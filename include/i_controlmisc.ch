@@ -1,0 +1,199 @@
+/*
+ * $Id: i_controlmisc.ch,v 1.1 2005-08-06 23:49:17 guerra000 Exp $
+ */
+/*
+ * ooHG source code:
+ * Miscelaneous control definitions
+ *
+ * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.guerra.com.mx
+ *
+ * Portions of this code are copyrighted by the Harbour MiniGUI library.
+ * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this software; see the file COPYING.  If not, write to
+ * the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
+ * Boston, MA 02111-1307 USA (or visit the web site http://www.gnu.org/).
+ *
+ * As a special exception, the ooHG Project gives permission for
+ * additional uses of the text contained in its release of ooHG.
+ *
+ * The exception is that, if you link the ooHG libraries with other
+ * files to produce an executable, this does not by itself cause the
+ * resulting executable to be covered by the GNU General Public License.
+ * Your use of that executable is in no way restricted on account of
+ * linking the ooHG library code into it.
+ *
+ * This exception does not however invalidate any other reasons why
+ * the executable file might be covered by the GNU General Public License.
+ *
+ * This exception applies only to the code released by the ooHG
+ * Project under the name ooHG. If you copy code from other
+ * ooHG Project or Free Software Foundation releases into a copy of
+ * ooHG, as the General Public License permits, the exception does
+ * not apply to the code that you add in this way. To avoid misleading
+ * anyone as to the status of such modified files, you must delete
+ * this exception notice from them.
+ *
+ * If you write modifications of your own for ooHG, it is your choice
+ * whether to permit this exception to apply to your modifications.
+ * If you do not wish that, delete this exception notice.
+ *
+ */
+/*----------------------------------------------------------------------------
+ MINIGUI - Harbour Win32 GUI library source code
+
+ Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
+ http://www.geocities.com/harbour_minigui/
+
+ This program is free software; you can redistribute it and/or modify it under
+ the terms of the GNU General Public License as published by the Free Software
+ Foundation; either version 2 of the License, or (at your option) any later
+ version.
+
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License along with
+ this software; see the file COPYING. If not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA (or
+ visit the web site http://www.gnu.org/).
+
+ As a special exception, you have permission for additional uses of the text
+ contained in this release of Harbour Minigui.
+
+ The exception is that, if you link the Harbour Minigui library with other
+ files to produce an executable, this does not by itself cause the resulting
+ executable to be covered by the GNU General Public License.
+ Your use of that executable is in no way restricted on account of linking the
+ Harbour-Minigui library code into it.
+
+ Parts of this project are based upon:
+
+        "Harbour GUI framework for Win32"
+        Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
+        Copyright 2001 Antonio Linares <alinares@fivetech.com>
+        www - http://www.harbour-project.org
+
+        "Harbour Project"
+        Copyright 1999-2003, http://www.harbour-project.org/
+---------------------------------------------------------------------------*/
+
+#define IDC_ARROW	32512
+#define IDC_IBEAM	32513
+#define IDC_WAIT	32514
+#define IDC_CROSS	32515
+#define IDC_UPARROW	32516
+#define IDC_SIZENWSE	32642
+#define IDC_SIZENESW	32643
+#define IDC_SIZEWE	32644
+#define IDC_SIZENS	32645
+#define IDC_SIZEALL	32646
+#define IDC_NO	32648
+#define IDC_APPSTARTING	32650
+#define IDC_HELP	32651
+
+#command SETFOCUS <n> OF <w>;
+	=>;
+	DoMethod ( <"w"> , <"n"> , 'SetFocus' )
+
+#command ADD ITEM <i> TO <n> OF <p> ;
+	=>;
+	DoMethod ( <"p"> , <"n"> , 'AddItem' , <i> )
+
+#command ADD COLUMN [ INDEX <index> ] [ CAPTION <caption> ] [ WIDTH <width> ] [ JUSTIFY <justify> ] TO <control> OF <parent> ;
+	=>;
+	DoMethod ( <"parent"> , <"control"> , 'AddColumn' , <index> , <caption> , <width> , <justify> )
+
+#command DELETE COLUMN [ INDEX ] <index> FROM <control> OF <parent> ;
+	=>;
+	DoMethod ( <"parent"> , <"control"> , 'DeleteColumn' , <index> )
+
+#command DELETE ITEM <i> FROM <n> OF <p>;
+	=>;
+	DoMethod ( <"p"> , <"n"> , 'DeleteItem' , <i> )
+
+#command DELETE ITEM ALL FROM <n> OF <p>;
+	=>;
+	DoMethod ( <"p"> , <"n"> , 'DeleteAllItems' )
+
+#command ENABLE CONTROL <control> OF <form>;
+	=>;
+	SetProperty ( <"form"> , <"control"> , 'Enabled' , .T. )
+
+#command SHOW CONTROL <control> OF <form>;
+	=>;
+	DoMethod ( <"form"> , <"control"> , 'Show' )
+
+#command HIDE CONTROL <control> OF <form>;
+	=>;
+	DoMethod ( <"form"> , <"control"> , 'Hide' )
+
+#command DISABLE CONTROL <control> OF <form>;
+	=>;
+	SetProperty ( <"form"> , <"control"> , 'Enabled' , .F. )
+
+#command RELEASE CONTROL <control> OF <form>;
+	=>;
+	DoMethod ( <"form"> , <"control"> , 'Release' )
+
+#command SET FONT TO <fontname> , <fontsize>;
+	=>;
+        _OOHG_DefaultFontName := <fontname> ; _OOHG_DefaultFontSize := <fontsize>
+
+#translate MODIFY [ PROPERTY ] [ CONTROL ] <Arg2> OF <Arg1> <Arg3> <Arg4> ;
+=> ;
+SetProperty ( <"Arg1"> , <"Arg2"> , <"Arg3"> , <Arg4> )
+
+#xtranslate MODIFY [ PROPERTY ] [ CONTROL ] <Arg2> OF <Arg1> <Arg3> ( <Arg4> ) <Arg5> ;
+=> ;
+SetProperty ( <"Arg1"> , <"Arg2"> , <"Arg3"> , <Arg4> , <Arg5> )
+
+#xtranslate FETCH [ PROPERTY ] [ CONTROL ] <Arg2> OF <Arg1> <Arg3> TO <Arg4> ;
+=> ;
+<Arg4> := GetProperty ( <"Arg1"> , <"Arg2"> , <"Arg3"> )
+
+#xtranslate FETCH [ PROPERTY ] [ CONTROL ] <Arg2> OF <Arg1> <Arg3> (<Arg4>) TO <Arg5> ;
+=> ;
+<Arg5> := GetProperty ( <"Arg1"> , <"Arg2"> , <"Arg3"> , <Arg4> )
+
+#xtranslate MODIFY [ PROPERTY ] [ CONTROL ] <Arg2> OF <Arg1> <Arg3> .T. ;
+=> ;
+SetProperty ( <"Arg1"> , <"Arg2"> , <"Arg3"> , .T. )
+
+#xtranslate MODIFY [ PROPERTY ] [ CONTROL ] <Arg2> OF <Arg1> <Arg3> .F. ;
+=> ;
+SetProperty ( <"Arg1"> , <"Arg2"> , <"Arg3"> , .F. )
+
+#xtranslate MODIFY [ PROPERTY ] [ CONTROL ] <Arg2> OF <Arg1> <Arg3> { <Arg4, ...> } ;
+=> ;
+SetProperty ( <"Arg1"> , <"Arg2"> , <"Arg3"> , \{<Arg4>\} )
+
+#translate SET MULTIPLE <x:ON,OFF> [<warning: WARNING>] => _OOHG_SetMultiple( <(x)> , <.warning.> )
+
+#translate SET CONTEXTMENUS OFF => _ShowContextMenus := .F.
+#translate SET CONTEXTMENUS ON => _ShowContextMenus := .T.
+
+#translate SET CONTEXTMENU OFF => _ShowContextMenus := .F.
+#translate SET CONTEXTMENU ON => _ShowContextMenus := .T.
+
+#translate SET CONTEXT MENU OFF => _ShowContextMenus := .F.
+#translate SET CONTEXT MENU ON => _ShowContextMenus := .T.
+
+#xcommand EXIT PROCEDURE <name> ;
+=> ;
+INIT PROCEDURE <name> ;;
+	MsgStop ('EXIT PROCEDURE Statement is not Supported in MiniGUI. Use Main Window ON RELEASE Event Procedure Instead. Program Terminated','MiniGUI Error') ;;
+        ExitProcess()
