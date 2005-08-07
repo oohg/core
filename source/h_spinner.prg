@@ -1,0 +1,230 @@
+/*
+ * $Id: h_spinner.prg,v 1.1 2005-08-07 00:12:12 guerra000 Exp $
+ */
+/*
+ * ooHG source code:
+ * PRG spinner functions
+ *
+ * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.guerra.com.mx
+ *
+ * Portions of this code are copyrighted by the Harbour MiniGUI library.
+ * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this software; see the file COPYING.  If not, write to
+ * the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
+ * Boston, MA 02111-1307 USA (or visit the web site http://www.gnu.org/).
+ *
+ * As a special exception, the ooHG Project gives permission for
+ * additional uses of the text contained in its release of ooHG.
+ *
+ * The exception is that, if you link the ooHG libraries with other
+ * files to produce an executable, this does not by itself cause the
+ * resulting executable to be covered by the GNU General Public License.
+ * Your use of that executable is in no way restricted on account of
+ * linking the ooHG library code into it.
+ *
+ * This exception does not however invalidate any other reasons why
+ * the executable file might be covered by the GNU General Public License.
+ *
+ * This exception applies only to the code released by the ooHG
+ * Project under the name ooHG. If you copy code from other
+ * ooHG Project or Free Software Foundation releases into a copy of
+ * ooHG, as the General Public License permits, the exception does
+ * not apply to the code that you add in this way. To avoid misleading
+ * anyone as to the status of such modified files, you must delete
+ * this exception notice from them.
+ *
+ * If you write modifications of your own for ooHG, it is your choice
+ * whether to permit this exception to apply to your modifications.
+ * If you do not wish that, delete this exception notice.
+ *
+ */
+/*----------------------------------------------------------------------------
+ MINIGUI - Harbour Win32 GUI library source code
+
+ Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
+ http://www.geocities.com/harbour_minigui/
+
+ This program is free software; you can redistribute it and/or modify it under
+ the terms of the GNU General Public License as published by the Free Software
+ Foundation; either version 2 of the License, or (at your option) any later
+ version.
+
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License along with
+ this software; see the file COPYING. If not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA (or
+ visit the web site http://www.gnu.org/).
+
+ As a special exception, you have permission for additional uses of the text
+ contained in this release of Harbour Minigui.
+
+ The exception is that, if you link the Harbour Minigui library with other
+ files to produce an executable, this does not by itself cause the resulting
+ executable to be covered by the GNU General Public License.
+ Your use of that executable is in no way restricted on account of linking the
+ Harbour-Minigui library code into it.
+
+ Parts of this project are based upon:
+
+	"Harbour GUI framework for Win32"
+ 	Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
+ 	Copyright 2001 Antonio Linares <alinares@fivetech.com>
+	www - http://www.harbour-project.org
+
+	"Harbour Project"
+	Copyright 1999-2003, http://www.harbour-project.org/
+---------------------------------------------------------------------------*/
+
+#include "minigui.ch"
+#include "common.ch"
+#include "hbclass.ch"
+
+CLASS TSpinner FROM TControl
+   DATA Type      INIT "SPINNER" READONLY
+   DATA ControlHdl  INIT 0
+   DATA nRangeMin   INIT 0
+   DATA nRangeMax   INIT 0
+
+   METHOD Release
+   METHOD SizePos
+   METHOD Value               SETGET
+   METHOD Enabled             SETGET
+   METHOD Visible             SETGET
+
+   METHOD RangeMin            SETGET
+   METHOD RangeMax            SETGET
+ENDCLASS
+
+*-----------------------------------------------------------------------------*
+Function _DefineSpinner ( ControlName, ParentForm, x, y, w, value ,fontname, ;
+                          fontsize, rl, rh, tooltip, change, lostfocus, ;
+                          gotfocus, h, HelpId, invisible, notabstop , bold, ;
+                          italic, underline, strikeout, wrap, readonly, increment , backcolor , fontcolor )
+*-----------------------------------------------------------------------------*
+Local RetArray , k := 0
+Local Self
+
+// AJ
+Local ControlHandle
+
+   DEFAULT w         TO 120
+   DEFAULT h         TO 24
+   DEFAULT value     TO rl
+   DEFAULT change    TO ""
+   DEFAULT lostfocus TO ""
+   DEFAULT gotfocus  TO ""
+   DEFAULT invisible TO FALSE
+   DEFAULT notabstop TO FALSE
+   DEFAULT wrap      TO FALSE
+   DEFAULT readonly  TO FALSE
+   DEFAULT increment TO 1
+
+   Self := TSpinner():SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, .T. )
+
+   RetArray := InitSpinner ( ::Parent:hWnd, 0, x, y, w , '' , 0 , rl, rh , h, invisible, notabstop, wrap, readonly )
+
+	ControlHandle := RetArray [1]
+
+   ::New( RetArray[1], ControlName, HelpId, ! Invisible, ToolTip )
+   ::SetFont( , , bold, italic, underline, strikeout )
+   ::SizePos( y, x, w, h )
+
+   ::ControlHdl := RetArray[ 2 ]
+   ::OnLostFocus := LostFocus
+   ::OnGotFocus :=  GotFocus
+   ::OnChange   :=  Change
+   ::RangeMin   :=   Rl
+   ::RangeMax   :=   Rh
+
+	if valtype(value) == "N"
+		SetSpinnerValue ( RetArray [2] , Value )
+	endif
+
+	if increment <> 1
+	   SetSpinnerIncrement( RetArray[2], increment )
+	endif
+
+Return Nil
+
+*-----------------------------------------------------------------------------*
+METHOD Release() CLASS TSpinner
+*-----------------------------------------------------------------------------*
+   ReleaseControl( ::ControlHdl )
+Return ::Super:Release()
+
+*-----------------------------------------------------------------------------*
+METHOD SizePos( Row, Col, Width, Height ) CLASS TSpinner
+*-----------------------------------------------------------------------------*
+Local uRet
+   uRet := ::Super:SizePos( Row, Col, Width, Height )
+   MoveWindow( ::hWnd, ::ContainerCol, ::ContainerRow, ::Width - 15, ::Height , .T. )
+   MoveWindow( ::ControlHdl, ::ContainerCol + ::Width - 15, ::ContainerRow, 15, ::Height , .T. )
+Return uRet
+
+*-----------------------------------------------------------------------------*
+METHOD Value( uValue ) CLASS TSpinner
+*-----------------------------------------------------------------------------*
+   IF VALTYPE( uValue ) == "N"
+      SetSpinnerValue( ::ControlHdl, uValue )
+   ENDIF
+Return GetSpinnerValue( ::ControlHdl )
+
+*-----------------------------------------------------------------------------*
+METHOD Enabled( lEnabled ) CLASS TSpinner
+*-----------------------------------------------------------------------------*
+   IF VALTYPE( lEnabled ) == "L"
+      ::Super:Enabled := lEnabled
+      IF lEnabled
+         EnableWindow( ::ControlHdl )
+      ELSE
+         DisableWindow( ::ControlHdl )
+      ENDIF
+   ENDIF
+Return ::Super:Enabled
+
+*-----------------------------------------------------------------------------*
+METHOD Visible( lVisible ) CLASS TSpinner
+*-----------------------------------------------------------------------------*
+   IF VALTYPE( lVisible ) == "L"
+      ::Super:Visible := lVisible
+      IF lVisible
+         CShowControl( ::ControlHdl )
+      ELSE
+         HideWindow( ::ControlHdl )
+      ENDIF
+   ENDIF
+Return ::Super:Visible
+
+*-----------------------------------------------------------------------------*
+METHOD RangeMin( nValue ) CLASS TSpinner
+*-----------------------------------------------------------------------------*
+   IF VALTYPE( nValue ) == "N"
+      ::nRangeMin := nValue
+      SetSpinnerRange( ::hWnd, ::nRangeMin, ::nRangeMax )
+   ENDIF
+Return ::nRangeMin
+
+*-----------------------------------------------------------------------------*
+METHOD RangeMax( nValue ) CLASS TSpinner
+*-----------------------------------------------------------------------------*
+   IF VALTYPE( nValue ) == "N"
+      ::nRangeMax := nValue
+      SetSpinnerRange( ::hWnd, ::nRangeMin, ::nRangeMax )
+   ENDIF
+Return ::nRangeMax

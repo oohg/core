@@ -1,0 +1,495 @@
+/*
+ * $Id: c_controlmisc.c,v 1.1 2005-08-07 00:02:01 guerra000 Exp $
+ */
+/*
+ * ooHG source code:
+ * Miscelaneus C controls functions
+ *
+ * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.guerra.com.mx
+ *
+ * Portions of this code are copyrighted by the Harbour MiniGUI library.
+ * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this software; see the file COPYING.  If not, write to
+ * the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
+ * Boston, MA 02111-1307 USA (or visit the web site http://www.gnu.org/).
+ *
+ * As a special exception, the ooHG Project gives permission for
+ * additional uses of the text contained in its release of ooHG.
+ *
+ * The exception is that, if you link the ooHG libraries with other
+ * files to produce an executable, this does not by itself cause the
+ * resulting executable to be covered by the GNU General Public License.
+ * Your use of that executable is in no way restricted on account of
+ * linking the ooHG library code into it.
+ *
+ * This exception does not however invalidate any other reasons why
+ * the executable file might be covered by the GNU General Public License.
+ *
+ * This exception applies only to the code released by the ooHG
+ * Project under the name ooHG. If you copy code from other
+ * ooHG Project or Free Software Foundation releases into a copy of
+ * ooHG, as the General Public License permits, the exception does
+ * not apply to the code that you add in this way. To avoid misleading
+ * anyone as to the status of such modified files, you must delete
+ * this exception notice from them.
+ *
+ * If you write modifications of your own for ooHG, it is your choice
+ * whether to permit this exception to apply to your modifications.
+ * If you do not wish that, delete this exception notice.
+ *
+ */
+/*----------------------------------------------------------------------------
+ MINIGUI - Harbour Win32 GUI library source code
+
+ Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
+ http://www.geocities.com/harbour_minigui/
+
+ This program is free software; you can redistribute it and/or modify it under
+ the terms of the GNU General Public License as published by the Free Software
+ Foundation; either version 2 of the License, or (at your option) any later
+ version.
+
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License along with
+ this software; see the file COPYING. If not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA (or
+ visit the web site http://www.gnu.org/).
+
+ As a special exception, you have permission for additional uses of the text
+ contained in this release of Harbour Minigui.
+
+ The exception is that, if you link the Harbour Minigui library with other
+ files to produce an executable, this does not by itself cause the resulting
+ executable to be covered by the GNU General Public License.
+ Your use of that executable is in no way restricted on account of linking the
+ Harbour-Minigui library code into it.
+
+ Parts of this project are based upon:
+
+	"Harbour GUI framework for Win32"
+ 	Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
+ 	Copyright 2001 Antonio Linares <alinares@fivetech.com>
+	www - http://www.harbour-project.org
+
+	"Harbour Project"
+	Copyright 1999-2003, http://www.harbour-project.org/
+---------------------------------------------------------------------------*/
+
+#define _WIN32_IE      0x0500
+#define HB_OS_WIN_32_USED
+#define _WIN32_WINNT   0x0400
+#include <shlobj.h>
+
+#if defined(__MINGW32__)
+  #define UDM_GETPOS32 0x0472
+  #define UDM_SETPOS32 0x0471
+#endif
+
+#if defined(_MSC_VER)
+  #define UDM_SETPOS32 (WM_USER+113)
+  #define UDM_GETPOS32 (WM_USER+114)
+#endif
+
+#include <windows.h>
+#include <commctrl.h>
+#include "hbapi.h"
+#include "hbvm.h"
+#include "hbstack.h"
+#include "hbapiitm.h"
+#include "winreg.h"
+#include "tchar.h"
+
+
+HB_FUNC ( DELETEOBJECT )
+{
+   hb_retl ( DeleteObject( (HGDIOBJ) hb_parnl( 1 ) ) ) ;
+}
+
+HB_FUNC ( CSHOWCONTROL )
+{
+
+	HWND hwnd;
+
+	hwnd = (HWND) hb_parnl (1);
+
+	ShowWindow(hwnd, SW_SHOW);
+
+	return ;
+}
+
+HB_FUNC( INITTOOLTIP )
+{
+
+	HWND htooltip;
+
+	InitCommonControls();
+
+	htooltip = CreateWindowEx( 0,
+	"tooltips_class32",
+	"",
+	TTS_ALWAYSTIP,
+	0,
+	0,
+	0,
+	0,
+	(HWND) hb_parnl(1) ,
+	(HMENU) 0 ,
+	GetModuleHandle ( NULL )
+	, NULL ) ;
+
+	hb_retnl ( (LONG) htooltip ) ;
+
+}
+
+HB_FUNC ( SETTOOLTIP )
+{
+
+	static  TOOLINFO  ti;
+
+	HWND hWnd ;
+	char *Text ;
+	HWND hWnd_ToolTip ;
+
+	hWnd = (HWND) hb_parnl (1) ;
+	Text = hb_parc (2) ;
+	hWnd_ToolTip = (HWND) hb_parnl (3) ;
+
+	memset(&ti,0,sizeof(ti));
+
+	ti.cbSize=sizeof(ti);
+	ti.uFlags=TTF_SUBCLASS|TTF_IDISHWND;
+	ti.hwnd=GetParent(hWnd);
+	ti.uId=(UINT)hWnd;
+
+	if(SendMessage(hWnd_ToolTip,(UINT)TTM_GETTOOLINFO,(WPARAM)0,(LPARAM)&ti))
+	{
+		SendMessage(hWnd_ToolTip,(UINT)TTM_DELTOOL,(WPARAM)0,(LPARAM)&ti);
+	}
+
+	ti.cbSize=sizeof(ti);
+	ti.uFlags=TTF_SUBCLASS|TTF_IDISHWND;
+	ti.hwnd=GetParent(hWnd);
+	ti.uId=(UINT)hWnd;
+	ti.lpszText=Text;
+	SendMessage(hWnd_ToolTip,(UINT)TTM_ADDTOOL,(WPARAM)0,(LPARAM)&ti);
+
+	hb_retni(0);
+
+}
+HB_FUNC ( HIDEWINDOW )
+{
+	HWND hwnd;
+
+	hwnd = (HWND) hb_parnl (1);
+
+	ShowWindow(hwnd, SW_HIDE);
+
+	return ;
+}
+
+HB_FUNC ( CHECKDLGBUTTON )
+{
+	CheckDlgButton(
+	(HWND) hb_parnl (2),
+	hb_parni(1),
+	BST_CHECKED);
+}
+
+HB_FUNC ( UNCHECKDLGBUTTON )
+{
+	CheckDlgButton(
+	(HWND) hb_parnl (2),
+	hb_parni(1),
+	BST_UNCHECKED);
+}
+
+HB_FUNC ( SETDLGITEMTEXT )
+{
+    SetDlgItemText(
+       (HWND) hb_parnl (3) ,
+       hb_parni( 1 ),
+       (LPCTSTR) hb_parc( 2 )
+    );
+}
+
+HB_FUNC ( SETFOCUS )
+{
+   hb_retnl( (LONG) SetFocus( (HWND) hb_parnl( 1 ) ) );
+}
+
+HB_FUNC ( GETDLGITEMTEXT )
+{
+   USHORT iLen = 32768;
+   char *cText = (char*) hb_xgrab( iLen+1 );
+
+	GetDlgItemText(
+	(HWND) hb_parnl (2),	// handle of dialog box
+	hb_parni(1),		// identifier of control
+	(LPTSTR) cText,       	// address of buffer for text
+	iLen                   	// maximum size of string
+	);
+
+   hb_retc( cText );
+   hb_xfree( cText );
+}
+
+HB_FUNC ( ISDLGBUTTONCHECKED )
+{
+	UINT r ;
+
+	r = IsDlgButtonChecked( (HWND) hb_parnl (2), hb_parni( 1 ) );
+
+	if ( r == BST_CHECKED )
+	{
+		hb_retl( TRUE );
+	}
+	else
+	{
+		hb_retl( FALSE );
+	}
+}
+
+HB_FUNC ( SETSPINNERVALUE )
+{
+	SendMessage((HWND) hb_parnl(1) ,
+		(UINT)UDM_SETPOS32 ,
+		(WPARAM)0,
+		(LPARAM) (INT) hb_parni (2)
+		) ;
+}
+HB_FUNC ( GETSPINNERVALUE )
+{
+	hb_retnl (
+	SendMessage((HWND) hb_parnl(1) ,
+		(UINT)UDM_GETPOS32 ,
+		(WPARAM) 0 ,
+		(LPARAM) 0 )
+	) ;
+}
+
+HB_FUNC ( INSERTTAB )
+{
+
+	keybd_event(
+		VK_TAB	,	// virtual-key code
+		0,		// hardware scan code
+		0,		// flags specifying various function options
+		0		// additional data associated with keystroke
+	);
+
+}
+
+HB_FUNC ( INSERTSHIFTTAB )
+{
+
+	keybd_event(
+		VK_SHIFT,	// virtual-key code
+		0,		// hardware scan code
+		0,		// flags specifying various function options
+		0		// additional data associated with keystroke
+	);
+
+	keybd_event(
+		VK_TAB	,	// virtual-key code
+		0,		// hardware scan code
+		0,		// flags specifying various function options
+		0		// additional data associated with keystroke
+	);
+
+	keybd_event(
+		VK_SHIFT,	// virtual-key code
+		0,		// hardware scan code
+		KEYEVENTF_KEYUP,// flags specifying various function options
+		0		// additional data associated with keystroke
+	);
+
+}
+
+
+
+HB_FUNC ( RELEASECONTROL )
+{
+	SendMessage( (HWND) hb_parnl(1) , WM_SYSCOMMAND , SC_CLOSE , 0 ) ;
+}
+
+
+HB_FUNC ( INSERTBACKSPACE )
+{
+
+	keybd_event(
+		VK_BACK	,	// virtual-key code
+		0,		// hardware scan code
+		0,		// flags specifying various function options
+		0		// additional data associated with keystroke
+	);
+
+}
+
+HB_FUNC ( INSERTPOINT )
+{
+
+	keybd_event(
+		VK_DECIMAL		,	// virtual-key code
+		0,		// hardware scan code
+		0,		// flags specifying various function options
+		0		// additional data associated with keystroke
+	);
+
+}
+
+HB_FUNC ( GETMODULEFILENAME )
+
+{
+   BYTE bBuffer[ MAX_PATH + 1 ] = { 0 } ;
+
+   GetModuleFileName( ( HMODULE ) hb_parnl( 1 ), ( char * ) bBuffer, 249 );
+   hb_retc( ( char * ) bBuffer );
+}
+
+HB_FUNC (SETCURSORPOS)
+{
+   SetCursorPos( hb_parni( 1 ), hb_parni( 2 ) );
+}
+
+HB_FUNC (SHOWCURSOR)
+{
+   hb_retni( ShowCursor( hb_parl( 1 ) ) );
+}
+
+HB_FUNC( SYSTEMPARAMETERSINFO )
+{
+   if( SystemParametersInfoA( (UINT) hb_parni( 1 ),
+                             (UINT) hb_parni( 2 ),
+                             (VOID *) hb_parc( 3 ),
+                             (UINT) hb_parni( 4 ) ) )
+   {
+      hb_retl( TRUE );
+   }
+   else
+   {
+      hb_retl( FALSE );
+   }
+}
+
+HB_FUNC( GETTEXTWIDTH )  // returns the width of a string in pixels
+{
+   HDC   hDC        = ( HDC ) hb_parnl( 1 );
+   HWND  hWnd;
+   DWORD dwSize;
+   BOOL  bDestroyDC = FALSE;
+   HFONT hFont = ( HFONT ) hb_parnl( 3 );
+   HFONT hOldFont;
+   SIZE sz;
+
+   if( ! hDC )
+   {
+      bDestroyDC = TRUE;
+      hWnd = GetActiveWindow();
+      hDC = GetDC( hWnd );
+   }
+
+   if( hFont )
+      hOldFont = ( HFONT ) SelectObject( hDC, hFont );
+
+   GetTextExtentPoint32( hDC, hb_parc( 2 ), hb_parclen( 2 ), &sz );
+   dwSize = sz.cx;
+
+   if( hFont )
+      SelectObject( hDC, hOldFont );
+
+   if( bDestroyDC )
+       ReleaseDC( hWnd, hDC );
+
+   hb_retni( LOWORD( dwSize ) );
+}
+
+HB_FUNC ( KEYBD_EVENT )
+{
+
+	keybd_event(
+		hb_parni(1),				// virtual-key code
+		MapVirtualKey( hb_parni(1), 0 ),	// hardware scan code
+		hb_parl(2) ? KEYEVENTF_KEYUP: 0,	// flags specifying various function options
+		0					// additional data associated with keystroke
+	);
+
+}
+
+HB_FUNC ( INSERTRETURN )
+{
+
+	keybd_event(
+		VK_RETURN	, // virtual-key code
+		0,		// hardware scan code
+		0,		// flags specifying various function options
+		0		// additional data associated with keystroke
+	);
+
+}
+
+HB_FUNC ( GETSHOWCMD )
+{
+
+	WINDOWPLACEMENT WP;
+	HWND h;
+        int i;
+
+	h = (HWND) hb_parnl( 1 ) ;
+
+	WP.length = sizeof(WINDOWPLACEMENT) ;
+
+	GetWindowPlacement( (HWND) h , &WP ) ;
+
+        i =  WP.showCmd;
+
+	hb_retni (i);
+
+}
+
+HB_FUNC( GETPROGRAMFILENAME )
+{
+   char Buffer [ MAX_PATH + 1 ] = { 0 } ;
+   GetModuleFileName( GetModuleHandle(NULL) , Buffer , MAX_PATH ) ;
+   hb_retc(Buffer);
+}
+
+/*
+// Intento por controlar las teclas...
+HB_FUNC( GETNMKEY )
+{
+   LPNMKEY lpNmKey;
+
+   lpNmKey = ( LPNMKEY ) hb_parnl( 1 );
+   hb_reta( 2 );
+   hb_storni( lpNmKey->nVKey, -1, 1 );
+   hb_storni( lpNmKey->uFlags, -1, 2 );
+}
+
+HB_FUNC( GETNMCHAR )
+{
+   hb_retnl( ( ( LPNMCHAR ) hb_parnl( 1 ) )->ch );
+}
+
+HB_FUNC( __ISMOD )
+{
+   ULONG ulMod = hb_parl( 2 );
+
+   hb_retl( ( hb_parnl( 1 ) & ulMod ) == ulMod );
+}
+*/
