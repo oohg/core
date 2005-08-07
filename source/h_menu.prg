@@ -1,5 +1,5 @@
 /*
- * $Id: h_menu.prg,v 1.1 2005-08-07 00:12:50 guerra000 Exp $
+ * $Id: h_menu.prg,v 1.2 2005-08-07 05:14:37 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -94,7 +94,6 @@
 #include "minigui.ch"
 #include "hbclass.ch"
 
-STATIC _OOHG_ContextMenu := NIL
 STATIC _OOHG_xMenuActive := {}
 
 CLASS TMenu FROM TControl
@@ -252,8 +251,6 @@ METHOD DefineContext( Parent ) CLASS TMenu
 
    ::Parent:ContextMenu := Self
 
-   _OOHG_ContextMenu := Self
-
    AADD( _OOHG_xMenuActive, Self )
 
 Return Self
@@ -270,8 +267,6 @@ METHOD DefineNotify( Parent ) CLASS TMenu
 
    ::Parent:NotifyMenuHandle := ::hWnd
 
-   _OOHG_ContextMenu := Self
-
    AADD( _OOHG_xMenuActive, Self )
 
 Return Self
@@ -287,8 +282,6 @@ METHOD DefineDropDown( Button , Parent ) CLASS TMenu
    ::Type := "DROPDOWN"
 
    GetControlObject( Button, ::Parent:Name ):ContextMenu := Self
-
-   _OOHG_ContextMenu := Self
 
    AADD( _OOHG_xMenuActive, Self )
 
