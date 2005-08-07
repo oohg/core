@@ -1,7 +1,7 @@
-rem
-rem $Id: makelib.bat,v 1.1 2005-08-07 01:03:52 guerra000 Exp $
-rem
 @echo off
+rem
+rem $Id: makelib.bat,v 1.2 2005-08-07 01:43:08 guerra000 Exp $
+rem
 cls
 
 IF "%hg_bcc%"=="" SET HG_BCC=c:\borland\bcc55
@@ -23,7 +23,3 @@ IF EXIST %hg_root%\lib\oohg.bak del %hg_root%\lib\oohg.bak
 del *.obj
 del h_*.c
 del errorsys.c
-
-SET HG_BCC=
-SET HG_HRB=
-SET HG_ROOT=
