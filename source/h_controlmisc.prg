@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.1 2005-08-07 00:06:08 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.2 2005-08-08 02:42:56 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -93,7 +93,7 @@
 
 #include "hbclass.ch"
 #include 'common.ch'
-#include 'minigui.ch'
+#include 'oohg.ch'
 #include 'i_windefs.ch'
 
 Memvar aResult
@@ -2513,32 +2513,6 @@ Local StartUpFolder := GetProgramFileName()
 Return Left ( StartUpFolder , Rat ( '\' , StartUpFolder ) - 1 )
 
 *------------------------------------------------------------------------------*
-PROCEDURE HMG_UNZIPFILE ( zipfile , block , extractpath )
-*------------------------------------------------------------------------------*
-Local ObjZip
-Local Count
-Local objItem
-Local i
-
-	objZip := TOleAuto():New( "XStandard.Zip")
-
-	Count := objZip:Contents(zipfile):Count
-
-	For i := 1 To Count
-
-		objItem := objZip:Contents(zipfile):Item(i)
-
-		if valtype (block) = 'B'
-			Eval ( block , objItem:Name , i )
-		endif
-
-		objZip:UnPack( zipfile , extractpath , objItem:Name )
-
-	Next i
-
-RETURN
-
-*------------------------------------------------------------------------------*
 Function _OOHG_SetMultiple( lMultiple, lWarning )
 *------------------------------------------------------------------------------*
 Local lRet := _OOHG_lMultiple
@@ -2547,29 +2521,8 @@ Local lRet := _OOHG_lMultiple
       ( EMPTY( CreateMutex( , .T., strtran(GetModuleFileName(),'\','_') ) ) .OR. (GetLastError() > 0) )
       If ValType( lWarning ) == "L" .AND. lWarning
          InitMessages()
-         MsgStop( _OOHG_MESSAGE[ 4 ] )
+         MsgStop( _OOHG_Message[ 4 ] )
       Endif
       ExitProcess(0)
    ENDIF
 Return lRet
-
-*------------------------------------------------------------------------------*
-PROCEDURE HMG_ZIPFILE( zipfile , afiles , level , block , ovr )
-*------------------------------------------------------------------------------*
-LOCAL oZip
-LOCAL I
-
-	oZip:=TOleAuto():New( "XStandard.Zip")
-
-	if ovr == .t.
-		if file (zipfile)
-			delete file (zipfile)
-		endif
-	endif
-
-	For i := 1 To Len (afiles)
-		Eval ( block , aFiles [i] , i )
-		oZip:pack( afiles [i] , zipfile , , , level )
-	Next i
-
-RETURN
