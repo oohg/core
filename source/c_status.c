@@ -1,5 +1,5 @@
 /*
- * $Id: c_status.c,v 1.1 2005-08-07 00:05:14 guerra000 Exp $
+ * $Id: c_status.c,v 1.2 2005-08-08 02:43:49 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -269,7 +269,7 @@ HB_FUNC( REFRESHITEMBAR )
 
       piItems = hb_xgrab( sizeof( int ) * iItems );
       SendMessage( hWnd, SB_GETPARTS, iItems, ( LPARAM ) piItems );
-      iDiff = iWidth - piItems[ iCount - 1 ];
+      iDiff = iWidth - piItems[ iItems - 1 ];
       for( iCount = 0; iCount < iItems; iCount++ )
       {
          piItems[ iCount ] = piItems[ iCount ] + iDiff;
