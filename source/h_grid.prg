@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.1 2005-08-07 00:07:33 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.2 2005-08-09 06:03:39 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -390,7 +390,7 @@ STATIC Function TGrid_AddColumnColor( aGrid, nColumn, uColor, uDynamicColor, nWi
 Local uTemp, x
    IF ValType( aGrid ) == "A" .OR. ValType( uColor ) $ "ANB" .OR. ValType( uDynamicColor ) $ "ANB"
       IF ValType( uDynamicColor ) == "A"
-         IF Len( LEN( uDynamicColor ) ) < nWidth
+         IF Len( uDynamicColor ) < nWidth
             ASIZE( uDynamicColor, nWidth )
          ENDIF
          AINS( uDynamicColor, nColumn )
