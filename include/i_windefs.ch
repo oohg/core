@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.1 2005-08-06 23:53:54 guerra000 Exp $
+ * $Id: i_windefs.ch,v 1.2 2005-08-09 04:20:05 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -99,6 +99,7 @@
 #define WM_ACTIVATE	6
 #define WM_SETFOCUS	7
 #define WM_KILLFOCUS	8
+#define WM_GETTEXT      13
 #define WM_PAINT	15
 #define WM_CLOSE        16
 #define WM_QUIT		18
@@ -108,9 +109,13 @@
 #define WM_NEXTDLGCTL	40
 #define WM_DRAWITEM     43
 #define WM_VKEYTOITEM	46
+#define WM_WINDOWPOSCHANGING  70
+#define WM_WINDOWPOSCHANGED   71
 #define WM_NOTIFY	78
 #define WM_HELP         83
 #define WM_CONTEXTMENU	123
+#define WM_NCPAINT      133
+#define WM_NCACTIVATE   134
 #define WM_GETDLGCODE	135
 #define WM_KEYDOWN	256
 #define WM_KEYUP        257
