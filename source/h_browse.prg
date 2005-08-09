@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.1 2005-08-07 00:06:08 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.2 2005-08-09 04:19:27 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -90,7 +90,7 @@
 	"Harbour Project"
 	Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
-#include 'minigui.ch'
+#include 'oohg.ch'
 #include "hbclass.ch"
 #include "i_windefs.ch"
 
@@ -163,39 +163,39 @@ ENDCLASS
 *-----------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aFields ,value,fontname,fontsize , tooltip , change , dblclick , aHeadClick , gotfocus , lostfocus , WorkArea , AllowDelete, nogrid, aImage, aJust , HelpId , bold , italic , underline , strikeout , break , backcolor , fontcolor , lock , inplace , novscroll , AllowAppend , readonly , valid , validmessages , edit , dynamicbackcolor , aWhenFields , dynamicforecolor ) CLASS TBrowse
 *-----------------------------------------------------------------------------*
-Local wBitmap , z , ScrollBarHandle , DeltaWidth
+Local wBitmap , ScrollBarHandle , DeltaWidth
 Local ControlHandle
-Local hsum := 0
+Local hsum
 Local ScrollBarButtonHandle
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize )
 
-	if valtype(w) == "U"
+   if valtype(w) != "N"
 		w := 240
 	endif
-	if valtype(h) == "U"
+   if valtype(h) != "N"
 		h := 120
 	endif
-	if valtype(value) == "U"
+   if valtype(value) != "N"
 		value := 0
 	endif
-	if valtype(aFields) == "U"
+   if valtype(aFields) != "A"
 		aFields := {}
 	endif
-	if valtype(aJust) == "U"		// Browse+
+   if valtype(aJust) != "A"
 		aJust := Array( len( aFields ) )
 		aFill( aJust, 0 )
 	else
 		aSize( aJust, len( aFields) )
 		aEval( aJust, { |x| x := iif( x == NIL, 0, x ) } )
 	endif
-	if valtype(aImage) == "U"
+   if valtype(aImage) != "A"
 		aImage := {}
 	endif
 
 	// If splitboxed force no vertical scrollbar
 
-	if valtype(x) == "U" .or. valtype(y) == "U"
+   if valtype(x) != "N" .or. valtype(y) != "N"
 		novscroll := .T.
 	endif
 
@@ -205,7 +205,7 @@ Local ScrollBarButtonHandle
 		DeltaWidth := 0
 	EndIf
 
-	if valtype(x) == "U" .or. valtype(y) == "U"
+   if valtype(x) != "N" .or. valtype(y) != "N"
 
       If _OOHG_SplitLastControl == "TOOLBAR"
 			Break := .T.
@@ -236,17 +236,17 @@ Local ScrollBarButtonHandle
 	EndIf
 
 	wBitmap := iif( len( aImage ) > 0, AddListViewBitmap( ControlHandle, aImage ), 0 ) //Add Bitmap Column
-	aWidths[1] := max ( aWidths[1], wBitmap + 2 ) // Set Column 1 witth to Bitmap width
+   aWidths[1] := max ( aWidths[1], wBitmap + 2 ) // Set Column 1 width to Bitmap width
 
-	if valtype(aHeadClick) == "U"
+   if valtype(aHeadClick) != "A"
 		aHeadClick := {}
 	endif
 
-	if valtype(change) == "U"
+   if valtype(change) != "B"
 		change := ""
 	endif
 
-	if valtype(dblclick) == "U"
+   if valtype(dblclick) != "B"
 		dblclick := ""
 	endif
 
@@ -286,10 +286,8 @@ Local ScrollBarButtonHandle
 
    aAdd ( ::Parent:BrowseList, Self )
 
-   For z := 1 To Len( ::aWidths )
-      hsum := hsum + ListView_GetColumnWidth ( ::hWnd, z - 1 )
-      ::aWidths [z] := ListView_GetColumnWidth ( ControlHandle, z - 1 )
-	Next z
+   hsum := 0
+   AEVAL( ::aWidths, { |a,i| hsum += ( ::aWidths[ i ] := ListView_GetColumnWidth( ControlHandle, i - 1 ) ), a } )
 
 	// Add Vertical scrollbar
 
@@ -440,7 +438,7 @@ Local PageLength , _RecNo , _DeltaScroll := { Nil , Nil , Nil , Nil } , s
 
       if ::lEof
          Return nil
-		EndIf
+      EndIf
 
       If Select( ::WorkArea ) == 0
          Return nil
@@ -592,7 +590,7 @@ Local PageLength , s , _RecNo , _DeltaScroll := { Nil , Nil , Nil , Nil }
 
       if ::lEof
          Return nil
-		EndIf
+      EndIf
 
       If Select( ::WorkArea ) == 0
          Return nil
@@ -1636,7 +1634,7 @@ Local hws, x, lRet, nButton
       nButton := IF( ( hws > ::Width - GETVSCROLLBARWIDTH() - 4 ), 1, 0 )
       IF ::nButtonActive != nButton
          ::nButtonActive := nButton
-         ::Refresh()
+*         ::Refresh()
          if nButton == 1
             ::VScroll:SizePos( 0, ::Width - GETVSCROLLBARWIDTH() , GETVSCROLLBARWIDTH() , ::Height - GETHSCROLLBARHEIGHT() )
             MoveWindow( ::ScrollBarButtonHandle, ::ContainerCol + ::Width - GETVSCROLLBARWIDTH() , ::ContainerRow + ::Height - GETHSCROLLBARHEIGHT() , GETVSCROLLBARWIDTH() , GETHSCROLLBARHEIGHT() , .t. )
@@ -1901,25 +1899,23 @@ Return NIL
 *-----------------------------------------------------------------------------*
 METHOD Refresh() CLASS TBrowse
 *-----------------------------------------------------------------------------*
-Local s , _RecNo , _BrowseRecMap , _DeltaScroll
-Local v // , cMacroVar
+Local s , _RecNo , _DeltaScroll
+Local v
+
+   If Select( ::WorkArea ) == 0
+      ListViewReset( ::hWnd )
+      Return nil
+	EndIf
 
    v := ::Value
 
    _DeltaScroll := ListView_GetSubItemRect ( ::hWnd, 0 , 0 )
 
-   _BrowseRecMap := ::aRecMap
-
    s := LISTVIEW_GETFIRSTITEM ( ::hWnd )
-
-   If Select( ::WorkArea ) == 0
-      ListViewReset ( ::hWnd )
-      Return nil
-	EndIf
 
    _RecNo := ( ::WorkArea )->( RecNo() )
 
-   if v < 0
+   if v <= 0
 		v := _RecNo
 	EndIf
 
@@ -1955,11 +1951,6 @@ Local v // , cMacroVar
 		EndIf
 	endif
 
-***************************
-
-***************************
-***************************
-
 	if s == 0
       if Set( _SET_DELETED )
          if ( ::WorkArea )->( Deleted() )
@@ -1967,10 +1958,6 @@ Local v // , cMacroVar
 			endif
 		EndIf
 	endif
-
-***************************
-***************************
-
 
    If ( ::WorkArea )->( Eof() )
 
@@ -2321,5 +2308,4 @@ Return _OOHG_BrowseSyncStatus
 
 
 
-*/
 /// TEMP!!! CLASE SCROLLBARBUTTON!!!
