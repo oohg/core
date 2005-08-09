@@ -1,8 +1,8 @@
 /*
- * $Id: h_combo.prg,v 1.1 2005-08-07 00:06:08 guerra000 Exp $
+ * $Id: h_combo.prg,v 1.2 2005-08-09 04:17:38 guerra000 Exp $
  */
 /*
- * $Id: h_combo.prg,v 1.1 2005-08-07 00:06:08 guerra000 Exp $
+ * $Id: h_combo.prg,v 1.2 2005-08-09 04:17:38 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -364,13 +364,13 @@ RETURN uValue
 METHOD Visible( lVisible ) CLASS TCombo
 *-----------------------------------------------------------------------------*
    IF VALTYPE( lVisible ) == "L"
-      ::Super:lVisible := lVisible
+      ::Super:Visible := lVisible
       IF ! lVisible
          SendMessage( ::hWnd, 335 , 0 , 0 )
          HideWindow( ::hWnd )
       ENDIF
    ENDIF
-RETURN ::Super:lVisible
+RETURN ::Super:Visible
 
 *-----------------------------------------------------------------------------*
 METHOD RefreshData() CLASS TCombo
