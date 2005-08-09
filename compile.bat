@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: compile.bat,v 1.1 2005-08-07 01:43:08 guerra000 Exp $
+rem $Id: compile.bat,v 1.2 2005-08-09 05:36:23 guerra000 Exp $
 rem
 CLS
 
@@ -14,8 +14,8 @@ if exist %1.exe del %1.exe
 
 Rem Debug Compile
 
-for %a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%a"=="/d" GOTO DEBUG_COMP
-for %a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%a"=="/D" GOTO DEBUG_COMP
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/d" GOTO DEBUG_COMP
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/D" GOTO DEBUG_COMP
 
 %HG_HRB%\bin\harbour %1.prg -n -i%HG_HRB%\include;%HG_ROOT%\include; %2 %3
 
@@ -62,31 +62,31 @@ echo %HG_HRB%\lib\miniprint.lib + >> b32.bc
 
 Rem ODBC Libraries Link
 
-for %a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%a"=="/o" echo %HG_HRB%\lib\hbodbc.lib + >> b32.bc
-for %a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%a"=="/o" echo %HG_HRB%\lib\odbc32.lib + >> b32.bc
-for %a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%a"=="/O" echo %HG_HRB%\lib\hbodbc.lib + >> b32.bc
-for %a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%a"=="/O" echo %HG_HRB%\lib\odbc32.lib + >> b32.bc
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/o" echo %HG_HRB%\lib\hbodbc.lib + >> b32.bc
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/o" echo %HG_HRB%\lib\odbc32.lib + >> b32.bc
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/O" echo %HG_HRB%\lib\hbodbc.lib + >> b32.bc
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/O" echo %HG_HRB%\lib\odbc32.lib + >> b32.bc
 
 Rem ZIP Libraries Linking
 
-for %a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%a"=="/z" echo %HG_HRB%\lib\zlib1.lib + >> b32.bc
-for %a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%a"=="/z" echo %HG_HRB%\lib\ziparchive.lib + >> b32.bc
-for %a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%a"=="/Z" echo %HG_HRB%\lib\zlib1.lib + >> b32.bc
-for %a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%a"=="/Z" echo %HG_HRB%\lib\ziparchive.lib + >> b32.bc
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/z" echo %HG_HRB%\lib\zlib1.lib + >> b32.bc
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/z" echo %HG_HRB%\lib\ziparchive.lib + >> b32.bc
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/Z" echo %HG_HRB%\lib\zlib1.lib + >> b32.bc
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/Z" echo %HG_HRB%\lib\ziparchive.lib + >> b32.bc
 
 Rem ADS Libraries Linking
 
-for %a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%a"=="/a" echo %HG_HRB%\lib\rddads.lib + >> b32.bc
-for %a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%a"=="/a" echo %HG_HRB%\lib\ace32.lib + >> b32.bc
-for %a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%a"=="/A" echo %HG_HRB%\lib\rddads.lib + >> b32.bc
-for %a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%a"=="/A" echo %HG_HRB%\lib\ace32.lib + >> b32.bc
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/a" echo %HG_HRB%\lib\rddads.lib + >> b32.bc
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/a" echo %HG_HRB%\lib\ace32.lib + >> b32.bc
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/A" echo %HG_HRB%\lib\rddads.lib + >> b32.bc
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/A" echo %HG_HRB%\lib\ace32.lib + >> b32.bc
 
 Rem MySql Libraries Linking
 
-for %a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%a"=="/m" echo %HG_HRB%\lib\mysql.lib + >> b32.bc
-for %a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%a"=="/m" echo %HG_HRB%\lib\libmysql.lib + >> b32.bc
-for %a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%a"=="/M" echo %HG_HRB%\lib\mysql.lib + >> b32.bc
-for %a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%a"=="/M" echo %HG_HRB%\lib\libmysql.lib + >> b32.bc
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/m" echo %HG_HRB%\lib\mysql.lib + >> b32.bc
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/m" echo %HG_HRB%\lib\libmysql.lib + >> b32.bc
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/M" echo %HG_HRB%\lib\mysql.lib + >> b32.bc
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/M" echo %HG_HRB%\lib\libmysql.lib + >> b32.bc
 
 echo cw32.lib + >> b32.bc
 echo import32.lib, >> b32.bc
@@ -94,12 +94,12 @@ echo import32.lib, >> b32.bc
 if exist %1.res echo %1.res + >> b32.bc
 if exist %HG_ROOT%\resources\hbprinter.res echo %HG_ROOT%\resources\hbprinter.res + >> b32.bc
 if exist %HG_ROOT%\resources\miniprint.res echo %HG_ROOT%\resources\miniprint.res + >> b32.bc
-echo %HG_ROOT%\resources\oohg.res >> b32.bc
+if exist %HG_ROOT%\resources\oohg.res      echo %HG_ROOT%\resources\oohg.res + >> b32.bc
 
 Rem Debug Link
 
-for %a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%a"=="/d" GOTO DEBUG_LINK
-for %a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%a"=="/D" GOTO DEBUG_LINK
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/d" GOTO DEBUG_LINK
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/D" GOTO DEBUG_LINK
 
 %HG_BCC%\bin\ilink32 -Gn -Tpe -aa -L%HG_BCC%\lib; @b32.bc
 
