@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.1 2005-08-07 00:11:28 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.2 2005-08-09 04:18:32 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -131,7 +131,7 @@ CLASS TWindow
 
    DATA DefBkColorEdit  INIT nil
 
-   METHOD SetFocus            BLOCK { | Self | SetFocus( ::hWnd ) }
+   METHOD SetFocus            BLOCK { | Self | SetFocus( ::hWnd ), Self }
 
 * Intento por controlar las teclas...
 *method setkey
@@ -285,7 +285,7 @@ RETURN Self
 *-----------------------------------------------------------------------------*
 METHOD Hide() CLASS TForm
 *-----------------------------------------------------------------------------*
-   If IsWindowVisible ( ::hWnd )
+   If IsWindowVisible( ::hWnd )
       if ::Type == "M"
          if _OOHG_ActiveModal == nil .OR. _OOHG_ActiveModal:hWnd <> ::hWnd
             MsgOOHGError("Non top modal windows can't be hide. Program terminated" )
@@ -381,7 +381,7 @@ METHOD Activate( lNoStop, oWndLoop ) CLASS TForm
       endif
 
       If ! ::NoShow
-         ::Show()
+         ShowWindow( ::hWnd )
       EndIf
 
       ::SetActivationFlag()
@@ -746,15 +746,15 @@ Local oWnd, oCtrl
 
 		* Process HotKeys
 
-      // oWnd := GetFormObjectByHandle( GetActiveWindow() )
-      oWnd := Self
-      i := ASCAN( oWnd:aHotKeys, { |a| a[ HOTKEY_ID ] == wParam } )
+      // Self := GetFormObjectByHandle( GetActiveWindow() )
+
+      i := ASCAN( ::aHotKeys, { |a| a[ HOTKEY_ID ] == wParam } )
 
       If i > 0
 
-         If VALTYPE( oWnd:aHotKeys[ i ][ HOTKEY_ACTION ] ) == "B"
+         If VALTYPE( ::aHotKeys[ i ][ HOTKEY_ACTION ] ) == "B"
 
-            EVAL( oWnd:aHotKeys[ i ][ HOTKEY_ACTION ] )
+            EVAL( ::aHotKeys[ i ][ HOTKEY_ACTION ] )
 
             Return 0
 
@@ -813,8 +813,8 @@ Local oWnd, oCtrl
 
 		Else
 
-         if Ascan ( _OOHG_aFormhWnd, hWnd ) > 0
-            UpdateWindow ( hWnd )
+         if Ascan( _OOHG_aFormhWnd, hWnd ) > 0
+            UpdateWindow( hWnd )
 			EndIf
 
 		EndIf
@@ -963,11 +963,11 @@ Local oWnd, oCtrl
 
 			If Wparam == 0
 
-				NextControlHandle := GetNextDlgTabITem ( GetActiveWindow() , GetFocus() , 0 )
+            NextControlHandle := GetNextDlgTabItem ( GetActiveWindow() , GetFocus() , 0 )
 
 			Else
 
-				NextControlHandle := GetNextDlgTabITem ( GetActiveWindow() , GetFocus() , 1 )
+            NextControlHandle := GetNextDlgTabItem ( GetActiveWindow() , GetFocus() , 1 )
 
 			EndIf
 
@@ -989,7 +989,7 @@ Local oWnd, oCtrl
 	case nMsg == WM_HSCROLL
         ***********************************************************************
 
-      i := aScan ( _OOHG_aFormhWnd, hWnd )
+      i := aScan( _OOHG_aFormhWnd, hWnd )
 *****      Self := GetFormObjectByHandle( hWnd )
 
 		if i > 0
@@ -1073,20 +1073,15 @@ Local oWnd, oCtrl
          // WHY ALL WINDOWS?????
          AEVAL( _OOHG_aFormObjects, { |o| IF( o:Type == "X", AEVAL( o:GraphTasks, { |b| EVAL( b ) } ), ) } )
 
-         I := Ascan ( _OOHG_aFormhWnd, hWnd )
 *****      Self := GetFormObjectByHandle( hWnd )
 
-			if i > 0
+         AEVAL( ::GraphTasks, { |b| EVAL( b ) } )
 
-            AEVAL( ::GraphTasks, { |b| EVAL( b ) } )
+         DefWindowProc( hWnd, nMsg, wParam, lParam )
 
-				DefWindowProc( hWnd, nMsg, wParam, lParam )
+         ::DoEvent( ::OnPaint, '' )
 
-            ::DoEvent( ::OnPaint, '' )
-
-            return 1
-
-			Endif
+         return 1
 
         ***********************************************************************
 	case nMsg == WM_LBUTTONDOWN
@@ -1155,34 +1150,29 @@ Local oWnd, oCtrl
 	case nMsg == WM_SIZE
         ***********************************************************************
 
-      i := aScan ( _OOHG_aFormhWnd, hWnd )
 *****      Self := GetFormObjectByHandle( hWnd )
 
-		if i > 0
+      If _OOHG_Main != nil
 
-         If _OOHG_Main != nil
+         If wParam == SIZE_MAXIMIZED
 
-				If wParam == SIZE_MAXIMIZED
+            ::DoEvent( ::OnMaximize, '' )
 
-               ::DoEvent( ::OnMaximize, '' )
+         ElseIf wParam == SIZE_MINIMIZED
 
-				ElseIf wParam == SIZE_MINIMIZED
+            ::DoEvent( ::OnMinimize, '' )
 
-               ::DoEvent( ::OnMinimize, '' )
+         Else
 
-				Else
-
-               ::DoEvent( ::OnSize, '' )
-
-				EndIf
+            ::DoEvent( ::OnSize, '' )
 
 			EndIf
 
-         If ::ReBarHandle > 0
-            SizeRebar( ::ReBarHandle )
-            RedrawWindow( ::ReBarHandle )
-			EndIf
+      EndIf
 
+      If ::ReBarHandle > 0
+         SizeRebar( ::ReBarHandle )
+         RedrawWindow( ::ReBarHandle )
 		EndIf
 
       AEVAL( ::aControls, { |o| o:Events_Size() } )
@@ -1250,20 +1240,18 @@ Local oWnd, oCtrl
 
 *****      Self := GetFormObjectByHandle( hWnd )
 
-			* Process Interactive Close Event / Setting
+      * Process Interactive Close Event / Setting
 
-         If ValType ( ::OnInteractiveClose ) == 'B'
-            xRetVal := ::DoEvent( ::OnInteractiveClose, 'WINDOW_ONINTERACTIVECLOSE' )
-				If ValType (xRetVal) = 'L'
-					If !xRetVal
-						Return (1)
-					EndIf
-				EndIf
-			EndIf
+      If ValType ( ::OnInteractiveClose ) == 'B'
+         xRetVal := ::DoEvent( ::OnInteractiveClose, 'WINDOW_ONINTERACTIVECLOSE' )
+         If ValType( xRetVal ) == 'L' .AND. ! xRetVal
+            Return (1)
+         EndIf
+      EndIf
 
-			Do Case
+      Do Case
          Case _OOHG_InteractiveClose == 0
-            MsgStop ( _OOHG_MESSAGE [3] )
+            MsgStop( _OOHG_MESSAGE [3] )
 				Return (1)
          Case _OOHG_InteractiveClose == 2
             If ! MsgYesNo ( _OOHG_MESSAGE [1] , _OOHG_MESSAGE [2] )
@@ -1275,28 +1263,28 @@ Local oWnd, oCtrl
 						Return (1)
 					EndIf
 				EndIf
-			EndCase
+      EndCase
 
-			* Process AutoRelease Property
+      * Process AutoRelease Property
 
-         if ! ::AutoRelease
-            ::Hide()
-				Return (1)
-			EndIf
+      if ! ::AutoRelease
+         ::Hide()
+         Return (1)
+      EndIf
 
-			* If Not AutoRelease Destroy Window
+      * If Not AutoRelease Destroy Window
 
-         if ::Type == "A"
-            ReleaseAllWindows()
-			Else
-            if valtype( ::OnRelease )=='B'
-               _OOHG_InteractiveCloseStarted := .T.
-               ::DoEvent( ::OnRelease, 'WINDOW_RELEASE' )
-				EndIf
+      if ::Type == "A"
+         ReleaseAllWindows()
+      Else
+         if valtype( ::OnRelease ) == 'B'
+            _OOHG_InteractiveCloseStarted := .T.
+            ::DoEvent( ::OnRelease, 'WINDOW_RELEASE' )
+         EndIf
 
-            ::OnHideFocusManagement()
+         ::OnHideFocusManagement()
 
-			EndIf
+      EndIf
 
         ***********************************************************************
 	case nMsg == WM_DESTROY
@@ -1482,7 +1470,7 @@ Function _SetWindowSizePos( FormName , row , col , width , height )
 Return GetFormObject( FormName ):SizePos( row , col , width , height )
 
 *-----------------------------------------------------------------------------*
-Function _DefineWindow ( FormName, Caption, x, y, w, h ,nominimize ,nomaximize ,nosize ,nosysmenu, nocaption , StatusBar , StatusText ,initprocedure ,ReleaseProcedure , MouseDragProcedure ,SizeProcedure , ClickProcedure , MouseMoveProcedure, aRGB , PaintProcedure , noshow , topmost , main , icon , child , fontname , fontsize , NotifyIconName , NotifyIconTooltip , NotifyIconLeftClick , GotFocus , LostFocus , virtualheight , VirtualWidth , scrollleft , scrollright , scrollup , scrolldown , hscrollbox , vscrollbox , helpbutton , maximizeprocedure , minimizeprocedure , cursor , NoAutoRelease , InteractiveCloseProcedure )
+Function _DefineWindow( FormName, Caption, x, y, w, h ,nominimize ,nomaximize ,nosize ,nosysmenu, nocaption , StatusBar , StatusText ,initprocedure ,ReleaseProcedure , MouseDragProcedure ,SizeProcedure , ClickProcedure , MouseMoveProcedure, aRGB , PaintProcedure , noshow , topmost , main , icon , child , fontname , fontsize , NotifyIconName , NotifyIconTooltip , NotifyIconLeftClick , GotFocus , LostFocus , virtualheight , VirtualWidth , scrollleft , scrollright , scrollup , scrolldown , hscrollbox , vscrollbox , helpbutton , maximizeprocedure , minimizeprocedure , cursor , NoAutoRelease , InteractiveCloseProcedure )
 *-----------------------------------------------------------------------------*
 Local i , htooltip , vscroll , hscroll , BrushHandle , FormHandle, ParentHandle
 Local oWnd
@@ -1630,7 +1618,7 @@ StatusText := Nil
 
    _OOHG_BeginWindowActive := .T.
 
-	UnRegisterWindow (FormName)
+   UnRegisterWindow( FormName )
 	BrushHandle := RegisterWindow(icon,FormName, aRGB )
 
 	Formhandle = InitWindow( Caption , x, y, w, h, nominimize, nomaximize, nosize, nosysmenu, nocaption , topmost , FormName , ParentHandle , vscroll , hscroll , helpbutton )
@@ -1839,7 +1827,7 @@ StatusText := Nil
 	UnRegisterWindow (FormName)
 	BrushHandle := RegisterWindow(icon,FormName , aRGB )
 
-   Formhandle = InitModalWindow ( Caption , x, y, w, h , Parent:hWnd ,nosize ,nosysmenu, nocaption , FormName , vscroll , hscroll , helpbutton )
+   Formhandle = InitModalWindow( Caption , x, y, w, h , Parent:hWnd ,nosize ,nosysmenu, nocaption , FormName , vscroll , hscroll , helpbutton )
 
 	if Valtype ( cursor ) != "U"
 		SetWindowCursor( Formhandle , cursor )
@@ -1903,8 +1891,6 @@ StatusText := Nil
 		SetScrollRange ( Formhandle , SB_HORZ , 0 , VirtualWidth - w , 1 )
 	EndIf
 
-
-// Return (FormHandle)
 Return oWnd
 
 *-----------------------------------------------------------------------------*
@@ -2220,26 +2206,16 @@ Return ( RetVal )
 *-----------------------------------------------------------------------------*
 Function _SetWindowRgn(name,col,row,w,h,lx)
 *-----------------------------------------------------------------------------*
-local lhand:=0
-
-      lhand := GetFormHandle ( name )
-
-      c_SetWindowRgn(lhand,col,row,w,h,lx)
-
-Return Nil
+Return c_SetWindowRgn( GetFormHandle( name ), col, row, w, h, lx )
 
 *-----------------------------------------------------------------------------*
 Function _SetPolyWindowRgn(name,apoints,lx)
 *-----------------------------------------------------------------------------*
-local lhand:=0,apx:={},apy:={}
-
-      lhand := GetFormHandle ( name )
+local apx:={},apy:={}
 
       aeval(apoints,{|x| aadd(apx,x[1]), aadd(apy,x[2])})
 
-      c_SetPolyWindowRgn(lhand,apx,apy,lx)
-
-Return Nil
+Return c_SetPolyWindowRgn( GetFormHandle( name ), apx, apy, lx )
 
 *-----------------------------------------------------------------------------*
 Procedure _SetNextFocus()
@@ -2294,7 +2270,7 @@ Local z, aForm2, nForm := len( aForm )
    ENDIF
 
    // Activate windows
-   AEVAL( aForm2, { |o| o:Activate( .T. ) } )
+   AEVAL( aForm2, { |o| o:Activate( .T., aForm2[ 1 ] ) } )
    aForm2[ 1 ]:MessageLoop()
 
 Return Nil
@@ -2361,7 +2337,7 @@ Procedure _PopEventInfo
 *------------------------------------------------------------------------------*
 Local l
 
-   l := Len (_OOHG_aEventInfo)
+   l := Len( _OOHG_aEventInfo )
 
 	if l > 0
 
@@ -2370,7 +2346,7 @@ Local l
       _OOHG_ThisType     := _OOHG_aEventInfo [l] [3]
       _OOHG_ThisControl    := _OOHG_aEventInfo [l] [4]
 
-      asize ( _OOHG_aEventInfo , l-1 )
+      asize( _OOHG_aEventInfo , l - 1 )
 
 	Else
 
@@ -2466,31 +2442,6 @@ Static Function _OOHG_MacroCall_Error( oError )
    BREAK oError
 RETURN 1
 
-Function _OOHG_GetArrayItem( uaArray, nItem, uExtra1, uExtra2 )
-Local uRet
-   IF ValType( uaArray ) != "A"
-      uRet := uaArray
-   ElseIf LEN( uaArray ) >= nItem
-      uRet := uaArray[ nItem ]
-   Else
-      uRet := NIL
-   ENDIF
-   IF ValType( uRet ) == "B"
-      uRet := Eval( uRet, nItem, uExtra1, uExtra2 )
-   ENDIF
-Return uRet
-
-Function _OOHG_DeleteArrayItem( aArray, nItem )
-#ifdef __XHARBOUR__
-   Return ADel( aArray, nItem, .T. )
-#else
-   IF ValType( aArray ) == "A" .AND. Len( aArray ) >= nItem
-      ADel( aArray, nItem )
-      ASize( aArray, Len( aArray ) - 1 )
-   ENDIF
-   Return aArray
-#endif
-
 EXTERN IsXPThemeActive
 
 #pragma BEGINDUMP
@@ -2534,3 +2485,28 @@ HB_FUNC( ISXPTHEMEACTIVE )
 }
 
 #pragma ENDDUMP
+
+Function _OOHG_GetArrayItem( uaArray, nItem, uExtra1, uExtra2 )
+Local uRet
+   IF ValType( uaArray ) != "A"
+      uRet := uaArray
+   ElseIf LEN( uaArray ) >= nItem
+      uRet := uaArray[ nItem ]
+   Else
+      uRet := NIL
+   ENDIF
+   IF ValType( uRet ) == "B"
+      uRet := Eval( uRet, nItem, uExtra1, uExtra2 )
+   ENDIF
+Return uRet
+
+Function _OOHG_DeleteArrayItem( aArray, nItem )
+#ifdef __XHARBOUR__
+   Return ADel( aArray, nItem, .T. )
+#else
+   IF ValType( aArray ) == "A" .AND. Len( aArray ) >= nItem
+      ADel( aArray, nItem )
+      ASize( aArray, Len( aArray ) - 1 )
+   ENDIF
+   Return aArray
+#endif

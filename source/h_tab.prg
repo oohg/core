@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.1 2005-08-07 00:12:12 guerra000 Exp $
+ * $Id: h_tab.prg,v 1.2 2005-08-09 04:18:31 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -552,7 +552,7 @@ CLASS TTabPage FROM TControl
 
    METHOD AddControl
    METHOD Release
-   METHOD SetFocus            BLOCK { |Self| ::Container:SetFocus() , ::Container:Value := ::Position }
+   METHOD SetFocus            BLOCK { |Self| ::Container:SetFocus() , ::Container:Value := ::Position , Self }
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
