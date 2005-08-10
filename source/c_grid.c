@@ -1,5 +1,5 @@
 /*
- * $Id: c_grid.c,v 1.1 2005-08-07 00:03:18 guerra000 Exp $
+ * $Id: c_grid.c,v 1.2 2005-08-10 04:56:26 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -635,20 +635,142 @@ HB_FUNC ( LISTVIEW_DELETECOLUMN )
 	RedrawWindow ( (HWND) hb_parnl( 1 ), NULL , NULL , RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW ) ;
 }
 
-HB_FUNC( SETBCBC )
-{
-    LPNMLVCUSTOMDRAW lplvcd = (LPNMLVCUSTOMDRAW) (LPARAM) hb_parnl(1);
-
-    if( ISNUM( 3 ) )
-       lplvcd->clrText   = hb_parni(3);
-    if( ISNUM( 2 ) )
-       lplvcd->clrTextBk = hb_parni(2) ;
-	hb_retni ( CDRF_NEWFONT ) ;
-}
-
 HB_FUNC ( GETGRIDVKEY )
 {
 
    hb_retnl( ( LPARAM ) ( ( ( LV_KEYDOWN * ) hb_parnl( 1 ) ) -> wVKey ) );
 
+}
+
+static PHB_DYNS s_GridForeColor = 0, s_GridBackColor = 0;
+static PHB_DYNS s_aFontColor = 0,    s_DefBkColorEdit = 0;
+static PHB_DYNS s_Container = 0,     s_Parent = 0;
+
+static int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, unsigned int x, unsigned int y, PHB_DYNS sGridColor, PHB_DYNS sObjColor, int iDefaultColor )
+{
+   PHB_ITEM pColor;
+   HB_ITEM pRet;
+   int iColor, sw;
+
+   hb_vmPushSymbol( sGridColor->pSymbol );
+   hb_vmPush( pSelf );
+   hb_vmSend( 0 );
+
+   pColor = hb_param( -1, HB_IT_ARRAY );
+   if( pColor &&                                                 // ValType( aColor ) == "A"
+       pColor->item.asArray.value->ulLen >= y &&                       // Len( aColor ) >= y
+       HB_IS_ARRAY( &pColor->item.asArray.value->pItems[ y - 1 ] ) &&   // ValType( aColor[ y ] ) == "A"
+       pColor->item.asArray.value->pItems[ y - 1 ].item.asArray.value->ulLen >= x )   // Len( aColor[ y ] ) >= x
+   {
+      pColor = &pColor->item.asArray.value->pItems[ y - 1 ].item.asArray.value->pItems[ x - 1 ];
+   }
+   else
+   {
+      pColor = NULL;
+   }
+
+   iColor = -1;
+   sw = 1;
+   while( iColor < 0 && sw )
+   {
+      if( pColor && HB_IS_NUMERIC( pColor ) )
+      {
+         iColor = hb_itemGetNL( pColor );
+      }
+      else if( pColor && HB_IS_ARRAY( pColor ) )
+      {
+         if( pColor->item.asArray.value->ulLen >= 3 )
+         {
+            pColor = pColor->item.asArray.value->pItems;
+            if( HB_IS_NUMERIC( pColor ) && HB_IS_NUMERIC( &pColor[ 1 ] ) && HB_IS_NUMERIC( &pColor[ 2 ] ) )
+            {
+               iColor =   ( hb_itemGetNL( pColor       ) & 0x0000FF )         |
+                        ( ( hb_itemGetNL( &pColor[ 1 ] ) & 0x0000FF ) <<  8 ) |
+                        ( ( hb_itemGetNL( &pColor[ 2 ] ) & 0x0000FF ) << 16 ) ;
+            }
+         }
+      }
+      else if( ! pSelf || ! HB_IS_OBJECT( pSelf ) )
+      {
+         iColor = GetSysColor( iDefaultColor );
+         sw = 0;
+      }
+      else
+      {
+         hb_vmPushSymbol( sObjColor->pSymbol );
+         hb_vmPush( pSelf );
+
+         // oObj := IF( ValType( oObj:Container ) == "O", oObj:Container, oObj:Parent )
+         hb_vmPushSymbol( s_Container->pSymbol );
+         hb_vmPush( pSelf );
+         hb_vmSend( 0 );
+         pColor = hb_param( -1, HB_IT_OBJECT );
+         if( ! pColor )
+         {
+            hb_vmPushSymbol( s_Parent->pSymbol );
+            hb_vmPush( pSelf );
+            hb_vmSend( 0 );
+            pColor = hb_param( -1, HB_IT_OBJECT );
+         }
+         if( pColor )
+         {
+            memcpy( &pRet, pColor, sizeof( HB_ITEM ) );
+            pSelf = &pRet;
+         }
+         else
+         {
+            pSelf = NULL;
+         }
+
+         // nColor := oObj:aFontColor
+         hb_vmSend( 0 );
+         pColor = hb_param( -1, HB_IT_ANY );
+      }
+   }
+
+   return iColor;
+}
+
+HB_FUNC( TGRID_NOTIFY_CUSTOMDRAW )
+{
+   PHB_ITEM pSelf;
+   LPNMLVCUSTOMDRAW lplvcd;
+   int x, y;
+
+   pSelf = hb_param( 1, HB_IT_OBJECT );
+   lplvcd = ( LPNMLVCUSTOMDRAW ) ( LPARAM ) hb_parnl( 2 );
+
+   if( lplvcd->nmcd.dwDrawStage == CDDS_PREPAINT )
+	{
+      hb_retni( CDRF_NOTIFYITEMDRAW ) ;
+      return;
+	}
+   else if( lplvcd->nmcd.dwDrawStage == CDDS_ITEMPREPAINT )
+	{
+      hb_retni( CDRF_NOTIFYSUBITEMDRAW ) ;
+      return;
+	}
+   else if( ! ( lplvcd->nmcd.dwDrawStage == CDDS_SUBITEM | CDDS_ITEMPREPAINT ) )
+	{
+      hb_retni( CDRF_DODEFAULT ) ;
+      return;
+	}
+
+   if( ! s_GridForeColor )
+   {
+      s_GridForeColor  = hb_dynsymFindName( "GRIDFORECOLOR" );
+      s_GridBackColor  = hb_dynsymFindName( "GRIDBACKCOLOR" );
+      s_aFontColor     = hb_dynsymFindName( "AFONTCOLOR" );
+      s_DefBkColorEdit = hb_dynsymFindName( "DEFBKCOLOREDIT" );
+      s_Container      = hb_dynsymFindName( "CONTAINER" );
+      s_Parent         = hb_dynsymFindName( "PARENT" );
+   }
+
+   x = lplvcd->iSubItem + 1;
+   y = lplvcd->nmcd.dwItemSpec + 1;
+
+   lplvcd->clrText   = TGrid_Notify_CustomDraw( pSelf, x, y, s_GridForeColor, s_aFontColor,     COLOR_WINDOWTEXT );
+   lplvcd->clrTextBk = TGrid_Notify_CustomDraw( pSelf, x, y, s_GridBackColor, s_DefBkColorEdit, COLOR_WINDOW );
+
+   hb_retni( CDRF_NEWFONT );
 }

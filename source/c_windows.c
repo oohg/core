@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.1 2005-08-07 00:06:08 guerra000 Exp $
+ * $Id: c_windows.c,v 1.2 2005-08-10 04:56:26 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -314,43 +314,31 @@ HB_FUNC ( INITMODALWINDOW )
 	hb_retnl ((LONG)hwnd);
 }
 
-HB_FUNC ( _DOMESSAGELOOP )
+HB_FUNC( _DOMESSAGELOOP )
 {
+   MSG Msg;
 
-	MSG Msg;
-
-	while(GetMessage(&Msg,NULL,0,0) )
-	{
-        if( !IsWindow(GetActiveWindow()) || !IsDialogMessage(GetActiveWindow(),&Msg) )
-		{
-			TranslateMessage(&Msg);
-			DispatchMessage(&Msg);
-		}
-	}
-
-	return;
-
+   while( GetMessage( &Msg, NULL, 0, 0 ) )
+   {
+      if( ! IsWindow( GetActiveWindow() ) || ! IsDialogMessage( GetActiveWindow(), &Msg ) )
+      {
+         TranslateMessage( &Msg );
+         DispatchMessage( &Msg );
+      }
+   }
 }
 
-HB_FUNC ( SHOWWINDOW )
+HB_FUNC( SHOWWINDOW )
 {
-
-	HWND hwnd;
-
-	hwnd = (HWND) hb_parnl (1);
-
-	ShowWindow(hwnd, SW_SHOW);
-
-	return;
-
+    ShowWindow( ( HWND ) hb_parnl( 1 ), SW_SHOW );
 }
 
-HB_FUNC ( EXITPROCESS )
+HB_FUNC( EXITPROCESS )
 {
 	ExitProcess(0);
 }
 
-HB_FUNC ( INITSTATUS )
+HB_FUNC( INITSTATUS )
 {
 
 	HWND hwnd;
@@ -367,7 +355,7 @@ HB_FUNC ( INITSTATUS )
 
 }
 
-HB_FUNC ( SETSTATUS )
+HB_FUNC( SETSTATUS )
 {
 
 	HWND hwnd;
@@ -379,38 +367,29 @@ HB_FUNC ( SETSTATUS )
 
 }
 
-HB_FUNC (MAXIMIZE)
+HB_FUNC( MAXIMIZE )
 {
-	ShowWindow((HWND) hb_parnl( 1 ), SW_MAXIMIZE);
+    ShowWindow( ( HWND ) hb_parnl( 1 ), SW_MAXIMIZE );
 }
 
-HB_FUNC (MINIMIZE)
+HB_FUNC( MINIMIZE )
 {
-	ShowWindow((HWND) hb_parnl( 1 ), SW_MINIMIZE);
+    ShowWindow( ( HWND ) hb_parnl( 1 ), SW_MINIMIZE );
 }
 
-HB_FUNC (RESTORE)
+HB_FUNC( RESTORE )
 {
-	ShowWindow( (HWND) hb_parnl( 1 ),SW_RESTORE);
+    ShowWindow( ( HWND ) hb_parnl( 1 ), SW_RESTORE );
 }
 
 HB_FUNC( GETACTIVEWINDOW )
 {
-	HWND hwnd;
-
-
-	hwnd = GetActiveWindow();
-
-	hb_retnl ( (LONG) hwnd );
+    hb_retnl( ( LONG ) GetActiveWindow() );
 }
 
 HB_FUNC( SETACTIVEWINDOW )
 {
-	HWND hwnd;
-
-	hwnd = (HWND) hb_parnl (1);
-
-	SetActiveWindow (hwnd);
+    SetActiveWindow( ( HWND ) hb_parnl( 1 ) );
 }
 
 HB_FUNC( POSTQUITMESSAGE )
@@ -420,7 +399,7 @@ HB_FUNC( POSTQUITMESSAGE )
 
 HB_FUNC ( DESTROYWINDOW )
 {
-	DestroyWindow( (HWND) hb_parnl( 1 ) );
+    DestroyWindow( ( HWND ) hb_parnl( 1 ) );
 }
 
 HB_FUNC (ISWINDOWENABLED)
@@ -443,85 +422,58 @@ HB_FUNC (ISWINDOWENABLED)
 
 }
 
-HB_FUNC (ENABLEWINDOW)
+HB_FUNC( ENABLEWINDOW )
 {
-	HWND hwnd;
-	hwnd = (HWND) hb_parnl (1);
-	EnableWindow( hwnd , TRUE );
+    EnableWindow( ( HWND ) hb_parnl( 1 ), TRUE );
 }
 
-HB_FUNC (DISABLEWINDOW)
+HB_FUNC( DISABLEWINDOW )
 {
-	HWND hwnd;
-	hwnd = (HWND) hb_parnl (1);
-	EnableWindow( hwnd , FALSE );
+    EnableWindow( ( HWND ) hb_parnl( 1 ), FALSE );
 }
 
-HB_FUNC (SETFOREGROUNDWINDOW)
+HB_FUNC( SETFOREGROUNDWINDOW )
 {
-	HWND hwnd;
-	hwnd = (HWND) hb_parnl (1);
-	SetForegroundWindow( hwnd );
+    SetForegroundWindow( ( HWND ) hb_parnl( 1 ) );
 }
-HB_FUNC (BRINGWINDOWTOTOP)
+HB_FUNC( BRINGWINDOWTOTOP )
 {
-	HWND hwnd;
-	hwnd = (HWND) hb_parnl (1);
-	BringWindowToTop( hwnd );
+    BringWindowToTop( ( HWND ) hb_parnl( 1 ) );
 }
 
-
-HB_FUNC (GETFOREGROUNDWINDOW)
+HB_FUNC( GETFOREGROUNDWINDOW )
 {
-	HWND x;
-
-	x = GetForegroundWindow() ;
-	hb_retnl ((LONG) x );
+    hb_retnl( ( LONG ) GetForegroundWindow() );
 }
 
-HB_FUNC (GETNEXTWINDOW)
+HB_FUNC( GETNEXTWINDOW )
 {
-	HWND hwnd;
-	HWND x;
-
-	hwnd = (HWND) hb_parnl (1);
-
-	x = GetWindow( hwnd, GW_HWNDNEXT );
-
-	hb_retnl ((LONG) x );
+    hb_retnl( ( LONG ) GetWindow( ( HWND ) hb_parnl( 1 ), GW_HWNDNEXT ) );
 }
 
-HB_FUNC (GETPREVWINDOW)
+HB_FUNC( GETPREVWINDOW )
 {
-	HWND hwnd;
-	HWND x;
-
-	hwnd = (HWND) hb_parnl (1);
-
-	x = GetWindow( hwnd, GW_HWNDPREV );
-
-	hb_retnl ((LONG) x );
+    hb_retnl( ( LONG ) GetWindow( ( HWND ) hb_parnl( 1 ), GW_HWNDPREV ) );
 }
 
-HB_FUNC ( SETWINDOWTEXT )
+HB_FUNC( SETWINDOWTEXT )
 {
-    SetWindowText(
-       (HWND) hb_parnl (1) ,
-       (LPCTSTR) hb_parc( 2 )
-    );
+   SetWindowText( ( HWND ) hb_parnl( 1 ) , ( LPCTSTR ) hb_parc( 2 ) );
 }
 
-HB_FUNC (C_CENTER)
+HB_FUNC( C_CENTER )
 {
-	RECT rect;
-	int w, h, x, y;
-	GetWindowRect((HWND) hb_parnl (1), &rect);
-	w  = rect.right  - rect.left;
-	h = rect.bottom - rect.top;
-	x = GetSystemMetrics(SM_CXSCREEN);
-	y = GetSystemMetrics(SM_CYSCREEN);
-	SetWindowPos((HWND) hb_parnl (1), HWND_TOP, (x - w) / 2,
-	(y - h) / 2, 0, 0, SWP_NOSIZE | SWP_NOACTIVATE ) ;
+   RECT rect;
+   HWND hwnd;
+   int w, h, x, y;
+   hwnd = ( HWND ) hb_parnl( 1 );
+   GetWindowRect( hwnd, &rect );
+   w = rect.right  - rect.left + 1;
+   h = rect.bottom - rect.top  + 1;
+   x = GetSystemMetrics( SM_CXSCREEN );
+   y = GetSystemMetrics( SM_CYSCREEN );
+   SetWindowPos( hwnd, HWND_TOP, ( x - w ) / 2,
+                 ( y - h ) / 2, 0, 0, SWP_NOSIZE | SWP_NOACTIVATE );
 }
 
 HB_FUNC ( GETWINDOWTEXT )
@@ -1037,7 +989,7 @@ HB_FUNC ( ADDSPLITBOXITEM )
 
 }
 
-HB_FUNC (C_SETWINDOWRGN)
+HB_FUNC( C_SETWINDOWRGN )
 {
    HRGN hrgn;
    if ( hb_parni(6)==0)
@@ -1053,7 +1005,7 @@ HB_FUNC (C_SETWINDOWRGN)
      }
 }
 
-HB_FUNC (C_IHAVETODO)
+HB_FUNC( C_IHAVETODO )
 {
    HRGN hrgn1,hrgn2;
    hrgn1=CreateRectRgn(0,0,300,300);
@@ -1066,7 +1018,7 @@ HB_FUNC (C_IHAVETODO)
    SetWindowRgn(GetActiveWindow(),hrgn1,TRUE);
 }
 
-HB_FUNC (C_2IHAVETODO)
+HB_FUNC( C_2IHAVETODO )
 {
  HRGN hrgn;
  POINT lppt[10];
@@ -1103,7 +1055,7 @@ HB_FUNC (C_2IHAVETODO)
 //WINDING
 }
 
-HB_FUNC (C_SETPOLYWINDOWRGN)
+HB_FUNC( C_SETPOLYWINDOWRGN )
 {
  HRGN hrgn;
  POINT lppt[512];
@@ -1124,31 +1076,31 @@ HB_FUNC (C_SETPOLYWINDOWRGN)
   SetWindowRgn(GetActiveWindow(),hrgn,TRUE);
 }
 
-HB_FUNC ( GETHELPDATA )
+HB_FUNC( GETHELPDATA )
 {
    hb_retnl( (LONG) (((HELPINFO FAR *) hb_parnl(1))->hItemHandle) );
 }
 
-HB_FUNC ( GETMSKTEXTMESSAGE )
+HB_FUNC( GETMSKTEXTMESSAGE )
 {
    hb_retnl( (LONG) (((MSGFILTER FAR *) hb_parnl(1))->msg) );
 }
-HB_FUNC ( GETMSKTEXTWPARAM )
+HB_FUNC( GETMSKTEXTWPARAM )
 {
    hb_retnl( (LONG) (((MSGFILTER FAR *) hb_parnl(1))->wParam) );
 }
-HB_FUNC ( GETMSKTEXTLPARAM )
+HB_FUNC( GETMSKTEXTLPARAM )
 {
    hb_retnl( (LONG) (((MSGFILTER FAR *) hb_parnl(1))->lParam) );
 }
 
-HB_FUNC (GETWINDOW)
+HB_FUNC( GETWINDOW )
 {
    hb_retnl( ( LONG ) GetWindow( ( HWND ) hb_parnl( 1 ), hb_parni( 2 ) ) );
 }
 
 
-HB_FUNC ( GETGRIDOLDSTATE )
+HB_FUNC( GETGRIDOLDSTATE )
 {
 	#define pnm ((NM_LISTVIEW *) hb_parnl(1) )
 
@@ -1158,7 +1110,7 @@ HB_FUNC ( GETGRIDOLDSTATE )
 
 }
 
-HB_FUNC ( GETGRIDNEWSTATE )
+HB_FUNC( GETGRIDNEWSTATE )
 {
 	#define pnm ((NM_LISTVIEW *) hb_parnl(1) )
 
@@ -1168,7 +1120,7 @@ HB_FUNC ( GETGRIDNEWSTATE )
 
 }
 
-HB_FUNC ( GETGRIDDISPINFOINDEX )
+HB_FUNC( GETGRIDDISPINFOINDEX )
 {
 
 	LV_DISPINFO* pDispInfo = (LV_DISPINFO*)hb_parnl(1);
@@ -1183,7 +1135,7 @@ HB_FUNC ( GETGRIDDISPINFOINDEX )
 
 }
 
-HB_FUNC ( SETGRIDQUERYDATA )
+HB_FUNC( SETGRIDQUERYDATA )
 {
 //	LV_DISPINFO* pDispInfo = (LV_DISPINFO*)hb_parnl(1);
 //	pDispInfo->item.pszText = hb_parc(2) ;
@@ -1195,55 +1147,54 @@ HB_FUNC ( SETGRIDQUERYDATA )
 
 }
 
-HB_FUNC ( SETGRIDQUERYIMAGE )
+HB_FUNC( SETGRIDQUERYIMAGE )
 {
-	LV_DISPINFO* pDispInfo = (LV_DISPINFO*)hb_parnl(1) ;
-	pDispInfo->item.iImage = hb_parni( 2 ) ;
+    LV_DISPINFO* pDispInfo = ( LV_DISPINFO * ) hb_parnl( 1 );
+    pDispInfo->item.iImage = hb_parni( 2 );
 }
 
-HB_FUNC ( GETESCAPESTATE )
+HB_FUNC( GETESCAPESTATE )
 {
-	 hb_retni ( GetKeyState( VK_ESCAPE ) ) ;
+     hb_retni ( GetKeyState( VK_ESCAPE ) );
 }
 
-HB_FUNC ( GETALTSTATE )
+HB_FUNC( GETALTSTATE )
 {
-	 hb_retni ( GetKeyState( VK_MENU ) ) ;
+     hb_retni ( GetKeyState( VK_MENU ) );
 }
 
-HB_FUNC ( GETCURSORROW )
+HB_FUNC( GETCURSORROW )
 {
    POINT pt;
    GetCursorPos( &pt );
    hb_retni( pt.y );
 }
 
-HB_FUNC ( GETCURSORCOL )
+HB_FUNC( GETCURSORCOL )
 {
    POINT pt;
    GetCursorPos( &pt );
    hb_retni( pt.x );
 }
 
-
-HB_FUNC ( ISINSERTACTIVE )
+HB_FUNC( ISINSERTACTIVE )
 {
-	 hb_retl ( GetKeyState( VK_INSERT ) ) ;
+   hb_retl( GetKeyState( VK_INSERT ) );
 }
 
-HB_FUNC ( ISCAPSLOCKACTIVE )
+HB_FUNC( ISCAPSLOCKACTIVE )
 {
-	 hb_retl ( GetKeyState( VK_CAPITAL ) ) ;
+   hb_retl( GetKeyState( VK_CAPITAL ) );
 }
 
-HB_FUNC ( ISNUMLOCKACTIVE )
+HB_FUNC( ISNUMLOCKACTIVE )
 {
-	 hb_retl ( GetKeyState( VK_NUMLOCK ) ) ;
+   hb_retl( GetKeyState( VK_NUMLOCK ) );
 }
 
-HB_FUNC ( ISSCROLLLOCKACTIVE )
+HB_FUNC( ISSCROLLLOCKACTIVE )
 {
-	 hb_retl ( GetKeyState( VK_SCROLL ) ) ;
+   hb_retl( GetKeyState( VK_SCROLL ) );
 }
 
 HB_FUNC( FINDWINDOWEX )
@@ -1265,7 +1216,7 @@ HB_FUNC( INITDUMMY )
 
 }
 
-HB_FUNC ( REGISTERSPLITCHILDWINDOW )
+HB_FUNC( REGISTERSPLITCHILDWINDOW )
 {
 	WNDCLASS WndClass;
 
@@ -1309,35 +1260,11 @@ HB_FUNC ( REGISTERSPLITCHILDWINDOW )
 	hb_retnl ( (LONG) hbrush ) ;
 }
 
-HB_FUNC( GETDS )
-{
-    LPNMLVCUSTOMDRAW lplvcd = (LPNMLVCUSTOMDRAW) ( LPARAM ) hb_parnl(1);
-
-	if (lplvcd->nmcd.dwDrawStage == CDDS_PREPAINT )
-	{
-		hb_retni ( CDRF_NOTIFYITEMDRAW ) ;
-	}
-        else if (lplvcd->nmcd.dwDrawStage == CDDS_ITEMPREPAINT )
-	{
-		hb_retni ( CDRF_NOTIFYSUBITEMDRAW ) ;
-	}
-        else if (lplvcd->nmcd.dwDrawStage == CDDS_SUBITEM | CDDS_ITEMPREPAINT )
-	{
-		hb_retni ( -1 ) ;
-	}
-	else
-	{
-		hb_retni ( CDRF_DODEFAULT ) ;
-	}
-}
-
 HB_FUNC( GETRC )
 {
-	LPARAM	lParam	= hb_parnl(1) ;
+   LPNMLVCUSTOMDRAW lplvcd = ( LPNMLVCUSTOMDRAW ) ( LPARAM ) hb_parnl( 1 );
 
-	LPNMLVCUSTOMDRAW lplvcd = (LPNMLVCUSTOMDRAW)lParam;
-
-	hb_reta( 2 );
-    hb_stornl( (LONG) lplvcd->nmcd.dwItemSpec + 1 , -1, 1 );
-    hb_storni( (INT) lplvcd->iSubItem + 1 , -1, 2 );
+   hb_reta( 2 );
+   hb_stornl( ( LONG ) lplvcd->nmcd.dwItemSpec + 1 , -1, 1 );
+   hb_storni( ( INT )  lplvcd->iSubItem + 1 , -1, 2 );
 }

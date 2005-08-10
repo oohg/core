@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.2 2005-08-09 06:03:39 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.3 2005-08-10 04:56:26 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -490,32 +490,11 @@ Return 0
 METHOD Events_Notify( wParam, lParam ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local nNotify := GetNotifyCode( lParam )
-Local lvc, aCellData, _ThisQueryTemp, r, a, nFore, nBack, aColor
+Local lvc, aCellData, _ThisQueryTemp // , r, a, nFore, nBack, aColor
 
    If nNotify == NM_CUSTOMDRAW
 
-      r := GetDs( lParam )
-      if r <> -1
-         Return r
-      else
-         a := GetRc( lParam )
-
-         nFore := nil
-         aColor := ::GridForeColor
-         IF ValType( aColor ) == "A" .AND. Len( aColor ) >= a[ 1 ] .AND. ValType( aColor[ a[ 1 ] ] ) == "A" .AND. Len( aColor[ a[ 1 ] ] ) >= a[ 2 ]
-            nFore := aColor[ a[ 1 ] ][ a[ 2 ] ]
-         Endif
-         nFore := _OOHG_GetForeColor( nFore, Self ) // RGB( 0, 0, 0 )
-
-         nBack := nil
-         aColor := ::GridBackColor
-         IF ValType( aColor ) == "A" .AND. Len( aColor ) >= a[ 1 ] .AND. ValType( aColor[ a[ 1 ] ] ) == "A" .AND. Len( aColor[ a[ 1 ] ] ) >= a[ 2 ]
-            nBack := aColor[ a[ 1 ] ][ a[ 2 ] ]
-         Endif
-         nBack := _OOHG_GetBackColor( nBack, Self, COLOR_WINDOW ) // RGB( 255, 255, 255 )
-
-         Return SetBcBc( lParam, nBack, nFore )
-      endif
+      Return TGRID_NOTIFY_CUSTOMDRAW( Self, lParam )
 
    ElseIf nNotify == LVN_GETDISPINFO
 
@@ -614,36 +593,6 @@ Local lvc, aCellData, _ThisQueryTemp, r, a, nFore, nBack, aColor
    EndIf
 
 Return ::Super:Events_Notify( wParam, lParam )
-
-Function _OOHG_GetForeColor( nColor, oObj )
-   DO WHILE ValType( nColor ) != "N" .OR. nColor < 0
-      IF ValType( nColor ) == "A"
-         nColor := RGB( nColor[ 1 ], nColor[ 2 ], nColor[ 3 ] )
-      ElseIf ValType( oObj ) != "O"
-         nColor := GetSysColor( COLOR_WINDOWTEXT )
-      Else
-         If ValType( oObj:aFontColor ) $ "AN"
-            nColor := oObj:aFontColor
-         Endif
-         oObj := IF( ValType( oObj:Container ) == "O", oObj:Container, oObj:Parent )
-      ENDIF
-   EndDo
-Return nColor
-
-Function _OOHG_GetBackColor( nColor, oObj, ColorDefault )
-   DO WHILE ValType( nColor ) != "N" .OR. nColor < 0
-      IF ValType( nColor ) == "A"
-         nColor := RGB( nColor[ 1 ], nColor[ 2 ], nColor[ 3 ] )
-      ElseIf ValType( oObj ) != "O"
-         nColor := GetSysColor( ColorDefault )
-      Else
-         If ValType( oObj:DefBkColorEdit ) $ "AN"
-            nColor := oObj:DefBkColorEdit
-         Endif
-         oObj := IF( ValType( oObj:Container ) == "O", oObj:Container, oObj:Parent )
-      ENDIF
-   EndDo
-Return nColor
 
 *-----------------------------------------------------------------------------*
 METHOD AddItem( aRow, uForeColor, uBackColor ) CLASS TGrid
