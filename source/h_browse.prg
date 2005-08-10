@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.2 2005-08-09 04:19:27 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.3 2005-08-10 04:57:14 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -164,9 +164,7 @@ ENDCLASS
 METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aFields ,value,fontname,fontsize , tooltip , change , dblclick , aHeadClick , gotfocus , lostfocus , WorkArea , AllowDelete, nogrid, aImage, aJust , HelpId , bold , italic , underline , strikeout , break , backcolor , fontcolor , lock , inplace , novscroll , AllowAppend , readonly , valid , validmessages , edit , dynamicbackcolor , aWhenFields , dynamicforecolor ) CLASS TBrowse
 *-----------------------------------------------------------------------------*
 Local wBitmap , ScrollBarHandle , DeltaWidth
-Local ControlHandle
-Local hsum
-Local ScrollBarButtonHandle
+Local ControlHandle, hsum, ScrollBarButtonHandle
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize )
 
@@ -326,95 +324,101 @@ Return Self
 *-----------------------------------------------------------------------------*
 METHOD UpDate() CLASS TBrowse
 *-----------------------------------------------------------------------------*
-Local PageLength , aTemp := {} , uTemp , _BrowseRecMap := {} , x , j , First , Image , _Rec
+Local PageLength , aTemp := {} , uTemp , _BrowseRecMap := {} , x , j , First , Image
 Local cType, nCurrentLength
+Local lColor, aFields, cWorkArea, hWnd, nWidth
 
-   If Select( ::WorkArea ) == 0
+   cWorkArea := ::WorkArea
+
+   If Select( cWorkArea ) == 0
       Return nil
-	EndIf
+   EndIf
+
+   lColor := ! ( Empty( ::DynamicForeColor ) .AND. Empty( ::DynamicBackColor ) )
+   nWidth := LEN( ::aFields )
+   aFields := ARRAY( nWidth )
+   AEVAL( ::aFields, { |c,i| aFields[ i ] := &( "{ || "+cWorkArea+"->( " + c + " ) }" ) } )
+   hWnd := ::hWnd
 
    ::lEof := .F.
 
    First   := iif( len( ::aImages ) == 0, 1, 2 ) // Browse+ ( 2= bitmap definido, se cargan campos a partir de 2º )
 
-   PageLength := ListViewGetCountPerPage ( ::hWnd )
+   PageLength := ListViewGetCountPerPage( hWnd )
 
-   ::GridForeColor := ARRAY( PageLength )
-   ::GridBackColor := ARRAY( PageLength )
+   If lColor
+      ::GridForeColor := ARRAY( PageLength )
+      ::GridBackColor := ARRAY( PageLength )
+   Else
+      ::GridForeColor := nil
+      ::GridBackColor := nil
+   EndIf
 
    x := 1
    nCurrentLength := ::ItemCount()
 
-   Do While x <= PageLength .AND. ! ( ::WorkArea )->( Eof() )
+   Do While x <= PageLength .AND. ! ( cWorkArea )->( Eof() )
 
-      aTemp := ARRAY( LEN( ::aFields ) )
+      aTemp := ARRAY( nWidth )
       AFILL( aTemp, NIL )
 
-		If First == 2						// Browse+
-         uTemp := ( ::WorkArea )->( &( ::aFields[ 1 ] ) )
+      If First == 2
+         uTemp := EVAL( aFields[ 1 ] )
          cType := ValType( uTemp )
 
-         if cType == 'N'           // ..
+         if cType == 'N'
             image := uTemp
-
-         elseif cType == 'L'       // ..
+         elseif cType == 'L'
             image := iif( uTemp, 1, 0 )
+         else
+            image := 0
+         endif
+      EndIf
 
-			else						// ..
-				image := 0
-
-			endif						// ..
-
-		EndIf							// Browse+
-
-      For j := First To Len( ::aFields )
-         uTemp := ( ::WorkArea )->( &( ::aFields[ j ] ) )
+      For j := First To nWidth
+         uTemp := EVAL( aFields[ j ] )
 
          cType := ValType( uTemp )
          If cType == 'N'
-            aTemp[ j ] := lTrim ( Str ( uTemp ) )
+            aTemp[ j ] := lTrim( Str( uTemp ) )
          ElseIf cType == 'D'
             aTemp[ j ] := Dtoc( uTemp )
          ElseIf cType == 'L'
-            aTemp[ j ] := IIF ( uTemp, '.T.', '.F.' )
+            aTemp[ j ] := IIF( uTemp, '.T.', '.F.' )
          ElseIf cType == 'C'
             aTemp[ j ] := rTrim( uTemp )
          ElseIf cType == 'M'
             aTemp[ j ] := '<Memo>'
-			Else
+         Else
             aTemp[ j ] := 'Nil'
-			EndIf
+         EndIf
+      Next j
 
-		Next j
-
-      ( ::WorkArea )->( ::SetItemColor( x,,, aTemp ) )
+      If lColor
+         ( cWorkArea )->( ::SetItemColor( x,,, aTemp ) )
+      EndIf
 
       IF nCurrentLength < x
-         AddListViewItems ( ::hWnd, aTemp , Image )
+         AddListViewItems( hWnd, aTemp , Image )
          nCurrentLength++
       Else
-         ListViewSetItem( ::hWnd, aTemp, x )
+         ListViewSetItem( hWnd, aTemp, x )
          if First == 2
-            SetImageListViewItems( ::hWnd, x, aTemp[1] )
+            SetImageListViewItems( hWnd, x, aTemp[1] )
          EndIf
       ENDIF
 
-      _Rec := ( ::WorkArea )->( RecNo() )
+      aadd( _BrowseRecMap , ( cWorkArea )->( RecNo() ) )
 
-		aadd ( _BrowseRecMap , _Rec )
-
-      ( ::WorkArea )->( DbSkip() )
+      ( cWorkArea )->( DbSkip() )
       x++
    EndDo
 
    IF nCurrentLength > Len( _BrowseRecMap )
-      Do While nCurrentLength > Len( _BrowseRecMap )
-         ::DeleteItem( nCurrentLength )
-         nCurrentLength--
-      Enddo
+      ListView_SetItemCount( hWnd, Len( _BrowseRecMap ) )
    ENDIF
 
-   IF ( ::WorkArea )->( Eof() )
+   IF ( cWorkArea )->( Eof() )
 *      _BrowseRecMap[ len( _BrowseRecMap ) ] := 0
       ::lEof := .T.
    EndIf
@@ -2118,7 +2122,11 @@ Local nNotify := GetNotifyCode( lParam )
 Local xs , xd, nvKey
 Local r, DeltaSelect
 
-   If nNotify == NM_CLICK  .or. nNotify == LVN_BEGINDRAG
+   If nNotify == NM_CUSTOMDRAW
+
+      Return TGRID_NOTIFY_CUSTOMDRAW( Self, lParam )
+
+   elseIf nNotify == NM_CLICK  .or. nNotify == LVN_BEGINDRAG
 
       If LISTVIEW_GETFIRSTITEM ( ::hWnd ) > 0
          DeltaSelect := LISTVIEW_GETFIRSTITEM ( ::hWnd ) - ascan ( ::aRecMap, ::nValue )
