@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: makelib.bat,v 1.3 2005-08-08 02:42:56 guerra000 Exp $
+rem $Id: makelib.bat,v 1.4 2005-08-10 04:52:46 guerra000 Exp $
 rem
 cls
 
@@ -10,9 +10,16 @@ IF "%hg_hrb%"=="" SET HG_HRB=c:\harbour
 
 IF EXIST %hg_root%\lib\oohg.lib del %hg_root%\lib\oohg.lib
 
-rem %hg_hrb%\bin\harbour h_browse h_scrsaver h_error h_ipaddress h_monthcal h_help h_crypt h_status h_tree h_toolbar errorsys h_init h_media h_winapimisc h_slider h_button h_checkbox h_combo h_controlmisc h_datepicker h_editbox h_dialogs h_grid h_windows h_image h_label h_listbox h_menu h_msgbox h_frame h_progressbar h_radio h_spinner h_tab h_textbox h_timer h_cursor h_ini h_report h_registry h_font h_hyperlink h_hotkey h_graph h_richeditbox h_edit h_edit_ex h_scroll h_http h_zip -i%hg_hrb%\include;%hg_root%\include; -n1 -w2 -gc0 -es2
-    %hg_hrb%\bin\harbour h_browse h_scrsaver h_error h_ipaddress h_monthcal h_help h_crypt h_status h_tree h_toolbar errorsys h_init h_media h_winapimisc h_slider h_button h_checkbox h_combo h_controlmisc h_datepicker h_editbox h_dialogs h_grid h_windows h_image h_label h_listbox h_menu h_msgbox h_frame h_progressbar h_radio h_spinner h_tab h_textbox h_timer h_cursor h_ini h_report h_registry h_font h_hyperlink h_hotkey h_graph h_richeditbox h_edit h_edit_ex h_scroll h_http h_zip -i%hg_hrb%\include;%hg_root%\include; -n1     -gc0 -es2
+if exist %hg_hrb%\lib\tip.lib goto XHARBOUR_COMPILE
 
+:HARBOUR_COMPILE
+%hg_hrb%\bin\harbour h_browse h_scrsaver h_error h_ipaddress h_monthcal h_help h_crypt h_status h_tree h_toolbar errorsys h_init h_media h_winapimisc h_slider h_button h_checkbox h_combo h_controlmisc h_datepicker h_editbox h_dialogs h_grid h_windows h_image h_label h_listbox h_menu h_msgbox h_frame h_progressbar h_radio h_spinner h_tab h_textbox h_timer h_cursor h_ini h_report h_registry h_font h_hyperlink h_hotkey h_graph h_richeditbox h_edit h_edit_ex h_scroll h_http h_zip -i%hg_hrb%\include;%hg_root%\include; -n1     -gc0 -es2
+GOTO C_COMPILE
+
+:XHARBOUR_COMPILE
+%hg_hrb%\bin\harbour h_browse h_scrsaver h_error h_ipaddress h_monthcal h_help h_crypt h_status h_tree h_toolbar errorsys h_init h_media h_winapimisc h_slider h_button h_checkbox h_combo h_controlmisc h_datepicker h_editbox h_dialogs h_grid h_windows h_image h_label h_listbox h_menu h_msgbox h_frame h_progressbar h_radio h_spinner h_tab h_textbox h_timer h_cursor h_ini h_report h_registry h_font h_hyperlink h_hotkey h_graph h_richeditbox h_edit h_edit_ex h_scroll h_http h_zip -i%hg_hrb%\include;%hg_root%\include; -n1 -w2 -gc0 -es2
+
+:C_COMPILE
 %hg_bcc%\bin\bcc32 -c -O2 -tW -tWM -d -a8 -OS -5 -6 -I%hg_hrb%\include;%hg_bcc%\include;  -L%hg_hrb%\lib;%hg_bcc%\lib; h_scrsaver.c h_edit.c h_edit_ex.c h_error.c h_ipaddress.c c_ipaddress.c h_monthcal.c c_monthcal.c h_help.c c_help.c h_crypt.c c_crypt.c h_status.c c_status.c h_tree.c c_tree.c c_toolbar.c h_toolbar.c errorsys.c h_init.c h_media.c c_media.c h_winapimisc.c h_slider.c c_button.c c_checkbox.c c_combo.c c_controlmisc.c c_datepicker.c c_resource.c h_cursor.c c_cursor.c c_ini.c h_ini.c h_report.c h_registry.c h_font.c c_font.c h_hyperlink.c c_hyperlink.c h_richeditbox.c c_richeditbox.c h_scroll.c h_http.c h_zip.c
 %hg_bcc%\bin\bcc32 -c -O2 -tW -tWM -d -a8 -OS -5 -6 -I%hg_hrb%\include;%hg_bcc%\include;  -L%hg_hrb%\lib;%hg_bcc%\lib; c_editbox.c c_dialogs.c c_grid.c c_windows.c c_image.c c_label.c c_listbox.c c_menu.c c_msgbox.c c_frame.c c_progressbar.c c_radio.c c_registry.c c_slider.c c_spinner.c c_tab.c c_textbox.c c_timer.c c_winapimisc.c h_button.c h_checkbox.c h_combo.c h_controlmisc.c h_datepicker.c h_editbox.c h_dialogs.c h_grid.c h_windows.c h_image.c h_label.c h_listbox.c h_menu.c h_msgbox.c h_frame.c h_progressbar.c h_radio.c h_spinner.c h_tab.c h_textbox.c h_timer.c c_scrsaver.c h_hotkey.c c_hotkey.c h_graph.c c_graph.c h_browse.c c_browse.c
 
