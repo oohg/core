@@ -1,5 +1,5 @@
 /*
- * $Id: i_window.ch,v 1.1 2005-08-06 23:53:55 guerra000 Exp $
+ * $Id: i_window.ch,v 1.2 2005-08-10 04:54:45 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -452,9 +452,9 @@
 	=>;
 	ReleaseAllWindows()
 
-#command ACTIVATE WINDOW <name, ...> ;
+#command ACTIVATE WINDOW <name, ...> [ <nowait: NOWAIT> ] ;
 	=>;
-    _ActivateWindow ( \{<"name">\} )
+    _ActivateWindow( \{<"name">\}, <.nowait.> )
 
 #command ACTIVATE WINDOW ALL ;
 	=>;

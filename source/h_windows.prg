@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.2 2005-08-09 04:18:32 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.3 2005-08-10 04:54:45 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -301,6 +301,8 @@ METHOD Show() CLASS TForm
 *-----------------------------------------------------------------------------*
    if ::Type == "M"
 		// Find Parent
+
+/*
       If _OOHG_ActiveModal != nil
          ::Parent := _OOHG_ActiveModal
 		Else
@@ -309,6 +311,19 @@ METHOD Show() CLASS TForm
 			else
             ::Parent := _OOHG_Main
 			endif
+		endif
+*/
+      IF ::Parent == NIL .OR. ASCAN( _OOHG_aFormhWnd, ::Parent:hWnd ) == 0
+         ::Parent := GetFormObjectByHandle( GetActiveWindow() )
+         IF ::Parent:hWnd == 0
+            If _OOHG_UserWindow != NIL .AND. ascan( _OOHG_aFormhWnd, _OOHG_UserWindow:hWnd ) > 0
+               ::Parent := _OOHG_UserWindow
+            ElseIf _OOHG_ActiveModal != NIL .AND. ascan( _OOHG_aFormhWnd, _OOHG_ActiveModal:hWnd ) > 0
+               ::Parent := _OOHG_ActiveModal
+            Else
+               ::Parent := _OOHG_Main
+            Endif
+         ENDIF
 		endif
 
       AEVAL( _OOHG_aFormObjects, { |o| if( o:Type != "X" .AND. o:hWnd != ::hWnd, DisableWindow( o:hWnd ) , ) } )
@@ -1820,7 +1835,16 @@ StatusText := Nil
       aRGB := { GetRed ( GetSysColor ( COLOR_3DFACE) ) , GetGreen ( GetSysColor ( COLOR_3DFACE) ) , GetBlue ( GetSysColor ( COLOR_3DFACE) ) }
 	EndIf
 
-   Parent = _OOHG_Main
+   Parent := GetFormObjectByHandle( GetActiveWindow() )
+   IF Parent:hWnd == 0
+      If _OOHG_UserWindow != NIL .AND. ascan( _OOHG_aFormhWnd, _OOHG_UserWindow:hWnd ) > 0
+         Parent := _OOHG_UserWindow
+      ElseIf _OOHG_ActiveModal != NIL .AND. ascan( _OOHG_aFormhWnd, _OOHG_ActiveModal:hWnd ) > 0
+         Parent := _OOHG_ActiveModal
+      Else
+         Parent := _OOHG_Main
+      Endif
+   ENDIF
 
    _OOHG_BeginWindowActive := .T.
 
@@ -2233,29 +2257,21 @@ Local oCtrl , NextControlHandle
 Return
 
 *-----------------------------------------------------------------------------*
-Function _ActivateWindow( aForm )
+Function _ActivateWindow( aForm, lNoWait )
 *-----------------------------------------------------------------------------*
-Local z, aForm2, nForm := len( aForm )
+Local z, aForm2, nForm := len( aForm ), oWndActive
 
    // Multiple activation can't be used when modal window is active
    If nForm > 1 .AND. _OOHG_ActiveModal != nil
       MsgOOHGError( "Multiple Activation can't be used when a modal window is active. Program Terminated" )
    Endif
 
+   // Search for form's objects
    aForm2 := ARRAY( nForm )
    AEVAL( aForm, { |c,i| aForm2[ i ] := GetFormObject( c ) } )
 
    // Search for undefined window
    AEVAL( aForm2, { |o,i| IF( EMPTY( o:Type ) .AND. EMPTY( o:Name ) .AND. EMPTY( o:hWnd ), MsgOOHGError( "Window: " + aForm[ i ] + " is not defined. Program terminated" ), ) } )
-
-   // Look For Main Window
-   z := ASCAN( aForm2, { |o| o:Type == "A" } )
-   IF z != 0
-      AADD( aForm2, nil )
-      AINS( aForm2, 1 )
-      aForm2[ 1 ] := aForm2[ z + 1 ]
-      _OOHG_DeleteArrayItem( aForm2, z + 1 )
-   ENDIF
 
    // Look for modal window
    z := 0
@@ -2269,9 +2285,30 @@ Local z, aForm2, nForm := len( aForm )
       _OOHG_DeleteArrayItem( aForm2, z )
    ENDIF
 
+   // Validate NOWAIT flag
+   IF ValType( lNoWait ) != "L"
+      lNoWait := .F.
+   ENDIF
+   oWndActive := IF( lNoWait, _OOHG_Main, aForm2[ 1 ] )
+
+   // Look For Main Window
+   z := ASCAN( aForm2, { |o| o:Type == "A" } )
+   IF z != 0
+      AADD( aForm2, nil )
+      AINS( aForm2, 1 )
+      aForm2[ 1 ] := aForm2[ z + 1 ]
+      _OOHG_DeleteArrayItem( aForm2, z + 1 )
+      IF lNoWait
+         * MsgOOHGError( "NOWAIT option can't be used in MAIN window. Program Terminated" )
+         oWndActive := aForm2[ 1 ]
+      ENDIF
+   ENDIF
+
    // Activate windows
-   AEVAL( aForm2, { |o| o:Activate( .T., aForm2[ 1 ] ) } )
-   aForm2[ 1 ]:MessageLoop()
+   AEVAL( aForm2, { |o| o:Activate( .T., oWndActive ) } )
+   If ! lNoWait
+      aForm2[ 1 ]:MessageLoop()
+   Endif
 
 Return Nil
 
