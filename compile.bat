@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: compile.bat,v 1.2 2005-08-09 05:36:23 guerra000 Exp $
+rem $Id: compile.bat,v 1.3 2005-08-10 04:52:09 guerra000 Exp $
 rem
 CLS
 
@@ -38,27 +38,14 @@ echo %1.obj, + >> b32.bc
 echo %1.exe, + >> b32.bc
 echo %1.map, + >> b32.bc
 echo %HG_ROOT%\lib\oohg.lib + >> b32.bc
-echo %HG_HRB%\lib\dll.lib + >> b32.bc
-echo %HG_HRB%\lib\rtl.lib + >> b32.bc
-echo %HG_HRB%\lib\vm.lib + >> b32.bc
-echo %HG_HRB%\lib\gtwin.lib + >> b32.bc
-echo %HG_HRB%\lib\lang.lib + >> b32.bc
-echo %HG_HRB%\lib\codepage.lib + >> b32.bc
-echo %HG_HRB%\lib\macro.lib + >> b32.bc
-echo %HG_HRB%\lib\rdd.lib + >> b32.bc
-echo %HG_HRB%\lib\dbfntx.lib + >> b32.bc
-echo %HG_HRB%\lib\dbfcdx.lib + >> b32.bc
-echo %HG_HRB%\lib\dbfdbt.lib + >> b32.bc
-echo %HG_HRB%\lib\dbffpt.lib + >> b32.bc
-echo %HG_HRB%\lib\common.lib + >> b32.bc
-echo %HG_HRB%\lib\debug.lib + >> b32.bc
-echo %HG_HRB%\lib\pp.lib + >> b32.bc
-echo %HG_HRB%\lib\libct.lib + >> b32.bc
-echo %HG_HRB%\lib\libmisc.lib + >> b32.bc
-echo %HG_HRB%\lib\hbole.lib + >> b32.bc
-echo %HG_HRB%\lib\hbprinter.lib + >> b32.bc
-echo %HG_HRB%\lib\socket.lib + >> b32.bc
-echo %HG_HRB%\lib\miniprint.lib + >> b32.bc
+if exist %HG_HRB%\lib\dll.lib echo %HG_HRB%\lib\dll.lib + >> b32.bc
+rem Compiler libraries
+for %%a in (rtl vm gtwin lang codepage macro rdd dbfntx dbfcdx dbfdbt dbffpt common debug pp tip) do echo %HG_HRB%\lib\%%a.lib + >> b32.bc
+rem Additional libraries
+for %%a in (ct libct libmisc hbole) do if exist %HG_HRB%\lib\%%a.lib echo %HG_HRB%\lib\%%a.lib + >> b32.bc
+rem "Related" libraries
+for %%a in (hbprinter socket miniprint) do if exist %HG_HRB%\lib\%%a.lib echo %HG_HRB%\lib\%%a.lib + >> b32.bc
+for %%a in (hbprinter socket miniprint) do if exist %HG_ROOT%\lib\%%a.lib echo %HG_ROOT%\lib\%%a.lib + >> b32.bc
 
 Rem ODBC Libraries Link
 
