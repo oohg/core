@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.2 2005-08-10 04:56:26 guerra000 Exp $
+ * $Id: c_windows.c,v 1.3 2005-08-11 05:13:27 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -116,27 +116,74 @@ BOOL Array2Rect(PHB_ITEM aRect, RECT *rc ) ;
 static void ChangeNotifyIcon(HWND hWnd, HICON hIcon, LPSTR szText);
 static void ShowNotifyIcon(HWND hWnd, BOOL bAdd, HICON hIcon, LPSTR szText);
 
-#if defined(__XHARBOUR__)
+static PHB_DYNS _ooHG_Symbol_Events = 0, _ooHG_Symbol_TForm;
+static HB_ITEM  _OOHG_aFormhWnd, _OOHG_aFormObjects;
 
-LRESULT CALLBACK WndProc (HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+HB_FUNC_EXTERN( _OOHG_INIT_C_VARS );
+
+HB_FUNC( _OOHG_INIT_C_VARS_C_SIDE )
 {
-	static PHB_DYNS Dyns = 0 ;
-	long int r;
+   _ooHG_Symbol_TForm  = hb_dynsymFind( "TFORM" );
+   _ooHG_Symbol_Events = hb_dynsymFind( "EVENTS" );
+   memcpy( &_OOHG_aFormhWnd,    hb_param( 1, HB_IT_ARRAY ), sizeof( HB_ITEM ) );
+   memcpy( &_OOHG_aFormObjects, hb_param( 2, HB_IT_ARRAY ), sizeof( HB_ITEM ) );
+}
 
-	if ( ! Dyns )
-	{
-		Dyns = hb_dynsymFind( "EVENTS" );
-	}
+PHB_ITEM GetFormObjectByHandle( LONG hWnd )
+{
+   PHB_ITEM pForm;
+   ULONG ulCount;
 
-	hb_vmPushSymbol( Dyns->pSymbol );
-	hb_vmPushNil();
-	hb_vmPushLong( ( LONG ) hWnd );
-	hb_vmPushLong( message );
-	hb_vmPushLong( wParam );
-	hb_vmPushLong( lParam );
-	hb_vmDo( 4 );
+   pForm = 0;
+   for( ulCount = 0; ulCount < _OOHG_aFormhWnd.item.asArray.value->ulLen; ulCount++ )
+   {
+      if( hWnd == hb_itemGetNL( &_OOHG_aFormhWnd.item.asArray.value->pItems[ ulCount ] ) )
+      {
+         pForm = &_OOHG_aFormObjects.item.asArray.value->pItems[ ulCount ];
+         ulCount = _OOHG_aFormhWnd.item.asArray.value->ulLen;
+      }
+   }
+   if( ! pForm )
+   {
+      hb_vmPushSymbol( _ooHG_Symbol_TForm->pSymbol );
+      hb_vmPushNil();
+      hb_vmDo( 0 );
+      pForm = hb_param( -1, HB_IT_ANY );
+   }
 
-	r = hb_itemGetNL( (PHB_ITEM) &(HB_VM_STACK.Return) ) ;
+   return pForm;
+}
+
+LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
+{
+   long int r;
+   PHB_ITEM pResult;
+
+   if ( ! _ooHG_Symbol_Events )
+   {
+      HB_FUNCNAME( _OOHG_INIT_C_VARS )();
+   }
+
+   hb_vmPushSymbol( _ooHG_Symbol_Events->pSymbol );
+   hb_vmPush( GetFormObjectByHandle( ( LONG ) hWnd ) );
+   hb_vmPushLong( ( LONG ) hWnd );
+   hb_vmPushLong( message );
+   hb_vmPushLong( wParam );
+   hb_vmPushLong( lParam );
+   hb_vmSend( 4 );
+
+   pResult = hb_param( -1, HB_IT_NUMERIC );
+   if( pResult )
+   {
+      return hb_itemGetNL( pResult );
+   }
+   else
+   {
+      return DefWindowProc( hWnd, message, wParam, lParam );
+   }
+
+/*
+#if defined(__XHARBOUR__)
 
 	if ( r != 0 )
 	{
@@ -147,27 +194,7 @@ LRESULT CALLBACK WndProc (HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		return( DefWindowProc( hWnd, message, wParam, lParam ));
 	}
 
-}
-
 #else
-
-LRESULT CALLBACK WndProc (HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
-{
-	static PHB_DYNS Dyns = 0 ;
-	long int r;
-
-	if ( ! Dyns )
-	{
-		Dyns = hb_dynsymFind( "EVENTS" );
-	}
-
-	hb_vmPushSymbol( Dyns->pSymbol );
-	hb_vmPushNil();
-	hb_vmPushLong( ( LONG ) hWnd );
-	hb_vmPushLong( message );
-	hb_vmPushLong( wParam );
-	hb_vmPushLong( lParam );
-	hb_vmDo( 4 );
 
 	r = hb_itemGetNL( (PHB_ITEM) &hb_stack.Return ) ;
 
@@ -180,9 +207,10 @@ LRESULT CALLBACK WndProc (HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		return( DefWindowProc( hWnd, message, wParam, lParam ));
 	}
 
-}
-
 #endif
+*/
+
+}
 
 HB_FUNC ( INITWINDOW )
 {

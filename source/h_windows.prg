@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.3 2005-08-10 04:54:45 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.4 2005-08-11 05:13:27 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -96,7 +96,7 @@
 #include "common.ch"
 #include "error.ch"
 
-STATIC _OOHG_aFormhWnd := {},    _OOHG_aFormObjects := {}
+STATIC _OOHG_aFormhWnd := {}, _OOHG_aFormObjects := {}
 STATIC _OOHG_aEventInfo := {}        // Event's stack
 STATIC _OOHG_UserWindow := nil       // User's window
 STATIC _OOHG_InteractiveClose := 1   // Interactive close
@@ -771,8 +771,6 @@ Local oWnd, oCtrl
 
             EVAL( ::aHotKeys[ i ][ HOTKEY_ACTION ] )
 
-            Return 0
-
          EndIf
 
       EndIf
@@ -998,8 +996,6 @@ Local oWnd, oCtrl
 
          endif
 
-			Return 0
-
         ***********************************************************************
 	case nMsg == WM_HSCROLL
         ***********************************************************************
@@ -1204,11 +1200,9 @@ Local oWnd, oCtrl
 
       ENDIF
 
-      // By Id
+      IF ( oCtrl := GetControlObjectById( LoWord( wParam ) ) ):Id != 0
 
-      oCtrl := GetControlObjectById( LoWord( wParam ) )
-
-      IF oCtrl:Id != 0
+         // By Id
 
          // From MENU
 
@@ -1218,25 +1212,19 @@ Local oWnd, oCtrl
 
          oCtrl:DoEvent( oCtrl:OnClick )
 
-         Return 0
-
 //         EndIf
 
-      ENDIF
+      ElseIf ( oCtrl := GetControlObjectByHandle( lParam ) ):hWnd != 0
 
-      // By handle
-
-      oCtrl := GetControlObjectByHandle( lParam )
-
-      IF oCtrl:hWnd != 0
+         // By handle
 
          Return oCtrl:Events_Command( wParam )
 
-      ENDIF
+      ElseIf HIWORD( wParam ) == 1
 
-      IF HIWORD( wParam ) == 1
          // From accelerator
 *         Return GetControlObjectByHandle( lParam ):Events_Accelerator( wParam )
+
       ENDIF
 
         ***********************************************************************
@@ -1358,12 +1346,15 @@ Local oWnd, oCtrl
 
 	endcase
 
-return (0)
+return nil
 
-*------------------------------------------------------------------------------*
-function Events( hWnd, nMsg, wParam, lParam )
-*------------------------------------------------------------------------------*
-Return GetFormObjectByHandle( hWnd ):Events( hWnd, nMsg, wParam, lParam )
+// Initializes C variables
+*-----------------------------------------------------------------------------*
+Procedure _OOHG_Init_C_Vars()
+*-----------------------------------------------------------------------------*
+   TForm()
+   _OOHG_Init_C_Vars_C_Side( _OOHG_aFormhWnd, _OOHG_aFormObjects )
+Return
 
 *-----------------------------------------------------------------------------*
 Function GetFormObject( FormName )
