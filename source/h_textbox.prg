@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.1 2005-08-07 00:11:28 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.2 2005-08-11 05:17:26 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -152,7 +152,7 @@ METHOD Events_Enter() CLASS TText
    Else
       _OOHG_SetFocusExecuted := .F.
    EndIf
-Return 0
+Return nil
 
 *------------------------------------------------------------------------------*
 METHOD Events_Command( wParam ) CLASS TText
@@ -179,7 +179,7 @@ Local Hi_wParam := HIWORD( wParam )
 
       ::DoEvent( ::OnChange )
 
-      Return 0
+      Return nil
 
    elseif Hi_wParam == EN_KILLFOCUS
 
@@ -189,13 +189,13 @@ Local Hi_wParam := HIWORD( wParam )
 
       EndIf
 
-      Return 0
+      Return nil
 
    elseif Hi_wParam == EN_SETFOCUS
 
       ::DoEvent( ::OnGotFocus )
 
-      Return 0
+      Return nil
 
    Endif
 
@@ -688,7 +688,7 @@ Local tmpstr, ts
          ::DoEvent( ::OnLostFocus )
       EndIf
 
-      Return 0
+      Return nil
 
    elseif Hi_wParam == EN_SETFOCUS
 
@@ -733,7 +733,7 @@ Local tmpstr, ts
 
       ::DoEvent( ::OnGotFocus )
 
-      Return 0
+      Return nil
 
    Endif
 
@@ -1154,7 +1154,7 @@ Local x, maskstart
          ::DoEvent( ::OnLostFocus )
       EndIf
 
-      Return 0
+      Return nil
 
    elseif Hi_wParam == EN_SETFOCUS
 
@@ -1173,7 +1173,7 @@ Local x, maskstart
 
       ::DoEvent( ::OnGotFocus )
 
-      Return 0
+      Return nil
 
    Endif
 

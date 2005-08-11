@@ -1,5 +1,5 @@
 /*
- * $Id: h_checkbox.prg,v 1.1 2005-08-07 00:06:08 guerra000 Exp $
+ * $Id: h_checkbox.prg,v 1.2 2005-08-11 05:14:47 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -245,7 +245,7 @@ Local Hi_wParam := HIWORD( wParam )
 
       ::DoEvent( ::OnChange )
 
-      Return 0
+      Return nil
 
    EndIf
 

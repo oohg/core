@@ -1,5 +1,5 @@
 /*
- * $Id: h_tree.prg,v 1.1 2005-08-07 00:11:28 guerra000 Exp $
+ * $Id: h_tree.prg,v 1.2 2005-08-11 05:16:06 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -497,7 +497,7 @@ METHOD Events_Enter() CLASS TTree
 
    ::DoEvent( ::OnDblClick )
 
-Return 0
+Return nil
 
 *------------------------------------------------------------------------------*
 Function _DefineTree ( ControlName , ParentForm , row , col , width , height , change , tooltip , fontname , fontsize , gotfocus , lostfocus , dblclick , break , value  , HelpId, aImgNode, aImgItem, noBot , bold, italic, underline, strikeout , itemids )

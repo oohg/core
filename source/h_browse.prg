@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.3 2005-08-10 04:57:14 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.4 2005-08-11 05:14:47 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -137,7 +137,6 @@ CLASS TBrowse FROM TGrid
    METHOD Events_Enter
    METHOD Events_Notify
 
-   METHOD Sync
    METHOD BrowseOnChange
    METHOD FastUpdate
    METHOD ScrollUpdate
@@ -238,14 +237,6 @@ Local ControlHandle, hsum, ScrollBarButtonHandle
 
    if valtype(aHeadClick) != "A"
 		aHeadClick := {}
-	endif
-
-   if valtype(change) != "B"
-		change := ""
-	endif
-
-   if valtype(dblclick) != "B"
-		dblclick := ""
 	endif
 
    InitListViewColumns( ControlHandle , aHeaders , aWidths, aJust ) // Browse+
@@ -414,12 +405,12 @@ Local lColor, aFields, cWorkArea, hWnd, nWidth
       x++
    EndDo
 
-   IF nCurrentLength > Len( _BrowseRecMap )
-      ListView_SetItemCount( hWnd, Len( _BrowseRecMap ) )
-   ENDIF
+   Do While nCurrentLength > Len( _BrowseRecMap )
+      ListViewDeleteString( ::hWnd, nCurrentLength )
+      nCurrentLength--
+   EndDo
 
    IF ( cWorkArea )->( Eof() )
-*      _BrowseRecMap[ len( _BrowseRecMap ) ] := 0
       ::lEof := .T.
    EndIf
 
@@ -1768,7 +1759,7 @@ Local xs,xd
 Return nil
 
 *-----------------------------------------------------------------------------*
-METHOD Sync() CLASS TBrowse
+METHOD BrowseOnChange() CLASS TBrowse
 *-----------------------------------------------------------------------------*
 
    If _OOHG_BrowseSyncStatus
@@ -1780,14 +1771,6 @@ METHOD Sync() CLASS TBrowse
 		EndIf
 
 	EndIf
-
-Return nil
-
-*-----------------------------------------------------------------------------*
-METHOD BrowseOnChange() CLASS TBrowse
-*-----------------------------------------------------------------------------*
-
-   ::Sync()
 
    ::DoEvent( ::OnChange )
 
@@ -1868,28 +1851,31 @@ Return nil
 *-----------------------------------------------------------------------------*
 METHOD ScrollUpdate() CLASS TBrowse
 *-----------------------------------------------------------------------------*
-Local ActualRecord , RecordCount , KeyCount
+Local ActualRecord , RecordCount
+Local oVScroll, cWorkArea
+
+   oVScroll := ::VScroll
 
 	// If vertical scrollbar is used it must be updated
-   If ::VScroll != nil
+   If oVScroll != nil
 
-      KeyCount := ( ::WorkArea )->( OrdKeyCount() )
-		If KeyCount > 0
-         ActualRecord := ( ::WorkArea )->( OrdKeyNo() )
-			RecordCount := KeyCount
+      cWorkArea := ::WorkArea
+      RecordCount := ( cWorkArea )->( OrdKeyCount() )
+      If RecordCount > 0
+         ActualRecord := ( cWorkArea )->( OrdKeyNo() )
 		Else
-         ActualRecord := ( ::WorkArea )->( RecNo() )
-         RecordCount := ( ::WorkArea )->( RecCount() )
+         ActualRecord := ( cWorkArea )->( RecNo() )
+         RecordCount := ( cWorkArea )->( RecCount() )
 		EndIf
 
       ::RecCount := RecordCount
 
 		If RecordCount < 100
-         ::VScroll:RangeMax := RecordCount
-         ::VScroll:Value := ActualRecord
+         oVScroll:RangeMax := RecordCount
+         oVScroll:Value := ActualRecord
 		Else
-         ::VScroll:RangeMax := 100
-         ::VScroll:Value := Int ( ActualRecord * 100 / RecordCount )
+         oVScroll:RangeMax := 100
+         oVScroll:Value := Int ( ActualRecord * 100 / RecordCount )
 		EndIf
 
 	EndIf
@@ -2113,7 +2099,7 @@ METHOD Events_Enter() CLASS TBrowse
 
    Endif
 
-Return 0
+Return nil
 
 *-----------------------------------------------------------------------------*
 METHOD Events_Notify( wParam, lParam ) CLASS TBrowse
@@ -2135,7 +2121,7 @@ Local r, DeltaSelect
          ::BrowseOnChange()
       EndIf
 
-      Return 0
+      Return nil
 
    elseIf nNotify == LVN_KEYDOWN
 
@@ -2195,7 +2181,7 @@ Local r, DeltaSelect
 
       EndCase
 
-      Return 0
+      Return nil
 
    elseIf nNotify == NM_DBLCLK
 
@@ -2252,7 +2238,7 @@ Local r, DeltaSelect
       _OOHG_ThisItemCellWidth := 0
       _OOHG_ThisItemCellHeight := 0
 
-      Return 0
+      Return nil
 
    EndIf
 
@@ -2275,6 +2261,8 @@ Local nr , RecordCount , SkipCount , BackRec
 
       SkipCount := Int ( nPos * RecordCount / ::VScroll:RangeMax )
 
+      ( ::WorkArea )->( OrdKeyGoTo( SkipCount ) )
+/*
       If SkipCount > ( RecordCount / 2 )
          ( ::WorkArea )->( DbGoBottom() )
          ( ::WorkArea )->( DbSkip( - ( RecordCount - SkipCount ) ) )
@@ -2282,6 +2270,7 @@ Local nr , RecordCount , SkipCount , BackRec
          ( ::WorkArea )->( DbGoTop() )
          ( ::WorkArea )->( DbSkip( SkipCount ) )
       EndIf
+*/
 
       If ( ::WorkArea )->( Eof() )
          ( ::WorkArea )->( DbSkip( -1 ) )

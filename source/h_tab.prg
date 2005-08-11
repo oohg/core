@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.2 2005-08-09 04:18:31 guerra000 Exp $
+ * $Id: h_tab.prg,v 1.3 2005-08-11 05:17:26 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -305,7 +305,7 @@ Local nNotify := GetNotifyCode( lParam )
 
       ::DoEvent( ::OnChange )
 
-      Return 0
+      Return nil
 
    EndIf
 

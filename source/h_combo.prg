@@ -1,8 +1,8 @@
 /*
- * $Id: h_combo.prg,v 1.2 2005-08-09 04:17:38 guerra000 Exp $
+ * $Id: h_combo.prg,v 1.3 2005-08-11 05:14:47 guerra000 Exp $
  */
 /*
- * $Id: h_combo.prg,v 1.2 2005-08-09 04:17:38 guerra000 Exp $
+ * $Id: h_combo.prg,v 1.3 2005-08-11 05:14:47 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -388,25 +388,25 @@ Local Hi_wParam := HIWORD( wParam )
 
       ::DoEvent ( ::OnChange )
 
-      Return 0
+      Return nil
 
    elseif Hi_wParam == CBN_KILLFOCUS
 
       ::DoEvent( ::OnLostFocus )
 
-      Return 0
+      Return nil
 
    elseif Hi_wParam == CBN_SETFOCUS
 
       ::DoEvent( ::OnGotFocus )
 
-      Return 0
+      Return nil
 
    elseif Hi_wParam == CBN_EDITCHANGE
 
       ::DoEvent( ::OnClick )
 
-      Return 0
+      Return nil
 
    EndIf
 

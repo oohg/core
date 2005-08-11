@@ -1,5 +1,5 @@
 /*
- * $Id: h_radio.prg,v 1.1 2005-08-07 00:12:51 guerra000 Exp $
+ * $Id: h_radio.prg,v 1.2 2005-08-11 05:14:47 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -283,7 +283,7 @@ Local Hi_wParam := HIWORD( wParam )
 
       EndIf
 
-      Return 0
+      Return nil
 
    EndIf
 
@@ -323,7 +323,7 @@ Local Hi_wParam := HIWORD( wParam )
 
       EndIf
 
-      Return 0
+      Return nil
 
    EndIf
 

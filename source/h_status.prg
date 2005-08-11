@@ -1,5 +1,5 @@
 /*
- * $Id: h_status.prg,v 1.1 2005-08-07 00:12:12 guerra000 Exp $
+ * $Id: h_status.prg,v 1.2 2005-08-11 05:14:47 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -251,7 +251,7 @@ Local x
 
          if ::aControls[ x ]:DoEvent( ::aControls[ x ]:OnClick )
 
-            Return 0
+            Return nil
 
          EndIf
 

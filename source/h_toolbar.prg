@@ -1,5 +1,5 @@
 /*
- * $Id: h_toolbar.prg,v 1.1 2005-08-07 00:11:28 guerra000 Exp $
+ * $Id: h_toolbar.prg,v 1.2 2005-08-11 05:16:06 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -210,7 +210,7 @@ Local ws, x, aPos
 
       ENDIF
 
-      Return 0
+      Return nil
 
    ElseIf nNotify == TTN_NEEDTEXT
 
@@ -229,7 +229,7 @@ msginfo("si")
 
       ENDIF
 
-      Return 0
+      Return nil
 
    EndIf
 
@@ -436,7 +436,7 @@ msginfo("si")
 
          Endif
 
-      Return 0
+      Return nil
 
    EndIf
 

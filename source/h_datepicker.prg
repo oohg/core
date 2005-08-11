@@ -1,5 +1,5 @@
 /*
- * $Id: h_datepicker.prg,v 1.1 2005-08-07 00:06:08 guerra000 Exp $
+ * $Id: h_datepicker.prg,v 1.2 2005-08-11 05:16:06 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -175,7 +175,7 @@ METHOD Events_Enter() CLASS TDatePick
 
    EndIf
 
-Return 0
+Return nil
 
 *-----------------------------------------------------------------------------*
 METHOD Events_Notify( wParam, lParam ) CLASS TDatePick
@@ -186,7 +186,7 @@ Local nNotify := GetNotifyCode( lParam )
 
       ::DoEvent( ::OnChange )
 
-      Return 0
+      Return nil
 
    EndIf
 

@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.2 2005-08-08 02:42:56 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.3 2005-08-11 05:17:26 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -314,17 +314,17 @@ Return GetControlObject( ControlName, ParentForm ):Picture
 Function GetData()
 *-----------------------------------------------------------------------------*
 Local PacketNames [ aDir ( _OOHG_CommPath + _OOHG_StationName + '.*'  ) ] , i , Rows , Cols , RetVal := Nil , bd , aItem , aTemp := {} , r , c
-
-// AJ
 Local DataValue, DataType, DataLenght, Packet
+
+   aDir ( _OOHG_CommPath + _OOHG_StationName + '.*' , PacketNames )
+
+   If Len ( PacketNames ) == 0
+		Return Nil
+	EndIf
 
 	bd = Set (_SET_DATEFORMAT )
 
 	SET DATE TO ANSI
-
-   aDir ( _OOHG_CommPath + _OOHG_StationName + '.*' , PacketNames )
-
-	If Len ( PacketNames ) > 0
 
       Packet := MemoRead ( _OOHG_CommPath + PacketNames [1] )
 
@@ -433,11 +433,6 @@ Local DataValue, DataType, DataLenght, Packet
 				RetVal := aTemp
 
 		End Case
-
-	Else
-		Set (_SET_DATEFORMAT ,bd)
-		Return Nil
-	EndIf
 
    Delete File ( _OOHG_CommPath + PacketNames [1] )
 
@@ -1822,8 +1817,8 @@ CLASS TControl FROM TWindow
    METHOD Events_Enter
    METHOD Events_Command
    METHOD Events_Notify
-   METHOD Events_VScroll      BLOCK { || 0 }
-   METHOD Events_Size         BLOCK { || 0 }
+   METHOD Events_VScroll      BLOCK { || nil }
+   METHOD Events_Size         BLOCK { || nil }
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -2349,13 +2344,9 @@ Local Hi_wParam := HIWORD( wParam )
 
       ::DoEvent( ::OnClick )
 
-      Return 0
-
    elseif Hi_wParam == EN_CHANGE
 
       ::DoEvent( ::OnChange )
-
-      Return 0
 
    elseif Hi_wParam == EN_KILLFOCUS
 
@@ -2363,29 +2354,21 @@ Local Hi_wParam := HIWORD( wParam )
          ::DoEvent( ::OnLostFocus )
       EndIf
 
-      Return 0
-
    elseif Hi_wParam == EN_SETFOCUS
 
       ::DoEvent( ::OnGotFocus )
-
-      Return 0
 
    elseif Hi_wParam == BN_KILLFOCUS
 
       ::DoEvent( ::OnLostFocus )
 
-      Return 0
-
    elseif Hi_wParam == BN_SETFOCUS
 
       ::DoEvent( ::OnGotFocus )
 
-      Return 0
-
    EndIf
 
-Return 0
+Return nil
 
 *-----------------------------------------------------------------------------*
 METHOD Events_Enter() CLASS TControl
@@ -2401,7 +2384,7 @@ METHOD Events_Enter() CLASS TControl
 
    EndIf
 
-Return 0
+Return nil
 
 *-----------------------------------------------------------------------------*
 METHOD Events_Notify( wParam, lParam ) CLASS TControl
@@ -2413,15 +2396,12 @@ wParam++ // DUMMY...
 
    If nNotify == NM_KILLFOCUS
       ::DoEvent( ::OnLostFocus )
-      Return 0
 
    elseif nNotify == NM_SETFOCUS
       ::DoEvent( ::OnGotFocus )
-      Return 0
 
    elseif nNotify == NM_DBLCLK
       ::DoEvent( ::OnDblClick )
-      Return 0
 
 * Intento por controlar las teclas...
 /*
@@ -2436,16 +2416,14 @@ wParam++ // DUMMY...
          cant := 0
       ENDIF
       GetControlObject( "STATUSITEM", "WIN_1" ):Value := ltrim(str(aKeys))+" "+ltrim(str(cant))
-      Return 0
 */
 
    elseif nNotify == TVN_SELCHANGED
       ::DoEvent( ::OnChange )
-      Return 0
 
    EndIf
 
-Return 0
+Return nil
 
 
 
