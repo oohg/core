@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.4 2005-08-11 05:13:27 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.5 2005-08-11 05:47:53 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -381,6 +381,17 @@ METHOD Activate( lNoStop, oWndLoop ) CLASS TForm
       MsgOOHGError("Window: "+ ::Name + " already active. Program terminated" )
    Endif
 
+   // Checks for non-stop window
+   IF ValType( lNoStop ) != "L"
+      lNoStop := .F.
+   ENDIF
+   IF ValType( oWndLoop ) != "O"
+      oWndLoop := IF( lNoStop, _OOHG_Main, Self )
+   ENDIF
+   ::ActivateCount := oWndLoop:ActivateCount
+   ::ActivateCount[ 1 ]++
+
+   // Show window
    if ::Type == "M"
 
       ::Show()
@@ -408,16 +419,6 @@ METHOD Activate( lNoStop, oWndLoop ) CLASS TForm
       endif
 
    Endif
-
-   // Checks for non-stop window
-   IF ValType( lNoStop ) != "L"
-      lNoStop := .F.
-   ENDIF
-   IF ValType( oWndLoop ) != "O"
-      oWndLoop := IF( lNoStop, _OOHG_Main, Self )
-   ENDIF
-   ::ActivateCount := oWndLoop:ActivateCount
-   ::ActivateCount[ 1 ]++
 
    // Starts the Message Loop
    IF ! lNoStop
@@ -465,21 +466,16 @@ Local b
 
          MsgOOHGError("Non top modal windows can't be released. Program terminated" )
 
-      Else
-
-         EnableWindow( ::hWnd )
-         SendMessage( ::hWnd , WM_SYSCOMMAND, SC_CLOSE, 0 )
-
       EndIf
 
 	Else
 
       AEVAL( _OOHG_aFormObjects, { |o| IF( o:Parent != nil .AND. o:Parent:hWnd == ::hWnd, o:Parent := _OOHG_Main, )  } )
 
-      EnableWindow( ::hWnd )
-      SendMessage( ::hWnd, WM_SYSCOMMAND, SC_CLOSE, 0 )
-
 	EndIf
+
+   EnableWindow( ::hWnd )
+   SendMessage( ::hWnd, WM_SYSCOMMAND, SC_CLOSE, 0 )
 
    _OOHG_InteractiveClose := b
 
