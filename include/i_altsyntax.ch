@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.1 2005-08-06 23:49:17 guerra000 Exp $
+ * $Id: i_altsyntax.ch,v 1.2 2005-08-11 05:10:16 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1859,7 +1859,8 @@ Grid
 
 #xcommand END GRID ;
 	=>;
-_DefineGrid ( _OOHG_ActiveControlName ,  ;
+iif( _OOHG_ActiveControlMultiSelect, TGridMulti(), TGrid() ):Define( ;
+                _OOHG_ActiveControlName ,  ;
                 _OOHG_ActiveControlOf ,  ;
                 _OOHG_ActiveControlCol ,         ;
                 _OOHG_ActiveControlRow ,         ;
@@ -1890,10 +1891,6 @@ _DefineGrid ( _OOHG_ActiveControlName ,  ;
                 _OOHG_ActiveControlOnQueryData ,  ;
                 _OOHG_ActiveControlItemCount ,   ;
                 _OOHG_ActiveControlEdit ,  ;
-		Nil , 	;
-		Nil ,	;
-                _OOHG_ActiveControlMultiSelect , ;
-		Nil  ,;
                 _OOHG_ActiveControlBackColor, ;
                 _OOHG_ActiveControlFontColor )
 

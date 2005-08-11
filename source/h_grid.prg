@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.3 2005-08-10 04:56:26 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.4 2005-08-11 05:10:16 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -91,7 +91,7 @@
 	Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-#include 'minigui.ch'
+#include 'oohg.ch'
 #include 'hbclass.ch'
 #include "i_windefs.ch"
 
@@ -105,6 +105,9 @@ CLASS TGrid FROM TControl
    DATA GridBackColor INIT {}
    DATA DynamicForeColor INIT {}
    DATA DynamicBackColor INIT {}
+   DATA lMulti       INIT .T.
+
+   METHOD Define
 
    METHOD Value            SETGET
 
@@ -129,18 +132,10 @@ CLASS TGrid FROM TControl
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
-Function _DefineGrid ( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows,value,fontname,fontsize , tooltip , change , dblclick , aHeadClick , gotfocus , lostfocus , nogrid, aImage, aJust, break  , HelpId , bold, italic, underline, strikeout , ownerdata , ondispinfo , itemcount , editable , available1 , available2 , multiselect , available3 , backcolor , fontcolor, dynamicbackcolor , dynamicforecolor )
+METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows,value,fontname,fontsize , tooltip , change , dblclick , aHeadClick , gotfocus , lostfocus , nogrid, aImage, aJust, break  , HelpId , bold, italic, underline, strikeout , ownerdata , ondispinfo , itemcount , editable , backcolor , fontcolor, dynamicbackcolor , dynamicforecolor ) CLASS TGrid
 *-----------------------------------------------------------------------------*
-Local wBitmap
-Local Self
+Local wBitmap, ControlHandle
 
-// AJ
-Local ControlHandle
-Available1 := Nil
-Available2 := Nil
-Available3 := Nil
-
-   Self := if( multiselect, TGridMulti(), TGrid() )
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, .t. )
 
 	if ValType ( aHeaders ) == 'U'
@@ -166,9 +161,6 @@ Available3 := Nil
 	if valtype(h) == "U"
 		h := 120
 	endif
-	if valtype(value) == "U" .and. !MultiSelect
-		value := 0
-	endif
 	if valtype(aRows) == "U"
 		aRows := {}
 	endif
@@ -191,16 +183,16 @@ Available3 := Nil
 
       _OOHG_SplitLastControl   := "GRID"
 
-         ControlHandle := InitListView ( ::Parent:ReBarHandle, 0, 0, 0, w, h ,'',0,iif( nogrid, 0, 1 ) , ownerdata , itemcount , multiselect )
+         ControlHandle := InitListView ( ::Parent:ReBarHandle, 0, 0, 0, w, h ,'',0,iif( nogrid, 0, 1 ) , ownerdata , itemcount , ::lMulti )
 
-			x := GetWindowCol ( Controlhandle )
-			y := GetWindowRow ( Controlhandle )
+         x := GetWindowCol( Controlhandle )
+         y := GetWindowRow( Controlhandle )
 
-         AddSplitBoxItem ( Controlhandle, ::Parent:ReBarHandle, w , break , , , , _OOHG_ActiveSplitBoxInverted )
+         AddSplitBoxItem( Controlhandle, ::Parent:ReBarHandle, w , break , , , , _OOHG_ActiveSplitBoxInverted )
 
 	Else
 
-      ControlHandle := InitListView ( ::Parent:hWnd, 0, x, y, w, h ,'',0, iif( nogrid, 0, 1 ) , ownerdata  , itemcount  , multiselect )
+      ControlHandle := InitListView ( ::Parent:hWnd, 0, x, y, w, h ,'',0, iif( nogrid, 0, 1 ) , ownerdata  , itemcount  , ::lMulti )
 	endif
 
    ::New( ControlHandle, ControlName, HelpId, , ToolTip )
@@ -241,21 +233,9 @@ Available3 := Nil
 
    AEVAL( aRows, { |u| ::AddItem( u ) } )
 
-	if multiselect == .T.
+   ::Value := value
 
-		if VALTYPE ( value ) == 'A'
-			ListViewSetMultiSel (ControlHandle,value)
-		endif
-
-	Else
-
-		if value <> 0
-			ListView_SetCursel (ControlHandle ,value)
-		endif
-
-	EndIf
-
-Return Nil
+Return Self
 
 *-----------------------------------------------------------------------------*
 METHOD EditItem() CLASS TGrid
@@ -484,7 +464,7 @@ METHOD Events_Enter() CLASS TGrid
 
    EndIf
 
-Return 0
+Return nil
 
 *-----------------------------------------------------------------------------*
 METHOD Events_Notify( wParam, lParam ) CLASS TGrid
@@ -528,7 +508,7 @@ Local lvc, aCellData, _ThisQueryTemp // , r, a, nFore, nBack, aColor
 
       If GetGridOldState(lParam) == 0 .and. GetGridNewState(lParam) != 0
          ::DoEvent( ::OnChange )
-         Return 0
+         Return nil
       EndIf
 
    elseif nNotify == LVN_COLUMNCLICK
@@ -539,7 +519,7 @@ Local lvc, aCellData, _ThisQueryTemp // , r, a, nFore, nBack, aColor
          lvc := GetGridColumn(lParam) + 1
          if len ( ::aHeadClick ) >= lvc
             ::DoEvent ( ::aHeadClick [lvc] )
-            Return 0
+            Return nil
          EndIf
       EndIf
 
@@ -583,7 +563,7 @@ Local lvc, aCellData, _ThisQueryTemp // , r, a, nFore, nBack, aColor
 
       EndIf
 
-      Return 0
+      Return nil
 
 * ¿Qué es -181?
    elseif nNotify == -181  // ???????
@@ -782,9 +762,17 @@ Return aGrid
 
 CLASS TGridMulti FROM TGrid
    DATA Type      INIT "MULTIGRID" READONLY
+   DATA lMulti    INIT .T.
 
+   METHOD Define
    METHOD Value
 ENDCLASS
+
+*-----------------------------------------------------------------------------*
+METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows,value,fontname,fontsize , tooltip , change , dblclick , aHeadClick , gotfocus , lostfocus , nogrid, aImage, aJust, break  , HelpId , bold, italic, underline, strikeout , ownerdata , ondispinfo , itemcount , editable , backcolor , fontcolor, dynamicbackcolor , dynamicforecolor ) CLASS TGridMulti
+*-----------------------------------------------------------------------------*
+   ::Super:Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows,value,fontname,fontsize , tooltip , change , dblclick , aHeadClick , gotfocus , lostfocus , nogrid, aImage, aJust, break  , HelpId , bold, italic, underline, strikeout , ownerdata , ondispinfo , itemcount , editable , backcolor , fontcolor, dynamicbackcolor , dynamicforecolor )
+Return Self
 
 *-----------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TGridMulti

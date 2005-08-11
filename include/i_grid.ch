@@ -1,5 +1,5 @@
 /*
- * $Id: i_grid.ch,v 1.1 2005-08-06 23:50:17 guerra000 Exp $
+ * $Id: i_grid.ch,v 1.2 2005-08-11 05:10:16 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -101,6 +101,7 @@
 // GRID (STANDARD VERSION)
 ///////////////////////////////////////////////////////////////////////////////
 #command @ <row>,<col> GRID <name> 		;
+                [ OBJ <obj> ]                   ;
 		[ <dummy1: OF, PARENT> <parent> ] ;
 		[ WIDTH <w> ] 			;
 		[ HEIGHT <h> ] 			;
@@ -135,7 +136,8 @@
 		[ HELPID <helpid> ] 		;
 		[ <break: BREAK> ] 		;
 	=>;
-_DefineGrid ( <"name"> , 	;
+[ <obj> := ] iif( <.multiselect.>, TGridMulti(), TGrid() ):Define( ;
+                <"name"> ,      ;
 		<"parent"> , 	;
 		<col> ,		;
 		<row> ,		;
@@ -166,10 +168,6 @@ _DefineGrid ( <"name"> , 	;
 		<{dispinfo}> ,  ;
 		<itemcount> , 	;
 		<.edit.> ,  ;
-		Nil , 	;
-		Nil ,	;
-		<.multiselect.> , ;
-		Nil , ;
 		<backcolor> ;
                 , <fontcolor>, <dynamicbackcolor> , <dynamicforecolor> )
 
@@ -177,6 +175,7 @@ _DefineGrid ( <"name"> , 	;
 // GRID (SPLITBOX VERSION)
 ///////////////////////////////////////////////////////////////////////////////
 #command GRID <name> 		;
+                [ OBJ <obj> ]                   ;
 		[ <dummy1: OF, PARENT> <parent> ] ;
 		[ WIDTH <w> ] 			;
 		[ HEIGHT <h> ] 			;
@@ -211,7 +210,8 @@ _DefineGrid ( <"name"> , 	;
 		[ HELPID <helpid> ] 		;
 		[ <break: BREAK> ] 		;
 	=>;
-_DefineGrid ( <"name"> , 	;
+[ <obj> := ] iif( <.multiselect.>, TGridMulti(), TGrid() ):Define( ;
+                <"name"> ,      ;
 		<"parent"> , 	;
 		,		;
 		,		;
@@ -242,10 +242,6 @@ _DefineGrid ( <"name"> , 	;
 		<{dispinfo}> ,  ;
 		<itemcount> , 	;
 		<.edit.> ,  ;
-		Nil , 	;
-		Nil ,	;
-		<.multiselect.> , ;
-		Nil , ;
 		<backcolor> , ;
                 <fontcolor>, <dynamicbackcolor> , <dynamicforecolor> )
 
