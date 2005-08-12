@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.4 2005-08-11 05:10:16 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.5 2005-08-12 05:18:02 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -98,6 +98,7 @@
 CLASS TGrid FROM TControl
    DATA Type         INIT "GRID" READONLY
    DATA aImages      INIT {}
+   DATA aWidths      INIT {}
    DATA aHeaders     INIT ""
    DATA aHeadClick   INIT {}
    DATA AllowEdit    INIT .F.
@@ -105,7 +106,7 @@ CLASS TGrid FROM TControl
    DATA GridBackColor INIT {}
    DATA DynamicForeColor INIT {}
    DATA DynamicBackColor INIT {}
-   DATA lMulti       INIT .T.
+   DATA lMulti       INIT .F.
 
    METHOD Define
 
@@ -121,7 +122,7 @@ CLASS TGrid FROM TControl
 
    METHOD AddItem
    METHOD DeleteItem
-   METHOD DeleteAllItems      BLOCK { | Self | ListViewReset( ::hWnd ), ::GridForeColor := {}, ::GridBackColor := {} }
+   METHOD DeleteAllItems      BLOCK { | Self | ListViewReset( ::hWnd ), ::GridForeColor := nil, ::GridBackColor := nil }
    METHOD Item
    METHOD SetItemColor
    METHOD ItemCount           BLOCK { | Self | ListViewGetItemCount( ::hWnd ) }
@@ -147,35 +148,34 @@ Local wBitmap, ControlHandle
 	if Len ( aHeaders ) != Len ( aWidths )
       MsgOOHGError ("Browse/Grid: FIELDS/HEADERS/WIDTHS array size mismatch .Program Terminated")
 	EndIf
-	if ValType (aRows) != 'U'
+   if ValType( aRows ) == 'A'
 		if Len (aRows) > 0
 			if Len (aRows[1]) != Len ( aHeaders )
             MsgOOHGError ("Grid: ITEMS length mismatch. Program Terminated")
 			EndIf
 		EndIf
+   Else
+		aRows := {}
 	EndIf
 
-	if valtype(w) == "U"
+   if valtype( w ) != "N"
 		w := 240
 	endif
-	if valtype(h) == "U"
+   if valtype( h ) != "N"
 		h := 120
 	endif
-	if valtype(aRows) == "U"
-		aRows := {}
-	endif
-	if valtype(aJust) == "U"		// Grid+
+   if valtype(aJust) != "A"
 		aJust := Array( len( aHeaders ) )
 		aFill( aJust, 0 )
 	else
 		aSize( aJust, len( aHeaders ) )
 		aEval( aJust, { |x| x := iif( x == NIL, 0, x ) } )
 	endif
-	if valtype(aImage) == "U"  		// Grid+
+   if valtype(aImage) != "A"
 		aImage := {}
 	endif
 
-	if valtype(x) == "U" .or. valtype(y) == "U"
+   if valtype( x ) != "N" .OR. valtype( y ) != "N"
 
       If _OOHG_SplitLastControl == 'TOOLBAR'
 			Break := .T.
@@ -193,7 +193,13 @@ Local wBitmap, ControlHandle
 	Else
 
       ControlHandle := InitListView ( ::Parent:hWnd, 0, x, y, w, h ,'',0, iif( nogrid, 0, 1 ) , ownerdata  , itemcount  , ::lMulti )
+
 	endif
+
+   wBitmap := iif( len( aImage ) > 0, AddListViewBitmap( ControlHandle, aImage ), 0 ) //Add Bitmap Column
+	aWidths[1] := max ( aWidths[1], wBitmap + 2 ) // Set Column 1 width to Bitmap width
+
+   InitListViewColumns( ControlHandle, aHeaders , aWidths, aJust )
 
    ::New( ControlHandle, ControlName, HelpId, , ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
@@ -202,22 +208,12 @@ Local wBitmap, ControlHandle
    ::FontColor := ::aFontColor
    ::BkColor := ::aBkColor
 
-	wBitmap := iif( len( aImage ) > 0, AddListViewBitmap( ControlHandle, aImage ), 0 )
-	aWidths[1] := max ( aWidths[1], wBitmap + 2 ) // Set Column 1 width to Bitmap width
-
-	if valtype(aHeadClick) == "U"
+   if valtype(aHeadClick) != "A"
 		aHeadClick := {}
 	endif
 
-	if valtype(change) == "U"
-		change := ""
-	endif
-
-	if valtype(dblclick) == "U"
-		dblclick := ""
-	endif
-
    ::OnClick := ondispinfo
+   ::aWidths := aWidths
    ::aHeaders :=  aHeaders
    ::OnLostFocus := LostFocus
    ::OnGotFocus :=  GotFocus
@@ -228,8 +224,6 @@ Local wBitmap, ControlHandle
    ::AllowEdit :=  Editable
    ::DynamicForeColor := dynamicforecolor
    ::DynamicBackColor := dynamicbackcolor
-
-	InitListViewColumns ( ControlHandle, aHeaders , aWidths, aJust )
 
    AEVAL( aRows, { |u| ::AddItem( u ) } )
 
@@ -317,7 +311,7 @@ Local i , a [l]
 Return Nil
 
 *-----------------------------------------------------------------------------*
-METHOD AddColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor ) CLASS TGrid
+METHOD AddColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor, lNoDelete ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local nColumns, uGridColor, uDynamicColor
 
@@ -347,40 +341,46 @@ Local nColumns, uGridColor, uDynamicColor
    AINS( ::aHeaders, nColIndex )
    ::aHeaders[ nColIndex ] := cCaption
 
+   IF ValType( lNoDelete ) != "L"
+      lNoDelete := .F.
+   ENDIF
+
    // Update Foreground Color
    uGridColor := ::GridForeColor
    uDynamicColor := ::DynamicForeColor
-   TGrid_AddColumnColor( @uGridColor, nColIndex, uForeColor, @uDynamicColor, nColumns, ::ItemCount() )
+   TGrid_AddColumnColor( @uGridColor, nColIndex, uForeColor, @uDynamicColor, nColumns, ::ItemCount(), lNoDelete )
    ::GridForeColor := uGridColor
    ::DynamicForeColor := uDynamicColor
 
    // Update Background Color
    uGridColor := ::GridBackColor
    uDynamicColor := ::DynamicBackColor
-   TGrid_AddColumnColor( @uGridColor, nColIndex, uBackColor, @uDynamicColor, nColumns, ::ItemCount() )
+   TGrid_AddColumnColor( @uGridColor, nColIndex, uBackColor, @uDynamicColor, nColumns, ::ItemCount(), lNoDelete )
    ::GridBackColor := uGridColor
    ::DynamicBackColor := uDynamicColor
 
 	// Call C-Level Routine
-   ListView_AddColumn( ::hWnd, nColIndex , nWidth , cCaption , nJustify )
+   ListView_AddColumn( ::hWnd, nColIndex, nWidth, cCaption, nJustify, lNoDelete )
 
 Return nil
 
-STATIC Function TGrid_AddColumnColor( aGrid, nColumn, uColor, uDynamicColor, nWidth, nItemCount )
+STATIC Function TGrid_AddColumnColor( aGrid, nColumn, uColor, uDynamicColor, nWidth, nItemCount, lNoDelete )
 Local uTemp, x
-   IF ValType( aGrid ) == "A" .OR. ValType( uColor ) $ "ANB" .OR. ValType( uDynamicColor ) $ "ANB"
-      IF ValType( uDynamicColor ) == "A"
-         IF Len( uDynamicColor ) < nWidth
-            ASIZE( uDynamicColor, nWidth )
-         ENDIF
-         AINS( uDynamicColor, nColumn )
-         uDynamicColor[ nColumn ] := uColor
-      ElseIf ValType( uColor ) $ "ANB"
-         uTemp := uDynamicColor
-         uDynamicColor := ARRAY( nWidth )
-         AFILL( uDynamicColor, uTemp )
-         uDynamicColor[ nColumn ] := uColor
+   IF ValType( uDynamicColor ) == "A"
+      IF Len( uDynamicColor ) < nWidth
+         ASIZE( uDynamicColor, nWidth )
       ENDIF
+      AINS( uDynamicColor, nColumn )
+      uDynamicColor[ nColumn ] := uColor
+   ElseIf ValType( uColor ) $ "ANB"
+      uTemp := uDynamicColor
+      uDynamicColor := ARRAY( nWidth )
+      AFILL( uDynamicColor, uTemp )
+      uDynamicColor[ nColumn ] := uColor
+   ENDIF
+   IF ! lNoDelete
+      uDynamicColor := nil
+   ElseIf ValType( aGrid ) == "A" .OR. ValType( uColor ) $ "ANB" .OR. ValType( uDynamicColor ) $ "ANB"
       IF ValType( aGrid ) == "A"
          IF Len( aGrid ) < nItemCount
             ASIZE( aGrid, nItemCount )
@@ -405,7 +405,7 @@ Local uTemp, x
 Return NIL
 
 *-----------------------------------------------------------------------------*
-METHOD DeleteColumn( nColIndex ) CLASS TGrid
+METHOD DeleteColumn( nColIndex, lNoDelete ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local nColumns
 
@@ -426,16 +426,20 @@ Local nColumns
    _OOHG_DeleteArrayItem( ::DynamicForeColor, nColIndex )
    _OOHG_DeleteArrayItem( ::DynamicBackColor, nColIndex )
 
-   IF ValType( ::GridForeColor ) == "A"
-      AEVAL( ::GridForeColor, { |a| _OOHG_DeleteArrayItem( a, nColIndex ) } )
-   ENDIF
-   IF ValType( ::GridBackColor ) == "A"
-      AEVAL( ::GridBackColor, { |a| _OOHG_DeleteArrayItem( a, nColIndex ) } )
-   ENDIF
+   If ValType( lNoDelete ) == "L" .AND. lNoDelete
+      IF ValType( ::GridForeColor ) == "A"
+         AEVAL( ::GridForeColor, { |a| _OOHG_DeleteArrayItem( a, nColIndex ) } )
+      ENDIF
+      IF ValType( ::GridBackColor ) == "A"
+         AEVAL( ::GridBackColor, { |a| _OOHG_DeleteArrayItem( a, nColIndex ) } )
+      ENDIF
+   Else
+      ::GridForeColor := nil
+      ::GridBackColor := nil
+   EndIf
 
 	// Call C-Level Routine
-
-   ListView_DeleteColumn( ::hWnd, nColIndex )
+   ListView_DeleteColumn( ::hWnd, nColIndex, lNoDelete )
 
 Return nil
 
@@ -583,14 +587,9 @@ Local iIm := 0
       MsgOOHGError( "Grid.AddItem: Item size mismatch. Program Terminated" )
 	EndIf
 
-   if len( ::aImages ) > 0
-      iIm     := aRow[1]
-		aRow[1] := NIL
-	endif
-
    ::SetItemColor( ::ItemCount() + 1, uForeColor, uBackColor, aRow )
 
-   AddListViewItems( ::hWnd , aRow, iIm )
+   AddListViewItems( ::hWnd , aRow )
 
 Return Nil
 
@@ -607,9 +606,6 @@ METHOD Item( nItem, uValue, uForeColor, uBackColor ) CLASS TGrid
    IF PCOUNT() > 1
       ::SetItemColor( nItem, uForeColor, uBackColor, uValue )
       ListViewSetItem( ::hWnd, uValue, nItem )
-      if Len( ::aImages ) > 0
-         SetImageListViewItems( ::hWnd, nItem, uValue [1] )
-      EndIf
    ENDIF
    uValue := ListViewGetItem( ::hWnd, nItem , Len( ::aHeaders ) )
    if Len( ::aImages ) > 0
