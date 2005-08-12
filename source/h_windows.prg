@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.5 2005-08-11 05:47:53 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.6 2005-08-12 05:22:08 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1346,7 +1346,7 @@ return nil
 
 // Initializes C variables
 *-----------------------------------------------------------------------------*
-Procedure _OOHG_Init_C_Vars()
+Init Procedure _OOHG_Init_C_Vars()
 *-----------------------------------------------------------------------------*
    TForm()
    _OOHG_Init_C_Vars_C_Side( _OOHG_aFormhWnd, _OOHG_aFormObjects )

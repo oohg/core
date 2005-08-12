@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.3 2005-08-11 05:13:27 guerra000 Exp $
+ * $Id: c_windows.c,v 1.4 2005-08-12 05:22:08 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -119,8 +119,6 @@ static void ShowNotifyIcon(HWND hWnd, BOOL bAdd, HICON hIcon, LPSTR szText);
 static PHB_DYNS _ooHG_Symbol_Events = 0, _ooHG_Symbol_TForm;
 static HB_ITEM  _OOHG_aFormhWnd, _OOHG_aFormObjects;
 
-HB_FUNC_EXTERN( _OOHG_INIT_C_VARS );
-
 HB_FUNC( _OOHG_INIT_C_VARS_C_SIDE )
 {
    _ooHG_Symbol_TForm  = hb_dynsymFind( "TFORM" );
@@ -158,11 +156,6 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
 {
    long int r;
    PHB_ITEM pResult;
-
-   if ( ! _ooHG_Symbol_Events )
-   {
-      HB_FUNCNAME( _OOHG_INIT_C_VARS )();
-   }
 
    hb_vmPushSymbol( _ooHG_Symbol_Events->pSymbol );
    hb_vmPush( GetFormObjectByHandle( ( LONG ) hWnd ) );

@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.3 2005-08-11 05:17:26 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.4 2005-08-12 05:22:08 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -2504,3 +2504,11 @@ Local lRet := _OOHG_lMultiple
       ExitProcess(0)
    ENDIF
 Return lRet
+
+// Initializes C variables
+*-----------------------------------------------------------------------------*
+Init Procedure _OOHG_Init_C_Vars_Controls()
+*-----------------------------------------------------------------------------*
+   TControl()
+   _OOHG_Init_C_Vars_Controls_C_Side( _OOHG_aControlhWnd, _OOHG_aControlObjects )
+Return

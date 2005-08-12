@@ -1,5 +1,5 @@
 /*
- * $Id: c_controlmisc.c,v 1.1 2005-08-07 00:02:01 guerra000 Exp $
+ * $Id: c_controlmisc.c,v 1.2 2005-08-12 05:22:08 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -493,3 +493,38 @@ HB_FUNC( __ISMOD )
    hb_retl( ( hb_parnl( 1 ) & ulMod ) == ulMod );
 }
 */
+
+static PHB_DYNS _ooHG_Symbol_TControl = 0;
+static HB_ITEM  _OOHG_aControlhWnd, _OOHG_aControlObjects;
+
+HB_FUNC( _OOHG_INIT_C_VARS_CONTROLS_C_SIDE )
+{
+   _ooHG_Symbol_TControl = hb_dynsymFind( "TCONTROL" );
+   memcpy( &_OOHG_aControlhWnd,    hb_param( 1, HB_IT_ARRAY ), sizeof( HB_ITEM ) );
+   memcpy( &_OOHG_aControlObjects, hb_param( 2, HB_IT_ARRAY ), sizeof( HB_ITEM ) );
+}
+
+PHB_ITEM GetControlObjectByHandle( LONG hWnd )
+{
+   PHB_ITEM pControl;
+   ULONG ulCount;
+
+   pControl = 0;
+   for( ulCount = 0; ulCount < _OOHG_aControlhWnd.item.asArray.value->ulLen; ulCount++ )
+   {
+      if( hWnd == hb_itemGetNL( &_OOHG_aControlhWnd.item.asArray.value->pItems[ ulCount ] ) )
+      {
+         pControl = &_OOHG_aControlObjects.item.asArray.value->pItems[ ulCount ];
+         ulCount = _OOHG_aControlhWnd.item.asArray.value->ulLen;
+      }
+   }
+   if( ! pControl )
+   {
+      hb_vmPushSymbol( _ooHG_Symbol_TControl->pSymbol );
+      hb_vmPushNil();
+      hb_vmDo( 0 );
+      pControl = hb_param( -1, HB_IT_ANY );
+   }
+
+   return pControl;
+}
