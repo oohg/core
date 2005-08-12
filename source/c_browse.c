@@ -1,5 +1,5 @@
 /*
- * $Id: c_browse.c,v 1.1 2005-08-07 00:02:01 guerra000 Exp $
+ * $Id: c_browse.c,v 1.2 2005-08-12 05:20:23 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -104,79 +104,6 @@
 #include "hbapiitm.h"
 #include "winreg.h"
 #include "tchar.h"
-
-LRESULT APIENTRY SubClassFunc ( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
-
-static WNDPROC lpfnOldWndProc;
-
-HB_FUNC (INITBROWSE)
-{
-	HWND hwnd;
-	HWND hbutton;
-
-	INITCOMMONCONTROLSEX  i;
-
-	i.dwSize = sizeof(INITCOMMONCONTROLSEX);
-	i.dwICC = ICC_DATE_CLASSES;
-	InitCommonControlsEx(&i);
-
-	hwnd = (HWND) hb_parnl (1);
-
-	hbutton = CreateWindowEx(WS_EX_CLIENTEDGE,"SysListView32","",
-	LVS_SINGLESEL | LVS_SHOWSELALWAYS | WS_CHILD | WS_TABSTOP | WS_VISIBLE | LVS_REPORT,
-	hb_parni(3), hb_parni(4) , hb_parni(5) , hb_parni(6) ,
-	hwnd,(HMENU)hb_parni(2) , GetModuleHandle(NULL) , NULL ) ;
-														// Browse+
-	SendMessage(hbutton,LVM_SETEXTENDEDLISTVIEWSTYLE, 0, hb_parni(9) | LVS_EX_FULLROWSELECT | LVS_EX_HEADERDRAGDROP );
-
-	lpfnOldWndProc = (WNDPROC) SetWindowLong ( (HWND) hbutton , GWL_WNDPROC, (LONG) SubClassFunc);
-
-	hb_retnl( (LONG) hbutton );
-
-}
-
-LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
-{
-
-	// char res[20];
-
-	if ( msg == WM_MOUSEWHEEL )
-	{
-
-                // sprintf( res,"zDelta: %d", (short) HIWORD (wParam) );
-       	        // MessageBox( GetActiveWindow(), res, "", MB_OK | MB_ICONINFORMATION );
-
-		if ( (short) HIWORD (wParam) > 0 )
-		{
-
-			keybd_event(
-			VK_UP	,	// virtual-key code
-			0,		// hardware scan code
-			0,		// flags specifying various function options
-			0		// additional data associated with keystroke
-			);
-
-		}
-		else
-		{
-
-			keybd_event(
-			VK_DOWN	,	// virtual-key code
-			0,		// hardware scan code
-			0,		// flags specifying various function options
-			0		// additional data associated with keystroke
-			);
-
-		}
-
-		return CallWindowProc(lpfnOldWndProc, hWnd, 0 , 0, 0 ) ;
-
-	}
-	else
-	{
-		return CallWindowProc(lpfnOldWndProc, hWnd, msg , wParam, lParam ) ;
-	}
-}
 
 HB_FUNC (INITVSCROLLBAR)
 {
