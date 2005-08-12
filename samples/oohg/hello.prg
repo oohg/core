@@ -20,7 +20,6 @@ set cent on
                 MAIN ;
                 virtual height 600 ;
                 virtual WIDTH 800
-oownd := ownd
 
                 // oWnd := GetFormObject( "Win_1" )
 
@@ -117,7 +116,7 @@ oWnd:RAD:AITEMS[2]:BKCOLOR := {255,0,0}
 
                 @  10,200 GRID grd width 150 height 100 headers { "UNO", "DOS", "TRES" } widths {45,45,45} edit ;
                           items { {"1","2","3"},{"A","@","C"},{"x","y","z"} } ;
-                          JUSTIFY { GRID_JTFY_LEFT, GRID_JTFY_CENTER, GRID_JTFY_RIGHT } ;
+                          JUSTIFY { GRID_JTFY_RIGHT, GRID_JTFY_CENTER, GRID_JTFY_LEFT } ;
                           FONTCOLOR ORANGE;
                           DYNAMICBACKCOLOR { RGB(0,255,0), , RGB(255,0,0) } ;
                           DYNAMICFORECOLOR { NIL, RGB(255,255,0), NIL }
