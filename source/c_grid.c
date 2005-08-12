@@ -1,5 +1,5 @@
 /*
- * $Id: c_grid.c,v 1.3 2005-08-12 05:18:02 guerra000 Exp $
+ * $Id: c_grid.c,v 1.4 2005-08-12 05:53:17 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -141,7 +141,7 @@ HB_FUNC( INITLISTVIEW )
    hb_parni(3), hb_parni(4) , hb_parni(5), hb_parni(6) ,
    hwnd,(HMENU)hb_parni(2) , GetModuleHandle(NULL) , NULL ) ;
 
-   SendMessage(hbutton,LVM_SETEXTENDEDLISTVIEWSTYLE, 0, hb_parni(9) | LVS_EX_FULLROWSELECT | LVS_EX_HEADERDRAGDROP );
+   SendMessage(hbutton,LVM_SETEXTENDEDLISTVIEWSTYLE, 0, hb_parni(9) | LVS_EX_FULLROWSELECT | LVS_EX_HEADERDRAGDROP | LVS_EX_SUBITEMIMAGES );
 
    if ( hb_parl( 10 ) )
    {
@@ -678,11 +678,11 @@ HB_FUNC( LISTVIEW_ADDCOLUMN )
       return;
    }
 
-   COL.mask = LVCF_WIDTH | LVCF_TEXT | LVCF_FMT | LVCF_SUBITEM;
+   COL.mask = LVCF_WIDTH | LVCF_TEXT | LVCF_FMT | LVCF_SUBITEM | LVCF_IMAGE;
    COL.cx = hb_parni( 3 );
    COL.pszText = hb_parc( 4 );
    COL.iSubItem = iColumn;
-   COL.fmt = hb_parni( 5 );
+   COL.fmt = hb_parni( 5 ); // | LVCFMT_IMAGE;
 
    ListView_InsertColumn( hwnd, iColumn, &COL );
    if( iColumn == 0 && COL.fmt != LVCFMT_LEFT )
