@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.4 2005-08-12 05:22:08 guerra000 Exp $
+ * $Id: c_windows.c,v 1.5 2005-08-13 05:10:49 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -113,8 +113,8 @@
 
 BOOL Array2Rect(PHB_ITEM aRect, RECT *rc ) ;
 
-static void ChangeNotifyIcon(HWND hWnd, HICON hIcon, LPSTR szText);
-static void ShowNotifyIcon(HWND hWnd, BOOL bAdd, HICON hIcon, LPSTR szText);
+static void ChangeNotifyIcon( HWND hWnd, HICON hIcon, LPSTR szText );
+static void ShowNotifyIcon( HWND hWnd, BOOL bAdd, HICON hIcon, LPSTR szText );
 
 static PHB_DYNS _ooHG_Symbol_Events = 0, _ooHG_Symbol_TForm;
 static HB_ITEM  _OOHG_aFormhWnd, _OOHG_aFormObjects;

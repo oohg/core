@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.6 2005-08-12 05:22:08 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.7 2005-08-13 05:10:49 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -727,8 +727,91 @@ Local nPos
    nPos := aScan( ::aControlsNames, UPPER( ALLTRIM( cControl ) ) + CHR( 255 ) )
 Return IF( nPos > 0, ::aControls[ nPos ], nil )
 
+#pragma BEGINDUMP
+#include "hbapi.h"
+#include "hbvm.h"
+#include <windows.h>
+
+extern PHB_ITEM GetControlObjectByHandle( LONG hWnd );
+
+// -----------------------------------------------------------------------------
+HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TForm
+// -----------------------------------------------------------------------------
+{
+   static PHB_DYNS s_Events2 = 0;
+   static PHB_DYNS s_Events_Color = 0;
+   static PHB_DYNS s_Events_Notify = 0;
+
+   HWND hWnd      = ( HWND )   hb_parnl( 1 );
+   UINT message   = ( UINT )   hb_parni( 2 );
+   WPARAM wParam  = ( WPARAM ) hb_parni( 3 );
+   LPARAM lParam  = ( LPARAM ) hb_parnl( 4 );
+   PHB_ITEM pSelf = hb_stackSelfItem();
+if( ! pSelf )
+{
+   MessageBox( GetActiveWindow(), "No pSelf!", "Err!", MB_OK | MB_ICONINFORMATION | MB_SYSTEMMODAL );
+}
+
+   switch( message )
+   {
+      case WM_CTLCOLORSTATIC:
+         if( ! s_Events_Color )
+         {
+            s_Events_Color = hb_dynsymFind( "EVENTS_COLOR" );
+         }
+         hb_vmPushSymbol( s_Events_Color->pSymbol );
+         hb_vmPush( GetControlObjectByHandle( ( LONG ) lParam ) );
+         hb_vmPushLong( wParam );
+         hb_vmPushLong( COLOR_3DFACE );
+         hb_vmSend( 2 );
+         break;
+
+      case WM_CTLCOLOREDIT:
+      case WM_CTLCOLORLISTBOX:
+         if( ! s_Events_Color )
+         {
+            s_Events_Color = hb_dynsymFind( "EVENTS_COLOR" );
+         }
+         hb_vmPushSymbol( s_Events_Color->pSymbol );
+         hb_vmPush( GetControlObjectByHandle( ( LONG ) lParam ) );
+         hb_vmPushLong( wParam );
+         hb_vmPushLong( COLOR_WINDOW );
+         hb_vmSend( 2 );
+         break;
+
+      case WM_NOTIFY:
+         if( ! s_Events_Notify )
+         {
+            s_Events_Notify = hb_dynsymFind( "EVENTS_NOTIFY" );
+         }
+         hb_vmPushSymbol( s_Events_Notify->pSymbol );
+         hb_vmPush( GetControlObjectByHandle( ( LONG ) ( ( ( NMHDR FAR * ) lParam )->hwndFrom ) ) );
+         hb_vmPushLong( wParam );
+         hb_vmPushLong( lParam );
+         hb_vmSend( 2 );
+         break;
+
+      default:
+         if( ! s_Events2 )
+         {
+            s_Events2 = hb_dynsymFind( "_OOHG_TFORM_EVENTS2" );
+         }
+         hb_vmPushSymbol( s_Events2->pSymbol );
+         hb_vmPushNil();
+         hb_vmPush( pSelf );
+         hb_vmPushLong( ( LONG ) hWnd );
+         hb_vmPushLong( message );
+         hb_vmPushLong( wParam );
+         hb_vmPushLong( lParam );
+         hb_vmDo( 5 );
+         break;
+   }
+}
+
+#pragma ENDDUMP
+
 *-----------------------------------------------------------------------------*
-METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TForm
+FUNCTION _OOHG_TForm_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TForm
 *-----------------------------------------------------------------------------*
 Local i, aPos
 Local NextControlHandle
@@ -739,18 +822,15 @@ Local oWnd, oCtrl
 
 	do case
 
-        ***********************************************************************
-	case nMsg == WM_CTLCOLORSTATIC
-        ***********************************************************************
-
-      Return GetControlObjectByHandle( lParam ):Events_Color( wParam, COLOR_3DFACE )
-
-        ***********************************************************************
-	case nMsg == WM_CTLCOLOREDIT .Or. nMsg == WM_CTLCOLORLISTBOX
-        ***********************************************************************
-
-      Return GetControlObjectByHandle( lParam ):Events_Color( wParam, COLOR_WINDOW )
-
+//   case nMsg == WM_CTLCOLORSTATIC
+//      Return GetControlObjectByHandle( lParam ):Events_Color( wParam, COLOR_3DFACE )
+//
+//   case nMsg == WM_CTLCOLOREDIT .Or. nMsg == WM_CTLCOLORLISTBOX
+//      Return GetControlObjectByHandle( lParam ):Events_Color( wParam, COLOR_WINDOW )
+//
+//   case nMsg == WM_NOTIFY
+//      Return GetControlObjectByHandle( GethWndFrom( lParam ) ):Events_Notify( wParam, lParam )
+//
         ***********************************************************************
 	case nMsg == WM_HOTKEY
         ***********************************************************************
@@ -1222,12 +1302,6 @@ Local oWnd, oCtrl
 *         Return GetControlObjectByHandle( lParam ):Events_Accelerator( wParam )
 
       ENDIF
-
-        ***********************************************************************
-	case nMsg == WM_NOTIFY
-        ***********************************************************************
-
-      Return GetControlObjectByHandle( GethWndFrom( lParam ) ):Events_Notify( wParam, lParam )
 
         ***********************************************************************
 	case nMsg == WM_CLOSE
@@ -2469,9 +2543,6 @@ RETURN 1
 EXTERN IsXPThemeActive
 
 #pragma BEGINDUMP
-
-#include "hbapi.h"
-#include <windows.h>
 
 typedef LONG ( * CALL_ISTHEMEACTIVE )( void );
 
