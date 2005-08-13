@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.2 2005-08-11 05:17:26 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.3 2005-08-13 05:14:45 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -91,14 +91,16 @@
 	Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-
+#include "oohg.ch"
 #include "common.ch"
-#include "minigui.ch"
 #include "i_windefs.ch"
 #include "hbclass.ch"
 
 CLASS TText FROM TLabel
    DATA Type          INIT "TEXT" READONLY
+
+   METHOD Define
+   METHOD Define2
 
    METHOD TextChange  BLOCK { || nil }
    METHOD RefreshData
@@ -107,7 +109,82 @@ CLASS TText FROM TLabel
    METHOD SetFocus
    METHOD Events_Enter
    METHOD Events_Command
+   METHOD Events_Char
 ENDCLASS
+
+*-----------------------------------------------------------------------------*
+METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, cValue, ;
+               cFontName, nFontSize, cToolTip, nMaxLenght, lUpper, lLower, ;
+               lPassword, uLostFocus, uGotFocus, uChange , uEnter , right  , ;
+               HelpId, readonly, bold, italic, underline, strikeout, field , ;
+               backcolor , fontcolor , invisible , notabstop ) CLASS TText
+*-----------------------------------------------------------------------------*
+Local nStyle
+
+   nStyle := IF( Valtype( lUpper ) == "L" .AND. lUpper, ES_UPPERCASE, 0 ) + ;
+             IF( Valtype( lLower ) == "L" .AND. lLower, ES_LOWERCASE, 0 )
+
+   ::Define2( cControlName, cParentForm, nx, ny, nWidth, nHeight, cValue, ;
+              cFontName, nFontSize, cToolTip, nMaxLenght, lPassword, ;
+              uLostFocus, uGotFocus, uChange, uEnter, right, HelpId, ;
+              readonly, bold, italic, underline, strikeout, field, ;
+              backcolor, fontcolor, invisible, notabstop, nStyle )
+
+Return Self
+
+*-----------------------------------------------------------------------------*
+METHOD Define2( cControlName, cParentForm, nx, ny, nWidth, nHeight, cValue, ;
+                cFontName, nFontSize, cToolTip, nMaxLenght, lPassword, ;
+                uLostFocus, uGotFocus, uChange, uEnter, right, HelpId, ;
+                readonly, bold, italic, underline, strikeout, field, ;
+                backcolor, fontcolor, invisible, notabstop, nStyle ) CLASS TText
+*-----------------------------------------------------------------------------*
+Local nControlHandle := 0
+
+	// Asign STANDARD values to optional params.
+	DEFAULT nWidth     TO 120
+	DEFAULT nHeight    TO 24
+	DEFAULT uChange    TO ""
+	DEFAULT uGotFocus  TO ""
+	DEFAULT uLostFocus TO ""
+	DEFAULT nMaxLenght TO 255
+	DEFAULT uEnter     TO ""
+
+   IF ValType( nStyle ) != "N"
+      nStyle := 0
+   ENDIF
+
+   ::SetForm( cControlName, cParentForm, cFontName, nFontSize, FontColor, BackColor, .T. )
+
+   // Style definition
+   nStyle += IF( Valtype( lPassword ) == "L" .AND. lPassword, ES_PASSWORD,  0 ) + ;
+             IF( Valtype( right     ) == "L" .AND. right,     ES_RIGHT,     0 ) + ;
+             IF( Valtype( readonly  ) == "L" .AND. readonly,  ES_READONLY,  0 ) + ;
+             IF( Valtype( invisible ) != "L" .OR. !invisible, WS_VISIBLE,   0 ) + ;
+             IF( Valtype( notabstop ) != "L" .OR. !notabstop, WS_TABSTOP,   0 )
+
+	// Creates the control window.
+   nControlHandle := InitTextBox( ::Parent:hWnd, 0, nx, ny, nWidth, nHeight, nStyle, nMaxLenght )
+
+   ::New( nControlHandle, cControlName, HelpId, ! Invisible, cToolTip )
+   ::SetFont( , , bold, italic, underline, strikeout )
+   ::SizePos( ny, nx, nWidth, nHeight )
+
+   ::OnLostFocus := uLostFocus
+   ::OnGotFocus :=  uGotFocus
+   ::OnChange   :=  uChange
+   ::OnDblClick := uEnter
+
+   If ValType( Field ) == 'C' .AND. ! empty( Field )
+      ::VarName := alltrim( Field )
+      ::Block := &( "{ |x| if( PCount() == 0, " + Field + ", " + Field + " := x ) }" )
+      cValue := EVAL( ::Block )
+      aAdd( ::Parent:BrowseList, Self )
+	EndIf
+
+   ::Value := cValue
+
+return Self
 
 *-----------------------------------------------------------------------------*
 METHOD RefreshData() CLASS TText
@@ -201,6 +278,18 @@ Local Hi_wParam := HIWORD( wParam )
 
 Return ::Super:Events_Command( wParam )
 
+*------------------------------------------------------------------------------*
+METHOD Events_Char( wParam, lParam ) CLASS TText
+*------------------------------------------------------------------------------*
+Empty( wParam )
+Empty( lParam )
+/*
+      BOOL bCtrl     = GetKeyState( VK_CONTROL ) & 0x8000;
+      int  iScanCode = HIWORD( lParam ) & 0xFF ;
+      int  c = ( int ) wParam;
+*/
+Return NIL // ::Super:Events_Char( wParam, lParam )
+
 
 
 
@@ -210,9 +299,31 @@ CLASS TTextNum FROM TText
 *-----------------------------------------------------------------------------*
    DATA Type          INIT "NUMTEXT" READONLY
 
+   METHOD Define
+
    METHOD TextChange
    METHOD Value       SETGET
 ENDCLASS
+
+*-----------------------------------------------------------------------------*
+METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, cValue, ;
+               cFontName, nFontSize, cToolTip, nMaxLenght, lUpper, lLower, ;
+               lPassword, uLostFocus, uGotFocus, uChange , uEnter , right  , ;
+               HelpId, readonly, bold, italic, underline, strikeout, field , ;
+               backcolor , fontcolor , invisible , notabstop ) CLASS TTextNum
+*-----------------------------------------------------------------------------*
+Local nStyle := ES_NUMBER
+
+   Empty( lUpper )
+   Empty( lLower )
+
+   ::Define2( cControlName, cParentForm, nx, ny, nWidth, nHeight, cValue, ;
+              cFontName, nFontSize, cToolTip, nMaxLenght, lPassword, ;
+              uLostFocus, uGotFocus, uChange, uEnter, right, HelpId, ;
+              readonly, bold, italic, underline, strikeout, field, ;
+              backcolor, fontcolor, invisible, notabstop, nStyle )
+
+Return Self
 
 *------------------------------------------------------------------------------*
 METHOD TextChange() CLASS TTextNum
@@ -281,72 +392,6 @@ RETURN uValue
 
 
 
-*--------------------------------------------------------*
-function _DefineTextBox( cControlName, cParentForm, nx, ny, nWidth, nHeight, ;
-                        cValue, cFontName, nFontSize, cToolTip, nMaxLenght, ;
-			lUpper, lLower, lNumeric, lPassword, ;
-                        uLostFocus, uGotFocus, uChange , uEnter , right  , ;
-			HelpId , readonly , bold, italic, underline, ;
-			strikeout , field , backcolor , fontcolor , ;
-			invisible , notabstop )
-*--------------------------------------------------------*
-
-	local nControlHandle := 0
-Local Self
-
-	// Asign STANDARD values to optional params.
-	DEFAULT nWidth     TO 120
-	DEFAULT nHeight    TO 24
-	DEFAULT cValue     TO ""
-	DEFAULT uChange    TO ""
-	DEFAULT uGotFocus  TO ""
-	DEFAULT uLostFocus TO ""
-	DEFAULT nMaxLenght TO 255
-	DEFAULT lUpper     TO .f.
-	DEFAULT lLower     TO .f.
-	DEFAULT lNumeric   TO .f.
-	DEFAULT lPassword  TO .f.
-	DEFAULT uEnter     TO ""
-
-   Self := if( lNumeric, TTextNum(), TText() )
-   ::SetForm( cControlName, cParentForm, cFontName, nFontSize, FontColor, BackColor, .T. )
-
-	// Creates the control window.
-   nControlHandle := InitTextBox( ::Parent:hWnd, 0, nx, ny, nWidth, nHeight, '', 0, nMaxLenght, ;
-                                  lUpper, lLower, .f., lPassword , right , readonly , invisible , notabstop )
-
-   ::New( nControlHandle, cControlName, HelpId, ! Invisible, cToolTip )
-   ::SetFont( , , bold, italic, underline, strikeout )
-   ::SizePos( ny, nx, nWidth, nHeight )
-
-   ::OnLostFocus := uLostFocus
-   ::OnGotFocus :=  uGotFocus
-   ::OnChange   :=  uChange
-   ::OnDblClick := uEnter
-
-   If ValType( Field ) == 'C' .AND. ! empty( Field )
-      ::VarName := alltrim( Field )
-      ::Block := &( "{ |x| if( PCount() == 0, " + Field + ", " + Field + " := x ) }" )
-      cValue := EVAL( ::Block )
-	EndIf
-
-	// With NUMERIC clause, transform numeric value into a string.
-	if ( lNumeric )
-		If Valtype(cValue) != 'C'
-			cValue := AllTrim( Str( cValue ) )
-		EndIf
-	EndIf
-
-	// Fill the TEXTBOX with the text given.
-	if ( Len( cValue ) > 0 )
-      ::SetText( cValue )
-	endif
-
-	if valtype ( Field ) != 'U'
-      aAdd ( ::Parent:BrowseList, Self )
-	EndIf
-
-return nil
 
 
 
@@ -366,6 +411,8 @@ CLASS TTextMasked FROM TText
    DATA lAllow        INIT .F.
    DATA lDot          INIT .T.
 
+   METHOD Define
+
    METHOD TextChange
    METHOD GetNumFromText
    METHOD GetNumFromTextSP
@@ -373,6 +420,61 @@ CLASS TTextMasked FROM TText
    METHOD Value       SETGET
    METHOD Events_Command
 ENDCLASS
+
+*------------------------------------------------------------------------------*
+METHOD Define( ControlName, ParentForm, x, y, inputmask, width, value, ;
+               fontname, fontsize, tooltip, lostfocus, gotfocus, change, ;
+               height, enter, rightalign, HelpId, Format, bold, italic, ;
+               underline, strikeout, field, backcolor, fontcolor, readonly, ;
+               invisible, notabstop ) CLASS TTextMasked
+*------------------------------------------------------------------------------*
+Local i, c
+
+   rightalign := .T.
+
+	if valtype(Format) == "U"
+		Format := ""
+	endif
+
+	For i := 1 To Len (InputMask)
+
+		c := SubStr ( InputMask , i , 1 )
+
+        	if c!='9' .and.  c!='$' .and. c!='*' .and. c!='.' .and. c!= ','  .and. c != ' ' .and. c!='€'
+         MsgOOHGError("@...TEXTBOX: Wrong InputMask Definition" )
+		EndIf
+
+	Next i
+
+	For i := 1 To Len (Format)
+
+		c := SubStr ( Format , i , 1 )
+
+        	if c!='C' .and. c!='X' .and. c!= '('  .and. c!= 'E'
+         MsgOOHGError("@...TEXTBOX: Wrong Format Definition" )
+		EndIf
+
+	Next i
+
+	If .Not. Empty (Format)
+		Format := '@' + AllTrim(Format)
+	EndIf
+
+	InputMask :=  Format + ' ' + InputMask
+
+   * Value := Transform( value , InputMask )
+
+   ::Picture := InputMask
+   ::PictureMask := GetNumMask( InputMask )
+   ::lAllow := .F.
+
+   ::Define2( ControlName, ParentForm, x, y, width, height, Value, ;
+              fontname, fontsize, tooltip, 255, .F., ;
+              lostfocus, gotfocus, change, enter, rightalign, HelpId, ;
+              readonly, bold, italic, underline, strikeout, field, ;
+              backcolor, fontcolor, invisible, notabstop, 0 )
+
+Return Self
 
 *------------------------------------------------------------------------------*
 METHOD TextChange() CLASS TTextMasked
@@ -801,110 +903,6 @@ Local Text := ::GetText()
 
 Return Val(s)
 
-
-*-----------------------------------------------------------------------------*
-Function _DefineMaskedTextbox ( ControlName, ParentForm, x, y, inputmask , width , value , fontname, fontsize , tooltip , lostfocus ,gotfocus , change , height , enter , rightalign  , HelpId , Format , bold, italic, underline, strikeout , field  , backcolor , fontcolor , readonly  , invisible , notabstop )
-*-----------------------------------------------------------------------------*
-Local i, c
-Local Self
-
-// AJ
-Local ControlHandle
-
-* Unused Parameters
-RightAlign := NIL
-*
-
-	if valtype(Format) == "U"
-		Format := ""
-	endif
-
-	For i := 1 To Len (InputMask)
-
-		c := SubStr ( InputMask , i , 1 )
-
-        	if c!='9' .and.  c!='$' .and. c!='*' .and. c!='.' .and. c!= ','  .and. c != ' ' .and. c!='€'
-         MsgOOHGError("@...TEXTBOX: Wrong InputMask Definition" )
-		EndIf
-
-	Next i
-
-	For i := 1 To Len (Format)
-
-		c := SubStr ( Format , i , 1 )
-
-        	if c!='C' .and. c!='X' .and. c!= '('  .and. c!= 'E'
-         MsgOOHGError("@...TEXTBOX: Wrong Format Definition" )
-		EndIf
-
-	Next i
-
-	if valtype(change) == "U"
-		change := ""
-	endif
-
-	if valtype(gotfocus) == "U"
-		gotfocus := ""
-	endif
-
-	if valtype(enter) == "U"
-		enter := ""
-	endif
-
-	if valtype(lostfocus) == "U"
-		lostfocus := ""
-	endif
-
-	if valtype(Width) == "U"
-		Width := 120
-	endif
-
-	if valtype(height) == "U"
-		height := 24
-	endif
-
-	If .Not. Empty (Format)
-		Format := '@' + AllTrim(Format)
-	EndIf
-
-	InputMask :=  Format + ' ' + InputMask
-
-   Self := TTextMasked():SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, .T. )
-
-   If ValType( Field ) == 'C' .AND. ! empty( Field )
-      ::VarName := alltrim( Field )
-      ::Block := &( "{ |x| if( PCount() == 0, " + Field + ", " + Field + " := x ) }" )
-      Value := EVAL( ::Block )
-	EndIf
-
-	if valtype(Value) == "U"
-		Value := ""
-	endif
-
-	Value := Transform ( value , InputMask )
-
-   ControlHandle := InitMaskedTextBox ( ::Parent:hWnd, 0, x, y, width , '' , 0  , 255 , .f. , .f. , height , .t. , readonly  , invisible , notabstop )
-
-   ::New( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
-   ::SetFont( , , bold, italic, underline, strikeout )
-   ::SizePos( y, x, Width, Height )
-
-   ::Picture :=   InputMask
-   ::PictureMask :=  GetNumMask ( InputMask )
-   ::OnLostFocus := LostFocus
-   ::OnGotFocus :=  GotFocus
-   ::OnChange   :=  Change
-   ::OnDblClick := enter
-   ::lAllow := .F.
-
-   ::SetText( value )
-
-	if valtype ( Field ) != 'U'
-      aAdd ( ::Parent:BrowseList, Self )
-	EndIf
-
-Return Nil
-
 Function GetNumMask ( Text )
 Local i , c , s
 
@@ -943,46 +941,24 @@ CLASS TTextCharMask FROM TTextMasked
    DATA lAllow        INIT .T.
    DATA lDot          INIT .F.
 
+   METHOD Define
+
    METHOD Value       SETGET
    METHOD SetFocus
    METHOD Events_Command
 ENDCLASS
 
-*-----------------------------------------------------------------------------*
-Function _DefineCharMaskTextbox ( ControlName, ParentForm, x, y, inputmask , width , value , fontname, fontsize , tooltip , lostfocus ,gotfocus , change , height , enter , rightalign  , HelpId , bold, italic, underline, strikeout , field  , backcolor , fontcolor , date , readonly  , invisible , notabstop )
-*-----------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
+METHOD Define( ControlName, ParentForm, x, y, inputmask, width, value, ;
+               fontname, fontsize, tooltip, lostfocus, gotfocus, change, ;
+               height, enter, rightalign, HelpId, bold, italic, underline, ;
+               strikeout, field, backcolor, fontcolor, date, readonly, ;
+               invisible, notabstop ) CLASS TTextCharMask
+*------------------------------------------------------------------------------*
 Local dateformat
-Local Self
-
-// AJ
-Local ControlHandle
 
 	if valtype(date) == "U"
 		date := .F.
-	endif
-
-	if valtype(change) == "U"
-		change := ""
-	endif
-
-	if valtype(gotfocus) == "U"
-		gotfocus := ""
-	endif
-
-	if valtype(enter) == "U"
-		enter := ""
-	endif
-
-	if valtype(lostfocus) == "U"
-		lostfocus := ""
-	endif
-
-	if valtype(Width) == "U"
-		Width := 120
-	endif
-
-	if valtype(height) == "U"
-		height := 24
 	endif
 
 	dateformat := set ( _SET_DATEFORMAT )
@@ -1021,46 +997,16 @@ Local ControlHandle
 		endif
 	endif
 
-   Self := TTextCharMask():SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, .T. )
-
-   If ValType( Field ) == 'C' .AND. ! empty( Field )
-      ::VarName := alltrim( Field )
-      ::Block := &( "{ |x| if( PCount() == 0, " + Field + ", " + Field + " := x ) }" )
-      Value := EVAL( ::Block )
-	EndIf
-
-	if valtype(Value) == "U"
-		if date == .F.
-			Value := ""
-		else
-			Value := ctod ('  /  /  ')
-		endif
-	endif
-
-   ControlHandle := InitCharMaskTextBox ( ::Parent:hWnd, 0, x, y, width , '' , 0  , 255 , .f. , .f. , height , rightalign , readonly  , invisible , notabstop )
-
-   ::New( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
-   ::SetFont( , , bold, italic, underline, strikeout )
-   ::SizePos( y, x, Width, Height )
-
    ::PictureMask := InputMask
-   ::OnLostFocus := LostFocus
-   ::OnGotFocus :=  GotFocus
-   ::OnChange   :=  Change
-   ::OnDblClick := enter
    ::lDate := date
 
-   if ! date
-      ::SetText( Value  )
-	Else
-      ::SetText( dtoc ( Value ) )
-	endif
+   ::Define2( ControlName, ParentForm, x, y, width, height, value, ;
+              fontname, fontsize, tooltip, 255, .F., ;
+              lostfocus, gotfocus, change, enter, rightalign, HelpId, ;
+              readonly, bold, italic, underline, strikeout, field, ;
+              backcolor, fontcolor, invisible, notabstop, 0 )
 
-	if valtype ( Field ) != 'U'
-      aAdd ( ::Parent:BrowseList, Self )
-	EndIf
-
-Return Nil
+Return Self
 
 *------------------------------------------------------------------------------*
 Function CharMaskTekstOK(cString,cMask)

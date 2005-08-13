@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.2 2005-08-09 04:20:05 guerra000 Exp $
+ * $Id: i_windefs.ch,v 1.3 2005-08-13 05:14:45 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -210,12 +210,31 @@
 #define COLOR_3DHILIGHT         COLOR_BTNHIGHLIGHT
 #define COLOR_BTNHILIGHT        COLOR_BTNHIGHLIGHT
 
+// Edit Control Styles
+#define ES_LEFT         0     // 0x0000
+#define ES_CENTER       1     // 0x0001
+#define ES_RIGHT        2     // 0x0002
+#define ES_MULTILINE    4     // 0x0004
+#define ES_UPPERCASE    8     // 0x0008
+#define ES_LOWERCASE    16    // 0x0010
+#define ES_PASSWORD     32    // 0x0020
+#define ES_AUTOVSCROLL  64    // 0x0040
+#define ES_AUTOHSCROLL  128   // 0x0080
+#define ES_NOHIDESEL    256   // 0x0100
+#define ES_OEMCONVERT   1024  // 0x0400
+#define ES_READONLY     2048  // 0x0800
+#define ES_WANTRETURN   4096  // 0x1000
+#define ES_NUMBER       8192  // 0x2000
+
+// Window Styles
+#define WS_TABSTOP      0x00010000
+#define WS_GROUP        0x00020000
+#define WS_VISIBLE	0x10000000
+#define WS_CHILD	0x40000000
+
 #DEFINE DC_BRUSH 18
 #define LVN_BEGINDRAG	(-109)
-#define WS_VISIBLE	0x10000000
-#define WS_GROUP	0x20000
 #define BS_AUTORADIOBUTTON	9
-#define WS_CHILD	0x40000000
 #define BS_NOTIFY	0x4000
 #define GWL_STYLE	(-16)
 #define CBN_EDITCHANGE	5

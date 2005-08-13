@@ -1,5 +1,5 @@
 /*
- * $Id: c_textbox.c,v 1.1 2005-08-07 00:05:14 guerra000 Exp $
+ * $Id: c_textbox.c,v 1.2 2005-08-13 05:14:45 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -108,180 +108,82 @@
 #include "winreg.h"
 #include "tchar.h"
 
-HB_FUNC( INITMASKEDTEXTBOX )
-{
-	HWND hwnd;
-	HWND hbutton;
+static LRESULT APIENTRY SubClassFunc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
+extern PHB_ITEM GetControlObjectByHandle( LONG hWnd );
 
-	int Style ;
-
-	hwnd = (HWND) hb_parnl (1);
-
-	Style = WS_CHILD | ES_AUTOHSCROLL ;
-
-	if ( hb_parl (9) )
-	{
-		Style = Style | ES_UPPERCASE ;
-	}
-
-	if ( hb_parl (10) )
-	{
-		Style = Style | ES_LOWERCASE ;
-	}
-
-	if ( hb_parl (12) )
-	{
-		Style = Style | ES_RIGHT ;
-	}
-
-	if ( hb_parl (13) )
-	{
-		Style = Style | ES_READONLY;
-	}
-
-	if ( ! hb_parl (14) )
-	{
-		Style = Style | WS_VISIBLE ;
-	}
-
-	if ( ! hb_parl (15) )
-	{
-		Style = Style | WS_TABSTOP ;
-	}
-
-	hbutton = CreateWindowEx( WS_EX_CLIENTEDGE , "EDIT" , "" ,
-	Style,
-	hb_parni(3), hb_parni(4) , hb_parni(5) , hb_parni(11) ,
-	hwnd,(HMENU)hb_parni(2) , GetModuleHandle(NULL) , NULL ) ;
-
-	hb_retnl ( (LONG) hbutton );
-}
+static WNDPROC lpfnOldWndProc = 0;
 
 HB_FUNC( INITTEXTBOX )
 {
-  HWND hwnd;         // Handle of the parent window/form.
-  HWND hedit;        // Handle of the child window/control.
-  int  iStyle;       // TEXTBOX window base style.
+   HWND hwnd;         // Handle of the parent window/form.
+   HWND hedit;        // Handle of the child window/control.
+   WNDPROC ll;
 
-  // Get the handle of the parent window/form.
-  hwnd = (HWND)hb_parnl(1);
+   // Get the handle of the parent window/form.
+   hwnd = ( HWND ) hb_parnl( 1 );
 
-  iStyle = WS_CHILD | ES_AUTOHSCROLL;
+   // Creates the child control.
+   hedit = CreateWindowEx( WS_EX_CLIENTEDGE ,
+                           "EDIT",
+                           "",
+                           ( WS_CHILD | ES_AUTOHSCROLL | hb_parni( 7 ) ),
+                           hb_parni( 3 ),
+                           hb_parni( 4 ),
+                           hb_parni( 5 ),
+                           hb_parni( 6 ),
+                           hwnd,
+                           ( HMENU ) hb_parni( 2 ),
+                           GetModuleHandle( NULL ),
+                           NULL );
 
-  if ( hb_parl(12) ) // if <lNumeric> is TRUE, then ES_NUMBER style is added.
-  {
-    iStyle = iStyle | ES_NUMBER ;
-    // Set to a numeric TEXTBOX, so don't worry about other "textual" styles.
-  }
-  else
-  {
+   SendMessage( hedit, ( UINT ) EM_LIMITTEXT, ( WPARAM) hb_parni( 8 ), ( LPARAM ) 0 );
 
-    if ( hb_parl(10) ) // if <lUpper> is TRUE, then ES_UPPERCASE style is added.
-    {
-      iStyle = iStyle | ES_UPPERCASE;
-    }
+   ll = lpfnOldWndProc;
+   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hedit, GWL_WNDPROC, ( LONG ) SubClassFunc );
+   if( ll != NULL && ll != lpfnOldWndProc )
+   {
+      MessageBox( GetActiveWindow(), "cambia!", ".", MB_OK | MB_ICONINFORMATION | MB_SYSTEMMODAL );
+   }
 
-    if ( hb_parl(11) )  // if <lLower> is TRUE, then ES_LOWERCASE style is added.
-    {
-      iStyle = iStyle | ES_LOWERCASE;
-    }
-
-  }
-
-  if ( hb_parl(13) )  // if <lPassword> is TRUE, then ES_PASSWORD style is added.
-  {
-    iStyle = iStyle | ES_PASSWORD;
-  }
-
-  if ( hb_parl(14) )
-  {
-    iStyle = iStyle | ES_RIGHT;
-  }
-
-  if ( hb_parl (15) )
-  {
-    iStyle = iStyle | ES_READONLY;
-  }
-
-	if ( ! hb_parl (16) )
-	{
-		iStyle = iStyle | WS_VISIBLE ;
-	}
-
-	if ( ! hb_parl (17) )
-	{
-		iStyle = iStyle | WS_TABSTOP ;
-	}
-
-  // Creates the child control.
-  hedit = CreateWindowEx(WS_EX_CLIENTEDGE ,
-                         "EDIT",
-                         "",
-                         iStyle,
-                         hb_parni(3),
-                         hb_parni(4),
-                         hb_parni(5),
-                         hb_parni(6),
-                         hwnd,
-                         (HMENU)hb_parni(2),
-                         GetModuleHandle(NULL),
-                         NULL);
-
-  SendMessage(hedit, (UINT)EM_LIMITTEXT, (WPARAM)hb_parni(9), (LPARAM)0);
-
-  hb_retnl((LONG)hedit);
+   hb_retnl( ( LONG ) hedit );
 
 }
 
-HB_FUNC( INITCHARMASKTEXTBOX )
+static PHB_DYNS s_Events_Char = 0;
+
+static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
-	HWND hwnd;
-	HWND hbutton;
+   PHB_ITEM pResult = NULL;
 
-	int Style ;
+   if( msg == WM_CHAR )
+   {
+      if( ! s_Events_Char )
+      {
+         s_Events_Char = hb_dynsymFindName( "EVENTS_CHAR" );
+      }
 
-	hwnd = (HWND) hb_parnl (1);
+      hb_vmPushSymbol( s_Events_Char->pSymbol );
+      hb_vmPush( GetControlObjectByHandle( ( LONG ) hWnd ) );
+      hb_vmPushLong( wParam );
+      hb_vmPushLong( lParam );
+      hb_vmSend( 2 );
+      pResult = hb_param( -1, HB_IT_NUMERIC );
+/*
+      BOOL bCtrl     = GetKeyState( VK_CONTROL ) & 0x8000;
+      int  iScanCode = HIWORD( lParam ) & 0xFF ;
+      int  c = ( int ) wParam;
+*/
+   }
 
-	Style = WS_CHILD | ES_AUTOHSCROLL ;
-
-	if ( hb_parl (9) )
-	{
-		Style = Style | ES_UPPERCASE ;
-	}
-
-	if ( hb_parl (10) )
-	{
-		Style = Style | ES_LOWERCASE ;
-	}
-
-	if ( hb_parl (12) )
-	{
-		Style = Style | ES_RIGHT ;
-	}
-
-	if ( hb_parl (13) )
-	{
-		Style = Style | ES_READONLY;
-	}
-
-	if ( ! hb_parl (14) )
-	{
-		Style = Style | WS_VISIBLE ;
-	}
-
-	if ( ! hb_parl (15) )
-	{
-		Style = Style | WS_TABSTOP ;
-	}
-
-	hbutton = CreateWindowEx( WS_EX_CLIENTEDGE , "EDIT" , "" ,
-	Style,
-	hb_parni(3), hb_parni(4) , hb_parni(5) , hb_parni(11) ,
-	hwnd,(HMENU)hb_parni(2) , GetModuleHandle(NULL) , NULL ) ;
-
-	hb_retnl ( (LONG) hbutton );
+   if( pResult )
+   {
+      return hb_itemGetNL( pResult );
+   }
+   else
+   {
+      return CallWindowProc( lpfnOldWndProc, hWnd, msg, wParam, lParam );
+   }
 }
-
 
 HB_FUNC( SETTEXTEDITREADONLY )
 {

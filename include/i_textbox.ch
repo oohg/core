@@ -1,5 +1,5 @@
 /*
- * $Id: i_textbox.ch,v 1.1 2005-08-06 23:53:54 guerra000 Exp $
+ * $Id: i_textbox.ch,v 1.2 2005-08-13 05:14:45 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -94,6 +94,7 @@
 // TEXTBOX
 
 #command @ <row>, <col> TEXTBOX <name>               	;
+                        [ OBJ <obj> ]                   ;
 			[ <dummy1: OF, PARENT> <parent> ] ;
                         [ HEIGHT <height> ]          	;
                         [ WIDTH <width> ]            	;
@@ -123,16 +124,18 @@
 			[ <notabstop: NOTABSTOP> ]	;
                         [ HELPID <helpid> ] 		;
          =>;
-         _DefineTextBox( <"name">, <"parent">, <col>, <row>, <width>, <height>, <value>, ;
-				<fontname>, <fontsize>, <tooltip>, <maxlenght>, ;
-                        <.upper.>, <.lower.>, <.numeric.>, <.password.>, ;
-				<{lostfocus}>, <{gotfocus}>, <{change}>, <{enter}>, ;
-				<.RightAlign.>, <helpid>, <.readonly.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <"field"> , <backcolor> , <fontcolor> , <.invisible.> , <.notabstop.> )
+[ <obj> := ] iif( <.numeric.>, TTextNum(), TText() ):Define( ;
+                        <"name">, <"parent">, <col>, <row>, <width>, <height>, <value>, ;
+                        <fontname>, <fontsize>, <tooltip>, <maxlenght>, ;
+                        <.upper.>, <.lower.>, <.password.>, ;
+                        <{lostfocus}>, <{gotfocus}>, <{change}>, <{enter}>, ;
+                        <.RightAlign.>, <helpid>, <.readonly.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <"field"> , <backcolor> , <fontcolor> , <.invisible.> , <.notabstop.> )
 
 
 // TEXTBOX ( NUMERIC INPUTMASK )
 
 #command @ <row>,<col> TEXTBOX <name>		;
+                [ OBJ <obj> ]                   ;
 		[ <dummy1: OF, PARENT> <parent> ] ;
                 [ HEIGHT <height> ]		;
 		[ WIDTH <w> ]			;
@@ -160,11 +163,12 @@
 		[ <notabstop: NOTABSTOP> ]	;
 		[ HELPID <helpid> ] 		;
 	=>;
-	_DefineMaskedTextBox ( <"name">, <"parent">, <col>, <row>, <inputmask> , <w> , <value> , <fontname> , <fontsize> , <tooltip>   , <{lostfocus}>  , <{gotfocus}> , <{change}> , <height> , <{enter}> , <.RightAlign.>  , <helpid> , <format> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.>  , <"field">  , <backcolor> , <fontcolor> , <.readonly.> , <.invisible.> , <.notabstop.> )
+[ <obj> := ] TTextMasked():Define( <"name">, <"parent">, <col>, <row>, <inputmask> , <w> , <value> , <fontname> , <fontsize> , <tooltip>   , <{lostfocus}>  , <{gotfocus}> , <{change}> , <height> , <{enter}> , <.RightAlign.>  , <helpid> , <format> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.>  , <"field">  , <backcolor> , <fontcolor> , <.readonly.> , <.invisible.> , <.notabstop.> )
 
 // TEXTBOX ( CHARACTER INPUTMASK )
 
 #command @ <row>,<col> TEXTBOX <name>		;
+                [ OBJ <obj> ]                   ;
 		[ <dummy1: OF, PARENT> <parent> ] ;
                 [ HEIGHT <height> ]		;
 		[ WIDTH <w> ]			;
@@ -190,11 +194,12 @@
 		[ <notabstop: NOTABSTOP> ]	;
 		[ HELPID <helpid> ] 		;
 	=>;
-	_DefineCharMaskTextBox ( <"name">, <"parent">, <col>, <row>, <inputmask> , <w> , <value> , <fontname> , <fontsize> , <tooltip>   , <{lostfocus}>  , <{gotfocus}> , <{change}> , <height> , <{enter}> , <.RightAlign.>  , <helpid> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.>  , <"field">  , <backcolor> , <fontcolor> , .f. , <.readonly.>  , <.invisible.> , <.notabstop.> )
+[ <obj> := ] TTextCharMask():Define( <"name">, <"parent">, <col>, <row>, <inputmask> , <w> , <value> , <fontname> , <fontsize> , <tooltip>   , <{lostfocus}>  , <{gotfocus}> , <{change}> , <height> , <{enter}> , <.RightAlign.>  , <helpid> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.>  , <"field">  , <backcolor> , <fontcolor> , .f. , <.readonly.>  , <.invisible.> , <.notabstop.> )
 
 // TEXTBOX ( DATE TYPE )
 
 #xcommand @ <row>,<col> TEXTBOX <name>		;
+                [ OBJ <obj> ]                   ;
 		[ <dummy1: OF, PARENT> <parent> ] ;
                 [ HEIGHT <height> ]		;
 		[ WIDTH <w> ]			;
@@ -220,4 +225,4 @@
 		[ <notabstop: NOTABSTOP> ]	;
 		[ HELPID <helpid> ] 		;
 	=>;
-	_DefineCharMaskTextBox ( <"name">, <"parent">, <col>, <row>, "" , <w> , <value> , <fontname> , <fontsize> , <tooltip>   , <{lostfocus}>  , <{gotfocus}> , <{change}> , <height> , <{enter}> , <.RightAlign.>  , <helpid> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.>  , <"field">  , <backcolor> , <fontcolor> , <.date.> , <.readonly.>  , <.invisible.> , <.notabstop.> )
+[ <obj> := ] TTextCharMask():Define( <"name">, <"parent">, <col>, <row>, "" , <w> , <value> , <fontname> , <fontsize> , <tooltip>   , <{lostfocus}>  , <{gotfocus}> , <{change}> , <height> , <{enter}> , <.RightAlign.>  , <helpid> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.>  , <"field">  , <backcolor> , <fontcolor> , <.date.> , <.readonly.>  , <.invisible.> , <.notabstop.> )
