@@ -1,5 +1,5 @@
 /*
- * $Id: i_browse.ch,v 1.1 2005-08-06 23:49:17 guerra000 Exp $
+ * $Id: i_browse.ch,v 1.2 2005-08-13 05:12:14 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -108,20 +108,21 @@
 		[ HEIGHT <h> ] 			;
 		[ HEADERS <headers> ] 		;
 		[ WIDTHS <widths> ] 		;
-		[ WORKAREA <workarea> ]	;
+                [ WORKAREA <workarea> ]         ;
 		[ FIELDS <Fields> ] 		;
+                [ PICTURE <Picture> ]           ;
 		[ VALUE <value> ] 		;
 		[ FONT <fontname> ] 		;
 		[ SIZE <fontsize> ] 		;
-		[ <bold : BOLD> ] ;
-		[ <italic : ITALIC> ] ;
-		[ <underline : UNDERLINE> ] ;
-		[ <strikeout : STRIKEOUT> ] ;
+                [ <bold : BOLD> ]               ;
+                [ <italic : ITALIC> ]           ;
+                [ <underline : UNDERLINE> ]     ;
+                [ <strikeout : STRIKEOUT> ]     ;
 		[ TOOLTIP <tooltip> ]  		;
-		[ BACKCOLOR <backcolor> ] ;
+                [ BACKCOLOR <backcolor> ]       ;
                 [ DYNAMICBACKCOLOR <dynamicbackcolor> ] ;
 		[ DYNAMICFORECOLOR <dynamicforecolor> ] ;
-                [ FONTCOLOR <fontcolor> ] ;
+                [ FONTCOLOR <fontcolor> ]       ;
 		[ ON GOTFOCUS <gotfocus> ] 	;
 		[ ON CHANGE <change> ]  	;
 		[ ON LOSTFOCUS <lostfocus> ] 	;
@@ -136,9 +137,9 @@
 		[ READONLY <aReadOnly> ] 	;
 		[ <lock: LOCK> ] 		;
 		[ <Delete: DELETE> ]		;
-		[ <style: NOLINES> ] 		;// Browse+
-		[ IMAGE <aImage> ] 		;// Browse+
-		[ JUSTIFY <aJust> ] 		;// Browse+
+                [ <style: NOLINES> ]            ;
+                [ IMAGE <aImage> ]              ;
+                [ JUSTIFY <aJust> ]             ;
 		[ <novscroll: NOVSCROLL> ] 	;
 		[ HELPID <helpid> ] 		;
 		[ <break: BREAK> ] 		;
@@ -182,7 +183,7 @@
 		<aReadOnly> , ;
 		<{aValidFields}> , ;
 		<aValidMessages> , ;
-                <.edit.> , <dynamicbackcolor> , <aWhenFields> , <dynamicforecolor> )
+                <.edit.> , <dynamicbackcolor> , <aWhenFields> , <dynamicforecolor>, <Picture> )
 
 ///////////////////////////////////////////////////////////////////////////////
 // SPLITBOX BROWSE
@@ -196,18 +197,19 @@
 		[ WIDTHS <widths> ] 		;
 		[ WORKAREA <WorkArea> ]		;
 		[ FIELDS <Fields> ] 		;
+                [ PICTURE <Picture> ]           ;
 		[ VALUE <value> ] 		;
 		[ FONT <fontname> ] 		;
 		[ SIZE <fontsize> ] 		;
-		[ <bold : BOLD> ] ;
-		[ <italic : ITALIC> ] ;
-		[ <underline : UNDERLINE> ] ;
-		[ <strikeout : STRIKEOUT> ] ;
+                [ <bold : BOLD> ]               ;
+                [ <italic : ITALIC> ]           ;
+                [ <underline : UNDERLINE> ]     ;
+                [ <strikeout : STRIKEOUT> ]     ;
 		[ TOOLTIP <tooltip> ]  		;
-		[ BACKCOLOR <backcolor> ] ;
+                [ BACKCOLOR <backcolor> ]       ;
                 [ DYNAMICBACKCOLOR <dynamicbackcolor> ] ;
 		[ DYNAMICFORECOLOR <dynamicforecolor> ] ;
-                [ FONTCOLOR <fontcolor> ] ;
+                [ FONTCOLOR <fontcolor> ]       ;
 		[ ON GOTFOCUS <gotfocus> ] 	;
 		[ ON CHANGE <change> ]  	;
 		[ ON LOSTFOCUS <lostfocus> ] 	;
@@ -222,9 +224,9 @@
 		[ READONLY <aReadOnly> ] 	;
 		[ <lock: LOCK> ] 		;
 		[ <Delete: DELETE> ]		;
-		[ <style: NOLINES> ] 		;// Browse+
-		[ IMAGE <aImage> ] 		;// Browse+
-		[ JUSTIFY <aJust> ] 		;// Browse+
+                [ <style: NOLINES> ]            ;
+                [ IMAGE <aImage> ]              ;
+                [ JUSTIFY <aJust> ]             ;
 		[ <novscroll: NOVSCROLL> ] 	;
 		[ HELPID <helpid> ] 		;
 		[ <break: BREAK> ] 		;
@@ -268,7 +270,7 @@
 		<aReadOnly> , ;
 		 <{aValidFields}> , ;
 		<aValidMessages> , ;
-                <.edit.>  , <dynamicbackcolor> , <aWhenFields> , <dynamicforecolor> )
+                <.edit.>  , <dynamicbackcolor> , <aWhenFields> , <dynamicforecolor>, <Picture> )
 
 #xcommand SET BROWSESYNC ON => SetBrowseSync( .T. )
 #xcommand SET BROWSESYNC OFF => SetBrowseSync( .F. )

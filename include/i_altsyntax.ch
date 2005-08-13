@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.2 2005-08-11 05:10:16 guerra000 Exp $
+ * $Id: i_altsyntax.ch,v 1.3 2005-08-13 05:12:14 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -877,7 +877,7 @@ Text Box
 #xcommand END TEXTBOX;
 	=>;
         iif(_OOHG_ActiveControlInputMask == Nil .and. _OOHG_ActiveControlDateType == .F. ,;
-		_DefineTextBox(;
+                iif( _OOHG_ActiveControlNumeric, TTextNum(), TText() ):Define( ;
                         _OOHG_ActiveControlName,;
                         _OOHG_ActiveControlOf,;
                         _OOHG_ActiveControlCol,;
@@ -891,7 +891,6 @@ Text Box
                         _OOHG_ActiveControlMaxLength,;
                         _OOHG_ActiveControlUpperCase,;
                         _OOHG_ActiveControlLowerCase,;
-                        _OOHG_ActiveControlNumeric,;
                         _OOHG_ActiveControlPassword,;
                         _OOHG_ActiveControlOnLostFocus,;
                         _OOHG_ActiveControlOnGotFocus,;
@@ -903,10 +902,15 @@ Text Box
                         _OOHG_ActiveControlFontBold , ;
                         _OOHG_ActiveControlFontItalic , ;
                         _OOHG_ActiveControlFontUnderLine , ;
-                        _OOHG_ActiveControlFontStrikeOut ,;
-                        _OOHG_ActiveControlField,_OOHG_ActiveControlBackColor,_OOHG_ActiveControlFontColor,_OOHG_ActiveControlInvisible,_OOHG_ActiveControlNoTabStop);
+                        _OOHG_ActiveControlFontStrikeOut , ;
+                        _OOHG_ActiveControlField , ;
+                        _OOHG_ActiveControlBackColor , ;
+                        _OOHG_ActiveControlFontColor , ;
+                        _OOHG_ActiveControlInvisible , ;
+                        _OOHG_ActiveControlNoTabStop);
 	,;
-                if ( _OOHG_ActiveControlNumeric == .t. , _DefineMaskedTextBox(;
+                if ( _OOHG_ActiveControlNumeric, ;
+                     TTextMasked():Define( ;
                         _OOHG_ActiveControlName,;
                         _OOHG_ActiveControlOf,;
                         _OOHG_ActiveControlCol,;
@@ -929,7 +933,8 @@ Text Box
                         _OOHG_ActiveControlFontItalic , ;
                         _OOHG_ActiveControlFontUnderLine , ;
                         _OOHG_ActiveControlFontStrikeOut,;
-                        _OOHG_ActiveControlField,_OOHG_ActiveControlBackColor,_OOHG_ActiveControlFontColor,_OOHG_ActiveControlReadonly,_OOHG_ActiveControlInvisible,_OOHG_ActiveControlNoTabStop) , _DefineCharMaskTextBox ( _OOHG_ActiveControlName , _OOHG_ActiveControlOf, _OOHG_ActiveControlCol, _OOHG_ActiveControlRow, _OOHG_ActiveControlInputMask , _OOHG_ActiveControlWidth , _OOHG_ActiveControlValue , _OOHG_ActiveControlFont , _OOHG_ActiveControlSize , _OOHG_ActiveControlTooltip , _OOHG_ActiveControlOnLostFocus  , _OOHG_ActiveControlOnGotFocus , _OOHG_ActiveControlOnChange , _OOHG_ActiveControlHeight , _OOHG_ActiveControlOnEnter , _OOHG_ActiveControlRightAlign  , _OOHG_ActiveControlHelpId  , _OOHG_ActiveControlFontBold , _OOHG_ActiveControlFontItalic , _OOHG_ActiveControlFontUnderLine , _OOHG_ActiveControlFontStrikeOut , _OOHG_ActiveControlField , _OOHG_ActiveControlBackColor,_OOHG_ActiveControlFontColor,_OOHG_ActiveControlDateType,_OOHG_ActiveControlReadonly,_OOHG_ActiveControlInvisible,_OOHG_ActiveControlNoTabStop) ) ;
+                        _OOHG_ActiveControlField,_OOHG_ActiveControlBackColor,_OOHG_ActiveControlFontColor,_OOHG_ActiveControlReadonly,_OOHG_ActiveControlInvisible,_OOHG_ActiveControlNoTabStop) , ;
+                     TTextCharMask():Define( _OOHG_ActiveControlName , _OOHG_ActiveControlOf, _OOHG_ActiveControlCol, _OOHG_ActiveControlRow, _OOHG_ActiveControlInputMask , _OOHG_ActiveControlWidth , _OOHG_ActiveControlValue , _OOHG_ActiveControlFont , _OOHG_ActiveControlSize , _OOHG_ActiveControlTooltip , _OOHG_ActiveControlOnLostFocus  , _OOHG_ActiveControlOnGotFocus , _OOHG_ActiveControlOnChange , _OOHG_ActiveControlHeight , _OOHG_ActiveControlOnEnter , _OOHG_ActiveControlRightAlign  , _OOHG_ActiveControlHelpId  , _OOHG_ActiveControlFontBold , _OOHG_ActiveControlFontItalic , _OOHG_ActiveControlFontUnderLine , _OOHG_ActiveControlFontStrikeOut , _OOHG_ActiveControlField , _OOHG_ActiveControlBackColor,_OOHG_ActiveControlFontColor,_OOHG_ActiveControlDateType,_OOHG_ActiveControlReadonly,_OOHG_ActiveControlInvisible,_OOHG_ActiveControlNoTabStop) ) ;
 	)
 
 /*----------------------------------------------------------------------------
@@ -1855,7 +1860,8 @@ Grid
         _OOHG_ActiveControlBackColor             := Nil          ;;
         _OOHG_ActiveControlFontColor             := Nil          ;;
         _OOHG_ActiveControlReadOnly              := Nil          ;;
-        _OOHG_ActiveControlVirtual               := .f.
+        _OOHG_ActiveControlVirtual               := .f.          ;;
+        _OOHG_ActiveControlPicture := nil
 
 #xcommand END GRID ;
 	=>;
@@ -1892,7 +1898,8 @@ iif( _OOHG_ActiveControlMultiSelect, TGridMulti(), TGrid() ):Define( ;
                 _OOHG_ActiveControlItemCount ,   ;
                 _OOHG_ActiveControlEdit ,  ;
                 _OOHG_ActiveControlBackColor, ;
-                _OOHG_ActiveControlFontColor )
+                _OOHG_ActiveControlFontColor, ;
+                _OOHG_ActiveControlPicture )
 
 /*----------------------------------------------------------------------------
 BROWSE
@@ -1938,6 +1945,7 @@ BROWSE
         _OOHG_ActiveControlLock          := .f.          ;;
         _OOHG_ActiveControlValidMessages := Nil          ;;
         _OOHG_ActiveControlNoVScroll             := .f.          ;;
+        _OOHG_ActiveControlPicture := nil                ;;
         _OOHG_ActiveControlInPlaceEdit   := .f.
 
 #xcommand END BROWSE ;
@@ -1980,7 +1988,11 @@ TBrowse():Define( _OOHG_ActiveControlName ,        ;
                 _OOHG_ActiveControlReadOnly , ;
                 _OOHG_ActiveControlValid , ;
                 _OOHG_ActiveControlValidMessages , ;
-                _OOHG_ActiveControlEdit )
+                _OOHG_ActiveControlEdit, ;
+                , ; // DynamicBackColor
+                , ; // aWhenFields
+                , ; // DynamicForeColor
+                _OOHG_ActiveControlPicture )
 
 /*----------------------------------------------------------------------------
 Hyperlink

@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.5 2005-08-12 05:20:23 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.6 2005-08-13 05:12:14 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -159,7 +159,14 @@ CLASS TBrowse FROM TGrid
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
-METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aFields ,value,fontname,fontsize , tooltip , change , dblclick , aHeadClick , gotfocus , lostfocus , WorkArea , AllowDelete, nogrid, aImage, aJust , HelpId , bold , italic , underline , strikeout , break , backcolor , fontcolor , lock , inplace , novscroll , AllowAppend , readonly , valid , validmessages , edit , dynamicbackcolor , aWhenFields , dynamicforecolor ) CLASS TBrowse
+METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
+               aFields, value, fontname, fontsize, tooltip, change, ;
+               dblclick, aHeadClick, gotfocus, lostfocus, WorkArea, ;
+               AllowDelete, nogrid, aImage, aJust, HelpId, bold, italic, ;
+               underline, strikeout, break, backcolor, fontcolor, lock, ;
+               inplace, novscroll, AllowAppend, readonly, valid, ;
+               validmessages, edit, dynamicbackcolor, aWhenFields, ;
+               dynamicforecolor, aPicture ) CLASS TBrowse
 *-----------------------------------------------------------------------------*
 Local ScrollBarHandle, hsum, ScrollBarButtonHandle, nWidth2
 
@@ -176,7 +183,7 @@ Local ScrollBarHandle, hsum, ScrollBarButtonHandle, nWidth2
 	else
       aSize( aHeaders, len( aFields ) )
 	endif
-   aEval( aHeaders, { |x,i| x := iif( ValType( x ) != "C" .OR. Empty( x ), aFields[ i ], x ) } )
+   aEval( aHeaders, { |x,i| aHeaders[ i ] := iif( ValType( x ) != "C" .OR. Empty( x ), aFields[ i ], x ) } )
 
 	// If splitboxed force no vertical scrollbar
 
@@ -189,7 +196,10 @@ Local ScrollBarHandle, hsum, ScrollBarButtonHandle, nWidth2
    ENDIF
    nWidth2 := w - if( novscroll, 0, GETVSCROLLBARWIDTH() )
 
-   ::Super:Define( ControlName, ParentForm, x, y, nWidth2, h, aHeaders, aWidths, {}, nil, fontname, fontsize, tooltip, change , dblclick , aHeadClick , gotfocus , lostfocus , nogrid, aImage, aJust, break  , HelpId , bold, italic, underline, strikeout, nil, nil, nil, edit, backcolor, fontcolor, dynamicbackcolor, dynamicforecolor )
+   ::Super:Define( ControlName, ParentForm, x, y, nWidth2, h, aHeaders, aWidths, {}, nil, ;
+                   fontname, fontsize, tooltip, change, dblclick, aHeadClick, gotfocus, lostfocus, ;
+                   nogrid, aImage, aJust, break, HelpId, bold, italic, underline, strikeout, nil, ;
+                   nil, nil, edit, backcolor, fontcolor, dynamicbackcolor, dynamicforecolor, aPicture )
 
    ::nWidth := w
 
@@ -230,7 +240,7 @@ Local ScrollBarHandle, hsum, ScrollBarButtonHandle, nWidth2
       ::VScroll:OnLineDown := { || ::SetFocus(), ::Down() }
       ::VScroll:OnPageUp   := { || ::SetFocus(), ::PageUp() }
       ::VScroll:OnPageDown := { || ::SetFocus(), ::PageDown() }
-      ::VScroll:OnThumb    := { |VScroll,Pos| empty(VScroll), ::SetFocus(), ::SetScrollPos( Pos ) }
+      ::VScroll:OnThumb    := { |VScroll,Pos| empty( VScroll ), ::SetFocus(), ::SetScrollPos( Pos ) }
 // cambiar TOOLTIP si cambia el del BROWSE
 // Cambiar HelpID si cambia el del BROWSE
 
@@ -251,9 +261,11 @@ Return Self
 *-----------------------------------------------------------------------------*
 METHOD UpDate() CLASS TBrowse
 *-----------------------------------------------------------------------------*
-Local PageLength , aTemp := {} , uTemp , _BrowseRecMap := {} , x , j , First
+Local PageLength , aTemp := {} , uTemp , _BrowseRecMap := {} , x , j
 Local cType, nCurrentLength
 Local lColor, aFields, cWorkArea, hWnd, nWidth
+MEMVAR aPicture
+PRIVATE aPicture
 
    cWorkArea := ::WorkArea
 
@@ -262,14 +274,17 @@ Local lColor, aFields, cWorkArea, hWnd, nWidth
    EndIf
 
    lColor := ! ( Empty( ::DynamicForeColor ) .AND. Empty( ::DynamicBackColor ) )
+   aPicture := ::Picture
    nWidth := LEN( ::aFields )
    aFields := ARRAY( nWidth )
-   AEVAL( ::aFields, { |c,i| aFields[ i ] := &( "{ || "+cWorkArea+"->( " + c + " ) }" ) } )
+   AEVAL( ::aFields, { |c,i| aFields[ i ] := &( "{ || " + ;
+                     if( valtype( aPicture[ i ] ) == "C", "TRANSFORM( ", "" ) + ;
+                     cWorkArea + "->( " + c + " )" + ;
+                     if( valtype( aPicture[ i ] ) == "C", ", aPicture[ " + LTRIM( STR( i ) ) + " ] )", "" ) + ;
+                     " }" ) } )
    hWnd := ::hWnd
 
    ::lEof := .F.
-
-   First   := iif( len( ::aImages ) == 0, 1, 2 ) // Browse+ ( 2= bitmap definido, se cargan campos a partir de 2º )
 
    PageLength := ListViewGetCountPerPage( hWnd )
 
@@ -289,31 +304,26 @@ Local lColor, aFields, cWorkArea, hWnd, nWidth
       aTemp := ARRAY( nWidth )
       AFILL( aTemp, NIL )
 
-      If First == 2
-         uTemp := EVAL( aFields[ 1 ] )
-         cType := ValType( uTemp )
-
-         if cType == 'N'
-            aTemp[ 1 ] := uTemp
-         elseif cType == 'L'
-            aTemp[ 1 ] := iif( uTemp, 1, 0 )
-         else
-            aTemp[ 1 ] := 0
-         endif
-      EndIf
-
-      For j := First To nWidth
+      For j := 1 To nWidth
          uTemp := EVAL( aFields[ j ] )
-
          cType := ValType( uTemp )
-         If cType == 'N'
-            aTemp[ j ] := lTrim( Str( uTemp ) )
+
+         If     cType == 'C'
+            aTemp[ j ] := rTrim( uTemp )
+         ElseIf cType == 'N'
+            If VALTYPE( aPicture[ j ] ) == "L" .AND. aPicture[ j ]
+               aTemp[ j ] := uTemp
+            Else
+               aTemp[ j ] := lTrim( Str( uTemp ) )
+            Endif
+         ElseIf cType == 'L'
+            If VALTYPE( aPicture[ j ] ) == "L" .AND. aPicture[ j ]
+               aTemp[ j ] := iif( uTemp, 1, 0 )
+            Else
+               aTemp[ j ] := IIF( uTemp, '.T.', '.F.' )
+            Endif
          ElseIf cType == 'D'
             aTemp[ j ] := Dtoc( uTemp )
-         ElseIf cType == 'L'
-            aTemp[ j ] := IIF( uTemp, '.T.', '.F.' )
-         ElseIf cType == 'C'
-            aTemp[ j ] := rTrim( uTemp )
          ElseIf cType == 'M'
             aTemp[ j ] := '<Memo>'
          Else
@@ -1725,7 +1735,7 @@ Local ActualRecord , RecordCount
 
 		If RecordCount < 100
          ActualRecord := ::VScroll:Value + d
-         ::VScroll:RangeMax := RecordCount
+         * ::VScroll:RangeMax := RecordCount
          ::VScroll:Value := ActualRecord
 		EndIf
 

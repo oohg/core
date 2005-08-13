@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.5 2005-08-12 05:18:02 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.6 2005-08-13 05:12:14 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -96,17 +96,18 @@
 #include "i_windefs.ch"
 
 CLASS TGrid FROM TControl
-   DATA Type         INIT "GRID" READONLY
-   DATA aImages      INIT {}
-   DATA aWidths      INIT {}
-   DATA aHeaders     INIT ""
-   DATA aHeadClick   INIT {}
-   DATA AllowEdit    INIT .F.
-   DATA GridForeColor INIT {}
-   DATA GridBackColor INIT {}
+   DATA Type             INIT "GRID" READONLY
+   DATA aImages          INIT {}
+   DATA aWidths          INIT {}
+   DATA aHeaders         INIT ""
+   DATA aHeadClick       INIT {}
+   DATA AllowEdit        INIT .F.
+   DATA GridForeColor    INIT {}
+   DATA GridBackColor    INIT {}
    DATA DynamicForeColor INIT {}
    DATA DynamicBackColor INIT {}
-   DATA lMulti       INIT .F.
+   DATA lMulti           INIT .F.
+   DATA Picture          INIT {}
 
    METHOD Define
 
@@ -133,16 +134,21 @@ CLASS TGrid FROM TControl
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
-METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows,value,fontname,fontsize , tooltip , change , dblclick , aHeadClick , gotfocus , lostfocus , nogrid, aImage, aJust, break  , HelpId , bold, italic, underline, strikeout , ownerdata , ondispinfo , itemcount , editable , backcolor , fontcolor, dynamicbackcolor , dynamicforecolor ) CLASS TGrid
+METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
+               aRows, value, fontname, fontsize, tooltip, change, dblclick, ;
+               aHeadClick, gotfocus, lostfocus, nogrid, aImage, aJust, ;
+               break, HelpId, bold, italic, underline, strikeout, ownerdata, ;
+               ondispinfo, itemcount, editable, backcolor, fontcolor, ;
+               dynamicbackcolor, dynamicforecolor, aPicture ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local wBitmap, ControlHandle
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, .t. )
 
-	if ValType ( aHeaders ) == 'U'
+   if ValType ( aHeaders ) != 'A'
       MsgOOHGError ("Grid: HEADERS not defined .Program Terminated")
 	EndIf
-	if ValType ( aWidths ) == 'U'
+   if ValType ( aWidths ) != 'A'
       MsgOOHGError ("Grid: WIDTHS not defined. Program Terminated")
 	EndIf
 	if Len ( aHeaders ) != Len ( aWidths )
@@ -169,11 +175,18 @@ Local wBitmap, ControlHandle
 		aFill( aJust, 0 )
 	else
 		aSize( aJust, len( aHeaders ) )
-		aEval( aJust, { |x| x := iif( x == NIL, 0, x ) } )
+      aEval( aJust, { |x| x := iif( ValType( x ) != "N", 0, x ) } )
 	endif
    if valtype(aImage) != "A"
 		aImage := {}
 	endif
+
+   if valtype( aPicture ) != "A"
+      aPicture := Array( len( aHeaders ) )
+	else
+      aSize( aPicture, len( aHeaders ) )
+	endif
+   aEval( aPicture, { |x,i| aPicture[ i ] := iif( ( ValType( x ) == "C" .AND. ! Empty( x ) ) .OR. ValType( x ) == "L", x, nil ) } )
 
    if valtype( x ) != "N" .OR. valtype( y ) != "N"
 
@@ -201,6 +214,10 @@ Local wBitmap, ControlHandle
 
    InitListViewColumns( ControlHandle, aHeaders , aWidths, aJust )
 
+   If Len( aImage ) > 0
+      aPicture[ 1 ] := .T.
+   EndIf
+
    ::New( ControlHandle, ControlName, HelpId, , ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
    ::SizePos( y, x, w, h )
@@ -224,6 +241,7 @@ Local wBitmap, ControlHandle
    ::AllowEdit :=  Editable
    ::DynamicForeColor := dynamicforecolor
    ::DynamicBackColor := dynamicbackcolor
+   ::Picture := aPicture
 
    AEVAL( aRows, { |u| ::AddItem( u ) } )
 
@@ -311,7 +329,7 @@ Local i , a [l]
 Return Nil
 
 *-----------------------------------------------------------------------------*
-METHOD AddColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor, lNoDelete ) CLASS TGrid
+METHOD AddColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor, lNoDelete, uPicture ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local nColumns, uGridColor, uDynamicColor
 
@@ -340,6 +358,11 @@ Local nColumns, uGridColor, uDynamicColor
    ASIZE( ::aHeaders, nColumns )
    AINS( ::aHeaders, nColIndex )
    ::aHeaders[ nColIndex ] := cCaption
+
+   // Update Pictures
+   ASIZE( ::Picture, nColumns )
+   AINS( ::Picture, nColIndex )
+   ::Picture[ nColIndex ] := iif( ( ValType( uPicture ) == "C" .AND. ! Empty( uPicture ) ) .OR. ValType( uPicture ) == "L", uPicture, nil )
 
    IF ValType( lNoDelete ) != "L"
       lNoDelete := .F.
@@ -422,6 +445,7 @@ Local nColumns
 	EndIf
 
    _OOHG_DeleteArrayItem( ::aHeaders, nColIndex )
+   _OOHG_DeleteArrayItem( ::Picture,  nColIndex )
 
    _OOHG_DeleteArrayItem( ::DynamicForeColor, nColIndex )
    _OOHG_DeleteArrayItem( ::DynamicBackColor, nColIndex )
@@ -474,7 +498,7 @@ Return nil
 METHOD Events_Notify( wParam, lParam ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local nNotify := GetNotifyCode( lParam )
-Local lvc, aCellData, _ThisQueryTemp // , r, a, nFore, nBack, aColor
+Local lvc, aCellData, _ThisQueryTemp
 
    If nNotify == NM_CUSTOMDRAW
 
@@ -581,13 +605,16 @@ Return ::Super:Events_Notify( wParam, lParam )
 *-----------------------------------------------------------------------------*
 METHOD AddItem( aRow, uForeColor, uBackColor ) CLASS TGrid
 *-----------------------------------------------------------------------------*
-Local iIm := 0
+Local iIm := 0, aRow2
 
    if Len( ::aHeaders ) != Len( aRow )
       MsgOOHGError( "Grid.AddItem: Item size mismatch. Program Terminated" )
 	EndIf
 
-   ::SetItemColor( ::ItemCount() + 1, uForeColor, uBackColor, aRow )
+   aRow2 := ACLONE( aRow )
+   AEVAL( ::Picture, { |x,i| if( ValType( x ) == "C", aRow2 := Transform( aRow[ i ], x ), ) } )
+
+   ::SetItemColor( ::ItemCount() + 1, uForeColor, uBackColor, aRow2 )
 
    AddListViewItems( ::hWnd , aRow )
 

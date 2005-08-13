@@ -1,5 +1,5 @@
 /*
- * $Id: i_grid.ch,v 1.2 2005-08-11 05:10:16 guerra000 Exp $
+ * $Id: i_grid.ch,v 1.3 2005-08-13 05:12:14 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -107,6 +107,7 @@
 		[ HEIGHT <h> ] 			;
 		[ HEADERS <headers> ] 		;
 		[ WIDTHS <widths> ] 		;
+                [ PICTURE <Picture> ]           ;
 		[ ITEMS <rows> ] 		;
 		[ VALUE <value> ] 		;
 		[ FONT <fontname> ] 		;
@@ -169,7 +170,7 @@
 		<itemcount> , 	;
 		<.edit.> ,  ;
 		<backcolor> ;
-                , <fontcolor>, <dynamicbackcolor> , <dynamicforecolor> )
+                , <fontcolor>, <dynamicbackcolor> , <dynamicforecolor>, <Picture> )
 
 ///////////////////////////////////////////////////////////////////////////////
 // GRID (SPLITBOX VERSION)
@@ -181,6 +182,7 @@
 		[ HEIGHT <h> ] 			;
 		[ HEADERS <headers> ] 		;
 		[ WIDTHS <widths> ] 		;
+                [ PICTURE <Picture> ]           ;
 		[ ITEMS <rows> ] 		;
 		[ VALUE <value> ] 		;
 		[ FONT <fontname> ] 		;
@@ -243,6 +245,6 @@
 		<itemcount> , 	;
 		<.edit.> ,  ;
 		<backcolor> , ;
-                <fontcolor>, <dynamicbackcolor> , <dynamicforecolor> )
+                <fontcolor>, <dynamicbackcolor> , <dynamicforecolor>, <Picture> )
 
 ///////////////////////////////////////////////////////////////////////////////
