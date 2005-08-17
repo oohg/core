@@ -1,5 +1,5 @@
 /*
- * $Id: i_label.ch,v 1.1 2005-08-06 23:53:54 guerra000 Exp $
+ * $Id: i_label.ch,v 1.2 2005-08-17 06:01:46 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -92,6 +92,7 @@
 ---------------------------------------------------------------------------*/
 
 #command @ <row>,<col> LABEL <name>   ;
+        [ OBJ <obj> ] ;
 	[ <dummy1: OF, PARENT> <parent> ] ;
 	[ VALUE <value> ]   ;
 	[ ACTION <action> ] ;
@@ -117,7 +118,7 @@
 	[ HELPID <helpid> ] 		;
 	[ <invisible: INVISIBLE> ] ;
 	=>;
-	_DefineLabel (      ;
+        [ <obj> := ] TLabel():Define( ;
 	<"name">,    ;
 	<"parent">,    ;
 	<col>,     ;
@@ -145,4 +146,3 @@
 	<.autosize.> , ;
 	<.rightalign.> , ;
 	<.centeralign.> )
-

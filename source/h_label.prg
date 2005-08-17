@@ -1,5 +1,5 @@
 /*
- * $Id: h_label.prg,v 1.1 2005-08-07 00:13:51 guerra000 Exp $
+ * $Id: h_label.prg,v 1.2 2005-08-17 06:01:47 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -91,32 +91,31 @@
 	Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-#include "minigui.ch"
+#include "oohg.ch"
 #include "common.ch"
 #include "hbclass.ch"
 
 CLASS TLabel FROM TControl
    DATA Type      INIT "LABEL" READONLY
    DATA AutoSize  INIT .F.
+   DATA IconWidth INIT 0
 
-   METHOD SetText( cText )     BLOCK { | Self, cText | ::TopValue := cText }
-   METHOD GetText()            BLOCK { | Self | ::TopValue }
+   METHOD SetText( cText )     BLOCK { | Self, cText | ::Caption := cText }
+   METHOD GetText()            BLOCK { | Self | ::Caption }
 
+   METHOD Define
    METHOD Value      SETGET
-   METHOD TopValue   SETGET
+   METHOD Caption    SETGET
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
-Function _DefineLabel ( ControlName, ParentForm, x, y, Caption, w, h, ;
-                        fontname, fontsize, bold, BORDER, CLIENTEDGE, ;
-                        HSCROLL, VSCROLL, TRANSPARENT, aRGB_bk, aRGB_font, ;
-                        ProcedureName, tooltip, HelpId, invisible, italic, ;
-                        underline, strikeout , autosize , rightalign , centeralign )
+METHOD Define( ControlName, ParentForm, x, y, Caption, w, h, fontname, ;
+               fontsize, bold, BORDER, CLIENTEDGE, HSCROLL, VSCROLL, ;
+               TRANSPARENT, aRGB_bk, aRGB_font, ProcedureName, tooltip, ;
+               HelpId, invisible, italic, underline, strikeout, autosize, ;
+               rightalign, centeralign ) CLASS TLabel
 *-----------------------------------------------------------------------------*
-
-// AJ
 Local ControlHandle
-Local Self
 
    DEFAULT w             TO 120
    DEFAULT h             TO 24
@@ -127,7 +126,7 @@ Local Self
    DEFAULT underline     TO FALSE
    DEFAULT strikeout     TO FALSE
 
-   Self := TLabel():SetForm( ControlName, ParentForm, FontName, FontSize, aRGB_font, aRGB_bk )
+   ::SetForm( ControlName, ParentForm, FontName, FontSize, aRGB_font, aRGB_bk )
 
    Controlhandle := InitLabel ( ::Parent:hWnd, Caption, 0, x, y, w, h, '', 0, Nil , border , clientedge , HSCROLL , VSCROLL , TRANSPARENT , invisible , rightalign , centeralign )
 
@@ -136,45 +135,36 @@ Local Self
    ::SizePos( y, x, w, h )
 
    ::OnClick := ProcedureName
-   ::Transparent :=  transparent
+   ::Transparent := transparent
    ::AutoSize := autosize
    ::Caption := Caption
 
    if ::AutoSize
 
-      ::SizePos( , , GetTextWidth( NIL, Caption, ::FontHandle ), ::FontSize + IF( ::FontSize < 12, 12, 16 ) )
-      RedrawWindow(ControlHandle)
+      ::SizePos( , , GetTextWidth( NIL, Caption, ::FontHandle ) + ::IconWidth, GetTextHeight( NIL, Caption, ::FontHandle ) )
+      RedrawWindow( ControlHandle )
 
 	EndIf
 
-Return Nil
+Return Self
 
 *-----------------------------------------------------------------------------*
 METHOD Value( cValue ) CLASS TLabel
 *-----------------------------------------------------------------------------*
-   IF VALTYPE( cValue ) == "C"
-      ::TopValue := cValue
-   ENDIF
-Return ::TopValue
+Return ( ::Caption := cValue )
 
 *-----------------------------------------------------------------------------*
-METHOD TopValue( cValue ) CLASS TLabel
+METHOD Caption( cValue ) CLASS TLabel
 *-----------------------------------------------------------------------------*
    IF VALTYPE( cValue ) == "C"
-
       if ::AutoSize
-         ::SizePos( , , GetTextWidth( nil, cValue , ::FontHandle ), ::FontSize + 16 )
+         ::SizePos( , , GetTextWidth( nil, cValue , ::FontHandle ) + ::IconWidth, GetTextHeight( nil, cValue , ::FontHandle ) )
 		EndIf
-
       SetWindowText( ::hWnd , cValue )
-
       If ::Transparent
          RedrawWindowControlRect( ::Parent:hWnd, ::ContainerRow, ::ContainerCol, ::ContainerRow + ::Height, ::ContainerCol + ::Width )
       EndIf
-
    ELSE
-
       cValue := GetWindowText( ::hWnd )
-
    ENDIF
 RETURN cValue
