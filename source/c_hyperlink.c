@@ -1,5 +1,5 @@
 /*
- * $Id: c_hyperlink.c,v 1.1 2005-08-07 00:03:18 guerra000 Exp $
+ * $Id: c_hyperlink.c,v 1.2 2005-08-17 06:00:36 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -104,89 +104,33 @@
 #include "hbapiitm.h"
 #include "winreg.h"
 #include "tchar.h"
-static char *classname="myapp";
 
-LRESULT APIENTRY HyperLinkSubClassFunc ( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
+static LRESULT APIENTRY SubClassFunc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 
-static WNDPROC HyperLinklpfnOldWndProc;
+static WNDPROC lpfnOldWndProc;
 
-HB_FUNC( INITHYPERLINK )
+HB_FUNC( INITHYPERLINKCURSOR )
 {
-
-	HWND hwnd;
-	HWND hbutton;
-        HCURSOR curs;
-	int Style = WS_CHILD | SS_NOTIFY ;
-	int ExStyle = 0 ;
-
-	hwnd = (HWND) hb_parnl (1);
-
-	if ( hb_parl (12) )
-	{
-		ExStyle = ExStyle | WS_EX_CLIENTEDGE ;
-	}
-
-	if ( hb_parl (11) )
-	{
-		Style = Style | WS_BORDER ;
-	}
-
-	if ( hb_parl (13) )
-	{
-		Style = Style | WS_HSCROLL ;
-	}
-
-	if ( hb_parl (14) )
-	{
-		Style = Style | WS_VSCROLL ;
-	}
-
-	if ( hb_parl (15) )
-	{
-		ExStyle = ExStyle | WS_EX_TRANSPARENT ;
-	}
-
-	if ( ! hb_parl (16) )
-	{
-		Style = Style | WS_VISIBLE ;
-	}
-
-	hbutton = CreateWindowEx( ExStyle , "static" , hb_parc(2) ,
-	Style ,	hb_parni(4), hb_parni(5) , hb_parni(6), hb_parni(7),
-	hwnd,(HMENU)hb_parni(3) , GetModuleHandle(NULL) , NULL ) ;
-
-	if ( hb_parl (18) )
-	{
-		HyperLinklpfnOldWndProc = (WNDPROC) SetWindowLong ( (HWND) hbutton , GWL_WNDPROC, (LONG) HyperLinkSubClassFunc);
-	}
-
-	hb_retnl ( (LONG) hbutton );
-
+   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hb_parnl( 1 ), GWL_WNDPROC, ( LONG ) SubClassFunc );
 }
 
 HB_FUNC ( SETARROWCURSOR )
 {
-
-SetClassLong( (HWND) hb_parnl(1) ,    // window handle
-    GCL_HCURSOR,      // change cursor
-    (LONG) LoadCursor(NULL, IDC_ARROW) );   // new cursor
+   SetClassLong( ( HWND ) hb_parnl( 1 ) ,    // window handle
+                 GCL_HCURSOR,      // change cursor
+                 ( LONG ) LoadCursor( NULL, IDC_ARROW ) );   // new cursor
 
 }
 
-LRESULT APIENTRY HyperLinkSubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
-
-	if ( msg == WM_MOUSEMOVE )
-	{
-
-		SetCursor( LoadCursor( GetModuleHandle( NULL ) , "MINIGUI_FINGER" ) ) ;
-
-		return CallWindowProc(HyperLinklpfnOldWndProc, hWnd, 0 , 0, 0 ) ;
-
-	}
-	else
-	{
-		return CallWindowProc(HyperLinklpfnOldWndProc, hWnd, msg , wParam, lParam ) ;
-	}
-
+   if ( msg == WM_MOUSEMOVE )
+   {
+      SetCursor( LoadCursor( GetModuleHandle( NULL ) , "MINIGUI_FINGER" ) );
+      return CallWindowProc( lpfnOldWndProc, hWnd, 0, 0, 0 );
+   }
+   else
+   {
+      return CallWindowProc( lpfnOldWndProc, hWnd, msg , wParam, lParam );
+   }
 }

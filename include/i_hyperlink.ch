@@ -1,5 +1,5 @@
 /*
- * $Id: i_hyperlink.ch,v 1.1 2005-08-06 23:50:17 guerra000 Exp $
+ * $Id: i_hyperlink.ch,v 1.2 2005-08-17 06:00:36 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -92,6 +92,7 @@
 ---------------------------------------------------------------------------*/
 
 #command @ <row>,<col> HYPERLINK <name>   ;
+   [ OBJ <obj> ] ;
    [ <dummy1: OF, PARENT> <parent> ] ;
    [ VALUE <value> ]   ;
    [ ADDRESS <address>];
@@ -114,7 +115,7 @@
    [ HELPID <helpid> ] 		;
    [ <invisible: INVISIBLE> ] ;
  =>;
-    _DefineHyperLink (      ;
+   [ <obj> := ] THyperLink():Define( ;
    <"name">,    ;
    <"parent">,    ;
    <col>,     ;

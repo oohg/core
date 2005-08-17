@@ -1,5 +1,5 @@
 /*
- * $Id: h_hyperlink.prg,v 1.1 2005-08-07 00:13:51 guerra000 Exp $
+ * $Id: h_hyperlink.prg,v 1.2 2005-08-17 06:00:36 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -91,7 +91,7 @@
 	Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-#include "minigui.ch"
+#include "oohg.ch"
 #include "common.ch"
 #include "hbclass.ch"
 
@@ -99,50 +99,33 @@ CLASS THyperLink FROM TLabel
    DATA Type        INIT "HYPERLINK" READONLY
    DATA URL         INIT ""
 
+   METHOD Define
    METHOD Address   SETGET
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
-Function _DefineHyperLink ( ControlName, ParentForm, x, y, Caption, url, w, h, ;
-                            fontname, fontsize, bold, BORDER, CLIENTEDGE, ;
-                            HSCROLL, VSCROLL, TRANSPARENT, aRGB_bk, aRGB_font, ;
-                            tooltip, HelpId, invisible, italic, ;
-                            autosize , handcursor )
+METHOD Define( ControlName, ParentForm, x, y, Caption, url, w, h, fontname, ;
+               fontsize, bold, BORDER, CLIENTEDGE, HSCROLL, VSCROLL, ;
+               TRANSPARENT, aRGB_bk, aRGB_font, tooltip, HelpId, invisible, ;
+               italic, autosize, handcursor ) CLASS THyperLink
 *-----------------------------------------------------------------------------*
-Local Self
 
-// JK
-Local ControlHandle
-Local link
-
-   DEFAULT w             TO 120
-   DEFAULT h             TO 24
    DEFAULT Url           TO ""
-   DEFAULT invisible     TO FALSE
-   DEFAULT bold          TO FALSE
-   DEFAULT italic        TO FALSE
    DEFAULT aRGB_font     TO {0,0,255}
 
-           link:=.t.
+   ::Super:Define( ControlName, ParentForm, x, y, Caption, w, h, fontname, ;
+                   fontsize, bold, BORDER, CLIENTEDGE, HSCROLL, VSCROLL, ;
+                   TRANSPARENT, aRGB_bk, aRGB_font, nil, tooltip, ;
+                   HelpId, invisible, italic, .T., .F., autosize, ;
+                   .F., .F. )
 
-   Self := THyperLink():SetForm( ControlName, ParentForm, FontName, FontSize, aRGB_font, aRGB_bk )
-
-   Controlhandle := InitHyperLink ( ::Parent:hWnd, Caption, 0, x, y, w, h, '', 0, Nil , border , clientedge , HSCROLL , VSCROLL , TRANSPARENT , invisible, link , handcursor)
-
-   ::New( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
-   ::SetFont( , , bold, italic, .T., .F. )
-   ::SizePos( y, x, w, h )
    ::Address := url
-   ::Transparent := Transparent
-   ::AutoSize := autosize
-   ::Caption := Caption
 
-   if ::AutoSize
-      ::SizePos( , , GetTextWidth( NIL, Caption, ::FontHandle ), ::FontSize + IF( ::FontSize < 12, 12, 16 ) )
-      RedrawWindow( ::hWnd )
-	EndIf
+   If handcursor
+      InitHyperlinkCursor( ::hWnd )
+   EndIf
 
-Return Nil
+Return Self
 
 *------------------------------------------------------------------------------*
 METHOD Address( cUrl ) CLASS THyperLink
