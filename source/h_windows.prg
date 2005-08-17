@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.7 2005-08-13 05:10:49 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.8 2005-08-17 05:53:58 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -91,7 +91,7 @@
 	Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-#include "minigui.ch"
+#include "oohg.ch"
 #include "i_windefs.ch"
 #include "common.ch"
 #include "error.ch"
@@ -1420,7 +1420,7 @@ return nil
 
 // Initializes C variables
 *-----------------------------------------------------------------------------*
-Init Procedure _OOHG_Init_C_Vars()
+Procedure _OOHG_Init_C_Vars()
 *-----------------------------------------------------------------------------*
    TForm()
    _OOHG_Init_C_Vars_C_Side( _OOHG_aFormhWnd, _OOHG_aFormObjects )
@@ -1432,13 +1432,6 @@ Function GetFormObject( FormName )
 Local mVar
 mVar := '_' + FormName
 Return IF( ( type( mVar ) != 'U' .AND. VALTYPE( &mVar ) == "O" ), &mVar, TForm() )
-
-*-----------------------------------------------------------------------------*
-Function GetFormObjectByHandle( FormHandle )
-*-----------------------------------------------------------------------------*
-Local i
-   i := aScan( _OOHG_aFormhWnd, FormHandle )
-Return IF( i == 0, TForm(), _OOHG_aFormObjects[ i ] )
 
 *-----------------------------------------------------------------------------*
 Function GetWindowType( FormName )

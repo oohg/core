@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.4 2005-08-12 05:22:08 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.5 2005-08-17 05:53:58 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -91,9 +91,9 @@
 	Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
+#include 'oohg.ch'
 #include "hbclass.ch"
 #include 'common.ch'
-#include 'oohg.ch'
 #include 'i_windefs.ch'
 
 Memvar aResult
@@ -1782,6 +1782,7 @@ CLASS TControl FROM TWindow
    DATA VarName     INIT ""
    DATA Caption     INIT ""
    DATA Id          INIT 0
+   DATA ImageList   INIT 0
 
    METHOD Row       SETGET
    METHOD Col       SETGET
@@ -1802,6 +1803,7 @@ CLASS TControl FROM TWindow
    METHOD Value               BLOCK { || nil }
    METHOD Enabled             SETGET
    METHOD Visible             SETGET
+   METHOD ForceHide           BLOCK { |Self| HideWindow( ::hWnd ) }
    METHOD SaveData
    METHOD RefreshData
    METHOD FontColor           SETGET
@@ -2132,6 +2134,10 @@ Local mVar
       DeleteObject( ::AuxHandle )
    Endif
 
+   IF ::ImageList != 0
+      ImageList_Destroy( ::ImageList )
+   endif
+
    IF ::Container != nil
       ::Container:DeleteControl( Self )
    ENDIF
@@ -2210,7 +2216,7 @@ METHOD Visible( lVisible ) CLASS TControl
 *------------------------------------------------------------------------------*
    IF VALTYPE( lVisible ) == "L"
       ::lVisible := lVisible
-      IF ::ContainerVisible
+      IF lVisible .AND. ::ContainerVisible
          CShowControl( ::hWnd )
       ELSE
          HideWindow( ::hWnd )
@@ -2437,13 +2443,6 @@ mVar := '_' + FormName + '_' + ControlName
 Return IF( ( type( mVar ) != 'U' .AND. VALTYPE( &mVar ) == "O" ), &mVar, TControl() )
 
 *-----------------------------------------------------------------------------*
-Function GetControlObjectByHandle( ControlHandle )
-*-----------------------------------------------------------------------------*
-Local i
-   i := aScan( _OOHG_aControlhWnd, ControlHandle )
-Return IF( i == 0, TControl(), _OOHG_aControlObjects[ i ] )
-
-*-----------------------------------------------------------------------------*
 Function GetControlObjectById( Id )
 *-----------------------------------------------------------------------------*
 Local i
@@ -2507,7 +2506,7 @@ Return lRet
 
 // Initializes C variables
 *-----------------------------------------------------------------------------*
-Init Procedure _OOHG_Init_C_Vars_Controls()
+Procedure _OOHG_Init_C_Vars_Controls()
 *-----------------------------------------------------------------------------*
    TControl()
    _OOHG_Init_C_Vars_Controls_C_Side( _OOHG_aControlhWnd, _OOHG_aControlObjects )

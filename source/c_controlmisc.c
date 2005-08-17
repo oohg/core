@@ -1,5 +1,5 @@
 /*
- * $Id: c_controlmisc.c,v 1.2 2005-08-12 05:22:08 guerra000 Exp $
+ * $Id: c_controlmisc.c,v 1.3 2005-08-17 05:53:58 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -391,7 +391,6 @@ HB_FUNC( GETTEXTWIDTH )  // returns the width of a string in pixels
 {
    HDC   hDC        = ( HDC ) hb_parnl( 1 );
    HWND  hWnd;
-   DWORD dwSize;
    BOOL  bDestroyDC = FALSE;
    HFONT hFont = ( HFONT ) hb_parnl( 3 );
    HFONT hOldFont;
@@ -408,7 +407,6 @@ HB_FUNC( GETTEXTWIDTH )  // returns the width of a string in pixels
       hOldFont = ( HFONT ) SelectObject( hDC, hFont );
 
    GetTextExtentPoint32( hDC, hb_parc( 2 ), hb_parclen( 2 ), &sz );
-   dwSize = sz.cx;
 
    if( hFont )
       SelectObject( hDC, hOldFont );
@@ -416,7 +414,37 @@ HB_FUNC( GETTEXTWIDTH )  // returns the width of a string in pixels
    if( bDestroyDC )
        ReleaseDC( hWnd, hDC );
 
-   hb_retni( LOWORD( dwSize ) );
+   hb_retni( LOWORD( sz.cx ) );
+}
+
+HB_FUNC( GETTEXTHEIGHT )  // returns the width of a string in pixels
+{
+   HDC   hDC        = ( HDC ) hb_parnl( 1 );
+   HWND  hWnd;
+   BOOL  bDestroyDC = FALSE;
+   HFONT hFont = ( HFONT ) hb_parnl( 3 );
+   HFONT hOldFont;
+   SIZE sz;
+
+   if( ! hDC )
+   {
+      bDestroyDC = TRUE;
+      hWnd = GetActiveWindow();
+      hDC = GetDC( hWnd );
+   }
+
+   if( hFont )
+      hOldFont = ( HFONT ) SelectObject( hDC, hFont );
+
+   GetTextExtentPoint32( hDC, hb_parc( 2 ), hb_parclen( 2 ), &sz );
+
+   if( hFont )
+      SelectObject( hDC, hOldFont );
+
+   if( bDestroyDC )
+       ReleaseDC( hWnd, hDC );
+
+   hb_retni( LOWORD( sz.cy ) );
 }
 
 HB_FUNC ( KEYBD_EVENT )
@@ -469,6 +497,86 @@ HB_FUNC( GETPROGRAMFILENAME )
    hb_retc(Buffer);
 }
 
+HB_FUNC( IMAGELIST_INIT )
+{
+   HIMAGELIST himl = 0;
+   HBITMAP hbmp;
+   PHB_ITEM hArray;
+   char *caption;
+   int iLen, s, cx = 0, cy = 0, iStyle;
+
+   iLen = hb_parinfa( 1, 0 );
+   hArray = hb_param( 1, HB_IT_ARRAY );
+   if( iLen != 0 )
+   {
+      iStyle = hb_parni( 3 );
+      iLen--;
+      caption = hb_itemGetCPtr( hArray->item.asArray.value->pItems );
+
+      himl = ImageList_LoadImage( GetModuleHandle( NULL ), caption, 0, iLen, hb_parni( 2 ), IMAGE_BITMAP, iStyle );
+      if ( himl == NULL )
+      {
+         himl = ImageList_LoadImage( GetModuleHandle( NULL ), caption, 0, iLen, hb_parni( 2 ), IMAGE_BITMAP, iStyle | LR_LOADFROMFILE );
+      }
+
+      ImageList_GetIconSize( himl, &cx, &cy );
+
+      for( s = 1; s <= iLen; s++ )
+      {
+         caption = hb_itemGetCPtr( hArray->item.asArray.value->pItems + s );
+
+         hbmp = ( HBITMAP ) LoadImage( GetModuleHandle( NULL ), caption, IMAGE_BITMAP, cx, cy, iStyle );
+         if( hbmp == NULL )
+         {
+            hbmp = ( HBITMAP ) LoadImage( GetModuleHandle( NULL ), caption, IMAGE_BITMAP, cx, cy, iStyle | LR_LOADFROMFILE );
+         }
+
+         ImageList_Add( himl, hbmp, NULL );
+         DeleteObject( hbmp ) ;
+      }
+   }
+
+   hb_reta( 3 );
+   hb_stornl( ( LONG ) himl, -1, 1 );
+   hb_storni( ( int )  cx,   -1, 2 );
+   hb_storni( ( int )  cy,   -1, 3 );
+}
+
+HB_FUNC( IMAGELIST_DESTROY )
+{
+   hb_retl( ImageList_Destroy( ( HIMAGELIST ) hb_parnl( 1 ) ) );
+}
+
+HB_FUNC( IMAGELIST_ADD )
+{
+   HIMAGELIST himl = ( HIMAGELIST ) hb_parnl( 1 );
+   HBITMAP hbmp;
+   int cx, cy, iStyle, ic = 0;
+
+   if ( himl != NULL )
+   {
+      ImageList_GetIconSize( himl, &cx, &cy );
+
+      hbmp = ( HBITMAP ) LoadImage( GetModuleHandle( NULL ), hb_parc( 2 ), IMAGE_BITMAP, cx, cy, iStyle );
+      if( hbmp == NULL )
+      {
+         hbmp = ( HBITMAP ) LoadImage( GetModuleHandle( NULL ), hb_parc( 2 ), IMAGE_BITMAP, cx, cy, iStyle | LR_LOADFROMFILE );
+      }
+
+      ImageList_Add( himl, hbmp, NULL );
+      DeleteObject( hbmp );
+
+      ic = ImageList_GetImageCount( himl );
+   }
+
+   hb_retni( ic );
+}
+
+HB_FUNC( IMAGELIST_GETIMAGECOUNT )
+{
+   hb_retni( ImageList_GetImageCount( ( HIMAGELIST ) hb_parnl( 1 ) ) );
+}
+
 /*
 // Intento por controlar las teclas...
 HB_FUNC( GETNMKEY )
@@ -509,6 +617,13 @@ PHB_ITEM GetControlObjectByHandle( LONG hWnd )
    PHB_ITEM pControl;
    ULONG ulCount;
 
+   if( ! _ooHG_Symbol_TControl )
+   {
+      hb_vmPushSymbol( hb_dynsymFind( "_OOHG_INIT_C_VARS_CONTROLS" )->pSymbol );
+      hb_vmPushNil();
+      hb_vmDo( 0 );
+   }
+
    pControl = 0;
    for( ulCount = 0; ulCount < _OOHG_aControlhWnd.item.asArray.value->ulLen; ulCount++ )
    {
@@ -527,4 +642,15 @@ PHB_ITEM GetControlObjectByHandle( LONG hWnd )
    }
 
    return pControl;
+}
+
+HB_FUNC( GETCONTROLOBJECTBYHANDLE )
+{
+   HB_ITEM pReturn;
+
+   pReturn.type = HB_IT_NIL;
+   hb_itemCopy( &pReturn, GetControlObjectByHandle( hb_parnl( 1 ) ) );
+
+   hb_itemReturn( &pReturn );
+   hb_itemClear( &pReturn );
 }
