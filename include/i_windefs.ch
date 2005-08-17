@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.3 2005-08-13 05:14:45 guerra000 Exp $
+ * $Id: i_windefs.ch,v 1.4 2005-08-17 06:04:56 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -151,6 +151,7 @@
 #define WM_HOTKEY	786
 // User-defined WM_*
 #define WM_USER         0x0400
+#define CBEM_SETIMAGELIST  (WM_USER + 2)
 #define WM_TASKBAR      WM_USER+1043
 
 // Generic WM_NOTIFY calls
@@ -232,6 +233,76 @@
 #define WS_VISIBLE	0x10000000
 #define WS_CHILD	0x40000000
 
+// Button Control
+#define BM_GETCHECK        240
+#define BM_SETCHECK        241
+#define BM_GETSTATE        242
+#define BM_SETSTATE        243
+#define BM_SETSTYLE        244
+#define BM_CLICK           245
+#define BM_GETIMAGE        246
+#define BM_SETIMAGE        247
+#define BST_UNCHECKED      0
+#define BST_CHECKED        1
+#define BST_INDETERMINATE  2
+#define BST_PUSHED         4
+#define BST_FOCUS          8
+
+// ListView messages
+#define LVM_FIRST          0x1000
+#define LVM_GETBKCOLOR     ( LVM_FIRST + 0 )
+#define LVM_SETBKCOLOR     ( LVM_FIRST + 1 )
+#define LVM_GETIMAGELIST   ( LVM_FIRST + 2 )
+#define LVM_SETIMAGELIST   ( LVM_FIRST + 3 )
+#define LVM_GETITEMCOUNT   ( LVM_FIRST + 4 )
+#define LVSIL_NORMAL       0
+#define LVSIL_SMALL        1
+#define LVSIL_STATE        2
+
+// TreeView messages
+#define TV_FIRST           0x1100
+#define TVM_INSERTITEM     ( TV_FIRST + 0 )  // + 50
+#define TVM_DELETEITEM     ( TV_FIRST + 1 )
+#define TVM_EXPAND         ( TV_FIRST + 2 )
+#define TVM_GETITEMRECT    ( TV_FIRST + 4 )
+#define TVM_GETCOUNT       ( TV_FIRST + 5 )
+#define TVM_GETINDENT      ( TV_FIRST + 6 )
+#define TVM_SETINDENT      ( TV_FIRST + 7 )
+#define TVM_GETIMAGELIST   ( TV_FIRST + 8 )
+#define TVM_SETIMAGELIST   ( TV_FIRST + 9 )
+#define TVM_GETNEXTITEM    ( TV_FIRST + 10 )
+#define TVM_SELECTITEM     ( TV_FIRST + 11 )
+#define TVSIL_NORMAL       0
+#define TVSIL_STATE        2
+#define TVE_COLLAPSE       1
+#define TVE_EXPAND         2
+
+// Tab control messages
+#define TCM_FIRST          0x1300
+#define TCM_GETIMAGELIST   ( TCM_FIRST + 2 )
+#define TCM_SETIMAGELIST   ( TCM_FIRST + 3 )
+#define TCM_GETITEMCOUNT   ( TCM_FIRST + 4 )
+
+// Header messages
+#define HDM_FIRST          0x1200
+
+#define CLR_NONE           0xFFFFFFFF
+#define CLR_DEFAULT        0xFF000000
+
+#define LR_DEFAULTCOLOR     0
+#define LR_MONOCHROME       1
+#define LR_COLOR            2
+#define LR_COPYRETURNORG    4
+#define LR_COPYDELETEORG    8
+#define LR_LOADFROMFILE     16
+#define LR_LOADTRANSPARENT  32
+#define LR_DEFAULTSIZE      64
+#define LR_VGACOLOR         128
+#define LR_LOADMAP3DCOLORS  0x1000
+#define LR_CREATEDIBSECTION 0x2000
+#define LR_COPYFROMRESOURCE 0x4000
+#define LR_SHARED           0x8000
+
 #DEFINE DC_BRUSH 18
 #define LVN_BEGINDRAG	(-109)
 #define BS_AUTORADIOBUTTON	9
@@ -267,7 +338,6 @@
 
 #define SB_HORZ	0
 #define BS_DEFPUSHBUTTON	1
-#define BM_SETSTYLE	244
 #define SB_CTL	2
 #define SB_VERT	1
 #define SB_LINEUP	0
