@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.3 2005-08-13 05:14:45 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.4 2005-08-17 06:06:20 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -204,10 +204,7 @@ Return NIL
 *------------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TText
 *------------------------------------------------------------------------------*
-   IF VALTYPE( uValue ) == "C"
-      ::TopValue := RTrim( uValue )
-   ENDIF
-RETURN ::TopValue
+Return IF( VALTYPE( uValue ) == "C", ::Caption := RTrim( uValue ), ::Caption )
 
 *------------------------------------------------------------------------------*
 METHOD SetFocus() CLASS TText
@@ -384,9 +381,9 @@ METHOD Value( uValue ) CLASS TTextNum
 *------------------------------------------------------------------------------*
    IF VALTYPE( uValue ) == "N"
       uValue := Int( uValue )
-      ::TopValue := AllTrim( Str( uValue ) )
+      ::Caption := AllTrim( Str( uValue ) )
    ELSE
-      uValue := Int( Val( ::TopValue ) )
+      uValue := Int( Val( ::Caption ) )
    ENDIF
 RETURN uValue
 
@@ -1051,12 +1048,12 @@ METHOD Value( uValue ) CLASS TTextCharMask
 
    IF ::lDate
       IF VALTYPE( uValue ) == "D"
-         ::TopValue := RTrim( dToc( uValue ) )
+         ::Caption := RTrim( dToc( uValue ) )
       ELSE
-         uValue := cTod( AllTrim( ::TopValue ) )
+         uValue := cTod( AllTrim( ::Caption ) )
       ENDIF
    ELSE
-      uValue := ( ::TopValue := uValue )
+      uValue := ( ::Caption := uValue )
    ENDIF
 
 RETURN uValue
