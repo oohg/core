@@ -1,5 +1,5 @@
 /*
- * $Id: c_combo.c,v 1.1 2005-08-07 00:02:01 guerra000 Exp $
+ * $Id: c_combo.c,v 1.2 2005-08-17 06:06:48 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -104,12 +104,18 @@
 #include "hbapiitm.h"
 #include "winreg.h"
 #include "tchar.h"
+#include <windowsx.h>
 
 HB_FUNC( INITCOMBOBOX )
 {
 	HWND hwnd;
 	HWND hbutton;
 	int Style;
+    INITCOMMONCONTROLSEX  i;
+
+    i.dwSize = sizeof( INITCOMMONCONTROLSEX );
+    i.dwICC = ICC_USEREX_CLASSES;
+    InitCommonControlsEx( &i );
 
 	hwnd = (HWND) hb_parnl (1);
 
@@ -144,7 +150,7 @@ HB_FUNC( INITCOMBOBOX )
 		Style = Style | CBS_NOINTEGRALHEIGHT ;
 	}
 
-	hbutton = CreateWindow( "COMBOBOX" ,
+    hbutton = CreateWindowEx( 0, WC_COMBOBOXEX,
                            "" ,
                            Style ,
                            hb_parni(3) ,
@@ -159,16 +165,46 @@ HB_FUNC( INITCOMBOBOX )
 	hb_retnl ( (LONG) hbutton );
 }
 
-HB_FUNC ( COMBOADDSTRING )
+// #define CBEM_SETIMAGELIST       (WM_USER + 2)
+HB_FUNC( COMBOADDSTRING )
 {
-   char *cString = hb_parc( 2 );
-   SendMessage( (HWND) hb_parnl( 1 ), CB_ADDSTRING, 0, (LPARAM) cString );
+   HWND hWnd = ( HWND ) hb_parnl( 1 );
+   COMBOBOXEXITEM cmb;
+
+   cmb.mask = CBEIF_TEXT | CBEIF_IMAGE | CBEIF_SELECTEDIMAGE;
+   cmb.iItem = ComboBox_GetCount( hWnd );
+   cmb.pszText = hb_parc( 2 );
+   if( ISNUM( 3 ) )
+   {
+      cmb.iImage = hb_parni( 3 );
+      cmb.iSelectedImage = ISNUM( 4 ) ? hb_parni( 4 ) : cmb.iImage;
+   }
+   else
+   {
+      cmb.iImage = -1;
+      cmb.iSelectedImage = -1;
+   }
+   SendMessage( hWnd, CBEM_INSERTITEM, 0, ( LPARAM ) &cmb );
 }
 
 HB_FUNC ( COMBOINSERTSTRING )
 {
-   char *cString = hb_parc( 2 );
-   SendMessage( (HWND) hb_parnl( 1 ), CB_INSERTSTRING, (WPARAM) hb_parni(3) - 1 , (LPARAM) cString );
+   COMBOBOXEXITEM cmb;
+
+   cmb.mask = CBEIF_TEXT | CBEIF_IMAGE | CBEIF_SELECTEDIMAGE;
+   cmb.iItem = hb_parni( 3 ) - 1;
+   cmb.pszText = hb_parc( 2 );
+   if( ISNUM( 4 ) )
+   {
+      cmb.iImage = hb_parni( 4 );
+      cmb.iSelectedImage = ISNUM( 5 ) ? hb_parni( 5 ) : cmb.iImage;
+   }
+   else
+   {
+      cmb.iImage = -1;
+      cmb.iSelectedImage = -1;
+   }
+   SendMessage( ( HWND ) hb_parnl( 1 ), CBEM_INSERTITEM, 0, ( LPARAM ) &cmb );
 }
 
 HB_FUNC ( COMBOSETCURSEL )
