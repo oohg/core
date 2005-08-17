@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.3 2005-08-13 05:12:14 guerra000 Exp $
+ * $Id: i_altsyntax.ch,v 1.4 2005-08-17 06:05:40 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -704,6 +704,7 @@ Radio Group
         _OOHG_ActiveControlFontItalic    := .f.          ;;
         _OOHG_ActiveControlFontStrikeOut := .f.          ;;
         _OOHG_ActiveControlTransparent   := .f.          ;;
+        _OOHG_ActiveControlAutoSize      := .f.          ;;
         _OOHG_ActiveControlFontUnderLine := .f.
 
 #xcommand OPTIONS	<aOptions>;
@@ -716,7 +717,7 @@ Radio Group
 
 #xcommand END RADIOGROUP;
 	=>;
-	_DefineradioGroup(;
+        TRadioGroup():Define( ;
                 _OOHG_ActiveControlName,;
                 _OOHG_ActiveControlOf,;
                 _OOHG_ActiveControlCol,;
@@ -738,7 +739,8 @@ Radio Group
                 _OOHG_ActiveControlFontStrikeOut ,;
                 _OOHG_ActiveControlBackColor,;
                 _OOHG_ActiveControlFontColor  , ;
-                _OOHG_ActiveControlTransparent ;
+                _OOHG_ActiveControlTransparent, ;
+                _OOHG_ActiveControlAutoSize  ;
 		)
 
 
@@ -1229,6 +1231,7 @@ Check Box/Button
         _OOHG_ActiveControlBackColor             := Nil          ;;
         _OOHG_ActiveControlFontColor             := Nil          ;;
         _OOHG_ActiveControlTransparent   := .f.          ;;
+        _OOHG_ActiveControlAutoSize   := .f.          ;;
         _OOHG_ActiveControlField             := Nil
 
 
@@ -1280,7 +1283,7 @@ Check Box/Button
 
 #xcommand END CHECKBOX ;
 	=>;
-	_DefineCheckBox (;
+        TCheckBox():Define(;
                 _OOHG_ActiveControlName,;
                 _OOHG_ActiveControlOf,;
                 _OOHG_ActiveControlCol,;
@@ -1302,7 +1305,11 @@ Check Box/Button
                 _OOHG_ActiveControlFontItalic , ;
                 _OOHG_ActiveControlFontUnderLine , ;
                 _OOHG_ActiveControlFontStrikeOut,;
-                _OOHG_ActiveControlField ,_OOHG_ActiveControlBackColor,_OOHG_ActiveControlFontColor , _OOHG_ActiveControlTransparent )
+                _OOHG_ActiveControlField,;
+                _OOHG_ActiveControlBackColor,;
+                _OOHG_ActiveControlFontColor,;
+                _OOHG_ActiveControlTransparent,;
+                _OOHG_ActiveControlAutoSize )
 
 #xcommand END CHECKBUTTON ;
 	=>;
@@ -1742,7 +1749,7 @@ Label
 
 #xcommand END LABEL ;
 	=>;
-	_DefineLabel(;
+        TLabel():Define( ;
                 _OOHG_ActiveControlName,;
                 _OOHG_ActiveControlOf,;
                 _OOHG_ActiveControlCol,;
@@ -2035,7 +2042,7 @@ Hyperlink
 
 #xcommand END HYPERLINK ;
 	=>;
-        _DefineHyperLink (      ;
+        THyperLink():Define(     ;
         _OOHG_ActiveControlName ,;
         _OOHG_ActiveControlOf,;
         _OOHG_ActiveControlCol,;
