@@ -1,5 +1,5 @@
 /*
- * $Id: h_checkbox.prg,v 1.2 2005-08-11 05:14:47 guerra000 Exp $
+ * $Id: h_checkbox.prg,v 1.3 2005-08-17 05:59:45 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -91,30 +91,27 @@
 	Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-#define BM_GETCHECK	240
-#define BST_UNCHECKED	0
-#define BST_CHECKED	1
-#define BM_SETCHECK	241
-#define BN_CLICKED 0
-#include "minigui.ch"
+#include "oohg.ch"
 #include "common.ch"
 #include "hbclass.ch"
+#include "i_windefs.ch"
 
 CLASS TCheckBox FROM TLabel
    DATA Type      INIT "CHECKBOX" READONLY
    DATA Picture   INIT ""
+   DATA IconWidth INIT 18
 
+   METHOD Define
    METHOD Value       SETGET
    METHOD Events_Command
 ENDCLASS
-*-----------------------------------------------------------------------------*
-Function _DefineCheckBox ( ControlName, ParentForm, x, y, Caption, Value, ;
-                           fontname, fontsize, tooltip, changeprocedure, w, h,;
-                           lostfocus, gotfocus, HelpId, invisible, notabstop , bold, italic, underline, strikeout , field  , backcolor , fontcolor , transparent )
-*-----------------------------------------------------------------------------*
-Local Self
 
-// AJ
+*-----------------------------------------------------------------------------*
+METHOD Define( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
+               fontsize, tooltip, changeprocedure, w, h, lostfocus, gotfocus, ;
+               HelpId, invisible, notabstop, bold, italic, underline, ;
+               strikeout, field, backcolor, fontcolor, transparent, autosize ) CLASS TCheckBox
+*-----------------------------------------------------------------------------*
 Local ControlHandle
 
    DEFAULT value           TO FALSE
@@ -125,8 +122,9 @@ Local ControlHandle
    DEFAULT changeprocedure TO ""
    DEFAULT invisible       TO FALSE
    DEFAULT notabstop       TO FALSE
+   DEFAULT autosize        TO FALSE
 
-   Self := TCheckBox():SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor )
+   ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor )
 
    Controlhandle := InitCheckBox ( ::Parent:hWnd, Caption, 0, x, y, '', 0 , w , h, invisible, notabstop )
 
@@ -134,11 +132,12 @@ Local ControlHandle
    ::SetFont( , , bold, italic, underline, strikeout )
    ::SizePos( y, x, w, h )
 
-   ::Transparent :=   transparent
+   ::Transparent := transparent
    ::OnLostFocus := LostFocus
-   ::OnGotFocus :=  GotFocus
-   ::OnChange   :=  ChangeProcedure
-   ::Caption := Caption
+   ::OnGotFocus  := GotFocus
+   ::OnChange    := ChangeProcedure
+   ::Autosize    := autosize
+   ::Caption     := Caption
 
    If ValType( Field ) == 'C' .AND. ! empty( Field )
       ::VarName := alltrim( Field )
@@ -152,7 +151,8 @@ Local ControlHandle
       aAdd ( ::Parent:BrowseList, Self )
 	EndIf
 
-Return Nil
+Return Self
+
 *-----------------------------------------------------------------------------*
 Function _DefineCheckButton ( ControlName, ParentForm, x, y, Caption, Value, ;
                               fontname, fontsize, tooltip, changeprocedure, ;
