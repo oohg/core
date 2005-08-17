@@ -1,5 +1,5 @@
 /*
- * $Id: h_tree.prg,v 1.2 2005-08-11 05:16:06 guerra000 Exp $
+ * $Id: h_tree.prg,v 1.3 2005-08-17 05:56:13 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -91,11 +91,9 @@
 	Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-#include "minigui.ch"
+#include "oohg.ch"
 #include "hbclass.ch"
-#define TVM_EXPAND	4354
-#define TVE_COLLAPSE	1
-#define TVE_EXPAND	2
+#include "i_windefs.ch"
 
 STATIC _OOHG_ActiveTree := nil
 
@@ -114,6 +112,7 @@ CLASS TTree FROM TControl
    METHOD ItemCount      BLOCK { | Self | TreeView_GetCount( ::hWnd ) }
    METHOD Collapse
    METHOD Expand
+   METHOD AddBitMap
 
    METHOD Value       SETGET
    METHOD Events_Enter
@@ -156,8 +155,8 @@ Local NewHandle , TempHandle , i , aPos , ChildHandle , BackHandle , ParentHandl
 				iUnsel := 2	// Pointer to defalut Node Bitmaps, no Bitmap loaded
 				iSel   := 3
 			else
-            iUnSel := AddTreeViewBitmap( ::hWnd, aImage[1] ) -1
-            iSel   := iif( ImgDef == 1, iUnSel, AddTreeViewBitmap( ::hWnd, aImage[2] ) -1 )
+            iUnSel := ::AddBitMap( aImage[1] ) -1
+            iSel   := iif( ImgDef == 1, iUnSel, ::AddBitMap( aImage[2] ) -1 )
 				// If only one bitmap in array iSel = iUnsel, only one Bitmap loaded
 			endif
 
@@ -241,8 +240,8 @@ Local NewHandle , TempHandle , i , aPos , ChildHandle , BackHandle , ParentHandl
 				iUnsel := 0	// Pointer to defalut Node Bitmaps, no Bitmap loaded
 				iSel   := 1
 			else
-            iUnSel := AddTreeViewBitmap( ::hWnd, aImage[1] ) -1
-            iSel   := iif( ImgDef == 1, iUnSel, AddTreeViewBitmap( ::hWnd, aImage[2] ) -1 )
+            iUnSel := ::AddBitMap( aImage[1] ) -1
+            iSel   := iif( ImgDef == 1, iUnSel, ::AddBitMap( aImage[2] ) -1 )
 				// If only one bitmap in array iSel = iUnsel, only one Bitmap loaded
 			endif
 
@@ -454,6 +453,19 @@ Local ItemHandle := 0 , Pos
 Return nil
 
 *------------------------------------------------------------------------------*
+METHOD AddBitMap( cImage ) CLASS TTree
+*------------------------------------------------------------------------------*
+Local nPos
+   If ::ImageList == 0
+      ::ImageList := ImageList_Init( { cImage }, CLR_NONE, LR_LOADTRANSPARENT )[ 1 ]
+      nPos := 1
+   Else
+      nPos := ImageList_Add( ::ImageList, cImage, LR_LOADTRANSPARENT )
+   Endif
+   SendMessage( ::hWnd, TVM_SETIMAGELIST, TVSIL_NORMAL, ::ImageList )
+Return nPos
+
+*------------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TTree
 *------------------------------------------------------------------------------*
 Local TreeItemHandle, aPos
@@ -555,7 +567,8 @@ Local Self
 
 		endif
 
-		InitTreeViewBitmap( ControlHandle, aBitmaps ) //Init Bitmap List
+      ::ImageList := ImageList_Init( aBitmaps, CLR_NONE, LR_LOADTRANSPARENT )[ 1 ]
+      SendMessage( ControlHandle, TVM_SETIMAGELIST, TVSIL_NORMAL, ::ImageList )
 	endif
 
 	if valtype(change) == "U"
@@ -609,8 +622,8 @@ Local Item
 		iSel   := 1
 
 	else
-      iUnSel := AddTreeViewBitmap( _OOHG_ActiveTree:hWnd, aImage[1] ) -1
-      iSel   := iif( ImgDef == 1, iUnSel, AddTreeViewBitmap( _OOHG_ActiveTree:hWnd, aImage[2] ) -1 )
+      iUnSel := _OOHG_ActiveTree:AddBitMap( aImage[ 1 ] ) - 1
+      iSel   := iif( ImgDef == 1, iUnSel, _OOHG_ActiveTree:AddBitMap( aImage[ 2 ] ) - 1 )
 		// If only one bitmap in array iSel = iUnsel, only one Bitmap loaded
 	endif
 
@@ -646,8 +659,8 @@ Local handle, ImgDef, iUnSel, iSel
 		iSel   := 3
 
 	else
-      iUnSel := AddTreeViewBitmap( _OOHG_ActiveTree:hWnd, aImage[1] ) -1
-      iSel   := iif( ImgDef == 1, iUnSel, AddTreeViewBitmap( _OOHG_ActiveTree:hWnd, aImage[2] ) -1 )
+      iUnSel := _OOHG_ActiveTree:AddBitMap( aImage[ 1 ] ) - 1
+      iSel   := iif( ImgDef == 1, iUnSel, _OOHG_ActiveTree:AddBitMap( aImage[ 2 ] ) -1 )
 		// If only one bitmap in array iSel = iUnsel, only one Bitmap loaded
 	endif
 

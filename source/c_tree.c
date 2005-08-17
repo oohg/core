@@ -1,5 +1,5 @@
 /*
- * $Id: c_tree.c,v 1.1 2005-08-07 00:05:14 guerra000 Exp $
+ * $Id: c_tree.c,v 1.2 2005-08-17 05:56:13 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -153,100 +153,6 @@ HB_FUNC (INITTREE)
 
 
 	hb_retnl( (LONG) hWndTV ) ;
-
-}
-
-
-HB_FUNC (INITTREEVIEWBITMAP)// Tree+
-{
-	HWND hbutton;
-	HIMAGELIST himl;
-	HBITMAP hbmp;
-	PHB_ITEM hArray;
-	char *caption;
-	int l9;
-	int s;
-	int cx;
-	int cy;
-
-	hbutton = (HWND) hb_parnl (1);
-	l9 = hb_parinfa( 2, 0 ) - 1 ;
-	hArray = hb_param( 2, HB_IT_ARRAY );
-
-		cx = 0;
-	if ( l9 != 0 )
-		{
-			caption	= hb_itemGetCPtr ( hArray->item.asArray.value->pItems );
-
-	 		himl = ImageList_LoadImage( GetModuleHandle(NULL), caption, 0, l9, CLR_NONE, IMAGE_BITMAP, LR_LOADTRANSPARENT );
-
-			if ( himl == NULL )
-			{
-		 		himl = ImageList_LoadImage( GetModuleHandle(NULL), caption, 0, l9, CLR_NONE, IMAGE_BITMAP, LR_LOADTRANSPARENT | LR_LOADFROMFILE );
-			}
-
-	 		ImageList_GetIconSize( himl, &cx, &cy );
-
-			for (s = 1 ; s<=l9 ; s=s+1 )
-			{
-
-				caption	= hb_itemGetCPtr ( hArray->item.asArray.value->pItems + s );
-
-	 			hbmp = (HBITMAP) LoadImage(GetModuleHandle(NULL),caption,IMAGE_BITMAP , cx, cy, LR_LOADTRANSPARENT );
-				if ( hbmp == NULL )
-				{
-		 			hbmp = (HBITMAP) LoadImage(GetModuleHandle(NULL),caption,IMAGE_BITMAP , cx, cy, LR_LOADTRANSPARENT | LR_LOADFROMFILE );
-				}
-
-	 			ImageList_Add( himl, hbmp, NULL ) 						;
-				DeleteObject( hbmp ) ;
-
-			}
-
-			if ( himl != NULL )
-			{
-				SendMessage(hbutton,TVM_SETIMAGELIST, (WPARAM) TVSIL_NORMAL, (LPARAM) himl );
-			}
-
-		}
-
-		hb_retni( (INT) cx );
-
-}
-
-HB_FUNC (ADDTREEVIEWBITMAP)// Tree+
-{
-	HWND hbutton;
-	HIMAGELIST himl;
-	HBITMAP hbmp;
-
-	int cx;
-	int cy;
-	int ic;
-
-	hbutton = (HWND) hb_parnl (1);
-	himl = TreeView_GetImageList( hbutton, TVSIL_NORMAL );
-	ic = 0;
-
-	if ( himl != NULL )
-	{
-
-		ImageList_GetIconSize( himl, &cx, &cy );
-
-		hbmp = (HBITMAP) LoadImage(GetModuleHandle(NULL),hb_parc(2),IMAGE_BITMAP , cx, cy, LR_LOADTRANSPARENT );
-		if ( hbmp == NULL )
-		{
-			hbmp = (HBITMAP) LoadImage(GetModuleHandle(NULL),hb_parc(2),IMAGE_BITMAP , cx, cy, LR_LOADTRANSPARENT | LR_LOADFROMFILE );
-		}
-
-		ImageList_Add( himl, hbmp, NULL );
-		DeleteObject( hbmp );
-
-		SendMessage(hbutton,TVM_SETIMAGELIST, (WPARAM) TVSIL_NORMAL, (LPARAM) himl );
-		ic = ImageList_GetImageCount( himl );
-	}
-
-	hb_retni( (INT) ic );
 
 }
 

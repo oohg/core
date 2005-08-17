@@ -1,5 +1,5 @@
 /*
- * $Id: c_grid.c,v 1.4 2005-08-12 05:53:17 guerra000 Exp $
+ * $Id: c_grid.c,v 1.5 2005-08-17 05:56:13 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -197,70 +197,12 @@ HB_FUNC( LISTVIEW_SETITEMCOUNT )
 	ListView_SetItemCount ( (HWND) hb_parnl (1) , hb_parni (2) ) ;
 }
 
-HB_FUNC (ADDLISTVIEWBITMAP)// Grid+
+HB_FUNC( LISTVIEW_GETFIRSTITEM )
 {
-	HWND hbutton;
-	HIMAGELIST himl;
-	HBITMAP hbmp;
-	PHB_ITEM hArray;
-	char *caption;
-	int l9;
-	int s;
-	int cx;
-	int cy;
-
-	hbutton = (HWND) hb_parnl (1);
-	l9 = hb_parinfa( 2, 0 ) - 1 ;
-	hArray = hb_param( 2, HB_IT_ARRAY );
-
-		cx = 0;
-	if ( l9 != 0 )
-		{
-			caption	= hb_itemGetCPtr ( hArray->item.asArray.value->pItems );
-
-	 		himl = ImageList_LoadImage( GetModuleHandle(NULL), caption, 0, l9, CLR_NONE, IMAGE_BITMAP, LR_LOADTRANSPARENT );
-
-			if ( himl == NULL )
-			{
-		 		himl = ImageList_LoadImage( GetModuleHandle(NULL), caption, 0, l9, CLR_NONE, IMAGE_BITMAP, LR_LOADTRANSPARENT | LR_LOADFROMFILE );
-			}
-
-	 		ImageList_GetIconSize( himl, &cx, &cy );
-
-			for (s = 1 ; s<=l9 ; s=s+1 )
-			{
-
-				caption	= hb_itemGetCPtr ( hArray->item.asArray.value->pItems + s );
-
-	 			hbmp = (HBITMAP) LoadImage(GetModuleHandle(NULL),caption,IMAGE_BITMAP , cx, cy, LR_LOADTRANSPARENT );
-				if ( hbmp == NULL)
-				{
-		 			hbmp = (HBITMAP) LoadImage(GetModuleHandle(NULL),caption,IMAGE_BITMAP , cx, cy, LR_LOADTRANSPARENT | LR_LOADFROMFILE );
-				}
-
-                ImageList_Add( himl, hbmp, NULL );
-				DeleteObject( hbmp ) ;
-
-			}
-
-
-			if ( himl != NULL )
-			{
-				SendMessage(hbutton,LVM_SETIMAGELIST, (WPARAM) LVSIL_SMALL, (LPARAM) himl );
-			}
-
-		}
-
-		hb_retni( (INT) cx );
-
+   hb_retni( ListView_GetNextItem( ( HWND ) hb_parnl( 1 ), -1 , LVNI_ALL | LVNI_SELECTED ) + 1 );
 }
 
-HB_FUNC ( LISTVIEW_GETFIRSTITEM )
-{
-	hb_retni ( ListView_GetNextItem( (HWND) hb_parnl( 1 )  , -1 ,LVNI_ALL | LVNI_SELECTED) + 1);
-}
-
-HB_FUNC ( INITLISTVIEWCOLUMNS )
+HB_FUNC( INITLISTVIEWCOLUMNS )
 {
    PHB_ITEM wArray;
    PHB_ITEM hArray;
@@ -459,26 +401,49 @@ HB_FUNC( LISTVIEWSETITEM )
 
 HB_FUNC ( LISTVIEWGETITEM )
 {
-	char string [1024] = "" ;
-	HWND h;
-	int s;
-	int c;
-	int l ;
+   char buffer[ 1024 ];
+   HWND h;
+   int s, c, l;
+   LV_ITEM LI;
+   PHB_ITEM pArray, pString;
 
-	h = (HWND) hb_parnl( 1 ) ;
+   h = ( HWND ) hb_parnl( 1 );
 
-	c = hb_parni(2) - 1 ;
+   c = hb_parni( 2 ) - 1;
 
-	l =  hb_parni(3) ;
+   l = hb_parni( 3 );
 
-	hb_reta ( l ) ;
+   pArray = hb_itemArrayNew( l );
+   pString = hb_itemNew( NULL );
 
-	for (s = 0 ; s <= l-1 ; s++ )
-	{
-		ListView_GetItemText(h,c,s,string,1024) ;
-		hb_storc( string , -1 , s+1 ) ;
-	}
+   for( s = 0; s < l; s++ )
+   {
+      LI.mask = LVIF_TEXT | LVIF_IMAGE;
+      LI.state = 0;
+      LI.stateMask = 0;
+      LI.iSubItem = s;
+      LI.cchTextMax = 1022;
+      LI.pszText = buffer;
+      LI.iItem = c;
+      buffer[ 0 ] = 0;
+      buffer[ 1023 ] = 0;
+      ListView_GetItem( h, &LI );
+      buffer[ 1023 ] = 0;
 
+      if( LI.iImage == -1 )
+      {
+         hb_itemPutC( pString, buffer );
+      }
+      else
+      {
+         hb_itemPutNI( pString, LI.iImage );
+      }
+      hb_itemArrayPut( pArray, s + 1, pString );
+   }
+
+   hb_itemReturn( pArray );
+   hb_itemRelease( pArray );
+   hb_itemRelease( pString );
 }
 
 HB_FUNC ( LISTVIEWGETITEMROW )
@@ -516,45 +481,6 @@ HB_FUNC ( LISTVIEWGETCOUNTPERPAGE )
 HB_FUNC (LISTVIEW_ENSUREVISIBLE)
 {
 	ListView_EnsureVisible( (HWND) hb_parnl (1) , hb_parni(2)-1 , 1 ) ;
-}
-
-/*
-HB_FUNC ( SETIMAGELISTVIEWITEMS )
-{
-	LV_ITEM LI;
-	HWND h;
-
-	h = (HWND) hb_parnl( 1 ) ;
-
-	LI.mask= LVIF_IMAGE ;	// Browse+
-	LI.state=0;
-	LI.stateMask=0;
-        LI.iImage= hb_parni( 3 );	// Browse+
-        LI.iSubItem=0;
-	LI.iItem=hb_parni(2) - 1 ;
-
-    ListView_SetItem(h,&LI);
-}
-*/
-
-HB_FUNC ( GETIMAGELISTVIEWITEMS )
-{
-	LV_ITEM LI;
-	HWND h;
-        int i;
-
-	h = (HWND) hb_parnl( 1 ) ;
-
-	LI.mask= LVIF_IMAGE ;	// Browse+
-	LI.state=0;
-	LI.stateMask=0;
-        LI.iSubItem=0;
-	LI.iItem=hb_parni(2) - 1 ;
-
-        ListView_GetItem(h,&LI);
-        i =  LI.iImage;
-
-	hb_retni (i);
 }
 
 HB_FUNC ( LISTVIEW_GETTOPINDEX )
@@ -624,7 +550,6 @@ HB_FUNC ( LISTVIEW_GETITEMRECT )
 	hb_storni( Rect.bottom - Rect.top  , -1, 4 );
 
 }
-
 
 HB_FUNC ( LISTVIEW_UPDATE )
 {

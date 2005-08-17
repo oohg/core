@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.3 2005-08-11 05:17:26 guerra000 Exp $
+ * $Id: h_tab.prg,v 1.4 2005-08-17 05:56:13 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -91,15 +91,15 @@
 	Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-#include "minigui.ch"
+#include "oohg.ch"
 #include "hbclass.ch"
-
-#define TCN_SELCHANGE	(-551)
+#include "i_windefs.ch"
 
 CLASS TTab FROM TControl
    DATA Type      INIT "TAB" READONLY
    DATA aPages    INIT {}
-   DATA ImageList INIT 0
+
+   METHOD Define
 
    METHOD Refresh
    METHOD Release
@@ -107,6 +107,7 @@ CLASS TTab FROM TControl
    METHOD Value               SETGET
    METHOD Enabled             SETGET
    METHOD Visible             SETGET
+   METHOD ForceHide
 
    METHOD Events_Notify
 
@@ -118,17 +119,16 @@ CLASS TTab FROM TControl
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
-Function _DefineTab ( ControlName, ParentForm, x, y, w, h, aCaptions, aPageMap, value, fontname, fontsize , tooltip , change , Buttons , Flat , HotTrack , Vertical , notabstop , aMnemonic , bold, italic, underline, strikeout , Images )
+METHOD Define( ControlName, ParentForm, x, y, w, h, aCaptions, aPageMap, ;
+               value, fontname, fontsize, tooltip, change, Buttons, Flat, ;
+               HotTrack, Vertical, notabstop, aMnemonic, bold, italic, ;
+               underline, strikeout, Images ) CLASS TTab
 *-----------------------------------------------------------------------------*
-*Local imageFlag := .F.
 Local z
-Local Self
 Local Caption, Page, Image, Mnemonic
-
-// AJ
 Local ControlHandle
 
-   Self := TTab():SetForm( ControlName, ParentForm, FontName, FontSize )
+   ::SetForm( ControlName, ParentForm, FontName, FontSize )
 
    IF VALTYPE( aCaptions ) != "A"
       aCaptions := {}
@@ -139,33 +139,6 @@ Local ControlHandle
    IF VALTYPE( Images ) != "A"
       Images := {}
    ENDIF
-
-/*
-	For z := 1 To Len (Images)
-		If ValType (Images[z]) == "C"
-			ImageFlag := .T.
-			Exit
-		EndIf
-	Next z
-
-	If ImageFlag == .T. .And. IsXPThemeActive() == .T.
-
-		For z := 1 To Len (aCaptions)
-
-			If at ( '&' , aCaptions[z] ) != 0
-				aCaptions[z] := Space(3) + aCaptions[z]
-			EndIf
-
-		Next z
-
-	EndIf
-
-   ControlHandle = InitTabControl( ::Parent:hWnd, 0, x, y, w, h , aCaptions, value, '', 0 , Buttons , Flat , HotTrack , Vertical , notabstop )
-
-	If ImageFlag == .T.
-      ::ImageList := AddtabBitMap ( ControlHandle , Images )
-	EndIf
-*/
 
    ControlHandle = InitTabControl( ::Parent:hWnd, 0, x, y, w, h , {}, value, '', 0 , Buttons , Flat , HotTrack , Vertical , notabstop )
    SetWindowPos( ControlHandle, 0, 0, 0, 0, 0, 3 )
@@ -197,10 +170,6 @@ Local ControlHandle
       z++
    ENDDO
 
-	if valtype(change) == "U"
-		change := ""
-	endif
-
    ::New( ControlHandle, ControlName, , , ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
    ::SizePos( y, x, w, h )
@@ -213,15 +182,18 @@ Local ControlHandle
       ::Value := 1
    ENDIF
 
+   AADD( _OOHG_ActiveFrame, Self )
+
 Return Self
 
 *-----------------------------------------------------------------------------*
 METHOD Refresh() CLASS TTab
 *-----------------------------------------------------------------------------*
+Local nPage
 
-   * Hide All Pages, except the selected one
+   nPage := IF( ::Visible, ::Value, 0 )
 
-   AEVAL( ::aPages, { |p| AEVAL( p:aControls, { |o| o:Visible := o:Visible } ) } )
+   AEVAL( ::aPages, { |p,i| if( i == nPage, AEVAL( p:aControls, { |o| o:Visible := o:Visible } ), p:ForceHide() ) } )
 
 Return Nil
 
@@ -229,12 +201,6 @@ Return Nil
 METHOD Release() CLASS TTab
 *-----------------------------------------------------------------------------*
 Local i
-
-   IF ::ImageList != 0
-
-      IMAGELIST_DESTROY ( ::ImageList )
-
-   endif
 
    // Delete controls inside TAB
    FOR i := 1 TO LEN( ::aPages )
@@ -259,13 +225,9 @@ Return Nil
 METHOD Value( nValue ) CLASS TTab
 *-----------------------------------------------------------------------------*
    IF VALTYPE( nValue ) == "N"
-
       TABCTRL_SETCURSEL( ::hWnd, nValue )
-
       ::Refresh()
-
    ENDIF
-
 RETURN TABCTRL_GETCURSEL( ::hWnd )
 
 *-----------------------------------------------------------------------------*
@@ -284,15 +246,30 @@ RETURN ::Super:Enabled
 *-----------------------------------------------------------------------------*
 METHOD Visible( lVisible ) CLASS TTab
 *-----------------------------------------------------------------------------*
-LOCAL nPos
+LOCAL nPos, aPages
    IF VALTYPE( lVisible ) == "L"
       ::Super:Visible := lVisible
       nPos := TabCtrl_GetCurSel( ::hWnd )
-      IF nPos <= LEN( ::aPages ) .AND. nPos >= 1
-         AEVAL( ::aPages[ nPos ]:aControls, { |o| o:Visible := o:Visible } )
+      aPages := ::aPages
+      IF nPos <= LEN( aPages ) .AND. nPos >= 1
+         IF aPages[ nPos ]:Visible
+            AEVAL( aPages[ nPos ]:aControls, { |o| o:Visible := o:Visible } )
+         ELSE
+            aPages[ nPos ]:ForceHide()
+         ENDIF
       ENDIF
    ENDIF
 RETURN ::Super:Visible
+
+*-----------------------------------------------------------------------------*
+METHOD ForceHide() CLASS TTab
+*-----------------------------------------------------------------------------*
+LOCAL nPos
+   nPos := TabCtrl_GetCurSel( ::hWnd )
+   IF nPos <= LEN( ::aPages ) .AND. nPos >= 1
+      AEVAL( ::aPages[ nPos ]:aControls, { |o| o:ForceHide() } )
+   ENDIF
+RETURN ::Super:ForceHide()
 
 *-----------------------------------------------------------------------------*
 METHOD Events_Notify( wParam, lParam ) CLASS TTab
@@ -314,7 +291,7 @@ Return ::Super:Events_Notify( wParam, lParam )
 *-----------------------------------------------------------------------------*
 METHOD AddPage( Position , Caption , Image, aControls, Mnemonic ) CLASS TTab
 *-----------------------------------------------------------------------------*
-Local aImages, oPage, nPos, nKey
+Local oPage, nPos, nKey
 
    IF VALTYPE( Position ) != "N" .OR. Position < 1 .OR. Position > LEN( ::aPages )
       Position := LEN( ::aPages ) + 1
@@ -352,10 +329,20 @@ Local aImages, oPage, nPos, nKey
    AINS( ::aPages, Position )
    ::aPages[ Position ] := oPage
 
-   aImages := {}
-   AEVAL( ::aPages, { |o,i| AADD( aImages, o:Picture ), o:Position := i } )
+   AEVAL( ::aPages, { |o,i| o:Position := i } )
 
-   ::ImageList := AddtabBitMap( ::hWnd, aImages )
+   IF ! Empty( Image )
+//            himl = ImageList_Create( cx , cy , ILC_COLOR8 | ILC_MASK , l + 1 , l + 1 );
+//            ImageList_AddMasked( himl, hbmp, CLR_DEFAULT ) ;
+      If ::ImageList == 0
+         ::ImageList := ImageList_Init( { Image }, CLR_DEFAULT, LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS )[ 1 ]
+         nPos := 1
+      Else
+         nPos := ImageList_Add( ::ImageList, Image, LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS )
+      Endif
+      SendMessage( ::hWnd, TCM_SETIMAGELIST, 0, ::ImageList )
+      SetTabPageImage( ::hWnd, nPos - 1 )
+   ENDIF
 
    nPos := At( '&' , Caption )
 
@@ -378,21 +365,6 @@ Local aImages, oPage, nPos, nKey
    ::Refresh()
 
 Return Nil
-
-*------------------------------------------------------------------------------*
-Function _BeginTab( name , parent , row , col , w , h , value , f , s , tooltip , change , buttons , flat , hottrack , vertical , notabstop , bold, italic, underline, strikeout )
-*------------------------------------------------------------------------------*
-Local Self
-
-	if valtype (value) == 'U'
-		value := 1
-	EndIf
-
-   Self := _DefineTab ( name , parent , row , col , w , h , {}, {}, value, f, s , tooltip , change , buttons , flat , hottrack , vertical , notabstop , , bold, italic, underline, strikeout , {} )
-
-   AADD( _OOHG_ActiveFrame, Self )
-
-Return Self
 
 *------------------------------------------------------------------------------*
 Function _BeginTabPage ( caption , image )
@@ -489,7 +461,7 @@ Return Nil
 *-----------------------------------------------------------------------------*
 METHOD DeletePage( Position ) CLASS TTab
 *-----------------------------------------------------------------------------*
-Local aImages, NewValue
+Local NewValue
 
    IF VALTYPE( Position ) != "N" .OR. Position < 1 .OR. Position > LEN( ::aPages )
       Position := LEN( ::aPages )
@@ -500,14 +472,6 @@ Local aImages, NewValue
    ::aPages[ Position ]:Release()
 
    _OOHG_DeleteArrayItem( ::aPages, Position )
-
-   // Images
-
-   aImages := {}
-
-   AEVAL( ::aPages, { |o,i| AADD( aImages, o:Picture ), o:Position := i } )
-
-   ::ImageList := AddTabBitMap( ::hWnd, aImages )
 
    TabCtrl_DeleteItem( ::hWnd, Position - 1 )
 
@@ -547,12 +511,14 @@ CLASS TTabPage FROM TControl
    DATA Picture   INIT ""
    DATA aControls INIT {}
    DATA Position  INIT 0
+   DATA nImage    INIT -1
 
    METHOD ContainerVisible
 
    METHOD AddControl
    METHOD Release
    METHOD SetFocus            BLOCK { |Self| ::Container:SetFocus() , ::Container:Value := ::Position , Self }
+   METHOD ForceHide           BLOCK { |Self| AEVAL( ::aControls, { |o| o:ForceHide() } ) }
 ENDCLASS
 
 *-----------------------------------------------------------------------------*

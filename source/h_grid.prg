@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.6 2005-08-13 05:12:14 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.7 2005-08-17 05:56:13 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -110,14 +110,12 @@ CLASS TGrid FROM TControl
    DATA Picture          INIT {}
 
    METHOD Define
-
    METHOD Value            SETGET
 
    METHOD Events_Enter
    METHOD Events_Notify
 
    METHOD EditItem
-   METHOD EditItemOk
    METHOD AddColumn
    METHOD DeleteColumn
 
@@ -141,7 +139,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                ondispinfo, itemcount, editable, backcolor, fontcolor, ;
                dynamicbackcolor, dynamicforecolor, aPicture ) CLASS TGrid
 *-----------------------------------------------------------------------------*
-Local wBitmap, ControlHandle
+Local ControlHandle, aImageList
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, .t. )
 
@@ -209,14 +207,17 @@ Local wBitmap, ControlHandle
 
 	endif
 
-   wBitmap := iif( len( aImage ) > 0, AddListViewBitmap( ControlHandle, aImage ), 0 ) //Add Bitmap Column
-	aWidths[1] := max ( aWidths[1], wBitmap + 2 ) // Set Column 1 width to Bitmap width
+   If Len( aImage ) > 0
+      aImageList := ImageList_Init( aImage, CLR_NONE, LR_LOADTRANSPARENT )
+      SendMessage( ControlHandle, LVM_SETIMAGELIST, LVSIL_SMALL, aImageList[ 1 ] )
+      ::ImageList := aImageList[ 1 ]
+      If ASCAN( aPicture, .T. ) == 0
+         aPicture[ 1 ] := .T.
+         aWidths[ 1 ] := max( aWidths[ 1 ], aImageList[ 2 ] + 2 ) // Set Column 1 width to Bitmap width
+      EndIf
+   EndIf
 
    InitListViewColumns( ControlHandle, aHeaders , aWidths, aJust )
-
-   If Len( aImage ) > 0
-      aPicture[ 1 ] := .T.
-   EndIf
 
    ::New( ControlHandle, ControlName, HelpId, , ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
@@ -252,13 +253,17 @@ Return Self
 *-----------------------------------------------------------------------------*
 METHOD EditItem() CLASS TGrid
 *-----------------------------------------------------------------------------*
-Local a,l,g,actpos:={0,0,0,0},GRow,GCol,GWidth,Col,IRow,LN , TN , item,i
+Local a,l,g,actpos:={0,0,0,0},GRow,GCol,GWidth,Col,IRow,LN , TN , item,i, oWnd, aSave
+Local aNum, oCtrl
 
    _OOHG_ActiveFormBak := _OOHG_ActiveForm
 
    a := ::aHeaders
 
    item := ::Value
+   IF item == 0
+      return nil
+   ENDIF
 
 	l := Len(a)
 
@@ -271,39 +276,53 @@ Local a,l,g,actpos:={0,0,0,0},GRow,GCol,GWidth,Col,IRow,LN , TN , item,i
 	GRow 	:= actpos [2]
 	GCol 	:= actpos [1]
 	GWidth 	:= actpos [3] - actpos [1]
+   aSave := {}
 
 	Col := GCol + ( ( GWidth - 260 ) / 2 )
 
 	DEFINE WINDOW _EditItem ;
+      OBJ oWnd ;
 		AT IRow,Col ;
 		WIDTH 260 ;
 		HEIGHT (l*30) + 70 + GetTitleHeight() ;
       TITLE _OOHG_MESSAGE [5] ;
 		MODAL ;
-		NOSIZE
+      NOSIZE
 
 		For i := 1 to l
 			LN := 'Label_' + Alltrim(Str(i,2,0))
 			TN := 'Text_' + Alltrim(Str(i,2,0))
 			@ (i*30) - 17 , 10 LABEL &LN OF _EditItem VALUE Alltrim(a[i]) +":"
-			@ (i*30) - 20 , 120 TEXTBOX  &TN OF _EditItem VALUE g[i]
+         IF ValType( g[ i ] ) == "C"
+            @ (i*30) - 20 , 120 TEXTBOX  &TN OF _EditItem VALUE g[i]
+            AADD( aSave, TGrid_EditItemBlock1( g, i, oWnd:Control( TN ) ) )
+         Else
+            @ (i*30) - 20 , 120 COMBOBOX &TN OF _EditItem ITEMS {} VALUE 0
+            oCtrl := oWnd:Control( TN )
+            aNum := ARRAY( ImageList_GetImageCount( ::ImageList ) )
+            AEval( aNum, { |x,i| aNum[ i ] :=  i - 1, x } )
+            SendMessage( oCtrl:hWnd, CBEM_SETIMAGELIST, 0, ::ImageList )
+            AEVAL( aNum, { |n| ComboAddString( oCtrl:hWnd, "", n ) } )
+            oCtrl:Value := g[ i ] + 1
+            AADD( aSave, TGrid_EditItemBlock2( g, i, oWnd:Control( TN ) ) )
+         ENDIF
 		Next i
 
 		@ (l*30) + 20 , 20 BUTTON BUTTON_1 ;
 		OF _EDITITEM ;
       CAPTION _OOHG_MESSAGE [6] ;
-      ACTION { || ::EditItemOk( Item , l ) }
+      ACTION { || TGrid_EditItemOk( Item, oWnd, Self, g, aSave ) }
 
 		@ (l*30) + 20 , 130 BUTTON BUTTON_2 ;
 		OF _EDITITEM ;
       CAPTION _OOHG_MESSAGE [7] ;
-		ACTION _EditItem.Release
+      ACTION oWnd:Release()
 
 	END WINDOW
 
-	_SetFocus ('Text_1','_EditItem')
+   oWnd:Text_1:SetFocus()
 
-	ACTIVATE WINDOW _EditItem
+   oWnd:Activate()
 
    _OOHG_ActiveForm := _OOHG_ActiveFormBak
 
@@ -311,20 +330,19 @@ Local a,l,g,actpos:={0,0,0,0},GRow,GCol,GWidth,Col,IRow,LN , TN , item,i
 
 Return Nil
 
-*-----------------------------------------------------------------------------*
-METHOD EditItemOk( Item , l ) CLASS TGrid
-*-----------------------------------------------------------------------------*
-Local i , a [l]
+STATIC FUNCTION TGrid_EditItemBlock1( aItems, nItem, oControl )
+Return { || aItems[ nItem ] := oControl:Value }
 
-	for i := 1 to l
+STATIC FUNCTION TGrid_EditItemBlock2( aItems, nItem, oControl )
+Return { || aItems[ nItem ] := oControl:Value - 1 }
 
-      a [i] := GetProperty ( '_EditItem' , 'Text_'+Alltrim(Str(i)) , 'Value' )
+STATIC FUNCTION TGrid_EditItemOk( Item, oWnd, oGrid, a, aSave )
 
-	next i
+   AEVAL( aSave, { | b | EVAL( b ) } )
 
-   ::Item( Item , a )
+   oGrid:Item( Item , a )
 
-	_EditItem.Release
+   oWnd:Release()
 
 Return Nil
 
@@ -605,16 +623,16 @@ Return ::Super:Events_Notify( wParam, lParam )
 *-----------------------------------------------------------------------------*
 METHOD AddItem( aRow, uForeColor, uBackColor ) CLASS TGrid
 *-----------------------------------------------------------------------------*
-Local iIm := 0, aRow2
+Local iIm := 0
 
    if Len( ::aHeaders ) != Len( aRow )
       MsgOOHGError( "Grid.AddItem: Item size mismatch. Program Terminated" )
 	EndIf
 
-   aRow2 := ACLONE( aRow )
-   AEVAL( ::Picture, { |x,i| if( ValType( x ) == "C", aRow2 := Transform( aRow[ i ], x ), ) } )
+   aRow := ACLONE( aRow )
+   AEVAL( ::Picture, { |x,i| if( ValType( x ) == "C", aRow[ i ] := Transform( aRow[ i ], x ), ) } )
 
-   ::SetItemColor( ::ItemCount() + 1, uForeColor, uBackColor, aRow2 )
+   ::SetItemColor( ::ItemCount() + 1, uForeColor, uBackColor, aRow )
 
    AddListViewItems( ::hWnd , aRow )
 
@@ -631,15 +649,12 @@ Return ListViewDeleteString( ::hWnd, nItem )
 METHOD Item( nItem, uValue, uForeColor, uBackColor ) CLASS TGrid
 *-----------------------------------------------------------------------------*
    IF PCOUNT() > 1
+      uValue := ACLONE( uValue )
+      AEVAL( ::Picture, { |x,i| if( ValType( x ) == "C", uValue[ i ] := Transform( uValue[ i ], x ), ) } )
       ::SetItemColor( nItem, uForeColor, uBackColor, uValue )
       ListViewSetItem( ::hWnd, uValue, nItem )
    ENDIF
    uValue := ListViewGetItem( ::hWnd, nItem , Len( ::aHeaders ) )
-   if Len( ::aImages ) > 0
-      if len( uValue ) >= 1
-         uValue [1] := GetImageListViewItems( ::hWnd, nItem )
-      EndIf
-   EndIf
 Return uValue
 
 *-----------------------------------------------------------------------------*
@@ -778,11 +793,6 @@ Return aGrid
 
 
 
-
-
-
-
-
 CLASS TGridMulti FROM TGrid
    DATA Type      INIT "MULTIGRID" READONLY
    DATA lMulti    INIT .T.
@@ -805,7 +815,5 @@ METHOD Value( uValue ) CLASS TGridMulti
       If Len( uValue ) > 0
          ListView_EnsureVisible( ::hWnd, uValue[ 1 ] )
 		EndIf
-   ELSE
-      uValue := ListViewGetMultiSel( ::hWnd )
    ENDIF
-RETURN uValue
+RETURN ListViewGetMultiSel( ::hWnd )

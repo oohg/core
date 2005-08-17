@@ -1,5 +1,5 @@
 /*
- * $Id: c_tab.c,v 1.1 2005-08-07 00:05:14 guerra000 Exp $
+ * $Id: c_tab.c,v 1.2 2005-08-17 05:56:13 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -231,91 +231,13 @@ HB_FUNC( SETTABCAPTION )
 
 }
 
-HB_FUNC (ADDTABBITMAP)
+HB_FUNC( SETTABPAGEIMAGE )
 {
-	HWND hbutton;
-	HIMAGELIST himl;
-	HBITMAP hbmp;
-	PHB_ITEM hArray;
-	char *caption;
-	int l;
-	int s;
-	int cx;
-	int cy;
+   TC_ITEM tie;
 
-	TC_ITEM tie;
-
-	hbutton = (HWND) hb_parnl (1);
-	l = hb_parinfa( 2, 0 ) - 1 ;
-	hArray = hb_param( 2, HB_IT_ARRAY );
-
-	if ( l != 0 )
-	{
-			caption	= hb_itemGetCPtr ( hArray->item.asArray.value->pItems );
-
-			// Determine Image Size Based Upon First Image
-
-	 		himl = ImageList_LoadImage( GetModuleHandle(NULL), caption, 0, l, CLR_DEFAULT, IMAGE_BITMAP, LR_LOADTRANSPARENT | LR_DEFAULTCOLOR | LR_LOADMAP3DCOLORS);
-			if ( himl == NULL )
-			{
-		 		himl = ImageList_LoadImage( GetModuleHandle(NULL), caption, 0, l, CLR_DEFAULT, IMAGE_BITMAP, LR_LOADTRANSPARENT | LR_LOADFROMFILE | LR_DEFAULTCOLOR | LR_LOADMAP3DCOLORS);
-			}
-
-			ImageList_GetIconSize( himl, &cx, &cy );
-
-			ImageList_Destroy(himl);
-
-			//
-
-			himl = ImageList_Create( cx , cy , ILC_COLOR8 | ILC_MASK , l + 1 , l + 1 );
-
- 			hbmp = (HBITMAP) LoadImage(GetModuleHandle(NULL),caption,IMAGE_BITMAP , cx , cy , LR_LOADTRANSPARENT | LR_DEFAULTCOLOR | LR_LOADMAP3DCOLORS);
-			if ( hbmp == NULL)
-			{
-	 			hbmp = (HBITMAP) LoadImage(GetModuleHandle(NULL),caption,IMAGE_BITMAP , cx , cy , LR_LOADTRANSPARENT | LR_LOADFROMFILE | LR_DEFAULTCOLOR | LR_LOADMAP3DCOLORS) ;
-			}
-
- 			ImageList_AddMasked( himl, hbmp, CLR_DEFAULT ) ;
-
-			for (s = 1 ; s<=l ; s=s+1 )
-			{
-
-				caption	= hb_itemGetCPtr ( hArray->item.asArray.value->pItems + s );
-
-	 			hbmp = (HBITMAP) LoadImage(GetModuleHandle(NULL),caption,IMAGE_BITMAP , cx , cy , LR_LOADTRANSPARENT | LR_DEFAULTCOLOR | LR_LOADMAP3DCOLORS);
-				if ( hbmp == NULL)
-				{
-		 			hbmp = (HBITMAP) LoadImage(GetModuleHandle(NULL),caption,IMAGE_BITMAP , cx , cy , LR_LOADTRANSPARENT | LR_LOADFROMFILE | LR_DEFAULTCOLOR | LR_LOADMAP3DCOLORS) ;
-				}
-
-	 			ImageList_AddMasked( himl, hbmp, CLR_DEFAULT ) ;
-				DeleteObject( hbmp ) ;
-
-			}
-
-			if ( himl != NULL )
-			{
-				SendMessage(hbutton,TCM_SETIMAGELIST, (WPARAM) 0 , (LPARAM) himl );
-			}
-
-			for ( s = 0 ; s <= l ; s++ )
-			{
-
-				tie.mask = TCIF_IMAGE ;
-				tie.iImage = s;
-				TabCtrl_SetItem ( (HWND) hbutton , s , &tie);
-
-			}
-
-	}
-
-	hb_retnl( (LONG) himl );
-
-}
-
-
-
-HB_FUNC(IMAGELIST_DESTROY)
-{
-   hb_retl( ImageList_Destroy( (HIMAGELIST) hb_parnl(1) ) );
+//            himl = ImageList_Create( cx , cy , ILC_COLOR8 | ILC_MASK , l + 1 , l + 1 );
+//            ImageList_AddMasked( himl, hbmp, CLR_DEFAULT ) ;
+   tie.mask = TCIF_IMAGE ;
+   tie.iImage = hb_parni( 2 );
+   TabCtrl_SetItem( ( HWND ) hb_parnl( 1 ), hb_parni( 2 ), &tie );
 }
