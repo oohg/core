@@ -1,5 +1,5 @@
 /*
- * $Id: h_spinner.prg,v 1.1 2005-08-07 00:12:12 guerra000 Exp $
+ * $Id: h_spinner.prg,v 1.2 2005-08-17 05:58:27 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -91,7 +91,7 @@
 	Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-#include "minigui.ch"
+#include "oohg.ch"
 #include "common.ch"
 #include "hbclass.ch"
 
@@ -106,6 +106,7 @@ CLASS TSpinner FROM TControl
    METHOD Value               SETGET
    METHOD Enabled             SETGET
    METHOD Visible             SETGET
+   METHOD ForceHide           BLOCK { |Self| HideWindow( ::ControlHdl ) , ::Super:ForceHide() }
 
    METHOD RangeMin            SETGET
    METHOD RangeMax            SETGET

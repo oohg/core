@@ -1,8 +1,8 @@
 /*
- * $Id: h_combo.prg,v 1.3 2005-08-11 05:14:47 guerra000 Exp $
+ * $Id: h_combo.prg,v 1.4 2005-08-17 05:58:27 guerra000 Exp $
  */
 /*
- * $Id: h_combo.prg,v 1.3 2005-08-11 05:14:47 guerra000 Exp $
+ * $Id: h_combo.prg,v 1.4 2005-08-17 05:58:27 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -112,11 +112,12 @@ CLASS TCombo FROM TLabel
    METHOD Refresh
    METHOD Value               SETGET
    METHOD Visible             SETGET
+   METHOD ForceHide           BLOCK { |Self| SendMessage( ::hWnd, 335 , 0 , 0 ) , ::Super:ForceHide() }
    METHOD RefreshData
 
    METHOD Events_Command
 
-   METHOD AddItem(cValue)     BLOCK { |Self,cValue| ComboAddString( ::hWnd, cValue ) }
+   METHOD AddItem(cValue)     BLOCK { |Self,cValue,nImage| ComboAddString( ::hWnd, cValue, nImage ) }
    METHOD DeleteItem(nItem)   BLOCK { |Self,nItem| ComboBoxDeleteString( ::hWnd, nItem ) }
    METHOD DeleteAllItems      BLOCK { | Self | ComboBoxReset( ::hWnd ) }
    METHOD Item
@@ -413,10 +414,10 @@ Local Hi_wParam := HIWORD( wParam )
 Return ::Super:Events_Command( wParam )
 
 *-----------------------------------------------------------------------------*
-METHOD Item( nItem, cValue ) CLASS TCombo
+METHOD Item( nItem, cValue, nImage ) CLASS TCombo
 *-----------------------------------------------------------------------------*
    IF VALTYPE( cValue ) == "C"
       ComboBoxDeleteString( ::hWnd, nItem )
-      ComboInsertString( ::hWnd, cValue, nItem )
+      ComboInsertString( ::hWnd, cValue, nItem, nImage )
    ENDIF
 RETURN ComboGetString( ::hWnd, nItem )

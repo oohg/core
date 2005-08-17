@@ -1,5 +1,5 @@
 /*
- * $Id: h_radio.prg,v 1.2 2005-08-11 05:14:47 guerra000 Exp $
+ * $Id: h_radio.prg,v 1.3 2005-08-17 05:58:27 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -91,30 +91,28 @@
 	Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-#define BM_GETCHECK	240
-#define BST_UNCHECKED	0
-#define BST_CHECKED	1
-#define BM_SETCHECK	241
-#define BN_CLICKED	0
-
-#include "minigui.ch"
+#include "oohg.ch"
 #include "common.ch"
 #include "hbclass.ch"
+#include "i_windefs.ch"
 
 CLASS TRadioGroup FROM TLabel
    DATA Type          INIT "RADIOGROUP" READONLY
    DATA aItems        INIT {}
    DATA TabStop       INIT .T.
+   DATA IconWidth     INIT 18
 
    METHOD RowMargin   BLOCK { |Self| - ::Row }
    METHOD ColMargin   BLOCK { |Self| - ::Col }
 
+   METHOD Define
    METHOD Release
    METHOD SetFont
    METHOD SizePos
    METHOD Value               SETGET
    METHOD Enabled             SETGET
    METHOD Visible             SETGET
+   METHOD ForceHide           BLOCK { |Self| AEVAL( ::aItems, { |o| o:ForceHide() } ) }
 
    METHOD IsHandle
    METHOD Caption
@@ -126,14 +124,13 @@ CLASS TRadioGroup FROM TLabel
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
-Function _DefineRadioGroup ( ControlName, ParentForm, x, y, aOptions, Value, ;
-                             fontname, fontsize, tooltip, change, width, ;
-                             spacing, HelpId, invisible, notabstop , bold, italic, underline, strikeout , backcolor , fontcolor , transparent )
+METHOD Define( ControlName, ParentForm, x, y, aOptions, Value, fontname, ;
+               fontsize, tooltip, change, width, spacing, HelpId, invisible, ;
+               notabstop, bold, italic, underline, strikeout, backcolor, ;
+               fontcolor, transparent, autosize ) CLASS TRadioGroup
 *-----------------------------------------------------------------------------*
 Local i
-Local Self, oItem
-
-// AJ
+Local oItem
 Local ControlHandle
 
    DEFAULT Width     TO 120
@@ -141,10 +138,11 @@ Local ControlHandle
    DEFAULT change    TO ""
    DEFAULT invisible TO FALSE
    DEFAULT notabstop TO FALSE
+   DEFAULT autosize  TO FALSE
 
-   Self := TRadioGroup():SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor )
+   ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor )
 
-   ControlHandle := InitRadioGroup ( ::Parent:hWnd, aOptions[1], 0, x, y , '' , 0 , width, invisible, notabstop )
+   ControlHandle := InitRadioGroup( ::Parent:hWnd, aOptions[1], 0, x, y , '' , 0 , width, invisible, notabstop )
 
    ::New( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
@@ -154,27 +152,30 @@ Local ControlHandle
    ::OnChange   :=  Change
    ::TabStop := NoTabStop
    ::aItems := {}
+   ::AutoSize := autosize
 
    // First item
    oItem := TRadioItem():SetContainer( Self )
    oItem:New( ControlHandle, , HelpId, ! Invisible, ToolTip )
    oItem:SetFont( , , bold, italic, underline, strikeout )
    oItem:SizePos( ::Row, ::Col, ::Width, Spacing )
+   oItem:AutoSize := autosize
    oItem:Caption := aOptions[ 1 ]
 
    y := ::Row
 
-	for i = 2 to len (aOptions)
+   for i = 2 to len( aOptions )
 
-		y = y + Spacing
+      y += Spacing
 
-      ControlHandle := InitRadioButton ( ::Parent:hWnd, aOptions[i], 0, ::Col, y , '' , 0 , width, invisible )
+      ControlHandle := InitRadioButton( ::Parent:hWnd, aOptions[i], 0, ::Col, y , '' , 0 , width, invisible )
 
       oItem := TRadioItem():SetContainer( Self )
       oItem:New( ControlHandle, , HelpId, ! Invisible, ToolTip )
       oItem:SetFont( , , bold, italic, underline, strikeout )
       oItem:SizePos( y, ::Col, ::Width, Spacing )
-      oItem:Caption := aOptions[i]
+      oItem:AutoSize := autosize
+      oItem:Caption := aOptions[ i ]
 
 	next i
 
@@ -190,38 +191,27 @@ Return Self
 *-----------------------------------------------------------------------------*
 METHOD Release() CLASS TRadioGroup
 *-----------------------------------------------------------------------------*
-
    DO WHILE LEN( ::aItems ) > 0
       ::aItems[ 1 ]:Release()
    ENDDO
-
 Return ::Super:Release()
 
 *-----------------------------------------------------------------------------*
 METHOD SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout ) CLASS TRadioGroup
 *-----------------------------------------------------------------------------*
-
    AEVAL( ::aItems, { |o| o:SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout ) } )
-
 RETURN ::Super:SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout )
 
 *-----------------------------------------------------------------------------*
 METHOD SizePos( Row, Col, Width, Height ) CLASS TRadioGroup
 *-----------------------------------------------------------------------------*
 Local nDeltaRow, nDeltaCol, uRet
-
    nDeltaRow := ::Row
-
    nDeltaCol := ::Col
-
    uRet := ::Super:SizePos( Row, Col, Width, Height )
-
    nDeltaRow := ::Row - nDeltaRow
-
    nDeltaCol := ::Col - nDeltaCol
-
    AEVAL( ::aItems, { |o| o:SizePos( o:Row + nDeltaRow, o:Col + nDeltaCol ) } )
-
 Return uRet
 
 *-----------------------------------------------------------------------------*
@@ -263,30 +253,19 @@ Return ( ASCAN( ::aItems, { |o| o:hWnd == hWnd } ) != 0 )
 *-----------------------------------------------------------------------------*
 METHOD Caption( nItem, uValue ) CLASS TRadioGroup
 *-----------------------------------------------------------------------------*
-   IF VALTYPE( uValue ) == "C"
-      ::aItems[ nItem ]:Caption := uValue
-   ENDIF
-Return ::aItems[ nItem ]:Caption
+Return if( VALTYPE( uValue ) == "C", ::aItems[ nItem ]:Caption := uValue, ::aItems[ nItem ]:Caption )
 
 *-----------------------------------------------------------------------------*
 METHOD Events_Command( wParam ) CLASS TRadioGroup
 *-----------------------------------------------------------------------------*
 Local Hi_wParam := HIWORD( wParam )
-
    If Hi_wParam == BN_CLICKED
-
       ::DoEvent( ::OnChange )
-
       If ::TabStop .AND. IsTabStop( ::hWnd )
-
          SetTabStop( ::hWnd, .F. )
-
       EndIf
-
       Return nil
-
    EndIf
-
 Return ::Super:Events_Command( wParam )
 
 
@@ -295,36 +274,20 @@ Return ::Super:Events_Command( wParam )
 
 CLASS TRadioItem FROM TLabel
    DATA Type          INIT "RADIOITEM" READONLY
+   DATA IconWidth     INIT 18
 
-   METHOD Caption     SETGET
    METHOD Events_Command
 ENDCLASS
-
-*-----------------------------------------------------------------------------*
-METHOD Caption( uValue ) CLASS TRadioItem
-*-----------------------------------------------------------------------------*
-   IF VALTYPE( uValue ) == "C"
-      ::TopValue := uValue
-   ENDIF
-Return ::TopValue
 
 *-----------------------------------------------------------------------------*
 METHOD Events_Command( wParam ) CLASS TRadioItem
 *-----------------------------------------------------------------------------*
 Local Hi_wParam := HIWORD( wParam )
-
    If Hi_wParam == BN_CLICKED
-
       ::Container:DoEvent( ::Container:OnChange )
-
       If ::Container:TabStop .AND. IsTabStop( ::hWnd )
-
          SetTabStop( ::hWnd, .F. )
-
       EndIf
-
       Return nil
-
    EndIf
-
 Return ::Super:Events_Command( wParam )
