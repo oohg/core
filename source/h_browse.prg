@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.6 2005-08-13 05:12:14 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.7 2005-08-17 05:57:17 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -90,6 +90,7 @@
 	"Harbour Project"
 	Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
+
 #include 'oohg.ch'
 #include "hbclass.ch"
 #include "i_windefs.ch"
@@ -129,6 +130,7 @@ CLASS TBrowse FROM TGrid
    METHOD Value               SETGET
    METHOD Enabled             SETGET
    METHOD Visible             SETGET
+   METHOD ForceHide
    METHOD RefreshData
 
    METHOD IsHandle
@@ -197,7 +199,7 @@ Local ScrollBarHandle, hsum, ScrollBarButtonHandle, nWidth2
    nWidth2 := w - if( novscroll, 0, GETVSCROLLBARWIDTH() )
 
    ::Super:Define( ControlName, ParentForm, x, y, nWidth2, h, aHeaders, aWidths, {}, nil, ;
-                   fontname, fontsize, tooltip, change, dblclick, aHeadClick, gotfocus, lostfocus, ;
+                   fontname, fontsize, tooltip, /* change */, /* dblclick */, aHeadClick, /* gotfocus */ , /* lostfocus */, ;
                    nogrid, aImage, aJust, break, HelpId, bold, italic, underline, strikeout, nil, ;
                    nil, nil, edit, backcolor, fontcolor, dynamicbackcolor, dynamicforecolor, aPicture )
 
@@ -255,6 +257,12 @@ Local ScrollBarHandle, hsum, ScrollBarButtonHandle, nWidth2
    ::ScrollBarButtonHandle := ScrollBarButtonHandle
 
    ::SizePos()
+
+   // Must be set after control is initialized
+   ::OnLostFocus := lostfocus
+   ::OnGotFocus :=  gotfocus
+   ::OnChange   :=  change
+   ::OnDblClick := dblclick
 
 Return Self
 
@@ -2011,6 +2019,17 @@ METHOD Visible( lVisible ) CLASS TBrowse
       ProcessMessages()
    ENDIF
 RETURN ::Super:Visible
+
+*------------------------------------------------------------------------------*
+METHOD ForceHide() CLASS TBrowse
+*------------------------------------------------------------------------------*
+   If ::VScroll != nil
+      ::VScroll:ForceHide()
+   EndIf
+   If ::ScrollBarButtonHandle != 0
+      HideWindow( ::ScrollBarButtonHandle )
+   EndIf
+RETURN ::Super:ForceHide()
 
 *-----------------------------------------------------------------------------*
 METHOD RefreshData() CLASS TBrowse
