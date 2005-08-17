@@ -1,5 +1,5 @@
 /*
- * $Id: i_radiogroup.ch,v 1.1 2005-08-06 23:53:54 guerra000 Exp $
+ * $Id: i_radiogroup.ch,v 1.2 2005-08-17 06:02:25 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -92,6 +92,7 @@
 ---------------------------------------------------------------------------*/
 
 #command @ <row>,<col> RADIOGROUP <name>        ;
+                        [ OBJ <obj> ]           ;
 			[ <dummy1: OF, PARENT> <parent> ] ;
 			OPTIONS <aOptions>	;
 			[ VALUE <value> ]	;
@@ -111,6 +112,7 @@
 			[ HELPID <helpid> ] 		;
 			[ <invisible : INVISIBLE> ] ;
 			[ <notabstop : NOTABSTOP> ] ;
+                        [ <autosize : AUTOSIZE> ] ;
 	=>;
-	_DefineradioGroup ( <"name">, <"parent">, <col>, <row>, <aOptions>, <value> , <fontname> , <fontsize>  , <tooltip>  , <{change}> , <width> , <spacing>  , <helpid>, <.invisible.>, <.notabstop.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <backcolor> , <fontcolor> , <.transparent.> )
-
+        [ <obj> := ] ;
+        TRadioGroup():Define( <"name">, <"parent">, <col>, <row>, <aOptions>, <value> , <fontname> , <fontsize>  , <tooltip>  , <{change}> , <width> , <spacing>  , <helpid>, <.invisible.>, <.notabstop.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <backcolor> , <fontcolor> , <.transparent.>, <.autosize.> )
