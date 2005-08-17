@@ -1,5 +1,5 @@
 /*
- * $Id: i_tab.ch,v 1.1 2005-08-06 23:53:54 guerra000 Exp $
+ * $Id: i_tab.ch,v 1.2 2005-08-17 06:03:12 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -92,6 +92,7 @@
 ---------------------------------------------------------------------------*/
 
 #command DEFINE TAB <name> ;
+                [ OBJ <obj> ] ;
 		[ <dummy1: OF, PARENT> <parent> ] ;
 		AT <row> , <col> ;
 		WIDTH <w> ;
@@ -111,7 +112,7 @@
 		[ ON CHANGE <change> ] ;
                 [ <notabstop: NOTABSTOP> ]       ;
 	=>;
-        _BeginTab( <"name"> , <"parent"> , <col> , <row> , <w> , <h> , <value> , <f> , <s> , <tooltip> , <{change}> , <.buttons.> , <.flat.> , <.hottrack.> , <.vertical.>, <.notabstop.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> )
+[ <obj> := ] TTab():Define( <"name"> , <"parent"> , <col> , <row> , <w> , <h> , {}, {}, <value> , <f> , <s> , <tooltip> , <{change}> , <.buttons.> , <.flat.> , <.hottrack.> , <.vertical.>, <.notabstop.> , , <.bold.>, <.italic.>, <.underline.>, <.strikeout.> , {} )
 
 #command PAGE <caption> [ IMAGE <image> ] ;
 	=>;
