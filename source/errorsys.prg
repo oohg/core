@@ -1,5 +1,5 @@
 /*
- * $Id: errorsys.prg,v 1.1 2005-08-07 00:06:08 guerra000 Exp $
+ * $Id: errorsys.prg,v 1.2 2005-08-17 05:52:09 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -91,7 +91,7 @@
 	Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-#include "minigui.ch"
+#include "oohg.ch"
 #include "error.ch"
 #include "common.ch"
 
@@ -227,7 +227,7 @@ FUNCTION HTML_ERRORLOG
 *---------------------
     Local HtmArch := 0
     If .Not. File("\"+CurDir()+"\ErrorLog.Htm")
-        HtmArch := HtmL_Ini("\"+CurDir()+"\ErrorLog.Htm","Harbour - MiniGui Errorlog File")
+        HtmArch := HtmL_Ini("\"+CurDir()+"\ErrorLog.Htm","ooHG Errorlog File")
         Html_Line(HtmArch)
     Else
         HtmArch := FOPEN("\"+CurDir()+"\ErrorLog.Htm",2)
