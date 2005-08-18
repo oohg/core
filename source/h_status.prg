@@ -1,5 +1,5 @@
 /*
- * $Id: h_status.prg,v 1.2 2005-08-11 05:14:47 guerra000 Exp $
+ * $Id: h_status.prg,v 1.3 2005-08-18 04:04:40 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -91,7 +91,7 @@
 	Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-#include "minigui.ch"
+#include "oohg.ch"
 #include "hbclass.ch"
 #include "i_windefs.ch"
 
@@ -189,7 +189,7 @@ local nrItem
 
    nrItem := _DefineItemMessage ( "TimerBar",  _OOHG_ActiveMessageBar:Name, 0, 0, Time(), action , Width, 0, "" , ToolTip )
 
-   _DefineTimer( 'StatusTimer' , ::Parent:Name , 1000 , { || ::Item( nrItem , Time() ) } )
+   TTimer():Define( 'StatusTimer' , ::Parent:Name , 1000 , { || ::Item( nrItem , Time() ) } )
 
 Return Nil
 
@@ -217,7 +217,7 @@ local nrItem1 , nrItem2 , nrItem3
    nrItem3 := _DefineItemMessage( "TimerInsert", _OOHG_ActiveMessageBar:Name, 0, 0, "Insert", If ( empty (Action), {|| KeyToggle( VK_INSERT ) }, Action ), Width, 0,;
                      if ( IsInsertActive() , "zzz_led_on" , "zzz_led_off" ), "", ToolTip)
 
-   _DefineTimer ( 'StatusKeyBrd' , ::Parent:Name , 400 , ;
+   TTimer():Define( 'StatusKeyBrd' , ::Parent:Name , 400 , ;
       {|| SetStatusItemIcon( ::hWnd, nrItem1 , if ( IsNumLockActive() , "zzz_led_on" , "zzz_led_off" ) ), ;
           SetStatusItemIcon( ::hWnd, nrItem2 , if ( IsCapsLockActive() , "zzz_led_on" , "zzz_led_off" ) ), ;
           SetStatusItemIcon( ::hWnd, nrItem3 , if ( IsInsertActive() , "zzz_led_on" , "zzz_led_off" ) ) } )
@@ -227,7 +227,7 @@ Return Nil
 *-----------------------------------------------------------------------------*
 METHOD Item( nItem, uValue ) CLASS TMessageBar
 *-----------------------------------------------------------------------------*
-   IF VALTYPE( uValue  ) == "C"
+   IF VALTYPE( uValue  ) $ "CM"
       ::aControls[ nItem ]:Caption := uValue
       SetItemBar( ::hWnd, uValue, nItem - 1 )
    ENDIF
@@ -315,7 +315,7 @@ Local Self
 empty( parentcontrol )
 
    Self := TItemMessage():SetContainer( _OOHG_ActiveMessageBar, "" )
-   IF VALTYPE( ControlName ) == "C" .AND. upper( alltrim( ControlName ) ) == "STATUSITEM" .AND. ::Parent:Control( "STATUSITEM" ) == nil
+   IF VALTYPE( ControlName ) $ "CM" .AND. upper( alltrim( ControlName ) ) == "STATUSITEM" .AND. ::Parent:Control( "STATUSITEM" ) == nil
       ::Name := "STATUSITEM"
    ENDIF
 

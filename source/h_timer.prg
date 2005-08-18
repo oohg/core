@@ -1,5 +1,5 @@
 /*
- * $Id: h_timer.prg,v 1.1 2005-08-07 00:11:28 guerra000 Exp $
+ * $Id: h_timer.prg,v 1.2 2005-08-18 04:04:40 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -91,27 +91,25 @@
 	Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-#include "minigui.ch"
+#include "oohg.ch"
 #include "hbclass.ch"
 
 CLASS TTimer FROM TControl
    DATA Type      INIT "TIMER" READONLY
    DATA Interval  INIT 0
 
+   METHOD Define
    METHOD Value        SETGET
    METHOD Enabled      SETGET
    METHOD Release
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
-Function _DefineTimer ( ControlName ,ParentForm , Interval , ProcedureName )
+METHOD Define( ControlName, ParentForm, Interval, ProcedureName ) CLASS TTimer
 *-----------------------------------------------------------------------------*
-Local Self
-
-// AJ
 Local id
 
-   Self := TTimer():SetForm( ControlName, ParentForm )
+   ::SetForm( ControlName, ParentForm )
 
 	Id := _GetId()
    InitTimer( ::Parent:hWnd, id , Interval )
@@ -121,7 +119,7 @@ Local id
    ::OnClick := ProcedureName
    ::Interval :=  Interval
 
-Return Nil
+Return Self
 
 *-----------------------------------------------------------------------------*
 METHOD Value( nValue ) CLASS TTimer

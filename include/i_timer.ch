@@ -1,5 +1,5 @@
 /*
- * $Id: i_timer.ch,v 1.1 2005-08-06 23:53:54 guerra000 Exp $
+ * $Id: i_timer.ch,v 1.2 2005-08-18 04:04:39 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -92,8 +92,9 @@
 ---------------------------------------------------------------------------*/
 
 #command DEFINE TIMER <name> ;
+                [ OBJ <obj> ] ;
 		[ <dummy1: OF, PARENT> <parent> ] ;
 		INTERVAL <interval> ;
 		ACTION <action> ;
 	=>;
-	_DefineTimer ( <"name"> , <"parent"> ,<interval> , <{action}> )
+        [ <obj> := ] TTimer():Define( <"name"> , <"parent"> , <interval> , <{action}> )
