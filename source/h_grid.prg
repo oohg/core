@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.7 2005-08-17 05:56:13 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.8 2005-08-18 04:01:06 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -97,7 +97,6 @@
 
 CLASS TGrid FROM TControl
    DATA Type             INIT "GRID" READONLY
-   DATA aImages          INIT {}
    DATA aWidths          INIT {}
    DATA aHeaders         INIT ""
    DATA aHeadClick       INIT {}
@@ -108,6 +107,9 @@ CLASS TGrid FROM TControl
    DATA DynamicBackColor INIT {}
    DATA lMulti           INIT .F.
    DATA Picture          INIT {}
+   DATA OnDispInfo       INIT nil
+   DATA SetImageListCommand INIT LVM_SETIMAGELIST
+   DATA SetImageListWParam  INIT LVSIL_SMALL
 
    METHOD Define
    METHOD Value            SETGET
@@ -175,16 +177,13 @@ Local ControlHandle, aImageList
 		aSize( aJust, len( aHeaders ) )
       aEval( aJust, { |x| x := iif( ValType( x ) != "N", 0, x ) } )
 	endif
-   if valtype(aImage) != "A"
-		aImage := {}
-	endif
 
    if valtype( aPicture ) != "A"
       aPicture := Array( len( aHeaders ) )
 	else
       aSize( aPicture, len( aHeaders ) )
 	endif
-   aEval( aPicture, { |x,i| aPicture[ i ] := iif( ( ValType( x ) == "C" .AND. ! Empty( x ) ) .OR. ValType( x ) == "L", x, nil ) } )
+   aEval( aPicture, { |x,i| aPicture[ i ] := iif( ( ValType( x ) $ "CM" .AND. ! Empty( x ) ) .OR. ValType( x ) == "L", x, nil ) } )
 
    if valtype( x ) != "N" .OR. valtype( y ) != "N"
 
@@ -207,9 +206,9 @@ Local ControlHandle, aImageList
 
 	endif
 
-   If Len( aImage ) > 0
+   if valtype( aImage ) == "A"
       aImageList := ImageList_Init( aImage, CLR_NONE, LR_LOADTRANSPARENT )
-      SendMessage( ControlHandle, LVM_SETIMAGELIST, LVSIL_SMALL, aImageList[ 1 ] )
+      SendMessage( ControlHandle, ::SetImageListCommand, ::SetImageListWParam, aImageList[ 1 ] )
       ::ImageList := aImageList[ 1 ]
       If ASCAN( aPicture, .T. ) == 0
          aPicture[ 1 ] := .T.
@@ -230,13 +229,12 @@ Local ControlHandle, aImageList
 		aHeadClick := {}
 	endif
 
-   ::OnClick := ondispinfo
+   ::OnDispInfo := ondispinfo
    ::aWidths := aWidths
    ::aHeaders :=  aHeaders
    ::OnLostFocus := LostFocus
    ::OnGotFocus :=  GotFocus
    ::OnChange   :=  Change
-   ::aImages :=  aImage
    ::OnDblClick := dblclick
    ::aHeadClick :=  aHeadClick
    ::AllowEdit :=  Editable
@@ -293,16 +291,15 @@ Local aNum, oCtrl
 			LN := 'Label_' + Alltrim(Str(i,2,0))
 			TN := 'Text_' + Alltrim(Str(i,2,0))
 			@ (i*30) - 17 , 10 LABEL &LN OF _EditItem VALUE Alltrim(a[i]) +":"
-         IF ValType( g[ i ] ) == "C"
+         IF ValType( g[ i ] ) $ "CM"
             @ (i*30) - 20 , 120 TEXTBOX  &TN OF _EditItem VALUE g[i]
             AADD( aSave, TGrid_EditItemBlock1( g, i, oWnd:Control( TN ) ) )
          Else
             @ (i*30) - 20 , 120 COMBOBOX &TN OF _EditItem ITEMS {} VALUE 0
             oCtrl := oWnd:Control( TN )
             aNum := ARRAY( ImageList_GetImageCount( ::ImageList ) )
-            AEval( aNum, { |x,i| aNum[ i ] :=  i - 1, x } )
-            SendMessage( oCtrl:hWnd, CBEM_SETIMAGELIST, 0, ::ImageList )
-            AEVAL( aNum, { |n| ComboAddString( oCtrl:hWnd, "", n ) } )
+            SendMessage( oCtrl:hWnd, oCtrl:SetImageListCommand, oCtrl:SetImageListWParam, ::ImageList )
+            AEVAL( aNum, { |x,i| ComboAddString( oCtrl:hWnd, i - 1 ), x } )
             oCtrl:Value := g[ i ] + 1
             AADD( aSave, TGrid_EditItemBlock2( g, i, oWnd:Control( TN ) ) )
          ENDIF
@@ -311,7 +308,7 @@ Local aNum, oCtrl
 		@ (l*30) + 20 , 20 BUTTON BUTTON_1 ;
 		OF _EDITITEM ;
       CAPTION _OOHG_MESSAGE [6] ;
-      ACTION { || TGrid_EditItemOk( Item, oWnd, Self, g, aSave ) }
+      ACTION { || AEVAL( aSave, { |b| EVAL(b) } ), ::Item( Item , g ), oWnd:Release() }
 
 		@ (l*30) + 20 , 130 BUTTON BUTTON_2 ;
 		OF _EDITITEM ;
@@ -336,16 +333,6 @@ Return { || aItems[ nItem ] := oControl:Value }
 STATIC FUNCTION TGrid_EditItemBlock2( aItems, nItem, oControl )
 Return { || aItems[ nItem ] := oControl:Value - 1 }
 
-STATIC FUNCTION TGrid_EditItemOk( Item, oWnd, oGrid, a, aSave )
-
-   AEVAL( aSave, { | b | EVAL( b ) } )
-
-   oGrid:Item( Item , a )
-
-   oWnd:Release()
-
-Return Nil
-
 *-----------------------------------------------------------------------------*
 METHOD AddColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor, lNoDelete, uPicture ) CLASS TGrid
 *-----------------------------------------------------------------------------*
@@ -360,7 +347,7 @@ Local nColumns, uGridColor, uDynamicColor
       nColIndex := 1
 	EndIf
 
-   If ValType( cCaption ) != 'C'
+   If ! ValType( cCaption ) $ 'CM'
 		cCaption := ''
 	EndIf
 
@@ -380,7 +367,7 @@ Local nColumns, uGridColor, uDynamicColor
    // Update Pictures
    ASIZE( ::Picture, nColumns )
    AINS( ::Picture, nColIndex )
-   ::Picture[ nColIndex ] := iif( ( ValType( uPicture ) == "C" .AND. ! Empty( uPicture ) ) .OR. ValType( uPicture ) == "L", uPicture, nil )
+   ::Picture[ nColIndex ] := iif( ( ValType( uPicture ) $ "CM" .AND. ! Empty( uPicture ) ) .OR. ValType( uPicture ) == "L", uPicture, nil )
 
    IF ValType( lNoDelete ) != "L"
       lNoDelete := .F.
@@ -526,7 +513,7 @@ Local lvc, aCellData, _ThisQueryTemp
 
       * Grid OnQueryData ............................
 
-      if valtype( ::OnClick ) == 'B'
+      if valtype( ::OnDispInfo ) == 'B'
 
          _PushEventInfo()
          _OOHG_ThisForm := ::Parent
@@ -535,10 +522,10 @@ Local lvc, aCellData, _ThisQueryTemp
          _ThisQueryTemp  := GETGRIDDISPINFOINDEX ( lParam )
          _OOHG_ThisQueryRowIndex  := _ThisQueryTemp [1]
          _OOHG_ThisQueryColIndex  := _ThisQueryTemp [2]
-         Eval( ::OnClick )
-         if Len ( ::aImages ) > 0 .And. _OOHG_ThisQueryColIndex == 1
+         Eval( ::OnDispInfo )
+         IF ValType( _OOHG_ThisQueryData ) == "N"
             SetGridQueryImage ( lParam , _OOHG_ThisQueryData )
-         Else
+         ElseIf ValType( _OOHG_ThisQueryData ) $ "CM"
             SetGridQueryData ( lParam , _OOHG_ThisQueryData )
          EndIf
          _OOHG_ThisQueryRowIndex  := 0
@@ -630,7 +617,7 @@ Local iIm := 0
 	EndIf
 
    aRow := ACLONE( aRow )
-   AEVAL( ::Picture, { |x,i| if( ValType( x ) == "C", aRow[ i ] := Transform( aRow[ i ], x ), ) } )
+   AEVAL( ::Picture, { |x,i| if( ValType( x ) $ "CM", aRow[ i ] := Transform( aRow[ i ], x ), ) } )
 
    ::SetItemColor( ::ItemCount() + 1, uForeColor, uBackColor, aRow )
 
@@ -650,7 +637,7 @@ METHOD Item( nItem, uValue, uForeColor, uBackColor ) CLASS TGrid
 *-----------------------------------------------------------------------------*
    IF PCOUNT() > 1
       uValue := ACLONE( uValue )
-      AEVAL( ::Picture, { |x,i| if( ValType( x ) == "C", uValue[ i ] := Transform( uValue[ i ], x ), ) } )
+      AEVAL( ::Picture, { |x,i| if( ValType( x ) $ "CM", uValue[ i ] := Transform( uValue[ i ], x ), ) } )
       ::SetItemColor( nItem, uForeColor, uBackColor, uValue )
       ListViewSetItem( ::hWnd, uValue, nItem )
    ENDIF
@@ -697,7 +684,7 @@ Return aGrid
 *-----------------------------------------------------------------------------*
 METHOD Header( nColumn, uValue ) CLASS TGrid
 *-----------------------------------------------------------------------------*
-   IF VALTYPE( uValue ) == "C"
+   IF VALTYPE( uValue ) $ "CM"
       ::aHeaders[ nColumn ] := uValue
       SETGRIDCOLOMNHEADER( ::hWnd, nColumn, uValue )
    ENDIF

@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.4 2005-08-17 05:56:13 guerra000 Exp $
+ * $Id: h_tab.prg,v 1.5 2005-08-18 04:01:06 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -98,6 +98,12 @@
 CLASS TTab FROM TControl
    DATA Type      INIT "TAB" READONLY
    DATA aPages    INIT {}
+//            himl = ImageList_Create( cx , cy , ILC_COLOR8 | ILC_MASK , l + 1 , l + 1 );
+//            ImageList_AddMasked( himl, hbmp, CLR_DEFAULT ) ;
+   DATA ImageListColor      INIT CLR_DEFAULT
+   DATA ImageListFlags      INIT LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
+   DATA SetImageListCommand INIT TCM_SETIMAGELIST
+   DATA SetImageListWParam  INIT 0
 
    METHOD Define
 
@@ -146,12 +152,12 @@ Local ControlHandle
    // Add page by page
    z := 1
    DO WHILE z <= LEN( aCaptions ) .AND. z <= LEN( aPageMap ) .AND. z <= LEN( Images )
-      IF z <= LEN( Images ) .AND. VALTYPE( Images[ z ] ) == "C"
+      IF z <= LEN( Images ) .AND. VALTYPE( Images[ z ] ) $ "CM"
          Image := Images[ z ]
       ELSE
          Image := ""
       ENDIF
-      IF z <= LEN( aCaptions ) .AND. VALTYPE( aCaptions[ z ] ) == "C"
+      IF z <= LEN( aCaptions ) .AND. VALTYPE( aCaptions[ z ] ) $ "CM"
          Caption := aCaptions[ z ]
       ELSE
          Caption := ""
@@ -297,11 +303,11 @@ Local oPage, nPos, nKey
       Position := LEN( ::aPages ) + 1
    ENDIF
 
-   If ValType( Image ) != 'C'
+   If ! ValType( Image ) $ 'CM'
 		Image := ''
 	EndIf
 
-   If ValType( Caption ) != 'C'
+   If ! ValType( Caption ) $ 'CM'
 		Caption := ''
    Else
       IF ! EMPTY( Image ) .AND. IsXPThemeActive() .AND. At( '&' , Caption ) != 0
@@ -332,16 +338,7 @@ Local oPage, nPos, nKey
    AEVAL( ::aPages, { |o,i| o:Position := i } )
 
    IF ! Empty( Image )
-//            himl = ImageList_Create( cx , cy , ILC_COLOR8 | ILC_MASK , l + 1 , l + 1 );
-//            ImageList_AddMasked( himl, hbmp, CLR_DEFAULT ) ;
-      If ::ImageList == 0
-         ::ImageList := ImageList_Init( { Image }, CLR_DEFAULT, LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS )[ 1 ]
-         nPos := 1
-      Else
-         nPos := ImageList_Add( ::ImageList, Image, LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS )
-      Endif
-      SendMessage( ::hWnd, TCM_SETIMAGELIST, 0, ::ImageList )
-      SetTabPageImage( ::hWnd, nPos - 1 )
+      SetTabPageImage( ::hWnd, ::AddBitMap( Image ) - 1 )
    ENDIF
 
    nPos := At( '&' , Caption )
@@ -490,7 +487,7 @@ Return Nil
 *-----------------------------------------------------------------------------*
 METHOD Caption( nColumn, uValue ) CLASS TTab
 *-----------------------------------------------------------------------------*
-   IF VALTYPE( uValue ) == "C"
+   IF VALTYPE( uValue ) $ "CM"
       ::aPages[ nColumn ]:Caption := uValue
       SETTABCAPTION( ::hWnd, nColumn, uValue )
    ENDIF

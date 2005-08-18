@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.5 2005-08-17 05:53:58 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.6 2005-08-18 04:01:06 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -202,7 +202,7 @@ if type ( mVar ) = 'U'
 EndIf
 if type ( mVar ) = 'O'
    o := &mVar
-   if o:hWnd == 0
+   if o:hWnd == -1
 		Return .f.
 	EndIf
    Return .t.
@@ -697,7 +697,7 @@ Local i , l , ControlRow , e := 0 ,LN , CN ,r , c , wHeight , diff
 					@ ControlRow , 120 COMBOBOX &CN  OF _InputWindow ITEMS aFormats[i] VALUE aValues[i] WIDTH 140  FONT 'Arial' SIZE 10
 					ControlRow := ControlRow + 30
 
-				ElseIf  ValType ( aFormats [i] ) == 'C'
+            ElseIf  ValType ( aFormats [i] ) $ 'CM'
 
 					If AT ( '.' , aFormats [i] ) > 0
 						@ ControlRow , 120 TEXTBOX &CN  OF _InputWindow VALUE aValues[i] WIDTH 140 FONT 'Arial' SIZE 10 NUMERIC INPUTMASK aFormats [i]
@@ -1394,7 +1394,7 @@ Local oWnd, oCtrl
 
 	if Pcount() == 2 // Window
 
-		If ValType ( Arg1 ) == 'C'
+      If ValType ( Arg1 ) $ 'CM'
 			If .Not. _IsWindowDefined ( Arg1 )
             MsgOOHGError("Window: "+ Arg1 + " is not defined. Program terminated" )
 			Endif
@@ -1574,7 +1574,7 @@ Local oWnd, oCtrl
 
 		EndIf
 
-	ElseIf Pcount() == 5 .And. ValType (Arg3) == 'C'
+   ElseIf Pcount() == 5 .And. ValType (Arg3) $ 'CM'
 		 // CONTROL (WITH 2 ARGUMENTS)
 
 		If .Not. _IsControlDefined ( Arg2 , Arg1  )
@@ -1605,7 +1605,7 @@ Local oWnd, oCtrl
 
 		DoMethod ( Arg1 , Arg4 , Arg5 )
 
-	ElseIf Pcount() == 6 .And. ValType (Arg3) == 'C'
+   ElseIf Pcount() == 6 .And. ValType (Arg3) $ 'CM'
 		// CONTROL (WITH 3 ARGUMENTS)
 
 		If .Not. _IsControlDefined ( Arg2 , Arg1  )
@@ -1635,7 +1635,7 @@ Local oWnd, oCtrl
 */
 		DoMethod ( Arg1 , Arg4 , Arg5 , Arg6 )
 
-	ElseIf Pcount() == 7 .And. ValType (Arg3) == 'C'
+   ElseIf Pcount() == 7 .And. ValType (Arg3) $ 'CM'
 		// CONTROL (WITH 4 ARGUMENTS)
 
 		If .Not. _IsControlDefined ( Arg2 , Arg1  )
@@ -1783,6 +1783,10 @@ CLASS TControl FROM TWindow
    DATA Caption     INIT ""
    DATA Id          INIT 0
    DATA ImageList   INIT 0
+   DATA ImageListColor      INIT CLR_NONE
+   DATA ImageListFlags      INIT LR_LOADTRANSPARENT
+   DATA SetImageListCommand INIT 0   // Must be explicit for each control
+   DATA SetImageListWParam  INIT TVSIL_NORMAL
 
    METHOD Row       SETGET
    METHOD Col       SETGET
@@ -1810,6 +1814,7 @@ CLASS TControl FROM TWindow
    METHOD BkColor             SETGET
    METHOD AddControl(oCtrl)       BLOCK { |Self,oCtrl| AADD( ::aControls, oCtrl ) }
    METHOD DeleteControl
+   METHOD AddBitMap
 
    METHOD IsHandle( hWnd )    BLOCK { | Self, hWnd | ( ::hWnd == hWnd ) }
 //   METHOD MainControl         BLOCK { | Self | Self }
@@ -1859,7 +1864,7 @@ RETURN ::nHeight
 METHOD ToolTip( cToolTip ) CLASS TControl
 *------------------------------------------------------------------------------*
    IF PCOUNT() > 0
-      IF valtype( cToolTip ) == "C"
+      IF valtype( cToolTip ) $ "CM"
          ::cToolTip := cToolTip
       ELSE
          ::cToolTip := ""
@@ -1870,7 +1875,7 @@ RETURN ::cToolTip
 
 STATIC FUNCTION NullName( cName )
 STATIC nCtrl := 0
-   cName := IF( VALTYPE( cName ) == "C", UPPER( ALLTRIM( cName ) ), "0" )
+   cName := IF( VALTYPE( cName ) $ "CM", UPPER( ALLTRIM( cName ) ), "0" )
    IF EMPTY( cName ) .OR. cName == "0" .OR. cName == "NONAME" .OR. cName == "NIL" .OR. cName == "NULL" .OR. cName == "NONE"
       // TODO: Verify this name doesn't exists
       cName := "NULL" + STRZERO( nCtrl, 10 )
@@ -1884,6 +1889,7 @@ RETURN cName
 *------------------------------------------------------------------------------*
 METHOD SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BkColor, lEditBox ) CLASS TControl
 *------------------------------------------------------------------------------*
+LOCAL nPos
    // Parent form:
    if ! empty( ParentForm )
       // Specified form
@@ -1901,6 +1907,15 @@ METHOD SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BkColor,
    else
       MsgOOHGError( "Window: No window name specified. Program terminated.")
    endif
+
+   // Checks for an open "control container" structure in the specified parent form
+   IF Empty( ::Container )
+      nPos := 0
+      ASCAN( _OOHG_ActiveFrame, { |o,i| IF( o:Parent:hWnd == ::Parent:hWnd, nPos := i, ) } )
+      IF nPos > 0
+         ::Container := _OOHG_ActiveFrame[ nPos ]
+      ENDIF
+   ENDIF
 
    // Font Name:
    if ! empty( FontName )
@@ -2155,7 +2170,7 @@ METHOD SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout ) CLASS T
    IF ::FontHandle > 0
       DeleteObject( ::FontHandle )
    ENDIF
-   IF ! EMPTY( FontName ) .AND. VALTYPE( FontName ) == "C"
+   IF ! EMPTY( FontName ) .AND. VALTYPE( FontName ) $ "CM"
       ::FontName := FontName
    ENDIF
    IF ! EMPTY( FontSize ) .AND. VALTYPE( FontSize ) == "N"
@@ -2281,6 +2296,28 @@ Local nPos
       ASIZE( aControls, LEN( aControls ) - 1 )
    ENDIF
 Return oCtrl
+
+*-----------------------------------------------------------------------------*
+METHOD AddBitMap( uImage ) CLASS TControl
+*-----------------------------------------------------------------------------*
+Local nPos
+   If ::ImageList == 0
+      If ValType( uImage ) == "A"
+         ::ImageList := ImageList_Init( uImage, ::ImageListColor, ::ImageListFlags )[ 1 ]
+      Else
+         ::ImageList := ImageList_Init( { uImage }, ::ImageListColor, ::ImageListFlags )[ 1 ]
+      EndIf
+      nPos := 1
+   Else
+      If ValType( uImage ) == "A"
+         nPos := ImageList_Add( ::ImageList, uImage[ 1 ], ::ImageListFlags )
+         AEVAL( ::ImageList, { |c| ImageList_Add( ::ImageList, c, ::ImageListFlags ) }, 2 )
+      Else
+         nPos := ImageList_Add( ::ImageList, uImage, ::ImageListFlags )
+      EndIf
+   Endif
+   SendMessage( ::hWnd, ::SetImageListCommand, ::SetImageListWParam, ::ImageList )
+Return nPos
 
 *-----------------------------------------------------------------------------*
 METHOD DoEvent( bBlock ) CLASS TControl

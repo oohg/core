@@ -1,5 +1,5 @@
 /*
- * $Id: h_tree.prg,v 1.3 2005-08-17 05:56:13 guerra000 Exp $
+ * $Id: h_tree.prg,v 1.4 2005-08-18 04:01:06 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -104,6 +104,7 @@ CLASS TTree FROM TControl
    DATA aTreeIdMap    INIT {}
    DATA aTreeNode     INIT {}
    DATA InitValue     INIT 0
+   DATA SetImageListCommand INIT TVM_SETIMAGELIST
 
    METHOD AddItem
    METHOD DeleteItem
@@ -112,7 +113,6 @@ CLASS TTree FROM TControl
    METHOD ItemCount      BLOCK { | Self | TreeView_GetCount( ::hWnd ) }
    METHOD Collapse
    METHOD Expand
-   METHOD AddBitMap
 
    METHOD Value       SETGET
    METHOD Events_Enter
@@ -453,19 +453,6 @@ Local ItemHandle := 0 , Pos
 Return nil
 
 *------------------------------------------------------------------------------*
-METHOD AddBitMap( cImage ) CLASS TTree
-*------------------------------------------------------------------------------*
-Local nPos
-   If ::ImageList == 0
-      ::ImageList := ImageList_Init( { cImage }, CLR_NONE, LR_LOADTRANSPARENT )[ 1 ]
-      nPos := 1
-   Else
-      nPos := ImageList_Add( ::ImageList, cImage, LR_LOADTRANSPARENT )
-   Endif
-   SendMessage( ::hWnd, TVM_SETIMAGELIST, TVSIL_NORMAL, ::ImageList )
-Return nPos
-
-*------------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TTree
 *------------------------------------------------------------------------------*
 Local TreeItemHandle, aPos
@@ -567,8 +554,7 @@ Local Self
 
 		endif
 
-      ::ImageList := ImageList_Init( aBitmaps, CLR_NONE, LR_LOADTRANSPARENT )[ 1 ]
-      SendMessage( ControlHandle, TVM_SETIMAGELIST, TVSIL_NORMAL, ::ImageList )
+      ::AddBitMap( aBitmaps )
 	endif
 
 	if valtype(change) == "U"
