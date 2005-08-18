@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.7 2005-08-17 05:57:17 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.8 2005-08-18 04:05:35 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -96,7 +96,6 @@
 #include "i_windefs.ch"
 
 STATIC _OOHG_BrowseSyncStatus := .F.
-STATIC _OOHG_IPE_COL := 1   // ???
 STATIC _OOHG_IPE_ROW := 1   // ???
 STATIC _OOHG_IPE_CANCELLED := .F.   // ???
 
@@ -148,7 +147,6 @@ CLASS TBrowse FROM TGrid
    METHOD UpDate
    METHOD InPlaceAppend
    METHOD InPlaceEdit
-   METHOD InPlaceEditOk
    METHOD AdjustRightScroll
 
    METHOD Home
@@ -172,7 +170,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
 *-----------------------------------------------------------------------------*
 Local ScrollBarHandle, hsum, ScrollBarButtonHandle, nWidth2
 
-   IF ValType( WorkArea ) != "C" .OR. Empty( WorkArea )
+   IF ! ValType( WorkArea ) $ "CM" .OR. Empty( WorkArea )
       WorkArea := ALIAS()
    ENDIF
    if valtype( aFields ) != "A"
@@ -185,7 +183,7 @@ Local ScrollBarHandle, hsum, ScrollBarButtonHandle, nWidth2
 	else
       aSize( aHeaders, len( aFields ) )
 	endif
-   aEval( aHeaders, { |x,i| aHeaders[ i ] := iif( ValType( x ) != "C" .OR. Empty( x ), aFields[ i ], x ) } )
+   aEval( aHeaders, { |x,i| aHeaders[ i ] := iif( ! ValType( x ) $ "CM" .OR. Empty( x ), aFields[ i ], x ) } )
 
 	// If splitboxed force no vertical scrollbar
 
@@ -272,8 +270,8 @@ METHOD UpDate() CLASS TBrowse
 Local PageLength , aTemp := {} , uTemp , _BrowseRecMap := {} , x , j
 Local cType, nCurrentLength
 Local lColor, aFields, cWorkArea, hWnd, nWidth
-MEMVAR aPicture
-PRIVATE aPicture
+MEMVAR __aPicture
+PRIVATE __aPicture
 
    cWorkArea := ::WorkArea
 
@@ -282,13 +280,13 @@ PRIVATE aPicture
    EndIf
 
    lColor := ! ( Empty( ::DynamicForeColor ) .AND. Empty( ::DynamicBackColor ) )
-   aPicture := ::Picture
+   __aPicture := ::Picture
    nWidth := LEN( ::aFields )
    aFields := ARRAY( nWidth )
    AEVAL( ::aFields, { |c,i| aFields[ i ] := &( "{ || " + ;
-                     if( valtype( aPicture[ i ] ) == "C", "TRANSFORM( ", "" ) + ;
+                     if( valtype( __aPicture[ i ] ) $ "CM", "TRANSFORM( ", "" ) + ;
                      cWorkArea + "->( " + c + " )" + ;
-                     if( valtype( aPicture[ i ] ) == "C", ", aPicture[ " + LTRIM( STR( i ) ) + " ] )", "" ) + ;
+                     if( valtype( __aPicture[ i ] ) $ "CM", ", __aPicture[ " + LTRIM( STR( i ) ) + " ] )", "" ) + ;
                      " }" ) } )
    hWnd := ::hWnd
 
@@ -319,13 +317,13 @@ PRIVATE aPicture
          If     cType == 'C'
             aTemp[ j ] := rTrim( uTemp )
          ElseIf cType == 'N'
-            If VALTYPE( aPicture[ j ] ) == "L" .AND. aPicture[ j ]
+            If VALTYPE( __aPicture[ j ] ) == "L" .AND. __aPicture[ j ]
                aTemp[ j ] := uTemp
             Else
                aTemp[ j ] := lTrim( Str( uTemp ) )
             Endif
          ElseIf cType == 'L'
-            If VALTYPE( aPicture[ j ] ) == "L" .AND. aPicture[ j ]
+            If VALTYPE( __aPicture[ j ] ) == "L" .AND. __aPicture[ j ]
                aTemp[ j ] := iif( uTemp, 1, 0 )
             Else
                aTemp[ j ] := IIF( uTemp, '.T.', '.F.' )
@@ -334,6 +332,12 @@ PRIVATE aPicture
             aTemp[ j ] := Dtoc( uTemp )
          ElseIf cType == 'M'
             aTemp[ j ] := '<Memo>'
+         ElseIf cType == 'A'
+            If VALTYPE( __aPicture[ j ] ) == "L" .AND. __aPicture[ j ]
+               aTemp[ j ] := uTemp
+            Else
+               aTemp[ j ] := "<Array>"
+            Endif
          Else
             aTemp[ j ] := 'Nil'
          EndIf
@@ -666,7 +670,7 @@ Local _BrowseRecMap , Value , _Alias , _RecNo , _BrowseArea
    If Select( ::WorkArea ) == 0
 		Return Nil
 	EndIf
-	Select &_BrowseArea
+   DbSelectArea( _BrowseArea )
 	_RecNo := RecNo()
 
 	Go Value
@@ -704,9 +708,9 @@ Local _BrowseRecMap , Value , _Alias , _RecNo , _BrowseArea
 
 	Go _RecNo
 	if Select( _Alias ) != 0
-		Select &_Alias
+      DbSelectArea( _Alias )
 	Else
-		Select 0
+      DbSelectArea( 0 )
 	Endif
 
 Return Nil
@@ -765,7 +769,7 @@ Local Title , aLabels , aInitValues := {} , aFormats := {} , aResults , z , tvar
 	BackArea := Alias()
 
    BrowseArea := ::WorkArea
-	Select &BrowseArea
+   DbSelectArea( BrowseArea )
 
    BackRec := ( ::WorkArea )->( RecNo() )
 
@@ -783,7 +787,7 @@ Local Title , aLabels , aInitValues := {} , aFormats := {} , aResults , z , tvar
 
       tvar := ( ::WorkArea )->( &( ::aFields[ z ] ) )
 
-      if valtype( tvar ) == 'C'
+      if valtype( tvar ) $ 'CM'
 
          Aadd ( aInitValues , Alltrim(tvar) )
 
@@ -803,7 +807,7 @@ Local Title , aLabels , aInitValues := {} , aFormats := {} , aResults , z , tvar
 
 		if q == 0
 
-		        Select &BrowseArea
+         DbSelectArea( BrowseArea )
 			aStru := DbStruct ()
 
 			aAdd ( TmpNames , 'MemVar' + BrowseArea + tvar )
@@ -811,7 +815,7 @@ Local Title , aLabels , aInitValues := {} , aFormats := {} , aResults , z , tvar
 		Else
 
 			svar := Left ( tvar , q-2 )
-		        Select &svar
+         DbSelectArea( svar )
 			aStru := DbStruct()
 
 			tvar := Right ( tvar , Len (tvar) - q )
@@ -853,17 +857,17 @@ Local Title , aLabels , aInitValues := {} , aFormats := {} , aResults , z , tvar
 											// Browse+
 	Next z
 
-	Select &BrowseArea
+   DbSelectArea( BrowseArea )
 
    If ::lock == .t.
 
 		If Rlock() == .F.
          MsgExclamation(_OOHG_BRWLangError[9],_OOHG_BRWLangError[10])
 			Go BackRec
-			If Select (BackArea) != 0
-				Select &BackArea
+         If Select( BackArea ) != 0
+            DbSelectArea( BackArea )
 			Else
-				Select 0
+            DbSelectArea( 0 )
 			EndIf
          _OOHG_ActiveForm := _OOHG_ActiveFormBak
          ::SetFocus()
@@ -913,10 +917,10 @@ Local Title , aLabels , aInitValues := {} , aFormats := {} , aResults , z , tvar
 
    ( ::WorkArea )->( DbGoTo( BackRec ) )
 
-	If Select (BackArea) != 0
-		Select &BackArea
+   If Select( BackArea ) != 0
+      DbSelectArea( BackArea )
 	Else
-		Select 0
+      DbSelectArea( 0 )
 	EndIf
 
    _OOHG_ActiveForm := _OOHG_ActiveFormBak
@@ -940,7 +944,7 @@ Local i , l , ControlRow , e := 0 ,LN , CN , th, oWnd, oControl, aControls
 
 	l := Len ( aLabels )
 
-	Private aResult [l]
+   Private aResult := ARRAY( l )
 
    aControls := ARRAY( l )
 
@@ -956,9 +960,7 @@ Local i , l , ControlRow , e := 0 ,LN , CN , th, oWnd, oControl, aControls
 
 			EndIf
 
-		EndIf
-
-		if ValType ( aValues[i] ) == 'M'
+      ElseIf ValType ( aValues[i] ) == 'M'
 			e++
 		EndIf
 
@@ -1017,7 +1019,7 @@ Local i , l , ControlRow , e := 0 ,LN , CN , th, oWnd, oControl, aControls
 							@ ControlRow , 120 COMBOBOX &CN  OF _Split_1 ITEMS aFormats[i] VALUE aValues[i] WIDTH 140  FONT 'Arial' SIZE 10
 							ControlRow := ControlRow + 30
 
-						ElseIf  ValType ( aFormats [i] ) == 'C'
+                  ElseIf  ValType ( aFormats [i] ) $ 'CM'
 
 							If AT ( '.' , aFormats [i] ) > 0
 								@ ControlRow , 120 TEXTBOX &CN  OF _Split_1 VALUE aValues[i] WIDTH 140 FONT 'Arial' SIZE 10 NUMERIC INPUTMASK aFormats [i]
@@ -1192,7 +1194,7 @@ Return Nil
 *------------------------------------------------------------------------------*
 METHOD InPlaceEdit( append ) CLASS TBrowse
 *------------------------------------------------------------------------------*
-Local GridCol , GridRow , i , nrec , BackArea , BackRec , _GridFields , FieldName , CellData  := '' , CellColIndex , x
+Local GridCol , GridRow , nrec , BackArea , BackRec , _GridFields , FieldName , CellData  := '' , CellColIndex , x
 Local aFieldNames
 Local aTypes
 Local aWidths
@@ -1225,7 +1227,7 @@ Local Ldelta := 0
 		Return Nil
 	EndIf
 
-   if Len ( ::aImages ) > 0 .And. CellColIndex == 1
+   If VALTYPE( ::Picture[ CellColIndex ] ) == "L" .AND. ::Picture[ CellColIndex ]
 		PlayHand()
 		Return Nil
 	EndIf
@@ -1260,7 +1262,7 @@ Local Ldelta := 0
 
 	// Selects Grid's WorkArea
 
-   Select &( ::WorkArea )
+   DbSelectArea( ::WorkArea )
 
    nRec := ::Value
 	Go nRec
@@ -1273,10 +1275,10 @@ Local Ldelta := 0
 			// Restore Original Record Pointer
 			Go BackRec
 			// Restore Original WorkArea
-			If Select (BackArea) != 0
-				Select &BackArea
+         If Select( BackArea ) != 0
+            DbSelectArea( BackArea )
 			Else
-				Select 0
+            DbSelectArea( 0 )
 			EndIf
 			Return Nil
 		EndIf
@@ -1349,7 +1351,7 @@ Local Ldelta := 0
 			NOCAPTION ;
 			NOSIZE
 
-         ON KEY RETURN ACTION ::InPlaceEditOk( i , Fieldname , _InPlaceEdit.Control_1.Value , ControlType , CellColIndex , sFieldName )
+         ON KEY RETURN ACTION TBrowse_InPlaceEditOk( Self, Fieldname , _InPlaceEdit.Control_1.Value , ControlType , CellColIndex , sFieldName )
          ON KEY ESCAPE ACTION ( _OOHG_IPE_CANCELLED := .T. , dbrunlock() , _InPlaceEdit.Release , ::setfocus() )
 
 			If ControlType == 'C'
@@ -1421,20 +1423,17 @@ Local Ldelta := 0
 	Go BackRec
 
 	// Restore Original WorkArea
-	If Select (BackArea) != 0
-		Select &BackArea
+   If Select( BackArea ) != 0
+      DbSelectArea( BackArea )
 	Else
-		Select 0
+      DbSelectArea( 0 )
 	EndIf
 
 Return Nil
 
-*------------------------------------------------------------------------------*
-METHOD InPlaceEditOk( i , Fieldname , r , ControlType , CellColIndex , sFieldName ) CLASS TBrowse
-*------------------------------------------------------------------------------*
+STATIC Function TBrowse_InPlaceEditOk( Self, Fieldname , r , ControlType , CellColIndex , sFieldName )
 Local b , Result , mVar , TmpName
 
-I++
    If ValType ( ::Valid ) == 'A'
       If Len ( ::Valid ) >= CellColIndex
          If ::Valid [ CellColIndex ] != Nil
@@ -1602,8 +1601,9 @@ Local r
 Local IPE_MAXCOL
 Local TmpRow
 Local xs,xd
+Local _OOHG_IPE_COL := ASCAN( ::Picture, { |x| ValType( x ) != "L" .OR. ! x } )
 
-   If ! ::InPlace
+   If ! ::InPlace .OR. _OOHG_IPE_COL == 0
       Return nil
 	EndIf
 
@@ -1621,11 +1621,7 @@ Local xs,xd
 
          _OOHG_IPE_ROW := TmpRow
 
-         if Len ( ::aImages ) > 0
-            _OOHG_IPE_COL := 2
-			Else
-            _OOHG_IPE_COL := 1
-			EndIf
+         _OOHG_IPE_COL := ASCAN( ::Picture, { |x| ValType( x ) != "L" .OR. ! x } )
 
 		EndIf
 
@@ -1676,11 +1672,7 @@ Local xs,xd
 
          If _OOHG_IPE_COL == IPE_MAXCOL
 
-            if Len ( ::aImages ) > 0
-               _OOHG_IPE_COL := 2
-				Else
-               _OOHG_IPE_COL := 1
-				EndIf
+            _OOHG_IPE_COL := ASCAN( ::Picture, { |x| ValType( x ) != "L" .OR. ! x } )
 
             ListView_Scroll( ::hWnd,  -10000  , 0 )
 			EndIf
@@ -1689,15 +1681,11 @@ Local xs,xd
 
 		Else
 
-         _OOHG_IPE_COL++
+         _OOHG_IPE_COL := ASCAN( ::Picture, { |x| ValType( x ) != "L" .OR. ! x }, _OOHG_IPE_COL + 1 )
 
-         If _OOHG_IPE_COL > IPE_MAXCOL
+         If _OOHG_IPE_COL > IPE_MAXCOL .OR. _OOHG_IPE_COL == 0
 
-            if Len ( ::aImages ) > 0
-               _OOHG_IPE_COL := 2
-				Else
-               _OOHG_IPE_COL := 1
-				EndIf
+            _OOHG_IPE_COL := ASCAN( ::Picture, { |x| ValType( x ) != "L" .OR. ! x } )
 
             ListView_Scroll( ::hWnd,  -10000  , 0 )
 				Exit
@@ -1760,10 +1748,10 @@ Local _Alias , _RecNo , _BrowseArea , _BrowseRecMap   , _DeltaScroll := { Nil , 
 
 	_Alias := Alias()
    _BrowseArea := ::WorkArea
-	If Select (_BrowseArea) == 0
+   If Select( _BrowseArea ) == 0
       Return nil
 	EndIf
-	Select &_BrowseArea
+   DbSelectArea( _BrowseArea )
 	_RecNo := RecNo()
 	Go Bottom
 
@@ -1779,9 +1767,9 @@ Local _Alias , _RecNo , _BrowseArea , _BrowseRecMap   , _DeltaScroll := { Nil , 
 
 	Go _RecNo
 	if Select( _Alias ) != 0
-		Select &_Alias
+      DbSelectArea( _Alias )
 	Else
-		Select 0
+      DbSelectArea( 0 )
 	Endif
 
    aTemp := array ( Len ( ::aFields ) )
@@ -1795,7 +1783,6 @@ Local _Alias , _RecNo , _BrowseArea , _BrowseRecMap   , _DeltaScroll := { Nil , 
    ::BrowseOnChange()
 
    _OOHG_IPE_ROW := 1
-   _OOHG_IPE_COL := 1
 
 Return nil
 
