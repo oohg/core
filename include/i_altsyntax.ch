@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.4 2005-08-17 06:05:40 guerra000 Exp $
+ * $Id: i_altsyntax.ch,v 1.5 2005-08-18 04:12:15 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1387,6 +1387,7 @@ Combo Box
         _OOHG_ActiveControlGripperText   := ""           ;;
         _OOHG_ActiveControlDisplayEdit   := .f.          ;;
         _OOHG_ActiveControlDisplayChange := Nil          ;;
+        _OOHG_ActiveControlImage         := Nil          ;;
         _OOHG_ActiveControlFontUnderLine := .f.
 
 #xcommand DISPLAYEDIT <displayedit> ;
@@ -1423,7 +1424,7 @@ Combo Box
 
 #xcommand END COMBOBOX ;
 	=>;
-	_DefineCombo (;
+        TCombo():Define(;
                 _OOHG_ActiveControlName,;
                 _OOHG_ActiveControlOf,;
                 _OOHG_ActiveControlCol,;
@@ -1452,7 +1453,8 @@ Combo Box
                 _OOHG_ActiveControlDisplayEdit , ;
                 _OOHG_ActiveControlDisplayChange , ;
                 _OOHG_ActiveControlBreak , ;
-                _OOHG_ActiveControlGripperText ;
+                _OOHG_ActiveControlGripperText, ;
+                _OOHG_ActiveControlImage ;
 		)
 
 /*----------------------------------------------------------------------------
