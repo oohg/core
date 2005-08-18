@@ -1,5 +1,5 @@
 /*
- * $Id: i_combobox.ch,v 1.1 2005-08-06 23:49:17 guerra000 Exp $
+ * $Id: i_combobox.ch,v 1.2 2005-08-18 04:10:21 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -92,6 +92,7 @@
 ---------------------------------------------------------------------------*/
 
 #xcommand @ <row>,<col> COMBOBOX <name> ;
+                [ OBJ <obj> ] ;
 		[ <dummy1: OF, PARENT> <parent> ] ;
 		[ WIDTH <w> ] ;
 		[ HEIGHT <h> ] ;
@@ -115,19 +116,21 @@
 		[ <notabstop : NOTABSTOP> ] ;
 		[ HELPID <helpid> ] 		;
 		[ <invisible : INVISIBLE> ] ;
+                [ IMAGE <aImage> ] ;
 		[ <sort : SORT> ] ;
 	=>;
-	_DefineCombo ( <"name">, <"parent">, <col>, <row>, <w>, <aRows> , <value>, ;
+        [ <obj> := ] TCombo():Define( <"name">, <"parent">, <col>, <row>, <w>, <aRows> , <value>, ;
                   <f>, <n>, <tooltip>, <{changeprocedure}>, <h>, ;
                   <{gotfocus}>, <{lostfocus}>, <{enter}>, <helpid>, ;
                   <.invisible.>, <.notabstop.>, <.sort.> ,<.bold.>, ;
 		<.italic.>, <.underline.>, <.strikeout.> , <"itemsource"> , ;
 		<"valuesource"> , <.displaychange.> , ;
-		<{ondisplaychangeprocedure}> ,  .f. , "" )
+                <{ondisplaychangeprocedure}> ,  .f. , "", <aImage> )
 
 // SPLITBOX VERSION
 
 #xcommand COMBOBOX <name> ;
+                [ OBJ <obj> ] ;
 		[ <dummy1: OF, PARENT> <parent> ] ;
 		[ WIDTH <w> ] ;
 		[ HEIGHT <h> ] ;
@@ -153,10 +156,12 @@
 		[ GRIPPERTEXT <grippertext> ] ;
 		[ <break: BREAK> ] ;
 		[ <invisible : INVISIBLE> ] ;
+                [ IMAGE <aImage> ] ;
 		[ <sort : SORT> ] ;
 	=>;
-	_DefineCombo ( <"name">, <"parent">, , , <w>, <aRows> , <value>, ;
-                  <f>, <n>, <tooltip>, <{changeprocedure}>, <h>, ;
-                  <{gotfocus}>, <{lostfocus}>, <{enter}>, <helpid>, ;
-                  <.invisible.>, <.notabstop.>, <.sort.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <"itemsource"> , <"valuesource"> , <.displaychange.> , <{ondisplaychangeprocedure}> , <.break.> , <grippertext> )
-
+        [ <obj> := ] TCombo():Define( <"name">, <"parent">, , , <w>, <aRows> , <value>, ;
+                  <f>, <n>, <tooltip>, <{changeprocedure}>, <h>, <{gotfocus}>, ;
+                  <{lostfocus}>, <{enter}>, <helpid>, <.invisible.>, <.notabstop.>, ;
+                  <.sort.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , ;
+                  <"itemsource"> , <"valuesource"> , <.displaychange.> , ;
+                  <{ondisplaychangeprocedure}> , <.break.> , <grippertext>, <aImage> )
