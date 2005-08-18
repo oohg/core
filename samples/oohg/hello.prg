@@ -1,4 +1,7 @@
 /*
+ * $Id: hello.prg,v 1.3 2005-08-18 03:57:35 guerra000 Exp $
+ */
+/*
 * ooHG Hello World Demo
 * (c) 2005 Vic
 */
@@ -82,14 +85,18 @@ oWnd:Txt3:transparent := .t.
 
                 @ 150,10 TEXTBOX Txt5 VALUE date() WIDTH 150 height 20 date
 
-                @ 170,10 checkBOX chk caption "This control have context menu!" VALUE .t. on change msginfo("change!") width 200
+                @ 170,10 checkBOX chk caption "This control have context menu!" VALUE .t. on change msginfo("change!") autosize
 
                 @ 200,10 button btn1 caption "BUTTON!" ACTION msginfo(oLabel:vALUE)
 
-                @ 230,10 radio rad options { "Uno", "Dos", "Tres" }
+                @ 230,10 radio rad options { "Uno", "Dos", "Tres" } autosize
+oWnd:RAD:AITEMS[3]:autosize := .t.
+oWnd:RAD:AITEMS[3]:BKCOLOR := BLUE
+oWnd:RAD:AITEMS[3]:WIDTH := 100
 oWnd:RAD:AITEMS[3]:COL := 70
 oWnd:RAD:AITEMS[1]:COL := 50
 oWnd:RAD:AITEMS[2]:BKCOLOR := {255,0,0}
+oWnd:RAD:AITEMS[2]:caption := oWnd:RAD:AITEMS[2]:caption
 
                 oWnd:menu1:checked := .t.
                 oWnd:menu2:checked := .t.
