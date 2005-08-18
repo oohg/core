@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.8 2005-08-17 05:53:58 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.9 2005-08-18 03:59:17 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -542,7 +542,7 @@ RETURN ::cNotifyIconTooltip
 *------------------------------------------------------------------------------*
 METHOD Title( cTitle ) CLASS TForm
 *------------------------------------------------------------------------------*
-   if valtype( cTitle ) == "C"
+   if valtype( cTitle ) $ "CM"
       SetWindowText( ::hWnd, cTitle )
    endif
 Return GetWindowText( ::hWnd )
@@ -1399,7 +1399,7 @@ Local oWnd, oCtrl
          _OOHG_ActiveModal := nil
       ENDIF
 
-      ::hWnd := 0
+      ::hWnd := -1
       ::Active := .F.
 
       _OOHG_InteractiveCloseStarted := .F.
