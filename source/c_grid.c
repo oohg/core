@@ -1,5 +1,5 @@
 /*
- * $Id: c_grid.c,v 1.5 2005-08-17 05:56:13 guerra000 Exp $
+ * $Id: c_grid.c,v 1.6 2005-08-18 04:02:20 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -104,10 +104,10 @@
 #include "hbapiitm.h"
 #include "winreg.h"
 #include "tchar.h"
+#include "../include/oohg.h"
 
 static LRESULT APIENTRY SubClassFunc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 // int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam );
-// extern PHB_ITEM GetControlObjectByHandle( LONG hWnd );
 
 static WNDPROC lpfnOldWndProc;
 
@@ -250,6 +250,7 @@ static void _OOHG_ListView_FillItem( HWND hWnd, int nItem, PHB_ITEM pItems )
 {
    LV_ITEM LI;
    ULONG s, ulLen;
+   struct IMAGE_PARAMETER pStruct;
 
    ulLen = pItems->item.asArray.value->ulLen;
    pItems = pItems->item.asArray.value->pItems;
@@ -262,21 +263,14 @@ static void _OOHG_ListView_FillItem( HWND hWnd, int nItem, PHB_ITEM pItems )
 
    for( s = 0; s < ulLen; s++ )
    {
-   LI.mask = LVIF_TEXT | LVIF_IMAGE;
-   LI.state = 0;
-   LI.stateMask = 0;
-   LI.iItem = nItem;
+      LI.mask = LVIF_TEXT | LVIF_IMAGE;
+      LI.state = 0;
+      LI.stateMask = 0;
+      LI.iItem = nItem;
       LI.iSubItem = s;
-      if( HB_IS_STRING( pItems ) || ! HB_IS_NUMERIC( pItems ) || hb_itemGetNI( pItems ) < 0 )
-      {
-         LI.pszText = hb_itemGetCPtr( pItems );
-         LI.iImage = -1;
-      }
-      else
-      {
-         LI.pszText = "";
-         LI.iImage = hb_itemGetNI( pItems );
-      }
+      ImageFillParameter( &pStruct, pItems );
+      LI.pszText = pStruct.cString;
+      LI.iImage = pStruct.iImage1;
       ListView_SetItem( hWnd, &LI );
       pItems++;
    }

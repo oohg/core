@@ -1,5 +1,5 @@
 /*
- * $Id: c_controlmisc.c,v 1.3 2005-08-17 05:53:58 guerra000 Exp $
+ * $Id: c_controlmisc.c,v 1.4 2005-08-18 04:02:20 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -114,6 +114,7 @@
 #include "hbapiitm.h"
 #include "winreg.h"
 #include "tchar.h"
+#include "../include/oohg.h"
 
 
 HB_FUNC ( DELETEOBJECT )
@@ -575,6 +576,49 @@ HB_FUNC( IMAGELIST_ADD )
 HB_FUNC( IMAGELIST_GETIMAGECOUNT )
 {
    hb_retni( ImageList_GetImageCount( ( HIMAGELIST ) hb_parnl( 1 ) ) );
+}
+
+void ImageFillParameter( struct IMAGE_PARAMETER *pResult, PHB_ITEM pString )
+{
+   if( pString && HB_IS_STRING( pString ) )
+   {
+      pResult->cString = hb_itemGetC( pString );
+      pResult->iImage1 = -1;
+      pResult->iImage2 = -1;
+   }
+   else if( pString && HB_IS_NUMERIC( pString ) )
+   {
+      pResult->cString = "";
+      pResult->iImage1 = hb_itemGetNI( pString );
+      pResult->iImage2 = pResult->iImage1;
+   }
+   else if( pString && HB_IS_ARRAY( pString ) && pString->item.asArray.value->ulLen > 0 )
+   {
+      pResult->cString = hb_itemGetC( pString->item.asArray.value->pItems );
+      if( pString->item.asArray.value->ulLen > 1 && HB_IS_NUMERIC( &pString->item.asArray.value->pItems[ 1 ] ) )
+      {
+         pResult->iImage1 = hb_itemGetNI( &pString->item.asArray.value->pItems[ 1 ] );
+         if( pString->item.asArray.value->ulLen > 2 && HB_IS_NUMERIC( &pString->item.asArray.value->pItems[ 2 ] ) )
+         {
+            pResult->iImage2 = hb_itemGetNI( &pString->item.asArray.value->pItems[ 2 ] );
+         }
+         else
+         {
+            pResult->iImage2 = pResult->iImage1;
+         }
+      }
+      else
+      {
+         pResult->iImage1 = -1;
+         pResult->iImage2 = -1;
+      }
+   }
+   else
+   {
+      pResult->cString = "";
+      pResult->iImage1 = -1;
+      pResult->iImage2 = -1;
+   }
 }
 
 /*

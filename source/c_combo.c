@@ -1,5 +1,5 @@
 /*
- * $Id: c_combo.c,v 1.2 2005-08-17 06:06:48 guerra000 Exp $
+ * $Id: c_combo.c,v 1.3 2005-08-18 04:02:20 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -105,6 +105,7 @@
 #include "winreg.h"
 #include "tchar.h"
 #include <windowsx.h>
+#include "../include/oohg.h"
 
 HB_FUNC( INITCOMBOBOX )
 {
@@ -165,46 +166,32 @@ HB_FUNC( INITCOMBOBOX )
 	hb_retnl ( (LONG) hbutton );
 }
 
-// #define CBEM_SETIMAGELIST       (WM_USER + 2)
+static int ComboInsertAnyItem( HWND hWnd, int iPos, PHB_ITEM pItem )
+{
+   COMBOBOXEXITEM cmb;
+   struct IMAGE_PARAMETER pStruct;
+
+   cmb.mask = CBEIF_TEXT | CBEIF_IMAGE | CBEIF_SELECTEDIMAGE;
+   cmb.iItem = iPos;
+   ImageFillParameter( &pStruct, pItem );
+   cmb.pszText = pStruct.cString;
+   cmb.iImage = pStruct.iImage1;
+   cmb.iSelectedImage = pStruct.iImage2;
+   SendMessage( hWnd, CBEM_INSERTITEM, 0, ( LPARAM ) &cmb );
+
+   return iPos;
+}
+
 HB_FUNC( COMBOADDSTRING )
 {
    HWND hWnd = ( HWND ) hb_parnl( 1 );
-   COMBOBOXEXITEM cmb;
 
-   cmb.mask = CBEIF_TEXT | CBEIF_IMAGE | CBEIF_SELECTEDIMAGE;
-   cmb.iItem = ComboBox_GetCount( hWnd );
-   cmb.pszText = hb_parc( 2 );
-   if( ISNUM( 3 ) )
-   {
-      cmb.iImage = hb_parni( 3 );
-      cmb.iSelectedImage = ISNUM( 4 ) ? hb_parni( 4 ) : cmb.iImage;
-   }
-   else
-   {
-      cmb.iImage = -1;
-      cmb.iSelectedImage = -1;
-   }
-   SendMessage( hWnd, CBEM_INSERTITEM, 0, ( LPARAM ) &cmb );
+   ComboInsertAnyItem( hWnd, ComboBox_GetCount( hWnd ), hb_param( 2, HB_IT_ANY ) );
 }
 
 HB_FUNC ( COMBOINSERTSTRING )
 {
-   COMBOBOXEXITEM cmb;
-
-   cmb.mask = CBEIF_TEXT | CBEIF_IMAGE | CBEIF_SELECTEDIMAGE;
-   cmb.iItem = hb_parni( 3 ) - 1;
-   cmb.pszText = hb_parc( 2 );
-   if( ISNUM( 4 ) )
-   {
-      cmb.iImage = hb_parni( 4 );
-      cmb.iSelectedImage = ISNUM( 5 ) ? hb_parni( 5 ) : cmb.iImage;
-   }
-   else
-   {
-      cmb.iImage = -1;
-      cmb.iSelectedImage = -1;
-   }
-   SendMessage( ( HWND ) hb_parnl( 1 ), CBEM_INSERTITEM, 0, ( LPARAM ) &cmb );
+   ComboInsertAnyItem( ( HWND ) hb_parnl( 1 ), hb_parni( 3 ) - 1, hb_param( 2, HB_IT_ANY ) );
 }
 
 HB_FUNC ( COMBOSETCURSEL )
