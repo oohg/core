@@ -1,8 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.4 2005-08-17 05:58:27 guerra000 Exp $
- */
-/*
- * $Id: h_combo.prg,v 1.4 2005-08-17 05:58:27 guerra000 Exp $
+ * $Id: h_combo.prg,v 1.5 2005-08-18 04:03:08 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -93,14 +90,11 @@
 	"Harbour Project"
 	Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
-#include "minigui.ch"
+
+#include "oohg.ch"
 #include "common.ch"
 #include "hbclass.ch"
-
-#define CBN_EDITCHANGE	5
-#define CBN_KILLFOCUS	4
-#define CBN_SETFOCUS	3
-#define CBN_SELCHANGE	1
+#include "i_windefs.ch"
 
 CLASS TCombo FROM TLabel
    DATA Type      INIT "COMBO" READONLY
@@ -108,7 +102,10 @@ CLASS TCombo FROM TLabel
    DATA Field     INIT ""
    DATA nValue    INIT 0
    DATA ValueSource   INIT ""
+   DATA SetImageListCommand INIT CBEM_SETIMAGELIST
+   DATA SetImageListWParam  INIT 0
 
+   METHOD Define
    METHOD Refresh
    METHOD Value               SETGET
    METHOD Visible             SETGET
@@ -117,47 +114,21 @@ CLASS TCombo FROM TLabel
 
    METHOD Events_Command
 
-   METHOD AddItem(cValue)     BLOCK { |Self,cValue,nImage| ComboAddString( ::hWnd, cValue, nImage ) }
+   METHOD AddItem(cValue)     BLOCK { |Self,uValue| ComboAddString( ::hWnd, uValue ) }
    METHOD DeleteItem(nItem)   BLOCK { |Self,nItem| ComboBoxDeleteString( ::hWnd, nItem ) }
    METHOD DeleteAllItems      BLOCK { | Self | ComboBoxReset( ::hWnd ) }
    METHOD Item
    METHOD ItemCount           BLOCK { | Self | ComboBoxGetItemCount( ::hWnd ) }
 ENDCLASS
 
-
 *-----------------------------------------------------------------------------*
-Function _DefineCombo ( ControlName, ;
-			ParentForm, ;
-			x, ;
-			y, ;
-			w, ;
-			rows, ;
-			value, ;
-                        fontname, ;
-			fontsize, ;
-			tooltip, ;
-			changeprocedure, ;
-			h, ;
-                        gotfocus, ;
-			lostfocus, ;
-			uEnter, ;
-			HelpId, ;
-			invisible, ;
-                        notabstop, ;
-			sort , ;
-			bold, ;
-			italic, ;
-			underline, ;
-			strikeout , ;
-			itemsource , ;
-			valuesource , ;
-			displaychange , ;
-			ondisplaychangeprocedure , ;
-			break , ;
-			GripperText )
+METHOD Define( ControlName, ParentForm, x, y, w, rows, value, fontname, ;
+               fontsize, tooltip, changeprocedure, h, gotfocus, lostfocus, ;
+               uEnter, HelpId, invisible, notabstop, sort, bold, italic, ;
+               underline, strikeout, itemsource, valuesource, displaychange, ;
+               ondisplaychangeprocedure, break, GripperText, aImage ) CLASS TCombo
 *-----------------------------------------------------------------------------*
-Local i , ControlHandle , rcount := 0 , BackRec , cset := 0 , WorkArea , cField , ContainerHandle := 0 , k := 0
-Local Self
+Local ControlHandle , rcount := 0 , BackRec , cset := 0 , WorkArea , cField , ContainerHandle := 0
 
    DEFAULT w               TO 120
    DEFAULT h               TO 150
@@ -170,7 +141,7 @@ Local Self
    DEFAULT sort		TO FALSE
    DEFAULT GripperText	TO ""
 
-   Self := TCombo():SetForm( ControlName, ParentForm, FontName, FontSize, , , .t. )
+   ::SetForm( ControlName, ParentForm, FontName, FontSize, , , .t. )
 
 	if ValType ( ItemSource ) != 'U' .And. Sort == .T.
       MsgOOHGError ("Sort and ItemSource clauses can't be used simultaneusly. Program Terminated" )
@@ -193,8 +164,6 @@ Local Self
 		value := 0
 	endif
 
-//JP77
-
 	if valtype(x) == "U" .or. valtype(y) == "U"
 
       _OOHG_SplitLastControl   := 'COMBOBOX'
@@ -210,8 +179,6 @@ Local Self
       ControlHandle := InitComboBox ( ::Parent:hWnd, 0, x, y, w, '', 0 , h, invisible, notabstop, sort , displaychange , _OOHG_IsXP )
 
 	endif
-
-//
 
 	if valtype(uEnter) == "U"
 		uEnter := ""
@@ -231,11 +198,15 @@ Local Self
    ::WorkArea := WorkArea
    ::ValueSource :=  valuesource
 
+   if valtype( aImage ) == "A"
+      ::AddBitMap( aImage )
+   EndIf
+
 	If DisplayChange == .T.
 *      _OOHG_acontrolrangemin [k] := FindWindowEx( Controlhandle , 0, "Edit", Nil )
 	EndIf
 
-	If  ValType( WorkArea ) == "C"
+   If  ValType( WorkArea ) $ "CM"
 
 		If Select ( WorkArea ) != 0
 
@@ -260,21 +231,19 @@ Local Self
 
 	Else
 
-		for i = 1 to len (rows)
-			ComboAddString (ControlHandle,rows[i])
-		next x
+      AEval( rows, { |x| ComboAddString( ControlHandle, x ) } )
 
 		if value <> 0
-			ComboSetCurSel (ControlHandle,Value)
+         ComboSetCurSel( ControlHandle, Value )
 		endif
 
 	EndIf
 
 	if valtype ( ItemSource ) != 'U'
-         aAdd ( ::Parent:BrowseList, Self )
+      aAdd( ::Parent:BrowseList, Self )
 	EndIf
 
-Return Nil
+Return Self
 
 *-----------------------------------------------------------------------------*
 METHOD Refresh() CLASS TCombo
@@ -306,7 +275,7 @@ METHOD Value( uValue ) CLASS TCombo
 Local WorkArea, BackRec, RCount, AuxVal
    IF VALTYPE( uValue ) == "N"
 
-      If ValType ( ::WorkArea ) == 'C'
+      If ValType ( ::WorkArea ) $ 'CM'
          ::nValue  := uValue
          WorkArea := ::WorkArea
 		        rcount := 0
@@ -329,7 +298,7 @@ Local WorkArea, BackRec, RCount, AuxVal
 *      MsgOOHGError('COMBOBOX: Value property wrong type (only numeric allowed). Program terminated')
    ENDIF
 
-      If ValType ( ::WorkArea ) == 'C'
+      If ValType ( ::WorkArea ) $ 'CM'
 
          auxval := ComboGetCursel ( ::hWnd )
 			rcount := 0
@@ -414,10 +383,10 @@ Local Hi_wParam := HIWORD( wParam )
 Return ::Super:Events_Command( wParam )
 
 *-----------------------------------------------------------------------------*
-METHOD Item( nItem, cValue, nImage ) CLASS TCombo
+METHOD Item( nItem, uValue ) CLASS TCombo
 *-----------------------------------------------------------------------------*
-   IF VALTYPE( cValue ) == "C"
+   IF VALTYPE( uValue ) $ "CMNA"
       ComboBoxDeleteString( ::hWnd, nItem )
-      ComboInsertString( ::hWnd, cValue, nItem, nImage )
+      ComboInsertString( ::hWnd, uValue, nItem )
    ENDIF
 RETURN ComboGetString( ::hWnd, nItem )
