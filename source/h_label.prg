@@ -1,5 +1,5 @@
 /*
- * $Id: h_label.prg,v 1.2 2005-08-17 06:01:47 guerra000 Exp $
+ * $Id: h_label.prg,v 1.3 2005-08-18 04:07:28 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -156,7 +156,7 @@ Return ( ::Caption := cValue )
 *-----------------------------------------------------------------------------*
 METHOD Caption( cValue ) CLASS TLabel
 *-----------------------------------------------------------------------------*
-   IF VALTYPE( cValue ) == "C"
+   IF VALTYPE( cValue ) $ "CM"
       if ::AutoSize
          ::SizePos( , , GetTextWidth( nil, cValue , ::FontHandle ) + ::IconWidth, GetTextHeight( nil, cValue , ::FontHandle ) )
 		EndIf

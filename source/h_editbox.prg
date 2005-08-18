@@ -1,5 +1,5 @@
 /*
- * $Id: h_editbox.prg,v 1.1 2005-08-07 00:07:33 guerra000 Exp $
+ * $Id: h_editbox.prg,v 1.2 2005-08-18 04:07:28 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -91,7 +91,7 @@
 	Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-#include "minigui.ch"
+#include "oohg.ch"
 #include "common.ch"
 #include "hbclass.ch"
 
@@ -122,7 +122,7 @@ Local ControlHandle
 
    Self := TEdit():SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, .T. )
 
-   If ValType( Field ) == 'C' .AND. ! empty( Field )
+   If ValType( Field ) $ 'CM' .AND. ! empty( Field )
       ::VarName := alltrim( Field )
       ::Block := &( "{ |x| if( PCount() == 0, " + Field + ", " + Field + " := x ) }" )
       Value := EVAL( ::Block )

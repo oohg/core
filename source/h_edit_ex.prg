@@ -1,5 +1,5 @@
 /*
- * $Id: h_edit_ex.prg,v 1.1 2005-08-07 00:07:33 guerra000 Exp $
+ * $Id: h_edit_ex.prg,v 1.2 2005-08-18 04:07:28 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -235,7 +235,7 @@
 
 
 // Ficheros de definiciones.---------------------------------------------------
-#include "minigui.ch"
+#include "oohg.ch"
 #include "dbstruct.ch"
 #include "winprint.ch"
 
@@ -373,7 +373,7 @@ function ABM2( cArea, cTitulo, aNombreCampo, ;
 
 ////////// Control de parámetros.----------------------------------------------
         // Area de la base de datos.
-        if ( ValType( cArea ) != "C" ) .or. Empty( cArea )
+        if ( ! ValType( cArea ) $ "CM" ) .or. Empty( cArea )
                 _cArea := Alias()
                 if _cArea == ""
                         msgExclamation( _OOHG_aLangUser[1], "EDIT EXTENDED" )
@@ -388,7 +388,7 @@ function ABM2( cArea, cTitulo, aNombreCampo, ;
         if ( cTitulo == NIL )
                 _cTitulo := _cArea
         else
-                if ( Valtype( cTitulo ) != "C" )
+                if ( ! Valtype( cTitulo ) $ "CM" )
                         _cTitulo := _cArea
                 else
                         _cTitulo := cTitulo
@@ -404,7 +404,7 @@ function ABM2( cArea, cTitulo, aNombreCampo, ;
                         lSalida := .f.
                 else
                         for i := 1 to Len( aNombreCampo )
-                                if ValType( aNombreCampo[i] ) != "C"
+                                if ! ValType( aNombreCampo[i] ) $ "CM"
                                         lSalida := .f.
                                         exit
                                 endif
@@ -430,7 +430,7 @@ function ABM2( cArea, cTitulo, aNombreCampo, ;
                         lSalida := .f.
                 else
                         for i := 1 to Len( aAvisoCampo )
-                                if Valtype( aAvisoCampo[i] ) != "C"
+                                if ! Valtype( aAvisoCampo[i] ) $ "CM"
                                         lSalida := .f.
                                         exit
                                 endif
@@ -520,7 +520,7 @@ function ABM2( cArea, cTitulo, aNombreCampo, ;
 		lSalida := .f.
 	else
 		for i := 1 to Len( aOpciones )
-			if ValType( aOpciones [i,ABM_OPC_TEXTO] ) != "C"
+         if ! ValType( aOpciones [i,ABM_OPC_TEXTO] ) $ "CM"
 				lSalida := .f.
 				exit
 			endif
@@ -2070,7 +2070,7 @@ static function ABM2Imprimir()
         INIT PRINTSYS
         GET PRINTERS TO aImpresoras
         RELEASE PRINTSYS
-        if ValType( nImpLen ) # 'N'
+        if ValType( nImpLen ) != 'N'
                 nImpLen := Len( aImpresoras )
         endif
         aSize( aImpresoras, nImpLen )

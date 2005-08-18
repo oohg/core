@@ -1,5 +1,5 @@
 /*
- * $Id: h_init.prg,v 1.1 2005-08-07 00:13:51 guerra000 Exp $
+ * $Id: h_init.prg,v 1.2 2005-08-18 04:07:28 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -91,7 +91,7 @@
 	Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-#include "minigui.ch"
+#include "oohg.ch"
 
 #define ABM_CRLF                HB_OsNewLine()
 
@@ -193,7 +193,7 @@ Procedure InitMessages( cLang )
 *------------------------------------------------------------------------------*
 Local aLang, aLangDefault
 
-   IF VALTYPE( cLang ) == "C" .AND. ! EMPTY( cLang )
+   IF VALTYPE( cLang ) $ "CM" .AND. ! EMPTY( cLang )
       // Language specified via parameter
       cLang := UPPER( ALLTRIM( cLang ) )
    ELSE
@@ -226,7 +226,7 @@ STATIC FUNCTION InitMessagesMerge( aLang, aLangDefault, nTable )
 Local aReturn
    aReturn := ACLONE( aLangDefault[ nTable ] )
    IF LEN( aLang ) >= nTable .AND. VALTYPE( aLang[ nTable ] ) == "A"
-      AEVAL( aReturn, { |c,i| IF( LEN( aLang[ nTable ] ) >= i .AND. VALTYPE( aLang[ nTable ][ i ] ) == "C" , aReturn[ i ] := aLang[ nTable ][ i ] , c ) } )
+      AEVAL( aReturn, { |c,i| IF( LEN( aLang[ nTable ] ) >= i .AND. VALTYPE( aLang[ nTable ][ i ] ) $ "CM" , aReturn[ i ] := aLang[ nTable ][ i ] , c ) } )
    ENDIF
 RETURN aReturn
 

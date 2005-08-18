@@ -1,5 +1,5 @@
 /*
- * $Id: h_datepicker.prg,v 1.2 2005-08-11 05:16:06 guerra000 Exp $
+ * $Id: h_datepicker.prg,v 1.3 2005-08-18 04:07:28 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -91,7 +91,7 @@
 	Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-#include "minigui.ch"
+#include "oohg.ch"
 #include "common.ch"
 #include "hbclass.ch"
 
@@ -128,7 +128,7 @@ Local ControlHandle
 
    Self := TDatePick():SetForm( ControlName, ParentForm, FontName, FontSize, , , .t. )
 
-   If ValType( Field ) == 'C' .AND. ! empty( Field )
+   If ValType( Field ) $ 'CM' .AND. ! empty( Field )
       ::VarName := alltrim( Field )
       ::Block := &( "{ |x| if( PCount() == 0, " + Field + ", " + Field + " := x ) }" )
       Value := EVAL( ::Block )

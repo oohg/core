@@ -1,5 +1,5 @@
 /*
- * $Id: h_edit.prg,v 1.1 2005-08-07 00:07:33 guerra000 Exp $
+ * $Id: h_edit.prg,v 1.2 2005-08-18 04:07:28 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -109,9 +109,10 @@
  *                      - Añadido soporte para lenguaje Alemán (Janusz Poura).
  ***************************************************************************************/
 
-#include "minigui.ch"
+#include "oohg.ch"
 
 #include "winprint.ch"
+
 // Modos.
 #define ABM_MODO_VER            1
 #define ABM_MODO_EDITAR         2
@@ -254,7 +255,7 @@ InitMessages()
 
 // Control de parámetros.
 // Area de la base de datos.---------------------------------------------------
-if ( ValType( cArea ) != "C" ) .or. Empty( cArea )
+if ( ! ValType( cArea ) $ "CM" ) .or. Empty( cArea )
         MsgOOHGError( _OOHG_aABMLangError[1], "" )
 else
         _cArea       := cArea
@@ -268,7 +269,7 @@ if ( nCampos > 16 )
 endif
 
 // Titulo de la ventana.-------------------------------------------------------
-if ( ValType( cTitulo ) != "C" ) .or. Empty( cTitulo )
+if ( ! ValType( cTitulo ) $ "CM" ) .or. Empty( cTitulo )
         _cTitulo := cArea
 else
         _cTitulo := cTitulo
@@ -283,7 +284,7 @@ if ( ValType( aCampos ) != "A" ) .or. ( Len( aCampos ) != nCampos )
         next
 else
         for nItem := 1 to nCampos
-                if Valtype( aCampos[nItem] ) != "C"
+                if ! Valtype( aCampos[nItem] ) $ "CM"
                         _aCampos[nItem] := Lower( _aEstructura[nItem,1] )
                 else
                         _aCampos[nItem] := aCampos[nItem]

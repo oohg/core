@@ -1,5 +1,5 @@
 /*
- * $Id: h_listbox.prg,v 1.2 2005-08-11 05:16:06 guerra000 Exp $
+ * $Id: h_listbox.prg,v 1.3 2005-08-18 04:07:28 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -91,7 +91,7 @@
 	Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-#include "minigui.ch"
+#include "oohg.ch"
 #include "common.ch"
 #include "hbclass.ch"
 
@@ -239,7 +239,7 @@ Return ::Super:Events_Command( wParam )
 *-----------------------------------------------------------------------------*
 METHOD Item( nItem, uValue ) CLASS TList
 *-----------------------------------------------------------------------------*
-   IF VALTYPE( uValue ) == "C"
+   IF VALTYPE( uValue ) $ "CM"
       ListBoxDeleteString( ::hWnd, nItem )
       ListBoxInsertString( ::hWnd, uValue, nItem )
    ENDIF

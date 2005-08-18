@@ -1,5 +1,5 @@
 /*
- * $Id: h_scrsaver.prg,v 1.1 2005-08-07 00:12:12 guerra000 Exp $
+ * $Id: h_scrsaver.prg,v 1.2 2005-08-18 04:07:28 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -91,7 +91,7 @@
 	Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-#include "minigui.ch"
+#include "oohg.ch"
 #include "common.ch"
 
 Memvar _ActiveScrSaverName
@@ -197,7 +197,7 @@ Function _ActivateScrSaver( aForm, cParam )
 
 		cFileScr := GetModuleFileName( GetInstance() )
 		cFileDes := GetSystemFolder() + "\" + ;
-				If( valtype(_ScrSaverFileName) == "C", _ScrSaverFileName, ;
+            If( valtype(_ScrSaverFileName) $ "CM", _ScrSaverFileName, ;
 				cFileNoExt( cFileScr ) + ".SCR" )
 
 		IF File( cFileDes )

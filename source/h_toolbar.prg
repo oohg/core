@@ -1,5 +1,5 @@
 /*
- * $Id: h_toolbar.prg,v 1.2 2005-08-11 05:16:06 guerra000 Exp $
+ * $Id: h_toolbar.prg,v 1.3 2005-08-18 04:07:28 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -91,7 +91,7 @@
 	Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-#include "minigui.ch"
+#include "oohg.ch"
 #include "hbclass.ch"
 #include "i_windefs.ch"
 
@@ -221,7 +221,7 @@ msginfo("si")
 
       IF x  > 0
 
-         If VALTYPE( ::aControls[ x ]:ToolTip )  == "C"
+         If VALTYPE( ::aControls[ x ]:ToolTip ) $ "CM"
 
             ShowToolButtonTip ( lParam , ::aControls[ x ]:ToolTip )
 
@@ -430,7 +430,7 @@ Local nNotify := GetNotifyCode( lParam )
 
 msginfo("si")
 
-         If VALTYPE( ::ToolTip )  == "C"
+         If VALTYPE( ::ToolTip ) $ "CM"
 
             ShowToolButtonTip ( lParam , ::ToolTip )
 

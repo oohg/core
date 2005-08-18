@@ -1,5 +1,5 @@
 /*
- * $Id: h_radio.prg,v 1.3 2005-08-17 05:58:27 guerra000 Exp $
+ * $Id: h_radio.prg,v 1.4 2005-08-18 04:07:28 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -253,7 +253,7 @@ Return ( ASCAN( ::aItems, { |o| o:hWnd == hWnd } ) != 0 )
 *-----------------------------------------------------------------------------*
 METHOD Caption( nItem, uValue ) CLASS TRadioGroup
 *-----------------------------------------------------------------------------*
-Return if( VALTYPE( uValue ) == "C", ::aItems[ nItem ]:Caption := uValue, ::aItems[ nItem ]:Caption )
+Return ( ::aItems[ nItem ]:Caption := uValue )
 
 *-----------------------------------------------------------------------------*
 METHOD Events_Command( wParam ) CLASS TRadioGroup

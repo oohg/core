@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.1 2005-08-07 00:06:08 guerra000 Exp $
+ * $Id: h_button.prg,v 1.2 2005-08-18 04:07:28 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -91,7 +91,7 @@
 	Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-#include "minigui.ch"
+#include "oohg.ch"
 #include "common.ch"
 #include "hbclass.ch"
 
@@ -180,7 +180,7 @@ Return uRet
 *-----------------------------------------------------------------------------*
 METHOD Picture( cPicture ) CLASS TButton
 *-----------------------------------------------------------------------------*
-   IF VALTYPE( cPicture ) == "C"
+   IF VALTYPE( cPicture ) $ "CM"
       DeleteObject( ::AuxHandle )
       ::AuxHandle := _SetBtnPicture( ::hWnd, cPicture )
       ::cPicture := cPicture

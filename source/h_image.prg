@@ -1,5 +1,5 @@
 /*
- * $Id: h_image.prg,v 1.1 2005-08-07 00:13:51 guerra000 Exp $
+ * $Id: h_image.prg,v 1.2 2005-08-18 04:07:28 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -91,11 +91,8 @@
 	Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-#include "minigui.ch"
+#include "oohg.ch"
 #include "hbclass.ch"
-
-*#define BS_DEFPUSHBUTTON   1
-*#define BM_SETSTYLE  244
 
 CLASS TImage FROM TControl
    DATA Type      INIT "IMAGE" READONLY
@@ -145,7 +142,7 @@ Return Nil
 *-----------------------------------------------------------------------------*
 METHOD Picture( cPicture ) CLASS TImage
 *-----------------------------------------------------------------------------*
-   IF VALTYPE( cPicture ) == "C"
+   IF VALTYPE( cPicture ) $ "CM"
       C_SetPicture( ::hWnd, cPicture, ::Width, ::Height, ::Stretch )
       ::cPicture := cPicture
    ENDIF

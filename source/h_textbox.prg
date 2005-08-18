@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.4 2005-08-17 06:06:20 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.5 2005-08-18 04:07:28 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -175,7 +175,7 @@ Local nControlHandle := 0
    ::OnChange   :=  uChange
    ::OnDblClick := uEnter
 
-   If ValType( Field ) == 'C' .AND. ! empty( Field )
+   If ValType( Field ) $ 'CM' .AND. ! empty( Field )
       ::VarName := alltrim( Field )
       ::Block := &( "{ |x| if( PCount() == 0, " + Field + ", " + Field + " := x ) }" )
       cValue := EVAL( ::Block )
@@ -193,7 +193,7 @@ Local uValue
 
    IF valtype( ::Block ) == "B"
       uValue := EVAL( ::Block )
-      If valtype ( uValue ) == 'C'
+      If valtype ( uValue ) $ 'CM'
          uValue := rtrim( uValue )
       EndIf
       ::Value := uValue
@@ -204,7 +204,7 @@ Return NIL
 *------------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TText
 *------------------------------------------------------------------------------*
-Return IF( VALTYPE( uValue ) == "C", ::Caption := RTrim( uValue ), ::Caption )
+Return ( ::Caption := IF( ValType( uValue ) $ "CM", RTrim( uValue ), NIL ) )
 
 *------------------------------------------------------------------------------*
 METHOD SetFocus() CLASS TText
