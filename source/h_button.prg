@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.2 2005-08-18 04:07:28 guerra000 Exp $
+ * $Id: h_button.prg,v 1.3 2005-08-19 05:46:28 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -94,27 +94,27 @@
 #include "oohg.ch"
 #include "common.ch"
 #include "hbclass.ch"
-
-#define BS_DEFPUSHBUTTON	1
-#define BM_SETSTYLE	244
+#include "i_windefs.ch"
 
 CLASS TButton FROM TControl
    DATA Type      INIT "BUTTON" READONLY
    DATA cPicture  INIT ""
-   DATA ImgHandle INIT 0
+   // DATA ImgHandle INIT 0   // ::AuxHandle
 
+   METHOD Define
+   METHOD DefineImage
    METHOD SetFocus
    METHOD Picture     SETGET
+   METHOD Value       SETGET
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
-Function _DefineButton ( ControlName, ParentForm, x, y, Caption, ;
-                         ProcedureName, w, h, fontname, fontsize, tooltip, ;
-                         gotfocus, lostfocus, flat, NoTabStop, HelpId, ;
-                         invisible , bold, italic, underline, strikeout )
+METHOD Define( ControlName, ParentForm, x, y, Caption, ProcedureName, w, h, ;
+               fontname, fontsize, tooltip, gotfocus, lostfocus, flat, ;
+               NoTabStop, HelpId, invisible, bold, italic, underline, ;
+               strikeout ) CLASS TButton
 *-----------------------------------------------------------------------------*
 Local ControlHandle
-Local Self
 
    DEFAULT w         TO 100
    DEFAULT h         TO 28
@@ -122,9 +122,9 @@ Local Self
    DEFAULT gotfocus  TO ""
    DEFAULT invisible TO FALSE
 
-   Self := TButton():SetForm( ControlName, ParentForm, FontName, FontSize )
+   ::SetForm( ControlName, ParentForm, FontName, FontSize )
 
-   ControlHandle := InitButton ( ::Parent:hWnd, Caption, 0, x, y ,w ,h,'',0 , flat , NoTabStop, invisible )
+   ControlHandle := InitButton( ::Parent:hWnd, Caption, 0, x, y, w, h, '', 0, flat, NoTabStop, invisible )
 
    ::New( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
@@ -135,16 +135,14 @@ Local Self
    ::OnGotFocus :=  GotFocus
    ::Caption := Caption
 
-Return Nil
+Return Self
 
 *-----------------------------------------------------------------------------*
-Function _DefineImageButton ( ControlName, ParentForm, x, y, Caption, ;
-                              ProcedureName, w, h, image, tooltip, gotfocus, ;
-                              lostfocus, flat, notrans, HelpId, invisible, ;
-                              notabstop )
+METHOD DefineImage( ControlName, ParentForm, x, y, Caption, ProcedureName, ;
+                    w, h, image, tooltip, gotfocus, lostfocus, flat, ;
+                    notrans, HelpId, invisible, notabstop ) CLASS TButton
 *-----------------------------------------------------------------------------*
 Local aRet [2]
-Local Self
 
 	DEFAULT invisible TO FALSE
 	DEFAULT notabstop TO FALSE
@@ -153,7 +151,7 @@ Local Self
 		Return Nil
 	EndIf
 
-   Self := TButton():SetForm( ControlName, ParentForm )
+   ::SetForm( ControlName, ParentForm )
 
    aRet := InitImageButton ( ::Parent:hWnd, Caption, 0, x, y, w, h, image , flat , notrans, invisible, notabstop )
 
@@ -167,15 +165,13 @@ Local Self
    ::Caption := Caption
    ::AuxHandle := aRet [2]
 
-Return Nil
+Return Self
 
 *------------------------------------------------------------------------------*
 METHOD SetFocus() CLASS TButton
 *------------------------------------------------------------------------------*
-Local uRet
-   uRet := ::Super:SetFocus()
    SendMessage( ::hWnd , BM_SETSTYLE , LOWORD( BS_DEFPUSHBUTTON ) , 1 )
-Return uRet
+Return ::Super:SetFocus()
 
 *-----------------------------------------------------------------------------*
 METHOD Picture( cPicture ) CLASS TButton
@@ -186,6 +182,11 @@ METHOD Picture( cPicture ) CLASS TButton
       ::cPicture := cPicture
    ENDIF
 Return ::cPicture
+
+*------------------------------------------------------------------------------*
+METHOD Value( uValue ) CLASS TButton
+*------------------------------------------------------------------------------*
+Return ( ::Value := uValue )
 
 
 
