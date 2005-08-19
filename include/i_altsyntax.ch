@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.5 2005-08-18 04:12:15 guerra000 Exp $
+ * $Id: i_altsyntax.ch,v 1.6 2005-08-19 05:45:09 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1125,7 +1125,7 @@ Button
 #xcommand END BUTTON ;
         =>;
         iif ( _OOHG_ActiveControlPicture == Nil ,;
-	         _DefineButton (;
+                 TButton():Define(;
                     _OOHG_ActiveControlName,;
                     _OOHG_ActiveControlOf ,;
                     _OOHG_ActiveControlCol ,;
@@ -1143,7 +1143,7 @@ Button
                     _OOHG_ActiveControlNoTabStop  ,;
                     _OOHG_ActiveControlHelpId ,;
                     _OOHG_ActiveControlInvisible , _OOHG_ActiveControlFontBold , _OOHG_ActiveControlFontItalic , _OOHG_ActiveControlFontUnderLine , _OOHG_ActiveControlFontStrikeOut  ) ,;
-		 _DefineImageButton (;
+                 TButton():DefineImage(;
                     _OOHG_ActiveControlName,;
                     _OOHG_ActiveControlOf,;
                     _OOHG_ActiveControlCol,;

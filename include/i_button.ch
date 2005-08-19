@@ -1,5 +1,5 @@
 /*
- * $Id: i_button.ch,v 1.1 2005-08-06 23:49:17 guerra000 Exp $
+ * $Id: i_button.ch,v 1.2 2005-08-19 05:45:09 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -92,6 +92,7 @@
 ---------------------------------------------------------------------------*/
 
 #xcommand @ <row>,<col> BUTTON <name> ;
+                [ OBJ <obj> ] ;
 		[ <dummy1: OF, PARENT> <parent> ] ;
 		CAPTION <caption> ;
 		[ <dummy2: ACTION,ON CLICK,ONCLICK> <action> ];
@@ -111,11 +112,12 @@
 		[ HELPID <helpid> ] 		;
 		[ <invisible: INVISIBLE> ] ;
 	=>;
-	_DefineButton ( <"name">, <"parent">, <col>, <row>, <caption>, <{action}>, ;
+        [ <obj> := ] TButton():Define( <"name">, <"parent">, <col>, <row>, <caption>, <{action}>, ;
                    <w>, <h>, <font>, <size>, <tooltip>, <{gotfocus}>, ;
-                   <{lostfocus}>, <.flat.>, <.notabstop.>, <helpid>, <.invisible.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> ) 
+                   <{lostfocus}>, <.flat.>, <.notabstop.>, <helpid>, <.invisible.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> )
 
 #xcommand @ <row>,<col> BUTTON <name> ;
+                [ OBJ <obj> ] ;
 		[ <dummy1: OF, PARENT> <parent> ] ;
 		PICTURE <bitmap> ;
 		[ <dummy2: ACTION,ON CLICK,ONCLICK> <action> ];
@@ -130,8 +132,7 @@
 		[ HELPID <helpid> ] 		;
 		[ <invisible: INVISIBLE> ] ;
 	=>;
-	_DefineImageButton ( <"name">, <"parent">, <col>, <row>, "", <{action}>, ;
+        [ <obj> := ] TButton():DefineImage( <"name">, <"parent">, <col>, <row>, "", <{action}>, ;
                         <w>, <h>, <bitmap>, <tooltip>, <{gotfocus}>, <{lostfocus}>, ;
                         <.flat.>, <.notrans.>, <helpid>, <.invisible.>, <.notabstop.> )
-
 
