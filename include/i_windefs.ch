@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.4 2005-08-17 06:04:56 guerra000 Exp $
+ * $Id: i_windefs.ch,v 1.5 2005-08-19 05:45:49 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -303,10 +303,13 @@
 #define LR_COPYFROMRESOURCE 0x4000
 #define LR_SHARED           0x8000
 
-#DEFINE DC_BRUSH 18
-#define LVN_BEGINDRAG	(-109)
+// Button
+#define BS_DEFPUSHBUTTON	1
 #define BS_AUTORADIOBUTTON	9
 #define BS_NOTIFY	0x4000
+
+#DEFINE DC_BRUSH 18
+#define LVN_BEGINDRAG	(-109)
 #define GWL_STYLE	(-16)
 #define CBN_EDITCHANGE	5
 #define SIZE_MAXHIDE	4
@@ -337,7 +340,6 @@
 #define STN_DISABLE         3
 
 #define SB_HORZ	0
-#define BS_DEFPUSHBUTTON	1
 #define SB_CTL	2
 #define SB_VERT	1
 #define SB_LINEUP	0
