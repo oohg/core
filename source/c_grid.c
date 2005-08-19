@@ -1,5 +1,5 @@
 /*
- * $Id: c_grid.c,v 1.6 2005-08-18 04:02:20 guerra000 Exp $
+ * $Id: c_grid.c,v 1.7 2005-08-19 05:47:38 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -254,12 +254,6 @@ static void _OOHG_ListView_FillItem( HWND hWnd, int nItem, PHB_ITEM pItems )
 
    ulLen = pItems->item.asArray.value->ulLen;
    pItems = pItems->item.asArray.value->pItems;
-
-   // General info
-   LI.mask = LVIF_TEXT | LVIF_IMAGE;
-   LI.state = 0;
-   LI.stateMask = 0;
-   LI.iItem = nItem;
 
    for( s = 0; s < ulLen; s++ )
    {
@@ -642,18 +636,13 @@ HB_FUNC( GETGRIDVKEY )
    hb_retnl( ( LPARAM ) ( ( ( LV_KEYDOWN * ) hb_parnl( 1 ) ) -> wVKey ) );
 }
 
-static PHB_DYNS s_GridForeColor = 0, s_GridBackColor = 0;
-static PHB_DYNS s_aFontColor = 0,    s_DefBkColorEdit = 0;
-static PHB_DYNS s_Container = 0,     s_Parent = 0;
-
-static int TGrid_Notify_CustomDraw_GetColor( PHB_ITEM pSelf, unsigned int x, unsigned int y, PHB_DYNS sGridColor, PHB_DYNS sObjColor, int iDefaultColor )
+static int TGrid_Notify_CustomDraw_GetColor( PHB_ITEM pSelf, unsigned int x, unsigned int y, int sGridColor, int sObjColor, int iDefaultColor )
 {
    PHB_ITEM pColor;
    HB_ITEM pRet;
    int iColor, sw;
 
-   hb_vmPushSymbol( sGridColor->pSymbol );
-   hb_vmPush( pSelf );
+   _OOHG_Send( pSelf, sGridColor );
    hb_vmSend( 0 );
 
    pColor = hb_param( -1, HB_IT_ARRAY );
@@ -697,18 +686,15 @@ static int TGrid_Notify_CustomDraw_GetColor( PHB_ITEM pSelf, unsigned int x, uns
       }
       else
       {
-         hb_vmPushSymbol( sObjColor->pSymbol );
-         hb_vmPush( pSelf );
+         _OOHG_Send( pSelf, sObjColor );
 
          // oObj := IF( ValType( oObj:Container ) == "O", oObj:Container, oObj:Parent )
-         hb_vmPushSymbol( s_Container->pSymbol );
-         hb_vmPush( pSelf );
+         _OOHG_Send( pSelf, s_Container );
          hb_vmSend( 0 );
          pColor = hb_param( -1, HB_IT_OBJECT );
          if( ! pColor )
          {
-            hb_vmPushSymbol( s_Parent->pSymbol );
-            hb_vmPush( pSelf );
+            _OOHG_Send( pSelf, s_Parent );
             hb_vmSend( 0 );
             pColor = hb_param( -1, HB_IT_OBJECT );
          }
@@ -751,16 +737,6 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam )
       return CDRF_DODEFAULT;
    }
 
-   if( ! s_GridForeColor )
-   {
-      s_GridForeColor  = hb_dynsymFindName( "GRIDFORECOLOR" );
-      s_GridBackColor  = hb_dynsymFindName( "GRIDBACKCOLOR" );
-      s_aFontColor     = hb_dynsymFindName( "AFONTCOLOR" );
-      s_DefBkColorEdit = hb_dynsymFindName( "DEFBKCOLOREDIT" );
-      s_Container      = hb_dynsymFindName( "CONTAINER" );
-      s_Parent         = hb_dynsymFindName( "PARENT" );
-   }
-
    x = lplvcd->iSubItem + 1;
    y = lplvcd->nmcd.dwItemSpec + 1;
 
@@ -773,4 +749,38 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam )
 HB_FUNC( TGRID_NOTIFY_CUSTOMDRAW )
 {
    hb_retni( TGrid_Notify_CustomDraw( hb_param( 1, HB_IT_OBJECT ), ( LPARAM ) hb_parnl( 2 ) ) );
+}
+
+HB_FUNC( FILLGRIDFROMARRAY )
+{
+   HWND hWnd = ( HWND ) hb_parnl( 1 );
+   ULONG iCount = ListView_GetItemCount( hWnd );
+   PHB_ITEM pScreen = hb_param( 2, HB_IT_ARRAY );
+   ULONG iLen = pScreen->item.asArray.value->ulLen;
+   LV_ITEM LI;
+
+   while( iCount > iLen )
+   {
+      iCount--;
+      SendMessage( hWnd, LVM_DELETEITEM, ( WPARAM ) iCount, 0 );
+   }
+   while( iCount < iLen )
+   {
+      LI.mask = LVIF_TEXT | LVIF_IMAGE;
+      LI.state = 0;
+      LI.stateMask = 0;
+      LI.iItem = iCount;
+      LI.iSubItem = 0;
+      LI.pszText = "";
+      LI.iImage = -1;
+      ListView_InsertItem( hWnd, &LI );
+      iCount++;
+   }
+
+   pScreen = pScreen->item.asArray.value->pItems;
+   for( iCount = 0; iCount < iLen; iCount++ )
+   {
+      _OOHG_ListView_FillItem( hWnd, iCount, pScreen );
+      pScreen++;
+   }
 }

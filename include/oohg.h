@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.h,v 1.1 2005-08-18 04:11:21 guerra000 Exp $
+ * $Id: oohg.h,v 1.2 2005-08-19 05:47:37 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -56,3 +56,18 @@ struct IMAGE_PARAMETER {
 
 extern void ImageFillParameter( struct IMAGE_PARAMETER *pResult, PHB_ITEM pString );
 extern PHB_ITEM GetControlObjectByHandle( LONG hWnd );
+void _OOHG_Send( PHB_ITEM pSelf, int iSymbol );
+
+// Symbol tables
+#define s_Events_Notify    0
+#define s_GridForeColor    1
+#define s_GridBackColor    2
+#define s_aFontColor       3
+#define s_DefBkColorEdit   4
+#define s_Container        5
+#define s_Parent           6
+#define s_Events_Char      7
+#define s_Events           8
+#define s_Events_Color     9
+#define s_Super            10
+#define s_LastSymbol       11

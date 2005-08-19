@@ -1,5 +1,5 @@
 /*
- * $Id: c_textbox.c,v 1.2 2005-08-13 05:14:45 guerra000 Exp $
+ * $Id: c_textbox.c,v 1.3 2005-08-19 05:47:38 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -107,6 +107,7 @@
 #include "hbapiitm.h"
 #include "winreg.h"
 #include "tchar.h"
+#include "../include/oohg.h"
 
 static LRESULT APIENTRY SubClassFunc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 extern PHB_ITEM GetControlObjectByHandle( LONG hWnd );
@@ -149,21 +150,13 @@ HB_FUNC( INITTEXTBOX )
 
 }
 
-static PHB_DYNS s_Events_Char = 0;
-
 static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
    PHB_ITEM pResult = NULL;
 
    if( msg == WM_CHAR )
    {
-      if( ! s_Events_Char )
-      {
-         s_Events_Char = hb_dynsymFindName( "EVENTS_CHAR" );
-      }
-
-      hb_vmPushSymbol( s_Events_Char->pSymbol );
-      hb_vmPush( GetControlObjectByHandle( ( LONG ) hWnd ) );
+      _OOHG_Send( GetControlObjectByHandle( ( LONG ) hWnd ), s_Events_Char );
       hb_vmPushLong( wParam );
       hb_vmPushLong( lParam );
       hb_vmSend( 2 );

@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.6 2005-08-17 05:53:58 guerra000 Exp $
+ * $Id: c_windows.c,v 1.7 2005-08-19 05:47:38 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -109,6 +109,7 @@
 #include "winreg.h"
 #include "tchar.h"
 #include <commctrl.h>
+#include "../include/oohg.h"
 
 
 BOOL Array2Rect(PHB_ITEM aRect, RECT *rc ) ;
@@ -116,13 +117,12 @@ BOOL Array2Rect(PHB_ITEM aRect, RECT *rc ) ;
 static void ChangeNotifyIcon( HWND hWnd, HICON hIcon, LPSTR szText );
 static void ShowNotifyIcon( HWND hWnd, BOOL bAdd, HICON hIcon, LPSTR szText );
 
-static PHB_DYNS _ooHG_Symbol_Events = 0, _ooHG_Symbol_TForm = 0;
+static PHB_DYNS _ooHG_Symbol_TForm = 0;
 static HB_ITEM  _OOHG_aFormhWnd, _OOHG_aFormObjects;
 
 HB_FUNC( _OOHG_INIT_C_VARS_C_SIDE )
 {
    _ooHG_Symbol_TForm  = hb_dynsymFind( "TFORM" );
-   _ooHG_Symbol_Events = hb_dynsymFind( "EVENTS" );
    memcpy( &_OOHG_aFormhWnd,    hb_param( 1, HB_IT_ARRAY ), sizeof( HB_ITEM ) );
    memcpy( &_OOHG_aFormObjects, hb_param( 2, HB_IT_ARRAY ), sizeof( HB_ITEM ) );
 }
@@ -175,15 +175,14 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
    long int r;
    PHB_ITEM pResult;
 
-   if( ! _ooHG_Symbol_Events )
+   if( ! _ooHG_Symbol_TForm )
    {
       hb_vmPushSymbol( hb_dynsymFind( "_OOHG_INIT_C_VARS" )->pSymbol );
       hb_vmPushNil();
       hb_vmDo( 0 );
    }
 
-   hb_vmPushSymbol( _ooHG_Symbol_Events->pSymbol );
-   hb_vmPush( GetFormObjectByHandle( ( LONG ) hWnd ) );
+   _OOHG_Send( GetFormObjectByHandle( ( LONG ) hWnd ), s_Events );
    hb_vmPushLong( ( LONG ) hWnd );
    hb_vmPushLong( message );
    hb_vmPushLong( wParam );

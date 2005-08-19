@@ -1,5 +1,5 @@
 /*
- * $Id: c_controlmisc.c,v 1.4 2005-08-18 04:02:20 guerra000 Exp $
+ * $Id: c_controlmisc.c,v 1.5 2005-08-19 05:47:38 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -116,6 +116,37 @@
 #include "tchar.h"
 #include "../include/oohg.h"
 
+PHB_DYNS *s_Symbols = NULL;
+
+char *s_SymbolNames[] = { "EVENTS_NOTIFY",
+                          "GRIDFORECOLOR",
+                          "GRIDBACKCOLOR",
+                          "AFONTCOLOR",
+                          "DEFBKCOLOREDIT",
+                          "CONTAINER",
+                          "PARENT",
+                          "EVENTS_CHAR",
+                          "EVENTS",
+                          "EVENTS_COLOR",
+                          "SUPER",
+                          "LastSymbol" };
+
+void _OOHG_Send( PHB_ITEM pSelf, int iSymbol )
+{
+   if( ! s_Symbols )
+   {
+      s_Symbols = hb_xgrab( sizeof( PHB_DYNS ) * s_LastSymbol );
+      memset( s_Symbols, 0, sizeof( PHB_DYNS ) * s_LastSymbol );
+   }
+
+   if( ! s_Symbols[ iSymbol ] )
+   {
+      s_Symbols[ iSymbol ] = hb_dynsymFind( s_SymbolNames[ iSymbol ] );
+   }
+
+   hb_vmPushSymbol( s_Symbols[ iSymbol ]->pSymbol );
+   hb_vmPush( pSelf );
+}
 
 HB_FUNC ( DELETEOBJECT )
 {
