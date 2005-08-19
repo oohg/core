@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.9 2005-08-18 03:59:17 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.10 2005-08-19 05:50:40 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -731,6 +731,7 @@ Return IF( nPos > 0, ::aControls[ nPos ], nil )
 #include "hbapi.h"
 #include "hbvm.h"
 #include <windows.h>
+#include "../include/oohg.h"
 
 extern PHB_ITEM GetControlObjectByHandle( LONG hWnd );
 
@@ -739,8 +740,6 @@ HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
 // -----------------------------------------------------------------------------
 {
    static PHB_DYNS s_Events2 = 0;
-   static PHB_DYNS s_Events_Color = 0;
-   static PHB_DYNS s_Events_Notify = 0;
 
    HWND hWnd      = ( HWND )   hb_parnl( 1 );
    UINT message   = ( UINT )   hb_parni( 2 );
@@ -749,18 +748,13 @@ HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
    PHB_ITEM pSelf = hb_stackSelfItem();
 if( ! pSelf )
 {
-   MessageBox( GetActiveWindow(), "No pSelf!", "Err!", MB_OK | MB_ICONINFORMATION | MB_SYSTEMMODAL );
+   MessageBox( GetActiveWindow(), "No pSelf!", "Error!", MB_OK | MB_ICONINFORMATION | MB_SYSTEMMODAL );
 }
 
    switch( message )
    {
       case WM_CTLCOLORSTATIC:
-         if( ! s_Events_Color )
-         {
-            s_Events_Color = hb_dynsymFind( "EVENTS_COLOR" );
-         }
-         hb_vmPushSymbol( s_Events_Color->pSymbol );
-         hb_vmPush( GetControlObjectByHandle( ( LONG ) lParam ) );
+         _OOHG_Send( GetControlObjectByHandle( ( LONG ) lParam ), s_Events_Color );
          hb_vmPushLong( wParam );
          hb_vmPushLong( COLOR_3DFACE );
          hb_vmSend( 2 );
@@ -768,24 +762,14 @@ if( ! pSelf )
 
       case WM_CTLCOLOREDIT:
       case WM_CTLCOLORLISTBOX:
-         if( ! s_Events_Color )
-         {
-            s_Events_Color = hb_dynsymFind( "EVENTS_COLOR" );
-         }
-         hb_vmPushSymbol( s_Events_Color->pSymbol );
-         hb_vmPush( GetControlObjectByHandle( ( LONG ) lParam ) );
+         _OOHG_Send( GetControlObjectByHandle( ( LONG ) lParam ), s_Events_Color );
          hb_vmPushLong( wParam );
          hb_vmPushLong( COLOR_WINDOW );
          hb_vmSend( 2 );
          break;
 
       case WM_NOTIFY:
-         if( ! s_Events_Notify )
-         {
-            s_Events_Notify = hb_dynsymFind( "EVENTS_NOTIFY" );
-         }
-         hb_vmPushSymbol( s_Events_Notify->pSymbol );
-         hb_vmPush( GetControlObjectByHandle( ( LONG ) ( ( ( NMHDR FAR * ) lParam )->hwndFrom ) ) );
+         _OOHG_Send( GetControlObjectByHandle( ( LONG ) ( ( ( NMHDR FAR * ) lParam )->hwndFrom ) ), s_Events_Notify );
          hb_vmPushLong( wParam );
          hb_vmPushLong( lParam );
          hb_vmSend( 2 );
@@ -843,11 +827,7 @@ Local oWnd, oCtrl
 
       If i > 0
 
-         If VALTYPE( ::aHotKeys[ i ][ HOTKEY_ACTION ] ) == "B"
-
-            EVAL( ::aHotKeys[ i ][ HOTKEY_ACTION ] )
-
-         EndIf
+         _OOHG_EVAL( ::aHotKeys[ i ][ HOTKEY_ACTION ] )
 
       EndIf
 
@@ -1410,7 +1390,7 @@ Local oWnd, oCtrl
 
       if valtype( ::WndProc ) == "B"
 
-         return EVAL( ::WndProc, hWnd, nMsg, wParam, lParam )
+         return _OOHG_EVAL( ::WndProc, hWnd, nMsg, wParam, lParam )
 
       endif
 
@@ -2533,7 +2513,7 @@ Static Function _OOHG_MacroCall_Error( oError )
    BREAK oError
 RETURN 1
 
-EXTERN IsXPThemeActive
+EXTERN IsXPThemeActive, _OOHG_Eval, EVAL
 
 #pragma BEGINDUMP
 
@@ -2570,6 +2550,18 @@ HB_FUNC( ISXPTHEMEACTIVE )
    }
 
    hb_retl( bResult );
+}
+
+HB_FUNC( _OOHG_EVAL )
+{
+   if( ISBLOCK( 1 ) )
+   {
+      HB_FUN_EVAL();
+   }
+   else
+   {
+      hb_ret();
+   }
 }
 
 #pragma ENDDUMP

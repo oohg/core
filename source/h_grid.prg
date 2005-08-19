@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.8 2005-08-18 04:01:06 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.9 2005-08-19 05:50:40 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -308,7 +308,7 @@ Local aNum, oCtrl
 		@ (l*30) + 20 , 20 BUTTON BUTTON_1 ;
 		OF _EDITITEM ;
       CAPTION _OOHG_MESSAGE [6] ;
-      ACTION { || AEVAL( aSave, { |b| EVAL(b) } ), ::Item( Item , g ), oWnd:Release() }
+      ACTION { || AEVAL( aSave, { |b| _OOHG_EVAL( b ) } ), ::Item( Item , g ), oWnd:Release() }
 
 		@ (l*30) + 20 , 130 BUTTON BUTTON_2 ;
 		OF _EDITITEM ;

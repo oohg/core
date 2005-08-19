@@ -1,5 +1,5 @@
 /*
- * $Id: h_scroll.prg,v 1.1 2005-08-07 00:12:12 guerra000 Exp $
+ * $Id: h_scroll.prg,v 1.2 2005-08-19 05:50:40 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -108,67 +108,35 @@ Local Lo_wParam := LoWord( wParam )
 
    If Lo_wParam == SB_LINEDOWN
 
-      if valtype( ::OnLineDown ) == "B"
-
-         EVAL( ::OnLineDown, Self )
-
-      endif
+      _OOHG_EVAL( ::OnLineDown, Self )
 
    elseif Lo_wParam == SB_LINEUP
 
-      if valtype( ::OnLineUp ) == "B"
-
-         EVAL( ::OnLineUp, Self )
-
-      endif
+      _OOHG_EVAL( ::OnLineUp, Self )
 
    elseif Lo_wParam == SB_PAGEUP
 
-      if valtype( ::OnPageUp ) == "B"
-
-         EVAL( ::OnPageUp, Self )
-
-      endif
+      _OOHG_EVAL( ::OnPageUp, Self )
 
    elseif Lo_wParam == SB_PAGEDOWN
 
-      if valtype( ::OnPageDown ) == "B"
-
-         EVAL( ::OnPageDown, Self )
-
-      endif
+      _OOHG_EVAL( ::OnPageDown, Self )
 
    elseif Lo_wParam == SB_TOP
 
-      if valtype( ::OnTop ) == "B"
-
-         EVAL( ::OnTop, Self )
-
-      endif
+      _OOHG_EVAL( ::OnTop, Self )
 
    elseif Lo_wParam == SB_BOTTOM
 
-      if valtype( ::OnBottom ) == "B"
-
-         EVAL( ::OnBottom, Self )
-
-      endif
+      _OOHG_EVAL( ::OnBottom, Self )
 
    elseif Lo_wParam == SB_THUMBPOSITION
 
-      if valtype( ::OnThumb ) == "B"
-
-         EVAL( ::OnThumb, Self, HiWord( wParam ) )
-
-      endif
+      _OOHG_EVAL( ::OnThumb, Self, HiWord( wParam ) )
 
    elseif Lo_wParam == SB_THUMBTRACK
 
-      if valtype( ::OnTrack ) == "B"
-
-         EVAL( ::OnTrack, Self, HiWord( wParam ) )
-
-      endif
+      _OOHG_EVAL( ::OnTrack, Self, HiWord( wParam ) )
 
    else
 

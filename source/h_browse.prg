@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.8 2005-08-18 04:05:35 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.9 2005-08-19 05:50:40 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -250,7 +250,7 @@ Local ScrollBarHandle, hsum, ScrollBarButtonHandle, nWidth2
 
    aAdd ( ::Parent:BrowseList, Self )
 
-	// Add Vertical scrollbar
+   // Add Vertical scrollbar button
 
    ::ScrollBarButtonHandle := ScrollBarButtonHandle
 
@@ -361,7 +361,7 @@ PRIVATE __aPicture
    EndDo
 
    Do While nCurrentLength > Len( _BrowseRecMap )
-      ListViewDeleteString( ::hWnd, nCurrentLength )
+      ListViewDeleteString( hWnd, nCurrentLength )
       nCurrentLength--
    EndDo
 
@@ -528,15 +528,15 @@ Return nil
 *-----------------------------------------------------------------------------*
 METHOD Down() CLASS TBrowse
 *-----------------------------------------------------------------------------*
-Local PageLength , s , _RecNo , _DeltaScroll := { Nil , Nil , Nil , Nil }
-
-   _DeltaScroll := ListView_GetSubItemRect( ::hWnd, 0 , 0 )
+Local PageLength , s , _RecNo , _DeltaScroll
 
    s := LISTVIEW_GETFIRSTITEM( ::hWnd )
 
    PageLength := LISTVIEWGETCOUNTPERPAGE( ::hWnd )
 
 	If s == PageLength
+
+      _DeltaScroll := ListView_GetSubItemRect( ::hWnd, 0 , 0 )
 
       if ::lEof
          Return nil
@@ -1133,11 +1133,11 @@ Local i , ControlName , l , b , mVar
 
 		For i := 1 to l
 
-			If ValType ( aValid [i] ) == 'B'
+         b := _OOHG_Eval( aValid[ i ] )
 
-				b := Eval ( aValid [i] )
+         If ValType ( b ) == 'L'
 
-				If b == .f.
+            If ! b
 
 				        If ValType ( aValidMessages ) != 'U'
 
@@ -1449,7 +1449,7 @@ Local b , Result , mVar , TmpName
 				mVar := TmpName
 				&mVar := Result
 
-            b := Eval ( ::Valid [ CellColIndex ] )
+            b := _OOHG_Eval ( ::Valid [ CellColIndex ] )
 				If b == .f.
 
                If ValType ( ::ValidMessages ) == 'A'
@@ -1827,43 +1827,46 @@ Return NIL
 *-----------------------------------------------------------------------------*
 METHOD Refresh() CLASS TBrowse
 *-----------------------------------------------------------------------------*
-Local s , _RecNo , _DeltaScroll
-Local v
+Local s , _RecNo , _DeltaScroll, v
+Local cWorkArea, hWnd
 
-   If Select( ::WorkArea ) == 0
-      ListViewReset( ::hWnd )
+   cWorkArea := ::WorkArea
+   hWnd := ::hWnd
+
+   If Select( cWorkArea ) == 0
+      ListViewReset( hWnd )
       Return nil
 	EndIf
 
    v := ::Value
 
-   _DeltaScroll := ListView_GetSubItemRect ( ::hWnd, 0 , 0 )
+   _DeltaScroll := ListView_GetSubItemRect ( hWnd, 0 , 0 )
 
-   s := LISTVIEW_GETFIRSTITEM ( ::hWnd )
+   s := LISTVIEW_GETFIRSTITEM ( hWnd )
 
-   _RecNo := ( ::WorkArea )->( RecNo() )
+   _RecNo := ( cWorkArea )->( RecNo() )
 
    if v <= 0
 		v := _RecNo
 	EndIf
 
-   ( ::WorkArea )->( DbGoTo( v ) )
+   ( cWorkArea )->( DbGoTo( v ) )
 
 ***************************
 
 	if s == 1 .or. s == 0
 // Sin usar DBFILTER()
-      ( ::WorkArea )->( DBSkip() )
-      ( ::WorkArea )->( DBSkip( -1 ) )
-      IF ( ::WorkArea )->( RecNo() ) != v
-         ( ::WorkArea )->( DbSkip() )
+      ( cWorkArea )->( DBSkip() )
+      ( cWorkArea )->( DBSkip( -1 ) )
+      IF ( cWorkArea )->( RecNo() ) != v
+         ( cWorkArea )->( DbSkip() )
       ENDIF
 /*
 // Usando DBFILTER()
-      cMacroVar := ( ::WorkArea )->( dbfilter() )
+      cMacroVar := ( c::WorkArea )->( dbfilter() )
       If ! Empty( cMacroVar )
-         If ! ( ::WorkArea )->( &cMacroVar )
-            ( ::WorkArea )->( DbSkip() )
+         If ! ( cWorkArea )->( &cMacroVar )
+            ( cWorkArea )->( DbSkip() )
          EndIf
       EndIf
 */
@@ -1872,26 +1875,24 @@ Local v
 ***************************
 
 	if s == 0
-      if ( ::WorkArea )->( INDEXORD() ) != 0
-         if ( ::WorkArea )->( ORDKEYVAL() ) == Nil
-            ( ::WorkArea )->( DbGoTop() )
+      if ( cWorkArea )->( INDEXORD() ) != 0
+         if ( cWorkArea )->( ORDKEYVAL() ) == Nil
+            ( cWorkArea )->( DbGoTop() )
 			endif
 		EndIf
-	endif
 
-	if s == 0
       if Set( _SET_DELETED )
-         if ( ::WorkArea )->( Deleted() )
-            ( ::WorkArea )->( DbGoTop() )
+         if ( cWorkArea )->( Deleted() )
+            ( cWorkArea )->( DbGoTop() )
 			endif
 		EndIf
 	endif
 
-   If ( ::WorkArea )->( Eof() )
+   If ( cWorkArea )->( Eof() )
 
-      ListViewReset ( ::hWnd )
+      ListViewReset ( hWnd )
 
-      ( ::WorkArea )->( DbGoTo( _RecNo ) )
+      ( cWorkArea )->( DbGoTo( _RecNo ) )
 
       Return nil
 
@@ -1900,15 +1901,15 @@ Local v
    ::scrollUpdate()
 
 	if s != 0
-      ( ::WorkArea )->( DbSkip( -s+1 ) )
+      ( cWorkArea )->( DbSkip( -s+1 ) )
 	EndIf
 
    ::Update()
 
-   ListView_Scroll( ::hWnd, _DeltaScroll[2] * (-1) , 0 )
-   ListView_SetCursel ( ::hWnd, ascan ( ::aRecMap, v ) )
+   ListView_Scroll( hWnd, _DeltaScroll[2] * (-1) , 0 )
+   ListView_SetCursel ( hWnd, ascan ( ::aRecMap, v ) )
 
-   ( ::WorkArea )->( DbGoTo( _RecNo ) )
+   ( cWorkArea )->( DbGoTo( _RecNo ) )
 
 Return nil
 
@@ -2050,9 +2051,45 @@ METHOD Events_Enter() CLASS TBrowse
 
 Return nil
 
-*-----------------------------------------------------------------------------*
-METHOD Events_Notify( wParam, lParam ) CLASS TBrowse
-*-----------------------------------------------------------------------------*
+#pragma BEGINDUMP
+#include "hbapi.h"
+#include "hbvm.h"
+#include "../include/oohg.h"
+#include <windows.h>
+#include <commctrl.h>
+
+// -----------------------------------------------------------------------------
+// METHOD Events_Notify( wParam, lParam ) CLASS TBrowse
+HB_FUNC_STATIC( TBROWSE_EVENTS_NOTIFY )
+// -----------------------------------------------------------------------------
+{
+   LONG wParam = hb_parnl( 1 );
+   LONG lParam = hb_parnl( 2 );
+
+   switch( ( ( NMHDR FAR * ) lParam )->code )
+   {
+      case NM_CUSTOMDRAW:
+      case NM_CLICK:
+      case LVN_BEGINDRAG:
+      case LVN_KEYDOWN:
+      case NM_DBLCLK:
+         HB_FUNCNAME( TBROWSE_EVENTS_NOTIFY2 )();
+         break;
+
+      default:
+         _OOHG_Send( hb_stackSelfItem(), s_Super );
+         hb_vmSend( 0 );
+         _OOHG_Send( hb_param( -1, HB_IT_OBJECT ), s_Events_Notify );
+         hb_vmPushLong( wParam );
+         hb_vmPushLong( lParam );
+         hb_vmSend( 2 );
+         break;
+   }
+}
+#pragma ENDDUMP
+
+FUNCTION TBrowse_Events_Notify2( wParam, lParam )
+Local Self := QSelf()
 Local nNotify := GetNotifyCode( lParam )
 Local xs , xd, nvKey
 Local r, DeltaSelect
@@ -2174,9 +2211,7 @@ Local r, DeltaSelect
       if ::AllowEdit
          ::EditItem( .f. )
       Else
-         if valtype( ::OnDblClick )=='B'
-            Eval( ::OnDblClick )
-         EndIf
+         _OOHG_Eval( ::OnDblClick )
       Endif
 
       _PopEventInfo()

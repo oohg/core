@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.6 2005-08-18 04:01:06 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.7 2005-08-19 05:50:40 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1474,11 +1474,11 @@ Local oWnd, oCtrl
 
 		ElseIf Arg3 == 'ACTION'
 
-         Eval( oCtrl:OnClick )
+         _OOHG_Eval( oCtrl:OnClick )
 
 		ElseIf Arg3 == 'ONCLICK'
 
-         Eval( oCtrl:OnClick )
+         _OOHG_Eval( oCtrl:OnClick )
 
 		ElseIf Arg3 == 'DELETEALLITEMS'
 
@@ -2243,17 +2243,12 @@ RETURN ::lVisible
 *-----------------------------------------------------------------------------*
 METHOD SaveData() CLASS TControl
 *-----------------------------------------------------------------------------*
-   IF VALTYPE( ::Block ) == "B"
-      EVAL( ::Block, ::Value )
-   ENDIF
-Return nil
+Return _OOHG_EVAL( ::Block, ::Value )
 
 *-----------------------------------------------------------------------------*
 METHOD RefreshData() CLASS TControl
 *-----------------------------------------------------------------------------*
-   IF VALTYPE( ::Block ) == "B"
-      ::Value := EVAL( ::Block )
-   ENDIF
+   ::Value := _OOHG_EVAL( ::Block )
    ::Refresh()
 Return nil
 
