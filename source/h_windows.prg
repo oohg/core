@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.10 2005-08-19 05:50:40 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.11 2005-08-21 21:19:04 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -122,6 +122,7 @@ CLASS TWindow
    DATA ColMargin  INIT 0
    DATA Container  INIT nil
    DATA ContextMenu   INIT nil
+   DATA Cargo      INIT nil
 
    DATA OnClick       INIT nil
    DATA OnGotFocus    INIT nil
