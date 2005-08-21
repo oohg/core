@@ -1,5 +1,5 @@
 /*
- * $Id: h_label.prg,v 1.3 2005-08-18 04:07:28 guerra000 Exp $
+ * $Id: h_label.prg,v 1.4 2005-08-21 21:16:58 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -125,6 +125,7 @@ Local ControlHandle
    DEFAULT italic        TO FALSE
    DEFAULT underline     TO FALSE
    DEFAULT strikeout     TO FALSE
+   DEFAULT autosize      TO FALSE
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, aRGB_font, aRGB_bk )
 
@@ -140,10 +141,8 @@ Local ControlHandle
    ::Caption := Caption
 
    if ::AutoSize
-
       ::SizePos( , , GetTextWidth( NIL, Caption, ::FontHandle ) + ::IconWidth, GetTextHeight( NIL, Caption, ::FontHandle ) )
       RedrawWindow( ControlHandle )
-
 	EndIf
 
 Return Self
