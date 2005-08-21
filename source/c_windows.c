@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.7 2005-08-19 05:47:38 guerra000 Exp $
+ * $Id: c_windows.c,v 1.8 2005-08-21 21:24:51 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -232,15 +232,15 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
 HB_FUNC ( INITWINDOW )
 {
 	HWND hwnd;
-	int Style = WS_POPUP , ExStyle ;
+    int Style = WS_POPUP , ExStyle;
+    ExStyle = _ooHG_DefaultStyleEx();
 
 	if ( hb_parl (16) )
 	{
-	        ExStyle = WS_EX_CONTEXTHELP ;
+            ExStyle |= WS_EX_CONTEXTHELP ;
 	}
 	else
 	{
-		ExStyle = 0 ;
 		if ( ! hb_parl (6) )
 		{
 			Style = Style | WS_MINIMIZEBOX ;
@@ -268,7 +268,7 @@ HB_FUNC ( INITWINDOW )
 
 	if ( hb_parl (11) )
 	{
-		ExStyle = ExStyle | WS_EX_TOPMOST ;
+        ExStyle |= WS_EX_TOPMOST ;
 	}
 
 	if ( hb_parl (14) )
@@ -305,11 +305,11 @@ HB_FUNC ( INITMODALWINDOW )
 	HWND parent ;
 	HWND hwnd ;
 	int Style ;
-	int ExStyle = 0 ;
+    int ExStyle = _ooHG_DefaultStyleEx();
 
 	if ( hb_parl (13) )
 	{
-	        ExStyle = WS_EX_CONTEXTHELP ;
+            ExStyle |= WS_EX_CONTEXTHELP;
 	}
 
 	parent = (HWND) hb_parnl (6);
@@ -848,7 +848,7 @@ HB_FUNC ( INITSPLITBOX )
 	icex.dwICC   = ICC_COOL_CLASSES|ICC_BAR_CLASSES;
 	InitCommonControlsEx(&icex);
 
-	hwndRB = CreateWindowEx( WS_EX_TOOLWINDOW | WS_EX_DLGMODALFRAME	 ,
+    hwndRB = CreateWindowEx( _ooHG_DefaultStyleEx() | WS_EX_TOOLWINDOW | WS_EX_DLGMODALFRAME,
                            REBARCLASSNAME,
                            NULL,
 			   Style ,
@@ -891,7 +891,7 @@ HB_FUNC ( INITSPLITCHILDWINDOW )
 		Style = Style | WS_HSCROLL ;
 	}
 
-	hwnd = CreateWindowEx( WS_EX_STATICEDGE | WS_EX_TOOLWINDOW ,hb_parc(3),hb_parc(5),
+    hwnd = CreateWindowEx( _ooHG_DefaultStyleEx() | WS_EX_STATICEDGE | WS_EX_TOOLWINDOW ,hb_parc(3),hb_parc(5),
 	Style,
 	0,
 	0,
@@ -1305,11 +1305,26 @@ HB_FUNC( REGISTERSPLITCHILDWINDOW )
 	hb_retnl ( (LONG) hbrush ) ;
 }
 
-HB_FUNC( GETRC )
-{
-   LPNMLVCUSTOMDRAW lplvcd = ( LPNMLVCUSTOMDRAW ) ( LPARAM ) hb_parnl( 1 );
+int _ooHG_RightToLeft = 0;
 
-   hb_reta( 2 );
-   hb_stornl( ( LONG ) lplvcd->nmcd.dwItemSpec + 1 , -1, 1 );
-   hb_storni( ( INT )  lplvcd->iSubItem + 1 , -1, 2 );
+HB_FUNC( SETRIGHTTOLEFT )
+{
+   hb_retl( _ooHG_RightToLeft );
+
+   if( ISLOG( 1 ) )
+   {
+      _ooHG_RightToLeft = hb_parl( 1 );
+   }
+}
+
+int _ooHG_DefaultStyleEx( void )
+{
+   int iStyle = 0;
+
+   if( _ooHG_RightToLeft )
+   {
+      iStyle |= WS_EX_LAYOUTRTL | WS_EX_RIGHTSCROLLBAR | WS_EX_RTLREADING;
+   }
+
+   return iStyle;
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: i_lang.ch,v 1.1 2005-08-06 23:53:54 guerra000 Exp $
+ * $Id: i_lang.ch,v 1.2 2005-08-21 21:24:51 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -108,6 +108,5 @@
 #translate SET LANGUAGE TO FINNISH              =>  InitMessages( "FI" )
 #translate SET LANGUAGE TO DUTCH                =>  InitMessages( "NL" )
 
-
-
-
+#command SET RIGHTTOLEFT ON  => SetRightToLeft( .T. )
+#command SET RIGHTTOLEFT OFF => SetRightToLeft( .F. )
