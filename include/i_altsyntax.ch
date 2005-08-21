@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.6 2005-08-19 05:45:09 guerra000 Exp $
+ * $Id: i_altsyntax.ch,v 1.7 2005-08-21 21:17:48 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1870,7 +1870,7 @@ Grid
         _OOHG_ActiveControlFontColor             := Nil          ;;
         _OOHG_ActiveControlReadOnly              := Nil          ;;
         _OOHG_ActiveControlVirtual               := .f.          ;;
-        _OOHG_ActiveControlPicture := nil
+        _OOHG_ActiveControlInputMask := nil
 
 #xcommand END GRID ;
 	=>;
@@ -1908,7 +1908,7 @@ iif( _OOHG_ActiveControlMultiSelect, TGridMulti(), TGrid() ):Define( ;
                 _OOHG_ActiveControlEdit ,  ;
                 _OOHG_ActiveControlBackColor, ;
                 _OOHG_ActiveControlFontColor, ;
-                _OOHG_ActiveControlPicture )
+                _OOHG_ActiveControlInputMask )
 
 /*----------------------------------------------------------------------------
 BROWSE
@@ -1954,7 +1954,7 @@ BROWSE
         _OOHG_ActiveControlLock          := .f.          ;;
         _OOHG_ActiveControlValidMessages := Nil          ;;
         _OOHG_ActiveControlNoVScroll             := .f.          ;;
-        _OOHG_ActiveControlPicture := nil                ;;
+        _OOHG_ActiveControlInputMask := nil                ;;
         _OOHG_ActiveControlInPlaceEdit   := .f.
 
 #xcommand END BROWSE ;
@@ -2001,7 +2001,7 @@ TBrowse():Define( _OOHG_ActiveControlName ,        ;
                 , ; // DynamicBackColor
                 , ; // aWhenFields
                 , ; // DynamicForeColor
-                _OOHG_ActiveControlPicture )
+                _OOHG_ActiveControlInputMask )
 
 /*----------------------------------------------------------------------------
 Hyperlink

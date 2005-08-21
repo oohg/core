@@ -1,5 +1,5 @@
 /*
- * $Id: i_grid.ch,v 1.3 2005-08-13 05:12:14 guerra000 Exp $
+ * $Id: i_grid.ch,v 1.4 2005-08-21 21:17:48 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -107,7 +107,7 @@
 		[ HEIGHT <h> ] 			;
 		[ HEADERS <headers> ] 		;
 		[ WIDTHS <widths> ] 		;
-                [ PICTURE <Picture> ]           ;
+                [ INPUTMASK <Picture> ]         ;
 		[ ITEMS <rows> ] 		;
 		[ VALUE <value> ] 		;
 		[ FONT <fontname> ] 		;
@@ -182,7 +182,7 @@
 		[ HEIGHT <h> ] 			;
 		[ HEADERS <headers> ] 		;
 		[ WIDTHS <widths> ] 		;
-                [ PICTURE <Picture> ]           ;
+                [ INPUTMASK <Picture> ]         ;
 		[ ITEMS <rows> ] 		;
 		[ VALUE <value> ] 		;
 		[ FONT <fontname> ] 		;

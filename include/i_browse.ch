@@ -1,5 +1,5 @@
 /*
- * $Id: i_browse.ch,v 1.2 2005-08-13 05:12:14 guerra000 Exp $
+ * $Id: i_browse.ch,v 1.3 2005-08-21 21:17:48 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -110,7 +110,7 @@
 		[ WIDTHS <widths> ] 		;
                 [ WORKAREA <workarea> ]         ;
 		[ FIELDS <Fields> ] 		;
-                [ PICTURE <Picture> ]           ;
+                [ INPUTMASK <Picture> ]         ;
 		[ VALUE <value> ] 		;
 		[ FONT <fontname> ] 		;
 		[ SIZE <fontsize> ] 		;
@@ -197,7 +197,7 @@
 		[ WIDTHS <widths> ] 		;
 		[ WORKAREA <WorkArea> ]		;
 		[ FIELDS <Fields> ] 		;
-                [ PICTURE <Picture> ]           ;
+                [ INPUTMASK <Picture> ]         ;
 		[ VALUE <value> ] 		;
 		[ FONT <fontname> ] 		;
 		[ SIZE <fontsize> ] 		;
@@ -272,5 +272,5 @@
 		<aValidMessages> , ;
                 <.edit.>  , <dynamicbackcolor> , <aWhenFields> , <dynamicforecolor>, <Picture> )
 
-#xcommand SET BROWSESYNC ON => SetBrowseSync( .T. )
-#xcommand SET BROWSESYNC OFF => SetBrowseSync( .F. )
+#command SET BROWSESYNC ON  => SetBrowseSync( .T. )
+#command SET BROWSESYNC OFF => SetBrowseSync( .F. )
