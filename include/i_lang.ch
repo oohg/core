@@ -1,5 +1,5 @@
 /*
- * $Id: i_lang.ch,v 1.2 2005-08-21 21:24:51 guerra000 Exp $
+ * $Id: i_lang.ch,v 1.3 2005-08-23 05:08:49 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -97,16 +97,13 @@
 #translate SET LANGUAGE TO PORTUGUESE           =>  REQUEST HB_LANG_PT           ; HB_LANGSELECT( "PT" )         ; InitMessages()
 #translate SET LANGUAGE TO GERMAN               =>  REQUEST HB_LANG_DEWIN        ; HB_LANGSELECT( "DEWIN" )      ; InitMessages()
 #translate SET LANGUAGE TO RUSSIAN              =>  REQUEST HB_LANG_RUWIN        ; HB_LANGSELECT( "RUWIN" )      ; InitMessages()
-#translate SET LANGUAGE TO ITALIAN              =>  REQUEST HB_LANG_IT           ; HB_LANGSELECT("IT" )          ; InitMessages()
-#translate SET LANGUAGE TO POLISH               =>  REQUEST HB_LANG_PLWIN        ; HB_LANGSELECT("PLWIN" )       ; InitMessages()
-#translate SET LANGUAGE TO BASQUE               =>  REQUEST HB_LANG_EU           ; HB_LANGSELECT("EU" )          ; InitMessages()
-#translate SET LANGUAGE TO CROATIAN             =>  REQUEST HB_LANG_HR852        ; HB_LANGSELECT("HR852" )       ; InitMessages()
-#translate SET LANGUAGE TO SLOVENIAN            =>  REQUEST HB_LANG_SLWIN        ; HB_LANGSELECT("SLWIN" )       ; InitMessages()
+#translate SET LANGUAGE TO ITALIAN              =>  REQUEST HB_LANG_IT           ; HB_LANGSELECT( "IT" )         ; InitMessages()
+#translate SET LANGUAGE TO POLISH               =>  REQUEST HB_LANG_PLWIN        ; HB_LANGSELECT( "PLWIN" )      ; InitMessages()
+#translate SET LANGUAGE TO BASQUE               =>  REQUEST HB_LANG_EU           ; HB_LANGSELECT( "EU" )         ; InitMessages()
+#translate SET LANGUAGE TO CROATIAN             =>  REQUEST HB_LANG_HR852        ; HB_LANGSELECT( "HR852" )      ; InitMessages()
+#translate SET LANGUAGE TO SLOVENIAN            =>  REQUEST HB_LANG_SLWIN        ; HB_LANGSELECT( "SLWIN" )      ; InitMessages()
 
 // Languages Not Supported by hb_LangSelect()
 
 #translate SET LANGUAGE TO FINNISH              =>  InitMessages( "FI" )
 #translate SET LANGUAGE TO DUTCH                =>  InitMessages( "NL" )
-
-#command SET RIGHTTOLEFT ON  => SetRightToLeft( .T. )
-#command SET RIGHTTOLEFT OFF => SetRightToLeft( .F. )
