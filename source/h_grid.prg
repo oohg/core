@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.9 2005-08-19 05:50:40 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.10 2005-08-23 05:12:56 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -139,11 +139,11 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                aHeadClick, gotfocus, lostfocus, nogrid, aImage, aJust, ;
                break, HelpId, bold, italic, underline, strikeout, ownerdata, ;
                ondispinfo, itemcount, editable, backcolor, fontcolor, ;
-               dynamicbackcolor, dynamicforecolor, aPicture ) CLASS TGrid
+               dynamicbackcolor, dynamicforecolor, aPicture, lRtl ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local ControlHandle, aImageList
 
-   ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, .t. )
+   ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, .t., lRtl )
 
    if ValType ( aHeaders ) != 'A'
       MsgOOHGError ("Grid: HEADERS not defined .Program Terminated")
@@ -193,7 +193,7 @@ Local ControlHandle, aImageList
 
       _OOHG_SplitLastControl   := "GRID"
 
-         ControlHandle := InitListView ( ::Parent:ReBarHandle, 0, 0, 0, w, h ,'',0,iif( nogrid, 0, 1 ) , ownerdata , itemcount , ::lMulti )
+         ControlHandle := InitListView ( ::Parent:ReBarHandle, 0, 0, 0, w, h ,'',0,iif( nogrid, 0, 1 ) , ownerdata , itemcount , ::lMulti , ::lRtl )
 
          x := GetWindowCol( Controlhandle )
          y := GetWindowRow( Controlhandle )
@@ -202,7 +202,7 @@ Local ControlHandle, aImageList
 
 	Else
 
-      ControlHandle := InitListView ( ::Parent:hWnd, 0, x, y, w, h ,'',0, iif( nogrid, 0, 1 ) , ownerdata  , itemcount  , ::lMulti )
+      ControlHandle := InitListView ( ::Parent:hWnd, 0, x, y, w, h ,'',0, iif( nogrid, 0, 1 ) , ownerdata  , itemcount  , ::lMulti , ::lRtl )
 
 	endif
 
@@ -789,9 +789,9 @@ CLASS TGridMulti FROM TGrid
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
-METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows,value,fontname,fontsize , tooltip , change , dblclick , aHeadClick , gotfocus , lostfocus , nogrid, aImage, aJust, break  , HelpId , bold, italic, underline, strikeout , ownerdata , ondispinfo , itemcount , editable , backcolor , fontcolor, dynamicbackcolor , dynamicforecolor ) CLASS TGridMulti
+METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows,value,fontname,fontsize , tooltip , change , dblclick , aHeadClick , gotfocus , lostfocus , nogrid, aImage, aJust, break  , HelpId , bold, italic, underline, strikeout , ownerdata , ondispinfo , itemcount , editable , backcolor , fontcolor, dynamicbackcolor , dynamicforecolor , aPicture , lRtl ) CLASS TGridMulti
 *-----------------------------------------------------------------------------*
-   ::Super:Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows,value,fontname,fontsize , tooltip , change , dblclick , aHeadClick , gotfocus , lostfocus , nogrid, aImage, aJust, break  , HelpId , bold, italic, underline, strikeout , ownerdata , ondispinfo , itemcount , editable , backcolor , fontcolor, dynamicbackcolor , dynamicforecolor )
+   ::Super:Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows,value,fontname,fontsize , tooltip , change , dblclick , aHeadClick , gotfocus , lostfocus , nogrid, aImage, aJust, break  , HelpId , bold, italic, underline, strikeout , ownerdata , ondispinfo , itemcount , editable , backcolor , fontcolor, dynamicbackcolor , dynamicforecolor , aPicture , lRtl )
 Return Self
 
 *-----------------------------------------------------------------------------*

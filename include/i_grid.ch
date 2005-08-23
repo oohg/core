@@ -1,5 +1,5 @@
 /*
- * $Id: i_grid.ch,v 1.4 2005-08-21 21:17:48 guerra000 Exp $
+ * $Id: i_grid.ch,v 1.5 2005-08-23 05:12:56 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -131,11 +131,12 @@
 		[ ITEMCOUNT <itemcount> ]	;
 		[ ON QUERYDATA <dispinfo> ] 	;
 		[ <multiselect: MULTISELECT> ]	;
-		[ <style: NOLINES> ] 		;// Grid+
-		[ IMAGE <aImage> ] 		;// Grid+
-		[ JUSTIFY <aJust> ] 		;// Grid+
+                [ <style: NOLINES> ]            ;
+                [ IMAGE <aImage> ]              ;
+                [ JUSTIFY <aJust> ]             ;
 		[ HELPID <helpid> ] 		;
 		[ <break: BREAK> ] 		;
+                [ <rtl: RTL> ]                  ;
 	=>;
 [ <obj> := ] iif( <.multiselect.>, TGridMulti(), TGrid() ):Define( ;
                 <"name"> ,      ;
@@ -170,7 +171,7 @@
 		<itemcount> , 	;
 		<.edit.> ,  ;
 		<backcolor> ;
-                , <fontcolor>, <dynamicbackcolor> , <dynamicforecolor>, <Picture> )
+                , <fontcolor>, <dynamicbackcolor> , <dynamicforecolor>, <Picture>, <.rtl.> )
 
 ///////////////////////////////////////////////////////////////////////////////
 // GRID (SPLITBOX VERSION)
@@ -206,11 +207,12 @@
 		[ ITEMCOUNT <itemcount> ]	;
 		[ ON QUERYDATA <dispinfo> ] 	;
 		[ <multiselect: MULTISELECT> ]	;
-		[ <style: NOLINES> ] 		;// Grid+
-		[ IMAGE <aImage> ] 		;// Grid+
-		[ JUSTIFY <aJust> ] 		;// Grid+
+                [ <style: NOLINES> ]            ;
+                [ IMAGE <aImage> ]              ;
+                [ JUSTIFY <aJust> ]             ;
 		[ HELPID <helpid> ] 		;
 		[ <break: BREAK> ] 		;
+                [ <rtl: RTL> ]                  ;
 	=>;
 [ <obj> := ] iif( <.multiselect.>, TGridMulti(), TGrid() ):Define( ;
                 <"name"> ,      ;
@@ -245,6 +247,6 @@
 		<itemcount> , 	;
 		<.edit.> ,  ;
 		<backcolor> , ;
-                <fontcolor>, <dynamicbackcolor> , <dynamicforecolor>, <Picture> )
+                <fontcolor>, <dynamicbackcolor> , <dynamicforecolor>, <Picture>, <.rtl.> )
 
 ///////////////////////////////////////////////////////////////////////////////

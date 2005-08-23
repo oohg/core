@@ -1,5 +1,5 @@
 /*
- * $Id: c_grid.c,v 1.7 2005-08-19 05:47:38 guerra000 Exp $
+ * $Id: c_grid.c,v 1.8 2005-08-23 05:12:56 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -115,7 +115,7 @@ HB_FUNC( INITLISTVIEW )
 {
    HWND hwnd;
    HWND hbutton;
-   int style ;
+   int style, StyleEx;
 
    INITCOMMONCONTROLSEX  i;
 
@@ -124,6 +124,12 @@ HB_FUNC( INITLISTVIEW )
    InitCommonControlsEx( &i );
 
    hwnd = ( HWND ) hb_parnl( 1 );
+
+   StyleEx = WS_EX_CLIENTEDGE;
+   if ( hb_parl( 13 ) )
+   {
+      StyleEx |= WS_EX_LAYOUTRTL | WS_EX_RIGHTSCROLLBAR | WS_EX_RTLREADING;
+   }
 
    style = LVS_SHOWSELALWAYS | WS_CHILD | WS_TABSTOP | WS_VISIBLE | LVS_REPORT;
    if ( ! hb_parl( 12 ) )
@@ -136,7 +142,7 @@ HB_FUNC( INITLISTVIEW )
       style = style | LVS_OWNERDATA;
    }
 
-   hbutton = CreateWindowEx(WS_EX_CLIENTEDGE,"SysListView32","",
+   hbutton = CreateWindowEx(StyleEx,"SysListView32","",
    style ,
    hb_parni(3), hb_parni(4) , hb_parni(5), hb_parni(6) ,
    hwnd,(HMENU)hb_parni(2) , GetModuleHandle(NULL) , NULL ) ;

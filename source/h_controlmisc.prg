@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.7 2005-08-19 05:50:40 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.8 2005-08-23 05:12:56 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1887,7 +1887,7 @@ STATIC nCtrl := 0
 RETURN cName
 
 *------------------------------------------------------------------------------*
-METHOD SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BkColor, lEditBox ) CLASS TControl
+METHOD SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BkColor, lEditBox, lRtl ) CLASS TControl
 *------------------------------------------------------------------------------*
 LOCAL nPos
    // Parent form:
@@ -1997,10 +1997,21 @@ LOCAL nPos
       MsgOOHGError( _OOHG_BRWLangError[ 4 ] + ::Name + _OOHG_BRWLangError[ 5 ] + ::Parent:Name + _OOHG_BRWLangError[ 6 ] )
 	endif
 
+   // Right-to-left
+   If ValType( lRtl ) == "L"
+      ::lRtl := lRtl
+   ElseIf ! Empty( ::Container )
+      ::lRtl := ::Container:lRtl
+   ElseIf ! Empty( ::Parent )
+      ::lRtl := ::Parent:lRtl
+   Else
+      ::lRtl := .F.
+   EndIf
+
 RETURN Self
 
 *------------------------------------------------------------------------------*
-METHOD SetContainer( Container, ControlName, FontName, FontSize, FontColor, BkColor, DefBkColorEdit ) CLASS TControl
+METHOD SetContainer( Container, ControlName, FontName, FontSize, FontColor, BkColor, DefBkColorEdit, lRtl ) CLASS TControl
 *------------------------------------------------------------------------------*
    ::Container := Container
    ::Parent := ::Container:Parent
@@ -2082,6 +2093,17 @@ METHOD SetContainer( Container, ControlName, FontName, FontSize, FontColor, BkCo
    If _IsControlDefined( ::Name, ::Parent:Name )
       MsgOOHGError( _OOHG_BRWLangError[ 4 ] + ::Name + _OOHG_BRWLangError[ 5 ] + ::Parent:Name + _OOHG_BRWLangError[ 6 ] )
 	endif
+
+   // Right-to-left
+   If ValType( lRtl ) == "L"
+      ::lRtl := lRtl
+   ElseIf ! Empty( ::Container )
+      ::lRtl := ::Container:lRtl
+   ElseIf ! Empty( ::Parent )
+      ::lRtl := ::Parent:lRtl
+   Else
+      ::lRtl := .F.
+   EndIf
 
 RETURN Self
 

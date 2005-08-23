@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.7 2005-08-21 21:17:48 guerra000 Exp $
+ * $Id: i_altsyntax.ch,v 1.8 2005-08-23 05:12:56 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -235,6 +235,7 @@ MEMVAR _OOHG_ActiveControlShowPosition
 
 MEMVAR _OOHG_ActiveControlFormat
 MEMVAR _OOHG_ActiveControlField
+MEMVAR _OOHG_ActiveControlRtl
 
 
 #xcommand ITEMSOURCE <itemsource>;
@@ -325,6 +326,10 @@ MEMVAR _OOHG_ActiveControlField
 #xcommand AUTOSIZE		<a>;
 	=>;
         _OOHG_ActiveControlAutoSize              := <a>
+
+#xcommand RTL              <l>;
+	=>;
+        _OOHG_ActiveControlRtl              := <l>
 
 
 /*----------------------------------------------------------------------------
@@ -1870,6 +1875,7 @@ Grid
         _OOHG_ActiveControlFontColor             := Nil          ;;
         _OOHG_ActiveControlReadOnly              := Nil          ;;
         _OOHG_ActiveControlVirtual               := .f.          ;;
+        _OOHG_ActiveControlRtl                   := .F.          ;;
         _OOHG_ActiveControlInputMask := nil
 
 #xcommand END GRID ;
@@ -1908,7 +1914,8 @@ iif( _OOHG_ActiveControlMultiSelect, TGridMulti(), TGrid() ):Define( ;
                 _OOHG_ActiveControlEdit ,  ;
                 _OOHG_ActiveControlBackColor, ;
                 _OOHG_ActiveControlFontColor, ;
-                _OOHG_ActiveControlInputMask )
+                _OOHG_ActiveControlInputMask, ;
+                _OOHG_ActiveControlRtl )
 
 /*----------------------------------------------------------------------------
 BROWSE
@@ -1955,6 +1962,7 @@ BROWSE
         _OOHG_ActiveControlValidMessages := Nil          ;;
         _OOHG_ActiveControlNoVScroll             := .f.          ;;
         _OOHG_ActiveControlInputMask := nil                ;;
+        _OOHG_ActiveControlRtl := .F.                ;;
         _OOHG_ActiveControlInPlaceEdit   := .f.
 
 #xcommand END BROWSE ;
@@ -2001,7 +2009,8 @@ TBrowse():Define( _OOHG_ActiveControlName ,        ;
                 , ; // DynamicBackColor
                 , ; // aWhenFields
                 , ; // DynamicForeColor
-                _OOHG_ActiveControlInputMask )
+                _OOHG_ActiveControlInputMask, ;
+                _OOHG_ActiveControlRtl )
 
 /*----------------------------------------------------------------------------
 Hyperlink
