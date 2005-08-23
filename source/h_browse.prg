@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.10 2005-08-21 21:19:48 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.11 2005-08-23 05:10:23 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -166,9 +166,9 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                underline, strikeout, break, backcolor, fontcolor, lock, ;
                inplace, novscroll, AllowAppend, readonly, valid, ;
                validmessages, edit, dynamicbackcolor, aWhenFields, ;
-               dynamicforecolor, aPicture ) CLASS TBrowse
+               dynamicforecolor, aPicture, lRtl ) CLASS TBrowse
 *-----------------------------------------------------------------------------*
-Local ScrollBarHandle, hsum, ScrollBarButtonHandle, nWidth2
+Local ScrollBarHandle, hsum, ScrollBarButtonHandle, nWidth2, nRow2
 
    IF ! ValType( WorkArea ) $ "CM" .OR. Empty( WorkArea )
       WorkArea := ALIAS()
@@ -194,13 +194,20 @@ Local ScrollBarHandle, hsum, ScrollBarButtonHandle, nWidth2
    IF valtype( w ) != "N"
       w := 240
    ENDIF
-   nWidth2 := w - if( novscroll, 0, GETVSCROLLBARWIDTH() )
+   IF novscroll
+      nWidth2 := w
+      nRow2 := x
+   Else
+      nWidth2 := w - GETVSCROLLBARWIDTH()
+      nRow2 := x + IF( lRtl, GETVSCROLLBARWIDTH(), 0 )
+   ENDIF
 
-   ::Super:Define( ControlName, ParentForm, x, y, nWidth2, h, aHeaders, aWidths, {}, nil, ;
+   ::Super:Define( ControlName, ParentForm, nRow2, y, nWidth2, h, aHeaders, aWidths, {}, nil, ;
                    fontname, fontsize, tooltip, /* change */, /* dblclick */, aHeadClick, /* gotfocus */ , /* lostfocus */, ;
                    nogrid, aImage, aJust, break, HelpId, bold, italic, underline, strikeout, nil, ;
-                   nil, nil, edit, backcolor, fontcolor, dynamicbackcolor, dynamicforecolor, aPicture )
+                   nil, nil, edit, backcolor, fontcolor, dynamicbackcolor, dynamicforecolor, aPicture, lRtl )
 
+   ::nRow := x
    ::nWidth := w
 
    ::nValue := Value
@@ -222,13 +229,15 @@ Local ScrollBarHandle, hsum, ScrollBarButtonHandle, nWidth2
       hsum := 0
       AEVAL( ::aWidths, { |a,i| hsum += ( ::aWidths[ i ] := ListView_GetColumnWidth( ::hWnd, i - 1 ) ), a } )
 
+      nRow2 := x + if( lRtl, 0, x + nWidth2 )
+
 		if hsum > w - GETVSCROLLBARWIDTH() - 4
-         ScrollBarHandle := InitVScrollBar ( ::Parent:hWnd, x + nWidth2 , y , GETVSCROLLBARWIDTH() , h - GETHSCROLLBARHEIGHT() )
-         ScrollBarButtonHandle := InitVScrollBarButton ( ::Parent:hWnd, x + nWidth2 , y + h - GETHSCROLLBARHEIGHT() , GETVSCROLLBARWIDTH() , GETHSCROLLBARHEIGHT() )
+         ScrollBarHandle := InitVScrollBar ( ::Parent:hWnd, nRow2, y , GETVSCROLLBARWIDTH() , h - GETHSCROLLBARHEIGHT() )
+         ScrollBarButtonHandle := InitVScrollBarButton ( ::Parent:hWnd, nRow2, y + h - GETHSCROLLBARHEIGHT() , GETVSCROLLBARWIDTH() , GETHSCROLLBARHEIGHT() )
          ::nButtonActive := 1
 		Else
-         ScrollBarHandle := InitVScrollBar ( ::Parent:hWnd, x + nWidth2 , y , GETVSCROLLBARWIDTH() , h )
-         ScrollBarButtonHandle := InitVScrollBarButton ( ::Parent:hWnd, x + nWidth2 , y + h - GETHSCROLLBARHEIGHT() , 0 , 0 )
+         ScrollBarHandle := InitVScrollBar ( ::Parent:hWnd, nRow2, y , GETVSCROLLBARWIDTH() , h )
+         ScrollBarButtonHandle := InitVScrollBarButton ( ::Parent:hWnd, nRow2, y + h - GETHSCROLLBARHEIGHT() , 0 , 0 )
          ::nButtonActive := 0
 		EndIf
 
@@ -1540,7 +1549,7 @@ Return NIL
 *-----------------------------------------------------------------------------*
 METHOD AdjustRightScroll() CLASS TBrowse
 *-----------------------------------------------------------------------------*
-Local hws, x, lRet, nButton
+Local hws, x, lRet, nButton, nRow
    lRet := .F.
    hws := 0
    For x := 1 To Len ( ::aWidths )
@@ -1554,12 +1563,13 @@ Local hws, x, lRet, nButton
       IF ::nButtonActive != nButton
          ::nButtonActive := nButton
 *         ::Refresh()
+         nRow := if( ::lRtl, 0, ::Width - GETVSCROLLBARWIDTH() )
          if nButton == 1
-            ::VScroll:SizePos( 0, ::Width - GETVSCROLLBARWIDTH() , GETVSCROLLBARWIDTH() , ::Height - GETHSCROLLBARHEIGHT() )
-            MoveWindow( ::ScrollBarButtonHandle, ::ContainerCol + ::Width - GETVSCROLLBARWIDTH() , ::ContainerRow + ::Height - GETHSCROLLBARHEIGHT() , GETVSCROLLBARWIDTH() , GETHSCROLLBARHEIGHT() , .t. )
+            ::VScroll:SizePos( 0, nRow, GETVSCROLLBARWIDTH() , ::Height - GETHSCROLLBARHEIGHT() )
+            MoveWindow( ::ScrollBarButtonHandle, ::ContainerCol + nRow, ::ContainerRow + ::Height - GETHSCROLLBARHEIGHT() , GETVSCROLLBARWIDTH() , GETHSCROLLBARHEIGHT() , .t. )
          Else
-            ::VScroll:SizePos( 0, ::Width - GETVSCROLLBARWIDTH() , GETVSCROLLBARWIDTH() , ::Height )
-            MoveWindow( ::ScrollBarButtonHandle, ::ContainerCol + ::Width - GETVSCROLLBARWIDTH() , ::ContainerRow + ::Height - GETHSCROLLBARHEIGHT() , 0 , 0 , .t. )
+            ::VScroll:SizePos( 0, nRow, GETVSCROLLBARWIDTH() , ::Height )
+            MoveWindow( ::ScrollBarButtonHandle, ::ContainerCol + nRow, ::ContainerRow + ::Height - GETHSCROLLBARHEIGHT() , 0 , 0 , .t. )
          EndIf
 *         ReDrawWindow( ::VScroll:hWnd )
 *         ReDrawWindow( ::ScrollBarButtonHandle )
@@ -1917,7 +1927,7 @@ Local uRet
    ENDIF
 
    If ::VScroll != nil
-      uRet := MoveWindow( ::hWnd, ::ContainerCol, ::ContainerRow, ::Width - GETVSCROLLBARWIDTH(), ::Height , .t. )
+      uRet := MoveWindow( ::hWnd, ::ContainerCol, ::ContainerRow + if( ::lRtl, GETVSCROLLBARWIDTH(), 0 ), ::Width - GETVSCROLLBARWIDTH(), ::Height , .t. )
 
       // Force button move/resize and browse refresh
       ::nButtonActive := 2
@@ -1925,7 +1935,7 @@ Local uRet
 
    else
 
-      uRet := MoveWindow( ::hWnd, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight , .T. )
+      uRet := MoveWindow( ::hWnd, ::ContainerCol, ::ContainerRow + if( ::lRtl, GETVSCROLLBARWIDTH(), 0 ), ::nWidth, ::nHeight , .T. )
 
    EndIf
 *   ReDrawWindow( ::hWnd )
