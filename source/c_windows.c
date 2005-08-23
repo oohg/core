@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.8 2005-08-21 21:24:51 guerra000 Exp $
+ * $Id: c_windows.c,v 1.9 2005-08-23 05:09:34 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -229,11 +229,15 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
 
 }
 
-HB_FUNC ( INITWINDOW )
+HB_FUNC( INITWINDOW )
 {
-	HWND hwnd;
-    int Style = WS_POPUP , ExStyle;
-    ExStyle = _ooHG_DefaultStyleEx();
+   HWND hwnd;
+   int Style = WS_POPUP , ExStyle = 0;
+
+   if ( hb_parl( 17 ) )
+   {
+      ExStyle |= WS_EX_LAYOUTRTL | WS_EX_RIGHTSCROLLBAR | WS_EX_RTLREADING;
+   }
 
 	if ( hb_parl (16) )
 	{
@@ -299,18 +303,22 @@ HB_FUNC ( INITWINDOW )
 	hb_retnl ((LONG)hwnd);
 }
 
-HB_FUNC ( INITMODALWINDOW )
+HB_FUNC( INITMODALWINDOW )
 {
+   HWND parent ;
+   HWND hwnd ;
+   int Style ;
+   int ExStyle = 0;
 
-	HWND parent ;
-	HWND hwnd ;
-	int Style ;
-    int ExStyle = _ooHG_DefaultStyleEx();
+   if ( hb_parl( 14 ) )
+   {
+      ExStyle |= WS_EX_LAYOUTRTL | WS_EX_RIGHTSCROLLBAR | WS_EX_RTLREADING;
+   }
 
-	if ( hb_parl (13) )
-	{
-            ExStyle |= WS_EX_CONTEXTHELP;
-	}
+   if ( hb_parl (13) )
+   {
+      ExStyle |= WS_EX_CONTEXTHELP;
+   }
 
 	parent = (HWND) hb_parnl (6);
 
@@ -817,64 +825,73 @@ static void ChangeNotifyIcon(HWND hWnd, HICON hIcon, LPSTR szText)
   Shell_NotifyIcon(NIM_MODIFY,&nid);
 }
 
-HB_FUNC ( INITSPLITBOX )
+HB_FUNC( INITSPLITBOX )
 {
+   HWND hwndOwner = (HWND) hb_parnl ( 1 ) ;
+   REBARINFO     rbi;
+   HWND   hwndRB;
+   INITCOMMONCONTROLSEX icex;
+   int ExStyle = 0;
+   int Style;
 
-	HWND hwndOwner = (HWND) hb_parnl ( 1 ) ;
-	REBARINFO     rbi;
-	HWND   hwndRB;
-	INITCOMMONCONTROLSEX icex;
+   if ( hb_parl( 4 ) )
+   {
+      ExStyle |= WS_EX_LAYOUTRTL | WS_EX_RIGHTSCROLLBAR | WS_EX_RTLREADING;
+   }
 
-	int Style = 	WS_CHILD |
-			WS_VISIBLE |
-			WS_CLIPSIBLINGS |
-			WS_CLIPCHILDREN |
-			RBS_BANDBORDERS |
-			RBS_VARHEIGHT |
-			RBS_FIXEDORDER ;
+   Style = WS_CHILD |
+           WS_VISIBLE |
+           WS_CLIPSIBLINGS |
+           WS_CLIPCHILDREN |
+           RBS_BANDBORDERS |
+           RBS_VARHEIGHT |
+           RBS_FIXEDORDER;
 
+   if ( hb_parl (2) )
+   {
+      Style |= CCS_BOTTOM;
+   }
 
-	if ( hb_parl (2) )
-	{
-		Style = Style | CCS_BOTTOM ;
-	}
+   if ( hb_parl (3) )
+   {
+      Style |= CCS_VERT;
+   }
 
-	if ( hb_parl (3) )
-	{
-		Style = Style  | CCS_VERT ;
-	}
+   icex.dwSize = sizeof( INITCOMMONCONTROLSEX );
+   icex.dwICC  = ICC_COOL_CLASSES | ICC_BAR_CLASSES;
+   InitCommonControlsEx( &icex );
 
-	icex.dwSize = sizeof(INITCOMMONCONTROLSEX);
-	icex.dwICC   = ICC_COOL_CLASSES|ICC_BAR_CLASSES;
-	InitCommonControlsEx(&icex);
+   hwndRB = CreateWindowEx( ExStyle | WS_EX_TOOLWINDOW | WS_EX_DLGMODALFRAME,
+                            REBARCLASSNAME,
+                            NULL,
+                            Style,
+                            0,0,0,0,
+                            hwndOwner,
+                            NULL,
+                            GetModuleHandle( NULL ),
+                            NULL );
 
-    hwndRB = CreateWindowEx( _ooHG_DefaultStyleEx() | WS_EX_TOOLWINDOW | WS_EX_DLGMODALFRAME,
-                           REBARCLASSNAME,
-                           NULL,
-			   Style ,
-                           0,0,0,0,
-                           hwndOwner,
-                           NULL,
-                           GetModuleHandle(NULL),
-                           NULL);
+   // Initialize and send the REBARINFO structure.
+   rbi.cbSize = sizeof( REBARINFO );  // Required when using this struct.
+   rbi.fMask  = 0;
+   rbi.himl   = ( HIMAGELIST ) NULL;
+   SendMessage( hwndRB, RB_SETBARINFO, 0, ( LPARAM ) &rbi );
 
-	// Initialize and send the REBARINFO structure.
-	rbi.cbSize = sizeof(REBARINFO);  // Required when using this struct.
-	rbi.fMask  = 0;
-	rbi.himl   = (HIMAGELIST)NULL;
-	SendMessage(hwndRB, RB_SETBARINFO, 0, (LPARAM)&rbi) ;
-
-	hb_retnl ( (LONG) hwndRB );
-
+   hb_retnl ( ( LONG ) hwndRB );
 }
 
-HB_FUNC ( INITSPLITCHILDWINDOW )
+HB_FUNC( INITSPLITCHILDWINDOW )
 {
+   HWND hwnd;
+   int Style;
+   int ExStyle = 0;
 
-	HWND hwnd;
-	int Style;
+   if ( hb_parl( 9 ) )
+   {
+      ExStyle |= WS_EX_LAYOUTRTL | WS_EX_RIGHTSCROLLBAR | WS_EX_RTLREADING;
+   }
 
-	Style = WS_POPUP ;
+   Style = WS_POPUP ;
 
 	if ( !hb_parl(4) )
 	{
@@ -891,7 +908,7 @@ HB_FUNC ( INITSPLITCHILDWINDOW )
 		Style = Style | WS_HSCROLL ;
 	}
 
-    hwnd = CreateWindowEx( _ooHG_DefaultStyleEx() | WS_EX_STATICEDGE | WS_EX_TOOLWINDOW ,hb_parc(3),hb_parc(5),
+    hwnd = CreateWindowEx( ExStyle | WS_EX_STATICEDGE | WS_EX_TOOLWINDOW ,hb_parc(3),hb_parc(5),
 	Style,
 	0,
 	0,
@@ -1303,28 +1320,4 @@ HB_FUNC( REGISTERSPLITCHILDWINDOW )
 	ExitProcess(0);
 	}
 	hb_retnl ( (LONG) hbrush ) ;
-}
-
-int _ooHG_RightToLeft = 0;
-
-HB_FUNC( SETRIGHTTOLEFT )
-{
-   hb_retl( _ooHG_RightToLeft );
-
-   if( ISLOG( 1 ) )
-   {
-      _ooHG_RightToLeft = hb_parl( 1 );
-   }
-}
-
-int _ooHG_DefaultStyleEx( void )
-{
-   int iStyle = 0;
-
-   if( _ooHG_RightToLeft )
-   {
-      iStyle |= WS_EX_LAYOUTRTL | WS_EX_RIGHTSCROLLBAR | WS_EX_RTLREADING;
-   }
-
-   return iStyle;
 }
