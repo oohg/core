@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.11 2005-08-21 21:19:04 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.12 2005-08-23 05:10:58 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -121,6 +121,7 @@ CLASS TWindow
    DATA RowMargin  INIT 0
    DATA ColMargin  INIT 0
    DATA Container  INIT nil
+   DATA lRtl       INIT .F.
    DATA ContextMenu   INIT nil
    DATA Cargo      INIT nil
 
@@ -616,7 +617,7 @@ local actpos:={0,0,0,0}
       nHeight := actpos[ 4 ] - actpos[ 2 ]
    endif
 
-Return MoveWindow( ::hWnd , nRow , nCol , nWidth , nHeight , .t. )
+Return MoveWindow( ::hWnd , nCol , nRow , nWidth , nHeight , .t. )
 
 *-----------------------------------------------------------------------------*
 METHOD RefreshDataControls() CLASS TForm
@@ -1520,7 +1521,7 @@ Function _SetWindowSizePos( FormName , row , col , width , height )
 Return GetFormObject( FormName ):SizePos( row , col , width , height )
 
 *-----------------------------------------------------------------------------*
-Function _DefineWindow( FormName, Caption, x, y, w, h ,nominimize ,nomaximize ,nosize ,nosysmenu, nocaption , StatusBar , StatusText ,initprocedure ,ReleaseProcedure , MouseDragProcedure ,SizeProcedure , ClickProcedure , MouseMoveProcedure, aRGB , PaintProcedure , noshow , topmost , main , icon , child , fontname , fontsize , NotifyIconName , NotifyIconTooltip , NotifyIconLeftClick , GotFocus , LostFocus , virtualheight , VirtualWidth , scrollleft , scrollright , scrollup , scrolldown , hscrollbox , vscrollbox , helpbutton , maximizeprocedure , minimizeprocedure , cursor , NoAutoRelease , InteractiveCloseProcedure )
+Function _DefineWindow( FormName, Caption, x, y, w, h ,nominimize ,nomaximize ,nosize ,nosysmenu, nocaption , StatusBar , StatusText ,initprocedure ,ReleaseProcedure , MouseDragProcedure ,SizeProcedure , ClickProcedure , MouseMoveProcedure, aRGB , PaintProcedure , noshow , topmost , main , icon , child , fontname , fontsize , NotifyIconName , NotifyIconTooltip , NotifyIconLeftClick , GotFocus , LostFocus , virtualheight , VirtualWidth , scrollleft , scrollright , scrollup , scrolldown , hscrollbox , vscrollbox , helpbutton , maximizeprocedure , minimizeprocedure , cursor , NoAutoRelease , InteractiveCloseProcedure, lRtl )
 *-----------------------------------------------------------------------------*
 Local i , htooltip , vscroll , hscroll , BrushHandle , FormHandle, ParentHandle
 Local oWnd
@@ -1530,7 +1531,9 @@ Local oWnd
 StatusBar := Nil
 StatusText := Nil
 
-*
+   if valtype( lRtl ) != "L"
+      lRtl := .F.
+	endif
 
 	if valtype(FormName) == "U"
       FormName := _OOHG_TempWindowName
@@ -1671,7 +1674,7 @@ StatusText := Nil
    UnRegisterWindow( FormName )
 	BrushHandle := RegisterWindow(icon,FormName, aRGB )
 
-	Formhandle = InitWindow( Caption , x, y, w, h, nominimize, nomaximize, nosize, nosysmenu, nocaption , topmost , FormName , ParentHandle , vscroll , hscroll , helpbutton )
+   Formhandle = InitWindow( Caption , x, y, w, h, nominimize, nomaximize, nosize, nosysmenu, nocaption , topmost , FormName , ParentHandle , vscroll , hscroll , helpbutton, lRtl )
 
 	if Valtype ( cursor ) != "U"
 		SetWindowCursor( Formhandle , cursor )
@@ -1715,6 +1718,7 @@ StatusText := Nil
    oWnd:aBkColor := aRGB
    oWnd:AutoRelease := ! NoAutoRelease
    oWnd:BrushHandle := BrushHandle
+   oWnd:lRtl := lRtl
 
    // Font Name:
    if ! empty( FontName )
@@ -1753,7 +1757,7 @@ StatusText := Nil
 Return oWnd
 
 *-----------------------------------------------------------------------------*
-Function _DefineModalWindow ( FormName, Caption, x, y, w, h, Parent ,nosize ,nosysmenu, nocaption , StatusBar , StatusText ,InitProcedure, ReleaseProcedure , MouseDragProcedure , SizeProcedure , ClickProcedure , MouseMoveProcedure, aRGB , PaintProcedure , icon , FontName , FontSize , GotFocus , LostFocus , virtualheight , VirtualWidth , scrollleft , scrollright , scrollup , scrolldown  , hscrollbox , vscrollbox , helpbutton , cursor , noshow  , NoAutoRelease  , InteractiveCloseProcedure )
+Function _DefineModalWindow( FormName, Caption, x, y, w, h, Parent ,nosize ,nosysmenu, nocaption , StatusBar , StatusText ,InitProcedure, ReleaseProcedure , MouseDragProcedure , SizeProcedure , ClickProcedure , MouseMoveProcedure, aRGB , PaintProcedure , icon , FontName , FontSize , GotFocus , LostFocus , virtualheight , VirtualWidth , scrollleft , scrollright , scrollup , scrolldown  , hscrollbox , vscrollbox , helpbutton , cursor , noshow  , NoAutoRelease  , InteractiveCloseProcedure, lRtl )
 *-----------------------------------------------------------------------------*
 Local htooltip , vscroll , hscroll , BrushHandle
 Local oWnd
@@ -1766,8 +1770,9 @@ Local FormHandle
 StatusBar := Nil
 StatusText := Nil
 
-*
-
+   if valtype( lRtl ) != "L"
+      lRtl := .F.
+	endif
 
 	if valtype(FormName) == "U"
       FormName := _OOHG_TempWindowName
@@ -1886,7 +1891,7 @@ StatusText := Nil
 	UnRegisterWindow (FormName)
 	BrushHandle := RegisterWindow(icon,FormName , aRGB )
 
-   Formhandle = InitModalWindow( Caption , x, y, w, h , Parent:hWnd ,nosize ,nosysmenu, nocaption , FormName , vscroll , hscroll , helpbutton )
+   Formhandle = InitModalWindow( Caption , x, y, w, h , Parent:hWnd ,nosize ,nosysmenu, nocaption , FormName , vscroll , hscroll , helpbutton , lRtl )
 
 	if Valtype ( cursor ) != "U"
 		SetWindowCursor( Formhandle , cursor )
@@ -1920,6 +1925,7 @@ StatusText := Nil
    oWnd:aBkColor := aRGB
    oWnd:AutoRelease := ! NoAutoRelease
    oWnd:BrushHandle := BrushHandle
+   oWnd:lRtl := lRtl
 
    // Font Name:
    if ! empty( FontName )
@@ -1953,13 +1959,17 @@ StatusText := Nil
 Return oWnd
 
 *-----------------------------------------------------------------------------*
-Function _DefineSplitChildWindow ( FormName , w , h , break , grippertext  , nocaption , title , fontname , fontsize , gotfocus , lostfocus , virtualheight , VirtualWidth , Focused , scrollleft , scrollright , scrollup , scrolldown  , hscrollbox , vscrollbox , cursor )
+Function _DefineSplitChildWindow( FormName , w , h , break , grippertext  , nocaption , title , fontname , fontsize , gotfocus , lostfocus , virtualheight , VirtualWidth , Focused , scrollleft , scrollright , scrollup , scrolldown  , hscrollbox , vscrollbox , cursor , lRtl )
 *-----------------------------------------------------------------------------*
 Local i , htooltip , hscroll , BrushHandle
 Local oWnd, oParent
 
 // AJ
 Local FormHandle , vscroll
+
+   if valtype( lRtl ) != "L"
+      lRtl := .F.
+	endif
 
 	if valtype(FormName) == "U"
       FormName := _OOHG_TempWindowName
@@ -2014,7 +2024,7 @@ Local FormHandle , vscroll
 
    oParent := _OOHG_ActiveForm
 
-		Formhandle := InitSplitChildWindow ( w , h , FormName , nocaption , title , 0 , vscroll , hscroll )
+   Formhandle := InitSplitChildWindow( w , h , FormName , nocaption , title , 0 , vscroll , hscroll , lRtl )
 
 		if Valtype ( cursor ) != "U"
 			SetWindowCursor( Formhandle , cursor )
@@ -2067,6 +2077,7 @@ Local FormHandle , vscroll
    oWnd:Focused := Focused
    oWnd:AutoRelease := .T.
    oWnd:BrushHandle := BrushHandle
+   oWnd:lRtl := lRtl
 
    // Font Name:
    if ! empty( FontName )
@@ -2105,9 +2116,13 @@ Local FormHandle , vscroll
 Return oWnd
 
 *-----------------------------------------------------------------------------*
-Function _DefineSplitBox ( ParentForm, bottom , inverted )
+Function _DefineSplitBox( ParentForm, bottom, inverted, lRtl )
 *-----------------------------------------------------------------------------*
-Local cParentForm,Controlhandle
+Local cParentForm, Controlhandle
+
+   if valtype( lRtl ) != "L"
+      lRtl := .F.
+	endif
 
    if _OOHG_BeginWindowActive = .T.
       ParentForm := _OOHG_ActiveForm:Name
@@ -2138,9 +2153,10 @@ Local cParentForm,Controlhandle
 
 	ParentForm = GetFormHandle (ParentForm)
 
-	ControlHandle := InitSplitBox ( ParentForm, bottom , inverted )
+   ControlHandle := InitSplitBox( ParentForm, bottom, inverted, lRtl )
 
    GetFormObject( cParentForm ):ReBarHandle := ControlHandle
+   // oWnd:lRtl := lRtl
 
 Return Nil
 
