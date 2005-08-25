@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.9 2005-08-23 05:09:34 guerra000 Exp $
+ * $Id: c_windows.c,v 1.10 2005-08-25 06:11:01 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -170,21 +170,13 @@ HB_FUNC( GETFORMOBJECTBYHANDLE )
    hb_itemClear( &pReturn );
 }
 
-LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
+LRESULT APIENTRY _OOHG_WndProc( PHB_ITEM pSelf, HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM lParam, WNDPROC lpfnOldWndProc )
 {
-   long int r;
    PHB_ITEM pResult;
 
-   if( ! _ooHG_Symbol_TForm )
-   {
-      hb_vmPushSymbol( hb_dynsymFind( "_OOHG_INIT_C_VARS" )->pSymbol );
-      hb_vmPushNil();
-      hb_vmDo( 0 );
-   }
-
-   _OOHG_Send( GetFormObjectByHandle( ( LONG ) hWnd ), s_Events );
+   _OOHG_Send( pSelf, s_Events );
    hb_vmPushLong( ( LONG ) hWnd );
-   hb_vmPushLong( message );
+   hb_vmPushLong( uiMsg );
    hb_vmPushLong( wParam );
    hb_vmPushLong( lParam );
    hb_vmSend( 4 );
@@ -196,37 +188,20 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
    }
    else
    {
-      return DefWindowProc( hWnd, message, wParam, lParam );
+      return CallWindowProc( lpfnOldWndProc, hWnd, uiMsg, wParam, lParam );
+   }
+}
+
+LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
+{
+   if( ! _ooHG_Symbol_TForm )
+   {
+      hb_vmPushSymbol( hb_dynsymFind( "_OOHG_INIT_C_VARS" )->pSymbol );
+      hb_vmPushNil();
+      hb_vmDo( 0 );
    }
 
-/*
-#if defined(__XHARBOUR__)
-
-	if ( r != 0 )
-	{
-		return r ;
-	}
-	else
-	{
-		return( DefWindowProc( hWnd, message, wParam, lParam ));
-	}
-
-#else
-
-	r = hb_itemGetNL( (PHB_ITEM) &hb_stack.Return ) ;
-
-	if ( r != 0 )
-	{
-		return r ;
-	}
-	else
-	{
-		return( DefWindowProc( hWnd, message, wParam, lParam ));
-	}
-
-#endif
-*/
-
+   return _OOHG_WndProc( GetFormObjectByHandle( ( LONG ) hWnd ), hWnd, message, wParam, lParam, &DefWindowProc );
 }
 
 HB_FUNC( INITWINDOW )
