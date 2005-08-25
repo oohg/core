@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.8 2005-08-23 05:12:56 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.9 2005-08-25 06:06:51 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1787,6 +1787,7 @@ CLASS TControl FROM TWindow
    DATA ImageListFlags      INIT LR_LOADTRANSPARENT
    DATA SetImageListCommand INIT 0   // Must be explicit for each control
    DATA SetImageListWParam  INIT TVSIL_NORMAL
+   DATA hCursor     INIT 0
 
    METHOD Row       SETGET
    METHOD Col       SETGET
@@ -1820,6 +1821,7 @@ CLASS TControl FROM TWindow
 //   METHOD MainControl         BLOCK { | Self | Self }
    METHOD DoEvent
 
+   METHOD Events
    METHOD Events_Color
    METHOD Events_Enter
    METHOD Events_Command
@@ -2355,6 +2357,92 @@ Local lRetVal
 	EndIf
 
 Return lRetVal
+
+#pragma BEGINDUMP
+#define s_Super s_Window
+#include "hbapi.h"
+#include "hbvm.h"
+#include <windows.h>
+#include "../include/oohg.h"
+
+// -----------------------------------------------------------------------------
+HB_FUNC_STATIC( TCONTROL_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TControl
+// -----------------------------------------------------------------------------
+{
+   HWND hWnd      = ( HWND )   hb_parnl( 1 );
+   UINT message   = ( UINT )   hb_parni( 2 );
+   // WPARAM wParam  = ( WPARAM ) hb_parni( 3 );
+   LPARAM lParam  = ( LPARAM ) hb_parnl( 4 );
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   ULONG lData;
+
+   switch( message )
+   {
+      case WM_MOUSEMOVE:
+         _OOHG_Send( pSelf, s_hCursor );
+         hb_vmSend( 0 );
+         lData = hb_parnl( -1 );
+         if( lData )
+         {
+            SetCursor( ( HCURSOR ) lData );
+         }
+         hb_ret();
+         break;
+
+      case WM_CONTEXTMENU:
+//         if( _OOHG_ShowContextMenus )
+         {
+            SetFocus( hWnd );
+
+            _OOHG_Send( pSelf, s_ContextMenu );
+            hb_vmSend( 0 );
+            if( hb_param( -1, HB_IT_OBJECT ) )
+            {
+               HWND hParent;
+               HB_ITEM pContext;
+               memcpy( &pContext, hb_param( -1, HB_IT_OBJECT ), sizeof( HB_ITEM ) );
+               _OOHG_Send( pSelf, s_Parent );
+               hb_vmSend( 0 );
+               _OOHG_Send( hb_param( -1, HB_IT_OBJECT ), s_hWnd );
+               hb_vmSend( 0 );
+               hParent = ( HWND ) hb_parnl( -1 );
+
+/*
+               int iRow, iCol;
+
+               // _OOHG_MouseRow := HIWORD(lParam) - ::RowMargin
+               _OOHG_Send( pParent, s_RowMargin );
+               hb_vmSend( 0 );
+               iRow = HIWORD( lParam ) - hb_parni( -1 );
+               // _OOHG_MouseCol := LOWORD(lParam) - ::ColMargin
+               _OOHG_Send( pParent, s_ColMargin );
+               hb_vmSend( 0 );
+               iCol = LOWORD( lParam ) - hb_parni( -1 );
+*/
+               // HMENU
+               _OOHG_Send( &pContext, s_hWnd );
+               hb_vmSend( 0 );
+               TrackPopupMenu( ( HMENU ) hb_parnl( -1 ), 0, ( int ) LOWORD( lParam ), ( int ) HIWORD( lParam ), 0, hParent, 0 );
+               PostMessage( hParent, WM_NULL, 0, 0 );
+               hb_ret();
+            }
+            else
+            {
+               hb_ret();
+            }
+         }
+//         else
+//         {
+//            hb_ret();
+//         }
+         break;
+
+      default:
+         hb_ret();
+         break;
+   }
+}
+#pragma ENDDUMP
 
 *-----------------------------------------------------------------------------*
 METHOD Events_Color( wParam, ColorDefault ) CLASS TControl

@@ -1,5 +1,5 @@
 /*
- * $Id: c_grid.c,v 1.8 2005-08-23 05:12:56 guerra000 Exp $
+ * $Id: c_grid.c,v 1.9 2005-08-25 06:06:51 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -106,10 +106,12 @@
 #include "tchar.h"
 #include "../include/oohg.h"
 
-static LRESULT APIENTRY SubClassFunc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
-// int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam );
+static WNDPROC lpfnOldWndProc = 0;
 
-static WNDPROC lpfnOldWndProc;
+static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+{
+   return _OOHG_WndProc( GetControlObjectByHandle( ( LONG ) hWnd ), hWnd, msg, wParam, lParam, lpfnOldWndProc );
+}
 
 HB_FUNC( INITLISTVIEW )
 {
@@ -132,18 +134,13 @@ HB_FUNC( INITLISTVIEW )
    }
 
    style = LVS_SHOWSELALWAYS | WS_CHILD | WS_TABSTOP | WS_VISIBLE | LVS_REPORT;
-   if ( ! hb_parl( 12 ) )
-   {
-      style = style | LVS_SINGLESEL;
-   }
-
    if ( hb_parl( 10 ) )
    {
       style = style | LVS_OWNERDATA;
    }
 
    hbutton = CreateWindowEx(StyleEx,"SysListView32","",
-   style ,
+   ( style | hb_parni( 12 ) ),
    hb_parni(3), hb_parni(4) , hb_parni(5), hb_parni(6) ,
    hwnd,(HMENU)hb_parni(2) , GetModuleHandle(NULL) , NULL ) ;
 
@@ -159,44 +156,6 @@ HB_FUNC( INITLISTVIEW )
    hb_retnl ( (LONG) hbutton );
 
 }
-
-static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
-{
-	if ( msg == WM_MOUSEWHEEL )
-	{
-
-		if ( (short) HIWORD (wParam) > 0 )
-		{
-
-			keybd_event(
-			VK_UP	,	// virtual-key code
-			0,		// hardware scan code
-			0,		// flags specifying various function options
-			0		// additional data associated with keystroke
-			);
-
-		}
-		else
-		{
-
-			keybd_event(
-			VK_DOWN	,	// virtual-key code
-			0,		// hardware scan code
-			0,		// flags specifying various function options
-			0		// additional data associated with keystroke
-			);
-
-		}
-
-		return CallWindowProc(lpfnOldWndProc, hWnd, 0 , 0, 0 ) ;
-
-	}
-	else
-	{
-		return CallWindowProc(lpfnOldWndProc, hWnd, msg , wParam, lParam ) ;
-	}
-}
-
 
 HB_FUNC( LISTVIEW_SETITEMCOUNT )
 {
@@ -584,6 +543,25 @@ HB_FUNC( LISTVIEW_GETBKCOLOR )
 HB_FUNC( LISTVIEW_GETCOLUMNWIDTH )
 {
     hb_retni( ListView_GetColumnWidth( ( HWND ) hb_parnl( 1 ), hb_parni( 2 ) ) );
+}
+
+HB_FUNC( _OOHG_GRIDARRAYWIDTHS )
+{
+   HWND hWnd = ( HWND ) hb_parnl( 1 );
+   PHB_ITEM pArray = hb_param( 2, HB_IT_ARRAY );
+   ULONG iSum = 0, iCount, iSize;
+
+   if( pArray )
+   {
+      for( iCount = 0; iCount < pArray->item.asArray.value->ulLen; iCount++ )
+      {
+         iSize = ListView_GetColumnWidth( hWnd, iCount );
+         iSum += iSize;
+         hb_storni( iSize, 2, iCount + 1 );
+      }
+   }
+
+   hb_retni( iSum );
 }
 
 HB_FUNC( LISTVIEW_ADDCOLUMN )

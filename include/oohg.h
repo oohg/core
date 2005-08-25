@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.h,v 1.4 2005-08-23 05:08:49 guerra000 Exp $
+ * $Id: oohg.h,v 1.5 2005-08-25 06:06:51 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -57,6 +57,7 @@ struct IMAGE_PARAMETER {
 extern void ImageFillParameter( struct IMAGE_PARAMETER *pResult, PHB_ITEM pString );
 extern PHB_ITEM GetControlObjectByHandle( LONG hWnd );
 extern void _OOHG_Send( PHB_ITEM pSelf, int iSymbol );
+LRESULT APIENTRY _OOHG_WndProc( PHB_ITEM pSelf, HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM lParam, WNDPROC lpfnOldWndProc );
 
 // Symbol tables
 #define s_Events_Notify    0
@@ -66,8 +67,16 @@ extern void _OOHG_Send( PHB_ITEM pSelf, int iSymbol );
 #define s_DefBkColorEdit   4
 #define s_Container        5
 #define s_Parent           6
-#define s_Events_Char      7
+#define s_hCursor          7
 #define s_Events           8
 #define s_Events_Color     9
-#define s_Super            10
-#define s_LastSymbol       11
+#define s_Name             10
+#define s_Type             11
+#define s_TControl         12
+#define s_TLabel           13
+#define s_TGrid            14
+#define s_ContextMenu      15
+#define s_RowMargin        16
+#define s_ColMargin        17
+#define s_hWnd             18
+#define s_LastSymbol       19

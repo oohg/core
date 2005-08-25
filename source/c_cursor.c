@@ -1,5 +1,5 @@
 /*
- * $Id: c_cursor.c,v 1.1 2005-08-07 00:02:34 guerra000 Exp $
+ * $Id: c_cursor.c,v 1.2 2005-08-25 06:06:51 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -112,14 +112,12 @@ Status:		Public Domain
 #include "winreg.h"
 #include "tchar.h"
 
-/*
 HB_FUNC ( LOADCURSOR )
 {
 HINSTANCE hInstance    = (ISNIL(1) ? NULL : (HINSTANCE) hb_parnl(1));
 LPCTSTR   lpCursorName = (hb_parinfo(2)== HB_IT_STRING ? hb_parc(2): MAKEINTRESOURCE( hb_parnl( 2 ) ) );
 hb_retnl( (long) LoadCursor( hInstance, lpCursorName ) );
 }
-*/
 
 HB_FUNC( LOADCURSORFROMFILE )
 {
@@ -230,4 +228,11 @@ HB_FUNC ( SETWINDOWCURSOR )
 		GCL_HCURSOR,      // change cursor
 		(LONG) ch );   // new cursor
 
+}
+
+HB_FUNC ( SETARROWCURSOR )
+{
+   SetClassLong( ( HWND ) hb_parnl( 1 ) ,    // window handle
+                 GCL_HCURSOR,      // change cursor
+                 ( LONG ) LoadCursor( NULL, IDC_ARROW ) );   // new cursor
 }

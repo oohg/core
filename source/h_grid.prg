@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.10 2005-08-23 05:12:56 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.11 2005-08-25 06:06:51 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -105,15 +105,16 @@ CLASS TGrid FROM TControl
    DATA GridBackColor    INIT {}
    DATA DynamicForeColor INIT {}
    DATA DynamicBackColor INIT {}
-   DATA lMulti           INIT .F.
    DATA Picture          INIT {}
    DATA OnDispInfo       INIT nil
    DATA SetImageListCommand INIT LVM_SETIMAGELIST
    DATA SetImageListWParam  INIT LVSIL_SMALL
 
    METHOD Define
+   METHOD Define2
    METHOD Value            SETGET
 
+   METHOD Events
    METHOD Events_Enter
    METHOD Events_Notify
 
@@ -140,6 +141,24 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                break, HelpId, bold, italic, underline, strikeout, ownerdata, ;
                ondispinfo, itemcount, editable, backcolor, fontcolor, ;
                dynamicbackcolor, dynamicforecolor, aPicture, lRtl ) CLASS TGrid
+*-----------------------------------------------------------------------------*
+Local nStyle := LVS_SINGLESEL
+
+   ::Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
+              aRows, value, fontname, fontsize, tooltip, change, dblclick, ;
+              aHeadClick, gotfocus, lostfocus, nogrid, aImage, aJust, ;
+              break, HelpId, bold, italic, underline, strikeout, ownerdata, ;
+              ondispinfo, itemcount, editable, backcolor, fontcolor, ;
+              dynamicbackcolor, dynamicforecolor, aPicture, lRtl, nStyle )
+Return Self
+
+*-----------------------------------------------------------------------------*
+METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
+                aRows, value, fontname, fontsize, tooltip, change, dblclick, ;
+                aHeadClick, gotfocus, lostfocus, nogrid, aImage, aJust, ;
+                break, HelpId, bold, italic, underline, strikeout, ownerdata, ;
+                ondispinfo, itemcount, editable, backcolor, fontcolor, ;
+                dynamicbackcolor, dynamicforecolor, aPicture, lRtl, nStyle ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local ControlHandle, aImageList
 
@@ -193,7 +212,7 @@ Local ControlHandle, aImageList
 
       _OOHG_SplitLastControl   := "GRID"
 
-         ControlHandle := InitListView ( ::Parent:ReBarHandle, 0, 0, 0, w, h ,'',0,iif( nogrid, 0, 1 ) , ownerdata , itemcount , ::lMulti , ::lRtl )
+         ControlHandle := InitListView ( ::Parent:ReBarHandle, 0, 0, 0, w, h ,'',0,iif( nogrid, 0, 1 ) , ownerdata , itemcount , nStyle, ::lRtl )
 
          x := GetWindowCol( Controlhandle )
          y := GetWindowRow( Controlhandle )
@@ -202,7 +221,7 @@ Local ControlHandle, aImageList
 
 	Else
 
-      ControlHandle := InitListView ( ::Parent:hWnd, 0, x, y, w, h ,'',0, iif( nogrid, 0, 1 ) , ownerdata  , itemcount  , ::lMulti , ::lRtl )
+      ControlHandle := InitListView ( ::Parent:hWnd, 0, x, y, w, h ,'',0, iif( nogrid, 0, 1 ) , ownerdata  , itemcount  , nStyle, ::lRtl )
 
 	endif
 
@@ -482,6 +501,66 @@ METHOD Value( uValue ) CLASS TGrid
       uValue := LISTVIEW_GETFIRSTITEM( ::hWnd )
    ENDIF
 RETURN uValue
+
+#pragma BEGINDUMP
+#define s_Super s_TControl
+#include "hbapi.h"
+#include "hbvm.h"
+#include <windows.h>
+#include "../include/oohg.h"
+
+// -----------------------------------------------------------------------------
+HB_FUNC_STATIC( TGRID_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TGrid
+// -----------------------------------------------------------------------------
+{
+// int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam );
+   HWND hWnd      = ( HWND )   hb_parnl( 1 );
+   UINT message   = ( UINT )   hb_parni( 2 );
+   WPARAM wParam  = ( WPARAM ) hb_parni( 3 );
+   LPARAM lParam  = ( LPARAM ) hb_parnl( 4 );
+   PHB_ITEM pSelf = hb_stackSelfItem();
+
+   if ( message == WM_MOUSEWHEEL )
+	{
+
+      if ( ( short ) HIWORD ( wParam ) > 0 )
+		{
+
+			keybd_event(
+			VK_UP	,	// virtual-key code
+			0,		// hardware scan code
+			0,		// flags specifying various function options
+			0		// additional data associated with keystroke
+			);
+
+		}
+		else
+		{
+
+			keybd_event(
+			VK_DOWN	,	// virtual-key code
+			0,		// hardware scan code
+			0,		// flags specifying various function options
+			0		// additional data associated with keystroke
+			);
+
+		}
+
+      hb_retni( 1 );
+	}
+	else
+	{
+      _OOHG_Send( pSelf, s_Super );
+      hb_vmSend( 0 );
+      _OOHG_Send( hb_param( -1, HB_IT_OBJECT ), s_Events );
+      hb_vmPushLong( ( LONG ) hWnd );
+      hb_vmPushLong( message );
+      hb_vmPushLong( wParam );
+      hb_vmPushLong( lParam );
+      hb_vmSend( 4 );
+	}
+}
+#pragma ENDDUMP
 
 *-----------------------------------------------------------------------------*
 METHOD Events_Enter() CLASS TGrid
@@ -782,16 +861,26 @@ Return aGrid
 
 CLASS TGridMulti FROM TGrid
    DATA Type      INIT "MULTIGRID" READONLY
-   DATA lMulti    INIT .T.
 
    METHOD Define
    METHOD Value
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
-METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows,value,fontname,fontsize , tooltip , change , dblclick , aHeadClick , gotfocus , lostfocus , nogrid, aImage, aJust, break  , HelpId , bold, italic, underline, strikeout , ownerdata , ondispinfo , itemcount , editable , backcolor , fontcolor, dynamicbackcolor , dynamicforecolor , aPicture , lRtl ) CLASS TGridMulti
+METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
+               aRows, value, fontname, fontsize, tooltip, change, dblclick, ;
+               aHeadClick, gotfocus, lostfocus, nogrid, aImage, aJust, ;
+               break, HelpId, bold, italic, underline, strikeout, ownerdata, ;
+               ondispinfo, itemcount, editable, backcolor, fontcolor, ;
+               dynamicbackcolor, dynamicforecolor, aPicture, lRtl ) CLASS TGridMulti
 *-----------------------------------------------------------------------------*
-   ::Super:Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows,value,fontname,fontsize , tooltip , change , dblclick , aHeadClick , gotfocus , lostfocus , nogrid, aImage, aJust, break  , HelpId , bold, italic, underline, strikeout , ownerdata , ondispinfo , itemcount , editable , backcolor , fontcolor, dynamicbackcolor , dynamicforecolor , aPicture , lRtl )
+Local nStyle := 0
+   ::Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
+              aRows, value, fontname, fontsize, tooltip, change, dblclick, ;
+              aHeadClick, gotfocus, lostfocus, nogrid, aImage, aJust, ;
+              break, HelpId, bold, italic, underline, strikeout, ownerdata, ;
+              ondispinfo, itemcount, editable, backcolor, fontcolor, ;
+              dynamicbackcolor, dynamicforecolor, aPicture, lRtl, nStyle )
 Return Self
 
 *-----------------------------------------------------------------------------*
