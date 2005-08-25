@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.12 2005-08-23 05:10:58 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.13 2005-08-25 06:08:13 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -102,6 +102,13 @@ STATIC _OOHG_UserWindow := nil       // User's window
 STATIC _OOHG_InteractiveClose := 1   // Interactive close
 
 #include "hbclass.ch"
+
+// C static variables
+#pragma BEGINDUMP
+
+int _OOHG_ShowContextMenus = 1;
+
+#pragma ENDDUMP
 
 *------------------------------------------------------------------------------*
 CLASS TWindow
@@ -748,10 +755,6 @@ HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
    WPARAM wParam  = ( WPARAM ) hb_parni( 3 );
    LPARAM lParam  = ( LPARAM ) hb_parnl( 4 );
    PHB_ITEM pSelf = hb_stackSelfItem();
-if( ! pSelf )
-{
-   MessageBox( GetActiveWindow(), "No pSelf!", "Error!", MB_OK | MB_ICONINFORMATION | MB_SYSTEMMODAL );
-}
 
    switch( message )
    {
@@ -775,6 +778,60 @@ if( ! pSelf )
          hb_vmPushLong( wParam );
          hb_vmPushLong( lParam );
          hb_vmSend( 2 );
+         break;
+
+      case WM_CONTEXTMENU:
+         if( _OOHG_ShowContextMenus )
+         {
+            PHB_ITEM pControl, pContext;
+
+            SetFocus( ( HWND ) wParam );
+            pControl = GetControlObjectByHandle( ( LONG ) wParam );
+
+            // Check if control have context menu
+            _OOHG_Send( pControl, s_ContextMenu );
+            hb_vmSend( 0 );
+            pContext = hb_param( -1, HB_IT_OBJECT );
+            // Check if form have context menu
+            if( ! pContext )
+            {
+               // _OOHG_Send( pSelf, s_ContextMenu );
+               _OOHG_Send( pSelf, s_ContextMenu );
+               hb_vmSend( 0 );
+               pContext = hb_param( -1, HB_IT_OBJECT );
+            }
+
+            // If there's a context menu, show it
+            if( pContext )
+            {
+/*
+               int iRow, iCol;
+
+               // _OOHG_MouseRow := HIWORD( lParam ) - ::RowMargin
+               _OOHG_Send( pSelf, s_RowMargin );
+               hb_vmSend( 0 );
+               iRow = HIWORD( lParam ) - hb_parni( -1 );
+               // _OOHG_MouseCol := LOWORD( lParam ) - ::ColMargin
+               _OOHG_Send( pSelf, s_ColMargin );
+               hb_vmSend( 0 );
+               iCol = LOWORD( lParam ) - hb_parni( -1 );
+*/
+               // HMENU
+               _OOHG_Send( pContext, s_hWnd );
+               hb_vmSend( 0 );
+               TrackPopupMenu( ( HMENU ) hb_parnl( -1 ), 0, ( int ) LOWORD( lParam ), ( int ) HIWORD( lParam ), 0, hWnd, 0 );
+               PostMessage( hWnd, WM_NULL, 0, 0 );
+               hb_ret();
+            }
+            else
+            {
+               hb_ret();
+            }
+         }
+         else
+         {
+            hb_ret();
+         }
          break;
 
       default:
@@ -1017,7 +1074,7 @@ Local oWnd, oCtrl
 
 				case lParam == WM_RBUTTONDOWN
 
-               if _OOHG_ShowContextMenus == .t.
+               if _OOHG_ShowContextMenus()
 
                   if ::NotifyMenuHandle != 0
                      TrackPopupMenu( ::NotifyMenuHandle, aPos[2] , aPos[1] , hWnd )
@@ -1185,27 +1242,6 @@ Local oWnd, oCtrl
 		Else
             ::DoEvent( ::OnMouseMove, '' )
 		Endif
-
-        ***********************************************************************
-	case nMsg == WM_CONTEXTMENU
-        ***********************************************************************
-
-      if _OOHG_ShowContextMenus == .t.
-
-         _OOHG_MouseRow := HIWORD(lParam) - ::RowMargin
-         _OOHG_MouseCol := LOWORD(lParam) - ::ColMargin
-
-         setfocus( wParam )
-
-         oCtrl := GetControlObjectByHandle( wParam )
-         IF oCtrl:hWnd != 0 .AND. oCtrl:ContextMenu != nil
-            TrackPopupMenu( oCtrl:ContextMenu:hWnd, LOWORD(lparam) , HIWORD(lparam) , oCtrl:Parent:hWnd )
-*****      Self := GetFormObjectByHandle( hWnd )
-         elseif ::ContextMenu != nil
-            TrackPopupMenu( ::ContextMenu:hWnd, LOWORD(lparam) , HIWORD(lparam) , hWnd )
-         ENDIF
-
-		EndIf
 
         ***********************************************************************
 	case nMsg == WM_TIMER
@@ -2531,6 +2567,7 @@ Static Function _OOHG_MacroCall_Error( oError )
 RETURN 1
 
 EXTERN IsXPThemeActive, _OOHG_Eval, EVAL
+EXTERN _OOHG_ShowContextMenus
 
 #pragma BEGINDUMP
 
@@ -2579,6 +2616,15 @@ HB_FUNC( _OOHG_EVAL )
    {
       hb_ret();
    }
+}
+
+HB_FUNC( _OOHG_SHOWCONTEXTMENUS )
+{
+   if( ISLOG( 1 ) )
+   {
+      _OOHG_ShowContextMenus = hb_parl( 1 );
+   }
+   hb_retl( _OOHG_ShowContextMenus );
 }
 
 #pragma ENDDUMP

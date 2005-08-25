@@ -1,5 +1,5 @@
 /*
- * $Id: i_var.ch,v 1.1 2005-08-06 23:53:54 guerra000 Exp $
+ * $Id: i_var.ch,v 1.2 2005-08-25 06:08:13 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -133,7 +133,6 @@ MEMVAR _OOHG_AllVars
 #xtranslate  _OOHG_DefaultFontName     => _OOHG_AllVars \[  28 \]
 #xtranslate  _OOHG_DefaultFontSize     => _OOHG_AllVars \[  29 \]
 
-#xtranslate  _OOHG_ShowContextMenus    => _OOHG_AllVars \[  30 \]
 #xtranslate  _OOHG_ThisType            => _OOHG_AllVars \[  31 \]
 #xtranslate  _OOHG_ThisForm            => _OOHG_AllVars \[  32 \]
 

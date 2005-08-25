@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.5 2005-08-19 05:45:49 guerra000 Exp $
+ * $Id: i_windefs.ch,v 1.6 2005-08-25 06:08:13 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -228,10 +228,24 @@
 #define ES_NUMBER       8192  // 0x2000
 
 // Window Styles
+#define WS_OVERLAPPED   0x00000000
 #define WS_TABSTOP      0x00010000
 #define WS_GROUP        0x00020000
+#define WS_THICKFRAME   0x00040000
+#define WS_SYSMENU      0x00080000
+#define WS_HSCROLL      0x00100000
+#define WS_VSCROLL      0x00200000
+#define WS_DLGFRAME     0x00400000
+#define WS_BORDER       0x00800000
+#define WS_CAPTION      0x00C00000   // WS_BORDER | WS_DLGFRAME
+#define WS_MAXIMIZE     0x01000000
+#define WS_CLIPCHILDREN 0x02000000
+#define WS_CLIPSIBLINGS 0x04000000
+#define WS_DISABLED     0x08000000
 #define WS_VISIBLE	0x10000000
+#define WS_MINIMIZE     0x20000000
 #define WS_CHILD	0x40000000
+#define WS_POPUP        0x80000000
 
 // Button Control
 #define BM_GETCHECK        240
@@ -258,6 +272,48 @@
 #define LVSIL_NORMAL       0
 #define LVSIL_SMALL        1
 #define LVSIL_STATE        2
+
+// ListView styles
+#define LVS_ICON            0
+#define LVS_REPORT          1
+#define LVS_SMALLICON       2
+#define LVS_LIST            3
+#define LVS_TYPEMASK        3
+#define LVS_SINGLESEL       4
+#define LVS_SHOWSELALWAYS   8
+#define LVS_SORTASCENDING   16
+#define LVS_SORTDESCENDING  32
+#define LVS_SHAREIMAGELISTS 64
+#define LVS_NOLABELWRAP     128
+#define LVS_AUTOARRANGE     256
+#define LVS_EDITLABELS      512
+#define LVS_OWNERDATA       0x1000
+#define LVS_NOSCROLL        0x2000
+#define LVS_TYPESTYLEMASK   0xfc00
+#define LVS_ALIGNTOP        0
+#define LVS_ALIGNLEFT       0x0800
+#define LVS_ALIGNMASK       0x0c00
+#define LVS_OWNERDRAWFIXED  0x0400
+#define LVS_NOCOLUMNHEADER  0x4000
+#define LVS_NOSORTHEADER    0x8000
+
+// Listbox Styles
+#define LBS_NOTIFY            1
+#define LBS_SORT              2
+#define LBS_NOREDRAW          4
+#define LBS_MULTIPLESEL       8
+#define LBS_OWNERDRAWFIXED    16
+#define LBS_OWNERDRAWVARIABLE 32
+#define LBS_HASSTRINGS        64
+#define LBS_USETABSTOPS       128
+#define LBS_NOINTEGRALHEIGHT  256
+#define LBS_MULTICOLUMN       512
+#define LBS_WANTKEYBOARDINPUT 1024
+#define LBS_EXTENDEDSEL       2048
+#define LBS_DISABLENOSCROLL   4096
+#define LBS_NODATA            8192
+#define LBS_NOSEL             16384
+#define LBS_STANDARD          ( LBS_NOTIFY + LBS_SORT + WS_VSCROLL + WS_BORDER )
 
 // TreeView messages
 #define TV_FIRST           0x1100
@@ -394,6 +450,7 @@
 #define EM_SETSEL	177
 #define EM_GETSEL	176
 #define EM_UNDO		199
+#define EM_SETBKGNDCOLOR	1091
 #define EN_CHANGE       768
 #define EN_UPDATE       1024
 #define MK_LBUTTON	1

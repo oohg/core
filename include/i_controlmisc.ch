@@ -1,5 +1,5 @@
 /*
- * $Id: i_controlmisc.ch,v 1.1 2005-08-06 23:49:17 guerra000 Exp $
+ * $Id: i_controlmisc.ch,v 1.2 2005-08-25 06:08:13 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -183,14 +183,11 @@ SetProperty ( <"Arg1"> , <"Arg2"> , <"Arg3"> , \{<Arg4>\} )
 
 #translate SET MULTIPLE <x:ON,OFF> [<warning: WARNING>] => _OOHG_SetMultiple( <(x)> , <.warning.> )
 
-#translate SET CONTEXTMENUS OFF => _ShowContextMenus := .F.
-#translate SET CONTEXTMENUS ON => _ShowContextMenus := .T.
+#translate SET CONTEXTMENUS OFF => _OOHG_ShowContextMenus( .F. )
+#translate SET CONTEXTMENUS ON =>  _OOHG_ShowContextMenus( .T. )
 
-#translate SET CONTEXTMENU OFF => _ShowContextMenus := .F.
-#translate SET CONTEXTMENU ON => _ShowContextMenus := .T.
-
-#translate SET CONTEXT MENU OFF => _ShowContextMenus := .F.
-#translate SET CONTEXT MENU ON => _ShowContextMenus := .T.
+#translate SET CONTEXT MENU OFF => _OOHG_ShowContextMenus( .F. )
+#translate SET CONTEXT MENU ON =>  _OOHG_ShowContextMenus( .T. )
 
 #xcommand EXIT PROCEDURE <name> ;
 => ;
