@@ -1,5 +1,5 @@
 /*
- * $Id: h_listbox.prg,v 1.3 2005-08-18 04:07:28 guerra000 Exp $
+ * $Id: h_listbox.prg,v 1.4 2005-08-25 05:57:42 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -94,10 +94,13 @@
 #include "oohg.ch"
 #include "common.ch"
 #include "hbclass.ch"
+#include "i_windefs.ch"
 
 CLASS TList FROM TControl
    DATA Type      INIT "LIST" READONLY
 
+   METHOD Define
+   METHOD Define2
    METHOD Value             SETGET
    METHOD Events_Command
 
@@ -114,37 +117,40 @@ CLASS TList FROM TControl
 
 ENDCLASS
 
-#define LBN_KILLFOCUS	5
-#define LBN_SETFOCUS	4
-#define LBN_DBLCLK	2
-#define LBN_SELCHANGE	1
+*-----------------------------------------------------------------------------*
+METHOD Define( ControlName, ParentForm, x, y, w, h, rows, value, fontname, ;
+               fontsize, tooltip, changeprocedure, dblclick, gotfocus, ;
+               lostfocus, break, HelpId, invisible, notabstop, sort, bold, ;
+               italic, underline, strikeout, backcolor, fontcolor, lRtl ) CLASS TList
+*-----------------------------------------------------------------------------*
+Local nStyle := 0
+   ::Define2( ControlName, ParentForm, x, y, w, h, rows, value, fontname, ;
+              fontsize, tooltip, changeprocedure, dblclick, gotfocus, ;
+              lostfocus, break, HelpId, invisible, notabstop, sort, bold, ;
+              italic, underline, strikeout, backcolor, fontcolor, nStyle, lRtl )
+Return Self
 
 *-----------------------------------------------------------------------------*
-Function _DefineListbox ( ControlName, ParentForm, x, y, w, h, rows, value, ;
-			fontname, fontsize, tooltip, changeprocedure, ;
-			dblclick, gotfocus, lostfocus, break, HelpId, ;
-			invisible, notabstop, sort , bold, italic, ;
-			underline, strikeout , backcolor , fontcolor , ;
-			multiselect )
+METHOD Define2( ControlName, ParentForm, x, y, w, h, rows, value, fontname, ;
+                fontsize, tooltip, changeprocedure, dblclick, gotfocus, ;
+                lostfocus, break, HelpId, invisible, notabstop, sort, bold, ;
+                italic, underline, strikeout, backcolor, fontcolor, nStyle, ;
+                lRtl ) CLASS TList
 *-----------------------------------------------------------------------------*
 Local ControlHandle
-Local Self
 
    DEFAULT w               TO 120
    DEFAULT h               TO 120
    DEFAULT gotfocus        TO ""
    DEFAULT lostfocus       TO ""
    DEFAULT rows            TO {}
-   DEFAULT value           TO 0
    DEFAULT changeprocedure TO ""
    DEFAULT dblclick        TO ""
    DEFAULT invisible       TO FALSE
    DEFAULT notabstop       TO FALSE
    DEFAULT sort            TO FALSE
 
-   Self := if( multiselect, TListMulti(), TList() )
-
-   ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, .T. )
+   ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, .T., lRtl )
 
 	if valtype(x) == "U" .or. valtype(y) == "U"
 
@@ -152,11 +158,7 @@ Local Self
 			Break := TRUE
 		EndIf
 
-			if multiselect == .t.
-            ControlHandle := InitMultiListBox ( ::Parent:ReBarHandle, 0, x, y, w, h, fontname, fontsize, invisible, notabstop, sort )
-			else
-            ControlHandle := InitListBox ( ::Parent:ReBarHandle, 0 , 0 , 0 , w , h , '' , 0 , invisible , notabstop, sort )
-			endif
+         ControlHandle := InitListBox( ::Parent:ReBarHandle, 0, 0, 0, w, h, invisible, notabstop, sort, nStyle, ::lRtl )
 
          AddSplitBoxItem ( Controlhandle , ::Parent:ReBarHandle, w , break , , , , _OOHG_ActiveSplitBoxInverted )
 
@@ -164,11 +166,7 @@ Local Self
 
 	Else
 
-		if multiselect == .t.
-         ControlHandle := InitMultiListBox ( ::Parent:hWnd, 0, x, y, w, h, fontname, fontsize, invisible, notabstop, sort )
-		else
-         ControlHandle := InitListBox ( ::Parent:hWnd , 0 , x , y , w , h , '' , 0 , invisible , notabstop, sort )
-		endif
+      ControlHandle := InitListBox( ::Parent:hWnd, 0, x, y, w, h, invisible, notabstop, sort, nStyle, ::lRtl )
 
 	endif
 
@@ -183,17 +181,9 @@ Local Self
 
    AEVAL( rows, { |c| ListboxAddString( ControlHandle, c ) } )
 
-	if multiselect == .t.
-		if value <> Nil
-			LISTBOXSETMULTISEL (ControlHandle,Value)
-		endif
-	else
-		if value <> 0
-			ListboxSetCurSel (ControlHandle,Value)
-		endif
-	endif
+   ::Value := Value
 
-Return Nil
+Return Self
 
 *------------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TList
@@ -252,8 +242,23 @@ Return ListBoxGetString( ::hWnd, nItem )
 CLASS TListMulti FROM TList
    DATA Type      INIT "MULTILIST" READONLY
 
+   METHOD Define
    METHOD Value   SETGET
 ENDCLASS
+
+*-----------------------------------------------------------------------------*
+METHOD Define( ControlName, ParentForm, x, y, w, h, rows, value, fontname, ;
+               fontsize, tooltip, changeprocedure, dblclick, gotfocus, ;
+               lostfocus, break, HelpId, invisible, notabstop, sort, bold, ;
+               italic, underline, strikeout, backcolor, fontcolor, lRtl ) CLASS TListMulti
+*-----------------------------------------------------------------------------*
+Local nStyle := LBS_EXTENDEDSEL + LBS_MULTIPLESEL
+
+   ::Define2( ControlName, ParentForm, x, y, w, h, rows, value, fontname, ;
+              fontsize, tooltip, changeprocedure, dblclick, gotfocus, ;
+              lostfocus, break, HelpId, invisible, notabstop, sort, bold, ;
+              italic, underline, strikeout, backcolor, fontcolor, nStyle, lRtl )
+Return Self
 
 *------------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TListMulti

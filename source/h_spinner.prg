@@ -1,5 +1,5 @@
 /*
- * $Id: h_spinner.prg,v 1.2 2005-08-17 05:58:27 guerra000 Exp $
+ * $Id: h_spinner.prg,v 1.3 2005-08-25 05:57:42 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -94,34 +94,31 @@
 #include "oohg.ch"
 #include "common.ch"
 #include "hbclass.ch"
+#include "i_windefs.ch"
 
 CLASS TSpinner FROM TControl
    DATA Type      INIT "SPINNER" READONLY
-   DATA ControlHdl  INIT 0
    DATA nRangeMin   INIT 0
    DATA nRangeMax   INIT 0
 
-   METHOD Release
+   METHOD Define
    METHOD SizePos
    METHOD Value               SETGET
    METHOD Enabled             SETGET
    METHOD Visible             SETGET
-   METHOD ForceHide           BLOCK { |Self| HideWindow( ::ControlHdl ) , ::Super:ForceHide() }
+   METHOD ForceHide           BLOCK { |Self| HideWindow( ::AuxHandle ) , ::Super:ForceHide() }
 
    METHOD RangeMin            SETGET
    METHOD RangeMax            SETGET
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
-Function _DefineSpinner ( ControlName, ParentForm, x, y, w, value ,fontname, ;
-                          fontsize, rl, rh, tooltip, change, lostfocus, ;
-                          gotfocus, h, HelpId, invisible, notabstop , bold, ;
-                          italic, underline, strikeout, wrap, readonly, increment , backcolor , fontcolor )
+METHOD Define( ControlName, ParentForm, x, y, w, value, fontname, fontsize, ;
+               rl, rh, tooltip, change, lostfocus, gotfocus, h, HelpId, ;
+               invisible, notabstop, bold, italic, underline, strikeout, ;
+               wrap, readonly, increment, backcolor, fontcolor, lRtl ) CLASS TSpinner
 *-----------------------------------------------------------------------------*
-Local RetArray , k := 0
-Local Self
-
-// AJ
+Local nStyle := ES_NUMBER + ES_AUTOHSCROLL
 Local ControlHandle
 
    DEFAULT w         TO 120
@@ -136,17 +133,20 @@ Local ControlHandle
    DEFAULT readonly  TO FALSE
    DEFAULT increment TO 1
 
-   Self := TSpinner():SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, .T. )
+   ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, .T., lRtl )
 
-   RetArray := InitSpinner ( ::Parent:hWnd, 0, x, y, w , '' , 0 , rl, rh , h, invisible, notabstop, wrap, readonly )
+   nStyle += if( ValType( invisible ) != "L" .OR. ! invisible, WS_VISIBLE, 0 ) + ;
+             if( ValType( notabstop ) != "L" .OR. ! notabstop, WS_TABSTOP, 0 ) + ;
+             if( ValType( readonly )  == "L" .AND.  readonly,  ES_READONLY, 0 )
 
-	ControlHandle := RetArray [1]
+   ControlHandle := InitTextBox( ::Parent:hWnd, 0, x, y, w, h, nStyle, 0, ::lRtl )
 
-   ::New( RetArray[1], ControlName, HelpId, ! Invisible, ToolTip )
+   ::AuxHandle := InitSpinner ( ::Parent:hWnd, 0, x + w, y, 15, h, rl, rh , invisible, wrap, ControlHandle, ::lRtl )
+
+   ::New( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
    ::SizePos( y, x, w, h )
 
-   ::ControlHdl := RetArray[ 2 ]
    ::OnLostFocus := LostFocus
    ::OnGotFocus :=  GotFocus
    ::OnChange   :=  Change
@@ -154,20 +154,14 @@ Local ControlHandle
    ::RangeMax   :=   Rh
 
 	if valtype(value) == "N"
-		SetSpinnerValue ( RetArray [2] , Value )
+      SetSpinnerValue ( ::AuxHandle, Value )
 	endif
 
 	if increment <> 1
-	   SetSpinnerIncrement( RetArray[2], increment )
+      SetSpinnerIncrement( ::AuxHandle, increment )
 	endif
 
-Return Nil
-
-*-----------------------------------------------------------------------------*
-METHOD Release() CLASS TSpinner
-*-----------------------------------------------------------------------------*
-   ReleaseControl( ::ControlHdl )
-Return ::Super:Release()
+Return Self
 
 *-----------------------------------------------------------------------------*
 METHOD SizePos( Row, Col, Width, Height ) CLASS TSpinner
@@ -175,26 +169,26 @@ METHOD SizePos( Row, Col, Width, Height ) CLASS TSpinner
 Local uRet
    uRet := ::Super:SizePos( Row, Col, Width, Height )
    MoveWindow( ::hWnd, ::ContainerCol, ::ContainerRow, ::Width - 15, ::Height , .T. )
-   MoveWindow( ::ControlHdl, ::ContainerCol + ::Width - 15, ::ContainerRow, 15, ::Height , .T. )
+   MoveWindow( ::AuxHandle, ::ContainerCol + ::Width - 15, ::ContainerRow, 15, ::Height , .T. )
 Return uRet
 
 *-----------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TSpinner
 *-----------------------------------------------------------------------------*
    IF VALTYPE( uValue ) == "N"
-      SetSpinnerValue( ::ControlHdl, uValue )
+      SetSpinnerValue( ::AuxHandle, uValue )
    ENDIF
-Return GetSpinnerValue( ::ControlHdl )
+Return GetSpinnerValue( ::AuxHandle )
 
 *-----------------------------------------------------------------------------*
 METHOD Enabled( lEnabled ) CLASS TSpinner
 *-----------------------------------------------------------------------------*
    IF VALTYPE( lEnabled ) == "L"
       ::Super:Enabled := lEnabled
-      IF lEnabled
-         EnableWindow( ::ControlHdl )
+      IF ::Super:Enabled
+         EnableWindow( ::AuxHandle )
       ELSE
-         DisableWindow( ::ControlHdl )
+         DisableWindow( ::AuxHandle )
       ENDIF
    ENDIF
 Return ::Super:Enabled
@@ -204,10 +198,10 @@ METHOD Visible( lVisible ) CLASS TSpinner
 *-----------------------------------------------------------------------------*
    IF VALTYPE( lVisible ) == "L"
       ::Super:Visible := lVisible
-      IF lVisible
-         CShowControl( ::ControlHdl )
+      IF ::Super:Visible
+         CShowControl( ::AuxHandle )
       ELSE
-         HideWindow( ::ControlHdl )
+         HideWindow( ::AuxHandle )
       ENDIF
    ENDIF
 Return ::Super:Visible

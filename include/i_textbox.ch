@@ -1,5 +1,5 @@
 /*
- * $Id: i_textbox.ch,v 1.2 2005-08-13 05:14:45 guerra000 Exp $
+ * $Id: i_textbox.ch,v 1.3 2005-08-25 05:57:41 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -122,6 +122,7 @@
                         [ <RightAlign: RIGHTALIGN> ]	;
 			[ <invisible: INVISIBLE> ]	;
 			[ <notabstop: NOTABSTOP> ]	;
+                        [ <rtl: RTL> ]                  ;
                         [ HELPID <helpid> ] 		;
          =>;
 [ <obj> := ] iif( <.numeric.>, TTextNum(), TText() ):Define( ;
@@ -129,7 +130,7 @@
                         <fontname>, <fontsize>, <tooltip>, <maxlenght>, ;
                         <.upper.>, <.lower.>, <.password.>, ;
                         <{lostfocus}>, <{gotfocus}>, <{change}>, <{enter}>, ;
-                        <.RightAlign.>, <helpid>, <.readonly.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <"field"> , <backcolor> , <fontcolor> , <.invisible.> , <.notabstop.> )
+                        <.RightAlign.>, <helpid>, <.readonly.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <"field"> , <backcolor> , <fontcolor> , <.invisible.> , <.notabstop.> , <.rtl.> )
 
 
 // TEXTBOX ( NUMERIC INPUTMASK )
@@ -162,8 +163,9 @@
 		[ <invisible: INVISIBLE> ]	;
 		[ <notabstop: NOTABSTOP> ]	;
 		[ HELPID <helpid> ] 		;
+                [ <rtl: RTL> ]                  ;
 	=>;
-[ <obj> := ] TTextMasked():Define( <"name">, <"parent">, <col>, <row>, <inputmask> , <w> , <value> , <fontname> , <fontsize> , <tooltip>   , <{lostfocus}>  , <{gotfocus}> , <{change}> , <height> , <{enter}> , <.RightAlign.>  , <helpid> , <format> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.>  , <"field">  , <backcolor> , <fontcolor> , <.readonly.> , <.invisible.> , <.notabstop.> )
+[ <obj> := ] TTextMasked():Define( <"name">, <"parent">, <col>, <row>, <inputmask> , <w> , <value> , <fontname> , <fontsize> , <tooltip>   , <{lostfocus}>  , <{gotfocus}> , <{change}> , <height> , <{enter}> , <.RightAlign.>  , <helpid> , <format> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.>  , <"field">  , <backcolor> , <fontcolor> , <.readonly.> , <.invisible.> , <.notabstop.> , <.rtl.> )
 
 // TEXTBOX ( CHARACTER INPUTMASK )
 
@@ -193,8 +195,9 @@
 		[ <invisible: INVISIBLE> ]	;
 		[ <notabstop: NOTABSTOP> ]	;
 		[ HELPID <helpid> ] 		;
+                [ <rtl: RTL> ]                  ;
 	=>;
-[ <obj> := ] TTextCharMask():Define( <"name">, <"parent">, <col>, <row>, <inputmask> , <w> , <value> , <fontname> , <fontsize> , <tooltip>   , <{lostfocus}>  , <{gotfocus}> , <{change}> , <height> , <{enter}> , <.RightAlign.>  , <helpid> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.>  , <"field">  , <backcolor> , <fontcolor> , .f. , <.readonly.>  , <.invisible.> , <.notabstop.> )
+[ <obj> := ] TTextCharMask():Define( <"name">, <"parent">, <col>, <row>, <inputmask> , <w> , <value> , <fontname> , <fontsize> , <tooltip>   , <{lostfocus}>  , <{gotfocus}> , <{change}> , <height> , <{enter}> , <.RightAlign.>  , <helpid> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.>  , <"field">  , <backcolor> , <fontcolor> , .f. , <.readonly.>  , <.invisible.> , <.notabstop.> , <.rtl.> )
 
 // TEXTBOX ( DATE TYPE )
 
@@ -224,5 +227,6 @@
 		[ <invisible: INVISIBLE> ]	;
 		[ <notabstop: NOTABSTOP> ]	;
 		[ HELPID <helpid> ] 		;
+                [ <rtl: RTL> ]                  ;
 	=>;
-[ <obj> := ] TTextCharMask():Define( <"name">, <"parent">, <col>, <row>, "" , <w> , <value> , <fontname> , <fontsize> , <tooltip>   , <{lostfocus}>  , <{gotfocus}> , <{change}> , <height> , <{enter}> , <.RightAlign.>  , <helpid> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.>  , <"field">  , <backcolor> , <fontcolor> , <.date.> , <.readonly.>  , <.invisible.> , <.notabstop.> )
+[ <obj> := ] TTextCharMask():Define( <"name">, <"parent">, <col>, <row>, "" , <w> , <value> , <fontname> , <fontsize> , <tooltip>   , <{lostfocus}>  , <{gotfocus}> , <{change}> , <height> , <{enter}> , <.RightAlign.>  , <helpid> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.>  , <"field">  , <backcolor> , <fontcolor> , <.date.> , <.readonly.>  , <.invisible.> , <.notabstop.> , <.rtl.> )

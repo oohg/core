@@ -1,5 +1,5 @@
 /*
- * $Id: i_frame.ch,v 1.1 2005-08-06 23:50:17 guerra000 Exp $
+ * $Id: i_frame.ch,v 1.2 2005-08-25 05:57:41 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -92,6 +92,7 @@
 ---------------------------------------------------------------------------*/
 
 #xcommand @ <row> , <col> FRAME <name> ;
+                [ OBJ <obj> ] ;
 		[ <dummy1: OF, PARENT> <parent> ] ;
 		[ CAPTION <caption> ] ;
 		[ WIDTH <w> ] ;
@@ -106,6 +107,6 @@
 		[ FONTCOLOR <fontcolor> ] ;
 		[ <opaque: OPAQUE> ] ;
 		[ <transparent: TRANSPARENT> ] ;
+                [ <rtl: RTL> ] ;
 	=>;
-	_BeginFrame ( <"name">, <"parent">, <row>, <col>, <w>, <h> , <caption> , <fontname> , <fontsize> , <.opaque.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <backcolor> , <fontcolor> , <.transparent.> ) 
-
+        [ <obj> := ] TFrame():Define( <"name">, <"parent">, <row>, <col>, <w>, <h> , <caption> , <fontname> , <fontsize> , <.opaque.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <backcolor> , <fontcolor> , <.transparent.>, <.rtl.> )

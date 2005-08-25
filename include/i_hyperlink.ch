@@ -1,5 +1,5 @@
 /*
- * $Id: i_hyperlink.ch,v 1.2 2005-08-17 06:00:36 guerra000 Exp $
+ * $Id: i_hyperlink.ch,v 1.3 2005-08-25 05:57:41 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -113,7 +113,8 @@
    [ <transparent: TRANSPARENT> ] ;
    [ <handcursor: HANDCURSOR> ] ;
    [ HELPID <helpid> ] 		;
-   [ <invisible: INVISIBLE> ] ;
+   [ <invisible: INVISIBLE> ]   ;
+   [ <rtl: RTL> ]               ;
  =>;
    [ <obj> := ] THyperLink():Define( ;
    <"name">,    ;
@@ -139,4 +140,5 @@
 	<.invisible.>, ;
 	<.italic.>, ;
 	<.autosize.> , ;
-	<.handcursor.> )
+        <.handcursor.>, ;
+        <.rtl.> )

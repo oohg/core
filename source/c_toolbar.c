@@ -1,5 +1,5 @@
 /*
- * $Id: c_toolbar.c,v 1.1 2005-08-07 00:05:14 guerra000 Exp $
+ * $Id: c_toolbar.c,v 1.2 2005-08-25 05:57:42 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -104,8 +104,15 @@
 #include "hbapiitm.h"
 #include "winreg.h"
 #include "tchar.h"
-
 #include <stdlib.h>
+#include "../include/oohg.h"
+
+static WNDPROC lpfnOldWndProc = 0;
+
+static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+{
+   return _OOHG_WndProc( GetControlObjectByHandle( ( LONG ) hWnd ), hWnd, msg, wParam, lParam, lpfnOldWndProc );
+}
 
 #define NUM_TOOLBAR_BUTTONS 10
 
@@ -121,10 +128,15 @@ HB_FUNC( INITTOOLBAR )
 
 	hwnd = (HWND) hb_parnl (1);
 
-	if ( hb_parl (14) )
-	{
-		ExStyle = ExStyle | WS_EX_CLIENTEDGE ;
-	}
+   if( hb_parl( 15 ) )
+   {
+      ExStyle |= WS_EX_LAYOUTRTL | WS_EX_RIGHTSCROLLBAR | WS_EX_RTLREADING;
+   }
+
+   if( hb_parl (14) )
+   {
+      ExStyle |= WS_EX_CLIENTEDGE;
+   }
 
 	if ( hb_parl (10) )
 	{
@@ -150,6 +162,8 @@ HB_FUNC( INITTOOLBAR )
 		Style ,
 		0, 0 ,0 ,0,
 		hwnd, (HMENU)hb_parni(3), GetModuleHandle(NULL), NULL);
+
+   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hwndTB, GWL_WNDPROC, ( LONG ) SubClassFunc );
 
 	if (hb_parni(6) && hb_parni(7))
 	{

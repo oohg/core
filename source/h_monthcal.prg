@@ -1,5 +1,5 @@
 /*
- * $Id: h_monthcal.prg,v 1.2 2005-08-11 05:16:06 guerra000 Exp $
+ * $Id: h_monthcal.prg,v 1.3 2005-08-25 05:57:42 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -91,68 +91,62 @@
 	Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-#include "minigui.ch"
+#include "oohg.ch"
 #include "common.ch"
 #include "hbclass.ch"
+#include "i_windefs.ch"
 
 CLASS TMonthCal FROM TControl
    DATA Type      INIT "MONTHCAL" READONLY
 
+   METHOD Define
    METHOD Value            SETGET
+   METHOD SetFont
    METHOD Events_Notify
 ENDCLASS
 
-#define MCN_FIRST           -750
-#define MCN_LAST            -759
-#define MCN_SELCHANGE       (MCN_FIRST + 1)
-#define MCN_SELECT          (MCN_FIRST + 4)
-
 *-----------------------------------------------------------------------------*
-Function _DefineMonthCal ( ControlName, ParentForm, x, y, w, h, value, ;
-                           fontname, fontsize, tooltip, notoday, notodaycircle, ;
-                           weeknumbers, change, HelpId, invisible, notabstop, ;
-                           bold, italic, underline, strikeout )
+METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
+               fontsize, tooltip, notoday, notodaycircle, weeknumbers, ;
+               change, HelpId, invisible, notabstop, bold, italic, ;
+               underline, strikeout, lRtl ) CLASS TMonthCal
 *-----------------------------------------------------------------------------*
-Local Self
-
-// AJ
-Local aControlHandle
+Local ControlHandle
 
    DEFAULT value     TO date()
    DEFAULT change    TO ""
-   DEFAULT bold      TO FALSE
-   DEFAULT italic    TO FALSE
-   DEFAULT underline TO FALSE
-   DEFAULT strikeout TO FALSE
 
-   Self := TMonthCal():SetForm( ControlName, ParentForm, FontName, FontSize )
+   ::SetForm( ControlName, ParentForm, FontName, FontSize,,,, lRtl )
 
-	if valtype(fontname) != "U" .and. valtype(fontsize) != "U"
-      aControlHandle := InitMonthCal ( ::Parent:hWnd, 0, x, y, w, h , fontname , fontsize , notoday , notodaycircle , weeknumbers, invisible, notabstop, bold, italic, underline, strikeout )
-	Else
-      aControlHandle := InitMonthCal ( ::Parent:hWnd, 0, x, y, w, h , _OOHG_DefaultFontName , _OOHG_DefaultFontSize , notoday , notodaycircle , weeknumbers, invisible, notabstop, bold, italic, underline, strikeout )
-	endif
+   ControlHandle := InitMonthCal( ::Parent:hWnd, 0, x, y, w, h , notoday , notodaycircle , weeknumbers, invisible, notabstop, ::lRtl )
 
-	w := GetWindowWidth ( aControlHandle[1] )
-	h := GetWindowHeight ( aControlHandle[1] )
-
-   ::New( aControlHandle[1], ControlName, HelpId, ! Invisible, ToolTip )
+   ::New( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
    ::SizePos( y, x, w, h )
+   ::SetFont( , , bold, italic, underline, strikeout )
 
    ::OnChange   :=  Change
-   ::FontHandle  :=   aControlHandle[2]
 
    ::Value := value
 
-Return Nil
+Return Self
 
 *-----------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TMonthCal
 *-----------------------------------------------------------------------------*
    IF ValType( uValue ) == "D"
-      SetMonthCal( ::hWnd, year( uValue ), month( uValue ), day( uValue ) )
+      SetMonthCal( ::hWnd, uValue )
    ENDIF
-Return SToD( StrZero( GetMonthCalYear( ::hWnd ), 4 ) + StrZero( GetMonthCalMonth( ::hWnd ) , 2 ) + StrZero( GetMonthCalDay( ::hWnd ), 2 ) )
+Return GetMonthCalDate( ::hWnd )
+
+*-----------------------------------------------------------------------------*
+METHOD SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout ) CLASS TMonthCal
+*-----------------------------------------------------------------------------*
+Local uRet
+   uRet := ::Super:SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout )
+   AdjustMonthCalSize( ::hWnd, ::nCol, ::nRow )
+   ::nWidth := GetWindowWidth( ::hWnd )
+   ::nHeight := GetWindowHeight( ::hWnd )
+Return uRet
 
 *-----------------------------------------------------------------------------*
 METHOD Events_Notify( wParam, lParam ) CLASS TMonthCal

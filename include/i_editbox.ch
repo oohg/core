@@ -1,5 +1,5 @@
 /*
- * $Id: i_editbox.ch,v 1.1 2005-08-06 23:50:17 guerra000 Exp $
+ * $Id: i_editbox.ch,v 1.2 2005-08-25 05:57:41 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -92,6 +92,7 @@
 ---------------------------------------------------------------------------*/
 
 #command @ <row>,<col> EDITBOX <name> ;
+                [ OBJ <obj> ] ;
 		[ <dummy1: OF, PARENT> <parent> ] ;
 		[ WIDTH <w> ] ;
 		[ HEIGHT <h> ] ;
@@ -114,14 +115,16 @@
 		[ HELPID <helpid> ] 		;
 		[ <invisible: INVISIBLE> ] ;
 		[ <notabstop: NOTABSTOP> ] ;
-		[ <novscroll: NOVSCROLL> ] 	;                             
-		[ <nohscroll: NOHSCROLL> ] 	;                             
+		[ <novscroll: NOVSCROLL> ] 	;
+		[ <nohscroll: NOHSCROLL> ] 	;
+                [ <rtl: RTL> ] ;
 	=>;
-	_DefineEditBox ( <"name">, <"parent">, <col>, <row>, <w>, <h>, <value> ,<f>,<s> , <tooltip>  , <maxlenght>  , <{gotfocus}>  , <{change}>  , <{lostfocus}>  , <.readonly.> , .f. , <helpid>, <.invisible.>, <.notabstop.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <"field"> , <backcolor> , <fontcolor> , <.novscroll.> , <.nohscroll.> )
+        [ <obj> := ] TEdit():Define( <"name">, <"parent">, <col>, <row>, <w>, <h>, <value> ,<f>,<s> , <tooltip>  , <maxlenght>  , <{gotfocus}>  , <{change}>  , <{lostfocus}>  , <.readonly.> , .f. , <helpid>, <.invisible.>, <.notabstop.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <"field"> , <backcolor> , <fontcolor> , <.novscroll.> , <.nohscroll.>, <.rtl.> )
 
 //SPLITBOX VERSION
 
 #command EDITBOX <name> ;
+                [ OBJ <obj> ] ;
 		[ <dummy1: OF, PARENT> <parent> ] ;
 		[ WIDTH <w> ] ;
 		[ HEIGHT <h> ] ;
@@ -145,9 +148,8 @@
 		[ <break: BREAK> ] ;
 		[ <invisible: INVISIBLE> ] ;
 		[ <notabstop: NOTABSTOP> ] ;
-		[ <novscroll: NOVSCROLL> ] 	;                             
-		[ <nohscroll: NOHSCROLL> ] 	;                             
+		[ <novscroll: NOVSCROLL> ] 	;
+		[ <nohscroll: NOHSCROLL> ] 	;
+                [ <rtl: RTL> ] ;
 	=>;
-	_DefineEditBox ( <"name">, <"parent">, , , <w>, <h>, <value> ,<f>,<s> , <tooltip>  , <maxlenght>  , <{gotfocus}>  , <{change}>  , <{lostfocus}>  , <.readonly.> , <.break.>  , <helpid>, <.invisible.>, <.notabstop.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <"field">  , <backcolor> , <fontcolor> , <.novscroll.> , <.nohscroll.> )
-
-
+        [ <obj> := ] TEdit():Define( <"name">, <"parent">, , , <w>, <h>, <value> ,<f>,<s> , <tooltip>  , <maxlenght>  , <{gotfocus}>  , <{change}>  , <{lostfocus}>  , <.readonly.> , <.break.>  , <helpid>, <.invisible.>, <.notabstop.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <"field">  , <backcolor> , <fontcolor> , <.novscroll.> , <.nohscroll.> , <.rtl.> )

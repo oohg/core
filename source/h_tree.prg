@@ -1,5 +1,5 @@
 /*
- * $Id: h_tree.prg,v 1.4 2005-08-18 04:01:06 guerra000 Exp $
+ * $Id: h_tree.prg,v 1.5 2005-08-25 05:57:42 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -106,6 +106,7 @@ CLASS TTree FROM TControl
    DATA InitValue     INIT 0
    DATA SetImageListCommand INIT TVM_SETIMAGELIST
 
+   METHOD Define
    METHOD AddItem
    METHOD DeleteItem
    METHOD DeleteAllItems
@@ -117,6 +118,100 @@ CLASS TTree FROM TControl
    METHOD Value       SETGET
    METHOD Events_Enter
 ENDCLASS
+
+*------------------------------------------------------------------------------*
+METHOD Define( ControlName, ParentForm, row, col, width, height, change, ;
+               tooltip, fontname, fontsize, gotfocus, lostfocus, dblclick, ;
+               break, value, HelpId, aImgNode, aImgItem, noBot, bold, ;
+               italic, underline, strikeout, itemids, lRtl ) CLASS TTree
+*------------------------------------------------------------------------------*
+Local Controlhandle , ImgDefNode, ImgDefItem, aBitmaps := array(4)
+
+   ::SetForm( ControlName, ParentForm, FontName, FontSize, , , .t., lRtl )
+
+   if valtype(Value) == "N"
+      ::InitValue := Value
+	EndIf
+	if valtype(Width) == "U"
+		Width := 120
+	endif
+	if valtype(Height) == "U"
+		Height := 120
+	endif
+
+	if valtype(Row) == "U" .or. valtype(Col) == "U"
+
+      If _OOHG_SplitLastControl == 'TOOLBAR'
+			Break := .T.
+		EndIf
+
+         ControlHandle := InitTree ( ::Parent:ReBarHandle , col , row , width , height , 0 , '' , 0, iif(noBot,1,0), ::lRtl )
+
+         AddSplitBoxItem ( Controlhandle , ::Parent:ReBarHandle, Width , break , , , , _OOHG_ActiveSplitBoxInverted )
+
+         _OOHG_SplitLastControl := 'TREE'
+
+	Else
+
+      ControlHandle := InitTree ( ::Parent:hWnd, col , row , width , height , 0 , '' , 0, iif(noBot,1,0), ::lRtl )
+
+	endif
+
+	ImgDefNode := iif( valtype( aImgNode ) == "A" , len( aImgNode ), 0 )  //Tree+
+	ImgDefItem := iif( valtype( aImgItem ) == "A" , len( aImgItem ), 0 )  //Tree+
+
+	if ImgDefNode > 0
+
+		aBitmaps[1] := aImgNode[1]  			// Node default
+		aBitmaps[2] := aImgNode[ImgDefNode]
+
+		if ImgDefItem > 0
+
+			aBitmaps[3] := aImgItem[1]  		// Item default
+			aBitmaps[4] := aImgItem[ImgDefItem]
+
+		else
+
+			aBitmaps[3] := aImgNode[1]  		 // Copy Node def if no Item def
+			aBitmaps[4] := aImgNode[ImgDefNode]
+
+		endif
+
+      ::AddBitMap( aBitmaps )
+	endif
+
+	if valtype(change) == "U"
+		change := ""
+	endif
+
+	if valtype(gotfocus) == "U"
+		gotfocus := ""
+	endif
+
+	if valtype(lostfocus) == "U"
+		lostfocus := ""
+	endif
+
+	if valtype(dblclick) == "U"
+		dblclick := ""
+	endif
+
+   ::New( ControlHandle, ControlName, HelpId, , ToolTip )
+   ::SetFont( , , bold, italic, underline, strikeout )
+   ::SizePos( Row, Col, Width, Height )
+
+   ::ItemIds :=  itemids
+   ::OnLostFocus := LostFocus
+   ::OnGotFocus :=  GotFocus
+   ::OnChange   :=  Change
+   ::OnDblClick := dblclick
+   ::aTreeMap   :=  {}
+   ::aTreeIdMap :=  {}
+   ::aTreeNode  :=  {}
+
+   _OOHG_ActiveTree := Self
+
+Return Self
 
 *------------------------------------------------------------------------------*
 METHOD AddItem( Value , Parent, aImage , Id ) CLASS TTree
@@ -497,98 +592,6 @@ METHOD Events_Enter() CLASS TTree
    ::DoEvent( ::OnDblClick )
 
 Return nil
-
-*------------------------------------------------------------------------------*
-Function _DefineTree ( ControlName , ParentForm , row , col , width , height , change , tooltip , fontname , fontsize , gotfocus , lostfocus , dblclick , break , value  , HelpId, aImgNode, aImgItem, noBot , bold, italic, underline, strikeout , itemids )
-*------------------------------------------------------------------------------*
-Local Controlhandle , ImgDefNode, ImgDefItem, aBitmaps := array(4)
-Local Self
-
-   Self := TTree():SetForm( ControlName, ParentForm, FontName, FontSize, , , .t. )
-
-   if valtype(Value) == "N"
-      ::InitValue := Value
-	EndIf
-	if valtype(Width) == "U"
-		Width := 120
-	endif
-	if valtype(Height) == "U"
-		Height := 120
-	endif
-
-	if valtype(Row) == "U" .or. valtype(Col) == "U"
-
-      If _OOHG_SplitLastControl == 'TOOLBAR'
-			Break := .T.
-		EndIf
-
-         ControlHandle := InitTree ( ::Parent:ReBarHandle , col , row , width , height , 0 , '' , 0, iif(noBot,1,0) )
-
-         AddSplitBoxItem ( Controlhandle , ::Parent:ReBarHandle, Width , break , , , , _OOHG_ActiveSplitBoxInverted )
-
-         _OOHG_SplitLastControl := 'TREE'
-
-	Else
-
-      ControlHandle := InitTree ( ::Parent:hWnd, col , row , width , height , 0 , '' , 0, iif(noBot,1,0) )
-
-	endif
-
-	ImgDefNode := iif( valtype( aImgNode ) == "A" , len( aImgNode ), 0 )  //Tree+
-	ImgDefItem := iif( valtype( aImgItem ) == "A" , len( aImgItem ), 0 )  //Tree+
-
-	if ImgDefNode > 0
-
-		aBitmaps[1] := aImgNode[1]  			// Node default
-		aBitmaps[2] := aImgNode[ImgDefNode]
-
-		if ImgDefItem > 0
-
-			aBitmaps[3] := aImgItem[1]  		// Item default
-			aBitmaps[4] := aImgItem[ImgDefItem]
-
-		else
-
-			aBitmaps[3] := aImgNode[1]  		 // Copy Node def if no Item def
-			aBitmaps[4] := aImgNode[ImgDefNode]
-
-		endif
-
-      ::AddBitMap( aBitmaps )
-	endif
-
-	if valtype(change) == "U"
-		change := ""
-	endif
-
-	if valtype(gotfocus) == "U"
-		gotfocus := ""
-	endif
-
-	if valtype(lostfocus) == "U"
-		lostfocus := ""
-	endif
-
-	if valtype(dblclick) == "U"
-		dblclick := ""
-	endif
-
-   ::New( ControlHandle, ControlName, HelpId, , ToolTip )
-   ::SetFont( , , bold, italic, underline, strikeout )
-   ::SizePos( Row, Col, Width, Height )
-
-   ::ItemIds :=  itemids
-   ::OnLostFocus := LostFocus
-   ::OnGotFocus :=  GotFocus
-   ::OnChange   :=  Change
-   ::OnDblClick := dblclick
-   ::aTreeMap   :=  {}
-   ::aTreeIdMap :=  {}
-   ::aTreeNode  :=  {}
-
-   _OOHG_ActiveTree := Self
-
-Return Nil
 
 *------------------------------------------------------------------------------*
 Function _DefineTreeNode ( text, aImage , Id )

@@ -1,5 +1,5 @@
 /*
- * $Id: h_frame.prg,v 1.1 2005-08-07 00:07:33 guerra000 Exp $
+ * $Id: h_frame.prg,v 1.2 2005-08-25 05:57:42 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -91,20 +91,20 @@
 	Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-#include "minigui.ch"
+#include "oohg.ch"
 #include "hbclass.ch"
 
 CLASS TFrame FROM TControl
    DATA Type      INIT "FRAME" READONLY
 
+   METHOD Define
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
-Function _DefineFrame ( ControlName, ParentForm, x, y, w, h , caption , fontname , fontsize , opaque , bold, italic, underline, strikeout , backcolor , fontcolor , transparent )
+METHOD Define( ControlName, ParentForm, y, x, w, h, caption, fontname, ;
+               fontsize, opaque, bold, italic, underline, strikeout, ;
+               backcolor, fontcolor, transparent, lRtl ) CLASS TFrame
 *-----------------------------------------------------------------------------*
-Local Self
-
-// AJ
 Local ControlHandle
 
 	if valtype (caption) == 'U'
@@ -121,9 +121,9 @@ Local ControlHandle
 		h := 140
 	EndIf
 
-   Self := TFrame():SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor )
+   ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, , lRtl )
 
-   Controlhandle := InitFrame ( ::Parent:hWnd, 0, x, y, w, h , caption , '' , 0 , opaque )
+   Controlhandle := InitFrame( ::Parent:hWnd, 0, x, y, w, h , caption , opaque, ::lRtl )
 
    ::New( ControlHandle, ControlName )
    ::SetFont( , , bold, italic, underline, strikeout )
@@ -132,10 +132,4 @@ Local ControlHandle
    ::Transparent :=  transparent
    ::Caption := Caption
 
-Return Controlhandle
-
-Function _BeginFrame( name , parent , row , col , w , h , caption , fontname , fontsize , opaque , bold, italic, underline, strikeout , backcolor , fontcolor , transparent )
-
-	_DefineFrame ( name , parent , col , row , w , h , caption , fontname , fontsize , opaque , bold, italic, underline, strikeout , backcolor , fontcolor , transparent )
-
-Return Nil
+Return Self

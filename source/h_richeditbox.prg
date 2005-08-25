@@ -1,5 +1,5 @@
 /*
- * $Id: h_richeditbox.prg,v 1.2 2005-08-18 04:07:28 guerra000 Exp $
+ * $Id: h_richeditbox.prg,v 1.3 2005-08-25 05:57:42 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -94,26 +94,22 @@
 #include "oohg.ch"
 #include "common.ch"
 #include "hbclass.ch"
+#include "i_windefs.ch"
 
 CLASS TEditRich FROM TEdit
    DATA Type      INIT "RICHEDIT" READONLY
 
+   METHOD Define
    METHOD BkColor     SETGET
 ENDCLASS
 
-#define EM_SETBKGNDCOLOR	1091
-
 *-----------------------------------------------------------------------------*
-Function _DefineRichEditBox ( ControlName, ParentForm, x, y, w, h, value, ;
-			fontname, fontsize, tooltip, maxlenght, gotfocus, ;
-			change, lostfocus, readonly, break, HelpId, ;
-			invisible, notabstop , bold, italic, underline, ;
-			strikeout , field , backcolor )
+METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
+               fontsize, tooltip, maxlenght, gotfocus, change, lostfocus, ;
+               readonly, break, HelpId, invisible, notabstop, bold, italic, ;
+               underline, strikeout, field, backcolor, lRtl ) CLASS TEditRich
 *-----------------------------------------------------------------------------*
 Local ContainerHandle
-Local Self
-
-// AJ
 Local ControlHandle
 
    DEFAULT w         TO 120
@@ -126,7 +122,7 @@ Local ControlHandle
    DEFAULT invisible TO FALSE
    DEFAULT notabstop TO FALSE
 
-   Self := TEditRich():SetForm( ControlName, ParentForm, FontName, FontSize, , BackColor, .T. )
+   ::SetForm( ControlName, ParentForm, FontName, FontSize, , BackColor, .T., lRtl )
 
    If ValType( Field ) $ 'CM' .AND. ! empty( Field )
       ::VarName := alltrim( Field )
@@ -142,14 +138,14 @@ Local ControlHandle
 
       _OOHG_SplitLastControl   := 'RICHEDIT'
 
-         ControlHandle := InitRichEditBox ( ::Parent:ReBarHandle, 0, x, y, w, h, '', 0 , maxlenght , readonly, invisible, notabstop )
+         ControlHandle := InitRichEditBox ( ::Parent:ReBarHandle, 0, x, y, w, h, '', 0 , maxlenght , readonly, invisible, notabstop, ::lRtl )
 
          AddSplitBoxItem ( Controlhandle , ::Parent:ReBarHandle, w , break , , , , _OOHG_ActiveSplitBoxInverted )
          Containerhandle := ::Parent:ReBarHandle
 
 	Else
 
-      ControlHandle := InitRichEditBox ( ::Parent:hWnd, 0, x, y, w, h, '', 0 , maxlenght , readonly, invisible, notabstop )
+      ControlHandle := InitRichEditBox ( ::Parent:hWnd, 0, x, y, w, h, '', 0 , maxlenght , readonly, invisible, notabstop, ::lRtl )
 
 	endif
 
@@ -162,7 +158,6 @@ Local ControlHandle
    ::OnLostFocus := LostFocus
    ::OnGotFocus :=  GotFocus
    ::OnChange   :=  Change
-*   _OOHG_aControlContainerHandle [k] :=   ContainerHandle
 
 	if valtype ( Field ) != 'U'
       aAdd ( ::Parent:BrowseList, Self )
@@ -172,7 +167,7 @@ Local ControlHandle
       SendMessage ( ::hWnd, EM_SETBKGNDCOLOR  , 0 , RGB ( ::aBkColor[1] , ::aBkColor[2] , ::aBkColor[3] ) )
 	EndIf
 
-Return Nil
+Return Self
 
 *-----------------------------------------------------------------------------*
 METHOD BkColor( uValue ) CLASS TEditRich

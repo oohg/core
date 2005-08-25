@@ -1,5 +1,5 @@
 /*
- * $Id: i_toolbar.ch,v 1.1 2005-08-06 23:53:54 guerra000 Exp $
+ * $Id: i_toolbar.ch,v 1.2 2005-08-25 05:57:41 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -92,6 +92,7 @@
 ---------------------------------------------------------------------------*/
 
 #xcommand  DEFINE TOOLBAR  <name> ;
+                [ OBJ <obj> ];
 		[ OF <parent> ]  [ PARENT <parent> ] ;
 		[ CAPTION <caption> ];
 		[ ACTION <action> ] ;
@@ -109,8 +110,9 @@
 		[ GRIPPERTEXT <caption> ] ;
 		[ <border : BORDER> ] ;
 	        [ <break: BREAK> ] ;
+                [ <rtl: RTL> ] ;
       => ;
-	_BeginToolBar ( <"name">, <"parent">, 0, 0, <w>, <h>, <caption>, <{action}>,<f>,<s> ,<tooltip> , <.flat.> , <.bottom.> , <.righttext.> , <.break.> , <.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <.border.> )
+        [ <obj> := ] TToolBar():Define( <"name">, <"parent">, 0, 0, <w>, <h>, <caption>, <{action}>,<f>,<s> ,<tooltip> , <.flat.> , <.bottom.> , <.righttext.> , <.break.> , <.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <.border.> , <.rtl.> )
 
 #xcommand  END TOOLBAR ;
       => ;

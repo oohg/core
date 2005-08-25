@@ -1,5 +1,5 @@
 /*
- * $Id: c_ipaddress.c,v 1.1 2005-08-07 00:03:18 guerra000 Exp $
+ * $Id: c_ipaddress.c,v 1.2 2005-08-25 05:57:42 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -104,12 +104,21 @@
 #include "hbapiitm.h"
 #include "winreg.h"
 #include "tchar.h"
+#include "../include/oohg.h"
+
+static WNDPROC lpfnOldWndProc = 0;
+
+static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+{
+   return _OOHG_WndProc( GetControlObjectByHandle( ( LONG ) hWnd ), hWnd, msg, wParam, lParam, lpfnOldWndProc );
+}
 
 HB_FUNC ( INITIPADDRESS )
 {
 	HWND hWnd;
 	HWND hIpAddress;
 	int Style = WS_CHILD ;
+    int StyleEx;
 
 	INITCOMMONCONTROLSEX  i;
 	i.dwSize = sizeof(INITCOMMONCONTROLSEX);
@@ -117,6 +126,12 @@ HB_FUNC ( INITIPADDRESS )
 	InitCommonControlsEx(&i);
 
 	hWnd = (HWND) hb_parnl (1);
+
+   StyleEx = WS_EX_CLIENTEDGE;
+   if ( hb_parl( 11 ) )
+   {
+      StyleEx |= WS_EX_LAYOUTRTL | WS_EX_RIGHTSCROLLBAR | WS_EX_RTLREADING;
+   }
 
 	if ( ! hb_parl (9) )
 	{
@@ -128,25 +143,38 @@ HB_FUNC ( INITIPADDRESS )
 		Style = Style | WS_TABSTOP ;
 	}
 
-	hIpAddress = CreateWindowEx(WS_EX_CLIENTEDGE,WC_IPADDRESS,"",
+    hIpAddress = CreateWindowEx( StyleEx, WC_IPADDRESS, "",
 	Style ,
 	hb_parni(3), hb_parni(4) ,hb_parni(5) ,hb_parni(6) ,
 	hWnd,(HMENU)hb_parni(2) , GetModuleHandle(NULL) , NULL ) ;
 
-	hb_retnl ( (LONG) hIpAddress );
+   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hIpAddress, GWL_WNDPROC, ( LONG ) SubClassFunc );
+
+   hb_retnl ( (LONG) hIpAddress );
 }
 
 HB_FUNC ( SETIPADDRESS )
 {
 	HWND hWnd;
-	BYTE v1, v2, v3, v4;
+    BYTE v1, v2, v3, v4, *v;
 
 	hWnd = (HWND) hb_parnl (1);
 
-	v1 = (BYTE) hb_parni(2);
-	v2 = (BYTE) hb_parni(3);
-	v3 = (BYTE) hb_parni(4);
-	v4 = (BYTE) hb_parni(5);
+   if( ISCHAR( 2 ) )
+   {
+      v = hb_parc( 2 );
+      v1 = v[ 0 ];
+      v2 = v[ 1 ];
+      v3 = v[ 2 ];
+      v4 = v[ 3 ];
+   }
+   else
+   {
+      v1 = (BYTE) hb_parni(2);
+      v2 = (BYTE) hb_parni(3);
+      v3 = (BYTE) hb_parni(4);
+      v4 = (BYTE) hb_parni(5);
+   }
 
 	SendMessage(hWnd, IPM_SETADDRESS, 0, MAKEIPADDRESS(v1,v2,v3,v4));
 }
@@ -173,6 +201,24 @@ HB_FUNC ( GETIPADDRESS )
 	hb_storni( (INT) v4, -1, 4 );
 }
 
+HB_FUNC( GETIPADDRESSSTRING )
+{
+   HWND hWnd;
+   DWORD pdwAddr;
+   BYTE v[ 4 ];
+
+   hWnd = (HWND) hb_parnl (1);
+
+   SendMessage(hWnd, IPM_GETADDRESS, 0, (LPARAM)(LPDWORD)&pdwAddr);
+
+   v[ 0 ] = FIRST_IPADDRESS( pdwAddr );
+   v[ 1 ] = SECOND_IPADDRESS( pdwAddr );
+   v[ 2 ] = THIRD_IPADDRESS( pdwAddr );
+   v[ 3 ] = FOURTH_IPADDRESS( pdwAddr );
+
+   hb_retclen( &v[ 0 ], 4 );
+}
+
 HB_FUNC ( CLEARIPADDRESS )
 {
 	HWND hWnd;
@@ -181,4 +227,3 @@ HB_FUNC ( CLEARIPADDRESS )
 
 	SendMessage(hWnd, IPM_CLEARADDRESS, 0, 0);
 }
-

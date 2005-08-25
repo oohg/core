@@ -1,5 +1,5 @@
 /*
- * $Id: h_toolbar.prg,v 1.3 2005-08-18 04:07:28 guerra000 Exp $
+ * $Id: h_toolbar.prg,v 1.4 2005-08-25 05:57:42 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -100,21 +100,40 @@ CLASS TToolBar FROM TControl
    DATA Break     INIT .F.
    DATA aControls INIT {}
 
+   METHOD Define
    METHOD Events_Size
    METHOD Events_Notify
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
-Function _DefineToolBar ( ControlName, ParentForm, x, y, caption , ProcedureName ,w,h ,fontname, fontsize,tooltip , flat , bottom , righttext , break , bold, italic, underline, strikeout , border )
+METHOD Define( ControlName, ParentForm, x, y, w, h, caption, ProcedureName, ;
+               fontname, fontsize, tooltip, flat, bottom, righttext, break, ;
+               bold, italic, underline, strikeout, border, lRtl ) CLASS TToolBar
 *-----------------------------------------------------------------------------*
-*Function _DefineToolBar ( cGripperText, nImageWidth, nImageHeight, lStrictWidth )
-Local Self
-
-// AJ
 Local ControlHandle
 Local id
 
-   Self := TToolBar():SetForm( ControlName, ParentForm, FontName, FontSize )
+   If _OOHG_SplitChild != NIL
+      MsgOOHGError("ToolBars Can't Be Defined Inside SplitChild Windows. Program terminated" )
+	Endif
+
+	if valtype (caption) == 'U'
+		caption := ""
+	EndIf
+
+	if valtype (w) == 'U'
+		w := 0
+	EndIf
+
+	if valtype (h) == 'U'
+		h := 0
+	EndIf
+
+	If valtype (break) == 'U'
+      break := iif(_OOHG_ActiveSplitBox , .f. , .t. )
+   Endif
+
+   ::SetForm( ControlName, ParentForm, FontName, FontSize,,,, lRtl )
 
    _OOHG_ActiveToolBar := Self
 
@@ -126,7 +145,7 @@ Local id
       _OOHG_SplitLastControl   := 'TOOLBAR'
 	EndIf
 
-   ControlHandle := InitToolBar( ::Parent:hWnd, Caption, id, 0, 0 ,w ,h, "" , 0 , flat , bottom , righttext , _OOHG_ActiveSplitBox , border )
+   ControlHandle := InitToolBar( ::Parent:hWnd, Caption, id, 0, 0 ,w ,h, "" , 0 , flat , bottom , righttext , _OOHG_ActiveSplitBox , border , ::lRtl )
 
 /*
 Default nImageWidth	To -1
@@ -154,7 +173,7 @@ Default nImageHeight	To -1
    ::OnClick := ProcedureName
    ::Caption := Caption
 
-Return Controlhandle
+Return Self
 
 *-----------------------------------------------------------------------------*
 Function _EndToolBar()
@@ -366,34 +385,6 @@ Local c, w , wbtn , hbtn , MinWidth , MinHeight, oWnd
 	w := GetWindowWidth (c)
 
       AddSplitBoxItem ( c , oWnd:ReBarHandle, w , break , Caption, MinWidth, MinHeight , _OOHG_ActiveSplitBoxInverted )
-
-Return Nil
-
-*-----------------------------------------------------------------------------*
-Function _BeginToolBar( name , parent , row , col , w , h , caption , ProcedureName, fontname , fontsize , tooltip , flat , bottom , righttext , break , bold, italic, underline, strikeout , border )  //JP62
-*-----------------------------------------------------------------------------*
-
-   If _OOHG_SplitChild != NIL
-      MsgOOHGError("ToolBars Can't Be Defined Inside SplitChild Windows. Program terminated" )
-	Endif
-
-	if valtype (caption) == 'U'
-		caption := ""
-	EndIf
-
-	if valtype (w) == 'U'
-		w := 0
-	EndIf
-
-	if valtype (h) == 'U'
-		h := 0
-	EndIf
-
-	If valtype (break) == 'U'
-      break :=iif(_OOHG_ActiveSplitBox , .f. , .t.)
-	Endif
-
-	_DefineToolBar ( name , parent , col , row , caption , ProcedureName ,w,h , fontname , fontsize , tooltip , flat , bottom , righttext , break , bold, italic, underline, strikeout , border ) //JP62
 
 Return Nil
 

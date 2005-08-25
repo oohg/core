@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.5 2005-08-18 04:07:28 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.6 2005-08-25 05:57:42 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -107,9 +107,9 @@ CLASS TText FROM TLabel
 
    METHOD Value       SETGET
    METHOD SetFocus
+   METHOD Events
    METHOD Events_Enter
    METHOD Events_Command
-   METHOD Events_Char
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -117,18 +117,18 @@ METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, cValue, ;
                cFontName, nFontSize, cToolTip, nMaxLenght, lUpper, lLower, ;
                lPassword, uLostFocus, uGotFocus, uChange , uEnter , right  , ;
                HelpId, readonly, bold, italic, underline, strikeout, field , ;
-               backcolor , fontcolor , invisible , notabstop ) CLASS TText
+               backcolor, fontcolor, invisible, notabstop, lRtl ) CLASS TText
 *-----------------------------------------------------------------------------*
-Local nStyle
+Local nStyle := ES_AUTOHSCROLL
 
-   nStyle := IF( Valtype( lUpper ) == "L" .AND. lUpper, ES_UPPERCASE, 0 ) + ;
+   nStyle += IF( Valtype( lUpper ) == "L" .AND. lUpper, ES_UPPERCASE, 0 ) + ;
              IF( Valtype( lLower ) == "L" .AND. lLower, ES_LOWERCASE, 0 )
 
    ::Define2( cControlName, cParentForm, nx, ny, nWidth, nHeight, cValue, ;
               cFontName, nFontSize, cToolTip, nMaxLenght, lPassword, ;
               uLostFocus, uGotFocus, uChange, uEnter, right, HelpId, ;
               readonly, bold, italic, underline, strikeout, field, ;
-              backcolor, fontcolor, invisible, notabstop, nStyle )
+              backcolor, fontcolor, invisible, notabstop, nStyle, lRtl )
 
 Return Self
 
@@ -137,24 +137,24 @@ METHOD Define2( cControlName, cParentForm, nx, ny, nWidth, nHeight, cValue, ;
                 cFontName, nFontSize, cToolTip, nMaxLenght, lPassword, ;
                 uLostFocus, uGotFocus, uChange, uEnter, right, HelpId, ;
                 readonly, bold, italic, underline, strikeout, field, ;
-                backcolor, fontcolor, invisible, notabstop, nStyle ) CLASS TText
+                backcolor, fontcolor, invisible, notabstop, nStyle, lRtl ) CLASS TText
 *-----------------------------------------------------------------------------*
-Local nControlHandle := 0
+Local nControlHandle
 
-	// Asign STANDARD values to optional params.
+   // Assign STANDARD values to optional params.
 	DEFAULT nWidth     TO 120
 	DEFAULT nHeight    TO 24
 	DEFAULT uChange    TO ""
 	DEFAULT uGotFocus  TO ""
 	DEFAULT uLostFocus TO ""
-	DEFAULT nMaxLenght TO 255
+   DEFAULT nMaxLenght TO 0
 	DEFAULT uEnter     TO ""
 
    IF ValType( nStyle ) != "N"
       nStyle := 0
    ENDIF
 
-   ::SetForm( cControlName, cParentForm, cFontName, nFontSize, FontColor, BackColor, .T. )
+   ::SetForm( cControlName, cParentForm, cFontName, nFontSize, FontColor, BackColor, .T., lRtl )
 
    // Style definition
    nStyle += IF( Valtype( lPassword ) == "L" .AND. lPassword, ES_PASSWORD,  0 ) + ;
@@ -164,7 +164,7 @@ Local nControlHandle := 0
              IF( Valtype( notabstop ) != "L" .OR. !notabstop, WS_TABSTOP,   0 )
 
 	// Creates the control window.
-   nControlHandle := InitTextBox( ::Parent:hWnd, 0, nx, ny, nWidth, nHeight, nStyle, nMaxLenght )
+   nControlHandle := InitTextBox( ::Parent:hWnd, 0, nx, ny, nWidth, nHeight, nStyle, nMaxLenght, ::lRtl )
 
    ::New( nControlHandle, cControlName, HelpId, ! Invisible, cToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
@@ -213,6 +213,49 @@ Local uRet
    uRet := ::Super:SetFocus()
    SendMessage( ::hWnd, EM_SETSEL, 0 , -1 )
 Return uRet
+
+#pragma BEGINDUMP
+#define s_Super s_TLabel
+#include "hbapi.h"
+#include "hbvm.h"
+#include <windows.h>
+#include "../include/oohg.h"
+
+// -----------------------------------------------------------------------------
+HB_FUNC_STATIC( TTEXT_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TText
+// -----------------------------------------------------------------------------
+{
+   HWND hWnd      = ( HWND )   hb_parnl( 1 );
+   UINT message   = ( UINT )   hb_parni( 2 );
+   WPARAM wParam  = ( WPARAM ) hb_parni( 3 );
+   LPARAM lParam  = ( LPARAM ) hb_parnl( 4 );
+   PHB_ITEM pSelf = hb_stackSelfItem();
+
+/*
+   if( message == WM_CHAR )
+   {
+//      BOOL bCtrl     = GetKeyState( VK_CONTROL ) & 0x8000;
+//      int  iScanCode = HIWORD( lParam ) & 0xFF ;
+//      int  c = ( int ) wParam;
+      _OOHG_Send( pSelf, s_Events_Char );
+      hb_vmPushLong( wParam );
+      hb_vmPushLong( lParam );
+      hb_vmSend( 2 );
+   }
+   else
+*/
+	{
+      _OOHG_Send( pSelf, s_Super );
+      hb_vmSend( 0 );
+      _OOHG_Send( hb_param( -1, HB_IT_OBJECT ), s_Events );
+      hb_vmPushLong( ( LONG ) hWnd );
+      hb_vmPushLong( message );
+      hb_vmPushLong( wParam );
+      hb_vmPushLong( lParam );
+      hb_vmSend( 4 );
+	}
+}
+#pragma ENDDUMP
 
 *------------------------------------------------------------------------------*
 METHOD Events_Enter() CLASS TText
@@ -275,18 +318,6 @@ Local Hi_wParam := HIWORD( wParam )
 
 Return ::Super:Events_Command( wParam )
 
-*------------------------------------------------------------------------------*
-METHOD Events_Char( wParam, lParam ) CLASS TText
-*------------------------------------------------------------------------------*
-Empty( wParam )
-Empty( lParam )
-/*
-      BOOL bCtrl     = GetKeyState( VK_CONTROL ) & 0x8000;
-      int  iScanCode = HIWORD( lParam ) & 0xFF ;
-      int  c = ( int ) wParam;
-*/
-Return NIL // ::Super:Events_Char( wParam, lParam )
-
 
 
 
@@ -307,9 +338,9 @@ METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, cValue, ;
                cFontName, nFontSize, cToolTip, nMaxLenght, lUpper, lLower, ;
                lPassword, uLostFocus, uGotFocus, uChange , uEnter , right  , ;
                HelpId, readonly, bold, italic, underline, strikeout, field , ;
-               backcolor , fontcolor , invisible , notabstop ) CLASS TTextNum
+               backcolor , fontcolor , invisible , notabstop, lRtl ) CLASS TTextNum
 *-----------------------------------------------------------------------------*
-Local nStyle := ES_NUMBER
+Local nStyle := ES_NUMBER + ES_AUTOHSCROLL
 
    Empty( lUpper )
    Empty( lLower )
@@ -318,7 +349,7 @@ Local nStyle := ES_NUMBER
               cFontName, nFontSize, cToolTip, nMaxLenght, lPassword, ;
               uLostFocus, uGotFocus, uChange, uEnter, right, HelpId, ;
               readonly, bold, italic, underline, strikeout, field, ;
-              backcolor, fontcolor, invisible, notabstop, nStyle )
+              backcolor, fontcolor, invisible, notabstop, nStyle, lRtl )
 
 Return Self
 
@@ -423,8 +454,9 @@ METHOD Define( ControlName, ParentForm, x, y, inputmask, width, value, ;
                fontname, fontsize, tooltip, lostfocus, gotfocus, change, ;
                height, enter, rightalign, HelpId, Format, bold, italic, ;
                underline, strikeout, field, backcolor, fontcolor, readonly, ;
-               invisible, notabstop ) CLASS TTextMasked
+               invisible, notabstop, lRtl ) CLASS TTextMasked
 *------------------------------------------------------------------------------*
+Local nStyle := ES_AUTOHSCROLL
 Local i, c
 
    rightalign := .T.
@@ -466,10 +498,10 @@ Local i, c
    ::lAllow := .F.
 
    ::Define2( ControlName, ParentForm, x, y, width, height, Value, ;
-              fontname, fontsize, tooltip, 255, .F., ;
+              fontname, fontsize, tooltip, 0, .F., ;
               lostfocus, gotfocus, change, enter, rightalign, HelpId, ;
               readonly, bold, italic, underline, strikeout, field, ;
-              backcolor, fontcolor, invisible, notabstop, 0 )
+              backcolor, fontcolor, invisible, notabstop, nStyle, lRtl )
 
 Return Self
 
@@ -950,8 +982,9 @@ METHOD Define( ControlName, ParentForm, x, y, inputmask, width, value, ;
                fontname, fontsize, tooltip, lostfocus, gotfocus, change, ;
                height, enter, rightalign, HelpId, bold, italic, underline, ;
                strikeout, field, backcolor, fontcolor, date, readonly, ;
-               invisible, notabstop ) CLASS TTextCharMask
+               invisible, notabstop, lRtl ) CLASS TTextCharMask
 *------------------------------------------------------------------------------*
+Local nStyle := ES_AUTOHSCROLL
 Local dateformat
 
 	if valtype(date) == "U"
@@ -998,10 +1031,10 @@ Local dateformat
    ::lDate := date
 
    ::Define2( ControlName, ParentForm, x, y, width, height, value, ;
-              fontname, fontsize, tooltip, 255, .F., ;
+              fontname, fontsize, tooltip, 0, .F., ;
               lostfocus, gotfocus, change, enter, rightalign, HelpId, ;
               readonly, bold, italic, underline, strikeout, field, ;
-              backcolor, fontcolor, invisible, notabstop, 0 )
+              backcolor, fontcolor, invisible, notabstop, nStyle, lRtl )
 
 Return Self
 

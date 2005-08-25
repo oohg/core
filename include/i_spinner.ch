@@ -1,5 +1,5 @@
 /*
- * $Id: i_spinner.ch,v 1.1 2005-08-06 23:53:54 guerra000 Exp $
+ * $Id: i_spinner.ch,v 1.2 2005-08-25 05:57:41 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -92,6 +92,7 @@
 ---------------------------------------------------------------------------*/
 
 #command @ <row>,<col> SPINNER <name> ;
+                [ OBJ <obj> ] ;
 		[ <dummy1: OF, PARENT> <parent> ] ;
 		RANGE <rl> , <rh> ;
 		[ VALUE <value> ] ;
@@ -115,9 +116,10 @@
 		[ <wrap : WRAP> ] ;
 		[ <readonly : READONLY> ] ;
 		[ INCREMENT <inc> ] ;
+                [ <rtl: RTL> ] ;
 	=>;
-	_DefineSpinner ( <"name">, <"parent">, <col>, <row>, <w>, <value>, ;
+        [ <obj> := ] TSpinner():Define( <"name">, <"parent">, <col>, <row>, <w>, <value>, ;
                     <fontname>, <fontsize>, <rl>, <rh>, <tooltip>, <{change}>, ;
                     <{lostfocus}>, <{gotfocus}>, <h>, <helpid>, <.invisible.>, ;
                     <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, ;
-                    <.wrap.>, <.readonly.>, <inc> , <backcolor> , <fontcolor> )
+                    <.wrap.>, <.readonly.>, <inc> , <backcolor> , <fontcolor>, <.rtl.> )

@@ -1,5 +1,5 @@
 /*
- * $Id: h_init.prg,v 1.2 2005-08-18 04:07:28 guerra000 Exp $
+ * $Id: h_init.prg,v 1.3 2005-08-25 05:57:42 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -151,7 +151,6 @@ Function Init
    _OOHG_ThisQueryColIndex  := 0
 
    _OOHG_ThisType        := ''
-   _OOHG_ShowContextMenus  := .T.
 
    _OOHG_DefaultFontName         := 'Arial'
    _OOHG_DefaultFontSize         := 9

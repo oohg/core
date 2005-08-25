@@ -1,5 +1,5 @@
 /*
- * $Id: i_tree.ch,v 1.1 2005-08-06 23:53:54 guerra000 Exp $
+ * $Id: i_tree.ch,v 1.2 2005-08-25 05:57:41 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -92,6 +92,7 @@
 ---------------------------------------------------------------------------*/
 
 #xcommand DEFINE TREE <name> ;
+        [ OBJ <obj> ] ;
 	[ <dummy1: OF, PARENT> <parent> ] ;
 	AT <row> , <col> ;
 	[ WIDTH <width> ] ;
@@ -111,8 +112,9 @@
 	[ NODEIMAGES <aImgNode> [ ITEMIMAGES <aImgItem> ] [ <noBut: NOROOTBUTTON> ]];
 	[ <itemids : ITEMIDS> ] ;
 	[ HELPID <helpid> ] 		;
+        [ <rtl: RTL> ]                  ;
 =>;
-_DefineTree ( <"name"> , <"parent"> , <row> , <col> , <width> , <height> , <{change}> , <tooltip> , <fontname> , <fontsize> , <{gotfocus}> , <{lostfocus}> , <{dblclick}> , .f. , <value>  , <helpid>, <aImgNode>, <aImgItem>, <.noBut.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <.itemids.> )
+[ <obj> := ] TTree():Define( <"name"> , <"parent"> , <row> , <col> , <width> , <height> , <{change}> , <tooltip> , <fontname> , <fontsize> , <{gotfocus}> , <{lostfocus}> , <{dblclick}> , .f. , <value>  , <helpid>, <aImgNode>, <aImgItem>, <.noBut.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <.itemids.>, <.rtl.> )
 
 #xcommand NODE <text> [ IMAGES <aImage> ] [ ID <id> ];
 =>;
@@ -139,6 +141,7 @@ _EndTree()
 ///////////////////////////////////////////////////////////////////////////////
 
 #xcommand DEFINE TREE <name> ;
+        [ OBJ <obj> ] ;
 	[ <dummy1: OF, PARENT> <parent> ] ;
 	[ WIDTH <width> ] ;
 	[ HEIGHT <height> ] ;
@@ -158,7 +161,7 @@ _EndTree()
 	[ HELPID <helpid> ] 		;
 	[ NODEIMAGES <aImgNode> [ ITEMIMAGES <aImgItem> ] [ <noBut: NOROOTBUTTON> ]];
 	[ <break: BREAK> ] ;
+        [ <rtl: RTL> ]                  ;
 =>;
-_DefineTree ( <"name"> , <"parent"> ,  ,  , <width> , <height> , <{change}> , <tooltip> , <fontname> , <fontsize> , <{gotfocus}> , <{lostfocus}> , <{dblclick}> , <.break.> , <value>  , <helpid>, <aImgNode>, <aImgItem>, <.noBut.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.>  , <.itemids.> )
-
+[ <obj> := ] TTree():Define( <"name"> , <"parent"> ,  ,  , <width> , <height> , <{change}> , <tooltip> , <fontname> , <fontsize> , <{gotfocus}> , <{lostfocus}> , <{dblclick}> , <.break.> , <value>  , <helpid>, <aImgNode>, <aImgItem>, <.noBut.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.>  , <.itemids.>, <.rtl.> )
 

@@ -1,5 +1,5 @@
 /*
- * $Id: i_image.ch,v 1.1 2005-08-06 23:53:54 guerra000 Exp $
+ * $Id: i_image.ch,v 1.2 2005-08-25 05:57:41 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -92,6 +92,7 @@
 ---------------------------------------------------------------------------*/
 
 #xcommand @ <row>,<col> IMAGE <name> ;
+        [ OBJ <obj> ] ;
 	[ <dummy1: OF, PARENT> <parent> ] ;
 	PICTURE <filename> ;
 	[ <dummy2: ACTION,ON CLICK,ONCLICK> <action> ];
@@ -100,7 +101,7 @@
 	[ <stretch: STRETCH> ] ;
 	[ HELPID <helpid> ] 		;
 	[ <invisible: INVISIBLE> ] ;
+        [ <rtl: RTL> ] ;
  =>;
- _DefineImage ( <"name">, <"parent">, <col>, <row>, <filename> ,<w>, <h>, <{action}> , <helpid> , <.invisible.> , <.stretch.> , .f. )
-
+ [ <obj> := ] TImage():Define( <"name">, <"parent">, <col>, <row>, <filename> ,<w>, <h>, <{action}> , <helpid> , <.invisible.> , <.stretch.> , .f. , <.rtl.> )
 

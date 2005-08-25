@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.5 2005-08-18 04:03:08 guerra000 Exp $
+ * $Id: h_combo.prg,v 1.6 2005-08-25 05:57:42 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -126,7 +126,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, rows, value, fontname, ;
                fontsize, tooltip, changeprocedure, h, gotfocus, lostfocus, ;
                uEnter, HelpId, invisible, notabstop, sort, bold, italic, ;
                underline, strikeout, itemsource, valuesource, displaychange, ;
-               ondisplaychangeprocedure, break, GripperText, aImage ) CLASS TCombo
+               ondisplaychangeprocedure, break, GripperText, aImage, lRtl ) CLASS TCombo
 *-----------------------------------------------------------------------------*
 Local ControlHandle , rcount := 0 , BackRec , cset := 0 , WorkArea , cField , ContainerHandle := 0
 
@@ -141,7 +141,7 @@ Local ControlHandle , rcount := 0 , BackRec , cset := 0 , WorkArea , cField , Co
    DEFAULT sort		TO FALSE
    DEFAULT GripperText	TO ""
 
-   ::SetForm( ControlName, ParentForm, FontName, FontSize, , , .t. )
+   ::SetForm( ControlName, ParentForm, FontName, FontSize, , , .t. , lRtl )
 
 	if ValType ( ItemSource ) != 'U' .And. Sort == .T.
       MsgOOHGError ("Sort and ItemSource clauses can't be used simultaneusly. Program Terminated" )
@@ -168,7 +168,7 @@ Local ControlHandle , rcount := 0 , BackRec , cset := 0 , WorkArea , cField , Co
 
       _OOHG_SplitLastControl   := 'COMBOBOX'
 
-         ControlHandle := InitComboBox ( ::Parent:ReBarHandle, 0, x, y, w, '', 0 , h, invisible, notabstop, sort, displaychange , _OOHG_IsXP )
+         ControlHandle := InitComboBox ( ::Parent:ReBarHandle, 0, x, y, w, '', 0 , h, invisible, notabstop, sort, displaychange , _OOHG_IsXP , ::lRtl )
 
          AddSplitBoxItem ( Controlhandle , ::Parent:ReBarHandle, w , break , GripperText , w , , _OOHG_ActiveSplitBoxInverted )
 
@@ -176,7 +176,7 @@ Local ControlHandle , rcount := 0 , BackRec , cset := 0 , WorkArea , cField , Co
 
 	else
 
-      ControlHandle := InitComboBox ( ::Parent:hWnd, 0, x, y, w, '', 0 , h, invisible, notabstop, sort , displaychange , _OOHG_IsXP )
+      ControlHandle := InitComboBox ( ::Parent:hWnd, 0, x, y, w, '', 0 , h, invisible, notabstop, sort , displaychange , _OOHG_IsXP , ::lRtl )
 
 	endif
 

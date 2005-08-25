@@ -1,5 +1,5 @@
 /*
- * $Id: i_monthcal.ch,v 1.1 2005-08-06 23:53:54 guerra000 Exp $
+ * $Id: i_monthcal.ch,v 1.2 2005-08-25 05:57:41 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -92,6 +92,7 @@
 ---------------------------------------------------------------------------*/
 
 #command @ <row>,<col> MONTHCALENDAR <name> ;
+                [ OBJ <obj> ] ;
 		[ <dummy1: OF, PARENT> <parent> ] ;
 		[ VALUE <v> ] ;
 		[ FONT <fontname> ] ;
@@ -108,8 +109,9 @@
 		[ < notabstop: NOTABSTOP > ] ;
 		[ ON CHANGE <change> ] ;
 		[ HELPID <helpid> ] 		;
+                [ <rtl: RTL> ] ;
 	=>;
-	_DefineMonthCal ( <"name"> , ;
+        [ <obj> := ] TMonthCal():Define( <"name"> , ;
                      <"parent"> , ;
                      <col> , ;
                      <row> , ;
@@ -122,6 +124,5 @@
                      <.notoday.> , ;
                      <.notodaycircle.> , ;
                      <.weeknumbers.> , ;
-                     <{change}>  , <helpid>, <.invisible.>, <.notabstop.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> )
-
+                     <{change}>  , <helpid>, <.invisible.>, <.notabstop.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.>, <.rtl.> )
 

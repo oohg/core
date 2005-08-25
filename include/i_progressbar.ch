@@ -1,5 +1,5 @@
 /*
- * $Id: i_progressbar.ch,v 1.1 2005-08-06 23:53:54 guerra000 Exp $
+ * $Id: i_progressbar.ch,v 1.2 2005-08-25 05:57:41 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -92,6 +92,7 @@
 ---------------------------------------------------------------------------*/
 
 #command @ <row>,<col> PROGRESSBAR <name>	;
+                [ OBJ <obj> ]                   ;
 		[ <dummy1: OF, PARENT> <parent> ] ;
 		[ RANGE <lo> , <hi> ] 		;
 		[ VALUE <v> ]			;
@@ -104,8 +105,8 @@
 		[ <invisible : INVISIBLE> ]	;
 		[ BACKCOLOR <backcolor> ]	;
 		[ FORECOLOR <barcolor> ]	;
+                [ <rtl: RTL> ]                  ;
 	=>;
-	_DefineProgressBar ( <"name">, <"parent">, <col>, <row>, <w>, <h>, ;
+        [ <obj> := ] TProgressBar():Define( <"name">, <"parent">, <col>, <row>, <w>, <h>, ;
                         <lo>, <hi>, <tooltip>, <.vertical.>, <.smooth.>, ;
-                        <helpid>, <.invisible.>, <v>, [ <backcolor> ], [ <barcolor> ])
-
+                        <helpid>, <.invisible.>, <v>, [ <backcolor> ], [ <barcolor> ], <.rtl.>)

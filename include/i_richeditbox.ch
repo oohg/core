@@ -1,5 +1,5 @@
 /*
- * $Id: i_richeditbox.ch,v 1.1 2005-08-06 23:53:54 guerra000 Exp $
+ * $Id: i_richeditbox.ch,v 1.2 2005-08-25 05:57:41 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -92,6 +92,7 @@
 ---------------------------------------------------------------------------*/
 
 #xcommand @ <row>,<col> RICHEDITBOX <name> ;
+                [ OBJ <obj> ] ;
 		[ <dummy1: OF, PARENT> <parent> ] ;
 		[ WIDTH <w> ] ;
 		[ HEIGHT <h> ] ;
@@ -114,12 +115,14 @@
 		[ HELPID <helpid> ] 		;
 		[ <invisible: INVISIBLE> ] ;
 		[ <notabstop: NOTABSTOP> ] ;
+                [ <rtl: RTL> ] ;
 	=>;
-	_DefineRichEditBox ( <"name">, <"parent">, <col>, <row>, <w>, <h>, <value> ,<f>,<s> , <tooltip>  , <maxlenght>  , <{gotfocus}>  , <{change}>  , <{lostfocus}>  , <.readonly.> , .f. , <helpid>, <.invisible.>, <.notabstop.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <"field"> , <backcolor> )
+        [ <obj> := ] TEditRich():Define( <"name">, <"parent">, <col>, <row>, <w>, <h>, <value> ,<f>,<s> , <tooltip>  , <maxlenght>  , <{gotfocus}>  , <{change}>  , <{lostfocus}>  , <.readonly.> , .f. , <helpid>, <.invisible.>, <.notabstop.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <"field"> , <backcolor>, <.rtl.> )
 
 //SPLITBOX VERSION
 
 #xcommand RICHEDITBOX <name> ;
+                [ OBJ <obj> ] ;
 		[ <dummy1: OF, PARENT> <parent> ] ;
 		[ WIDTH <w> ] ;
 		[ HEIGHT <h> ] ;
@@ -143,7 +146,6 @@
 		[ <break: BREAK> ] ;
 		[ <invisible: INVISIBLE> ] ;
 		[ <notabstop: NOTABSTOP> ] ;
+                [ <rtl: RTL> ] ;
 	=>;
-	_DefineRichEditBox ( <"name">, <"parent">, , , <w>, <h>, <value> ,<f>,<s> , <tooltip>  , <maxlenght>  , <{gotfocus}>  , <{change}>  , <{lostfocus}>  , <.readonly.> , <.break.>  , <helpid>, <.invisible.>, <.notabstop.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <"field">  , <backcolor> )
-
-
+        [ <obj> := ] TEditRich():Define( <"name">, <"parent">, , , <w>, <h>, <value> ,<f>,<s> , <tooltip>  , <maxlenght>  , <{gotfocus}>  , <{change}>  , <{lostfocus}>  , <.readonly.> , <.break.>  , <helpid>, <.invisible.>, <.notabstop.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <"field">  , <backcolor>, <.rtl.> )

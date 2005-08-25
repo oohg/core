@@ -1,5 +1,5 @@
 /*
- * $Id: i_combobox.ch,v 1.2 2005-08-18 04:10:21 guerra000 Exp $
+ * $Id: i_combobox.ch,v 1.3 2005-08-25 05:57:41 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -118,6 +118,7 @@
 		[ <invisible : INVISIBLE> ] ;
                 [ IMAGE <aImage> ] ;
 		[ <sort : SORT> ] ;
+                [ <rtl: RTL> ] ;
 	=>;
         [ <obj> := ] TCombo():Define( <"name">, <"parent">, <col>, <row>, <w>, <aRows> , <value>, ;
                   <f>, <n>, <tooltip>, <{changeprocedure}>, <h>, ;
@@ -125,7 +126,7 @@
                   <.invisible.>, <.notabstop.>, <.sort.> ,<.bold.>, ;
 		<.italic.>, <.underline.>, <.strikeout.> , <"itemsource"> , ;
 		<"valuesource"> , <.displaychange.> , ;
-                <{ondisplaychangeprocedure}> ,  .f. , "", <aImage> )
+                <{ondisplaychangeprocedure}> ,  .f. , "", <aImage>, <.rtl.> )
 
 // SPLITBOX VERSION
 
@@ -158,10 +159,11 @@
 		[ <invisible : INVISIBLE> ] ;
                 [ IMAGE <aImage> ] ;
 		[ <sort : SORT> ] ;
+                [ <rtl: RTL> ] ;
 	=>;
         [ <obj> := ] TCombo():Define( <"name">, <"parent">, , , <w>, <aRows> , <value>, ;
                   <f>, <n>, <tooltip>, <{changeprocedure}>, <h>, <{gotfocus}>, ;
                   <{lostfocus}>, <{enter}>, <helpid>, <.invisible.>, <.notabstop.>, ;
                   <.sort.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , ;
                   <"itemsource"> , <"valuesource"> , <.displaychange.> , ;
-                  <{ondisplaychangeprocedure}> , <.break.> , <grippertext>, <aImage> )
+                  <{ondisplaychangeprocedure}> , <.break.> , <grippertext>, <aImage>, <.rtl.> )

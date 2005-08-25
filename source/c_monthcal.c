@@ -1,5 +1,5 @@
 /*
- * $Id: c_monthcal.c,v 1.1 2005-08-07 00:04:18 guerra000 Exp $
+ * $Id: c_monthcal.c,v 1.2 2005-08-25 05:57:42 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -104,21 +104,21 @@
 #include "hbapiitm.h"
 #include "winreg.h"
 #include "tchar.h"
+#include "../include/oohg.h"
 
-HFONT PrepareFont (char *, int, int, int, int, int );
+static WNDPROC lpfnOldWndProc = 0;
+
+static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+{
+   return _OOHG_WndProc( GetControlObjectByHandle( ( LONG ) hWnd ), hWnd, msg, wParam, lParam, lpfnOldWndProc );
+}
 
 HB_FUNC ( INITMONTHCAL )
 {
 	HWND hwnd;
 	HWND hmonthcal;
-	RECT rc;
 	INITCOMMONCONTROLSEX icex;
-	int Style;
-	HFONT hfont ;
-	int bold = FW_NORMAL;
-	int italic = 0;
-	int underline = 0;
-	int strikeout = 0;
+    int Style, StyleEx;
 
 	icex.dwSize = sizeof(icex);
 	icex.dwICC  = ICC_DATE_CLASSES;
@@ -126,34 +126,40 @@ HB_FUNC ( INITMONTHCAL )
 
 	hwnd = (HWND) hb_parnl (1);
 
+   StyleEx = 0;
+   if ( hb_parl( 12 ) )
+   {
+      StyleEx |= WS_EX_LAYOUTRTL | WS_EX_RIGHTSCROLLBAR | WS_EX_RTLREADING;
+   }
+
 	Style = WS_BORDER | WS_CHILD ;
 
-	if ( hb_parl(9) )
+    if ( hb_parl(7) )
 	{
 		Style = Style | MCS_NOTODAY ;
 	}
 
-	if ( hb_parl(10) )
+    if ( hb_parl(8) )
 	{
 		Style = Style | MCS_NOTODAYCIRCLE ;
 	}
 
-	if ( hb_parl(11) )
+    if ( hb_parl(9) )
 	{
 		Style = Style | MCS_WEEKNUMBERS ;
 	}
 
-	if ( !hb_parl(12) )
+    if ( !hb_parl(10) )
 	{
 		Style = Style | WS_VISIBLE ;
 	}
 
-	if ( !hb_parl(13) )
+    if ( !hb_parl(11) )
 	{
 		Style = Style | WS_TABSTOP ;
 	}
 
-	hmonthcal = CreateWindowEx(0,
+    hmonthcal = CreateWindowEx(StyleEx,
                      MONTHCAL_CLASS,
                      "",
                      Style,
@@ -163,61 +169,59 @@ HB_FUNC ( INITMONTHCAL )
                      GetModuleHandle(NULL),
                      NULL ) ;
 
-	if ( hb_parl (14) )
-	{
-		bold = FW_BOLD;
-	}
+   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hmonthcal, GWL_WNDPROC, ( LONG ) SubClassFunc );
 
-	if ( hb_parl (15) )
-	{
-		italic = 1;
-	}
-
-	if ( hb_parl (16) )
-	{
-		underline = 1;
-	}
-
-	if ( hb_parl (17) )
-	{
-		strikeout = 1;
-	}
-
-  	hfont = PrepareFont ( hb_parc(7), (LPARAM) hb_parni(8), bold , italic, underline, strikeout ) ;
-
-	SendMessage(hmonthcal,(UINT)WM_SETFONT,(WPARAM) hfont , 1 ) ;
-
-	MonthCal_GetMinReqRect(hmonthcal, &rc);
-
-	SetWindowPos(hmonthcal, NULL, hb_parni(3) , hb_parni(4) ,
-                rc.right, rc.bottom,
-                SWP_NOZORDER);
-
-	hb_reta( 2 );
-	hb_stornl( (LONG) hmonthcal , -1, 1 );
-	hb_stornl( (LONG) hfont , -1, 2 );
+   hb_retnl( ( LONG ) hmonthcal );
 
 }
 
-HB_FUNC ( SETMONTHCAL )
+HB_FUNC( ADJUSTMONTHCALSIZE )
+{
+   HWND hWnd = ( HWND ) hb_parnl( 1 );
+   // RECT rOld;
+   RECT rMin;
+
+   // GetWindowRect( hWnd, &rOld );
+
+   MonthCal_GetMinReqRect( hWnd, &rMin );
+
+   SetWindowPos( hWnd, NULL, hb_parni( 2 ), hb_parni( 3 ), // rOld.left, rOld.top,
+                 rMin.right, rMin.bottom, SWP_NOZORDER );
+}
+
+HB_FUNC( SETMONTHCAL )
 {
 	HWND hwnd;
 	SYSTEMTIME sysTime;
-	int y;
-	int m;
-	int d;
+    char *cDate = 0;
 
 	hwnd = (HWND) hb_parnl (1);
 
-	y = hb_parni(2);
-	m = hb_parni(3);
-	d = hb_parni(4);
+    if( ISDATE( 2 ) )
+    {
+       cDate = hb_pards( 2 );
+       if( cDate[ 0 ] == ' ' )
+       {
+          cDate = 0;
+       }
+       else
+       {
+          sysTime.wYear  = ( ( cDate[ 0 ] - '0' ) * 1000 ) +
+                           ( ( cDate[ 1 ] - '0' ) * 100 )  +
+                           ( ( cDate[ 2 ] - '0' ) * 10 ) + ( cDate[ 3 ] - '0' );
+          sysTime.wMonth = ( ( cDate[ 4 ] - '0' ) * 10 ) + ( cDate[ 5 ] - '0' );
+          sysTime.wDay   = ( ( cDate[ 6 ] - '0' ) * 10 ) + ( cDate[ 7 ] - '0' );
+       }
+    }
 
-	sysTime.wYear = y;
-	sysTime.wMonth = m;
-	sysTime.wDay = d;
+    if( ! cDate )
+    {
+       sysTime.wYear = hb_parni(2);
+       sysTime.wMonth = hb_parni(3);
+       sysTime.wDay = hb_parni(4);
+    }
+
 	sysTime.wDayOfWeek = 0;
-
 	sysTime.wHour = 0;
 	sysTime.wMinute = 0;
 	sysTime.wSecond = 0;
@@ -256,3 +260,33 @@ HB_FUNC ( GETMONTHCALDAY )
 	hb_retni(st.wDay);
 }
 
+HB_FUNC ( GETMONTHCALDATE )
+{
+	HWND hwnd;
+	SYSTEMTIME st;
+    int iNum;
+    char cDate[ 9 ];
+
+	hwnd = (HWND) hb_parnl (1);
+	SendMessage(hwnd, MCM_GETCURSEL, 0, (LPARAM) &st);
+
+    cDate[ 8 ] = 0;
+    iNum = st.wYear;
+    cDate[ 3 ] = ( iNum % 10 ) + '0';
+    iNum /= 10;
+    cDate[ 2 ] = ( iNum % 10 ) + '0';
+    iNum /= 10;
+    cDate[ 1 ] = ( iNum % 10 ) + '0';
+    iNum /= 10;
+    cDate[ 0 ] = ( iNum % 10 ) + '0';
+    iNum = st.wMonth;
+    cDate[ 5 ] = ( iNum % 10 ) + '0';
+    iNum /= 10;
+    cDate[ 4 ] = ( iNum % 10 ) + '0';
+    iNum = st.wDay;
+    cDate[ 7 ] = ( iNum % 10 ) + '0';
+    iNum /= 10;
+    cDate[ 6 ] = ( iNum % 10 ) + '0';
+
+    hb_retds( cDate );
+}

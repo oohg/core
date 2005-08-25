@@ -1,5 +1,5 @@
 /*
- * $Id: c_image.c,v 1.1 2005-08-07 00:03:18 guerra000 Exp $
+ * $Id: c_image.c,v 1.2 2005-08-25 05:57:42 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -110,32 +110,41 @@
 #include <winuser.h>
 #include <wingdi.h>
 #include "olectl.h"
+#include "../include/oohg.h"
+
+static WNDPROC lpfnOldWndProc = 0;
+
+static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+{
+   return _OOHG_WndProc( GetControlObjectByHandle( ( LONG ) hWnd ), hWnd, msg, wParam, lParam, lpfnOldWndProc );
+}
 
 HBITMAP loadolepicture(char * filename,int width,int height, HWND handle, int scalestrech , int whitebackground , int transparent ) ;
 
 HB_FUNC (INITIMAGE)
 {
-        HWND  h;
-        HBITMAP hBitmap;
-        HWND hwnd;
-        int Style;
-	int whitebackground ;
+   HWND  h;
+   HBITMAP hBitmap;
+   HWND hwnd;
+   int Style, StyleEx;
+   int whitebackground ;
 
-        hwnd = (HWND) hb_parnl (1);
+   hwnd = (HWND) hb_parnl (1);
 
-        Style = WS_CHILD | SS_BITMAP ;
+   StyleEx = 0;
+   if ( hb_parl( 11 ) )
+   {
+      StyleEx |= WS_EX_LAYOUTRTL | WS_EX_RIGHTSCROLLBAR | WS_EX_RTLREADING;
+   }
 
-        if ( ! hb_parl (8) )
-        {
-                Style = Style | WS_VISIBLE ;
-        }
+   Style = WS_CHILD | SS_BITMAP | SS_NOTIFY;
+
+   if ( ! hb_parl (8) )
+   {
+      Style |= WS_VISIBLE ;
+   }
 
         if ( hb_parl (10) )
-        {
-                Style = Style | SS_NOTIFY ;
-        }
-
-        if ( hb_parl (11) )
         {
                 whitebackground = 1 ;
         }
@@ -144,17 +153,21 @@ HB_FUNC (INITIMAGE)
                 whitebackground = 0 ;
 	}
 
-        h = CreateWindowEx(0,"static",NULL,
+   h = CreateWindowEx(StyleEx,"static",NULL,
         Style,
         hb_parni(3), hb_parni(4), 0, 0,
         hwnd,(HMENU)hb_parni(2) , GetModuleHandle(NULL) , NULL ) ;
 
-        hBitmap = loadolepicture(hb_parc(5),hb_parni(6),hb_parni(7),h,hb_parni(9) , whitebackground, 0 ) ;
-        if (hBitmap!=NULL)
-            SendMessage(h,(UINT)STM_SETIMAGE,(WPARAM)IMAGE_BITMAP,(LPARAM)hBitmap);
-        hb_retnl ( (LONG) h );
-}
+   hBitmap = loadolepicture(hb_parc(5),hb_parni(6),hb_parni(7),h,hb_parni(9) , whitebackground, 0 ) ;
+   if (hBitmap!=NULL)
+   {
+      SendMessage(h,(UINT)STM_SETIMAGE,(WPARAM)IMAGE_BITMAP,(LPARAM)hBitmap);
+   }
 
+   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) h, GWL_WNDPROC, ( LONG ) SubClassFunc );
+
+   hb_retnl ( (LONG) h );
+}
 
 HB_FUNC (C_SETPICTURE)
 {

@@ -1,5 +1,5 @@
 /*
- * $Id: h_hyperlink.prg,v 1.3 2005-08-18 04:07:28 guerra000 Exp $
+ * $Id: h_hyperlink.prg,v 1.4 2005-08-25 05:57:42 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -107,7 +107,7 @@ ENDCLASS
 METHOD Define( ControlName, ParentForm, x, y, Caption, url, w, h, fontname, ;
                fontsize, bold, BORDER, CLIENTEDGE, HSCROLL, VSCROLL, ;
                TRANSPARENT, aRGB_bk, aRGB_font, tooltip, HelpId, invisible, ;
-               italic, autosize, handcursor ) CLASS THyperLink
+               italic, autosize, handcursor, lRtl ) CLASS THyperLink
 *-----------------------------------------------------------------------------*
 
    DEFAULT Url           TO ""
@@ -117,12 +117,12 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, url, w, h, fontname, ;
                    fontsize, bold, BORDER, CLIENTEDGE, HSCROLL, VSCROLL, ;
                    TRANSPARENT, aRGB_bk, aRGB_font, nil, tooltip, ;
                    HelpId, invisible, italic, .T., .F., autosize, ;
-                   .F., .F. )
+                   .F., .F., lRtl )
 
    ::Address := url
 
    If handcursor
-      InitHyperlinkCursor( ::hWnd )
+      ::hCursor := LoadCursorFromFile( "MINIGUI_FINGER" )
    EndIf
 
 Return Self

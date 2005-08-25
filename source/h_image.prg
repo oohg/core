@@ -1,5 +1,5 @@
 /*
- * $Id: h_image.prg,v 1.2 2005-08-18 04:07:28 guerra000 Exp $
+ * $Id: h_image.prg,v 1.3 2005-08-25 05:57:42 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -99,19 +99,17 @@ CLASS TImage FROM TControl
    DATA cPicture  INIT ""
    DATA Stretch   INIT .F.
 
+   METHOD Define
    METHOD Picture      SETGET
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
-Function _DefineImage ( ControlName, ParentForm, x, y, FileName ,w , h , ProcedureName  , HelpId, invisible , stretch , lWhiteBackground )
+METHOD Define( ControlName, ParentForm, x, y, FileName, w, h, ProcedureName, ;
+               HelpId, invisible, stretch, lWhiteBackground, lRtl ) CLASS TImage
 *-----------------------------------------------------------------------------*
-Local Self
-Local action
-
-// AJ
 Local ControlHandle
 
-   Self := TImage():SetForm( ControlName, ParentForm )
+   ::SetForm( ControlName, ParentForm,,,,,, lRtl )
 
 	if valtype(w) == "U"
 		w := 100
@@ -123,12 +121,9 @@ Local ControlHandle
 
 	if valtype(ProcedureName) == "U"
 		ProcedureName := ""
-      action := .t.
-   else
-      action := .f.
 	endif
 
-   ControlHandle := InitImage ( ::Parent:hWnd, 0, x, y , FileName ,w,h,invisible , if ( stretch == .t. , 1 , 0 ) , action , lWhiteBackground )
+   ControlHandle := InitImage( ::Parent:hWnd, 0, x, y , FileName ,w,h,invisible , if ( stretch == .t. , 1 , 0 ) , lWhiteBackground, ::lRtl )
 
    ::New( ControlHandle, ControlName, HelpId, ! Invisible )
    ::SizePos( y, x, w, h )
@@ -137,7 +132,7 @@ Local ControlHandle
    ::Stretch := stretch
    ::cPicture  :=  FileName
 
-Return Nil
+Return Self
 
 *-----------------------------------------------------------------------------*
 METHOD Picture( cPicture ) CLASS TImage

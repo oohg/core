@@ -1,5 +1,5 @@
 /*
- * $Id: i_ipaddress.ch,v 1.1 2005-08-06 23:53:54 guerra000 Exp $
+ * $Id: i_ipaddress.ch,v 1.2 2005-08-25 05:57:41 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -92,10 +92,11 @@
 ---------------------------------------------------------------------------*/
 
 #command @ <row>, <col> IPADDRESS <name> ;
+        [ OBJ <obj> ]                ;
 	[ <dummy1: OF, PARENT> <parent> ] ;
 	[ HEIGHT <height> ]          ;
 	[ WIDTH <width> ]            ;
-	[ VALUE <value> ] ;
+        [ VALUE <value> ]            ;
 	[ FONT <fontname> ]          ;
 	[ SIZE <fontsize> ]          ;
 	[ <bold : BOLD> ] ;
@@ -109,8 +110,9 @@
 	[ HELPID <helpid> ] 		     ;
 	[ <invisible : INVISIBLE> ] ;
 	[ <notabstop : NOTABSTOP> ] ;
+        [ <rtl: RTL> ]              ;
 =>;
-   _DefineIPAddress( ;
+   [ <obj> := ] TIPAddress():Define( ;
       <"name"> , ;
       <"parent"> , ;
       <col> , ;
@@ -130,5 +132,5 @@
 	<.bold.>, ;
 	<.italic.>, ;
 	<.underline.>, ;
-	<.strikeout.> )
-
+        <.strikeout.>, ;
+        <.rtl.> )

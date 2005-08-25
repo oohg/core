@@ -1,5 +1,5 @@
 /*
- * $Id: h_editbox.prg,v 1.2 2005-08-18 04:07:28 guerra000 Exp $
+ * $Id: h_editbox.prg,v 1.3 2005-08-25 05:57:42 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -93,41 +93,40 @@
 
 #include "oohg.ch"
 #include "common.ch"
+#include "i_windefs.ch"
 #include "hbclass.ch"
 
-CLASS TEdit FROM TLabel
+CLASS TEdit FROM TText
    DATA Type      INIT "EDIT" READONLY
+
+   METHOD Define
+   METHOD SetFocus          BLOCK { |Self| SetFocus( ::hWnd ) }
+   METHOD Events_Enter      BLOCK { || nil }
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
-Function _DefineEditbox ( ControlName, ParentForm, x, y, w, h, value, ;
-                          fontname, fontsize, tooltip, maxlenght, gotfocus, ;
-                          change, lostfocus, readonly, break, HelpId, ;
-                          invisible, notabstop , bold, italic, underline, strikeout , field , backcolor , fontcolor , novscroll , nohscroll )
+METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
+               fontsize, tooltip, maxlenght, gotfocus, change, lostfocus, ;
+               readonly, break, HelpId, invisible, notabstop, bold, italic, ;
+               underline, strikeout, field, backcolor, fontcolor, novscroll, ;
+               nohscroll, lRtl ) CLASS TEdit
 *-----------------------------------------------------------------------------*
-Local Self, Containerhandle
+Local nStyle := ES_MULTILINE + ES_WANTRETURN
 
-// AJ
-Local ControlHandle
-
-   DEFAULT w         TO 120
    DEFAULT h         TO 240
-   DEFAULT value     TO ""
-   DEFAULT change    TO ""
-   DEFAULT lostfocus TO ""
-   DEFAULT gotfocus  TO ""
-   DEFAULT Maxlenght TO 64738
-   DEFAULT invisible TO FALSE
-   DEFAULT notabstop TO FALSE
+*   DEFAULT Maxlenght TO 64738
+empty(break)
 
-   Self := TEdit():SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, .T. )
+   nStyle += IF( Valtype( novscroll ) == "L" .AND. novscroll, ES_AUTOVSCROLL, WS_VSCROLL ) + ;
+             IF( Valtype( nohscroll ) == "L" .AND. nohscroll, 0,              WS_HSCROLL )
 
-   If ValType( Field ) $ 'CM' .AND. ! empty( Field )
-      ::VarName := alltrim( Field )
-      ::Block := &( "{ |x| if( PCount() == 0, " + Field + ", " + Field + " := x ) }" )
-      Value := EVAL( ::Block )
-	EndIf
+   ::Define2( ControlName, ParentForm, x, y, w, h, value, ;
+              fontname, fontsize, tooltip, maxlenght, .f., ;
+              lostfocus, gotfocus, change, nil, .f., HelpId, ;
+              readonly, bold, italic, underline, strikeout, field, ;
+              backcolor, fontcolor, invisible, notabstop, nStyle, lRtl )
 
+/*
 	if valtype(x) == "U" .or. valtype(y) == "U"
 
       If _OOHG_SplitLastControl == 'TOOLBAR'
@@ -146,20 +145,6 @@ Local ControlHandle
       ControlHandle := InitEditBox ( ::Parent:hWnd, 0, x, y, w, h, '', 0 , maxlenght , readonly, invisible, notabstop , novscroll , nohscroll )
 
 	endif
+*/
 
-   ::New( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
-   ::SetFont( , , bold, italic, underline, strikeout )
-   ::SizePos( y, x, w, h )
-
-   ::Value := Value
-
-   ::OnLostFocus := LostFocus
-   ::OnGotFocus :=  GotFocus
-   ::OnChange   :=  Change
-*   _OOHG_aControlContainerHandle  [k] :=  ContainerHandle
-
-	if valtype ( Field ) != 'U'
-      aAdd ( ::Parent:BrowseList, Self )
-	EndIf
-
-Return Nil
+Return Self

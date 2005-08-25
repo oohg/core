@@ -1,5 +1,5 @@
 /*
- * $Id: h_progressbar.prg,v 1.1 2005-08-07 00:12:51 guerra000 Exp $
+ * $Id: h_progressbar.prg,v 1.2 2005-08-25 05:57:42 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -91,18 +91,17 @@
 	Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-#include "minigui.ch"
+#include "oohg.ch"
 #include "common.ch"
 #include "hbclass.ch"
-
-#define PBM_SETPOS	1026
-#define PBM_GETPOS 1032
+#include "i_windefs.ch"
 
 CLASS TProgressBar FROM TControl
    DATA Type      INIT "PROGRESSBAR" READONLY
    DATA nRangeMin   INIT 0
    DATA nRangeMax   INIT 0
 
+   METHOD Define
    METHOD Value               SETGET
 
    METHOD RangeMin            SETGET
@@ -112,12 +111,11 @@ CLASS TProgressBar FROM TControl
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
-Function _DefineProgressBar ( ControlName, ParentForm, x, y, w, h, lo, hi, ;
-                              tooltip, vertical, smooth, HelpId, invisible, ;
-                              value, BackColor, BarColor )
+METHOD Define( ControlName, ParentForm, x, y, w, h, lo, hi, tooltip, ;
+               vertical, smooth, HelpId, invisible, value, BackColor, ;
+               BarColor, lRtl ) CLASS TProgressBar
 *-----------------------------------------------------------------------------*
 Local ControlHandle
-Local Self
 
    DEFAULT h         TO if( vertical, 120, 25 )
    DEFAULT w         TO if( vertical, 25, 120 )
@@ -126,9 +124,9 @@ Local Self
    DEFAULT value     TO 0
    DEFAULT invisible TO FALSE
 
-   Self := TProgressBar():SetForm( ControlName, ParentForm,,, BarColor, BackColor )
+   ::SetForm( ControlName, ParentForm,,, BarColor, BackColor,, lRtl  )
 
-   ControlHandle := InitProgressBar ( ::Parent:hWnd, 0, x, y, w, h ,lo ,hi, vertical, smooth, invisible, value )
+   ControlHandle := InitProgressBar ( ::Parent:hWnd, 0, x, y, w, h ,lo ,hi, vertical, smooth, invisible, value, ::lRtl )
 
    ::New( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
    ::SizePos( y, x, w, h )
@@ -148,7 +146,7 @@ Local Self
 		endif
 	endif
 
-Return Nil
+Return Self
 
 *------------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TProgressBar

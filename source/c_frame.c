@@ -1,5 +1,5 @@
 /*
- * $Id: c_frame.c,v 1.1 2005-08-07 00:02:34 guerra000 Exp $
+ * $Id: c_frame.c,v 1.2 2005-08-25 05:57:42 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -104,21 +104,42 @@
 #include "hbapiitm.h"
 #include "winreg.h"
 #include "tchar.h"
+#include "../include/oohg.h"
+
+static WNDPROC lpfnOldWndProcA = 0;
+static WNDPROC lpfnOldWndProcB = 0;
+
+static LRESULT APIENTRY SubClassFuncA( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+{
+   return _OOHG_WndProc( GetControlObjectByHandle( ( LONG ) hWnd ), hWnd, msg, wParam, lParam, lpfnOldWndProcA );
+}
+
+static LRESULT APIENTRY SubClassFuncB( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+{
+   return _OOHG_WndProc( GetControlObjectByHandle( ( LONG ) hWnd ), hWnd, msg, wParam, lParam, lpfnOldWndProcB );
+}
 
 HB_FUNC( INITFRAME )
 {
-	HWND hwnd;
-	HWND hbutton;
+   HWND hwnd;
+   HWND hbutton;
+   int StyleEx;
 
-	hwnd = (HWND) hb_parnl (1);
+   hwnd = (HWND) hb_parnl (1);
 
+   StyleEx = 0;
+   if ( hb_parl( 9 ) )
+   {
+      StyleEx |= WS_EX_LAYOUTRTL | WS_EX_RIGHTSCROLLBAR | WS_EX_RTLREADING;
+   }
 
-	if ( ! hb_parl (10) )
+    if ( ! hb_parl (8) )
 	{
-		hbutton = CreateWindowEx( WS_EX_TRANSPARENT , "BUTTON" , hb_parc(7) ,
+        hbutton = CreateWindowEx( StyleEx, "BUTTON" , hb_parc(7) ,
 		WS_CHILD | WS_VISIBLE | BS_GROUPBOX | BS_NOTIFY	 ,
 		hb_parni(3), hb_parni(4) , hb_parni(5), hb_parni(6),
 		hwnd,(HMENU)hb_parni(2) , GetModuleHandle(NULL) , NULL ) ;
+        lpfnOldWndProcA = ( WNDPROC ) SetWindowLong( ( HWND ) hbutton, GWL_WNDPROC, ( LONG ) SubClassFuncA );
 	}
 	else
 	{
@@ -126,7 +147,8 @@ HB_FUNC( INITFRAME )
 		WS_CHILD | WS_VISIBLE | BS_GROUPBOX | BS_NOTIFY	 ,
 		hb_parni(3), hb_parni(4) , hb_parni(5), hb_parni(6),
 		hwnd,(HMENU)hb_parni(2) , GetModuleHandle(NULL) , NULL ) ;
+        lpfnOldWndProcB = ( WNDPROC ) SetWindowLong( ( HWND ) hbutton, GWL_WNDPROC, ( LONG ) SubClassFuncB );
 	}
 
-	hb_retnl ( (LONG) hbutton );
+   hb_retnl ( (LONG) hbutton );
 }

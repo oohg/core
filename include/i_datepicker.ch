@@ -1,5 +1,5 @@
 /*
- * $Id: i_datepicker.ch,v 1.1 2005-08-06 23:50:17 guerra000 Exp $
+ * $Id: i_datepicker.ch,v 1.2 2005-08-25 05:57:41 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -92,6 +92,7 @@
 ---------------------------------------------------------------------------*/
 
 #command @ <row>,<col> DATEPICKER <name> ;
+                [ OBJ <obj> ] ;
 		[ <dummy1: OF, PARENT> <parent> ] ;
 		[ VALUE <v> ] ;
 		[ FIELD <field> ] ;
@@ -114,8 +115,9 @@
 		[ HELPID <helpid> ] 		;
 		[ <invisible: INVISIBLE> ] ;
 		[ <notabstop: NOTABSTOP> ] ;
+                [ <rtl: RTL> ] ;
 	=> ;
-	_DefineDatePick ( <"name"> , ;
+        [ <obj> := ] TDatePick():Define( <"name"> , ;
                      <"parent"> , ;
                      <col> , ;
                      <row> , ;
@@ -130,5 +132,4 @@
                      <{gotfocus}> , ;
                      <.shownone.> , ;
                      <.updown.> , ;
-                     <.rightalign.>  , <helpid> , <.invisible.>, <.notabstop.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <"field"> , <{enter}> )
-
+                     <.rightalign.>  , <helpid> , <.invisible.>, <.notabstop.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <"field"> , <{enter}> , <.rtl.> )

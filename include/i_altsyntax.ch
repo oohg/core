@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.8 2005-08-23 05:12:56 guerra000 Exp $
+ * $Id: i_altsyntax.ch,v 1.9 2005-08-25 05:57:40 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -355,6 +355,7 @@ Frame
         _OOHG_ActiveControlFontBold              := .f.          ;;
         _OOHG_ActiveControlFontItalic    := .f.          ;;
         _OOHG_ActiveControlFontStrikeOut := .f.          ;;
+        _OOHG_ActiveControlRtl           := .F.          ;;
         _OOHG_ActiveControlFontUnderLine := .f.
 
 
@@ -364,7 +365,7 @@ Frame
 
 #xcommand END FRAME ;
 	=>;
-	_BeginFrame (;
+        TFrame():Define(;
                 _OOHG_ActiveControlName,;
                 _OOHG_ActiveControlOf,;
                 _OOHG_ActiveControlRow,;
@@ -374,10 +375,15 @@ Frame
                 _OOHG_ActiveControlCaption,;
                 _OOHG_ActiveControlFont,;
                 _OOHG_ActiveControlSize,;
-                _OOHG_ActiveControlOpaque , _OOHG_ActiveControlFontBold , _OOHG_ActiveControlFontItalic , _OOHG_ActiveControlFontUnderLine , _OOHG_ActiveControlFontStrikeOut , _OOHG_ActiveControlBackColor , _OOHG_ActiveControlFontColor , _OOHG_ActiveControlTransparent )
-
-
-
+                _OOHG_ActiveControlOpaque,;
+                _OOHG_ActiveControlFontBold,;
+                _OOHG_ActiveControlFontItalic,;
+                _OOHG_ActiveControlFontUnderLine,;
+                _OOHG_ActiveControlFontStrikeOut,;
+                _OOHG_ActiveControlBackColor,;
+                _OOHG_ActiveControlFontColor,;
+                _OOHG_ActiveControlTransparent,;
+                _OOHG_ActiveControlRtl )
 
 
 #xcommand HEADERS <headers> ;
@@ -458,6 +464,7 @@ List Box
         _OOHG_ActiveControlFontColor             := Nil          ;;
         _OOHG_ActiveControlFontItalic    := .f.          ;;
         _OOHG_ActiveControlFontStrikeOut := .f.          ;;
+        _OOHG_ActiveControlRtl           := .F.          ;;
         _OOHG_ActiveControlFontUnderLine := .f.
 
 #xcommand SORT	<sort>	;
@@ -466,7 +473,7 @@ List Box
 
 #xcommand END LISTBOX	;
 	=>;
-	_DefineListBox(;
+        iif( _OOHG_ActiveControlMultiSelect, TListMulti(), TList() ):Define( ;
                 _OOHG_ActiveControlName,;
                 _OOHG_ActiveControlOf,;
                 _OOHG_ActiveControlCol,;
@@ -493,7 +500,7 @@ List Box
                 _OOHG_ActiveControlFontStrikeOut , ;
                 _OOHG_ActiveControlBackColor , ;
                 _OOHG_ActiveControlFontColor , ;
-                _OOHG_ActiveControlMultiSelect )
+                _OOHG_ActiveControlRtl )
 
 ///////////////////////////////////////////////////////////////////////////////
 // ANIMATEBOX COMMANDS
@@ -645,6 +652,7 @@ Progress Bar
         _OOHG_ActiveControlInvisible             := .f.          ;;
         _OOHG_ActiveControlBackColor             := Nil          ;;
         _OOHG_ActiveControlForeColor             := Nil          ;;
+        _OOHG_ActiveControlRtl           := .F.          ;;
         _OOHG_ActiveControlValue         := Nil
 
 #xcommand RANGEMIN	<lo>;
@@ -665,7 +673,7 @@ Progress Bar
 
 #xcommand END PROGRESSBAR;
 	=>;
-	_DefineProgressBar(;
+        TProgressBar():Define(;
                 _OOHG_ActiveControlName,;
                 _OOHG_ActiveControlOf,;
                 _OOHG_ActiveControlCol,;
@@ -679,7 +687,10 @@ Progress Bar
                 _OOHG_ActiveControlSmooth,;
                 _OOHG_ActiveControlHelpId,;
                 _OOHG_ActiveControlInvisible,;
-                _OOHG_ActiveControlValue , _OOHG_ActiveControlBackColor , _OOHG_ActiveControlForeColor )
+                _OOHG_ActiveControlValue,;
+                _OOHG_ActiveControlBackColor,;
+                _OOHG_ActiveControlForeColor,;
+                _OOHG_ActiveControlRtl )
 
 
 /*----------------------------------------------------------------------------
@@ -855,6 +866,7 @@ Text Box
         _OOHG_ActiveControlInvisible             := .f.          ;;
         _OOHG_ActiveControlFontItalic    := .f.          ;;
         _OOHG_ActiveControlFontStrikeOut := .f.          ;;
+        _OOHG_ActiveControlRtl           := .F.          ;;
         _OOHG_ActiveControlFontUnderLine := .f.
 
 #xcommand UPPERCASE <uppercase>;
@@ -914,7 +926,8 @@ Text Box
                         _OOHG_ActiveControlBackColor , ;
                         _OOHG_ActiveControlFontColor , ;
                         _OOHG_ActiveControlInvisible , ;
-                        _OOHG_ActiveControlNoTabStop);
+                        _OOHG_ActiveControlNoTabStop , ;
+                        _OOHG_ActiveControlRtl );
 	,;
                 if ( _OOHG_ActiveControlNumeric, ;
                      TTextMasked():Define( ;
@@ -940,8 +953,8 @@ Text Box
                         _OOHG_ActiveControlFontItalic , ;
                         _OOHG_ActiveControlFontUnderLine , ;
                         _OOHG_ActiveControlFontStrikeOut,;
-                        _OOHG_ActiveControlField,_OOHG_ActiveControlBackColor,_OOHG_ActiveControlFontColor,_OOHG_ActiveControlReadonly,_OOHG_ActiveControlInvisible,_OOHG_ActiveControlNoTabStop) , ;
-                     TTextCharMask():Define( _OOHG_ActiveControlName , _OOHG_ActiveControlOf, _OOHG_ActiveControlCol, _OOHG_ActiveControlRow, _OOHG_ActiveControlInputMask , _OOHG_ActiveControlWidth , _OOHG_ActiveControlValue , _OOHG_ActiveControlFont , _OOHG_ActiveControlSize , _OOHG_ActiveControlTooltip , _OOHG_ActiveControlOnLostFocus  , _OOHG_ActiveControlOnGotFocus , _OOHG_ActiveControlOnChange , _OOHG_ActiveControlHeight , _OOHG_ActiveControlOnEnter , _OOHG_ActiveControlRightAlign  , _OOHG_ActiveControlHelpId  , _OOHG_ActiveControlFontBold , _OOHG_ActiveControlFontItalic , _OOHG_ActiveControlFontUnderLine , _OOHG_ActiveControlFontStrikeOut , _OOHG_ActiveControlField , _OOHG_ActiveControlBackColor,_OOHG_ActiveControlFontColor,_OOHG_ActiveControlDateType,_OOHG_ActiveControlReadonly,_OOHG_ActiveControlInvisible,_OOHG_ActiveControlNoTabStop) ) ;
+                        _OOHG_ActiveControlField,_OOHG_ActiveControlBackColor,_OOHG_ActiveControlFontColor,_OOHG_ActiveControlReadonly,_OOHG_ActiveControlInvisible,_OOHG_ActiveControlNoTabStop, _OOHG_ActiveControlRtl) , ;
+                     TTextCharMask():Define( _OOHG_ActiveControlName , _OOHG_ActiveControlOf, _OOHG_ActiveControlCol, _OOHG_ActiveControlRow, _OOHG_ActiveControlInputMask , _OOHG_ActiveControlWidth , _OOHG_ActiveControlValue , _OOHG_ActiveControlFont , _OOHG_ActiveControlSize , _OOHG_ActiveControlTooltip , _OOHG_ActiveControlOnLostFocus  , _OOHG_ActiveControlOnGotFocus , _OOHG_ActiveControlOnChange , _OOHG_ActiveControlHeight , _OOHG_ActiveControlOnEnter , _OOHG_ActiveControlRightAlign  , _OOHG_ActiveControlHelpId  , _OOHG_ActiveControlFontBold , _OOHG_ActiveControlFontItalic , _OOHG_ActiveControlFontUnderLine , _OOHG_ActiveControlFontStrikeOut , _OOHG_ActiveControlField , _OOHG_ActiveControlBackColor,_OOHG_ActiveControlFontColor,_OOHG_ActiveControlDateType,_OOHG_ActiveControlReadonly,_OOHG_ActiveControlInvisible,_OOHG_ActiveControlNoTabStop, _OOHG_ActiveControlRtl) ) ;
 	)
 
 /*----------------------------------------------------------------------------
@@ -968,6 +981,7 @@ Month Calendar
         _OOHG_ActiveControlFontBold              := .f.          ;;
         _OOHG_ActiveControlFontItalic    := .f.          ;;
         _OOHG_ActiveControlFontStrikeOut := .f.          ;;
+        _OOHG_ActiveControlRtl           := .F.          ;;
         _OOHG_ActiveControlFontUnderLine := .f.
 
 #xcommand NOTODAY	<notoday>;
@@ -984,7 +998,7 @@ Month Calendar
 
 #xcommand END MONTHCALENDAR;
 	=>;
-	_DefineMonthCal (;
+        TMonthCal():Define(;
                 _OOHG_ActiveControlName,;
                 _OOHG_ActiveControlOf,;
                 _OOHG_ActiveControlCol,;
@@ -1001,7 +1015,12 @@ Month Calendar
                 _OOHG_ActiveControlOnChange,;
                 _OOHG_ActiveControlHelpId,;
                 _OOHG_ActiveControlInvisible,;
-                _OOHG_ActiveControlNoTabStop , _OOHG_ActiveControlFontBold , _OOHG_ActiveControlFontItalic , _OOHG_ActiveControlFontUnderLine , _OOHG_ActiveControlFontStrikeOut )
+                _OOHG_ActiveControlNoTabStop,;
+                _OOHG_ActiveControlFontBold,;
+                _OOHG_ActiveControlFontItalic,;
+                _OOHG_ActiveControlFontUnderLine,;
+                _OOHG_ActiveControlFontStrikeOut, ;
+                _OOHG_ActiveControlRtl )
 
 /*----------------------------------------------------------------------------
 Button
@@ -1182,11 +1201,12 @@ Image
         _OOHG_ActiveControlAction                := Nil          ;;
         _OOHG_ActiveControlHelpId                := Nil          ;;
         _OOHG_ActiveControlStretch               := .F.          ;;
+        _OOHG_ActiveControlRtl                   := .F.          ;;
         _OOHG_ActiveControlInvisible             := .f.
 
 #xcommand END IMAGE ;
 	=>;
-	_DefineImage(;
+        TImage():Define(;
                 _OOHG_ActiveControlName,;
                 _OOHG_ActiveControlOf,;
                 _OOHG_ActiveControlCol,;
@@ -1198,7 +1218,8 @@ Image
                 _OOHG_ActiveControlHelpId,;
                 _OOHG_ActiveControlInvisible,;
                 _OOHG_ActiveControlStretch,;
-		.F.;
+                .F.,;
+                _OOHG_ActiveControlRtl ;
 		)
 
 #xcommand STRETCH		<stretch>;
@@ -1393,6 +1414,7 @@ Combo Box
         _OOHG_ActiveControlDisplayEdit   := .f.          ;;
         _OOHG_ActiveControlDisplayChange := Nil          ;;
         _OOHG_ActiveControlImage         := Nil          ;;
+        _OOHG_ActiveControlRtl           := .F.          ;;
         _OOHG_ActiveControlFontUnderLine := .f.
 
 #xcommand DISPLAYEDIT <displayedit> ;
@@ -1459,7 +1481,8 @@ Combo Box
                 _OOHG_ActiveControlDisplayChange , ;
                 _OOHG_ActiveControlBreak , ;
                 _OOHG_ActiveControlGripperText, ;
-                _OOHG_ActiveControlImage ;
+                _OOHG_ActiveControlImage, ;
+                _OOHG_ActiveControlRtl ;
 		)
 
 /*----------------------------------------------------------------------------
@@ -1492,7 +1515,8 @@ Datepicker
         _OOHG_ActiveControlFontBold              := .f.          ;;
         _OOHG_ActiveControlFontItalic    := .f.          ;;
         _OOHG_ActiveControlFontStrikeOut := .f.          ;;
-        _OOHG_ActiveControlOnEnter               := Nil          ;;
+        _OOHG_ActiveControlOnEnter       := Nil          ;;
+        _OOHG_ActiveControlRtl           := .F.          ;;
         _OOHG_ActiveControlFontUnderLine := .f.
 
 
@@ -1511,7 +1535,7 @@ Datepicker
 
 #xcommand END DATEPICKER ;
 	=> ;
-        _DefineDatePick (;
+        TDatePick():Define(;
                 _OOHG_ActiveControlName,;
                 _OOHG_ActiveControlOf,;
                 _OOHG_ActiveControlCol,;
@@ -1535,7 +1559,9 @@ Datepicker
                 _OOHG_ActiveControlFontItalic , ;
                 _OOHG_ActiveControlFontUnderLine , ;
                 _OOHG_ActiveControlFontStrikeOut,;
-                _OOHG_ActiveControlField , _OOHG_ActiveControlOnEnter )
+                _OOHG_ActiveControlField , ;
+                _OOHG_ActiveControlOnEnter , ;
+                _OOHG_ActiveControlRtl )
 
 
 
@@ -1572,6 +1598,7 @@ Edit Box
         _OOHG_ActiveControlFontColor             := Nil          ;;
         _OOHG_ActiveControlField             := Nil ;;
         _OOHG_ActiveControlNoVScroll         := .f.          ;;
+        _OOHG_ActiveControlRtl               := .F.          ;;
         _OOHG_ActiveControlNoHScroll         := .f.
 
 #xcommand READONLYFIELDS <readonly> ;
@@ -1588,7 +1615,7 @@ Edit Box
 
 #xcommand END EDITBOX ;
 	=>;
-		_DefineEditBox(;
+                TEdit():Define(;
                         _OOHG_ActiveControlName,;
                         _OOHG_ActiveControlOf,;
                         _OOHG_ActiveControlCol,;
@@ -1616,7 +1643,8 @@ Edit Box
                         _OOHG_ActiveControlBackColor, ;
                         _OOHG_ActiveControlFontColor, ;
                         _OOHG_ActiveControlNoVScroll, ;
-                        _OOHG_ActiveControlNoHScroll )
+                        _OOHG_ActiveControlNoHScroll, ;
+                        _OOHG_ActiveControlRtl )
 
 
 /*----------------------------------------------------------------------------
@@ -1649,11 +1677,12 @@ Rich Edit Box
         _OOHG_ActiveControlNoTabStop         := .f.          ;;
         _OOHG_ActiveControlBackColor             := Nil          ;;
         _OOHG_ActiveControlFontColor             := Nil          ;;
+        _OOHG_ActiveControlRtl               := .F.          ;;
         _OOHG_ActiveControlField             := Nil
 
 #xcommand END RICHEDITBOX ;
 	=>;
-		_DefineRichEditBox(;
+                TEditRich():Define(;
                         _OOHG_ActiveControlName,;
                         _OOHG_ActiveControlOf,;
                         _OOHG_ActiveControlCol,;
@@ -1678,7 +1707,8 @@ Rich Edit Box
                         _OOHG_ActiveControlFontUnderLine , ;
                         _OOHG_ActiveControlFontStrikeOut ,;
                         _OOHG_ActiveControlField,;
-                        _OOHG_ActiveControlBackColor )
+                        _OOHG_ActiveControlBackColor,;
+                        _OOHG_ActiveControlRtl )
 
 /*----------------------------------------------------------------------------
 Label
@@ -1712,6 +1742,7 @@ Label
         _OOHG_ActiveControlTooltip           := Nil          ;;
         _OOHG_ActiveControlRightAlign    := .F.          ;;
         _OOHG_ActiveControlAutoSize              := .f. ;;
+        _OOHG_ActiveControlRtl                   := .F.          ;;
         _OOHG_ActiveControlCenterAlign := .F.
 
 #xcommand BACKCOLOR	<color>;
@@ -1783,7 +1814,8 @@ Label
                 _OOHG_ActiveControlFontStrikeOut , ;
                 _OOHG_ActiveControlAutoSize , ;
                 _OOHG_ActiveControlRightAlign , ;
-                _OOHG_ActiveControlCenterAlign )
+                _OOHG_ActiveControlCenterAlign , ;
+                _OOHG_ActiveControlRtl )
 
 
 #xcommand DEFINE IPADDRESS <name> ;
@@ -1807,11 +1839,12 @@ Label
         _OOHG_ActiveControlFontStrikeOut := .f.          ;;
         _OOHG_ActiveControlInvisible             := .f.          ;;
         _OOHG_ActiveControlNoTabStop         := .f.          ;;
+        _OOHG_ActiveControlRtl               := .F.          ;;
         _OOHG_ActiveControlFontUnderLine := .f.
 
 #xcommand END IPADDRESS ;
 =>;
-   _DefineIPAddress( ;
+   TIPAddress():Define( ;
       _OOHG_ActiveControlName , ;
       _OOHG_ActiveControlOf , ;
       _OOHG_ActiveControlCol , ;
@@ -1831,7 +1864,8 @@ Label
         _OOHG_ActiveControlFontBold , ;
         _OOHG_ActiveControlFontItalic , ;
         _OOHG_ActiveControlFontUnderLine , ;
-        _OOHG_ActiveControlFontStrikeOut )
+        _OOHG_ActiveControlFontStrikeOut , ;
+        _OOHG_ActiveControlRtl )
 
 
 /*----------------------------------------------------------------------------
@@ -2040,7 +2074,8 @@ Hyperlink
         _OOHG_ActiveControlVScroll           := .f.          ;;
         _OOHG_ActiveControlTransparent       := .f.          ;;
         _OOHG_ActiveControlHelpid            := Nil          ;;
-        _OOHG_ActiveControlHandCursor            := .F.          ;;
+        _OOHG_ActiveControlHandCursor        := .F.          ;;
+        _OOHG_ActiveControlRtl               := .F.          ;;
         _OOHG_ActiveControlinvisible         := .f.
 
 #xcommand ADDRESS   <address>;
@@ -2077,7 +2112,8 @@ Hyperlink
         _OOHG_ActiveControlInvisible,;
         _OOHG_ActiveControlFontItalic,;
         _OOHG_ActiveControlAutosize , ;
-        _OOHG_ActiveControlHandCursor )
+        _OOHG_ActiveControlHandCursor,;
+        _OOHG_ActiveControlRtl  )
 
 
 /*----------------------------------------------------------------------------
@@ -2121,11 +2157,12 @@ Spinner
         _OOHG_ActiveControlReadOnly              := .F.          ;;
         _OOHG_ActiveControlIncrement             := Nil      ;;
         _OOHG_ActiveControlinvisible         := .f.   ;;
+        _OOHG_ActiveControlRtl               := .F.          ;;
         _OOHG_ActiveControlNoTabStop             := .f.
 
 #xcommand END SPINNER;
 	=>;
-	_DefineSpinner(;
+        TSpinner():Define(;
                 _OOHG_ActiveControlName,;
                 _OOHG_ActiveControlOf,;
                 _OOHG_ActiveControlCol,;
@@ -2151,5 +2188,6 @@ Spinner
                 _OOHG_ActiveControlWrap , ;
                 _OOHG_ActiveControlReadOnly , ;
                 _OOHG_ActiveControlIncrement ,;
-                _OOHG_ActiveControlBackColor,;
-                _OOHG_ActiveControlFontColor)
+                _OOHG_ActiveControlBackColor, ;
+                _OOHG_ActiveControlFontColor, ;
+                _OOHG_ActiveControlRtl )

@@ -1,5 +1,5 @@
 /*
- * $Id: h_datepicker.prg,v 1.3 2005-08-18 04:07:28 guerra000 Exp $
+ * $Id: h_datepicker.prg,v 1.4 2005-08-25 05:57:42 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -94,27 +94,23 @@
 #include "oohg.ch"
 #include "common.ch"
 #include "hbclass.ch"
+#include "i_windefs.ch"
 
 CLASS TDatePick FROM TControl
    DATA Type      INIT "DATEPICK" READONLY
 
+   METHOD Define
    METHOD Value            SETGET
    METHOD Events_Enter
    METHOD Events_Notify
 ENDCLASS
 
-#define DTN_FIRST	(-760)
-#define DTN_DATETIMECHANGE (DTN_FIRST+1)
-
 *-----------------------------------------------------------------------------*
-Function _DefineDatePick ( ControlName, ParentForm, x, y, w, h, value, ;
-                           fontname, fontsize, tooltip, change, lostfocus, ;
-                           gotfocus, shownone, updown, rightalign, HelpId, ;
-                           invisible, notabstop , bold, italic, underline, strikeout , Field , Enter )
+METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
+               fontsize, tooltip, change, lostfocus, gotfocus, shownone, ;
+               updown, rightalign, HelpId, invisible, notabstop, bold, ;
+               italic, underline, strikeout, Field, Enter, lRtl ) CLASS TDatePick
 *-----------------------------------------------------------------------------*
-Local Self
-
-// AJ
 Local ControlHandle
 
    DEFAULT value     TO ctod ('  /  /  ')
@@ -126,7 +122,7 @@ Local ControlHandle
    DEFAULT invisible TO FALSE
    DEFAULT notabstop TO FALSE
 
-   Self := TDatePick():SetForm( ControlName, ParentForm, FontName, FontSize, , , .t. )
+   ::SetForm( ControlName, ParentForm, FontName, FontSize, , , .t. , lRtl )
 
    If ValType( Field ) $ 'CM' .AND. ! empty( Field )
       ::VarName := alltrim( Field )
@@ -134,7 +130,7 @@ Local ControlHandle
       Value := EVAL( ::Block )
 	EndIf
 
-   ControlHandle := InitDatePick ( ::Parent:hWnd, 0, x, y, w, h , '' , 0 , shownone , updown , rightalign, invisible, notabstop )
+   ControlHandle := InitDatePick ( ::Parent:hWnd, 0, x, y, w, h , '' , 0 , shownone , updown , rightalign, invisible, notabstop , ::lRtl )
 
 	If Empty (Value)
 		SetDatePickNull (ControlHandle)
@@ -151,7 +147,7 @@ Local ControlHandle
    ::OnGotFocus :=  GotFocus
    ::OnChange   :=  Change
 
-Return Nil
+Return Self
 
 *-----------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TDatePick

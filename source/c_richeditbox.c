@@ -1,5 +1,5 @@
 /*
- * $Id: c_richeditbox.c,v 1.1 2005-08-07 00:04:18 guerra000 Exp $
+ * $Id: c_richeditbox.c,v 1.2 2005-08-25 05:57:42 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -105,13 +105,27 @@
 #include "hbapiitm.h"
 #include "winreg.h"
 #include "tchar.h"
+#include "../include/oohg.h"
+
+static WNDPROC lpfnOldWndProc = 0;
+
+static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+{
+   return _OOHG_WndProc( GetControlObjectByHandle( ( LONG ) hWnd ), hWnd, msg, wParam, lParam, lpfnOldWndProc );
+}
 
 HB_FUNC( INITRICHEDITBOX )
 {
 
 	HWND hwnd;
 	HWND hwndRE;
-	int Style ;
+    int Style, StyleEx ;
+
+   StyleEx = WS_EX_CLIENTEDGE;
+   if ( hb_parl( 13 ) )
+   {
+      StyleEx |= WS_EX_LAYOUTRTL | WS_EX_RIGHTSCROLLBAR | WS_EX_RTLREADING;
+   }
 
 	hwnd = (HWND) hb_parnl (1);
 
@@ -135,10 +149,12 @@ HB_FUNC( INITRICHEDITBOX )
         InitCommonControls();
         if ( LoadLibrary("RichEd20.dll"))
 		{
-        	hwndRE = CreateWindowEx( WS_EX_CLIENTEDGE, RICHEDIT_CLASS , (LPSTR) NULL,
+            hwndRE = CreateWindowEx( StyleEx, RICHEDIT_CLASS , (LPSTR) NULL,
 	          Style ,
 		hb_parni(3), hb_parni(4) , hb_parni(5), hb_parni(6) ,
 		hwnd,(HMENU)hb_parni(2) , GetModuleHandle(NULL) , NULL ) ;
+
+   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hwndRE, GWL_WNDPROC, ( LONG ) SubClassFunc );
 
 		SendMessage ( hwndRE , (UINT)EM_LIMITTEXT ,(WPARAM) hb_parni(9) , (LPARAM) 0 ) ;
 
@@ -149,4 +165,3 @@ HB_FUNC( INITRICHEDITBOX )
 	hb_retnl ( (LONG) hwndRE );
 
 }
-

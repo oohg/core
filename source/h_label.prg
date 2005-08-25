@@ -1,5 +1,5 @@
 /*
- * $Id: h_label.prg,v 1.4 2005-08-21 21:16:58 guerra000 Exp $
+ * $Id: h_label.prg,v 1.5 2005-08-25 05:57:42 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -113,7 +113,7 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, w, h, fontname, ;
                fontsize, bold, BORDER, CLIENTEDGE, HSCROLL, VSCROLL, ;
                TRANSPARENT, aRGB_bk, aRGB_font, ProcedureName, tooltip, ;
                HelpId, invisible, italic, underline, strikeout, autosize, ;
-               rightalign, centeralign ) CLASS TLabel
+               rightalign, centeralign, lRtl ) CLASS TLabel
 *-----------------------------------------------------------------------------*
 Local ControlHandle
 
@@ -127,9 +127,9 @@ Local ControlHandle
    DEFAULT strikeout     TO FALSE
    DEFAULT autosize      TO FALSE
 
-   ::SetForm( ControlName, ParentForm, FontName, FontSize, aRGB_font, aRGB_bk )
+   ::SetForm( ControlName, ParentForm, FontName, FontSize, aRGB_font, aRGB_bk, , lRtl )
 
-   Controlhandle := InitLabel ( ::Parent:hWnd, Caption, 0, x, y, w, h, '', 0, Nil , border , clientedge , HSCROLL , VSCROLL , TRANSPARENT , invisible , rightalign , centeralign )
+   Controlhandle := InitLabel( ::Parent:hWnd, Caption, 0, x, y, w, h, '', 0, Nil , border , clientedge , HSCROLL , VSCROLL , TRANSPARENT , invisible , rightalign , centeralign , ::lRtl )
 
    ::New( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )

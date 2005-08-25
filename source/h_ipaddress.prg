@@ -1,5 +1,5 @@
 /*
- * $Id: h_ipaddress.prg,v 1.1 2005-08-07 00:13:51 guerra000 Exp $
+ * $Id: h_ipaddress.prg,v 1.2 2005-08-25 05:57:42 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -91,24 +91,23 @@
 	Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-#include "minigui.ch"
+#include "oohg.ch"
 #include "common.ch"
 #include "hbclass.ch"
 
 CLASS TIpAddress FROM TLabel
    DATA Type          INIT "IPADDRESS" READONLY
 
+   METHOD Define
    METHOD Value       SETGET
+   METHOD String      SETGET
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
-Function _DefineIPAddress ( ControlName, ParentForm, x, y, w, h, aValue, ;
-                            fontname, fontsize, tooltip, lostfocus, gotfocus, ;
-                            change, HelpId, invisible, notabstop , bold, italic, underline, strikeout )
+METHOD Define( ControlName, ParentForm, x, y, w, h, aValue, fontname, ;
+               fontsize, tooltip, lostfocus, gotfocus, change, HelpId, ;
+               invisible, notabstop, bold, italic, underline, strikeout, lRtl ) CLASS TIpAddress
 *-----------------------------------------------------------------------------*
-Local Self
-
-// AJ
 Local ControlHandle
 
    DEFAULT w         TO 120
@@ -119,9 +118,9 @@ Local ControlHandle
    DEFAULT invisible TO FALSE
    DEFAULT notabstop TO FALSE
 
-   Self := TIpAddress():SetForm( ControlName, ParentForm, FontName, FontSize, , , .t. )
+   ::SetForm( ControlName, ParentForm, FontName, FontSize, , , .t., lRtl )
 
-   ControlHandle := InitIPAddress( ::Parent:hWnd, 0, x, y, w, h , '' , 0, invisible, notabstop )
+   ControlHandle := InitIPAddress( ::Parent:hWnd, 0, x, y, w, h , '' , 0, invisible, notabstop, ::lRtl )
 
 	If aValue <> Nil
 		SetIPAddress( ControlHandle , aValue[1], aValue[2], aValue[3], aValue[4] )
@@ -135,7 +134,7 @@ Local ControlHandle
    ::OnGotFocus :=  GotFocus
    ::OnChange   :=  Change
 
-Return Nil
+Return Self
 
 *------------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TIpAddress
@@ -145,6 +144,16 @@ METHOD Value( uValue ) CLASS TIpAddress
          ClearIpAddress( ::hWnd )
       Elseif VALTYPE( uValue ) == "A"
          SetIPAddress( ::hWnd, uValue[1], uValue[2], uValue[3], uValue[4] )
+      Elseif VALTYPE( uValue ) $ "CM"
+         SetIPAddress( ::hWnd, uValue )
 		EndIf
    ENDIF
 RETURN GetIPAddress( ::hWnd )
+
+*------------------------------------------------------------------------------*
+METHOD String( uValue ) CLASS TIpAddress
+*------------------------------------------------------------------------------*
+   IF pcount() > 0
+      ::Value := uValue
+   ENDIF
+RETURN GetIPAddressString( ::hWnd )

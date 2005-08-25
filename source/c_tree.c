@@ -1,5 +1,5 @@
 /*
- * $Id: c_tree.c,v 1.2 2005-08-17 05:56:13 guerra000 Exp $
+ * $Id: c_tree.c,v 1.3 2005-08-25 05:57:42 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -109,16 +109,30 @@
 #include "hbapiitm.h"
 #include "winreg.h"
 #include "tchar.h"
-
 #include <commctrl.h>
+#include "../include/oohg.h"
 
-HB_FUNC (INITTREE)
+static WNDPROC lpfnOldWndProc = 0;
+
+static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+{
+   return _OOHG_WndProc( GetControlObjectByHandle( ( LONG ) hWnd ), hWnd, msg, wParam, lParam, lpfnOldWndProc );
+}
+
+HB_FUNC( INITTREE )
 {
 
 	INITCOMMONCONTROLSEX icex;
 
 	HWND hWndTV ;
 	UINT mask;
+   int StyleEx;
+
+   StyleEx = WS_EX_CLIENTEDGE;
+   if ( hb_parl( 10 ) )
+   {
+      StyleEx |= WS_EX_LAYOUTRTL | WS_EX_RIGHTSCROLLBAR | WS_EX_RTLREADING;
+   }
 
 	if( hb_parni(9) != 0 )  //Tree+
 	{
@@ -133,7 +147,7 @@ HB_FUNC (INITTREE)
 	icex.dwICC   = ICC_TREEVIEW_CLASSES ;
 	InitCommonControlsEx(&icex);
 
-	hWndTV = CreateWindowEx( WS_EX_CLIENTEDGE ,
+    hWndTV = CreateWindowEx( StyleEx,
 			WC_TREEVIEW, "",
 			WS_VISIBLE |
 			WS_TABSTOP |
@@ -151,8 +165,9 @@ HB_FUNC (INITTREE)
                             GetModuleHandle(NULL),
                             NULL);
 
+   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hWndTV, GWL_WNDPROC, ( LONG ) SubClassFunc );
 
-	hb_retnl( (LONG) hWndTV ) ;
+   hb_retnl( (LONG) hWndTV ) ;
 
 }
 

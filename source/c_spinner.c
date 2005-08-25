@@ -1,5 +1,5 @@
 /*
- * $Id: c_spinner.c,v 1.1 2005-08-07 00:05:14 guerra000 Exp $
+ * $Id: c_spinner.c,v 1.2 2005-08-25 05:57:42 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -104,78 +104,65 @@
 #include "hbapiitm.h"
 #include "winreg.h"
 #include "tchar.h"
+#include "../include/oohg.h"
+
+static WNDPROC lpfnOldWndProc = 0;
+
+static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+{
+   return _OOHG_WndProc( GetControlObjectByHandle( ( LONG ) hWnd ), hWnd, msg, wParam, lParam, lpfnOldWndProc );
+}
 
 HB_FUNC( INITSPINNER )
 {
-	HWND hwnd;
-	HWND hbutton;
-	HWND hupdown;
-	int Style1 = ES_NUMBER | WS_CHILD | ES_AUTOHSCROLL ;
-	int Style2 = WS_CHILD | WS_BORDER | UDS_ARROWKEYS | UDS_ALIGNRIGHT | UDS_SETBUDDYINT | UDS_NOTHOUSANDS ;
+   HWND hwnd;
+   HWND hupdown;
+   int Style2 = WS_CHILD | WS_BORDER | UDS_ARROWKEYS | UDS_ALIGNRIGHT | UDS_SETBUDDYINT | UDS_NOTHOUSANDS;
+   INITCOMMONCONTROLSEX  i;
+   int StyleEx;
 
-	INITCOMMONCONTROLSEX  i;
+   StyleEx = WS_EX_CLIENTEDGE;
+   if ( hb_parl( 12 ) )
+   {
+      StyleEx |= WS_EX_LAYOUTRTL | WS_EX_RIGHTSCROLLBAR | WS_EX_RTLREADING;
+   }
 
-	i.dwSize = sizeof(INITCOMMONCONTROLSEX);
-	InitCommonControlsEx(&i);
+   i.dwSize = sizeof(INITCOMMONCONTROLSEX);
+   InitCommonControlsEx(&i);
 
-	hwnd = (HWND) hb_parnl (1);
+   hwnd = ( HWND ) hb_parnl( 1 );
 
-	if ( !hb_parl (11) )
-	{
-		Style1 = Style1 | WS_VISIBLE ;
-		Style2 = Style2 | WS_VISIBLE ;
-	}
+   if ( !hb_parl (9) )
+   {
+      Style2 = Style2 | WS_VISIBLE ;
+   }
 
-	if ( !hb_parl (12) )
-	{
-		Style1 = Style1 | WS_TABSTOP ;
-	}
+   if ( hb_parl (10) )
+   {
+      Style2 = Style2 | UDS_WRAP ;
+   }
 
-	if ( hb_parl (13) )
-	{
-		Style2 = Style2 | UDS_WRAP ;
-	}
-
-	if ( hb_parl (14) )
-	{
-		Style1 = Style1 | ES_READONLY ;
-	}
-
-	hbutton = CreateWindowEx( WS_EX_CLIENTEDGE ,
-                             "EDIT" ,
-                             "" ,
-                             Style1 ,
-                             hb_parni(3) ,
-                             hb_parni(4) ,
-                             hb_parni(5) ,
-                             hb_parni(10) ,
-                             hwnd ,
-                             (HMENU)hb_parni(2) ,
-                             GetModuleHandle(NULL) ,
-                             NULL ) ;
-
-	hupdown = CreateWindowEx( WS_EX_CLIENTEDGE ,
+    hupdown = CreateWindowEx( StyleEx,
                              UPDOWN_CLASS ,
                              "" ,
                              Style2 ,
-                             hb_parni(3)+hb_parni(5) ,
-                             hb_parni(4) ,
-                             15 ,
-                             hb_parni(10) ,
+                             hb_parni(3),
+                             hb_parni(4),
+                             hb_parni(5),
+                             hb_parni(6),
                              hwnd ,
                              (HMENU) 0 ,
                              GetModuleHandle(NULL) ,
                              NULL ) ;
 
-	SendMessage ( hupdown, UDM_SETBUDDY, (WPARAM)hbutton, (LPARAM)NULL ) ;
-	SendMessage ( hupdown, UDM_SETRANGE32, (WPARAM)hb_parni(8) , (LPARAM) hb_parni(9) ) ;
+   SendMessage ( hupdown, UDM_SETBUDDY, ( WPARAM ) hb_parnl( 11 ), (LPARAM)NULL ) ;
+   SendMessage ( hupdown, UDM_SETRANGE32, (WPARAM) hb_parni(7) , (LPARAM) hb_parni(8) ) ;
 
-	hb_reta( 2 );
-	hb_stornl( (LONG) hbutton , -1, 1 );
-	hb_stornl( (LONG) hupdown , -1, 2 );
+   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hupdown, GWL_WNDPROC, ( LONG ) SubClassFunc );
+
+   hb_retnl( ( LONG ) hupdown );
 
 }
-
 
 HB_FUNC( SETSPINNERRANGE )
 {
@@ -187,5 +174,5 @@ HB_FUNC( SETSPINNERINCREMENT )
    UDACCEL inc ;
    inc.nSec = 0;
    inc.nInc = hb_parnl(2);
- 	SendMessage ( (HWND) hb_parnl (1), UDM_SETACCEL, (WPARAM) 1 , (LPARAM) &inc ) ;
+   SendMessage ( (HWND) hb_parnl (1), UDM_SETACCEL, (WPARAM) 1 , (LPARAM) &inc ) ;
 }

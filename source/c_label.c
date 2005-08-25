@@ -1,5 +1,5 @@
 /*
- * $Id: c_label.c,v 1.1 2005-08-07 00:03:18 guerra000 Exp $
+ * $Id: c_label.c,v 1.2 2005-08-25 05:57:42 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -103,6 +103,14 @@
 #include "hbapiitm.h"
 #include "winreg.h"
 #include "tchar.h"
+#include "../include/oohg.h"
+
+static WNDPROC lpfnOldWndProc = 0;
+
+static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+{
+   return _OOHG_WndProc( GetControlObjectByHandle( ( LONG ) hWnd ), hWnd, msg, wParam, lParam, lpfnOldWndProc );
+}
 
 HB_FUNC( INITLABEL )
 {
@@ -114,10 +122,15 @@ HB_FUNC( INITLABEL )
 
 	hwnd = (HWND) hb_parnl (1);
 
-	if ( hb_parl (12) )
-	{
-		ExStyle = ExStyle | WS_EX_CLIENTEDGE ;
-	}
+   if ( hb_parl (12) )
+   {
+      ExStyle |= WS_EX_CLIENTEDGE;
+   }
+
+   if ( hb_parl( 19 ) )
+   {
+      ExStyle |= WS_EX_LAYOUTRTL | WS_EX_RIGHTSCROLLBAR | WS_EX_RTLREADING;
+   }
 
 	if ( hb_parl (11) )
 	{
@@ -136,7 +149,7 @@ HB_FUNC( INITLABEL )
 
 	if ( hb_parl (15) )
 	{
-		ExStyle = ExStyle | WS_EX_TRANSPARENT ;
+        ExStyle |= WS_EX_TRANSPARENT;
 	}
 
 	if ( ! hb_parl (16) )
@@ -159,6 +172,8 @@ HB_FUNC( INITLABEL )
 	hb_parni(4), hb_parni(5) , hb_parni(6), hb_parni(7),
 	hwnd,(HMENU)hb_parni(3) , GetModuleHandle(NULL) , NULL ) ;
 
-	hb_retnl ( (LONG) hbutton );
+   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hbutton, GWL_WNDPROC, ( LONG ) SubClassFunc );
+
+   hb_retnl ( ( LONG ) hbutton );
 
 }

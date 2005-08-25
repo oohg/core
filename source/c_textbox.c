@@ -1,5 +1,5 @@
 /*
- * $Id: c_textbox.c,v 1.3 2005-08-19 05:47:38 guerra000 Exp $
+ * $Id: c_textbox.c,v 1.4 2005-08-25 05:57:42 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -109,25 +109,33 @@
 #include "tchar.h"
 #include "../include/oohg.h"
 
-static LRESULT APIENTRY SubClassFunc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
-extern PHB_ITEM GetControlObjectByHandle( LONG hWnd );
-
 static WNDPROC lpfnOldWndProc = 0;
+
+static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+{
+   return _OOHG_WndProc( GetControlObjectByHandle( ( LONG ) hWnd ), hWnd, msg, wParam, lParam, lpfnOldWndProc );
+}
 
 HB_FUNC( INITTEXTBOX )
 {
    HWND hwnd;         // Handle of the parent window/form.
    HWND hedit;        // Handle of the child window/control.
-   WNDPROC ll;
+   int StyleEx;
+
+   StyleEx = WS_EX_CLIENTEDGE;
+   if ( hb_parl( 9 ) )
+   {
+      StyleEx |= WS_EX_LAYOUTRTL | WS_EX_RIGHTSCROLLBAR | WS_EX_RTLREADING;
+   }
 
    // Get the handle of the parent window/form.
    hwnd = ( HWND ) hb_parnl( 1 );
 
    // Creates the child control.
-   hedit = CreateWindowEx( WS_EX_CLIENTEDGE ,
+   hedit = CreateWindowEx( StyleEx,
                            "EDIT",
                            "",
-                           ( WS_CHILD | ES_AUTOHSCROLL | hb_parni( 7 ) ),
+                           ( WS_CHILD | hb_parni( 7 ) ),
                            hb_parni( 3 ),
                            hb_parni( 4 ),
                            hb_parni( 5 ),
@@ -137,45 +145,15 @@ HB_FUNC( INITTEXTBOX )
                            GetModuleHandle( NULL ),
                            NULL );
 
-   SendMessage( hedit, ( UINT ) EM_LIMITTEXT, ( WPARAM) hb_parni( 8 ), ( LPARAM ) 0 );
-
-   ll = lpfnOldWndProc;
-   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hedit, GWL_WNDPROC, ( LONG ) SubClassFunc );
-   if( ll != NULL && ll != lpfnOldWndProc )
+   if( hb_parni( 8 ) != 0 )
    {
-      MessageBox( GetActiveWindow(), "cambia!", ".", MB_OK | MB_ICONINFORMATION | MB_SYSTEMMODAL );
+      SendMessage( hedit, ( UINT ) EM_LIMITTEXT, ( WPARAM) hb_parni( 8 ), ( LPARAM ) 0 );
    }
+
+   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hedit, GWL_WNDPROC, ( LONG ) SubClassFunc );
 
    hb_retnl( ( LONG ) hedit );
 
-}
-
-static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
-{
-   PHB_ITEM pResult = NULL;
-
-   if( msg == WM_CHAR )
-   {
-      _OOHG_Send( GetControlObjectByHandle( ( LONG ) hWnd ), s_Events_Char );
-      hb_vmPushLong( wParam );
-      hb_vmPushLong( lParam );
-      hb_vmSend( 2 );
-      pResult = hb_param( -1, HB_IT_NUMERIC );
-/*
-      BOOL bCtrl     = GetKeyState( VK_CONTROL ) & 0x8000;
-      int  iScanCode = HIWORD( lParam ) & 0xFF ;
-      int  c = ( int ) wParam;
-*/
-   }
-
-   if( pResult )
-   {
-      return hb_itemGetNL( pResult );
-   }
-   else
-   {
-      return CallWindowProc( lpfnOldWndProc, hWnd, msg, wParam, lParam );
-   }
 }
 
 HB_FUNC( SETTEXTEDITREADONLY )

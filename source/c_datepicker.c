@@ -1,5 +1,5 @@
 /*
- * $Id: c_datepicker.c,v 1.1 2005-08-07 00:02:34 guerra000 Exp $
+ * $Id: c_datepicker.c,v 1.2 2005-08-25 05:57:42 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -105,12 +105,21 @@
 #include "hbapiitm.h"
 #include "winreg.h"
 #include "tchar.h"
+#include "../include/oohg.h"
 
-HB_FUNC ( INITDATEPICK )
+static WNDPROC lpfnOldWndProc = 0;
+
+static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+{
+   return _OOHG_WndProc( GetControlObjectByHandle( ( LONG ) hWnd ), hWnd, msg, wParam, lParam, lpfnOldWndProc );
+}
+
+HB_FUNC( INITDATEPICK )
 {
 	HWND hwnd;
 	HWND hbutton;
-	int Style = WS_CHILD ;
+    int Style = WS_CHILD;
+    int StyleEx;
 
 	INITCOMMONCONTROLSEX  i;
 	i.dwSize = sizeof(INITCOMMONCONTROLSEX);
@@ -118,6 +127,12 @@ HB_FUNC ( INITDATEPICK )
 	InitCommonControlsEx(&i);
 
 	hwnd = (HWND) hb_parnl (1);
+
+   StyleEx = WS_EX_CLIENTEDGE;
+   if ( hb_parl( 14 ) )
+   {
+      StyleEx |= WS_EX_LAYOUTRTL | WS_EX_RIGHTSCROLLBAR | WS_EX_RTLREADING;
+   }
 
 	if ( hb_parl (9) )
 	{
@@ -144,12 +159,14 @@ HB_FUNC ( INITDATEPICK )
 		Style = Style | WS_TABSTOP ;
 	}
 
-	hbutton = CreateWindowEx(WS_EX_CLIENTEDGE,"SysDateTimePick32",0,
+    hbutton = CreateWindowEx( StyleEx, "SysDateTimePick32", 0,
 	Style ,
 	hb_parni(3), hb_parni(4) ,hb_parni(5) ,hb_parni(6) ,
 	hwnd,(HMENU)hb_parni(2) , GetModuleHandle(NULL) , NULL ) ;
 
-	hb_retnl ( (LONG) hbutton );
+   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hbutton, GWL_WNDPROC, ( LONG ) SubClassFunc );
+
+   hb_retnl ( (LONG) hbutton );
 }
 
 HB_FUNC ( SETDATEPICK )
@@ -217,4 +234,3 @@ HB_FUNC ( SETDATEPICKNULL )
 
 	SendMessage(hwnd, DTM_SETSYSTEMTIME,GDT_NONE, (LPARAM) 0 );
 }
-

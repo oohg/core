@@ -1,5 +1,5 @@
 /*
- * $Id: c_progressbar.c,v 1.1 2005-08-07 00:04:18 guerra000 Exp $
+ * $Id: c_progressbar.c,v 1.2 2005-08-25 05:57:42 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -104,12 +104,20 @@
 #include "hbapiitm.h"
 #include "winreg.h"
 #include "tchar.h"
+#include "../include/oohg.h"
 
-HB_FUNC ( INITPROGRESSBAR )
+static WNDPROC lpfnOldWndProc = 0;
+
+static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+{
+   return _OOHG_WndProc( GetControlObjectByHandle( ( LONG ) hWnd ), hWnd, msg, wParam, lParam, lpfnOldWndProc );
+}
+
+HB_FUNC( INITPROGRESSBAR )
 {
 	HWND hwnd;
 	HWND hbutton;
-
+    int StyleEx;
 	int Style = WS_CHILD ;
 
 	INITCOMMONCONTROLSEX  i;
@@ -118,6 +126,12 @@ HB_FUNC ( INITPROGRESSBAR )
 	InitCommonControlsEx(&i);
 
 	hwnd = (HWND) hb_parnl (1);
+
+   StyleEx = WS_EX_CLIENTEDGE;
+   if ( hb_parl( 13 ) )
+   {
+      StyleEx |= WS_EX_LAYOUTRTL | WS_EX_RIGHTSCROLLBAR | WS_EX_RTLREADING;
+   }
 
 	if ( hb_parl (9) )
 	{
@@ -134,7 +148,7 @@ HB_FUNC ( INITPROGRESSBAR )
 		Style = Style | WS_VISIBLE ;
 	}
 
-	hbutton = CreateWindowEx( WS_EX_CLIENTEDGE ,
+    hbutton = CreateWindowEx( StyleEx,
                              "msctls_progress32" ,
                              0 ,
                              Style ,
@@ -148,6 +162,8 @@ HB_FUNC ( INITPROGRESSBAR )
 
 	SendMessage(hbutton,PBM_SETRANGE,0,MAKELONG(hb_parni(7),hb_parni(8)));
 	SendMessage(hbutton,PBM_SETPOS,(WPARAM) hb_parni(12),0);
+
+   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hbutton, GWL_WNDPROC, ( LONG ) SubClassFunc );
 
 	hb_retnl ( (LONG) hbutton );
 }

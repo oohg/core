@@ -1,5 +1,5 @@
 /*
- * $Id: c_combo.c,v 1.3 2005-08-18 04:02:20 guerra000 Exp $
+ * $Id: c_combo.c,v 1.4 2005-08-25 05:57:42 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -107,11 +107,18 @@
 #include <windowsx.h>
 #include "../include/oohg.h"
 
+static WNDPROC lpfnOldWndProc = 0;
+
+static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+{
+   return _OOHG_WndProc( GetControlObjectByHandle( ( LONG ) hWnd ), hWnd, msg, wParam, lParam, lpfnOldWndProc );
+}
+
 HB_FUNC( INITCOMBOBOX )
 {
 	HWND hwnd;
 	HWND hbutton;
-	int Style;
+    int Style, StyleEx;
     INITCOMMONCONTROLSEX  i;
 
     i.dwSize = sizeof( INITCOMMONCONTROLSEX );
@@ -119,6 +126,12 @@ HB_FUNC( INITCOMBOBOX )
     InitCommonControlsEx( &i );
 
 	hwnd = (HWND) hb_parnl (1);
+
+   StyleEx = 0;
+   if ( hb_parl( 14 ) )
+   {
+      StyleEx |= WS_EX_LAYOUTRTL | WS_EX_RIGHTSCROLLBAR | WS_EX_RTLREADING;
+   }
 
 	Style = WS_CHILD | WS_VSCROLL ;
 
@@ -151,7 +164,7 @@ HB_FUNC( INITCOMBOBOX )
 		Style = Style | CBS_NOINTEGRALHEIGHT ;
 	}
 
-    hbutton = CreateWindowEx( 0, WC_COMBOBOXEX,
+    hbutton = CreateWindowEx( StyleEx, WC_COMBOBOXEX,
                            "" ,
                            Style ,
                            hb_parni(3) ,
@@ -163,7 +176,9 @@ HB_FUNC( INITCOMBOBOX )
                            GetModuleHandle(NULL) ,
                            NULL ) ;
 
-	hb_retnl ( (LONG) hbutton );
+   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hbutton, GWL_WNDPROC, ( LONG ) SubClassFunc );
+
+   hb_retnl ( (LONG) hbutton );
 }
 
 static int ComboInsertAnyItem( HWND hWnd, int iPos, PHB_ITEM pItem )
