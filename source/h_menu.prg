@@ -1,5 +1,5 @@
 /*
- * $Id: h_menu.prg,v 1.2 2005-08-07 05:14:37 guerra000 Exp $
+ * $Id: h_menu.prg,v 1.3 2005-08-25 06:04:53 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -91,7 +91,7 @@
 	Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-#include "minigui.ch"
+#include "oohg.ch"
 #include "hbclass.ch"
 
 STATIC _OOHG_xMenuActive := {}
