@@ -1,5 +1,5 @@
 /*
- * $Id: h_hotkey.prg,v 1.1 2005-08-07 00:15:02 guerra000 Exp $
+ * $Id: h_hotkey.prg,v 1.2 2005-08-26 06:04:16 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -91,7 +91,7 @@
 	Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-#include 'minigui.ch'
+#include 'oohg.ch'
 
 #define HOTKEY_ID        1
 #define HOTKEY_MOD       2

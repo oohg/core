@@ -1,5 +1,5 @@
 /*
- * $Id: h_scroll.prg,v 1.2 2005-08-19 05:50:40 guerra000 Exp $
+ * $Id: h_scroll.prg,v 1.3 2005-08-26 06:04:16 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -49,9 +49,9 @@
  *
  */
 
+#include 'oohg.ch'
 #include "hbclass.ch"
 #include 'common.ch'
-#include 'minigui.ch'
 #include 'i_windefs.ch'
 
 CLASS TScrollBar FROM TControl
