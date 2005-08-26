@@ -1,5 +1,5 @@
 /*
- * $Id: h_error.prg,v 1.3 2005-08-25 06:10:11 guerra000 Exp $
+ * $Id: h_error.prg,v 1.4 2005-08-26 06:05:58 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -106,6 +106,11 @@
 *------------------------------------------------------------------------------
 Function MsgOOHGError(Message)
     Local n, ai, HtmArch, xText
+
+   // Kill timers and hot keys
+   _KillAllTimers()
+   _KillAllKeys()
+
     HtmArch := Html_ErrorLog()
     Html_LineText(HtmArch,"Date:"+Dtoc(Date())+"  "+"Time: "+Time())
     n := 1

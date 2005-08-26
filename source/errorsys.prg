@@ -1,5 +1,5 @@
 /*
- * $Id: errorsys.prg,v 1.2 2005-08-17 05:52:09 guerra000 Exp $
+ * $Id: errorsys.prg,v 1.3 2005-08-26 06:05:58 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -143,8 +143,9 @@ STATIC FUNCTION DefError( oError )
       cDOSError := "(DOS Error " + LTrim( Str( oError:osCode ) ) + ")"
    ENDIF
 
-   // Kill timers
+   // Kill timers and hot keys
    _KillAllTimers()
+   _KillAllKeys()
 
    // "Quit" selected
 
