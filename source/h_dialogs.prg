@@ -1,5 +1,5 @@
 /*
- * $Id: h_dialogs.prg,v 1.2 2005-08-25 06:04:27 guerra000 Exp $
+ * $Id: h_dialogs.prg,v 1.3 2005-08-26 06:04:53 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -90,6 +90,8 @@
 	"Harbour Project"
 	Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
+
+#include "oohg.ch"
 
 *-----------------------------------------------------------------------------*
 Function GetColor( aInitColor )
