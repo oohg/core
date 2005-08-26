@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.13 2005-08-25 06:08:13 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.14 2005-08-26 06:20:40 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -250,6 +250,7 @@ CLASS TForm FROM TWindow
 
    METHOD FocusedControl
    METHOD SizePos
+   METHOD Define2
    METHOD New
    METHOD Hide
    METHOD Show
@@ -276,6 +277,34 @@ CLASS TForm FROM TWindow
    ERROR HANDLER Error
    METHOD Control
 ENDCLASS
+
+*------------------------------------------------------------------------------*
+METHOD Define2( /* FormName, Caption, x, y, w, h, Parent */ ) CLASS TForm
+/*
+helpbutton, nominimize, nomaximize, nosize, nosysmenu, nocaption, virtualheight, virtualwidth, hscrollbox, vscrollbox,
+fontname, fontsize, aRGB, cursor, icon, noshow,
+gotfocus, lostfocus, scrollleft, scrollright, scrollup, scrolldown, maximizeprocedure , minimizeprocedure,
+initprocedure, ReleaseProcedure, SizeProcedure, ClickProcedure, PaintProcedure, MouseMoveProcedure, MouseDragProcedure, InteractiveCloseProcedure, NoAutoRelease
+nStyle, nStyleEx, lRtl
+*------------------------------------------------------------------------------*
+*Function _DefineWindow          ( topmost , main , child ,
+                                   NotifyIconName , NotifyIconTooltip , NotifyIconLeftClick )
+*Function _DefineModalWindow     (  )
+*Function _DefineSplitChildWindow( break , grippertext  , Focused  )
+
+
+
+      nStyle += if( ValType( nominimize ) != "L" .OR. ! nominimize, WS_MINIMIZEBOX, 0 ) + ;
+                if( ValType( nomaximize ) != "L" .OR. ! nomaximize, WS_MAXIMIZEBOX, 0 )
+   nStyle    += if( ValType( nosize )     != "L" .OR. ! nosize,    WS_SIZEBOX, 0 ) + ;
+                if( ValType( nosysmenu )  != "L" .OR. ! nosysmenu, WS_SYSMENU, 0 ) + ;
+                if( ValType( nocaption )  != "L" .OR. ! nocaption, WS_CAPTION, 0 ) + ;
+                if( ValType( vscroll )    == "L" .AND. vscroll,    WS_VSCROLL, 0 ) + ;
+                if( ValType( hscroll )    == "L" .AND. hscroll,    WS_HSCROLL, 0 )
+   nStyleEx  += if( ValType( helpbutton ) == "L" .AND. helpbutton, WS_EX_CONTEXTHELP, 0 ) + ;
+                if( ValType( topmost )    == "L" .AND. topmost,    WS_EX_TOPMOST, 0 )
+*/
+Return Self
 
 *------------------------------------------------------------------------------*
 METHOD New( hWnd, cName ) CLASS TForm
@@ -1436,6 +1465,16 @@ Local oWnd, oCtrl
 
 return nil
 
+*-----------------------------------------------------------------------------*
+Procedure _KillAllKeys()
+*-----------------------------------------------------------------------------*
+Local I, hWnd
+   FOR I := 1 TO LEN( _OOHG_aFormhWnd )
+      hWnd := _OOHG_aFormhWnd[ I ]:hWnd
+      AEVAL( _OOHG_aFormhWnd[ I ]:aHotKeys, { |a| ReleaseHotKey( hWnd, a[ HOTKEY_ID ] ) } )
+   NEXT
+Return
+
 // Initializes C variables
 *-----------------------------------------------------------------------------*
 Procedure _OOHG_Init_C_Vars()
@@ -1560,7 +1599,7 @@ Return GetFormObject( FormName ):SizePos( row , col , width , height )
 Function _DefineWindow( FormName, Caption, x, y, w, h ,nominimize ,nomaximize ,nosize ,nosysmenu, nocaption , StatusBar , StatusText ,initprocedure ,ReleaseProcedure , MouseDragProcedure ,SizeProcedure , ClickProcedure , MouseMoveProcedure, aRGB , PaintProcedure , noshow , topmost , main , icon , child , fontname , fontsize , NotifyIconName , NotifyIconTooltip , NotifyIconLeftClick , GotFocus , LostFocus , virtualheight , VirtualWidth , scrollleft , scrollright , scrollup , scrolldown , hscrollbox , vscrollbox , helpbutton , maximizeprocedure , minimizeprocedure , cursor , NoAutoRelease , InteractiveCloseProcedure, lRtl )
 *-----------------------------------------------------------------------------*
 Local i , htooltip , vscroll , hscroll , BrushHandle , FormHandle, ParentHandle
-Local oWnd
+Local oWnd // , nStyle, nStyleEx
 
 * Unused Parameters
 
@@ -1712,6 +1751,33 @@ StatusText := Nil
 
    Formhandle = InitWindow( Caption , x, y, w, h, nominimize, nomaximize, nosize, nosysmenu, nocaption , topmost , FormName , ParentHandle , vscroll , hscroll , helpbutton, lRtl )
 
+/*
+// InitWindow( 1-Caption , x, y, w, h, 6-nominimize, 7-nomaximize, 8-nosize, 9-nosysmenu, 10-nocaption , 11-topmost , 12-FormName , 13-ParentHandle , 14-vscroll , 15-hscroll , 16-helpbutton, 17-lRtl )
+   nStyle   := WS_POPUP
+   nStyleEx := 0 // lRtl
+   If ValType( helpbutton ) == "L" .AND. helpbutton
+      nStyleEx += WS_EX_CONTEXTHELP
+   Else
+      nStyle += if( ValType( nominimize ) != "L" .OR. ! nominimize, WS_MINIMIZEBOX, 0 ) + ;
+                if( ValType( nomaximize ) != "L" .OR. ! nomaximize, WS_MAXIMIZEBOX, 0 )
+   EndIf
+   nStyle    += if( ValType( nosize )     != "L" .OR. ! nosize,    WS_SIZEBOX, 0 ) + ;
+                if( ValType( nosysmenu )  != "L" .OR. ! nosysmenu, WS_SYSMENU, 0 ) + ;
+                if( ValType( nocaption )  != "L" .OR. ! nocaption, WS_CAPTION, 0 ) + ;
+                if( ValType( vscroll )    == "L" .AND. vscroll,    WS_VSCROLL, 0 ) + ;
+                if( ValType( hscroll )    == "L" .AND. hscroll,    WS_HSCROLL, 0 )
+   nStyleEx  += if( ValType( helpbutton ) == "L" .AND. helpbutton, WS_EX_CONTEXTHELP, 0 ) + ;
+                if( ValType( topmost )    == "L" .AND. topmost,    WS_EX_TOPMOST, 0 )
+
+	hwnd = CreateWindowEx( ExStyle , hb_parc(12) ,hb_parc(1),
+	Style ,
+	hb_parni(2),
+	hb_parni(3),
+	hb_parni(4),
+	hb_parni(5),
+	(HWND) hb_parnl (13),(HMENU)NULL, GetModuleHandle( NULL ) ,NULL);
+*/
+
 	if Valtype ( cursor ) != "U"
 		SetWindowCursor( Formhandle , cursor )
 	EndIf
@@ -1796,7 +1862,7 @@ Return oWnd
 Function _DefineModalWindow( FormName, Caption, x, y, w, h, Parent ,nosize ,nosysmenu, nocaption , StatusBar , StatusText ,InitProcedure, ReleaseProcedure , MouseDragProcedure , SizeProcedure , ClickProcedure , MouseMoveProcedure, aRGB , PaintProcedure , icon , FontName , FontSize , GotFocus , LostFocus , virtualheight , VirtualWidth , scrollleft , scrollright , scrollup , scrolldown  , hscrollbox , vscrollbox , helpbutton , cursor , noshow  , NoAutoRelease  , InteractiveCloseProcedure, lRtl )
 *-----------------------------------------------------------------------------*
 Local htooltip , vscroll , hscroll , BrushHandle
-Local oWnd
+Local oWnd // , nStyle, nStyleEx
 
 // AJ
 Local FormHandle
@@ -1928,6 +1994,36 @@ StatusText := Nil
 	BrushHandle := RegisterWindow(icon,FormName , aRGB )
 
    Formhandle = InitModalWindow( Caption , x, y, w, h , Parent:hWnd ,nosize ,nosysmenu, nocaption , FormName , vscroll , hscroll , helpbutton , lRtl )
+/*
+// InitModalWindow( Caption , x, y, w, h , 6-Parent:hWnd , 7-nosize , 8-nosysmenu, 9-nocaption , 10-FormName , 11-vscroll , 12-hscroll , 13-helpbutton , 14-lRtl )
+   nStyle   := WS_POPUP
+   nStyleEx := 0 // lRtl
+   If ValType( helpbutton ) == "L" .AND. helpbutton
+      nStyleEx += WS_EX_CONTEXTHELP
+   EndIf
+   nStyle    += if( ValType( nosize )     != "L" .OR. ! nosize,    WS_SIZEBOX, 0 ) + ;
+                if( ValType( nosysmenu )  != "L" .OR. ! nosysmenu, WS_SYSMENU, 0 ) + ;
+                if( ValType( nocaption )  != "L" .OR. ! nocaption, WS_CAPTION, 0 ) + ;
+                if( ValType( vscroll )    == "L" .AND. vscroll,    WS_VSCROLL, 0 ) + ;
+                if( ValType( hscroll )    == "L" .AND. hscroll,    WS_HSCROLL, 0 )
+
+	hwnd = CreateWindowEx( ExStyle ,hb_parc(10),hb_parc(1),
+	Style,
+	hb_parni(2),
+	hb_parni(3),
+	hb_parni(4),
+	hb_parni(5),
+   (HWND) hb_parnl (6),(HMENU)NULL, GetModuleHandle( NULL ) ,NULL);
+
+	if(hwnd == NULL)
+	{
+	MessageBox(0, "Window Creation Failed!", "Error!",
+	MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
+	return;
+	}
+
+	hb_retnl ((LONG)hwnd);
+*/
 
 	if Valtype ( cursor ) != "U"
 		SetWindowCursor( Formhandle , cursor )
