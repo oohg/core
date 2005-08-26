@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.12 2005-08-25 06:09:16 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.13 2005-08-26 06:30:36 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -285,6 +285,7 @@ PRIVATE __aPicture
    cWorkArea := ::WorkArea
 
    If Select( cWorkArea ) == 0
+      ::RecCount := 0
       Return nil
    EndIf
 
@@ -396,6 +397,7 @@ Local PageLength , _RecNo , _DeltaScroll := { Nil , Nil , Nil , Nil } , s
 	If  s == PageLength
 
       If Select( ::WorkArea ) == 0
+         ::RecCount := 0
          Return nil
 		EndIf
 
@@ -436,6 +438,7 @@ Local _RecNo , _DeltaScroll := { Nil , Nil , Nil , Nil }
 
    If LISTVIEW_GETFIRSTITEM ( ::hWnd ) == 1
       If Select( ::WorkArea ) == 0
+         ::RecCount := 0
          Return nil
 		EndIf
       _RecNo := ( ::WorkArea )->( RecNo() )
@@ -466,6 +469,7 @@ Local _RecNo , _DeltaScroll := { Nil , Nil , Nil , Nil }
    _DeltaScroll := ListView_GetSubItemRect ( ::hWnd, 0 , 0 )
 
    If Select( ::WorkArea ) == 0
+      ::RecCount := 0
       Return nil
 	EndIf
    _RecNo := ( ::WorkArea )->( RecNo() )
@@ -489,6 +493,7 @@ Local _RecNo , _DeltaScroll , _BottomRec
    _DeltaScroll := ListView_GetSubItemRect ( ::hWnd, 0 , 0 )
 
    If Select( ::WorkArea ) == 0
+      ::RecCount := 0
       Return nil
 	EndIf
    _RecNo := ( ::WorkArea )->( RecNo() )
@@ -518,6 +523,7 @@ Local s  , _RecNo , _DeltaScroll := { Nil , Nil , Nil , Nil }
 
 	If s == 1
       If Select( ::WorkArea ) == 0
+         ::RecCount := 0
          Return nil
       EndIf
       _RecNo := ( ::WorkArea )->( RecNo() )
@@ -552,6 +558,7 @@ Local PageLength , s , _RecNo , _DeltaScroll
       _DeltaScroll := ListView_GetSubItemRect( ::hWnd, 0 , 0 )
 
       If Select( ::WorkArea ) == 0
+         ::RecCount := 0
          Return nil
       EndIf
 
@@ -601,6 +608,7 @@ Local _RecNo , _BrowseRecMap , NewPos := 50, _DeltaScroll := { Nil , Nil , Nil ,
 	EndIf
 
    If Select( ::WorkArea ) == 0
+      ::RecCount := 0
       Return nil
 	EndIf
 
@@ -685,6 +693,7 @@ Local _BrowseRecMap , Value , _Alias , _RecNo , _BrowseArea
 	_Alias := Alias()
    _BrowseArea := ::WorkArea
    If Select( ::WorkArea ) == 0
+      ::RecCount := 0
 		Return Nil
 	EndIf
    DbSelectArea( _BrowseArea )
@@ -1000,7 +1009,7 @@ Local i , l , ControlRow , e := 0 ,LN , CN , th, oWnd, oControl, aControls
 
 					case ValType ( aValues [i] ) == 'D'
 
-						@ ControlRow , 120 DATEPICKER &CN  OF _Split_1 VALUE aValues[i] WIDTH 140
+                  @ ControlRow , 120 TEXTBOX &CN  OF _Split_1 VALUE aValues[i] WIDTH 140 DATE
 						ControlRow := ControlRow + 30
 
 					case ValType ( aValues [i] ) == 'N'
@@ -1242,6 +1251,7 @@ Local Ldelta := 0
 	// return
 
    If Select( ::WorkArea ) == 0
+      ::RecCount := 0
 		Return Nil
 	EndIf
 
@@ -1359,14 +1369,14 @@ Local Ldelta := 0
 
 			ElseIf ControlType == 'D'
 
-				DEFINE DATEPICKER Control_1
+            DEFINE TEXTBOX Control_1         // DEFINE DATEPICKER Control_1
 					ROW 0
 					COL 0
 					HEIGHT This.CellHeight + 6
 					WIDTH This.CellWidth
 					VALUE CellData
-					UPDOWN .T.
-				END DATEPICKER
+               DATE .T.                      // UPDOWN .T.
+            END TEXTBOX                      // END DATEPICKER
 
 			ElseIf ControlType == 'L'
 
@@ -1738,6 +1748,7 @@ Local _Alias , _RecNo , _BrowseArea , _BrowseRecMap   , _DeltaScroll := { Nil , 
 	_Alias := Alias()
    _BrowseArea := ::WorkArea
    If Select( _BrowseArea ) == 0
+      ::RecCount := 0
       Return nil
 	EndIf
    DbSelectArea( _BrowseArea )
@@ -1788,6 +1799,7 @@ Local oVScroll, cWorkArea
 
       cWorkArea := ::WorkArea
       IF Select( cWorkArea ) == 0
+         ::RecCount := 0
          Return NIL
       ENDIF
       RecordCount := ( cWorkArea )->( OrdKeyCount() )
