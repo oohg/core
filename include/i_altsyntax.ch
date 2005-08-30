@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.10 2005-08-26 06:03:06 guerra000 Exp $
+ * $Id: i_altsyntax.ch,v 1.11 2005-08-30 04:57:55 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -219,6 +219,7 @@ MEMVAR _OOHG_ActiveControlField
 
 MEMVAR _OOHG_ActiveControlInfo
 
+/*
 #xtranslate _OOHG_ActiveControlName           => _OOHG_ActiveControlInfo \[  1 \]
 #xtranslate _OOHG_ActiveControlOf             => _OOHG_ActiveControlInfo \[  2 \]
 #xtranslate _OOHG_ActiveControlRow            => _OOHG_ActiveControlInfo \[  3 \]
@@ -239,6 +240,27 @@ MEMVAR _OOHG_ActiveControlInfo
 #xtranslate _OOHG_ActiveControlNoTabStop      => _OOHG_ActiveControlInfo \[ 18 \]
 #xtranslate _OOHG_ActiveControlInvisible      => _OOHG_ActiveControlInfo \[ 19 \]
 #xtranslate _OOHG_ActiveControlHelpId         => _OOHG_ActiveControlInfo \[ 20 \]
+*/
+MEMVAR _OOHG_ActiveControlName
+MEMVAR _OOHG_ActiveControlOf
+MEMVAR _OOHG_ActiveControlRow
+MEMVAR _OOHG_ActiveControlCol
+MEMVAR _OOHG_ActiveControlWidth
+MEMVAR _OOHG_ActiveControlHeight
+MEMVAR _OOHG_ActiveControlFont
+MEMVAR _OOHG_ActiveControlSize
+MEMVAR _OOHG_ActiveControlFontBold
+MEMVAR _OOHG_ActiveControlFontItalic
+MEMVAR _OOHG_ActiveControlFontStrikeOut
+MEMVAR _OOHG_ActiveControlFontUnderLine
+MEMVAR _OOHG_ActiveControlFontColor
+MEMVAR _OOHG_ActiveControlBackColor
+MEMVAR _OOHG_ActiveControlRtl
+MEMVAR _OOHG_ActiveControlValue
+MEMVAR _OOHG_ActiveControlTooltip
+MEMVAR _OOHG_ActiveControlNoTabStop
+MEMVAR _OOHG_ActiveControlInvisible
+MEMVAR _OOHG_ActiveControlHelpId
 
 #xtranslate _OOHG_ClearActiveControlInfo( <name> ) => ;
         PUBLIC _OOHG_ActiveControlInfo \[ 150 \] ;;
