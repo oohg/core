@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.10 2005-08-25 06:11:01 guerra000 Exp $
+ * $Id: c_windows.c,v 1.11 2005-08-30 05:03:22 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -207,139 +207,26 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
 HB_FUNC( INITWINDOW )
 {
    HWND hwnd;
-   int Style = WS_POPUP , ExStyle = 0;
+   int Style   = hb_parni( 8 );
+   int ExStyle = hb_parni( 9 );
 
-   if ( hb_parl( 17 ) )
+   if ( hb_parl( 10 ) )
    {
       ExStyle |= WS_EX_LAYOUTRTL | WS_EX_RIGHTSCROLLBAR | WS_EX_RTLREADING;
    }
 
-	if ( hb_parl (16) )
-	{
-            ExStyle |= WS_EX_CONTEXTHELP ;
-	}
-	else
-	{
-		if ( ! hb_parl (6) )
-		{
-			Style = Style | WS_MINIMIZEBOX ;
-		}
-		if ( ! hb_parl (7) )
-		{
-			Style = Style | WS_MAXIMIZEBOX ;
-		}
-	}
+   hwnd = CreateWindowEx( ExStyle, hb_parc( 7 ), hb_parc( 1 ), Style,
+                          hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ),
+                          ( HWND ) hb_parnl ( 6 ), ( HMENU ) NULL, GetModuleHandle( NULL ), NULL );
 
-	if ( ! hb_parl (8) )
-	{
-		Style = Style | WS_SIZEBOX ;
-	}
-
-	if ( ! hb_parl (9) )
-	{
-		Style = Style | WS_SYSMENU ;
-	}
-
-	if ( ! hb_parl (10) )
-	{
-		Style = Style | WS_CAPTION ;
-	}
-
-	if ( hb_parl (11) )
-	{
-        ExStyle |= WS_EX_TOPMOST ;
-	}
-
-	if ( hb_parl (14) )
-	{
-		Style = Style | WS_VSCROLL ;
-	}
-
-	if ( hb_parl (15) )
-	{
-		Style = Style | WS_HSCROLL ;
-	}
-
-	hwnd = CreateWindowEx( ExStyle , hb_parc(12) ,hb_parc(1),
-	Style ,
-	hb_parni(2),
-	hb_parni(3),
-	hb_parni(4),
-	hb_parni(5),
-	(HWND) hb_parnl (13),(HMENU)NULL, GetModuleHandle( NULL ) ,NULL);
-
-	if(hwnd == NULL)
-	{
-	MessageBox(0, "Window Creation Failed!", "Error!",
-	MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
-	return;
-	}
-
-	hb_retnl ((LONG)hwnd);
-}
-
-HB_FUNC( INITMODALWINDOW )
-{
-   HWND parent ;
-   HWND hwnd ;
-   int Style ;
-   int ExStyle = 0;
-
-   if ( hb_parl( 14 ) )
+   if(hwnd == NULL)
    {
-      ExStyle |= WS_EX_LAYOUTRTL | WS_EX_RIGHTSCROLLBAR | WS_EX_RTLREADING;
+      MessageBox(0, "Window Creation Failed!", "Error!",
+      MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
+      return;
    }
 
-   if ( hb_parl (13) )
-   {
-      ExStyle |= WS_EX_CONTEXTHELP;
-   }
-
-	parent = (HWND) hb_parnl (6);
-
-	Style = WS_POPUP;
-
-	if ( ! hb_parl (7) )
-	{
-		Style = Style | WS_SIZEBOX ;
-	}
-
-	if ( ! hb_parl (8) )
-	{
-		Style = Style | WS_SYSMENU ;
-	}
-
-	if ( ! hb_parl (9) )
-	{
-		Style = Style | WS_CAPTION ;
-	}
-
-	if ( hb_parl (11) )
-	{
-		Style = Style | WS_VSCROLL ;
-	}
-
-	if ( hb_parl (12) )
-	{
-		Style = Style | WS_HSCROLL ;
-	}
-
-	hwnd = CreateWindowEx( ExStyle ,hb_parc(10),hb_parc(1),
-	Style,
-	hb_parni(2),
-	hb_parni(3),
-	hb_parni(4),
-	hb_parni(5),
-	parent,(HMENU)NULL, GetModuleHandle( NULL ) ,NULL);
-
-	if(hwnd == NULL)
-	{
-	MessageBox(0, "Window Creation Failed!", "Error!",
-	MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
-	return;
-	}
-
-	hb_retnl ((LONG)hwnd);
+   hb_retnl( ( LONG ) hwnd );
 }
 
 HB_FUNC( _DOMESSAGELOOP )
@@ -581,47 +468,52 @@ HB_FUNC ( GETWINDOWRECT )
 
 HB_FUNC ( REGISTERWINDOW )
 {
-	WNDCLASS WndClass;
+   WNDCLASS WndClass;
 
-	HBRUSH hbrush = 0 ;
+   HBRUSH hbrush = 0 ;
 
-	WndClass.style         = CS_HREDRAW | CS_VREDRAW | CS_OWNDC ;
-//	WndClass.style         = CS_OWNDC ;
-	WndClass.lpfnWndProc   = WndProc;
-	WndClass.cbClsExtra    = 0;
-	WndClass.cbWndExtra    = 0;
-	WndClass.hInstance     = GetModuleHandle( NULL );
-	WndClass.hIcon         = LoadIcon(GetModuleHandle(NULL),  hb_parc(1) );
-	if (WndClass.hIcon==NULL)
-	{
-		WndClass.hIcon= (HICON) LoadImage( GetModuleHandle(NULL),  hb_parc(1) , IMAGE_ICON, 0, 0, LR_LOADFROMFILE + LR_DEFAULTSIZE ) ;
-	}
-	if (WndClass.hIcon==NULL)
-	{
-		WndClass.hIcon= LoadIcon(NULL, IDI_APPLICATION);
-	}
-	WndClass.hCursor       = LoadCursor(NULL, IDC_ARROW);
+   if( hb_parl( 4 ) )
+   {
+      WndClass.style       = CS_OWNDC;
+   }
+   else
+   {
+      WndClass.style       = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
+   }
+   WndClass.lpfnWndProc   = WndProc;
+   WndClass.cbClsExtra    = 0;
+   WndClass.cbWndExtra    = 0;
+   WndClass.hInstance     = GetModuleHandle( NULL );
+   WndClass.hIcon         = LoadIcon(GetModuleHandle(NULL),  hb_parc(1) );
+   if (WndClass.hIcon==NULL)
+   {
+      WndClass.hIcon= (HICON) LoadImage( GetModuleHandle(NULL),  hb_parc(1) , IMAGE_ICON, 0, 0, LR_LOADFROMFILE + LR_DEFAULTSIZE ) ;
+   }
+   if (WndClass.hIcon==NULL)
+   {
+       WndClass.hIcon= LoadIcon(NULL, IDI_APPLICATION);
+   }
+   WndClass.hCursor       = LoadCursor(NULL, IDC_ARROW);
 
-	if ( hb_parni(3, 1) == -1 )
-	{
-		WndClass.hbrBackground = (HBRUSH)( COLOR_BTNFACE + 1 );
-	}
-	else
-	{
-		hbrush = CreateSolidBrush( RGB(hb_parni(3, 1), hb_parni(3, 2), hb_parni(3, 3)) );
-		WndClass.hbrBackground = hbrush ;
-	}
+   if ( hb_parni(3, 1) == -1 )
+   {
+       WndClass.hbrBackground = (HBRUSH)( COLOR_BTNFACE + 1 );
+   }
+   else
+   {
+       hbrush = CreateSolidBrush( RGB(hb_parni(3, 1), hb_parni(3, 2), hb_parni(3, 3)) );
+       WndClass.hbrBackground = hbrush ;
+   }
 
-	WndClass.lpszMenuName  = NULL;
-	WndClass.lpszClassName = hb_parc(2);
-
-	if(!RegisterClass(&WndClass))
-	{
-	MessageBox(0, "Window Registration Failed!", "Error!",
-	MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
-	ExitProcess(0);
-	}
-	hb_retnl ( (LONG) hbrush ) ;
+   WndClass.lpszMenuName  = NULL;
+   WndClass.lpszClassName = hb_parc(2);
+   if(!RegisterClass(&WndClass))
+   {
+      MessageBox(0, "Window Registration Failed!", "Error!",
+      MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
+      ExitProcess(0);
+   }
+   hb_retnl ( (LONG) hbrush ) ;
 }
 
 HB_FUNC ( UNREGISTERWINDOW )
@@ -853,52 +745,6 @@ HB_FUNC( INITSPLITBOX )
    SendMessage( hwndRB, RB_SETBARINFO, 0, ( LPARAM ) &rbi );
 
    hb_retnl ( ( LONG ) hwndRB );
-}
-
-HB_FUNC( INITSPLITCHILDWINDOW )
-{
-   HWND hwnd;
-   int Style;
-   int ExStyle = 0;
-
-   if ( hb_parl( 9 ) )
-   {
-      ExStyle |= WS_EX_LAYOUTRTL | WS_EX_RIGHTSCROLLBAR | WS_EX_RTLREADING;
-   }
-
-   Style = WS_POPUP ;
-
-	if ( !hb_parl(4) )
-	{
-		Style = Style | WS_CAPTION ;
-	}
-
-	if ( hb_parl (7) )
-	{
-		Style = Style | WS_VSCROLL ;
-	}
-
-	if ( hb_parl (8) )
-	{
-		Style = Style | WS_HSCROLL ;
-	}
-
-    hwnd = CreateWindowEx( ExStyle | WS_EX_STATICEDGE | WS_EX_TOOLWINDOW ,hb_parc(3),hb_parc(5),
-	Style,
-	0,
-	0,
-	hb_parni(1),
-	hb_parni(2),
-	0,(HMENU)NULL, GetModuleHandle( NULL ) ,NULL);
-
-	if(hwnd == NULL)
-	{
-	MessageBox(0, "Window Creation Failed!", "Error!",
-	MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
-	return;
-	}
-
-	hb_retnl ((LONG)hwnd);
 }
 
 HB_FUNC (SIZEREBAR)
@@ -1251,48 +1097,4 @@ HB_FUNC( INITDUMMY )
 	0, 0 , 0, 0,
 	(HWND) hb_parnl (1),(HMENU)0 , GetModuleHandle(NULL) , NULL ) ;
 
-}
-
-HB_FUNC( REGISTERSPLITCHILDWINDOW )
-{
-	WNDCLASS WndClass;
-
-	HBRUSH hbrush = 0 ;
-
-	WndClass.style         = CS_OWNDC ;
-	WndClass.lpfnWndProc   = WndProc;
-	WndClass.cbClsExtra    = 0;
-	WndClass.cbWndExtra    = 0;
-	WndClass.hInstance     = GetModuleHandle( NULL );
-	WndClass.hIcon         = LoadIcon(GetModuleHandle(NULL),  hb_parc(1) );
-	if (WndClass.hIcon==NULL)
-	{
-		WndClass.hIcon= (HICON) LoadImage( GetModuleHandle(NULL),  hb_parc(1) , IMAGE_ICON, 0, 0, LR_LOADFROMFILE + LR_DEFAULTSIZE ) ;
-	}
-	if (WndClass.hIcon==NULL)
-	{
-		WndClass.hIcon= LoadIcon(NULL, IDI_APPLICATION);
-	}
-	WndClass.hCursor       = LoadCursor(NULL, IDC_ARROW);
-
-	if ( hb_parni(3, 1) == -1 )
-	{
-		WndClass.hbrBackground = (HBRUSH)( COLOR_BTNFACE + 1 );
-	}
-	else
-	{
-		hbrush = CreateSolidBrush( RGB(hb_parni(3, 1), hb_parni(3, 2), hb_parni(3, 3)) );
-		WndClass.hbrBackground = hbrush ;
-	}
-
-	WndClass.lpszMenuName  = NULL;
-	WndClass.lpszClassName = hb_parc(2);
-
-	if(!RegisterClass(&WndClass))
-	{
-	MessageBox(0, "Window Registration Failed!", "Error!",
-	MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
-	ExitProcess(0);
-	}
-	hb_retnl ( (LONG) hbrush ) ;
 }
