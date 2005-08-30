@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.13 2005-08-26 06:30:36 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.14 2005-08-30 04:59:39 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -108,7 +108,6 @@ CLASS TBrowse FROM TGrid
    DATA VScroll   INIT nil
    DATA nValue    INIT 0
    DATA aRecMap   INIT {}
-   DATA ScrollBarButtonHandle INIT 0
    DATA AllowAppend     INIT .F.
    DATA readonly        INIT .F.
    DATA valid           INIT .F.
@@ -168,7 +167,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                validmessages, edit, dynamicbackcolor, aWhenFields, ;
                dynamicforecolor, aPicture, lRtl ) CLASS TBrowse
 *-----------------------------------------------------------------------------*
-Local ScrollBarHandle, hsum, ScrollBarButtonHandle, nWidth2, nCol2
+Local ScrollBarHandle, hsum, ScrollBarButtonHandle := 0, nWidth2, nCol2
 
    IF ! ValType( WorkArea ) $ "CM" .OR. Empty( WorkArea )
       WorkArea := ALIAS()
@@ -214,7 +213,7 @@ Local ScrollBarHandle, hsum, ScrollBarButtonHandle, nWidth2, nCol2
    ::AllowDelete := AllowDelete
    ::aFields := aFields
    ::aRecMap :=  {}
-   ::ScrollBarButtonHandle := 0
+   ::AuxHandle := 0
    ::AllowAppend := AllowAppend
    ::readonly := readonly
    ::valid := valid
@@ -261,7 +260,7 @@ Local ScrollBarHandle, hsum, ScrollBarButtonHandle, nWidth2, nCol2
 
    // Add Vertical scrollbar button
 
-   ::ScrollBarButtonHandle := ScrollBarButtonHandle
+   ::AuxHandle := ScrollBarButtonHandle
 
    ::SizePos()
 
@@ -760,8 +759,6 @@ Local Title , aLabels , aInitValues := {} , aFormats := {} , aResults , z , tvar
 		Return Nil
 	EndIf
 
-   _OOHG_ActiveFormBak := _OOHG_ActiveForm
-
    a := ::aHeaders
 
    item := ::Value
@@ -863,7 +860,6 @@ Local Title , aLabels , aInitValues := {} , aFormats := {} , aResults , z , tvar
       If ! ( ::WorkArea )->( Rlock() )
          MsgExclamation(_OOHG_BRWLangError[9],_OOHG_BRWLangError[10])
          ( ::WorkArea )->( DbGoTo( BackRec ) )
-         _OOHG_ActiveForm := _OOHG_ActiveFormBak
          ::SetFocus()
 			Return Nil
 		EndIf
@@ -918,8 +914,6 @@ Local Title , aLabels , aInitValues := {} , aFormats := {} , aResults , z , tvar
 	Else
       DbSelectArea( 0 )
 	EndIf
-
-   _OOHG_ActiveForm := _OOHG_ActiveFormBak
 
    ::SetFocus()
 
@@ -1578,13 +1572,13 @@ Local hws, lRet, nButton, nCol
          nCol := if( ::lRtl .AND. ! ::Parent:lRtl, 0, ::Width - GETVSCROLLBARWIDTH() )
          if nButton == 1
             ::VScroll:SizePos( 0, nCol, GETVSCROLLBARWIDTH() , ::Height - GETHSCROLLBARHEIGHT() )
-            MoveWindow( ::ScrollBarButtonHandle, ::ContainerCol + nCol, ::ContainerRow + ::Height - GETHSCROLLBARHEIGHT() , GETVSCROLLBARWIDTH() , GETHSCROLLBARHEIGHT() , .t. )
+            MoveWindow( ::AuxHandle, ::ContainerCol + nCol, ::ContainerRow + ::Height - GETHSCROLLBARHEIGHT() , GETVSCROLLBARWIDTH() , GETHSCROLLBARHEIGHT() , .t. )
          Else
             ::VScroll:SizePos( 0, nCol, GETVSCROLLBARWIDTH() , ::Height )
-            MoveWindow( ::ScrollBarButtonHandle, ::ContainerCol + nCol, ::ContainerRow + ::Height - GETHSCROLLBARHEIGHT() , 0 , 0 , .t. )
+            MoveWindow( ::AuxHandle, ::ContainerCol + nCol, ::ContainerRow + ::Height - GETHSCROLLBARHEIGHT() , 0 , 0 , .t. )
          EndIf
 *         ReDrawWindow( ::VScroll:hWnd )
-*         ReDrawWindow( ::ScrollBarButtonHandle )
+*         ReDrawWindow( ::AuxHandle )
          lRet := .T.
       ENDIF
    EndIf
@@ -1923,9 +1917,6 @@ METHOD Release() CLASS TBrowse
    if ::VScroll != nil
       ::VScroll:Release()
    endif
-   if ::ScrollBarButtonHandle != 0
-      ReleaseControl( ::ScrollBarButtonHandle )
-   endif
 Return ::Super:Release()
 
 *-----------------------------------------------------------------------------*
@@ -1983,11 +1974,11 @@ METHOD Enabled( lEnabled ) CLASS TBrowse
       If ::VScroll != nil
          ::VScroll:Enabled := lEnabled
       ENDIF
-      If ::ScrollBarButtonHandle != 0
+      If ::AuxHandle != 0
          IF ::Super:Enabled
-            EnableWindow( ::ScrollBarButtonHandle )
+            EnableWindow( ::AuxHandle )
          ELSE
-            DisableWindow( ::ScrollBarButtonHandle )
+            DisableWindow( ::AuxHandle )
          EndIf
       ENDIF
    ENDIF
@@ -2001,11 +1992,11 @@ METHOD Visible( lVisible ) CLASS TBrowse
       If ::VScroll != nil
          ::VScroll:Visible := ::VScroll:Visible
 		EndIf
-      If ::ScrollBarButtonHandle != 0
+      If ::AuxHandle != 0
          IF ::ContainerVisible
-            CShowControl( ::ScrollBarButtonHandle )
+            CShowControl( ::AuxHandle )
          ELSE
-            HideWindow( ::ScrollBarButtonHandle )
+            HideWindow( ::AuxHandle )
          ENDIF
 		EndIf
       ProcessMessages()
@@ -2018,8 +2009,8 @@ METHOD ForceHide() CLASS TBrowse
    If ::VScroll != nil
       ::VScroll:ForceHide()
    EndIf
-   If ::ScrollBarButtonHandle != 0
-      HideWindow( ::ScrollBarButtonHandle )
+   If ::AuxHandle != 0
+      HideWindow( ::AuxHandle )
    EndIf
 RETURN ::Super:ForceHide()
 
@@ -2035,7 +2026,7 @@ METHOD IsHandle( hWnd ) CLASS TBrowse
 *-----------------------------------------------------------------------------*
 RETURN ( hWnd == ::hWnd ) .OR. ;
        ( ::VScroll != nil .AND. hWnd == ::VScroll:hWnd ) .OR. ;
-       ( ::ScrollBarButtonHandle != 0 .AND. hWnd == ::ScrollBarButtonHandle )
+       ( ::AuxHandle != 0 .AND. hWnd == ::AuxHandle )
 
 *-----------------------------------------------------------------------------*
 METHOD Events_Enter() CLASS TBrowse

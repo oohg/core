@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.11 2005-08-25 06:06:51 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.12 2005-08-30 04:59:39 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -273,8 +273,6 @@ METHOD EditItem() CLASS TGrid
 Local a,l,g,actpos:={0,0,0,0},GRow,GCol,GWidth,Col,IRow,LN , TN , item,i, oWnd, aSave
 Local aNum, oCtrl
 
-   _OOHG_ActiveFormBak := _OOHG_ActiveForm
-
    a := ::aHeaders
 
    item := ::Value
@@ -339,8 +337,6 @@ Local aNum, oCtrl
    oWnd:Text_1:SetFocus()
 
    oWnd:Activate()
-
-   _OOHG_ActiveForm := _OOHG_ActiveFormBak
 
    ::SetFocus()
 

@@ -1,5 +1,5 @@
 /*
- * $Id: i_var.ch,v 1.2 2005-08-25 06:08:13 guerra000 Exp $
+ * $Id: i_var.ch,v 1.3 2005-08-30 04:59:38 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -97,7 +97,6 @@
 MEMVAR _OOHG_AllVars
 
 #xtranslate  _OOHG_ActiveToolBar       => _OOHG_AllVars \[   1 \]
-#xtranslate  _OOHG_ActiveFormBak       => _OOHG_AllVars \[   2 \]
 #xtranslate  _OOHG_SplitLastControl    => _OOHG_AllVars \[   3 \]
 #xtranslate  _OOHG_ActiveSplitBox      => _OOHG_AllVars \[   4 \]
 #xtranslate  _OOHG_ActiveSplitBoxParentFormName => _OOHG_AllVars \[   5 \]
@@ -121,8 +120,6 @@ MEMVAR _OOHG_AllVars
 #xtranslate  _OOHG_StationName         => _OOHG_AllVars \[  21 \]
 #xtranslate  _OOHG_SendDataCount       => _OOHG_AllVars \[  22 \]
 #xtranslate  _OOHG_CommPath            => _OOHG_AllVars \[  23 \]
-
-#xtranslate  _OOHG_SplitChild          => _OOHG_AllVars \[  24 \]
 
 #xtranslate  _OOHG_ActiveMessageBar    => _OOHG_AllVars \[  25 \]
 
@@ -184,5 +181,3 @@ MEMVAR _OOHG_AllVars
 #xtranslate  _OOHG_DelayedSetFocus     => _OOHG_AllVars \[  63 \]
 
 #xtranslate  _OOHG_activemodal         => _OOHG_AllVars \[  64 \]
-
-#xtranslate  _OOHG_BeginWindowActive   => _OOHG_AllVars \[  65 \]

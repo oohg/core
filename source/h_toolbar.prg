@@ -1,5 +1,5 @@
 /*
- * $Id: h_toolbar.prg,v 1.4 2005-08-25 05:57:42 guerra000 Exp $
+ * $Id: h_toolbar.prg,v 1.5 2005-08-30 04:59:39 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -113,10 +113,6 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, caption, ProcedureName, ;
 Local ControlHandle
 Local id
 
-   If _OOHG_SplitChild != NIL
-      MsgOOHGError("ToolBars Can't Be Defined Inside SplitChild Windows. Program terminated" )
-	Endif
-
 	if valtype (caption) == 'U'
 		caption := ""
 	EndIf
@@ -134,6 +130,10 @@ Local id
    Endif
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize,,,, lRtl )
+
+   If ::Parent:Type == "X"
+      MsgOOHGError("ToolBars Can't Be Defined Inside SplitChild Windows. Program terminated" )
+	Endif
 
    _OOHG_ActiveToolBar := Self
 
@@ -322,7 +322,7 @@ tooltip := caption
    nControlHandle := InitToolButton ( _hmg_ActiveToolBarImageWidth  , _hmg_ActiveToolBarImageHeight )
    _HMG_aControlValue      [k] :=  _hmg_ActiveToolBarButtonCount
 */
-	if valtype(image) != "U"
+   if valtype(image) $ "CM"
 		if ControlHandle == 0
          MsgOOHGError ('ToolBar Button Image: ' + chr(34) + Image + chr(34) + ' Not Available. Program terminated' )
 		EndIf
@@ -372,8 +372,8 @@ Local c, w , wbtn , hbtn , MinWidth , MinHeight, oWnd
 
    c = GetControlHandle (ControlName , _OOHG_ActiveSplitBoxParentFormName )
 
-   wBtn := _GetControlWidth (ControlName,_OOHG_ActiveForm:Name)
-   hBtn := _GetControlHeight (ControlName,_OOHG_ActiveForm:Name)
+   wBtn := _GetControlWidth (ControlName,ATail(_OOHG_ActiveForm):Name)
+   hBtn := _GetControlHeight (ControlName,ATail(_OOHG_ActiveForm):Name)
 
 	MaxTextBtnToolBar( c, wBtn, hBtn)
 

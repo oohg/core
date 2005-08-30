@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.9 2005-08-25 06:06:51 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.10 2005-08-30 04:59:39 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1763,7 +1763,6 @@ Return GetWindowText( GetControlObject( ControlName, ParentForm ):hWnd )
 *------------------------------------------------------------------------------*
 CLASS TControl FROM TWindow
 *------------------------------------------------------------------------------*
-   DATA lEnabled    INIT .T.
    DATA lVisible    INIT .T.
    DATA nRow        INIT 0
    DATA nCol        INIT 0
@@ -1806,7 +1805,6 @@ CLASS TControl FROM TWindow
    METHOD SizePos
    METHOD Move
    METHOD Value               BLOCK { || nil }
-   METHOD Enabled             SETGET
    METHOD Visible             SETGET
    METHOD ForceHide           BLOCK { |Self| HideWindow( ::hWnd ) }
    METHOD SaveData
@@ -1903,9 +1901,9 @@ LOCAL nPos
       // Active frame
       ::Container := ATAIL( _OOHG_ActiveFrame )
       ::Parent := ::Container:Parent
-   elseif _OOHG_BeginWindowActive
+   elseif LEN( _OOHG_ActiveForm ) > 0
       // Active form
-      ::Parent := _OOHG_ActiveForm
+      ::Parent := ATAIL( _OOHG_ActiveForm )
    else
       MsgOOHGError( "Window: No window name specified. Program terminated.")
    endif
@@ -1926,8 +1924,8 @@ LOCAL nPos
    elseif ::Container != nil
       // Active frame
       ::FontName := ::Container:FontName
-   elseif _OOHG_BeginWindowActive
-      // Active form
+   elseif ! Empty( ::Parent:FontName )
+      // Parent
       ::FontName := ::Parent:FontName
    else
        // Default
@@ -1941,8 +1939,8 @@ LOCAL nPos
    elseif ::Container != nil
       // Active frame
       ::FontSize := ::Container:FontSize
-   elseif _OOHG_BeginWindowActive
-      // Active form
+   elseif ! Empty( ::Parent:FontSize )
+      // Parent
       ::FontSize := ::Parent:FontSize
    else
        // Default
@@ -1956,8 +1954,8 @@ LOCAL nPos
    elseif ::Container != nil
       // Active frame
       ::aFontColor := ::Container:aFontColor
-   elseif _OOHG_BeginWindowActive
-      // Active form
+   elseif ! Empty( ::Parent:aFontColor )
+      // Parent
       ::aFontColor := ::Parent:aFontColor
    else
        // Default
@@ -1971,7 +1969,7 @@ LOCAL nPos
       elseif ::Container != nil
          // Active frame
          ::aBkColor := ::Container:DefBkColorEdit
-      elseif _OOHG_BeginWindowActive
+      elseif ! Empty( ::Parent:DefBkColorEdit )
          // Active form
          ::aBkColor := ::Parent:DefBkColorEdit
       else
@@ -1985,7 +1983,7 @@ LOCAL nPos
       elseif ::Container != nil
          // Active frame
          ::aBkColor := ::Container:aBkColor
-      elseif _OOHG_BeginWindowActive
+      elseif ! Empty( ::Parent:aBkColor )
          // Active form
          ::aBkColor := ::Parent:aBkColor
       else
@@ -2236,19 +2234,6 @@ Return MoveWindow( ::hWnd, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight ,
 METHOD Move( Row, Col, Width, Height ) CLASS TControl
 *-----------------------------------------------------------------------------*
 Return ::SizePos( Row, Col, Width, Height )
-
-*------------------------------------------------------------------------------*
-METHOD Enabled( lEnabled ) CLASS TControl
-*------------------------------------------------------------------------------*
-   IF VALTYPE( lEnabled ) == "L"
-      IF lEnabled
-         EnableWindow( ::hWnd )
-      ELSE
-         DisableWindow( ::hWnd )
-      ENDIF
-      ::lEnabled := lEnabled
-   ENDIF
-RETURN ::lEnabled
 
 *------------------------------------------------------------------------------*
 METHOD Visible( lVisible ) CLASS TControl

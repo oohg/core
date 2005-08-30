@@ -1,5 +1,5 @@
 /*
- * $Id: h_init.prg,v 1.3 2005-08-25 05:57:42 guerra000 Exp $
+ * $Id: h_init.prg,v 1.4 2005-08-30 04:59:39 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -99,7 +99,7 @@ Function Init
 
    Public _OOHG_AllVars[ 65 ]
 
-   _OOHG_ActiveModal := nil
+   _OOHG_ActiveModal := {}
 
    _OOHG_ActiveToolBar := NIL
 
@@ -159,10 +159,6 @@ Function Init
 
    _OOHG_ActiveMessageBar := nil
 
-   _OOHG_SplitChild := nil
-
-   _OOHG_ActiveFormBak     := NIL
-
    _OOHG_SplitLastControl     := ""
 
    _OOHG_ActiveSplitBox       := .f.
@@ -174,8 +170,7 @@ Function Init
    _OOHG_MouseRow          := 0
    _OOHG_MouseCol          := 0
 
-   _OOHG_ActiveForm          := NIL
-   _OOHG_BeginWindowActive       := .F.
+   _OOHG_ActiveForm        := {}
 
    _OOHG_ActiveFrame := {}
 
