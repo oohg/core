@@ -1,5 +1,5 @@
 /*
- * $Id: h_status.prg,v 1.4 2005-08-21 21:20:31 guerra000 Exp $
+ * $Id: h_status.prg,v 1.5 2005-08-30 05:05:55 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -353,7 +353,6 @@ empty( parentcontrol )
 		h := 0
 	endif
 
-  TOOLTIP := STR( _GetId() )
    If LEN( ::Container:aControls ) == 0
       ControlHandle := InitItemBar ( ::Container:hWnd, Caption, 0, 0, 0, Icon , ToolTip, styl )
 	Else
