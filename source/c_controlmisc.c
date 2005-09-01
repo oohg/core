@@ -1,5 +1,5 @@
 /*
- * $Id: c_controlmisc.c,v 1.6 2005-08-25 06:11:01 guerra000 Exp $
+ * $Id: c_controlmisc.c,v 1.7 2005-09-01 05:25:10 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -137,6 +137,7 @@ char *s_SymbolNames[] = { "EVENTS_NOTIFY",
                           "ROWMARGIN",
                           "COLMARGIN",
                           "HWND",
+                          "TTEXT",
                           "LastSymbol" };
 
 void _OOHG_Send( PHB_ITEM pSelf, int iSymbol )
@@ -736,4 +737,37 @@ HB_FUNC( GETCONTROLOBJECTBYHANDLE )
 
    hb_itemReturn( &pReturn );
    hb_itemClear( &pReturn );
+}
+
+HB_FUNC( GETCLIPBOARDTEXT )
+{
+   HGLOBAL hClip;
+   LPTSTR  cString;
+
+   if( IsClipboardFormatAvailable( CF_TEXT ) && OpenClipboard( NULL ) )
+   {
+      hClip = GetClipboardData( CF_TEXT );
+      if( hClip )
+      {
+         cString = GlobalLock( hClip );
+         if( cString )
+         {
+            hb_retc( cString );
+            GlobalUnlock( hClip );
+         }
+         else
+         {
+            hb_retc( "" );
+         }
+      }
+      else
+      {
+         hb_retc( "" );
+      }
+      CloseClipboard();
+   }
+   else
+   {
+      hb_retc( "" );
+   }
 }

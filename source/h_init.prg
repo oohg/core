@@ -1,5 +1,5 @@
 /*
- * $Id: h_init.prg,v 1.4 2005-08-30 04:59:39 guerra000 Exp $
+ * $Id: h_init.prg,v 1.5 2005-09-01 05:25:10 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -119,8 +119,6 @@ Function Init
    _OOHG_SetFocusExecuted := .F.
 
    _OOHG_InteractiveCloseStarted := .F.
-
-   _OOHG_DateTextBoxActive := .F.
 
    _OOHG_ThisForm := NIL
    _OOHG_ThisControl := nil

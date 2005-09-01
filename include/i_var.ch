@@ -1,5 +1,5 @@
 /*
- * $Id: i_var.ch,v 1.3 2005-08-30 04:59:38 guerra000 Exp $
+ * $Id: i_var.ch,v 1.4 2005-09-01 05:25:10 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -156,8 +156,6 @@ MEMVAR _OOHG_AllVars
 #xtranslate  _OOHG_cMacroTemp          => _OOHG_AllVars \[  48 \]
 
 #xtranslate  _OOHG_ThisControl         => _OOHG_AllVars \[  49 \]
-
-#xtranslate  _OOHG_DateTextBoxActive   => _OOHG_AllVars \[  50 \]
 
 #xtranslate  _OOHG_InteractiveCloseStarted => _OOHG_AllVars \[  51 \]
 

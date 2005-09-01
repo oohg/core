@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.6 2005-08-25 05:57:42 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.7 2005-09-01 05:25:10 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -95,9 +95,12 @@
 #include "common.ch"
 #include "i_windefs.ch"
 #include "hbclass.ch"
+#include "set.ch"
+#include "hblang.ch"
 
 CLASS TText FROM TLabel
    DATA Type          INIT "TEXT" READONLY
+   DATA lSetting      INIT .F.
 
    METHOD Define
    METHOD Define2
@@ -278,41 +281,504 @@ Local Hi_wParam := HIWORD( wParam )
 
    if Hi_wParam == EN_CHANGE
 
-      If _OOHG_DateTextBoxActive == .T.
-
-         _OOHG_DateTextBoxActive := .F.
-
-      Else
+      IF ! ::lSetting
 
          ::TextChange()
 
-         If ::Transparent
+      EndIf
 
-            RedrawWindowControlRect( ::Parent:hWnd, ::ContainerRow, ::ContainerCol, ::ContainerRow + ::Height, ::ContainerCol + ::Width )
+      If ::Transparent
 
-         EndIf
+         RedrawWindowControlRect( ::Parent:hWnd, ::ContainerRow, ::ContainerCol, ::ContainerRow + ::Height, ::ContainerCol + ::Width )
 
       EndIf
 
-      ::DoEvent( ::OnChange )
+      IF ::lSetting
+
+         ::lSetting := .F.
+
+      Else
+
+         ::DoEvent( ::OnChange )
+
+      EndIf
 
       Return nil
 
    elseif Hi_wParam == EN_KILLFOCUS
-
-      If _OOHG_InteractiveCloseStarted != .T.
-
+      If ! _OOHG_InteractiveCloseStarted
          ::DoEvent( ::OnLostFocus )
-
       EndIf
-
       Return nil
 
    elseif Hi_wParam == EN_SETFOCUS
-
       ::DoEvent( ::OnGotFocus )
-
       Return nil
+
+   Endif
+
+Return ::Super:Events_Command( wParam )
+
+
+
+
+
+CLASS TTextPicture FROM TText
+   DATA Type          INIT "TEXTPICTURE" READONLY
+   DATA lBritish      INIT .F.
+   DATA NonTemplate   INIT .F.
+   DATA PictureShow   INIT ""
+   DATA PictureMask   INIT ""
+   DATA ValidMask     INIT {}
+   DATA DataType      INIT "."
+   DATA nDecimal      INIT 0
+   DATA lInsert       INIT .T.
+
+   METHOD Define
+
+   METHOD Value       SETGET
+   METHOD Events
+   METHOD Events_Command
+ENDCLASS
+
+*-----------------------------------------------------------------------------*
+METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, uValue, ;
+               cInputMask, cFontName, nFontSize, cToolTip, uLostFocus, ;
+               uGotFocus, uChange, uEnter, right, HelpId, readonly, bold, ;
+               italic, underline, strikeout, field, backcolor, fontcolor, ;
+               invisible, notabstop, lRtl ) CLASS TTextPicture
+*-----------------------------------------------------------------------------*
+Local nStyle := ES_AUTOHSCROLL
+
+   SetMask( Self, uValue, cInputMask )
+
+   IF ValType( uValue ) == "N"
+      right := .T.
+   ENDIF
+
+   ::Define2( cControlName, cParentForm, nx, ny, nWidth, nHeight, uValue, ;
+              cFontName, nFontSize, cToolTip, 0, .F., ;
+              uLostFocus, uGotFocus, uChange, uEnter, right, HelpId, ;
+              readonly, bold, italic, underline, strikeout, field, ;
+              backcolor, fontcolor, invisible, notabstop, nStyle, lRtl )
+
+Return Self
+
+STATIC PROCEDURE SetMask( Self, uValue, cInputMask )
+Local cType, cPicFun, cPicMask, nPos
+
+   cType := ValType( uValue )
+
+   IF ! ValType( cInputMask ) $ "CM"
+      cInputMask := ""
+   ENDIF
+   ::lBritish := .F.
+   ::NonTemplate := .F.
+
+   cPicFun := ""
+   IF Left( cInputMask, 1 ) == "@"
+      nPos := At( " ", cInputMask )
+      IF nPos != 0
+         cPicMask := Substr( cInputMask, nPos + 1 )
+         cInputMask := Upper( Left( cInputMask, nPos - 1 ) )
+      Else
+         cPicMask := ""
+         cInputMask := Upper( cInputMask )
+      ENDIF
+
+      IF "A" $ cInputMask
+         IF cType $ "CM" .AND. EMPTY( cPicMask )
+            cPicMask := Replicate( "A", Len( uValue ) )
+         ENDIF
+         cInputMask := StrTran( cInputMask, "A", "" )
+      ENDIF
+
+/*
+      IF "B" $ cInputMask
+         cPicFun += "B"
+         cInputMask := StrTran( cInputMask, "B", "" )
+      ENDIF
+*/
+
+/*
+      IF "C" $ cInputMask
+         cPicFun += "C"
+         cInputMask := StrTran( cInputMask, "C", "" )
+      ENDIF
+*/
+
+      IF "D" $ cInputMask
+         cPicMask := StrTran( StrTran( StrTran( StrTran( StrTran( StrTran( SET( _SET_DATEFORMAT ), "Y", "9" ), "y", "9" ), "M", "9" ), "m", "9" ), "D", "9" ), "d", "9" )
+         cInputMask := StrTran( cInputMask, "D", "" )
+      ENDIF
+
+      IF "E" $ cInputMask
+         ::lBritish := .T.
+         If cType != "N"
+            cPicMask := If( __SETCENTURY(), "99/99/9999", "99/99/99" )
+         Endif
+         cPicFun += "E"
+         cInputMask := StrTran( cInputMask, "E", "" )
+      ENDIF
+
+      IF "K" $ cInputMask
+         // Since all text is selected when textbox gets focus, it's automatic
+         cInputMask := StrTran( cInputMask, "K", "" )
+      ENDIF
+
+      IF "R" $ cInputMask
+         ::NonTemplate := .T.
+         cPicFun += "R"
+         cInputMask := StrTran( cInputMask, "R", "" )
+      ENDIF
+
+      DO WHILE "S" $ cInputMask
+         // It's automatic at textbox's width
+         nPos := At( "S", cInputMask )
+         DO WHILE Len( cInputMask ) >= nPos .AND. SubStr( cInputMask, nPos, 1 ) $ "S0123456789"
+            cInputMask := Left( cInputMask, nPos - 1 ) + SubStr( cInputMask, nPos + 1 )
+         ENDDO
+      ENDDO
+
+/*
+      IF "X" $ cInputMask
+         cPicFun += "X"
+         cInputMask := StrTran( cInputMask, "X", "" )
+      ENDIF
+*/
+
+      IF "Z" $ cInputMask
+         cPicFun += "Z"
+         cInputMask := StrTran( cInputMask, "Z", "" )
+      ENDIF
+
+/*
+      IF "(" $ cInputMask
+         cPicFun += "("
+         cInputMask := StrTran( cInputMask, "(", "" )
+      ENDIF
+*/
+
+/*
+      IF ")" $ cInputMask
+         cPicFun += ")"
+         cInputMask := StrTran( cInputMask, ")", "" )
+      ENDIF
+*/
+
+      IF "!" $ cInputMask
+         IF cType $ "CM" .AND. EMPTY( cPicMask )
+            cPicMask := Replicate( "!", Len( uValue ) )
+         ENDIF
+         cInputMask := StrTran( cInputMask, "!", "" )
+      ENDIF
+
+      IF ! cInputMask == "@"
+         // Invalid picture function
+      ENDIF
+
+      IF ! Empty( cPicFun )
+         cPicFun := "@" + cPicFun + " "
+      ENDIF
+
+   Else
+      cPicMask := cInputMask
+   ENDIF
+
+   IF Empty( cPicMask )
+      DO CASE
+         CASE cType $ "CM"
+            cPicMask := Replicate( "X", Len( uValue ) )
+         CASE cType $ "N"
+            cPicMask := STR( uValue )
+            nPos := At( ".", cPicMask )
+            cPicMask := Replicate( "9", Len( cPicMask ) )
+            IF nPos != 0
+               cPicMask := Left( cPicMask, nPos - 1 ) + "." + SubStr( cPicMask, nPos + 1 )
+            ENDIF
+         CASE cType $ "D"
+            cPicMask := StrTran( StrTran( StrTran( StrTran( StrTran( StrTran( SET( _SET_DATEFORMAT ), "Y", "9" ), "y", "9" ), "M", "9" ), "m", "9" ), "D", "9" ), "d", "9" )
+         CASE cType $ "L"
+            cPicMask := "L"
+         OTHERWISE
+            // Invalid data type
+      ENDCASE
+   ENDIF
+
+   ::PictureShow := cPicFun + cPicMask
+   ::PictureMask := cPicMask
+   ::DataType    := If( cType == "M", "C", cType )
+   ::nDecimal    := If( cType == "N", AT( ".", cPicMask ), 0 )
+
+   cPicFun := "ANX9#LY!anxly" + if( cType == "N", "$*", "" )
+   ::ValidMask := ARRAY( Len( cPicMask ) )
+   FOR nPos := 1 TO Len( cPicMask )
+      ::ValidMask[ nPos ] := ( SubStr( cPicMask, nPos, 1 ) $ cPicFun )
+   NEXT
+
+Return
+
+*------------------------------------------------------------------------------*
+METHOD Value( uValue ) CLASS TTextPicture
+*------------------------------------------------------------------------------*
+Local cType, uDate
+   IF PCount() > 0
+      cType := ValType( uValue )
+      cType := If( cType == "M", "C", cType )
+      IF cType == ::DataType
+         ::Caption := Transform( uValue, if( ::lBritish, "@E ", "" ) + ::PictureMask )
+      Else
+         // Wrong data types
+      ENDIF
+   ENDIF
+   cType := ::DataType
+
+   // Removes mask
+   DO CASE
+      CASE cType == "C"
+         uValue := If( ::NonTemplate, UnTransform( Self, ::Caption ), ::Caption )
+      CASE cType == "N"
+         uValue := VAL( StrTran( UnTransform( Self, ::Caption ), " ", "" ) )
+      CASE cType == "D"
+         If ::lBritish
+            uDate := SET( _SET_DATEFORMAT )
+            SET DATE BRITISH
+            uValue := CTOD( ::Caption )
+            SET( _SET_DATEFORMAT, uDate )
+         Else
+            uValue := CTOD( ::Caption )
+         EndIf
+      CASE cType == "L"
+         uValue := ( Left( UnTransform( Self, ::Caption ), 1 ) $ "YT" + HB_LANGMESSAGE( HB_LANG_ITEM_BASE_TEXT + 1 ) )
+      OTHERWISE
+         // Wrong data type
+         uValue := NIL
+   ENDCASE
+Return uValue
+
+STATIC FUNCTION UnTransform( Self, cCaption )
+Local aValidMask := ::ValidMask
+Local cValue, nPos
+   cValue := ""
+   FOR nPos := 1 TO Len( cCaption )
+      IF aValidMask[ nPos ]
+         cValue += SubStr( cCaption, nPos, 1 )
+      ElseIf nPos == ::nDecimal
+         cValue += "."
+      ENDIF
+   NEXT
+   IF ::DataType == "N"
+      cValue := StrTran( StrTran( cValue, "$", " " ), "*", " " )
+   ENDIF
+Return cValue
+
+#pragma BEGINDUMP
+#undef s_Super
+#define s_Super s_TText
+
+// -----------------------------------------------------------------------------
+HB_FUNC_STATIC( TTEXTPICTURE_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TTextPicture
+// -----------------------------------------------------------------------------
+{
+   HWND hWnd      = ( HWND )   hb_parnl( 1 );
+   UINT message   = ( UINT )   hb_parni( 2 );
+   WPARAM wParam  = ( WPARAM ) hb_parni( 3 );
+   LPARAM lParam  = ( LPARAM ) hb_parnl( 4 );
+   PHB_ITEM pSelf = hb_stackSelfItem();
+
+   switch( message )
+   {
+      case WM_CHAR:
+      case WM_PASTE:
+         HB_FUNCNAME( TTEXTPICTURE_EVENTS2 )();
+         break;
+
+      default:
+         _OOHG_Send( pSelf, s_Super );
+         hb_vmSend( 0 );
+         _OOHG_Send( hb_param( -1, HB_IT_OBJECT ), s_Events );
+         hb_vmPushLong( ( LONG ) hWnd );
+         hb_vmPushLong( message );
+         hb_vmPushLong( wParam );
+         hb_vmPushLong( lParam );
+         hb_vmSend( 4 );
+         break;
+	}
+}
+#pragma ENDDUMP
+
+FUNCTION TTextPicture_Events2( hWnd, nMsg, wParam, lParam )
+Local Self := QSelf()
+Local nPos, nPos1, nPos2, cText
+Local aValidMask := ::ValidMask
+
+   If nMsg == WM_CHAR .AND. wParam >= 32
+      nPos := SendMessage( ::hWnd, EM_GETSEL , 0 , 0 )
+      nPos1 := LoWord( nPos )
+      nPos2 := HiWord( nPos )
+      cText := ::Caption
+      cText := TTextPicture_Clear( cText, nPos + 1, nPos2 - nPos1, aValidMask, ::lInsert )
+      nPos := nPos1 + 1
+      IF TTextPicture_Events2_Key( Self, @cText, @nPos, CHR( wParam ), aValidMask, ::PictureMask, ::lInsert )
+         ::Caption := cText
+         SendMessage( ::hWnd, EM_SETSEL, nPos, nPos )
+      EndIf
+      Return 1
+
+   ElseIf nMsg == WM_PASTE
+      nPos := SendMessage( ::hWnd, EM_GETSEL, 0, 0 )
+      nPos1 := LoWord( nPos )
+      nPos2 := HiWord( nPos )
+      cText := ::Caption
+      cText := TTextPicture_Clear( cText, nPos + 1, nPos2 - nPos1, aValidMask, ::lInsert )
+      nPos := nPos1
+      IF TTextPicture_Events2_String( Self, @cText, @nPos, GetClipboardText(), aValidMask, ::PictureMask, ::lInsert )
+         ::Caption := cText
+         SendMessage( ::hWnd, EM_SETSEL, nPos, nPos )
+      ENDIF
+      Return 1
+
+   Endif
+Return ::Super:Events( hWnd, nMsg, wParam, lParam )
+
+STATIC FUNCTION TTextPicture_Events2_Key( Self, cText, nPos, cChar, aValidMask, cPictureMask, lInsert )
+Local lChange := .F., nPos1, cMask
+   IF ::nDecimal != 0 .AND. cChar $ if( ::lBritish, ",.", "." )
+      cText := Transform( VAL( StrTran( UnTransform( Self, cText ), " ", "" ) ), if( ::lBritish, "@E ", "" ) + cPictureMask )
+      nPos := ::nDecimal
+      Return .T.
+   Endif
+   DO WHILE nPos <= Len( cPictureMask ) .AND. ! aValidMask[ nPos ]
+      nPos++
+   ENDDO
+   IF nPos <= Len( cPictureMask )
+      cMask := Substr( cPictureMask, nPos, 1 )
+      IF cMask $ "!lLyY"
+         cChar := Upper( cChar )
+      ENDIF
+      IF ( cMask $ "Nn"  .AND. cChar $ "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789" ) .OR. ;
+         ( cMask $ "Aa"  .AND. cChar $ "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz" ) .OR. ;
+         ( cMask $ "#$*" .AND. cChar $ "0123456789-" ) .OR. ;
+         ( cMask $ "9"   .AND. cChar $ "0123456789" ) .OR. ;
+         ( cMask $ "Ll"  .AND. cChar $ ( "TFYN" + HB_LANGMESSAGE( HB_LANG_ITEM_BASE_TEXT + 1 ) + HB_LANGMESSAGE( HB_LANG_ITEM_BASE_TEXT + 2 ) ) ) .OR. ;
+         ( cMask $ "Yy"  .AND. cChar $ ( "YN"   + HB_LANGMESSAGE( HB_LANG_ITEM_BASE_TEXT + 1 ) + HB_LANGMESSAGE( HB_LANG_ITEM_BASE_TEXT + 2 ) ) ) .OR. ;
+           cMask $ "Xx!"
+         IF lInsert
+            nPos1 := nPos
+            DO WHILE nPos1 < Len( cPictureMask ) .AND. aValidMask[ nPos1 + 1 ]
+               nPos1++
+            ENDDO
+            cText := Left( cText, nPos - 1 ) + cChar + SubStr( cText, nPos, nPos1 - nPos ) + SubStr( cText, nPos1 + 1 )
+         Else
+            cText := Left( cText, nPos - 1 ) + cChar + SubStr( cText, nPos + 1 )
+         Endif
+         lChange := .T.
+      Else
+         nPos--
+      ENDIF
+   ENDIF
+Return lChange
+
+STATIC FUNCTION TTextPicture_Events2_String( Self, cText, nPos, cString, aValidMask, cPictureMask, lInsert )
+Local lChange := .F.
+   DO WHILE Len( cString ) > 0 .AND. nPos < Len( cPictureMask )
+      nPos++
+      IF ! aValidMask[ nPos ] .AND. Left( cString, 1 ) == SubStr( cPictureMask, nPos, 1 )
+         cText := Left( cText, nPos - 1 ) + SubStr( cPictureMask, nPos, 1 ) + SubStr( cText, nPos + 1 )
+         lChange := .T.
+      Else
+         lChange := TTextPicture_Events2_Key( Self, @cText, @nPos, Left( cString, 1 ), aValidMask, cPictureMask, lInsert ) .OR. lChange
+      ENDIF
+      cString := SubStr( cString, 2 )
+   ENDDO
+Return lChange
+
+STATIC FUNCTION TTextPicture_Clear( cText, nPos, nCount, aValidMask, lInsert )
+Local nClear, nBase
+   nCount := Max( Min( nCount, ( LEN( aValidMask ) - nPos + 1 ) ), 0 )
+   IF lInsert
+      DO WHILE nCount > 0
+         // Skip non-template characters
+         DO WHILE ! aValidMask[ nPos ] .AND. nCount > 0
+            nPos++
+            nCount--
+         ENDDO
+         // Count how many blank spaces
+         nClear := 0
+         nBase := nPos - 1
+         DO WHILE aValidMask[ nPos ] .AND. nCount > 0
+            nPos++
+            nCount--
+            nClear++
+         ENDDO
+         IF nCount > 0
+            // There's a non-template character
+            cText := Left( cText, nBase ) + Space( nClear ) + SubStr( cText, nPos )
+         ElseIf nClear != 0
+            // The clear area is out of the count's range
+            DO WHILE nPos <= LEN( aValidMask ) .AND. aValidMask[ nPos ]
+               nPos++
+            ENDDO
+            cText := Left( cText, nBase ) + SubStr( cText, nBase + nClear + 1, nPos - nBase - nClear - 1 ) + Space( nClear ) + SubStr( cText, nPos )
+         ENDIF
+      ENDDO
+   Else
+      DO WHILE nCount > 0
+         IF aValidMask[ nPos ]
+            cText := Left( cText, nPos - 1 ) + " " + SubStr( cText, nPos + 1 )
+         ENDIF
+         nPos++
+         nCount--
+      ENDDO
+   ENDIF
+Return cText
+
+*------------------------------------------------------------------------------*
+METHOD Events_Command( wParam ) CLASS TTextPicture
+*------------------------------------------------------------------------------*
+Local Hi_wParam := HIWORD( wParam )
+Local cText, nPos, nPos2, cAux
+Local cPictureMask, aValidMask
+
+   if Hi_wParam == EN_CHANGE
+      cText := ::Caption
+      cPictureMask := ::PictureMask
+      aValidMask := ::ValidMask
+      IF Len( cText ) != Len( cPictureMask )
+         nPos := HiWord( SendMessage( ::hWnd, EM_GETSEL , 0 , 0 ) )
+         IF Len( cText ) > Len( cPictureMask )
+            nPos2 := Len( cPictureMask ) - ( Len( cText ) - nPos )
+            cAux := SubStr( cText, nPos2 + 1, nPos - nPos2 )
+            cText := Left( cText, nPos2 ) + SubStr( cText, nPos + 1 )
+            TTextPicture_Events2_String( Self, @cText, @nPos2, cAux, aValidMask, cPictureMask, .F. )
+         Else
+            IF nPos > 0 .AND. nPos < Len( cPictureMask ) .AND. ! aValidMask[ nPos + 1 ]
+               nPos--
+            ENDIF
+            nPos2 := nPos
+            nPos := Len( cPictureMask ) - Len( cText )
+            cText := Left( cText, nPos2 ) + Space( nPos ) + SubStr( cText, nPos2 + 1 )
+            cText := TTextPicture_Clear( cText, nPos2 + 1, nPos, aValidMask, ::lInsert )
+         ENDIF
+         FOR nPos := 1 TO Len( cPictureMask )
+            IF ! aValidMask[ nPos ]
+               cAux := SubStr( cPictureMask, nPos, 1 )
+               IF cAux $ ",." .AND. ::lBritish
+                  cAux := if( cAux == ",", ".", "," )
+               ENDIF
+               cText := Left( cText, nPos - 1 ) + cAux + SubStr( cText, nPos + 1 )
+            Endif
+         NEXT
+         ::Caption := cText
+         SendMessage( ::hWnd, EM_SETSEL , nPos2, nPos2 )
+      ENDIF
+
+   elseif Hi_wParam == EN_KILLFOCUS
+      ::lSetting := .T.
+      ::Caption := Transform( ::Value, ::PictureShow )
+
+   elseif Hi_wParam == EN_SETFOCUS
+      //
 
    Endif
 
@@ -1122,7 +1588,7 @@ Local x, maskstart
    if Hi_wParam == EN_KILLFOCUS
 
          if ::lDate
-            _OOHG_DateTextBoxActive := .T.
+            ::lSetting := .T.
             ::SetText( dtoc ( ctod ( ::GetText() ) ) )
          EndIf
 

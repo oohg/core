@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.h,v 1.5 2005-08-25 06:06:51 guerra000 Exp $
+ * $Id: oohg.h,v 1.6 2005-09-01 05:25:10 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -79,4 +79,5 @@ LRESULT APIENTRY _OOHG_WndProc( PHB_ITEM pSelf, HWND hWnd, UINT uiMsg, WPARAM wP
 #define s_RowMargin        16
 #define s_ColMargin        17
 #define s_hWnd             18
-#define s_LastSymbol       19
+#define s_TText            19
+#define s_LastSymbol       20
