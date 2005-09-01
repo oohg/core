@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.5 2005-08-18 04:01:06 guerra000 Exp $
+ * $Id: h_tab.prg,v 1.6 2005-09-01 05:23:55 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -199,7 +199,11 @@ Local nPage
 
    nPage := IF( ::Visible, ::Value, 0 )
 
-   AEVAL( ::aPages, { |p,i| if( i == nPage, AEVAL( p:aControls, { |o| o:Visible := o:Visible } ), p:ForceHide() ) } )
+   AEVAL( ::aPages, { |p,i| if( i == nPage, , p:ForceHide() ) } )
+
+   IF nPage >= 1 .AND. nPage <= Len( ::aPages )
+      AEVAL( ::aPages[ nPage ]:aControls, { |o| o:Visible := o:Visible } )
+   ENDIF
 
 Return Nil
 
