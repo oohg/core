@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.10 2005-08-30 04:59:39 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.11 2005-09-01 05:19:51 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1873,7 +1873,7 @@ METHOD ToolTip( cToolTip ) CLASS TControl
    ENDIF
 RETURN ::cToolTip
 
-STATIC FUNCTION NullName( cName )
+FUNCTION _OOHG_GetNullName( cName )
 STATIC nCtrl := 0
    cName := IF( VALTYPE( cName ) $ "CM", UPPER( ALLTRIM( cName ) ), "0" )
    IF EMPTY( cName ) .OR. cName == "0" .OR. cName == "NONAME" .OR. cName == "NIL" .OR. cName == "NULL" .OR. cName == "NONE"
@@ -1991,7 +1991,7 @@ LOCAL nPos
       endif
    ENDIF
 
-   ::Name := NullName( ControlName )
+   ::Name := _OOHG_GetNullName( ControlName )
 
    If _IsControlDefined( ::Name, ::Parent:Name )
       MsgOOHGError( _OOHG_BRWLangError[ 4 ] + ::Name + _OOHG_BRWLangError[ 5 ] + ::Parent:Name + _OOHG_BRWLangError[ 6 ] )
@@ -2088,7 +2088,7 @@ METHOD SetContainer( Container, ControlName, FontName, FontSize, FontColor, BkCo
       // Default
    endif
 
-   ::Name := NullName( ControlName )
+   ::Name := _OOHG_GetNullName( ControlName )
 
    If _IsControlDefined( ::Name, ::Parent:Name )
       MsgOOHGError( _OOHG_BRWLangError[ 4 ] + ::Name + _OOHG_BRWLangError[ 5 ] + ::Parent:Name + _OOHG_BRWLangError[ 6 ] )
@@ -2113,7 +2113,7 @@ METHOD New( hWnd, cName, HelpId, Visible, ToolTip, Id ) CLASS TControl
 Local mVar
 
    // cName NO debe recibirse!!! Ya debe estar desde :SetForm()!!!!
-*   ::Name   := NullName( ControlName )
+*   ::Name   := _OOHG_GetNullName( ControlName )
 EMPTY(cName)
 
    ::hWnd   := hWnd

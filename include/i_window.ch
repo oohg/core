@@ -1,5 +1,5 @@
 /*
- * $Id: i_window.ch,v 1.3 2005-08-23 05:12:56 guerra000 Exp $
+ * $Id: i_window.ch,v 1.4 2005-09-01 05:19:51 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -276,6 +276,74 @@
         DECLARE WINDOW <w>;;
         #include \<<ww>.fmg\>
 
+        #xcommand XDEFINE WINDOW <w> ;
+                        [ OBJ <obj> ] ;
+                        [ <dummy: OF, PARENT> <parent> ] ;
+                        [ AT <row>,<col> ] ;
+                        [ WIDTH <wi> ] ;
+                        [ HEIGHT <h> ] ;
+			[ VIRTUAL WIDTH <vWidth> ] ;
+			[ VIRTUAL HEIGHT <vHeight> ] ;
+			[ TITLE <title> ] ;
+			[ ICON <icon> ] ;
+			[ <main:  MAIN> ] ;
+			[ <child: CHILD> ] ;
+                        [ <modal: MODAL> ] ;
+                        [ <modalsize: MODALSIZE> ] ;
+                        [ <splitchild: SPLITCHILD> ] ;
+                        [ <mdi: MDI> ] ;
+			[ <noshow: NOSHOW> ] ;
+			[ <topmost: TOPMOST> ] ;
+			[ <noautorelease: NOAUTORELEASE> ] ;
+			[ <nominimize: NOMINIMIZE> ] ;
+			[ <nomaximize: NOMAXIMIZE> ] ;
+			[ <nosize: NOSIZE> ] ;
+			[ <nosysmenu: NOSYSMENU> ] ;
+			[ <nocaption: NOCAPTION> ] ;
+			[ CURSOR <cursor> ] ;
+			[ ON INIT <InitProcedure> ] ;
+			[ ON RELEASE <ReleaseProcedure> ] ;
+			[ ON INTERACTIVECLOSE <interactivecloseprocedure> ] ;
+			[ ON MOUSECLICK <ClickProcedure> ] ;
+			[ ON MOUSEDRAG <MouseDragProcedure> ] ;
+			[ ON MOUSEMOVE <MouseMoveProcedure> ] ;
+			[ ON SIZE <SizeProcedure> ] ;
+			[ ON MAXIMIZE <MaximizeProcedure> ] ;
+			[ ON MINIMIZE <MinimizeProcedure> ] ;
+			[ ON PAINT <PaintProcedure> ] ;
+		        [ BACKCOLOR <backcolor> ] ;
+			[ FONT <FontName> SIZE <FontSize> ] ;
+			[ NOTIFYICON <NotifyIcon> ] ;
+			[ NOTIFYTOOLTIP <NotifyIconTooltip> ] ;
+			[ ON NOTIFYCLICK <NotifyLeftClick> ] ;
+			[ ON GOTFOCUS <GotFocusProcedure> ] ;
+			[ ON LOSTFOCUS <LostFocusProcedure> ] ;
+			[ ON SCROLLUP <scrollup> ] ;
+			[ ON SCROLLDOWN <scrolldown> ] ;
+			[ ON SCROLLLEFT <scrollleft> ] ;
+			[ ON SCROLLRIGHT <scrollright> ] ;
+			[ ON HSCROLLBOX <hScrollBox> ] ;
+			[ ON VSCROLLBOX <vScrollBox> ] ;
+			[ <helpbutton:  HELPBUTTON> ] ;
+                        [ <rtl: RTL> ] ;
+                        [ GRIPPERTEXT <grippertext> ] ;
+                        [ <break: BREAK> ] ;
+                        [ <focused: FOCUSED> ] ;
+	=>;
+        [ <obj> := ] ;
+        TForm():Define( <"w">, <title>, <col>, <row>, <wi>, <h>, <.nominimize.>, <.nomaximize.>, <.nosize.>, ;
+                        <.nosysmenu.>, <.nocaption.>, <{InitProcedure}>, <{ReleaseProcedure}>, ;
+                        <{MouseDragProcedure}>, <{SizeProcedure}>, <{ClickProcedure}>, ;
+                        <{MouseMoveProcedure}>, <backcolor>, <{PaintProcedure}>, <.noshow.>, <.topmost.>, ;
+                        <icon>, <FontName>, <FontSize>, <NotifyIcon>, <NotifyIconTooltip>, ;
+                        <{NotifyLeftClick}>, <{GotFocusProcedure}>, <{LostFocusProcedure}>, <vHeight>, ;
+                        <vWidth>, <{scrollleft}>, <{scrollright}>, <{scrollup}>, <{scrolldown}>, ;
+                        <{hScrollBox}>, <{vScrollBox}>, <.helpbutton.>, <{MaximizeProcedure}>, ;
+                        <{MinimizeProcedure}>, <cursor>, <.noautorelease.>, <parent>, ;
+                        <{interactivecloseprocedure}>, <.focused.>, <.break.>, <grippertext>, <.rtl.>, ;
+                        <.main.>, <.splitchild.>, <.child.>, <.modal.>, <.modalsize.>, <.mdi.> ) ;;
+        DECLARE WINDOW <w>
+
 #else
 
 	#xcommand DECLARE WINDOW <w> ;
@@ -439,6 +507,74 @@
 	=> ;
 	DECLARE WINDOW <w> ;;
         _OOHG_TempWindowName := <"w"> ; #include <<ww>.fmg>
+
+        #xcommand XDEFINE WINDOW <w> ;
+                        [ OBJ <obj> ] ;
+                        [ <dummy: OF, PARENT> <parent> ] ;
+                        [ AT <row>,<col> ] ;
+                        [ WIDTH <wi> ] ;
+                        [ HEIGHT <h> ] ;
+			[ VIRTUAL WIDTH <vWidth> ] ;
+			[ VIRTUAL HEIGHT <vHeight> ] ;
+			[ TITLE <title> ] ;
+			[ ICON <icon> ] ;
+			[ <main:  MAIN> ] ;
+			[ <child: CHILD> ] ;
+                        [ <modal: MODAL> ] ;
+                        [ <modalsize: MODALSIZE> ] ;
+                        [ <splitchild: SPLITCHILD> ] ;
+                        [ <mdi: MDI> ] ;
+			[ <noshow: NOSHOW> ] ;
+			[ <topmost: TOPMOST> ] ;
+			[ <noautorelease: NOAUTORELEASE> ] ;
+			[ <nominimize: NOMINIMIZE> ] ;
+			[ <nomaximize: NOMAXIMIZE> ] ;
+			[ <nosize: NOSIZE> ] ;
+			[ <nosysmenu: NOSYSMENU> ] ;
+			[ <nocaption: NOCAPTION> ] ;
+			[ CURSOR <cursor> ] ;
+			[ ON INIT <InitProcedure> ] ;
+			[ ON RELEASE <ReleaseProcedure> ] ;
+			[ ON INTERACTIVECLOSE <interactivecloseprocedure> ] ;
+			[ ON MOUSECLICK <ClickProcedure> ] ;
+			[ ON MOUSEDRAG <MouseDragProcedure> ] ;
+			[ ON MOUSEMOVE <MouseMoveProcedure> ] ;
+			[ ON SIZE <SizeProcedure> ] ;
+			[ ON MAXIMIZE <MaximizeProcedure> ] ;
+			[ ON MINIMIZE <MinimizeProcedure> ] ;
+			[ ON PAINT <PaintProcedure> ] ;
+		        [ BACKCOLOR <backcolor> ] ;
+			[ FONT <FontName> SIZE <FontSize> ] ;
+			[ NOTIFYICON <NotifyIcon> ] ;
+			[ NOTIFYTOOLTIP <NotifyIconTooltip> ] ;
+			[ ON NOTIFYCLICK <NotifyLeftClick> ] ;
+			[ ON GOTFOCUS <GotFocusProcedure> ] ;
+			[ ON LOSTFOCUS <LostFocusProcedure> ] ;
+			[ ON SCROLLUP <scrollup> ] ;
+			[ ON SCROLLDOWN <scrolldown> ] ;
+			[ ON SCROLLLEFT <scrollleft> ] ;
+			[ ON SCROLLRIGHT <scrollright> ] ;
+			[ ON HSCROLLBOX <hScrollBox> ] ;
+			[ ON VSCROLLBOX <vScrollBox> ] ;
+			[ <helpbutton:  HELPBUTTON> ] ;
+                        [ <rtl: RTL> ] ;
+                        [ GRIPPERTEXT <grippertext> ] ;
+                        [ <break: BREAK> ] ;
+                        [ <focused: FOCUSED> ] ;
+	=>;
+        DECLARE WINDOW <w>  ;;
+        [ <obj> := ] ;
+        TForm():Define( <"w">, <title>, <col>, <row>, <wi>, <h>, <.nominimize.>, <.nomaximize.>, <.nosize.>, ;
+                        <.nosysmenu.>, <.nocaption.>, <{InitProcedure}>, <{ReleaseProcedure}>, ;
+                        <{MouseDragProcedure}>, <{SizeProcedure}>, <{ClickProcedure}>, ;
+                        <{MouseMoveProcedure}>, <backcolor>, <{PaintProcedure}>, <.noshow.>, <.topmost.>, ;
+                        <icon>, <FontName>, <FontSize>, <NotifyIcon>, <NotifyIconTooltip>, ;
+                        <{NotifyLeftClick}>, <{GotFocusProcedure}>, <{LostFocusProcedure}>, <vHeight>, ;
+                        <vWidth>, <{scrollleft}>, <{scrollright}>, <{scrollup}>, <{scrolldown}>, ;
+                        <{hScrollBox}>, <{vScrollBox}>, <.helpbutton.>, <{MaximizeProcedure}>, ;
+                        <{MinimizeProcedure}>, <cursor>, <.noautorelease.>, <parent>, ;
+                        <{interactivecloseprocedure}>, <.focused.>, <.break.>, <grippertext>, <.rtl.>, ;
+                        <.main.>, <.splitchild.>, <.child.>, <.modal.>, <.modalsize.>, <.mdi.> )
 
 #endif
 
@@ -621,3 +757,71 @@ SetProperty ( <"Arg1"> , <"Arg2"> , <Arg3> )
       => ;
         [ <obj> := ] ;
         _DefineSplitChildWindow ( , <wi>, <h> , <.break.> , <grippertext> , <.nocaption.> , <title> , <FontName> , <FontSize> , <{GotFocusProcedure}>, <{LostFocusProcedure}> , <vHeight>  , <vWidth> , <.focused.>  , <{scrollleft}> , <{scrollright}> , <{scrollup}> , <{scrolldown}> , <{hScrollBox}> , <{vScrollBox}> , <cursor>, <.rtl.> )
+
+
+        #xcommand XDEFINE WINDOW TEMPLATE ;
+                        [ OBJ <obj> ] ;
+                        [ <dummy: OF, PARENT> <parent> ] ;
+                        [ AT <row>,<col> ] ;
+                        [ WIDTH <wi> ] ;
+                        [ HEIGHT <h> ] ;
+			[ VIRTUAL WIDTH <vWidth> ] ;
+			[ VIRTUAL HEIGHT <vHeight> ] ;
+			[ TITLE <title> ] ;
+			[ ICON <icon> ] ;
+			[ <main:  MAIN> ] ;
+			[ <child: CHILD> ] ;
+                        [ <modal: MODAL> ] ;
+                        [ <modalsize: MODALSIZE> ] ;
+                        [ <splitchild: SPLITCHILD> ] ;
+                        [ <mdi: MDI> ] ;
+			[ <noshow: NOSHOW> ] ;
+			[ <topmost: TOPMOST> ] ;
+			[ <noautorelease: NOAUTORELEASE> ] ;
+			[ <nominimize: NOMINIMIZE> ] ;
+			[ <nomaximize: NOMAXIMIZE> ] ;
+			[ <nosize: NOSIZE> ] ;
+			[ <nosysmenu: NOSYSMENU> ] ;
+			[ <nocaption: NOCAPTION> ] ;
+			[ CURSOR <cursor> ] ;
+			[ ON INIT <InitProcedure> ] ;
+			[ ON RELEASE <ReleaseProcedure> ] ;
+			[ ON INTERACTIVECLOSE <interactivecloseprocedure> ] ;
+			[ ON MOUSECLICK <ClickProcedure> ] ;
+			[ ON MOUSEDRAG <MouseDragProcedure> ] ;
+			[ ON MOUSEMOVE <MouseMoveProcedure> ] ;
+			[ ON SIZE <SizeProcedure> ] ;
+			[ ON MAXIMIZE <MaximizeProcedure> ] ;
+			[ ON MINIMIZE <MinimizeProcedure> ] ;
+			[ ON PAINT <PaintProcedure> ] ;
+		        [ BACKCOLOR <backcolor> ] ;
+			[ FONT <FontName> SIZE <FontSize> ] ;
+			[ NOTIFYICON <NotifyIcon> ] ;
+			[ NOTIFYTOOLTIP <NotifyIconTooltip> ] ;
+			[ ON NOTIFYCLICK <NotifyLeftClick> ] ;
+			[ ON GOTFOCUS <GotFocusProcedure> ] ;
+			[ ON LOSTFOCUS <LostFocusProcedure> ] ;
+			[ ON SCROLLUP <scrollup> ] ;
+			[ ON SCROLLDOWN <scrolldown> ] ;
+			[ ON SCROLLLEFT <scrollleft> ] ;
+			[ ON SCROLLRIGHT <scrollright> ] ;
+			[ ON HSCROLLBOX <hScrollBox> ] ;
+			[ ON VSCROLLBOX <vScrollBox> ] ;
+			[ <helpbutton:  HELPBUTTON> ] ;
+                        [ <rtl: RTL> ] ;
+                        [ GRIPPERTEXT <grippertext> ] ;
+                        [ <break: BREAK> ] ;
+                        [ <focused: FOCUSED> ] ;
+	=>;
+        [ <obj> := ] ;
+        TForm():Define( , <title>, <col>, <row>, <wi>, <h>, <.nominimize.>, <.nomaximize.>, <.nosize.>, ;
+                        <.nosysmenu.>, <.nocaption.>, <{InitProcedure}>, <{ReleaseProcedure}>, ;
+                        <{MouseDragProcedure}>, <{SizeProcedure}>, <{ClickProcedure}>, ;
+                        <{MouseMoveProcedure}>, <backcolor>, <{PaintProcedure}>, <.noshow.>, <.topmost.>, ;
+                        <icon>, <FontName>, <FontSize>, <NotifyIcon>, <NotifyIconTooltip>, ;
+                        <{NotifyLeftClick}>, <{GotFocusProcedure}>, <{LostFocusProcedure}>, <vHeight>, ;
+                        <vWidth>, <{scrollleft}>, <{scrollright}>, <{scrollup}>, <{scrolldown}>, ;
+                        <{hScrollBox}>, <{vScrollBox}>, <.helpbutton.>, <{MaximizeProcedure}>, ;
+                        <{MinimizeProcedure}>, <cursor>, <.noautorelease.>, <parent>, ;
+                        <{interactivecloseprocedure}>, <.focused.>, <.break.>, <grippertext>, <.rtl.>, ;
+                        <.main.>, <.splitchild.>, <.child.>, <.modal.>, <.modalsize.>, <.mdi.> )

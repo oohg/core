@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.7 2005-08-30 04:59:38 guerra000 Exp $
+ * $Id: i_windefs.ch,v 1.8 2005-09-01 05:19:51 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -275,7 +275,7 @@
 #define WS_EX_STATICEDGE        0x00020000
 #define WS_EX_APPWINDOW         0x00040000
 #define WS_EX_OVERLAPPEDWINDOW  ( WS_EX_WINDOWEDGE + WS_EX_CLIENTEDGE )
-#define WS_EX_PALETTEWINDOW     ( WS_EX_WINDOWEDGE | WS_EX_TOOLWINDOW + WS_EX_TOPMOST )
+#define WS_EX_PALETTEWINDOW     ( WS_EX_WINDOWEDGE + WS_EX_TOOLWINDOW + WS_EX_TOPMOST )
 
 //
 #define RBS_TOOLTIPS        256

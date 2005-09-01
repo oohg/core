@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.15 2005-08-30 05:02:41 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.16 2005-09-01 05:19:51 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -100,6 +100,7 @@ STATIC _OOHG_aFormhWnd := {}, _OOHG_aFormObjects := {}
 STATIC _OOHG_aEventInfo := {}        // Event's stack
 STATIC _OOHG_UserWindow := nil       // User's window
 STATIC _OOHG_InteractiveClose := 1   // Interactive close
+STATIC _OOHG_MessageLoops := {}      // Message loops
 
 #include "hbclass.ch"
 
@@ -224,9 +225,6 @@ CLASS TForm FROM TWindow
    DATA OnRelease      INIT nil
    DATA OnInit         INIT nil
    DATA OnSize         INIT nil
-*   DATA OnClick        INIT nil
-*   DATA OnGotFocus     INIT nil
-*   DATA OnLostFocus    INIT nil
    DATA OnPaint        INIT nil
    DATA OnMouseDrag    INIT nil
    DATA OnMouseMove    INIT nil
@@ -289,7 +287,7 @@ CLASS TForm FROM TWindow
    METHOD DeleteControl
 
    METHOD Events
-   METHOD MessageLoop() BLOCK { || _DoMessageLoop() }
+   METHOD MessageLoop
    ERROR HANDLER Error
    METHOD Control
 ENDCLASS
@@ -307,12 +305,17 @@ METHOD Define( FormName, Caption, x, y, w, h, nominimize, nomaximize, nosize, ;
                InteractiveCloseProcedure, Focused, Break, GripperText, lRtl, ;
                main, splitchild, child, modal, modalsize, mdi ) CLASS TForm
 *------------------------------------------------------------------------------*
-Local aError, nMain, hParent, lSplit := .F.
+Local aError := {}, nMain, hParent, lSplit := .F.
 Local nStyle := 0, nStyleEx := 0
 
    nMain := ASCAN( _OOHG_aFormObjects, { |o| o:Type == "A" } )
 
-   IF ValType( oParent ) != "O"
+   If ValType( oParent ) $ "CM" .AND. ! Empty( oParent )
+      oParent := GetFormObject( oParent )
+      If oParent:hWnd <= 0
+         MsgOOHGError( "Specified parent window is not defined. Program Terminated." )
+      Endif
+   ElseIf ValType( oParent ) != "O"
       oParent := GetFormObjectByHandle( GetActiveWindow() )
       If oParent:hWnd == 0
          If _OOHG_UserWindow != NIL .AND. ascan( _OOHG_aFormhWnd, _OOHG_UserWindow:hWnd ) > 0
@@ -335,19 +338,6 @@ Local nStyle := 0, nStyleEx := 0
          MsgOOHGError("NOAUTORELEASE and MAIN Clauses Can't Be Used Simultaneously. Program Terminated" )
 		Endif
 
-*         [ NOTIFYICON <NotifyIcon> ] ;
-*         [ NOTIFYTOOLTIP <NotifyIconTooltip> ] ;
-*         [ ON NOTIFYCLICK <NotifyLeftClick> ] ;
-
-/*
-   ::Define2( FormName, Caption, x, y, w, h, Parent, helpbutton, nominimize, nomaximize, nosize, nosysmenu, ;
-              nocaption, virtualheight, virtualwidth, hscrollbox, vscrollbox, fontname, fontsize, aRGB, cursor, ;
-              icon, noshow, gotfocus, lostfocus, scrollleft, scrollright, scrollup, scrolldown, maximizeprocedure, ;
-              minimizeprocedure, initprocedure, ReleaseProcedure, SizeProcedure, ClickProcedure, PaintProcedure, ;
-              MouseMoveProcedure, MouseDragProcedure, InteractiveCloseProcedure, NoAutoRelease, nStyle, nStyleEx, ;
-              .F., lRtl )
-*/
-
       AADD( aError, "MAIN" )
 
       hParent := 0
@@ -362,14 +352,6 @@ Local nStyle := 0, nStyleEx := 0
       if nMain == 0
          MsgOOHGError( "Main Window Not Defined. Program Terminated." )
 		Endif
-
-		If .Not. Empty (NotifyIconName)
-         MsgOOHGError("Notification Icon Allowed Only in Main Window. Program Terminated" )
-		endif
-
-*         sOLO MAIN: [ NOTIFYICON <NotifyIcon> ] ;
-*         sOLO MAIN: [ NOTIFYTOOLTIP <NotifyIconTooltip> ] ;
-*         sOLO MAIN: [ ON NOTIFYCLICK <NotifyLeftClick> ] ;
 
       hParent := 0
       ::Type := "S"
@@ -398,20 +380,15 @@ Local nStyle := 0, nStyleEx := 0
 
       _OOHG_SplitLastControl   := 'SPLITCHILD'
 
-/*
-   ::Define2( FormName, Title, 0, 0, w, h, 0, .F., .F., .F., .F., .F., ;
-              nocaption, virtualheight, virtualwidth, hscrollbox, vscrollbox, fontname, fontsize, {-1,-1,-1}, cursor, ;
-              "", .F., gotfocus, lostfocus, scrollleft, scrollright, scrollup, scrolldown, nil, ;
-              nil, nil, nil, nil, nil, nil, ;
-              nil, nil, nil, .F., 0, 0, ;
-              .T., lRtl )
-*/
+      helpbutton := nominimize := nomaximize := nosize := nosysmenu := noshow := .F.
+      // aRgb := { -1, -1, -1 }
 
       ::Type := "X"
       ::Focused := Focused
       ::Parent := oParent
 
       aAdd ( oParent:SplitChildList, Self )
+      ::ActivateCount[ 1 ] += 999
 
       lSplit := .T.
 
@@ -427,14 +404,7 @@ Local nStyle := 0, nStyleEx := 0
       AADD( aError, "CHILD" )
 
       hParent := oParent:hWnd
-/*
-   ::Define2( FormName, Caption, x, y, w, h, Parent, helpbutton, nominimize, nomaximize, nosize, nosysmenu, ;
-              nocaption, virtualheight, virtualwidth, hscrollbox, vscrollbox, fontname, fontsize, aRGB, cursor, ;
-              icon, noshow, gotfocus, lostfocus, scrollleft, scrollright, scrollup, scrolldown, maximizeprocedure, ;
-              minimizeprocedure, initprocedure, ReleaseProcedure, SizeProcedure, ClickProcedure, PaintProcedure, ;
-              MouseMoveProcedure, MouseDragProcedure, InteractiveCloseProcedure, NoAutoRelease, nStyle, nStyleEx, ;
-              .F., lRtl )
-*/
+
       ::Type := "C"
 
    else
@@ -450,14 +420,6 @@ Local nStyle := 0, nStyleEx := 0
       ::Parent := oParent
       hParent := oParent:hWnd
 
-/*
-   ::Define2( FormName, Caption, x, y, w, h, hParent, helpbutton, .F., .F., nosize, nosysmenu, ;
-              nocaption, virtualheight, virtualwidth, hscrollbox, vscrollbox, fontname, fontsize, aRGB, cursor, ;
-              icon, noshow, gotfocus, lostfocus, scrollleft, scrollright, scrollup, scrolldown, nil, ;
-              nil, initprocedure, ReleaseProcedure, SizeProcedure, ClickProcedure, PaintProcedure, ;
-              MouseMoveProcedure, MouseDragProcedure, InteractiveCloseProcedure, NoAutoRelease, nStyle, nStyleEx, ;
-              .T., lRtl )
-*/
    else
 
       modal := .F.
@@ -471,14 +433,6 @@ Local nStyle := 0, nStyleEx := 0
       ::Parent := oParent
       hParent := oParent:hWnd
 
-/*
-   ::Define2( FormName, Caption, x, y, w, h, hParent, helpbutton, .F., .F., nosize, nosysmenu, ;
-              nocaption, virtualheight, virtualwidth, hscrollbox, vscrollbox, fontname, fontsize, aRGB, cursor, ;
-              icon, noshow, gotfocus, lostfocus, scrollleft, scrollright, scrollup, scrolldown, nil, ;
-              nil, initprocedure, ReleaseProcedure, SizeProcedure, ClickProcedure, PaintProcedure, ;
-              MouseMoveProcedure, MouseDragProcedure, InteractiveCloseProcedure, NoAutoRelease, nStyle, nStyleEx, ;
-              .T., lRtl )
-*/
    else
 
       modalsize := .F.
@@ -496,15 +450,10 @@ Local nStyle := 0, nStyleEx := 0
       hParent := oParent:hWnd
 
       aAdd( oParent:SplitChildList, Self )
+      ::ActivateCount[ 1 ] += 999
 
-/*
-   ::Define2( FormName, Caption, x, y, w, h, hParent, helpbutton, .F., .F., nosize, nosysmenu, ;
-              nocaption, virtualheight, virtualwidth, hscrollbox, vscrollbox, fontname, fontsize, aRGB, cursor, ;
-              icon, noshow, gotfocus, lostfocus, scrollleft, scrollright, scrollup, scrolldown, nil, ;
-              nil, initprocedure, ReleaseProcedure, SizeProcedure, ClickProcedure, PaintProcedure, ;
-              MouseMoveProcedure, MouseDragProcedure, InteractiveCloseProcedure, NoAutoRelease, nStyle, nStyleEx, ;
-              .T., lRtl )
-*/
+      nStyle   += WS_CHILD - WS_POPUP
+
    else
 
       mdi := .F.
@@ -524,16 +473,16 @@ Local nStyle := 0, nStyleEx := 0
               MouseMoveProcedure, MouseDragProcedure, InteractiveCloseProcedure, NoAutoRelease, nStyle, nStyleEx, ;
               lSplit, lRtl )
 
-   if main
-      if ! valtype( NotifyIconName ) $ "CM"
-         NotifyIconName := ""
-      Else
-         ShowNotifyIcon( ::hWnd, .T. , LoadTrayIcon(GETINSTANCE(), NotifyIconName ), NotifyIconTooltip )
-      endif
+   if ! valtype( NotifyIconName ) $ "CM"
+      NotifyIconName := ""
+   Else
+      ShowNotifyIcon( ::hWnd, .T. , LoadTrayIcon(GETINSTANCE(), NotifyIconName ), NotifyIconTooltip )
       ::NotifyIconName := NotifyIconName
       ::NotifyIconToolTip := NotifyIconToolTip
       ::NotifyIconLeftClick := NotifyIconLeftClick
-   elseif splitchild
+   endif
+
+   if splitchild
       AddSplitBoxItem( ::hWnd, oParent:ReBarHandle, w , break , grippertext ,  ,  , _OOHG_ActiveSplitBoxInverted )
    endif
 
@@ -549,17 +498,17 @@ METHOD Define2( FormName, Caption, x, y, w, h, Parent, helpbutton, nominimize, n
 *------------------------------------------------------------------------------*
 Local Formhandle, vscroll, hscroll, BrushHandle
 
-   ::lRtl := lRtl
-
    if valtype( lRtl ) != "L"
       lRtl := .F.
 	endif
+
+   ::lRtl := lRtl
 
    if ! valtype( FormName ) $ "CM"
       FormName := _OOHG_TempWindowName
 	endif
 
-   FormName := Alltrim( FormName )
+   FormName := _OOHG_GetNullName( FormName )
 
    If _IsWindowDefined( FormName )
       MsgOOHGError( "Window: " + FormName + " already defined. Program Terminated" )
@@ -897,6 +846,17 @@ METHOD Activate( lNoStop, oWndLoop ) CLASS TForm
 Return Nil
 
 *-----------------------------------------------------------------------------*
+METHOD MessageLoop() CLASS TForm
+*-----------------------------------------------------------------------------*
+   AADD( _OOHG_MessageLoops, ::ActivateCount )
+   _DoMessageLoop()
+   _OOHG_DeleteArrayItem( _OOHG_MessageLoops, Len( _OOHG_MessageLoops ) )
+   If Len( _OOHG_MessageLoops ) > 0 .AND. ATAIL( _OOHG_MessageLoops )[ 1 ] < 1
+      PostQuitMessage( 0 )
+   EndIf
+Return nil
+
+*-----------------------------------------------------------------------------*
 METHOD Release() CLASS TForm
 *-----------------------------------------------------------------------------*
 Local b
@@ -954,7 +914,7 @@ Return Nil
 METHOD SetActivationFlag() CLASS TForm
 *-----------------------------------------------------------------------------*
    ::Active := .t.
-   AEVAL( ::SplitChildList, { |o| o:Active := .t. } )
+   AEVAL( ::SplitChildList, { |o| o:Active := .t., if( ! o:NoShow, o:Show(), ) } )
 Return Nil
 
 *-----------------------------------------------------------------------------*
@@ -988,6 +948,7 @@ METHOD ProcessInitProcedure() CLASS TForm
       Eval( ::OnInit )
 		_PopEventInfo()
 	EndIf
+   AEVAL( ::SplitChildList, { |o| o:ProcessInitProcedure() } )
 Return nil
 
 *-----------------------------------------------------------------------------*
@@ -1823,32 +1784,38 @@ Local oWnd, oCtrl
 	case nMsg == WM_DESTROY
         ***********************************************************************
 
-      * Remove Child Controls
-
+      // Remove Child Controls
       DO WHILE LEN( ::aControls ) > 0
           ::aControls[ 1 ]:Release()
       ENDDO
 
-      * Delete Brush
-
+      // Delete Brush
       DeleteObject( ::BrushHandle )
 
-      * Update Form Index Variable
+      // Delete Notify icon
+      ShowNotifyIcon( ::hWnd, .F. , 0, "" )
+      DeleteObject( ::NotifyMenuHandle )
 
-      mVar := '_' + ::Name
-      if type( mVar ) != 'U'
-         __MVPUT( mVar , 0 )
+      // Update Form Index Variable
+      If ! Empty( ::Name )
+         mVar := '_' + ::Name
+         if type( mVar ) != 'U'
+            __MVPUT( mVar , 0 )
+         EndIf
       EndIf
 
       // Verify if window was multi-activated
-      if ::ActivateCount[ 1 ] > 1
-         ::ActivateCount[ 1 ]--
-      else
-         PostQuitMessage(0)
+      ::ActivateCount[ 1 ]--
+      If Len( _OOHG_MessageLoops ) > 0
+         If ATAIL( _OOHG_MessageLoops )[ 1 ] < 1
+            PostQuitMessage( 0 )
+         Endif
+      ElseIf ::ActivateCount[ 1 ] < 1
+         PostQuitMessage( 0 )
       Endif
 
       // Removes WINDOW from the array
-      i := Ascan ( _OOHG_aFormhWnd, hWnd )
+      i := Ascan( _OOHG_aFormhWnd, hWnd )
       IF i > 0
          _OOHG_DeleteArrayItem( _OOHG_aFormhWnd, I )
          _OOHG_DeleteArrayItem( _OOHG_aFormObjects, I )
