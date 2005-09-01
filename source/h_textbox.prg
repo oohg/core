@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.7 2005-09-01 05:25:10 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.8 2005-09-01 05:48:09 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -617,8 +617,8 @@ Local aValidMask := ::ValidMask
       nPos1 := LoWord( nPos )
       nPos2 := HiWord( nPos )
       cText := ::Caption
-      cText := TTextPicture_Clear( cText, nPos + 1, nPos2 - nPos1, aValidMask, ::lInsert )
       nPos := nPos1 + 1
+      cText := TTextPicture_Clear( cText, nPos, nPos2 - nPos1, aValidMask, ::lInsert )
       IF TTextPicture_Events2_Key( Self, @cText, @nPos, CHR( wParam ), aValidMask, ::PictureMask, ::lInsert )
          ::Caption := cText
          SendMessage( ::hWnd, EM_SETSEL, nPos, nPos )
@@ -630,8 +630,8 @@ Local aValidMask := ::ValidMask
       nPos1 := LoWord( nPos )
       nPos2 := HiWord( nPos )
       cText := ::Caption
-      cText := TTextPicture_Clear( cText, nPos + 1, nPos2 - nPos1, aValidMask, ::lInsert )
       nPos := nPos1
+      cText := TTextPicture_Clear( cText, nPos + 1, nPos2 - nPos1, aValidMask, ::lInsert )
       IF TTextPicture_Events2_String( Self, @cText, @nPos, GetClipboardText(), aValidMask, ::PictureMask, ::lInsert )
          ::Caption := cText
          SendMessage( ::hWnd, EM_SETSEL, nPos, nPos )
@@ -699,14 +699,14 @@ Local nClear, nBase
    IF lInsert
       DO WHILE nCount > 0
          // Skip non-template characters
-         DO WHILE ! aValidMask[ nPos ] .AND. nCount > 0
+         DO WHILE nCount > 0 .AND. ! aValidMask[ nPos ]
             nPos++
             nCount--
          ENDDO
          // Count how many blank spaces
          nClear := 0
          nBase := nPos - 1
-         DO WHILE aValidMask[ nPos ] .AND. nCount > 0
+         DO WHILE nCount > 0 .AND. aValidMask[ nPos ]
             nPos++
             nCount--
             nClear++
