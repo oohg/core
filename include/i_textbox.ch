@@ -1,5 +1,5 @@
 /*
- * $Id: i_textbox.ch,v 1.3 2005-08-25 05:57:41 guerra000 Exp $
+ * $Id: i_textbox.ch,v 1.4 2005-09-02 05:51:10 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -230,3 +230,35 @@
                 [ <rtl: RTL> ]                  ;
 	=>;
 [ <obj> := ] TTextCharMask():Define( <"name">, <"parent">, <col>, <row>, "" , <w> , <value> , <fontname> , <fontsize> , <tooltip>   , <{lostfocus}>  , <{gotfocus}> , <{change}> , <height> , <{enter}> , <.RightAlign.>  , <helpid> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.>  , <"field">  , <backcolor> , <fontcolor> , <.date.> , <.readonly.>  , <.invisible.> , <.notabstop.> , <.rtl.> )
+
+// TEXTBOX ( PICTURE MASK )
+
+#command @ <row>,<col> TEXTBOX <name>		;
+                [ OBJ <obj> ]                   ;
+		[ <dummy1: OF, PARENT> <parent> ] ;
+                [ HEIGHT <height> ]		;
+		[ WIDTH <w> ]			;
+		[ FIELD <field> ]		;
+		[ VALUE <value> ]		;
+		[ < readonly: READONLY > ] 	;
+		[ FONT <fontname> ]		;
+		[ SIZE <fontsize> ]		;
+                [ <bold : BOLD> ]               ;
+                [ <italic : ITALIC> ]           ;
+                [ <underline : UNDERLINE> ]     ;
+                [ <strikeout : STRIKEOUT> ]     ;
+		[ TOOLTIP <tooltip> ]		;
+                [ BACKCOLOR <backcolor> ]       ;
+                [ FONTCOLOR <fontcolor> ]       ;
+                PICTURE <inputmask>             ;
+                [ ON CHANGE <change> ]		;
+		[ ON GOTFOCUS <gotfocus> ]	;
+		[ ON LOSTFOCUS <lostfocus> ]	;
+                [ ON ENTER <enter> ]		;
+                [ <RightAlign: RIGHTALIGN> ]    ;
+		[ <invisible: INVISIBLE> ]	;
+		[ <notabstop: NOTABSTOP> ]	;
+		[ HELPID <helpid> ] 		;
+                [ <rtl: RTL> ]                  ;
+	=>;
+[ <obj> := ] TTextPicture():Define( <"name">, <"parent">, <col>, <row>, <w> , <height> , <value> , <inputmask> , <fontname> , <fontsize> , <tooltip>   , <{lostfocus}>  , <{gotfocus}> , <{change}> , <{enter}> , <.RightAlign.>  , <helpid> , <.readonly.>  , <.bold.>, <.italic.>, <.underline.>, <.strikeout.>  , <"field">  , <backcolor> , <fontcolor> , <.invisible.> , <.notabstop.> , <.rtl.> )
