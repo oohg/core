@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.12 2005-08-30 04:59:39 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.13 2005-09-02 05:53:45 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -308,10 +308,7 @@ Local aNum, oCtrl
 			LN := 'Label_' + Alltrim(Str(i,2,0))
 			TN := 'Text_' + Alltrim(Str(i,2,0))
 			@ (i*30) - 17 , 10 LABEL &LN OF _EditItem VALUE Alltrim(a[i]) +":"
-         IF ValType( g[ i ] ) $ "CM"
-            @ (i*30) - 20 , 120 TEXTBOX  &TN OF _EditItem VALUE g[i]
-            AADD( aSave, TGrid_EditItemBlock1( g, i, oWnd:Control( TN ) ) )
-         Else
+         If ValType( g[ i ] ) == "N"
             @ (i*30) - 20 , 120 COMBOBOX &TN OF _EditItem ITEMS {} VALUE 0
             oCtrl := oWnd:Control( TN )
             aNum := ARRAY( ImageList_GetImageCount( ::ImageList ) )
@@ -319,6 +316,12 @@ Local aNum, oCtrl
             AEVAL( aNum, { |x,i| ComboAddString( oCtrl:hWnd, i - 1 ), x } )
             oCtrl:Value := g[ i ] + 1
             AADD( aSave, TGrid_EditItemBlock2( g, i, oWnd:Control( TN ) ) )
+         ElseIf ValType( ::Picture ) == "A" .AND. Len( ::Picture ) >= i .AND. ValType( ::Picture[ i ] ) $ "CM"
+            @ (i*30) - 20 , 120 TEXTBOX  &TN OF _EditItem VALUE g[i] PICTURE ::Picture[ i ]
+            AADD( aSave, TGrid_EditItemBlock1( g, i, oWnd:Control( TN ) ) )
+         Else
+            @ (i*30) - 20 , 120 TEXTBOX  &TN OF _EditItem VALUE g[i]
+            AADD( aSave, TGrid_EditItemBlock1( g, i, oWnd:Control( TN ) ) )
          ENDIF
 		Next i
 
