@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.15 2005-09-01 05:23:02 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.16 2005-09-02 05:52:18 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -98,8 +98,6 @@
 STATIC _OOHG_BrowseSyncStatus := .F.
 STATIC _OOHG_IPE_ROW := 1   // ???
 STATIC _OOHG_IPE_CANCELLED := .F.   // ???
-
-memvar aresult
 
 CLASS TBrowse FROM TGrid
    DATA Type      INIT "BROWSE" READONLY
@@ -244,11 +242,11 @@ Local ScrollBarHandle, hsum, ScrollBarButtonHandle := 0, nWidth2, nCol2
       ::VScroll:New( ScrollBarHandle,, HelpId,, ToolTip, ScrollBarHandle )
       ::VScroll:RangeMin := 1
       ::VScroll:RangeMax := 100
-      ::VScroll:OnLineUp   := { || ::SetFocus(), ::Up() }
-      ::VScroll:OnLineDown := { || ::SetFocus(), ::Down() }
-      ::VScroll:OnPageUp   := { || ::SetFocus(), ::PageUp() }
-      ::VScroll:OnPageDown := { || ::SetFocus(), ::PageDown() }
-      ::VScroll:OnThumb    := { |VScroll,Pos| empty( VScroll ), ::SetFocus(), ::SetScrollPos( Pos ) }
+      ::VScroll:OnLineUp   := { || ::SetFocus():Up() }
+      ::VScroll:OnLineDown := { || ::SetFocus():Down() }
+      ::VScroll:OnPageUp   := { || ::SetFocus():PageUp() }
+      ::VScroll:OnPageDown := { || ::SetFocus():PageDown() }
+      ::VScroll:OnThumb    := { |VScroll,Pos| ::SetFocus():SetScrollPos( Pos, VScroll ) }
 // cambiar TOOLTIP si cambia el del BROWSE
 // Cambiar HelpID si cambia el del BROWSE
 
@@ -587,62 +585,64 @@ Return nil
 *-----------------------------------------------------------------------------*
 METHOD SetValue( Value, mp ) CLASS TBrowse
 *-----------------------------------------------------------------------------*
-Local _RecNo , _BrowseRecMap , NewPos := 50, _DeltaScroll := { Nil , Nil , Nil , Nil } , m
-// Local cMacroVar
+Local _RecNo , NewPos := 50, _DeltaScroll , m , hWnd, cWorkArea
+
+   cWorkArea := ::WorkArea
+
+   If Select( cWorkArea ) == 0
+      ::RecCount := 0
+      Return nil
+	EndIf
 
 	If Value <= 0
       Return nil
 	EndIf
 
+   hWnd := ::hWnd
+
    If _OOHG_ThisEventType == 'BROWSE_ONCHANGE'
-      If ::hWnd == _OOHG_ThisControl:hWnd
-         MsgOOHGError ("BROWSE: Value property can't be changed inside ONCHANGE event. Program Terminated" )
+      If hWnd == _OOHG_ThisControl:hWnd
+         MsgOOHGError( "BROWSE: Value property can't be changed inside ONCHANGE event. Program Terminated" )
 		EndIf
 	EndIf
 
-   If Select( ::WorkArea ) == 0
-      ::RecCount := 0
-      Return nil
-	EndIf
-
-   If Value > ( ::WorkArea )->( RecCount() )
+   If Value > ( cWorkArea )->( RecCount() )
       ::nValue := 0
-      ListViewReset ( ::hWnd )
+      ListViewReset( hWnd )
       ::BrowseOnChange()
       Return nil
 	EndIf
 
-	If valtype ( mp ) == 'U'
-      m := int ( ListViewGetCountPerPage ( ::hWnd ) / 2 )
+   If valtype ( mp ) != "N"
+      m := int( ListViewGetCountPerPage( hWnd ) / 2 )
 	else
 		m := mp
 	endif
 
-   _DeltaScroll := ListView_GetSubItemRect ( ::hWnd, 0 , 0 )
-   _BrowseRecMap := ::aRecMap
+   _DeltaScroll := ListView_GetSubItemRect( hWnd, 0 , 0 )
 
-   _RecNo := ( ::WorkArea )->( RecNo() )
+   _RecNo := ( cWorkArea )->( RecNo() )
 
-   ( ::WorkArea )->( DbGoTo( Value ) )
+   ( cWorkArea )->( DbGoTo( Value ) )
 
-   If ( ::WorkArea )->( Eof() )
-      ( ::WorkArea )->( DbGoTo( _RecNo ) )
+   If ( cWorkArea )->( Eof() )
+      ( cWorkArea )->( DbGoTo( _RecNo ) )
       Return nil
 	EndIf
 
 // Sin usar DBFILTER()
-   ( ::WorkArea )->( DBSkip() )
-   ( ::WorkArea )->( DBSkip( -1 ) )
-   IF ( ::WorkArea )->( RecNo() ) != Value
-      ( ::WorkArea )->( DbGoTo( _RecNo ) )
+   ( cWorkArea )->( DBSkip() )
+   ( cWorkArea )->( DBSkip( -1 ) )
+   IF ( cWorkArea )->( RecNo() ) != Value
+      ( cWorkArea )->( DbGoTo( _RecNo ) )
       Return nil
    ENDIF
 /*
 // Usando DBFILTER()
-   cMacroVar := ( ::WorkArea )->( dbfilter() )
+   cMacroVar := ( cWorkArea )->( dbfilter() )
    If ! Empty( cMacroVar )
-      If ! ( ::WorkArea )->( &cMacroVar )
-         ( ::WorkArea )->( DbGoTo( _RecNo ) )
+      If ! ( cWorkArea )->( &cMacroVar )
+         ( cWorkArea )->( DbGoTo( _RecNo ) )
          Return nil
 		EndIf
 	EndIf
@@ -651,14 +651,14 @@ Local _RecNo , _BrowseRecMap , NewPos := 50, _DeltaScroll := { Nil , Nil , Nil ,
    if pcount() < 2
       ::scrollUpdate()
    EndIf
-   ( ::WorkArea )->( DbSkip( -m + 1 ) )
+   ( cWorkArea )->( DbSkip( -m + 1 ) )
 
    ::nValue := Value
-   ( ::WorkArea )->( ::Update() )
-   ( ::WorkArea )->( DbGoTo( _RecNo ) )
+   ::Update()
+   ( cWorkArea )->( DbGoTo( _RecNo ) )
 
-   ListView_Scroll( ::hWnd, _DeltaScroll[2] * (-1) , 0 )
-   ListView_SetCursel ( ::hWnd, ascan ( ::aRecMap, Value ) )
+   ListView_Scroll( hWnd, _DeltaScroll[ 2 ] * ( -1 ) , 0 )
+   ListView_SetCursel ( hWnd, ascan( ::aRecMap, Value ) )
 
    _OOHG_ThisEventType := 'BROWSE_ONCHANGE'
    ::BrowseOnChange()
@@ -669,68 +669,37 @@ Return nil
 *-----------------------------------------------------------------------------*
 METHOD Delete() CLASS TBrowse
 *-----------------------------------------------------------------------------*
-Local _BrowseRecMap , Value , _Alias , _RecNo , _BrowseArea
+Local Value, nRecNo
 
-   If LISTVIEW_GETFIRSTITEM ( ::hWnd ) == 0
-		Return Nil
-	EndIf
-
-   _BrowseRecMap := ::aRecMap
-
-   Value := _BrowseRecMap [ LISTVIEW_GETFIRSTITEM ( ::hWnd ) ]
+   Value := ::Value
 
 	If Value == 0
 		Return Nil
 	EndIf
 
-	_Alias := Alias()
-   _BrowseArea := ::WorkArea
-   If Select( ::WorkArea ) == 0
-      ::RecCount := 0
-		Return Nil
-	EndIf
-   DbSelectArea( _BrowseArea )
-	_RecNo := RecNo()
+   nRecNo := ( ::WorkArea )->( RecNo() )
 
-	Go Value
+   ( ::WorkArea )->( DbGoTo( Value ) )
 
-   If ::Lock
-		If Rlock()
-			Delete
-			Skip
-			if eof()
-				Go Bottom
-			EndIf
+   If ::Lock .AND. ! ( ::WorkArea )->( Rlock() )
 
-         If Set ( _SET_DELETED )
-            ::SetValue( RecNo() , LISTVIEW_GETFIRSTITEM ( ::hWnd ) )
-			EndIf
+      MsgStop('Record is being editied by another user. Retry later','Delete Record')
 
-		Else
+   Else
 
-			MsgStop('Record is being editied by another user. Retry later','Delete Record')
+      ( ::WorkArea )->( DbDelete() )
+      ( ::WorkArea )->( DbSkip() )
+      if ( ::WorkArea )->( Eof() )
+         ( ::WorkArea )->( DbGoBottom() )
+      EndIf
 
-		EndIf
-
-	Else
-
-		Delete
-		Skip
-		if eof()
-			Go Bottom
-		EndIf
-      If Set ( _SET_DELETED )
-         ::SetValue( RecNo() , LISTVIEW_GETFIRSTITEM ( ::hWnd ) )
+      If Set( _SET_DELETED )
+         ::SetValue( ( ::WorkArea )->( RecNo() ) , LISTVIEW_GETFIRSTITEM( ::hWnd ) )
 		EndIf
 
 	EndIf
 
-	Go _RecNo
-	if Select( _Alias ) != 0
-      DbSelectArea( _Alias )
-	Else
-      DbSelectArea( 0 )
-	Endif
+   ( ::WorkArea )->( DbGoTo( nRecNo ) )
 
 Return Nil
 
@@ -924,11 +893,11 @@ Return Nil
 *-----------------------------------------------------------------------------*
 Function _EditRecord( Title , aLabels , aValues , aFormats , row , col , aValid , TmpNames , aValidMessages , aReadOnly , h , aWhen )
 *-----------------------------------------------------------------------------*
-Local i , l , ControlRow , e := 0 ,LN , CN , th, oWnd, oControl, aControls
+Local i , l , ControlRow , e := 0 ,LN , CN , th, oWnd, oControl, aControls, oEditRecord, aResults
 
 	l := Len ( aLabels )
 
-   Private aResult := ARRAY( l )
+   aResults := ARRAY( l )
 
    aControls := ARRAY( l )
 
@@ -958,7 +927,7 @@ Local i , l , ControlRow , e := 0 ,LN , CN , th, oWnd, oControl, aControls
 		TH := H + 1
 	ENDIF
 
-   DEFINE WINDOW _EditRecord;
+   DEFINE WINDOW _EditRecord OBJ oEditRecord ;
 		AT row,col ;
 		WIDTH 310 ;
 		HEIGHT h - 19 + GetTitleHeight() ;
@@ -966,8 +935,8 @@ Local i , l , ControlRow , e := 0 ,LN , CN , th, oWnd, oControl, aControls
       MODAL NOSIZE ;
       ON INIT oWnd:Control_1:SetFocus() ;
 
-      ON KEY ALT+O ACTION _EditRecordOk( aValid , TmpNames , aValidMessages )
-      ON KEY ALT+C ACTION _EditRecordCancel()
+      ON KEY ALT+O ACTION ( aResults := _EditRecordOk( aControls, aValid, aValidMessages, oEditRecord ) )
+      ON KEY ALT+C ACTION oEditRecord:Release()
 
 		DEFINE SPLITBOX
 
@@ -977,8 +946,8 @@ Local i , l , ControlRow , e := 0 ,LN , CN , th, oWnd, oControl, aControls
 				VIRTUAL HEIGHT TH ;
 				SPLITCHILD NOCAPTION FONT 'Arial' SIZE 10 BREAK FOCUSED
 
-            ON KEY ALT+O ACTION _EditRecordOk( aValid , TmpNames , aValidMessages )
-            ON KEY ALT+C ACTION _EditRecordCancel()
+            ON KEY ALT+O ACTION ( aResults := _EditRecordOk( aControls, aValid, aValidMessages, oEditRecord ) )
+            ON KEY ALT+C ACTION oEditRecord:Release()
 
 				ControlRow :=  10
 
@@ -990,6 +959,13 @@ Local i , l , ControlRow , e := 0 ,LN , CN , th, oWnd, oControl, aControls
 					@ ControlRow , 10 LABEL &LN OF _Split_1 VALUE aLabels [i] WIDTH 90
 
 					do case
+/*
+               case ValType( ::Picture ) == 'A' .AND. Len( ::Picture ) >= i .AND. ValType( ::Picture[ i ] ) $ "CM"
+
+                  @ ControlRow , 120 TEXTBOX &CN  OF _Split_1 VALUE aValues[i] WIDTH 140 FONT 'Arial' SIZE 10 PICTURE ::Picture[ i ]
+						ControlRow := ControlRow + 30
+*/
+
 					case ValType ( aValues [i] ) == 'L'
 
 						@ ControlRow , 120 CHECKBOX &CN OF _Split_1 CAPTION '' VALUE aValues[i]
@@ -1050,9 +1026,8 @@ Local i , l , ControlRow , e := 0 ,LN , CN , th, oWnd, oControl, aControls
                If ValType ( aReadOnly ) == 'A'
 
                   If aReadOnly[ i ]
-
-                       oWnd:Control( CN ):Disabled()
-
+                       oControl:Disabled()
+                       oControl:Cargo := { || .F. }
 						EndIf
 
 					EndIf
@@ -1060,6 +1035,8 @@ Local i , l , ControlRow , e := 0 ,LN , CN , th, oWnd, oControl, aControls
 				Next i
 
 			END WINDOW
+
+         _WHENEVAL( aControls )
 
 			DEFINE WINDOW _Split_2 ;
 				WIDTH 300 ;
@@ -1069,12 +1046,12 @@ Local i , l , ControlRow , e := 0 ,LN , CN , th, oWnd, oControl, aControls
 				@ 10 , 40 BUTTON BUTTON_1 ;
 				OF _Split_2 ;
             CAPTION _OOHG_BRWLangButton[4] ;
-            ACTION _EditRecordOk( aValid , TmpNames , aValidMessages )
+            ACTION ( aResults := _EditRecordOk( aControls, aValid, aValidMessages, oEditRecord ) )
 
 				@ 10 , 150 BUTTON BUTTON_2 ;
 				OF _Split_2 ;
             CAPTION _OOHG_BRWLangButton[3] ;
-				ACTION _EditRecordCancel()
+            ACTION oEditRecord:Release()
 
 			END WINDOW
 
@@ -1082,75 +1059,52 @@ Local i , l , ControlRow , e := 0 ,LN , CN , th, oWnd, oControl, aControls
 
 	END WINDOW
 
-	ACTIVATE WINDOW _EditRecord
+   oEditRecord:Activate()
 
-Return ( aResult )
+Return ( aResults )
 
 *-----------------------------------------------------------------------------*
-PROCEDURE _WHENEVAL( aControls )
+STATIC PROCEDURE _WHENEVAL( aControls )
 *-----------------------------------------------------------------------------*
 
    AEVAL( aControls, { |o| o:SaveData() } )
 
-   AEVAL( aControls, { |o| IF( VALTYPE( o:Cargo ) == "B", o:Enabled := EVAL( o:Cargo ),  ) } )
+   AEVAL( aControls, { |o| o:Enabled := EVAL( o:Cargo ) } )
 
 RETURN
 
 *-----------------------------------------------------------------------------*
-Function _EditRecordOk( aValid , TmpNames , aValidMessages )
+STATIC Function _EditRecordOk( aControls, aValid, aValidMessages, oEditRecord )
 *-----------------------------------------------------------------------------*
-Local i , ControlName , l , b , mVar
+Local i , l , b , aResults
 
-	l := len (aResult)
+   l := len( aControls )
 
-	For i := 1 to l
+   aResults := ARRAY( l )
 
-		ControlName := 'Control_' + Alltrim ( Str ( i ) )
-		aResult [i] := _GetValue ( ControlName , '_Split_1' )
+   AEVAL( aControls, { |o,n| o:SaveData(), aResults[ n ] := o:Value } )
 
-		If ValType (aValid) != 'U'
+   If ValType( aValid ) == "A"
 
-			mVar := TmpNames [i]
-			&mVar := aResult [i]
-
-		EndIf
-
-	Next i
-
-   If ValType (aValid) == 'A'
-
-		For i := 1 to l
+      For i := 1 to Min( l, Len( aValid ) )
 
          b := _OOHG_Eval( aValid[ i ] )
 
-         If ValType ( b ) == 'L'
+         If ValType( b ) == "L" .AND. ! b
 
-            If ! b
+            If ValType( aValidMessages ) == "A" .AND. Len( aValidMessages ) >= i .AND. ValType( aValidMessages[ i ] ) $ "CM"
 
-				        If ValType ( aValidMessages ) != 'U'
+               MsgExclamation ( aValidMessages[i] )
 
-						If ValType ( aValidMessages [i] ) != 'U'
+            Else
 
-							MsgExclamation ( aValidMessages[i] )
+               MsgExclamation (_OOHG_BRWLangError[11])
 
-						Else
+            EndIf
 
-                     MsgExclamation (_OOHG_BRWLangError[11])
+            aControls[ i ]:SetFocus()
 
-						EndIf
-
-					Else
-
-                  MsgExclamation (_OOHG_BRWLangError[11])
-
-					EndIf
-
-
-               GetControlObject( 'Control_' + Alltrim(Str(i)) , '_Split_1' ):SetFocus()
-
-					Return Nil
-
-				EndIf
+            Return aResults
 
 			EndIf
 
@@ -1158,26 +1112,11 @@ Local i , ControlName , l , b , mVar
 
 	EndIf
 
-	RELEASE WINDOW _EditRecord
+   AEVAL( aControls, { |o,n| aResults[ n ] := o:Value } )
 
-Return Nil
+   oEditRecord:Release()
 
-*-----------------------------------------------------------------------------*
-Function _EditRecordCancel
-*-----------------------------------------------------------------------------*
-Local i , l
-
-	l := len (aResult)
-
-	For i := 1 to l
-
-		aResult [i] := Nil
-
-	Next i
-
-	RELEASE WINDOW _EditRecord
-
-Return Nil
+Return aResults
 
 *------------------------------------------------------------------------------*
 METHOD InPlaceEdit( append ) CLASS TBrowse
@@ -1955,13 +1894,20 @@ Return uRet
 *-----------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TBrowse
 *-----------------------------------------------------------------------------*
+Local nItem
    IF VALTYPE( uValue ) == "N"
       ::SetValue( uValue )
    ENDIF
-   If SELECT( ::WorkArea ) == 0 .OR. LISTVIEW_GETFIRSTITEM( ::hWnd ) == 0
+   If SELECT( ::WorkArea ) == 0
+      ::RecCount := 0
       uValue := 0
-	Else
-      uValue := ::aRecMap[ LISTVIEW_GETFIRSTITEM( ::hWnd ) ]
+   Else
+      nItem := LISTVIEW_GETFIRSTITEM( ::hWnd )
+      If nItem > 0 .AND. nItem <= Len( ::aRecMap )
+         uValue := ::aRecMap[ nItem ]
+      Else
+         uValue := 0
+      Endif
 	EndIf
 RETURN uValue
 
@@ -2016,8 +1962,15 @@ RETURN ::Super:ForceHide()
 *-----------------------------------------------------------------------------*
 METHOD RefreshData() CLASS TBrowse
 *-----------------------------------------------------------------------------*
-   ::Refresh()
-   ::Value := ::nValue
+Local nValue := ::nValue
+   IF ValType( nValue ) != "N" .OR. nValue == 0
+      ::Refresh()
+      ::nValue := ::Value
+   ElseIf ::Value == nValue
+      ::Refresh()
+   Else
+      ::Value := nValue
+   ENDIF
 RETURN nil
 
 *-----------------------------------------------------------------------------*
@@ -2052,6 +2005,7 @@ Return nil
 #include <windows.h>
 #include <commctrl.h>
 #include "../include/oohg.h"
+extern int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam );
 
 // -----------------------------------------------------------------------------
 // METHOD Events_Notify( wParam, lParam ) CLASS TBrowse
@@ -2063,12 +2017,17 @@ HB_FUNC_STATIC( TBROWSE_EVENTS_NOTIFY )
 
    switch( ( ( NMHDR FAR * ) lParam )->code )
    {
-      case NM_CUSTOMDRAW:
       case NM_CLICK:
       case LVN_BEGINDRAG:
       case LVN_KEYDOWN:
       case NM_DBLCLK:
          HB_FUNCNAME( TBROWSE_EVENTS_NOTIFY2 )();
+         break;
+
+      case NM_CUSTOMDRAW:
+         _OOHG_Send( hb_stackSelfItem(), s_AdjustRightScroll );
+         hb_vmSend( 0 );
+         hb_retni( TGrid_Notify_CustomDraw( hb_stackSelfItem(), lParam ) );
          break;
 
       default:
@@ -2089,12 +2048,7 @@ Local nNotify := GetNotifyCode( lParam )
 Local xs , xd, nvKey
 Local r, DeltaSelect
 
-   If nNotify == NM_CUSTOMDRAW
-
-      ::AdjustRightScroll()
-      Return TGRID_NOTIFY_CUSTOMDRAW( Self, lParam )
-
-   elseIf nNotify == NM_CLICK  .or. nNotify == LVN_BEGINDRAG
+   If nNotify == NM_CLICK  .or. nNotify == LVN_BEGINDRAG
 
       r := LISTVIEW_GETFIRSTITEM( ::hWnd )
       If r > 0
