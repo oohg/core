@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.16 2005-09-01 05:19:51 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.17 2005-09-02 05:55:07 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -341,7 +341,7 @@ Local nStyle := 0, nStyleEx := 0
       AADD( aError, "MAIN" )
 
       hParent := 0
-      ::Type := "M"
+      ::Type := "A"
 
       _OOHG_Main := Self
 
@@ -419,6 +419,7 @@ Local nStyle := 0, nStyleEx := 0
       ::Type := "M"
       ::Parent := oParent
       hParent := oParent:hWnd
+      nominimize := nomaximize := .T.
 
    else
 
@@ -1380,14 +1381,11 @@ Local oWnd, oCtrl
 	case nMsg == WM_VSCROLL
         ***********************************************************************
 
-      i := aScan ( _OOHG_aFormhWnd, hWnd )
-*****      Self := GetFormObjectByHandle( hWnd )
-
-		if i > 0
+      if lParam == 0
 
 			* Vertical ScrollBar Processing
 
-         if ::VirtualHeight > 0 .And. lParam == 0
+         if ::VirtualHeight > 0
 
             If ::ReBarHandle > 0
                MsgOOHGError("SplitBox's Parent Window Can't Be a 'Virtual Dimensioned' Window (Use 'Virtual Dimensioned' SplitChild Instead). Program terminated" )
@@ -1446,19 +1444,13 @@ Local oWnd, oCtrl
 
 			EndIf
 
+      Else
+
+         Return GetControlObjectByHandle( lParam ):Events_VScroll( wParam )
+
 		EndIf
 
 
-
-      oCtrl := GetControlObjectByHandle( lParam )
-
-      oCtrl:Events_VScroll( wParam )
-
-      If LoWord (wParam) == TB_ENDTRACK .AND. oCtrl:hWnd > 0
-
-         oCtrl:DoEvent( oCtrl:OnChange )
-
-      EndIf
 
         ***********************************************************************
 	case nMsg == WM_TASKBAR
@@ -2076,7 +2068,7 @@ Parent := nil
       Endif
    ENDIF
 
-   ::Define2( FormName, Caption, x, y, w, h, Parent:hWnd, helpbutton, .F., .F., nosize, nosysmenu, ;
+   ::Define2( FormName, Caption, x, y, w, h, Parent:hWnd, helpbutton, .T., .T., nosize, nosysmenu, ;
               nocaption, virtualheight, virtualwidth, hscrollbox, vscrollbox, fontname, fontsize, aRGB, cursor, ;
               icon, noshow, gotfocus, lostfocus, scrollleft, scrollright, scrollup, scrolldown, nil, ;
               nil, initprocedure, ReleaseProcedure, SizeProcedure, ClickProcedure, PaintProcedure, ;
@@ -2107,7 +2099,7 @@ Local oParent
    oParent := ATail( _OOHG_ActiveForm )
 
    ::Define2( FormName, Title, 0, 0, w, h, 0, .F., .T., .T., .T., .T., ;
-              nocaption, virtualheight, virtualwidth, hscrollbox, vscrollbox, fontname, fontsize, {-1,-1,-1}, cursor, ;
+              nocaption, virtualheight, virtualwidth, hscrollbox, vscrollbox, fontname, fontsize, nil, cursor, ;
               "", .F., gotfocus, lostfocus, scrollleft, scrollright, scrollup, scrolldown, nil, ;
               nil, nil, nil, nil, nil, nil, ;
               nil, nil, nil, .F., nStyle, nStyleEx, ;

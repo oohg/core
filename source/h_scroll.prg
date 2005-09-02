@@ -1,5 +1,5 @@
 /*
- * $Id: h_scroll.prg,v 1.3 2005-08-26 06:04:16 guerra000 Exp $
+ * $Id: h_scroll.prg,v 1.4 2005-09-02 05:55:07 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -64,6 +64,7 @@ CLASS TScrollBar FROM TControl
    DATA OnBottom     INIT nil
    DATA OnThumb      INIT nil
    DATA OnTrack      INIT nil
+   DATA OnEndTrack   INIT nil
    DATA ScrollType   INIT SB_CTL
    DATA nRangeMin    INIT 0
    DATA nRangeMax    INIT 0
@@ -137,6 +138,10 @@ Local Lo_wParam := LoWord( wParam )
    elseif Lo_wParam == SB_THUMBTRACK
 
       _OOHG_EVAL( ::OnTrack, Self, HiWord( wParam ) )
+
+   elseif Lo_wParam == TB_ENDTRACK
+
+      _OOHG_EVAL( ::OnEndTrack, Self, HiWord( wParam ) )
 
    else
 
