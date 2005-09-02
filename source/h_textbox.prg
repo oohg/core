@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.9 2005-09-02 05:51:10 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.10 2005-09-02 06:08:52 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -283,6 +283,7 @@ CLASS TTextPicture FROM TText
    DATA PictureFun     INIT ""
    DATA PictureMask    INIT ""
    DATA PictureShow    INIT ""
+   DATA PictureFMask   INIT ""
    DATA ValidMask      INIT {}
    DATA ValidMaskShow  INIT {}
    DATA nDecimal       INIT 0
@@ -460,10 +461,12 @@ Local cType, cPicFun, cPicMask, nPos, nScroll
       ENDCASE
    ENDIF
 
-   ::PictureShow := cPicFun + cPicMask
-   ::PictureFun  := cPicFun
-   ::PictureMask := cPicMask
-   ::DataType    := If( cType == "M", "C", cType )
+   ::PictureShow  := cPicFun + cPicMask
+   ::PictureFun   := cPicFun
+   ::PictureMask  := cPicMask
+   cPicFun := IF( ::lBritish, "E", "" ) + IF( "R" $ cPicFun, "R", "" )
+   ::PictureFMask := if( Empty( cPicFun ), "", "@" + cPicFun + " " ) + cPicMask
+   ::DataType     := If( cType == "M", "C", cType )
    ::nDecimal      := If( cType == "N", AT( ".", cPicMask ), 0 )
    ::nDecimalShow  := If( cType == "N", AT( ".", cPicMask ), 0 )
    ::ValidMask     := ValidatePicture( cPicMask, cType )
@@ -488,7 +491,7 @@ Local cType, uDate
       cType := ValType( uValue )
       cType := If( cType == "M", "C", cType )
       IF cType == ::DataType
-         ::Caption := Transform( uValue, if( ::lFocused, if( ::lBritish, "@E ", "" ) + ::PictureMask, ::PictureShow ) )
+         ::Caption := Transform( uValue, if( ::lFocused, ::PictureFMask, ::PictureShow ) )
       Else
          // Wrong data types
       ENDIF
@@ -763,7 +766,7 @@ Local cPictureMask, aValidMask
       cText := ::Value
       ::lFocused := .T.
       ::lSetting := .T.
-      ::Caption := Transform( cText, if( ::lBritish, "@E ", "" ) + ::PictureMask )
+      ::Caption := Transform( cText, ::PictureFMask )
       ::SetFocus()
 
    Endif
