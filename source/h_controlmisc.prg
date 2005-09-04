@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.11 2005-09-01 05:19:51 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.12 2005-09-04 00:11:39 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -809,23 +809,24 @@ Return ( HiWord ( SendMessage( GetControlObject( ControlName, FormName ):hWnd, E
 *------------------------------------------------------------------------------*
 FUNCTION Random( nLimit )
 *------------------------------------------------------------------------------*
-  Static snRandom := Nil
-  Local nDecimals, cLimit
+//  Static snRandom := Nil
+//  Local nDecimals, cLimit
 
-  DEFAULT snRandom TO Seconds() / Exp(1)
+//  DEFAULT snRandom TO Seconds() / Exp(1)
   DEFAULT nLimit   TO 65535
 
-  snRandom  := Log( snRandom + Sqrt(2) ) * Exp(3)
-  snRandom  := Val( Str(snRandom - Int(snRandom), 17, 15 ) )
-  cLimit    := Transform( nLimit, "@N" )
+//  snRandom  := Log( snRandom + Sqrt(2) ) * Exp(3)
+//  snRandom  := Val( Str(snRandom - Int(snRandom), 17, 15 ) )
+//  cLimit    := Transform( nLimit, "@N" )
 
-  nDecimals := At(".", cLimit)
+//  nDecimals := At(".", cLimit)
 
-  if nDecimals > 0
-     nDecimals := Len(cLimit)-nDecimals
-  endif
+//  if nDecimals > 0
+//     nDecimals := Len(cLimit)-nDecimals
+//  endif
 
-Return Round( nLimit * snRandom, nDecimals )
+//Return Round( nLimit * snRandom, nDecimals )
+Return hb_random( nLimit )
 
 *------------------------------------------------------------------------------*
 Function SetProperty( Arg1 , Arg2 , Arg3 , Arg4 , Arg5 , Arg6 , Arg7 )
@@ -2583,7 +2584,7 @@ Local RetVal , i
 
 	do while .t.
 
-		RetVal := random (65000)
+      RetVal := Int( random( 65000 ) )
 
       i := ascan ( _OOHG_aControlIds , retval )
 
