@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.10 2005-09-02 06:08:52 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.11 2005-09-04 00:12:20 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -279,11 +279,12 @@ Return ::Super:Events_Command( wParam )
 CLASS TTextPicture FROM TText
    DATA Type           INIT "TEXTPICTURE" READONLY
    DATA lBritish       INIT .F.
-   DATA NonTemplate    INIT .F.
+
    DATA PictureFun     INIT ""
+   DATA PictureFunShow INIT ""
    DATA PictureMask    INIT ""
    DATA PictureShow    INIT ""
-   DATA PictureFMask   INIT ""
+
    DATA ValidMask      INIT {}
    DATA ValidMaskShow  INIT {}
    DATA nDecimal       INIT 0
@@ -308,11 +309,13 @@ METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, uValue, ;
 *-----------------------------------------------------------------------------*
 Local nStyle := ES_AUTOHSCROLL
 
-   SetMask( Self, uValue, cInputMask )
-
    IF ValType( uValue ) == "N"
       right := .T.
+   ElseIf ValType( uValue ) == "U"
+      uValue := ""
    ENDIF
+
+   SetMask( Self, uValue, cInputMask )
 
    ::Define2( cControlName, cParentForm, nx, ny, nWidth, nHeight, uValue, ;
               cFontName, nFontSize, cToolTip, 0, .F., ;
@@ -331,7 +334,6 @@ Local cType, cPicFun, cPicMask, nPos, nScroll
       cInputMask := ""
    ENDIF
    ::lBritish := .F.
-   ::NonTemplate := .F.
 
    cPicFun := ""
    IF Left( cInputMask, 1 ) == "@"
@@ -383,7 +385,6 @@ Local cType, cPicFun, cPicMask, nPos, nScroll
       ENDIF
 
       IF "R" $ cInputMask
-         ::NonTemplate := .T.
          cPicFun += "R"
          cInputMask := StrTran( cInputMask, "R", "" )
       ENDIF
@@ -461,22 +462,24 @@ Local cType, cPicFun, cPicMask, nPos, nScroll
       ENDCASE
    ENDIF
 
-   ::PictureShow  := cPicFun + cPicMask
-   ::PictureFun   := cPicFun
-   ::PictureMask  := cPicMask
-   cPicFun := IF( ::lBritish, "E", "" ) + IF( "R" $ cPicFun, "R", "" )
-   ::PictureFMask := if( Empty( cPicFun ), "", "@" + cPicFun + " " ) + cPicMask
-   ::DataType     := If( cType == "M", "C", cType )
-   ::nDecimal      := If( cType == "N", AT( ".", cPicMask ), 0 )
-   ::nDecimalShow  := If( cType == "N", AT( ".", cPicMask ), 0 )
-   ::ValidMask     := ValidatePicture( cPicMask, cType )
-   ::ValidMaskShow := ValidatePicture( cPicMask, cType )
+   ::PictureFunShow := cPicFun
+   ::PictureFun     := IF( ::lBritish, "E", "" ) + IF( "R" $ cPicFun, "R", "" )
+   IF ! Empty( ::PictureFun )
+      ::PictureFun := "@" + ::PictureFun + " "
+   ENDIF
+   ::PictureShow    := cPicMask
+   ::PictureMask    := cPicMask
+   ::DataType       := If( cType == "M", "C", cType )
+   ::nDecimal       := If( cType == "N", AT( ".", cPicMask ), 0 )
+   ::nDecimalShow   := If( cType == "N", AT( ".", cPicMask ), 0 )
+   ::ValidMask      := ValidatePicture( cPicMask )
+   ::ValidMaskShow  := ValidatePicture( cPicMask )
 
 Return
 
-STATIC FUNCTION ValidatePicture( cPicture, cType )
+STATIC FUNCTION ValidatePicture( cPicture )
 Local aValid, nPos
-Local cValidPictures := "ANX9#LY!anxly" + if( cType == "N", "$*", "" )
+Local cValidPictures := "ANX9#LY!anxly$*"
    aValid := ARRAY( Len( cPicture ) )
    FOR nPos := 1 TO Len( cPicture )
       aValid[ nPos ] := ( SubStr( cPicture, nPos, 1 ) $ cValidPictures )
@@ -491,7 +494,7 @@ Local cType, uDate
       cType := ValType( uValue )
       cType := If( cType == "M", "C", cType )
       IF cType == ::DataType
-         ::Caption := Transform( uValue, if( ::lFocused, ::PictureFMask, ::PictureShow ) )
+         ::Caption := Transform( uValue, if( ::lFocused, ::PictureFun + ::PictureMask, ::PictureFunShow + ::PictureShow ) )
       Else
          // Wrong data types
       ENDIF
@@ -501,7 +504,7 @@ Local cType, uDate
    // Removes mask
    DO CASE
       CASE cType == "C"
-         uValue := If( ::NonTemplate, UnTransform( Self, ::Caption ), ::Caption )
+         uValue := If( ( "R" $ ::PictureFun ), UnTransform( Self, ::Caption ), ::Caption )
       CASE cType == "N"
          uValue := VAL( StrTran( UnTransform( Self, ::Caption ), " ", "" ) )
       CASE cType == "D"
@@ -522,15 +525,17 @@ Local cType, uDate
 Return uValue
 
 STATIC FUNCTION UnTransform( Self, cCaption )
-Local aValidMask
+Local aValidMask, cPictureMask
 Local cValue, nPos, nDecimal
    cValue := ""
    IF ::lFocused
       aValidMask := ::ValidMask
       nDecimal := ::nDecimal
+      cPictureMask := ::PictureMask
    Else
       aValidMask := ::ValidMaskShow
       nDecimal := ::nDecimalShow
+      cPictureMask := ::PictureShow
    ENDIF
 
    FOR nPos := 1 TO Len( aValidMask )
@@ -543,10 +548,16 @@ Local cValue, nPos, nDecimal
 
    IF ::DataType == "N"
       cValue := StrTran( StrTran( StrTran( cValue, "$", " " ), "*", " " ), "(", " " )
-      IF ( "X" $ ::PictureFun .AND. Right( cCaption, 3 ) == " DB" ) .OR. ;
-         ( ")" $ ::PictureFun .AND. Right( cCaption, 1 ) == ")" )   .OR. ;
-         ( "(" $ ::PictureFun .AND. Right( cCaption, 1 ) == ")" )
-          cValue := "-" + cValue
+      IF ( "X" $ ::PictureFunShow .AND. Right( cCaption, 3 ) == " DB" ) .OR. ;
+         ( ")" $ ::PictureFunShow .AND. Right( cCaption, 1 ) == ")" )   .OR. ;
+         ( "(" $ ::PictureFunShow .AND. Right( cCaption, 1 ) == ")" )
+         cValue := "-" + cValue
+      Else
+         FOR nPos := 1 TO Len( cPictureMask )
+            IF SubStr( cPictureMask, nPos, 1 ) == "," .AND. SubStr( cCaption, nPos, 1 ) =="-"
+               cValue := "-" + cValue
+            ENDIF
+         NEXT
       ENDIF
    ENDIF
 
@@ -760,13 +771,13 @@ Local cPictureMask, aValidMask
       cText := ::Value
       ::lFocused := .F.
       ::lSetting := .T.
-      ::Caption := Transform( cText, ::PictureShow )
+      ::Caption := Transform( cText, ::PictureFunShow + ::PictureShow )
 
    elseif Hi_wParam == EN_SETFOCUS
       cText := ::Value
       ::lFocused := .T.
       ::lSetting := .T.
-      ::Caption := Transform( cText, ::PictureFMask )
+      ::Caption := Transform( cText, ::PictureFun + ::PictureMask )
       ::SetFocus()
 
    Endif
@@ -869,6 +880,10 @@ METHOD Define( ControlName, ParentForm, x, y, inputmask, width, value, ;
                invisible, notabstop, lRtl ) CLASS TTextMasked
 *------------------------------------------------------------------------------*
 
+   If ValType( Value ) == "U"
+      Value := 0
+   EndIf
+
    rightalign := .T.
 
    IF ValType( Format ) $ "CM" .AND. ! Empty( Format )
@@ -896,7 +911,7 @@ METHOD Define( ControlName, ParentForm, x, y, inputmask, width, value, ;
    If ::DataType == "N"
       ::PictureMask := StrTran( ::PictureMask, ",", "" )
       ::nDecimal    := AT( ".", ::PictureMask )
-      ::ValidMask   := ValidatePicture( ::PictureMask, ::DataType )
+      ::ValidMask   := ValidatePicture( ::PictureMask )
       ::Value := value
    Endif
 
@@ -929,6 +944,8 @@ METHOD Define( ControlName, ParentForm, x, y, inputmask, width, value, ;
       ElseIf ValType( Value ) != "D"
          Value := STOD( "" )
       ENDIF
+   ElseIf ValType( Value ) == "U"
+      Value := ""
    ENDIF
 
    ::Super:Define( ControlName, ParentForm, x, y, width, height, value, ;
