@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.ch,v 1.1 2005-08-06 23:53:55 guerra000 Exp $
+ * $Id: oohg.ch,v 1.2 2005-09-04 00:19:13 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -108,6 +108,7 @@
 #include "i_frame.ch"
 #include "i_slider.ch"
 #include "i_progressbar.ch"
+#include "i_progressmeter.ch"
 #include "i_window.ch"
 #include "i_button.ch"
 #include "i_image.ch"
