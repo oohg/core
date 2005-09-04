@@ -1,5 +1,5 @@
 /*
- * $Id: h_scroll.prg,v 1.4 2005-09-02 05:55:07 guerra000 Exp $
+ * $Id: h_scroll.prg,v 1.5 2005-09-04 00:12:52 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -56,6 +56,9 @@
 
 CLASS TScrollBar FROM TControl
    DATA Type         INIT "SCROLLBAR" READONLY
+   DATA ScrollType   INIT SB_CTL
+   DATA nRangeMin    INIT 0
+   DATA nRangeMax    INIT 0
    DATA OnLineUp     INIT nil
    DATA OnLineDown   INIT nil
    DATA OnPageUp     INIT nil
@@ -65,16 +68,53 @@ CLASS TScrollBar FROM TControl
    DATA OnThumb      INIT nil
    DATA OnTrack      INIT nil
    DATA OnEndTrack   INIT nil
-   DATA ScrollType   INIT SB_CTL
-   DATA nRangeMin    INIT 0
-   DATA nRangeMax    INIT 0
 
+   METHOD Define
    METHOD Value               SETGET
    METHOD RangeMin            SETGET
    METHOD RangeMax            SETGET
 
    METHOD Events_VScroll
 ENDCLASS
+
+// VScrollbar!!!!
+*-----------------------------------------------------------------------------*
+METHOD Define( ControlName, ParentForm, x, y, w, h, RangeMin, RangeMax, ;
+               change, lineup, linedown, pageup, pagedown, top, bottom, ;
+               thumb, track, endtrack, HelpId, invisible, ToolTip, lRtl ) CLASS TScrollBar
+*-----------------------------------------------------------------------------*
+Local ControlHandle
+
+   DEFAULT w         TO GETVSCROLLBARWIDTH()
+   DEFAULT h         TO GETHSCROLLBARHEIGHT()
+   DEFAULT invisible TO .F.
+   DEFAULT RangeMin  TO 1
+   DEFAULT RangeMax  TO 100
+
+   ::SetForm( ControlName, ParentForm,,,,,, lRtl )
+
+   ControlHandle := InitVScrollBar( ::Parent:hWnd, x, y, w, h )
+
+   ::New( ControlHandle, ControlName, HelpId, ! invisible, ToolTip, ControlHandle )
+   ::SizePos( y, x, w, h )
+
+   ::VScroll:RangeMin := RangeMin
+   ::VScroll:RangeMax := RangeMax
+
+   SetScrollRange( ::hWnd, ::ScrollType, RangeMin, RangeMax, 1 )
+
+   ::OnChange   := change
+   ::OnLineUp   := lineup
+   ::OnLineDown := linedown
+   ::OnPageUp   := pageup
+   ::OnPageDown := pagedown
+   ::OnTop      := top
+   ::OnBottom   := bottom
+   ::OnThumb    := thumb
+   ::OnTrack    := track
+   ::OnEndTrack := endtrack
+
+Return Self
 
 *-----------------------------------------------------------------------------*
 METHOD Value( nValue ) CLASS TScrollBar
