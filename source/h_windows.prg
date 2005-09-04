@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.17 2005-09-02 05:55:07 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.18 2005-09-04 00:13:44 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -940,15 +940,17 @@ Return nil
 METHOD ProcessInitProcedure() CLASS TForm
 *-----------------------------------------------------------------------------*
    if valtype( ::OnInit )=='B'
-		ProcessMessages()
-		_PushEventInfo()
+      ProcessMessages()
+      _PushEventInfo()
       _OOHG_ThisEventType := 'WINDOW_INIT'
       _OOHG_ThisForm := Self
       _OOHG_ThisType := 'W'
       _OOHG_ThisControl := nil
+      AADD( _OOHG_MessageLoops, ::ActivateCount )
       Eval( ::OnInit )
-		_PopEventInfo()
-	EndIf
+      _OOHG_DeleteArrayItem( _OOHG_MessageLoops, Len( _OOHG_MessageLoops ) )
+      _PopEventInfo()
+   EndIf
    AEVAL( ::SplitChildList, { |o| o:ProcessInitProcedure() } )
 Return nil
 
