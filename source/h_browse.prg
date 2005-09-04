@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.17 2005-09-04 00:14:40 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.18 2005-09-04 01:21:02 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -204,10 +204,9 @@ Local ScrollBarHandle, hsum, ScrollBarButtonHandle := 0, nWidth2, nCol2
 
    ::nWidth := w
 
-   IF ValType( Value ) != "N"
-      Value := 0
+   IF ValType( Value ) == "N"
+      ::nValue := Value
    ENDIF
-   ::nValue := Value
    ::Lock := Lock
    ::InPlace := inplace
    ::WorkArea := WorkArea
@@ -1909,7 +1908,7 @@ Local nItem
       If nItem > 0 .AND. nItem <= Len( ::aRecMap )
          uValue := ::aRecMap[ nItem ]
       Else
-         uValue := 0
+         uValue := ::nValue
       Endif
 	EndIf
 RETURN uValue
