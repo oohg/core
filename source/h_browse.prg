@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.16 2005-09-02 05:52:18 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.17 2005-09-04 00:14:40 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -100,12 +100,12 @@ STATIC _OOHG_IPE_ROW := 1   // ???
 STATIC _OOHG_IPE_CANCELLED := .F.   // ???
 
 CLASS TBrowse FROM TGrid
-   DATA Type      INIT "BROWSE" READONLY
-   DATA Lock      INIT .F.
-   DATA WorkArea  INIT ""
-   DATA VScroll   INIT nil
-   DATA nValue    INIT 0
-   DATA aRecMap   INIT {}
+   DATA Type            INIT "BROWSE" READONLY
+   DATA Lock            INIT .F.
+   DATA WorkArea        INIT ""
+   DATA VScroll         INIT nil
+   DATA nValue          INIT 0
+   DATA aRecMap         INIT {}
    DATA AllowAppend     INIT .F.
    DATA readonly        INIT .F.
    DATA valid           INIT .F.
@@ -198,12 +198,15 @@ Local ScrollBarHandle, hsum, ScrollBarButtonHandle := 0, nWidth2, nCol2
    ENDIF
 
    ::Super:Define( ControlName, ParentForm, x, y, nWidth2, h, aHeaders, aWidths, {}, nil, ;
-                   fontname, fontsize, tooltip, /* change */, /* dblclick */, aHeadClick, /* gotfocus */ , /* lostfocus */, ;
+                   fontname, fontsize, tooltip, , , aHeadClick, , , ;
                    nogrid, aImage, aJust, break, HelpId, bold, italic, underline, strikeout, nil, ;
                    nil, nil, edit, backcolor, fontcolor, dynamicbackcolor, dynamicforecolor, aPicture, lRtl )
 
    ::nWidth := w
 
+   IF ValType( Value ) != "N"
+      Value := 0
+   ENDIF
    ::nValue := Value
    ::Lock := Lock
    ::InPlace := inplace
@@ -707,7 +710,7 @@ Return Nil
 METHOD EditItem( append ) CLASS TBrowse
 *-----------------------------------------------------------------------------*
 Local g,a,l,actpos:={0,0,0,0},GRow,GCol,GWidth,Col,IRow, item
-Local Title , aLabels , aInitValues := {} , aFormats := {} , aResults , z , tvar , BackRec , aStru , y , svar , q , BackArea , BrowseArea , TmpNames := {} , NewRec := 0 , MixedFields := .f.
+Local Title , aLabels , aInitValues := {} , aFormats := {} , aResults , z , tvar , BackRec , aStru , y , svar , BackArea , BrowseArea , TmpNames := {} , NewRec := 0 , MixedFields := .f.
 
    If LISTVIEW_GETFIRSTITEM ( ::hWnd ) == 0
       If Valtype (append) == 'L'
@@ -777,14 +780,14 @@ Local Title , aLabels , aInitValues := {} , aFormats := {} , aResults , z , tvar
 		EndIf
 
       tvar := Upper ( ::aFields [z] )
-		q := at ( '>' , tvar )
-		if q == 0
+      y := at ( '->' , tvar )
+      if y == 0
          aStru := ( BrowseArea )->( DbStruct() )
 			aAdd ( TmpNames , 'MemVar' + BrowseArea + tvar )
 		Else
-         svar := Left( tvar , q - 2 )
+         svar := Left( tvar , y - 1 )
          aStru := ( svar )->( DbStruct() )
-         tvar := SubStr( tvar , q + 1 )
+         tvar := SubStr( tvar , y + 1 )
 			aAdd ( TmpNames , 'MemVar' + svar + tvar )
          If Upper( svar ) != Upper( BrowseArea )
 				MixedFields := .t.
@@ -1069,7 +1072,7 @@ STATIC PROCEDURE _WHENEVAL( aControls )
 
    AEVAL( aControls, { |o| o:SaveData() } )
 
-   AEVAL( aControls, { |o| o:Enabled := EVAL( o:Cargo ) } )
+   AEVAL( aControls, { |o| o:Enabled := _OOHG_EVAL( o:Cargo ) } )
 
 RETURN
 
