@@ -1,5 +1,5 @@
 /*
- * $Id: c_label.c,v 1.2 2005-08-25 05:57:42 guerra000 Exp $
+ * $Id: c_label.c,v 1.3 2005-09-04 00:16:38 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -132,6 +132,19 @@ HB_FUNC( INITLABEL )
       ExStyle |= WS_EX_LAYOUTRTL | WS_EX_RIGHTSCROLLBAR | WS_EX_RTLREADING;
    }
 
+   if( hb_parl( 20 ) )
+   {
+      Style |= SS_LEFTNOWORDWRAP;
+   }
+   else if (hb_parl( 18 ) )
+   {
+      Style |= SS_CENTER;
+   }
+   else if( hb_parl( 17 ) )
+   {
+      Style |= SS_RIGHT;
+   }
+
 	if ( hb_parl (11) )
 	{
 		Style = Style | WS_BORDER ;
@@ -155,16 +168,6 @@ HB_FUNC( INITLABEL )
 	if ( ! hb_parl (16) )
 	{
 		Style = Style | WS_VISIBLE ;
-	}
-
-	if ( hb_parl (17) )
-	{
-		Style = Style | ES_RIGHT ;
-	}
-
-	if ( hb_parl (18) )
-	{
-		Style = Style | ES_CENTER ;
 	}
 
 	hbutton = CreateWindowEx( ExStyle , "static" , hb_parc(2) ,

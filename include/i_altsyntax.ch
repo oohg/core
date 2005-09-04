@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.12 2005-09-02 05:51:10 guerra000 Exp $
+ * $Id: i_altsyntax.ch,v 1.13 2005-09-04 00:16:38 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -169,6 +169,7 @@ MEMVAR _OOHG_ActiveControlClientEdge
 MEMVAR _OOHG_ActiveControlHScroll
 MEMVAR _OOHG_ActiveControlVscroll
 MEMVAR _OOHG_ActiveControlTransparent
+MEMVAR _OOHG_ActiveControlNoWordWrap
 
 MEMVAR _OOHG_ActiveControlSort
 
@@ -1567,15 +1568,16 @@ Label
 #xcommand DEFINE LABEL <name> ;
 	=>;
         _OOHG_ClearActiveControlInfo( <"name"> ) ;;
-        _OOHG_ActiveControlBorder                := .f.          ;;
+        _OOHG_ActiveControlBorder        := .f.          ;;
         _OOHG_ActiveControlClientEdge    := .f.          ;;
-        _OOHG_ActiveControlHScroll               := .f.          ;;
-        _OOHG_ActiveControlVScroll               := .f.          ;;
+        _OOHG_ActiveControlHScroll       := .f.          ;;
+        _OOHG_ActiveControlVScroll       := .f.          ;;
         _OOHG_ActiveControlTransparent   := .f.          ;;
-        _OOHG_ActiveControlAction                := Nil          ;;
+        _OOHG_ActiveControlAction        := Nil          ;;
         _OOHG_ActiveControlRightAlign    := .F.          ;;
-        _OOHG_ActiveControlAutoSize              := .f. ;;
-        _OOHG_ActiveControlCenterAlign := .F.
+        _OOHG_ActiveControlAutoSize      := .f.          ;;
+        _OOHG_ActiveControlCenterAlign   := .F.          ;;
+        _OOHG_ActiveControlNoWordWrap    := .F.
 
 #xcommand CENTERALIGN	<centeralign> ;
 	=> ;
@@ -1604,6 +1606,10 @@ Label
 #xcommand TRANSPARENT	<transparent>;
 	=>;
         _OOHG_ActiveControlTransparent   := <transparent>
+
+#xcommand NOWORDWRAP   <nowordwrap>;
+	=>;
+        _OOHG_ActiveControlNoWordWrap   := <nowordwrap>
 
 #xcommand END LABEL ;
 	=>;
@@ -1635,7 +1641,8 @@ Label
                 _OOHG_ActiveControlAutoSize , ;
                 _OOHG_ActiveControlRightAlign , ;
                 _OOHG_ActiveControlCenterAlign , ;
-                _OOHG_ActiveControlRtl )
+                _OOHG_ActiveControlRtl , ;
+                _OOHG_ActiveControlNoWordWrap )
 
 
 #xcommand DEFINE IPADDRESS <name> ;
