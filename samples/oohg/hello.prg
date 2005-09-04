@@ -1,5 +1,5 @@
 /*
- * $Id: hello.prg,v 1.3 2005-08-18 03:57:35 guerra000 Exp $
+ * $Id: hello.prg,v 1.4 2005-09-04 01:46:18 guerra000 Exp $
  */
 /*
 * ooHG Hello World Demo
@@ -74,9 +74,9 @@ set cent on
                 @ 40,10 HYPERLINK HLNK VALUE "www.yahoo.com.mx" autosize address "http://www.yahoo.com.mx"
 
                 @ 70,10 TEXTBOX Txt1 value "Text!" WIDTH 150 height 20
-oLabel := oWnd:Txt1
 
-                @ 90,10 TEXTBOX Txt2 VALUE "094-01-001-01-00-0000" WIDTH 150  height 20 INPUTMASK "999-99-999-99-!!-!!!!"
+                @ 90,10 TEXTBOX Txt2 VALUE "0940100101000000" WIDTH 150  height 20 INPUTMASK "@R 999-99-999-99-!!-!!!!"
+oLabel := oWnd:Txt2
 
                 @ 110,10 TEXTBOX Txt3 VALUE 55 WIDTH 150 numeric height 20
 oWnd:Txt3:transparent := .t.
@@ -161,6 +161,7 @@ ownd:tab:transparent := .t.
 
                 @ 310,240 datepicker DTP value date()
 
+                @ 340,240 progressmeter pgm width 120 height 20 value 75
 
 
 
