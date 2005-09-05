@@ -1,5 +1,5 @@
 /*
- * $Id: h_toolbar.prg,v 1.5 2005-08-30 04:59:39 guerra000 Exp $
+ * $Id: h_toolbar.prg,v 1.6 2005-09-05 02:01:21 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -101,6 +101,7 @@ CLASS TToolBar FROM TControl
    DATA aControls INIT {}
 
    METHOD Define
+   METHOD Release
    METHOD Events_Size
    METHOD Events_Notify
 ENDCLASS
@@ -151,20 +152,10 @@ Local id
 Default nImageWidth	To -1
 Default nImageHeight	To -1
 
-	* Set Public ToolBar Support Variables
-	_hmg_ActiveToolBarButtonCount	:= 0
-	_hmg_ActiveToolBarGripperText	:= cGripperText
-
 	* Create Control
-	aTemp := InitToolBar ( nParentWindowHandle , nId , nButtonWidth , nButtonHeight , lBorder , lFlat , lBottom , lRightText , _HMG_ActiveSplitBox , nImageWidth , nImageHeight , lStrictWidth )
+   aTemp := InitToolBar ( nParentWindowHandle , nId , w, h , lBorder , lFlat , lBottom , lRightText , _HMG_ActiveSplitBox , nImageWidth , nImageHeight , lStrictWidth )
 
 	nControlHandle := atemp[1]
-
-	_hmg_ActiveToolBarImageWidth	:= aTemp [2]
-	_hmg_ActiveToolBarImageHeight	:= aTemp [3]
-
-	_HMG_aControlWidth		[k] := nButtonWidth
-	_HMG_aControlHeight		[k] := nButtonHeight
 */
    ::New( ControlHandle, ControlName, , , ToolTip, Id )
    ::SetFont( , , bold, italic, underline, strikeout )
@@ -196,6 +187,14 @@ Local Self
    _OOHG_ActiveToolBar := nil
 
 Return Nil
+
+*-----------------------------------------------------------------------------*
+METHOD Release() CLASS TToolBar
+*-----------------------------------------------------------------------------*
+   DO WHILE LEN( ::aControls ) > 0
+      ::aControls[ 1 ]:Release()
+   ENDDO
+RETURN ::Super:Release()
 
 *-----------------------------------------------------------------------------*
 METHOD Events_Size() CLASS TToolBar
@@ -233,7 +232,7 @@ Local ws, x, aPos
 
    ElseIf nNotify == TTN_NEEDTEXT
 
-msginfo("si")
+*msginfo("si")
       ws := GetButtonPos( lParam )
 
       x  := Ascan ( ::aControls, { |o| o:Id == ws } )
@@ -266,7 +265,7 @@ CLASS TToolButton FROM TControl
    METHOD Value      SETGET
    METHOD Enabled    SETGET
 
-   method events_notify
+   METHOD Events_Notify
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -317,11 +316,6 @@ tooltip := caption
 
    ControlHandle := InitToolButton ( ::Container:hWnd, Caption, id , 0, 0, 0, 0, image , 0 , separator , autosize , check , group , dropdown , WHOLEDROPDOWN )
 
-/*
-	_hmg_ActiveToolBarButtonCount++
-   nControlHandle := InitToolButton ( _hmg_ActiveToolBarImageWidth  , _hmg_ActiveToolBarImageHeight )
-   _HMG_aControlValue      [k] :=  _hmg_ActiveToolBarButtonCount
-*/
    if valtype(image) $ "CM"
 		if ControlHandle == 0
          MsgOOHGError ('ToolBar Button Image: ' + chr(34) + Image + chr(34) + ' Not Available. Program terminated' )
@@ -419,7 +413,7 @@ Local nNotify := GetNotifyCode( lParam )
 
    If nNotify == TTN_NEEDTEXT
 
-msginfo("si")
+*msginfo("si")
 
          If VALTYPE( ::ToolTip ) $ "CM"
 
