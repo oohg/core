@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.6 2005-09-01 05:23:55 guerra000 Exp $
+ * $Id: h_tab.prg,v 1.7 2005-09-11 16:46:24 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -510,7 +510,6 @@ Return AEVAL( ::aPages, { |o| o:DeleteControl( oCtrl ) } )
 CLASS TTabPage FROM TControl
    DATA Type      INIT "TABPAGE" READONLY
    DATA Picture   INIT ""
-   DATA aControls INIT {}
    DATA Position  INIT 0
    DATA nImage    INIT -1
 

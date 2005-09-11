@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.18 2005-09-04 00:13:44 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.19 2005-09-11 16:46:24 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -131,8 +131,9 @@ CLASS TWindow
    DATA Container  INIT nil
    DATA lRtl       INIT .F.
    DATA ContextMenu   INIT nil
-   DATA Cargo      INIT nil
-   DATA lEnabled   INIT .T.
+   DATA Cargo         INIT nil
+   DATA lEnabled      INIT .T.
+   DATA aControls     INIT {}
 
    DATA OnClick       INIT nil
    DATA OnGotFocus    INIT nil
@@ -243,7 +244,6 @@ CLASS TForm FROM TWindow
 
    DATA GraphTasks     INIT {}
    DATA SplitChildList INIT {}
-   DATA aControls      INIT {}
    DATA aControlsNames INIT {}
 
    DATA WndProc    INIT nil
@@ -654,7 +654,6 @@ Local Formhandle, vscroll, hscroll, BrushHandle
    ::aBkColor := aRGB
    ::AutoRelease := ! NoAutoRelease
    ::BrushHandle := BrushHandle
-   ::lRtl := lRtl
 
    // Font Name:
    if ! empty( FontName )

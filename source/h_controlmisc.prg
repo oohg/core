@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.12 2005-09-04 00:11:39 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.13 2005-09-11 16:46:24 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -2168,14 +2168,18 @@ Local mVar
 
    DeleteObject( ::FontHandle )
    DeleteObject( ::BrushHandle )
-   IF ::AuxHandle > 0
-      DeleteObject( ::AuxHandle )
-   Endif
+   DeleteObject( ::AuxHandle )
 
    IF ::ImageList != 0
       ImageList_Destroy( ::ImageList )
    endif
 
+   // Attached controls
+   DO WHILE LEN( ::aControls ) > 0
+      ::aControls[ 1 ]:Release()
+   ENDDO
+
+   // Removes from container
    IF ::Container != nil
       ::Container:DeleteControl( Self )
    ENDIF

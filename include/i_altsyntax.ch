@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.13 2005-09-04 00:16:38 guerra000 Exp $
+ * $Id: i_altsyntax.ch,v 1.14 2005-09-11 16:46:24 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1134,7 +1134,12 @@ Button
                     _OOHG_ActiveControlFlat ,;
                     _OOHG_ActiveControlNoTabStop  ,;
                     _OOHG_ActiveControlHelpId ,;
-                    _OOHG_ActiveControlInvisible , _OOHG_ActiveControlFontBold , _OOHG_ActiveControlFontItalic , _OOHG_ActiveControlFontUnderLine , _OOHG_ActiveControlFontStrikeOut  ) ,;
+                    _OOHG_ActiveControlInvisible ,;
+                    _OOHG_ActiveControlFontBold ,;
+                    _OOHG_ActiveControlFontItalic ,;
+                    _OOHG_ActiveControlFontUnderLine ,;
+                    _OOHG_ActiveControlFontStrikeOut,;
+                    _OOHG_ActiveControlRtl ) ,;
                  TButton():DefineImage(;
                     _OOHG_ActiveControlName,;
                     _OOHG_ActiveControlOf,;
@@ -1151,7 +1156,9 @@ Button
                     _OOHG_ActiveControlFlat  ,;
                      .not. _OOHG_ActiveControlTransparent ,;
                     _OOHG_ActiveControlHelpId ,;
-                    _OOHG_ActiveControlInvisible , _OOHG_ActiveControlNoTabStop ) )
+                    _OOHG_ActiveControlInvisible ,;
+                    _OOHG_ActiveControlNoTabStop ,;
+                    _OOHG_ActiveControlRtl ) )
 
 /*----------------------------------------------------------------------------
 Image

@@ -1,5 +1,5 @@
 /*
- * $Id: h_status.prg,v 1.5 2005-08-30 05:05:55 guerra000 Exp $
+ * $Id: h_status.prg,v 1.6 2005-09-11 16:46:24 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -97,7 +97,6 @@
 
 CLASS TMessageBar FROM TControl
    DATA Type      INIT "MESSAGEBAR" READONLY
-   DATA aControls INIT {}
 
    METHOD SetClock
    METHOD SetKeybrd

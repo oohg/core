@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.18 2005-09-04 01:21:02 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.19 2005-09-11 16:46:24 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -115,13 +115,11 @@ CLASS TBrowse FROM TGrid
    DATA RecCount        INIT 0
    DATA aFields         INIT {}
    DATA lEof            INIT .F.
-   DATA aControls       INIT {}
    DATA nButtonActive   INIT 0
    DATA aWhen           INIT {}
 
    METHOD Define
    METHOD Refresh
-   METHOD Release
    METHOD SizePos
    METHOD Value               SETGET
    METHOD Enabled             SETGET
@@ -567,8 +565,9 @@ Local s , _RecNo , _DeltaScroll
 
       ( ::WorkArea )->( DbGoTo( ::aRecMap[ 1 ] ) )
       ( ::WorkArea )->( DbSkip() )
-      ::scrollUpdate()
       ::Update()
+      ( ::WorkArea )->( DbGoTo( ATail( ::aRecMap ) ) )
+      ::scrollUpdate()
       ListView_Scroll( ::hWnd, _DeltaScroll[2] * (-1) , 0 )
       ( ::WorkArea )->( DbGoTo( _RecNo ) )
 
@@ -1850,14 +1849,6 @@ Local cWorkArea, hWnd
    ( cWorkArea )->( DbGoTo( _RecNo ) )
 
 Return nil
-
-*-----------------------------------------------------------------------------*
-METHOD Release() CLASS TBrowse
-*-----------------------------------------------------------------------------*
-   if ::VScroll != nil
-      ::VScroll:Release()
-   endif
-Return ::Super:Release()
 
 *-----------------------------------------------------------------------------*
 METHOD SizePos( Row, Col, Width, Height ) CLASS TBrowse

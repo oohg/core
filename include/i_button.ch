@@ -1,5 +1,5 @@
 /*
- * $Id: i_button.ch,v 1.2 2005-08-19 05:45:09 guerra000 Exp $
+ * $Id: i_button.ch,v 1.3 2005-09-11 16:46:24 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -111,10 +111,11 @@
 		[ <notabstop: NOTABSTOP> ] ;
 		[ HELPID <helpid> ] 		;
 		[ <invisible: INVISIBLE> ] ;
+                [ <rtl: RTL> ] ;
 	=>;
         [ <obj> := ] TButton():Define( <"name">, <"parent">, <col>, <row>, <caption>, <{action}>, ;
                    <w>, <h>, <font>, <size>, <tooltip>, <{gotfocus}>, ;
-                   <{lostfocus}>, <.flat.>, <.notabstop.>, <helpid>, <.invisible.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> )
+                   <{lostfocus}>, <.flat.>, <.notabstop.>, <helpid>, <.invisible.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.>, <.rtl.> )
 
 #xcommand @ <row>,<col> BUTTON <name> ;
                 [ OBJ <obj> ] ;
@@ -131,8 +132,8 @@
 		[ <notabstop: NOTABSTOP> ] ;
 		[ HELPID <helpid> ] 		;
 		[ <invisible: INVISIBLE> ] ;
+                [ <rtl: RTL> ] ;
 	=>;
         [ <obj> := ] TButton():DefineImage( <"name">, <"parent">, <col>, <row>, "", <{action}>, ;
                         <w>, <h>, <bitmap>, <tooltip>, <{gotfocus}>, <{lostfocus}>, ;
-                        <.flat.>, <.notrans.>, <helpid>, <.invisible.>, <.notabstop.> )
-
+                        <.flat.>, <.notrans.>, <helpid>, <.invisible.>, <.notabstop.>, <.rtl.> )

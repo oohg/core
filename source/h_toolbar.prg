@@ -1,5 +1,5 @@
 /*
- * $Id: h_toolbar.prg,v 1.6 2005-09-05 02:01:21 guerra000 Exp $
+ * $Id: h_toolbar.prg,v 1.7 2005-09-11 16:46:24 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -98,10 +98,8 @@
 CLASS TToolBar FROM TControl
    DATA Type      INIT "TOOLBAR" READONLY
    DATA Break     INIT .F.
-   DATA aControls INIT {}
 
    METHOD Define
-   METHOD Release
    METHOD Events_Size
    METHOD Events_Notify
 ENDCLASS
@@ -187,14 +185,6 @@ Local Self
    _OOHG_ActiveToolBar := nil
 
 Return Nil
-
-*-----------------------------------------------------------------------------*
-METHOD Release() CLASS TToolBar
-*-----------------------------------------------------------------------------*
-   DO WHILE LEN( ::aControls ) > 0
-      ::aControls[ 1 ]:Release()
-   ENDDO
-RETURN ::Super:Release()
 
 *-----------------------------------------------------------------------------*
 METHOD Events_Size() CLASS TToolBar
