@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.19 2005-09-11 16:46:24 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.20 2005-09-11 16:51:41 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1004,7 +1004,7 @@ Local i , l , ControlRow , e := 0 ,LN , CN , th, oWnd, oControl, aControls, oEdi
 								@ ControlRow , 120 EDITBOX &CN  OF _Split_1 WIDTH 140 HEIGHT 90 VALUE aValues[i] FONT 'Arial' SIZE 10 MAXLENGTH aFormats[i]
 								ControlRow := ControlRow + 94
 							EndIf
-                  ElseIf ValType ( aFormats [i] ) == 'C' .AND. aFormats [i] == "M"
+                  ElseIf ValType ( aFormats [i] ) == 'C' .OR. aFormats [i] == "M"
                      @ ControlRow , 120 EDITBOX &CN  OF _Split_1 WIDTH 140 HEIGHT 90 VALUE aValues[i] FONT 'Arial' SIZE 10 MAXLENGTH aFormats[i]
                      ControlRow := ControlRow + 94
 						EndIf
