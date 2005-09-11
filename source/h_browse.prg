@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.20 2005-09-11 16:51:41 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.21 2005-09-11 17:24:00 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -713,21 +713,21 @@ Local Title , aLabels , aInitValues := {} , aFormats := {} , aResults , z , tvar
    If LISTVIEW_GETFIRSTITEM ( ::hWnd ) == 0
       If Valtype (append) == 'L'
          If ! append
-				Return Nil
-			EndIf
-		EndIf
-	EndIf
+            Return Nil
+         EndIf
+      EndIf
+   EndIf
 
    If ::InPlace
       ::InPlaceEdit( append )
-		Return Nil
-	EndIf
+      Return Nil
+   EndIf
 
    a := ::aHeaders
 
    item := ::Value
 
-	l := Len(a)
+   l := Len(a)
 
    g := ::Item( Item )
 
@@ -735,21 +735,21 @@ Local Title , aLabels , aInitValues := {} , aFormats := {} , aResults , z , tvar
 
    GetWindowRect( ::hWnd, actpos )
 
-	GRow 	:= actpos [2]
-	GCol 	:= actpos [1]
-	GWidth 	:= actpos [3] - actpos [1]
+   GRow    := actpos [2]
+   GCol    := actpos [1]
+   GWidth  := actpos [3] - actpos [1]
 
-	Col := GCol + ( ( GWidth - 310 ) / 2 )
+   Col := GCol + ( ( GWidth - 310 ) / 2 )
 
    If Valtype (append) == 'L'
       If append
          Title := _OOHG_BRWLangButton[1]
-		Else
+      Else
          Title := _OOHG_BRWLangButton[2]
-		EndIf
-	ELse
+      EndIf
+   ELse
       Title := _OOHG_BRWLangButton[2]
-	EndIf
+   EndIf
 
    aLabels  := ::aHeaders
 
@@ -773,31 +773,31 @@ Local Title , aLabels , aInitValues := {} , aFormats := {} , aResults , z , tvar
 
       if valtype( tvar ) $ 'CM'
          Aadd ( aInitValues , Alltrim(tvar) )
-		Else
+      Else
          Aadd ( aInitValues , tvar )
-		EndIf
+      EndIf
 
       tvar := Upper ( ::aFields [z] )
       y := at ( '->' , tvar )
       if y == 0
          aStru := ( BrowseArea )->( DbStruct() )
-			aAdd ( TmpNames , 'MemVar' + BrowseArea + tvar )
-		Else
+         aAdd ( TmpNames , 'MemVar' + BrowseArea + tvar )
+      Else
          svar := Left( tvar , y - 1 )
          aStru := ( svar )->( DbStruct() )
-         tvar := SubStr( tvar , y + 1 )
-			aAdd ( TmpNames , 'MemVar' + svar + tvar )
+         tvar := SubStr( tvar , y + 2 )
+         aAdd ( TmpNames , 'MemVar' + svar + tvar )
          If Upper( svar ) != Upper( BrowseArea )
-				MixedFields := .t.
-			EndIf
-		EndIf
+            MixedFields := .t.
+         EndIf
+      EndIf
       If Valtype (append) == 'L'
          If append
             If MixedFields
                MsgOOHGError(_OOHG_BRWLangError[8],_OOHG_BRWLangError[3])
-				EndIf
-			EndIf
-		EndIf
+            EndIf
+         EndIf
+      EndIf
 
       y := ASCAN( aStru, { |a| Upper( a[ 1 ] ) == tvar } )
       If y == 0   // Field not found!!!
@@ -815,79 +815,79 @@ Local Title , aLabels , aInitValues := {} , aFormats := {} , aResults , z , tvar
       ElseIf aStru [y] [2] == 'M'
          Aadd ( aFormats , "M" )
       Else   // Unknow type!!!   Must be fixed for "extended" types (VFP types)
-         Aadd ( aFormats , Nil )
+         Aadd (  , Nil )
       EndIf
 
-	Next z
+   Next z
 
    If ::lock
       If ! ( ::WorkArea )->( Rlock() )
          MsgExclamation(_OOHG_BRWLangError[9],_OOHG_BRWLangError[10])
          ( ::WorkArea )->( DbGoTo( BackRec ) )
          ::SetFocus()
-			Return Nil
-		EndIf
-	EndIf
+         Return Nil
+      EndIf
+   EndIf
 
-	BackArea := Alias()
+   BackArea := Alias()
    DbSelectArea( BrowseArea )
 
    aResults := _EditRecord( Title , aLabels , aInitValues , aFormats , GRow , Col , ::Valid , TmpNames , ::ValidMessages , ::ReadOnly , actpos [4] - actpos [2] )
-	tvar := aResults [1]
-	If ValType ( tvar ) != 'U'
+   tvar := aResults [1]
+   If ValType ( tvar ) != 'U'
 
       If Valtype (append) == 'L'
          If append
             ( ::WorkArea )->( DBAppend() )
             NewRec := ( ::WorkArea )->( RecNo() )
-			EndIf
-		EndIf
+         EndIf
+      EndIf
 
-		For z := 1 To Len ( aResults )
+      For z := 1 To Len ( aResults )
 
-         tvar := ::aFields [z]
+      tvar := ::aFields [z]
 
-         If ValType (::ReadOnly) == 'U'
+      If ValType (::ReadOnly) == 'U'
 
-				Replace &tvar With aResults [z]
+         Replace &tvar With aResults [z]
 
-			Else
+      Else
 
-            If ::ReadOnly [z] == .F.
+         If ::ReadOnly [z] == .F.
 
-					Replace &tvar With aResults [z]
+            Replace &tvar With aResults [z]
 
-				EndIf
+         EndIf
 
-			EndIf
+      EndIf
 
-		Next z
+      Next z
 
       ::Refresh()
 
-	EndIf
+   EndIf
 
    If ::lock
       ( ::WorkArea )->( DbUnlock() )
-	EndIf
+   EndIf
 
    ( ::WorkArea )->( DbGoTo( BackRec ) )
 
    If Select( BackArea ) != 0
       DbSelectArea( BackArea )
-	Else
+   Else
       DbSelectArea( 0 )
-	EndIf
+   EndIf
 
    ::SetFocus()
 
    If Valtype (append) == 'L'
       If append
-			If NewRec != 0
+         If NewRec != 0
             ::Value := NewRec
-			EndIf
-		EndIf
-	EndIf
+         EndIf
+      EndIf
+   EndIf
 
 Return Nil
 
@@ -896,50 +896,50 @@ Function _EditRecord( Title , aLabels , aValues , aFormats , row , col , aValid 
 *-----------------------------------------------------------------------------*
 Local i , l , ControlRow , e := 0 ,LN , CN , th, oWnd, oControl, aControls, oEditRecord, aResults
 
-	l := Len ( aLabels )
+   l := Len ( aLabels )
 
    aResults := ARRAY( l )
 
    aControls := ARRAY( l )
 
-	For i := 1 to l
+   For i := 1 to l
 
       if ValType ( aValues[i] ) $ 'CM'
 
-			if ValType ( aFormats[i] ) == 'N'
+         if ValType ( aFormats[i] ) == 'N'
 
-				If aFormats[i] > 32
-					e++
-				Endif
+            If aFormats[i] > 32
+               e++
+            Endif
 
          ElseIf ValType ( aFormats[i] ) == 'C' .AND. aFormats[i] == "M"
 
             e++
 
-			EndIf
+         EndIf
 
-		EndIf
+      EndIf
 
-	Next i
+   Next i
 
-	th := (l*30) + (e*60) + 30
+   th := (l*30) + (e*60) + 30
 
-	IF TH < H
-		TH := H + 1
-	ENDIF
+   IF TH < H
+      TH := H + 1
+   ENDIF
 
    DEFINE WINDOW _EditRecord OBJ oEditRecord ;
-		AT row,col ;
-		WIDTH 310 ;
-		HEIGHT h - 19 + GetTitleHeight() ;
-		TITLE Title ;
-      MODAL NOSIZE ;
-      ON INIT oWnd:Control_1:SetFocus() ;
+                 AT row,col ;
+                 WIDTH 310 ;
+                 HEIGHT h - 19 + GetTitleHeight() ;
+                 TITLE Title ;
+                 MODAL NOSIZE ;
+                 ON INIT oWnd:Control_1:SetFocus() ;
 
       ON KEY ALT+O ACTION ( aResults := _EditRecordOk( aControls, aValid, aValidMessages, oEditRecord ) )
       ON KEY ALT+C ACTION oEditRecord:Release()
 
-		DEFINE SPLITBOX
+      DEFINE SPLITBOX
 
          DEFINE WINDOW _Split_1 OBJ oWnd;
 				WIDTH 310 ;
@@ -950,51 +950,51 @@ Local i , l , ControlRow , e := 0 ,LN , CN , th, oWnd, oControl, aControls, oEdi
             ON KEY ALT+O ACTION ( aResults := _EditRecordOk( aControls, aValid, aValidMessages, oEditRecord ) )
             ON KEY ALT+C ACTION oEditRecord:Release()
 
-				ControlRow :=  10
+            ControlRow :=  10
 
-				For i := 1 to l
+            For i := 1 to l
 
-					LN := 'Label_' + Alltrim(Str(i))
-					CN := 'Control_' + Alltrim(Str(i))
+               LN := 'Label_' + Alltrim(Str(i))
+               CN := 'Control_' + Alltrim(Str(i))
 
-					@ ControlRow , 10 LABEL &LN OF _Split_1 VALUE aLabels [i] WIDTH 90
+               @ ControlRow , 10 LABEL &LN OF _Split_1 VALUE aLabels [i] WIDTH 90
 
-					do case
+               do case
 /*
                case ValType( ::Picture ) == 'A' .AND. Len( ::Picture ) >= i .AND. ValType( ::Picture[ i ] ) $ "CM"
 
                   @ ControlRow , 120 TEXTBOX &CN  OF _Split_1 VALUE aValues[i] WIDTH 140 FONT 'Arial' SIZE 10 PICTURE ::Picture[ i ]
-						ControlRow := ControlRow + 30
+                  ControlRow := ControlRow + 30
 */
 
-					case ValType ( aValues [i] ) == 'L'
+               case ValType ( aValues [i] ) == 'L'
 
-						@ ControlRow , 120 CHECKBOX &CN OF _Split_1 CAPTION '' VALUE aValues[i]
-						ControlRow := ControlRow + 30
+                  @ ControlRow , 120 CHECKBOX &CN OF _Split_1 CAPTION '' VALUE aValues[i]
+                  ControlRow := ControlRow + 30
 
-					case ValType ( aValues [i] ) == 'D'
+               case ValType ( aValues [i] ) == 'D'
 
                   @ ControlRow , 120 TEXTBOX &CN  OF _Split_1 VALUE aValues[i] WIDTH 140 DATE
-						ControlRow := ControlRow + 30
+                  ControlRow := ControlRow + 30
 
-					case ValType ( aValues [i] ) == 'N'
+               case ValType ( aValues [i] ) == 'N'
 
-						If ValType ( aFormats [i] ) == 'A'
-							@ ControlRow , 120 COMBOBOX &CN  OF _Split_1 ITEMS aFormats[i] VALUE aValues[i] WIDTH 140  FONT 'Arial' SIZE 10
-							ControlRow := ControlRow + 30
+                  If ValType ( aFormats [i] ) == 'A'
+                     @ ControlRow , 120 COMBOBOX &CN  OF _Split_1 ITEMS aFormats[i] VALUE aValues[i] WIDTH 140  FONT 'Arial' SIZE 10
+                     ControlRow := ControlRow + 30
 
                   ElseIf  ValType ( aFormats [i] ) $ 'CM'
 
-							If AT ( '.' , aFormats [i] ) > 0
-								@ ControlRow , 120 TEXTBOX &CN  OF _Split_1 VALUE aValues[i] WIDTH 140 FONT 'Arial' SIZE 10 NUMERIC INPUTMASK aFormats [i]
-							Else
-								@ ControlRow , 120 TEXTBOX &CN  OF _Split_1 VALUE aValues[i] WIDTH 140 FONT 'Arial' SIZE 10 MAXLENGTH Len(aFormats [i]) NUMERIC
-							EndIf
+                     If AT ( '.' , aFormats [i] ) > 0
+                        @ ControlRow , 120 TEXTBOX &CN  OF _Split_1 VALUE aValues[i] WIDTH 140 FONT 'Arial' SIZE 10 NUMERIC INPUTMASK aFormats [i]
+                     Else
+                        @ ControlRow , 120 TEXTBOX &CN  OF _Split_1 VALUE aValues[i] WIDTH 140 FONT 'Arial' SIZE 10 MAXLENGTH Len(aFormats [i]) NUMERIC
+                     EndIf
 
-							ControlRow := ControlRow + 30
-						Endif
+                     ControlRow := ControlRow + 30
+                  Endif
 
-					case ValType ( aValues [i] ) == 'C'
+               case ValType ( aValues [i] ) == 'C'
 
 						If ValType ( aFormats [i] ) == 'N'
 							If  aFormats [i] <= 32
