@@ -1,5 +1,5 @@
 /*
- * $Id: c_button.c,v 1.1 2005-08-07 00:02:01 guerra000 Exp $
+ * $Id: c_button.c,v 1.2 2005-09-11 16:47:19 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -104,33 +104,32 @@
 #include "hbapiitm.h"
 #include "winreg.h"
 #include "tchar.h"
+#include "../include/oohg.h"
+
+static WNDPROC lpfnOldWndProc = 0;
+
+static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+{
+   return _OOHG_WndProc( GetControlObjectByHandle( ( LONG ) hWnd ), hWnd, msg, wParam, lParam, lpfnOldWndProc );
+}
 
 HB_FUNC( INITBUTTON )
 {
-	HWND hwnd;
-	HWND hbutton;
-	int Style ;
+   HWND hwnd;
+   HWND hbutton;
+   int Style, StyleEx;
 
-	hwnd = (HWND) hb_parnl (1);
+   hwnd = (HWND) hb_parnl (1);
 
-	Style =  BS_NOTIFY | WS_CHILD | BS_PUSHBUTTON ;
+   Style =  BS_NOTIFY | WS_CHILD | BS_PUSHBUTTON | hb_parni( 9 );
 
-	if ( hb_parl (10) )
-	{
-		Style = Style | BS_FLAT ;
-	}
+   StyleEx = 0;
+   if ( hb_parl( 8 ) )
+   {
+      StyleEx |= WS_EX_LAYOUTRTL | WS_EX_RIGHTSCROLLBAR | WS_EX_RTLREADING;
+   }
 
-	if ( ! hb_parl (11) )
-	{
-		Style = Style | WS_TABSTOP ;
-	}
-
-	if ( ! hb_parl (12) )
-	{
-		Style = Style | WS_VISIBLE ;
-	}
-
-	hbutton = CreateWindow( "button" ,
+   hbutton = CreateWindowEx(StyleEx, "button" ,
                            hb_parc(2) ,
                            Style ,
                            hb_parni(4) ,
@@ -142,84 +141,30 @@ HB_FUNC( INITBUTTON )
                            GetModuleHandle(NULL) ,
                            NULL ) ;
 
-	hb_retnl ( (LONG) hbutton );
+   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hbutton, GWL_WNDPROC, ( LONG ) SubClassFunc );
+
+   hb_retnl( ( LONG ) hbutton );
 }
 
-HB_FUNC( INITIMAGEBUTTON )
-{
-	HWND hwnd;
-	HWND hbutton;
-	HWND himage;
-	int Style ;
-	int ImgStyle ;
-
-	hwnd = (HWND) hb_parnl (1);
-
-	Style = BS_NOTIFY | BS_BITMAP | WS_CHILD | BS_PUSHBUTTON ;
-
-	if ( hb_parl (9) )
-	{
-		Style = Style | BS_FLAT ;
-	}
-
-	if ( ! hb_parl (11) )
-	{
-		Style = Style | WS_VISIBLE ;
-	}
-
-	if ( ! hb_parl (12) )
-	{
-		Style = Style | WS_TABSTOP ;
-	}
-
-	hbutton = CreateWindow( "button" ,
-                           hb_parc(2) ,
-                           Style ,
-                           hb_parni(4) ,
-                           hb_parni(5) ,
-                           hb_parni(6) ,
-                           hb_parni(7) ,
-                           hwnd ,
-                           (HMENU)hb_parni(3) ,
-                           GetModuleHandle(NULL) ,
-                           NULL ) ;
-
-	if ( hb_parl (10) )
-	{
-		ImgStyle = 0 ;
-	}
-	else
-	{
-		ImgStyle = LR_LOADTRANSPARENT ;
-	}
-
-	himage = (HWND)LoadImage(0,hb_parc(8),IMAGE_BITMAP ,0,0,LR_LOADFROMFILE | LR_LOADMAP3DCOLORS | ImgStyle );
-
-	if (himage==NULL)
-	{
-		himage = (HWND)LoadImage(GetModuleHandle(NULL),hb_parc(8),IMAGE_BITMAP ,0,0, LR_LOADMAP3DCOLORS	| ImgStyle );
-	}
-
-	SendMessage(hbutton,(UINT)BM_SETIMAGE,(WPARAM)IMAGE_BITMAP,(LPARAM)himage);
-
-	hb_reta( 2 );
-	hb_stornl( (LONG) hbutton , -1, 1 );
-	hb_stornl( (LONG) himage , -1, 2 );
-
-}
-
-HB_FUNC( _SETBTNPICTURE)
+HB_FUNC( _SETBTNPICTURE )
 {
 	HWND hwnd;
 	HWND himage;
+    int ImgStyle;
 
 	hwnd = (HWND) hb_parnl (1);
 
-	himage = (HWND)LoadImage(0,hb_parc(2),IMAGE_BITMAP ,0,0,LR_LOADFROMFILE | LR_LOADMAP3DCOLORS | LR_LOADTRANSPARENT );
+    ImgStyle = LR_LOADMAP3DCOLORS;
+    if( ! hb_parl( 3 ) )
+    {
+       ImgStyle |= LR_LOADTRANSPARENT;
+    }
+
+    himage = (HWND)LoadImage(0,hb_parc(2),IMAGE_BITMAP ,0,0, LR_LOADFROMFILE | ImgStyle );
 
 	if (himage==NULL)
 	{
-		himage = (HWND)LoadImage(GetModuleHandle(NULL),hb_parc(2),IMAGE_BITMAP ,0,0, LR_LOADMAP3DCOLORS	| LR_LOADTRANSPARENT );
+        himage = (HWND)LoadImage(GetModuleHandle(NULL),hb_parc(2),IMAGE_BITMAP ,0,0, ImgStyle );
 	}
 
 	SendMessage(hwnd,(UINT)BM_SETIMAGE,(WPARAM)IMAGE_BITMAP,(LPARAM)himage);

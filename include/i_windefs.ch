@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.8 2005-09-01 05:19:51 guerra000 Exp $
+ * $Id: i_windefs.ch,v 1.9 2005-09-11 16:47:18 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -127,9 +127,11 @@
 #define WM_TIMER	275
 #define WM_HSCROLL	276
 #define WM_VSCROLL      277 //0x0115
+#define WM_CTLCOLORMSGBOX       306  //
 #define WM_CTLCOLOREDIT	307
 #define WM_CTLCOLORLISTBOX	308
 #define WM_CTLCOLORBTN	309
+#define WM_CTLCOLORSCROLLBAR    311  //
 #define WM_CTLCOLORDLG	310
 #define WM_CTLCOLORSTATIC 312
 #define WM_MOUSEMOVE    512 // 0x0200
@@ -399,10 +401,33 @@
 #define LR_COPYFROMRESOURCE 0x4000
 #define LR_SHARED           0x8000
 
-// Button
+// Button styles
+#define BS_PUSHBUTTON           0
 #define BS_DEFPUSHBUTTON	1
+#define BS_CHECKBOX             2
+#define BS_AUTOCHECKBOX         3
+#define BS_RADIOBUTTON          4
+#define BS_3STATE               5
+#define BS_AUTO3STATE           6
+#define BS_GROUPBOX             7
+#define BS_USERBUTTON           8
 #define BS_AUTORADIOBUTTON	9
-#define BS_NOTIFY	0x4000
+#define BS_OWNERDRAW           11
+#define BS_LEFTTEXT            32
+#define BS_TEXT                 0
+#define BS_ICON                64
+#define BS_BITMAP             128
+#define BS_LEFT               256
+#define BS_RIGHT              512
+#define BS_CENTER             768
+#define BS_TOP               1024
+#define BS_BOTTOM            2048
+#define BS_VCENTER           3072
+#define BS_PUSHLIKE          4096
+#define BS_MULTILINE         8192
+#define BS_NOTIFY           16384
+#define BS_FLAT             32768
+#define BS_RIGHTBUTTON      BS_LEFTTEXT
 
 #DEFINE DC_BRUSH 18
 #define LVN_BEGINDRAG	(-109)

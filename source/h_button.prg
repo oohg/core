@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.4 2005-08-23 05:13:40 guerra000 Exp $
+ * $Id: h_button.prg,v 1.5 2005-09-11 16:47:19 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -113,9 +113,9 @@ ENDCLASS
 METHOD Define( ControlName, ParentForm, x, y, Caption, ProcedureName, w, h, ;
                fontname, fontsize, tooltip, gotfocus, lostfocus, flat, ;
                NoTabStop, HelpId, invisible, bold, italic, underline, ;
-               strikeout ) CLASS TButton
+               strikeout, lRtl ) CLASS TButton
 *-----------------------------------------------------------------------------*
-Local ControlHandle
+Local ControlHandle, nStyle
 
    DEFAULT w         TO 100
    DEFAULT h         TO 28
@@ -123,9 +123,13 @@ Local ControlHandle
    DEFAULT gotfocus  TO ""
    DEFAULT invisible TO FALSE
 
-   ::SetForm( ControlName, ParentForm, FontName, FontSize )
+   ::SetForm( ControlName, ParentForm, FontName, FontSize,,,, lRtl )
 
-   ControlHandle := InitButton( ::Parent:hWnd, Caption, 0, x, y, w, h, '', 0, flat, NoTabStop, invisible )
+   nStyle := if( ValType( flat ) == "L"      .AND. flat,       BS_FLAT, 0 ) + ;
+             if( ValType( NoTabStop ) != "L" .OR. ! NoTabStop, WS_TABSTOP, 0 ) + ;
+             if( ValType( invisible ) != "L" .OR. ! invisible, WS_VISIBLE, 0 )
+
+   ControlHandle := InitButton( ::Parent:hWnd, Caption, 0, x, y, w, h, ::lRtl, nStyle )
 
    ::New( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
@@ -141,9 +145,9 @@ Return Self
 *-----------------------------------------------------------------------------*
 METHOD DefineImage( ControlName, ParentForm, x, y, Caption, ProcedureName, ;
                     w, h, image, tooltip, gotfocus, lostfocus, flat, ;
-                    notrans, HelpId, invisible, notabstop ) CLASS TButton
+                    notrans, HelpId, invisible, notabstop, lRtl ) CLASS TButton
 *-----------------------------------------------------------------------------*
-Local aRet [2]
+Local ControlHandle, nStyle
 
 	DEFAULT invisible TO FALSE
 	DEFAULT notabstop TO FALSE
@@ -152,19 +156,23 @@ Local aRet [2]
 		Return Nil
 	EndIf
 
-   ::SetForm( ControlName, ParentForm )
+   ::SetForm( ControlName, ParentForm,,,,,, lRtl )
 
-   aRet := InitImageButton ( ::Parent:hWnd, Caption, 0, x, y, w, h, image , flat , notrans, invisible, notabstop )
+   nStyle := BS_BITMAP + ;
+             if( ValType( flat ) == "L"      .AND. flat,       BS_FLAT, 0 ) + ;
+             if( ValType( NoTabStop ) != "L" .OR. ! NoTabStop, WS_TABSTOP, 0 ) + ;
+             if( ValType( invisible ) != "L" .OR. ! invisible, WS_VISIBLE, 0 )
 
-   ::New( aRet [1], ControlName, HelpId, ! Invisible, ToolTip )
+   ControlHandle := InitButton( ::Parent:hWnd, Caption, 0, x, y, w, h, ::lRtl, nStyle )
+
+   ::New( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
    ::SizePos( y, x, w, h )
 
    ::OnClick := ProcedureName
    ::OnLostFocus := LostFocus
    ::OnGotFocus :=  GotFocus
-   ::cPicture :=   image
    ::Caption := Caption
-   ::AuxHandle := aRet [2]
+   ::Picture( image, notrans )
 
 Return Self
 
@@ -175,11 +183,11 @@ METHOD SetFocus() CLASS TButton
 Return ::Super:SetFocus()
 
 *-----------------------------------------------------------------------------*
-METHOD Picture( cPicture ) CLASS TButton
+METHOD Picture( cPicture, lNoTransparent ) CLASS TButton
 *-----------------------------------------------------------------------------*
    IF VALTYPE( cPicture ) $ "CM"
       DeleteObject( ::AuxHandle )
-      ::AuxHandle := _SetBtnPicture( ::hWnd, cPicture )
+      ::AuxHandle := _SetBtnPicture( ::hWnd, cPicture, lNoTransparent )
       ::cPicture := cPicture
    ENDIF
 Return ::cPicture
@@ -196,8 +204,3 @@ METHOD Caption( cValue ) CLASS TButton
       SetWindowText( ::hWnd , cValue )
    ENDIF
 RETURN GetWindowText( ::hWnd )
-
-
-
-
-///// clase Img!!!!!!!!
