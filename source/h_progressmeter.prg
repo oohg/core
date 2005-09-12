@@ -1,5 +1,5 @@
 /*
- * $Id: h_progressmeter.prg,v 1.1 2005-09-04 00:19:13 guerra000 Exp $
+ * $Id: h_progressmeter.prg,v 1.2 2005-09-12 02:46:42 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -68,7 +68,7 @@ CLASS TProgressMeter FROM TLabel
    METHOD RangeMin            SETGET
    METHOD RangeMax            SETGET
    METHOD FontColor           SETGET
-   METHOD BkColor             SETGET
+   METHOD BackColor           SETGET
    METHOD SizePos
    METHOD SetFont
 * fontname, fontsize, bold, italic, underline, strikeout
@@ -99,7 +99,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, lo, hi, value, tooltip, ;
 
    ::oLabel := TLabel():Define( "0", ::Parent:Name, ::Col, ::Row, "", ::Width, ::Height, ::FontName, ;
                ::FontSize, ::bold, .F., .F., .F., .F., ;
-               .F., ::FontColor, ::BkColor, ::OnClick, ::ToolTip, ;
+               .F., ::FontColor, ::BackColor, ::OnClick, ::ToolTip, ;
                ::HelpId, invisible, ::italic, ::underline, ::strikeout, .F., ;
                .F., .F., ::lRtl, .T. )
 
@@ -170,7 +170,7 @@ METHOD FontColor( uValue ) CLASS TProgressMeter
       ::Super:FontColor := uValue
       uValue := ::aFontColor
       IF ValType( ::oLabel ) == "O"
-         ::oLabel:BkColor := uValue
+         ::oLabel:BackColor := uValue
       EndIf
    Else
       uValue := ::aFontColor
@@ -178,15 +178,15 @@ METHOD FontColor( uValue ) CLASS TProgressMeter
 RETURN uValue
 
 *------------------------------------------------------------------------------*
-METHOD BkColor( uValue ) CLASS TProgressMeter
+METHOD BackColor( uValue ) CLASS TProgressMeter
 *------------------------------------------------------------------------------*
    IF VALTYPE( uValue ) == "A"
-      ::Super:BkColor := uValue
+      ::Super:BackColor := uValue
       IF ValType( ::oLabel ) == "O"
          ::oLabel:FontColor := uValue
       Endif
    Else
-      uValue := ::aBkColor
+      uValue := ::aBackColor
    ENDIF
 RETURN uValue
 

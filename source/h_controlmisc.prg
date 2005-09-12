@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.13 2005-09-11 16:46:24 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.14 2005-09-12 02:46:42 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -869,7 +869,10 @@ Local oWnd, oCtrl
 
 		ElseIf Arg2 == 'NOTIFYTOOLTIP'
 
-         oWnd:NotifyIconTooltip := Arg1
+         oWnd:NotifyIconTooltip := Arg3
+
+      ElseIf Arg2 == "BACKCOLOR"
+         oWnd:BackColor := Arg3
 
 		ElseIf Arg2 == 'CURSOR'
 
@@ -1013,7 +1016,7 @@ Local oWnd, oCtrl
 
 		ElseIf Arg3 == 'BACKCOLOR'
 
-         oCtrl:BkColor := Arg4
+         oCtrl:BackColor := Arg4
 
 		ElseIf Arg3 == 'FONTCOLOR'
 
@@ -1164,6 +1167,9 @@ Local RetVal, oWnd, oCtrl
 
          RetVal := oWnd:NotifyIconTooltip
 
+      ElseIf Arg2 == "BACKCOLOR"
+         RetVal := oWnd:BackColor
+
 		EndIf
 
 	ElseIf Pcount() == 3 // CONTROL
@@ -1301,7 +1307,7 @@ Local RetVal, oWnd, oCtrl
 
 		ElseIf Arg3 == 'BACKCOLOR'
 
-         RetVal := oCtrl:BkColor
+         RetVal := oCtrl:BackColor
 
 		ElseIf Arg3 == 'FONTCOLOR'
 
@@ -1745,7 +1751,7 @@ Return ( GetControlObject( ControlName, ParentForm ):FontColor := Value )
 *-----------------------------------------------------------------------------*
 Function _SetBackColor ( ControlName, ParentForm , Value  )
 *-----------------------------------------------------------------------------*
-Return ( GetControlObject( ControlName, ParentForm ):BkColor := Value )
+Return ( GetControlObject( ControlName, ParentForm ):BackColor := Value )
 
 *-----------------------------------------------------------------------------*
 Function _SetStatusIcon( ControlName , ParentForm , Item , Icon )
@@ -1811,7 +1817,7 @@ CLASS TControl FROM TWindow
    METHOD SaveData
    METHOD RefreshData
    METHOD FontColor           SETGET
-   METHOD BkColor             SETGET
+   METHOD BackColor           SETGET
    METHOD AddControl(oCtrl)       BLOCK { |Self,oCtrl| AADD( ::aControls, oCtrl ) }
    METHOD DeleteControl
    METHOD AddBitMap
@@ -1966,13 +1972,13 @@ LOCAL nPos
       // Background Color (edit or listbox):
       if ! empty( BkColor )
          // Specified color
-         ::aBkColor := BkColor
+         ::aBackColor := BkColor
       elseif ::Container != nil
          // Active frame
-         ::aBkColor := ::Container:DefBkColorEdit
+         ::aBackColor := ::Container:DefBkColorEdit
       elseif ! Empty( ::Parent:DefBkColorEdit )
          // Active form
-         ::aBkColor := ::Parent:DefBkColorEdit
+         ::aBackColor := ::Parent:DefBkColorEdit
       else
           // Default
       endif
@@ -1980,13 +1986,13 @@ LOCAL nPos
       // Background Color (static):
       if ! empty( BkColor )
          // Specified color
-         ::aBkColor := BkColor
+         ::aBackColor := BkColor
       elseif ::Container != nil
          // Active frame
-         ::aBkColor := ::Container:aBkColor
-      elseif ! Empty( ::Parent:aBkColor )
+         ::aBackColor := ::Container:aBackColor
+      elseif ! Empty( ::Parent:aBackColor )
          // Active form
-         ::aBkColor := ::Parent:aBkColor
+         ::aBackColor := ::Parent:aBackColor
       else
           // Default
       endif
@@ -2064,13 +2070,13 @@ METHOD SetContainer( Container, ControlName, FontName, FontSize, FontColor, BkCo
    // Background Color (static):
    if ! empty( BkColor )
       // Specified color
-      ::aBkColor := BkColor
-   elseif ! empty( ::Container:aBkColor )
+      ::aBackColor := BkColor
+   elseif ! empty( ::Container:aBackColor )
       // Container
-      ::aBkColor := ::Container:aBkColor
-   elseif ! empty( ::Parent:aBkColor )
+      ::aBackColor := ::Container:aBackColor
+   elseif ! empty( ::Parent:aBackColor )
       // Parent form
-      ::aBkColor := ::Parent:aBkColor
+      ::aBackColor := ::Parent:aBackColor
    else
       // Default
    endif
@@ -2280,17 +2286,17 @@ METHOD FontColor( uValue ) CLASS TControl
 RETURN ::aFontColor
 
 *-----------------------------------------------------------------------------*
-METHOD BkColor( uValue ) CLASS TControl
+METHOD BackColor( uValue ) CLASS TControl
 *-----------------------------------------------------------------------------*
    IF VALTYPE( uValue ) == "A" .AND. LEN( uValue ) >= 3 .AND. ;
       VALTYPE( uValue[ 1 ] ) == "N" .AND. VALTYPE( uValue[ 2 ] ) == "N" .AND. ;
       VALTYPE( uValue[ 3 ] ) == "N"
-      ::aBkColor := uValue
+      ::aBackColor := uValue
       IF ::hWnd != 0
          RedrawWindow( ::hWnd )
       ENDIF
    ENDIF
-RETURN ::aBkColor
+RETURN ::aBackColor
 
 *-----------------------------------------------------------------------------*
 METHOD DeleteControl( oCtrl, aControls ) CLASS TControl
@@ -2454,11 +2460,11 @@ METHOD Events_Color( wParam, ColorDefault ) CLASS TControl
       Return ( GetStockObject( NULL_BRUSH ) )
    EndIf
 
-   If ! empty( ::aBkColor )
+   If ! empty( ::aBackColor )
 
-      SetBkColor( wParam, ::aBkColor[ 1 ], ::aBkColor[ 2 ], ::aBkColor[ 3 ] )
+      SetBkColor( wParam, ::aBackColor[ 1 ], ::aBackColor[ 2 ], ::aBackColor[ 3 ] )
       DeleteObject( ::BrushHandle )
-      ::BrushHandle := CreateSolidBrush( ::aBkColor[ 1 ], ::aBkColor[ 2 ], ::aBkColor[ 3 ] )
+      ::BrushHandle := CreateSolidBrush( ::aBackColor[ 1 ], ::aBackColor[ 2 ], ::aBackColor[ 3 ] )
 
    Else
 

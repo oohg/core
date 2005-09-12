@@ -1,5 +1,5 @@
 /*
- * $Id: h_slider.prg,v 1.2 2005-08-26 06:04:16 guerra000 Exp $
+ * $Id: h_slider.prg,v 1.3 2005-09-12 02:46:42 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -107,7 +107,7 @@ CLASS TSlider FROM TControl
 
    METHOD RangeMin            SETGET
    METHOD RangeMax            SETGET
-   METHOD BkColor             SETGET
+   METHOD BackColor           SETGET
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -167,14 +167,14 @@ METHOD RangeMax( uValue ) CLASS TSlider
 RETURN ::nRangeMax
 
 *------------------------------------------------------------------------------*
-METHOD BkColor( uValue ) CLASS TSlider
+METHOD BackColor( uValue ) CLASS TSlider
 *------------------------------------------------------------------------------*
 Local f
    IF VALTYPE( uValue ) == "A"
-      ::Super:BkColor := uValue
+      ::Super:BackColor := uValue
       RedrawWindow ( ::hWnd )
 		f := GetFocus()
       setfocus( ::hWnd )
       setfocus( f )
    ENDIF
-RETURN ::aBkColor
+RETURN ::aBackColor

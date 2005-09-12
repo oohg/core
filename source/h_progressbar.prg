@@ -1,5 +1,5 @@
 /*
- * $Id: h_progressbar.prg,v 1.2 2005-08-25 05:57:42 guerra000 Exp $
+ * $Id: h_progressbar.prg,v 1.3 2005-09-12 02:46:42 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -107,7 +107,7 @@ CLASS TProgressBar FROM TControl
    METHOD RangeMin            SETGET
    METHOD RangeMax            SETGET
    METHOD FontColor           SETGET
-   METHOD BkColor             SETGET
+   METHOD BackColor           SETGET
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -134,9 +134,9 @@ Local ControlHandle
    ::nRangeMin := Lo
    ::nRangeMax := Hi
 
-   if ::aBkColor <> Nil
-      if ::aBkColor[1] <> Nil .and. ::aBkColor[2] <> Nil .and. ::aBkColor[3] <> Nil
-         SetProgressBarBkColor( ControlHandle, ::aBkColor[1], ::aBkColor[2], ::aBkColor[3] )
+   if ::aBackColor <> Nil
+      if ::aBackColor[1] <> Nil .and. ::aBackColor[2] <> Nil .and. ::aBackColor[3] <> Nil
+         SetProgressBarBkColor( ControlHandle, ::aBackColor[1], ::aBackColor[2], ::aBackColor[3] )
 		endif
 	endif
 
@@ -184,10 +184,10 @@ METHOD FontColor( uValue ) CLASS TProgressBar
 RETURN ::aFontColor
 
 *------------------------------------------------------------------------------*
-METHOD BkColor( uValue ) CLASS TProgressBar
+METHOD BackColor( uValue ) CLASS TProgressBar
 *------------------------------------------------------------------------------*
    IF VALTYPE( uValue ) == "A"
-      ::Super:BkColor := uValue
-      SetProgressBarBkColor( ::hWnd, ::aBkColor[1], ::aBkColor[2], ::aBkColor[3] )
+      ::Super:BackColor := uValue
+      SetProgressBarBkColor( ::hWnd, ::aBackColor[1], ::aBackColor[2], ::aBackColor[3] )
    ENDIF
-RETURN ::aBkColor
+RETURN ::aBackColor

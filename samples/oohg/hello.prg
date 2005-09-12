@@ -1,5 +1,5 @@
 /*
- * $Id: hello.prg,v 1.4 2005-09-04 01:46:18 guerra000 Exp $
+ * $Id: hello.prg,v 1.5 2005-09-12 02:46:42 guerra000 Exp $
  */
 /*
 * ooHG Hello World Demo
@@ -91,11 +91,11 @@ oWnd:Txt3:transparent := .t.
 
                 @ 230,10 radio rad options { "Uno", "Dos", "Tres" } autosize
 oWnd:RAD:AITEMS[3]:autosize := .t.
-oWnd:RAD:AITEMS[3]:BKCOLOR := BLUE
+oWnd:RAD:AITEMS[3]:BACKCOLOR := BLUE
 oWnd:RAD:AITEMS[3]:WIDTH := 100
 oWnd:RAD:AITEMS[3]:COL := 70
 oWnd:RAD:AITEMS[1]:COL := 50
-oWnd:RAD:AITEMS[2]:BKCOLOR := {255,0,0}
+oWnd:RAD:AITEMS[2]:BACKCOLOR := {255,0,0}
 oWnd:RAD:AITEMS[2]:caption := oWnd:RAD:AITEMS[2]:caption
 
                 oWnd:menu1:checked := .t.

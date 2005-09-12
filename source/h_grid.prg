@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.13 2005-09-02 05:53:45 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.14 2005-09-12 02:46:42 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -130,7 +130,7 @@ CLASS TGrid FROM TControl
    METHOD ItemCount           BLOCK { | Self | ListViewGetItemCount( ::hWnd ) }
    METHOD Header
    METHOD FontColor      SETGET
-   METHOD BkColor        SETGET
+   METHOD BackColor      SETGET
    METHOD SetRangeColor
 ENDCLASS
 
@@ -242,7 +242,7 @@ Local ControlHandle, aImageList
    ::SizePos( y, x, w, h )
 
    ::FontColor := ::aFontColor
-   ::BkColor := ::aBkColor
+   ::BackColor := ::aBackColor
 
    if valtype(aHeadClick) != "A"
 		aHeadClick := {}
@@ -786,22 +786,22 @@ LOCAL nTmp
 Return ::aFontColor
 
 *-----------------------------------------------------------------------------*
-METHOD BkColor( uValue ) CLASS TGrid
+METHOD BackColor( uValue ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 LOCAL nTmp
    IF VALTYPE( uValue ) == "A"
-      ::Super:BkColor := uValue
+      ::Super:BackColor := uValue
       IF ::hWnd > 0
-         ListView_SetBkColor( ::hWnd, ::aBkColor[1] , ::aBkColor[2] , ::aBkColor[3] )
-         ListView_SetTextBkColor( ::hWnd, ::aBkColor[1] , ::aBkColor[2] , ::aBkColor[3] )
+         ListView_SetBkColor( ::hWnd, ::aBackColor[1] , ::aBackColor[2] , ::aBackColor[3] )
+         ListView_SetTextBkColor( ::hWnd, ::aBackColor[1] , ::aBackColor[2] , ::aBackColor[3] )
          RedrawWindow( ::hWnd )
       ENDIF
    ENDIF
    IF ::hWnd > 0
       nTmp := ListView_GetBkColor( ::hWnd )
-      ::aBkColor := { GetRed( nTmp ), GetGreen( nTmp ), GetBlue( nTmp ) }
+      ::aBackColor := { GetRed( nTmp ), GetGreen( nTmp ), GetBlue( nTmp ) }
    ENDIF
-Return ::aBkColor
+Return ::aBackColor
 
 *-----------------------------------------------------------------------------*
 METHOD SetRangeColor( uForeColor, uBackColor, nTop, nLeft, nBottom, nRight ) CLASS TGrid

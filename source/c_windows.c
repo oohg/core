@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.11 2005-08-30 05:03:22 guerra000 Exp $
+ * $Id: c_windows.c,v 1.12 2005-09-12 02:46:42 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -402,7 +402,6 @@ HB_FUNC ( GETWINDOWTEXT )
    hb_xfree( cText );
 }
 
-
 HB_FUNC ( SENDMESSAGE )
 {
 	hb_retnl( (LONG) SendMessage( (HWND) hb_parnl( 1 ), (UINT) hb_parni( 2 ), (WPARAM) hb_parnl( 3 ), (LPARAM) hb_parnl( 4 ) ) );
@@ -428,20 +427,14 @@ HB_FUNC ( GETDRAWITEMHANDLE )
    hb_retnl( (LONG) (((DRAWITEMSTRUCT FAR *) hb_parnl(1))->hwndItem) );
 }
 
-
 HB_FUNC ( GETFOCUS )
 {
    hb_retnl( (LONG) GetFocus() );
 }
 
-HB_FUNC ( GETGRIDCOLUMN )
+HB_FUNC( GETGRIDCOLUMN )
 {
-	#define pnm ((NM_LISTVIEW *) hb_parnl(1) )
-
-	hb_retnl ( (LPARAM) (pnm->iSubItem) ) ;
-
-	#undef pnm
-
+   hb_retnl ( ( LPARAM ) ( ( ( NM_LISTVIEW * ) hb_parnl( 1 ) )->iSubItem ) ) ;
 }
 
 HB_FUNC ( MOVEWINDOW )
@@ -519,6 +512,29 @@ HB_FUNC ( REGISTERWINDOW )
 HB_FUNC ( UNREGISTERWINDOW )
 {
 	UnregisterClass ( hb_parc(1), GetModuleHandle( NULL ) ) ;
+}
+
+HB_FUNC( SETWINDOWBACKCOLOR )
+{
+   HWND hWnd = ( HWND ) hb_parnl( 1 );
+   HBRUSH hBrush, color;
+
+   if( hb_param( 2, HB_IT_ARRAY ) == 0 || hb_parni( 3, 1 ) == -1 )
+   {
+      hBrush = 0;
+      color = ( HBRUSH )( COLOR_BTNFACE + 1 );
+   }
+   else
+   {
+      hBrush = CreateSolidBrush( RGB( hb_parni( 2, 1 ), hb_parni( 2, 2 ), hb_parni( 2, 3 ) ) );
+      color = hBrush;
+   }
+
+   SetClassLong( hWnd, GCL_HBRBACKGROUND, ( LONG ) color );
+
+   RedrawWindow( hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+
+   hb_retnl( ( ULONG ) hBrush );
 }
 
 HB_FUNC (GETDESKTOPWIDTH)

@@ -1,5 +1,5 @@
 /*
- * $Id: h_listbox.prg,v 1.4 2005-08-25 05:57:42 guerra000 Exp $
+ * $Id: h_listbox.prg,v 1.5 2005-09-12 02:46:42 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -111,8 +111,7 @@ CLASS TList FROM TControl
    METHOD ItemCount           BLOCK { | Self | ListBoxGetItemCount( ::hWnd ) }
 /*
    METHOD FontColor      SETGET
-   METHOD BkColor        SETGET
-
+   METHOD BackColor      SETGET
 */
 
 ENDCLASS

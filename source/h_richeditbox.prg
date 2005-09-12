@@ -1,5 +1,5 @@
 /*
- * $Id: h_richeditbox.prg,v 1.3 2005-08-25 05:57:42 guerra000 Exp $
+ * $Id: h_richeditbox.prg,v 1.4 2005-09-12 02:46:42 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -100,7 +100,7 @@ CLASS TEditRich FROM TEdit
    DATA Type      INIT "RICHEDIT" READONLY
 
    METHOD Define
-   METHOD BkColor     SETGET
+   METHOD BackColor   SETGET
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -163,20 +163,20 @@ Local ControlHandle
       aAdd ( ::Parent:BrowseList, Self )
 	EndIf
 
-   if valtype ( ::aBkColor ) == 'A'
-      SendMessage ( ::hWnd, EM_SETBKGNDCOLOR  , 0 , RGB ( ::aBkColor[1] , ::aBkColor[2] , ::aBkColor[3] ) )
+   if valtype ( ::aBackColor ) == 'A'
+      SendMessage ( ::hWnd, EM_SETBKGNDCOLOR  , 0 , RGB ( ::aBackColor[1] , ::aBackColor[2] , ::aBackColor[3] ) )
 	EndIf
 
 Return Self
 
 *-----------------------------------------------------------------------------*
-METHOD BkColor( uValue ) CLASS TEditRich
+METHOD BackColor( uValue ) CLASS TEditRich
 *-----------------------------------------------------------------------------*
    IF VALTYPE( uValue ) == "A"
-      ::Super:BkColor := uValue
+      ::Super:BackColor := uValue
       IF ::hWnd > 0
-         SendMessage ( ::hWnd, EM_SETBKGNDCOLOR , 0 , RGB( ::aBkColor[1] , ::aBkColor[2] , ::aBkColor[3] ) )
+         SendMessage ( ::hWnd, EM_SETBKGNDCOLOR , 0 , RGB( ::aBackColor[1] , ::aBackColor[2] , ::aBackColor[3] ) )
          RedrawWindow( ::hWnd )
       ENDIF
    ENDIF
-Return ::aBkColor
+Return ::aBackColor

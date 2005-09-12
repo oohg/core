@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.19 2005-09-11 16:46:24 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.20 2005-09-12 02:46:42 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -125,7 +125,7 @@ CLASS TWindow
    DATA Underline  INIT .F.
    DATA Strikeout  INIT .F.
    DATA aFontColor INIT nil
-   DATA aBkColor   INIT nil
+   DATA aBackColor INIT nil
    DATA RowMargin  INIT 0
    DATA ColMargin  INIT 0
    DATA Container  INIT nil
@@ -260,6 +260,7 @@ CLASS TForm FROM TWindow
    METHOD Col                 SETGET
    METHOD Row                 SETGET
    METHOD Cursor              SETGET
+   METHOD BackColor           SETGET
 
    METHOD FocusedControl
    METHOD SizePos
@@ -497,7 +498,7 @@ METHOD Define2( FormName, Caption, x, y, w, h, Parent, helpbutton, nominimize, n
                 MouseMoveProcedure, MouseDragProcedure, InteractiveCloseProcedure, NoAutoRelease, nStyle, nStyleEx, ;
                 lSplit, lRtl ) CLASS TForm
 *------------------------------------------------------------------------------*
-Local Formhandle, vscroll, hscroll, BrushHandle
+Local Formhandle, vscroll, hscroll
 
    if valtype( lRtl ) != "L"
       lRtl := .F.
@@ -606,7 +607,7 @@ Local Formhandle, vscroll, hscroll, BrushHandle
 	EndIf
 
    UnRegisterWindow( FormName )
-   BrushHandle := RegisterWindow( icon, FormName, aRGB, lSplit )
+   ::BrushHandle := RegisterWindow( icon, FormName, aRGB, lSplit )
 
    nStyle   += WS_POPUP
    If ValType( helpbutton ) == "L" .AND. helpbutton
@@ -651,9 +652,8 @@ Local Formhandle, vscroll, hscroll, BrushHandle
    ::VirtualHeight := VirtualHeight
    ::VirtualWidth := VirtualWidth
    ::NoShow := NoShow
-   ::aBkColor := aRGB
+   ::aBackColor := aRGB
    ::AutoRelease := ! NoAutoRelease
-   ::BrushHandle := BrushHandle
 
    // Font Name:
    if ! empty( FontName )
@@ -1024,6 +1024,16 @@ METHOD Cursor( uValue ) CLASS TForm
 *------------------------------------------------------------------------------*
    IF uValue != nil
       SetWindowCursor( ::hWnd, uValue )
+   ENDIF
+Return nil
+
+*------------------------------------------------------------------------------*
+METHOD BackColor( uValue ) CLASS TForm
+*------------------------------------------------------------------------------*
+   IF ValType( uValue ) == "A"
+      DeleteObject( ::BrushHandle )
+      ::aBackColor := uValue
+      ::BrushHandle = SetWindowBackColor( ::hWnd, uValue )
    ENDIF
 Return nil
 
