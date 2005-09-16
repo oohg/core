@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.20 2005-09-12 02:46:42 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.21 2005-09-16 19:17:52 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -2319,40 +2319,23 @@ Return
 *-----------------------------------------------------------------------------*
 Function _ActivateWindow( aForm, lNoWait )
 *-----------------------------------------------------------------------------*
-Local z, aForm2, nForm := len( aForm ), oWndActive
+Local z, aForm2, oWndActive, oWnd, lModal
 
    // Multiple activation can't be used when modal window is active
-   If nForm > 1 .AND. Len( _OOHG_ActiveModal ) != 0
+   If len( aForm ) > 1 .AND. Len( _OOHG_ActiveModal ) != 0
       MsgOOHGError( "Multiple Activation can't be used when a modal window is active. Program Terminated" )
    Endif
 
-   // Search for form's objects
-   aForm2 := ARRAY( nForm )
-   AEVAL( aForm, { |c,i| aForm2[ i ] := GetFormObject( c ) } )
+   aForm2 := ACLONE( aForm )
 
-   // Search for undefined window
-   AEVAL( aForm2, { |o,i| IF( EMPTY( o:Type ) .AND. EMPTY( o:Name ) .AND. EMPTY( o:hWnd ), MsgOOHGError( "Window: " + aForm[ i ] + " is not defined. Program terminated" ), ) } )
-
-   // Look for modal window
-   z := 0
-   AEVAL( aForm2, { |o| IF( o:Type == "M" .AND. ! o:NoShow, z++, ) } )
-   IF z > 1
-      MsgOOHGError( "ACTIVATE WINDOW: Only one initially visible modal window allowed. Program terminated" )
-   ElseIf z == 1
-      z := ASCAN( aForm2, { |o| o:Type == "M" .AND. ! o:NoShow } )
-      AADD( aForm2, nil )
-      aForm2[ nForm + 1 ] := aForm2[ z ]
-      _OOHG_DeleteArrayItem( aForm2, z )
-   ENDIF
-
-   // Validate NOWAIT flag
+   // Validates NOWAIT flag
    IF ValType( lNoWait ) != "L"
       lNoWait := .F.
    ENDIF
-   oWndActive := IF( lNoWait, _OOHG_Main, aForm2[ 1 ] )
+   oWndActive := IF( lNoWait, _OOHG_Main, GetFormObject( aForm2[ 1 ] ) )
 
-   // Look For Main Window
-   z := ASCAN( aForm2, { |o| o:Type == "A" } )
+   // Looks for MAIN window
+   z := ASCAN( aForm2, { |c| GetFormObject( c ):Type == "A" } )
    IF z != 0
       AADD( aForm2, nil )
       AINS( aForm2, 1 )
@@ -2360,14 +2343,25 @@ Local z, aForm2, nForm := len( aForm ), oWndActive
       _OOHG_DeleteArrayItem( aForm2, z + 1 )
       IF lNoWait
          * MsgOOHGError( "NOWAIT option can't be used in MAIN window. Program Terminated" )
-         oWndActive := aForm2[ 1 ]
+         oWndActive := GetFormObject( aForm2[ 1 ] )
       ENDIF
    ENDIF
 
    // Activate windows
-   AEVAL( aForm2, { |o| o:Activate( .T., oWndActive ) } )
+   lModal := .F.
+   FOR z := 1 TO Len( aForm2 )
+      oWnd := GetFormObject( aForm2[ z ] )
+      IF oWnd:Type == "M" .AND. ! oWnd:NoShow
+         IF lModal
+            MsgOOHGError( "ACTIVATE WINDOW: Only one initially visible modal window allowed. Program terminated" )
+         ENDIF
+         lModal := .T.
+      ENDIF
+      oWnd:Activate( .T., oWndActive )
+   NEXT
+
    If ! lNoWait
-      aForm2[ 1 ]:MessageLoop()
+      GetFormObject( aForm2[ 1 ] ):MessageLoop()
    Endif
 
 Return Nil
