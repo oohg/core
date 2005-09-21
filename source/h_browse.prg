@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.21 2005-09-11 17:24:00 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.22 2005-09-21 05:07:04 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -117,6 +117,7 @@ CLASS TBrowse FROM TGrid
    DATA lEof            INIT .F.
    DATA nButtonActive   INIT 0
    DATA aWhen           INIT {}
+   DATA OnAppend        INIT {}
 
    METHOD Define
    METHOD Refresh
@@ -840,6 +841,7 @@ Local Title , aLabels , aInitValues := {} , aFormats := {} , aResults , z , tvar
          If append
             ( ::WorkArea )->( DBAppend() )
             NewRec := ( ::WorkArea )->( RecNo() )
+            _OOHG_Eval( ::OnAppend )
          EndIf
       EndIf
 
@@ -1673,44 +1675,28 @@ Return nil
 *-----------------------------------------------------------------------------*
 METHOD InPlaceAppend() CLASS TBrowse
 *-----------------------------------------------------------------------------*
-Local _Alias , _RecNo , _BrowseArea , _BrowseRecMap   , _DeltaScroll := { Nil , Nil , Nil , Nil } , _NewRec , aTemp
+Local _RecNo , _BrowseArea
 
-   _BrowseRecMap := ::aRecMap
-
-	_Alias := Alias()
    _BrowseArea := ::WorkArea
    If Select( _BrowseArea ) == 0
       ::RecCount := 0
       Return nil
 	EndIf
-   DbSelectArea( _BrowseArea )
-	_RecNo := RecNo()
-	Go Bottom
+   _RecNo := ( _BrowseArea )->( RecNo() )
 
-	_NewRec := RecCount() + 1
+   ( _BrowseArea )->( DbAppend() )
 
-   if LISTVIEWGETITEMCOUNT( ::hWnd ) != 0
-      ::scrollUpdate()
-      Skip - LISTVIEWGETCOUNTPERPAGE ( ::hWnd ) + 2
-      ::Update()
-	endif
+   _OOHG_Eval( ::OnAppend )
 
-	append blank
+   ::scrollUpdate()
 
-	Go _RecNo
-	if Select( _Alias ) != 0
-      DbSelectArea( _Alias )
-	Else
-      DbSelectArea( 0 )
-	Endif
+   ( _BrowseArea )->( DbSkip( - LISTVIEWGETCOUNTPERPAGE( ::hWnd ) + 1 ) )
 
-   aTemp := array ( Len ( ::aFields ) )
-	afill ( aTemp , '' )
-   aadd ( ::aRecMap, _NewRec )
+   ::Update()
 
-   AddListViewItems( ::hWnd, aTemp )
+   ( _BrowseArea )->( DbGoTo( _RecNo ) )
 
-   ListView_SetCursel ( ::hWnd, Len ( ::aRecMap ) )
+   ListView_SetCursel( ::hWnd, Len( ::aRecMap ) )
 
    ::BrowseOnChange()
 

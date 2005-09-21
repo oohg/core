@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.14 2005-09-11 16:46:24 guerra000 Exp $
+ * $Id: i_altsyntax.ch,v 1.15 2005-09-21 05:07:03 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -217,6 +217,7 @@ MEMVAR _OOHG_ActiveControlShowPosition
 
 MEMVAR _OOHG_ActiveControlFormat
 MEMVAR _OOHG_ActiveControlField
+MEMVAR _OOHG_ActiveControlOnAppend
 
 MEMVAR _OOHG_ActiveControlInfo
 
@@ -1710,7 +1711,12 @@ Grid
         _OOHG_ActiveControlItemCount             := Nil          ;;
         _OOHG_ActiveControlReadOnly              := Nil          ;;
         _OOHG_ActiveControlVirtual               := .f.          ;;
-        _OOHG_ActiveControlInputMask := nil
+        _OOHG_ActiveControlInputMask             := nil          ;;
+        _OOHG_ActiveControlOnAppend              := nil
+
+#xcommand ONAPPEND    <onappend>;
+	=>;
+        _OOHG_ActiveControlOnAppend    := <onappend>
 
 #xcommand END GRID ;
 	=>;
@@ -1779,8 +1785,9 @@ BROWSE
         _OOHG_ActiveControlLock          := .f.          ;;
         _OOHG_ActiveControlValidMessages := Nil          ;;
         _OOHG_ActiveControlNoVScroll             := .f.          ;;
-        _OOHG_ActiveControlInputMask := nil                ;;
-        _OOHG_ActiveControlInPlaceEdit   := .f.
+        _OOHG_ActiveControlInputMask             := nil          ;;
+        _OOHG_ActiveControlInPlaceEdit           := .f.          ;;
+        _OOHG_ActiveControlOnAppend              := nil
 
 #xcommand END BROWSE ;
 	=>;
@@ -1827,7 +1834,8 @@ TBrowse():Define( _OOHG_ActiveControlName ,        ;
                 , ; // aWhenFields
                 , ; // DynamicForeColor
                 _OOHG_ActiveControlInputMask, ;
-                _OOHG_ActiveControlRtl )
+                _OOHG_ActiveControlRtl, ;
+                _OOHG_ActiveControlOnAppend )
 
 /*----------------------------------------------------------------------------
 Hyperlink
