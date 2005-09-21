@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.14 2005-09-12 02:46:42 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.15 2005-09-21 05:08:30 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -121,6 +121,7 @@ CLASS TGrid FROM TControl
    METHOD EditItem
    METHOD AddColumn
    METHOD DeleteColumn
+   METHOD Cell
 
    METHOD AddItem
    METHOD DeleteItem
@@ -500,6 +501,22 @@ METHOD Value( uValue ) CLASS TGrid
       uValue := LISTVIEW_GETFIRSTITEM( ::hWnd )
    ENDIF
 RETURN uValue
+
+*-----------------------------------------------------------------------------*
+METHOD Cell( nRow, nCol, uValue ) CLASS TGrid
+*-----------------------------------------------------------------------------*
+Local aItem, uValue2 := nil
+   IF nRow >= 1 .AND. nRow <= ListViewGetItemCount( ::hWnd )
+      aItem := ListViewGetItem( ::hWnd, nRow, Len( ::aHeaders ) )
+      IF nCol >= 1 .AND. nCol <= Len( aItem )
+         IF PCOUNT() > 2
+            aItem[ nCol ] := uValue
+            ::Item( nRow, aItem )
+         ENDIF
+         uValue2 := aItem[ nCol ]
+      ENDIF
+   ENDIF
+Return uValue2
 
 #pragma BEGINDUMP
 #define s_Super s_TControl
