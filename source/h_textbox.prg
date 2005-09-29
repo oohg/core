@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.11 2005-09-04 00:12:20 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.12 2005-09-29 05:20:24 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -584,6 +584,7 @@ HB_FUNC_STATIC( TTEXTPICTURE_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lP
    {
       case WM_CHAR:
       case WM_PASTE:
+      case WM_KEYDOWN:
          HB_FUNCNAME( TTEXTPICTURE_EVENTS2 )();
          break;
 
@@ -598,6 +599,13 @@ HB_FUNC_STATIC( TTEXTPICTURE_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lP
          hb_vmSend( 4 );
          break;
 	}
+}
+
+HB_FUNC_STATIC( GETKEYSTATEXTRA )   // Checks for non CTRL, ALT, SHIFT keys pressed
+{
+   hb_retl( ( ( GetKeyState( VK_MENU )    & 0x8000 ) == 0 ) &&
+            ( ( GetKeyState( VK_CONTROL ) & 0x8000 ) == 0 ) &&
+            ( ( GetKeyState( VK_SHIFT )   & 0x8000 ) == 0 )  );
 }
 #pragma ENDDUMP
 
@@ -617,6 +625,15 @@ Local aValidMask := ::ValidMask
          ::Caption := cText
          SendMessage( ::hWnd, EM_SETSEL, nPos, nPos )
       EndIf
+      Return 1
+
+   ElseIf nMsg == WM_KEYDOWN .AND. wParam == VK_END .AND. GetKeyStateXtra()
+      cText := ::Caption
+      nPos := Len( aValidMask )
+      DO WHILE nPos > 0 .AND. ( ! aValidMask[ nPos ] .OR. SubStr( cText, nPos, 1 ) == " " )
+         nPos--
+      ENDDO
+      SendMessage( ::hWnd, EM_SETSEL, nPos, nPos )
       Return 1
 
    ElseIf nMsg == WM_PASTE

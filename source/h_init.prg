@@ -1,5 +1,5 @@
 /*
- * $Id: h_init.prg,v 1.5 2005-09-01 05:25:10 guerra000 Exp $
+ * $Id: h_init.prg,v 1.6 2005-09-29 05:20:24 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -171,6 +171,8 @@ Function Init
    _OOHG_ActiveForm        := {}
 
    _OOHG_ActiveFrame := {}
+
+   _OOHG_THISItemCellValue := Nil
 
 	InitMessages()
 

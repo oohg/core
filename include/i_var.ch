@@ -1,5 +1,5 @@
 /*
- * $Id: i_var.ch,v 1.4 2005-09-01 05:25:10 guerra000 Exp $
+ * $Id: i_var.ch,v 1.5 2005-09-29 05:20:23 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -179,3 +179,4 @@ MEMVAR _OOHG_AllVars
 #xtranslate  _OOHG_DelayedSetFocus     => _OOHG_AllVars \[  63 \]
 
 #xtranslate  _OOHG_activemodal         => _OOHG_AllVars \[  64 \]
+#xtranslate  _OOHG_ThisItemCellValue   => _OOHG_AllVars \[  65 \]

@@ -1,5 +1,5 @@
 /*
- * $Id: h_label.prg,v 1.6 2005-09-04 00:16:38 guerra000 Exp $
+ * $Id: h_label.prg,v 1.7 2005-09-29 05:20:24 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -129,7 +129,7 @@ Local ControlHandle
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, aRGB_font, aRGB_bk, , lRtl )
 
-   Controlhandle := InitLabel( ::Parent:hWnd, Caption, 0, x, y, w, h, '', 0, Nil , border , clientedge , HSCROLL , VSCROLL , TRANSPARENT , invisible , rightalign , centeralign , ::lRtl, lNoWordWrap )
+   Controlhandle := InitLabel( ::ContainerhWnd, Caption, 0, x, y, w, h, '', 0, Nil , border , clientedge , HSCROLL , VSCROLL , TRANSPARENT , invisible , rightalign , centeralign , ::lRtl, lNoWordWrap )
 
    ::New( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )

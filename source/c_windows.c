@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.12 2005-09-12 02:46:42 guerra000 Exp $
+ * $Id: c_windows.c,v 1.13 2005-09-29 05:20:24 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -902,56 +902,6 @@ HB_FUNC( C_SETWINDOWRGN )
      SetWindowRgn(GetActiveWindow(),hrgn,TRUE);
      // Should be hb_parnl(1) instead of GetActiveWindow()
      }
-}
-
-HB_FUNC( C_IHAVETODO )
-{
-   HRGN hrgn1,hrgn2;
-   hrgn1=CreateRectRgn(0,0,300,300);
-   hrgn2=CreateEllipticRgn(0,0,80,80);
-   CombineRgn(hrgn1,hrgn1,hrgn2,RGN_XOR);
-   DeleteObject(hrgn2);
-   hrgn2=CreateEllipticRgn(0,220,80,300);
-   CombineRgn(hrgn1,hrgn1,hrgn2,RGN_XOR);
-   DeleteObject(hrgn2);
-   SetWindowRgn(GetActiveWindow(),hrgn1,TRUE);
-}
-
-HB_FUNC( C_2IHAVETODO )
-{
- HRGN hrgn;
- POINT lppt[10];
- int xp[3]={3,3,4};
-// int nPoly = 3;
- int fnPolyFillMode=WINDING;
-
-  lppt[0].x=0;
-  lppt[0].y=84;
-  lppt[1].x=300;
-  lppt[1].y=84;
-  lppt[2].x=150;
-  lppt[2].y=276;
-
-  lppt[3].x=150;
-  lppt[3].y=24;
-  lppt[4].x=300;
-  lppt[4].y=216;
-  lppt[5].x=0;
-  lppt[5].y=216;
-
-  lppt[6].x=0;
-  lppt[6].y=0;
-  lppt[7].x=400;
-  lppt[7].y=0;
-  lppt[8].x=400;
-  lppt[8].y=24;
-  lppt[9].x=0;
-  lppt[9].y=24;
-
-  hrgn=CreatePolyPolygonRgn(lppt,xp,3,fnPolyFillMode);
-  SetWindowRgn(GetActiveWindow(),hrgn,TRUE);
-//ALTERNATE
-//WINDING
 }
 
 HB_FUNC( C_SETPOLYWINDOWRGN )

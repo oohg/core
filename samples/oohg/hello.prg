@@ -1,5 +1,5 @@
 /*
- * $Id: hello.prg,v 1.5 2005-09-12 02:46:42 guerra000 Exp $
+ * $Id: hello.prg,v 1.6 2005-09-29 05:20:24 guerra000 Exp $
  */
 /*
 * ooHG Hello World Demo
@@ -161,7 +161,13 @@ ownd:tab:transparent := .t.
 
                 @ 310,240 datepicker DTP value date()
 
-                @ 340,240 progressmeter pgm width 120 height 20 value 75
+                @ 350,240 progressmeter pgm width 120 height 20 value 75
+
+                Xdefine WINDOW internal obj ointernal AT 390,240 WIDTH 120 HEIGHT 100 INTERNAL VIRTUAL WIDTH 200 VIRTUAL HEIGHT 150
+                    @ 10, 10 LABEL LabelRed   VALUE "A" WIDTH 50 HEIGHT 100 CENTER BACKCOLOR RED
+                    @ 10, 60 LABEL LabelGreen VALUE "B" WIDTH 50 HEIGHT 100 CENTER BACKCOLOR GREEN
+                    @ 10,110 LABEL LabelBlue  VALUE "C" WIDTH 50 HEIGHT 100 CENTER BACKCOLOR BLUE
+                END WINDOW
 
 
 

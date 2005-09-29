@@ -1,5 +1,5 @@
 /*
- * $Id: i_grid.ch,v 1.5 2005-08-23 05:12:56 guerra000 Exp $
+ * $Id: i_grid.ch,v 1.6 2005-09-29 05:20:23 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -137,6 +137,12 @@
 		[ HELPID <helpid> ] 		;
 		[ <break: BREAK> ] 		;
                 [ <rtl: RTL> ]                  ;
+                [ <inplace: INPLACE> ]          ;
+                [ COLUMNCONTROLS <editcontrols> ] ;
+		[ READONLY <aReadOnly> ] 	;
+		[ VALID <aValidFields> ]	;
+		[ VALIDMESSAGES <aValidMessages> ] ;
+                [ ON EDITCELL <editcell> ]      ;
 	=>;
 [ <obj> := ] iif( <.multiselect.>, TGridMulti(), TGrid() ):Define( ;
                 <"name"> ,      ;
@@ -169,9 +175,14 @@
 		<.ownerdata.> , ;
 		<{dispinfo}> ,  ;
 		<itemcount> , 	;
-		<.edit.> ,  ;
-		<backcolor> ;
-                , <fontcolor>, <dynamicbackcolor> , <dynamicforecolor>, <Picture>, <.rtl.> )
+                <.edit.> ,      ;
+                <backcolor>,    ;
+                <fontcolor>,    ;
+                <dynamicbackcolor>, ;
+                <dynamicforecolor>, ;
+                <Picture>,      ;
+                <.rtl.>,        ;
+                <.inplace.>, <editcontrols>, <aReadOnly>, <aValidFields>, <aValidMessages>, <{editcell}> )
 
 ///////////////////////////////////////////////////////////////////////////////
 // GRID (SPLITBOX VERSION)
@@ -213,6 +224,12 @@
 		[ HELPID <helpid> ] 		;
 		[ <break: BREAK> ] 		;
                 [ <rtl: RTL> ]                  ;
+                [ <inplace: INPLACE> ]          ;
+                [ COLUMNCONTROLS <editcontrols> ] ;
+		[ READONLY <aReadOnly> ] 	;
+		[ VALID <aValidFields> ]	;
+		[ VALIDMESSAGES <aValidMessages> ] ;
+                [ ON EDITCELL <editcell> ]      ;
 	=>;
 [ <obj> := ] iif( <.multiselect.>, TGridMulti(), TGrid() ):Define( ;
                 <"name"> ,      ;
@@ -245,8 +262,13 @@
 		<.ownerdata.> , ;
 		<{dispinfo}> ,  ;
 		<itemcount> , 	;
-		<.edit.> ,  ;
-		<backcolor> , ;
-                <fontcolor>, <dynamicbackcolor> , <dynamicforecolor>, <Picture>, <.rtl.> )
+                <.edit.> ,      ;
+                <backcolor> ,   ;
+                <fontcolor>,    ;
+                <dynamicbackcolor>, ;
+                <dynamicforecolor>, ;
+                <Picture>,      ;
+                <.rtl.>,        ;
+                <.inplace.>, <editcontrols>, <aReadOnly>, <aValidFields>, <aValidMessages>, <{editcell}> )
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.21 2005-09-16 19:17:52 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.22 2005-09-29 05:20:24 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -118,6 +118,10 @@ CLASS TWindow
    DATA Name       INIT ""
    DATA Type       INIT ""
    DATA Parent     INIT nil
+   DATA nRow       INIT 0
+   DATA nCol       INIT 0
+   DATA nWidth     INIT 0
+   DATA nHeight    INIT 0
    DATA FontName   INIT ""
    DATA FontSize   INIT 0
    DATA Bold       INIT .F.
@@ -222,6 +226,7 @@ CLASS TForm FROM TWindow
    DATA ReBarHandle    INIT 0
    DATA BrowseList     INIT {}
    DATA aHotKeys       INIT {}  // { Id, Mod, Key, Action }
+   DATA lInternal      INIT .F.
 
    DATA OnRelease      INIT nil
    DATA OnInit         INIT nil
@@ -304,7 +309,7 @@ METHOD Define( FormName, Caption, x, y, w, h, nominimize, nomaximize, nosize, ;
                hscrollbox, vscrollbox, helpbutton, maximizeprocedure, ;
                minimizeprocedure, cursor, NoAutoRelease, oParent, ;
                InteractiveCloseProcedure, Focused, Break, GripperText, lRtl, ;
-               main, splitchild, child, modal, modalsize, mdi ) CLASS TForm
+               main, splitchild, child, modal, modalsize, mdi, internal ) CLASS TForm
 *------------------------------------------------------------------------------*
 Local aError := {}, nMain, hParent, lSplit := .F.
 Local nStyle := 0, nStyleEx := 0
@@ -459,6 +464,32 @@ Local nStyle := 0, nStyleEx := 0
    else
 
       mdi := .F.
+
+   endif
+
+   if Valtype( internal ) == "L" .AND. internal
+
+      oParent := ATail( _OOHG_ActiveForm )
+
+      AADD( aError, "INTERNAL" )
+      ::Type := "I"
+      ::Focused := Focused
+      ::Parent := oParent
+      hParent := oParent:hWnd
+      ::lInternal := .T.
+
+      aAdd( oParent:SplitChildList, Self )
+      ::ActivateCount[ 1 ] += 999
+
+      nStyle   += WS_CHILD - WS_POPUP
+
+      // Removes borders
+      helpbutton := .f.
+      nominimize := nomaximize := nosize := nosysmenu := nocaption := .t.
+
+   else
+
+      internal := .F.
 
    endif
 
@@ -683,6 +714,11 @@ Local Formhandle, vscroll, hscroll
 	EndIf
 
    InitDummy( FormHandle )
+
+   ::nRow    := y
+   ::nCol    := x
+   ::nWidth  := w
+   ::nHeight := h
 
 Return Self
 
@@ -1042,20 +1078,49 @@ METHOD SizePos( nRow, nCol, nWidth, nHeight ) CLASS TForm
 *------------------------------------------------------------------------------*
 local actpos:={0,0,0,0}
 
-   GetWindowRect( ::hWnd, actpos )
+   IF ::lInternal
 
-   if valtype( nCol ) != "N"
-      nCol := actpos[ 1 ]
-   endif
-   if valtype( nRow ) != "N"
-      nRow := actpos[ 2 ]
-   endif
-   if valtype( nWidth ) != "N"
-      nWidth := actpos[ 3 ] - actpos[ 1 ]
-   endif
-   if valtype( nHeight ) != "N"
-      nHeight := actpos[ 4 ] - actpos[ 2 ]
-   endif
+      if valtype( nCol ) != "N"
+         nCol := ::nCol
+      else
+         ::nCol := nCol
+      endif
+      if valtype( nRow ) != "N"
+         nRow := ::nRow
+      else
+         ::nRow := nRow
+      endif
+      if valtype( nWidth ) != "N"
+         nWidth := ::nWidth
+      else
+         ::nWidth := nWidth
+      endif
+      if valtype( nHeight ) != "N"
+         nHeight := ::nHeight
+      else
+         ::nHeight := nHeight
+      endif
+      nCol += ::Parent:ColMargin
+      nRow += ::Parent:RowMargin
+
+   Else
+
+      GetWindowRect( ::hWnd, actpos )
+
+      if valtype( nCol ) != "N"
+         nCol := actpos[ 1 ]
+      endif
+      if valtype( nRow ) != "N"
+         nRow := actpos[ 2 ]
+      endif
+      if valtype( nWidth ) != "N"
+         nWidth := actpos[ 3 ] - actpos[ 1 ]
+      endif
+      if valtype( nHeight ) != "N"
+         nHeight := actpos[ 4 ] - actpos[ 2 ]
+      endif
+
+   ENDIF
 
 Return MoveWindow( ::hWnd , nCol , nRow , nWidth , nHeight , .t. )
 
@@ -1433,7 +1498,9 @@ Local oWnd, oCtrl
 
 				If LoWord(wParam) == SB_THUMBPOSITION .Or. LoWord(wParam) == SB_LINEDOWN .Or. LoWord(wParam) == SB_LINEUP .or. LoWord(wParam) == SB_PAGEUP .or. LoWord(wParam) == SB_PAGEDOWN
 
-               AEVAL( ::aControls, { |o| o:SizePos() } )
+               // AEVAL( ::aControls, { |o| o:SizePos() } )
+               AEVAL( ::aControls, { |o| If( o:Container == nil, o:SizePos(), ) } )
+               AEVAL( ::SplitChildList, { |o| o:SizePos() } )
 
 					ReDrawWindow ( hwnd )
 
@@ -1565,7 +1632,9 @@ Local oWnd, oCtrl
 
 				If LoWord(wParam) == SB_THUMBPOSITION .Or. LoWord(wParam) == SB_LINELEFT .Or. LoWord(wParam) == SB_LINERIGHT .OR. LoWord(wParam) == SB_PAGELEFT	.OR. LoWord(wParam) == SB_PAGERIGHT
 
-               AEVAL( ::aControls, { |o| o:SizePos() } )
+               // AEVAL( ::aControls, { |o| o:SizePos() } )
+               AEVAL( ::aControls, { |o| If( o:Container == nil, o:SizePos(), ) } )
+               AEVAL( ::SplitChildList, { |o| o:SizePos } )
 
 					RedrawWindow ( hwnd )
 
@@ -1686,7 +1755,8 @@ Local oWnd, oCtrl
          RedrawWindow( ::ReBarHandle )
 		EndIf
 
-      AEVAL( ::aControls, { |o| o:Events_Size() } )
+      // AEVAL( ::aControls, { |o| o:Events_Size() } )
+      AEVAL( ::aControls, { |o| If( o:Container == nil, o:Events_Size(), ) } )
 
         ***********************************************************************
 	case nMsg == WM_COMMAND
@@ -1840,7 +1910,7 @@ Local oWnd, oCtrl
 
       if valtype( ::WndProc ) == "B"
 
-         return _OOHG_EVAL( ::WndProc, hWnd, nMsg, wParam, lParam )
+         return _OOHG_EVAL( ::WndProc, hWnd, nMsg, wParam, lParam, Self )
 
       endif
 
@@ -2449,66 +2519,6 @@ Local l
 	EndIf
 
 Return
-
-*------------------------------------------------------------------------------*
-Function _GetGridCellData( Self )
-*------------------------------------------------------------------------------*
-Local ThisItemRowIndex
-Local ThisItemColIndex
-Local ThisItemCellRow
-Local ThisItemCellCol
-Local ThisItemCellWidth
-Local ThisItemCellHeight
-Local r
-Local xs
-Local xd
-Local aCellData
-
-   r := ListView_HitTest ( ::hWnd, GetCursorRow() - GetWindowRow ( ::hWnd )  , GetCursorCol() - GetWindowCol ( ::hWnd ) )
-	If r [2] == 1
-      ListView_Scroll( ::hWnd,  -10000  , 0 )
-      r := ListView_HitTest ( ::hWnd, GetCursorRow() - GetWindowRow ( ::hWnd )  , GetCursorCol() - GetWindowCol ( ::hWnd ) )
-	Else
-      r := LISTVIEW_GETSUBITEMRECT ( ::hWnd, r[1] - 1 , r[2] - 1 )
-
-               	*	CellCol				CellWidth
-      xs := ( ( ::ContainerCol + r [2] ) +( r[3] ))  -  ( ::ContainerCol + ::Width )
-
-      If ListViewGetItemCount( ::hWnd ) >  ListViewGetCountPerPage( ::hWnd )
-			xd := 20
-		Else
-			xd := 0
-		EndIf
-
-		If xs > -xd
-         ListView_Scroll( ::hWnd,  xs + xd , 0 )
-		Else
-			If r [2] < 0
-            ListView_Scroll( ::hWnd, r[2]   , 0 )
-			EndIf
-		EndIf
-
-      r := ListView_HitTest ( ::hWnd, GetCursorRow() - GetWindowRow ( ::hWnd )  , GetCursorCol() - GetWindowCol ( ::hWnd ) )
-
-	EndIf
-
-	ThisItemRowIndex := r[1]
-	ThisItemColIndex := r[2]
-
-	If r [2] == 1
-      r := LISTVIEW_GETITEMRECT ( ::hWnd, r[1] - 1 )
-	Else
-      r := LISTVIEW_GETSUBITEMRECT ( ::hWnd, r[1] - 1 , r[2] - 1 )
-	EndIf
-
-   ThisItemCellRow := ::ContainerRow + r [1]
-   ThisItemCellCol := ::ContainerCol + r [2]
-	ThisItemCellWidth := r[3]
-	ThisItemCellHeight := r[4]
-
-	aCellData := { ThisItemRowIndex , ThisItemColIndex , ThisItemCellRow , ThisItemCellCol , ThisItemCellWidth , ThisItemCellHeight }
-
-Return aCellData
 
 Function SetInteractiveClose( nValue )
 Local nRet := _OOHG_InteractiveClose

@@ -1,5 +1,5 @@
 /*
- * $Id: i_window.ch,v 1.5 2005-09-12 02:46:42 guerra000 Exp $
+ * $Id: i_window.ch,v 1.6 2005-09-29 05:20:23 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -124,6 +124,8 @@
         #xtranslate <w> . \<c\> . \<p:AllowAppend,AllowDelete,AllowEdit\> := \<n\> => SetProperty ( <"w">, \<"c"\> , \<"p"\> , \<n\> ) ;;
 	#xtranslate <w>	. \<c\> . \<p:Caption,Header,Item,Icon\> (\<arg\>) => GetProperty ( <"w">, \<"c"\> , \<"p"\> , \<arg\> ) ;;
 	#xtranslate <w>	. \<c\> . \<p:Caption,Header,Item,Icon\> (\<arg\>) := \<n\> => SetProperty ( <"w">, \<"c"\> , \<"p"\> , \<arg\> , \<n\> ) ;;
+        #xtranslate <w> . \<c\> . \<p:Cell\> (\<arg1\>,\<arg2\>) => GetProperty ( <"w">, \<"c"\> , \<"p"\> , \<arg1\> , \<arg2\> ) ;;
+	#xtranslate <w>	. \<c\> . \<p:Cell\> (\<arg1\>,\<arg2\>) := \<n\> => SetProperty ( <"w">, \<"c"\> , \<"p"\> , \<arg1\> , \<arg2\> , \<n\> ) ;;
 	#xtranslate <w>	. \<c\> . \<p:Refresh,SetFocus,DeleteAllItems,Release,Show,Save,Hide,Play,Stop,Close,Pause,Eject,OpenDialog,Resume,Action,OnClick\> \[()\] => Domethod ( <"w">, \<"c"\> , \<"p"\> ) ;;
 	#xtranslate <w>	. \<c\> . \<p:AddItem,DeleteItem,Open,DeletePage,DeleteColumn,Expand,Collapse\> (\<a\>) => Domethod ( <"w">, \<"c"\> , \<"p"\> , \<a\> ) ;;
 	#xtranslate <w>	. \<c\> . \<p:AddItem,AddPage\> (\<a1\> , \<a2\>) => Domethod ( <"w">, \<"c"\> , \<"p"\> , \<a1\> , \<a2\> ) ;;
@@ -292,6 +294,7 @@
                         [ <modalsize: MODALSIZE> ] ;
                         [ <splitchild: SPLITCHILD> ] ;
                         [ <mdi: MDI> ] ;
+                        [ <internal: INTERNAL> ] ;
 			[ <noshow: NOSHOW> ] ;
 			[ <topmost: TOPMOST> ] ;
 			[ <noautorelease: NOAUTORELEASE> ] ;
@@ -341,7 +344,7 @@
                         <{hScrollBox}>, <{vScrollBox}>, <.helpbutton.>, <{MaximizeProcedure}>, ;
                         <{MinimizeProcedure}>, <cursor>, <.noautorelease.>, <parent>, ;
                         <{interactivecloseprocedure}>, <.focused.>, <.break.>, <grippertext>, <.rtl.>, ;
-                        <.main.>, <.splitchild.>, <.child.>, <.modal.>, <.modalsize.>, <.mdi.> ) ;;
+                        <.main.>, <.splitchild.>, <.child.>, <.modal.>, <.modalsize.>, <.mdi.>, <.internal.> ) ;;
         DECLARE WINDOW <w>
 
 #else
@@ -357,6 +360,8 @@
         #xtranslate <w> . <c> . <p:AllowAppend,AllowDelete,AllowEdit> := <n> => SetProperty ( <"w">, <"c"> , <"p"> , <n> ) ;;
 	#xtranslate <w>	. <c> . <p:Caption,Header,Item,Icon> (<arg>) => GetProperty ( <"w">, <"c"> , <"p"> , <arg> ) ;;
 	#xtranslate <w>	. <c> . <p:Caption,Header,Item,Icon> (<arg>) := <n> => SetProperty ( <"w">, <"c"> , <"p"> , <arg> , <n> ) ;;
+        #xtranslate <w> . <c> . <p:Cell> (<arg1>,<arg2>) => GetProperty ( <"w">, <"c"> , <"p"> , <arg\> , <arg2> ) ;;
+        #xtranslate <w> . <c> . <p:Cell> (<arg1>,<arg2>) := <n> => SetProperty ( <"w">, <"c"> , <"p"> , <arg1> , <arg2> , <n> ) ;;
 	#xtranslate <w>	. <c> . <p:Refresh,SetFocus,DeleteAllItems,Release,Show,Save,Hide,Play,Stop,Close,Pause,Eject,OpenDialog,Resume,Action,OnClick> [()] => Domethod ( <"w">, <"c"> , <"p"> ) ;;
 	#xtranslate <w>	. <c> . <p:AddItem,DeleteItem,Open,DeletePage,DeleteColumn,Expand,Collapse,Seek> (<a>) => Domethod ( <"w">, <"c"> , <"p"> , <a> ) ;;
 	#xtranslate <w>	. <c> . <p:AddItem,AddPage> (<a1> , <a2>) => Domethod ( <"w">, <"c"> , <"p"> , <a1> , <a2> ) ;;
@@ -524,6 +529,7 @@
                         [ <modalsize: MODALSIZE> ] ;
                         [ <splitchild: SPLITCHILD> ] ;
                         [ <mdi: MDI> ] ;
+                        [ <internal: INTERNAL> ] ;
 			[ <noshow: NOSHOW> ] ;
 			[ <topmost: TOPMOST> ] ;
 			[ <noautorelease: NOAUTORELEASE> ] ;
@@ -574,7 +580,7 @@
                         <{hScrollBox}>, <{vScrollBox}>, <.helpbutton.>, <{MaximizeProcedure}>, ;
                         <{MinimizeProcedure}>, <cursor>, <.noautorelease.>, <parent>, ;
                         <{interactivecloseprocedure}>, <.focused.>, <.break.>, <grippertext>, <.rtl.>, ;
-                        <.main.>, <.splitchild.>, <.child.>, <.modal.>, <.modalsize.>, <.mdi.> )
+                        <.main.>, <.splitchild.>, <.child.>, <.modal.>, <.modalsize.>, <.mdi.>, <.internal.> )
 
 #endif
 
@@ -775,6 +781,7 @@ SetProperty ( <"Arg1"> , <"Arg2"> , <Arg3> )
                         [ <modalsize: MODALSIZE> ] ;
                         [ <splitchild: SPLITCHILD> ] ;
                         [ <mdi: MDI> ] ;
+                        [ <internal: INTERNAL> ] ;
 			[ <noshow: NOSHOW> ] ;
 			[ <topmost: TOPMOST> ] ;
 			[ <noautorelease: NOAUTORELEASE> ] ;
@@ -824,4 +831,4 @@ SetProperty ( <"Arg1"> , <"Arg2"> , <Arg3> )
                         <{hScrollBox}>, <{vScrollBox}>, <.helpbutton.>, <{MaximizeProcedure}>, ;
                         <{MinimizeProcedure}>, <cursor>, <.noautorelease.>, <parent>, ;
                         <{interactivecloseprocedure}>, <.focused.>, <.break.>, <grippertext>, <.rtl.>, ;
-                        <.main.>, <.splitchild.>, <.child.>, <.modal.>, <.modalsize.>, <.mdi.> )
+                        <.main.>, <.splitchild.>, <.child.>, <.modal.>, <.modalsize.>, <.mdi.>, <.internal.> )

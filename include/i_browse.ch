@@ -1,5 +1,5 @@
 /*
- * $Id: i_browse.ch,v 1.5 2005-09-21 05:07:03 guerra000 Exp $
+ * $Id: i_browse.ch,v 1.6 2005-09-29 05:20:23 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -145,6 +145,7 @@
 		[ <break: BREAK> ] 		;
                 [ <rtl: RTL> ]                  ;
                 [ ON APPEND <onappend> ]        ;
+                [ ON EDITCELL <editcell> ]      ;
 	=>;
 [ <oObj> := ] TBrowse():Define( ;
                 <"name"> ,      ;
@@ -185,7 +186,12 @@
 		<aReadOnly> , ;
 		<{aValidFields}> , ;
 		<aValidMessages> , ;
-                <.edit.> , <dynamicbackcolor> , <aWhenFields> , <dynamicforecolor>, <Picture>, <.rtl.>, <{onappend}> )
+                <.edit.> , ;
+                <dynamicbackcolor> , ;
+                <aWhenFields> , ;
+                <dynamicforecolor>, ;
+                <Picture>, ;
+                <.rtl.>, <{onappend}>, <{editcell}> )
 
 ///////////////////////////////////////////////////////////////////////////////
 // SPLITBOX BROWSE
@@ -234,6 +240,7 @@
 		[ <break: BREAK> ] 		;
                 [ <rtl: RTL> ]                  ;
                 [ ON APPEND <onappend> ]        ;
+                [ ON EDITCELL <editcell> ]      ;
 	=>;
 [ <oObj> := ] TBrowse():Define( ;
                 <"name"> ,      ;
@@ -274,7 +281,12 @@
 		<aReadOnly> , ;
 		 <{aValidFields}> , ;
 		<aValidMessages> , ;
-                <.edit.>  , <dynamicbackcolor> , <aWhenFields> , <dynamicforecolor>, <Picture>, <.rtl.>, <{onappend}> )
+                <.edit.>  , ;
+                <dynamicbackcolor> , ;
+                <aWhenFields> , ;
+                <dynamicforecolor>, ;
+                <Picture>, ;
+                <.rtl.>, <{onappend}>, <{editcell}> )
 
 #command SET BROWSESYNC ON  => SetBrowseSync( .T. )
 #command SET BROWSESYNC OFF => SetBrowseSync( .F. )

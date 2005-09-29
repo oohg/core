@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.22 2005-09-21 05:07:04 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.23 2005-09-29 05:20:24 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -107,11 +107,7 @@ CLASS TBrowse FROM TGrid
    DATA nValue          INIT 0
    DATA aRecMap         INIT {}
    DATA AllowAppend     INIT .F.
-   DATA readonly        INIT .F.
-   DATA valid           INIT .F.
-   DATA validmessages   INIT .F.
    DATA AllowDelete     INIT .F.
-   DATA InPlace         INIT .F.
    DATA RecCount        INIT 0
    DATA aFields         INIT {}
    DATA lEof            INIT .F.
@@ -136,13 +132,13 @@ CLASS TBrowse FROM TGrid
    METHOD BrowseOnChange
    METHOD FastUpdate
    METHOD ScrollUpdate
-   METHOD EditItem
-   METHOD ProcessInPlaceKbdEdit
+   METHOD EditItem                            //
+   METHOD ProcessInPlaceKbdEdit               //
+   METHOD InPlaceAppend                       //
    METHOD SetValue
    METHOD Delete
    METHOD UpDate
-   METHOD InPlaceAppend
-   METHOD InPlaceEdit
+   METHOD EditCell
    METHOD AdjustRightScroll
 
    METHOD Home
@@ -162,7 +158,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                underline, strikeout, break, backcolor, fontcolor, lock, ;
                inplace, novscroll, AllowAppend, readonly, valid, ;
                validmessages, edit, dynamicbackcolor, aWhenFields, ;
-               dynamicforecolor, aPicture, lRtl ) CLASS TBrowse
+               dynamicforecolor, aPicture, lRtl, editcell ) CLASS TBrowse
 *-----------------------------------------------------------------------------*
 Local ScrollBarHandle, hsum, ScrollBarButtonHandle := 0, nWidth2, nCol2
 
@@ -199,7 +195,8 @@ Local ScrollBarHandle, hsum, ScrollBarButtonHandle := 0, nWidth2, nCol2
    ::Super:Define( ControlName, ParentForm, x, y, nWidth2, h, aHeaders, aWidths, {}, nil, ;
                    fontname, fontsize, tooltip, , , aHeadClick, , , ;
                    nogrid, aImage, aJust, break, HelpId, bold, italic, underline, strikeout, nil, ;
-                   nil, nil, edit, backcolor, fontcolor, dynamicbackcolor, dynamicforecolor, aPicture, lRtl )
+                   nil, nil, edit, backcolor, fontcolor, dynamicbackcolor, dynamicforecolor, aPicture, ;
+                   lRtl, InPlace, /* editcontrols */ , readonly, valid, validmessages, editcell )
 
    ::nWidth := w
 
@@ -207,16 +204,12 @@ Local ScrollBarHandle, hsum, ScrollBarButtonHandle := 0, nWidth2, nCol2
       ::nValue := Value
    ENDIF
    ::Lock := Lock
-   ::InPlace := inplace
    ::WorkArea := WorkArea
    ::AllowDelete := AllowDelete
    ::aFields := aFields
    ::aRecMap :=  {}
    ::AuxHandle := 0
    ::AllowAppend := AllowAppend
-   ::readonly := readonly
-   ::valid := valid
-   ::validmessages := validmessages
    ::aWhen := aWhenFields
 
    if ! novscroll
@@ -711,16 +704,16 @@ METHOD EditItem( append ) CLASS TBrowse
 Local g,a,l,actpos:={0,0,0,0},GRow,GCol,GWidth,Col,IRow, item
 Local Title , aLabels , aInitValues := {} , aFormats := {} , aResults , z , tvar , BackRec , aStru , y , svar , BackArea , BrowseArea , TmpNames := {} , NewRec := 0 , MixedFields := .f.
 
-   If LISTVIEW_GETFIRSTITEM ( ::hWnd ) == 0
-      If Valtype (append) == 'L'
-         If ! append
-            Return Nil
-         EndIf
-      EndIf
+   IF ValType( append ) != "L"
+      append := .F.
+   ENDIF
+
+   If LISTVIEW_GETFIRSTITEM( ::hWnd ) == 0 .AND. ! append
+      Return Nil
    EndIf
 
    If ::InPlace
-      ::InPlaceEdit( append )
+      ::ProcessInPlaceKbdEdit( append )
       Return Nil
    EndIf
 
@@ -816,7 +809,7 @@ Local Title , aLabels , aInitValues := {} , aFormats := {} , aResults , z , tvar
       ElseIf aStru [y] [2] == 'M'
          Aadd ( aFormats , "M" )
       Else   // Unknow type!!!   Must be fixed for "extended" types (VFP types)
-         Aadd (  , Nil )
+         Aadd ( aFormats , Nil )
       EndIf
 
    Next z
@@ -841,7 +834,7 @@ Local Title , aLabels , aInitValues := {} , aFormats := {} , aResults , z , tvar
          If append
             ( ::WorkArea )->( DBAppend() )
             NewRec := ( ::WorkArea )->( RecNo() )
-            _OOHG_Eval( ::OnAppend )
+            ( ::WorkArea )->( _OOHG_Eval( ::OnAppend ) )
          EndIf
       EndIf
 
@@ -866,6 +859,8 @@ Local Title , aLabels , aInitValues := {} , aFormats := {} , aResults , z , tvar
       Next z
 
       ::Refresh()
+
+      _OOHG_Eval( ::OnEditCell, 0, 0 )
 
    EndIf
 
@@ -1121,378 +1116,104 @@ Local i , l , b , aResults
 
 Return aResults
 
-*------------------------------------------------------------------------------*
-METHOD InPlaceEdit( append ) CLASS TBrowse
-*------------------------------------------------------------------------------*
-Local GridCol , GridRow , nrec , BackArea , BackRec , _GridFields , FieldName , CellData  := '' , CellColIndex , x
-Local aFieldNames
-Local aTypes
-Local aWidths
-Local aDecimals
-Local Type
-Local Width
-Local Decimals
-Local sFieldname
-Local r
-Local ControlType
-Local Ldelta := 0
-
-	If append
-
-      ::InPlaceAppend()
-
-		Return Nil
-
-	EndIf
-
-   If This.CellRowIndex != LISTVIEW_GETFIRSTITEM( ::hWnd )
-		Return Nil
-	EndIf
-
-   _GridFields := ::aFields
-
-	CellColIndex := This.CellColIndex
-
-	If CellColIndex < 1 .or. CellColIndex > Len (_GridFields)
-		Return Nil
-	EndIf
-
-   If VALTYPE( ::Picture[ CellColIndex ] ) == "L" .AND. ::Picture[ CellColIndex ]
-		PlayHand()
-		Return Nil
-	EndIf
-
-   If ValType ( ::ReadOnly ) == 'A'
-      If Len ( ::ReadOnly ) >= CellColIndex
-         If ::ReadOnly [ CellColIndex ] != Nil
-            If ::ReadOnly [ CellColIndex ] == .T.
-*					PlayHand()
-               _OOHG_IPE_CANCELLED := .F.
-*
-					Return Nil
-				EndIf
-			EndIf
-		EndIf
-	EndIf
-
-	FieldName := _GridFields [  CellColIndex ]
-
-	// It the specified area does not exists, set recorcount to 0 and
-	// return
-
+*-----------------------------------------------------------------------------*
+METHOD EditCell( nRow, nCol, editcontrol, uOldValue, uValue, cMemVar ) CLASS TBrowse
+*-----------------------------------------------------------------------------*
+Local lRet, BackRec, aStruct, nPos, cArea, cField
+   IF ValType( nRow ) != "N"
+      nRow := LISTVIEW_GETFIRSTITEM( ::hWnd )
+   ENDIF
+   IF ValType( nCol ) != "N"
+      nCol := 1
+   ENDIF
    If Select( ::WorkArea ) == 0
+      // It the specified area does not exists, set recordcount to 0 and return
       ::RecCount := 0
-		Return Nil
-	EndIf
-
-	// Save Original WorkArea
-	BackArea := Alias()
-
-	// Save Original Record Pointer
-	BackRec := RecNo()
-
-	// Selects Grid's WorkArea
-
-   DbSelectArea( ::WorkArea )
-
-   nRec := ::Value
-	Go nRec
-
-	// If LOCK clause is present, try to lock.
-
-   If ::lock == .T.
-		If Rlock() == .F.
-         MsgExclamation(_OOHG_BRWLangError[9],_OOHG_BRWLangError[10])
-			// Restore Original Record Pointer
-			Go BackRec
-			// Restore Original WorkArea
-         If Select( BackArea ) != 0
-            DbSelectArea( BackArea )
-			Else
-            DbSelectArea( 0 )
-			EndIf
-			Return Nil
-		EndIf
-	EndIf
-
-	CellData := &FieldName
-
-        aFieldNames	:= ARRAY(FCOUNT())
-        aTypes		:= ARRAY(FCOUNT())
-        aWidths		:= ARRAY(FCOUNT())
-        aDecimals	:= ARRAY(FCOUNT())
-
-        AFIELDS(aFieldNames, aTypes, aWidths, aDecimals)
-
-	r := at ('>',FieldName)
-
-	if r != 0
-		sFieldName := Right ( FieldName, Len(Fieldname) - r )
-	Else
-		sFieldName := FieldName
-	EndIf
-
-	x := FieldPos ( sFieldName )
-
-	If x > 0
-        	Type		:= aTypes [x]
-	        Width		:= aWidths [x]
-        	Decimals	:= aDecimals [x]
-	EndIf
-
-   GridRow := GetWindowRow( ::hWnd )
-   GridCol := GetWindowCol( ::hWnd )
-
-	If Type (FieldName) == 'C'
-		ControlType := 'C'
-	ElseIf Type (FieldName) == 'D'
-		ControlType := 'D'
-	ElseIf Type (FieldName) == 'L'
-		ControlType := 'L'
-		Ldelta := 1
-	ElseIf Type (FieldName) == 'M'
-		ControlType := 'M'
-	ElseIf Type (FieldName) == 'N'
-		If Decimals == 0
-			ControlType := 'I'
-		Else
-			ControlType := 'F'
-		EndIf
-	EndIf
-
-	If ControlType == 'M'
-
-// JK
-		r := InputBox ( '' , 'Edit Memo' , STRTRAN(CellData,chr(141),' ') , , , .T. )
-
-      If _OOHG_DialogCancelled == .F.
-			Replace &FieldName With r
-         _OOHG_IPE_CANCELLED := .F.
-		Else
-         _OOHG_IPE_CANCELLED := .T.
-		EndIf
-
-	Else
-
-		DEFINE WINDOW _InPlaceEdit ;
-         AT This.CellRow + GridRow - ::ContainerRow - 1 , This.CellCol + GridCol - ::ContainerCol + 2 ;
-			WIDTH This.CellWidth ;
-			HEIGHT This.CellHeight + 6 + Ldelta ;
-			MODAL ;
-			NOCAPTION ;
-			NOSIZE
-
-         ON KEY RETURN ACTION TBrowse_InPlaceEditOk( Self, Fieldname , _InPlaceEdit.Control_1.Value , ControlType , CellColIndex , sFieldName )
-         ON KEY ESCAPE ACTION ( _OOHG_IPE_CANCELLED := .T. , dbrunlock() , _InPlaceEdit.Release , ::setfocus() )
-
-			If ControlType == 'C'
-				CellData := rtrim ( CellData )
-
-				DEFINE TEXTBOX Control_1
-					ROW 0
-					COL 0
-					WIDTH This.CellWidth
-					HEIGHT This.CellHeight + 6
-					VALUE CellData
-					MAXLENGTH Width
-				END TEXTBOX
-
-			ElseIf ControlType == 'D'
-
-            DEFINE TEXTBOX Control_1         // DEFINE DATEPICKER Control_1
-					ROW 0
-					COL 0
-					HEIGHT This.CellHeight + 6
-					WIDTH This.CellWidth
-					VALUE CellData
-               DATE .T.                      // UPDOWN .T.
-            END TEXTBOX                      // END DATEPICKER
-
-			ElseIf ControlType == 'L'
-
-				DEFINE COMBOBOX Control_1
-					ROW 0
-					COL 0
-					ITEMS { '.T.','.F.' }
-					WIDTH This.CellWidth
-					VALUE If ( CellData , 1 , 2 )
-				END COMBOBOX
-
-			ElseIf ControlType == 'I'
-
-				DEFINE TEXTBOX Control_1
-					ROW 0
-					COL 0
-					NUMERIC	.T.
-					WIDTH This.CellWidth
-					HEIGHT This.CellHeight + 6
-					VALUE CellData
-					MAXLENGTH Width
-				END TEXTBOX
-
-			ElseIf ControlType == 'F'
-
-				DEFINE TEXTBOX Control_1
-					ROW 0
-					COL 0
-					NUMERIC	.T.
-					INPUTMASK Replicate ( '9', Width - Decimals - 1 ) + '.' + Replicate ( '9', Decimals )
-					WIDTH This.CellWidth
-					HEIGHT This.CellHeight + 6
-					VALUE CellData
-				END TEXTBOX
-
-			EndIf
-
-		END WINDOW
-
-		ACTIVATE WINDOW _InPlaceEdit
-
-	EndIf
-
-	// Restore Original Record Pointer
-	Go BackRec
-
-	// Restore Original WorkArea
-   If Select( BackArea ) != 0
-      DbSelectArea( BackArea )
-	Else
-      DbSelectArea( 0 )
-	EndIf
-
-Return Nil
-
-STATIC Function TBrowse_InPlaceEditOk( Self, Fieldname , r , ControlType , CellColIndex , sFieldName )
-Local b , Result , mVar , TmpName
-
-   If ValType ( ::Valid ) == 'A'
-      If Len ( ::Valid ) >= CellColIndex
-         If ::Valid [ CellColIndex ] != Nil
-
-				Result := _GetValue ( 'Control_1' , '_InPlaceEdit' )
-
-				If ControlType == 'L'
-					Result := if ( Result == 0 .or. Result == 2 , .F. , .T. )
-				EndIf
-
-            TmpName := 'MemVar' + ::WorkArea + sFieldname
-
-				mVar := TmpName
-				&mVar := Result
-
-            b := _OOHG_Eval ( ::Valid [ CellColIndex ] )
-				If b == .f.
-
-               If ValType ( ::ValidMessages ) == 'A'
-
-                  If Len ( ::ValidMessages ) >= CellColIndex
-
-                     If ::ValidMessages [CellColIndex] != Nil
-
-                        MsgExclamation ( ::ValidMessages [CellColIndex] )
-
-							Else
-
-                        MsgExclamation (_OOHG_BRWLangError[11])
-
-							EndIf
-
-						Else
-
-                     MsgExclamation (_OOHG_BRWLangError[11])
-
-						EndIf
-
-					Else
-
-                  MsgExclamation (_OOHG_BRWLangError[11])
-
-					EndIf
-
-				Else
-
-					If ControlType == 'L'
-						r := if ( r == 0 .or. r == 2 , .F. , .T. )
-					EndIf
-
-               If ::lock == .t.
-						Replace &FieldName With r
-						Unlock
-
-                  ::Refresh()
-
-						_InPlaceEdit.Release
-					Else
-						Replace &FieldName With r
-
-                  ::Refresh()
-
-						_InPlaceEdit.Release
-					EndIf
-
-				EndIf
-
-			Else
-
-				If ControlType == 'L'
-					r := if ( r == 0 .or. r == 2 , .F. , .T. )
-				EndIf
-
-            If ::lock == .t.
-
-					Replace &FieldName With r
-					Unlock
-
-               ::Refresh()
-
-					_InPlaceEdit.Release
-
-				Else
-
-					Replace &FieldName With r
-
-               ::Refresh()
-
-					_InPlaceEdit.Release
-
-				EndIf
-
-			EndIf
-
-		EndIf
-
-	Else
-
-		If ControlType == 'L'
-			r := if ( r == 0 .or. r == 2 , .F. , .T. )
-		EndIf
-
-      If ::lock == .t.
-
-			Replace &FieldName With r
-			Unlock
-
+   ElseIf nRow < 1 .OR. nRow > ::ItemCount() .OR. nCol < 1 .OR. nCol > Len( ::aHeaders )
+      // Cell out of range
+   ElseIf VALTYPE( ::ReadOnly ) == "A" .AND. Len( ::ReadOnly ) >= nCol .AND. ValType( ::ReadOnly[ nCol ] ) == "L" .AND. ::ReadOnly[ nCol ]
+      // Read only column
+      PlayHand()
+   Else
+
+      BackRec := ( ::WorkArea )->( RecNo() )
+      ( ::WorkArea )->( DbGoTo( ::aRecMap[ nRow ] ) )
+
+      // If LOCK clause is present, try to lock.
+      If ::Lock .AND. ! Rlock()
+         MsgExclamation( _OOHG_BRWLangError[ 9 ], _OOHG_BRWLangError[ 10 ] )
+         ( ::WorkArea )->( DbGoTo( BackRec ) )
+         Return .F.
+      EndIf
+
+      IF ValType( uOldValue ) == "U"
+         uOldValue := &( ::aFields[ nCol ] )
+      ENDIF
+
+      // Default cMemVar
+      cField := Upper( AllTrim( ::aFields[ nCol ] ) )
+      nPos := At( '->', cField )
+      If nPos != 0 .AND. Select( Trim( Left( cField, nPos - 1 ) ) ) != 0
+         cArea := Trim( Left( cField, nPos - 1 ) )
+         cField := Ltrim( SubStr( cField, nPos + 2 ) )
+      Else
+         cArea := ::WorkArea
+      EndIf
+      aStruct := ( cArea )->( DbStruct() )
+      nPos := aScan( aStruct, { |a| a[ 1 ] == cField } )
+      If nPos == 0
+         cArea := cField := ""
+      EndIf
+      IF ( ! ValType( cMemVar ) $ "CM" .OR. Empty( cMemVar ) ) .AND. ! Empty( cArea )
+         cMemVar := "MemVar" + cArea + cField
+      ENDIF
+
+      // Determines control type
+      If ValType( EditControl ) == "A" .AND. Len( EditControl ) >= 1
+         // EditControl specified
+      ElseIf ValType( ::EditControls ) == "A" .AND. Len( ::EditControls ) >= nCol .AND. ValType( ::EditControls[ nCol ] ) == "A" .AND. Len( ::EditControls[ nCol ] ) >= 1
+         // EditControl specified at control definition
+         EditControl := ::EditControls[ nCol ]
+      ElseIf ValType( ::Picture[ nCol ] ) == "C"
+         EditControl := { "TEXTBOX", ValType( uOldValue ), ::Picture[ nCol ], "" }
+      Else
+         // Checks according to field type
+         If nPos != 0
+            // Takes info about field type
+            Do Case
+               Case aStruct[ nPos ][ 2 ] == "N"
+                  IF aStruct[ nPos ][ 4 ] == 0
+                     EditControl := { "TEXTBOX", "N", Replicate( "9", aStruct[ nPos ][ 3 ] ), "" }
+                  Else
+                     EditControl := { "TEXTBOX", "N", Replicate( "9", aStruct[ nPos ][ 3 ] - aStruct[ nPos ][ 4 ] - 1 ) + "." + Replicate( "9", aStruct[ nPos ][ 4 ] ), "" }
+                  EndIf
+               Case aStruct[ nPos ][ 2 ] == "L"
+                  // EditControl := { "CHECKBOX",   ".T.", ".F." }
+                  EditControl := { "LCOMBOBOX" }
+               Case aStruct[ nPos ][ 2 ] == "M"
+                  EditControl := { "MEMO" }
+               Case aStruct[ nPos ][ 2 ] == "D"
+                  // EditControl := { "DATEPICKER", .T. }
+                  EditControl := { "TEXTBOX", "D", "", "D" }
+               Case aStruct[ nPos ][ 2 ] == "C"
+                  EditControl := { "TEXTBOX", "C", "", "S" + Ltrim( Str( aStruct[ nPos ][ 3 ] ) ) }
+               OtherWise
+                  // Non-implemented field type!!!
+            EndCase
+         EndIf
+      EndIf
+      lRet := ::EditCell2( @nRow, @nCol, EditControl, uOldValue, @uValue, cMemVar, .F. )
+      If lRet
+         Replace &( ::aFields[ nCol ] ) With uValue
          ::Refresh()
-
-			_InPlaceEdit.Release
-
-		Else
-
-			Replace &FieldName With r
-
-         ::Refresh()
-
-			_InPlaceEdit.Release
-
-		EndIf
-
-	EndIf
-
-   _OOHG_IPE_CANCELLED := .F.
-
-   ::SetFocus()
-
-Return NIL
+         _OOHG_Eval( ::OnEditCell, nRow, nCol )
+      EndIf
+      If ::Lock
+         ( ::WorkArea )->( DbUnLock() )
+      EndIf
+      ( ::WorkArea )->( DbGoTo( BackRec ) )
+   Endif
+Return lRet
 
 *-----------------------------------------------------------------------------*
 METHOD AdjustRightScroll() CLASS TBrowse
@@ -1521,7 +1242,7 @@ Local hws, lRet, nButton, nCol
 Return lRet
 
 *-----------------------------------------------------------------------------*
-METHOD ProcessInPlaceKbdEdit() CLASS TBrowse
+METHOD ProcessInPlaceKbdEdit( append ) CLASS TBrowse
 *-----------------------------------------------------------------------------*
 Local r
 Local IPE_MAXCOL
@@ -1532,6 +1253,10 @@ Local _OOHG_IPE_COL := ASCAN( ::Picture, { |x| ValType( x ) != "L" .OR. ! x } )
    If ! ::InPlace .OR. _OOHG_IPE_COL == 0
       Return nil
 	EndIf
+
+   IF ValType( append ) == "L" .AND. append
+      ::InPlaceAppend()
+   ENDIF
 
    if LISTVIEW_GETFIRSTITEM ( ::hWnd ) == 0
       Return nil
@@ -1560,7 +1285,7 @@ Local _OOHG_IPE_COL := ASCAN( ::Picture, { |x| ValType( x ) != "L" .OR. ! x } )
          r := LISTVIEW_GETSUBITEMRECT ( ::hWnd, _OOHG_IPE_ROW - 1 , _OOHG_IPE_COL - 1 )
 		EndIf
 
-      xs := ( ( ::ContainerCol + r [2] ) +( r[3] ))  -  ( ::ContainerCol + ::Width )
+      xs := ( r[ 2 ] + r[ 3 ] ) - ::Width
 
 		xd := 20
 
@@ -1584,7 +1309,7 @@ Local _OOHG_IPE_COL := ASCAN( ::Picture, { |x| ValType( x ) != "L" .OR. ! x } )
       _OOHG_ThisItemCellCol := ::ContainerCol + r [2]
       _OOHG_ThisItemCellWidth := r[3]
       _OOHG_ThisItemCellHeight := r[4]
-      ::EditItem( .f. )
+      _OOHG_IPE_CANCELLED := ! ::EditCell( _OOHG_IPE_ROW, _OOHG_IPE_COL )
       _OOHG_ThisType := ''
 
       _OOHG_ThisItemRowIndex := 0
@@ -1686,7 +1411,7 @@ Local _RecNo , _BrowseArea
 
    ( _BrowseArea )->( DbAppend() )
 
-   _OOHG_Eval( ::OnAppend )
+   ( ::WorkArea )->( _OOHG_Eval( ::OnAppend ) )
 
    ::scrollUpdate()
 
@@ -1965,7 +1690,7 @@ METHOD Events_Enter() CLASS TBrowse
 
    if ::AllowEdit .AND. Select( ::WorkArea ) != 0
       if ::InPlace
-         ::ProcessInPlaceKbdEdit()
+         ::ProcessInPlaceKbdEdit( .F. )
       Else
          ::EditItem( .f. )
       EndIf
@@ -1999,7 +1724,6 @@ HB_FUNC_STATIC( TBROWSE_EVENTS_NOTIFY )
       case NM_CLICK:
       case LVN_BEGINDRAG:
       case LVN_KEYDOWN:
-      case NM_DBLCLK:
          HB_FUNCNAME( TBROWSE_EVENTS_NOTIFY2 )();
          break;
 
@@ -2024,7 +1748,7 @@ HB_FUNC_STATIC( TBROWSE_EVENTS_NOTIFY )
 FUNCTION TBrowse_Events_Notify2( wParam, lParam )
 Local Self := QSelf()
 Local nNotify := GetNotifyCode( lParam )
-Local xs , xd, nvKey
+Local nvKey
 Local r, DeltaSelect
 
    If nNotify == NM_CLICK  .or. nNotify == LVN_BEGINDRAG
@@ -2102,61 +1826,6 @@ Local r, DeltaSelect
 
       Return nil
 
-   elseIf nNotify == NM_DBLCLK
-
-      _PushEventInfo()
-      _OOHG_ThisForm := ::Parent
-      _OOHG_ThisType := 'C'
-      _OOHG_ThisControl := Self
-
-      r := ListView_HitTest ( ::hWnd, GetCursorRow() - GetWindowRow ( ::hWnd )  , GetCursorCol() - GetWindowCol ( ::hWnd ) )
-      If r [2] == 1
-         ListView_Scroll( ::hWnd,  -10000  , 0 )
-         r := ListView_HitTest ( ::hWnd, GetCursorRow() - GetWindowRow ( ::hWnd )  , GetCursorCol() - GetWindowCol ( ::hWnd ) )
-      Else
-         r := LISTVIEW_GETSUBITEMRECT ( ::hWnd, r[1] - 1 , r[2] - 1 )
-
-                                           *  CellCol           CellWidth
-         xs := ( ( ::ContainerCol + r [2] ) +( r[3] ))  -  ( ::ContainerCol + ::Width )
-         xd := 20
-         If xs > -xd
-            ListView_Scroll( ::hWnd,  xs + xd , 0 )
-         Else
-            If r [2] < 0
-               ListView_Scroll( ::hWnd, r[2]   , 0 )
-            EndIf
-         EndIf
-         r := ListView_HitTest ( ::hWnd, GetCursorRow() - GetWindowRow ( ::hWnd )  , GetCursorCol() - GetWindowCol ( ::hWnd ) )
-      EndIf
-
-      _OOHG_ThisItemRowIndex := r[1]
-      _OOHG_ThisItemColIndex := r[2]
-      If r [2] == 1
-         r := LISTVIEW_GETITEMRECT ( ::hWnd, r[1] - 1 )
-      Else
-         r := LISTVIEW_GETSUBITEMRECT ( ::hWnd, r[1] - 1 , r[2] - 1 )
-      EndIf
-      _OOHG_ThisItemCellRow := ::ContainerRow + r [1]
-      _OOHG_ThisItemCellCol := ::ContainerCol + r [2]
-      _OOHG_ThisItemCellWidth := r[3]
-      _OOHG_ThisItemCellHeight := r[4]
-
-      if ::AllowEdit
-         ::EditItem( .f. )
-      Else
-         _OOHG_Eval( ::OnDblClick )
-      Endif
-
-      _PopEventInfo()
-      _OOHG_ThisItemRowIndex := 0
-      _OOHG_ThisItemColIndex := 0
-      _OOHG_ThisItemCellRow := 0
-      _OOHG_ThisItemCellCol := 0
-      _OOHG_ThisItemCellWidth := 0
-      _OOHG_ThisItemCellHeight := 0
-
-      Return nil
-
    EndIf
 
 Return ::Super:Events_Notify( wParam, lParam )
@@ -2181,7 +1850,18 @@ Local nr , RecordCount , BackRec
       ElseIf nPos == ::VScroll:RangeMax
          ( ::WorkArea )->( DBGoBottom() )
       Else
-         ( ::WorkArea )->( OrdKeyGoTo( nPos * RecordCount / ::VScroll:RangeMax ) )
+         nr := nPos * RecordCount / ::VScroll:RangeMax
+         #ifdef __XHARBOR__
+            ( ::WorkArea )->( OrdKeyGoTo( nr ) )
+         #else
+            If nr < ( RecordCount / 2 )
+               ( ::WorkArea )->( DbGoTop() )
+               ( ::WorkArea )->( DbSkip( nr ) )
+            Else
+               ( ::WorkArea )->( DbGoBottom() )
+               ( ::WorkArea )->( DbSkip( nr - RecordCount ) )
+            EndIf
+         #endif
       ENDIF
 
       If ( ::WorkArea )->( Eof() )

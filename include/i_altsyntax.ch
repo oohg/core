@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.15 2005-09-21 05:07:03 guerra000 Exp $
+ * $Id: i_altsyntax.ch,v 1.16 2005-09-29 05:20:23 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -94,6 +94,12 @@
 /*---------------------------------------------------------------------------------------------------
 Memvariables
 ----------------------------------------------------------------------------------------------------*/
+
+MEMVAR _OOHG_ActiveControlEditControls
+MEMVAR _OOHG_ActiveControlWhen
+MEMVAR _OOHG_ActiveControlDynamicForeColor
+MEMVAR _OOHG_ActiveControlDynamicBackColor
+MEMVAR _OOHG_ActiveControlEditCell
 
 MEMVAR _OOHG_ActiveControlHandCursor
 MEMVAR _OOHG_ActiveControlCenterAlign
@@ -376,6 +382,13 @@ MEMVAR _OOHG_ActiveControlHelpId
    =>;
    _OOHG_ActiveControlValueSource := <"valuesource">
 
+#xcommand COLUMNCONTROLS <editcontrols>;
+   =>;
+        _OOHG_ActiveControlEditControls := <editcontrols>
+
+#xcommand EDITCELL <editcell>;
+   =>;
+        _OOHG_ActiveControlEditCell := <editcell>
 
 #xcommand WORKAREA <workarea>;
 	=>;
@@ -513,6 +526,18 @@ Frame
 #xcommand ON HEADCLICK <aHeadClick> ;
 	=>;
         _OOHG_ActiveControlOnHeadClick   := <{aHeadClick}>
+
+#xcommand DYNAMICBACKCOLOR <aDynamicBackColor> ;
+        =>;
+        _OOHG_ActiveControlDynamicBackColor := <aDynamicBackColor>
+
+#xcommand DYNAMICFORECOLOR <aDynamicForeColor> ;
+        =>;
+        _OOHG_ActiveControlDynamicForeColor := <aDynamicForeColor>
+
+#xcommand WHEN <aWhenFields> ;
+        =>;
+        _OOHG_ActiveControlWhen   := <aWhenFields>
 
 #xcommand NOLINES <nolines> ;
 	=>;
@@ -1712,7 +1737,15 @@ Grid
         _OOHG_ActiveControlReadOnly              := Nil          ;;
         _OOHG_ActiveControlVirtual               := .f.          ;;
         _OOHG_ActiveControlInputMask             := nil          ;;
-        _OOHG_ActiveControlOnAppend              := nil
+        _OOHG_ActiveControlOnAppend              := nil          ;;
+        _OOHG_ActiveControlInPlaceEdit           := .f.          ;;
+        _OOHG_ActiveControlDynamicBackColor      := Nil          ;;
+        _OOHG_ActiveControlDynamicForeColor      := Nil          ;;
+        _OOHG_ActiveControlEditControls          := Nil          ;;
+        _OOHG_ActiveControlReadOnly              := Nil          ;;
+        _OOHG_ActiveControlValid                 := Nil          ;;
+        _OOHG_ActiveControlValidMessages         := Nil          ;;
+        _OOHG_ActiveControlEditCell              := Nil
 
 #xcommand ONAPPEND    <onappend>;
 	=>;
@@ -1754,8 +1787,16 @@ iif( _OOHG_ActiveControlMultiSelect, TGridMulti(), TGrid() ):Define( ;
                 _OOHG_ActiveControlEdit ,  ;
                 _OOHG_ActiveControlBackColor, ;
                 _OOHG_ActiveControlFontColor, ;
+                _OOHG_ActiveControlDynamicBackColor, ;
+                _OOHG_ActiveControlDynamicForeColor, ;
                 _OOHG_ActiveControlInputMask, ;
-                _OOHG_ActiveControlRtl )
+                _OOHG_ActiveControlRtl, ;
+                _OOHG_ActiveControlInPlaceEdit , ;
+                _OOHG_ActiveControlEditControls, ;
+                _OOHG_ActiveControlReadOnly , ;
+                _OOHG_ActiveControlValid , ;
+                _OOHG_ActiveControlValidMessages, ;
+                _OOHG_ActiveControlEditCell )
 
 /*----------------------------------------------------------------------------
 BROWSE
@@ -1787,7 +1828,11 @@ BROWSE
         _OOHG_ActiveControlNoVScroll             := .f.          ;;
         _OOHG_ActiveControlInputMask             := nil          ;;
         _OOHG_ActiveControlInPlaceEdit           := .f.          ;;
-        _OOHG_ActiveControlOnAppend              := nil
+        _OOHG_ActiveControlDynamicBackColor      := Nil          ;;
+        _OOHG_ActiveControlDynamicForeColor      := Nil          ;;
+        _OOHG_ActiveControlWhen                  := nil          ;;
+        _OOHG_ActiveControlOnAppend              := nil          ;;
+        _OOHG_ActiveControlEditCell              := Nil
 
 #xcommand END BROWSE ;
 	=>;
@@ -1830,12 +1875,13 @@ TBrowse():Define( _OOHG_ActiveControlName ,        ;
                 _OOHG_ActiveControlValid , ;
                 _OOHG_ActiveControlValidMessages , ;
                 _OOHG_ActiveControlEdit, ;
-                , ; // DynamicBackColor
-                , ; // aWhenFields
-                , ; // DynamicForeColor
+                _OOHG_ActiveControlDynamicBackColor, ;
+                _OOHG_ActiveControlWhen, ;
+                _OOHG_ActiveControlDynamicForeColor, ;
                 _OOHG_ActiveControlInputMask, ;
                 _OOHG_ActiveControlRtl, ;
-                _OOHG_ActiveControlOnAppend )
+                _OOHG_ActiveControlOnAppend, ;
+                _OOHG_ActiveControlEditCell )
 
 /*----------------------------------------------------------------------------
 Hyperlink

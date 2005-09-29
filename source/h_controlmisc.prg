@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.14 2005-09-12 02:46:42 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.15 2005-09-29 05:20:24 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1771,10 +1771,6 @@ Return GetWindowText( GetControlObject( ControlName, ParentForm ):hWnd )
 CLASS TControl FROM TWindow
 *------------------------------------------------------------------------------*
    DATA lVisible    INIT .T.
-   DATA nRow        INIT 0
-   DATA nCol        INIT 0
-   DATA nWidth      INIT 0
-   DATA nHeight     INIT 0
    DATA cToolTip    INIT ""
    DATA FontHandle  INIT 0
    DATA BrushHandle INIT 0
@@ -1808,6 +1804,7 @@ CLASS TControl FROM TWindow
    METHOD ContainerRow        BLOCK { |Self| IF( ::Container != NIL, ::Container:ContainerRow + ::Container:RowMargin, ::Parent:RowMargin ) + ::Row }
    METHOD ContainerCol        BLOCK { |Self| IF( ::Container != NIL, ::Container:ContainerCol + ::Container:ColMargin, ::Parent:ColMargin ) + ::Col }
    METHOD ContainerVisible    BLOCK { |Self| ::lVisible .AND. IF( ::Container != NIL, ::Container:ContainerVisible, .T. ) }
+   METHOD ContainerhWnd       BLOCK { |Self| IF( ::Container != NIL, ::Container:ContainerhWnd, ::Parent:hWnd ) }
    METHOD SetFont
    METHOD SizePos
    METHOD Move

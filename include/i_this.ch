@@ -1,5 +1,5 @@
 /*
- * $Id: i_this.ch,v 1.1 2005-08-06 23:53:54 guerra000 Exp $
+ * $Id: i_this.ch,v 1.2 2005-09-29 05:20:23 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -153,3 +153,4 @@
 #xtranslate This . CellCol => _OOHG_THISItemCellCol
 #xtranslate This . CellWidth => _OOHG_THISItemCellWidth
 #xtranslate This . CellHeight => _OOHG_THISItemCellHeight
+#xtranslate This . CellValue => _OOHG_THISItemCellValue
