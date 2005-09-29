@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: compile.bat,v 1.3 2005-08-10 04:52:09 guerra000 Exp $
+rem $Id: compile.bat,v 1.4 2005-09-29 05:24:14 guerra000 Exp $
 rem
 CLS
 
@@ -38,38 +38,49 @@ echo %1.obj, + >> b32.bc
 echo %1.exe, + >> b32.bc
 echo %1.map, + >> b32.bc
 echo %HG_ROOT%\lib\oohg.lib + >> b32.bc
-if exist %HG_HRB%\lib\dll.lib echo %HG_HRB%\lib\dll.lib + >> b32.bc
-rem Compiler libraries
-for %%a in (rtl vm gtwin lang codepage macro rdd dbfntx dbfcdx dbfdbt dbffpt common debug pp tip) do echo %HG_HRB%\lib\%%a.lib + >> b32.bc
-rem Additional libraries
-for %%a in (ct libct libmisc hbole) do if exist %HG_HRB%\lib\%%a.lib echo %HG_HRB%\lib\%%a.lib + >> b32.bc
-rem "Related" libraries
-for %%a in (hbprinter socket miniprint) do if exist %HG_HRB%\lib\%%a.lib echo %HG_HRB%\lib\%%a.lib + >> b32.bc
-for %%a in (hbprinter socket miniprint) do if exist %HG_ROOT%\lib\%%a.lib echo %HG_ROOT%\lib\%%a.lib + >> b32.bc
 
-Rem ODBC Libraries Link
+Rem *** Compiler libraries ***
+for %%a in (rtl vm gtwin lang codepage macro rdd dbfntx dbfcdx dbffpt common debug pp) do echo %HG_HRB%\lib\%%a.lib + >> b32.bc
 
+Rem *** Compiler-dependant libraries ***
+if exist %HG_HRB%\lib\dbfdbt.lib echo %HG_HRB%\lib\dbfdbt.lib + >> b32.bc
+if exist %HG_HRB%\lib\hbsix.lib  echo %HG_HRB%\lib\hbsix.lib + >> b32.bc
+if exist %HG_HRB%\lib\tip.lib    echo %HG_HRB%\lib\tip.lib + >> b32.bc
+if exist %HG_HRB%\lib\ct.lib     echo %HG_HRB%\lib\ct.lib + >> b32.bc
+
+Rem *** Additional libraries ***
+if exist %HG_HRB%\lib\libct.lib   echo %HG_HRB%\lib\libct.lib + >> b32.bc
+if exist %HG_HRB%\lib\libmisc.lib echo %HG_HRB%\lib\libmisc.lib + >> b32.bc
+if exist %HG_HRB%\lib\hbole.lib   echo %HG_HRB%\lib\hbole.lib + >> b32.bc
+if exist %HG_HRB%\lib\dll.lib     echo %HG_HRB%\lib\dll.lib + >> b32.bc
+
+Rem *** "Related" libraries ***
+if exist %HG_HRB%\lib\hbprinter.lib  echo %HG_HRB%\lib\hbprinter.lib + >> b32.bc
+if exist %HG_ROOT%\lib\hbprinter.lib echo %HG_ROOT%\lib\hbprinter.lib + >> b32.bc
+if exist %HG_HRB%\lib\socket.lib     echo %HG_HRB%\lib\socket.lib + >> b32.bc
+if exist %HG_ROOT%\lib\socket.lib    echo %HG_ROOT%\lib\socket.lib + >> b32.bc
+if exist %HG_HRB%\lib\miniprint.lib  echo %HG_HRB%\lib\miniprint.lib + >> b32.bc
+if exist %HG_ROOT%\lib\miniprint.lib echo %HG_ROOT%\lib\miniprint.lib + >> b32.bc
+
+Rem *** ODBC Libraries Link ***
 for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/o" echo %HG_HRB%\lib\hbodbc.lib + >> b32.bc
 for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/o" echo %HG_HRB%\lib\odbc32.lib + >> b32.bc
 for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/O" echo %HG_HRB%\lib\hbodbc.lib + >> b32.bc
 for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/O" echo %HG_HRB%\lib\odbc32.lib + >> b32.bc
 
-Rem ZIP Libraries Linking
-
+Rem *** ZIP Libraries Linking ***
 for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/z" echo %HG_HRB%\lib\zlib1.lib + >> b32.bc
 for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/z" echo %HG_HRB%\lib\ziparchive.lib + >> b32.bc
 for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/Z" echo %HG_HRB%\lib\zlib1.lib + >> b32.bc
 for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/Z" echo %HG_HRB%\lib\ziparchive.lib + >> b32.bc
 
-Rem ADS Libraries Linking
-
+Rem *** ADS Libraries Linking ***
 for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/a" echo %HG_HRB%\lib\rddads.lib + >> b32.bc
 for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/a" echo %HG_HRB%\lib\ace32.lib + >> b32.bc
 for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/A" echo %HG_HRB%\lib\rddads.lib + >> b32.bc
 for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/A" echo %HG_HRB%\lib\ace32.lib + >> b32.bc
 
-Rem MySql Libraries Linking
-
+Rem *** MySql Libraries Linking ***
 for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/m" echo %HG_HRB%\lib\mysql.lib + >> b32.bc
 for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/m" echo %HG_HRB%\lib\libmysql.lib + >> b32.bc
 for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/M" echo %HG_HRB%\lib\mysql.lib + >> b32.bc
