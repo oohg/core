@@ -1,5 +1,5 @@
 /*
- * $Id: h_progressmeter.prg,v 1.2 2005-09-12 02:46:42 guerra000 Exp $
+ * $Id: h_progressmeter.prg,v 1.3 2005-10-01 15:35:10 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -97,8 +97,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, lo, hi, value, tooltip, ;
    ::RangeMin := lo
    ::RangeMax := hi
 
-   ::oLabel := TLabel():Define( "0", ::Parent:Name, ::Col, ::Row, "", ::Width, ::Height, ::FontName, ;
-               ::FontSize, ::bold, .F., .F., .F., .F., ;
+   ::oLabel := TLabel():Define( "0", ::Parent:Name, ::Col, ::Row, "", ::Width, ::Height, ::cFontName, ;
+               ::nFontSize, ::bold, .F., .F., .F., .F., ;
                .F., ::FontColor, ::BackColor, ::OnClick, ::ToolTip, ;
                ::HelpId, invisible, ::italic, ::underline, ::strikeout, .F., ;
                .F., .F., ::lRtl, .T. )
@@ -205,7 +205,7 @@ METHOD SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout ) CLASS T
 *-----------------------------------------------------------------------------*
 Local uRet := ::Super:SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout )
    IF ValType( ::oLabel ) == "O"
-      ::oLabel:SetFont( ::FontName, ::FontSize, ::Bold, ::Italic, ::Underline, ::Strikeout )
+      ::oLabel:SetFont( ::cFontName, ::nFontSize, ::Bold, ::Italic, ::Underline, ::Strikeout )
    EndIf
    ::ReCalc( .T. )
 Return uRet

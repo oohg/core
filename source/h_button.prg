@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.5 2005-09-11 16:47:19 guerra000 Exp $
+ * $Id: h_button.prg,v 1.6 2005-10-01 15:35:10 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -129,7 +129,7 @@ Local ControlHandle, nStyle
              if( ValType( NoTabStop ) != "L" .OR. ! NoTabStop, WS_TABSTOP, 0 ) + ;
              if( ValType( invisible ) != "L" .OR. ! invisible, WS_VISIBLE, 0 )
 
-   ControlHandle := InitButton( ::Parent:hWnd, Caption, 0, x, y, w, h, ::lRtl, nStyle )
+   ControlHandle := InitButton( ::ContainerhWnd, Caption, 0, x, y, w, h, ::lRtl, nStyle )
 
    ::New( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
@@ -163,7 +163,7 @@ Local ControlHandle, nStyle
              if( ValType( NoTabStop ) != "L" .OR. ! NoTabStop, WS_TABSTOP, 0 ) + ;
              if( ValType( invisible ) != "L" .OR. ! invisible, WS_VISIBLE, 0 )
 
-   ControlHandle := InitButton( ::Parent:hWnd, Caption, 0, x, y, w, h, ::lRtl, nStyle )
+   ControlHandle := InitButton( ::ContainerhWnd, Caption, 0, x, y, w, h, ::lRtl, nStyle )
 
    ::New( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
    ::SizePos( y, x, w, h )

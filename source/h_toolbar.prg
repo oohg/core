@@ -1,5 +1,5 @@
 /*
- * $Id: h_toolbar.prg,v 1.7 2005-09-11 16:46:24 guerra000 Exp $
+ * $Id: h_toolbar.prg,v 1.8 2005-10-01 15:35:10 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -141,7 +141,7 @@ Local id
 	Id := _GetId()
 
    if _OOHG_ActiveSplitBox == .T.
-      _OOHG_SplitLastControl   := 'TOOLBAR'
+      _OOHG_SplitForceBreak := .T.
 	EndIf
 
    ControlHandle := InitToolBar( ::Parent:hWnd, Caption, id, 0, 0 ,w ,h, "" , 0 , flat , bottom , righttext , _OOHG_ActiveSplitBox , border , ::lRtl )

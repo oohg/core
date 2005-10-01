@@ -1,5 +1,5 @@
 /*
- * $Id: h_tree.prg,v 1.5 2005-08-25 05:57:42 guerra000 Exp $
+ * $Id: h_tree.prg,v 1.6 2005-10-01 15:35:10 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -141,19 +141,18 @@ Local Controlhandle , ImgDefNode, ImgDefItem, aBitmaps := array(4)
 
 	if valtype(Row) == "U" .or. valtype(Col) == "U"
 
-      If _OOHG_SplitLastControl == 'TOOLBAR'
-			Break := .T.
-		EndIf
+      if _OOHG_SplitForceBreak
+         Break := .T.
+      endif
+      _OOHG_SplitForceBreak := .F.
 
-         ControlHandle := InitTree ( ::Parent:ReBarHandle , col , row , width , height , 0 , '' , 0, iif(noBot,1,0), ::lRtl )
+      ControlHandle := InitTree ( ::Parent:ReBarHandle , col , row , width , height , 0 , '' , 0, iif(noBot,1,0), ::lRtl )
 
-         AddSplitBoxItem ( Controlhandle , ::Parent:ReBarHandle, Width , break , , , , _OOHG_ActiveSplitBoxInverted )
-
-         _OOHG_SplitLastControl := 'TREE'
+      AddSplitBoxItem ( Controlhandle , ::Parent:ReBarHandle, Width , break , , , , _OOHG_ActiveSplitBoxInverted )
 
 	Else
 
-      ControlHandle := InitTree ( ::Parent:hWnd, col , row , width , height , 0 , '' , 0, iif(noBot,1,0), ::lRtl )
+      ControlHandle := InitTree ( ::ContainerhWnd, col , row , width , height , 0 , '' , 0, iif(noBot,1,0), ::lRtl )
 
 	endif
 

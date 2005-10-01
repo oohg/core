@@ -1,5 +1,5 @@
 /*
- * $Id: h_font.prg,v 1.2 2005-08-25 06:04:27 guerra000 Exp $
+ * $Id: h_font.prg,v 1.3 2005-10-01 15:35:10 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -94,12 +94,12 @@
 *-----------------------------------------------------------------------------*
 Function _GetFontName ( ControlName, ParentForm )
 *-----------------------------------------------------------------------------*
-Return GetControlObject( ControlName, ParentForm ):FontName
+Return GetControlObject( ControlName, ParentForm ):cFontName
 
 *-----------------------------------------------------------------------------*
 Function _GetFontSize ( ControlName, ParentForm )
 *-----------------------------------------------------------------------------*
-Return GetControlObject( ControlName, ParentForm ):FontSize
+Return GetControlObject( ControlName, ParentForm ):nFontSize
 
 *-----------------------------------------------------------------------------*
 Function _GetFontBold ( ControlName, ParentForm )

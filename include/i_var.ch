@@ -1,5 +1,5 @@
 /*
- * $Id: i_var.ch,v 1.5 2005-09-29 05:20:23 guerra000 Exp $
+ * $Id: i_var.ch,v 1.6 2005-10-01 15:35:10 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -97,7 +97,7 @@
 MEMVAR _OOHG_AllVars
 
 #xtranslate  _OOHG_ActiveToolBar       => _OOHG_AllVars \[   1 \]
-#xtranslate  _OOHG_SplitLastControl    => _OOHG_AllVars \[   3 \]
+#xtranslate  _OOHG_SplitForceBreak     => _OOHG_AllVars \[   3 \]
 #xtranslate  _OOHG_ActiveSplitBox      => _OOHG_AllVars \[   4 \]
 #xtranslate  _OOHG_ActiveSplitBoxParentFormName => _OOHG_AllVars \[   5 \]
 #xtranslate  _OOHG_Id                  => _OOHG_AllVars \[   6 \]

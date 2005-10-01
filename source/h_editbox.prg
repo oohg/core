@@ -1,5 +1,5 @@
 /*
- * $Id: h_editbox.prg,v 1.3 2005-08-25 05:57:42 guerra000 Exp $
+ * $Id: h_editbox.prg,v 1.4 2005-10-01 15:35:10 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -129,16 +129,14 @@ empty(break)
 /*
 	if valtype(x) == "U" .or. valtype(y) == "U"
 
-      If _OOHG_SplitLastControl == 'TOOLBAR'
-			Break := .T.
-		EndIf
-
-      _OOHG_SplitLastControl   := 'EDIT'
+      if _OOHG_SplitForceBreak
+         Break := .T.
+      endif
+      _OOHG_SplitForceBreak := .F.
 
          ControlHandle := InitEditBox ( ::Parent:ReBarHandle, 0, x, y, w, h, '', 0 , maxlenght , readonly, invisible, notabstop , novscroll , nohscroll )
 
          AddSplitBoxItem ( Controlhandle , ::Parent:ReBarHandle, w , break , , , , _OOHG_ActiveSplitBoxInverted )
-         Containerhandle := ::Parent:ReBarHandle
 
 	Else
 

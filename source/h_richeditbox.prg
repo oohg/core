@@ -1,5 +1,5 @@
 /*
- * $Id: h_richeditbox.prg,v 1.4 2005-09-12 02:46:42 guerra000 Exp $
+ * $Id: h_richeditbox.prg,v 1.5 2005-10-01 15:35:10 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -109,7 +109,6 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
                readonly, break, HelpId, invisible, notabstop, bold, italic, ;
                underline, strikeout, field, backcolor, lRtl ) CLASS TEditRich
 *-----------------------------------------------------------------------------*
-Local ContainerHandle
 Local ControlHandle
 
    DEFAULT w         TO 120
@@ -132,20 +131,18 @@ Local ControlHandle
 
 	if valtype(x) == "U" .or. valtype(y) == "U"
 
-      If _OOHG_SplitLastControl == 'TOOLBAR'
-			Break := .T.
-		EndIf
+      if _OOHG_SplitForceBreak
+         Break := .T.
+      endif
+      _OOHG_SplitForceBreak := .F.
 
-      _OOHG_SplitLastControl   := 'RICHEDIT'
+      ControlHandle := InitRichEditBox ( ::Parent:ReBarHandle, 0, x, y, w, h, '', 0 , maxlenght , readonly, invisible, notabstop, ::lRtl )
 
-         ControlHandle := InitRichEditBox ( ::Parent:ReBarHandle, 0, x, y, w, h, '', 0 , maxlenght , readonly, invisible, notabstop, ::lRtl )
-
-         AddSplitBoxItem ( Controlhandle , ::Parent:ReBarHandle, w , break , , , , _OOHG_ActiveSplitBoxInverted )
-         Containerhandle := ::Parent:ReBarHandle
+      AddSplitBoxItem ( Controlhandle , ::Parent:ReBarHandle, w , break , , , , _OOHG_ActiveSplitBoxInverted )
 
 	Else
 
-      ControlHandle := InitRichEditBox ( ::Parent:hWnd, 0, x, y, w, h, '', 0 , maxlenght , readonly, invisible, notabstop, ::lRtl )
+      ControlHandle := InitRichEditBox ( ::ContainerhWnd, 0, x, y, w, h, '', 0 , maxlenght , readonly, invisible, notabstop, ::lRtl )
 
 	endif
 

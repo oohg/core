@@ -1,5 +1,5 @@
 /*
- * $Id: h_ipaddress.prg,v 1.2 2005-08-25 05:57:42 guerra000 Exp $
+ * $Id: h_ipaddress.prg,v 1.3 2005-10-01 15:35:10 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -120,7 +120,7 @@ Local ControlHandle
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, , , .t., lRtl )
 
-   ControlHandle := InitIPAddress( ::Parent:hWnd, 0, x, y, w, h , '' , 0, invisible, notabstop, ::lRtl )
+   ControlHandle := InitIPAddress( ::ContainerhWnd, 0, x, y, w, h , '' , 0, invisible, notabstop, ::lRtl )
 
 	If aValue <> Nil
 		SetIPAddress( ControlHandle , aValue[1], aValue[2], aValue[3], aValue[4] )

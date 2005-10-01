@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.10 2005-09-29 05:20:23 guerra000 Exp $
+ * $Id: i_windefs.ch,v 1.11 2005-10-01 15:35:10 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -314,6 +314,8 @@
 #define LVSIL_NORMAL       0
 #define LVSIL_SMALL        1
 #define LVSIL_STATE        2
+#define LVSCW_AUTOSIZE              -1
+#define LVSCW_AUTOSIZE_USEHEADER    -2
 
 // ListView styles
 #define LVS_ICON            0

@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.h,v 1.7 2005-09-02 05:52:18 guerra000 Exp $
+ * $Id: oohg.h,v 1.8 2005-10-01 15:35:10 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -60,25 +60,28 @@ extern void _OOHG_Send( PHB_ITEM pSelf, int iSymbol );
 LRESULT APIENTRY _OOHG_WndProc( PHB_ITEM pSelf, HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM lParam, WNDPROC lpfnOldWndProc );
 
 // Symbol tables
-#define s_Events_Notify    0
-#define s_GridForeColor    1
-#define s_GridBackColor    2
-#define s_aFontColor       3
-#define s_DefBkColorEdit   4
-#define s_Container        5
-#define s_Parent           6
-#define s_hCursor          7
-#define s_Events           8
-#define s_Events_Color     9
-#define s_Name             10
-#define s_Type             11
-#define s_TControl         12
-#define s_TLabel           13
-#define s_TGrid            14
-#define s_ContextMenu      15
-#define s_RowMargin        16
-#define s_ColMargin        17
-#define s_hWnd             18
-#define s_TText            19
+#define s_Events_Notify     0
+#define s_GridForeColor     1
+#define s_GridBackColor     2
+#define s_aFontColor        3
+#define s_DefBkColorEdit    4
+#define s_Container         5
+#define s_Parent            6
+#define s_hCursor           7
+#define s_Events            8
+#define s_Events_Color      9
+#define s_Name              10
+#define s_Type              11
+#define s_TControl          12
+#define s_TLabel            13
+#define s_TGrid             14
+#define s_ContextMenu       15
+#define s_RowMargin         16
+#define s_ColMargin         17
+#define s_hWnd              18
+#define s_TText             19
 #define s_AdjustRightScroll 20
-#define s_LastSymbol        21
+#define s_OnMouseMove       21
+#define s_OnMouseDrag       22
+#define s_DoEvent           23
+#define s_LastSymbol        24

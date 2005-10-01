@@ -1,5 +1,5 @@
 /*
- * $Id: h_spinner.prg,v 1.3 2005-08-25 05:57:42 guerra000 Exp $
+ * $Id: h_spinner.prg,v 1.4 2005-10-01 15:35:10 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -139,9 +139,9 @@ Local ControlHandle
              if( ValType( notabstop ) != "L" .OR. ! notabstop, WS_TABSTOP, 0 ) + ;
              if( ValType( readonly )  == "L" .AND.  readonly,  ES_READONLY, 0 )
 
-   ControlHandle := InitTextBox( ::Parent:hWnd, 0, x, y, w, h, nStyle, 0, ::lRtl )
+   ControlHandle := InitTextBox( ::ContainerhWnd, 0, x, y, w, h, nStyle, 0, ::lRtl )
 
-   ::AuxHandle := InitSpinner ( ::Parent:hWnd, 0, x + w, y, 15, h, rl, rh , invisible, wrap, ControlHandle, ::lRtl )
+   ::AuxHandle := InitSpinner( ::ContainerhWnd, 0, x + w, y, 15, h, rl, rh , invisible, wrap, ControlHandle, ::lRtl )
 
    ::New( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )

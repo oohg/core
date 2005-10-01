@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.22 2005-09-29 05:20:24 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.23 2005-10-01 15:35:10 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -107,6 +107,11 @@ STATIC _OOHG_MessageLoops := {}      // Message loops
 // C static variables
 #pragma BEGINDUMP
 
+#include "hbapi.h"
+#include "hbvm.h"
+#include <windows.h>
+#include "../include/oohg.h"
+
 int _OOHG_ShowContextMenus = 1;
 
 #pragma ENDDUMP
@@ -122,8 +127,8 @@ CLASS TWindow
    DATA nCol       INIT 0
    DATA nWidth     INIT 0
    DATA nHeight    INIT 0
-   DATA FontName   INIT ""
-   DATA FontSize   INIT 0
+   DATA cFontName  INIT ""
+   DATA nFontSize  INIT 0
    DATA Bold       INIT .F.
    DATA Italic     INIT .F.
    DATA Underline  INIT .F.
@@ -134,14 +139,16 @@ CLASS TWindow
    DATA ColMargin  INIT 0
    DATA Container  INIT nil
    DATA lRtl       INIT .F.
-   DATA ContextMenu   INIT nil
-   DATA Cargo         INIT nil
-   DATA lEnabled      INIT .T.
-   DATA aControls     INIT {}
+   DATA ContextMenu    INIT nil
+   DATA Cargo          INIT nil
+   DATA lEnabled       INIT .T.
+   DATA aControls      INIT {}
 
-   DATA OnClick       INIT nil
-   DATA OnGotFocus    INIT nil
-   DATA OnLostFocus   INIT nil
+   DATA OnClick        INIT nil
+   DATA OnGotFocus     INIT nil
+   DATA OnLostFocus    INIT nil
+   DATA OnMouseDrag    INIT nil
+   DATA OnMouseMove    INIT nil
 * Intento por controlar las teclas...
 *data akeys init {}
 
@@ -232,8 +239,6 @@ CLASS TForm FROM TWindow
    DATA OnInit         INIT nil
    DATA OnSize         INIT nil
    DATA OnPaint        INIT nil
-   DATA OnMouseDrag    INIT nil
-   DATA OnMouseMove    INIT nil
    DATA OnScrollUp     INIT nil
    DATA OnScrollDown   INIT nil
    DATA OnScrollLeft   INIT nil
@@ -380,11 +385,10 @@ Local nStyle := 0, nStyleEx := 0
          MsgOOHGError( "SplitChild Windows Can be Defined Only Inside SplitBox. Program terminated." )
       EndIf
 
-      If _OOHG_SplitLastControl == "TOOLBAR" .And. _OOHG_ActiveSplitBoxInverted == .F.
+      if _OOHG_SplitForceBreak .AND. ! _OOHG_ActiveSplitBoxInverted
          Break := .T.
-      EndIf
-
-      _OOHG_SplitLastControl   := 'SPLITCHILD'
+      endif
+      _OOHG_SplitForceBreak := .F.
 
       helpbutton := nominimize := nomaximize := nosize := nosysmenu := noshow := .F.
       // aRgb := { -1, -1, -1 }
@@ -689,19 +693,19 @@ Local Formhandle, vscroll, hscroll
    // Font Name:
    if ! empty( FontName )
       // Specified font
-      ::FontName := FontName
+      ::cFontName := FontName
    else
        // Default
-      ::FontName := _OOHG_DefaultFontName
+      ::cFontName := _OOHG_DefaultFontName
    endif
 
    // Font Size:
    if ! empty( FontSize )
       // Specified size
-      ::FontSize := FontSize
+      ::nFontSize := FontSize
    else
        // Default
-      ::FontSize := _OOHG_DefaultFontSize
+      ::nFontSize := _OOHG_DefaultFontSize
    endif
 
    AADD( _OOHG_ActiveForm, Self )
@@ -844,6 +848,10 @@ METHOD Activate( lNoStop, oWndLoop ) CLASS TForm
    ENDIF
    ::ActivateCount := oWndLoop:ActivateCount
    ::ActivateCount[ 1 ]++
+
+   IF ::ReBarHandle > 0
+      SizeRebar( ::ReBarHandle )
+   ENDIF
 
    // Show window
    if ::Type == "M"
@@ -1217,12 +1225,6 @@ Local nPos
 Return IF( nPos > 0, ::aControls[ nPos ], nil )
 
 #pragma BEGINDUMP
-#include "hbapi.h"
-#include "hbvm.h"
-#include <windows.h>
-#include "../include/oohg.h"
-
-extern PHB_ITEM GetControlObjectByHandle( LONG hWnd );
 
 // -----------------------------------------------------------------------------
 HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TForm
@@ -2186,13 +2188,12 @@ Local oParent
               nil, nil, nil, .F., nStyle, nStyleEx, ;
               .T., lRtl )
 
-   If _OOHG_SplitLastControl == "TOOLBAR" .And. _OOHG_ActiveSplitBoxInverted == .F.
+   if _OOHG_SplitForceBreak .AND. ! _OOHG_ActiveSplitBoxInverted == .F.
       Break := .T.
-   EndIf
+   endif
+   _OOHG_SplitForceBreak := .F.
 
    AddSplitBoxItem ( ::hWnd, oParent:ReBarHandle, w , break , grippertext ,  ,  , _OOHG_ActiveSplitBoxInverted )
-
-   _OOHG_SplitLastControl   := 'SPLITCHILD'
 
    ::Type := "X"
    ::Parent := oParent
@@ -2251,7 +2252,7 @@ Return Nil
 Function _EndSplitBox ()
 *-----------------------------------------------------------------------------*
 
-   _OOHG_SplitLastControl   := "TOOLBAR"
+   _OOHG_SplitForceBreak := .T.
 
    _OOHG_ActiveSplitBox := .F.
 

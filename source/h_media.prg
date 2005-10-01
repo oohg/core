@@ -1,5 +1,5 @@
 /*
- * $Id: h_media.prg,v 1.2 2005-08-26 06:04:16 guerra000 Exp $
+ * $Id: h_media.prg,v 1.3 2005-10-01 15:35:10 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -127,7 +127,7 @@ Local Self
 
    Self := TPlayer():SetForm( ControlName, ParentForm )
 
-   Hh :=InitPlayer ( ::Parent:hWnd  , ;
+   Hh :=InitPlayer ( ::ContainerhWnd, ;
 				file 				, ;
 				col 				, ;
 				row				, ;
@@ -215,7 +215,7 @@ Local Self
 
    Self := TAnimateBox():SetForm( ControlName, ParentForm )
 
-   hh:=InitAnimate(::Parent:hWnd,col,row,w,h,autoplay,center,transparent)
+   hh := InitAnimate( ::ContainerhWnd, col, row, w, h, autoplay, center, transparent )
 
    ::New( hh, ControlName, HelpId )
    ::SizePos( row, col, w, h )

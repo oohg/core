@@ -1,5 +1,5 @@
 /*
- * $Id: h_listbox.prg,v 1.5 2005-09-12 02:46:42 guerra000 Exp $
+ * $Id: h_listbox.prg,v 1.6 2005-10-01 15:35:10 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -153,19 +153,18 @@ Local ControlHandle
 
 	if valtype(x) == "U" .or. valtype(y) == "U"
 
-      If _OOHG_SplitLastControl == "TOOLBAR"
-			Break := TRUE
-		EndIf
+      if _OOHG_SplitForceBreak
+         Break := .T.
+      endif
+      _OOHG_SplitForceBreak := .F.
 
-         ControlHandle := InitListBox( ::Parent:ReBarHandle, 0, 0, 0, w, h, invisible, notabstop, sort, nStyle, ::lRtl )
+      ControlHandle := InitListBox( ::Parent:ReBarHandle, 0, 0, 0, w, h, invisible, notabstop, sort, nStyle, ::lRtl )
 
-         AddSplitBoxItem ( Controlhandle , ::Parent:ReBarHandle, w , break , , , , _OOHG_ActiveSplitBoxInverted )
-
-         _OOHG_SplitLastControl   := "LISTBOX"
+      AddSplitBoxItem ( Controlhandle , ::Parent:ReBarHandle, w , break , , , , _OOHG_ActiveSplitBoxInverted )
 
 	Else
 
-      ControlHandle := InitListBox( ::Parent:hWnd, 0, x, y, w, h, invisible, notabstop, sort, nStyle, ::lRtl )
+      ControlHandle := InitListBox( ::ContainerhWnd, 0, x, y, w, h, invisible, notabstop, sort, nStyle, ::lRtl )
 
 	endif
 

@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.16 2005-09-29 05:20:24 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.17 2005-10-01 15:35:10 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -141,6 +141,7 @@ CLASS TGrid FROM TControl
    METHOD FontColor      SETGET
    METHOD BackColor      SETGET
    METHOD SetRangeColor
+   METHOD ColumnWidth
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -218,11 +219,10 @@ Local ControlHandle, aImageList
 
    if valtype( x ) != "N" .OR. valtype( y ) != "N"
 
-      If _OOHG_SplitLastControl == 'TOOLBAR'
-			Break := .T.
-		EndIf
-
-      _OOHG_SplitLastControl   := "GRID"
+      if _OOHG_SplitForceBreak
+         Break := .T.
+      endif
+      _OOHG_SplitForceBreak := .F.
 
          ControlHandle := InitListView ( ::Parent:ReBarHandle, 0, 0, 0, w, h ,'',0,iif( nogrid, 0, 1 ) , ownerdata , itemcount , nStyle, ::lRtl )
 
@@ -233,7 +233,7 @@ Local ControlHandle, aImageList
 
 	Else
 
-      ControlHandle := InitListView ( ::Parent:hWnd, 0, x, y, w, h ,'',0, iif( nogrid, 0, 1 ) , ownerdata  , itemcount  , nStyle, ::lRtl )
+      ControlHandle := InitListView ( ::ContainerhWnd, 0, x, y, w, h ,'',0, iif( nogrid, 0, 1 ) , ownerdata  , itemcount  , nStyle, ::lRtl )
 
 	endif
 
@@ -1179,6 +1179,20 @@ Local nAux
       NEXT
    ENDIF
 Return aGrid
+
+*-----------------------------------------------------------------------------*
+METHOD ColumnWidth( nColumn, nWidth ) CLASS TGrid
+*-----------------------------------------------------------------------------*
+   IF ValType( nColumn ) == "N" .AND. nColumn >= 1 .AND. nColumn <= Len( ::aHeaders )
+      IF ValType( nWidth ) == "N"
+         ListView_SetColumnWidth( ::hWnd, nColumn - 1, nWidth )
+      ENDIF
+      nWidth := ListView_GetColumnWidth( ::hWnd, nColumn - 1 )
+      ::aWidths[ nColumn ] := nWidth
+   Else
+      nWidth := 0
+   ENDIF
+Return nWidth
 
 
 

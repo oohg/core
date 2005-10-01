@@ -1,5 +1,5 @@
 /*
- * $Id: h_radio.prg,v 1.4 2005-08-18 04:07:28 guerra000 Exp $
+ * $Id: h_radio.prg,v 1.5 2005-10-01 15:35:10 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -142,7 +142,7 @@ Local ControlHandle
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor )
 
-   ControlHandle := InitRadioGroup( ::Parent:hWnd, aOptions[1], 0, x, y , '' , 0 , width, invisible, notabstop )
+   ControlHandle := InitRadioGroup( ::ContainerhWnd, aOptions[1], 0, x, y , '' , 0 , width, invisible, notabstop )
 
    ::New( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
@@ -168,7 +168,7 @@ Local ControlHandle
 
       y += Spacing
 
-      ControlHandle := InitRadioButton( ::Parent:hWnd, aOptions[i], 0, ::Col, y , '' , 0 , width, invisible )
+      ControlHandle := InitRadioButton( ::ContainerhWnd, aOptions[i], 0, ::Col, y , '' , 0 , width, invisible )
 
       oItem := TRadioItem():SetContainer( Self )
       oItem:New( ControlHandle, , HelpId, ! Invisible, ToolTip )

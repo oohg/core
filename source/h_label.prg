@@ -1,5 +1,5 @@
 /*
- * $Id: h_label.prg,v 1.7 2005-09-29 05:20:24 guerra000 Exp $
+ * $Id: h_label.prg,v 1.8 2005-10-01 15:35:10 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -161,7 +161,7 @@ METHOD Caption( cValue ) CLASS TLabel
 		EndIf
       SetWindowText( ::hWnd , cValue )
       If ::Transparent
-         RedrawWindowControlRect( ::Parent:hWnd, ::ContainerRow, ::ContainerCol, ::ContainerRow + ::Height, ::ContainerCol + ::Width )
+         RedrawWindowControlRect( ::ContainerhWnd, ::ContainerRow, ::ContainerCol, ::ContainerRow + ::Height, ::ContainerCol + ::Width )
       EndIf
    ELSE
       cValue := GetWindowText( ::hWnd )

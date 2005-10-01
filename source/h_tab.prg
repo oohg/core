@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.7 2005-09-11 16:46:24 guerra000 Exp $
+ * $Id: h_tab.prg,v 1.8 2005-10-01 15:35:10 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -146,7 +146,7 @@ Local ControlHandle
       Images := {}
    ENDIF
 
-   ControlHandle = InitTabControl( ::Parent:hWnd, 0, x, y, w, h , {}, value, '', 0 , Buttons , Flat , HotTrack , Vertical , notabstop )
+   ControlHandle = InitTabControl( ::ContainerhWnd, 0, x, y, w, h , {}, value, '', 0 , Buttons , Flat , HotTrack , Vertical , notabstop )
    SetWindowPos( ControlHandle, 0, 0, 0, 0, 0, 3 )
 
    // Add page by page

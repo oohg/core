@@ -1,5 +1,5 @@
 /*
- * $Id: c_grid.c,v 1.9 2005-08-25 06:06:51 guerra000 Exp $
+ * $Id: c_grid.c,v 1.10 2005-10-01 15:35:10 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -543,6 +543,11 @@ HB_FUNC( LISTVIEW_GETBKCOLOR )
 HB_FUNC( LISTVIEW_GETCOLUMNWIDTH )
 {
     hb_retni( ListView_GetColumnWidth( ( HWND ) hb_parnl( 1 ), hb_parni( 2 ) ) );
+}
+
+HB_FUNC( LISTVIEW_SETCOLUMNWIDTH )
+{
+    hb_retni( ListView_SetColumnWidth( ( HWND ) hb_parnl( 1 ), hb_parni( 2 ), hb_parni( 3 ) ) );
 }
 
 HB_FUNC( _OOHG_GRIDARRAYWIDTHS )

@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.15 2005-09-29 05:20:24 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.16 2005-10-01 15:35:10 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -173,7 +173,7 @@ Return GetControlObject( ControlName, ParentForm ):Container:hWnd
 *-----------------------------------------------------------------------------*
 Function GetControlParentHandle( ControlName, ParentForm )
 *-----------------------------------------------------------------------------*
-Return GetControlObject( ControlName, ParentForm ):Parent:hWnd
+Return GetControlObject( ControlName, ParentForm ):ContainerhWnd     // :Parent:hWnd
 
 *-----------------------------------------------------------------------------*
 Function GetControlId (ControlName,ParentForm)
@@ -1078,6 +1078,14 @@ Local oWnd, oCtrl
 
 			_SetStatusIcon ( Arg2 , Arg1 , Arg4 , Arg5 )
 
+      ElseIf Arg3 == 'COLUMNWIDTH'
+
+			If .Not. _IsControlDefined ( Arg2 , Arg1  )
+            MsgOOHGError ("Control: " + Arg2 + " Of " + Arg1 + " Not defined. Program Terminated" )
+			endif
+
+         oCtrl:ColumnWidth( Arg4, Arg5 )
+
 		Else
 			// If Property Not Matched Look For ToolBar Button
 
@@ -1223,11 +1231,11 @@ Local RetVal, oWnd, oCtrl
 
 		ElseIf Arg3 == 'FONTNAME'
 
-         RetVal := oCtrl:FontName
+         RetVal := oCtrl:cFontName
 
 		ElseIf Arg3 == 'FONTSIZE'
 
-         RetVal := oCtrl:Size
+         RetVal := oCtrl:nFontSize
 
 		ElseIf Arg3 == 'FONTBOLD'
 
@@ -1315,7 +1323,7 @@ Local RetVal, oWnd, oCtrl
 
 		ElseIf Arg3 == 'FORECOLOR'
 
-         RetVal := oCtrl:FontColor
+         RetVal := oCtrl:BackColor
 
 		ElseIf Arg3 == 'ADDRESS'
 
@@ -1352,6 +1360,14 @@ Local RetVal, oWnd, oCtrl
 			endif
 
          RetVal := oCtrl:Caption( Arg4 )
+
+      ElseIf Arg3 == 'COLUMNWIDTH'
+
+			If .Not. _IsControlDefined ( Arg2 , Arg1  )
+            MsgOOHGError ("Control: " + Arg2 + " Of " + Arg1 + " Not defined. Program Terminated" )
+			endif
+
+         RetVal := oCtrl:ColumnWidth( Arg4 )
 
 		Else
 
@@ -1806,6 +1822,12 @@ CLASS TControl FROM TWindow
    METHOD ContainerVisible    BLOCK { |Self| ::lVisible .AND. IF( ::Container != NIL, ::Container:ContainerVisible, .T. ) }
    METHOD ContainerhWnd       BLOCK { |Self| IF( ::Container != NIL, ::Container:ContainerhWnd, ::Parent:hWnd ) }
    METHOD SetFont
+   METHOD FontName            SETGET
+   METHOD FontSize            SETGET
+   METHOD FontBold            SETGET
+   METHOD FontItalic          SETGET
+   METHOD FontUnderline       SETGET
+   METHOD FontStrikeout       SETGET
    METHOD SizePos
    METHOD Move
    METHOD Value               BLOCK { || nil }
@@ -1924,31 +1946,31 @@ LOCAL nPos
    // Font Name:
    if ! empty( FontName )
       // Specified font
-      ::FontName := FontName
+      ::cFontName := FontName
    elseif ::Container != nil
       // Active frame
-      ::FontName := ::Container:FontName
-   elseif ! Empty( ::Parent:FontName )
+      ::cFontName := ::Container:cFontName
+   elseif ! Empty( ::Parent:cFontName )
       // Parent
-      ::FontName := ::Parent:FontName
+      ::cFontName := ::Parent:cFontName
    else
        // Default
-      ::FontName := _OOHG_DefaultFontName
+      ::cFontName := _OOHG_DefaultFontName
    endif
 
    // Font Size:
    if ! empty( FontSize )
       // Specified size
-      ::FontSize := FontSize
+      ::nFontSize := FontSize
    elseif ::Container != nil
       // Active frame
-      ::FontSize := ::Container:FontSize
-   elseif ! Empty( ::Parent:FontSize )
+      ::nFontSize := ::Container:nFontSize
+   elseif ! Empty( ::Parent:nFontSize )
       // Parent
-      ::FontSize := ::Parent:FontSize
+      ::nFontSize := ::Parent:nFontSize
    else
        // Default
-      ::FontSize := _OOHG_DefaultFontSize
+      ::nFontSize := _OOHG_DefaultFontSize
    endif
 
    // Font Color:
@@ -2023,31 +2045,31 @@ METHOD SetContainer( Container, ControlName, FontName, FontSize, FontColor, BkCo
    // Font Name:
    if ! empty( FontName )
       // Specified font
-      ::FontName := FontName
-   elseif ! empty( ::Container:FontName )
+      ::cFontName := FontName
+   elseif ! empty( ::Container:cFontName )
       // Container
-      ::FontName := ::Container:FontName
-   elseif ! empty( ::Parent:FontName )
+      ::cFontName := ::Container:cFontName
+   elseif ! empty( ::Parent:cFontName )
       // Parent form
-      ::FontName := ::Parent:FontName
+      ::cFontName := ::Parent:cFontName
    else
        // Default
-      ::FontName := _OOHG_DefaultFontName
+      ::cFontName := _OOHG_DefaultFontName
    endif
 
    // Font Size:
    if ! empty( FontSize )
       // Specified size
-      ::FontSize := FontSize
-   elseif ! empty( ::Container:FontSize )
+      ::nFontSize := FontSize
+   elseif ! empty( ::Container:nFontSize )
       // Container
-      ::FontSize := ::Container:FontSize
-   elseif ! empty( ::Parent:FontSize )
+      ::nFontSize := ::Container:nFontSize
+   elseif ! empty( ::Parent:nFontSize )
       // Parent form
-      ::FontSize := ::Parent:FontSize
+      ::nFontSize := ::Parent:nFontSize
    else
        // Default
-      ::FontSize := _OOHG_DefaultFontSize
+      ::nFontSize := _OOHG_DefaultFontSize
    endif
 
    // Font Color:
@@ -2201,10 +2223,10 @@ METHOD SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout ) CLASS T
       DeleteObject( ::FontHandle )
    ENDIF
    IF ! EMPTY( FontName ) .AND. VALTYPE( FontName ) $ "CM"
-      ::FontName := FontName
+      ::cFontName := FontName
    ENDIF
    IF ! EMPTY( FontSize ) .AND. VALTYPE( FontSize ) == "N"
-      ::FontSize := FontSize
+      ::nFontSize := FontSize
    ENDIF
    IF VALTYPE( Bold ) == "L"
       ::Bold := Bold
@@ -2218,8 +2240,56 @@ METHOD SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout ) CLASS T
    IF VALTYPE( Strikeout ) == "L"
       ::Strikeout := Strikeout
    ENDIF
-   ::FontHandle := _SetFont( ::hWnd, ::FontName, ::FontSize, ::Bold, ::Italic, ::Underline, ::Strikeout )
+   ::FontHandle := _SetFont( ::hWnd, ::cFontName, ::nFontSize, ::Bold, ::Italic, ::Underline, ::Strikeout )
 Return Nil
+
+*-----------------------------------------------------------------------------*
+METHOD FontName( cFontName ) CLASS TControl
+*-----------------------------------------------------------------------------*
+   If ValType( cFontName ) $ "CM"
+      ::SetFont( cFontName )
+   EndIf
+Return ::cFontName
+
+*-----------------------------------------------------------------------------*
+METHOD FontSize( nFontSize ) CLASS TControl
+*-----------------------------------------------------------------------------*
+   If ValType( nFontSize ) == "N"
+      ::SetFont( , nFontSize )
+   EndIf
+Return ::nFontSize
+
+*-----------------------------------------------------------------------------*
+METHOD FontBold( lBold ) CLASS TControl
+*-----------------------------------------------------------------------------*
+   If ValType( lBold ) == "L"
+      ::SetFont( ,, lBold )
+   EndIf
+Return ::Bold
+
+*-----------------------------------------------------------------------------*
+METHOD FontItalic( lItalic ) CLASS TControl
+*-----------------------------------------------------------------------------*
+   If ValType( lItalic ) == "L"
+      ::SetFont( ,,, lItalic )
+   EndIf
+Return ::Italic
+
+*-----------------------------------------------------------------------------*
+METHOD FontUnderline( lUnderline ) CLASS TControl
+*-----------------------------------------------------------------------------*
+   If ValType( lUnderline ) == "L"
+      ::SetFont( ,,,, lUnderline )
+   EndIf
+Return ::Underline
+
+*-----------------------------------------------------------------------------*
+METHOD FontStrikeout( lStrikeout ) CLASS TControl
+*-----------------------------------------------------------------------------*
+   If ValType( lStrikeout ) == "L"
+      ::SetFont( ,,,,, lStrikeout )
+   EndIf
+Return ::Strikeout
 
 *-----------------------------------------------------------------------------*
 METHOD SizePos( Row, Col, Width, Height ) CLASS TControl
@@ -2364,7 +2434,7 @@ HB_FUNC_STATIC( TCONTROL_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam
 {
    HWND hWnd      = ( HWND )   hb_parnl( 1 );
    UINT message   = ( UINT )   hb_parni( 2 );
-   // WPARAM wParam  = ( WPARAM ) hb_parni( 3 );
+   WPARAM wParam  = ( WPARAM ) hb_parni( 3 );
    LPARAM lParam  = ( LPARAM ) hb_parnl( 4 );
    PHB_ITEM pSelf = hb_stackSelfItem();
    ULONG lData;
@@ -2379,6 +2449,26 @@ HB_FUNC_STATIC( TCONTROL_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam
          {
             SetCursor( ( HCURSOR ) lData );
          }
+
+         // _OOHG_MouseRow := HIWORD( lParam ) - ::RowMargin
+         // _OOHG_MouseCol := LOWORD( lParam ) - ::ColMargin
+         if( wParam == MK_LBUTTON )
+         {
+            _OOHG_Send( pSelf, s_OnMouseDrag );
+         }
+         else
+         {
+            _OOHG_Send( pSelf, s_OnMouseMove );
+         }
+         hb_vmSend( 0 );
+         if( hb_param( -1, HB_IT_BLOCK ) )
+         {
+            _OOHG_Send( pSelf, s_DoEvent );
+            hb_vmPush( hb_param( -1, HB_IT_BLOCK ) );
+            hb_vmPushString( "", 0 );
+            hb_vmSend( 2 );
+         }
+
          hb_ret();
          break;
 

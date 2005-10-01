@@ -1,5 +1,5 @@
 /*
- * $Id: h_slider.prg,v 1.3 2005-09-12 02:46:42 guerra000 Exp $
+ * $Id: h_slider.prg,v 1.4 2005-10-01 15:35:10 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -127,7 +127,7 @@ Local Self
 
    Self := TSlider():SetForm( ControlName, ParentForm, , , , BackColor )
 
-   ControlHandle := InitSlider ( ::Parent:hWnd, 0, x, y, w, h, lo, hi, vertical, noticks, both, top, left, invisible, notabstop )
+   ControlHandle := InitSlider ( ::ContainerhWnd, 0, x, y, w, h, lo, hi, vertical, noticks, both, top, left, invisible, notabstop )
 
 	SendMessage( ControlHandle , TBM_SETPOS ,1,  value )
 

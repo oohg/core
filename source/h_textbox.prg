@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.12 2005-09-29 05:20:24 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.13 2005-10-01 15:35:10 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -109,6 +109,7 @@ CLASS TText FROM TLabel
 
    METHOD Value       SETGET
    METHOD SetFocus
+   METHOD CaretPos    SETGET
    METHOD Events_Enter
    METHOD Events_Command
 ENDCLASS
@@ -141,6 +142,7 @@ METHOD Define2( cControlName, cParentForm, nx, ny, nWidth, nHeight, cValue, ;
                 backcolor, fontcolor, invisible, notabstop, nStyle, lRtl ) CLASS TText
 *-----------------------------------------------------------------------------*
 Local nControlHandle
+local break
 
    // Assign STANDARD values to optional params.
 	DEFAULT nWidth     TO 120
@@ -169,7 +171,23 @@ Local nControlHandle
              IF( Valtype( notabstop ) != "L" .OR. !notabstop, WS_TABSTOP,   0 )
 
 	// Creates the control window.
-   nControlHandle := InitTextBox( ::Parent:hWnd, 0, nx, ny, nWidth, nHeight, nStyle, nMaxLenght, ::lRtl )
+*   nControlHandle := InitTextBox( ::ContainerhWnd, 0, nx, ny, nWidth, nHeight, nStyle, nMaxLenght, ::lRtl )
+   if valtype(nx) == "U" .or. valtype(ny) == "U"
+
+      if _OOHG_SplitForceBreak
+         Break := .T.
+      endif
+      _OOHG_SplitForceBreak := .F.
+
+      nControlHandle := InitTextBox( ::Parent:ReBarHandle, 0, nx, ny, nWidth, nHeight, nStyle, nMaxLenght, ::lRtl )
+
+      AddSplitBoxItem ( nControlhandle , ::Parent:ReBarHandle, nWidth, break , , , , _OOHG_ActiveSplitBoxInverted )
+
+	Else
+
+       nControlHandle := InitTextBox( ::ContainerhWnd, 0, nx, ny, nWidth, nHeight, nStyle, nMaxLenght, ::lRtl )
+
+	endif
 
    ::New( nControlHandle, cControlName, HelpId, ! Invisible, cToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
@@ -220,6 +238,14 @@ Local uRet
 Return uRet
 
 *------------------------------------------------------------------------------*
+METHOD CaretPos( nPos ) CLASS TText
+*------------------------------------------------------------------------------*
+   IF ValType( nPos ) == "N"
+      SendMessage( ::hWnd, EM_SETSEL, nPos, nPos )
+   ENDIF
+Return HiWord( SendMessage( ::hWnd, EM_GETSEL, 0, 0 ) )
+
+*------------------------------------------------------------------------------*
 METHOD Events_Enter() CLASS TText
 *------------------------------------------------------------------------------*
    _OOHG_SetFocusExecuted := .F.
@@ -242,7 +268,7 @@ Local Hi_wParam := HIWORD( wParam )
 
       If ::Transparent
 
-         RedrawWindowControlRect( ::Parent:hWnd, ::ContainerRow, ::ContainerCol, ::ContainerRow + ::Height, ::ContainerCol + ::Width )
+         RedrawWindowControlRect( ::ContainerhWnd, ::ContainerRow, ::ContainerCol, ::ContainerRow + ::Height, ::ContainerCol + ::Width )
 
       EndIf
 

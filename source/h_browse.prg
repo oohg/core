@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.23 2005-09-29 05:20:24 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.24 2005-10-01 15:35:10 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -141,6 +141,8 @@ CLASS TBrowse FROM TGrid
    METHOD EditCell
    METHOD AdjustRightScroll
 
+   METHOD ColumnWidth
+
    METHOD Home
    METHOD End
    METHOD PageUp
@@ -175,7 +177,7 @@ Local ScrollBarHandle, hsum, ScrollBarButtonHandle := 0, nWidth2, nCol2
 	else
       aSize( aHeaders, len( aFields ) )
 	endif
-   aEval( aHeaders, { |x,i| aHeaders[ i ] := iif( ! ValType( x ) $ "CM" .OR. Empty( x ), aFields[ i ], x ) } )
+   aEval( aHeaders, { |x,i| aHeaders[ i ] := iif( ! ValType( x ) $ "CM", aFields[ i ], x ) } )
 
 	// If splitboxed force no vertical scrollbar
 
@@ -223,12 +225,12 @@ Local ScrollBarHandle, hsum, ScrollBarButtonHandle := 0, nWidth2, nCol2
       ENDIF
 
 		if hsum > w - GETVSCROLLBARWIDTH() - 4
-         ScrollBarHandle := InitVScrollBar ( ::Parent:hWnd, nCol2, y , GETVSCROLLBARWIDTH() , h - GETHSCROLLBARHEIGHT() )
-         ScrollBarButtonHandle := InitVScrollBarButton ( ::Parent:hWnd, nCol2, y + h - GETHSCROLLBARHEIGHT() , GETVSCROLLBARWIDTH() , GETHSCROLLBARHEIGHT() )
+         ScrollBarHandle := InitVScrollBar ( ::ContainerhWnd, nCol2, y , GETVSCROLLBARWIDTH() , h - GETHSCROLLBARHEIGHT() )
+         ScrollBarButtonHandle := InitVScrollBarButton ( ::ContainerhWnd, nCol2, y + h - GETHSCROLLBARHEIGHT() , GETVSCROLLBARWIDTH() , GETHSCROLLBARHEIGHT() )
          ::nButtonActive := 1
 		Else
-         ScrollBarHandle := InitVScrollBar ( ::Parent:hWnd, nCol2, y , GETVSCROLLBARWIDTH() , h )
-         ScrollBarButtonHandle := InitVScrollBarButton ( ::Parent:hWnd, nCol2, y + h - GETHSCROLLBARHEIGHT() , 0 , 0 )
+         ScrollBarHandle := InitVScrollBar ( ::ContainerhWnd, nCol2, y , GETVSCROLLBARWIDTH() , h )
+         ScrollBarButtonHandle := InitVScrollBarButton ( ::ContainerhWnd, nCol2, y + h - GETHSCROLLBARHEIGHT() , 0 , 0 )
          ::nButtonActive := 0
 		EndIf
 
@@ -1240,6 +1242,16 @@ Local hws, lRet, nButton, nCol
       ENDIF
    EndIf
 Return lRet
+
+*-----------------------------------------------------------------------------*
+METHOD ColumnWidth( nColumn, nWidth ) CLASS TBrowse
+*-----------------------------------------------------------------------------*
+Local nRet
+   nRet := ::Super:ColumnWidth( nColumn, nWidth )
+   IF ::AdjustRightScroll()
+      ::Refresh()
+   ENDIF
+Return nRet
 
 *-----------------------------------------------------------------------------*
 METHOD ProcessInPlaceKbdEdit( append ) CLASS TBrowse

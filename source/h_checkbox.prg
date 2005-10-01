@@ -1,5 +1,5 @@
 /*
- * $Id: h_checkbox.prg,v 1.4 2005-08-18 04:07:28 guerra000 Exp $
+ * $Id: h_checkbox.prg,v 1.5 2005-10-01 15:35:10 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -126,7 +126,7 @@ Local ControlHandle
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor )
 
-   Controlhandle := InitCheckBox ( ::Parent:hWnd, Caption, 0, x, y, '', 0 , w , h, invisible, notabstop )
+   Controlhandle := InitCheckBox ( ::ContainerhWnd, Caption, 0, x, y, '', 0 , w , h, invisible, notabstop )
 
    ::New( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
@@ -175,7 +175,7 @@ Local ControlHandle
 
    Self := TCheckBox():SetForm( ControlName, ParentForm, FontName, FontSize )
 
-   Controlhandle := InitCheckButton ( ::Parent:hWnd, Caption, 0, x, y, '', 0 , w , h, invisible, notabstop )
+   Controlhandle := InitCheckButton ( ::ContainerhWnd, Caption, 0, x, y, '', 0 , w , h, invisible, notabstop )
 
    ::New( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
@@ -211,7 +211,7 @@ Local ControlHandle
 
    Self := TCheckBox():SetForm( ControlName, ParentForm, FontName, FontSize )
 
-   Controlhandle := InitImageCheckButton ( ::Parent:hWnd, "", 0, x, y, '', 0 , bitmap , w , h, invisible, notabstop )
+   Controlhandle := InitImageCheckButton ( ::ContainerhWnd, "", 0, x, y, '', 0 , bitmap , w , h, invisible, notabstop )
 
    ::New( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
    ::SetFont()

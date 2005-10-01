@@ -1,5 +1,5 @@
 /*
- * $Id: h_error.prg,v 1.4 2005-08-26 06:05:58 guerra000 Exp $
+ * $Id: h_error.prg,v 1.5 2005-10-01 15:35:10 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -112,24 +112,24 @@ Function MsgOOHGError(Message)
    _KillAllKeys()
 
     HtmArch := Html_ErrorLog()
-    Html_LineText(HtmArch,"Date:"+Dtoc(Date())+"  "+"Time: "+Time())
+    Html_LineText( HtmArch, "Date:" + Dtoc( Date() ) + "  " + "Time: " + Time() )
     n := 1
-    ai := "" + MiniGuiVersion()+chr(13) + chr(10) + Message + chr(13) + chr (10) + chr(13) + chr (10)
-    Html_LineText(HtmArch,"Error: " + MiniGuiVersion())
-    Html_LineText(HtmArch,Message)
+    ai := MiniGuiVersion() + chr( 13 ) + chr( 10 ) + Message + chr( 13 ) + chr( 10 ) + chr( 13 ) + chr( 10 )
+    Html_LineText( HtmArch, "Error: " + MiniGuiVersion() )
+    Html_LineText( HtmArch, Message)
     WHILE ! Empty( ProcName( n ) )
-       xText := "Called from " + ProcName( n ) + "(" + AllTrim( Str( ProcLine( n++ ) ) ) + ")" +CHR(13) +CHR(10)
+       xText := "Called from " + ProcName( n ) + "(" + AllTrim( Str( ProcLine( n++ ) ) ) + ")" + CHR( 13 ) + CHR( 10 )
        ai += xText
-       Html_LineText(HtmArch,xText)
+       Html_LineText( HtmArch, xText )
     ENDDO
-    Html_Line(HtmArch)
-    ShowError(ai)
+    Html_Line( HtmArch )
+    ShowError( ai )
 Return Nil
 
 *------------------------------------------------------------------------------
 Function ooHGVersion()
 *------------------------------------------------------------------------------
-Return "ooHG pre-release - 2005.08.25"
+Return "ooHG pre-release - 2005.09.30"
 
 Function MiniGuiVersion()
 Return ooHGVersion()

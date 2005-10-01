@@ -1,5 +1,5 @@
 /*
- * $Id: h_datepicker.prg,v 1.4 2005-08-25 05:57:42 guerra000 Exp $
+ * $Id: h_datepicker.prg,v 1.5 2005-10-01 15:35:10 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -130,7 +130,7 @@ Local ControlHandle
       Value := EVAL( ::Block )
 	EndIf
 
-   ControlHandle := InitDatePick ( ::Parent:hWnd, 0, x, y, w, h , '' , 0 , shownone , updown , rightalign, invisible, notabstop , ::lRtl )
+   ControlHandle := InitDatePick ( ::ContainerhWnd, 0, x, y, w, h , '' , 0 , shownone , updown , rightalign, invisible, notabstop , ::lRtl )
 
 	If Empty (Value)
 		SetDatePickNull (ControlHandle)

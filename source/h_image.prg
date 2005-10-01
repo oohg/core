@@ -1,5 +1,5 @@
 /*
- * $Id: h_image.prg,v 1.3 2005-08-25 05:57:42 guerra000 Exp $
+ * $Id: h_image.prg,v 1.4 2005-10-01 15:35:10 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -123,7 +123,7 @@ Local ControlHandle
 		ProcedureName := ""
 	endif
 
-   ControlHandle := InitImage( ::Parent:hWnd, 0, x, y , FileName ,w,h,invisible , if ( stretch == .t. , 1 , 0 ) , lWhiteBackground, ::lRtl )
+   ControlHandle := InitImage( ::ContainerhWnd, 0, x, y , FileName ,w,h,invisible , if ( stretch == .t. , 1 , 0 ) , lWhiteBackground, ::lRtl )
 
    ::New( ControlHandle, ControlName, HelpId, ! Invisible )
    ::SizePos( y, x, w, h )

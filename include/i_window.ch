@@ -1,5 +1,5 @@
 /*
- * $Id: i_window.ch,v 1.6 2005-09-29 05:20:23 guerra000 Exp $
+ * $Id: i_window.ch,v 1.7 2005-10-01 15:35:10 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -122,8 +122,8 @@
         #xtranslate <w> . \<c\> . \<p:Value,Name,Value,Address,BackColor,FontColor,Picture,ToolTip,FontName,FontSize,FontBold,FontUnderline,FontItalic,FontStrikeOut,Caption,Row,DisplayValue,Col,Width,Height,Visible,Enabled,Checked,ItemCount,RangeMin,RangeMax,Position,CaretPos,ForeColor\> := \<n\> => SetProperty ( <"w">, \<"c"\> , \<"p"\> , \<n\> ) ;;
         #xtranslate <w> . \<c\> . \<p:AllowAppend,AllowDelete,AllowEdit\> => GetProperty ( <"w">, \<"c"\> , \<"p"\> ) ;;
         #xtranslate <w> . \<c\> . \<p:AllowAppend,AllowDelete,AllowEdit\> := \<n\> => SetProperty ( <"w">, \<"c"\> , \<"p"\> , \<n\> ) ;;
-	#xtranslate <w>	. \<c\> . \<p:Caption,Header,Item,Icon\> (\<arg\>) => GetProperty ( <"w">, \<"c"\> , \<"p"\> , \<arg\> ) ;;
-	#xtranslate <w>	. \<c\> . \<p:Caption,Header,Item,Icon\> (\<arg\>) := \<n\> => SetProperty ( <"w">, \<"c"\> , \<"p"\> , \<arg\> , \<n\> ) ;;
+        #xtranslate <w> . \<c\> . \<p:Caption,Header,Item,Icon,ColumnWidth\> (\<arg\>) => GetProperty ( <"w">, \<"c"\> , \<"p"\> , \<arg\> ) ;;
+        #xtranslate <w> . \<c\> . \<p:Caption,Header,Item,Icon,ColumnWidth\> (\<arg\>) := \<n\> => SetProperty ( <"w">, \<"c"\> , \<"p"\> , \<arg\> , \<n\> ) ;;
         #xtranslate <w> . \<c\> . \<p:Cell\> (\<arg1\>,\<arg2\>) => GetProperty ( <"w">, \<"c"\> , \<"p"\> , \<arg1\> , \<arg2\> ) ;;
 	#xtranslate <w>	. \<c\> . \<p:Cell\> (\<arg1\>,\<arg2\>) := \<n\> => SetProperty ( <"w">, \<"c"\> , \<"p"\> , \<arg1\> , \<arg2\> , \<n\> ) ;;
 	#xtranslate <w>	. \<c\> . \<p:Refresh,SetFocus,DeleteAllItems,Release,Show,Save,Hide,Play,Stop,Close,Pause,Eject,OpenDialog,Resume,Action,OnClick\> \[()\] => Domethod ( <"w">, \<"c"\> , \<"p"\> ) ;;
@@ -358,8 +358,8 @@
         #xtranslate <w> . <c> . <p:Value,Name,Value,Address,BackColor,FontColor,Picture,ToolTip,FontName,FontSize,FontBold,FontItalic,FontUnderline,FontStrikeOut,Caption,Row,DisplayValue,Col,Width,Height,Visible,Enabled,Checked,ItemCount,RangeMin,RangeMax,Position,CaretPos,ForeColor> := <n> => SetProperty ( <"w">, <"c"> , <"p"> , <n> ) ;;
         #xtranslate <w> . <c> . <p:AllowAppend,AllowDelete,AllowEdit> => GetProperty ( <"w">, <"c"> , <"p"> ) ;;
         #xtranslate <w> . <c> . <p:AllowAppend,AllowDelete,AllowEdit> := <n> => SetProperty ( <"w">, <"c"> , <"p"> , <n> ) ;;
-	#xtranslate <w>	. <c> . <p:Caption,Header,Item,Icon> (<arg>) => GetProperty ( <"w">, <"c"> , <"p"> , <arg> ) ;;
-	#xtranslate <w>	. <c> . <p:Caption,Header,Item,Icon> (<arg>) := <n> => SetProperty ( <"w">, <"c"> , <"p"> , <arg> , <n> ) ;;
+        #xtranslate <w> . <c> . <p:Caption,Header,Item,Icon,ColumnWidth> (<arg>) => GetProperty ( <"w">, <"c"> , <"p"> , <arg> ) ;;
+        #xtranslate <w> . <c> . <p:Caption,Header,Item,Icon,ColumnWidth> (<arg>) := <n> => SetProperty ( <"w">, <"c"> , <"p"> , <arg> , <n> ) ;;
         #xtranslate <w> . <c> . <p:Cell> (<arg1>,<arg2>) => GetProperty ( <"w">, <"c"> , <"p"> , <arg\> , <arg2> ) ;;
         #xtranslate <w> . <c> . <p:Cell> (<arg1>,<arg2>) := <n> => SetProperty ( <"w">, <"c"> , <"p"> , <arg1> , <arg2> , <n> ) ;;
 	#xtranslate <w>	. <c> . <p:Refresh,SetFocus,DeleteAllItems,Release,Show,Save,Hide,Play,Stop,Close,Pause,Eject,OpenDialog,Resume,Action,OnClick> [()] => Domethod ( <"w">, <"c"> , <"p"> ) ;;

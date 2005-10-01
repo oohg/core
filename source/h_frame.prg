@@ -1,5 +1,5 @@
 /*
- * $Id: h_frame.prg,v 1.2 2005-08-25 05:57:42 guerra000 Exp $
+ * $Id: h_frame.prg,v 1.3 2005-10-01 15:35:10 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -123,7 +123,7 @@ Local ControlHandle
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, , lRtl )
 
-   Controlhandle := InitFrame( ::Parent:hWnd, 0, x, y, w, h , caption , opaque, ::lRtl )
+   Controlhandle := InitFrame( ::ContainerhWnd, 0, x, y, w, h , caption , opaque, ::lRtl )
 
    ::New( ControlHandle, ControlName )
    ::SetFont( , , bold, italic, underline, strikeout )

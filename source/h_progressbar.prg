@@ -1,5 +1,5 @@
 /*
- * $Id: h_progressbar.prg,v 1.3 2005-09-12 02:46:42 guerra000 Exp $
+ * $Id: h_progressbar.prg,v 1.4 2005-10-01 15:35:10 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -126,7 +126,7 @@ Local ControlHandle
 
    ::SetForm( ControlName, ParentForm,,, BarColor, BackColor,, lRtl  )
 
-   ControlHandle := InitProgressBar ( ::Parent:hWnd, 0, x, y, w, h ,lo ,hi, vertical, smooth, invisible, value, ::lRtl )
+   ControlHandle := InitProgressBar ( ::ContainerhWnd, 0, x, y, w, h ,lo ,hi, vertical, smooth, invisible, value, ::lRtl )
 
    ::New( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
    ::SizePos( y, x, w, h )

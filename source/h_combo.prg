@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.6 2005-08-25 05:57:42 guerra000 Exp $
+ * $Id: h_combo.prg,v 1.7 2005-10-01 15:35:10 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -128,7 +128,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, rows, value, fontname, ;
                underline, strikeout, itemsource, valuesource, displaychange, ;
                ondisplaychangeprocedure, break, GripperText, aImage, lRtl ) CLASS TCombo
 *-----------------------------------------------------------------------------*
-Local ControlHandle , rcount := 0 , BackRec , cset := 0 , WorkArea , cField , ContainerHandle := 0
+Local ControlHandle , rcount := 0 , BackRec , cset := 0 , WorkArea , cField
 
    DEFAULT w               TO 120
    DEFAULT h               TO 150
@@ -166,17 +166,18 @@ Local ControlHandle , rcount := 0 , BackRec , cset := 0 , WorkArea , cField , Co
 
 	if valtype(x) == "U" .or. valtype(y) == "U"
 
-      _OOHG_SplitLastControl   := 'COMBOBOX'
+      if _OOHG_SplitForceBreak
+         Break := .T.
+      endif
+      _OOHG_SplitForceBreak := .F.
 
-         ControlHandle := InitComboBox ( ::Parent:ReBarHandle, 0, x, y, w, '', 0 , h, invisible, notabstop, sort, displaychange , _OOHG_IsXP , ::lRtl )
+      ControlHandle := InitComboBox ( ::Parent:ReBarHandle, 0, x, y, w, '', 0 , h, invisible, notabstop, sort, displaychange , _OOHG_IsXP , ::lRtl )
 
-         AddSplitBoxItem ( Controlhandle , ::Parent:ReBarHandle, w , break , GripperText , w , , _OOHG_ActiveSplitBoxInverted )
-
-         Containerhandle := ::Parent:ReBarHandle
+      AddSplitBoxItem ( Controlhandle , ::Parent:ReBarHandle, w , break , GripperText , w , , _OOHG_ActiveSplitBoxInverted )
 
 	else
 
-      ControlHandle := InitComboBox ( ::Parent:hWnd, 0, x, y, w, '', 0 , h, invisible, notabstop, sort , displaychange , _OOHG_IsXP , ::lRtl )
+      ControlHandle := InitComboBox ( ::ContainerhWnd, 0, x, y, w, '', 0 , h, invisible, notabstop, sort , displaychange , _OOHG_IsXP , ::lRtl )
 
 	endif
 

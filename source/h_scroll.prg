@@ -1,5 +1,5 @@
 /*
- * $Id: h_scroll.prg,v 1.5 2005-09-04 00:12:52 guerra000 Exp $
+ * $Id: h_scroll.prg,v 1.6 2005-10-01 15:35:10 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -93,7 +93,7 @@ Local ControlHandle
 
    ::SetForm( ControlName, ParentForm,,,,,, lRtl )
 
-   ControlHandle := InitVScrollBar( ::Parent:hWnd, x, y, w, h )
+   ControlHandle := InitVScrollBar( ::ContainerhWnd, x, y, w, h )
 
    ::New( ControlHandle, ControlName, HelpId, ! invisible, ToolTip, ControlHandle )
    ::SizePos( y, x, w, h )

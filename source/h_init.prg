@@ -1,5 +1,5 @@
 /*
- * $Id: h_init.prg,v 1.6 2005-09-29 05:20:24 guerra000 Exp $
+ * $Id: h_init.prg,v 1.7 2005-10-01 15:35:10 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -157,7 +157,7 @@ Function Init
 
    _OOHG_ActiveMessageBar := nil
 
-   _OOHG_SplitLastControl     := ""
+   _OOHG_SplitForceBreak      := .F.
 
    _OOHG_ActiveSplitBox       := .f.
 
