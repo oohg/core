@@ -1,5 +1,5 @@
 /*
- * $Id: h_label.prg,v 1.8 2005-10-01 15:35:10 guerra000 Exp $
+ * $Id: h_label.prg,v 1.9 2005-10-03 05:29:51 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -126,6 +126,7 @@ Local ControlHandle
    DEFAULT underline     TO FALSE
    DEFAULT strikeout     TO FALSE
    DEFAULT autosize      TO FALSE
+   DEFAULT transparent   TO FALSE
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, aRGB_font, aRGB_bk, , lRtl )
 
