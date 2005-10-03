@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.23 2005-10-01 15:35:10 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.24 2005-10-03 05:27:49 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -2188,7 +2188,7 @@ Local oParent
               nil, nil, nil, .F., nStyle, nStyleEx, ;
               .T., lRtl )
 
-   if _OOHG_SplitForceBreak .AND. ! _OOHG_ActiveSplitBoxInverted == .F.
+   if _OOHG_SplitForceBreak .AND. ! _OOHG_ActiveSplitBoxInverted
       Break := .T.
    endif
    _OOHG_SplitForceBreak := .F.
