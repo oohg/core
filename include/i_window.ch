@@ -1,5 +1,5 @@
 /*
- * $Id: i_window.ch,v 1.7 2005-10-01 15:35:10 guerra000 Exp $
+ * $Id: i_window.ch,v 1.8 2005-10-03 05:35:54 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -126,8 +126,8 @@
         #xtranslate <w> . \<c\> . \<p:Caption,Header,Item,Icon,ColumnWidth\> (\<arg\>) := \<n\> => SetProperty ( <"w">, \<"c"\> , \<"p"\> , \<arg\> , \<n\> ) ;;
         #xtranslate <w> . \<c\> . \<p:Cell\> (\<arg1\>,\<arg2\>) => GetProperty ( <"w">, \<"c"\> , \<"p"\> , \<arg1\> , \<arg2\> ) ;;
 	#xtranslate <w>	. \<c\> . \<p:Cell\> (\<arg1\>,\<arg2\>) := \<n\> => SetProperty ( <"w">, \<"c"\> , \<"p"\> , \<arg1\> , \<arg2\> , \<n\> ) ;;
-	#xtranslate <w>	. \<c\> . \<p:Refresh,SetFocus,DeleteAllItems,Release,Show,Save,Hide,Play,Stop,Close,Pause,Eject,OpenDialog,Resume,Action,OnClick\> \[()\] => Domethod ( <"w">, \<"c"\> , \<"p"\> ) ;;
-	#xtranslate <w>	. \<c\> . \<p:AddItem,DeleteItem,Open,DeletePage,DeleteColumn,Expand,Collapse\> (\<a\>) => Domethod ( <"w">, \<"c"\> , \<"p"\> , \<a\> ) ;;
+        #xtranslate <w> . \<c\> . \<p:Refresh,SetFocus,DeleteAllItems,Release,Show,Save,Hide,Play,Stop,Close,Pause,Eject,OpenDialog,Resume,Action,OnClick,ColumnsAutoFit,ColumnsAutoFitH\> \[()\] => Domethod ( <"w">, \<"c"\> , \<"p"\> ) ;;
+        #xtranslate <w> . \<c\> . \<p:AddItem,DeleteItem,Open,DeletePage,DeleteColumn,Expand,Collapse,ColumnAutoFit,ColumnAutoFitH\> (\<a\>) => Domethod ( <"w">, \<"c"\> , \<"p"\> , \<a\> ) ;;
 	#xtranslate <w>	. \<c\> . \<p:AddItem,AddPage\> (\<a1\> , \<a2\>) => Domethod ( <"w">, \<"c"\> , \<"p"\> , \<a1\> , \<a2\> ) ;;
 	#xtranslate <w>	. \<c\> . \<p:AddItem,AddPage\> (\<a1\> , \<a2\> , \<a3\> ) => Domethod ( <"w">, \<"c"\> , \<"p"\> , \<a1\> , \<a2\> , \<a3\> ) ;;
 	#xtranslate <w>	. \<c\> . \<p:AddItem,AddColumn,AddControl\> (\<a1\> , \<a2\> , \<a3\> , \<a4\> ) => Domethod ( <"w">, \<"c"\> , \<"p"\> , \<a1\> , \<a2\> , \<a3\> , \<a4\> ) ;;
@@ -362,8 +362,8 @@
         #xtranslate <w> . <c> . <p:Caption,Header,Item,Icon,ColumnWidth> (<arg>) := <n> => SetProperty ( <"w">, <"c"> , <"p"> , <arg> , <n> ) ;;
         #xtranslate <w> . <c> . <p:Cell> (<arg1>,<arg2>) => GetProperty ( <"w">, <"c"> , <"p"> , <arg\> , <arg2> ) ;;
         #xtranslate <w> . <c> . <p:Cell> (<arg1>,<arg2>) := <n> => SetProperty ( <"w">, <"c"> , <"p"> , <arg1> , <arg2> , <n> ) ;;
-	#xtranslate <w>	. <c> . <p:Refresh,SetFocus,DeleteAllItems,Release,Show,Save,Hide,Play,Stop,Close,Pause,Eject,OpenDialog,Resume,Action,OnClick> [()] => Domethod ( <"w">, <"c"> , <"p"> ) ;;
-	#xtranslate <w>	. <c> . <p:AddItem,DeleteItem,Open,DeletePage,DeleteColumn,Expand,Collapse,Seek> (<a>) => Domethod ( <"w">, <"c"> , <"p"> , <a> ) ;;
+        #xtranslate <w> . <c> . <p:Refresh,SetFocus,DeleteAllItems,Release,Show,Save,Hide,Play,Stop,Close,Pause,Eject,OpenDialog,Resume,Action,OnClick,ColumnsAutoFit,ColumnsAutoFitH> [()] => Domethod ( <"w">, <"c"> , <"p"> ) ;;
+        #xtranslate <w> . <c> . <p:AddItem,DeleteItem,Open,DeletePage,DeleteColumn,Expand,Collapse,Seek,ColumnAutoFit,ColumnAutoFitH> (<a>) => Domethod ( <"w">, <"c"> , <"p"> , <a> ) ;;
 	#xtranslate <w>	. <c> . <p:AddItem,AddPage> (<a1> , <a2>) => Domethod ( <"w">, <"c"> , <"p"> , <a1> , <a2> ) ;;
 	#xtranslate <w>	. <c> . <p:AddItem,AddPage> (<a1> , <a2> , <a3> ) => Domethod ( <"w">, <"c"> , <"p"> , <a1> , <a2> , <a3> ) ;;
 	#xtranslate <w>	. <c> . <p:AddItem,AddColumn,AddControl> (<a1> , <a2> , <a3> , <a4> ) => Domethod ( <"w">, <"c"> , <"p"> , <a1> , <a2> , <a3> , <a4> ) ;;

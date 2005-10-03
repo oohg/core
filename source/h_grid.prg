@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.17 2005-10-01 15:35:10 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.18 2005-10-03 05:35:54 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -142,6 +142,10 @@ CLASS TGrid FROM TControl
    METHOD BackColor      SETGET
    METHOD SetRangeColor
    METHOD ColumnWidth
+   METHOD ColumnAutoFit
+   METHOD ColumnAutoFitH
+   METHOD ColumnsAutoFit
+   METHOD ColumnsAutoFitH
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -742,9 +746,9 @@ Local r, r2, oInPlace, lRet := .F., nControlType, bForceString, cMask
                Case nControlType == 6    // TextBox
                   If Valtype( uValue ) == "C"
                      Do Case
-                        Case EditControl[ 2 ] == "N"
+                        Case EditControl[ 2 ] = "N"
                            uValue := Val( uValue )
-                        Case EditControl[ 2 ] == "D"
+                        Case EditControl[ 2 ] = "D"
                            uValue := CTOD( uValue )
                      EndCase
                   EndIf
@@ -1039,10 +1043,33 @@ Return ListViewDeleteString( ::hWnd, nItem )
 *-----------------------------------------------------------------------------*
 METHOD Item( nItem, uValue, uForeColor, uBackColor ) CLASS TGrid
 *-----------------------------------------------------------------------------*
+Local nColumn, aTemp // , cMask, nPos
    IF PCOUNT() > 1
-      uValue := ACLONE( uValue )
-      AEVAL( ::Picture, { |x,i| if( ValType( x ) $ "CM", uValue[ i ] := Transform( uValue[ i ], x ), ) } )
-      ::SetItemColor( nItem, uForeColor, uBackColor, uValue )
+      aTemp := Array( uValue )
+      For nColumn := 1 To Len( uValue )
+         If ValType( ::Picture[ nColumn ] ) $ "CM"
+            aTemp[ nColumn ] := Transform( uValue[ nColumn ], ::Picture[ nColumn ] )
+         ElseIf ValType( ::Picture[ nColumn ] ) == "N"
+            aTemp[ nColumn ] := uValue[ nColumn ]
+/*
+         ElseIf ValType( ::EditControls ) == "A" .AND. ValType( ::EditControls[ nColumn ] ) == "A" .AND. Len( ::EditControls[ nColumn ] ) >= 1
+            If  ::EditControls[ nColumn ][ 1 ] == "DATEPICKER"
+               aTemp[ nColumn ] := Transform( uValue[ nColumn ], "@D" )
+            ElseIf ::EditControls[ nColumn ][ 1 ] == "SPINNER"
+               aTemp[ nColumn ] := LTrim( Str( uValue[ nColumn ] ) )
+
+
+
+
+*         nControlType := aScan( { "COMBOBOX", "CHECKBOX", "TEXTBOX", "IMAGELIST", "LCOMBOBOX" }, { |c| Upper( EditControl[ 1 ] ) == c } )
+
+
+*/
+         Else
+            aTemp[ nColumn ] := uValue[ nColumn ]
+         EndIf
+      Next
+      ::SetItemColor( nItem, uForeColor, uBackColor, aTemp )
       ListViewSetItem( ::hWnd, uValue, nItem )
    ENDIF
    uValue := ListViewGetItem( ::hWnd, nItem , Len( ::aHeaders ) )
@@ -1184,14 +1211,61 @@ Return aGrid
 METHOD ColumnWidth( nColumn, nWidth ) CLASS TGrid
 *-----------------------------------------------------------------------------*
    IF ValType( nColumn ) == "N" .AND. nColumn >= 1 .AND. nColumn <= Len( ::aHeaders )
-      IF ValType( nWidth ) == "N"
-         ListView_SetColumnWidth( ::hWnd, nColumn - 1, nWidth )
-      ENDIF
-      nWidth := ListView_GetColumnWidth( ::hWnd, nColumn - 1 )
+      If ValType( nWidth ) == "N"
+         nWidth := ListView_SetColumnWidth( ::hWnd, nColumn - 1, nWidth )
+      Else
+         nWidth := ListView_GetColumnWidth( ::hWnd, nColumn - 1 )
+      EndIf
       ::aWidths[ nColumn ] := nWidth
    Else
       nWidth := 0
    ENDIF
+Return nWidth
+
+*-----------------------------------------------------------------------------*
+METHOD ColumnAutoFit( nColumn ) CLASS TGrid
+*-----------------------------------------------------------------------------*
+Local nWidth
+   IF ValType( nColumn ) == "N" .AND. nColumn >= 1 .AND. nColumn <= Len( ::aHeaders )
+      nWidth := ListView_SetColumnWidth( ::hWnd, nColumn - 1, LVSCW_AUTOSIZE )
+      ::aWidths[ nColumn ] := nWidth
+   Else
+      nWidth := 0
+   ENDIF
+Return nWidth
+
+*-----------------------------------------------------------------------------*
+METHOD ColumnAutoFitH( nColumn ) CLASS TGrid
+*-----------------------------------------------------------------------------*
+Local nWidth
+   IF ValType( nColumn ) == "N" .AND. nColumn >= 1 .AND. nColumn <= Len( ::aHeaders )
+      nWidth := ListView_SetColumnWidth( ::hWnd, nColumn - 1, LVSCW_AUTOSIZE_USEHEADER )
+      ::aWidths[ nColumn ] := nWidth
+   Else
+      nWidth := 0
+   ENDIF
+Return nWidth
+
+*-----------------------------------------------------------------------------*
+METHOD ColumnsAutoFit() CLASS TGrid
+*-----------------------------------------------------------------------------*
+Local nColumn, nWidth, nSum := 0
+   FOR nColumn := 1 TO Len( ::aHeaders )
+      nWidth := ListView_SetColumnWidth( ::hWnd, nColumn - 1, LVSCW_AUTOSIZE )
+      ::aWidths[ nColumn ] := nWidth
+      nSum += nWidth
+   NEXT
+Return nWidth
+
+*-----------------------------------------------------------------------------*
+METHOD ColumnsAutoFitH() CLASS TGrid
+*-----------------------------------------------------------------------------*
+Local nColumn, nWidth, nSum := 0
+   FOR nColumn := 1 TO Len( ::aHeaders )
+      nWidth := ListView_SetColumnWidth( ::hWnd, nColumn - 1, LVSCW_AUTOSIZE_USEHEADER )
+      ::aWidths[ nColumn ] := nWidth
+      nSum += nWidth
+   NEXT
 Return nWidth
 
 

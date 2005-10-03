@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.24 2005-10-01 15:35:10 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.25 2005-10-03 05:35:54 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -142,6 +142,10 @@ CLASS TBrowse FROM TGrid
    METHOD AdjustRightScroll
 
    METHOD ColumnWidth
+   METHOD ColumnAutoFit
+   METHOD ColumnAutoFitH
+   METHOD ColumnsAutoFit
+   METHOD ColumnsAutoFitH
 
    METHOD Home
    METHOD End
@@ -1248,6 +1252,46 @@ METHOD ColumnWidth( nColumn, nWidth ) CLASS TBrowse
 *-----------------------------------------------------------------------------*
 Local nRet
    nRet := ::Super:ColumnWidth( nColumn, nWidth )
+   IF ::AdjustRightScroll()
+      ::Refresh()
+   ENDIF
+Return nRet
+
+*-----------------------------------------------------------------------------*
+METHOD ColumnAutoFit( nColumn ) CLASS TBrowse
+*-----------------------------------------------------------------------------*
+Local nRet
+   nRet := ::Super:ColumnAutoFit( nColumn )
+   IF ::AdjustRightScroll()
+      ::Refresh()
+   ENDIF
+Return nRet
+
+*-----------------------------------------------------------------------------*
+METHOD ColumnAutoFitH( nColumn ) CLASS TBrowse
+*-----------------------------------------------------------------------------*
+Local nRet
+   nRet := ::Super:ColumnAutoFitH( nColumn )
+   IF ::AdjustRightScroll()
+      ::Refresh()
+   ENDIF
+Return nRet
+
+*-----------------------------------------------------------------------------*
+METHOD ColumnsAutoFit() CLASS TBrowse
+*-----------------------------------------------------------------------------*
+Local nRet
+   nRet := ::Super:ColumnsAutoFit()
+   IF ::AdjustRightScroll()
+      ::Refresh()
+   ENDIF
+Return nRet
+
+*-----------------------------------------------------------------------------*
+METHOD ColumnsAutoFitH() CLASS TBrowse
+*-----------------------------------------------------------------------------*
+Local nRet
+   nRet := ::Super:ColumnsAutoFitH()
    IF ::AdjustRightScroll()
       ::Refresh()
    ENDIF

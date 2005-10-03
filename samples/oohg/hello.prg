@@ -1,5 +1,5 @@
 /*
- * $Id: hello.prg,v 1.6 2005-09-29 05:20:24 guerra000 Exp $
+ * $Id: hello.prg,v 1.7 2005-10-03 05:35:54 guerra000 Exp $
  */
 /*
 * ooHG Hello World Demo
@@ -69,7 +69,13 @@ set cent on
 *                on key F5 action msginfo( "hotkey!" )
                 on key F5 action msginfo( str( getwindowcol( ownd:hello:hwnd )  )+str( ownd:hello:col ) )
 
-                @ 10,10 LABEL Hello VALUE "(F5) Hello!!" AUTOSIZE ACTION MSGINFO("CLICK!")
+                // @ 10,10 LABEL Hello VALUE "(F5) Hello!!" AUTOSIZE ACTION MSGINFO("CLICK!")
+                oLabel := TLabel():Define()
+                oLabel:Caption := "(F5) Hello!!"
+                oLabel:AutoSize := .T.
+                oLabel:Row := 10
+                oLabel:Col := 10
+                oLabel:OnClick := { || MSGINFO("CLICK!") }
 
                 @ 40,10 HYPERLINK HLNK VALUE "www.yahoo.com.mx" autosize address "http://www.yahoo.com.mx"
 

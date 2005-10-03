@@ -1,10 +1,41 @@
- * $Id: ChangeLog,v 1.2 2005-08-25 06:46:29 guerra000 Exp $
+ * $Id: ChangeLog,v 1.3 2005-10-03 05:35:53 guerra000 Exp $
 
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2005-10-03 00:24 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_label.prg
+    ! Added TRANSPARENT default value (to .F.).
+
+  * include/i_window.ch
+  * source/c_grid.c
+  * source/h_browse.prg
+  * source/h_controlmisc.prg
+  * source/h_grid.prg
+    + .ColumnAutoFit(), .ColumnAutoFitH(), .ColumnsAutoFit(), and
+      .ColumnsAutoFitH() properties added.
+    + ::ColumnAutoFit(), ::ColumnAutoFitH(), ::ColumnsAutoFit() and
+      ::ColumnsAutoFitH() methods added.
+
+  * source/h_windows.prg
+    ! Fixed SPLITCHILD creation.
+
+  * source/h_status.prg
+    ! Release timers when STATUSBAR is released.
+
+  * source/h_hotkey.prg
+    ! Fixed hotkey release.
+
+  * samples/oohg/hello.prg
+    * Changed sample's LABEL definition method.
+
+2005-10-03 12:00 UTC-0300 Ciro Vargas Clemow <sistemascvc@softhome.net>
+  * include/i_report.ch
+  * source/h_report.prg
+    * DO REPORT new release.
 
 2005-08-25 00:00 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   + Added RTL (right-to-left) clause to most controls.

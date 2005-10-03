@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.16 2005-10-01 15:35:10 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.17 2005-10-03 05:35:54 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1411,7 +1411,7 @@ Local RetVal, oWnd, oCtrl
 Return RetVal
 
 *------------------------------------------------------------------------------*
-Function DoMethod ( Arg1 , Arg2 , Arg3 , Arg4 , Arg5 , Arg6 , Arg7 , Arg8 , Arg9 )
+Function DoMethod( Arg1 , Arg2 , Arg3 , Arg4 , Arg5 , Arg6 , Arg7 , Arg8 , Arg9 )
 *------------------------------------------------------------------------------*
 Local oWnd, oCtrl
 
@@ -1502,6 +1502,14 @@ Local oWnd, oCtrl
 		ElseIf Arg3 == 'ONCLICK'
 
          _OOHG_Eval( oCtrl:OnClick )
+
+      ElseIf Arg3 == 'COLUMNSAUTOFIT'
+
+         oCtrl:ColumnsAutoFit()
+
+      ElseIf Arg3 == 'COLUMNSAUTOFITH'
+
+         oCtrl:ColumnsAutoFitH()
 
 		ElseIf Arg3 == 'DELETEALLITEMS'
 
@@ -1594,6 +1602,14 @@ Local oWnd, oCtrl
 		ElseIf Arg3 == 'DELETECOLUMN'
 
          oCtrl:DeleteColumn( Arg4 )
+
+      ElseIf Arg3 == 'COLUMNAUTOFIT'
+
+         oCtrl:ColumnAutoFit( Arg4 )
+
+      ElseIf Arg3 == 'COLUMNAUTOFITH'
+
+         oCtrl:ColumnAutoFitH( Arg4 )
 
 		EndIf
 
@@ -2178,6 +2194,16 @@ METHOD Release() CLASS TControl
 *-----------------------------------------------------------------------------*
 Local mVar
 
+   // Removes from container
+   IF ::Container != nil
+      ::Container:DeleteControl( Self )
+   ENDIF
+
+   // Attached controls
+   DO WHILE LEN( ::aControls ) > 0
+      ::aControls[ 1 ]:Release()
+   ENDDO
+
    // Delete it from arrays
    mVar := aScan( _OOHG_aControlNames, { |c| c == UPPER( ::Parent:Name + CHR( 255 ) + ::Name ) } )
    IF mVar > 0
@@ -2199,19 +2225,9 @@ Local mVar
       ImageList_Destroy( ::ImageList )
    endif
 
-   // Attached controls
-   DO WHILE LEN( ::aControls ) > 0
-      ::aControls[ 1 ]:Release()
-   ENDDO
-
-   // Removes from container
-   IF ::Container != nil
-      ::Container:DeleteControl( Self )
-   ENDIF
-
    mVar := '_' + ::Parent:Name + '_' + ::Name
 	if type ( mVar ) != 'U'
-		__MVPUT ( mVar , 0 )
+      __MVPUT( mVar , 0 )
 	EndIf
 
 Return Nil

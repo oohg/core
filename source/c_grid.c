@@ -1,5 +1,5 @@
 /*
- * $Id: c_grid.c,v 1.10 2005-10-01 15:35:10 guerra000 Exp $
+ * $Id: c_grid.c,v 1.11 2005-10-03 05:35:54 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -547,7 +547,11 @@ HB_FUNC( LISTVIEW_GETCOLUMNWIDTH )
 
 HB_FUNC( LISTVIEW_SETCOLUMNWIDTH )
 {
-    hb_retni( ListView_SetColumnWidth( ( HWND ) hb_parnl( 1 ), hb_parni( 2 ), hb_parni( 3 ) ) );
+    HWND hWnd = ( HWND ) hb_parnl( 1 );
+    int iColumn = hb_parni( 2 );
+
+    ListView_SetColumnWidth( hWnd, iColumn, hb_parni( 3 ) );
+    hb_retni( ListView_GetColumnWidth( hWnd, iColumn ) );
 }
 
 HB_FUNC( _OOHG_GRIDARRAYWIDTHS )
