@@ -1,5 +1,5 @@
 /*
- * $Id: h_hotkey.prg,v 1.2 2005-08-26 06:04:16 guerra000 Exp $
+ * $Id: h_hotkey.prg,v 1.3 2005-10-03 05:29:12 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -127,7 +127,7 @@ Local nPos, oWnd
 
    IF nPos > 0
 
-      ReleaseHotKey( oWnd:hWnd, oWnd:aHotKeys[ HOTKEY_ID ] )
+      ReleaseHotKey( oWnd:hWnd, oWnd:aHotKeys[ nPos ][ HOTKEY_ID ] )
 
       _OOHG_DeleteArrayItem( oWnd:aHotKeys, nPos )
 
