@@ -1,5 +1,5 @@
 /*
- * $Id: h_status.prg,v 1.6 2005-09-11 16:46:24 guerra000 Exp $
+ * $Id: h_status.prg,v 1.7 2005-10-03 05:28:24 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -179,28 +179,31 @@ Function _EndStatusBar ( cParentForm, acCaptions, anWidths, acImages, abActions,
 *-----------------------------------------------------------------------------*
 METHOD SetClock( Width , ToolTip , action ) CLASS TMessageBar
 *-----------------------------------------------------------------------------*
-local nrItem
+local nrItem, oTimer
 
-	If ValType (Width) == 'U'
+   If ValType( Width ) != 'N'
 		Width := 70
 	EndIf
-	If ValType (ToolTip) == 'U'
+   If ! ValType( ToolTip ) $ "CM"
 		ToolTip := 'Clock'
 	EndIf
-	If ValType (Action) == 'U'
+   If ValType( Action ) == 'U'
 		Action := ''
 	EndIf
 
    nrItem := _DefineItemMessage ( "TimerBar",  _OOHG_ActiveMessageBar:Name, 0, 0, Time(), action , Width, 0, "" , ToolTip )
 
-   TTimer():Define( 'StatusTimer' , ::Parent:Name , 1000 , { || ::Item( nrItem , Time() ) } )
+   oTimer := TTimer():Define( 'StatusTimer' , ::Parent:Name , 1000 , { || ::Item( nrItem , Time() ) } )
+
+   oTimer:Container := Self
+   ::AddControl( oTimer )
 
 Return Nil
 
 *-----------------------------------------------------------------------------*
 METHOD SetKeybrd( Width , ToolTip , action ) CLASS TMessageBar
 *-----------------------------------------------------------------------------*
-local nrItem1 , nrItem2 , nrItem3
+local nrItem1 , nrItem2 , nrItem3 , oTimer
 
 	If ValType (Width) == 'U'
       Width := 45
@@ -212,16 +215,6 @@ local nrItem1 , nrItem2 , nrItem3
 		Action := ''
 	EndIf
 
-/*
-   nrItem1 := _DefineItemMessage( "TimerNum", _OOHG_ActiveMessageBar:Name, 0, 0, "Num", If ( empty (Action), {|| KeyToggle( VK_NUMLOCK ) }, Action ), Width + 20, 0, ;
-                     if ( IsNumLockActive() , "zzz_led_on" , "zzz_led_off" ), "", ToolTip)
-
-   nrItem2 := _DefineItemMessage( "TimerCaps", _OOHG_ActiveMessageBar:Name, 0, 0, "Caps", If ( empty (Action), {|| KeyToggle( VK_CAPITAL ) }, Action ), Width + 25, 0,;
-                     if ( IsCapsLockActive() , "zzz_led_on" , "zzz_led_off" ), "", ToolTip)
-
-   nrItem3 := _DefineItemMessage( "TimerInsert", _OOHG_ActiveMessageBar:Name, 0, 0, "Ins", If ( empty (Action), {|| KeyToggle( VK_INSERT ) }, Action ), Width + 10, 0,;
-                     if ( IsInsertActive() , "zzz_led_on" , "zzz_led_off" ), "", ToolTip)
-*/
    nrItem1 := _DefineItemMessage( "TimerNum", _OOHG_ActiveMessageBar:Name, 0, 0, "Num", If ( empty (Action), {|| KeyToggle( VK_NUMLOCK ) }, Action ), GetTextWidth( NIL, "Num", ::FontHandle ) + 36, 0, ;
                      if ( IsNumLockActive() , "zzz_led_on" , "zzz_led_off" ), "", ToolTip)
 
@@ -231,10 +224,13 @@ local nrItem1 , nrItem2 , nrItem3
    nrItem3 := _DefineItemMessage( "TimerInsert", _OOHG_ActiveMessageBar:Name, 0, 0, "Ins", If ( empty (Action), {|| KeyToggle( VK_INSERT ) }, Action ), GetTextWidth( NIL, "Ins", ::FontHandle ) + 36, 0,;
                      if ( IsInsertActive() , "zzz_led_on" , "zzz_led_off" ), "", ToolTip)
 
-   TTimer():Define( 'StatusKeyBrd' , ::Parent:Name , 400 , ;
+   oTimer := TTimer():Define( 'StatusKeyBrd' , ::Parent:Name , 400 , ;
       {|| SetStatusItemIcon( ::hWnd, nrItem1 , if ( IsNumLockActive() , "zzz_led_on" , "zzz_led_off" ) ), ;
           SetStatusItemIcon( ::hWnd, nrItem2 , if ( IsCapsLockActive() , "zzz_led_on" , "zzz_led_off" ) ), ;
           SetStatusItemIcon( ::hWnd, nrItem3 , if ( IsInsertActive() , "zzz_led_on" , "zzz_led_off" ) ) } )
+
+   oTimer:Container := Self
+   ::AddControl( oTimer )
 
 Return Nil
 
@@ -291,6 +287,10 @@ Function _EndMessageBar()
    _OOHG_ActiveMessageBar := nil
 
 Return Nil
+
+
+
+
 
 CLASS TItemMessage FROM TControl
    DATA Type      INIT "ITEMMESSAGE" READONLY
