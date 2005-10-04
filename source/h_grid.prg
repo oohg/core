@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.19 2005-10-04 05:01:13 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.20 2005-10-04 05:17:17 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1053,8 +1053,8 @@ METHOD Item( nItem, uValue, uForeColor, uBackColor ) CLASS TGrid
 Local nColumn, aTemp, cMask, xValue
    IF PCOUNT() > 1
       aTemp := Array( Len( uValue ) )
-      xValue := uValue[ nColumn ]
       For nColumn := 1 To Len( uValue )
+         xValue := uValue[ nColumn ]
          If ValType( ::Picture[ nColumn ] ) $ "CM"
             aTemp[ nColumn ] := Transform( xValue, ::Picture[ nColumn ] )
          ElseIf ValType( ::Picture[ nColumn ] ) == "N"
