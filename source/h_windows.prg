@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.25 2005-10-08 02:20:08 declan2005 Exp $
+ * $Id: h_windows.prg,v 1.26 2005-10-08 21:37:40 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -805,7 +805,7 @@ Return Nil
 *-----------------------------------------------------------------------------*
 METHOD Print(x,y,w,h) CLASS TForm
 *-----------------------------------------------------------------------------*
-local cwork:='t'+alltrim(str(random(999999)))+'.bmp'
+local myobject, aprinters,aports,cprintercvc,cwork:='_oohg_t'+alltrim(str(random(999999)))+'.bmp'
 
  DEFAULT w    TO 40
  DEFAULT h    TO 140
@@ -813,25 +813,25 @@ local cwork:='t'+alltrim(str(random(999999)))+'.bmp'
  DEFAULT x    TO 4
  DEFAULT y    TO 4
 
-WNDCOPY(::hwnd,.F.,cwork) //// guarda como BMP
-INIT PRINTSYS
-GET PRINTERS TO aprinters
-GET PORTS TO aports
-GET DEFAULT PRINTER TO cPRINTERCVC
-SELECT BY DIALOG PREVIEW
-set page orientation DMORIENT_LANDSCAPE 
-if HBPRNERROR>0
+WNDCOPY(::hwnd,.F.,cwork) //// save as BMP
+
+myobject:=hbprinter():new()
+aprinters:=aclone(myobject:printers)
+aports:=aclone(myobject:ports)
+cprintercvc:=myobject:printerdefault
+myobject:selectprinter("",.T.)
+myobject:setpage(DMORIENT_LANDSCAPE,,)
+if myobject:error > 0
    msginfo("Print error","Information")
-//////   RELEASE WINDOW all
    return nil
 endif
 
-start doc
-start page
- @ y , x PICTURE cwork size W,H   ////   
-END PAGE
-END DOC
-RELEASE PRINTSYS
+myobject:startdoc("oohg printing")
+myobject:startpage()
+myobject:picture(y,x,w,h,cwork,,)
+myobject:endpage()
+myobject:enddoc()
+myobject:end()
 erase &cwork
 return nil
 
