@@ -1,5 +1,5 @@
 /*
- * $Id: i_graph.ch,v 1.1 2005-08-06 23:50:17 guerra000 Exp $
+ * $Id: i_graph.ch,v 1.2 2005-10-08 18:52:33 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -182,6 +182,7 @@
 		[ <l3D : 3DVIEW> ]		;
 		[ <lxVal : SHOWXVALUES> ]	;
 		[ <lSLeg : SHOWLEGENDS> ]	;
+                [ <lNoBorder : NOBORDER> ]      ;
       => ;
 		DrawPieGraph(<"window">,;
 		<nT>,;
@@ -195,7 +196,8 @@
 		<nD>,;
 		<.l3D.>,;
 		<.lxVal.>,;
-		<.lSLeg.>)
+                <.lSLeg.>,;
+                <.lNoBorder.>)
 
 #define BARS      1
 #define LINES     2
@@ -219,6 +221,8 @@
 		[ <lxVal : SHOWXVALUES> ]	;
 		[ <lyVal : SHOWYVALUES> ]	;
 		[ <lSLeg : SHOWLEGENDS> ]	;
+                [ LEGENDSWIDTH <nLegendWindth> ] ;
+		[ <lNoborder : NOBORDER> ]	;
 => ;
 		GraphShow(<"window">,	;
 		<nT>,				;
@@ -245,4 +249,6 @@
 		<aColor>,			;
 		<nType>,			;
 		.f.,			;
-		Nil)
+                Nil,                    ;
+                <nLegendWindth>,        ;
+                <.lNoborder.> )

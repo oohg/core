@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.13 2005-10-01 15:35:10 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.14 2005-10-08 18:52:33 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -530,9 +530,9 @@ Local cType, uDate
    // Removes mask
    DO CASE
       CASE cType == "C"
-         uValue := If( ( "R" $ ::PictureFun ), UnTransform( Self, ::Caption ), ::Caption )
+         uValue := If( ( "R" $ ::PictureFun ), xUnTransform( Self, ::Caption ), ::Caption )
       CASE cType == "N"
-         uValue := VAL( StrTran( UnTransform( Self, ::Caption ), " ", "" ) )
+         uValue := VAL( StrTran( xUnTransform( Self, ::Caption ), " ", "" ) )
       CASE cType == "D"
          If ::lBritish
             uDate := SET( _SET_DATEFORMAT )
@@ -543,14 +543,22 @@ Local cType, uDate
             uValue := CTOD( ::Caption )
          EndIf
       CASE cType == "L"
-         uValue := ( Left( UnTransform( Self, ::Caption ), 1 ) $ "YT" + HB_LANGMESSAGE( HB_LANG_ITEM_BASE_TEXT + 1 ) )
+         uValue := ( Left( xUnTransform( Self, ::Caption ), 1 ) $ "YT" + HB_LANGMESSAGE( HB_LANG_ITEM_BASE_TEXT + 1 ) )
       OTHERWISE
          // Wrong data type
          uValue := NIL
    ENDCASE
 Return uValue
 
-STATIC FUNCTION UnTransform( Self, cCaption )
+STATIC FUNCTION xUnTransform( Self, cCaption )
+Local cRet
+   If ::lFocused
+      cRet := _OOHG_UnTransform( cCaption, ::PictureFun + ::PictureMask, ::DataType )
+   Else
+      cRet := _OOHG_UnTransform( cCaption, ::PictureFunShow + ::PictureShow, ::DataType )
+   EndIf
+Return cRet
+/*
 Local aValidMask, cPictureMask
 Local cValue, nPos, nDecimal
    cValue := ""
@@ -588,6 +596,7 @@ Local cValue, nPos, nDecimal
    ENDIF
 
 Return cValue
+*/
 
 #pragma BEGINDUMP
 #include "hbapi.h"
@@ -681,7 +690,7 @@ Return ::Super:Events( hWnd, nMsg, wParam, lParam )
 STATIC FUNCTION TTextPicture_Events2_Key( Self, cText, nPos, cChar, aValidMask, cPictureMask, lInsert )
 Local lChange := .F., nPos1, cMask
    IF ::nDecimal != 0 .AND. cChar $ if( ::lBritish, ",.", "." )
-      cText := Transform( VAL( StrTran( UnTransform( Self, cText ), " ", "" ) ), if( ::lBritish, "@E ", "" ) + cPictureMask )
+      cText := Transform( VAL( StrTran( xUnTransform( Self, cText ), " ", "" ) ), if( ::lBritish, "@E ", "" ) + cPictureMask )
       nPos := ::nDecimal
       Return .T.
    Endif

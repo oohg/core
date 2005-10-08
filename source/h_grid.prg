@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.20 2005-10-04 05:17:17 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.21 2005-10-08 18:52:33 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1050,7 +1050,7 @@ Return ListViewDeleteString( ::hWnd, nItem )
 *-----------------------------------------------------------------------------*
 METHOD Item( nItem, uValue, uForeColor, uBackColor ) CLASS TGrid
 *-----------------------------------------------------------------------------*
-Local nColumn, aTemp, cMask, xValue
+Local nColumn, aTemp, cMask, xValue, cControl
    IF PCOUNT() > 1
       aTemp := Array( Len( uValue ) )
       For nColumn := 1 To Len( uValue )
@@ -1060,19 +1060,20 @@ Local nColumn, aTemp, cMask, xValue
          ElseIf ValType( ::Picture[ nColumn ] ) == "N"
             aTemp[ nColumn ] := xValue
          ElseIf ValType( ::EditControls ) == "A" .AND. ValType( ::EditControls[ nColumn ] ) == "A" .AND. Len( ::EditControls[ nColumn ] ) >= 1
-            If  ::EditControls[ nColumn ][ 1 ] == "DATEPICKER"
+            cControl := ::EditControls[ nColumn ][ 1 ]
+            If  cControl == "DATEPICKER"
                aTemp[ nColumn ] := Transform( xValue, "@D" )
-            ElseIf ::EditControls[ nColumn ][ 1 ] == "SPINNER"
+            ElseIf cControl == "SPINNER"
                aTemp[ nColumn ] := LTrim( Str( xValue ) )
-            ElseIf ::EditControls[ nColumn ][ 1 ] == "CHECKBOX"
+            ElseIf cControl == "CHECKBOX"
                aTemp[ nColumn ] := If( xValue, ::EditControls[ nColumn ][ 2 ], ::EditControls[ nColumn ][ 3 ] )
-            ElseIf ::EditControls[ nColumn ][ 1 ] == "COMBOBOX"
+            ElseIf cControl == "COMBOBOX"
                If xValue >= 1 .AND. xValue <= Len( ::EditControls[ nColumn ][ 2 ] )
                   aTemp[ nColumn ] := ::EditControls[ nColumn ][ 2 ][ xValue ]
                Else
                   aTemp[ nColumn ] := ""
                Endif
-            ElseIf ::EditControls[ nColumn ][ 1 ] == "LCOMBOBOX"
+            ElseIf cControl == "LCOMBOBOX"
                If xValue
                   If Len( ::EditControls[ nColumn ] ) >= 2 .AND. ValType( ::EditControls[ nColumn ][ 2 ] ) $ "CM"
                      aTemp[ nColumn ] := ::EditControls[ nColumn ][ 2 ]
@@ -1086,9 +1087,9 @@ Local nColumn, aTemp, cMask, xValue
                      aTemp[ nColumn ] := ".F."
                   Endif
                Endif
-            ElseIf ::EditControls[ nColumn ][ 1 ] == "IMAGELIST"
+            ElseIf cControl == "IMAGELIST"
                aTemp[ nColumn ] := xValue
-            ElseIf ::EditControls[ nColumn ][ 1 ] == "TEXTBOX"
+            ElseIf cControl == "TEXTBOX"
                cMask := ""
                If Len( ::EditControls[ nColumn ] ) >= 4 .AND. ValType( ::EditControls[ nColumn ][ 4 ] ) $ "CM"
                   cMask := "@" + ::EditControls[ nColumn ][ 4 ] + " "
@@ -1102,7 +1103,7 @@ Local nColumn, aTemp, cMask, xValue
                   ElseIf ::EditControls[ nColumn ][ 2 ] = "N"
                      aTemp[ nColumn ] := LTrim( Str( xValue ) )
                   ElseIf ::EditControls[ nColumn ][ 2 ] = "L"
-                     aTemp[ nColumn ] := If( xValue, ".T.", ".F." )
+                     aTemp[ nColumn ] := If( xValue, "T", "F" )
                   Else
                      aTemp[ nColumn ] := xValue
                   EndIf
@@ -1118,6 +1119,50 @@ Local nColumn, aTemp, cMask, xValue
       ListViewSetItem( ::hWnd, uValue, nItem )
    ENDIF
    uValue := ListViewGetItem( ::hWnd, nItem , Len( ::aHeaders ) )
+   If ValType( ::EditControls ) == "A"
+      For nColumn := 1 To Len( uValue )
+         If Len( ::EditControls ) >= nColumn .AND. Len( ::EditControls[ nColumn ] ) >= 1
+            cControl := ::EditControls[ nColumn ][ 1 ]
+            xValue := uValue[ nColumn ]
+            If cControl == "DATEPICKER"
+               uValue[ nColumn ] := CTOD( xValue )
+            ElseIf cControl == "SPINNER"
+               uValue[ nColumn ] := Val( AllTrim( xValue ) )
+            ElseIf cControl == "CHECKBOX"
+               uValue[ nColumn ] := ( xValue == ::EditControls[ nColumn ][ 2 ] )
+            ElseIf cControl == "LCHECKBOX"
+               If Len( ::EditControls[ nColumn ] ) >= 2 .AND. ValType( ::EditControls[ nColumn ][ 2 ] ) $ "CM"
+                  uValue[ nColumn ] := ( xValue == ::EditControls[ nColumn ][ 2 ] )
+               Else
+                  uValue[ nColumn ] := ( xValue == ".T." )
+               EndIf
+            ElseIf cControl == "COMBOBOX"
+               uValue[ nColumn ] := ASCAN( ::EditControls[ nColumn ][ 2 ], { |c| c == xValue } )
+            ElseIf cControl == "TEXTBOX"
+               Do Case
+                  Case ::EditControls[ nColumn ][ 2 ] = "D"
+                     uValue[ nColumn ] := CTOD( xValue )
+                  Case ::EditControls[ nColumn ][ 2 ] = "L"
+                     uValue[ nColumn ] := ( xValue == "T" )
+                  Otherwise
+                     cMask := ""
+                     If Len( ::EditControls[ nColumn ] ) >= 4 .AND. ValType( ::EditControls[ nColumn ][ 4 ] ) $ "CM"
+                        cMask := "@" + ::EditControls[ nColumn ][ 4 ] + " "
+                     EndIf
+                     If Len( ::EditControls[ nColumn ] ) >= 3 .AND. ValType( ::EditControls[ nColumn ][ 3 ] ) $ "CM"
+                        cMask += ::EditControls[ nColumn ][ 3 ]
+                     EndIf
+
+                     If ::EditControls[ nColumn ][ 2 ] = "N"
+                        uValue[ nColumn ] := Val( StrTran( _OOHG_UnTransform( xValue, cMask, ::EditControls[ nColumn ][ 2 ] ), " ", "" ) )
+                     Else
+                        uValue[ nColumn ] := _OOHG_UnTransform( xValue, cMask, ::EditControls[ nColumn ][ 2 ] )
+                     Endif
+               EndCase
+            EndIf
+         EndIf
+      Next
+   EndIf
 Return uValue
 
 *-----------------------------------------------------------------------------*

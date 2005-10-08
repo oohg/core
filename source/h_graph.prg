@@ -1,5 +1,5 @@
 /*
- * $Id: h_graph.prg,v 1.2 2005-08-26 06:04:16 guerra000 Exp $
+ * $Id: h_graph.prg,v 1.3 2005-10-08 18:52:33 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -309,7 +309,7 @@ return nil
  * Grigory Filatov 26/02/2004 translation #2 for MiniGUI
 
 Procedure GraphShow(parent,nTop,nLeft,nBottom,nRight,nHeight,nWidth,aData,cTitle,aYVals,nBarD,nWideB,nSep,nXRanges,;
-	l3D,lGrid,lxGrid,lyGrid,lxVal,lyVal,lLegends,aSeries,aColors,nType,lViewVal,cPicture)
+   l3D,lGrid,lxGrid,lyGrid,lxVal,lyVal,lLegends,aSeries,aColors,nType,lViewVal,cPicture, nLegendWindth, lNoborder )
    LOCAL nI, nJ, nPos, nMax, nMin, nMaxBar, nDeep
    LOCAL nRange, nResH, nResV,  nWide, aPoint, cName
    LOCAL nXMax, nXMin, nHigh, nRel, nZero, nRPos, nRNeg
@@ -317,6 +317,12 @@ Procedure GraphShow(parent,nTop,nLeft,nBottom,nRight,nHeight,nWidth,aData,cTitle
    DEFAULT cTitle   := ""
    DEFAULT nSep     := 0
    DEFAULT cPicture := "999,999.99"
+   DEFAULT nLegendWindth := 50
+   DEFAULT lNoborder := .F.
+
+   If ! lLegends
+      nLegendWindth := 0
+   EndIf
 
 	If 	( Len (aSeries) != Len (aData) ) .or. ;
 		( Len (aSeries) != Len (aColors) )
@@ -372,12 +378,12 @@ Procedure GraphShow(parent,nTop,nLeft,nBottom,nRight,nHeight,nWidth,aData,cTitle
       nHeight := nBottom - nTop / 2
       nWidth  := nRight - nLeft / 2
       nBottom -= IF(lyVal, 42, 32)
-      nRight  -= IF(lLegends, 82, 32)
+      nRight  -= 32 + nLegendWindth
    ENDIF
    nTop    += 1 + IF(Empty(cTitle), 30, 44)             // Top gap
    nLeft   += 1 + IF(lxVal, 80 + nBarD, 30 + nBarD)     // Left
    DEFAULT nBottom := nHeight -2 - IF(lyVal, 40, 30)    // Bottom
-   DEFAULT nRight  := nWidth - 2 - IF(lLegends, 80, 30) // Right
+   DEFAULT nRight  := nWidth - 2 - 30 - nLegendWindth   // Right
 
    l3D     := IF( nType == POINTS, .F., l3D )
    nDeep   := IF( l3D, nBarD, 1 )
@@ -386,8 +392,9 @@ Procedure GraphShow(parent,nTop,nLeft,nBottom,nRight,nHeight,nWidth,aData,cTitle
    nWide   := ( nRight - nLeft )*nResH / ( nMax(aData) + 1 ) * nResH
 
    // Graph area
-   //
-   DrawWindowBoxIn( parent, Max(1,nTop-44), Max(1,nLeft-80-nBarD), nHeight-1, nWidth-1 )
+   If ! lNoBorder
+      DrawWindowBoxIn( parent, Max(1,nTop-44), Max(1,nLeft-80-nBarD), nHeight-1, nWidth-1 )
+   EndIf
 
    // Back area
    //
@@ -438,11 +445,11 @@ Procedure GraphShow(parent,nTop,nLeft,nBottom,nRight,nHeight,nWidth,aData,cTitle
    IF !Empty(cTitle)
       @ nTop-30*nResV, nLeft LABEL Graph_Title OF &parent ;
 		VALUE cTitle ;
-		WIDTH nRight - nLeft ;
+      WIDTH nRight - nLeft + ( 50 - nLegendWindth ) ;
 		HEIGHT 18 ;
 		FONTCOLOR RED ;
 		FONT "Arial" SIZE 12 ;
-		BOLD CENTERALIGN
+      BOLD TRANSPARENT CENTERALIGN
    ENDIF
 
    // Legends
@@ -453,9 +460,9 @@ Procedure GraphShow(parent,nTop,nLeft,nBottom,nRight,nHeight,nWidth,aData,cTitle
          DrawBar( parent, nRight+(8*nResH), nPos+(9*nResV), 8*nResH, 7*nResV, l3D, 1, aColors[nI] )
          cName := "Ser_Name_"+Ltrim( Str( nI ) )
          @ nPos, nRight+(20*nResH) LABEL &cName OF &parent ;
-		VALUE aSeries[nI] AUTOSIZE ;
-		FONTCOLOR BLACK ;
-		FONT "Arial" SIZE 8
+                 VALUE aSeries[nI] AUTOSIZE ;
+                 FONTCOLOR BLACK ;
+                 FONT "Arial" SIZE 8 TRANSPARENT
          nPos += 18*nResV
       NEXT nI
    ENDIF
@@ -507,7 +514,7 @@ Procedure GraphShow(parent,nTop,nLeft,nBottom,nRight,nHeight,nWidth,aData,cTitle
 			VALUE Transform(nRange*nI, cPicture) ;
 			WIDTH 60 ;
 			HEIGHT 14 ;
-			FONTCOLOR BLUE FONT "Arial" SIZE 8 RIGHTALIGN
+         FONTCOLOR BLUE FONT "Arial" SIZE 8 TRANSPARENT RIGHTALIGN
          ENDIF
          IF nRange*(-nI) >= nXMin*(-1)
             cName := "xNVal_Name_"+Ltrim(Str(nI))
@@ -515,7 +522,7 @@ Procedure GraphShow(parent,nTop,nLeft,nBottom,nRight,nHeight,nWidth,aData,cTitle
 			VALUE Transform(nRange*-nI, cPicture) ;
 			WIDTH 60 ;
 			HEIGHT 14 ;
-			FONTCOLOR BLUE FONT "Arial" SIZE 8 RIGHTALIGN
+         FONTCOLOR BLUE FONT "Arial" SIZE 8 TRANSPARENT RIGHTALIGN
          ENDIF
       ENDIF
       IF lxGrid
@@ -570,16 +577,16 @@ Procedure GraphShow(parent,nTop,nLeft,nBottom,nRight,nHeight,nWidth,aData,cTitle
       FOR nJ := 1 TO nMax(aData)
          cName := "yVal_Name_"+Ltrim(Str(nJ))
          @ nBottom + 8, nI - nDeep - IF(l3D, 0, 8) LABEL &cName OF &parent ;
-		VALUE aYVals[nJ] AUTOSIZE ;
-		FONTCOLOR BLUE ;
-		FONT "Arial" SIZE 8
+                        VALUE aYVals[nJ] AUTOSIZE ;
+                        FONTCOLOR BLUE ;
+                        FONT "Arial" SIZE 8 TRANSPARENT
          nI += nWideB
       NEXT
    ENDIF
 
    // Bars
    //
-   IF nType == BARS
+   IF nType == BARS .AND. nMin <> 0
       nPos := nLeft + ( ( nWide + nSep ) / 2 )
       FOR nI=1 TO Len(aData[1])
          FOR nJ=1 TO Len(aSeries)
@@ -592,7 +599,7 @@ Procedure GraphShow(parent,nTop,nLeft,nBottom,nRight,nHeight,nWidth,aData,cTitle
 
    // Lines
    //
-   IF nType == LINES
+   IF nType == LINES .AND. nMin <> 0
       nWideB  := ( nRight - nLeft ) / ( nMax(aData) + 1 )
       nPos := nLeft + nWideB
       FOR nI := 1 TO Len(aData[1])
@@ -622,7 +629,7 @@ Procedure GraphShow(parent,nTop,nLeft,nBottom,nRight,nHeight,nWidth,aData,cTitle
 
    // Points
    //
-   IF nType == POINTS
+   IF nType == POINTS .AND. nMin <> 0
       nWideB := ( nRight - nLeft ) / ( nMax(aData) + 1 )
       nPos := nLeft + nWideB
       FOR nI := 1 TO Len(aData[1])
@@ -900,7 +907,7 @@ Local oWnd := GetFormObject( Window )
 return nil
 
 
-function drawpiegraph(windowname,fromrow,fromcol,torow,tocol,series,aname,colors,ctitle,depth,l3d,lxval,lsleg)
+function drawpiegraph(windowname,fromrow,fromcol,torow,tocol,series,aname,colors,ctitle,depth,l3d,lxval,lsleg,lnoborder)
 local topleftrow := fromrow
 local topleftcol := fromcol
 local toprightrow := fromrow
@@ -927,16 +934,18 @@ local j,i,sum := 0
 local cname := ""
 local shadowcolor := {}
 
-DrawLine(windowname, torow  ,fromcol  ,torow  ,tocol  ,WHITE)
-DrawLine(windowname, torow-1,fromcol+1,torow-1,tocol-1,GRAY )
-DrawLine(windowname, torow-1,fromcol  ,fromrow  ,fromcol  ,GRAY )
-DrawLine(windowname, torow-2,fromcol+1,fromrow+1,fromcol+1,GRAY )
-DrawLine(windowname, fromrow  ,fromcol  ,fromrow  ,tocol-1,GRAY )
-DrawLine(windowname, fromrow+1,fromcol+1,fromrow+1,tocol-2,GRAY )
-DrawLine(windowname, fromrow  ,tocol  ,torow  ,tocol  ,WHITE)
-DrawLine(windowname, fromrow  ,tocol-1,torow-1,tocol-1,GRAY )
+   If ! lNoBorder
 
+      DrawLine( windowname, torow      , fromcol    , torow      , tocol      , WHITE )
+      DrawLine( windowname, torow  - 1 , fromcol + 1, torow   - 1, tocol - 1  , GRAY  )
+      DrawLine( windowname, torow  - 1 , fromcol    , fromrow    , fromcol    , GRAY  )
+      DrawLine( windowname, torow  - 2 , fromcol + 1, fromrow + 1, fromcol + 1, GRAY  )
+      DrawLine( windowname, fromrow    , fromcol    , fromrow    , tocol - 1  , GRAY  )
+      DrawLine( windowname, fromrow + 1, fromcol + 1, fromrow + 1, tocol - 2  , GRAY  )
+      DrawLine( windowname, fromrow    , tocol      , torow      , tocol      , WHITE )
+      DrawLine( windowname, fromrow    , tocol - 1  , torow - 1  , tocol - 1  , GRAY  )
 
+   EndIf
 
 if len(alltrim(ctitle)) > 0
    if _iscontroldefined("title_of_pie",windowname)
@@ -953,6 +962,7 @@ if len(alltrim(ctitle)) > 0
       fontunderline .t.
       fontsize 12
       value alltrim(ctitle)
+      Transparent .t.
    end label
    fromrow := fromrow + 40
 endif
@@ -1120,6 +1130,7 @@ if lsleg
          autosize .t.
          value aname[i]+iif(lxval," - "+alltrim(str(series[i],10,2))+" ("+alltrim(str(degrees[i] / 360 * 100,6,2))+" %)","")
          fontcolor colors[i]
+         Transparent .t.
       end label
       fromrow := fromrow + 20
    next i
