@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.14 2005-10-08 02:20:08 declan2005 Exp $
+ * $Id: c_windows.c,v 1.15 2005-10-08 22:35:04 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -1284,8 +1284,8 @@ HANDLE DDBToDIB(HBITMAP hBitmap, HPALETTE hPal)
 
     dwLen = bi.biSize + PaletteSize((LPSTR)&bi) + bi.biSizeImage;
 
-    if (h = GlobalReAlloc(hDIB, dwLen, 0))
-        hDIB = h;
+    if (h == GlobalReAlloc(hDIB, dwLen, 0))
+          hDIB = h;   
     else
     {
         // clean up and return NULL
