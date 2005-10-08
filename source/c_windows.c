@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.13 2005-09-29 05:20:24 guerra000 Exp $
+ * $Id: c_windows.c,v 1.14 2005-10-08 02:20:08 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -99,6 +99,20 @@
 #define _WIN32_WINNT   0x0400
 
 #define WM_TASKBAR     WM_USER+1043
+
+/* Handle to a DIB */
+#define HDIB HANDLE
+
+/* DIB constants */
+#define PALVERSION   0x300
+
+/* DIB macros */
+#define IS_WIN30_DIB(lpbi)  ((*(LPDWORD)(lpbi)) == sizeof(BITMAPINFOHEADER))
+#define RECTWIDTH(lpRect)     ((lpRect)->right - (lpRect)->left)
+#define RECTHEIGHT(lpRect)    ((lpRect)->bottom - (lpRect)->top)
+
+
+
 #include <shlobj.h>
 #include <windows.h>
 #include "richedit.h"
@@ -1064,3 +1078,327 @@ HB_FUNC( INITDUMMY )
 	(HWND) hb_parnl (1),(HMENU)0 , GetModuleHandle(NULL) , NULL ) ;
 
 }
+
+WORD DIBNumColors(LPSTR);
+WORD PaletteSize(LPSTR);
+WORD SaveDIB(HDIB , LPSTR);
+HANDLE DDBToDIB(HBITMAP , HPALETTE );
+
+HB_FUNC( WNDCOPY  )  //  hWnd        Copies any Window to the Clipboard!
+{
+   HWND hWnd = ( HWND ) hb_parnl( 1 );
+   BOOL bAll = hb_parl( 2 );
+   HDC  hDC  = GetDC( hWnd );
+   HDC  hMemDC;
+   RECT rct;
+   HBITMAP hBitmap, hOldBmp;
+   HPALETTE  hPal;
+   LPSTR myFile =  hb_parc( 3 ) ;
+   HANDLE hDIB;
+   if( bAll )
+      GetWindowRect( hWnd, &rct );
+   else
+      GetClientRect( hWnd, &rct );
+
+      hMemDC  = CreateCompatibleDC( hDC );
+      hBitmap = CreateCompatibleBitmap( hDC, rct.right-rct.left, rct.bottom-rct.top );
+      hOldBmp = ( HBITMAP ) SelectObject( hMemDC, hBitmap );
+
+      BitBlt( hMemDC, 0, 0, rct.right-rct.left, rct.bottom-rct.top, hDC, 0, 0, SRCCOPY );
+
+
+      SelectObject( hMemDC, hOldBmp );
+
+      hDIB = DDBToDIB(hBitmap ,hPal);
+
+      SaveDIB(hDIB , myFile);
+
+      DeleteDC( hMemDC );
+
+      GlobalFree (hDIB);
+   ReleaseDC( hWnd, hDC );
+}
+
+WORD PaletteSize(LPSTR lpDIB)
+{
+    // calculate the size required by the palette
+    if (IS_WIN30_DIB (lpDIB))
+        return (DIBNumColors(lpDIB) * sizeof(RGBQUAD));
+    else
+        return (DIBNumColors(lpDIB) * sizeof(RGBTRIPLE));
+}
+
+
+WORD DIBNumColors(LPSTR lpDIB)
+{
+    WORD wBitCount;  // DIB bit count
+
+    // If this is a Windows-style DIB, the number of colors in the
+    // color table can be less than the number of bits per pixel
+    // allows for (i.e. lpbi->biClrUsed can be set to some value).
+    // If this is the case, return the appropriate value.
+    
+
+    if (IS_WIN30_DIB(lpDIB))
+    {
+        DWORD dwClrUsed;
+
+        dwClrUsed = ((LPBITMAPINFOHEADER)lpDIB)->biClrUsed;
+        if (dwClrUsed)
+
+        return (WORD)dwClrUsed;
+    }
+
+    // Calculate the number of colors in the color table based on
+    // the number of bits per pixel for the DIB.
+    
+    if (IS_WIN30_DIB(lpDIB))
+        wBitCount = ((LPBITMAPINFOHEADER)lpDIB)->biBitCount;
+    else
+        wBitCount = ((LPBITMAPCOREHEADER)lpDIB)->bcBitCount;
+
+    // return number of colors based on bits per pixel
+
+    switch (wBitCount)
+    {
+        case 1:
+            return 2;
+
+        case 4:
+            return 16;
+
+        case 8:
+            return 256;
+
+        default:
+            return 0;
+    }
+}
+
+HANDLE DDBToDIB(HBITMAP hBitmap, HPALETTE hPal) 
+{
+    BITMAP              bm;         // bitmap structure
+    BITMAPINFOHEADER    bi;         // bitmap header
+    LPBITMAPINFOHEADER  lpbi;       // pointer to BITMAPINFOHEADER
+    DWORD               dwLen;      // size of memory block
+    HANDLE              hDIB, h;    // handle to DIB, temp handle
+    HDC                 hDC;        // handle to DC
+    WORD                biBits;     // bits per pixel
+
+    // check if bitmap handle is valid
+
+    if (!hBitmap)
+        return NULL;
+
+    // fill in BITMAP structure, return NULL if it didn't work
+
+    if (!GetObject(hBitmap, sizeof(bm), (LPSTR)&bm))
+        return NULL;
+
+    // if no palette is specified, use default palette
+
+    if (hPal == NULL)
+        hPal = GetStockObject(DEFAULT_PALETTE);
+
+    // calculate bits per pixel
+
+    biBits = bm.bmPlanes * bm.bmBitsPixel;
+
+    // make sure bits per pixel is valid
+
+    if (biBits <= 1)
+        biBits = 1;
+    else if (biBits <= 4)
+        biBits = 4;
+    else if (biBits <= 8)
+        biBits = 8;
+    else // if greater than 8-bit, force to 24-bit
+        biBits = 24;
+
+    // initialize BITMAPINFOHEADER
+
+    bi.biSize = sizeof(BITMAPINFOHEADER);
+    bi.biWidth = bm.bmWidth;
+    bi.biHeight = bm.bmHeight;
+    bi.biPlanes = 1;
+    bi.biBitCount = biBits;
+    bi.biCompression = BI_RGB;
+    bi.biSizeImage = 0;
+    bi.biXPelsPerMeter = 0;
+    bi.biYPelsPerMeter = 0;
+    bi.biClrUsed = 0;
+    bi.biClrImportant = 0;
+
+    // calculate size of memory block required to store BITMAPINFO
+
+    dwLen = bi.biSize + PaletteSize((LPSTR)&bi);
+
+    // get a DC
+
+    hDC = GetDC(NULL);
+
+    // select and realize our palette
+
+    hPal = SelectPalette(hDC, hPal, FALSE);
+    RealizePalette(hDC);
+
+    // alloc memory block to store our bitmap
+
+    hDIB = GlobalAlloc(GHND, dwLen);
+
+    // if we couldn't get memory block
+
+    if (!hDIB)
+    {
+      // clean up and return NULL
+
+      SelectPalette(hDC, hPal, TRUE);
+      RealizePalette(hDC);
+      ReleaseDC(NULL, hDC);
+      return NULL;
+    }
+
+    // lock memory and get pointer to it
+
+    lpbi = (LPBITMAPINFOHEADER)GlobalLock(hDIB);
+
+    /// use our bitmap info. to fill BITMAPINFOHEADER
+
+    *lpbi = bi;
+
+    // call GetDIBits with a NULL lpBits param, so it will calculate the
+    // biSizeImage field for us    
+
+    GetDIBits(hDC, hBitmap, 0, (UINT)bi.biHeight, NULL, (LPBITMAPINFO)lpbi,
+        DIB_RGB_COLORS);
+
+    // get the info. returned by GetDIBits and unlock memory block
+
+    bi = *lpbi;
+    GlobalUnlock(hDIB);
+
+    // if the driver did not fill in the biSizeImage field, make one up 
+    if (bi.biSizeImage == 0)
+        bi.biSizeImage = ((((DWORD)bm.bmWidth * biBits)+ 31) / 32 * 4) * bm.bmHeight;
+    // realloc the buffer big enough to hold all the bits
+
+    dwLen = bi.biSize + PaletteSize((LPSTR)&bi) + bi.biSizeImage;
+
+    if (h = GlobalReAlloc(hDIB, dwLen, 0))
+        hDIB = h;
+    else
+    {
+        // clean up and return NULL
+
+        GlobalFree(hDIB);
+///        hDIB = NULL;
+        SelectPalette(hDC, hPal, TRUE);
+        RealizePalette(hDC);
+        ReleaseDC(NULL, hDC);
+        return NULL;
+    }
+
+    // lock memory block and get pointer to it */
+
+    lpbi = (LPBITMAPINFOHEADER)GlobalLock(hDIB);
+
+    // call GetDIBits with a NON-NULL lpBits param, and actualy get the
+    // bits this time
+
+    if (GetDIBits(hDC, hBitmap, 0, (UINT)bi.biHeight, (LPSTR)lpbi +
+            (WORD)lpbi->biSize + PaletteSize((LPSTR)lpbi), (LPBITMAPINFO)lpbi,
+            DIB_RGB_COLORS) == 0)
+    {
+        // clean up and return NULL
+
+        GlobalFree(hDIB);
+	
+///////        hDIB = NULL;
+
+        SelectPalette(hDC, hPal, TRUE);
+        RealizePalette(hDC);
+        ReleaseDC(NULL, hDC);
+        return NULL;
+    }
+
+    bi = *lpbi;
+
+    // clean up 
+    GlobalUnlock(hDIB);
+    SelectPalette(hDC, hPal, TRUE);
+    RealizePalette(hDC);
+    ReleaseDC(NULL, hDC);
+
+    // return handle to the DIB
+    return hDIB;
+}
+
+WORD SaveDIB(HDIB hDib, LPSTR lpFileName)
+{
+    BITMAPFILEHEADER    bmfHdr;     // Header for Bitmap file
+    LPBITMAPINFOHEADER  lpBI;       // Pointer to DIB info structure
+    HANDLE              fh;         // file handle for opened file
+    DWORD               dwDIBSize;
+    DWORD               dwWritten;
+    DWORD               dwBmBitsSize;
+
+    fh = CreateFile(lpFileName, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS,
+            FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, NULL);
+
+
+    // Get a pointer to the DIB memory, the first of which contains
+    // a BITMAPINFO structure
+
+    lpBI = (LPBITMAPINFOHEADER)GlobalLock(hDib);
+    if (!lpBI)
+    {
+        CloseHandle(fh);
+        return 1;
+    }
+
+    if (lpBI->biSize != sizeof(BITMAPINFOHEADER))
+    {
+        GlobalUnlock(hDib);
+        CloseHandle(fh);
+        return 1;
+    }
+
+
+    bmfHdr.bfType = ((WORD) ('M' << 8) | 'B'); // is always "BM" 
+
+    dwDIBSize = *(LPDWORD)lpBI + PaletteSize((LPSTR)lpBI);  
+
+
+    dwBmBitsSize = ((((lpBI->biWidth)*((DWORD)lpBI->biBitCount))+ 31) / 32 * 4) *  lpBI->biHeight;
+    dwDIBSize += dwBmBitsSize;
+    lpBI->biSizeImage = dwBmBitsSize;
+
+                   
+    bmfHdr.bfSize = dwDIBSize + sizeof(BITMAPFILEHEADER);
+    bmfHdr.bfReserved1 = 0;
+    bmfHdr.bfReserved2 = 0;
+
+    // Now, calculate the offset the actual bitmap bits will be in
+    // the file -- It's the Bitmap file header plus the DIB header,
+    // plus the size of the color table.
+    
+    bmfHdr.bfOffBits = (DWORD)sizeof(BITMAPFILEHEADER) + lpBI->biSize +
+            PaletteSize((LPSTR)lpBI);
+
+    // Write the file header
+
+    WriteFile(fh, (LPSTR)&bmfHdr, sizeof(BITMAPFILEHEADER), &dwWritten, NULL);
+
+    // Write the DIB header and the bits -- use local version of
+    // MyWrite, so we can write more than 32767 bytes of data
+    
+    WriteFile(fh, (LPSTR)lpBI, dwDIBSize, &dwWritten, NULL);
+
+    GlobalUnlock(hDib);
+    CloseHandle(fh);
+
+    if (dwWritten == 0)
+        return 1; // oops, something happened in the write
+    else
+        return 0; // Success code
+}																																																																																																																																										    

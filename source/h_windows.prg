@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.24 2005-10-03 05:27:49 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.25 2005-10-08 02:20:08 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -95,6 +95,7 @@
 #include "i_windefs.ch"
 #include "common.ch"
 #include "error.ch"
+#include "winprint.ch"
 
 STATIC _OOHG_aFormhWnd := {}, _OOHG_aFormObjects := {}
 STATIC _OOHG_aEventInfo := {}        // Event's stack
@@ -279,6 +280,7 @@ CLASS TForm FROM TWindow
    METHOD New
    METHOD Hide
    METHOD Show
+   METHOD Print
    METHOD Activate
    METHOD Release
    METHOD Center()      BLOCK { | Self | C_Center( ::hWnd ) }
@@ -301,6 +303,7 @@ CLASS TForm FROM TWindow
    METHOD MessageLoop
    ERROR HANDLER Error
    METHOD Control
+   
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -797,6 +800,41 @@ METHOD Show() CLASS TForm
    ShowWindow( ::hWnd )
 	ProcessMessages()
 Return Nil
+
+
+*-----------------------------------------------------------------------------*
+METHOD Print(x,y,w,h) CLASS TForm
+*-----------------------------------------------------------------------------*
+local cwork:='t'+alltrim(str(random(999999)))+'.bmp'
+
+ DEFAULT w    TO 40
+ DEFAULT h    TO 140
+
+ DEFAULT x    TO 4
+ DEFAULT y    TO 4
+
+WNDCOPY(::hwnd,.F.,cwork) //// guarda como BMP
+INIT PRINTSYS
+GET PRINTERS TO aprinters
+GET PORTS TO aports
+GET DEFAULT PRINTER TO cPRINTERCVC
+SELECT BY DIALOG PREVIEW
+set page orientation DMORIENT_LANDSCAPE 
+if HBPRNERROR>0
+   msginfo("Print error","Information")
+//////   RELEASE WINDOW all
+   return nil
+endif
+
+start doc
+start page
+ @ y , x PICTURE cwork size W,H   ////   
+END PAGE
+END DOC
+RELEASE PRINTSYS
+erase &cwork
+return nil
+
 
 *-----------------------------------------------------------------------------*
 METHOD Activate( lNoStop, oWndLoop ) CLASS TForm
