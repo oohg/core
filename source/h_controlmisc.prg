@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.18 2005-10-08 15:47:46 declan2005 Exp $
+ * $Id: h_controlmisc.prg,v 1.19 2005-10-08 19:22:20 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -102,6 +102,13 @@ STATIC _OOHG_aControlhWnd := {}, _OOHG_aControlObjects := {}
 STATIC _OOHG_aControlIds := {},  _OOHG_aControlNames := {}
 
 STATIC _OOHG_lMultiple := .T.    // Allows the same applicaton runs more one instance at a time
+
+#pragma BEGINDUMP
+#include "hbapi.h"
+#include "hbvm.h"
+#include <windows.h>
+#include "../include/oohg.h"
+#pragma ENDDUMP
 
 *-----------------------------------------------------------------------------*
 Function _Getvalue ( ControlName, ParentForm )
@@ -2443,10 +2450,6 @@ Return lRetVal
 
 #pragma BEGINDUMP
 #define s_Super s_Window
-#include "hbapi.h"
-#include "hbvm.h"
-#include <windows.h>
-#include "../include/oohg.h"
 
 // -----------------------------------------------------------------------------
 HB_FUNC_STATIC( TCONTROL_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TControl
@@ -2756,3 +2759,190 @@ Procedure _OOHG_Init_C_Vars_Controls()
    TControl()
    _OOHG_Init_C_Vars_Controls_C_Side( _OOHG_aControlhWnd, _OOHG_aControlObjects )
 Return
+
+EXTERN _OOHG_UnTransform
+
+#pragma BEGINDUMP
+
+HB_FUNC( _OOHG_UNTRANSFORM )
+{
+   BYTE *cText, *cPicture, *cReturn, cType;
+   ULONG iText, iPicture, iReturn, iMax;
+   BOOL lSign, bIgnoreMasks;
+
+   iText = hb_parclen( 1 );
+   iPicture = hb_parclen( 2 );
+   iMax = ( iText > iPicture ) ? iText : iPicture ;
+   if( iText && iPicture )
+   {
+      cText = hb_parc( 1 );
+      cPicture = hb_parc( 2 );
+      cReturn = hb_xgrab( iMax );
+      iReturn = 0;
+
+      if( hb_parclen( 3 ) > 0 )
+      {
+         cType = hb_parc( 3 )[ 0 ];
+         if( cType >= 'a' && cType <= 'z' )
+         {
+            cType -= 32;
+         }
+      }
+      else
+      {
+         cType = 'C';
+      }
+
+      lSign = 0;
+      bIgnoreMasks = ( cType == 'N' || cType == 'L' );
+
+      // Picture function
+      if( iPicture && *cPicture == '@' )
+      {
+         cPicture++;
+         while( iPicture && *cPicture != ' ' )
+         {
+            iPicture--;
+            switch( *cPicture++ )
+            {
+               case 'R':
+               case 'r':
+                  bIgnoreMasks = 1;
+                  break;
+
+               case '(':
+               case ')':
+                  if( cType == 'N' && cText[ iText - 1 ] == ')' )
+                  {
+                     lSign = 1;
+                     iText--;
+                     cReturn[ iReturn++ ] = '-';
+                  }
+                  break;
+
+               case 'X':
+               case 'x':
+                  if( cType == 'N' && iText > 2 && cText[ iText - 3 ] == ' ' && cText[ iText - 2 ] == 'D' && cText[ iText - 1 ] == 'B' )
+                  {
+                     lSign = 1;
+                     iText -= 3;
+                     cReturn[ iReturn++ ] = '-';
+                  }
+                  break;
+
+            }
+         }
+         if( iPicture && *cPicture == ' ' )
+         {
+            iPicture--;
+            cPicture++;
+         }
+      }
+
+      while( iPicture && iText )
+      {
+         iPicture--;
+         switch( *cPicture++ )
+         {
+            case 'A':
+            case 'N':
+            case 'X':
+            case '9':
+            case '#':
+            case 'L':
+            case 'Y':
+            case '!':
+            case 'a':
+            case 'n':
+            case 'x':
+            case 'l':
+            case 'y':
+            case '$':
+            case '*':
+               if( cType == 'N' )
+               {
+                  switch( *cText )
+                  {
+                     case '$':
+                     case '*':
+                     case '(':
+                        cReturn[ iReturn++ ] = ' ';
+                        break;
+
+                     default:
+                        cReturn[ iReturn++ ] = *cText;
+                        break;
+                  }
+               }
+               else
+               {
+                  cReturn[ iReturn++ ] = *cText;
+               }
+               break;
+
+            case '.':
+               if( cType == 'N' )
+               {
+                  cReturn[ iReturn++ ] = '.';
+               }
+               else if( ! bIgnoreMasks )
+               {
+                  cReturn[ iReturn++ ] = *cText;
+               }
+               break;
+
+            case ',':
+               if( cType == 'N' && *cText == '-' )
+               {
+                  lSign = 1;
+               }
+               else if( ! bIgnoreMasks )
+               {
+                  cReturn[ iReturn++ ] = *cText;
+               }
+               break;
+
+            default:
+               if( ! bIgnoreMasks )
+               {
+                  cReturn[ iReturn++ ] = *cText;
+               }
+
+         }
+         iText--;
+         cText++;
+      }
+
+      while( iText )
+      {
+         cReturn[ iReturn++ ] = *cText++;
+         iText--;
+      }
+
+      if( cType == 'N' && lSign )
+      {
+         iPicture = 0;
+         for( iText = 0; iText < iReturn; iText++ )
+         {
+            if( cReturn[ iText ] == ' ' )
+            {
+               iPicture = iText;
+            }
+            else
+            {
+               iText = iReturn;
+            }
+         }
+         cReturn[ iPicture ] = '-';
+      }
+
+      hb_retclen( cReturn, iReturn );
+      hb_xfree( cReturn );
+   }
+   else
+   {
+      hb_retc( "" );
+   }
+}
+
+#pragma ENDDUMP
