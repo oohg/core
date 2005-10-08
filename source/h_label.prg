@@ -1,5 +1,5 @@
 /*
- * $Id: h_label.prg,v 1.9 2005-10-03 05:29:51 guerra000 Exp $
+ * $Id: h_label.prg,v 1.10 2005-10-08 19:16:59 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -97,7 +97,7 @@
 
 CLASS TLabel FROM TControl
    DATA Type      INIT "LABEL" READONLY
-   DATA AutoSize  INIT .F.
+   DATA lAutoSize INIT .F.
    DATA IconWidth INIT 0
 
    METHOD SetText( cText )     BLOCK { | Self, cText | ::Caption := cText }
@@ -106,6 +106,7 @@ CLASS TLabel FROM TControl
    METHOD Define
    METHOD Value      SETGET
    METHOD Caption    SETGET
+   METHOD AutoSize   SETGET
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -121,11 +122,6 @@ Local ControlHandle
    DEFAULT h             TO 24
    DEFAULT ProcedureName TO ""
    DEFAULT invisible     TO FALSE
-   DEFAULT bold          TO FALSE
-   DEFAULT italic        TO FALSE
-   DEFAULT underline     TO FALSE
-   DEFAULT strikeout     TO FALSE
-   DEFAULT autosize      TO FALSE
    DEFAULT transparent   TO FALSE
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, aRGB_font, aRGB_bk, , lRtl )
@@ -139,12 +135,6 @@ Local ControlHandle
    ::OnClick := ProcedureName
    ::Transparent := transparent
    ::AutoSize := autosize
-   ::Caption := Caption
-
-   if ::AutoSize
-      ::SizePos( , , GetTextWidth( NIL, Caption, ::FontHandle ) + ::IconWidth, GetTextHeight( NIL, Caption, ::FontHandle ) )
-      RedrawWindow( ControlHandle )
-	EndIf
 
 Return Self
 
@@ -157,7 +147,7 @@ Return ( ::Caption := cValue )
 METHOD Caption( cValue ) CLASS TLabel
 *-----------------------------------------------------------------------------*
    IF VALTYPE( cValue ) $ "CM"
-      if ::AutoSize
+      if ::lAutoSize
          ::SizePos( , , GetTextWidth( nil, cValue , ::FontHandle ) + ::IconWidth, GetTextHeight( nil, cValue , ::FontHandle ) )
 		EndIf
       SetWindowText( ::hWnd , cValue )
@@ -168,3 +158,17 @@ METHOD Caption( cValue ) CLASS TLabel
       cValue := GetWindowText( ::hWnd )
    ENDIF
 RETURN cValue
+
+*-----------------------------------------------------------------------------*
+METHOD AutoSize( lValue ) CLASS TLabel
+*-----------------------------------------------------------------------------*
+Local cCaption
+   If ValType( lValue ) == "L"
+      ::lAutoSize := lValue
+      If lValue
+         cCaption := GetWindowText( ::hWnd )
+         ::SizePos( , , GetTextWidth( NIL, cCaption, ::FontHandle ) + ::IconWidth, GetTextHeight( NIL, cCaption, ::FontHandle ) )
+         RedrawWindow( ::hWnd )
+      EndIf
+   EndIf
+Return ::lAutoSize
