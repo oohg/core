@@ -1,10 +1,19 @@
- * $Id: ChangeLog,v 1.5 2005-10-08 02:20:08 declan2005 Exp $
+ * $Id: ChangeLog,v 1.6 2005-10-08 15:47:46 declan2005 Exp $
 
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2005-10-08 09:00 UTC-0500 Ciro Vargas C. <sistemascvc@softhome.net>
+  * source/h_controlmisc.prg
+  * include/i_windows.ch  
+    ! added new method print to form in semioop sintax.
+  * samples/oohg/hello.prg
+    | added example for new method print and other fixes.   
+     
+
 
 2005-10-07 18:00 UTC-0500 Ciro Vargas C. <sistemascvc@softhome.net>
   * source/h_windows.prg

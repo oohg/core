@@ -1,5 +1,5 @@
 /*
- * $Id: i_window.ch,v 1.8 2005-10-03 05:35:54 guerra000 Exp $
+ * $Id: i_window.ch,v 1.9 2005-10-08 15:47:46 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -117,7 +117,7 @@
 	=>;
         #xtranslate <w> . \<p:Name,Title,Height,Width,Col,Row,NotifyIcon,NotifyToolTip,BackColor,FocusedControl\> => GetProperty ( <"w">, \<"p"\> ) ;;
         #xtranslate <w> . \<p:Name,Title,Height,Width,Col,Row,NotifyIcon,NotifyToolTip,BackColor,FocusedControl,Cursor\> := \<n\> => SetProperty ( <"w">, \<"p"\> , \<n\> ) ;;
-	#xtranslate <w>	. \<p:Activate,Center,Release,Maximize,Minimize,Restore,Show,Hide,SetFocus\> \[()\] => DoMethod ( <"w">, \<"p"\> ) ;;
+	#xtranslate <w>	. \<p:Activate,Center,Release,Maximize,Minimize,Restore,Show,Hide,Print,SetFocus\> \[()\] => DoMethod ( <"w">, \<"p"\> ) ;;
         #xtranslate <w> . \<c\> . \<p:Value,Name,Value,Address,BackColor,FontColor,Picture,ToolTip,FontName,FontSize,FontBold,FontUnderline,FontItalic,FontStrikeOut,Caption,Row,DisplayValue,Col,Width,Height,Visible,Enabled,Checked,ItemCount,RangeMin,RangeMax,Position,CaretPos,ForeColor\> => GetProperty ( <"w">, \<"c"\> , \<"p"\> ) ;;
         #xtranslate <w> . \<c\> . \<p:Value,Name,Value,Address,BackColor,FontColor,Picture,ToolTip,FontName,FontSize,FontBold,FontUnderline,FontItalic,FontStrikeOut,Caption,Row,DisplayValue,Col,Width,Height,Visible,Enabled,Checked,ItemCount,RangeMin,RangeMax,Position,CaretPos,ForeColor\> := \<n\> => SetProperty ( <"w">, \<"c"\> , \<"p"\> , \<n\> ) ;;
         #xtranslate <w> . \<c\> . \<p:AllowAppend,AllowDelete,AllowEdit\> => GetProperty ( <"w">, \<"c"\> , \<"p"\> ) ;;
@@ -353,7 +353,7 @@
 	=>;
         #xtranslate <w> . <p:Name,Title,Height,Width,Col,Row,NotifyIcon,NotifyToolTip,BackColor,FocusedControl> => GetProperty ( <"w">, <"p"> ) ;;
         #xtranslate <w> . <p:Name,Title,Height,Width,Col,Row,NotifyIcon,NotifyToolTip,BackColor,FocusedControl,Cursor> := <n> => SetProperty ( <"w">, <"p"> , <n> ) ;;
-	#xtranslate <w>	. <p:Activate,Center,Release,Maximize,Minimize,Restore,Show,Hide,SetFocus> [()] => DoMethod ( <"w">, <"p"> ) ;;
+	#xtranslate <w>	. <p:Activate,Center,Release,Maximize,Minimize,Restore,Show,Print,Hide,SetFocus> [()] => DoMethod ( <"w">, <"p"> ) ;;
         #xtranslate <w> . <c> . <p:Value,Name,Value,Address,BackColor,FontColor,Picture,ToolTip,FontName,FontSize,FontBold,FontItalic,FontUnderline,FontStrikeOut,Caption,Row,DisplayValue,Col,Width,Height,Visible,Enabled,Checked,ItemCount,RangeMin,RangeMax,Position,CaretPos,ForeColor> => GetProperty ( <"w">, <"c"> , <"p"> ) ;;
         #xtranslate <w> . <c> . <p:Value,Name,Value,Address,BackColor,FontColor,Picture,ToolTip,FontName,FontSize,FontBold,FontItalic,FontUnderline,FontStrikeOut,Caption,Row,DisplayValue,Col,Width,Height,Visible,Enabled,Checked,ItemCount,RangeMin,RangeMax,Position,CaretPos,ForeColor> := <n> => SetProperty ( <"w">, <"c"> , <"p"> , <n> ) ;;
         #xtranslate <w> . <c> . <p:AllowAppend,AllowDelete,AllowEdit> => GetProperty ( <"w">, <"c"> , <"p"> ) ;;

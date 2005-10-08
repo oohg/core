@@ -1,5 +1,5 @@
 /*
- * $Id: hello.prg,v 1.7 2005-10-03 05:35:54 guerra000 Exp $
+ * $Id: hello.prg,v 1.8 2005-10-08 15:47:46 declan2005 Exp $
  */
 /*
 * ooHG Hello World Demo
@@ -8,21 +8,22 @@
 
 #include "oohg.ch"
 
-Function Main
-Local oWnd
+Function Main()
 LOCAL oLabel
+Private oWnd
+
 
 set cent on
 
         DEFINE WINDOW Win_1 OBJ oWnd ;
 		AT 0,0 ;
-                WIDTH 400 ;
-                HEIGHT 450 ;
+                WIDTH 640 ;
+                HEIGHT 480 ;
 		TITLE 'Hello World!' ;
                 on mouseclick msginfo(str(_OOHG_MouseRow)+str(_OOHG_MouseCol)) ;
                 MAIN ;
-                virtual height 600 ;
-                virtual WIDTH 800
+                virtual height 768 ;
+                virtual WIDTH 1024
 
                 // oWnd := GetFormObject( "Win_1" )
 
@@ -66,15 +67,14 @@ set cent on
                     ITEM "Salir" ACTION Win_1.Release
                 END MENU
 
-*                on key F5 action msginfo( "hotkey!" )
-                on key F5 action msginfo( str( getwindowcol( ownd:hello:hwnd )  )+str( ownd:hello:col ) )
+                on key F5 action msginfo( str( olabel:row  )+str( olabel:col ),"Hello window" )
 
                 // @ 10,10 LABEL Hello VALUE "(F5) Hello!!" AUTOSIZE ACTION MSGINFO("CLICK!")
                 oLabel := TLabel():Define()
                 oLabel:Caption := "(F5) Hello!!"
                 oLabel:AutoSize := .T.
                 oLabel:Row := 10
-                oLabel:Col := 10
+                oLabel:Col := 400
                 oLabel:OnClick := { || MSGINFO("CLICK!") }
 
                 @ 40,10 HYPERLINK HLNK VALUE "www.yahoo.com.mx" autosize address "http://www.yahoo.com.mx"
@@ -82,6 +82,7 @@ set cent on
                 @ 70,10 TEXTBOX Txt1 value "Text!" WIDTH 150 height 20
 
                 @ 90,10 TEXTBOX Txt2 VALUE "0940100101000000" WIDTH 150  height 20 INPUTMASK "@R 999-99-999-99-!!-!!!!"
+
 oLabel := oWnd:Txt2
 
                 @ 110,10 TEXTBOX Txt3 VALUE 55 WIDTH 150 numeric height 20
@@ -123,10 +124,6 @@ oWnd:RAD:AITEMS[2]:caption := oWnd:RAD:AITEMS[2]:caption
                 END MENU
 
 
-
-
-
-
                 @  10,200 GRID grd width 150 height 100 headers { "UNO", "DOS", "TRES" } widths {45,45,45} edit ;
                           items { {"1","2","3"},{"A","@","C"},{"x","y","z"} } ;
                           JUSTIFY { GRID_JTFY_RIGHT, GRID_JTFY_CENTER, GRID_JTFY_LEFT } ;
@@ -135,8 +132,8 @@ oWnd:RAD:AITEMS[2]:caption := oWnd:RAD:AITEMS[2]:caption
                           DYNAMICFORECOLOR { NIL, RGB(255,255,0), NIL }
 oWnd:Grd:SetRangeColor( 0, , 2, 2 )
 
-                define tab tab at 130,200 width 150 height 100
-ownd:tab:transparent := .t.
+                define tab tab at 130,210 width 150 height 100
+                  ownd:tab:transparent := .t.
                    define page "uno"
                       @ 30,10 label ll1 value "tab 1" autosize
                    end page
@@ -151,10 +148,10 @@ ownd:tab:transparent := .t.
                       @ 30,10 label ll4 value "tab a" autosize
                    end page
                    define page "bbb"
-                      @ 50,10 label ll5 value "tab b" autosize
+                      @ 30,14 label ll5 value "tab b" autosize
                    end page
                    define page "ccc"
-                      @ 70,10 label ll6 value "tab c" autosize
+                      @ 30,18 label ll6 value "tab c" autosize
                    end page
                 end tab
 
@@ -177,17 +174,7 @@ ownd:tab:transparent := .t.
 
 
 
-
-
-
-
-
-
-
-
-
-
-                DEFINE TREE Tree_1 AT 10,400 WIDTH 150 HEIGHT 300 VALUE 15
+                DEFINE TREE Tree_1 AT 80,400 WIDTH 150 HEIGHT 240 VALUE 15
 
 			NODE 'Item 1'
 				TREEITEM 'Item 1.1'
@@ -206,8 +193,6 @@ ownd:tab:transparent := .t.
 					TREEITEM 'Item 2.2.4'
 					TREEITEM 'Item 2.2.5'
 					TREEITEM 'Item 2.2.6'
-					TREEITEM 'Item 2.2.7'
-					TREEITEM 'Item 2.2.8'
 				END NODE
 
 				TREEITEM 'Item 2.3'
@@ -227,15 +212,10 @@ ownd:tab:transparent := .t.
 
 		END TREE
 
-                @ 330,400 BUTTON BTN2 PICTURE "RESOURCES\EDIT_NEW.BMP" width 100 height 100
-                OWND:BTN2:TOOLTIP := "BUTTON 2"
+                @ 330,400 BUTTON BTN2 PICTURE "RESOURCES\EDIT_NEW.BMP" width 100 height 100 action printform()
 
-
-
-
-
-
-
+                OWND:BTN2:TOOLTIP := "Print this form"
+/////                OWND:BTN2:action := { || ownd:print() } 
 
                 @ 10,600 FRAME frame WIDTH 150 HEIGHT 60 CAPTION "Frame"
 
@@ -248,9 +228,6 @@ ownd:tab:transparent := .t.
                 @ 200,600 richeditbox edit2 WIDTH 150 HEIGHT 60 value "texto2"
 
                 @ 280,600 LISTBOX lbx items { "Uno", "Dos", "Tres" } width 150 multi
-
-
-
 
 
 
@@ -267,3 +244,9 @@ ownd:tab:transparent := .t.
         ownd:activate()
 
 Return
+
+function printform()
+  OWND:BTN2:enabled:=.F. 
+  ownd:print()
+  OWND:BTN2:enabled:=.T. 
+return nil

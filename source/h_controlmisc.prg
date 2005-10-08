@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.17 2005-10-03 05:35:54 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.18 2005-10-08 15:47:46 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -1460,6 +1460,10 @@ Local oWnd, oCtrl
 		ElseIf Arg2 == 'SHOW'
 
          oWnd:Show()
+	 
+		ElseIf Arg2 == 'PRINT'
+
+         oWnd:print()
 
 		ElseIf Arg2 == 'HIDE'
 
