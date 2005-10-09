@@ -1,5 +1,5 @@
 /*
- * $Id: h_toolbar.prg,v 1.8 2005-10-01 15:35:10 guerra000 Exp $
+ * $Id: h_toolbar.prg,v 1.9 2005-10-09 21:31:20 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -306,11 +306,13 @@ tooltip := caption
 
    ControlHandle := InitToolButton ( ::Container:hWnd, Caption, id , 0, 0, 0, 0, image , 0 , separator , autosize , check , group , dropdown , WHOLEDROPDOWN )
 
+/*
    if valtype(image) $ "CM"
-		if ControlHandle == 0
+      if ControlHandle == 0
          MsgOOHGError ('ToolBar Button Image: ' + chr(34) + Image + chr(34) + ' Not Available. Program terminated' )
-		EndIf
-	EndIf
+      EndIf
+   EndIf
+*/
 
    nPos := GetButtonBarCount ( ::Container:hWnd ) - if(separator,1,0)
 
