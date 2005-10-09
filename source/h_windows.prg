@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.26 2005-10-08 21:37:40 declan2005 Exp $
+ * $Id: h_windows.prg,v 1.27 2005-10-09 03:53:48 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -805,7 +805,10 @@ Return Nil
 *-----------------------------------------------------------------------------*
 METHOD Print(x,y,w,h) CLASS TForm
 *-----------------------------------------------------------------------------*
-local myobject, aprinters,aports,cprintercvc,cwork:='_oohg_t'+alltrim(str(random(999999)))+'.bmp'
+local myobject, aprinters,aports,cprintercvc,cwork:='_oohg_t'+alltrim(str(int(random(999999))))+'.bmp'
+do while file(cwork)
+   cwork:='_oohg_t'+alltrim(str(int(random(999999))))+'.bmp'
+enddo
 
  DEFAULT w    TO 40
  DEFAULT h    TO 140
