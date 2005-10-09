@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.25 2005-10-03 05:35:54 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.26 2005-10-09 22:32:48 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1907,7 +1907,7 @@ Local nr , RecordCount , BackRec
          ( ::WorkArea )->( DBGoBottom() )
       Else
          nr := nPos * RecordCount / ::VScroll:RangeMax
-         #ifdef __XHARBOR__
+         #ifdef __XHARBOUR__
             ( ::WorkArea )->( OrdKeyGoTo( nr ) )
          #else
             If nr < ( RecordCount / 2 )
