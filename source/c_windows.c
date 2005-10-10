@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.17 2005-10-09 21:33:24 guerra000 Exp $
+ * $Id: c_windows.c,v 1.18 2005-10-10 00:32:56 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1137,7 +1137,7 @@ WORD DIBNumColors(LPSTR lpDIB)
     // color table can be less than the number of bits per pixel
     // allows for (i.e. lpbi->biClrUsed can be set to some value).
     // If this is the case, return the appropriate value.
-    
+
 
     if (IS_WIN30_DIB(lpDIB))
     {
@@ -1151,7 +1151,7 @@ WORD DIBNumColors(LPSTR lpDIB)
 
     // Calculate the number of colors in the color table based on
     // the number of bits per pixel for the DIB.
-    
+
     if (IS_WIN30_DIB(lpDIB))
         wBitCount = ((LPBITMAPINFOHEADER)lpDIB)->biBitCount;
     else
@@ -1175,7 +1175,7 @@ WORD DIBNumColors(LPSTR lpDIB)
     }
 }
 
-HANDLE DDBToDIB(HBITMAP hBitmap, HPALETTE hPal) 
+HANDLE DDBToDIB(HBITMAP hBitmap, HPALETTE hPal)
 {
     BITMAP              bm;         // bitmap structure
     BITMAPINFOHEADER    bi;         // bitmap header
@@ -1267,7 +1267,7 @@ HANDLE DDBToDIB(HBITMAP hBitmap, HPALETTE hPal)
     *lpbi = bi;
 
     // call GetDIBits with a NULL lpBits param, so it will calculate the
-    // biSizeImage field for us    
+    // biSizeImage field for us
 
     GetDIBits(hDC, hBitmap, 0, (UINT)bi.biHeight, NULL, (LPBITMAPINFO)lpbi,
         DIB_RGB_COLORS);
@@ -1277,7 +1277,7 @@ HANDLE DDBToDIB(HBITMAP hBitmap, HPALETTE hPal)
     bi = *lpbi;
     GlobalUnlock(hDIB);
 
-    // if the driver did not fill in the biSizeImage field, make one up 
+    // if the driver did not fill in the biSizeImage field, make one up
     if (bi.biSizeImage == 0)
         bi.biSizeImage = ((((DWORD)bm.bmWidth * biBits)+ 31) / 32 * 4) * bm.bmHeight;
     // realloc the buffer big enough to hold all the bits
@@ -1315,7 +1315,7 @@ HANDLE DDBToDIB(HBITMAP hBitmap, HPALETTE hPal)
         // clean up and return NULL
 
         GlobalFree(hDIB);
-	
+
 ///////        hDIB = NULL;
 
         SelectPalette(hDC, hPal, TRUE);
@@ -1326,7 +1326,7 @@ HANDLE DDBToDIB(HBITMAP hBitmap, HPALETTE hPal)
 
     bi = *lpbi;
 
-    // clean up 
+    // clean up
     GlobalUnlock(hDIB);
     SelectPalette(hDC, hPal, TRUE);
     RealizePalette(hDC);
@@ -1367,16 +1367,16 @@ WORD SaveDIB(HDIB hDib, LPSTR lpFileName)
     }
 
 
-    bmfHdr.bfType = ((WORD) ('M' << 8) | 'B'); // is always "BM" 
+    bmfHdr.bfType = ((WORD) ('M' << 8) | 'B'); // is always "BM"
 
-    dwDIBSize = *(LPDWORD)lpBI + PaletteSize((LPSTR)lpBI);  
+    dwDIBSize = *(LPDWORD)lpBI + PaletteSize((LPSTR)lpBI);
 
 
     dwBmBitsSize = ((((lpBI->biWidth)*((DWORD)lpBI->biBitCount))+ 31) / 32 * 4) *  lpBI->biHeight;
     dwDIBSize += dwBmBitsSize;
     lpBI->biSizeImage = dwBmBitsSize;
 
-                   
+
     bmfHdr.bfSize = dwDIBSize + sizeof(BITMAPFILEHEADER);
     bmfHdr.bfReserved1 = 0;
     bmfHdr.bfReserved2 = 0;
@@ -1384,7 +1384,7 @@ WORD SaveDIB(HDIB hDib, LPSTR lpFileName)
     // Now, calculate the offset the actual bitmap bits will be in
     // the file -- It's the Bitmap file header plus the DIB header,
     // plus the size of the color table.
-    
+
     bmfHdr.bfOffBits = (DWORD)sizeof(BITMAPFILEHEADER) + lpBI->biSize +
             PaletteSize((LPSTR)lpBI);
 
@@ -1394,7 +1394,7 @@ WORD SaveDIB(HDIB hDib, LPSTR lpFileName)
 
     // Write the DIB header and the bits -- use local version of
     // MyWrite, so we can write more than 32767 bytes of data
-    
+
     WriteFile(fh, (LPSTR)lpBI, dwDIBSize, &dwWritten, NULL);
 
     GlobalUnlock(hDib);
@@ -1404,4 +1404,22 @@ WORD SaveDIB(HDIB hDib, LPSTR lpFileName)
         return 1; // oops, something happened in the write
     else
         return 0; // Success code
-}																																																																																																																																										    
+}
+
+HB_FUNC( _UPDATERTL )
+{
+   HWND hwnd;
+   LONG myret;
+   hwnd = ( HWND ) hb_parnl (1);
+   myret = ::GetWindowLong ( hwnd, GWL_EXSTYLE);
+   if( hb_parnl ( 2 ) )
+   {
+      SetWindowLong( hwnd, GWL_EXSTYLE, WS_EX_LTRREADING | WS_EX_LEFT | WS_EX_LEFTSCROLLBAR | myret );
+   }
+   else
+   {
+      SetWindowLong( hwnd, GWL_EXSTYLE,  myret &~ WS_EX_LTRREADING &~ WS_EX_LEFT &~ WS_EX_LEFTSCROLLBAR );
+   }
+
+   hb_ret();
+}

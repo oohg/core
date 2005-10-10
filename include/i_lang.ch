@@ -1,5 +1,5 @@
 /*
- * $Id: i_lang.ch,v 1.3 2005-08-23 05:08:49 guerra000 Exp $
+ * $Id: i_lang.ch,v 1.4 2005-10-10 00:32:55 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -107,3 +107,9 @@
 
 #translate SET LANGUAGE TO FINNISH              =>  InitMessages( "FI" )
 #translate SET LANGUAGE TO DUTCH                =>  InitMessages( "NL" )
+
+
+// RTL functionality
+
+#command SET GLOBALRTL ON  => _OOHG_GlobalRTL( .T. )
+#command SET GLOBALRTL OFF => _OOHG_GlobalRTL( .F. )
