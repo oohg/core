@@ -1,5 +1,5 @@
 /*
- * $Id: hello.prg,v 1.8 2005-10-08 15:47:46 declan2005 Exp $
+ * $Id: hello.prg,v 1.9 2005-10-10 03:29:28 guerra000 Exp $
  */
 /*
 * ooHG Hello World Demo
@@ -10,7 +10,7 @@
 
 Function Main()
 LOCAL oLabel
-Private oWnd
+Local oWnd
 
 
 set cent on
@@ -73,9 +73,9 @@ set cent on
                 oLabel := TLabel():Define()
                 oLabel:Caption := "(F5) Hello!!"
                 oLabel:AutoSize := .T.
-                oLabel:Row := 10
+                oLabel:Row := 40
                 oLabel:Col := 400
-                oLabel:OnClick := { || MSGINFO("CLICK!") }
+                oLabel:Action := { || MSGINFO("CLICK!") }
 
                 @ 40,10 HYPERLINK HLNK VALUE "www.yahoo.com.mx" autosize address "http://www.yahoo.com.mx"
 
@@ -212,10 +212,9 @@ oWnd:Grd:SetRangeColor( 0, , 2, 2 )
 
 		END TREE
 
-                @ 330,400 BUTTON BTN2 PICTURE "RESOURCES\EDIT_NEW.BMP" width 100 height 100 action printform()
-
-                OWND:BTN2:TOOLTIP := "Print this form"
-/////                OWND:BTN2:action := { || ownd:print() } 
+                @ 330,400 BUTTON BTN2 PICTURE "RESOURCES\EDIT_NEW.BMP" width 100 height 100
+                oWnd:Btn2:ToolTip := "Print this form"
+                oWnd:Btn2:Action := { || printform( oWnd ) }
 
                 @ 10,600 FRAME frame WIDTH 150 HEIGHT 60 CAPTION "Frame"
 
@@ -245,7 +244,7 @@ oWnd:Grd:SetRangeColor( 0, , 2, 2 )
 
 Return
 
-function printform()
+function printform( oWnd )
   OWND:BTN2:enabled:=.F. 
   ownd:print()
   OWND:BTN2:enabled:=.T. 

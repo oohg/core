@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.28 2005-10-10 00:32:56 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.29 2005-10-10 03:29:28 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -158,6 +158,7 @@ CLASS TWindow
    METHOD SetFocus            BLOCK { | Self | SetFocus( ::hWnd ), Self }
    METHOD Enabled             SETGET
    METHOD RTL                 SETGET
+   METHOD Action              SETGET
 
 * Intento por controlar las teclas...
 *method setkey
@@ -185,6 +186,14 @@ METHOD RTL( lRTL ) CLASS TWindow
       ::lRtl := lRtl
    EndIf
 Return ::lRtl
+
+*------------------------------------------------------------------------------*
+METHOD Action( bAction ) CLASS TWindow
+*------------------------------------------------------------------------------*
+   If PCount() > 0
+      ::OnClick := bAction
+   EndIf
+Return ::OnClick
 
 #define HOTKEY_ID        1
 #define HOTKEY_MOD       2
