@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.1 2005-10-09 21:30:09 guerra000 Exp $
+ * $Id: winprint.prg,v 1.2 2005-10-11 05:44:18 guerra000 Exp $
  */
 // -----------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -1279,7 +1279,7 @@ return self
 **********************************
 METHOD Preview() CLASS HBPrinter
 **********************************
-local i:=1,pi:=1 // ,wl
+local i:=1,pi:=1,wl
 
  ::aopisy:=;
 {"Preview",;
@@ -1322,8 +1322,11 @@ local i:=1,pi:=1 // ,wl
   ::scale:=::PREVIEWSCALE
   ::npages:={}
 
-/*
+#ifdef __XHARBOUR__
+  wl:=set(100)
+#else
   wl:=hb_langselect()
+#endif
   do case
   case wl="EN"
 ::aopisy:={"Preview";
@@ -1481,7 +1484,7 @@ case wl="PT"
 ,"Imprimindo ....";
 ,"Esperando por papel..."}
 case wl="DEWIN"
-::aopisy:={,"Vorschau";
+::aopisy:={"Vorschau";
 ,"&Abbruch";
 ,"&Drucken";
 ,"&Speichern";
@@ -1512,7 +1515,7 @@ case wl="DEWIN"
 ,"Druckt ....";
 ,"Bitte Papier nachlegen..."}
 case wl='FR'
-::aopisy:={,"Prévisualisation";
+::aopisy:={"Prévisualisation";
 ,"&Abandonner";
 ,"&Imprimer";
 ,"&Sauver";
@@ -1541,9 +1544,8 @@ case wl='FR'
 ,"Tout mais impair d'abord";
 ,"Tout mais pair d'abord";
 ,"Impression ....";
-,"Attente de changement de papier..."}	
+,"Attente de changement de papier..."}
   endcase
-*/
 
   if ::nwhattoprint<2
    ::ntopage:=::iloscstron
@@ -1564,7 +1566,6 @@ case wl='FR'
 for pi=1 to ::iloscstron
 AADD(::npages,padl(pi,4))
 next pi
-
 
   if ::PreviewRect[3]>0 .and. ::PreviewRect[4]>0
     ::ahs[1,1]:=::Previewrect[1]
@@ -1870,10 +1871,10 @@ HB_FUNC (RR_PRINTDIALOG)
       // if the printer name is greater than 32, like network printers,
       // the rr_getdc() function return a null handle. So, I'm using
       // pDevNames instead pDevMode. (E.F.)
-      //strcpy(PrinterName,pDevMode->dmDeviceName); 
-      pDevice = (LPCTSTR) pDevNames + pDevNames->wDeviceOffset; 
+      //strcpy(PrinterName,pDevMode->dmDeviceName);
+      pDevice = (LPCTSTR) pDevNames + pDevNames->wDeviceOffset;
       strcpy(PrinterName, (char *) pDevice);
-      
+
       if (hDC==NULL)
          {
            strcpy(PrinterName,"");
