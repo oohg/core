@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.19 2005-10-08 19:22:20 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.20 2005-10-11 05:46:36 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1467,7 +1467,7 @@ Local oWnd, oCtrl
 		ElseIf Arg2 == 'SHOW'
 
          oWnd:Show()
-	 
+
 		ElseIf Arg2 == 'PRINT'
 
          oWnd:print()
@@ -2051,7 +2051,9 @@ LOCAL nPos
 	endif
 
    // Right-to-left
-   If ValType( lRtl ) == "L"
+   If _OOHG_GlobalRTL()
+      ::lRtl := .T.
+   ElseIf ValType( lRtl ) == "L"
       ::lRtl := lRtl
    ElseIf ! Empty( ::Container )
       ::lRtl := ::Container:lRtl
@@ -2148,7 +2150,9 @@ METHOD SetContainer( Container, ControlName, FontName, FontSize, FontColor, BkCo
 	endif
 
    // Right-to-left
-   If ValType( lRtl ) == "L"
+   If _OOHG_GlobalRTL()
+      ::lRtl := .T.
+   ElseIf ValType( lRtl ) == "L"
       ::lRtl := lRtl
    ElseIf ! Empty( ::Container )
       ::lRtl := ::Container:lRtl

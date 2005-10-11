@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.29 2005-10-10 03:29:28 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.30 2005-10-11 05:46:36 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -95,13 +95,13 @@
 #include "i_windefs.ch"
 #include "common.ch"
 #include "error.ch"
-#include "winprint.ch"
 
 STATIC _OOHG_aFormhWnd := {}, _OOHG_aFormObjects := {}
 STATIC _OOHG_aEventInfo := {}        // Event's stack
 STATIC _OOHG_UserWindow := nil       // User's window
 STATIC _OOHG_InteractiveClose := 1   // Interactive close
 STATIC _OOHG_MessageLoops := {}      // Message loops
+STATIC _OOHG_GlobalRTL := .F.        // Force RTL functionality
 
 #include "hbclass.ch"
 
@@ -111,6 +111,7 @@ STATIC _OOHG_MessageLoops := {}      // Message loops
 #include "hbapi.h"
 #include "hbvm.h"
 #include <windows.h>
+#include <olectl.h>
 #include "../include/oohg.h"
 
 int _OOHG_ShowContextMenus = 1;
@@ -159,6 +160,7 @@ CLASS TWindow
    METHOD Enabled             SETGET
    METHOD RTL                 SETGET
    METHOD Action              SETGET
+   METHOD Print
 
 * Intento por controlar las teclas...
 *method setkey
@@ -181,7 +183,7 @@ RETURN ::lEnabled
 *------------------------------------------------------------------------------*
 METHOD RTL( lRTL ) CLASS TWindow
 *------------------------------------------------------------------------------*
-   If ValType( lRTL ) == "L" .AND. ::lRtl != lRtl
+   If ValType( lRTL ) == "L"
       _UpdateRTL( ::hWnd, lRtl )
       ::lRtl := lRtl
    EndIf
@@ -194,6 +196,42 @@ METHOD Action( bAction ) CLASS TWindow
       ::OnClick := bAction
    EndIf
 Return ::OnClick
+
+*-----------------------------------------------------------------------------*
+METHOD Print( x, y, w, h ) CLASS TWindow
+*-----------------------------------------------------------------------------*
+Local myobject, cWork
+   cWork := '_oohg_t' + alltrim( str( int( random( 999999 ) ) ) ) + '.bmp'
+   do while file( cWork )
+      cWork := '_oohg_t' + alltrim( str( int( random( 999999 ) ) ) ) + '.bmp'
+   enddo
+
+   DEFAULT w    TO GetWindowWidth( ::hWnd )
+   DEFAULT h    TO GetWindowHeight( ::hWnd )
+   DEFAULT x    TO 4
+   DEFAULT y    TO 4
+
+   WNDCOPY( ::hWnd, .F., cWork ) //// save as BMP
+
+   myobject := HBPrinter():New()
+   myobject:selectprinter( "", .T. )
+   if myobject:error == 0
+      myobject:setpage( 2,, )  // myobject:setpage( DMORIENT_LANDSCAPE,, )
+      if myobject:error > 0
+         msginfo( "Print error", "Information" )
+      else
+         myobject:startdoc( "ooHG printing" )
+         myobject:startpage()
+         myobject:setunits( 3 )
+         myobject:picture( y, x, w, h, cwork,, )
+         myobject:endpage()
+         myobject:enddoc()
+         myobject:end()
+      endif
+   endif
+
+   FErase( cWork )
+return nil
 
 #define HOTKEY_ID        1
 #define HOTKEY_MOD       2
@@ -299,7 +337,6 @@ CLASS TForm FROM TWindow
    METHOD New
    METHOD Hide
    METHOD Show
-   METHOD Print
    METHOD Activate
    METHOD Release
    METHOD Center()      BLOCK { | Self | C_Center( ::hWnd ) }
@@ -557,9 +594,11 @@ METHOD Define2( FormName, Caption, x, y, w, h, Parent, helpbutton, nominimize, n
 *------------------------------------------------------------------------------*
 Local Formhandle, vscroll, hscroll
 
-   if valtype( lRtl ) != "L"
+   If _OOHG_GlobalRTL
+      lRtl := .T.
+   ElseIf ValType( lRtl ) != "L"
       lRtl := .F.
-	endif
+   Endif
 
    ::lRtl := lRtl
 
@@ -819,44 +858,6 @@ METHOD Show() CLASS TForm
    ShowWindow( ::hWnd )
 	ProcessMessages()
 Return Nil
-
-
-*-----------------------------------------------------------------------------*
-METHOD Print(x,y,w,h) CLASS TForm
-*-----------------------------------------------------------------------------*
-local myobject, aprinters,aports,cprintercvc,cwork:='_oohg_t'+alltrim(str(int(random(999999))))+'.bmp'
-do while file(cwork)
-   cwork:='_oohg_t'+alltrim(str(int(random(999999))))+'.bmp'
-enddo
-
- DEFAULT w    TO 40
- DEFAULT h    TO 140
-
- DEFAULT x    TO 4
- DEFAULT y    TO 4
-
-WNDCOPY(::hwnd,.F.,cwork) //// save as BMP
-
-myobject:=hbprinter():new()
-aprinters:=aclone(myobject:printers)
-aports:=aclone(myobject:ports)
-cprintercvc:=myobject:printerdefault
-myobject:selectprinter("",.T.)
-myobject:setpage(DMORIENT_LANDSCAPE,,)
-if myobject:error > 0
-   msginfo("Print error","Information")
-   return nil
-endif
-
-myobject:startdoc("oohg printing")
-myobject:startpage()
-myobject:picture(y,x,w,h,cwork,,)
-myobject:endpage()
-myobject:enddoc()
-myobject:end()
-erase &cwork
-return nil
-
 
 *-----------------------------------------------------------------------------*
 METHOD Activate( lNoStop, oWndLoop ) CLASS TForm
@@ -2268,9 +2269,11 @@ Function _DefineSplitBox( ParentForm, bottom, inverted, lRtl )
 *-----------------------------------------------------------------------------*
 Local cParentForm, Controlhandle
 
-   if valtype( lRtl ) != "L"
+   If _OOHG_GlobalRTL
+      lRtl := .T.
+   ElseIf ValType( lRtl ) != "L"
       lRtl := .F.
-	endif
+   Endif
 
    if LEN( _OOHG_ActiveForm ) > 0
       ParentForm := ATail( _OOHG_ActiveForm ):Name
@@ -2299,7 +2302,7 @@ Local cParentForm, Controlhandle
 
 	cParentForm := ParentForm
 
-	ParentForm = GetFormHandle (ParentForm)
+   ParentForm = GetFormHandle( ParentForm )
 
    ControlHandle := InitSplitBox( ParentForm, bottom, inverted, lRtl )
 
@@ -2583,10 +2586,17 @@ Return
 
 Function SetInteractiveClose( nValue )
 Local nRet := _OOHG_InteractiveClose
-   IF ValType( nValue ) == "N" .AND. nValue >= 0 .AND. nValue <= 3
+   If ValType( nValue ) == "N" .AND. nValue >= 0 .AND. nValue <= 3
       _OOHG_InteractiveClose := INT( nValue )
-   ENDIF
+   EndIf
 Return nRet
+
+Function _OOHG_GlobalRTL( lRTL )
+Local lRet := _OOHG_GlobalRTL
+   If ValType( lRTL ) == "L"
+      _OOHG_GlobalRTL := lRTL
+   EndIf
+Return lRet
 
 Function _OOHG_MacroCall( cMacro )
 Local uRet, oError
