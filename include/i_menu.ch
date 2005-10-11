@@ -1,5 +1,5 @@
 /*
- * $Id: i_menu.ch,v 1.1 2005-08-06 23:53:54 guerra000 Exp $
+ * $Id: i_menu.ch,v 1.2 2005-10-11 05:45:18 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -139,25 +139,25 @@
 =>;
 [ <oObj> := ] TMenu():DefineNotify( <"parent"> )
 
-#xcommand POPUP <caption> [ NAME <name> ] [ OBJ <oObj> ];
+#xcommand POPUP <caption> [ NAME <name> ] [ OBJ <oObj> ] [ <checked:CHECKED> ] [ <disabled:DISABLED> ] ;
 => ;
-[ <oObj> := ] TMenu():DefinePopUp( <caption> , <"name"> )
+[ <oObj> := ] TMenu():DefinePopUp( <caption> , <"name"> , <.checked.> , <.disabled.> )
 
-#xcommand DEFINE POPUP <caption> [ NAME <name> ] [ OBJ <oObj> ];
+#xcommand DEFINE POPUP <caption> [ NAME <name> ] [ OBJ <oObj> ] [ <checked:CHECKED> ] [ <disabled:DISABLED> ] ;
 => ;
-[ <oObj> := ] TMenu():DefinePopUp( <caption> , <"name">  )
+[ <oObj> := ] TMenu():DefinePopUp( <caption> , <"name"> , <.checked.> , <.disabled.> )
 
-#xcommand DEFINE MENU POPUP <caption> [ NAME <name> ] [ OBJ <oObj> ];
+#xcommand DEFINE MENU POPUP <caption> [ NAME <name> ] [ OBJ <oObj> ] [ <checked:CHECKED> ] [ <disabled:DISABLED> ] ;
 => ;
-[ <oObj> := ] TMenu():DefinePopUp( <caption> , <"name">  )
+[ <oObj> := ] TMenu():DefinePopUp( <caption> , <"name"> , <.checked.> , <.disabled.> )
 
-#xcommand ITEM <caption> [ ACTION <action> ] [ NAME <name> ] [ IMAGE <image> ] [ <checked : CHECKED> ] [ OBJ <oObj> ] ;
+#xcommand ITEM <caption> [ ACTION <action> ] [ NAME <name> ] [ IMAGE <image> ] [ <checked:CHECKED> ] [ OBJ <oObj> ] [ <disabled:DISABLED> ] ;
 => ;
-[ <oObj> := ] TMenu():DefineItem( <caption> , <{action}> , <"name"> , <image> , <.checked.> )
+[ <oObj> := ] TMenu():DefineItem( <caption> , <{action}> , <"name"> , <image> , <.checked.> , <.disabled.> )
 
-#xcommand MENUITEM <caption> [ ACTION <action> ] [ NAME <name> ] [ IMAGE <image> ] [ <checked : CHECKED> ] [ OBJ <oObj> ];
+#xcommand MENUITEM <caption> [ ACTION <action> ] [ NAME <name> ] [ IMAGE <image> ] [ <checked:CHECKED> ] [ OBJ <oObj> ] [ <disabled:DISABLED> ] ;
 => ;
-[ <oObj> := ] TMenu():DefineItem( <caption> , <{action}> , <"name"> , <image> , <.checked.> )
+[ <oObj> := ] TMenu():DefineItem( <caption> , <{action}> , <"name"> , <image> , <.checked.> , <.disabled.> )
 
 #xcommand SEPARATOR ;
 => ;

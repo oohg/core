@@ -1,5 +1,5 @@
 /*
- * $Id: h_menu.prg,v 1.3 2005-08-25 06:04:53 guerra000 Exp $
+ * $Id: h_menu.prg,v 1.4 2005-10-11 05:45:18 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -143,21 +143,15 @@ RETURN ( xGetMenuCheckState( ::Container:hWnd, ::xId ) == 1 )
 *------------------------------------------------------------------------------*
 METHOD DefineMain( Parent ) CLASS TMenu
 *------------------------------------------------------------------------------*
-
-   ::SetForm( , Parent )
+   ::SetForm( Parent )
    ::New( CreateMenu() )
    ::Type := "MAIN"
-
    SetMenu( ::Parent:hWnd, ::hWnd )
-
-   // _OOHG_xMainMenu := Self
-
    AADD( _OOHG_xMenuActive, Self )
-
 Return Self
 
 *------------------------------------------------------------------------------*
-METHOD DefinePopUp( Caption , Name ) CLASS TMenu
+METHOD DefinePopUp( Caption , Name , checked , disabled ) CLASS TMenu
 *------------------------------------------------------------------------------*
 
    ::SetContainer( ATAIL( _OOHG_xMenuActive ), Name )
@@ -174,18 +168,24 @@ METHOD DefinePopUp( Caption , Name ) CLASS TMenu
 
    AppendMenuPopup( ::Container:hWnd, ::hWnd, ::Caption )
 
+   if ValType( checked ) == "L" .AND. checked
+      ::Checked := .T.
+   EndIf
+
+   if ValType( disabled ) == "L" .AND. disabled
+      ::Enabled := .F.
+   EndIf
+
 Return Self
 
 *------------------------------------------------------------------------------*
 Function _EndMenuPopup()
 *------------------------------------------------------------------------------*
-
    ASIZE( _OOHG_xMenuActive, LEN( _OOHG_xMenuActive ) - 1 )
-
 Return Nil
 
 *------------------------------------------------------------------------------*
-METHOD DefineItem( caption , action , name , Image , checked ) CLASS TMenu
+METHOD DefineItem( caption , action , name , Image , checked , disabled ) CLASS TMenu
 *------------------------------------------------------------------------------*
 Local Controlhandle
 Local id
@@ -194,7 +194,7 @@ Local id
 
    Controlhandle := AppendMenuString( ATAIL( _OOHG_xMenuActive ):hWnd, id, caption )
 
-   if Valtype ( image ) != 'U'
+   if Valtype( image ) $ 'CM'
       MenuItem_SetBitMaps( ATAIL( _OOHG_xMenuActive ):hWnd, Id, image, '' )
    EndIf
 
@@ -210,8 +210,12 @@ Local id
 
    ::Caption := Caption
 
-   if checked == .t.
-      xCheckMenuItem( ::Parent:hWnd, id )
+   if ValType( checked ) == "L" .AND. checked
+      ::Checked := .T.
+   EndIf
+
+   if ValType( disabled ) == "L" .AND. disabled
+      ::Enabled := .F.
    EndIf
 
 Return Self
@@ -219,16 +223,13 @@ Return Self
 *------------------------------------------------------------------------------*
 Function _DefineSeparator()
 *------------------------------------------------------------------------------*
-
    AppendMenuSeparator( ATAIL( _OOHG_xMenuActive ):hWnd )
-
 Return Nil
 
 *------------------------------------------------------------------------------*
 Function _EndMenu()
 *------------------------------------------------------------------------------*
 Local oMenu
-
    IF LEN( _OOHG_xMenuActive ) > 0
       oMenu := ATAIL( _OOHG_xMenuActive )
       IF oMenu:Type == "MAIN"
@@ -236,53 +237,34 @@ Local oMenu
       ENDIF
       ASIZE( _OOHG_xMenuActive, LEN( _OOHG_xMenuActive ) - 1 )
    ENDIF
-
 Return Nil
 
 *------------------------------------------------------------------------------*
 METHOD DefineContext( Parent ) CLASS TMenu
 *------------------------------------------------------------------------------*
-
    ::SetForm( , Parent )
-
    ::New( CreatePopupMenu() )
-
    ::Type := "CONTEXT"
-
    ::Parent:ContextMenu := Self
-
    AADD( _OOHG_xMenuActive, Self )
-
 Return Self
 
 *------------------------------------------------------------------------------*
 METHOD DefineNotify( Parent ) CLASS TMenu
 *------------------------------------------------------------------------------*
-
    ::SetForm( , Parent )
-
    ::New( CreatePopupMenu() )
-
    ::Type := "CONTEXT"
-
    ::Parent:NotifyMenuHandle := ::hWnd
-
    AADD( _OOHG_xMenuActive, Self )
-
 Return Self
 
 *------------------------------------------------------------------------------*
 METHOD DefineDropDown( Button , Parent ) CLASS TMenu
 *------------------------------------------------------------------------------*
-
    ::SetForm( , Parent )
-
    ::New( CreatePopupMenu() )
-
    ::Type := "DROPDOWN"
-
    GetControlObject( Button, ::Parent:Name ):ContextMenu := Self
-
    AADD( _OOHG_xMenuActive, Self )
-
 Return Self
