@@ -1,11 +1,33 @@
 /*
- * $Id: ChangeLog,v 1.12 2005-10-10 03:29:25 guerra000 Exp $
+ * $Id: ChangeLog,v 1.13 2005-10-11 05:47:16 guerra000 Exp $
 */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2005-10-11 00:43 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_windows.prg
+    * Removed "winprint.ch" include (for avoid warnings).
+    * Moved ::Print() method from TForm to TWindow class.
+      Minor formating and some code cleanup.
+
+  * source/h_controlmisc.prg
+  * source/h_windows.prg
+    * _OOHG_GlobalRTL() added. Forces RTL on all forms and
+      controls creation. Contributed by Ehab Ouf.
+
+  * include/i_menu.ch
+  * source/h_menu.prg
+    ! Fixed CHECKED clause in declaration.
+    * Added DISABLED clause.
+
+  + samples/oohg/rtl.prg
+    + RTL functionality demo.
+
+  * source/winprint.prg
+    * Uncommented multi-language texts.
 
 2005-10-09 22:30 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * samples/oohg/hello.prg
