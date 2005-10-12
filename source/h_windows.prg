@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.30 2005-10-11 05:46:36 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.31 2005-10-12 13:48:42 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -206,8 +206,8 @@ Local myobject, cWork
       cWork := '_oohg_t' + alltrim( str( int( random( 999999 ) ) ) ) + '.bmp'
    enddo
 
-   DEFAULT w    TO GetWindowWidth( ::hWnd )
-   DEFAULT h    TO GetWindowHeight( ::hWnd )
+   DEFAULT w    TO 40
+   DEFAULT h    TO 140
    DEFAULT x    TO 4
    DEFAULT y    TO 4
 
@@ -222,7 +222,7 @@ Local myobject, cWork
       else
          myobject:startdoc( "ooHG printing" )
          myobject:startpage()
-         myobject:setunits( 3 )
+//////         myobject:setunits( 3 )
          myobject:picture( y, x, w, h, cwork,, )
          myobject:endpage()
          myobject:enddoc()
