@@ -1,5 +1,5 @@
 /*
-* $Id: hello.prg,v 1.10 2005-10-10 04:34:20 declan2005 Exp $
+* $Id: hello.prg,v 1.11 2005-10-12 22:34:02 declan2005 Exp $
 */
 /*
 * ooHG Hello World Demo
@@ -7,7 +7,7 @@
 */
 
 #include "oohg.ch"
-
+#include "i_graph.ch"
 
 *-------------------------
 Function Main()
@@ -216,8 +216,8 @@ DEFINE TREE Tree_1 AT 80,400 WIDTH 150 HEIGHT 240 VALUE 15
 END TREE
 
 @ 330,400 BUTTON BTN2 PICTURE "RESOURCES\EDIT_NEW.BMP" width 100 height 100
-oWnd:Btn2:ToolTip := "Print this form"
-oWnd:Btn2:Action := { || printform( oWnd ) }
+oWnd:Btn2:ToolTip := "Grahp Print"
+oWnd:Btn2:Action := { || printform( ) }
 
 @ 10,600 FRAME frame WIDTH 150 HEIGHT 60 CAPTION "Frame"
 
@@ -249,11 +249,55 @@ Return
 
 
 *-------------------------
-function printform( oWnd )
+function printform( )
 *-------------------------
-OWND:BTN2:enabled:=.F.
-ownd:print()
-OWND:BTN2:enabled:=.T.
-return nil
+
+Public aSer:={ {14280,20420,12870,25347, 7640},;
+           { 8350,10315,15870, 5347,12340},;
+           {12345, -8945,10560,15600,17610} }
+
+
+	Define Window GraphTest obj graphtest ;
+		At 0,0 ;
+		Width 640 ;
+		Height 480 ;
+		Title "Printing Bar Graphs" ;
+		 modal ;                
+		On Init DrawBarGraph ( aser ) ;
+                on mouseclick graphtest:print()
+ 
+
+	End Window
+
+	GraphTest.Center
+
+	Activate Window GraphTest
+
+Return
+
+Procedure DrawBarGraph ( aSer )
+
+	ERASE WINDOW GraphTest
+
+	DRAW GRAPH							;
+		IN WINDOW GraphTest					;
+		AT 20,20						;
+		TO 400,610						;
+		TITLE "Sales and Product"				;
+		TYPE BARS						;
+		SERIES aSer						;
+		YVALUES {"Jan","Feb","Mar","Apr","May"}			;
+		DEPTH 15						;
+		BARWIDTH 15						;
+		HVALUES 5						;
+		SERIENAMES {"Serie 1","Serie 2","Serie 3"}		;
+		COLORS { {128,128,255}, {255,102, 10}, {55,201, 48} }	;
+		3DVIEW    						;
+		SHOWGRID                        			;
+		SHOWXVALUES                     			;
+		SHOWYVALUES                     			;
+		SHOWLEGENDS 
+
+Return nil
 
 

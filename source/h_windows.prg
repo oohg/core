@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.31 2005-10-12 13:48:42 declan2005 Exp $
+ * $Id: h_windows.prg,v 1.32 2005-10-12 22:34:02 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -210,6 +210,8 @@ Local myobject, cWork
    DEFAULT h    TO 140
    DEFAULT x    TO 4
    DEFAULT y    TO 4
+
+   bringwindowtotop( ::Hwnd)
 
    WNDCOPY( ::hWnd, .F., cWork ) //// save as BMP
 
