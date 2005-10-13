@@ -1,5 +1,5 @@
 /*
- * $Id: h_progressmeter.prg,v 1.3 2005-10-01 15:35:10 guerra000 Exp $
+ * $Id: h_progressmeter.prg,v 1.4 2005-10-13 06:31:07 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -120,7 +120,7 @@ RETURN ::nValue
 *------------------------------------------------------------------------------*
 METHOD ReCalc( lForce ) CLASS TProgressMeter
 *------------------------------------------------------------------------------*
-Local nPercent, cText, nWidth
+Local nPercent, nIntPercent, cText, nWidth
    IF ValType( ::oLabel ) != "O"
       Return nil
    ENDIF
@@ -129,9 +129,10 @@ Local nPercent, cText, nWidth
    ENDIF
    // Percent text
    nPercent := ( ::nValue - ::RangeMin ) / ( ::RangeMax - ::RangeMin )
-   IF lForce .OR. ::nPercent != INT( nPercent )
-      ::nPercent := INT( nPercent )
-      cText := LTRIM( STR( INT( nPercent * 100 ) ) ) + "%"
+   nIntPercent := INT( nPercent * 100 )
+   IF lForce .OR. ::nPercent != nIntPercent
+      ::nPercent := nIntPercent
+      cText := LTRIM( STR( nIntPercent ) ) + "%"
       nWidth := Int( Max( ( ::nWidth - GetTextWidth( 0, cText, ::FontHandle ) ) / 2, 0 ) / GetTextWidth( 0, " ", ::FontHandle ) )
       cText := Space( nWidth ) + cText
       ::Caption := cText
