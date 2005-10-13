@@ -1,5 +1,5 @@
 /*
- * $Id: i_datepicker.ch,v 1.2 2005-08-25 05:57:41 guerra000 Exp $
+ * $Id: i_datepicker.ch,v 1.3 2005-10-13 22:55:14 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -118,6 +118,50 @@
                 [ <rtl: RTL> ] ;
 	=> ;
         [ <obj> := ] TDatePick():Define( <"name"> , ;
+                     <"parent"> , ;
+                     <col> , ;
+                     <row> , ;
+                     <w> , ;
+                     <h> , ;
+                     <v> , ;
+                     <fontname> , ;
+                     <fontsize> , ;
+                     <tooltip> , ;
+                     <{change}> , ;
+                     <{lostfocus}> , ;
+                     <{gotfocus}> , ;
+                     <.shownone.> , ;
+                     <.updown.> , ;
+                     <.rightalign.>  , <helpid> , <.invisible.>, <.notabstop.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <"field"> , <{enter}> , <.rtl.> )
+
+
+#command @ <row>,<col> TIMEPICKER <name> ;
+                [ OBJ <obj> ] ;
+		[ <dummy1: OF, PARENT> <parent> ] ;
+		[ VALUE <v> ] ;
+		[ FIELD <field> ] ;
+		[ WIDTH <w> ] ;
+		[ HEIGHT <h> ] ;
+		[ FONT <fontname> ] ;
+		[ SIZE <fontsize> ] ;
+		[ <bold : BOLD> ] ;
+		[ <italic : ITALIC> ] ;
+		[ <underline : UNDERLINE> ] ;
+		[ <strikeout : STRIKEOUT> ] ;
+		[ TOOLTIP <tooltip> ] ;
+		[ < shownone: SHOWNONE > ] ;
+		[ < updown: UPDOWN > ] ;
+		[ < rightalign: RIGHTALIGN > ] ;
+		[ ON GOTFOCUS <gotfocus> ] ;
+		[ ON CHANGE <change> ] ;
+		[ ON LOSTFOCUS <lostfocus> ] ;
+                [ ON ENTER <enter> ]		;
+		[ HELPID <helpid> ] 		;
+		[ <invisible: INVISIBLE> ] ;
+		[ <notabstop: NOTABSTOP> ] ;
+                [ <rtl: RTL> ] ;
+	=> ;
+        [ <obj> := ] TTimePick():Define( <"name"> , ;
                      <"parent"> , ;
                      <col> , ;
                      <row> , ;

@@ -1,5 +1,5 @@
 /*
- * $Id: h_datepicker.prg,v 1.5 2005-10-01 15:35:10 guerra000 Exp $
+ * $Id: h_datepicker.prg,v 1.6 2005-10-13 22:55:14 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -105,6 +105,7 @@ CLASS TDatePick FROM TControl
    METHOD Events_Notify
 ENDCLASS
 
+
 *-----------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
                fontsize, tooltip, change, lostfocus, gotfocus, shownone, ;
@@ -149,6 +150,7 @@ Local ControlHandle
 
 Return Self
 
+
 *-----------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TDatePick
 *-----------------------------------------------------------------------------*
@@ -173,6 +175,7 @@ METHOD Events_Enter() CLASS TDatePick
 
 Return nil
 
+
 *-----------------------------------------------------------------------------*
 METHOD Events_Notify( wParam, lParam ) CLASS TDatePick
 *-----------------------------------------------------------------------------*
@@ -187,3 +190,103 @@ Local nNotify := GetNotifyCode( lParam )
    EndIf
 
 Return ::Super:Events_Notify( wParam, lParam )
+
+
+
+
+CLASS TtimePick FROM TControl
+   DATA Type      INIT "TIMEPICK" READONLY
+
+      METHOD Define
+      METHOD Value            SETGET
+      METHOD Events_Enter
+      METHOD Events_Notify
+ENDCLASS
+
+
+METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
+               fontsize, tooltip, change, lostfocus, gotfocus, shownone, ;
+               updown, rightalign, HelpId, invisible, notabstop, bold, ;
+               italic, underline, strikeout, Field, Enter, lRtl ) CLASS TTimePick
+*-----------------------------------------------------------------------------*
+Local ControlHandle
+
+   DEFAULT value     TO time()
+   DEFAULT w         TO 120
+   DEFAULT h         TO 24
+   DEFAULT change    TO ""
+   DEFAULT lostfocus TO ""
+   DEFAULT gotfocus  TO ""
+   DEFAULT invisible TO FALSE
+   DEFAULT notabstop TO FALSE
+////   DEFAULT cTimeFormat  TO "HH:mm:ss"
+
+   ::SetForm( ControlName, ParentForm, FontName, FontSize, , , .t. , lRtl )
+
+   If ValType( Field ) $ 'CM' .AND. ! empty( Field )
+      ::VarName := alltrim( Field )
+      ::Block := &( "{ |x| if( PCount() == 0, " + Field + ", " + Field + " := x ) }" )
+      Value := EVAL( ::Block )
+	EndIf
+
+   ControlHandle := InitTimePick ( ::ContainerhWnd, 0, x, y, w, h , '' , 0 , shownone , updown , rightalign, invisible, notabstop , ::lRtl )
+
+	If Empty (Value)
+             SettimePick (ControlHandle,,VAL(left(TIME(),2)),VAL(SUBSTR(TIME(),4,2)),VAL( SUBSTR(TIME(),7,2) ))
+	Else
+             SetTimePick( ControlHandle ,VAL(left(Value,2)),VAL(SUBSTR(Value,4,2)),VAL( SUBSTR(Value,7,2 )) )
+	EndIf
+
+   ::New( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
+   ::SetFont( , , bold, italic, underline, strikeout )
+   ::SizePos( y, x, w, h )
+
+   ::OnClick := Enter
+   ::OnLostFocus := LostFocus
+   ::OnGotFocus :=  GotFocus
+   ::OnChange   :=  Change
+
+Return Self
+
+
+*-----------------------------------------------------------------------------*
+METHOD Value( uValue ) CLASS TTimePick
+*-----------------------------------------------------------------------------*
+   IF ValType( uValue ) == "C"
+      SetTimePick( ::hWnd ,VAL(left(uValue,2)),VAL(SUBSTR(uValue,4,2)),VAL( SUBSTR(uValue,7,2 )) )
+   ELSEIF PCOUNT() > 0
+      SettimePick (::hWnd,,VAL(left(TIME(),2)),VAL(SUBSTR(TIME(),4,2)),VAL( SUBSTR(TIME(),7,2) ))      
+   ENDIF
+Return StrZero(GetDatePickHour ( ::hWnd ), 2 ) + ":" + StrZero ( GetDatePickMinute ( ::hWnd ), 2 ) + ":" + StrZero ( GetDatePickSecond (::hWnd ), 2 )
+
+
+*-----------------------------------------------------------------------------*
+METHOD Events_Enter() CLASS TTimePick
+*-----------------------------------------------------------------------------*
+
+   ::DoEvent( ::OnClick )
+
+   If _OOHG_ExtendedNavigation == .T.
+
+      _SetNextFocus()
+
+   EndIf
+
+Return nil
+
+*-----------------------------------------------------------------------------*
+METHOD Events_Notify( wParam, lParam ) CLASS TTimePick
+*-----------------------------------------------------------------------------*
+Local nNotify := GetNotifyCode( lParam )
+
+   If nNotify == DTN_DATETIMECHANGE
+
+      ::DoEvent( ::OnChange )
+
+      Return nil
+
+   EndIf
+
+Return ::Super:Events_Notify( wParam, lParam )
+
+

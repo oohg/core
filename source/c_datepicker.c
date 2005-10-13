@@ -1,5 +1,5 @@
 /*
- * $Id: c_datepicker.c,v 1.2 2005-08-25 05:57:42 guerra000 Exp $
+ * $Id: c_datepicker.c,v 1.3 2005-10-13 22:55:14 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -233,4 +233,109 @@ HB_FUNC ( SETDATEPICKNULL )
 	hwnd = (HWND) hb_parnl (1);
 
 	SendMessage(hwnd, DTM_SETSYSTEMTIME,GDT_NONE, (LPARAM) 0 );
+}
+
+HB_FUNC ( INITTIMEPICK )
+{
+   HWND hwnd;
+   HWND hbutton;
+   int Style = WS_CHILD ;
+
+   INITCOMMONCONTROLSEX  i;
+   i.dwSize = sizeof(INITCOMMONCONTROLSEX);
+   i.dwICC = ICC_DATE_CLASSES;
+   InitCommonControlsEx(&i);
+
+   hwnd = (HWND) hb_parnl (1);
+
+   if ( hb_parl (9) )
+   {
+      Style = Style | DTS_SHOWNONE ;
+   }
+
+     Style = Style | DTS_TIMEFORMAT ;
+
+     Style = Style | DTS_UPDOWN ;
+
+   if ( ! hb_parl (10) )
+   {
+      Style = Style | WS_VISIBLE ;
+   }
+
+   if ( ! hb_parl (11) )
+   {
+      Style = Style | WS_TABSTOP ;
+   }
+   hbutton = CreateWindowEx(WS_EX_CLIENTEDGE,DATETIMEPICK_CLASS,"DateTime",
+   Style ,
+   hb_parni(3), hb_parni(4) ,hb_parni(5) ,hb_parni(6) ,
+   hwnd,(HMENU)hb_parni(2) , GetModuleHandle(NULL) , NULL ) ;
+
+   hb_retnl ( (LONG) hbutton );
+}
+
+HB_FUNC ( SETTIMEPICK )
+{
+   HWND hwnd;
+   SYSTEMTIME sysTime;
+   int h;
+   int m;
+   int s;
+
+   hwnd = (HWND) hb_parnl (1);
+
+   h = hb_parni(2);
+   m = hb_parni(3);
+   s = hb_parni(4);
+
+   sysTime.wYear = 2005;
+   sysTime.wMonth = 1;
+   sysTime.wDay = 1;
+   sysTime.wDayOfWeek = 0;
+
+   sysTime.wHour = h;
+   sysTime.wMinute = m;
+   sysTime.wSecond = s;
+   sysTime.wMilliseconds = 0;
+
+   SendMessage(hwnd, DTM_SETSYSTEMTIME,GDT_VALID, (LPARAM) &sysTime);
+}
+
+HB_FUNC ( GETDATEPICKHOUR )
+{
+   SYSTEMTIME st;
+
+   if( SendMessage((HWND) hb_parnl (1), DTM_GETSYSTEMTIME, 0, (LPARAM) &st)==GDT_VALID) {
+   hb_retni(st.wHour);
+   }
+   else
+   {
+     hb_retni(-1);
+   }
+}
+
+HB_FUNC ( GETDATEPICKMINUTE )
+{
+   SYSTEMTIME st;
+
+   if( SendMessage((HWND) hb_parnl (1), DTM_GETSYSTEMTIME, 0, (LPARAM) &st)==GDT_VALID ) {
+   hb_retni(st.wMinute);
+   }
+   else
+   {
+     hb_retni(-1);
+   }
+}
+
+HB_FUNC ( GETDATEPICKSECOND )
+{
+   SYSTEMTIME st;
+
+   if( SendMessage( (HWND) hb_parnl (1), DTM_GETSYSTEMTIME, 0, (LPARAM) &st)==GDT_VALID ) {
+   hb_retni(st.wSecond);
+    }
+   else
+   {
+     hb_retni(-1);
+   }
 }
