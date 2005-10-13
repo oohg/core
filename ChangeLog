@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.19 2005-10-13 22:55:14 declan2005 Exp $
+ * $Id: ChangeLog,v 1.20 2005-10-13 23:38:16 declan2005 Exp $
 */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,12 +7,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2005-10-13 18:28 UTC-0500 Ciro Vargas C. <sistemascvc@softhome.net>
+    * source/i_altsyntax.ch
+      alternate syntax (semi oop syntax)
 
 2005-10-13 17:37 UTC-0500 Ciro Vargas C. <sistemascvc@softhome.net>
     * source/h_datepicker.prg
     * source/c_datepicker.c
     * include/i_datepicker.ch
-      new timepicker control oop sintax ( initial approach ).
+      new timepicker control oop syntax ( initial approach ).
 
 2005-10-13 9:37 UTC-0500 Ciro Vargas C. <sistemascvc@softhome.net>
     * source/h_controlmisc.prg
@@ -111,14 +114,14 @@
 2005-10-08 09:00 UTC-0500 Ciro Vargas C. <sistemascvc@softhome.net>
   * source/h_controlmisc.prg
   * include/i_window.ch
-    ! added new method print to form in semioop sintax.
+    ! added new method print to form in semioop syntax.
   * samples/oohg/hello.prg
     | added example for new method print and other fixes.
 
 2005-10-07 18:00 UTC-0500 Ciro Vargas C. <sistemascvc@softhome.net>
   * source/h_windows.prg
   * source/c_windows.c
-    ! added new method print to form in oop sintax. (not semioop)
+    ! added new method print to form in oop syntax. (not semioop)
 
 2005-10-04 00:00 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_grid.prg
