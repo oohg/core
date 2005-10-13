@@ -1,5 +1,5 @@
 /*
-* $Id: hello.prg,v 1.11 2005-10-12 22:34:02 declan2005 Exp $
+* $Id: hello.prg,v 1.12 2005-10-13 23:02:15 declan2005 Exp $
 */
 /*
 * ooHG Hello World Demo
@@ -166,6 +166,8 @@ DEFINE WINDOW Win_1 OBJ oWnd ;
    @ 280,200 combobox cmb items { "Uno", "Dos", "Tres" } width 150
    
    @ 310,240 datepicker DTP value date()
+
+    @ 513,21 timepicker TMP value time()
    
    @ 350,240 progressmeter pgm width 120 height 20 value 75
    
