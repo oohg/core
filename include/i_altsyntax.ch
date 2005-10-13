@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.16 2005-09-29 05:20:23 guerra000 Exp $
+ * $Id: i_altsyntax.ch,v 1.17 2005-10-13 23:28:38 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -1484,6 +1484,49 @@ Datepicker
                 _OOHG_ActiveControlOnEnter , ;
                 _OOHG_ActiveControlRtl )
 
+
+#xcommand DEFINE TIMEPICKER <name> ;
+	=> ;
+        _OOHG_ClearActiveControlInfo( <"name"> ) ;;
+        _OOHG_ActiveControlShowNone              := .f.          ;;
+        _OOHG_ActiveControlUpDown                := .f.          ;;
+        _OOHG_ActiveControlRightAlign    := .f.          ;;
+        _OOHG_ActiveControlOnGotFocus    := Nil          ;;
+        _OOHG_ActiveControlField             := Nil          ;;
+        _OOHG_ActiveControlOnChange              := Nil          ;;
+        _OOHG_ActiveControlOnLostFocus   := Nil          ;;
+        _OOHG_ActiveControlOnEnter       := Nil
+
+
+#xcommand END TIMEPICKER ;
+	=> ;
+        TTimePick():Define(;
+                _OOHG_ActiveControlName,;
+                _OOHG_ActiveControlOf,;
+                _OOHG_ActiveControlCol,;
+                _OOHG_ActiveControlRow,;
+                _OOHG_ActiveControlWidth,;
+                _OOHG_ActiveControlHeight,;
+                _OOHG_ActiveControlValue,;
+                _OOHG_ActiveControlFont,;
+                _OOHG_ActiveControlSize,;
+                _OOHG_ActiveControlTooltip,;
+                _OOHG_ActiveControlOnChange,;
+                _OOHG_ActiveControlOnLostFocus,;
+                _OOHG_ActiveControlOnGotFocus,;
+                _OOHG_ActiveControlShowNone,;
+                _OOHG_ActiveControlUpDown,;
+                _OOHG_ActiveControlRightAlign,;
+                _OOHG_ActiveControlHelpId,;
+                _OOHG_ActiveControlInvisible , ;
+                _OOHG_ActiveControlNoTabStop,;
+                _OOHG_ActiveControlFontBold , ;
+                _OOHG_ActiveControlFontItalic , ;
+                _OOHG_ActiveControlFontUnderLine , ;
+                _OOHG_ActiveControlFontStrikeOut,;
+                _OOHG_ActiveControlField , ;
+                _OOHG_ActiveControlOnEnter , ;
+                _OOHG_ActiveControlRtl )
 
 
 /*----------------------------------------------------------------------------
