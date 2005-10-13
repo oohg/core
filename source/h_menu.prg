@@ -1,5 +1,5 @@
 /*
- * $Id: h_menu.prg,v 1.4 2005-10-11 05:45:18 guerra000 Exp $
+ * $Id: h_menu.prg,v 1.5 2005-10-13 05:58:48 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -143,7 +143,7 @@ RETURN ( xGetMenuCheckState( ::Container:hWnd, ::xId ) == 1 )
 *------------------------------------------------------------------------------*
 METHOD DefineMain( Parent ) CLASS TMenu
 *------------------------------------------------------------------------------*
-   ::SetForm( Parent )
+   ::SetForm( , Parent )
    ::New( CreateMenu() )
    ::Type := "MAIN"
    SetMenu( ::Parent:hWnd, ::hWnd )
