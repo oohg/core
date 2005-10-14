@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.21 2005-10-13 14:40:09 declan2005 Exp $
+ * $Id: h_controlmisc.prg,v 1.22 2005-10-14 04:26:48 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -762,8 +762,8 @@ Return ( aResult )
 Function _InputWindowOk
 *-----------------------------------------------------------------------------*
 Local i , ControlName 
-
-        For i := 1 to len (aResult)
+        l:= len(aresults)
+        For i := 1 to l
 		ControlName := 'Control_' + Alltrim ( Str ( i ) )
 		aResult [i] := _GetValue ( ControlName , '_InputWindow' )
 	Next i
@@ -774,12 +774,8 @@ Return Nil
 *-----------------------------------------------------------------------------*
 Function _InputWindowCancel
 *-----------------------------------------------------------------------------*
-Local i 
-
-aeval( aResult, {|a,i| aResult[i]:= Nil } )
-
+afill (aresult, NIL)
 RELEASE WINDOW _InputWindow
-
 Return Nil
 
 *-----------------------------------------------------------------------------*
