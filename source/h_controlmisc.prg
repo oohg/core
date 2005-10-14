@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.22 2005-10-14 04:26:48 declan2005 Exp $
+ * $Id: h_controlmisc.prg,v 1.23 2005-10-14 04:54:58 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -96,8 +96,6 @@
 #include 'common.ch'
 #include 'i_windefs.ch'
 
-Memvar aResult
-
 STATIC _OOHG_aControlhWnd := {}, _OOHG_aControlObjects := {}
 STATIC _OOHG_aControlIds := {},  _OOHG_aControlNames := {}
 
@@ -134,7 +132,7 @@ Local Self := GetControlObject( ControlName, ParentForm )
 Return ::Value
 
 *-----------------------------------------------------------------------------*
-Function _Setvalue ( ControlName, ParentForm, Value )
+Function _Setvalue( ControlName, ParentForm, Value )
 *-----------------------------------------------------------------------------*
 Local Self := GetControlObject( ControlName, ParentForm )
 
@@ -626,10 +624,11 @@ Return GetControlObject( ControlName, ParentForm ):Caption( Item )
 Function InputWindow ( Title , aLabels , aValues , aFormats , row , col )
 *-----------------------------------------------------------------------------*
 Local i , l , ControlRow , e := 0 ,LN , CN ,r , c , wHeight , diff
+Local oInputWindow, aResult
 
 	l := Len ( aLabels )
 
-	Private aResult [l]
+   aResult := ARRAY( l )
 
 	For i := 1 to l
 
@@ -669,7 +668,7 @@ Local i , l , ControlRow , e := 0 ,LN , CN ,r , c , wHeight , diff
 
 	EndIf
 
-	DEFINE WINDOW _InputWindow ;
+   DEFINE WINDOW _InputWindow OBJ oInputWindow ;
 		AT r,c ;
 		WIDTH 280 ;
 		HEIGHT (l*30) + 90 + (e*60) ;
@@ -738,44 +737,42 @@ Local i , l , ControlRow , e := 0 ,LN , CN ,r , c , wHeight , diff
 
 		@ ControlRow + 10 , 30 BUTTON BUTTON_1 ;
 		OF _InputWindow ;
-		CAPTION if( Set ( _SET_LANGUAGE ) == 'ES', 'Aceptar' , 'Ok' );
-		ACTION _InputWindowOk()
+      CAPTION _OOHG_MESSAGE[ 6 ] ;
+      ACTION _InputWindowOk( oInputWindow, aResult )
 
 		@ ControlRow + 10 , 140 BUTTON BUTTON_2 ;
 		OF _InputWindow ;
-		CAPTION if( Set ( _SET_LANGUAGE ) == 'ES', 'Cancelar' ,'Cancel' ) ;
-		ACTION _InputWindowCancel()
+      CAPTION _OOHG_MESSAGE[ 7 ] ;
+      ACTION _InputWindowCancel( oInputWindow, aResult )
 
-		_SetFocus ('Control_1','_InputWindow')
+      oInputWindow:Control_1:SetFocus()
 
 	END WINDOW
 
 	if pcount() == 4
-		CENTER WINDOW _InputWindow
+      oInputWindow:Center()
 	EndIf
 
-	ACTIVATE WINDOW _InputWindow
+   oInputWindow:Activate()
 
 Return ( aResult )
 
 *-----------------------------------------------------------------------------*
-Function _InputWindowOk
+Function _InputWindowOk( oInputWindow, aResult )
 *-----------------------------------------------------------------------------*
-Local i , ControlName 
-        l:= len(aresults)
-        For i := 1 to l
-		ControlName := 'Control_' + Alltrim ( Str ( i ) )
-		aResult [i] := _GetValue ( ControlName , '_InputWindow' )
+Local i , l
+   l := len( aResult )
+   For i := 1 to l
+      aResult[ i ] := oInputWindow:Control( 'Control_' + Alltrim( Str( i ) ) ):Value
 	Next i
-	RELEASE WINDOW _InputWindow
-
+   oInputWindow:Release()
 Return Nil
 
 *-----------------------------------------------------------------------------*
-Function _InputWindowCancel
+Function _InputWindowCancel( oInputWindow, aResult )
 *-----------------------------------------------------------------------------*
-afill (aresult, NIL)
-RELEASE WINDOW _InputWindow
+   afill( aResult, NIL )
+   oInputWindow:Release()
 Return Nil
 
 *-----------------------------------------------------------------------------*
@@ -789,7 +786,7 @@ Function _IsControlVisibleFromHandle (Handle)
 Return GetControlObjectByHandle( Handle ):ContainerVisible
 
 *-----------------------------------------------------------------------------*
-Function _SetCaretPos ( ControlName , FormName , Pos )
+Function _SetCaretPos( ControlName , FormName , Pos )
 *-----------------------------------------------------------------------------*
 Return SendMessage( GetControlObject( ControlName, FormName ):hWnd, EM_SETSEL , Pos , Pos )
 
