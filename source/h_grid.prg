@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.21 2005-10-08 18:52:33 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.22 2005-10-16 17:26:44 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -531,7 +531,7 @@ METHOD Cell( nRow, nCol, uValue ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local aItem, uValue2 := nil
    IF nRow >= 1 .AND. nRow <= ListViewGetItemCount( ::hWnd )
-      aItem := ListViewGetItem( ::hWnd, nRow, Len( ::aHeaders ) )
+      aItem := ::Item( nRow )
       IF nCol >= 1 .AND. nCol <= Len( aItem )
          IF PCOUNT() > 2
             aItem[ nCol ] := uValue
@@ -557,7 +557,11 @@ Local lRet, lForceString, lIcon
       Return .F.
    EndIf
 
-   If ValType( uOldValue ) == "U"
+   If ValType( ::EditControls ) == "A" .AND. ValType( ::EditControls[ nCol ] ) == "A" .AND. Len( ::EditControls[ nCol ] ) >= 1
+      If Upper( ::EditControls[ nCol ][ 1 ] ) == "IMAGELIST"
+         lIcon := .T.
+      EndIf
+   ElseIf ValType( uOldValue ) == "U"
       uOldValue := ::Cell( nRow, nCol )
       If ValType( uOldValue ) == "N"
          lIcon := .T.
@@ -567,7 +571,7 @@ Local lRet, lForceString, lIcon
    EndIf
 
    // Checks if it must require a text value
-   IF ValType( ::Picture[ nCol ] ) $ "CM" .OR. lIcon
+   IF ValType( ::Picture[ nCol ] ) $ "CM" .OR. lIcon .OR. ( ValType( ::EditControls ) == "A" .AND. ValType( ::EditControls[ nCol ] ) == "A" .AND. Len( ::EditControls[ nCol ] ) >= 1 )
       lForceString := .F.
    Else
       lForceString := .T.
@@ -711,12 +715,10 @@ Local r, r2, oInPlace, lRet := .F., nControlType, bForceString, cMask, aItems
                   If ValType( uValue ) == "C"
                      uValue := CTOD( uValue )
                   EndIf
-                  If Len( EditControl ) >= 2 .AND. ValType( EditControl[ 2 ] ) == "L"
-                     If EditControl[ 2 ]
-                        @ 0,0 DATEPICKER Control_1 WIDTH r[ 3 ] HEIGHT r[ 4 ] + 6 VALUE uValue UPDOWN
-                     Else
-                        @ 0,0 DATEPICKER Control_1 WIDTH r[ 3 ] HEIGHT r[ 4 ] + 6 VALUE uValue
-                     EndIf
+                  If Len( EditControl ) >= 2 .AND. ValType( EditControl[ 2 ] ) == "L" .AND. EditControl[ 2 ]
+                     @ 0,0 DATEPICKER Control_1 WIDTH r[ 3 ] HEIGHT r[ 4 ] + 6 VALUE uValue UPDOWN
+                  Else
+                     @ 0,0 DATEPICKER Control_1 WIDTH r[ 3 ] HEIGHT r[ 4 ] + 6 VALUE uValue
                   EndIf
                   bForceString := { |value| DTOC( value ) }
 
@@ -1031,11 +1033,8 @@ Local iIm := 0
       MsgOOHGError( "Grid.AddItem: Item size mismatch. Program Terminated" )
 	EndIf
 
-   aRow := ACLONE( aRow )
-   AEVAL( ::Picture, { |x,i| if( ValType( x ) $ "CM", aRow[ i ] := Transform( aRow[ i ], x ), ) } )
-
+   aRow := TGrid_SetArray( Self, aRow )
    ::SetItemColor( ::ItemCount() + 1, uForeColor, uBackColor, aRow )
-
    AddListViewItems( ::hWnd , aRow )
 
 Return Nil
@@ -1052,6 +1051,59 @@ METHOD Item( nItem, uValue, uForeColor, uBackColor ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local nColumn, aTemp, cMask, xValue, cControl
    IF PCOUNT() > 1
+      aTemp := TGrid_SetArray( Self, uValue )
+      ::SetItemColor( nItem, uForeColor, uBackColor, uValue )
+      ListViewSetItem( ::hWnd, aTemp, nItem )
+   ENDIF
+   uValue := ListViewGetItem( ::hWnd, nItem , Len( ::aHeaders ) )
+   If ValType( ::EditControls ) == "A"
+      For nColumn := 1 To Len( uValue )
+         If Len( ::EditControls ) >= nColumn .AND. Len( ::EditControls[ nColumn ] ) >= 1
+            cControl := ::EditControls[ nColumn ][ 1 ]
+            xValue := uValue[ nColumn ]
+            If cControl == "DATEPICKER"
+               uValue[ nColumn ] := CTOD( xValue )
+            ElseIf cControl == "SPINNER"
+               uValue[ nColumn ] := Val( AllTrim( xValue ) )
+            ElseIf cControl == "CHECKBOX"
+               uValue[ nColumn ] := ( xValue == ::EditControls[ nColumn ][ 2 ] )
+            ElseIf cControl == "LCHECKBOX"
+               If Len( ::EditControls[ nColumn ] ) >= 2 .AND. ValType( ::EditControls[ nColumn ][ 2 ] ) $ "CM"
+                  uValue[ nColumn ] := ( xValue == ::EditControls[ nColumn ][ 2 ] )
+               Else
+                  uValue[ nColumn ] := ( xValue == ".T." )
+               EndIf
+            ElseIf cControl == "COMBOBOX"
+               uValue[ nColumn ] := ASCAN( ::EditControls[ nColumn ][ 2 ], { |c| c == xValue } )
+            ElseIf cControl == "TEXTBOX"
+               Do Case
+                  Case ::EditControls[ nColumn ][ 2 ] = "D"
+                     uValue[ nColumn ] := CTOD( xValue )
+                  Case ::EditControls[ nColumn ][ 2 ] = "L"
+                     uValue[ nColumn ] := ( xValue == "T" )
+                  Otherwise
+                     cMask := ""
+                     If Len( ::EditControls[ nColumn ] ) >= 4 .AND. ValType( ::EditControls[ nColumn ][ 4 ] ) $ "CM"
+                        cMask := "@" + ::EditControls[ nColumn ][ 4 ] + " "
+                     EndIf
+                     If Len( ::EditControls[ nColumn ] ) >= 3 .AND. ValType( ::EditControls[ nColumn ][ 3 ] ) $ "CM"
+                        cMask += ::EditControls[ nColumn ][ 3 ]
+                     EndIf
+
+                     If ::EditControls[ nColumn ][ 2 ] = "N"
+                        uValue[ nColumn ] := Val( StrTran( _OOHG_UnTransform( xValue, cMask, ::EditControls[ nColumn ][ 2 ] ), " ", "" ) )
+                     Else
+                        uValue[ nColumn ] := _OOHG_UnTransform( xValue, cMask, ::EditControls[ nColumn ][ 2 ] )
+                     Endif
+               EndCase
+            EndIf
+         EndIf
+      Next
+   EndIf
+Return uValue
+
+FUNCTION TGrid_SetArray( Self, uValue )
+local aTemp, nColumn, xValue, cMask
       aTemp := Array( Len( uValue ) )
       For nColumn := 1 To Len( uValue )
          xValue := uValue[ nColumn ]
@@ -1115,55 +1167,7 @@ Local nColumn, aTemp, cMask, xValue, cControl
             aTemp[ nColumn ] := xValue
          EndIf
       Next
-      ::SetItemColor( nItem, uForeColor, uBackColor, aTemp )
-      ListViewSetItem( ::hWnd, uValue, nItem )
-   ENDIF
-   uValue := ListViewGetItem( ::hWnd, nItem , Len( ::aHeaders ) )
-   If ValType( ::EditControls ) == "A"
-      For nColumn := 1 To Len( uValue )
-         If Len( ::EditControls ) >= nColumn .AND. Len( ::EditControls[ nColumn ] ) >= 1
-            cControl := ::EditControls[ nColumn ][ 1 ]
-            xValue := uValue[ nColumn ]
-            If cControl == "DATEPICKER"
-               uValue[ nColumn ] := CTOD( xValue )
-            ElseIf cControl == "SPINNER"
-               uValue[ nColumn ] := Val( AllTrim( xValue ) )
-            ElseIf cControl == "CHECKBOX"
-               uValue[ nColumn ] := ( xValue == ::EditControls[ nColumn ][ 2 ] )
-            ElseIf cControl == "LCHECKBOX"
-               If Len( ::EditControls[ nColumn ] ) >= 2 .AND. ValType( ::EditControls[ nColumn ][ 2 ] ) $ "CM"
-                  uValue[ nColumn ] := ( xValue == ::EditControls[ nColumn ][ 2 ] )
-               Else
-                  uValue[ nColumn ] := ( xValue == ".T." )
-               EndIf
-            ElseIf cControl == "COMBOBOX"
-               uValue[ nColumn ] := ASCAN( ::EditControls[ nColumn ][ 2 ], { |c| c == xValue } )
-            ElseIf cControl == "TEXTBOX"
-               Do Case
-                  Case ::EditControls[ nColumn ][ 2 ] = "D"
-                     uValue[ nColumn ] := CTOD( xValue )
-                  Case ::EditControls[ nColumn ][ 2 ] = "L"
-                     uValue[ nColumn ] := ( xValue == "T" )
-                  Otherwise
-                     cMask := ""
-                     If Len( ::EditControls[ nColumn ] ) >= 4 .AND. ValType( ::EditControls[ nColumn ][ 4 ] ) $ "CM"
-                        cMask := "@" + ::EditControls[ nColumn ][ 4 ] + " "
-                     EndIf
-                     If Len( ::EditControls[ nColumn ] ) >= 3 .AND. ValType( ::EditControls[ nColumn ][ 3 ] ) $ "CM"
-                        cMask += ::EditControls[ nColumn ][ 3 ]
-                     EndIf
-
-                     If ::EditControls[ nColumn ][ 2 ] = "N"
-                        uValue[ nColumn ] := Val( StrTran( _OOHG_UnTransform( xValue, cMask, ::EditControls[ nColumn ][ 2 ] ), " ", "" ) )
-                     Else
-                        uValue[ nColumn ] := _OOHG_UnTransform( xValue, cMask, ::EditControls[ nColumn ][ 2 ] )
-                     Endif
-               EndCase
-            EndIf
-         EndIf
-      Next
-   EndIf
-Return uValue
+RETURN aTemp
 
 *-----------------------------------------------------------------------------*
 METHOD SetItemColor( nItem, uForeColor, uBackColor, uExtra ) CLASS TGrid
