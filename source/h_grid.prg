@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.22 2005-10-16 17:26:44 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.23 2005-10-18 03:54:06 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1103,7 +1103,7 @@ Local nColumn, aTemp, cMask, xValue, cControl
 Return uValue
 
 FUNCTION TGrid_SetArray( Self, uValue )
-local aTemp, nColumn, xValue, cMask
+Local aTemp, nColumn, xValue, cMask, cControl
       aTemp := Array( Len( uValue ) )
       For nColumn := 1 To Len( uValue )
          xValue := uValue[ nColumn ]
