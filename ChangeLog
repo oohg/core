@@ -1,11 +1,37 @@
 /*
- * $Id: ChangeLog,v 1.23 2005-10-18 03:54:06 guerra000 Exp $
+ * $Id: ChangeLog,v 1.24 2005-10-21 05:20:08 guerra000 Exp $
 */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2005-10-21 00:19 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_grid.prg
+    * Added EDITCONTROLS functionality to ::EDITITEM (full row).
+    + Added TGridControl() class. EditControls are now objects
+      instead of arrays with texts. Users can create new editcontrols
+      (TIMEPICKER, IPADDRESS, RADIOBUTTONS!?!?, SLIDER, SCROLLBAR?,
+      TREE!?!?, LISTBOX, MONTHCAL? can be easily converted to
+      EDITCONTROLS), or custom edit windows!
+
+  * source/h_browse.prg
+    * Added EDITCONTROLS functionality to ::EDITITEM (full row).
+    * New EDITCONTROLS functonality implemented to ::EditCell() method.
+    + Added ::aReplaceField property. When a cell is edited, this
+      codeblock will be used for store data into database. Since it's a
+      codeblock, it can be easily configured for custom controls.
+
+  * source/c_controlmisc.c
+    * A logical value passed to a grid/combobox item will assume an image
+      parameter (TRUE means image 1, FALSE means image 0).
+
+  * include/i_altsyntax.ch
+  * include/i_browse.ch
+  * include/i_grid.ch
+    + Added WHEN clause to GRID control.
+    + Added EDITCONTROLS and REPLACEFIELD clauses to BROWSE control.
 
 2005-10-17 21:53 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_grid.prg
