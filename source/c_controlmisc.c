@@ -1,5 +1,5 @@
 /*
- * $Id: c_controlmisc.c,v 1.9 2005-10-01 15:35:10 guerra000 Exp $
+ * $Id: c_controlmisc.c,v 1.10 2005-10-21 05:17:04 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -634,6 +634,12 @@ void ImageFillParameter( struct IMAGE_PARAMETER *pResult, PHB_ITEM pString )
    {
       pResult->cString = "";
       pResult->iImage1 = hb_itemGetNI( pString );
+      pResult->iImage2 = pResult->iImage1;
+   }
+   else if( pString && HB_IS_LOGICAL( pString ) )
+   {
+      pResult->cString = "";
+      pResult->iImage1 = ( hb_itemGetL( pString ) ? 1 : 0 );
       pResult->iImage2 = pResult->iImage1;
    }
    else if( pString && HB_IS_ARRAY( pString ) && pString->item.asArray.value->ulLen > 0 )
