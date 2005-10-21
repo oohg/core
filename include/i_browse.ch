@@ -1,5 +1,5 @@
 /*
- * $Id: i_browse.ch,v 1.6 2005-09-29 05:20:23 guerra000 Exp $
+ * $Id: i_browse.ch,v 1.7 2005-10-21 05:15:36 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -146,6 +146,8 @@
                 [ <rtl: RTL> ]                  ;
                 [ ON APPEND <onappend> ]        ;
                 [ ON EDITCELL <editcell> ]      ;
+                [ COLUMNCONTROLS <editcontrols> ] ;
+                [ REPLACEFIELD <replacefields> ] ;
 	=>;
 [ <oObj> := ] TBrowse():Define( ;
                 <"name"> ,      ;
@@ -191,7 +193,11 @@
                 <aWhenFields> , ;
                 <dynamicforecolor>, ;
                 <Picture>, ;
-                <.rtl.>, <{onappend}>, <{editcell}> )
+                <.rtl.>, ;
+                <{onappend}>, ;
+                <{editcell}>, ;
+                <editcontrols>, ;
+                <replacefields> )
 
 ///////////////////////////////////////////////////////////////////////////////
 // SPLITBOX BROWSE
@@ -241,6 +247,8 @@
                 [ <rtl: RTL> ]                  ;
                 [ ON APPEND <onappend> ]        ;
                 [ ON EDITCELL <editcell> ]      ;
+                [ COLUMNCONTROLS <editcontrols> ] ;
+                [ REPLACEFIELD <replacefields> ] ;
 	=>;
 [ <oObj> := ] TBrowse():Define( ;
                 <"name"> ,      ;
@@ -286,7 +294,11 @@
                 <aWhenFields> , ;
                 <dynamicforecolor>, ;
                 <Picture>, ;
-                <.rtl.>, <{onappend}>, <{editcell}> )
+                <.rtl.>, ;
+                <{onappend}>, ;
+                <{editcell}>, ;
+                <editcontrols>, ;
+                <replacefields> )
 
 #command SET BROWSESYNC ON  => SetBrowseSync( .T. )
 #command SET BROWSESYNC OFF => SetBrowseSync( .F. )

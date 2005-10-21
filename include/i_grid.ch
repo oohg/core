@@ -1,5 +1,5 @@
 /*
- * $Id: i_grid.ch,v 1.6 2005-09-29 05:20:23 guerra000 Exp $
+ * $Id: i_grid.ch,v 1.7 2005-10-21 05:15:36 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -143,6 +143,7 @@
 		[ VALID <aValidFields> ]	;
 		[ VALIDMESSAGES <aValidMessages> ] ;
                 [ ON EDITCELL <editcell> ]      ;
+                [ WHEN <aWhenFields> ]          ;
 	=>;
 [ <obj> := ] iif( <.multiselect.>, TGridMulti(), TGrid() ):Define( ;
                 <"name"> ,      ;
@@ -182,7 +183,13 @@
                 <dynamicforecolor>, ;
                 <Picture>,      ;
                 <.rtl.>,        ;
-                <.inplace.>, <editcontrols>, <aReadOnly>, <aValidFields>, <aValidMessages>, <{editcell}> )
+                <.inplace.>,    ;
+                <editcontrols>, ;
+                <aReadOnly>,    ;
+                <aValidFields>, ;
+                <aValidMessages>, ;
+                <{editcell}>    ;
+                <aWhenFields> )
 
 ///////////////////////////////////////////////////////////////////////////////
 // GRID (SPLITBOX VERSION)
@@ -230,6 +237,7 @@
 		[ VALID <aValidFields> ]	;
 		[ VALIDMESSAGES <aValidMessages> ] ;
                 [ ON EDITCELL <editcell> ]      ;
+                [ WHEN <aWhenFields> ]          ;
 	=>;
 [ <obj> := ] iif( <.multiselect.>, TGridMulti(), TGrid() ):Define( ;
                 <"name"> ,      ;
@@ -269,6 +277,12 @@
                 <dynamicforecolor>, ;
                 <Picture>,      ;
                 <.rtl.>,        ;
-                <.inplace.>, <editcontrols>, <aReadOnly>, <aValidFields>, <aValidMessages>, <{editcell}> )
+                <.inplace.>,    ;
+                <editcontrols>, ;
+                <aReadOnly>,    ;
+                <aValidFields>, ;
+                <aValidMessages>, ;
+                <{editcell}>,   ;
+                <aWhenFields> )
 
 ///////////////////////////////////////////////////////////////////////////////

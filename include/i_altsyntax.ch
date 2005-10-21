@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.17 2005-10-13 23:28:38 declan2005 Exp $
+ * $Id: i_altsyntax.ch,v 1.18 2005-10-21 05:15:36 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -97,6 +97,7 @@ Memvariables
 
 MEMVAR _OOHG_ActiveControlEditControls
 MEMVAR _OOHG_ActiveControlWhen
+MEMVAR _OOHG_ActiveControlReplaceFields
 MEMVAR _OOHG_ActiveControlDynamicForeColor
 MEMVAR _OOHG_ActiveControlDynamicBackColor
 MEMVAR _OOHG_ActiveControlEditCell
@@ -538,6 +539,10 @@ Frame
 #xcommand WHEN <aWhenFields> ;
         =>;
         _OOHG_ActiveControlWhen   := <aWhenFields>
+
+#xcommand REPLACEFIELD <aReplaceFields> ;
+        =>;
+        _OOHG_ActiveControlReplaceFields := <aReplaceFields>
 
 #xcommand NOLINES <nolines> ;
 	=>;
@@ -1788,7 +1793,8 @@ Grid
         _OOHG_ActiveControlReadOnly              := Nil          ;;
         _OOHG_ActiveControlValid                 := Nil          ;;
         _OOHG_ActiveControlValidMessages         := Nil          ;;
-        _OOHG_ActiveControlEditCell              := Nil
+        _OOHG_ActiveControlEditCell              := Nil          ;;
+        _OOHG_ActiveControlWhen                  := nil
 
 #xcommand ONAPPEND    <onappend>;
 	=>;
@@ -1839,7 +1845,8 @@ iif( _OOHG_ActiveControlMultiSelect, TGridMulti(), TGrid() ):Define( ;
                 _OOHG_ActiveControlReadOnly , ;
                 _OOHG_ActiveControlValid , ;
                 _OOHG_ActiveControlValidMessages, ;
-                _OOHG_ActiveControlEditCell )
+                _OOHG_ActiveControlEditCell, ;
+                _OOHG_ActiveControlWhen )
 
 /*----------------------------------------------------------------------------
 BROWSE
@@ -1875,7 +1882,9 @@ BROWSE
         _OOHG_ActiveControlDynamicForeColor      := Nil          ;;
         _OOHG_ActiveControlWhen                  := nil          ;;
         _OOHG_ActiveControlOnAppend              := nil          ;;
-        _OOHG_ActiveControlEditCell              := Nil
+        _OOHG_ActiveControlEditCell              := Nil          ;;
+        _OOHG_ActiveControlEditControls          := Nil          ;;
+        _OOHG_ActiveControlReplaceFields         := Nil
 
 #xcommand END BROWSE ;
 	=>;
@@ -1924,7 +1933,9 @@ TBrowse():Define( _OOHG_ActiveControlName ,        ;
                 _OOHG_ActiveControlInputMask, ;
                 _OOHG_ActiveControlRtl, ;
                 _OOHG_ActiveControlOnAppend, ;
-                _OOHG_ActiveControlEditCell )
+                _OOHG_ActiveControlEditCell, ;
+                _OOHG_ActiveControlEditControls, ;
+                _OOHG_ActiveControlReplaceFields )
 
 /*----------------------------------------------------------------------------
 Hyperlink
