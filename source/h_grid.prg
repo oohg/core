@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.24 2005-10-21 05:17:47 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.25 2005-10-22 06:10:07 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -91,8 +91,8 @@
 	Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-#include 'oohg.ch'
-#include 'hbclass.ch'
+#include "oohg.ch"
+#include "hbclass.ch"
 #include "i_windefs.ch"
 
 CLASS TGrid FROM TControl
@@ -327,7 +327,9 @@ Local nItem, aItems, aEditControls, nColumn
    aItems := ::EditItem2( nItem, aItems, aEditControls,, _OOHG_MESSAGE[ 5 ] )
    If ! Empty( aItems )
       ::Item( nItem, ASIZE( aItems, LEN( ::aHeaders ) ) )
+      _SetThisCellInfo( ::hWnd, nItem, 1 )
       _OOHG_Eval( ::OnEditCell, nItem, 0 )
+      _ClearThisCellInfo()
    EndIf
 Return NIL
 
@@ -335,7 +337,7 @@ Return NIL
 METHOD EditItem2( nItem, aItems, aEditControls, aMemVars, cTitle ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local l, actpos := {0,0,0,0}, GCol, IRow, i, oWnd
-Local oCtrl, aEditControls2
+Local oCtrl, aEditControls2, nRow
 
    If ValType( nItem ) != "N"
       nItem := LISTVIEW_GETFIRSTITEM( ::hWnd )
@@ -358,7 +360,9 @@ Local oCtrl, aEditControls2
 
    GetWindowRect( ::hWnd, actpos )
 
-   GCol := actpos[ 1 ] + ( ( ( actpos[ 3 ] - actpos[ 1 ] ) - 260 ) / 2 )
+   GCol := actpos[ 1 ] + ( ( ( actpos[ 3 ] - actpos[ 1 ] ) - 280 ) / 2 )
+
+   _SetThisCellInfo( ::hWnd, nItem, 1 )
 
    aEditControls2 := ARRAY( l )
    For i := 1 To l
@@ -374,18 +378,19 @@ Local oCtrl, aEditControls2
       aEditControls2[ i ] := oCtrl
    Next
 
-   DEFINE WINDOW 0 ;
-      OBJ oWnd ;
-      AT IRow,GCol ;
-		WIDTH 260 ;
-      HEIGHT ( l * 30 ) + 70 + GetTitleHeight() ;
-      TITLE cTitle ;
-		MODAL ;
-      NOSIZE
+   nRow := 70 + GetTitleHeight()
+   AEVAL( aEditControls2, { |o| nRow += o:nDefHeight + 6 } )
+
+   DEFINE WINDOW 0 OBJ oWnd AT IRow,GCol ;
+      WIDTH 280 HEIGHT nRow ;
+      TITLE cTitle MODAL NOSIZE
+
+      nRow := 10
 
 		For i := 1 to l
-         @ ( i * 30 ) - 17, 10 LABEL 0 PARENT &( oWnd:Name ) VALUE Alltrim( ::aHeaders[ i ] ) + ":"
-         oCtrl := aEditControls2[ i ]:CreateControl( aItems[ i ], oWnd:Name, ( i * 30 ) - 20, 120, nil, nil )
+         @ nRow + 3, 10 LABEL 0 PARENT ( oWnd ) VALUE Alltrim( ::aHeaders[ i ] ) + ":"
+         aEditControls2[ i ]:CreateControl( aItems[ i ], oWnd:Name, nRow, 120, aEditControls2[ i ]:nDefWidth, aEditControls2[ i ]:nDefHeight )
+         nRow += aEditControls2[ i ]:nDefHeight + 6
          If ValType( aMemVars ) == "A" .AND. Len( aMemVars ) >= i
             aEditControls2[ i ]:cMemVar := aMemVars[ i ]
          EndIf
@@ -400,27 +405,29 @@ Local oCtrl, aEditControls2
             aEditControls2[ i ]:bWhen := ::aWhen[ i ]
          EndIf
          If ValType( ::ReadOnly ) == "A" .AND. Len( ::ReadOnly ) >= i .AND. ValType( ::ReadOnly[ i ] ) == "L" .AND. ::ReadOnly[ i ]
-            oCtrl:Enabled := .F.
+            aEditControls2[ i ]:Enabled := .F.
             aEditControls2[ i ]:bWhen := { || .F. }
          EndIf
 
 		Next i
 
-      @ ( l * 30 ) + 20,  20 BUTTON 0 PARENT &( oWnd:Name ) CAPTION _OOHG_MESSAGE[ 6 ] ;
+      @ nRow + 10,  25 BUTTON 0 PARENT &( oWnd:Name ) CAPTION _OOHG_MESSAGE[ 6 ] ;
             ACTION ( TGrid_EditItem_Check( aEditControls2, aItems, oWnd ) )
 
-      @ ( l * 30 ) + 20, 130 BUTTON 0 PARENT &( oWnd:Name ) CAPTION _OOHG_MESSAGE[ 7 ] ;
+      @ nRow + 10, 145 BUTTON 0 PARENT &( oWnd:Name ) CAPTION _OOHG_MESSAGE[ 7 ] ;
             ACTION ( aItems := {}, oWnd:Release() )
 
 	END WINDOW
 
-   AEVAL( aEditControls2, { |o| o:oControl:OnLostFocus := { || TGrid_EditItem_When( aEditControls2 ) } } )
+   AEVAL( aEditControls2, { |o| o:OnLostFocus := { || TGrid_EditItem_When( aEditControls2 ) } } )
 
    TGrid_EditItem_When( aEditControls2 )
 
    aEditControls2[ 1 ]:SetFocus()
 
    oWnd:Activate()
+
+   _ClearThisCellInfo()
 
    ::SetFocus()
 
@@ -518,14 +525,14 @@ Local nColumns, uGridColor, uDynamicColor
    // Update Foreground Color
    uGridColor := ::GridForeColor
    uDynamicColor := ::DynamicForeColor
-   TGrid_AddColumnColor( @uGridColor, nColIndex, uForeColor, @uDynamicColor, nColumns, ::ItemCount(), lNoDelete )
+   TGrid_AddColumnColor( @uGridColor, nColIndex, uForeColor, @uDynamicColor, nColumns, ::ItemCount(), lNoDelete, ::hWnd )
    ::GridForeColor := uGridColor
    ::DynamicForeColor := uDynamicColor
 
    // Update Background Color
    uGridColor := ::GridBackColor
    uDynamicColor := ::DynamicBackColor
-   TGrid_AddColumnColor( @uGridColor, nColIndex, uBackColor, @uDynamicColor, nColumns, ::ItemCount(), lNoDelete )
+   TGrid_AddColumnColor( @uGridColor, nColIndex, uBackColor, @uDynamicColor, nColumns, ::ItemCount(), lNoDelete, ::hWnd )
    ::GridBackColor := uGridColor
    ::DynamicBackColor := uDynamicColor
 
@@ -534,7 +541,7 @@ Local nColumns, uGridColor, uDynamicColor
 
 Return nil
 
-STATIC Function TGrid_AddColumnColor( aGrid, nColumn, uColor, uDynamicColor, nWidth, nItemCount, lNoDelete )
+STATIC Function TGrid_AddColumnColor( aGrid, nColumn, uColor, uDynamicColor, nWidth, nItemCount, lNoDelete, hWnd )
 Local uTemp, x
    IF ValType( uDynamicColor ) == "A"
       IF Len( uDynamicColor ) < nWidth
@@ -569,7 +576,9 @@ Local uTemp, x
          Else
             aGrid[ x ] := ARRAY( nWidth )
          ENDIF
+         _SetThisCellInfo( hWnd, x, nColumn )
          aGrid[ x ][ nColumn ] := _OOHG_GetArrayItem( uDynamicColor, nColumn, x )
+         _ClearThisCellInfo()
       NEXT
    ENDIF
 Return NIL
@@ -678,7 +687,9 @@ Local lRet
          uValue := Trim( uValue )
       ENDIF
       ::Cell( nRow, nCol, uValue )
+      _SetThisCellInfo( ::hWnd, nRow, nCol )
       _OOHG_Eval( ::OnEditCell, nRow, nCol )
+      _ClearThisCellInfo()
    ENDIF
 Return lRet
 
@@ -721,12 +732,11 @@ Local r, r2, lRet := .F.
          EditControl := GridControlObjectByType( uValue )
       EndIf
 
-      r2 := { 0, 0, 0, 0 }
-      GetWindowRect( ::hWnd, r2 )
-
       If ValType( EditControl ) != "O"
          MsgExclamation( "ooHG can't determine cell type for INPLACE edit." )
       Else
+         r2 := { 0, 0, 0, 0 }
+         GetWindowRect( ::hWnd, r2 )
          ListView_EnsureVisible( ::hWnd, nRow - 1 )
          r := LISTVIEW_GETSUBITEMRECT( ::hWnd, nRow - 1, nCol - 1 )
          r[ 3 ] := ListView_GetColumnWidth( ::hWnd, nCol - 1 )
@@ -744,12 +754,7 @@ Local r, r2, lRet := .F.
          r[ 1 ] += r2[ 2 ] + 2
          r[ 2 ] += r2[ 1 ] + 3
 
-         _OOHG_ThisItemRowIndex   := nRow
-         _OOHG_ThisItemColIndex   := nCol
-         _OOHG_ThisItemCellRow    := r[ 1 ]
-         _OOHG_ThisItemCellCol    := r[ 2 ]
-         _OOHG_ThisItemCellWidth  := r[ 3 ]
-         _OOHG_ThisItemCellHeight := r[ 4 ]
+         _SetThisCellInfo( ::hWnd, nRow, nCol )
 
          r[ 4 ] += 6
 
@@ -760,7 +765,7 @@ Local r, r2, lRet := .F.
          If ValType( ::ValidMessages ) == "A" .AND. Len( ::ValidMessages ) >= nCol
             EditControl:cValidMessage := ::ValidMessages[ nCol ]
          EndIf
-         lRet := EditControl:CreateWindow( uValue, r[ 1 ], r[ 2 ], r[ 3 ], r[ 4 ] )
+         lRet := EditControl:CreateWindow( uValue, r[ 1 ], r[ 2 ], r[ 3 ], r[ 4 ], ::FontName, ::FontSize )
          If lRet
             uValue := EditControl:Value
          Else
@@ -768,43 +773,10 @@ Local r, r2, lRet := .F.
          EndIf
 
          _OOHG_ThisType := ''
-         _OOHG_ThisItemRowIndex   := 0
-         _OOHG_ThisItemColIndex   := 0
-         _OOHG_ThisItemCellRow    := 0
-         _OOHG_ThisItemCellCol    := 0
-         _OOHG_ThisItemCellWidth  := 0
-         _OOHG_ThisItemCellHeight := 0
+         _ClearThisCellInfo()
 
       EndIf
    EndIf
-Return lRet
-
-Static Function TGrid_InPlaceValid( Self, oInPlace, nCol, cMemVar, uValue )
-Local lRet, lValid, uValue2
-   lRet := .F.
-   uValue2 := oInPlace:Control_1:Value
-   If ValType( ::Valid ) == 'A' .AND. Len ( ::Valid ) >= nCol .AND. ValType( ::Valid[ nCol ] ) == "B"
-      &cMemVar := uValue2
-      lValid := _OOHG_Eval( ::Valid[ nCol ], uValue2 )
-      IF ValType( lValid ) != "L"
-         lValid := .T.
-      ENDIF
-   Else
-      lValid := .T.
-   Endif
-
-   If lValid
-      lRet := .T.
-      uValue := uValue2
-      oInPlace:Release()
-   Else
-      If ValType( ::ValidMessages ) == 'A' .AND. Len ( ::ValidMessages ) >= nCol .AND. ValType( ::ValidMessages[ nCol ] ) $ "CM"
-         MsgExclamation( ::ValidMessages[ nCol ] )
-      Else
-         MsgExclamation( _OOHG_BRWLangError[ 11 ] )
-      Endif
-      oInPlace:Control_1:SetFocus()
-   Endif
 Return lRet
 
 *-----------------------------------------------------------------------------*
@@ -1005,12 +977,7 @@ Local lvc, aCellData, _ThisQueryTemp, lWhen
 
       EndIf
 
-      _OOHG_ThisItemRowIndex   := 0
-      _OOHG_ThisItemColIndex   := 0
-      _OOHG_ThisItemCellRow    := 0
-      _OOHG_ThisItemCellCol    := 0
-      _OOHG_ThisItemCellWidth  := 0
-      _OOHG_ThisItemCellHeight := 0
+      _ClearThisCellInfo()
       _PopEventInfo()
 
       Return nil
@@ -1085,11 +1052,11 @@ RETURN aTemp
 *-----------------------------------------------------------------------------*
 METHOD SetItemColor( nItem, uForeColor, uBackColor, uExtra ) CLASS TGrid
 *-----------------------------------------------------------------------------*
-   ::GridForeColor := TGrid_CreateColorArray( ::GridForeColor, nItem, uForeColor, ::DynamicForeColor, LEN( ::aHeaders ), uExtra )
-   ::GridBackColor := TGrid_CreateColorArray( ::GridBackColor, nItem, uBackColor, ::DynamicBackColor, LEN( ::aHeaders ), uExtra )
+   ::GridForeColor := TGrid_CreateColorArray( ::GridForeColor, nItem, uForeColor, ::DynamicForeColor, LEN( ::aHeaders ), uExtra, ::hWnd )
+   ::GridBackColor := TGrid_CreateColorArray( ::GridBackColor, nItem, uBackColor, ::DynamicBackColor, LEN( ::aHeaders ), uExtra, ::hWnd )
 Return Nil
 
-STATIC Function TGrid_CreateColorArray( aGrid, nItem, uColor, uDynamicColor, nWidth, uExtra )
+STATIC Function TGrid_CreateColorArray( aGrid, nItem, uColor, uDynamicColor, nWidth, uExtra, hWnd )
 Local aTemp, nLen
    IF ! ValType( uColor ) $ "ANB" .AND. ValType( uDynamicColor ) $ "ANB"
       uColor := uDynamicColor
@@ -1114,7 +1081,8 @@ Local aTemp, nLen
             AEVAL( uColor, { |x,i| uColor[ i ] := uDynamicColor[ i ], x }, nLen + 1 )
          ENDIF
       ENDIF
-      AEVAL( aTemp, { |x,i| aTemp[ i ] := _OOHG_GetArrayItem( uColor, i, nItem, uExtra ), x } )
+      AEVAL( aTemp, { |x,i| _SetThisCellInfo( hWnd, nItem, i ), aTemp[ i ] := _OOHG_GetArrayItem( uColor, i, nItem, uExtra ), x } )
+      _ClearThisCellInfo()
       aGrid[ nItem ] := aTemp
    ENDIF
 Return aGrid
@@ -1190,12 +1158,12 @@ Local nAux, nLong := ::ItemCount()
       nRight := Len( ::aHeaders )
    ENDIF
    IF nTop <= nLong .AND. nLeft <= Len( ::aHeaders ) .AND. nTop >= 1 .AND. nLeft >= 1
-      ::GridForeColor := TGrid_FillColorArea( ::GridForeColor, uForeColor, nTop, nLeft, nBottom, nRight )
-      ::GridBackColor := TGrid_FillColorArea( ::GridBackColor, uBackColor, nTop, nLeft, nBottom, nRight )
+      ::GridForeColor := TGrid_FillColorArea( ::GridForeColor, uForeColor, nTop, nLeft, nBottom, nRight, ::hWnd )
+      ::GridBackColor := TGrid_FillColorArea( ::GridBackColor, uBackColor, nTop, nLeft, nBottom, nRight, ::hWnd )
    ENDIF
 Return nil
 
-STATIC Function TGrid_FillColorArea( aGrid, uColor, nTop, nLeft, nBottom, nRight )
+STATIC Function TGrid_FillColorArea( aGrid, uColor, nTop, nLeft, nBottom, nRight, hWnd )
 Local nAux
    IF ValType( uColor ) $ "ANB"
       IF ValType( aGrid ) != "A"
@@ -1209,7 +1177,8 @@ Local nAux
          ELSEIF LEN( aGrid[ nAux ] ) < nRight
             ASIZE( aGrid[ nAux ], nRight )
          ENDIF
-         AEVAL( aGrid[ nAux ], { |x,i| aGrid[ nAux ][ i ] := _OOHG_GetArrayItem( uColor, i, nAux ), x }, nLeft, ( nRight - nLeft + 1 ) )
+         AEVAL( aGrid[ nAux ], { |x,i| _SetThisCellInfo( hWnd, nAux, i ), aGrid[ nAux ][ i ] := _OOHG_GetArrayItem( uColor, i, nAux ), x }, nLeft, ( nRight - nLeft + 1 ) )
+         _ClearThisCellInfo()
       NEXT
    ENDIF
 Return aGrid
@@ -1378,6 +1347,34 @@ Local aCellData
 
 Return aCellData
 
+*------------------------------------------------------------------------------*
+Procedure _SetThisCellInfo( hWnd, nRow, nCol )
+*------------------------------------------------------------------------------*
+Local aControlRect, aCellRect
+   aControlRect := { 0, 0, 0, 0 }
+   GetWindowRect( hWnd, aControlRect )
+   aCellRect := LISTVIEW_GETSUBITEMRECT( hWnd, nRow - 1, nCol - 1 )
+   aCellRect[ 3 ] := ListView_GetColumnWidth( hWnd, nCol - 1 )
+
+   _OOHG_ThisItemRowIndex   := nRow
+   _OOHG_ThisItemColIndex   := nCol
+   _OOHG_ThisItemCellRow    := aCellRect[ 1 ] + aControlRect[ 2 ] + 2
+   _OOHG_ThisItemCellCol    := aCellRect[ 2 ] + aControlRect[ 1 ] + 3
+   _OOHG_ThisItemCellWidth  := aCellRect[ 3 ]
+   _OOHG_ThisItemCellHeight := aCellRect[ 4 ]
+Return
+
+*------------------------------------------------------------------------------*
+Procedure _ClearThisCellInfo()
+*------------------------------------------------------------------------------*
+   _OOHG_ThisItemRowIndex   := 0
+   _OOHG_ThisItemColIndex   := 0
+   _OOHG_ThisItemCellRow    := 0
+   _OOHG_ThisItemCellCol    := 0
+   _OOHG_ThisItemCellWidth  := 0
+   _OOHG_ThisItemCellHeight := 0
+Return
+
 
 
 
@@ -1457,13 +1454,15 @@ Return oEditControl
 *-----------------------------------------------------------------------------*
 CLASS TGridControl
 *-----------------------------------------------------------------------------*
-   DATA oControl INIT nil
-   DATA oWindow  INIT nil
-   DATA Value    INIT nil
-   DATA bWhen    INIT nil
-   DATA cMemVar  INIT nil
-   DATA bValid   INIT nil
+   DATA oControl      INIT nil
+   DATA oWindow       INIT nil
+   DATA Value         INIT nil
+   DATA bWhen         INIT nil
+   DATA cMemVar       INIT nil
+   DATA bValid        INIT nil
    DATA cValidMessage INIT nil
+   DATA nDefWidth     INIT 140
+   DATA nDefHeight    INIT 24
 
    METHOD New               BLOCK { |Self| Self }
    METHOD CreateWindow
@@ -1473,14 +1472,16 @@ CLASS TGridControl
    METHOD GridValue(uValue) BLOCK { |Self,uValue| Empty( Self ), If( ValType( uValue ) $ "CM", Trim( uValue ), uValue ) }
    METHOD ControlValue      BLOCK { |Self| ::oControl:Value }
    METHOD SetFocus          BLOCK { |Self| ::oControl:SetFocus() }
-   METHOD Enabled(uValue)   SETGET
+   METHOD Enabled           SETGET
+   METHOD OnLostFocus       SETGET
 ENDCLASS
 
-METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight ) CLASS TGridControl
+METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize ) CLASS TGridControl
 Local lRet := .F.
    DEFINE WINDOW 0 OBJ ::oWindow ;
           AT nRow, nCol WIDTH nWidth HEIGHT nHeight ;
-          MODAL NOSIZE NOCAPTION
+          MODAL NOSIZE NOCAPTION ;
+          FONT cFontName SIZE nFontSize
 
           ON KEY RETURN OF &( ::oWindow:Name ) ACTION ( lRet := ::Valid() )
           ON KEY ESCAPE OF &( ::oWindow:Name ) ACTION ( ::oWindow:Release() )
@@ -1522,6 +1523,12 @@ Return lValid
 
 METHOD Enabled( uValue ) CLASS TGridControl
 Return ( ::oControl:Enabled := uValue )
+
+METHOD OnLostFocus( uValue ) CLASS TGridControl
+   If PCOUNT() >= 1
+      ::oControl:OnLostFocus := uValue
+   EndIf
+Return ::oControl:OnLostFocus
 
 *-----------------------------------------------------------------------------*
 CLASS TGridControlTextBox FROM TGridControl
@@ -1608,23 +1615,28 @@ Return uValue
 *-----------------------------------------------------------------------------*
 CLASS TGridControlMemo FROM TGridControl
 *-----------------------------------------------------------------------------*
+*   DATA nDefWidth     INIT 140
+*   DATA nDefHeight    INIT 24
+
    METHOD CreateWindow
    METHOD CreateControl
 ENDCLASS
 
-METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight ) CLASS TGridControlMemo
+METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize ) CLASS TGridControlMemo
 Local lRet := .F.
    Empty( nWidth )
    Empty( nHeight )
+   Empty( cFontName )
+   Empty( nFontSize )
    DEFINE WINDOW 0 OBJ ::oWindow ;
           AT nRow, nCol WIDTH 350 HEIGHT GetTitleHeight() + 265 TITLE "Edit Memo" ;
           MODAL NOSIZE
 
           ON KEY ESCAPE OF &( ::oWindow:Name ) ACTION ( ::oWindow:Release() )
 
-          ::Value := uValue
           @ 07,10 LABEL 0    PARENT &( ::oWindow:Name ) VALUE ""   WIDTH 280
           ::CreateControl( uValue, ::oWindow:Name, 30, 10, 320, 176 )
+          ::Value := ::ControlValue
           @ 217,120 BUTTON 0 PARENT &( ::oWindow:Name ) CAPTION _OOHG_MESSAGE[ 6 ] ACTION ( lRet := ::Valid() )
           @ 217,230 BUTTON 0 PARENT &( ::oWindow:Name ) CAPTION _OOHG_MESSAGE[ 7 ] ACTION ( ::oWindow:Release() )
 
