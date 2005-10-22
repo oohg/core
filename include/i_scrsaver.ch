@@ -1,5 +1,5 @@
 /*
- * $Id: i_scrsaver.ch,v 1.1 2005-08-06 23:53:54 guerra000 Exp $
+ * $Id: i_scrsaver.ch,v 1.2 2005-10-22 06:04:31 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -101,7 +101,7 @@
              [ BACKCOLOR <backcolor> ] ;
        => ;
 		DECLARE WINDOW <Scr> ;;
-		_BeginScrSaver( <"Scr">, <.noshow.>, ;
+                _BeginScrSaver( <(Scr)>, <.noshow.>, ;
 				<{InitProcedure}>, <{ReleaseProcedure}>, ;
 				<{PaintProcedure}>, <nInterval>, [<backcolor>] )
 
@@ -110,7 +110,7 @@
              [ <lShow: SHOW> ] ;
        => ;
 		_ScrSaverInstall := .t. ;;
-		[ _ScrSaverFileName := <"cFileName"> ; ] ;
+                [ _ScrSaverFileName := <(cFileName)> ; ] ;
 		PUBLIC _ScrSaverShow := <.lShow.>
 
 #xcommand CONFIGURE SCREENSAVER <ConfigProcedure> ;
@@ -121,4 +121,4 @@
              WINDOW <name, ...> ;
              PARAMETERS <cParameters> ;
        => ;
-		_ActivateScrSaver( \{<"name">\}, <cParameters> )
+                _ActivateScrSaver( \{<(name)>\}, <cParameters> )

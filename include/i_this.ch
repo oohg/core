@@ -1,5 +1,5 @@
 /*
- * $Id: i_this.ch,v 1.2 2005-09-29 05:20:23 guerra000 Exp $
+ * $Id: i_this.ch,v 1.3 2005-10-22 06:04:31 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -93,54 +93,54 @@
 
 // WINDOWS (THIS)
 
-#xtranslate This . <p:Title,NotifyIcon,NotifyTooltip,FocusedControl> => GetProperty ( _OOHG_THISFORM:NAME , <"p"> )
-#xtranslate This . <p:Title,Cursor,NotifyTooltip> := <arg> => SetProperty ( _OOHG_THISFORM:NAME , <"p"> , <arg> )
-#xtranslate This . <p:Activate,Center,Release,Maximize,Minimize,Restore> [ () ] => DoMethod ( _OOHG_THISFORM:NAME , <"p"> )
+#xtranslate This . <p:Title,NotifyIcon,NotifyTooltip,FocusedControl> => GetProperty ( _OOHG_THISFORM:NAME , <(p)> )
+#xtranslate This . <p:Title,Cursor,NotifyTooltip> := <arg> => SetProperty ( _OOHG_THISFORM:NAME , <(p)> , <arg> )
+#xtranslate This . <p:Activate,Center,Release,Maximize,Minimize,Restore> [ () ] => DoMethod ( _OOHG_THISFORM:NAME , <(p)> )
 
 // WINDOWS (THISWINDOW)
 
-#xtranslate ThisWindow . <p:Title,NotifyIcon,NotifyTooltip,FocusedControl,Name,Row,Col,Width,Height> => GetProperty ( _OOHG_THISFORM:NAME , <"p"> )
-#xtranslate ThisWindow . <p:Title,Cursor,NotifyIcon,NotifyTooltip,Row,Col,Width,Height> := <arg> => SetProperty ( _OOHG_THISFORM:NAME , <"p"> , <arg> )
-#xtranslate ThisWindow . <p:Activate,Center,Release,Maximize,Minimize,Restore,Show,Hide,SetFocus> [ () ] => DoMethod ( _OOHG_THISFORM:NAME , <"p"> )
+#xtranslate ThisWindow . <p:Title,NotifyIcon,NotifyTooltip,FocusedControl,Name,Row,Col,Width,Height> => GetProperty ( _OOHG_THISFORM:NAME , <(p)> )
+#xtranslate ThisWindow . <p:Title,Cursor,NotifyIcon,NotifyTooltip,Row,Col,Width,Height> := <arg> => SetProperty ( _OOHG_THISFORM:NAME , <(p)> , <arg> )
+#xtranslate ThisWindow . <p:Activate,Center,Release,Maximize,Minimize,Restore,Show,Hide,SetFocus> [ () ] => DoMethod ( _OOHG_THISFORM:NAME , <(p)> )
 
 // CONTROLS
 
 * Property without arguments
 
-#xtranslate This . <p:BackColor,FontColor,ForeColor,Value,Address,Picture,Tooltip,FontName,FontSize,FontBold,FontItalic,FontUnderline,FontStrikeout,Caption,Displayvalue,Visible,Enabled,Checked,ItemCount,RangeMin,RangeMax,Length,Position,CaretPos> => GetProperty ( _OOHG_THISFORM:NAME , _OOHG_THISCONTROL:NAME , <"p"> )
-#xtranslate This . <p:BackColor,FontColor,ForeColor,Value,ReadOnly,Address,Picture,Tooltip,FontName,FontSize,FontBold,FontItalic,FontUnderline,FontStrikeout,Caption,DisplayValue,Enabled,Checked,RangeMin,RangeMax,Repeat,Speed,Volume,Zoom,Position,CaretPos> := <arg> => SetProperty ( _OOHG_THISFORM:NAME , _OOHG_THISCONTROL:NAME , <"p"> , <arg> )
+#xtranslate This . <p:BackColor,FontColor,ForeColor,Value,Address,Picture,Tooltip,FontName,FontSize,FontBold,FontItalic,FontUnderline,FontStrikeout,Caption,Displayvalue,Visible,Enabled,Checked,ItemCount,RangeMin,RangeMax,Length,Position,CaretPos> => GetProperty ( _OOHG_THISFORM:NAME , _OOHG_THISCONTROL:NAME , <(p)> )
+#xtranslate This . <p:BackColor,FontColor,ForeColor,Value,ReadOnly,Address,Picture,Tooltip,FontName,FontSize,FontBold,FontItalic,FontUnderline,FontStrikeout,Caption,DisplayValue,Enabled,Checked,RangeMin,RangeMax,Repeat,Speed,Volume,Zoom,Position,CaretPos> := <arg> => SetProperty ( _OOHG_THISFORM:NAME , _OOHG_THISCONTROL:NAME , <(p)> , <arg> )
 
 * Property with 1 argument
 
-#xtranslate This . <p:Item,Caption,Header> (<n>) => GetProperty ( _OOHG_THISFORM:NAME , _OOHG_THISCONTROL:NAME , <"p"> , <n> )
-#xtranslate This . <p:Item,Caption,Header> (<n>) := <arg>       => SetProperty ( _OOHG_THISFORM:NAME , _OOHG_THISCONTROL:NAME , <"p"> , <n> , <arg> )
+#xtranslate This . <p:Item,Caption,Header> (<n>) => GetProperty ( _OOHG_THISFORM:NAME , _OOHG_THISCONTROL:NAME , <(p)> , <n> )
+#xtranslate This . <p:Item,Caption,Header> (<n>) := <arg>       => SetProperty ( _OOHG_THISFORM:NAME , _OOHG_THISCONTROL:NAME , <(p)> , <n> , <arg> )
 
 * Method without arguments
 
-#xtranslate This . <p:Refresh,DeleteAllItems,Release,Play,Stop,Close,PlayReverse,Pause,Eject,OpenDialog,Resume,Save> [ () ] => DoMethod ( _OOHG_THISFORM:NAME , _OOHG_THISCONTROL:NAME , <"p"> )
+#xtranslate This . <p:Refresh,DeleteAllItems,Release,Play,Stop,Close,PlayReverse,Pause,Eject,OpenDialog,Resume,Save> [ () ] => DoMethod ( _OOHG_THISFORM:NAME , _OOHG_THISCONTROL:NAME , <(p)> )
 
 * Method with 1 argument
 
-#xtranslate This . <p:AddItem,DeleteItem,Open,Seek,DeletePage,DeleteColumn,Expand,Collapse> (<arg>)                     => DoMethod ( _OOHG_THISFORM:NAME , _OOHG_THISCONTROL:NAME , <"p"> , <arg> )
+#xtranslate This . <p:AddItem,DeleteItem,Open,Seek,DeletePage,DeleteColumn,Expand,Collapse> (<arg>)                     => DoMethod ( _OOHG_THISFORM:NAME , _OOHG_THISCONTROL:NAME , <(p)> , <arg> )
 
 * Method with 2 arguments
 
-#xtranslate This . <p:AddItem> (<arg1>,<arg2>)          => DoMethod ( _OOHG_THISFORM:NAME , _OOHG_THISCONTROL:NAME , <"p"> , <arg1> , <arg2> )
+#xtranslate This . <p:AddItem> (<arg1>,<arg2>)          => DoMethod ( _OOHG_THISFORM:NAME , _OOHG_THISCONTROL:NAME , <(p)> , <arg1> , <arg2> )
 
 * Method with 3 arguments
 
-#xtranslate This . <p:AddItem,AddPage> (<arg1>,<arg2>,<arg3>)   => DoMethod ( _OOHG_THISFORM:NAME , _OOHG_THISCONTROL:NAME , <"p"> , <arg1> , <arg2> , <arg3> )
+#xtranslate This . <p:AddItem,AddPage> (<arg1>,<arg2>,<arg3>)   => DoMethod ( _OOHG_THISFORM:NAME , _OOHG_THISCONTROL:NAME , <(p)> , <arg1> , <arg2> , <arg3> )
 
 * Method with 4 arguments
 
-#xtranslate This . <p:AddControl,AddColumn> ( <arg1> , <arg2> , <arg3>  , <arg4> ) => DoMethod ( _OOHG_THISFORM:NAME , _OOHG_THISCONTROL:NAME , <"p"> , <arg1> , <arg2> , <arg3> , <arg4> )
+#xtranslate This . <p:AddControl,AddColumn> ( <arg1> , <arg2> , <arg3>  , <arg4> ) => DoMethod ( _OOHG_THISFORM:NAME , _OOHG_THISCONTROL:NAME , <(p)> , <arg1> , <arg2> , <arg3> , <arg4> )
 
 
 // COMMON ( REQUIRES TYPE CHECK )
 
-#xtranslate This . <p:Name,Row,Col,Width,Height>        => if ( _OOHG_THISType == 'C' , GetProperty ( _OOHG_THISFORM:NAME , _OOHG_THISCONTROL:NAME , <"p"> ) , GetProperty ( _OOHG_THISFORM:NAME , <"p"> ) )
-#xtranslate This . <p:Row,Col,Width,Height>     := <arg> => if ( _OOHG_THISType == 'C' , SetProperty ( _OOHG_THISFORM:NAME , _OOHG_THISCONTROL:NAME , <"p"> , <arg> ) , SetProperty ( _OOHG_THISFORM:NAME , <"p"> , <arg> ) )
-#xtranslate This . <p:Show,Hide,SetFocus> [ () ]        => if ( _OOHG_THISType == 'C' , DoMethod ( _OOHG_THISFORM:NAME , _OOHG_THISCONTROL:NAME , <"p"> ) , DoMethod ( _OOHG_THISFORM:NAME , <"p"> ) )
+#xtranslate This . <p:Name,Row,Col,Width,Height>        => if ( _OOHG_THISType == 'C' , GetProperty ( _OOHG_THISFORM:NAME , _OOHG_THISCONTROL:NAME , <(p)> ) , GetProperty ( _OOHG_THISFORM:NAME , <(p)> ) )
+#xtranslate This . <p:Row,Col,Width,Height>     := <arg> => if ( _OOHG_THISType == 'C' , SetProperty ( _OOHG_THISFORM:NAME , _OOHG_THISCONTROL:NAME , <(p)> , <arg> ) , SetProperty ( _OOHG_THISFORM:NAME , <(p)> , <arg> ) )
+#xtranslate This . <p:Show,Hide,SetFocus> [ () ]        => if ( _OOHG_THISType == 'C' , DoMethod ( _OOHG_THISFORM:NAME , _OOHG_THISCONTROL:NAME , <(p)> ) , DoMethod ( _OOHG_THISFORM:NAME , <(p)> ) )
 
 // EVENT PROCEDURES
 

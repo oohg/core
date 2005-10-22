@@ -1,5 +1,5 @@
 /*
- * $Id: i_splitbox.ch,v 1.2 2005-08-23 05:12:56 guerra000 Exp $
+ * $Id: i_splitbox.ch,v 1.3 2005-10-22 06:04:31 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -97,7 +97,7 @@
 		[ <horizontal: HORIZONTAL> ]	;
                 [ <rtl: RTL> ]    ;
 =>;
-        _DefineSplitBox( <"parent"> , <.bottom.> , <.horizontal.> , <.rtl.> )
+        _DefineSplitBox( <(parent)> , <.bottom.> , <.horizontal.> , <.rtl.> )
 
 #xcommand END SPLITBOX ;
 =>;

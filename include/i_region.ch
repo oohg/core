@@ -1,5 +1,5 @@
 /*
- * $Id: i_region.ch,v 1.1 2005-08-06 23:53:54 guerra000 Exp $
+ * $Id: i_region.ch,v 1.2 2005-10-22 06:04:31 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -93,16 +93,16 @@
 
 #xtranslate SET REGION OF <name> RECTANGULAR <row>,<col>,<w>,<h> ;
         =>;
-    _SetWindowRgn(<"name">,<col>, <row>, <w>, <h>,1)
+    _SetWindowRgn(<(name)>,<col>, <row>, <w>, <h>,1)
 
 #xtranslate SET REGION OF <name> ELLIPTIC <row>,<col>,<w>,<h> ;
         =>;
-    _SetWindowRgn(<"name">,<col>, <row>, <w>, <h>,2)
+    _SetWindowRgn(<(name)>,<col>, <row>, <w>, <h>,2)
 
-#xtranslate SET REGION OF <name> POLYGONAL <apoints> [WINDING] => _SetPolyWindowRgn(<"name">,<apoints>,1)
+#xtranslate SET REGION OF <name> POLYGONAL <apoints> [WINDING] => _SetPolyWindowRgn(<(name)>,<apoints>,1)
 
-#xtranslate SET REGION OF <name> POLYGONAL <apoints> ALTERNATE => _SetPolyWindowRgn(<"name">,<apoints>,2)
+#xtranslate SET REGION OF <name> POLYGONAL <apoints> ALTERNATE => _SetPolyWindowRgn(<(name)>,<apoints>,2)
 
 #xtranslate SET REGION OF <name> RESET ;
         =>;
-    _SetWindowRgn(<"name">,0,0,0,0,0)
+    _SetWindowRgn(<(name)>,0,0,0,0,0)

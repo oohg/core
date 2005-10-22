@@ -1,5 +1,5 @@
 /*
- * $Id: i_menu.ch,v 1.2 2005-10-11 05:45:18 guerra000 Exp $
+ * $Id: i_menu.ch,v 1.3 2005-10-22 06:04:31 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -93,71 +93,71 @@
 
 #command ENABLE MENUITEM <control> OF <form>;
 	=>;
-        GetControlObject( <"control"> , <"form"> ):Enabled := .T.
+        GetControlObject( <(control)> , <(form)> ):Enabled := .T.
 
 #command DISABLE MENUITEM <control> OF <form>;
 	=>;
-        GetControlObject( <"control"> , <"form"> ):Enabled := .F.
+        GetControlObject( <(control)> , <(form)> ):Enabled := .F.
 
 #command CHECK MENUITEM <control> OF <form>;
 	=>;
-        GetControlObject( <"control"> , <"form"> ):Checked := .T.
+        GetControlObject( <(control)> , <(form)> ):Checked := .T.
 
 #command UNCHECK MENUITEM <control> OF <form>;
 	=>;
-        GetControlObject( <"control"> , <"form"> ):Checked := .F.
+        GetControlObject( <(control)> , <(form)> ):Checked := .F.
 
 #xcommand DEFINE MAIN MENU [ OF <parent> ] [ OBJ <oObj> ] ;
 =>;
-[ <oObj> := ] TMenu():DefineMain( <"parent"> )
+[ <oObj> := ] TMenu():DefineMain( <(parent)> )
 
 #xcommand DEFINE MAINMENU [ OF <parent> ] [ OBJ <oObj> ] ;
 =>;
-[ <oObj> := ] TMenu():DefineMain( <"parent"> )
+[ <oObj> := ] TMenu():DefineMain( <(parent)> )
 
 #xcommand DEFINE CONTEXT MENU [ OF <parent> ] [ OBJ <oObj> ] ;
 =>;
-[ <oObj> := ] TMenu():DefineContext( <"parent"> )
+[ <oObj> := ] TMenu():DefineContext( <(parent)> )
 
 #xcommand DEFINE CONTEXTMENU [ OF <parent> ] [ OBJ <oObj> ] ;
 =>;
-[ <oObj> := ] TMenu():DefineContext( <"parent"> )
+[ <oObj> := ] TMenu():DefineContext( <(parent)> )
 
 #xcommand DEFINE CONTEXT MENU CONTROL <Control> [ OF <parent> ] [ OBJ <oObj> ] ;
 =>;
-[ <oObj> := ] TMenu():DefineDropDown( <"Control"> , <"parent"> )
+[ <oObj> := ] TMenu():DefineDropDown( <(Control)> , <(parent)> )
 
 #xcommand DEFINE CONTEXTMENU CONTROL <Control> [ OF <parent> ] [ OBJ <oObj> ] ;
 =>;
-[ <oObj> := ] TMenu():DefineDropDown( <"Control"> , <"parent"> )
+[ <oObj> := ] TMenu():DefineDropDown( <(Control)> , <(parent)> )
 
 #xcommand DEFINE NOTIFY MENU [ OF <parent> ] [ OBJ <oObj> ] ;
 =>;
-[ <oObj> := ] TMenu():DefineNotify( <"parent"> )
+[ <oObj> := ] TMenu():DefineNotify( <(parent)> )
 
 #xcommand DEFINE NOTIFYMENU [ OF <parent> ] [ OBJ <oObj> ] ;
 =>;
-[ <oObj> := ] TMenu():DefineNotify( <"parent"> )
+[ <oObj> := ] TMenu():DefineNotify( <(parent)> )
 
 #xcommand POPUP <caption> [ NAME <name> ] [ OBJ <oObj> ] [ <checked:CHECKED> ] [ <disabled:DISABLED> ] ;
 => ;
-[ <oObj> := ] TMenu():DefinePopUp( <caption> , <"name"> , <.checked.> , <.disabled.> )
+[ <oObj> := ] TMenu():DefinePopUp( <caption> , <(name)> , <.checked.> , <.disabled.> )
 
 #xcommand DEFINE POPUP <caption> [ NAME <name> ] [ OBJ <oObj> ] [ <checked:CHECKED> ] [ <disabled:DISABLED> ] ;
 => ;
-[ <oObj> := ] TMenu():DefinePopUp( <caption> , <"name"> , <.checked.> , <.disabled.> )
+[ <oObj> := ] TMenu():DefinePopUp( <caption> , <(name)> , <.checked.> , <.disabled.> )
 
 #xcommand DEFINE MENU POPUP <caption> [ NAME <name> ] [ OBJ <oObj> ] [ <checked:CHECKED> ] [ <disabled:DISABLED> ] ;
 => ;
-[ <oObj> := ] TMenu():DefinePopUp( <caption> , <"name"> , <.checked.> , <.disabled.> )
+[ <oObj> := ] TMenu():DefinePopUp( <caption> , <(name)> , <.checked.> , <.disabled.> )
 
 #xcommand ITEM <caption> [ ACTION <action> ] [ NAME <name> ] [ IMAGE <image> ] [ <checked:CHECKED> ] [ OBJ <oObj> ] [ <disabled:DISABLED> ] ;
 => ;
-[ <oObj> := ] TMenu():DefineItem( <caption> , <{action}> , <"name"> , <image> , <.checked.> , <.disabled.> )
+[ <oObj> := ] TMenu():DefineItem( <caption> , <{action}> , <(name)> , <image> , <.checked.> , <.disabled.> )
 
 #xcommand MENUITEM <caption> [ ACTION <action> ] [ NAME <name> ] [ IMAGE <image> ] [ <checked:CHECKED> ] [ OBJ <oObj> ] [ <disabled:DISABLED> ] ;
 => ;
-[ <oObj> := ] TMenu():DefineItem( <caption> , <{action}> , <"name"> , <image> , <.checked.> , <.disabled.> )
+[ <oObj> := ] TMenu():DefineItem( <caption> , <{action}> , <(name)> , <image> , <.checked.> , <.disabled.> )
 
 #xcommand SEPARATOR ;
 => ;
@@ -173,4 +173,4 @@ _EndMenu()
 
 #xcommand DEFINE DROPDOWN MENU BUTTON <button> [ OF <parent> ] [ OBJ <oObj> ] ;
 =>;
-[ <oObj> := ] TMenu():DefineDropDown( <"button"> , <"parent"> )
+[ <oObj> := ] TMenu():DefineDropDown( <(button)> , <(parent)> )

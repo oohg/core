@@ -1,5 +1,5 @@
 /*
- * $Id: i_grid.ch,v 1.7 2005-10-21 05:15:36 guerra000 Exp $
+ * $Id: i_grid.ch,v 1.8 2005-10-22 06:04:31 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -146,8 +146,8 @@
                 [ WHEN <aWhenFields> ]          ;
 	=>;
 [ <obj> := ] iif( <.multiselect.>, TGridMulti(), TGrid() ):Define( ;
-                <"name"> ,      ;
-		<"parent"> , 	;
+                <(name)> ,      ;
+                <(parent)> ,    ;
 		<col> ,		;
 		<row> ,		;
 		<w> , 		;
@@ -240,8 +240,8 @@
                 [ WHEN <aWhenFields> ]          ;
 	=>;
 [ <obj> := ] iif( <.multiselect.>, TGridMulti(), TGrid() ):Define( ;
-                <"name"> ,      ;
-		<"parent"> , 	;
+                <(name)> ,      ;
+                <(parent)> ,    ;
 		,		;
 		,		;
 		<w> , 		;

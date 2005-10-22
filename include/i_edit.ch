@@ -1,5 +1,5 @@
 /*
- * $Id: i_edit.ch,v 1.1 2005-08-06 23:50:17 guerra000 Exp $
+ * $Id: i_edit.ch,v 1.2 2005-10-22 06:04:31 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -98,7 +98,7 @@
 		[ SAVE <bsave> ]				;
 		[ SEARCH <bsearch> ]				;
 		=> 						;
-		ABM( 	<"workarea"> , 			;
+                ABM(    <(workarea)> ,                  ;
 			<title> , 				;
 			<fields> , 				;
 			NoArray(<editablefields>) , 	;
@@ -117,7 +117,7 @@
                 [ ON FIND <bFind> ]                    ;
                 [ ON PRINT <bPrint> ]                  ;
 		=> 						;
-		ABM2( 	<"cWorkArea">, 			;
+                ABM2(   <(cWorkArea)>,                  ;
 			<cTitle>, 				;
 			<acFieldNames>, 			;
 			<acFieldMessages>, 	        	;
@@ -127,6 +127,5 @@
                         <bSave>,                      	;
                         <bFind>,                      	;
                         <bPrint> )
-
 
 

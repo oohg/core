@@ -1,5 +1,5 @@
 /*
- * $Id: i_datepicker.ch,v 1.3 2005-10-13 22:55:14 declan2005 Exp $
+ * $Id: i_datepicker.ch,v 1.4 2005-10-22 06:04:31 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -117,8 +117,8 @@
 		[ <notabstop: NOTABSTOP> ] ;
                 [ <rtl: RTL> ] ;
 	=> ;
-        [ <obj> := ] TDatePick():Define( <"name"> , ;
-                     <"parent"> , ;
+        [ <obj> := ] TDatePick():Define( <(name)> , ;
+                     <(parent)> , ;
                      <col> , ;
                      <row> , ;
                      <w> , ;
@@ -132,7 +132,7 @@
                      <{gotfocus}> , ;
                      <.shownone.> , ;
                      <.updown.> , ;
-                     <.rightalign.>  , <helpid> , <.invisible.>, <.notabstop.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <"field"> , <{enter}> , <.rtl.> )
+                     <.rightalign.>  , <helpid> , <.invisible.>, <.notabstop.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <(field)> , <{enter}> , <.rtl.> )
 
 
 #command @ <row>,<col> TIMEPICKER <name> ;
@@ -161,8 +161,8 @@
 		[ <notabstop: NOTABSTOP> ] ;
                 [ <rtl: RTL> ] ;
 	=> ;
-        [ <obj> := ] TTimePick():Define( <"name"> , ;
-                     <"parent"> , ;
+        [ <obj> := ] TTimePick():Define( <(name)> , ;
+                     <(parent)> , ;
                      <col> , ;
                      <row> , ;
                      <w> , ;
@@ -176,4 +176,4 @@
                      <{gotfocus}> , ;
                      <.shownone.> , ;
                      <.updown.> , ;
-                     <.rightalign.>  , <helpid> , <.invisible.>, <.notabstop.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <"field"> , <{enter}> , <.rtl.> )
+                     <.rightalign.>  , <helpid> , <.invisible.>, <.notabstop.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <(field)> , <{enter}> , <.rtl.> )

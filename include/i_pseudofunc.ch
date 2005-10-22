@@ -1,5 +1,5 @@
 /*
- * $Id: i_pseudofunc.ch,v 1.1 2005-08-06 23:53:54 guerra000 Exp $
+ * $Id: i_pseudofunc.ch,v 1.2 2005-10-22 06:04:31 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -93,12 +93,12 @@
 
 #translate IsControlDefined ( <ControlName> , <FormName> ) ;
 => ;
-_IsControlDefined ( <"ControlName"> , <"FormName"> )
+_IsControlDefined ( <(ControlName)> , <(FormName)> )
 
 #translate IsWIndowActive ( <FormName> ) ;
 => ;
-_IsWIndowActive ( <"FormName"> )
+_IsWIndowActive ( <(FormName)> )
 
 #translate IsWindowDefined ( <FormName> ) ;
 => ;
-_IsWindowDefined ( <"FormName"> )
+_IsWindowDefined ( <(FormName)> )

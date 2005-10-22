@@ -1,5 +1,5 @@
 /*
- * $Id: i_status.ch,v 1.1 2005-08-06 23:53:54 guerra000 Exp $
+ * $Id: i_status.ch,v 1.2 2005-10-22 06:04:31 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -104,7 +104,7 @@
 		[ <strikeout : STRIKEOUT> ] ;
       => ;
          [ <obj> := ] ;
-         TMessageBar():Define( "StatusBar", <"parent">, 0, 0, 0, 0, , "", <fontname>, <fontsize>, "", .f., .f., <.kbd.>,;
+         TMessageBar():Define( "StatusBar", <(parent)>, 0, 0, 0, 0, , "", <fontname>, <fontsize>, "", .f., .f., <.kbd.>,;
                                Nil , Nil ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.>, <.top.> )
 
 #xcommand  END STATUSBAR ;
@@ -119,7 +119,7 @@
          [ TOOLTIP <cToolTip> ] ;
        => ;
           _DefineItemMessage( "STATUSITEM",  , 0, 0, <cMsg>, <{uAction}>, <nSize>, 0,;
-                     <cBitmap>, <"styl">, <cToolTip>)
+                     <cBitmap>, <(styl)>, <cToolTip>)
 
 #xcommand DATE ;
 	[ <w: WIDTH > <nSize> ] ;

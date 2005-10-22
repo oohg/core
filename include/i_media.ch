@@ -1,5 +1,5 @@
 /*
- * $Id: i_media.ch,v 1.1 2005-08-06 23:53:54 guerra000 Exp $
+ * $Id: i_media.ch,v 1.2 2005-10-22 06:04:31 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -104,55 +104,55 @@
 			[ <transparent: TRANSPARENT> ] ;
 			[ HELPID <helpid> ] 		;
 	=>;
-    _DefineAnimateBox( <"name">,<"parent">,<col>, <row>, <w>, <h>, <.autoplay.>, <.center.>, <.transparent.>,<file> , <helpid> )
+    _DefineAnimateBox( <(name)>,<(parent)>,<col>, <row>, <w>, <h>, <.autoplay.>, <.center.>, <.transparent.>,<file> , <helpid> )
 
 #command OPEN ANIMATEBOX <ControlName> OF <ParentForm> FILE <FileName> ;
 => ;
-GetControlObject( <"ControlName"> , <"ParentForm"> ):Open( <FileName> )
+GetControlObject( <(ControlName)> , <(ParentForm)> ):Open( <FileName> )
 
 #command PLAY ANIMATEBOX <ControlName> OF <ParentForm> ;
 => ;
-GetControlObject( <"ControlName"> , <"ParentForm"> ):Play()
+GetControlObject( <(ControlName)> , <(ParentForm)> ):Play()
 
 #command SEEK ANIMATEBOX <ControlName> OF <ParentForm> POSITION <frame> ;
 => ;
-GetControlObject( <"ControlName"> , <"ParentForm"> ):Seek( <frame> )
+GetControlObject( <(ControlName)> , <(ParentForm)> ):Seek( <frame> )
 
 #command STOP ANIMATEBOX <ControlName> OF <ParentForm> ;
 => ;
-GetControlObject( <"ControlName"> , <"ParentForm"> ):Stop()
+GetControlObject( <(ControlName)> , <(ParentForm)> ):Stop()
 
 #command CLOSE ANIMATEBOX <ControlName> OF <ParentForm> ;
 => ;
-GetControlObject( <"ControlName"> , <"ParentForm"> ):Close()
+GetControlObject( <(ControlName)> , <(ParentForm)> ):Close()
 
 #command DESTROY ANIMATEBOX <ControlName> OF <ParentForm> ;
 => ;
-GetControlObject( <"ControlName"> , <"ParentForm"> ):Release()
+GetControlObject( <(ControlName)> , <(ParentForm)> ):Release()
 
 #translate  OpenAnimateBox ( <ControlName> , <ParentForm> , <FileName> );
 => ;
-GetControlObject( <"ControlName"> , <"ParentForm"> ):Open( <FileName> )
+GetControlObject( <(ControlName)> , <(ParentForm)> ):Open( <FileName> )
 
 #translate  PlayAnimateBox ( <ControlName> , <ParentForm> );
 => ;
-GetControlObject( <"ControlName"> , <"ParentForm"> ):Play()
+GetControlObject( <(ControlName)> , <(ParentForm)> ):Play()
 
 #translate  SeekAnimateBox ( <ControlName> , <ParentForm> , <frame> );
 => ;
-GetControlObject( <"ControlName"> , <"ParentForm"> ):Seek( <frame> )
+GetControlObject( <(ControlName)> , <(ParentForm)> ):Seek( <frame> )
 
 #translate StopAnimateBox ( <ControlName> , <ParentForm> );
 => ;
-GetControlObject( <"ControlName"> , <"ParentForm"> ):Stop()
+GetControlObject( <(ControlName)> , <(ParentForm)> ):Stop()
 
 #translate CloseAnimateBox ( <ControlName> , <ParentForm> ) ;
 => ;
-GetControlObject( <"ControlName"> , <"ParentForm"> ):Close()
+GetControlObject( <(ControlName)> , <(ParentForm)> ):Close()
 
 #translate DestroyAnimateBox ( <ControlName> , <ParentForm> );
 => ;
-GetControlObject( <"ControlName"> , <"ParentForm"> ):Release()
+GetControlObject( <(ControlName)> , <(ParentForm)> ):Release()
 
 //////////////////////////////////////////////////////////////////////////////
 // PLAYER COMMANDS
@@ -174,75 +174,75 @@ GetControlObject( <"ControlName"> , <"ParentForm"> ):Release()
 			[ <showposition: SHOWPOSITION> ] ;
 			[ HELPID <helpid> ] 		;
 	=>;
-    _DefinePlayer( <"name">,<"parent">,<file>,<col>, <row>, <w>, <h>, <.noautosizewindow.>, <.noautosizemovie.>, <.noerrordlg.>,<.nomenu.>,<.noopen.>,<.noplaybar.>,<.showall.>,<.showmode.>,<.showname.>,<.showposition.> , <helpid> )
+    _DefinePlayer( <(name)>,<(parent)>,<file>,<col>, <row>, <w>, <h>, <.noautosizewindow.>, <.noautosizemovie.>, <.noerrordlg.>,<.nomenu.>,<.noopen.>,<.noplaybar.>,<.showall.>,<.showmode.>,<.showname.>,<.showposition.> , <helpid> )
 
 #command PLAY PLAYER <name> OF <parent> ;
 	=> ;
-        GetControlObject( <"name"> , <"parent"> ):Play()
+        GetControlObject( <(name)> , <(parent)> ):Play()
 
 #xcommand PLAY PLAYER <name> OF <parent> REVERSE ;
 	=> ;
-        GetControlObject( <"name"> , <"parent"> ):PlayReverse()
+        GetControlObject( <(name)> , <(parent)> ):PlayReverse()
 
 #command STOP PLAYER <name> OF <parent> ;
 	=> ;
-        GetControlObject( <"name"> , <"parent"> ):Stop()
+        GetControlObject( <(name)> , <(parent)> ):Stop()
 
 #command PAUSE PLAYER <name> OF <parent> ;
 	=> ;
-        GetControlObject( <"name"> , <"parent"> ):Pause()
+        GetControlObject( <(name)> , <(parent)> ):Pause()
 
 #command CLOSE PLAYER <name> OF <parent> ;
 	=> ;
-        GetControlObject( <"name"> , <"parent"> ):Close()
+        GetControlObject( <(name)> , <(parent)> ):Close()
 
 #command DESTROY PLAYER <name> OF <parent> ;
 	=> ;
-        GetControlObject( <"name"> , <"parent"> ):Release()
+        GetControlObject( <(name)> , <(parent)> ):Release()
 
 #command EJECT PLAYER <name> OF <parent> ;
 	=> ;
-        GetControlObject( <"name"> , <"parent"> ):Eject()
+        GetControlObject( <(name)> , <(parent)> ):Eject()
 
 #command OPEN PLAYER <name> OF <parent> FILE <file> ;
 	=> ;
-        GetControlObject( <"name"> , <"parent"> ):Open( <file> )
+        GetControlObject( <(name)> , <(parent)> ):Open( <file> )
 
 #command OPEN PLAYER <name> OF <parent> DIALOG ;
 	=> ;
-        GetControlObject( <"name"> , <"parent"> ):OpenDialog()
+        GetControlObject( <(name)> , <(parent)> ):OpenDialog()
 
 #command RESUME PLAYER <name> OF <parent> ;
 	=> ;
-        GetControlObject( <"name"> , <"parent"> ):Resume()
+        GetControlObject( <(name)> , <(parent)> ):Resume()
 
 #command SET PLAYER <name> OF <parent> POSITION HOME ;
 	=> ;
-        GetControlObject( <"name"> , <"parent"> ):PositionHome()
+        GetControlObject( <(name)> , <(parent)> ):PositionHome()
 
 #command SET PLAYER <name> OF <parent> POSITION END ;
 	=> ;
-        GetControlObject( <"name"> , <"parent"> ):PositionEnd()
+        GetControlObject( <(name)> , <(parent)> ):PositionEnd()
 
 #command SET PLAYER <name> OF <parent> REPEAT ON ;
 	=> ;
-        GetControlObject( <"name"> , <"parent"> ):RepeatOn()
+        GetControlObject( <(name)> , <(parent)> ):RepeatOn()
 
 #command SET PLAYER <name> OF <parent> REPEAT OFF ;
 	=> ;
-        GetControlObject( <"name"> , <"parent"> ):RepeatOff()
+        GetControlObject( <(name)> , <(parent)> ):RepeatOff()
 
 #command SET PLAYER <name> OF <parent> SPEED <speed> ;
 	=> ;
-        GetControlObject( <"name"> , <"parent"> ):Speed( <speed> )
+        GetControlObject( <(name)> , <(parent)> ):Speed( <speed> )
 
 #command SET PLAYER <name> OF <parent> VOLUME <volume> ;
 	=> ;
-        GetControlObject( <"name"> , <"parent"> ):Volume( <volume> )
+        GetControlObject( <(name)> , <(parent)> ):Volume( <volume> )
 
 #command SET PLAYER <name> OF <parent> ZOOM <zoom> ;
 	=> ;
-        GetControlObject( <"name"> , <"parent"> ):Zoom( <zoom> )
+        GetControlObject( <(name)> , <(parent)> ):Zoom( <zoom> )
 
 ///////////////////////////////////////////////////////////////////////////////
 // WAVE COMMANDS

@@ -1,5 +1,5 @@
 /*
- * $Id: i_toolbar.ch,v 1.2 2005-08-25 05:57:41 guerra000 Exp $
+ * $Id: i_toolbar.ch,v 1.3 2005-10-22 06:04:31 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -112,7 +112,7 @@
 	        [ <break: BREAK> ] ;
                 [ <rtl: RTL> ] ;
       => ;
-        [ <obj> := ] TToolBar():Define( <"name">, <"parent">, 0, 0, <w>, <h>, <caption>, <{action}>,<f>,<s> ,<tooltip> , <.flat.> , <.bottom.> , <.righttext.> , <.break.> , <.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <.border.> , <.rtl.> )
+        [ <obj> := ] TToolBar():Define( <(name)>, <(parent)>, 0, 0, <w>, <h>, <caption>, <{action}>,<f>,<s> ,<tooltip> , <.flat.> , <.bottom.> , <.righttext.> , <.break.> , <.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <.border.> , <.rtl.> )
 
 #xcommand  END TOOLBAR ;
       => ;
@@ -130,7 +130,7 @@
 		[ <check: CHECK> ] ;
 		[ <group: GROUP> ] ;
 	=>;
-        _DefineToolButton ( <"name">, _OOHG_ActiveToolBar:Name, 0, 0, <caption> , <{action}> , , ,<bitmap> ,"" ,   ,  , .f. ,<.separator.> , <.autosize.> , <.check.> , <.group.> , <.dropdown.> , <.wholedropdown.> )
+        _DefineToolButton ( <(name)>, _OOHG_ActiveToolBar:Name, 0, 0, <caption> , <{action}> , , ,<bitmap> ,"" ,   ,  , .f. ,<.separator.> , <.autosize.> , <.check.> , <.group.> , <.dropdown.> , <.wholedropdown.> )
 
 #xcommand BUTTON <name> ;
 		[ CAPTION <caption> ] ;
@@ -143,7 +143,7 @@
 		[ <check: CHECK> ] ;
 		[ <group: GROUP> ] ;
 	=>;
-        _DefineToolButton ( <"name">, _OOHG_ActiveToolBar:Name, 0, 0, <caption> , <{action}> , , ,<bitmap> ,"" ,   ,  , .f. ,<.separator.>  , <.autosize.> , <.check.> , <.group.>  , <.dropdown.>  , <.wholedropdown.> )
+        _DefineToolButton ( <(name)>, _OOHG_ActiveToolBar:Name, 0, 0, <caption> , <{action}> , , ,<bitmap> ,"" ,   ,  , .f. ,<.separator.>  , <.autosize.> , <.check.> , <.group.>  , <.dropdown.>  , <.wholedropdown.> )
 
 #xcommand BUTTON <name> ;
 		[ CAPTION <caption> ] ;
@@ -156,7 +156,7 @@
 		[ <check: CHECK> ] ;
 		[ <group: GROUP> ] ;
 	=>;
-        _DefineToolButton ( <"name">, _OOHG_ActiveToolBar:Name, 0, 0, <caption> , <{action}> , , ,<bitmap> ,"" ,   ,  , .f. ,<.separator.>  , <.autosize.> , <.check.> , <.group.>  , <.dropdown.>  , <.wholedropdown.> )
+        _DefineToolButton ( <(name)>, _OOHG_ActiveToolBar:Name, 0, 0, <caption> , <{action}> , , ,<bitmap> ,"" ,   ,  , .f. ,<.separator.>  , <.autosize.> , <.check.> , <.group.>  , <.dropdown.>  , <.wholedropdown.> )
 
 #xcommand BUTTON <name> ;
 		[ PICTURE <bitmap> ] ;
@@ -169,7 +169,7 @@
 		[ <check: CHECK> ] ;
 		[ <group: GROUP> ] ;
 	=>;
-        _DefineToolButton ( <"name">, _OOHG_ActiveToolBar:Name, 0, 0,  , <{action}> , , ,<bitmap> , <tooltip> ,   ,  , .f. ,<.separator.>  , <.autosize.> , <.check.> , <.group.>  , <.dropdown.>  , <.wholedropdown.> )
+        _DefineToolButton ( <(name)>, _OOHG_ActiveToolBar:Name, 0, 0,  , <{action}> , , ,<bitmap> , <tooltip> ,   ,  , .f. ,<.separator.>  , <.autosize.> , <.check.> , <.group.>  , <.dropdown.>  , <.wholedropdown.> )
 
 #xcommand BUTTON <name> ;
 		[ PICTURE <bitmap> ] ;
@@ -182,7 +182,7 @@
 		[ <check: CHECK> ] ;
 		[ <group: GROUP> ] ;
 	=>;
-        _DefineToolButton ( <"name">, _OOHG_ActiveToolBar:Name, 0, 0,  , <{action}> , , ,<bitmap> , <tooltip> ,   ,  , .f. ,<.separator.>  , <.autosize.> , <.check.> , <.group.> , <.dropdown.>  , <.wholedropdown.> )
+        _DefineToolButton ( <(name)>, _OOHG_ActiveToolBar:Name, 0, 0,  , <{action}> , , ,<bitmap> , <tooltip> ,   ,  , .f. ,<.separator.>  , <.autosize.> , <.check.> , <.group.> , <.dropdown.>  , <.wholedropdown.> )
 
 #xcommand BUTTON <name> ;
 		[ PICTURE <bitmap> ] ;
@@ -195,4 +195,4 @@
 		[ <check: CHECK> ] ;
 		[ <group: GROUP> ] ;
 	=>;
-        _DefineToolButton ( <"name">, _OOHG_ActiveToolBar:Name, 0, 0,  , <{action}> , , ,<bitmap> , <tooltip> ,   ,  , .f. ,<.separator.>  , <.autosize.> , <.check.> , <.group.> , <.dropdown.>  , <.wholedropdown.> )
+        _DefineToolButton ( <(name)>, _OOHG_ActiveToolBar:Name, 0, 0,  , <{action}> , , ,<bitmap> , <tooltip> ,   ,  , .f. ,<.separator.>  , <.autosize.> , <.check.> , <.group.> , <.dropdown.>  , <.wholedropdown.> )

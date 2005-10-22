@@ -1,5 +1,5 @@
 /*
- * $Id: i_graph.ch,v 1.2 2005-10-08 18:52:33 guerra000 Exp $
+ * $Id: i_graph.ch,v 1.3 2005-10-22 06:04:31 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -96,7 +96,7 @@
              [PENCOLOR <penrgb>] ;
              [PENWIDTH <pnwidth>];
           =>;
-          drawline(<"windowname">,<frow>,<fcol>,<trow>,<tcol>,[<penrgb>],<pnwidth>)
+          drawline(<(windowname)>,<frow>,<fcol>,<trow>,<tcol>,[<penrgb>],<pnwidth>)
 
 #xcommand DRAW RECTANGLE IN WINDOW <windowname> AT <frow>,<fcol> ;
              TO <trow>,<tcol> ;
@@ -104,7 +104,7 @@
              [PENWIDTH <pnwidth>];
              [FILLCOLOR <fillrgb>];
           =>;
-          drawrect(<"windowname">,<frow>,<fcol>,<trow>,<tcol>,[<penrgb>],<pnwidth>,[<fillrgb>])
+          drawrect(<(windowname)>,<frow>,<fcol>,<trow>,<tcol>,[<penrgb>],<pnwidth>,[<fillrgb>])
 
 #xcommand DRAW ROUNDRECTANGLE IN WINDOW <windowname> AT <frow>,<fcol> ;
              TO <trow>,<tcol> ;
@@ -114,7 +114,7 @@
              [PENWIDTH <pnwidth>];
              [FILLCOLOR <fillrgb>];
           =>;
-          drawroundrect(<"windowname">,<frow>,<fcol>,<trow>,<tcol>,<width>,<height>,[<penrgb>],<pnwidth>,[<fillrgb>])
+          drawroundrect(<(windowname)>,<frow>,<fcol>,<trow>,<tcol>,<width>,<height>,[<penrgb>],<pnwidth>,[<fillrgb>])
 
 #xcommand DRAW ELLIPSE IN WINDOW <windowname> AT <frow>,<fcol> ;
              TO <trow>,<tcol> ;
@@ -122,7 +122,7 @@
              [PENWIDTH <pnwidth>];
              [FILLCOLOR <fillrgb>];
           =>;
-          drawellipse(<"windowname">,<frow>,<fcol>,<trow>,<tcol>,[<penrgb>],<pnwidth>,[<fillrgb>])
+          drawellipse(<(windowname)>,<frow>,<fcol>,<trow>,<tcol>,[<penrgb>],<pnwidth>,[<fillrgb>])
 
 #xcommand DRAW ARC IN WINDOW <windowname> AT <frow>,<fcol> ;
              TO <trow>,<tcol> ;
@@ -131,7 +131,7 @@
              [PENCOLOR <penrgb>] ;
              [PENWIDTH <pnwidth>];
           =>;
-          drawarc(<"windowname">,<frow>,<fcol>,<trow>,<tcol>,<rrow>,<rcol>,<rrow1>,<rcol1>,[<penrgb>],<pnwidth>)
+          drawarc(<(windowname)>,<frow>,<fcol>,<trow>,<tcol>,<rrow>,<rcol>,<rrow1>,<rcol1>,[<penrgb>],<pnwidth>)
 
 #xcommand DRAW PIE IN WINDOW <windowname> AT <frow>,<fcol> ;
              TO <trow>,<tcol> ;
@@ -141,7 +141,7 @@
              [PENWIDTH <pnwidth>];
              [FILLCOLOR <fillrgb>];
           =>;
-          drawpie(<"windowname">,<frow>,<fcol>,<trow>,<tcol>,<rrow>,<rcol>,<rrow1>,<rcol1>,[<penrgb>],<pnwidth>,[<fillrgb>])
+          drawpie(<(windowname)>,<frow>,<fcol>,<trow>,<tcol>,<rrow>,<rcol>,<rrow1>,<rcol1>,[<penrgb>],<pnwidth>,[<fillrgb>])
 
 // Points should be in the format {{row1,col1},{row2,col2},{row3,col3},{row4,col4}.....}
 #xcommand DRAW POLYGON IN WINDOW <windowname> ;
@@ -150,16 +150,16 @@
             [PENWIDTH <penwidth>] ;
             [FILLCOLOR <fillrgb>] ;
          =>;
-         drawpolygon(<"windowname">,[<pointsarr>],[<penrgb>],<penwidth>,[<fillrgb>])
+         drawpolygon(<(windowname)>,[<pointsarr>],[<penrgb>],<penwidth>,[<fillrgb>])
 
 #xcommand DRAW POLYBEZIER IN WINDOW <windowname> ;
             POINTS <pointsarr> ;
             [PENCOLOR <penrgb>] ;
             [PENWIDTH <penwidth>] ;
          =>;
-         drawpolybezier(<"windowname">,[<pointsarr>],[<penrgb>],<penwidth>)
+         drawpolybezier(<(windowname)>,[<pointsarr>],[<penrgb>],<penwidth>)
 
-#xcommand ERASE WINDOW <windowname> => erasewindow(<"windowname">)
+#xcommand ERASE WINDOW <windowname> => erasewindow(<(windowname)>)
 
 
 #xcommand DEFAULT <uVar1> := <uVal1> ;
@@ -184,7 +184,7 @@
 		[ <lSLeg : SHOWLEGENDS> ]	;
                 [ <lNoBorder : NOBORDER> ]      ;
       => ;
-		DrawPieGraph(<"window">,;
+                DrawPieGraph(<(window)>,;
 		<nT>,;
 		<nL>,;
 		<nB>,;
@@ -224,7 +224,7 @@
                 [ LEGENDSWIDTH <nLegendWindth> ] ;
 		[ <lNoborder : NOBORDER> ]	;
 => ;
-		GraphShow(<"window">,	;
+                GraphShow(<(window)>,   ;
 		<nT>,				;
 		<nL>,				;
 		<nB>,				;

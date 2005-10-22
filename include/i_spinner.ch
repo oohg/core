@@ -1,5 +1,5 @@
 /*
- * $Id: i_spinner.ch,v 1.2 2005-08-25 05:57:41 guerra000 Exp $
+ * $Id: i_spinner.ch,v 1.3 2005-10-22 06:04:31 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -118,7 +118,7 @@
 		[ INCREMENT <inc> ] ;
                 [ <rtl: RTL> ] ;
 	=>;
-        [ <obj> := ] TSpinner():Define( <"name">, <"parent">, <col>, <row>, <w>, <value>, ;
+        [ <obj> := ] TSpinner():Define( <(name)>, <(parent)>, <col>, <row>, <w>, <value>, ;
                     <fontname>, <fontsize>, <rl>, <rh>, <tooltip>, <{change}>, ;
                     <{lostfocus}>, <{gotfocus}>, <h>, <helpid>, <.invisible.>, ;
                     <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, ;

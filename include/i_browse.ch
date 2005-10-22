@@ -1,5 +1,5 @@
 /*
- * $Id: i_browse.ch,v 1.7 2005-10-21 05:15:36 guerra000 Exp $
+ * $Id: i_browse.ch,v 1.8 2005-10-22 06:04:31 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -150,8 +150,8 @@
                 [ REPLACEFIELD <replacefields> ] ;
 	=>;
 [ <oObj> := ] TBrowse():Define( ;
-                <"name"> ,      ;
-		<"parent"> , 	;
+                <(name)> ,      ;
+                <(parent)> ,    ;
 		<col> ,		;
 		<row> ,		;
 		<w> , 		;
@@ -168,7 +168,7 @@
 		<aHeadClick> ,  ;
 		<{gotfocus}> ,	;
 		<{lostfocus}>, 	;
-		<"workarea"> ,	;
+                <(workarea)> ,  ;
 		<.Delete.>,  	;
 		<.style.> ,	;
 		<aImage> ,	;
@@ -251,8 +251,8 @@
                 [ REPLACEFIELD <replacefields> ] ;
 	=>;
 [ <oObj> := ] TBrowse():Define( ;
-                <"name"> ,      ;
-		<"parent"> , 	;
+                <(name)> ,      ;
+                <(parent)> ,    ;
 		 ,		;
 		 ,		;
 		<w> , 		;
@@ -269,7 +269,7 @@
 		<{aHeadClick}> ,;
 		<{gotfocus}> ,	;
 		<{lostfocus}>, 	;
-		<"WorkArea"> ,	;
+                <(WorkArea)> ,  ;
 		<.Delete.>,  	;
 		<.style.> ,	;
 		<aImage> ,	;

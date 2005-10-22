@@ -1,5 +1,5 @@
 /*
- * $Id: i_image.ch,v 1.2 2005-08-25 05:57:41 guerra000 Exp $
+ * $Id: i_image.ch,v 1.3 2005-10-22 06:04:31 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -103,5 +103,4 @@
 	[ <invisible: INVISIBLE> ] ;
         [ <rtl: RTL> ] ;
  =>;
- [ <obj> := ] TImage():Define( <"name">, <"parent">, <col>, <row>, <filename> ,<w>, <h>, <{action}> , <helpid> , <.invisible.> , <.stretch.> , .f. , <.rtl.> )
-
+ [ <obj> := ] TImage():Define( <(name)>, <(parent)>, <col>, <row>, <filename> ,<w>, <h>, <{action}> , <helpid> , <.invisible.> , <.stretch.> , .f. , <.rtl.> )

@@ -1,5 +1,5 @@
 /*
- * $Id: i_checkbox.ch,v 1.2 2005-08-17 05:59:44 guerra000 Exp $
+ * $Id: i_checkbox.ch,v 1.3 2005-10-22 06:04:31 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -117,7 +117,7 @@
 		[ <notabstop: NOTABSTOP> ] ;
                 [ <autosize: AUTOSIZE > ] ;
 	=>;
-[ <obj> := ] TCheckBox():Define( <"name">, <"parent">, <col>, <row>, <caption>, <value> ,<f> ,<n> , <tooltip>  , <{change}>  , [<w>] , [<h>] , <{lostfocus}>, <{gotfocus}>  , <helpid>, <.invisible.>, <.notabstop.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <"field"> , <backcolor> , <fontcolor> , <.transparent.>, <.autosize.> )
+[ <obj> := ] TCheckBox():Define( <(name)>, <(parent)>, <col>, <row>, <caption>, <value> ,<f> ,<n> , <tooltip>  , <{change}>  , [<w>] , [<h>] , <{lostfocus}>, <{gotfocus}>  , <helpid>, <.invisible.>, <.notabstop.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <(field)> , <backcolor> , <fontcolor> , <.transparent.>, <.autosize.> )
 
 #command @ <row>,<col> CHECKBUTTON <name> ;
 		[ <dummy1: OF, PARENT> <parent> ] ;
@@ -139,7 +139,7 @@
 		[ <invisible: INVISIBLE> ] ;
 		[ <notabstop: NOTABSTOP> ] ;
 	=>;
-	_DefineCheckButton ( <"name">, <"parent">, <col>, <row>, <caption>, <value> ,<f> ,<n> , <tooltip>  , <{change}>  , [<w>] , [<h>] , <{lostfocus}>, <{gotfocus}>  , <helpid>, <.invisible.>, <.notabstop.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> )
+        _DefineCheckButton ( <(name)>, <(parent)>, <col>, <row>, <caption>, <value> ,<f> ,<n> , <tooltip>  , <{change}>  , [<w>] , [<h>] , <{lostfocus}>, <{gotfocus}>  , <helpid>, <.invisible.>, <.notabstop.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> )
 
 #command @ <row>,<col> CHECKBUTTON <name> ;
 		[ <dummy1: OF, PARENT> <parent> ] ;
@@ -155,4 +155,4 @@
 		[ <invisible: INVISIBLE> ] ;
 		[ <notabstop: NOTABSTOP> ] ;
 	=>;
-	_DefineImageCheckButton ( <"name">, <"parent">, <col>, <row>, <bitmap>, <value> ,"" ,0 , <tooltip>  , <{change}>  , [<w>] , [<h>] , <{lostfocus}>, <{gotfocus}> , <helpid>, <.invisible.>, <.notabstop.> )
+        _DefineImageCheckButton ( <(name)>, <(parent)>, <col>, <row>, <bitmap>, <value> ,"" ,0 , <tooltip>  , <{change}>  , [<w>] , [<h>] , <{lostfocus}>, <{gotfocus}> , <helpid>, <.invisible.>, <.notabstop.> )

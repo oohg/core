@@ -1,5 +1,5 @@
 /*
- * $Id: i_tree.ch,v 1.2 2005-08-25 05:57:41 guerra000 Exp $
+ * $Id: i_tree.ch,v 1.3 2005-10-22 06:04:31 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -114,7 +114,7 @@
 	[ HELPID <helpid> ] 		;
         [ <rtl: RTL> ]                  ;
 =>;
-[ <obj> := ] TTree():Define( <"name"> , <"parent"> , <row> , <col> , <width> , <height> , <{change}> , <tooltip> , <fontname> , <fontsize> , <{gotfocus}> , <{lostfocus}> , <{dblclick}> , .f. , <value>  , <helpid>, <aImgNode>, <aImgItem>, <.noBut.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <.itemids.>, <.rtl.> )
+[ <obj> := ] TTree():Define( <(name)> , <(parent)> , <row> , <col> , <width> , <height> , <{change}> , <tooltip> , <fontname> , <fontsize> , <{gotfocus}> , <{lostfocus}> , <{dblclick}> , .f. , <value>  , <helpid>, <aImgNode>, <aImgItem>, <.noBut.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <.itemids.>, <.rtl.> )
 
 #xcommand NODE <text> [ IMAGES <aImage> ] [ ID <id> ];
 =>;
@@ -163,5 +163,4 @@ _EndTree()
 	[ <break: BREAK> ] ;
         [ <rtl: RTL> ]                  ;
 =>;
-[ <obj> := ] TTree():Define( <"name"> , <"parent"> ,  ,  , <width> , <height> , <{change}> , <tooltip> , <fontname> , <fontsize> , <{gotfocus}> , <{lostfocus}> , <{dblclick}> , <.break.> , <value>  , <helpid>, <aImgNode>, <aImgItem>, <.noBut.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.>  , <.itemids.>, <.rtl.> )
-
+[ <obj> := ] TTree():Define( <(name)> , <(parent)> ,  ,  , <width> , <height> , <{change}> , <tooltip> , <fontname> , <fontsize> , <{gotfocus}> , <{lostfocus}> , <{dblclick}> , <.break.> , <value>  , <helpid>, <aImgNode>, <aImgItem>, <.noBut.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.>  , <.itemids.>, <.rtl.> )

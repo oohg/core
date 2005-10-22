@@ -1,5 +1,5 @@
 /*
- * $Id: i_button.ch,v 1.3 2005-09-11 16:46:24 guerra000 Exp $
+ * $Id: i_button.ch,v 1.4 2005-10-22 06:04:31 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -113,7 +113,7 @@
 		[ <invisible: INVISIBLE> ] ;
                 [ <rtl: RTL> ] ;
 	=>;
-        [ <obj> := ] TButton():Define( <"name">, <"parent">, <col>, <row>, <caption>, <{action}>, ;
+        [ <obj> := ] TButton():Define( <(name)>, <(parent)>, <col>, <row>, <caption>, <{action}>, ;
                    <w>, <h>, <font>, <size>, <tooltip>, <{gotfocus}>, ;
                    <{lostfocus}>, <.flat.>, <.notabstop.>, <helpid>, <.invisible.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.>, <.rtl.> )
 
@@ -134,6 +134,6 @@
 		[ <invisible: INVISIBLE> ] ;
                 [ <rtl: RTL> ] ;
 	=>;
-        [ <obj> := ] TButton():DefineImage( <"name">, <"parent">, <col>, <row>, "", <{action}>, ;
+        [ <obj> := ] TButton():DefineImage( <(name)>, <(parent)>, <col>, <row>, "", <{action}>, ;
                         <w>, <h>, <bitmap>, <tooltip>, <{gotfocus}>, <{lostfocus}>, ;
                         <.flat.>, <.notrans.>, <helpid>, <.invisible.>, <.notabstop.>, <.rtl.> )

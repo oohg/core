@@ -1,5 +1,5 @@
 /*
- * $Id: i_slider.ch,v 1.1 2005-08-06 23:53:54 guerra000 Exp $
+ * $Id: i_slider.ch,v 1.2 2005-10-22 06:04:31 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -109,8 +109,8 @@
 		[ <invisible : INVISIBLE> ] ;
 		[ <notabstop : NOTABSTOP> ] ;
 	=>;
-	_DefineSlider ( <"name">, ;
-                   <"parent">, ;
+        _DefineSlider ( <(name)>, ;
+                   <(parent)>, ;
                    <col>, ;
                    <row>, ;
                    <w>, ;
@@ -125,4 +125,3 @@
                    <.both.>, ;
                    <.top.>, ;
                    <.left.>  , <helpid>, <.invisible.>, <.notabstop.> , <backcolor> )
-

@@ -1,5 +1,5 @@
 /*
- * $Id: i_report.ch,v 1.2 2005-10-02 03:35:48 declan2005 Exp $
+ * $Id: i_report.ch,v 1.3 2005-10-22 06:04:31 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -87,13 +87,13 @@ easyreport  ( <ctitle> ,		 	;
                 <.llandscape.>        ,  ;
                 <ncpl>                ,  ;
                 <.lselect.>           ,  ;
-                <"calias">            ,  ;
+                <(calias)>            ,  ;
                 <nllmargin>           ,  ;
                 <aformats>            ,  ;
                 <npapersize> )
- 
 
-#xcommand DO REPORT FORM <cfilerep> => extreport(<"cfilerep">)
+
+#xcommand DO REPORT FORM <cfilerep> => extreport(<(cfilerep)>)
 
 #ifndef DMPAPER_FIRST
 
@@ -225,44 +225,44 @@ easyreport  ( <ctitle> ,		 	;
 #endif
 
 #define apapeles { ;
-"DMPAPER_LETTER", ; 
+"DMPAPER_LETTER", ;
 "DMPAPER_LETTERSMALL", ;
-"DMPAPER_TABLOID",      ;      
-"DMPAPER_LEDGER",        ;     
-"DMPAPER_LEGAL",          ;    
-"DMPAPER_STATEMENT",       ;   
-"DMPAPER_EXECUTIVE",        ;  
-"DMPAPER_A3",                ; 
-"DMPAPER_A4",              ;   
-"DMPAPER_A4SMALL",;            
-"DMPAPER_A5",      ;           
-"DMPAPER_B4",       ;          
-"DMPAPER_B5",        ;         
-"DMPAPER_FOLIO",      ;        
-"DMPAPER_QUARTO",      ;       
-"DMPAPER_10X14",        ;      
-"DMPAPER_11X17",  ;            
-"DMPAPER_NOTE",    ;           
-"DMPAPER_ENV_9",    ;          
-"DMPAPER_ENV_10",    ;         
-"DMPAPER_ENV_11",     ;        
-"DMPAPER_ENV_12",      ;       
-"DMPAPER_ENV_14",       ;      
-"DMPAPER_CSHEET",   ;          
-"DMPAPER_DSHEET",   ;          
-"DMPAPER_ESHEET",   ;          
-"DMPAPER_ENV_DL",   ;          
-"DMPAPER_ENV_C5",   ;          
-"DMPAPER_ENV_C3",   ;          
-"DMPAPER_ENV_C4",    ;         
-"DMPAPER_ENV_C6",     ;        
-"DMPAPER_ENV_C65",     ;       
-"DMPAPER_ENV_B4",       ;      
-"DMPAPER_ENV_B5",        ;     
-"DMPAPER_ENV_B6",         ;    
-"DMPAPER_ENV_ITALY",       ;   
-"DMPAPER_ENV_MONARCH",      ;  
-"DMPAPER_ENV_PERSONAL",      ; 
+"DMPAPER_TABLOID",      ;
+"DMPAPER_LEDGER",        ;
+"DMPAPER_LEGAL",          ;
+"DMPAPER_STATEMENT",       ;
+"DMPAPER_EXECUTIVE",        ;
+"DMPAPER_A3",                ;
+"DMPAPER_A4",              ;
+"DMPAPER_A4SMALL",;
+"DMPAPER_A5",      ;
+"DMPAPER_B4",       ;
+"DMPAPER_B5",        ;
+"DMPAPER_FOLIO",      ;
+"DMPAPER_QUARTO",      ;
+"DMPAPER_10X14",        ;
+"DMPAPER_11X17",  ;
+"DMPAPER_NOTE",    ;
+"DMPAPER_ENV_9",    ;
+"DMPAPER_ENV_10",    ;
+"DMPAPER_ENV_11",     ;
+"DMPAPER_ENV_12",      ;
+"DMPAPER_ENV_14",       ;
+"DMPAPER_CSHEET",   ;
+"DMPAPER_DSHEET",   ;
+"DMPAPER_ESHEET",   ;
+"DMPAPER_ENV_DL",   ;
+"DMPAPER_ENV_C5",   ;
+"DMPAPER_ENV_C3",   ;
+"DMPAPER_ENV_C4",    ;
+"DMPAPER_ENV_C6",     ;
+"DMPAPER_ENV_C65",     ;
+"DMPAPER_ENV_B4",       ;
+"DMPAPER_ENV_B5",        ;
+"DMPAPER_ENV_B6",         ;
+"DMPAPER_ENV_ITALY",       ;
+"DMPAPER_ENV_MONARCH",      ;
+"DMPAPER_ENV_PERSONAL",      ;
 "DMPAPER_FANFOLD_US",         ;
 "DMPAPER_FANFOLD_STD_GERMAN", ;
 "DMPAPER_FANFOLD_LGL_GERMAN", ;
@@ -315,33 +315,32 @@ easyreport  ( <ctitle> ,		 	;
 "DMPAPER_B6_JIS",             ;
 "DMPAPER_B6_JIS_ROTATED",     ;
 "DMPAPER_12X11",              ;
-"DMPAPER_JENV_YOU4", ;          
-"DMPAPER_JENV_YOU4_ROTATED", ;  
-"DMPAPER_P16K", ;               
-"DMPAPER_P32K", ;               
-"DMPAPER_P32KBIG", ;            
-"DMPAPER_PENV_1", ;             
-"DMPAPER_PENV_2", ;             
-"DMPAPER_PENV_3", ;             
-"DMPAPER_PENV_4", ;             
-"DMPAPER_PENV_5", ;             
-"DMPAPER_PENV_6", ;             
-"DMPAPER_PENV_7", ;             
-"DMPAPER_PENV_8", ;             
-"DMPAPER_PENV_9", ;             
-"DMPAPER_PENV_10", ;            
-"DMPAPER_P16K_ROTATED", ;       
-"DMPAPER_P32K_ROTATED", ;       
-"DMPAPER_P32KBIG_ROTATED", ;    
-"DMPAPER_PENV_1_ROTATED", ;     
-"DMPAPER_PENV_2_ROTATED", ;     
-"DMPAPER_PENV_3_ROTATED", ;     
-"DMPAPER_PENV_4_ROTATED", ;     
-"DMPAPER_PENV_5_ROTATED", ;     
-"DMPAPER_PENV_6_ROTATED", ;     
-"DMPAPER_PENV_7_ROTATED", ;     
-"DMPAPER_PENV_8_ROTATED", ;     
-"DMPAPER_PENV_9_ROTATED", ;     
-"DMPAPER_PENV_10_ROTATED" }     
-
+"DMPAPER_JENV_YOU4", ;
+"DMPAPER_JENV_YOU4_ROTATED", ;
+"DMPAPER_P16K", ;
+"DMPAPER_P32K", ;
+"DMPAPER_P32KBIG", ;
+"DMPAPER_PENV_1", ;
+"DMPAPER_PENV_2", ;
+"DMPAPER_PENV_3", ;
+"DMPAPER_PENV_4", ;
+"DMPAPER_PENV_5", ;
+"DMPAPER_PENV_6", ;
+"DMPAPER_PENV_7", ;
+"DMPAPER_PENV_8", ;
+"DMPAPER_PENV_9", ;
+"DMPAPER_PENV_10", ;
+"DMPAPER_P16K_ROTATED", ;
+"DMPAPER_P32K_ROTATED", ;
+"DMPAPER_P32KBIG_ROTATED", ;
+"DMPAPER_PENV_1_ROTATED", ;
+"DMPAPER_PENV_2_ROTATED", ;
+"DMPAPER_PENV_3_ROTATED", ;
+"DMPAPER_PENV_4_ROTATED", ;
+"DMPAPER_PENV_5_ROTATED", ;
+"DMPAPER_PENV_6_ROTATED", ;
+"DMPAPER_PENV_7_ROTATED", ;
+"DMPAPER_PENV_8_ROTATED", ;
+"DMPAPER_PENV_9_ROTATED", ;
+"DMPAPER_PENV_10_ROTATED" }
 

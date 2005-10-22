@@ -1,5 +1,5 @@
 /*
- * $Id: i_richeditbox.ch,v 1.2 2005-08-25 05:57:41 guerra000 Exp $
+ * $Id: i_richeditbox.ch,v 1.3 2005-10-22 06:04:31 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -117,7 +117,7 @@
 		[ <notabstop: NOTABSTOP> ] ;
                 [ <rtl: RTL> ] ;
 	=>;
-        [ <obj> := ] TEditRich():Define( <"name">, <"parent">, <col>, <row>, <w>, <h>, <value> ,<f>,<s> , <tooltip>  , <maxlenght>  , <{gotfocus}>  , <{change}>  , <{lostfocus}>  , <.readonly.> , .f. , <helpid>, <.invisible.>, <.notabstop.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <"field"> , <backcolor>, <.rtl.> )
+        [ <obj> := ] TEditRich():Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <value> ,<f>,<s> , <tooltip>  , <maxlenght>  , <{gotfocus}>  , <{change}>  , <{lostfocus}>  , <.readonly.> , .f. , <helpid>, <.invisible.>, <.notabstop.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <(field)> , <backcolor>, <.rtl.> )
 
 //SPLITBOX VERSION
 
@@ -148,4 +148,4 @@
 		[ <notabstop: NOTABSTOP> ] ;
                 [ <rtl: RTL> ] ;
 	=>;
-        [ <obj> := ] TEditRich():Define( <"name">, <"parent">, , , <w>, <h>, <value> ,<f>,<s> , <tooltip>  , <maxlenght>  , <{gotfocus}>  , <{change}>  , <{lostfocus}>  , <.readonly.> , <.break.>  , <helpid>, <.invisible.>, <.notabstop.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <"field">  , <backcolor>, <.rtl.> )
+        [ <obj> := ] TEditRich():Define( <(name)>, <(parent)>, , , <w>, <h>, <value> ,<f>,<s> , <tooltip>  , <maxlenght>  , <{gotfocus}>  , <{change}>  , <{lostfocus}>  , <.readonly.> , <.break.>  , <helpid>, <.invisible.>, <.notabstop.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <(field)>  , <backcolor>, <.rtl.> )

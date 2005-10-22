@@ -1,5 +1,5 @@
 /*
- * $Id: i_socket.ch,v 1.1 2005-08-06 23:53:54 guerra000 Exp $
+ * $Id: i_socket.ch,v 1.2 2005-10-22 06:04:31 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -95,7 +95,7 @@
 
 #xcommand OPEN CONNECTION <con> SERVER <server> PORT <port> HTTP	;
 	=> ;
-httpconnect( <"con"> , <server> , <port> )
+httpconnect( <(con)> , <server> , <port> )
 
 
 #xcommand CLOSE CONNECTION <con> 					;

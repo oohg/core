@@ -1,5 +1,5 @@
 /*
- * $Id: i_radiogroup.ch,v 1.2 2005-08-17 06:02:25 guerra000 Exp $
+ * $Id: i_radiogroup.ch,v 1.3 2005-10-22 06:04:31 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -115,4 +115,4 @@
                         [ <autosize : AUTOSIZE> ] ;
 	=>;
         [ <obj> := ] ;
-        TRadioGroup():Define( <"name">, <"parent">, <col>, <row>, <aOptions>, <value> , <fontname> , <fontsize>  , <tooltip>  , <{change}> , <width> , <spacing>  , <helpid>, <.invisible.>, <.notabstop.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <backcolor> , <fontcolor> , <.transparent.>, <.autosize.> )
+        TRadioGroup():Define( <(name)>, <(parent)>, <col>, <row>, <aOptions>, <value> , <fontname> , <fontsize>  , <tooltip>  , <{change}> , <width> , <spacing>  , <helpid>, <.invisible.>, <.notabstop.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <backcolor> , <fontcolor> , <.transparent.>, <.autosize.> )

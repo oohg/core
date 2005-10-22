@@ -1,5 +1,5 @@
 /*
- * $Id: i_listbox.ch,v 1.2 2005-08-25 05:57:41 guerra000 Exp $
+ * $Id: i_listbox.ch,v 1.3 2005-10-22 06:04:31 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -119,7 +119,7 @@
                 [ <rtl: RTL> ] ;
 	=>;
         [ <obj> := ] iif( <.multiselect.>, TListMulti(), TList() ):Define( ;
-                        <"name">, <"parent">, <col>, <row>, <w>, <h>, <aRows>, ;
+                        <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <aRows>, ;
                         <value>, <fontname>, <fontsize>, <tooltip>, <{change}>, ;
                         <{dblclick}>, <{gotfocus}>, <{lostfocus}>, .f., ;
                         <helpid>, <.invisible.>, <.notabstop.>, <.sort.> , ;
@@ -157,11 +157,10 @@
                 [ <rtl: RTL> ] ;
 	=>;
         [ <obj> := ] iif( <.multiselect.>, TListMulti(), TList() ):Define( ;
-                <"name">, <"parent">, , , <w>, <h>, <aRows>, <value>, ;
+                <(name)>, <(parent)>, , , <w>, <h>, <aRows>, <value>, ;
 		<fontname>, <fontsize>, <tooltip>, <{change}>, <{dblclick}>, ;
 		<{gotfocus}>, <{lostfocus}>, <.break.>, <helpid>, ;
 		<.invisible.>, <.notabstop.>, <.sort.> ,<.bold.>, ;
 		<.italic.>, <.underline.>, <.strikeout.> , <backcolor> , ;
                 <fontcolor> , <.rtl.> )
-
 

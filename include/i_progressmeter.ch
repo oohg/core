@@ -1,5 +1,5 @@
 /*
- * $Id: i_progressmeter.ch,v 1.1 2005-09-04 00:19:13 guerra000 Exp $
+ * $Id: i_progressmeter.ch,v 1.2 2005-10-22 06:04:31 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -70,6 +70,6 @@
                 [ ACTION <action> ]               ;
                 [ <rtl: RTL> ]                    ;
 	=>;
-        [ <obj> := ] TProgressMeter():Define( <"name">, <"parent">, <col>, <row>, <w>, <h>, ;
+        [ <obj> := ] TProgressMeter():Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, ;
                 <lo>, <hi>, <v>, <tooltip>, <fontname>, <fontsize>, <.bold.>, <.italic.>, ;
                 <.underline.>, <.strikeout.>, <forecolor>, <backcolor>, <{action}>, <.rtl.> )

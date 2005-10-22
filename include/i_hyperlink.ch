@@ -1,5 +1,5 @@
 /*
- * $Id: i_hyperlink.ch,v 1.3 2005-08-25 05:57:41 guerra000 Exp $
+ * $Id: i_hyperlink.ch,v 1.4 2005-10-22 06:04:31 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -117,8 +117,8 @@
    [ <rtl: RTL> ]               ;
  =>;
    [ <obj> := ] THyperLink():Define( ;
-   <"name">,    ;
-   <"parent">,    ;
+   <(name)>,    ;
+   <(parent)>,    ;
    <col>,     ;
    <row>,     ;
    <value>,    ;

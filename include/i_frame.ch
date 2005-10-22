@@ -1,5 +1,5 @@
 /*
- * $Id: i_frame.ch,v 1.2 2005-08-25 05:57:41 guerra000 Exp $
+ * $Id: i_frame.ch,v 1.3 2005-10-22 06:04:31 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -109,4 +109,4 @@
 		[ <transparent: TRANSPARENT> ] ;
                 [ <rtl: RTL> ] ;
 	=>;
-        [ <obj> := ] TFrame():Define( <"name">, <"parent">, <row>, <col>, <w>, <h> , <caption> , <fontname> , <fontsize> , <.opaque.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <backcolor> , <fontcolor> , <.transparent.>, <.rtl.> )
+        [ <obj> := ] TFrame():Define( <(name)>, <(parent)>, <row>, <col>, <w>, <h> , <caption> , <fontname> , <fontsize> , <.opaque.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <backcolor> , <fontcolor> , <.transparent.>, <.rtl.> )
