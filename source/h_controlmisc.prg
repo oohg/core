@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.23 2005-10-14 04:54:58 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.24 2005-10-22 06:07:26 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1822,7 +1822,7 @@ CLASS TControl FROM TWindow
    METHOD Height    SETGET
    METHOD ToolTip   SETGET
    METHOD SetForm
-   METHOD SetContainer
+   METHOD SetInfo
    METHOD New
    METHOD Refresh             BLOCK { || nil }
    METHOD Release
@@ -1925,11 +1925,24 @@ RETURN cName
 METHOD SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BkColor, lEditBox, lRtl ) CLASS TControl
 *------------------------------------------------------------------------------*
 LOCAL nPos
+
+   // If PARENTFORM is a control
+   If ValType( ParentForm ) == "O"
+      If ParentForm:ClassName == "TFORM"
+         ::Parent := ParentForm
+         Return ::SetInfo( ControlName, FontName, FontSize, FontColor, BkColor, lEditBox, lRtl )
+      Else
+         ::Container := ParentForm
+         ::Parent := ::Container:Parent
+         Return ::SetInfo( ControlName, FontName, FontSize, FontColor, BkColor, lEditBox, lRtl )
+      EndIf
+   EndIf
+
    // Parent form:
    if ! empty( ParentForm )
       // Specified form
-      If ! _IsWindowDefined (ParentForm)
-         MsgOOHGError("Window: "+ ParentForm + " is not defined. Program terminated.")
+      If ! _IsWindowDefined( ParentForm )
+         MsgOOHGError( "Window: "+ ParentForm + " is not defined. Program terminated." )
       Endif
       ::Parent := GetFormObject( ParentForm )
    elseif len( _OOHG_ActiveFrame ) > 0
@@ -1952,15 +1965,20 @@ LOCAL nPos
       ENDIF
    ENDIF
 
+Return ::SetInfo( ControlName, FontName, FontSize, FontColor, BkColor, lEditBox, lRtl )
+
+*------------------------------------------------------------------------------*
+METHOD SetInfo( ControlName, FontName, FontSize, FontColor, BkColor, lEditBox, lRtl ) CLASS TControl
+*------------------------------------------------------------------------------*
    // Font Name:
    if ! empty( FontName )
       // Specified font
       ::cFontName := FontName
-   elseif ::Container != nil
-      // Active frame
+   elseif ::Container != nil .AND. ! empty( ::Container:cFontName )
+      // Container
       ::cFontName := ::Container:cFontName
-   elseif ! Empty( ::Parent:cFontName )
-      // Parent
+   elseif ! empty( ::Parent:cFontName )
+      // Parent form
       ::cFontName := ::Parent:cFontName
    else
        // Default
@@ -1971,11 +1989,11 @@ LOCAL nPos
    if ! empty( FontSize )
       // Specified size
       ::nFontSize := FontSize
-   elseif ::Container != nil
-      // Active frame
+   elseif ::Container != nil .AND. ! empty( ::Container:nFontSize )
+      // Container
       ::nFontSize := ::Container:nFontSize
-   elseif ! Empty( ::Parent:nFontSize )
-      // Parent
+   elseif ! empty( ::Parent:nFontSize )
+      // Parent form
       ::nFontSize := ::Parent:nFontSize
    else
        // Default
@@ -1986,11 +2004,11 @@ LOCAL nPos
    if ! empty( FontColor )
       // Specified color
       ::aFontColor := FontColor
-   elseif ::Container != nil
-      // Active frame
+   elseif ::Container != nil .AND. ! empty( ::Container:aFontColor )
+      // Container
       ::aFontColor := ::Container:aFontColor
-   elseif ! Empty( ::Parent:aFontColor )
-      // Parent
+   elseif ! empty( ::Parent:aFontColor )
+      // Parent form
       ::aFontColor := ::Parent:aFontColor
    else
        // Default
@@ -2025,105 +2043,6 @@ LOCAL nPos
           // Default
       endif
    ENDIF
-
-   ::Name := _OOHG_GetNullName( ControlName )
-
-   If _IsControlDefined( ::Name, ::Parent:Name )
-      MsgOOHGError( _OOHG_BRWLangError[ 4 ] + ::Name + _OOHG_BRWLangError[ 5 ] + ::Parent:Name + _OOHG_BRWLangError[ 6 ] )
-	endif
-
-   // Right-to-left
-   If _OOHG_GlobalRTL()
-      ::lRtl := .T.
-   ElseIf ValType( lRtl ) == "L"
-      ::lRtl := lRtl
-   ElseIf ! Empty( ::Container )
-      ::lRtl := ::Container:lRtl
-   ElseIf ! Empty( ::Parent )
-      ::lRtl := ::Parent:lRtl
-   Else
-      ::lRtl := .F.
-   EndIf
-
-RETURN Self
-
-*------------------------------------------------------------------------------*
-METHOD SetContainer( Container, ControlName, FontName, FontSize, FontColor, BkColor, DefBkColorEdit, lRtl ) CLASS TControl
-*------------------------------------------------------------------------------*
-   ::Container := Container
-   ::Parent := ::Container:Parent
-
-   // Font Name:
-   if ! empty( FontName )
-      // Specified font
-      ::cFontName := FontName
-   elseif ! empty( ::Container:cFontName )
-      // Container
-      ::cFontName := ::Container:cFontName
-   elseif ! empty( ::Parent:cFontName )
-      // Parent form
-      ::cFontName := ::Parent:cFontName
-   else
-       // Default
-      ::cFontName := _OOHG_DefaultFontName
-   endif
-
-   // Font Size:
-   if ! empty( FontSize )
-      // Specified size
-      ::nFontSize := FontSize
-   elseif ! empty( ::Container:nFontSize )
-      // Container
-      ::nFontSize := ::Container:nFontSize
-   elseif ! empty( ::Parent:nFontSize )
-      // Parent form
-      ::nFontSize := ::Parent:nFontSize
-   else
-       // Default
-      ::nFontSize := _OOHG_DefaultFontSize
-   endif
-
-   // Font Color:
-   if ! empty( FontColor )
-      // Specified color
-      ::aFontColor := FontColor
-   elseif ! empty( ::Container:aFontColor )
-      // Container
-      ::aFontColor := ::Container:aFontColor
-   elseif ! empty( ::Parent:aFontColor )
-      // Parent form
-      ::aFontColor := ::Parent:aFontColor
-   else
-       // Default
-   endif
-
-   // Background Color (static):
-   if ! empty( BkColor )
-      // Specified color
-      ::aBackColor := BkColor
-   elseif ! empty( ::Container:aBackColor )
-      // Container
-      ::aBackColor := ::Container:aBackColor
-   elseif ! empty( ::Parent:aBackColor )
-      // Parent form
-      ::aBackColor := ::Parent:aBackColor
-   else
-      // Default
-   endif
-
-   // Background Color (edit or listbox):
-   if ! empty( DefBkColorEdit )
-      // Specified color
-      ::DefBkColorEdit := DefBkColorEdit
-   elseif ! empty( ::Container:DefBkColorEdit )
-      // Container
-      ::DefBkColorEdit := ::Container:DefBkColorEdit
-   elseif ! empty( ::Parent:DefBkColorEdit )
-      // Parent form
-      ::DefBkColorEdit := ::Parent:DefBkColorEdit
-   else
-      // Default
-   endif
 
    ::Name := _OOHG_GetNullName( ControlName )
 

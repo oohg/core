@@ -1,5 +1,5 @@
 /*
- * $Id: h_status.prg,v 1.7 2005-10-03 05:28:24 guerra000 Exp $
+ * $Id: h_status.prg,v 1.8 2005-10-22 06:07:26 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -328,7 +328,7 @@ Local Self
 *   EndIf
 empty( parentcontrol )
 
-   Self := TItemMessage():SetContainer( _OOHG_ActiveMessageBar, "" )
+   Self := TItemMessage():SetForm( , _OOHG_ActiveMessageBar )
    IF VALTYPE( ControlName ) $ "CM" .AND. upper( alltrim( ControlName ) ) == "STATUSITEM" .AND. ::Parent:Control( "STATUSITEM" ) == nil
       ::Name := "STATUSITEM"
    ENDIF

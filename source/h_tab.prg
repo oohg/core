@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.8 2005-10-01 15:35:10 guerra000 Exp $
+ * $Id: h_tab.prg,v 1.9 2005-10-22 06:07:26 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -327,7 +327,7 @@ Local oPage, nPos, nKey
       aControls := {}
 	EndIf
 
-   oPage := TTabPage():SetContainer( Self )
+   oPage := TTabPage():SetForm( , Self )
 
    TABCTRL_INSERTITEM ( ::hWnd, Position - 1 , Caption )
 

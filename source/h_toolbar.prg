@@ -1,5 +1,5 @@
 /*
- * $Id: h_toolbar.prg,v 1.9 2005-10-09 21:31:20 guerra000 Exp $
+ * $Id: h_toolbar.prg,v 1.10 2005-10-22 06:07:26 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -276,7 +276,7 @@ empty(parentcontrol)  /// ???????
 *
 tooltip := caption
 
-   Self := TToolButton():SetContainer( _OOHG_ActiveToolBar, ControlName )
+   Self := TToolButton():SetForm( ControlName, _OOHG_ActiveToolBar )
 
 	If valtype(ProcedureName) != 'U' .and. WHOLEDROPDOWN == .t.
       MsgOOHGError ("Action and WholeDropDown clauses can't be used simultaneously. Program terminated" )

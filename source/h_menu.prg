@@ -1,5 +1,5 @@
 /*
- * $Id: h_menu.prg,v 1.5 2005-10-13 05:58:48 guerra000 Exp $
+ * $Id: h_menu.prg,v 1.6 2005-10-22 06:07:26 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -154,7 +154,7 @@ Return Self
 METHOD DefinePopUp( Caption , Name , checked , disabled ) CLASS TMenu
 *------------------------------------------------------------------------------*
 
-   ::SetContainer( ATAIL( _OOHG_xMenuActive ), Name )
+   ::SetForm( Name, ATAIL( _OOHG_xMenuActive ) )
 
    ::New( CreatePopupMenu(), Name )
 
@@ -198,7 +198,7 @@ Local id
       MenuItem_SetBitMaps( ATAIL( _OOHG_xMenuActive ):hWnd, Id, image, '' )
    EndIf
 
-   ::SetContainer( ATAIL( _OOHG_xMenuActive ), Name )
+   ::SetForm( Name, ATAIL( _OOHG_xMenuActive ) )
 
    ::New( ControlHandle, Name, , , , Id )
 
