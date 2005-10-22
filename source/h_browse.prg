@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.27 2005-10-21 05:18:38 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.28 2005-10-22 06:09:13 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -162,8 +162,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                underline, strikeout, break, backcolor, fontcolor, lock, ;
                inplace, novscroll, AllowAppend, readonly, valid, ;
                validmessages, edit, dynamicbackcolor, aWhenFields, ;
-               dynamicforecolor, aPicture, lRtl, editcell, editcontrols, ;
-               replacefields ) CLASS TBrowse
+               dynamicforecolor, aPicture, lRtl, onappend, editcell, ;
+               editcontrols, replacefields ) CLASS TBrowse
 *-----------------------------------------------------------------------------*
 Local ScrollBarHandle, hsum, ScrollBarButtonHandle := 0, nWidth2, nCol2
 
@@ -216,7 +216,7 @@ Local ScrollBarHandle, hsum, ScrollBarButtonHandle := 0, nWidth2, nCol2
    ::aRecMap :=  {}
    ::AuxHandle := 0
    ::AllowAppend := AllowAppend
-   ::aReplaceFields := replacefields
+   ::aReplaceField := replacefields
 
    if ! novscroll
 
@@ -238,7 +238,7 @@ Local ScrollBarHandle, hsum, ScrollBarButtonHandle := 0, nWidth2, nCol2
          ::nButtonActive := 0
 		EndIf
 
-      ::VScroll := TScrollBar():SetContainer( Self, "" )
+      ::VScroll := TScrollBar():SetForm( , Self )
       ::VScroll:New( ScrollBarHandle,, HelpId,, ToolTip, ScrollBarHandle )
       ::VScroll:RangeMin := 1
       ::VScroll:RangeMax := 100
@@ -267,6 +267,7 @@ Local ScrollBarHandle, hsum, ScrollBarButtonHandle := 0, nWidth2, nCol2
    ::OnGotFocus :=  gotfocus
    ::OnChange   :=  change
    ::OnDblClick := dblclick
+   ::OnAppend := onappend
 
 Return Self
 
@@ -276,8 +277,8 @@ METHOD UpDate() CLASS TBrowse
 Local PageLength , aTemp, _BrowseRecMap := {} , x
 Local nCurrentLength
 Local lColor, aFields, cWorkArea, hWnd, nWidth
-MEMVAR __aPicture
-PRIVATE __aPicture
+MEMVAR __aPicture, __aEditControls
+PRIVATE __aPicture, __aEditControls
 
    cWorkArea := ::WorkArea
 
@@ -290,6 +291,7 @@ PRIVATE __aPicture
    __aPicture := ::Picture
    nWidth := LEN( ::aFields )
    aFields := ARRAY( nWidth )
+   __aEditControls := ARRAY( nWidth )
    AEVAL( ::aFields, { |c,i| aFields[ i ] := TBrowse_UpDate_Block( Self, i, c ) } )
    hWnd := ::hWnd
 
@@ -345,12 +347,12 @@ PRIVATE __aPicture
 Return nil
 
 Static Function TBrowse_UpDate_Block( Self, nColumn, cValue )
-Local bBlock
-Private oEditControl
-MemVar oEditControl, __aPicture
+Local bBlock, oEditControl
+MEMVAR __aEditControls, __aPicture
    oEditControl := GetEditControlFromArray( NIL, ::EditControls, nColumn, Self )
+   __aEditControls[ nColumn ] := oEditControl
    If ValType( oEditControl ) == "O"
-      bBlock := &( "{ || oEditControl:GridValue( " + cValue + " ) }" )
+      bBlock := &( "{ || __aEditControls[ " + LTRIM( STR( nColumn ) ) + " ]:GridValue( " + cValue + " ) }" )
    ElseIf ValType( __aPicture[ nColumn ] ) $ "CM"
       bBlock := &( "{ || Trim( Transform( " + ::WorkArea + "->( " + cValue + " ), __aPicture[ " + LTRIM( STR( nColumn ) ) + " ] ) ) }" )
    ElseIf ValType( __aPicture[ nColumn ] ) == "L" .AND. __aPicture[ nColumn ]
@@ -747,10 +749,10 @@ Local oEditControl, uOldValue, cMemVar, bReplaceField
 
    If append
       cTitle := _OOHG_BRWLangButton[ 1 ]
-      ( ::WorkArea )->( DbGoTo( ::aRecMap[ nItem ] ) )
+      ( ::WorkArea )->( DbGoTo( 0 ) )
    Else
       cTitle := _OOHG_BRWLangButton[ 2 ]
-      ( ::WorkArea )->( DbGoTo( 0 ) )
+      ( ::WorkArea )->( DbGoTo( ::aRecMap[ nItem ] ) )
    EndIf
 
    aItems := ARRAY( Len( ::aHeaders ) )
@@ -760,6 +762,7 @@ Local oEditControl, uOldValue, cMemVar, bReplaceField
 
    For z := 1 To Len( aItems )
 
+      oEditControl := uOldValue := cMemVar := bReplaceField := nil
       ::GetCellType( z, @oEditControl, @uOldValue, @cMemVar, @bReplaceField )
       If ValType( uOldValue ) $ "CM"
          uOldValue := AllTrim( uOldValue )
@@ -995,7 +998,7 @@ Local lRet, BackRec, bReplaceField
       If lRet
          _OOHG_EVAL( bReplaceField, uValue )
          ::Refresh()
-         _OOHG_Eval( ::OnEditCell, nRow, nCol )
+         _OOHG_EVAL( ::OnEditCell, nRow, nCol )
       EndIf
       If ::Lock
          ( ::WorkArea )->( DbUnLock() )
@@ -1021,7 +1024,7 @@ Local cField, cArea, nPos, aStruct
       uOldValue := &( ::aFields[ nCol ] )
    EndIf
 
-   If ValType( ::aRepalceField ) == "A" .AND. Len( ::aReplaceField ) >= nCol
+   If ValType( ::aReplaceField ) == "A" .AND. Len( ::aReplaceField ) >= nCol
       bReplaceField := ::aReplaceField[ nCol ]
    Else
       bReplaceField := nil
@@ -1040,15 +1043,12 @@ Local cField, cArea, nPos, aStruct
    nPos := aScan( aStruct, { |a| a[ 1 ] == cField } )
    If nPos == 0
       cArea := cField := ""
-      If ValType( bReplaceField ) != "B"
-         bReplaceField := { || .F. }
-      EndIf
    Else
       If ! ValType( cMemVar ) $ "CM" .OR. Empty( cMemVar )
          cMemVar := "MemVar" + cArea + cField
       EndIf
       If ValType( bReplaceField ) != "B"
-         bReplaceField := FieldWBlock( cField, cArea )
+         bReplaceField := FieldWBlock( cField, Select( cArea ) )
       EndIf
    EndIf
 
@@ -1080,7 +1080,7 @@ Local cField, cArea, nPos, aStruct
                // EditControl := TGridControlDatePicker():New( .T. )
                EditControl := TGridControlTextBox():New( "@D",, "D" )
             Case aStruct[ nPos ][ 2 ] == "C"
-               EditControl := TGridControlTextBox():New( "S" + Ltrim( Str( aStruct[ nPos ][ 3 ] ) ),, "C" )
+               EditControl := TGridControlTextBox():New( "@S" + Ltrim( Str( aStruct[ nPos ][ 3 ] ) ),, "C" )
             OtherWise
                // Non-implemented field type!!!
          EndCase
