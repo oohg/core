@@ -1,5 +1,5 @@
 /*
- * $Id: h_radio.prg,v 1.5 2005-10-01 15:35:10 guerra000 Exp $
+ * $Id: h_radio.prg,v 1.6 2005-10-22 06:08:12 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -142,7 +142,7 @@ Local ControlHandle
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor )
 
-   ControlHandle := InitRadioGroup( ::ContainerhWnd, aOptions[1], 0, x, y , '' , 0 , width, invisible, notabstop )
+   ControlHandle := InitRadioGroup( ::ContainerhWnd, aOptions[1], 0, x, y , '' , 0 , width, invisible, .T. )
 
    ::New( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
@@ -155,7 +155,7 @@ Local ControlHandle
    ::AutoSize := autosize
 
    // First item
-   oItem := TRadioItem():SetContainer( Self )
+   oItem := TRadioItem():SetForm( , Self )
    oItem:New( ControlHandle, , HelpId, ! Invisible, ToolTip )
    oItem:SetFont( , , bold, italic, underline, strikeout )
    oItem:SizePos( ::Row, ::Col, ::Width, Spacing )
@@ -170,7 +170,7 @@ Local ControlHandle
 
       ControlHandle := InitRadioButton( ::ContainerhWnd, aOptions[i], 0, ::Col, y , '' , 0 , width, invisible )
 
-      oItem := TRadioItem():SetContainer( Self )
+      oItem := TRadioItem():SetForm( , Self )
       oItem:New( ControlHandle, , HelpId, ! Invisible, ToolTip )
       oItem:SetFont( , , bold, italic, underline, strikeout )
       oItem:SizePos( y, ::Col, ::Width, Spacing )
@@ -179,10 +179,14 @@ Local ControlHandle
 
 	next i
 
-	if valtype (Value) <> 'U'
-      SendMessage( ::hWnd, BM_SETCHECK , BST_CHECKED , 0 )
+   if valtype( Value ) == "N" .AND. Value >= 1 .AND. Value <= Len( ::aItems )
+      SendMessage( ::aItems[ value ]:hWnd, BM_SETCHECK , BST_CHECKED , 0 )
       if notabstop .and. IsTabStop( ::aItems[ value ]:hWnd )
          SetTabStop( ::aItems[ value ]:hWnd, .f. )
+		endif
+   Else
+      if ! notabstop .and. ! IsTabStop( ::hWnd )
+         SetTabStop( ::hWnd, .T. )
 		endif
 	EndIf
 
