@@ -1,11 +1,92 @@
 /*
- * $Id: ChangeLog,v 1.24 2005-10-21 05:20:08 guerra000 Exp $
+ * $Id: ChangeLog,v 1.25 2005-10-22 06:11:42 guerra000 Exp $
 */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2005-10-22 01:11 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_textbox.prg
+    * When DATE or NUMERIC clauses are specified, ::lInsert will be .F.
+      (overwrite mode).
+    * When cursor reachs a mask position (when user is typing), cursor
+      will move automatically to next "editable" position.
+
+  * source/h_grid.prg
+    * Removed direct usage of TGridControl():oControl property.
+    + Added ::nDefWidth and ::nDefHeight. It will allow to know
+      the required area for controls.
+    * Inplace EDITCONTROL will take the grid's font.
+    * This.CellRowIndex installed in some "additional" places.
+
+  * source/h_browse.prg
+    - ::SetContainer() method removed. This will be done by ::SetForm().
+    ! Fixed some "::aReplaceField" and editcontrol creation typos.
+
+  * source/h_radio.prg
+    - ::SetContainer() method removed. This will be done by ::SetForm().
+    ! Fixed initial value assign and "first tabstop" functionality.
+
+  * source/h_controlmisc.prg
+  * source/h_menu.prg
+  * source/h_status.prg
+  * source/h_tab.prg
+  * source/h_toolbar.prg
+    - ::SetContainer() method removed. This will be done by ::SetForm().
+
+  + samples/oohg/gridcolumncontrols.prg
+    + Demo program for demostrate how to create "new" COLUMNCONTROLS
+      objects on grid.
+  + samples/oohg/browsecolumncontrols.dbf
+  + samples/oohg/browsecolumncontrols.prg
+    + Demo program for demostrate how to create "new" COLUMNCONTROLS
+      objects, and REPLACEFIELD clause, on browse.
+
+  * include/i_altsyntax.ch
+  * include/i_browse.ch
+  * include/i_button.ch
+  * include/i_checkbox.ch
+  * include/i_combobox.ch
+  * include/i_controlmisc.ch
+  * include/i_datepicker.ch
+  * include/i_edit.ch
+  * include/i_editbox.ch
+  * include/i_frame.ch
+  * include/i_graph.ch
+  * include/i_grid.ch
+  * include/i_hyperlink.ch
+  * include/i_image.ch
+  * include/i_ipaddress.ch
+  * include/i_keybd.ch
+  * include/i_label.ch
+  * include/i_listbox.ch
+  * include/i_media.ch
+  * include/i_menu.ch
+  * include/i_monthcal.ch
+  * include/i_progressbar.ch
+  * include/i_progressmeter.ch
+  * include/i_pseudofunc.ch
+  * include/i_radiogroup.ch
+  * include/i_region.ch
+  * include/i_report.ch
+  * include/i_richeditbox.ch
+  * include/i_scrsave.ch
+  * include/i_slider.ch
+  * include/i_socket.ch
+  * include/i_spinner.ch
+  * include/i_splitbox.ch
+  * include/i_status.ch
+  * include/i_tab.ch
+  * include/i_textbox.ch
+  * include/i_this.ch
+  * include/i_timer.ch
+  * include/i_toolbar.ch
+  * include/i_tree.ch
+  * include/i_window.ch
+    * Changed normal stringify result markers <""> to smart
+      stringify result markers <()>.
 
 2005-10-21 00:19 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_grid.prg
