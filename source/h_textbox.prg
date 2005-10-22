@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.14 2005-10-08 18:52:33 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.15 2005-10-22 06:10:47 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -558,45 +558,6 @@ Local cRet
       cRet := _OOHG_UnTransform( cCaption, ::PictureFunShow + ::PictureShow, ::DataType )
    EndIf
 Return cRet
-/*
-Local aValidMask, cPictureMask
-Local cValue, nPos, nDecimal
-   cValue := ""
-   IF ::lFocused
-      aValidMask := ::ValidMask
-      nDecimal := ::nDecimal
-      cPictureMask := ::PictureMask
-   Else
-      aValidMask := ::ValidMaskShow
-      nDecimal := ::nDecimalShow
-      cPictureMask := ::PictureShow
-   ENDIF
-
-   FOR nPos := 1 TO Len( aValidMask )
-      IF aValidMask[ nPos ]
-         cValue += SubStr( cCaption, nPos, 1 )
-      ElseIf nPos == nDecimal
-         cValue += "."
-      ENDIF
-   NEXT
-
-   IF ::DataType == "N"
-      cValue := StrTran( StrTran( StrTran( cValue, "$", " " ), "*", " " ), "(", " " )
-      IF ( "X" $ ::PictureFunShow .AND. Right( cCaption, 3 ) == " DB" ) .OR. ;
-         ( ")" $ ::PictureFunShow .AND. Right( cCaption, 1 ) == ")" )   .OR. ;
-         ( "(" $ ::PictureFunShow .AND. Right( cCaption, 1 ) == ")" )
-         cValue := "-" + cValue
-      Else
-         FOR nPos := 1 TO Len( cPictureMask )
-            IF SubStr( cPictureMask, nPos, 1 ) == "," .AND. SubStr( cCaption, nPos, 1 ) =="-"
-               cValue := "-" + cValue
-            ENDIF
-         NEXT
-      ENDIF
-   ENDIF
-
-Return cValue
-*/
 
 #pragma BEGINDUMP
 #include "hbapi.h"
@@ -658,6 +619,9 @@ Local aValidMask := ::ValidMask
       cText := TTextPicture_Clear( cText, nPos, nPos2 - nPos1, aValidMask, ::lInsert )
       IF TTextPicture_Events2_Key( Self, @cText, @nPos, CHR( wParam ), aValidMask, ::PictureMask, ::lInsert )
          ::Caption := cText
+         DO WHILE nPos < Len( aValidMask ) .AND. ! aValidMask[ nPos + 1 ]
+            nPos++
+         ENDDO
          SendMessage( ::hWnd, EM_SETSEL, nPos, nPos )
       EndIf
       Return 1
@@ -730,7 +694,7 @@ Local lChange := .F.
    DO WHILE Len( cString ) > 0 .AND. nPos < Len( cPictureMask )
       nPos++
       IF ! aValidMask[ nPos ] .AND. Left( cString, 1 ) == SubStr( cPictureMask, nPos, 1 )
-         cText := Left( cText, nPos - 1 ) + SubStr( cPictureMask, nPos, 1 ) + SubStr( cText, nPos + 1 )
+         cText := Left( cText, nPos - 1 ) + Left( cString, 1 ) + SubStr( cText, nPos + 1 )
          lChange := .T.
       Else
          lChange := TTextPicture_Events2_Key( Self, @cText, @nPos, Left( cString, 1 ), aValidMask, cPictureMask, lInsert ) .OR. lChange
@@ -964,7 +928,8 @@ METHOD Define( ControlName, ParentForm, x, y, inputmask, width, value, ;
       ::PictureMask := StrTran( ::PictureMask, ",", "" )
       ::nDecimal    := AT( ".", ::PictureMask )
       ::ValidMask   := ValidatePicture( ::PictureMask )
-      ::Value := value
+      ::Value       := value
+      ::lInsert     := .F.
    Endif
 
 Return Self
@@ -990,6 +955,7 @@ METHOD Define( ControlName, ParentForm, x, y, inputmask, width, value, ;
 *------------------------------------------------------------------------------*
 
    IF ValType( date ) == "L" .AND. date
+      ::lInsert := .F.
       inputmask := StrTran( StrTran( StrTran( StrTran( StrTran( StrTran( SET( _SET_DATEFORMAT ), "Y", "9" ), "y", "9" ), "M", "9" ), "m", "9" ), "D", "9" ), "d", "9" )
       If ValType( Value ) $ "CM"
          Value := CTOD( Value )
