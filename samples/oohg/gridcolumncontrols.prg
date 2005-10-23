@@ -1,5 +1,5 @@
 /*
- * $Id: gridcolumncontrols.prg,v 1.1 2005-10-22 06:05:45 guerra000 Exp $
+ * $Id: gridcolumncontrols.prg,v 1.2 2005-10-23 17:52:27 guerra000 Exp $
  */
 /*
  * ooHG Grid COLUMNCONTROLS demo. (c) 2005 Vic
@@ -94,9 +94,10 @@ Return aValue
 *-----------------------------------------------------------------------------*
 CLASS MyRadioGroup FROM TGridControl // CLASS TGridControlRadioGroup
 *-----------------------------------------------------------------------------*
-   DATA aItems INIT {}
+   DATA aItems   INIT {}
+   DATA nSpacing INIT 20
 
-   METHOD nDefHeight         BLOCK { |Self| ( Len( ::aItems ) * 20 ) }
+   METHOD nDefHeight         BLOCK { |Self| ( Len( ::aItems ) * ::nSpacing ) }
 
    METHOD New
    METHOD CreateWindow
@@ -105,9 +106,12 @@ CLASS MyRadioGroup FROM TGridControl // CLASS TGridControlRadioGroup
    METHOD GridValue(uValue) BLOCK { |Self,uValue| if( ( uValue >= 1 .AND. uValue <= Len( ::aItems ) ), ::aItems[ uValue ], "" ) }
 ENDCLASS
 
-METHOD New( aItems ) CLASS MyRadioGroup
+METHOD New( aItems, nSpacing ) CLASS MyRadioGroup
    If ValType( aItems ) == "A"
       ::aItems := aItems
+   EndIf
+   If ValType( nSpacing ) == "N"
+      ::nSpacing := nSpacing
    EndIf
 Return Self
 
@@ -119,7 +123,7 @@ METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS MyRad
    If ValType( uValue ) == "C"
       uValue := aScan( ::aItems, { |c| c == uValue } )
    EndIf
-   @ nRow,nCol RADIOGROUP 0 OBJ ::oControl PARENT &cWindow OPTIONS ::aItems WIDTH nWidth VALUE uValue SPACING 20
+   @ nRow,nCol RADIOGROUP 0 OBJ ::oControl PARENT &cWindow OPTIONS ::aItems WIDTH nWidth VALUE uValue SPACING ::nSpacing
 Return ::oControl
 
 METHOD Str2Val( uValue ) CLASS MyRadioGroup
