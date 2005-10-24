@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.24 2005-10-22 06:07:26 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.25 2005-10-24 04:57:36 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -104,6 +104,7 @@ STATIC _OOHG_lMultiple := .T.    // Allows the same applicaton runs more one ins
 #pragma BEGINDUMP
 #include "hbapi.h"
 #include "hbvm.h"
+#include "hbstack.h"
 #include <windows.h>
 #include "../include/oohg.h"
 #pragma ENDDUMP

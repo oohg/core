@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.15 2005-10-22 06:10:47 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.16 2005-10-24 04:57:36 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -562,6 +562,7 @@ Return cRet
 #pragma BEGINDUMP
 #include "hbapi.h"
 #include "hbvm.h"
+#include "hbstack.h"
 #include <windows.h>
 #include "../include/oohg.h"
 #define s_Super s_TText

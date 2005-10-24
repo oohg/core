@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.32 2005-10-12 22:34:02 declan2005 Exp $
+ * $Id: h_windows.prg,v 1.33 2005-10-24 04:57:36 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -110,6 +110,7 @@ STATIC _OOHG_GlobalRTL := .F.        // Force RTL functionality
 
 #include "hbapi.h"
 #include "hbvm.h"
+#include "hbstack.h"
 #include <windows.h>
 #include <olectl.h>
 #include "../include/oohg.h"

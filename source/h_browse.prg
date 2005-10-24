@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.28 2005-10-22 06:09:13 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.29 2005-10-24 04:57:36 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1493,6 +1493,7 @@ Return nil
 #define s_Super s_TGrid
 #include "hbapi.h"
 #include "hbvm.h"
+#include "hbstack.h"
 #include <windows.h>
 #include <commctrl.h>
 #include "../include/oohg.h"
