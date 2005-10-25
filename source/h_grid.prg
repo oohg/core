@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.26 2005-10-24 04:57:36 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.27 2005-10-25 05:17:12 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -872,22 +872,13 @@ HB_FUNC_STATIC( TGRID_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
 *-----------------------------------------------------------------------------*
 METHOD Events_Enter() CLASS TGrid
 *-----------------------------------------------------------------------------*
-Local lWhen
-
    If ::InPlace
-      If ValType( ::ReadOnly ) == "A" .AND. Len( ::ReadOnly ) >= 1 .AND. ValType( ::ReadOnly[ 1 ] ) == "L" .AND. ::ReadOnly[ 1 ]
-         // First cell is readonly
-      ElseIf ValType( ::aWhen ) == "A" .AND. Len( ::aWhen ) >= 1 .AND. ValType( ( lWhen := _OOHG_EVAL( ::aWhen[ 1 ] ) ) ) == "L" .AND. ! lWhen
-         // First cell denies WHEN clause
-      Else
-         ::EditCell()
-      EndIf
+      ::EditAllCells()
    ElseIf ::AllowEdit
       ::EditItem()
    Else
       ::DoEvent( ::OnDblClick )
    EndIf
-
 Return nil
 
 *-----------------------------------------------------------------------------*

@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.29 2005-10-24 04:57:36 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.30 2005-10-25 05:17:12 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1474,19 +1474,15 @@ RETURN ( hWnd == ::hWnd ) .OR. ;
 *-----------------------------------------------------------------------------*
 METHOD Events_Enter() CLASS TBrowse
 *-----------------------------------------------------------------------------*
-
-   if ::AllowEdit .AND. Select( ::WorkArea ) != 0
-      if ::InPlace
-         ::EditAllCells()
-      Else
-         ::EditItem( .f. )
-      EndIf
+   If Select( ::WorkArea ) != 0
+      // Do nothing
+   ElseIf ::InPlace
+      ::EditAllCells()
+   ElseIf ::AllowEdit
+      ::EditItem( .f. )
    Else
-
       ::DoEvent( ::OnDblClick )
-
    Endif
-
 Return nil
 
 #pragma BEGINDUMP
