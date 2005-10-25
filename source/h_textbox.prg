@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.16 2005-10-24 04:57:36 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.17 2005-10-25 05:17:44 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -101,6 +101,8 @@
 CLASS TText FROM TLabel
    DATA Type          INIT "TEXT" READONLY
    DATA lSetting      INIT .F.
+   DATA nMaxLenght    INIT 0
+   DATA lAutoSkip     INIT .F.
 
    METHOD Define
    METHOD Define2
@@ -150,8 +152,11 @@ local break
 	DEFAULT uChange    TO ""
 	DEFAULT uGotFocus  TO ""
 	DEFAULT uLostFocus TO ""
-   DEFAULT nMaxLenght TO 0
 	DEFAULT uEnter     TO ""
+
+   If ValType( nMaxLenght ) == "N" .AND. nMaxLenght >= 0
+      ::nMaxLenght := Int( nMaxLenght )
+   EndIf
 
    IF ValType( nStyle ) != "N"
       nStyle := 0
@@ -171,7 +176,6 @@ local break
              IF( Valtype( notabstop ) != "L" .OR. !notabstop, WS_TABSTOP,   0 )
 
 	// Creates the control window.
-*   nControlHandle := InitTextBox( ::ContainerhWnd, 0, nx, ny, nWidth, nHeight, nStyle, nMaxLenght, ::lRtl )
    if valtype(nx) == "U" .or. valtype(ny) == "U"
 
       if _OOHG_SplitForceBreak
@@ -179,13 +183,13 @@ local break
       endif
       _OOHG_SplitForceBreak := .F.
 
-      nControlHandle := InitTextBox( ::Parent:ReBarHandle, 0, nx, ny, nWidth, nHeight, nStyle, nMaxLenght, ::lRtl )
+      nControlHandle := InitTextBox( ::Parent:ReBarHandle, 0, nx, ny, nWidth, nHeight, nStyle, ::nMaxLenght, ::lRtl )
 
       AddSplitBoxItem ( nControlhandle , ::Parent:ReBarHandle, nWidth, break , , , , _OOHG_ActiveSplitBoxInverted )
 
 	Else
 
-       nControlHandle := InitTextBox( ::ContainerhWnd, 0, nx, ny, nWidth, nHeight, nStyle, nMaxLenght, ::lRtl )
+       nControlHandle := InitTextBox( ::ContainerhWnd, 0, nx, ny, nWidth, nHeight, nStyle, ::nMaxLenght, ::lRtl )
 
 	endif
 
@@ -265,23 +269,17 @@ METHOD Events_Command( wParam ) CLASS TText
 Local Hi_wParam := HIWORD( wParam )
 
    if Hi_wParam == EN_CHANGE
-
       If ::Transparent
-
          RedrawWindowControlRect( ::ContainerhWnd, ::ContainerRow, ::ContainerCol, ::ContainerRow + ::Height, ::ContainerCol + ::Width )
-
       EndIf
-
       IF ::lSetting
-
          ::lSetting := .F.
-
       Else
-
          ::DoEvent( ::OnChange )
-
+         If ::lAutoSkip .AND. ::nMaxLenght > 0 .AND. HiWord( SendMessage( ::hWnd, EM_GETSEL, 0, 0 ) ) >= ::nMaxLenght
+            _SetNextFocus()
+         EndIf
       EndIf
-
       Return nil
 
    elseif Hi_wParam == EN_KILLFOCUS
@@ -625,6 +623,9 @@ Local aValidMask := ::ValidMask
          ENDDO
          SendMessage( ::hWnd, EM_SETSEL, nPos, nPos )
       EndIf
+      If ::lAutoSkip .AND. nPos >= LEN( aValidMask )
+         _SetNextFocus()
+      EndIf
       Return 1
 
    ElseIf nMsg == WM_KEYDOWN .AND. wParam == VK_END .AND. GetKeyStateXtra()
@@ -647,6 +648,10 @@ Local aValidMask := ::ValidMask
          ::Caption := cText
          SendMessage( ::hWnd, EM_SETSEL, nPos, nPos )
       ENDIF
+      // Must ::lAutoSkip works when PASTE?
+      // If ::lAutoSkip .AND. nPos >= LEN( aValidMask )
+      //    _SetNextFocus()
+      // EndIf
       Return 1
 
    Endif
