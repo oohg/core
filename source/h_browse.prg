@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.30 2005-10-25 05:17:12 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.31 2005-10-26 02:37:56 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1474,7 +1474,7 @@ RETURN ( hWnd == ::hWnd ) .OR. ;
 *-----------------------------------------------------------------------------*
 METHOD Events_Enter() CLASS TBrowse
 *-----------------------------------------------------------------------------*
-   If Select( ::WorkArea ) != 0
+   If Select( ::WorkArea ) == 0
       // Do nothing
    ElseIf ::InPlace
       ::EditAllCells()
