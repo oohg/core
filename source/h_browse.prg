@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.31 2005-10-26 02:37:56 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.32 2005-10-27 05:15:08 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -751,7 +751,7 @@ Local oEditControl, uOldValue, cMemVar, bReplaceField
       cTitle := _OOHG_BRWLangButton[ 1 ]
       ( ::WorkArea )->( DbGoTo( 0 ) )
    Else
-      cTitle := _OOHG_BRWLangButton[ 2 ]
+      cTitle := if( ValType( ::cRowEditTitle ) $ "CM", ::cRowEditTitle, _OOHG_BRWLangButton[ 2 ] )
       ( ::WorkArea )->( DbGoTo( ::aRecMap[ nItem ] ) )
    EndIf
 
@@ -828,136 +828,6 @@ Local oEditControl, uOldValue, cMemVar, bReplaceField
    ::SetFocus()
 
 Return Nil
-
-/*
-   DEFINE WINDOW _EditRecord OBJ oEditRecord ;
-                 AT row,col ;
-                 WIDTH 310 ;
-                 HEIGHT h - 19 + GetTitleHeight() ;
-                 TITLE Title ;
-                 MODAL NOSIZE ;
-                 ON INIT oWnd:Control_1:SetFocus() ;
-
-      ON KEY ALT+O ACTION ( aResults := _EditRecordOk( aControls, aValid, aValidMessages, oEditRecord ) )
-      ON KEY ALT+C ACTION oEditRecord:Release()
-
-      DEFINE SPLITBOX
-
-         DEFINE WINDOW _Split_1 OBJ oWnd;
-				WIDTH 310 ;
-				HEIGHT H - 90 ;
-				VIRTUAL HEIGHT TH ;
-				SPLITCHILD NOCAPTION FONT 'Arial' SIZE 10 BREAK FOCUSED
-
-            ON KEY ALT+O ACTION ( aResults := _EditRecordOk( aControls, aValid, aValidMessages, oEditRecord ) )
-            ON KEY ALT+C ACTION oEditRecord:Release()
-
-            ControlRow :=  10
-
-            For i := 1 to l
-
-               LN := 'Label_' + Alltrim(Str(i))
-               CN := 'Control_' + Alltrim(Str(i))
-
-               @ ControlRow , 10 LABEL &LN OF _Split_1 VALUE aLabels [i] WIDTH 90
-
-               do case
-// *
-               case ValType( ::Picture ) == 'A' .AND. Len( ::Picture ) >= i .AND. ValType( ::Picture[ i ] ) $ "CM"
-
-                  @ ControlRow , 120 TEXTBOX &CN  OF _Split_1 VALUE aValues[i] WIDTH 140 FONT 'Arial' SIZE 10 PICTURE ::Picture[ i ]
-                  ControlRow := ControlRow + 30
-** /
-
-               case ValType ( aValues [i] ) == 'L'
-
-                  @ ControlRow , 120 CHECKBOX &CN OF _Split_1 CAPTION '' VALUE aValues[i]
-                  ControlRow := ControlRow + 30
-
-               case ValType ( aValues [i] ) == 'D'
-
-                  @ ControlRow , 120 TEXTBOX &CN  OF _Split_1 VALUE aValues[i] WIDTH 140 DATE
-                  ControlRow := ControlRow + 30
-
-               case ValType ( aValues [i] ) == 'N'
-
-                  If ValType ( aFormats [i] ) == 'A'
-                     @ ControlRow , 120 COMBOBOX &CN  OF _Split_1 ITEMS aFormats[i] VALUE aValues[i] WIDTH 140  FONT 'Arial' SIZE 10
-                     ControlRow := ControlRow + 30
-
-                  ElseIf  ValType ( aFormats [i] ) $ 'CM'
-
-                     If AT ( '.' , aFormats [i] ) > 0
-                        @ ControlRow , 120 TEXTBOX &CN  OF _Split_1 VALUE aValues[i] WIDTH 140 FONT 'Arial' SIZE 10 NUMERIC INPUTMASK aFormats [i]
-                     Else
-                        @ ControlRow , 120 TEXTBOX &CN  OF _Split_1 VALUE aValues[i] WIDTH 140 FONT 'Arial' SIZE 10 MAXLENGTH Len(aFormats [i]) NUMERIC
-                     EndIf
-
-                     ControlRow := ControlRow + 30
-                  Endif
-
-               case ValType ( aValues [i] ) == 'C'
-
-						If ValType ( aFormats [i] ) == 'N'
-							If  aFormats [i] <= 32
-								@ ControlRow , 120 TEXTBOX &CN  OF _Split_1 VALUE aValues[i] WIDTH 140 FONT 'Arial' SIZE 10 MAXLENGTH aFormats [i]
-								ControlRow := ControlRow + 30
-							Else
-								@ ControlRow , 120 EDITBOX &CN  OF _Split_1 WIDTH 140 HEIGHT 90 VALUE aValues[i] FONT 'Arial' SIZE 10 MAXLENGTH aFormats[i]
-								ControlRow := ControlRow + 94
-							EndIf
-                  ElseIf ValType ( aFormats [i] ) == 'C' .OR. aFormats [i] == "M"
-                     @ ControlRow , 120 EDITBOX &CN  OF _Split_1 WIDTH 140 HEIGHT 90 VALUE aValues[i] FONT 'Arial' SIZE 10 MAXLENGTH aFormats[i]
-                     ControlRow := ControlRow + 94
-						EndIf
-
-					case ValType ( aValues [i] ) == 'M'
-
-						@ ControlRow , 120 EDITBOX &CN  OF _Split_1 WIDTH 140 HEIGHT 90 VALUE aValues[i] FONT 'Arial' SIZE 10
-						ControlRow := ControlRow + 94
-
-					endcase
-
-               oControl := oWnd:Control( CN )
-               oControl:OnLostFocus := { || _WHENEVAL( aControls ) }
-               oControl:Block := &( "{ |x| IF( PCOUNT() == 1, " + TmpNames[ i ] + " :=  x, " + TmpNames[ i ] + " ) }" )
-               IF ValType( aWhen ) == "A" .AND. Len( aWhen ) >= i
-                  oControl:Cargo := aWhen[ i ]
-               ENDIF
-               aControls[ i ] := oControl
-
-               If ValType( aReadOnly ) == 'A' .AND. Len( aReadOnly ) >= i .AND. ValType( aReadOnly[ i ] ) == "L" .AND. aReadOnly[ i ]
-                  oControl:Disabled()
-                  oControl:Cargo := { || .F. }
-					EndIf
-
-				Next i
-
-			END WINDOW
-
-         _WHENEVAL( aControls )
-
-			DEFINE WINDOW _Split_2 ;
-				WIDTH 300 ;
-				HEIGHT 50 ;
-				SPLITCHILD NOCAPTION FONT 'Arial' SIZE 10 BREAK
-
-				@ 10 , 40 BUTTON BUTTON_1 ;
-				OF _Split_2 ;
-            CAPTION _OOHG_BRWLangButton[4] ;
-            ACTION ( aResults := _EditRecordOk( aControls, aValid, aValidMessages, oEditRecord ) )
-
-				@ 10 , 150 BUTTON BUTTON_2 ;
-				OF _Split_2 ;
-            CAPTION _OOHG_BRWLangButton[3] ;
-            ACTION oEditRecord:Release()
-
-			END WINDOW
-
-		END SPLITBOX
-
-	END WINDOW
-*/
 
 *-----------------------------------------------------------------------------*
 METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar ) CLASS TBrowse
