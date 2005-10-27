@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.11 2005-10-01 15:35:10 guerra000 Exp $
+ * $Id: i_windefs.ch,v 1.12 2005-10-27 05:15:49 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -527,3 +527,7 @@
 #define PBM_GETPOS   1032
 #define SC_CLOSE	61536
 #define TTN_NEEDTEXT    (-520)
+
+// System metrics
+#define SM_CXFULLSCREEN         16
+#define SM_CYFULLSCREEN         17

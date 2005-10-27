@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.18 2005-10-10 00:32:56 guerra000 Exp $
+ * $Id: c_windows.c,v 1.19 2005-10-27 05:15:49 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1422,4 +1422,9 @@ HB_FUNC( _UPDATERTL )
    }
 
    hb_ret();
+}
+
+HB_FUNC( GETSYSTEMMETRICS )
+{
+    hb_retni( GetSystemMetrics( hb_parni( 1 ) ) );
 }
