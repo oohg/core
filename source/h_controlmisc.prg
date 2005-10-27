@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.25 2005-10-24 04:57:36 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.26 2005-10-27 05:16:46 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1799,7 +1799,6 @@ CLASS TControl FROM TWindow
    DATA lVisible    INIT .T.
    DATA cToolTip    INIT ""
    DATA FontHandle  INIT 0
-   DATA BrushHandle INIT 0
    DATA AuxHandle   INIT 0
    DATA Transparent INIT .F.
    DATA Visible     INIT .T.

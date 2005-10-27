@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.33 2005-10-24 04:57:36 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.34 2005-10-27 05:16:46 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -146,6 +146,7 @@ CLASS TWindow
    DATA Cargo          INIT nil
    DATA lEnabled       INIT .T.
    DATA aControls      INIT {}
+   DATA BrushHandle    INIT 0
 
    DATA OnClick        INIT nil
    DATA OnGotFocus     INIT nil
@@ -290,7 +291,6 @@ CLASS TForm FROM TWindow
    DATA LastFocusedControl INIT 0
    DATA AutoRelease    INIT .F.
    DATA ActivateCount  INIT { 0 }
-   DATA BrushHandle    INIT 0
    DATA ReBarHandle    INIT 0
    DATA BrowseList     INIT {}
    DATA aHotKeys       INIT {}  // { Id, Mod, Key, Action }
