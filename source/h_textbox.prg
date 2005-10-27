@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.17 2005-10-25 05:17:44 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.18 2005-10-27 05:13:04 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -119,9 +119,9 @@ ENDCLASS
 *-----------------------------------------------------------------------------*
 METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, cValue, ;
                cFontName, nFontSize, cToolTip, nMaxLenght, lUpper, lLower, ;
-               lPassword, uLostFocus, uGotFocus, uChange , uEnter , right  , ;
-               HelpId, readonly, bold, italic, underline, strikeout, field , ;
-               backcolor, fontcolor, invisible, notabstop, lRtl ) CLASS TText
+               lPassword, uLostFocus, uGotFocus, uChange, uEnter, right, ;
+               HelpId, readonly, bold, italic, underline, strikeout, field, ;
+               backcolor, fontcolor, invisible, notabstop, lRtl, lAutoSkip ) CLASS TText
 *-----------------------------------------------------------------------------*
 Local nStyle := ES_AUTOHSCROLL
 
@@ -132,7 +132,8 @@ Local nStyle := ES_AUTOHSCROLL
               cFontName, nFontSize, cToolTip, nMaxLenght, lPassword, ;
               uLostFocus, uGotFocus, uChange, uEnter, right, HelpId, ;
               readonly, bold, italic, underline, strikeout, field, ;
-              backcolor, fontcolor, invisible, notabstop, nStyle, lRtl )
+              backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, ;
+              lAutoSkip )
 
 Return Self
 
@@ -141,7 +142,8 @@ METHOD Define2( cControlName, cParentForm, nx, ny, nWidth, nHeight, cValue, ;
                 cFontName, nFontSize, cToolTip, nMaxLenght, lPassword, ;
                 uLostFocus, uGotFocus, uChange, uEnter, right, HelpId, ;
                 readonly, bold, italic, underline, strikeout, field, ;
-                backcolor, fontcolor, invisible, notabstop, nStyle, lRtl ) CLASS TText
+                backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, ;
+                lAutoSkip ) CLASS TText
 *-----------------------------------------------------------------------------*
 Local nControlHandle
 local break
@@ -201,6 +203,9 @@ local break
    ::OnGotFocus :=  uGotFocus
    ::OnChange   :=  uChange
    ::OnDblClick := uEnter
+   If ValType( lAutoSkip ) == "L"
+      ::lAutoSkip := lAutoSkip
+   EndIf
 
    If ValType( Field ) $ 'CM' .AND. ! empty( Field )
       ::VarName := alltrim( Field )
@@ -329,7 +334,7 @@ METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, uValue, ;
                cInputMask, cFontName, nFontSize, cToolTip, uLostFocus, ;
                uGotFocus, uChange, uEnter, right, HelpId, readonly, bold, ;
                italic, underline, strikeout, field, backcolor, fontcolor, ;
-               invisible, notabstop, lRtl ) CLASS TTextPicture
+               invisible, notabstop, lRtl, lAutoSkip ) CLASS TTextPicture
 *-----------------------------------------------------------------------------*
 Local nStyle := ES_AUTOHSCROLL
 
@@ -345,7 +350,8 @@ Local nStyle := ES_AUTOHSCROLL
               cFontName, nFontSize, cToolTip, 0, .F., ;
               uLostFocus, uGotFocus, uChange, uEnter, right, HelpId, ;
               readonly, bold, italic, underline, strikeout, field, ;
-              backcolor, fontcolor, invisible, notabstop, nStyle, lRtl )
+              backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, ;
+              lAutoSkip )
 
 Return Self
 
@@ -825,7 +831,7 @@ METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, cValue, ;
                cFontName, nFontSize, cToolTip, nMaxLenght, lUpper, lLower, ;
                lPassword, uLostFocus, uGotFocus, uChange , uEnter , right  , ;
                HelpId, readonly, bold, italic, underline, strikeout, field , ;
-               backcolor , fontcolor , invisible , notabstop, lRtl ) CLASS TTextNum
+               backcolor , fontcolor , invisible , notabstop, lRtl, lAutoSkip ) CLASS TTextNum
 *-----------------------------------------------------------------------------*
 Local nStyle := ES_NUMBER + ES_AUTOHSCROLL
 
@@ -836,7 +842,8 @@ Local nStyle := ES_NUMBER + ES_AUTOHSCROLL
               cFontName, nFontSize, cToolTip, nMaxLenght, lPassword, ;
               uLostFocus, uGotFocus, uChange, uEnter, right, HelpId, ;
               readonly, bold, italic, underline, strikeout, field, ;
-              backcolor, fontcolor, invisible, notabstop, nStyle, lRtl )
+              backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, ;
+              lAutoSkip )
 
 Return Self
 
@@ -899,7 +906,7 @@ METHOD Define( ControlName, ParentForm, x, y, inputmask, width, value, ;
                fontname, fontsize, tooltip, lostfocus, gotfocus, change, ;
                height, enter, rightalign, HelpId, Format, bold, italic, ;
                underline, strikeout, field, backcolor, fontcolor, readonly, ;
-               invisible, notabstop, lRtl ) CLASS TTextMasked
+               invisible, notabstop, lRtl, lAutoSkip ) CLASS TTextMasked
 *------------------------------------------------------------------------------*
 
    If ValType( Value ) == "U"
@@ -928,7 +935,7 @@ METHOD Define( ControlName, ParentForm, x, y, inputmask, width, value, ;
                Format + inputmask, fontname, fontsize, tooltip, lostfocus, ;
                gotfocus, change, enter, rightalign, HelpId, readonly, bold, ;
                italic, underline, strikeout, field, backcolor, fontcolor, ;
-               invisible, notabstop, lRtl )
+               invisible, notabstop, lRtl, lAutoSkip )
 
    If ::DataType == "N"
       ::PictureMask := StrTran( ::PictureMask, ",", "" )
@@ -957,7 +964,7 @@ METHOD Define( ControlName, ParentForm, x, y, inputmask, width, value, ;
                fontname, fontsize, tooltip, lostfocus, gotfocus, change, ;
                height, enter, rightalign, HelpId, bold, italic, underline, ;
                strikeout, field, backcolor, fontcolor, date, readonly, ;
-               invisible, notabstop, lRtl ) CLASS TTextCharMask
+               invisible, notabstop, lRtl, lAutoSkip ) CLASS TTextCharMask
 *------------------------------------------------------------------------------*
 
    IF ValType( date ) == "L" .AND. date
@@ -976,6 +983,6 @@ METHOD Define( ControlName, ParentForm, x, y, inputmask, width, value, ;
                inputmask, fontname, fontsize, tooltip, lostfocus, ;
                gotfocus, change, enter, rightalign, HelpId, readonly, bold, ;
                italic, underline, strikeout, field, backcolor, fontcolor, ;
-               invisible, notabstop, lRtl )
+               invisible, notabstop, lRtl, lAutoSkip )
 
 Return Self

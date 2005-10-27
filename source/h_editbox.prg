@@ -1,5 +1,5 @@
 /*
- * $Id: h_editbox.prg,v 1.4 2005-10-01 15:35:10 guerra000 Exp $
+ * $Id: h_editbox.prg,v 1.5 2005-10-27 05:13:04 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -124,7 +124,7 @@ empty(break)
               fontname, fontsize, tooltip, maxlenght, .f., ;
               lostfocus, gotfocus, change, nil, .f., HelpId, ;
               readonly, bold, italic, underline, strikeout, field, ;
-              backcolor, fontcolor, invisible, notabstop, nStyle, lRtl )
+              backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, .F. )
 
 /*
 	if valtype(x) == "U" .or. valtype(y) == "U"

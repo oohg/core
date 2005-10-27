@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.19 2005-10-22 06:04:31 guerra000 Exp $
+ * $Id: i_altsyntax.ch,v 1.20 2005-10-27 05:13:04 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -199,6 +199,7 @@ MEMVAR _OOHG_ActiveControlLowerCase
 MEMVAR _OOHG_ActiveControlNumeric
 MEMVAR _OOHG_ActiveControlPassword
 MEMVAR _OOHG_ActiveControlInputMask
+MEMVAR _OOHG_ActiveControlAutoSkip
 
 MEMVAR _OOHG_ActiveControlWorkArea
 MEMVAR _OOHG_ActiveControlFields
@@ -936,6 +937,10 @@ Text Box
 	=>;
         _OOHG_ActiveControlFormat                := <format>
 
+#xcommand AUTOSKIP <autoskip> ;
+	=>;
+        _OOHG_ActiveControlAutoSkip              := <autoskip>
+
 #xcommand END TEXTBOX;
 	=>;
         iif( _OOHG_ActiveControlPicture == Nil ,;
@@ -971,7 +976,8 @@ Text Box
                         _OOHG_ActiveControlFontColor , ;
                         _OOHG_ActiveControlInvisible , ;
                         _OOHG_ActiveControlNoTabStop , ;
-                        _OOHG_ActiveControlRtl );
+                        _OOHG_ActiveControlRtl , ;
+                        _OOHG_ActiveControlAutoSkip );
               ,;
                    iif( _OOHG_ActiveControlNumeric, ;
                         TTextMasked():Define( ;
@@ -997,8 +1003,44 @@ Text Box
                         _OOHG_ActiveControlFontItalic , ;
                         _OOHG_ActiveControlFontUnderLine , ;
                         _OOHG_ActiveControlFontStrikeOut,;
-                        _OOHG_ActiveControlField,_OOHG_ActiveControlBackColor,_OOHG_ActiveControlFontColor,_OOHG_ActiveControlReadonly,_OOHG_ActiveControlInvisible,_OOHG_ActiveControlNoTabStop, _OOHG_ActiveControlRtl) , ;
-                     TTextCharMask():Define( _OOHG_ActiveControlName , _OOHG_ActiveControlOf, _OOHG_ActiveControlCol, _OOHG_ActiveControlRow, _OOHG_ActiveControlInputMask , _OOHG_ActiveControlWidth , _OOHG_ActiveControlValue , _OOHG_ActiveControlFont , _OOHG_ActiveControlSize , _OOHG_ActiveControlTooltip , _OOHG_ActiveControlOnLostFocus  , _OOHG_ActiveControlOnGotFocus , _OOHG_ActiveControlOnChange , _OOHG_ActiveControlHeight , _OOHG_ActiveControlOnEnter , _OOHG_ActiveControlRightAlign  , _OOHG_ActiveControlHelpId  , _OOHG_ActiveControlFontBold , _OOHG_ActiveControlFontItalic , _OOHG_ActiveControlFontUnderLine , _OOHG_ActiveControlFontStrikeOut , _OOHG_ActiveControlField , _OOHG_ActiveControlBackColor,_OOHG_ActiveControlFontColor,_OOHG_ActiveControlDateType,_OOHG_ActiveControlReadonly,_OOHG_ActiveControlInvisible,_OOHG_ActiveControlNoTabStop, _OOHG_ActiveControlRtl) ) ;
+                        _OOHG_ActiveControlField, ;
+                        _OOHG_ActiveControlBackColor, ;
+                        _OOHG_ActiveControlFontColor, ;
+                        _OOHG_ActiveControlReadonly, ;
+                        _OOHG_ActiveControlInvisible, ;
+                        _OOHG_ActiveControlNoTabStop, ;
+                        _OOHG_ActiveControlRtl, ;
+                        _OOHG_ActiveControlAutoSkip ) , ;
+                     TTextCharMask():Define( _OOHG_ActiveControlName, ;
+                        _OOHG_ActiveControlOf, ;
+                        _OOHG_ActiveControlCol, ;
+                        _OOHG_ActiveControlRow, ;
+                        _OOHG_ActiveControlInputMask , ;
+                        _OOHG_ActiveControlWidth , ;
+                        _OOHG_ActiveControlValue , ;
+                        _OOHG_ActiveControlFont , ;
+                        _OOHG_ActiveControlSize , ;
+                        _OOHG_ActiveControlTooltip , ;
+                        _OOHG_ActiveControlOnLostFocus  , ;
+                        _OOHG_ActiveControlOnGotFocus , ;
+                        _OOHG_ActiveControlOnChange , ;
+                        _OOHG_ActiveControlHeight , ;
+                        _OOHG_ActiveControlOnEnter , ;
+                        _OOHG_ActiveControlRightAlign  , ;
+                        _OOHG_ActiveControlHelpId  , ;
+                        _OOHG_ActiveControlFontBold , ;
+                        _OOHG_ActiveControlFontItalic , ;
+                        _OOHG_ActiveControlFontUnderLine , ;
+                        _OOHG_ActiveControlFontStrikeOut , ;
+                        _OOHG_ActiveControlField , ;
+                        _OOHG_ActiveControlBackColor,;
+                        _OOHG_ActiveControlFontColor,;
+                        _OOHG_ActiveControlDateType,;
+                        _OOHG_ActiveControlReadonly,;
+                        _OOHG_ActiveControlInvisible,;
+                        _OOHG_ActiveControlNoTabStop, ;
+                        _OOHG_ActiveControlRtl, ;
+                        _OOHG_ActiveControlAutoSkip ) ) ;
               ) ;
         ,;
               TTextPicture():Define( ;
@@ -1029,7 +1071,8 @@ Text Box
                         _OOHG_ActiveControlFontColor ,;
                         _OOHG_ActiveControlInvisible ,;
                         _OOHG_ActiveControlNoTabStop ,;
-                        _OOHG_ActiveControlRtl ) ;
+                        _OOHG_ActiveControlRtl ,;
+                        _OOHG_ActiveControlAutoSkip ) ;
 	)
 
 /*----------------------------------------------------------------------------

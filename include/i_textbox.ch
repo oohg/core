@@ -1,5 +1,5 @@
 /*
- * $Id: i_textbox.ch,v 1.5 2005-10-22 06:04:31 guerra000 Exp $
+ * $Id: i_textbox.ch,v 1.6 2005-10-27 05:13:04 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -124,13 +124,17 @@
 			[ <notabstop: NOTABSTOP> ]	;
                         [ <rtl: RTL> ]                  ;
                         [ HELPID <helpid> ] 		;
+                        [ AUTOSKIP <autoskip> ]         ;
          =>;
 [ <obj> := ] iif( <.numeric.>, TTextNum(), TText() ):Define( ;
                         <(name)>, <(parent)>, <col>, <row>, <width>, <height>, <value>, ;
                         <fontname>, <fontsize>, <tooltip>, <maxlenght>, ;
                         <.upper.>, <.lower.>, <.password.>, ;
                         <{lostfocus}>, <{gotfocus}>, <{change}>, <{enter}>, ;
-                        <.RightAlign.>, <helpid>, <.readonly.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <(field)> , <backcolor> , <fontcolor> , <.invisible.> , <.notabstop.> , <.rtl.> )
+                        <.RightAlign.>, <helpid>, <.readonly.> ,<.bold.>, ;
+                        <.italic.>, <.underline.>, <.strikeout.> , <(field)> , ;
+                        <backcolor> , <fontcolor> , <.invisible.> , <.notabstop.> , ;
+                        <.rtl.>, <.autoskip.> )
 
 
 // TEXTBOX ( NUMERIC INPUTMASK )
@@ -164,8 +168,15 @@
 		[ <notabstop: NOTABSTOP> ]	;
 		[ HELPID <helpid> ] 		;
                 [ <rtl: RTL> ]                  ;
+                [ AUTOSKIP <autoskip> ]         ;
 	=>;
-[ <obj> := ] TTextMasked():Define( <(name)>, <(parent)>, <col>, <row>, <inputmask> , <w> , <value> , <fontname> , <fontsize> , <tooltip>   , <{lostfocus}>  , <{gotfocus}> , <{change}> , <height> , <{enter}> , <.RightAlign.>  , <helpid> , <format> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.>  , <(field)>  , <backcolor> , <fontcolor> , <.readonly.> , <.invisible.> , <.notabstop.> , <.rtl.> )
+[ <obj> := ] TTextMasked():Define( <(name)>, <(parent)>, <col>, <row>, <inputmask> , ;
+                        <w> , <value> , <fontname> , <fontsize> , <tooltip> , ;
+                        <{lostfocus}>  , <{gotfocus}> , <{change}> , <height> , ;
+                        <{enter}> , <.RightAlign.>  , <helpid> , <format> , <.bold.>, ;
+                        <.italic.>, <.underline.>, <.strikeout.>  , <(field)>  , ;
+                        <backcolor> , <fontcolor> , <.readonly.> , <.invisible.> , ;
+                        <.notabstop.> , <.rtl.> , <.autoskip.> )
 
 // TEXTBOX ( CHARACTER INPUTMASK )
 
@@ -196,8 +207,15 @@
 		[ <notabstop: NOTABSTOP> ]	;
 		[ HELPID <helpid> ] 		;
                 [ <rtl: RTL> ]                  ;
+                [ AUTOSKIP <autoskip> ]         ;
 	=>;
-[ <obj> := ] TTextCharMask():Define( <(name)>, <(parent)>, <col>, <row>, <inputmask> , <w> , <value> , <fontname> , <fontsize> , <tooltip>   , <{lostfocus}>  , <{gotfocus}> , <{change}> , <height> , <{enter}> , <.RightAlign.>  , <helpid> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.>  , <(field)>  , <backcolor> , <fontcolor> , .f. , <.readonly.>  , <.invisible.> , <.notabstop.> , <.rtl.> )
+[ <obj> := ] TTextCharMask():Define( <(name)>, <(parent)>, <col>, <row>, <inputmask> , ;
+                        <w> , <value> , <fontname> , <fontsize> , <tooltip> , ;
+                        <{lostfocus}>  , <{gotfocus}> , <{change}> , <height> , ;
+                        <{enter}> , <.RightAlign.>  , <helpid> ,<.bold.>, <.italic.>, ;
+                        <.underline.>, <.strikeout.> , <(field)> , <backcolor> , ;
+                        <fontcolor> , .f. , <.readonly.> , <.invisible.> , ;
+                        <.notabstop.> , <.rtl.> , <.autoskip.> )
 
 // TEXTBOX ( DATE TYPE )
 
@@ -228,8 +246,14 @@
 		[ <notabstop: NOTABSTOP> ]	;
 		[ HELPID <helpid> ] 		;
                 [ <rtl: RTL> ]                  ;
+                [ AUTOSKIP <autoskip> ]         ;
 	=>;
-[ <obj> := ] TTextCharMask():Define( <(name)>, <(parent)>, <col>, <row>, "" , <w> , <value> , <fontname> , <fontsize> , <tooltip>   , <{lostfocus}>  , <{gotfocus}> , <{change}> , <height> , <{enter}> , <.RightAlign.>  , <helpid> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.>  , <(field)>  , <backcolor> , <fontcolor> , <.date.> , <.readonly.>  , <.invisible.> , <.notabstop.> , <.rtl.> )
+[ <obj> := ] TTextCharMask():Define( <(name)>, <(parent)>, <col>, <row>, "" , <w> , ;
+                        <value> , <fontname> , <fontsize> , <tooltip> , <{lostfocus}> , ;
+                        <{gotfocus}> , <{change}> , <height> , <{enter}> , <.RightAlign.> , ;
+                        <helpid> , <.bold.>, <.italic.>, <.underline.>, <.strikeout.> , ;
+                        <(field)> , <backcolor> , <fontcolor> , <.date.> , <.readonly.> , ;
+                        <.invisible.> , <.notabstop.> , <.rtl.> , <.autoskip.> )
 
 // TEXTBOX ( PICTURE MASK )
 
@@ -260,5 +284,11 @@
 		[ <notabstop: NOTABSTOP> ]	;
 		[ HELPID <helpid> ] 		;
                 [ <rtl: RTL> ]                  ;
+                [ AUTOSKIP <autoskip> ]         ;
 	=>;
-[ <obj> := ] TTextPicture():Define( <(name)>, <(parent)>, <col>, <row>, <w> , <height> , <value> , <inputmask> , <fontname> , <fontsize> , <tooltip>   , <{lostfocus}>  , <{gotfocus}> , <{change}> , <{enter}> , <.RightAlign.>  , <helpid> , <.readonly.>  , <.bold.>, <.italic.>, <.underline.>, <.strikeout.>  , <(field)>  , <backcolor> , <fontcolor> , <.invisible.> , <.notabstop.> , <.rtl.> )
+[ <obj> := ] TTextPicture():Define( <(name)>, <(parent)>, <col>, <row>, <w> , <height> , ;
+                        <value> , <inputmask> , <fontname> , <fontsize> , <tooltip> , ;
+                        <{lostfocus}> , <{gotfocus}> , <{change}> , <{enter}> , ;
+                        <.RightAlign.> , <helpid> , <.readonly.> , <.bold.> , <.italic.> , ;
+                        <.underline.> , <.strikeout.> , <(field)> , <backcolor> , ;
+                        <fontcolor> , <.invisible.> , <.notabstop.> , <.rtl.> , <.autoskip.> )
