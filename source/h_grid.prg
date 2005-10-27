@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.27 2005-10-25 05:17:12 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.28 2005-10-27 05:14:15 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -116,6 +116,7 @@ CLASS TGrid FROM TControl
    DATA ValidMessages    INIT nil
    DATA OnEditCell       INIT nil
    DATA aWhen            INIT {}
+   DATA cRowEditTitle    INIT nil
 
    METHOD Define
    METHOD Define2
@@ -324,7 +325,7 @@ Local nItem, aItems, aEditControls, nColumn
       Endif
    Next
 
-   aItems := ::EditItem2( nItem, aItems, aEditControls,, _OOHG_MESSAGE[ 5 ] )
+   aItems := ::EditItem2( nItem, aItems, aEditControls,, if( ValType( ::cRowEditTitle ) $ "CM", ::cRowEditTitle, _OOHG_MESSAGE[ 5 ] ) )
    If ! Empty( aItems )
       ::Item( nItem, ASIZE( aItems, LEN( ::aHeaders ) ) )
       _SetThisCellInfo( ::hWnd, nItem, 1 )
@@ -336,8 +337,8 @@ Return NIL
 *-----------------------------------------------------------------------------*
 METHOD EditItem2( nItem, aItems, aEditControls, aMemVars, cTitle ) CLASS TGrid
 *-----------------------------------------------------------------------------*
-Local l, actpos := {0,0,0,0}, GCol, IRow, i, oWnd
-Local oCtrl, aEditControls2, nRow
+Local l, actpos := {0,0,0,0}, GCol, IRow, i, oWnd, nWidth, nMaxHigh, oMain
+Local oCtrl, aEditControls2, nRow, lSplitWindow, nControlsMaxHeight
 
    If ValType( nItem ) != "N"
       nItem := LISTVIEW_GETFIRSTITEM( ::hWnd )
@@ -360,10 +361,12 @@ Local oCtrl, aEditControls2, nRow
 
    GetWindowRect( ::hWnd, actpos )
 
-   GCol := actpos[ 1 ] + ( ( ( actpos[ 3 ] - actpos[ 1 ] ) - 280 ) / 2 )
-
    _SetThisCellInfo( ::hWnd, nItem, 1 )
 
+   nControlsMaxHeight := GetDesktopHeight() - 130
+
+   nWidth := 140
+   nRow := 0
    aEditControls2 := ARRAY( l )
    For i := 1 To l
       oCtrl := GetEditControlFromArray( nil, aEditControls, i, Self )
@@ -376,48 +379,90 @@ Local oCtrl, aEditControls2, nRow
          EndIf
       Endif
       aEditControls2[ i ] := oCtrl
+      nWidth := MAX( nWidth, oCtrl:nDefWidth )
+      nRow += oCtrl:nDefHeight + 6
    Next
 
-   nRow := 70 + GetTitleHeight()
-   AEVAL( aEditControls2, { |o| nRow += o:nDefHeight + 6 } )
+   lSplitWindow := ( nRow > nControlsMaxHeight )
 
-   DEFINE WINDOW 0 OBJ oWnd AT IRow,GCol ;
-      WIDTH 280 HEIGHT nRow ;
-      TITLE cTitle MODAL NOSIZE
+   nWidth += If( lSplitWindow, 170, 140 )
+
+   GCol := actpos[ 1 ] + ( ( ( actpos[ 3 ] - actpos[ 1 ] ) - nWidth ) / 2 )
+   GCol := MAX( MIN( GCol, ( GetSystemMetrics( SM_CXFULLSCREEN ) - nWidth ) ), 0 )
+
+   nMaxHigh := Min( nControlsMaxHeight, nRow ) + 70 + GetTitleHeight()
+   IRow := MAX( MIN( IRow, ( GetSystemMetrics( SM_CYFULLSCREEN ) - nMaxHigh ) ), 0 )
+
+   If lSplitWindow
+      DEFINE WINDOW 0 OBJ oMain AT IRow,GCol ;
+         WIDTH nWidth HEIGHT nMaxHigh ;
+         TITLE cTitle MODAL NOSIZE
+
+      DEFINE SPLITBOX
+         DEFINE WINDOW 0 OBJ oWnd;
+            WIDTH nWidth ;
+            HEIGHT nControlsMaxHeight ;
+            VIRTUAL HEIGHT nRow + 20 ;
+				SPLITCHILD NOCAPTION FONT 'Arial' SIZE 10 BREAK FOCUSED
+   Else
+      DEFINE WINDOW 0 OBJ oWnd AT IRow,GCol ;
+         WIDTH nWidth HEIGHT nMaxHigh ;
+         TITLE cTitle MODAL NOSIZE
+
+      oMain := oWnd
+   EndIf
+
+   nRow := 10
+
+   For i := 1 to l
+      @ nRow + 3, 10 LABEL 0 PARENT ( oWnd ) VALUE Alltrim( ::aHeaders[ i ] ) + ":"
+      aEditControls2[ i ]:CreateControl( aItems[ i ], oWnd:Name, nRow, 120, aEditControls2[ i ]:nDefWidth, aEditControls2[ i ]:nDefHeight )
+      nRow += aEditControls2[ i ]:nDefHeight + 6
+      If ValType( aMemVars ) == "A" .AND. Len( aMemVars ) >= i
+         aEditControls2[ i ]:cMemVar := aMemVars[ i ]
+      EndIf
+      If ValType( ::Valid ) == "A" .AND. Len( ::Valid ) >= i
+         aEditControls2[ i ]:bValid := ::Valid[ i ]
+      EndIf
+      If ValType( ::ValidMessages ) == "A" .AND. Len( ::ValidMessages ) >= i
+         aEditControls2[ i ]:cValidMessage := ::ValidMessages[ i ]
+      EndIf
+
+      If ValType( ::aWhen ) == "A" .AND. Len( ::aWhen ) >= i
+         aEditControls2[ i ]:bWhen := ::aWhen[ i ]
+      EndIf
+      If ValType( ::ReadOnly ) == "A" .AND. Len( ::ReadOnly ) >= i .AND. ValType( ::ReadOnly[ i ] ) == "L" .AND. ::ReadOnly[ i ]
+         aEditControls2[ i ]:Enabled := .F.
+         aEditControls2[ i ]:bWhen := { || .F. }
+      EndIf
+
+   Next
+
+   If lSplitWindow
+      END WINDOW
+
+      DEFINE WINDOW 0 OBJ oWnd ;
+         WIDTH nWidth ;
+         HEIGHT 50 ;
+         SPLITCHILD NOCAPTION FONT 'Arial' SIZE 10 BREAK
 
       nRow := 10
+   Else
+      nRow += 10
+   Endif
 
-		For i := 1 to l
-         @ nRow + 3, 10 LABEL 0 PARENT ( oWnd ) VALUE Alltrim( ::aHeaders[ i ] ) + ":"
-         aEditControls2[ i ]:CreateControl( aItems[ i ], oWnd:Name, nRow, 120, aEditControls2[ i ]:nDefWidth, aEditControls2[ i ]:nDefHeight )
-         nRow += aEditControls2[ i ]:nDefHeight + 6
-         If ValType( aMemVars ) == "A" .AND. Len( aMemVars ) >= i
-            aEditControls2[ i ]:cMemVar := aMemVars[ i ]
-         EndIf
-         If ValType( ::Valid ) == "A" .AND. Len( ::Valid ) >= i
-            aEditControls2[ i ]:bValid := ::Valid[ i ]
-         EndIf
-         If ValType( ::ValidMessages ) == "A" .AND. Len( ::ValidMessages ) >= i
-            aEditControls2[ i ]:cValidMessage := ::ValidMessages[ i ]
-         EndIf
+   @ nRow,  25 BUTTON 0 PARENT ( oWnd ) CAPTION _OOHG_MESSAGE[ 6 ] ;
+         ACTION ( TGrid_EditItem_Check( aEditControls2, aItems, oMain ) )
 
-         If ValType( ::aWhen ) == "A" .AND. Len( ::aWhen ) >= i
-            aEditControls2[ i ]:bWhen := ::aWhen[ i ]
-         EndIf
-         If ValType( ::ReadOnly ) == "A" .AND. Len( ::ReadOnly ) >= i .AND. ValType( ::ReadOnly[ i ] ) == "L" .AND. ::ReadOnly[ i ]
-            aEditControls2[ i ]:Enabled := .F.
-            aEditControls2[ i ]:bWhen := { || .F. }
-         EndIf
-
-		Next i
-
-      @ nRow + 10,  25 BUTTON 0 PARENT &( oWnd:Name ) CAPTION _OOHG_MESSAGE[ 6 ] ;
-            ACTION ( TGrid_EditItem_Check( aEditControls2, aItems, oWnd ) )
-
-      @ nRow + 10, 145 BUTTON 0 PARENT &( oWnd:Name ) CAPTION _OOHG_MESSAGE[ 7 ] ;
-            ACTION ( aItems := {}, oWnd:Release() )
+   @ nRow, 145 BUTTON 0 PARENT ( oWnd ) CAPTION _OOHG_MESSAGE[ 7 ] ;
+         ACTION ( aItems := {}, oMain:Release() )
 
 	END WINDOW
+
+   If lSplitWindow
+      END SPLITBOX
+      END WINDOW
+   Endif
 
    AEVAL( aEditControls2, { |o| o:OnLostFocus := { || TGrid_EditItem_When( aEditControls2 ) } } )
 
@@ -425,7 +470,7 @@ Local oCtrl, aEditControls2, nRow
 
    aEditControls2[ 1 ]:SetFocus()
 
-   oWnd:Activate()
+   oMain:Activate()
 
    _ClearThisCellInfo()
 
