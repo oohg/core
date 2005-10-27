@@ -1,11 +1,39 @@
 /*
- * $Id: ChangeLog,v 1.29 2005-10-26 02:37:55 guerra000 Exp $
+ * $Id: ChangeLog,v 1.30 2005-10-27 05:17:46 guerra000 Exp $
 */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2005-10-27 00:11 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_altsyntax.ch
+  * include/i_textbox.ch
+  * source/h_editbox.prg
+  * source/h_textbox.prg
+    + AUTOSKIP clause added to TEXTBOX commands.
+
+  * source/h_grid.prg
+    * If ::EditItem control's height is bigger than
+      ( GetDesktopHeight() - 130 ), use SPLITBOXes.
+    * Ensures ::EditItem window is not out of screen.
+    + Added ::cRowEditTitle property. If defined, it's
+      the title for ::EditItem's window.
+
+  * source/h_browse.prg
+    * Removed unused code.
+    * ::cRowEditTitle functionality for record's edition.
+      Append records' title is still _OOHG_BRWLangButton[1].
+
+  * include/i_windefs.ch
+  * source/c_windows.c
+    + GetSystemMetrics() function added.
+
+  * source/h_controlmisc.prg
+  * source/h_windows.prg
+    * ::BrushHandle property moved to TWindow (instead of
+      TForm and TControl).
 
 2005-10-25 21:36 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_browse.prg
