@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.34 2005-10-27 05:16:46 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.35 2005-10-28 04:43:05 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -102,6 +102,8 @@ STATIC _OOHG_UserWindow := nil       // User's window
 STATIC _OOHG_InteractiveClose := 1   // Interactive close
 STATIC _OOHG_MessageLoops := {}      // Message loops
 STATIC _OOHG_GlobalRTL := .F.        // Force RTL functionality
+STATIC _OOHG_ActiveModal := {}       // Modal windows' stack
+STATIC _OOHG_DialogCancelled := .F.  //
 
 #include "hbclass.ch"
 
@@ -1884,15 +1886,15 @@ Local oWnd, oCtrl
 
       Do Case
          Case _OOHG_InteractiveClose == 0
-            MsgStop( _OOHG_MESSAGE [3] )
+            MsgStop( _OOHG_Messages( 1, 3 ) )
 				Return (1)
          Case _OOHG_InteractiveClose == 2
-            If ! MsgYesNo ( _OOHG_MESSAGE [1] , _OOHG_MESSAGE [2] )
+            If ! MsgYesNo ( _OOHG_Messages( 1, 1 ), _OOHG_Messages( 1, 2 ) )
 					Return (1)
 				EndIf
          Case _OOHG_InteractiveClose == 3
             if ::Type == "A"
-               If ! MsgYesNo ( _OOHG_MESSAGE [1] , _OOHG_MESSAGE [2] )
+               If ! MsgYesNo ( _OOHG_Messages( 1, 1 ), _OOHG_Messages( 1, 2 ) )
 						Return (1)
 					EndIf
 				EndIf

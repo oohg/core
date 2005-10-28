@@ -1,5 +1,5 @@
 /*
- * $Id: h_init.prg,v 1.7 2005-10-01 15:35:10 guerra000 Exp $
+ * $Id: h_init.prg,v 1.8 2005-10-28 04:43:05 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -95,28 +95,13 @@
 
 #define ABM_CRLF                HB_OsNewLine()
 
+STATIC _OOHG_Messages := { {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {} }
+
 Function Init
 
    Public _OOHG_AllVars[ 65 ]
 
-   _OOHG_ActiveModal := {}
-
    _OOHG_ActiveToolBar := NIL
-
-   _OOHG_IsXP := .F.
-
-   _OOHG_aLangButton     := {}
-   _OOHG_aLangLabel      := {}
-   _OOHG_aLangUser       := {}
-
-   _OOHG_aABMLangUser   := {}
-   _OOHG_aABMLangLabel  := {}
-   _OOHG_aABMLangButton := {}
-   _OOHG_aABMLangError  := {}
-
-   _OOHG_MESSAGE := array( 8 )
-
-   _OOHG_SetFocusExecuted := .F.
 
    _OOHG_InteractiveCloseStarted := .F.
 
@@ -129,13 +114,7 @@ Function Init
 
    _OOHG_ExtendedNavigation := .F.
 
-   _OOHG_DialogCancelled := .F.
-
    _OOHG_ActiveSplitBoxInverted := .F.
-
-   _OOHG_BRWLangButton := {}
-   _OOHG_BRWLangError  := {}
-   _OOHG_BRWLangMessage  := {}
 
    _OOHG_ThisItemRowIndex  := 0
    _OOHG_ThisItemColIndex  := 0
@@ -176,10 +155,6 @@ Function Init
 
 	InitMessages()
 
-   If 'XP' $ WindowsVersion()[ 1 ]
-      _OOHG_IsXP := .T.
-	EndIf
-
 Return Nil
 
 *------------------------------------------------------------------------------*
@@ -202,19 +177,25 @@ Local aLang, aLangDefault
       aLang := {}
    ENDIF
 
-   _OOHG_MESSAGE        := InitMessagesMerge( aLang, aLangDefault,  1 )
-   _OOHG_BRWLangButton  := InitMessagesMerge( aLang, aLangDefault,  2 )
-   _OOHG_BRWLangError   := InitMessagesMerge( aLang, aLangDefault,  3 )
-   _OOHG_BRWLangMessage := InitMessagesMerge( aLang, aLangDefault,  4 )
-   _OOHG_aABMLangUser   := InitMessagesMerge( aLang, aLangDefault,  5 )
-   _OOHG_aABMLangLabel  := InitMessagesMerge( aLang, aLangDefault,  6 )
-   _OOHG_aABMLangButton := InitMessagesMerge( aLang, aLangDefault,  7 )
-   _OOHG_aABMLangError  := InitMessagesMerge( aLang, aLangDefault,  8 )
-   _OOHG_aLangButton    := InitMessagesMerge( aLang, aLangDefault,  9 )
-   _OOHG_aLangLabel     := InitMessagesMerge( aLang, aLangDefault, 10 )
-   _OOHG_aLangUser      := InitMessagesMerge( aLang, aLangDefault, 11 )
+
+   _OOHG_Messages[  1 ] := InitMessagesMerge( aLang, aLangDefault,  1 )
+   _OOHG_Messages[  2 ] := InitMessagesMerge( aLang, aLangDefault,  2 )
+   _OOHG_Messages[  3 ] := InitMessagesMerge( aLang, aLangDefault,  3 )
+   _OOHG_Messages[  4 ] := InitMessagesMerge( aLang, aLangDefault,  4 )
+   _OOHG_Messages[  5 ] := InitMessagesMerge( aLang, aLangDefault,  5 )
+   _OOHG_Messages[  6 ] := InitMessagesMerge( aLang, aLangDefault,  6 )
+   _OOHG_Messages[  7 ] := InitMessagesMerge( aLang, aLangDefault,  7 )
+   _OOHG_Messages[  8 ] := InitMessagesMerge( aLang, aLangDefault,  8 )
+   _OOHG_Messages[  9 ] := InitMessagesMerge( aLang, aLangDefault,  9 )
+   _OOHG_Messages[ 10 ] := InitMessagesMerge( aLang, aLangDefault, 10 )
+   _OOHG_Messages[ 11 ] := InitMessagesMerge( aLang, aLangDefault, 11 )
 
 Return
+
+FUNCTION _OOHG_Messages( nTable, nItem )
+RETURN IF( ( VALTYPE( nTable ) == "N" .AND. nTable >= 1 .AND. nTable <= LEN( _OOHG_Messages ) .AND. ;
+             VALTYPE( nItem ) == "N" .AND. nItem >= 1 .AND. nItem <= LEN( _OOHG_Messages[ nTable] ) ), ;
+             _OOHG_Messages[ nTable ][ nItem ], "" )
 
 STATIC FUNCTION InitMessagesMerge( aLang, aLangDefault, nTable )
 Local aReturn

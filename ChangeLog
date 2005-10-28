@@ -1,11 +1,33 @@
 /*
- * $Id: ChangeLog,v 1.30 2005-10-27 05:17:46 guerra000 Exp $
+ * $Id: ChangeLog,v 1.31 2005-10-28 04:43:05 guerra000 Exp $
 */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2005-10-27 23:41 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_var.ch
+  * samples/oohg/browsecolumncontrols.prg
+  * samples/oohg/gridcolumncontrols.prg
+  * source/h_browse.prg
+  * source/h_controlmisc.prg
+  * source/h_edit.prg
+  * source/h_edit_ex.prg
+  * source/h_grid.prg
+  * source/h_init.prg
+  * source/h_report.prg
+  * source/h_textbox.prg
+  * source/h_windows.prg
+    - _OOHG_SetFocusExecuted converted to a property at TTextBox().
+    - _OOHG_MESSAGE, _OOHG_BRWLangButton, _OOHG_BRWLangError, _OOHG_BRWLangMessage,
+      _OOHG_aABMLangUser, _OOHG_aABMLangLabel, _OOHG_aABMLangButton,
+      _OOHG_aABMLangError, _OOHG_aLangButton, _OOHG_aLangLabel, _OOHG_aLangUser
+      converted to _OOHG_Messages( nTable, nItem ).
+    - _OOHG_ActiveModal moved to static into h_windows.prg.
+    - _OOHG_IsXP converted into to a macro.
+    - _OOHG_DialogCancelled moved to static into h_windows.prg.
 
 2005-10-27 00:11 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * include/i_altsyntax.ch

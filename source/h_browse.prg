@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.32 2005-10-27 05:15:08 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.33 2005-10-28 04:43:05 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -748,10 +748,10 @@ Local oEditControl, uOldValue, cMemVar, bReplaceField
    EndIf
 
    If append
-      cTitle := _OOHG_BRWLangButton[ 1 ]
+      cTitle := _OOHG_Messages( 2, 1 )
       ( ::WorkArea )->( DbGoTo( 0 ) )
    Else
-      cTitle := if( ValType( ::cRowEditTitle ) $ "CM", ::cRowEditTitle, _OOHG_BRWLangButton[ 2 ] )
+      cTitle := if( ValType( ::cRowEditTitle ) $ "CM", ::cRowEditTitle, _OOHG_Messages( 2, 2 ) )
       ( ::WorkArea )->( DbGoTo( ::aRecMap[ nItem ] ) )
    EndIf
 
@@ -775,14 +775,14 @@ Local oEditControl, uOldValue, cMemVar, bReplaceField
 
 // MIXEDFIELDS!!!!
 //      If append .AND. MixedFields
-//         MsgOOHGError( _OOHG_BRWLangError[ 8 ], _OOHG_BRWLangError[ 3 ] )
+//         MsgOOHGError( _OOHG_Messages( 3, 8 ), _OOHG_Messages( 3, 3 ) )
 //      EndIf
 
    Next z
 
    If ::lock .AND. ! append
       If ! ( ::WorkArea )->( RLock() )
-         MsgExclamation( _OOHG_BRWLangError[ 9 ], _OOHG_BRWLangError[ 10 ] )
+         MsgExclamation( _OOHG_Messages( 3, 9 ), _OOHG_Messages( 3, 10 ) )
          ( ::WorkArea )->( DbGoTo( nOldRecNo ) )
          ::SetFocus()
          Return Nil
@@ -857,7 +857,7 @@ Local lRet, BackRec, bReplaceField
 
       // If LOCK clause is present, try to lock.
       If ::Lock .AND. ! ( ::WorkArea )->( RLock() )
-         MsgExclamation( _OOHG_BRWLangError[ 9 ], _OOHG_BRWLangError[ 10 ] )
+         MsgExclamation( _OOHG_Messages( 3, 9 ), _OOHG_Messages( 3, 10 ) )
          ( ::WorkArea )->( DbGoTo( BackRec ) )
          Return .F.
       EndIf
@@ -1441,7 +1441,7 @@ Local r, DeltaSelect
       Case nvKey == 46 // DEL
 
          If ::AllowDelete
-            If MsgYesNo( _OOHG_BRWLangMessage [1] , _OOHG_BRWLangMessage [2] )
+            If MsgYesNo( _OOHG_Messages( 4, 1 ), _OOHG_Messages( 4, 2 ) )
                ::Delete()
             EndIf
          EndIf

@@ -1,5 +1,5 @@
 /*
- * $Id: h_edit_ex.prg,v 1.2 2005-08-18 04:07:28 guerra000 Exp $
+ * $Id: h_edit_ex.prg,v 1.3 2005-10-28 04:43:05 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -376,7 +376,7 @@ function ABM2( cArea, cTitulo, aNombreCampo, ;
         if ( ! ValType( cArea ) $ "CM" ) .or. Empty( cArea )
                 _cArea := Alias()
                 if _cArea == ""
-                        msgExclamation( _OOHG_aLangUser[1], "EDIT EXTENDED" )
+                        msgExclamation( _OOHG_Messages( 11, 1 ), "EDIT EXTENDED" )
                         return NIL
                 endif
         else
@@ -442,17 +442,17 @@ function ABM2( cArea, cTitulo, aNombreCampo, ;
                 for i := 1 to Len( _aEstructura )
                         do case
                                 case _aEstructura[i,DBS_TYPE] == "C"
-                                        aAdd( aAvisoCampo, _OOHG_aLangUser[2] )
+                                        aAdd( aAvisoCampo, _OOHG_Messages( 11, 2 ) )
                                 case _aEstructura[i,DBS_TYPE] == "N"
-                                        aAdd( aAvisoCampo, _OOHG_aLangUser[3] )
+                                        aAdd( aAvisoCampo, _OOHG_Messages( 11, 3 ) )
                                 case _aEstructura[i,DBS_TYPE] == "D"
-                                        aAdd( aAvisoCampo, _OOHG_aLangUser[4] )
+                                        aAdd( aAvisoCampo, _OOHG_Messages( 11, 4 ) )
                                 case _aEstructura[i,DBS_TYPE] == "L"
-                                        aAdd( aAvisoCampo, _OOHG_aLangUser[5] )
+                                        aAdd( aAvisoCampo, _OOHG_Messages( 11, 5 ) )
                                 case _aEstructura[i,DBS_TYPE] == "M"
-                                        aAdd( aAvisoCampo, _OOHG_aLangUser[6] )
+                                        aAdd( aAvisoCampo, _OOHG_Messages( 11, 6 ) )
                                 otherwise
-                                        aAdd( aAvisoCampo, _OOHG_aLangUser[7] )
+                                        aAdd( aAvisoCampo, _OOHG_Messages( 11, 7 ) )
                         endcase
                 next
         endif
@@ -583,7 +583,7 @@ function ABM2( cArea, cTitulo, aNombreCampo, ;
         _aIndice      := {}
         _aIndiceCampo := {}
         nVeces        := 1
-        aAdd( _aIndice, _OOHG_aLangLabel[1] )
+        aAdd( _aIndice, _OOHG_Messages( 10, 1 ) )
         aAdd( _aIndiceCampo, 0 )
         do while lSalida
                 if ( (_cArea)->( ordName( k ) ) == "" )
@@ -720,29 +720,29 @@ function ABM2( cArea, cTitulo, aNombreCampo, ;
 
                 // Define la barra de estado de la ventana de visualización.
                 define statusbar font "ms sans serif" size 9
-                        statusitem _OOHG_aLangLabel[19]                           // 1
-                        statusitem _OOHG_aLangLabel[20]         width 100 raised  // 2
-                        statusitem _OOHG_aLangLabel[2] +': '     width 200 raised // 3
+                        statusitem _OOHG_Messages( 10, 19 )                       // 1
+                        statusitem _OOHG_Messages( 10, 20 )     width 100 raised  // 2
+                        statusitem _OOHG_Messages( 10, 2 ) +': '     width 200 raised // 3
                 end statusbar
 
                 // Define la barra de botones de la ventana de visualización.
                 define toolbar tbEdit buttonsize 90, 32 flat righttext border
-                        button tbbCerrar  caption _OOHG_aLangButton[1]   ;
+                        button tbbCerrar  caption _OOHG_Messages( 9, 1 ) ;
                                           picture "MINIGUI_EDIT_CLOSE"          ;
                                           action  wndABM2Edit.Release
-                        button tbbNuevo   caption _OOHG_aLangButton[2]               ;
+                        button tbbNuevo   caption _OOHG_Messages( 9, 2 ) ;
                                           picture "MINIGUI_EDIT_NEW"            ;
                                           action  {|| ABM2Editar( .t. ) }
-                        button tbbEditar  caption _OOHG_aLangButton[3]               ;
+                        button tbbEditar  caption _OOHG_Messages( 9, 3 ) ;
                                           picture "MINIGUI_EDIT_EDIT"           ;
                                           action  {|| ABM2Editar( .f. ) }
-                        button tbbBorrar  caption _OOHG_aLangButton[4]               ;
+                        button tbbBorrar  caption _OOHG_Messages( 9, 4 ) ;
                                           picture "MINIGUI_EDIT_DELETE"         ;
                                           action  {|| ABM2Borrar() }
-                        button tbbBuscar  caption _OOHG_aLangButton[5]               ;
+                        button tbbBuscar  caption _OOHG_Messages( 9, 5 ) ;
                                           picture "MINIGUI_EDIT_FIND"           ;
                                           action  {|| ABM2Buscar() }
-                        button tbbListado caption _OOHG_aLangButton[6]               ;
+                        button tbbListado caption _OOHG_Messages( 9, 6 ) ;
                                           picture "MINIGUI_EDIT_PRINT"          ;
                                           action  {|| ABM2Imprimir() }
                 end toolbar
@@ -762,7 +762,7 @@ function ABM2( cArea, cTitulo, aNombreCampo, ;
                 height wndABM2Edit.Height - 165
          @ 60, 20 label lblIndice               ;
                 of wndABM2Edit                  ;
-                value _OOHG_aLangUser [26]            ;
+                value _OOHG_Messages( 11, 26 )  ;
                 width 150                       ;
                 height 25                       ;
                 font "ms sans serif" size 9
@@ -780,7 +780,7 @@ function ABM2( cArea, cTitulo, aNombreCampo, ;
         next
         @ 60, nColumna label lblOpciones        ;
                 of wndABM2Edit                  ;
-                value _OOHG_aLangLabel [5]            ;
+                value _OOHG_Messages( 10, 5 )   ;
                 width 150                       ;
                 height 25                       ;
                 font "ms sans serif" size 9
@@ -793,14 +793,14 @@ function ABM2( cArea, cTitulo, aNombreCampo, ;
                 on change {|| ABM2EjecutaOpcion() }
         @ 65, (wndABM2Edit.Width / 2)-110 button btnFiltro1     ;
                 of wndABM2Edit                                  ;
-                caption _OOHG_aLangButton[10]                       ;
+                caption _OOHG_Messages( 9, 10 )                 ;
                 action {|| ABM2ActivarFiltro() }                ;
                 width 100                                       ;
                 height 32                                       ;
                 font "ms sans serif" size 9
         @ 65, (wndABM2Edit.Width / 2)+5 button btnFiltro2       ;
                 of wndABM2Edit                                  ;
-                caption _OOHG_aLangButton[11]                    ;
+                caption _OOHG_Messages( 9, 11 )                 ;
                 action {|| ABM2DesactivarFiltro() }             ;
                 width 100                                       ;
                 height 32                                       ;
@@ -895,9 +895,9 @@ static function ABM2Redibuja( lTabla )
         endif
 
 ////////// Refresco de la barra de estado.-------------------------------------
-        wndABM2Edit.StatusBar.Item( 1 ) := _OOHG_aLangLabel[19] + _cFiltro
-        wndABM2Edit.StatusBar.Item( 2 ) := _OOHG_aLangLabel[20] + iif( _lFiltro, _OOHG_aLangUser[29], _OOHG_aLangUser[30] )
-        wndABM2Edit.StatusBar.Item( 3 ) := _OOHG_aLangLabel[2] + ': '+                                  ;
+        wndABM2Edit.StatusBar.Item( 1 ) := _OOHG_Messages( 10, 19 ) + _cFiltro
+        wndABM2Edit.StatusBar.Item( 2 ) := _OOHG_Messages( 10, 20 ) + iif( _lFiltro, _OOHG_Messages( 11, 29 ), _OOHG_Messages( 11, 30 ) )
+        wndABM2Edit.StatusBar.Item( 3 ) := _OOHG_Messages( 10, 2 ) + ': '+                                  ;
                                            AllTrim( Str( (_cArea)->( RecNo() ) ) ) + "/" + ;
                                            AllTrim( Str( (_cArea)->( RecCount() ) ) )
 
@@ -1023,7 +1023,7 @@ static function ABM2Editar( lNuevo )
         nAncho      := 15 + nAnchoSplit + 15
         nAncho      := iif( nAncho < 300, 300, nAncho )
         nAnchoTope  := _nAnchoPantalla - 60
-        cTitulo     := iif( lNuevo, _OOHG_aLangLabel[6], _OOHG_aLangLabel[7] )
+        cTitulo     := iif( lNuevo, _OOHG_Messages( 10, 6 ), _OOHG_Messages( 10, 7 ) )
 
 ////////// Define la ventana de edición de registro.---------------------------
         define window wndABM2EditNuevo                                  ;
@@ -1045,13 +1045,13 @@ static function ABM2Editar( lNuevo )
 
                         // Define la barra de botones de la ventana de edición de registro.
                         define toolbar tbEditNuevo buttonsize 90, 32 flat righttext
-                                button tbbCancelar caption _OOHG_aLangButton[7]              ;
+                                button tbbCancelar caption _OOHG_Messages( 9, 7 ) ;
                                                    picture "MINIGUI_EDIT_CANCEL"        ;
                                                    action  wndABM2EditNuevo.Release
-                                button tbbAceptar  caption _OOHG_aLangButton[8]              ;
+                                button tbbAceptar  caption _OOHG_Messages( 9, 8 ) ;
                                                    picture "MINIGUI_EDIT_OK"            ;
                                                    action  ABM2EditarGuardar( lNuevo )
-                                button tbbCopiar   caption _OOHG_aLangButton[9]              ;
+                                button tbbCopiar   caption _OOHG_Messages( 9, 9 ) ;
                                                    picture "MINIGUI_EDIT_COPY"          ;
                                                    action  ABM2EditarCopiar()
                         end toolbar
@@ -1398,7 +1398,7 @@ static function ABM2Seleccionar()
                 at 0, 0                         ;
                 width 500                       ;
                 height 300                      ;
-                title _OOHG_aLangLabel[8]            ;
+                title _OOHG_Messages( 10, 8 )   ;
                 modal                           ;
                 nosize                          ;
                 nosysmenu                       ;
@@ -1406,12 +1406,12 @@ static function ABM2Seleccionar()
 
                 // Define la barra de botones de la ventana de selección.
                 define toolbar tbSeleccionar buttonsize 90, 32 flat righttext border
-                        button tbbCancelarSel caption _OOHG_aLangButton[7]                   ;
+                        button tbbCancelarSel caption _OOHG_Messages( 9, 7 ) ;
                                               picture "MINIGUI_EDIT_CANCEL"             ;
                                               action  {|| lSalida := .f.,               ;
                                                           nReg    := 0,                 ;
                                                           wndSeleccionar.Release }
-                        button tbbAceptarSel  caption _OOHG_aLangButton[8]                                           ;
+                        button tbbAceptarSel  caption _OOHG_Messages( 9, 8 ) ;
                                               picture "MINIGUI_EDIT_OK"                                         ;
                                               action  {|| lSalida := .t.,                                       ;
                                                           nReg    := wndSeleccionar.brwSeleccionar.Value,       ;
@@ -1420,7 +1420,7 @@ static function ABM2Seleccionar()
 
                 // Define la barra de estado de la ventana de selección.
                 define statusbar font "ms sans serif" size 9
-                        statusitem _OOHG_aLangUser[7]
+                        statusitem _OOHG_Messages( 11, 7 )
                 end statusbar
 
                 // Define la tabla de la ventana de selección.
@@ -1502,7 +1502,7 @@ function ABM2Borrar()
 
 ////////// Borra el registro si se acepta.-------------------------------------
 
-        if MsgOKCancel( _OOHG_aLangUser[8], _OOHG_aLangLabel[16] )
+        if MsgOKCancel( _OOHG_Messages( 11, 8 ), _OOHG_Messages( 10, 16 ) )
                 if (_cArea)->( rlock() )
                    (_cArea)->( dbDelete() )
                    (_cArea)->( dbCommit() )
@@ -1516,7 +1516,7 @@ function ABM2Borrar()
                    endif
                    ABM2Redibuja( .t. )
                 else
-                   Msgstop( _OOHG_aLangUser [41] , _cTitulo )
+                   Msgstop( _OOHG_Messages( 11, 41 ), _cTitulo )
                 endif
         endif
 
@@ -1555,13 +1555,13 @@ static function ABM2Buscar()
 
 ////////// Comprueba si hay un indice activo.----------------------------------
         if _nIndiceActivo == 1
-                msgExclamation( _OOHG_aLangUser[9], _cTitulo )
+                msgExclamation( _OOHG_Messages( 11, 9 ), _cTitulo )
                 return NIL
         endif
 
 ////////// Comprueba que el campo indice no es del tipo memo o logico.---------
         if _aEstructura[nControl,DBS_TYPE] == "L" .or. _aEstructura[nControl,DBS_TYPE] == "M"
-                msgExclamation( _OOHG_aLangUser[10], _cTitulo )
+                msgExclamation( _OOHG_Messages( 11, 10 ), _cTitulo )
                 return nil
         endif
 
@@ -1570,7 +1570,7 @@ static function ABM2Buscar()
                 at 0, 0                         ;
                 width 500                       ;
                 height 170                      ;
-                title _OOHG_aLangLabel[9]            ;
+                title _OOHG_Messages( 10, 9 )   ;
                 modal                           ;
                 nosize                          ;
                 nosysmenu                       ;
@@ -1578,12 +1578,12 @@ static function ABM2Buscar()
 
                 // Define la barra de botones de la ventana de busqueda.
                 define toolbar tbBuscar buttonsize 90, 32 flat righttext border
-                        button tbbCancelarBus caption _OOHG_aLangButton[7]                           ;
+                        button tbbCancelarBus caption _OOHG_Messages( 9, 7 ) ;
                                               picture "MINIGUI_EDIT_CANCEL"                     ;
                                               action  {|| lSalida := .f.,                       ;
                                                           xValor := wndABMBuscar.conBuscar.Value,  ;
                                                           wndABMBuscar.Release }
-                        button tbbAceptarBus  caption _OOHG_aLangButton[8]                                ;
+                        button tbbAceptarBus  caption _OOHG_Messages( 9, 8 ) ;
                                               picture "MINIGUI_EDIT_OK"                         ;
                                               action  {|| lSalida := .t.,                       ;
                                                           xValor := wndABMBuscar.conBuscar.Value,  ;
@@ -1682,7 +1682,7 @@ static function ABM2Buscar()
                 nRegistro := (_cArea)->( RecNo() )
                 lResultado := (_cArea)->( dbSeek( xValor ) )
                 if !lResultado
-                        msgExclamation( _OOHG_aLangUser[11], _cTitulo )
+                        msgExclamation( _OOHG_Messages( 11, 11 ), _cTitulo )
                         (_cArea)->( dbGoTo( nRegistro ) )
                 else
                         ABM2Redibuja( .t. )
@@ -1709,17 +1709,17 @@ static function ABM2ActivarFiltro()
 
 ////////// Comprueba que no hay ningun filtro activo.--------------------------
         if _cFiltro != ""
-                MsgInfo( _OOHG_aLangUser[34], '' )
+                MsgInfo( _OOHG_Messages( 11, 34 ), '' )
         endif
 
 ////////// Inicialización de variables.----------------------------------------
         aCampos    := _aNombreCampo
-        aCompara   := { _OOHG_aLangLabel[27],;
-                        _OOHG_aLangLabel[28],;
-                        _OOHG_aLangLabel[29],;
-                        _OOHG_aLangLabel[30],;
-                        _OOHG_aLangLabel[31],;
-                        _OOHG_aLangLabel[32] }
+        aCompara   := { _OOHG_Messages( 10, 27 ),;
+                        _OOHG_Messages( 10, 28 ),;
+                        _OOHG_Messages( 10, 29 ),;
+                        _OOHG_Messages( 10, 30 ),;
+                        _OOHG_Messages( 10, 31 ),;
+                        _OOHG_Messages( 10, 32 ) }
 
 
 ////////// Crea la ventana de filtrado.----------------------------------------
@@ -1727,7 +1727,7 @@ static function ABM2ActivarFiltro()
                 at 0, 0                                 ;
                 width 400                               ;
                 height 325                              ;
-                title _OOHG_aLangLabel[21]            ;
+                title _OOHG_Messages( 10, 21 )          ;
                 modal                                   ;
                 nosize                                  ;
                 nosysmenu                               ;
@@ -1736,11 +1736,11 @@ static function ABM2ActivarFiltro()
 
                 // Define la barra de botones de la ventana de filtrado.
                 define toolbar tbBuscar buttonsize 90, 32 flat righttext border
-                        button tbbCancelarFil caption _OOHG_aLangButton[7]           ;
+                        button tbbCancelarFil caption _OOHG_Messages( 9, 7 ) ;
                                               picture "MINIGUI_EDIT_CANCEL"     ;
                                               action  {|| wndABM2Filtro.Release,;
                                                           ABM2Redibuja( .f. ) }
-                        button tbbAceptarFil  caption _OOHG_aLangButton[8]           ;
+                        button tbbAceptarFil  caption _OOHG_Messages( 9, 8 ) ;
                                               picture "MINIGUI_EDIT_OK"         ;
                                               action  {|| ABM2EstableceFiltro() }
                 end toolbar
@@ -1760,19 +1760,19 @@ static function ABM2ActivarFiltro()
                 height wndABM2Filtro.Height - 100
         @ 65, 20 label lblCampos                ;
                 of wndABM2Filtro                ;
-                value _OOHG_aLangLabel[22]        ;
+                value _OOHG_Messages( 10, 22 )  ;
                 width 140                       ;
                 height 25                       ;
                 font "ms sans serif" size 9
         @ 65, 220 label lblCompara              ;
                 of wndABM2Filtro                ;
-                value _OOHG_aLangLabel[23]    ;
+                value _OOHG_Messages( 10, 23 )  ;
                 width 140                       ;
                 height 25                       ;
                 font "ms sans serif" size 9
         @ 200, 20 label lblValor                ;
                 of wndABM2Filtro                ;
-                value _OOHG_aLangLabel[24]        ;
+                value _OOHG_Messages( 10, 24 )  ;
                 width 140                       ;
                 height 25                       ;
                 font "ms sans serif" size 9
@@ -1784,7 +1784,7 @@ static function ABM2ActivarFiltro()
                 value 1                                 ;
                 font "Arial" size 9                     ;
                 on change {|| ABM2ControlFiltro() }     ;
-                on gotfocus wndABM2Filtro.StatusBar.Item(1) := _OOHG_aLangLabel[25] ;
+                on gotfocus wndABM2Filtro.StatusBar.Item(1) := _OOHG_Messages( 10, 25 ) ;
                 on lostfocus wndABM2Filtro.StatusBar.Item(1) := ""
         @ 85, 220 listbox lbxCompara                    ;
                 of wndABM2Filtro                        ;
@@ -1793,7 +1793,7 @@ static function ABM2ActivarFiltro()
                 items aCompara                          ;
                 value 1                                 ;
                 font "Arial" size 9                     ;
-                on gotfocus wndABM2Filtro.StatusBar.Item(1) := _OOHG_aLangLabel[26] ;
+                on gotfocus wndABM2Filtro.StatusBar.Item(1) := _OOHG_Messages( 10, 26 ) ;
                 on lostfocus wndABM2Filtro.StatusBar.Item(1) := ""
         @ 220, 20 textbox conValor              ;
                 of wndABM2Filtro                ;
@@ -1831,11 +1831,11 @@ static function ABM2ControlFiltro()
 
 ///////// Comprueba que se puede crear el control.-----------------------------
         if _aEstructura[nControl,DBS_TYPE] == "M"
-                msgExclamation( _OOHG_aLangUser[35], _cTitulo )
+                msgExclamation( _OOHG_Messages( 11, 35 ), _cTitulo )
                 return NIL
         endif
         if nControl == 0
-                msgExclamation( _OOHG_aLangUser[36], _cTitulo )
+                msgExclamation( _OOHG_Messages( 11, 36 ), _cTitulo )
                 return NIL
         endif
 
@@ -1959,19 +1959,19 @@ static function ABM2EstableceFiltro()
 
 ////////// Comprueba que se puede filtrar.-------------------------------------
         if nCompara == 0
-                msgExclamation( _OOHG_aLangUser[37], _cTitulo )
+                msgExclamation( _OOHG_Messages( 11, 37 ), _cTitulo )
                 return NIL
         endif
         if nCampo == 0
-                msgExclamation( _OOHG_aLangUser[36], _cTitulo )
+                msgExclamation( _OOHG_Messages( 11, 36 ), _cTitulo )
                 return NIL
         endif
         if cValor == ""
-                msgExclamation( _OOHG_aLangUser[38], _cTitulo )
+                msgExclamation( _OOHG_Messages( 11, 38 ), _cTitulo )
                 return NIL
         endif
         if _aEstructura[nCampo,DBS_TYPE] == "M"
-                msgExclamation( _OOHG_aLangUser[35], _cTitulo )
+                msgExclamation( _OOHG_Messages( 11, 35 ), _cTitulo )
                 return NIL
         endif
 
@@ -2021,11 +2021,11 @@ static function ABM2DesactivarFiltro()
 
 ////////// Desactiva el filtro si procede.
         if !_lFiltro
-                msgExclamation( _OOHG_aLangUser[39], _cTitulo )
+                msgExclamation( _OOHG_Messages( 11, 39 ), _cTitulo )
                 ABM2Redibuja( .f. )
                 return NIL
         endif
-        if msgYesNo( _OOHG_aLangUser[40], _cTitulo )
+        if msgYesNo( _OOHG_Messages( 11, 40 ), _cTitulo )
                 (_cArea)->( dbSetFilter( {|| NIL }, "" ) )
                 _lFiltro := .f.
                 _cFiltro := ""
@@ -2077,7 +2077,7 @@ static function ABM2Imprimir()
 
 ////////// Comprueba que hay un indice activo.---------------------------------
         if _nIndiceActivo == 1
-                msgExclamation( _OOHG_aLangUser[9], _cTitulo )
+                msgExclamation( _OOHG_Messages( 11, 9 ), _cTitulo )
                 return NIL
         endif
 
@@ -2099,7 +2099,7 @@ static function ABM2Imprimir()
                 at 0, 0                         ;
                 width 390                       ;
                 height 365                      ;
-                title _OOHG_aLangLabel[10]   ;
+                title _OOHG_Messages( 10, 10 )  ;
                 icon "MINIGUI_EDIT_PRINT"       ;
                 modal                           ;
                 nosize                          ;
@@ -2108,10 +2108,10 @@ static function ABM2Imprimir()
 
                 // Define la barra de botones de la ventana de formato de listado.
                 define toolbar tbListado buttonsize 90, 32 flat righttext border
-                        button tbbCancelarLis caption _OOHG_aLangButton[7]                   ;
+                        button tbbCancelarLis caption _OOHG_Messages( 9, 7 ) ;
                                               picture "MINIGUI_EDIT_CANCEL"             ;
                                               action  wndABM2Listado.Release
-                        button tbbAceptarLis  caption _OOHG_aLangButton[8]                   ;
+                        button tbbAceptarLis  caption _OOHG_Messages( 9, 8 ) ;
                                               picture "MINIGUI_EDIT_OK"                 ;
                                               action  ABM2Listado( aImpresoras )
 
@@ -2134,31 +2134,31 @@ static function ABM2Imprimir()
         // Label
         @ 65, 20 label lblCampoBase             ;
                 of wndABM2Listado               ;
-                value _OOHG_aLangLabel[11]       ;
+                value _OOHG_Messages( 10, 11 )  ;
                 width 140                       ;
                 height 25                       ;
                 font "ms sans serif" size 9
         @ 65, 220 label lblCampoListado         ;
                 of wndABM2Listado               ;
-                value _OOHG_aLangLabel[12]           ;
+                value _OOHG_Messages( 10, 12 )  ;
                 width 140                       ;
                 height 25                       ;
                 font "ms sans serif" size 9
         @ 200, 20 label lblImpresoras           ;
                 of wndABM2Listado               ;
-                value _OOHG_aLangLabel[13]   ;
+                value _OOHG_Messages( 10, 13 )  ;
                 width 140                       ;
                 height 25                       ;
                 font "ms sans serif" size 9
         @ 200, 170 label lblInicial             ;
                 of wndABM2Listado               ;
-                value _OOHG_aLangLabel[14]           ;
+                value _OOHG_Messages( 10, 14 )  ;
                 width 160                       ;
                 height 25                       ;
                 font "ms sans serif" size 9
         @ 255, 170 label lblFinal               ;
                 of wndABM2Listado               ;
-                value _OOHG_aLangLabel[15]           ;
+                value _OOHG_Messages( 10, 15 )  ;
                 width 160                       ;
                 height 25                       ;
                 font "ms sans serif" size 9
@@ -2171,7 +2171,7 @@ static function ABM2Imprimir()
                 items aCampoBase                                                ;
                 value 1                                                         ;
                 font "Arial" size 9                                             ;
-                on gotfocus wndABM2Listado.StatusBar.Item( 1 ) := _OOHG_aLangUser[12] ;
+                on gotfocus wndABM2Listado.StatusBar.Item( 1 ) := _OOHG_Messages( 11, 12 ) ;
                 on lostfocus wndABM2Listado.StatusBar.Item( 1 ) := ""
         @ 85, 220 listbox lbxCampoListado                                       ;
                 of wndABM2Listado                                               ;
@@ -2180,7 +2180,7 @@ static function ABM2Imprimir()
                 items aCampoListado                                             ;
                 value 1                                                         ;
                 font "Arial" size 9                                             ;
-                on gotFocus wndABM2Listado.StatusBar.Item( 1 ) := _OOHG_aLangUser[13];
+                on gotFocus wndABM2Listado.StatusBar.Item( 1 ) := _OOHG_Messages( 11, 13 ) ;
                 on lostfocus wndABM2Listado.StatusBar.Item( 1 ) := ""
 
         // ComboBox.
@@ -2190,7 +2190,7 @@ static function ABM2Imprimir()
                 value 1                                                         ;
                 width 140                                                       ;
                 font "Arial" size 9                                             ;
-                on gotfocus wndABM2Listado.StatusBar.Item( 1 ) := _OOHG_aLangUser[14] ;
+                on gotfocus wndABM2Listado.StatusBar.Item( 1 ) := _OOHG_Messages( 11, 14 ) ;
                 on lostfocus wndABM2Listado.StatusBar.Item( 1 ) := ""
 
         // PicButton.
@@ -2200,7 +2200,7 @@ static function ABM2Imprimir()
                 action ABM2DefinirColumnas( ABM_LIS_ADD )                       ;
                 width 40                                                        ;
                 height 40                                                       ;
-                on gotfocus wndABM2Listado.StatusBar.Item( 1 ) := _OOHG_aLangUser[15] ;
+                on gotfocus wndABM2Listado.StatusBar.Item( 1 ) := _OOHG_Messages( 11, 15 ) ;
                 on lostfocus wndABM2Listado.StatusBar.Item( 1 ) := ""
         @ 140, 170 button btnMenos                                              ;
                 of wndABM2Listado                                               ;
@@ -2208,7 +2208,7 @@ static function ABM2Imprimir()
                 action ABM2DefinirColumnas( ABM_LIS_DEL )                       ;
                 width 40                                                        ;
                 height 40                                                       ;
-                on gotfocus wndABM2Listado.StatusBar.Item( 1 ) := _OOHG_aLangUser[16] ;
+                on gotfocus wndABM2Listado.StatusBar.Item( 1 ) := _OOHG_Messages( 11, 16 ) ;
                 on lostfocus wndABM2Listado.StatusBar.Item( 1 ) := ""
         @ 220, 170 button btnSet1                                               ;
                 of wndABM2Listado                                               ;
@@ -2216,7 +2216,7 @@ static function ABM2Imprimir()
                 action ABM2DefinirRegistro( ABM_LIS_SET1 )                      ;
                 width 25                                                        ;
                 height 25                                                       ;
-                on gotfocus wndABM2Listado.StatusBar.Item( 1 ) := _OOHG_aLangUser[17] ;
+                on gotfocus wndABM2Listado.StatusBar.Item( 1 ) := _OOHG_Messages( 11, 17 ) ;
                 on lostfocus wndABM2Listado.StatusBar.Item( 1 ) := ""
         @ 275, 170 button btnSet2                                               ;
                 of wndABM2Listado                                               ;
@@ -2224,20 +2224,20 @@ static function ABM2Imprimir()
                 action ABM2DefinirRegistro( ABM_LIS_SET2 )                      ;
                 width 25                                                        ;
                 height 25                                                       ;
-                on gotfocus wndABM2Listado.StatusBar.Item( 1 ) := _OOHG_aLangUser[18] ;
+                on gotfocus wndABM2Listado.StatusBar.Item( 1 ) := _OOHG_Messages( 11, 18 ) ;
                 on lostfocus wndABM2Listado.StatusBar.Item( 1 ) := ""
 
         // CheckBox.
         @ 255, 20 checkbox chkVistas            ;
                 of wndABM2Listado               ;
-                caption _OOHG_aLangLabel[18]    ;
+                caption _OOHG_Messages( 10, 18 ) ;
                 width 140                       ;
                 height 25                       ;
                 value .t.                       ;
                 font "ms sans serif" size 9
         @ 275, 20 checkbox chkPrevio            ;
                 of wndABM2Listado               ;
-                caption _OOHG_aLangLabel[17]      ;
+                caption _OOHG_Messages( 10, 17 ) ;
                 width 140                       ;
                 height 25                       ;
                 value .t.                       ;
@@ -2366,7 +2366,7 @@ static function ABM2DefinirColumnas( nAccion )
 
                         // Actualiza los datos de los campos de la base.
                         if Len( aCampoBase ) == 0
-                                msgExclamation( _OOHG_aLangUser[23], _cTitulo )
+                                msgExclamation( _OOHG_Messages( 11, 23 ), _cTitulo )
                                 return NIL
                         else
                                 wndABM2Listado.lbxCampoBase.DeleteAllItems
@@ -2381,7 +2381,7 @@ static function ABM2DefinirColumnas( nAccion )
 
                         // Actualiza los datos de los campos del listado.
                         if Empty( cValor )
-                                msgExclamation( _OOHG_aLangUser[23], _cTitulo )
+                                msgExclamation( _OOHG_Messages( 11, 23 ), _cTitulo )
                                 return NIL
                         else
                                 wndABM2Listado.lbxCampoListado.AddItem( cValor )
@@ -2396,7 +2396,7 @@ static function ABM2DefinirColumnas( nAccion )
 
                         // Actualiza los datos de los campos del listado.
                         if Len( aCampoListado ) == 0
-                                msgExclamation( _OOHG_aLangUser[23], _cTitulo )
+                                msgExclamation( _OOHG_Messages( 11, 23 ), _cTitulo )
                                 return NIL
                         else
                                 wndABM2Listado.lbxCampoListado.DeleteAllItems
@@ -2412,7 +2412,7 @@ static function ABM2DefinirColumnas( nAccion )
 
                         // Actualiza los datos de los campos de la base.
                         if Empty( cValor )
-                                msgExclamation( _OOHG_aLangUser[23], _cTitulo )
+                                msgExclamation( _OOHG_Messages( 11, 23 ), _cTitulo )
                                 return NIL
                         else
                                 wndABM2Listado.lbxCampoBase.DeleteAllItems
@@ -2480,7 +2480,7 @@ static function ABM2Listado( aImpresoras )
         // Nombre de la impresora.
         nImpresora := wndABM2Listado.cbxImpresoras.Value
         if nImpresora == 0
-                msgExclamation( _OOHG_aLangUser[32], '' )
+                msgExclamation( _OOHG_Messages( 11, 32 ), '' )
         else
                 cImpresora := aImpresoras[nImpresora]
         endif
@@ -2492,7 +2492,7 @@ static function ABM2Listado( aImpresoras )
                 aAdd( aCampo, cCampo )
         next
         if Len( aCampo ) == 0
-                msgExclamation( _OOHG_aLangUser[23], _cTitulo )
+                msgExclamation( _OOHG_Messages( 11, 23 ), _cTitulo )
                 return NIL
         endif
 
@@ -2528,7 +2528,7 @@ static function ABM2Listado( aImpresoras )
                 nAncho += aAncho[i]
         next
         if nAncho > 164
-                MsgExclamation( _OOHG_aLangUser[24], _cTitulo )
+                MsgExclamation( _OOHG_Messages( 11, 24 ), _cTitulo )
                 return NIL
         else
                 if nAncho > 109                 // Horizontal.
@@ -2598,7 +2598,7 @@ static function ABM2Listado( aImpresoras )
 
                 // Control de errores.
                 if HBPRNERROR > 0
-                        msgExclamation( _OOHG_aLangUser[25], _cTitulo )
+                        msgExclamation( _OOHG_Messages( 11, 25 ), _cTitulo )
                         return nil
                 endif
 
@@ -2642,10 +2642,10 @@ static function ABM2Listado( aImpresoras )
                                         @ 5, HBPRNMAXCOL-5 say _cTitulo      font "a12n" to print
                                         @ 6, 10, 6, HBPRNMAXCOL-5 line
                                         select pen "l0"
-                                        @ 7, 29 say _OOHG_aLangUser [26]          font "a9n" to print
-                                        @ 8, 29 say _OOHG_aLangUser[27]          font "a9n" to print
-                                        @ 9, 29 say _OOHG_aLangUser[28]          font "a9n" to print
-                                        @ 10,29 say _OOHG_aLangUser[33] font "a9n" to print
+                                        @ 7, 29 say _OOHG_Messages( 11, 26 )          font "a9n" to print
+                                        @ 8, 29 say _OOHG_Messages( 11, 27 )          font "a9n" to print
+                                        @ 9, 29 say _OOHG_Messages( 11, 28 )          font "a9n" to print
+                                        @ 10,29 say _OOHG_Messages( 11, 33 ) font "a9n" to print
                                         set text align left
                                         @ 7, 31 say (_cArea)->( ordName() ) font "a9"  to print
                                         @ 8, 31 say cRegistro1              font "a9"  to print
@@ -2674,7 +2674,7 @@ static function ABM2Listado( aImpresoras )
                                                         @ nFila, nColumna + aAncho[i] say (_cArea)->( FieldGet( aNumeroCampo[i] ) ) font "a8" to print
                                                 case _aEstructura[nCampo,DBS_TYPE] == "L"
                                                         set text align left
-                                                        @ nFila, nColumna + 1 say iif( (_cArea)->( FieldGet( aNumeroCampo[i] ) ), _OOHG_aLangUser[29], _OOHG_aLangUser[30] ) font "a8" to print
+                                                        @ nFila, nColumna + 1 say iif( (_cArea)->( FieldGet( aNumeroCampo[i] ) ), _OOHG_Messages( 11, 29 ), _OOHG_Messages( 11, 30 ) ) font "a8" to print
                                                 case _aEstructura[nCampo,DBS_TYPE] == "M"
                                                         set text align left
                                                         @ nFila, nColumna + 1 say SubStr( (_cArea)->( FieldGet( aNumeroCampo[i] ) ), 1, 20 ) font "a8" to print

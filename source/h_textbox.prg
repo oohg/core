@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.18 2005-10-27 05:13:04 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.19 2005-10-28 04:43:05 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -99,10 +99,11 @@
 #include "hblang.ch"
 
 CLASS TText FROM TLabel
-   DATA Type          INIT "TEXT" READONLY
-   DATA lSetting      INIT .F.
-   DATA nMaxLenght    INIT 0
-   DATA lAutoSkip     INIT .F.
+   DATA Type            INIT "TEXT" READONLY
+   DATA lSetting        INIT .F.
+   DATA nMaxLenght      INIT 0
+   DATA lAutoSkip       INIT .F.
+   DATA lSettingFocus   INIT .F.
 
    METHOD Define
    METHOD Define2
@@ -244,6 +245,7 @@ METHOD SetFocus() CLASS TText
 Local uRet
    uRet := ::Super:SetFocus()
    SendMessage( ::hWnd, EM_SETSEL, 0 , -1 )
+   ::lSettingFocus := .T.
 Return uRet
 
 *------------------------------------------------------------------------------*
@@ -257,14 +259,14 @@ Return HiWord( SendMessage( ::hWnd, EM_GETSEL, 0, 0 ) )
 *------------------------------------------------------------------------------*
 METHOD Events_Enter() CLASS TText
 *------------------------------------------------------------------------------*
-   _OOHG_SetFocusExecuted := .F.
+   ::lSettingFocus := .F.
    ::DoEvent( ::OnDblClick )
-   If _OOHG_SetFocusExecuted == .F.
+   If ! ::lSettingFocus
       If _OOHG_ExtendedNavigation == .T.
          _SetNextFocus()
       EndIf
    Else
-      _OOHG_SetFocusExecuted := .F.
+      ::lSettingFocus := .F.
    EndIf
 Return nil
 

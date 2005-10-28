@@ -1,5 +1,5 @@
 /*
- * $Id: h_edit.prg,v 1.2 2005-08-18 04:07:28 guerra000 Exp $
+ * $Id: h_edit.prg,v 1.3 2005-10-28 04:43:05 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -256,7 +256,7 @@ InitMessages()
 // Control de parámetros.
 // Area de la base de datos.---------------------------------------------------
 if ( ! ValType( cArea ) $ "CM" ) .or. Empty( cArea )
-        MsgOOHGError( _OOHG_aABMLangError[1], "" )
+        MsgOOHGError( _OOHG_Messages( 8, 1 ), "" )
 else
         _cArea       := cArea
         _aEstructura := (_cArea)->( dbStruct() )
@@ -265,7 +265,7 @@ endif
 
 // Numero de campos.-----------------------------------------------------------
 if ( nCampos > 16 )
-        MsgOOHGError( _OOHG_aABMLangError[2], "" )
+        MsgOOHGError( _OOHG_Messages( 8, 2 ), "" )
 endif
 
 // Titulo de la ventana.-------------------------------------------------------
@@ -424,7 +424,7 @@ for nItem := 1 to nCampos
 next
 @ 310, 535 label  lblLabel1 ;
            of     wndABM ;
-           value  _OOHG_aABMLangLabel[1] ;
+           value  _OOHG_Messages( 6, 1 ) ;
            width  85 ;
            height 20 ;
            font   "ms sans serif" ;
@@ -438,7 +438,7 @@ next
            size   8
 @ 350, 535 label  lblLabel2 ;
            of     wndABM ;
-           value  _OOHG_aABMLangLabel[2] ;
+           value  _OOHG_Messages( 6, 2 ) ;
            width  85 ;
            height 20 ;
            font   "ms sans serif" ;
@@ -466,7 +466,7 @@ next
 // Definición de los botones.--------------------------------------------------
 @ 400, 535 button btnCerrar ;
         of      wndABM ;
-        caption _OOHG_aABMLangButton[1] ;
+        caption _OOHG_Messages( 7, 1 ) ;
         action  ABMEventos( ABM_EVENTO_SALIR ) ;
         width   85 ;
         height  30 ;
@@ -474,7 +474,7 @@ next
         size    8
 @ 20, 535 button btnNuevo ;
         of      wndABM ;
-        caption _OOHG_aABMLangButton[2] ;
+        caption _OOHG_Messages( 7, 2 ) ;
         action  ABMEventos( ABM_EVENTO_NUEVO ) ;
         width   85 ;
         height  30 ;
@@ -483,7 +483,7 @@ next
         notabstop
 @ 65, 535 button btnEditar ;
         of      wndABM ;
-        caption _OOHG_aABMLangButton[3] ;
+        caption _OOHG_Messages( 7, 3 ) ;
         action  ABMEventos( ABM_EVENTO_EDITAR ) ;
         width   85 ;
         height  30 ;
@@ -492,7 +492,7 @@ next
         notabstop
 @ 110, 535 button btnBorrar ;
         of      wndABM ;
-        caption _OOHG_aABMLangButton[4] ;
+        caption _OOHG_Messages( 7, 4 ) ;
         action  ABMEventos( ABM_EVENTO_BORRAR ) ;
         width   85 ;
         height  30 ;
@@ -501,7 +501,7 @@ next
         notabstop
 @ 155, 535 button btnBuscar ;
         of      wndABM ;
-        caption _OOHG_aABMLangButton[5] ;
+        caption _OOHG_Messages( 7, 5 ) ;
         action  ABMEventos( ABM_EVENTO_BUSCAR ) ;
         width   85 ;
         height  30 ;
@@ -510,7 +510,7 @@ next
         notabstop
 @ 200, 535 button btnIr ;
         of      wndABM ;
-        caption _OOHG_aABMLangButton[6] ;
+        caption _OOHG_Messages( 7, 6 ) ;
         action  ABMEventos( ABM_EVENTO_IR ) ;
         width   85 ;
         height  30 ;
@@ -519,7 +519,7 @@ next
         notabstop
 @ 245, 535 button btnListado ;
         of      wndABM ;
-        caption _OOHG_aABMLangButton[7] ;
+        caption _OOHG_Messages( 7, 7 ) ;
         action  ABMEventos( ABM_EVENTO_LISTADO ) ;
         width   85 ;
         height  30 ;
@@ -528,7 +528,7 @@ next
         notabstop
 @ 260, 20 button btnPrimero ;
         of      wndABM ;
-        caption _OOHG_aABMLangButton[8] ;
+        caption _OOHG_Messages( 7, 8 ) ;
         action  ABMEventos( ABM_EVENTO_PRIMERO ) ;
         width   70 ;
         height  30 ;
@@ -537,7 +537,7 @@ next
         notabstop
 @ 260, 100 button btnAnterior ;
         of      wndABM ;
-        caption _OOHG_aABMLangButton[9] ;
+        caption _OOHG_Messages( 7, 9 ) ;
         action  ABMEventos( ABM_EVENTO_ANTERIOR ) ;
         width   70 ;
         height  30 ;
@@ -546,7 +546,7 @@ next
         notabstop
 @ 260, 180 button btnSiguiente ;
         of      wndABM ;
-        caption _OOHG_aABMLangButton[10] ;
+        caption _OOHG_Messages( 7, 10 ) ;
         action  ABMEventos( ABM_EVENTO_SIGUIENTE ) ;
         width   70 ;
         height  30 ;
@@ -555,7 +555,7 @@ next
         notabstop
 @ 260, 260 button btnUltimo ;
         of      wndABM ;
-        caption _OOHG_aABMLangButton[11] ;
+        caption _OOHG_Messages( 7, 11 ) ;
         action  ABMEventos( ABM_EVENTO_ULTIMO ) ;
         width   70 ;
         height  30 ;
@@ -564,7 +564,7 @@ next
         notabstop
 @ 260, 355 button btnGuardar ;
         of      wndABM ;
-        caption _OOHG_aABMLangButton[12] ;
+        caption _OOHG_Messages( 7, 12 ) ;
         action  ABMEventos( ABM_EVENTO_GUARDAR ) ;
         width   70 ;
         height  30 ;
@@ -572,7 +572,7 @@ next
         size    8
 @ 260, 435 button btnCancelar ;
         of      wndABM ;
-        caption _OOHG_aABMLangButton[13] ;
+        caption _OOHG_Messages( 7, 13 ) ;
         action  ABMEventos( ABM_EVENTO_CANCELAR ) ;
         width   70 ;
         height  30 ;
@@ -783,7 +783,7 @@ do case
 
         // Control de error.---------------------------------------------------
         otherwise
-                MsgOOHGError( _OOHG_aABMLangError[3], "" )
+                MsgOOHGError( _OOHG_Messages( 8, 3 ), "" )
 end case
 
 return ( nil )
@@ -817,7 +817,7 @@ do case
         // Pulsación del botón NUEVO.------------------------------------------
         case nEvento == ABM_EVENTO_NUEVO
                 _lEditar := .f.
-                cModo := _OOHG_aABMLangLabel[3]
+                cModo := _OOHG_Messages( 6, 3 )
                 wndABM.Title := wndABM.Title + cModo
 
                 // Pasa a modo de edición.
@@ -851,7 +851,7 @@ do case
         // Pulsación del botón EDITAR.-----------------------------------------
         case nEvento == ABM_EVENTO_EDITAR
                 _lEditar := .t.
-                cModo := _OOHG_aABMLangLabel[4]
+                cModo := _OOHG_Messages( 6, 4 )
                 wndABM.Title := wndABM.Title + cModo
 
                 // Pasa a modo de edicion.
@@ -871,7 +871,7 @@ do case
         case nEvento == ABM_EVENTO_BORRAR
 
                 // Borra el registro si se acepta.
-                if MsgOKCancel( _OOHG_aABMLangUser[1], "" )
+                if MsgOKCancel( _OOHG_Messages( 5, 1 ), "" )
 	                if (_cArea)->( rlock() )
         	           (_cArea)->( dbDelete() )
                 	   (_cArea)->( dbCommit() )
@@ -884,7 +884,7 @@ do case
 	                      (_cArea)->( dbGoBottom() )
         	           endif
 	                else
-                      Msgstop( _OOHG_aLangUser [41] , '' )
+                      Msgstop( _OOHG_Messages( 11, 41 ), '' )
 	                endif
                 endif
 
@@ -896,7 +896,7 @@ do case
         case nEvento == ABM_EVENTO_BUSCAR
                 if ValType( _bBuscar ) != "B"
                         if Empty( (_cArea)->( ordSetFocus() ) )
-                                msgExclamation( _OOHG_aABMLangUser[2] , "" )
+                                msgExclamation( _OOHG_Messages( 5, 2 ), "" )
                         else
                                 ABMBuscar()
                         endif
@@ -907,7 +907,7 @@ do case
 
         // Pulsación del botón IR AL REGISTRO.---------------------------------
         case nEvento == ABM_EVENTO_IR
-                cRegistro := InputBox( _OOHG_aABMLangLabel[5], "" )
+                cRegistro := InputBox( _OOHG_Messages( 6, 5 ), "" )
                 if !Empty( cRegistro )
                         nRegistro := Val( cRegistro )
                         if ( nRegistro != 0 ) .and. ( nRegistro <= (_cArea)->( RecCount() ) )
@@ -1008,7 +1008,7 @@ do case
 
         // Control de error.---------------------------------------------------
         otherwise
-                MsgOOHGError( _OOHG_aABMLangError[4], "" )
+                MsgOOHGError( _OOHG_Messages( 8, 4 ), "" )
 
 endcase
 
@@ -1044,14 +1044,14 @@ next
 cCampo := Upper( (_cArea)->( ordSetFocus() ) )
 nTipoCampo := aScan( aCampo, cCampo )
 if nTipoCampo == 0
-        msgExclamation( _OOHG_aABMLangUser[3], "" )
+        msgExclamation( _OOHG_Messages( 5, 3 ), "" )
         return ( nil )
 endif
 cTipoCampo := aTipoCampo[nTipoCampo]
 
 // Comprueba si el tipo se puede buscar.---------------------------------------
 if ( cTipoCampo == "N" ) .or. ( cTipoCampo == "L" ) .or. ( cTipoCampo == "M" )
-        MsgExclamation( _OOHG_aABMLangUser[4], "" )
+        MsgExclamation( _OOHG_Messages( 5, 4 ), "" )
         return ( nil )
 endif
 
@@ -1060,7 +1060,7 @@ define window wndABMBuscar ;
                 at 0, 0 ;
                 width  200 ;
                 height 160 ;
-                title _OOHG_aABMLangLabel[6] ;
+                title _OOHG_Messages( 6, 6 ) ;
                 modal ;
                 nosysmenu ;
                 font "Serif" ;
@@ -1080,7 +1080,7 @@ end window
 // Botones.
 @ 80, 20 button btnGuardar ;
         of      wndABMBuscar ;
-        caption "&" + _OOHG_aABMLangButton[5] ;
+        caption "&" + _OOHG_Messages( 7, 5 ) ;
         action  {|| ABMBusqueda() } ;
         width   70 ;
         height  30 ;
@@ -1088,7 +1088,7 @@ end window
         size    8
 @ 80, 100 button btnCancelar ;
         of      wndABMBuscar ;
-        caption "&" + _OOHG_aABMLangButton[13] ;
+        caption "&" + _OOHG_Messages( 7, 13 ) ;
         action  {|| wndABMBuscar.Release } ;
         width   70 ;
         height  30 ;
@@ -1098,7 +1098,7 @@ end window
 // Controles de edición.
 do case
         case cTipoCampo == "C"
-                cModo := _OOHG_aABMLangLabel[7]
+                cModo := _OOHG_Messages( 6, 7 )
                 wndABMBuscar.lblEtiqueta1.Value := cModo
                 @ 45, 20 textbox txtBuscar ;
                 of wndABMBuscar ;
@@ -1109,7 +1109,7 @@ do case
                 size 9 ;
                 maxlength _aEstructura[nTipoCampo,3]
         case cTipoCampo == "D"
-                cModo := _OOHG_aABMLangLabel [8]
+                cModo := _OOHG_Messages( 6, 8 )
                 wndABMBuscar.lblEtiqueta1.Value := cModo
                 @ 45, 20 datepicker txtBuscar ;
                         of  wndABMBuscar ;
@@ -1143,7 +1143,7 @@ local nRegistro := (_cArea)->( RecNo() )                // Registro anterior.
 if (_cArea)->( dbSeek( wndABMBuscar.txtBuscar.Value ) )
         nRegistro := (_cArea)->( RecNo() )
 else
-        msgExclamation( _OOHG_aABMLangUser[5] , "" )
+        msgExclamation( _OOHG_Messages( 5, 5 ), "" )
         (_cArea)->(dbGoTo( nRegistro ) )
 endif
 
@@ -1194,7 +1194,7 @@ define window wndABMListado ;
         at 0, 0 ;
         width  420 ;
         height 295 ;
-        title _OOHG_aABMLangLabel[10] ;
+        title _OOHG_Messages( 6, 10 ) ;
         modal ;
         nosysmenu ;
         font "Serif" ;
@@ -1208,28 +1208,28 @@ end window
 // Label.
 @ 20, 20 label lblLabel1 ;
         of wndABMListado ;
-        value _OOHG_aABMLangLabel[11] ;
+        value _OOHG_Messages( 6, 11 ) ;
         width 140 ;
         height 21 ;
         font "ms sans serif" ;
         size 8
 @ 20, 250 label lblLabel2 ;
         of     wndABMListado ;
-        value  _OOHG_aABMLangLabel[12] ;
+        value  _OOHG_Messages( 6, 12 ) ;
         width  140 ;
         height 21 ;
         font   "ms sans serif" ;
         size   8
 @ 160, 20 label lblLabel3 ;
         of wndABMListado ;
-        value _OOHG_aABMLangLabel[13] ;
+        value _OOHG_Messages( 6, 13 ) ;
         width 140 ;
         height 21 ;
         font "ms sans serif" ;
         size 8
 @ 160, 250 label lblLabel4 ;
         of wndABMListado ;
-        value _OOHG_aABMLangLabel[14] ;
+        value _OOHG_Messages( 6, 14 ) ;
         width 140 ;
         height 21 ;
         font "ms sans serif" ;
@@ -1275,7 +1275,7 @@ end window
 // Botones.
 @ 45, 170 button btnMas ;
         of      wndABMListado ;
-        caption _OOHG_aABMLangButton[14] ;
+        caption _OOHG_Messages( 7, 14 ) ;
         action  {|| ABMListadoEvento( ABM_LISTADO_MAS ) } ;
         width   70 ;
         height  30 ;
@@ -1283,7 +1283,7 @@ end window
         size    8
 @ 85, 170 button btnMenos ;
         of      wndABMListado ;
-        caption _OOHG_aABMLangButton[15] ;
+        caption _OOHG_Messages( 7, 15 ) ;
         action  {|| ABMListadoEvento( ABM_LISTADO_MENOS ) } ;
         width   70 ;
         height  30 ;
@@ -1291,7 +1291,7 @@ end window
         size    8
 @ 225, 240 button btnImprimir ;
         of      wndABMListado ;
-        caption _OOHG_aABMLangButton[16] ;
+        caption _OOHG_Messages( 7, 16 ) ;
         action  {|| ABMListadoEvento( ABM_LISTADO_IMPRIMIR ) } ;
         width   70 ;
         height  30 ;
@@ -1300,7 +1300,7 @@ end window
         notabstop
 @ 225, 330 button btnCerrar ;
         of      wndABMListado ;
-        caption _OOHG_aABMLangButton[17] ;
+        caption _OOHG_Messages( 7, 17 ) ;
         action  {|| ABMListadoEvento( ABM_LISTADO_CERRAR ) } ;
         width   70 ;
         height  30 ;
@@ -1405,7 +1405,7 @@ do case
                 if nTotal > 164
 
                         // No cabe en la hoja.
-                        MsgExclamation( _OOHG_aABMLangUser[6], "" )
+                        MsgExclamation( _OOHG_Messages( 5, 6 ), "" )
                 else
                         if nTotal > 109
 
@@ -1420,7 +1420,7 @@ do case
 
         // Control de error.---------------------------------------------------
         otherwise
-                MsgOOHGError( _OOHG_aABMLangError[5], "" )
+                MsgOOHGError( _OOHG_Messages( 8, 5 ), "" )
 endcase
 
 return ( nil )
@@ -1504,16 +1504,16 @@ do while lSalida
         if lCabecera
 		START PAGE
 		SET TEXT ALIGN LEFT
-                @ 5, 10 say _OOHG_aABMLangLabel[15] + _cTitulo font "f14n" to print
+                @ 5, 10 say _OOHG_Messages( 6, 15 ) + _cTitulo font "f14n" to print
                 set text align left
                 @ 6, 10, 6, HBPRNMAXCOL-5 line
-                @ 7, 10 say _OOHG_aABMLangLabel[16]         font "f10n" to print
+                @ 7, 10 say _OOHG_Messages( 6, 16 )         font "f10n" to print
                 @ 7, 18 say Date()                     font "f10"  to print
-                @ 8, 10 say _OOHG_aABMLangLabel[17]         font "f10n" to print
+                @ 8, 10 say _OOHG_Messages( 6, 17 )         font "f10n" to print
                 @ 8, 30 say AllTrim( Str( nPrimero ) ) font "f10"  to print
-                @ 8, 40 say _OOHG_aABMLangLabel[18]         font "f10n" to print
+                @ 8, 40 say _OOHG_Messages( 6, 18 )         font "f10n" to print
                 @ 8, 60 say AllTrim( Str( nUltimo ) )  font "f10"  to print
-                @ 9, 10 say _OOHG_aABMLangLabel[19]         font "f10n" to print
+                @ 9, 10 say _OOHG_Messages( 6, 19 )         font "f10n" to print
                 @ 9, 30 say ordName()                  font "f10"  to print
                 nColumna := 10
                 for nItem := 1 to Len( _aNumeroCampo )
@@ -1533,7 +1533,7 @@ do while lSalida
 
                         set text align left
 
-                        cTexto := iif( (_cArea)->( FieldGet( nIndice ) ), _OOHG_aABMLangLabel[20], _OOHG_aABMLangLabel[21] )
+                        cTexto := iif( (_cArea)->( FieldGet( nIndice ) ), _OOHG_Messages( 6, 20 ), _OOHG_Messages( 6, 21 ) )
                         @ nFila, nColumna say cTexto font "f10" to print
                         nColumna += _aAnchoCampo[nItem]
                 case _aEstructura[nIndice,2] == "N"
@@ -1564,7 +1564,7 @@ do while lSalida
 
                         @ 45, 10, 45, HBPRNMAXCOL-5 line
                         set text align center
-                        @ 45, HBPRNMAXCOL/2 say _OOHG_aABMLangLabel[22] + AllTrim( Str( nPagina ) ) + _OOHG_aABMLangLabel[23] + AllTrim( Str( nPaginas ) ) font "f10n" to print
+                        @ 45, HBPRNMAXCOL/2 say _OOHG_Messages( 6, 22 ) + AllTrim( Str( nPagina ) ) + _OOHG_Messages( 6, 23 ) + AllTrim( Str( nPaginas ) ) font "f10n" to print
                         lCabecera := .t.
                         nPagina++
                         nFila := 12
@@ -1584,7 +1584,7 @@ do while lSalida
 
                         set text align center
 
-                        @ 65, HBPRNMAXCOL/2 say _OOHG_aABMLangLabel[22] + AllTrim( Str( nPagina ) ) + _OOHG_aABMLangLabel[23] + AllTrim( Str( nPaginas ) ) font "f10n" to print
+                        @ 65, HBPRNMAXCOL/2 say _OOHG_Messages( 6, 22 ) + AllTrim( Str( nPagina ) ) + _OOHG_Messages( 6, 23 ) + AllTrim( Str( nPaginas ) ) font "f10n" to print
                         lCabecera := .t.
                         nPagina++
                         nFila := 12
@@ -1603,7 +1603,7 @@ do while lSalida
                         do case
                         case _aEstructura[nIndice,2] == "L"
                                 set text align left
-                                cTexto := iif( (_cArea)->( FieldGet( nIndice ) ), _OOHG_aABMLangLabel[20], _OOHG_aABMLangLabel[21] )
+                                cTexto := iif( (_cArea)->( FieldGet( nIndice ) ), _OOHG_Messages( 6, 20 ), _OOHG_Messages( 6, 21 ) )
                                 @ nFila, nColumna say cTexto font "f10" to print
                                 nColumna += _aAnchoCampo[nItem]
                         case _aEstructura[nIndice,2] == "N"
@@ -1635,7 +1635,7 @@ if lOrientacion
                 set text align left
                 @ 45, 10, 45, HBPRNMAXCOL-5 line
                 set text align center
-                @ 45, HBPRNMAXCOL/2 say _OOHG_aABMLangLabel[22] + AllTrim( Str( nPagina ) ) + _OOHG_aABMLangLabel[23] + AllTrim( Str( nPaginas ) ) font "f10n" to print
+                @ 45, HBPRNMAXCOL/2 say _OOHG_Messages( 6, 22 ) + AllTrim( Str( nPagina ) ) + _OOHG_Messages( 6, 23 ) + AllTrim( Str( nPaginas ) ) font "f10n" to print
         endif
 else
         // Vertical
@@ -1647,7 +1647,7 @@ else
                 set text align left
                 @ 65, 10, 65, HBPRNMAXCOL-5 line
                 set text align center
-                @ 65, HBPRNMAXCOL/2 say _OOHG_aABMLangLabel[22] + AllTrim( Str( nPagina ) ) + _OOHG_aABMLangLabel[23] + AllTrim( Str( nPaginas ) ) font "f10n" to print
+                @ 65, HBPRNMAXCOL/2 say _OOHG_Messages( 6, 22 ) + AllTrim( Str( nPagina ) ) + _OOHG_Messages( 6, 23 ) + AllTrim( Str( nPaginas ) ) font "f10n" to print
         endif
 endif
 

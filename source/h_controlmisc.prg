@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.26 2005-10-27 05:16:46 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.27 2005-10-28 04:43:05 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -219,12 +219,7 @@ Return .F.
 *-----------------------------------------------------------------------------*
 Function _SetFocus ( ControlName , ParentForm )
 *-----------------------------------------------------------------------------*
-
-   GetControlObject( ControlName , ParentForm ):SetFocus()
-
-   _OOHG_SetFocusExecuted := .T.
-
-Return nil
+Return GetControlObject( ControlName , ParentForm ):SetFocus()
 
 *-----------------------------------------------------------------------------*
 Function _DisableControl ( ControlName , ParentForm )
@@ -738,12 +733,12 @@ Local oInputWindow, aResult
 
 		@ ControlRow + 10 , 30 BUTTON BUTTON_1 ;
 		OF _InputWindow ;
-      CAPTION _OOHG_MESSAGE[ 6 ] ;
+      CAPTION _OOHG_Messages( 1, 6 ) ;
       ACTION _InputWindowOk( oInputWindow, aResult )
 
 		@ ControlRow + 10 , 140 BUTTON BUTTON_2 ;
 		OF _InputWindow ;
-      CAPTION _OOHG_MESSAGE[ 7 ] ;
+      CAPTION _OOHG_Messages( 1, 7 ) ;
       ACTION _InputWindowCancel( oInputWindow, aResult )
 
       oInputWindow:Control_1:SetFocus()
@@ -2047,7 +2042,7 @@ METHOD SetInfo( ControlName, FontName, FontSize, FontColor, BkColor, lEditBox, l
    ::Name := _OOHG_GetNullName( ControlName )
 
    If _IsControlDefined( ::Name, ::Parent:Name )
-      MsgOOHGError( _OOHG_BRWLangError[ 4 ] + ::Name + _OOHG_BRWLangError[ 5 ] + ::Parent:Name + _OOHG_BRWLangError[ 6 ] )
+      MsgOOHGError( _OOHG_Messages( 3, 4 ) + ::Name + _OOHG_Messages( 3, 5 ) + ::Parent:Name + _OOHG_Messages( 3, 6 ) )
 	endif
 
    // Right-to-left
@@ -2651,7 +2646,7 @@ Local lRet := _OOHG_lMultiple
       ( EMPTY( CreateMutex( , .T., strtran(GetModuleFileName(),'\','_') ) ) .OR. (GetLastError() > 0) )
       If ValType( lWarning ) == "L" .AND. lWarning
          InitMessages()
-         MsgStop( _OOHG_Message[ 4 ] )
+         MsgStop( _OOHG_Messages( 1, 4 ) )
       Endif
       ExitProcess(0)
    ENDIF

@@ -1,5 +1,5 @@
 /*
- * $Id: i_var.ch,v 1.6 2005-10-01 15:35:10 guerra000 Exp $
+ * $Id: i_var.ch,v 1.7 2005-10-28 04:43:05 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -144,11 +144,7 @@ MEMVAR _OOHG_AllVars
 #xtranslate  _OOHG_ThisItemCellWidth   => _OOHG_AllVars \[  40 \]
 #xtranslate  _OOHG_ThisItemCellHeight  => _OOHG_AllVars \[  41 \]
 
-#xtranslate  _OOHG_BRWLangButton       => _OOHG_AllVars \[  42 \]
-#xtranslate  _OOHG_BRWLangError        => _OOHG_AllVars \[  43 \]
 #xtranslate  _OOHG_ActiveSplitBoxInverted => _OOHG_AllVars \[  44 \]
-
-#xtranslate  _OOHG_DialogCancelled     => _OOHG_AllVars \[  45 \]
 
 #xtranslate  _OOHG_ExtendedNavigation  => _OOHG_AllVars \[  46 \]
 #xtranslate  _OOHG_ThisEventType       => _OOHG_AllVars \[  47 \]
@@ -159,24 +155,6 @@ MEMVAR _OOHG_AllVars
 
 #xtranslate  _OOHG_InteractiveCloseStarted => _OOHG_AllVars \[  51 \]
 
-#xtranslate  _OOHG_SetFocusExecuted    => _OOHG_AllVars \[  52 \]
+#xtranslate  _OOHG_IsXP                => ( "XP" $ WindowsVersion()\[ 1 \] )
 
-#xtranslate  _OOHG_BRWLangMessage      => _OOHG_AllVars \[  53 \]
-
-#xtranslate  _OOHG_MESSAGE             => _OOHG_AllVars \[  54 \]
-
-#xtranslate  _OOHG_aABMLangUser        => _OOHG_AllVars \[  55 \]
-#xtranslate  _OOHG_aABMLangLabel       => _OOHG_AllVars \[  56 \]
-#xtranslate  _OOHG_aABMLangButton      => _OOHG_AllVars \[  57 \]
-#xtranslate  _OOHG_aABMLangError       => _OOHG_AllVars \[  58 \]
-
-#xtranslate  _OOHG_aLangButton         => _OOHG_AllVars \[  59 \]
-#xtranslate  _OOHG_aLangLabel          => _OOHG_AllVars \[  60 \]
-#xtranslate  _OOHG_aLangUser           => _OOHG_AllVars \[  61 \]
-
-#xtranslate  _OOHG_IsXP                => _OOHG_AllVars \[  62 \]
-
-#xtranslate  _OOHG_DelayedSetFocus     => _OOHG_AllVars \[  63 \]
-
-#xtranslate  _OOHG_activemodal         => _OOHG_AllVars \[  64 \]
 #xtranslate  _OOHG_ThisItemCellValue   => _OOHG_AllVars \[  65 \]

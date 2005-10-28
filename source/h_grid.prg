@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.28 2005-10-27 05:14:15 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.29 2005-10-28 04:43:05 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -325,7 +325,7 @@ Local nItem, aItems, aEditControls, nColumn
       Endif
    Next
 
-   aItems := ::EditItem2( nItem, aItems, aEditControls,, if( ValType( ::cRowEditTitle ) $ "CM", ::cRowEditTitle, _OOHG_MESSAGE[ 5 ] ) )
+   aItems := ::EditItem2( nItem, aItems, aEditControls,, if( ValType( ::cRowEditTitle ) $ "CM", ::cRowEditTitle, _OOHG_Messages( 1, 5 ) ) )
    If ! Empty( aItems )
       ::Item( nItem, ASIZE( aItems, LEN( ::aHeaders ) ) )
       _SetThisCellInfo( ::hWnd, nItem, 1 )
@@ -451,10 +451,10 @@ Local oCtrl, aEditControls2, nRow, lSplitWindow, nControlsMaxHeight
       nRow += 10
    Endif
 
-   @ nRow,  25 BUTTON 0 PARENT ( oWnd ) CAPTION _OOHG_MESSAGE[ 6 ] ;
+   @ nRow,  25 BUTTON 0 PARENT ( oWnd ) CAPTION _OOHG_Messages( 1, 6 ) ;
          ACTION ( TGrid_EditItem_Check( aEditControls2, aItems, oMain ) )
 
-   @ nRow, 145 BUTTON 0 PARENT ( oWnd ) CAPTION _OOHG_MESSAGE[ 7 ] ;
+   @ nRow, 145 BUTTON 0 PARENT ( oWnd ) CAPTION _OOHG_Messages( 1, 7 ) ;
          ACTION ( aItems := {}, oMain:Release() )
 
 	END WINDOW
@@ -514,7 +514,7 @@ Local lRet, nItem, aValues, lValid
          If ValType( aEditControls[ nItem ]:cValidMessage ) $ "CM" .AND. ! Empty( aEditControls[ nItem ]:cValidMessage )
             MsgExclamation( aEditControls[ nItem ]:cValidMessage )
          Else
-            MsgExclamation( _OOHG_BRWLangError[ 11 ] )
+            MsgExclamation( _OOHG_Messages( 3, 11 ) )
          Endif
          aEditControls[ nItem ]:SetFocus()
       EndIf
@@ -1552,7 +1552,7 @@ Local lValid, uValue
       If ValType( ::cValidMessage ) $ "CM" .AND. ! Empty( ::cValidMessage )
          MsgExclamation( ::cValidMessage )
       Else
-         MsgExclamation( _OOHG_BRWLangError[ 11 ] )
+         MsgExclamation( _OOHG_Messages( 3, 11 ) )
       Endif
       ::oControl:SetFocus()
    Endif
@@ -1674,8 +1674,8 @@ Local lRet := .F.
           @ 07,10 LABEL 0    PARENT &( ::oWindow:Name ) VALUE ""   WIDTH 280
           ::CreateControl( uValue, ::oWindow:Name, 30, 10, 320, 176 )
           ::Value := ::ControlValue
-          @ 217,120 BUTTON 0 PARENT &( ::oWindow:Name ) CAPTION _OOHG_MESSAGE[ 6 ] ACTION ( lRet := ::Valid() )
-          @ 217,230 BUTTON 0 PARENT &( ::oWindow:Name ) CAPTION _OOHG_MESSAGE[ 7 ] ACTION ( ::oWindow:Release() )
+          @ 217,120 BUTTON 0 PARENT &( ::oWindow:Name ) CAPTION _OOHG_Messages( 1, 6 ) ACTION ( lRet := ::Valid() )
+          @ 217,230 BUTTON 0 PARENT &( ::oWindow:Name ) CAPTION _OOHG_Messages( 1, 7 ) ACTION ( ::oWindow:Release() )
 
    END WINDOW
    ::oWindow:Center()

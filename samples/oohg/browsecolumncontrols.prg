@@ -1,5 +1,5 @@
 /*
- * $Id: browsecolumncontrols.prg,v 1.2 2005-10-23 17:52:27 guerra000 Exp $
+ * $Id: browsecolumncontrols.prg,v 1.3 2005-10-28 04:43:05 guerra000 Exp $
  */
 /*
  * ooHG Browse COLUMNCONTROLS demo. (c) 2005 Vic
@@ -184,8 +184,8 @@ Local lRet := .F.
           @ 43, 10 LABEL 0 PARENT &( ::oWindow:Name ) VALUE "Last Name:"  AUTOSIZE
           ::CreateControl( uValue, ::oWindow:Name, 10, 100, ::nDefWidth, ::nDefHeight )
           ::Value := ::ControlValue
-          @  77, 20 BUTTON 0 PARENT &( ::oWindow:Name ) CAPTION _OOHG_MESSAGE[ 6 ] ACTION ( lRet := ::Valid() )
-          @  77,130 BUTTON 0 PARENT &( ::oWindow:Name ) CAPTION _OOHG_MESSAGE[ 7 ] ACTION ( ::oWindow:Release() )
+          @  77, 20 BUTTON 0 PARENT &( ::oWindow:Name ) CAPTION _OOHG_Messages( 1, 6 ) ACTION ( lRet := ::Valid() )
+          @  77,130 BUTTON 0 PARENT &( ::oWindow:Name ) CAPTION _OOHG_Messages( 1, 7 ) ACTION ( ::oWindow:Release() )
    END WINDOW
    ::oWindow:Center()
    ::oControl:SetFocus()
