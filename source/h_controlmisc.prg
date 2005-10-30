@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.27 2005-10-28 04:43:05 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.28 2005-10-30 16:50:54 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -2104,6 +2104,15 @@ RETURN Self
 METHOD Release() CLASS TControl
 *-----------------------------------------------------------------------------*
 Local mVar
+
+   // Erases events (for avoid wrong re-usage)
+   ::OnClick        := nil
+   ::OnGotFocus     := nil
+   ::OnLostFocus    := nil
+   ::OnMouseDrag    := nil
+   ::OnMouseMove    := nil
+   ::OnChange       := nil
+   ::OnDblClick     := nil
 
    // Removes from container
    IF ::Container != nil
