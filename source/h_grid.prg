@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.29 2005-10-28 04:43:05 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.30 2005-10-30 16:53:54 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -117,6 +117,7 @@ CLASS TGrid FROM TControl
    DATA OnEditCell       INIT nil
    DATA aWhen            INIT {}
    DATA cRowEditTitle    INIT nil
+   DATA lNested          INIT .F.
 
    METHOD Define
    METHOD Define2
@@ -340,12 +341,18 @@ METHOD EditItem2( nItem, aItems, aEditControls, aMemVars, cTitle ) CLASS TGrid
 Local l, actpos := {0,0,0,0}, GCol, IRow, i, oWnd, nWidth, nMaxHigh, oMain
 Local oCtrl, aEditControls2, nRow, lSplitWindow, nControlsMaxHeight
 
+   If ::lNested
+      Return {}
+   EndIf
+
    If ValType( nItem ) != "N"
       nItem := LISTVIEW_GETFIRSTITEM( ::hWnd )
    EndIf
    If nItem == 0 .OR. nItem > ::ItemCount
-      Return nil
+      Return {}
    EndIf
+
+   ::lNested := .T.
 
    If ValType( aItems ) != "A" .OR. Len( aItems ) == 0
       aItems := ::Item( nItem )
@@ -475,6 +482,8 @@ Local oCtrl, aEditControls2, nRow, lSplitWindow, nControlsMaxHeight
    _ClearThisCellInfo()
 
    ::SetFocus()
+
+   ::lNested := .F.
 
 Return aItems
 
