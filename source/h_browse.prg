@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.33 2005-10-28 04:43:05 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.34 2005-10-30 16:52:19 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -801,7 +801,7 @@ Local oEditControl, uOldValue, cMemVar, bReplaceField
 
       For z := 1 To Len( aItems )
 
-         If ValType( ::ReadOnly ) == 'A' .AND. Len( ::ReadOnly ) >= z .AND. ValType( ::ReadOnly[ z ] ) == "L" .AND. ! ::ReadOnly[ z ]
+         If ValType( ::ReadOnly ) == 'A' .AND. Len( ::ReadOnly ) >= z .AND. ValType( ::ReadOnly[ z ] ) == "L" .AND. ::ReadOnly[ z ]
             // Readonly field
          Else
             _OOHG_EVAL( aReplaceFields[ z ], aItems[ z ] )
