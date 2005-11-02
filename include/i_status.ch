@@ -1,5 +1,5 @@
 /*
- * $Id: i_status.ch,v 1.2 2005-10-22 06:04:31 guerra000 Exp $
+ * $Id: i_status.ch,v 1.3 2005-11-02 17:33:03 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -118,7 +118,7 @@
 	 [ <styl:FLAT,RAISED> ] ;
          [ TOOLTIP <cToolTip> ] ;
        => ;
-          _DefineItemMessage( "STATUSITEM",  , 0, 0, <cMsg>, <{uAction}>, <nSize>, 0,;
+          TItemMessage():Define( "STATUSITEM",  , 0, 0, <cMsg>, <{uAction}>, <nSize>, 0,;
                      <cBitmap>, <(styl)>, <cToolTip>)
 
 #xcommand DATE ;
@@ -126,18 +126,18 @@
 	[ ACTION <uAction> ] ;
 	[ TOOLTIP <cToolTip> ] ;
        => ;
-          _DefineItemMessage( "STATUSITEM",  , 0, 0, Dtoc(Date()), <{uAction}>, if ( <.w.> == .f. , if ( lower ( left ( set ( _SET_DATEFORMAT ) , 4 ) ) == "yyyy" .or. lower ( right ( set ( _SET_DATEFORMAT ) , 4 ) ) == "yyyy", 90 , 70 ) , <nSize> ) , 0, "", <cToolTip>)
+          TItemMessage():Define( "STATUSITEM",  , 0, 0, Dtoc(Date()), <{uAction}>, if ( <.w.> == .f. , if ( lower ( left ( set ( _SET_DATEFORMAT ) , 4 ) ) == "yyyy" .or. lower ( right ( set ( _SET_DATEFORMAT ) , 4 ) ) == "yyyy", 90 , 70 ) , <nSize> ) , 0, "", <cToolTip>)
 
 #xcommand CLOCK ;
              [ WIDTH <nSize> ] ;
              [ ACTION <uAction> ] ;
              [ TOOLTIP <cToolTip> ] ;
        => ;
-        _OOHG_ActiveMessageBar:SetClock( <nSize> , <cToolTip> , <{uAction}> )
+        _SetStatusClock( <nSize> , <cToolTip> , <{uAction}> )
 
 #xcommand KEYBOARD ;
              [ WIDTH <nSize> ] ;
              [ ACTION <uAction> ] ;
              [ TOOLTIP <cToolTip> ] ;
        => ;
-        _OOHG_ActiveMessageBar:SetKeybrd( <nSize> , <cToolTip> , <{uAction}> )
+        _SetStatusKeybrd( <nSize> , <cToolTip> , <{uAction}> )

@@ -1,5 +1,5 @@
 /*
- * $Id: h_status.prg,v 1.8 2005-10-22 06:07:26 guerra000 Exp $
+ * $Id: h_status.prg,v 1.9 2005-11-02 17:33:03 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -95,6 +95,8 @@
 #include "hbclass.ch"
 #include "i_windefs.ch"
 
+STATIC _OOHG_ActiveMessageBar := nil
+
 CLASS TMessageBar FROM TControl
    DATA Type      INIT "MESSAGEBAR" READONLY
 
@@ -145,7 +147,7 @@ Local ControlHandle
 
    // Re-defines first status item
    IF ! Empty( Caption )
-      _DefineItemMessage( , , , , Caption, ProcedureName, w, h, , , tooltip )
+      TItemMessage():Define( , Self, , , Caption, ProcedureName, w, h, , , tooltip )
    Endif
 
    IF VALTYPE( clock ) == "L" .AND. clock
@@ -191,7 +193,7 @@ local nrItem, oTimer
 		Action := ''
 	EndIf
 
-   nrItem := _DefineItemMessage ( "TimerBar",  _OOHG_ActiveMessageBar:Name, 0, 0, Time(), action , Width, 0, "" , ToolTip )
+   nrItem := TItemMessage():Define( "TimerBar",  Self, 0, 0, Time(), action , Width, 0, "" , ToolTip )
 
    oTimer := TTimer():Define( 'StatusTimer' , ::Parent:Name , 1000 , { || ::Item( nrItem , Time() ) } )
 
@@ -215,13 +217,13 @@ local nrItem1 , nrItem2 , nrItem3 , oTimer
 		Action := ''
 	EndIf
 
-   nrItem1 := _DefineItemMessage( "TimerNum", _OOHG_ActiveMessageBar:Name, 0, 0, "Num", If ( empty (Action), {|| KeyToggle( VK_NUMLOCK ) }, Action ), GetTextWidth( NIL, "Num", ::FontHandle ) + 36, 0, ;
+   nrItem1 := TItemMessage():Define( "TimerNum", Self, 0, 0, "Num", If ( empty (Action), {|| KeyToggle( VK_NUMLOCK ) }, Action ), GetTextWidth( NIL, "Num", ::FontHandle ) + 36, 0, ;
                      if ( IsNumLockActive() , "zzz_led_on" , "zzz_led_off" ), "", ToolTip)
 
-   nrItem2 := _DefineItemMessage( "TimerCaps", _OOHG_ActiveMessageBar:Name, 0, 0, "Caps", If ( empty (Action), {|| KeyToggle( VK_CAPITAL ) }, Action ), GetTextWidth( NIL, "Caps", ::FontHandle ) + 36, 0,;
+   nrItem2 := TItemMessage():Define( "TimerCaps", Self, 0, 0, "Caps", If ( empty (Action), {|| KeyToggle( VK_CAPITAL ) }, Action ), GetTextWidth( NIL, "Caps", ::FontHandle ) + 36, 0,;
                      if ( IsCapsLockActive() , "zzz_led_on" , "zzz_led_off" ), "", ToolTip)
 
-   nrItem3 := _DefineItemMessage( "TimerInsert", _OOHG_ActiveMessageBar:Name, 0, 0, "Ins", If ( empty (Action), {|| KeyToggle( VK_INSERT ) }, Action ), GetTextWidth( NIL, "Ins", ::FontHandle ) + 36, 0,;
+   nrItem3 := TItemMessage():Define( "TimerInsert", Self, 0, 0, "Ins", If ( empty (Action), {|| KeyToggle( VK_INSERT ) }, Action ), GetTextWidth( NIL, "Ins", ::FontHandle ) + 36, 0,;
                      if ( IsInsertActive() , "zzz_led_on" , "zzz_led_off" ), "", ToolTip)
 
    oTimer := TTimer():Define( 'StatusKeyBrd' , ::Parent:Name , 400 , ;
@@ -295,8 +297,73 @@ Return Nil
 CLASS TItemMessage FROM TControl
    DATA Type      INIT "ITEMMESSAGE" READONLY
 
+   METHOD Define
    METHOD SizePos
 ENDCLASS
+
+*-----------------------------------------------------------------------------*
+METHOD Define( ControlName, ParentControl, x, y, Caption, ProcedureName, w, ;
+               h, icon, cstyl, tooltip ) CLASS TItemMessage
+*-----------------------------------------------------------------------------*
+Local i, styl, nKey, ControlHandle
+
+   if valtype( ParentControl ) == 'U'
+      ParentControl := _OOHG_ActiveMessageBar
+   EndIf
+
+   ::SetForm( , ParentControl )
+   IF VALTYPE( ControlName ) $ "CM" .AND. upper( alltrim( ControlName ) ) == "STATUSITEM" .AND. ::Parent:Control( "STATUSITEM" ) == nil
+      ::Name := "STATUSITEM"
+   ENDIF
+
+	do case
+      case ! ValType( cStyl ) $ "CM"
+         styl := 0
+      case Upper( cStyl ) == "RAISED"
+         styl := 1
+      case Upper( cStyl ) == "FLAT"
+         styl := 2
+      otherwise
+         styl := 0
+ 	endcase
+
+   if valtype( w ) != "N"
+		w := 70
+	endif
+
+   if valtype( h ) != "N"
+		h := 0
+	endif
+
+   If LEN( ::Container:aControls ) == 0
+      ControlHandle := InitItemBar ( ::Container:hWnd, Caption, 0, 0, 0, Icon , ToolTip, styl )
+	Else
+      ControlHandle := InitItemBar ( ::Container:hWnd, Caption, 0, w, 1, Icon , ToolTip, styl )
+	EndIf
+
+   ::New( ControlHandle, ControlName, , , ToolTip )
+   ::SizePos( y, x, w, h )
+
+   ::OnClick := ProcedureName
+   ::Caption := Caption
+
+   Caption := Upper( Caption )
+
+   i := At( "&", Caption )
+
+   IF i > 0 .AND. i < LEN( Caption )
+      i := AT( Upper( SubStr( Caption, i + 1, 1 ) ), "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789" )
+      IF i > 0
+         nKey := { VK_A, VK_B, VK_C, VK_D, VK_E, VK_F, VK_G, VK_H, ;
+                   VK_I, VK_J, VK_K, VK_L, VK_M, VK_N, VK_O, VK_P, ;
+                   VK_Q, VK_R, VK_S, VK_T, VK_U, VK_V, VK_W, VK_X, ;
+                   VK_Y, VK_Z, VK_0, VK_1, VK_2, VK_3, VK_4, VK_5, ;
+                   VK_6, VK_7, VK_8, VK_9 }[ i ]
+         _DefineHotKey( ::Parent:Name, MOD_ALT, nKey , ProcedureName )
+      ENDIF
+   ENDIF
+
+Return ControlHandle
 
 *-----------------------------------------------------------------------------*
 METHOD SizePos( Row, Col, Width, Height ) CLASS TItemMessage
@@ -315,69 +382,12 @@ METHOD SizePos( Row, Col, Width, Height ) CLASS TItemMessage
    ENDIF
 Return 0
 
-*-----------------------------------------------------------------------------*
-Function _DefineItemMessage ( ControlName, ParentControl, x, y, Caption, ProcedureName, w, h, icon, cstyl, tooltip )
-*-----------------------------------------------------------------------------*
-Local i , styl , nKey
 
-Local ControlHandle
-Local Self
 
-*   if valtype (ParentControl) == 'U'
-*      ParentControl := _OOHG_ActiveMessageBarName
-*   EndIf
-empty( parentcontrol )
 
-   Self := TItemMessage():SetForm( , _OOHG_ActiveMessageBar )
-   IF VALTYPE( ControlName ) $ "CM" .AND. upper( alltrim( ControlName ) ) == "STATUSITEM" .AND. ::Parent:Control( "STATUSITEM" ) == nil
-      ::Name := "STATUSITEM"
-   ENDIF
 
-	do case
-	case valtype(cStyl) == "U"
-           	styl := 0
-	case Upper(cStyl) == "RAISED"
-           	styl := 1
-	case Upper(cStyl) == "FLAT"
-           	styl := 2
-	otherwise
-		styl := 0
- 	endcase
+FUNCTION _SetStatusClock( nSize, cToolTip, uAction )
+Return _OOHG_ActiveMessageBar:SetClock( nSize, cToolTip, uAction )
 
-	if valtype(w) == "U"
-		w := 70
-	endif
-
-	if valtype(h) == "U"
-		h := 0
-	endif
-
-   If LEN( ::Container:aControls ) == 0
-      ControlHandle := InitItemBar ( ::Container:hWnd, Caption, 0, 0, 0, Icon , ToolTip, styl )
-	Else
-      ControlHandle := InitItemBar ( ::Container:hWnd, Caption, 0, w, 1, Icon , ToolTip, styl )
-	EndIf
-
-   ::New( ControlHandle, ControlName, , , ToolTip )
-   ::SizePos( y, x, w, h )
-
-   ::OnClick := ProcedureName
-   ::Caption := Caption
-
-	Caption := Upper ( Caption )
-
-   i := At( "&", Caption )
-
-   IF i > 0 .AND. i < LEN( Caption )
-      i := AT( Upper( SubStr( Caption, i + 1, 1 ) ), "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789" )
-      IF i > 0
-         nKey := { VK_A, VK_B, VK_C, VK_D, VK_E, VK_F, VK_G, VK_H, ;
-                   VK_I, VK_J, VK_K, VK_L, VK_M, VK_N, VK_O, VK_P, ;
-                   VK_Q, VK_R, VK_S, VK_T, VK_U, VK_V, VK_W, VK_X, ;
-                   VK_Y, VK_Z, VK_0, VK_1, VK_2, VK_3, VK_4, VK_5, ;
-                   VK_6, VK_7, VK_8, VK_9 }[ i ]
-         _DefineHotKey( ::Parent:Name, MOD_ALT, nKey , ProcedureName )
-      ENDIF
-   ENDIF
-
-Return ControlHandle
+FUNCTION _SetStatusKeybrd( nSize, cToolTip, uAction )
+Return _OOHG_ActiveMessageBar:SetKeybrd( nSize, cToolTip, uAction )
