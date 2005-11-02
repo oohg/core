@@ -1,5 +1,5 @@
 /*
- * $Id: i_comm.ch,v 1.1 2005-08-06 23:49:17 guerra000 Exp $
+ * $Id: i_comm.ch,v 1.2 2005-11-02 17:32:20 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -93,8 +93,8 @@
 
 #xtranslate Set StationName To <st> ;
 => ;
-Public _OOHG_StationName := <st> ; Public _OOHG_SendDataCount := 0
+SetCommStationName( <st> )
 
 #xtranslate Set CommPath To <cph> ;
 => ;
-Public _OOHG_CommPath := <cph>
+SetCommPath( <cph> )
