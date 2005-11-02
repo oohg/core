@@ -1,11 +1,36 @@
 /*
- * $Id: ChangeLog,v 1.32 2005-10-30 16:54:59 guerra000 Exp $
-*/
+ * $Id: ChangeLog,v 1.33 2005-11-02 17:34:04 guerra000 Exp $
+ */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2005-11-02 11:26 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_toolbar.ch
+  * source/h_toolbar.prg
+    * _DefineToolButton() converted to TToolButton():Define()
+
+  * include/i_var.ch
+  * source/errorsys.prg
+  * source/h_button.prg
+  * source/h_init.prg
+    - _OOHG_ActiveToolBar moved to a static variable in h_toolbar.prg.
+    * FUNCTION INIT() is changed to INIT PROCEDURE _OOHG_INIT().
+    * Pseudo-public variables reordered (requires re-compile all modules).
+
+  * include/i_comm.ch
+  + source/h_comm.prg
+  * source/h_controlmisc.prg
+  * source/makelib.bat
+    * SendData() and GetData() functions moved to an independent
+      intercommunications source file.
+
+  * include/i_status.ch
+  * source/h_status.prg
+    * _DefineItemMessage() converted to TItemMessage():Define()
+    * _OOHG_ActiveMessageBar moved to a static variable in h_status.prg.
 
 2005-10-30 10:48 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_browse.prg
