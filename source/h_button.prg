@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.6 2005-10-01 15:35:10 guerra000 Exp $
+ * $Id: h_button.prg,v 1.7 2005-11-02 17:29:48 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -151,10 +151,6 @@ Local ControlHandle, nStyle
 
 	DEFAULT invisible TO FALSE
 	DEFAULT notabstop TO FALSE
-
-   If _OOHG_ActiveToolBar != nil
-		Return Nil
-	EndIf
 
    ::SetForm( ControlName, ParentForm,,,,,, lRtl )
 

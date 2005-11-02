@@ -1,5 +1,5 @@
 /*
- * $Id: errorsys.prg,v 1.3 2005-08-26 06:05:58 guerra000 Exp $
+ * $Id: errorsys.prg,v 1.4 2005-11-02 17:29:48 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -100,8 +100,6 @@ PROCEDURE ErrorSys
 *------------------------------------------------------------------------------*
 
 	ErrorBlock( { | oError | DefError( oError ) } )
-
-	Init()
 
 RETURN
 

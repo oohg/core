@@ -1,5 +1,5 @@
 /*
- * $Id: h_init.prg,v 1.8 2005-10-28 04:43:05 guerra000 Exp $
+ * $Id: h_init.prg,v 1.9 2005-11-02 17:29:48 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -97,11 +97,9 @@
 
 STATIC _OOHG_Messages := { {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {} }
 
-Function Init
+INIT PROCEDURE _OOHG_INIT()
 
-   Public _OOHG_AllVars[ 65 ]
-
-   _OOHG_ActiveToolBar := NIL
+   Public _OOHG_AllVars[ 29 ]
 
    _OOHG_InteractiveCloseStarted := .F.
 
@@ -134,8 +132,6 @@ Function Init
 
    _OOHG_TempWindowName       := ""
 
-   _OOHG_ActiveMessageBar := nil
-
    _OOHG_SplitForceBreak      := .F.
 
    _OOHG_ActiveSplitBox       := .f.
@@ -155,7 +151,7 @@ Function Init
 
 	InitMessages()
 
-Return Nil
+Return
 
 *------------------------------------------------------------------------------*
 Procedure InitMessages( cLang )

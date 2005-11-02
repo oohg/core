@@ -1,5 +1,5 @@
 /*
- * $Id: i_var.ch,v 1.7 2005-10-28 04:43:05 guerra000 Exp $
+ * $Id: i_var.ch,v 1.8 2005-11-02 17:29:48 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -96,65 +96,45 @@
 
 MEMVAR _OOHG_AllVars
 
-#xtranslate  _OOHG_ActiveToolBar       => _OOHG_AllVars \[   1 \]
-#xtranslate  _OOHG_SplitForceBreak     => _OOHG_AllVars \[   3 \]
-#xtranslate  _OOHG_ActiveSplitBox      => _OOHG_AllVars \[   4 \]
-#xtranslate  _OOHG_ActiveSplitBoxParentFormName => _OOHG_AllVars \[   5 \]
-#xtranslate  _OOHG_Id                  => _OOHG_AllVars \[   6 \]
-#xtranslate  _OOHG_Main                => _OOHG_AllVars \[   7 \]
-#xtranslate  _OOHG_MouseRow            => _OOHG_AllVars \[   8 \]
-#xtranslate  _OOHG_MouseCol            => _OOHG_AllVars \[   9 \]
-#xtranslate  _OOHG_ActiveForm          => _OOHG_AllVars \[  10 \]
-#xtranslate  _OOHG_ActiveFrame         => _OOHG_AllVars \[  11 \]
-#xtranslate  _OOHG_IsModalActive       => _OOHG_AllVars \[  12 \]
+#xtranslate  _OOHG_SplitForceBreak     => _OOHG_AllVars \[   1 \]
+#xtranslate  _OOHG_ActiveSplitBox      => _OOHG_AllVars \[   2 \]
+#xtranslate  _OOHG_ActiveSplitBoxParentFormName => _OOHG_AllVars \[   3 \]
+#xtranslate  _OOHG_Main                => _OOHG_AllVars \[   4 \]
+#xtranslate  _OOHG_MouseRow            => _OOHG_AllVars \[   5 \]
+#xtranslate  _OOHG_MouseCol            => _OOHG_AllVars \[   6 \]
+#xtranslate  _OOHG_ActiveForm          => _OOHG_AllVars \[   7 \]
+#xtranslate  _OOHG_ActiveFrame         => _OOHG_AllVars \[   8 \]
 
-#xtranslate  _OOHG_MenuParentFormName  => _OOHG_AllVars \[  13 \]
-#xtranslate  _OOHG_PopupLevel          => _OOHG_AllVars \[  14 \]
-#xtranslate  _OOHG_PendingPopup        => _OOHG_AllVars \[  15 \]
-#xtranslate  _OOHG_PendingSubPopup     => _OOHG_AllVars \[  16 \]
-#xtranslate  _OOHG_PendingMenuDef      => _OOHG_AllVars \[  17 \]
-#xtranslate  _OOHG_PopupNumber         => _OOHG_AllVars \[  18 \]
-#xtranslate  _OOHG_ItemNumber          => _OOHG_AllVars \[  19 \]
-#xtranslate  _OOHG_SubItemNumber       => _OOHG_AllVars \[  20 \]
+#xtranslate  _OOHG_TempWindowName      => _OOHG_AllVars \[   9 \]
 
-#xtranslate  _OOHG_StationName         => _OOHG_AllVars \[  21 \]
-#xtranslate  _OOHG_SendDataCount       => _OOHG_AllVars \[  22 \]
-#xtranslate  _OOHG_CommPath            => _OOHG_AllVars \[  23 \]
+#xtranslate  _OOHG_DefaultFontName     => _OOHG_AllVars \[  10 \]
+#xtranslate  _OOHG_DefaultFontSize     => _OOHG_AllVars \[  11 \]
 
-#xtranslate  _OOHG_ActiveMessageBar    => _OOHG_AllVars \[  25 \]
+#xtranslate  _OOHG_ThisType            => _OOHG_AllVars \[  12 \]
+#xtranslate  _OOHG_ThisForm            => _OOHG_AllVars \[  13 \]
 
-#xtranslate  _OOHG_TempWindowName      => _OOHG_AllVars \[  26 \]
+#xtranslate  _OOHG_ThisQueryRowIndex   => _OOHG_AllVars \[  14 \]
+#xtranslate  _OOHG_ThisQueryColIndex   => _OOHG_AllVars \[  15 \]
+#xtranslate  _OOHG_ThisQueryData       => _OOHG_AllVars \[  16 \]
 
-#xtranslate  _OOHG_LoadWindowActive    => _OOHG_AllVars \[  27 \]
+#xtranslate  _OOHG_ThisItemRowIndex    => _OOHG_AllVars \[  17 \]
+#xtranslate  _OOHG_ThisItemColIndex    => _OOHG_AllVars \[  18 \]
+#xtranslate  _OOHG_ThisItemCellRow     => _OOHG_AllVars \[  19 \]
+#xtranslate  _OOHG_ThisItemCellCol     => _OOHG_AllVars \[  20 \]
+#xtranslate  _OOHG_ThisItemCellWidth   => _OOHG_AllVars \[  21 \]
+#xtranslate  _OOHG_ThisItemCellHeight  => _OOHG_AllVars \[  22 \]
 
-#xtranslate  _OOHG_DefaultFontName     => _OOHG_AllVars \[  28 \]
-#xtranslate  _OOHG_DefaultFontSize     => _OOHG_AllVars \[  29 \]
+#xtranslate  _OOHG_ActiveSplitBoxInverted => _OOHG_AllVars \[  23 \]
 
-#xtranslate  _OOHG_ThisType            => _OOHG_AllVars \[  31 \]
-#xtranslate  _OOHG_ThisForm            => _OOHG_AllVars \[  32 \]
+#xtranslate  _OOHG_ExtendedNavigation  => _OOHG_AllVars \[  24 \]
+#xtranslate  _OOHG_ThisEventType       => _OOHG_AllVars \[  25 \]
 
-#xtranslate  _OOHG_ThisQueryRowIndex   => _OOHG_AllVars \[  33 \]
-#xtranslate  _OOHG_ThisQueryColIndex   => _OOHG_AllVars \[  34 \]
-#xtranslate  _OOHG_ThisQueryData       => _OOHG_AllVars \[  35 \]
+#xtranslate  _OOHG_cMacroTemp          => _OOHG_AllVars \[  26 \]
 
-#xtranslate  _OOHG_ThisItemRowIndex    => _OOHG_AllVars \[  36 \]
-#xtranslate  _OOHG_ThisItemColIndex    => _OOHG_AllVars \[  37 \]
-#xtranslate  _OOHG_ThisItemCellRow     => _OOHG_AllVars \[  38 \]
-#xtranslate  _OOHG_ThisItemCellCol     => _OOHG_AllVars \[  39 \]
-#xtranslate  _OOHG_ThisItemCellWidth   => _OOHG_AllVars \[  40 \]
-#xtranslate  _OOHG_ThisItemCellHeight  => _OOHG_AllVars \[  41 \]
+#xtranslate  _OOHG_ThisControl         => _OOHG_AllVars \[  27 \]
 
-#xtranslate  _OOHG_ActiveSplitBoxInverted => _OOHG_AllVars \[  44 \]
-
-#xtranslate  _OOHG_ExtendedNavigation  => _OOHG_AllVars \[  46 \]
-#xtranslate  _OOHG_ThisEventType       => _OOHG_AllVars \[  47 \]
-
-#xtranslate  _OOHG_cMacroTemp          => _OOHG_AllVars \[  48 \]
-
-#xtranslate  _OOHG_ThisControl         => _OOHG_AllVars \[  49 \]
-
-#xtranslate  _OOHG_InteractiveCloseStarted => _OOHG_AllVars \[  51 \]
+#xtranslate  _OOHG_InteractiveCloseStarted => _OOHG_AllVars \[  28 \]
 
 #xtranslate  _OOHG_IsXP                => ( "XP" $ WindowsVersion()\[ 1 \] )
 
-#xtranslate  _OOHG_ThisItemCellValue   => _OOHG_AllVars \[  65 \]
+#xtranslate  _OOHG_ThisItemCellValue   => _OOHG_AllVars \[  29 \]
