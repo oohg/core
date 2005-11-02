@@ -1,5 +1,5 @@
 /*
- * $Id: h_toolbar.prg,v 1.10 2005-10-22 06:07:26 guerra000 Exp $
+ * $Id: h_toolbar.prg,v 1.11 2005-11-02 17:27:43 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -94,6 +94,8 @@
 #include "oohg.ch"
 #include "hbclass.ch"
 #include "i_windefs.ch"
+
+STATIC _OOHG_ActiveToolBar := NIL    // Active toolbar
 
 CLASS TToolBar FROM TControl
    DATA Type      INIT "TOOLBAR" READONLY
@@ -252,6 +254,7 @@ CLASS TToolButton FROM TControl
    DATA Position  INIT 0
    DATA ContextMenu  INIT 0
 
+   METHOD Define
    METHOD Value      SETGET
    METHOD Enabled    SETGET
 
@@ -259,27 +262,23 @@ CLASS TToolButton FROM TControl
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
-Function _DefineToolButton ( ControlName, ParentControl, x, y, Caption, ProcedureName, w, h, image ,tooltip , gotfocus , lostfocus , flat , separator , autosize , check , group , dropdown , WHOLEDROPDOWN )
+METHOD Define( ControlName, x, y, Caption, ProcedureName, w, h, image, ;
+               tooltip, gotfocus, lostfocus, flat, separator, autosize, ;
+               check, group, dropdown, WHOLEDROPDOWN ) CLASS TToolButton
 *-----------------------------------------------------------------------------*
-Local i , nKey
-Local Self
-
-// AJ
-Local ControlHandle, gotTFocus
-Local id
-Local npos
+Local i, nKey, ControlHandle, id, nPos
 
 * Unused Parameters
-ToolTip := NIL
 Flat := NIL
-empty(parentcontrol)  /// ???????
-*
-tooltip := caption
 
-   Self := TToolButton():SetForm( ControlName, _OOHG_ActiveToolBar )
+   ::SetForm( ControlName, _OOHG_ActiveToolBar )
 
-	If valtype(ProcedureName) != 'U' .and. WHOLEDROPDOWN == .t.
-      MsgOOHGError ("Action and WholeDropDown clauses can't be used simultaneously. Program terminated" )
+   If ValType( WHOLEDROPDOWN ) != "L"
+      WHOLEDROPDOWN := .F.
+   EndIf
+
+   If valtype( ProcedureName ) == "B" .and. WHOLEDROPDOWN
+      MsgOOHGError( "Action and WholeDropDown clauses can't be used simultaneously. Program terminated" )
 	endif
 
 	id := _GetId()
@@ -297,7 +296,7 @@ tooltip := caption
 		lostfocus := ""
 	endif
 	if valtype(gotfocus) == "U"
-		gottfocus := ""
+      gotfocus := ""
 	endif
 
 	if valtype(caption) == "U"
@@ -316,7 +315,7 @@ tooltip := caption
 
    nPos := GetButtonBarCount ( ::Container:hWnd ) - if(separator,1,0)
 
-   ::New( ControlHandle, ControlName,,,, Id )
+   ::New( ControlHandle, ControlName, , , ToolTip, Id )
    ::SizePos( y, x, w, h )
 
    ::OnClick := ProcedureName
@@ -347,7 +346,7 @@ tooltip := caption
 
 	EndIf
 
-Return Nil
+Return Self
 
 *-----------------------------------------------------------------------------*
 Function _AddToolBarToSpliBox ( ControlName , break , Caption )
@@ -370,7 +369,7 @@ Local c, w , wbtn , hbtn , MinWidth , MinHeight, oWnd
 
 	w := GetWindowWidth (c)
 
-      AddSplitBoxItem ( c , oWnd:ReBarHandle, w , break , Caption, MinWidth, MinHeight , _OOHG_ActiveSplitBoxInverted )
+   AddSplitBoxItem ( c , oWnd:ReBarHandle, w , break , Caption, MinWidth, MinHeight , _OOHG_ActiveSplitBoxInverted )
 
 Return Nil
 
@@ -404,8 +403,6 @@ METHOD Events_Notify( wParam, lParam ) CLASS TToolButton
 Local nNotify := GetNotifyCode( lParam )
 
    If nNotify == TTN_NEEDTEXT
-
-*msginfo("si")
 
          If VALTYPE( ::ToolTip ) $ "CM"
 
