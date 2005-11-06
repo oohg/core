@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.19 2005-10-28 04:43:05 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.20 2005-11-06 00:21:40 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -124,7 +124,7 @@ METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, cValue, ;
                HelpId, readonly, bold, italic, underline, strikeout, field, ;
                backcolor, fontcolor, invisible, notabstop, lRtl, lAutoSkip ) CLASS TText
 *-----------------------------------------------------------------------------*
-Local nStyle := ES_AUTOHSCROLL
+Local nStyle := ES_AUTOHSCROLL, nStyleEx := WS_EX_CLIENTEDGE
 
    nStyle += IF( Valtype( lUpper ) == "L" .AND. lUpper, ES_UPPERCASE, 0 ) + ;
              IF( Valtype( lLower ) == "L" .AND. lLower, ES_LOWERCASE, 0 )
@@ -134,7 +134,7 @@ Local nStyle := ES_AUTOHSCROLL
               uLostFocus, uGotFocus, uChange, uEnter, right, HelpId, ;
               readonly, bold, italic, underline, strikeout, field, ;
               backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, ;
-              lAutoSkip )
+              lAutoSkip, nStyleEx )
 
 Return Self
 
@@ -144,7 +144,7 @@ METHOD Define2( cControlName, cParentForm, nx, ny, nWidth, nHeight, cValue, ;
                 uLostFocus, uGotFocus, uChange, uEnter, right, HelpId, ;
                 readonly, bold, italic, underline, strikeout, field, ;
                 backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, ;
-                lAutoSkip ) CLASS TText
+                lAutoSkip, nStyleEx ) CLASS TText
 *-----------------------------------------------------------------------------*
 Local nControlHandle
 local break
@@ -186,13 +186,13 @@ local break
       endif
       _OOHG_SplitForceBreak := .F.
 
-      nControlHandle := InitTextBox( ::Parent:ReBarHandle, 0, nx, ny, nWidth, nHeight, nStyle, ::nMaxLenght, ::lRtl )
+      nControlHandle := InitTextBox( ::Parent:ReBarHandle, 0, nx, ny, nWidth, nHeight, nStyle, ::nMaxLenght, ::lRtl, nStyleEx )
 
       AddSplitBoxItem ( nControlhandle , ::Parent:ReBarHandle, nWidth, break , , , , _OOHG_ActiveSplitBoxInverted )
 
 	Else
 
-       nControlHandle := InitTextBox( ::ContainerhWnd, 0, nx, ny, nWidth, nHeight, nStyle, ::nMaxLenght, ::lRtl )
+       nControlHandle := InitTextBox( ::ContainerhWnd, 0, nx, ny, nWidth, nHeight, nStyle, ::nMaxLenght, ::lRtl, nStyleEx )
 
 	endif
 
@@ -338,7 +338,7 @@ METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, uValue, ;
                italic, underline, strikeout, field, backcolor, fontcolor, ;
                invisible, notabstop, lRtl, lAutoSkip ) CLASS TTextPicture
 *-----------------------------------------------------------------------------*
-Local nStyle := ES_AUTOHSCROLL
+Local nStyle := ES_AUTOHSCROLL, nStyleEx := WS_EX_CLIENTEDGE
 
    IF ValType( uValue ) == "N"
       right := .T.
@@ -353,7 +353,7 @@ Local nStyle := ES_AUTOHSCROLL
               uLostFocus, uGotFocus, uChange, uEnter, right, HelpId, ;
               readonly, bold, italic, underline, strikeout, field, ;
               backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, ;
-              lAutoSkip )
+              lAutoSkip, nStyleEx )
 
 Return Self
 
@@ -835,7 +835,7 @@ METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, cValue, ;
                HelpId, readonly, bold, italic, underline, strikeout, field , ;
                backcolor , fontcolor , invisible , notabstop, lRtl, lAutoSkip ) CLASS TTextNum
 *-----------------------------------------------------------------------------*
-Local nStyle := ES_NUMBER + ES_AUTOHSCROLL
+Local nStyle := ES_NUMBER + ES_AUTOHSCROLL, nStyleEx := WS_EX_CLIENTEDGE
 
    Empty( lUpper )
    Empty( lLower )
@@ -845,7 +845,7 @@ Local nStyle := ES_NUMBER + ES_AUTOHSCROLL
               uLostFocus, uGotFocus, uChange, uEnter, right, HelpId, ;
               readonly, bold, italic, underline, strikeout, field, ;
               backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, ;
-              lAutoSkip )
+              lAutoSkip, nStyleEx )
 
 Return Self
 

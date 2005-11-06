@@ -1,5 +1,5 @@
 /*
- * $Id: h_spinner.prg,v 1.4 2005-10-01 15:35:10 guerra000 Exp $
+ * $Id: h_spinner.prg,v 1.5 2005-11-06 00:21:40 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -118,7 +118,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, value, fontname, fontsize, ;
                invisible, notabstop, bold, italic, underline, strikeout, ;
                wrap, readonly, increment, backcolor, fontcolor, lRtl ) CLASS TSpinner
 *-----------------------------------------------------------------------------*
-Local nStyle := ES_NUMBER + ES_AUTOHSCROLL
+Local nStyle := ES_NUMBER + ES_AUTOHSCROLL, nStyleEx := WS_EX_CLIENTEDGE
 Local ControlHandle
 
    DEFAULT w         TO 120
@@ -139,7 +139,7 @@ Local ControlHandle
              if( ValType( notabstop ) != "L" .OR. ! notabstop, WS_TABSTOP, 0 ) + ;
              if( ValType( readonly )  == "L" .AND.  readonly,  ES_READONLY, 0 )
 
-   ControlHandle := InitTextBox( ::ContainerhWnd, 0, x, y, w, h, nStyle, 0, ::lRtl )
+   ControlHandle := InitTextBox( ::ContainerhWnd, 0, x, y, w, h, nStyle, 0, ::lRtl, nStyleEx )
 
    ::AuxHandle := InitSpinner( ::ContainerhWnd, 0, x + w, y, 15, h, rl, rh , invisible, wrap, ControlHandle, ::lRtl )
 
