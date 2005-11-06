@@ -1,11 +1,22 @@
 /*
- * $Id: ChangeLog,v 1.33 2005-11-02 17:34:04 guerra000 Exp $
+ * $Id: ChangeLog,v 1.34 2005-11-06 00:23:12 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2005-11-05 18:22 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/c_textbox.c
+  * source/h_edit.prg
+  * source/h_spinner.prg
+  * source/h_textbox.prg
+    * StyleEx is now a parameter to ::Define2() in TText class.
+
+  * source/c_windows.c
+    + _SETSCROLL() function added. It allows to insert/remove scroll bars
+      to an existing control/window.
 
 2005-11-02 11:26 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * include/i_toolbar.ch
