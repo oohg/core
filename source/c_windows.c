@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.19 2005-10-27 05:15:49 guerra000 Exp $
+ * $Id: c_windows.c,v 1.20 2005-11-06 00:22:32 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1411,20 +1411,56 @@ HB_FUNC( _UPDATERTL )
    HWND hwnd;
    LONG myret;
    hwnd = ( HWND ) hb_parnl (1);
-   myret = ::GetWindowLong ( hwnd, GWL_EXSTYLE);
-   if( hb_parnl ( 2 ) )
+   myret = GetWindowLong( hwnd, GWL_EXSTYLE );
+   if( hb_parnl( 2 ) )
    {
-      SetWindowLong( hwnd, GWL_EXSTYLE, WS_EX_LTRREADING | WS_EX_LEFT | WS_EX_LEFTSCROLLBAR | myret );
+      myret = myret |  WS_EX_LTRREADING |  WS_EX_LEFT |  WS_EX_LEFTSCROLLBAR;
+//      myret = myret                    &~ WS_EX_LTRREADING &~ WS_EX_LEFT;
+//      myret = myret |  WS_EX_LAYOUTRTL |  WS_EX_RTLREADING |  WS_EX_RIGHT;
    }
    else
    {
-      SetWindowLong( hwnd, GWL_EXSTYLE,  myret &~ WS_EX_LTRREADING &~ WS_EX_LEFT &~ WS_EX_LEFTSCROLLBAR );
+      myret = myret &~ WS_EX_LTRREADING &~ WS_EX_LEFT &~ WS_EX_LEFTSCROLLBAR;
+//      myret = myret                    |  WS_EX_LTRREADING |  WS_EX_LEFT;
+//      myret = myret &~ WS_EX_LAYOUTRTL &~ WS_EX_RTLREADING &~ WS_EX_RIGHT;
    }
+   SetWindowLong( hwnd, GWL_EXSTYLE, myret );
 
-   hb_ret();
+   hb_retni( myret );
 }
 
 HB_FUNC( GETSYSTEMMETRICS )
 {
     hb_retni( GetSystemMetrics( hb_parni( 1 ) ) );
+}
+
+HB_FUNC( _SETSCROLL )
+{
+   HWND hWnd = ( HWND ) hb_parnl( 1 );
+   LONG nStyle;
+
+   nStyle = GetWindowLong( hWnd, GWL_STYLE );
+
+   if( ISLOG( 2 ) )
+   {
+      nStyle = nStyle &~ WS_HSCROLL;
+      if( hb_parl( 2 ) )
+      {
+         nStyle |= WS_HSCROLL;
+      }
+   }
+
+   if( ISLOG( 3 ) )
+   {
+      nStyle = nStyle &~ WS_VSCROLL;
+      if( hb_parl( 3 ) )
+      {
+         nStyle |= WS_VSCROLL;
+      }
+   }
+
+   SetWindowLong( hWnd, GWL_STYLE, nStyle );
+   SetWindowPos( hWnd, 0, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_NOCOPYBITS | SWP_NOOWNERZORDER | SWP_NOSENDCHANGING );
+
+   hb_retni( nStyle );
 }
