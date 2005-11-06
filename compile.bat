@@ -1,10 +1,10 @@
 @echo off
 rem
-rem $Id: compile.bat,v 1.4 2005-09-29 05:24:14 guerra000 Exp $
+rem $Id: compile.bat,v 1.5 2005-11-06 00:35:41 guerra000 Exp $
 rem
 CLS
 
-Rem Set Paths 
+Rem Set Paths
 
 IF "%HG_BCC%"=="" SET HG_BCC=c:\borland\bcc55
 IF "%HG_ROOT%"=="" SET HG_ROOT=c:\oohg
@@ -43,10 +43,12 @@ Rem *** Compiler libraries ***
 for %%a in (rtl vm gtwin lang codepage macro rdd dbfntx dbfcdx dbffpt common debug pp) do echo %HG_HRB%\lib\%%a.lib + >> b32.bc
 
 Rem *** Compiler-dependant libraries ***
-if exist %HG_HRB%\lib\dbfdbt.lib echo %HG_HRB%\lib\dbfdbt.lib + >> b32.bc
-if exist %HG_HRB%\lib\hbsix.lib  echo %HG_HRB%\lib\hbsix.lib + >> b32.bc
-if exist %HG_HRB%\lib\tip.lib    echo %HG_HRB%\lib\tip.lib + >> b32.bc
-if exist %HG_HRB%\lib\ct.lib     echo %HG_HRB%\lib\ct.lib + >> b32.bc
+if exist %HG_HRB%\lib\dbfdbt.lib  echo %HG_HRB%\lib\dbfdbt.lib + >> b32.bc
+if exist %HG_HRB%\lib\hbsix.lib   echo %HG_HRB%\lib\hbsix.lib + >> b32.bc
+if exist %HG_HRB%\lib\tip.lib     echo %HG_HRB%\lib\tip.lib + >> b32.bc
+if exist %HG_HRB%\lib\ct.lib      echo %HG_HRB%\lib\ct.lib + >> b32.bc
+if exist %HG_HRB%\lib\hsx.lib     echo %HG_HRB%\lib\hsx.lib + >> b32.bc
+if exist %HG_HRB%\lib\pcrepos.lib echo %HG_HRB%\lib\pcrepos.lib + >> b32.bc
 
 Rem *** Additional libraries ***
 if exist %HG_HRB%\lib\libct.lib   echo %HG_HRB%\lib\libct.lib + >> b32.bc
