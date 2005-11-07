@@ -1,5 +1,5 @@
 /*
- * $Id: c_controlmisc.c,v 1.10 2005-10-21 05:17:04 guerra000 Exp $
+ * $Id: c_controlmisc.c,v 1.11 2005-11-07 06:24:39 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -142,6 +142,7 @@ char *s_SymbolNames[] = { "EVENTS_NOTIFY",
                           "ONMOUSEMOVE",
                           "ONMOUSEDRAG",
                           "DOEVENT",
+                          "LOOKFORKEY",
                           "LastSymbol" };
 
 void _OOHG_Send( PHB_ITEM pSelf, int iSymbol )
@@ -671,30 +672,17 @@ void ImageFillParameter( struct IMAGE_PARAMETER *pResult, PHB_ITEM pString )
    }
 }
 
-/*
-// Intento por controlar las teclas...
-HB_FUNC( GETNMKEY )
+int GetKeyFlagState( void )
 {
-   LPNMKEY lpNmKey;
-
-   lpNmKey = ( LPNMKEY ) hb_parnl( 1 );
-   hb_reta( 2 );
-   hb_storni( lpNmKey->nVKey, -1, 1 );
-   hb_storni( lpNmKey->uFlags, -1, 2 );
+   return ( ( ( GetKeyState( VK_MENU )    & 0x8000 ) != 0 ) ? 1 : 0 ) +
+          ( ( ( GetKeyState( VK_CONTROL ) & 0x8000 ) != 0 ) ? 2 : 0 ) +
+          ( ( ( GetKeyState( VK_SHIFT )   & 0x8000 ) != 0 ) ? 4 : 0 ) ;
 }
 
-HB_FUNC( GETNMCHAR )
+HB_FUNC( GETKEYFLAGSTATE )
 {
-   hb_retnl( ( ( LPNMCHAR ) hb_parnl( 1 ) )->ch );
+   hb_retni( GetKeyFlagState() );
 }
-
-HB_FUNC( __ISMOD )
-{
-   ULONG ulMod = hb_parl( 2 );
-
-   hb_retl( ( hb_parnl( 1 ) & ulMod ) == ulMod );
-}
-*/
 
 static PHB_DYNS _ooHG_Symbol_TControl = 0;
 static HB_ITEM  _OOHG_aControlhWnd, _OOHG_aControlObjects;

@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.21 2005-11-07 01:54:05 guerra000 Exp $
+ * $Id: c_windows.c,v 1.22 2005-11-07 06:24:39 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1468,6 +1468,8 @@ HB_FUNC( _SETSCROLL )
          {
             nStyle = nStyle &~ WS_HSCROLL;
             bChange = 1;
+            // Clears scroll range
+            SetScrollRange( hWnd, SB_HORZ, 0, 0, 1 );
          }
       }
    }
@@ -1488,6 +1490,8 @@ HB_FUNC( _SETSCROLL )
          {
             nStyle = nStyle &~ WS_VSCROLL;
             bChange = 1;
+            // Clears scroll range
+            SetScrollRange( hWnd, SB_VERT, 0, 0, 1 );
          }
       }
    }

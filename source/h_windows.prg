@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.36 2005-11-07 01:54:37 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.37 2005-11-07 06:24:39 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -155,8 +155,7 @@ CLASS TWindow
    DATA OnLostFocus    INIT nil
    DATA OnMouseDrag    INIT nil
    DATA OnMouseMove    INIT nil
-* Intento por controlar las teclas...
-*data akeys init {}
+   DATA aKeys          INIT {}
 
    DATA DefBkColorEdit  INIT nil
 
@@ -166,9 +165,8 @@ CLASS TWindow
    METHOD Action              SETGET
    METHOD Print
 
-* Intento por controlar las teclas...
-*method setkey
-*method lookforkey
+   METHOD SetKey
+   METHOD LookForKey
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -244,11 +242,11 @@ return nil
 #define HOTKEY_KEY       3
 #define HOTKEY_ACTION    4
 
-* Intento por controlar las teclas...
-/*
+*-----------------------------------------------------------------------------*
 METHOD LookForKey( nKey, nFlags ) CLASS TWindow
+*-----------------------------------------------------------------------------*
 Local lDone, nPos
-   nPos := ASCAN( ::aKeys, { |a| a[ HOTKEY_KEY ] == nKey .AND. __ISMOD( nFlags, a[ HOTKEY_MOD ] ) } )
+   nPos := ASCAN( ::aKeys, { |a| a[ HOTKEY_KEY ] == nKey .AND. nFlags == a[ HOTKEY_MOD ] } )
    If nPos > 0
       Eval( ::aKeys[ nPos ][ HOTKEY_ACTION ], nKey, nFlags )
       lDone := .T.
@@ -261,7 +259,9 @@ Local lDone, nPos
    EndIf
 Return lDone
 
+*-----------------------------------------------------------------------------*
 METHOD SetKey( nKey, nFlags, bAction ) CLASS TWindow
+*-----------------------------------------------------------------------------*
 Local nPos, uRet := nil
    nPos := ASCAN( ::aKeys, { |a| a[ HOTKEY_KEY ] == nKey .AND. a[ HOTKEY_MOD ] == nFlags } )
    IF nPos > 0
@@ -281,7 +281,6 @@ Local nPos, uRet := nil
       Endif
    ENDIF
 Return uRet
-*/
 
 *------------------------------------------------------------------------------*
 CLASS TForm FROM TWindow
@@ -708,6 +707,8 @@ Local Formhandle
    ::nCol    := x
    ::nWidth  := w
    ::nHeight := h
+
+   ValidateScrolls( Self, .F. )
 
 Return Self
 
@@ -1325,7 +1326,6 @@ FUNCTION _OOHG_TForm_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TForm
 *-----------------------------------------------------------------------------*
 Local i, aPos, NextControlHandle, mVar, xRetVal
 Local oWnd, oCtrl
-Local vscroll, hscroll, aRect, w, h
 * Local hWnd := ::hWnd
 
 	do case
@@ -1715,50 +1715,7 @@ Local vscroll, hscroll, aRect, w, h
 	case nMsg == WM_SIZE
         ***********************************************************************
 
-      vscroll := hscroll := .F.
-      aRect := ARRAY( 4 )
-      GetClientRect( ::hWnd, aRect )
-      w := aRect[ 3 ] - aRect[ 1 ]
-      h := aRect[ 4 ] - aRect[ 2 ]
-      If h < ::VirtualHeight
-         ::RangeHeight := ::VirtualHeight - h
-         vscroll := .T.
-         w -= GetVScrollBarWidth()
-      EndIf
-      If w < ::VirtualWidth
-         ::RangeWidth := ::VirtualWidth - w
-         hscroll := .T.
-         h -= GetHScrollBarHeight()
-      EndIf
-      If h < ::VirtualHeight .AND. ! vscroll
-         ::RangeHeight := ::VirtualHeight - h
-         vscroll := .T.
-         w -= GetVScrollBarWidth()
-      EndIf
-      _SetScroll( ::hWnd, hscroll, vscroll )
-      If vscroll
-         SetScrollRange( ::hWnd, SB_VERT, 0, ::RangeHeight, 1 )
-         If ::RangeHeight < ( - ::RowMargin )
-            ::RowMargin := - ::RangeHeight
-            SetScrollPos( ::hWnd, SB_VERT, ::RangeHeight, 1 )
-         Else
-            vscroll := .F.
-         EndIf
-      EndIf
-      If hscroll
-         SetScrollRange( ::hWnd, SB_HORZ, 0, ::RangeWidth, 1 )
-         If ::RangeWidth < ( - ::ColMargin )
-            ::ColMargin := - ::RangeWidth
-            SetScrollPos( ::hWnd, SB_HORZ, ::RangeWidth, 1 )
-         Else
-            hscroll := .F.
-         EndIf
-      EndIf
-      If vscroll .OR. hscroll
-         AEVAL( ::aControls, { |o| If( o:Container == nil, o:SizePos(), ) } )
-         AEVAL( ::SplitChildList, { |o| o:SizePos } )
-         RedrawWindow( ::hWnd )
-      EndIf
+      ValidateScrolls( Self, .T. )
 
       If _OOHG_Main != nil
 
@@ -1945,6 +1902,79 @@ Local vscroll, hscroll, aRect, w, h
 	endcase
 
 return nil
+
+*-----------------------------------------------------------------------------*
+Static Procedure ValidateScrolls( Self, lMove )
+*-----------------------------------------------------------------------------*
+Local hWnd, nVirtualWidth, nVirtualHeight
+Local aRect, w, h, hscroll, vscroll
+   // Initializes variables
+   hWnd := ::hWnd
+   nVirtualWidth := ::VirtualWidth
+   nVirtualHeight := ::VirtualHeight
+   If ValType( lMove ) != "L"
+      lMove := .F.
+   EndIf
+   vscroll := hscroll := .F.
+   aRect := ARRAY( 4 )
+   GetClientRect( hWnd, aRect )
+   w := aRect[ 3 ] - aRect[ 1 ]
+   h := aRect[ 4 ] - aRect[ 2 ]
+   ::RangeWidth := ::RangeHeight := 0
+
+   // Checks if there's space on the window
+   If h < nVirtualHeight
+      ::RangeHeight := nVirtualHeight - h
+      vscroll := .T.
+      w -= GetVScrollBarWidth()
+   EndIf
+   If w < nVirtualWidth
+      ::RangeWidth := nVirtualWidth - w
+      hscroll := .T.
+      h -= GetHScrollBarHeight()
+   EndIf
+   If h < nVirtualHeight .AND. ! vscroll
+      ::RangeHeight := nVirtualHeight - h
+      vscroll := .T.
+      w -= GetVScrollBarWidth()
+   EndIf
+
+   // Shows/hides scroll bars
+   _SetScroll( hWnd, hscroll, vscroll )
+
+   // Verifies there's no "extra" space derived from resize
+   If vscroll
+      SetScrollRange( hWnd, SB_VERT, 0, ::RangeHeight, 1 )
+      If ::RangeHeight < ( - ::RowMargin )
+         ::RowMargin := - ::RangeHeight
+         SetScrollPos( hWnd, SB_VERT, ::RangeHeight, 1 )
+      Else
+         vscroll := .F.
+      EndIf
+   ElseIf nVirtualHeight > 0 .AND. ::RowMargin != 0
+      ::RowMargin := 0
+      vscroll := .T.
+   EndIf
+   If hscroll
+      SetScrollRange( hWnd, SB_HORZ, 0, ::RangeWidth, 1 )
+      If ::RangeWidth < ( - ::ColMargin )
+         ::ColMargin := - ::RangeWidth
+         SetScrollPos( hWnd, SB_HORZ, ::RangeWidth, 1 )
+      Else
+         hscroll := .F.
+      EndIf
+   ElseIf nVirtualWidth > 0 .AND. ::ColMargin != 0
+      ::ColMargin := 0
+      hscroll := .T.
+   EndIf
+
+   // Reubicates controls
+   If lMove .AND. ( vscroll .OR. hscroll )
+      AEVAL( ::aControls, { |o| If( o:Container == nil, o:SizePos(), ) } )
+      AEVAL( ::SplitChildList, { |o| o:SizePos } )
+      RedrawWindow( hWnd )
+   EndIf
+Return
 
 *-----------------------------------------------------------------------------*
 Procedure _KillAllKeys()

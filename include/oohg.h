@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.h,v 1.8 2005-10-01 15:35:10 guerra000 Exp $
+ * $Id: oohg.h,v 1.9 2005-11-07 06:24:39 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -84,4 +84,5 @@ LRESULT APIENTRY _OOHG_WndProc( PHB_ITEM pSelf, HWND hWnd, UINT uiMsg, WPARAM wP
 #define s_OnMouseMove       21
 #define s_OnMouseDrag       22
 #define s_DoEvent           23
-#define s_LastSymbol        24
+#define s_LookForKey        24
+#define s_LastSymbol        25

@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.20 2005-11-06 00:21:40 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.21 2005-11-07 06:24:39 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -603,13 +603,6 @@ HB_FUNC_STATIC( TTEXTPICTURE_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lP
          break;
 	}
 }
-
-HB_FUNC_STATIC( GETKEYSTATEXTRA )   // Checks for non CTRL, ALT, SHIFT keys pressed
-{
-   hb_retl( ( ( GetKeyState( VK_MENU )    & 0x8000 ) == 0 ) &&
-            ( ( GetKeyState( VK_CONTROL ) & 0x8000 ) == 0 ) &&
-            ( ( GetKeyState( VK_SHIFT )   & 0x8000 ) == 0 )  );
-}
 #pragma ENDDUMP
 
 FUNCTION TTextPicture_Events2( hWnd, nMsg, wParam, lParam )
@@ -636,7 +629,7 @@ Local aValidMask := ::ValidMask
       EndIf
       Return 1
 
-   ElseIf nMsg == WM_KEYDOWN .AND. wParam == VK_END .AND. GetKeyStateXtra()
+   ElseIf nMsg == WM_KEYDOWN .AND. wParam == VK_END .AND. GetKeyFlagState() == 0
       cText := ::Caption
       nPos := Len( aValidMask )
       DO WHILE nPos > 0 .AND. ( ! aValidMask[ nPos ] .OR. SubStr( cText, nPos, 1 ) == " " )

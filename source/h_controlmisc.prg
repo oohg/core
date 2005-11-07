@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.29 2005-11-02 17:32:20 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.30 2005-11-07 06:24:39 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -106,6 +106,7 @@ STATIC _OOHG_lMultiple := .T.    // Allows the same applicaton runs more one ins
 #include "hbvm.h"
 #include "hbstack.h"
 #include <windows.h>
+#include <commctrl.h>
 #include "../include/oohg.h"
 #pragma ENDDUMP
 
@@ -2100,6 +2101,8 @@ Return lRetVal
 #pragma BEGINDUMP
 #define s_Super s_Window
 
+int GetKeyFlagState( void );
+
 // -----------------------------------------------------------------------------
 HB_FUNC_STATIC( TCONTROL_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TControl
 // -----------------------------------------------------------------------------
@@ -2190,6 +2193,23 @@ HB_FUNC_STATIC( TCONTROL_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam
 //         {
 //            hb_ret();
 //         }
+         break;
+
+      case WM_SYSKEYDOWN:
+      case WM_KEYDOWN:
+         _OOHG_Send( pSelf, s_LookForKey );
+//         hb_vmPushInteger( ( lParam >> 16 ) & 0xFF );
+         hb_vmPushInteger( wParam );
+         hb_vmPushInteger( GetKeyFlagState() );
+         hb_vmSend( 2 );
+         if( hb_parl( -1 ) )
+         {
+            hb_retni( 0 );
+         }
+         else
+         {
+            hb_ret();
+         }
          break;
 
       default:
@@ -2305,21 +2325,6 @@ wParam++ // DUMMY...
 
    elseif nNotify == NM_DBLCLK
       ::DoEvent( ::OnDblClick )
-
-* Intento por controlar las teclas...
-/*
-   elseif nNotify == NM_KEYDOWN
-      aKeys := GetNmKey( lParam )
-      Return IF( ::LookForKey( aKeys[ 1 ], aKeys[ 2 ] ), 1, 0 )
-
-   elseif nNotify == NM_CHAR
-      aKeys := GetNmChar( lParam )
-      IF last != akeys
-         last := akeys
-         cant := 0
-      ENDIF
-      GetControlObject( "STATUSITEM", "WIN_1" ):Value := ltrim(str(aKeys))+" "+ltrim(str(cant))
-*/
 
    elseif nNotify == TVN_SELCHANGED
       ::DoEvent( ::OnChange )
