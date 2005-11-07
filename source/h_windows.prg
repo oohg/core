@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.35 2005-10-28 04:43:05 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.36 2005-11-07 01:54:37 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -314,6 +314,8 @@ CLASS TForm FROM TWindow
 
    DATA VirtualHeight  INIT 0
    DATA VirtualWidth   INIT 0
+   DATA RangeHeight    INIT 0
+   DATA RangeWidth     INIT 0
 
    DATA GraphTasks     INIT {}
    DATA SplitChildList INIT {}
@@ -597,7 +599,7 @@ METHOD Define2( FormName, Caption, x, y, w, h, Parent, helpbutton, nominimize, n
                 MouseMoveProcedure, MouseDragProcedure, InteractiveCloseProcedure, NoAutoRelease, nStyle, nStyleEx, ;
                 lSplit, lRtl ) CLASS TForm
 *------------------------------------------------------------------------------*
-Local Formhandle, vscroll, hscroll
+Local Formhandle
 
    If _OOHG_GlobalRTL
       lRtl := .T.
@@ -621,86 +623,12 @@ Local Formhandle, vscroll, hscroll
 		Caption := ""
 	endif
 
-/*
-	if valtype(scrollup) == "U"
-		scrollup := ""
-	endif
-	if valtype(scrolldown) == "U"
-		scrolldown := ""
-	endif
-	if valtype(scrollleft) == "U"
-		scrollleft := ""
-	endif
-	if valtype(scrollright) == "U"
-		scrollright := ""
+   if valtype( VirtualHeight ) != "N"
+      VirtualHeight := 0
 	endif
 
-	if valtype(hscrollbox) == "U"
-		hscrollbox := ""
-	endif
-	if valtype(vscrollbox) == "U"
-		vscrollbox := ""
-	endif
-
-	if valtype(InitProcedure) == "U"
-		InitProcedure := ""
-	endif
-
-	if valtype(ReleaseProcedure) == "U"
-		ReleaseProcedure := ""
-	endif
-
-	if valtype(MouseDragProcedure) == "U"
-		MouseDragProcedure := ""
-	endif
-
-	if valtype(SizeProcedure) == "U"
-		SizeProcedure := ""
-	endif
-
-	if valtype(ClickProcedure) == "U"
-		ClickProcedure := ""
-	endif
-
-	if valtype(MouseMoveProcedure) == "U"
-		MouseMoveProcedure := ""
-	endif
-
-	if valtype(PaintProcedure) == "U"
-		PaintProcedure := ""
-	endif
-
-	if valtype(GotFocus) == "U"
-		GotFocus := ""
-	endif
-
-	if valtype(LostFocus) == "U"
-		LostFocus := ""
-	endif
-*/
-
-   if valtype(VirtualHeight) != "N"
-		VirtualHeight	:= 0
-		vscroll		:= .f.
-	Else
-		If VirtualHeight <= h
-         * MsgOOHGError("DEFINE WINDOW: Virtual Height Must Be Greater Than Height. Program Terminated" )
-         VirtualHeight  := 0
-         vscroll     := .f.
-		EndIf
-		vscroll		:= .t.
-	endif
-
-   if valtype(VirtualWidth) != "N"
-		VirtualWidth	:= 0
-		hscroll		:= .f.
-	Else
-		If VirtualWidth <= w
-         * MsgOOHGError("DEFINE WINDOW: Virtual Width Must Be Greater Than Width. Program Terminated" )
-         VirtualWidth   := 0
-         hscroll     := .f.
-		EndIf
-		hscroll		:= .t.
+   if valtype( VirtualWidth ) != "N"
+      VirtualWidth := 0
    endif
 
    if Valtype ( aRGB ) != 'A'
@@ -719,9 +647,7 @@ Local Formhandle, vscroll, hscroll
    EndIf
    nStyle    += if( ValType( nosize )     != "L" .OR. ! nosize,    WS_SIZEBOX, 0 ) + ;
                 if( ValType( nosysmenu )  != "L" .OR. ! nosysmenu, WS_SYSMENU, 0 ) + ;
-                if( ValType( nocaption )  != "L" .OR. ! nocaption, WS_CAPTION, 0 ) + ;
-                if( ValType( vscroll )    == "L" .AND. vscroll,    WS_VSCROLL, 0 ) + ;
-                if( ValType( hscroll )    == "L" .AND. hscroll,    WS_HSCROLL, 0 )
+                if( ValType( nocaption )  != "L" .OR. ! nocaption, WS_CAPTION, 0 )
 
    Formhandle := InitWindow( Caption, x, y, w, h, Parent, FormName, nStyle, nStyleEx, lRtl )
 
@@ -775,13 +701,6 @@ Local Formhandle, vscroll, hscroll
    endif
 
    AADD( _OOHG_ActiveForm, Self )
-
-	If VirtualHeight > 0
-		SetScrollRange ( Formhandle , SB_VERT , 0 , VirtualHeight - h , 1 )
-	EndIf
-	If VirtualWidth > 0
-		SetScrollRange ( Formhandle , SB_HORZ , 0 , VirtualWidth - w , 1 )
-	EndIf
 
    InitDummy( FormHandle )
 
@@ -1404,11 +1323,9 @@ HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
 *-----------------------------------------------------------------------------*
 FUNCTION _OOHG_TForm_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TForm
 *-----------------------------------------------------------------------------*
-Local i, aPos
-Local NextControlHandle
-Local mVar
-Local xRetVal
+Local i, aPos, NextControlHandle, mVar, xRetVal
 Local oWnd, oCtrl
+Local vscroll, hscroll, aRect, w, h
 * Local hWnd := ::hWnd
 
 	do case
@@ -1456,7 +1373,7 @@ Local oWnd, oCtrl
 
       ENDIF
 
-      If oWnd:hWnd != 0 .AND. oWnd:VirtualHeight > 0
+      If oWnd:hWnd != 0 .AND. oWnd:RangeHeight > 0
 
 			If HIWORD(wParam) == 120
 				if GetScrollPos(hwnd,SB_VERT) < 20
@@ -1529,7 +1446,7 @@ Local oWnd, oCtrl
 
 			* Vertical ScrollBar Processing
 
-         if ::VirtualHeight > 0
+         if ::RangeHeight > 0
 
             If ::ReBarHandle > 0
                MsgOOHGError("SplitBox's Parent Window Can't Be a 'Virtual Dimensioned' Window (Use 'Virtual Dimensioned' SplitChild Instead). Program terminated" )
@@ -1663,7 +1580,7 @@ Local oWnd, oCtrl
 
 			* Horizontal ScrollBar Processing
 
-         if ::VirtualWidth > 0 .And. lParam == 0
+         if ::RangeWidth > 0 .And. lParam == 0
 
             If ::ReBarHandle > 0
                MsgOOHGError("SplitBox's Parent Window Can't Be a 'Virtual Dimensioned' Window (Use 'Virtual Dimensioned' SplitChild Instead). Program terminated" )
@@ -1798,7 +1715,50 @@ Local oWnd, oCtrl
 	case nMsg == WM_SIZE
         ***********************************************************************
 
-*****      Self := GetFormObjectByHandle( hWnd )
+      vscroll := hscroll := .F.
+      aRect := ARRAY( 4 )
+      GetClientRect( ::hWnd, aRect )
+      w := aRect[ 3 ] - aRect[ 1 ]
+      h := aRect[ 4 ] - aRect[ 2 ]
+      If h < ::VirtualHeight
+         ::RangeHeight := ::VirtualHeight - h
+         vscroll := .T.
+         w -= GetVScrollBarWidth()
+      EndIf
+      If w < ::VirtualWidth
+         ::RangeWidth := ::VirtualWidth - w
+         hscroll := .T.
+         h -= GetHScrollBarHeight()
+      EndIf
+      If h < ::VirtualHeight .AND. ! vscroll
+         ::RangeHeight := ::VirtualHeight - h
+         vscroll := .T.
+         w -= GetVScrollBarWidth()
+      EndIf
+      _SetScroll( ::hWnd, hscroll, vscroll )
+      If vscroll
+         SetScrollRange( ::hWnd, SB_VERT, 0, ::RangeHeight, 1 )
+         If ::RangeHeight < ( - ::RowMargin )
+            ::RowMargin := - ::RangeHeight
+            SetScrollPos( ::hWnd, SB_VERT, ::RangeHeight, 1 )
+         Else
+            vscroll := .F.
+         EndIf
+      EndIf
+      If hscroll
+         SetScrollRange( ::hWnd, SB_HORZ, 0, ::RangeWidth, 1 )
+         If ::RangeWidth < ( - ::ColMargin )
+            ::ColMargin := - ::RangeWidth
+            SetScrollPos( ::hWnd, SB_HORZ, ::RangeWidth, 1 )
+         Else
+            hscroll := .F.
+         EndIf
+      EndIf
+      If vscroll .OR. hscroll
+         AEVAL( ::aControls, { |o| If( o:Container == nil, o:SizePos(), ) } )
+         AEVAL( ::SplitChildList, { |o| o:SizePos } )
+         RedrawWindow( ::hWnd )
+      EndIf
 
       If _OOHG_Main != nil
 
