@@ -1,11 +1,21 @@
 /*
- * $Id: ChangeLog,v 1.36 2005-11-06 00:37:26 guerra000 Exp $
+ * $Id: ChangeLog,v 1.37 2005-11-07 01:56:09 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2005-11-06 19:55 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/c_windows.c
+    * GetClientRect() function added.
+    * _SetScroll() will only redraw window if neccesary.
+
+  * source/h_windows.prg
+    * Virtual width and virtual height interacts with WM_SIZE message.
+      Scroll bars appears/disappears/changes range according to windows'
+      available area.
 
 2005-11-05 18:22 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source/c_textbox.c
