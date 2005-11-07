@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.20 2005-11-06 00:22:32 guerra000 Exp $
+ * $Id: c_windows.c,v 1.21 2005-11-07 01:54:05 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -463,14 +463,24 @@ HB_FUNC ( MOVEWINDOW )
                       ));
 }
 
-HB_FUNC ( GETWINDOWRECT )
+HB_FUNC( GETWINDOWRECT )
 {
-  RECT rect;
-  hb_retl( GetWindowRect((HWND) hb_parnl (1), &rect));
-  hb_stornl(rect.left,2,1);
-  hb_stornl(rect.top,2,2);
-  hb_stornl(rect.right,2,3);
-  hb_stornl(rect.bottom,2,4);
+   RECT rect;
+   hb_retl( GetWindowRect( ( HWND ) hb_parnl( 1 ), &rect ) );
+   hb_stornl( rect.left, 2, 1 );
+   hb_stornl( rect.top, 2, 2 );
+   hb_stornl( rect.right, 2, 3 );
+   hb_stornl( rect.bottom, 2, 4 );
+}
+
+HB_FUNC( GETCLIENTRECT )
+{
+   RECT rect;
+   hb_retl( GetClientRect( ( HWND ) hb_parnl( 1 ), &rect ) );
+   hb_stornl( rect.left, 2, 1 );
+   hb_stornl( rect.top, 2, 2 );
+   hb_stornl( rect.right, 2, 3 );
+   hb_stornl( rect.bottom, 2, 4 );
 }
 
 HB_FUNC ( REGISTERWINDOW )
@@ -1438,29 +1448,55 @@ HB_FUNC( _SETSCROLL )
 {
    HWND hWnd = ( HWND ) hb_parnl( 1 );
    LONG nStyle;
+   BOOL bChange = 0;
 
    nStyle = GetWindowLong( hWnd, GWL_STYLE );
 
    if( ISLOG( 2 ) )
    {
-      nStyle = nStyle &~ WS_HSCROLL;
       if( hb_parl( 2 ) )
       {
-         nStyle |= WS_HSCROLL;
+         if( ! ( nStyle & WS_HSCROLL ) )
+         {
+            nStyle |= WS_HSCROLL;
+            bChange = 1;
+         }
+      }
+      else
+      {
+         if( nStyle & WS_HSCROLL )
+         {
+            nStyle = nStyle &~ WS_HSCROLL;
+            bChange = 1;
+         }
       }
    }
 
    if( ISLOG( 3 ) )
    {
-      nStyle = nStyle &~ WS_VSCROLL;
       if( hb_parl( 3 ) )
       {
-         nStyle |= WS_VSCROLL;
+         if( ! ( nStyle & WS_VSCROLL ) )
+         {
+            nStyle |= WS_VSCROLL;
+            bChange = 1;
+         }
+      }
+      else
+      {
+         if( nStyle & WS_VSCROLL )
+         {
+            nStyle = nStyle &~ WS_VSCROLL;
+            bChange = 1;
+         }
       }
    }
 
-   SetWindowLong( hWnd, GWL_STYLE, nStyle );
-   SetWindowPos( hWnd, 0, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_NOCOPYBITS | SWP_NOOWNERZORDER | SWP_NOSENDCHANGING );
+   if( bChange )
+   {
+      SetWindowLong( hWnd, GWL_STYLE, nStyle );
+      SetWindowPos( hWnd, 0, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_NOCOPYBITS | SWP_NOOWNERZORDER | SWP_NOSENDCHANGING );
+   }
 
    hb_retni( nStyle );
 }
