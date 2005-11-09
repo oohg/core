@@ -1,11 +1,47 @@
 /*
- * $Id: ChangeLog,v 1.38 2005-11-07 06:24:38 guerra000 Exp $
+ * $Id: ChangeLog,v 1.39 2005-11-09 06:01:27 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2005-11-09 00:00 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_altsyntaxtbox.ch
+  * include/i_editbox.ch
+  * include/i_spinner.ch
+  * include/i_textbox.ch
+  * source/h_editbox.prg
+  * source/h_spinner.prg
+  * source/h_textbox.prg
+    + NOBORDER clause added.
+
+  * include/i_window.ch
+  * source/h_controlmisc.prg
+    * Form.hWnd and Form.Control.hWnd property added.
+
+  * include/oohg.h
+  * source/c_windows.c
+  * source/h_controlmisc.prg
+    * ::SetKey() is now controlled directly from _DOMESSAGELOOP()
+      function.
+
+  * include/i_keybd.ch
+  * source/h_hotkey.prg
+  * source/h_status.prg
+  * source/h_tab.prg
+  * source/h_toolbar.prg
+  * source/h_windows.prg
+  * source/winprint.prg
+    + SPACE hotkeys added.
+    + SetAppHotKey() function added. For application-wide hotkeys.
+    + ::HotKey() method added (for "old" hotkey style).
+    * ON KEY commands are now controlled by ::SetKey().
+      This must solve hotkey-locked problems.
+
+  * samples/oohg/hello.prg
+    * Samples for NOBORDER and ::SetKey() added.
 
 2005-11-07 00:22 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * include/oohg.h
