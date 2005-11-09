@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.22 2005-11-07 06:24:39 guerra000 Exp $
+ * $Id: c_windows.c,v 1.23 2005-11-09 05:43:31 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -246,13 +246,53 @@ HB_FUNC( INITWINDOW )
 HB_FUNC( _DOMESSAGELOOP )
 {
    MSG Msg;
+   PHB_ITEM pSelf;
+   LONG hWnd;
 
    while( GetMessage( &Msg, NULL, 0, 0 ) )
    {
-      if( ! IsWindow( GetActiveWindow() ) || ! IsDialogMessage( GetActiveWindow(), &Msg ) )
+      switch( Msg.message )
       {
-         TranslateMessage( &Msg );
-         DispatchMessage( &Msg );
+         case WM_KEYDOWN:
+         case WM_SYSKEYDOWN:
+            hWnd = ( LONG ) Msg.hwnd;
+            pSelf = NULL;
+            while( hWnd && ! pSelf )
+            {
+               pSelf = GetFormObjectByHandle( hWnd );
+               _OOHG_Send( pSelf, s_hWnd );
+               hb_vmSend( 0 );
+               if( hb_parnl( -1 ) != hWnd )
+               {
+                  pSelf = GetControlObjectByHandle( hWnd );
+                  _OOHG_Send( pSelf, s_hWnd );
+                  hb_vmSend( 0 );
+                  if( hb_parnl( -1 ) != hWnd )
+                  {
+                     hWnd = ( LONG ) GetParent( ( HWND ) hWnd );
+                     pSelf = NULL;
+                  }
+               }
+            }
+            if( hWnd && pSelf )
+            {
+               _OOHG_Send( pSelf, s_LookForKey );
+               hb_vmPushInteger( Msg.wParam );
+               hb_vmPushInteger( GetKeyFlagState() );
+               hb_vmSend( 2 );
+               if( hb_parl( -1 ) )
+               {
+                  break;
+               }
+            }
+
+         default:
+            if( ! IsWindow( GetActiveWindow() ) || ! IsDialogMessage( GetActiveWindow(), &Msg ) )
+            {
+               TranslateMessage( &Msg );
+               DispatchMessage( &Msg );
+            }
+            break;
       }
    }
 }
