@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.20 2005-10-27 05:13:04 guerra000 Exp $
+ * $Id: i_altsyntax.ch,v 1.21 2005-11-09 05:45:53 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -172,6 +172,7 @@ MEMVAR _OOHG_ActiveControlMultiSelect
 MEMVAR _OOHG_ActiveControlEdit
 
 MEMVAR _OOHG_ActiveControlBorder
+MEMVAR _OOHG_ActiveControlNoBorder
 MEMVAR _OOHG_ActiveControlClientEdge
 MEMVAR _OOHG_ActiveControlHScroll
 MEMVAR _OOHG_ActiveControlVscroll
@@ -896,22 +897,23 @@ Text Box
 #xcommand DEFINE TEXTBOX <name>;
 	=>;
         _OOHG_ClearActiveControlInfo( <(name)> ) ;;
-        _OOHG_ActiveControlField     := Nil          ;;
+        _OOHG_ActiveControlField         := Nil          ;;
         _OOHG_ActiveControlMaxLength     := Nil          ;;
         _OOHG_ActiveControlUpperCase     := .f.          ;;
         _OOHG_ActiveControlLowerCase     := .f.          ;;
         _OOHG_ActiveControlNumeric       := .f.          ;;
         _OOHG_ActiveControlPassword      := .f.          ;;
-        _OOHG_ActiveControlOnLostFocus := Nil    ;;
-        _OOHG_ActiveControlOnGotFocus := Nil             ;;
+        _OOHG_ActiveControlOnLostFocus   := Nil          ;;
+        _OOHG_ActiveControlOnGotFocus    := Nil          ;;
         _OOHG_ActiveControlOnChange      := Nil          ;;
         _OOHG_ActiveControlOnEnter       := Nil          ;;
-        _OOHG_ActiveControlRightAlign := .f.             ;;
-        _OOHG_ActiveControlReadonly   := .f.         ;;
-        _OOHG_ActiveControlDateType   := .f.         ;;
+        _OOHG_ActiveControlRightAlign    := .f.          ;;
+        _OOHG_ActiveControlReadonly      := .f.          ;;
+        _OOHG_ActiveControlDateType      := .f.          ;;
         _OOHG_ActiveControlInputMask     := Nil          ;;
-        _OOHG_ActiveControlPicture           := Nil      ;;
-        _OOHG_ActiveControlFormat        := Nil
+        _OOHG_ActiveControlPicture       := Nil          ;;
+        _OOHG_ActiveControlFormat        := Nil          ;;
+        _OOHG_ActiveControlNoBorder      := .f.
 
 #xcommand UPPERCASE <uppercase>;
 	=>;
@@ -940,6 +942,10 @@ Text Box
 #xcommand AUTOSKIP <autoskip> ;
 	=>;
         _OOHG_ActiveControlAutoSkip              := <autoskip>
+
+#xcommand NOBORDER        <noborder>;
+	=>;
+        _OOHG_ActiveControlNoBorder              := <noborder>
 
 #xcommand END TEXTBOX;
 	=>;
@@ -977,7 +983,8 @@ Text Box
                         _OOHG_ActiveControlInvisible , ;
                         _OOHG_ActiveControlNoTabStop , ;
                         _OOHG_ActiveControlRtl , ;
-                        _OOHG_ActiveControlAutoSkip );
+                        _OOHG_ActiveControlAutoSkip , ;
+                        _OOHG_ActiveControlNoBorder );
               ,;
                    iif( _OOHG_ActiveControlNumeric, ;
                         TTextMasked():Define( ;
@@ -1010,7 +1017,8 @@ Text Box
                         _OOHG_ActiveControlInvisible, ;
                         _OOHG_ActiveControlNoTabStop, ;
                         _OOHG_ActiveControlRtl, ;
-                        _OOHG_ActiveControlAutoSkip ) , ;
+                        _OOHG_ActiveControlAutoSkip , ;
+                        _OOHG_ActiveControlNoBorder ) , ;
                      TTextCharMask():Define( _OOHG_ActiveControlName, ;
                         _OOHG_ActiveControlOf, ;
                         _OOHG_ActiveControlCol, ;
@@ -1040,7 +1048,8 @@ Text Box
                         _OOHG_ActiveControlInvisible,;
                         _OOHG_ActiveControlNoTabStop, ;
                         _OOHG_ActiveControlRtl, ;
-                        _OOHG_ActiveControlAutoSkip ) ) ;
+                        _OOHG_ActiveControlAutoSkip , ;
+                        _OOHG_ActiveControlNoBorder ) ) ;
               ) ;
         ,;
               TTextPicture():Define( ;
@@ -1072,7 +1081,8 @@ Text Box
                         _OOHG_ActiveControlInvisible ,;
                         _OOHG_ActiveControlNoTabStop ,;
                         _OOHG_ActiveControlRtl ,;
-                        _OOHG_ActiveControlAutoSkip ) ;
+                        _OOHG_ActiveControlAutoSkip ,;
+                        _OOHG_ActiveControlNoBorder ) ;
 	)
 
 /*----------------------------------------------------------------------------
@@ -1584,15 +1594,16 @@ Edit Box
 #xcommand DEFINE EDITBOX <name> ;
 	=>;
         _OOHG_ClearActiveControlInfo( <(name)> ) ;;
-        _OOHG_ActiveControlReadonly              := .f.          ;;
-        _OOHG_ActiveControlMaxLength             := Nil          ;;
+        _OOHG_ActiveControlReadonly      := .f.          ;;
+        _OOHG_ActiveControlMaxLength     := Nil          ;;
         _OOHG_ActiveControlOnGotFocus    := Nil          ;;
-        _OOHG_ActiveControlOnChange              := Nil          ;;
+        _OOHG_ActiveControlOnChange      := Nil          ;;
         _OOHG_ActiveControlOnLostFocus   := Nil          ;;
         _OOHG_ActiveControlBreak         := .f.          ;;
-        _OOHG_ActiveControlField             := Nil ;;
-        _OOHG_ActiveControlNoVScroll         := .f.          ;;
-        _OOHG_ActiveControlNoHScroll         := .f.
+        _OOHG_ActiveControlField         := Nil          ;;
+        _OOHG_ActiveControlNoVScroll     := .f.          ;;
+        _OOHG_ActiveControlNoHScroll     := .f.          ;;
+        _OOHG_ActiveControlNoBorder      := .f.
 
 #xcommand READONLYFIELDS <readonly> ;
 	=>;
@@ -1637,7 +1648,8 @@ Edit Box
                         _OOHG_ActiveControlFontColor, ;
                         _OOHG_ActiveControlNoVScroll, ;
                         _OOHG_ActiveControlNoHScroll, ;
-                        _OOHG_ActiveControlRtl )
+                        _OOHG_ActiveControlRtl, ;
+                        _OOHG_ActiveControlNoBorder )
 
 
 /*----------------------------------------------------------------------------
@@ -2049,14 +2061,15 @@ Spinner
 #xcommand DEFINE SPINNER <name>;
 	=>;
         _OOHG_ClearActiveControlInfo( <(name)> ) ;;
-        _OOHG_ActiveControlRangeLow              := Nil          ;;
-        _OOHG_ActiveControlRangeHigh             := Nil          ;;
-        _OOHG_ActiveControlOnChange              := Nil          ;;
+        _OOHG_ActiveControlRangeLow      := Nil          ;;
+        _OOHG_ActiveControlRangeHigh     := Nil          ;;
+        _OOHG_ActiveControlOnChange      := Nil          ;;
         _OOHG_ActiveControlOnLostFocus   := Nil          ;;
         _OOHG_ActiveControlOnGotFocus    := Nil          ;;
         _OOHG_ActiveControlWrap          := .F.          ;;
-        _OOHG_ActiveControlReadOnly              := .F.          ;;
-        _OOHG_ActiveControlIncrement             := Nil
+        _OOHG_ActiveControlReadOnly      := .F.          ;;
+        _OOHG_ActiveControlIncrement     := Nil          ;;
+        _OOHG_ActiveControlNoBorder      := .f.
 
 #xcommand END SPINNER;
 	=>;
@@ -2088,4 +2101,5 @@ Spinner
                 _OOHG_ActiveControlIncrement ,;
                 _OOHG_ActiveControlBackColor, ;
                 _OOHG_ActiveControlFontColor, ;
-                _OOHG_ActiveControlRtl )
+                _OOHG_ActiveControlRtl, ;
+                _OOHG_ActiveControlNoBorder )

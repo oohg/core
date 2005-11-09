@@ -1,5 +1,5 @@
 /*
- * $Id: h_spinner.prg,v 1.5 2005-11-06 00:21:40 guerra000 Exp $
+ * $Id: h_spinner.prg,v 1.6 2005-11-09 05:45:54 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -116,9 +116,10 @@ ENDCLASS
 METHOD Define( ControlName, ParentForm, x, y, w, value, fontname, fontsize, ;
                rl, rh, tooltip, change, lostfocus, gotfocus, h, HelpId, ;
                invisible, notabstop, bold, italic, underline, strikeout, ;
-               wrap, readonly, increment, backcolor, fontcolor, lRtl ) CLASS TSpinner
+               wrap, readonly, increment, backcolor, fontcolor, lRtl, ;
+               lNoBorder ) CLASS TSpinner
 *-----------------------------------------------------------------------------*
-Local nStyle := ES_NUMBER + ES_AUTOHSCROLL, nStyleEx := WS_EX_CLIENTEDGE
+Local nStyle := ES_NUMBER + ES_AUTOHSCROLL, nStyleEx := 0
 Local ControlHandle
 
    DEFAULT w         TO 120
@@ -138,6 +139,8 @@ Local ControlHandle
    nStyle += if( ValType( invisible ) != "L" .OR. ! invisible, WS_VISIBLE, 0 ) + ;
              if( ValType( notabstop ) != "L" .OR. ! notabstop, WS_TABSTOP, 0 ) + ;
              if( ValType( readonly )  == "L" .AND.  readonly,  ES_READONLY, 0 )
+
+   nStyleEx += IF( Valtype( lNoBorder ) != "L" .OR. ! lNoBorder, WS_EX_CLIENTEDGE, 0 )
 
    ControlHandle := InitTextBox( ::ContainerhWnd, 0, x, y, w, h, nStyle, 0, ::lRtl, nStyleEx )
 
