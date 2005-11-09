@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.2 2005-10-11 05:44:18 guerra000 Exp $
+ * $Id: winprint.prg,v 1.3 2005-11-09 05:56:43 guerra000 Exp $
  */
 // -----------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -1279,7 +1279,7 @@ return self
 **********************************
 METHOD Preview() CLASS HBPrinter
 **********************************
-local i:=1,pi:=1,wl
+local i:=1,pi:=1,wl, oHBPreview
 
  ::aopisy:=;
 {"Preview",;
@@ -1583,15 +1583,15 @@ next pi
     ::ahs[1,6]:=::ahs[1,4]-::ahs[1,2]+1
   endif
 
-  DEFINE WINDOW HBPREVIEW   AT  ::ahs[1,1] , ::ahs[1,1] ;
+  DEFINE WINDOW HBPREVIEW OBJ oHBPreview AT  ::ahs[1,1] , ::ahs[1,1] ;
          WIDTH ::ahs[1,6] HEIGHT ::ahs[1,5] ;
           TITLE ::aopisy[1] ICON 'zzz_Printicon' ;
           MODAL NOSIZE ;
           FONT 'Arial' SIZE 9
 
-        _definehotkey("HBPREVIEW ", 0,  27, {||_ReleaseWindow("HBPREVIEW") })
-        _definehotkey("HBPREVIEW ", 0, 107,{|| ::scale:=::scale*1.25,:: PrevShow () })
-        _definehotkey("HBPREVIEW ", 0, 109,{|| ::scale:=::scale/1.25,:: PrevShow () })
+         oHBPreview:HotKey(  27, 0, {|| oHBPreview:Release() } )
+         oHBPreview:HotKey( 107, 0, {|| ::scale:=::scale*1.25,:: PrevShow () } )
+         oHBPreview:HotKey( 109, 0, {|| ::scale:=::scale/1.25,:: PrevShow () } )
 
          DEFINE STATUSBAR
 
@@ -1606,7 +1606,7 @@ next pi
 
          DEFINE SPLITBOX
                DEFINE TOOLBAR TB1 BUTTONSIZE 50,33 FONT 'Arial Narrow' SIZE 8 FLAT BREAK // RIGHTTEXT
-                        BUTTON B1 CAPTION  ::aopisy[2]     PICTURE 'hbprint_close'   ACTION {||  _ReleaseWindow ("HBPREVIEW1" ),if(::iloscstron>1 .and. ::thumbnails,_ReleaseWindow ("HBPREVIEW2" ),""), _ReleaseWindow ("HBPREVIEW" )}
+                        BUTTON B1 CAPTION  ::aopisy[2]     PICTURE 'hbprint_close'   ACTION {||  _ReleaseWindow ("HBPREVIEW1" ),if(::iloscstron>1 .and. ::thumbnails,_ReleaseWindow ("HBPREVIEW2" ),""), oHBPreview:Release()}
                         BUTTON B2 CAPTION  ::aopisy[3]    PICTURE 'hbprint_print'   ACTION {|| ::prevprint() }
                         BUTTON B3 CAPTION  ::aopisy[4]     PICTURE 'hbprint_save'    ACTION {|| ::savemetafiles()}
                         if ::iloscstron>1
@@ -1620,12 +1620,12 @@ next pi
                         BUTTON B10 CAPTION ::aopisy[11] PICTURE 'hbprint_option' ACTION {|| ::PrintOption() }
                END TOOLBAR
 
-                          aadd(::ahs,{0,0,0,0,0,0,GetFormHandle("hbpreview")})
+               aadd(::ahs,{0,0,0,0,0,0,oHBPreview:hWnd})
                rr_getclientrect(::ahs[2])
 
-               aadd(::ahs,{0,0,0,0,0,0,GetControlHandle("Tb1","hbpreview")})
+               aadd(::ahs,{0,0,0,0,0,0,oHBPreview:Tb1:hWnd})
                rr_getclientrect(::ahs[3])
-               aadd(::ahs,{0,0,0,0,0,0,GetControlHandle("StatusBar","hbpreview")})
+               aadd(::ahs,{0,0,0,0,0,0,oHBPreview:StatusBar:hWnd})
                rr_getclientrect(::ahs[4])
 
                DEFINE WINDOW HBPREVIEW1  ;

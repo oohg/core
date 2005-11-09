@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.9 2005-10-22 06:07:26 guerra000 Exp $
+ * $Id: h_tab.prg,v 1.10 2005-11-09 05:56:43 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -359,7 +359,7 @@ Local oPage, nPos, nKey
 *            Mnemonic := {|| ( ::Value := Position , iif ( valtype( ::OnChange ) =='B' , Eval( ::OnChange ) , Nil ) ) }
             Mnemonic := {|| ( oPage:SetFocus() , iif ( valtype( ::OnChange ) =='B' , Eval( ::OnChange ) , Nil ) ) }
          ENDIF
-         _DefineHotKey( ::Parent:Name, MOD_ALT , nKey , Mnemonic )
+         ::Parent:HotKey( nKey, MOD_ALT, Mnemonic )
       ENDIF
    ENDIF
 

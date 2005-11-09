@@ -1,5 +1,5 @@
 /*
- * $Id: h_status.prg,v 1.9 2005-11-02 17:33:03 guerra000 Exp $
+ * $Id: h_status.prg,v 1.10 2005-11-09 05:56:43 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -359,7 +359,7 @@ Local i, styl, nKey, ControlHandle
                    VK_Q, VK_R, VK_S, VK_T, VK_U, VK_V, VK_W, VK_X, ;
                    VK_Y, VK_Z, VK_0, VK_1, VK_2, VK_3, VK_4, VK_5, ;
                    VK_6, VK_7, VK_8, VK_9 }[ i ]
-         _DefineHotKey( ::Parent:Name, MOD_ALT, nKey , ProcedureName )
+         ::Parent:HotKey( nKey, MOD_ALT, ProcedureName )
       ENDIF
    ENDIF
 

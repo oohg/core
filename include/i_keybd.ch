@@ -1,5 +1,5 @@
 /*
- * $Id: i_keybd.ch,v 1.2 2005-10-22 06:04:31 guerra000 Exp $
+ * $Id: i_keybd.ch,v 1.3 2005-11-09 05:56:43 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -255,6 +255,14 @@ _OOHG_ExtendedNavigation := .F.
 #define VK_RMENU	165
 #define VK_PROCESSKEY	229
 
+#define VK_OEM_1        0xBA
+#define VK_OEM_PLUS     0xBB
+#define VK_OEM_COMMA    0xBC
+#define VK_OEM_MINUS    0xBD
+#define VK_OEM_PERIOD   0xBE
+#define VK_OEM_2        0xBF
+#define VK_OEM_3        0xC0
+
 #define MOD_ALT	1
 #define MOD_CONTROL	2
 #define MOD_SHIFT	4
@@ -344,6 +352,10 @@ _DefineHotKey ( <(parent)> , 0 , VK_RETURN , <{action}> )
 #xcommand ON KEY ESCAPE [ OF <parent> ] ACTION <action> ;
 => ;
 _DefineHotKey ( <(parent)> , 0 , VK_ESCAPE , <{action}> )
+
+#xcommand ON KEY SPACE [ OF <parent> ] ACTION <action> ;
+=> ;
+_DefineHotKey ( <(parent)> , 0 , VK_SPACE , <{action}> )
 
 #xcommand ON KEY END [ OF <parent> ] ACTION <action> ;
 => ;
@@ -595,6 +607,10 @@ _DefineHotKey ( <(parent)> , MOD_ALT , VK_RETURN , <{action}> )
 => ;
 _DefineHotKey ( <(parent)> , MOD_ALT , VK_ESCAPE , <{action}> )
 
+#xcommand ON KEY ALT+SPACE [ OF <parent> ] ACTION <action> ;
+=> ;
+_DefineHotKey ( <(parent)> , MOD_ALT , VK_SPACE , <{action}> )
+
 #xcommand ON KEY ALT+END [ OF <parent> ] ACTION <action> ;
 => ;
 _DefineHotKey ( <(parent)> , MOD_ALT , VK_END , <{action}> )
@@ -844,6 +860,10 @@ _DefineHotKey ( <(parent)> , MOD_SHIFT , VK_RETURN , <{action}> )
 #xcommand ON KEY SHIFT+ESCAPE [ OF <parent> ] ACTION <action> ;
 => ;
 _DefineHotKey ( <(parent)> , MOD_SHIFT , VK_ESCAPE , <{action}> )
+
+#xcommand ON KEY SHIFT+SPACE [ OF <parent> ] ACTION <action> ;
+=> ;
+_DefineHotKey ( <(parent)> , MOD_SHIFT , VK_SPACE , <{action}> )
 
 #xcommand ON KEY SHIFT+END [ OF <parent> ] ACTION <action> ;
 => ;
@@ -1095,6 +1115,10 @@ _DefineHotKey ( <(parent)> , MOD_CONTROL , VK_RETURN , <{action}> )
 => ;
 _DefineHotKey ( <(parent)> , MOD_CONTROL , VK_ESCAPE , <{action}> )
 
+#xcommand ON KEY CONTROL+SPACE [ OF <parent> ] ACTION <action> ;
+=> ;
+_DefineHotKey ( <(parent)> , MOD_CONTROL , VK_SPACE , <{action}> )
+
 #xcommand ON KEY CONTROL+END [ OF <parent> ] ACTION <action> ;
 => ;
 _DefineHotKey ( <(parent)> , MOD_CONTROL , VK_END , <{action}> )
@@ -1204,6 +1228,10 @@ _ReleaseHotKey ( <(parent)> , 0 , VK_RETURN   )
 #xcommand RELEASE KEY ESCAPE OF <parent> ;
 => ;
 _ReleaseHotKey ( <(parent)> , 0 , VK_ESCAPE   )
+
+#xcommand RELEASE KEY SPACE OF <parent> ;
+=> ;
+_ReleaseHotKey ( <(parent)> , 0 , VK_SPACE   )
 
 #xcommand RELEASE KEY END OF <parent> ;
 => ;
@@ -1455,6 +1483,10 @@ _ReleaseHotKey ( <(parent)> , MOD_ALT , VK_RETURN   )
 => ;
 _ReleaseHotKey ( <(parent)> , MOD_ALT , VK_ESCAPE   )
 
+#xcommand RELEASE KEY ALT+SPACE OF <parent> ;
+=> ;
+_ReleaseHotKey ( <(parent)> , MOD_ALT , VK_SPACE   )
+
 #xcommand RELEASE KEY ALT+END OF <parent> ;
 => ;
 _ReleaseHotKey ( <(parent)> , MOD_ALT , VK_END   )
@@ -1704,6 +1736,10 @@ _ReleaseHotKey ( <(parent)> , MOD_SHIFT , VK_RETURN   )
 #xcommand RELEASE KEY SHIFT+ESCAPE OF <parent> ;
 => ;
 _ReleaseHotKey ( <(parent)> , MOD_SHIFT , VK_ESCAPE   )
+
+#xcommand RELEASE KEY SHIFT+SPACE OF <parent> ;
+=> ;
+_ReleaseHotKey ( <(parent)> , MOD_SHIFT , VK_SPACE   )
 
 #xcommand RELEASE KEY SHIFT+END OF <parent> ;
 => ;
@@ -1955,6 +1991,10 @@ _ReleaseHotKey ( <(parent)> , MOD_CONTROL , VK_RETURN   )
 => ;
 _ReleaseHotKey ( <(parent)> , MOD_CONTROL , VK_ESCAPE   )
 
+#xcommand RELEASE KEY CONTROL+SPACE OF <parent> ;
+=> ;
+_ReleaseHotKey ( <(parent)> , MOD_CONTROL , VK_SPACE   )
+
 #xcommand RELEASE KEY CONTROL+END OF <parent> ;
 => ;
 _ReleaseHotKey ( <(parent)> , MOD_CONTROL , VK_END   )
@@ -2064,6 +2104,10 @@ _ReleaseHotKey ( <(parent)> , MOD_CONTROL , VK_NEXT   )
 #xcommand STORE KEY ESCAPE OF <parent> TO <baction> ;
 => ;
 <baction> := _GetHotKey ( <(parent)> , 0 , VK_ESCAPE   )
+
+#xcommand STORE KEY SPACE OF <parent> TO <baction> ;
+=> ;
+<baction> := _GetHotKey ( <(parent)> , 0 , VK_SPACE   )
 
 #xcommand STORE KEY END OF <parent> TO <baction> ;
 => ;
@@ -2315,6 +2359,10 @@ _ReleaseHotKey ( <(parent)> , MOD_CONTROL , VK_NEXT   )
 => ;
 <baction> := _GetHotKey ( <(parent)> , MOD_ALT , VK_ESCAPE   )
 
+#xcommand STORE KEY ALT+SPACE OF <parent> TO <baction> ;
+=> ;
+<baction> := _GetHotKey ( <(parent)> , MOD_ALT , VK_SPACE   )
+
 #xcommand STORE KEY ALT+END OF <parent> TO <baction> ;
 => ;
 <baction> := _GetHotKey ( <(parent)> , MOD_ALT , VK_END   )
@@ -2564,6 +2612,10 @@ _ReleaseHotKey ( <(parent)> , MOD_CONTROL , VK_NEXT   )
 #xcommand STORE KEY SHIFT+ESCAPE OF <parent> TO <baction> ;
 => ;
 <baction> := _GetHotKey ( <(parent)> , MOD_SHIFT , VK_ESCAPE   )
+
+#xcommand STORE KEY SHIFT+SPACE OF <parent> TO <baction> ;
+=> ;
+<baction> := _GetHotKey ( <(parent)> , MOD_SHIFT , VK_SPACE   )
 
 #xcommand STORE KEY SHIFT+END OF <parent> TO <baction> ;
 => ;
@@ -2815,6 +2867,10 @@ _ReleaseHotKey ( <(parent)> , MOD_CONTROL , VK_NEXT   )
 => ;
 <baction> := _GetHotKey ( <(parent)> , MOD_CONTROL , VK_ESCAPE   )
 
+#xcommand STORE KEY CONTROL+SPACE OF <parent> TO <baction> ;
+=> ;
+<baction> := _GetHotKey ( <(parent)> , MOD_CONTROL , VK_SPACE   )
+
 #xcommand STORE KEY CONTROL+END OF <parent> TO <baction> ;
 => ;
 <baction> := _GetHotKey ( <(parent)> , MOD_CONTROL , VK_END   )
@@ -2922,6 +2978,10 @@ _PushKey ( VK_RETURN )
 #xcommand PUSH KEY ESCAPE ;
 => ;
 _PushKey ( VK_ESCAPE )
+
+#xcommand PUSH KEY SPACE ;
+=> ;
+_PushKey ( VK_SPACE )
 
 #xcommand PUSH KEY END ;
 => ;

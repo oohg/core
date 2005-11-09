@@ -1,5 +1,5 @@
 /*
- * $Id: h_toolbar.prg,v 1.11 2005-11-02 17:27:43 guerra000 Exp $
+ * $Id: h_toolbar.prg,v 1.12 2005-11-09 05:56:43 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -341,7 +341,7 @@ Flat := NIL
 **            ProcedureName := {|| ( ::Value := Position , iif ( valtype( ::OnChange ) =='B' , Eval( ::OnChange ) , Nil ) ) }
 *            ProcedureName := {|| ( oPage:SetFocus() , iif ( valtype( ::OnChange ) =='B' , Eval( ::OnChange ) , Nil ) ) }
 *         ENDIF
-         _DefineHotKey( ::Parent:Name, MOD_ALT , nKey , ProcedureName )
+         ::Parent:HotKey( nKey, MOD_ALT, ProcedureName )
       EndIf
 
 	EndIf

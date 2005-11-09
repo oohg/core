@@ -1,5 +1,5 @@
 /*
- * $Id: h_hotkey.prg,v 1.3 2005-10-03 05:29:12 guerra000 Exp $
+ * $Id: h_hotkey.prg,v 1.4 2005-11-09 05:56:43 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -91,66 +91,29 @@
 	Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-#include 'oohg.ch'
-
-#define HOTKEY_ID        1
-#define HOTKEY_MOD       2
-#define HOTKEY_KEY       3
-#define HOTKEY_ACTION    4
+#include "oohg.ch"
 
 *------------------------------------------------------------------------------*
-Procedure _DefineHotKey( cParentForm , nMod , nKey , bAction )
+Function _DefineHotKey( cParentForm, nMod, nKey, bAction )
 *------------------------------------------------------------------------------*
-Local nId, oWnd
-
-   cParentForm := TControl():SetForm( "", cParentForm ):Parent:Name
-
-   oWnd := GetFormObject( cParentForm )
-
-   _ReleaseHotKey( cParentForm, nMod , nKey )
-
-	nId := _GetId()
-
-   InitHotKey( oWnd:hWnd , nMod , nKey , nId )
-
-   AADD( oWnd:aHotKeys, { nId, nMod, nKey, bAction } )
-
-Return
-*------------------------------------------------------------------------------*
-Procedure _ReleaseHotKey( cParentForm, nMod , nKey )
-*------------------------------------------------------------------------------*
-Local nPos, oWnd
-
-   oWnd := GetFormObject( cParentForm )
-
-   nPos := ASCAN( oWnd:aHotKeys, { |a| a[ HOTKEY_MOD ] == nMod .and. a[ HOTKEY_KEY ] == nKey } )
-
-   IF nPos > 0
-
-      ReleaseHotKey( oWnd:hWnd, oWnd:aHotKeys[ nPos ][ HOTKEY_ID ] )
-
-      _OOHG_DeleteArrayItem( oWnd:aHotKeys, nPos )
-
-   ENDIF
-
-Return
+// Return ( TControl():SetForm( "", cParentForm ):Parent ):HotKey( nKey, nMod, bAction )
+Return ( TControl():SetForm( "", cParentForm ):Parent ):SetKey( nKey, nMod, bAction )
 
 *------------------------------------------------------------------------------*
-Function _GetHotKey ( cParentForm, nMod , nKey )
+Function _ReleaseHotKey( cParentForm, nMod, nKey )
 *------------------------------------------------------------------------------*
-Local nPos, oWnd
+// Return ( TControl():SetForm( "", cParentForm ):Parent ):HotKey( nKey, nMod, nil )
+Return ( TControl():SetForm( "", cParentForm ):Parent ):SetKey( nKey, nMod, nil )
 
-   oWnd := GetFormObject( cParentForm )
-
-   nPos := ASCAN( oWnd:aHotKeys, { |a| a[ HOTKEY_MOD ] == nMod .and. a[ HOTKEY_KEY ] == nKey } )
-
-Return IF( nPos == 0, nil, oWnd:aHotKeys[ HOTKEY_ACTION ] )
+*------------------------------------------------------------------------------*
+Function _GetHotKey( cParentForm, nMod, nKey )
+*------------------------------------------------------------------------------*
+// Return ( TControl():SetForm( "", cParentForm ):Parent ):HotKey( nKey, nMod )
+Return ( TControl():SetForm( "", cParentForm ):Parent ):SetKey( nKey, nMod )
 
 *------------------------------------------------------------------------------*
 Function _PushKey( nKey )
 *------------------------------------------------------------------------------*
-
    Keybd_Event( nKey, .f. )
    Keybd_Event( nKey, .t. )
-
 Return Nil

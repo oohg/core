@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.37 2005-11-07 06:24:39 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.38 2005-11-09 05:56:43 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -104,6 +104,7 @@ STATIC _OOHG_MessageLoops := {}      // Message loops
 STATIC _OOHG_GlobalRTL := .F.        // Force RTL functionality
 STATIC _OOHG_ActiveModal := {}       // Modal windows' stack
 STATIC _OOHG_DialogCancelled := .F.  //
+STATIC _OOHG_HotKeys := {}           // Application-wide hot keys
 
 #include "hbclass.ch"
 
@@ -149,13 +150,15 @@ CLASS TWindow
    DATA lEnabled       INIT .T.
    DATA aControls      INIT {}
    DATA BrushHandle    INIT 0
+   DATA lInternal      INIT .T.
 
    DATA OnClick        INIT nil
    DATA OnGotFocus     INIT nil
    DATA OnLostFocus    INIT nil
    DATA OnMouseDrag    INIT nil
    DATA OnMouseMove    INIT nil
-   DATA aKeys          INIT {}
+   DATA aKeys          INIT {}  // { Id, Mod, Key, Action }   Application-controlled hotkeys
+   DATA aHotKeys       INIT {}  // { Id, Mod, Key, Action }   OperatingSystem-controlled hotkeys
 
    DATA DefBkColorEdit  INIT nil
 
@@ -165,7 +168,8 @@ CLASS TWindow
    METHOD Action              SETGET
    METHOD Print
 
-   METHOD SetKey
+   METHOD HotKey                // OperatingSystem-controlled hotkeys
+   METHOD SetKey                // Application-controlled hotkeys
    METHOD LookForKey
 ENDCLASS
 
@@ -243,6 +247,37 @@ return nil
 #define HOTKEY_ACTION    4
 
 *-----------------------------------------------------------------------------*
+METHOD HotKey( nKey, nFlags, bAction ) CLASS TWindow
+*-----------------------------------------------------------------------------*
+Local nPos, nId, uRet := nil
+   nPos := ASCAN( ::aHotKeys, { |a| a[ HOTKEY_KEY ] == nKey .AND. a[ HOTKEY_MOD ] == nFlags } )
+   If nPos > 0
+      uRet := ::aHotKeys[ nPos ][ HOTKEY_ACTION ]
+   EndIf
+   If PCOUNT() > 2
+      If ValType( bAction ) == "B"
+         If nPos > 0
+            ::aHotKeys[ nPos ][ HOTKEY_ACTION ] := bAction
+         Else
+            nId := _GetId()
+            AADD( ::aHotKeys, { nId, nFlags, nKey, bAction } )
+            InitHotKey( ::hWnd, nFlags, nKey, nId )
+         EndIf
+      Else
+         If nPos > 0
+            ReleaseHotKey( ::hWnd, ::aHotKeys[ nPos ][ HOTKEY_ID ] )
+            _OOHG_DeleteArrayItem( ::aHotKeys, nPos )
+         EndIf
+      Endif
+   EndIf
+Return uRet
+
+*-----------------------------------------------------------------------------*
+METHOD SetKey( nKey, nFlags, bAction ) CLASS TWindow
+*-----------------------------------------------------------------------------*
+Return _OOHG_SetKey( ::aKeys, nKey, nFlags, bAction )
+
+*-----------------------------------------------------------------------------*
 METHOD LookForKey( nKey, nFlags ) CLASS TWindow
 *-----------------------------------------------------------------------------*
 Local lDone, nPos
@@ -252,35 +287,18 @@ Local lDone, nPos
       lDone := .T.
    ElseIf ValType( ::Container ) == "O"
       lDone := ::Container:LookForKey( nKey, nFlags )
-   ElseIf ValType( ::Parent ) == "O"
+   ElseIf ValType( ::Parent ) == "O" .AND. ::lInternal
       lDone := ::Parent:LookForKey( nKey, nFlags )
    Else
-      lDone := .F.
+      nPos := ASCAN( _OOHG_HotKeys, { |a| a[ HOTKEY_KEY ] == nKey .AND. nFlags == a[ HOTKEY_MOD ] } )
+      If nPos > 0
+         Eval( _OOHG_HotKeys[ nPos ][ HOTKEY_ACTION ], nKey, nFlags )
+         lDone := .T.
+      Else
+         lDone := .F.
+      EndIf
    EndIf
 Return lDone
-
-*-----------------------------------------------------------------------------*
-METHOD SetKey( nKey, nFlags, bAction ) CLASS TWindow
-*-----------------------------------------------------------------------------*
-Local nPos, uRet := nil
-   nPos := ASCAN( ::aKeys, { |a| a[ HOTKEY_KEY ] == nKey .AND. a[ HOTKEY_MOD ] == nFlags } )
-   IF nPos > 0
-      uRet := ::aKeys[ nPos ][ HOTKEY_ACTION ]
-   ENDIF
-   IF PCOUNT() > 2
-      IF ValType( bAction ) == "B"
-         IF nPos > 0
-            ::aKeys[ nPos ] := { 0, nFlags, nKey, bAction }
-         Else
-            AADD( ::aKeys, { 0, nFlags, nKey, bAction } )
-         ENDIF
-      Else
-         IF nPos > 0
-            _OOHG_DeleteArrayItem( ::aKeys, nPos )
-         ENDIF
-      Endif
-   ENDIF
-Return uRet
 
 *------------------------------------------------------------------------------*
 CLASS TForm FROM TWindow
@@ -294,7 +312,6 @@ CLASS TForm FROM TWindow
    DATA ActivateCount  INIT { 0 }
    DATA ReBarHandle    INIT 0
    DATA BrowseList     INIT {}
-   DATA aHotKeys       INIT {}  // { Id, Mod, Key, Action }
    DATA lInternal      INIT .F.
 
    DATA OnRelease      INIT nil
@@ -1844,7 +1861,7 @@ Local oWnd, oCtrl
 
       // Remove Child Controls
       DO WHILE LEN( ::aControls ) > 0
-          ::aControls[ 1 ]:Release()
+         ::aControls[ 1 ]:Release()
       ENDDO
 
       // Delete Brush
@@ -2586,6 +2603,9 @@ Local nRet := _OOHG_InteractiveClose
    EndIf
 Return nRet
 
+Function SetAppHotKey( nKey, nFlags, bAction )
+Return _OOHG_SetKey( _OOHG_HotKeys, nKey, nFlags, bAction )
+
 Function _OOHG_GlobalRTL( lRTL )
 Local lRet := _OOHG_GlobalRTL
    If ValType( lRTL ) == "L"
@@ -2696,3 +2716,27 @@ Function _OOHG_DeleteArrayItem( aArray, nItem )
    ENDIF
    Return aArray
 #endif
+
+FUNCTION _OOHG_SetKey( aKeys, nKey, nFlags, bAction, nId )
+Local nPos, uRet := nil
+   nPos := ASCAN( aKeys, { |a| a[ HOTKEY_KEY ] == nKey .AND. a[ HOTKEY_MOD ] == nFlags } )
+   If nPos > 0
+      uRet := aKeys[ nPos ][ HOTKEY_ACTION ]
+   EndIf
+   If PCOUNT() > 2
+      If ValType( bAction ) == "B"
+         If ValType( nId ) != "N"
+            nId := 0
+         EndIf
+         If nPos > 0
+            aKeys[ nPos ] := { nId, nFlags, nKey, bAction }
+         Else
+            AADD( aKeys, { nId, nFlags, nKey, bAction } )
+         EndIf
+      Else
+         If nPos > 0
+            _OOHG_DeleteArrayItem( aKeys, nPos )
+         EndIf
+      Endif
+   EndIf
+Return uRet
