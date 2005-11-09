@@ -1,12 +1,13 @@
 /*
-* $Id: hello.prg,v 1.12 2005-10-13 23:02:15 declan2005 Exp $
-*/
+ * $Id: hello.prg,v 1.13 2005-11-09 05:54:55 guerra000 Exp $
+ */
 /*
-* ooHG Hello World Demo
-* (c) 2005 Vic
-*/
+ * ooHG Hello World Demo
+ * (c) 2005 Vic
+ */
 
 #include "oohg.ch"
+#include "i_windefs.ch"
 #include "i_graph.ch"
 
 *-------------------------
@@ -14,7 +15,6 @@ Function Main()
 *-------------------------
 LOCAL oLabel
 Local oWnd
-
 
 set cent on
 
@@ -27,19 +27,17 @@ DEFINE WINDOW Win_1 OBJ oWnd ;
    MAIN ;
    virtual height 768 ;
    virtual WIDTH 1024
-   
-   // oWnd := GetFormObject( "Win_1" )
-   
+
    DEFINE TOOLBAR Toolbr buttonsize 50,20
       BUTTON TBN1 CAPTION "Boton 1" ACTION MSGINFO("Toolbar 1!")
       BUTTON TBN2 CAPTION "Boton 2" ACTION MSGINFO("Toolbar 2!") dropdown
    END TOOLBAR
-   
+
    DEFINE DROPDOWN MENU BUTTON TBN2
       ITEM "Tool 1" ACTION MSGINFO("Tool 1")
       ITEM "Tool 2" ACTION MSGINFO("Tool 2")
    END MENU
-   
+
    DEFINE MAIN MENU
       POPUP "Uno"
          ITEM "1.1" ACTION MSGINFO("Menu 1.1") name menu1
@@ -69,9 +67,9 @@ DEFINE WINDOW Win_1 OBJ oWnd ;
       END POPUP
       ITEM "Salir" ACTION Win_1.Release
    END MENU
-   
+
    on key F5 action msginfo( str( olabel:row  )+str( olabel:col ),"Hello window" )
-   
+
    // @ 10,10 LABEL Hello VALUE "(F5) Hello!!" AUTOSIZE ACTION MSGINFO("CLICK!")
    oLabel := TLabel():Define()
    oLabel:Caption := "(F5) Hello!!"
@@ -79,20 +77,25 @@ DEFINE WINDOW Win_1 OBJ oWnd ;
    oLabel:Row := 40
    oLabel:Col := 400
    oLabel:Action := { || MSGINFO("CLICK!") }
-   
+
    @ 40,10 HYPERLINK HLNK VALUE "www.yahoo.com.mx" autosize address "http://www.yahoo.com.mx"
-   
-   @ 70,10 TEXTBOX Txt1 value "Text!" WIDTH 150 height 20
-   
-   @ 90,10 TEXTBOX Txt2 VALUE "0940100101000000" WIDTH 150  height 20 INPUTMASK "@R 999-99-999-99-!!-!!!!"
-   
+
+   @ 70,10 TEXTBOX Txt1 value "This is a TEXTBOX!" WIDTH 150 height 17 NOBORDER ;
+           BACKCOLOR { GetRed( GetSysColor( COLOR_3DFACE ) ), GetGreen( GetSysColor( COLOR_3DFACE ) ), GetBlue( GetSysColor( COLOR_3DFACE ) ) }
+
+   @ 90,10 TEXTBOX Txt2 VALUE "0940100101000000" WIDTH 150  height 20 INPUTMASK "@R 999-99-999-99-!!-!!!!" AUTOSKIP
+
    oLabel := oWnd:Txt2
-   
-   @ 110,10 TEXTBOX Txt3 VALUE 55 WIDTH 150 numeric height 20
-   oWnd:Txt3:transparent := .t.
-   
+
+   @ 110,10 LABEL Lbl3 VALUE "Press '-'" AUTOSIZE
+   @ 110,60 TEXTBOX Txt3 VALUE "1234567" WIDTH 100 height 20 INPUTMASK "@R 999.999-9" RIGHTALIGN
+   oWnd:Txt3:SetKey( VK_SUBTRACT,  0, { || MoveCursor( oWnd:Txt3 ) } )
+   oWnd:Txt3:SetKey( VK_OEM_MINUS, 0, { || MoveCursor( oWnd:Txt3 ) } )
+   oWnd:Txt3:OnLostFocus := { || MoveCursor( oWnd:Txt3 ) }
+
    @ 130,10 TEXTBOX Txt4 VALUE 111.5 WIDTH 150 height 20 numeric INPUTMASK "999,999.99"
-   
+   oWnd:Txt4:transparent := .t.
+
    @ 150,10 TEXTBOX Txt5 VALUE date() WIDTH 150 height 20 date
    
    @ 170,10 checkBOX chk caption "This control have context menu!" VALUE .t. on change msginfo("change!") autosize
@@ -303,3 +306,9 @@ Procedure DrawBarGraph ( aSer )
 Return nil
 
 
+*-------------------------------
+PROCEDURE MoveCursor( oCtrl )
+*-------------------------------
+   oCtrl:Value := PADL( STRTRAN( LEFT( oCtrl:Value, 6 ), " ", "" ), 6 ) + RIGHT( oCtrl:Value, 1 )
+   oCtrl:CaretPos := 8
+RETURN
