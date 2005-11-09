@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.30 2005-11-07 06:24:39 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.31 2005-11-09 05:42:35 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -866,43 +866,37 @@ Local RetVal, oWnd, oCtrl
       oWnd := GetFormObject( Arg1 )
 
 		if Arg2 == 'TITLE'
-
          RetVal := oWnd:Title
 
 		ELseIf Arg2 == 'FOCUSEDCONTROL'
-
          RetVal := oWnd:FocusedControl()
 
 		ELseIf Arg2 == 'NAME'
-
          RetVal := oWnd:Name
 
 		ELseIf Arg2 == 'HEIGHT'
-
          RetVal := oWnd:Height
 
 		ElseIf Arg2 == 'WIDTH'
-
          RetVal := oWnd:Width
 
 		ElseIf Arg2 == 'COL'
-
          RetVal := oWnd:Col
 
 		ElseIf Arg2 == 'ROW'
-
          RetVal := oWnd:Row
 
 		ElseIf Arg2 == 'NOTIFYICON'
-
          RetVal := oWnd:NotifyIconName
 
 		ElseIf Arg2 == 'NOTIFYTOOLTIP'
-
          RetVal := oWnd:NotifyIconTooltip
 
       ElseIf Arg2 == "BACKCOLOR"
          RetVal := oWnd:BackColor
+
+      ElseIf Arg2 == "HWND"
+         RetVal := oWnd:hWnd
 
 		EndIf
 
@@ -927,133 +921,104 @@ Local RetVal, oWnd, oCtrl
       oCtrl := GetControlObject( Arg2, Arg1 )
 
 		If     Arg3 == 'VALUE'
-
          // RetVal := oCtrl:Value
          RetVal := _GetValue( Arg2, Arg1 )
 
 		ElseIf Arg3 == 'NAME'
-
          RetVal := oCtrl:Name
 
       ElseIf Arg3 == 'ALLOWEDIT'
-
          RetVal := oCtrl:AllowEdit
 
 		ElseIf Arg3 == 'ALLOWAPPEND'
-
          RetVal := oCtrl:AllowAppend
 
 		ElseIf Arg3 == 'ALLOWDELETE'
-
          RetVal := oCtrl:AllowDelete
 
 		ElseIf Arg3 == 'PICTURE'
-
          RetVal := oCtrl:Picture
 
 		ElseIf Arg3 == 'TOOLTIP'
-
          RetVal := oCtrl:Tooltip
 
 		ElseIf Arg3 == 'FONTNAME'
-
          RetVal := oCtrl:cFontName
 
 		ElseIf Arg3 == 'FONTSIZE'
-
          RetVal := oCtrl:nFontSize
 
 		ElseIf Arg3 == 'FONTBOLD'
-
          RetVal := oCtrl:Bold
 
 		ElseIf Arg3 == 'FONTITALIC'
-
          RetVal := oCtrl:Italic
 
 		ElseIf Arg3 == 'FONTUNDERLINE'
-
          RetVal := oCtrl:Underline
 
 		ElseIf Arg3 == 'FONTSTRIKEOUT'
-
          RetVal := oCtrl:Strikeout
 
 		ElseIf Arg3 == 'CAPTION'
-
          RetVal := oCtrl:Caption
 
 		ElseIf Arg3 == 'DISPLAYVALUE'
-
          RetVal := GetWindowText( oCtrl:hWnd )
 
 		ElseIf Arg3 == 'ROW'
-
          RetVal := oCtrl:Row
 
 		ElseIf Arg3 == 'COL'
-
          RetVal := oCtrl:Col
 
 		ElseIf Arg3 == 'WIDTH'
-
          RetVal := oCtrl:Width
 
 		ElseIf Arg3 == 'HEIGHT'
-
          RetVal := oCtrl:Height
 
 		ElseIf Arg3 == 'VISIBLE'
-
          RetVal := oCtrl:Visible
 
 		ElseIf Arg3 == 'ENABLED'
-
          RetVal := oCtrl:Enabled
 
 		ElseIf Arg3 == 'CHECKED'
-
          RetVal := oCtrl:Checked
 
 		ElseIf Arg3 == 'ITEMCOUNT'
-
          RetVal := oCtrl:ItemCount()
 
 		ElseIf Arg3 == 'RANGEMIN'
-
          RetVal := oCtrl:RangeMin
 
 		ElseIf Arg3 == 'RANGEMAX'
-
          RetVal := oCtrl:RangeMax
 
 		ElseIf Arg3 == 'LENGTH'
-
          RetVal := oCtrl:Length
 
 		ElseIf Arg3 == 'POSITION'
-
          RetVal := oCtrl:Position
 
 		ElseIf Arg3 == 'CARETPOS'
-
          RetVal := _GetCaretPos( Arg2 , Arg1 )
 
 		ElseIf Arg3 == 'BACKCOLOR'
-
          RetVal := oCtrl:BackColor
 
 		ElseIf Arg3 == 'FONTCOLOR'
-
          RetVal := oCtrl:FontColor
 
 		ElseIf Arg3 == 'FORECOLOR'
-
          RetVal := oCtrl:BackColor
 
 		ElseIf Arg3 == 'ADDRESS'
-
          RetVal := oCtrl:Address
+
+      ElseIf Arg3 == "HWND"
+         RetVal := oCtrl:hWnd
 
 		EndIf
 
@@ -2101,8 +2066,6 @@ Return lRetVal
 #pragma BEGINDUMP
 #define s_Super s_Window
 
-int GetKeyFlagState( void );
-
 // -----------------------------------------------------------------------------
 HB_FUNC_STATIC( TCONTROL_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TControl
 // -----------------------------------------------------------------------------
@@ -2193,23 +2156,6 @@ HB_FUNC_STATIC( TCONTROL_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam
 //         {
 //            hb_ret();
 //         }
-         break;
-
-      case WM_SYSKEYDOWN:
-      case WM_KEYDOWN:
-         _OOHG_Send( pSelf, s_LookForKey );
-//         hb_vmPushInteger( ( lParam >> 16 ) & 0xFF );
-         hb_vmPushInteger( wParam );
-         hb_vmPushInteger( GetKeyFlagState() );
-         hb_vmSend( 2 );
-         if( hb_parl( -1 ) )
-         {
-            hb_retni( 0 );
-         }
-         else
-         {
-            hb_ret();
-         }
          break;
 
       default:
