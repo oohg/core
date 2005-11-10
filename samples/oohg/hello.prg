@@ -1,5 +1,5 @@
 /*
- * $Id: hello.prg,v 1.13 2005-11-09 05:54:55 guerra000 Exp $
+ * $Id: hello.prg,v 1.14 2005-11-10 04:36:17 guerra000 Exp $
  */
 /*
  * ooHG Hello World Demo
@@ -97,11 +97,11 @@ DEFINE WINDOW Win_1 OBJ oWnd ;
    oWnd:Txt4:transparent := .t.
 
    @ 150,10 TEXTBOX Txt5 VALUE date() WIDTH 150 height 20 date
-   
+
    @ 170,10 checkBOX chk caption "This control have context menu!" VALUE .t. on change msginfo("change!") autosize
-   
+
    @ 200,10 button btn1 caption "BUTTON!" ACTION msginfo(oLabel:vALUE)
-   
+
    @ 230,10 radio rad options { "Uno", "Dos", "Tres" } autosize
    oWnd:RAD:AITEMS[3]:autosize := .t.
    oWnd:RAD:AITEMS[3]:BACKCOLOR := BLUE
@@ -110,14 +110,14 @@ DEFINE WINDOW Win_1 OBJ oWnd ;
    oWnd:RAD:AITEMS[1]:COL := 50
    oWnd:RAD:AITEMS[2]:BACKCOLOR := {255,0,0}
    oWnd:RAD:AITEMS[2]:caption := oWnd:RAD:AITEMS[2]:caption
-   
+
    oWnd:menu1:checked := .t.
    oWnd:menu2:checked := .t.
    oWnd:menu3:enabled := .f.
    oWnd:menu4:enabled := .f.
-   
+
    @ 320,10 monthcal mtc value date()
-   
+
    DEFINE CONTEXT MENU CONTROL Chk
       POPUP "Nivel 1"
          ITEM "Nivel 1.1" ACTION MsgInfo( "Nivel 1.1!" )
@@ -128,8 +128,8 @@ DEFINE WINDOW Win_1 OBJ oWnd ;
          ITEM "Nivel 2.2" ACTION MsgInfo( "Nivel 2.2!" )
       END POPUP
    END MENU
-   
-   
+
+
    @  10,200 GRID grd width 150 height 100 headers { "UNO", "DOS", "TRES" } widths {45,45,45} edit ;
    items { {"1","2","3"},{"A","@","C"},{"x","y","z"} } ;
    JUSTIFY { GRID_JTFY_RIGHT, GRID_JTFY_CENTER, GRID_JTFY_LEFT } ;
@@ -137,7 +137,7 @@ DEFINE WINDOW Win_1 OBJ oWnd ;
    DYNAMICBACKCOLOR { RGB(0,255,0), , RGB(255,0,0) } ;
    DYNAMICFORECOLOR { NIL, RGB(255,255,0), NIL }
    oWnd:Grd:SetRangeColor( 0, , 2, 2 )
-   
+
    define tab tab at 130,210 width 150 height 100
       ownd:tab:transparent := .t.
       define page "uno"
@@ -148,7 +148,7 @@ DEFINE WINDOW Win_1 OBJ oWnd ;
       end page
       define page "tres"
       @ 30,10 label ll3 value "tab 3" autosize
-      
+
       define tab tab2 at 50,10 width 150 height 50
          define page "aaa"
          @ 30,10 label ll4 value "tab a" autosize
@@ -160,21 +160,21 @@ DEFINE WINDOW Win_1 OBJ oWnd ;
          @ 30,18 label ll6 value "tab c" autosize
          end page
       end tab
-      
+
       end page
    end tab
-   
+
    @ 250,200 spinner spin range 0,100 width 150 height 20
-   
+
    @ 280,200 combobox cmb items { "Uno", "Dos", "Tres" } width 150
-   
+
    @ 310,240 datepicker DTP value date()
 
     @ 513,21 timepicker TMP value time()
-   
+
    @ 350,240 progressmeter pgm width 120 height 20 value 75
-   
-   Xdefine WINDOW internal obj ointernal AT 390,240 WIDTH 120 HEIGHT 100 INTERNAL VIRTUAL WIDTH 200 VIRTUAL HEIGHT 150
+
+   DEFINE WINDOW internal obj ointernal AT 390,240 WIDTH 120 HEIGHT 100 INTERNAL VIRTUAL WIDTH 200 VIRTUAL HEIGHT 150
    @ 10, 10 LABEL LabelRed   VALUE "A" WIDTH 50 HEIGHT 100 CENTER BACKCOLOR RED
    @ 10, 60 LABEL LabelGreen VALUE "B" WIDTH 50 HEIGHT 100 CENTER BACKCOLOR GREEN
    @ 10,110 LABEL LabelBlue  VALUE "C" WIDTH 50 HEIGHT 100 CENTER BACKCOLOR BLUE
@@ -183,17 +183,17 @@ END WINDOW
 
 
 DEFINE TREE Tree_1 AT 80,400 WIDTH 150 HEIGHT 240 VALUE 15
-   
+
    NODE 'Item 1'
    TREEITEM 'Item 1.1'
    TREEITEM 'Item 1.2' ID 999
    TREEITEM 'Item 1.3'
    END NODE
-   
+
    NODE 'Item 2'
-   
+
    TREEITEM 'Item 2.1'
-   
+
    NODE 'Item 2.2'
    TREEITEM 'Item 2.2.1'
    TREEITEM 'Item 2.2.2'

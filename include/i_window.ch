@@ -1,5 +1,5 @@
 /*
- * $Id: i_window.ch,v 1.11 2005-11-09 05:46:58 guerra000 Exp $
+ * $Id: i_window.ch,v 1.12 2005-11-10 04:36:17 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -147,6 +147,7 @@
         #xtranslate <w> . \<x\> (\<k\>) . \<c\> . \<p:Name,Length,hWnd\> => GetProperty ( <(w)>, \<(x)> , \<k\> , \<(c)> , \<(p)> ) ;;
         #xtranslate <w> . \<x\> (\<k\>) . \<c\> . \<p:ReadOnly,Speed,Volume,Zoom\> := \<n\> => SetProperty ( <(w)>, \<(x)> , \<k\> , \<(c)> , \<(p)> , \<n\> )
 
+/*
 	#xcommand DEFINE WINDOW <w> ;
                         [ OBJ <obj> ] ;
 			AT <row>,<col> ;
@@ -265,20 +266,9 @@
         [ <obj> := ] ;
         _DefineSplitChildWindow( <(w)>, <wi>, <h> , <.break.> , <grippertext> , <.nocaption.> , <title> , <FontName> , <FontSize> , <{GotFocusProcedure}>, <{LostFocusProcedure}> , <vHeight>  , <vWidth> , <.focused.>  , <{scrollleft}> , <{scrollright}> , <{scrollup}> , <{scrolldown}> , <{hScrollBox}> , <{vScrollBox}> , <cursor>, <.rtl.> ) ;;
 	DECLARE WINDOW <w>
+*/
 
-	#xcommand LOAD WINDOW <w> ;
-	=> ;
-        _OOHG_TempWindowName := <(w)>;;
-        DECLARE WINDOW <w>;;
-        #include \<<w>.fmg\>
-
-	#xcommand LOAD WINDOW <ww> AS <w> ;
-	=> ;
-        _OOHG_TempWindowName := <(w)>;;
-        DECLARE WINDOW <w>;;
-        #include \<<ww>.fmg\>
-
-        #xcommand XDEFINE WINDOW <w> ;
+        #xcommand DEFINE WINDOW <w> ;
                         [ OBJ <obj> ] ;
                         [ <dummy: OF, PARENT> <parent> ] ;
                         [ AT <row>,<col> ] ;
@@ -347,6 +337,18 @@
                         <.main.>, <.splitchild.>, <.child.>, <.modal.>, <.modalsize.>, <.mdi.>, <.internal.> ) ;;
         DECLARE WINDOW <w>
 
+	#xcommand LOAD WINDOW <w> ;
+	=> ;
+        _OOHG_TempWindowName := <(w)>;;
+        DECLARE WINDOW <w>;;
+        #include \<<w>.fmg\>
+
+	#xcommand LOAD WINDOW <ww> AS <w> ;
+	=> ;
+        _OOHG_TempWindowName := <(w)>;;
+        DECLARE WINDOW <w>;;
+        #include \<<ww>.fmg\>
+
 #else
 
 	#xcommand DECLARE WINDOW <w> ;
@@ -383,6 +385,7 @@
         #xtranslate <w> . <x> (<k>) . <c> . <p:Name,Length,hWnd> => GetProperty ( <(w)>, <(x)> , <k> , <(c)> , <(p)> ) ;;
         #xtranslate <w> . <x> (<k>) . <c> . <p:ReadOnly,Speed,Volume,Zoom> := <n> => SetProperty ( <(w)>, <(x)> , <k> , <(c)> , <(p)> , <n> )
 
+/*
 	#xcommand DEFINE WINDOW <w> ;
                         [ OBJ <obj> ] ;
 			AT <row>,<col> ;
@@ -501,19 +504,9 @@
 	DECLARE WINDOW <w>  ;;
         [ <obj> := ] ;
         _DefineSplitChildWindow( <(w)>, <wi>, <h> , <.break.> , <grippertext> , <.nocaption.> , <title> , <FontName> , <FontSize> , <{GotFocusProcedure}>, <{LostFocusProcedure}> , <vHeight>  , <vWidth> , <.focused.>  , <{scrollleft}> , <{scrollright}> , <{scrollup}> , <{scrolldown}> , <{hScrollBox}> , <{vScrollBox}> , <cursor>, <.rtl.> ) ;;
+*/
 
-	#xcommand LOAD WINDOW <w> ;
-	=> ;
-	DECLARE WINDOW <w> ;;
-        _OOHG_TempWindowName := <(w)> ;;
-	#include <<w>.fmg>
-
-	#xcommand LOAD WINDOW <ww> AS <w> ;
-	=> ;
-	DECLARE WINDOW <w> ;;
-        _OOHG_TempWindowName := <(w)> ; #include <<ww>.fmg>
-
-        #xcommand XDEFINE WINDOW <w> ;
+        #xcommand DEFINE WINDOW <w> ;
                         [ OBJ <obj> ] ;
                         [ <dummy: OF, PARENT> <parent> ] ;
                         [ AT <row>,<col> ] ;
@@ -582,6 +575,17 @@
                         <{interactivecloseprocedure}>, <.focused.>, <.break.>, <grippertext>, <.rtl.>, ;
                         <.main.>, <.splitchild.>, <.child.>, <.modal.>, <.modalsize.>, <.mdi.>, <.internal.> )
 
+	#xcommand LOAD WINDOW <w> ;
+	=> ;
+	DECLARE WINDOW <w> ;;
+        _OOHG_TempWindowName := <(w)> ;;
+	#include <<w>.fmg>
+
+	#xcommand LOAD WINDOW <ww> AS <w> ;
+	=> ;
+	DECLARE WINDOW <w> ;;
+        _OOHG_TempWindowName := <(w)> ; #include <<ww>.fmg>
+
 #endif
 
 #command RELEASE WINDOW <name> ;
@@ -646,7 +650,7 @@ _EndWindow ()
 => ;
 SetProperty ( <(Arg1)> , <(Arg2)> , <Arg3> )
 
-
+/*
 #command DEFINE WINDOW TEMPLATE ;
                         [ OBJ <obj> ] ;
 			AT <row>,<col> ;
@@ -763,9 +767,9 @@ SetProperty ( <(Arg1)> , <(Arg2)> , <Arg3> )
       => ;
         [ <obj> := ] ;
         _DefineSplitChildWindow ( , <wi>, <h> , <.break.> , <grippertext> , <.nocaption.> , <title> , <FontName> , <FontSize> , <{GotFocusProcedure}>, <{LostFocusProcedure}> , <vHeight>  , <vWidth> , <.focused.>  , <{scrollleft}> , <{scrollright}> , <{scrollup}> , <{scrolldown}> , <{hScrollBox}> , <{vScrollBox}> , <cursor>, <.rtl.> )
+*/
 
-
-        #xcommand XDEFINE WINDOW TEMPLATE ;
+        #xcommand DEFINE WINDOW TEMPLATE ;
                         [ OBJ <obj> ] ;
                         [ <dummy: OF, PARENT> <parent> ] ;
                         [ AT <row>,<col> ] ;
