@@ -1,5 +1,5 @@
 /*
- * $Id: hello.prg,v 1.15 2005-11-12 20:49:41 declan2005 Exp $
+ * $Id: hello.prg,v 1.16 2005-11-12 21:06:59 declan2005 Exp $
  */
 /*
  * ooHG Hello World Demo
@@ -101,7 +101,7 @@ DEFINE WINDOW Win_1 OBJ oWnd ;
 
    @ 170,10 checkBOX chk caption "This control have context menu!" VALUE .t. on change msginfo("change!") autosize
 
-   @ 200,10 button btn1 caption "BUTTON!" ACTION msginfo(oLabel:vALUE)
+   @ 200,10 button btn1 caption "BUTTON!" ACTION msginfo(oLabel:vALUE) tooltip "Click me"
 
    @ 230,10 radio rad options { "Uno", "Dos", "Tres" } autosize
    oWnd:RAD:AITEMS[3]:autosize := .t.
@@ -111,6 +111,7 @@ DEFINE WINDOW Win_1 OBJ oWnd ;
    oWnd:RAD:AITEMS[1]:COL := 50
    oWnd:RAD:AITEMS[2]:BACKCOLOR := {255,0,0}
    oWnd:RAD:AITEMS[2]:caption := oWnd:RAD:AITEMS[2]:caption
+   oWnd:RAD:aitems[2]:tooltip := "individual tooltip"
 
    oWnd:menu1:checked := .t.
    oWnd:menu2:checked := .t.
