@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.39 2005-11-12 20:42:44 declan2005 Exp $
+ * $Id: h_windows.prg,v 1.40 2005-11-12 20:46:50 declan2005 Exp $
  */
 /*
  * ooHG source code:
