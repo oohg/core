@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.23 2005-11-09 05:43:31 guerra000 Exp $
+ * $Id: c_windows.c,v 1.24 2005-11-12 05:21:52 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -187,6 +187,12 @@ HB_FUNC( GETFORMOBJECTBYHANDLE )
 LRESULT APIENTRY _OOHG_WndProc( PHB_ITEM pSelf, HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM lParam, WNDPROC lpfnOldWndProc )
 {
    PHB_ITEM pResult;
+   HB_ITEM pSave;
+   LRESULT APIENTRY iReturn;
+
+   // Saves current result
+   pSave.type = HB_IT_NIL;
+   hb_itemCopy( &pSave, hb_param( -1, HB_IT_ANY ) );
 
    _OOHG_Send( pSelf, s_Events );
    hb_vmPushLong( ( LONG ) hWnd );
@@ -198,12 +204,18 @@ LRESULT APIENTRY _OOHG_WndProc( PHB_ITEM pSelf, HWND hWnd, UINT uiMsg, WPARAM wP
    pResult = hb_param( -1, HB_IT_NUMERIC );
    if( pResult )
    {
-      return hb_itemGetNL( pResult );
+      iReturn = hb_itemGetNL( pResult );
    }
    else
    {
-      return CallWindowProc( lpfnOldWndProc, hWnd, uiMsg, wParam, lParam );
+      iReturn = CallWindowProc( lpfnOldWndProc, hWnd, uiMsg, wParam, lParam );
    }
+
+   // Restores result
+   hb_itemReturn( &pSave );
+   hb_itemClear( &pSave );
+
+   return iReturn;
 }
 
 LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
