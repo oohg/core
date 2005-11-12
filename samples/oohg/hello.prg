@@ -1,5 +1,5 @@
 /*
- * $Id: hello.prg,v 1.14 2005-11-10 04:36:17 guerra000 Exp $
+ * $Id: hello.prg,v 1.15 2005-11-12 20:49:41 declan2005 Exp $
  */
 /*
  * ooHG Hello World Demo
@@ -16,7 +16,8 @@ Function Main()
 LOCAL oLabel
 Local oWnd
 
-set cent on
+set century on
+SET TOOLTIPBALLOON ON
 
 DEFINE WINDOW Win_1 OBJ oWnd ;
    AT 0,0 ;
