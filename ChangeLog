@@ -1,11 +1,21 @@
 /*
- * $Id: ChangeLog,v 1.41 2005-11-12 05:21:51 guerra000 Exp $
+ * $Id: ChangeLog,v 1.42 2005-11-12 20:42:43 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2005-11-12 15:26 UTC-0500 Ciro Vargas C. <sistemascvc@softhome.net>
+    + include/i_tooltip.ch
+    * include/oohg.ch
+    * source/c_controlmisc.c
+    * source/h_windows.prg
+      + Added SET TOOLTIPBALLOON ON
+      + Added isTooltipBalloonActive
+    * samples/oohg/hello.prg  
+	  
 
 2005-11-11 23:09 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source/c_windows.c
@@ -328,7 +338,7 @@
     * Added oInputWindow variable, for manage _InputWindow form.
 
 2005-10-13 18:28 UTC-0500 Ciro Vargas C. <sistemascvc@softhome.net>
-    * source/i_altsyntax.ch
+    * include/i_altsyntax.ch
       alternate syntax (semi oop syntax)
 
 2005-10-13 17:37 UTC-0500 Ciro Vargas C. <sistemascvc@softhome.net>

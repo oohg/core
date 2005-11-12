@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.ch,v 1.2 2005-09-04 00:19:13 guerra000 Exp $
+ * $Id: oohg.ch,v 1.3 2005-11-12 20:42:44 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -148,5 +148,6 @@
 #include "i_richeditbox.ch"
 #include "i_browse.ch"
 #include "i_dll.ch"
+#include "i_tooltip.ch"
 
 #endif

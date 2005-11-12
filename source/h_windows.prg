@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.38 2005-11-09 05:56:43 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.39 2005-11-12 20:42:44 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -672,7 +672,7 @@ Local Formhandle
 	EndIf
 
    ::New( FormHandle, FormName )
-   ::ToolTipHandle := InitToolTip( FormHandle )
+   ::ToolTipHandle := InitToolTip( FormHandle, _SetToolTipBalloon() )
 
    ::OnRelease := ReleaseProcedure
    ::OnInit := InitProcedure
@@ -728,6 +728,20 @@ Local Formhandle
    ValidateScrolls( Self, .F. )
 
 Return Self
+
+
+*--------------------------------------------------
+Function _SetToolTipBalloon ( lNewBalloon )
+*--------------------------------------------------
+Static lBalloon := .F.
+Local lOldBalloon := lBalloon
+
+        If lNewBalloon <> Nil
+           lBalloon := lNewBalloon
+        Endif
+
+return lOldBalloon
+
 
 *------------------------------------------------------------------------------*
 METHOD New( hWnd, cName ) CLASS TForm
@@ -2740,3 +2754,4 @@ Local nPos, uRet := nil
       Endif
    EndIf
 Return uRet
+

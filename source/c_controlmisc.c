@@ -1,5 +1,5 @@
 /*
- * $Id: c_controlmisc.c,v 1.11 2005-11-07 06:24:39 guerra000 Exp $
+ * $Id: c_controlmisc.c,v 1.12 2005-11-12 20:42:44 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -183,13 +183,20 @@ HB_FUNC( INITTOOLTIP )
 {
 
 	HWND htooltip;
+        int Style = TTS_ALWAYSTIP;
+
+        if ( hb_parl(2) )
+        {
+           Style = Style | TTS_BALLOON ;
+        }
+
 
 	InitCommonControls();
 
 	htooltip = CreateWindowEx( 0,
 	"tooltips_class32",
 	"",
-	TTS_ALWAYSTIP,
+        Style,
 	0,
 	0,
 	0,
