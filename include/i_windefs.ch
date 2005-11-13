@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.12 2005-10-27 05:15:49 guerra000 Exp $
+ * $Id: i_windefs.ch,v 1.13 2005-11-13 00:11:12 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -90,6 +90,9 @@
         "Harbour Project"
         Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
+
+#ifndef __I_WINDEFS__
+#define __I_WINDEFS__
 
 // WM_* definitions
 #define WM_CREATE	1
@@ -531,3 +534,15 @@
 // System metrics
 #define SM_CXFULLSCREEN         16
 #define SM_CYFULLSCREEN         17
+
+// Tootips' definitions
+#define TTM_SETTIPBKCOLOR   (WM_USER + 19)
+#define TTM_SETTIPTEXTCOLOR (WM_USER + 20)
+#define TTM_SETMAXTIPWIDTH  (WM_USER + 24)
+#define TTM_SETTITLE        (WM_USER + 32)
+#define TTI_NONE                0
+#define TTI_INFO                1
+#define TTI_WARNING             2
+#define TTI_ERROR               3
+
+#endif

@@ -1,5 +1,5 @@
 /*
- * $Id: i_tooltip.ch,v 1.1 2005-11-12 20:49:41 declan2005 Exp $
+ * $Id: i_tooltip.ch,v 1.2 2005-11-13 00:11:12 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -91,19 +91,7 @@
 	Copyright 1999-2003, http://www.harbour-project.org
 /--------------------------------------------------------------------------*/
 
-#define WM_USER             0x400
-#define TTM_SETTIPBKCOLOR   (WM_USER + 19)
-#define TTM_SETTIPTEXTCOLOR (WM_USER + 20)
-#define TTM_SETMAXTIPWIDTH  (WM_USER + 24)
-#define TTM_SETTITLE        (WM_USER + 32)
-#define TTI_NONE                0
-#define TTI_INFO                1
-#define TTI_WARNING             2
-#define TTI_ERROR               3
-
-
 #xcommand SET TOOLTIPBALLOON <x:ON,OFF> => _SetToolTipBalloon ( Upper(<(x)>) == "ON" )
 #xcommand SET TOOLTIP BALLOON <x:ON,OFF> => _SetToolTipBalloon ( Upper(<(x)>) == "ON" )
 
 #translate IsToolTipBalloonActive => _SetToolTipBalloon ()
-
