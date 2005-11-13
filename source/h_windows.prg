@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.40 2005-11-12 20:46:50 declan2005 Exp $
+ * $Id: h_windows.prg,v 1.41 2005-11-13 00:19:25 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -149,6 +149,7 @@ CLASS TWindow
    DATA Cargo          INIT nil
    DATA lEnabled       INIT .T.
    DATA aControls      INIT {}
+   DATA aControlsNames INIT {}
    DATA BrushHandle    INIT 0
    DATA lInternal      INIT .T.
 
@@ -167,6 +168,11 @@ CLASS TWindow
    METHOD RTL                 SETGET
    METHOD Action              SETGET
    METHOD Print
+   METHOD AddControl
+   METHOD DeleteControl
+
+   ERROR HANDLER Error
+   METHOD Control
 
    METHOD HotKey                // OperatingSystem-controlled hotkeys
    METHOD SetKey                // Application-controlled hotkeys
@@ -240,6 +246,39 @@ Local myobject, cWork
 
    FErase( cWork )
 return nil
+
+*-----------------------------------------------------------------------------*
+METHOD AddControl( oControl ) CLASS TWindow
+*-----------------------------------------------------------------------------*
+   AADD( ::aControls,      oControl )
+   AADD( ::aControlsNames, UPPER( ALLTRIM( oControl:Name ) ) + CHR( 255 ) )
+Return oControl
+
+*-----------------------------------------------------------------------------*
+METHOD DeleteControl( oControl ) CLASS TWindow
+*-----------------------------------------------------------------------------*
+Local nPos
+   nPos := aScan( ::aControlsNames, UPPER( ALLTRIM( oControl:Name ) ) + CHR( 255 ) )
+   IF nPos > 0
+      _OOHG_DeleteArrayItem( ::aControls,      nPos )
+      _OOHG_DeleteArrayItem( ::aControlsNames, nPos )
+   ENDIF
+Return oControl
+
+*-----------------------------------------------------------------------------*
+METHOD Error() CLASS TWindow
+*-----------------------------------------------------------------------------*
+Local nPos, cMessage
+   cMessage := __GetMessage()
+   nPos := aScan( ::aControlsNames, UPPER( ALLTRIM( cMessage ) ) + CHR( 255 ) )
+Return IF( nPos > 0, ::aControls[ nPos ], ::MsgNotFound( cMessage ) )
+
+*-----------------------------------------------------------------------------*
+METHOD Control( cControl ) CLASS TWindow
+*-----------------------------------------------------------------------------*
+Local nPos
+   nPos := aScan( ::aControlsNames, UPPER( ALLTRIM( cControl ) ) + CHR( 255 ) )
+Return IF( nPos > 0, ::aControls[ nPos ], nil )
 
 #define HOTKEY_ID        1
 #define HOTKEY_MOD       2
@@ -335,7 +374,6 @@ CLASS TForm FROM TWindow
 
    DATA GraphTasks     INIT {}
    DATA SplitChildList INIT {}
-   DATA aControlsNames INIT {}
 
    DATA WndProc    INIT nil
 
@@ -375,13 +413,8 @@ CLASS TForm FROM TWindow
    METHOD OnHideFocusManagement
    METHOD DoEvent
 
-   METHOD AddControl
-   METHOD DeleteControl
-
    METHOD Events
    METHOD MessageLoop
-   ERROR HANDLER Error
-   METHOD Control
 
 ENDCLASS
 
@@ -1207,39 +1240,6 @@ Local lRetVal := .F.
 		_PopEventInfo()
 	EndIf
 Return lRetVal
-
-*-----------------------------------------------------------------------------*
-METHOD AddControl( oControl ) CLASS TForm
-*-----------------------------------------------------------------------------*
-   AADD( ::aControls,      oControl )
-   AADD( ::aControlsNames, UPPER( ALLTRIM( oControl:Name ) ) + CHR( 255 ) )
-Return oControl
-
-*-----------------------------------------------------------------------------*
-METHOD DeleteControl( oControl ) CLASS TForm
-*-----------------------------------------------------------------------------*
-Local nPos
-   nPos := aScan( ::aControlsNames, UPPER( ALLTRIM( oControl:Name ) ) + CHR( 255 ) )
-   IF nPos > 0
-      _OOHG_DeleteArrayItem( ::aControls,      nPos )
-      _OOHG_DeleteArrayItem( ::aControlsNames, nPos )
-   ENDIF
-Return oControl
-
-*-----------------------------------------------------------------------------*
-METHOD Error() CLASS TForm
-*-----------------------------------------------------------------------------*
-Local nPos, cMessage
-   cMessage := __GetMessage()
-   nPos := aScan( ::aControlsNames, UPPER( ALLTRIM( cMessage ) ) + CHR( 255 ) )
-Return IF( nPos > 0, ::aControls[ nPos ], ::Super:MsgNotFound( cMessage ) )
-
-*-----------------------------------------------------------------------------*
-METHOD Control( cControl ) CLASS TForm
-*-----------------------------------------------------------------------------*
-Local nPos
-   nPos := aScan( ::aControlsNames, UPPER( ALLTRIM( cControl ) ) + CHR( 255 ) )
-Return IF( nPos > 0, ::aControls[ nPos ], nil )
 
 #pragma BEGINDUMP
 
@@ -2754,4 +2754,3 @@ Local nPos, uRet := nil
       Endif
    EndIf
 Return uRet
-

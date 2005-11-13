@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.31 2005-11-09 05:42:35 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.32 2005-11-13 00:19:25 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1547,8 +1547,6 @@ CLASS TControl FROM TWindow
    METHOD RefreshData
    METHOD FontColor           SETGET
    METHOD BackColor           SETGET
-   METHOD AddControl(oCtrl)       BLOCK { |Self,oCtrl| AADD( ::aControls, oCtrl ) }
-   METHOD DeleteControl
    METHOD AddBitMap
 
    METHOD IsHandle( hWnd )    BLOCK { | Self, hWnd | ( ::hWnd == hWnd ) }
@@ -2006,20 +2004,6 @@ METHOD BackColor( uValue ) CLASS TControl
       ENDIF
    ENDIF
 RETURN ::aBackColor
-
-*-----------------------------------------------------------------------------*
-METHOD DeleteControl( oCtrl, aControls ) CLASS TControl
-*-----------------------------------------------------------------------------*
-Local nPos
-   IF VALTYPE( aControls ) != "A"
-      aControls := ::aControls
-   ENDIF
-   nPos := aScan( aControls, { |o| o:Name == oCtrl:Name .AND. o:hWnd == oCtrl:hWnd } )
-   IF nPos > 0
-      ADEL( aControls,  nPos )
-      ASIZE( aControls, LEN( aControls ) - 1 )
-   ENDIF
-Return oCtrl
 
 *-----------------------------------------------------------------------------*
 METHOD AddBitMap( uImage ) CLASS TControl

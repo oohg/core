@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.10 2005-11-09 05:56:43 guerra000 Exp $
+ * $Id: h_tab.prg,v 1.11 2005-11-13 00:19:25 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -319,10 +319,6 @@ Local oPage, nPos, nKey
       ENDIF
 	EndIf
 
-   If ValType( aControls ) != 'A'
-      aControls := {}
-	EndIf
-
    If ValType( aControls ) != "A"
       aControls := {}
 	EndIf
@@ -334,6 +330,8 @@ Local oPage, nPos, nKey
    oPage:Caption   := Caption
    oPage:Picture   := Image
    oPage:aControls := aControls
+   oPage:aControlsNames := ARRAY( LEN( aControls ) )
+   AEVAL( aControls, { |o,i| oPage:aControlsNames[ i ] := UPPER( ALLTRIM( o:Name ) ) + CHR( 255 ) } )
 
    AADD( ::aPages, nil )
    AINS( ::aPages, Position )
@@ -516,7 +514,6 @@ CLASS TTabPage FROM TControl
    METHOD ContainerVisible
 
    METHOD AddControl
-   METHOD Release
    METHOD SetFocus            BLOCK { |Self| ::Container:SetFocus() , ::Container:Value := ::Position , Self }
    METHOD ForceHide           BLOCK { |Self| AEVAL( ::aControls, { |o| o:ForceHide() } ) }
 ENDCLASS
@@ -534,9 +531,7 @@ RETURN lRet
 METHOD AddControl( oCtrl , Row , Col ) CLASS TTabPage
 *-----------------------------------------------------------------------------*
 
-   oCtrl:Visible := oCtrl:Visible
-
-   AADD( ::aControls, oCtrl )
+   ::Super:AddControl( oCtrl )
 
    oCtrl:Container := Self
 
@@ -545,11 +540,3 @@ METHOD AddControl( oCtrl , Row , Col ) CLASS TTabPage
    oCtrl:Visible := oCtrl:Visible
 
 Return Nil
-
-*-----------------------------------------------------------------------------*
-METHOD Release() CLASS TTabPage
-*-----------------------------------------------------------------------------*
-
-   AEVAL( ::aControls, { |o| o:Release() } )
-
-RETURN nil
