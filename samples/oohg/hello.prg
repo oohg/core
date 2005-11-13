@@ -1,5 +1,5 @@
 /*
- * $Id: hello.prg,v 1.16 2005-11-12 21:06:59 declan2005 Exp $
+ * $Id: hello.prg,v 1.17 2005-11-13 00:18:16 guerra000 Exp $
  */
 /*
  * ooHG Hello World Demo
@@ -26,8 +26,8 @@ DEFINE WINDOW Win_1 OBJ oWnd ;
    TITLE 'Hello World!' ;
    on mouseclick msginfo(str(_OOHG_MouseRow)+str(_OOHG_MouseCol)) ;
    MAIN ;
-   virtual height 768 ;
-   virtual WIDTH 1024
+   virtual height 650 ;
+   virtual WIDTH 900
 
    DEFINE TOOLBAR Toolbr buttonsize 50,20
       BUTTON TBN1 CAPTION "Boton 1" ACTION MSGINFO("Toolbar 1!")
@@ -101,17 +101,17 @@ DEFINE WINDOW Win_1 OBJ oWnd ;
 
    @ 170,10 checkBOX chk caption "This control have context menu!" VALUE .t. on change msginfo("change!") autosize
 
-   @ 200,10 button btn1 caption "BUTTON!" ACTION msginfo(oLabel:vALUE) tooltip "Click me"
+   @ 200,10 button btn1 caption "BUTTON!" ACTION msginfo(oLabel:vALUE) tooltip "Click me!"
 
    @ 230,10 radio rad options { "Uno", "Dos", "Tres" } autosize
-   oWnd:RAD:AITEMS[3]:autosize := .t.
-   oWnd:RAD:AITEMS[3]:BACKCOLOR := BLUE
-   oWnd:RAD:AITEMS[3]:WIDTH := 100
-   oWnd:RAD:AITEMS[3]:COL := 70
-   oWnd:RAD:AITEMS[1]:COL := 50
-   oWnd:RAD:AITEMS[2]:BACKCOLOR := {255,0,0}
-   oWnd:RAD:AITEMS[2]:caption := oWnd:RAD:AITEMS[2]:caption
-   oWnd:RAD:aitems[2]:tooltip := "individual tooltip"
+   oWnd:RAD:aControls[3]:autosize := .F.
+   oWnd:RAD:aControls[3]:BACKCOLOR := BLUE
+   oWnd:RAD:aControls[3]:WIDTH := 100
+   oWnd:RAD:aControls[3]:COL := 70
+   oWnd:RAD:aControls[1]:COL := 50
+   oWnd:RAD:aControls[2]:BACKCOLOR := {255,0,0}
+   oWnd:RAD:aControls[2]:caption := oWnd:RAD:aControls[2]:caption
+   oWnd:RAD:aControls[2]:tooltip := "Individual tooltip"
 
    oWnd:menu1:checked := .t.
    oWnd:menu2:checked := .t.
@@ -130,7 +130,6 @@ DEFINE WINDOW Win_1 OBJ oWnd ;
          ITEM "Nivel 2.2" ACTION MsgInfo( "Nivel 2.2!" )
       END POPUP
    END MENU
-
 
    @  10,200 GRID grd width 150 height 100 headers { "UNO", "DOS", "TRES" } widths {45,45,45} edit ;
    items { {"1","2","3"},{"A","@","C"},{"x","y","z"} } ;
@@ -204,26 +203,26 @@ DEFINE TREE Tree_1 AT 80,400 WIDTH 150 HEIGHT 240 VALUE 15
    TREEITEM 'Item 2.2.5'
    TREEITEM 'Item 2.2.6'
    END NODE
-   
+
    TREEITEM 'Item 2.3'
-   
+
    END NODE
-   
+
    NODE 'Item 3'
    TREEITEM 'Item 3.1'
    TREEITEM 'Item 3.2'
-   
+
    NODE 'Item 3.3'
    TREEITEM 'Item 3.3.1'
    TREEITEM 'Item 3.3.2'
    END NODE
-   
+
    END NODE
-   
+
 END TREE
 
 @ 330,400 BUTTON BTN2 PICTURE "RESOURCES\EDIT_NEW.BMP" width 100 height 100
-oWnd:Btn2:ToolTip := "Grahp Print"
+oWnd:Btn2:ToolTip := "Graph Print"
 oWnd:Btn2:Action := { || printform( ) }
 
 @ 10,600 FRAME frame WIDTH 150 HEIGHT 60 CAPTION "Frame"
@@ -241,10 +240,10 @@ oWnd:Btn2:Action := { || printform( ) }
 
 
 DEFINE STATUSBAR
-   
+
    STATUSITEM "This is a statusbar's test!" ACTION MSGINFO( "Statusbar!" )
    CLOCK ACTION MSGINFO( "Clock!" )
-   
+
 END STATUSBAR
 
 END WINDOW
@@ -260,8 +259,8 @@ function printform( )
 *-------------------------
 
 Public aSer:={ {14280,20420,12870,25347, 7640},;
-           { 8350,10315,15870, 5347,12340},;
-           {12345, -8945,10560,15600,17610} }
+               { 8350,10315,15870, 5347,12340},;
+               {12345, -8945,10560,15600,17610} }
 
 
 	Define Window GraphTest obj graphtest ;
@@ -269,10 +268,10 @@ Public aSer:={ {14280,20420,12870,25347, 7640},;
 		Width 640 ;
 		Height 480 ;
 		Title "Printing Bar Graphs" ;
-		 modal ;                
+		 modal ;
 		On Init DrawBarGraph ( aser ) ;
                 on mouseclick graphtest:print()
- 
+
 
 	End Window
 
@@ -303,7 +302,7 @@ Procedure DrawBarGraph ( aSer )
 		SHOWGRID                        			;
 		SHOWXVALUES                     			;
 		SHOWYVALUES                     			;
-		SHOWLEGENDS 
+		SHOWLEGENDS
 
 Return nil
 
