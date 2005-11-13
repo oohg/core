@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.24 2005-11-12 05:21:52 guerra000 Exp $
+ * $Id: c_windows.c,v 1.25 2005-11-13 00:17:51 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -255,57 +255,73 @@ HB_FUNC( INITWINDOW )
    hb_retnl( ( LONG ) hwnd );
 }
 
-HB_FUNC( _DOMESSAGELOOP )
+void _OOHG_ProcessMessage( PMSG Msg )
 {
-   MSG Msg;
-   PHB_ITEM pSelf;
+   PHB_ITEM pSelf, pResult, pSave;
    LONG hWnd;
 
-   while( GetMessage( &Msg, NULL, 0, 0 ) )
+   // Saves current result
+   pSave = hb_xgrab( sizeof( HB_ITEM ) );
+   pSave->type = HB_IT_NIL;
+   hb_itemCopy( pSave, hb_param( -1, HB_IT_ANY ) );
+
+   switch( Msg->message )
    {
-      switch( Msg.message )
-      {
-         case WM_KEYDOWN:
-         case WM_SYSKEYDOWN:
-            hWnd = ( LONG ) Msg.hwnd;
-            pSelf = NULL;
-            while( hWnd && ! pSelf )
+      case WM_KEYDOWN:
+      case WM_SYSKEYDOWN:
+         hWnd = ( LONG ) Msg->hwnd;
+         pSelf = NULL;
+         while( hWnd && ! pSelf )
+         {
+            pSelf = GetFormObjectByHandle( hWnd );
+            _OOHG_Send( pSelf, s_hWnd );
+            hb_vmSend( 0 );
+            if( hb_parnl( -1 ) != hWnd )
             {
-               pSelf = GetFormObjectByHandle( hWnd );
+               pSelf = GetControlObjectByHandle( hWnd );
                _OOHG_Send( pSelf, s_hWnd );
                hb_vmSend( 0 );
                if( hb_parnl( -1 ) != hWnd )
                {
-                  pSelf = GetControlObjectByHandle( hWnd );
-                  _OOHG_Send( pSelf, s_hWnd );
-                  hb_vmSend( 0 );
-                  if( hb_parnl( -1 ) != hWnd )
-                  {
-                     hWnd = ( LONG ) GetParent( ( HWND ) hWnd );
-                     pSelf = NULL;
-                  }
+                  hWnd = ( LONG ) GetParent( ( HWND ) hWnd );
+                  pSelf = NULL;
                }
             }
-            if( hWnd && pSelf )
+         }
+         if( hWnd && pSelf )
+         {
+            _OOHG_Send( pSelf, s_LookForKey );
+            hb_vmPushInteger( Msg->wParam );
+            hb_vmPushInteger( GetKeyFlagState() );
+            hb_vmSend( 2 );
+            if( hb_parl( -1 ) )
             {
-               _OOHG_Send( pSelf, s_LookForKey );
-               hb_vmPushInteger( Msg.wParam );
-               hb_vmPushInteger( GetKeyFlagState() );
-               hb_vmSend( 2 );
-               if( hb_parl( -1 ) )
-               {
-                  break;
-               }
+               break;
             }
+         }
 
-         default:
-            if( ! IsWindow( GetActiveWindow() ) || ! IsDialogMessage( GetActiveWindow(), &Msg ) )
-            {
-               TranslateMessage( &Msg );
-               DispatchMessage( &Msg );
-            }
-            break;
-      }
+      default:
+         if( ! IsWindow( GetActiveWindow() ) || ! IsDialogMessage( GetActiveWindow(), Msg ) )
+         {
+            TranslateMessage( Msg );
+            DispatchMessage( Msg );
+         }
+         break;
+   }
+
+   // Restores result
+   hb_itemReturn( pSave );
+   hb_itemClear( pSave );
+   hb_xfree( pSave );
+}
+
+HB_FUNC( _DOMESSAGELOOP )
+{
+   MSG Msg;
+
+   while( GetMessage( &Msg, NULL, 0, 0 ) )
+   {
+      _OOHG_ProcessMessage( &Msg );
    }
 }
 
