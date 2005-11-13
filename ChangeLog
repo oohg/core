@@ -1,11 +1,37 @@
 /*
- * $Id: ChangeLog,v 1.42 2005-11-12 20:42:43 declan2005 Exp $
+ * $Id: ChangeLog,v 1.43 2005-11-13 00:20:43 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2005-11-12 18:07 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_tooltip.ch
+  * include/i_windefs.ch
+    * Moved Windows' definitions from i_tooltip.ch to i_windefs.ch.
+    * Avoid i_windefs.ch double definitions.
+
+  * samples/oohg/hello.prg
+    * Cosmetic changes.
+
+  * source/h_checkbox.prg
+  * source/h_radio.prg
+    * Added one pixel to AUTOSIZE clause.
+
+  * source/h_controlmisc.prg
+  * source/h_tab.prg
+  * source/h_windows.prg
+    * ::AddControl, ::DeleteControl, ::Error, ::Control methods
+      moved from TForm to TWindow.
+
+  * source/h_radio.prg
+  * source/h_menu.prg
+    * Changed ::aItems to ::aControls.
+
+  * source/c_windows.c
+    ! PRG-level result saved at message loop.
 
 2005-11-12 15:26 UTC-0500 Ciro Vargas C. <sistemascvc@softhome.net>
     + include/i_tooltip.ch
@@ -14,8 +40,8 @@
     * source/h_windows.prg
       + Added SET TOOLTIPBALLOON ON
       + Added isTooltipBalloonActive
-    * samples/oohg/hello.prg  
-	  
+    * samples/oohg/hello.prg
+
 
 2005-11-11 23:09 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source/c_windows.c
