@@ -1,5 +1,5 @@
 /*
- * $Id: h_checkbox.prg,v 1.5 2005-10-01 15:35:10 guerra000 Exp $
+ * $Id: h_checkbox.prg,v 1.6 2005-11-13 00:20:15 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -99,7 +99,7 @@
 CLASS TCheckBox FROM TLabel
    DATA Type      INIT "CHECKBOX" READONLY
    DATA Picture   INIT ""
-   DATA IconWidth INIT 18
+   DATA IconWidth INIT 19
 
    METHOD Define
    METHOD Value       SETGET

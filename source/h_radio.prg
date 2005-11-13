@@ -1,5 +1,5 @@
 /*
- * $Id: h_radio.prg,v 1.6 2005-10-22 06:08:12 guerra000 Exp $
+ * $Id: h_radio.prg,v 1.7 2005-11-13 00:20:15 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -98,29 +98,24 @@
 
 CLASS TRadioGroup FROM TLabel
    DATA Type          INIT "RADIOGROUP" READONLY
-   DATA aItems        INIT {}
    DATA TabStop       INIT .T.
-   DATA IconWidth     INIT 18
+   DATA IconWidth     INIT 19
 
    METHOD RowMargin   BLOCK { |Self| - ::Row }
    METHOD ColMargin   BLOCK { |Self| - ::Col }
 
    METHOD Define
-   METHOD Release
    METHOD SetFont
    METHOD SizePos
    METHOD Value               SETGET
    METHOD Enabled             SETGET
    METHOD Visible             SETGET
-   METHOD ForceHide           BLOCK { |Self| AEVAL( ::aItems, { |o| o:ForceHide() } ) }
+   METHOD ForceHide           BLOCK { |Self| AEVAL( ::aControls, { |o| o:ForceHide() } ) }
 
    METHOD IsHandle
    METHOD Caption
 
    METHOD Events_Command
-
-   METHOD AddControl(oCtrl)       BLOCK { |Self,oCtrl| AADD( ::aItems, oCtrl ) }
-   METHOD DeleteControl(oCtrl)    BLOCK { |Self,oCtrl| ::Super:DeleteControl( oCtrl, ::aItems ) }
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -151,7 +146,6 @@ Local ControlHandle
    ::Transparent :=  transparent
    ::OnChange   :=  Change
    ::TabStop := NoTabStop
-   ::aItems := {}
    ::AutoSize := autosize
 
    // First item
@@ -179,10 +173,10 @@ Local ControlHandle
 
 	next i
 
-   if valtype( Value ) == "N" .AND. Value >= 1 .AND. Value <= Len( ::aItems )
-      SendMessage( ::aItems[ value ]:hWnd, BM_SETCHECK , BST_CHECKED , 0 )
-      if notabstop .and. IsTabStop( ::aItems[ value ]:hWnd )
-         SetTabStop( ::aItems[ value ]:hWnd, .f. )
+   if valtype( Value ) == "N" .AND. Value >= 1 .AND. Value <= Len( ::aControls )
+      SendMessage( ::aControls[ value ]:hWnd, BM_SETCHECK , BST_CHECKED , 0 )
+      if notabstop .and. IsTabStop( ::aControls[ value ]:hWnd )
+         SetTabStop( ::aControls[ value ]:hWnd, .f. )
 		endif
    Else
       if ! notabstop .and. ! IsTabStop( ::hWnd )
@@ -193,17 +187,9 @@ Local ControlHandle
 Return Self
 
 *-----------------------------------------------------------------------------*
-METHOD Release() CLASS TRadioGroup
-*-----------------------------------------------------------------------------*
-   DO WHILE LEN( ::aItems ) > 0
-      ::aItems[ 1 ]:Release()
-   ENDDO
-Return ::Super:Release()
-
-*-----------------------------------------------------------------------------*
 METHOD SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout ) CLASS TRadioGroup
 *-----------------------------------------------------------------------------*
-   AEVAL( ::aItems, { |o| o:SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout ) } )
+   AEVAL( ::aControls, { |o| o:SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout ) } )
 RETURN ::Super:SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout )
 
 *-----------------------------------------------------------------------------*
@@ -215,20 +201,20 @@ Local nDeltaRow, nDeltaCol, uRet
    uRet := ::Super:SizePos( Row, Col, Width, Height )
    nDeltaRow := ::Row - nDeltaRow
    nDeltaCol := ::Col - nDeltaCol
-   AEVAL( ::aItems, { |o| o:SizePos( o:Row + nDeltaRow, o:Col + nDeltaCol ) } )
+   AEVAL( ::aControls, { |o| o:SizePos( o:Row + nDeltaRow, o:Col + nDeltaCol ) } )
 Return uRet
 
 *-----------------------------------------------------------------------------*
 METHOD Value( nValue ) CLASS TRadioGroup
 *-----------------------------------------------------------------------------*
    IF VALTYPE( nValue ) == "N"
-      ASCAN( ::aItems, { |o| SendMessage( o:hWnd, BM_GETCHECK, BST_UNCHECKED, 0 ) } )
-      SendMessage( ::aItems[ nValue ]:hWnd, BM_SETCHECK, BST_CHECKED, 0 )
-      if ::TabStop .and. IsTabStop( ::aItems[ nValue ]:hWnd )
-         SetTabStop( ::aItems[ nValue ]:hWnd, .f. )
+      ASCAN( ::aControls, { |o| SendMessage( o:hWnd, BM_GETCHECK, BST_UNCHECKED, 0 ) } )
+      SendMessage( ::aControls[ nValue ]:hWnd, BM_SETCHECK, BST_CHECKED, 0 )
+      if ::TabStop .and. IsTabStop( ::aControls[ nValue ]:hWnd )
+         SetTabStop( ::aControls[ nValue ]:hWnd, .f. )
 		endif
    ENDIF
-   nValue := ASCAN( ::aItems, { |o| SendMessage( o:hWnd, BM_GETCHECK, 0, 0 ) == BST_CHECKED } )
+   nValue := ASCAN( ::aControls, { |o| SendMessage( o:hWnd, BM_GETCHECK, 0, 0 ) == BST_CHECKED } )
 RETURN nValue
 
 *-----------------------------------------------------------------------------*
@@ -236,7 +222,7 @@ METHOD Enabled( lEnabled ) CLASS TRadioGroup
 *-----------------------------------------------------------------------------*
    IF VALTYPE( lEnabled ) == "L"
       ::Super:Enabled := lEnabled
-      AEVAL( ::aItems, { |o| o:Enabled := o:Enabled } )
+      AEVAL( ::aControls, { |o| o:Enabled := o:Enabled } )
    ENDIF
 RETURN ::Super:Enabled
 
@@ -245,19 +231,19 @@ METHOD Visible( lVisible ) CLASS TRadioGroup
 *-----------------------------------------------------------------------------*
    IF VALTYPE( lVisible ) == "L"
       ::Super:Visible := lVisible
-      AEVAL( ::aItems, { |o| o:Visible := o:Visible } )
+      AEVAL( ::aControls, { |o| o:Visible := o:Visible } )
    ENDIF
 RETURN ::Super:Visible
 
 *-----------------------------------------------------------------------------*
 METHOD IsHandle( hWnd ) CLASS TRadioGroup
 *-----------------------------------------------------------------------------*
-Return ( ASCAN( ::aItems, { |o| o:hWnd == hWnd } ) != 0 )
+Return ( ASCAN( ::aControls, { |o| o:hWnd == hWnd } ) != 0 )
 
 *-----------------------------------------------------------------------------*
 METHOD Caption( nItem, uValue ) CLASS TRadioGroup
 *-----------------------------------------------------------------------------*
-Return ( ::aItems[ nItem ]:Caption := uValue )
+Return ( ::aControls[ nItem ]:Caption := uValue )
 
 *-----------------------------------------------------------------------------*
 METHOD Events_Command( wParam ) CLASS TRadioGroup
@@ -278,7 +264,7 @@ Return ::Super:Events_Command( wParam )
 
 CLASS TRadioItem FROM TLabel
    DATA Type          INIT "RADIOITEM" READONLY
-   DATA IconWidth     INIT 18
+   DATA IconWidth     INIT 19
 
    METHOD Events_Command
 ENDCLASS

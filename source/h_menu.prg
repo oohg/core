@@ -1,5 +1,5 @@
 /*
- * $Id: h_menu.prg,v 1.6 2005-10-22 06:07:26 guerra000 Exp $
+ * $Id: h_menu.prg,v 1.7 2005-11-13 00:20:15 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -98,7 +98,6 @@ STATIC _OOHG_xMenuActive := {}
 
 CLASS TMenu FROM TControl
    DATA Type      INIT "MENU" READONLY
-   DATA aItems    INIT {}
    DATA xId       INIT 0
 
    METHOD DefineMain
@@ -108,8 +107,6 @@ CLASS TMenu FROM TControl
    METHOD DefineDropDown
    METHOD DefineItem
 
-   METHOD AddControl(oCtrl)       BLOCK { |Self,oCtrl| AADD( ::aItems, oCtrl ) }
-   METHOD DeleteControl(oCtrl)    BLOCK { |Self,oCtrl| ::Super:DeleteControl( oCtrl, ::aItems ) }
    METHOD Enabled     SETGET
    METHOD Checked     SETGET
 
