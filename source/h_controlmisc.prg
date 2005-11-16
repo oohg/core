@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.32 2005-11-13 00:19:25 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.33 2005-11-16 05:42:50 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1773,7 +1773,8 @@ Local mVar
 *   ::Name   := _OOHG_GetNullName( ControlName )
 EMPTY(cName)
 
-   ::hWnd   := hWnd
+   ::hWnd := hWnd
+   ::StartInfo( hWnd )
 
    ::Parent:AddControl( Self )
 

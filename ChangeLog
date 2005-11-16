@@ -1,11 +1,22 @@
 /*
- * $Id: ChangeLog,v 1.43 2005-11-13 00:20:43 guerra000 Exp $
+ * $Id: ChangeLog,v 1.44 2005-11-16 05:42:49 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2005-11-12 18:07 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * include/oohg.h
+  * source/c_combo.c
+  * source/c_controlmisc.c
+  * source/h_combo.prg
+  * source/h_controlmisc.prg
+  * source/h_windows.prg
+    + ::aControlInfo property added. It contains window/control info for
+      access it at C level.
+    * A few methods moved to C level.
 
 2005-11-12 18:07 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * include/i_tooltip.ch
@@ -41,7 +52,6 @@
       + Added SET TOOLTIPBALLOON ON
       + Added isTooltipBalloonActive
     * samples/oohg/hello.prg
-
 
 2005-11-11 23:09 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source/c_windows.c

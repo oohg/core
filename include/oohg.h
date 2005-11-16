@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.h,v 1.10 2005-11-09 06:00:33 guerra000 Exp $
+ * $Id: oohg.h,v 1.11 2005-11-16 05:42:50 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -54,11 +54,44 @@ struct IMAGE_PARAMETER {
    int iImage1, iImage2;
 };
 
+#define _OOHG_Struct_Size    ( sizeof( OCTRL ) + 100 )
+
+typedef struct OOHG_Window {
+   HWND       hWnd;
+   HB_ITEM    pSelf;
+//   int        iRow, iCol, iWidth, iHeight;
+//   HB_ITEM    oParent;
+//   HB_ITEM    oContainer;
+//   BYTE       *cFontName;
+//   int        iFontSize;
+//   BOOL       bBold, bItalic, bUnderline, bStrikeout;
+//   LONG       lFontColor, lBackColor;
+//   int        iRowMargin, iColMargin;
+//   BOOL       bRtl;
+//   HWND       hContextMenu;
+//   BOOL       bEnabled;
+/*
+   DATA aControls      INIT {}
+   DATA aControlsNames INIT {}
+   DATA BrushHandle    INIT 0
+   DATA lInternal      INIT .T.
+   DATA OnClick        INIT nil
+   DATA OnGotFocus     INIT nil
+   DATA OnLostFocus    INIT nil
+   DATA OnMouseDrag    INIT nil
+   DATA OnMouseMove    INIT nil
+   DATA aKeys          INIT {}  // { Id, Mod, Key, Action }   Application-controlled hotkeys
+   DATA aHotKeys       INIT {}  // { Id, Mod, Key, Action }   OperatingSystem-controlled hotkeys
+   DATA DefBkColorEdit  INIT nil
+*/
+} OCTRL, *POCTRL;
+
 extern void ImageFillParameter( struct IMAGE_PARAMETER *pResult, PHB_ITEM pString );
 extern PHB_ITEM GetControlObjectByHandle( LONG hWnd );
 extern void _OOHG_Send( PHB_ITEM pSelf, int iSymbol );
 LRESULT APIENTRY _OOHG_WndProc( PHB_ITEM pSelf, HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM lParam, WNDPROC lpfnOldWndProc );
 extern int GetKeyFlagState( void );
+POCTRL _OOHG_GetControlInfo( PHB_ITEM pSelf );
 
 // Symbol tables
 #define s_Events_Notify     0
@@ -86,4 +119,6 @@ extern int GetKeyFlagState( void );
 #define s_OnMouseDrag       22
 #define s_DoEvent           23
 #define s_LookForKey        24
-#define s_LastSymbol        25
+#define s_aControlInfo      25
+#define s__aControlInfo     26
+#define s_LastSymbol        27

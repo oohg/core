@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.7 2005-10-01 15:35:10 guerra000 Exp $
+ * $Id: h_combo.prg,v 1.8 2005-11-16 05:42:50 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -118,7 +118,7 @@ CLASS TCombo FROM TLabel
    METHOD DeleteItem(nItem)   BLOCK { |Self,nItem| ComboBoxDeleteString( ::hWnd, nItem ) }
    METHOD DeleteAllItems      BLOCK { | Self | ComboBoxReset( ::hWnd ) }
    METHOD Item
-   METHOD ItemCount           BLOCK { | Self | ComboBoxGetItemCount( ::hWnd ) }
+   METHOD ItemCount
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -383,11 +383,39 @@ Local Hi_wParam := HIWORD( wParam )
 
 Return ::Super:Events_Command( wParam )
 
-*-----------------------------------------------------------------------------*
-METHOD Item( nItem, uValue ) CLASS TCombo
-*-----------------------------------------------------------------------------*
-   IF VALTYPE( uValue ) $ "CMNA"
-      ComboBoxDeleteString( ::hWnd, nItem )
-      ComboInsertString( ::hWnd, uValue, nItem )
-   ENDIF
-RETURN ComboGetString( ::hWnd, nItem )
+#pragma BEGINDUMP
+#include <hbapi.h>
+#include <hbstack.h>
+#include <windows.h>
+#include "../include/oohg.h"
+int ComboInsertAnyItem( HWND hWnd, int iPos, PHB_ITEM pItem );
+
+HB_FUNC_STATIC( TCOMBO_ITEM )
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   PHB_ITEM pValue = hb_param( 2, HB_IT_ANY );
+   int nItem = hb_parni( 1 ) - 1;
+   BYTE *cBuffer;
+
+   if( pValue && ( HB_IS_STRING( pValue ) || HB_IS_NUMERIC( pValue ) || HB_IS_ARRAY( pValue ) ) )
+   {
+      SendMessage( oSelf->hWnd, CB_DELETESTRING, ( WPARAM ) nItem, 0 );
+      ComboInsertAnyItem( oSelf->hWnd, nItem, pValue );
+   }
+
+   cBuffer = hb_xgrab( 2000 );
+   SendMessage( oSelf->hWnd, CB_GETLBTEXT, ( WPARAM ) nItem, ( LPARAM ) cBuffer );
+   hb_retc( cBuffer );
+   hb_xfree( cBuffer );
+}
+
+HB_FUNC_STATIC( TCOMBO_ITEMCOUNT )
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+
+   hb_retnl( SendMessage( oSelf->hWnd, CB_GETCOUNT, 0, 0 ) );
+}
+
+#pragma ENDDUMP

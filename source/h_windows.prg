@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.41 2005-11-13 00:19:25 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.42 2005-11-16 05:42:50 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -112,6 +112,7 @@ STATIC _OOHG_HotKeys := {}           // Application-wide hot keys
 #pragma BEGINDUMP
 
 #include "hbapi.h"
+#include "hbapiitm.h"
 #include "hbvm.h"
 #include "hbstack.h"
 #include <windows.h>
@@ -126,6 +127,7 @@ int _OOHG_ShowContextMenus = 1;
 CLASS TWindow
 *------------------------------------------------------------------------------*
    DATA hWnd       INIT 0
+   DATA aControlInfo INIT { "X" }
    DATA Name       INIT ""
    DATA Type       INIT ""
    DATA Parent     INIT nil
@@ -163,7 +165,8 @@ CLASS TWindow
 
    DATA DefBkColorEdit  INIT nil
 
-   METHOD SetFocus            BLOCK { | Self | SetFocus( ::hWnd ), Self }
+   METHOD StartInfo
+   METHOD SetFocus
    METHOD Enabled             SETGET
    METHOD RTL                 SETGET
    METHOD Action              SETGET
@@ -178,6 +181,33 @@ CLASS TWindow
    METHOD SetKey                // Application-controlled hotkeys
    METHOD LookForKey
 ENDCLASS
+
+#pragma BEGINDUMP
+
+HB_FUNC_STATIC( TWINDOW_STARTINFO )
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+
+   oSelf->hWnd = ( HWND ) hb_parnl( 1 );
+   memcpy( &oSelf->pSelf, pSelf, sizeof( HB_ITEM ) );
+}
+
+HB_FUNC_STATIC( TWINDOW_SETFOCUS )
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   HB_ITEM pReturn;
+
+   SetFocus( oSelf->hWnd );
+
+   pReturn.type = HB_IT_NIL;
+   hb_itemCopy( &pReturn, &oSelf->pSelf );
+   hb_itemReturn( &pReturn );
+   hb_itemClear( &pReturn );
+}
+
+#pragma ENDDUMP
 
 *------------------------------------------------------------------------------*
 METHOD Enabled( lEnabled ) CLASS TWindow
@@ -780,8 +810,9 @@ return lOldBalloon
 METHOD New( hWnd, cName ) CLASS TForm
 *------------------------------------------------------------------------------*
 Local mVar
-   ::hWnd  := hWnd
-   ::Name  := cName
+   ::hWnd := hWnd
+   ::StartInfo( hWnd )
+   ::Name := cName
 
    AADD( _OOHG_aFormhWnd,    hWnd )
    AADD( _OOHG_aFormObjects, Self )
@@ -1916,6 +1947,8 @@ Local oWnd, oCtrl
       ENDIF
 
       ::hWnd := -1
+      ::StartInfo( -1 )
+
       ::Active := .F.
 
       _OOHG_InteractiveCloseStarted := .F.

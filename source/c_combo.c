@@ -1,5 +1,5 @@
 /*
- * $Id: c_combo.c,v 1.4 2005-08-25 05:57:42 guerra000 Exp $
+ * $Id: c_combo.c,v 1.5 2005-11-16 05:42:50 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -181,7 +181,7 @@ HB_FUNC( INITCOMBOBOX )
    hb_retnl ( (LONG) hbutton );
 }
 
-static int ComboInsertAnyItem( HWND hWnd, int iPos, PHB_ITEM pItem )
+int ComboInsertAnyItem( HWND hWnd, int iPos, PHB_ITEM pItem )
 {
    COMBOBOXEXITEM cmb;
    struct IMAGE_PARAMETER pStruct;

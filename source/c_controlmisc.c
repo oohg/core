@@ -1,5 +1,5 @@
 /*
- * $Id: c_controlmisc.c,v 1.12 2005-11-12 20:42:44 declan2005 Exp $
+ * $Id: c_controlmisc.c,v 1.13 2005-11-16 05:42:50 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -143,6 +143,8 @@ char *s_SymbolNames[] = { "EVENTS_NOTIFY",
                           "ONMOUSEDRAG",
                           "DOEVENT",
                           "LOOKFORKEY",
+                          "ACONTROLINFO",
+                          "_ACONTROLINFO",
                           "LastSymbol" };
 
 void _OOHG_Send( PHB_ITEM pSelf, int iSymbol )
@@ -160,6 +162,52 @@ void _OOHG_Send( PHB_ITEM pSelf, int iSymbol )
 
    hb_vmPushSymbol( s_Symbols[ iSymbol ]->pSymbol );
    hb_vmPush( pSelf );
+}
+
+POCTRL _OOHG_GetControlInfo( PHB_ITEM pSelf )
+{
+   PHB_ITEM pArray;
+   BOOL bRelease = 0;
+   BYTE *pString;
+
+   _OOHG_Send( pSelf, s_aControlInfo );
+   hb_vmSend( 0 );
+   pArray = hb_param( -1, HB_IT_ARRAY );
+   if( ! pArray )
+   {
+      bRelease = 1;
+      pArray = hb_itemNew( NULL );
+      hb_arrayNew( pArray, 1 );
+      _OOHG_Send( pSelf, s__aControlInfo );
+      hb_vmPush( pArray );
+      hb_vmSend( 1 );
+   }
+
+   if( pArray->item.asArray.value->ulLen < 1 )
+   {
+      hb_arraySize( pArray, 1 );
+   }
+
+   if( ! HB_IS_STRING( pArray->item.asArray.value->pItems ) || pArray->item.asArray.value->pItems->item.asString.length < _OOHG_Struct_Size )
+   {
+      pString = hb_xgrab( _OOHG_Struct_Size );
+      memset( pString, 0, _OOHG_Struct_Size );
+      if( HB_IS_STRING( pArray->item.asArray.value->pItems ) )
+      {
+         memcpy( pString, pArray->item.asArray.value->pItems->item.asString.value, pArray->item.asArray.value->pItems->item.asString.length );
+      }
+      hb_itemPutCL( pArray->item.asArray.value->pItems, pString, _OOHG_Struct_Size );
+      hb_xfree( pString );
+   }
+
+   pString = pArray->item.asArray.value->pItems->item.asString.value;
+
+   if( bRelease )
+   {
+      hb_itemRelease( pArray );
+   }
+
+   return ( POCTRL ) pString;
 }
 
 HB_FUNC ( DELETEOBJECT )
