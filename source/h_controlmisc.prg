@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.33 2005-11-16 05:42:50 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.34 2005-11-16 05:52:53 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1854,6 +1854,9 @@ Local mVar
 	if type ( mVar ) != 'U'
       __MVPUT( mVar , 0 )
 	EndIf
+
+   ::hWnd := -1
+   ::StartInfo( -1 )
 
 Return Nil
 
