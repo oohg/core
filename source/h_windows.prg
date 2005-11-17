@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.42 2005-11-16 05:42:50 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.43 2005-11-17 05:06:37 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -116,6 +116,7 @@ STATIC _OOHG_HotKeys := {}           // Application-wide hot keys
 #include "hbvm.h"
 #include "hbstack.h"
 #include <windows.h>
+#include <commctrl.h>
 #include <olectl.h>
 #include "../include/oohg.h"
 
@@ -127,7 +128,7 @@ int _OOHG_ShowContextMenus = 1;
 CLASS TWindow
 *------------------------------------------------------------------------------*
    DATA hWnd       INIT 0
-   DATA aControlInfo INIT { "X" }
+   DATA aControlInfo INIT { CHR( 0 ) }
    DATA Name       INIT ""
    DATA Type       INIT ""
    DATA Parent     INIT nil
@@ -165,8 +166,11 @@ CLASS TWindow
 
    DATA DefBkColorEdit  INIT nil
 
+   METHOD Release
    METHOD StartInfo
    METHOD SetFocus
+   METHOD ImageList           SETGET
+
    METHOD Enabled             SETGET
    METHOD RTL                 SETGET
    METHOD Action              SETGET
@@ -183,6 +187,33 @@ CLASS TWindow
 ENDCLASS
 
 #pragma BEGINDUMP
+
+HB_FUNC_STATIC( TWINDOW_RELEASE )
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+
+   // ImageList
+   if( oSelf->ImageList )
+   {
+      ImageList_Destroy( oSelf->ImageList );
+      oSelf->ImageList = 0;
+   }
+
+   // Auxiliar Buffer
+   if( oSelf->AuxBuffer )
+   {
+      hb_xfree( oSelf->AuxBuffer );
+      oSelf->AuxBuffer = NULL;
+      oSelf->AuxBufferLen = 0;
+   }
+
+   // ::hWnd := -1
+   oSelf->hWnd = ( HWND ) -1;
+   _OOHG_Send( pSelf, s__hWnd );
+   hb_vmPushInteger( -1 );
+   hb_vmSend( 1 );
+}
 
 HB_FUNC_STATIC( TWINDOW_STARTINFO )
 {
@@ -205,6 +236,19 @@ HB_FUNC_STATIC( TWINDOW_SETFOCUS )
    hb_itemCopy( &pReturn, &oSelf->pSelf );
    hb_itemReturn( &pReturn );
    hb_itemClear( &pReturn );
+}
+
+HB_FUNC_STATIC( TWINDOW_IMAGELIST )
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+
+   if( hb_pcount() >= 1 && ISNUM( 1 ) )
+   {
+      oSelf->ImageList = ( HIMAGELIST ) hb_parnl( 1 );
+   }
+
+   hb_retnl( ( LONG ) oSelf->ImageList );
 }
 
 #pragma ENDDUMP
@@ -1364,6 +1408,12 @@ HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
          }
          break;
 
+      case WM_DRAWITEM:
+         _OOHG_Send( GetControlObjectByHandle( ( LONG ) ( ( ( PDRAWITEMSTRUCT ) lParam )->hwndItem ) ), s_Events_DrawItem );
+         hb_vmPushLong( lParam );
+         hb_vmSend( 1 );
+         break;
+
       default:
          if( ! s_Events2 )
          {
@@ -1946,8 +1996,7 @@ Local oWnd, oCtrl
          _OOHG_DeleteArrayItem( _OOHG_ActiveModal, Len( _OOHG_ActiveModal ) )
       ENDIF
 
-      ::hWnd := -1
-      ::StartInfo( -1 )
+      ::Super:Release()
 
       ::Active := .F.
 

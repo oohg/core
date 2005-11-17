@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.h,v 1.11 2005-11-16 05:42:50 guerra000 Exp $
+ * $Id: oohg.h,v 1.12 2005-11-17 05:06:37 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -59,6 +59,9 @@ struct IMAGE_PARAMETER {
 typedef struct OOHG_Window {
    HWND       hWnd;
    HB_ITEM    pSelf;
+   HIMAGELIST ImageList;
+   BYTE      *AuxBuffer;
+   ULONG      AuxBufferLen;
 //   int        iRow, iCol, iWidth, iHeight;
 //   HB_ITEM    oParent;
 //   HB_ITEM    oContainer;
@@ -89,6 +92,7 @@ typedef struct OOHG_Window {
 extern void ImageFillParameter( struct IMAGE_PARAMETER *pResult, PHB_ITEM pString );
 extern PHB_ITEM GetControlObjectByHandle( LONG hWnd );
 extern void _OOHG_Send( PHB_ITEM pSelf, int iSymbol );
+void _OOHG_DoEvent( PHB_ITEM pSelf, int iSymbol );
 LRESULT APIENTRY _OOHG_WndProc( PHB_ITEM pSelf, HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM lParam, WNDPROC lpfnOldWndProc );
 extern int GetKeyFlagState( void );
 POCTRL _OOHG_GetControlInfo( PHB_ITEM pSelf );
@@ -121,4 +125,11 @@ POCTRL _OOHG_GetControlInfo( PHB_ITEM pSelf );
 #define s_LookForKey        24
 #define s_aControlInfo      25
 #define s__aControlInfo     26
-#define s_LastSymbol        27
+#define s_Events_DrawItem   27
+#define s__hWnd             28
+#define s_Events_Command    29
+#define s_OnChange          30
+#define s_OnGotFocus        31
+#define s_OnLostFocus       32
+#define s_OnClick           33
+#define s_LastSymbol        34

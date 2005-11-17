@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.34 2005-11-16 05:52:53 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.35 2005-11-17 05:06:37 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1510,7 +1510,6 @@ CLASS TControl FROM TWindow
    DATA VarName     INIT ""
    DATA Caption     INIT ""
    DATA Id          INIT 0
-   DATA ImageList   INIT 0
    DATA ImageListColor      INIT CLR_NONE
    DATA ImageListFlags      INIT LR_LOADTRANSPARENT
    DATA SetImageListCommand INIT 0   // Must be explicit for each control
@@ -1560,6 +1559,7 @@ CLASS TControl FROM TWindow
    METHOD Events_Notify
    METHOD Events_VScroll      BLOCK { || nil }
    METHOD Events_Size         BLOCK { || nil }
+   METHOD Events_DrawItem     BLOCK { || nil }
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -1846,19 +1846,12 @@ Local mVar
    DeleteObject( ::BrushHandle )
    DeleteObject( ::AuxHandle )
 
-   IF ::ImageList != 0
-      ImageList_Destroy( ::ImageList )
-   endif
-
    mVar := '_' + ::Parent:Name + '_' + ::Name
 	if type ( mVar ) != 'U'
       __MVPUT( mVar , 0 )
 	EndIf
 
-   ::hWnd := -1
-   ::StartInfo( -1 )
-
-Return Nil
+Return ::Super:Release()
 
 *-----------------------------------------------------------------------------*
 METHOD SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout ) CLASS TControl

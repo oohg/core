@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.8 2005-11-16 05:42:50 guerra000 Exp $
+ * $Id: h_combo.prg,v 1.9 2005-11-17 05:06:37 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -102,8 +102,6 @@ CLASS TCombo FROM TLabel
    DATA Field     INIT ""
    DATA nValue    INIT 0
    DATA ValueSource   INIT ""
-   DATA SetImageListCommand INIT CBEM_SETIMAGELIST
-   DATA SetImageListWParam  INIT 0
 
    METHOD Define
    METHOD Refresh
@@ -113,10 +111,11 @@ CLASS TCombo FROM TLabel
    METHOD RefreshData
 
    METHOD Events_Command
+   METHOD Events_DrawItem
 
-   METHOD AddItem(cValue)     BLOCK { |Self,uValue| ComboAddString( ::hWnd, uValue ) }
-   METHOD DeleteItem(nItem)   BLOCK { |Self,nItem| ComboBoxDeleteString( ::hWnd, nItem ) }
-   METHOD DeleteAllItems      BLOCK { | Self | ComboBoxReset( ::hWnd ) }
+   METHOD AddItem
+   METHOD DeleteItem
+   METHOD DeleteAllItems
    METHOD Item
    METHOD ItemCount
 ENDCLASS
@@ -232,7 +231,7 @@ Local ControlHandle , rcount := 0 , BackRec , cset := 0 , WorkArea , cField
 
 	Else
 
-      AEval( rows, { |x| ComboAddString( ControlHandle, x ) } )
+      AEval( rows, { |x| ::AddItem( x ) } )
 
 		if value <> 0
          ComboSetCurSel( ControlHandle, Value )
@@ -350,58 +349,199 @@ METHOD RefreshData() CLASS TCombo
    ::Value := ::nValue
 RETURN nil
 
-*-----------------------------------------------------------------------------*
-METHOD Events_Command( wParam ) CLASS TCombo
-*-----------------------------------------------------------------------------*
-Local Hi_wParam := HIWORD( wParam )
-
-   if Hi_wParam == CBN_SELCHANGE
-
-      ::DoEvent ( ::OnChange )
-
-      Return nil
-
-   elseif Hi_wParam == CBN_KILLFOCUS
-
-      ::DoEvent( ::OnLostFocus )
-
-      Return nil
-
-   elseif Hi_wParam == CBN_SETFOCUS
-
-      ::DoEvent( ::OnGotFocus )
-
-      Return nil
-
-   elseif Hi_wParam == CBN_EDITCHANGE
-
-      ::DoEvent( ::OnClick )
-
-      Return nil
-
-   EndIf
-
-Return ::Super:Events_Command( wParam )
-
 #pragma BEGINDUMP
 #include <hbapi.h>
+#include <hbvm.h>
 #include <hbstack.h>
 #include <windows.h>
+#include <commctrl.h>
+#include <windowsx.h>
 #include "../include/oohg.h"
-int ComboInsertAnyItem( HWND hWnd, int iPos, PHB_ITEM pItem );
+#define s_Super s_TLabel
 
-HB_FUNC_STATIC( TCOMBO_ITEM )
+void TCombo_SetImageBuffer( POCTRL oSelf, struct IMAGE_PARAMETER pStruct, int nItem )
+{
+   BYTE *cBuffer;
+   ULONG ulSize, ulSize2;
+   int *pImage;
+
+   if( oSelf->AuxBuffer || pStruct.iImage1 != -1 || pStruct.iImage2 != -1 )
+   {
+      if( nItem >= ( int ) oSelf->AuxBufferLen )
+      {
+         ulSize = sizeof( int ) * 2 * ( nItem + 100 );
+         cBuffer = hb_xgrab( ulSize );
+         memset( cBuffer, -1, ulSize );
+         if( oSelf->AuxBuffer )
+         {
+            memcpy( cBuffer, oSelf->AuxBuffer, ( sizeof( int ) * 2 * oSelf->AuxBufferLen ) );
+            hb_xfree( oSelf->AuxBuffer );
+         }
+         oSelf->AuxBuffer = cBuffer;
+         oSelf->AuxBufferLen = nItem + 100;
+      }
+
+      pImage = &( ( int * ) oSelf->AuxBuffer )[ nItem * 2 ];
+      if( nItem < ComboBox_GetCount( oSelf->hWnd ) )
+      {
+         ulSize  = sizeof( int ) * 2 * ComboBox_GetCount( oSelf->hWnd );
+         ulSize2 = sizeof( int ) * 2 * nItem;
+         cBuffer = hb_xgrab( ulSize );
+         memcpy( cBuffer, pImage, ulSize - ulSize2 );
+         memcpy( &pImage[ 2 ], cBuffer, ulSize - ulSize2 );
+         hb_xfree( cBuffer );
+      }
+      pImage[ 0 ] = pStruct.iImage1;
+      pImage[ 1 ] = pStruct.iImage2;
+   }
+}
+
+HB_FUNC_STATIC( TCOMBO_EVENTS_COMMAND )   // METHOD Events_Command( wParam )
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+//   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   WPARAM wParam = ( WPARAM ) hb_parnl( 1 );
+
+   switch( HIWORD( wParam ) )
+   {
+      case CBN_SELCHANGE:
+         _OOHG_DoEvent( pSelf, s_OnChange );
+         hb_ret();
+         break;
+
+      case CBN_KILLFOCUS:
+         _OOHG_DoEvent( pSelf, s_OnLostFocus );
+         hb_ret();
+         break;
+
+      case CBN_SETFOCUS:
+         _OOHG_DoEvent( pSelf, s_OnGotFocus );
+         hb_ret();
+         break;
+
+      case CBN_EDITCHANGE:
+         _OOHG_DoEvent( pSelf, s_OnClick );
+         hb_ret();
+         break;
+
+      default:
+         _OOHG_Send( pSelf, s_Super );
+         hb_vmSend( 0 );
+         _OOHG_Send( hb_param( -1, HB_IT_ANY ), s_Events_Command );
+         hb_vmPushLong( ( LONG ) wParam );
+         hb_vmSend( 1 );
+         break;
+   }
+}
+
+HB_FUNC_STATIC( TCOMBO_EVENTS_DRAWITEM )   // METHOD Events_DrawItem( lParam )
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   LPDRAWITEMSTRUCT lpdis = ( LPDRAWITEMSTRUCT ) hb_parnl( 1 );
+   COLORREF FontColor, BackColor;
+   TEXTMETRIC lptm;
+   BYTE cBuffer[ 1024 ];
+   int x, y, cx, cy, iImage;
+   HDC hdc;
+
+   if( lpdis->itemID != -1 )
+   {
+      // Checks if image defined for current item
+      if( oSelf->ImageList && oSelf->AuxBuffer && ( lpdis->itemID + 1 ) <= oSelf->AuxBufferLen )
+      {
+         iImage = ( ( int * ) oSelf->AuxBuffer )[ ( lpdis->itemID * 2 ) + ( lpdis->itemState & ODS_SELECTED ? 1 : 0 ) ];
+         if( iImage >= 0 && iImage < ImageList_GetImageCount( oSelf->ImageList ) )
+         {
+            ImageList_GetIconSize( oSelf->ImageList, &cx, &cy );
+         }
+         else
+         {
+            cx = 0;
+            iImage = -1;
+         }
+      }
+      else
+      {
+         cx = 0;
+         iImage = -1;
+      }
+
+      // Color del texto... depende si está seleccionado o no...
+      FontColor = SetTextColor( lpdis->hDC, GetSysColor( lpdis->itemState & ODS_SELECTED ? COLOR_HIGHLIGHTTEXT : COLOR_WINDOWTEXT ) );
+      BackColor = SetBkColor( lpdis->hDC, GetSysColor( lpdis->itemState & ODS_SELECTED ? COLOR_HIGHLIGHT : COLOR_WINDOW ) );
+
+      // Posición de la ventana...
+      GetTextMetrics( lpdis->hDC, &lptm );
+      y = ( lpdis->rcItem.bottom + lpdis->rcItem.top - lptm.tmHeight ) / 2;
+      x = LOWORD( GetDialogBaseUnits() ) / 4;
+
+      // Text
+      SendMessage( lpdis->hwndItem, CB_GETLBTEXT, lpdis->itemID, ( LPARAM ) cBuffer );
+      ExtTextOut( lpdis->hDC, cx + 2 * x, y, ETO_CLIPPED | ETO_OPAQUE, &lpdis->rcItem, ( LPCSTR ) cBuffer, strlen( cBuffer ), NULL );
+
+      SetTextColor( lpdis->hDC, FontColor );
+      SetBkColor( lpdis->hDC, BackColor );
+
+      // Draws image
+      if( iImage != -1 )
+      {
+         ImageList_Draw( oSelf->ImageList, iImage, lpdis->hDC, 0, y, 0 );
+      }
+
+      // Focused rectangle
+      if( lpdis->itemState & ODS_FOCUS )
+      {
+         DrawFocusRect( lpdis->hDC, &lpdis->rcItem );
+      }
+   }
+}
+
+HB_FUNC_STATIC( TCOMBO_ADDITEM )   // METHOD AddItem( uValue )
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   struct IMAGE_PARAMETER pStruct;
+   int nItem = ComboBox_GetCount( oSelf->hWnd );
+
+   ImageFillParameter( &pStruct, hb_param( 1, HB_IT_ANY ) );
+   TCombo_SetImageBuffer( oSelf, pStruct, nItem );
+   SendMessage( oSelf->hWnd, CB_INSERTSTRING, ( WPARAM ) nItem, ( LPARAM ) pStruct.cString );
+
+   hb_retnl( ComboBox_GetCount( oSelf->hWnd ) );
+}
+
+HB_FUNC_STATIC( TCOMBO_DELETEITEM )   // METHOD DeleteItem( nItem )
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+
+   hb_retnl( SendMessage( oSelf->hWnd, CB_DELETESTRING, ( WPARAM ) hb_parni( 1 ) - 1, 0 ) );
+}
+
+HB_FUNC_STATIC( TCOMBO_DELETEALLITEMS )   // METHOD DeleteAllItems()
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+
+   hb_retnl( SendMessage( oSelf->hWnd, CB_RESETCONTENT, 0, 0 ) );
+}
+
+HB_FUNC_STATIC( TCOMBO_ITEM )   // METHOD Item( nItem, uValue )
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
    PHB_ITEM pValue = hb_param( 2, HB_IT_ANY );
    int nItem = hb_parni( 1 ) - 1;
    BYTE *cBuffer;
+   struct IMAGE_PARAMETER pStruct;
 
    if( pValue && ( HB_IS_STRING( pValue ) || HB_IS_NUMERIC( pValue ) || HB_IS_ARRAY( pValue ) ) )
    {
       SendMessage( oSelf->hWnd, CB_DELETESTRING, ( WPARAM ) nItem, 0 );
-      ComboInsertAnyItem( oSelf->hWnd, nItem, pValue );
+      ImageFillParameter( &pStruct, pValue );
+      TCombo_SetImageBuffer( oSelf, pStruct, nItem );
+      SendMessage( oSelf->hWnd, CB_INSERTSTRING, ( WPARAM ) nItem, ( LPARAM ) pStruct.cString );
    }
 
    cBuffer = hb_xgrab( 2000 );
@@ -410,7 +550,7 @@ HB_FUNC_STATIC( TCOMBO_ITEM )
    hb_xfree( cBuffer );
 }
 
-HB_FUNC_STATIC( TCOMBO_ITEMCOUNT )
+HB_FUNC_STATIC( TCOMBO_ITEMCOUNT )   // METHOD ItemCount()
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );

@@ -1,5 +1,5 @@
 /*
- * $Id: c_combo.c,v 1.5 2005-11-16 05:42:50 guerra000 Exp $
+ * $Id: c_combo.c,v 1.6 2005-11-17 05:06:37 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -116,16 +116,11 @@ static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 
 HB_FUNC( INITCOMBOBOX )
 {
-	HWND hwnd;
-	HWND hbutton;
-    int Style, StyleEx;
-    INITCOMMONCONTROLSEX  i;
+   HWND hwnd;
+   HWND hbutton;
+   int Style, StyleEx;
 
-    i.dwSize = sizeof( INITCOMMONCONTROLSEX );
-    i.dwICC = ICC_USEREX_CLASSES;
-    InitCommonControlsEx( &i );
-
-	hwnd = (HWND) hb_parnl (1);
+   hwnd = (HWND) hb_parnl (1);
 
    StyleEx = 0;
    if ( hb_parl( 14 ) )
@@ -133,38 +128,38 @@ HB_FUNC( INITCOMBOBOX )
       StyleEx |= WS_EX_LAYOUTRTL | WS_EX_RIGHTSCROLLBAR | WS_EX_RTLREADING;
    }
 
-	Style = WS_CHILD | WS_VSCROLL ;
+   Style = WS_CHILD | WS_VSCROLL | CBS_HASSTRINGS | CBS_OWNERDRAWVARIABLE;
 
-	if ( ! hb_parl(9) )
-	{
-		Style = Style | WS_VISIBLE ;
-	}
+   if ( ! hb_parl(9) )
+   {
+      Style |= WS_VISIBLE ;
+   }
 
-	if ( ! hb_parl(10) )
-	{
-		Style = Style | WS_TABSTOP ;
-	}
+   if ( ! hb_parl(10) )
+   {
+      Style |= WS_TABSTOP ;
+   }
 
-	if ( hb_parl(11) )
-	{
-		Style = Style | CBS_SORT ;
-	}
+   if ( hb_parl(11) )
+   {
+      Style |= CBS_SORT ;
+   }
 
-	if ( !hb_parl(12) )
-	{
-		Style = Style | CBS_DROPDOWNLIST ;
-	}
-	else
-	{
-		Style = Style | CBS_DROPDOWN ;
-	}
+   if ( !hb_parl(12) )
+   {
+      Style |= CBS_DROPDOWNLIST ;
+   }
+   else
+   {
+      Style |= CBS_DROPDOWN ;
+   }
 
-	if ( hb_parl(13) )
-	{
-		Style = Style | CBS_NOINTEGRALHEIGHT ;
-	}
+   if ( hb_parl(13) )
+   {
+      Style |= CBS_NOINTEGRALHEIGHT ;
+   }
 
-    hbutton = CreateWindowEx( StyleEx, WC_COMBOBOXEX,
+   hbutton = CreateWindowEx( StyleEx, "COMBOBOX",
                            "" ,
                            Style ,
                            hb_parni(3) ,
@@ -181,42 +176,26 @@ HB_FUNC( INITCOMBOBOX )
    hb_retnl ( (LONG) hbutton );
 }
 
-int ComboInsertAnyItem( HWND hWnd, int iPos, PHB_ITEM pItem )
-{
-   COMBOBOXEXITEM cmb;
-   struct IMAGE_PARAMETER pStruct;
-
-   cmb.mask = CBEIF_TEXT | CBEIF_IMAGE | CBEIF_SELECTEDIMAGE;
-   cmb.iItem = iPos;
-   ImageFillParameter( &pStruct, pItem );
-   cmb.pszText = pStruct.cString;
-   cmb.iImage = pStruct.iImage1;
-   cmb.iSelectedImage = pStruct.iImage2;
-   SendMessage( hWnd, CBEM_INSERTITEM, 0, ( LPARAM ) &cmb );
-
-   return iPos;
-}
-
 HB_FUNC( COMBOADDSTRING )
 {
    HWND hWnd = ( HWND ) hb_parnl( 1 );
 
-   ComboInsertAnyItem( hWnd, ComboBox_GetCount( hWnd ), hb_param( 2, HB_IT_ANY ) );
+   SendMessage( hWnd, CB_INSERTSTRING, ( WPARAM ) ComboBox_GetCount( hWnd ), ( LPARAM ) hb_parc( 2 ) );
 }
 
-HB_FUNC ( COMBOINSERTSTRING )
+HB_FUNC( COMBOINSERTSTRING )
 {
-   ComboInsertAnyItem( ( HWND ) hb_parnl( 1 ), hb_parni( 3 ) - 1, hb_param( 2, HB_IT_ANY ) );
+   SendMessage( ( HWND ) hb_parnl( 1 ), CB_INSERTSTRING, ( WPARAM ) hb_parni( 3 ) - 1, ( LPARAM ) hb_parc( 2 ) );
 }
 
-HB_FUNC ( COMBOSETCURSEL )
+HB_FUNC( COMBOSETCURSEL )
 {
-   SendMessage( (HWND) hb_parnl( 1 ), CB_SETCURSEL, (WPARAM) hb_parni(2)-1, 0);
+   SendMessage( ( HWND ) hb_parnl( 1 ), CB_SETCURSEL, ( WPARAM ) hb_parni( 2 ) - 1, 0 );
 }
 
-HB_FUNC ( COMBOGETCURSEL )
+HB_FUNC( COMBOGETCURSEL )
 {
-	hb_retni ( SendMessage( (HWND) hb_parnl( 1 ) , CB_GETCURSEL , 0 , 0 )  + 1 );
+   hb_retni ( SendMessage( (HWND) hb_parnl( 1 ) , CB_GETCURSEL , 0 , 0 )  + 1 );
 }
 
 HB_FUNC (COMBOBOXDELETESTRING )

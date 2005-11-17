@@ -1,11 +1,29 @@
 /*
- * $Id: ChangeLog,v 1.45 2005-11-16 05:52:53 guerra000 Exp $
+ * $Id: ChangeLog,v 1.46 2005-11-17 05:06:36 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2005-11-16 23:04 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * include/oohg.h
+  * source/c_combo.c
+  * source/c_controlmisc.c
+  * source/h_combo.prg
+  * source/h_controlmisc.prg
+  * source/h_grid.prg
+  * source/h_windows.prg
+    + ::Events_DrawItem() method added.
+    + ::Release() method for TWindow class added.
+    * ::ImageList property moved to C level structure.
+    * Combobox is again "COMBOBOX" window instead of "ComboBoxEx32".
+      Image processing is managed via WM_DRAWITEM event.
+    * A few methods moved to C level.
+
+  * source/h_textbox.prg
+    * commctrl.h include file added.
 
 2005-11-15 23:52 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_controlmisc.prg

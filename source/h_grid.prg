@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.30 2005-10-30 16:53:54 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.31 2005-11-17 05:06:37 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -868,6 +868,7 @@ Return lRet
 #include "hbvm.h"
 #include "hbstack.h"
 #include <windows.h>
+#include <commctrl.h>
 #include "../include/oohg.h"
 
 // -----------------------------------------------------------------------------
@@ -1750,8 +1751,8 @@ METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGrid
       uValue := aScan( ::aItems, { |c| c == uValue } )
    EndIf
    @ nRow,nCol COMBOBOX 0 OBJ ::oControl PARENT &cWindow WIDTH nWidth VALUE uValue ITEMS ::aItems
-   If ! Empty( ::oGrid )
-      SendMessage( ::oControl:hWnd, ::oControl:SetImageListCommand, ::oControl:SetImageListWParam, ::oGrid:ImageList )
+   If ! Empty( ::oGrid ) .AND. ::oGrid:ImageList != 0
+      ::oControl:ImageList := ImageList_Duplicate( ::oGrid:ImageList )
    EndIf
 Return ::oControl
 
@@ -1836,8 +1837,10 @@ METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGrid
       uValue := Val( uValue )
    EndIf
    @ nRow,nCol COMBOBOX 0 OBJ ::oControl PARENT &cWindow WIDTH nWidth VALUE 0 ITEMS {}
-   SendMessage( ::oControl:hWnd, ::oControl:SetImageListCommand, ::oControl:SetImageListWParam, ::oGrid:ImageList )
-   AEVAL( ARRAY( ImageList_GetImageCount( ::oGrid:ImageList ) ), { |x,i| ComboAddString( ::oControl:hWnd, i - 1 ), x } )
+   If ! Empty( ::oGrid ) .AND. ::oGrid:ImageList != 0
+      ::oControl:ImageList := ImageList_Duplicate( ::oGrid:ImageList )
+   EndIf
+   AEVAL( ARRAY( ImageList_GetImageCount( ::oGrid:ImageList ) ), { |x,i| ::oControl:AddItem( i - 1 ), x } )
    ::oControl:Value := uValue + 1
 Return ::oControl
 

@@ -1,5 +1,5 @@
 /*
- * $Id: c_controlmisc.c,v 1.13 2005-11-16 05:42:50 guerra000 Exp $
+ * $Id: c_controlmisc.c,v 1.14 2005-11-17 05:06:37 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -145,6 +145,13 @@ char *s_SymbolNames[] = { "EVENTS_NOTIFY",
                           "LOOKFORKEY",
                           "ACONTROLINFO",
                           "_ACONTROLINFO",
+                          "EVENTS_DRAWITEM",
+                          "_HWND",
+                          "EVENTS_COMMAND",
+                          "ONCHANGE",
+                          "ONGOTFOCUS",
+                          "ONLOSTFOCUS",
+                          "ONCLICK",
                           "LastSymbol" };
 
 void _OOHG_Send( PHB_ITEM pSelf, int iSymbol )
@@ -208,6 +215,18 @@ POCTRL _OOHG_GetControlInfo( PHB_ITEM pSelf )
    }
 
    return ( POCTRL ) pString;
+}
+
+void _OOHG_DoEvent( PHB_ITEM pSelf, int iSymbol )
+{
+   HB_ITEM pSelf2;
+
+   memcpy( &pSelf2, pSelf, sizeof( HB_ITEM ) );
+   _OOHG_Send( pSelf, iSymbol );
+   hb_vmSend( 0 );
+   _OOHG_Send( &pSelf2, s_DoEvent );
+   hb_vmPush( hb_param( -1, HB_IT_ANY ) );
+   hb_vmSend( 1 );
 }
 
 HB_FUNC ( DELETEOBJECT )
@@ -676,6 +695,11 @@ HB_FUNC( IMAGELIST_ADD )
 HB_FUNC( IMAGELIST_GETIMAGECOUNT )
 {
    hb_retni( ImageList_GetImageCount( ( HIMAGELIST ) hb_parnl( 1 ) ) );
+}
+
+HB_FUNC( IMAGELIST_DUPLICATE )
+{
+   hb_retnl( ( LONG ) ImageList_Duplicate( ( HIMAGELIST ) hb_parnl( 1 ) ) );
 }
 
 void ImageFillParameter( struct IMAGE_PARAMETER *pResult, PHB_ITEM pString )
