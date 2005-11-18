@@ -1,5 +1,5 @@
 /*
- * $Id: c_controlmisc.c,v 1.14 2005-11-17 05:06:37 guerra000 Exp $
+ * $Id: c_controlmisc.c,v 1.15 2005-11-18 03:49:04 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -121,8 +121,8 @@ PHB_DYNS *s_Symbols = NULL;
 char *s_SymbolNames[] = { "EVENTS_NOTIFY",
                           "GRIDFORECOLOR",
                           "GRIDBACKCOLOR",
-                          "AFONTCOLOR",
-                          "DEFBKCOLOREDIT",
+                          "FONTCOLOR",
+                          "BACKCOLOR",
                           "CONTAINER",
                           "PARENT",
                           "HCURSOR",
@@ -152,6 +152,7 @@ char *s_SymbolNames[] = { "EVENTS_NOTIFY",
                           "ONGOTFOCUS",
                           "ONLOSTFOCUS",
                           "ONCLICK",
+                          "TRANSPARENT",
                           "LastSymbol" };
 
 void _OOHG_Send( PHB_ITEM pSelf, int iSymbol )
@@ -179,7 +180,6 @@ POCTRL _OOHG_GetControlInfo( PHB_ITEM pSelf )
 
    _OOHG_Send( pSelf, s_aControlInfo );
    hb_vmSend( 0 );
-   pArray = hb_param( -1, HB_IT_ARRAY );
    if( ! pArray )
    {
       bRelease = 1;
@@ -199,7 +199,7 @@ POCTRL _OOHG_GetControlInfo( PHB_ITEM pSelf )
    {
       pString = hb_xgrab( _OOHG_Struct_Size );
       memset( pString, 0, _OOHG_Struct_Size );
-      if( HB_IS_STRING( pArray->item.asArray.value->pItems ) )
+      if( HB_IS_STRING( pArray->item.asArray.value->pItems ) && pArray->item.asArray.value->pItems->item.asString.value && pArray->item.asArray.value->pItems->item.asString.length )
       {
          memcpy( pString, pArray->item.asArray.value->pItems->item.asString.value, pArray->item.asArray.value->pItems->item.asString.length );
       }
@@ -227,6 +227,41 @@ void _OOHG_DoEvent( PHB_ITEM pSelf, int iSymbol )
    _OOHG_Send( &pSelf2, s_DoEvent );
    hb_vmPush( hb_param( -1, HB_IT_ANY ) );
    hb_vmSend( 1 );
+}
+
+BOOL _OOHG_DetermineColor( PHB_ITEM pColor, LONG *lColor )
+{
+   BOOL bValid = 0;
+
+   if( pColor )
+   {
+
+      if( HB_IS_NUMERIC( pColor ) )
+      {
+         *lColor = hb_itemGetNL( pColor );
+         bValid = 1;
+      }
+      else if( HB_IS_ARRAY( pColor ) && pColor->item.asArray.value->ulLen >= 3 &&
+               HB_IS_NUMERIC( &pColor->item.asArray.value->pItems[ 0 ] ) &&
+               HB_IS_NUMERIC( &pColor->item.asArray.value->pItems[ 1 ] ) &&
+               HB_IS_NUMERIC( &pColor->item.asArray.value->pItems[ 2 ] ) )
+      {
+         *lColor = RGB( hb_itemGetNL( &pColor->item.asArray.value->pItems[ 0 ] ),
+                        hb_itemGetNL( &pColor->item.asArray.value->pItems[ 1 ] ),
+                        hb_itemGetNL( &pColor->item.asArray.value->pItems[ 2 ] ) );
+         bValid = 1;
+      }
+      else if( HB_IS_STRING( pColor ) && pColor->item.asString.length >= 3 )
+      {
+         *lColor = RGB( pColor->item.asString.value[ 0 ],
+                        pColor->item.asString.value[ 1 ],
+                        pColor->item.asString.value[ 2 ] );
+         bValid = 1;
+      }
+
+   }
+
+   return bValid;
 }
 
 HB_FUNC ( DELETEOBJECT )

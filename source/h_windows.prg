@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.43 2005-11-17 05:06:37 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.44 2005-11-18 03:49:04 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -142,8 +142,6 @@ CLASS TWindow
    DATA Italic     INIT .F.
    DATA Underline  INIT .F.
    DATA Strikeout  INIT .F.
-   DATA aFontColor INIT nil
-   DATA aBackColor INIT nil
    DATA RowMargin  INIT 0
    DATA ColMargin  INIT 0
    DATA Container  INIT nil
@@ -153,7 +151,6 @@ CLASS TWindow
    DATA lEnabled       INIT .T.
    DATA aControls      INIT {}
    DATA aControlsNames INIT {}
-   DATA BrushHandle    INIT 0
    DATA lInternal      INIT .T.
 
    DATA OnClick        INIT nil
@@ -166,10 +163,16 @@ CLASS TWindow
 
    DATA DefBkColorEdit  INIT nil
 
+   METHOD SethWnd
    METHOD Release
    METHOD StartInfo
    METHOD SetFocus
    METHOD ImageList           SETGET
+   METHOD BrushHandle         SETGET
+   METHOD FontColor           SETGET
+   METHOD BackColor           SETGET
+   METHOD FontColorSelected   SETGET
+   METHOD BackColorSelected   SETGET
 
    METHOD Enabled             SETGET
    METHOD RTL                 SETGET
@@ -187,6 +190,19 @@ CLASS TWindow
 ENDCLASS
 
 #pragma BEGINDUMP
+
+HB_FUNC_STATIC( TWINDOW_SETHWND )
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+
+   if( hb_pcount() >= 1 && ISNUM( 1 ) )
+   {
+      oSelf->hWnd = ( HWND ) hb_parnl( 1 );
+   }
+
+   hb_retnl( ( LONG ) oSelf->hWnd );
+}
 
 HB_FUNC_STATIC( TWINDOW_RELEASE )
 {
@@ -207,6 +223,14 @@ HB_FUNC_STATIC( TWINDOW_RELEASE )
       oSelf->AuxBuffer = NULL;
       oSelf->AuxBufferLen = 0;
    }
+   DeleteObject( oSelf->BrushHandle );
+
+   // Brush handle
+   if( oSelf->BrushHandle )
+   {
+      DeleteObject( oSelf->BrushHandle );
+      oSelf->BrushHandle = NULL;
+   }
 
    // ::hWnd := -1
    oSelf->hWnd = ( HWND ) -1;
@@ -222,6 +246,11 @@ HB_FUNC_STATIC( TWINDOW_STARTINFO )
 
    oSelf->hWnd = ( HWND ) hb_parnl( 1 );
    memcpy( &oSelf->pSelf, pSelf, sizeof( HB_ITEM ) );
+
+   oSelf->lFontColor = -1;
+   oSelf->lBackColor = -1;
+   oSelf->lFontColorSelected = -1;
+   oSelf->lBackColorSelected = -1;
 }
 
 HB_FUNC_STATIC( TWINDOW_SETFOCUS )
@@ -249,6 +278,112 @@ HB_FUNC_STATIC( TWINDOW_IMAGELIST )
    }
 
    hb_retnl( ( LONG ) oSelf->ImageList );
+}
+
+HB_FUNC_STATIC( TWINDOW_BRUSHHANDLE )
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+
+   if( hb_pcount() >= 1 && ISNUM( 1 ) )
+   {
+      oSelf->BrushHandle = ( HBRUSH ) hb_parnl( 1 );
+   }
+
+   hb_retnl( ( LONG ) oSelf->BrushHandle );
+}
+
+HB_FUNC_STATIC( TWINDOW_FONTCOLOR )
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+
+   if( _OOHG_DetermineColor( hb_param( 1, HB_IT_ANY ), &oSelf->lFontColor ) && oSelf->hWnd )
+   {
+
+      RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+   }
+
+   if( oSelf->lFontColor != -1 )
+   {
+      hb_reta( 3 );
+      hb_stornl( GetRValue( oSelf->lFontColor ), -1, 1 );
+      hb_stornl( GetGValue( oSelf->lFontColor ), -1, 2 );
+      hb_stornl( GetBValue( oSelf->lFontColor ), -1, 3 );
+   }
+   else
+   {
+      hb_ret();
+   }
+}
+
+HB_FUNC_STATIC( TWINDOW_BACKCOLOR )
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+
+   if( _OOHG_DetermineColor( hb_param( 1, HB_IT_ANY ), &oSelf->lBackColor ) && oSelf->hWnd )
+   {
+      RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+   }
+
+   if( oSelf->lBackColor != -1 )
+   {
+      hb_reta( 3 );
+      hb_stornl( GetRValue( oSelf->lBackColor ), -1, 1 );
+      hb_stornl( GetGValue( oSelf->lBackColor ), -1, 2 );
+      hb_stornl( GetBValue( oSelf->lBackColor ), -1, 3 );
+   }
+   else
+   {
+      hb_ret();
+   }
+}
+
+HB_FUNC_STATIC( TWINDOW_FONTCOLORSELECTED )
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+
+   if( _OOHG_DetermineColor( hb_param( 1, HB_IT_ANY ), &oSelf->lFontColorSelected ) && oSelf->hWnd )
+   {
+      RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+   }
+
+   if( oSelf->lFontColorSelected != -1 )
+   {
+      hb_reta( 3 );
+      hb_stornl( GetRValue( oSelf->lFontColorSelected ), -1, 1 );
+      hb_stornl( GetGValue( oSelf->lFontColorSelected ), -1, 2 );
+      hb_stornl( GetBValue( oSelf->lFontColorSelected ), -1, 3 );
+   }
+   else
+   {
+      hb_ret();
+   }
+}
+
+HB_FUNC_STATIC( TWINDOW_BACKCOLORSELECTED )
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+
+   if( _OOHG_DetermineColor( hb_param( 1, HB_IT_ANY ), &oSelf->lBackColorSelected ) && oSelf->hWnd )
+   {
+      RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+   }
+
+   if( oSelf->lBackColorSelected != -1 )
+   {
+      hb_reta( 3 );
+      hb_stornl( GetRValue( oSelf->lBackColorSelected ), -1, 1 );
+      hb_stornl( GetGValue( oSelf->lBackColorSelected ), -1, 2 );
+      hb_stornl( GetBValue( oSelf->lBackColorSelected ), -1, 3 );
+   }
+   else
+   {
+      hb_ret();
+   }
 }
 
 #pragma ENDDUMP
@@ -802,7 +937,7 @@ Local Formhandle
    ::VirtualHeight := VirtualHeight
    ::VirtualWidth := VirtualWidth
    ::NoShow := NoShow
-   ::aBackColor := aRGB
+   ::BackColor := aRGB
    ::AutoRelease := ! NoAutoRelease
 
    // Font Name:
@@ -1196,15 +1331,55 @@ METHOD Cursor( uValue ) CLASS TForm
    ENDIF
 Return nil
 
+/*
 *------------------------------------------------------------------------------*
 METHOD BackColor( uValue ) CLASS TForm
 *------------------------------------------------------------------------------*
    IF ValType( uValue ) == "A"
       DeleteObject( ::BrushHandle )
-      ::aBackColor := uValue
+      ::BackColor := uValue
       ::BrushHandle = SetWindowBackColor( ::hWnd, uValue )
    ENDIF
 Return nil
+*/
+#pragma BEGINDUMP
+HB_FUNC_STATIC( TFORM_BACKCOLOR )
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+
+   if( _OOHG_DetermineColor( hb_param( 1, HB_IT_ANY ), &oSelf->lBackColor ) && oSelf->hWnd )
+   {
+      if( oSelf->BrushHandle )
+      {
+         DeleteObject( oSelf->BrushHandle );
+      }
+      if( oSelf->lBackColor != -1 )
+      {
+         oSelf->BrushHandle = CreateSolidBrush( oSelf->lBackColor );
+         SetClassLong( oSelf->hWnd, GCL_HBRBACKGROUND, ( long ) oSelf->BrushHandle );
+      }
+      else
+      {
+         oSelf->BrushHandle = 0;
+         SetClassLong( oSelf->hWnd, GCL_HBRBACKGROUND, ( long )( COLOR_BTNFACE + 1 ) );
+      }
+      RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+   }
+
+   if( oSelf->lBackColor != -1 )
+   {
+      hb_reta( 3 );
+      hb_stornl( GetRValue( oSelf->lBackColor ), -1, 1 );
+      hb_stornl( GetGValue( oSelf->lBackColor ), -1, 2 );
+      hb_stornl( GetBValue( oSelf->lBackColor ), -1, 3 );
+   }
+   else
+   {
+      hb_ret();
+   }
+}
+#pragma ENDDUMP
 
 *------------------------------------------------------------------------------*
 METHOD SizePos( nRow, nCol, nWidth, nHeight ) CLASS TForm
@@ -1958,9 +2133,6 @@ Local oWnd, oCtrl
       DO WHILE LEN( ::aControls ) > 0
          ::aControls[ 1 ]:Release()
       ENDDO
-
-      // Delete Brush
-      DeleteObject( ::BrushHandle )
 
       // Delete Notify icon
       ShowNotifyIcon( ::hWnd, .F. , 0, "" )

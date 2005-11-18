@@ -1,5 +1,5 @@
 /*
- * $Id: c_grid.c,v 1.11 2005-10-03 05:35:54 guerra000 Exp $
+ * $Id: c_grid.c,v 1.12 2005-11-18 03:49:04 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -633,7 +633,7 @@ static int TGrid_Notify_CustomDraw_GetColor( PHB_ITEM pSelf, unsigned int x, uns
 {
    PHB_ITEM pColor;
    HB_ITEM pRet;
-   int iColor, sw;
+   LONG iColor;
 
    _OOHG_Send( pSelf, sGridColor );
    hb_vmSend( 0 );
@@ -652,58 +652,14 @@ static int TGrid_Notify_CustomDraw_GetColor( PHB_ITEM pSelf, unsigned int x, uns
    }
 
    iColor = -1;
-   sw = 1;
-   while( iColor < 0 && sw )
+
+   if( ! _OOHG_DetermineColor( pColor, &iColor ) || iColor == -1 )
    {
-      if( pColor && HB_IS_NUMERIC( pColor ) )
-      {
-         iColor = hb_itemGetNL( pColor );
-      }
-      else if( pColor && HB_IS_ARRAY( pColor ) )
-      {
-         if( pColor->item.asArray.value->ulLen >= 3 )
-         {
-            pColor = pColor->item.asArray.value->pItems;
-            if( HB_IS_NUMERIC( pColor ) && HB_IS_NUMERIC( &pColor[ 1 ] ) && HB_IS_NUMERIC( &pColor[ 2 ] ) )
-            {
-               iColor =   ( hb_itemGetNL( pColor       ) & 0x0000FF )         |
-                        ( ( hb_itemGetNL( &pColor[ 1 ] ) & 0x0000FF ) <<  8 ) |
-                        ( ( hb_itemGetNL( &pColor[ 2 ] ) & 0x0000FF ) << 16 ) ;
-            }
-         }
-      }
-      else if( ! pSelf || ! HB_IS_OBJECT( pSelf ) )
+      _OOHG_Send( pSelf, sObjColor );
+      hb_vmSend( 0 );
+      if( ! _OOHG_DetermineColor( hb_param( -1, HB_IT_ANY ), &iColor ) || iColor == -1 )
       {
          iColor = GetSysColor( iDefaultColor );
-         sw = 0;
-      }
-      else
-      {
-         _OOHG_Send( pSelf, sObjColor );
-
-         // oObj := IF( ValType( oObj:Container ) == "O", oObj:Container, oObj:Parent )
-         _OOHG_Send( pSelf, s_Container );
-         hb_vmSend( 0 );
-         pColor = hb_param( -1, HB_IT_OBJECT );
-         if( ! pColor )
-         {
-            _OOHG_Send( pSelf, s_Parent );
-            hb_vmSend( 0 );
-            pColor = hb_param( -1, HB_IT_OBJECT );
-         }
-         if( pColor )
-         {
-            memcpy( &pRet, pColor, sizeof( HB_ITEM ) );
-            pSelf = &pRet;
-         }
-         else
-         {
-            pSelf = NULL;
-         }
-
-         // nColor := oObj:aFontColor
-         hb_vmSend( 0 );
-         pColor = hb_param( -1, HB_IT_ANY );
       }
    }
 
@@ -733,8 +689,8 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam )
    x = lplvcd->iSubItem + 1;
    y = lplvcd->nmcd.dwItemSpec + 1;
 
-   lplvcd->clrText   = TGrid_Notify_CustomDraw_GetColor( pSelf, x, y, s_GridForeColor, s_aFontColor,     COLOR_WINDOWTEXT );
-   lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetColor( pSelf, x, y, s_GridBackColor, s_DefBkColorEdit, COLOR_WINDOW );
+   lplvcd->clrText   = TGrid_Notify_CustomDraw_GetColor( pSelf, x, y, s_GridForeColor, s_FontColor, COLOR_WINDOWTEXT );
+   lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetColor( pSelf, x, y, s_GridBackColor, s_BackColor, COLOR_WINDOW );
 
    return CDRF_NEWFONT;
 }

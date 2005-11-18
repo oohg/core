@@ -1,5 +1,5 @@
 /*
- * $Id: h_progressbar.prg,v 1.4 2005-10-01 15:35:10 guerra000 Exp $
+ * $Id: h_progressbar.prg,v 1.5 2005-11-18 03:49:04 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -134,16 +134,12 @@ Local ControlHandle
    ::nRangeMin := Lo
    ::nRangeMax := Hi
 
-   if ::aBackColor <> Nil
-      if ::aBackColor[1] <> Nil .and. ::aBackColor[2] <> Nil .and. ::aBackColor[3] <> Nil
-         SetProgressBarBkColor( ControlHandle, ::aBackColor[1], ::aBackColor[2], ::aBackColor[3] )
-		endif
+   if ::BackColor <> Nil
+      SetProgressBarBkColor( ControlHandle, ::BackColor[1], ::BackColor[2], ::BackColor[3] )
 	endif
 
-   if ::aFontColor <> Nil
-      if ::aFontColor[1] <> Nil .and. ::aFontColor[2] <> Nil .and. ::aFontColor[3] <> Nil
-         SetProgressBarBarColor( ControlHandle, ::aFontColor[1], ::aFontColor[2], ::aFontColor[3] )
-		endif
+   if ::FontColor <> Nil
+      SetProgressBarBarColor( ControlHandle, ::FontColor[1], ::FontColor[2], ::FontColor[3] )
 	endif
 
 Return Self
@@ -179,15 +175,15 @@ METHOD FontColor( uValue ) CLASS TProgressBar
 *------------------------------------------------------------------------------*
    IF VALTYPE( uValue ) == "A"
       ::Super:FontColor := uValue
-      SetProgressBarBarColor( ::hWnd, ::aFontColor[1], ::aFontColor[2], ::aFontColor[3] )
+      SetProgressBarBarColor( ::hWnd, ::FontColor[1], ::FontColor[2], ::FontColor[3] )
    ENDIF
-RETURN ::aFontColor
+RETURN ::Super:FontColor
 
 *------------------------------------------------------------------------------*
 METHOD BackColor( uValue ) CLASS TProgressBar
 *------------------------------------------------------------------------------*
    IF VALTYPE( uValue ) == "A"
       ::Super:BackColor := uValue
-      SetProgressBarBkColor( ::hWnd, ::aBackColor[1], ::aBackColor[2], ::aBackColor[3] )
+      SetProgressBarBkColor( ::hWnd, ::BackColor[1], ::BackColor[2], ::BackColor[3] )
    ENDIF
-RETURN ::aBackColor
+RETURN ::Super:BackColor

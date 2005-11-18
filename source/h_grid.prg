@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.31 2005-11-17 05:06:37 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.32 2005-11-18 03:49:04 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -266,8 +266,8 @@ Local ControlHandle, aImageList
    ::SetFont( , , bold, italic, underline, strikeout )
    ::SizePos( y, x, w, h )
 
-   ::FontColor := ::aFontColor
-   ::BackColor := ::aBackColor
+   ::FontColor := ::Super:FontColor
+   ::BackColor := ::Super:BackColor
 
    if valtype(aHeadClick) != "A"
 		aHeadClick := {}
@@ -875,7 +875,6 @@ Return lRet
 HB_FUNC_STATIC( TGRID_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TGrid
 // -----------------------------------------------------------------------------
 {
-// int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam );
    HWND hWnd      = ( HWND )   hb_parnl( 1 );
    UINT message   = ( UINT )   hb_parni( 2 );
    WPARAM wParam  = ( WPARAM ) hb_parni( 3 );
@@ -1143,40 +1142,63 @@ METHOD Header( nColumn, uValue ) CLASS TGrid
    ENDIF
 Return ::aHeaders[ nColumn ]
 
-*-----------------------------------------------------------------------------*
-METHOD FontColor( uValue ) CLASS TGrid
-*-----------------------------------------------------------------------------*
-LOCAL nTmp
-   IF VALTYPE( uValue ) == "A"
-      ::Super:FontColor := uValue
-      IF ::hWnd > 0
-         ListView_SetTextColor( ::hWnd, ::aFontColor[1] , ::aFontColor[2] , ::aFontColor[3] )
-         RedrawWindow( ::hWnd )
-      ENDIF
-   ENDIF
-   IF ::hWnd > 0
-      nTmp := ListView_GetTextColor( ::hWnd )
-      ::aFontColor := { GetRed( nTmp ), GetGreen( nTmp ), GetBlue( nTmp ) }
-   ENDIF
-Return ::aFontColor
+#pragma BEGINDUMP
+HB_FUNC_STATIC( TGRID_FONTCOLOR )
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
 
-*-----------------------------------------------------------------------------*
-METHOD BackColor( uValue ) CLASS TGrid
-*-----------------------------------------------------------------------------*
-LOCAL nTmp
-   IF VALTYPE( uValue ) == "A"
-      ::Super:BackColor := uValue
-      IF ::hWnd > 0
-         ListView_SetBkColor( ::hWnd, ::aBackColor[1] , ::aBackColor[2] , ::aBackColor[3] )
-         ListView_SetTextBkColor( ::hWnd, ::aBackColor[1] , ::aBackColor[2] , ::aBackColor[3] )
-         RedrawWindow( ::hWnd )
-      ENDIF
-   ENDIF
-   IF ::hWnd > 0
-      nTmp := ListView_GetBkColor( ::hWnd )
-      ::aBackColor := { GetRed( nTmp ), GetGreen( nTmp ), GetBlue( nTmp ) }
-   ENDIF
-Return ::aBackColor
+   if( _OOHG_DetermineColor( hb_param( 1, HB_IT_ANY ), &oSelf->lFontColor ) )
+   {
+      if( oSelf->hWnd )
+      {
+         ListView_SetTextColor( oSelf->hWnd, oSelf->lFontColor );
+         // oSelf->lTextColor = ListView_GetTextColor( oSelf->hWnd );
+         RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+      }
+   }
+
+   if( oSelf->lFontColor != -1 )
+   {
+      hb_reta( 3 );
+      hb_stornl( GetRValue( oSelf->lFontColor ), -1, 1 );
+      hb_stornl( GetGValue( oSelf->lFontColor ), -1, 2 );
+      hb_stornl( GetBValue( oSelf->lFontColor ), -1, 3 );
+   }
+   else
+   {
+      hb_ret();
+   }
+}
+
+HB_FUNC_STATIC( TGRID_BACKCOLOR )
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+
+   if( _OOHG_DetermineColor( hb_param( 1, HB_IT_ANY ), &oSelf->lBackColor ) )
+   {
+      if( oSelf->hWnd )
+      {
+         ListView_SetBkColor( oSelf->hWnd, oSelf->lBackColor );
+         // oSelf->lBackColor = ListView_GetBkColor( oSelf->hWnd );
+         RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+      }
+   }
+
+   if( oSelf->lBackColor != -1 )
+   {
+      hb_reta( 3 );
+      hb_stornl( GetRValue( oSelf->lBackColor ), -1, 1 );
+      hb_stornl( GetGValue( oSelf->lBackColor ), -1, 2 );
+      hb_stornl( GetBValue( oSelf->lBackColor ), -1, 3 );
+   }
+   else
+   {
+      hb_ret();
+   }
+}
+#pragma ENDDUMP
 
 *-----------------------------------------------------------------------------*
 METHOD SetRangeColor( uForeColor, uBackColor, nTop, nLeft, nBottom, nRight ) CLASS TGrid

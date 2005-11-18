@@ -1,5 +1,5 @@
 /*
- * $Id: h_progressmeter.prg,v 1.4 2005-10-13 06:31:07 guerra000 Exp $
+ * $Id: h_progressmeter.prg,v 1.5 2005-11-18 03:49:04 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -169,12 +169,12 @@ METHOD FontColor( uValue ) CLASS TProgressMeter
 *------------------------------------------------------------------------------*
    IF VALTYPE( uValue ) == "A"
       ::Super:FontColor := uValue
-      uValue := ::aFontColor
+      uValue := ::Super:FontColor
       IF ValType( ::oLabel ) == "O"
          ::oLabel:BackColor := uValue
       EndIf
    Else
-      uValue := ::aFontColor
+      uValue := ::Super:FontColor
    ENDIF
 RETURN uValue
 
@@ -187,7 +187,7 @@ METHOD BackColor( uValue ) CLASS TProgressMeter
          ::oLabel:FontColor := uValue
       Endif
    Else
-      uValue := ::aBackColor
+      uValue := ::Super:BackColor
    ENDIF
 RETURN uValue
 

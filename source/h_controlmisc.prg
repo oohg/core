@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.35 2005-11-17 05:06:37 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.36 2005-11-18 03:49:04 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -103,6 +103,7 @@ STATIC _OOHG_lMultiple := .T.    // Allows the same applicaton runs more one ins
 
 #pragma BEGINDUMP
 #include "hbapi.h"
+#include "hbapiitm.h"
 #include "hbvm.h"
 #include "hbstack.h"
 #include <windows.h>
@@ -1544,8 +1545,6 @@ CLASS TControl FROM TWindow
    METHOD ForceHide           BLOCK { |Self| HideWindow( ::hWnd ) }
    METHOD SaveData
    METHOD RefreshData
-   METHOD FontColor           SETGET
-   METHOD BackColor           SETGET
    METHOD AddBitMap
 
    METHOD IsHandle( hWnd )    BLOCK { | Self, hWnd | ( ::hWnd == hWnd ) }
@@ -1625,6 +1624,8 @@ METHOD SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BkColor,
 *------------------------------------------------------------------------------*
 LOCAL nPos
 
+   ::StartInfo( -1 )
+
    // If PARENTFORM is a control
    If ValType( ParentForm ) == "O"
       If ParentForm:ClassName == "TFORM"
@@ -1702,13 +1703,13 @@ METHOD SetInfo( ControlName, FontName, FontSize, FontColor, BkColor, lEditBox, l
    // Font Color:
    if ! empty( FontColor )
       // Specified color
-      ::aFontColor := FontColor
-   elseif ::Container != nil .AND. ! empty( ::Container:aFontColor )
+      ::FontColor := FontColor
+   elseif ::Container != nil .AND. ! empty( ::Container:FontColor )
       // Container
-      ::aFontColor := ::Container:aFontColor
-   elseif ! empty( ::Parent:aFontColor )
+      ::FontColor := ::Container:FontColor
+   elseif ! empty( ::Parent:FontColor )
       // Parent form
-      ::aFontColor := ::Parent:aFontColor
+      ::FontColor := ::Parent:FontColor
    else
        // Default
    endif
@@ -1717,13 +1718,13 @@ METHOD SetInfo( ControlName, FontName, FontSize, FontColor, BkColor, lEditBox, l
       // Background Color (edit or listbox):
       if ! empty( BkColor )
          // Specified color
-         ::aBackColor := BkColor
+         ::BackColor := BkColor
       elseif ::Container != nil
          // Active frame
-         ::aBackColor := ::Container:DefBkColorEdit
+         ::BackColor := ::Container:DefBkColorEdit
       elseif ! Empty( ::Parent:DefBkColorEdit )
          // Active form
-         ::aBackColor := ::Parent:DefBkColorEdit
+         ::BackColor := ::Parent:DefBkColorEdit
       else
           // Default
       endif
@@ -1731,13 +1732,13 @@ METHOD SetInfo( ControlName, FontName, FontSize, FontColor, BkColor, lEditBox, l
       // Background Color (static):
       if ! empty( BkColor )
          // Specified color
-         ::aBackColor := BkColor
+         ::BackColor := BkColor
       elseif ::Container != nil
          // Active frame
-         ::aBackColor := ::Container:aBackColor
-      elseif ! Empty( ::Parent:aBackColor )
+         ::BackColor := ::Container:BackColor
+      elseif ! Empty( ::Parent:BackColor )
          // Active form
-         ::aBackColor := ::Parent:aBackColor
+         ::BackColor := ::Parent:BackColor
       else
           // Default
       endif
@@ -1774,7 +1775,7 @@ Local mVar
 EMPTY(cName)
 
    ::hWnd := hWnd
-   ::StartInfo( hWnd )
+   ::SethWnd( hWnd )
 
    ::Parent:AddControl( Self )
 
@@ -1843,7 +1844,6 @@ Local mVar
    ReleaseControl( ::hWnd )
 
    DeleteObject( ::FontHandle )
-   DeleteObject( ::BrushHandle )
    DeleteObject( ::AuxHandle )
 
    mVar := '_' + ::Parent:Name + '_' + ::Name
@@ -1975,32 +1975,6 @@ METHOD RefreshData() CLASS TControl
    ::Value := _OOHG_EVAL( ::Block )
    ::Refresh()
 Return nil
-
-*-----------------------------------------------------------------------------*
-METHOD FontColor( uValue ) CLASS TControl
-*-----------------------------------------------------------------------------*
-   IF VALTYPE( uValue ) == "A" .AND. LEN( uValue ) >= 3 .AND. ;
-      VALTYPE( uValue[ 1 ] ) == "N" .AND. VALTYPE( uValue[ 2 ] ) == "N" .AND. ;
-      VALTYPE( uValue[ 3 ] ) == "N"
-      ::aFontColor := uValue
-      IF ::hWnd != 0
-         RedrawWindow( ::hWnd )
-      ENDIF
-   ENDIF
-RETURN ::aFontColor
-
-*-----------------------------------------------------------------------------*
-METHOD BackColor( uValue ) CLASS TControl
-*-----------------------------------------------------------------------------*
-   IF VALTYPE( uValue ) == "A" .AND. LEN( uValue ) >= 3 .AND. ;
-      VALTYPE( uValue[ 1 ] ) == "N" .AND. VALTYPE( uValue[ 2 ] ) == "N" .AND. ;
-      VALTYPE( uValue[ 3 ] ) == "N"
-      ::aBackColor := uValue
-      IF ::hWnd != 0
-         RedrawWindow( ::hWnd )
-      ENDIF
-   ENDIF
-RETURN ::aBackColor
 
 *-----------------------------------------------------------------------------*
 METHOD AddBitMap( uImage ) CLASS TControl
@@ -2144,8 +2118,46 @@ HB_FUNC_STATIC( TCONTROL_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam
          break;
    }
 }
+
+HB_FUNC_STATIC( TCONTROL_EVENTS_COLOR )   // METHOD Events_Color( wParam, ColorDefault ) CLASS TControl
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   HDC hdc = ( HDC ) hb_parnl( 1 );
+
+   if( oSelf->lFontColor != -1 )
+   {
+      SetTextColor( hdc, ( COLORREF ) oSelf->lFontColor );
+   }
+
+   _OOHG_Send( pSelf, s_Transparent );
+   hb_vmSend( 0 );
+   if( hb_parl( -1 ) )
+   {
+      SetBkMode( hdc, ( COLORREF ) TRANSPARENT );
+      hb_retnl( ( LONG ) GetStockObject( NULL_BRUSH ) );
+      return;
+   }
+
+   if( oSelf->lBackColor != -1 )
+   {
+      SetBkColor( hdc, ( COLORREF ) oSelf->lBackColor );
+      DeleteObject( oSelf->BrushHandle );
+      oSelf->BrushHandle = CreateSolidBrush( oSelf->lBackColor );
+   }
+   else
+   {
+      DeleteObject( oSelf->BrushHandle );
+      oSelf->BrushHandle = CreateSolidBrush( GetSysColor( hb_parnl( 2 ) ) );
+      SetBkColor( hdc, ( COLORREF ) GetSysColor( hb_parnl( 2 ) ) );
+   }
+
+   hb_retnl( ( LONG ) oSelf->BrushHandle );
+}
+
 #pragma ENDDUMP
 
+/*
 *-----------------------------------------------------------------------------*
 METHOD Events_Color( wParam, ColorDefault ) CLASS TControl
 *-----------------------------------------------------------------------------*
@@ -2157,8 +2169,8 @@ METHOD Events_Color( wParam, ColorDefault ) CLASS TControl
    // If ::Type == "TEXT" .or. ::Type == "LIST" .or. ::Type == "SPINNER"
    // ColorDefault := COLOR_WINDOW
 
-   If ::aFontColor != Nil
-      SetTextColor( wParam, ::aFontColor[ 1 ], ::aFontColor[ 2 ], ::aFontColor[ 3 ] )
+   If ::FontColor != Nil
+      SetTextColor( wParam, ::FontColor[ 1 ], ::FontColor[ 2 ], ::FontColor[ 3 ] )
    EndIf
 
    If ::Transparent
@@ -2166,11 +2178,11 @@ METHOD Events_Color( wParam, ColorDefault ) CLASS TControl
       Return ( GetStockObject( NULL_BRUSH ) )
    EndIf
 
-   If ! empty( ::aBackColor )
+   If ! empty( ::BackColor )
 
-      SetBkColor( wParam, ::aBackColor[ 1 ], ::aBackColor[ 2 ], ::aBackColor[ 3 ] )
+      SetBkColor( wParam, ::BackColor[ 1 ], ::BackColor[ 2 ], ::BackColor[ 3 ] )
       DeleteObject( ::BrushHandle )
-      ::BrushHandle := CreateSolidBrush( ::aBackColor[ 1 ], ::aBackColor[ 2 ], ::aBackColor[ 3 ] )
+      ::BrushHandle := CreateSolidBrush( ::BackColor[ 1 ], ::BackColor[ 2 ], ::BackColor[ 3 ] )
 
    Else
 
@@ -2181,6 +2193,7 @@ METHOD Events_Color( wParam, ColorDefault ) CLASS TControl
    EndIf
 
 Return ::BrushHandle
+*/
 
 *-----------------------------------------------------------------------------*
 METHOD Events_Command( wParam ) CLASS TControl

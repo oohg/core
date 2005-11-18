@@ -1,5 +1,5 @@
 /*
- * $Id: h_richeditbox.prg,v 1.5 2005-10-01 15:35:10 guerra000 Exp $
+ * $Id: h_richeditbox.prg,v 1.6 2005-11-18 03:49:04 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -160,20 +160,45 @@ Local ControlHandle
       aAdd ( ::Parent:BrowseList, Self )
 	EndIf
 
-   if valtype ( ::aBackColor ) == 'A'
-      SendMessage ( ::hWnd, EM_SETBKGNDCOLOR  , 0 , RGB ( ::aBackColor[1] , ::aBackColor[2] , ::aBackColor[3] ) )
+   if valtype ( ::BackColor ) == 'A'
+      SendMessage ( ::hWnd, EM_SETBKGNDCOLOR  , 0 , RGB ( ::BackColor[1] , ::BackColor[2] , ::BackColor[3] ) )
 	EndIf
 
 Return Self
 
-*-----------------------------------------------------------------------------*
-METHOD BackColor( uValue ) CLASS TEditRich
-*-----------------------------------------------------------------------------*
-   IF VALTYPE( uValue ) == "A"
-      ::Super:BackColor := uValue
-      IF ::hWnd > 0
-         SendMessage ( ::hWnd, EM_SETBKGNDCOLOR , 0 , RGB( ::aBackColor[1] , ::aBackColor[2] , ::aBackColor[3] ) )
-         RedrawWindow( ::hWnd )
-      ENDIF
-   ENDIF
-Return ::aBackColor
+#pragma BEGINDUMP
+#include "hbapi.h"
+#include "hbvm.h"
+#include "hbstack.h"
+#include <windows.h>
+#include <commctrl.h>
+#include <richedit.h>
+#include "../include/oohg.h"
+
+HB_FUNC_STATIC( TEDITRICH_BACKCOLOR )
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+
+   if( _OOHG_DetermineColor( hb_param( 1, HB_IT_ANY ), &oSelf->lBackColor ) && oSelf->hWnd )
+   {
+      if( oSelf->hWnd )
+      {
+         SendMessage ( oSelf->hWnd, EM_SETBKGNDCOLOR, 0 , oSelf->lBackColor );
+         RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+      }
+   }
+
+   if( oSelf->lBackColor != -1 )
+   {
+      hb_reta( 3 );
+      hb_stornl( GetRValue( oSelf->lBackColor ), -1, 1 );
+      hb_stornl( GetGValue( oSelf->lBackColor ), -1, 2 );
+      hb_stornl( GetBValue( oSelf->lBackColor ), -1, 3 );
+   }
+   else
+   {
+      hb_ret();
+   }
+}
+#pragma ENDDUMP

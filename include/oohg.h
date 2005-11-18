@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.h,v 1.12 2005-11-17 05:06:37 guerra000 Exp $
+ * $Id: oohg.h,v 1.13 2005-11-18 03:49:04 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -62,13 +62,16 @@ typedef struct OOHG_Window {
    HIMAGELIST ImageList;
    BYTE      *AuxBuffer;
    ULONG      AuxBufferLen;
+   LONG       lFontColor, lBackColor;
+   HBRUSH     BrushHandle;
+   LONG       lFontColorSelected, lBackColorSelected;
+
 //   int        iRow, iCol, iWidth, iHeight;
 //   HB_ITEM    oParent;
 //   HB_ITEM    oContainer;
 //   BYTE       *cFontName;
 //   int        iFontSize;
 //   BOOL       bBold, bItalic, bUnderline, bStrikeout;
-//   LONG       lFontColor, lBackColor;
 //   int        iRowMargin, iColMargin;
 //   BOOL       bRtl;
 //   HWND       hContextMenu;
@@ -76,7 +79,6 @@ typedef struct OOHG_Window {
 /*
    DATA aControls      INIT {}
    DATA aControlsNames INIT {}
-   DATA BrushHandle    INIT 0
    DATA lInternal      INIT .T.
    DATA OnClick        INIT nil
    DATA OnGotFocus     INIT nil
@@ -96,13 +98,14 @@ void _OOHG_DoEvent( PHB_ITEM pSelf, int iSymbol );
 LRESULT APIENTRY _OOHG_WndProc( PHB_ITEM pSelf, HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM lParam, WNDPROC lpfnOldWndProc );
 extern int GetKeyFlagState( void );
 POCTRL _OOHG_GetControlInfo( PHB_ITEM pSelf );
+BOOL _OOHG_DetermineColor( PHB_ITEM pColor, LONG *lColor );
 
 // Symbol tables
 #define s_Events_Notify     0
 #define s_GridForeColor     1
 #define s_GridBackColor     2
-#define s_aFontColor        3
-#define s_DefBkColorEdit    4
+#define s_FontColor         3
+#define s_BackColor         4
 #define s_Container         5
 #define s_Parent            6
 #define s_hCursor           7
@@ -132,4 +135,5 @@ POCTRL _OOHG_GetControlInfo( PHB_ITEM pSelf );
 #define s_OnGotFocus        31
 #define s_OnLostFocus       32
 #define s_OnClick           33
-#define s_LastSymbol        34
+#define s_Transparent       34
+#define s_LastSymbol        35

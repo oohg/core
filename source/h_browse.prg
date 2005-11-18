@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.34 2005-10-30 16:52:19 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.35 2005-11-18 03:49:04 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1372,6 +1372,7 @@ HB_FUNC_STATIC( TBROWSE_EVENTS_NOTIFY )
 {
    LONG wParam = hb_parnl( 1 );
    LONG lParam = hb_parnl( 2 );
+   PHB_ITEM pSelf;
 
    switch( ( ( NMHDR FAR * ) lParam )->code )
    {
@@ -1382,9 +1383,10 @@ HB_FUNC_STATIC( TBROWSE_EVENTS_NOTIFY )
          break;
 
       case NM_CUSTOMDRAW:
-         _OOHG_Send( hb_stackSelfItem(), s_AdjustRightScroll );
+         pSelf = hb_stackSelfItem();
+         _OOHG_Send( pSelf, s_AdjustRightScroll );
          hb_vmSend( 0 );
-         hb_retni( TGrid_Notify_CustomDraw( hb_stackSelfItem(), lParam ) );
+         hb_retni( TGrid_Notify_CustomDraw( pSelf, lParam ) );
          break;
 
       default:

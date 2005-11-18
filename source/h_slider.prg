@@ -1,5 +1,5 @@
 /*
- * $Id: h_slider.prg,v 1.4 2005-10-01 15:35:10 guerra000 Exp $
+ * $Id: h_slider.prg,v 1.5 2005-11-18 03:49:04 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -177,4 +177,4 @@ Local f
       setfocus( ::hWnd )
       setfocus( f )
    ENDIF
-RETURN ::aBackColor
+RETURN ::Super:BackColor

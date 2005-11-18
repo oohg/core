@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.9 2005-11-17 05:06:37 guerra000 Exp $
+ * $Id: h_combo.prg,v 1.10 2005-11-18 03:49:04 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -467,18 +467,26 @@ HB_FUNC_STATIC( TCOMBO_EVENTS_DRAWITEM )   // METHOD Events_DrawItem( lParam )
          iImage = -1;
       }
 
-      // Color del texto... depende si está seleccionado o no...
-      FontColor = SetTextColor( lpdis->hDC, GetSysColor( lpdis->itemState & ODS_SELECTED ? COLOR_HIGHLIGHTTEXT : COLOR_WINDOWTEXT ) );
-      BackColor = SetBkColor( lpdis->hDC, GetSysColor( lpdis->itemState & ODS_SELECTED ? COLOR_HIGHLIGHT : COLOR_WINDOW ) );
+      // Text color
+      if( lpdis->itemState & ODS_SELECTED )
+      {
+         FontColor = SetTextColor( lpdis->hDC, ( ( oSelf->lFontColorSelected == -1 ) ? GetSysColor( COLOR_HIGHLIGHTTEXT ) : oSelf->lFontColorSelected ) );
+         BackColor = SetBkColor(   lpdis->hDC, ( ( oSelf->lBackColorSelected == -1 ) ? GetSysColor( COLOR_HIGHLIGHT )     : oSelf->lBackColorSelected ) );
+      }
+      else
+      {
+         FontColor = SetTextColor( lpdis->hDC, ( ( oSelf->lFontColor == -1 ) ? GetSysColor( COLOR_WINDOWTEXT ) : oSelf->lFontColor ) );
+         BackColor = SetBkColor(   lpdis->hDC, ( ( oSelf->lBackColor == -1 ) ? GetSysColor( COLOR_WINDOW )     : oSelf->lBackColor ) );
+      }
 
       // Posición de la ventana...
       GetTextMetrics( lpdis->hDC, &lptm );
       y = ( lpdis->rcItem.bottom + lpdis->rcItem.top - lptm.tmHeight ) / 2;
-      x = LOWORD( GetDialogBaseUnits() ) / 4;
+      x = LOWORD( GetDialogBaseUnits() ) / 2;
 
       // Text
       SendMessage( lpdis->hwndItem, CB_GETLBTEXT, lpdis->itemID, ( LPARAM ) cBuffer );
-      ExtTextOut( lpdis->hDC, cx + 2 * x, y, ETO_CLIPPED | ETO_OPAQUE, &lpdis->rcItem, ( LPCSTR ) cBuffer, strlen( cBuffer ), NULL );
+      ExtTextOut( lpdis->hDC, cx + x, y, ETO_CLIPPED | ETO_OPAQUE, &lpdis->rcItem, ( LPCSTR ) cBuffer, strlen( cBuffer ), NULL );
 
       SetTextColor( lpdis->hDC, FontColor );
       SetBkColor( lpdis->hDC, BackColor );
