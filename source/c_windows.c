@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.25 2005-11-13 00:17:51 guerra000 Exp $
+ * $Id: c_windows.c,v 1.26 2005-11-20 05:17:21 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -261,8 +261,7 @@ void _OOHG_ProcessMessage( PMSG Msg )
    LONG hWnd;
 
    // Saves current result
-   pSave = hb_xgrab( sizeof( HB_ITEM ) );
-   pSave->type = HB_IT_NIL;
+   pSave = hb_itemNew( NULL );
    hb_itemCopy( pSave, hb_param( -1, HB_IT_ANY ) );
 
    switch( Msg->message )
@@ -311,8 +310,7 @@ void _OOHG_ProcessMessage( PMSG Msg )
 
    // Restores result
    hb_itemReturn( pSave );
-   hb_itemClear( pSave );
-   hb_xfree( pSave );
+   hb_itemRelease( pSave );
 }
 
 HB_FUNC( _DOMESSAGELOOP )

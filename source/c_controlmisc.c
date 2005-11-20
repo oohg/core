@@ -1,5 +1,5 @@
 /*
- * $Id: c_controlmisc.c,v 1.15 2005-11-18 03:49:04 guerra000 Exp $
+ * $Id: c_controlmisc.c,v 1.16 2005-11-20 05:17:21 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -180,6 +180,7 @@ POCTRL _OOHG_GetControlInfo( PHB_ITEM pSelf )
 
    _OOHG_Send( pSelf, s_aControlInfo );
    hb_vmSend( 0 );
+   pArray = hb_param( -1, HB_IT_ARRAY );
    if( ! pArray )
    {
       bRelease = 1;
@@ -219,14 +220,15 @@ POCTRL _OOHG_GetControlInfo( PHB_ITEM pSelf )
 
 void _OOHG_DoEvent( PHB_ITEM pSelf, int iSymbol )
 {
-   HB_ITEM pSelf2;
+   PHB_ITEM pSelf2;
 
-   memcpy( &pSelf2, pSelf, sizeof( HB_ITEM ) );
-   _OOHG_Send( pSelf, iSymbol );
+   pSelf2 = hb_itemNew( pSelf );
+   _OOHG_Send( pSelf2, iSymbol );
    hb_vmSend( 0 );
-   _OOHG_Send( &pSelf2, s_DoEvent );
+   _OOHG_Send( pSelf2, s_DoEvent );
    hb_vmPush( hb_param( -1, HB_IT_ANY ) );
    hb_vmSend( 1 );
+   hb_itemRelease( pSelf2 );
 }
 
 BOOL _OOHG_DetermineColor( PHB_ITEM pColor, LONG *lColor )

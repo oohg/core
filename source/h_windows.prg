@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.44 2005-11-18 03:49:04 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.45 2005-11-20 05:17:21 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -245,7 +245,6 @@ HB_FUNC_STATIC( TWINDOW_STARTINFO )
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
 
    oSelf->hWnd = ( HWND ) hb_parnl( 1 );
-   memcpy( &oSelf->pSelf, pSelf, sizeof( HB_ITEM ) );
 
    oSelf->lFontColor = -1;
    oSelf->lBackColor = -1;
@@ -257,14 +256,14 @@ HB_FUNC_STATIC( TWINDOW_SETFOCUS )
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
-   HB_ITEM pReturn;
+   PHB_ITEM pReturn;
 
    SetFocus( oSelf->hWnd );
 
-   pReturn.type = HB_IT_NIL;
-   hb_itemCopy( &pReturn, &oSelf->pSelf );
-   hb_itemReturn( &pReturn );
-   hb_itemClear( &pReturn );
+   pReturn = hb_itemNew( NULL );
+   hb_itemCopy( pReturn, pSelf );
+   hb_itemReturn( pReturn );
+   hb_itemRelease( pReturn );
 }
 
 HB_FUNC_STATIC( TWINDOW_IMAGELIST )

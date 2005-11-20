@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.h,v 1.13 2005-11-18 03:49:04 guerra000 Exp $
+ * $Id: oohg.h,v 1.14 2005-11-20 05:17:21 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -58,7 +58,6 @@ struct IMAGE_PARAMETER {
 
 typedef struct OOHG_Window {
    HWND       hWnd;
-   HB_ITEM    pSelf;
    HIMAGELIST ImageList;
    BYTE      *AuxBuffer;
    ULONG      AuxBufferLen;

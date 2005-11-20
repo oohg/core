@@ -1,11 +1,19 @@
 /*
- * $Id: ChangeLog,v 1.47 2005-11-18 03:49:04 guerra000 Exp $
+ * $Id: ChangeLog,v 1.48 2005-11-20 05:17:21 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2005-11-19 23:16 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * include/oohg.h
+  * source/c_controlmisc.c
+  * source/c_windows.c
+  * source/h_windows.prg
+    ! Changed direct-saving objects to new allocated items.
+    ! Fixed missing line in _OOHG_GetControlInfo() function.
 
 2005-11-17 21:47 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * include/oohg.h
