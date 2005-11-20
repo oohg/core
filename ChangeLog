@@ -1,11 +1,18 @@
 /*
- * $Id: ChangeLog,v 1.48 2005-11-20 05:17:21 guerra000 Exp $
+ * $Id: ChangeLog,v 1.49 2005-11-20 16:57:32 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2005-11-20 10:56 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_altsyntax.ch
+    * Added _OOHG_ActiveControlAutoSkip definition.
+  * source/h_windows.prg
+    * Moved definitions at the end of window' creation.
+    * WM_SIZE will only take effect when window is active.
 
 2005-11-19 23:16 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * include/oohg.h

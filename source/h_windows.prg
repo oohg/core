@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.45 2005-11-20 05:17:21 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.46 2005-11-20 16:57:32 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -915,30 +915,6 @@ Local Formhandle
    ::New( FormHandle, FormName )
    ::ToolTipHandle := InitToolTip( FormHandle, _SetToolTipBalloon() )
 
-   ::OnRelease := ReleaseProcedure
-   ::OnInit := InitProcedure
-   ::OnSize := SizeProcedure
-   ::OnClick := ClickProcedure
-   ::OnGotFocus := GotFocus
-   ::OnLostFocus := LostFocus
-   ::OnPaint := PaintProcedure
-   ::OnMouseDrag := MouseDragProcedure
-   ::OnMouseMove := MouseMoveProcedure
-   ::OnScrollUp := ScrollUp
-   ::OnScrollDown := ScrollDown
-   ::OnScrollLeft := ScrollLeft
-   ::OnScrollRight := ScrollRight
-   ::OnHScrollBox := HScrollBox
-   ::OnVScrollBox := VScrollBox
-   ::OnInteractiveClose := InteractiveCloseProcedure
-   ::OnMaximize := MaximizeProcedure
-   ::OnMinimize := MinimizeProcedure
-   ::VirtualHeight := VirtualHeight
-   ::VirtualWidth := VirtualWidth
-   ::NoShow := NoShow
-   ::BackColor := aRGB
-   ::AutoRelease := ! NoAutoRelease
-
    // Font Name:
    if ! empty( FontName )
       // Specified font
@@ -967,6 +943,30 @@ Local Formhandle
    ::nHeight := h
 
    ValidateScrolls( Self, .F. )
+
+   ::OnRelease := ReleaseProcedure
+   ::OnInit := InitProcedure
+   ::OnSize := SizeProcedure
+   ::OnClick := ClickProcedure
+   ::OnGotFocus := GotFocus
+   ::OnLostFocus := LostFocus
+   ::OnPaint := PaintProcedure
+   ::OnMouseDrag := MouseDragProcedure
+   ::OnMouseMove := MouseMoveProcedure
+   ::OnScrollUp := ScrollUp
+   ::OnScrollDown := ScrollDown
+   ::OnScrollLeft := ScrollLeft
+   ::OnScrollRight := ScrollRight
+   ::OnHScrollBox := HScrollBox
+   ::OnVScrollBox := VScrollBox
+   ::OnInteractiveClose := InteractiveCloseProcedure
+   ::OnMaximize := MaximizeProcedure
+   ::OnMinimize := MinimizeProcedure
+   ::VirtualHeight := VirtualHeight
+   ::VirtualWidth := VirtualWidth
+   ::NoShow := NoShow
+   ::BackColor := aRGB
+   ::AutoRelease := ! NoAutoRelease
 
 Return Self
 
@@ -2003,7 +2003,8 @@ Local oWnd, oCtrl
 
       ValidateScrolls( Self, .T. )
 
-      If _OOHG_Main != nil
+      // If _OOHG_Main != nil
+      If ::Active
 
          If wParam == SIZE_MAXIMIZED
 
