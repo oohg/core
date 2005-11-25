@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.46 2005-11-20 16:57:32 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.47 2005-11-25 05:38:41 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -223,7 +223,6 @@ HB_FUNC_STATIC( TWINDOW_RELEASE )
       oSelf->AuxBuffer = NULL;
       oSelf->AuxBufferLen = 0;
    }
-   DeleteObject( oSelf->BrushHandle );
 
    // Brush handle
    if( oSelf->BrushHandle )
@@ -1330,17 +1329,6 @@ METHOD Cursor( uValue ) CLASS TForm
    ENDIF
 Return nil
 
-/*
-*------------------------------------------------------------------------------*
-METHOD BackColor( uValue ) CLASS TForm
-*------------------------------------------------------------------------------*
-   IF ValType( uValue ) == "A"
-      DeleteObject( ::BrushHandle )
-      ::BackColor := uValue
-      ::BrushHandle = SetWindowBackColor( ::hWnd, uValue )
-   ENDIF
-Return nil
-*/
 #pragma BEGINDUMP
 HB_FUNC_STATIC( TFORM_BACKCOLOR )
 {
@@ -2073,9 +2061,9 @@ Local oWnd, oCtrl
 	case nMsg == WM_CLOSE
         ***********************************************************************
 
-		If GetEscapeState() < 0
-			Return (1)
-		EndIf
+//      If GetEscapeState() < 0
+//         Return (1)
+//      EndIf
 
 *****      Self := GetFormObjectByHandle( hWnd )
 

@@ -1,5 +1,5 @@
 /*
- * $Id: c_grid.c,v 1.12 2005-11-18 03:49:04 guerra000 Exp $
+ * $Id: c_grid.c,v 1.13 2005-11-25 05:38:41 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -110,7 +110,7 @@ static WNDPROC lpfnOldWndProc = 0;
 
 static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
-   return _OOHG_WndProc( GetControlObjectByHandle( ( LONG ) hWnd ), hWnd, msg, wParam, lParam, lpfnOldWndProc );
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
 }
 
 HB_FUNC( INITLISTVIEW )

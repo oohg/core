@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.26 2005-11-20 05:17:21 guerra000 Exp $
+ * $Id: c_windows.c,v 1.27 2005-11-25 05:38:41 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -187,12 +187,7 @@ HB_FUNC( GETFORMOBJECTBYHANDLE )
 LRESULT APIENTRY _OOHG_WndProc( PHB_ITEM pSelf, HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM lParam, WNDPROC lpfnOldWndProc )
 {
    PHB_ITEM pResult;
-   HB_ITEM pSave;
    LRESULT APIENTRY iReturn;
-
-   // Saves current result
-   pSave.type = HB_IT_NIL;
-   hb_itemCopy( &pSave, hb_param( -1, HB_IT_ANY ) );
 
    _OOHG_Send( pSelf, s_Events );
    hb_vmPushLong( ( LONG ) hWnd );
@@ -211,15 +206,33 @@ LRESULT APIENTRY _OOHG_WndProc( PHB_ITEM pSelf, HWND hWnd, UINT uiMsg, WPARAM wP
       iReturn = CallWindowProc( lpfnOldWndProc, hWnd, uiMsg, wParam, lParam );
    }
 
-   // Restores result
-   hb_itemReturn( &pSave );
-   hb_itemClear( &pSave );
+   return iReturn;
+}
+
+LRESULT APIENTRY _OOHG_WndProcCtrl( HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM lParam, WNDPROC lpfnOldWndProc )
+{
+   PHB_ITEM pSave, pSelf;
+   LRESULT APIENTRY iReturn;
+
+   pSave = hb_itemNew( NULL );
+   pSelf = hb_itemNew( NULL );
+   hb_itemCopy( pSave, hb_param( -1, HB_IT_ANY ) );
+   hb_itemCopy( pSelf, GetControlObjectByHandle( ( LONG ) hWnd ) );
+
+   iReturn = _OOHG_WndProc( pSelf, hWnd, uiMsg, wParam, lParam, lpfnOldWndProc );
+
+   hb_itemReturn( pSave );
+   hb_itemRelease( pSave );
+   hb_itemRelease( pSelf );
 
    return iReturn;
 }
 
 LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
 {
+   PHB_ITEM pSave, pSelf;
+   LRESULT CALLBACK iReturn;
+
    if( ! _ooHG_Symbol_TForm )
    {
       hb_vmPushSymbol( hb_dynsymFind( "_OOHG_INIT_C_VARS" )->pSymbol );
@@ -227,7 +240,18 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
       hb_vmDo( 0 );
    }
 
-   return _OOHG_WndProc( GetFormObjectByHandle( ( LONG ) hWnd ), hWnd, message, wParam, lParam, &DefWindowProc );
+   pSave = hb_itemNew( NULL );
+   pSelf = hb_itemNew( NULL );
+   hb_itemCopy( pSave, hb_param( -1, HB_IT_ANY ) );
+   hb_itemCopy( pSelf, GetFormObjectByHandle( ( LONG ) hWnd ) );
+
+   iReturn = _OOHG_WndProc( pSelf, hWnd, message, wParam, lParam, DefWindowProc );
+
+   hb_itemReturn( pSave );
+   hb_itemRelease( pSave );
+   hb_itemRelease( pSelf );
+
+   return iReturn;
 }
 
 HB_FUNC( INITWINDOW )
@@ -257,7 +281,7 @@ HB_FUNC( INITWINDOW )
 
 void _OOHG_ProcessMessage( PMSG Msg )
 {
-   PHB_ITEM pSelf, pResult, pSave;
+   PHB_ITEM pSelf, pSave;
    LONG hWnd;
 
    // Saves current result
@@ -269,25 +293,25 @@ void _OOHG_ProcessMessage( PMSG Msg )
       case WM_KEYDOWN:
       case WM_SYSKEYDOWN:
          hWnd = ( LONG ) Msg->hwnd;
-         pSelf = NULL;
-         while( hWnd && ! pSelf )
+         pSelf = hb_itemNew( NULL );
+         while( hWnd && ! HB_IS_OBJECT( pSelf ) )
          {
-            pSelf = GetFormObjectByHandle( hWnd );
+            hb_itemCopy( pSelf, GetFormObjectByHandle( hWnd ) );
             _OOHG_Send( pSelf, s_hWnd );
             hb_vmSend( 0 );
             if( hb_parnl( -1 ) != hWnd )
             {
-               pSelf = GetControlObjectByHandle( hWnd );
+               hb_itemCopy( pSelf, GetControlObjectByHandle( hWnd ) );
                _OOHG_Send( pSelf, s_hWnd );
                hb_vmSend( 0 );
                if( hb_parnl( -1 ) != hWnd )
                {
                   hWnd = ( LONG ) GetParent( ( HWND ) hWnd );
-                  pSelf = NULL;
+                  hb_itemClear( pSelf );
                }
             }
          }
-         if( hWnd && pSelf )
+         if( hWnd && HB_IS_OBJECT( pSelf ) )
          {
             _OOHG_Send( pSelf, s_LookForKey );
             hb_vmPushInteger( Msg->wParam );
@@ -295,9 +319,11 @@ void _OOHG_ProcessMessage( PMSG Msg )
             hb_vmSend( 2 );
             if( hb_parl( -1 ) )
             {
+               hb_itemRelease( pSelf );
                break;
             }
          }
+         hb_itemRelease( pSelf );
 
       default:
          if( ! IsWindow( GetActiveWindow() ) || ! IsDialogMessage( GetActiveWindow(), Msg ) )
@@ -723,7 +749,6 @@ HB_FUNC ( SHOWNOTIFYICON )
 }
 //----------------------------------------------------------------------------//
 static void ShowNotifyIcon(HWND hWnd, BOOL bAdd, HICON hIcon, LPSTR szText)
-
 {
   NOTIFYICONDATA nid;
   ZeroMemory(&nid,sizeof(nid));
@@ -1199,9 +1224,9 @@ WORD PaletteSize(LPSTR lpDIB)
 {
     // calculate the size required by the palette
     if (IS_WIN30_DIB (lpDIB))
-        return (DIBNumColors(lpDIB) * sizeof(RGBQUAD));
+        return (WORD) (DIBNumColors(lpDIB) * sizeof(RGBQUAD));
     else
-        return (DIBNumColors(lpDIB) * sizeof(RGBTRIPLE));
+        return (WORD) (DIBNumColors(lpDIB) * sizeof(RGBTRIPLE));
 }
 
 
@@ -1278,7 +1303,7 @@ HANDLE DDBToDIB(HBITMAP hBitmap, HPALETTE hPal)
 
     // calculate bits per pixel
 
-    biBits = bm.bmPlanes * bm.bmBitsPixel;
+    biBits = ( WORD ) ( bm.bmPlanes * bm.bmBitsPixel );
 
     // make sure bits per pixel is valid
 

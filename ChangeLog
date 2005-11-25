@@ -1,11 +1,51 @@
 /*
- * $Id: ChangeLog,v 1.49 2005-11-20 16:57:32 guerra000 Exp $
+ * $Id: ChangeLog,v 1.50 2005-11-25 05:38:41 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2005-11-24 23:34 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/c_controlmisc.c
+    * Initialized lFontColor and lBackColor to -1 in new controls.
+
+  * source/h_combo.prg
+    * Added combobox color when control is DISABLED.
+
+  * source/c_windows.c
+  * source/h_controlmisc.prg
+    * Removed some warnings.
+
+  * source/c_windows.c
+    ! Fixed some return-value loss.
+
+  * source/h_windows.prg
+    ! Commented ESCAPE key-lock for windows' close.
+
+  * source/c_datepicker.c
+    * TimePicker now included to SubClassFunc (ooHG's events).
+
+  * include/oohg.h
+  * source/c_button.c
+  * source/c_combo.c
+  * source/c_datepicker.c
+  * source/c_frame.c
+  * source/c_grid.c
+  * source/c_image.c
+  * source/c_ipaddress.c
+  * source/c_label.c
+  * source/c_listbox.c
+  * source/c_monthcal.c
+  * source/c_progressbar.c
+  * source/c_richeditbox.c
+  * source/c_spinner.c
+  * source/c_textbox.c
+  * source/c_toolbar.c
+  * source/c_tree.c
+  * source/c_windows.c
+    ! Moved all control's SubClassFunc to _OOHG_WndProcCtrl.
 
 2005-11-20 10:56 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * include/i_altsyntax.ch

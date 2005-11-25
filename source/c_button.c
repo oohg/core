@@ -1,5 +1,5 @@
 /*
- * $Id: c_button.c,v 1.2 2005-09-11 16:47:19 guerra000 Exp $
+ * $Id: c_button.c,v 1.3 2005-11-25 05:38:41 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -110,7 +110,7 @@ static WNDPROC lpfnOldWndProc = 0;
 
 static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
-   return _OOHG_WndProc( GetControlObjectByHandle( ( LONG ) hWnd ), hWnd, msg, wParam, lParam, lpfnOldWndProc );
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
 }
 
 HB_FUNC( INITBUTTON )

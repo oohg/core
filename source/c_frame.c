@@ -1,5 +1,5 @@
 /*
- * $Id: c_frame.c,v 1.2 2005-08-25 05:57:42 guerra000 Exp $
+ * $Id: c_frame.c,v 1.3 2005-11-25 05:38:41 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -111,12 +111,12 @@ static WNDPROC lpfnOldWndProcB = 0;
 
 static LRESULT APIENTRY SubClassFuncA( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
-   return _OOHG_WndProc( GetControlObjectByHandle( ( LONG ) hWnd ), hWnd, msg, wParam, lParam, lpfnOldWndProcA );
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProcA );
 }
 
 static LRESULT APIENTRY SubClassFuncB( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
-   return _OOHG_WndProc( GetControlObjectByHandle( ( LONG ) hWnd ), hWnd, msg, wParam, lParam, lpfnOldWndProcB );
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProcB );
 }
 
 HB_FUNC( INITFRAME )

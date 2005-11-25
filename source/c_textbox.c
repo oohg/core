@@ -1,5 +1,5 @@
 /*
- * $Id: c_textbox.c,v 1.5 2005-11-06 00:21:40 guerra000 Exp $
+ * $Id: c_textbox.c,v 1.6 2005-11-25 05:38:41 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -113,7 +113,7 @@ static WNDPROC lpfnOldWndProc = 0;
 
 static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
-   return _OOHG_WndProc( GetControlObjectByHandle( ( LONG ) hWnd ), hWnd, msg, wParam, lParam, lpfnOldWndProc );
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
 }
 
 HB_FUNC( INITTEXTBOX )

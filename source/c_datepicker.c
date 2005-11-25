@@ -1,5 +1,5 @@
 /*
- * $Id: c_datepicker.c,v 1.3 2005-10-13 22:55:14 declan2005 Exp $
+ * $Id: c_datepicker.c,v 1.4 2005-11-25 05:38:41 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -107,11 +107,17 @@
 #include "tchar.h"
 #include "../include/oohg.h"
 
-static WNDPROC lpfnOldWndProc = 0;
+static WNDPROC lpfnOldWndProcA = 0;
+static WNDPROC lpfnOldWndProcB = 0;
 
-static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+static LRESULT APIENTRY SubClassFuncA( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
-   return _OOHG_WndProc( GetControlObjectByHandle( ( LONG ) hWnd ), hWnd, msg, wParam, lParam, lpfnOldWndProc );
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProcA );
+}
+
+static LRESULT APIENTRY SubClassFuncB( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+{
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProcB );
 }
 
 HB_FUNC( INITDATEPICK )
@@ -164,7 +170,7 @@ HB_FUNC( INITDATEPICK )
 	hb_parni(3), hb_parni(4) ,hb_parni(5) ,hb_parni(6) ,
 	hwnd,(HMENU)hb_parni(2) , GetModuleHandle(NULL) , NULL ) ;
 
-   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hbutton, GWL_WNDPROC, ( LONG ) SubClassFunc );
+   lpfnOldWndProcA = ( WNDPROC ) SetWindowLong( ( HWND ) hbutton, GWL_WNDPROC, ( LONG ) SubClassFuncA );
 
    hb_retnl ( (LONG) hbutton );
 }
@@ -270,6 +276,8 @@ HB_FUNC ( INITTIMEPICK )
    Style ,
    hb_parni(3), hb_parni(4) ,hb_parni(5) ,hb_parni(6) ,
    hwnd,(HMENU)hb_parni(2) , GetModuleHandle(NULL) , NULL ) ;
+
+   lpfnOldWndProcB = ( WNDPROC ) SetWindowLong( ( HWND ) hbutton, GWL_WNDPROC, ( LONG ) SubClassFuncB );
 
    hb_retnl ( (LONG) hbutton );
 }

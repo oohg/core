@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.36 2005-11-18 03:49:04 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.37 2005-11-25 05:38:41 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -2360,7 +2360,7 @@ EXTERN _OOHG_UnTransform
 
 HB_FUNC( _OOHG_UNTRANSFORM )
 {
-   BYTE *cText, *cPicture, *cReturn, cType;
+   char *cText, *cPicture, *cReturn, cType;
    ULONG iText, iPicture, iReturn, iMax;
    BOOL lSign, bIgnoreMasks;
 
@@ -2379,7 +2379,7 @@ HB_FUNC( _OOHG_UNTRANSFORM )
          cType = hb_parc( 3 )[ 0 ];
          if( cType >= 'a' && cType <= 'z' )
          {
-            cType -= 32;
+            cType = ( char ) ( cType - 32 );
          }
       }
       else

@@ -1,5 +1,5 @@
 /*
- * $Id: c_controlmisc.c,v 1.16 2005-11-20 05:17:21 guerra000 Exp $
+ * $Id: c_controlmisc.c,v 1.17 2005-11-25 05:38:41 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -176,7 +176,7 @@ POCTRL _OOHG_GetControlInfo( PHB_ITEM pSelf )
 {
    PHB_ITEM pArray;
    BOOL bRelease = 0;
-   BYTE *pString;
+   char *pString;
 
    _OOHG_Send( pSelf, s_aControlInfo );
    hb_vmSend( 0 );
@@ -199,7 +199,12 @@ POCTRL _OOHG_GetControlInfo( PHB_ITEM pSelf )
    if( ! HB_IS_STRING( pArray->item.asArray.value->pItems ) || pArray->item.asArray.value->pItems->item.asString.length < _OOHG_Struct_Size )
    {
       pString = hb_xgrab( _OOHG_Struct_Size );
+
+      // Initializes...
       memset( pString, 0, _OOHG_Struct_Size );
+      ( ( POCTRL ) pString )->lFontColor = -1;
+      ( ( POCTRL ) pString )->lBackColor = -1;
+
       if( HB_IS_STRING( pArray->item.asArray.value->pItems ) && pArray->item.asArray.value->pItems->item.asString.value && pArray->item.asArray.value->pItems->item.asString.length )
       {
          memcpy( pString, pArray->item.asArray.value->pItems->item.asString.value, pArray->item.asArray.value->pItems->item.asString.length );
@@ -608,8 +613,8 @@ HB_FUNC ( KEYBD_EVENT )
 {
 
 	keybd_event(
-		hb_parni(1),				// virtual-key code
-		MapVirtualKey( hb_parni(1), 0 ),	// hardware scan code
+        (WORD) hb_parni(1),                // virtual-key code
+        (WORD) MapVirtualKey( hb_parni(1), 0 ),    // hardware scan code
 		hb_parl(2) ? KEYEVENTF_KEYUP: 0,	// flags specifying various function options
 		0					// additional data associated with keystroke
 	);
@@ -708,7 +713,8 @@ HB_FUNC( IMAGELIST_ADD )
 {
    HIMAGELIST himl = ( HIMAGELIST ) hb_parnl( 1 );
    HBITMAP hbmp;
-   int cx, cy, iStyle, ic = 0;
+   int cx, cy, ic = 0;
+   int iStyle = hb_parni( 3 );
 
    if ( himl != NULL )
    {

@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.10 2005-11-18 03:49:04 guerra000 Exp $
+ * $Id: h_combo.prg,v 1.11 2005-11-25 05:38:41 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -441,9 +441,8 @@ HB_FUNC_STATIC( TCOMBO_EVENTS_DRAWITEM )   // METHOD Events_DrawItem( lParam )
    LPDRAWITEMSTRUCT lpdis = ( LPDRAWITEMSTRUCT ) hb_parnl( 1 );
    COLORREF FontColor, BackColor;
    TEXTMETRIC lptm;
-   BYTE cBuffer[ 1024 ];
+   char cBuffer[ 2048 ];
    int x, y, cx, cy, iImage;
-   HDC hdc;
 
    if( lpdis->itemID != -1 )
    {
@@ -472,6 +471,11 @@ HB_FUNC_STATIC( TCOMBO_EVENTS_DRAWITEM )   // METHOD Events_DrawItem( lParam )
       {
          FontColor = SetTextColor( lpdis->hDC, ( ( oSelf->lFontColorSelected == -1 ) ? GetSysColor( COLOR_HIGHLIGHTTEXT ) : oSelf->lFontColorSelected ) );
          BackColor = SetBkColor(   lpdis->hDC, ( ( oSelf->lBackColorSelected == -1 ) ? GetSysColor( COLOR_HIGHLIGHT )     : oSelf->lBackColorSelected ) );
+      }
+      else if( lpdis->itemState & ODS_DISABLED )
+      {
+         FontColor = SetTextColor( lpdis->hDC, GetSysColor( COLOR_GRAYTEXT ) );
+         BackColor = SetBkColor(   lpdis->hDC, GetSysColor( COLOR_BTNFACE ) );
       }
       else
       {
@@ -541,7 +545,7 @@ HB_FUNC_STATIC( TCOMBO_ITEM )   // METHOD Item( nItem, uValue )
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
    PHB_ITEM pValue = hb_param( 2, HB_IT_ANY );
    int nItem = hb_parni( 1 ) - 1;
-   BYTE *cBuffer;
+   char *cBuffer;
    struct IMAGE_PARAMETER pStruct;
 
    if( pValue && ( HB_IS_STRING( pValue ) || HB_IS_NUMERIC( pValue ) || HB_IS_ARRAY( pValue ) ) )
