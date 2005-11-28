@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.37 2005-11-25 05:38:41 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.38 2005-11-28 01:26:09 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1559,6 +1559,7 @@ CLASS TControl FROM TWindow
    METHOD Events_VScroll      BLOCK { || nil }
    METHOD Events_Size         BLOCK { || nil }
    METHOD Events_DrawItem     BLOCK { || nil }
+   METHOD Events_MeasureItem  BLOCK { || nil }
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -1793,13 +1794,15 @@ EMPTY(cName)
 
    ::ToolTip := ToolTip
 
-   IF VALTYPE( Id ) == "N"
+   If VALTYPE( Id ) == "N"
       ::Id := Id
-   ENDIF
+   Else
+      ::Id := GetDlgCtrlId( ::hWnd )
+   EndIf
 
    AADD( _OOHG_aControlhWnd,    hWnd )
    AADD( _OOHG_aControlObjects, Self )
-   AADD( _OOHG_aControlIds,     ::Id )
+   AADD( _OOHG_aControlIds,     { ::Id, ::ContainerhWnd } )
    AADD( _OOHG_aControlNames,   UPPER( ::Parent:Name + CHR( 255 ) + ::Name ) )
 
    mVar := "_" + ::Parent:Name + "_" + ::Name
@@ -2285,13 +2288,6 @@ mVar := '_' + FormName + '_' + ControlName
 Return IF( ( type( mVar ) != 'U' .AND. VALTYPE( &mVar ) == "O" ), &mVar, TControl() )
 
 *-----------------------------------------------------------------------------*
-Function GetControlObjectById( Id )
-*-----------------------------------------------------------------------------*
-Local i
-   i := aScan( _OOHG_aControlIds, Id )
-Return IF( i == 0, TControl(), _OOHG_aControlObjects[ i ] )
-
-*-----------------------------------------------------------------------------*
 Function _GetId()
 *-----------------------------------------------------------------------------*
 Local RetVal , i
@@ -2351,7 +2347,7 @@ Return lRet
 Procedure _OOHG_Init_C_Vars_Controls()
 *-----------------------------------------------------------------------------*
    TControl()
-   _OOHG_Init_C_Vars_Controls_C_Side( _OOHG_aControlhWnd, _OOHG_aControlObjects )
+   _OOHG_Init_C_Vars_Controls_C_Side( _OOHG_aControlhWnd, _OOHG_aControlObjects, _OOHG_aControlIds )
 Return
 
 EXTERN _OOHG_UnTransform

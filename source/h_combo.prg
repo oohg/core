@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.11 2005-11-25 05:38:41 guerra000 Exp $
+ * $Id: h_combo.prg,v 1.12 2005-11-28 01:26:09 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -112,6 +112,7 @@ CLASS TCombo FROM TLabel
 
    METHOD Events_Command
    METHOD Events_DrawItem
+   METHOD Events_MeasureItem
 
    METHOD AddItem
    METHOD DeleteItem
@@ -141,6 +142,7 @@ Local ControlHandle , rcount := 0 , BackRec , cset := 0 , WorkArea , cField
    DEFAULT GripperText	TO ""
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, , , .t. , lRtl )
+   ::SetFont( , , bold, italic, underline, strikeout )
 
 	if ValType ( ItemSource ) != 'U' .And. Sort == .T.
       MsgOOHGError ("Sort and ItemSource clauses can't be used simultaneusly. Program Terminated" )
@@ -185,7 +187,7 @@ Local ControlHandle , rcount := 0 , BackRec , cset := 0 , WorkArea , cField
 	endif
 
    ::New( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
-   ::SetFont( , , bold, italic, underline, strikeout )
+   ::SetFont()
    ::SizePos( y, x, w, h )
 
    ::OnClick := ondisplaychangeprocedure
@@ -507,6 +509,33 @@ HB_FUNC_STATIC( TCOMBO_EVENTS_DRAWITEM )   // METHOD Events_DrawItem( lParam )
          DrawFocusRect( lpdis->hDC, &lpdis->rcItem );
       }
    }
+}
+
+HB_FUNC_STATIC( TCOMBO_EVENTS_MEASUREITEM )   // METHOD Events_MeasureItem( lParam )
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+//   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   LPMEASUREITEMSTRUCT lpmis = ( LPMEASUREITEMSTRUCT ) hb_parnl( 1 );
+
+   HWND hWnd = GetActiveWindow();
+   HDC hDC = GetDC( hWnd );
+   HFONT hFont, hOldFont;
+   SIZE sz;
+
+   // Convert ::FONTHANDLE to ( HFONT ) oSelf->hFontHandle
+   _OOHG_Send( pSelf, s_FontHandle );
+   hb_vmSend( 0 );
+   hFont = ( HFONT ) hb_parnl( -1 );
+
+   hOldFont = ( HFONT ) SelectObject( hDC, hFont );
+   GetTextExtentPoint32( hDC, "_", 1, &sz );
+
+   SelectObject( hDC, hOldFont );
+   ReleaseDC( hWnd, hDC );
+
+   lpmis->itemHeight = sz.cy + 2;
+
+   hb_retnl( 1 );
 }
 
 HB_FUNC_STATIC( TCOMBO_ADDITEM )   // METHOD AddItem( uValue )

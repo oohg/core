@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.h,v 1.15 2005-11-25 05:38:41 guerra000 Exp $
+ * $Id: oohg.h,v 1.16 2005-11-28 01:26:09 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -92,6 +92,7 @@ typedef struct OOHG_Window {
 
 extern void ImageFillParameter( struct IMAGE_PARAMETER *pResult, PHB_ITEM pString );
 extern PHB_ITEM GetControlObjectByHandle( LONG hWnd );
+extern PHB_ITEM GetControlObjectById( LONG lId, LONG hWnd );
 extern void _OOHG_Send( PHB_ITEM pSelf, int iSymbol );
 void _OOHG_DoEvent( PHB_ITEM pSelf, int iSymbol );
 LRESULT APIENTRY _OOHG_WndProcCtrl( HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM lParam, WNDPROC lpfnOldWndProc );
@@ -100,39 +101,41 @@ POCTRL _OOHG_GetControlInfo( PHB_ITEM pSelf );
 BOOL _OOHG_DetermineColor( PHB_ITEM pColor, LONG *lColor );
 
 // Symbol tables
-#define s_Events_Notify     0
-#define s_GridForeColor     1
-#define s_GridBackColor     2
-#define s_FontColor         3
-#define s_BackColor         4
-#define s_Container         5
-#define s_Parent            6
-#define s_hCursor           7
-#define s_Events            8
-#define s_Events_Color      9
-#define s_Name              10
-#define s_Type              11
-#define s_TControl          12
-#define s_TLabel            13
-#define s_TGrid             14
-#define s_ContextMenu       15
-#define s_RowMargin         16
-#define s_ColMargin         17
-#define s_hWnd              18
-#define s_TText             19
-#define s_AdjustRightScroll 20
-#define s_OnMouseMove       21
-#define s_OnMouseDrag       22
-#define s_DoEvent           23
-#define s_LookForKey        24
-#define s_aControlInfo      25
-#define s__aControlInfo     26
-#define s_Events_DrawItem   27
-#define s__hWnd             28
-#define s_Events_Command    29
-#define s_OnChange          30
-#define s_OnGotFocus        31
-#define s_OnLostFocus       32
-#define s_OnClick           33
-#define s_Transparent       34
-#define s_LastSymbol        35
+#define s_Events_Notify        0
+#define s_GridForeColor        1
+#define s_GridBackColor        2
+#define s_FontColor            3
+#define s_BackColor            4
+#define s_Container            5
+#define s_Parent               6
+#define s_hCursor              7
+#define s_Events               8
+#define s_Events_Color         9
+#define s_Name                 10
+#define s_Type                 11
+#define s_TControl             12
+#define s_TLabel               13
+#define s_TGrid                14
+#define s_ContextMenu          15
+#define s_RowMargin            16
+#define s_ColMargin            17
+#define s_hWnd                 18
+#define s_TText                19
+#define s_AdjustRightScroll    20
+#define s_OnMouseMove          21
+#define s_OnMouseDrag          22
+#define s_DoEvent              23
+#define s_LookForKey           24
+#define s_aControlInfo         25
+#define s__aControlInfo        26
+#define s_Events_DrawItem      27
+#define s__hWnd                28
+#define s_Events_Command       29
+#define s_OnChange             30
+#define s_OnGotFocus           31
+#define s_OnLostFocus          32
+#define s_OnClick              33
+#define s_Transparent          34
+#define s_Events_MeasureItem   35
+#define s_FontHandle           36
+#define s_LastSymbol           37

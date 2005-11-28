@@ -1,5 +1,5 @@
 /*
- * $Id: c_combo.c,v 1.7 2005-11-25 05:38:41 guerra000 Exp $
+ * $Id: c_combo.c,v 1.8 2005-11-28 01:26:09 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -128,7 +128,7 @@ HB_FUNC( INITCOMBOBOX )
       StyleEx |= WS_EX_LAYOUTRTL | WS_EX_RIGHTSCROLLBAR | WS_EX_RTLREADING;
    }
 
-   Style = WS_CHILD | WS_VSCROLL | CBS_HASSTRINGS | CBS_OWNERDRAWVARIABLE;
+   Style = WS_CHILD | WS_VSCROLL | CBS_HASSTRINGS | CBS_OWNERDRAWFIXED; // CBS_OWNERDRAWVARIABLE;
 
    if ( ! hb_parl(9) )
    {

@@ -1,11 +1,24 @@
 /*
- * $Id: ChangeLog,v 1.50 2005-11-25 05:38:41 guerra000 Exp $
+ * $Id: ChangeLog,v 1.51 2005-11-28 01:26:06 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2005-11-27 19:24 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * include/oohg.h
+  * source/c_combo.c
+  * source/c_controlmisc.c
+  * source/h_combo.prg
+  * source/h_controlmisc.prg
+  * source/h_windows.prg
+    * Control's ID taken from OS.
+    * GetControlObjectById() function moved to C level.
+    * Added 2nd. HWND parameter to GetControlObjectById() function.
+    * TControl:Events_MeasureItem() method added.
+    * Fixed combo's default control height.
 
 2005-11-24 23:34 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source/c_controlmisc.c

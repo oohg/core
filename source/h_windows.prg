@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.47 2005-11-25 05:38:41 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.48 2005-11-28 01:26:09 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -121,6 +121,8 @@ STATIC _OOHG_HotKeys := {}           // Application-wide hot keys
 #include "../include/oohg.h"
 
 int _OOHG_ShowContextMenus = 1;
+PHB_ITEM _OOHG_LastSelf = 0;
+HB_ITEM _OOHG_LastSelf_ITEM;
 
 #pragma ENDDUMP
 
@@ -249,6 +251,14 @@ HB_FUNC_STATIC( TWINDOW_STARTINFO )
    oSelf->lBackColor = -1;
    oSelf->lFontColorSelected = -1;
    oSelf->lBackColorSelected = -1;
+
+   // HACK! Latest created control... Needed for WM_MEASUREITEM :(
+   if( ! _OOHG_LastSelf )
+   {
+      _OOHG_LastSelf_ITEM.type = HB_IT_NIL;
+      _OOHG_LastSelf = &_OOHG_LastSelf_ITEM;
+   }
+   hb_itemCopy( &_OOHG_LastSelf_ITEM, pSelf );
 }
 
 HB_FUNC_STATIC( TWINDOW_SETFOCUS )
@@ -1571,7 +1581,20 @@ HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
          break;
 
       case WM_DRAWITEM:
-         _OOHG_Send( GetControlObjectByHandle( ( LONG ) ( ( ( PDRAWITEMSTRUCT ) lParam )->hwndItem ) ), s_Events_DrawItem );
+         _OOHG_Send( GetControlObjectByHandle( ( LONG ) ( ( ( LPDRAWITEMSTRUCT ) lParam )->hwndItem ) ), s_Events_DrawItem );
+         hb_vmPushLong( lParam );
+         hb_vmSend( 1 );
+         break;
+
+      case WM_MEASUREITEM:
+         if( wParam )
+         {
+            _OOHG_Send( GetControlObjectById( ( LONG ) ( ( ( LPMEASUREITEMSTRUCT ) lParam )->CtlID ), ( LONG ) hWnd ), s_Events_MeasureItem );
+         }
+         else
+         {
+            _OOHG_Send( &_OOHG_LastSelf_ITEM, s_Events_MeasureItem );
+         }
          hb_vmPushLong( lParam );
          hb_vmSend( 1 );
          break;
@@ -1981,7 +2004,7 @@ Local oWnd, oCtrl
 	case nMsg == WM_TIMER
         ***********************************************************************
 
-      oCtrl := GetControlObjectById( wParam )
+      oCtrl := GetControlObjectById( wParam, hWnd )
 
       oCtrl:DoEvent( oCtrl:OnClick )
 
@@ -2030,7 +2053,7 @@ Local oWnd, oCtrl
 
       ENDIF
 
-      IF ( oCtrl := GetControlObjectById( LoWord( wParam ) ) ):Id != 0
+      IF ( oCtrl := GetControlObjectById( LoWord( wParam ), hWnd ) ):Id != 0
 
          // By Id
 

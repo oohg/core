@@ -1,5 +1,5 @@
 /*
- * $Id: c_controlmisc.c,v 1.17 2005-11-25 05:38:41 guerra000 Exp $
+ * $Id: c_controlmisc.c,v 1.18 2005-11-28 01:26:09 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -153,6 +153,8 @@ char *s_SymbolNames[] = { "EVENTS_NOTIFY",
                           "ONLOSTFOCUS",
                           "ONCLICK",
                           "TRANSPARENT",
+                          "EVENTS_MEASUREITEM",
+                          "FONTHANDLE",
                           "LastSymbol" };
 
 void _OOHG_Send( PHB_ITEM pSelf, int iSymbol )
@@ -807,13 +809,14 @@ HB_FUNC( GETKEYFLAGSTATE )
 }
 
 static PHB_DYNS _ooHG_Symbol_TControl = 0;
-static HB_ITEM  _OOHG_aControlhWnd, _OOHG_aControlObjects;
+static HB_ITEM  _OOHG_aControlhWnd, _OOHG_aControlObjects, _OOHG_aControlIds;
 
 HB_FUNC( _OOHG_INIT_C_VARS_CONTROLS_C_SIDE )
 {
    _ooHG_Symbol_TControl = hb_dynsymFind( "TCONTROL" );
    memcpy( &_OOHG_aControlhWnd,    hb_param( 1, HB_IT_ARRAY ), sizeof( HB_ITEM ) );
    memcpy( &_OOHG_aControlObjects, hb_param( 2, HB_IT_ARRAY ), sizeof( HB_ITEM ) );
+   memcpy( &_OOHG_aControlIds,     hb_param( 3, HB_IT_ARRAY ), sizeof( HB_ITEM ) );
 }
 
 PHB_ITEM GetControlObjectByHandle( LONG hWnd )
@@ -859,6 +862,50 @@ HB_FUNC( GETCONTROLOBJECTBYHANDLE )
    hb_itemClear( &pReturn );
 }
 
+PHB_ITEM GetControlObjectById( LONG lId, LONG hWnd )
+{
+   PHB_ITEM pControl;
+   ULONG ulCount;
+
+   if( ! _ooHG_Symbol_TControl )
+   {
+      hb_vmPushSymbol( hb_dynsymFind( "_OOHG_INIT_C_VARS_CONTROLS" )->pSymbol );
+      hb_vmPushNil();
+      hb_vmDo( 0 );
+   }
+
+   pControl = 0;
+   for( ulCount = 0; ulCount < _OOHG_aControlIds.item.asArray.value->ulLen; ulCount++ )
+   {
+      if( lId  == hb_itemGetNL( &_OOHG_aControlIds.item.asArray.value->pItems[ ulCount ].item.asArray.value->pItems[ 0 ] ) &&
+          hWnd == hb_itemGetNL( &_OOHG_aControlIds.item.asArray.value->pItems[ ulCount ].item.asArray.value->pItems[ 1 ] ) )
+      {
+         pControl = &_OOHG_aControlObjects.item.asArray.value->pItems[ ulCount ];
+         ulCount = _OOHG_aControlIds.item.asArray.value->ulLen;
+      }
+   }
+   if( ! pControl )
+   {
+      hb_vmPushSymbol( _ooHG_Symbol_TControl->pSymbol );
+      hb_vmPushNil();
+      hb_vmDo( 0 );
+      pControl = hb_param( -1, HB_IT_ANY );
+   }
+
+   return pControl;
+}
+
+HB_FUNC( GETCONTROLOBJECTBYID )
+{
+   HB_ITEM pReturn;
+
+   pReturn.type = HB_IT_NIL;
+   hb_itemCopy( &pReturn, GetControlObjectById( hb_parnl( 1 ), hb_parnl( 2 ) ) );
+
+   hb_itemReturn( &pReturn );
+   hb_itemClear( &pReturn );
+}
+
 HB_FUNC( GETCLIPBOARDTEXT )
 {
    HGLOBAL hClip;
@@ -890,4 +937,14 @@ HB_FUNC( GETCLIPBOARDTEXT )
    {
       hb_retc( "" );
    }
+}
+
+HB_FUNC( GETPARENT )
+{
+   hb_retnl( ( LONG ) GetParent( ( HWND ) hb_parnl( 1 ) ) );
+}
+
+HB_FUNC( GETDLGCTRLID )
+{
+   hb_retnl( GetDlgCtrlID( ( HWND ) hb_parnl( 1 ) ) );
 }
