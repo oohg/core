@@ -1,5 +1,5 @@
 /*
- * $Id: c_controlmisc.c,v 1.18 2005-11-28 01:26:09 guerra000 Exp $
+ * $Id: c_controlmisc.c,v 1.19 2005-11-30 05:42:05 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -253,7 +253,8 @@ BOOL _OOHG_DetermineColor( PHB_ITEM pColor, LONG *lColor )
       else if( HB_IS_ARRAY( pColor ) && pColor->item.asArray.value->ulLen >= 3 &&
                HB_IS_NUMERIC( &pColor->item.asArray.value->pItems[ 0 ] ) &&
                HB_IS_NUMERIC( &pColor->item.asArray.value->pItems[ 1 ] ) &&
-               HB_IS_NUMERIC( &pColor->item.asArray.value->pItems[ 2 ] ) )
+               HB_IS_NUMERIC( &pColor->item.asArray.value->pItems[ 2 ] ) &&
+               hb_itemGetNL( &pColor->item.asArray.value->pItems[ 0 ] ) != -1 )
       {
          *lColor = RGB( hb_itemGetNL( &pColor->item.asArray.value->pItems[ 0 ] ),
                         hb_itemGetNL( &pColor->item.asArray.value->pItems[ 1 ] ),

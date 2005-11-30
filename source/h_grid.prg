@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.32 2005-11-18 03:49:04 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.33 2005-11-30 05:42:05 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1148,8 +1148,10 @@ HB_FUNC_STATIC( TGRID_FONTCOLOR )
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
 
-   if( _OOHG_DetermineColor( hb_param( 1, HB_IT_ANY ), &oSelf->lFontColor ) )
+   if( hb_pcount() >= 1 )
    {
+      oSelf->lFontColor = -1;
+      _OOHG_DetermineColor( hb_param( 1, HB_IT_ANY ), &oSelf->lFontColor );
       if( oSelf->hWnd )
       {
          ListView_SetTextColor( oSelf->hWnd, oSelf->lFontColor );
@@ -1176,8 +1178,10 @@ HB_FUNC_STATIC( TGRID_BACKCOLOR )
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
 
-   if( _OOHG_DetermineColor( hb_param( 1, HB_IT_ANY ), &oSelf->lBackColor ) )
+   if( hb_pcount() >= 1 )
    {
+      oSelf->lBackColor = -1;
+      _OOHG_DetermineColor( hb_param( 1, HB_IT_ANY ), &oSelf->lBackColor );
       if( oSelf->hWnd )
       {
          ListView_SetBkColor( oSelf->hWnd, oSelf->lBackColor );

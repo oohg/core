@@ -1,11 +1,23 @@
 /*
- * $Id: ChangeLog,v 1.52 2005-11-30 04:01:07 guerra000 Exp $
+ * $Id: ChangeLog,v 1.53 2005-11-30 05:42:04 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2005-11-29 23:40 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_windows.prg
+    * Fixed for NOT auto-NOSHOW and NOT auto-NOAUTORELEASE when
+      ACTIVATE WINDOW ALL.
+
+  * source/c_controlmisc.c
+  * source/h_windows.prg
+  * source/h_richeditbox.prg
+  * source/h_grid.prg
+    * Fixed color assignment. Any "unrecognized color" will clear the
+      control's color (and set it with to "default" color).
 
 2005-11-29 20:04 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_controlmisc.prg

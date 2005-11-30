@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.49 2005-11-30 04:01:08 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.50 2005-11-30 05:42:05 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -306,10 +306,14 @@ HB_FUNC_STATIC( TWINDOW_FONTCOLOR )
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
 
-   if( _OOHG_DetermineColor( hb_param( 1, HB_IT_ANY ), &oSelf->lFontColor ) && oSelf->hWnd )
+   if( hb_pcount() >= 1 )
    {
-
-      RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+      oSelf->lFontColor = -1;
+      _OOHG_DetermineColor( hb_param( 1, HB_IT_ANY ), &oSelf->lFontColor );
+      if( oSelf->hWnd )
+      {
+         RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+      }
    }
 
    if( oSelf->lFontColor != -1 )
@@ -330,9 +334,14 @@ HB_FUNC_STATIC( TWINDOW_BACKCOLOR )
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
 
-   if( _OOHG_DetermineColor( hb_param( 1, HB_IT_ANY ), &oSelf->lBackColor ) && oSelf->hWnd )
+   if( hb_pcount() >= 1 )
    {
-      RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+      oSelf->lBackColor = -1;
+      _OOHG_DetermineColor( hb_param( 1, HB_IT_ANY ), &oSelf->lBackColor );
+      if( oSelf->hWnd )
+      {
+         RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+      }
    }
 
    if( oSelf->lBackColor != -1 )
@@ -353,9 +362,14 @@ HB_FUNC_STATIC( TWINDOW_FONTCOLORSELECTED )
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
 
-   if( _OOHG_DetermineColor( hb_param( 1, HB_IT_ANY ), &oSelf->lFontColorSelected ) && oSelf->hWnd )
+   if( hb_pcount() >= 1 )
    {
-      RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+      oSelf->lFontColorSelected = -1;
+      _OOHG_DetermineColor( hb_param( 1, HB_IT_ANY ), &oSelf->lFontColorSelected );
+      if( oSelf->hWnd )
+      {
+         RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+      }
    }
 
    if( oSelf->lFontColorSelected != -1 )
@@ -376,9 +390,14 @@ HB_FUNC_STATIC( TWINDOW_BACKCOLORSELECTED )
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
 
-   if( _OOHG_DetermineColor( hb_param( 1, HB_IT_ANY ), &oSelf->lBackColorSelected ) && oSelf->hWnd )
+   if( hb_pcount() >= 1 )
    {
-      RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+      oSelf->lBackColorSelected = -1;
+      _OOHG_DetermineColor( hb_param( 1, HB_IT_ANY ), &oSelf->lBackColorSelected );
+      if( oSelf->hWnd )
+      {
+         RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+      }
    }
 
    if( oSelf->lBackColorSelected != -1 )
@@ -1345,8 +1364,10 @@ HB_FUNC_STATIC( TFORM_BACKCOLOR )
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
 
-   if( _OOHG_DetermineColor( hb_param( 1, HB_IT_ANY ), &oSelf->lBackColor ) && oSelf->hWnd )
+   if( hb_pcount() >= 1 )
    {
+      oSelf->lBackColor = -1;
+      _OOHG_DetermineColor( hb_param( 1, HB_IT_ANY ), &oSelf->lBackColor );
       if( oSelf->BrushHandle )
       {
          DeleteObject( oSelf->BrushHandle );
@@ -1361,7 +1382,10 @@ HB_FUNC_STATIC( TFORM_BACKCOLOR )
          oSelf->BrushHandle = 0;
          SetClassLong( oSelf->hWnd, GCL_HBRBACKGROUND, ( long )( COLOR_BTNFACE + 1 ) );
       }
-      RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+      if( oSelf->hWnd )
+      {
+         RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+      }
    }
 
    if( oSelf->lBackColor != -1 )
@@ -2806,7 +2830,7 @@ Local MainName := ''
       MsgOOHGError("ACTIVATE WINDOW ALL: This Command Should Be Used At Application Startup Only. Program terminated" )
 	EndIf
 
-	* Force NoShow And NoAutoRelease Styles For Non Main Windows
+// WHY???   * Force NoShow And NoAutoRelease Styles For Non Main Windows
 	* ( Force AutoRelease And Visible For Main )
 
    For i := 1 To LEN( _OOHG_aFormObjects )
@@ -2817,8 +2841,8 @@ Local MainName := ''
             oWnd:AutoRelease := .T.
             MainName := oWnd:Name
          ELse
-            oWnd:NoShow := .T.
-            oWnd:AutoRelease := .F.
+//            oWnd:NoShow := .T.
+//            oWnd:AutoRelease := .F.
             aadd( aForm , oWnd:Name )
          EndIf
       EndIf
