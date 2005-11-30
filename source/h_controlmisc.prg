@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.38 2005-11-28 01:26:09 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.39 2005-11-30 04:01:08 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -199,24 +199,11 @@ Function GetControlValue (ControlName,ParentForm)
 Return GetControlObject( ControlName, ParentForm ):Value
 
 *-----------------------------------------------------------------------------*
-Function _IsControlDefined ( ControlName , FormName)
+Function _IsControlDefined( ControlName , FormName )
 *-----------------------------------------------------------------------------*
-Local mVar , o
-
-mVar := '_' + FormName + '_' + ControlName
-
-if type ( mVar ) = 'U'
-	Return (.F.)
-EndIf
-if type ( mVar ) = 'O'
-   o := &mVar
-   if o:hWnd == -1
-		Return .f.
-	EndIf
-   Return .t.
-EndIf
-
-Return .F.
+Local mVar
+   mVar := '_' + FormName + '_' + ControlName
+Return ( Type( mVar ) == "O" .AND. ( &mVar ):hWnd != -1 )
 
 *-----------------------------------------------------------------------------*
 Function _SetFocus ( ControlName , ParentForm )
@@ -2284,8 +2271,8 @@ Return nil
 Function GetControlObject(ControlName,FormName)
 *-----------------------------------------------------------------------------*
 Local mVar
-mVar := '_' + FormName + '_' + ControlName
-Return IF( ( type( mVar ) != 'U' .AND. VALTYPE( &mVar ) == "O" ), &mVar, TControl() )
+   mVar := '_' + FormName + '_' + ControlName
+Return IF( Type( mVar ) == "O", &mVar, TControl() )
 
 *-----------------------------------------------------------------------------*
 Function _GetId()

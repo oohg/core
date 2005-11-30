@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.11 2005-11-13 00:19:25 guerra000 Exp $
+ * $Id: h_tab.prg,v 1.12 2005-11-30 04:01:08 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -135,6 +135,10 @@ Local Caption, Page, Image, Mnemonic
 Local ControlHandle
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize )
+
+   // Since we still can't set a TAB's backcolor, we assume it (and
+   // internal controls) as system-default backcolor  :(
+   ::BackColor := -1
 
    IF VALTYPE( aCaptions ) != "A"
       aCaptions := {}

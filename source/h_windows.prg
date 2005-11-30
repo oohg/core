@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.48 2005-11-28 01:26:09 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.49 2005-11-30 04:01:08 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1408,6 +1408,8 @@ local actpos:={0,0,0,0}
       nCol += ::Parent:ColMargin
       nRow += ::Parent:RowMargin
 
+      ValidateScrolls( Self, .T. )
+
    Else
 
       GetWindowRect( ::hWnd, actpos )
@@ -2294,8 +2296,8 @@ Return
 Function GetFormObject( FormName )
 *-----------------------------------------------------------------------------*
 Local mVar
-mVar := '_' + FormName
-Return IF( ( type( mVar ) != 'U' .AND. VALTYPE( &mVar ) == "O" ), &mVar, TForm() )
+   mVar := '_' + FormName
+Return IF( Type( mVar ) == "O", &mVar, TForm() )
 
 *-----------------------------------------------------------------------------*
 Function GetWindowType( FormName )
@@ -2312,7 +2314,7 @@ Function _IsWindowDefined ( FormName )
 *-----------------------------------------------------------------------------*
 Local mVar
 mVar := '_' + FormName
-Return ( type( mVar ) != 'U' .AND. VALTYPE( &mVar ) == "O" )
+Return ( Type( mVar ) == "O" )
 
 *-----------------------------------------------------------------------------*
 Function GetFormName( FormName )
@@ -2808,22 +2810,18 @@ Local MainName := ''
 	* ( Force AutoRelease And Visible For Main )
 
    For i := 1 To LEN( _OOHG_aFormObjects )
-
       oWnd := _OOHG_aFormObjects[ i ]
-         If oWnd:Type != "X"
-
-            if oWnd:Type == "A"
-               oWnd:NoShow := .F.
-               oWnd:AutoRelease := .T.
-               MainName := oWnd:Name
-				ELse
-               oWnd:NoShow := .T.
-               oWnd:AutoRelease := .F.
-               aadd( aForm , oWnd:Name )
-				EndIf
-
-			EndIf
-
+      If oWnd:Type != "X" .AND. ! oWnd:lInternal
+         if oWnd:Type == "A"
+            oWnd:NoShow := .F.
+            oWnd:AutoRelease := .T.
+            MainName := oWnd:Name
+         ELse
+            oWnd:NoShow := .T.
+            oWnd:AutoRelease := .F.
+            aadd( aForm , oWnd:Name )
+         EndIf
+      EndIf
 	Next i
 
 	aadd ( aForm , MainName )

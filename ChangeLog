@@ -1,11 +1,23 @@
 /*
- * $Id: ChangeLog,v 1.51 2005-11-28 01:26:06 guerra000 Exp $
+ * $Id: ChangeLog,v 1.52 2005-11-30 04:01:07 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2005-11-29 20:04 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_controlmisc.prg
+  * source/h_windows.prg
+    ! Semi-optimized some type/valtype usage in window/control detection.
+
+  * source/h_tab.prg
+    * Since we still can't set a TAB's backcolor, we assume it (and
+      internal controls) as system-default backcolor  :(
+
+  * source/h_windows.prg
+    * Added scroll validation when changed size.
 
 2005-11-27 19:24 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * include/oohg.h
