@@ -1,5 +1,5 @@
 /*
- * $Id: gridcolumncontrols.prg,v 1.4 2005-12-01 03:29:38 guerra000 Exp $
+ * $Id: gridcolumncontrols.prg,v 1.5 2005-12-01 03:53:02 declan2005 Exp $
  */
 /*
  * ooHG Grid COLUMNCONTROLS demo. (c) 2005 Vic
@@ -12,6 +12,9 @@
 PROCEDURE MAIN
 Local oMain
 Local aControls, aItems, aGroups
+
+
+set navigation extended
 
    aGroups := { "Computing", "Accounting", "Sales" }
 
