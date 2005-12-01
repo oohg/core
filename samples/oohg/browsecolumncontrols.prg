@@ -1,5 +1,5 @@
 /*
- * $Id: browsecolumncontrols.prg,v 1.3 2005-10-28 04:43:05 guerra000 Exp $
+ * $Id: browsecolumncontrols.prg,v 1.4 2005-12-01 03:29:38 guerra000 Exp $
  */
 /*
  * ooHG Browse COLUMNCONTROLS demo. (c) 2005 Vic
@@ -12,7 +12,7 @@
 
 PROCEDURE MAIN
 Local oMain
-Local aControls, aItems, aGroups, aReplaceField
+Local aControls, aGroups, aReplaceField
 
    aGroups := { "Computing", "Accounting", "Sales" }
 
@@ -46,8 +46,8 @@ Local aControls, aItems, aGroups, aReplaceField
       @ 180,100 RADIOGROUP Radio OPTIONS { "InPlace", "Full Row" } AUTOSIZE VALUE 1 ;
                 ON CHANGE ( oMain:Browse:InPlace := ( oMain:Radio:Value == 1 ) )
 
-      oMain:Radio:aItems[ 2 ]:Row := 180
-      oMain:Radio:aItems[ 2 ]:Col := 180
+      oMain:Radio:aControls[ 2 ]:Row := 180
+      oMain:Radio:aControls[ 2 ]:Col := 180
 
    END WINDOW
    CENTER WINDOW Main
