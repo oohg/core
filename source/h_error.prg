@@ -1,5 +1,5 @@
 /*
- * $Id: h_error.prg,v 1.5 2005-10-01 15:35:10 guerra000 Exp $
+ * $Id: h_error.prg,v 1.6 2005-12-01 13:36:12 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -129,7 +129,7 @@ Return Nil
 *------------------------------------------------------------------------------
 Function ooHGVersion()
 *------------------------------------------------------------------------------
-Return "ooHG pre-release - 2005.09.30"
+Return "ooHG pre-release - 2005.12.01"
 
 Function MiniGuiVersion()
 Return ooHGVersion()
