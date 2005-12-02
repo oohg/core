@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.55 2005-12-01 13:36:12 declan2005 Exp $
+ * $Id: ChangeLog,v 1.56 2005-12-02 01:49:23 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,8 +7,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2005-12-01 20:44 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+  * source/h_error.prg
+  * source/errorsys.prg
+     added txt format errorlog.txt only if _ooHG_txterror defined as true
+
 2005-12-01 08:28 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
-    * source/h_error.prg
+  * source/h_error.prg
        version updated. 
 
 2005-11-30 21:27 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
