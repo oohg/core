@@ -1,5 +1,5 @@
 /*
- * $Id: errorsys.prg,v 1.4 2005-11-02 17:29:48 guerra000 Exp $
+ * $Id: errorsys.prg,v 1.5 2005-12-02 01:44:52 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -113,7 +113,7 @@ STATIC FUNCTION DefError( oError )
    Local Ai
 
    //Html Arch to ErrorLog
-   LOCAL HtmArch, xText
+   LOCAL HtmArch, xText  
 
    // By default, division by zero results in zero
    IF oError:genCode == EG_ZERODIV
@@ -134,8 +134,13 @@ STATIC FUNCTION DefError( oError )
       NetErr( .T. )
       RETURN .F.
    ENDIF
-
-   HtmArch := Html_ErrorLog()
+   if type("_OOHG_TXTERROR") == "U"
+      _OOHG_TXTERROR=.F.
+   endif  
+   
+   if  .not. _OOHG_TXTERROR 
+      HtmArch := Html_ErrorLog()
+   endif
    cMessage := ErrorMessage( oError )
    IF ! Empty( oError:osCode )
       cDOSError := "(DOS Error " + LTrim( Str( oError:osCode ) ) + ")"
@@ -147,20 +152,39 @@ STATIC FUNCTION DefError( oError )
 
    // "Quit" selected
 
+ 
    IF ! Empty( oError:osCode )
       cMessage += " " + cDOSError
    ENDIF
-   Html_LineText(HtmArch, '<p class="updated">Date:' + Dtoc(Date()) + "  " + "Time: " + Time() )
-   Html_LineText(HtmArch, cMessage + "</p>" )
-   n := 2
-   ai = cmessage + chr(13) + chr (10) + chr(13) + chr (10)
-   WHILE ! Empty( ProcName( n ) )
-      xText := "Called from " + ProcName( n ) + "(" + AllTrim( Str( ProcLine( n++ ) ) ) + ")" +CHR(13) +CHR(10)
-      ai = ai + xText
-      Html_LineText(HtmArch,xText)
-   ENDDO
-   Html_Line(HtmArch)
-
+   if  .not. _OOHG_TXTERROR  
+      Html_LineText(HtmArch, '<p class="updated">Date:' + Dtoc(Date()) + "  " + "Time: " + Time() )
+      Html_LineText(HtmArch, cMessage + "</p>" )
+      n := 2
+      ai = cmessage + chr(13) + chr (10) + chr(13) + chr (10)
+      WHILE ! Empty( ProcName( n ) )
+         xText := "Called from " + ProcName( n ) + "(" + AllTrim( Str( ProcLine( n++ ) ) ) + ")" +CHR(13) +CHR(10)
+         ai = ai + xText
+         Html_LineText(HtmArch,xText)
+      ENDDO
+      Html_Line(HtmArch)
+   else
+    set printer to errorlog.txt additive
+    set print on
+    ? replicate("-",80)
+    ? "Date:" + Dtoc( Date() ) + "  " + "Time: " + Time() 
+    n := 2
+    ? " "
+    ai := MiniGuiVersion() + chr( 13 ) + chr( 10 ) + chr(13)+chr(10)+cMessage + chr( 13 ) + chr( 10 ) 
+    ? "Version: " + ai 
+//////    ? cMessage
+    DO WHILE ! Empty( ProcName( n ) )
+       xText := "Called from " + ProcName( n ) + "(" + AllTrim( Str( ProcLine( n++ ) ) ) + ")"+chr(13)+chr(10)
+       ai += xText
+       ? xtext
+    ENDDO
+    set print off
+    set printer to
+   endif
    ShowError(ai)
 
    QUIT

@@ -1,5 +1,5 @@
 /*
- * $Id: h_error.prg,v 1.6 2005-12-01 13:36:12 declan2005 Exp $
+ * $Id: h_error.prg,v 1.7 2005-12-02 01:44:52 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -111,18 +111,45 @@ Function MsgOOHGError(Message)
    _KillAllTimers()
    _KillAllKeys()
 
+if type("_OOHG_TXTERROR") == "U"
+   _OOHG_TXTERROR=.F.
+endif
+    
+
+if  .not. _OOHG_TXTERROR 
     HtmArch := Html_ErrorLog()
     Html_LineText( HtmArch, "Date:" + Dtoc( Date() ) + "  " + "Time: " + Time() )
     n := 1
     ai := MiniGuiVersion() + chr( 13 ) + chr( 10 ) + Message + chr( 13 ) + chr( 10 ) + chr( 13 ) + chr( 10 )
     Html_LineText( HtmArch, "Error: " + MiniGuiVersion() )
     Html_LineText( HtmArch, Message)
-    WHILE ! Empty( ProcName( n ) )
+    DO WHILE ! Empty( ProcName( n ) )
        xText := "Called from " + ProcName( n ) + "(" + AllTrim( Str( ProcLine( n++ ) ) ) + ")" + CHR( 13 ) + CHR( 10 )
        ai += xText
        Html_LineText( HtmArch, xText )
     ENDDO
     Html_Line( HtmArch )
+else
+    set printer to errorlog.txt additive
+    set print on
+    ? ""
+    ? replicate("-",80)
+    ? "Date:" + Dtoc( Date() ) + "  " + "Time: " + Time() 
+    ? " "
+    n := 1
+    ai := MiniGuiVersion() + chr( 13 ) + chr( 10 ) + Message + chr( 13 ) + chr( 10 ) + chr( 13 ) + chr( 10 )
+    ? "Version: " + MiniGuiVersion() 
+    ?
+    ? Message
+    ?
+    DO WHILE ! Empty( ProcName( n ) )
+       xText := "Called from " + ProcName( n ) + "(" + AllTrim( Str( ProcLine( n++ ) ) ) + ")" +chr(13)+chr(10)
+       ai += xText
+       ? xtext
+    ENDDO
+    set print off
+    set printer to
+endif
     ShowError( ai )
 Return Nil
 
