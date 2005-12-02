@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.33 2005-11-30 05:42:05 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.34 2005-12-02 04:17:33 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1688,8 +1688,7 @@ Return uValue
 *-----------------------------------------------------------------------------*
 CLASS TGridControlMemo FROM TGridControl
 *-----------------------------------------------------------------------------*
-*   DATA nDefWidth     INIT 140
-*   DATA nDefHeight    INIT 24
+   DATA nDefHeight    INIT 84
 
    METHOD CreateWindow
    METHOD CreateControl
