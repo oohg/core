@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.35 2005-11-18 03:49:04 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.36 2005-12-02 04:18:12 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -515,7 +515,7 @@ Local s  , _RecNo , _DeltaScroll := { Nil , Nil , Nil , Nil }
 
    s := LISTVIEW_GETFIRSTITEM ( ::hWnd )
 
-	If s == 1
+   If s <= 1
       If Select( ::WorkArea ) == 0
          ::RecCount := 0
          Return nil
