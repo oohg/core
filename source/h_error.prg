@@ -1,5 +1,5 @@
 /*
- * $Id: h_error.prg,v 1.8 2005-12-02 04:27:17 guerra000 Exp $
+ * $Id: h_error.prg,v 1.9 2005-12-02 13:23:42 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -112,8 +112,12 @@ Function MsgOOHGError(Message)
    _KillAllTimers()
    _KillAllKeys()
 
-if type("_OOHG_TXTERROR") == "U"
+if type("_OOHG_TXTERROR") == "U" 
    _OOHG_TXTERROR=.F.
+else
+   if type("_OOHG_TXTERROR") # "L"
+      _OOHG_TXTERROR=.F.
+   endif
 endif
 
 
