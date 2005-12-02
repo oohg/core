@@ -1,5 +1,5 @@
 /*
- * $Id: errorsys.prg,v 1.5 2005-12-02 01:44:52 declan2005 Exp $
+ * $Id: errorsys.prg,v 1.6 2005-12-02 04:27:17 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -106,14 +106,10 @@ RETURN
 STATIC FUNCTION DefError( oError )
    LOCAL cMessage
    LOCAL cDOSError
-
    LOCAL n
-
-   // AJ
    Local Ai
-
-   //Html Arch to ErrorLog
-   LOCAL HtmArch, xText  
+   LOCAL HtmArch, xText
+   MemVar _OOHG_TXTERROR
 
    // By default, division by zero results in zero
    IF oError:genCode == EG_ZERODIV
@@ -136,9 +132,9 @@ STATIC FUNCTION DefError( oError )
    ENDIF
    if type("_OOHG_TXTERROR") == "U"
       _OOHG_TXTERROR=.F.
-   endif  
-   
-   if  .not. _OOHG_TXTERROR 
+   endif
+
+   if  .not. _OOHG_TXTERROR
       HtmArch := Html_ErrorLog()
    endif
    cMessage := ErrorMessage( oError )
@@ -152,11 +148,11 @@ STATIC FUNCTION DefError( oError )
 
    // "Quit" selected
 
- 
+
    IF ! Empty( oError:osCode )
       cMessage += " " + cDOSError
    ENDIF
-   if  .not. _OOHG_TXTERROR  
+   if  .not. _OOHG_TXTERROR
       Html_LineText(HtmArch, '<p class="updated">Date:' + Dtoc(Date()) + "  " + "Time: " + Time() )
       Html_LineText(HtmArch, cMessage + "</p>" )
       n := 2
@@ -171,11 +167,11 @@ STATIC FUNCTION DefError( oError )
     set printer to errorlog.txt additive
     set print on
     ? replicate("-",80)
-    ? "Date:" + Dtoc( Date() ) + "  " + "Time: " + Time() 
+    ? "Date:" + Dtoc( Date() ) + "  " + "Time: " + Time()
     n := 2
     ? " "
-    ai := MiniGuiVersion() + chr( 13 ) + chr( 10 ) + chr(13)+chr(10)+cMessage + chr( 13 ) + chr( 10 ) 
-    ? "Version: " + ai 
+    ai := MiniGuiVersion() + chr( 13 ) + chr( 10 ) + chr(13)+chr(10)+cMessage + chr( 13 ) + chr( 10 )
+    ? "Version: " + ai
 //////    ? cMessage
     DO WHILE ! Empty( ProcName( n ) )
        xText := "Called from " + ProcName( n ) + "(" + AllTrim( Str( ProcLine( n++ ) ) ) + ")"+chr(13)+chr(10)

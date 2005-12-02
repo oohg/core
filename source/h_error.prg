@@ -1,5 +1,5 @@
 /*
- * $Id: h_error.prg,v 1.7 2005-12-02 01:44:52 declan2005 Exp $
+ * $Id: h_error.prg,v 1.8 2005-12-02 04:27:17 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -106,6 +106,7 @@
 *------------------------------------------------------------------------------
 Function MsgOOHGError(Message)
     Local n, ai, HtmArch, xText
+    MemVar _OOHG_TXTERROR
 
    // Kill timers and hot keys
    _KillAllTimers()
@@ -114,9 +115,9 @@ Function MsgOOHGError(Message)
 if type("_OOHG_TXTERROR") == "U"
    _OOHG_TXTERROR=.F.
 endif
-    
 
-if  .not. _OOHG_TXTERROR 
+
+if  .not. _OOHG_TXTERROR
     HtmArch := Html_ErrorLog()
     Html_LineText( HtmArch, "Date:" + Dtoc( Date() ) + "  " + "Time: " + Time() )
     n := 1
@@ -134,11 +135,11 @@ else
     set print on
     ? ""
     ? replicate("-",80)
-    ? "Date:" + Dtoc( Date() ) + "  " + "Time: " + Time() 
+    ? "Date:" + Dtoc( Date() ) + "  " + "Time: " + Time()
     ? " "
     n := 1
     ai := MiniGuiVersion() + chr( 13 ) + chr( 10 ) + Message + chr( 13 ) + chr( 10 ) + chr( 13 ) + chr( 10 )
-    ? "Version: " + MiniGuiVersion() 
+    ? "Version: " + MiniGuiVersion()
     ?
     ? Message
     ?
