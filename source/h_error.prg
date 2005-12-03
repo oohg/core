@@ -1,5 +1,5 @@
 /*
- * $Id: h_error.prg,v 1.9 2005-12-02 13:23:42 declan2005 Exp $
+ * $Id: h_error.prg,v 1.10 2005-12-03 00:34:38 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -115,19 +115,19 @@ Function MsgOOHGError(Message)
 if type("_OOHG_TXTERROR") == "U" 
    _OOHG_TXTERROR=.F.
 else
-   if type("_OOHG_TXTERROR") # "L"
+   if .not. type("_OOHG_TXTERROR") == "L"
       _OOHG_TXTERROR=.F.
    endif
 endif
 
-
 if  .not. _OOHG_TXTERROR
     HtmArch := Html_ErrorLog()
-    Html_LineText( HtmArch, "Date:" + Dtoc( Date() ) + "  " + "Time: " + Time() )
+    Html_LineText(HtmArch, '<p class="updated">Date:' + Dtoc(Date()) + "  " + "Time: " + Time() )
     n := 1
-    ai := MiniGuiVersion() + chr( 13 ) + chr( 10 ) + Message + chr( 13 ) + chr( 10 ) + chr( 13 ) + chr( 10 )
-    Html_LineText( HtmArch, "Error: " + MiniGuiVersion() )
-    Html_LineText( HtmArch, Message)
+    ai := MiniGuiVersion() + chr( 13 ) + chr( 10 ) + Message + chr( 13 ) + chr( 10 ) 
+    Html_LineText( HtmArch, "Version: " + MiniGuiVersion() )
+    Html_LineText( HtmArch, "Alias in use: " + alias() )
+    Html_LineText( HtmArch, "Error: "+Message +"</p>" )
     DO WHILE ! Empty( ProcName( n ) )
        xText := "Called from " + ProcName( n ) + "(" + AllTrim( Str( ProcLine( n++ ) ) ) + ")" + CHR( 13 ) + CHR( 10 )
        ai += xText
@@ -137,19 +137,20 @@ if  .not. _OOHG_TXTERROR
 else
     set printer to errorlog.txt additive
     set print on
-    ? ""
+    ? " "    
     ? replicate("-",80)
-    ? "Date:" + Dtoc( Date() ) + "  " + "Time: " + Time()
     ? " "
+    ? "Date:" + Dtoc( Date() ) + "  " + "Time: " + Time()
     n := 1
-    ai := MiniGuiVersion() + chr( 13 ) + chr( 10 ) + Message + chr( 13 ) + chr( 10 ) + chr( 13 ) + chr( 10 )
+    ai := MiniGuiVersion() + chr( 13 ) + chr( 10 ) + Message + chr( 13 ) + chr( 10 ) 
     ? "Version: " + MiniGuiVersion()
-    ?
-    ? Message
-    ?
+    ? "Alias in use: "+alias()
+    ? "Error: "+ Message
+    ? " "
+    ? " "
     DO WHILE ! Empty( ProcName( n ) )
-       xText := "Called from " + ProcName( n ) + "(" + AllTrim( Str( ProcLine( n++ ) ) ) + ")" +chr(13)+chr(10)
-       ai += xText
+       xText := "Called from " + ProcName( n ) + "(" + AllTrim( Str( ProcLine( n++ ) ) ) + ")"
+       ai += xText + chr(13)  + chr(10)
        ? xtext
     ENDDO
     set print off
