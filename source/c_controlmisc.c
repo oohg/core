@@ -1,5 +1,5 @@
 /*
- * $Id: c_controlmisc.c,v 1.19 2005-11-30 05:42:05 guerra000 Exp $
+ * $Id: c_controlmisc.c,v 1.20 2005-12-04 00:54:43 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -229,7 +229,8 @@ void _OOHG_DoEvent( PHB_ITEM pSelf, int iSymbol )
 {
    PHB_ITEM pSelf2;
 
-   pSelf2 = hb_itemNew( pSelf );
+   pSelf2 = hb_itemNew( NULL );
+   hb_itemCopy( pSelf2, pSelf );
    _OOHG_Send( pSelf2, iSymbol );
    hb_vmSend( 0 );
    _OOHG_Send( pSelf2, s_DoEvent );
@@ -875,14 +876,17 @@ PHB_ITEM GetControlObjectById( LONG lId, LONG hWnd )
       hb_vmDo( 0 );
    }
 
-   pControl = 0;
-   for( ulCount = 0; ulCount < _OOHG_aControlIds.item.asArray.value->ulLen; ulCount++ )
+   pControl = NULL;
+   if( lId )
    {
-      if( lId  == hb_itemGetNL( &_OOHG_aControlIds.item.asArray.value->pItems[ ulCount ].item.asArray.value->pItems[ 0 ] ) &&
-          hWnd == hb_itemGetNL( &_OOHG_aControlIds.item.asArray.value->pItems[ ulCount ].item.asArray.value->pItems[ 1 ] ) )
+      for( ulCount = 0; ulCount < _OOHG_aControlIds.item.asArray.value->ulLen; ulCount++ )
       {
-         pControl = &_OOHG_aControlObjects.item.asArray.value->pItems[ ulCount ];
-         ulCount = _OOHG_aControlIds.item.asArray.value->ulLen;
+         if( lId  == hb_itemGetNL( &_OOHG_aControlIds.item.asArray.value->pItems[ ulCount ].item.asArray.value->pItems[ 0 ] ) &&
+             hWnd == hb_itemGetNL( &_OOHG_aControlIds.item.asArray.value->pItems[ ulCount ].item.asArray.value->pItems[ 1 ] ) )
+         {
+            pControl = &_OOHG_aControlObjects.item.asArray.value->pItems[ ulCount ];
+            ulCount = _OOHG_aControlIds.item.asArray.value->ulLen;
+         }
       }
    }
    if( ! pControl )
