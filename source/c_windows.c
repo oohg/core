@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.27 2005-11-25 05:38:41 guerra000 Exp $
+ * $Id: c_windows.c,v 1.28 2005-12-04 00:55:21 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -232,13 +232,6 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
 {
    PHB_ITEM pSave, pSelf;
    LRESULT CALLBACK iReturn;
-
-   if( ! _ooHG_Symbol_TForm )
-   {
-      hb_vmPushSymbol( hb_dynsymFind( "_OOHG_INIT_C_VARS" )->pSymbol );
-      hb_vmPushNil();
-      hb_vmDo( 0 );
-   }
 
    pSave = hb_itemNew( NULL );
    pSelf = hb_itemNew( NULL );
