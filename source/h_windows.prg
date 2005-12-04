@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.50 2005-11-30 05:42:05 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.51 2005-12-04 00:56:40 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1371,19 +1371,19 @@ HB_FUNC_STATIC( TFORM_BACKCOLOR )
       if( oSelf->BrushHandle )
       {
          DeleteObject( oSelf->BrushHandle );
-      }
-      if( oSelf->lBackColor != -1 )
-      {
-         oSelf->BrushHandle = CreateSolidBrush( oSelf->lBackColor );
-         SetClassLong( oSelf->hWnd, GCL_HBRBACKGROUND, ( long ) oSelf->BrushHandle );
-      }
-      else
-      {
          oSelf->BrushHandle = 0;
-         SetClassLong( oSelf->hWnd, GCL_HBRBACKGROUND, ( long )( COLOR_BTNFACE + 1 ) );
       }
       if( oSelf->hWnd )
       {
+         if( oSelf->lBackColor != -1 )
+         {
+            oSelf->BrushHandle = CreateSolidBrush( oSelf->lBackColor );
+            SetClassLong( oSelf->hWnd, GCL_HBRBACKGROUND, ( long ) oSelf->BrushHandle );
+         }
+         else
+         {
+            SetClassLong( oSelf->hWnd, GCL_HBRBACKGROUND, ( long )( COLOR_BTNFACE + 1 ) );
+         }
          RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
       }
    }

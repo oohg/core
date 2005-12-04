@@ -1,5 +1,5 @@
 /*
- * $Id: h_richeditbox.prg,v 1.7 2005-11-30 05:42:05 guerra000 Exp $
+ * $Id: h_richeditbox.prg,v 1.8 2005-12-04 00:56:40 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -186,7 +186,14 @@ HB_FUNC_STATIC( TEDITRICH_BACKCOLOR )
       _OOHG_DetermineColor( hb_param( 1, HB_IT_ANY ), &oSelf->lBackColor );
       if( oSelf->hWnd )
       {
-         SendMessage ( oSelf->hWnd, EM_SETBKGNDCOLOR, 0 , oSelf->lBackColor );
+         if( oSelf->lBackColor != -1 )
+         {
+            SendMessage( oSelf->hWnd, EM_SETBKGNDCOLOR, 0, oSelf->lBackColor );
+         }
+         else
+         {
+            SendMessage( oSelf->hWnd, EM_SETBKGNDCOLOR, 0, GetSysColor( COLOR_WINDOW ) );
+         }
          RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
       }
    }

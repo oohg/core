@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.34 2005-12-02 04:17:33 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.35 2005-12-04 00:56:40 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1154,8 +1154,14 @@ HB_FUNC_STATIC( TGRID_FONTCOLOR )
       _OOHG_DetermineColor( hb_param( 1, HB_IT_ANY ), &oSelf->lFontColor );
       if( oSelf->hWnd )
       {
-         ListView_SetTextColor( oSelf->hWnd, oSelf->lFontColor );
-         // oSelf->lTextColor = ListView_GetTextColor( oSelf->hWnd );
+         if( oSelf->lFontColor != -1 )
+         {
+            ListView_SetTextColor( oSelf->hWnd, oSelf->lFontColor );
+         }
+         else
+         {
+            ListView_SetTextColor( oSelf->hWnd, GetSysColor( COLOR_WINDOWTEXT ) );
+         }
          RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
       }
    }
@@ -1184,8 +1190,14 @@ HB_FUNC_STATIC( TGRID_BACKCOLOR )
       _OOHG_DetermineColor( hb_param( 1, HB_IT_ANY ), &oSelf->lBackColor );
       if( oSelf->hWnd )
       {
-         ListView_SetBkColor( oSelf->hWnd, oSelf->lBackColor );
-         // oSelf->lBackColor = ListView_GetBkColor( oSelf->hWnd );
+         if( oSelf->lBackColor != -1 )
+         {
+            ListView_SetBkColor( oSelf->hWnd, oSelf->lBackColor );
+         }
+         else
+         {
+            ListView_SetBkColor( oSelf->hWnd, GetSysColor( COLOR_WINDOW ) );
+         }
          RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
       }
    }
