@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.12 2005-11-30 04:01:08 guerra000 Exp $
+ * $Id: h_tab.prg,v 1.13 2005-12-09 03:51:45 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -534,6 +534,8 @@ RETURN lRet
 *-----------------------------------------------------------------------------*
 METHOD AddControl( oCtrl , Row , Col ) CLASS TTabPage
 *-----------------------------------------------------------------------------*
+
+   oCtrl:Visible := oCtrl:Visible
 
    ::Super:AddControl( oCtrl )
 
