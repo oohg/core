@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.7 2005-11-02 17:29:48 guerra000 Exp $
+ * $Id: h_button.prg,v 1.8 2005-12-28 03:52:58 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -99,6 +99,7 @@
 CLASS TButton FROM TControl
    DATA Type      INIT "BUTTON" READONLY
    DATA cPicture  INIT ""
+   DATA lNoTransparent INIT .F.
    // DATA ImgHandle INIT 0   // ::AuxHandle
 
    METHOD Define
@@ -168,7 +169,8 @@ Local ControlHandle, nStyle
    ::OnLostFocus := LostFocus
    ::OnGotFocus :=  GotFocus
    ::Caption := Caption
-   ::Picture( image, notrans )
+   ::lNoTransparent := notrans
+   ::Picture := image
 
 Return Self
 
@@ -179,11 +181,11 @@ METHOD SetFocus() CLASS TButton
 Return ::Super:SetFocus()
 
 *-----------------------------------------------------------------------------*
-METHOD Picture( cPicture, lNoTransparent ) CLASS TButton
+METHOD Picture( cPicture ) CLASS TButton
 *-----------------------------------------------------------------------------*
    IF VALTYPE( cPicture ) $ "CM"
       DeleteObject( ::AuxHandle )
-      ::AuxHandle := _SetBtnPicture( ::hWnd, cPicture, lNoTransparent )
+      ::AuxHandle := _SetBtnPicture( ::hWnd, cPicture, ::lNoTransparent )
       ::cPicture := cPicture
    ENDIF
 Return ::cPicture

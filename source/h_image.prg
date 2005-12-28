@@ -1,5 +1,5 @@
 /*
- * $Id: h_image.prg,v 1.4 2005-10-01 15:35:10 guerra000 Exp $
+ * $Id: h_image.prg,v 1.5 2005-12-28 03:52:58 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -95,9 +95,10 @@
 #include "hbclass.ch"
 
 CLASS TImage FROM TControl
-   DATA Type      INIT "IMAGE" READONLY
-   DATA cPicture  INIT ""
-   DATA Stretch   INIT .F.
+   DATA Type            INIT "IMAGE" READONLY
+   DATA cPicture        INIT ""
+   DATA Stretch         INIT .F.
+   DATA WhiteBackground INIT .F.
 
    METHOD Define
    METHOD Picture      SETGET
@@ -123,14 +124,15 @@ Local ControlHandle
 		ProcedureName := ""
 	endif
 
-   ControlHandle := InitImage( ::ContainerhWnd, 0, x, y , FileName ,w,h,invisible , if ( stretch == .t. , 1 , 0 ) , lWhiteBackground, ::lRtl )
+   ControlHandle := InitImage( ::ContainerhWnd, 0, x, y , FileName ,w,h,invisible , ::lRtl )
 
    ::New( ControlHandle, ControlName, HelpId, ! Invisible )
    ::SizePos( y, x, w, h )
 
-   ::OnClick := ProcedureName
-   ::Stretch := stretch
-   ::cPicture  :=  FileName
+   ::OnClick         := ProcedureName
+   ::Stretch         := stretch
+   ::WhiteBackground := lWhiteBackground
+   ::AuxHandle := ::Picture( FileName )
 
 Return Self
 
@@ -138,7 +140,8 @@ Return Self
 METHOD Picture( cPicture ) CLASS TImage
 *-----------------------------------------------------------------------------*
    IF VALTYPE( cPicture ) $ "CM"
-      C_SetPicture( ::hWnd, cPicture, ::Width, ::Height, ::Stretch )
+      DeleteObject( ::AuxHandle )
+      ::AuxHandle := C_SetPicture( ::hWnd, cPicture, ::Width, ::Height, ::Stretch, ::WhiteBackground )
       ::cPicture := cPicture
    ENDIF
 Return ::cPicture

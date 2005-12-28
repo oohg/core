@@ -1,5 +1,5 @@
 /*
- * $Id: c_image.c,v 1.3 2005-11-25 05:38:41 guerra000 Exp $
+ * $Id: c_image.c,v 1.4 2005-12-28 03:52:58 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -123,65 +123,53 @@ HBITMAP loadolepicture(char * filename,int width,int height, HWND handle, int sc
 
 HB_FUNC (INITIMAGE)
 {
-   HWND  h;
-   HBITMAP hBitmap;
+   HWND h;
    HWND hwnd;
    int Style, StyleEx;
-   int whitebackground ;
 
-   hwnd = (HWND) hb_parnl (1);
+   hwnd = ( HWND ) hb_parnl( 1 );
 
    StyleEx = 0;
-   if ( hb_parl( 11 ) )
+   if( hb_parl( 9 ) )
    {
       StyleEx |= WS_EX_LAYOUTRTL | WS_EX_RIGHTSCROLLBAR | WS_EX_RTLREADING;
    }
 
    Style = WS_CHILD | SS_BITMAP | SS_NOTIFY;
 
-   if ( ! hb_parl (8) )
+   if( ! hb_parl( 8 ) )
    {
-      Style |= WS_VISIBLE ;
+      Style |= WS_VISIBLE;
    }
-
-        if ( hb_parl (10) )
-        {
-                whitebackground = 1 ;
-        }
-	else
-	{
-                whitebackground = 0 ;
-	}
 
    h = CreateWindowEx(StyleEx,"static",NULL,
         Style,
         hb_parni(3), hb_parni(4), 0, 0,
         hwnd,(HMENU)hb_parni(2) , GetModuleHandle(NULL) , NULL ) ;
 
-   hBitmap = loadolepicture(hb_parc(5),hb_parni(6),hb_parni(7),h,hb_parni(9) , whitebackground, 0 ) ;
-   if (hBitmap!=NULL)
-   {
-      SendMessage(h,(UINT)STM_SETIMAGE,(WPARAM)IMAGE_BITMAP,(LPARAM)hBitmap);
-   }
-
    lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) h, GWL_WNDPROC, ( LONG ) SubClassFunc );
 
-   hb_retnl ( (LONG) h );
+   hb_retnl( ( LONG ) h );
 }
 
-HB_FUNC (C_SETPICTURE)
+HB_FUNC( C_SETPICTURE )
 {
-
 // 1. CONTROL HANDLE
 // 2. FILENAME
 // 3. WIDTH
 // 4. HEIGHT
+// 5. scalestrech
+// 6. whitebackground
 
-        HBITMAP hBitmap;
+   HBITMAP hBitmap;
 
-        hBitmap = loadolepicture(hb_parc(2),hb_parni(3),hb_parni(4),(HWND) hb_parnl (1),hb_parni(5) , 0 , 0 );
-        if (hBitmap!=NULL)
-             SendMessage((HWND) hb_parnl (1),(UINT)STM_SETIMAGE,(WPARAM)IMAGE_BITMAP,(LPARAM)hBitmap);
+   hBitmap = loadolepicture( hb_parc( 2 ), hb_parni( 3 ), hb_parni( 4 ), ( HWND ) hb_parnl( 1 ), hb_parl( 5 ), hb_parl( 6 ), 0 );
+   if( hBitmap != NULL )
+   {
+      SendMessage( ( HWND ) hb_parnl( 1 ), ( UINT ) STM_SETIMAGE, ( WPARAM ) IMAGE_BITMAP, ( LPARAM ) hBitmap );
+   }
+
+   hb_retnl( ( LONG ) hBitmap );
 }
 
 HBITMAP loadolepicture(char * filename,int width,int height, HWND handle, int scalestrech , int whitebackground  , int transparent )
@@ -199,18 +187,17 @@ HBITMAP loadolepicture(char * filename,int width,int height, HWND handle, int sc
 	IPicture *iPicture = NULL;
 	HGLOBAL hGlobal;
 	HANDLE hFile;
-	DWORD nFileSize;
+    DWORD nFileSize = 0;
 	DWORD nReadByte;
 	RECT rect,rect2;
 	HBITMAP hpic,hpic2;
 	BITMAP bm;
-	SIZE size;
 	long lWidth,lHeight;
 	HDC imgDC = GetDC ( handle ) ;
 	HDC tmpDC = CreateCompatibleDC(imgDC);
 	HDC tmp2DC = CreateCompatibleDC(imgDC);
 
-	if (width==0 & height==0)
+    if (width==0 && height==0)
 	{
 		GetClientRect(handle,&rect);
 	}
@@ -350,7 +337,7 @@ HBITMAP loadolepicture(char * filename,int width,int height, HWND handle, int sc
 
 	SelectObject(tmpDC,hpic);
 
-	if ( whitebackground == 1 )
+    if( whitebackground )
 	{
 		  FillRect(tmpDC,&rect2,(HBRUSH) GetStockObject(WHITE_BRUSH));
 	}
