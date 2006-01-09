@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.36 2005-12-02 04:18:12 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.37 2006-01-09 15:13:40 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -173,20 +173,20 @@ Local ScrollBarHandle, hsum, ScrollBarButtonHandle := 0, nWidth2, nCol2
    if valtype( aFields ) != "A"
       aFields := ( WorkArea )->( DBSTRUCT() )
       AEVAL( aFields, { |x,i| aFields[ i ] := WorkArea + "->" + x[ 1 ] } )
-	endif
+   endif
 
    if valtype( aHeaders ) != "A"
       aHeaders := Array( len( aFields ) )
-	else
+   else
       aSize( aHeaders, len( aFields ) )
-	endif
+   endif
    aEval( aHeaders, { |x,i| aHeaders[ i ] := iif( ! ValType( x ) $ "CM", aFields[ i ], x ) } )
 
-	// If splitboxed force no vertical scrollbar
+   // If splitboxed force no vertical scrollbar
 
    if valtype(x) != "N" .or. valtype(y) != "N"
-		novscroll := .T.
-	endif
+      novscroll := .T.
+   endif
 
    IF valtype( w ) != "N"
       w := 240
@@ -228,15 +228,15 @@ Local ScrollBarHandle, hsum, ScrollBarButtonHandle := 0, nWidth2, nCol2
          nCol2 := x
       ENDIF
 
-		if hsum > w - GETVSCROLLBARWIDTH() - 4
+      if hsum > w - GETVSCROLLBARWIDTH() - 4
          ScrollBarHandle := InitVScrollBar ( ::ContainerhWnd, nCol2, y , GETVSCROLLBARWIDTH() , h - GETHSCROLLBARHEIGHT() )
          ScrollBarButtonHandle := InitVScrollBarButton ( ::ContainerhWnd, nCol2, y + h - GETHSCROLLBARHEIGHT() , GETVSCROLLBARWIDTH() , GETHSCROLLBARHEIGHT() )
          ::nButtonActive := 1
-		Else
+      Else
          ScrollBarHandle := InitVScrollBar ( ::ContainerhWnd, nCol2, y , GETVSCROLLBARWIDTH() , h )
          ScrollBarButtonHandle := InitVScrollBarButton ( ::ContainerhWnd, nCol2, y + h - GETHSCROLLBARHEIGHT() , 0 , 0 )
          ::nButtonActive := 0
-		EndIf
+      EndIf
 
       ::VScroll := TScrollBar():SetForm( , Self )
       ::VScroll:New( ScrollBarHandle,, HelpId,, ToolTip, ScrollBarHandle )
@@ -250,14 +250,15 @@ Local ScrollBarHandle, hsum, ScrollBarButtonHandle := 0, nWidth2, nCol2
 // cambiar TOOLTIP si cambia el del BROWSE
 // Cambiar HelpID si cambia el del BROWSE
 
-	EndIf
+      // It forces to hide "additional" controls when it's inside a
+      // non-visible TAB page.
+      ::Visible := ::Visible
+   EndIf
 
-	// Add to browselist array to update on window activation
-
-   aAdd ( ::Parent:BrowseList, Self )
+   // Add to browselist array to update on window activation
+   aAdd( ::Parent:BrowseList, Self )
 
    // Add Vertical scrollbar button
-
    ::AuxHandle := ScrollBarButtonHandle
 
    ::SizePos()
