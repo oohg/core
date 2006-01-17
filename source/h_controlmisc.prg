@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.39 2005-11-30 04:01:08 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.40 2006-01-17 03:04:47 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -2009,7 +2009,7 @@ Local lRetVal
 Return lRetVal
 
 #pragma BEGINDUMP
-#define s_Super s_Window
+#define s_Super s_TWindow
 
 // -----------------------------------------------------------------------------
 HB_FUNC_STATIC( TCONTROL_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TControl
@@ -2104,7 +2104,14 @@ HB_FUNC_STATIC( TCONTROL_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam
          break;
 
       default:
-         hb_ret();
+         _OOHG_Send( pSelf, s_Super );
+         hb_vmSend( 0 );
+         _OOHG_Send( hb_param( -1, HB_IT_OBJECT ), s_Events );
+         hb_vmPushLong( ( LONG ) hWnd );
+         hb_vmPushLong( message );
+         hb_vmPushLong( wParam );
+         hb_vmPushLong( lParam );
+         hb_vmSend( 4 );
          break;
    }
 }

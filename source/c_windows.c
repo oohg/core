@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.28 2005-12-04 00:55:21 guerra000 Exp $
+ * $Id: c_windows.c,v 1.29 2006-01-17 03:04:47 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -189,20 +189,43 @@ LRESULT APIENTRY _OOHG_WndProc( PHB_ITEM pSelf, HWND hWnd, UINT uiMsg, WPARAM wP
    PHB_ITEM pResult;
    LRESULT APIENTRY iReturn;
 
-   _OOHG_Send( pSelf, s_Events );
-   hb_vmPushLong( ( LONG ) hWnd );
-   hb_vmPushLong( uiMsg );
-   hb_vmPushLong( wParam );
-   hb_vmPushLong( lParam );
-   hb_vmSend( 4 );
-
-   pResult = hb_param( -1, HB_IT_NUMERIC );
+   _OOHG_Send( pSelf, s_OverWndProc );
+   hb_vmSend( 0 );
+   pResult = hb_param( -1, HB_IT_BLOCK );
+   // ::OverWndProc is a codeblock... execute it
    if( pResult )
    {
+      hb_vmPushSymbol( &hb_symEval );
+      hb_vmPush( pResult );
+      hb_vmPushLong( ( LONG ) hWnd );
+      hb_vmPushLong( uiMsg );
+      hb_vmPushLong( wParam );
+      hb_vmPushLong( lParam );
+      hb_vmPush( pSelf );
+      hb_vmDo( 5 );
+      pResult = hb_param( -1, HB_IT_NUMERIC );
+   }
+
+   // ::OverWndProc is NOT a codeblock, or it returns a non-numeric value... execute ::Events()
+   if( ! pResult )
+   {
+      _OOHG_Send( pSelf, s_Events );
+      hb_vmPushLong( ( LONG ) hWnd );
+      hb_vmPushLong( uiMsg );
+      hb_vmPushLong( wParam );
+      hb_vmPushLong( lParam );
+      hb_vmSend( 4 );
+      pResult = hb_param( -1, HB_IT_NUMERIC );
+   }
+
+   if( pResult )
+   {
+      // Return value is numeric... return it to Windows
       iReturn = hb_itemGetNL( pResult );
    }
    else
    {
+      // Return value is NOT numeric... execute default WindowProc
       iReturn = CallWindowProc( lpfnOldWndProc, hWnd, uiMsg, wParam, lParam );
    }
 
@@ -231,7 +254,7 @@ LRESULT APIENTRY _OOHG_WndProcCtrl( HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM
 LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
 {
    PHB_ITEM pSave, pSelf;
-   LRESULT CALLBACK iReturn;
+   LRESULT APIENTRY iReturn;
 
    pSave = hb_itemNew( NULL );
    pSelf = hb_itemNew( NULL );

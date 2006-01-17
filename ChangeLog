@@ -1,11 +1,22 @@
 /*
- * $Id: ChangeLog,v 1.64 2006-01-09 15:13:40 guerra000 Exp $
+ * $Id: ChangeLog,v 1.65 2006-01-17 03:04:46 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-01-16 21:03 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * include/oohg.h
+  * source/c_controlmisc.c
+  * source/c_windows.c
+  * source/h_controlmisc.prg
+  * source/h_windows.prg
+    + Added TWindow:Events() method. It concentrates "parent's"
+      commands for allow controls to have internal controls.
+    + Added TWindow:OverWndProc property. It's like ::WndProc property
+      but it's executed BEFORE default :EVENTS() method.
 
 2006-01-09 09:12 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_browse.prg

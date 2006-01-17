@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.51 2005-12-04 00:56:40 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.52 2006-01-17 03:04:47 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -154,6 +154,8 @@ CLASS TWindow
    DATA aControls      INIT {}
    DATA aControlsNames INIT {}
    DATA lInternal      INIT .T.
+   DATA WndProc        INIT nil
+   DATA OverWndProc    INIT nil
 
    DATA OnClick        INIT nil
    DATA OnGotFocus     INIT nil
@@ -175,6 +177,7 @@ CLASS TWindow
    METHOD BackColor           SETGET
    METHOD FontColorSelected   SETGET
    METHOD BackColorSelected   SETGET
+   METHOD Events
 
    METHOD Enabled             SETGET
    METHOD RTL                 SETGET
@@ -413,6 +416,134 @@ HB_FUNC_STATIC( TWINDOW_BACKCOLORSELECTED )
    }
 }
 
+HB_FUNC_STATIC( TWINDOW_EVENTS )
+{
+   HWND hWnd      = ( HWND )   hb_parnl( 1 );
+   UINT message   = ( UINT )   hb_parni( 2 );
+   WPARAM wParam  = ( WPARAM ) hb_parni( 3 );
+   LPARAM lParam  = ( LPARAM ) hb_parnl( 4 );
+   PHB_ITEM pSelf = hb_stackSelfItem();
+
+   switch( message )
+   {
+      case WM_CTLCOLORSTATIC:
+         _OOHG_Send( GetControlObjectByHandle( ( LONG ) lParam ), s_Events_Color );
+         hb_vmPushLong( wParam );
+         hb_vmPushLong( COLOR_3DFACE );
+         hb_vmSend( 2 );
+         break;
+
+      case WM_CTLCOLOREDIT:
+      case WM_CTLCOLORLISTBOX:
+         _OOHG_Send( GetControlObjectByHandle( ( LONG ) lParam ), s_Events_Color );
+         hb_vmPushLong( wParam );
+         hb_vmPushLong( COLOR_WINDOW );
+         hb_vmSend( 2 );
+         break;
+
+      case WM_NOTIFY:
+         _OOHG_Send( GetControlObjectByHandle( ( LONG ) ( ( ( NMHDR FAR * ) lParam )->hwndFrom ) ), s_Events_Notify );
+         hb_vmPushLong( wParam );
+         hb_vmPushLong( lParam );
+         hb_vmSend( 2 );
+         break;
+
+      case WM_DRAWITEM:
+         _OOHG_Send( GetControlObjectByHandle( ( LONG ) ( ( ( LPDRAWITEMSTRUCT ) lParam )->hwndItem ) ), s_Events_DrawItem );
+         hb_vmPushLong( lParam );
+         hb_vmSend( 1 );
+         break;
+
+      case WM_MEASUREITEM:
+         if( wParam )
+         {
+            _OOHG_Send( GetControlObjectById( ( LONG ) ( ( ( LPMEASUREITEMSTRUCT ) lParam )->CtlID ), ( LONG ) hWnd ), s_Events_MeasureItem );
+         }
+         else
+         {
+            _OOHG_Send( &_OOHG_LastSelf_ITEM, s_Events_MeasureItem );
+         }
+         hb_vmPushLong( lParam );
+         hb_vmSend( 1 );
+         break;
+
+/********
+
+      case WM_CONTEXTMENU:
+         if( _OOHG_ShowContextMenus )
+         {
+            PHB_ITEM pControl, pContext;
+
+            SetFocus( ( HWND ) wParam );
+            pControl = GetControlObjectByHandle( ( LONG ) wParam );
+
+            // Check if control have context menu
+            _OOHG_Send( pControl, s_ContextMenu );
+            hb_vmSend( 0 );
+            pContext = hb_param( -1, HB_IT_OBJECT );
+            // Check if form have context menu
+            if( ! pContext )
+            {
+               // _OOHG_Send( pSelf, s_ContextMenu );
+               _OOHG_Send( pSelf, s_ContextMenu );
+               hb_vmSend( 0 );
+               pContext = hb_param( -1, HB_IT_OBJECT );
+            }
+
+            // If there's a context menu, show it
+            if( pContext )
+            {
+//               int iRow, iCol;
+//               // _OOHG_MouseRow := HIWORD( lParam ) - ::RowMargin
+//               _OOHG_Send( pSelf, s_RowMargin );
+//               hb_vmSend( 0 );
+//               iRow = HIWORD( lParam ) - hb_parni( -1 );
+//               // _OOHG_MouseCol := LOWORD( lParam ) - ::ColMargin
+//               _OOHG_Send( pSelf, s_ColMargin );
+//               hb_vmSend( 0 );
+//               iCol = LOWORD( lParam ) - hb_parni( -1 );
+
+               // HMENU
+               _OOHG_Send( pContext, s_hWnd );
+               hb_vmSend( 0 );
+               TrackPopupMenu( ( HMENU ) hb_parnl( -1 ), 0, ( int ) LOWORD( lParam ), ( int ) HIWORD( lParam ), 0, hWnd, 0 );
+               PostMessage( hWnd, WM_NULL, 0, 0 );
+               hb_ret();
+            }
+            else
+            {
+               hb_ret();
+            }
+         }
+         else
+         {
+            hb_ret();
+         }
+         break;
+********/
+
+      default:
+         _OOHG_Send( pSelf, s_WndProc );
+         hb_vmSend( 0 );
+         if( hb_param( -1, HB_IT_BLOCK ) )
+         {
+            hb_vmPushSymbol( &hb_symEval );
+            hb_vmPush( hb_param( -1, HB_IT_BLOCK ) );
+            hb_vmPushLong( ( LONG ) hWnd );
+            hb_vmPushLong( message );
+            hb_vmPushLong( wParam );
+            hb_vmPushLong( lParam );
+            hb_vmPush( pSelf );
+            hb_vmDo( 5 );
+         }
+         else
+         {
+            hb_ret();
+         }
+         break;
+   }
+}
+
 #pragma ENDDUMP
 
 *------------------------------------------------------------------------------*
@@ -610,8 +741,6 @@ CLASS TForm FROM TWindow
 
    DATA GraphTasks     INIT {}
    DATA SplitChildList INIT {}
-
-   DATA WndProc    INIT nil
 
    DATA NotifyIconLeftClick   INIT nil
    DATA NotifyMenuHandle      INIT 0
@@ -1530,28 +1659,6 @@ HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
 
    switch( message )
    {
-      case WM_CTLCOLORSTATIC:
-         _OOHG_Send( GetControlObjectByHandle( ( LONG ) lParam ), s_Events_Color );
-         hb_vmPushLong( wParam );
-         hb_vmPushLong( COLOR_3DFACE );
-         hb_vmSend( 2 );
-         break;
-
-      case WM_CTLCOLOREDIT:
-      case WM_CTLCOLORLISTBOX:
-         _OOHG_Send( GetControlObjectByHandle( ( LONG ) lParam ), s_Events_Color );
-         hb_vmPushLong( wParam );
-         hb_vmPushLong( COLOR_WINDOW );
-         hb_vmSend( 2 );
-         break;
-
-      case WM_NOTIFY:
-         _OOHG_Send( GetControlObjectByHandle( ( LONG ) ( ( ( NMHDR FAR * ) lParam )->hwndFrom ) ), s_Events_Notify );
-         hb_vmPushLong( wParam );
-         hb_vmPushLong( lParam );
-         hb_vmSend( 2 );
-         break;
-
       case WM_CONTEXTMENU:
          if( _OOHG_ShowContextMenus )
          {
@@ -1606,25 +1713,6 @@ HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
          }
          break;
 
-      case WM_DRAWITEM:
-         _OOHG_Send( GetControlObjectByHandle( ( LONG ) ( ( ( LPDRAWITEMSTRUCT ) lParam )->hwndItem ) ), s_Events_DrawItem );
-         hb_vmPushLong( lParam );
-         hb_vmSend( 1 );
-         break;
-
-      case WM_MEASUREITEM:
-         if( wParam )
-         {
-            _OOHG_Send( GetControlObjectById( ( LONG ) ( ( ( LPMEASUREITEMSTRUCT ) lParam )->CtlID ), ( LONG ) hWnd ), s_Events_MeasureItem );
-         }
-         else
-         {
-            _OOHG_Send( &_OOHG_LastSelf_ITEM, s_Events_MeasureItem );
-         }
-         hb_vmPushLong( lParam );
-         hb_vmSend( 1 );
-         break;
-
       default:
          if( ! s_Events2 )
          {
@@ -1653,22 +1741,11 @@ Local oWnd, oCtrl
 
 	do case
 
-//   case nMsg == WM_CTLCOLORSTATIC
-//      Return GetControlObjectByHandle( lParam ):Events_Color( wParam, COLOR_3DFACE )
-//
-//   case nMsg == WM_CTLCOLOREDIT .Or. nMsg == WM_CTLCOLORLISTBOX
-//      Return GetControlObjectByHandle( lParam ):Events_Color( wParam, COLOR_WINDOW )
-//
-//   case nMsg == WM_NOTIFY
-//      Return GetControlObjectByHandle( GethWndFrom( lParam ) ):Events_Notify( wParam, lParam )
-//
         ***********************************************************************
 	case nMsg == WM_HOTKEY
         ***********************************************************************
 
 		* Process HotKeys
-
-      // Self := GetFormObjectByHandle( GetActiveWindow() )
 
       i := ASCAN( ::aHotKeys, { |a| a[ HOTKEY_ID ] == wParam } )
 
@@ -2215,18 +2292,14 @@ Local oWnd, oCtrl
    otherwise
         ***********************************************************************
 
-      if valtype( ::WndProc ) == "B"
-
-         return _OOHG_EVAL( ::WndProc, hWnd, nMsg, wParam, lParam, Self )
-
-      endif
+      return ::Super:Events( hWnd, nMsg, wParam, lParam )
 
 	endcase
 
 return nil
 
 *-----------------------------------------------------------------------------*
-Static Procedure ValidateScrolls( Self, lMove )
+Procedure ValidateScrolls( Self, lMove )
 *-----------------------------------------------------------------------------*
 Local hWnd, nVirtualWidth, nVirtualHeight
 Local aRect, w, h, hscroll, vscroll

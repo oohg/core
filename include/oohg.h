@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.h,v 1.16 2005-11-28 01:26:09 guerra000 Exp $
+ * $Id: oohg.h,v 1.17 2006-01-17 03:04:47 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -138,4 +138,7 @@ BOOL _OOHG_DetermineColor( PHB_ITEM pColor, LONG *lColor );
 #define s_Transparent          34
 #define s_Events_MeasureItem   35
 #define s_FontHandle           36
-#define s_LastSymbol           37
+#define s_TWindow              37
+#define s_WndProc              38
+#define s_OverWndProc          39
+#define s_LastSymbol           40
