@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.13 2005-11-13 00:11:12 guerra000 Exp $
+ * $Id: i_windefs.ch,v 1.14 2006-01-18 05:43:43 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -544,5 +544,37 @@
 #define TTI_INFO                1
 #define TTI_WARNING             2
 #define TTI_ERROR               3
+
+// Static Control Constants
+#define SS_LEFT             0
+#define SS_CENTER           1
+#define SS_RIGHT            2
+#define SS_ICON             3
+#define SS_BLACKRECT        4
+#define SS_GRAYRECT         5
+#define SS_WHITERECT        6
+#define SS_BLACKFRAME       7
+#define SS_GRAYFRAME        8
+#define SS_WHITEFRAME       9
+#define SS_USERITEM         10
+#define SS_SIMPLE           11
+#define SS_LEFTNOWORDWRAP   12
+#define SS_OWNERDRAW        13
+#define SS_BITMAP           14
+#define SS_ENHMETAFILE      15
+#define SS_ETCHEDHORZ       16
+#define SS_ETCHEDVERT       17
+#define SS_ETCHEDFRAME      18
+#define SS_TYPEMASK         31
+#define SS_NOPREFIX         128 // Don't do "&" character translation
+#define SS_NOTIFY           256
+#define SS_CENTERIMAGE      512
+#define SS_RIGHTJUST        1024
+#define SS_REALSIZEIMAGE    2048
+#define SS_SUNKEN           4096
+#define SS_ENDELLIPSIS      16384
+#define SS_PATHELLIPSIS     32768
+#define SS_WORDELLIPSIS     49152
+#define SS_ELLIPSISMASK     49152
 
 #endif

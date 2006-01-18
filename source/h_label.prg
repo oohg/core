@@ -1,5 +1,5 @@
 /*
- * $Id: h_label.prg,v 1.10 2005-10-08 19:16:59 guerra000 Exp $
+ * $Id: h_label.prg,v 1.11 2006-01-18 05:43:43 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -94,6 +94,7 @@
 #include "oohg.ch"
 #include "common.ch"
 #include "hbclass.ch"
+#include "i_windefs.ch"
 
 CLASS TLabel FROM TControl
    DATA Type      INIT "LABEL" READONLY
@@ -112,28 +113,45 @@ ENDCLASS
 *-----------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, x, y, Caption, w, h, fontname, ;
                fontsize, bold, BORDER, CLIENTEDGE, HSCROLL, VSCROLL, ;
-               TRANSPARENT, aRGB_bk, aRGB_font, ProcedureName, tooltip, ;
+               lTRANSPARENT, aRGB_bk, aRGB_font, ProcedureName, tooltip, ;
                HelpId, invisible, italic, underline, strikeout, autosize, ;
                rightalign, centeralign, lRtl, lNoWordWrap ) CLASS TLabel
 *-----------------------------------------------------------------------------*
-Local ControlHandle
+Local ControlHandle, nStyle, nStyleEx
 
    DEFAULT w             TO 120
    DEFAULT h             TO 24
    DEFAULT ProcedureName TO ""
    DEFAULT invisible     TO FALSE
-   DEFAULT transparent   TO FALSE
+   DEFAULT ltransparent  TO FALSE
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, aRGB_font, aRGB_bk, , lRtl )
 
-   Controlhandle := InitLabel( ::ContainerhWnd, Caption, 0, x, y, w, h, '', 0, Nil , border , clientedge , HSCROLL , VSCROLL , TRANSPARENT , invisible , rightalign , centeralign , ::lRtl, lNoWordWrap )
+   nStyle := if( ValType( invisible ) != "L" .OR. ! invisible, WS_VISIBLE, 0 ) + ;
+             if( ValType( BORDER ) == "L"    .AND. BORDER,     WS_BORDER,  0 ) + ;
+             if( ValType( HSCROLL ) == "L"   .AND. HSCROLL,    WS_HSCROLL, 0 ) + ;
+             if( ValType( VSCROLL ) == "L"   .AND. VSCROLL,    WS_VSCROLL, 0 ) + ;
+             if( ValType( BORDER ) == "L"    .AND. BORDER,     WS_BORDER, 0 )
+
+   If ValType( lNoWordWrap ) == "L" .AND. lNoWordWrap
+      nStyle += SS_LEFTNOWORDWRAP
+   ElseIf ValType( centeralign ) == "L" .AND. centeralign
+      nStyle += SS_CENTER
+   ElseIf ValType( rightalign ) == "L" .AND. rightalign
+      nStyle += SS_RIGHT
+   EndIf
+
+   nStyleEx := if( ValType( CLIENTEDGE ) == "L"   .AND. CLIENTEDGE,   WS_EX_CLIENTEDGE,  0 ) + ;
+               if( ValType( lTRANSPARENT ) == "L" .AND. lTRANSPARENT, WS_EX_TRANSPARENT, 0 )
+
+   Controlhandle := InitLabel( ::ContainerhWnd, Caption, 0, x, y, w, h, '', 0, Nil , nStyle, nStyleEx, ::lRtl )
 
    ::New( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
    ::SizePos( y, x, w, h )
 
    ::OnClick := ProcedureName
-   ::Transparent := transparent
+   ::Transparent := ltransparent
    ::AutoSize := autosize
 
 Return Self

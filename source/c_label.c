@@ -1,5 +1,5 @@
 /*
- * $Id: c_label.c,v 1.4 2005-11-25 05:38:41 guerra000 Exp $
+ * $Id: c_label.c,v 1.5 2006-01-18 05:43:43 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -114,66 +114,24 @@ static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 
 HB_FUNC( INITLABEL )
 {
-	HWND hwnd;
-	HWND hbutton;
+   HWND hwnd;
+   HWND hbutton;
 
-	int Style = WS_CHILD | SS_NOTIFY ;
-	int ExStyle = 0 ;
+   int Style, ExStyle;
 
-	hwnd = (HWND) hb_parnl (1);
+   hwnd = ( HWND ) hb_parnl( 1 );
+   Style = hb_parni( 11 ) | WS_CHILD | SS_NOTIFY;
+   ExStyle = hb_parni( 12 );
 
-   if ( hb_parl (12) )
-   {
-      ExStyle |= WS_EX_CLIENTEDGE;
-   }
-
-   if ( hb_parl( 19 ) )
+   if ( hb_parl( 13 ) )
    {
       ExStyle |= WS_EX_LAYOUTRTL | WS_EX_RIGHTSCROLLBAR | WS_EX_RTLREADING;
    }
 
-   if( hb_parl( 20 ) )
-   {
-      Style |= SS_LEFTNOWORDWRAP;
-   }
-   else if (hb_parl( 18 ) )
-   {
-      Style |= SS_CENTER;
-   }
-   else if( hb_parl( 17 ) )
-   {
-      Style |= SS_RIGHT;
-   }
-
-	if ( hb_parl (11) )
-	{
-		Style = Style | WS_BORDER ;
-	}
-
-	if ( hb_parl (13) )
-	{
-		Style = Style | WS_HSCROLL ;
-	}
-
-	if ( hb_parl (14) )
-	{
-		Style = Style | WS_VSCROLL ;
-	}
-
-	if ( hb_parl (15) )
-	{
-        ExStyle |= WS_EX_TRANSPARENT;
-	}
-
-	if ( ! hb_parl (16) )
-	{
-		Style = Style | WS_VISIBLE ;
-	}
-
-	hbutton = CreateWindowEx( ExStyle , "static" , hb_parc(2) ,
-	Style ,
-	hb_parni(4), hb_parni(5) , hb_parni(6), hb_parni(7),
-	hwnd,(HMENU)hb_parni(3) , GetModuleHandle(NULL) , NULL ) ;
+   hbutton = CreateWindowEx( ExStyle , "static" , hb_parc(2) ,
+   Style,
+   hb_parni(4), hb_parni(5) , hb_parni(6), hb_parni(7),
+   hwnd,(HMENU)hb_parni(3) , GetModuleHandle(NULL) , NULL ) ;
 
    lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hbutton, GWL_WNDPROC, ( LONG ) SubClassFunc );
 
