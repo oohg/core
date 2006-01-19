@@ -1,5 +1,5 @@
 /*
- * $Id: h_edit_ex.prg,v 1.3 2005-10-28 04:43:05 guerra000 Exp $
+ * $Id: h_edit_ex.prg,v 1.4 2006-01-19 21:12:58 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -2430,8 +2430,6 @@ static function ABM2DefinirColumnas( nAccion )
 
 return NIL
 
-
-
 /****************************************************************************************
  *  Aplicación: Comando EDIT para MiniGUI
  *       Autor: Cristóbal Mollá [cemese@terra.es]
@@ -2440,6 +2438,7 @@ return NIL
  *  Parámetros: Ninguno
  *    Devuelve: NIL
 ****************************************************************************************/
+
 static function ABM2Listado( aImpresoras )
 
 ////////// Declaración de variables locales.-----------------------------------
@@ -2471,6 +2470,7 @@ static function ABM2Listado( aImpresoras )
         local cRegistro2    as character        // * Valor del registro final.
         local xRegistro1                        // * Valor de comparación.
         local xRegistro2                        // * Valor de comparación.
+        local oprint
 
 ////////// Inicialización de variables.----------------------------------------
         // Previsualizar.
@@ -2480,7 +2480,7 @@ static function ABM2Listado( aImpresoras )
         // Nombre de la impresora.
         nImpresora := wndABM2Listado.cbxImpresoras.Value
         if nImpresora == 0
-                msgExclamation( _OOHG_Messages( 11, 32 ), '' )
+                msgExclamation( _oohg_messages(6,32), '' )
         else
                 cImpresora := aImpresoras[nImpresora]
         endif
@@ -2492,7 +2492,7 @@ static function ABM2Listado( aImpresoras )
                 aAdd( aCampo, cCampo )
         next
         if Len( aCampo ) == 0
-                msgExclamation( _OOHG_Messages( 11, 23 ), _cTitulo )
+                msgExclamation( _OOHG_messages(6,23), _cTitulo )
                 return NIL
         endif
 
@@ -2528,7 +2528,7 @@ static function ABM2Listado( aImpresoras )
                 nAncho += aAncho[i]
         next
         if nAncho > 164
-                MsgExclamation( _OOHG_Messages( 11, 24 ), _cTitulo )
+                MsgExclamation( _OOHG_messages(6,24), _cTitulo )
                 return NIL
         else
                 if nAncho > 109                 // Horizontal.
@@ -2574,113 +2574,72 @@ static function ABM2Listado( aImpresoras )
                         nPaginas := Int( nTotales / 33 ) + 1
                 endif
         else
-                if Mod( nTotales, 55 ) == 0
-                        nPaginas := Int( nTotales / 55 )
+                if Mod( nTotales, 42 ) == 0
+                        nPaginas := Int( nTotales / 42 )
                 else
-                        nPaginas := Int( nTotales / 55 ) + 1
+                        nPaginas := Int( nTotales / 42 ) + 1
                 endif
         endif
         (_cArea)->( dbGoTo( nPrimero ) )
 
 ////////// Inicializa el listado.----------------------------------------------
-        INIT PRINTSYS
+oprint:=tprint()
+oprint:init()
+oprint:selprinter(.T. , .T.  )  /// select,preview,landscape,papersize
+//oprint:selprinter(.T. , .F.  )  /// select,preview,landscape,papersize
+if oprint:lprerror
+   oprint:release()
+   return nil
+endif
 
-                // Opciones de la impresión.
-                if lPrevio
-                        SELECT PRINTER cImpresora PREVIEW
-                        SET PREVIEW RECT  15, 15, _nAltoPantalla-15, _nAnchoPantalla-15
-                else
-                        SELECT PRINTER cImpresora
-                endif
-                if lVistas
-                        ENABLE THUMBNAILS
-                endif
-
-                // Control de errores.
-                if HBPRNERROR > 0
-                        msgExclamation( _OOHG_Messages( 11, 25 ), _cTitulo )
-                        return nil
-                endif
-
-                // Definición de las fuentes del listado.
-                DEFINE FONT "a8"   name "arial" size 8
-                DEFINE FONT "a9"   name "arial" size 9
-                DEFINE FONT "a9n"  name "arial" size 9  bold
-                DEFINE FONT "a10"  NAME "arial" size 10
-                DEFINE FONT "a12n" name "arial" size 12 bold
-
-                // Definición de los tipos de linea.
-                DEFINE PEN "l0" STYLE PS_SOLID width 0.0 color 0x000000
-                DEFINE PEN "l1" STYLE PS_SOLID width 0.1 color 0x000000
-                DEFINE PEN "l2" STYLE PS_SOLID width 0.2 color 0x000000
-
-                // Definición de los patrones de relleno.
-                DEFINE BRUSH "s0" STYLE BS_NULL
-                DEFINE BRUSH "s1" STYLE BS_SOLID color RGB(195, 195, 195)
 
                 // Inicio del listado.
                 lCabecera := .t.
                 lSalida   := .t.
-                nFila     := 13
+                nFila     := 14
                 nPagina   := 1
-                START DOC
-                SET UNITS ROWCOL
-                if lOrientacion
-                        SET PAGE ORIENTATION DMORIENT_LANDSCAPE ;
-                                PAPERSIZE DMPAPER_A4 FONT "a10"
-                else
-                        SET PAGE ORIENTATION DMORIENT_PORTRAIT  ;
-                                PAPERSIZE DMPAPER_A4 FONT "a10"
-                endif
-                START PAGE
+                oprint:begindoc()
+                oprint:beginpage()
                         do while lSalida
 
                                 // Cabecera el listado.
                                 if lCabecera
-                                        set text align right
-                                        select pen "l2"
-                                        @ 5, HBPRNMAXCOL-5 say _cTitulo      font "a12n" to print
-                                        @ 6, 10, 6, HBPRNMAXCOL-5 line
-                                        select pen "l0"
-                                        @ 7, 29 say _OOHG_Messages( 11, 26 )          font "a9n" to print
-                                        @ 8, 29 say _OOHG_Messages( 11, 27 )          font "a9n" to print
-                                        @ 9, 29 say _OOHG_Messages( 11, 28 )          font "a9n" to print
-                                        @ 10,29 say _OOHG_Messages( 11, 33 ) font "a9n" to print
-                                        set text align left
-                                        @ 7, 31 say (_cArea)->( ordName() ) font "a9"  to print
-                                        @ 8, 31 say cRegistro1              font "a9"  to print
-                                        @ 9, 31 say cRegistro2              font "a9"  to print
-                                        @ 10, 31 say _cFiltro font "a9" to print
-                                        nColumna := 10
-                                        select pen "l1"
-                                        select brush "s1"
+oprint:printdata(5,1,_ctitulo,"times new roman",12,.T.) /// 
+oprint:printline(6,1,6,140)
+
+oprint:printdata(7,1,_oohg_messages(6,26),"times new roman" ,,.T.) /// 
+oprint:printdata(7,31, (_cArea)->( ordName() )) /// 
+
+oprint:printdata(8,1,_OOHG_messages(6,27),"times new roman",,.T.) /// 
+oprint:printdata(8,31, CREGISTRO1) /// 
+
+oprint:printdata(9,1,_OOHG_messages(6,28),"times new roman",,.T.) /// 
+oprint:printdata(9,31, CREGISTRO2) /// 
+oprint:printdata(10,1,_OOHG_messages(6,33),"times new roman",,.T.) /// 
+oprint:printdata(10,31, _CFILTRO) /// 
+
+                                        nColumna := 1
                                         for i := 1 to Len( aCampo )
-                                                @ 12, nColumna, 12, nColumna + aAncho[i] fillrect
-                                                @ 12, nColumna + 1 say aCampo[i] font "a9n" to print
+////oprint:printdata(12,ncolumna+ancho[i], CREGISTRO1) /// 
+oprint:printdata(12,ncolumna, acampo[i]) /// 
                                                 nColumna += aAncho[i]
                                         next
-                                        select pen "l0"
-                                        select brush "s0"
                                         lCabecera := .f.
                                 endif
 
                                 // Registros.
-                                nColumna := 10
+                                nColumna := 1
                                 for i := 1 to Len( aNumeroCampo )
                                         nCampo := aNumeroCampo[i]
                                         do case
                                                 case _aEstructura[nCampo,DBS_TYPE] == "N"
-                                                        set text align right
-                                                        @ nFila, nColumna + aAncho[i] say (_cArea)->( FieldGet( aNumeroCampo[i] ) ) font "a8" to print
+oprint:printdata(nfila,ncolumna+aancho[i], (_cArea)->( FieldGet( aNumeroCampo[i] ) )   ) /// 
                                                 case _aEstructura[nCampo,DBS_TYPE] == "L"
-                                                        set text align left
-                                                        @ nFila, nColumna + 1 say iif( (_cArea)->( FieldGet( aNumeroCampo[i] ) ), _OOHG_Messages( 11, 29 ), _OOHG_Messages( 11, 30 ) ) font "a8" to print
+oprint:printdata(nfila,ncolumna+1, iif( (_cArea)->( FieldGet( aNumeroCampo[i] ) ), _OOHG_messages(6,29), _OOHG_messages(6,30) )   ) ///  
                                                 case _aEstructura[nCampo,DBS_TYPE] == "M"
-                                                        set text align left
-                                                        @ nFila, nColumna + 1 say SubStr( (_cArea)->( FieldGet( aNumeroCampo[i] ) ), 1, 20 ) font "a8" to print
+oprint:printdata(nfila,ncolumna+1, SubStr( (_cArea)->( FieldGet( aNumeroCampo[i] ) ), 1, 20 )  ) ///  
                                                 otherwise
-                                                        set text align left
-                                                        @ nFila, nColumna + 1 say (_cArea)->( FieldGet( aNumeroCampo[i] ) ) font "a8" to print
+oprint:printdata(nfila,ncolumna+1, (_cArea)->( FieldGet( aNumeroCampo[i] ) )   ) ///  
                                         endcase
                                         nColumna += aAncho[i]
                                 next
@@ -2698,79 +2657,69 @@ static function ABM2Listado( aImpresoras )
                                 // Pie.
                                 if lOrientacion
                                         if nFila > 44
-                                                set text align left
-                                                select pen "l2"
-                                                @ 46, 10, 46, HBPRNMAXCOL - 5 line
+oprint:printline(46,1,46,140)
                                                 cPie := HB_ValToStr( Date() ) + " " + Time()
-                                                @ 46, 10 say cPie font "a9n" to print
-                                                set text align right
-                                                cPie := "Pagina:" + " " +          ;
+oprint:printdata(47,1,cpie)
+                                                cPie := "Pag:" + " " +          ;
                                                         AllTrim( Str( nPagina) ) +      ;
                                                         "/" +                           ;
                                                         AllTrim( Str( nPaginas ) )
-                                                @ 46, HBPRNMAXCOL - 5 say cPie font "a9n" to print
+oprint:printdata(47,70,cpie)
                                                 nPagina++
-                                                nFila := 13
+                                                nFila := 14
                                                 lCabecera := .t.
-                                                END PAGE
-                                                START PAGE
+oprint:endpage()
+oprint:beginpage()
                                         endif
                                 else
-                                        if nFila > 66
-                                                set text align left
-                                                select pen "l2"
-                                                @ 68, 10, 68, HBPRNMAXCOL- 5 line
+                                        if nFila > 56
+oprint:printline(58,1,58,140)
                                                 cPie := HB_ValToStr( Date() ) + " " + Time()
-                                                @ 68, 10 say cPie font "a9n" to print
-                                                set text align right
-                                                cPie := "Pagina: " +                    ;
+                              ////                  @ 68, 10 say cPie font "a9n" to print
+oprint:printdata(59,1,cpie)
+                                                cPie := "Pag: " +                    ;
                                                         AllTrim( Str( nPagina) ) +      ;
                                                         "/" +                           ;
                                                         AllTrim( Str( nPaginas ) )
-                                                @ 68, HBPRNMAXCOL - 5 say cPie font "a9n" to print
-                                                nFila := 13
+oprint:printdata(59,70,cpie)
+                                                nFila := 14
                                                 nPagina++
                                                 lCabecera := .t.
-                                                END PAGE
-                                                START PAGE
+oprint:endpage()
+oprint:beginpage()
                                         endif
                                 endif
                         enddo
 
                 // Comprueba que se imprime el pie de la ultima hoja.----------
                 if lOrientacion
-                        set text align left
-                        select pen "l2"
-                        @ 46, 10, 46, HBPRNMAXCOL - 5 line
+oprint:printline(46,1,46,140)
                         cPie := HB_ValToStr( Date() ) + " " + Time()
-                        @ 46, 10 say cPie font "a9n" to print
-                        set text align right
-                        cPie := "Página: " +                    ;
+oprint:printdata(47,1,cpie)
+                        cPie := "Pag: " +                    ;
                                 AllTrim( Str( nPagina) ) +      ;
                                 "/" +                           ;
                                 AllTrim( Str( nPaginas ) )
-                        @ 46, HBPRNMAXCOL - 5 say cPie font "a9n" to print
+oprint:printdata(47,70,cpie)
                 else
-                        set text align left
-                        select pen "l2"
-                        @ 68, 10, 68, HBPRNMAXCOL - 5 line
+oprint:printline(58,1,58,140)
                         cPie := HB_ValToStr( Date() ) + " " + Time()
-                        @ 68, 10 say cPie font "a9n" to print
-                        set text align right
-                        cPie := "Página: " +                    ;
+oprint:printdata(59,1,cpie)
+                        cPie := "Pag: " +                    ;
                                 AllTrim( Str( nPagina) ) +      ;
                                 "/" +                           ;
                                 AllTrim( Str( nPaginas ) )
-                        @ 68, HBPRNMAXCOL - 5 say cPie font "a9n" to print
+
+oprint:printdata(59,70,cpie)
                 endif
 
-                END PAGE
-                END DOC
-
-        RELEASE PRINTSYS
+oprint:endpage()
+oprint:enddoc()
+oprint:release()
 
 ////////// Cierra la ventana.--------------------------------------------------
         (_cArea)->( dbGoTo( nRegistro ) )
         wndABM2Listado.Release
 
 return NIL
+

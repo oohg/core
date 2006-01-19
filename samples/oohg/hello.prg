@@ -1,5 +1,5 @@
 /*
- * $Id: hello.prg,v 1.17 2005-11-13 00:18:16 guerra000 Exp $
+ * $Id: hello.prg,v 1.18 2006-01-19 21:12:58 declan2005 Exp $
  */
 /*
  * ooHG Hello World Demo
@@ -225,6 +225,11 @@ END TREE
 oWnd:Btn2:ToolTip := "Graph Print"
 oWnd:Btn2:Action := { || printform( ) }
 
+
+@ 330,510 BUTTON BTN3 PICTURE "RESOURCES\EDIT_NEW.BMP" width 90 height 90
+oWnd:Btn3:ToolTip :=" Tprint examples"
+oWnd:Btn3:Action := { || test( ) }
+
 @ 10,600 FRAME frame WIDTH 150 HEIGHT 60 CAPTION "Frame"
 
 @ 30,610 ipaddress IPA value {1,2,3,4} width 130
@@ -313,3 +318,5 @@ PROCEDURE MoveCursor( oCtrl )
    oCtrl:Value := PADL( STRTRAN( LEFT( oCtrl:Value, 6 ), " ", "" ), 6 ) + RIGHT( oCtrl:Value, 1 )
    oCtrl:CaretPos := 8
 RETURN
+
+#include "test.prg"

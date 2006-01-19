@@ -1,5 +1,5 @@
 /*
- * $Id: h_edit.prg,v 1.3 2005-10-28 04:43:05 guerra000 Exp $
+ * $Id: h_edit.prg,v 1.4 2006-01-19 21:12:58 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -422,6 +422,7 @@ for nItem := 1 to nCampos
                 font   "ms sans serif" ;
                 size   8
 next
+
 @ 310, 535 label  lblLabel1 ;
            of     wndABM ;
            value  _OOHG_Messages( 6, 1 ) ;
@@ -1442,7 +1443,7 @@ function ABMListadoImprimir( lOrientacion, nPrimero, nUltimo )
 // Declaración de variables locales.-------------------------------------------
 local nLineas   := 0                                    // Numero de linea.
 local nPaginas  := 0                                    // Numero de páginas.
-local nFila     := 12                                   // Numero de fila.
+local nFila     := 13                                   // Numero de fila.
 local nColumna  := 10                                   // Numero de columna.
 local nItem     := 1                                    // Indice de iteracion.
 local nIndice   := 1                                    // Indice de campo.
@@ -1452,6 +1453,7 @@ local nPagina   := 1                                    // Numero de pagina.
 local lSalida   := .t.                                  // ¿Salir del listado?.
 local nRegistro := (_cArea)->( RecNo() )                // Registro anterior.
 local cTexto    := ""                                   // Texto para lógicos.
+local oprint
 
 // Definición del rango del listado.-------------------------------------------
 (_cArea)->( dbGoTo( nPrimero ) )
@@ -1463,38 +1465,27 @@ enddo
 
 // Inicialización de la impresora.---------------------------------------------
 
-INIT PRINTSYS
 
-SELECT BY DIALOG PREVIEW
+oprint:=tprint()
+oprint:init()   ////// printlibrary
+oprint:selprinter(.T. , .T.  )  /// select,preview,landscape,papersize
+if oprint:lprerror
+   oprint:release()
+   return nil
+endif
+
+
 
 // Control de errores.---------------------------------------------------------
-
-IF HBPRNERROR != 0
-	RETURN NIL
-ENDIF
-
-if lOrientacion
-	SET ORIENTATION LANDSCAPE
-else
-	SET ORIENTATION PORTRAIT
-endif
 
 
 // Definición de fuentes, rellenos y tipos de linea.---------------------------
 // Fuentes.
 
-define font "f10"  name "arial" size 10
-define font "f10n" name "arial" size 10 bold
-define font "f9ns" name "arial" size  9 bold underline
-define font "f14n" name "arial" size 14 bold
-define font "f8n"  name "arial" size  8 bold
-define font "f8"   name "arial" size  8
-
-SELECT FONT "f10"
-SET UNITS ROWCOL
-
 // Inicio del listado.
-START DOC
+
+oprint:begindoc()
+
 
 lCabecera := .t.
 lSalida   := .t.
@@ -1502,53 +1493,48 @@ do while lSalida
 
         // Cabecera.-----------------------------------------------------------
         if lCabecera
-		START PAGE
-		SET TEXT ALIGN LEFT
-                @ 5, 10 say _OOHG_Messages( 6, 15 ) + _cTitulo font "f14n" to print
-                set text align left
-                @ 6, 10, 6, HBPRNMAXCOL-5 line
-                @ 7, 10 say _OOHG_Messages( 6, 16 )         font "f10n" to print
-                @ 7, 18 say Date()                     font "f10"  to print
-                @ 8, 10 say _OOHG_Messages( 6, 17 )         font "f10n" to print
-                @ 8, 30 say AllTrim( Str( nPrimero ) ) font "f10"  to print
-                @ 8, 40 say _OOHG_Messages( 6, 18 )         font "f10n" to print
-                @ 8, 60 say AllTrim( Str( nUltimo ) )  font "f10"  to print
-                @ 9, 10 say _OOHG_Messages( 6, 19 )         font "f10n" to print
-                @ 9, 30 say ordName()                  font "f10"  to print
-                nColumna := 10
+                oprint:beginpage()
+oprint:printdata(5,1,_OOHG_Messages(6,15) + _cTitulo,"times new roman",14,.T.) /// 
+oprint:printline(6,1,6,140)
+oprint:printdata(7,1,_OOHG_messages(6,16) ,"times new roman",10,.T.) /// 
+oprint:printdata(7,30,date(),"times new roman",10,.T.) /// 
+oprint:printdata(8,1, _OOHG_messages(6,17) ,"times new roman",10,.T.) /// 
+oprint:printdata(8,30, alltrim(str(nprimero)),"times new roman",10,.T.) /// 
+oprint:printdata(8,40,_OOHG_messages(6,18) ,"times new roman",10,.T.) /// 
+oprint:printdata(8,60, alltrim(str(nultimo)),"times new roman",10,.F.) /// 
+oprint:printdata(9,1,_OOHG_messages(6,19) ,"times new roman",10,.T.) /// 
+oprint:printdata(9,30, ordname(),"times new roman",10,.F.) /// 
+                nColumna := 1
                 for nItem := 1 to Len( _aNumeroCampo )
                         nIndice := _aNumeroCampo[nItem]
-                        @ 11, nColumna say _aCampos[nIndice] font "f9ns" to print
+                        oprint:printdata(11,ncolumna,UPPER(_acampos[nindice]),,9,.T.) /// 
                         nColumna += _aAnchoCampo[nItem]
                 next
                 lCabecera := .f.
         endif
 
         // Registros.-----------------------------------------------------------
-        nColumna := 10
+        nColumna := 1
         for nItem := 1 to Len( _aNumeroCampo )
                 nIndice := _aNumeroCampo[nItem]
                 do case
                 case _aEstructura[nIndice,2] == "L"
 
-                        set text align left
-
-                        cTexto := iif( (_cArea)->( FieldGet( nIndice ) ), _OOHG_Messages( 6, 20 ), _OOHG_Messages( 6, 21 ) )
+                        cTexto := iif( (_cArea)->( FieldGet( nIndice ) ), _HMG_aABMLangLabel[20], _HMG_aABMLangLabel[21] )
                         @ nFila, nColumna say cTexto font "f10" to print
+                        oprint:printdata(nfila,ncolumna,ctexto, ,,)
                         nColumna += _aAnchoCampo[nItem]
                 case _aEstructura[nIndice,2] == "N"
-                        set text align right
                         nColumna += _aAnchoCampo[nItem] - 2
-                        @ nFila, nColumna say (_cArea)->( FieldGet( nIndice ) ) font "f10" to print
+                        oprint:printdata(nfila,ncolumna, (_cArea)->( FieldGet( nIndice ) ), ,,)
                         nColumna += 2
                 otherwise
-                        *set print textalign left
-                        set text align left
-                        @ nFila, nColumna say (_cArea)->( FieldGet( nIndice ) ) font "f10" to print
+                        oprint:printdata(nfila,ncolumna, (_cArea)->( FieldGet( nIndice ) ), ,,)
                         nColumna += _aAnchoCampo[nItem]
                 endcase
         next
         nFila++
+
         (_cArea)->( dbSkip( 1 ) )
 
         // Pie.-----------------------------------------------------------------
@@ -1560,60 +1546,52 @@ do while lSalida
                                 nPaginas++
                         endif
 
-                        set text align left
 
-                        @ 45, 10, 45, HBPRNMAXCOL-5 line
-                        set text align center
-                        @ 45, HBPRNMAXCOL/2 say _OOHG_Messages( 6, 22 ) + AllTrim( Str( nPagina ) ) + _OOHG_Messages( 6, 23 ) + AllTrim( Str( nPaginas ) ) font "f10n" to print
+                        oprint:printline(45,10,45,140)
+                        oprint:printdata(46,1,_OOHG_messages(6,22) + AllTrim( Str( nPagina ) ) + _HMG_aABMLangLabel[23] + AllTrim( Str( nPaginas ) ) ,"times new roman",10,.F.) /// 
                         lCabecera := .t.
                         nPagina++
-                        nFila := 12
-			END PAGE
+                        nFila := 13
+                        oprint:endpage()
                 endif
         else
                 // Vertical
-                if nFila > 63
-                        nPaginas := Int( nLineas / 52 )
-                        if .not. Mod( nLineas, 52 ) == 0
+                if nFila > 53
+                        nPaginas := Int( nLineas / 42 )
+                        if .not. Mod( nLineas, 42 ) == 0
                                 nPaginas++
                         endif
 
-                        set text align left
+                        oprint:printline(55,1,55,140)
 
-                        @ 65, 10, 65, HBPRNMAXCOL-5 line
 
-                        set text align center
-
-                        @ 65, HBPRNMAXCOL/2 say _OOHG_Messages( 6, 22 ) + AllTrim( Str( nPagina ) ) + _OOHG_Messages( 6, 23 ) + AllTrim( Str( nPaginas ) ) font "f10n" to print
+                        oprint:printdata(56,70,_OOHG_messages(6,22) + AllTrim( Str( nPagina ) ) + _HMG_aABMLangLabel[23] + AllTrim( Str( nPaginas ) ) ,"times new roman",10,.F.) /// 
                         lCabecera := .t.
                         nPagina++
-                        nFila := 12
+                        nFila := 13
 
-                        END PAGE
+                        oprint:endpage()
                 endif
         endif
 
         // Comprobación del rango de registro.---------------------------------
         if ( (_cArea)->( RecNo() ) == nUltimo )
-                nColumna := 10
+                nColumna := 1
 
                 // Imprime el último registro.
                 for nItem := 1 to Len( _aNumeroCampo )
                         nIndice := _aNumeroCampo[nItem]
                         do case
                         case _aEstructura[nIndice,2] == "L"
-                                set text align left
-                                cTexto := iif( (_cArea)->( FieldGet( nIndice ) ), _OOHG_Messages( 6, 20 ), _OOHG_Messages( 6, 21 ) )
-                                @ nFila, nColumna say cTexto font "f10" to print
+                                cTexto := iif( (_cArea)->( FieldGet( nIndice ) ), _HMG_aABMLangLabel[20], _HMG_aABMLangLabel[21] )
+                                oprint:printdata(nfila,ncolumna, ctexto, ,,.F.)
                                 nColumna += _aAnchoCampo[nItem]
                         case _aEstructura[nIndice,2] == "N"
-                                set text align right
                                 nColumna += _aAnchoCampo[nItem] - 2
-                                @ nFila, nColumna say (_cArea)->( FieldGet( nIndice ) ) font "f10" to print
+                                oprint:printdata(nfila,ncolumna, (_cArea)->( FieldGet( nIndice ) )    , ,,.F.)
                                 nColumna += 2
                         otherwise
-                                set text align left
-                                @ nFila, nColumna say (_cArea)->( FieldGet( nIndice ) ) font "f10" to print
+                                oprint:printdata(nfila,ncolumna, (_cArea)->( FieldGet( nIndice ) )    , ,,.F.)
                                 nColumna += _aAnchoCampo[nItem]
                         endcase
                 next
@@ -1632,30 +1610,26 @@ if lOrientacion
                 if .not. Mod( nLineas, 32 ) == 0
                         nPaginas++
                 endif
-                set text align left
-                @ 45, 10, 45, HBPRNMAXCOL-5 line
-                set text align center
-                @ 45, HBPRNMAXCOL/2 say _OOHG_Messages( 6, 22 ) + AllTrim( Str( nPagina ) ) + _OOHG_Messages( 6, 23 ) + AllTrim( Str( nPaginas ) ) font "f10n" to print
+                   oprint:printline(45,1,45,140)
+                   oprint:printdata(46,70,_OOHG_messages(6,22) + AllTrim( Str( nPagina ) ) + _HMG_aABMLangLabel[23] + AllTrim( Str( nPaginas ) )  ,"times new roman" ,10,.F.)
         endif
 else
         // Vertical
-        if nFila <= 63
-                nPaginas := Int( nLineas / 52 )
-                if .not. Mod( nLineas, 52 ) == 0
+        if nFila <= 53
+                nPaginas := Int( nLineas / 42 )
+                if .not. Mod( nLineas, 42 ) == 0
                         nPaginas++
                 endif
-                set text align left
-                @ 65, 10, 65, HBPRNMAXCOL-5 line
-                set text align center
-                @ 65, HBPRNMAXCOL/2 say _OOHG_Messages( 6, 22 ) + AllTrim( Str( nPagina ) ) + _OOHG_Messages( 6, 23 ) + AllTrim( Str( nPaginas ) ) font "f10n" to print
+                oprint:printline(55,1,55,140)
+                oprint:printdata(56,70,_OOHG_messages(6,22) + AllTrim( Str( nPagina ) ) + _HMG_aABMLangLabel[23] + AllTrim( Str( nPaginas ) )  ,"times new roman" ,10,.F.)
         endif
 endif
-
-END PAGE
-END DOC
-RELEASE PRINTSYS
-
+oprint:endpage()
+oprint:enddoc()
+oprint:release()
+release oprint
 // Restaura.-------------------------------------------------------------------
 (_cArea)->( dbGoTo( nRegistro ) )
 
 return ( nil )
+

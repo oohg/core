@@ -1,11 +1,28 @@
 /*
- * $Id: ChangeLog,v 1.67 2006-01-19 05:21:21 guerra000 Exp $
+ * $Id: ChangeLog,v 1.68 2006-01-19 21:12:58 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-01-19 13:06 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+  * source/h_edit.prg
+  * source/h_edit_ex.prg
+  * source/h_report.prg
+  * source/makelib.bat
+  * compile.bat  
+  + source/miniprint.prg
+  + source/h_print.prg
+  + include/miniprint.ch
+  + samples/oohg/test.prg
+  + samples/oohg/test.dbf
+  + samples/oohg/test.dbt
+  + samples/oohg/report1.rpt
+  
+    + New TPRINT class , now can change print library without modify source code
+
 
 2006-01-18 23:20 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_windows.prg
