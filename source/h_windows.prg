@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.52 2006-01-17 03:04:47 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.53 2006-01-19 05:21:21 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -741,6 +741,7 @@ CLASS TForm FROM TWindow
 
    DATA GraphTasks     INIT {}
    DATA SplitChildList INIT {}
+   DATA LockedForms    INIT {}
 
    DATA NotifyIconLeftClick   INIT nil
    DATA NotifyMenuHandle      INIT 0
@@ -1160,9 +1161,14 @@ RETURN Self
 METHOD Hide() CLASS TForm
 *-----------------------------------------------------------------------------*
    If IsWindowVisible( ::hWnd )
-      if ::Type == "M"
-         if Len( _OOHG_ActiveModal ) == 0 .OR. ATAIL( _OOHG_ActiveModal ):hWnd <> ::hWnd
-            MsgOOHGError("Non top modal windows can't be hide. Program terminated" )
+      If ::Type == "M"
+         If Len( _OOHG_ActiveModal ) == 0 .OR. ATAIL( _OOHG_ActiveModal ):hWnd <> ::hWnd
+            MsgOOHGError( "Non top modal windows can't be hide. Program terminated." )
+/*
+Testing...
+         ElseIf ::ActivateCount[ 1 ] > 1 .OR. ! ::ActivateCount == ATAIL( _OOHG_MessageLoops )
+            MsgOOHGError( "Modal windows can't be hide when it have sub-windows. Program terminated." )
+*/
          EndIf
       EndIf
       HideWindow( ::hWnd )
@@ -1187,9 +1193,9 @@ METHOD Show() CLASS TForm
 			endif
 		endif
 */
-      IF ::Parent == NIL .OR. ASCAN( _OOHG_aFormhWnd, ::Parent:hWnd ) == 0
+      If ::Parent == NIL .OR. ASCAN( _OOHG_aFormhWnd, ::Parent:hWnd ) == 0
          ::Parent := GetFormObjectByHandle( GetActiveWindow() )
-         IF ::Parent:hWnd == 0
+         If ::Parent:hWnd == 0
             If _OOHG_UserWindow != NIL .AND. ascan( _OOHG_aFormhWnd, _OOHG_UserWindow:hWnd ) > 0
                ::Parent := _OOHG_UserWindow
             ElseIf Len( _OOHG_ActiveModal ) != 0 .AND. ascan( _OOHG_aFormhWnd, ATAIL( _OOHG_ActiveModal ):hWnd ) > 0
@@ -1197,10 +1203,10 @@ METHOD Show() CLASS TForm
             Else
                ::Parent := _OOHG_Main
             Endif
-         ENDIF
-		endif
+         EndIf
+      EndIf
 
-      AEVAL( _OOHG_aFormObjects, { |o| if( o:Type != "X" .AND. o:hWnd != ::hWnd, DisableWindow( o:hWnd ) , ) } )
+      AEVAL( _OOHG_aFormObjects, { |o| if( o:Type != "X" .AND. o:hWnd != ::hWnd .AND. IsWindowEnabled( o:hWnd ), ( AADD( ::LockedForms, o ), DisableWindow( o:hWnd ) ) , ) } )
       AEVAL( ::SplitChildList, { |o| EnableWindow( o:hWnd ) } )
 
       AADD( _OOHG_ActiveModal, Self )
@@ -1260,7 +1266,7 @@ METHOD Activate( lNoStop, oWndLoop ) CLASS TForm
       lNoStop := .F.
    ENDIF
    IF ValType( oWndLoop ) != "O"
-      oWndLoop := IF( lNoStop, _OOHG_Main, Self )
+      oWndLoop := IF( lNoStop, if( ValType( ::Parent ) == "O", ::Parent, _OOHG_Main), Self )
    ENDIF
    ::ActivateCount := oWndLoop:ActivateCount
    ::ActivateCount[ 1 ]++
@@ -1280,9 +1286,13 @@ METHOD Activate( lNoStop, oWndLoop ) CLASS TForm
 
    Else
 
+* Testing... it allows to create non-modal windows when modal windows are active.
+* The problem is, what should do when modal window is ... disabled? hidden? WM_CLOSE? WM_DESTROY?
+/*
       If Len( _OOHG_ActiveModal ) != 0 .AND. ATAIL( _OOHG_ActiveModal ):Active
-         MsgOOHGError("Non Modal Windows can't be activated when a modal window is active. " + ::Name +" Program Terminated" )
+         MsgOOHGError("Non Modal Windows can't be activated when a modal window is active. " + ::Name + ". Program Terminated" )
       endif
+*/
 
       If ! ::NoShow
          ShowWindow( ::hWnd )
@@ -1353,15 +1363,17 @@ Local b
 
       If IsWindowVisible( ::hWnd )
 
-         MsgOOHGError("Non top modal windows can't be released. Program terminated*"+b+"*" )
+         MsgOOHGError("Non top modal windows can't be released. Program terminated *" + ::Name + "*" )
 
       EndIf
 
-	Else
-
-      AEVAL( _OOHG_aFormObjects, { |o| IF( o:Parent != nil .AND. o:Parent:hWnd == ::hWnd, o:Parent := _OOHG_Main, )  } )
-
 	EndIf
+
+   // Checks if the released window still have child windows
+   * AEVAL( _OOHG_aFormObjects, { |o| IF( o:Parent != nil .AND. o:Parent:hWnd == ::hWnd, o:Parent := _OOHG_Main, )  } )
+   // This window's parent will be child window's parent...
+   * Check if ::Parent isn't NIL...
+   AEVAL( _OOHG_aFormObjects, { |o| IF( o:Parent != nil .AND. o:Parent:hWnd == ::hWnd, o:Parent := ::Parent, )  } )
 
    EnableWindow( ::hWnd )
    SendMessage( ::hWnd, WM_SYSCOMMAND, SC_CLOSE, 0 )
@@ -1597,31 +1609,16 @@ Return nil
 *-----------------------------------------------------------------------------*
 METHOD OnHideFocusManagement() CLASS TForm
 *-----------------------------------------------------------------------------*
+
+   // Re-enables locked forms
+   AEVAL( ::LockedForms, { |o| IF( o:hWnd != -1, EnableWindow( o:hWnd ), ) } )
+   ::LockedForms := {}
+
    If ::Parent == nil
-
-      if Len( _OOHG_ActiveModal ) == 0
-
-         AEVAL( _OOHG_aFormObjects, { |o| EnableWindow( o:hWnd ) } )
-
-		EndIf
 
       // _OOHG_Main:SetFocus()
 
 	Else
-
-      if ::Parent:Type == "M"
-
-         * Modal Parent
-
-         EnableWindow( ::Parent:hWnd )
-
-      Else
-
-         * Non Modal Parent
-
-         AEVAL( _OOHG_aFormObjects, { |o| EnableWindow( o:hWnd ) } )
-
-      Endif
 
       ::Parent:SetFocus()
 
@@ -2187,12 +2184,6 @@ Local oWnd, oCtrl
 	case nMsg == WM_CLOSE
         ***********************************************************************
 
-//      If GetEscapeState() < 0
-//         Return (1)
-//      EndIf
-
-*****      Self := GetFormObjectByHandle( hWnd )
-
       * Process Interactive Close Event / Setting
 
       If ValType ( ::OnInteractiveClose ) == 'B'
@@ -2234,6 +2225,13 @@ Local oWnd, oCtrl
             _OOHG_InteractiveCloseStarted := .T.
             ::DoEvent( ::OnRelease, 'WINDOW_RELEASE' )
          EndIf
+
+/*
+Testing...
+         If ::Type == "M" .AND. ::ActivateCount[ 1 ] > 1 .OR. ! ::ActivateCount == ATAIL( _OOHG_MessageLoops )
+            MsgOOHGError( "Modal windows MUST not be closed while it have sub-windows. Program terminated." )
+         EndIf
+*/
 
          ::OnHideFocusManagement()
 
@@ -2845,10 +2843,14 @@ Function _ActivateWindow( aForm, lNoWait )
 *-----------------------------------------------------------------------------*
 Local z, aForm2, oWndActive, oWnd, lModal
 
+* Testing... it allows to create non-modal windows when modal windows are active.
+* The problem is, what should do when modal window is ... disabled? hidden? WM_CLOSE? WM_DESTROY?
+/*
    // Multiple activation can't be used when modal window is active
    If len( aForm ) > 1 .AND. Len( _OOHG_ActiveModal ) != 0
       MsgOOHGError( "Multiple Activation can't be used when a modal window is active. Program Terminated" )
    Endif
+*/
 
    aForm2 := ACLONE( aForm )
 
