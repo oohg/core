@@ -68,7 +68,6 @@ echo %MG_HRB%\lib\hbole.lib + >> b32.bc
 echo %MG_ROOT%\lib\hbprinter.lib + >> b32.bc
 echo %MG_ROOT%\lib\miniprint.lib + >> b32.bc
 
-pause
 
 Rem ODBC Libraries Link
 
@@ -181,10 +180,10 @@ if "%6"=="/m" echo %MG_HRB%\lib\libmysql.lib + >> b32.bc
 echo cw32.lib + >> b32.bc
 echo import32.lib, >> b32.bc
 
-rem if exist %1.res echo %1.res + >> b32.bc
+if exist %1.res echo %1.res + >> b32.bc
 if exist %MG_ROOT%\resources\hbprinter.res echo %MG_ROOT%\resources\hbprinter.res + >> b32.bc
 if exist %MG_ROOT%\resources\miniprint.res echo %MG_ROOT%\resources\miniprint.res + >> b32.bc
-rem echo %MG_ROOT%\resources\minigui.res >> b32.bc
+echo %MG_ROOT%\resources\minigui.res >> b32.bc
 
 Rem Debug Link
 
