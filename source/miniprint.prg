@@ -111,39 +111,6 @@ Public _HMG_printer_thumbupdate := .T.
 Public _HMG_printer_thumbscroll 
 Public _HMG_printer_PrevPageNumber := 0
 
-///        if _HMG_IsModAlactive == .T.
-////           if _HMG_activemodal>0
-
-    /////            ModalHandle := _OOHG_ActiveModal
-
-/////                _HMG_IsModalActive := .F.
-////               _HMG_ActiveModal := 0
-////
-////                DisableWindow ( ModalHandle )
-////
-////        Else
-    ////
-////                ModalHandle := 0
-    
-    ////    EndIf
-
-//    oparent:=getformobjectbyhandle(getactivewindow())
-
-//    if oparent:type="M"
-//       modalhandle:=getactivewindow()
-//       disablewindow (modalhandle)
-///    else
- //     modalhandle:=0
-//    endif
-
-
-///    nHparent := GetActiveWindow()
-//    msgbox(str(nhparent))
-///    If nhParent >0
-///       DisableWindow ( nhparent )
-///       msgbox("hola")
-//    endif
-
 
         if _HMG_printer_hdc_bak == 0
 		Return
@@ -2015,7 +1982,7 @@ HB_FUNC ( _HMG_PRINTER_STARTDOC )
 
 		ZeroMemory(&docInfo, sizeof(docInfo));
 		docInfo.cbSize = sizeof(docInfo);
-		docInfo.lpszDocName = "Harbour MiniGUI Print System";
+                docInfo.lpszDocName = "ooHG printing";
 
 		StartDoc(hdcPrint, &docInfo);
 	

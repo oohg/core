@@ -1,5 +1,5 @@
 /*
- * $Id: h_print.prg,v 1.2 2006-01-20 15:26:52 declan2005 Exp $
+ * $Id: h_print.prg,v 1.3 2006-01-20 16:14:22 declan2005 Exp $
  */
 
 #include 'hbclass.ch'
@@ -313,7 +313,7 @@ RETURN nil
 METHOD BEGINDOC(cdoc) CLASS TPRINT
 *-------------------------
 IF cdoc=NIL
-   cDOc:=""
+   cDOc:="ooHG printing"
 endif
 
 DEFINE WINDOW _modalhide ;
@@ -351,9 +351,9 @@ DEFINE WINDOW _winreport ;
 
 do case
 case ::cprintlibrary="HBPRINTER"
-   START DOC
+   START DOC NAME cdoc
 case ::cprintlibrary="MINIPRINT"
-   START PRINTDOC
+   START PRINTDOC  
 case ::cprintlibrary="DOS"
    SET PRINTER TO &(::tempfile)
    SET DEVICE TO PRINT
