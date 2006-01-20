@@ -1,5 +1,5 @@
 /*
- * $Id: h_print.prg,v 1.1 2006-01-20 05:47:17 guerra000 Exp $
+ * $Id: h_print.prg,v 1.2 2006-01-20 15:26:52 declan2005 Exp $
  */
 
 #include 'hbclass.ch'
@@ -147,7 +147,7 @@ if iswindowactive(_winreport)
    return
 endif
 if clibx=NIL
-   if _OOHG_printlibrary#NIL
+   if type("_OOHG_printlibrary")="C"
       ::cprintlibrary:=upper(_OOHG_PRINTLIBRARY)
    else
       ::cprintlibrary:="HBPRINTER"
