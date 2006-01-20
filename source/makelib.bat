@@ -1,12 +1,12 @@
 @echo off
 rem
-rem $Id: makelib.bat,v 1.9 2006-01-19 21:12:58 declan2005 Exp $
+rem $Id: makelib.bat,v 1.10 2006-01-20 13:48:33 declan2005 Exp $
 rem
 cls
 
-SET HG_BCC=c:\borland\bcc55
-SET HG_ROOT=c:\minioop
-SET HG_HRB=c:\miniexp\harbour
+IF "%HG_BCC%"==""  SET HG_BCC=c:\borland\bcc55
+IF "%HG_ROOT%"=="" SET HG_ROOT=c:\minioop
+IF "%HG_HRB%"==""  SET HG_HRB=c:\miniexp\harbour
 
 IF EXIST %hg_root%\lib\oohg.lib del %hg_root%\lib\oohg.lib
 IF EXIST %hg_root%\lib\hbprinter.lib del %hg_root%\lib\hbprinter.lib
