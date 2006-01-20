@@ -1,5 +1,5 @@
 /*
- * $Id: h_report.prg,v 1.7 2006-01-20 05:47:17 guerra000 Exp $
+ * $Id: h_report.prg,v 1.8 2006-01-20 13:35:30 declan2005 Exp $
  */
 /*
  * DO REPORT Command support procedures For MiniGUI Library.
@@ -33,8 +33,6 @@
 #include 'hbclass.ch'
 #include 'common.ch'
 #include 'oohg.ch'
-////#include 'miniprint.ch'
-/////#include "winprint.ch"
 
 MEMVAR NPOS
 MEMVAR NPOS1
