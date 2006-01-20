@@ -1,4 +1,7 @@
 /*
+ * $Id: h_report.prg,v 1.7 2006-01-20 05:47:17 guerra000 Exp $
+ */
+/*
  * DO REPORT Command support procedures For MiniGUI Library.
  * (c) Ciro vargas Clemow [gerente@sistemascvc.com]
 
