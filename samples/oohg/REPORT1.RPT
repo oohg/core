@@ -1,0 +1,21 @@
+DEFINE  REPORT TEMPLATE
+			TITLE  'INFORME DE ARTISTAS DE CINE | segundo titulo'
+			HEADERS  {'','','',''} , {'SIMPLE','APELLIDO','DOBLE','INGRESOS'}
+			FIELDS   {'code','last','BIO','incoming'}
+			WIDTHS   {10,20,26,14}
+			TOTALS   {.F.,.F.,.F.,.T.}
+			NFORMATS {'','','','@E 999,999,999.99'}
+			WORKAREA Test
+			LPP      55	
+			CPL      77
+			LMARGIN  3
+			TMARGIN 3
+			PAPERSIZE DMPAPER_A4
+			PREVIEW	
+			SELECT
+			MULTIPLE
+                        GROUPED BY code
+			HEADRGRP 'Sumas: '
+                        LIBRARY "HBPRINTER"
+END REPORT
+

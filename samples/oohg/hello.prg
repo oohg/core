@@ -1,5 +1,5 @@
 /*
- * $Id: hello.prg,v 1.18 2006-01-19 21:12:58 declan2005 Exp $
+ * $Id: hello.prg,v 1.19 2006-01-20 13:21:24 declan2005 Exp $
  */
 /*
  * ooHG Hello World Demo
