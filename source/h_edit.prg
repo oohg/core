@@ -1,5 +1,5 @@
 /*
- * $Id: h_edit.prg,v 1.4 2006-01-19 21:12:58 declan2005 Exp $
+ * $Id: h_edit.prg,v 1.5 2006-01-20 04:57:43 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1494,20 +1494,20 @@ do while lSalida
         // Cabecera.-----------------------------------------------------------
         if lCabecera
                 oprint:beginpage()
-oprint:printdata(5,1,_OOHG_Messages(6,15) + _cTitulo,"times new roman",14,.T.) /// 
+oprint:printdata(5,1,_OOHG_Messages(6,15) + _cTitulo,"times new roman",14,.T.) ///
 oprint:printline(6,1,6,140)
-oprint:printdata(7,1,_OOHG_messages(6,16) ,"times new roman",10,.T.) /// 
-oprint:printdata(7,30,date(),"times new roman",10,.T.) /// 
-oprint:printdata(8,1, _OOHG_messages(6,17) ,"times new roman",10,.T.) /// 
-oprint:printdata(8,30, alltrim(str(nprimero)),"times new roman",10,.T.) /// 
-oprint:printdata(8,40,_OOHG_messages(6,18) ,"times new roman",10,.T.) /// 
-oprint:printdata(8,60, alltrim(str(nultimo)),"times new roman",10,.F.) /// 
-oprint:printdata(9,1,_OOHG_messages(6,19) ,"times new roman",10,.T.) /// 
-oprint:printdata(9,30, ordname(),"times new roman",10,.F.) /// 
+oprint:printdata(7,1,_OOHG_messages(6,16) ,"times new roman",10,.T.) ///
+oprint:printdata(7,30,date(),"times new roman",10,.T.) ///
+oprint:printdata(8,1, _OOHG_messages(6,17) ,"times new roman",10,.T.) ///
+oprint:printdata(8,30, alltrim(str(nprimero)),"times new roman",10,.T.) ///
+oprint:printdata(8,40,_OOHG_messages(6,18) ,"times new roman",10,.T.) ///
+oprint:printdata(8,60, alltrim(str(nultimo)),"times new roman",10,.F.) ///
+oprint:printdata(9,1,_OOHG_messages(6,19) ,"times new roman",10,.T.) ///
+oprint:printdata(9,30, ordname(),"times new roman",10,.F.) ///
                 nColumna := 1
                 for nItem := 1 to Len( _aNumeroCampo )
                         nIndice := _aNumeroCampo[nItem]
-                        oprint:printdata(11,ncolumna,UPPER(_acampos[nindice]),,9,.T.) /// 
+                        oprint:printdata(11,ncolumna,UPPER(_acampos[nindice]),,9,.T.) ///
                         nColumna += _aAnchoCampo[nItem]
                 next
                 lCabecera := .f.
@@ -1520,7 +1520,7 @@ oprint:printdata(9,30, ordname(),"times new roman",10,.F.) ///
                 do case
                 case _aEstructura[nIndice,2] == "L"
 
-                        cTexto := iif( (_cArea)->( FieldGet( nIndice ) ), _HMG_aABMLangLabel[20], _HMG_aABMLangLabel[21] )
+                        cTexto := iif( (_cArea)->( FieldGet( nIndice ) ), _OOHG_Messages( 6, 20 ), _OOHG_Messages( 6, 21 ) )
                         @ nFila, nColumna say cTexto font "f10" to print
                         oprint:printdata(nfila,ncolumna,ctexto, ,,)
                         nColumna += _aAnchoCampo[nItem]
@@ -1548,7 +1548,7 @@ oprint:printdata(9,30, ordname(),"times new roman",10,.F.) ///
 
 
                         oprint:printline(45,10,45,140)
-                        oprint:printdata(46,1,_OOHG_messages(6,22) + AllTrim( Str( nPagina ) ) + _HMG_aABMLangLabel[23] + AllTrim( Str( nPaginas ) ) ,"times new roman",10,.F.) /// 
+                        oprint:printdata(46,1,_OOHG_messages(6,22) + AllTrim( Str( nPagina ) ) + _OOHG_Messages( 6, 23 ) + AllTrim( Str( nPaginas ) ) ,"times new roman",10,.F.) ///
                         lCabecera := .t.
                         nPagina++
                         nFila := 13
@@ -1565,7 +1565,7 @@ oprint:printdata(9,30, ordname(),"times new roman",10,.F.) ///
                         oprint:printline(55,1,55,140)
 
 
-                        oprint:printdata(56,70,_OOHG_messages(6,22) + AllTrim( Str( nPagina ) ) + _HMG_aABMLangLabel[23] + AllTrim( Str( nPaginas ) ) ,"times new roman",10,.F.) /// 
+                        oprint:printdata(56,70,_OOHG_messages(6,22) + AllTrim( Str( nPagina ) ) + _OOHG_Messages( 6, 23 ) + AllTrim( Str( nPaginas ) ) ,"times new roman",10,.F.) ///
                         lCabecera := .t.
                         nPagina++
                         nFila := 13
@@ -1583,7 +1583,7 @@ oprint:printdata(9,30, ordname(),"times new roman",10,.F.) ///
                         nIndice := _aNumeroCampo[nItem]
                         do case
                         case _aEstructura[nIndice,2] == "L"
-                                cTexto := iif( (_cArea)->( FieldGet( nIndice ) ), _HMG_aABMLangLabel[20], _HMG_aABMLangLabel[21] )
+                                cTexto := iif( (_cArea)->( FieldGet( nIndice ) ), _OOHG_Messages( 6, 20 ), _OOHG_Messages( 6, 21 ) )
                                 oprint:printdata(nfila,ncolumna, ctexto, ,,.F.)
                                 nColumna += _aAnchoCampo[nItem]
                         case _aEstructura[nIndice,2] == "N"
@@ -1611,7 +1611,7 @@ if lOrientacion
                         nPaginas++
                 endif
                    oprint:printline(45,1,45,140)
-                   oprint:printdata(46,70,_OOHG_messages(6,22) + AllTrim( Str( nPagina ) ) + _HMG_aABMLangLabel[23] + AllTrim( Str( nPaginas ) )  ,"times new roman" ,10,.F.)
+                   oprint:printdata(46,70,_OOHG_messages(6,22) + AllTrim( Str( nPagina ) ) + _OOHG_Messages( 6, 23 ) + AllTrim( Str( nPaginas ) )  ,"times new roman" ,10,.F.)
         endif
 else
         // Vertical
@@ -1621,7 +1621,7 @@ else
                         nPaginas++
                 endif
                 oprint:printline(55,1,55,140)
-                oprint:printdata(56,70,_OOHG_messages(6,22) + AllTrim( Str( nPagina ) ) + _HMG_aABMLangLabel[23] + AllTrim( Str( nPaginas ) )  ,"times new roman" ,10,.F.)
+                oprint:printdata(56,70,_OOHG_messages(6,22) + AllTrim( Str( nPagina ) ) + _OOHG_Messages( 6, 23 ) + AllTrim( Str( nPaginas ) )  ,"times new roman" ,10,.F.)
         endif
 endif
 oprint:endpage()
@@ -1632,4 +1632,3 @@ release oprint
 (_cArea)->( dbGoTo( nRegistro ) )
 
 return ( nil )
-
