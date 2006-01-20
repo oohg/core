@@ -1,5 +1,5 @@
 /*
- * $Id: hello.prg,v 1.19 2006-01-20 13:21:24 declan2005 Exp $
+ * $Id: hello.prg,v 1.20 2006-01-20 14:15:58 declan2005 Exp $
  */
 /*
  * ooHG Hello World Demo
@@ -319,4 +319,5 @@ PROCEDURE MoveCursor( oCtrl )
    oCtrl:CaretPos := 8
 RETURN
 
-#include "test.prg"
+#include "printtest.prg"
+

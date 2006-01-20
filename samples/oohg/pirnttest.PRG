@@ -1,5 +1,3 @@
-//////#include 'hbclass.ch'
-/////#include 'common.ch'
 #include 'oohg.ch'
 
 procedure test()
@@ -10,8 +8,8 @@ set date ansi
 
 	define window pr_form ;
 		at 0,0 ;
-		width 100;
-		height 100 ;
+		width 300;
+		height 300 ;
 		title 'print Test' ;
                 MODAL                
 
@@ -97,4 +95,3 @@ function editpx(clibrary)
 return nil
 
 
-
