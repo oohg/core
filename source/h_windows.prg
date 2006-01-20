@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.53 2006-01-19 05:21:21 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.54 2006-01-20 15:37:13 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -577,7 +577,7 @@ METHOD Action( bAction ) CLASS TWindow
 Return ::OnClick
 
 *-----------------------------------------------------------------------------*
-METHOD Print( x, y, w, h ) CLASS TWindow
+METHOD Print( y, x, y1, x1 ) CLASS TWindow
 *-----------------------------------------------------------------------------*
 Local myobject, cWork
    cWork := '_oohg_t' + alltrim( str( int( random( 999999 ) ) ) ) + '.bmp'
@@ -585,8 +585,8 @@ Local myobject, cWork
       cWork := '_oohg_t' + alltrim( str( int( random( 999999 ) ) ) ) + '.bmp'
    enddo
 
-   DEFAULT w    TO 40
-   DEFAULT h    TO 140
+   DEFAULT y1    TO 40
+   DEFAULT x1    TO 120
    DEFAULT x    TO 4
    DEFAULT y    TO 4
 
@@ -594,23 +594,20 @@ Local myobject, cWork
 
    WNDCOPY( ::hWnd, .F., cWork ) //// save as BMP
 
-   myobject := HBPrinter():New()
-   myobject:selectprinter( "", .T. )
-   if myobject:error == 0
-      myobject:setpage( 2,, )  // myobject:setpage( DMORIENT_LANDSCAPE,, )
-      if myobject:error > 0
-         msginfo( "Print error", "Information" )
-      else
-         myobject:startdoc( "ooHG printing" )
-         myobject:startpage()
-//////         myobject:setunits( 3 )
-         myobject:picture( y, x, w, h, cwork,, )
-         myobject:endpage()
-         myobject:enddoc()
-         myobject:end()
-      endif
+   myobject:= Tprint()
+   myobject:init()  
+   myobject:selprinter(.T. , .T. , .T.  )  /// select,preview,landscape
+   if myobject:lprerror
+      myobject:release()
+      return nil
    endif
-
+   myobject:begindoc("ooHG printing" )
+   myobject:beginpage()
+   myobject:printimage(y,x,y1,x1,cwork)
+   myobject:endpage()
+   myobject:enddoc()
+   myobject:release()
+   release myobject
    FErase( cWork )
 return nil
 
