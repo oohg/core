@@ -645,20 +645,11 @@ Local cAction
 
                 cAction := "( _HMG_printer_CurrentPageNumber:="+ alltrim(str(i)) +", _HMG_PRINTER_THUMBUPDATE := .F. , _HMG_PRINTER_PreviewRefresh() , _HMG_PRINTER_THUMBUPDATE := .T. )"
 
-//                _DefineImage(;
-//                        cMacroTemp,;
-//                        '_HMG_PRINTER_SHOWTHUMBNAILS',;
-//                        10,;
-//                        ( i * (tHeight + 10) ) - tHeight,;
-//                        _HMG_printer_BasePageName + strzero(i,4) + ".emf",;
-//                        tWidth,;
-//                        tHeight,;
-//                        { || &cAction },;
-//                        Nil,;
-//                        .F.,;
-//                        .F.,;
-//                        .T.;
-//                        )
+                   TImage():Define( cMacroTemp, '_HMG_PRINTER_SHOWTHUMBNAILS', 10, ;
+                    ( i * (tHeight + 10) ) - tHeight, ;
+                    _HMG_printer_BasePageName + strzero(i,4) + ".emf",;
+                    tWidth, tHeight, { || &cAction }, Nil, ;
+                   .F., .F., .T., .F. )
 
                 SetToolTip ( GetControlHandle ( cMacroTemp ,'_HMG_PRINTER_SHOWTHUMBNAILS'), _HMG_printer_usermessages [01] + ' ' + AllTrim(Str(i)) + ' [Click]' , ttHandle )
 			
