@@ -1,5 +1,5 @@
 /*
- * $Id: h_report.prg,v 1.8 2006-01-20 13:35:30 declan2005 Exp $
+ * $Id: h_report.prg,v 1.9 2006-01-21 23:39:26 declan2005 Exp $
  */
 /*
  * DO REPORT Command support procedures For MiniGUI Library.
@@ -219,31 +219,39 @@ if ncpl = NIL
    ncpl:=80
    repobject:nfsize=12
 endif
-
+oprintr:=tprint()
 do case
         case ncpl= 80
             ncvcopt:=1
             repobject:nfsize:=12
+            oprintr:nfontsize:=12
          case ncpl= 96
             ncvcopt:=2
             repobject:nfsize=10
+            oprintr:nfontsize:=10
          case ncpl= 120
             ncvcopt:=3
             repobject:nfsize:=8
+            oprintr:nfontsize:=8
          case ncpl= 140
             ncvcopt:=4
            repobject:nfsize:=7
+            oprintr:nfontsize:=7
+
          case ncpl= 160
             ncvcopt:=5
             repobject:nfsize:=6
+            oprintr:nfontsize:=6
+
          otherwise
             ncvcopt:=1
             repobject:nfsize:=12
+            oprint:nfontsize:=12
+
 endcase
 
 *****************=======================================
 
-oprintr:=TPRINT()
 if ldos
    oprintr:init("DOS")
    if ldos .and. ncpl<= 80
@@ -295,7 +303,7 @@ do while .not. eof()
 **************
             for i:=1 to len(afields)
                 if atotals[i]
-                   oprintr:printdata(nlin,ncol, iif(.not.(aformats[i]==''),transform(repobject:angrpby[i],aformats[i]),str(repobject:angrpby[i],awidths[i])),,,.T.)
+                   oprintr:printdata(nlin,ncol, iif(.not.(aformats[i]==''),transform(repobject:angrpby[i],aformats[i]),str(repobject:angrpby[i],awidths[i])),, ,.T.)
                 endif
                 ncol:=ncol+awidths[i]+1
             next i
@@ -306,7 +314,7 @@ do while .not. eof()
         next i
         crompe:=&grpby
         nlin++
-        oprintr:printdata(nlin,repobject:nlmargin,  '** ' +hb_oemtoansi(chdrgrp)+' ** '+hb_oemtoansi(&grpby),,,.T.)
+        oprintr:printdata(nlin,repobject:nlmargin,  '** ' +hb_oemtoansi(chdrgrp)+' ** '+hb_oemtoansi(&grpby),, ,.T.)
         nlin++
       endif
    endif
@@ -320,16 +328,16 @@ do while .not. eof()
 
             do case
                case type('&wfield')=='C'
-                oprintr:printdata(nlin,ncol,substr(&wfield,1,awidths[i])  )
+                oprintr:printdata(nlin,ncol,substr(&wfield,1,awidths[i]),,  )
                case type('&wfield')=='N'
-                oprintr:printdata(nlin,ncol, iif(.not.(aformats[i]==''),transform(&wfield,aformats[i]),str(&wfield,awidths[i]))  )
+                oprintr:printdata(nlin,ncol, iif(.not.(aformats[i]==''),transform(&wfield,aformats[i]),str(&wfield,awidths[i])),,  )
                case type('&wfield')=='D'
-               oprintr:printdata(nlin,ncol, substr(dtoc(&wfield),1,awidths[i])  )
+               oprintr:printdata(nlin,ncol, substr(dtoc(&wfield),1,awidths[i]),, )
                case type('&wfield')=='L'
-               oprintr:printdata(nlin,ncol, iif(&wfield,'T','F')  )
+               oprintr:printdata(nlin,ncol, iif(&wfield,'T','F'),,  )
                case type('&wfield')=='M'
                  for k:=1 to mlcount(&wfield,awidths[i])
-                        oprintr:printdata(nlin,ncol, justificalinea(memoline(&wfield,awidths[i] ,k),awidths[i])  )
+                        oprintr:printdata(nlin,ncol, justificalinea(memoline(&wfield,awidths[i] ,k),awidths[i]),,  )
                      nlin++
    		if nlin>nlpp
 			   nlin:=1
@@ -346,7 +354,7 @@ do while .not. eof()
 		endif
                  next k
                otherwise
-                oprintr:printdata(nlin,ncol,replicate('_',awidths[i])   )
+                oprintr:printdata(nlin,ncol,replicate('_',awidths[i]),,   )
             endcase
 
 
@@ -385,13 +393,13 @@ if swt==1
    if grpby<>NIL
       if .not.(&grpby == crompe)
          if ascan(atotals,.T.)>0
-            oprintr:printdata(nlin,repobject:nlmargin,  '** Subtotal **',,,.T.)
+            oprintr:printdata(nlin,repobject:nlmargin,  '** Subtotal **',, ,.T.)
 **** ojo
             nlin++
          endif
          for i:=1 to len(afields)
                 if atotals[i]
-                    oprintr:printdata(nlin,ncol,  iif(.not.(aformats[i]==''),transform(repobject:angrpby[i],aformats[i]),str(repobject:angrpby[i],awidths[i])),,,.T. )
+                    oprintr:printdata(nlin,ncol,  iif(.not.(aformats[i]==''),transform(repobject:angrpby[i],aformats[i]),str(repobject:angrpby[i],awidths[i])),, ,.T. )
                 endif
                 ncol:=ncol+awidths[i]+1
          next i
@@ -412,19 +420,19 @@ if swt==1
       nlin:=repobject:headers(aheaders1,aheaders2,awidths,nlin,ctitle,lmode,grpby,chdrgrp,cheader)
    endif
    if ascan(atotals,.T.)>0
-      oprintr:printdata(nlin,ncol,'*** Total ***',,,.T.)
+      oprintr:printdata(nlin,ncol,'*** Total ***',, ,.T.)
    endif
    nlin++
    ncol:=0+repobject:nlmargin
    for i:=1 to len(afields)
        if atotals[i]
-          oprintr:printdata(nlin,ncol,iif(.not.(aformats[i]==''),transform(aresul[i],aformats[i]),str(aresul[i],awidths[i])),,,.T.)
+          oprintr:printdata(nlin,ncol,iif(.not.(aformats[i]==''),transform(aresul[i],aformats[i]),str(aresul[i],awidths[i])),, ,.T.)
        endif
        ncol:= ncol + awidths[i] + 1
    next i
    ncol:=repobject:nlmargin
    nlin++
-   oprintr:printdata(nlin,ncol," ")
+   oprintr:printdata(nlin,ncol," ",,)
 ///   endif
 
 endif
@@ -456,53 +464,52 @@ if len(ctitle2)>0
 endif
 repobject:npager++
 
-oprintr:printdata(nlin,repobject:nlmargin, trim( _OOHG_Messages( 1, 8 ) ) )
-oprintr:printdata(nlin,repobject:nlmargin+6, str(repobject:npager,4) )
-oprintr:printdata(nlin,repobject:nlmargin+ncenter, ctitle1,,12,.T. )
-oprintr:printdata(nlin,repobject:nlmargin+nsum-11 +len(awidths) , (DATE()) )
+oprintr:printdata(nlin,repobject:nlmargin, trim( _OOHG_Messages( 1, 8 ) ),, )
+oprintr:printdata(nlin,repobject:nlmargin+6, str(repobject:npager,4),, )
+oprintr:printdata(nlin,repobject:nlmargin+ncenter, ctitle1,, repobject:nfsize +2,.T. )
+oprintr:printdata(nlin,repobject:nlmargin+nsum-11 +len(awidths) , (DATE()),, )
 
 if len(ctitle2)>0
    nlin++
-      oprintr:printdata(nlin,repobject:nlmargin+ncenter2, ctitle2,,12,.T. )
-      oprintr:printdata(nlin,repobject:nlmargin+nsum-11 +len(awidths) , TIME() )
+      oprintr:printdata(nlin,repobject:nlmargin+ncenter2, ctitle2,,repobject:nfsize +2,.T. )
+      oprintr:printdata(nlin,repobject:nlmargin+nsum-11 +len(awidths) , TIME(),, )
 else
    nlin++
-    oprintr:printdata(nlin,repobject:nlmargin+nsum-11 +len(awidths) , TIME() )
+    oprintr:printdata(nlin,repobject:nlmargin+nsum-11 +len(awidths) , TIME(),, )
 endif
 
 nlin++
 nlin++
 ncol:=repobject:nlmargin
 for i:=1 to  len(awidths)
-    oprintr:printdata(nlin,ncol, replicate('-',awidths[i])  )
+    oprintr:printdata(nlin,ncol, replicate('-',awidths[i]),,  )
     ncol=ncol+awidths[i]+1
 next i
 nlin++
 
 ncol:=repobject:nlmargin
 for i:=1 to len(awidths)
-    oprintr:printdata(nlin,ncol, substr(aheaders1[i],1,awidths[i])  )
+    oprintr:printdata(nlin,ncol, substr(aheaders1[i],1,awidths[i]),,  )
     ncol=ncol+awidths[i]+1
 next i
 nlin++
 
 ncol:=repobject:nlmargin
 for i:=1 to len(awidths)
-    oprintr:printdata(nlin,ncol,  substr(aheaders2[i],1,awidths[i] ),,,.T.)
+    oprintr:printdata(nlin,ncol,  substr(aheaders2[i],1,awidths[i] ),, ,.T.)
     ncol=ncol+awidths[i]+1
 next i
 nlin++
 ncol:=repobject:nlmargin
 for i:=1 to  len(awidths)
-    oprintr:printdata(nlin,ncol,  replicate('-',awidths[i])   )
+    oprintr:printdata(nlin,ncol,  replicate('-',awidths[i]),,   )
     ncol=ncol+awidths[i]+1
 next i
 nlin:=nlin+2
 if grpby<>NIL
-       oprintr:printdata(nlin,repobject:nlmargin, '** ' +chdrgrp+' ** '+   &grpby ,,,.T.   )
+       oprintr:printdata(nlin,repobject:nlmargin, '** ' +chdrgrp+' ** '+   &grpby ,, ,.T.   )
        nlin++
 endif
-////_OOHG_interactiveclose:=sicvar
 return nlin
 
 
