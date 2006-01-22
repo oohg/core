@@ -1,5 +1,5 @@
 /*
- * $Id: h_report.prg,v 1.9 2006-01-21 23:39:26 declan2005 Exp $
+ * $Id: h_report.prg,v 1.10 2006-01-22 17:39:13 declan2005 Exp $
  */
 /*
  * DO REPORT Command support procedures For MiniGUI Library.

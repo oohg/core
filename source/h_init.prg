@@ -1,5 +1,5 @@
 /*
- * $Id: h_init.prg,v 1.9 2005-11-02 17:29:48 guerra000 Exp $
+ * $Id: h_init.prg,v 1.10 2006-01-22 17:39:13 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -1580,11 +1580,11 @@ Local acButton, acLabel, acUser
                    "Listado de "                      ,;
                    "Fecha:"                           ,;
                    "Primer registro:"                 ,;
-                   "Último registro:"                 ,;
+                   "Ultimo registro:"                 ,;
                    "Ordenado por:"                    ,;
                    "Si"                               ,;
                    "No"                               ,;
-                   "Página "                          ,;
+                   "P gina "                          ,;
                    " de "                              }
    acABMButton := { "Cerrar"           ,;
                     "Nuevo"            ,;

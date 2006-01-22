@@ -1,5 +1,5 @@
 /*
- * $Id: h_edit.prg,v 1.6 2006-01-22 04:54:27 declan2005 Exp $
+ * $Id: h_edit.prg,v 1.7 2006-01-22 17:39:12 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -1497,9 +1497,9 @@ do while lSalida
 oprint:printdata(5,1,_OOHG_Messages(6,15) + _cTitulo,"times new roman",14,.T.) ///
 oprint:printline(6,1,6,140)
 oprint:printdata(7,1,_OOHG_messages(6,16) ,"times new roman",10,.T.) ///
-oprint:printdata(7,30,date(),"times new roman",10,.T.) ///
+oprint:printdata(7,30,date(),"times new roman",10,.F.) ///
 oprint:printdata(8,1, _OOHG_messages(6,17) ,"times new roman",10,.T.) ///
-oprint:printdata(8,30, alltrim(str(nprimero)),"times new roman",10,.T.) ///
+oprint:printdata(8,30, alltrim(str(nprimero)),"times new roman",10,.F.) ///
 oprint:printdata(8,40,_OOHG_messages(6,18) ,"times new roman",10,.T.) ///
 oprint:printdata(8,60, alltrim(str(nultimo)),"times new roman",10,.F.) ///
 oprint:printdata(9,1,_OOHG_messages(6,19) ,"times new roman",10,.T.) ///
@@ -1508,7 +1508,7 @@ oprint:printdata(9,30, ordname(),"times new roman",10,.F.) ///
                 for nItem := 1 to Len( _aNumeroCampo )
                         nIndice := _aNumeroCampo[nItem]
                         oprint:printdata(11,ncolumna,UPPER(_acampos[nindice]),,9,.T.) ///
-                        nColumna += _aAnchoCampo[nItem]
+                        nColumna += _aAnchoCampo[nItem] +2
                 next
                 lCabecera := .f.
         endif
@@ -1523,14 +1523,14 @@ oprint:printdata(9,30, ordname(),"times new roman",10,.F.) ///
                         cTexto := iif( (_cArea)->( FieldGet( nIndice ) ), _OOHG_Messages( 6, 20 ), _OOHG_Messages( 6, 21 ) )
                         @ nFila, nColumna say cTexto font "f10" to print
                         oprint:printdata(nfila,ncolumna,ctexto, ,,)
-                        nColumna += _aAnchoCampo[nItem]
+                        nColumna += _aAnchoCampo[nItem] +2
                 case _aEstructura[nIndice,2] == "N"
-                        nColumna += _aAnchoCampo[nItem] - 2
                         oprint:printdata(nfila,ncolumna, (_cArea)->( FieldGet( nIndice ) ), ,,)
-                        nColumna += 2
+                        nColumna += _aAnchoCampo[nItem] +2
+
                 otherwise
                         oprint:printdata(nfila,ncolumna, (_cArea)->( FieldGet( nIndice ) ), ,,)
-                        nColumna += _aAnchoCampo[nItem]
+                        nColumna += _aAnchoCampo[nItem] +2
                 endcase
         next
         nFila++
@@ -1585,14 +1585,14 @@ oprint:printdata(9,30, ordname(),"times new roman",10,.F.) ///
                         case _aEstructura[nIndice,2] == "L"
                                 cTexto := iif( (_cArea)->( FieldGet( nIndice ) ), _OOHG_Messages( 6, 20 ), _OOHG_Messages( 6, 21 ) )
                                 oprint:printdata(nfila,ncolumna, ctexto, ,,.F.)
-                                nColumna += _aAnchoCampo[nItem]
+                                nColumna += _aAnchoCampo[nItem]  +2
                         case _aEstructura[nIndice,2] == "N"
-                                nColumna += _aAnchoCampo[nItem] - 2
                                 oprint:printdata(nfila,ncolumna, (_cArea)->( FieldGet( nIndice ) )    , ,,.F.)
-                                nColumna += 2
+                                nColumna += _aAnchoCampo[nItem] +2
+
                         otherwise
                                 oprint:printdata(nfila,ncolumna, (_cArea)->( FieldGet( nIndice ) )    , ,,.F.)
-                                nColumna += _aAnchoCampo[nItem]
+                                nColumna += _aAnchoCampo[nItem] +2
                         endcase
                 next
                 lSalida := .f.
