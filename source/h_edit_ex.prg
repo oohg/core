@@ -1,5 +1,5 @@
 /*
- * $Id: h_edit_ex.prg,v 1.4 2006-01-19 21:12:58 declan2005 Exp $
+ * $Id: h_edit_ex.prg,v 1.5 2006-01-22 04:54:27 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -1080,7 +1080,7 @@ static function ABM2Editar( lNuevo )
                 _OOHG_cMacroTemp := _aEtiqueta[i,ABM_LBL_NAME]
 
                 @ _aEtiqueta[i,ABM_LBL_ROW], _aEtiqueta[i,ABM_LBL_COL]  ;
-                        label &_OOHG_cMacroTemp ;
+                        label &(_OOHG_cMacroTemp) ;
                         of wndABM2EditNuevoSplit                        ;
                         value _aNombreCampo[i]                          ;
                         width _aEtiqueta[i,ABM_LBL_WIDTH]               ;
@@ -1095,7 +1095,7 @@ static function ABM2Editar( lNuevo )
 
                                 _OOHG_cMacroTemp := _aControl[i,ABM_CON_NAME]
                                 @ _aControl[i,ABM_CON_ROW], _aControl[i,ABM_CON_COL]    ;
-                                        textbox &_OOHG_cMacroTemp                      ;
+                                        textbox &(_OOHG_cMacroTemp)                      ;
                                         of wndABM2EditNuevoSplit                        ;
                                         value ""                                        ;
                                         height _aControl[i,ABM_CON_HEIGHT]              ;
@@ -1108,7 +1108,7 @@ static function ABM2Editar( lNuevo )
                         case _aControl[i,ABM_CON_TYPE] == ABM_DATEPICKER
                                 _OOHG_cMacroTemp := _aControl[i,ABM_CON_NAME]
                                 @ _aControl[i,ABM_CON_ROW], _aControl[i,ABM_CON_COL]    ;
-                                        datepicker &_OOHG_cMacroTemp           ;
+                                        datepicker &(_OOHG_cMacroTemp)           ;
                                         of wndABM2EditNuevoSplit                        ;
                                         height _aControl[i,ABM_CON_HEIGHT]              ;
                                         width _aControl[i,ABM_CON_WIDTH] + 25           ;
@@ -1120,7 +1120,7 @@ static function ABM2Editar( lNuevo )
                                 if ( _aEstructura[i,DBS_DEC] == 0 )
                                         _OOHG_cMacroTemp := _aControl[i,ABM_CON_NAME]
                                         @ _aControl[i,ABM_CON_ROW], _aControl[i,ABM_CON_COL]    ;
-                                                textbox &_OOHG_cMacroTemp           ;
+                                                textbox &(_OOHG_cMacroTemp)           ;
                                                 of wndABM2EditNuevoSplit                        ;
                                                 value ""                                        ;
                                                 height _aControl[i,ABM_CON_HEIGHT]              ;
@@ -1139,7 +1139,7 @@ static function ABM2Editar( lNuevo )
                                         cMascara += Replicate( "9", _aEstructura[i,DBS_DEC] )
                                         _OOHG_cMacroTemp := _aControl[i,ABM_CON_NAME]
                                         @ _aControl[i,ABM_CON_ROW], _aControl[i,ABM_CON_COL]    ;
-                                                textbox &_OOHG_cMacroTemp              ;
+                                                textbox &(_OOHG_cMacroTemp)              ;
                                                 of wndABM2EditNuevoSplit                        ;
                                                 value ""                                        ;
                                                 height _aControl[i,ABM_CON_HEIGHT]              ;
@@ -1153,7 +1153,7 @@ static function ABM2Editar( lNuevo )
                         case _aControl[i,ABM_CON_TYPE] == ABM_CHECKBOX
                                 _OOHG_cMacroTemp := _aControl[i,ABM_CON_NAME]
                                 @ _aControl[i,ABM_CON_ROW], _aControl[i,ABM_CON_COL]    ;
-                                        checkbox &_OOHG_cMacroTemp             ;
+                                        checkbox &(_OOHG_cMacroTemp)             ;
                                         of wndABM2EditNuevoSplit                        ;
                                         caption ""                                      ;
                                         height _aControl[i,ABM_CON_HEIGHT]              ;
@@ -1164,7 +1164,7 @@ static function ABM2Editar( lNuevo )
                         case _aControl[i,ABM_CON_TYPE] == ABM_EDITBOX
                                 _OOHG_cMacroTemp := _aControl[i,ABM_CON_NAME]
                                 @ _aControl[i,ABM_CON_ROW], _aControl[i,ABM_CON_COL]    ;
-                                        editbox &_OOHG_cMacroTemp              ;
+                                        editbox &(_OOHG_cMacroTemp)              ;
                                         of wndABM2EditNuevoSplit                        ;
                                         width _aControl[i,ABM_CON_WIDTH]                ;
                                         height _aControl[i,ABM_CON_HEIGHT]              ;
@@ -2607,15 +2607,15 @@ endif
 oprint:printdata(5,1,_ctitulo,"times new roman",12,.T.) /// 
 oprint:printline(6,1,6,140)
 
-oprint:printdata(7,1,_oohg_messages(6,26),"times new roman" ,,.T.) /// 
+oprint:printdata(7,1,_oohg_messages(6,16),"times new roman" ,,.T.) /// 
 oprint:printdata(7,31, (_cArea)->( ordName() )) /// 
 
-oprint:printdata(8,1,_OOHG_messages(6,27),"times new roman",,.T.) /// 
+oprint:printdata(8,1,_OOHG_messages(6,17),"times new roman",,.T.) /// 
 oprint:printdata(8,31, CREGISTRO1) /// 
 
-oprint:printdata(9,1,_OOHG_messages(6,28),"times new roman",,.T.) /// 
+oprint:printdata(9,1,_OOHG_messages(6,18),"times new roman",,.T.) /// 
 oprint:printdata(9,31, CREGISTRO2) /// 
-oprint:printdata(10,1,_OOHG_messages(6,33),"times new roman",,.T.) /// 
+oprint:printdata(10,1,_OOHG_messages(6,23),"times new roman",,.T.) /// 
 oprint:printdata(10,31, _CFILTRO) /// 
 
                                         nColumna := 1
@@ -2661,9 +2661,7 @@ oprint:printline(46,1,46,140)
                                                 cPie := HB_ValToStr( Date() ) + " " + Time()
 oprint:printdata(47,1,cpie)
                                                 cPie := "Pag:" + " " +          ;
-                                                        AllTrim( Str( nPagina) ) +      ;
-                                                        "/" +                           ;
-                                                        AllTrim( Str( nPaginas ) )
+                                                        AllTrim( Str( nPagina) )       
 oprint:printdata(47,70,cpie)
                                                 nPagina++
                                                 nFila := 14
@@ -2678,9 +2676,7 @@ oprint:printline(58,1,58,140)
                               ////                  @ 68, 10 say cPie font "a9n" to print
 oprint:printdata(59,1,cpie)
                                                 cPie := "Pag: " +                    ;
-                                                        AllTrim( Str( nPagina) ) +      ;
-                                                        "/" +                           ;
-                                                        AllTrim( Str( nPaginas ) )
+                                                        AllTrim( Str( nPagina) )       
 oprint:printdata(59,70,cpie)
                                                 nFila := 14
                                                 nPagina++
@@ -2697,20 +2693,15 @@ oprint:printline(46,1,46,140)
                         cPie := HB_ValToStr( Date() ) + " " + Time()
 oprint:printdata(47,1,cpie)
                         cPie := "Pag: " +                    ;
-                                AllTrim( Str( nPagina) ) +      ;
-                                "/" +                           ;
-                                AllTrim( Str( nPaginas ) )
+                                AllTrim( Str( nPagina) )      
 oprint:printdata(47,70,cpie)
                 else
 oprint:printline(58,1,58,140)
                         cPie := HB_ValToStr( Date() ) + " " + Time()
 oprint:printdata(59,1,cpie)
                         cPie := "Pag: " +                    ;
-                                AllTrim( Str( nPagina) ) +      ;
-                                "/" +                           ;
-                                AllTrim( Str( nPaginas ) )
-
-oprint:printdata(59,70,cpie)
+                                AllTrim( Str( nPagina) )
+                        oprint:printdata(59,70,cpie)
                 endif
 
 oprint:endpage()

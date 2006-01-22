@@ -1,5 +1,5 @@
 /*
- * $Id: h_edit.prg,v 1.5 2006-01-20 04:57:43 guerra000 Exp $
+ * $Id: h_edit.prg,v 1.6 2006-01-22 04:54:27 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -414,7 +414,7 @@ for nItem := 1 to nCampos
 
    _OOHG_cMacroTemp := aEtiquetas[nItem,1]
 
-        @ aEtiquetas[nItem,2], aEtiquetas[nItem,3] label &_OOHG_cMacroTemp ;
+        @ aEtiquetas[nItem,2], aEtiquetas[nItem,3] label &(_OOHG_cMacroTemp) ;
                 of     wndABM ;
                 value  _aCampos[nItem] ;
                 width  70 ;
@@ -587,7 +587,7 @@ for nItem := 1 to nCampos
 
          _OOHG_cMacroTemp := _OOHG_aControles[nItem,1]
 
-                        @ _OOHG_aControles[nItem,2], _OOHG_aControles[nItem,3] textbox &_OOHG_cMacroTemp ;
+                        @ _OOHG_aControles[nItem,2], _OOHG_aControles[nItem,3] textbox &(_OOHG_cMacroTemp) ;
                                 of      wndABM ;
                                 height  21 ;
                                 value   "" ;
@@ -601,7 +601,7 @@ for nItem := 1 to nCampos
 
             _OOHG_cMacroTemp := _OOHG_aControles[nItem,1]
 
-                                @ _OOHG_aControles[nItem,2], _OOHG_aControles[nItem,3] textbox &_OOHG_cMacroTemp ;
+                                @ _OOHG_aControles[nItem,2], _OOHG_aControles[nItem,3] textbox &(_OOHG_cMacroTemp) ;
                                         of      wndABM ;
                                         height  21 ;
                                         value   0 ;
@@ -619,7 +619,7 @@ for nItem := 1 to nCampos
 
             _OOHG_cMacroTemp := _OOHG_aControles[nItem,1]
 
-                                @ _OOHG_aControles[nItem,2], _OOHG_aControles[nItem,3] textbox &_OOHG_cMacroTemp ;
+                                @ _OOHG_aControles[nItem,2], _OOHG_aControles[nItem,3] textbox &(_OOHG_cMacroTemp) ;
                                         of      wndABM ;
                                         height  21 ;
                                         value   0 ;
@@ -631,7 +631,7 @@ for nItem := 1 to nCampos
 
          _OOHG_cMacroTemp := _OOHG_aControles[nItem,1]
 
-                        @ _OOHG_aControles[nItem,2], _OOHG_aControles[nItem,3] datepicker &_OOHG_cMacroTemp ;
+                        @ _OOHG_aControles[nItem,2], _OOHG_aControles[nItem,3] datepicker &(_OOHG_cMacroTemp) ;
                                 of      wndABM ;
                                 value   Date() ;
                                 width   100 ;
@@ -647,7 +647,7 @@ for nItem := 1 to nCampos
 
          _OOHG_cMacroTemp := _OOHG_aControles[nItem,1]
 
-                        @ _OOHG_aControles[nItem,2], _OOHG_aControles[nItem,3] checkbox &_OOHG_cMacroTemp ;
+                        @ _OOHG_aControles[nItem,2], _OOHG_aControles[nItem,3] checkbox &(_OOHG_cMacroTemp) ;
                                 of      wndABM ;
                                 caption "" ;
                                 width   21 ;
@@ -659,7 +659,7 @@ for nItem := 1 to nCampos
 
          _OOHG_cMacroTemp := _OOHG_aControles[nItem,1]
 
-                        @ _OOHG_aControles[nItem,2], _OOHG_aControles[nItem,3] editbox &_OOHG_cMacroTemp ;
+                        @ _OOHG_aControles[nItem,2], _OOHG_aControles[nItem,3] editbox &(_OOHG_cMacroTemp) ;
                                 of     wndABM ;
                                 width  160 ;
                                 height 47
@@ -1548,7 +1548,7 @@ oprint:printdata(9,30, ordname(),"times new roman",10,.F.) ///
 
 
                         oprint:printline(45,10,45,140)
-                        oprint:printdata(46,1,_OOHG_messages(6,22) + AllTrim( Str( nPagina ) ) + _OOHG_Messages( 6, 23 ) + AllTrim( Str( nPaginas ) ) ,"times new roman",10,.F.) ///
+                        oprint:printdata(46,1,_OOHG_messages(6,22) + AllTrim( Str( nPagina ) )  ,"times new roman",10,.F.) ///
                         lCabecera := .t.
                         nPagina++
                         nFila := 13
@@ -1565,7 +1565,7 @@ oprint:printdata(9,30, ordname(),"times new roman",10,.F.) ///
                         oprint:printline(55,1,55,140)
 
 
-                        oprint:printdata(56,70,_OOHG_messages(6,22) + AllTrim( Str( nPagina ) ) + _OOHG_Messages( 6, 23 ) + AllTrim( Str( nPaginas ) ) ,"times new roman",10,.F.) ///
+                        oprint:printdata(56,70,_OOHG_messages(6,22) + AllTrim( Str( nPagina ) )  ,"times new roman",10,.F.) ///
                         lCabecera := .t.
                         nPagina++
                         nFila := 13
@@ -1611,7 +1611,7 @@ if lOrientacion
                         nPaginas++
                 endif
                    oprint:printline(45,1,45,140)
-                   oprint:printdata(46,70,_OOHG_messages(6,22) + AllTrim( Str( nPagina ) ) + _OOHG_Messages( 6, 23 ) + AllTrim( Str( nPaginas ) )  ,"times new roman" ,10,.F.)
+                   oprint:printdata(46,70,_OOHG_messages(6,22) + AllTrim( Str( nPagina ) )   ,"times new roman" ,10,.F.)
         endif
 else
         // Vertical
@@ -1621,7 +1621,7 @@ else
                         nPaginas++
                 endif
                 oprint:printline(55,1,55,140)
-                oprint:printdata(56,70,_OOHG_messages(6,22) + AllTrim( Str( nPagina ) ) + _OOHG_Messages( 6, 23 ) + AllTrim( Str( nPaginas ) )  ,"times new roman" ,10,.F.)
+                oprint:printdata(56,70,_OOHG_messages(6,22) + AllTrim( Str( nPagina ) )   ,"times new roman" ,10,.F.)
         endif
 endif
 oprint:endpage()
