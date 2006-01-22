@@ -1,0 +1,25 @@
+// MANIFEST FOR CREATE 'XP-STYLE' APPLICATIONS
+
+1 24 "WindowsXP.Manifest"
+
+MINIGUI_FINGER		CURSOR		FINGER.CUR
+
+// EDIT COMMAND IMAGE BUTTONS
+
+MINIGUI_EDIT_CANCEL     BITMAP          edit_cancel.bmp
+MINIGUI_EDIT_CLOSE      BITMAP          edit_close.bmp
+MINIGUI_EDIT_COPY       BITMAP          edit_copy.bmp
+MINIGUI_EDIT_DELETE     BITMAP          edit_delete.bmp
+MINIGUI_EDIT_EDIT       BITMAP          edit_edit.bmp
+MINIGUI_EDIT_FIND       BITMAP          edit_find.bmp
+MINIGUI_EDIT_NEW        BITMAP          edit_new.bmp
+MINIGUI_EDIT_OK         BITMAP          edit_ok.bmp
+MINIGUI_EDIT_PRINT      BITMAP          edit_print.bmp
+MINIGUI_EDIT_ADD        BITMAP          edit_add.bmp
+MINIGUI_EDIT_DEL        BITMAP          edit_del.bmp
+MINIGUI_EDIT_SET        BITMAP          edit_set.bmp
+
+ZZZ_AAAWINDOW ICON WINDOW.ICO
+ZZZ_LED_ON ICON LED_ON.ICO
+ZZZ_LED_OFF ICON LED_OFF.ICO
+
