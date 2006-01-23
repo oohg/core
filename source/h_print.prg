@@ -1,5 +1,5 @@
 /*
- * $Id: h_print.prg,v 1.5 2006-01-22 17:39:13 declan2005 Exp $
+ * $Id: h_print.prg,v 1.6 2006-01-23 01:15:46 guerra000 Exp $
  */
 
 #include 'hbclass.ch'
@@ -8,6 +8,16 @@
 #include 'miniprint.ch'
 #include 'winprint.ch'
 
+memvar _OOHG_PRINTLIBRARY
+memvar _HMG_PRINTER_APRINTERPROPERTIES
+memvar _HMG_PRINTER_HDC
+memvar _HMG_PRINTER_COPIES
+memvar _HMG_PRINTER_COLLATE
+memvar _HMG_PRINTER_PREVIEW
+memvar _HMG_PRINTER_TIMESTAMP
+memvar _HMG_PRINTER_NAME
+memvar _HMG_PRINTER_PAGECOUNT
+memvar _HMG_PRINTER_HDC_BAK
 
 CREATE CLASS TPRINT
 
@@ -117,24 +127,24 @@ return nil
 *-------------------------
 METHOD release() CLASS TPRINT
 *-------------------------
-if ::exit
-   return
-endif
-do case
-case ::cprintlibrary="HBPRINTER"
-        RELEASE PRINTSYS
-        RELEASE HBPRN
-case ::cprintlibrary="MINIPRINT"
-release _HMG_PRINTER_APRINTERPROPERTIES
-release _HMG_PRINTER_HDC
-release _HMG_PRINTER_COPIES
-release _HMG_PRINTER_COLLATE
-release _HMG_PRINTER_PREVIEW
-release _HMG_PRINTER_TIMESTAMP
-release _HMG_PRINTER_NAME
-release _HMG_PRINTER_PAGECOUNT
-release _HMG_PRINTER_HDC_BAK
-endcase
+   if ::exit
+      return nil
+   endif
+   do case
+      case ::cprintlibrary="HBPRINTER"
+         RELEASE PRINTSYS
+         RELEASE HBPRN
+      case ::cprintlibrary="MINIPRINT"
+         release _HMG_PRINTER_APRINTERPROPERTIES
+         release _HMG_PRINTER_HDC
+         release _HMG_PRINTER_COPIES
+         release _HMG_PRINTER_COLLATE
+         release _HMG_PRINTER_PREVIEW
+         release _HMG_PRINTER_TIMESTAMP
+         release _HMG_PRINTER_NAME
+         release _HMG_PRINTER_PAGECOUNT
+         release _HMG_PRINTER_HDC_BAK
+   endcase
 RETURN NIL
 
 
@@ -144,7 +154,7 @@ METHOD init(clibx) CLASS TPRINT
 if iswindowactive(_winreport)
    msgstop("Print preview pending, close first")
    ::exit:=.T.
-   return
+   return nil
 endif
 if clibx=NIL
    if type("_OOHG_printlibrary")="C"
@@ -185,10 +195,10 @@ return nil
 *-------------------------
 METHOD selprinter( lselect , lpreview, llandscape , npapersize ) CLASS TPRINT
 *-------------------------
-local lsucess:=.T. 
+local Worientation, lsucess := .T.
 if ::exit
    ::lprerror:=.T.
-   return
+   return nil
 endif
 SETPRC(0,0)
 if llandscape=NIL
@@ -238,7 +248,7 @@ case ::cprintlibrary="MINIPRINT"
          ::lprerror:=.T.
          Return Nil
       EndIf
-      
+
       if npapersize#NIL
          SELECT PRINTER ::cprinter to lsucess ;
          ORIENTATION worientation ;
@@ -250,9 +260,9 @@ case ::cprintlibrary="MINIPRINT"
          PREVIEW
       endif
    endif
-   
+
    if (.not. lselect) .and. lpreview
-      
+
       if npapersize#NIL
          SELECT PRINTER DEFAULT TO lsucess ;
          ORIENTATION worientation  ;
@@ -264,9 +274,9 @@ case ::cprintlibrary="MINIPRINT"
          PREVIEW
       endif
    endif
-   
+
    if (.not. lselect) .and. (.not. lpreview)
-      
+
       if npapersize#NIL
          SELECT PRINTER DEFAULT TO lsucess  ;
          ORIENTATION worientation  ;
@@ -283,14 +293,14 @@ case ::cprintlibrary="MINIPRINT"
          ::lprerror:=.T.
          Return Nil
       EndIf
-      
+
       if npapersize#NIL
          SELECT PRINTER ::cprinter to lsucess ;
          ORIENTATION worientation ;
-         PAPERSIZE npapersize       
+         PAPERSIZE npapersize
       else
          SELECT PRINTER ::cprinter to lsucess ;
-         ORIENTATION worientation 
+         ORIENTATION worientation
       endif
    endif
 
@@ -347,13 +357,13 @@ DEFINE WINDOW _winreport ;
         end window
         center window _winreport
         activate window _modalhide NOWAIT
-        activate window _winreport NOWAIT        
+        activate window _winreport NOWAIT
 
 do case
 case ::cprintlibrary="HBPRINTER"
    START DOC NAME cdoc
 case ::cprintlibrary="MINIPRINT"
-   START PRINTDOC  
+   START PRINTDOC
 case ::cprintlibrary="DOS"
    SET PRINTER TO &(::tempfile)
    SET DEVICE TO PRINT
@@ -373,7 +383,7 @@ return nil
 *-------------------------
 METHOD ENDDOC() CLASS TPRINT
 *-------------------------
-local _nhandle
+local _nhandle, wr
 do case
 case ::cprintlibrary="HBPRINTER"
    END DOC
@@ -381,8 +391,8 @@ case ::cprintlibrary="MINIPRINT"
    END PRINTDOC
 case ::cprintlibrary="DOS"
    SET DEVICE TO SCREEN
-   SET PRINTER TO   
-   _nhandle:=FOPEN(::tempfile,0+64) 
+   SET PRINTER TO
+   _nhandle:=FOPEN(::tempfile,0+64)
    if ::impreview
          wr:=hb_oemtoansi(memoread((::tempfile)))
    DEFINE WINDOW PRINT_PREVIEW  ;
@@ -390,7 +400,7 @@ case ::cprintlibrary="DOS"
    	   WIDTH 640 HEIGHT 480 ;
    	   TITLE 'Preview -----> ' + ::tempfile ;
    	   MODAL
-  
+
    	@ 0,0 EDITBOX EDIT_P ;
    	OF PRINT_PREVIEW ;
    	WIDTH 590 ;
@@ -405,9 +415,9 @@ case ::cprintlibrary="DOS"
         @ 210,600 button but_2 caption "- -" width 30 action zoom("-")
         @ 310,600 button but_3 caption "P" width 30 action (::printdos())
 
-  
+
    END WINDOW
-   
+
    CENTER WINDOW PRINT_PREVIEW
    ACTIVATE WINDOW PRINT_PREVIEW
 
@@ -432,7 +442,7 @@ METHOD SETCOLOR(atColor) CLASS TPRINT
 ::acolor:=atColor
 if ::cprintlibrary="HBPRINTER"
    CHANGE PEN "C0" WIDTH ::nwpen COLOR ::acolor
-   SELECT PEN "C0"   
+   SELECT PEN "C0"
 endif
 RETURN NIL
 
@@ -490,15 +500,15 @@ METHOD printdata(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen) CLASS TPRI
 *-------------------------
 local ctext,cspace
 do case
-    case valtype(data)=='C' 
+    case valtype(data)=='C'
                 ctext:=data
     case valtype(data)=='N'
                 ctext:=alltrim(str(data))
     case valtype(data)=='D'
                 ctext:=dtoc(data)
     case valtype(data)=='L'
-               ctext:= iif(data,'T','F')  
-    case valtype(data)=='M'  
+               ctext:= iif(data,'T','F')
+    case valtype(data)=='M'
                ctext:=data
     otherwise
                ctext:=""
@@ -514,14 +524,14 @@ endif
 
 do case
    case calign = "L"
-        cspace=""        
+        cspace=""
    case calign = "C"
         cspace=  space((int(nlen)-len(ctext))/2 )
    case calign = "R"
         cspace = space(int(nlen)-len(ctext))
    otherwise
         cspace = ""
-endcase   
+endcase
 
 if nlin=nil
    nlin:=1
@@ -579,7 +589,7 @@ case ::cprintlibrary="MINIPRINT"
 case ::cprintlibrary="DOS"
    if .not. lbold
        @ nlin,ncol say (ctext)
-   else   
+   else
        @ nlin,ncol say (ctext)
 //////       @ nlin,ncol say hb_oemtoansi(ctext)
    endif
@@ -766,6 +776,7 @@ endcase
 RETURN nil
 
 method printdos() CLASS TPRINT
+local cbat
     cbat:='b'+alltrim(str(random(999999),6))+'.bat'
     set printer to &cbat
     set print on
@@ -775,11 +786,11 @@ method printdos() CLASS TPRINT
     set printer to
     waitrun('&cbat',0)
     erase &cbat
-return
+return nil
 
 
 static function zoom(cOp)
- 
+
 if cop="+" .and. print_preview.edit_p.fontsize <= 24
   print_preview.edit_p.fontsize:=  print_preview.edit_p.fontsize + 2
 endif
@@ -788,5 +799,4 @@ if cop="-" .and. print_preview.edit_p.fontsize > 7
   print_preview.edit_p.fontsize:=  print_preview.edit_p.fontsize - 2
 endif
 return nil
-
 

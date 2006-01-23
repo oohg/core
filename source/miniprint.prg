@@ -1,30 +1,33 @@
+/*
+ * $Id: miniprint.prg,v 1.4 2006-01-23 01:15:46 guerra000 Exp $
+ */
 /*----------------------------------------------------------------------------
  MINIGUI - Harbour Win32 GUI library source code
 
  Copyright 2002-05 Roberto Lopez <roblez@ciudad.com.ar>
  http://www.geocities.com/harbour_minigui/
 
- This program is free software; you can redistribute it and/or modify it under 
- the terms of the GNU General Public License as published by the Free Software 
- Foundation; either version 2 of the License, or (at your option) any later 
- version. 
+ This program is free software; you can redistribute it and/or modify it under
+ the terms of the GNU General Public License as published by the Free Software
+ Foundation; either version 2 of the License, or (at your option) any later
+ version.
 
- This program is distributed in the hope that it will be useful, but WITHOUT 
- ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS 
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
- You should have received a copy of the GNU General Public License along with 
- this software; see the file COPYING. If not, write to the Free Software 
- Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA (or 
+ You should have received a copy of the GNU General Public License along with
+ this software; see the file COPYING. If not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA (or
  visit the web site http://www.gnu.org/).
 
- As a special exception, you have permission for additional uses of the text 
+ As a special exception, you have permission for additional uses of the text
  contained in this release of Harbour Minigui.
 
- The exception is that, if you link the Harbour Minigui library with other 
- files to produce an executable, this does not by itself cause the resulting 
+ The exception is that, if you link the Harbour Minigui library with other
+ files to produce an executable, this does not by itself cause the resulting
  executable to be covered by the GNU General Public License.
- Your use of that executable is in no way restricted on account of linking the 
+ Your use of that executable is in no way restricted on account of linking the
  Harbour-Minigui library code into it.
 
  Parts of this project are based upon:
@@ -39,7 +42,7 @@
 
  Parts of this module are based upon:
 
-	"HBPRINT" 
+	"HBPRINT"
 	Copyright 2002 Richard Rylko <rrylko@poczta.onet.pl>
 	http://rrylko.republika.pl
 
@@ -80,7 +83,7 @@ memvar _HMG_printer_Dz
 memvar _HMG_printer_scrollstep
 memvar _HMG_printer_zoomclick_xoffset
 memvar _HMG_printer_thumbupdate
-memvar _HMG_printer_thumbscroll 
+memvar _HMG_printer_thumbscroll
 memvar _HMG_printer_PrevPageNumber
 memvar _HMG_printer_usermessages
 
@@ -89,15 +92,10 @@ Procedure _HMG_PRINTER_SHOWPREVIEW
 *------------------------------------------------------------------------------*
 Local ModalHandle := 0
 Local Tmp
-Local i
-Local cMacroTemp
 Local tWidth
 Local tHeight
 Local tFactor
 Local tvHeight
-Local tvWidth
-Local cAction
-Local ttHandle
 Local icb := 0
 Public _HMG_printer_BasePageName := GetTempFolder() + "\" + _HMG_printer_timestamp + "_HMG_print_preview_"
 Public _HMG_printer_CurrentPageNumber := 1
@@ -108,7 +106,7 @@ Public _HMG_printer_Dz := 0
 Public _HMG_printer_scrollstep := 10
 Public _HMG_printer_zoomclick_xoffset := 0
 Public _HMG_printer_thumbupdate := .T.
-Public _HMG_printer_thumbscroll 
+Public _HMG_printer_thumbscroll
 Public _HMG_printer_PrevPageNumber := 0
 
 
@@ -126,13 +124,13 @@ Public _HMG_printer_PrevPageNumber := 0
 
         _HMG_printer_SizeFactor := GetDesktopHeight() / _HMG_PRINTER_GETPAGEHEIGHT(_HMG_printer_hdc_bak) * 0.63
 
-        define window _HMG_PRINTER_Wait at 0,0 width 310 height 85 title '' child noshow nocaption 
+        define window _HMG_PRINTER_Wait at 0,0 width 310 height 85 title '' child noshow nocaption
 		define label label_1
 			row 30
 			col 5
 			width 300
 			height 30
-                        value _HMG_printer_usermessages [29] 
+                        value _HMG_printer_usermessages [29]
 			centeralign .t.
 		end label
 	end window
@@ -160,7 +158,7 @@ Public _HMG_printer_PrevPageNumber := 0
                         ON SCROLLLEFT   _HMG_PRINTER_ScrollLeft() ;
                         ON SCROLLRIGHT  _HMG_PRINTER_ScrollRight() ;
                         ON HSCROLLBOX   _HMG_PRINTER_hScrollBoxProcess() ;
-                        ON VSCROLLBOX   _HMG_PRINTER_vScrollBoxProcess() 
+                        ON VSCROLLBOX   _HMG_PRINTER_vScrollBoxProcess()
 
                         ON KEY HOME             ACTION ( _HMG_printer_CurrentPageNumber:=1 , _HMG_PRINTER_PreviewRefresh()  )
                         ON KEY PRIOR            ACTION ( _HMG_printer_CurrentPageNumber-- , _HMG_PRINTER_PreviewRefresh()  )
@@ -205,7 +203,7 @@ Public _HMG_printer_PrevPageNumber := 0
 			FontSize 9
 			Value 1
                         Options { _HMG_printer_usermessages [16] , _HMG_printer_usermessages [17] }
-                        OnChange if ( This.value == 1 , ( _HMG_PRINTER_PRINTPAGES.Label_1.Enabled := .F. , _HMG_PRINTER_PRINTPAGES.Label_2.Enabled := .F. , _HMG_PRINTER_PRINTPAGES.Spinner_1.Enabled := .F. , _HMG_PRINTER_PRINTPAGES.Spinner_2.Enabled := .F. , _HMG_PRINTER_PRINTPAGES.Combo_1.Enabled := .F.  , _HMG_PRINTER_PRINTPAGES.Label_4.Enabled := .F. ) , ( _HMG_PRINTER_PRINTPAGES.Label_1.Enabled := .T. , _HMG_PRINTER_PRINTPAGES.Label_2.Enabled := .T. , _HMG_PRINTER_PRINTPAGES.Spinner_1.Enabled := .T. , _HMG_PRINTER_PRINTPAGES.Spinner_2.Enabled := .T. , _HMG_PRINTER_PRINTPAGES.Combo_1.Enabled := .T.  , _HMG_PRINTER_PRINTPAGES.Label_4.Enabled := .T. , _HMG_PRINTER_PRINTPAGES.Spinner_1.SetFocus ) ) 
+                        OnChange if ( This.value == 1 , ( _HMG_PRINTER_PRINTPAGES.Label_1.Enabled := .F. , _HMG_PRINTER_PRINTPAGES.Label_2.Enabled := .F. , _HMG_PRINTER_PRINTPAGES.Spinner_1.Enabled := .F. , _HMG_PRINTER_PRINTPAGES.Spinner_2.Enabled := .F. , _HMG_PRINTER_PRINTPAGES.Combo_1.Enabled := .F.  , _HMG_PRINTER_PRINTPAGES.Label_4.Enabled := .F. ) , ( _HMG_PRINTER_PRINTPAGES.Label_1.Enabled := .T. , _HMG_PRINTER_PRINTPAGES.Label_2.Enabled := .T. , _HMG_PRINTER_PRINTPAGES.Spinner_1.Enabled := .T. , _HMG_PRINTER_PRINTPAGES.Spinner_2.Enabled := .T. , _HMG_PRINTER_PRINTPAGES.Combo_1.Enabled := .T.  , _HMG_PRINTER_PRINTPAGES.Label_4.Enabled := .T. , _HMG_PRINTER_PRINTPAGES.Spinner_1.SetFocus ) )
 		End RadioGroup
 
 		Define Label Label_1
@@ -395,9 +393,9 @@ Public _HMG_printer_PrevPageNumber := 0
         tWidth  :=_HMG_PRINTER_GETPAGEWIDTH(_HMG_printer_hdc_bak) * tFactor
         tHeight :=_HMG_PRINTER_GETPAGEHEIGHT(_HMG_printer_hdc_bak) * tFactor
 
-	tHeight := Int (tHeight)	
+	tHeight := Int (tHeight)
 
-        tvHeight := ( _HMG_printer_PageCount * (tHeight + 10) ) + GetHScrollbarHeight() + GetTitleHeight() + ( GetBorderHeight() * 2 ) + 7 
+        tvHeight := ( _HMG_printer_PageCount * (tHeight + 10) ) + GetHScrollbarHeight() + GetTitleHeight() + ( GetBorderHeight() * 2 ) + 7
 
 	if tvHeight <= GetDesktopHeight() - 103
                 _HMG_printer_thumbscroll := .f.
@@ -419,7 +417,7 @@ Public _HMG_printer_PrevPageNumber := 0
 		NOMAXIMIZE ;
 		NOSYSMENU ;
 		NOSHOW ;
-		BACKCOLOR GRAY 
+		BACKCOLOR GRAY
 
                 ON KEY HOME             ACTION ( _HMG_printer_CurrentPageNumber:=1 , _HMG_PRINTER_PreviewRefresh()  )
                 ON KEY PRIOR            ACTION ( _HMG_printer_CurrentPageNumber-- , _HMG_PRINTER_PreviewRefresh()  )
@@ -457,7 +455,7 @@ Public _HMG_printer_PrevPageNumber := 0
 				WIDTH 30
 				HEIGHT 30
 				PICTURE "HP_TOP"
-                                TOOLTIP _HMG_printer_usermessages [03] 
+                                TOOLTIP _HMG_printer_usermessages [03]
                                 ACTION ( _HMG_printer_CurrentPageNumber:=1 , _HMG_PRINTER_PreviewRefresh()  )
 			END BUTTON
 
@@ -578,7 +576,7 @@ Public _HMG_printer_PrevPageNumber := 0
 
         CENTER WINDOW _HMG_PRINTER_SHOWPREVIEW
 
-        Tmp := _HMG_PRINTER_SHOWPREVIEW.ROW  
+        Tmp := _HMG_PRINTER_SHOWPREVIEW.ROW
 
 	Tmp := Tmp + GetTitleHeight() - 10
 
@@ -586,9 +584,9 @@ Public _HMG_printer_PrevPageNumber := 0
 
         _HMG_PRINTER_SHOWTHUMBNAILS.ROW := Tmp
 
-        ACTIVATE WINDOW _HMG_PRINTER_PRINTPAGES , _HMG_PRINTER_GO_TO_PAGE , _HMG_PRINTER_SHOWTHUMBNAILS , _HMG_PRINTER_SHOWPREVIEW , _HMG_PRINTER_Wait , _HMG_PRINTER_PPNAV 
+        ACTIVATE WINDOW _HMG_PRINTER_PRINTPAGES , _HMG_PRINTER_GO_TO_PAGE , _HMG_PRINTER_SHOWTHUMBNAILS , _HMG_PRINTER_SHOWPREVIEW , _HMG_PRINTER_Wait , _HMG_PRINTER_PPNAV
 
-        _HMG_printer_hdc := _HMG_printer_hdc_bak 
+        _HMG_printer_hdc := _HMG_printer_hdc_bak
 
       //  If ModalHandle != 0
        //
@@ -635,7 +633,7 @@ Local cAction
         tWidth  :=_HMG_PRINTER_GETPAGEWIDTH(_HMG_printer_hdc_bak) * tFactor
         tHeight :=_HMG_PRINTER_GETPAGEHEIGHT(_HMG_printer_hdc_bak) * tFactor
 
-	tHeight := Int (tHeight)	
+	tHeight := Int (tHeight)
 
         ttHandle := GetFormToolTipHandle ('_HMG_PRINTER_SHOWTHUMBNAILS')
 
@@ -652,7 +650,7 @@ Local cAction
                    .F., .F., .T., .F. )
 
                 SetToolTip ( GetControlHandle ( cMacroTemp ,'_HMG_PRINTER_SHOWTHUMBNAILS'), _HMG_printer_usermessages [01] + ' ' + AllTrim(Str(i)) + ' [Click]' , ttHandle )
-			
+
 	Next i
 
         HideWindow ( GetFormHandle ( "_HMG_PRINTER_Wait" ) )
@@ -662,23 +660,22 @@ Return
 Function _HMG_printer_ThumbnailToggle()
 *------------------------------------------------------------------------------*
 
-        if _HMG_PRINTER_PPNAV.thumbswitch.Value == .t. 
+        if _HMG_PRINTER_PPNAV.thumbswitch.Value == .t.
 
-                _HMG_PRINTER_PPNAV.thumbswitch.Value := .f. 
+                _HMG_PRINTER_PPNAV.thumbswitch.Value := .f.
 
 	Else
 
-                _HMG_PRINTER_PPNAV.thumbswitch.Value := .t. 
-	
+                _HMG_PRINTER_PPNAV.thumbswitch.Value := .t.
+
 	EndIf
 
-        _HMG_PRINTER_ProcessTHUMBNAILS() 
+        _HMG_PRINTER_ProcessTHUMBNAILS()
 
 Return .F.
 *------------------------------------------------------------------------------*
 Procedure _HMG_PRINTER_ProcessTHUMBNAILS()
 *------------------------------------------------------------------------------*
-Local Tmp
 
         If _HMG_PRINTER_PPNAV.thumbswitch.Value == .T.
 
@@ -692,7 +689,7 @@ Local Tmp
 
                 _HMG_PRINTER_SHOWPREVIEW.Col := 138
 
-                ShowWindow ( GetFormHandle ( "_HMG_PRINTER_SHOWTHUMBNAILS" ) ) 
+                ShowWindow ( GetFormHandle ( "_HMG_PRINTER_SHOWTHUMBNAILS" ) )
 
 	else
 
@@ -725,7 +722,7 @@ Local c , i , f , t , d , x
 		x := x + '\'
 	endif
 
-	t := GetTempFolder() 
+	t := GetTempFolder()
 
         c := adir ( t + "\" + _HMG_printer_timestamp  + "_HMG_print_preview_*.Emf")
 
@@ -744,7 +741,7 @@ Return
 Procedure _HMG_PRINTER_GO_TO_PAGE
 *------------------------------------------------------------------------------*
 
-        DIsableWindow ( GetformHandle ( "_HMG_PRINTER_PPNAV" ) ) 
+        DIsableWindow ( GetformHandle ( "_HMG_PRINTER_PPNAV" ) )
 
         DIsableWindow ( GetformHandle ( "_HMG_PRINTER_SHOWTHUMBNAILS" ) )
 
@@ -800,14 +797,14 @@ Procedure _HMG_PRINTER_CleanPreview
 
 Return
 *------------------------------------------------------------------------------*
-Procedure _HMG_PRINTER_PreviewRefresh 
+Procedure _HMG_PRINTER_PreviewRefresh
 *------------------------------------------------------------------------------*
 Local hwnd
 Local nRow
 Local nScrollMax
 
         if ! __MVEXIST ( '_HMG_printer_CurrentPageNumber' )
-                __MVPUBLIC( '_HMG_printer_CurrentPageNumber' )   
+                __MVPUBLIC( '_HMG_printer_CurrentPageNumber' )
                 __MVPUT( '_HMG_printer_CurrentPageNumber' , 1 )
 	endif
 
@@ -828,7 +825,7 @@ Local nScrollMax
                                 _HMG_PRINTER_SETVSCROLLVALUE ( hwnd , nScrollMax )
 			EndIf
 
-                ElseIf _HMG_printer_CurrentPageNumber == 1 
+                ElseIf _HMG_printer_CurrentPageNumber == 1
 
 			if GetScrollPos(hwnd,SB_VERT) != 0
                                 _HMG_PRINTER_SETVSCROLLVALUE ( hwnd , 0 )
@@ -836,7 +833,7 @@ Local nScrollMax
 
 		Else
 
-			if ( nRow - 9 ) < nScrollMax 
+			if ( nRow - 9 ) < nScrollMax
                                 _HMG_PRINTER_SETVSCROLLVALUE ( hwnd , nRow - 9 )
 			Else
 				if GetScrollPos(hwnd,SB_VERT) != nScrollMax
@@ -850,7 +847,7 @@ Local nScrollMax
 
 	EndIf
 
-        if _HMG_printer_CurrentPageNumber < 1 
+        if _HMG_printer_CurrentPageNumber < 1
                 _HMG_printer_CurrentPageNumber := 1
 		PlayBeep()
 		Return
@@ -862,7 +859,7 @@ Local nScrollMax
 		Return
 	EndIf
 
-        _HMG_PRINTER_SHOWPAGE ( _HMG_printer_BasePageName + strzero(_HMG_printer_CurrentPageNumber,4) + ".emf" , GetFormhandle ('_HMG_PRINTER_SHOWPREVIEW') , _HMG_printer_hdc_bak , _HMG_printer_SizeFactor * 10000 , _HMG_printer_Dz , _HMG_printer_Dx , _HMG_printer_Dy ) 
+        _HMG_PRINTER_SHOWPAGE ( _HMG_printer_BasePageName + strzero(_HMG_printer_CurrentPageNumber,4) + ".emf" , GetFormhandle ('_HMG_PRINTER_SHOWPREVIEW') , _HMG_printer_hdc_bak , _HMG_printer_SizeFactor * 10000 , _HMG_printer_Dz , _HMG_printer_Dx , _HMG_printer_Dy )
 
         _HMG_PRINTER_SHOWPREVIEW.TITLE := _HMG_printer_usermessages [01] + ' [' + alltrim(str(_HMG_printer_CurrentPageNumber)) + '/'+alltrim(str(_HMG_printer_PageCount)) + ']'
 
@@ -870,10 +867,9 @@ Return
 *------------------------------------------------------------------------------*
 Procedure _HMG_PRINTER_PrintPages
 *------------------------------------------------------------------------------*
-Local i
 Local aProp := {}
 
-        DIsableWindow ( GetformHandle ( "_HMG_PRINTER_PPNAV" ) ) 
+        DIsableWindow ( GetformHandle ( "_HMG_PRINTER_PPNAV" ) )
         DIsableWindow ( GetformHandle ( "_HMG_PRINTER_SHOWTHUMBNAILS" ) )
         DIsableWindow ( GetformHandle ( "_HMG_PRINTER_SHOWPREVIEW" ) )
 
@@ -910,7 +906,7 @@ Local EvenOnly := .F.
 
         If _HMG_PRINTER_PrintPages.Radio_1.Value == 1
 
-		PageFrom := 1 
+		PageFrom := 1
                 PageTo   := _HMG_printer_PageCount
 
         ElseIf _HMG_PRINTER_PrintPages.Radio_1.Value == 2
@@ -919,9 +915,9 @@ Local EvenOnly := .F.
                 PageTo   := _HMG_PRINTER_PrintPages.Spinner_2.Value
 
                 If _HMG_PRINTER_PrintPages.Combo_1.Value == 2
-			OddOnly := .T. 
+			OddOnly := .T.
                 ElseIf _HMG_PRINTER_PrintPages.Combo_1.Value == 3
-			EvenOnly := .T. 
+			EvenOnly := .T.
 		EndIf
 
 	EndIf
@@ -950,7 +946,7 @@ Local EvenOnly := .F.
 
 	Else
 
-                If _HMG_PRINTER_PrintPages.Spinner_3.Value == 1 // Copies 
+                If _HMG_PRINTER_PrintPages.Spinner_3.Value == 1 // Copies
 
 			For i := PageFrom To PageTo
 
@@ -1022,12 +1018,12 @@ Local EvenOnly := .F.
         _HMG_PRINTER_ENDDOC ( _HMG_printer_hdc_bak )
 
         EnableWindow ( GetformHandle ( "_HMG_PRINTER_SHOWPREVIEW" ) )
-        EnableWindow ( GetformHandle ( "_HMG_PRINTER_SHOWTHUMBNAILS" ) ) 
-        EnableWindow ( GetformHandle ( "_HMG_PRINTER_PPNAV" ) ) 
+        EnableWindow ( GetformHandle ( "_HMG_PRINTER_SHOWTHUMBNAILS" ) )
+        EnableWindow ( GetformHandle ( "_HMG_PRINTER_PPNAV" ) )
 
-        HideWindow ( GetFormHandle ( "_HMG_PRINTER_PRINTPAGES" ) ) 
+        HideWindow ( GetFormHandle ( "_HMG_PRINTER_PRINTPAGES" ) )
 
-        _HMG_PRINTER_SHOWPREVIEW.setfocus 
+        _HMG_PRINTER_SHOWPREVIEW.setfocus
 
 Return
 
@@ -1057,36 +1053,36 @@ Local DeltaHeight := 35 + GetTitleHeight() + GetBorderHeight() + 10
                 if      _oohg_mouseCol <= ( Width / 2 ) - _HMG_printer_zoomclick_xoffset ;
 			.And. ;
                         _oohg_MouseRow <= ( Height / 2 ) - DeltaHeight
-		
+
 			Q := 1
 
                 Elseif  _oohg_mouseCol > ( Width / 2 ) - _HMG_printer_zoomclick_xoffset ;
 			.And. ;
                         _oohg_MouseRow <= ( Height / 2 ) - DeltaHeight
-	
+
 			Q := 2
 
                 Elseif  _oohg_mousecol <= ( Width / 2 ) - _HMG_printer_zoomclick_xoffset ;
 			.And. ;
-                        _oohg_MouseRow > ( Height / 2 ) - DeltaHeight     
-	
+                        _oohg_MouseRow > ( Height / 2 ) - DeltaHeight
+
 			Q := 3
 
                 Elseif  _oohg_mouseCol > ( Width / 2 ) - _HMG_printer_zoomclick_xoffset ;
 			.And. ;
-                        _oohg_MouseRow > ( Height / 2 ) - DeltaHeight     
-	
+                        _oohg_MouseRow > ( Height / 2 ) - DeltaHeight
+
 			Q := 4
 
 		EndIf
 
                 if      _HMG_PRINTER_GETPAGEHEIGHT(_HMG_printer_hdc_bak) ;
 			> ;
-                        _HMG_PRINTER_GETPAGEWIDTH(_HMG_printer_hdc_bak) 
+                        _HMG_PRINTER_GETPAGEWIDTH(_HMG_printer_hdc_bak)
 
 			* Portrait
 
-			If Q == 1 
+			If Q == 1
                                 _HMG_printer_Dz := 1000
                                 _HMG_printer_Dx := 100
                                 _HMG_printer_Dy := 400
@@ -1110,13 +1106,13 @@ Local DeltaHeight := 35 + GetTitleHeight() + GetBorderHeight() + 10
                                 _HMG_printer_Dy := -400
                                 SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_VERT , 90 , 1 )
                                 SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_HORZ , 60 , 1 )
-			EndIf				
+			EndIf
 
 		Else
 
 			* Landscape
 
-			If Q == 1 
+			If Q == 1
                                 _HMG_printer_Dz := 1000
                                 _HMG_printer_Dx := 500
                                 _HMG_printer_Dy := 300
@@ -1140,7 +1136,7 @@ Local DeltaHeight := 35 + GetTitleHeight() + GetBorderHeight() + 10
                                 _HMG_printer_Dy := -300
                                 SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_VERT , 80 , 1 )
                                 SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_HORZ , 99 , 1 )
-			EndIf				
+			EndIf
 
 		EndIf
 
@@ -1171,7 +1167,7 @@ Procedure _HMG_PRINTER_Zoom
 
                 if      _HMG_PRINTER_GETPAGEHEIGHT(_HMG_printer_hdc_bak) ;
 			> ;
-                        _HMG_PRINTER_GETPAGEWIDTH(_HMG_printer_hdc_bak) 
+                        _HMG_PRINTER_GETPAGEWIDTH(_HMG_printer_hdc_bak)
 
                         _HMG_printer_Dz := 1000
                         _HMG_printer_Dx := 100

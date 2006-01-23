@@ -1,5 +1,5 @@
 /*
- * $Id: h_report.prg,v 1.10 2006-01-22 17:39:13 declan2005 Exp $
+ * $Id: h_report.prg,v 1.11 2006-01-23 01:15:46 guerra000 Exp $
  */
 /*
  * DO REPORT Command support procedures For MiniGUI Library.
@@ -246,7 +246,7 @@ do case
          otherwise
             ncvcopt:=1
             repobject:nfsize:=12
-            oprint:nfontsize:=12
+            oprintr:nfontsize:=12
 
 endcase
 
@@ -736,4 +736,3 @@ if at(upper('IMAGE')+' ',upper(repobject:aline[i]))#0
 endif
 Next i
 return ncol
-
