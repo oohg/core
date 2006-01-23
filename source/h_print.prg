@@ -1,5 +1,5 @@
 /*
- * $Id: h_print.prg,v 1.7 2006-01-23 04:23:59 declan2005 Exp $
+ * $Id: h_print.prg,v 1.8 2006-01-23 15:23:53 guerra000 Exp $
  */
 
 #include 'hbclass.ch'
@@ -775,15 +775,13 @@ endcase
 RETURN nil
 
 method printdos() CLASS TPRINT
-private cbat
+local cbat, nHdl
     cbat:='b'+alltrim(str(random(999999),6))+'.bat'
-    set printer to &cbat
-    set print on
-    ? 'copy '+::tempfile+' prn'
-    ? 'rem comando auxiliar de impresion'
-    set print off
-    set printer to
-    waitrun('&cbat',0)
+    nHdl := FCREATE( cBat )
+    FWRITE( nHdl, "copy " + ::tempfile + " prn" + CHR( 13 ) + CHR( 10 ) )
+    FWRITE( nHdl, "rem comando auxiliar de impresion" + CHR( 13 ) + CHR( 10 ) )
+    FCLOSE( nHdl )
+    waitrun( cBat, 0 )
     erase &cbat
 return nil
 
@@ -798,4 +796,3 @@ if cop="-" .and. print_preview.edit_p.fontsize > 7
   print_preview.edit_p.fontsize:=  print_preview.edit_p.fontsize - 2
 endif
 return nil
-
