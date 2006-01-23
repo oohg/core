@@ -1,5 +1,5 @@
 /*
- * $Id: h_edit_ex.prg,v 1.5 2006-01-22 04:54:27 declan2005 Exp $
+ * $Id: h_edit_ex.prg,v 1.6 2006-01-23 04:23:59 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -2607,7 +2607,7 @@ endif
 oprint:printdata(5,1,_ctitulo,"times new roman",12,.T.) /// 
 oprint:printline(6,1,6,140)
 
-oprint:printdata(7,1,_oohg_messages(6,16),"times new roman" ,,.T.) /// 
+oprint:printdata(7,1,_oohg_messages(6,19),"times new roman" ,,.T.) /// 
 oprint:printdata(7,31, (_cArea)->( ordName() )) /// 
 
 oprint:printdata(8,1,_OOHG_messages(6,17),"times new roman",,.T.) /// 
@@ -2615,14 +2615,14 @@ oprint:printdata(8,31, CREGISTRO1) ///
 
 oprint:printdata(9,1,_OOHG_messages(6,18),"times new roman",,.T.) /// 
 oprint:printdata(9,31, CREGISTRO2) /// 
-oprint:printdata(10,1,_OOHG_messages(6,23),"times new roman",,.T.) /// 
-oprint:printdata(10,31, _CFILTRO) /// 
+///oprint:printdata(10,1,_OOHG_messages(6,23),"times new roman",,.T.) /// 
+///oprint:printdata(10,31, _CFILTRO) /// 
 
                                         nColumna := 1
                                         for i := 1 to Len( aCampo )
 ////oprint:printdata(12,ncolumna+ancho[i], CREGISTRO1) /// 
-oprint:printdata(12,ncolumna, acampo[i]) /// 
-                                                nColumna += aAncho[i]
+oprint:printdata(12,ncolumna, acampo[i], , ,.T.) /// 
+                                         nColumna += aAncho[i]
                                         next
                                         lCabecera := .f.
                                 endif
@@ -2633,13 +2633,13 @@ oprint:printdata(12,ncolumna, acampo[i]) ///
                                         nCampo := aNumeroCampo[i]
                                         do case
                                                 case _aEstructura[nCampo,DBS_TYPE] == "N"
-oprint:printdata(nfila,ncolumna+aancho[i], (_cArea)->( FieldGet( aNumeroCampo[i] ) )   ) /// 
+oprint:printdata(nfila,ncolumna, (_cArea)->( FieldGet( aNumeroCampo[i] ) )   ) /// 
                                                 case _aEstructura[nCampo,DBS_TYPE] == "L"
 oprint:printdata(nfila,ncolumna+1, iif( (_cArea)->( FieldGet( aNumeroCampo[i] ) ), _OOHG_messages(6,29), _OOHG_messages(6,30) )   ) ///  
                                                 case _aEstructura[nCampo,DBS_TYPE] == "M"
-oprint:printdata(nfila,ncolumna+1, SubStr( (_cArea)->( FieldGet( aNumeroCampo[i] ) ), 1, 20 )  ) ///  
+oprint:printdata(nfila,ncolumna, SubStr( (_cArea)->( FieldGet( aNumeroCampo[i] ) ), 1, 20 )  ) ///  
                                                 otherwise
-oprint:printdata(nfila,ncolumna+1, (_cArea)->( FieldGet( aNumeroCampo[i] ) )   ) ///  
+oprint:printdata(nfila,ncolumna, (_cArea)->( FieldGet( aNumeroCampo[i] ) )   ) ///  
                                         endcase
                                         nColumna += aAncho[i]
                                 next
@@ -2660,7 +2660,7 @@ oprint:printdata(nfila,ncolumna+1, (_cArea)->( FieldGet( aNumeroCampo[i] ) )   )
 oprint:printline(46,1,46,140)
                                                 cPie := HB_ValToStr( Date() ) + " " + Time()
 oprint:printdata(47,1,cpie)
-                                                cPie := "Pag:" + " " +          ;
+                                                cPie := _OOHG_messages(6,22) + " " +          ;
                                                         AllTrim( Str( nPagina) )       
 oprint:printdata(47,70,cpie)
                                                 nPagina++
@@ -2675,7 +2675,7 @@ oprint:printline(58,1,58,140)
                                                 cPie := HB_ValToStr( Date() ) + " " + Time()
                               ////                  @ 68, 10 say cPie font "a9n" to print
 oprint:printdata(59,1,cpie)
-                                                cPie := "Pag: " +                    ;
+                                                cPie := _oohg_messages(6,22)+" " +                    ;
                                                         AllTrim( Str( nPagina) )       
 oprint:printdata(59,70,cpie)
                                                 nFila := 14
@@ -2692,14 +2692,14 @@ oprint:beginpage()
 oprint:printline(46,1,46,140)
                         cPie := HB_ValToStr( Date() ) + " " + Time()
 oprint:printdata(47,1,cpie)
-                        cPie := "Pag: " +                    ;
+                        cPie := _oohg_messages(6,22)+" " +                    ;
                                 AllTrim( Str( nPagina) )      
 oprint:printdata(47,70,cpie)
                 else
 oprint:printline(58,1,58,140)
                         cPie := HB_ValToStr( Date() ) + " " + Time()
 oprint:printdata(59,1,cpie)
-                        cPie := "Pag: " +                    ;
+                        cPie := _OOHG_messages(6,22) + " " +                    ;
                                 AllTrim( Str( nPagina) )
                         oprint:printdata(59,70,cpie)
                 endif

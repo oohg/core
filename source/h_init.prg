@@ -1,5 +1,5 @@
 /*
- * $Id: h_init.prg,v 1.10 2006-01-22 17:39:13 declan2005 Exp $
+ * $Id: h_init.prg,v 1.11 2006-01-23 04:23:59 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -1584,7 +1584,7 @@ Local acButton, acLabel, acUser
                    "Ordenado por:"                    ,;
                    "Si"                               ,;
                    "No"                               ,;
-                   "P gina "                          ,;
+                   "Página "                          ,;
                    " de "                              }
    acABMButton := { "Cerrar"           ,;
                     "Nuevo"            ,;

@@ -1,5 +1,5 @@
 /*
- * $Id: h_edit.prg,v 1.7 2006-01-22 17:39:12 declan2005 Exp $
+ * $Id: h_edit.prg,v 1.8 2006-01-23 04:23:59 declan2005 Exp $
  */
 /*
  * ooHG source code:

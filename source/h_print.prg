@@ -1,5 +1,5 @@
 /*
- * $Id: h_print.prg,v 1.6 2006-01-23 01:15:46 guerra000 Exp $
+ * $Id: h_print.prg,v 1.7 2006-01-23 04:23:59 declan2005 Exp $
  */
 
 #include 'hbclass.ch'
@@ -331,7 +331,6 @@ DEFINE WINDOW _modalhide ;
         WIDTH 0 HEIGHT 0 ;
         TITLE cdoc MODAL NOSHOW NOSIZE NOSYSMENU NOCAPTION  ;
 
-
 end window
 
 
@@ -394,7 +393,7 @@ case ::cprintlibrary="DOS"
    SET PRINTER TO
    _nhandle:=FOPEN(::tempfile,0+64)
    if ::impreview
-         wr:=hb_oemtoansi(memoread((::tempfile)))
+         wr:=memoread((::tempfile))
    DEFINE WINDOW PRINT_PREVIEW  ;
    	AT 10,10 ;
    	   WIDTH 640 HEIGHT 480 ;
@@ -575,23 +574,23 @@ case ::cprintlibrary="HBPRINTER"
      change font "F0" name cfont size nsize
      change font "F1" name cfont size nsize BOLD
      SET TEXTCOLOR ::acolor
-   if .not. lbold
-      @ nlin*::nmver+::nvfij,ncol*::nmhor+::nhfij*2 SAY hb_oemtoansi(ctext) font "F0" TO PRINT
-   else
-      @ nlin*::nmver+::nvfij,ncol*::nmhor+::nhfij*2 SAY hb_oemtoansi(ctext) font "F1" TO PRINT
-   endif
+     if .not. lbold
+        @ nlin*::nmver+::nvfij,ncol*::nmhor+::nhfij*2 SAY (ctext) font "F0" TO PRINT
+     else
+        @ nlin*::nmver+::nvfij,ncol*::nmhor+::nhfij*2 SAY (ctext) font "F1" TO PRINT
+     endif
 case ::cprintlibrary="MINIPRINT"
-   if .not. lbold
-      @ nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 PRINT hb_oemtoansi(ctext) font cfont size nsize COLOR ::acolor
-   else
-      @ nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 PRINT hb_oemtoansi(ctext) font cfont size nsize  BOLD COLOR ::acolor
-   endif
+     if .not. lbold
+        @ nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 PRINT (ctext) font cfont size nsize COLOR ::acolor
+     else
+        @ nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 PRINT (ctext) font cfont size nsize  BOLD COLOR ::acolor
+     endif
 case ::cprintlibrary="DOS"
-   if .not. lbold
-       @ nlin,ncol say (ctext)
-   else
-       @ nlin,ncol say (ctext)
-//////       @ nlin,ncol say hb_oemtoansi(ctext)
+     if .not. lbold
+        @ nlin,ncol say (ctext)
+     else
+        @ nlin,ncol say (ctext)
+/////   @ nlin,ncol say (ctext)
    endif
 endcase
 RETURN self
@@ -730,7 +729,7 @@ case ::cprintlibrary="MINIPRINT"
 endcase
 RETURN nil
 
-
+*------------------------
 METHOD printroundrectangle(nlin,ncol,nlinf,ncolf,atcolor,ntwpen ) CLASS TPRINT
 *-------------------------
 if nlin=NIL
@@ -776,7 +775,7 @@ endcase
 RETURN nil
 
 method printdos() CLASS TPRINT
-local cbat
+private cbat
     cbat:='b'+alltrim(str(random(999999),6))+'.bat'
     set printer to &cbat
     set print on
