@@ -1,9 +1,12 @@
-@Echo Off
+@echo off
+rem
+rem $Id: CompileRes.bat,v 1.2 2006-01-23 00:44:01 guerra000 Exp $
+rem
 
 Rem Set Paths 
 
-IF "%MG_BCC%"=="" SET MG_BCC=c:\borland\bcc55
-IF "%MG_ROOT%"=="" SET MG_ROOT=c:\minigui
-IF "%MG_HRB%"=="" SET MG_HRB=c:\minigui\harbour
+IF "%HG_BCC%"==""  SET HG_BCC=c:\borland\bcc55
+IF "%HG_ROOT%"=="" SET HG_ROOT=c:\oohg
+IF "%HG_HRB%"==""  SET HG_HRB=c:\harbour
 
-%MG_BCC%\bin\brc32 -r minigui.rc
+%HG_BCC%\bin\brc32 -r oohg.rc

@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.71 2006-01-20 15:37:11 declan2005 Exp $
+ * $Id: ChangeLog,v 1.72 2006-01-23 00:44:00 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,8 +7,20 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2006-01-22 15:39 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * compile.bat
+  * resources/CompileRes.bat
+  - resources/minigui.rc
+  - resources/minigui.RES
+  + resources/oohg.rc
+  + resources/oohg.res
+  + resources/window.ico
+  * source/makelib.bat
+    * Changed default directories to previous ones.
+    * Changed MiniGUI references to ooHG.
+
 2006-01-20 10:29 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
-  * source/h_windows.prg    
+  * source/h_windows.prg
   * source/h_print.prg
      * fixed problem when _OOHG_printlibrary is not defined.
      * ported print method from hbprint to TPRINT()

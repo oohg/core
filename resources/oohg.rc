@@ -1,3 +1,7 @@
+//
+// $Id: oohg.rc,v 1.1 2006-01-23 00:44:01 guerra000 Exp $
+//
+
 // MANIFEST FOR CREATE 'XP-STYLE' APPLICATIONS
 
 1 24 "WindowsXP.Manifest"
@@ -19,7 +23,6 @@ MINIGUI_EDIT_ADD        BITMAP          edit_add.bmp
 MINIGUI_EDIT_DEL        BITMAP          edit_del.bmp
 MINIGUI_EDIT_SET        BITMAP          edit_set.bmp
 
-ZZZ_AAAWINDOW ICON WINDOW.ICO
-ZZZ_LED_ON ICON LED_ON.ICO
-ZZZ_LED_OFF ICON LED_OFF.ICO
-
+ZZZ_AAAWINDOW           ICON            WINDOW.ICO
+ZZZ_LED_ON              ICON            LED_ON.ICO
+ZZZ_LED_OFF             ICON            LED_OFF.ICO
