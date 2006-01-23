@@ -1,5 +1,5 @@
 /*
- * $Id: h_print.prg,v 1.8 2006-01-23 15:23:53 guerra000 Exp $
+ * $Id: h_print.prg,v 1.9 2006-01-23 19:28:26 declan2005 Exp $
  */
 
 #include 'hbclass.ch'
@@ -38,7 +38,7 @@ DATA exit               INIT  .F.
 DATA acolor             INIT {1,1,1}
 DATA cfontname          INIT "courier new"
 DATA nfontsize          INIT 10
-DATA nwpen              INIT 0.1   //// ancho del pen
+DATA nwpen              INIT 0.1   //// pen width
 DATA tempfile           INIT gettempdir()+"T"+alltrim(str(int(hb_random(999999)),8))+".prn"
 DATA impreview          INIT .F.
 
@@ -151,7 +151,7 @@ RETURN NIL
 *-------------------------
 METHOD init(clibx) CLASS TPRINT
 *-------------------------
-if iswindowactive(_winreport)
+if iswindowactive(_oohg_winreport)
    msgstop("Print preview pending, close first")
    ::exit:=.T.
    return nil
@@ -334,12 +334,14 @@ DEFINE WINDOW _modalhide ;
 end window
 
 
-DEFINE WINDOW _winreport ;
+DEFINE WINDOW _oohg_winreport ;
         AT 0,0 ;
         WIDTH 400 HEIGHT 120 ;
         TITLE cdoc CHILD NOSIZE NOSYSMENU NOCAPTION ;
 
-        @ 15,195 IMAGE IMAGE_101 OF _winreport ;
+        @ 5,5 frame myframe width 390 height 110          
+
+        @ 15,195 IMAGE IMAGE_101 ;
         picture 'hbprint_print'  ;
         WIDTH 25  ;
         HEIGHT 30 ;
@@ -347,16 +349,16 @@ DEFINE WINDOW _winreport ;
 
         @ 22,225 LABEL LABEL_101 VALUE '......' FONT "Courier new" SIZE 10
 
-        @ 55,10  label label_1 value cdoc WIDTH 400 HEIGHT 32 FONT "Courier new"
+        @ 55,10  label label_1 value cdoc WIDTH 300 HEIGHT 32 FONT "Courier new"
 
-        DEFINE TIMER TIMER_101 OF _winreport ;
+        DEFINE TIMER TIMER_101  ;
         INTERVAL 1000  ;
         ACTION action_timer()
 
         end window
-        center window _winreport
+        center window _oohg_winreport
         activate window _modalhide NOWAIT
-        activate window _winreport NOWAIT
+        activate window _oohg_winreport NOWAIT
 
 do case
 case ::cprintlibrary="HBPRINTER"
@@ -372,9 +374,9 @@ RETURN nil
 
 
 function action_timer()
-if iswindowdefined(_winreport)
-   _winreport.label_1.fontbold:=IIF(_winreport.label_1.fontbold,.F.,.T.)
-   _winreport.image_101.visible:=IIF(_winreport.label_1.fontbold,.T.,.F.)
+if iswindowdefined(_oohg_winreport)
+   _oohg_winreport.label_1.fontbold:=IIF(_oohg_winreport.label_1.fontbold,.F.,.T.)
+   _oohg_winreport.image_101.visible:=IIF(_oohg_winreport.label_1.fontbold,.T.,.F.)
 endif
 return nil
 
@@ -432,7 +434,7 @@ case ::cprintlibrary="DOS"
    ENDIF
 endcase
 
-_winreport.release()
+_oohg_winreport.release()
 _modalhide.release()
 
 RETURN self

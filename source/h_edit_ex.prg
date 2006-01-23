@@ -1,5 +1,5 @@
 /*
- * $Id: h_edit_ex.prg,v 1.6 2006-01-23 04:23:59 declan2005 Exp $
+ * $Id: h_edit_ex.prg,v 1.7 2006-01-23 19:28:26 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -279,6 +279,9 @@
 // Tipo de acción al definir los registros del listado.
 #define ABM_LIS_SET1            1
 #define ABM_LIS_SET2            2
+
+MEMVAR oventanapadre
+MEMVAR abackpadre
 
 // Declaración de variables globales.------------------------------------------
 static _cArea           as character            // Nombre del area de la bdd.
@@ -705,6 +708,9 @@ function ABM2( cArea, cTitulo, aNombreCampo, ;
                 endif
         next
 
+oVentanapadre:=getformobjectbyhandle(getactivewindow())
+abackpadre:=oVentanapadre:backcolor
+
 ////////// Definición de la ventana de visualización.--------------------------
         define window wndABM2Edit               ;
                 at 60, 30                       ;
@@ -714,6 +720,7 @@ function ABM2( cArea, cTitulo, aNombreCampo, ;
                 modal                           ;
                 nosize                          ;
                 nosysmenu                       ;
+                backcolor   abackpadre       ;         
                 on init {|| ABM2Redibuja() }    ;
                 on release {|| ABM2salir(nRegistro, cIndiceActivo, cFiltroAnt, nArea) }   ;
                 font "ms sans serif" size 9
@@ -1025,6 +1032,10 @@ static function ABM2Editar( lNuevo )
         nAnchoTope  := _nAnchoPantalla - 60
         cTitulo     := iif( lNuevo, _OOHG_Messages( 10, 6 ), _OOHG_Messages( 10, 7 ) )
 
+
+oVentanapadre:=getformobjectbyhandle(getactivewindow())
+abackpadre:=oVentanapadre:backcolor
+
 ////////// Define la ventana de edición de registro.---------------------------
         define window wndABM2EditNuevo                                  ;
                 at 70, 40                                               ;
@@ -1034,6 +1045,7 @@ static function ABM2Editar( lNuevo )
                 modal                                                   ;
                 nosize                                                  ;
                 nosysmenu                                               ;
+                backcolor abackpadre                                    ;
                 font "ms sans serif" size 9
 
                 // Define la barra de estado de la ventana de edición de registro.
@@ -1056,6 +1068,7 @@ static function ABM2Editar( lNuevo )
                                                    action  ABM2EditarCopiar()
                         end toolbar
 
+
                         // Define la ventana donde van contenidos los controles de edición.
                         define window wndABM2EditNuevoSplit             ;
                                 width iif( nAncho > nAnchoTope,         ;
@@ -1069,7 +1082,11 @@ static function ABM2Editar( lNuevo )
                                 splitchild                              ;
                                 nocaption                               ;
                                 font "ms sans serif" size 9             ;
-                                focused
+                                backcolor  abackpadre  ;
+                                focused  ;
+
+
+
                         end window
                 end splitbox
         end window
@@ -1393,6 +1410,9 @@ static function ABM2Seleccionar()
 ////////// Se situa en el primer registro.-------------------------------------
         (_cArea)->( dbGoTop() )
 
+oVentanapadre:=getformobjectbyhandle(getactivewindow())
+abackpadre:=oVentanapadre:backcolor
+
 ////////// Creación de la ventana de selección de registro.--------------------
         define window wndSeleccionar            ;
                 at 0, 0                         ;
@@ -1402,6 +1422,7 @@ static function ABM2Seleccionar()
                 modal                           ;
                 nosize                          ;
                 nosysmenu                       ;
+                backcolor  abackpadre   ;
                 font "ms sans serif" size 9
 
                 // Define la barra de botones de la ventana de selección.
@@ -1565,6 +1586,9 @@ static function ABM2Buscar()
                 return nil
         endif
 
+oVentanapadre:=getformobjectbyhandle(getactivewindow())
+abackpadre:=oVentanapadre:backcolor
+
 ////////// Crea la ventana de busqueda.----------------------------------------
         define window wndABMBuscar              ;
                 at 0, 0                         ;
@@ -1574,7 +1598,8 @@ static function ABM2Buscar()
                 modal                           ;
                 nosize                          ;
                 nosysmenu                       ;
-                font "ms sans serif" size 9
+                font "ms sans serif" size 9     ;
+                backcolor  abackpadre
 
                 // Define la barra de botones de la ventana de busqueda.
                 define toolbar tbBuscar buttonsize 90, 32 flat righttext border
@@ -1721,6 +1746,9 @@ static function ABM2ActivarFiltro()
                         _OOHG_Messages( 10, 31 ),;
                         _OOHG_Messages( 10, 32 ) }
 
+oVentanapadre:=getformobjectbyhandle(getactivewindow())
+abackpadre:=oVentanapadre:backcolor
+
 
 ////////// Crea la ventana de filtrado.----------------------------------------
         define window wndABM2Filtro                     ;
@@ -1732,7 +1760,8 @@ static function ABM2ActivarFiltro()
                 nosize                                  ;
                 nosysmenu                               ;
                 on init {|| ABM2ControlFiltro() }       ;
-                font "ms sans serif" size 9
+                font "ms sans serif" size 9  ;
+                backcolor abackpadre
 
                 // Define la barra de botones de la ventana de filtrado.
                 define toolbar tbBuscar buttonsize 90, 32 flat righttext border
@@ -2094,6 +2123,10 @@ static function ABM2Imprimir()
         cRegistro2 := HB_ValToStr( (_cArea)->( FieldGet( nCampo ) ) )
         (_cArea)->( dbGoTo( nRegistro ) )
 
+
+oVentanapadre:=getformobjectbyhandle(getactivewindow())
+abackpadre:=oVentanapadre:backcolor
+
 ////////// Definición de la ventana de formato de listado.---------------------
         define window wndABM2Listado            ;
                 at 0, 0                         ;
@@ -2104,7 +2137,8 @@ static function ABM2Imprimir()
                 modal                           ;
                 nosize                          ;
                 nosysmenu                       ;
-                font "ms sans serif" size 9
+                font "ms sans serif" size 9  ;
+                backcolor abackpadre
 
                 // Define la barra de botones de la ventana de formato de listado.
                 define toolbar tbListado buttonsize 90, 32 flat righttext border

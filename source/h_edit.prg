@@ -1,5 +1,5 @@
 /*
- * $Id: h_edit.prg,v 1.8 2006-01-23 04:23:59 declan2005 Exp $
+ * $Id: h_edit.prg,v 1.9 2006-01-23 19:28:26 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -137,6 +137,9 @@
 #define ABM_LISTADO_MAS         2
 #define ABM_LISTADO_MENOS       3
 #define ABM_LISTADO_IMPRIMIR    4
+
+MEMVAR oventanapadre
+MEMVAR abackpadre
 
 
 
@@ -393,6 +396,9 @@ _aBotones := { "btnCerrar", "btnNuevo", "btnEditar", ;
               "btnSiguiente", "btnUltimo", "btnGuardar",;
               "btnCancelar" }
 
+oventanapadre:=getformobjectbyhandle(GetActiveWindow())
+abackpadre:=oventanapadre:backcolor
+
 // Defincinión de la ventana de edición.---------------------------------------
 define window wndABM ;
        at     0, 0 ;
@@ -403,6 +409,7 @@ define window wndABM ;
        nosysmenu ;
        font "Serif" ;
        size 8 ;
+       backcolor abackpadre ;
        on init ABMRefresh( ABM_MODO_VER )
 end window
 
@@ -1056,6 +1063,9 @@ if ( cTipoCampo == "N" ) .or. ( cTipoCampo == "L" ) .or. ( cTipoCampo == "M" )
         return ( nil )
 endif
 
+oventanapadre:=getformobjectbyhandle(GetActiveWindow())
+abackpadre:=oventanapadre:backcolor
+
 // Define la ventana de busqueda.----------------------------------------------
 define window wndABMBuscar ;
                 at 0, 0 ;
@@ -1065,7 +1075,8 @@ define window wndABMBuscar ;
                 modal ;
                 nosysmenu ;
                 font "Serif" ;
-                size 8
+                size 8 ;
+                backcolor abackpadre
 end window
 
 // Define los controles de la ventana de busqueda.-----------------------------
@@ -1190,6 +1201,10 @@ nPrimero := (_cArea)->( RecNo() )
 nUltimo  := (_cArea)->( RecNo() )
 (_cArea)->( dbGoTo( nRegistro ) )
 
+oventanapadre:=getformobjectbyhandle(GetActiveWindow())
+abackpadre:=oventanapadre:backcolor
+
+
 // Defincicón de la ventana del proceso.---------------------------------------
 define window wndABMListado ;
         at 0, 0 ;
@@ -1199,7 +1214,9 @@ define window wndABMListado ;
         modal ;
         nosysmenu ;
         font "Serif" ;
-        size 8
+        size 8 ;
+        backcolor abackpadre
+
 end window
 
 // Definición de los controles.------------------------------------------------
