@@ -1,5 +1,5 @@
 /*
- * $Id: h_edit_ex.prg,v 1.7 2006-01-23 19:28:26 declan2005 Exp $
+ * $Id: h_edit_ex.prg,v 1.8 2006-01-24 00:22:08 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -1245,12 +1245,13 @@ static function ABM2ConFoco()
         _nControlActivo := aScan( acControl, cControl )
 
 ////////// Pone la etiqueta en negrita.----------------------------------------
-        _OOHG_cMacroTemp := _aEtiqueta[_nControlActivo,ABM_LBL_NAME]
-        wndABM2EditNuevoSplit.&_OOHG_cMacroTemp.FontBold := .t.
+        if _ncontrolactivo>0
+           _OOHG_cMacroTemp := _aEtiqueta[_nControlActivo,ABM_LBL_NAME]
+           wndABM2EditNuevoSplit.&_OOHG_cMacroTemp.FontBold := .t.
 
 ////////// Presenta el mensaje en la barra de estado.--------------------------
-        wndABM2EditNuevo.StatusBar.Item( 1 ) := _aControl[_nControlActivo,ABM_CON_DES]
-
+           wndABM2EditNuevo.StatusBar.Item( 1 ) := _aControl[_nControlActivo,ABM_CON_DES]
+        endif
 return nil
 
 
@@ -1267,9 +1268,10 @@ return nil
 static function ABM2SinFoco()
 
 ////////// Restaura el estado de la etiqueta.----------------------------------
-        _OOHG_cMacroTemp := _aEtiqueta[_nControlActivo,ABM_LBL_NAME]
-        wndABM2EditNuevoSplit.&_OOHG_cMacroTemp.FontBold := .f.
-
+        if _ncontrolactivo>0
+           _OOHG_cMacroTemp := _aEtiqueta[_nControlActivo,ABM_LBL_NAME]
+           wndABM2EditNuevoSplit.&_OOHG_cMacroTemp.FontBold := .f.
+        endif
 ////////// Restaura el texto de la barra de estado.----------------------------
         wndABM2EditNuevo.StatusBar.Item( 1 ) := ""
 
@@ -1296,25 +1298,29 @@ static function ABM2AlEntrar()
         lSalida  := .t.
 
 ////////// Restaura el estado de la etiqueta.----------------------------------
-        _OOHG_cMacroTemp := _aEtiqueta[_nControlActivo,ABM_LBL_NAME]
-        wndABM2EditNuevoSplit.&_OOHG_cMacroTemp.FontBold := .f.
-
+       if _ncontrolactivo>0
+          _OOHG_cMacroTemp := _aEtiqueta[_nControlActivo,ABM_LBL_NAME]
+          wndABM2EditNuevoSplit.&_OOHG_cMacroTemp.FontBold := .f.
+       endif
 ////////// Activa el siguiente control editable con evento ON ENTER.-----------
         do while lSalida
                 _nControlActivo++
                 if _nControlActivo > Len( _aControl )
                         _nControlActivo := 1
                 endif
-                nTipo := _aControl[_nControlActivo,ABM_CON_TYPE]
+                if _ncontrolactivo>0
+                   nTipo := _aControl[_nControlActivo,ABM_CON_TYPE]
+                endif
                 if nTipo == ABM_TEXTBOXC .or. nTipo == ABM_TEXTBOXN
                         if _aEditable[_nControlActivo]
                                 lSalida := .f.
                         endif
                 endif
         enddo
-        _OOHG_cMacroTemp := _aControl[_nControlActivo,ABM_CON_NAME]
-        wndABM2EditNuevoSplit.&_OOHG_cMacroTemp.SetFocus
-
+         if _ncontrolactivo>0
+            _OOHG_cMacroTemp := _aControl[_nControlActivo,ABM_CON_NAME]
+            wndABM2EditNuevoSplit.&_OOHG_cMacroTemp.SetFocus
+        endif
 return NIL
 
 
