@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.76 2006-01-23 19:28:25 declan2005 Exp $
+ * $Id: ChangeLog,v 1.77 2006-01-25 04:11:17 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,13 +7,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2006-01-24 22:10 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_controlmisc.prg
+    * Fixed SET MULTIPLE command.
+
 2006-01-23 14:17 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source/h_edit.prg
   * source/h_edit_ex.prg
   * source/h_print.prg
       * little cosmetic fixes and vars naming
 
-=======
 2006-01-23 09:21 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_print.prg
     * Fixed MEMVAR warning.

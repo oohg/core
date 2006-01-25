@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.40 2006-01-17 03:04:47 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.41 2006-01-25 04:11:18 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -2325,7 +2325,17 @@ Return Left ( StartUpFolder , Rat ( '\' , StartUpFolder ) - 1 )
 Function _OOHG_SetMultiple( lMultiple, lWarning )
 *------------------------------------------------------------------------------*
 Local lRet := _OOHG_lMultiple
-   _OOHG_lMultiple := lMultiple
+   If VALTYPE( lMultiple ) == "L"
+      _OOHG_lMultiple := lMultiple
+   ElseIf VALTYPE( lMultiple ) == "N"
+      _OOHG_lMultiple := ( lMultiple != 0 )
+   ElseIf VALTYPE( lMultiple ) $ "CM"
+      If UPPER( ALLTRIM( lMultiple ) ) == "ON"
+         _OOHG_lMultiple := .T.
+      ElseIf UPPER( ALLTRIM( lMultiple ) ) == "OFF"
+         _OOHG_lMultiple := .F.
+      EndIf
+   EndIf
    If ! _OOHG_lMultiple .AND. ;
       ( EMPTY( CreateMutex( , .T., strtran(GetModuleFileName(),'\','_') ) ) .OR. (GetLastError() > 0) )
       If ValType( lWarning ) == "L" .AND. lWarning
