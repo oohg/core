@@ -1,5 +1,5 @@
 /*
- * $Id: h_print.prg,v 1.9 2006-01-23 19:28:26 declan2005 Exp $
+ * $Id: h_print.prg,v 1.10 2006-01-29 19:07:46 declan2005 Exp $
  */
 
 #include 'hbclass.ch'
@@ -21,26 +21,25 @@ memvar _HMG_PRINTER_HDC_BAK
 
 CREATE CLASS TPRINT
 
-DATA cprintlibrary      INIT "HBPRINTER"
-DATA nfontsize          INIT 10
-DATA nmhor              INIT (10)/4.75
-DATA nmver              INIT (10)/2.45
-DATA nhfij              INIT (12/3.70)
-DATA nvfij              INIT (12/1.65)
-DATA cunits             INIT "ROWCOL"
-DATA cprinter           INIT ""
+DATA cprintlibrary      INIT "HBPRINTER" PROTECTED
+DATA nmhor              INIT (10)/4.75   PROTECTED
+DATA nmver              INIT (10)/2.45   PROTECTED
+DATA nhfij              INIT (12/3.70)   PROTECTED
+DATA nvfij              INIT (12/1.65)   PROTECTED
+DATA cunits             INIT "ROWCOL"    PROTECTED
+DATA cprinter           INIT ""          PROTECTED
 
-DATA aprinters          INIT {}
-DATA aports             INIT {}
-
-DATA lprerror           INIT .F.
-DATA exit               INIT  .F.
-DATA acolor             INIT {1,1,1}
-DATA cfontname          INIT "courier new"
-DATA nfontsize          INIT 10
-DATA nwpen              INIT 0.1   //// pen width
-DATA tempfile           INIT gettempdir()+"T"+alltrim(str(int(hb_random(999999)),8))+".prn"
-DATA impreview          INIT .F.
+DATA aprinters          INIT {}   PROTECTED
+DATA aports             INIT {}   PROTECTED
+                                  
+DATA lprerror           INIT .F.  PROTECTED
+DATA exit               INIT  .F. PROTECTED
+DATA acolor             INIT {1,1,1}  PROTECTED
+DATA cfontname          INIT "courier new" PROTECTED
+DATA nfontsize          INIT 10 PROTECTED
+DATA nwpen              INIT 0.1   PROTECTED //// pen width
+DATA tempfile           INIT gettempdir()+"T"+alltrim(str(int(hb_random(999999)),8))+".prn" PROTECTED
+DATA impreview          INIT .F.  PROTECTED
 
 *-------------------------
 METHOD init()
@@ -80,42 +79,51 @@ METHOD printline
 METHOD printrectangle
 *-------------------------
 
+*-------------------------
 METHOD selprinter()
 *-------------------------
-*-------------------------
 
+*-------------------------
 METHOD getdefprinter()
 *-------------------------
 
+*-------------------------
 METHOD setcolor()
+*-------------------------
 
-
-
+*-------------------------
 METHOD setpreviewsize()
+*-------------------------
 
 *-------------------------
 METHOD setunits()   ////// mm o rowcol
 *-------------------------
 
+*-------------------------
 METHOD printroundrectangle()
+*-------------------------
 
 ENDCLASS
 
-
+*-------------------------
 METHOD condenDOS() CLASS TPRINT
+*-------------------------
 if ::cprintlibrary="DOS"
    @ prow(), pcol() say chr(15)
 endif
 return nil
 
-
+*-------------------------
 method normaldos() CLASS TPRINT
+*-------------------------
 if ::cprintlibrary="DOS"
    @ prow(), pcol() say chr(18)
 endif
 return nil
 
+*-------------------------
 METHOD setpreviewsize(ntam)
+*-------------------------
 if ntam=NIL .or. ntam>5
    ntam=1
 endif
@@ -499,7 +507,7 @@ RETURN nil
 *-------------------------
 METHOD printdata(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen) CLASS TPRINT
 *-------------------------
-local ctext,cspace
+local ctext,cspace,caux,i
 do case
     case valtype(data)=='C'
                 ctext:=data
@@ -520,12 +528,10 @@ if calign=NIL
 endif
 
 if nlen=NIL
-   nlen=len(ctext)
+   nlen=15
 endif
 
 do case
-   case calign = "L"
-        cspace=""
    case calign = "C"
         cspace=  space((int(nlen)-len(ctext))/2 )
    case calign = "R"
@@ -577,17 +583,47 @@ case ::cprintlibrary="HBPRINTER"
      change font "F1" name cfont size nsize BOLD
      SET TEXTCOLOR ::acolor
      if .not. lbold
-        @ nlin*::nmver+::nvfij,ncol*::nmhor+::nhfij*2 SAY (ctext) font "F0" TO PRINT
-     else
-        @ nlin*::nmver+::nvfij,ncol*::nmhor+::nhfij*2 SAY (ctext) font "F1" TO PRINT
-     endif
-case ::cprintlibrary="MINIPRINT"
-     if .not. lbold
-        @ nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 PRINT (ctext) font cfont size nsize COLOR ::acolor
-     else
-        @ nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 PRINT (ctext) font cfont size nsize  BOLD COLOR ::acolor
-     endif
-case ::cprintlibrary="DOS"
+       if calign="R"
+         for i:=nlen to 1 step -1
+             caux:=substr(ctext,i,1)
+             @ nlin*::nmver+::nvfij,ncol*::nmhor+::nhfij*2+(i*nsize/4.75) SAY (caux) font "F0" TO PRINT
+         next i
+      else
+         @ nlin*::nmver+::nvfij,ncol*::nmhor+::nhfij*2 SAY (ctext) font "F0" TO PRINT
+      endif
+   else
+      if calign="R"
+         for i:=nlen to 1 step -1
+             caux:=substr(ctext,i,1)
+             @ nlin*::nmver+::nvfij,ncol*::nmhor+::nhfij*2+(i*nsize/4.75) SAY (caux) font "F1" TO PRINT
+         next i
+      else
+         @ nlin*::nmver+::nvfij,ncol*::nmhor+::nhfij*2  SAY (ctext) font "F1" TO PRINT
+      endif
+
+   endif
+
+   case ::cprintlibrary="MINIPRINT"
+    if .not. lbold
+       if calign="R"
+         for i:=nlen to 1 step -1
+             caux:=substr(ctext,i,1)
+             @ nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2+(i*nsize/4.75) PRINT (caux) font cfont size nsize COLOR ::acolor
+         next i
+      else
+         @ nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 PRINT (ctext) font cfont size nsize COLOR ::acolor
+      endif 
+   else
+      if calign="R"
+         for i:=nlen to 1 step -1
+             caux:=substr(ctext,i,1)
+             @ nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2+(i*nsize/4.75) PRINT (caux) font cfont size nsize  BOLD COLOR ::acolor
+         next i
+         else
+             @ nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 PRINT (ctext) font cfont size nsize  BOLD COLOR ::acolor
+         endif
+   endif
+    case ::cprintlibrary="DOS"
      if .not. lbold
         @ nlin,ncol say (ctext)
      else
