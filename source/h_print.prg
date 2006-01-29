@@ -1,5 +1,5 @@
 /*
- * $Id: h_print.prg,v 1.10 2006-01-29 19:07:46 declan2005 Exp $
+ * $Id: h_print.prg,v 1.11 2006-01-29 23:19:03 declan2005 Exp $
  */
 
 #include 'hbclass.ch'
@@ -528,7 +528,7 @@ if calign=NIL
 endif
 
 if nlen=NIL
-   nlen=15
+   nlen:=15
 endif
 
 do case
@@ -584,7 +584,7 @@ case ::cprintlibrary="HBPRINTER"
      SET TEXTCOLOR ::acolor
      if .not. lbold
        if calign="R"
-         for i:=nlen to 1 step -1
+         for i:=1 to nlen 
              caux:=substr(ctext,i,1)
              @ nlin*::nmver+::nvfij,ncol*::nmhor+::nhfij*2+(i*nsize/4.75) SAY (caux) font "F0" TO PRINT
          next i
@@ -593,7 +593,7 @@ case ::cprintlibrary="HBPRINTER"
       endif
    else
       if calign="R"
-         for i:=nlen to 1 step -1
+         for i:=1 to nlen 
              caux:=substr(ctext,i,1)
              @ nlin*::nmver+::nvfij,ncol*::nmhor+::nhfij*2+(i*nsize/4.75) SAY (caux) font "F1" TO PRINT
          next i
@@ -606,7 +606,7 @@ case ::cprintlibrary="HBPRINTER"
    case ::cprintlibrary="MINIPRINT"
     if .not. lbold
        if calign="R"
-         for i:=nlen to 1 step -1
+         for i:=1 to nlen 
              caux:=substr(ctext,i,1)
              @ nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2+(i*nsize/4.75) PRINT (caux) font cfont size nsize COLOR ::acolor
          next i
@@ -615,7 +615,7 @@ case ::cprintlibrary="HBPRINTER"
       endif 
    else
       if calign="R"
-         for i:=nlen to 1 step -1
+         for i:=1 to nlen 
              caux:=substr(ctext,i,1)
              @ nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2+(i*nsize/4.75) PRINT (caux) font cfont size nsize  BOLD COLOR ::acolor
          next i
