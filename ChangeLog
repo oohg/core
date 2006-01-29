@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.79 2006-01-29 19:07:45 declan2005 Exp $
+ * $Id: ChangeLog,v 1.80 2006-01-29 19:09:43 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -9,7 +9,7 @@
 
 2006-01-29 14:01 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source/h_print.prg
-     * fixed right align with wichever FONT
+     * fixed right align with any FONT
 
 2006-01-28 19:43 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_label.prg
