@@ -1,5 +1,5 @@
 /*
- * $Id: h_label.prg,v 1.11 2006-01-18 05:43:43 guerra000 Exp $
+ * $Id: h_label.prg,v 1.12 2006-01-29 01:44:16 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -130,8 +130,7 @@ Local ControlHandle, nStyle, nStyleEx
    nStyle := if( ValType( invisible ) != "L" .OR. ! invisible, WS_VISIBLE, 0 ) + ;
              if( ValType( BORDER ) == "L"    .AND. BORDER,     WS_BORDER,  0 ) + ;
              if( ValType( HSCROLL ) == "L"   .AND. HSCROLL,    WS_HSCROLL, 0 ) + ;
-             if( ValType( VSCROLL ) == "L"   .AND. VSCROLL,    WS_VSCROLL, 0 ) + ;
-             if( ValType( BORDER ) == "L"    .AND. BORDER,     WS_BORDER, 0 )
+             if( ValType( VSCROLL ) == "L"   .AND. VSCROLL,    WS_VSCROLL, 0 )
 
    If ValType( lNoWordWrap ) == "L" .AND. lNoWordWrap
       nStyle += SS_LEFTNOWORDWRAP
