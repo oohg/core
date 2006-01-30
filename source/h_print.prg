@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.12 2006-01-30 04:34:04 declan2005 Exp $
+* $Id: h_print.prg,v 1.13 2006-01-30 11:42:30 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -637,7 +637,7 @@ case ::cprintlibrary="MINIPRINT"
 
        textalign( 2 )
        @ nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2  +((nlen+1)*nsize/4.75) PRINT (ctext) font cfont size nsize COLOR ::acolor
-       textalign( 2 )
+       textalign( 0 )
       else
          @ nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 PRINT (ctext) font cfont size nsize COLOR ::acolor
       endif
@@ -647,7 +647,7 @@ case ::cprintlibrary="MINIPRINT"
 ///             caux:=substr(ctext,i,1)
              textalign( 2 )
              @ nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2+((nlen+1)*nsize/4.75) PRINT (ctext) font cfont size nsize  BOLD COLOR ::acolor
-             textalign( 2 )
+             textalign( 0 )
 ///         next i
       else
          @ nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 PRINT (ctext) font cfont size nsize  BOLD COLOR ::acolor
