@@ -1,6 +1,6 @@
 /*
- * $Id: h_print.prg,v 1.11 2006-01-29 23:19:03 declan2005 Exp $
- */
+* $Id: h_print.prg,v 1.12 2006-01-30 04:34:04 declan2005 Exp $
+*/
 
 #include 'hbclass.ch'
 #include 'common.ch'
@@ -31,7 +31,7 @@ DATA cprinter           INIT ""          PROTECTED
 
 DATA aprinters          INIT {}   PROTECTED
 DATA aports             INIT {}   PROTECTED
-                                  
+
 DATA lprerror           INIT .F.  PROTECTED
 DATA exit               INIT  .F. PROTECTED
 DATA acolor             INIT {1,1,1}  PROTECTED
@@ -49,16 +49,25 @@ METHOD begindoc()
 *-------------------------
 *-------------------------
 METHOD enddoc()
+*-------------------------
 
+
+*-------------------------
 method printdos()
 *-------------------------
 *-------------------------
 METHOD beginpage()
 *-------------------------
 
-METHOD condendos()
 
+*-------------------------
+METHOD condendos()
+*-------------------------
+
+
+*-------------------------
 METHOD NORMALDOS()
+*-------------------------
 
 *-------------------------
 METHOD endpage()
@@ -76,6 +85,8 @@ METHOD printimage
 METHOD printline
 *-------------------------
 
+
+*-------------------------
 METHOD printrectangle
 *-------------------------
 
@@ -135,24 +146,24 @@ return nil
 *-------------------------
 METHOD release() CLASS TPRINT
 *-------------------------
-   if ::exit
-      return nil
-   endif
-   do case
-      case ::cprintlibrary="HBPRINTER"
-         RELEASE PRINTSYS
-         RELEASE HBPRN
-      case ::cprintlibrary="MINIPRINT"
-         release _HMG_PRINTER_APRINTERPROPERTIES
-         release _HMG_PRINTER_HDC
-         release _HMG_PRINTER_COPIES
-         release _HMG_PRINTER_COLLATE
-         release _HMG_PRINTER_PREVIEW
-         release _HMG_PRINTER_TIMESTAMP
-         release _HMG_PRINTER_NAME
-         release _HMG_PRINTER_PAGECOUNT
-         release _HMG_PRINTER_HDC_BAK
-   endcase
+if ::exit
+   return nil
+endif
+do case
+case ::cprintlibrary="HBPRINTER"
+   RELEASE PRINTSYS
+   RELEASE HBPRN
+case ::cprintlibrary="MINIPRINT"
+   release _HMG_PRINTER_APRINTERPROPERTIES
+   release _HMG_PRINTER_HDC
+   release _HMG_PRINTER_COPIES
+   release _HMG_PRINTER_COLLATE
+   release _HMG_PRINTER_PREVIEW
+   release _HMG_PRINTER_TIMESTAMP
+   release _HMG_PRINTER_NAME
+   release _HMG_PRINTER_PAGECOUNT
+   release _HMG_PRINTER_HDC_BAK
+endcase
 RETURN NIL
 
 
@@ -162,7 +173,7 @@ METHOD init(clibx) CLASS TPRINT
 if iswindowactive(_oohg_winreport)
    msgstop("Print preview pending, close first")
    ::exit:=.T.
-   return nil
+return nil
 endif
 if clibx=NIL
    if type("_OOHG_printlibrary")="C"
@@ -171,7 +182,7 @@ if clibx=NIL
       ::cprintlibrary:="HBPRINTER"
    endif
 else
-     ::cprintlibrary:=upper(clibx)
+   ::cprintlibrary:=upper(clibx)
 endif
 
 do case
@@ -182,21 +193,21 @@ case ::cprintlibrary="HBPRINTER"
    GET PORTS TO ::aports
    SET UNITS MM
 case ::cprintlibrary="MINIPRINT"
-
-public _HMG_PRINTER_APRINTERPROPERTIES
-public _HMG_PRINTER_HDC
-public _HMG_PRINTER_COPIES
-public  _HMG_PRINTER_COLLATE
-public _HMG_PRINTER_PREVIEW
-public _HMG_PRINTER_TIMESTAMP
-public _HMG_PRINTER_NAME
-public _HMG_PRINTER_PAGECOUNT
-public _HMG_PRINTER_HDC_BAK
-
-::aprinters:=aprinters()
-
+   
+   public _HMG_PRINTER_APRINTERPROPERTIES
+   public _HMG_PRINTER_HDC
+   public _HMG_PRINTER_COPIES
+   public  _HMG_PRINTER_COLLATE
+   public _HMG_PRINTER_PREVIEW
+   public _HMG_PRINTER_TIMESTAMP
+   public _HMG_PRINTER_NAME
+   public _HMG_PRINTER_PAGECOUNT
+   public _HMG_PRINTER_HDC_BAK
+   
+   ::aprinters:=aprinters()
+   
 case ::cprintlibrary="DOS"
-::impreview:=.F.
+   ::impreview:=.F.
 endcase
 return nil
 
@@ -249,14 +260,14 @@ case ::cprintlibrary="MINIPRINT"
    else
       Worientation:= PRINTER_ORIENT_PORTRAIT
    endif
-
+   
    if lselect .and. lpreview
       ::cPrinter := GetPrinter()
       If Empty (::cPrinter)
          ::lprerror:=.T.
          Return Nil
       EndIf
-
+      
       if npapersize#NIL
          SELECT PRINTER ::cprinter to lsucess ;
          ORIENTATION worientation ;
@@ -268,9 +279,9 @@ case ::cprintlibrary="MINIPRINT"
          PREVIEW
       endif
    endif
-
+   
    if (.not. lselect) .and. lpreview
-
+      
       if npapersize#NIL
          SELECT PRINTER DEFAULT TO lsucess ;
          ORIENTATION worientation  ;
@@ -282,9 +293,9 @@ case ::cprintlibrary="MINIPRINT"
          PREVIEW
       endif
    endif
-
+   
    if (.not. lselect) .and. (.not. lpreview)
-
+      
       if npapersize#NIL
          SELECT PRINTER DEFAULT TO lsucess  ;
          ORIENTATION worientation  ;
@@ -294,14 +305,14 @@ case ::cprintlibrary="MINIPRINT"
          ORIENTATION worientation
       endif
    endif
-
+   
    if lselect .and. .not. lpreview
       ::cPrinter := GetPrinter()
       If Empty (::cPrinter)
          ::lprerror:=.T.
          Return Nil
       EndIf
-
+      
       if npapersize#NIL
          SELECT PRINTER ::cprinter to lsucess ;
          ORIENTATION worientation ;
@@ -311,18 +322,18 @@ case ::cprintlibrary="MINIPRINT"
          ORIENTATION worientation
       endif
    endif
-
+   
    IF .NOT. lsucess
       ::lprerror:=.T.
       return nil
    ENDIF
 case ::cprintlibrary="DOS"
-      do while file(::tempfile)
-         ::tempfile:=gettempdir()+"T"+alltrim(str(int(hb_random(999999)),8))+".prn"
-      enddo
-if lpreview
-   ::impreview:=.T.
-endif
+   do while file(::tempfile)
+      ::tempfile:=gettempdir()+"T"+alltrim(str(int(hb_random(999999)),8))+".prn"
+   enddo
+   if lpreview
+      ::impreview:=.T.
+   endif
 endcase
 
 RETURN nil
@@ -335,38 +346,38 @@ IF cdoc=NIL
 endif
 
 DEFINE WINDOW _modalhide ;
-        AT 0,0 ;
-        WIDTH 0 HEIGHT 0 ;
-        TITLE cdoc MODAL NOSHOW NOSIZE NOSYSMENU NOCAPTION  ;
+AT 0,0 ;
+WIDTH 0 HEIGHT 0 ;
+TITLE cdoc MODAL NOSHOW NOSIZE NOSYSMENU NOCAPTION  ;
 
 end window
 
 
 DEFINE WINDOW _oohg_winreport ;
-        AT 0,0 ;
-        WIDTH 400 HEIGHT 120 ;
-        TITLE cdoc CHILD NOSIZE NOSYSMENU NOCAPTION ;
+AT 0,0 ;
+WIDTH 400 HEIGHT 120 ;
+TITLE cdoc CHILD NOSIZE NOSYSMENU NOCAPTION ;
 
-        @ 5,5 frame myframe width 390 height 110          
+@ 5,5 frame myframe width 390 height 110
 
-        @ 15,195 IMAGE IMAGE_101 ;
-        picture 'hbprint_print'  ;
-        WIDTH 25  ;
-        HEIGHT 30 ;
-        STRETCH
+@ 15,195 IMAGE IMAGE_101 ;
+picture 'hbprint_print'  ;
+WIDTH 25  ;
+HEIGHT 30 ;
+STRETCH
 
-        @ 22,225 LABEL LABEL_101 VALUE '......' FONT "Courier new" SIZE 10
+@ 22,225 LABEL LABEL_101 VALUE '......' FONT "Courier new" SIZE 10
 
-        @ 55,10  label label_1 value cdoc WIDTH 300 HEIGHT 32 FONT "Courier new"
+@ 55,10  label label_1 value cdoc WIDTH 300 HEIGHT 32 FONT "Courier new"
 
-        DEFINE TIMER TIMER_101  ;
-        INTERVAL 1000  ;
-        ACTION action_timer()
+DEFINE TIMER TIMER_101  ;
+INTERVAL 1000  ;
+ACTION action_timer()
 
-        end window
-        center window _oohg_winreport
-        activate window _modalhide NOWAIT
-        activate window _oohg_winreport NOWAIT
+end window
+center window _oohg_winreport
+activate window _modalhide NOWAIT
+activate window _oohg_winreport NOWAIT
 
 do case
 case ::cprintlibrary="HBPRINTER"
@@ -381,7 +392,10 @@ endcase
 RETURN nil
 
 
+
+*-------------------------
 function action_timer()
+*-------------------------
 if iswindowdefined(_oohg_winreport)
    _oohg_winreport.label_1.fontbold:=IIF(_oohg_winreport.label_1.fontbold,.F.,.T.)
    _oohg_winreport.image_101.visible:=IIF(_oohg_winreport.label_1.fontbold,.T.,.F.)
@@ -403,39 +417,39 @@ case ::cprintlibrary="DOS"
    SET PRINTER TO
    _nhandle:=FOPEN(::tempfile,0+64)
    if ::impreview
-         wr:=memoread((::tempfile))
-   DEFINE WINDOW PRINT_PREVIEW  ;
-   	AT 10,10 ;
-   	   WIDTH 640 HEIGHT 480 ;
-   	   TITLE 'Preview -----> ' + ::tempfile ;
-   	   MODAL
-
-   	@ 0,0 EDITBOX EDIT_P ;
-   	OF PRINT_PREVIEW ;
-   	WIDTH 590 ;
-   	HEIGHT 440 ;
-   	VALUE WR ;
-   	READONLY ;
-   	FONT 'Courier new' ;
-   	SIZE 10
-
-        @ 10,600 button but_4 caption "X" width 30 action ( print_preview.release() )
-        @ 110,600 button but_1 caption "+ +" width 30 action zoom("+")
-        @ 210,600 button but_2 caption "- -" width 30 action zoom("-")
-        @ 310,600 button but_3 caption "P" width 30 action (::printdos())
-
-
-   END WINDOW
-
-   CENTER WINDOW PRINT_PREVIEW
-   ACTIVATE WINDOW PRINT_PREVIEW
-
+      wr:=memoread((::tempfile))
+      DEFINE WINDOW PRINT_PREVIEW  ;
+         AT 10,10 ;
+         WIDTH 640 HEIGHT 480 ;
+         TITLE 'Preview -----> ' + ::tempfile ;
+         MODAL
+         
+         @ 0,0 EDITBOX EDIT_P ;
+         OF PRINT_PREVIEW ;
+         WIDTH 590 ;
+         HEIGHT 440 ;
+         VALUE WR ;
+         READONLY ;
+         FONT 'Courier new' ;
+         SIZE 10
+         
+         @ 10,600 button but_4 caption "X" width 30 action ( print_preview.release() )
+         @ 110,600 button but_1 caption "+ +" width 30 action zoom("+")
+         @ 210,600 button but_2 caption "- -" width 30 action zoom("-")
+         @ 310,600 button but_3 caption "P" width 30 action (::printdos())
+         
+         
+      END WINDOW
+      
+      CENTER WINDOW PRINT_PREVIEW
+      ACTIVATE WINDOW PRINT_PREVIEW
+      
    else
-
+      
       ::PRINTDOS()
-
+      
    endif
-
+   
    IF FILE(::tempfile)
       fclose(_nhandle)
       ERASE &(::tempfile)
@@ -447,7 +461,10 @@ _modalhide.release()
 
 RETURN self
 
+
+*-------------------------
 METHOD SETCOLOR(atColor) CLASS TPRINT
+*-------------------------
 ::acolor:=atColor
 if ::cprintlibrary="HBPRINTER"
    CHANGE PEN "C0" WIDTH ::nwpen COLOR ::acolor
@@ -509,18 +526,18 @@ METHOD printdata(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen) CLASS TPRI
 *-------------------------
 local ctext,cspace,caux,i
 do case
-    case valtype(data)=='C'
-                ctext:=data
-    case valtype(data)=='N'
-                ctext:=alltrim(str(data))
-    case valtype(data)=='D'
-                ctext:=dtoc(data)
-    case valtype(data)=='L'
-               ctext:= iif(data,'T','F')
-    case valtype(data)=='M'
-               ctext:=data
-    otherwise
-               ctext:=""
+case valtype(data)=='C'
+   ctext:=data
+case valtype(data)=='N'
+   ctext:=alltrim(str(data))
+case valtype(data)=='D'
+   ctext:=dtoc(data)
+case valtype(data)=='L'
+   ctext:= iif(data,'T','F')
+case valtype(data)=='M'
+   ctext:=data
+otherwise
+   ctext:=""
 endcase
 
 if calign=NIL
@@ -532,12 +549,12 @@ if nlen=NIL
 endif
 
 do case
-   case calign = "C"
-        cspace=  space((int(nlen)-len(ctext))/2 )
-   case calign = "R"
-        cspace = space(int(nlen)-len(ctext))
-   otherwise
-        cspace = ""
+case calign = "C"
+   cspace=  space((int(nlen)-len(ctext))/2 )
+case calign = "R"
+   cspace = space(int(nlen)-len(ctext))
+otherwise
+   cspace = ""
 endcase
 
 if nlin=nil
@@ -547,7 +564,7 @@ if ncol=nil
    ncol:=1
 endif
 if ctext=NIL
-   ctext=""
+   ctext:=""
 endif
 if lbold=NIL
    lbold:=.F.
@@ -579,56 +596,69 @@ ctext:=cspace + ctext
 
 do case
 case ::cprintlibrary="HBPRINTER"
-     change font "F0" name cfont size nsize
-     change font "F1" name cfont size nsize BOLD
-     SET TEXTCOLOR ::acolor
-     if .not. lbold
-       if calign="R"
-         for i:=1 to nlen 
-             caux:=substr(ctext,i,1)
-             @ nlin*::nmver+::nvfij,ncol*::nmhor+::nhfij*2+(i*nsize/4.75) SAY (caux) font "F0" TO PRINT
-         next i
+   change font "F0" name cfont size nsize
+   change font "F1" name cfont size nsize BOLD
+   SET TEXTCOLOR ::acolor
+   if .not. lbold
+      if calign="R"
+///         for i:=1 to nlen
+///             caux:=substr(ctext,i,1)
+///             @ nlin*::nmver+::nvfij,ncol*::nmhor+::nhfij*2+(i*nsize/4.75) SAY (caux) font "F0" TO PRINT
+///         next i
+        SET TEXT ALIGN RIGHT
+        @ nlin*::nmver+::nvfij,ncol*::nmhor+::nhfij*2 +((nlen+1)*nsize/4.75) SAY (ctext) font "F0" TO PRINT
+        SET TEXT ALIGN LEFT
       else
          @ nlin*::nmver+::nvfij,ncol*::nmhor+::nhfij*2 SAY (ctext) font "F0" TO PRINT
       endif
    else
       if calign="R"
-         for i:=1 to nlen 
-             caux:=substr(ctext,i,1)
-             @ nlin*::nmver+::nvfij,ncol*::nmhor+::nhfij*2+(i*nsize/4.75) SAY (caux) font "F1" TO PRINT
-         next i
+///         for i:=1 to nlen
+///             caux:=substr(ctext,i,1)
+///             @ nlin*::nmver+::nvfij,ncol*::nmhor+::nhfij*2+(i*nsize/4.75) SAY (caux) font "F1" TO PRINT
+///         next i
+        SET TEXT ALIGN RIGHT
+        @ nlin*::nmver+::nvfij,ncol*::nmhor+::nhfij*2 +((nlen+1)*nsize/4.75) SAY (ctext) font "F1" TO PRINT
+        SET TEXT ALIGN LEFT
+
       else
          @ nlin*::nmver+::nvfij,ncol*::nmhor+::nhfij*2  SAY (ctext) font "F1" TO PRINT
       endif
-
+      
    endif
+   
+case ::cprintlibrary="MINIPRINT"
+   if .not. lbold
+      if calign="R"
+//         for i:=1 to nlen
+//             caux:=substr(ctext,i,1)
+//             @ nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2+(i*nsize/4.75) PRINT (caux) font cfont size nsize COLOR ::acolor
+//         next i
 
-   case ::cprintlibrary="MINIPRINT"
-    if .not. lbold
-       if calign="R"
-         for i:=1 to nlen 
-             caux:=substr(ctext,i,1)
-             @ nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2+(i*nsize/4.75) PRINT (caux) font cfont size nsize COLOR ::acolor
-         next i
+       textalign( 2 )
+       @ nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2  +((nlen+1)*nsize/4.75) PRINT (ctext) font cfont size nsize COLOR ::acolor
+       textalign( 2 )
       else
          @ nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 PRINT (ctext) font cfont size nsize COLOR ::acolor
-      endif 
+      endif
    else
       if calign="R"
-         for i:=1 to nlen 
-             caux:=substr(ctext,i,1)
-             @ nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2+(i*nsize/4.75) PRINT (caux) font cfont size nsize  BOLD COLOR ::acolor
-         next i
-         else
-             @ nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 PRINT (ctext) font cfont size nsize  BOLD COLOR ::acolor
-         endif
+///         for i:=1 to nlen
+///             caux:=substr(ctext,i,1)
+             textalign( 2 )
+             @ nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2+((nlen+1)*nsize/4.75) PRINT (ctext) font cfont size nsize  BOLD COLOR ::acolor
+             textalign( 2 )
+///         next i
+      else
+         @ nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 PRINT (ctext) font cfont size nsize  BOLD COLOR ::acolor
+      endif
    endif
-    case ::cprintlibrary="DOS"
-     if .not. lbold
-        @ nlin,ncol say (ctext)
-     else
-        @ nlin,ncol say (ctext)
-/////   @ nlin,ncol say (ctext)
+case ::cprintlibrary="DOS"
+   if .not. lbold
+      @ nlin,ncol say (ctext)
+   else
+      @ nlin,ncol say (ctext)
+      /////   @ nlin,ncol say (ctext)
    endif
 endcase
 RETURN self
@@ -640,7 +670,7 @@ if nlin=NIL
    nlin:=1
 endif
 if ncol=NIL
-   ncol=1
+   ncol:=1
 endif
 if cimage=NIL
    cimage:=""
@@ -649,7 +679,7 @@ if nlinf=NIL
    nlinf:=4
 endif
 if ncolf=NIL
-   ncolf=4
+   ncolf:=4
 endif
 
 if ::cunits="MM"
@@ -679,7 +709,7 @@ if nlin=NIL
    nlin:=1
 endif
 if ncol=NIL
-   ncol=1
+   ncol:=1
 endif
 if nlinf=NIL
    nlinf:=4
@@ -716,9 +746,9 @@ case ::cprintlibrary="HBPRINTER"
 case ::cprintlibrary="MINIPRINT"
    @  (nlin+.2)*::nmver+::nvfij,ncol*::nmhor+::nhfij*2 PRINT LINE TO  (nlinf+.2)*::nmver+::nvfij,ncolf*::nmhor+::nhfij*2  COLOR atcolor PENWIDTH ntwpen  //// CPEN
 case ::cprintlibrary="DOS"
-  if nlin=nlinf
-     @ nlin,ncol say replicate("-",ncolf-ncol+1)
-  endif
+   if nlin=nlinf
+      @ nlin,ncol say replicate("-",ncolf-ncol+1)
+   endif
 endcase
 RETURN nil
 
@@ -729,7 +759,7 @@ if nlin=NIL
    nlin:=1
 endif
 if ncol=NIL
-   ncol=1
+   ncol:=1
 endif
 if nlinf=NIL
    nlinf:=4
@@ -747,15 +777,15 @@ if ntwpen=NIL
 endif
 
 if ::cunits="MM"
-   ::nmver:=1
-   ::nvfij:=0
-   ::nmhor:=1
-   ::nhfij:=0
+  ::nmver:=1
+  ::nvfij:=0
+  ::nmhor:=1
+  ::nhfij:=0
 else
-   ::nmhor  := (::nfontsize)/4.75
-   ::nmver  := (::nfontsize)/2.45
-   ::nvfij  := (12/1.65)
-   ::nhfij  := (12/3.70)
+  ::nmhor  := (::nfontsize)/4.75
+  ::nmver  := (::nfontsize)/2.45
+  ::nvfij  := (12/1.65)
+  ::nhfij  := (12/3.70)
 endif
 do case
 case ::cprintlibrary="HBPRINTER"
@@ -774,7 +804,7 @@ if nlin=NIL
    nlin:=1
 endif
 if ncol=NIL
-   ncol=1
+   ncol:=1
 endif
 if nlinf=NIL
    nlinf:=4
@@ -788,7 +818,7 @@ if atcolor=NIL
 endif
 
 if ntwpen=NIL
-   ntwpen:= ::nwpen
+ntwpen:= ::nwpen
 endif
 
 if ::cunits="MM"
@@ -806,31 +836,36 @@ do case
 case ::cprintlibrary="HBPRINTER"
    CHANGE PEN "C0" WIDTH ntwpen*10 COLOR atcolor
    SELECT PEN "C0"
-    hbprn:RoundRect( nlin*::nmver+::nvfij  ,ncol*::nmhor+::nhfij*2 ,(nlinf+0.5)*::nmver+::nvfij ,ncolf*::nmhor+::nhfij*2 ,10, 10,"C0")
+   hbprn:RoundRect( nlin*::nmver+::nvfij  ,ncol*::nmhor+::nhfij*2 ,(nlinf+0.5)*::nmver+::nvfij ,ncolf*::nmhor+::nhfij*2 ,10, 10,"C0")
 case ::cprintlibrary="MINIPRINT"
    @  nlin*::nmver+::nvfij,ncol*::nmhor+::nhfij*2 PRINT RECTANGLE TO  (nlinf+0.5)*::nmver+::nvfij,ncolf*::nmhor+::nhfij*2 COLOR atcolor  PENWIDTH ntwpen  ROUNDED //// CPEN
 endcase
 RETURN nil
 
+
+*-------------------------
 method printdos() CLASS TPRINT
+*-------------------------
 local cbat, nHdl
-    cbat:='b'+alltrim(str(random(999999),6))+'.bat'
-    nHdl := FCREATE( cBat )
-    FWRITE( nHdl, "copy " + ::tempfile + " prn" + CHR( 13 ) + CHR( 10 ) )
-    FWRITE( nHdl, "rem comando auxiliar de impresion" + CHR( 13 ) + CHR( 10 ) )
-    FCLOSE( nHdl )
-    waitrun( cBat, 0 )
-    erase &cbat
+cbat:='b'+alltrim(str(random(999999),6))+'.bat'
+nHdl := FCREATE( cBat )
+FWRITE( nHdl, "copy " + ::tempfile + " prn" + CHR( 13 ) + CHR( 10 ) )
+FWRITE( nHdl, "rem comando auxiliar de impresion" + CHR( 13 ) + CHR( 10 ) )
+FCLOSE( nHdl )
+waitrun( cBat, 0 )
+erase &cbat
 return nil
 
-
+*-------------------------
 static function zoom(cOp)
-
+*-------------------------
 if cop="+" .and. print_preview.edit_p.fontsize <= 24
-  print_preview.edit_p.fontsize:=  print_preview.edit_p.fontsize + 2
+   print_preview.edit_p.fontsize:=  print_preview.edit_p.fontsize + 2
 endif
 
 if cop="-" .and. print_preview.edit_p.fontsize > 7
-  print_preview.edit_p.fontsize:=  print_preview.edit_p.fontsize - 2
+   print_preview.edit_p.fontsize:=  print_preview.edit_p.fontsize - 2
 endif
 return nil
+
+

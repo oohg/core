@@ -1,5 +1,5 @@
 /*
- * $Id: miniprint.prg,v 1.4 2006-01-23 01:15:46 guerra000 Exp $
+ * $Id: miniprint.prg,v 1.5 2006-01-30 04:34:04 declan2005 Exp $
  */
 /*----------------------------------------------------------------------------
  MINIGUI - Harbour Win32 GUI library source code
@@ -1933,6 +1933,13 @@ FUNCTION GETPRINTABLEAREAVERTICALOFFSET()
 
 RETURN ( _HMG_PRINTER_GETPRINTABLEAREAPHYSICALOFFSETY ( _HMG_printer_hdc ) / _HMG_PRINTER_GETPRINTABLEAREALOGPIXELSY ( _HMG_printer_hdc ) * 25.4 )
 
+*------------------------------------------------------------------------------*
+FUNCTION textALIGN(nAlign)
+*------------------------------------------------------------------------------*
+CVCSETTEXTALIGN( _HMG_printer_hdc,nAlign )
+RETURN NIL
+
+
 #pragma BEGINDUMP
 
 
@@ -1950,6 +1957,11 @@ RETURN ( _HMG_PRINTER_GETPRINTABLEAREAPHYSICALOFFSETY ( _HMG_printer_hdc ) / _HM
 #include <wingdi.h>
 #include "commctrl.h"
 #include "olectl.h"
+
+HB_FUNC ( CVCSETTEXTALIGN )
+{
+  hb_retni(SetTextAlign( (HDC) hb_parnl (1) ,24 |hb_parni(2)));
+}
 
 HB_FUNC ( _HMG_PRINTER_ABORTDOC )
 {
