@@ -1,5 +1,5 @@
 /*
- * $Id: miniprint.prg,v 1.5 2006-01-30 04:34:04 declan2005 Exp $
+ * $Id: miniprint.prg,v 1.6 2006-01-30 04:59:13 declan2005 Exp $
  */
 /*----------------------------------------------------------------------------
  MINIGUI - Harbour Win32 GUI library source code
@@ -1960,7 +1960,7 @@ RETURN NIL
 
 HB_FUNC ( CVCSETTEXTALIGN )
 {
-  hb_retni(SetTextAlign( (HDC) hb_parnl (1) ,24 |hb_parni(2)));
+  hb_retni(SetTextAlign( (HDC) hb_parnl (1) ,  hb_parni(2)));
 }
 
 HB_FUNC ( _HMG_PRINTER_ABORTDOC )
