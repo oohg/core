@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.84 2006-02-03 04:16:14 declan2005 Exp $
+ * $Id: ChangeLog,v 1.85 2006-02-03 19:48:25 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,6 +7,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+
+2006-02-03 14:41 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+  * source/h_print.prg
+     * added hide printing window at selprinter() 
+     * fixed hello sample problem, because bad program pirntest.prg instead of printtest.prg
 
 2006-02-02 23:11 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source/makelib.bat
