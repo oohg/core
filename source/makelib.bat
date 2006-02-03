@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: makelib.bat,v 1.11 2006-01-23 00:44:49 guerra000 Exp $
+rem $Id: makelib.bat,v 1.12 2006-02-03 03:48:31 declan2005 Exp $
 rem
 cls
 
@@ -17,9 +17,9 @@ IF EXIST %hg_root%\lib\miniprint.lib del %hg_root%\lib\miniprint.lib
 if exist %hg_hrb%\lib\tip.lib goto XHARBOUR_COMPILE
 
 :HARBOUR_COMPILE
-%hg_hrb%\bin\harbour h_browse h_scrsaver h_error h_ipaddress h_monthcal h_help h_crypt h_status h_tree h_toolbar errorsys h_init h_media h_winapimisc h_slider h_button h_checkbox h_combo h_controlmisc h_datepicker h_editbox h_dialogs h_grid h_windows h_image h_label h_listbox h_menu h_msgbox h_frame h_progressbar h_radio h_spinner h_tab h_textbox h_timer h_cursor h_ini h_report h_registry h_font h_hyperlink h_hotkey h_graph h_richeditbox h_edit h_edit_ex h_scroll h_http h_zip h_progressmeter h_comm h_print -i%hg_hrb%\include;%hg_root%\include; -n1     -gc0 -es2
-if exist winprint.prg  %hg_hrb%\bin\harbour winprint  -i%hg_hrb%\include;%hg_root%\include; -n1     -gc0 -es2
-if exist miniprint.prg %hg_hrb%\bin\harbour miniprint -i%hg_hrb%\include;%hg_root%\include; -n1     -gc0 -es2
+%hg_hrb%\bin\harbour h_browse h_scrsaver h_error h_ipaddress h_monthcal h_help h_crypt h_status h_tree h_toolbar errorsys h_init h_media h_winapimisc h_slider h_button h_checkbox h_combo h_controlmisc h_datepicker h_editbox h_dialogs h_grid h_windows h_image h_label h_listbox h_menu h_msgbox h_frame h_progressbar h_radio h_spinner h_tab h_textbox h_timer h_cursor h_ini h_report h_registry h_font h_hyperlink h_hotkey h_graph h_richeditbox h_edit h_edit_ex h_scroll h_http h_zip h_progressmeter h_comm h_print -i%hg_hrb%\include;%hg_root%\include; -n1  -w  -gc0 -es2
+if exist winprint.prg  %hg_hrb%\bin\harbour winprint  -i%hg_hrb%\include;%hg_root%\include; -n1  -w   -gc0 -es2
+if exist miniprint.prg %hg_hrb%\bin\harbour miniprint -i%hg_hrb%\include;%hg_root%\include; -n1  -w   -gc0 -es2
 
 GOTO C_COMPILE
 
