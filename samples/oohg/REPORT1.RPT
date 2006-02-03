@@ -6,16 +6,14 @@ DEFINE  REPORT TEMPLATE
 			TOTALS   {.F.,.F.,.F.,.T.}
 			NFORMATS {'','','','@E 999,999,999.99'}
 			WORKAREA Test
-			LPP      55	
-			CPL      77
-			LMARGIN  3
-			TMARGIN 3
+			LPP      50	
+			CPL      80
+			LMARGIN  2
 			PAPERSIZE DMPAPER_A4
 			PREVIEW	
 			SELECT
 			MULTIPLE
                         GROUPED BY code
 			HEADRGRP 'Sumas: '
-                        LIBRARY "HBPRINTER"
 END REPORT
 
