@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.13 2006-01-30 11:42:30 declan2005 Exp $
+* $Id: h_print.prg,v 1.14 2006-02-03 03:15:55 guerra000 Exp $
 */
 
 #include 'hbclass.ch'
@@ -193,7 +193,7 @@ case ::cprintlibrary="HBPRINTER"
    GET PORTS TO ::aports
    SET UNITS MM
 case ::cprintlibrary="MINIPRINT"
-   
+
    public _HMG_PRINTER_APRINTERPROPERTIES
    public _HMG_PRINTER_HDC
    public _HMG_PRINTER_COPIES
@@ -203,9 +203,9 @@ case ::cprintlibrary="MINIPRINT"
    public _HMG_PRINTER_NAME
    public _HMG_PRINTER_PAGECOUNT
    public _HMG_PRINTER_HDC_BAK
-   
+
    ::aprinters:=aprinters()
-   
+
 case ::cprintlibrary="DOS"
    ::impreview:=.F.
 endcase
@@ -260,14 +260,14 @@ case ::cprintlibrary="MINIPRINT"
    else
       Worientation:= PRINTER_ORIENT_PORTRAIT
    endif
-   
+
    if lselect .and. lpreview
       ::cPrinter := GetPrinter()
       If Empty (::cPrinter)
          ::lprerror:=.T.
          Return Nil
       EndIf
-      
+
       if npapersize#NIL
          SELECT PRINTER ::cprinter to lsucess ;
          ORIENTATION worientation ;
@@ -279,9 +279,9 @@ case ::cprintlibrary="MINIPRINT"
          PREVIEW
       endif
    endif
-   
+
    if (.not. lselect) .and. lpreview
-      
+
       if npapersize#NIL
          SELECT PRINTER DEFAULT TO lsucess ;
          ORIENTATION worientation  ;
@@ -293,9 +293,9 @@ case ::cprintlibrary="MINIPRINT"
          PREVIEW
       endif
    endif
-   
+
    if (.not. lselect) .and. (.not. lpreview)
-      
+
       if npapersize#NIL
          SELECT PRINTER DEFAULT TO lsucess  ;
          ORIENTATION worientation  ;
@@ -305,14 +305,14 @@ case ::cprintlibrary="MINIPRINT"
          ORIENTATION worientation
       endif
    endif
-   
+
    if lselect .and. .not. lpreview
       ::cPrinter := GetPrinter()
       If Empty (::cPrinter)
          ::lprerror:=.T.
          Return Nil
       EndIf
-      
+
       if npapersize#NIL
          SELECT PRINTER ::cprinter to lsucess ;
          ORIENTATION worientation ;
@@ -322,7 +322,7 @@ case ::cprintlibrary="MINIPRINT"
          ORIENTATION worientation
       endif
    endif
-   
+
    IF .NOT. lsucess
       ::lprerror:=.T.
       return nil
@@ -423,7 +423,7 @@ case ::cprintlibrary="DOS"
          WIDTH 640 HEIGHT 480 ;
          TITLE 'Preview -----> ' + ::tempfile ;
          MODAL
-         
+
          @ 0,0 EDITBOX EDIT_P ;
          OF PRINT_PREVIEW ;
          WIDTH 590 ;
@@ -432,24 +432,24 @@ case ::cprintlibrary="DOS"
          READONLY ;
          FONT 'Courier new' ;
          SIZE 10
-         
+
          @ 10,600 button but_4 caption "X" width 30 action ( print_preview.release() )
          @ 110,600 button but_1 caption "+ +" width 30 action zoom("+")
          @ 210,600 button but_2 caption "- -" width 30 action zoom("-")
          @ 310,600 button but_3 caption "P" width 30 action (::printdos())
-         
-         
+
+
       END WINDOW
-      
+
       CENTER WINDOW PRINT_PREVIEW
       ACTIVATE WINDOW PRINT_PREVIEW
-      
+
    else
-      
+
       ::PRINTDOS()
-      
+
    endif
-   
+
    IF FILE(::tempfile)
       fclose(_nhandle)
       ERASE &(::tempfile)
@@ -524,7 +524,7 @@ RETURN nil
 *-------------------------
 METHOD printdata(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen) CLASS TPRINT
 *-------------------------
-local ctext,cspace,caux,i
+local ctext,cspace
 do case
 case valtype(data)=='C'
    ctext:=data
@@ -624,9 +624,9 @@ case ::cprintlibrary="HBPRINTER"
       else
          @ nlin*::nmver+::nvfij,ncol*::nmhor+::nhfij*2  SAY (ctext) font "F1" TO PRINT
       endif
-      
+
    endif
-   
+
 case ::cprintlibrary="MINIPRINT"
    if .not. lbold
       if calign="R"
@@ -867,5 +867,4 @@ if cop="-" .and. print_preview.edit_p.fontsize > 7
    print_preview.edit_p.fontsize:=  print_preview.edit_p.fontsize - 2
 endif
 return nil
-
 
