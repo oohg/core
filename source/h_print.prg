@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.14 2006-02-03 03:15:55 guerra000 Exp $
+* $Id: h_print.prg,v 1.15 2006-02-03 19:47:51 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -40,6 +40,7 @@ DATA nfontsize          INIT 10 PROTECTED
 DATA nwpen              INIT 0.1   PROTECTED //// pen width
 DATA tempfile           INIT gettempdir()+"T"+alltrim(str(int(hb_random(999999)),8))+".prn" PROTECTED
 DATA impreview          INIT .F.  PROTECTED
+DATA lwinhide           INIT .T.
 
 *-------------------------
 METHOD init()
@@ -212,13 +213,17 @@ endcase
 return nil
 
 *-------------------------
-METHOD selprinter( lselect , lpreview, llandscape , npapersize ) CLASS TPRINT
+METHOD selprinter( lselect , lpreview, llandscape , npapersize ,lhide ) CLASS TPRINT
 *-------------------------
 local Worientation, lsucess := .T.
 if ::exit
    ::lprerror:=.T.
    return nil
 endif
+if lhide#NIL
+  ::lwinhide:=lhide
+endif
+
 SETPRC(0,0)
 if llandscape=NIL
    llandscape:=.F.
@@ -373,6 +378,10 @@ STRETCH
 DEFINE TIMER TIMER_101  ;
 INTERVAL 1000  ;
 ACTION action_timer()
+
+if .not. ::lwinhide
+   _oohg_winreport.hide()
+endif
 
 end window
 center window _oohg_winreport
