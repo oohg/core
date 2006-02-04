@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.15 2006-02-03 19:47:51 declan2005 Exp $
+* $Id: h_print.prg,v 1.16 2006-02-04 03:56:33 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -213,7 +213,7 @@ endcase
 return nil
 
 *-------------------------
-METHOD selprinter( lselect , lpreview, llandscape , npapersize ,lhide ) CLASS TPRINT
+METHOD selprinter( lselect , lpreview, llandscape , npapersize ,cprinterx, lhide ) CLASS TPRINT
 *-------------------------
 local Worientation, lsucess := .T.
 if ::exit
@@ -231,18 +231,27 @@ endif
 
 do case
 case ::cprintlibrary="HBPRINTER"
-   if lselect .and. lpreview
+   if lselect .and. lpreview .and. cprinterx=NIL
       SELECT BY DIALOG PREVIEW
    endif
-   if lselect .and. (.not. lpreview)
+   if lselect .and. (.not. lpreview) .and. cprinterx=NIL
       SELECT BY DIALOG
    endif
-   if (.not. lselect) .and. lpreview
+   if (.not. lselect) .and. lpreview .and. cprinterx=NIL
       SELECT DEFAULT PREVIEW
    endif
-   if (.not. lselect) .and. (.not. lpreview)
+   if (.not. lselect) .and. (.not. lpreview) .and. cprinterx=NIL
       SELECT DEFAULT
    endif
+
+   if cprinterx # NIL
+      IF lpreview
+          SELECT PRINTER cprinterx PREVIEW
+      ELSE
+          SELECT PRINTER cprinterx
+      ENDIF
+   endif
+
    IF HBPRNERROR != 0
       ::lprerror:=.T.
       return nil
@@ -259,14 +268,16 @@ case ::cprintlibrary="HBPRINTER"
    if npapersize#NIL
       set page papersize npapersize
    endif
+
 case ::cprintlibrary="MINIPRINT"
+
    if llandscape
       Worientation:= PRINTER_ORIENT_LANDSCAPE
    else
       Worientation:= PRINTER_ORIENT_PORTRAIT
    endif
 
-   if lselect .and. lpreview
+   if lselect .and. lpreview .and. cprinterx = NIL
       ::cPrinter := GetPrinter()
       If Empty (::cPrinter)
          ::lprerror:=.T.
@@ -285,7 +296,7 @@ case ::cprintlibrary="MINIPRINT"
       endif
    endif
 
-   if (.not. lselect) .and. lpreview
+   if (.not. lselect) .and. lpreview .and. cprinterx = NIL
 
       if npapersize#NIL
          SELECT PRINTER DEFAULT TO lsucess ;
@@ -299,7 +310,7 @@ case ::cprintlibrary="MINIPRINT"
       endif
    endif
 
-   if (.not. lselect) .and. (.not. lpreview)
+   if (.not. lselect) .and. (.not. lpreview) .and. cprinterx = NIL
 
       if npapersize#NIL
          SELECT PRINTER DEFAULT TO lsucess  ;
@@ -311,7 +322,7 @@ case ::cprintlibrary="MINIPRINT"
       endif
    endif
 
-   if lselect .and. .not. lpreview
+   if lselect .and. .not. lpreview .and. cprinterx = NIL
       ::cPrinter := GetPrinter()
       If Empty (::cPrinter)
          ::lprerror:=.T.
@@ -327,11 +338,48 @@ case ::cprintlibrary="MINIPRINT"
          ORIENTATION worientation
       endif
    endif
+
+   if cprinterx # NIL .AND. lpreview
+      If Empty (cprinterx)
+         ::lprerror:=.T.
+         Return Nil
+      EndIf
+
+      if npapersize#NIL
+         SELECT PRINTER cprinterx to lsucess ;
+         ORIENTATION worientation ;
+         PAPERSIZE npapersize ;
+         PREVIEW
+      else
+         SELECT PRINTER cprinterx to lsucess ;
+         ORIENTATION worientation ;
+         PREVIEW 
+      endif
+   endif
+
+   if cprinterx # NIL .AND. .not. lpreview
+      If Empty (cprinterx)
+         ::lprerror:=.T.
+         Return Nil
+      EndIf
+
+      if npapersize#NIL
+         SELECT PRINTER cprinterx to lsucess ;
+         ORIENTATION worientation ;
+         PAPERSIZE npapersize
+      else
+         SELECT PRINTER cprinterx to lsucess ;
+         ORIENTATION worientation 
+      endif
+   endif
+
+
 
    IF .NOT. lsucess
       ::lprerror:=.T.
       return nil
    ENDIF
+
 case ::cprintlibrary="DOS"
    do while file(::tempfile)
       ::tempfile:=gettempdir()+"T"+alltrim(str(int(hb_random(999999)),8))+".prn"
