@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.37 2006-01-09 15:13:40 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.38 2006-02-06 00:29:01 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -640,16 +640,6 @@ Local _RecNo , NewPos := 50, _DeltaScroll , m , hWnd, cWorkArea
       ( cWorkArea )->( DbGoTo( _RecNo ) )
       Return nil
    ENDIF
-/*
-// Usando DBFILTER()
-   cMacroVar := ( cWorkArea )->( dbfilter() )
-   If ! Empty( cMacroVar )
-      If ! ( cWorkArea )->( &cMacroVar )
-         ( cWorkArea )->( DbGoTo( _RecNo ) )
-         Return nil
-		EndIf
-	EndIf
-*/
 
    if pcount() < 2
       ::scrollUpdate()
@@ -1385,8 +1375,9 @@ HB_FUNC_STATIC( TBROWSE_EVENTS_NOTIFY )
 
       case NM_CUSTOMDRAW:
          pSelf = hb_stackSelfItem();
-         _OOHG_Send( pSelf, s_AdjustRightScroll );
-         hb_vmSend( 0 );
+// It's so SLOW! :( This will require some workaround
+//         _OOHG_Send( pSelf, s_AdjustRightScroll );
+//         hb_vmSend( 0 );
          hb_retni( TGrid_Notify_CustomDraw( pSelf, lParam ) );
          break;
 

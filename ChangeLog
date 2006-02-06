@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.86 2006-02-04 03:56:33 declan2005 Exp $
+ * $Id: ChangeLog,v 1.87 2006-02-06 00:29:00 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,13 +7,19 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2006-02-05 18:19 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+  * source/h_browse.prg
+    * Commented the ::AdjustRightScroll() call in NM_CUSTOMDRAW event.
+  - samples/oohg/pirntest.prg
+    * Removed unnecesary file.
+
 2006-02-03 22:53 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source/h_print.prg
-     * added new parameter for direct printing in selprinter() 
+     * added new parameter for direct printing in selprinter()
 
 2006-02-03 14:41 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source/h_print.prg
-     * added hide printing window at selprinter() 
+     * added hide printing window at selprinter()
      * fixed hello sample problem, because bad program pirntest.prg instead of printtest.prg
 
 2006-02-02 23:11 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
