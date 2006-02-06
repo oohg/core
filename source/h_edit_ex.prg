@@ -1,5 +1,5 @@
 /*
- * $Id: h_edit_ex.prg,v 1.11 2006-02-06 17:03:34 declan2005 Exp $
+ * $Id: h_edit_ex.prg,v 1.12 2006-02-06 18:27:31 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -1555,6 +1555,12 @@ function ABM2Borrar()
                    ABM2Redibuja( .t. )
                 else
                    Msgstop( _OOHG_Messages( 11, 41 ), _cTitulo )
+                 wndabm2edit.tbbNuevo.enabled:=.t.
+                  wndabm2edit.tbbEditar.enabled:=.t.
+                   wndabm2edit.tbbBorrar.enabled:=.t.
+                    wndabm2edit.tbbBuscar.enabled:=.t.
+                     wndabm2edit.tbbListado.enabled:=.t.
+
                 endif
         endif
 
@@ -1922,10 +1928,22 @@ static function ABM2ControlFiltro()
 ///////// Comprueba que se puede crear el control.-----------------------------
         if _aEstructura[nControl,DBS_TYPE] == "M"
                 msgExclamation( _OOHG_Messages( 11, 35 ), _cTitulo )
+         wndabm2edit.tbbNuevo.enabled:=.t.
+          wndabm2edit.tbbEditar.enabled:=.t.
+           wndabm2edit.tbbBorrar.enabled:=.t.
+            wndabm2edit.tbbBuscar.enabled:=.t.
+             wndabm2edit.tbbListado.enabled:=.t.
+                    
                 return NIL
         endif
         if nControl == 0
                 msgExclamation( _OOHG_Messages( 11, 36 ), _cTitulo )
+         wndabm2edit.tbbNuevo.enabled:=.t.
+          wndabm2edit.tbbEditar.enabled:=.t.
+           wndabm2edit.tbbBorrar.enabled:=.t.
+            wndabm2edit.tbbBuscar.enabled:=.t.
+             wndabm2edit.tbbListado.enabled:=.t.
+
                 return NIL
         endif
 
@@ -2050,18 +2068,42 @@ static function ABM2EstableceFiltro()
 ////////// Comprueba que se puede filtrar.-------------------------------------
         if nCompara == 0
                 msgExclamation( _OOHG_Messages( 11, 37 ), _cTitulo )
+         wndabm2edit.tbbNuevo.enabled:=.t.
+          wndabm2edit.tbbEditar.enabled:=.t.
+           wndabm2edit.tbbBorrar.enabled:=.t.
+            wndabm2edit.tbbBuscar.enabled:=.t.
+             wndabm2edit.tbbListado.enabled:=.t.
+
                 return NIL
         endif
         if nCampo == 0
                 msgExclamation( _OOHG_Messages( 11, 36 ), _cTitulo )
+         wndabm2edit.tbbNuevo.enabled:=.t.
+          wndabm2edit.tbbEditar.enabled:=.t.
+           wndabm2edit.tbbBorrar.enabled:=.t.
+            wndabm2edit.tbbBuscar.enabled:=.t.
+             wndabm2edit.tbbListado.enabled:=.t.
+
                 return NIL
         endif
         if cValor == ""
                 msgExclamation( _OOHG_Messages( 11, 38 ), _cTitulo )
+         wndabm2edit.tbbNuevo.enabled:=.t.
+          wndabm2edit.tbbEditar.enabled:=.t.
+           wndabm2edit.tbbBorrar.enabled:=.t.
+            wndabm2edit.tbbBuscar.enabled:=.t.
+             wndabm2edit.tbbListado.enabled:=.t.
+
                 return NIL
         endif
         if _aEstructura[nCampo,DBS_TYPE] == "M"
                 msgExclamation( _OOHG_Messages( 11, 35 ), _cTitulo )
+         wndabm2edit.tbbNuevo.enabled:=.t.
+          wndabm2edit.tbbEditar.enabled:=.t.
+           wndabm2edit.tbbBorrar.enabled:=.t.
+            wndabm2edit.tbbBuscar.enabled:=.t.
+             wndabm2edit.tbbListado.enabled:=.t.
+
                 return NIL
         endif
 
@@ -2113,6 +2155,12 @@ static function ABM2DesactivarFiltro()
         if !_lFiltro
                 msgExclamation( _OOHG_Messages( 11, 39 ), _cTitulo )
                 ABM2Redibuja( .f. )
+                 wndabm2edit.tbbNuevo.enabled:=.t.
+                  wndabm2edit.tbbEditar.enabled:=.t.
+                   wndabm2edit.tbbBorrar.enabled:=.t.
+                    wndabm2edit.tbbBuscar.enabled:=.t.
+                     wndabm2edit.tbbListado.enabled:=.t.
+
                 return NIL
         endif
         if msgYesNo( _OOHG_Messages( 11, 40 ), _cTitulo )
@@ -2120,6 +2168,12 @@ static function ABM2DesactivarFiltro()
                 _lFiltro := .f.
                 _cFiltro := ""
                 ABM2Redibuja( .t. )
+                 wndabm2edit.tbbNuevo.enabled:=.t.
+                  wndabm2edit.tbbEditar.enabled:=.t.
+                   wndabm2edit.tbbBorrar.enabled:=.t.
+                    wndabm2edit.tbbBuscar.enabled:=.t.
+                     wndabm2edit.tbbListado.enabled:=.t.
+
         endif
 
 return NIL
@@ -2158,6 +2212,12 @@ static function ABM2Imprimir()
                 // msgInfo( "ON PRINT" )
                 Eval( _bImprimir )
                 ABM2Redibuja( .T. )
+                 wndabm2edit.tbbNuevo.enabled:=.t.
+                  wndabm2edit.tbbEditar.enabled:=.t.
+                   wndabm2edit.tbbBorrar.enabled:=.t.
+                    wndabm2edit.tbbBuscar.enabled:=.t.
+                     wndabm2edit.tbbListado.enabled:=.t.
+
                 RETURN NIL
         ENDIF
 
@@ -2174,6 +2234,12 @@ static function ABM2Imprimir()
 ////////// Comprueba que hay un indice activo.---------------------------------
         if _nIndiceActivo == 1
                 msgExclamation( _OOHG_Messages( 11, 9 ), _cTitulo )
+         wndabm2edit.tbbNuevo.enabled:=.t.
+          wndabm2edit.tbbEditar.enabled:=.t.
+           wndabm2edit.tbbBorrar.enabled:=.t.
+            wndabm2edit.tbbBuscar.enabled:=.t.
+             wndabm2edit.tbbListado.enabled:=.t.
+
                 return NIL
         endif
 
@@ -2474,6 +2540,12 @@ static function ABM2DefinirColumnas( nAccion )
                         // Actualiza los datos de los campos de la base.
                         if Len( aCampoBase ) == 0
                                 msgExclamation( _OOHG_Messages( 11, 23 ), _cTitulo )
+         wndabm2edit.tbbNuevo.enabled:=.t.
+          wndabm2edit.tbbEditar.enabled:=.t.
+           wndabm2edit.tbbBorrar.enabled:=.t.
+            wndabm2edit.tbbBuscar.enabled:=.t.
+             wndabm2edit.tbbListado.enabled:=.t.
+
                                 return NIL
                         else
                                 wndABM2Listado.lbxCampoBase.DeleteAllItems
@@ -2489,6 +2561,12 @@ static function ABM2DefinirColumnas( nAccion )
                         // Actualiza los datos de los campos del listado.
                         if Empty( cValor )
                                 msgExclamation( _OOHG_Messages( 11, 23 ), _cTitulo )
+         wndabm2edit.tbbNuevo.enabled:=.t.
+          wndabm2edit.tbbEditar.enabled:=.t.
+           wndabm2edit.tbbBorrar.enabled:=.t.
+            wndabm2edit.tbbBuscar.enabled:=.t.
+             wndabm2edit.tbbListado.enabled:=.t.
+
                                 return NIL
                         else
                                 wndABM2Listado.lbxCampoListado.AddItem( cValor )
@@ -2504,6 +2582,12 @@ static function ABM2DefinirColumnas( nAccion )
                         // Actualiza los datos de los campos del listado.
                         if Len( aCampoListado ) == 0
                                 msgExclamation( _OOHG_Messages( 11, 23 ), _cTitulo )
+         wndabm2edit.tbbNuevo.enabled:=.t.
+          wndabm2edit.tbbEditar.enabled:=.t.
+           wndabm2edit.tbbBorrar.enabled:=.t.
+            wndabm2edit.tbbBuscar.enabled:=.t.
+             wndabm2edit.tbbListado.enabled:=.t.
+
                                 return NIL
                         else
                                 wndABM2Listado.lbxCampoListado.DeleteAllItems
@@ -2520,6 +2604,12 @@ static function ABM2DefinirColumnas( nAccion )
                         // Actualiza los datos de los campos de la base.
                         if Empty( cValor )
                                 msgExclamation( _OOHG_Messages( 11, 23 ), _cTitulo )
+         wndabm2edit.tbbNuevo.enabled:=.t.
+          wndabm2edit.tbbEditar.enabled:=.t.
+           wndabm2edit.tbbBorrar.enabled:=.t.
+            wndabm2edit.tbbBuscar.enabled:=.t.
+             wndabm2edit.tbbListado.enabled:=.t.
+
                                 return NIL
                         else
                                 wndABM2Listado.lbxCampoBase.DeleteAllItems
