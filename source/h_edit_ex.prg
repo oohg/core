@@ -1,5 +1,5 @@
 /*
- * $Id: h_edit_ex.prg,v 1.8 2006-01-24 00:22:08 declan2005 Exp $
+ * $Id: h_edit_ex.prg,v 1.9 2006-02-06 16:25:40 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -1005,6 +1005,12 @@ static function ABM2Editar( lNuevo )
         local cMascara       as array           // Máscara de edición de los controles numéricos.
 	local NANCHOCONTROL
 
+        wndabm2edit.tbbNuevo.enabled:=.F.
+        wndabm2edit.tbbEditar.enabled:=.F.
+        wndabm2edit.tbbBorrar.enabled:=.F.
+        wndabm2edit.tbbBuscar.enabled:=.F.
+        wndabm2edit.tbbListado.enabled:=.F.
+
 ////////// Control de parámetros.----------------------------------------------
         if ( ValType( lNuevo ) != "L" )
                 lNuevo := .t.
@@ -1214,6 +1220,11 @@ abackpadre:=oVentanapadre:backcolor
 
 ////////// Activa la ventana de edición de registro.---------------------------
         activate window wndABM2EditNuevo
+        wndabm2edit.tbbNuevo.enabled:=.t.
+        wndabm2edit.tbbEditar.enabled:=.t.
+        wndabm2edit.tbbBorrar.enabled:=.t.
+        wndabm2edit.tbbBuscar.enabled:=.t.
+        wndabm2edit.tbbListado.enabled:=.t.
 
 return NIL
 
@@ -1569,6 +1580,13 @@ static function ABM2Buscar()
         local lResultado as logical             // Resultado de la busqueda.
         local nRegistro  as numeric             // Numero de registro.
 
+
+                 wndabm2edit.tbbNuevo.enabled:=.F.
+                  wndabm2edit.tbbEditar.enabled:=.F.
+                   wndabm2edit.tbbBorrar.enabled:=.F.
+                    wndabm2edit.tbbBuscar.enabled:=.F.
+                     wndabm2edit.tbbListado.enabled:=.F.
+
 ////////// Inicialización de variables.----------------------------------------
         nControl := _aIndiceCampo[_nIndiceActivo]
 
@@ -1720,6 +1738,12 @@ abackpadre:=oVentanapadre:backcolor
                 endif
         endif
 
+         wndabm2edit.tbbNuevo.enabled:=.t.
+          wndabm2edit.tbbEditar.enabled:=.t.
+           wndabm2edit.tbbBorrar.enabled:=.t.
+            wndabm2edit.tbbBuscar.enabled:=.t.
+             wndabm2edit.tbbListado.enabled:=.t.
+
 return NIL
 
 
@@ -1737,6 +1761,13 @@ static function ABM2ActivarFiltro()
 ////////// Declaración de variables locales.-----------------------------------
         local aCompara   as array               // Comparaciones.
         local aCampos    as array               // Nombre de los campos.
+
+
+         wndabm2edit.tbbNuevo.enabled:=.F.
+          wndabm2edit.tbbEditar.enabled:=.F.
+           wndabm2edit.tbbBorrar.enabled:=.F.
+            wndabm2edit.tbbBuscar.enabled:=.F.
+             wndabm2edit.tbbListado.enabled:=.F.
 
 ////////// Comprueba que no hay ningun filtro activo.--------------------------
         if _cFiltro != ""
@@ -1842,6 +1873,12 @@ abackpadre:=oVentanapadre:backcolor
         center window wndABM2Filtro
         activate window wndABM2Filtro
 
+
+         wndabm2edit.tbbNuevo.enabled:=.t.
+          wndabm2edit.tbbEditar.enabled:=.t.
+           wndabm2edit.tbbBorrar.enabled:=.t.
+            wndabm2edit.tbbBuscar.enabled:=.t.
+             wndabm2edit.tbbListado.enabled:=.t.
 
 return NIL
 
@@ -2092,6 +2129,12 @@ static function ABM2Imprimir()
 	local NIMPLEN
         private hbprn
 
+         wndabm2edit.tbbNuevo.enabled:=.F.
+          wndabm2edit.tbbEditar.enabled:=.F.
+           wndabm2edit.tbbBorrar.enabled:=.F.
+            wndabm2edit.tbbBuscar.enabled:=.F.
+             wndabm2edit.tbbListado.enabled:=.F.
+
 ////////// Comprueba si se ha pasado la clausula ON PRINT.---------------------
         IF _bImprimir != NIL
                 // msgInfo( "ON PRINT" )
@@ -2318,6 +2361,12 @@ abackpadre:=oVentanapadre:backcolor
         (_cArea)->( dbGoTo( nRegistro ) )
         ABM2Redibuja( .f. )
 
+
+         wndabm2edit.tbbNuevo.enabled:=.t.
+          wndabm2edit.tbbEditar.enabled:=.t.
+           wndabm2edit.tbbBorrar.enabled:=.t.
+            wndabm2edit.tbbBuscar.enabled:=.t.
+             wndabm2edit.tbbListado.enabled:=.t.
 return NIL
 
 
