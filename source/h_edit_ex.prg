@@ -1,5 +1,5 @@
 /*
- * $Id: h_edit_ex.prg,v 1.9 2006-02-06 16:25:40 declan2005 Exp $
+ * $Id: h_edit_ex.prg,v 1.10 2006-02-06 16:55:05 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -1595,18 +1595,36 @@ static function ABM2Buscar()
                 // msgInfo( "ON FIND" )
                 Eval( _bBuscar )
                 ABM2Redibuja( .t. )
+                 wndabm2edit.tbbNuevo.enabled:=.t.
+                  wndabm2edit.tbbEditar.enabled:=.t.
+                   wndabm2edit.tbbBorrar.enabled:=.t.
+                    wndabm2edit.tbbBuscar.enabled:=.t.
+                     wndabm2edit.tbbListado.enabled:=.t.
+
                 return NIL
         endif
 
 ////////// Comprueba si hay un indice activo.----------------------------------
         if _nIndiceActivo == 1
                 msgExclamation( _OOHG_Messages( 11, 9 ), _cTitulo )
+                 wndabm2edit.tbbNuevo.enabled:=.t.
+                  wndabm2edit.tbbEditar.enabled:=.t.
+                   wndabm2edit.tbbBorrar.enabled:=.t.
+                    wndabm2edit.tbbBuscar.enabled:=.t.
+                     wndabm2edit.tbbListado.enabled:=.t.
+
                 return NIL
         endif
 
 ////////// Comprueba que el campo indice no es del tipo memo o logico.---------
         if _aEstructura[nControl,DBS_TYPE] == "L" .or. _aEstructura[nControl,DBS_TYPE] == "M"
                 msgExclamation( _OOHG_Messages( 11, 10 ), _cTitulo )
+                 wndabm2edit.tbbNuevo.enabled:=.t.
+                  wndabm2edit.tbbEditar.enabled:=.t.
+                   wndabm2edit.tbbBorrar.enabled:=.t.
+                    wndabm2edit.tbbBuscar.enabled:=.t.
+                     wndabm2edit.tbbListado.enabled:=.t.
+
                 return nil
         endif
 
