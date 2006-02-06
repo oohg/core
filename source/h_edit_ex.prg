@@ -1,5 +1,5 @@
 /*
- * $Id: h_edit_ex.prg,v 1.10 2006-02-06 16:55:05 declan2005 Exp $
+ * $Id: h_edit_ex.prg,v 1.11 2006-02-06 17:03:34 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -2600,6 +2600,12 @@ static function ABM2Listado( aImpresoras )
         next
         if Len( aCampo ) == 0
                 msgExclamation( _OOHG_messages(6,23), _cTitulo )
+        wndabm2edit.tbbNuevo.enabled:=.t.
+        wndabm2edit.tbbEditar.enabled:=.t.
+        wndabm2edit.tbbBorrar.enabled:=.t.
+        wndabm2edit.tbbBuscar.enabled:=.t.
+        wndabm2edit.tbbListado.enabled:=.t.
+
                 return NIL
         endif
 
@@ -2636,6 +2642,12 @@ static function ABM2Listado( aImpresoras )
         next
         if nAncho > 164
                 MsgExclamation( _OOHG_messages(6,24), _cTitulo )
+        wndabm2edit.tbbNuevo.enabled:=.t.
+        wndabm2edit.tbbEditar.enabled:=.t.
+        wndabm2edit.tbbBorrar.enabled:=.t.
+        wndabm2edit.tbbBuscar.enabled:=.t.
+        wndabm2edit.tbbListado.enabled:=.t.
+
                 return NIL
         else
                 if nAncho > 109                 // Horizontal.
@@ -2696,6 +2708,12 @@ oprint:selprinter(.T. , .T.  )  /// select,preview,landscape,papersize
 //oprint:selprinter(.T. , .F.  )  /// select,preview,landscape,papersize
 if oprint:lprerror
    oprint:release()
+        wndabm2edit.tbbNuevo.enabled:=.t.
+        wndabm2edit.tbbEditar.enabled:=.t.
+        wndabm2edit.tbbBorrar.enabled:=.t.
+        wndabm2edit.tbbBuscar.enabled:=.t.
+        wndabm2edit.tbbListado.enabled:=.t.
+
    return nil
 endif
 
@@ -2818,6 +2836,11 @@ oprint:release()
 ////////// Cierra la ventana.--------------------------------------------------
         (_cArea)->( dbGoTo( nRegistro ) )
         wndABM2Listado.Release
+        wndabm2edit.tbbNuevo.enabled:=.t.
+        wndabm2edit.tbbEditar.enabled:=.t.
+        wndabm2edit.tbbBorrar.enabled:=.t.
+        wndabm2edit.tbbBuscar.enabled:=.t.
+        wndabm2edit.tbbListado.enabled:=.t.
 
 return NIL
 
