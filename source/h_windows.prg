@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.57 2006-02-10 06:35:45 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.58 2006-02-10 15:19:21 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1645,7 +1645,7 @@ Return lRetVal
 HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TForm
 // -----------------------------------------------------------------------------
 {
-   static PHB_DYNS s_Events2 = 0;
+   static PHB_SYMB s_Events2 = 0;
 
    HWND hWnd      = ( HWND )   hb_parnl( 1 );
    UINT message   = ( UINT )   hb_parni( 2 );
@@ -1712,9 +1712,9 @@ HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
       default:
          if( ! s_Events2 )
          {
-            s_Events2 = hb_dynsymFind( "_OOHG_TFORM_EVENTS2" );
+            s_Events2 = hb_dynsymSymbol( hb_dynsymFind( "_OOHG_TFORM_EVENTS2" ) );
          }
-         hb_vmPushSymbol( s_Events2->pSymbol );
+         hb_vmPushSymbol( s_Events2 );
          hb_vmPushNil();
          hb_vmPush( pSelf );
          hb_vmPushLong( ( LONG ) hWnd );

@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.30 2006-02-10 06:35:45 guerra000 Exp $
+ * $Id: c_windows.c,v 1.31 2006-02-10 15:19:21 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -131,12 +131,12 @@ BOOL Array2Rect(PHB_ITEM aRect, RECT *rc ) ;
 static void ChangeNotifyIcon( HWND hWnd, HICON hIcon, LPSTR szText );
 static void ShowNotifyIcon( HWND hWnd, BOOL bAdd, HICON hIcon, LPSTR szText );
 
-static PHB_DYNS _ooHG_Symbol_TForm = 0;
+static PHB_SYMB _ooHG_Symbol_TForm = 0;
 static PHB_ITEM _OOHG_aFormhWnd, _OOHG_aFormObjects;
 
 HB_FUNC( _OOHG_INIT_C_VARS_C_SIDE )
 {
-   _ooHG_Symbol_TForm  = hb_dynsymFind( "TFORM" );
+   _ooHG_Symbol_TForm = hb_dynsymSymbol( hb_dynsymFind( "TFORM" ) );
    _OOHG_aFormhWnd    = hb_itemNew( NULL );
    _OOHG_aFormObjects = hb_itemNew( NULL );
    hb_itemCopy( _OOHG_aFormhWnd,    hb_param( 1, HB_IT_ARRAY ) );
@@ -150,7 +150,7 @@ PHB_ITEM GetFormObjectByHandle( LONG hWnd )
 
    if( ! _ooHG_Symbol_TForm )
    {
-      hb_vmPushSymbol( hb_dynsymFind( "_OOHG_INIT_C_VARS" )->pSymbol );
+      hb_vmPushSymbol( hb_dynsymSymbol( hb_dynsymFind( "_OOHG_INIT_C_VARS" ) ) );
       hb_vmPushNil();
       hb_vmDo( 0 );
    }
@@ -166,7 +166,7 @@ PHB_ITEM GetFormObjectByHandle( LONG hWnd )
    }
    if( ! pForm )
    {
-      hb_vmPushSymbol( _ooHG_Symbol_TForm->pSymbol );
+      hb_vmPushSymbol( _ooHG_Symbol_TForm );
       hb_vmPushNil();
       hb_vmDo( 0 );
       pForm = hb_param( -1, HB_IT_ANY );

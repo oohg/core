@@ -1,5 +1,5 @@
 /*
- * $Id: c_controlmisc.c,v 1.22 2006-02-10 06:35:45 guerra000 Exp $
+ * $Id: c_controlmisc.c,v 1.23 2006-02-10 15:19:21 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -116,7 +116,7 @@
 #include "tchar.h"
 #include "../include/oohg.h"
 
-PHB_DYNS *s_Symbols = NULL;
+PHB_SYMB *s_Symbols = NULL;
 
 char *s_SymbolNames[] = { "EVENTS_NOTIFY",
                           "GRIDFORECOLOR",
@@ -164,16 +164,16 @@ void _OOHG_Send( PHB_ITEM pSelf, int iSymbol )
 {
    if( ! s_Symbols )
    {
-      s_Symbols = hb_xgrab( sizeof( PHB_DYNS ) * s_LastSymbol );
-      memset( s_Symbols, 0, sizeof( PHB_DYNS ) * s_LastSymbol );
+      s_Symbols = hb_xgrab( sizeof( PHB_SYMB ) * s_LastSymbol );
+      memset( s_Symbols, 0, sizeof( PHB_SYMB ) * s_LastSymbol );
    }
 
    if( ! s_Symbols[ iSymbol ] )
    {
-      s_Symbols[ iSymbol ] = hb_dynsymFind( s_SymbolNames[ iSymbol ] );
+      s_Symbols[ iSymbol ] = hb_dynsymSymbol( hb_dynsymFind( s_SymbolNames[ iSymbol ] ) );
    }
 
-   hb_vmPushSymbol( s_Symbols[ iSymbol ]->pSymbol );
+   hb_vmPushSymbol( s_Symbols[ iSymbol ] );
    hb_vmPush( pSelf );
 }
 
@@ -804,12 +804,12 @@ HB_FUNC( GETKEYFLAGSTATE )
    hb_retni( GetKeyFlagState() );
 }
 
-static PHB_DYNS _ooHG_Symbol_TControl = 0;
+static PHB_SYMB _ooHG_Symbol_TControl = 0;
 static PHB_ITEM _OOHG_aControlhWnd, _OOHG_aControlObjects, _OOHG_aControlIds;
 
 HB_FUNC( _OOHG_INIT_C_VARS_CONTROLS_C_SIDE )
 {
-   _ooHG_Symbol_TControl = hb_dynsymFind( "TCONTROL" );
+   _ooHG_Symbol_TControl = hb_dynsymSymbol( hb_dynsymFind( "TCONTROL" ) );
    _OOHG_aControlhWnd    = hb_itemNew( NULL );
    _OOHG_aControlObjects = hb_itemNew( NULL );
    _OOHG_aControlIds     = hb_itemNew( NULL );
@@ -825,7 +825,7 @@ PHB_ITEM GetControlObjectByHandle( LONG hWnd )
 
    if( ! _ooHG_Symbol_TControl )
    {
-      hb_vmPushSymbol( hb_dynsymFind( "_OOHG_INIT_C_VARS_CONTROLS" )->pSymbol );
+      hb_vmPushSymbol( hb_dynsymSymbol( hb_dynsymFind( "_OOHG_INIT_C_VARS_CONTROLS" ) ) );
       hb_vmPushNil();
       hb_vmDo( 0 );
    }
@@ -841,7 +841,7 @@ PHB_ITEM GetControlObjectByHandle( LONG hWnd )
    }
    if( ! pControl )
    {
-      hb_vmPushSymbol( _ooHG_Symbol_TControl->pSymbol );
+      hb_vmPushSymbol( _ooHG_Symbol_TControl );
       hb_vmPushNil();
       hb_vmDo( 0 );
       pControl = hb_param( -1, HB_IT_ANY );
@@ -868,7 +868,7 @@ PHB_ITEM GetControlObjectById( LONG lId, LONG hWnd )
 
    if( ! _ooHG_Symbol_TControl )
    {
-      hb_vmPushSymbol( hb_dynsymFind( "_OOHG_INIT_C_VARS_CONTROLS" )->pSymbol );
+      hb_vmPushSymbol( hb_dynsymSymbol( hb_dynsymFind( "_OOHG_INIT_C_VARS_CONTROLS" ) ) );
       hb_vmPushNil();
       hb_vmDo( 0 );
    }
@@ -888,7 +888,7 @@ PHB_ITEM GetControlObjectById( LONG lId, LONG hWnd )
    }
    if( ! pControl )
    {
-      hb_vmPushSymbol( _ooHG_Symbol_TControl->pSymbol );
+      hb_vmPushSymbol( _ooHG_Symbol_TControl );
       hb_vmPushNil();
       hb_vmDo( 0 );
       pControl = hb_param( -1, HB_IT_ANY );
