@@ -1,5 +1,5 @@
 /*
- * $Id: c_grid.c,v 1.13 2005-11-25 05:38:41 guerra000 Exp $
+ * $Id: c_grid.c,v 1.14 2006-02-10 06:35:45 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -191,9 +191,9 @@ HB_FUNC( INITLISTVIEWCOLUMNS )
    iColumn = 0;
    for( s = 0; s <= iLen; s++ )
    {
-      COL.fmt = hb_itemGetNI( jArray->item.asArray.value->pItems + s );
-      COL.cx = hb_itemGetNI( wArray->item.asArray.value->pItems + s );
-      COL.pszText = hb_itemGetCPtr( hArray->item.asArray.value->pItems + s );
+      COL.fmt = hb_arrayGetNI( jArray, s + 1 );
+      COL.cx = hb_arrayGetNI( wArray, s + 1 );
+      COL.pszText = hb_arrayGetCPtr( hArray, s + 1 );
       COL.iSubItem = iColumn;
       ListView_InsertColumn( hc, iColumn, &COL );
       if( iColumn == 0 && COL.fmt != LVCFMT_LEFT )
@@ -217,8 +217,7 @@ static void _OOHG_ListView_FillItem( HWND hWnd, int nItem, PHB_ITEM pItems )
    ULONG s, ulLen;
    struct IMAGE_PARAMETER pStruct;
 
-   ulLen = pItems->item.asArray.value->ulLen;
-   pItems = pItems->item.asArray.value->pItems;
+   ulLen = hb_arrayLen( pItems );
 
    for( s = 0; s < ulLen; s++ )
    {
@@ -227,11 +226,10 @@ static void _OOHG_ListView_FillItem( HWND hWnd, int nItem, PHB_ITEM pItems )
       LI.stateMask = 0;
       LI.iItem = nItem;
       LI.iSubItem = s;
-      ImageFillParameter( &pStruct, pItems );
+      ImageFillParameter( &pStruct, hb_arrayGetItemPtr( pItems, s + 1 ) );
       LI.pszText = pStruct.cString;
       LI.iImage = pStruct.iImage1;
       ListView_SetItem( hWnd, &LI );
-      pItems++;
    }
 }
 
@@ -240,11 +238,10 @@ HB_FUNC( ADDLISTVIEWITEMS )
    PHB_ITEM hArray;
    LV_ITEM LI;
    HWND h;
-   int l;
    int c;
 
    hArray = hb_param( 2, HB_IT_ARRAY );
-   if( ! hArray || hArray->item.asArray.value->ulLen == 0 )
+   if( ! hArray || hb_arrayLen( hArray ) == 0 )
    {
       return;
    }
@@ -340,9 +337,9 @@ HB_FUNC ( LISTVIEWSETMULTISEL )
 
 	// SET NEW SELECTIONS
 
-	for ( i=0 ; i <= l ; i++ )
+    for( i = 0; i <= l; i++ )
 	{
-		ListView_SetItemState( (HWND) hb_parnl (1), hb_itemGetNI ( wArray->item.asArray.value->pItems + i ) - 1  ,LVIS_FOCUSED | LVIS_SELECTED , LVIS_FOCUSED | LVIS_SELECTED ) ;
+        ListView_SetItemState( ( HWND ) hb_parnl( 1 ), hb_arrayGetNI( wArray, i + 1 ) - 1, LVIS_FOCUSED | LVIS_SELECTED, LVIS_FOCUSED | LVIS_SELECTED );
 	}
 
 }
@@ -562,7 +559,7 @@ HB_FUNC( _OOHG_GRIDARRAYWIDTHS )
 
    if( pArray )
    {
-      for( iCount = 0; iCount < pArray->item.asArray.value->ulLen; iCount++ )
+      for( iCount = 0; iCount < hb_arrayLen( pArray ); iCount++ )
       {
          iSize = ListView_GetColumnWidth( hWnd, iCount );
          iSum += iSize;
@@ -632,7 +629,6 @@ HB_FUNC( GETGRIDVKEY )
 static int TGrid_Notify_CustomDraw_GetColor( PHB_ITEM pSelf, unsigned int x, unsigned int y, int sGridColor, int sObjColor, int iDefaultColor )
 {
    PHB_ITEM pColor;
-   HB_ITEM pRet;
    LONG iColor;
 
    _OOHG_Send( pSelf, sGridColor );
@@ -640,11 +636,11 @@ static int TGrid_Notify_CustomDraw_GetColor( PHB_ITEM pSelf, unsigned int x, uns
 
    pColor = hb_param( -1, HB_IT_ARRAY );
    if( pColor &&                                                 // ValType( aColor ) == "A"
-       pColor->item.asArray.value->ulLen >= y &&                       // Len( aColor ) >= y
-       HB_IS_ARRAY( &pColor->item.asArray.value->pItems[ y - 1 ] ) &&   // ValType( aColor[ y ] ) == "A"
-       pColor->item.asArray.value->pItems[ y - 1 ].item.asArray.value->ulLen >= x )   // Len( aColor[ y ] ) >= x
+       hb_arrayLen( pColor ) >= y &&                       // Len( aColor ) >= y
+       HB_IS_ARRAY( hb_arrayGetItemPtr( pColor, y ) ) &&   // ValType( aColor[ y ] ) == "A"
+       hb_arrayLen( hb_arrayGetItemPtr( pColor, y ) ) >= x )   // Len( aColor[ y ] ) >= x
    {
-      pColor = &pColor->item.asArray.value->pItems[ y - 1 ].item.asArray.value->pItems[ x - 1 ];
+      pColor = hb_arrayGetItemPtr( hb_arrayGetItemPtr( pColor, y ), x );
    }
    else
    {
@@ -681,7 +677,7 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam )
    {
       return CDRF_NOTIFYSUBITEMDRAW;
    }
-   else if( ! ( lplvcd->nmcd.dwDrawStage == CDDS_SUBITEM | CDDS_ITEMPREPAINT ) )
+   else if( ! ( lplvcd->nmcd.dwDrawStage == ( CDDS_SUBITEM | CDDS_ITEMPREPAINT ) ) )
    {
       return CDRF_DODEFAULT;
    }
@@ -705,7 +701,7 @@ HB_FUNC( FILLGRIDFROMARRAY )
    HWND hWnd = ( HWND ) hb_parnl( 1 );
    ULONG iCount = ListView_GetItemCount( hWnd );
    PHB_ITEM pScreen = hb_param( 2, HB_IT_ARRAY );
-   ULONG iLen = pScreen->item.asArray.value->ulLen;
+   ULONG iLen = hb_arrayLen( pScreen );
    LV_ITEM LI;
 
    while( iCount > iLen )
@@ -726,10 +722,8 @@ HB_FUNC( FILLGRIDFROMARRAY )
       iCount++;
    }
 
-   pScreen = pScreen->item.asArray.value->pItems;
-   for( iCount = 0; iCount < iLen; iCount++ )
+   for( iCount = 1; iCount <= iLen; iCount++ )
    {
-      _OOHG_ListView_FillItem( hWnd, iCount, pScreen );
-      pScreen++;
+      _OOHG_ListView_FillItem( hWnd, iCount, hb_arrayGetItemPtr( pScreen, iCount ) );
    }
 }

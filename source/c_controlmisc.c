@@ -1,5 +1,5 @@
 /*
- * $Id: c_controlmisc.c,v 1.21 2006-01-17 03:04:47 guerra000 Exp $
+ * $Id: c_controlmisc.c,v 1.22 2006-02-10 06:35:45 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -196,12 +196,12 @@ POCTRL _OOHG_GetControlInfo( PHB_ITEM pSelf )
       hb_vmSend( 1 );
    }
 
-   if( pArray->item.asArray.value->ulLen < 1 )
+   if( hb_arrayLen( pArray ) < 1 )
    {
       hb_arraySize( pArray, 1 );
    }
 
-   if( ! HB_IS_STRING( pArray->item.asArray.value->pItems ) || pArray->item.asArray.value->pItems->item.asString.length < _OOHG_Struct_Size )
+   if( ! HB_IS_STRING( hb_arrayGetItemPtr( pArray, 1 ) ) || hb_arrayGetCLen( pArray, 1 ) < _OOHG_Struct_Size )
    {
       pString = hb_xgrab( _OOHG_Struct_Size );
 
@@ -210,15 +210,15 @@ POCTRL _OOHG_GetControlInfo( PHB_ITEM pSelf )
       ( ( POCTRL ) pString )->lFontColor = -1;
       ( ( POCTRL ) pString )->lBackColor = -1;
 
-      if( HB_IS_STRING( pArray->item.asArray.value->pItems ) && pArray->item.asArray.value->pItems->item.asString.value && pArray->item.asArray.value->pItems->item.asString.length )
+      if( HB_IS_STRING( hb_arrayGetItemPtr( pArray, 1 ) ) && hb_arrayGetCLen( pArray, 1 ) )
       {
-         memcpy( pString, pArray->item.asArray.value->pItems->item.asString.value, pArray->item.asArray.value->pItems->item.asString.length );
+         memcpy( pString, hb_arrayGetCPtr( pArray, 1 ), hb_arrayGetCLen( pArray, 1 ) );
       }
-      hb_itemPutCL( pArray->item.asArray.value->pItems, pString, _OOHG_Struct_Size );
+      hb_itemPutCL( hb_arrayGetItemPtr( pArray, 1 ), pString, _OOHG_Struct_Size );
       hb_xfree( pString );
    }
 
-   pString = pArray->item.asArray.value->pItems->item.asString.value;
+   pString = hb_arrayGetCPtr( pArray, 1 );
 
    if( bRelease )
    {
@@ -254,22 +254,20 @@ BOOL _OOHG_DetermineColor( PHB_ITEM pColor, LONG *lColor )
          *lColor = hb_itemGetNL( pColor );
          bValid = 1;
       }
-      else if( HB_IS_ARRAY( pColor ) && pColor->item.asArray.value->ulLen >= 3 &&
-               HB_IS_NUMERIC( &pColor->item.asArray.value->pItems[ 0 ] ) &&
-               HB_IS_NUMERIC( &pColor->item.asArray.value->pItems[ 1 ] ) &&
-               HB_IS_NUMERIC( &pColor->item.asArray.value->pItems[ 2 ] ) &&
-               hb_itemGetNL( &pColor->item.asArray.value->pItems[ 0 ] ) != -1 )
+      else if( HB_IS_ARRAY( pColor ) && hb_arrayLen( pColor ) >= 3 &&
+               HB_IS_NUMERIC( hb_arrayGetItemPtr( pColor, 1 ) ) &&
+               HB_IS_NUMERIC( hb_arrayGetItemPtr( pColor, 2 ) ) &&
+               HB_IS_NUMERIC( hb_arrayGetItemPtr( pColor, 3 ) ) &&
+               hb_arrayGetNL( pColor, 1 ) != -1 )
       {
-         *lColor = RGB( hb_itemGetNL( &pColor->item.asArray.value->pItems[ 0 ] ),
-                        hb_itemGetNL( &pColor->item.asArray.value->pItems[ 1 ] ),
-                        hb_itemGetNL( &pColor->item.asArray.value->pItems[ 2 ] ) );
+         *lColor = RGB( hb_arrayGetNL( pColor, 1 ), hb_arrayGetNL( pColor, 2 ), hb_arrayGetNL( pColor, 3 ) );
          bValid = 1;
       }
-      else if( HB_IS_STRING( pColor ) && pColor->item.asString.length >= 3 )
+      else if( HB_IS_STRING( pColor ) && hb_itemGetCLen( pColor ) >= 3 )
       {
-         *lColor = RGB( pColor->item.asString.value[ 0 ],
-                        pColor->item.asString.value[ 1 ],
-                        pColor->item.asString.value[ 2 ] );
+         *lColor = RGB( hb_itemGetCPtr( pColor )[ 0 ],
+                        hb_itemGetCPtr( pColor )[ 1 ],
+                        hb_itemGetCPtr( pColor )[ 2 ] );
          bValid = 1;
       }
 
@@ -283,22 +281,16 @@ HB_FUNC ( DELETEOBJECT )
    hb_retl ( DeleteObject( (HGDIOBJ) hb_parnl( 1 ) ) ) ;
 }
 
-HB_FUNC ( CSHOWCONTROL )
+HB_FUNC( CSHOWCONTROL )
 {
-
-	HWND hwnd;
-
-	hwnd = (HWND) hb_parnl (1);
-
-	ShowWindow(hwnd, SW_SHOW);
-
-	return ;
+   ShowWindow( ( HWND ) hb_parnl( 1 ), SW_SHOW );
 }
 
 HB_FUNC( INITTOOLTIP )
 {
 
-	HWND htooltip;
+   HWND htooltip;
+
         int Style = TTS_ALWAYSTIP;
 
         if ( hb_parl(2) )
@@ -679,20 +671,19 @@ HB_FUNC( IMAGELIST_INIT )
    if( iLen != 0 )
    {
       iStyle = hb_parni( 3 );
-      iLen--;
-      caption = hb_itemGetCPtr( hArray->item.asArray.value->pItems );
+      caption = hb_arrayGetCPtr( hArray, 1 );
 
-      himl = ImageList_LoadImage( GetModuleHandle( NULL ), caption, 0, iLen, hb_parni( 2 ), IMAGE_BITMAP, iStyle );
+      himl = ImageList_LoadImage( GetModuleHandle( NULL ), caption, 0, iLen + 1 , hb_parni( 2 ), IMAGE_BITMAP, iStyle );
       if ( himl == NULL )
       {
-         himl = ImageList_LoadImage( GetModuleHandle( NULL ), caption, 0, iLen, hb_parni( 2 ), IMAGE_BITMAP, iStyle | LR_LOADFROMFILE );
+         himl = ImageList_LoadImage( GetModuleHandle( NULL ), caption, 0, iLen + 1, hb_parni( 2 ), IMAGE_BITMAP, iStyle | LR_LOADFROMFILE );
       }
 
       ImageList_GetIconSize( himl, &cx, &cy );
 
-      for( s = 1; s <= iLen; s++ )
+      for( s = 2; s <= iLen; s++ )
       {
-         caption = hb_itemGetCPtr( hArray->item.asArray.value->pItems + s );
+         caption = hb_arrayGetCPtr( hArray, s );
 
          hbmp = ( HBITMAP ) LoadImage( GetModuleHandle( NULL ), caption, IMAGE_BITMAP, cx, cy, iStyle );
          if( hbmp == NULL )
@@ -772,15 +763,15 @@ void ImageFillParameter( struct IMAGE_PARAMETER *pResult, PHB_ITEM pString )
       pResult->iImage1 = ( hb_itemGetL( pString ) ? 1 : 0 );
       pResult->iImage2 = pResult->iImage1;
    }
-   else if( pString && HB_IS_ARRAY( pString ) && pString->item.asArray.value->ulLen > 0 )
+   else if( pString && HB_IS_ARRAY( pString ) && hb_arrayLen( pString ) > 0 )
    {
-      pResult->cString = hb_itemGetC( pString->item.asArray.value->pItems );
-      if( pString->item.asArray.value->ulLen > 1 && HB_IS_NUMERIC( &pString->item.asArray.value->pItems[ 1 ] ) )
+      pResult->cString = hb_arrayGetC( pString, 1 );
+      if( hb_arrayLen( pString ) > 1 && HB_IS_NUMERIC( hb_arrayGetItemPtr( pString, 2 ) ) )
       {
-         pResult->iImage1 = hb_itemGetNI( &pString->item.asArray.value->pItems[ 1 ] );
-         if( pString->item.asArray.value->ulLen > 2 && HB_IS_NUMERIC( &pString->item.asArray.value->pItems[ 2 ] ) )
+         pResult->iImage1 = hb_arrayGetNI( pString, 2 );
+         if( hb_arrayLen( pString ) > 2 && HB_IS_NUMERIC( hb_arrayGetItemPtr( pString, 3 ) ) )
          {
-            pResult->iImage2 = hb_itemGetNI( &pString->item.asArray.value->pItems[ 2 ] );
+            pResult->iImage2 = hb_arrayGetNI( pString, 3 );
          }
          else
          {
@@ -814,14 +805,17 @@ HB_FUNC( GETKEYFLAGSTATE )
 }
 
 static PHB_DYNS _ooHG_Symbol_TControl = 0;
-static HB_ITEM  _OOHG_aControlhWnd, _OOHG_aControlObjects, _OOHG_aControlIds;
+static PHB_ITEM _OOHG_aControlhWnd, _OOHG_aControlObjects, _OOHG_aControlIds;
 
 HB_FUNC( _OOHG_INIT_C_VARS_CONTROLS_C_SIDE )
 {
    _ooHG_Symbol_TControl = hb_dynsymFind( "TCONTROL" );
-   memcpy( &_OOHG_aControlhWnd,    hb_param( 1, HB_IT_ARRAY ), sizeof( HB_ITEM ) );
-   memcpy( &_OOHG_aControlObjects, hb_param( 2, HB_IT_ARRAY ), sizeof( HB_ITEM ) );
-   memcpy( &_OOHG_aControlIds,     hb_param( 3, HB_IT_ARRAY ), sizeof( HB_ITEM ) );
+   _OOHG_aControlhWnd    = hb_itemNew( NULL );
+   _OOHG_aControlObjects = hb_itemNew( NULL );
+   _OOHG_aControlIds     = hb_itemNew( NULL );
+   hb_itemCopy( _OOHG_aControlhWnd,    hb_param( 1, HB_IT_ARRAY ) );
+   hb_itemCopy( _OOHG_aControlObjects, hb_param( 2, HB_IT_ARRAY ) );
+   hb_itemCopy( _OOHG_aControlIds,     hb_param( 3, HB_IT_ARRAY ) );
 }
 
 PHB_ITEM GetControlObjectByHandle( LONG hWnd )
@@ -837,12 +831,12 @@ PHB_ITEM GetControlObjectByHandle( LONG hWnd )
    }
 
    pControl = 0;
-   for( ulCount = 0; ulCount < _OOHG_aControlhWnd.item.asArray.value->ulLen; ulCount++ )
+   for( ulCount = 1; ulCount <= hb_arrayLen( _OOHG_aControlhWnd ); ulCount++ )
    {
-      if( hWnd == hb_itemGetNL( &_OOHG_aControlhWnd.item.asArray.value->pItems[ ulCount ] ) )
+      if( hWnd == hb_arrayGetNL( _OOHG_aControlhWnd, ulCount ) )
       {
-         pControl = &_OOHG_aControlObjects.item.asArray.value->pItems[ ulCount ];
-         ulCount = _OOHG_aControlhWnd.item.asArray.value->ulLen;
+         pControl = hb_arrayGetItemPtr( _OOHG_aControlObjects, ulCount );
+         ulCount = hb_arrayLen( _OOHG_aControlhWnd );
       }
    }
    if( ! pControl )
@@ -858,13 +852,13 @@ PHB_ITEM GetControlObjectByHandle( LONG hWnd )
 
 HB_FUNC( GETCONTROLOBJECTBYHANDLE )
 {
-   HB_ITEM pReturn;
+   PHB_ITEM pReturn;
 
-   pReturn.type = HB_IT_NIL;
-   hb_itemCopy( &pReturn, GetControlObjectByHandle( hb_parnl( 1 ) ) );
+   pReturn = hb_itemNew( NULL );
+   hb_itemCopy( pReturn, GetControlObjectByHandle( hb_parnl( 1 ) ) );
 
-   hb_itemReturn( &pReturn );
-   hb_itemClear( &pReturn );
+   hb_itemReturn( pReturn );
+   hb_itemRelease( pReturn );
 }
 
 PHB_ITEM GetControlObjectById( LONG lId, LONG hWnd )
@@ -882,13 +876,13 @@ PHB_ITEM GetControlObjectById( LONG lId, LONG hWnd )
    pControl = NULL;
    if( lId )
    {
-      for( ulCount = 0; ulCount < _OOHG_aControlIds.item.asArray.value->ulLen; ulCount++ )
+      for( ulCount = 1; ulCount <= hb_arrayLen( _OOHG_aControlIds ); ulCount++ )
       {
-         if( lId  == hb_itemGetNL( &_OOHG_aControlIds.item.asArray.value->pItems[ ulCount ].item.asArray.value->pItems[ 0 ] ) &&
-             hWnd == hb_itemGetNL( &_OOHG_aControlIds.item.asArray.value->pItems[ ulCount ].item.asArray.value->pItems[ 1 ] ) )
+         if( lId  == hb_arrayGetNL( hb_arrayGetItemPtr( _OOHG_aControlIds, ulCount ), 1 ) &&
+             hWnd == hb_arrayGetNL( hb_arrayGetItemPtr( _OOHG_aControlIds, ulCount ), 2 ) )
          {
-            pControl = &_OOHG_aControlObjects.item.asArray.value->pItems[ ulCount ];
-            ulCount = _OOHG_aControlIds.item.asArray.value->ulLen;
+            pControl = hb_arrayGetItemPtr( _OOHG_aControlObjects, ulCount );
+            ulCount = hb_arrayLen( _OOHG_aControlIds );
          }
       }
    }
@@ -905,13 +899,13 @@ PHB_ITEM GetControlObjectById( LONG lId, LONG hWnd )
 
 HB_FUNC( GETCONTROLOBJECTBYID )
 {
-   HB_ITEM pReturn;
+   PHB_ITEM pReturn;
 
-   pReturn.type = HB_IT_NIL;
-   hb_itemCopy( &pReturn, GetControlObjectById( hb_parnl( 1 ), hb_parnl( 2 ) ) );
+   pReturn = hb_itemNew( NULL );
+   hb_itemCopy( pReturn, GetControlObjectById( hb_parnl( 1 ), hb_parnl( 2 ) ) );
 
-   hb_itemReturn( &pReturn );
-   hb_itemClear( &pReturn );
+   hb_itemReturn( pReturn );
+   hb_itemRelease( pReturn );
 }
 
 HB_FUNC( GETCLIPBOARDTEXT )

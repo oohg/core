@@ -1,5 +1,5 @@
 /*
- * $Id: c_tab.c,v 1.2 2005-08-17 05:56:13 guerra000 Exp $
+ * $Id: c_tab.c,v 1.3 2006-02-10 06:35:45 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -112,7 +112,6 @@ HB_FUNC( INITTABCONTROL )
 	HWND hwnd;
 	HWND hbutton;
 	TC_ITEM tie;
-	int l;
 	int i;
 
 	int Style = WS_CHILD | WS_VISIBLE ;
@@ -142,7 +141,6 @@ HB_FUNC( INITTABCONTROL )
 		Style = Style | WS_TABSTOP ;
 	}
 
-	l = hb_parinfa( 7, 0 ) - 1 ;
 	hArray = hb_param( 7, HB_IT_ARRAY );
 
 	hwnd = (HWND) hb_parnl (1);
@@ -155,17 +153,15 @@ HB_FUNC( INITTABCONTROL )
 	tie.mask = TCIF_TEXT ;
 	tie.iImage = -1;
 
-	for (i = l ; i>=0 ; i=i-1 )
-		{
+   for( i = hb_parinfa( 7, 0 ); i > 0; i-- )
+   {
+      tie.pszText = hb_arrayGetCPtr( hArray, i );
+      TabCtrl_InsertItem( hbutton, 0, &tie );
+   }
 
-		tie.pszText = hb_itemGetCPtr ( hArray->item.asArray.value->pItems + i );
+   TabCtrl_SetCurSel( hbutton, hb_parni( 8 ) - 1 );
 
-		TabCtrl_InsertItem(hbutton, 0, &tie);
-		}
-
-	TabCtrl_SetCurSel( hbutton , hb_parni(8) - 1 );
-
-	hb_retnl ( (LONG) hbutton );
+   hb_retnl( ( LONG ) hbutton );
 }
 
 HB_FUNC (TABCTRL_SETCURSEL)

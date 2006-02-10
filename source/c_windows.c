@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.29 2006-01-17 03:04:47 guerra000 Exp $
+ * $Id: c_windows.c,v 1.30 2006-02-10 06:35:45 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -132,13 +132,15 @@ static void ChangeNotifyIcon( HWND hWnd, HICON hIcon, LPSTR szText );
 static void ShowNotifyIcon( HWND hWnd, BOOL bAdd, HICON hIcon, LPSTR szText );
 
 static PHB_DYNS _ooHG_Symbol_TForm = 0;
-static HB_ITEM  _OOHG_aFormhWnd, _OOHG_aFormObjects;
+static PHB_ITEM _OOHG_aFormhWnd, _OOHG_aFormObjects;
 
 HB_FUNC( _OOHG_INIT_C_VARS_C_SIDE )
 {
    _ooHG_Symbol_TForm  = hb_dynsymFind( "TFORM" );
-   memcpy( &_OOHG_aFormhWnd,    hb_param( 1, HB_IT_ARRAY ), sizeof( HB_ITEM ) );
-   memcpy( &_OOHG_aFormObjects, hb_param( 2, HB_IT_ARRAY ), sizeof( HB_ITEM ) );
+   _OOHG_aFormhWnd    = hb_itemNew( NULL );
+   _OOHG_aFormObjects = hb_itemNew( NULL );
+   hb_itemCopy( _OOHG_aFormhWnd,    hb_param( 1, HB_IT_ARRAY ) );
+   hb_itemCopy( _OOHG_aFormObjects, hb_param( 2, HB_IT_ARRAY ) );
 }
 
 PHB_ITEM GetFormObjectByHandle( LONG hWnd )
@@ -154,12 +156,12 @@ PHB_ITEM GetFormObjectByHandle( LONG hWnd )
    }
 
    pForm = 0;
-   for( ulCount = 0; ulCount < _OOHG_aFormhWnd.item.asArray.value->ulLen; ulCount++ )
+   for( ulCount = 1; ulCount <= hb_arrayLen( _OOHG_aFormhWnd ); ulCount++ )
    {
-      if( hWnd == hb_itemGetNL( &_OOHG_aFormhWnd.item.asArray.value->pItems[ ulCount ] ) )
+      if( hWnd == hb_arrayGetNL( _OOHG_aFormhWnd, ulCount ) )
       {
-         pForm = &_OOHG_aFormObjects.item.asArray.value->pItems[ ulCount ];
-         ulCount = _OOHG_aFormhWnd.item.asArray.value->ulLen;
+         pForm = hb_arrayGetItemPtr( _OOHG_aFormObjects, ulCount );
+         ulCount = hb_arrayLen( _OOHG_aFormhWnd );
       }
    }
    if( ! pForm )
@@ -175,13 +177,13 @@ PHB_ITEM GetFormObjectByHandle( LONG hWnd )
 
 HB_FUNC( GETFORMOBJECTBYHANDLE )
 {
-   HB_ITEM pReturn;
+   PHB_ITEM pReturn;
 
-   pReturn.type = HB_IT_NIL;
-   hb_itemCopy( &pReturn, GetFormObjectByHandle( hb_parnl( 1 ) ) );
+   pReturn = hb_itemNew( NULL );
+   hb_itemCopy( pReturn, GetFormObjectByHandle( hb_parnl( 1 ) ) );
 
-   hb_itemReturn( &pReturn );
-   hb_itemClear( &pReturn );
+   hb_itemReturn( pReturn );
+   hb_itemRelease( pReturn );
 }
 
 LRESULT APIENTRY _OOHG_WndProc( PHB_ITEM pSelf, HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM lParam, WNDPROC lpfnOldWndProc )
@@ -1123,7 +1125,7 @@ HB_FUNC( SETGRIDQUERYDATA )
 	PHB_ITEM pValue = hb_itemNew( NULL );
 	LV_DISPINFO* pDispInfo = (LV_DISPINFO*)hb_parnl(1);
 	hb_itemCopy( pValue, hb_param( 2, HB_IT_STRING ));
-	pDispInfo->item.pszText = pValue->item.asString.value;
+    pDispInfo->item.pszText = hb_itemGetCPtr( pValue );
 
 }
 
@@ -1209,7 +1211,7 @@ HB_FUNC( WNDCOPY  )  //  hWnd        Copies any Window to the Clipboard!
    HDC  hMemDC;
    RECT rct;
    HBITMAP hBitmap, hOldBmp;
-   HPALETTE  hPal;
+   HPALETTE  hPal = NULL;
    LPSTR myFile =  hb_parc( 3 ) ;
    HANDLE hDIB;
    if( bAll )

@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.56 2006-02-07 16:31:56 declan2005 Exp $
+ * $Id: h_windows.prg,v 1.57 2006-02-10 06:35:45 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -125,8 +125,7 @@ STATIC _OOHG_HotKeys := {}           // Application-wide hot keys
 #include "../include/oohg.h"
 
 int _OOHG_ShowContextMenus = 1;
-PHB_ITEM _OOHG_LastSelf = 0;
-HB_ITEM _OOHG_LastSelf_ITEM;
+PHB_ITEM _OOHG_LastSelf = NULL;
 
 #pragma ENDDUMP
 
@@ -262,10 +261,9 @@ HB_FUNC_STATIC( TWINDOW_STARTINFO )
    // HACK! Latest created control... Needed for WM_MEASUREITEM :(
    if( ! _OOHG_LastSelf )
    {
-      _OOHG_LastSelf_ITEM.type = HB_IT_NIL;
-      _OOHG_LastSelf = &_OOHG_LastSelf_ITEM;
+      _OOHG_LastSelf = hb_itemNew( NULL );
    }
-   hb_itemCopy( &_OOHG_LastSelf_ITEM, pSelf );
+   hb_itemCopy( _OOHG_LastSelf, pSelf );
 }
 
 HB_FUNC_STATIC( TWINDOW_SETFOCUS )
@@ -465,7 +463,7 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )
          }
          else
          {
-            _OOHG_Send( &_OOHG_LastSelf_ITEM, s_Events_MeasureItem );
+            _OOHG_Send( _OOHG_LastSelf, s_Events_MeasureItem );
          }
          hb_vmPushLong( lParam );
          hb_vmSend( 1 );
@@ -599,7 +597,7 @@ Local myobject, cWork
    WNDCOPY( ::hWnd, .F., cWork ) //// save as BMP
 
    myobject:= Tprint()
-   myobject:init()  
+   myobject:init()
    myobject:selprinter(.T. , .T. , .T.  )  /// select,preview,landscape
    if myobject:lprerror
       myobject:release()
@@ -2751,7 +2749,7 @@ Function InputBox ( cInputPrompt , cDialogCaption , cDefaultValue , nTimeout , c
 		WIDTH 350 			;
 		HEIGHT 115 + mo	+ GetTitleHeight() ;
 		TITLE cDialogCaption  		;
-		MODAL 				;              
+		MODAL 				;
 		NOSIZE 				;
                 BACKCOLOR abackpadre            ;
 		FONT 'Arial'			;

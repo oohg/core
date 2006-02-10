@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.42 2006-02-07 16:31:56 declan2005 Exp $
+ * $Id: h_controlmisc.prg,v 1.43 2006-02-10 06:35:45 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -2072,8 +2072,9 @@ HB_FUNC_STATIC( TCONTROL_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam
             if( hb_param( -1, HB_IT_OBJECT ) )
             {
                HWND hParent;
-               HB_ITEM pContext;
-               memcpy( &pContext, hb_param( -1, HB_IT_OBJECT ), sizeof( HB_ITEM ) );
+               PHB_ITEM pContext;
+               pContext = hb_itemNew( NULL );
+               hb_itemCopy( pContext, hb_param( -1, HB_IT_OBJECT ) );
                _OOHG_Send( pSelf, s_Parent );
                hb_vmSend( 0 );
                _OOHG_Send( hb_param( -1, HB_IT_OBJECT ), s_hWnd );
@@ -2093,10 +2094,11 @@ HB_FUNC_STATIC( TCONTROL_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam
                iCol = LOWORD( lParam ) - hb_parni( -1 );
 */
                // HMENU
-               _OOHG_Send( &pContext, s_hWnd );
+               _OOHG_Send( pContext, s_hWnd );
                hb_vmSend( 0 );
                TrackPopupMenu( ( HMENU ) hb_parnl( -1 ), 0, ( int ) LOWORD( lParam ), ( int ) HIWORD( lParam ), 0, hParent, 0 );
                PostMessage( hParent, WM_NULL, 0, 0 );
+               hb_itemRelease( pContext );
                hb_ret();
             }
             else

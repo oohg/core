@@ -1,5 +1,5 @@
 /*
- * $Id: c_listbox.c,v 1.3 2005-11-25 05:38:41 guerra000 Exp $
+ * $Id: c_listbox.c,v 1.4 2006-02-10 06:35:45 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -246,7 +246,7 @@ HB_FUNC ( LISTBOXSETMULTISEL )
 
 	wArray = hb_param( 2, HB_IT_ARRAY );
 
-	l = hb_parinfa( 2, 0 ) - 1 ;
+    l = hb_parinfa( 2, 0 );
 
 	n = SendMessage( hwnd , LB_GETCOUNT , 0 , 0 );
 
@@ -257,12 +257,12 @@ HB_FUNC ( LISTBOXSETMULTISEL )
 		SendMessage(hwnd, LB_SETSEL, (WPARAM)(0), (LPARAM) i );
 	}
 
-	// SET NEW SELECTIONS
+   // SET NEW SELECTIONS
 
-	for ( i=0 ; i <= l ; i++ )
-	{
-		SendMessage(hwnd, LB_SETSEL, (WPARAM)(1), (LPARAM) ( hb_itemGetNI ( wArray->item.asArray.value->pItems + i ) ) - 1 );
-	}
+   for( i = 1; i <= l ; i++ )
+   {
+      SendMessage( hwnd, LB_SETSEL, ( WPARAM ) 1, ( LPARAM ) ( hb_arrayGetNI( wArray, i ) ) - 1 );
+   }
 
 }
 

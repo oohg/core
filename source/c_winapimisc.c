@@ -1,5 +1,5 @@
 /*
- * $Id: c_winapimisc.c,v 1.1 2005-08-07 00:05:14 guerra000 Exp $
+ * $Id: c_winapimisc.c,v 1.2 2006-02-10 06:35:45 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -120,7 +120,6 @@ HB_FUNC(WAITRUNPIPE )
 
       STARTUPINFO StartupInfo = {0};
       PROCESS_INFORMATION ProcessInfo = {0};
-      DWORD dwExitCode;
       HANDLE ReadPipeHandle;
       HANDLE WritePipeHandle;       // not used here
       char Data[1024];
@@ -145,7 +144,7 @@ HB_FUNC(WAITRUNPIPE )
       ProcessInfo.hProcess=INVALID_HANDLE_VALUE;
       ProcessInfo.hThread=INVALID_HANDLE_VALUE;
       StartupInfo.dwFlags = STARTF_USESHOWWINDOW |STARTF_USESTDHANDLES;
-      StartupInfo.wShowWindow = hb_parni( 2 );
+      StartupInfo.wShowWindow = ( SHORT ) hb_parni( 2 );
       StartupInfo.hStdOutput=WritePipeHandle;
       StartupInfo.hStdError=WritePipeHandle;
 
@@ -405,7 +404,7 @@ HB_FUNC( WAITRUN )
 
 	stInfo.dwFlags=STARTF_USESHOWWINDOW;
 
-	stInfo.wShowWindow=hb_parni(2);
+    stInfo.wShowWindow= ( SHORT ) hb_parni(2);
 
 	bResult = CreateProcess(NULL,
 		hb_parc(1) ,
@@ -436,8 +435,10 @@ HB_FUNC( CREATEMUTEX )
 {
    SECURITY_ATTRIBUTES *sa;
 
-   if (ISCHAR(2))
-       sa = (SECURITY_ATTRIBUTES *) hb_param(1, HB_IT_STRING)->item.asString.value;
+   if( ISCHAR( 2 ) )
+   {
+      sa = ( SECURITY_ATTRIBUTES * ) hb_itemGetCPtr( hb_param( 1, HB_IT_STRING ) );
+   }
 
    hb_retnl( (ULONG) CreateMutex( ISNIL( 1 ) ? NULL : sa,
                                   hb_parnl( 2 )         ,
