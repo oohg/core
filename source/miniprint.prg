@@ -1,5 +1,5 @@
 /*
- * $Id: miniprint.prg,v 1.6 2006-01-30 04:59:13 declan2005 Exp $
+ * $Id: miniprint.prg,v 1.7 2006-02-10 03:25:42 declan2005 Exp $
  */
 /*----------------------------------------------------------------------------
  MINIGUI - Harbour Win32 GUI library source code
@@ -1236,8 +1236,17 @@ Return
 *------------------------------------------------------------------------------*
 Function GetPrinter()
 *------------------------------------------------------------------------------*
-	Local RetVal := ''
-	Local Printers := aPrinters()
+        Local RetVal := '',I,nvalue
+        Local Printers := asort(aPrinters())
+        Local cdefault:= getdefaultprinter()
+        for i:=1 to len(printers)
+            if printers[i]==cdefault
+               nvalue:=i
+               exit
+            endif
+        next i
+
+        
 
         _HMG_printer_InitUserMessages()
 
@@ -1249,7 +1258,7 @@ Function GetPrinter()
 		MODAL			;
 		NOSIZE
 
-		@ 15,10 COMBOBOX Combo_1 ITEMS Printers VALUE 1 WIDTH 270
+                @ 15,10 COMBOBOX Combo_1 ITEMS Printers VALUE nvalue WIDTH 270
 
                 @ 53,40  BUTTON Ok CAPTION _HMG_printer_usermessages [11] ACTION ( RetVal := Printers [ GetProperty ( '_HMG_PRINTER_GETPRINTER','Combo_1','Value') ] , DoMethod('_HMG_PRINTER_GETPRINTER','Release' ) )
                 @ 53,150 BUTTON Cancel CAPTION _HMG_printer_usermessages [12] ACTION ( RetVal := '' ,DoMethod('_HMG_PRINTER_GETPRINTER','Release' ) )
