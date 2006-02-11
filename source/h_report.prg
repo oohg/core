@@ -1,5 +1,5 @@
 /*
- * $Id: h_report.prg,v 1.11 2006-01-23 01:15:46 guerra000 Exp $
+ * $Id: h_report.prg,v 1.12 2006-02-11 23:34:24 declan2005 Exp $
  */
 /*
  * DO REPORT Command support procedures For MiniGUI Library.
@@ -53,6 +53,7 @@ MEMVAR AHEADERS2
 MEMVAR CTITLE
 MEMVAR CGRAPHIC
 MEMVAR WFIELD
+MEMVAR WFIELDA
 MEMVAR WFIELD1
 MEMVAR ATOTALS
 MEMVAR AFORMATS
@@ -179,8 +180,8 @@ ENDCLASS
 
 
 METHOD easyreport1(ctitle,aheaders1,aheaders2,afields,awidths,atotals,nlpp,ldos,lpreview,cgraphic,nfi,nci,nff,ncf,lmul,cgrpby,chdrgrp,llandscape,ncpl,lselect,calias,nllmargin,aformats,npapersize,cheader) CLASS _OOHG_REPORT
-local nlin,i,ncol,aresul,lmode,swt:=0,grpby,k,ncvcopt
-private  wfield
+local nlin,i,ncol,aresul,lmode,swt:=0,grpby,k,ncvcopt,swmemo
+private  wfield,wfielda
 if nllmargin = NIL
    repobject:nlmargin:=0
 else
@@ -321,38 +322,43 @@ do while .not. eof()
 **********
    ncol:=0+repobject:nlmargin
    for i:=1 to len(afields)
-       wfield:=afields[i]
-       if at('(',wfield)>0 .and. at(')',wfield)>0
-          wfield:=&wfield
+       wfielda:=afields[i]
+       wfield:=&(wfielda)
+       swmemo=.F.
+       if type('&wfielda')=='M'
+          swmemo=.T.          
        endif
-
+////////////       msgbox(type("&wfield")+"====="+type("&wfielda"))
             do case
-               case type('&wfield')=='C'
-                oprintr:printdata(nlin,ncol,substr(&wfield,1,awidths[i]),,  )
-               case type('&wfield')=='N'
-                oprintr:printdata(nlin,ncol, iif(.not.(aformats[i]==''),transform(&wfield,aformats[i]),str(&wfield,awidths[i])),,  )
-               case type('&wfield')=='D'
-               oprintr:printdata(nlin,ncol, substr(dtoc(&wfield),1,awidths[i]),, )
-               case type('&wfield')=='L'
-               oprintr:printdata(nlin,ncol, iif(&wfield,'T','F'),,  )
-               case type('&wfield')=='M'
-                 for k:=1 to mlcount(&wfield,awidths[i])
-                        oprintr:printdata(nlin,ncol, justificalinea(memoline(&wfield,awidths[i] ,k),awidths[i]),,  )
-                     nlin++
-   		if nlin>nlpp
+               case type('&wfielda')=='N'
+                oprintr:printdata(nlin,ncol, iif(.not.(aformats[i]==''),transform(wfield,aformats[i]),str(wfield,awidths[i])),,  )
+               case type('&wfielda')=='D'
+               oprintr:printdata(nlin,ncol, substr(dtoc(wfield),1,awidths[i]),, )
+               case type('&wfielda')=='L'
+               oprintr:printdata(nlin,ncol, wfield,,  )
+               case type('&wfielda')=='C' .or. type('&wfielda')=='M' //// ojo no quitar la a
+               if swmemo    //// pregunta si es memo o caracter
+                  for k:=1 to mlcount(rtrim(wfield),awidths[i])
+                       oprintr:printdata(nlin,ncol,justificalinea(memoline(rtrim(wfield),awidths[i] ,k),awidths[i]) ,,,  )
+                       nlin++
+                       if nlin>nlpp
 			   nlin:=1
                            oprintr:endpage()
                            oprintr:beginpage()
-		      if cgraphic<>NIL .and. lmul
-		         if .not. File(cgraphic)
+		           if cgraphic<>NIL .and. lmul
+                              if .not. File(cgraphic)
 			         msgstop('graphic file not found','error')
-			 else
-                                oprintr:printimage(nfi,nci+repobject:nlmargin,nff,repobject:nfc,cgraphic )
-			 endif
-		   endif
-			nlin:=repobject:headers(aheaders1,aheaders2,awidths,nlin,ctitle,lmode,grpby,chdrgrp,cheader)
-		endif
-                 next k
+                              else
+                                 oprintr:printimage(nfi,nci+repobject:nlmargin,nff,repobject:nfc,cgraphic )
+                              endif
+		           endif
+			   nlin:=repobject:headers(aheaders1,aheaders2,awidths,nlin,ctitle,lmode,grpby,chdrgrp,cheader)
+                      endif
+                  next k
+                  nlin--
+               else
+                  oprintr:printdata(nlin,ncol,substr(wfield,1,awidths[i]),,  )
+               endif
                otherwise
                 oprintr:printdata(nlin,ncol,replicate('_',awidths[i]),,   )
             endcase
@@ -361,10 +367,10 @@ do while .not. eof()
        ncol:=ncol+awidths[i]+1
        if atotals[i]
 
-          aresul[i]:=aresul[i]+&wfield
+          aresul[i]:=aresul[i]+wfield
           swt:=1
           if grpby<>NIL
-             repobject:angrpby[i]:=repobject:angrpby[i]+&wfield
+             repobject:angrpby[i]:=repobject:angrpby[i]+wfield
           endif
        endif
 next i
@@ -489,7 +495,7 @@ nlin++
 
 ncol:=repobject:nlmargin
 for i:=1 to len(awidths)
-    oprintr:printdata(nlin,ncol, substr(aheaders1[i],1,awidths[i]),,  )
+    oprintr:printdata(nlin,ncol, substr(aheaders1[i],1,awidths[i]),, ,.T.  )
     ncol=ncol+awidths[i]+1
 next i
 nlin++
