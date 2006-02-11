@@ -1,5 +1,5 @@
 /*
- * $Id: i_report.ch,v 1.3 2005-10-22 06:04:31 guerra000 Exp $
+ * $Id: i_report.ch,v 1.4 2006-02-11 17:04:54 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -93,7 +93,9 @@ easyreport  ( <ctitle> ,		 	;
                 <npapersize> )
 
 
-#xcommand DO REPORT FORM <cfilerep> => extreport(<(cfilerep)>)
+
+#xcommand DO REPORT FORM <cfilerep> [ HEADING <cheading> ] => extreport(<"cfilerep">,<cheading> )
+
 
 #ifndef DMPAPER_FIRST
 
