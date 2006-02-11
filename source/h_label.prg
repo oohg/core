@@ -1,5 +1,5 @@
 /*
- * $Id: h_label.prg,v 1.12 2006-01-29 01:44:16 guerra000 Exp $
+ * $Id: h_label.prg,v 1.13 2006-02-11 06:19:33 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -145,7 +145,7 @@ Local ControlHandle, nStyle, nStyleEx
 
    Controlhandle := InitLabel( ::ContainerhWnd, Caption, 0, x, y, w, h, '', 0, Nil , nStyle, nStyleEx, ::lRtl )
 
-   ::New( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
+   ::Register( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
    ::SizePos( y, x, w, h )
 

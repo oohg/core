@@ -1,5 +1,5 @@
 /*
- * $Id: h_status.prg,v 1.10 2005-11-09 05:56:43 guerra000 Exp $
+ * $Id: h_status.prg,v 1.11 2006-02-11 06:19:33 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -138,7 +138,7 @@ Local ControlHandle
 //   ControlHandle := InitMessageBar( ::Parent:hWnd, Caption, 0, 0, 0, w , h, '', 0, clock, date, kbd  )
    ControlHandle := InitMessageBar( ::Parent:hWnd, Caption, 0, lTop  )
 
-   ::New( ControlHandle, ControlName, , , ToolTip )
+   ::Register( ControlHandle, ControlName, , , ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
    ::SizePos( y, x, w, h )
 
@@ -341,7 +341,7 @@ Local i, styl, nKey, ControlHandle
       ControlHandle := InitItemBar ( ::Container:hWnd, Caption, 0, w, 1, Icon , ToolTip, styl )
 	EndIf
 
-   ::New( ControlHandle, ControlName, , , ToolTip )
+   ::Register( ControlHandle, ControlName, , , ToolTip )
    ::SizePos( y, x, w, h )
 
    ::OnClick := ProcedureName

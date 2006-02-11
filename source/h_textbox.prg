@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.23 2005-11-17 05:06:37 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.24 2006-02-11 06:19:33 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -104,6 +104,7 @@ CLASS TText FROM TLabel
    DATA nMaxLenght      INIT 0
    DATA lAutoSkip       INIT .F.
    DATA lSettingFocus   INIT .F.
+   DATA nOnFocusPos     INIT -2
 
    METHOD Define
    METHOD Define2
@@ -123,7 +124,7 @@ METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, cValue, ;
                lPassword, uLostFocus, uGotFocus, uChange, uEnter, right, ;
                HelpId, readonly, bold, italic, underline, strikeout, field, ;
                backcolor, fontcolor, invisible, notabstop, lRtl, lAutoSkip, ;
-               lNoBorder ) CLASS TText
+               lNoBorder, OnFocusPos ) CLASS TText
 *-----------------------------------------------------------------------------*
 Local nStyle := ES_AUTOHSCROLL, nStyleEx := 0
 
@@ -135,7 +136,7 @@ Local nStyle := ES_AUTOHSCROLL, nStyleEx := 0
               uLostFocus, uGotFocus, uChange, uEnter, right, HelpId, ;
               readonly, bold, italic, underline, strikeout, field, ;
               backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, ;
-              lAutoSkip, nStyleEx, lNoBorder )
+              lAutoSkip, nStyleEx, lNoBorder, OnFocusPos )
 
 Return Self
 
@@ -145,7 +146,7 @@ METHOD Define2( cControlName, cParentForm, nx, ny, nWidth, nHeight, cValue, ;
                 uLostFocus, uGotFocus, uChange, uEnter, right, HelpId, ;
                 readonly, bold, italic, underline, strikeout, field, ;
                 backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, ;
-                lAutoSkip, nStyleEx, lNoBorder ) CLASS TText
+                lAutoSkip, nStyleEx, lNoBorder, OnFocusPos ) CLASS TText
 *-----------------------------------------------------------------------------*
 Local nControlHandle
 local break
@@ -202,17 +203,9 @@ local break
 
 	endif
 
-   ::New( nControlHandle, cControlName, HelpId, ! Invisible, cToolTip )
+   ::Register( nControlHandle, cControlName, HelpId, ! Invisible, cToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
    ::SizePos( ny, nx, nWidth, nHeight )
-
-   ::OnLostFocus := uLostFocus
-   ::OnGotFocus :=  uGotFocus
-   ::OnChange   :=  uChange
-   ::OnDblClick := uEnter
-   If ValType( lAutoSkip ) == "L"
-      ::lAutoSkip := lAutoSkip
-   EndIf
 
    If ValType( Field ) $ 'CM' .AND. ! empty( Field )
       ::VarName := alltrim( Field )
@@ -222,6 +215,17 @@ local break
 	EndIf
 
    ::Value := cValue
+
+   ::OnLostFocus := uLostFocus
+   ::OnGotFocus :=  uGotFocus
+   ::OnChange   :=  uChange
+   ::OnDblClick := uEnter
+   If ValType( lAutoSkip ) == "L"
+      ::lAutoSkip := lAutoSkip
+   EndIf
+   If ValType( OnFocusPos ) == "N"
+      ::nOnFocusPos := OnFocusPos
+   EndIf
 
 return Self
 
@@ -248,9 +252,16 @@ Return ( ::Caption := IF( ValType( uValue ) $ "CM", RTrim( uValue ), NIL ) )
 *------------------------------------------------------------------------------*
 METHOD SetFocus() CLASS TText
 *------------------------------------------------------------------------------*
-Local uRet
+Local uRet, nLen
    uRet := ::Super:SetFocus()
-   SendMessage( ::hWnd, EM_SETSEL, 0 , -1 )
+   If ::nOnFocusPos == -2
+      SendMessage( ::hWnd, EM_SETSEL, 0, -1 )
+   ElseIf ::nOnFocusPos == -1
+      nLen := LEN( ::Caption )
+      SendMessage( ::hWnd, EM_SETSEL, nLen, nLen )
+   ElseIf ::nOnFocusPos >= 0
+      SendMessage( ::hWnd, EM_SETSEL, ::nOnFocusPos, ::nOnFocusPos )
+   EndIf
    ::lSettingFocus := .T.
 Return uRet
 
@@ -268,7 +279,7 @@ METHOD Events_Enter() CLASS TText
    ::lSettingFocus := .F.
    ::DoEvent( ::OnDblClick )
    If ! ::lSettingFocus
-      If _OOHG_ExtendedNavigation == .T.
+      If _OOHG_ExtendedNavigation
          _SetNextFocus()
       EndIf
    Else
@@ -302,6 +313,7 @@ Local Hi_wParam := HIWORD( wParam )
       Return nil
 
    elseif Hi_wParam == EN_SETFOCUS
+      ::SetFocus()
       ::DoEvent( ::OnGotFocus )
       Return nil
 
@@ -342,7 +354,7 @@ METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, uValue, ;
                cInputMask, cFontName, nFontSize, cToolTip, uLostFocus, ;
                uGotFocus, uChange, uEnter, right, HelpId, readonly, bold, ;
                italic, underline, strikeout, field, backcolor, fontcolor, ;
-               invisible, notabstop, lRtl, lAutoSkip, lNoBorder ) CLASS TTextPicture
+               invisible, notabstop, lRtl, lAutoSkip, lNoBorder, OnFocusPos ) CLASS TTextPicture
 *-----------------------------------------------------------------------------*
 Local nStyle := ES_AUTOHSCROLL, nStyleEx := 0
 
@@ -359,7 +371,7 @@ Local nStyle := ES_AUTOHSCROLL, nStyleEx := 0
               uLostFocus, uGotFocus, uChange, uEnter, right, HelpId, ;
               readonly, bold, italic, underline, strikeout, field, ;
               backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, ;
-              lAutoSkip, nStyleEx, lNoBorder )
+              lAutoSkip, nStyleEx, lNoBorder, OnFocusPos )
 
 Return Self
 
@@ -681,9 +693,9 @@ Local lChange := .F., nPos1, cMask
          cChar := Upper( cChar )
       ENDIF
       IF ( cMask $ "Nn"  .AND. ( IsAlpha( cChar ) .OR. IsDigit( cChar ) .OR. cChar $ " " )  ) .OR. ;
-         ( cMask $ "Aa"  .AND. ( IsAlpha( cChar ) .OR. cChar $ " " ) ) .OR. ;
-         ( cMask $ "#$*" .AND. ( IsDigit( cChar ) .OR. cChar $ "-" ) ) .OR. ;
-         ( cMask $ "9"   .AND. IsDigit( cChar ) ) .OR. ;
+         ( cMask $ "Aa"  .AND. ( IsAlpha( cChar ) .OR. cChar == " " ) ) .OR. ;
+         ( cMask $ "#$*" .AND. ( IsDigit( cChar ) .OR. cChar == "-" ) ) .OR. ;
+         ( cMask $ "9"   .AND. ( IsDigit( cChar ) .OR. ( cChar == "-" .AND. ::DataType == "N" ) ) ) .OR. ;
          ( cMask $ "Ll"  .AND. cChar $ ( "TFYN" + HB_LANGMESSAGE( HB_LANG_ITEM_BASE_TEXT + 1 ) + HB_LANGMESSAGE( HB_LANG_ITEM_BASE_TEXT + 2 ) ) ) .OR. ;
          ( cMask $ "Yy"  .AND. cChar $ ( "YN"   + HB_LANGMESSAGE( HB_LANG_ITEM_BASE_TEXT + 1 ) + HB_LANGMESSAGE( HB_LANG_ITEM_BASE_TEXT + 2 ) ) ) .OR. ;
            cMask $ "Xx!"
@@ -808,7 +820,6 @@ Local cPictureMask, aValidMask
       ::lFocused := .T.
       ::lSetting := .T.
       ::Caption := Transform( cText, ::PictureFun + ::PictureMask )
-      ::SetFocus()
 
    Endif
 
@@ -834,7 +845,7 @@ METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, cValue, ;
                lPassword, uLostFocus, uGotFocus, uChange , uEnter , right  , ;
                HelpId, readonly, bold, italic, underline, strikeout, field , ;
                backcolor , fontcolor , invisible , notabstop, lRtl, lAutoSkip, ;
-               lNoBorder ) CLASS TTextNum
+               lNoBorder, OnFocusPos ) CLASS TTextNum
 *-----------------------------------------------------------------------------*
 Local nStyle := ES_NUMBER + ES_AUTOHSCROLL, nStyleEx := 0
 
@@ -846,7 +857,7 @@ Local nStyle := ES_NUMBER + ES_AUTOHSCROLL, nStyleEx := 0
               uLostFocus, uGotFocus, uChange, uEnter, right, HelpId, ;
               readonly, bold, italic, underline, strikeout, field, ;
               backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, ;
-              lAutoSkip, nStyleEx, lNoBorder )
+              lAutoSkip, nStyleEx, lNoBorder, OnFocusPos )
 
 Return Self
 
@@ -909,7 +920,7 @@ METHOD Define( ControlName, ParentForm, x, y, inputmask, width, value, ;
                fontname, fontsize, tooltip, lostfocus, gotfocus, change, ;
                height, enter, rightalign, HelpId, Format, bold, italic, ;
                underline, strikeout, field, backcolor, fontcolor, readonly, ;
-               invisible, notabstop, lRtl, lAutoSkip, lNoBorder ) CLASS TTextMasked
+               invisible, notabstop, lRtl, lAutoSkip, lNoBorder, OnFocusPos ) CLASS TTextMasked
 *------------------------------------------------------------------------------*
 
    If ValType( Value ) == "U"
@@ -928,8 +939,6 @@ METHOD Define( ControlName, ParentForm, x, y, inputmask, width, value, ;
       inputmask := ""
    ENDIF
 
-   inputmask := StrTran( inputmask, "9", "#" )
-
 *         if c!='9' .and.  c!='$' .and. c!='*' .and. c!='.' .and. c!= ','  .and. c != ' ' .and. c!='€'
 *         MsgOOHGError("@...TEXTBOX: Wrong InputMask Definition" )
 *      EndIf
@@ -938,7 +947,7 @@ METHOD Define( ControlName, ParentForm, x, y, inputmask, width, value, ;
                Format + inputmask, fontname, fontsize, tooltip, lostfocus, ;
                gotfocus, change, enter, rightalign, HelpId, readonly, bold, ;
                italic, underline, strikeout, field, backcolor, fontcolor, ;
-               invisible, notabstop, lRtl, lAutoSkip, lNoBorder )
+               invisible, notabstop, lRtl, lAutoSkip, lNoBorder, OnFocusPos )
 
    If ::DataType == "N"
       ::PictureMask := StrTran( ::PictureMask, ",", "" )
@@ -967,7 +976,7 @@ METHOD Define( ControlName, ParentForm, x, y, inputmask, width, value, ;
                fontname, fontsize, tooltip, lostfocus, gotfocus, change, ;
                height, enter, rightalign, HelpId, bold, italic, underline, ;
                strikeout, field, backcolor, fontcolor, date, readonly, ;
-               invisible, notabstop, lRtl, lAutoSkip, lNoBorder ) CLASS TTextCharMask
+               invisible, notabstop, lRtl, lAutoSkip, lNoBorder, OnFocusPos ) CLASS TTextCharMask
 *------------------------------------------------------------------------------*
 
    IF ValType( date ) == "L" .AND. date
@@ -986,6 +995,6 @@ METHOD Define( ControlName, ParentForm, x, y, inputmask, width, value, ;
                inputmask, fontname, fontsize, tooltip, lostfocus, ;
                gotfocus, change, enter, rightalign, HelpId, readonly, bold, ;
                italic, underline, strikeout, field, backcolor, fontcolor, ;
-               invisible, notabstop, lRtl, lAutoSkip, lNoBorder )
+               invisible, notabstop, lRtl, lAutoSkip, lNoBorder, OnFocusPos )
 
 Return Self

@@ -1,11 +1,60 @@
 /*
- * $Id: ChangeLog,v 1.93 2006-02-10 15:19:20 guerra000 Exp $
+ * $Id: ChangeLog,v 1.94 2006-02-11 06:19:32 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-02-11 00:15 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_window.ch
+  * source/h_controlmisc.prg
+    + Added .Object property to semi-OOP syntax.
+  * source/h_browse.prg
+  * source/h_button.prg
+  * source/h_checkbox.prg
+  * source/h_combo.prg
+  * source/h_controlmisc.prg
+  * source/h_datepicker.prg
+  * source/h_frame.prg
+  * source/h_grid.prg
+  * source/h_image.prg
+  * source/h_ipaddress.prg
+  * source/h_label.prg
+  * source/h_listbox.prg
+  * source/h_media.prg
+  * source/h_menu.prg
+  * source/h_monthcal.prg
+  * source/h_progressbar.prg
+  * source/h_radio.prg
+  * source/h_richeditbox.prg
+  * source/h_scroll.prg
+  * source/h_slider.prg
+  * source/h_spinner.prg
+  * source/h_status.prg
+  * source/h_tab.prg
+  * source/h_textbox.prg
+  * source/h_timer.prg
+  * source/h_toolbar.prg
+  * source/h_tree.prg
+  * source/h_windows.prg
+    * Changed method's name ::New() to ::Register() in TControl's
+      subclasses.
+  * source/h_controlmisc.prg
+  * source/h_windows.prg
+    * Locks any BN_CLICKED or STN_CLICKED event WM_COMMAND to be
+      nested while the same event is currently performed
+      (configurable via _OOHG_NestedSameEvent() function).
+  * include/i_altsyntax.ch
+  * include/i_editbox.ch
+  * include/i_textbox.ch
+  * source/h_editbox.prg
+  * source/h_textbox.prg
+    * A "9" picture allows a "-" symbol only when data type is
+      numeric (string data doesn't allows "-").
+    + Added FOCUSEDPOS clause. It indicates where the cursor will
+      be positioned when TEXTBOX gets focused.
 
 2006-02-10 09:17 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source/c_controlmisc.c

@@ -1,5 +1,5 @@
 /*
- * $Id: h_slider.prg,v 1.5 2005-11-18 03:49:04 guerra000 Exp $
+ * $Id: h_slider.prg,v 1.6 2006-02-11 06:19:33 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -131,7 +131,7 @@ Local Self
 
 	SendMessage( ControlHandle , TBM_SETPOS ,1,  value )
 
-   ::New( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
+   ::Register( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
    ::SizePos( y, x, w, h )
 
    ::OnChange   :=  Change

@@ -1,5 +1,5 @@
 /*
- * $Id: h_monthcal.prg,v 1.4 2005-10-01 15:35:10 guerra000 Exp $
+ * $Id: h_monthcal.prg,v 1.5 2006-02-11 06:19:33 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -120,7 +120,7 @@ Local ControlHandle
 
    ControlHandle := InitMonthCal( ::ContainerhWnd, 0, x, y, w, h , notoday , notodaycircle , weeknumbers, invisible, notabstop, ::lRtl )
 
-   ::New( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
+   ::Register( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
    ::SizePos( y, x, w, h )
    ::SetFont( , , bold, italic, underline, strikeout )
 

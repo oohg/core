@@ -1,5 +1,5 @@
 /*
- * $Id: h_radio.prg,v 1.7 2005-11-13 00:20:15 guerra000 Exp $
+ * $Id: h_radio.prg,v 1.8 2006-02-11 06:19:33 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -139,7 +139,7 @@ Local ControlHandle
 
    ControlHandle := InitRadioGroup( ::ContainerhWnd, aOptions[1], 0, x, y , '' , 0 , width, invisible, .T. )
 
-   ::New( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
+   ::Register( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
    ::SizePos( y, x, Width, Spacing * len( aOptions ) )
 
@@ -150,7 +150,7 @@ Local ControlHandle
 
    // First item
    oItem := TRadioItem():SetForm( , Self )
-   oItem:New( ControlHandle, , HelpId, ! Invisible, ToolTip )
+   oItem:Register( ControlHandle, , HelpId, ! Invisible, ToolTip )
    oItem:SetFont( , , bold, italic, underline, strikeout )
    oItem:SizePos( ::Row, ::Col, ::Width, Spacing )
    oItem:AutoSize := autosize
@@ -165,7 +165,7 @@ Local ControlHandle
       ControlHandle := InitRadioButton( ::ContainerhWnd, aOptions[i], 0, ::Col, y , '' , 0 , width, invisible )
 
       oItem := TRadioItem():SetForm( , Self )
-      oItem:New( ControlHandle, , HelpId, ! Invisible, ToolTip )
+      oItem:Register( ControlHandle, , HelpId, ! Invisible, ToolTip )
       oItem:SetFont( , , bold, italic, underline, strikeout )
       oItem:SizePos( y, ::Col, ::Width, Spacing )
       oItem:AutoSize := autosize

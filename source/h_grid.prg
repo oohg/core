@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.35 2005-12-04 00:56:40 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.36 2006-02-11 06:19:33 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -262,7 +262,7 @@ Local ControlHandle, aImageList
 
    InitListViewColumns( ControlHandle, aHeaders , aWidths, aJust )
 
-   ::New( ControlHandle, ControlName, HelpId, , ToolTip )
+   ::Register( ControlHandle, ControlName, HelpId, , ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
    ::SizePos( y, x, w, h )
 

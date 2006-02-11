@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.13 2005-12-09 03:51:45 guerra000 Exp $
+ * $Id: h_tab.prg,v 1.14 2006-02-11 06:19:33 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -180,7 +180,7 @@ Local ControlHandle
       z++
    ENDDO
 
-   ::New( ControlHandle, ControlName, , , ToolTip )
+   ::Register( ControlHandle, ControlName, , , ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
    ::SizePos( y, x, w, h )
 

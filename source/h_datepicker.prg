@@ -1,5 +1,5 @@
 /*
- * $Id: h_datepicker.prg,v 1.6 2005-10-13 22:55:14 declan2005 Exp $
+ * $Id: h_datepicker.prg,v 1.7 2006-02-11 06:19:33 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -139,7 +139,7 @@ Local ControlHandle
 		SetDatePick( ControlHandle ,year(value), month(value), day(value) )
 	EndIf
 
-   ::New( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
+   ::Register( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
    ::SizePos( y, x, w, h )
 
@@ -237,7 +237,7 @@ Local ControlHandle
              SetTimePick( ControlHandle ,VAL(left(Value,2)),VAL(SUBSTR(Value,4,2)),VAL( SUBSTR(Value,7,2 )) )
 	EndIf
 
-   ::New( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
+   ::Register( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
    ::SizePos( y, x, w, h )
 
@@ -255,7 +255,7 @@ METHOD Value( uValue ) CLASS TTimePick
    IF ValType( uValue ) == "C"
       SetTimePick( ::hWnd ,VAL(left(uValue,2)),VAL(SUBSTR(uValue,4,2)),VAL( SUBSTR(uValue,7,2 )) )
    ELSEIF PCOUNT() > 0
-      SettimePick (::hWnd,,VAL(left(TIME(),2)),VAL(SUBSTR(TIME(),4,2)),VAL( SUBSTR(TIME(),7,2) ))      
+      SettimePick (::hWnd,,VAL(left(TIME(),2)),VAL(SUBSTR(TIME(),4,2)),VAL( SUBSTR(TIME(),7,2) ))
    ENDIF
 Return StrZero(GetDatePickHour ( ::hWnd ), 2 ) + ":" + StrZero ( GetDatePickMinute ( ::hWnd ), 2 ) + ":" + StrZero ( GetDatePickSecond (::hWnd ), 2 )
 
@@ -288,5 +288,4 @@ Local nNotify := GetNotifyCode( lParam )
    EndIf
 
 Return ::Super:Events_Notify( wParam, lParam )
-
 

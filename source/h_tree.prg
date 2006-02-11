@@ -1,5 +1,5 @@
 /*
- * $Id: h_tree.prg,v 1.6 2005-10-01 15:35:10 guerra000 Exp $
+ * $Id: h_tree.prg,v 1.7 2006-02-11 06:19:33 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -195,7 +195,7 @@ Local Controlhandle , ImgDefNode, ImgDefItem, aBitmaps := array(4)
 		dblclick := ""
 	endif
 
-   ::New( ControlHandle, ControlName, HelpId, , ToolTip )
+   ::Register( ControlHandle, ControlName, HelpId, , ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
    ::SizePos( Row, Col, Width, Height )
 

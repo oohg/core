@@ -1,5 +1,5 @@
 /*
- * $Id: h_editbox.prg,v 1.7 2005-11-09 05:45:54 guerra000 Exp $
+ * $Id: h_editbox.prg,v 1.8 2006-02-11 06:19:33 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -109,7 +109,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
                fontsize, tooltip, maxlenght, gotfocus, change, lostfocus, ;
                readonly, break, HelpId, invisible, notabstop, bold, italic, ;
                underline, strikeout, field, backcolor, fontcolor, novscroll, ;
-               nohscroll, lRtl, lNoBorder ) CLASS TEdit
+               nohscroll, lRtl, lNoBorder, OnFocusPos ) CLASS TEdit
 *-----------------------------------------------------------------------------*
 Local nStyle := ES_MULTILINE + ES_WANTRETURN, nStyleEx := 0
 
@@ -125,7 +125,7 @@ empty(break)
               lostfocus, gotfocus, change, nil, .f., HelpId, ;
               readonly, bold, italic, underline, strikeout, field, ;
               backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, .F., ;
-              nStyleEx, lNoBorder )
+              nStyleEx, lNoBorder, OnFocusPos )
 
 /*
 	if valtype(x) == "U" .or. valtype(y) == "U"

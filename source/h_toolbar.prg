@@ -1,5 +1,5 @@
 /*
- * $Id: h_toolbar.prg,v 1.12 2005-11-09 05:56:43 guerra000 Exp $
+ * $Id: h_toolbar.prg,v 1.13 2006-02-11 06:19:33 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -157,7 +157,7 @@ Default nImageHeight	To -1
 
 	nControlHandle := atemp[1]
 */
-   ::New( ControlHandle, ControlName, , , ToolTip, Id )
+   ::Register( ControlHandle, ControlName, , , ToolTip, Id )
    ::SetFont( , , bold, italic, underline, strikeout )
    ::SizePos( y, x, w, h )
 
@@ -315,7 +315,7 @@ Flat := NIL
 
    nPos := GetButtonBarCount ( ::Container:hWnd ) - if(separator,1,0)
 
-   ::New( ControlHandle, ControlName, , , ToolTip, Id )
+   ::Register( ControlHandle, ControlName, , , ToolTip, Id )
    ::SizePos( y, x, w, h )
 
    ::OnClick := ProcedureName

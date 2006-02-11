@@ -1,5 +1,5 @@
 /*
- * $Id: h_spinner.prg,v 1.6 2005-11-09 05:45:54 guerra000 Exp $
+ * $Id: h_spinner.prg,v 1.7 2006-02-11 06:19:33 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -146,7 +146,7 @@ Local ControlHandle
 
    ::AuxHandle := InitSpinner( ::ContainerhWnd, 0, x + w, y, 15, h, rl, rh , invisible, wrap, ControlHandle, ::lRtl )
 
-   ::New( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
+   ::Register( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
    ::SizePos( y, x, w, h )
 

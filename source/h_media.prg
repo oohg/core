@@ -1,5 +1,5 @@
 /*
- * $Id: h_media.prg,v 1.3 2005-10-01 15:35:10 guerra000 Exp $
+ * $Id: h_media.prg,v 1.4 2006-02-11 06:19:33 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -144,7 +144,7 @@ Local Self
 				shn				, ;
 				shp )
 
-   ::New( hh, ControlName, HelpId )
+   ::Register( hh, ControlName, HelpId )
    ::SizePos( row, col, w, h )
 
 Return Nil
@@ -217,7 +217,7 @@ Local Self
 
    hh := InitAnimate( ::ContainerhWnd, col, row, w, h, autoplay, center, transparent )
 
-   ::New( hh, ControlName, HelpId )
+   ::Register( hh, ControlName, HelpId )
    ::SizePos( row, col, w, h )
 
 	if valtype(file) <> 'U'

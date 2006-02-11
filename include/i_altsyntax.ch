@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.22 2005-11-20 16:57:32 guerra000 Exp $
+ * $Id: i_altsyntax.ch,v 1.23 2006-02-11 06:19:32 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -173,6 +173,7 @@ MEMVAR _OOHG_ActiveControlEdit
 
 MEMVAR _OOHG_ActiveControlBorder
 MEMVAR _OOHG_ActiveControlNoBorder
+MEMVAR _OOHG_ActiveControlFocusedPos
 MEMVAR _OOHG_ActiveControlClientEdge
 MEMVAR _OOHG_ActiveControlHScroll
 MEMVAR _OOHG_ActiveControlVscroll
@@ -914,7 +915,8 @@ Text Box
         _OOHG_ActiveControlPicture       := Nil          ;;
         _OOHG_ActiveControlFormat        := Nil          ;;
         _OOHG_ActiveControlNoBorder      := .f.          ;;
-        _OOHG_ActiveControlAutoSkip      := .f.
+        _OOHG_ActiveControlAutoSkip      := .f.          ;;
+        _OOHG_ActiveControlFocusedPos    := Nil
 
 #xcommand UPPERCASE <uppercase>;
 	=>;
@@ -947,6 +949,10 @@ Text Box
 #xcommand NOBORDER        <noborder>;
 	=>;
         _OOHG_ActiveControlNoBorder              := <noborder>
+
+#xcommand FOCUSEDPOS      <focusedpos> ;
+	=>;
+        _OOHG_ActiveControlFocusedPos            := <focusedpos>
 
 #xcommand END TEXTBOX;
 	=>;
@@ -985,7 +991,8 @@ Text Box
                         _OOHG_ActiveControlNoTabStop , ;
                         _OOHG_ActiveControlRtl , ;
                         _OOHG_ActiveControlAutoSkip , ;
-                        _OOHG_ActiveControlNoBorder );
+                        _OOHG_ActiveControlNoBorder , ;
+                        _OOHG_ActiveControlFocusedPos );
               ,;
                    iif( _OOHG_ActiveControlNumeric, ;
                         TTextMasked():Define( ;
@@ -1019,7 +1026,8 @@ Text Box
                         _OOHG_ActiveControlNoTabStop, ;
                         _OOHG_ActiveControlRtl, ;
                         _OOHG_ActiveControlAutoSkip , ;
-                        _OOHG_ActiveControlNoBorder ) , ;
+                        _OOHG_ActiveControlNoBorder , ;
+                        _OOHG_ActiveControlFocusedPos ) , ;
                      TTextCharMask():Define( _OOHG_ActiveControlName, ;
                         _OOHG_ActiveControlOf, ;
                         _OOHG_ActiveControlCol, ;
@@ -1050,7 +1058,8 @@ Text Box
                         _OOHG_ActiveControlNoTabStop, ;
                         _OOHG_ActiveControlRtl, ;
                         _OOHG_ActiveControlAutoSkip , ;
-                        _OOHG_ActiveControlNoBorder ) ) ;
+                        _OOHG_ActiveControlNoBorder , ;
+                        _OOHG_ActiveControlFocusedPos ) ) ;
               ) ;
         ,;
               TTextPicture():Define( ;
@@ -1083,7 +1092,8 @@ Text Box
                         _OOHG_ActiveControlNoTabStop ,;
                         _OOHG_ActiveControlRtl ,;
                         _OOHG_ActiveControlAutoSkip ,;
-                        _OOHG_ActiveControlNoBorder ) ;
+                        _OOHG_ActiveControlNoBorder ,;
+                        _OOHG_ActiveControlFocusedPos ) ;
 	)
 
 /*----------------------------------------------------------------------------
@@ -1604,7 +1614,8 @@ Edit Box
         _OOHG_ActiveControlField         := Nil          ;;
         _OOHG_ActiveControlNoVScroll     := .f.          ;;
         _OOHG_ActiveControlNoHScroll     := .f.          ;;
-        _OOHG_ActiveControlNoBorder      := .f.
+        _OOHG_ActiveControlNoBorder      := .f.          ;;
+        _OOHG_ActiveControlFocusedPos    := Nil
 
 #xcommand READONLYFIELDS <readonly> ;
 	=>;
@@ -1650,7 +1661,8 @@ Edit Box
                         _OOHG_ActiveControlNoVScroll, ;
                         _OOHG_ActiveControlNoHScroll, ;
                         _OOHG_ActiveControlRtl, ;
-                        _OOHG_ActiveControlNoBorder )
+                        _OOHG_ActiveControlNoBorder, ;
+                        _OOHG_ActiveControlFocusedPos )
 
 
 /*----------------------------------------------------------------------------

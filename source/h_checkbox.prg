@@ -1,5 +1,5 @@
 /*
- * $Id: h_checkbox.prg,v 1.6 2005-11-13 00:20:15 guerra000 Exp $
+ * $Id: h_checkbox.prg,v 1.7 2006-02-11 06:19:33 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -128,7 +128,7 @@ Local ControlHandle
 
    Controlhandle := InitCheckBox ( ::ContainerhWnd, Caption, 0, x, y, '', 0 , w , h, invisible, notabstop )
 
-   ::New( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
+   ::Register( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
    ::SizePos( y, x, w, h )
 
@@ -177,7 +177,7 @@ Local ControlHandle
 
    Controlhandle := InitCheckButton ( ::ContainerhWnd, Caption, 0, x, y, '', 0 , w , h, invisible, notabstop )
 
-   ::New( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
+   ::Register( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
    ::SizePos( y, x, w, h )
 
@@ -213,7 +213,7 @@ Local ControlHandle
 
    Controlhandle := InitImageCheckButton ( ::ContainerhWnd, "", 0, x, y, '', 0 , bitmap , w , h, invisible, notabstop )
 
-   ::New( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
+   ::Register( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
    ::SetFont()
    ::SizePos( y, x, w, h )
 

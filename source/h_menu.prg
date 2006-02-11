@@ -1,5 +1,5 @@
 /*
- * $Id: h_menu.prg,v 1.7 2005-11-13 00:20:15 guerra000 Exp $
+ * $Id: h_menu.prg,v 1.8 2006-02-11 06:19:33 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -141,7 +141,7 @@ RETURN ( xGetMenuCheckState( ::Container:hWnd, ::xId ) == 1 )
 METHOD DefineMain( Parent ) CLASS TMenu
 *------------------------------------------------------------------------------*
    ::SetForm( , Parent )
-   ::New( CreateMenu() )
+   ::Register( CreateMenu() )
    ::Type := "MAIN"
    SetMenu( ::Parent:hWnd, ::hWnd )
    AADD( _OOHG_xMenuActive, Self )
@@ -153,7 +153,7 @@ METHOD DefinePopUp( Caption , Name , checked , disabled ) CLASS TMenu
 
    ::SetForm( Name, ATAIL( _OOHG_xMenuActive ) )
 
-   ::New( CreatePopupMenu(), Name )
+   ::Register( CreatePopupMenu(), Name )
 
    ::Type := "POPUP"
 
@@ -197,7 +197,7 @@ Local id
 
    ::SetForm( Name, ATAIL( _OOHG_xMenuActive ) )
 
-   ::New( ControlHandle, Name, , , , Id )
+   ::Register( ControlHandle, Name, , , , Id )
 
    ::Type := "MENU"
 
@@ -240,7 +240,7 @@ Return Nil
 METHOD DefineContext( Parent ) CLASS TMenu
 *------------------------------------------------------------------------------*
    ::SetForm( , Parent )
-   ::New( CreatePopupMenu() )
+   ::Register( CreatePopupMenu() )
    ::Type := "CONTEXT"
    ::Parent:ContextMenu := Self
    AADD( _OOHG_xMenuActive, Self )
@@ -250,7 +250,7 @@ Return Self
 METHOD DefineNotify( Parent ) CLASS TMenu
 *------------------------------------------------------------------------------*
    ::SetForm( , Parent )
-   ::New( CreatePopupMenu() )
+   ::Register( CreatePopupMenu() )
    ::Type := "CONTEXT"
    ::Parent:NotifyMenuHandle := ::hWnd
    AADD( _OOHG_xMenuActive, Self )
@@ -260,7 +260,7 @@ Return Self
 METHOD DefineDropDown( Button , Parent ) CLASS TMenu
 *------------------------------------------------------------------------------*
    ::SetForm( , Parent )
-   ::New( CreatePopupMenu() )
+   ::Register( CreatePopupMenu() )
    ::Type := "DROPDOWN"
    GetControlObject( Button, ::Parent:Name ):ContextMenu := Self
    AADD( _OOHG_xMenuActive, Self )

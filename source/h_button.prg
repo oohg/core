@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.8 2005-12-28 03:52:58 guerra000 Exp $
+ * $Id: h_button.prg,v 1.9 2006-02-11 06:19:33 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -132,7 +132,7 @@ Local ControlHandle, nStyle
 
    ControlHandle := InitButton( ::ContainerhWnd, Caption, 0, x, y, w, h, ::lRtl, nStyle )
 
-   ::New( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
+   ::Register( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
    ::SizePos( y, x, w, h )
 
@@ -162,7 +162,7 @@ Local ControlHandle, nStyle
 
    ControlHandle := InitButton( ::ContainerhWnd, Caption, 0, x, y, w, h, ::lRtl, nStyle )
 
-   ::New( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
+   ::Register( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
    ::SizePos( y, x, w, h )
 
    ::OnClick := ProcedureName

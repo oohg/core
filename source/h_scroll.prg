@@ -1,5 +1,5 @@
 /*
- * $Id: h_scroll.prg,v 1.6 2005-10-01 15:35:10 guerra000 Exp $
+ * $Id: h_scroll.prg,v 1.7 2006-02-11 06:19:33 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -95,7 +95,7 @@ Local ControlHandle
 
    ControlHandle := InitVScrollBar( ::ContainerhWnd, x, y, w, h )
 
-   ::New( ControlHandle, ControlName, HelpId, ! invisible, ToolTip, ControlHandle )
+   ::Register( ControlHandle, ControlName, HelpId, ! invisible, ToolTip, ControlHandle )
    ::SizePos( y, x, w, h )
 
    ::VScroll:RangeMin := RangeMin

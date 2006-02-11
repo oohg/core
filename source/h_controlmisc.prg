@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.43 2006-02-10 06:35:45 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.44 2006-02-11 06:19:33 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -893,6 +893,9 @@ Local RetVal, oWnd, oCtrl
       ElseIf Arg2 == "HWND"
          RetVal := oWnd:hWnd
 
+      ElseIf Arg2 == "OBJECT"
+         RetVal := oWnd
+
 		EndIf
 
 	ElseIf Pcount() == 3 // CONTROL
@@ -1014,6 +1017,9 @@ Local RetVal, oWnd, oCtrl
 
       ElseIf Arg3 == "HWND"
          RetVal := oCtrl:hWnd
+
+      ElseIf Arg3 == "OBJECT"
+         RetVal := oCtrl
 
 		EndIf
 
@@ -1518,7 +1524,7 @@ CLASS TControl FROM TWindow
    METHOD ToolTip   SETGET
    METHOD SetForm
    METHOD SetInfo
-   METHOD New
+   METHOD Register
    METHOD Refresh             BLOCK { || nil }
    METHOD Release
    METHOD ContainerRow        BLOCK { |Self| IF( ::Container != NIL, ::Container:ContainerRow + ::Container:RowMargin, ::Parent:RowMargin ) + ::Row }
@@ -1761,7 +1767,7 @@ METHOD SetInfo( ControlName, FontName, FontSize, FontColor, BkColor, lEditBox, l
 RETURN Self
 
 *------------------------------------------------------------------------------*
-METHOD New( hWnd, cName, HelpId, Visible, ToolTip, Id ) CLASS TControl
+METHOD Register( hWnd, cName, HelpId, Visible, ToolTip, Id ) CLASS TControl
 *------------------------------------------------------------------------------*
 Local mVar
 
@@ -2211,7 +2217,11 @@ Local Hi_wParam := HIWORD( wParam )
       // Default: ::OnClick
       // If ::Type == "LABEL" .Or. ::Type = "IMAGE" .OR. ::Type = "BUTTON"
 
-      ::DoEvent( ::OnClick )
+      If ! ::NestedClick
+         ::NestedClick := ! _OOHG_NestedSameEvent()
+         ::DoEvent( ::OnClick )
+         ::NestedClick := .F.
+      EndIf
 
    elseif Hi_wParam == EN_CHANGE
 

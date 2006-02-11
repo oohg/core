@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.58 2006-02-10 15:19:21 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.59 2006-02-11 06:19:33 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -105,7 +105,6 @@ STATIC _OOHG_aEventInfo := {}        // Event's stack
 STATIC _OOHG_UserWindow := nil       // User's window
 STATIC _OOHG_InteractiveClose := 1   // Interactive close
 STATIC _OOHG_MessageLoops := {}      // Message loops
-STATIC _OOHG_GlobalRTL := .F.        // Force RTL functionality
 STATIC _OOHG_ActiveModal := {}       // Modal windows' stack
 STATIC _OOHG_DialogCancelled := .F.  //
 STATIC _OOHG_HotKeys := {}           // Application-wide hot keys
@@ -124,7 +123,9 @@ STATIC _OOHG_HotKeys := {}           // Application-wide hot keys
 #include <olectl.h>
 #include "../include/oohg.h"
 
-int _OOHG_ShowContextMenus = 1;
+int _OOHG_ShowContextMenus = 1;      //
+int _OOHG_GlobalRTL = 0;             // Force RTL functionality
+int _OOHG_NestedSameEvent = 0;       // Allows to nest an event currently performed (i.e. CLICK button)
 PHB_ITEM _OOHG_LastSelf = NULL;
 
 #pragma ENDDUMP
@@ -167,6 +168,8 @@ CLASS TWindow
    DATA OnMouseMove    INIT nil
    DATA aKeys          INIT {}  // { Id, Mod, Key, Action }   Application-controlled hotkeys
    DATA aHotKeys       INIT {}  // { Id, Mod, Key, Action }   OperatingSystem-controlled hotkeys
+
+   DATA NestedClick    INIT .F.
 
    DATA DefBkColorEdit  INIT nil
 
@@ -760,7 +763,7 @@ CLASS TForm FROM TWindow
    METHOD SizePos
    METHOD Define
    METHOD Define2
-   METHOD New
+   METHOD Register
    METHOD Hide
    METHOD Show
    METHOD Activate
@@ -1015,7 +1018,7 @@ METHOD Define2( FormName, Caption, x, y, w, h, Parent, helpbutton, nominimize, n
 *------------------------------------------------------------------------------*
 Local Formhandle
 
-   If _OOHG_GlobalRTL
+   If _OOHG_GlobalRTL()
       lRtl := .T.
    ElseIf ValType( lRtl ) != "L"
       lRtl := .F.
@@ -1069,7 +1072,7 @@ Local Formhandle
 		SetWindowCursor( Formhandle , cursor )
 	EndIf
 
-   ::New( FormHandle, FormName )
+   ::Register( FormHandle, FormName )
    ::ToolTipHandle := InitToolTip( FormHandle, _SetToolTipBalloon() )
 
    // Font Name:
@@ -1142,7 +1145,7 @@ return lOldBalloon
 
 
 *------------------------------------------------------------------------------*
-METHOD New( hWnd, cName ) CLASS TForm
+METHOD Register( hWnd, cName ) CLASS TForm
 *------------------------------------------------------------------------------*
 Local mVar
    ::hWnd := hWnd
@@ -2656,7 +2659,7 @@ Function _DefineSplitBox( ParentForm, bottom, inverted, lRtl )
 *-----------------------------------------------------------------------------*
 Local cParentForm, Controlhandle
 
-   If _OOHG_GlobalRTL
+   If _OOHG_GlobalRTL()
       lRtl := .T.
    ElseIf ValType( lRtl ) != "L"
       lRtl := .F.
@@ -2984,13 +2987,6 @@ Return nRet
 Function SetAppHotKey( nKey, nFlags, bAction )
 Return _OOHG_SetKey( _OOHG_HotKeys, nKey, nFlags, bAction )
 
-Function _OOHG_GlobalRTL( lRTL )
-Local lRet := _OOHG_GlobalRTL
-   If ValType( lRTL ) == "L"
-      _OOHG_GlobalRTL := lRTL
-   EndIf
-Return lRet
-
 Function _OOHG_MacroCall( cMacro )
 Local uRet, oError
    oError := ERRORBLOCK()
@@ -3008,7 +3004,7 @@ Static Function _OOHG_MacroCall_Error( oError )
 RETURN 1
 
 EXTERN IsXPThemeActive, _OOHG_Eval, EVAL
-EXTERN _OOHG_ShowContextMenus
+EXTERN _OOHG_ShowContextMenus, _OOHG_GlobalRTL, _OOHG_NestedSameEvent
 
 #pragma BEGINDUMP
 
@@ -3066,6 +3062,24 @@ HB_FUNC( _OOHG_SHOWCONTEXTMENUS )
       _OOHG_ShowContextMenus = hb_parl( 1 );
    }
    hb_retl( _OOHG_ShowContextMenus );
+}
+
+HB_FUNC( _OOHG_GLOBALRTL )
+{
+   if( ISLOG( 1 ) )
+   {
+      _OOHG_GlobalRTL = hb_parl( 1 );
+   }
+   hb_retl( _OOHG_GlobalRTL );
+}
+
+HB_FUNC( _OOHG_NESTEDSAMEEVENT )
+{
+   if( ISLOG( 1 ) )
+   {
+      _OOHG_NestedSameEvent = hb_parl( 1 );
+   }
+   hb_retl( _OOHG_NestedSameEvent );
 }
 
 #pragma ENDDUMP

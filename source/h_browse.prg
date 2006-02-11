@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.38 2006-02-06 00:29:01 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.39 2006-02-11 06:19:32 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -239,7 +239,7 @@ Local ScrollBarHandle, hsum, ScrollBarButtonHandle := 0, nWidth2, nCol2
       EndIf
 
       ::VScroll := TScrollBar():SetForm( , Self )
-      ::VScroll:New( ScrollBarHandle,, HelpId,, ToolTip, ScrollBarHandle )
+      ::VScroll:Register( ScrollBarHandle,, HelpId,, ToolTip, ScrollBarHandle )
       ::VScroll:RangeMin := 1
       ::VScroll:RangeMax := 100
       ::VScroll:OnLineUp   := { || ::SetFocus():Up() }

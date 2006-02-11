@@ -1,5 +1,5 @@
 /*
- * $Id: h_ipaddress.prg,v 1.3 2005-10-01 15:35:10 guerra000 Exp $
+ * $Id: h_ipaddress.prg,v 1.4 2006-02-11 06:19:33 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -126,7 +126,7 @@ Local ControlHandle
 		SetIPAddress( ControlHandle , aValue[1], aValue[2], aValue[3], aValue[4] )
 	EndIf
 
-   ::New( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
+   ::Register( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
    ::SizePos( y, x, w, h )
 

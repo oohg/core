@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.12 2005-11-28 01:26:09 guerra000 Exp $
+ * $Id: h_combo.prg,v 1.13 2006-02-11 06:19:33 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -186,7 +186,7 @@ Local ControlHandle , rcount := 0 , BackRec , cset := 0 , WorkArea , cField
 		uEnter := ""
 	endif
 
-   ::New( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
+   ::Register( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
    ::SetFont()
    ::SizePos( y, x, w, h )
 

@@ -1,5 +1,5 @@
 /*
- * $Id: h_frame.prg,v 1.3 2005-10-01 15:35:10 guerra000 Exp $
+ * $Id: h_frame.prg,v 1.4 2006-02-11 06:19:33 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -125,7 +125,7 @@ Local ControlHandle
 
    Controlhandle := InitFrame( ::ContainerhWnd, 0, x, y, w, h , caption , opaque, ::lRtl )
 
-   ::New( ControlHandle, ControlName )
+   ::Register( ControlHandle, ControlName )
    ::SetFont( , , bold, italic, underline, strikeout )
    ::SizePos( y, x, w, h )
 

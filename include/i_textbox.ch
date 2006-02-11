@@ -1,5 +1,5 @@
 /*
- * $Id: i_textbox.ch,v 1.7 2005-11-09 05:45:54 guerra000 Exp $
+ * $Id: i_textbox.ch,v 1.8 2006-02-11 06:19:32 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -126,6 +126,7 @@
                         [ HELPID <helpid> ] 		;
                         [ <autoskip: AUTOSKIP> ]        ;
                         [ <noborder: NOBORDER> ]        ;
+                        [ FOCUSEDPOS <focusedpos> ]     ;
          =>;
 [ <obj> := ] iif( <.numeric.>, TTextNum(), TText() ):Define( ;
                         <(name)>, <(parent)>, <col>, <row>, <width>, <height>, <value>, ;
@@ -135,7 +136,7 @@
                         <.RightAlign.>, <helpid>, <.readonly.> ,<.bold.>, ;
                         <.italic.>, <.underline.>, <.strikeout.> , <(field)> , ;
                         <backcolor> , <fontcolor> , <.invisible.> , <.notabstop.> , ;
-                        <.rtl.>, <.autoskip.>, <.noborder.> )
+                        <.rtl.>, <.autoskip.>, <.noborder.>, <focusedpos> )
 
 
 // TEXTBOX ( NUMERIC INPUTMASK )
@@ -171,6 +172,7 @@
                 [ <rtl: RTL> ]                  ;
                 [ <autoskip: AUTOSKIP> ]        ;
                 [ <noborder: NOBORDER> ]        ;
+                [ FOCUSEDPOS <focusedpos> ]     ;
 	=>;
 [ <obj> := ] TTextMasked():Define( <(name)>, <(parent)>, <col>, <row>, <inputmask> , ;
                         <w> , <value> , <fontname> , <fontsize> , <tooltip> , ;
@@ -178,7 +180,8 @@
                         <{enter}> , <.RightAlign.>  , <helpid> , <format> , <.bold.>, ;
                         <.italic.>, <.underline.>, <.strikeout.>  , <(field)>  , ;
                         <backcolor> , <fontcolor> , <.readonly.> , <.invisible.> , ;
-                        <.notabstop.> , <.rtl.> , <.autoskip.>, <.noborder.> )
+                        <.notabstop.> , <.rtl.> , <.autoskip.>, <.noborder.> , ;
+                        <focusedpos> )
 
 // TEXTBOX ( CHARACTER INPUTMASK )
 
@@ -211,6 +214,7 @@
                 [ <rtl: RTL> ]                  ;
                 [ <autoskip: AUTOSKIP> ]        ;
                 [ <noborder: NOBORDER> ]        ;
+                [ FOCUSEDPOS <focusedpos> ]     ;
 	=>;
 [ <obj> := ] TTextCharMask():Define( <(name)>, <(parent)>, <col>, <row>, <inputmask> , ;
                         <w> , <value> , <fontname> , <fontsize> , <tooltip> , ;
@@ -218,7 +222,8 @@
                         <{enter}> , <.RightAlign.>  , <helpid> ,<.bold.>, <.italic.>, ;
                         <.underline.>, <.strikeout.> , <(field)> , <backcolor> , ;
                         <fontcolor> , .f. , <.readonly.> , <.invisible.> , ;
-                        <.notabstop.> , <.rtl.> , <.autoskip.>, <.noborder.> )
+                        <.notabstop.> , <.rtl.> , <.autoskip.>, <.noborder.> , ;
+                        <focusedpos> )
 
 // TEXTBOX ( DATE TYPE )
 
@@ -251,13 +256,15 @@
                 [ <rtl: RTL> ]                  ;
                 [ <autoskip: AUTOSKIP> ]        ;
                 [ <noborder: NOBORDER> ]        ;
+                [ FOCUSEDPOS <focusedpos> ]     ;
 	=>;
 [ <obj> := ] TTextCharMask():Define( <(name)>, <(parent)>, <col>, <row>, "" , <w> , ;
                         <value> , <fontname> , <fontsize> , <tooltip> , <{lostfocus}> , ;
                         <{gotfocus}> , <{change}> , <height> , <{enter}> , <.RightAlign.> , ;
                         <helpid> , <.bold.>, <.italic.>, <.underline.>, <.strikeout.> , ;
                         <(field)> , <backcolor> , <fontcolor> , <.date.> , <.readonly.> , ;
-                        <.invisible.> , <.notabstop.> , <.rtl.> , <.autoskip.>, <.noborder.> )
+                        <.invisible.> , <.notabstop.> , <.rtl.> , <.autoskip.>, <.noborder.> , ;
+                        <focusedpos> )
 
 // TEXTBOX ( PICTURE MASK )
 
@@ -290,6 +297,7 @@
                 [ <rtl: RTL> ]                  ;
                 [ <autoskip: AUTOSKIP> ]        ;
                 [ <noborder: NOBORDER> ]        ;
+                [ FOCUSEDPOS <focusedpos> ]     ;
 	=>;
 [ <obj> := ] TTextPicture():Define( <(name)>, <(parent)>, <col>, <row>, <w> , <height> , ;
                         <value> , <inputmask> , <fontname> , <fontsize> , <tooltip> , ;
@@ -297,4 +305,4 @@
                         <.RightAlign.> , <helpid> , <.readonly.> , <.bold.> , <.italic.> , ;
                         <.underline.> , <.strikeout.> , <(field)> , <backcolor> , ;
                         <fontcolor> , <.invisible.> , <.notabstop.> , <.rtl.> , <.autoskip.>, ;
-                        <.noborder.> )
+                        <.noborder.> , <focusedpos> )

@@ -1,5 +1,5 @@
 /*
- * $Id: h_timer.prg,v 1.2 2005-08-18 04:04:40 guerra000 Exp $
+ * $Id: h_timer.prg,v 1.3 2006-02-11 06:19:33 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -114,7 +114,7 @@ Local id
 	Id := _GetId()
    InitTimer( ::Parent:hWnd, id , Interval )
 
-   ::New( 0, ControlName, , , , Id )
+   ::Register( 0, ControlName, , , , Id )
 
    ::OnClick := ProcedureName
    ::Interval :=  Interval

@@ -1,5 +1,5 @@
 /*
- * $Id: i_editbox.ch,v 1.4 2005-11-09 05:45:54 guerra000 Exp $
+ * $Id: i_editbox.ch,v 1.5 2006-02-11 06:19:32 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -119,8 +119,13 @@
 		[ <nohscroll: NOHSCROLL> ] 	;
                 [ <rtl: RTL> ] ;
                 [ <noborder: NOBORDER> ] ;
+                [ FOCUSEDPOS <focusedpos> ]     ;
 	=>;
-        [ <obj> := ] TEdit():Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <value> ,<f>,<s> , <tooltip>  , <maxlenght>  , <{gotfocus}>  , <{change}>  , <{lostfocus}>  , <.readonly.> , .f. , <helpid>, <.invisible.>, <.notabstop.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <(field)> , <backcolor> , <fontcolor> , <.novscroll.> , <.nohscroll.>, <.rtl.>, <.noborder.> )
+        [ <obj> := ] TEdit():Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <value>, <f>, ;
+                <s>, <tooltip>, <maxlenght>, <{gotfocus}>, <{change}>, <{lostfocus}>, <.readonly.>, ;
+                .f. , <helpid>, <.invisible.>, <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, ;
+                <.strikeout.>, <(field)>, <backcolor>, <fontcolor>, <.novscroll.>, <.nohscroll.>, ;
+                <.rtl.>, <.noborder.>, <focusedpos> )
 
 //SPLITBOX VERSION
 
@@ -153,5 +158,10 @@
 		[ <nohscroll: NOHSCROLL> ] 	;
                 [ <rtl: RTL> ] ;
                 [ <noborder: NOBORDER> ] ;
+                [ FOCUSEDPOS <focusedpos> ]     ;
 	=>;
-        [ <obj> := ] TEdit():Define( <(name)>, <(parent)>, , , <w>, <h>, <value> ,<f>,<s> , <tooltip>  , <maxlenght>  , <{gotfocus}>  , <{change}>  , <{lostfocus}>  , <.readonly.> , <.break.>  , <helpid>, <.invisible.>, <.notabstop.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <(field)>  , <backcolor> , <fontcolor> , <.novscroll.> , <.nohscroll.> , <.rtl.>, <.noborder.> )
+        [ <obj> := ] TEdit():Define( <(name)>, <(parent)>,,, <w>, <h>, <value>, <f>, <s>, <tooltip>, ;
+                <maxlenght>, <{gotfocus}>, <{change}>, <{lostfocus}>, <.readonly.>, <.break.>, ;
+                <helpid>, <.invisible.>, <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, ;
+                <.strikeout.>, <(field)>, <backcolor>, <fontcolor>, <.novscroll.>, <.nohscroll.>, ;
+                <.rtl.>, <.noborder.>, <focusedpos> )

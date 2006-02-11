@@ -1,5 +1,5 @@
 /*
- * $Id: h_richeditbox.prg,v 1.8 2005-12-04 00:56:40 guerra000 Exp $
+ * $Id: h_richeditbox.prg,v 1.9 2006-02-11 06:19:33 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -146,7 +146,7 @@ Local ControlHandle
 
 	endif
 
-   ::New( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
+   ::Register( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
    ::SizePos( y, x, w, h )
 
