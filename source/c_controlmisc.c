@@ -1,5 +1,5 @@
 /*
- * $Id: c_controlmisc.c,v 1.23 2006-02-10 15:19:21 guerra000 Exp $
+ * $Id: c_controlmisc.c,v 1.24 2006-02-12 17:46:00 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -115,6 +115,8 @@
 #include "winreg.h"
 #include "tchar.h"
 #include "../include/oohg.h"
+
+extern HB_EXPORT PHB_SYMB    hb_dynsymSymbol( PHB_DYNS pDynSym );
 
 PHB_SYMB *s_Symbols = NULL;
 
