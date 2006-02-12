@@ -1,5 +1,5 @@
 /*
- * $Id: h_report.prg,v 1.12 2006-02-11 23:34:24 declan2005 Exp $
+ * $Id: h_report.prg,v 1.13 2006-02-12 01:36:40 declan2005 Exp $
  */
 /*
  * DO REPORT Command support procedures For MiniGUI Library.
@@ -355,7 +355,10 @@ do while .not. eof()
 			   nlin:=repobject:headers(aheaders1,aheaders2,awidths,nlin,ctitle,lmode,grpby,chdrgrp,cheader)
                       endif
                   next k
-                  nlin--
+                  if len(rtrim(wfield))=0
+                  else
+                     nlin--
+                  endif
                else
                   oprintr:printdata(nlin,ncol,substr(wfield,1,awidths[i]),,  )
                endif

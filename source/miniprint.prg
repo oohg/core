@@ -1,5 +1,5 @@
 /*
- * $Id: miniprint.prg,v 1.7 2006-02-10 03:25:42 declan2005 Exp $
+ * $Id: miniprint.prg,v 1.8 2006-02-12 01:36:40 declan2005 Exp $
  */
 /*----------------------------------------------------------------------------
  MINIGUI - Harbour Win32 GUI library source code
@@ -1266,6 +1266,7 @@ Function GetPrinter()
 	END WINDOW
 
         CENTER WINDOW _HMG_PRINTER_GETPRINTER
+        _HMG_printer_getprinter.ok.setfocus()
 
         ACTIVATE WINDOW _HMG_PRINTER_GETPRINTER
 
