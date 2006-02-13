@@ -1,5 +1,5 @@
 /*
- * $Id: h_report.prg,v 1.13 2006-02-12 01:36:40 declan2005 Exp $
+ * $Id: h_report.prg,v 1.14 2006-02-13 01:20:14 declan2005 Exp $
  */
 /*
  * DO REPORT Command support procedures For MiniGUI Library.
@@ -425,7 +425,7 @@ if swt==1
    if nlin>nlpp
       nlin:=1
       oprintr:endpage()
-      oprintr:startpage()
+      oprintr:beginpage()
       nlin:=repobject:headers(aheaders1,aheaders2,awidths,nlin,ctitle,lmode,grpby,chdrgrp,cheader)
    endif
    if ascan(atotals,.T.)>0
