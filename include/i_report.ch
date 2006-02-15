@@ -1,5 +1,5 @@
 /*
- * $Id: i_report.ch,v 1.4 2006-02-11 17:04:54 declan2005 Exp $
+ * $Id: i_report.ch,v 1.5 2006-02-15 20:57:14 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -49,6 +49,8 @@
  *
  */
 
+
+
 #xcommand       DO REPORT  ;
                 TITLE <ctitle>			;
 		HEADERS <aheaders1> , <aheaders2> ;
@@ -57,10 +59,11 @@
                	[ TOTALS <ato> ]		;
                 [ NFORMATS <aformats> ] ;
                 WORKAREA <calias>    		;
-                LPP    <nlpp>			;
-                CPL    <ncpl>			;
+                [ LPP    <nlpp>	 ]		;
+                [ CPL    <ncpl> ]		;
                 [ LMARGIN <nllmargin> ]         ;
                 [ PAPERSIZE <npapersize> ]      ;
+                [ <lnoprop:> NOFIXED ]    ;
 		[ <ldos: DOSMODE> ]		;
                 [ <lpreview: PREVIEW> ]         ;
                 [ <lselect: SELECT> ]           ;
@@ -90,11 +93,12 @@ easyreport  ( <ctitle> ,		 	;
                 <(calias)>            ,  ;
                 <nllmargin>           ,  ;
                 <aformats>            ,  ;
-                <npapersize> )
+                <npapersize>,<.lnoprop.> )
 
 
 
 #xcommand DO REPORT FORM <cfilerep> [ HEADING <cheading> ] => extreport(<"cfilerep">,<cheading> )
+
 
 
 #ifndef DMPAPER_FIRST

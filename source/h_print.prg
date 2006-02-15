@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.16 2006-02-04 03:56:33 declan2005 Exp $
+* $Id: h_print.prg,v 1.17 2006-02-15 20:57:16 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -40,7 +40,7 @@ DATA nfontsize          INIT 10 PROTECTED
 DATA nwpen              INIT 0.1   PROTECTED //// pen width
 DATA tempfile           INIT gettempdir()+"T"+alltrim(str(int(hb_random(999999)),8))+".prn" PROTECTED
 DATA impreview          INIT .F.  PROTECTED
-DATA lwinhide           INIT .T.
+DATA lwinhide           INIT .T.   PROTECTED
 
 *-------------------------
 METHOD init()
@@ -715,7 +715,7 @@ case ::cprintlibrary="DOS"
       @ nlin,ncol say (ctext)
    else
       @ nlin,ncol say (ctext)
-      /////   @ nlin,ncol say (ctext)
+      @ nlin,ncol say (ctext)
    endif
 endcase
 RETURN self

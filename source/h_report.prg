@@ -1,5 +1,5 @@
 /*
- * $Id: h_report.prg,v 1.14 2006-02-13 01:20:14 declan2005 Exp $
+ * $Id: h_report.prg,v 1.15 2006-02-15 20:57:16 declan2005 Exp $
  */
 /*
  * DO REPORT Command support procedures For MiniGUI Library.
@@ -54,7 +54,7 @@ MEMVAR CTITLE
 MEMVAR CGRAPHIC
 MEMVAR WFIELD
 MEMVAR WFIELDA
-MEMVAR WFIELD1
+MEMVAR WFIELDT
 MEMVAR ATOTALS
 MEMVAR AFORMATS
 MEMVAR AWIDTHS
@@ -89,40 +89,49 @@ MEMVAR WORIENTATION
 MEMVAR LSUCESS
 MEMVAR CBAT
 MEMVAR _OOHG_printlibrary
-MEMVAR oprintr
+MEMVAR oprint
 
-FUNCTION easyreport(ctitle,aheaders1,aheaders2,afields,awidths,atotals,nlpp,ldos,lpreview,cgraphic,nfi,nci,nff,ncf,lmul,cgrpby,chdrgrp,llandscape,ncpl,lselect,calias,nllmargin,aformats,npapersize,cheader)
+FUNCTION easyreport(ctitle,aheaders1,aheaders2,afields,awidths,atotals,nlpp,ldos,lpreview,cgraphic,nfi,nci,nff,ncf,lmul,cgrpby,chdrgrp,llandscape,ncpl,lselect,calias,nllmargin,aformats,npapersize,cheader,lnoprop)
 PRIVATE ctitle1,sicvar,_sw_report
+if lnoprop=NIL
+   lnoprop=.F.
+endif
 
+if nlpp=NIL
+   nlpp:=58
+endif
+if ncpl=NIL
+   ncpl:=80
+endif
 
 	ctitle1:=lower(substr(ctitle,at('|',ctitle)+1))+'...'
 	if cheader=NIL
-		cheader:=''
+	   cheader:=''
 	endif
 
 	_sw_report:=.F.
 
-	action_timer1(CTITLE,AHEADERS1,AHEADERS2,AFIELDS,AWIDTHS,ATOTALS,NLPP,LDOS,LPREVIEW,CGRAPHIC,NFI,NCI,NFF,NCF,LMUL,CGRPBY,CHDRGRP,LLANDSCAPE,NCPL,LSELECT,CALIAS,NLLMARGIN,AFORMATS,NPAPERSIZE,CHEADER)
+	action_timer1(CTITLE,AHEADERS1,AHEADERS2,AFIELDS,AWIDTHS,ATOTALS,NLPP,LDOS,LPREVIEW,CGRAPHIC,NFI,NCI,NFF,NCF,LMUL,CGRPBY,CHDRGRP,LLANDSCAPE,NCPL,LSELECT,CALIAS,NLLMARGIN,AFORMATS,NPAPERSIZE,CHEADER,lnoprop)
 
 RETURN NIL
 
-static function action_timer1(CTITLE,AHEADERS1,AHEADERS2,AFIELDS,AWIDTHS,ATOTALS,NLPP,LDOS,LPREVIEW,CGRAPHIC,NFI,NCI,NFF,NCF,LMUL,CGRPBY,CHDRGRP,LLANDSCAPE,NCPL,LSELECT,CALIAS,NLLMARGIN,AFORMATS,NPAPERSIZE,CHEADER)
+static function action_timer1(CTITLE,AHEADERS1,AHEADERS2,AFIELDS,AWIDTHS,ATOTALS,NLPP,LDOS,LPREVIEW,CGRAPHIC,NFI,NCI,NFF,NCF,LMUL,CGRPBY,CHDRGRP,LLANDSCAPE,NCPL,LSELECT,CALIAS,NLLMARGIN,AFORMATS,NPAPERSIZE,CHEADER,lnoprop)
 
 if .not. _sw_report
     _sw_report:=.T.
-   _LISTREPORT(CTITLE,AHEADERS1,AHEADERS2,AFIELDS,AWIDTHS,ATOTALS,NLPP,LDOS,LPREVIEW,CGRAPHIC,NFI,NCI,NFF,NCF,LMUL,CGRPBY,CHDRGRP,LLANDSCAPE,NCPL,LSELECT,CALIAS,NLLMARGIN,AFORMATS,NPAPERSIZE,CHEADER)
+   _LISTREPORT(CTITLE,AHEADERS1,AHEADERS2,AFIELDS,AWIDTHS,ATOTALS,NLPP,LDOS,LPREVIEW,CGRAPHIC,NFI,NCI,NFF,NCF,LMUL,CGRPBY,CHDRGRP,LLANDSCAPE,NCPL,LSELECT,CALIAS,NLLMARGIN,AFORMATS,NPAPERSIZE,CHEADER, lnoprop)
 endif
 
 return nil
 
-FUNCTION _listreport(ctitle,aheaders1,aheaders2,afields,awidths,atotals,nlpp,ldos,lpreview,cgraphic,nfi,nci,nff,ncf,lmul,cgrpby,chdrgrp,llandscape,ncpl,lselect,calias,nllmargin,aformats,npapersize,cheader)
+FUNCTION _listreport(ctitle,aheaders1,aheaders2,afields,awidths,atotals,nlpp,ldos,lpreview,cgraphic,nfi,nci,nff,ncf,lmul,cgrpby,chdrgrp,llandscape,ncpl,lselect,calias,nllmargin,aformats,npapersize,cheader,lnoprop)
 private repobject,sicvar
 
 
 repobject:=_OOHG_REPORT()
 sicvar:=setinteractiveclose()
 SET INTERACTIVECLOSE ON
-repobject:easyreport1(ctitle,aheaders1,aheaders2,afields,awidths,atotals,nlpp,ldos,lpreview,cgraphic,nfi,nci,nff,ncf,lmul,cgrpby,chdrgrp,llandscape,ncpl,lselect,calias,nllmargin,aformats,npapersize,cheader)
+repobject:easyreport1(ctitle,aheaders1,aheaders2,afields,awidths,atotals,nlpp,ldos,lpreview,cgraphic,nfi,nci,nff,ncf,lmul,cgrpby,chdrgrp,llandscape,ncpl,lselect,calias,nllmargin,aformats,npapersize,cheader,lnoprop)
 setinteractiveclose(sicvar)
 release repobject
 return nil
@@ -141,7 +150,7 @@ FOR I=1 TO WLARLIN
    IF WLARLIN=WTOPE
       EXIT
    ENDIF
-   IF SUBSTR(WPR_LINE,I,1)=SPACE(1) .AND. SUBSTR(WPR_LINE,I-1,1)#SPACE(1) .AND. SUBSTR(WPR_LINE,I+1,1)#SPACE(1)
+   IF SUBSTR(WPR_LINE,I,1)=SPACE(1) .AND. SUBSTR(WPR_LINE,I-1,1)#SPACE(1) ////// .AND. SUBSTR(WPR_LINE,I+1,1)#SPACE(1)
       WPR_LINE=LTRIM(SUBSTR(WPR_LINE,1,I-1))+SPACE(2)+LTRIM(SUBSTR(WPR_LINE,I+1,LEN(WPR_LINE)-I))
       WLARLIN=WLARLIN+1
    ENDIF
@@ -151,7 +160,7 @@ RETURN WPR_LINE
 
 CREATE CLASS _OOHG_REPORT
 
-Private oprintr
+Private oprint
 
 VAR npager    INIT 0
 VAR angrpby   INIT {}
@@ -165,7 +174,7 @@ VAR nvfij     INIT 0
 
 VAR aline     INIT {}
 
-METHOD easyreport1(ctitle,aheaders1,aheaders2,afields,awidths,atotals,nlpp,ldos,lpreview,cgraphic,nfi,nci,nff,ncf,lmul,cgrpby,chdrgrp,llandscape,ncpl,lselect,calias,nllmargin,aformats,npapersize,cheader)
+METHOD easyreport1(ctitle,aheaders1,aheaders2,afields,awidths,atotals,nlpp,ldos,lpreview,cgraphic,nfi,nci,nff,ncf,lmul,cgrpby,chdrgrp,llandscape,ncpl,lselect,calias,nllmargin,aformats,npapersize,cheader,lnoprop)
 METHOD headers(aheaders1,aheaders2,awidths,nlin,ctitle,lmode,grpby,chdrgrp,cheader)
 METHOD extreport1(cfilerep)
 METHOD leadato(cName,cPropmet,cDefault)
@@ -179,10 +188,10 @@ METHOD leacoli(cname,npar)
 ENDCLASS
 
 
-METHOD easyreport1(ctitle,aheaders1,aheaders2,afields,awidths,atotals,nlpp,ldos,lpreview,cgraphic,nfi,nci,nff,ncf,lmul,cgrpby,chdrgrp,llandscape,ncpl,lselect,calias,nllmargin,aformats,npapersize,cheader) CLASS _OOHG_REPORT
-local nlin,i,ncol,aresul,lmode,swt:=0,grpby,k,ncvcopt,swmemo
-private  wfield,wfielda
-if nllmargin = NIL
+METHOD easyreport1(ctitle,aheaders1,aheaders2,afields,awidths,atotals,nlpp,ldos,lpreview,cgraphic,nfi,nci,nff,ncf,lmul,cgrpby,chdrgrp,llandscape,ncpl,lselect,calias,nllmargin,aformats,npapersize,cheader,lnoprop) CLASS _OOHG_REPORT
+local nlin,i,ncol,aresul,lmode,swt:=0,grpby,k,ncvcopt,swmemo,clinea,ti,nmemo,nspace
+private  wfield,wfielda,wfieldt
+  if nllmargin = NIL
    repobject:nlmargin:=0
 else
    repobject:nlmargin:=nllmargin
@@ -215,71 +224,87 @@ if nlpp= NIL
    nlpp=50
 endif
 setprc(0,0)
-
 if ncpl = NIL
    ncpl:=80
    repobject:nfsize=12
 endif
-oprintr:=tprint()
+oprint:=TPRINT()
+oprint:normaldos()
 do case
         case ncpl= 80
             ncvcopt:=1
             repobject:nfsize:=12
-            oprintr:nfontsize:=12
+            if lnoprop
+               oprint:nfontsize:=12
+            endif
          case ncpl= 96
             ncvcopt:=2
             repobject:nfsize=10
-            oprintr:nfontsize:=10
+            if lnoprop
+               oprint:nfontsize:=10
+            endif
          case ncpl= 120
             ncvcopt:=3
             repobject:nfsize:=8
-            oprintr:nfontsize:=8
+            if lnoprop
+               oprint:nfontsize:=8
+            endif
          case ncpl= 140
             ncvcopt:=4
            repobject:nfsize:=7
-            oprintr:nfontsize:=7
-
+           if lnoprop
+              oprint:nfontsize:=7
+           endif
          case ncpl= 160
             ncvcopt:=5
             repobject:nfsize:=6
-            oprintr:nfontsize:=6
-
+            if lnoprop
+                oprint:nfontsize:=6
+            endif
          otherwise
             ncvcopt:=1
             repobject:nfsize:=12
-            oprintr:nfontsize:=12
-
+            if lnoprop
+                oprint:nfontsize:=12
+            endif
 endcase
 
 *****************=======================================
 
 if ldos
-   oprintr:init("DOS")
-   if ldos .and. ncpl<= 80
-      @ prow(),pcol() say chr(18)
-   endif
-   if ldos .and. ncpl>80
-      @ prow(),pcol() say chr(15)
+   oprint:init("DOS")
+   if ncpl<= 80
+      oprint:normaldos()
+   else
+      oprint:condendos()
    endif
 else
-   IF type("_OOHG_printlibrary")="U"
-      _OOHG_PRINTLIBRARY="HBPRINTER"
+   IF type("_oohg_printlibrary")="U"
+      _oohg_PRINTLIBRARY="HBPRINTER"
    ENDIF
-   oprintr:init(_OOHG_printlibrary)
+   oprint:init(_OOHG_printlibrary)
+   if _oohg_PRINTLIBRARY="DOS"
+      if ncpl<=80
+         oprint:normaldos()
+       else
+         oprint:condendos()
+      endif
+   endif
 endif
-oprintr:selprinter(lselect,lpreview,llandscape,npapersize)
-if oprintr:lprerror
-   oprintr:release()
+
+oprint:selprinter(lselect,lpreview,llandscape,npapersize)
+if oprint:lprerror
+   oprint:release()
    RETURN NIL
 endif
-oprintr:begindoc()
-oprintr:beginpage()
+oprint:begindoc()
+oprint:beginpage()
 nlin:=1
 if cgraphic<>NIL
    if .not. File(cgraphic)
       msgstop('graphic file not found','error')
    else
-      oprintr:printimage(nfi,nci+repobject:nlmargin,nff,ncf+repobject:nlmargin,cgraphic)
+      oprint:printimage(nfi,nci+repobject:nlmargin,nff,ncf+repobject:nlmargin,cgraphic)
    endif
 endif
 ngrpby:=0
@@ -293,21 +318,26 @@ if grpby<> NIL
 endif
 do while .not. eof()
    do events
-   ncol:=repobject:nlmargin
+////   ncol:=repobject:nlmargin
    swt:=0
    if grpby<>NIL
       if .not.(&grpby = crompe)
             if ascan(atotals,.T.)>0
-               oprintr:printdata(nlin,repobject:nlmargin, '** Subtotal **',,,.T.)
+               oprint:printdata(nlin,repobject:nlmargin, '** Subtotal **',,repobject:nfsize,.T.)
                nlin++
             endif
 **************
+            clinea:=""
             for i:=1 to len(afields)
-                if atotals[i]
-                   oprintr:printdata(nlin,ncol, iif(.not.(aformats[i]==''),transform(repobject:angrpby[i],aformats[i]),str(repobject:angrpby[i],awidths[i])),, ,.T.)
+                 if atotals[i]
+///////                  clinea:=clinea+ iif(.not.(aformats[i]==''),transform(repobject:angrpby[i],aformats[i]),str(repobject:angrpby[i],awidths[i]))+" "
+                  clinea:=clinea +iif(.not.(aformats[i]==''),space(awidths[i]-len(transform(repobject:angrpby[i],aformats[i])))+transform(repobject:angrpby[i],aformats[i]),str(repobject:angrpby[i],awidths[i]))+ space(awidths[i] -   len(  iif(.not.(aformats[i]==''),space(awidths[i]-len(transform(repobject:angrpby[i],aformats[i])))+transform(repobject:angrpby[i],aformats[i]),str(repobject:angrpby[i],awidths[i])))   )+" "
+                 else
+                  clinea:=clinea+ space(awidths[i])+" "
                 endif
-                ncol:=ncol+awidths[i]+1
-            next i
+             next i
+             oprint:printdata(nlin,0+repobject:nlmargin,clinea,,repobject:nfsize ,.T.)
+
 **************
 
         for i:=1 to len(afields)
@@ -315,61 +345,42 @@ do while .not. eof()
         next i
         crompe:=&grpby
         nlin++
-        oprintr:printdata(nlin,repobject:nlmargin,  '** ' +hb_oemtoansi(chdrgrp)+' ** '+hb_oemtoansi(&grpby),, ,.T.)
+        oprint:printdata(nlin,repobject:nlmargin,  '** ' +hb_oemtoansi(chdrgrp)+' ** '+hb_oemtoansi(&grpby),,repobject:nfsize,.T.)
         nlin++
       endif
    endif
 **********
-   ncol:=0+repobject:nlmargin
+///   ncol:=0+repobject:nlmargin
+   clinea:=""
+   swmemo:=.F.
    for i:=1 to len(afields)
        wfielda:=afields[i]
        wfield:=&(wfielda)
-       swmemo=.F.
        if type('&wfielda')=='M'
-          swmemo=.T.          
+          swmemo=.T.
+          wfieldt:=wfield
+          ti:=i
        endif
-////////////       msgbox(type("&wfield")+"====="+type("&wfielda"))
             do case
+               case type('&wfielda')=='C'
+                 clinea:=clinea+substr(wfield,1,awidths[i])+space(awidths[i]-len(substr(wfield,1,awidths[i]) ))+" "
                case type('&wfielda')=='N'
-                oprintr:printdata(nlin,ncol, iif(.not.(aformats[i]==''),transform(wfield,aformats[i]),str(wfield,awidths[i])),,  )
+                    clinea:=clinea + iif(.not.(aformats[i]==''),space(awidths[i]-len(transform(wfield,aformats[i])))+transform(wfield,aformats[i]),str(wfield,awidths[i]))+ space(awidths[i] -   len(  iif(.not.(aformats[i]==''),space(awidths[i]-len(transform(wfield,aformats[i])))+transform(wfield,aformats[i]),str(wfield,awidths[i])))   )+" "
                case type('&wfielda')=='D'
-               oprintr:printdata(nlin,ncol, substr(dtoc(wfield),1,awidths[i]),, )
+                    clinea:=clinea+ substr(dtoc(wfield),1,awidths[i])+space(awidths[i]-len(substr(dtoc(wfield),1,awidths[i])) )+" "
                case type('&wfielda')=='L'
-               oprintr:printdata(nlin,ncol, wfield,,  )
-               case type('&wfielda')=='C' .or. type('&wfielda')=='M' //// ojo no quitar la a
-               if swmemo    //// pregunta si es memo o caracter
-                  for k:=1 to mlcount(rtrim(wfield),awidths[i])
-                       oprintr:printdata(nlin,ncol,justificalinea(memoline(rtrim(wfield),awidths[i] ,k),awidths[i]) ,,,  )
-                       nlin++
-                       if nlin>nlpp
-			   nlin:=1
-                           oprintr:endpage()
-                           oprintr:beginpage()
-		           if cgraphic<>NIL .and. lmul
-                              if .not. File(cgraphic)
-			         msgstop('graphic file not found','error')
-                              else
-                                 oprintr:printimage(nfi,nci+repobject:nlmargin,nff,repobject:nfc,cgraphic )
-                              endif
-		           endif
-			   nlin:=repobject:headers(aheaders1,aheaders2,awidths,nlin,ctitle,lmode,grpby,chdrgrp,cheader)
-                      endif
-                  next k
-                  if len(rtrim(wfield))=0
+                    clinea:=clinea+wfield+" "
+              case type('&wfielda')=='M' .or. type('&wfielda')=='C' //// ojo no quitar la a
+                  nmemo:=mlcount(rtrim(wfield),awidths[i])
+                  if nmemo>0
+                     clinea:=clinea + rtrim(justificalinea(memoline(rtrim(wfield),awidths[i] ,1),awidths[i]))+space(awidths[i]-len(rtrim(justificalinea(memoline(rtrim(wfield),awidths[i] ,1),awidths[i])) ) )+" "
                   else
-                     nlin--
+                     clinea:=clinea + space(awidths[i])+" "
                   endif
-               else
-                  oprintr:printdata(nlin,ncol,substr(wfield,1,awidths[i]),,  )
-               endif
                otherwise
-                oprintr:printdata(nlin,ncol,replicate('_',awidths[i]),,   )
+               clinea:=clinea+replicate('_',awidths[i])+" "
             endcase
-
-
-       ncol:=ncol+awidths[i]+1
        if atotals[i]
-
           aresul[i]:=aresul[i]+wfield
           swt:=1
           if grpby<>NIL
@@ -377,42 +388,76 @@ do while .not. eof()
           endif
        endif
 next i
-
+oprint:printdata(nlin,repobject:nlmargin,clinea,,repobject:nfsize)
 nlin++
 if nlin>nlpp
    nlin:=1
    if .not. ldos
-      oprintr:endpage()
-      oprintr:beginpage()
+      oprint:endpage()
+      oprint:beginpage()
       if cgraphic<>NIL .and. lmul
          if .not. File(cgraphic)
          msgstop('graphic file not found','error')
       else
-         oprintr:printimage(nfi,nci+repobject:nlmargin,nff,repobject:nfc,cgraphic )
+         oprint:printimage(nfi,nci+repobject:nlmargin,nff,repobject:nfc,cgraphic )
       endif
    endif
 endif
 nlin:=repobject:headers(aheaders1,aheaders2,awidths,nlin,ctitle,lmode,grpby,chdrgrp,cheader)
 endif
+**************resto de memo
+if swmemo
+   if nmemo > 1
+   clinea:=""
+   nspace:=0
+   for k:=1 to ti-1
+       nspace:=nspace+awidths[k]+1
+   next k
+   for k:=2 to nmemo
+       clinea:=space(nspace)+justificalinea(memoline(rtrim(wfieldt),awidths[ti] ,k),awidths[ti] )
+       oprint:printdata(nlin,0+repobject:nlmargin,clinea , , repobject:nfsize ,  )
+       nlin++
+       if nlin>nlpp
+          nlin:=1
+          oprint:endpage()
+          oprint:beginpage()
+	  if cgraphic<>NIL .and. lmul
+             if .not. File(cgraphic)
+	         msgstop('graphic file not found','error')
+             else
+                 oprint:printimage(nfi,nci+repobject:nlmargin,nff,repobject:nfc,cgraphic )
+             endif
+	 endif
+	 nlin:=repobject:headers(aheaders1,aheaders2,awidths,nlin,ctitle,lmode,grpby,chdrgrp,cheader)
+       endif
+    next k
+////    nlin--
+   endif
+endif
+**************
 skip
 enddo
 
 if swt==1
-   ncol:=0+repobject:nlmargin
+///   ncol:=0+repobject:nlmargin
    if grpby<>NIL
       if .not.(&grpby == crompe)
          if ascan(atotals,.T.)>0
-            oprintr:printdata(nlin,repobject:nlmargin,  '** Subtotal **',, ,.T.)
+            oprint:printdata(nlin,repobject:nlmargin,  '** Subtotal **',,repobject:nfsize,.T.)
 **** ojo
             nlin++
          endif
+         clinea:=""
          for i:=1 to len(afields)
                 if atotals[i]
-                    oprintr:printdata(nlin,ncol,  iif(.not.(aformats[i]==''),transform(repobject:angrpby[i],aformats[i]),str(repobject:angrpby[i],awidths[i])),, ,.T. )
+                   //////clinea:=clinea+ iif(.not.(aformats[i]==''),transform(repobject:angrpby[i],aformats[i]),str(repobject:angrpby[i],awidths[i]))+" "
+                   clinea:=clinea +iif(.not.(aformats[i]==''),space(awidths[i]-len(transform(repobject:angrpby[i],aformats[i])))+transform(repobject:angrpby[i],aformats[i]),str(repobject:angrpby[i],awidths[i]))+ space(awidths[i] -   len(  iif(.not.(aformats[i]==''),space(awidths[i]-len(transform(repobject:angrpby[i],aformats[i])))+transform(repobject:angrpby[i],aformats[i]),str(repobject:angrpby[i],awidths[i])))   )+" "
+                else
+                   clinea:=clinea+ space(awidths[i])+" "
                 endif
-                ncol:=ncol+awidths[i]+1
+/////                ncol:=ncol+awidths[i]+1
          next i
-
+        oprint:printdata(nlin,repobject:nlmargin, clinea , ,repobject:nfsize ,.T. )
         for i:=1 to len(afields)
           repobject:angrpby[i]:=0
         next i
@@ -421,38 +466,37 @@ if swt==1
    endif
 **************
    nlin++
-   ncol:=0+repobject:nlmargin
+/////   ncol:=0+repobject:nlmargin
    if nlin>nlpp
       nlin:=1
-      oprintr:endpage()
-      oprintr:beginpage()
+      oprint:endpage()
+      oprint:beginpage()
       nlin:=repobject:headers(aheaders1,aheaders2,awidths,nlin,ctitle,lmode,grpby,chdrgrp,cheader)
    endif
    if ascan(atotals,.T.)>0
-      oprintr:printdata(nlin,ncol,'*** Total ***',, ,.T.)
+      oprint:printdata(nlin, 0+repobject:nlmargin,'*** Total ***',,repobject:nfsize,.T.)
    endif
    nlin++
-   ncol:=0+repobject:nlmargin
+   clinea:=""
    for i:=1 to len(afields)
        if atotals[i]
-          oprintr:printdata(nlin,ncol,iif(.not.(aformats[i]==''),transform(aresul[i],aformats[i]),str(aresul[i],awidths[i])),, ,.T.)
+   /////       clinea:=clinea+iif(.not.(aformats[i]==''),transform(aresul[i],aformats[i]),str(aresul[i],awidths[i]))+" "
+           clinea:=clinea +iif(.not.(aformats[i]==''),space(awidths[i]-len(transform(aresul[i],aformats[i])))+transform(aresul[i],aformats[i]),str(aresul[i],awidths[i]))+ space(awidths[i] -   len(  iif(.not.(aformats[i]==''),space(awidths[i]-len(transform(aresul[i],aformats[i])))+transform(aresul[i],aformats[i]),str(aresul[i],awidths[i])))   )+" "
+        else
+         clinea:=clinea+ space(awidths[i])+" "
        endif
-       ncol:= ncol + awidths[i] + 1
    next i
-   ncol:=repobject:nlmargin
+    oprint:printdata(nlin,0+repobject:nlmargin,clinea, ,repobject:nfsize ,.T.)
    nlin++
-   oprintr:printdata(nlin,ncol," ",,)
-///   endif
-
+   oprint:printdata(nlin,repobject:nlmargin," ")
 endif
-  oprintr:endpage()
-  oprintr:enddoc()
-  oprintr:release()
-****release nlmargin
+  oprint:endpage()
+  oprint:enddoc()
+  oprint:release()
 return Nil
 
 METHOD headers(aheaders1,aheaders2,awidths,nlin,ctitle,lmode,grpby,chdrgrp,cheader) CLASS _OOHG_REPORT
-local i,ncol,nsum,ncenter,ncenter2,npostitle,ctitle1,ctitle2
+local i,ncol,nsum,ncenter,ncenter2,npostitle,ctitle1,ctitle2,clinea,clinea1,clinea2
 empty(lmode)
 nsum:=0
 for i:=1 to len(awidths)
@@ -472,51 +516,58 @@ if len(ctitle2)>0
    ncenter2:=((nsum-len(ctitle2))/2)-1
 endif
 repobject:npager++
+clinea:=trim(_oohg_MESSAGES(1,8) )+ space(6-len(trim(_OOHG_MESSAGES(1,8) ))) + str(repobject:npager,4)
+clinea1:=space(ncenter)+ctitle1
+clinea2:=space(nsum+len(awidths)-11)+dtoc(date())
+oprint:printdata(nlin,repobject:nlmargin , clinea,,repobject:nfsize )
+oprint:printdata(nlin,repobject:nlmargin , clinea1,,repobject:nfsize+1,.T. )
+oprint:printdata(nlin,repobject:nlmargin , clinea2,,repobject:nfsize )
 
-oprintr:printdata(nlin,repobject:nlmargin, trim( _OOHG_Messages( 1, 8 ) ),, )
-oprintr:printdata(nlin,repobject:nlmargin+6, str(repobject:npager,4),, )
-oprintr:printdata(nlin,repobject:nlmargin+ncenter, ctitle1,, repobject:nfsize +2,.T. )
-oprintr:printdata(nlin,repobject:nlmargin+nsum-11 +len(awidths) , (DATE()),, )
-
+/////////
 if len(ctitle2)>0
    nlin++
-      oprintr:printdata(nlin,repobject:nlmargin+ncenter2, ctitle2,,repobject:nfsize +2,.T. )
-      oprintr:printdata(nlin,repobject:nlmargin+nsum-11 +len(awidths) , TIME(),, )
+   clinea1:=space(ncenter2)+ctitle2
+   clinea2:=space(nsum+len(awidths)-11)+time()
+   oprint:printdata(nlin,repobject:nlmargin, clinea1,,repobject:nfsize+1,.T. )
+   oprint:printdata(nlin,repobject:nlmargin, clinea2,,repobject:nfsize )
 else
    nlin++
-    oprintr:printdata(nlin,repobject:nlmargin+nsum-11 +len(awidths) , TIME(),, )
+   clinea2:=space(nsum+len(awidths)-11)+time()
+   oprint:printdata(nlin,repobject:nlmargin , clinea2,,repobject:nfsize )
 endif
 
 nlin++
 nlin++
-ncol:=repobject:nlmargin
+clinea:=""
 for i:=1 to  len(awidths)
-    oprintr:printdata(nlin,ncol, replicate('-',awidths[i]),,  )
-    ncol=ncol+awidths[i]+1
+    clinea:=clinea+ replicate('-',awidths[i])+" "
 next i
+oprint:printdata(nlin,repobject:nlmargin, clinea,,repobject:nfsize  )
 nlin++
 
-ncol:=repobject:nlmargin
+clinea:=""
 for i:=1 to len(awidths)
-    oprintr:printdata(nlin,ncol, substr(aheaders1[i],1,awidths[i]),, ,.T.  )
-    ncol=ncol+awidths[i]+1
+  clinea:= clinea + substr(aheaders1[i],1,awidths[i] ) + space( awidths[i]-len(aheaders1[i] )) +" "
 next i
+oprint:printdata(nlin,repobject:nlmargin, clinea,,repobject:nfsize ,.T.)
 nlin++
 
-ncol:=repobject:nlmargin
+clinea:=""
 for i:=1 to len(awidths)
-    oprintr:printdata(nlin,ncol,  substr(aheaders2[i],1,awidths[i] ),, ,.T.)
-    ncol=ncol+awidths[i]+1
+    clinea:= clinea + substr(aheaders2[i],1,awidths[i] ) + space( awidths[i]-len(aheaders2[i] )) +" "
 next i
+   oprint:printdata(nlin,repobject:nlmargin, clinea,,repobject:nfsize ,.T.)
 nlin++
-ncol:=repobject:nlmargin
+
+clinea:=""
 for i:=1 to  len(awidths)
-    oprintr:printdata(nlin,ncol,  replicate('-',awidths[i]),,   )
-    ncol=ncol+awidths[i]+1
+    clinea:=clinea + replicate('-',awidths[i])+" "
 next i
+oprint:printdata(nlin,repobject:nlmargin, clinea,,repobject:nfsize   )
 nlin:=nlin+2
+
 if grpby<>NIL
-       oprintr:printdata(nlin,repobject:nlmargin, '** ' +chdrgrp+' ** '+   &grpby ,, ,.T.   )
+    oprint:printdata(nlin,repobject:nlmargin, '** ' +chdrgrp+' ** '+   &grpby , ,repobject:nfsize ,.T.   )
        nlin++
 endif
 return nlin
@@ -525,7 +576,7 @@ return nlin
 METHOD extreport1(cfilerep,cheader) CLASS _OOHG_REPORT
 local nContlin,i,ctitle,aheaders1,aheaders2,afields,awidths,atotals,aformats
 local nlpp,ncpl,nllmargin,calias,ldos,lpreview,lselect,cgraphic,lmul,nfi,nci
-local nff,ncf,cgrpby,chdrgrp,llandscape
+local nff,ncf,cgrpby,chdrgrp,llandscape,lnoprop
        if .not. file(cfilerep+'.rpt')
           msginfo('('+cfilerep+'.rpt)  File not found','Information')
           return Nil
@@ -585,6 +636,7 @@ local nff,ncf,cgrpby,chdrgrp,llandscape
        lpreview:=repobject:leadatologic('REPORT','PREVIEW',.F.)
        lselect:=repobject:leadatologic('REPORT','SELECT',.F.)
        lmul:=repobject:leadatologic('REPORT','MULTIPLE',.F.)
+       lnoprop:=repobject:leadatologic('REPORT','NOFIXED',.F.)
 
        cgraphic:=repobject:clean(repobject:leaimage('REPORT','IMAGE',''))
        if len(cgraphic)==0
@@ -609,7 +661,7 @@ local nff,ncf,cgrpby,chdrgrp,llandscape
        endif
        chdrgrp:=repobject:clean(repobject:leadato('REPORT','HEADRGRP',''))
        llandscape:=repobject:leadatologic('REPORT','LANDSCAPE',.F.)
-       easyreport(ctitle,aheaders1,aheaders2,afields,awidths,atotals,nlpp,ldos,lpreview,cgraphic,nfi,nci,nff,ncf,lmul,cgrpby,chdrgrp,llandscape,ncpl,lselect,calias,nllmargin,aformats,npapersize,cheader)
+       easyreport(ctitle,aheaders1,aheaders2,afields,awidths,atotals,nlpp,ldos,lpreview,cgraphic,nfi,nci,nff,ncf,lmul,cgrpby,chdrgrp,llandscape,ncpl,lselect,calias,nllmargin,aformats,npapersize,cheader,lnoprop)
 return Nil
 
 METHOD leadato(cName,cPropmet,cDefault) CLASS _OOHG_REPORT
