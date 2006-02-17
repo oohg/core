@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.18 2006-02-16 20:14:08 declan2005 Exp $
+* $Id: h_print.prg,v 1.19 2006-02-17 13:31:41 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -41,9 +41,9 @@ DATA nwpen              INIT 0.1   PROTECTED //// pen width
 DATA tempfile           INIT gettempdir()+"T"+alltrim(str(int(hb_random(999999)),8))+".prn" PROTECTED
 DATA impreview          INIT .F.  PROTECTED
 DATA lwinhide           INIT .T.   PROTECTED
-DATA cversion           INI  "(oohg)V 1.18"
+DATA cversion           INIT  "(oohg)V 1.16"
 
-METHOD version() INLINE ::cversion
+
 
 *-------------------------
 METHOD init()
@@ -117,6 +117,8 @@ METHOD setunits()   ////// mm o rowcol
 *-------------------------
 METHOD printroundrectangle()
 *-------------------------
+
+METHOD version() INLINE ::cversion
 
 ENDCLASS
 
