@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.61 2006-02-19 05:05:10 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.62 2006-02-19 05:12:02 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -128,7 +128,9 @@ int _OOHG_GlobalRTL = 0;             // Force RTL functionality
 int _OOHG_NestedSameEvent = 0;       // Allows to nest an event currently performed (i.e. CLICK button)
 PHB_ITEM _OOHG_LastSelf = NULL;
 
-extern HB_EXPORT PHB_SYMB    hb_dynsymSymbol( PHB_DYNS pDynSym )
+#ifndef _HB_API_INTERNAL_
+    #define hb_dynsymSymbol( pDynSym )  ( pDynSym )->pSymbol
+#endif
 
 #pragma ENDDUMP
 
