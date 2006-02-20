@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.39 2006-02-11 06:19:32 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.40 2006-02-20 03:32:09 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -353,7 +353,7 @@ MEMVAR __aEditControls, __aPicture
    oEditControl := GetEditControlFromArray( NIL, ::EditControls, nColumn, Self )
    __aEditControls[ nColumn ] := oEditControl
    If ValType( oEditControl ) == "O"
-      bBlock := &( "{ || __aEditControls[ " + LTRIM( STR( nColumn ) ) + " ]:GridValue( " + cValue + " ) }" )
+      bBlock := &( "{ || __aEditControls[ " + LTRIM( STR( nColumn ) ) + " ]:GridValue( " + ::WorkArea + "->( " + cValue + " ) ) }" )
    ElseIf ValType( __aPicture[ nColumn ] ) $ "CM"
       bBlock := &( "{ || Trim( Transform( " + ::WorkArea + "->( " + cValue + " ), __aPicture[ " + LTRIM( STR( nColumn ) ) + " ] ) ) }" )
    ElseIf ValType( __aPicture[ nColumn ] ) == "L" .AND. __aPicture[ nColumn ]
@@ -882,7 +882,7 @@ Local cField, cArea, nPos, aStruct
    EndIf
 
    If ValType( uOldValue ) == "U"
-      uOldValue := &( ::aFields[ nCol ] )
+      uOldValue := &( ::WorkArea + "->( " + ::aFields[ nCol ] + " )" )
    EndIf
 
    If ValType( ::aReplaceField ) == "A" .AND. Len( ::aReplaceField ) >= nCol
@@ -1151,21 +1151,11 @@ Local cWorkArea, hWnd
 ***************************
 
 	if s == 1 .or. s == 0
-// Sin usar DBFILTER()
       ( cWorkArea )->( DBSkip() )
       ( cWorkArea )->( DBSkip( -1 ) )
       IF ( cWorkArea )->( RecNo() ) != v
          ( cWorkArea )->( DbSkip() )
       ENDIF
-/*
-// Usando DBFILTER()
-      cMacroVar := ( c::WorkArea )->( dbfilter() )
-      If ! Empty( cMacroVar )
-         If ! ( cWorkArea )->( &cMacroVar )
-            ( cWorkArea )->( DbSkip() )
-         EndIf
-      EndIf
-*/
 	EndIf
 
 ***************************
