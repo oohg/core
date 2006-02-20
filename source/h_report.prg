@@ -1,5 +1,5 @@
 /*
- * $Id: h_report.prg,v 1.15 2006-02-15 20:57:16 declan2005 Exp $
+ * $Id: h_report.prg,v 1.16 2006-02-20 03:47:03 declan2005 Exp $
  */
 /*
  * DO REPORT Command support procedures For MiniGUI Library.
@@ -93,6 +93,11 @@ MEMVAR oprint
 
 FUNCTION easyreport(ctitle,aheaders1,aheaders2,afields,awidths,atotals,nlpp,ldos,lpreview,cgraphic,nfi,nci,nff,ncf,lmul,cgrpby,chdrgrp,llandscape,ncpl,lselect,calias,nllmargin,aformats,npapersize,cheader,lnoprop)
 PRIVATE ctitle1,sicvar,_sw_report
+
+if type("cheader")#"C"
+   cheader=""
+endif
+
 if lnoprop=NIL
    lnoprop=.F.
 endif
@@ -105,9 +110,9 @@ if ncpl=NIL
 endif
 
 	ctitle1:=lower(substr(ctitle,at('|',ctitle)+1))+'...'
-	if cheader=NIL
-	   cheader:=''
-	endif
+//        if cheader=NIL
+//           cheader:=''
+//        endif
 
 	_sw_report:=.F.
 
@@ -314,14 +319,14 @@ for i:=1 to len(afields)
     repobject:angrpby[i]:=0
 next i
 if grpby<> NIL
-   crompe:=&grpby
+   crompe:=grpby
 endif
 do while .not. eof()
    do events
 ////   ncol:=repobject:nlmargin
    swt:=0
    if grpby<>NIL
-      if .not.(&grpby = crompe)
+      if .not.(grpby = crompe)
             if ascan(atotals,.T.)>0
                oprint:printdata(nlin,repobject:nlmargin, '** Subtotal **',,repobject:nfsize,.T.)
                nlin++
@@ -343,9 +348,9 @@ do while .not. eof()
         for i:=1 to len(afields)
           repobject:angrpby[i]:=0
         next i
-        crompe:=&grpby
+        crompe:=grpby
         nlin++
-        oprint:printdata(nlin,repobject:nlmargin,  '** ' +hb_oemtoansi(chdrgrp)+' ** '+hb_oemtoansi(&grpby),,repobject:nfsize,.T.)
+        oprint:printdata(nlin,repobject:nlmargin,  '** ' +hb_oemtoansi(chdrgrp)+' ** '+hb_oemtoansi(grpby),,repobject:nfsize,.T.)
         nlin++
       endif
    endif
@@ -441,7 +446,7 @@ enddo
 if swt==1
 ///   ncol:=0+repobject:nlmargin
    if grpby<>NIL
-      if .not.(&grpby == crompe)
+      if .not.(grpby == crompe)
          if ascan(atotals,.T.)>0
             oprint:printdata(nlin,repobject:nlmargin,  '** Subtotal **',,repobject:nfsize,.T.)
 **** ojo
@@ -461,7 +466,7 @@ if swt==1
         for i:=1 to len(afields)
           repobject:angrpby[i]:=0
         next i
-        crompe:=&grpby
+        crompe:=grpby
       endif
    endif
 **************
@@ -499,6 +504,9 @@ METHOD headers(aheaders1,aheaders2,awidths,nlin,ctitle,lmode,grpby,chdrgrp,chead
 local i,ncol,nsum,ncenter,ncenter2,npostitle,ctitle1,ctitle2,clinea,clinea1,clinea2
 empty(lmode)
 nsum:=0
+//if cheader=NIL
+//   cheader:=""
+///endif
 for i:=1 to len(awidths)
     nsum:=nsum+awidths[i]
 next i
@@ -567,7 +575,7 @@ oprint:printdata(nlin,repobject:nlmargin, clinea,,repobject:nfsize   )
 nlin:=nlin+2
 
 if grpby<>NIL
-    oprint:printdata(nlin,repobject:nlmargin, '** ' +chdrgrp+' ** '+   &grpby , ,repobject:nfsize ,.T.   )
+    oprint:printdata(nlin,repobject:nlmargin, '** ' +chdrgrp+' ** '+   grpby , ,repobject:nfsize ,.T.   )
        nlin++
 endif
 return nlin
