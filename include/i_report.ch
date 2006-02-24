@@ -1,5 +1,5 @@
 /*
- * $Id: i_report.ch,v 1.5 2006-02-15 20:57:14 declan2005 Exp $
+ * $Id: i_report.ch,v 1.6 2006-02-24 12:32:45 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -85,7 +85,7 @@ easyreport  ( <ctitle> ,		 	;
                 <cgraphic>,             ;
                 <nfi> , <nci> , <nff> , <ncf> ,   ;
                 <.lmul.>              ,  ;
-                <cgrpby>              ,  ;
+                <"cgrpby">              ,  ;
                 <chdrgrp>             ,  ;
                 <.llandscape.>        ,  ;
                 <ncpl>                ,  ;
