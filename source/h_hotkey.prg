@@ -1,5 +1,5 @@
 /*
- * $Id: h_hotkey.prg,v 1.5 2006-02-25 04:07:28 guerra000 Exp $
+ * $Id: h_hotkey.prg,v 1.6 2006-02-25 16:29:27 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -159,7 +159,7 @@ LOCAL aKey, nAlt, nCtrl, nShift, nWin, nPos, cKey2, cText
          cKey2 := SUBSTR( cKey2, nPos + 1 )
          IF cText == "ALT"
             nAlt := MOD_ALT
-         ELSEIF cText == "CTRL"
+         ELSEIF cText == "CTRL" .OR. cText == "CONTROL"
             nCtrl := MOD_CONTROL
          ELSEIF cText == "SHIFT"
             nShift := MOD_SHIFT
@@ -187,7 +187,8 @@ LOCAL aKey, oWnd, bCode
          oWnd:SetKey( aKey[ 1 ], aKey[ 2 ], bAction )
       ENDIF
    ELSE
-      bCode := NIL
+      MsgOOHGError( "HOTKEY: Key combination name not valid: " + cKey + ". Program Terminated." )
+      // bCode := NIL
    ENDIF
 Return bCode
 
