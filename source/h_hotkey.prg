@@ -1,5 +1,5 @@
 /*
- * $Id: h_hotkey.prg,v 1.4 2005-11-09 05:56:43 guerra000 Exp $
+ * $Id: h_hotkey.prg,v 1.5 2006-02-25 04:07:28 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -93,6 +93,24 @@
 
 #include "oohg.ch"
 
+STATIC aKeyTables := { "LBUTTON", "RBUTTON", "CANCEL", "MBUTTON", "XBUTTON1", "XBUTTON2", ".7", "BACK", "TAB", ".10", ;
+                       ".11", "CLEAR", "RETURN", ".14", ".15", "SHIFT", "CONTROL", "MENU", "PAUSE", "CAPITAL", ;
+                       "KANA", ".22", "JUNJA", "FINAL", "HANJA", ".26", "ESCAPE", "CONVERT", "NONCONVERT", "ACCEPT", ;
+                       "MODECHANGE", "SPACE", "PRIOR", "NEXT", "END", "HOME", "LEFT", "UP", "RIGHT", "DOWN", ;
+                       "SELECT", "PRINT", "EXECUTE", "SNAPSHOT", "INSERT", "DELETE", "HELP", "0", "1", "2", ;
+                       "3", "4", "5", "6", "7", "8", "9", ".58", ".59", ".60", ;
+                       ".61", ".62", ".63", ".64", "A", "B", "C", "D", "E", "F", ;
+                       "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", ;
+                       "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", ;
+                       "LWIN", "RWIN", "APPS", ".94", "SLEEP", "NUMPAD0", "NUMPAD1", "NUMPAD2", "NUMPAD3", "NUMPAD4", ;
+                       "NUMPAD5", "NUMPAD6", "NUMPAD7", "NUMPAD8", "NUMPAD9", "MULTIPLY", "ADD", "SEPARATOR", "SUBTRACT", "DECIMAL", ;
+                       "DIVIDE", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", ;
+                       "F10", "F11", "F12", "F13", "F14", "F15", "F16", "F17", "F18", "F19", ;
+                       "F20", "F21", "F22", "F23", "F24", ".136", ".137", ".138", ".139", ".140", ;
+                       ".141", ".142", ".143", "NUMLOCK", "SCROLL", ".146", ".147", ".148", ".149", ".150", ;
+                       ".151", ".152", ".153", ".154", ".155", ".156", ".157", ".158", ".159", "LSHIFT", ;
+                       "RSHIFT", "LCONTROL", "RCONTROL", "LMENU", "RMENU" } // 165
+
 *------------------------------------------------------------------------------*
 Function _DefineHotKey( cParentForm, nMod, nKey, bAction )
 *------------------------------------------------------------------------------*
@@ -117,3 +135,75 @@ Function _PushKey( nKey )
    Keybd_Event( nKey, .f. )
    Keybd_Event( nKey, .t. )
 Return Nil
+
+*------------------------------------------------------------------------------*
+FUNCTION _DetermineKey( cKey )
+*------------------------------------------------------------------------------*
+LOCAL aKey, nAlt, nCtrl, nShift, nWin, nPos, cKey2, cText
+   aKey := { 0, 0 }
+   nAlt := nCtrl := nShift := nWin := 0
+   cKey2 := UPPER( cKey )
+   DO WHILE ! EMPTY( cKey2 )
+      nPos := AT( "+", cKey2 )
+      IF nPos == 0
+         cKey2 := ALLTRIM( cKey2 )
+         nPos := ASCAN( aKeyTables, { |c| cKey2 == c } )
+         cKey2 := ""
+         IF nPos != 0
+            aKey := { nPos, nAlt + nCtrl + nShift + nWin }
+         // ELSE
+            // "Key" description not recognized
+         ENDIF
+      ELSE
+         cText := ALLTRIM( LEFT( cKey2, nPos - 1 ) )
+         cKey2 := SUBSTR( cKey2, nPos + 1 )
+         IF cText == "ALT"
+            nAlt := MOD_ALT
+         ELSEIF cText == "CTRL"
+            nCtrl := MOD_CONTROL
+         ELSEIF cText == "SHIFT"
+            nShift := MOD_SHIFT
+         ELSEIF cText == "WIN"
+            nWin := MOD_WIN
+         ELSE
+            // Invalid keyword!
+            cKey2 := ""
+         ENDIF
+      ENDIF
+   ENDDO
+RETURN aKey
+
+*------------------------------------------------------------------------------*
+Function _DefineAnyKey( cParentForm, cKey, bAction )
+*------------------------------------------------------------------------------*
+LOCAL aKey, oWnd, bCode
+   aKey := _DetermineKey( cKey )
+   IF aKey[ 1 ] != 0
+      oWnd := TControl():SetForm( "", cParentForm ):Parent
+      // bCode := oWnd:HotKey( aKey[ 1 ], aKey[ 2 ] )
+      bCode := oWnd:SetKey( aKey[ 1 ], aKey[ 2 ] )
+      IF PCOUNT() > 2
+         // oWnd:HotKey( aKey[ 1 ], aKey[ 2 ], bAction )
+         oWnd:SetKey( aKey[ 1 ], aKey[ 2 ], bAction )
+      ENDIF
+   ELSE
+      bCode := NIL
+   ENDIF
+Return bCode
+
+EXTERN InitHotKey, ReleaseHotKey
+
+#pragma BEGINDUMP
+#include <hbapi.h>
+#include <windows.h>
+
+HB_FUNC( INITHOTKEY )   // InitHotKey( hWnd, nMod, nKey, nHotKeyID )
+{
+   RegisterHotKey( ( HWND ) hb_parnl( 1 ), hb_parni( 4 ), hb_parni( 2 ), hb_parni( 3 ) );
+}
+
+HB_FUNC( RELEASEHOTKEY )   // ReleaseHotKey( hWnd, nHotKeyID )
+{
+   UnregisterHotKey( ( HWND ) hb_parnl( 1 ), hb_parni( 2 ) );
+}
+#pragma ENDDUMP

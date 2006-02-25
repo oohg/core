@@ -1,5 +1,5 @@
 /*
- * $Id: h_report.prg,v 1.17 2006-02-24 12:32:45 declan2005 Exp $
+ * $Id: h_report.prg,v 1.18 2006-02-25 04:07:28 guerra000 Exp $
  */
 /*
  * DO REPORT Command support procedures For MiniGUI Library.
@@ -182,7 +182,7 @@ ENDCLASS
 
 
 METHOD easyreport1(ctitle,aheaders1,aheaders2,afields,awidths,atotals,nlpp,ldos,lpreview,cgraphic,nfi,nci,nff,ncf,lmul,cgrpby,chdrgrp,llandscape,ncpl,lselect,calias,nllmargin,aformats,npapersize,cheader,lnoprop) CLASS _OOHG_REPORT
-local nlin,i,ncol,aresul,lmode,swt:=0,grpby,k,ncvcopt,swmemo,clinea,ti,nmemo,nspace
+local nlin,i,aresul,lmode,swt:=0,grpby,k,ncvcopt,swmemo,clinea,ti,nmemo,nspace
 private  wfield,wfielda,wfieldt
   if nllmargin = NIL
    repobject:nlmargin:=0
@@ -485,7 +485,7 @@ endif
 return Nil
 
 METHOD headers(aheaders1,aheaders2,awidths,nlin,ctitle,lmode,grpby,chdrgrp,cheader) CLASS _OOHG_REPORT
-local i,ncol,nsum,ncenter,ncenter2,npostitle,ctitle1,ctitle2,clinea,clinea1,clinea2
+local i,nsum,ncenter,ncenter2,npostitle,ctitle1,ctitle2,clinea,clinea1,clinea2
 empty(lmode)
 nsum:=0
 for i:=1 to len(awidths)

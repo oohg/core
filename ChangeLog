@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.103 2006-02-24 12:32:45 declan2005 Exp $
+ * $Id: ChangeLog,v 1.104 2006-02-25 04:07:27 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,6 +7,17 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2006-02-24 21:25 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_keybd.ch
+  * source/h_hotkey.prg
+    * Moved all ON KEY, RELEASE KEY and STORE KEY commands to a
+      single declaration. "Key" definition is
+  - source/c_hotkey.c
+  * source/makelib.bat
+    * Moved source code from c_hotkey.c to h_hotkey.prg .
+    - c_hotkey.c removed.
+  * source/h_report.prg
+    * Removed few unused variables (warnings).
 
 2006-02-24 07:30 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source/h_report.prg
