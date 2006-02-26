@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.36 2006-02-26 16:52:36 guerra000 Exp $
+ * $Id: c_windows.c,v 1.37 2006-02-26 17:49:53 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -124,7 +124,9 @@
 #include <commctrl.h>
 #include "../include/oohg.h"
 
-PHB_SYMB hb_dynsymSymbol( PHB_DYNS );
+#ifdef HB_ITEM_NIL
+   #define hb_dynsymSymbol( pDynSym )        ( ( pDynSym )->pSymbol )
+#endif
 
 BOOL Array2Rect(PHB_ITEM aRect, RECT *rc ) ;
 

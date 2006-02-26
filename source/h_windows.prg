@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.65 2006-02-26 16:52:36 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.66 2006-02-26 17:49:54 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -123,13 +123,8 @@ STATIC _OOHG_HotKeys := {}           // Application-wide hot keys
 #include <olectl.h>
 #include "../include/oohg.h"
 
-#ifdef HB_FS_PUBLIC
+#ifdef HB_ITEM_NIL
    #define hb_dynsymSymbol( pDynSym )        ( ( pDynSym )->pSymbol )
-#else
-   PHB_SYMB hb_dynsymSymbol( PHB_DYNS pDynSym )
-   {
-      return pDynSym->pSymbol;
-   }
 #endif
 
 int _OOHG_ShowContextMenus = 1;      //
