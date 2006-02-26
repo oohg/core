@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.63 2006-02-26 05:41:35 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.64 2006-02-26 05:51:43 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -114,12 +114,14 @@ STATIC _OOHG_HotKeys := {}           // Application-wide hot keys
 // C static variables
 #pragma BEGINDUMP
 
+/*
 #ifndef __XHARBOUR__
    #if !defined( _HB_API_INTERNAL_ )
       #define _HB_API_INTERNAL_
    #endif
    #define hb_dynsymSymbol( pDynSym )  ( pDynSym )->pSymbol
 #endif
+*/
 
 #include "hbapi.h"
 #include "hbapiitm.h"
