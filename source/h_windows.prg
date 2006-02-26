@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.64 2006-02-26 05:51:43 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.65 2006-02-26 16:52:36 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -114,15 +114,6 @@ STATIC _OOHG_HotKeys := {}           // Application-wide hot keys
 // C static variables
 #pragma BEGINDUMP
 
-/*
-#ifndef __XHARBOUR__
-   #if !defined( _HB_API_INTERNAL_ )
-      #define _HB_API_INTERNAL_
-   #endif
-   #define hb_dynsymSymbol( pDynSym )  ( pDynSym )->pSymbol
-#endif
-*/
-
 #include "hbapi.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
@@ -131,6 +122,15 @@ STATIC _OOHG_HotKeys := {}           // Application-wide hot keys
 #include <commctrl.h>
 #include <olectl.h>
 #include "../include/oohg.h"
+
+#ifdef HB_FS_PUBLIC
+   #define hb_dynsymSymbol( pDynSym )        ( ( pDynSym )->pSymbol )
+#else
+   PHB_SYMB hb_dynsymSymbol( PHB_DYNS pDynSym )
+   {
+      return pDynSym->pSymbol;
+   }
+#endif
 
 int _OOHG_ShowContextMenus = 1;      //
 int _OOHG_GlobalRTL = 0;             // Force RTL functionality

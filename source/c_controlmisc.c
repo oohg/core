@@ -1,5 +1,5 @@
 /*
- * $Id: c_controlmisc.c,v 1.27 2006-02-26 05:51:43 guerra000 Exp $
+ * $Id: c_controlmisc.c,v 1.28 2006-02-26 16:52:36 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -91,15 +91,6 @@
 	Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-/*
-#ifndef __XHARBOUR__
-   #if !defined( _HB_API_INTERNAL_ )
-      #define _HB_API_INTERNAL_
-   #endif
-   #define hb_dynsymSymbol( pDynSym )  ( pDynSym )->pSymbol
-#endif
-*/
-
 #define _WIN32_IE      0x0500
 #define HB_OS_WIN_32_USED
 #define _WIN32_WINNT   0x0400
@@ -124,6 +115,8 @@
 #include "winreg.h"
 #include "tchar.h"
 #include "../include/oohg.h"
+
+PHB_SYMB hb_dynsymSymbol( PHB_DYNS );
 
 PHB_SYMB *s_Symbols = NULL;
 
