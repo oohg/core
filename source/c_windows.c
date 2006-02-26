@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.33 2006-02-19 05:05:10 guerra000 Exp $
+ * $Id: c_windows.c,v 1.34 2006-02-26 05:41:35 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -91,6 +91,12 @@
 	Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
+#ifndef __XHARBOUR__
+   #if !defined( _HB_API_INTERNAL_ )
+      #define _HB_API_INTERNAL_
+   #endif
+   #define hb_dynsymSymbol( pDynSym )  ( pDynSym )->pSymbol
+#endif
 
 #define WINVER  0x0500
 #define _WIN32_IE      0x0500
@@ -124,10 +130,6 @@
 #include "tchar.h"
 #include <commctrl.h>
 #include "../include/oohg.h"
-
-#ifndef _HB_API_INTERNAL_
-    #define hb_dynsymSymbol( pDynSym )  ( pDynSym )->pSymbol
-#endif
 
 BOOL Array2Rect(PHB_ITEM aRect, RECT *rc ) ;
 

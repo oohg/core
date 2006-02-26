@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.62 2006-02-19 05:12:02 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.63 2006-02-26 05:41:35 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -114,6 +114,13 @@ STATIC _OOHG_HotKeys := {}           // Application-wide hot keys
 // C static variables
 #pragma BEGINDUMP
 
+#ifndef __XHARBOUR__
+   #if !defined( _HB_API_INTERNAL_ )
+      #define _HB_API_INTERNAL_
+   #endif
+   #define hb_dynsymSymbol( pDynSym )  ( pDynSym )->pSymbol
+#endif
+
 #include "hbapi.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
@@ -127,10 +134,6 @@ int _OOHG_ShowContextMenus = 1;      //
 int _OOHG_GlobalRTL = 0;             // Force RTL functionality
 int _OOHG_NestedSameEvent = 0;       // Allows to nest an event currently performed (i.e. CLICK button)
 PHB_ITEM _OOHG_LastSelf = NULL;
-
-#ifndef _HB_API_INTERNAL_
-    #define hb_dynsymSymbol( pDynSym )  ( pDynSym )->pSymbol
-#endif
 
 #pragma ENDDUMP
 
