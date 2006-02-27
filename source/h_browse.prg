@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.40 2006-02-20 03:32:09 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.41 2006-02-27 05:34:42 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -407,9 +407,18 @@ Local _RecNo , _DeltaScroll, s
 
       _RecNo := ( ::WorkArea )->( RecNo() )
 
-      ( ::WorkArea )->( DbGoTo( ::aRecMap[ Len( ::aRecMap ) ] ) )
+      If Len( ::aRecMap ) == 0
+         ( ::WorkArea )->( DbGoBottom() )
+         ( ::WorkArea )->( DbSkip( - LISTVIEWGETCOUNTPERPAGE ( ::hWnd ) + 1 ) )
+      Else
+         ( ::WorkArea )->( DbGoTo( ::aRecMap[ Len( ::aRecMap ) ] ) )
+      EndIf
       ::Update()
-      ( ::WorkArea )->( DbGoTo( ::aRecMap[ Len( ::aRecMap ) ] ) )
+      If Len( ::aRecMap ) == 0
+         ( ::WorkArea )->( DbGoTo( 0 ) )
+      Else
+         ( ::WorkArea )->( DbGoTo( ::aRecMap[ Len( ::aRecMap ) ] ) )
+      EndIf
       ::scrollUpdate()
       ListView_Scroll( ::hWnd, _DeltaScroll[2] * (-1) , 0 )
       ListView_SetCursel ( ::hWnd, Len( ::aRecMap ) )
@@ -438,7 +447,11 @@ Local _RecNo , _DeltaScroll
          Return nil
 		EndIf
       _RecNo := ( ::WorkArea )->( RecNo() )
-      ( ::WorkArea )->( DbGoTo( ::aRecMap[ 1 ] ) )
+      If Len( ::aRecMap ) == 0
+         ( ::WorkArea )->( DbGoTop() )
+      Else
+         ( ::WorkArea )->( DbGoTo( ::aRecMap[ 1 ] ) )
+      EndIf
       ( ::WorkArea )->( DbSkip( - LISTVIEWGETCOUNTPERPAGE ( ::hWnd ) + 1 ) )
       ::scrollUpdate()
       ::Update()
@@ -522,13 +535,19 @@ Local s  , _RecNo , _DeltaScroll := { Nil , Nil , Nil , Nil }
          Return nil
       EndIf
       _RecNo := ( ::WorkArea )->( RecNo() )
-      ( ::WorkArea )->( DbGoTo( ::aRecMap[ 1 ] ) )
+      If Len( ::aRecMap ) == 0
+         ( ::WorkArea )->( DbGoTop() )
+      Else
+         ( ::WorkArea )->( DbGoTo( ::aRecMap[ 1 ] ) )
+      EndIf
       ( ::WorkArea )->( DbSkip( -1 ) )
       ::scrollUpdate()
       ::Update()
       ListView_Scroll( ::hWnd, _DeltaScroll[2] * (-1) , 0 )
       ( ::WorkArea )->( DbGoTo( _RecNo ) )
-      ListView_SetCursel ( ::hWnd, 1 )
+      If Len( ::aRecMap ) != 0
+         ListView_SetCursel( ::hWnd, 1 )
+      EndIf
 
 	Else
 
@@ -565,12 +584,18 @@ Local s , _RecNo , _DeltaScroll
 
       _RecNo := ( ::WorkArea )->( RecNo() )
 
-      ( ::WorkArea )->( DbGoTo( ::aRecMap[ 1 ] ) )
+      If Len( ::aRecMap ) == 0
+         ( ::WorkArea )->( DbGoTop() )
+      Else
+         ( ::WorkArea )->( DbGoTo( ::aRecMap[ 1 ] ) )
+      EndIf
       ( ::WorkArea )->( DbSkip() )
       ::Update()
-      ( ::WorkArea )->( DbGoTo( ATail( ::aRecMap ) ) )
+      If Len( ::aRecMap ) != 0
+         ( ::WorkArea )->( DbGoTo( ATail( ::aRecMap ) ) )
+         ListView_Scroll( ::hWnd, _DeltaScroll[2] * (-1) , 0 )
+      EndIf
       ::scrollUpdate()
-      ListView_Scroll( ::hWnd, _DeltaScroll[2] * (-1) , 0 )
       ( ::WorkArea )->( DbGoTo( _RecNo ) )
 
       ListView_SetCursel( ::hWnd, Len( ::aRecMap ) )
@@ -1071,7 +1096,11 @@ Local ActualRecord , RecordCount
 
 	EndIf
 
-   ::nValue := ::aRecMap[ nRow ]
+   If Len( ::aRecMap ) < nRow .OR. nRow == 0
+      ::nValue := 0
+   Else
+      ::nValue := ::aRecMap[ nRow ]
+   EndIf
 
    ListView_SetCursel( ::hWnd, nRow )
 
@@ -1338,6 +1367,7 @@ Return nil
 
 #pragma BEGINDUMP
 #define s_Super s_TGrid
+
 #include "hbapi.h"
 #include "hbvm.h"
 #include "hbstack.h"
@@ -1517,6 +1547,138 @@ Local nr , RecordCount , BackRec
    EndIf
 
 Return nr
+
+EXTERN INITVSCROLLBAR, INSERTUP, INSERTDOWN, INSERTPRIOR, INSERTNEXT, GETSCROLLRANGEMAX, INITVSCROLLBARBUTTON, SETSCROLLINFO
+
+#pragma BEGINDUMP
+
+// #define _WIN32_IE      0x0500
+// #define HB_OS_WIN_32_USED
+// #define _WIN32_WINNT   0x0400
+// #include <shlobj.h>
+
+// #include "hbapiitm.h"
+// #include "winreg.h"
+// #include "tchar.h"
+
+HB_FUNC (INITVSCROLLBAR)
+{
+	HWND hwnd;
+	HWND hscrollbar;
+
+	hwnd = (HWND) hb_parnl (1);
+
+	hscrollbar = CreateWindowEx(0 ,"SCROLLBAR","",
+	WS_CHILD | WS_VISIBLE | SBS_VERT ,
+	hb_parni(2) , hb_parni(3) , hb_parni(4) , hb_parni(5),
+	hwnd,(HMENU) 0 , GetModuleHandle(NULL) , NULL ) ;
+
+	SetScrollRange(
+	hscrollbar,	// handle of window with scroll bar
+	SB_CTL,		// scroll bar flag
+	1,		// minimum scrolling position
+	100,		// maximum scrolling position
+	1 		// redraw flag
+	);
+
+	hb_retnl ( (LONG) hscrollbar );
+}
+
+HB_FUNC (INSERTUP)
+{
+			keybd_event(
+			VK_UP	,	// virtual-key code
+			0,		// hardware scan code
+			0,		// flags specifying various function options
+			0		// additional data associated with keystroke
+			);
+}
+
+HB_FUNC (INSERTDOWN)
+{
+			keybd_event(
+			VK_DOWN	,	// virtual-key code
+			0,		// hardware scan code
+			0,		// flags specifying various function options
+			0		// additional data associated with keystroke
+			);
+}
+
+HB_FUNC (INSERTPRIOR)
+{
+			keybd_event(
+			VK_PRIOR	,	// virtual-key code
+			0,		// hardware scan code
+			0,		// flags specifying various function options
+			0		// additional data associated with keystroke
+			);
+}
+
+HB_FUNC (INSERTNEXT)
+{
+			keybd_event(
+			VK_NEXT	,	// virtual-key code
+			0,		// hardware scan code
+			0,		// flags specifying various function options
+			0		// additional data associated with keystroke
+			);
+}
+
+HB_FUNC ( GETSCROLLRANGEMAX )
+{
+
+   int MinPos, MaxPos;
+
+   GetScrollRange( (HWND) hb_parnl( 1 ), hb_parni( 2 ),&MinPos,&MaxPos) ;
+
+   hb_retni( MaxPos );
+
+}
+
+
+HB_FUNC( INITVSCROLLBARBUTTON )
+{
+	HWND hwnd;
+	HWND hbutton;
+	int Style ;
+
+	hwnd = (HWND) hb_parnl (1);
+
+	Style =  WS_CHILD | WS_VISIBLE | SS_SUNKEN ;
+
+	hbutton = CreateWindow( "static" ,
+                           "" ,
+                           Style ,
+                           hb_parni(2) ,
+                           hb_parni(3) ,
+                           hb_parni(4) ,
+                           hb_parni(5) ,
+                           hwnd ,
+                           (HMENU) NULL ,
+                           GetModuleHandle(NULL) ,
+                           NULL ) ;
+
+	hb_retnl ( (LONG) hbutton );
+}
+
+HB_FUNC( SETSCROLLINFO )
+{
+	SCROLLINFO lpsi;
+	lpsi.cbSize = sizeof(SCROLLINFO);
+	lpsi.fMask = SIF_PAGE | SIF_POS | SIF_RANGE ;
+	lpsi.nMin   = 1;
+	lpsi.nMax   = hb_parni(2);
+	lpsi.nPage = hb_parni(4);
+	lpsi.nPos  = hb_parni(3);
+
+	hb_retni( SetScrollInfo( (HWND) hb_parnl( 1 ),
+ 							 SB_CTL       ,
+    						 (LPSCROLLINFO) &lpsi,
+							 1
+							 ) );
+}
+
+#pragma ENDDUMP
 
 Function SetBrowseSync( lValue )
    IF valtype( lValue ) == "L"

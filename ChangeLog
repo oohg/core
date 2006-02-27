@@ -1,11 +1,19 @@
 /*
- * $Id: ChangeLog,v 1.112 2006-02-27 04:13:59 guerra000 Exp $
+ * $Id: ChangeLog,v 1.113 2006-02-27 05:34:41 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-02-26 23:25 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  - source/c_browse.c
+  * source/h_browse.prg
+  * source/makelib.bat
+    ! Fixed some array access errors when DBF is empty.
+    * Moved source code from c_browse.c to h_browse.prg .
+    - c_browse.c removed.
 
 2006-02-26 22:15 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source/makelib.bat
