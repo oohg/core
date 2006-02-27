@@ -1,11 +1,18 @@
 /*
- * $Id: ChangeLog,v 1.110 2006-02-26 17:49:53 guerra000 Exp $
+ * $Id: ChangeLog,v 1.111 2006-02-27 04:11:18 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-02-26 22:10 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  - source/c_registry.c
+  * source/h_registry.prg
+    * Added registry type as 3rd parameter in ::Set() method.
+    * Moved source code from c_registry.c to h_registry.prg .
+    - c_registry.c removed.
 
 2006-02-26 11:48 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source/c_controlmisc.c
