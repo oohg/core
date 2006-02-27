@@ -1,5 +1,5 @@
 /*
- * $Id: i_tooltip.ch,v 1.2 2005-11-13 00:11:12 guerra000 Exp $
+ * $Id: i_tooltip.ch,v 1.3 2006-02-27 23:00:41 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -93,5 +93,8 @@
 
 #xcommand SET TOOLTIPBALLOON <x:ON,OFF> => _SetToolTipBalloon ( Upper(<(x)>) == "ON" )
 #xcommand SET TOOLTIP BALLOON <x:ON,OFF> => _SetToolTipBalloon ( Upper(<(x)>) == "ON" )
+#xcommand SET TOOLTIPSTYLE BALLOON  => _SetToolTipBalloon ( .T. )
+#xcommand SET TOOLTIPSTYLE STANDARD  => _SetToolTipBalloon ( .F. )
 
+ 
 #translate IsToolTipBalloonActive => _SetToolTipBalloon ()

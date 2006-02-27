@@ -1,11 +1,15 @@
 /*
- * $Id: ChangeLog,v 1.113 2006-02-27 05:34:41 guerra000 Exp $
+ * $Id: ChangeLog,v 1.114 2006-02-27 23:00:40 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-02-27 17:56 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+  * include/h_tooltip.ch
+    * added SET TOOLTIPSTYLE BALLOON/STANDARD (preserved SET TOOLTIP BALLOON for backward  compatibility)
 
 2006-02-26 23:25 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   - source/c_browse.c
