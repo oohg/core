@@ -1,5 +1,5 @@
 /*
- * $Id: hello.prg,v 1.21 2006-02-28 01:35:11 declan2005 Exp $
+ * $Id: hello.prg,v 1.22 2006-02-28 15:53:10 declan2005 Exp $
  */
 /*
  * ooHG Hello World Demo
@@ -19,7 +19,10 @@ Local oWnd
 PUblic _OOHG_printlibrary:="MINIPRINT"
 
 set century on
-SET TOOLTIPBALLOON ON
+
+SET TOOLTIPSTYLE BALLOON
+SET TOOLTIPBACKCOLOR  {255,0,0 }
+SET TOOLTIPFORECOLOR  {0,255,0 }
 
 DEFINE WINDOW Win_1 OBJ oWnd ;
    AT 0,0 ;
