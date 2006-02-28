@@ -1,5 +1,5 @@
 /*
- * $Id: hello.prg,v 1.20 2006-01-20 14:15:58 declan2005 Exp $
+ * $Id: hello.prg,v 1.21 2006-02-28 01:35:11 declan2005 Exp $
  */
 /*
  * ooHG Hello World Demo
@@ -16,6 +16,8 @@ Function Main()
 LOCAL oLabel
 Local oWnd
 
+PUblic _OOHG_printlibrary:="MINIPRINT"
+
 set century on
 SET TOOLTIPBALLOON ON
 
@@ -25,9 +27,8 @@ DEFINE WINDOW Win_1 OBJ oWnd ;
    HEIGHT 480 ;
    TITLE 'Hello World!' ;
    on mouseclick msginfo(str(_OOHG_MouseRow)+str(_OOHG_MouseCol)) ;
-   MAIN ;
-   virtual height 650 ;
-   virtual WIDTH 900
+   MAIN 
+
 
    DEFINE TOOLBAR Toolbr buttonsize 50,20
       BUTTON TBN1 CAPTION "Boton 1" ACTION MSGINFO("Toolbar 1!")
@@ -68,6 +69,7 @@ DEFINE WINDOW Win_1 OBJ oWnd ;
       END POPUP
       ITEM "Salir" ACTION Win_1.Release
    END MENU
+
 
    on key F5 action msginfo( str( olabel:row  )+str( olabel:col ),"Hello window" )
 
@@ -252,10 +254,8 @@ DEFINE STATUSBAR
 END STATUSBAR
 
 END WINDOW
-
 ownd:Center()
 ownd:activate()
-
 Return
 
 
@@ -274,6 +274,7 @@ Public aSer:={ {14280,20420,12870,25347, 7640},;
 		Height 480 ;
 		Title "Printing Bar Graphs" ;
 		 modal ;
+                BACKCOLOR {255,255,255 } ;
 		On Init DrawBarGraph ( aser ) ;
                 on mouseclick graphtest:print()
 

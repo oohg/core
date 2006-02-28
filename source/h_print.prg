@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.19 2006-02-17 13:31:41 declan2005 Exp $
+* $Id: h_print.prg,v 1.20 2006-02-28 01:35:11 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -18,6 +18,7 @@ memvar _HMG_PRINTER_TIMESTAMP
 memvar _HMG_PRINTER_NAME
 memvar _HMG_PRINTER_PAGECOUNT
 memvar _HMG_PRINTER_HDC_BAK
+memvar _OOHG_printer_docname
 
 CREATE CLASS TPRINT
 
@@ -209,6 +210,7 @@ case ::cprintlibrary="MINIPRINT"
    public _HMG_PRINTER_NAME
    public _HMG_PRINTER_PAGECOUNT
    public _HMG_PRINTER_HDC_BAK
+   public _OOHG_printer_docname
 
    ::aprinters:=aprinters()
 
@@ -358,7 +360,7 @@ case ::cprintlibrary="MINIPRINT"
       else
          SELECT PRINTER cprinterx to lsucess ;
          ORIENTATION worientation ;
-         PREVIEW 
+         PREVIEW
       endif
    endif
 
@@ -374,7 +376,7 @@ case ::cprintlibrary="MINIPRINT"
          PAPERSIZE npapersize
       else
          SELECT PRINTER cprinterx to lsucess ;
-         ORIENTATION worientation 
+         ORIENTATION worientation
       endif
    endif
 
@@ -445,7 +447,8 @@ do case
 case ::cprintlibrary="HBPRINTER"
    START DOC NAME cdoc
 case ::cprintlibrary="MINIPRINT"
-   START PRINTDOC
+   _OOHG_printer_docname:=cdoc
+   START PRINTDOC NAME cdoc
 case ::cprintlibrary="DOS"
    SET PRINTER TO &(::tempfile)
    SET DEVICE TO PRINT

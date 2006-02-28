@@ -8,8 +8,8 @@ set date ansi
 
 	define window pr_form ;
 		at 0,0 ;
-		width 300;
-		height 300 ;
+                width 300;
+                height 300 ;
 		title 'print Test' ;
                 MODAL                
 
@@ -50,7 +50,8 @@ if oprint:lprerror
    oprint:release()
    return nil
 endif
-oprint:begindoc()
+oprint:begindoc("mi documento")
+///oprint:begindoc()
 oprint:setpreviewsize(2)  /// tama¤o del preview  1 menor,2 mas grande ,3 mas...
 oprint:beginpage()
 oprint:printdata(10,10,"esta es una prueba","times new roman",10,.F.) /// 

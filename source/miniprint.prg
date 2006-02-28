@@ -1,5 +1,5 @@
 /*
- * $Id: miniprint.prg,v 1.8 2006-02-12 01:36:40 declan2005 Exp $
+ * $Id: miniprint.prg,v 1.9 2006-02-28 01:35:11 declan2005 Exp $
  */
 /*----------------------------------------------------------------------------
  MINIGUI - Harbour Win32 GUI library source code
@@ -86,6 +86,7 @@ memvar _HMG_printer_thumbupdate
 memvar _HMG_printer_thumbscroll
 memvar _HMG_printer_PrevPageNumber
 memvar _HMG_printer_usermessages
+memvar _OOHG_printer_docname
 
 *------------------------------------------------------------------------------*
 Procedure _HMG_PRINTER_SHOWPREVIEW
@@ -108,6 +109,7 @@ Public _HMG_printer_zoomclick_xoffset := 0
 Public _HMG_printer_thumbupdate := .T.
 Public _HMG_printer_thumbscroll
 Public _HMG_printer_PrevPageNumber := 0
+
 
 
         if _HMG_printer_hdc_bak == 0
@@ -335,7 +337,7 @@ Public _HMG_printer_PrevPageNumber := 0
 		NOSIZE NOSYSMENU
 
                 ON KEY ESCAPE   ACTION ( HideWindow( GetFormHandle ( "_HMG_PRINTER_GO_TO_PAGE" ) ) , EnableWindow ( GetformHandle ( "_HMG_PRINTER_SHOWPREVIEW" ) )  , EnableWindow ( GetformHandle ( "_HMG_PRINTER_SHOWTHUMBNAILS" ) ) , EnableWindow ( GetformHandle ( "_HMG_PRINTER_PPNAV" ) ) , _HMG_PRINTER_SHOWPREVIEW.setfocus  )
-                ON KEY RETURN   ACTION ( _HMG_printer_CurrentPageNumber := _HMG_PRINTER_GO_TO_PAGE.Spinner_1.Value , SendMessage ( GetFormHandle ('_HMG_PRINTER_GO_TO_PAGE') , WM_CLOSE , 0 , 0 ) )
+                ON KEY RETURN   ACTION ( _HMG_printer_CurrentPageNumber := _HMG_PRINTER_GO_TO_PAGE.Spinner_1.Value , HideWindow( GetFormHandle ( "_HMG_PRINTER_GO_TO_PAGE" ) ) , EnableWindow ( GetformHandle ( "_HMG_PRINTER_SHOWPREVIEW" ) )  , EnableWindow ( GetformHandle ( "_HMG_PRINTER_SHOWTHUMBNAILS" ) ) , EnableWindow ( GetformHandle ( "_HMG_PRINTER_PPNAV" ) ) , _HMG_PRINTER_SHOWPREVIEW.setfocus  )
 
 		Define Label Label_1
 			Row 13
@@ -921,8 +923,10 @@ Local EvenOnly := .F.
 		EndIf
 
 	EndIf
-
-        _HMG_PRINTER_StartDoc ( _HMG_printer_hdc_bak )
+///        if _oohg_printer_docname=NIL
+///              _OOHG_printer_docname := "oohg Print System"
+///        endif
+        _HMG_PRINTER_StartDoc ( _HMG_printer_hdc_bak, _oohg_printer_docname )
 
         If      _HMG_printer_copies > 1 ;
 		.or. ;
@@ -1986,15 +1990,17 @@ HB_FUNC ( _HMG_PRINTER_STARTDOC )
 
 	HDC hdcPrint = (HDC) hb_parnl(1) ;
 
+
+
 	if ( hdcPrint != 0 )
 	{
 
 		ZeroMemory(&docInfo, sizeof(docInfo));
 		docInfo.cbSize = sizeof(docInfo);
-                docInfo.lpszDocName = "ooHG printing";
+                docInfo.lpszDocName =  hb_parc(2);
 
 		StartDoc(hdcPrint, &docInfo);
-	
+
 	}
 }
 
@@ -2065,7 +2071,7 @@ HB_FUNC ( _HMG_PRINTER_C_PRINT )
 			fnWeight = FW_NORMAL ;
 		}
 
-		// Italic 
+		// Italic
 
 		if ( hb_parl(11) )
 		{

@@ -5,7 +5,7 @@
  http://www.geocities.com/harbour_minigui/
 
  This program is free software; you can redistribute it and/or modify it under 
- the terms of the GNU General Public License as published by the Free Software 
+ the terms of the GNU General Public License as published by the Free Software
  Foundation; either version 2 of the License, or (at your option) any later 
  version. 
 
@@ -203,21 +203,21 @@ _HMG_printer_preview := <.Preview.> ;;
 _HMG_printer_InitUserMessages() ;;
 _HMG_printer_timestamp := strzero( Seconds() * 100 , 8 ) 
 
-#xcommand START PRINTDOC ;
+#xcommand START PRINTDOC [ NAME <_oohg_printer_docname> ]  ;
 => ;
-if ( _HMG_printer_preview , ( _HMG_printer_PageCount := 0 , _HMG_printer_hdc_bak := _HMG_printer_hdc ) ,  _HMG_PRINTER_StartDoc ( _HMG_printer_hdc ) ) 
+if ( _HMG_printer_preview , ( _HMG_printer_PageCount := 0 , _HMG_printer_hdc_bak := _HMG_printer_hdc ) ,  _HMG_PRINTER_StartDoc ( _HMG_printer_hdc, if(_oohg_printer_docname = NIL,"oohg Print System",_oohg_printer_docname ) ) )
 
 #xcommand START PRINTPAGE ;
 => ;
-if ( _HMG_printer_preview , ( _HMG_printer_hdc := _HMG_PRINTER_STARTPAGE_PREVIEW ( _HMG_printer_hdc_bak , GetTempFolder() + "\" + _HMG_printer_timestamp + "_HMG_print_preview_" +  alltrim(strzero(++_HMG_printer_PageCount,4)) + ".Emf" ) ) , _HMG_PRINTER_StartPage ( _HMG_printer_hdc ) ) 
+if ( _HMG_printer_preview , ( _HMG_printer_hdc := _HMG_PRINTER_STARTPAGE_PREVIEW ( _HMG_printer_hdc_bak , GetTempFolder() + "\" + _HMG_printer_timestamp + "_HMG_print_preview_" +  alltrim(strzero(++_HMG_printer_PageCount,4)) + ".Emf" ) ) , _HMG_PRINTER_StartPage ( _HMG_printer_hdc ) )
 
 #xcommand END PRINTPAGE ;
 => ;
-if ( _HMG_printer_preview , _HMG_PRINTER_ENDPAGE_PREVIEW (_HMG_printer_hdc) , _HMG_PRINTER_EndPage ( _HMG_printer_hdc ) ) 
+if ( _HMG_printer_preview , _HMG_PRINTER_ENDPAGE_PREVIEW (_HMG_printer_hdc) , _HMG_PRINTER_EndPage ( _HMG_printer_hdc ) )
 
 #xcommand END PRINTDOC ;
 => ;
-if ( _HMG_printer_preview , _HMG_PRINTER_SHOWPREVIEW() , _HMG_PRINTER_EndDoc ( _HMG_printer_hdc ) ) 
+if ( _HMG_printer_preview , _HMG_PRINTER_SHOWPREVIEW() , _HMG_PRINTER_EndDoc ( _HMG_printer_hdc ) )
 
 #xcommand ABORT PRINTDOC ;
 => ;
@@ -232,7 +232,7 @@ _HMG_PRINTER_ABORTDOC ( _HMG_printer_hdc )
 	[ <strikeout : STRIKEOUT> ] ;
 	[ <lcolor : COLOR> <aColor> ] ;
 	=> ;
-        _HMG_PRINTER_H_PRINT ( _HMG_printer_hdc , <Row> , <Col> , <cFontName> , <nFontSize> , <aColor>\[1\] , <aColor>\[2\] , <aColor>\[3\] , <cText> , <.bold.> , <.italic.> , <.underline.> , <.strikeout.> , <.lcolor.> , <.lfont.> , <.lsize.> ) 
+        _HMG_PRINTER_H_PRINT ( _HMG_printer_hdc , <Row> , <Col> , <cFontName> , <nFontSize> , <aColor>\[1\] , <aColor>\[2\] , <aColor>\[3\] , <cText> , <.bold.> , <.italic.> , <.underline.> , <.strikeout.> , <.lcolor.> , <.lfont.> , <.lsize.> )
 
 #xcommand @ <Row> , <Col> PRINT [ DATA ] <cText> ;
 	TO <ToRow> , <ToCol> ;
