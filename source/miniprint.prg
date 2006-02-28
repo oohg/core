@@ -1,5 +1,5 @@
 /*
- * $Id: miniprint.prg,v 1.9 2006-02-28 01:35:11 declan2005 Exp $
+ * $Id: miniprint.prg,v 1.10 2006-02-28 23:20:43 declan2005 Exp $
  */
 /*----------------------------------------------------------------------------
  MINIGUI - Harbour Win32 GUI library source code
@@ -923,9 +923,7 @@ Local EvenOnly := .F.
 		EndIf
 
 	EndIf
-///        if _oohg_printer_docname=NIL
-///              _OOHG_printer_docname := "oohg Print System"
-///        endif
+
         _HMG_PRINTER_StartDoc ( _HMG_printer_hdc_bak, _oohg_printer_docname )
 
         If      _HMG_printer_copies > 1 ;
@@ -1240,7 +1238,7 @@ Return
 *------------------------------------------------------------------------------*
 Function GetPrinter()
 *------------------------------------------------------------------------------*
-        Local RetVal := '',I,nvalue
+        Local RetVal := '',I,nvalue:=0
         Local Printers := asort(aPrinters())
         Local cdefault:= getdefaultprinter()
         for i:=1 to len(printers)
@@ -1256,16 +1254,16 @@ Function GetPrinter()
 
         DEFINE WINDOW _HMG_PRINTER_GETPRINTER   ;
 		AT 0,0			; 
-		WIDTH 295		;
+		WIDTH 345		;
 		HEIGHT GetTitleHeight() + 100 ;
                 TITLE _HMG_printer_usermessages [13] ;
 		MODAL			;
 		NOSIZE
 
-                @ 15,10 COMBOBOX Combo_1 ITEMS Printers VALUE nvalue WIDTH 270
+                @ 15,10 COMBOBOX Combo_1 ITEMS Printers VALUE nvalue WIDTH 320
 
-                @ 53,40  BUTTON Ok CAPTION _HMG_printer_usermessages [11] ACTION ( RetVal := Printers [ GetProperty ( '_HMG_PRINTER_GETPRINTER','Combo_1','Value') ] , DoMethod('_HMG_PRINTER_GETPRINTER','Release' ) )
-                @ 53,150 BUTTON Cancel CAPTION _HMG_printer_usermessages [12] ACTION ( RetVal := '' ,DoMethod('_HMG_PRINTER_GETPRINTER','Release' ) )
+                @ 53,65  BUTTON Ok CAPTION _HMG_printer_usermessages [11] ACTION ( RetVal := Printers [ GetProperty ( '_HMG_PRINTER_GETPRINTER','Combo_1','Value') ] , DoMethod('_HMG_PRINTER_GETPRINTER','Release' ) )
+                @ 53,175 BUTTON Cancel CAPTION _HMG_printer_usermessages [12] ACTION ( RetVal := '' ,DoMethod('_HMG_PRINTER_GETPRINTER','Release' ) )
 
 	END WINDOW
 
@@ -1990,9 +1988,7 @@ HB_FUNC ( _HMG_PRINTER_STARTDOC )
 
 	HDC hdcPrint = (HDC) hb_parnl(1) ;
 
-
-
-	if ( hdcPrint != 0 )
+  	if ( hdcPrint != 0 )
 	{
 
 		ZeroMemory(&docInfo, sizeof(docInfo));
@@ -2035,6 +2031,8 @@ HB_FUNC ( _HMG_PRINTER_C_PRINT )
 	// 14: Color Flag
 	// 15: FontName Flag
 	// 16: FontSize Flag
+
+        HGDIOBJ hgdiobj ;
 
 	char FontName [32] ;
 	int FontSize ;
@@ -2161,7 +2159,7 @@ HB_FUNC ( _HMG_PRINTER_C_PRINT )
 			FontName 
 			);
 
-		SelectObject ( hdcPrint , hfont ) ;
+		hgdiobj = SelectObject ( hdcPrint , hfont ) ;
 
 		SetTextColor( hdcPrint , RGB ( r , g , b ) ) ;
 		SetBkMode( hdcPrint , TRANSPARENT );
@@ -2171,6 +2169,8 @@ HB_FUNC ( _HMG_PRINTER_C_PRINT )
 			( y * GetDeviceCaps ( hdcPrint , LOGPIXELSY ) / 1000 ) - GetDeviceCaps ( hdcPrint , PHYSICALOFFSETY ) ,
 			hb_parc(9),
 			strlen(hb_parc(9)) ) ; 
+
+                SelectObject ( hdcPrint , hgdiobj ) ;
 
 		DeleteObject ( hfont ) ;
 
@@ -2199,6 +2199,8 @@ HB_FUNC ( _HMG_PRINTER_C_MULTILINE_PRINT )
 	// 16: FontSize Flag
 	// 17: ToRow
 	// 18: ToCol
+
+        HGDIOBJ hgdiobj ;
 
 	char FontName [32] ;
 	int FontSize ;
@@ -2329,7 +2331,7 @@ HB_FUNC ( _HMG_PRINTER_C_MULTILINE_PRINT )
 			FontName 
 			);
 
-		SelectObject ( hdcPrint , hfont ) ;
+		hgdiobj = SelectObject ( hdcPrint , hfont ) ;
 
 		SetTextColor( hdcPrint , RGB ( r , g , b ) ) ;
 		SetBkMode( hdcPrint , TRANSPARENT );
@@ -2346,6 +2348,8 @@ HB_FUNC ( _HMG_PRINTER_C_MULTILINE_PRINT )
 			DT_NOPREFIX | DT_MODIFYSTRING | DT_WORDBREAK | DT_END_ELLIPSIS 
 			) ; 
 
+                SelectObject ( hdcPrint , hgdiobj ) ;
+                
 		DeleteObject ( hfont ) ;
 
 	}
