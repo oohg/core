@@ -1,5 +1,5 @@
 /*
- * $Id: i_var.ch,v 1.8 2005-11-02 17:29:48 guerra000 Exp $
+ * $Id: i_var.ch,v 1.9 2006-02-28 15:51:18 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -138,3 +138,7 @@ MEMVAR _OOHG_AllVars
 #xtranslate  _OOHG_IsXP                => ( "XP" $ WindowsVersion()\[ 1 \] )
 
 #xtranslate  _OOHG_ThisItemCellValue   => _OOHG_AllVars \[  29 \]
+
+#xtranslate  _OOHG_TooltipBackColor   => _OOHG_AllVars \[  30 \]
+
+#xtranslate  _OOHG_TooltipForeColor   => _OOHG_AllVars \[  31 \]

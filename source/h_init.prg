@@ -1,5 +1,5 @@
 /*
- * $Id: h_init.prg,v 1.11 2006-01-23 04:23:59 declan2005 Exp $
+ * $Id: h_init.prg,v 1.12 2006-02-28 15:51:18 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -99,7 +99,7 @@ STATIC _OOHG_Messages := { {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {} }
 
 INIT PROCEDURE _OOHG_INIT()
 
-   Public _OOHG_AllVars[ 29 ]
+   Public _OOHG_AllVars[ 31 ]
 
    _OOHG_InteractiveCloseStarted := .F.
 
@@ -148,6 +148,10 @@ INIT PROCEDURE _OOHG_INIT()
    _OOHG_ActiveFrame := {}
 
    _OOHG_THISItemCellValue := Nil
+   
+    _OOHG_TooltipBackColor := Nil
+
+    _OOHG_TooltipForeColor  := NIL
 
 	InitMessages()
 

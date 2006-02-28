@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.66 2006-02-26 17:49:54 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.67 2006-02-28 15:51:18 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -555,6 +555,18 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )
 
 #pragma ENDDUMP
 
+
+function _SetToolTipBackcolor ( acolor )
+*--------------------------------------------------
+ _OOHG_tooltipbackcolor:=acolor
+return nil
+
+*--------------------------------------------------
+function _SetToolTipforecolor ( acolor )
+*--------------------------------------------------
+_OOHG_TooltipForeColor:=acolor
+return nil
+
 *------------------------------------------------------------------------------*
 METHOD Enabled( lEnabled ) CLASS TWindow
 *------------------------------------------------------------------------------*
@@ -1078,7 +1090,13 @@ Local Formhandle
 
    ::Register( FormHandle, FormName )
    ::ToolTipHandle := InitToolTip( FormHandle, _SetToolTipBalloon() )
+   if _OOHG_TooltipBackColor#NIL
+        SendMessage( ::ToolTipHandle , TTM_SETTIPBKCOLOR, RGB( _OOHG_TooltipBackColor[1] , _OOHG_TooltipBackColor[2] , _OOHG_TooltipBackColor[3] ), 0)
+   endif
 
+   if _OOHG_TooltipForeColor#NIL
+      SendMessage( ::ToolTipHandle , TTM_SETTIPTEXTCOLOR, RGB( _OOHG_TooltipForeColor[1] , _OOHG_TooltipForeColor[2] , _OOHG_TooltipForeColor[3] ), 0)
+   endif
    // Font Name:
    if ! empty( FontName )
       // Specified font
@@ -1147,6 +1165,7 @@ Local lOldBalloon := lBalloon
 
 return lOldBalloon
 
+*--------------------------------------------------
 
 *------------------------------------------------------------------------------*
 METHOD Register( hWnd, cName ) CLASS TForm
