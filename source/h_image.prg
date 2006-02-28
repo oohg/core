@@ -1,5 +1,5 @@
 /*
- * $Id: h_image.prg,v 1.6 2006-02-11 06:19:33 guerra000 Exp $
+ * $Id: h_image.prg,v 1.7 2006-02-28 06:22:20 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -99,9 +99,11 @@ CLASS TImage FROM TControl
    DATA cPicture        INIT ""
    DATA Stretch         INIT .F.
    DATA WhiteBackground INIT .F.
+   DATA bOnClick        INIT ""
 
    METHOD Define
-   METHOD Picture      SETGET
+   METHOD Picture       SETGET
+   METHOD OnClick       SETGET
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -145,3 +147,38 @@ METHOD Picture( cPicture ) CLASS TImage
       ::cPicture := cPicture
    ENDIF
 Return ::cPicture
+
+*-----------------------------------------------------------------------------*
+METHOD OnClick( bOnClick ) CLASS TImage
+*-----------------------------------------------------------------------------*
+   If PCOUNT() > 0
+      ::bOnClick := bOnClick
+      _UPDATE_SS_NOTIFY( ::hWnd, ( ValType( bOnClick ) == "B" ) )
+   EndIf
+Return ::bOnClick
+
+#pragma BEGINDUMP
+
+#include "hbapi.h"
+#include <windows.h>
+
+HB_FUNC( _UPDATE_SS_NOTIFY )
+{
+   HWND hwnd;
+   LONG myret;
+   hwnd = ( HWND ) hb_parnl (1);
+   myret = GetWindowLong( hwnd, GWL_STYLE );
+   if( hb_parnl( 2 ) )
+   {
+      myret = myret | SS_NOTIFY;
+   }
+   else
+   {
+      myret = myret &~ SS_NOTIFY;
+   }
+   SetWindowLong( hwnd, GWL_STYLE, myret );
+
+   hb_retni( myret );
+}
+
+#pragma ENDDUMP
