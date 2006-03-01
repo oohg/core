@@ -1,5 +1,5 @@
 /*
- * $Id: miniprint.prg,v 1.10 2006-02-28 23:20:43 declan2005 Exp $
+ * $Id: miniprint.prg,v 1.11 2006-03-01 22:46:13 declan2005 Exp $
  */
 /*----------------------------------------------------------------------------
  MINIGUI - Harbour Win32 GUI library source code
@@ -2430,77 +2430,91 @@ HB_FUNC ( _HMG_PRINTER_PRINTDIALOG )
 		hb_reta( 4 );
 		hb_stornl	( 0	, -1, 1 ); 
 		hb_storc	( ""	, -1, 2 ); 
-		hb_storni	( 0	, -1, 3 ); 
-		hb_storni	( 0	, -1, 4 ); 
+		hb_storni	( 0	, -1, 3 );
+		hb_storni	( 0	, -1, 4 );
 	}
 
 }
 
-HB_FUNC (APRINTERS)
+HB_FUNC (APRINTERS)   //Pier Release
 {
+      OSVERSIONINFO osVer;
+      DWORD level;
+      DWORD flags;
+      DWORD dwSize = 0;
+      DWORD dwPrinters = 0;
+      DWORD i;
+      LPBYTE pBuffer;
+      LPBYTE cBuffer ;
+      PRINTER_INFO_4* pInfo_4;
+      PRINTER_INFO_5* pInfo_5;
+      osVer.dwOSVersionInfoSize = sizeof( osVer );
+      if( GetVersionEx( &osVer ) )
+      {
+         switch( osVer.dwPlatformId )
+         {
+            case VER_PLATFORM_WIN32_NT:
+               flags = PRINTER_ENUM_CONNECTIONS|PRINTER_ENUM_LOCAL;
+               level = 4;
+            break;
 
-	OSVERSIONINFO osvi ;
+            default:
+               flags = PRINTER_ENUM_LOCAL;
+               level = 5;
+            break;
+         }
+         EnumPrinters(flags, NULL, level, NULL, 0, &dwSize, &dwPrinters);
+         pBuffer = GlobalAlloc(GPTR, dwSize);
+         if (pBuffer == NULL)
+         {
+            hb_reta(0);
+			GlobalFree(pBuffer);
+            return;
+         }
+         EnumPrinters(flags, NULL, level, pBuffer, dwSize, &dwSize, &dwPrinters);
+         if (dwPrinters == 0)
+         {
+            hb_reta(0);
+			GlobalFree(pBuffer);
+            return;
+         }
+         switch( osVer.dwPlatformId )
+         {
+            case VER_PLATFORM_WIN32_NT:
+               pInfo_4 = (PRINTER_INFO_4*)pBuffer;
+               hb_reta( dwPrinters );
+               for ( i = 0; i < dwPrinters; i++, pInfo_4++)
+               {
+                  cBuffer = GlobalAlloc(GPTR, 256);
+                  strcat(cBuffer,pInfo_4->pPrinterName);
+                  hb_storc( cBuffer , -1 , i+1 );
+                  GlobalFree(cBuffer);
+               }
 
-	LPBYTE cBuffer ;
-	LPBYTE pBuffer ;
+               GlobalFree(pBuffer);
+            break;
+            default:
+               pInfo_5 = (PRINTER_INFO_5*)pBuffer;
+               hb_reta( dwPrinters );
+               for ( i = 0; i < dwPrinters; i++, pInfo_5++)
+               {
+                  cBuffer = GlobalAlloc(GPTR, 256);
+                  strcat(cBuffer,pInfo_5->pPrinterName);
+                  hb_storc( cBuffer , -1 , i+1 );
+                  GlobalFree(cBuffer);
+               }
+               GlobalFree(pBuffer);
+            break;
+         }
+      }
+      else
+      {
+         GlobalFree(cBuffer);
+         GlobalFree(pBuffer);
+         hb_reta(0);
+      }
+   }
 
-	DWORD dwSize = 0;
-	DWORD dwPrinters = 0;
-	DWORD i;
-
-	PRINTER_INFO_5* pInfo;
-
-	osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-
-	GetVersionEx(&osvi);
-
-	if (osvi.dwPlatformId == VER_PLATFORM_WIN32_NT)
-	{
-		EnumPrinters(PRINTER_ENUM_LOCAL | PRINTER_ENUM_CONNECTIONS , NULL,5, NULL, 0, &dwSize, &dwPrinters);
-	}
-	else
-	{
-		EnumPrinters(PRINTER_ENUM_LOCAL , NULL,5, NULL, 0, &dwSize, &dwPrinters);
-	}
-
-	pBuffer = GlobalAlloc(GPTR, dwSize);
-	if (pBuffer == NULL)
-	{
-		hb_reta(0);
-		return;
-	}
-
-	if (osvi.dwPlatformId == VER_PLATFORM_WIN32_NT)
-	{
-		EnumPrinters( PRINTER_ENUM_LOCAL | PRINTER_ENUM_CONNECTIONS , NULL,5, pBuffer, dwSize, &dwSize, &dwPrinters);
-	}
-	else
-	{
-		EnumPrinters( PRINTER_ENUM_LOCAL , NULL,5, pBuffer, dwSize, &dwSize, &dwPrinters);
-	}
-
-	if (dwPrinters == 0)
-	{
-		hb_reta(0);
-		return;
-	}
-
-	cBuffer = GlobalAlloc(GPTR, dwPrinters*256);
-
-	pInfo = (PRINTER_INFO_5*)pBuffer;
-
-	hb_reta( dwPrinters );
-
-	for ( i = 0; i < dwPrinters; i++, pInfo++)
-	{
-		hb_storc(  pInfo->pPrinterName , -1 , i+1 ); 
-	}
-
-	GlobalFree(pBuffer);
-
-	GlobalFree(cBuffer);
-
-}
 
 HB_FUNC ( _HMG_PRINTER_C_RECTANGLE )
 {
@@ -2566,7 +2580,7 @@ HB_FUNC ( _HMG_PRINTER_C_RECTANGLE )
 
 		hgdiobj = SelectObject( (HDC) hdcPrint , hpen );
 
-		Rectangle( (HDC) hdcPrint , 
+		Rectangle( (HDC) hdcPrint ,
 			( x * GetDeviceCaps ( hdcPrint , LOGPIXELSX ) / 1000 ) - GetDeviceCaps ( hdcPrint , PHYSICALOFFSETX ) ,
 			( y * GetDeviceCaps ( hdcPrint , LOGPIXELSY ) / 1000 ) - GetDeviceCaps ( hdcPrint , PHYSICALOFFSETY ) ,	 
 			( tox * GetDeviceCaps ( hdcPrint , LOGPIXELSX ) / 1000 ) - GetDeviceCaps ( hdcPrint , PHYSICALOFFSETX ) ,
