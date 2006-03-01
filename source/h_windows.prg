@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.67 2006-02-28 15:51:18 declan2005 Exp $
+ * $Id: h_windows.prg,v 1.68 2006-03-01 22:18:22 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -108,6 +108,9 @@ STATIC _OOHG_MessageLoops := {}      // Message loops
 STATIC _OOHG_ActiveModal := {}       // Modal windows' stack
 STATIC _OOHG_DialogCancelled := .F.  //
 STATIC _OOHG_HotKeys := {}           // Application-wide hot keys
+STATIC _OOHG_TooltipBackcolor :=NIL
+STATIC _OOHG_TooltipForecolor :=NIL
+
 
 #include "hbclass.ch"
 
