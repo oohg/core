@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.118 2006-02-28 23:20:42 declan2005 Exp $
+ * $Id: ChangeLog,v 1.119 2006-03-01 04:36:15 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,18 +7,21 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2006-02-28 22:32 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_browse.prg
+    * Locked ::EditItem() method for deny a nested edition.
 
-2006-02-28 18:15 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>  
+2006-02-28 18:15 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source/miniprint.prg
-    * fixed problem in big reports in win98/millenium releasing memory ocupied by fonts
+    * fixed problem in big reports in win98/millenium releasing memory
+      ocupied by fonts
 
 2006-02-28 10:43 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * include/i_var.ch
   * include/i_tooltip.ch
   * source/h_windows.prg
   * source/h_init.prg
-    +  added SET TOOLTIPBACKCOLOR and SET TOOLTIPFORECOLOR
-
+    + added SET TOOLTIPBACKCOLOR and SET TOOLTIPFORECOLOR
 
 2006-02-28 00:20 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_image.prg

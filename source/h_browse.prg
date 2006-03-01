@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.41 2006-02-27 05:34:42 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.42 2006-03-01 04:36:16 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -112,6 +112,7 @@ CLASS TBrowse FROM TGrid
    DATA nButtonActive   INIT 0
    DATA OnAppend        INIT {}
    DATA aReplaceField   INIT {}
+   DATA lEditing        INIT .F.
 
    METHOD Define
    METHOD Refresh
@@ -129,6 +130,7 @@ CLASS TBrowse FROM TGrid
 
    METHOD EditCell
    METHOD EditItem
+   METHOD EditItem_B
    METHOD GetCellType
 
    METHOD BrowseOnChange
@@ -724,13 +726,25 @@ Return Nil
 *-----------------------------------------------------------------------------*
 METHOD EditItem( append ) CLASS TBrowse
 *-----------------------------------------------------------------------------*
+Local uRet
+   uRet := nil
+   If ! ::lEditing
+      ::lEditing := .T.
+      uRet := ::EditItem_B( append )
+      ::lEditing := .F.
+   EndIf
+Return uRet
+
+*-----------------------------------------------------------------------------*
+METHOD EditItem_B( append ) CLASS TBrowse
+*-----------------------------------------------------------------------------*
 Local nOldRecNo, nNewRecNo, nItem, z, cTitle
 Local aItems, aEditControls, aMemVars, aReplaceFields
 Local oEditControl, uOldValue, cMemVar, bReplaceField
 
-   IF ValType( append ) != "L"
+   If ValType( append ) != "L"
       append := .F.
-   ENDIF
+   EndIf
 
    If Select( ::WorkArea ) == 0
       ::RecCount := 0
