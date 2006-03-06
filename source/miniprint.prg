@@ -1,5 +1,5 @@
 /*
- * $Id: miniprint.prg,v 1.11 2006-03-01 22:46:13 declan2005 Exp $
+ * $Id: miniprint.prg,v 1.12 2006-03-06 20:57:27 declan2005 Exp $
  */
 /*----------------------------------------------------------------------------
  MINIGUI - Harbour Win32 GUI library source code
@@ -109,7 +109,7 @@ Public _HMG_printer_zoomclick_xoffset := 0
 Public _HMG_printer_thumbupdate := .T.
 Public _HMG_printer_thumbscroll
 Public _HMG_printer_PrevPageNumber := 0
-
+PUblic _OOHG_printer_docname:="OOHG printing"
 
 
         if _HMG_printer_hdc_bak == 0
@@ -311,7 +311,7 @@ Public _HMG_printer_PrevPageNumber := 0
                         Value _HMG_printer_copies
 			RangeMin 1
 			RangeMax 999
-                        OnChange ( if ( IsControlDefined (CheckBox_1,_HMG_PRINTER_PRINTPAGES) , If ( This.Value > 1 , SetProperty( '_HMG_PRINTER_PRINTPAGES' , 'CheckBox_1','Enabled',.T.) , SetProperty( '_HMG_PRINTER_PRINTPAGES','CheckBox_1','Enabled', .F. ) ) , Nil ) )
+                        OnChange ( if ( _IsControlDefined ("CheckBox_1","_HMG_PRINTER_PRINTPAGES") , If ( This.Value > 1 , SetProperty( '_HMG_PRINTER_PRINTPAGES' , 'CheckBox_1','Enabled',.T.) , SetProperty( '_HMG_PRINTER_PRINTPAGES','CheckBox_1','Enabled', .F. ) ) , Nil ) )
 		End Spinner
 
 		Define CheckBox CheckBox_1

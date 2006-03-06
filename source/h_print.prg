@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.21 2006-03-06 14:11:15 declan2005 Exp $
+* $Id: h_print.prg,v 1.22 2006-03-06 20:57:27 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -614,7 +614,6 @@ otherwise
    cspace = ""
 endcase
 
-endif
 
 DEFAULT nlin to 1
 
