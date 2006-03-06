@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.20 2006-02-28 01:35:11 declan2005 Exp $
+* $Id: h_print.prg,v 1.21 2006-03-06 14:11:15 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -42,8 +42,7 @@ DATA nwpen              INIT 0.1   PROTECTED //// pen width
 DATA tempfile           INIT gettempdir()+"T"+alltrim(str(int(hb_random(999999)),8))+".prn" PROTECTED
 DATA impreview          INIT .F.  PROTECTED
 DATA lwinhide           INIT .T.   PROTECTED
-DATA cversion           INIT  "(oohg)V 1.16"
-
+DATA cversion           INIT  "(oohg)V 1.16" PROTECTED
 
 
 *-------------------------
@@ -143,8 +142,9 @@ return nil
 METHOD setpreviewsize(ntam)
 *-------------------------
 if ntam=NIL .or. ntam>5
-   ntam=1
+   ntam:=1
 endif
+
 if ::cprintlibrary="HBPRINTER"
    SET PREVIEW SCALE ntam
 endif
@@ -227,14 +227,13 @@ if ::exit
    ::lprerror:=.T.
    return nil
 endif
+
 if lhide#NIL
   ::lwinhide:=lhide
 endif
 
 SETPRC(0,0)
-if llandscape=NIL
-   llandscape:=.F.
-endif
+DEFAULT llandscape to .F.
 
 do case
 case ::cprintlibrary="HBPRINTER"
@@ -380,8 +379,6 @@ case ::cprintlibrary="MINIPRINT"
       endif
    endif
 
-
-
    IF .NOT. lsucess
       ::lprerror:=.T.
       return nil
@@ -401,9 +398,8 @@ RETURN nil
 *-------------------------
 METHOD BEGINDOC(cdoc) CLASS TPRINT
 *-------------------------
-IF cdoc=NIL
-   cDOc:="ooHG printing"
-endif
+
+DEFAULT cDoc to "ooHG printing"
 
 DEFINE WINDOW _modalhide ;
 AT 0,0 ;
@@ -466,7 +462,6 @@ if iswindowdefined(_oohg_winreport)
    _oohg_winreport.image_101.visible:=IIF(_oohg_winreport.label_1.fontbold,.T.,.F.)
 endif
 return nil
-
 
 *-------------------------
 METHOD ENDDOC() CLASS TPRINT
@@ -605,13 +600,10 @@ otherwise
    ctext:=""
 endcase
 
-if calign=NIL
-   calign:="L"
-endif
+DEFAULT calign to "L"
 
-if nlen=NIL
-   nlen:=15
-endif
+DEFAULT nlen to 15
+
 
 do case
 case calign = "C"
@@ -622,28 +614,21 @@ otherwise
    cspace = ""
 endcase
 
-if nlin=nil
-   nlin:=1
-endif
-if ncol=nil
-   ncol:=1
-endif
-if ctext=NIL
-   ctext:=""
-endif
-if lbold=NIL
-   lbold:=.F.
-endif
-if cfont=NIL
-   cfont:=::cfontname
-endif
-if nsize=NIL
-   nsize:=::nfontsize
 endif
 
-if acolor=NIL
-   acolor:=::acolor
-endif
+DEFAULT nlin to 1
+
+DEFAULT ncol to 1
+
+DEFAULT ctext to ""
+
+DEFAULT lbold to .F.
+
+DEFAULT cfont to ::cfontname
+
+DEFAULT nsize to ::nfontsize
+
+DEFAULT acolor to ::acolor
 
 if ::cunits="MM"
    ::nmver:=1
@@ -666,10 +651,6 @@ case ::cprintlibrary="HBPRINTER"
    SET TEXTCOLOR ::acolor
    if .not. lbold
       if calign="R"
-///         for i:=1 to nlen
-///             caux:=substr(ctext,i,1)
-///             @ nlin*::nmver+::nvfij,ncol*::nmhor+::nhfij*2+(i*nsize/4.75) SAY (caux) font "F0" TO PRINT
-///         next i
         SET TEXT ALIGN RIGHT
         @ nlin*::nmver+::nvfij,ncol*::nmhor+::nhfij*2 +((nlen+1)*nsize/4.75) SAY (ctext) font "F0" TO PRINT
         SET TEXT ALIGN LEFT
@@ -678,14 +659,9 @@ case ::cprintlibrary="HBPRINTER"
       endif
    else
       if calign="R"
-///         for i:=1 to nlen
-///             caux:=substr(ctext,i,1)
-///             @ nlin*::nmver+::nvfij,ncol*::nmhor+::nhfij*2+(i*nsize/4.75) SAY (caux) font "F1" TO PRINT
-///         next i
         SET TEXT ALIGN RIGHT
         @ nlin*::nmver+::nvfij,ncol*::nmhor+::nhfij*2 +((nlen+1)*nsize/4.75) SAY (ctext) font "F1" TO PRINT
         SET TEXT ALIGN LEFT
-
       else
          @ nlin*::nmver+::nvfij,ncol*::nmhor+::nhfij*2  SAY (ctext) font "F1" TO PRINT
       endif
@@ -695,25 +671,18 @@ case ::cprintlibrary="HBPRINTER"
 case ::cprintlibrary="MINIPRINT"
    if .not. lbold
       if calign="R"
-//         for i:=1 to nlen
-//             caux:=substr(ctext,i,1)
-//             @ nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2+(i*nsize/4.75) PRINT (caux) font cfont size nsize COLOR ::acolor
-//         next i
 
-       textalign( 2 )
+       textalign( 2 )  /// derecha
        @ nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2  +((nlen+1)*nsize/4.75) PRINT (ctext) font cfont size nsize COLOR ::acolor
-       textalign( 0 )
+       textalign( 0 )  //// izquierda
       else
          @ nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 PRINT (ctext) font cfont size nsize COLOR ::acolor
       endif
    else
       if calign="R"
-///         for i:=1 to nlen
-///             caux:=substr(ctext,i,1)
-             textalign( 2 )
+             textalign( 2 )    /// derecha
              @ nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2+((nlen+1)*nsize/4.75) PRINT (ctext) font cfont size nsize  BOLD COLOR ::acolor
-             textalign( 0 )
-///         next i
+             textalign( 0 )     /// izquierda
       else
          @ nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 PRINT (ctext) font cfont size nsize  BOLD COLOR ::acolor
       endif
@@ -731,21 +700,15 @@ RETURN self
 *-------------------------
 METHOD printimage(nlin,ncol,nlinf,ncolf,cimage) CLASS TPRINT
 *-------------------------
-if nlin=NIL
-   nlin:=1
-endif
-if ncol=NIL
-   ncol:=1
-endif
-if cimage=NIL
-   cimage:=""
-endif
-if nlinf=NIL
-   nlinf:=4
-endif
-if ncolf=NIL
-   ncolf:=4
-endif
+DEFAULT nlin to 1
+
+DEFAULT ncol to 1
+
+DEFAULT cimage to ""
+
+DEFAULT nlinf to 4
+
+DEFAULT ncolf to 4
 
 if ::cunits="MM"
    ::nmver:=1
@@ -766,29 +729,20 @@ case ::cprintlibrary="MINIPRINT"
 endcase
 RETURN nil
 
-
 *-------------------------
 METHOD printline(nlin,ncol,nlinf,ncolf,atcolor,ntwpen ) CLASS TPRINT
 *-------------------------
-if nlin=NIL
-   nlin:=1
-endif
-if ncol=NIL
-   ncol:=1
-endif
-if nlinf=NIL
-   nlinf:=4
-endif
-if ncolf=NIL
-   ncolf:=4
-endif
-if atcolor=NIL
-   atcolor:= ::acolor
-endif
+DEFAULT nlin to 1
 
-if ntwpen=NIL
-   ntwpen:= ::nwpen
-endif
+DEFAULT ncol to 1
+
+DEFAULT nlinf to 4
+
+DEFAULT ncolf to 4
+
+DEFAULT atcolor to ::acolor
+
+DEFAULT ntwpen to ::nwpen
 
 if ::cunits="MM"
    ::nmver:=1
@@ -801,7 +755,6 @@ else
    ::nvfij  := (12/1.65)
    ::nhfij  := (12/3.70)
 endif
-
 
 do case
 case ::cprintlibrary="HBPRINTER"
@@ -820,26 +773,18 @@ RETURN nil
 *-------------------------
 METHOD printrectangle(nlin,ncol,nlinf,ncolf,atcolor,ntwpen ) CLASS TPRINT
 *-------------------------
-if nlin=NIL
-   nlin:=1
-endif
-if ncol=NIL
-   ncol:=1
-endif
-if nlinf=NIL
-   nlinf:=4
-endif
-if ncolf=NIL
-   ncolf:=4
-endif
 
-if atcolor=NIL
-   atcolor:= ::acolor
-endif
+DEFAULT nlin to 1
 
-if ntwpen=NIL
-   ntwpen:= ::nwpen
-endif
+DEFAULT ncol to 1
+
+DEFAULT nlinf to 4
+
+DEFAULT ncolf to 4
+
+DEFAULT atcolor to ::acolor
+
+DEFAULT ntwpen to ::nwpen
 
 if ::cunits="MM"
   ::nmver:=1
@@ -865,26 +810,17 @@ RETURN nil
 *------------------------
 METHOD printroundrectangle(nlin,ncol,nlinf,ncolf,atcolor,ntwpen ) CLASS TPRINT
 *-------------------------
-if nlin=NIL
-   nlin:=1
-endif
-if ncol=NIL
-   ncol:=1
-endif
-if nlinf=NIL
-   nlinf:=4
-endif
-if ncolf=NIL
-   ncolf:=4
-endif
+DEFAULT nlin to 1
 
-if atcolor=NIL
-   atcolor:= ::acolor
-endif
+DEFAULT ncol to 1
 
-if ntwpen=NIL
-ntwpen:= ::nwpen
-endif
+DEFAULT nlinf to 4
+
+DEFAULT ncolf to 4
+
+DEFAULT atcolor to ::acolor
+
+DEFAULT ntwpen to ::nwpen
 
 if ::cunits="MM"
    ::nmver:=1
@@ -907,7 +843,6 @@ case ::cprintlibrary="MINIPRINT"
 endcase
 RETURN nil
 
-
 *-------------------------
 method printdos() CLASS TPRINT
 *-------------------------
@@ -924,11 +859,11 @@ return nil
 *-------------------------
 static function zoom(cOp)
 *-------------------------
-if cop="+" .and. print_preview.edit_p.fontsize <= 24
+if cOp="+" .and. print_preview.edit_p.fontsize <= 24
    print_preview.edit_p.fontsize:=  print_preview.edit_p.fontsize + 2
 endif
 
-if cop="-" .and. print_preview.edit_p.fontsize > 7
+if cOp="-" .and. print_preview.edit_p.fontsize > 7
    print_preview.edit_p.fontsize:=  print_preview.edit_p.fontsize - 2
 endif
 return nil
