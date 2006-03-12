@@ -1,0 +1,92 @@
+
+
+
+OOHG Classes
+
+
+TWINDOW ----
+           |
+           |
+           |---- TFORM
+           |
+           |
+           |---- TCONTROL ---|
+                             |
+                             |
+                             |---- TBUTTON
+                             |
+                             |
+                             |---- TLABEL ----------|
+                             |                      |
+                             |                      |
+                             |---- TIMAGE           |---- TTEXT----------|
+                             |                      |                    |
+                             |                      |                    |
+                             |---- TSPINNER         |---- THYPERLINK     |------ TTEXTPICTURE -----|
+                             |                      |                    |                         |
+                             |                      |                    |                         |
+                             |---- TTREE            |---- TCHECKBOX      |------ TTEXNUM           |---- TTEXTMASKED
+                             |                      |                    |                         |
+                             |                      |                    |                         |
+                             |---- TDATEPICK        |---- TRADIOGROUP    |------ TEDIT -----       |---- TTEXTCHARMASK
+                             |                      |                                      |
+                             |                      |                                      |
+                             |---- TTIMEPICK        |---- TRADIOITEM                       |-------TEDITRICH
+                             |                      |
+                             |                      |
+                             |---- TSCROLLBAR       |---- TCOMBO
+                             |                      |
+                             |                      |
+                             |---- TMESSAGEBAR      |---- TIPADDRESS
+                             |                      |
+                             |                      |
+                             |---- TITEMMESSAGE     |---- TPROGRESSMETER
+                             |
+                             |
+                             |---- TTAB
+                             |
+                             |
+                             |---- TTABPAGE
+                             |
+                             |
+                             |---- TLIST------------|
+                             |                      |
+                             |                      |
+                             |---- TFRAME           |---- TLISTMULTI
+                             |
+                             |
+                             |---- TGRID------------|
+                             |                      |
+                             |                      |
+                             |---- TTOOLBAR         |---- TBROWSE
+                             |                      |
+                             |                      |
+                             |---- TPLAYER          |---- TGRIDMULTI
+                             |                      |
+                             |                      |
+                             |---- TANIMATBOX       |---- TGRIDCONTROLTEXTBOX
+                             |                      |
+                             |                      |
+                             |---- TMENU            |---- TGRIDCONTROLMEMO
+                             |                      |
+                             |                      | 
+                             |---- TMONTHCAL        |---- TGRIDCONTROLDATEPICKER
+                             |                      |
+                             |                      |
+                             |---- TPROGRESSBAR     |---- TGRIDCONTROLCOMBOBOX
+                             |                      |
+                             |                      |
+                             |---- TSLIDER          |---- TGRIDCONTROLSPINNER
+                             |                      |
+                             |                      |
+                             |---- TTIMER           |---- TGRIDCONTROLCHECKBOX
+                             |                      |
+                             |                      |
+                             |---- TTOOLBUTTON      |---- TGRIDCONTROLIMAGELIST
+                                                    |
+                                                    |
+TPRINT -------|                                     |---- TGRIDCONTROLLCOMBOBOX
+              |
+              |
+              |-----TREPORT
+
