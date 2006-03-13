@@ -90,3 +90,7 @@ TPRINT -------|                                     |---- TGRIDCONTROLLCOMBOBOX
               |
               |-----TREPORT
 
+
+TREG32
+
+

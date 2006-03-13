@@ -1,5 +1,5 @@
 /*
- * $Id: h_report.prg,v 1.19 2006-03-12 01:20:26 declan2005 Exp $
+ * $Id: h_report.prg,v 1.20 2006-03-13 20:05:13 declan2005 Exp $
  */
 /*
  * DO REPORT Command support procedures For MiniGUI Library.
@@ -81,6 +81,7 @@ MEMVAR ipaper
 MEMVAR repobject
 MEMVAR sicvar
 MEMVAR ctitle1
+MEMVAR ctitle2
 MEMVAR cheader
 MEMVAR CPRINTER
 MEMVAR WORIENTATION
@@ -88,12 +89,14 @@ MEMVAR LSUCESS
 MEMVAR CBAT
 MEMVAR _OOHG_printlibrary
 MEMVAR oprint
+MEMVAR nposat
 
 FUNCTION easyreport(ctitle,aheaders1,aheaders2,afields,awidths,atotals,nlpp,ldos,lpreview,cgraphic,nfi,nci,nff,ncf,lmul,cgrpby,chdrgrp,llandscape,ncpl,lselect,calias,nllmargin,aformats,npapersize,cheader,lnoprop)
+local nposat
 PRIVATE ctitle1,sicvar
 
-if type("cheader")#"C"
-   cheader=""
+if cheader=NIL
+   cheader:=""
 endif
 
 if lnoprop=NIL
@@ -106,19 +109,18 @@ endif
 if ncpl=NIL
    ncpl:=80
 endif
+///        nposat:=at("|",ctitle)
+///        if len(cheader)>0
+///          ctitle1:=lower(substr(ctitle,1,nposat-1))
+///          ctitle2:=lower(substr(ctitle,nposat+1))
+///          ctitle:=ctitle1+"|"+ctitle2
+///        endif
 
-	ctitle1:=lower(substr(ctitle,at('|',ctitle)+1))+cheader
-//        if cheader=NIL
-//           cheader:=''
-//        endif
-
-///	_sw_report:=.F.
-
-	_listreport(CTITLE1,AHEADERS1,AHEADERS2,AFIELDS,AWIDTHS,ATOTALS,NLPP,LDOS,LPREVIEW,CGRAPHIC,NFI,NCI,NFF,NCF,LMUL,CGRPBY,CHDRGRP,LLANDSCAPE,NCPL,LSELECT,CALIAS,NLLMARGIN,AFORMATS,NPAPERSIZE,CHEADER,lnoprop)
+        _listreport(CTITLE,AHEADERS1,AHEADERS2,AFIELDS,AWIDTHS,ATOTALS,NLPP,LDOS,LPREVIEW,CGRAPHIC,NFI,NCI,NFF,NCF,LMUL,CGRPBY,CHDRGRP,LLANDSCAPE,NCPL,LSELECT,CALIAS,NLLMARGIN,AFORMATS,NPAPERSIZE,CHEADER,lnoprop)
 
 RETURN NIL
 
-FUNCTION _listreport(ctitle,aheaders1,aheaders2,afields,awidths,atotals,nlpp,ldos,lpreview,cgraphic,nfi,nci,nff,ncf,lmul,cgrpby,chdrgrp,llandscape,ncpl,lselect,calias,nllmargin,aformats,npapersize,cheader,lnoprop)
+static FUNCTION _listreport(ctitle,aheaders1,aheaders2,afields,awidths,atotals,nlpp,ldos,lpreview,cgraphic,nfi,nci,nff,ncf,lmul,cgrpby,chdrgrp,llandscape,ncpl,lselect,calias,nllmargin,aformats,npapersize,cheader,lnoprop)
 private repobject,sicvar
 
 repobject:=TREPORT()
@@ -169,7 +171,7 @@ VAR aline     INIT {}
 
 METHOD easyreport1(ctitle,aheaders1,aheaders2,afields,awidths,atotals,nlpp,ldos,lpreview,cgraphic,nfi,nci,nff,ncf,lmul,cgrpby,chdrgrp,llandscape,ncpl,lselect,calias,nllmargin,aformats,npapersize,cheader,lnoprop)
 METHOD headers(aheaders1,aheaders2,awidths,nlin,ctitle,lmode,grpby,chdrgrp,cheader)
-METHOD extreport1(cfilerep)
+METHOD extreport1(cfilerep,cheader)
 METHOD leadato(cName,cPropmet,cDefault)
 METHOD leaimage(cName,cPropmet,cDefault)
 METHOD leadatoh(cName,cPropmet,cDefault,npar)
@@ -650,7 +652,6 @@ local nff,ncf,cgrpby,chdrgrp,llandscape,lnoprop
        endif
        chdrgrp:=repobject:clean(repobject:leadato('REPORT','HEADRGRP',''))
        llandscape:=repobject:leadatologic('REPORT','LANDSCAPE',.F.)
-
        easyreport(ctitle,aheaders1,aheaders2,afields,awidths,atotals,nlpp,ldos,lpreview,cgraphic,nfi,nci,nff,ncf,lmul,cgrpby,chdrgrp,llandscape,ncpl,lselect,calias,nllmargin,aformats,npapersize,cheader,lnoprop)
 return Nil
 

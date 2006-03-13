@@ -1,5 +1,5 @@
 /*
- * $Id: i_report.ch,v 1.6 2006-02-24 12:32:45 declan2005 Exp $
+ * $Id: i_report.ch,v 1.7 2006-03-13 20:05:10 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -93,7 +93,7 @@ easyreport  ( <ctitle> ,		 	;
                 <(calias)>            ,  ;
                 <nllmargin>           ,  ;
                 <aformats>            ,  ;
-                <npapersize>,<.lnoprop.> )
+                <npapersize>,,<.lnoprop.> )
 
 
 
