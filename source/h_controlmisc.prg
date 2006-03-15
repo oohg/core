@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.44 2006-02-11 06:19:33 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.45 2006-03-15 06:39:09 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -95,9 +95,6 @@
 #include "hbclass.ch"
 #include 'common.ch'
 #include 'i_windefs.ch'
-
-MEMVAR oventanapadre
-MEMVAR abackpadre
 
 STATIC _OOHG_aControlhWnd := {}, _OOHG_aControlObjects := {}
 STATIC _OOHG_aControlIds := {},  _OOHG_aControlNames := {}
@@ -396,9 +393,6 @@ Local oInputWindow, aResult
 
 	EndIf
 
-   oventanapadre:=getformobjectbyhandle(GetActiveWindow())
-   abackpadre:=oventanapadre:backcolor
-
    DEFINE WINDOW _InputWindow OBJ oInputWindow ;
 		AT r,c ;
 		WIDTH 280 ;
@@ -406,7 +400,7 @@ Local oInputWindow, aResult
 		TITLE Title ;
 		MODAL ;
 		NOSIZE ;
-                BACKCOLOR abackpadre
+      BACKCOLOR ( GetFormObjectByHandle( GetActiveWindow() ):BackColor )
 
 		ControlRow :=  10
 

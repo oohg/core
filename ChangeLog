@@ -1,11 +1,27 @@
 /*
- * $Id: ChangeLog,v 1.124 2006-03-13 20:05:03 declan2005 Exp $
+ * $Id: ChangeLog,v 1.125 2006-03-15 06:39:05 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-03-15 00:35 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * ./compile.bat
+    * Batch process is stopped when an error occurs.
+
+  * source/h_report.prg
+    * Removed unused variable (warning).
+
+  * source/h_print.prg
+    * Moved PROTECTED properties to READONLY.
+
+  * source/h_controlmisc.prg
+  * source/h_edit.prg
+  * source/h_edit_ex.prg
+  * source/h_windows.prg
+    * Removed unnecesary "oventanapadre" and "abackpadre" variables.
 
 2006-03-13 14:54 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * include/i_report.ch
@@ -27,14 +43,12 @@
 2006-03-01 17:41 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source/miniprint.prg
     * fixed problem with network printers not showed in dialog  (thanks to Pierpaolo Martinello)
-      
 
 2006-03-01 17:06 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * include/i_var.ch
   * source/h_windows.prg
   * source/h_init.prg
     * moved from public oohg array to static vars in windows.prg
-
 
 2006-02-28 22:32 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_browse.prg

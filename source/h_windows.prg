@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.68 2006-03-01 22:18:22 declan2005 Exp $
+ * $Id: h_windows.prg,v 1.69 2006-03-15 06:39:12 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -95,10 +95,6 @@
 #include "i_windefs.ch"
 #include "common.ch"
 #include "error.ch"
-
-MEMVAR oventanapadre
-MEMVAR abackpadre
-
 
 STATIC _OOHG_aFormhWnd := {}, _OOHG_aFormObjects := {}
 STATIC _OOHG_aEventInfo := {}        // Event's stack
@@ -2764,8 +2760,6 @@ Function InputBox ( cInputPrompt , cDialogCaption , cDefaultValue , nTimeout , c
 	DEFAULT cDefaultValue	TO ""
 
 	RetVal := ''
-        oventanapadre:=getformobjectbyhandle(GetActiveWindow())
-        abackpadre:=oventanapadre:backcolor
 
    If ValType (lMultiLine) == 'L' .AND. lMultiLine
       mo := 150
@@ -2780,9 +2774,9 @@ Function InputBox ( cInputPrompt , cDialogCaption , cDefaultValue , nTimeout , c
 		TITLE cDialogCaption  		;
 		MODAL 				;
 		NOSIZE 				;
-                BACKCOLOR abackpadre            ;
-		FONT 'Arial'			;
-		SIZE 10
+      FONT 'Arial'      ;
+      SIZE 10           ;
+      BACKCOLOR ( GetFormObjectByHandle( GetActiveWindow() ):BackColor )
 
       ON KEY ESCAPE ACTION ( _OOHG_DialogCancelled := .T. , _InputBox.Release )
 

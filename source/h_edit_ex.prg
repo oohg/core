@@ -1,5 +1,5 @@
 /*
- * $Id: h_edit_ex.prg,v 1.12 2006-02-06 18:27:31 declan2005 Exp $
+ * $Id: h_edit_ex.prg,v 1.13 2006-03-15 06:39:11 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -279,9 +279,6 @@
 // Tipo de acción al definir los registros del listado.
 #define ABM_LIS_SET1            1
 #define ABM_LIS_SET2            2
-
-MEMVAR oventanapadre
-MEMVAR abackpadre
 
 // Declaración de variables globales.------------------------------------------
 static _cArea           as character            // Nombre del area de la bdd.
@@ -708,9 +705,6 @@ function ABM2( cArea, cTitulo, aNombreCampo, ;
                 endif
         next
 
-oVentanapadre:=getformobjectbyhandle(getactivewindow())
-abackpadre:=oVentanapadre:backcolor
-
 ////////// Definición de la ventana de visualización.--------------------------
         define window wndABM2Edit               ;
                 at 60, 30                       ;
@@ -720,10 +714,10 @@ abackpadre:=oVentanapadre:backcolor
                 modal                           ;
                 nosize                          ;
                 nosysmenu                       ;
-                backcolor   abackpadre       ;         
                 on init {|| ABM2Redibuja() }    ;
                 on release {|| ABM2salir(nRegistro, cIndiceActivo, cFiltroAnt, nArea) }   ;
-                font "ms sans serif" size 9
+                font "ms sans serif" size 9     ;
+                backcolor ( GetFormObjectByHandle( GetActiveWindow() ):BackColor )
 
                 // Define la barra de estado de la ventana de visualización.
                 define statusbar font "ms sans serif" size 9
@@ -1039,9 +1033,6 @@ static function ABM2Editar( lNuevo )
         cTitulo     := iif( lNuevo, _OOHG_Messages( 10, 6 ), _OOHG_Messages( 10, 7 ) )
 
 
-oVentanapadre:=getformobjectbyhandle(getactivewindow())
-abackpadre:=oVentanapadre:backcolor
-
 ////////// Define la ventana de edición de registro.---------------------------
         define window wndABM2EditNuevo                                  ;
                 at 70, 40                                               ;
@@ -1051,8 +1042,8 @@ abackpadre:=oVentanapadre:backcolor
                 modal                                                   ;
                 nosize                                                  ;
                 nosysmenu                                               ;
-                backcolor abackpadre                                    ;
-                font "ms sans serif" size 9
+                font "ms sans serif" size 9                             ;
+                backcolor ( GetFormObjectByHandle( GetActiveWindow() ):BackColor )
 
                 // Define la barra de estado de la ventana de edición de registro.
                 define statusbar font "ms sans serif" size 9
@@ -1088,8 +1079,8 @@ abackpadre:=oVentanapadre:backcolor
                                 splitchild                              ;
                                 nocaption                               ;
                                 font "ms sans serif" size 9             ;
-                                backcolor  abackpadre  ;
-                                focused  ;
+                                focused                                 ;
+                                backcolor ( GetFormObjectByHandle( GetActiveWindow() ):BackColor )
 
 
 
@@ -1427,9 +1418,6 @@ static function ABM2Seleccionar()
 ////////// Se situa en el primer registro.-------------------------------------
         (_cArea)->( dbGoTop() )
 
-oVentanapadre:=getformobjectbyhandle(getactivewindow())
-abackpadre:=oVentanapadre:backcolor
-
 ////////// Creación de la ventana de selección de registro.--------------------
         define window wndSeleccionar            ;
                 at 0, 0                         ;
@@ -1439,8 +1427,8 @@ abackpadre:=oVentanapadre:backcolor
                 modal                           ;
                 nosize                          ;
                 nosysmenu                       ;
-                backcolor  abackpadre   ;
-                font "ms sans serif" size 9
+                font "ms sans serif" size 9     ;
+                backcolor ( GetFormObjectByHandle( GetActiveWindow() ):BackColor )
 
                 // Define la barra de botones de la ventana de selección.
                 define toolbar tbSeleccionar buttonsize 90, 32 flat righttext border
@@ -1634,9 +1622,6 @@ static function ABM2Buscar()
                 return nil
         endif
 
-oVentanapadre:=getformobjectbyhandle(getactivewindow())
-abackpadre:=oVentanapadre:backcolor
-
 ////////// Crea la ventana de busqueda.----------------------------------------
         define window wndABMBuscar              ;
                 at 0, 0                         ;
@@ -1647,7 +1632,7 @@ abackpadre:=oVentanapadre:backcolor
                 nosize                          ;
                 nosysmenu                       ;
                 font "ms sans serif" size 9     ;
-                backcolor  abackpadre
+                backcolor ( GetFormObjectByHandle( GetActiveWindow() ):BackColor )
 
                 // Define la barra de botones de la ventana de busqueda.
                 define toolbar tbBuscar buttonsize 90, 32 flat righttext border
@@ -1807,9 +1792,6 @@ static function ABM2ActivarFiltro()
                         _OOHG_Messages( 10, 31 ),;
                         _OOHG_Messages( 10, 32 ) }
 
-oVentanapadre:=getformobjectbyhandle(getactivewindow())
-abackpadre:=oVentanapadre:backcolor
-
 
 ////////// Crea la ventana de filtrado.----------------------------------------
         define window wndABM2Filtro                     ;
@@ -1821,8 +1803,8 @@ abackpadre:=oVentanapadre:backcolor
                 nosize                                  ;
                 nosysmenu                               ;
                 on init {|| ABM2ControlFiltro() }       ;
-                font "ms sans serif" size 9  ;
-                backcolor abackpadre
+                font "ms sans serif" size 9             ;
+                backcolor ( GetFormObjectByHandle( GetActiveWindow() ):BackColor )
 
                 // Define la barra de botones de la ventana de filtrado.
                 define toolbar tbBuscar buttonsize 90, 32 flat righttext border
@@ -1933,7 +1915,7 @@ static function ABM2ControlFiltro()
            wndabm2edit.tbbBorrar.enabled:=.t.
             wndabm2edit.tbbBuscar.enabled:=.t.
              wndabm2edit.tbbListado.enabled:=.t.
-                    
+
                 return NIL
         endif
         if nControl == 0
@@ -2257,9 +2239,6 @@ static function ABM2Imprimir()
         (_cArea)->( dbGoTo( nRegistro ) )
 
 
-oVentanapadre:=getformobjectbyhandle(getactivewindow())
-abackpadre:=oVentanapadre:backcolor
-
 ////////// Definición de la ventana de formato de listado.---------------------
         define window wndABM2Listado            ;
                 at 0, 0                         ;
@@ -2270,8 +2249,8 @@ abackpadre:=oVentanapadre:backcolor
                 modal                           ;
                 nosize                          ;
                 nosysmenu                       ;
-                font "ms sans serif" size 9  ;
-                backcolor abackpadre
+                font "ms sans serif" size 9     ;
+                backcolor ( GetFormObjectByHandle( GetActiveWindow() ):BackColor )
 
                 // Define la barra de botones de la ventana de formato de listado.
                 define toolbar tbListado buttonsize 90, 32 flat righttext border
@@ -2819,24 +2798,24 @@ endif
 
                                 // Cabecera el listado.
                                 if lCabecera
-oprint:printdata(5,1,_ctitulo,"times new roman",12,.T.) /// 
+oprint:printdata(5,1,_ctitulo,"times new roman",12,.T.) ///
 oprint:printline(6,1,6,140)
 
-oprint:printdata(7,1,_oohg_messages(6,19),"times new roman" ,,.T.) /// 
-oprint:printdata(7,31, (_cArea)->( ordName() )) /// 
+oprint:printdata(7,1,_oohg_messages(6,19),"times new roman" ,,.T.) ///
+oprint:printdata(7,31, (_cArea)->( ordName() )) ///
 
-oprint:printdata(8,1,_OOHG_messages(6,17),"times new roman",,.T.) /// 
-oprint:printdata(8,31, CREGISTRO1) /// 
+oprint:printdata(8,1,_OOHG_messages(6,17),"times new roman",,.T.) ///
+oprint:printdata(8,31, CREGISTRO1) ///
 
-oprint:printdata(9,1,_OOHG_messages(6,18),"times new roman",,.T.) /// 
-oprint:printdata(9,31, CREGISTRO2) /// 
-///oprint:printdata(10,1,_OOHG_messages(6,23),"times new roman",,.T.) /// 
-///oprint:printdata(10,31, _CFILTRO) /// 
+oprint:printdata(9,1,_OOHG_messages(6,18),"times new roman",,.T.) ///
+oprint:printdata(9,31, CREGISTRO2) ///
+///oprint:printdata(10,1,_OOHG_messages(6,23),"times new roman",,.T.) ///
+///oprint:printdata(10,31, _CFILTRO) ///
 
                                         nColumna := 1
                                         for i := 1 to Len( aCampo )
-////oprint:printdata(12,ncolumna+ancho[i], CREGISTRO1) /// 
-oprint:printdata(12,ncolumna, acampo[i], , ,.T.) /// 
+////oprint:printdata(12,ncolumna+ancho[i], CREGISTRO1) ///
+oprint:printdata(12,ncolumna, acampo[i], , ,.T.) ///
                                          nColumna += aAncho[i]
                                         next
                                         lCabecera := .f.
@@ -2848,13 +2827,13 @@ oprint:printdata(12,ncolumna, acampo[i], , ,.T.) ///
                                         nCampo := aNumeroCampo[i]
                                         do case
                                                 case _aEstructura[nCampo,DBS_TYPE] == "N"
-oprint:printdata(nfila,ncolumna, (_cArea)->( FieldGet( aNumeroCampo[i] ) )   ) /// 
+oprint:printdata(nfila,ncolumna, (_cArea)->( FieldGet( aNumeroCampo[i] ) )   ) ///
                                                 case _aEstructura[nCampo,DBS_TYPE] == "L"
-oprint:printdata(nfila,ncolumna+1, iif( (_cArea)->( FieldGet( aNumeroCampo[i] ) ), _OOHG_messages(6,29), _OOHG_messages(6,30) )   ) ///  
+oprint:printdata(nfila,ncolumna+1, iif( (_cArea)->( FieldGet( aNumeroCampo[i] ) ), _OOHG_messages(6,29), _OOHG_messages(6,30) )   ) ///
                                                 case _aEstructura[nCampo,DBS_TYPE] == "M"
-oprint:printdata(nfila,ncolumna, SubStr( (_cArea)->( FieldGet( aNumeroCampo[i] ) ), 1, 20 )  ) ///  
+oprint:printdata(nfila,ncolumna, SubStr( (_cArea)->( FieldGet( aNumeroCampo[i] ) ), 1, 20 )  ) ///
                                                 otherwise
-oprint:printdata(nfila,ncolumna, (_cArea)->( FieldGet( aNumeroCampo[i] ) )   ) ///  
+oprint:printdata(nfila,ncolumna, (_cArea)->( FieldGet( aNumeroCampo[i] ) )   ) ///
                                         endcase
                                         nColumna += aAncho[i]
                                 next
@@ -2876,7 +2855,7 @@ oprint:printline(46,1,46,140)
                                                 cPie := HB_ValToStr( Date() ) + " " + Time()
 oprint:printdata(47,1,cpie)
                                                 cPie := _OOHG_messages(6,22) + " " +          ;
-                                                        AllTrim( Str( nPagina) )       
+                                                        AllTrim( Str( nPagina) )
 oprint:printdata(47,70,cpie)
                                                 nPagina++
                                                 nFila := 14
@@ -2891,7 +2870,7 @@ oprint:printline(58,1,58,140)
                               ////                  @ 68, 10 say cPie font "a9n" to print
 oprint:printdata(59,1,cpie)
                                                 cPie := _oohg_messages(6,22)+" " +                    ;
-                                                        AllTrim( Str( nPagina) )       
+                                                        AllTrim( Str( nPagina) )
 oprint:printdata(59,70,cpie)
                                                 nFila := 14
                                                 nPagina++
@@ -2908,7 +2887,7 @@ oprint:printline(46,1,46,140)
                         cPie := HB_ValToStr( Date() ) + " " + Time()
 oprint:printdata(47,1,cpie)
                         cPie := _oohg_messages(6,22)+" " +                    ;
-                                AllTrim( Str( nPagina) )      
+                                AllTrim( Str( nPagina) )
 oprint:printdata(47,70,cpie)
                 else
 oprint:printline(58,1,58,140)
@@ -2933,4 +2912,3 @@ oprint:release()
         wndabm2edit.tbbListado.enabled:=.t.
 
 return NIL
-
