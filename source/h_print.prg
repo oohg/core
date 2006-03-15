@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.22 2006-03-06 20:57:27 declan2005 Exp $
+* $Id: h_print.prg,v 1.23 2006-03-15 06:40:21 guerra000 Exp $
 */
 
 #include 'hbclass.ch'
@@ -22,27 +22,27 @@ memvar _OOHG_printer_docname
 
 CREATE CLASS TPRINT
 
-DATA cprintlibrary      INIT "HBPRINTER" PROTECTED
-DATA nmhor              INIT (10)/4.75   PROTECTED
-DATA nmver              INIT (10)/2.45   PROTECTED
-DATA nhfij              INIT (12/3.70)   PROTECTED
-DATA nvfij              INIT (12/1.65)   PROTECTED
-DATA cunits             INIT "ROWCOL"    PROTECTED
-DATA cprinter           INIT ""          PROTECTED
+DATA cprintlibrary      INIT "HBPRINTER" READONLY
+DATA nmhor              INIT (10)/4.75   READONLY
+DATA nmver              INIT (10)/2.45   READONLY
+DATA nhfij              INIT (12/3.70)   READONLY
+DATA nvfij              INIT (12/1.65)   READONLY
+DATA cunits             INIT "ROWCOL"    READONLY
+DATA cprinter           INIT ""          READONLY
 
-DATA aprinters          INIT {}   PROTECTED
-DATA aports             INIT {}   PROTECTED
+DATA aprinters          INIT {}   READONLY
+DATA aports             INIT {}   READONLY
 
-DATA lprerror           INIT .F.  PROTECTED
-DATA exit               INIT  .F. PROTECTED
-DATA acolor             INIT {1,1,1}  PROTECTED
-DATA cfontname          INIT "courier new" PROTECTED
-DATA nfontsize          INIT 10 PROTECTED
-DATA nwpen              INIT 0.1   PROTECTED //// pen width
-DATA tempfile           INIT gettempdir()+"T"+alltrim(str(int(hb_random(999999)),8))+".prn" PROTECTED
-DATA impreview          INIT .F.  PROTECTED
-DATA lwinhide           INIT .T.   PROTECTED
-DATA cversion           INIT  "(oohg)V 1.16" PROTECTED
+DATA lprerror           INIT .F.  READONLY
+DATA exit               INIT  .F. READONLY
+DATA acolor             INIT {1,1,1}  READONLY
+DATA cfontname          INIT "courier new" READONLY
+DATA nfontsize          INIT 10 READONLY
+DATA nwpen              INIT 0.1   READONLY //// pen width
+DATA tempfile           INIT gettempdir()+"T"+alltrim(str(int(hb_random(999999)),8))+".prn" READONLY
+DATA impreview          INIT .F.  READONLY
+DATA lwinhide           INIT .T.   READONLY
+DATA cversion           INIT  "(oohg)V 1.16" READONLY
 
 
 *-------------------------
@@ -866,4 +866,3 @@ if cOp="-" .and. print_preview.edit_p.fontsize > 7
    print_preview.edit_p.fontsize:=  print_preview.edit_p.fontsize - 2
 endif
 return nil
-
