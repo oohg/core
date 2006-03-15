@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: compile.bat,v 1.9 2006-01-23 00:44:00 guerra000 Exp $
+rem $Id: compile.bat,v 1.10 2006-03-15 06:36:32 guerra000 Exp $
 rem
 cls
 
@@ -29,9 +29,13 @@ ECHO OPTIONS NORUNATSTARTUP > INIT.CLD
 
 :C_COMP
 
+if errorlevel 1 goto exit1
+
 %HG_BCC%\bin\bcc32 -c -O2 -tW -M -I%HG_HRB%\include;%HG_BCC%\include; -L%HG_BCC%\lib; %1.c
+if errorlevel 1 goto exit2
 
 if exist %1.rc %HG_BCC%\bin\brc32 -r %1.rc
+if errorlevel 1 goto exit3
 
 echo c0w32.obj + > b32.bc
 echo %1.obj, + >> b32.bc
@@ -111,6 +115,8 @@ GOTO CLEANUP
 
 :CLEANUP
 
+if errorlevel 1 goto exit4
+
 del *.tds
 del %1.c
 del %1.map
@@ -118,3 +124,18 @@ del %1.obj
 del b32.bc
 if exist %1.res del %1.res
 %1
+goto exit1
+
+:EXIT4
+del b32.bc
+del %1.map
+del %1.obj
+del %1.tds
+
+:EXIT3
+if exist %1.res del %1.res
+
+:EXIT2
+del %1.c
+
+:EXIT1
