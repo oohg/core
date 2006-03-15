@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.h,v 1.17 2006-01-17 03:04:47 guerra000 Exp $
+ * $Id: oohg.h,v 1.18 2006-03-15 06:41:20 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -99,6 +99,7 @@ LRESULT APIENTRY _OOHG_WndProcCtrl( HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM
 extern int GetKeyFlagState( void );
 POCTRL _OOHG_GetControlInfo( PHB_ITEM pSelf );
 BOOL _OOHG_DetermineColor( PHB_ITEM pColor, LONG *lColor );
+HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, HWND hWnd );
 
 // Symbol tables
 #define s_Events_Notify        0

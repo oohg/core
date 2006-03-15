@@ -1,5 +1,5 @@
 /*
- * $Id: c_button.c,v 1.3 2005-11-25 05:38:41 guerra000 Exp $
+ * $Id: c_button.c,v 1.4 2006-03-15 06:41:20 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -160,12 +160,7 @@ HB_FUNC( _SETBTNPICTURE )
        ImgStyle |= LR_LOADTRANSPARENT;
     }
 
-    himage = (HWND)LoadImage(0,hb_parc(2),IMAGE_BITMAP ,0,0, LR_LOADFROMFILE | ImgStyle );
-
-	if (himage==NULL)
-	{
-        himage = (HWND)LoadImage(GetModuleHandle(NULL),hb_parc(2),IMAGE_BITMAP ,0,0, ImgStyle );
-	}
+    himage = ( HWND ) _OOHG_LoadImage( hb_parc( 2 ), ImgStyle, 0, 0, hwnd );
 
 	SendMessage(hwnd,(UINT)BM_SETIMAGE,(WPARAM)IMAGE_BITMAP,(LPARAM)himage);
 

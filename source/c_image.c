@@ -1,5 +1,5 @@
 /*
- * $Id: c_image.c,v 1.4 2005-12-28 03:52:58 guerra000 Exp $
+ * $Id: c_image.c,v 1.5 2006-03-15 06:41:20 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -364,4 +364,114 @@ HBITMAP loadolepicture(char * filename,int width,int height, HWND handle, int sc
 
 	return hpic;
 
+}
+
+HANDLE _OOHG_OleLoadPicture( HGLOBAL hGlobal, HWND hWnd )
+{
+   HANDLE hImage = 0;
+   IStream *iStream;
+   IPicture *iPicture;
+   long lWidth, lHeight;
+   long lWidth2, lHeight2;
+   HDC hdc1, hdc2;
+
+   CreateStreamOnHGlobal( hGlobal, FALSE, &iStream );
+   OleLoadPicture( iStream, 0, TRUE, &IID_IPicture, ( LPVOID * ) &iPicture );
+   if( iPicture )
+   {
+      iPicture->lpVtbl->get_Width( iPicture, &lWidth );
+      iPicture->lpVtbl->get_Height( iPicture, &lHeight );
+
+      // Must be pixel's size!!!
+      lWidth2 = lWidth;
+      lHeight2 = lHeight;
+
+      hdc1 = GetDC( hWnd );
+      hdc2 = CreateCompatibleDC( hdc1 );
+      hImage = CreateCompatibleBitmap( hdc1, lWidth2, lHeight2 );
+      SelectObject( hdc2, hImage );
+
+      iPicture->lpVtbl->Render( iPicture, hdc2, 0, 0, lWidth2, lHeight2, 0, lHeight, lWidth, -lHeight, NULL );
+      iPicture->lpVtbl->Release( iPicture );
+
+      DeleteDC( hdc1 );
+      DeleteDC( hdc2 );
+   }
+
+   return hImage;
+}
+
+HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, HWND hWnd )
+{
+   HANDLE hImage;
+
+   // Transparent: iAttributes |= LR_LOADMAP3DCOLORS | LR_LOADTRANSPARENT;
+
+   // iAttributes |= LR_CREATEDIBSECTION;
+
+   // RESOURCE: Searchs for BITMAP image
+   hImage = LoadImage( GetModuleHandle( NULL ), cImage, IMAGE_BITMAP, nWidth, nHeight, iAttributes );
+   if( ! hImage )
+   {
+      HRSRC hSource;
+      HGLOBAL hGlobal, hGlobalres;
+      LPVOID lpVoid;
+      DWORD nSize;
+
+      // RESOURCE: Tries for GIF type
+      hSource = FindResource( GetModuleHandle( NULL ), cImage, "GIF" );
+      if( ! hSource )
+      {
+         // RESOURCE: Tries for JPG type
+         hSource = FindResource( GetModuleHandle( NULL ), cImage, "JPG" );
+      }
+      if( hSource )
+      {
+         hGlobalres = LoadResource( GetModuleHandle( NULL ), hSource );
+         if( hGlobalres )
+         {
+            lpVoid = LockResource( hGlobalres );
+            if( lpVoid )
+            {
+               nSize = SizeofResource( GetModuleHandle( NULL ), hSource );
+               hGlobal = GlobalAlloc( GPTR, nSize );
+               if( hGlobal )
+               {
+                  memcpy( hGlobal, lpVoid, nSize );
+                  hImage = _OOHG_OleLoadPicture( hGlobal, hWnd );
+                  GlobalFree( hGlobal );
+               }
+            }
+            FreeResource( hGlobalres );
+         }
+      }
+   }
+
+   // FILE: Searchs for BITMAP image
+   if( ! hImage )
+   {
+      hImage = LoadImage( 0, cImage, IMAGE_BITMAP, nWidth, nHeight, iAttributes | LR_LOADFROMFILE );
+   }
+   if( ! hImage )
+   {
+      HANDLE hFile;
+      DWORD nSize, nReadByte;
+      HGLOBAL hGlobal;
+
+      hFile = CreateFile( cImage, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL );
+      if( hFile != INVALID_HANDLE_VALUE )
+      {
+         nSize = GetFileSize( hFile, NULL );
+         hGlobal = GlobalAlloc( GPTR, nSize );
+         if( hGlobal )
+         {
+            ReadFile( hFile, hGlobal, nSize, &nReadByte, NULL );
+            hImage = _OOHG_OleLoadPicture( hGlobal, hWnd );
+            GlobalFree( hGlobal );
+         }
+         CloseHandle( hFile );
+      }
+   }
+
+   return hImage;
 }

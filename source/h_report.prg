@@ -1,5 +1,5 @@
 /*
- * $Id: h_report.prg,v 1.20 2006-03-13 20:05:13 declan2005 Exp $
+ * $Id: h_report.prg,v 1.21 2006-03-15 06:41:20 guerra000 Exp $
  */
 /*
  * DO REPORT Command support procedures For MiniGUI Library.
@@ -92,7 +92,6 @@ MEMVAR oprint
 MEMVAR nposat
 
 FUNCTION easyreport(ctitle,aheaders1,aheaders2,afields,awidths,atotals,nlpp,ldos,lpreview,cgraphic,nfi,nci,nff,ncf,lmul,cgrpby,chdrgrp,llandscape,ncpl,lselect,calias,nllmargin,aformats,npapersize,cheader,lnoprop)
-local nposat
 PRIVATE ctitle1,sicvar
 
 if cheader=NIL
