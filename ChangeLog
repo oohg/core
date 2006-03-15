@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.125 2006-03-15 06:39:05 guerra000 Exp $
+ * $Id: ChangeLog,v 1.126 2006-03-15 06:43:05 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -22,6 +22,11 @@
   * source/h_edit_ex.prg
   * source/h_windows.prg
     * Removed unnecesary "oventanapadre" and "abackpadre" variables.
+
+  * include/oohg.h
+  * c_button.c
+  * c_image.c
+    * First try to centralize all image functions.
 
 2006-03-13 14:54 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * include/i_report.ch
