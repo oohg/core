@@ -1,5 +1,5 @@
 /*
- * $Id: i_label.ch,v 1.5 2005-10-22 06:04:31 guerra000 Exp $
+ * $Id: i_label.ch,v 1.6 2006-03-16 03:16:16 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -119,6 +119,7 @@
         [ <invisible: INVISIBLE> ]      ;
         [ <rtl: RTL> ]                  ;
         [ <nowordwrap: NOWORDWRAP> ]    ;
+        [ <noprefix: NOPREFIX> ] ;
 	=>;
         [ <obj> := ] TLabel():Define( ;
         <(name)>,    ;
@@ -149,4 +150,5 @@
 	<.rightalign.> , ;
         <.centeralign.> , ;
         <.rtl.> , ;
-        <.nowordwrap.> )
+        <.nowordwrap.> , ;
+        <.noprefix.> )

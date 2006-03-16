@@ -1,9 +1,9 @@
 /*
- * $Id: h_button.prg,v 1.9 2006-02-11 06:19:33 guerra000 Exp $
+ * $Id: h_button.prg,v 1.10 2006-03-16 03:16:16 guerra000 Exp $
  */
 /*
  * ooHG source code:
- * PRG button functions
+ * Button controls
  *
  * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.guerra.com.mx
@@ -107,14 +107,13 @@ CLASS TButton FROM TControl
    METHOD SetFocus
    METHOD Picture     SETGET
    METHOD Value       SETGET
-   METHOD Caption     SETGET
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, x, y, Caption, ProcedureName, w, h, ;
                fontname, fontsize, tooltip, gotfocus, lostfocus, flat, ;
                NoTabStop, HelpId, invisible, bold, italic, underline, ;
-               strikeout, lRtl ) CLASS TButton
+               strikeout, lRtl, lNoPrefix ) CLASS TButton
 *-----------------------------------------------------------------------------*
 Local ControlHandle, nStyle
 
@@ -126,9 +125,10 @@ Local ControlHandle, nStyle
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize,,,, lRtl )
 
-   nStyle := if( ValType( flat ) == "L"      .AND. flat,       BS_FLAT, 0 ) + ;
+   nStyle := if( ValType( flat ) == "L"      .AND. flat,       BS_FLAT, 0 )    + ;
              if( ValType( NoTabStop ) != "L" .OR. ! NoTabStop, WS_TABSTOP, 0 ) + ;
-             if( ValType( invisible ) != "L" .OR. ! invisible, WS_VISIBLE, 0 )
+             if( ValType( invisible ) != "L" .OR. ! invisible, WS_VISIBLE, 0 ) + ;
+             if( ValType( lNoPrefix ) == "L" .AND. lNoPrefix,  SS_NOPREFIX, 0 )
 
    ControlHandle := InitButton( ::ContainerhWnd, Caption, 0, x, y, w, h, ::lRtl, nStyle )
 
@@ -195,10 +195,73 @@ METHOD Value( uValue ) CLASS TButton
 *------------------------------------------------------------------------------*
 Return ( ::Caption := uValue )
 
-*-----------------------------------------------------------------------------*
-METHOD Caption( cValue ) CLASS TButton
-*-----------------------------------------------------------------------------*
-   IF VALTYPE( cValue ) $ "CM"
-      SetWindowText( ::hWnd , cValue )
-   ENDIF
-RETURN GetWindowText( ::hWnd )
+EXTERN InitButton, _SetBtnPicture
+
+#pragma BEGINDUMP
+#include <hbapi.h>
+#include <windows.h>
+#include <commctrl.h>
+#include "../include/oohg.h"
+
+static WNDPROC lpfnOldWndProc = 0;
+
+static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+{
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
+}
+
+HB_FUNC( INITBUTTON )
+{
+   HWND hwnd;
+   HWND hbutton;
+   int Style, StyleEx;
+
+   hwnd = (HWND) hb_parnl (1);
+
+   Style =  BS_NOTIFY | WS_CHILD | BS_PUSHBUTTON | hb_parni( 9 );
+
+   StyleEx = 0;
+   if ( hb_parl( 8 ) )
+   {
+      StyleEx |= WS_EX_LAYOUTRTL | WS_EX_RIGHTSCROLLBAR | WS_EX_RTLREADING;
+   }
+
+   hbutton = CreateWindowEx(StyleEx, "button" ,
+                           hb_parc(2) ,
+                           Style ,
+                           hb_parni(4) ,
+                           hb_parni(5) ,
+                           hb_parni(6) ,
+                           hb_parni(7) ,
+                           hwnd ,
+                           (HMENU)hb_parni(3) ,
+                           GetModuleHandle(NULL) ,
+                           NULL ) ;
+
+   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hbutton, GWL_WNDPROC, ( LONG ) SubClassFunc );
+
+   hb_retnl( ( LONG ) hbutton );
+}
+
+HB_FUNC( _SETBTNPICTURE )
+{
+	HWND hwnd;
+	HWND himage;
+    int ImgStyle;
+
+	hwnd = (HWND) hb_parnl (1);
+
+    ImgStyle = LR_LOADMAP3DCOLORS;
+    if( ! hb_parl( 3 ) )
+    {
+       ImgStyle |= LR_LOADTRANSPARENT;
+    }
+
+    himage = ( HWND ) _OOHG_LoadImage( hb_parc( 2 ), ImgStyle, 0, 0, hwnd );
+
+	SendMessage(hwnd,(UINT)BM_SETIMAGE,(WPARAM)IMAGE_BITMAP,(LPARAM)himage);
+
+	hb_retnl ( (LONG) himage );
+
+}
+#pragma ENDDUMP

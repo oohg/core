@@ -1,5 +1,5 @@
 /*
- * $Id: h_progressmeter.prg,v 1.5 2005-11-18 03:49:04 guerra000 Exp $
+ * $Id: h_progressmeter.prg,v 1.6 2006-03-16 03:16:17 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -101,7 +101,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, lo, hi, value, tooltip, ;
                ::nFontSize, ::bold, .F., .F., .F., .F., ;
                .F., ::FontColor, ::BackColor, ::OnClick, ::ToolTip, ;
                ::HelpId, invisible, ::italic, ::underline, ::strikeout, .F., ;
-               .F., .F., ::lRtl, .T. )
+               .F., .F., ::lRtl, .T., .F. )
 
    ::Value := If( Valtype( value ) == "N", value, ::RangeMin )
    ::ReCalc( .T. )

@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.69 2006-03-15 06:39:12 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.70 2006-03-16 03:16:17 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -104,9 +104,6 @@ STATIC _OOHG_MessageLoops := {}      // Message loops
 STATIC _OOHG_ActiveModal := {}       // Modal windows' stack
 STATIC _OOHG_DialogCancelled := .F.  //
 STATIC _OOHG_HotKeys := {}           // Application-wide hot keys
-STATIC _OOHG_TooltipBackcolor :=NIL
-STATIC _OOHG_TooltipForecolor :=NIL
-
 
 #include "hbclass.ch"
 
@@ -126,9 +123,11 @@ STATIC _OOHG_TooltipForecolor :=NIL
    #define hb_dynsymSymbol( pDynSym )        ( ( pDynSym )->pSymbol )
 #endif
 
-int _OOHG_ShowContextMenus = 1;      //
-int _OOHG_GlobalRTL = 0;             // Force RTL functionality
-int _OOHG_NestedSameEvent = 0;       // Allows to nest an event currently performed (i.e. CLICK button)
+int  _OOHG_ShowContextMenus = 1;      //
+int  _OOHG_GlobalRTL = 0;             // Force RTL functionality
+int  _OOHG_NestedSameEvent = 0;       // Allows to nest an event currently performed (i.e. CLICK button)
+LONG _OOHG_TooltipBackcolor = -1;     // Tooltip's backcolor
+LONG _OOHG_TooltipForecolor = -1;     // Tooltip's forecolor
 PHB_ITEM _OOHG_LastSelf = NULL;
 
 #pragma ENDDUMP
@@ -155,6 +154,7 @@ CLASS TWindow
    DATA ColMargin  INIT 0
    DATA Container  INIT nil
    DATA lRtl       INIT .F.
+   DATA lVisible       INIT .T.
    DATA ContextMenu    INIT nil
    DATA Cargo          INIT nil
    DATA lEnabled       INIT .T.
@@ -186,6 +186,7 @@ CLASS TWindow
    METHOD BackColor           SETGET
    METHOD FontColorSelected   SETGET
    METHOD BackColorSelected   SETGET
+   METHOD Caption             SETGET
    METHOD Events
 
    METHOD Enabled             SETGET
@@ -317,27 +318,15 @@ HB_FUNC_STATIC( TWINDOW_FONTCOLOR )
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
 
-   if( hb_pcount() >= 1 )
+   if( _OOHG_DetermineColorReturn( hb_param( 1, HB_IT_ANY ), &oSelf->lFontColor, ( hb_pcount() >= 1 ) ) )
    {
-      oSelf->lFontColor = -1;
-      _OOHG_DetermineColor( hb_param( 1, HB_IT_ANY ), &oSelf->lFontColor );
       if( oSelf->hWnd )
       {
          RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
       }
    }
 
-   if( oSelf->lFontColor != -1 )
-   {
-      hb_reta( 3 );
-      hb_stornl( GetRValue( oSelf->lFontColor ), -1, 1 );
-      hb_stornl( GetGValue( oSelf->lFontColor ), -1, 2 );
-      hb_stornl( GetBValue( oSelf->lFontColor ), -1, 3 );
-   }
-   else
-   {
-      hb_ret();
-   }
+   // Return value was set in _OOHG_DetermineColorReturn()
 }
 
 HB_FUNC_STATIC( TWINDOW_BACKCOLOR )
@@ -345,27 +334,15 @@ HB_FUNC_STATIC( TWINDOW_BACKCOLOR )
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
 
-   if( hb_pcount() >= 1 )
+   if( _OOHG_DetermineColorReturn( hb_param( 1, HB_IT_ANY ), &oSelf->lBackColor, ( hb_pcount() >= 1 ) ) )
    {
-      oSelf->lBackColor = -1;
-      _OOHG_DetermineColor( hb_param( 1, HB_IT_ANY ), &oSelf->lBackColor );
       if( oSelf->hWnd )
       {
          RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
       }
    }
 
-   if( oSelf->lBackColor != -1 )
-   {
-      hb_reta( 3 );
-      hb_stornl( GetRValue( oSelf->lBackColor ), -1, 1 );
-      hb_stornl( GetGValue( oSelf->lBackColor ), -1, 2 );
-      hb_stornl( GetBValue( oSelf->lBackColor ), -1, 3 );
-   }
-   else
-   {
-      hb_ret();
-   }
+   // Return value was set in _OOHG_DetermineColorReturn()
 }
 
 HB_FUNC_STATIC( TWINDOW_FONTCOLORSELECTED )
@@ -373,27 +350,15 @@ HB_FUNC_STATIC( TWINDOW_FONTCOLORSELECTED )
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
 
-   if( hb_pcount() >= 1 )
+   if( _OOHG_DetermineColorReturn( hb_param( 1, HB_IT_ANY ), &oSelf->lFontColorSelected, ( hb_pcount() >= 1 ) ) )
    {
-      oSelf->lFontColorSelected = -1;
-      _OOHG_DetermineColor( hb_param( 1, HB_IT_ANY ), &oSelf->lFontColorSelected );
       if( oSelf->hWnd )
       {
          RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
       }
    }
 
-   if( oSelf->lFontColorSelected != -1 )
-   {
-      hb_reta( 3 );
-      hb_stornl( GetRValue( oSelf->lFontColorSelected ), -1, 1 );
-      hb_stornl( GetGValue( oSelf->lFontColorSelected ), -1, 2 );
-      hb_stornl( GetBValue( oSelf->lFontColorSelected ), -1, 3 );
-   }
-   else
-   {
-      hb_ret();
-   }
+   // Return value was set in _OOHG_DetermineColorReturn()
 }
 
 HB_FUNC_STATIC( TWINDOW_BACKCOLORSELECTED )
@@ -401,27 +366,34 @@ HB_FUNC_STATIC( TWINDOW_BACKCOLORSELECTED )
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
 
-   if( hb_pcount() >= 1 )
+   if( _OOHG_DetermineColorReturn( hb_param( 1, HB_IT_ANY ), &oSelf->lBackColorSelected, ( hb_pcount() >= 1 ) ) )
    {
-      oSelf->lBackColorSelected = -1;
-      _OOHG_DetermineColor( hb_param( 1, HB_IT_ANY ), &oSelf->lBackColorSelected );
       if( oSelf->hWnd )
       {
          RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
       }
    }
 
-   if( oSelf->lBackColorSelected != -1 )
+   // Return value was set in _OOHG_DetermineColorReturn()
+}
+
+HB_FUNC( TWINDOW_CAPTION )
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   int iLen;
+   LPTSTR cText;
+
+   if( ISCHAR( 1 ) )
    {
-      hb_reta( 3 );
-      hb_stornl( GetRValue( oSelf->lBackColorSelected ), -1, 1 );
-      hb_stornl( GetGValue( oSelf->lBackColorSelected ), -1, 2 );
-      hb_stornl( GetBValue( oSelf->lBackColorSelected ), -1, 3 );
+      SetWindowText( oSelf->hWnd, ( LPCTSTR ) hb_parc( 2 ) );
    }
-   else
-   {
-      hb_ret();
-   }
+
+   iLen = GetWindowTextLength( oSelf->hWnd ) + 1;
+   cText = ( LPTSTR ) hb_xgrab( iLen );
+   GetWindowText( oSelf->hWnd, cText, iLen );
+   hb_retc( cText );
+   hb_xfree( cText );
 }
 
 HB_FUNC_STATIC( TWINDOW_EVENTS )
@@ -554,17 +526,6 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )
 
 #pragma ENDDUMP
 
-
-function _SetToolTipBackcolor ( acolor )
-*--------------------------------------------------
- _OOHG_tooltipbackcolor:=acolor
-return nil
-
-*--------------------------------------------------
-function _SetToolTipforecolor ( acolor )
-*--------------------------------------------------
-_OOHG_TooltipForeColor:=acolor
-return nil
 
 *------------------------------------------------------------------------------*
 METHOD Enabled( lEnabled ) CLASS TWindow
@@ -728,7 +689,6 @@ CLASS TForm FROM TWindow
 *------------------------------------------------------------------------------*
    DATA Active         INIT .F.
    DATA ToolTipHandle  INIT 0
-   DATA NoShow         INIT .F.
    DATA Focused        INIT .F.
    DATA LastFocusedControl INIT 0
    DATA AutoRelease    INIT .F.
@@ -1088,14 +1048,8 @@ Local Formhandle
 	EndIf
 
    ::Register( FormHandle, FormName )
-   ::ToolTipHandle := InitToolTip( FormHandle, _SetToolTipBalloon() )
-   if _OOHG_TooltipBackColor#NIL
-        SendMessage( ::ToolTipHandle , TTM_SETTIPBKCOLOR, RGB( _OOHG_TooltipBackColor[1] , _OOHG_TooltipBackColor[2] , _OOHG_TooltipBackColor[3] ), 0)
-   endif
+   ::ToolTipHandle := InitToolTip( FormHandle, _SetToolTipBalloon(), _SetTooltipBackcolor(), _SetTooltipForecolor() )
 
-   if _OOHG_TooltipForeColor#NIL
-      SendMessage( ::ToolTipHandle , TTM_SETTIPTEXTCOLOR, RGB( _OOHG_TooltipForeColor[1] , _OOHG_TooltipForeColor[2] , _OOHG_TooltipForeColor[3] ), 0)
-   endif
    // Font Name:
    if ! empty( FontName )
       // Specified font
@@ -1123,6 +1077,8 @@ Local Formhandle
    ::nWidth  := w
    ::nHeight := h
 
+   ::VirtualHeight := VirtualHeight
+   ::VirtualWidth := VirtualWidth
    ValidateScrolls( Self, .F. )
 
    ::OnRelease := ReleaseProcedure
@@ -1143,9 +1099,7 @@ Local Formhandle
    ::OnInteractiveClose := InteractiveCloseProcedure
    ::OnMaximize := MaximizeProcedure
    ::OnMinimize := MinimizeProcedure
-   ::VirtualHeight := VirtualHeight
-   ::VirtualWidth := VirtualWidth
-   ::NoShow := NoShow
+   ::lVisible := ! ( ValType( NoShow ) == "L" .AND. NoShow )
    ::BackColor := aRGB
    ::AutoRelease := ! NoAutoRelease
 
@@ -1318,7 +1272,7 @@ METHOD Activate( lNoStop, oWndLoop ) CLASS TForm
       endif
 */
 
-      If ! ::NoShow
+      If ::lVisible
          ShowWindow( ::hWnd )
       EndIf
 
@@ -1410,7 +1364,7 @@ Return Nil
 METHOD SetActivationFlag() CLASS TForm
 *-----------------------------------------------------------------------------*
    ::Active := .t.
-   AEVAL( ::SplitChildList, { |o| o:Active := .t., if( ! o:NoShow, o:Show(), ) } )
+   AEVAL( ::SplitChildList, { |o| o:Active := .t., if( o:lVisible, o:Show(), ) } )
 Return Nil
 
 *-----------------------------------------------------------------------------*
@@ -1470,10 +1424,7 @@ RETURN ::cNotifyIconTooltip
 *------------------------------------------------------------------------------*
 METHOD Title( cTitle ) CLASS TForm
 *------------------------------------------------------------------------------*
-   if valtype( cTitle ) $ "CM"
-      SetWindowText( ::hWnd, cTitle )
-   endif
-Return GetWindowText( ::hWnd )
+Return ( ::Caption := cTitle )
 
 *------------------------------------------------------------------------------*
 METHOD Height( nHeight ) CLASS TForm
@@ -1529,10 +1480,8 @@ HB_FUNC_STATIC( TFORM_BACKCOLOR )
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
 
-   if( hb_pcount() >= 1 )
+   if( _OOHG_DetermineColorReturn( hb_param( 1, HB_IT_ANY ), &oSelf->lBackColor, ( hb_pcount() >= 1 ) ) )
    {
-      oSelf->lBackColor = -1;
-      _OOHG_DetermineColor( hb_param( 1, HB_IT_ANY ), &oSelf->lBackColor );
       if( oSelf->BrushHandle )
       {
          DeleteObject( oSelf->BrushHandle );
@@ -1553,17 +1502,7 @@ HB_FUNC_STATIC( TFORM_BACKCOLOR )
       }
    }
 
-   if( oSelf->lBackColor != -1 )
-   {
-      hb_reta( 3 );
-      hb_stornl( GetRValue( oSelf->lBackColor ), -1, 1 );
-      hb_stornl( GetGValue( oSelf->lBackColor ), -1, 2 );
-      hb_stornl( GetBValue( oSelf->lBackColor ), -1, 3 );
-   }
-   else
-   {
-      hb_ret();
-   }
+   // Return value was set in _OOHG_DetermineColorReturn()
 }
 #pragma ENDDUMP
 
@@ -2902,7 +2841,7 @@ Local z, aForm2, oWndActive, oWnd, lModal
    lModal := .F.
    FOR z := 1 TO Len( aForm2 )
       oWnd := GetFormObject( aForm2[ z ] )
-      IF oWnd:Type == "M" .AND. ! oWnd:NoShow
+      IF oWnd:Type == "M" .AND. oWnd:lVisible
          IF lModal
             MsgOOHGError( "ACTIVATE WINDOW: Only one initially visible modal window allowed. Program terminated" )
          ENDIF
@@ -2937,11 +2876,11 @@ Local MainName := ''
       oWnd := _OOHG_aFormObjects[ i ]
       If oWnd:Type != "X" .AND. ! oWnd:lInternal
          if oWnd:Type == "A"
-            oWnd:NoShow := .F.
+            oWnd:lVisible := .T.
             oWnd:AutoRelease := .T.
             MainName := oWnd:Name
-         ELse
-//            oWnd:NoShow := .T.
+         Else
+//            oWnd:lVisible := .F.
 //            oWnd:AutoRelease := .F.
             aadd( aForm , oWnd:Name )
          EndIf
@@ -3025,6 +2964,7 @@ RETURN 1
 
 EXTERN IsXPThemeActive, _OOHG_Eval, EVAL
 EXTERN _OOHG_ShowContextMenus, _OOHG_GlobalRTL, _OOHG_NestedSameEvent
+EXTERN _SetTooltipBackcolor, _SetTooltipForecolor
 
 #pragma BEGINDUMP
 
@@ -3100,6 +3040,16 @@ HB_FUNC( _OOHG_NESTEDSAMEEVENT )
       _OOHG_NestedSameEvent = hb_parl( 1 );
    }
    hb_retl( _OOHG_NestedSameEvent );
+}
+
+HB_FUNC( _SETTOOLTIPBACKCOLOR )
+{
+   _OOHG_DetermineColorReturn( hb_param( 1, HB_IT_ANY ), &_OOHG_TooltipBackcolor, ( hb_pcount() >= 1 ) );
+}
+
+HB_FUNC( _SETTOOLTIPFORECOLOR )
+{
+   _OOHG_DetermineColorReturn( hb_param( 1, HB_IT_ANY ), &_OOHG_TooltipForecolor, ( hb_pcount() >= 1 ) );
 }
 
 #pragma ENDDUMP

@@ -1,5 +1,5 @@
 /*
- * $Id: c_controlmisc.c,v 1.29 2006-02-26 17:49:53 guerra000 Exp $
+ * $Id: c_controlmisc.c,v 1.30 2006-03-16 03:16:16 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -280,6 +280,29 @@ BOOL _OOHG_DetermineColor( PHB_ITEM pColor, LONG *lColor )
    return bValid;
 }
 
+BOOL _OOHG_DetermineColorReturn( PHB_ITEM pColor, LONG *lColor, BOOL fUpdate )
+{
+   if( fUpdate )
+   {
+      *lColor = -1;
+      _OOHG_DetermineColor( pColor, lColor );
+   }
+
+   if( *lColor != -1 )
+   {
+      hb_reta( 3 );
+      hb_stornl( GetRValue( *lColor ), -1, 1 );
+      hb_stornl( GetGValue( *lColor ), -1, 2 );
+      hb_stornl( GetBValue( *lColor ), -1, 3 );
+   }
+   else
+   {
+      hb_ret();
+   }
+
+   return fUpdate;
+}
+
 HB_FUNC ( DELETEOBJECT )
 {
    hb_retl ( DeleteObject( (HGDIOBJ) hb_parnl( 1 ) ) ) ;
@@ -292,34 +315,32 @@ HB_FUNC( CSHOWCONTROL )
 
 HB_FUNC( INITTOOLTIP )
 {
-
    HWND htooltip;
+   LONG lColor;
+   int Style = TTS_ALWAYSTIP;
 
-        int Style = TTS_ALWAYSTIP;
+   if( hb_parl( 2 ) )
+   {
+      Style |= TTS_BALLOON;
+   }
 
-        if ( hb_parl(2) )
-        {
-           Style = Style | TTS_BALLOON ;
-        }
+   InitCommonControls();
 
+   htooltip = CreateWindowEx( 0, "tooltips_class32", "", Style,
+                              0, 0, 0, 0, ( HWND ) hb_parnl( 1 ),
+                              NULL, GetModuleHandle( NULL ), NULL );
 
-	InitCommonControls();
+   if( _OOHG_DetermineColor( hb_param( 3, HB_IT_ANY ), &lColor ) )
+   {
+      SendMessage( htooltip, TTM_SETTIPBKCOLOR, lColor, 0 );
+   }
 
-	htooltip = CreateWindowEx( 0,
-	"tooltips_class32",
-	"",
-        Style,
-	0,
-	0,
-	0,
-	0,
-	(HWND) hb_parnl(1) ,
-	(HMENU) 0 ,
-	GetModuleHandle ( NULL )
-	, NULL ) ;
+   if( _OOHG_DetermineColor( hb_param( 4, HB_IT_ANY ), &lColor ) )
+   {
+      SendMessage( htooltip, TTM_SETTIPTEXTCOLOR, lColor, 0 );
+   }
 
-	hb_retnl ( (LONG) htooltip ) ;
-
+   hb_retnl( ( LONG ) htooltip );
 }
 
 HB_FUNC ( SETTOOLTIP )

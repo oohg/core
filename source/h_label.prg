@@ -1,5 +1,5 @@
 /*
- * $Id: h_label.prg,v 1.13 2006-02-11 06:19:33 guerra000 Exp $
+ * $Id: h_label.prg,v 1.14 2006-03-16 03:16:17 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -115,7 +115,7 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, w, h, fontname, ;
                fontsize, bold, BORDER, CLIENTEDGE, HSCROLL, VSCROLL, ;
                lTRANSPARENT, aRGB_bk, aRGB_font, ProcedureName, tooltip, ;
                HelpId, invisible, italic, underline, strikeout, autosize, ;
-               rightalign, centeralign, lRtl, lNoWordWrap ) CLASS TLabel
+               rightalign, centeralign, lRtl, lNoWordWrap, lNoPrefix ) CLASS TLabel
 *-----------------------------------------------------------------------------*
 Local ControlHandle, nStyle, nStyleEx
 
@@ -127,10 +127,11 @@ Local ControlHandle, nStyle, nStyleEx
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, aRGB_font, aRGB_bk, , lRtl )
 
-   nStyle := if( ValType( invisible ) != "L" .OR. ! invisible, WS_VISIBLE, 0 ) + ;
-             if( ValType( BORDER ) == "L"    .AND. BORDER,     WS_BORDER,  0 ) + ;
-             if( ValType( HSCROLL ) == "L"   .AND. HSCROLL,    WS_HSCROLL, 0 ) + ;
-             if( ValType( VSCROLL ) == "L"   .AND. VSCROLL,    WS_VSCROLL, 0 )
+   nStyle := if( ValType( invisible ) != "L" .OR. ! invisible, WS_VISIBLE,  0 ) + ;
+             if( ValType( BORDER ) == "L"    .AND. BORDER,     WS_BORDER,   0 ) + ;
+             if( ValType( HSCROLL ) == "L"   .AND. HSCROLL,    WS_HSCROLL,  0 ) + ;
+             if( ValType( VSCROLL ) == "L"   .AND. VSCROLL,    WS_VSCROLL,  0 ) + ;
+             if( ValType( lNoPrefix ) == "L" .AND. lNoPrefix,  SS_NOPREFIX, 0 )
 
    If ValType( lNoWordWrap ) == "L" .AND. lNoWordWrap
       nStyle += SS_LEFTNOWORDWRAP
@@ -166,14 +167,14 @@ METHOD Caption( cValue ) CLASS TLabel
    IF VALTYPE( cValue ) $ "CM"
       if ::lAutoSize
          ::SizePos( , , GetTextWidth( nil, cValue , ::FontHandle ) + ::IconWidth, GetTextHeight( nil, cValue , ::FontHandle ) )
-		EndIf
+      EndIf
       SetWindowText( ::hWnd , cValue )
       If ::Transparent
          RedrawWindowControlRect( ::ContainerhWnd, ::ContainerRow, ::ContainerCol, ::ContainerRow + ::Height, ::ContainerCol + ::Width )
       EndIf
-   ELSE
+   Else
       cValue := GetWindowText( ::hWnd )
-   ENDIF
+   EndIf
 RETURN cValue
 
 *-----------------------------------------------------------------------------*

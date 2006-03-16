@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.23 2006-02-11 06:19:32 guerra000 Exp $
+ * $Id: i_altsyntax.ch,v 1.24 2006-03-16 03:16:15 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -179,6 +179,7 @@ MEMVAR _OOHG_ActiveControlHScroll
 MEMVAR _OOHG_ActiveControlVscroll
 MEMVAR _OOHG_ActiveControlTransparent
 MEMVAR _OOHG_ActiveControlNoWordWrap
+MEMVAR _OOHG_ActiveControlNoPrefix
 
 MEMVAR _OOHG_ActiveControlSort
 
@@ -1159,7 +1160,8 @@ Button
         _OOHG_ActiveControlOnGotFocus        := Nil      ;;
         _OOHG_ActiveControlOnLostFocus       := Nil      ;;
         _OOHG_ActiveControlPicture           := Nil      ;;
-        _OOHG_ActiveControlTransparent     := .t.
+        _OOHG_ActiveControlTransparent       := .t.      ;;
+        _OOHG_ActiveControlNoPrefix          := .F.
 
 #xcommand CAPTION  <caption> ;
         =>;
@@ -1234,7 +1236,8 @@ Button
                     _OOHG_ActiveControlFontItalic ,;
                     _OOHG_ActiveControlFontUnderLine ,;
                     _OOHG_ActiveControlFontStrikeOut,;
-                    _OOHG_ActiveControlRtl ) ,;
+                    _OOHG_ActiveControlRtl,;
+                    _OOHG_ActiveControlNoPrefix ) ,;
                  TButton():DefineImage(;
                     _OOHG_ActiveControlName,;
                     _OOHG_ActiveControlOf,;
@@ -1726,7 +1729,8 @@ Label
         _OOHG_ActiveControlRightAlign    := .F.          ;;
         _OOHG_ActiveControlAutoSize      := .f.          ;;
         _OOHG_ActiveControlCenterAlign   := .F.          ;;
-        _OOHG_ActiveControlNoWordWrap    := .F.
+        _OOHG_ActiveControlNoWordWrap    := .F.          ;;
+        _OOHG_ActiveControlNoPrefix      := .F.
 
 #xcommand CENTERALIGN	<centeralign> ;
 	=> ;
@@ -1760,6 +1764,10 @@ Label
 	=>;
         _OOHG_ActiveControlNoWordWrap   := <nowordwrap>
 
+#xcommand NOPREFIX   <noprefix>;
+	=>;
+        _OOHG_ActiveControlNoPrefix     := <noprefix>
+
 #xcommand END LABEL ;
 	=>;
         TLabel():Define( ;
@@ -1791,7 +1799,8 @@ Label
                 _OOHG_ActiveControlRightAlign , ;
                 _OOHG_ActiveControlCenterAlign , ;
                 _OOHG_ActiveControlRtl , ;
-                _OOHG_ActiveControlNoWordWrap )
+                _OOHG_ActiveControlNoWordWrap , ;
+                _OOHG_ActiveControlNoPrefix )
 
 
 #xcommand DEFINE IPADDRESS <name> ;

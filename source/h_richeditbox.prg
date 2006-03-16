@@ -1,5 +1,5 @@
 /*
- * $Id: h_richeditbox.prg,v 1.9 2006-02-11 06:19:33 guerra000 Exp $
+ * $Id: h_richeditbox.prg,v 1.10 2006-03-16 03:16:17 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -180,10 +180,8 @@ HB_FUNC_STATIC( TEDITRICH_BACKCOLOR )
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
 
-   if( hb_pcount() >= 1 )
+   if( _OOHG_DetermineColorReturn( hb_param( 1, HB_IT_ANY ), &oSelf->lBackColor, ( hb_pcount() >= 1 ) ) )
    {
-      oSelf->lBackColor = -1;
-      _OOHG_DetermineColor( hb_param( 1, HB_IT_ANY ), &oSelf->lBackColor );
       if( oSelf->hWnd )
       {
          if( oSelf->lBackColor != -1 )
@@ -198,16 +196,6 @@ HB_FUNC_STATIC( TEDITRICH_BACKCOLOR )
       }
    }
 
-   if( oSelf->lBackColor != -1 )
-   {
-      hb_reta( 3 );
-      hb_stornl( GetRValue( oSelf->lBackColor ), -1, 1 );
-      hb_stornl( GetGValue( oSelf->lBackColor ), -1, 2 );
-      hb_stornl( GetBValue( oSelf->lBackColor ), -1, 3 );
-   }
-   else
-   {
-      hb_ret();
-   }
+   // Return value was set in _OOHG_DetermineColorReturn()
 }
 #pragma ENDDUMP

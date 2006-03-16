@@ -1,5 +1,5 @@
 /*
- * $Id: i_button.ch,v 1.4 2005-10-22 06:04:31 guerra000 Exp $
+ * $Id: i_button.ch,v 1.5 2006-03-16 03:16:16 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -112,10 +112,11 @@
 		[ HELPID <helpid> ] 		;
 		[ <invisible: INVISIBLE> ] ;
                 [ <rtl: RTL> ] ;
+                [ <noprefix: NOPREFIX> ] ;
 	=>;
         [ <obj> := ] TButton():Define( <(name)>, <(parent)>, <col>, <row>, <caption>, <{action}>, ;
-                   <w>, <h>, <font>, <size>, <tooltip>, <{gotfocus}>, ;
-                   <{lostfocus}>, <.flat.>, <.notabstop.>, <helpid>, <.invisible.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.>, <.rtl.> )
+                   <w>, <h>, <font>, <size>, <tooltip>, <{gotfocus}>,<{lostfocus}>, <.flat.>, <.notabstop.>, ;
+                   <helpid>, <.invisible.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.>, <.rtl.>, <.noprefix.> )
 
 #xcommand @ <row>,<col> BUTTON <name> ;
                 [ OBJ <obj> ] ;

@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.45 2006-03-15 06:39:09 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.46 2006-03-16 03:16:16 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1114,49 +1114,38 @@ Local oWnd, oCtrl
 		Arg2 := Upper (Arg2)
 
 		if Arg2 == 'ACTIVATE'
-
-			if ValType ( Arg1 ) == 'A'
-            oWnd:Activate()
+         if ValType( Arg1 ) == 'A'
+            _ActivateWindow( Arg1 )
 			Else
-            * AEVAL( Arg1, { |c| GetFormObject( c ):Activate() } )
-				_ActivateWindow ( { Arg1 } )
+            oWnd:Activate()
 			EndIf
 
 		ELseIf Arg2 == 'CENTER'
-
          oWnd:Center()
 
 		ElseIf Arg2 == 'RELEASE'
-
-			_ReleaseWindow ( Arg1 )
+         _ReleaseWindow( Arg1 )
 
 		ElseIf Arg2 == 'MAXIMIZE'
-
          oWnd:Maximize()
 
 		ElseIf Arg2 == 'MINIMIZE'
-
          oWnd:Minimize()
-			_MinimizeWindow ( Arg1 )
+         _MinimizeWindow( Arg1 )
 
 		ElseIf Arg2 == 'RESTORE'
-
          oWnd:Restore()
 
 		ElseIf Arg2 == 'SHOW'
-
          oWnd:Show()
 
 		ElseIf Arg2 == 'PRINT'
-
-         oWnd:print()
+         oWnd:Print()
 
 		ElseIf Arg2 == 'HIDE'
-
          oWnd:Hide()
 
 		ElseIf Arg2 == 'SETFOCUS'
-
          If oWnd:Active
             oWnd:SetFocus()
          EndIf
@@ -1174,79 +1163,60 @@ Local oWnd, oCtrl
 		Arg3 := Upper (Arg3)
 
 		If     Arg3 == 'REFRESH'
-
          oCtrl:Refresh()
 
 		ElseIf Arg3 == 'SAVE'
-
          oCtrl:SaveData()
 
 		ElseIf Arg3 == 'SETFOCUS'
-
          oCtrl:SetFocus()
 
 		ElseIf Arg3 == 'ACTION'
-
          _OOHG_Eval( oCtrl:OnClick )
 
 		ElseIf Arg3 == 'ONCLICK'
-
          _OOHG_Eval( oCtrl:OnClick )
 
       ElseIf Arg3 == 'COLUMNSAUTOFIT'
-
          oCtrl:ColumnsAutoFit()
 
       ElseIf Arg3 == 'COLUMNSAUTOFITH'
-
          oCtrl:ColumnsAutoFitH()
 
 		ElseIf Arg3 == 'DELETEALLITEMS'
-
          oCtrl:DeleteAllItems()
 
 		ElseIf Arg3 == 'RELEASE'
-
          oCtrl:Release()
 
 		ElseIf Arg3 == 'SHOW'
-
          oCtrl:Visible := .T.
 
 		ElseIf Arg3 == 'HIDE'
-
          oCtrl:Visible := .F.
 
 		ElseIf Arg3 == 'PLAY'
-
          oCtrl:Play()
 
 		ElseIf Arg3 == 'STOP'
-
          oCtrl:Stop()
 
 		ElseIf Arg3 == 'CLOSE'
-
          oCtrl:Close()
 
 		ElseIf Arg3 == 'PLAYREVERSE'
-
          oCtrl:PlayReverse()
 
 		ElseIf Arg3 == 'PAUSE'
-
          oCtrl:Pause()
 
 		ElseIf Arg3 == 'EJECT'
-
          oCtrl:Eject()
 
 		ElseIf Arg3 == 'OPENDIALOG'
-
          oCtrl:OpenDialog()
 
 		ElseIf Arg3 == 'RESUME'
-
          oCtrl:Resume()
 
 		EndIf
@@ -1492,7 +1462,6 @@ Return GetWindowText( GetControlObject( ControlName, ParentForm ):hWnd )
 *------------------------------------------------------------------------------*
 CLASS TControl FROM TWindow
 *------------------------------------------------------------------------------*
-   DATA lVisible    INIT .T.
    DATA cToolTip    INIT ""
    DATA FontHandle  INIT 0
    DATA AuxHandle   INIT 0
