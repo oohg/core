@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.70 2006-03-16 03:16:17 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.71 2006-03-17 05:52:14 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -386,7 +386,7 @@ HB_FUNC( TWINDOW_CAPTION )
 
    if( ISCHAR( 1 ) )
    {
-      SetWindowText( oSelf->hWnd, ( LPCTSTR ) hb_parc( 2 ) );
+      SetWindowText( oSelf->hWnd, ( LPCTSTR ) hb_parc( 1 ) );
    }
 
    iLen = GetWindowTextLength( oSelf->hWnd ) + 1;
