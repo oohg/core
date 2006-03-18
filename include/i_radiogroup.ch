@@ -1,5 +1,5 @@
 /*
- * $Id: i_radiogroup.ch,v 1.3 2005-10-22 06:04:31 guerra000 Exp $
+ * $Id: i_radiogroup.ch,v 1.4 2006-03-18 16:02:27 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -113,6 +113,11 @@
 			[ <invisible : INVISIBLE> ] ;
 			[ <notabstop : NOTABSTOP> ] ;
                         [ <autosize : AUTOSIZE> ] ;
+                        [ <horizontal: HORIZONTAL> ] ;
 	=>;
         [ <obj> := ] ;
-        TRadioGroup():Define( <(name)>, <(parent)>, <col>, <row>, <aOptions>, <value> , <fontname> , <fontsize>  , <tooltip>  , <{change}> , <width> , <spacing>  , <helpid>, <.invisible.>, <.notabstop.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <backcolor> , <fontcolor> , <.transparent.>, <.autosize.> )
+        TRadioGroup():Define( <(name)>, <(parent)>, <col>, <row>, <aOptions>, <value>, ;
+                              <fontname>, <fontsize>, <tooltip>, <{change}>, <width>, ;
+                              <spacing>, <helpid>, <.invisible.>, <.notabstop.>, <.bold.>, ;
+                              <.italic.>, <.underline.>, <.strikeout.>, <backcolor>, ;
+                              <fontcolor>, <.transparent.>, <.autosize.>, <.horizontal.> )

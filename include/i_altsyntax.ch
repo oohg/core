@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.24 2006-03-16 03:16:15 guerra000 Exp $
+ * $Id: i_altsyntax.ch,v 1.25 2006-03-18 16:02:27 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -188,9 +188,9 @@ MEMVAR _OOHG_ActiveControlRangeHigh
 MEMVAR _OOHG_ActiveControlVertical
 MEMVAR _OOHG_ActiveControlSmooth
 
-
 MEMVAR _OOHG_ActiveControlOptions
 MEMVAR _OOHG_ActiveControlSpacing
+MEMVAR _OOHG_ActiveControlHorizontal
 
 MEMVAR _OOHG_ActiveControlNoTicks
 MEMVAR _OOHG_ActiveControlBoth
@@ -796,8 +796,9 @@ Radio Group
         _OOHG_ActiveControlOptions               := Nil          ;;
         _OOHG_ActiveControlOnChange              := Nil          ;;
         _OOHG_ActiveControlSpacing               := Nil          ;;
-        _OOHG_ActiveControlTransparent   := .f.          ;;
-        _OOHG_ActiveControlAutoSize      := .f.
+        _OOHG_ActiveControlTransparent           := .f.          ;;
+        _OOHG_ActiveControlAutoSize              := .f.          ;;
+        _OOHG_ActiveControlHorizontal            := .f.
 
 #xcommand OPTIONS	<aOptions>;
 	=>;
@@ -806,6 +807,10 @@ Radio Group
 #xcommand SPACING	<spacing>;
 	=>;
         _OOHG_ActiveControlSpacing               := <spacing>
+
+#xcommand HORIZONTAL    <horizontal>;
+	=>;
+        _OOHG_ActiveControlHorizontal            := <horizontal>
 
 #xcommand END RADIOGROUP;
 	=>;
@@ -832,7 +837,8 @@ Radio Group
                 _OOHG_ActiveControlBackColor,;
                 _OOHG_ActiveControlFontColor  , ;
                 _OOHG_ActiveControlTransparent, ;
-                _OOHG_ActiveControlAutoSize  ;
+                _OOHG_ActiveControlAutoSize, ;
+                _OOHG_ActiveControlHorizontal  ;
 		)
 
 

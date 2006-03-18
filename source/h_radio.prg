@@ -1,5 +1,5 @@
 /*
- * $Id: h_radio.prg,v 1.8 2006-02-11 06:19:33 guerra000 Exp $
+ * $Id: h_radio.prg,v 1.9 2006-03-18 16:02:28 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -122,18 +122,19 @@ ENDCLASS
 METHOD Define( ControlName, ParentForm, x, y, aOptions, Value, fontname, ;
                fontsize, tooltip, change, width, spacing, HelpId, invisible, ;
                notabstop, bold, italic, underline, strikeout, backcolor, ;
-               fontcolor, transparent, autosize ) CLASS TRadioGroup
+               fontcolor, transparent, autosize, horizontal ) CLASS TRadioGroup
 *-----------------------------------------------------------------------------*
 Local i
 Local oItem
 Local ControlHandle
 
-   DEFAULT Width     TO 120
-   DEFAULT Spacing   TO 25
-   DEFAULT change    TO ""
-   DEFAULT invisible TO FALSE
-   DEFAULT notabstop TO FALSE
-   DEFAULT autosize  TO FALSE
+   DEFAULT Width      TO 120
+   DEFAULT Spacing    TO 25
+   DEFAULT change     TO ""
+   DEFAULT invisible  TO FALSE
+   DEFAULT notabstop  TO FALSE
+   DEFAULT autosize   TO FALSE
+   DEFAULT horizontal TO FALSE
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor )
 
@@ -156,21 +157,25 @@ Local ControlHandle
    oItem:AutoSize := autosize
    oItem:Caption := aOptions[ 1 ]
 
+   x := ::Col
    y := ::Row
 
    for i = 2 to len( aOptions )
 
-      y += Spacing
+      If horizontal
+         x += width
+      Else
+         y += Spacing
+      EndIf
 
-      ControlHandle := InitRadioButton( ::ContainerhWnd, aOptions[i], 0, ::Col, y , '' , 0 , width, invisible )
+      ControlHandle := InitRadioButton( ::ContainerhWnd, aOptions[i], 0, x, y , '' , 0 , width, invisible )
 
       oItem := TRadioItem():SetForm( , Self )
       oItem:Register( ControlHandle, , HelpId, ! Invisible, ToolTip )
       oItem:SetFont( , , bold, italic, underline, strikeout )
-      oItem:SizePos( y, ::Col, ::Width, Spacing )
+      oItem:SizePos( y, x, Width, Spacing )
       oItem:AutoSize := autosize
       oItem:Caption := aOptions[ i ]
-
 	next i
 
    if valtype( Value ) == "N" .AND. Value >= 1 .AND. Value <= Len( ::aControls )
