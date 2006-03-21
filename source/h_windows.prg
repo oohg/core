@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.71 2006-03-17 05:52:14 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.72 2006-03-21 15:59:33 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -447,27 +447,40 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )
          hb_vmSend( 1 );
          break;
 
-/********
-
       case WM_CONTEXTMENU:
          if( _OOHG_ShowContextMenus )
          {
             PHB_ITEM pControl, pContext;
+            HWND hForm;
 
             SetFocus( ( HWND ) wParam );
             pControl = GetControlObjectByHandle( ( LONG ) wParam );
 
             // Check if control have context menu
+            pContext = NULL;
             _OOHG_Send( pControl, s_ContextMenu );
             hb_vmSend( 0 );
-            pContext = hb_param( -1, HB_IT_OBJECT );
-            // Check if form have context menu
-            if( ! pContext )
+            if( hb_param( -1, HB_IT_OBJECT ) )
             {
-               // _OOHG_Send( pSelf, s_ContextMenu );
+               pContext = hb_itemNew( NULL );
+               hb_itemCopy( pContext, hb_param( -1, HB_IT_OBJECT ) );
+               _OOHG_Send( pSelf, s_Parent );
+               hb_vmSend( 0 );
+               _OOHG_Send( hb_param( -1, HB_IT_OBJECT ), s_hWnd );
+               hb_vmSend( 0 );
+               hForm = ( HWND ) hb_parnl( -1 );
+            }
+            else
+            {
+               // Check if form have context menu
                _OOHG_Send( pSelf, s_ContextMenu );
                hb_vmSend( 0 );
-               pContext = hb_param( -1, HB_IT_OBJECT );
+               if( hb_param( -1, HB_IT_OBJECT ) )
+               {
+                  pContext = hb_itemNew( NULL );
+                  hb_itemCopy( pContext, hb_param( -1, HB_IT_OBJECT ) );
+                  hForm = hWnd;
+               }
             }
 
             // If there's a context menu, show it
@@ -486,9 +499,10 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )
                // HMENU
                _OOHG_Send( pContext, s_hWnd );
                hb_vmSend( 0 );
-               TrackPopupMenu( ( HMENU ) hb_parnl( -1 ), 0, ( int ) LOWORD( lParam ), ( int ) HIWORD( lParam ), 0, hWnd, 0 );
-               PostMessage( hWnd, WM_NULL, 0, 0 );
-               hb_ret();
+               TrackPopupMenu( ( HMENU ) hb_parnl( -1 ), 0, ( int ) LOWORD( lParam ), ( int ) HIWORD( lParam ), 0, hForm, 0 );
+               PostMessage( hForm, WM_NULL, 0, 0 );
+               hb_itemRelease( pContext );
+               hb_retni( 1 );
             }
             else
             {
@@ -500,7 +514,6 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )
             hb_ret();
          }
          break;
-********/
 
       default:
          _OOHG_Send( pSelf, s_WndProc );
@@ -1619,59 +1632,8 @@ HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
 
    switch( message )
    {
-      case WM_CONTEXTMENU:
-         if( _OOHG_ShowContextMenus )
-         {
-            PHB_ITEM pControl, pContext;
-
-            SetFocus( ( HWND ) wParam );
-            pControl = GetControlObjectByHandle( ( LONG ) wParam );
-
-            // Check if control have context menu
-            _OOHG_Send( pControl, s_ContextMenu );
-            hb_vmSend( 0 );
-            pContext = hb_param( -1, HB_IT_OBJECT );
-            // Check if form have context menu
-            if( ! pContext )
-            {
-               // _OOHG_Send( pSelf, s_ContextMenu );
-               _OOHG_Send( pSelf, s_ContextMenu );
-               hb_vmSend( 0 );
-               pContext = hb_param( -1, HB_IT_OBJECT );
-            }
-
-            // If there's a context menu, show it
-            if( pContext )
-            {
-/*
-               int iRow, iCol;
-
-               // _OOHG_MouseRow := HIWORD( lParam ) - ::RowMargin
-               _OOHG_Send( pSelf, s_RowMargin );
-               hb_vmSend( 0 );
-               iRow = HIWORD( lParam ) - hb_parni( -1 );
-               // _OOHG_MouseCol := LOWORD( lParam ) - ::ColMargin
-               _OOHG_Send( pSelf, s_ColMargin );
-               hb_vmSend( 0 );
-               iCol = LOWORD( lParam ) - hb_parni( -1 );
-*/
-               // HMENU
-               _OOHG_Send( pContext, s_hWnd );
-               hb_vmSend( 0 );
-               TrackPopupMenu( ( HMENU ) hb_parnl( -1 ), 0, ( int ) LOWORD( lParam ), ( int ) HIWORD( lParam ), 0, hWnd, 0 );
-               PostMessage( hWnd, WM_NULL, 0, 0 );
-               hb_ret();
-            }
-            else
-            {
-               hb_ret();
-            }
-         }
-         else
-         {
-            hb_ret();
-         }
-         break;
+    //  case WM_CONTEXTMENU:
+         // Dummy... only for not to delete SWITCH structure...
 
       default:
          if( ! s_Events2 )

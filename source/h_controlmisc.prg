@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.46 2006-03-16 03:16:16 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.47 2006-03-21 15:59:33 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1938,7 +1938,10 @@ Return _OOHG_EVAL( ::Block, ::Value )
 *-----------------------------------------------------------------------------*
 METHOD RefreshData() CLASS TControl
 *-----------------------------------------------------------------------------*
-   ::Value := _OOHG_EVAL( ::Block )
+   // Since not all controls haves ::Value property, it must be checked here
+   IF VALTYPE( ::Block ) == "B"
+      ::Value := _OOHG_EVAL( ::Block )
+   ENDIF
    ::Refresh()
 Return nil
 
@@ -2029,56 +2032,6 @@ HB_FUNC_STATIC( TCONTROL_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam
          }
 
          hb_ret();
-         break;
-
-      case WM_CONTEXTMENU:
-//         if( _OOHG_ShowContextMenus )
-         {
-            SetFocus( hWnd );
-
-            _OOHG_Send( pSelf, s_ContextMenu );
-            hb_vmSend( 0 );
-            if( hb_param( -1, HB_IT_OBJECT ) )
-            {
-               HWND hParent;
-               PHB_ITEM pContext;
-               pContext = hb_itemNew( NULL );
-               hb_itemCopy( pContext, hb_param( -1, HB_IT_OBJECT ) );
-               _OOHG_Send( pSelf, s_Parent );
-               hb_vmSend( 0 );
-               _OOHG_Send( hb_param( -1, HB_IT_OBJECT ), s_hWnd );
-               hb_vmSend( 0 );
-               hParent = ( HWND ) hb_parnl( -1 );
-
-/*
-               int iRow, iCol;
-
-               // _OOHG_MouseRow := HIWORD(lParam) - ::RowMargin
-               _OOHG_Send( pParent, s_RowMargin );
-               hb_vmSend( 0 );
-               iRow = HIWORD( lParam ) - hb_parni( -1 );
-               // _OOHG_MouseCol := LOWORD(lParam) - ::ColMargin
-               _OOHG_Send( pParent, s_ColMargin );
-               hb_vmSend( 0 );
-               iCol = LOWORD( lParam ) - hb_parni( -1 );
-*/
-               // HMENU
-               _OOHG_Send( pContext, s_hWnd );
-               hb_vmSend( 0 );
-               TrackPopupMenu( ( HMENU ) hb_parnl( -1 ), 0, ( int ) LOWORD( lParam ), ( int ) HIWORD( lParam ), 0, hParent, 0 );
-               PostMessage( hParent, WM_NULL, 0, 0 );
-               hb_itemRelease( pContext );
-               hb_ret();
-            }
-            else
-            {
-               hb_ret();
-            }
-         }
-//         else
-//         {
-//            hb_ret();
-//         }
          break;
 
       default:
