@@ -1,5 +1,5 @@
 /*
- * $Id: h_report.prg,v 1.21 2006-03-15 06:41:20 guerra000 Exp $
+ * $Id: h_report.prg,v 1.22 2006-03-22 16:57:07 declan2005 Exp $
  */
 /*
  * DO REPORT Command support procedures For MiniGUI Library.
@@ -108,20 +108,13 @@ endif
 if ncpl=NIL
    ncpl:=80
 endif
-///        nposat:=at("|",ctitle)
-///        if len(cheader)>0
-///          ctitle1:=lower(substr(ctitle,1,nposat-1))
-///          ctitle2:=lower(substr(ctitle,nposat+1))
-///          ctitle:=ctitle1+"|"+ctitle2
-///        endif
 
-        _listreport(CTITLE,AHEADERS1,AHEADERS2,AFIELDS,AWIDTHS,ATOTALS,NLPP,LDOS,LPREVIEW,CGRAPHIC,NFI,NCI,NFF,NCF,LMUL,CGRPBY,CHDRGRP,LLANDSCAPE,NCPL,LSELECT,CALIAS,NLLMARGIN,AFORMATS,NPAPERSIZE,CHEADER,lnoprop)
+ _listreport(CTITLE,AHEADERS1,AHEADERS2,AFIELDS,AWIDTHS,ATOTALS,NLPP,LDOS,LPREVIEW,CGRAPHIC,NFI,NCI,NFF,NCF,LMUL,CGRPBY,CHDRGRP,LLANDSCAPE,NCPL,LSELECT,CALIAS,NLLMARGIN,AFORMATS,NPAPERSIZE,CHEADER,lnoprop)
 
 RETURN NIL
 
 static FUNCTION _listreport(ctitle,aheaders1,aheaders2,afields,awidths,atotals,nlpp,ldos,lpreview,cgraphic,nfi,nci,nff,ncf,lmul,cgrpby,chdrgrp,llandscape,ncpl,lselect,calias,nllmargin,aformats,npapersize,cheader,lnoprop)
 private repobject,sicvar
-
 repobject:=TREPORT()
 sicvar:=setinteractiveclose()
 SET INTERACTIVECLOSE ON
@@ -266,7 +259,7 @@ endcase
 *****************=======================================
 
 if ldos
-   oprint:init("DOS")
+   oprint:init("DOSPRINT")
    if ncpl<= 80
       oprint:normaldos()
    else
@@ -277,7 +270,7 @@ else
       _oohg_PRINTLIBRARY="HBPRINTER"
    ENDIF
    oprint:init(_OOHG_printlibrary)
-   if _oohg_PRINTLIBRARY="DOS"
+   if _oohg_PRINTLIBRARY="DOSPRINT"
       if ncpl<=80
          oprint:normaldos()
        else
@@ -332,7 +325,6 @@ do while .not. eof()
              oprint:printdata(nlin,0+repobject:nlmargin,clinea,,repobject:nfsize ,.T.)
 
 **************
-
         for i:=1 to len(afields)
           repobject:angrpby[i]:=0
         next i
@@ -343,7 +335,6 @@ do while .not. eof()
       endif
    endif
 **********
-///   ncol:=0+repobject:nlmargin
    clinea:=""
    swmemo:=.F.
    for i:=1 to len(afields)
@@ -358,7 +349,6 @@ do while .not. eof()
                case type('&wfielda')=='C'
                  clinea:=clinea+substr(wfield,1,awidths[i])+space(awidths[i]-len(substr(wfield,1,awidths[i]) ))+" "
                case type('&wfielda')=='N'
-////                    msgbox(str(len(aformats[i])))
                     clinea:=clinea + iif(.not.(aformats[i]==NIL),space(awidths[i]-len(transform(wfield,aformats[i])))+transform(wfield,aformats[i]),str(wfield,awidths[i]))+ space(awidths[i] -   len(  iif(.not.(aformats[i]==''),space(awidths[i]-len(transform(wfield,aformats[i])))+transform(wfield,aformats[i]),str(wfield,awidths[i])))   )+" "
                case type('&wfielda')=='D'
                     clinea:=clinea+ substr(dtoc(wfield),1,awidths[i])+space(awidths[i]-len(substr(dtoc(wfield),1,awidths[i])) )+" "
@@ -433,7 +423,6 @@ skip
 enddo
 
 if swt==1
-///   ncol:=0+repobject:nlmargin
    if grpby<>NIL
       if .not.(&(grpby) == crompe)
          if ascan(atotals,.T.)>0
@@ -561,7 +550,6 @@ if grpby<>NIL
    nlin++
 endif
 return nlin
-
 
 METHOD extreport1(cfilerep,cheader) CLASS TREPORT
 local nContlin,i,ctitle,aheaders1,aheaders2,afields,awidths,atotals,aformats
