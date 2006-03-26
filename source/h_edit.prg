@@ -1,5 +1,5 @@
 /*
- * $Id: h_edit.prg,v 1.10 2006-03-15 06:39:11 guerra000 Exp $
+ * $Id: h_edit.prg,v 1.11 2006-03-26 21:32:25 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -413,9 +413,7 @@ end window
 // Defincición de las etiquetas.-----------------------------------------------
 for nItem := 1 to nCampos
 
-   _OOHG_cMacroTemp := aEtiquetas[nItem,1]
-
-        @ aEtiquetas[nItem,2], aEtiquetas[nItem,3] label &(_OOHG_cMacroTemp) ;
+        @ aEtiquetas[nItem,2], aEtiquetas[nItem,3] label &( aEtiquetas[nItem,1] ) ;
                 of     wndABM ;
                 value  _aCampos[nItem] ;
                 width  70 ;
@@ -586,9 +584,7 @@ for nItem := 1 to nCampos
         do case
                 case _aEstructura[nItem,2] == "C"        // Campo tipo caracter.
 
-         _OOHG_cMacroTemp := _OOHG_aControles[nItem,1]
-
-                        @ _OOHG_aControles[nItem,2], _OOHG_aControles[nItem,3] textbox &(_OOHG_cMacroTemp) ;
+                        @ _OOHG_aControles[nItem,2], _OOHG_aControles[nItem,3] textbox &( _OOHG_aControles[nItem,1] ) ;
                                 of      wndABM ;
                                 height  21 ;
                                 value   "" ;
@@ -600,9 +596,7 @@ for nItem := 1 to nCampos
                 case _aEstructura[nItem,2] == "N"        // Campo tipo numerico
                         if _aEstructura[nItem,4] == 0
 
-            _OOHG_cMacroTemp := _OOHG_aControles[nItem,1]
-
-                                @ _OOHG_aControles[nItem,2], _OOHG_aControles[nItem,3] textbox &(_OOHG_cMacroTemp) ;
+                                @ _OOHG_aControles[nItem,2], _OOHG_aControles[nItem,3] textbox &( _OOHG_aControles[nItem,1] ) ;
                                         of      wndABM ;
                                         height  21 ;
                                         value   0 ;
@@ -618,9 +612,7 @@ for nItem := 1 to nCampos
                                 cMascara += "."
                                 cMascara += Replicate( "9", nMascaraDecimales )
 
-            _OOHG_cMacroTemp := _OOHG_aControles[nItem,1]
-
-                                @ _OOHG_aControles[nItem,2], _OOHG_aControles[nItem,3] textbox &(_OOHG_cMacroTemp) ;
+                                @ _OOHG_aControles[nItem,2], _OOHG_aControles[nItem,3] textbox &( _OOHG_aControles[nItem,1] ) ;
                                         of      wndABM ;
                                         height  21 ;
                                         value   0 ;
@@ -630,25 +622,19 @@ for nItem := 1 to nCampos
                         endif
                 case _aEstructura[nItem,2] == "D"        // Campo tipo fecha.
 
-         _OOHG_cMacroTemp := _OOHG_aControles[nItem,1]
-
-                        @ _OOHG_aControles[nItem,2], _OOHG_aControles[nItem,3] datepicker &(_OOHG_cMacroTemp) ;
+                        @ _OOHG_aControles[nItem,2], _OOHG_aControles[nItem,3] datepicker &( _OOHG_aControles[nItem,1] ) ;
                                 of      wndABM ;
                                 value   Date() ;
                                 width   100 ;
                                 font    "Arial" ;
                                 size    9
 
-         _OOHG_cMacroTemp := _OOHG_aControles[nItem,1]
-
-                        wndABM.&_OOHG_cMacroTemp.Height := 21
+                        wndABM.&( _OOHG_aControles[nItem,1] ).Height := 21
 
 
         case _aEstructura[nItem,2] == "L"        // Campo tipo logico.
 
-         _OOHG_cMacroTemp := _OOHG_aControles[nItem,1]
-
-                        @ _OOHG_aControles[nItem,2], _OOHG_aControles[nItem,3] checkbox &(_OOHG_cMacroTemp) ;
+                        @ _OOHG_aControles[nItem,2], _OOHG_aControles[nItem,3] checkbox &( _OOHG_aControles[nItem,1] ) ;
                                 of      wndABM ;
                                 caption "" ;
                                 width   21 ;
@@ -658,9 +644,7 @@ for nItem := 1 to nCampos
                                 size    9
                 case _aEstructura[nItem,2] == "M"        // Campo tipo memo.
 
-         _OOHG_cMacroTemp := _OOHG_aControles[nItem,1]
-
-                        @ _OOHG_aControles[nItem,2], _OOHG_aControles[nItem,3] editbox &(_OOHG_cMacroTemp) ;
+                        @ _OOHG_aControles[nItem,2], _OOHG_aControles[nItem,3] editbox &( _OOHG_aControles[nItem,1] ) ;
                                 of     wndABM ;
                                 width  160 ;
                                 height 47
@@ -713,42 +697,36 @@ do case
                 // Estado de los controles.
                 // Botones Cerrar y Nuevo.
                 for nItem := 1 to 2
-         _OOHG_cMacroTemp := _aBotones[nItem]
-                        wndABM.&_OOHG_cMacroTemp.Enabled := .t.
+                        wndABM.&( _aBotones[nItem] ).Enabled := .t.
                 next
 
                 // Botones Guardar y Cancelar.
                 for nItem := ( Len( _aBotones ) - 1 ) to Len( _aBotones )
-         _OOHG_cMacroTemp := _aBotones[nItem]
-                        wndABM.&_OOHG_cMacroTemp.Enabled := .f.
+                        wndABM.&( _aBotones[nItem] ).Enabled := .f.
                 next
 
                 // Resto de botones.
                 if (_cArea)->( RecCount() ) == 0
                         wndABM.brwBrowse.Enabled := .f.
                         for nItem := 3 to ( Len( _aBotones ) - 2 )
-            _OOHG_cMacroTemp := _aBotones[nItem]
-                                wndABM.&_OOHG_cMacroTemp.Enabled := .f.
+                                wndABM.&( _aBotones[nItem] ).Enabled := .f.
                         next
                 else
                         wndABM.brwBrowse.Enabled := .t.
                         for nItem := 3 to ( Len( _aBotones ) - 2 )
-            _OOHG_cMacroTemp := _aBotones[nItem]
-                                wndABM.&_OOHG_cMacroTemp.Enabled := .t.
+                                wndABM.&( _aBotones[nItem] ).Enabled := .t.
                         next
                 endif
 
                 // Controles de edición.
                 for nItem := 1 to Len( _OOHG_aControles )
-         _OOHG_cMacroTemp := _OOHG_aControles[nItem,1]
-                        wndABM.&_OOHG_cMacroTemp.Enabled := .f.
+                        wndABM.&( _OOHG_aControles[nItem,1] ).Enabled := .f.
                 next
 
                 // Contenido de los controles.
                 // Controles de edición.
                 for nItem := 1 to Len( _OOHG_aControles )
-         _OOHG_cMacroTemp := _OOHG_aControles[nItem,1]
-                        wndABM.&_OOHG_cMacroTemp.Value := (_cArea)->( FieldGet( nItem ) )
+                        wndABM.&( _OOHG_aControles[nItem,1] ).Value := (_cArea)->( FieldGet( nItem ) )
                 next
 
                 // Numero de registro y total.
@@ -761,22 +739,19 @@ do case
                 // Estado de los controles.
                 // Botones Guardar y Cancelar.
                 for nItem := ( Len( _aBotones ) - 1 ) to Len( _aBotones )
-         _OOHG_cMacroTemp := _aBotones[nItem]
-                        wndABM.&_OOHG_cMacroTemp.Enabled := .t.
+                        wndABM.&( _aBotones[nItem] ).Enabled := .t.
                 next
 
                 // Resto de los botones.
                 for nItem := 1 to ( Len( _aBotones ) - 2 )
-         _OOHG_cMacroTemp := _aBotones[nItem]
-                        wndABM.&_OOHG_cMacroTemp.Enabled := .f.
+                        wndABM.&( _aBotones[nItem] ).Enabled := .f.
                 next
                 wndABM.brwBrowse.Enabled := .f.
 
                 // Contenido de los controles.
                 // Controles de edición.
                 for nItem := 1 to Len( _OOHG_aControles )
-         _OOHG_cMacroTemp := _OOHG_aControles[nItem,1]
-                        wndABM.&_OOHG_cMacroTemp.Enabled := _aEditables[nItem]
+                        wndABM.&( _OOHG_aControles[nItem,1] ).Enabled := _aEditables[nItem]
                 next
 
                 // Numero de registro y total.
@@ -829,26 +804,20 @@ do case
                 for nItem := 1 to Len( _OOHG_aControles )
                         do case
                                 case _aEstructura[nItem, 2] == "C"
-               _OOHG_cMacroTemp := _OOHG_aControles[nItem,1]
-                                        wndABM.&_OOHG_cMacroTemp.Value := ""
+                                        wndABM.&( _OOHG_aControles[nItem,1] ).Value := ""
                                 case _aEstructura[nItem, 2] == "N"
-               _OOHG_cMacroTemp := _OOHG_aControles[nItem,1]
-                                        wndABM.&_OOHG_cMacroTemp.Value := 0
+                                        wndABM.&( _OOHG_aControles[nItem,1] ).Value := 0
                                 case _aEstructura[nItem, 2] == "D"
-               _OOHG_cMacroTemp := _OOHG_aControles[nItem,1]
-                                        wndABM.&_OOHG_cMacroTemp.Value := Date()
+                                        wndABM.&( _OOHG_aControles[nItem,1] ).Value := Date()
                                 case _aEstructura[nItem, 2] == "L"
-               _OOHG_cMacroTemp := _OOHG_aControles[nItem,1]
-                                        wndABM.&_OOHG_cMacroTemp.Value := .f.
+                                        wndABM.&( _OOHG_aControles[nItem,1] ).Value := .f.
                                 case _aEstructura[nItem, 2] == "M"
-               _OOHG_cMacroTemp := _OOHG_aControles[nItem,1]
-                                        wndABM.&_OOHG_cMacroTemp.Value := ""
+                                        wndABM.&( _OOHG_aControles[nItem,1] ).Value := ""
                         endcase
                 next
 
                 // Esteblece el foco en el primer control.
-      _OOHG_cMacroTemp := _OOHG_aControles[1,1]
-                wndABM.&_OOHG_cMacroTemp.SetFocus
+                wndABM.&( _OOHG_aControles[1,1] ).SetFocus
 
         // Pulsación del botón EDITAR.-----------------------------------------
         case nEvento == ABM_EVENTO_EDITAR
@@ -861,13 +830,11 @@ do case
 
                 // Actualiza los valores de los controles de edición.
                 for nItem := 1 to Len( _OOHG_aControles )
-         _OOHG_cMacroTemp := _OOHG_aControles[nItem,1]
-                        wndABM.&_OOHG_cMacroTemp.Value := (_cArea)->( FieldGet(nItem) )
+                        wndABM.&( _OOHG_aControles[nItem,1] ).Value := (_cArea)->( FieldGet(nItem) )
                 next
 
                 // Establece el foco en el primer coltrol.
-      _OOHG_cMacroTemp := _OOHG_aControles[1,1]
-                wndABM.&_OOHG_cMacroTemp.SetFocus
+                wndABM.&( _OOHG_aControles[1,1] ).SetFocus
 
         // Pulsación del botón BORRAR.-----------------------------------------
         case nEvento == ABM_EVENTO_BORRAR
@@ -962,8 +929,7 @@ do case
 			if (_cArea)->(rlock())
 
             for nItem := 1 to Len( _OOHG_aControles )
-               _OOHG_cMacroTemp := _OOHG_aControles[nItem,1]
-                                 (_cArea)->( FieldPut( nItem, wndABM.&_OOHG_cMacroTemp.Value ) )
+                                 (_cArea)->( FieldPut( nItem, wndABM.&( _OOHG_aControles[nItem,1] ).Value ) )
 				next
 
 				(_cArea)->( dbCommit() )
@@ -986,8 +952,7 @@ do case
 
                         // Evalúa el bloque de código bGuardar.
                         for nItem := 1 to Len( _OOHG_aControles )
-            _OOHG_cMacroTemp := _OOHG_aControles[nItem,1]
-                                aAdd( aValores, wndABM.&_OOHG_cMacroTemp.Value )
+                                aAdd( aValores, wndABM.&( _OOHG_aControles[nItem,1] ).Value )
                         next
                         lGuardar := Eval( _bGuardar, aValores, _lEditar )
                         lGuardar := iif( ValType( lGuardar ) != "L", .t., lGuardar )

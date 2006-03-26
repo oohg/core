@@ -1,5 +1,5 @@
 /*
- * $Id: h_edit_ex.prg,v 1.13 2006-03-15 06:39:11 guerra000 Exp $
+ * $Id: h_edit_ex.prg,v 1.14 2006-03-26 21:32:25 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1091,10 +1091,8 @@ static function ABM2Editar( lNuevo )
 ////////// Define las etiquetas de los controles.------------------------------
         for i := 1 to Len( _aEtiqueta )
 
-                _OOHG_cMacroTemp := _aEtiqueta[i,ABM_LBL_NAME]
-
                 @ _aEtiqueta[i,ABM_LBL_ROW], _aEtiqueta[i,ABM_LBL_COL]  ;
-                        label &(_OOHG_cMacroTemp) ;
+                        label &( _aEtiqueta[i,ABM_LBL_NAME] )           ;
                         of wndABM2EditNuevoSplit                        ;
                         value _aNombreCampo[i]                          ;
                         width _aEtiqueta[i,ABM_LBL_WIDTH]               ;
@@ -1107,9 +1105,8 @@ static function ABM2Editar( lNuevo )
                 do case
                         case _aControl[i,ABM_CON_TYPE] == ABM_TEXTBOXC
 
-                                _OOHG_cMacroTemp := _aControl[i,ABM_CON_NAME]
                                 @ _aControl[i,ABM_CON_ROW], _aControl[i,ABM_CON_COL]    ;
-                                        textbox &(_OOHG_cMacroTemp)                      ;
+                                        textbox &( _aControl[i,ABM_CON_NAME] )          ;
                                         of wndABM2EditNuevoSplit                        ;
                                         value ""                                        ;
                                         height _aControl[i,ABM_CON_HEIGHT]              ;
@@ -1120,9 +1117,8 @@ static function ABM2Editar( lNuevo )
                                         on lostfocus ABM2SinFoco()                      ;
                                         on enter ABM2AlEntrar( )
                         case _aControl[i,ABM_CON_TYPE] == ABM_DATEPICKER
-                                _OOHG_cMacroTemp := _aControl[i,ABM_CON_NAME]
                                 @ _aControl[i,ABM_CON_ROW], _aControl[i,ABM_CON_COL]    ;
-                                        datepicker &(_OOHG_cMacroTemp)           ;
+                                        datepicker &( _aControl[i,ABM_CON_NAME] )       ;
                                         of wndABM2EditNuevoSplit                        ;
                                         height _aControl[i,ABM_CON_HEIGHT]              ;
                                         width _aControl[i,ABM_CON_WIDTH] + 25           ;
@@ -1132,9 +1128,8 @@ static function ABM2Editar( lNuevo )
                                         on lostfocus ABM2SinFoco()
                         case _aControl[i,ABM_CON_TYPE] == ABM_TEXTBOXN
                                 if ( _aEstructura[i,DBS_DEC] == 0 )
-                                        _OOHG_cMacroTemp := _aControl[i,ABM_CON_NAME]
                                         @ _aControl[i,ABM_CON_ROW], _aControl[i,ABM_CON_COL]    ;
-                                                textbox &(_OOHG_cMacroTemp)           ;
+                                                textbox &( _aControl[i,ABM_CON_NAME] )          ;
                                                 of wndABM2EditNuevoSplit                        ;
                                                 value ""                                        ;
                                                 height _aControl[i,ABM_CON_HEIGHT]              ;
@@ -1151,9 +1146,8 @@ static function ABM2Editar( lNuevo )
                                                             ( _aEstructura[i,DBS_DEC] + 1 ) )
                                         cMascara += "."
                                         cMascara += Replicate( "9", _aEstructura[i,DBS_DEC] )
-                                        _OOHG_cMacroTemp := _aControl[i,ABM_CON_NAME]
                                         @ _aControl[i,ABM_CON_ROW], _aControl[i,ABM_CON_COL]    ;
-                                                textbox &(_OOHG_cMacroTemp)              ;
+                                                textbox &( _aControl[i,ABM_CON_NAME] )          ;
                                                 of wndABM2EditNuevoSplit                        ;
                                                 value ""                                        ;
                                                 height _aControl[i,ABM_CON_HEIGHT]              ;
@@ -1165,9 +1159,8 @@ static function ABM2Editar( lNuevo )
                                                 on enter ABM2AlEntrar()
                                 endif
                         case _aControl[i,ABM_CON_TYPE] == ABM_CHECKBOX
-                                _OOHG_cMacroTemp := _aControl[i,ABM_CON_NAME]
                                 @ _aControl[i,ABM_CON_ROW], _aControl[i,ABM_CON_COL]    ;
-                                        checkbox &(_OOHG_cMacroTemp)             ;
+                                        checkbox &( _aControl[i,ABM_CON_NAME] )         ;
                                         of wndABM2EditNuevoSplit                        ;
                                         caption ""                                      ;
                                         height _aControl[i,ABM_CON_HEIGHT]              ;
@@ -1176,9 +1169,8 @@ static function ABM2Editar( lNuevo )
                                         on gotfocus ABM2ConFoco()                       ;
                                         on lostfocus ABM2SinFoco()
                         case _aControl[i,ABM_CON_TYPE] == ABM_EDITBOX
-                                _OOHG_cMacroTemp := _aControl[i,ABM_CON_NAME]
                                 @ _aControl[i,ABM_CON_ROW], _aControl[i,ABM_CON_COL]    ;
-                                        editbox &(_OOHG_cMacroTemp)              ;
+                                        editbox &( _aControl[i,ABM_CON_NAME] )          ;
                                         of wndABM2EditNuevoSplit                        ;
                                         width _aControl[i,ABM_CON_WIDTH]                ;
                                         height _aControl[i,ABM_CON_HEIGHT]              ;
@@ -1192,16 +1184,14 @@ static function ABM2Editar( lNuevo )
 ////////// Actualiza los controles si se está editando.------------------------
         if !lNuevo
                 for i := 1 to Len( _aControl )
-                        _OOHG_cMacroTemp := _aControl[i,ABM_CON_NAME]
-                        wndABM2EditNuevoSplit.&_OOHG_cMacroTemp.Value := ;
+                        wndABM2EditNuevoSplit.&( _aControl[i,ABM_CON_NAME] ).Value := ;
                                                       (_cArea)->( FieldGet( i ) )
                 next
         endif
 
 ////////// Establece el estado inicial de los controles.-----------------------
         for i := 1 to Len( _aControl )
-                _OOHG_cMacroTemp := _aControl[i,ABM_CON_NAME]
-                wndABM2EditNuevoSplit.&_OOHG_cMacroTemp.Enabled := _aEditable[i]
+                wndABM2EditNuevoSplit.&( _aControl[i,ABM_CON_NAME] ).Enabled := _aEditable[i]
         next
 
 ////////// Establece el estado del botón de copia.-----------------------------
@@ -1248,8 +1238,7 @@ static function ABM2ConFoco()
 
 ////////// Pone la etiqueta en negrita.----------------------------------------
         if _ncontrolactivo>0
-           _OOHG_cMacroTemp := _aEtiqueta[_nControlActivo,ABM_LBL_NAME]
-           wndABM2EditNuevoSplit.&_OOHG_cMacroTemp.FontBold := .t.
+           wndABM2EditNuevoSplit.&( _aEtiqueta[_nControlActivo,ABM_LBL_NAME] ).FontBold := .t.
 
 ////////// Presenta el mensaje en la barra de estado.--------------------------
            wndABM2EditNuevo.StatusBar.Item( 1 ) := _aControl[_nControlActivo,ABM_CON_DES]
@@ -1271,8 +1260,7 @@ static function ABM2SinFoco()
 
 ////////// Restaura el estado de la etiqueta.----------------------------------
         if _ncontrolactivo>0
-           _OOHG_cMacroTemp := _aEtiqueta[_nControlActivo,ABM_LBL_NAME]
-           wndABM2EditNuevoSplit.&_OOHG_cMacroTemp.FontBold := .f.
+           wndABM2EditNuevoSplit.&( _aEtiqueta[_nControlActivo,ABM_LBL_NAME] ).FontBold := .f.
         endif
 ////////// Restaura el texto de la barra de estado.----------------------------
         wndABM2EditNuevo.StatusBar.Item( 1 ) := ""
@@ -1301,8 +1289,7 @@ static function ABM2AlEntrar()
 
 ////////// Restaura el estado de la etiqueta.----------------------------------
        if _ncontrolactivo>0
-          _OOHG_cMacroTemp := _aEtiqueta[_nControlActivo,ABM_LBL_NAME]
-          wndABM2EditNuevoSplit.&_OOHG_cMacroTemp.FontBold := .f.
+          wndABM2EditNuevoSplit.&( _aEtiqueta[_nControlActivo,ABM_LBL_NAME] ).FontBold := .f.
        endif
 ////////// Activa el siguiente control editable con evento ON ENTER.-----------
         do while lSalida
@@ -1320,8 +1307,7 @@ static function ABM2AlEntrar()
                 endif
         enddo
          if _ncontrolactivo>0
-            _OOHG_cMacroTemp := _aControl[_nControlActivo,ABM_CON_NAME]
-            wndABM2EditNuevoSplit.&_OOHG_cMacroTemp.SetFocus
+            wndABM2EditNuevoSplit.&( _aControl[_nControlActivo,ABM_CON_NAME] ).SetFocus
         endif
 return NIL
 
@@ -1355,8 +1341,7 @@ static function ABM2EditarGuardar( lNuevo )
                 if (_cArea)->(rlock())
 
                     for i := 1 to Len( _aEstructura )
-                            _OOHG_cMacroTemp := _aControl[i,ABM_CON_NAME]
-                            xValor := wndABM2EditNuevoSplit.&_OOHG_cMacroTemp.Value
+                            xValor := wndABM2EditNuevoSplit.&( _aControl[i,ABM_CON_NAME] ).Value
                             (_cArea)->( FieldPut( i, xValor ) )
                     next
 
@@ -1374,8 +1359,7 @@ static function ABM2EditarGuardar( lNuevo )
                 // Hay bloque de código del usuario.
                 aValores := {}
                 for i := 1 to Len( _aControl )
-                        _OOHG_cMacroTemp := _aControl[i,ABM_CON_NAME]
-                        xValor := wndABM2EditNuevoSplit.&_OOHG_cMacroTemp.Value
+                        xValor := wndABM2EditNuevoSplit.&( _aControl[i,ABM_CON_NAME] ).Value
                         aAdd( aValores, xValor )
                 next
                 lResultado := Eval( _bGuardar, aValores, lNuevo )
@@ -1502,8 +1486,7 @@ static function ABM2EditarCopiar()
                 (_cArea)->( dbGoTo( nReg ) )
                 for i := 1 to Len( _aControl )
                         if _aEditable[i]
-                                _OOHG_cMacroTemp := _aControl[i,ABM_CON_NAME]
-                                wndABM2EditNuevoSplit.&_OOHG_cMacroTemp.Value := ;
+                                wndABM2EditNuevoSplit.&( _aControl[i,ABM_CON_NAME] ).Value := ;
                                         (_cArea)->( FieldGet( i ) )
                         endif
                 next

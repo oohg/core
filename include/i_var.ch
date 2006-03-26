@@ -1,5 +1,5 @@
 /*
- * $Id: i_var.ch,v 1.10 2006-03-01 22:18:20 declan2005 Exp $
+ * $Id: i_var.ch,v 1.11 2006-03-26 21:32:25 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -129,8 +129,6 @@ MEMVAR _OOHG_AllVars
 #xtranslate  _OOHG_ExtendedNavigation  => _OOHG_AllVars \[  24 \]
 #xtranslate  _OOHG_ThisEventType       => _OOHG_AllVars \[  25 \]
 
-#xtranslate  _OOHG_cMacroTemp          => _OOHG_AllVars \[  26 \]
-
 #xtranslate  _OOHG_ThisControl         => _OOHG_AllVars \[  27 \]
 
 #xtranslate  _OOHG_InteractiveCloseStarted => _OOHG_AllVars \[  28 \]
@@ -138,5 +136,4 @@ MEMVAR _OOHG_AllVars
 #xtranslate  _OOHG_IsXP                => ( "XP" $ WindowsVersion()\[ 1 \] )
 
 #xtranslate  _OOHG_ThisItemCellValue   => _OOHG_AllVars \[  29 \]
-
 

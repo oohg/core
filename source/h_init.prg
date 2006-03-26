@@ -1,5 +1,5 @@
 /*
- * $Id: h_init.prg,v 1.13 2006-03-01 22:18:22 declan2005 Exp $
+ * $Id: h_init.prg,v 1.14 2006-03-26 21:32:25 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -105,8 +105,6 @@ INIT PROCEDURE _OOHG_INIT()
 
    _OOHG_ThisForm := NIL
    _OOHG_ThisControl := nil
-
-   _OOHG_cMacroTemp := nil
 
    _OOHG_ThisEventType := ''
 
