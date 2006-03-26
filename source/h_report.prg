@@ -1,5 +1,5 @@
 /*
- * $Id: h_report.prg,v 1.22 2006-03-22 16:57:07 declan2005 Exp $
+ * $Id: h_report.prg,v 1.23 2006-03-26 01:51:34 declan2005 Exp $
  */
 /*
  * DO REPORT Command support procedures For MiniGUI Library.
@@ -145,7 +145,7 @@ NEXT I
 RETURN WPR_LINE
 
 
-CREATE CLASS TREPORT FROM TPRINT
+CREATE CLASS TREPORT FROM TPRINTBASE
 
 Private oprint
 
@@ -215,8 +215,39 @@ if ncpl = NIL
    ncpl:=80
    repobject:nfsize=12
 endif
-oprint:=TPRINT()
-oprint:normaldos()
+
+if ldos
+   oprint:=tprint("DOSPRINT")      
+   oprint:init()
+
+   if ncpl<= 80
+      oprint:normaldos()
+   else
+      oprint:condendos()
+   endif
+
+else
+  if _OOHG_printlibrary="HBPRINTER"
+       oprint:=tprint("HBPRINTER")
+       oprint:init()
+  elseif _OOHG_printlibrary="MINIPRINT"
+       oprint:=tprint("MINIPRINT")
+       oprint:init()
+  elseif _OOHG_printlibrary="DOSPRINT"
+       oprint:=tprint("DOSPRINT")
+       oprint:init()
+       if ncpl<=80
+         oprint:normaldos()
+       else
+         oprint:condendos()
+       endif
+  else
+       oprint:=tprint("HBPRINTER")
+       oprint:init()
+  endif
+
+endif
+
 do case
         case ncpl= 80
             ncvcopt:=1
@@ -257,28 +288,6 @@ do case
 endcase
 
 *****************=======================================
-
-if ldos
-   oprint:init("DOSPRINT")
-   if ncpl<= 80
-      oprint:normaldos()
-   else
-      oprint:condendos()
-   endif
-else
-   IF type("_oohg_printlibrary")="U"
-      _oohg_PRINTLIBRARY="HBPRINTER"
-   ENDIF
-   oprint:init(_OOHG_printlibrary)
-   if _oohg_PRINTLIBRARY="DOSPRINT"
-      if ncpl<=80
-         oprint:normaldos()
-       else
-         oprint:condendos()
-      endif
-   endif
-endif
-
 oprint:selprinter(lselect,lpreview,llandscape,npapersize)
 if oprint:lprerror
    oprint:release()
