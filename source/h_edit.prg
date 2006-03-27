@@ -1,5 +1,5 @@
 /*
- * $Id: h_edit.prg,v 1.11 2006-03-26 21:32:25 guerra000 Exp $
+ * $Id: h_edit.prg,v 1.12 2006-03-27 03:14:29 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -784,18 +784,19 @@ local nRegistro  := 0                                   // Numero de registro.
 local lGuardar   := .t.                                 // Salida del bloque _bGuardar.
 local cModo      := ""                                  // Texto del modo.
 local cRegistro  := ""                                  // Numero de registro.
+Local wndABM     := GetFormObject( "wndABM" )
 
 // Gestión de eventos.
 do case
         // Pulsación del botón CERRAR.-----------------------------------------
         case nEvento == ABM_EVENTO_SALIR
-                wndABM.Release
+                wndABM:Release()
 
         // Pulsación del botón NUEVO.------------------------------------------
         case nEvento == ABM_EVENTO_NUEVO
                 _lEditar := .f.
                 cModo := _OOHG_Messages( 6, 3 )
-                wndABM.Title := wndABM.Title + cModo
+                wndABM:Title := wndABM:Title + cModo
 
                 // Pasa a modo de edición.
                 ABMRefresh( ABM_MODO_EDITAR )
@@ -804,37 +805,37 @@ do case
                 for nItem := 1 to Len( _OOHG_aControles )
                         do case
                                 case _aEstructura[nItem, 2] == "C"
-                                        wndABM.&( _OOHG_aControles[nItem,1] ).Value := ""
+                                        wndABM:Control( _OOHG_aControles[nItem,1] ):Value := ""
                                 case _aEstructura[nItem, 2] == "N"
-                                        wndABM.&( _OOHG_aControles[nItem,1] ).Value := 0
+                                        wndABM:Control( _OOHG_aControles[nItem,1] ):Value := 0
                                 case _aEstructura[nItem, 2] == "D"
-                                        wndABM.&( _OOHG_aControles[nItem,1] ).Value := Date()
+                                        wndABM:Control( _OOHG_aControles[nItem,1] ):Value := Date()
                                 case _aEstructura[nItem, 2] == "L"
-                                        wndABM.&( _OOHG_aControles[nItem,1] ).Value := .f.
+                                        wndABM:Control( _OOHG_aControles[nItem,1] ):Value := .f.
                                 case _aEstructura[nItem, 2] == "M"
-                                        wndABM.&( _OOHG_aControles[nItem,1] ).Value := ""
+                                        wndABM:Control( _OOHG_aControles[nItem,1] ):Value := ""
                         endcase
                 next
 
                 // Esteblece el foco en el primer control.
-                wndABM.&( _OOHG_aControles[1,1] ).SetFocus
+                wndABM:Control( _OOHG_aControles[1,1] ):SetFocus()
 
         // Pulsación del botón EDITAR.-----------------------------------------
         case nEvento == ABM_EVENTO_EDITAR
                 _lEditar := .t.
                 cModo := _OOHG_Messages( 6, 4 )
-                wndABM.Title := wndABM.Title + cModo
+                wndABM:Title := wndABM:Title + cModo
 
                 // Pasa a modo de edicion.
                 ABMRefresh( ABM_MODO_EDITAR )
 
                 // Actualiza los valores de los controles de edición.
                 for nItem := 1 to Len( _OOHG_aControles )
-                        wndABM.&( _OOHG_aControles[nItem,1] ).Value := (_cArea)->( FieldGet(nItem) )
+                        wndABM:Control( _OOHG_aControles[nItem,1] ):Value := (_cArea)->( FieldGet(nItem) )
                 next
 
                 // Establece el foco en el primer coltrol.
-                wndABM.&( _OOHG_aControles[1,1] ).SetFocus
+                wndABM:Control( _OOHG_aControles[1,1] ):SetFocus()
 
         // Pulsación del botón BORRAR.-----------------------------------------
         case nEvento == ABM_EVENTO_BORRAR
@@ -858,8 +859,8 @@ do case
                 endif
 
                 // Refresca.
-                wndABM.brwBrowse.Refresh
-                wndABM.brwBrowse.Value := (_cArea)->( RecNo() )
+                wndABM:brwBrowse:Refresh()
+                wndABM:brwBrowse:Value := (_cArea)->( RecNo() )
 
         // Pulsación del botón BUSCAR.-----------------------------------------
         case nEvento == ABM_EVENTO_BUSCAR
@@ -871,7 +872,7 @@ do case
                         endif
                 else
                         Eval( _bBuscar )
-                        wndABM.brwBrowse.Value := (_cArea)->( RecNo() )
+                        wndABM:brwBrowse:Value := (_cArea)->( RecNo() )
                 endif
 
         // Pulsación del botón IR AL REGISTRO.---------------------------------
@@ -881,7 +882,7 @@ do case
                         nRegistro := Val( cRegistro )
                         if ( nRegistro != 0 ) .and. ( nRegistro <= (_cArea)->( RecCount() ) )
                                 (_cArea)->( dbGoTo( nRegistro ) )
-                                wndABM.brwBrowse.Value := nRegistro
+                                wndABM:brwBrowse:Value := nRegistro
                         endif
                 endif
 
@@ -892,30 +893,30 @@ do case
         // Pulsación del botón PRIMERO.----------------------------------------
         case nEvento == ABM_EVENTO_PRIMERO
                 (_cArea)->( dbGoTop() )
-                wndABM.brwBrowse.Value   := (_cArea)->( RecNo() )
-                wndABM.lblRegistro.Value := AllTrim( Str( (_cArea)->(RecNo()) ) )
-                wndABM.lblTotales.Value  := AllTrim( Str( (_cArea)->(RecCount()) ) )
+                wndABM:brwBrowse:Value   := (_cArea)->( RecNo() )
+                wndABM:lblRegistro:Value := AllTrim( Str( (_cArea)->(RecNo()) ) )
+                wndABM:lblTotales:Value  := AllTrim( Str( (_cArea)->(RecCount()) ) )
 
         // Pulsación del botón ANTERIOR.---------------------------------------
         case nEvento == ABM_EVENTO_ANTERIOR
                 (_cArea)->( dbSkip( -1 ) )
-                wndABM.brwBrowse.Value   := (_cArea)->( RecNo() )
-                wndABM.lblRegistro.Value := AllTrim( Str( (_cArea)->(RecNo()) ) )
-                wndABM.lblTotales.Value  := AllTrim( Str( (_cArea)->(RecCount()) ) )
+                wndABM:brwBrowse:Value   := (_cArea)->( RecNo() )
+                wndABM:lblRegistro:Value := AllTrim( Str( (_cArea)->(RecNo()) ) )
+                wndABM:lblTotales:Value  := AllTrim( Str( (_cArea)->(RecCount()) ) )
 
         // Pulsación del botón SIGUIENTE.--------------------------------------
         case nEvento == ABM_EVENTO_SIGUIENTE
                 (_cArea)->( dbSkip( 1 ) )
-                wndABM.brwBrowse.Value := (_cArea)->( RecNo() )
-                wndABM.lblRegistro.Value := AllTrim( Str( (_cArea)->(RecNo()) ) )
-                wndABM.lblTotales.Value  := AllTrim( Str( (_cArea)->(RecCount()) ) )
+                wndABM:brwBrowse:Value := (_cArea)->( RecNo() )
+                wndABM:lblRegistro:Value := AllTrim( Str( (_cArea)->(RecNo()) ) )
+                wndABM:lblTotales:Value  := AllTrim( Str( (_cArea)->(RecCount()) ) )
 
         // Pulsación del botón ULTIMO.-----------------------------------------
         case nEvento == ABM_EVENTO_ULTIMO
                 (_cArea)->( dbGoBottom() )
-                wndABM.brwBrowse.Value   := (_cArea)->( RecNo() )
-                wndABM.lblRegistro.Value := AllTrim( Str( (_cArea)->(RecNo()) ) )
-                wndABM.lblTotales.Value  := AllTrim( Str( (_cArea)->(RecCount()) ) )
+                wndABM:brwBrowse:Value   := (_cArea)->( RecNo() )
+                wndABM:lblRegistro:Value := AllTrim( Str( (_cArea)->(RecNo()) ) )
+                wndABM:lblTotales:Value  := AllTrim( Str( (_cArea)->(RecCount()) ) )
 
         // Pulsación del botón GUARDAR.----------------------------------------
         case nEvento == ABM_EVENTO_GUARDAR
@@ -929,7 +930,7 @@ do case
 			if (_cArea)->(rlock())
 
             for nItem := 1 to Len( _OOHG_aControles )
-                                 (_cArea)->( FieldPut( nItem, wndABM.&( _OOHG_aControles[nItem,1] ).Value ) )
+                                 (_cArea)->( FieldPut( nItem, wndABM:Control( _OOHG_aControles[nItem,1] ):Value ) )
 				next
 
 				(_cArea)->( dbCommit() )
@@ -938,9 +939,9 @@ do case
 
 				// Refresca el browse.
 
-	                        wndABM.brwBrowse.Value := (_cArea)->( RecNo() )
-	                        wndABM.brwBrowse.Refresh
-        	                wndABM.Title := SubStr( wndABM.Title, 1, Len(wndABM.Title) - 12 )
+                           wndABM:brwBrowse:Value := (_cArea)->( RecNo() )
+                           wndABM:brwBrowse:Refresh()
+                         wndABM:Title := SubStr( wndABM:Title, 1, Len(wndABM:Title) - 12 )
 
 			else
 
@@ -952,7 +953,7 @@ do case
 
                         // Evalúa el bloque de código bGuardar.
                         for nItem := 1 to Len( _OOHG_aControles )
-                                aAdd( aValores, wndABM.&( _OOHG_aControles[nItem,1] ).Value )
+                                aAdd( aValores, wndABM:Control( _OOHG_aControles[nItem,1] ):Value )
                         next
                         lGuardar := Eval( _bGuardar, aValores, _lEditar )
                         lGuardar := iif( ValType( lGuardar ) != "L", .t., lGuardar )
@@ -960,9 +961,9 @@ do case
                                 (_cArea)->( dbCommit() )
 
                                 // Refresca el browse.
-                                wndABM.brwBrowse.Value := (_cArea)->( RecNo() )
-                                wndABM.brwBrowse.Refresh
-                                wndABM.Title := SubStr( wndABM.Title, 1, Len(wndABM.Title) - 12 )
+                                wndABM:brwBrowse:Value := (_cArea)->( RecNo() )
+                                wndABM:brwBrowse:Refresh()
+                                wndABM:Title := SubStr( wndABM:Title, 1, Len(wndABM:Title) - 12 )
                         endif
                 endif
 
@@ -971,7 +972,7 @@ do case
 
                 // Pasa a modo de visualización.
                 ABMRefresh( ABM_MODO_VER )
-                wndABM.Title := SubStr( wndABM.Title, 1, Len(wndABM.Title) - 12 )
+                wndABM:Title := SubStr( wndABM:Title, 1, Len(wndABM:Title) - 12 )
 
         // Control de error.---------------------------------------------------
         otherwise
