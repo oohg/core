@@ -1,11 +1,27 @@
 /*
- * $Id: ChangeLog,v 1.136 2006-03-27 03:14:29 guerra000 Exp $
+ * $Id: ChangeLog,v 1.137 2006-03-27 04:24:08 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-03-26 22:22 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_menu.prg
+  * source/h_windows.prg
+    * Added ::oMenu property to TForm class.
+  * include/i_window.ch
+  * include/oohg.h
+  * source/c_windows.c
+  * source/c_controlmisc.c
+  * source/h_windows.prg
+    * MDI windows pre-implemented.
+  * source/h_controlmisc.prg
+  * source/h_windows.prg
+    * Converted TForm:RefreshDataControls() to ::RefreshData()
+    * Added INTERNAL forms at Parent:BrowseList and Parent:aControls.
+    * Moved ::Events_Size() and ::IsHandle() methods to TWINDOW level.
 
 2006-03-26 21:13 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_edit.prg

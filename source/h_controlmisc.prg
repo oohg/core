@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.47 2006-03-21 15:59:33 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.48 2006-03-27 04:24:09 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1510,8 +1510,6 @@ CLASS TControl FROM TWindow
    METHOD RefreshData
    METHOD AddBitMap
 
-   METHOD IsHandle( hWnd )    BLOCK { | Self, hWnd | ( ::hWnd == hWnd ) }
-//   METHOD MainControl         BLOCK { | Self | Self }
    METHOD DoEvent
 
    METHOD Events
@@ -1520,7 +1518,6 @@ CLASS TControl FROM TWindow
    METHOD Events_Command
    METHOD Events_Notify
    METHOD Events_VScroll      BLOCK { || nil }
-   METHOD Events_Size         BLOCK { || nil }
    METHOD Events_DrawItem     BLOCK { || nil }
    METHOD Events_MeasureItem  BLOCK { || nil }
 ENDCLASS

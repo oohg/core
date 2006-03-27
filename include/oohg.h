@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.h,v 1.19 2006-03-16 03:16:16 guerra000 Exp $
+ * $Id: oohg.h,v 1.20 2006-03-27 04:24:09 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -143,4 +143,5 @@ HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, 
 #define s_TWindow              37
 #define s_WndProc              38
 #define s_OverWndProc          39
-#define s_LastSymbol           40
+#define s_hWndClient           40
+#define s_LastSymbol           41

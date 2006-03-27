@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.37 2006-02-26 17:49:53 guerra000 Exp $
+ * $Id: c_windows.c,v 1.38 2006-03-27 04:24:09 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -255,7 +255,7 @@ LRESULT APIENTRY _OOHG_WndProcCtrl( HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM
    return iReturn;
 }
 
-LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
+LRESULT APIENTRY _OOHG_WndProcForm( HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM lParam, WNDPROC lpfnOldWndProc )
 {
    PHB_ITEM pSave, pSelf;
    LRESULT APIENTRY iReturn;
@@ -265,7 +265,79 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
    hb_itemCopy( pSave, hb_param( -1, HB_IT_ANY ) );
    hb_itemCopy( pSelf, GetFormObjectByHandle( ( LONG ) hWnd ) );
 
-   iReturn = _OOHG_WndProc( pSelf, hWnd, message, wParam, lParam, DefWindowProc );
+   iReturn = _OOHG_WndProc( pSelf, hWnd, uiMsg, wParam, lParam, lpfnOldWndProc );
+
+   hb_itemReturn( pSave );
+   hb_itemRelease( pSave );
+   hb_itemRelease( pSelf );
+
+   return iReturn;
+}
+
+LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
+{
+   return _OOHG_WndProcForm( hWnd, message, wParam, lParam, DefWindowProc );
+}
+
+LRESULT CALLBACK WndProcMdiChild( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
+{
+   return _OOHG_WndProcForm( hWnd, message, wParam, lParam, DefMDIChildProc );
+}
+
+LRESULT CALLBACK WndProcMdi( HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM lParam )
+{
+   PHB_ITEM pSave, pSelf, pResult;
+   LRESULT APIENTRY iReturn;
+   HWND hClient;
+
+   pSave = hb_itemNew( NULL );
+   pSelf = hb_itemNew( NULL );
+   hb_itemCopy( pSave, hb_param( -1, HB_IT_ANY ) );
+   hb_itemCopy( pSelf, GetFormObjectByHandle( ( LONG ) hWnd ) );
+
+   _OOHG_Send( pSelf, s_OverWndProc );
+   hb_vmSend( 0 );
+   pResult = hb_param( -1, HB_IT_BLOCK );
+   // ::OverWndProc is a codeblock... execute it
+   if( pResult )
+   {
+      hb_vmPushSymbol( &hb_symEval );
+      hb_vmPush( pResult );
+      hb_vmPushLong( ( LONG ) hWnd );
+      hb_vmPushLong( uiMsg );
+      hb_vmPushLong( wParam );
+      hb_vmPushLong( lParam );
+      hb_vmPush( pSelf );
+      hb_vmDo( 5 );
+      pResult = hb_param( -1, HB_IT_NUMERIC );
+   }
+
+   // ::OverWndProc is NOT a codeblock, or it returns a non-numeric value... execute ::Events()
+   if( ! pResult )
+   {
+      _OOHG_Send( pSelf, s_Events );
+      hb_vmPushLong( ( LONG ) hWnd );
+      hb_vmPushLong( uiMsg );
+      hb_vmPushLong( wParam );
+      hb_vmPushLong( lParam );
+      hb_vmSend( 4 );
+      pResult = hb_param( -1, HB_IT_NUMERIC );
+   }
+
+   if( pResult )
+   {
+      // Return value is numeric... return it to Windows
+      iReturn = hb_itemGetNL( pResult );
+   }
+   else
+   {
+//      _OOHG_Send( pSelf, s_hWndClient );
+hb_vmPushSymbol( hb_dynsymSymbol( hb_dynsymFind( "HWNDCLIENT" ) ) );
+hb_vmPush( pSelf );
+      hb_vmSend( 0 );
+      hClient = ( HWND ) hb_parnl( -1 );
+      iReturn = DefFrameProc( hWnd, hClient, uiMsg, wParam, lParam );
+   }
 
    hb_itemReturn( pSave );
    hb_itemRelease( pSave );
@@ -285,14 +357,89 @@ HB_FUNC( INITWINDOW )
       ExStyle |= WS_EX_LAYOUTRTL | WS_EX_RIGHTSCROLLBAR | WS_EX_RTLREADING;
    }
 
+/*
+MDICLIENT:
+   + Establecer el menú con los nombres de las ventanas
+    icount = GetMenuItemCount(GetMenu(hwndparent));
+    ccs.hWindowMenu  = GetSubMenu(GetMenu(hwndparent), icount-2);
+    ccs.idFirstChild = 0;
+    hwndMDIClient = CreateWindow("mdiclient", NULL, style, 0, 0, 0, 0, hwndparent, (HMENU)0xCAC, GetModuleHandle(NULL), (LPSTR) &ccs);
+
+MDICHILD:
+   + "Título" automático de la ventana... rgch[]
+	mcs.szClass = "MdiChildWndClass";      // window class name
+	mcs.szTitle = rgch;                    // window title
+	mcs.hOwner  = GetModuleHandle(NULL);   // owner
+	mcs.x       = hb_parni (3);            // x position
+	mcs.y       = hb_parni (4);            // y position
+	mcs.cx      = hb_parni (5);            // width
+	mcs.cy      = hb_parni (6);            // height
+	mcs.style   = Style;                   // window style
+	mcs.lParam  = 0;                       // lparam
+    hwndChild = (HWND) SendMessage((HWND) hb_parnl(1), WM_MDICREATE, 0, (LPARAM)(LPMDICREATESTRUCT) &mcs);
+*/
    hwnd = CreateWindowEx( ExStyle, hb_parc( 7 ), hb_parc( 1 ), Style,
                           hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ),
                           ( HWND ) hb_parnl ( 6 ), ( HMENU ) NULL, GetModuleHandle( NULL ), NULL );
 
-   if(hwnd == NULL)
+   if( ! hwnd )
    {
-      MessageBox(0, "Window Creation Failed!", "Error!",
-      MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
+      char cBuffError[ 1000 ];
+      sprintf( cBuffError, "Window %s Creation Failed! Error %i", hb_parc( 7 ), GetLastError() );
+      MessageBox( 0, cBuffError, "Error!",
+                  MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
+      return;
+   }
+
+   hb_retnl( ( LONG ) hwnd );
+}
+
+HB_FUNC( INITWINDOWMDICLIENT )
+{
+   HWND hwnd;
+   int Style   = hb_parni( 8 );
+   int ExStyle = hb_parni( 9 );
+   CLIENTCREATESTRUCT ccs;
+
+   ccs.hWindowMenu = NULL;
+   ccs.idFirstChild = 0;
+
+   if ( hb_parl( 10 ) )
+   {
+      ExStyle |= WS_EX_LAYOUTRTL | WS_EX_RIGHTSCROLLBAR | WS_EX_RTLREADING;
+   }
+
+/*
+MDICLIENT:
+   + Establecer el menú con los nombres de las ventanas
+    icount = GetMenuItemCount(GetMenu(hwndparent));
+    ccs.hWindowMenu  = GetSubMenu(GetMenu(hwndparent), icount-2);
+    ccs.idFirstChild = 0;
+    hwndMDIClient = CreateWindow("mdiclient", NULL, style, 0, 0, 0, 0, hwndparent, (HMENU)0xCAC, GetModuleHandle(NULL), (LPSTR) &ccs);
+
+MDICHILD:
+   + "Título" automático de la ventana... rgch[]
+	mcs.szClass = "MdiChildWndClass";      // window class name
+	mcs.szTitle = rgch;                    // window title
+	mcs.hOwner  = GetModuleHandle(NULL);   // owner
+	mcs.x       = hb_parni (3);            // x position
+	mcs.y       = hb_parni (4);            // y position
+	mcs.cx      = hb_parni (5);            // width
+	mcs.cy      = hb_parni (6);            // height
+	mcs.style   = Style;                   // window style
+	mcs.lParam  = 0;                       // lparam
+    hwndChild = (HWND) SendMessage((HWND) hb_parnl(1), WM_MDICREATE, 0, (LPARAM)(LPMDICREATESTRUCT) &mcs);
+*/
+   hwnd = CreateWindowEx( ExStyle, "MDICLIENT", hb_parc( 1 ), Style,
+                          hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ),
+                          ( HWND ) hb_parnl ( 6 ), ( HMENU ) NULL, GetModuleHandle( NULL ), ( LPSTR ) &ccs );
+
+   if( ! hwnd )
+   {
+      char cBuffError[ 1000 ];
+      sprintf( cBuffError, "Window %s Creation Failed! Error %i", hb_parc( 7 ), GetLastError() );
+      MessageBox( 0, cBuffError, "Error!",
+                  MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
       return;
    }
 
@@ -595,25 +742,44 @@ HB_FUNC( GETCLIENTRECT )
    hb_stornl( rect.bottom, 2, 4 );
 }
 
-HB_FUNC ( REGISTERWINDOW )
+HB_FUNC( REGISTERWINDOW )
 {
    WNDCLASS WndClass;
+   HBRUSH hbrush = 0;
+   int iWindowType = hb_parni( 4 );
+   LONG lColor;
 
-   HBRUSH hbrush = 0 ;
-
-   if( hb_parl( 4 ) )
-   {
-      WndClass.style       = CS_OWNDC;
-   }
-   else
-   {
-      WndClass.style       = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
-   }
+   WndClass.style         = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
    WndClass.lpfnWndProc   = WndProc;
+   WndClass.lpszClassName = hb_parc( 2 );
+
+   switch( iWindowType )
+   {
+      case 1:                           // Splitchild
+         WndClass.style         = CS_OWNDC;
+         break;
+
+      case 2:                           // MDI client
+         WndClass.style         = CS_HREDRAW | CS_VREDRAW /* | CS_OWNDC */ | CS_DBLCLKS;
+         WndClass.lpfnWndProc   = WndProcMdiChild;
+         WndClass.lpszClassName = "MDICLIENT";
+         break;
+
+      case 3:                           // MDI child
+         WndClass.style         = 0;
+         WndClass.lpfnWndProc   = WndProcMdiChild;
+         break;
+
+      case 4:                           // MDI frame
+         WndClass.style         = CS_HREDRAW | CS_VREDRAW /* | CS_OWNDC */ | CS_DBLCLKS;
+         WndClass.lpfnWndProc   = WndProcMdi;
+         break;
+   }
    WndClass.cbClsExtra    = 0;
    WndClass.cbWndExtra    = 0;
+//    WndClass.cbWndExtra    = 20;   MDICHILD!
    WndClass.hInstance     = GetModuleHandle( NULL );
-   WndClass.hIcon         = LoadIcon(GetModuleHandle(NULL),  hb_parc(1) );
+   WndClass.hIcon         = LoadIcon( GetModuleHandle(NULL), hb_parc( 1 ) );
    if (WndClass.hIcon==NULL)
    {
       WndClass.hIcon= (HICON) LoadImage( GetModuleHandle(NULL),  hb_parc(1) , IMAGE_ICON, 0, 0, LR_LOADFROMFILE + LR_DEFAULTSIZE ) ;
@@ -622,26 +788,30 @@ HB_FUNC ( REGISTERWINDOW )
    {
        WndClass.hIcon= LoadIcon(NULL, IDI_APPLICATION);
    }
-   WndClass.hCursor       = LoadCursor(NULL, IDC_ARROW);
+   WndClass.hCursor       = LoadCursor( NULL, IDC_ARROW );
 
-   if ( hb_parni(3, 1) == -1 )
+   lColor = -1;
+   _OOHG_DetermineColor( hb_param( 3, HB_IT_ANY ), &lColor );
+   if( lColor == -1 )
    {
-       WndClass.hbrBackground = (HBRUSH)( COLOR_BTNFACE + 1 );
+      WndClass.hbrBackground = ( HBRUSH )( COLOR_BTNFACE + 1 );
    }
    else
    {
-       hbrush = CreateSolidBrush( RGB(hb_parni(3, 1), hb_parni(3, 2), hb_parni(3, 3)) );
-       WndClass.hbrBackground = hbrush ;
+      hbrush = CreateSolidBrush( lColor );
+      WndClass.hbrBackground = hbrush;
    }
 
    WndClass.lpszMenuName  = NULL;
-   WndClass.lpszClassName = hb_parc(2);
-   if(!RegisterClass(&WndClass))
+   if( ! RegisterClass( &WndClass ) )
    {
-      MessageBox(0, "Window Registration Failed!", "Error!",
-      MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
-      ExitProcess(0);
+      char cBuffError[ 1000 ];
+      sprintf( cBuffError, "Window %s Registration Failed! Error %i", hb_parc( 2 ), GetLastError() );
+      MessageBox( 0, cBuffError, "Error!",
+                  MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
+      ExitProcess( 0 );
    }
+
    hb_retnl ( (LONG) hbrush ) ;
 }
 

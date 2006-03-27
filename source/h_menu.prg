@@ -1,5 +1,5 @@
 /*
- * $Id: h_menu.prg,v 1.8 2006-02-11 06:19:33 guerra000 Exp $
+ * $Id: h_menu.prg,v 1.9 2006-03-27 04:24:09 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -144,6 +144,10 @@ METHOD DefineMain( Parent ) CLASS TMenu
    ::Register( CreateMenu() )
    ::Type := "MAIN"
    SetMenu( ::Parent:hWnd, ::hWnd )
+   If ::Parent:oMenu != nil
+      // Error: MAIN MENU already defined for this window
+   EndIf
+   ::Parent:oMenu := Self
    AADD( _OOHG_xMenuActive, Self )
 Return Self
 
