@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.38 2006-03-27 04:24:09 guerra000 Exp $
+ * $Id: c_windows.c,v 1.39 2006-03-28 04:04:25 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -284,66 +284,16 @@ LRESULT CALLBACK WndProcMdiChild( HWND hWnd, UINT message, WPARAM wParam, LPARAM
    return _OOHG_WndProcForm( hWnd, message, wParam, lParam, DefMDIChildProc );
 }
 
+LRESULT CALLBACK _OOHG_DefFrameProc( HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM lParam )
+{
+   _OOHG_Send( GetFormObjectByHandle( ( LONG ) hWnd ), s_hWndClient );
+   hb_vmSend( 0 );
+   return DefFrameProc( hWnd, ( HWND ) hb_parnl( -1 ), uiMsg, wParam, lParam );
+}
+
 LRESULT CALLBACK WndProcMdi( HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM lParam )
 {
-   PHB_ITEM pSave, pSelf, pResult;
-   LRESULT APIENTRY iReturn;
-   HWND hClient;
-
-   pSave = hb_itemNew( NULL );
-   pSelf = hb_itemNew( NULL );
-   hb_itemCopy( pSave, hb_param( -1, HB_IT_ANY ) );
-   hb_itemCopy( pSelf, GetFormObjectByHandle( ( LONG ) hWnd ) );
-
-   _OOHG_Send( pSelf, s_OverWndProc );
-   hb_vmSend( 0 );
-   pResult = hb_param( -1, HB_IT_BLOCK );
-   // ::OverWndProc is a codeblock... execute it
-   if( pResult )
-   {
-      hb_vmPushSymbol( &hb_symEval );
-      hb_vmPush( pResult );
-      hb_vmPushLong( ( LONG ) hWnd );
-      hb_vmPushLong( uiMsg );
-      hb_vmPushLong( wParam );
-      hb_vmPushLong( lParam );
-      hb_vmPush( pSelf );
-      hb_vmDo( 5 );
-      pResult = hb_param( -1, HB_IT_NUMERIC );
-   }
-
-   // ::OverWndProc is NOT a codeblock, or it returns a non-numeric value... execute ::Events()
-   if( ! pResult )
-   {
-      _OOHG_Send( pSelf, s_Events );
-      hb_vmPushLong( ( LONG ) hWnd );
-      hb_vmPushLong( uiMsg );
-      hb_vmPushLong( wParam );
-      hb_vmPushLong( lParam );
-      hb_vmSend( 4 );
-      pResult = hb_param( -1, HB_IT_NUMERIC );
-   }
-
-   if( pResult )
-   {
-      // Return value is numeric... return it to Windows
-      iReturn = hb_itemGetNL( pResult );
-   }
-   else
-   {
-//      _OOHG_Send( pSelf, s_hWndClient );
-hb_vmPushSymbol( hb_dynsymSymbol( hb_dynsymFind( "HWNDCLIENT" ) ) );
-hb_vmPush( pSelf );
-      hb_vmSend( 0 );
-      hClient = ( HWND ) hb_parnl( -1 );
-      iReturn = DefFrameProc( hWnd, hClient, uiMsg, wParam, lParam );
-   }
-
-   hb_itemReturn( pSave );
-   hb_itemRelease( pSave );
-   hb_itemRelease( pSelf );
-
-   return iReturn;
+   return _OOHG_WndProcForm( hWnd, uiMsg, wParam, lParam, _OOHG_DefFrameProc );
 }
 
 HB_FUNC( INITWINDOW )

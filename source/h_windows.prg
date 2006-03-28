@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.74 2006-03-28 02:12:51 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.75 2006-03-28 04:04:25 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -767,7 +767,6 @@ CLASS TForm FROM TWindow
    METHOD Minimize()    BLOCK { | Self | Minimize( ::hWnd ) }
    METHOD Maximize()    BLOCK { | Self | Maximize( ::hWnd ) }
 
-   METHOD SetActivationFlag
    METHOD SetFocusedSplitChild
    METHOD SetActivationFocus
    METHOD ProcessInitProcedure
@@ -1059,8 +1058,8 @@ Local Formhandle
       VirtualWidth := 0
    endif
 
-   if Valtype ( aRGB ) != 'A'
-      aRGB := { GetRed ( GetSysColor ( COLOR_3DFACE) ) , GetGreen ( GetSysColor ( COLOR_3DFACE) ) , GetBlue ( GetSysColor ( COLOR_3DFACE) ) }
+   if Valtype( aRGB ) != 'A'
+      aRGB := GetSysColor( COLOR_3DFACE )
 	EndIf
 
    nStyle   += WS_POPUP
@@ -1147,6 +1146,10 @@ Local Formhandle
       aAdd( ::Parent:SplitChildList, Self )
       aAdd( ::Parent:BrowseList, Self )
       ::Parent:AddControl( Self )
+      ::Active := .T.
+      If ::lVisible
+         ShowWindow( ::hWnd )
+      EndIf
    EndIf
 
 Return Self
@@ -1280,7 +1283,7 @@ METHOD Activate( lNoStop, oWndLoop ) CLASS TForm
    ENDIF
 
    If ::Active
-      MsgOOHGError("Window: "+ ::Name + " already active. Program terminated" )
+      MsgOOHGError( "Window: " + ::Name + " already active. Program terminated" )
    Endif
 
    // Checks for non-stop window
@@ -1300,7 +1303,7 @@ METHOD Activate( lNoStop, oWndLoop ) CLASS TForm
    // Show window
    if ::Type == "M"
       ::Show()
-      ::SetActivationFlag()
+      ::Active := .T.
       ::ProcessInitProcedure()
       ::RefreshData()
    Else
@@ -1317,7 +1320,7 @@ METHOD Activate( lNoStop, oWndLoop ) CLASS TForm
          ShowWindow( ::hWnd )
       EndIf
 
-      ::SetActivationFlag()
+      ::Active := .T.
       ::ProcessInitProcedure()
       ::RefreshData()
 
@@ -1406,13 +1409,6 @@ Local b
 
    _OOHG_InteractiveClose := b
 
-Return Nil
-
-*-----------------------------------------------------------------------------*
-METHOD SetActivationFlag() CLASS TForm
-*-----------------------------------------------------------------------------*
-   ::Active := .t.
-   AEVAL( ::SplitChildList, { |o| o:Active := .t., if( o:lVisible, ShowWindow( o:hWnd ), ) } )
 Return Nil
 
 *-----------------------------------------------------------------------------*
@@ -2555,17 +2551,9 @@ Return Nil
 *-----------------------------------------------------------------------------*
 Function _EndWindow()
 *-----------------------------------------------------------------------------*
-
    If Len( _OOHG_ActiveForm ) > 0
-
-      If ATail( _OOHG_ActiveForm ):lInternal
-         ATail( _OOHG_ActiveForm ):Active := .T.
-      EndIf
-
       _OOHG_DeleteArrayItem( _OOHG_ActiveForm, Len( _OOHG_ActiveForm ) )
-
 	EndIf
-
 Return Nil
 
 *-----------------------------------------------------------------------------*
@@ -2745,8 +2733,8 @@ Local MainName := ''
 
 	* If Already Active Windows Abort Command
 
-   If ascan( _OOHG_aFormObjects, { |o| o:Active } ) > 0
-      MsgOOHGError("ACTIVATE WINDOW ALL: This Command Should Be Used At Application Startup Only. Program terminated" )
+   If ascan( _OOHG_aFormObjects, { |o| o:Active .AND. ! o:lInternal } ) > 0
+      MsgOOHGError( "ACTIVATE WINDOW ALL: This Command Should Be Used At Application Startup Only. Program terminated" )
 	EndIf
 
 // WHY???   * Force NoShow And NoAutoRelease Styles For Non Main Windows
@@ -2754,16 +2742,14 @@ Local MainName := ''
 
    For i := 1 To LEN( _OOHG_aFormObjects )
       oWnd := _OOHG_aFormObjects[ i ]
-      If ! oWnd:lInternal
-         if oWnd:Type == "A"
-            oWnd:lVisible := .T.
-            oWnd:AutoRelease := .T.
-            MainName := oWnd:Name
-         Else
-//            oWnd:lVisible := .F.
-//            oWnd:AutoRelease := .F.
-            aadd( aForm , oWnd:Name )
-         EndIf
+      If oWnd:Type == "A"
+         oWnd:lVisible := .T.
+         oWnd:AutoRelease := .T.
+         MainName := oWnd:Name
+      ElseIf ! oWnd:lInternal
+//         oWnd:lVisible := .F.
+//         oWnd:AutoRelease := .F.
+         aadd( aForm , oWnd:Name )
       EndIf
 	Next i
 

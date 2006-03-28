@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.25 2006-03-26 01:51:34 declan2005 Exp $
+* $Id: h_print.prg,v 1.26 2006-03-28 04:04:25 guerra000 Exp $
 */
 
 #include 'hbclass.ch'
@@ -34,7 +34,7 @@ if clibx=NIL
          o_print_:=tdosprint()
       else
          o_print_:=thbprinter()
-      endif      
+      endif
    else
        o_print_:=thbprinter()
    endif
@@ -83,94 +83,94 @@ DATA cversion           INIT  "(oohg)V 1.4" READONLY
 
 *-------------------------
 METHOD init()
-METHOD initx() inline NIL
+METHOD initx() BLOCK { || nil }
 *-------------------------
 
 *-------------------------
 METHOD begindoc()
-METHOD begindocx() inline NIL
+METHOD begindocx() BLOCK { || nil }
 *-------------------------
 *-------------------------
 METHOD enddoc()
-METHOD enddocx() inline NIL
+METHOD enddocx() BLOCK { || nil }
 *-------------------------
 
 *-------------------------
 METHOD printdos()
-METHOD printdosx() INLINE nil
+METHOD printdosx() BLOCK { || nil }
 *-------------------------
 *-------------------------
 METHOD beginpage()
-METHOD beginpagex() INLINE nil
+METHOD beginpagex() BLOCK { || nil }
 *-------------------------
 
 
 *-------------------------
-METHOD condendos() INLINE nil
-METHOD condendosx() INLINE nil
+METHOD condendos() BLOCK { || nil }
+METHOD condendosx() BLOCK { || nil }
 *-------------------------
 
 
 *-------------------------
-METHOD NORMALDOS() INLINE NIL
-METHOD normaldosx() INLINE nil
+METHOD NORMALDOS() BLOCK { || nil }
+METHOD normaldosx() BLOCK { || nil }
 *-------------------------
 
 *-------------------------
 METHOD endpage()
-METHOD endpagex() INLINE nil
+METHOD endpagex() BLOCK { || nil }
 *-------------------------
 *-------------------------
 METHOD release()
-METHOD releasex() INLINE nil
+METHOD releasex() BLOCK { || nil }
 *-------------------------
 *-------------------------
 METHOD printdata()
-METHOD printdatax() INLINE nil
+METHOD printdatax() BLOCK { || nil }
 *-------------------------
 *-------------------------
 METHOD printimage()
-METHOD printimagex() INLINE nil
+METHOD printimagex() BLOCK { || nil }
 *-------------------------
 *-------------------------
 METHOD printline()
-METHOD printlinex() INLINE nil
+METHOD printlinex() BLOCK { || nil }
 *-------------------------
 
 
 *-------------------------
 METHOD printrectangle()
-METHOD printrectanglex() INLINE nil
+METHOD printrectanglex() BLOCK { || nil }
 *-------------------------
 
 *-------------------------
 METHOD selprinter()
-METHOD selprinterx() INLINE nil
+METHOD selprinterx() BLOCK { || nil }
 *-------------------------
 
 *-------------------------
 METHOD getdefprinter()
-METHOD getdefprinterx() INLINE NIL
+METHOD getdefprinterx() BLOCK { || nil }
 *-------------------------
 
 *-------------------------
 METHOD setcolor()
-METHOD setcolorx() INLINE NIL
+METHOD setcolorx() BLOCK { || nil }
 *-------------------------
 
 *-------------------------
 METHOD setpreviewsize()
-METHOD setpreviewsizex() INLINE nil
+METHOD setpreviewsizex() BLOCK { || nil }
 *-------------------------
 
 *-------------------------
 METHOD setunits()   ////// mm o rowcol
-METHOD setunitsx() INLINE NIL
+METHOD setunitsx() BLOCK { || nil }
 *-------------------------
 
 *-------------------------
 METHOD printroundrectangle()
-METHOD printroundrectanglex() INLINE NIL
+METHOD printroundrectanglex() BLOCK { || nil }
 *-------------------------
 
 METHOD version() INLINE ::cversion
@@ -198,7 +198,7 @@ endif
 return nil
 
 *-------------------------
-METHOD init(clibx) CLASS TPRINTBASE
+METHOD init( /* clibx */ ) CLASS TPRINTBASE
 *-------------------------
 if iswindowactive(_oohg_winreport)
    msgstop("Print preview pending, close first")
@@ -211,7 +211,7 @@ RETURN self
 *-------------------------
 METHOD selprinter( lselect , lpreview, llandscape , npapersize ,cprinterx, lhide ) CLASS TPRINTBASE
 *-------------------------
-local Worientation, lsucess := .T.
+local lsucess := .T.
 if ::exit
    ::lprerror:=.T.
    return nil
@@ -606,7 +606,7 @@ return self
 
 
 *-------------------------
-METHOD begindocx(cdoc) CLASS TMINIPRINT
+METHOD begindocx( /* cdoc */) CLASS TMINIPRINT
 *-------------------------
 START PRINTDOC //////////////NAME cDoc
 return self
@@ -646,6 +646,8 @@ return nil
 *-------------------------
 METHOD printdatax(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext) CLASS TMINIPRINT
 *-------------------------
+   Empty( Data )
+   Empty( aColor )
 if .not. lbold
 if calign="R"
    textalign( 2 )
@@ -931,6 +933,8 @@ return self
 *-------------------------
 METHOD PRINTDATAx(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext) CLASS THBPRINTER
 *-------------------------
+   Empty( Data )
+   Empty( aColor )
 change font "F0" name cfont size nsize
 change font "F1" name cfont size nsize BOLD
 SET TEXTCOLOR ::acolor
@@ -1078,7 +1082,7 @@ METHOD endpagex()
 *-------------------------
 
 *-------------------------
-METHOD releasex() INLINE nil
+METHOD releasex() BLOCK { || nil }
 *-------------------------
 
 *-------------------------
@@ -1086,7 +1090,7 @@ METHOD printdatax()
 *-------------------------
 
 *-------------------------
-METHOD printimage() INLINE nil
+METHOD printimage() BLOCK { || nil }
 *-------------------------
 
 *-------------------------
@@ -1094,7 +1098,7 @@ METHOD printlinex()
 *-------------------------
 
 *-------------------------
-METHOD printrectanglex INLINE nil
+METHOD printrectanglex BLOCK { || nil }
 *-------------------------
 
 *-------------------------
@@ -1102,19 +1106,19 @@ METHOD selprinterx()
 *-------------------------
 
 *-------------------------
-METHOD getdefprinterx() INLINE NIL
+METHOD getdefprinterx() BLOCK { || nil }
 *-------------------------
 
 *-------------------------
-METHOD setcolorx() INLINE NIL
+METHOD setcolorx() BLOCK { || nil }
 *-------------------------
 
 *-------------------------
-METHOD setpreviewsizex() INLINE NIL
+METHOD setpreviewsizex() BLOCK { || nil }
 *-------------------------
 
 *-------------------------
-METHOD printroundrectanglex() INLINE NIL
+METHOD printroundrectanglex() BLOCK { || nil }
 *-------------------------
 
 *-------------------------
@@ -1137,9 +1141,8 @@ return self
 *-------------------------
 METHOD begindocx() CLASS TDOSPRINT
 *-------------------------
-local _nhandle,wr
-SET PRINTER TO &(::tempfile)
-SET DEVICE TO PRINT
+   SET PRINTER TO &(::tempfile)
+   SET DEVICE TO PRINT
 return self
 
 *-------------------------
@@ -1210,17 +1213,23 @@ return self
 *-------------------------
 METHOD printdatax(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext) CLASS TDOSPRINT
 *-------------------------
-if .not. lbold
-@ nlin,ncol say (ctext)
-else
-@ nlin,ncol say (ctext)
-@ nlin,ncol say (ctext)
-endif
+   Empty( Data )
+   Empty( cFont )
+   Empty( nSize )
+   Empty( aColor )
+   Empty( cAlign )
+   Empty( nLen )
+   if .not. lbold
+      @ nlin,ncol say (ctext)
+   else
+      @ nlin,ncol say (ctext)
+      @ nlin,ncol say (ctext)
+   endif
 return self
 
 
 *-------------------------
-METHOD printlinex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen ) CLASS TDOSPRINT
+METHOD printlinex(nlin,ncol,nlinf,ncolf /* ,atcolor,ntwpen */ ) CLASS TDOSPRINT
 *-------------------------
 if nlin=nlinf
 @ nlin,ncol say replicate("-",ncolf-ncol+1)
@@ -1229,14 +1238,15 @@ return self
 
 
 *-------------------------
-METHOD selprinterx( lselect , lpreview, llandscape , npapersize ,cprinterx) CLASS TDOSPRINT
+METHOD selprinterx( lselect , lpreview /* , llandscape , npapersize ,cprinterx */ ) CLASS TDOSPRINT
 *-------------------------
-do while file(::tempfile)
-::tempfile:=gettempdir()+"T"+alltrim(str(int(hb_random(999999)),8))+".prn"
-enddo
-if lpreview
-::impreview:=.T.
-endif
+   Empty( lSelect )
+   do while file(::tempfile)
+      ::tempfile:=gettempdir()+"T"+alltrim(str(int(hb_random(999999)),8))+".prn"
+   enddo
+   if lpreview
+      ::impreview:=.T.
+   endif
 return self
 
 
