@@ -1,11 +1,15 @@
 /*
- * $Id: ChangeLog,v 1.137 2006-03-27 04:24:08 guerra000 Exp $
+ * $Id: ChangeLog,v 1.138 2006-03-28 02:12:50 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-03-27 20:10 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_windows.prg
+    ! Fixed context menu (recent) bug.
 
 2006-03-26 22:22 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_menu.prg

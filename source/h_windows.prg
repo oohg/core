@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.73 2006-03-27 04:24:09 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.74 2006-03-28 02:12:51 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -467,7 +467,7 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )
             {
                pContext = hb_itemNew( NULL );
                hb_itemCopy( pContext, hb_param( -1, HB_IT_OBJECT ) );
-               _OOHG_Send( pSelf, s_Parent );
+               _OOHG_Send( pControl, s_Parent );
                hb_vmSend( 0 );
                _OOHG_Send( hb_param( -1, HB_IT_OBJECT ), s_hWnd );
                hb_vmSend( 0 );
