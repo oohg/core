@@ -1,5 +1,5 @@
 /*
- * $Id: i_window.ch,v 1.14 2006-03-27 04:24:09 guerra000 Exp $
+ * $Id: i_window.ch,v 1.15 2006-03-29 05:54:14 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -205,18 +205,18 @@
                         [ <focused: FOCUSED> ] ;
 	=>;
         [ <obj> := ] ;
-        TForm():Define( <(w)>, <title>, <col>, <row>, <wi>, <h>, <.nominimize.>, <.nomaximize.>, <.nosize.>, ;
-                        <.nosysmenu.>, <.nocaption.>, <{InitProcedure}>, <{ReleaseProcedure}>, ;
-                        <{MouseDragProcedure}>, <{SizeProcedure}>, <{ClickProcedure}>, ;
-                        <{MouseMoveProcedure}>, <backcolor>, <{PaintProcedure}>, <.noshow.>, <.topmost.>, ;
-                        <icon>, <FontName>, <FontSize>, <NotifyIcon>, <NotifyIconTooltip>, ;
-                        <{NotifyLeftClick}>, <{GotFocusProcedure}>, <{LostFocusProcedure}>, <vHeight>, ;
-                        <vWidth>, <{scrollleft}>, <{scrollright}>, <{scrollup}>, <{scrolldown}>, ;
-                        <{hScrollBox}>, <{vScrollBox}>, <.helpbutton.>, <{MaximizeProcedure}>, ;
-                        <{MinimizeProcedure}>, <cursor>, <.noautorelease.>, <parent>, ;
-                        <{interactivecloseprocedure}>, <.focused.>, <.break.>, <grippertext>, <.rtl.>, ;
-                        <.main.>, <.splitchild.>, <.child.>, <.modal.>, <.modalsize.>, <.mdi.>, <.internal.>, ;
-                        <.mdichild.>, <.mdiclient.> ) ;;
+        DefineWindow( <(w)>, <title>, <col>, <row>, <wi>, <h>, <.nominimize.>, <.nomaximize.>, <.nosize.>, ;
+                      <.nosysmenu.>, <.nocaption.>, <{InitProcedure}>, <{ReleaseProcedure}>, ;
+                      <{MouseDragProcedure}>, <{SizeProcedure}>, <{ClickProcedure}>, ;
+                      <{MouseMoveProcedure}>, <backcolor>, <{PaintProcedure}>, <.noshow.>, <.topmost.>, ;
+                      <icon>, <FontName>, <FontSize>, <NotifyIcon>, <NotifyIconTooltip>, ;
+                      <{NotifyLeftClick}>, <{GotFocusProcedure}>, <{LostFocusProcedure}>, <vHeight>, ;
+                      <vWidth>, <{scrollleft}>, <{scrollright}>, <{scrollup}>, <{scrolldown}>, ;
+                      <{hScrollBox}>, <{vScrollBox}>, <.helpbutton.>, <{MaximizeProcedure}>, ;
+                      <{MinimizeProcedure}>, <cursor>, <.noautorelease.>, <parent>, ;
+                      <{interactivecloseprocedure}>, <.focused.>, <.break.>, <grippertext>, <.rtl.>, ;
+                      <.main.>, <.splitchild.>, <.child.>, <.modal.>, <.modalsize.>, <.mdi.>, <.internal.>, ;
+                      <.mdichild.>, <.mdiclient.> ) ;;
         DECLARE WINDOW <w>
 
 	#xcommand LOAD WINDOW <w> ;
@@ -326,18 +326,18 @@
 	=>;
         DECLARE WINDOW <w>  ;;
         [ <obj> := ] ;
-        TForm():Define( <(w)>, <title>, <col>, <row>, <wi>, <h>, <.nominimize.>, <.nomaximize.>, <.nosize.>, ;
-                        <.nosysmenu.>, <.nocaption.>, <{InitProcedure}>, <{ReleaseProcedure}>, ;
-                        <{MouseDragProcedure}>, <{SizeProcedure}>, <{ClickProcedure}>, ;
-                        <{MouseMoveProcedure}>, <backcolor>, <{PaintProcedure}>, <.noshow.>, <.topmost.>, ;
-                        <icon>, <FontName>, <FontSize>, <NotifyIcon>, <NotifyIconTooltip>, ;
-                        <{NotifyLeftClick}>, <{GotFocusProcedure}>, <{LostFocusProcedure}>, <vHeight>, ;
-                        <vWidth>, <{scrollleft}>, <{scrollright}>, <{scrollup}>, <{scrolldown}>, ;
-                        <{hScrollBox}>, <{vScrollBox}>, <.helpbutton.>, <{MaximizeProcedure}>, ;
-                        <{MinimizeProcedure}>, <cursor>, <.noautorelease.>, <parent>, ;
-                        <{interactivecloseprocedure}>, <.focused.>, <.break.>, <grippertext>, <.rtl.>, ;
-                        <.main.>, <.splitchild.>, <.child.>, <.modal.>, <.modalsize.>, <.mdi.>, <.internal.>, ;
-                        <.mdichild.>, <.mdiclient.> )
+        DefineWindow( <(w)>, <title>, <col>, <row>, <wi>, <h>, <.nominimize.>, <.nomaximize.>, <.nosize.>, ;
+                      <.nosysmenu.>, <.nocaption.>, <{InitProcedure}>, <{ReleaseProcedure}>, ;
+                      <{MouseDragProcedure}>, <{SizeProcedure}>, <{ClickProcedure}>, ;
+                      <{MouseMoveProcedure}>, <backcolor>, <{PaintProcedure}>, <.noshow.>, <.topmost.>, ;
+                      <icon>, <FontName>, <FontSize>, <NotifyIcon>, <NotifyIconTooltip>, ;
+                      <{NotifyLeftClick}>, <{GotFocusProcedure}>, <{LostFocusProcedure}>, <vHeight>, ;
+                      <vWidth>, <{scrollleft}>, <{scrollright}>, <{scrollup}>, <{scrolldown}>, ;
+                      <{hScrollBox}>, <{vScrollBox}>, <.helpbutton.>, <{MaximizeProcedure}>, ;
+                      <{MinimizeProcedure}>, <cursor>, <.noautorelease.>, <parent>, ;
+                      <{interactivecloseprocedure}>, <.focused.>, <.break.>, <grippertext>, <.rtl.>, ;
+                      <.main.>, <.splitchild.>, <.child.>, <.modal.>, <.modalsize.>, <.mdi.>, <.internal.>, ;
+                      <.mdichild.>, <.mdiclient.> )
 
 	#xcommand LOAD WINDOW <w> ;
 	=> ;
@@ -472,15 +472,15 @@ SetProperty ( <(Arg1)> , <(Arg2)> , <Arg3> )
                         [ <focused: FOCUSED> ] ;
 	=>;
         [ <obj> := ] ;
-        TForm():Define( , <title>, <col>, <row>, <wi>, <h>, <.nominimize.>, <.nomaximize.>, <.nosize.>, ;
-                        <.nosysmenu.>, <.nocaption.>, <{InitProcedure}>, <{ReleaseProcedure}>, ;
-                        <{MouseDragProcedure}>, <{SizeProcedure}>, <{ClickProcedure}>, ;
-                        <{MouseMoveProcedure}>, <backcolor>, <{PaintProcedure}>, <.noshow.>, <.topmost.>, ;
-                        <icon>, <FontName>, <FontSize>, <NotifyIcon>, <NotifyIconTooltip>, ;
-                        <{NotifyLeftClick}>, <{GotFocusProcedure}>, <{LostFocusProcedure}>, <vHeight>, ;
-                        <vWidth>, <{scrollleft}>, <{scrollright}>, <{scrollup}>, <{scrolldown}>, ;
-                        <{hScrollBox}>, <{vScrollBox}>, <.helpbutton.>, <{MaximizeProcedure}>, ;
-                        <{MinimizeProcedure}>, <cursor>, <.noautorelease.>, <parent>, ;
-                        <{interactivecloseprocedure}>, <.focused.>, <.break.>, <grippertext>, <.rtl.>, ;
-                        <.main.>, <.splitchild.>, <.child.>, <.modal.>, <.modalsize.>, <.mdi.>, <.internal.>, ;
-                        <.mdichild.>, <.mdiclient.> )
+        DefineWindow( , <title>, <col>, <row>, <wi>, <h>, <.nominimize.>, <.nomaximize.>, <.nosize.>, ;
+                      <.nosysmenu.>, <.nocaption.>, <{InitProcedure}>, <{ReleaseProcedure}>, ;
+                      <{MouseDragProcedure}>, <{SizeProcedure}>, <{ClickProcedure}>, ;
+                      <{MouseMoveProcedure}>, <backcolor>, <{PaintProcedure}>, <.noshow.>, <.topmost.>, ;
+                      <icon>, <FontName>, <FontSize>, <NotifyIcon>, <NotifyIconTooltip>, ;
+                      <{NotifyLeftClick}>, <{GotFocusProcedure}>, <{LostFocusProcedure}>, <vHeight>, ;
+                      <vWidth>, <{scrollleft}>, <{scrollright}>, <{scrollup}>, <{scrolldown}>, ;
+                      <{hScrollBox}>, <{vScrollBox}>, <.helpbutton.>, <{MaximizeProcedure}>, ;
+                      <{MinimizeProcedure}>, <cursor>, <.noautorelease.>, <parent>, ;
+                      <{interactivecloseprocedure}>, <.focused.>, <.break.>, <grippertext>, <.rtl.>, ;
+                      <.main.>, <.splitchild.>, <.child.>, <.modal.>, <.modalsize.>, <.mdi.>, <.internal.>, ;
+                      <.mdichild.>, <.mdiclient.> )

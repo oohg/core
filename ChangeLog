@@ -1,11 +1,17 @@
 /*
- * $Id: ChangeLog,v 1.139 2006-03-28 04:04:24 guerra000 Exp $
+ * $Id: ChangeLog,v 1.140 2006-03-29 05:54:14 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-03-28 23:53 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_windows.ch
+  * source/h_windows.prg
+    * Force to work with "current" window at WM_MOUSEWHEEL event.
+    * TForm class divided in subclasses.
 
 2006-03-27 22:03 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source/c_windows.c

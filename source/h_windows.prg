@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.75 2006-03-28 04:04:25 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.76 2006-03-29 05:54:14 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -713,7 +713,6 @@ CLASS TForm FROM TWindow
    DATA lInternal      INIT .F.
    DATA oMenu          INIT nil
    DATA hWndClient     INIT 0
-   DATA oPrevWindow    INIT nil
 
    DATA OnRelease      INIT nil
    DATA OnInit         INIT nil
@@ -737,7 +736,6 @@ CLASS TForm FROM TWindow
    DATA GraphTasks     INIT {}
    DATA BrowseList     INIT {}    // Controls to be refresh at form's draw.
    DATA SplitChildList INIT {}    // INTERNAL windows.
-   DATA LockedForms    INIT {}
 
    DATA NotifyIconLeftClick   INIT nil
    DATA NotifyMenuHandle      INIT 0
@@ -773,6 +771,7 @@ CLASS TForm FROM TWindow
    METHOD RefreshData
    METHOD DeleteControl
    METHOD OnHideFocusManagement
+   METHOD CheckInteractiveClose()
    METHOD DoEvent
 
    METHOD Events
@@ -791,17 +790,16 @@ METHOD Define( FormName, Caption, x, y, w, h, nominimize, nomaximize, nosize, ;
                hscrollbox, vscrollbox, helpbutton, maximizeprocedure, ;
                minimizeprocedure, cursor, NoAutoRelease, oParent, ;
                InteractiveCloseProcedure, Focused, Break, GripperText, lRtl, ;
-               main, splitchild, child, modal, modalsize, mdi, internal, ;
+               NULL1, splitchild, child, NULL2, NULL3, mdi, internal, ;
                mdichild, mdiclient ) CLASS TForm
 *------------------------------------------------------------------------------*
-Local aError := {}, nMain, hParent, nWindowType
+Local aError := {}, hParent, nWindowType
 Local nStyle := 0, nStyleEx := 0
 
-   If ValType( main ) != "L"
-      main := .F.
-   ElseIf main
-      AADD( aError, "MAIN" )
-   EndIf
+Empty( NULL1 )
+Empty( NULL2 )
+Empty( NULL3 )
+
    If ValType( splitchild ) != "L"
       splitchild := .F.
    ElseIf splitchild
@@ -811,16 +809,6 @@ Local nStyle := 0, nStyleEx := 0
       child := .F.
    ElseIf child
       AADD( aError, "CHILD" )
-   EndIf
-   If ValType( modal ) != "L"
-      modal := .F.
-   ElseIf modal
-      AADD( aError, "MODAL" )
-   EndIf
-   If ValType( modalsize ) != "L"
-      modalsize := .F.
-   ElseIf modalsize
-      AADD( aError, "MODALSIZE" )
    EndIf
    If ValType( mdiclient ) != "L"
       mdiclient := .F.
@@ -846,15 +834,7 @@ Local nStyle := 0, nStyleEx := 0
       MsgOOHGError( "Window: " + aError[ 1 ] + " and " + aError[ 2 ] + " clauses can't be used Simultaneously. Program Terminated." )
    endif
 
-   If mdi
-      nWindowType := 4
-      nStyle   += WS_CLIPSIBLINGS + WS_CLIPCHILDREN // + WS_THICKFRAME
-      If mdichild .OR. mdiclient // .OR. splitchild
-         * These window's types can't be MDI FRAME
-      EndIf
-   Else
-      nWindowType := 0
-   EndIf
+   nWindowType := 0
 
    If ValType( oParent ) $ "CM" .AND. ! Empty( oParent )
       oParent := GetFormObject( oParent )
@@ -881,28 +861,10 @@ Local nStyle := 0, nStyleEx := 0
       EndIf
    EndIf
 
-   nMain := ASCAN( _OOHG_aFormObjects, { |o| o:Type == "A" } )
-
-   if main
-      if nMain > 0
-         MsgOOHGError( "Main Window Already Defined. Program Terminated." )
-		Endif
-
-		if NoAutoRelease == .T.
-         MsgOOHGError("NOAUTORELEASE and MAIN Clauses Can't Be Used Simultaneously. Program Terminated" )
-		Endif
-
-      hParent := 0
-      ::Type := "A"
-
-      _OOHG_Main := Self
-   else
-      if nMain == 0
-         MsgOOHGError( "Main Window Not Defined. Program Terminated." )
-		Endif
-
+   IF len( aError ) == 0
       hParent := 0
       ::Type := "S"
+      nStyle   += WS_POPUP
    endif
 
    if splitchild
@@ -934,19 +896,7 @@ Local nStyle := 0, nStyleEx := 0
    if child
       ::Type := "C"
       hParent := oParent:hWnd
-   endif
-
-   if modal
-      ::Type := "M"
-      ::oPrevWindow := oParent
-      hParent := oParent:hWnd
-      nominimize := nomaximize := .T.
-   endif
-
-   if modalsize
-      ::Type := "M"
-      ::oPrevWindow := oParent
-      hParent := oParent:hWnd
+      nStyle   += WS_POPUP
    endif
 
    if mdiclient
@@ -957,8 +907,8 @@ Local nStyle := 0, nStyleEx := 0
       hParent := oParent:hWnd
 
 * ventana MDI FRAME
-*      nStyle   += /* - WS_POPUP + */ WS_CLIPSIBLINGS + WS_CLIPCHILDREN // + WS_THICKFRAME
-      nStyle   += WS_CHILD - WS_POPUP + WS_CLIPCHILDREN
+*      nStyle   += WS_CLIPSIBLINGS + WS_CLIPCHILDREN // + WS_THICKFRAME
+      nStyle   += WS_CHILD + WS_CLIPCHILDREN
 
       helpbutton := .f.
       nominimize := nomaximize := nosize := nosysmenu := nocaption := .t.
@@ -972,7 +922,7 @@ Local nStyle := 0, nStyleEx := 0
       ::lInternal := .T.
       hParent := oParent:hWnd
 
-      nStyle   += WS_CHILD - WS_POPUP
+      nStyle   += WS_CHILD
       nStyleEx += WS_EX_MDICHILD
 
       nWindowType := 3
@@ -985,21 +935,19 @@ Local nStyle := 0, nStyleEx := 0
       ::lInternal := .T.
       hParent := oParent:hWnd
 
-      nStyle   += WS_CHILD - WS_POPUP
+      nStyle   += WS_CHILD
 
       // Removes borders
       helpbutton := .f.
       nominimize := nomaximize := nosize := nosysmenu := nocaption := .t.
    endif
 
-   nStyleEx += if( ValType( topmost ) == "L" .AND. topmost, WS_EX_TOPMOST, 0 )
-
    ::Define2( FormName, Caption, x, y, w, h, hParent, helpbutton, nominimize, nomaximize, nosize, nosysmenu, ;
               nocaption, virtualheight, virtualwidth, hscrollbox, vscrollbox, fontname, fontsize, aRGB, cursor, ;
               icon, noshow, gotfocus, lostfocus, scrollleft, scrollright, scrollup, scrolldown, maximizeprocedure, ;
               minimizeprocedure, initprocedure, ReleaseProcedure, SizeProcedure, ClickProcedure, PaintProcedure, ;
               MouseMoveProcedure, MouseDragProcedure, InteractiveCloseProcedure, NoAutoRelease, nStyle, nStyleEx, ;
-              nWindowType, lRtl )
+              nWindowType, lRtl, mdi, topmost )
 
    if ! valtype( NotifyIconName ) $ "CM"
       NotifyIconName := ""
@@ -1024,9 +972,13 @@ METHOD Define2( FormName, Caption, x, y, w, h, Parent, helpbutton, nominimize, n
                 icon, noshow, gotfocus, lostfocus, scrollleft, scrollright, scrollup, scrolldown, maximizeprocedure, ;
                 minimizeprocedure, initprocedure, ReleaseProcedure, SizeProcedure, ClickProcedure, PaintProcedure, ;
                 MouseMoveProcedure, MouseDragProcedure, InteractiveCloseProcedure, NoAutoRelease, nStyle, nStyleEx, ;
-                nWindowType, lRtl ) CLASS TForm
+                nWindowType, lRtl, mdi, topmost ) CLASS TForm
 *------------------------------------------------------------------------------*
 Local Formhandle
+
+   If _OOHG_Main == nil
+      MsgOOHGError( "Main Window Not Defined. Program Terminated." )
+   Endif
 
    If _OOHG_GlobalRTL()
       lRtl := .T.
@@ -1058,11 +1010,10 @@ Local Formhandle
       VirtualWidth := 0
    endif
 
-   if Valtype( aRGB ) != 'A'
+   if ! Valtype( aRGB ) $ 'AN'
       aRGB := GetSysColor( COLOR_3DFACE )
 	EndIf
 
-   nStyle   += WS_POPUP
    If ValType( helpbutton ) == "L" .AND. helpbutton
       nStyleEx += WS_EX_CONTEXTHELP
    Else
@@ -1072,6 +1023,20 @@ Local Formhandle
    nStyle    += if( ValType( nosize )     != "L" .OR. ! nosize,    WS_SIZEBOX, 0 ) + ;
                 if( ValType( nosysmenu )  != "L" .OR. ! nosysmenu, WS_SYSMENU, 0 ) + ;
                 if( ValType( nocaption )  != "L" .OR. ! nocaption, WS_CAPTION, 0 )
+
+   nStyleEx += if( ValType( topmost ) == "L" .AND. topmost, WS_EX_TOPMOST, 0 )
+
+   If ValType( mdi ) == "L" .AND. mdi
+      If nWindowType != 0
+         *  mdichild .OR. mdiclient // .OR. splitchild
+         * These window's types can't be MDI FRAME
+      EndIf
+      nWindowType := 4
+      nStyle   += WS_CLIPSIBLINGS + WS_CLIPCHILDREN // + WS_THICKFRAME
+* propiedad si es MDI????
+   Else
+      mdi := .F.
+   EndIf
 
    If nWindowType == 2
       Formhandle := InitWindowMDIClient( Caption, x, y, w, h, Parent, "MDICLIENT", nStyle, nStyleEx, lRtl )
@@ -1139,7 +1104,7 @@ Local Formhandle
    ::OnMinimize := MinimizeProcedure
    ::lVisible := ! ( ValType( NoShow ) == "L" .AND. NoShow )
    ::BackColor := aRGB
-   ::AutoRelease := ! NoAutoRelease
+   ::AutoRelease := ! ( ValType( NoAutoRelease ) == "L" .AND. NoAutoRelease )
 
    If ::lInternal
       ::ActivateCount[ 1 ] += 999
@@ -1186,16 +1151,7 @@ RETURN Self
 METHOD Hide() CLASS TForm
 *-----------------------------------------------------------------------------*
    If IsWindowVisible( ::hWnd )
-      If ::Type == "M"
-         If Len( _OOHG_ActiveModal ) == 0 .OR. ATAIL( _OOHG_ActiveModal ):hWnd <> ::hWnd
-            MsgOOHGError( "Non top modal windows can't be hide. Program terminated." )
-/*
-Testing...
-         ElseIf ::ActivateCount[ 1 ] > 1 .OR. ! ::ActivateCount == ATAIL( _OOHG_MessageLoops )
-            MsgOOHGError( "Modal windows can't be hide when it have sub-windows. Program terminated." )
-*/
-         EndIf
-      EndIf
+      ::lVisible := .F.
       HideWindow( ::hWnd )
       ::OnHideFocusManagement()
 	EndIf
@@ -1204,43 +1160,7 @@ Return Nil
 *-----------------------------------------------------------------------------*
 METHOD Show() CLASS TForm
 *-----------------------------------------------------------------------------*
-   if ::Type == "M"
-		// Find Parent
-
-/*
-      If Len( _OOHG_ActiveModal ) != 0
-         ::oPrevWindow := ATAIL( _OOHG_ActiveModal )
-		Else
-         IF _OOHG_UserWindow != NIL .AND. ascan( _OOHG_aFormhWnd, _OOHG_UserWindow:hWnd ) > 0
-            ::oPrevWindow := _OOHG_UserWindow
-			else
-            ::oPrevWindow := _OOHG_Main
-			endif
-		endif
-*/
-      If ::oPrevWindow == NIL .OR. ASCAN( _OOHG_aFormhWnd, ::oPrevWindow:hWnd ) == 0
-         ::oPrevWindow := GetFormObjectByHandle( GetActiveWindow() )
-         If ::oPrevWindow:hWnd == 0
-            ::oPrevWindow := NIL
-            If _OOHG_UserWindow != NIL .AND. ascan( _OOHG_aFormhWnd, _OOHG_UserWindow:hWnd ) > 0
-               ::oPrevWindow := _OOHG_UserWindow
-            ElseIf Len( _OOHG_ActiveModal ) != 0 .AND. ascan( _OOHG_aFormhWnd, ATAIL( _OOHG_ActiveModal ):hWnd ) > 0
-               ::oPrevWindow := ATAIL( _OOHG_ActiveModal )
-            Else
-               ::oPrevWindow := _OOHG_Main
-            Endif
-         EndIf
-      EndIf
-
-      AEVAL( _OOHG_aFormObjects, { |o| if( ! o:lInternal .AND. o:hWnd != ::hWnd .AND. IsWindowEnabled( o:hWnd ), ( AADD( ::LockedForms, o ), DisableWindow( o:hWnd ) ) , ) } )
-
-      AADD( _OOHG_ActiveModal, Self )
-      EnableWindow( ::hWnd )
-
-      If ! ::SetFocusedSplitChild()
-         ::SetActivationFocus()
-		endif
-	EndIf
+   ::lVisible := .T.
    ShowWindow( ::hWnd )
 	ProcessMessages()
 Return Nil
@@ -1268,45 +1188,30 @@ METHOD Activate( lNoStop, oWndLoop ) CLASS TForm
 	// Main Check
 
    If _OOHG_Main == nil
-      If ::Type != "A"
-         MsgOOHGError("ACTIVATE WINDOW: Main Window Must be Activated In First ACTIVATE WINDOW Command. Program terminated" )
-		EndIf
-	Else
-      If ::Type == "A" .AND. ::hWnd != _OOHG_Main:hWnd
-         MsgOOHGError("ACTIVATE WINDOW: Main Window Already Active. Program terminated" )
-		EndIf
-	EndIf
-
-	// Set Main Active Public Flag
-   IF ::Type == "A"
-      _OOHG_Main := Self
-   ENDIF
+      MsgOOHGError( "ACTIVATE WINDOW: Main Window not defined. Program terminated." )
+   ElseIf ! _OOHG_Main:lFirstActivate
+      MsgOOHGError( "ACTIVATE WINDOW: Main Window Must be Activated In First ACTIVATE WINDOW Command. Program terminated." )
+   EndIf
 
    If ::Active
       MsgOOHGError( "Window: " + ::Name + " already active. Program terminated" )
    Endif
 
    // Checks for non-stop window
-   IF ValType( lNoStop ) != "L"
+   If ValType( lNoStop ) != "L"
       lNoStop := .F.
-   ENDIF
-   IF ValType( oWndLoop ) != "O"
-      oWndLoop := IF( lNoStop, if( ValType( ::oPrevWindow ) == "O", ::oPrevWindow, _OOHG_Main ), Self )
-   ENDIF
+   EndIf
+   If ValType( oWndLoop ) != "O"
+      oWndLoop := IF( lNoStop, _OOHG_Main, Self )
+   EndIf
    ::ActivateCount := oWndLoop:ActivateCount
    ::ActivateCount[ 1 ]++
 
-   IF ::ReBarHandle > 0
+   If ::ReBarHandle > 0
       SizeRebar( ::ReBarHandle )
-   ENDIF
+   EndIf
 
    // Show window
-   if ::Type == "M"
-      ::Show()
-      ::Active := .T.
-      ::ProcessInitProcedure()
-      ::RefreshData()
-   Else
 
 * Testing... it allows to create non-modal windows when modal windows are active.
 * The problem is, what should do when modal window is ... disabled? hidden? WM_CLOSE? WM_DESTROY?
@@ -1316,24 +1221,22 @@ METHOD Activate( lNoStop, oWndLoop ) CLASS TForm
       endif
 */
 
-      If ::lVisible
-         ShowWindow( ::hWnd )
-      EndIf
+   If ::lVisible
+      ::Show()
+   EndIf
 
-      ::Active := .T.
-      ::ProcessInitProcedure()
-      ::RefreshData()
+   ::Active := .T.
+   ::ProcessInitProcedure()
+   ::RefreshData()
 
-      If ! ::SetFocusedSplitChild()
-         ::SetActivationFocus()
-      endif
-
-   Endif
+   If ! ::SetFocusedSplitChild()
+      ::SetActivationFocus()
+   EndIf
 
    // Starts the Message Loop
-   IF ! lNoStop
+   If ! lNoStop
       ::MessageLoop()
-   ENDIF
+   EndIf
 
 Return Nil
 
@@ -1376,33 +1279,7 @@ Local b
 		EndIf
 	EndIf
 
-	* If the window to release is the main application window, release all
-	* windows command will be executed
-
-   If ::Type == "A"
-
-      If _OOHG_ThisEventType == 'WINDOW_RELEASE'
-         MsgOOHGError("Release a window in its own 'on release' procedure or release the main window in any 'on release' procedure is not allowed. Program terminated" )
-		Else
-			ReleaseAllWindows()
-		EndIf
-
-	EndIf
-
 	* Release Window
-
-   if ::Type == "M" .and. ( Len( _OOHG_ActiveModal ) == 0 .OR. ATAIL( _OOHG_ActiveModal ):hWnd <> ::hWnd )
-
-      If IsWindowVisible( ::hWnd )
-
-         MsgOOHGError("Non top modal windows can't be released. Program terminated *" + ::Name + "*" )
-
-      EndIf
-
-	EndIf
-
-   // Checks if the released window is modal's previous window
-   AEVAL( _OOHG_aFormObjects, { |o| IF( o:oPrevWindow != nil .AND. o:oPrevWindow:hWnd == ::hWnd, o:oPrevWindow := ::oPrevWindow, )  } )
 
    EnableWindow( ::hWnd )
    SendMessage( ::hWnd, WM_SYSCOMMAND, SC_CLOSE, 0 )
@@ -1624,18 +1501,20 @@ Return nil
 *-----------------------------------------------------------------------------*
 METHOD OnHideFocusManagement() CLASS TForm
 *-----------------------------------------------------------------------------*
-
-   // Re-enables locked forms
-   AEVAL( ::LockedForms, { |o| IF( o:hWnd != -1, EnableWindow( o:hWnd ), ) } )
-   ::LockedForms := {}
-
-   If ::oPrevWindow == nil
-      // _OOHG_Main:SetFocus()
-	Else
-      ::oPrevWindow:SetFocus()
-	EndIf
-
 Return nil
+
+*-----------------------------------------------------------------------------*
+METHOD CheckInteractiveClose() CLASS TForm
+*-----------------------------------------------------------------------------*
+Local lRet := .T.
+   Do Case
+      Case _OOHG_InteractiveClose == 0
+         MsgStop( _OOHG_Messages( 1, 3 ) )
+         lRet := .F.
+      Case _OOHG_InteractiveClose == 2
+         lRet := MsgYesNo( _OOHG_Messages( 1, 1 ), _OOHG_Messages( 1, 2 ) )
+   EndCase
+Return lRet
 
 *-----------------------------------------------------------------------------*
 METHOD DoEvent( bBlock, cEventType ) CLASS TForm
@@ -1716,6 +1595,7 @@ Local oWnd, oCtrl
 	case nMsg == WM_MOUSEWHEEL
         ***********************************************************************
 
+/*
       oWnd := GetFormObjectByHandle( GetFocus() )
 
       IF oWnd:hWnd == 0
@@ -1729,6 +1609,9 @@ Local oWnd, oCtrl
          ENDIF
 
       ENDIF
+*/
+
+      oWnd := Self
 
       If oWnd:hWnd != 0 .AND. oWnd:RangeHeight > 0
 
@@ -2116,28 +1999,16 @@ Local oWnd, oCtrl
 
       * Process Interactive Close Event / Setting
 
-      If ValType ( ::OnInteractiveClose ) == 'B'
+      If ValType( ::OnInteractiveClose ) == 'B'
          xRetVal := ::DoEvent( ::OnInteractiveClose, 'WINDOW_ONINTERACTIVECLOSE' )
          If ValType( xRetVal ) == 'L' .AND. ! xRetVal
-            Return (1)
+            Return 1
          EndIf
       EndIf
 
-      Do Case
-         Case _OOHG_InteractiveClose == 0
-            MsgStop( _OOHG_Messages( 1, 3 ) )
-				Return (1)
-         Case _OOHG_InteractiveClose == 2
-            If ! MsgYesNo ( _OOHG_Messages( 1, 1 ), _OOHG_Messages( 1, 2 ) )
-					Return (1)
-				EndIf
-         Case _OOHG_InteractiveClose == 3
-            if ::Type == "A"
-               If ! MsgYesNo ( _OOHG_Messages( 1, 1 ), _OOHG_Messages( 1, 2 ) )
-						Return (1)
-					EndIf
-				EndIf
-      EndCase
+      If ! ::CheckInteractiveClose()
+         Return 1
+      EndIf
 
       * Process AutoRelease Property
 
@@ -2299,6 +2170,512 @@ Local aRect, w, h, hscroll, vscroll
 Return
 
 *-----------------------------------------------------------------------------*
+Function SearchParent( oParent, lInternal )
+*-----------------------------------------------------------------------------*
+   If ValType( oParent ) $ "CM" .AND. ! Empty( oParent )
+      oParent := GetFormObject( oParent )
+      If oParent:hWnd <= 0
+         MsgOOHGError( "Specified parent window is not defined. Program Terminated." )
+      Endif
+   EndIf
+
+   If ValType( oParent ) != "O"
+      If LEN( _OOHG_ActiveForm ) > 0 .AND. lInternal
+         oParent := ATail( _OOHG_ActiveForm )
+      Else
+         oParent := GetFormObjectByHandle( GetActiveWindow() )
+         If oParent:hWnd == 0
+            If _OOHG_UserWindow != NIL .AND. ascan( _OOHG_aFormhWnd, _OOHG_UserWindow:hWnd ) > 0
+               oParent := _OOHG_UserWindow
+            ElseIf Len( _OOHG_ActiveModal ) > 0 .AND. ascan( _OOHG_aFormhWnd, ATAIL( _OOHG_ActiveModal ):hWnd ) > 0
+               oParent := ATAIL( _OOHG_ActiveModal )
+            Else
+               oParent := _OOHG_Main
+            Endif
+         Endif
+      EndIf
+   EndIf
+Return oParent
+
+
+*-----------------------------------------------------------------------------*
+CLASS TFormMain FROM TForm
+*-----------------------------------------------------------------------------*
+   DATA Type           INIT "A" READONLY
+   DATA lFirstActivate INIT .F.
+
+   METHOD Define
+   METHOD Activate
+   METHOD Release
+
+   METHOD CheckInteractiveClose
+ENDCLASS
+
+*-----------------------------------------------------------------------------*
+METHOD Define( FormName, Caption, x, y, w, h, nominimize, nomaximize, nosize, ;
+               nosysmenu, nocaption, initprocedure, ReleaseProcedure, ;
+               MouseDragProcedure, SizeProcedure, ClickProcedure, ;
+               MouseMoveProcedure, aRGB, PaintProcedure, noshow, topmost, ;
+               icon, fontname, fontsize, NotifyIconName, NotifyIconTooltip, ;
+               NotifyIconLeftClick, GotFocus, LostFocus, virtualheight, ;
+               VirtualWidth, scrollleft, scrollright, scrollup, scrolldown, ;
+               hscrollbox, vscrollbox, helpbutton, maximizeprocedure, ;
+               minimizeprocedure, cursor, InteractiveCloseProcedure, lRtl, mdi ) CLASS TFormMain
+*-----------------------------------------------------------------------------*
+Local nStyle := 0, nStyleEx := 0
+
+   If _OOHG_Main != nil
+      MsgOOHGError( "Main Window Already Defined. Program Terminated." )
+   Endif
+
+   _OOHG_Main := Self
+   nStyle += WS_POPUP
+
+   ::Define2( FormName, Caption, x, y, w, h, 0, helpbutton, nominimize, nomaximize, nosize, nosysmenu, ;
+              nocaption, virtualheight, virtualwidth, hscrollbox, vscrollbox, fontname, fontsize, aRGB, cursor, ;
+              icon, noshow, gotfocus, lostfocus, scrollleft, scrollright, scrollup, scrolldown, maximizeprocedure, ;
+              minimizeprocedure, initprocedure, ReleaseProcedure, SizeProcedure, ClickProcedure, PaintProcedure, ;
+              MouseMoveProcedure, MouseDragProcedure, InteractiveCloseProcedure, nil, nStyle, nStyleEx, ;
+              0, lRtl, mdi, topmost )
+
+   if ! valtype( NotifyIconName ) $ "CM"
+      NotifyIconName := ""
+   Else
+      ShowNotifyIcon( ::hWnd, .T. , LoadTrayIcon(GETINSTANCE(), NotifyIconName ), NotifyIconTooltip )
+      ::NotifyIconName := NotifyIconName
+      ::NotifyIconToolTip := NotifyIconToolTip
+      ::NotifyIconLeftClick := NotifyIconLeftClick
+   endif
+
+Return Self
+
+*-----------------------------------------------------------------------------*
+METHOD Activate( lNoStop, oWndLoop ) CLASS TFormMain
+*-----------------------------------------------------------------------------*
+   ::lFirstActivate := .T.
+Return ::Super:Activate( lNoStop, oWndLoop )
+
+*-----------------------------------------------------------------------------*
+METHOD Release() CLASS TFormMain
+*-----------------------------------------------------------------------------*
+
+   If _OOHG_ThisEventType == 'WINDOW_RELEASE'
+      MsgOOHGError("Release a window in its own 'on release' procedure or release the main window in any 'on release' procedure is not allowed. Program terminated" )
+   Else
+      ReleaseAllWindows()
+   EndIf
+
+Return ::Super:Release()
+
+*-----------------------------------------------------------------------------*
+METHOD CheckInteractiveClose() CLASS TFormMain
+*-----------------------------------------------------------------------------*
+Local lRet := .T.
+   If _OOHG_InteractiveClose == 3
+      lRet := MsgYesNo( _OOHG_Messages( 1, 1 ), _OOHG_Messages( 1, 2 ) )
+   Else
+      lRet := ::Super:CheckInteractiveClose()
+   EndIf
+Return lRet
+
+
+
+
+*-----------------------------------------------------------------------------*
+CLASS TFormModal FROM TForm
+*-----------------------------------------------------------------------------*
+   DATA Type           INIT "M" READONLY
+   DATA LockedForms    INIT {}
+   DATA oPrevWindow    INIT nil
+
+   METHOD Define
+   METHOD Hide
+   METHOD Show
+   METHOD Activate
+   METHOD Release
+   METHOD OnHideFocusManagement
+ENDCLASS
+
+*-----------------------------------------------------------------------------*
+METHOD Define( FormName, Caption, x, y, w, h, Parent, nosize, nosysmenu, ;
+               nocaption, InitProcedure, ReleaseProcedure, ;
+               MouseDragProcedure, SizeProcedure, ClickProcedure, ;
+               MouseMoveProcedure, aRGB, PaintProcedure, icon, FontName, ;
+               FontSize, GotFocus, LostFocus, virtualheight, VirtualWidth, ;
+               scrollleft, scrollright, scrollup, scrolldown, hscrollbox, ;
+               vscrollbox, helpbutton, cursor, noshow, NoAutoRelease, ;
+               InteractiveCloseProcedure, lRtl, modalsize, mdi, topmost ) CLASS TFormModal
+*-----------------------------------------------------------------------------*
+Local nStyle := WS_POPUP, nStyleEx := 0
+Local oParent
+
+   If ValType( modalsize ) != "L"
+      modalsize := .F.
+   EndIf
+
+   oParent := SearchParent( Parent, .F. )
+   If ValType( oParent ) != "O"
+      * Must have a parent!
+   EndIf
+
+   ::oPrevWindow := oParent
+
+   ::Define2( FormName, Caption, x, y, w, h, oParent:hWnd, helpbutton, ( ! modalsize ), ( ! modalsize ), nosize, nosysmenu, ;
+              nocaption, virtualheight, virtualwidth, hscrollbox, vscrollbox, fontname, fontsize, aRGB, cursor, ;
+              icon, noshow, gotfocus, lostfocus, scrollleft, scrollright, scrollup, scrolldown, nil, ;
+              nil, initprocedure, ReleaseProcedure, SizeProcedure, ClickProcedure, PaintProcedure, ;
+              MouseMoveProcedure, MouseDragProcedure, InteractiveCloseProcedure, NoAutoRelease, nStyle, nStyleEx, ;
+              0, lRtl, mdi, topmost )
+
+Return Self
+
+*-----------------------------------------------------------------------------*
+METHOD Hide() CLASS TFormModal
+*-----------------------------------------------------------------------------*
+   If IsWindowVisible( ::hWnd )
+      If Len( _OOHG_ActiveModal ) == 0 .OR. ATAIL( _OOHG_ActiveModal ):hWnd <> ::hWnd
+         MsgOOHGError( "Non top modal windows can't be hide. Program terminated." )
+/*
+Testing...
+      ElseIf ::ActivateCount[ 1 ] > 1 .OR. ! ::ActivateCount == ATAIL( _OOHG_MessageLoops )
+         MsgOOHGError( "Modal windows can't be hidden when it have sub-windows. Program terminated." )
+*/
+      EndIf
+	EndIf
+Return ::Super:Hide()
+
+*-----------------------------------------------------------------------------*
+METHOD Show() CLASS TFormModal
+*-----------------------------------------------------------------------------*
+   // Find Parent
+
+/*
+   If Len( _OOHG_ActiveModal ) != 0
+      ::oPrevWindow := ATAIL( _OOHG_ActiveModal )
+   Else
+      IF _OOHG_UserWindow != NIL .AND. ascan( _OOHG_aFormhWnd, _OOHG_UserWindow:hWnd ) > 0
+         ::oPrevWindow := _OOHG_UserWindow
+      else
+         ::oPrevWindow := _OOHG_Main
+      endif
+   endif
+*/
+   If ::oPrevWindow == NIL .OR. ASCAN( _OOHG_aFormhWnd, ::oPrevWindow:hWnd ) == 0
+      ::oPrevWindow := GetFormObjectByHandle( GetActiveWindow() )
+      If ::oPrevWindow:hWnd == 0
+         ::oPrevWindow := NIL
+         If _OOHG_UserWindow != NIL .AND. ascan( _OOHG_aFormhWnd, _OOHG_UserWindow:hWnd ) > 0
+            ::oPrevWindow := _OOHG_UserWindow
+         ElseIf Len( _OOHG_ActiveModal ) != 0 .AND. ascan( _OOHG_aFormhWnd, ATAIL( _OOHG_ActiveModal ):hWnd ) > 0
+            ::oPrevWindow := ATAIL( _OOHG_ActiveModal )
+         Else
+            ::oPrevWindow := _OOHG_Main
+         Endif
+      EndIf
+   EndIf
+
+   AEVAL( _OOHG_aFormObjects, { |o| if( ! o:lInternal .AND. o:hWnd != ::hWnd .AND. IsWindowEnabled( o:hWnd ), ( AADD( ::LockedForms, o ), DisableWindow( o:hWnd ) ) , ) } )
+
+   AADD( _OOHG_ActiveModal, Self )
+   EnableWindow( ::hWnd )
+
+   If ! ::SetFocusedSplitChild()
+      ::SetActivationFocus()
+	EndIf
+Return ::Super:Show()
+
+*-----------------------------------------------------------------------------*
+METHOD Activate( lNoStop, oWndLoop ) CLASS TFormModal
+*-----------------------------------------------------------------------------*
+   If _OOHG_Main == nil
+      MsgOOHGError("ACTIVATE WINDOW: Main Window Must be Activated In First ACTIVATE WINDOW Command. Program terminated" )
+	EndIf
+
+   // Checks for non-stop window
+   IF ValType( lNoStop ) != "L"
+      lNoStop := .F.
+   ENDIF
+   IF lNoStop .AND. ValType( oWndLoop ) != "O" .AND. ValType( ::oPrevWindow ) == "O"
+      oWndLoop := ::oPrevWindow
+   ENDIF
+
+   // Since this window disables all other windows, it must be visible!
+   ::lVisible := .T.
+
+Return ::Super:Activate( lNoStop, oWndLoop )
+
+*-----------------------------------------------------------------------------*
+METHOD Release() CLASS TFormModal
+*-----------------------------------------------------------------------------*
+   If ( Len( _OOHG_ActiveModal ) == 0 .OR. ATAIL( _OOHG_ActiveModal ):hWnd <> ::hWnd ) .AND. IsWindowVisible( ::hWnd )
+      MsgOOHGError( "Non top modal windows can't be released. Program terminated *" + ::Name + "*" )
+	EndIf
+Return ::Super:Release()
+
+*-----------------------------------------------------------------------------*
+METHOD OnHideFocusManagement() CLASS TFormModal
+*-----------------------------------------------------------------------------*
+
+   // Re-enables locked forms
+   AEVAL( ::LockedForms, { |o| IF( o:hWnd != -1, EnableWindow( o:hWnd ), ) } )
+   ::LockedForms := {}
+
+   If ::oPrevWindow == nil .OR. ! ::oPrevWindow:Active
+      // _OOHG_Main:SetFocus()
+	Else
+      ::oPrevWindow:SetFocus()
+	EndIf
+
+Return ::Super:OnHideFocusManagement()
+
+
+
+
+
+
+*-----------------------------------------------------------------------------*
+CLASS TFormInternal FROM TForm
+*-----------------------------------------------------------------------------*
+ENDCLASS
+
+*------------------------------------------------------------------------------*
+FUNCTION DefineWindow( FormName, Caption, x, y, w, h, nominimize, nomaximize, nosize, ;
+                       nosysmenu, nocaption, initprocedure, ReleaseProcedure, ;
+                       MouseDragProcedure, SizeProcedure, ClickProcedure, ;
+                       MouseMoveProcedure, aRGB, PaintProcedure, noshow, topmost, ;
+                       icon, fontname, fontsize, NotifyIconName, NotifyIconTooltip, ;
+                       NotifyIconLeftClick, GotFocus, LostFocus, Virtualheight, ;
+                       VirtualWidth, scrollleft, scrollright, scrollup, scrolldown, ;
+                       hscrollbox, vscrollbox, helpbutton, maximizeprocedure, ;
+                       minimizeprocedure, cursor, NoAutoRelease, oParent, ;
+                       InteractiveCloseProcedure, Focused, Break, GripperText, lRtl, ;
+                       main, splitchild, child, modal, modalsize, mdi, internal, ;
+                       mdichild, mdiclient )
+*------------------------------------------------------------------------------*
+Local aError := {}, hParent, nWindowType
+Local nStyle := 0, nStyleEx := 0
+Local Self
+
+   If ValType( main ) != "L"
+      main := .F.
+   ElseIf main
+      AADD( aError, "MAIN" )
+   EndIf
+   If ValType( splitchild ) != "L"
+      splitchild := .F.
+   ElseIf splitchild
+      AADD( aError, "SPLITCHILD" )
+   EndIf
+   If ValType( child ) != "L"
+      child := .F.
+   ElseIf child
+      AADD( aError, "CHILD" )
+   EndIf
+   If ValType( modal ) != "L"
+      modal := .F.
+   ElseIf modal
+      AADD( aError, "MODAL" )
+   EndIf
+   If ValType( modalsize ) != "L"
+      modalsize := .F.
+   ElseIf modalsize
+      AADD( aError, "MODALSIZE" )
+   EndIf
+   If ValType( mdiclient ) != "L"
+      mdiclient := .F.
+   ElseIf mdiclient
+      AADD( aError, "MDICLIENT" )
+   EndIf
+   If ValType( mdichild ) != "L"
+      mdichild := .F.
+   ElseIf mdichild
+      AADD( aError, "MDICHILD" )
+   EndIf
+   If ValType( internal ) != "L"
+      internal := .F.
+   ElseIf internal
+      AADD( aError, "INTERNAL" )
+   EndIf
+
+   if Len( aError ) > 1
+      MsgOOHGError( "Window: " + aError[ 1 ] + " and " + aError[ 2 ] + " clauses can't be used Simultaneously. Program Terminated." )
+   endif
+
+   nWindowType := 0
+
+   If ValType( oParent ) $ "CM" .AND. ! Empty( oParent )
+      oParent := GetFormObject( oParent )
+      If oParent:hWnd <= 0
+         MsgOOHGError( "Specified parent window is not defined. Program Terminated." )
+      Endif
+   EndIf
+
+   If ValType( oParent ) != "O"
+      If LEN( _OOHG_ActiveForm ) > 0 .AND. ( splitchild .OR. mdichild .OR. internal )
+         oParent := ATail( _OOHG_ActiveForm )
+      EndIf
+      If ValType( oParent ) != "O"
+         oParent := GetFormObjectByHandle( GetActiveWindow() )
+         If oParent:hWnd == 0
+            If _OOHG_UserWindow != NIL .AND. ascan( _OOHG_aFormhWnd, _OOHG_UserWindow:hWnd ) > 0
+               oParent := _OOHG_UserWindow
+            ElseIf Len( _OOHG_ActiveModal ) > 0 .AND. ascan( _OOHG_aFormhWnd, ATAIL( _OOHG_ActiveModal ):hWnd ) > 0
+               oParent := ATAIL( _OOHG_ActiveModal )
+            Else
+               oParent := _OOHG_Main
+            Endif
+         Endif
+      EndIf
+   EndIf
+
+   Self := TForm()
+
+   if main
+      Return TFormMain():Define( FormName, Caption, x, y, w, h, nominimize, nomaximize, nosize, ;
+               nosysmenu, nocaption, initprocedure, ReleaseProcedure, ;
+               MouseDragProcedure, SizeProcedure, ClickProcedure, ;
+               MouseMoveProcedure, aRGB, PaintProcedure, noshow, topmost, ;
+               icon, fontname, fontsize, NotifyIconName, NotifyIconTooltip, ;
+               NotifyIconLeftClick, GotFocus, LostFocus, virtualheight, ;
+               VirtualWidth, scrollleft, scrollright, scrollup, scrolldown, ;
+               hscrollbox, vscrollbox, helpbutton, maximizeprocedure, ;
+               minimizeprocedure, cursor, InteractiveCloseProcedure, lRtl, mdi )
+   endif
+
+   IF Len( aError ) == 0
+      hParent := 0
+      nStyle   += WS_POPUP
+      ::Type := "S"
+   endif
+
+   If _OOHG_Main == nil
+      MsgOOHGError( "Main Window Not Defined. Program Terminated." )
+   Endif
+
+   if splitchild
+*      [ GRIPPERTEXT <grippertext> ] ;
+*      [ <break: BREAK> ] ;
+*      [ <focused: FOCUSED> ] ;
+
+      nStyleEx += WS_EX_STATICEDGE + WS_EX_TOOLWINDOW
+
+      If oParent:ReBarHandle == 0
+         MsgOOHGError( "SplitChild Windows Can be Defined Only Inside SplitBox. Program terminated." )
+      EndIf
+
+      if _OOHG_SplitForceBreak .AND. ! _OOHG_ActiveSplitBoxInverted
+         Break := .T.
+      endif
+      _OOHG_SplitForceBreak := .F.
+
+      helpbutton := nominimize := nomaximize := nosize := nosysmenu := noshow := .F.
+
+      ::Type := "X"
+      ::Focused := Focused
+      ::Parent := oParent
+      ::lInternal := .T.
+
+      nWindowType := 1
+   endif
+
+   if child
+      ::Type := "C"
+      nStyle   += WS_POPUP
+      hParent := oParent:hWnd
+   endif
+
+   if modal
+      Return TFormModal():Define( FormName, Caption, x, y, w, h, oParent, nosize, nosysmenu, ;
+               nocaption, InitProcedure, ReleaseProcedure, ;
+               MouseDragProcedure, SizeProcedure, ClickProcedure, ;
+               MouseMoveProcedure, aRGB, PaintProcedure, icon, FontName, ;
+               FontSize, GotFocus, LostFocus, virtualheight, VirtualWidth, ;
+               scrollleft, scrollright, scrollup, scrolldown, hscrollbox, ;
+               vscrollbox, helpbutton, cursor, noshow, NoAutoRelease, ;
+               InteractiveCloseProcedure, lRtl, .F., mdi, topmost )
+   endif
+
+   if modalsize
+      Return TFormModal():Define( FormName, Caption, x, y, w, h, oParent, nosize, nosysmenu, ;
+               nocaption, InitProcedure, ReleaseProcedure, ;
+               MouseDragProcedure, SizeProcedure, ClickProcedure, ;
+               MouseMoveProcedure, aRGB, PaintProcedure, icon, FontName, ;
+               FontSize, GotFocus, LostFocus, virtualheight, VirtualWidth, ;
+               scrollleft, scrollright, scrollup, scrolldown, hscrollbox, ;
+               vscrollbox, helpbutton, cursor, noshow, NoAutoRelease, ;
+               InteractiveCloseProcedure, lRtl, .F., mdi, topmost )
+   endif
+
+   if mdiclient
+      ::Type := "D"
+      ::Focused := Focused
+      ::Parent := oParent
+      ::lInternal := .T.
+      hParent := oParent:hWnd
+
+* ventana MDI FRAME
+*      nStyle   += WS_CLIPSIBLINGS + WS_CLIPCHILDREN // + WS_THICKFRAME
+      nStyle   += WS_CHILD + WS_CLIPCHILDREN
+
+      helpbutton := .f.
+      nominimize := nomaximize := nosize := nosysmenu := nocaption := .t.
+      nWindowType := 2
+   endif
+
+   if mdichild
+      ::Type := "L"
+      ::Focused := Focused
+      ::Parent := oParent
+      ::lInternal := .T.
+      hParent := oParent:hWnd
+
+      nStyle   += WS_CHILD
+      nStyleEx += WS_EX_MDICHILD
+
+      nWindowType := 3
+   endif
+
+   if internal
+      ::Type := "I"
+      ::Focused := Focused
+      ::Parent := oParent
+      ::lInternal := .T.
+      hParent := oParent:hWnd
+
+      nStyle   += WS_CHILD
+
+      // Removes borders
+      helpbutton := .f.
+      nominimize := nomaximize := nosize := nosysmenu := nocaption := .t.
+   endif
+
+   nStyleEx += if( ValType( topmost ) == "L" .AND. topmost, WS_EX_TOPMOST, 0 )
+
+   ::Define2( FormName, Caption, x, y, w, h, hParent, helpbutton, nominimize, nomaximize, nosize, nosysmenu, ;
+              nocaption, virtualheight, virtualwidth, hscrollbox, vscrollbox, fontname, fontsize, aRGB, cursor, ;
+              icon, noshow, gotfocus, lostfocus, scrollleft, scrollright, scrollup, scrolldown, maximizeprocedure, ;
+              minimizeprocedure, initprocedure, ReleaseProcedure, SizeProcedure, ClickProcedure, PaintProcedure, ;
+              MouseMoveProcedure, MouseDragProcedure, InteractiveCloseProcedure, NoAutoRelease, nStyle, nStyleEx, ;
+              nWindowType, lRtl, mdi, topmost )
+
+   if ! valtype( NotifyIconName ) $ "CM"
+      NotifyIconName := ""
+   Else
+      ShowNotifyIcon( ::hWnd, .T. , LoadTrayIcon(GETINSTANCE(), NotifyIconName ), NotifyIconTooltip )
+      ::NotifyIconName := NotifyIconName
+      ::NotifyIconToolTip := NotifyIconToolTip
+      ::NotifyIconLeftClick := NotifyIconLeftClick
+   endif
+
+   If splitchild
+      AddSplitBoxItem( ::hWnd, oParent:ReBarHandle, w , break , grippertext ,  ,  , _OOHG_ActiveSplitBoxInverted )
+   ElseIf mdiclient
+      oParent:hWndClient := ::hWnd
+   EndIf
+
+Return Self
+
+*-----------------------------------------------------------------------------*
 Procedure _KillAllKeys()
 *-----------------------------------------------------------------------------*
 Local I, hWnd
@@ -2448,30 +2825,6 @@ Local Self := TForm()
              minimizeprocedure, cursor, NoAutoRelease, nil, ;
              InteractiveCloseProcedure, .F., nil, nil, lRtl, ;
              main, .F., child, .F., .F., .F., .F., ;
-             .F., .F. )
-
-Return Self
-
-*-----------------------------------------------------------------------------*
-Function _DefineModalWindow( FormName, Caption, x, y, w, h, Parent ,nosize ,nosysmenu, nocaption , StatusBar , StatusText ,InitProcedure, ReleaseProcedure , MouseDragProcedure , SizeProcedure , ClickProcedure , MouseMoveProcedure, aRGB , PaintProcedure , icon , FontName , FontSize , GotFocus , LostFocus , virtualheight , VirtualWidth , scrollleft , scrollright , scrollup , scrolldown  , hscrollbox , vscrollbox , helpbutton , cursor , noshow  , NoAutoRelease  , InteractiveCloseProcedure, lRtl )
-*-----------------------------------------------------------------------------*
-Local Self := TForm()
-
-   // Unused parameters
-   Empty( StatusBar )
-   Empty( StatusText )
-
-   ::Define( FormName, Caption, x, y, w, h, .T., .T., nosize, ;
-             nosysmenu, nocaption, initprocedure, ReleaseProcedure, ;
-             MouseDragProcedure, SizeProcedure, ClickProcedure, ;
-             MouseMoveProcedure, aRGB, PaintProcedure, noshow, .F., ;
-             icon, fontname, fontsize, nil, nil, ;
-             nil, GotFocus, LostFocus, Virtualheight, ;
-             VirtualWidth, scrollleft, scrollright, scrollup, scrolldown, ;
-             hscrollbox, vscrollbox, helpbutton, nil, ;
-             nil, cursor, NoAutoRelease, Parent, ;
-             InteractiveCloseProcedure, nil, nil, nil, lRtl, ;
-             .F., .F., .F., .T., .F., .F., .F., ;
              .F., .F. )
 
 Return Self
@@ -2675,6 +3028,10 @@ Function _ActivateWindow( aForm, lNoWait )
 *-----------------------------------------------------------------------------*
 Local z, aForm2, oWndActive, oWnd, lModal
 
+   If _OOHG_Main == nil
+      MsgOOHGError( "MAIN WINDOW not defined. Program Terminated." )
+   EndIf
+
 * Testing... it allows to create non-modal windows when modal windows are active.
 * The problem is, what should do when modal window is ... disabled? hidden? WM_CLOSE? WM_DESTROY?
 /*
@@ -2693,14 +3050,13 @@ Local z, aForm2, oWndActive, oWnd, lModal
    oWndActive := IF( lNoWait, _OOHG_Main, GetFormObject( aForm2[ 1 ] ) )
 
    // Looks for MAIN window
-   z := ASCAN( aForm2, { |c| GetFormObject( c ):Type == "A" } )
+   z := ASCAN( aForm2, { |c| GetFormObject( c ):hWnd == _OOHG_Main:hWnd } )
    IF z != 0
       AADD( aForm2, nil )
       AINS( aForm2, 1 )
       aForm2[ 1 ] := aForm2[ z + 1 ]
       _OOHG_DeleteArrayItem( aForm2, z + 1 )
       IF lNoWait
-         * MsgOOHGError( "NOWAIT option can't be used in MAIN window. Program Terminated" )
          oWndActive := GetFormObject( aForm2[ 1 ] )
       ENDIF
    ENDIF
@@ -2731,6 +3087,10 @@ Local i
 Local aForm := {}, oWnd
 Local MainName := ''
 
+   If _OOHG_Main == nil
+      MsgOOHGError( "MAIN WINDOW not defined. Program Terminated." )
+   EndIf
+
 	* If Already Active Windows Abort Command
 
    If ascan( _OOHG_aFormObjects, { |o| o:Active .AND. ! o:lInternal } ) > 0
@@ -2742,7 +3102,7 @@ Local MainName := ''
 
    For i := 1 To LEN( _OOHG_aFormObjects )
       oWnd := _OOHG_aFormObjects[ i ]
-      If oWnd:Type == "A"
+      If oWnd:hWnd == _OOHG_Main:hWnd
          oWnd:lVisible := .T.
          oWnd:AutoRelease := .T.
          MainName := oWnd:Name
