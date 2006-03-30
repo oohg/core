@@ -1,5 +1,5 @@
 /*
- * $Id: h_toolbar.prg,v 1.13 2006-02-11 06:19:33 guerra000 Exp $
+ * $Id: h_toolbar.prg,v 1.14 2006-03-30 04:54:37 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -99,7 +99,6 @@ STATIC _OOHG_ActiveToolBar := NIL    // Active toolbar
 
 CLASS TToolBar FROM TControl
    DATA Type      INIT "TOOLBAR" READONLY
-   DATA Break     INIT .F.
 
    METHOD Define
    METHOD Events_Size
@@ -111,8 +110,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, caption, ProcedureName, ;
                fontname, fontsize, tooltip, flat, bottom, righttext, break, ;
                bold, italic, underline, strikeout, border, lRtl ) CLASS TToolBar
 *-----------------------------------------------------------------------------*
-Local ControlHandle
-Local id
+Local ControlHandle, id, lSplitActive
 
 	if valtype (caption) == 'U'
 		caption := ""
@@ -126,10 +124,6 @@ Local id
 		h := 0
 	EndIf
 
-	If valtype (break) == 'U'
-      break := iif(_OOHG_ActiveSplitBox , .f. , .t. )
-   Endif
-
    ::SetForm( ControlName, ParentForm, FontName, FontSize,,,, lRtl )
 
    If ::Parent:Type == "X"
@@ -138,50 +132,41 @@ Local id
 
    _OOHG_ActiveToolBar := Self
 
-   ::Break := break
-
 	Id := _GetId()
 
-   if _OOHG_ActiveSplitBox == .T.
-      _OOHG_SplitForceBreak := .T.
-	EndIf
+   lSplitActive := ::SetSplitBoxInfo( Break, caption, w,, .T. )
+   ControlHandle := InitToolBar( ::ContainerhWnd, Caption, id, 0, 0, w, h, "", 0, flat, bottom, righttext, lSplitActive, border, ::lRtl )
 
-   ControlHandle := InitToolBar( ::Parent:hWnd, Caption, id, 0, 0 ,w ,h, "" , 0 , flat , bottom , righttext , _OOHG_ActiveSplitBox , border , ::lRtl )
-
-/*
-Default nImageWidth	To -1
-Default nImageHeight	To -1
-
-	* Create Control
-   aTemp := InitToolBar ( nParentWindowHandle , nId , w, h , lBorder , lFlat , lBottom , lRightText , _HMG_ActiveSplitBox , nImageWidth , nImageHeight , lStrictWidth )
-
-	nControlHandle := atemp[1]
-*/
    ::Register( ControlHandle, ControlName, , , ToolTip, Id )
    ::SetFont( , , bold, italic, underline, strikeout )
    ::SizePos( y, x, w, h )
 
    ::OnClick := ProcedureName
-   ::Caption := Caption
+
+   ::ContainerhWndValue := ::hWnd
 
 Return Self
 
 *-----------------------------------------------------------------------------*
 Function _EndToolBar()
 *-----------------------------------------------------------------------------*
-Local wBtn, hBtn, c  , ParentForm
+Local w, MinWidth, MinHeight
 Local Self
 
    Self := _OOHG_ActiveToolBar
-   ParentForm := ::Parent:Name
 
-   if _OOHG_ActiveSplitBox == .T.
-      _AddToolBarToSpliBox ( ::Name , ::Break , ::Caption )
-	else
-      wBtn := _GetControlWidth (::Name, ParentForm )
-      hBtn := _GetControlHeight (::Name, ParentForm )
-      c    := GetControlHandle (::Name , ParentForm )
-		MaxTextBtnToolBar( c, wBtn, hBtn)
+   MaxTextBtnToolBar( ::hWnd, ::Width, ::Height )
+
+   If ::SetSplitBoxInfo()
+      w := GetSizeToolBar( ::hWnd )
+      MinWidth  := HiWord( w )
+      MinHeight := LoWord( w )
+
+      w := GetWindowWidth( ::hWnd )
+
+      SetSplitBoxItem ( ::hWnd, ::Container:hWnd, w,,, MinWidth, MinHeight, ::Container:lInverted )
+
+      ::SetSplitBoxInfo( .T. )  // Force break for next control...
 	EndIf
 
    _OOHG_ActiveToolBar := nil
@@ -203,28 +188,18 @@ Local nNotify := GetNotifyCode( lParam )
 Local ws, x, aPos
 
    If nNotify == TBN_DROPDOWN
-
       ws := GetButtonPos( lParam )
-
-      x  := Ascan ( ::aControls, { |o| o:Id == ws } )
-
+      x  := Ascan( ::aControls, { |o| o:Id == ws } )
       IF x  > 0
-
          aPos:= {0,0,0,0}
-
          GetWindowRect( ::hWnd, aPos )
-
          ws := GetButtonBarRect( ::hWnd, ::aControls[ x ]:Position - 1 )
-
          TrackPopupMenu ( ::aControls[ x ]:ContextMenu:hWnd , aPos[1]+LoWord(ws) ,aPos[2]+HiWord(ws)+(aPos[4]-aPos[2]-HiWord(ws))/2 , ::hWnd )
-
       ENDIF
-
       Return nil
 
    ElseIf nNotify == TTN_NEEDTEXT
 
-*msginfo("si")
       ws := GetButtonPos( lParam )
 
       x  := Ascan ( ::aControls, { |o| o:Id == ws } )
@@ -241,6 +216,20 @@ Local ws, x, aPos
 
       Return nil
 
+/*
+   If nNotify == TBN_ENDDRAG  // -702
+      ws := GetButtonPos( lParam )
+      x  := Ascan( ::aControls, { |o| o:Id == ws } )
+      IF x > 0
+
+         aPos:= {0,0,0,0}
+         GetWindowRect( ::hWnd, aPos )
+         ws := GetButtonBarRect( ::hWnd, ::aControls[ x ]:Position - 1 )
+         TrackPopupMenu ( ::aControls[ x ]:ContextMenu:hWnd , aPos[1]+LoWord(ws) ,aPos[2]+HiWord(ws)+(aPos[4]-aPos[2]-HiWord(ws))/2 , ::hWnd )
+      ENDIF
+      Return nil
+*/
+
    EndIf
 
 Return ::Super:Events_Notify( wParam, lParam )
@@ -252,7 +241,6 @@ Return ::Super:Events_Notify( wParam, lParam )
 CLASS TToolButton FROM TControl
    DATA Type      INIT "TOOLBUTTON" READONLY
    DATA Position  INIT 0
-   DATA ContextMenu  INIT 0
 
    METHOD Define
    METHOD Value      SETGET
@@ -268,8 +256,7 @@ METHOD Define( ControlName, x, y, Caption, ProcedureName, w, h, image, ;
 *-----------------------------------------------------------------------------*
 Local i, nKey, ControlHandle, id, nPos
 
-* Unused Parameters
-Flat := NIL
+Empty( FLAT )
 
    ::SetForm( ControlName, _OOHG_ActiveToolBar )
 
@@ -303,7 +290,7 @@ Flat := NIL
 		caption := ""
 	endif
 
-   ControlHandle := InitToolButton ( ::Container:hWnd, Caption, id , 0, 0, 0, 0, image , 0 , separator , autosize , check , group , dropdown , WHOLEDROPDOWN )
+   ControlHandle := InitToolButton( ::ContainerhWnd, Caption, id , 0, 0, 0, 0, image , 0 , separator , autosize , check , group , dropdown , WHOLEDROPDOWN )
 
 /*
    if valtype(image) $ "CM"
@@ -313,7 +300,7 @@ Flat := NIL
    EndIf
 */
 
-   nPos := GetButtonBarCount ( ::Container:hWnd ) - if(separator,1,0)
+   nPos := GetButtonBarCount( ::ContainerhWnd ) - if( separator, 1, 0 )
 
    ::Register( ControlHandle, ControlName, , , ToolTip, Id )
    ::SizePos( y, x, w, h )
@@ -349,37 +336,12 @@ Flat := NIL
 Return Self
 
 *-----------------------------------------------------------------------------*
-Function _AddToolBarToSpliBox ( ControlName , break , Caption )
-*-----------------------------------------------------------------------------*
-Local c, w , wbtn , hbtn , MinWidth , MinHeight, oWnd
-
-   oWnd := GetFormObject( _OOHG_ActiveSplitBoxParentFormName )
-
-   c = GetControlHandle (ControlName , _OOHG_ActiveSplitBoxParentFormName )
-
-   wBtn := _GetControlWidth (ControlName,ATail(_OOHG_ActiveForm):Name)
-   hBtn := _GetControlHeight (ControlName,ATail(_OOHG_ActiveForm):Name)
-
-	MaxTextBtnToolBar( c, wBtn, hBtn)
-
-	w := GetSizeToolBar(c)
-
-	MinWidth  := HiWord(w)
-	MinHeight := LoWord(w)
-
-	w := GetWindowWidth (c)
-
-   AddSplitBoxItem ( c , oWnd:ReBarHandle, w , break , Caption, MinWidth, MinHeight , _OOHG_ActiveSplitBoxInverted )
-
-Return Nil
-
-*-----------------------------------------------------------------------------*
 METHOD Value( lValue ) CLASS TToolButton
 *-----------------------------------------------------------------------------*
    IF VALTYPE( lValue ) == "L"
-      CheckButtonBar( ::Container:hWnd, ::Position - 1 , lValue )
+      CheckButtonBar( ::ContainerhWnd, ::Position - 1 , lValue )
    ENDIF
-RETURN IsButtonBarChecked( ::Container:hWnd, ::Position - 1 )
+RETURN IsButtonBarChecked( ::ContainerhWnd, ::Position - 1 )
 
 *-----------------------------------------------------------------------------*
 METHOD Enabled( lEnabled ) CLASS TToolButton
@@ -387,9 +349,9 @@ METHOD Enabled( lEnabled ) CLASS TToolButton
    IF VALTYPE( lEnabled ) == "L"
       ::Super:Enabled := lEnabled
       IF lEnabled
-         cEnableToolbarButton( ::Container:hWnd, ::Id )
+         cEnableToolbarButton( ::ContainerhWnd, ::Id )
       ELSE
-         cDisableToolbarButton( ::Container:hWnd, ::Id )
+         cDisableToolbarButton( ::ContainerhWnd, ::Id )
       ENDIF
    ENDIF
 RETURN ::Super:Enabled

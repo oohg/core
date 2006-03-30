@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.48 2006-03-27 04:24:09 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.49 2006-03-30 04:54:37 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1493,7 +1493,7 @@ CLASS TControl FROM TWindow
    METHOD ContainerRow        BLOCK { |Self| IF( ::Container != NIL, ::Container:ContainerRow + ::Container:RowMargin, ::Parent:RowMargin ) + ::Row }
    METHOD ContainerCol        BLOCK { |Self| IF( ::Container != NIL, ::Container:ContainerCol + ::Container:ColMargin, ::Parent:ColMargin ) + ::Col }
    METHOD ContainerVisible    BLOCK { |Self| ::lVisible .AND. IF( ::Container != NIL, ::Container:ContainerVisible, .T. ) }
-   METHOD ContainerhWnd       BLOCK { |Self| IF( ::Container != NIL, ::Container:ContainerhWnd, ::Parent:hWnd ) }
+   METHOD ContainerhWnd       BLOCK { |Self| IF( ::Container == NIL, ::Parent:hWnd, if( Empty( ::Container:ContainerhWndValue ), ::Container:ContainerhWnd, ::Container:ContainerhWndValue ) ) }
    METHOD SetFont
    METHOD FontName            SETGET
    METHOD FontSize            SETGET
@@ -1589,7 +1589,7 @@ LOCAL nPos
 
    // If PARENTFORM is a control
    If ValType( ParentForm ) == "O"
-      If ParentForm:ClassName == "TFORM"
+      If ParentForm:ClassName = "TFORM"
          ::Parent := ParentForm
          Return ::SetInfo( ControlName, FontName, FontSize, FontColor, BkColor, lEditBox, lRtl )
       Else
@@ -1606,13 +1606,13 @@ LOCAL nPos
          MsgOOHGError( "Window: "+ ParentForm + " is not defined. Program terminated." )
       Endif
       ::Parent := GetFormObject( ParentForm )
+   elseif LEN( _OOHG_ActiveForm ) > 0
+      // Active form
+      ::Parent := ATAIL( _OOHG_ActiveForm )
    elseif len( _OOHG_ActiveFrame ) > 0
       // Active frame
       ::Container := ATAIL( _OOHG_ActiveFrame )
       ::Parent := ::Container:Parent
-   elseif LEN( _OOHG_ActiveForm ) > 0
-      // Active form
-      ::Parent := ATAIL( _OOHG_ActiveForm )
    else
       MsgOOHGError( "Window: No window name specified. Program terminated.")
    endif
@@ -1620,7 +1620,7 @@ LOCAL nPos
    // Checks for an open "control container" structure in the specified parent form
    IF Empty( ::Container )
       nPos := 0
-      ASCAN( _OOHG_ActiveFrame, { |o,i| IF( o:Parent:hWnd == ::Parent:hWnd, nPos := i, ) } )
+      AEVAL( _OOHG_ActiveFrame, { |o,i| IF( o:Parent:hWnd == ::Parent:hWnd, nPos := i, ) } )
       IF nPos > 0
          ::Container := _OOHG_ActiveFrame[ nPos ]
       ENDIF
@@ -1762,7 +1762,7 @@ EMPTY(cName)
 
    AADD( _OOHG_aControlhWnd,    hWnd )
    AADD( _OOHG_aControlObjects, Self )
-   AADD( _OOHG_aControlIds,     { ::Id, ::ContainerhWnd } )
+   AADD( _OOHG_aControlIds,     ::Id ) // { ::Id, ::ContainerhWnd } )
    AADD( _OOHG_aControlNames,   UPPER( ::Parent:Name + CHR( 255 ) + ::Name ) )
 
    mVar := "_" + ::Parent:Name + "_" + ::Name

@@ -1,5 +1,5 @@
 /*
- * $Id: h_richeditbox.prg,v 1.10 2006-03-16 03:16:17 guerra000 Exp $
+ * $Id: h_richeditbox.prg,v 1.11 2006-03-30 04:54:37 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -129,22 +129,8 @@ Local ControlHandle
       Value := EVAL( ::Block )
 	EndIf
 
-	if valtype(x) == "U" .or. valtype(y) == "U"
-
-      if _OOHG_SplitForceBreak
-         Break := .T.
-      endif
-      _OOHG_SplitForceBreak := .F.
-
-      ControlHandle := InitRichEditBox ( ::Parent:ReBarHandle, 0, x, y, w, h, '', 0 , maxlenght , readonly, invisible, notabstop, ::lRtl )
-
-      AddSplitBoxItem ( Controlhandle , ::Parent:ReBarHandle, w , break , , , , _OOHG_ActiveSplitBoxInverted )
-
-	Else
-
-      ControlHandle := InitRichEditBox ( ::ContainerhWnd, 0, x, y, w, h, '', 0 , maxlenght , readonly, invisible, notabstop, ::lRtl )
-
-	endif
+   ::SetSplitBoxInfo( Break, )
+   ControlHandle := InitRichEditBox( ::ContainerhWnd, 0, x, y, w, h, '', 0 , maxlenght , readonly, invisible, notabstop, ::lRtl )
 
    ::Register( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )

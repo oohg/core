@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.37 2006-03-16 03:16:17 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.38 2006-03-30 04:54:37 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -230,25 +230,8 @@ Local ControlHandle, aImageList
 	endif
    aEval( aPicture, { |x,i| aPicture[ i ] := iif( ( ValType( x ) $ "CM" .AND. ! Empty( x ) ) .OR. ValType( x ) == "L", x, nil ) } )
 
-   if valtype( x ) != "N" .OR. valtype( y ) != "N"
-
-      if _OOHG_SplitForceBreak
-         Break := .T.
-      endif
-      _OOHG_SplitForceBreak := .F.
-
-         ControlHandle := InitListView ( ::Parent:ReBarHandle, 0, 0, 0, w, h ,'',0,iif( nogrid, 0, 1 ) , ownerdata , itemcount , nStyle, ::lRtl )
-
-         x := GetWindowCol( Controlhandle )
-         y := GetWindowRow( Controlhandle )
-
-         AddSplitBoxItem( Controlhandle, ::Parent:ReBarHandle, w , break , , , , _OOHG_ActiveSplitBoxInverted )
-
-	Else
-
-      ControlHandle := InitListView ( ::ContainerhWnd, 0, x, y, w, h ,'',0, iif( nogrid, 0, 1 ) , ownerdata  , itemcount  , nStyle, ::lRtl )
-
-	endif
+   ::SetSplitBoxInfo( Break, )
+   ControlHandle := InitListView( ::ContainerhWnd, 0, x, y, w, h ,'',0, iif( nogrid, 0, 1 ) , ownerdata  , itemcount  , nStyle, ::lRtl )
 
    if valtype( aImage ) == "A"
       aImageList := ImageList_Init( aImage, CLR_NONE, LR_LOADTRANSPARENT )

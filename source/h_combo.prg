@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.13 2006-02-11 06:19:33 guerra000 Exp $
+ * $Id: h_combo.prg,v 1.14 2006-03-30 04:54:37 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -165,22 +165,8 @@ Local ControlHandle , rcount := 0 , BackRec , cset := 0 , WorkArea , cField
 		value := 0
 	endif
 
-	if valtype(x) == "U" .or. valtype(y) == "U"
-
-      if _OOHG_SplitForceBreak
-         Break := .T.
-      endif
-      _OOHG_SplitForceBreak := .F.
-
-      ControlHandle := InitComboBox ( ::Parent:ReBarHandle, 0, x, y, w, '', 0 , h, invisible, notabstop, sort, displaychange , _OOHG_IsXP , ::lRtl )
-
-      AddSplitBoxItem ( Controlhandle , ::Parent:ReBarHandle, w , break , GripperText , w , , _OOHG_ActiveSplitBoxInverted )
-
-	else
-
-      ControlHandle := InitComboBox ( ::ContainerhWnd, 0, x, y, w, '', 0 , h, invisible, notabstop, sort , displaychange , _OOHG_IsXP , ::lRtl )
-
-	endif
+   ::SetSplitBoxInfo( Break, GripperText, w )
+   ControlHandle := InitComboBox( ::ContainerhWnd, 0, x, y, w, '', 0, h, invisible, notabstop, sort, displaychange, _OOHG_IsXP, ::lRtl )
 
 	if valtype(uEnter) == "U"
 		uEnter := ""

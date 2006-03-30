@@ -1,5 +1,5 @@
 /*
- * $Id: i_var.ch,v 1.11 2006-03-26 21:32:25 guerra000 Exp $
+ * $Id: i_var.ch,v 1.12 2006-03-30 04:54:37 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -96,10 +96,7 @@
 
 MEMVAR _OOHG_AllVars
 
-#xtranslate  _OOHG_SplitForceBreak     => _OOHG_AllVars \[   1 \]
-#xtranslate  _OOHG_ActiveSplitBox      => _OOHG_AllVars \[   2 \]
-#xtranslate  _OOHG_ActiveSplitBoxParentFormName => _OOHG_AllVars \[   3 \]
-#xtranslate  _OOHG_Main                => _OOHG_AllVars \[   4 \]
+#xtranslate  _OOHG_Main                => _OOHG_AllVars \[   1 \]
 #xtranslate  _OOHG_MouseRow            => _OOHG_AllVars \[   5 \]
 #xtranslate  _OOHG_MouseCol            => _OOHG_AllVars \[   6 \]
 #xtranslate  _OOHG_ActiveForm          => _OOHG_AllVars \[   7 \]
@@ -124,8 +121,6 @@ MEMVAR _OOHG_AllVars
 #xtranslate  _OOHG_ThisItemCellWidth   => _OOHG_AllVars \[  21 \]
 #xtranslate  _OOHG_ThisItemCellHeight  => _OOHG_AllVars \[  22 \]
 
-#xtranslate  _OOHG_ActiveSplitBoxInverted => _OOHG_AllVars \[  23 \]
-
 #xtranslate  _OOHG_ExtendedNavigation  => _OOHG_AllVars \[  24 \]
 #xtranslate  _OOHG_ThisEventType       => _OOHG_AllVars \[  25 \]
 
@@ -136,4 +131,3 @@ MEMVAR _OOHG_AllVars
 #xtranslate  _OOHG_IsXP                => ( "XP" $ WindowsVersion()\[ 1 \] )
 
 #xtranslate  _OOHG_ThisItemCellValue   => _OOHG_AllVars \[  29 \]
-

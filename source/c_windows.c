@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.39 2006-03-28 04:04:25 guerra000 Exp $
+ * $Id: c_windows.c,v 1.40 2006-03-30 04:54:37 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -963,70 +963,6 @@ static void ChangeNotifyIcon(HWND hWnd, HICON hIcon, LPSTR szText)
   Shell_NotifyIcon(NIM_MODIFY,&nid);
 }
 
-HB_FUNC( INITSPLITBOX )
-{
-   HWND hwndOwner = (HWND) hb_parnl ( 1 ) ;
-   REBARINFO     rbi;
-   HWND   hwndRB;
-   INITCOMMONCONTROLSEX icex;
-   int ExStyle = 0;
-   int Style;
-
-   if ( hb_parl( 4 ) )
-   {
-      ExStyle |= WS_EX_LAYOUTRTL | WS_EX_RIGHTSCROLLBAR | WS_EX_RTLREADING;
-   }
-
-   Style = WS_CHILD |
-           WS_VISIBLE |
-           WS_CLIPSIBLINGS |
-           WS_CLIPCHILDREN |
-           RBS_BANDBORDERS |
-           RBS_VARHEIGHT |
-           RBS_FIXEDORDER;
-
-   if ( hb_parl (2) )
-   {
-      Style |= CCS_BOTTOM;
-   }
-
-   if ( hb_parl (3) )
-   {
-      Style |= CCS_VERT;
-   }
-
-   icex.dwSize = sizeof( INITCOMMONCONTROLSEX );
-   icex.dwICC  = ICC_COOL_CLASSES | ICC_BAR_CLASSES;
-   InitCommonControlsEx( &icex );
-
-   hwndRB = CreateWindowEx( ExStyle | WS_EX_TOOLWINDOW | WS_EX_DLGMODALFRAME,
-                            REBARCLASSNAME,
-                            NULL,
-                            Style,
-                            0,0,0,0,
-                            hwndOwner,
-                            NULL,
-                            GetModuleHandle( NULL ),
-                            NULL );
-
-   // Initialize and send the REBARINFO structure.
-   rbi.cbSize = sizeof( REBARINFO );  // Required when using this struct.
-   rbi.fMask  = 0;
-   rbi.himl   = ( HIMAGELIST ) NULL;
-   SendMessage( hwndRB, RB_SETBARINFO, 0, ( LPARAM ) &rbi );
-
-   hb_retnl ( ( LONG ) hwndRB );
-}
-
-HB_FUNC (SIZEREBAR)
-{
-
-	SendMessage(  (HWND) hb_parnl (1)  , RB_SHOWBAND , (WPARAM)(INT) 0 , (LPARAM)(BOOL) 0 );
-	SendMessage(  (HWND) hb_parnl (1)  , RB_SHOWBAND , (WPARAM)(INT) 0 , (LPARAM)(BOOL) 1 );
-
-}
-
-
 HB_FUNC ( GETITEMPOS )
 {
    hb_retnl( (LONG) (((NMMOUSE FAR *) hb_parnl(1))->dwItemSpec) );
@@ -1086,60 +1022,6 @@ HB_FUNC ( REDRAWWINDOWCONTROLRECT )
 		NULL,
 		RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW	 | RDW_UPDATENOW
 	);
-
-}
-
-HB_FUNC ( ADDSPLITBOXITEM )
-{
-
-	REBARBANDINFO rbBand;
-	RECT          rc;
-	int Style = RBBS_CHILDEDGE | RBBS_GRIPPERALWAYS ;
-
-	if ( hb_parl (4) )
-	{
-		Style = Style | RBBS_BREAK ;
-	}
-
-	GetWindowRect ( (HWND) hb_parnl ( 1 ) , &rc ) ;
-
-	rbBand.cbSize = sizeof(REBARBANDINFO);
-	rbBand.fMask  = RBBIM_TEXT | RBBIM_STYLE | RBBIM_CHILD | RBBIM_CHILDSIZE | RBBIM_SIZE ;
-	rbBand.fStyle = Style ;
-	rbBand.hbmBack= 0;
-
-	rbBand.lpText     = hb_parc(5);
-	rbBand.hwndChild  = (HWND)hb_parnl( 1 );
-
-
-	if ( !hb_parl (8) )
-	{
-		// Not Horizontal
-		rbBand.cxMinChild = hb_parni(6) ? hb_parni(6) : 0 ;       //0 ; JP 61
-		rbBand.cyMinChild = hb_parni(7) ? hb_parni(7) : rc.bottom - rc.top ; // JP 61
-		rbBand.cx         = hb_parni(3) ;
-	}
-	else
-	{
-		// Horizontal
-		if ( hb_parni(6) == 0 && hb_parni(7) == 0 )
-		{
-			// Not ToolBar
-			rbBand.cxMinChild = 0 ;
-			rbBand.cyMinChild = rc.right - rc.left ;
-			rbBand.cx         = rc.bottom - rc.top ;
-		}
-		else
-		{
-			// ToolBar
-			rbBand.cxMinChild = hb_parni(7) ? hb_parni(7) : rc.bottom - rc.top ; // JP 61
-			rbBand.cyMinChild = hb_parni(6) ? hb_parni(6) : 0 ;
-			rbBand.cx         = hb_parni(7) ? hb_parni(7) : rc.bottom - rc.top ;
-
-		}
-	}
-
-	SendMessage( (HWND) hb_parnl( 2 ) , RB_INSERTBAND , (WPARAM)-1 , (LPARAM) &rbBand ) ;
 
 }
 

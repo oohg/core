@@ -1,5 +1,5 @@
 /*
- * $Id: h_tree.prg,v 1.7 2006-02-11 06:19:33 guerra000 Exp $
+ * $Id: h_tree.prg,v 1.8 2006-03-30 04:54:37 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -139,22 +139,8 @@ Local Controlhandle , ImgDefNode, ImgDefItem, aBitmaps := array(4)
 		Height := 120
 	endif
 
-	if valtype(Row) == "U" .or. valtype(Col) == "U"
-
-      if _OOHG_SplitForceBreak
-         Break := .T.
-      endif
-      _OOHG_SplitForceBreak := .F.
-
-      ControlHandle := InitTree ( ::Parent:ReBarHandle , col , row , width , height , 0 , '' , 0, iif(noBot,1,0), ::lRtl )
-
-      AddSplitBoxItem ( Controlhandle , ::Parent:ReBarHandle, Width , break , , , , _OOHG_ActiveSplitBoxInverted )
-
-	Else
-
-      ControlHandle := InitTree ( ::ContainerhWnd, col , row , width , height , 0 , '' , 0, iif(noBot,1,0), ::lRtl )
-
-	endif
+   ::SetSplitBoxInfo( Break, )
+   ControlHandle := InitTree ( ::ContainerhWnd, col , row , width , height , 0 , '' , 0, iif(noBot,1,0), ::lRtl )
 
 	ImgDefNode := iif( valtype( aImgNode ) == "A" , len( aImgNode ), 0 )  //Tree+
 	ImgDefItem := iif( valtype( aImgItem ) == "A" , len( aImgItem ), 0 )  //Tree+

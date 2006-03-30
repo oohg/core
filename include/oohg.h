@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.h,v 1.20 2006-03-27 04:24:09 guerra000 Exp $
+ * $Id: oohg.h,v 1.21 2006-03-30 04:54:37 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -92,7 +92,7 @@ typedef struct OOHG_Window {
 
 extern void ImageFillParameter( struct IMAGE_PARAMETER *pResult, PHB_ITEM pString );
 extern PHB_ITEM GetControlObjectByHandle( LONG hWnd );
-extern PHB_ITEM GetControlObjectById( LONG lId, LONG hWnd );
+extern PHB_ITEM GetControlObjectById( LONG lId );
 extern void _OOHG_Send( PHB_ITEM pSelf, int iSymbol );
 void _OOHG_DoEvent( PHB_ITEM pSelf, int iSymbol );
 LRESULT APIENTRY _OOHG_WndProcCtrl( HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM lParam, WNDPROC lpfnOldWndProc );

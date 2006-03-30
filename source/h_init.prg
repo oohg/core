@@ -1,5 +1,5 @@
 /*
- * $Id: h_init.prg,v 1.14 2006-03-26 21:32:25 guerra000 Exp $
+ * $Id: h_init.prg,v 1.15 2006-03-30 04:54:37 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -101,6 +101,8 @@ INIT PROCEDURE _OOHG_INIT()
 
    Public _OOHG_AllVars[ 29 ]
 
+   _OOHG_Main        := nil
+
    _OOHG_InteractiveCloseStarted := .F.
 
    _OOHG_ThisForm := NIL
@@ -109,8 +111,6 @@ INIT PROCEDURE _OOHG_INIT()
    _OOHG_ThisEventType := ''
 
    _OOHG_ExtendedNavigation := .F.
-
-   _OOHG_ActiveSplitBoxInverted := .F.
 
    _OOHG_ThisItemRowIndex  := 0
    _OOHG_ThisItemColIndex  := 0
@@ -129,14 +129,6 @@ INIT PROCEDURE _OOHG_INIT()
    _OOHG_DefaultFontSize         := 9
 
    _OOHG_TempWindowName       := ""
-
-   _OOHG_SplitForceBreak      := .F.
-
-   _OOHG_ActiveSplitBox       := .f.
-
-   _OOHG_ActiveSplitBoxParentFormName  := ""
-
-   _OOHG_Main        := nil
 
    _OOHG_MouseRow          := 0
    _OOHG_MouseCol          := 0

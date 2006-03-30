@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.24 2006-02-11 06:19:33 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.25 2006-03-30 04:54:37 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -186,22 +186,8 @@ local break
    nStyleEx += IF( Valtype( lNoBorder ) != "L" .OR. ! lNoBorder, WS_EX_CLIENTEDGE, 0 )
 
 	// Creates the control window.
-   if valtype(nx) == "U" .or. valtype(ny) == "U"
-
-      if _OOHG_SplitForceBreak
-         Break := .T.
-      endif
-      _OOHG_SplitForceBreak := .F.
-
-      nControlHandle := InitTextBox( ::Parent:ReBarHandle, 0, nx, ny, nWidth, nHeight, nStyle, ::nMaxLenght, ::lRtl, nStyleEx )
-
-      AddSplitBoxItem ( nControlhandle , ::Parent:ReBarHandle, nWidth, break , , , , _OOHG_ActiveSplitBoxInverted )
-
-	Else
-
-       nControlHandle := InitTextBox( ::ContainerhWnd, 0, nx, ny, nWidth, nHeight, nStyle, ::nMaxLenght, ::lRtl, nStyleEx )
-
-	endif
+   ::SetSplitBoxInfo( Break, )
+   nControlHandle := InitTextBox( ::ContainerhWnd, 0, nx, ny, nWidth, nHeight, nStyle, ::nMaxLenght, ::lRtl, nStyleEx )
 
    ::Register( nControlHandle, cControlName, HelpId, ! Invisible, cToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )

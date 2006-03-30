@@ -1,5 +1,5 @@
 /*
- * $Id: h_editbox.prg,v 1.8 2006-02-11 06:19:33 guerra000 Exp $
+ * $Id: h_editbox.prg,v 1.9 2006-03-30 04:54:37 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -115,7 +115,6 @@ Local nStyle := ES_MULTILINE + ES_WANTRETURN, nStyleEx := 0
 
    DEFAULT h         TO 240
 *   DEFAULT Maxlenght TO 64738
-empty(break)
 
    nStyle += IF( Valtype( novscroll ) == "L" .AND. novscroll, ES_AUTOVSCROLL, WS_VSCROLL ) + ;
              IF( Valtype( nohscroll ) == "L" .AND. nohscroll, 0,              WS_HSCROLL )
@@ -127,23 +126,7 @@ empty(break)
               backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, .F., ;
               nStyleEx, lNoBorder, OnFocusPos )
 
-/*
-	if valtype(x) == "U" .or. valtype(y) == "U"
-
-      if _OOHG_SplitForceBreak
-         Break := .T.
-      endif
-      _OOHG_SplitForceBreak := .F.
-
-         ControlHandle := InitEditBox ( ::Parent:ReBarHandle, 0, x, y, w, h, '', 0 , maxlenght , readonly, invisible, notabstop , novscroll , nohscroll )
-
-         AddSplitBoxItem ( Controlhandle , ::Parent:ReBarHandle, w , break , , , , _OOHG_ActiveSplitBoxInverted )
-
-	Else
-
-      ControlHandle := InitEditBox ( ::Parent:hWnd, 0, x, y, w, h, '', 0 , maxlenght , readonly, invisible, notabstop , novscroll , nohscroll )
-
-	endif
-*/
+   // ::SetSplitBoxInfo( Break, )
+empty(break)
 
 Return Self

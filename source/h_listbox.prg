@@ -1,5 +1,5 @@
 /*
- * $Id: h_listbox.prg,v 1.7 2006-02-11 06:19:33 guerra000 Exp $
+ * $Id: h_listbox.prg,v 1.8 2006-03-30 04:54:37 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -151,22 +151,8 @@ Local ControlHandle
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, .T., lRtl )
 
-	if valtype(x) == "U" .or. valtype(y) == "U"
-
-      if _OOHG_SplitForceBreak
-         Break := .T.
-      endif
-      _OOHG_SplitForceBreak := .F.
-
-      ControlHandle := InitListBox( ::Parent:ReBarHandle, 0, 0, 0, w, h, invisible, notabstop, sort, nStyle, ::lRtl )
-
-      AddSplitBoxItem ( Controlhandle , ::Parent:ReBarHandle, w , break , , , , _OOHG_ActiveSplitBoxInverted )
-
-	Else
-
-      ControlHandle := InitListBox( ::ContainerhWnd, 0, x, y, w, h, invisible, notabstop, sort, nStyle, ::lRtl )
-
-	endif
+   ::SetSplitBoxInfo( Break )
+   ControlHandle := InitListBox( ::ContainerhWnd, 0, x, y, w, h, invisible, notabstop, sort, nStyle, ::lRtl )
 
    ::Register( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
