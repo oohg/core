@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.40 2006-03-30 04:54:37 guerra000 Exp $
+ * $Id: c_windows.c,v 1.41 2006-04-07 05:47:41 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -798,16 +798,6 @@ HB_FUNC (GETDESKTOPWIDTH)
 	hb_retni ( GetSystemMetrics(SM_CXSCREEN) ) ;
 }
 
-HB_FUNC (GETVSCROLLBARWIDTH)
-{
-	hb_retni ( GetSystemMetrics(SM_CXVSCROLL) ) ;
-}
-
-HB_FUNC (GETHSCROLLBARHEIGHT)
-{
-	hb_retni ( GetSystemMetrics(SM_CYHSCROLL) ) ;
-}
-
 HB_FUNC (GETDESKTOPHEIGHT)
 {
    hb_retni ( GetSystemMetrics(SM_CYSCREEN) ) ;
@@ -968,21 +958,6 @@ HB_FUNC ( GETITEMPOS )
    hb_retnl( (LONG) (((NMMOUSE FAR *) hb_parnl(1))->dwItemSpec) );
 }
 
-
-HB_FUNC( SETSCROLLRANGE )
-{
-   hb_retl( SetScrollRange( (HWND) hb_parnl( 1 ),
-                            hb_parni( 2 )       ,
-                            hb_parni( 3 )       ,
-                            hb_parni( 4 )       ,
-                            hb_parl( 5 )
-                          ) ) ;
-}
-
-HB_FUNC( GETSCROLLPOS )
-{
-   hb_retni( GetScrollPos( (HWND) hb_parnl( 1 ), hb_parni( 2 ) ) ) ;
-}
 
 HB_FUNC( GETWINDOWSTATE )
 {
@@ -1176,11 +1151,6 @@ HB_FUNC( ISCAPSLOCKACTIVE )
 HB_FUNC( ISNUMLOCKACTIVE )
 {
    hb_retl( GetKeyState( VK_NUMLOCK ) );
-}
-
-HB_FUNC( ISSCROLLLOCKACTIVE )
-{
-   hb_retl( GetKeyState( VK_SCROLL ) );
 }
 
 HB_FUNC( FINDWINDOWEX )
@@ -1555,65 +1525,4 @@ HB_FUNC( _UPDATERTL )
 HB_FUNC( GETSYSTEMMETRICS )
 {
     hb_retni( GetSystemMetrics( hb_parni( 1 ) ) );
-}
-
-HB_FUNC( _SETSCROLL )
-{
-   HWND hWnd = ( HWND ) hb_parnl( 1 );
-   LONG nStyle;
-   BOOL bChange = 0;
-
-   nStyle = GetWindowLong( hWnd, GWL_STYLE );
-
-   if( ISLOG( 2 ) )
-   {
-      if( hb_parl( 2 ) )
-      {
-         if( ! ( nStyle & WS_HSCROLL ) )
-         {
-            nStyle |= WS_HSCROLL;
-            bChange = 1;
-         }
-      }
-      else
-      {
-         if( nStyle & WS_HSCROLL )
-         {
-            nStyle = nStyle &~ WS_HSCROLL;
-            bChange = 1;
-            // Clears scroll range
-            SetScrollRange( hWnd, SB_HORZ, 0, 0, 1 );
-         }
-      }
-   }
-
-   if( ISLOG( 3 ) )
-   {
-      if( hb_parl( 3 ) )
-      {
-         if( ! ( nStyle & WS_VSCROLL ) )
-         {
-            nStyle |= WS_VSCROLL;
-            bChange = 1;
-         }
-      }
-      else
-      {
-         if( nStyle & WS_VSCROLL )
-         {
-            nStyle = nStyle &~ WS_VSCROLL;
-            bChange = 1;
-            // Clears scroll range
-            SetScrollRange( hWnd, SB_VERT, 0, 0, 1 );
-         }
-      }
-   }
-
-   if( bChange )
-   {
-      SetWindowLong( hWnd, GWL_STYLE, nStyle );
-      SetWindowPos( hWnd, 0, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_NOCOPYBITS | SWP_NOOWNERZORDER | SWP_NOSENDCHANGING );
-   }
-
-   hb_retni( nStyle );
 }

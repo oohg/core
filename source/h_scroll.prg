@@ -1,5 +1,5 @@
 /*
- * $Id: h_scroll.prg,v 1.7 2006-02-11 06:19:33 guerra000 Exp $
+ * $Id: h_scroll.prg,v 1.8 2006-04-07 05:47:41 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -49,10 +49,10 @@
  *
  */
 
-#include 'oohg.ch'
+#include "oohg.ch"
 #include "hbclass.ch"
-#include 'common.ch'
-#include 'i_windefs.ch'
+#include "common.ch"
+#include "i_windefs.ch"
 
 CLASS TScrollBar FROM TControl
    DATA Type         INIT "SCROLLBAR" READONLY
@@ -192,3 +192,203 @@ Local Lo_wParam := LoWord( wParam )
    ::DoEvent( ::OnChange )
 
 Return ::Super:Events_VScroll( wParam )
+
+EXTERN GetVScrollbarWidth, GetHScrollbarHeight, SetScrollPos, SetScrollPage
+EXTERN SetScrollRange, GetScrollPos, IsScrollLockActive, _SetScroll
+EXTERN InitVScrollbar, SetScrollInfo, GetScrollRangeMax
+
+#pragma BEGINDUMP
+
+#include <hbapi.h>
+#include <windows.h>
+#include <commctrl.h>
+#include "../include/oohg.h"
+
+static WNDPROC lpfnOldWndProc = 0;
+
+static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+{
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
+}
+
+// this MUST be a INITSCROLLBAR instead only a VERTICAL scroll bar!!!
+HB_FUNC( INITVSCROLLBAR )
+{
+	HWND hwnd;
+	HWND hscrollbar;
+
+	hwnd = (HWND) hb_parnl (1);
+
+	hscrollbar = CreateWindowEx(0 ,"SCROLLBAR","",
+	WS_CHILD | WS_VISIBLE | SBS_VERT ,
+	hb_parni(2) , hb_parni(3) , hb_parni(4) , hb_parni(5),
+	hwnd,(HMENU) 0 , GetModuleHandle(NULL) , NULL ) ;
+
+   SetScrollRange( hscrollbar, // handle of window with scroll bar
+                   SB_CTL,     // scroll bar flag
+                   1,    // minimum scrolling position
+                   100,     // maximum scrolling position
+                   1     // redraw flag
+	);
+
+   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hscrollbar, GWL_WNDPROC, ( LONG ) SubClassFunc );
+
+   hb_retnl( (LONG) hscrollbar );
+}
+
+HB_FUNC( GETVSCROLLBARWIDTH )
+{
+   hb_retni( GetSystemMetrics( SM_CXVSCROLL ) );
+}
+
+HB_FUNC( GETHSCROLLBARHEIGHT )
+{
+   hb_retni( GetSystemMetrics( SM_CYHSCROLL ) );
+}
+
+HB_FUNC( SETSCROLLPOS ) // ( hWnd, fnBar, nPos, lRedraw )
+{
+   hb_retni( SetScrollPos( ( HWND ) hb_parnl( 1 ), hb_parni( 2 ), hb_parni( 3 ), hb_parl( 4 ) ) );
+}
+
+HB_FUNC( SETSCROLLRANGE ) // ( hWnd, fnBar, nRangeMin, nRangeMax, lRedraw )
+{
+   hb_retl( SetScrollRange( ( HWND ) hb_parnl( 1 ), hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parl( 5 ) ) );
+}
+
+HB_FUNC( GETSCROLLPOS ) // ( hWnd, fnBar )
+{
+   hb_retni( GetScrollPos( ( HWND ) hb_parnl( 1 ), hb_parni( 2 ) ) );
+}
+
+HB_FUNC( ISSCROLLLOCKACTIVE )
+{
+   hb_retl( GetKeyState( VK_SCROLL ) );
+}
+
+HB_FUNC( _SETSCROLL )
+{
+   HWND hWnd = ( HWND ) hb_parnl( 1 );
+   LONG nStyle;
+   BOOL bChange = 0;
+
+   nStyle = GetWindowLong( hWnd, GWL_STYLE );
+
+   if( ISLOG( 2 ) )
+   {
+      if( hb_parl( 2 ) )
+      {
+         if( ! ( nStyle & WS_HSCROLL ) )
+         {
+            nStyle |= WS_HSCROLL;
+            bChange = 1;
+         }
+      }
+      else
+      {
+         if( nStyle & WS_HSCROLL )
+         {
+            nStyle = nStyle &~ WS_HSCROLL;
+            bChange = 1;
+            // Clears scroll range
+            SetScrollRange( hWnd, SB_HORZ, 0, 0, 1 );
+         }
+      }
+   }
+
+   if( ISLOG( 3 ) )
+   {
+      if( hb_parl( 3 ) )
+      {
+         if( ! ( nStyle & WS_VSCROLL ) )
+         {
+            nStyle |= WS_VSCROLL;
+            bChange = 1;
+         }
+      }
+      else
+      {
+         if( nStyle & WS_VSCROLL )
+         {
+            nStyle = nStyle &~ WS_VSCROLL;
+            bChange = 1;
+            // Clears scroll range
+            SetScrollRange( hWnd, SB_VERT, 0, 0, 1 );
+         }
+      }
+   }
+
+   if( bChange )
+   {
+      SetWindowLong( hWnd, GWL_STYLE, nStyle );
+      SetWindowPos( hWnd, 0, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_NOCOPYBITS | SWP_NOOWNERZORDER | SWP_NOSENDCHANGING );
+   }
+
+   hb_retni( nStyle );
+}
+
+HB_FUNC( SETSCROLLPAGE ) // ( hWnd, fnBar [ , size ] )
+{
+   HWND hWnd = ( HWND ) hb_parnl( 1 );
+   int iType = hb_parni( 2 );
+   SCROLLINFO pScrollInfo;
+   int iPage;
+
+   pScrollInfo.cbSize = sizeof( SCROLLINFO );
+   pScrollInfo.fMask = SIF_PAGE | SIF_POS | SIF_RANGE | SIF_TRACKPOS;
+   GetScrollInfo( hWnd, iType, &pScrollInfo );
+   iPage = pScrollInfo.nPage;
+   if( ISNUM( 3 ) )
+   {
+      pScrollInfo.fMask = SIF_PAGE;
+      pScrollInfo.nPage = hb_parni( 3 );
+      SetScrollInfo( hWnd, iType, &pScrollInfo, 1 );
+   }
+
+   hb_retni( iPage );
+}
+
+HB_FUNC( GETSCROLLRANGEMAX ) // ( hWnd, fnBar )
+{
+   int MinPos, MaxPos;
+
+   GetScrollRange( ( HWND ) hb_parnl( 1 ), hb_parni( 2 ), &MinPos, &MaxPos );
+   hb_retni( MaxPos );
+}
+
+HB_FUNC( SETSCROLLINFO ) // ( hWnd, nMax, nPos, nPage, nMin )
+{
+	SCROLLINFO lpsi;
+   lpsi.cbSize = sizeof( SCROLLINFO );
+   lpsi.fMask = 0;
+   if( ISNUM( 2 ) )
+   {
+      lpsi.fMask |= SIF_RANGE;
+      lpsi.nMax = hb_parni( 2 );
+   }
+   if( ISNUM( 3 ) )
+   {
+      lpsi.fMask |= SIF_POS;
+      lpsi.nPos = hb_parni( 3 );
+   }
+   if( ISNUM( 4 ) )
+   {
+      lpsi.fMask |= SIF_PAGE;
+      lpsi.nPage = hb_parni( 4 );
+   }
+   if( ISNUM( 5 ) )
+   {
+      lpsi.fMask |= SIF_RANGE;
+      lpsi.nMin = hb_parni( 5 );
+   }
+   if( lpsi.fMask )
+   {
+      hb_retni( SetScrollInfo( ( HWND ) hb_parnl( 1 ), SB_CTL, ( LPSCROLLINFO ) &lpsi, 1 ) );
+   }
+   else
+   {
+      hb_retni( 0 );
+   }
+}
+
+#pragma ENDDUMP

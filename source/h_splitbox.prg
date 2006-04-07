@@ -1,5 +1,5 @@
 /*
- * $Id: h_splitbox.prg,v 1.1 2006-03-30 04:54:37 guerra000 Exp $
+ * $Id: h_splitbox.prg,v 1.2 2006-04-07 05:47:41 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -191,6 +191,14 @@ EXTERN SetSplitBoxItem
 #include <hbapi.h>
 #include <windows.h>
 #include <commctrl.h>
+#include "../include/oohg.h"
+
+static WNDPROC lpfnOldWndProc = 0;
+
+static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+{
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
+}
 
 HB_FUNC( INITSPLITBOX )
 {
@@ -243,6 +251,8 @@ HB_FUNC( INITSPLITBOX )
    rbi.fMask  = 0;
    rbi.himl   = ( HIMAGELIST ) NULL;
    SendMessage( hwndRB, RB_SETBARINFO, 0, ( LPARAM ) &rbi );
+
+   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hwndRB, GWL_WNDPROC, ( LONG ) SubClassFunc );
 
    hb_retnl ( ( LONG ) hwndRB );
 }

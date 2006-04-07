@@ -1,11 +1,26 @@
 /*
- * $Id: ChangeLog,v 1.141 2006-03-30 04:54:37 guerra000 Exp $
+ * $Id: ChangeLog,v 1.142 2006-04-07 05:47:39 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-04-07 00:43 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/c_winapimisc.c
+  * source/c_windows.c
+  * source/h_browse.prg
+  * source/h_scroll.prg
+  * source/h_windows.prg
+    + Added SetScrollPage() function. It allows to set the scrollbar's
+      thumb size.
+    * Moved scrollbars-related functions to h_scroll.prg file.
+  * source/h_windows.prg
+    ! Fixed INTERNAL window release.
+
+  * source/h_splitbox.prg
+    * TSplitbox subclass-ed.
 
 2006-03-29 22:49 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * include/i_splitbox.ch

@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.77 2006-03-30 04:54:37 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.78 2006-04-07 05:47:41 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1202,16 +1202,6 @@ METHOD Release() CLASS TForm
 *-----------------------------------------------------------------------------*
 Local b
 
-   If ::lInternal .AND. ::Parent != NIL
-      // Removes INTERNAL window from ::BrowseList and ::aControls
-      ::Parent:DeleteControl( Self )
-      // Removes INTERNAL window from ::SplitChildList
-      b := aScan( ::SplitChildList, { |o| o:hWnd == ::hWnd } )
-      If b > 0
-         _OOHG_DeleteArrayItem( ::SplitChildList, b )
-      EndIf
-   EndIf
-
    b := _OOHG_InteractiveClose
    _OOHG_InteractiveClose := 1
 
@@ -1999,6 +1989,22 @@ Testing...
          PostQuitMessage( 0 )
       Endif
 
+      // Removes from container
+      If ::Container != NIL
+         ::Container:DeleteControl( Self )
+      EndIf
+
+      // Removes "internal" references
+      If ::lInternal .AND. ::Parent != NIL
+         // Removes INTERNAL window from ::BrowseList and ::aControls
+         ::Parent:DeleteControl( Self )
+         // Removes INTERNAL window from ::SplitChildList
+         i := aScan( ::SplitChildList, { |o| o:hWnd == ::hWnd } )
+         If i > 0
+            _OOHG_DeleteArrayItem( ::SplitChildList, i )
+         EndIf
+      EndIf
+
       // Removes WINDOW from the array
       i := Ascan( _OOHG_aFormhWnd, hWnd )
       IF i > 0
@@ -2068,7 +2074,8 @@ Local aRect, w, h, hscroll, vscroll
 
    // Verifies there's no "extra" space derived from resize
    If vscroll
-      SetScrollRange( hWnd, SB_VERT, 0, ::RangeHeight, 1 )
+      SetScrollRange( hWnd, SB_VERT, 0, ::VirtualHeight, 1 )
+      SetScrollPage( hWnd, SB_VERT, h )
       If ::RangeHeight < ( - ::RowMargin )
          ::RowMargin := - ::RangeHeight
          SetScrollPos( hWnd, SB_VERT, ::RangeHeight, 1 )
@@ -2080,7 +2087,8 @@ Local aRect, w, h, hscroll, vscroll
       vscroll := .T.
    EndIf
    If hscroll
-      SetScrollRange( hWnd, SB_HORZ, 0, ::RangeWidth, 1 )
+      SetScrollRange( hWnd, SB_HORZ, 0, ::VirtualWidth, 1 )
+      SetScrollPage( hWnd, SB_HORZ, w )
       If ::RangeWidth < ( - ::ColMargin )
          ::ColMargin := - ::RangeWidth
          SetScrollPos( hWnd, SB_HORZ, ::RangeWidth, 1 )

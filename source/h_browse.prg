@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.42 2006-03-01 04:36:16 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.43 2006-04-07 05:47:41 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1562,7 +1562,7 @@ Local nr , RecordCount , BackRec
 
 Return nr
 
-EXTERN INITVSCROLLBAR, INSERTUP, INSERTDOWN, INSERTPRIOR, INSERTNEXT, GETSCROLLRANGEMAX, INITVSCROLLBARBUTTON, SETSCROLLINFO
+EXTERN INSERTUP, INSERTDOWN, INSERTPRIOR, INSERTNEXT, INITVSCROLLBARBUTTON
 
 #pragma BEGINDUMP
 
@@ -1574,29 +1574,6 @@ EXTERN INITVSCROLLBAR, INSERTUP, INSERTDOWN, INSERTPRIOR, INSERTNEXT, GETSCROLLR
 // #include "hbapiitm.h"
 // #include "winreg.h"
 // #include "tchar.h"
-
-HB_FUNC (INITVSCROLLBAR)
-{
-	HWND hwnd;
-	HWND hscrollbar;
-
-	hwnd = (HWND) hb_parnl (1);
-
-	hscrollbar = CreateWindowEx(0 ,"SCROLLBAR","",
-	WS_CHILD | WS_VISIBLE | SBS_VERT ,
-	hb_parni(2) , hb_parni(3) , hb_parni(4) , hb_parni(5),
-	hwnd,(HMENU) 0 , GetModuleHandle(NULL) , NULL ) ;
-
-	SetScrollRange(
-	hscrollbar,	// handle of window with scroll bar
-	SB_CTL,		// scroll bar flag
-	1,		// minimum scrolling position
-	100,		// maximum scrolling position
-	1 		// redraw flag
-	);
-
-	hb_retnl ( (LONG) hscrollbar );
-}
 
 HB_FUNC (INSERTUP)
 {
@@ -1638,18 +1615,6 @@ HB_FUNC (INSERTNEXT)
 			);
 }
 
-HB_FUNC ( GETSCROLLRANGEMAX )
-{
-
-   int MinPos, MaxPos;
-
-   GetScrollRange( (HWND) hb_parnl( 1 ), hb_parni( 2 ),&MinPos,&MaxPos) ;
-
-   hb_retni( MaxPos );
-
-}
-
-
 HB_FUNC( INITVSCROLLBARBUTTON )
 {
 	HWND hwnd;
@@ -1673,23 +1638,6 @@ HB_FUNC( INITVSCROLLBARBUTTON )
                            NULL ) ;
 
 	hb_retnl ( (LONG) hbutton );
-}
-
-HB_FUNC( SETSCROLLINFO )
-{
-	SCROLLINFO lpsi;
-	lpsi.cbSize = sizeof(SCROLLINFO);
-	lpsi.fMask = SIF_PAGE | SIF_POS | SIF_RANGE ;
-	lpsi.nMin   = 1;
-	lpsi.nMax   = hb_parni(2);
-	lpsi.nPage = hb_parni(4);
-	lpsi.nPos  = hb_parni(3);
-
-	hb_retni( SetScrollInfo( (HWND) hb_parnl( 1 ),
- 							 SB_CTL       ,
-    						 (LPSCROLLINFO) &lpsi,
-							 1
-							 ) );
 }
 
 #pragma ENDDUMP

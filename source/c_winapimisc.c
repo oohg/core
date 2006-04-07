@@ -1,5 +1,5 @@
 /*
- * $Id: c_winapimisc.c,v 1.2 2006-02-10 06:35:45 guerra000 Exp $
+ * $Id: c_winapimisc.c,v 1.3 2006-04-07 05:47:41 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -448,15 +448,6 @@ HB_FUNC( CREATEMUTEX )
 HB_FUNC (GETLASTERROR )
 {
   hb_retnl( (LONG) GetLastError() ) ;
-}
-
-HB_FUNC( SETSCROLLPOS )
-{
-   hb_retni( SetScrollPos( (HWND) hb_parnl( 1 ),
-                           hb_parni( 2 )       ,
-                           hb_parni( 3 )       ,
-                           hb_parl( 4 )
-                         ) ) ;
 }
 
 HB_FUNC ( CREATEFOLDER )
