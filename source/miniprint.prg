@@ -1,5 +1,5 @@
 /*
- * $Id: miniprint.prg,v 1.13 2006-03-16 22:40:27 declan2005 Exp $
+ * $Id: miniprint.prg,v 1.14 2006-04-09 14:58:19 declan2005 Exp $
  */
 /*----------------------------------------------------------------------------
  MINIGUI - Harbour Win32 GUI library source code
@@ -109,7 +109,9 @@ Public _HMG_printer_zoomclick_xoffset := 0
 Public _HMG_printer_thumbupdate := .T.
 Public _HMG_printer_thumbscroll
 Public _HMG_printer_PrevPageNumber := 0
-PUblic _OOHG_printer_docname:="OOHG printing"
+if type ( "_OOHG_printer_docname") # 'C'
+   PUblic _OOHG_printer_docname:="OOHG printing"
+endif
 
 
         if _HMG_printer_hdc_bak == 0

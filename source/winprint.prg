@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.3 2005-11-09 05:56:43 guerra000 Exp $
+ * $Id: winprint.prg,v 1.4 2006-04-09 14:58:19 declan2005 Exp $
  */
 // -----------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -1632,7 +1632,8 @@ next pi
                       WIDTH ::ahs[2,6]-15  HEIGHT ::ahs[2,5]-::ahs[3,5]-::ahs[4,5]-10 ;
                       VIRTUAL WIDTH ::ahs[2,6] -5;
                       VIRTUAL HEIGHT ::ahs[2,5]-::ahs[3,5]-::ahs[4,5] ;
-                      TITLE ::aopisy[13]   SPLITCHILD  GRIPPERTEXT "P"
+                      TITLE ::aopisy[13]   SPLITCHILD  GRIPPERTEXT "P" ;
+                      NOSYSMENU NOCAPTION ;
 
 
                       aadd(::ahs,{0,0,0,0,0,0,GetFormHandle("hbpreview1")})

@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.26 2006-03-28 04:04:25 guerra000 Exp $
+* $Id: h_print.prg,v 1.27 2006-04-09 14:58:19 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -19,6 +19,7 @@ memvar _HMG_PRINTER_NAME
 memvar _HMG_PRINTER_PAGECOUNT
 memvar _HMG_PRINTER_HDC_BAK
 memvar _OOHG_printer_docname
+////memvar sicvar
 
 *-------------------------
 FUNCTION TPrint( clibx )
@@ -79,6 +80,7 @@ DATA tempfile           INIT gettempdir()+"T"+alltrim(str(int(hb_random(999999))
 DATA impreview          INIT .F.  READONLY
 DATA lwinhide           INIT .T.   READONLY
 DATA cversion           INIT  "(oohg)V 1.4" READONLY
+DATA cargo              INIT  .F.
 
 
 *-------------------------
@@ -103,7 +105,6 @@ METHOD printdosx() BLOCK { || nil }
 METHOD beginpage()
 METHOD beginpagex() BLOCK { || nil }
 *-------------------------
-
 
 *-------------------------
 METHOD condendos() BLOCK { || nil }
@@ -194,22 +195,24 @@ METHOD release() CLASS TPRINTBASE
 if ::exit
    return nil
 endif
+////setinteractiveclose(::cargo)
 ::releasex()
 return nil
 
 *-------------------------
-METHOD init( /* clibx */ ) CLASS TPRINTBASE
+METHOD init( ) CLASS TPRINTBASE
 *-------------------------
 if iswindowactive(_oohg_winreport)
    msgstop("Print preview pending, close first")
    ::exit:=.T.
    return nil
 endif
+Public _OOHG_printer_docname
 ::initx()
 RETURN self
 
 *-------------------------
-METHOD selprinter( lselect , lpreview, llandscape , npapersize ,cprinterx, lhide ) CLASS TPRINTBASE
+METHOD selprinter( lselect , lpreview, llandscape , npapersize ,cprinterx, lhide,nres ) CLASS TPRINTBASE
 *-------------------------
 local lsucess := .T.
 if ::exit
@@ -224,7 +227,7 @@ endif
 SETPRC(0,0)
 DEFAULT llandscape to .F.
 
-::selprinterx( lselect , lpreview, llandscape , npapersize ,cprinterx, lhide)
+::selprinterx( lselect , lpreview, llandscape , npapersize ,cprinterx, nres)
 return self
 
 
@@ -319,8 +322,8 @@ return self
 *-------------------------
 METHOD getdefprinter() CLASS TPRINTBASE
 *-------------------------
-local cdefprinter:= ::getdefprinterx()
-RETURN cdefprinter
+/////local cdefprinter:= ::getdefprinterx()
+RETURN ::getdefprinterx()
 
 *-------------------------
 METHOD setunits(cunitsx) CLASS TPRINTBASE
@@ -606,9 +609,10 @@ return self
 
 
 *-------------------------
-METHOD begindocx( /* cdoc */) CLASS TMINIPRINT
+METHOD begindocx(  cdoc ) CLASS TMINIPRINT
 *-------------------------
-START PRINTDOC //////////////NAME cDoc
+_OOHG_printer_docname:=cdoc
+START PRINTDOC NAME cDoc
 return self
 
 *-------------------------
@@ -628,6 +632,7 @@ METHOD endpagex() CLASS TMINIPRINT
 *-------------------------
 END PRINTPAGE
 return self
+
 
 *-------------------------
 METHOD releasex() CLASS TMINIPRINT
@@ -691,9 +696,13 @@ return self
 
 
 *-------------------------
-METHOD selprinterx( lselect , lpreview, llandscape , npapersize ,cprinterx) CLASS TMINIPRINT
+METHOD selprinterx( lselect , lpreview, llandscape , npapersize ,cprinterx,nres) CLASS TMINIPRINT
 *-------------------------
 local worientation,lsucess
+
+if nres=NIL
+   nres:=PRINTER_RES_MEDIUM 
+endif
 IF llandscape
    Worientation:= PRINTER_ORIENT_LANDSCAPE
 ELSE
@@ -711,10 +720,12 @@ if npapersize#NIL
    SELECT PRINTER ::cprinter to lsucess ;
    ORIENTATION worientation ;
    PAPERSIZE npapersize       ;
+   QUALITY nres ;
    PREVIEW
 else
    SELECT PRINTER ::cprinter to lsucess ;
    ORIENTATION worientation ;
+   QUALITY nres ;
    PREVIEW
 endif
 endif
@@ -725,10 +736,12 @@ if npapersize#NIL
    SELECT PRINTER DEFAULT TO lsucess ;
    ORIENTATION worientation  ;
    PAPERSIZE npapersize       ;
+   QUALITY nres ;
    PREVIEW
 else
    SELECT PRINTER DEFAULT TO lsucess ;
    ORIENTATION worientation  ;
+   QUALITY nres ;
    PREVIEW
 endif
 endif
@@ -738,9 +751,11 @@ if (.not. lselect) .and. (.not. lpreview) .and. cprinterx = NIL
 if npapersize#NIL
    SELECT PRINTER DEFAULT TO lsucess  ;
    ORIENTATION worientation  ;
+   QUALITY nres ;
    PAPERSIZE npapersize
 else
    SELECT PRINTER DEFAULT TO lsucess  ;
+   QUALITY nres ;
    ORIENTATION worientation
 endif
 endif
@@ -755,9 +770,11 @@ EndIf
 if npapersize#NIL
    SELECT PRINTER ::cprinter to lsucess ;
    ORIENTATION worientation ;
+   QUALITY nres ;
    PAPERSIZE npapersize
 else
    SELECT PRINTER ::cprinter to lsucess ;
+   QUALITY nres ;
    ORIENTATION worientation
 endif
 endif
@@ -771,11 +788,13 @@ EndIf
 if npapersize#NIL
    SELECT PRINTER cprinterx to lsucess ;
    ORIENTATION worientation ;
+   QUALITY nres ;
    PAPERSIZE npapersize ;
    PREVIEW
 else
    SELECT PRINTER cprinterx to lsucess ;
    ORIENTATION worientation ;
+   QUALITY nres ;
    PREVIEW
 endif
 endif
@@ -789,9 +808,11 @@ EndIf
 if npapersize#NIL
    SELECT PRINTER cprinterx to lsucess ;
    ORIENTATION worientation ;
+   QUALITY nres ;
    PAPERSIZE npapersize
 else
    SELECT PRINTER cprinterx to lsucess ;
+   QUALITY nres ;
    ORIENTATION worientation
 endif
 endif
@@ -806,7 +827,6 @@ return self
 METHOD getdefprinterx() CLASS TMINIPRINT
 *-------------------------
 return getDefaultPrinter()
-
 
 
 *-------------------------
@@ -985,45 +1005,51 @@ return self
 
 
 *-------------------------
-METHOD selprinterx( lselect , lpreview, llandscape , npapersize ,cprinterx) CLASS THBPRINTER
+METHOD selprinterx( lselect , lpreview, llandscape , npapersize ,cprinterx,nres ) CLASS THBPRINTER
 *-------------------------
+
 if lselect .and. lpreview .and. cprinterx=NIL
-SELECT BY DIALOG PREVIEW
+   SELECT BY DIALOG PREVIEW
 endif
 if lselect .and. (.not. lpreview) .and. cprinterx=NIL
-SELECT BY DIALOG
+   SELECT BY DIALOG
 endif
 if (.not. lselect) .and. lpreview .and. cprinterx=NIL
-SELECT DEFAULT PREVIEW
+   SELECT DEFAULT PREVIEW
 endif
 if (.not. lselect) .and. (.not. lpreview) .and. cprinterx=NIL
-SELECT DEFAULT
+   SELECT DEFAULT
 endif
 
 if cprinterx # NIL
 IF lpreview
-SELECT PRINTER cprinterx PREVIEW
+   SELECT PRINTER cprinterx PREVIEW
 ELSE
-SELECT PRINTER cprinterx
+   SELECT PRINTER cprinterx
 ENDIF
 endif
 
 IF HBPRNERROR != 0
-::lprerror:=.T.
-return nil
+   ::lprerror:=.T.
+   return nil
 ENDIF
 define font "f0" name ::cfontname size ::nfontsize
 define font "f1" name ::cfontname size ::nfontsize BOLD
 define pen "C0" WIDTH ::nwpen COLOR ::acolor
 select pen "C0"
 if llandscape
-set page orientation DMORIENT_LANDSCAPE font "f0"
+   set page orientation DMORIENT_LANDSCAPE font "f0"
 else
-set page orientation DMORIENT_PORTRAIT  font "f0"
+   set page orientation DMORIENT_PORTRAIT  font "f0"
 endif
 if npapersize#NIL
-set page papersize npapersize
+   set page papersize npapersize
 endif
+
+if nres#NIL
+   SET QUALITY nres   ////:=PRINTER_RES_MEDIUM 
+endif
+
 return self
 
 
@@ -1059,7 +1085,6 @@ hbprn:RoundRect( nlin*::nmver+::nvfij  ,ncol*::nmhor+::nhfij*2 ,(nlinf+0.5)*::nm
 return self
 
 CREATE CLASS TDOSPRINT FROM TPRINTBASE
-
 
 *-------------------------
 METHOD initx()
@@ -1232,7 +1257,7 @@ return self
 METHOD printlinex(nlin,ncol,nlinf,ncolf /* ,atcolor,ntwpen */ ) CLASS TDOSPRINT
 *-------------------------
 if nlin=nlinf
-@ nlin,ncol say replicate("-",ncolf-ncol+1)
+   @ nlin,ncol say replicate("-",ncolf-ncol+1)
 endif
 return self
 
@@ -1275,3 +1300,4 @@ if cOp="-" .and. print_preview.edit_p.fontsize > 7
    print_preview.edit_p.fontsize:=  print_preview.edit_p.fontsize - 2
 endif
 return nil
+
