@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.27 2006-04-09 14:58:19 declan2005 Exp $
+* $Id: h_print.prg,v 1.28 2006-04-09 16:18:56 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -37,7 +37,8 @@ if clibx=NIL
          o_print_:=thbprinter()
       endif
    else
-       o_print_:=thbprinter()
+       o_print_:=tminiprint()
+      _OOHG_printlibrary="MINIPRINT"     
    endif
 else
    if valtype(clibx)="C"
@@ -51,7 +52,8 @@ else
          o_print_:=thbprinter()
       endif
     else
-      o_print_:=thbprinter()
+      o_print_:=tminiprint()
+      _OOHG_printlibrary="MINIPRINT"     
     endif
 endif
 RETURN o_Print_

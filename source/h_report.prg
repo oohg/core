@@ -1,5 +1,5 @@
 /*
- * $Id: h_report.prg,v 1.23 2006-03-26 01:51:34 declan2005 Exp $
+ * $Id: h_report.prg,v 1.24 2006-04-09 16:18:56 declan2005 Exp $
  */
 /*
  * DO REPORT Command support procedures For MiniGUI Library.
@@ -227,6 +227,11 @@ if ldos
    endif
 
 else
+  if type("_OOHG_printlibrary")#"C"     
+     oprint:=tprint("MINIPRINT")
+     oprint:init()   
+     _OOHG_printlibrary="MINIPRINT"
+  endif  
   if _OOHG_printlibrary="HBPRINTER"
        oprint:=tprint("HBPRINTER")
        oprint:init()
@@ -242,10 +247,11 @@ else
          oprint:condendos()
        endif
   else
-       oprint:=tprint("HBPRINTER")
+       oprint:=tprint("MINIPRINT")
        oprint:init()
+       _OOHG_printlibrary="MINIPRINT"
   endif
-
+  
 endif
 
 do case
