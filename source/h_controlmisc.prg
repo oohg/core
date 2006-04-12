@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.49 2006-03-30 04:54:37 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.50 2006-04-12 19:32:57 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -1589,7 +1589,7 @@ LOCAL nPos
 
    // If PARENTFORM is a control
    If ValType( ParentForm ) == "O"
-      If ParentForm:ClassName = "TFORM"
+      If "TFORM" $ ParentForm:ClassName 
          ::Parent := ParentForm
          Return ::SetInfo( ControlName, FontName, FontSize, FontColor, BkColor, lEditBox, lRtl )
       Else
@@ -1598,7 +1598,7 @@ LOCAL nPos
          Return ::SetInfo( ControlName, FontName, FontSize, FontColor, BkColor, lEditBox, lRtl )
       EndIf
    EndIf
-
+    
    // Parent form:
    if ! empty( ParentForm )
       // Specified form
