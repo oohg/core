@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.50 2006-04-12 19:32:57 declan2005 Exp $
+ * $Id: h_controlmisc.prg,v 1.51 2006-04-13 03:20:23 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1472,7 +1472,6 @@ CLASS TControl FROM TWindow
    DATA OnDblClick  INIT nil
    DATA Block       INIT nil
    DATA VarName     INIT ""
-   DATA Caption     INIT ""
    DATA Id          INIT 0
    DATA ImageListColor      INIT CLR_NONE
    DATA ImageListFlags      INIT LR_LOADTRANSPARENT
@@ -1589,7 +1588,7 @@ LOCAL nPos
 
    // If PARENTFORM is a control
    If ValType( ParentForm ) == "O"
-      If "TFORM" $ ParentForm:ClassName 
+      If "TFORM" $ ParentForm:ClassName
          ::Parent := ParentForm
          Return ::SetInfo( ControlName, FontName, FontSize, FontColor, BkColor, lEditBox, lRtl )
       Else
@@ -1598,7 +1597,7 @@ LOCAL nPos
          Return ::SetInfo( ControlName, FontName, FontSize, FontColor, BkColor, lEditBox, lRtl )
       EndIf
    EndIf
-    
+
    // Parent form:
    if ! empty( ParentForm )
       // Specified form

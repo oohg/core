@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.11 2006-04-12 19:32:57 declan2005 Exp $
+ * $Id: h_button.prg,v 1.12 2006-04-13 03:20:23 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -107,19 +107,7 @@ CLASS TButton FROM TControl
    METHOD SetFocus
    METHOD Picture     SETGET
    METHOD Value       SETGET
-   METHOD Caption     SETGET
-
 ENDCLASS
-
-*-----------------------------------------------------------------------------*
-METHOD Caption( cValue ) CLASS Tbutton
-*-----------------------------------------------------------------------------*
-   IF VALTYPE( cValue ) $ "CM"
-      SetWindowText( ::hWnd , cValue )
-   Else
-      cValue := GetWindowText( ::hWnd )
-   EndIf
-RETURN cValue
 
 *-----------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, x, y, Caption, ProcedureName, w, h, ;
