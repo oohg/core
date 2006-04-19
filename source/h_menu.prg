@@ -1,5 +1,5 @@
 /*
- * $Id: h_menu.prg,v 1.9 2006-03-27 04:24:09 guerra000 Exp $
+ * $Id: h_menu.prg,v 1.10 2006-04-19 13:35:27 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -99,6 +99,7 @@ STATIC _OOHG_xMenuActive := {}
 CLASS TMenu FROM TControl
    DATA Type      INIT "MENU" READONLY
    DATA xId       INIT 0
+   DATA cCaption  INIT ""
 
    METHOD DefineMain
    METHOD DefinePopUp
@@ -163,11 +164,11 @@ METHOD DefinePopUp( Caption , Name , checked , disabled ) CLASS TMenu
 
    ::xId := ::hWnd
 
-   ::Caption := Caption
-
    AADD( _OOHG_xMenuActive, Self )
 
-   AppendMenuPopup( ::Container:hWnd, ::hWnd, ::Caption )
+   AppendMenuPopup( ::Container:hWnd, ::hWnd, Caption )
+
+   ::cCaption := Caption
 
    if ValType( checked ) == "L" .AND. checked
       ::Checked := .T.
@@ -209,7 +210,7 @@ Local id
 
    ::OnClick := action
 
-   ::Caption := Caption
+   ::cCaption := Caption
 
    if ValType( checked ) == "L" .AND. checked
       ::Checked := .T.
