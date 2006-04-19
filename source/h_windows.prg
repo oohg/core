@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.78 2006-04-07 05:47:41 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.79 2006-04-19 04:35:44 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -778,6 +778,7 @@ CLASS TForm FROM TWindow
    METHOD DoEvent
 
    METHOD Events
+   METHOD Events_Destroy
    METHOD MessageLoop
 
 ENDCLASS
@@ -926,9 +927,10 @@ METHOD Define2( FormName, Caption, x, y, w, h, Parent, helpbutton, nominimize, n
 *------------------------------------------------------------------------------*
 Local Formhandle
 
-   If _OOHG_Main == nil
-      MsgOOHGError( "Main Window Not Defined. Program Terminated." )
-   Endif
+   // Not mandatory MAIN
+   // If _OOHG_Main == nil
+   //    MsgOOHGError( "Main Window Not Defined. Program Terminated." )
+   // Endif
 
    If _OOHG_GlobalRTL()
       lRtl := .T.
@@ -1137,11 +1139,12 @@ METHOD Activate( lNoStop, oWndLoop ) CLASS TForm
 
 	// Main Check
 
-   If _OOHG_Main == nil
-      MsgOOHGError( "ACTIVATE WINDOW: Main Window not defined. Program terminated." )
-   ElseIf ! _OOHG_Main:lFirstActivate
-      MsgOOHGError( "ACTIVATE WINDOW: Main Window Must be Activated In First ACTIVATE WINDOW Command. Program terminated." )
-   EndIf
+   // Not mandatory MAIN
+   // If _OOHG_Main == nil
+   //    MsgOOHGError( "ACTIVATE WINDOW: Main Window not defined. Program terminated." )
+   // ElseIf ! _OOHG_Main:lFirstActivate
+   //    MsgOOHGError( "ACTIVATE WINDOW: Main Window Must be Activated In First ACTIVATE WINDOW Command. Program terminated." )
+   // EndIf
 
    If ::Active
       MsgOOHGError( "Window: " + ::Name + " already active. Program terminated" )
@@ -1152,7 +1155,7 @@ METHOD Activate( lNoStop, oWndLoop ) CLASS TForm
       lNoStop := .F.
    EndIf
    If ValType( oWndLoop ) != "O"
-      oWndLoop := IF( lNoStop, _OOHG_Main, Self )
+      oWndLoop := IF( lNoStop .AND. ValType( _OOHG_Main ) == "O", _OOHG_Main, Self )
    EndIf
    ::ActivateCount := oWndLoop:ActivateCount
    ::ActivateCount[ 1 ]++
@@ -1219,6 +1222,12 @@ Local b
 
    EnableWindow( ::hWnd )
    SendMessage( ::hWnd, WM_SYSCOMMAND, SC_CLOSE, 0 )
+
+   // HACK! This window doesn't receive WM_DESTROY and/or WM_CLOSE
+   If ::Type == "D"
+      // How MDICLIENT window is closed?
+      ::Events_Destroy()
+   EndIf
 
    _OOHG_InteractiveClose := b
 
@@ -1466,6 +1475,74 @@ Local lRetVal := .F.
 	EndIf
 Return lRetVal
 
+*-----------------------------------------------------------------------------*
+METHOD Events_Destroy() CLASS TForm
+*-----------------------------------------------------------------------------*
+Local mVar, i
+
+   // Remove Child Controls
+   DO WHILE LEN( ::aControls ) > 0
+      ::aControls[ 1 ]:Release()
+   ENDDO
+
+   // Delete Notify icon
+   ShowNotifyIcon( ::hWnd, .F. , 0, "" )
+   DeleteObject( ::NotifyMenuHandle )
+
+   // Update Form Index Variable
+   If ! Empty( ::Name )
+      mVar := '_' + ::Name
+      if type( mVar ) != 'U'
+         __MVPUT( mVar , 0 )
+      EndIf
+   EndIf
+
+   // Removes from container
+   If ::Container != NIL
+      ::Container:DeleteControl( Self )
+   EndIf
+
+   // Verify if window was multi-activated
+   ::ActivateCount[ 1 ]--
+   If Len( _OOHG_MessageLoops ) > 0
+      If ATAIL( _OOHG_MessageLoops )[ 1 ] < 1
+         PostQuitMessage( 0 )
+      Endif
+   ElseIf ::ActivateCount[ 1 ] < 1
+      PostQuitMessage( 0 )
+   Endif
+
+   *** ::Type == "INTERNAL"
+   // Removes "internal" references
+   If ::lInternal .AND. ::Parent != NIL
+      // Removes INTERNAL window from ::BrowseList and ::aControls
+      ::Parent:DeleteControl( Self )
+      // Removes INTERNAL window from ::SplitChildList
+      i := aScan( ::SplitChildList, { |o| o:hWnd == ::hWnd } )
+      If i > 0
+         _OOHG_DeleteArrayItem( ::SplitChildList, i )
+      EndIf
+   EndIf
+
+   // Removes WINDOW from the array
+   i := Ascan( _OOHG_aFormhWnd, ::hWnd )
+   IF i > 0
+      _OOHG_DeleteArrayItem( _OOHG_aFormhWnd, I )
+      _OOHG_DeleteArrayItem( _OOHG_aFormObjects, I )
+   ENDIF
+
+   *** ::Type == "MODAL"
+   // Eliminates active modal
+   IF Len( _OOHG_ActiveModal ) != 0 .AND. ATAIL( _OOHG_ActiveModal ):hWnd == ::hWnd
+      _OOHG_DeleteArrayItem( _OOHG_ActiveModal, Len( _OOHG_ActiveModal ) )
+   ENDIF
+
+   ::Active := .F.
+
+   ::Super:Release()
+
+Return nil
+
 #pragma BEGINDUMP
 
 // -----------------------------------------------------------------------------
@@ -1507,7 +1584,7 @@ HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
 *-----------------------------------------------------------------------------*
 FUNCTION _OOHG_TForm_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TForm
 *-----------------------------------------------------------------------------*
-Local i, aPos, NextControlHandle, mVar, xRetVal
+Local i, aPos, NextControlHandle, xRetVal
 Local oWnd, oCtrl
 * Local hWnd := ::hWnd
 
@@ -1962,64 +2039,7 @@ Testing...
 	case nMsg == WM_DESTROY
         ***********************************************************************
 
-      // Remove Child Controls
-      DO WHILE LEN( ::aControls ) > 0
-         ::aControls[ 1 ]:Release()
-      ENDDO
-
-      // Delete Notify icon
-      ShowNotifyIcon( ::hWnd, .F. , 0, "" )
-      DeleteObject( ::NotifyMenuHandle )
-
-      // Update Form Index Variable
-      If ! Empty( ::Name )
-         mVar := '_' + ::Name
-         if type( mVar ) != 'U'
-            __MVPUT( mVar , 0 )
-         EndIf
-      EndIf
-
-      // Verify if window was multi-activated
-      ::ActivateCount[ 1 ]--
-      If Len( _OOHG_MessageLoops ) > 0
-         If ATAIL( _OOHG_MessageLoops )[ 1 ] < 1
-            PostQuitMessage( 0 )
-         Endif
-      ElseIf ::ActivateCount[ 1 ] < 1
-         PostQuitMessage( 0 )
-      Endif
-
-      // Removes from container
-      If ::Container != NIL
-         ::Container:DeleteControl( Self )
-      EndIf
-
-      // Removes "internal" references
-      If ::lInternal .AND. ::Parent != NIL
-         // Removes INTERNAL window from ::BrowseList and ::aControls
-         ::Parent:DeleteControl( Self )
-         // Removes INTERNAL window from ::SplitChildList
-         i := aScan( ::SplitChildList, { |o| o:hWnd == ::hWnd } )
-         If i > 0
-            _OOHG_DeleteArrayItem( ::SplitChildList, i )
-         EndIf
-      EndIf
-
-      // Removes WINDOW from the array
-      i := Ascan( _OOHG_aFormhWnd, hWnd )
-      IF i > 0
-         _OOHG_DeleteArrayItem( _OOHG_aFormhWnd, I )
-         _OOHG_DeleteArrayItem( _OOHG_aFormObjects, I )
-      ENDIF
-
-      // Eliminates active modal
-      IF Len( _OOHG_ActiveModal ) != 0 .AND. ATAIL( _OOHG_ActiveModal ):hWnd == ::hWnd
-         _OOHG_DeleteArrayItem( _OOHG_ActiveModal, Len( _OOHG_ActiveModal ) )
-      ENDIF
-
-      ::Super:Release()
-
-      ::Active := .F.
+      ::Events_Destroy()
 
       _OOHG_InteractiveCloseStarted := .F.
 
@@ -2110,6 +2130,7 @@ Return
 *-----------------------------------------------------------------------------*
 Function SearchParent( oParent, lInternal )
 *-----------------------------------------------------------------------------*
+Local nPos
    If ValType( oParent ) $ "CM" .AND. ! Empty( oParent )
       oParent := GetFormObject( oParent )
       If oParent:hWnd <= 0
@@ -2118,8 +2139,17 @@ Function SearchParent( oParent, lInternal )
    EndIf
 
    If ValType( oParent ) != "O"
-      If LEN( _OOHG_ActiveForm ) > 0 .AND. lInternal
-         oParent := ATail( _OOHG_ActiveForm )
+      If LEN( _OOHG_ActiveForm ) > 0
+         If lInternal
+            oParent := ATAIL( _OOHG_ActiveForm )
+            // TODO: Check if oParent window haves any active _OOHG_ActiveFrame... this requires SELF!
+         Else
+            nPos := LEN( _OOHG_ActiveForm )
+            Do While nPos > 1 .AND. _OOHG_ActiveForm[ nPos ]:lInternal
+               nPos--
+            EndDo
+            oParent := _OOHG_ActiveForm[ nPos ]
+         EndIf
       Else
          oParent := GetFormObjectByHandle( GetActiveWindow() )
          If oParent:hWnd == 0
@@ -2127,8 +2157,11 @@ Function SearchParent( oParent, lInternal )
                oParent := _OOHG_UserWindow
             ElseIf Len( _OOHG_ActiveModal ) > 0 .AND. ascan( _OOHG_aFormhWnd, ATAIL( _OOHG_ActiveModal ):hWnd ) > 0
                oParent := ATAIL( _OOHG_ActiveModal )
-            Else
+            ElseIf _OOHG_Main != nil
                oParent := _OOHG_Main
+            Else
+               // Not mandatory MAIN
+               // NO PARENT DETECTED!
             Endif
          Endif
       EndIf
@@ -2306,8 +2339,11 @@ METHOD Show() CLASS TFormModal
             ::oPrevWindow := _OOHG_UserWindow
          ElseIf Len( _OOHG_ActiveModal ) != 0 .AND. ascan( _OOHG_aFormhWnd, ATAIL( _OOHG_ActiveModal ):hWnd ) > 0
             ::oPrevWindow := ATAIL( _OOHG_ActiveModal )
-         Else
+         ElseIf _OOHG_Main != nil
             ::oPrevWindow := _OOHG_Main
+         Else
+            // Not mandatory MAIN
+            // NO PARENT DETECTED!
          Endif
       EndIf
    EndIf
@@ -2325,9 +2361,10 @@ Return ::Super:Show()
 *-----------------------------------------------------------------------------*
 METHOD Activate( lNoStop, oWndLoop ) CLASS TFormModal
 *-----------------------------------------------------------------------------*
-   If _OOHG_Main == nil
-      MsgOOHGError("ACTIVATE WINDOW: Main Window Must be Activated In First ACTIVATE WINDOW Command. Program terminated" )
-	EndIf
+   // Not mandatory MAIN
+   // If _OOHG_Main == nil
+   //    MsgOOHGError("ACTIVATE WINDOW: Main Window Must be Activated In First ACTIVATE WINDOW Command. Program terminated" )
+   // EndIf
 
    // Checks for non-stop window
    IF ValType( lNoStop ) != "L"
@@ -2516,9 +2553,10 @@ Return SELF // Remove it!
       ::Type := "S"
    endif
 
-   If _OOHG_Main == nil
-      MsgOOHGError( "Main Window Not Defined. Program Terminated." )
-   Endif
+   // Not mandatory MAIN
+   // If _OOHG_Main == nil
+   //    MsgOOHGError( "Main Window Not Defined. Program Terminated." )
+   // Endif
 
    if splitchild
       Self := TFormSplit():Define( FormName, w, h, break, grippertext, nocaption, caption, ;
@@ -2904,9 +2942,10 @@ Function _ActivateWindow( aForm, lNoWait )
 *-----------------------------------------------------------------------------*
 Local z, aForm2, oWndActive, oWnd, lModal
 
-   If _OOHG_Main == nil
-      MsgOOHGError( "MAIN WINDOW not defined. Program Terminated." )
-   EndIf
+   // Not mandatory MAIN
+   // If _OOHG_Main == nil
+   //    MsgOOHGError( "MAIN WINDOW not defined. Program Terminated." )
+   // EndIf
 
 * Testing... it allows to create non-modal windows when modal windows are active.
 * The problem is, what should do when modal window is ... disabled? hidden? WM_CLOSE? WM_DESTROY?
@@ -2923,17 +2962,19 @@ Local z, aForm2, oWndActive, oWnd, lModal
    IF ValType( lNoWait ) != "L"
       lNoWait := .F.
    ENDIF
-   oWndActive := IF( lNoWait, _OOHG_Main, GetFormObject( aForm2[ 1 ] ) )
+   oWndActive := IF( lNoWait .AND. ValType( _OOHG_Main ) == "O", _OOHG_Main, GetFormObject( aForm2[ 1 ] ) )
 
    // Looks for MAIN window
-   z := ASCAN( aForm2, { |c| GetFormObject( c ):hWnd == _OOHG_Main:hWnd } )
-   IF z != 0
-      AADD( aForm2, nil )
-      AINS( aForm2, 1 )
-      aForm2[ 1 ] := aForm2[ z + 1 ]
-      _OOHG_DeleteArrayItem( aForm2, z + 1 )
-      IF lNoWait
-         oWndActive := GetFormObject( aForm2[ 1 ] )
+   If _OOHG_Main != NIL
+      z := ASCAN( aForm2, { |c| GetFormObject( c ):hWnd == _OOHG_Main:hWnd } )
+      IF z != 0
+         AADD( aForm2, nil )
+         AINS( aForm2, 1 )
+         aForm2[ 1 ] := aForm2[ z + 1 ]
+         _OOHG_DeleteArrayItem( aForm2, z + 1 )
+         IF lNoWait
+            oWndActive := GetFormObject( aForm2[ 1 ] )
+         EndIf
       ENDIF
    ENDIF
 
@@ -2963,9 +3004,10 @@ Local i
 Local aForm := {}, oWnd
 Local MainName := ''
 
-   If _OOHG_Main == nil
-      MsgOOHGError( "MAIN WINDOW not defined. Program Terminated." )
-   EndIf
+   // Not mandatory MAIN
+   // If _OOHG_Main == nil
+   //    MsgOOHGError( "MAIN WINDOW not defined. Program Terminated." )
+   // EndIf
 
 	* If Already Active Windows Abort Command
 
