@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.25 2006-03-30 04:54:37 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.26 2006-04-21 05:34:27 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -293,9 +293,7 @@ Local Hi_wParam := HIWORD( wParam )
       Return nil
 
    elseif Hi_wParam == EN_KILLFOCUS
-      If ! _OOHG_InteractiveCloseStarted
-         ::DoEvent( ::OnLostFocus )
-      EndIf
+      ::DoEvent( ::OnLostFocus )
       Return nil
 
    elseif Hi_wParam == EN_SETFOCUS

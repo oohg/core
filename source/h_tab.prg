@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.14 2006-02-11 06:19:33 guerra000 Exp $
+ * $Id: h_tab.prg,v 1.15 2006-04-21 05:34:27 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -112,7 +112,8 @@ CLASS TTab FROM TControl
    METHOD SizePos
    METHOD Value               SETGET
    METHOD Enabled             SETGET
-   METHOD Visible             SETGET
+   METHOD Show
+   METHOD Hide
    METHOD ForceHide
 
    METHOD Events_Notify
@@ -258,22 +259,32 @@ LOCAL nPos
 RETURN ::Super:Enabled
 
 *-----------------------------------------------------------------------------*
-METHOD Visible( lVisible ) CLASS TTab
+METHOD Show() CLASS TTab
 *-----------------------------------------------------------------------------*
 LOCAL nPos, aPages
-   IF VALTYPE( lVisible ) == "L"
-      ::Super:Visible := lVisible
-      nPos := TabCtrl_GetCurSel( ::hWnd )
-      aPages := ::aPages
-      IF nPos <= LEN( aPages ) .AND. nPos >= 1
-         IF aPages[ nPos ]:Visible
-            AEVAL( aPages[ nPos ]:aControls, { |o| o:Visible := o:Visible } )
-         ELSE
-            aPages[ nPos ]:ForceHide()
-         ENDIF
+   ::Super:Show()
+   nPos := TabCtrl_GetCurSel( ::hWnd )
+   aPages := ::aPages
+   IF nPos <= LEN( aPages ) .AND. nPos >= 1
+      IF aPages[ nPos ]:Visible
+         AEVAL( aPages[ nPos ]:aControls, { |o| o:Visible := o:Visible } )
+      ELSE
+         aPages[ nPos ]:ForceHide()
       ENDIF
    ENDIF
-RETURN ::Super:Visible
+RETURN nil
+
+*-----------------------------------------------------------------------------*
+METHOD Hide() CLASS TTab
+*-----------------------------------------------------------------------------*
+LOCAL nPos, aPages
+   ::Super:Hide()
+   nPos := TabCtrl_GetCurSel( ::hWnd )
+   aPages := ::aPages
+   IF nPos <= LEN( aPages ) .AND. nPos >= 1
+      aPages[ nPos ]:ForceHide()
+   ENDIF
+RETURN nil
 
 *-----------------------------------------------------------------------------*
 METHOD ForceHide() CLASS TTab

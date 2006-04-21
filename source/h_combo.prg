@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.14 2006-03-30 04:54:37 guerra000 Exp $
+ * $Id: h_combo.prg,v 1.15 2006-04-21 05:34:26 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -106,8 +106,8 @@ CLASS TCombo FROM TLabel
    METHOD Define
    METHOD Refresh
    METHOD Value               SETGET
-   METHOD Visible             SETGET
-   METHOD ForceHide           BLOCK { |Self| SendMessage( ::hWnd, 335 , 0 , 0 ) , ::Super:ForceHide() }
+   METHOD Hide                BLOCK { |Self| SendMessage( ::hWnd, 335, 0, 0 ) , ::Super:Hide() }
+   METHOD ForceHide           BLOCK { |Self| SendMessage( ::hWnd, 335, 0, 0 ) , ::Super:ForceHide() }
    METHOD RefreshData
 
    METHOD Events_Command
@@ -166,7 +166,7 @@ Local ControlHandle , rcount := 0 , BackRec , cset := 0 , WorkArea , cField
 	endif
 
    ::SetSplitBoxInfo( Break, GripperText, w )
-   ControlHandle := InitComboBox( ::ContainerhWnd, 0, x, y, w, '', 0, h, invisible, notabstop, sort, displaychange, _OOHG_IsXP, ::lRtl )
+   ControlHandle := InitComboBox( ::ContainerhWnd, 0, x, y, w, '', 0, h, invisible, notabstop, sort, displaychange, ( "XP" $ OS() ), ::lRtl )
 
 	if valtype(uEnter) == "U"
 		uEnter := ""
@@ -317,18 +317,6 @@ Local WorkArea, BackRec, RCount, AuxVal
 		EndIf
 
 RETURN uValue
-
-*-----------------------------------------------------------------------------*
-METHOD Visible( lVisible ) CLASS TCombo
-*-----------------------------------------------------------------------------*
-   IF VALTYPE( lVisible ) == "L"
-      ::Super:Visible := lVisible
-      IF ! lVisible
-         SendMessage( ::hWnd, 335 , 0 , 0 )
-         HideWindow( ::hWnd )
-      ENDIF
-   ENDIF
-RETURN ::Super:Visible
 
 *-----------------------------------------------------------------------------*
 METHOD RefreshData() CLASS TCombo

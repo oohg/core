@@ -1,5 +1,5 @@
 /*
- * $Id: h_init.prg,v 1.15 2006-03-30 04:54:37 guerra000 Exp $
+ * $Id: h_init.prg,v 1.16 2006-04-21 05:34:26 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -103,8 +103,6 @@ INIT PROCEDURE _OOHG_INIT()
 
    _OOHG_Main        := nil
 
-   _OOHG_InteractiveCloseStarted := .F.
-
    _OOHG_ThisForm := NIL
    _OOHG_ThisControl := nil
 
@@ -132,8 +130,6 @@ INIT PROCEDURE _OOHG_INIT()
 
    _OOHG_MouseRow          := 0
    _OOHG_MouseCol          := 0
-
-   _OOHG_ActiveForm        := {}
 
    _OOHG_ActiveFrame := {}
 

@@ -1,5 +1,5 @@
 /*
- * $Id: h_spinner.prg,v 1.7 2006-02-11 06:19:33 guerra000 Exp $
+ * $Id: h_spinner.prg,v 1.8 2006-04-21 05:34:27 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -103,9 +103,10 @@ CLASS TSpinner FROM TControl
 
    METHOD Define
    METHOD SizePos
+   METHOD Show
+   METHOD Hide                BLOCK { |Self| HideWindow( ::AuxHandle ) , ::Super:Hide() }
    METHOD Value               SETGET
    METHOD Enabled             SETGET
-   METHOD Visible             SETGET
    METHOD ForceHide           BLOCK { |Self| HideWindow( ::AuxHandle ) , ::Super:ForceHide() }
 
    METHOD RangeMin            SETGET
@@ -176,6 +177,17 @@ Local uRet
 Return uRet
 
 *-----------------------------------------------------------------------------*
+METHOD Show() CLASS TSpinner
+*-----------------------------------------------------------------------------*
+   ::Super:Show()
+   IF ::ContainerVisible
+      CShowControl( ::AuxHandle )
+   ELSE
+      HideWindow( ::AuxHandle )
+   ENDIF
+Return nil
+
+*-----------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TSpinner
 *-----------------------------------------------------------------------------*
    IF VALTYPE( uValue ) == "N"
@@ -195,19 +207,6 @@ METHOD Enabled( lEnabled ) CLASS TSpinner
       ENDIF
    ENDIF
 Return ::Super:Enabled
-
-*-----------------------------------------------------------------------------*
-METHOD Visible( lVisible ) CLASS TSpinner
-*-----------------------------------------------------------------------------*
-   IF VALTYPE( lVisible ) == "L"
-      ::Super:Visible := lVisible
-      IF ::Super:Visible
-         CShowControl( ::AuxHandle )
-      ELSE
-         HideWindow( ::AuxHandle )
-      ENDIF
-   ENDIF
-Return ::Super:Visible
 
 *-----------------------------------------------------------------------------*
 METHOD RangeMin( nValue ) CLASS TSpinner

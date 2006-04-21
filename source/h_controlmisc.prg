@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.51 2006-04-13 03:20:23 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.52 2006-04-21 05:34:26 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -223,12 +223,12 @@ Return GetControlObject( ControlName, ParentForm ):Enabled := .T.
 *-----------------------------------------------------------------------------*
 Function _ShowControl ( ControlName,ParentForm )
 *-----------------------------------------------------------------------------*
-Return GetControlObject( ControlName, ParentForm ):Visible := .T.
+Return GetControlObject( ControlName, ParentForm ):Show()
 
 *-----------------------------------------------------------------------------*
 Function _HideControl ( ControlName,ParentForm )
 *-----------------------------------------------------------------------------*
-Return GetControlObject( ControlName, ParentForm ):Visible := .F.
+Return GetControlObject( ControlName, ParentForm ):Hide()
 
 *-----------------------------------------------------------------------------*
 Function _SetItem ( ControlName, ParentForm, Item , Value )
@@ -1190,10 +1190,10 @@ Local oWnd, oCtrl
          oCtrl:Release()
 
 		ElseIf Arg3 == 'SHOW'
-         oCtrl:Visible := .T.
+         oCtrl:Show()
 
 		ElseIf Arg3 == 'HIDE'
-         oCtrl:Visible := .F.
+         oCtrl:Hide()
 
 		ElseIf Arg3 == 'PLAY'
          oCtrl:Play()
@@ -1466,7 +1466,6 @@ CLASS TControl FROM TWindow
    DATA FontHandle  INIT 0
    DATA AuxHandle   INIT 0
    DATA Transparent INIT .F.
-   DATA Visible     INIT .T.
    DATA HelpId      INIT 0
    DATA OnChange    INIT nil
    DATA OnDblClick  INIT nil
@@ -1485,13 +1484,11 @@ CLASS TControl FROM TWindow
    METHOD Height    SETGET
    METHOD ToolTip   SETGET
    METHOD SetForm
-   METHOD SetInfo
    METHOD Register
    METHOD Refresh             BLOCK { || nil }
    METHOD Release
    METHOD ContainerRow        BLOCK { |Self| IF( ::Container != NIL, ::Container:ContainerRow + ::Container:RowMargin, ::Parent:RowMargin ) + ::Row }
    METHOD ContainerCol        BLOCK { |Self| IF( ::Container != NIL, ::Container:ContainerCol + ::Container:ColMargin, ::Parent:ColMargin ) + ::Col }
-   METHOD ContainerVisible    BLOCK { |Self| ::lVisible .AND. IF( ::Container != NIL, ::Container:ContainerVisible, .T. ) }
    METHOD ContainerhWnd       BLOCK { |Self| IF( ::Container == NIL, ::Parent:hWnd, if( Empty( ::Container:ContainerhWndValue ), ::Container:ContainerhWnd, ::Container:ContainerhWndValue ) ) }
    METHOD SetFont
    METHOD FontName            SETGET
@@ -1503,8 +1500,6 @@ CLASS TControl FROM TWindow
    METHOD SizePos
    METHOD Move
    METHOD Value               BLOCK { || nil }
-   METHOD Visible             SETGET
-   METHOD ForceHide           BLOCK { |Self| HideWindow( ::hWnd ) }
    METHOD SaveData
    METHOD RefreshData
    METHOD AddBitMap
@@ -1582,54 +1577,10 @@ RETURN cName
 *------------------------------------------------------------------------------*
 METHOD SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BkColor, lEditBox, lRtl ) CLASS TControl
 *------------------------------------------------------------------------------*
-LOCAL nPos
 
    ::StartInfo( -1 )
+   ::SearchParent( ParentForm )
 
-   // If PARENTFORM is a control
-   If ValType( ParentForm ) == "O"
-      If "TFORM" $ ParentForm:ClassName
-         ::Parent := ParentForm
-         Return ::SetInfo( ControlName, FontName, FontSize, FontColor, BkColor, lEditBox, lRtl )
-      Else
-         ::Container := ParentForm
-         ::Parent := ::Container:Parent
-         Return ::SetInfo( ControlName, FontName, FontSize, FontColor, BkColor, lEditBox, lRtl )
-      EndIf
-   EndIf
-
-   // Parent form:
-   if ! empty( ParentForm )
-      // Specified form
-      If ! _IsWindowDefined( ParentForm )
-         MsgOOHGError( "Window: "+ ParentForm + " is not defined. Program terminated." )
-      Endif
-      ::Parent := GetFormObject( ParentForm )
-   elseif LEN( _OOHG_ActiveForm ) > 0
-      // Active form
-      ::Parent := ATAIL( _OOHG_ActiveForm )
-   elseif len( _OOHG_ActiveFrame ) > 0
-      // Active frame
-      ::Container := ATAIL( _OOHG_ActiveFrame )
-      ::Parent := ::Container:Parent
-   else
-      MsgOOHGError( "Window: No window name specified. Program terminated.")
-   endif
-
-   // Checks for an open "control container" structure in the specified parent form
-   IF Empty( ::Container )
-      nPos := 0
-      AEVAL( _OOHG_ActiveFrame, { |o,i| IF( o:Parent:hWnd == ::Parent:hWnd, nPos := i, ) } )
-      IF nPos > 0
-         ::Container := _OOHG_ActiveFrame[ nPos ]
-      ENDIF
-   ENDIF
-
-Return ::SetInfo( ControlName, FontName, FontSize, FontColor, BkColor, lEditBox, lRtl )
-
-*------------------------------------------------------------------------------*
-METHOD SetInfo( ControlName, FontName, FontSize, FontColor, BkColor, lEditBox, lRtl ) CLASS TControl
-*------------------------------------------------------------------------------*
    // Font Name:
    if ! empty( FontName )
       // Specified font
@@ -1912,20 +1863,6 @@ METHOD Move( Row, Col, Width, Height ) CLASS TControl
 *-----------------------------------------------------------------------------*
 Return ::SizePos( Row, Col, Width, Height )
 
-*------------------------------------------------------------------------------*
-METHOD Visible( lVisible ) CLASS TControl
-*------------------------------------------------------------------------------*
-   IF VALTYPE( lVisible ) == "L"
-      ::lVisible := lVisible
-      IF lVisible .AND. ::ContainerVisible
-         CShowControl( ::hWnd )
-      ELSE
-         HideWindow( ::hWnd )
-      ENDIF
-      ProcessMessages()
-   ENDIF
-RETURN ::lVisible
-
 *-----------------------------------------------------------------------------*
 METHOD SaveData() CLASS TControl
 *-----------------------------------------------------------------------------*
@@ -2141,9 +2078,7 @@ Local Hi_wParam := HIWORD( wParam )
 
    elseif Hi_wParam == EN_KILLFOCUS
 
-      If _OOHG_InteractiveCloseStarted != .T.
-         ::DoEvent( ::OnLostFocus )
-      EndIf
+      ::DoEvent( ::OnLostFocus )
 
    elseif Hi_wParam == EN_SETFOCUS
 

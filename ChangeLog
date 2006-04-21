@@ -1,11 +1,44 @@
 /*
- * $Id: ChangeLog,v 1.148 2006-04-19 13:35:27 guerra000 Exp $
+ * $Id: ChangeLog,v 1.149 2006-04-21 05:34:26 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-04-21 00:33 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_controlmisc.prg
+  * source/h_windows.prg
+    * ::lForm property added, indicating if it's a form or it's
+      a control.
+    * TFormInternal(), TFormMDIClient(), TFormMDIChild() classes added.
+  * source/h_browse.prg
+  * source/h_combo.prg
+  * source/h_controlmisc.prg
+  * source/h_radio.prg
+  * source/h_spinner.prg
+  * source/h_tab.prg
+  * source/h_windows.prg
+    * ::Visible, ::Show, ::Hide properties moved to TWindow level.
+      ::Visible calls ::Show() and ::Hide(), so these methods
+      should be updated for the corresponding functionalities in
+      the respective control.
+  * source/h_browse.prg
+    * Fixed bug when adding new records with scrollbar's down
+      arrow and APPEND clause (scrollbar is disabled so any
+      pending event is killed).
+  * include/i_var.ch
+  * source/h_combo.prg
+  * source/h_controlmisc.prg
+  * source/h_init.prg
+  * source/h_textbox.prg
+  * source/h_windows.prg
+    - _OOHG_InteractiveCloseStarted removed. Since controls' events
+      are cleared, ::OnLostFocus will not be performed.
+    - _OOHG_IsXP removed. This macro is used in a single place,
+      and now it's hard coded there.
+    * _OOHG_ActiveForm moved to a STATIC variable in h_windows.prg .
 
 2006-04-19 08:33 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_menu.prg

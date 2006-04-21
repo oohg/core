@@ -1,5 +1,5 @@
 /*
- * $Id: i_var.ch,v 1.12 2006-03-30 04:54:37 guerra000 Exp $
+ * $Id: i_var.ch,v 1.13 2006-04-21 05:34:26 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -99,7 +99,6 @@ MEMVAR _OOHG_AllVars
 #xtranslate  _OOHG_Main                => _OOHG_AllVars \[   1 \]
 #xtranslate  _OOHG_MouseRow            => _OOHG_AllVars \[   5 \]
 #xtranslate  _OOHG_MouseCol            => _OOHG_AllVars \[   6 \]
-#xtranslate  _OOHG_ActiveForm          => _OOHG_AllVars \[   7 \]
 #xtranslate  _OOHG_ActiveFrame         => _OOHG_AllVars \[   8 \]
 
 #xtranslate  _OOHG_TempWindowName      => _OOHG_AllVars \[   9 \]
@@ -125,9 +124,5 @@ MEMVAR _OOHG_AllVars
 #xtranslate  _OOHG_ThisEventType       => _OOHG_AllVars \[  25 \]
 
 #xtranslate  _OOHG_ThisControl         => _OOHG_AllVars \[  27 \]
-
-#xtranslate  _OOHG_InteractiveCloseStarted => _OOHG_AllVars \[  28 \]
-
-#xtranslate  _OOHG_IsXP                => ( "XP" $ WindowsVersion()\[ 1 \] )
 
 #xtranslate  _OOHG_ThisItemCellValue   => _OOHG_AllVars \[  29 \]

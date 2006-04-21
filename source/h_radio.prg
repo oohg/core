@@ -1,5 +1,5 @@
 /*
- * $Id: h_radio.prg,v 1.10 2006-04-19 05:11:25 guerra000 Exp $
+ * $Id: h_radio.prg,v 1.11 2006-04-21 05:34:26 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -109,9 +109,10 @@ CLASS TRadioGroup FROM TLabel
    METHOD SizePos
    METHOD Value               SETGET
    METHOD Enabled             SETGET
-   METHOD Visible             SETGET
    METHOD ForceHide           BLOCK { |Self| AEVAL( ::aControls, { |o| o:ForceHide() } ) }
    METHOD SetFocus
+   METHOD Show
+   METHOD Hide
 
    METHOD IsHandle
    METHOD Caption
@@ -233,15 +234,6 @@ METHOD Enabled( lEnabled ) CLASS TRadioGroup
 RETURN ::Super:Enabled
 
 *-----------------------------------------------------------------------------*
-METHOD Visible( lVisible ) CLASS TRadioGroup
-*-----------------------------------------------------------------------------*
-   IF VALTYPE( lVisible ) == "L"
-      ::Super:Visible := lVisible
-      AEVAL( ::aControls, { |o| o:Visible := o:Visible } )
-   ENDIF
-RETURN ::Super:Visible
-
-*-----------------------------------------------------------------------------*
 METHOD SetFocus() CLASS TRadioGroup
 *-----------------------------------------------------------------------------*
 Local nValue
@@ -250,6 +242,20 @@ Local nValue
       ::aControls[ nValue ]:SetFocus()
    EndIf
 Return Self
+
+*-----------------------------------------------------------------------------*
+METHOD Show() CLASS TRadioGroup
+*-----------------------------------------------------------------------------*
+   ::Super:Show()
+   AEVAL( ::aControls, { |o| o:Visible := o:Visible } )
+RETURN nil
+
+*-----------------------------------------------------------------------------*
+METHOD Hide() CLASS TRadioGroup
+*-----------------------------------------------------------------------------*
+   ::Super:Hide()
+   AEVAL( ::aControls, { |o| o:ForceHide() } )
+RETURN nil
 
 *-----------------------------------------------------------------------------*
 METHOD IsHandle( hWnd ) CLASS TRadioGroup

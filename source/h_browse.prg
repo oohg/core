@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.43 2006-04-07 05:47:41 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.44 2006-04-21 05:34:26 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -119,7 +119,8 @@ CLASS TBrowse FROM TGrid
    METHOD SizePos
    METHOD Value               SETGET
    METHOD Enabled             SETGET
-   METHOD Visible             SETGET
+   METHOD Show
+   METHOD Hide
    METHOD ForceHide
    METHOD RefreshData
 
@@ -730,6 +731,11 @@ Local uRet
    uRet := nil
    If ! ::lEditing
       ::lEditing := .T.
+      If ::VScroll != nil
+         // Kills scrollbar's events...
+         ::VScroll:Enabled := .F.
+         ::VScroll:Enabled := .T.
+      EndIf
       uRet := ::EditItem_B( append )
       ::lEditing := .F.
    EndIf
@@ -1315,23 +1321,34 @@ METHOD Enabled( lEnabled ) CLASS TBrowse
 RETURN ::Super:Enabled
 
 *------------------------------------------------------------------------------*
-METHOD Visible( lVisible ) CLASS TBrowse
+METHOD Show() CLASS TBrowse
 *------------------------------------------------------------------------------*
-   IF VALTYPE( lVisible ) == "L"
-      ::Super:Visible := lVisible
-      If ::VScroll != nil
-         ::VScroll:Visible := ::VScroll:Visible
-		EndIf
-      If ::AuxHandle != 0
-         IF ::ContainerVisible
-            CShowControl( ::AuxHandle )
-         ELSE
-            HideWindow( ::AuxHandle )
-         ENDIF
-		EndIf
-      ProcessMessages()
-   ENDIF
-RETURN ::Super:Visible
+   ::Super:Show()
+   If ::VScroll != nil
+      ::VScroll:Show()
+   EndIf
+   If ::AuxHandle != 0
+      If ::ContainerVisible
+         CShowControl( ::AuxHandle )
+      Else
+         HideWindow( ::AuxHandle )
+      EndIf
+   EndIf
+   ProcessMessages()
+RETURN nil
+
+*------------------------------------------------------------------------------*
+METHOD Hide() CLASS TBrowse
+*------------------------------------------------------------------------------*
+   ::Super:Hide()
+   If ::VScroll != nil
+      ::VScroll:Hide()
+   EndIf
+   If ::AuxHandle != 0
+      HideWindow( ::AuxHandle )
+   EndIf
+   ProcessMessages()
+RETURN nil
 
 *------------------------------------------------------------------------------*
 METHOD ForceHide() CLASS TBrowse
