@@ -1,11 +1,23 @@
 /*
- * $Id: ChangeLog,v 1.149 2006-04-21 05:34:26 guerra000 Exp $
+ * $Id: ChangeLog,v 1.150 2006-04-22 05:01:44 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-04-22 00:00 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_windows.prg
+    * Fixed BackColor definition for SplitChild windows.
+  * source/makelib.bat
+    * It tries to create oohg\lib directory.
+  - source/errorsys.prg
+  * source/h_error.prg
+  * source/makelib.bat
+    * Moved source code from errorsys.prg to h_error.prg .
+    - errorsys.prg removed.
+    * Version date changed to 2006.04.22 .
 
 2006-04-21 00:33 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_controlmisc.prg

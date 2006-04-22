@@ -1,9 +1,9 @@
 /*
- * $Id: h_error.prg,v 1.12 2006-03-06 14:11:15 declan2005 Exp $
+ * $Id: h_error.prg,v 1.13 2006-04-22 05:01:45 guerra000 Exp $
  */
 /*
  * ooHG source code:
- * PRG error messages functions
+ * Error handling system
  *
  * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.guerra.com.mx
@@ -112,20 +112,16 @@ Function MsgOOHGError(Message)
    _KillAllTimers()
    _KillAllKeys()
 
-if type("_OOHG_TXTERROR") == "U" 
-   _OOHG_TXTERROR=.F.
-else
-   if .not. type("_OOHG_TXTERROR") == "L"
-      _OOHG_TXTERROR=.F.
-   endif
-endif
+   If ValType( _OOHG_TXTERROR ) != "L"
+      _OOHG_TXTERROR := .F.
+   EndIf
 
 if  .not. _OOHG_TXTERROR
     HtmArch := Html_ErrorLog()
     Html_LineText(HtmArch, '<p class="updated">Date:' + Dtoc(Date()) + "  " + "Time: " + Time() )
     n := 1
-    ai := MiniGuiVersion() + chr( 13 ) + chr( 10 ) + Message + chr( 13 ) + chr( 10 ) 
-    Html_LineText( HtmArch, "Version: " + MiniGuiVersion() )
+    ai := ooHGVersion() + chr( 13 ) + chr( 10 ) + Message + chr( 13 ) + chr( 10 )
+    Html_LineText( HtmArch, "Version: " + ooHGVersion() )
     Html_LineText( HtmArch, "Alias in use: " + alias() )
     Html_LineText( HtmArch, "Error: "+Message +"</p>" )
     DO WHILE ! Empty( ProcName( n ) )
@@ -137,13 +133,13 @@ if  .not. _OOHG_TXTERROR
 else
     set printer to errorlog.txt additive
     set print on
-    ? " "    
+    ? " "
     ? replicate("-",80)
     ? " "
     ? "Date:" + Dtoc( Date() ) + "  " + "Time: " + Time()
     n := 1
-    ai := MiniGuiVersion() + chr( 13 ) + chr( 10 ) + Message + chr( 13 ) + chr( 10 ) 
-    ? "Version: " + MiniGuiVersion()
+    ai := ooHGVersion() + chr( 13 ) + chr( 10 ) + Message + chr( 13 ) + chr( 10 )
+    ? "Version: " + ooHGVersion()
     ? "Alias in use: "+alias()
     ? "Error: "+ Message
     ? " "
@@ -159,10 +155,245 @@ endif
     ShowError( ai )
 Return Nil
 
+#include "oohg.ch"
+#include "error.ch"
+#include "common.ch"
+
+*------------------------------------------------------------------------------*
+PROCEDURE ErrorSys
+*------------------------------------------------------------------------------*
+
+	ErrorBlock( { | oError | DefError( oError ) } )
+
+RETURN
+
+STATIC FUNCTION DefError( oError )
+   LOCAL cMessage
+   LOCAL cDOSError
+   LOCAL n
+   Local Ai
+   LOCAL HtmArch, xText
+   MemVar _OOHG_TXTERROR
+
+   // By default, division by zero results in zero
+   IF oError:genCode == EG_ZERODIV
+      RETURN 0
+   ENDIF
+
+   // Set NetErr() of there was a database open error
+   IF oError:genCode == EG_OPEN .AND. ;
+      oError:osCode == 32 .AND. ;
+      oError:canDefault
+      NetErr( .T. )
+      RETURN .F.
+   ENDIF
+
+   // Set NetErr() if there was a lock error on dbAppend()
+   IF oError:genCode == EG_APPENDLOCK .AND. ;
+      oError:canDefault
+      NetErr( .T. )
+      RETURN .F.
+   ENDIF
+
+   If ValType( _OOHG_TXTERROR ) != "L"
+      _OOHG_TXTERROR := .F.
+   EndIf
+
+   if ! _OOHG_TXTERROR
+      HtmArch := Html_ErrorLog()
+   endif
+   cMessage := ErrorMessage( oError )
+   IF ! Empty( oError:osCode )
+      cDOSError := "(DOS Error " + LTrim( Str( oError:osCode ) ) + ")"
+   ENDIF
+
+   // Kill timers and hot keys
+   _KillAllTimers()
+   _KillAllKeys()
+
+   // "Quit" selected
+
+
+   IF ! Empty( oError:osCode )
+      cMessage += " " + cDOSError
+   ENDIF
+   if ! _OOHG_TXTERROR
+      Html_LineText(HtmArch, '<p class="updated">Date:' + Dtoc(Date()) + "  " + "Time: " + Time() )
+      Html_LineText(HtmArch, "Version: " + ooHGVersion()  )
+      Html_LineText(HtmArch, "Alias in use: "+alias()  )
+      Html_LineText(HtmArch, "Error: " + cMessage + "</p>" )
+      n := 2
+      ai = cmessage + chr(13) + chr (10) + chr(13) + chr (10)
+      WHILE ! Empty( ProcName( n ) )
+         xText := "Called from " + ProcName( n ) + "(" + AllTrim( Str( ProcLine( n++ ) ) ) + ")" +CHR(13) +CHR(10)
+         ai = ai + xText
+         Html_LineText(HtmArch,xText)
+      ENDDO
+      Html_Line(HtmArch)
+   else
+      set printer to errorlog.txt additive
+      set print on
+      ? " "
+      ? replicate("-",80)
+      ? " "
+      ? "Date:" + Dtoc( Date() ) + "  " + "Time: " + Time()
+      n := 2
+      ai := ooHGVersion() + chr( 13 ) + chr( 10 ) +cMessage + chr( 13 ) + chr( 10 )
+      ? "Version: " + ooHGVersion()
+      ? "Alias in use: "+ alias()
+      ? "Error: " + Cmessage
+      ? " "
+      ? " "
+      DO WHILE ! Empty( ProcName( n ) )
+         xText := "Called from " + ProcName( n ) + "(" + AllTrim( Str( ProcLine( n++ ) ) ) + ")"
+         ai += xText + chr(13) + chr(10)
+         ? xtext
+      ENDDO
+      set print off
+      set printer to
+   endif
+   ShowError(ai)
+
+   QUIT
+
+   RETURN .F.
+
+// [vszakats]
+
+STATIC FUNCTION ErrorMessage( oError )
+   LOCAL cMessage
+
+   // start error message
+   cMessage := iif( oError:severity > ES_WARNING, "Error", "Warning" ) + " "
+
+   // add subsystem name if available
+   IF ISCHARACTER( oError:subsystem )
+      cMessage += oError:subsystem()
+   ELSE
+      cMessage += "???"
+   ENDIF
+
+   // add subsystem's error code if available
+   IF ISNUMBER( oError:subCode )
+      cMessage += "/" + LTrim( Str( oError:subCode ) )
+   ELSE
+      cMessage += "/???"
+   ENDIF
+
+   // add error description if available
+   IF ISCHARACTER( oError:description )
+      cMessage += "  " + oError:description
+   ENDIF
+
+   // add either filename or operation
+   DO CASE
+   CASE !Empty( oError:filename )
+      cMessage += ": " + oError:filename
+   CASE !Empty( oError:operation )
+      cMessage += ": " + oError:operation
+   ENDCASE
+
+   RETURN cMessage
+
+*******************************************
+Function ShowError ( ErrorMesssage )
+********************************************
+
+	dbcloseall()
+
+	C_MSGSTOP ( ErrorMesssage , 'Program Error' )
+
+   ExitProcess(0)
+
+Return Nil
+
+*------------------------------------------------------------------------------
+*-01-01-2003
+*-AUTHOR: Antonio Novo
+*-Create/Open the ErrorLog.Htm file
+*-Note: Is used in: errorsys.prg and h_error.prg
+*------------------------------------------------------------------------------
+FUNCTION HTML_ERRORLOG
+*---------------------
+    Local HtmArch := 0
+    If .Not. File("\"+CurDir()+"\ErrorLog.Htm")
+        HtmArch := HtmL_Ini("\"+CurDir()+"\ErrorLog.Htm","ooHG Errorlog File")
+        Html_Line(HtmArch)
+    Else
+        HtmArch := FOPEN("\"+CurDir()+"\ErrorLog.Htm",2)
+        FSeek(HtmArch,0,2)    //End Of File
+    EndIf
+RETURN (HtmArch)
+
+*------------------------------------------------------------------------------
+*-30-12-2002
+*-AUTHOR: Antonio Novo
+*-HTML Page Head
+*------------------------------------------------------------------------------
+FUNCTION HTML_INI(ARCH,TIT)
+*-------------------------
+    LOCAL HTMARCH
+    LOCAL cStilo:= "<style> "                       +;
+                     "body{ "                       +;
+                       "font-family: sans-serif;"   +;
+                       "background-color: #ffffff;" +;
+                       "font-size: 75%;"            +;
+                       "color: #000000;"            +;
+                       "}"                          +;
+                     "h1{"                          +;
+                       "font-family: sans-serif;"   +;
+                       "font-size: 150%;"           +;
+                       "color: #0000cc;"            +;
+                       "font-weight: bold;"         +;
+                       "background-color: #f0f0f0;" +;
+                       "}"                          +;
+                     ".updated{"                    +;
+                       "font-family: sans-serif;"   +;
+                       "color: #cc0000;"            +;
+                       "font-size: 110%;"           +;
+                       "}"                          +;
+                     ".normaltext{"                 +;
+                      "font-family: sans-serif;"    +;
+                      "font-size: 100%;"            +;
+                      "color: #000000;"             +;
+                      "font-weight: normal;"        +;
+                      "text-transform: none;"       +;
+                      "text-decoration: none;"      +;
+                    "}"                             +;
+                    "</style>"
+
+    HTMARCH := FCREATE(ARCH)
+    FWRITE(HTMARCH,"<HTML><HEAD><TITLE>"+TIT+"</TITLE></HEAD>" + cStilo +"<BODY>"+CHR(13)+CHR(10))
+    FWRITE(HTMARCH,'<H1 Align=Center>'+TIT+'</H1><BR>'+CHR(13)+CHR(10))
+RETURN (HTMARCH)
+
+*------------------------------------------------------------------------------
+*-30-12-2002
+*-AUTHOR: Antonio Novo
+*-HTM Page Line
+*------------------------------------------------------------------------------
+FUNCTION HTML_LINETEXT(HTMARCH,LINEA)
+*-----------------------------------
+ //   LOCAL XLINEA
+ //   XLINEA := RTRIM(LINEA)
+    FWRITE(HTMARCH, RTRIM( LINEA ) + "<BR>"+CHR(13)+CHR(10))
+RETURN (.T.)
+
+*------------------------------------------------------------------------------
+*-30-12-2002
+*-AUTHOR: Antonio Novo
+*-HTM Line
+*------------------------------------------------------------------------------
+FUNCTION HTML_LINE(HTMARCH)
+*-------------------------
+    FWRITE(HTMARCH,"<HR>"+CHR(13)+CHR(10))
+RETURN (.T.)
+
+
 *------------------------------------------------------------------------------
 Function ooHGVersion()
 *------------------------------------------------------------------------------
-Return "ooHG pre-release - 2006.03.06"
+Return "ooHG pre-release - 2006.04.22"
 
 Function MiniGuiVersion()
 Return ooHGVersion()

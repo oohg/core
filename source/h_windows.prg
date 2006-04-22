@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.80 2006-04-21 05:34:27 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.81 2006-04-22 05:01:45 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -2417,7 +2417,7 @@ CLASS TFormSplit FROM TFormInternal
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
-METHOD Define( FormName, w, h, break, grippertext, nocaption, title, ;
+METHOD Define( FormName, w, h, break, grippertext, nocaption, title, aRGB, ;
                fontname, fontsize, gotfocus, lostfocus, virtualheight, ;
                VirtualWidth, Focused, scrollleft, scrollright, scrollup, ;
                scrolldown, hscrollbox, vscrollbox, cursor, lRtl, mdi ) CLASS TFormSplit
@@ -2438,7 +2438,7 @@ Local oControl
    nStyleEx += WS_EX_STATICEDGE + WS_EX_TOOLWINDOW
 
    ::Define2( FormName, Title, 0, 0, w, h, ::Parent:hWnd, .F., .F., .F., .F., .F., ;
-              nocaption, virtualheight, virtualwidth, hscrollbox, vscrollbox, fontname, fontsize, nil, cursor, ;
+              nocaption, virtualheight, virtualwidth, hscrollbox, vscrollbox, fontname, fontsize, aRGB, cursor, ;
               nil, .F., gotfocus, lostfocus, scrollleft, scrollright, scrollup, scrolldown, nil, ;
               nil, nil, nil, nil, nil, nil, ;
               nil, nil, nil, .F., nStyle, nStyleEx, ;
@@ -2607,7 +2607,7 @@ Local aError := {}
                hscrollbox, vscrollbox, helpbutton, maximizeprocedure, ;
                minimizeprocedure, cursor, InteractiveCloseProcedure, lRtl, mdi )
    ElseIf splitchild
-      Self := TFormSplit():Define( FormName, w, h, break, grippertext, nocaption, caption, ;
+      Self := TFormSplit():Define( FormName, w, h, break, grippertext, nocaption, caption, aRGB, ;
                fontname, fontsize, gotfocus, lostfocus, virtualheight, ;
                VirtualWidth, Focused, scrollleft, scrollright, scrollup, ;
                scrolldown, hscrollbox, vscrollbox, cursor, lRtl, mdi )
