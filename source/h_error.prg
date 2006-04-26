@@ -1,5 +1,5 @@
 /*
- * $Id: h_error.prg,v 1.13 2006-04-22 05:01:45 guerra000 Exp $
+ * $Id: h_error.prg,v 1.14 2006-04-26 12:58:57 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -112,7 +112,7 @@ Function MsgOOHGError(Message)
    _KillAllTimers()
    _KillAllKeys()
 
-   If ValType( _OOHG_TXTERROR ) != "L"
+   If Type( "_OOHG_TXTERROR" ) != "L"
       _OOHG_TXTERROR := .F.
    EndIf
 
@@ -195,7 +195,7 @@ STATIC FUNCTION DefError( oError )
       RETURN .F.
    ENDIF
 
-   If ValType( _OOHG_TXTERROR ) != "L"
+   If Type( "_OOHG_TXTERROR" ) != "L"
       _OOHG_TXTERROR := .F.
    EndIf
 

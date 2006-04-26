@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.15 2006-04-21 05:34:27 guerra000 Exp $
+ * $Id: h_tab.prg,v 1.16 2006-04-26 12:58:57 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -193,7 +193,7 @@ Local ControlHandle
       ::Value := 1
    ENDIF
 
-   AADD( _OOHG_ActiveFrame, Self )
+   _OOHG_AddFrame( Self )
 
 Return Self
 
@@ -381,71 +381,34 @@ Local oPage, nPos, nKey
 Return Nil
 
 *------------------------------------------------------------------------------*
-Function _BeginTabPage ( caption , image )
+Function _BeginTabPage( caption, image, Position )
 *------------------------------------------------------------------------------*
-Local oCtrl
-
-   DO WHILE .T.
-      IF LEN( _OOHG_ActiveFrame ) == 0
-         EXIT
-         // ERROR: No TAB started
-      ENDIF
+   IF _OOHG_LastFrame() == "TABPAGE"
+      // ERROR: Last page not finished
+      _EndTabPage()
+   ENDIF
+   IF _OOHG_LastFrame() == "TAB"
       oCtrl := ATAIL( _OOHG_ActiveFrame )
-      IF oCtrl:Type == "TABPAGE"
-         _EndTabPage()
-         // ERROR: Last page not finished
-         LOOP
-      ELSEIF oCtrl:Type == "TAB"
-         oCtrl:AddPage( /* Position */ , Caption , Image )
-         AADD( _OOHG_ActiveFrame, ATAIL( oCtrl:aPages ) )
-      ELSE
-         // ERROR: No TAB started
-      ENDIF
-      exit
-   ENDDO
-
+      oCtrl:AddPage( Position, Caption, Image )
+      _OOHG_AddFrame( ATAIL( oCtrl:aPages ) )
+   Else
+      // ERROR: No TAB started
+   EndIf
 Return Nil
+
 *------------------------------------------------------------------------------*
 Function _EndTabPage()
 *------------------------------------------------------------------------------*
-Local oCtrl
-
-   IF LEN( _OOHG_ActiveFrame ) == 0
-      Return nil
-      // ERROR: No TAB started
-   ENDIF
-   oCtrl := ATAIL( _OOHG_ActiveFrame )
-   IF oCtrl:Type == "TABPAGE"
-      ASIZE( _OOHG_ActiveFrame, LEN( _OOHG_ActiveFrame ) - 1 )
-   ELSE
-      // ERROR: No TABPAGE started
-   ENDIF
-
-Return Nil
+Return _OOHG_DeleteFrame( "TABPAGE" )
 
 *------------------------------------------------------------------------------*
 Function _EndTab()
 *------------------------------------------------------------------------------*
-Local oCtrl
-
-   DO WHILE .T.
-      IF LEN( _OOHG_ActiveFrame ) == 0
-         EXIT
-         // ERROR: No TAB started
-      ENDIF
-      oCtrl := ATAIL( _OOHG_ActiveFrame )
-      IF oCtrl:Type == "TAB"
-         ASIZE( _OOHG_ActiveFrame, LEN( _OOHG_ActiveFrame ) - 1 )
-      ELSEIF oCtrl:Type == "TABPAGE"
-         ASIZE( _OOHG_ActiveFrame, LEN( _OOHG_ActiveFrame ) - 1 )
-         LOOP
-         // ERROR: No TABPAGE finished
-      ELSE
-         // ERROR: No TAB started
-      ENDIF
-      exit
-   ENDDO
-
+   IF _OOHG_LastFrame() == "TABPAGE"
+      // ERROR: Last page not finished
+      _EndTabPage()
+   ENDIF
+   _OOHG_DeleteFrame( "TAB" )
 Return Nil
 
 *-----------------------------------------------------------------------------*

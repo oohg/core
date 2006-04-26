@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.81 2006-04-22 05:01:45 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.82 2006-04-26 12:58:57 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -812,6 +812,40 @@ METHOD Hide() CLASS TWindow
    HideWindow( ::hWnd )
    ProcessMessages()
 Return nil
+
+*------------------------------------------------------------------------------*
+FUNCTION _OOHG_AddFrame( oFrame )
+*------------------------------------------------------------------------------*
+   AADD( _OOHG_ActiveFrame, oFrame )
+Return oFrame
+
+*------------------------------------------------------------------------------*
+FUNCTION _OOHG_DeleteFrame( cType )
+*------------------------------------------------------------------------------*
+Local oCtrl
+   If LEN( _OOHG_ActiveFrame ) == 0
+      // ERROR: No FRAME started
+      Return .F.
+   EndIf
+   oCtrl := ATAIL( _OOHG_ActiveFrame )
+   If oCtrl:Type == cType
+      ASIZE( _OOHG_ActiveFrame, LEN( _OOHG_ActiveFrame ) - 1 )
+   Else
+      // ERROR: No FRAME started
+      Return .F.
+   EndIf
+Return .T.
+
+*------------------------------------------------------------------------------*
+FUNCTION _OOHG_LastFrame()
+*------------------------------------------------------------------------------*
+Local cRet
+   If LEN( _OOHG_ActiveFrame ) == 0
+      cRet := ""
+   Else
+      cRet := ATAIL( _OOHG_ActiveFrame ):Type
+   EndIf
+Return cRet
 
 *------------------------------------------------------------------------------*
 CLASS TForm FROM TWindow

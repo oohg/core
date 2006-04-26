@@ -1,5 +1,5 @@
 /*
- * $Id: h_splitbox.prg,v 1.2 2006-04-07 05:47:41 guerra000 Exp $
+ * $Id: h_splitbox.prg,v 1.3 2006-04-26 12:58:57 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -137,7 +137,7 @@ Local ControlHandle
 
    ::ContainerhWndValue := ::hWnd
 
-   AADD( _OOHG_ActiveFrame, Self )
+   _OOHG_AddFrame( Self )
    aAdd( ::Parent:BrowseList, Self )
 
 Return Self
@@ -169,20 +169,7 @@ Return .T.
 *-----------------------------------------------------------------------------*
 Function _EndSplitBox()
 *-----------------------------------------------------------------------------*
-Local oCtrl
-
-   If LEN( _OOHG_ActiveFrame ) == 0
-      Return nil
-      // ERROR: No SPLITBOX started
-   EndIf
-   oCtrl := ATAIL( _OOHG_ActiveFrame )
-   If oCtrl:Type == "SPLITBOX"
-      ASIZE( _OOHG_ActiveFrame, LEN( _OOHG_ActiveFrame ) - 1 )
-   Else
-      // ERROR: No SPLITBOX started
-   EndIf
-
-Return Nil
+Return _OOHG_DeleteFrame( "SPLITBOX" )
 
 EXTERN SetSplitBoxItem
 
