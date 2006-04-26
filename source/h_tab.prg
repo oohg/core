@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.16 2006-04-26 12:58:57 guerra000 Exp $
+ * $Id: h_tab.prg,v 1.17 2006-04-26 18:31:24 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -383,6 +383,7 @@ Return Nil
 *------------------------------------------------------------------------------*
 Function _BeginTabPage( caption, image, Position )
 *------------------------------------------------------------------------------*
+local oCtrl
    IF _OOHG_LastFrame() == "TABPAGE"
       // ERROR: Last page not finished
       _EndTabPage()
