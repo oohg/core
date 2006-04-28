@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.28 2006-04-09 16:18:56 declan2005 Exp $
+* $Id: h_print.prg,v 1.29 2006-04-28 15:51:08 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -1175,7 +1175,10 @@ return self
 *-------------------------
 METHOD enddocx() CLASS TDOSPRINT
 *-------------------------
-local _nhandle,wr
+local _nhandle,wr,nx,ny
+
+nx:=getdesktopwidth()
+ny:=getdesktopheight()
 
  SET DEVICE TO SCREEN
    SET PRINTER TO
@@ -1183,24 +1186,24 @@ local _nhandle,wr
    if ::impreview
       wr:=memoread((::tempfile))
       DEFINE WINDOW PRINT_PREVIEW  ;
-         AT 10,10 ;
-         WIDTH 640 HEIGHT 480 ;
+         AT 0,0 ;
+         WIDTH nx HEIGHT ny-70 ;
          TITLE 'Preview -----> ' + ::tempfile ;
          MODAL
 
          @ 0,0 EDITBOX EDIT_P ;
          OF PRINT_PREVIEW ;
-         WIDTH 590 ;
-         HEIGHT 440 ;
+         WIDTH nx-50 ;
+         HEIGHT ny-40-70 ;
          VALUE WR ;
          READONLY ;
          FONT 'Courier new' ;
          SIZE 10
 
-         @ 10,600 button but_4 caption "X" width 30 action ( print_preview.release() )
-         @ 110,600 button but_1 caption "+ +" width 30 action zoom("+")
-         @ 210,600 button but_2 caption "- -" width 30 action zoom("-")
-         @ 310,600 button but_3 caption "P" width 30 action (::printdos())
+         @ 10,nx-40 button but_4 caption "X" width 30 action ( print_preview.release() )
+         @ 110,nx-40 button but_1 caption "+ +" width 30 action zoom("+")
+         @ 210,nx-40 button but_2 caption "- -" width 30 action zoom("-")
+         @ 310,nx-40 button but_3 caption "P" width 30 action (::printdos())
 
 
       END WINDOW
