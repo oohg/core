@@ -89,8 +89,12 @@ TPRINT -------|                                     |---- TGRIDCONTROLLCOMBOBOX
               |
               |
               |-----TREPORT
-
-
-TREG32
-
-
+              | 
+              |
+TREG32        |-----THBPRINTER
+              |
+              |
+              |-----TMINIPRINT
+              |
+              |
+              |-----TDOSPRINT
