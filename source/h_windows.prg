@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.82 2006-04-26 12:58:57 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.83 2006-05-01 04:12:44 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -105,6 +105,7 @@ STATIC _OOHG_ActiveModal := {}       // Modal windows' stack
 STATIC _OOHG_DialogCancelled := .F.  //
 STATIC _OOHG_HotKeys := {}           // Application-wide hot keys
 STATIC _OOHG_ActiveForm := {}        // Forms under creation
+STATIC _OOHG_bKeyDown := nil         // Application-wide WM_KEYDOWN handler
 
 #include "hbclass.ch"
 
@@ -174,6 +175,7 @@ CLASS TWindow
    DATA OnMouseMove         INIT nil
    DATA aKeys               INIT {}  // { Id, Mod, Key, Action }   Application-controlled hotkeys
    DATA aHotKeys            INIT {}  // { Id, Mod, Key, Action }   OperatingSystem-controlled hotkeys
+   DATA bKeyDown            INIT nil     // WM_KEYDOWN handler
    DATA NestedClick         INIT .F.
 
    DATA DefBkColorEdit      INIT nil
@@ -761,23 +763,46 @@ Return _OOHG_SetKey( ::aKeys, nKey, nFlags, bAction )
 *-----------------------------------------------------------------------------*
 METHOD LookForKey( nKey, nFlags ) CLASS TWindow
 *-----------------------------------------------------------------------------*
-Local lDone, nPos
-   nPos := ASCAN( ::aKeys, { |a| a[ HOTKEY_KEY ] == nKey .AND. nFlags == a[ HOTKEY_MOD ] } )
-   If nPos > 0
-      Eval( ::aKeys[ nPos ][ HOTKEY_ACTION ], nKey, nFlags )
+Local lDone
+   If LookForKey_Check_HotKey( ::aKeys, nKey, nFlags )
+      lDone := .T.
+   ElseIf LookForKey_Check_bKeyDown( ::bKeyDown, nKey, nFlags )
       lDone := .T.
    ElseIf ValType( ::Container ) == "O"
       lDone := ::Container:LookForKey( nKey, nFlags )
    ElseIf ValType( ::Parent ) == "O" .AND. ::lInternal
       lDone := ::Parent:LookForKey( nKey, nFlags )
    Else
-      nPos := ASCAN( _OOHG_HotKeys, { |a| a[ HOTKEY_KEY ] == nKey .AND. nFlags == a[ HOTKEY_MOD ] } )
-      If nPos > 0
-         Eval( _OOHG_HotKeys[ nPos ][ HOTKEY_ACTION ], nKey, nFlags )
+      If LookForKey_Check_HotKey( _OOHG_HotKeys, nKey, nFlags )
+         lDone := .T.
+      ElseIf LookForKey_Check_bKeyDown( _OOHG_bKeyDown, nKey, nFlags )
          lDone := .T.
       Else
          lDone := .F.
       EndIf
+   EndIf
+Return lDone
+
+STATIC FUNCTION LookForKey_Check_HotKey( aKeys, nKey, nFlags )
+Local nPos, lDone
+   nPos := ASCAN( aKeys, { |a| a[ HOTKEY_KEY ] == nKey .AND. nFlags == a[ HOTKEY_MOD ] } )
+   If nPos > 0
+      Eval( aKeys[ nPos ][ HOTKEY_ACTION ], nKey, nFlags )
+      lDone := .T.
+   Else
+      lDone := .F.
+   EndIf
+Return lDone
+
+STATIC FUNCTION LookForKey_Check_bKeyDown( bKeyDown, nKey, nFlags )
+Local lDone
+   If ValType( bKeyDown ) == "B"
+      lDone := Eval( bKeyDown, nKey, nFlags )
+      If ValType( lDone ) != "L"
+         lDone := .F.
+      EndIf
+   Else
+      lDone := .F.
    EndIf
 Return lDone
 
@@ -3291,6 +3316,16 @@ Local nPos, uRet := nil
             _OOHG_DeleteArrayItem( aKeys, nPos )
          EndIf
       Endif
+   EndIf
+Return uRet
+
+FUNCTION _OOHG_SetbKeyDown( bKeyDown )
+Local uRet
+   uRet := _OOHG_bKeyDown
+   If ValType( bKeyDown ) == "B"
+      _OOHG_bKeyDown := bKeyDown
+   ElseIf PCOUNT() > 0
+      _OOHG_bKeyDown := nil
    EndIf
 Return uRet
 
