@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.52 2006-04-21 05:34:26 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.53 2006-05-01 04:11:47 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1497,6 +1497,7 @@ CLASS TControl FROM TWindow
    METHOD FontItalic          SETGET
    METHOD FontUnderline       SETGET
    METHOD FontStrikeout       SETGET
+   METHOD OnEnter             SETGET
    METHOD SizePos
    METHOD Move
    METHOD Value               BLOCK { || nil }
@@ -1840,6 +1841,14 @@ METHOD FontStrikeout( lStrikeout ) CLASS TControl
       ::SetFont( ,,,,, lStrikeout )
    EndIf
 Return ::Strikeout
+
+*-----------------------------------------------------------------------------*
+METHOD OnEnter( bOnEnter ) CLASS TControl
+*-----------------------------------------------------------------------------*
+   If ValType( bOnEnter ) == "B"
+      ::OnDblClick := bOnEnter
+   EndIf
+Return ::OnDblClick
 
 *-----------------------------------------------------------------------------*
 METHOD SizePos( Row, Col, Width, Height ) CLASS TControl
