@@ -1,5 +1,5 @@
 /*
- * $Id: c_image.c,v 1.5 2006-03-15 06:41:20 guerra000 Exp $
+ * $Id: c_image.c,v 1.6 2006-05-01 04:09:47 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -129,11 +129,7 @@ HB_FUNC (INITIMAGE)
 
    hwnd = ( HWND ) hb_parnl( 1 );
 
-   StyleEx = 0;
-   if( hb_parl( 9 ) )
-   {
-      StyleEx |= WS_EX_LAYOUTRTL | WS_EX_RIGHTSCROLLBAR | WS_EX_RTLREADING;
-   }
+   StyleEx = _OOHG_RTL_Status( hb_parl( 9 ) );
 
    Style = WS_CHILD | SS_BITMAP | SS_NOTIFY;
 

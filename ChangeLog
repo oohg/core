@@ -1,11 +1,39 @@
 /*
- * $Id: ChangeLog,v 1.153 2006-04-28 15:51:03 declan2005 Exp $
+ * $Id: ChangeLog,v 1.154 2006-05-01 04:09:47 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-04-30 23:08 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_windows.prg
+    + Added TWindow:bKeyDown property and _OOHG_SetbKeyDown()
+      function. Codeblock executed on an WM_KEYDOWN event.
+  * source/h_controlmisc.prg
+    + Added ::OnEnter SETGET method, for assign ::OnDblClick property.
+  * include/oohg.h
+  * source/c_combo.c
+  * source/c_datepicker.c
+  * source/c_frame.c
+  * source/c_grid.c
+  * source/c_image.c
+  * source/c_ipaddress.c
+  * source/c_label.c
+  * source/c_listbox.c
+  * source/c_monthcal.c
+  * source/c_progressbar.c
+  * source/c_richeditbox.c
+  * source/c_spinner.c
+  * source/c_textbox.c
+  * source/c_toolbar.c
+  * source/c_tree.c
+  * source/c_windows.c
+  * source/h_windows.prg
+  * source/h_splitbox.prg
+    * Centralized RTL window/control creation.
+    * Fixed for avoid to use WS_EX_LAYOUTRTL if not defined.
 
 2006-04-28 13:29 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source/h_print.prg

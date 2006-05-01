@@ -1,5 +1,5 @@
 /*
- * $Id: c_toolbar.c,v 1.3 2005-11-25 05:38:41 guerra000 Exp $
+ * $Id: c_toolbar.c,v 1.4 2006-05-01 04:09:47 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -118,20 +118,17 @@ static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 
 HB_FUNC( INITTOOLBAR )
 {
-	HWND hwnd;
-	HWND hwndTB;
-	int Style = WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN |
-                         WS_CLIPSIBLINGS | TBSTYLE_TOOLTIPS;
+   HWND hwnd;
+   HWND hwndTB;
+   int Style = WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN |
+               WS_CLIPSIBLINGS | TBSTYLE_TOOLTIPS;
 
-	int ExStyle = 0 ;
-	int TbExStyle = TBSTYLE_EX_DRAWDDARROWS ;
+   int ExStyle;
+   int TbExStyle = TBSTYLE_EX_DRAWDDARROWS ;
 
-	hwnd = (HWND) hb_parnl (1);
+   hwnd = (HWND) hb_parnl (1);
 
-   if( hb_parl( 15 ) )
-   {
-      ExStyle |= WS_EX_LAYOUTRTL | WS_EX_RIGHTSCROLLBAR | WS_EX_RTLREADING;
-   }
+   ExStyle = _OOHG_RTL_Status( hb_parl( 15 ) );
 
    if( hb_parl (14) )
    {

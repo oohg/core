@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.12 2006-04-13 03:20:23 guerra000 Exp $
+ * $Id: h_button.prg,v 1.13 2006-05-01 04:09:47 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -220,11 +220,7 @@ HB_FUNC( INITBUTTON )
 
    Style =  BS_NOTIFY | WS_CHILD | BS_PUSHBUTTON | hb_parni( 9 );
 
-   StyleEx = 0;
-   if ( hb_parl( 8 ) )
-   {
-      StyleEx |= WS_EX_LAYOUTRTL | WS_EX_RIGHTSCROLLBAR | WS_EX_RTLREADING;
-   }
+   StyleEx = _OOHG_RTL_Status( hb_parl( 8 ) );
 
    hbutton = CreateWindowEx(StyleEx, "button" ,
                            hb_parc(2) ,

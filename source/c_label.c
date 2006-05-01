@@ -1,5 +1,5 @@
 /*
- * $Id: c_label.c,v 1.5 2006-01-18 05:43:43 guerra000 Exp $
+ * $Id: c_label.c,v 1.6 2006-05-01 04:09:47 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -121,12 +121,7 @@ HB_FUNC( INITLABEL )
 
    hwnd = ( HWND ) hb_parnl( 1 );
    Style = hb_parni( 11 ) | WS_CHILD | SS_NOTIFY;
-   ExStyle = hb_parni( 12 );
-
-   if ( hb_parl( 13 ) )
-   {
-      ExStyle |= WS_EX_LAYOUTRTL | WS_EX_RIGHTSCROLLBAR | WS_EX_RTLREADING;
-   }
+   ExStyle = hb_parni( 12 ) | _OOHG_RTL_Status( hb_parl( 13 ) );
 
    hbutton = CreateWindowEx( ExStyle , "static" , hb_parc(2) ,
    Style,

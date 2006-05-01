@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.h,v 1.21 2006-03-30 04:54:37 guerra000 Exp $
+ * $Id: oohg.h,v 1.22 2006-05-01 04:09:47 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -101,6 +101,7 @@ POCTRL _OOHG_GetControlInfo( PHB_ITEM pSelf );
 BOOL _OOHG_DetermineColor( PHB_ITEM pColor, LONG *lColor );
 BOOL _OOHG_DetermineColorReturn( PHB_ITEM pColor, LONG *lColor, BOOL fUpdate );
 HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, HWND hWnd );
+DWORD _OOHG_RTL_Status( BOOL bRtl );
 
 // Symbol tables
 #define s_Events_Notify        0

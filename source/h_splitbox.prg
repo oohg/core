@@ -1,5 +1,5 @@
 /*
- * $Id: h_splitbox.prg,v 1.3 2006-04-26 12:58:57 guerra000 Exp $
+ * $Id: h_splitbox.prg,v 1.4 2006-05-01 04:09:47 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -193,13 +193,10 @@ HB_FUNC( INITSPLITBOX )
    REBARINFO     rbi;
    HWND   hwndRB;
    INITCOMMONCONTROLSEX icex;
-   int ExStyle = 0;
+   int ExStyle;
    int Style;
 
-   if ( hb_parl( 4 ) )
-   {
-      ExStyle |= WS_EX_LAYOUTRTL | WS_EX_RIGHTSCROLLBAR | WS_EX_RTLREADING;
-   }
+   ExStyle = _OOHG_RTL_Status( hb_parl( 4 ) );
 
    Style = WS_CHILD |
            WS_VISIBLE |

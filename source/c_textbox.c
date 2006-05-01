@@ -1,5 +1,5 @@
 /*
- * $Id: c_textbox.c,v 1.6 2005-11-25 05:38:41 guerra000 Exp $
+ * $Id: c_textbox.c,v 1.7 2006-05-01 04:09:47 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -122,11 +122,7 @@ HB_FUNC( INITTEXTBOX )
    HWND hedit;        // Handle of the child window/control.
    int StyleEx;
 
-   StyleEx = hb_parni( 10 );
-   if ( hb_parl( 9 ) )
-   {
-      StyleEx |= WS_EX_LAYOUTRTL | WS_EX_RIGHTSCROLLBAR | WS_EX_RTLREADING;
-   }
+   StyleEx = hb_parni( 10 ) | _OOHG_RTL_Status( hb_parl( 9 ) );
 
    // Get the handle of the parent window/form.
    hwnd = ( HWND ) hb_parnl( 1 );

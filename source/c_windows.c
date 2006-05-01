@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.41 2006-04-07 05:47:41 guerra000 Exp $
+ * $Id: c_windows.c,v 1.42 2006-05-01 04:09:47 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -302,10 +302,7 @@ HB_FUNC( INITWINDOW )
    int Style   = hb_parni( 8 );
    int ExStyle = hb_parni( 9 );
 
-   if ( hb_parl( 10 ) )
-   {
-      ExStyle |= WS_EX_LAYOUTRTL | WS_EX_RIGHTSCROLLBAR | WS_EX_RTLREADING;
-   }
+   ExStyle |= _OOHG_RTL_Status( hb_parl( 10 ) );
 
 /*
 MDICLIENT:
@@ -354,10 +351,7 @@ HB_FUNC( INITWINDOWMDICLIENT )
    ccs.hWindowMenu = NULL;
    ccs.idFirstChild = 0;
 
-   if ( hb_parl( 10 ) )
-   {
-      ExStyle |= WS_EX_LAYOUTRTL | WS_EX_RIGHTSCROLLBAR | WS_EX_RTLREADING;
-   }
+   ExStyle |= _OOHG_RTL_Status( hb_parl( 10 ) );
 
 /*
 MDICLIENT:
@@ -1520,6 +1514,26 @@ HB_FUNC( _UPDATERTL )
    SetWindowLong( hwnd, GWL_EXSTYLE, myret );
 
    hb_retni( myret );
+}
+
+DWORD _OOHG_RTL_Status( BOOL bRtl )
+{
+   DWORD dwStyle;
+
+   if( bRtl )
+   {
+      #ifdef WS_EX_LAYOUTRTL
+         dwStyle = WS_EX_LAYOUTRTL | WS_EX_RIGHTSCROLLBAR | WS_EX_RTLREADING;
+      #else
+         dwStyle =                   WS_EX_RIGHTSCROLLBAR | WS_EX_RTLREADING;
+      #endif
+   }
+   else
+   {
+      dwStyle = 0;
+   }
+
+   return dwStyle;
 }
 
 HB_FUNC( GETSYSTEMMETRICS )

@@ -1,5 +1,5 @@
 /*
- * $Id: c_ipaddress.c,v 1.3 2005-11-25 05:38:41 guerra000 Exp $
+ * $Id: c_ipaddress.c,v 1.4 2006-05-01 04:09:47 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -127,11 +127,7 @@ HB_FUNC ( INITIPADDRESS )
 
 	hWnd = (HWND) hb_parnl (1);
 
-   StyleEx = WS_EX_CLIENTEDGE;
-   if ( hb_parl( 11 ) )
-   {
-      StyleEx |= WS_EX_LAYOUTRTL | WS_EX_RIGHTSCROLLBAR | WS_EX_RTLREADING;
-   }
+   StyleEx = WS_EX_CLIENTEDGE | _OOHG_RTL_Status( hb_parl( 11 ) );
 
 	if ( ! hb_parl (9) )
 	{
