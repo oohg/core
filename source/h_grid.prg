@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.38 2006-03-30 04:54:37 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.39 2006-05-04 04:02:34 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -914,7 +914,7 @@ METHOD Events_Enter() CLASS TGrid
    ElseIf ::AllowEdit
       ::EditItem()
    Else
-      ::DoEvent( ::OnDblClick )
+      ::DoEvent( ::OnEnter )
    EndIf
 Return nil
 

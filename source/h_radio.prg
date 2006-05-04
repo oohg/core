@@ -1,9 +1,9 @@
 /*
- * $Id: h_radio.prg,v 1.11 2006-04-21 05:34:26 guerra000 Exp $
+ * $Id: h_radio.prg,v 1.12 2006-05-04 04:02:34 guerra000 Exp $
  */
 /*
  * ooHG source code:
- * PRG radio button functions
+ * Radio button functions
  *
  * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.guerra.com.mx
@@ -303,3 +303,126 @@ Local Hi_wParam := HIWORD( wParam )
       Return nil
    EndIf
 Return ::Super:Events_Command( wParam )
+
+
+
+
+
+EXTERN InitRadioGroup, InitRadioButton, SetRadioStyle, IsTabStop, SetTabStop
+
+#pragma BEGINDUMP
+// #define s_Super s_TLabel
+#include "hbapi.h"
+#include <windows.h>
+#include <commctrl.h>
+#include "../include/oohg.h"
+
+static WNDPROC lpfnOldWndProcA = 0, lpfnOldWndProcB = 0;
+
+static LRESULT APIENTRY SubClassFuncA( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+{
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProcA );
+}
+
+static LRESULT APIENTRY SubClassFuncB( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+{
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProcB );
+}
+
+HB_FUNC( INITRADIOGROUP )
+{
+	HWND hwnd;
+	HWND hbutton;
+	int Style = BS_NOTIFY | WS_CHILD | BS_AUTORADIOBUTTON | WS_GROUP ;
+
+	hwnd = (HWND) hb_parnl (1);
+
+	if ( !hb_parl(9) )
+	{
+		Style = Style | WS_VISIBLE ;
+	}
+
+	if ( !hb_parl(10) )
+	{
+		Style = Style | WS_TABSTOP ;
+	}
+
+	hbutton = CreateWindow( "button" , hb_parc(2) ,
+	Style ,
+	hb_parni(4), hb_parni(5) , hb_parni(8), 28,
+	hwnd,(HMENU)hb_parni(3) , GetModuleHandle(NULL) , NULL ) ;
+
+   lpfnOldWndProcA = ( WNDPROC ) SetWindowLong( ( HWND ) hbutton, GWL_WNDPROC, ( LONG ) SubClassFuncA );
+
+	hb_retnl ( (LONG) hbutton );
+}
+
+HB_FUNC( INITRADIOBUTTON )
+{
+	HWND hwnd;
+	HWND hbutton;
+	int Style = BS_NOTIFY | WS_CHILD | BS_AUTORADIOBUTTON ;
+
+	hwnd = (HWND) hb_parnl (1);
+
+	if ( !hb_parl(9) )
+	{
+		Style = Style | WS_VISIBLE ;
+	}
+
+	hbutton = CreateWindow( "button" , hb_parc(2) ,
+	Style ,
+	hb_parni(4), hb_parni(5) , hb_parni(8) , 28,
+	hwnd,(HMENU)hb_parni(3) , GetModuleHandle(NULL) , NULL ) ;
+
+   lpfnOldWndProcB = ( WNDPROC ) SetWindowLong( ( HWND ) hbutton, GWL_WNDPROC, ( LONG ) SubClassFuncB );
+
+	hb_retnl ( (LONG) hbutton );
+}
+
+HB_FUNC( SETRADIOSTYLE )
+{
+	int Style ;
+
+	Style = BS_NOTIFY | WS_CHILD | BS_AUTORADIOBUTTON ;
+
+	if ( hb_parl(2) )
+	{
+		Style = Style | WS_GROUP ;
+	}
+	if ( hb_parl(3) )
+	{
+		Style = Style | WS_VISIBLE ;
+	}
+
+	SetWindowLong ( (HWND) hb_parnl(1) , GWL_STYLE , Style ) ;
+
+}
+
+HB_FUNC( ISTABSTOP )
+{
+   int Style;
+   int Result;
+   Style = GetWindowLong( (HWND) hb_parnl(1), GWL_STYLE );
+   Result = FALSE;
+   if (Style & WS_TABSTOP)
+   {
+      Result = TRUE;
+   }
+   hb_retl(Result);
+}
+
+HB_FUNC( SETTABSTOP )
+{
+   int Style = GetWindowLong( (HWND) hb_parnl(1), GWL_STYLE );
+   if (hb_parl(2))
+   {
+    SetWindowLong( (HWND) hb_parnl(1), GWL_STYLE, Style | WS_TABSTOP );
+   }
+   else
+   {
+    SetWindowLong( (HWND) hb_parnl(1), GWL_STYLE, Style - WS_TABSTOP );
+   }
+}
+
+#pragma ENDDUMP

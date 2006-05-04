@@ -1,5 +1,5 @@
 /*
- * $Id: h_tree.prg,v 1.8 2006-03-30 04:54:37 guerra000 Exp $
+ * $Id: h_tree.prg,v 1.9 2006-05-04 04:02:35 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -574,7 +574,7 @@ RETURN uValue
 METHOD Events_Enter() CLASS TTree
 *-----------------------------------------------------------------------------*
 
-   ::DoEvent( ::OnDblClick )
+   ::DoEvent( ::OnEnter )
 
 Return nil
 

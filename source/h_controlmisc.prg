@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.53 2006-05-01 04:11:47 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.54 2006-05-04 04:02:34 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1733,6 +1733,7 @@ Local mVar
    ::OnMouseMove    := nil
    ::OnChange       := nil
    ::OnDblClick     := nil
+   ::OnEnter        := nil
 
    // Removes from container
    IF ::Container != nil
@@ -2109,9 +2110,7 @@ Return nil
 METHOD Events_Enter() CLASS TControl
 *-----------------------------------------------------------------------------*
 
-   // Default:
-   // If ::Type == "COMBO"
-   ::DoEvent( ::OnDblClick )
+   ::DoEvent( ::OnEnter )
 
    If _OOHG_ExtendedNavigation == .T.
 

@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.26 2006-04-21 05:34:27 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.27 2006-05-04 04:02:34 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -263,7 +263,7 @@ Return HiWord( SendMessage( ::hWnd, EM_GETSEL, 0, 0 ) )
 METHOD Events_Enter() CLASS TText
 *------------------------------------------------------------------------------*
    ::lSettingFocus := .F.
-   ::DoEvent( ::OnDblClick )
+   ::DoEvent( ::OnEnter )
    If ! ::lSettingFocus
       If _OOHG_ExtendedNavigation
          _SetNextFocus()

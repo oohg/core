@@ -1,11 +1,26 @@
 /*
- * $Id: ChangeLog,v 1.154 2006-05-01 04:09:47 guerra000 Exp $
+ * $Id: ChangeLog,v 1.155 2006-05-04 04:02:34 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-05-03 23:00 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_browse.prg
+  * source/h_controlmisc.prg
+  * source/h_grid.prg
+  * source/h_textbox.prg
+  * source/h_tree.prg
+    * Implemented ::OnEnter property application. There could be
+      different codeblocks for ENTER and DBLCLICK events (::OnEnter
+      property must be redefined to a "storage" property).
+  - source/c_radio.c
+  * source/h_radio.prg
+  * source/makelib.bat
+    * Moved source code from c_radio.c to h_radio.prg .
+    - c_radio.c removed.
 
 2006-04-30 23:08 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_windows.prg
