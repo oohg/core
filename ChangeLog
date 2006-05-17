@@ -1,11 +1,36 @@
 /*
- * $Id: ChangeLog,v 1.155 2006-05-04 04:02:34 guerra000 Exp $
+ * $Id: ChangeLog,v 1.156 2006-05-17 05:22:49 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-05-17 00:00 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_windows.prg
+    * MDIclient window created automatically when a MDIchild window
+      is created and MDIclient doesn't exists.
+    * Small SPLITBOX creation commands.
+    + Added ::GraphCommand and ::GraphData properties
+      (optimized ::GraphTasks).
+  * include/i_pseudofunc.ch
+    + Added ASSIGN ... VALUE ... TYPE ... [ DEFAULT ... ] #command.
+  * include/oohg.h
+  * source/c_controlmisc.c
+    + Added REFRESH call at C level.
+  * source/h_browse.prg
+  * source/h_scroll.prg
+    * Fixed/modified some SCROLLBAR usage.
+    * Browse FIELD items can be codeblocks or character strings.
+  * source/c_graph.c
+  * source/h_graph.prg
+    * Graphic tasks optimized.
+  * source/h_controlmisc.prg
+    * Modified ::FontName, ::FontSize, ::FontColor, ::BackColor initial
+      value determination method.
+  * source/h_grid.prg
+    * Some DEFAULT assign implemented.
 
 2006-05-03 23:00 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_browse.prg
