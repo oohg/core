@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.45 2006-05-04 04:02:34 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.46 2006-05-17 05:17:08 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -168,7 +168,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                dynamicforecolor, aPicture, lRtl, onappend, editcell, ;
                editcontrols, replacefields ) CLASS TBrowse
 *-----------------------------------------------------------------------------*
-Local ScrollBarHandle, hsum, ScrollBarButtonHandle := 0, nWidth2, nCol2
+Local hsum, ScrollBarButtonHandle := 0, nWidth2, nCol2
 
    IF ! ValType( WorkArea ) $ "CM" .OR. Empty( WorkArea )
       WorkArea := ALIAS()
@@ -183,7 +183,7 @@ Local ScrollBarHandle, hsum, ScrollBarButtonHandle := 0, nWidth2, nCol2
    else
       aSize( aHeaders, len( aFields ) )
    endif
-   aEval( aHeaders, { |x,i| aHeaders[ i ] := iif( ! ValType( x ) $ "CM", aFields[ i ], x ) } )
+   aEval( aHeaders, { |x,i| aHeaders[ i ] := iif( ! ValType( x ) $ "CM", if( valtype( aFields[ i ] ) $ "CM", aFields[ i ], "" ), x ) } )
 
    // If splitboxed force no vertical scrollbar
 
@@ -225,26 +225,32 @@ Local ScrollBarHandle, hsum, ScrollBarButtonHandle := 0, nWidth2, nCol2
 
       hsum := _OOHG_GridArrayWidths( ::hWnd, ::aWidths )
 
+      ::VScroll := TScrollBar()
+      ::VScroll:nWidth := GETVSCROLLBARWIDTH()
+      ::VScroll:SetRange( 1, 100 )
+
       nCol2 := x + nWidth2
       IF lRtl .AND. ! ::Parent:lRtl
          ::nCol := x + GETVSCROLLBARWIDTH()
          nCol2 := x
+         ::VScroll:nCol := -GETVSCROLLBARWIDTH()
+      Else
+         ::VScroll:nCol := nWidth2
       ENDIF
 
       if hsum > w - GETVSCROLLBARWIDTH() - 4
-         ScrollBarHandle := InitVScrollBar ( ::ContainerhWnd, nCol2, y , GETVSCROLLBARWIDTH() , h - GETHSCROLLBARHEIGHT() )
+         ::VScroll:nRow := 0
+         ::VScroll:nHeight := h - GETHSCROLLBARHEIGHT()
          ScrollBarButtonHandle := InitVScrollBarButton ( ::ContainerhWnd, nCol2, y + h - GETHSCROLLBARHEIGHT() , GETVSCROLLBARWIDTH() , GETHSCROLLBARHEIGHT() )
          ::nButtonActive := 1
       Else
-         ScrollBarHandle := InitVScrollBar ( ::ContainerhWnd, nCol2, y , GETVSCROLLBARWIDTH() , h )
+         ::VScroll:nRow := 0
+         ::VScroll:nHeight := h
          ScrollBarButtonHandle := InitVScrollBarButton ( ::ContainerhWnd, nCol2, y + h - GETHSCROLLBARHEIGHT() , 0 , 0 )
          ::nButtonActive := 0
       EndIf
 
-      ::VScroll := TScrollBar():SetForm( , Self )
-      ::VScroll:Register( ScrollBarHandle,, HelpId,, ToolTip, ScrollBarHandle )
-      ::VScroll:RangeMin := 1
-      ::VScroll:RangeMax := 100
+      ::VScroll:Define( , Self )
       ::VScroll:OnLineUp   := { || ::SetFocus():Up() }
       ::VScroll:OnLineDown := { || ::SetFocus():Down() }
       ::VScroll:OnPageUp   := { || ::SetFocus():PageUp() }
@@ -281,8 +287,6 @@ METHOD UpDate() CLASS TBrowse
 Local PageLength , aTemp, _BrowseRecMap := {} , x
 Local nCurrentLength
 Local lColor, aFields, cWorkArea, hWnd, nWidth
-MEMVAR __aPicture, __aEditControls
-PRIVATE __aPicture, __aEditControls
 
    cWorkArea := ::WorkArea
 
@@ -292,10 +296,8 @@ PRIVATE __aPicture, __aEditControls
    EndIf
 
    lColor := ! ( Empty( ::DynamicForeColor ) .AND. Empty( ::DynamicBackColor ) )
-   __aPicture := ::Picture
    nWidth := LEN( ::aFields )
    aFields := ARRAY( nWidth )
-   __aEditControls := ARRAY( nWidth )
    AEVAL( ::aFields, { |c,i| aFields[ i ] := TBrowse_UpDate_Block( Self, i, c ) } )
    hWnd := ::hWnd
 
@@ -352,17 +354,91 @@ Return nil
 
 Static Function TBrowse_UpDate_Block( Self, nColumn, cValue )
 Local bBlock, oEditControl
-MEMVAR __aEditControls, __aPicture
    oEditControl := GetEditControlFromArray( NIL, ::EditControls, nColumn, Self )
-   __aEditControls[ nColumn ] := oEditControl
    If ValType( oEditControl ) == "O"
-      bBlock := &( "{ || __aEditControls[ " + LTRIM( STR( nColumn ) ) + " ]:GridValue( " + ::WorkArea + "->( " + cValue + " ) ) }" )
-   ElseIf ValType( __aPicture[ nColumn ] ) $ "CM"
-      bBlock := &( "{ || Trim( Transform( " + ::WorkArea + "->( " + cValue + " ), __aPicture[ " + LTRIM( STR( nColumn ) ) + " ] ) ) }" )
-   ElseIf ValType( __aPicture[ nColumn ] ) == "L" .AND. __aPicture[ nColumn ]
-      bBlock := &( "{ || " + ::WorkArea + "->( " + cValue + " ) }" )
+      // bBlock := &( "{ || __aEditControls[ " + LTRIM( STR( nColumn ) ) + " ]:GridValue( " + ::WorkArea + "->( " + cValue + " ) ) }" )
+      bBlock := TBrowse_UpDate_Block_EditControl( cValue, ::WorkArea, oEditControl )
+   ElseIf ValType( ::Picture[ nColumn ] ) $ "CM"
+      // bBlock := &( "{ || Trim( Transform( " + ::WorkArea + "->( " + cValue + " ), __aPicture[ " + LTRIM( STR( nColumn ) ) + " ] ) ) }" )
+      bBlock := TBrowse_UpDate_Block_Picture( cValue, ::WorkArea, ::Picture[ nColumn ] )
+   ElseIf ValType( ::Picture[ nColumn ] ) == "L" .AND. ::Picture[ nColumn ]
+      // bBlock := &( "{ || " + ::WorkArea + "->( " + cValue + " ) }" )
+      bBlock := TBrowse_UpDate_Block_Direct( cValue, ::WorkArea )
    Else
-      bBlock := &( "{ || TBrowse_UpDate_PerType( " + ::WorkArea + "->( " + cValue + " ) ) }" )
+      // bBlock := &( "{ || TBrowse_UpDate_PerType( " + ::WorkArea + "->( " + cValue + " ) ) }" )
+      bBlock := TBrowse_UpDate_Block_Convert( cValue, ::WorkArea )
+   EndIf
+Return bBlock
+
+Static Function TBrowse_UpDate_Block_EditControl( cValue, cArea, oEditControl )
+Local bBlock
+   If ! Empty( cArea )
+      If ValType( cValue ) == "B"
+         bBlock := { || oEditControl:GridValue( ( cArea ) -> ( EVAL( cValue ) ) ) }
+      Else
+         bBlock := { || oEditControl:GridValue( ( cArea ) -> ( &( cValue ) ) ) }
+      EndIf
+   Else
+      If ValType( cValue ) == "B"
+         bBlock := { || oEditControl:GridValue( EVAL( cValue ) ) }
+      Else
+         bBlock := { || oEditControl:GridValue( &( cValue ) ) }
+      EndIf
+   EndIf
+Return bBlock
+
+Static Function TBrowse_UpDate_Block_Picture( cValue, cArea, cPicture )
+Local bBlock
+   If ! Empty( cArea )
+      If ValType( cValue ) == "B"
+         bBlock := { || Trim( Transform( ( cArea ) -> ( EVAL( cValue ) ), cPicture ) ) }
+      Else
+         bBlock := { || Trim( Transform( ( cArea ) -> ( &( cValue ) ), cPicture ) ) }
+      EndIf
+   Else
+      If ValType( cValue ) == "B"
+         bBlock := { || Trim( Transform( EVAL( cValue ), cPicture ) ) }
+      Else
+         bBlock := { || Trim( Transform( &( cValue ), cPicture ) ) }
+      EndIf
+   EndIf
+Return bBlock
+
+Static Function TBrowse_UpDate_Block_Direct( cValue, cArea )
+Local bBlock
+   If ! Empty( cArea )
+      If ValType( cValue ) == "B"
+         bBlock := { || ( cArea ) -> ( EVAL( cValue ) ) }
+      Else
+         // bBlock := { || ( cArea ) -> ( &( cValue ) ) }
+         bBlock := &( " { || " + cArea + " -> ( " + cValue + " ) } " )
+      EndIf
+   Else
+      If ValType( cValue ) == "B"
+         bBlock := cValue
+      Else
+         // bBlock := { || &( cValue ) }
+         bBlock := &( " { || " + cValue + " } " )
+      EndIf
+   EndIf
+Return bBlock
+
+Static Function TBrowse_UpDate_Block_Convert( cValue, cArea )
+Local bBlock
+   If ! Empty( cArea )
+      If ValType( cValue ) == "B"
+         bBlock := { || TBrowse_UpDate_PerType( ( cArea ) -> ( EVAL( cValue ) ) ) }
+      Else
+         // bBlock := { || TBrowse_UpDate_PerType( ( cArea ) -> ( &( cValue ) ) ) }
+         bBlock := &( " { || TBrowse_UpDate_PerType( " + cArea + " -> ( " + cValue + " ) ) } " )
+      EndIf
+   Else
+      If ValType( cValue ) == "B"
+         bBlock := { || TBrowse_UpDate_PerType( EVAL( cValue ) ) }
+      Else
+         // bBlock := { || TBrowse_UpDate_PerType( &( cValue ) ) }
+         bBlock := &( " { || TBrowse_UpDate_PerType( " + cValue + " ) } " )
+      EndIf
    EndIf
 Return bBlock
 
@@ -927,7 +1003,8 @@ Local cField, cArea, nPos, aStruct
    EndIf
 
    If ValType( uOldValue ) == "U"
-      uOldValue := &( ::WorkArea + "->( " + ::aFields[ nCol ] + " )" )
+      // uOldValue := &( ::WorkArea + "->( " + ::aFields[ nCol ] + " )" )
+      uOldValue := EVAL( TBrowse_UpDate_Block( Self, nCol, ::aFields[ nCol ] ) )
    EndIf
 
    If ValType( ::aReplaceField ) == "A" .AND. Len( ::aReplaceField ) >= nCol
@@ -937,25 +1014,29 @@ Local cField, cArea, nPos, aStruct
    EndIf
 
    // Default cMemVar & bReplaceField
-   cField := Upper( AllTrim( ::aFields[ nCol ] ) )
-   nPos := At( '->', cField )
-   If nPos != 0 .AND. Select( Trim( Left( cField, nPos - 1 ) ) ) != 0
-      cArea := Trim( Left( cField, nPos - 1 ) )
-      cField := Ltrim( SubStr( cField, nPos + 2 ) )
+   If ValType( ::aFields[ nCol ] ) $ "CM"
+      cField := Upper( AllTrim( ::aFields[ nCol ] ) )
+      nPos := At( '->', cField )
+      If nPos != 0 .AND. Select( Trim( Left( cField, nPos - 1 ) ) ) != 0
+         cArea := Trim( Left( cField, nPos - 1 ) )
+         cField := Ltrim( SubStr( cField, nPos + 2 ) )
+      Else
+         cArea := ::WorkArea
+      EndIf
+      aStruct := ( cArea )->( DbStruct() )
+      nPos := aScan( aStruct, { |a| a[ 1 ] == cField } )
+      If nPos == 0
+         cArea := cField := ""
+      Else
+         If ! ValType( cMemVar ) $ "CM" .OR. Empty( cMemVar )
+            cMemVar := "MemVar" + cArea + cField
+         EndIf
+         If ValType( bReplaceField ) != "B"
+            bReplaceField := FieldWBlock( cField, Select( cArea ) )
+         EndIf
+      EndIf
    Else
-      cArea := ::WorkArea
-   EndIf
-   aStruct := ( cArea )->( DbStruct() )
-   nPos := aScan( aStruct, { |a| a[ 1 ] == cField } )
-   If nPos == 0
       cArea := cField := ""
-   Else
-      If ! ValType( cMemVar ) $ "CM" .OR. Empty( cMemVar )
-         cMemVar := "MemVar" + cArea + cField
-      EndIf
-      If ValType( bReplaceField ) != "B"
-         bReplaceField := FieldWBlock( cField, Select( cArea ) )
-      EndIf
    EndIf
 
    // Determines control type
@@ -1007,16 +1088,15 @@ Local hws, lRet, nButton, nCol
       nButton := IF( ( hws > ::Width - GETVSCROLLBARWIDTH() - 4 ), 1, 0 )
       IF ::nButtonActive != nButton
          ::nButtonActive := nButton
-*         ::Refresh()
+         ::Refresh()
          nCol := if( ::lRtl .AND. ! ::Parent:lRtl, 0, ::Width - GETVSCROLLBARWIDTH() )
          if nButton == 1
-            ::VScroll:SizePos( 0, nCol, GETVSCROLLBARWIDTH() , ::Height - GETHSCROLLBARHEIGHT() )
+            ::VScroll:Height := ::Height - GETHSCROLLBARHEIGHT()
             MoveWindow( ::AuxHandle, ::ContainerCol + nCol, ::ContainerRow + ::Height - GETHSCROLLBARHEIGHT() , GETVSCROLLBARWIDTH() , GETHSCROLLBARHEIGHT() , .t. )
          Else
-            ::VScroll:SizePos( 0, nCol, GETVSCROLLBARWIDTH() , ::Height )
+            ::VScroll:Height := ::Height
             MoveWindow( ::AuxHandle, ::ContainerCol + nCol, ::ContainerRow + ::Height - GETHSCROLLBARHEIGHT() , 0 , 0 , .t. )
          EndIf
-*         ReDrawWindow( ::VScroll:hWnd )
 *         ReDrawWindow( ::AuxHandle )
          lRet := .T.
       ENDIF
@@ -1419,12 +1499,27 @@ HB_FUNC_STATIC( TBROWSE_EVENTS_NOTIFY )
          break;
 
       case NM_CUSTOMDRAW:
+      {
+         POCTRL oSelf;
+         LONG lStyle;
+
          pSelf = hb_stackSelfItem();
-// It's so SLOW! :( This will require some workaround
-//         _OOHG_Send( pSelf, s_AdjustRightScroll );
-//         hb_vmSend( 0 );
+         oSelf = _OOHG_GetControlInfo( pSelf );
+
+         lStyle = GetWindowLong( oSelf->hWnd, GWL_STYLE );
+         if( lStyle & WS_VSCROLL )
+         {
+            // _OOHG_Send( pSelf, s_AdjustRightScroll );
+            _OOHG_Send( pSelf, s_Refresh );
+            hb_vmSend( 0 );
+         }
+         // else
+         // {
+         // TODO: Checks for WS_HSCROLL status (exists / doesn't exists) and ::nButtonActive value
+         // }
          hb_retni( TGrid_Notify_CustomDraw( pSelf, lParam ) );
          break;
+      }
 
       default:
          _OOHG_Send( hb_stackSelfItem(), s_Super );
