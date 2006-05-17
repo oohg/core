@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.39 2006-05-04 04:02:34 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.40 2006-05-17 05:21:40 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -97,15 +97,18 @@
 
 CLASS TGrid FROM TControl
    DATA Type             INIT "GRID" READONLY
-   DATA aWidths          INIT {}
-   DATA aHeaders         INIT ""
-   DATA aHeadClick       INIT {}
+   DATA nWidth           INIT 240
+   DATA nHeight          INIT 120
+   DATA aWidths          INIT nil
+   DATA aHeaders         INIT nil
+   DATA aHeadClick       INIT nil
+   DATA aJust            INIT nil
    DATA AllowEdit        INIT .F.
    DATA GridForeColor    INIT {}
    DATA GridBackColor    INIT {}
    DATA DynamicForeColor INIT {}
    DATA DynamicBackColor INIT {}
-   DATA Picture          INIT {}
+   DATA Picture          INIT nil
    DATA OnDispInfo       INIT nil
    DATA SetImageListCommand INIT LVM_SETIMAGELIST
    DATA SetImageListWParam  INIT LVSIL_SMALL
@@ -190,97 +193,90 @@ Local ControlHandle, aImageList
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, .t., lRtl )
 
-   if ValType ( aHeaders ) != 'A'
-      MsgOOHGError ("Grid: HEADERS not defined .Program Terminated")
+   ASSIGN ::aWidths    VALUE aWidths    TYPE "A"
+   ASSIGN ::aHeaders   VALUE aHeaders   TYPE "A"
+
+   If ValType( ::aHeaders ) != "A"
+      MsgOOHGError( "Grid: HEADERS not defined .Program Terminated." )
+   ElseIf ValType( ::aWidths ) != "A"
+      MsgOOHGError( "Grid: WIDTHS not defined. Program Terminated." )
+   ElseIf Len( ::aHeaders ) != Len( ::aWidths )
+      MsgOOHGError( "Grid: HEADERS/WIDTHS array size mismatch. Program Terminated." )
 	EndIf
-   if ValType ( aWidths ) != 'A'
-      MsgOOHGError ("Grid: WIDTHS not defined. Program Terminated")
-	EndIf
-	if Len ( aHeaders ) != Len ( aWidths )
-      MsgOOHGError ("Browse/Grid: FIELDS/HEADERS/WIDTHS array size mismatch .Program Terminated")
-	EndIf
-   if ValType( aRows ) == 'A'
-		if Len (aRows) > 0
-			if Len (aRows[1]) != Len ( aHeaders )
-            MsgOOHGError ("Grid: ITEMS length mismatch. Program Terminated")
-			EndIf
+   If ValType( aRows ) == 'A'
+      If ASCAN( aRows, { |a| ( ValType( a ) != "A" .OR. Len( a ) != Len( aHeaders ) ) } ) > 0
+         MsgOOHGError( "Grid: ITEMS length mismatch. Program Terminated." )
 		EndIf
    Else
 		aRows := {}
 	EndIf
 
-   if valtype( w ) != "N"
-		w := 240
-	endif
-   if valtype( h ) != "N"
-		h := 120
-	endif
-   if valtype(aJust) != "A"
-		aJust := Array( len( aHeaders ) )
-		aFill( aJust, 0 )
+   ASSIGN ::nWidth  VALUE w TYPE "N"
+   ASSIGN ::nHeight VALUE h TYPE "N"
+   ASSIGN ::nRow    VALUE y TYPE "N"
+   ASSIGN ::nCol    VALUE x TYPE "N"
+
+   ASSIGN ::aHeadClick VALUE aHeadClick TYPE "A" DEFAULT {}
+   ASSIGN ::aJust      VALUE aJust      TYPE "A"
+   ASSIGN ::Picture    VALUE aPicture   TYPE "A"
+
+   If Valtype( ::aJust ) != "A"
+      ::aJust := aFill( Array( len( ::aHeaders ) ), 0 )
 	else
-		aSize( aJust, len( aHeaders ) )
-      aEval( aJust, { |x| x := iif( ValType( x ) != "N", 0, x ) } )
+      aSize( ::aJust, len( ::aHeaders ) )
+      aEval( ::aJust, { |x,i| ::aJust[ i ] := iif( ValType( x ) != "N", 0, x ) } )
 	endif
 
-   if valtype( aPicture ) != "A"
-      aPicture := Array( len( aHeaders ) )
+   if valtype( ::Picture ) != "A"
+      ::Picture := Array( len( ::aHeaders ) )
 	else
-      aSize( aPicture, len( aHeaders ) )
+      aSize( ::Picture, len( ::aHeaders ) )
 	endif
-   aEval( aPicture, { |x,i| aPicture[ i ] := iif( ( ValType( x ) $ "CM" .AND. ! Empty( x ) ) .OR. ValType( x ) == "L", x, nil ) } )
+   aEval( ::Picture, { |x,i| ::Picture[ i ] := iif( ( ValType( x ) $ "CM" .AND. ! Empty( x ) ) .OR. ValType( x ) == "L", x, nil ) } )
 
    ::SetSplitBoxInfo( Break, )
-   ControlHandle := InitListView( ::ContainerhWnd, 0, x, y, w, h ,'',0, iif( nogrid, 0, 1 ) , ownerdata  , itemcount  , nStyle, ::lRtl )
+   ControlHandle := InitListView( ::ContainerhWnd, 0, ::nCol, ::nRow, ::nWidth, ::nHeight, '', 0, iif( nogrid, 0, 1 ) , ownerdata  , itemcount  , nStyle, ::lRtl )
 
    if valtype( aImage ) == "A"
       aImageList := ImageList_Init( aImage, CLR_NONE, LR_LOADTRANSPARENT )
       SendMessage( ControlHandle, ::SetImageListCommand, ::SetImageListWParam, aImageList[ 1 ] )
       ::ImageList := aImageList[ 1 ]
-      If ASCAN( aPicture, .T. ) == 0
-         aPicture[ 1 ] := .T.
-         aWidths[ 1 ] := max( aWidths[ 1 ], aImageList[ 2 ] + 2 ) // Set Column 1 width to Bitmap width
+      If ASCAN( ::Picture, .T. ) == 0
+         ::Picture[ 1 ] := .T.
+         ::aWidths[ 1 ] := max( ::aWidths[ 1 ], aImageList[ 2 ] + 2 ) // Set Column 1 width to Bitmap width
       EndIf
    EndIf
 
-   InitListViewColumns( ControlHandle, aHeaders , aWidths, aJust )
+   InitListViewColumns( ControlHandle, ::aHeaders, ::aWidths, ::aJust )
 
    ::Register( ControlHandle, ControlName, HelpId, , ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
-   ::SizePos( y, x, w, h )
+//   ::SizePos( y, x, w, h )
 
    ::FontColor := ::Super:FontColor
    ::BackColor := ::Super:BackColor
 
-   if valtype(aHeadClick) != "A"
-		aHeadClick := {}
-	endif
-
-   ::OnDispInfo := ondispinfo
-   ::aWidths := aWidths
-   ::aHeaders :=  aHeaders
-   ::OnLostFocus := LostFocus
-   ::OnGotFocus :=  GotFocus
-   ::OnChange   :=  Change
-   ::OnDblClick := dblclick
-   ::aHeadClick :=  aHeadClick
-   ::AllowEdit :=  Editable
    ::DynamicForeColor := dynamicforecolor
    ::DynamicBackColor := dynamicbackcolor
-   ::Picture := aPicture
    ::readonly := readonly
    ::valid := valid
    ::validmessages := validmessages
-   IF ValType( inplace ) == "L"
-      ::InPlace := inplace
-   ENDIF
    ::EditControls := editcontrols
    ::OnEditCell := editcell
    ::aWhen := aWhenFields
+   ASSIGN ::InPlace   VALUE inplace  TYPE "L"
+   ASSIGN ::AllowEdit VALUE Editable TYPE "L"
 
    AEVAL( aRows, { |u| ::AddItem( u ) } )
 
    ::Value := value
+
+   // Must be set after control is initialized
+   ASSIGN ::OnLostFocus VALUE lostfocus  TYPE "B"
+   ASSIGN ::OnGotFocus  VALUE gotfocus   TYPE "B"
+   ASSIGN ::OnChange    VALUE change     TYPE "B"
+   ASSIGN ::OnDblClick  VALUE dblclick   TYPE "B"
+   ASSIGN ::OnDispInfo  VALUE ondispinfo TYPE "B"
 
 Return Self
 
