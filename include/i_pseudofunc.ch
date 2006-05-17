@@ -1,5 +1,5 @@
 /*
- * $Id: i_pseudofunc.ch,v 1.2 2005-10-22 06:04:31 guerra000 Exp $
+ * $Id: i_pseudofunc.ch,v 1.3 2006-05-17 04:59:55 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -102,3 +102,15 @@ _IsWIndowActive ( <(FormName)> )
 #translate IsWindowDefined ( <FormName> ) ;
 => ;
 _IsWindowDefined ( <(FormName)> )
+
+#command ASSIGN <var> VALUE <value> TYPE <type> => ;
+         IF ValType( <value> ) $ ( <type> ) ;;
+            <var> := ( <value> )            ;;
+         ENDIF
+
+#command ASSIGN <var> VALUE <value> TYPE <type> DEFAULT <default> => ;
+         IF ValType( <value> ) $ ( <type> ) ;;
+            <var> := ( <value> )            ;;
+         ELSE                               ;;
+            <var> := ( <default> )          ;;
+         ENDIF
