@@ -1,5 +1,5 @@
 /*
- * $Id: h_graph.prg,v 1.3 2005-10-08 18:52:33 guerra000 Exp $
+ * $Id: h_graph.prg,v 1.4 2006-05-17 05:15:57 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -106,9 +106,13 @@ Local oWnd := GetFormObject( Window )
 			penwidth = 1
 		endif
 
+/*
       linedraw( oWnd:hWnd,row,col,row1,col1,penrgb,penwidth)
 
       aadd ( oWnd:GraphTasks, { || linedraw( oWnd:hWnd,row,col,row1,col1,penrgb,penwidth) } )
+*/
+      oWnd:GraphCommand := { | hWnd, aData | _OOHG_GraphCommand( hWnd, aData ) }
+      aadd( oWnd:GraphData, _OOHG_NewGraphCommand( oWnd:hWnd, 1, row, col, row1, col1, penrgb, penwidth ) )
 
 	endif
 
@@ -135,9 +139,13 @@ if oWnd:hWnd > 0
       fill := .t.
    endif
 
+/*
    rectdraw( oWnd:hWnd,row,col,row1,col1,penrgb,penwidth,fillrgb,fill)
 
    aadd ( oWnd:GraphTasks, { || rectdraw( oWnd:hWnd,row,col,row1,col1,penrgb,penwidth,fillrgb,fill) } )
+*/
+   oWnd:GraphCommand := { | hWnd, aData | _OOHG_GraphCommand( hWnd, aData ) }
+   aadd( oWnd:GraphData, _OOHG_NewGraphCommand( oWnd:hWnd, 2, row, col, row1, col1, penrgb, penwidth, fillrgb, fill ) )
 
 endif
 return nil
@@ -159,9 +167,13 @@ if oWnd:hWnd > 0
    else
       fill := .t.
    endif
+/*
    roundrectdraw( oWnd:hWnd,row,col,row1,col1,width,height,penrgb,penwidth,fillrgb,fill)
 
    aadd ( oWnd:GraphTasks, { || roundrectdraw( oWnd:hWnd,row,col,row1,col1,width,height,penrgb,penwidth,fillrgb,fill) } )
+*/
+   oWnd:GraphCommand := { | hWnd, aData | _OOHG_GraphCommand( hWnd, aData ) }
+   aadd( oWnd:GraphData, _OOHG_NewGraphCommand( oWnd:hWnd, 3, row, col, row1, col1, penrgb, penwidth, fillrgb, fill,,,,, width, height ) )
 
 endif
 return nil
@@ -183,9 +195,13 @@ if oWnd:hWnd > 0
    else
       fill := .t.
    endif
+/*
    ellipsedraw( oWnd:hWnd,row,col,row1,col1,penrgb,penwidth,fillrgb,fill)
 
    aadd ( oWnd:GraphTasks, { || ellipsedraw( oWnd:hWnd,row,col,row1,col1,penrgb,penwidth,fillrgb,fill) } )
+*/
+   oWnd:GraphCommand := { | hWnd, aData | _OOHG_GraphCommand( hWnd, aData ) }
+   aadd( oWnd:GraphData, _OOHG_NewGraphCommand( oWnd:hWnd, 4, row, col, row1, col1, penrgb, penwidth, fillrgb, fill ) )
 
 endif
 return nil
@@ -200,8 +216,12 @@ if oWnd:hWnd > 0
    if valtype(penwidth) == "U"
       penwidth = 1
    endif
+/*
    arcdraw( oWnd:hWnd,row,col,row1,col1,rowr,colr,rowr1,colr1,penrgb,penwidth)
    aadd ( oWnd:GraphTasks, { || arcdraw( oWnd:hWnd,row,col,row1,col1,rowr,colr,rowr1,colr1,penrgb,penwidth) } )
+*/
+   oWnd:GraphCommand := { | hWnd, aData | _OOHG_GraphCommand( hWnd, aData ) }
+   aadd( oWnd:GraphData, _OOHG_NewGraphCommand( oWnd:hWnd, 5, row, col, row1, col1, penrgb, penwidth,,, rowr, colr, rowr1, colr1 ) )
 
 endif
 
@@ -224,9 +244,13 @@ if oWnd:hWnd > 0
    else
       fill := .t.
    endif
+/*
    piedraw( oWnd:hWnd,row,col,row1,col1,rowr,colr,rowr1,colr1,penrgb,penwidth,fillrgb,fill)
 
    aadd ( oWnd:GraphTasks, { || piedraw( oWnd:hWnd,row,col,row1,col1,rowr,colr,rowr1,colr1,penrgb,penwidth,fillrgb,fill) } )
+*/
+   oWnd:GraphCommand := { | hWnd, aData | _OOHG_GraphCommand( hWnd, aData ) }
+   aadd( oWnd:GraphData, _OOHG_NewGraphCommand( oWnd:hWnd, 6, row, col, row1, col1, penrgb, penwidth, fillrgb, fill, rowr, colr, rowr1, colr1 ) )
 
 endif
 return nil
@@ -234,9 +258,8 @@ return nil
 function drawpolygon(window,apoints,penrgb,penwidth,fillrgb)
 Local oWnd := GetFormObject( Window )
 Local fill
-local xarr := {}
-local yarr := {}
-local x := 0
+local xarr
+local yarr
 
 if oWnd:hWnd > 0
    if valtype(penrgb) == "U"
@@ -251,20 +274,22 @@ if oWnd:hWnd > 0
    else
       fill := .t.
    endif
-   for x := 1 to len(apoints)
-       aadd(xarr,apoints[x,2])
-       aadd(yarr,apoints[x,1])
-   next x
+   xarr := array( len( apoints ) )
+   yarr := array( len( apoints ) )
+   aeval( apoints, { |a,i| yarr[ i ] := a[ 1 ], xarr[ i ] := a[ 2 ] } )
+/*
    polygondraw(oWnd:hWnd,xarr,yarr,penrgb,penwidth,fillrgb,fill)
    aadd( oWnd:GraphTasks, {||polygondraw(oWnd:hWnd,xarr,yarr,penrgb,penwidth,fillrgb,fill)})
+*/
+   oWnd:GraphCommand := { | hWnd, aData | _OOHG_GraphCommand( hWnd, aData ) }
+   aadd( oWnd:GraphData, _OOHG_NewGraphCommand( oWnd:hWnd, 8, yarr, xarr,,, penrgb, penwidth, fillrgb, fill ) )
 endif
 return nil
 
 function drawpolybezier(window,apoints,penrgb,penwidth)
 Local oWnd := GetFormObject( Window )
-local xarr := {}
-local yarr := {}
-local x := 0
+local xarr
+local yarr
 
 if oWnd:hWnd > 0
    if valtype(penrgb) == "U"
@@ -273,12 +298,15 @@ if oWnd:hWnd > 0
    if valtype(penwidth) == "U"
       penwidth = 1
    endif
-   for x := 1 to len(apoints)
-       aadd(xarr,apoints[x,2])
-       aadd(yarr,apoints[x,1])
-   next x
+   xarr := array( len( apoints ) )
+   yarr := array( len( apoints ) )
+   aeval( apoints, { |a,i| yarr[ i ] := a[ 1 ], xarr[ i ] := a[ 2 ] } )
+/*
    polybezierdraw(oWnd:hWnd,xarr,yarr,penrgb,penwidth)
    aadd( oWnd:GraphTasks, {||polybezierdraw(oWnd:hWnd,xarr,yarr,penrgb,penwidth)})
+*/
+   oWnd:GraphCommand := { | hWnd, aData | _OOHG_GraphCommand( hWnd, aData ) }
+   aadd( oWnd:GraphData, _OOHG_NewGraphCommand( oWnd:hWnd, 9, yarr, xarr,,, penrgb, penwidth ) )
 endif
 return nil
 
@@ -287,12 +315,10 @@ Local oWnd := GetFormObject( Window )
 
    if oWnd:hWnd > 0
 
-         If ValType ( oWnd:GraphTasks ) == 'A'
-
-            asize( oWnd:GraphTasks, 0 )
+            aSize( oWnd:GraphTasks, 0 )
+            aSize( oWnd:GraphData, 0 )
+            oWnd:GraphCommand := nil
             redrawwindow( oWnd:hWnd )
-
-			endif
 
 	endif
 
@@ -898,11 +924,13 @@ RETURN { Int( nR * 255 ), Int( nG * 255 ), Int( nB * 255 ) }
 
 function DrawWindowBoxIn(window,row,col,rowr,colr)
 Local oWnd := GetFormObject( Window )
-   Local hDC := GetDC( oWnd:hWnd )
 
-   WndBoxIn( hDC, row, col, rowr, colr )
-   aadd ( oWnd:GraphTasks, { || WndBoxIn( hDC := GetDC( oWnd:hWnd ), row, col, rowr, colr ), ReleaseDC( oWnd:hWnd, hDC ) } )
-   ReleaseDC( oWnd:hWnd, hDC )
+/*
+   WndBoxInDraw( oWnd:hWnd, row, col, rowr, colr )
+   aadd ( oWnd:GraphTasks, { || WndBoxInDraw( oWnd:hWnd, row, col, rowr, colr ) } )
+*/
+   oWnd:GraphCommand := { | hWnd, aData | _OOHG_GraphCommand( hWnd, aData ) }
+   aadd( oWnd:GraphData, _OOHG_NewGraphCommand( oWnd:hWnd, 7, row, col, rowr, colr ) )
 
 return nil
 

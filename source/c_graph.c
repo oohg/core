@@ -1,5 +1,5 @@
 /*
- * $Id: c_graph.c,v 1.1 2005-08-07 00:02:34 guerra000 Exp $
+ * $Id: c_graph.c,v 1.2 2006-05-17 05:15:57 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -94,8 +94,10 @@
 #include <windows.h>
 #include <commctrl.h>
 #include "hbapi.h"
+#include "hbapiitm.h"
 #include <wingdi.h>
 #include <winuser.h>
+#include "../include/oohg.h"
 
 HB_FUNC ( LINEDRAW )
 {
@@ -349,6 +351,25 @@ HB_FUNC( WNDBOXIN )
    WindowBoxIn( ( HDC ) hb_parnl( 1 ), &rct );
 }
 
+HB_FUNC( WNDBOXINDRAW )
+{
+   RECT rct;
+   HDC hDC;
+   HWND hWnd;
+
+   hWnd = ( HWND ) hb_parnl( 1 );
+   hDC = GetDC( hWnd );
+
+   rct.top    = hb_parni( 2 );
+   rct.left   = hb_parni( 3 );
+   rct.bottom = hb_parni( 4 );
+   rct.right  = hb_parni( 5 );
+
+   WindowBoxIn( hDC, &rct );
+
+   ReleaseDC( hWnd, hDC );
+}
+
 HB_FUNC ( GETDC )
 {
    hb_retnl( (ULONG) GetDC( (HWND) hb_parnl(1) ) ) ;
@@ -357,4 +378,262 @@ HB_FUNC ( GETDC )
 HB_FUNC ( RELEASEDC )
 {
    hb_retl( ReleaseDC( (HWND) hb_parnl(1), (HDC) hb_parnl(2) ) ) ;
+}
+
+struct _OOHG_GraphData {
+   int  type;
+   int  top;
+   int  left;
+   int  bottom;
+   int  right;
+   COLORREF penrgb;
+   int  penwidth;
+   COLORREF fillrgb;
+   BOOL fill;
+   int  top2;
+   int  left2;
+   int  bottom2;
+   int  right2;
+   int  width;
+   int  height;
+   int  pointcount;
+   char points;
+};
+
+void _OOHG_GraphCommand( HDC hDC, struct _OOHG_GraphData *pData )
+{
+   HGDIOBJ hgdiobj, hgdiobj2;
+   HPEN hpen;
+   HBRUSH hbrush;
+
+   switch( pData->type )
+   {
+      case  1:      // LineTo
+         hpen = CreatePen( PS_SOLID, pData->penwidth, pData->penrgb );
+         hgdiobj = SelectObject( hDC, hpen );
+         MoveToEx( hDC, pData->left, pData->top, NULL );
+         LineTo( hDC, pData->right, pData->bottom );
+         SelectObject( hDC, hgdiobj );
+         DeleteObject( hpen );
+         break;
+
+      case  2:      // Rectangle
+         hpen = CreatePen( PS_SOLID, pData->penwidth, pData->penrgb );
+         hgdiobj = SelectObject( hDC, hpen );
+         if( pData->fill )
+         {
+            hbrush = CreateSolidBrush( pData->fillrgb );
+         }
+         else
+         {
+            hbrush = GetSysColorBrush( COLOR_WINDOW );
+         }
+         hgdiobj2 = SelectObject( hDC, hbrush );
+         Rectangle( hDC, pData->left, pData->top, pData->right, pData->bottom );
+         SelectObject( hDC, hgdiobj );
+         SelectObject( hDC, hgdiobj2 );
+         DeleteObject( hpen );
+         DeleteObject( hbrush );
+         break;
+
+      case  3:      // RoundRect
+         hpen = CreatePen( PS_SOLID, pData->penwidth, pData->penrgb );
+         hgdiobj = SelectObject( hDC, hpen );
+         if( pData->fill )
+         {
+            hbrush = CreateSolidBrush( pData->fillrgb );
+         }
+         else
+         {
+            hbrush = GetSysColorBrush( COLOR_WINDOW );
+         }
+         hgdiobj2 = SelectObject( hDC, hbrush );
+         RoundRect( hDC, pData->left, pData->top, pData->right, pData->bottom, pData->width, pData->height );
+         SelectObject( hDC, hgdiobj );
+         SelectObject( hDC, hgdiobj2 );
+         DeleteObject( hpen );
+         DeleteObject( hbrush );
+         break;
+
+      case  4:      // Ellipse
+         hpen = CreatePen( PS_SOLID, pData->penwidth, pData->penrgb );
+         hgdiobj = SelectObject( hDC, hpen );
+         if( pData->fill )
+         {
+            hbrush = CreateSolidBrush( pData->fillrgb );
+         }
+         else
+         {
+            hbrush = GetSysColorBrush( COLOR_WINDOW );
+         }
+         hgdiobj2 = SelectObject( hDC, hbrush );
+         Ellipse( hDC, pData->left, pData->top, pData->right, pData->bottom );
+         SelectObject( hDC, hgdiobj );
+         SelectObject( hDC, hgdiobj2 );
+         DeleteObject( hpen );
+         DeleteObject( hbrush );
+         break;
+
+      case  5:      // Arc
+         hpen = CreatePen( PS_SOLID, pData->penwidth, pData->penrgb );
+         hgdiobj = SelectObject( hDC, hpen );
+         Arc( hDC, pData->left, pData->top, pData->right, pData->bottom, pData->left2, pData->top2, pData->right2, pData->bottom2 );
+         SelectObject( hDC, hgdiobj );
+         DeleteObject( hpen );
+         break;
+
+      case  6:      // Pie
+         hpen = CreatePen( PS_SOLID, pData->penwidth, pData->penrgb );
+         hgdiobj = SelectObject( hDC, hpen );
+         if( pData->fill )
+         {
+            hbrush = CreateSolidBrush( pData->fillrgb );
+         }
+         else
+         {
+            hbrush = GetSysColorBrush( COLOR_WINDOW );
+         }
+         hgdiobj2 = SelectObject( hDC, hbrush );
+         Pie( hDC, pData->left, pData->top, pData->right, pData->bottom, pData->left2, pData->top2, pData->right2, pData->bottom2 );
+         SelectObject( hDC, hgdiobj );
+         SelectObject( hDC, hgdiobj2 );
+         DeleteObject( hpen );
+         DeleteObject( hbrush );
+         break;
+
+      case  7:      // WindowBoxIn
+         {
+            RECT rct;
+            rct.top    = pData->top;
+            rct.left   = pData->left;
+            rct.bottom = pData->bottom;
+            rct.right  = pData->right;
+            WindowBoxIn( hDC, &rct );
+         }
+         break;
+
+      case  8:      // Polygon
+         hpen = CreatePen( PS_SOLID, pData->penwidth, pData->penrgb );
+         hgdiobj = SelectObject( hDC, hpen );
+         if( pData->fill )
+         {
+            hbrush = CreateSolidBrush( pData->fillrgb );
+         }
+         else
+         {
+            hbrush = GetSysColorBrush( COLOR_WINDOW );
+         }
+         hgdiobj2 = SelectObject( hDC, hbrush );
+         Polygon( hDC, ( POINT * ) &pData->points, pData->pointcount );
+         SelectObject( hDC, hgdiobj );
+         SelectObject( hDC, hgdiobj2 );
+         DeleteObject( hpen );
+         DeleteObject( hbrush );
+         break;
+
+      case  9:      // PolyBezier
+         hpen = CreatePen( PS_SOLID, pData->penwidth, pData->penrgb );
+         hgdiobj = SelectObject( hDC, hpen );
+         PolyBezier( hDC, ( POINT * ) &pData->points, pData->pointcount );
+         SelectObject( hDC, hgdiobj );
+         DeleteObject( hpen );
+         break;
+
+   }
+}
+
+HB_FUNC( _OOHG_GRAPHCOMMAND )
+{
+   HWND hWnd;
+   HDC hDC;
+   PHB_ITEM pArray, pItem;
+   ULONG ulCount, ulPos;
+
+   pArray = hb_param( 2, HB_IT_ARRAY );
+   if( pArray )
+   {
+      ulCount = hb_arrayLen( pArray );
+      if( ulCount )
+      {
+         hWnd = ( HWND ) hb_parnl( 1 );
+         hDC = GetDC( hWnd );
+         for( ulPos = 1; ulPos <= ulCount; ulPos++ )
+         {
+            pItem = hb_arrayGetItemPtr( pArray, ulPos );
+            if( HB_IS_STRING( pItem ) )
+            {
+               _OOHG_GraphCommand( hDC, ( struct _OOHG_GraphData * ) hb_itemGetCPtr( pItem ) );
+            }
+         }
+         ReleaseDC( hWnd, hDC );
+      }
+   }
+}
+
+HB_FUNC( _OOHG_NEWGRAPHCOMMAND )
+{
+   struct _OOHG_GraphData pStruct, *pData;
+   HWND hWnd;
+   HDC hDC;
+   LONG lColor, lSize, lItems;
+   BOOL bBuffer;
+   int iType;
+   POINT *pPoint;
+
+   iType = hb_parni(  2 );
+   if( iType == 8 || iType == 9 )
+   {
+      lItems = hb_parinfa( 3, 0 );
+      lSize = sizeof( pStruct ) + ( lItems * sizeof( POINT ) );
+      pData = hb_xgrab( lSize );
+      bBuffer = 1;
+      pPoint = ( POINT * ) &pData->points;
+      pData->pointcount = lItems;
+      while( lItems )
+      {
+         lItems--;
+         pPoint[ lItems ].x = hb_parni( 4, lItems + 1 );
+         pPoint[ lItems ].y = hb_parni( 3, lItems + 1 );
+      }
+   }
+   else
+   {
+      lSize = sizeof( pStruct );
+      pData = &pStruct;
+      bBuffer = 0;
+   }
+
+   pData->type     = iType;
+   pData->top      = hb_parni(  3 );
+   pData->left     = hb_parni(  4 );
+   pData->bottom   = hb_parni(  5 );
+   pData->right    = hb_parni(  6 );
+   lColor = -1;
+   _OOHG_DetermineColor( hb_param(  7, HB_IT_ANY ), &lColor );
+   pData->penrgb   = lColor;
+   pData->penwidth = max( hb_parni(  8 ), 1 );
+   lColor = -1;
+   _OOHG_DetermineColor( hb_param(  9, HB_IT_ANY ), &lColor );
+   pData->fillrgb  = lColor;
+   pData->fill     = hb_parl( 10 );
+   pData->top2     = hb_parni( 11 );
+   pData->left2    = hb_parni( 12 );
+   pData->bottom2  = hb_parni( 13 );
+   pData->right2   = hb_parni( 14 );
+   pData->width    = hb_parni( 15 );
+   pData->height   = hb_parni( 16 );
+
+   hWnd = ( HWND ) hb_parnl( 1 );
+   if( hWnd != 0 && ( int ) hWnd != -1 )
+   {
+      hDC = GetDC( hWnd );
+      _OOHG_GraphCommand( hDC, pData );
+      ReleaseDC( hWnd, hDC );
+   }
+
+   hb_retclen( ( char * ) pData, lSize );
+   if( bBuffer )
+   {
+      hb_xfree( pData );
+   }
 }

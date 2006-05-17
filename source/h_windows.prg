@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.83 2006-05-01 04:12:44 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.84 2006-05-17 05:15:57 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -906,6 +906,8 @@ CLASS TForm FROM TWindow
    DATA RangeWidth     INIT 0
 
    DATA GraphTasks     INIT {}
+   DATA GraphCommand   INIT nil
+   DATA GraphData      INIT {}
    DATA BrowseList     INIT {}    // Controls to be refresh at form's draw.
    DATA SplitChildList INIT {}    // INTERNAL windows.
 
@@ -1896,12 +1898,10 @@ Local oWnd, oCtrl
 	case nMsg == WM_PAINT
         ***********************************************************************
 
-         // WHY ALL WINDOWS?????
-         // WHY DON'T ONLY THIS WINDOW'S SUBWINDOWS?
-         // AEVAL( _OOHG_aFormObjects, { |o| IF( o:Type == "X", AEVAL( o:GraphTasks, { |b| EVAL( b ) } ), ) } )
-         AEVAL( ::SplitChildList, { |o| AEVAL( o:GraphTasks, { |b| EVAL( b ) } ) } )
+         AEVAL( ::SplitChildList, { |o| AEVAL( o:GraphTasks, { |b| _OOHG_EVAL( b ) } ), _OOHG_EVAL( o:GraphCommand, o:hWnd, o:GraphData ) } )
 
-         AEVAL( ::GraphTasks, { |b| EVAL( b ) } )
+         AEVAL( ::GraphTasks, { |b| _OOHG_EVAL( b ) } )
+         _OOHG_EVAL( ::GraphCommand, ::hWnd, ::GraphData )
 
          // This must change for MDI, MDICLIENT or MDICHILD window!
          DefWindowProc( hWnd, nMsg, wParam, lParam )
@@ -2482,19 +2482,15 @@ METHOD Define( FormName, w, h, break, grippertext, nocaption, title, aRGB, ;
                scrolldown, hscrollbox, vscrollbox, cursor, lRtl, mdi ) CLASS TFormSplit
 *-----------------------------------------------------------------------------*
 Local nStyle := 0, nStyleEx := 0
-Local oControl
 
-   oControl := TControl():SetForm()
-   ::Container := oControl:Container
-   ::Parent := oControl:Parent
+   ::SearchParent()
    ::Focused := ( ValType( Focused ) == "L" .AND. Focused )
+   nStyle += WS_CHILD
+   nStyleEx += WS_EX_STATICEDGE + WS_EX_TOOLWINDOW
 
-   If ! oControl:SetSplitBoxInfo()
+   If ! ::SetSplitBoxInfo()
       MsgOOHGError( "SplitChild Windows Can be Defined Only Inside SplitBox. Program terminated." )
    EndIf
-
-   nStyle := WS_CHILD
-   nStyleEx += WS_EX_STATICEDGE + WS_EX_TOOLWINDOW
 
    ::Define2( FormName, Title, 0, 0, w, h, ::Parent:hWnd, .F., .F., .F., .F., .F., ;
               nocaption, virtualheight, virtualwidth, hscrollbox, vscrollbox, fontname, fontsize, aRGB, cursor, ;
@@ -2576,6 +2572,12 @@ Local nStyle := 0, nStyleEx := 0
 
    nStyle   += WS_CHILD
    nStyleEx += WS_EX_MDICHILD
+
+   // If MDIclient window doesn't exists, create it.
+   If ::Parent:hWndClient == 0
+      oParent := TFormMDIClient():Define( ,,,,,,,,,,,,,,,,,,,,,,,,, ::Parent )
+      ::SearchParent( oParent )
+   EndIf
 
    ::Define2( FormName, Caption, x, y, w, h, ::Parent:hWnd, helpbutton, nominimize, nomaximize, nosize, nosysmenu, ;
               nocaption, virtualheight, virtualwidth, hscrollbox, vscrollbox, fontname, fontsize, aRGB, cursor, ;
