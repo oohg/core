@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.54 2006-05-04 04:02:34 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.55 2006-05-17 05:19:15 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1583,13 +1583,15 @@ METHOD SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BkColor,
    ::SearchParent( ParentForm )
 
    // Font Name:
-   if ! empty( FontName )
+   If ValType( FontName ) == "C" .AND. ! EMPTY( FontName )
       // Specified font
       ::cFontName := FontName
-   elseif ::Container != nil .AND. ! empty( ::Container:cFontName )
+   ElseIf ValType( ::cFontName ) == "C" .AND. ! Empty( ::cFontName )
+      // Pre-registered
+   elseif ::Container != nil .AND. ValType( ::Container:cFontName ) == "C" .AND. ! Empty( ::Container:cFontName )
       // Container
       ::cFontName := ::Container:cFontName
-   elseif ! empty( ::Parent:cFontName )
+   elseif ValType( ::Parent:cFontName ) == "C" .AND. ! Empty( ::Parent:cFontName )
       // Parent form
       ::cFontName := ::Parent:cFontName
    else
@@ -1598,13 +1600,15 @@ METHOD SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BkColor,
    endif
 
    // Font Size:
-   if ! empty( FontSize )
+   If ValType( FontSize ) == "N" .AND. FontSize != 0
       // Specified size
       ::nFontSize := FontSize
-   elseif ::Container != nil .AND. ! empty( ::Container:nFontSize )
+   ElseIf ValType( ::nFontSize ) == "N" .AND. ::nFontSize != 0
+      // Pre-registered
+   elseif ::Container != nil .AND. ValType( ::Container:nFontSize ) == "N" .AND. ::Container:nFontSize != 0
       // Container
       ::nFontSize := ::Container:nFontSize
-   elseif ! empty( ::Parent:nFontSize )
+   elseif ValType( ::Parent:nFontSize ) == "N" .AND. ::Parent:nFontSize != 0
       // Parent form
       ::nFontSize := ::Parent:nFontSize
    else
@@ -1613,13 +1617,15 @@ METHOD SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BkColor,
    endif
 
    // Font Color:
-   if ! empty( FontColor )
+   If ValType( FontColor ) $ "ANCM"
       // Specified color
       ::FontColor := FontColor
-   elseif ::Container != nil .AND. ! empty( ::Container:FontColor )
+   ElseIf ValType( ::FontColor ) $ "ANCM"
+      // Pre-registered
+   elseif ::Container != nil .AND. ValType( ::Container:FontColor ) $ "ANCM"
       // Container
       ::FontColor := ::Container:FontColor
-   elseif ! empty( ::Parent:FontColor )
+   elseif ValType( ::Parent:FontColor ) $ "ANCM"
       // Parent form
       ::FontColor := ::Parent:FontColor
    else
@@ -1628,13 +1634,15 @@ METHOD SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BkColor,
 
    IF valtype( lEditBox ) == "L" .AND. lEditBox
       // Background Color (edit or listbox):
-      if ! empty( BkColor )
+      if ValType( BkColor ) $ "ANCM"
          // Specified color
          ::BackColor := BkColor
+      ElseIf ValType( ::BackColor ) $ "ANCM"
+         // Pre-registered
       elseif ::Container != nil
          // Active frame
          ::BackColor := ::Container:DefBkColorEdit
-      elseif ! Empty( ::Parent:DefBkColorEdit )
+      elseif ValType( ::Parent:DefBkColorEdit ) $ "ANCM"
          // Active form
          ::BackColor := ::Parent:DefBkColorEdit
       else
@@ -1642,13 +1650,15 @@ METHOD SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BkColor,
       endif
    ELSE
       // Background Color (static):
-      if ! empty( BkColor )
+      if ValType( BkColor ) $ "ANCM"
          // Specified color
          ::BackColor := BkColor
+      ElseIf ValType( ::BackColor ) $ "ANCM"
+         // Pre-registered
       elseif ::Container != nil
          // Active frame
          ::BackColor := ::Container:BackColor
-      elseif ! Empty( ::Parent:BackColor )
+      elseif ValType( ::Parent:BackColor ) $ "ANCM"
          // Active form
          ::BackColor := ::Parent:BackColor
       else
