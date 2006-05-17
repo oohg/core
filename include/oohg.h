@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.h,v 1.22 2006-05-01 04:09:47 guerra000 Exp $
+ * $Id: oohg.h,v 1.23 2006-05-17 05:13:39 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -145,4 +145,5 @@ DWORD _OOHG_RTL_Status( BOOL bRtl );
 #define s_WndProc              38
 #define s_OverWndProc          39
 #define s_hWndClient           40
-#define s_LastSymbol           41
+#define s_Refresh              41
+#define s_LastSymbol           42

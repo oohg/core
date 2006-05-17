@@ -1,5 +1,5 @@
 /*
- * $Id: c_controlmisc.c,v 1.32 2006-03-30 04:54:37 guerra000 Exp $
+ * $Id: c_controlmisc.c,v 1.33 2006-05-17 05:13:39 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -163,6 +163,7 @@ char *s_SymbolNames[] = { "EVENTS_NOTIFY",
                           "WNDPROC",
                           "OVERWNDPROC",
                           "HWNDCLIENT",
+                          "REFRESH",
                           "LastSymbol" };
 
 void _OOHG_Send( PHB_ITEM pSelf, int iSymbol )
