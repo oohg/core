@@ -1,5 +1,5 @@
 /*
- * $Id: h_error.prg,v 1.14 2006-04-26 12:58:57 guerra000 Exp $
+ * $Id: h_error.prg,v 1.15 2006-05-23 23:38:23 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -105,7 +105,7 @@
 *-Return: Nil
 *------------------------------------------------------------------------------
 Function MsgOOHGError(Message)
-    Local n, ai, HtmArch, xText
+    Local n, ai, HtmArch, xText, txtarch
     MemVar _OOHG_TXTERROR
 
    // Kill timers and hot keys
@@ -131,26 +131,30 @@ if  .not. _OOHG_TXTERROR
     ENDDO
     Html_Line( HtmArch )
 else
-    set printer to errorlog.txt additive
-    set print on
-    ? " "
-    ? replicate("-",80)
-    ? " "
-    ? "Date:" + Dtoc( Date() ) + "  " + "Time: " + Time()
+    If .Not. File("\"+CurDir()+"\ErrorLog.txt")
+        txtArch := Fcreate("\"+CurDir()+"\ErrorLog.txt")
+    Else
+        txtArch := FOPEN("\"+CurDir()+"\ErrorLog.txt",2)
+        FSeek(txtArch,0,2)    //End Of File
+    EndIf
+
+    FWRITE(txtARCH,""+CHR(13)+CHR(10))
+    FWRITE(txtARCH,replicate("-",80)+CHR(13)+CHR(10))
+    FWRITE(txtARCH,""+CHR(13)+CHR(10))
+    FWRITE(txtARCH,"Date:" + Dtoc( Date() ) + "  " + "Time: " + Time()+CHR(13)+CHR(10))
     n := 1
     ai := ooHGVersion() + chr( 13 ) + chr( 10 ) + Message + chr( 13 ) + chr( 10 )
-    ? "Version: " + ooHGVersion()
-    ? "Alias in use: "+alias()
-    ? "Error: "+ Message
-    ? " "
-    ? " "
+    FWRITE(txtARCH,"Version: " + ooHGVersion()+CHR(13)+CHR(10))
+    FWRITE(txtARCH,"Alias in use: "+alias()+CHR(13)+CHR(10))
+    FWRITE(txtARCH,"Error: "+ Message+CHR(13)+CHR(10))
+    FWRITE(txtARCH,""+CHR(13)+CHR(10))
+    FWRITE(txtARCH,""+CHR(13)+CHR(10))
     DO WHILE ! Empty( ProcName( n ) )
        xText := "Called from " + ProcName( n ) + "(" + AllTrim( Str( ProcLine( n++ ) ) ) + ")"
        ai += xText + chr(13)  + chr(10)
-       ? xtext
+           FWRITE(txtARCH,ai)
     ENDDO
-    set print off
-    set printer to
+    fclose(txtarch)
 endif
     ShowError( ai )
 Return Nil
@@ -172,7 +176,7 @@ STATIC FUNCTION DefError( oError )
    LOCAL cDOSError
    LOCAL n
    Local Ai
-   LOCAL HtmArch, xText
+   LOCAL HtmArch, xText, txtarch
    MemVar _OOHG_TXTERROR
 
    // By default, division by zero results in zero
@@ -231,26 +235,30 @@ STATIC FUNCTION DefError( oError )
       ENDDO
       Html_Line(HtmArch)
    else
-      set printer to errorlog.txt additive
-      set print on
-      ? " "
-      ? replicate("-",80)
-      ? " "
-      ? "Date:" + Dtoc( Date() ) + "  " + "Time: " + Time()
+   If .Not. File("\"+CurDir()+"\ErrorLog.txt")
+        txtArch := Fcreate("\"+CurDir()+"\ErrorLog.txt")
+    Else
+        txtArch := FOPEN("\"+CurDir()+"\ErrorLog.txt",2)
+        FSeek(txtArch,0,2)    //End Of File
+    EndIf
+
+    FWRITE(txtARCH," "+CHR(13)+CHR(10))
+    FWRITE(txtARCH,replicate("-",80)+CHR(13)+CHR(10))
+    FWRITE(txtARCH," "+CHR(13)+CHR(10))
+    FWRITE(txtARCH,"Date:" + Dtoc( Date() ) + "  " + "Time: " + Time()+CHR(13)+CHR(10))
       n := 2
       ai := ooHGVersion() + chr( 13 ) + chr( 10 ) +cMessage + chr( 13 ) + chr( 10 )
-      ? "Version: " + ooHGVersion()
-      ? "Alias in use: "+ alias()
-      ? "Error: " + Cmessage
-      ? " "
-      ? " "
+      FWRITE(txtARCH,"Version: " + ooHGVersion()+CHR(13)+CHR(10))
+    FWRITE(txtARCH,"Alias in use: "+ alias()+CHR(13)+CHR(10))
+    FWRITE(txtARCH,"Error: " + Cmessage+CHR(13)+CHR(10))
+    FWRITE(txtARCH," "+CHR(13)+CHR(10))
+    FWRITE(txtARCH," "+CHR(13)+CHR(10))
       DO WHILE ! Empty( ProcName( n ) )
          xText := "Called from " + ProcName( n ) + "(" + AllTrim( Str( ProcLine( n++ ) ) ) + ")"
          ai += xText + chr(13) + chr(10)
-         ? xtext
+         FWRITE(txtARCH,xtext)
       ENDDO
-      set print off
-      set printer to
+      fclose(txtarch)
    endif
    ShowError(ai)
 
