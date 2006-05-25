@@ -1,8 +1,8 @@
 CLASE TPRINT
 
 TPRINT(ctlibrary)  inicializa  la clase y Se le dice a tprint() que
-libreria de impresion usar, los valores posibles son "HBPRINTER", "MINIPRINT","DOS" ,
-si no se especifica ningun valor se asume "HBPRINTER"
+libreria de impresion usar, los valores posibles son "HBPRINTER", "MINIPRINT","DOSPRINT" ,
+si no se especifica ningun valor se asume "MINIPRINT"
 
 
 ::init() inicializa algunas variables necesarias para cada libreria
@@ -131,13 +131,12 @@ Devuelve la version de Tprint actual
 
 Variables importantes
 
-_HMG_printlibrary  variable que debes definir publica para decir que libreria
+_OOHG_printlibrary  variable que debes definir publica para decir que libreria
                    de impresion usaras por defecto.
                    valores posibles:
-                   "HBPRINTER", "MINIPRINT","DOS".                   
+                   "HBPRINTER", "MINIPRINT","DOSPRINT".                   
 
-esto es muy util para utilizar el report form el edit y el edit extended si decides
-usar los aqui publicados en lugar de  los originales.
+esto es muy util para utilizar el report form el edit y el edit extended
 
 ::aprinters  arreglo de las impresoras disponibles
 ::aports     arreglo de puertos disponibles
