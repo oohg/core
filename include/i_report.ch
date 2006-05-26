@@ -1,5 +1,5 @@
 /*
- * $Id: i_report.ch,v 1.7 2006-03-13 20:05:10 declan2005 Exp $
+ * $Id: i_report.ch,v 1.8 2006-05-26 20:07:50 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -72,6 +72,8 @@
                 [ GROUPED BY <cgrpby> ]         ;
                 [ HEADRGRP   <chdrgrp> ]         ;
                 [ <llandscape: LANDSCAPE> ]           ;
+                [ <lgroupeject: GROUPEJECT> ]  ;
+                [ HEADING  <cheader> ]   ;
 	=>;
 easyreport  ( <ctitle> ,		 	;
 		<aheaders1> , 		;
@@ -93,7 +95,7 @@ easyreport  ( <ctitle> ,		 	;
                 <(calias)>            ,  ;
                 <nllmargin>           ,  ;
                 <aformats>            ,  ;
-                <npapersize>,,<.lnoprop.> )
+                <npapersize>,<cheader>,<.lnoprop.>,<.lgroupeject.> )
 
 
 

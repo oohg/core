@@ -1,9 +1,9 @@
 /*
- * $Id: h_report.prg,v 1.24 2006-04-09 16:18:56 declan2005 Exp $
+ * $Id: h_report.prg,v 1.25 2006-05-26 20:07:51 declan2005 Exp $
  */
 /*
  * DO REPORT Command support procedures For MiniGUI Library.
- * (c) Ciro vargas Clemow [gerente@sistemascvc.com]
+ * (c) Ciro vargas Clemow [sistemascvc@softhome.net]
 
  This program is free software; you can redistribute it and/or modify it under
  the terms of the GNU General Public License as published by the Free Software
@@ -90,9 +90,15 @@ MEMVAR CBAT
 MEMVAR _OOHG_printlibrary
 MEMVAR oprint
 MEMVAR nposat
+MEMVAR lgroupeject
 
-FUNCTION easyreport(ctitle,aheaders1,aheaders2,afields,awidths,atotals,nlpp,ldos,lpreview,cgraphic,nfi,nci,nff,ncf,lmul,cgrpby,chdrgrp,llandscape,ncpl,lselect,calias,nllmargin,aformats,npapersize,cheader,lnoprop)
+FUNCTION easyreport(ctitle,aheaders1,aheaders2,afields,awidths,atotals,nlpp,ldos,lpreview,cgraphic,nfi,nci,nff,ncf,lmul,cgrpby,chdrgrp,llandscape,ncpl,lselect,calias,nllmargin,aformats,npapersize,cheader,lnoprop,lgroupeject)
 PRIVATE ctitle1,sicvar
+
+if lgroupeject=NIL
+   lgroupeject:=.F.
+endif
+
 
 if cheader=NIL
    cheader:=""
@@ -109,16 +115,16 @@ if ncpl=NIL
    ncpl:=80
 endif
 
- _listreport(CTITLE,AHEADERS1,AHEADERS2,AFIELDS,AWIDTHS,ATOTALS,NLPP,LDOS,LPREVIEW,CGRAPHIC,NFI,NCI,NFF,NCF,LMUL,CGRPBY,CHDRGRP,LLANDSCAPE,NCPL,LSELECT,CALIAS,NLLMARGIN,AFORMATS,NPAPERSIZE,CHEADER,lnoprop)
+ _listreport(CTITLE,AHEADERS1,AHEADERS2,AFIELDS,AWIDTHS,ATOTALS,NLPP,LDOS,LPREVIEW,CGRAPHIC,NFI,NCI,NFF,NCF,LMUL,CGRPBY,CHDRGRP,LLANDSCAPE,NCPL,LSELECT,CALIAS,NLLMARGIN,AFORMATS,NPAPERSIZE,CHEADER,lnoprop,lgroupeject)
 
 RETURN NIL
 
-static FUNCTION _listreport(ctitle,aheaders1,aheaders2,afields,awidths,atotals,nlpp,ldos,lpreview,cgraphic,nfi,nci,nff,ncf,lmul,cgrpby,chdrgrp,llandscape,ncpl,lselect,calias,nllmargin,aformats,npapersize,cheader,lnoprop)
+static FUNCTION _listreport(ctitle,aheaders1,aheaders2,afields,awidths,atotals,nlpp,ldos,lpreview,cgraphic,nfi,nci,nff,ncf,lmul,cgrpby,chdrgrp,llandscape,ncpl,lselect,calias,nllmargin,aformats,npapersize,cheader,lnoprop,lgroupeject)
 private repobject,sicvar
 repobject:=TREPORT()
 sicvar:=setinteractiveclose()
 SET INTERACTIVECLOSE ON
-repobject:easyreport1(ctitle,aheaders1,aheaders2,afields,awidths,atotals,nlpp,ldos,lpreview,cgraphic,nfi,nci,nff,ncf,lmul,cgrpby,chdrgrp,llandscape,ncpl,lselect,calias,nllmargin,aformats,npapersize,cheader,lnoprop)
+repobject:easyreport1(ctitle,aheaders1,aheaders2,afields,awidths,atotals,nlpp,ldos,lpreview,cgraphic,nfi,nci,nff,ncf,lmul,cgrpby,chdrgrp,llandscape,ncpl,lselect,calias,nllmargin,aformats,npapersize,cheader,lnoprop,lgroupeject)
 setinteractiveclose(sicvar)
 release repobject
 return nil
@@ -161,7 +167,7 @@ VAR nvfij     INIT 0
 
 VAR aline     INIT {}
 
-METHOD easyreport1(ctitle,aheaders1,aheaders2,afields,awidths,atotals,nlpp,ldos,lpreview,cgraphic,nfi,nci,nff,ncf,lmul,cgrpby,chdrgrp,llandscape,ncpl,lselect,calias,nllmargin,aformats,npapersize,cheader,lnoprop)
+METHOD easyreport1(ctitle,aheaders1,aheaders2,afields,awidths,atotals,nlpp,ldos,lpreview,cgraphic,nfi,nci,nff,ncf,lmul,cgrpby,chdrgrp,llandscape,ncpl,lselect,calias,nllmargin,aformats,npapersize,cheader,lnoprop,lgroupeject)
 METHOD headers(aheaders1,aheaders2,awidths,nlin,ctitle,lmode,grpby,chdrgrp,cheader)
 METHOD extreport1(cfilerep,cheader)
 METHOD leadato(cName,cPropmet,cDefault)
@@ -175,7 +181,7 @@ METHOD leacoli(cname,npar)
 ENDCLASS
 
 
-METHOD easyreport1(ctitle,aheaders1,aheaders2,afields,awidths,atotals,nlpp,ldos,lpreview,cgraphic,nfi,nci,nff,ncf,lmul,cgrpby,chdrgrp,llandscape,ncpl,lselect,calias,nllmargin,aformats,npapersize,cheader,lnoprop) CLASS TREPORT
+METHOD easyreport1(ctitle,aheaders1,aheaders2,afields,awidths,atotals,nlpp,ldos,lpreview,cgraphic,nfi,nci,nff,ncf,lmul,cgrpby,chdrgrp,llandscape,ncpl,lselect,calias,nllmargin,aformats,npapersize,cheader,lnoprop,lgroupeject) CLASS TREPORT
 local nlin,i,aresul,lmode,swt:=0,grpby,k,ncvcopt,swmemo,clinea,ti,nmemo,nspace
 private  wfield,wfielda,wfieldt
   if nllmargin = NIL
@@ -343,6 +349,19 @@ do while .not. eof()
         for i:=1 to len(afields)
           repobject:angrpby[i]:=0
         next i
+********
+******** seria aqui si decido hacer el rompe por pagina
+       *********** if EJECTGROUP  oprint:endpage()
+      if lgroupeject
+         nlin:=1
+         oprint:endpage()
+         oprint:beginpage()
+         nlin:=repobject:headers(aheaders1,aheaders2,awidths,nlin,ctitle,lmode,grpby,chdrgrp,cheader)
+         nlin--
+      endif
+
+       *************
+********
         crompe:=&(grpby)
         nlin++
         oprint:printdata(nlin,repobject:nlmargin,  '** ' +hb_oemtoansi(chdrgrp)+' ** '+hb_oemtoansi(&(grpby)),,repobject:nfsize,.T.)
@@ -460,6 +479,15 @@ if swt==1
         crompe:=&(grpby)
       endif
    endif
+************** rompe por pagina si tiene el parametro
+      if lgroupeject
+         nlin:=1
+         oprint:endpage()
+         oprint:beginpage()
+         nlin:=repobject:headers(aheaders1,aheaders2,awidths,nlin,ctitle,lmode,grpby,chdrgrp,cheader)
+         nlin--
+      endif
+
 **************
    nlin++
    if nlin>nlpp
@@ -560,7 +588,8 @@ next i
 oprint:printdata(nlin,repobject:nlmargin, clinea,,repobject:nfsize   )
 nlin:=nlin+2
 
-if grpby<>NIL
+///if grpby<>NIL
+if repobject:npager=1
    oprint:printdata(nlin,repobject:nlmargin, '** ' +chdrgrp+' ** '+  &(grpby) , ,repobject:nfsize ,.T.   )
    nlin++
 endif
@@ -654,7 +683,9 @@ local nff,ncf,cgrpby,chdrgrp,llandscape,lnoprop
        endif
        chdrgrp:=repobject:clean(repobject:leadato('REPORT','HEADRGRP',''))
        llandscape:=repobject:leadatologic('REPORT','LANDSCAPE',.F.)
-       easyreport(ctitle,aheaders1,aheaders2,afields,awidths,atotals,nlpp,ldos,lpreview,cgraphic,nfi,nci,nff,ncf,lmul,cgrpby,chdrgrp,llandscape,ncpl,lselect,calias,nllmargin,aformats,npapersize,cheader,lnoprop)
+       lgroupeject:=repobject:leadatologic('REPORT','GROUPEJECT',.F.)
+
+       easyreport(ctitle,aheaders1,aheaders2,afields,awidths,atotals,nlpp,ldos,lpreview,cgraphic,nfi,nci,nff,ncf,lmul,cgrpby,chdrgrp,llandscape,ncpl,lselect,calias,nllmargin,aformats,npapersize,cheader,lnoprop,lgroupeject)
 return Nil
 
 METHOD leadato(cName,cPropmet,cDefault) CLASS TREPORT

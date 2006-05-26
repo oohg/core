@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog,v 1.158 2006-05-25 19:14:02 declan2005 Exp $
+ * $Id: ChangeLog,v 1.159 2006-05-26 20:07:49 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-05-26 15:04 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+  * source/h_report.prg
+  * include/i_report.ch
+     * add new parameter GROUPEJECT to do report form command in order to EJECT after each subtotaltotal
 
 2006-05-25 18:35 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * doc/tprint.doc
