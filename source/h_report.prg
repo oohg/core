@@ -1,5 +1,5 @@
 /*
- * $Id: h_report.prg,v 1.25 2006-05-26 20:07:51 declan2005 Exp $
+ * $Id: h_report.prg,v 1.26 2006-05-27 20:14:15 declan2005 Exp $
  */
 /*
  * DO REPORT Command support procedures For MiniGUI Library.
@@ -589,7 +589,7 @@ oprint:printdata(nlin,repobject:nlmargin, clinea,,repobject:nfsize   )
 nlin:=nlin+2
 
 ///if grpby<>NIL
-if repobject:npager=1
+if repobject:npager=1 .and. grpby#NIL
    oprint:printdata(nlin,repobject:nlmargin, '** ' +chdrgrp+' ** '+  &(grpby) , ,repobject:nfsize ,.T.   )
    nlin++
 endif
