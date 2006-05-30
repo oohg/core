@@ -1,5 +1,5 @@
 /*
- * $Id: c_grid.c,v 1.15 2006-05-01 04:09:47 guerra000 Exp $
+ * $Id: c_grid.c,v 1.16 2006-05-30 02:25:40 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -106,53 +106,6 @@
 #include "tchar.h"
 #include "../include/oohg.h"
 
-static WNDPROC lpfnOldWndProc = 0;
-
-static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
-{
-   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
-}
-
-HB_FUNC( INITLISTVIEW )
-{
-   HWND hwnd;
-   HWND hbutton;
-   int style, StyleEx;
-
-   INITCOMMONCONTROLSEX  i;
-
-   i.dwSize = sizeof( INITCOMMONCONTROLSEX );
-   i.dwICC = ICC_DATE_CLASSES;
-   InitCommonControlsEx( &i );
-
-   hwnd = ( HWND ) hb_parnl( 1 );
-
-   StyleEx = WS_EX_CLIENTEDGE | _OOHG_RTL_Status( hb_parl( 13 ) );
-
-   style = LVS_SHOWSELALWAYS | WS_CHILD | WS_TABSTOP | WS_VISIBLE | LVS_REPORT;
-   if ( hb_parl( 10 ) )
-   {
-      style = style | LVS_OWNERDATA;
-   }
-
-   hbutton = CreateWindowEx(StyleEx,"SysListView32","",
-   ( style | hb_parni( 12 ) ),
-   hb_parni(3), hb_parni(4) , hb_parni(5), hb_parni(6) ,
-   hwnd,(HMENU)hb_parni(2) , GetModuleHandle(NULL) , NULL ) ;
-
-   SendMessage(hbutton,LVM_SETEXTENDEDLISTVIEWSTYLE, 0, hb_parni(9) | LVS_EX_FULLROWSELECT | LVS_EX_HEADERDRAGDROP | LVS_EX_SUBITEMIMAGES );
-
-   if ( hb_parl( 10 ) )
-   {
-      ListView_SetItemCount( hbutton , hb_parni( 11 ) ) ;
-   }
-
-   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hbutton, GWL_WNDPROC, ( LONG ) SubClassFunc );
-
-   hb_retnl ( (LONG) hbutton );
-
-}
-
 HB_FUNC( LISTVIEW_SETITEMCOUNT )
 {
 	ListView_SetItemCount ( (HWND) hb_parnl (1) , hb_parni (2) ) ;
@@ -161,100 +114,6 @@ HB_FUNC( LISTVIEW_SETITEMCOUNT )
 HB_FUNC( LISTVIEW_GETFIRSTITEM )
 {
    hb_retni( ListView_GetNextItem( ( HWND ) hb_parnl( 1 ), -1 , LVNI_ALL | LVNI_SELECTED ) + 1 );
-}
-
-HB_FUNC( INITLISTVIEWCOLUMNS )
-{
-   PHB_ITEM wArray;
-   PHB_ITEM hArray;
-   PHB_ITEM jArray;
-
-   HWND hc;
-   LV_COLUMN COL;
-   int iLen;
-   int s;
-   int iColumn;
-
-   hc = ( HWND ) hb_parnl( 1 );
-
-   iLen = hb_parinfa( 2, 0 ) - 1;
-   hArray = hb_param( 2, HB_IT_ARRAY );
-   wArray = hb_param( 3, HB_IT_ARRAY );
-   jArray = hb_param( 4, HB_IT_ARRAY );
-
-   COL.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
-
-   iColumn = 0;
-   for( s = 0; s <= iLen; s++ )
-   {
-      COL.fmt = hb_arrayGetNI( jArray, s + 1 );
-      COL.cx = hb_arrayGetNI( wArray, s + 1 );
-      COL.pszText = hb_arrayGetCPtr( hArray, s + 1 );
-      COL.iSubItem = iColumn;
-      ListView_InsertColumn( hc, iColumn, &COL );
-      if( iColumn == 0 && COL.fmt != LVCFMT_LEFT )
-      {
-         iColumn++;
-         COL.iSubItem = iColumn;
-         ListView_InsertColumn( hc, iColumn, &COL );
-      }
-      iColumn++;
-   }
-
-   if( iColumn != s )
-   {
-      ListView_DeleteColumn( hc, 0 );
-   }
-}
-
-static void _OOHG_ListView_FillItem( HWND hWnd, int nItem, PHB_ITEM pItems )
-{
-   LV_ITEM LI;
-   ULONG s, ulLen;
-   struct IMAGE_PARAMETER pStruct;
-
-   ulLen = hb_arrayLen( pItems );
-
-   for( s = 0; s < ulLen; s++ )
-   {
-      LI.mask = LVIF_TEXT | LVIF_IMAGE;
-      LI.state = 0;
-      LI.stateMask = 0;
-      LI.iItem = nItem;
-      LI.iSubItem = s;
-      ImageFillParameter( &pStruct, hb_arrayGetItemPtr( pItems, s + 1 ) );
-      LI.pszText = pStruct.cString;
-      LI.iImage = pStruct.iImage1;
-      ListView_SetItem( hWnd, &LI );
-   }
-}
-
-HB_FUNC( ADDLISTVIEWITEMS )
-{
-   PHB_ITEM hArray;
-   LV_ITEM LI;
-   HWND h;
-   int c;
-
-   hArray = hb_param( 2, HB_IT_ARRAY );
-   if( ! hArray || hb_arrayLen( hArray ) == 0 )
-   {
-      return;
-   }
-   h = ( HWND ) hb_parnl( 1 );
-   c = ListView_GetItemCount( h );
-
-   // First "default" item
-   LI.mask = LVIF_TEXT | LVIF_IMAGE;
-   LI.state = 0;
-   LI.stateMask = 0;
-   LI.iItem = c;
-   LI.iSubItem = 0;
-   LI.pszText = "";
-   LI.iImage = -1;
-   ListView_InsertItem( h, &LI );
-
-   _OOHG_ListView_FillItem( h, c, hArray );
 }
 
 HB_FUNC (LISTVIEW_SETCURSEL)
@@ -338,58 +197,6 @@ HB_FUNC ( LISTVIEWSETMULTISEL )
         ListView_SetItemState( ( HWND ) hb_parnl( 1 ), hb_arrayGetNI( wArray, i + 1 ) - 1, LVIS_FOCUSED | LVIS_SELECTED, LVIS_FOCUSED | LVIS_SELECTED );
 	}
 
-}
-
-HB_FUNC( LISTVIEWSETITEM )
-{
-   _OOHG_ListView_FillItem( ( HWND ) hb_parnl( 1 ), hb_parni( 3 ) - 1, hb_param( 2, HB_IT_ARRAY ) );
-}
-
-HB_FUNC ( LISTVIEWGETITEM )
-{
-   char buffer[ 1024 ];
-   HWND h;
-   int s, c, l;
-   LV_ITEM LI;
-   PHB_ITEM pArray, pString;
-
-   h = ( HWND ) hb_parnl( 1 );
-
-   c = hb_parni( 2 ) - 1;
-
-   l = hb_parni( 3 );
-
-   pArray = hb_itemArrayNew( l );
-   pString = hb_itemNew( NULL );
-
-   for( s = 0; s < l; s++ )
-   {
-      LI.mask = LVIF_TEXT | LVIF_IMAGE;
-      LI.state = 0;
-      LI.stateMask = 0;
-      LI.iSubItem = s;
-      LI.cchTextMax = 1022;
-      LI.pszText = buffer;
-      LI.iItem = c;
-      buffer[ 0 ] = 0;
-      buffer[ 1023 ] = 0;
-      ListView_GetItem( h, &LI );
-      buffer[ 1023 ] = 0;
-
-      if( LI.iImage == -1 )
-      {
-         hb_itemPutC( pString, buffer );
-      }
-      else
-      {
-         hb_itemPutNI( pString, LI.iImage );
-      }
-      hb_itemArrayPut( pArray, s + 1, pString );
-   }
-
-   hb_itemReturn( pArray );
-   hb_itemRelease( pArray );
-   hb_itemRelease( pString );
 }
 
 HB_FUNC ( LISTVIEWGETITEMROW )
@@ -690,36 +497,4 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam )
 HB_FUNC( TGRID_NOTIFY_CUSTOMDRAW )
 {
    hb_retni( TGrid_Notify_CustomDraw( hb_param( 1, HB_IT_OBJECT ), ( LPARAM ) hb_parnl( 2 ) ) );
-}
-
-HB_FUNC( FILLGRIDFROMARRAY )
-{
-   HWND hWnd = ( HWND ) hb_parnl( 1 );
-   ULONG iCount = ListView_GetItemCount( hWnd );
-   PHB_ITEM pScreen = hb_param( 2, HB_IT_ARRAY );
-   ULONG iLen = hb_arrayLen( pScreen );
-   LV_ITEM LI;
-
-   while( iCount > iLen )
-   {
-      iCount--;
-      SendMessage( hWnd, LVM_DELETEITEM, ( WPARAM ) iCount, 0 );
-   }
-   while( iCount < iLen )
-   {
-      LI.mask = LVIF_TEXT | LVIF_IMAGE;
-      LI.state = 0;
-      LI.stateMask = 0;
-      LI.iItem = iCount;
-      LI.iSubItem = 0;
-      LI.pszText = "";
-      LI.iImage = -1;
-      ListView_InsertItem( hWnd, &LI );
-      iCount++;
-   }
-
-   for( iCount = 1; iCount <= iLen; iCount++ )
-   {
-      _OOHG_ListView_FillItem( hWnd, iCount, hb_arrayGetItemPtr( pScreen, iCount ) );
-   }
 }

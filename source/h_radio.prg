@@ -1,5 +1,5 @@
 /*
- * $Id: h_radio.prg,v 1.12 2006-05-04 04:02:34 guerra000 Exp $
+ * $Id: h_radio.prg,v 1.13 2006-05-30 02:25:40 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -114,7 +114,6 @@ CLASS TRadioGroup FROM TLabel
    METHOD Show
    METHOD Hide
 
-   METHOD IsHandle
    METHOD Caption
 
    METHOD Events_Command
@@ -256,11 +255,6 @@ METHOD Hide() CLASS TRadioGroup
    ::Super:Hide()
    AEVAL( ::aControls, { |o| o:ForceHide() } )
 RETURN nil
-
-*-----------------------------------------------------------------------------*
-METHOD IsHandle( hWnd ) CLASS TRadioGroup
-*-----------------------------------------------------------------------------*
-Return ( ASCAN( ::aControls, { |o| o:hWnd == hWnd } ) != 0 )
 
 *-----------------------------------------------------------------------------*
 METHOD Caption( nItem, uValue ) CLASS TRadioGroup

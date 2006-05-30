@@ -1,5 +1,5 @@
 /*
- * $Id: h_scroll.prg,v 1.9 2006-05-17 05:17:08 guerra000 Exp $
+ * $Id: h_scroll.prg,v 1.10 2006-05-30 02:25:40 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -97,8 +97,14 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, RangeMin, RangeMax, ;
 *-----------------------------------------------------------------------------*
 Local ControlHandle
 
-   ASSIGN ::nWidth    VALUE w         TYPE "N" DEFAULT GETVSCROLLBARWIDTH()
-   ASSIGN ::nHeight   VALUE h         TYPE "N" DEFAULT GETHSCROLLBARHEIGHT()
+   If ::nWidth == 0
+      ::nWidth := GETVSCROLLBARWIDTH()
+   EndIf
+   If ::nHeight == 0
+      ::nHeight := GETHSCROLLBARHEIGHT()
+   EndIf
+   ASSIGN ::nWidth    VALUE w         TYPE "N"
+   ASSIGN ::nHeight   VALUE h         TYPE "N"
    ASSIGN invisible   VALUE invisible TYPE "L" DEFAULT .F.
    ASSIGN ::nRangeMin VALUE RangeMin  TYPE "N"
    ASSIGN ::nRangeMax VALUE RangeMax  TYPE "N"

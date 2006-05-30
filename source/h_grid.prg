@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.40 2006-05-17 05:21:40 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.41 2006-05-30 02:25:40 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -141,11 +141,13 @@ CLASS TGrid FROM TControl
    METHOD EditItem2
 
    METHOD AddItem
+   METHOD InsertItem
    METHOD DeleteItem
    METHOD DeleteAllItems      BLOCK { | Self | ListViewReset( ::hWnd ), ::GridForeColor := nil, ::GridBackColor := nil }
    METHOD Item
    METHOD SetItemColor
    METHOD ItemCount           BLOCK { | Self | ListViewGetItemCount( ::hWnd ) }
+   METHOD CountPerPage        BLOCK { | Self | ListViewGetCountPerPage( ::hWnd ) }
    METHOD Header
    METHOD FontColor      SETGET
    METHOD BackColor      SETGET
@@ -220,6 +222,8 @@ Local ControlHandle, aImageList
    ASSIGN ::aJust      VALUE aJust      TYPE "A"
    ASSIGN ::Picture    VALUE aPicture   TYPE "A"
 
+   ASSIGN nogrid       VALUE nogrid     TYPE "L" DEFAULT .F.
+
    If Valtype( ::aJust ) != "A"
       ::aJust := aFill( Array( len( ::aHeaders ) ), 0 )
 	else
@@ -235,7 +239,7 @@ Local ControlHandle, aImageList
    aEval( ::Picture, { |x,i| ::Picture[ i ] := iif( ( ValType( x ) $ "CM" .AND. ! Empty( x ) ) .OR. ValType( x ) == "L", x, nil ) } )
 
    ::SetSplitBoxInfo( Break, )
-   ControlHandle := InitListView( ::ContainerhWnd, 0, ::nCol, ::nRow, ::nWidth, ::nHeight, '', 0, iif( nogrid, 0, 1 ) , ownerdata  , itemcount  , nStyle, ::lRtl )
+   ControlHandle := InitListView( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, '', 0, iif( nogrid, 0, 1 ) , ownerdata  , itemcount  , nStyle, ::lRtl )
 
    if valtype( aImage ) == "A"
       aImageList := ImageList_Init( aImage, CLR_NONE, LR_LOADTRANSPARENT )
@@ -844,6 +848,7 @@ Return lRet
 #pragma BEGINDUMP
 #define s_Super s_TControl
 #include "hbapi.h"
+#include "hbapiitm.h"
 #include "hbvm.h"
 #include "hbstack.h"
 #include <windows.h>
@@ -1019,8 +1024,6 @@ Return ::Super:Events_Notify( wParam, lParam )
 *-----------------------------------------------------------------------------*
 METHOD AddItem( aRow, uForeColor, uBackColor ) CLASS TGrid
 *-----------------------------------------------------------------------------*
-Local iIm := 0
-
    if Len( ::aHeaders ) != Len( aRow )
       MsgOOHGError( "Grid.AddItem: Item size mismatch. Program Terminated" )
 	EndIf
@@ -1028,6 +1031,19 @@ Local iIm := 0
    aRow := TGrid_SetArray( Self, aRow )
    ::SetItemColor( ::ItemCount() + 1, uForeColor, uBackColor, aRow )
    AddListViewItems( ::hWnd , aRow )
+
+Return Nil
+
+*-----------------------------------------------------------------------------*
+METHOD InsertItem( nItem, aRow, uForeColor, uBackColor ) CLASS TGrid
+*-----------------------------------------------------------------------------*
+   if Len( ::aHeaders ) != Len( aRow )
+      MsgOOHGError( "Grid.AddItem: Item size mismatch. Program Terminated" )
+	EndIf
+
+   aRow := TGrid_SetArray( Self, aRow )
+   ::SetItemColor( ::ItemCount() + 1, uForeColor, uBackColor, aRow )
+   InsertListViewItem( ::hWnd, aRow, nItem )
 
 Return Nil
 
@@ -1416,6 +1432,266 @@ Procedure _ClearThisCellInfo()
    _OOHG_ThisItemCellHeight := 0
 Return
 
+EXTERN InitListView, InitListViewColumns, AddListViewItems, InsertListViewItem
+EXTERN ListViewSetItem, ListViewGetItem, FillGridFromArray
+
+#pragma BEGINDUMP
+
+static WNDPROC lpfnOldWndProc = 0;
+
+static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+{
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
+}
+
+HB_FUNC( INITLISTVIEW )
+{
+   HWND hwnd;
+   HWND hbutton;
+   int style, StyleEx;
+
+   INITCOMMONCONTROLSEX i;
+
+   i.dwSize = sizeof( INITCOMMONCONTROLSEX );
+   i.dwICC = ICC_DATE_CLASSES;
+   InitCommonControlsEx( &i );
+
+   hwnd = ( HWND ) hb_parnl( 1 );
+
+   StyleEx = WS_EX_CLIENTEDGE | _OOHG_RTL_Status( hb_parl( 13 ) );
+
+   style = LVS_SHOWSELALWAYS | WS_CHILD | WS_TABSTOP | WS_VISIBLE | LVS_REPORT;
+   if ( hb_parl( 10 ) )
+   {
+      style = style | LVS_OWNERDATA;
+   }
+
+   hbutton = CreateWindowEx(StyleEx,"SysListView32","",
+   ( style | hb_parni( 12 ) ),
+   hb_parni(3), hb_parni(4) , hb_parni(5), hb_parni(6) ,
+   hwnd,(HMENU)hb_parni(2) , GetModuleHandle(NULL) , NULL ) ;
+
+   SendMessage(hbutton,LVM_SETEXTENDEDLISTVIEWSTYLE, 0, hb_parni(9) | LVS_EX_FULLROWSELECT | LVS_EX_HEADERDRAGDROP | LVS_EX_SUBITEMIMAGES );
+
+   if ( hb_parl( 10 ) )
+   {
+      ListView_SetItemCount( hbutton , hb_parni( 11 ) ) ;
+   }
+
+   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hbutton, GWL_WNDPROC, ( LONG ) SubClassFunc );
+
+   hb_retnl( (LONG) hbutton );
+}
+
+HB_FUNC( INITLISTVIEWCOLUMNS )
+{
+   PHB_ITEM wArray;
+   PHB_ITEM hArray;
+   PHB_ITEM jArray;
+
+   HWND hc;
+   LV_COLUMN COL;
+   int iLen;
+   int s;
+   int iColumn;
+
+   hc = ( HWND ) hb_parnl( 1 );
+
+   iLen = hb_parinfa( 2, 0 ) - 1;
+   hArray = hb_param( 2, HB_IT_ARRAY );
+   wArray = hb_param( 3, HB_IT_ARRAY );
+   jArray = hb_param( 4, HB_IT_ARRAY );
+
+   COL.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
+
+   iColumn = 0;
+   for( s = 0; s <= iLen; s++ )
+   {
+      COL.fmt = hb_arrayGetNI( jArray, s + 1 );
+      COL.cx = hb_arrayGetNI( wArray, s + 1 );
+      COL.pszText = hb_arrayGetCPtr( hArray, s + 1 );
+      COL.iSubItem = iColumn;
+      ListView_InsertColumn( hc, iColumn, &COL );
+      if( iColumn == 0 && COL.fmt != LVCFMT_LEFT )
+      {
+         iColumn++;
+         COL.iSubItem = iColumn;
+         ListView_InsertColumn( hc, iColumn, &COL );
+      }
+      iColumn++;
+   }
+
+   if( iColumn != s )
+   {
+      ListView_DeleteColumn( hc, 0 );
+   }
+}
+
+static void _OOHG_ListView_FillItem( HWND hWnd, int nItem, PHB_ITEM pItems )
+{
+   LV_ITEM LI;
+   ULONG s, ulLen;
+   struct IMAGE_PARAMETER pStruct;
+
+   ulLen = hb_arrayLen( pItems );
+
+   for( s = 0; s < ulLen; s++ )
+   {
+      LI.mask = LVIF_TEXT | LVIF_IMAGE;
+      LI.state = 0;
+      LI.stateMask = 0;
+      LI.iItem = nItem;
+      LI.iSubItem = s;
+      ImageFillParameter( &pStruct, hb_arrayGetItemPtr( pItems, s + 1 ) );
+      LI.pszText = pStruct.cString;
+      LI.iImage = pStruct.iImage1;
+      ListView_SetItem( hWnd, &LI );
+   }
+}
+
+HB_FUNC( ADDLISTVIEWITEMS )
+{
+   PHB_ITEM hArray;
+   LV_ITEM LI;
+   HWND h;
+   int c;
+
+   hArray = hb_param( 2, HB_IT_ARRAY );
+   if( ! hArray || hb_arrayLen( hArray ) == 0 )
+   {
+      return;
+   }
+   h = ( HWND ) hb_parnl( 1 );
+   c = ListView_GetItemCount( h );
+
+   // First "default" item
+   LI.mask = LVIF_TEXT | LVIF_IMAGE;
+   LI.state = 0;
+   LI.stateMask = 0;
+   LI.iItem = c;
+   LI.iSubItem = 0;
+   LI.pszText = "";
+   LI.iImage = -1;
+   ListView_InsertItem( h, &LI );
+
+   _OOHG_ListView_FillItem( h, c, hArray );
+}
+
+HB_FUNC( INSERTLISTVIEWITEM )
+{
+   PHB_ITEM hArray;
+   LV_ITEM LI;
+   HWND h;
+   int c;
+
+   hArray = hb_param( 2, HB_IT_ARRAY );
+   if( ! hArray || hb_arrayLen( hArray ) == 0 )
+   {
+      return;
+   }
+   h = ( HWND ) hb_parnl( 1 );
+   c = hb_parni( 3 ) - 1;
+
+   // First "default" item
+   LI.mask = LVIF_TEXT | LVIF_IMAGE;
+   LI.state = 0;
+   LI.stateMask = 0;
+   LI.iItem = c;
+   LI.iSubItem = 0;
+   LI.pszText = "";
+   LI.iImage = -1;
+   ListView_InsertItem( h, &LI );
+
+   _OOHG_ListView_FillItem( h, c, hArray );
+}
+
+HB_FUNC( LISTVIEWSETITEM )
+{
+   _OOHG_ListView_FillItem( ( HWND ) hb_parnl( 1 ), hb_parni( 3 ) - 1, hb_param( 2, HB_IT_ARRAY ) );
+}
+
+HB_FUNC( LISTVIEWGETITEM )
+{
+   char buffer[ 1024 ];
+   HWND h;
+   int s, c, l;
+   LV_ITEM LI;
+   PHB_ITEM pArray, pString;
+
+   h = ( HWND ) hb_parnl( 1 );
+
+   c = hb_parni( 2 ) - 1;
+
+   l = hb_parni( 3 );
+
+   pArray = hb_itemArrayNew( l );
+   pString = hb_itemNew( NULL );
+
+   for( s = 0; s < l; s++ )
+   {
+      LI.mask = LVIF_TEXT | LVIF_IMAGE;
+      LI.state = 0;
+      LI.stateMask = 0;
+      LI.iSubItem = s;
+      LI.cchTextMax = 1022;
+      LI.pszText = buffer;
+      LI.iItem = c;
+      buffer[ 0 ] = 0;
+      buffer[ 1023 ] = 0;
+      ListView_GetItem( h, &LI );
+      buffer[ 1023 ] = 0;
+
+      if( LI.iImage == -1 )
+      {
+         hb_itemPutC( pString, buffer );
+      }
+      else
+      {
+         hb_itemPutNI( pString, LI.iImage );
+      }
+      hb_itemArrayPut( pArray, s + 1, pString );
+   }
+
+   hb_itemReturn( pArray );
+   hb_itemRelease( pArray );
+   hb_itemRelease( pString );
+}
+
+HB_FUNC( FILLGRIDFROMARRAY )
+{
+   HWND hWnd = ( HWND ) hb_parnl( 1 );
+   ULONG iCount = ListView_GetItemCount( hWnd );
+   PHB_ITEM pScreen = hb_param( 2, HB_IT_ARRAY );
+   ULONG iLen = hb_arrayLen( pScreen );
+   LV_ITEM LI;
+
+   while( iCount > iLen )
+   {
+      iCount--;
+      SendMessage( hWnd, LVM_DELETEITEM, ( WPARAM ) iCount, 0 );
+   }
+   while( iCount < iLen )
+   {
+      LI.mask = LVIF_TEXT | LVIF_IMAGE;
+      LI.state = 0;
+      LI.stateMask = 0;
+      LI.iItem = iCount;
+      LI.iSubItem = 0;
+      LI.pszText = "";
+      LI.iImage = -1;
+      ListView_InsertItem( hWnd, &LI );
+      iCount++;
+   }
+
+   for( iCount = 1; iCount <= iLen; iCount++ )
+   {
+      _OOHG_ListView_FillItem( hWnd, iCount, hb_arrayGetItemPtr( pScreen, iCount ) );
+   }
+}
+
+
+#pragma ENDDUMP
+
 
 
 
@@ -1524,10 +1800,10 @@ Local lRet := .F.
           MODAL NOSIZE NOCAPTION ;
           FONT cFontName SIZE nFontSize
 
-          ON KEY RETURN OF &( ::oWindow:Name ) ACTION ( lRet := ::Valid() )
-          ON KEY ESCAPE OF &( ::oWindow:Name ) ACTION ( ::oWindow:Release() )
+          ON KEY RETURN OF ( ::oWindow ) ACTION ( lRet := ::Valid() )
+          ON KEY ESCAPE OF ( ::oWindow ) ACTION ( ::oWindow:Release() )
 
-          ::CreateControl( uValue, ::oWindow:Name, 0, 0, nWidth, nHeight )
+          ::CreateControl( uValue, ::oWindow, 0, 0, nWidth, nHeight )
           ::Value := ::ControlValue
 
    END WINDOW
@@ -1612,13 +1888,13 @@ METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGrid
       uValue := ::Str2Val( uValue )
    EndIf
    If ! Empty( ::cMask )
-      @ nRow,nCol TEXTBOX 0 OBJ ::oControl PARENT &cWindow WIDTH nWidth HEIGHT nHeight VALUE uValue INPUTMASK ::cMask
+      @ nRow,nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue INPUTMASK ::cMask
    ElseIf ValType( uValue ) == "N"
-      @ nRow,nCol TEXTBOX 0 OBJ ::oControl PARENT &cWindow WIDTH nWidth HEIGHT nHeight VALUE uValue NUMERIC
+      @ nRow,nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue NUMERIC
    ElseIf ValType( uValue ) == "D"
-      @ nRow,nCol TEXTBOX 0 OBJ ::oControl PARENT &cWindow WIDTH nWidth HEIGHT nHeight VALUE uValue DATE
+      @ nRow,nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue DATE
    Else
-      @ nRow,nCol TEXTBOX 0 OBJ ::oControl PARENT &cWindow WIDTH nWidth HEIGHT nHeight VALUE uValue
+      @ nRow,nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue
    EndIf
 Return ::oControl
 
@@ -1672,13 +1948,13 @@ Local lRet := .F.
           AT nRow, nCol WIDTH 350 HEIGHT GetTitleHeight() + 265 TITLE "Edit Memo" ;
           MODAL NOSIZE
 
-          ON KEY ESCAPE OF &( ::oWindow:Name ) ACTION ( ::oWindow:Release() )
+          ON KEY ESCAPE OF ( ::oWindow ) ACTION ( ::oWindow:Release() )
 
-          @ 07,10 LABEL 0    PARENT &( ::oWindow:Name ) VALUE ""   WIDTH 280
+          @ 07,10 LABEL 0    PARENT ( ::oWindow ) VALUE ""   WIDTH 280
           ::CreateControl( uValue, ::oWindow:Name, 30, 10, 320, 176 )
           ::Value := ::ControlValue
-          @ 217,120 BUTTON 0 PARENT &( ::oWindow:Name ) CAPTION _OOHG_Messages( 1, 6 ) ACTION ( lRet := ::Valid() )
-          @ 217,230 BUTTON 0 PARENT &( ::oWindow:Name ) CAPTION _OOHG_Messages( 1, 7 ) ACTION ( ::oWindow:Release() )
+          @ 217,120 BUTTON 0 PARENT ( ::oWindow ) CAPTION _OOHG_Messages( 1, 6 ) ACTION ( lRet := ::Valid() )
+          @ 217,230 BUTTON 0 PARENT ( ::oWindow ) CAPTION _OOHG_Messages( 1, 7 ) ACTION ( ::oWindow:Release() )
 
    END WINDOW
    ::oWindow:Center()
@@ -1687,7 +1963,7 @@ Local lRet := .F.
 Return lRet
 
 METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGridControlMemo
-   @ nRow,nCol EDITBOX 0 OBJ ::oControl PARENT &cWindow VALUE STRTRAN( uValue, chr(141), ' ' ) HEIGHT nHeight WIDTH nWidth
+   @ nRow,nCol EDITBOX 0 OBJ ::oControl PARENT ( cWindow ) VALUE STRTRAN( uValue, chr(141), ' ' ) HEIGHT nHeight WIDTH nWidth
 Return ::oControl
 
 *-----------------------------------------------------------------------------*
@@ -1713,9 +1989,9 @@ METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGrid
       uValue := CTOD( uValue )
    EndIf
    If ::lUpDown
-      @ nRow,nCol DATEPICKER 0 OBJ ::oControl PARENT &cWindow WIDTH nWidth HEIGHT nHeight VALUE uValue UPDOWN
+      @ nRow,nCol DATEPICKER 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue UPDOWN
    Else
-      @ nRow,nCol DATEPICKER 0 OBJ ::oControl PARENT &cWindow WIDTH nWidth HEIGHT nHeight VALUE uValue
+      @ nRow,nCol DATEPICKER 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue
    EndIf
 Return ::oControl
 
@@ -1743,7 +2019,7 @@ METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGrid
    If ValType( uValue ) == "C"
       uValue := aScan( ::aItems, { |c| c == uValue } )
    EndIf
-   @ nRow,nCol COMBOBOX 0 OBJ ::oControl PARENT &cWindow WIDTH nWidth VALUE uValue ITEMS ::aItems
+   @ nRow,nCol COMBOBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth VALUE uValue ITEMS ::aItems
    If ! Empty( ::oGrid ) .AND. ::oGrid:ImageList != 0
       ::oControl:ImageList := ImageList_Duplicate( ::oGrid:ImageList )
    EndIf
@@ -1777,7 +2053,7 @@ METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGrid
    If ValType( uValue ) == "C"
       uValue := Val( uValue )
    EndIf
-   @ nRow,nCol SPINNER 0 OBJ ::oControl PARENT &cWindow RANGE ::nRangeMin, ::nRangeMax WIDTH nWidth HEIGHT nHeight VALUE uValue
+   @ nRow,nCol SPINNER 0 OBJ ::oControl PARENT ( cWindow ) RANGE ::nRangeMin, ::nRangeMax WIDTH nWidth HEIGHT nHeight VALUE uValue
 Return ::oControl
 
 *-----------------------------------------------------------------------------*
@@ -1805,7 +2081,7 @@ METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGrid
    If ValType( uValue ) == "C"
       uValue := ( uValue == ::cTrue .OR. UPPER( uValue ) == ".T." )
    EndIf
-   @ nRow,nCol CHECKBOX 0 OBJ ::oControl PARENT &cWindow CAPTION if( uValue, ::cTrue, ::cFalse ) WIDTH nWidth HEIGHT nHeight VALUE uValue ;
+   @ nRow,nCol CHECKBOX 0 OBJ ::oControl PARENT ( cWindow ) CAPTION if( uValue, ::cTrue, ::cFalse ) WIDTH nWidth HEIGHT nHeight VALUE uValue ;
                ON CHANGE ( ::oControl:Caption := if( ::oControl:Value, ::cTrue, ::cFalse ) )
 Return ::oControl
 
@@ -1829,7 +2105,7 @@ METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGrid
    If ValType( uValue ) == "C"
       uValue := Val( uValue )
    EndIf
-   @ nRow,nCol COMBOBOX 0 OBJ ::oControl PARENT &cWindow WIDTH nWidth VALUE 0 ITEMS {}
+   @ nRow,nCol COMBOBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth VALUE 0 ITEMS {}
    If ! Empty( ::oGrid ) .AND. ::oGrid:ImageList != 0
       ::oControl:ImageList := ImageList_Duplicate( ::oGrid:ImageList )
    EndIf
@@ -1865,5 +2141,5 @@ METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGrid
       uValue := ( uValue == ::cTrue .OR. UPPER( uValue ) == ".T." )
    EndIf
    uValue := if( uValue, 1, 2 )
-   @ nRow,nCol COMBOBOX 0 OBJ ::oControl PARENT &cWindow WIDTH nWidth VALUE uValue ITEMS { ::cTrue, ::cFalse }
+   @ nRow,nCol COMBOBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth VALUE uValue ITEMS { ::cTrue, ::cFalse }
 Return ::oControl

@@ -1,11 +1,11 @@
 /*
- * $Id: oohg.ch,v 1.4 2006-05-30 02:25:40 guerra000 Exp $
+ * $Id: i_xbrowse.ch,v 1.1 2006-05-30 02:25:40 guerra000 Exp $
  */
 /*
  * ooHG source code:
- * Main include calls
+ * eXtended Browse definitions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2006 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.guerra.com.mx
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -82,73 +82,78 @@
 
  Parts of this project are based upon:
 
-	"Harbour GUI framework for Win32"
- 	Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- 	Copyright 2001 Antonio Linares <alinares@fivetech.com>
-	www - http://www.harbour-project.org
+        "Harbour GUI framework for Win32"
+        Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
+        Copyright 2001 Antonio Linares <alinares@fivetech.com>
+        www - http://www.harbour-project.org
 
-	"Harbour Project"
-	Copyright 1999-2003, http://www.harbour-project.org/
+        "Harbour Project"
+        Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
+#define XBROWSE_JTFY_LEFT                0
+#define XBROWSE_JTFY_RIGHT               1
+#define XBROWSE_JTFY_CENTER              2
+#define XBROWSE_JTFY_JUSTIFYMASK         3
 
-#ifndef __OOHG__
-#define __OOHG__
+#translate MemVar . <AreaName> . <FieldName> =>  MemVar<AreaName><FieldName>
 
-#include "i_var.ch"
-#include "i_media.ch"
-#include "i_pseudofunc.ch"
-#include "i_exec.ch"
-#include "i_comm.ch"
-#include "i_keybd.ch"
-#include "i_checkbox.ch"
-#include "i_menu.ch"
-#include "i_misc.ch"
-#include "i_timer.ch"
-#include "i_frame.ch"
-#include "i_slider.ch"
-#include "i_progressbar.ch"
-#include "i_progressmeter.ch"
-#include "i_window.ch"
-#include "i_button.ch"
-#include "i_image.ch"
-#include "i_radiogroup.ch"
-#include "i_label.ch"
-#include "i_combobox.ch"
-#include "i_datepicker.ch"
-#include "i_listbox.ch"
-#include "i_spinner.ch"
-#include "i_textbox.ch"
-#include "i_editbox.ch"
-#include "i_grid.ch"
-#include "i_tab.ch"
-#include "i_controlmisc.ch"
-#include "i_color.ch"
-#include "i_toolbar.ch"
-#include "i_splitbox.ch"
-#include "i_tree.ch"
-#include "i_status.ch"
-#include "i_ini.ch"
-#include "i_encrypt.ch"
-#include "i_help.ch"
-#include "i_monthcal.ch"
-#include "i_region.ch"
-#include "i_socket.ch"
-#include "i_ipaddress.ch"
-#include "i_altsyntax.ch"
-#include "i_scrsaver.ch"
-#include "i_registry.ch"
-#include "i_edit.ch"
-#include "i_report.ch"
-#include "i_lang.ch"
-#include "i_this.ch"
-#include "i_hyperlink.ch"
-#include "i_zip.ch"
-#include "i_graph.ch"
-#include "i_richeditbox.ch"
-#include "i_browse.ch"
-#include "i_dll.ch"
-#include "i_tooltip.ch"
-#include "i_xbrowse.ch"
-
-#endif
+#command @ <row>,<col> XBROWSE <name>      ;
+                [ OF <parent> ]      ;
+                [ OBJ <oObj> ]                  ;
+                [ WIDTH <w> ]        ;
+                [ HEIGHT <h> ]          ;
+                [ HEADERS <headers> ]      ;
+                [ WIDTHS <widths> ]     ;
+                [ WORKAREA <workarea> ]         ;
+                [ FIELDS <Fields> ]     ;
+                [ INPUTMASK <Picture> ]         ;
+                [ VALUE <value> ]       ;
+                [ FONT <fontname> ]     ;
+                [ SIZE <fontsize> ]     ;
+                [ <bold : BOLD> ]               ;
+                [ <italic : ITALIC> ]           ;
+                [ <underline : UNDERLINE> ]     ;
+                [ <strikeout : STRIKEOUT> ]     ;
+                [ TOOLTIP <tooltip> ]      ;
+                [ BACKCOLOR <backcolor> ]       ;
+                [ DYNAMICBACKCOLOR <dynamicbackcolor> ] ;
+                [ DYNAMICFORECOLOR <dynamicforecolor> ] ;
+                [ FONTCOLOR <fontcolor> ]       ;
+                [ ON GOTFOCUS <gotfocus> ]    ;
+                [ ON CHANGE <change> ]     ;
+                [ ON LOSTFOCUS <lostfocus> ]  ;
+                [ ON DBLCLICK <dblclick> ]    ;
+                [ <edit : EDIT> ]       ;
+                [ <inplace : INPLACE> ]    ;
+                [ <append : APPEND> ]      ;
+                [ ON HEADCLICK <aHeadClick> ]    ;
+                [ WHEN <aWhenFields> ]          ;
+                [ VALID <aValidFields> ]        ;
+                [ VALIDMESSAGES <aValidMessages> ] ;
+                [ READONLY <aReadOnly> ]   ;
+                [ <lock: LOCK> ]     ;
+                [ <Delete: DELETE> ]    ;
+                [ <style: NOLINES> ]            ;
+                [ IMAGE <aImage> ]              ;
+                [ JUSTIFY <aJust> ]             ;
+                [ <novscroll: NOVSCROLL> ]    ;
+                [ HELPID <helpid> ]     ;
+                [ <break: BREAK> ]      ;
+                [ <rtl: RTL> ]                  ;
+                [ ON APPEND <onappend> ]        ;
+                [ ON EDITCELL <editcell> ]      ;
+                [ COLUMNCONTROLS <editcontrols> ] ;
+                [ REPLACEFIELD <replacefields> ] ;
+	=>;
+       [ <oObj> := ] TXBrowse():Define( ;
+               <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, <widths>, ;
+               <Fields>, <(workarea)>, <value>, <.Delete.>, <.lock.>, <.novscroll.>, ;
+               <.append.>, <{onappend}>, <replacefields>, ;
+               <fontname>, <fontsize>, <tooltip>, <{change}>, <{dblclick}>, ;
+               <aHeadClick>, <{gotfocus}>, <{lostfocus}>, <.style.>, <aImage>, <aJust>, ;
+               <.break.>, <helpid>, <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, ;
+               <.edit.>, <backcolor>, <fontcolor>, ;
+               <dynamicbackcolor>, <dynamicforecolor>, <Picture>, <.rtl.>, <.inplace.>, ;
+               <editcontrols>, <aReadOnly>, <{aValidFields}>, <aValidMessages>, <{editcell}>, ;
+               <aWhenFields> )

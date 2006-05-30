@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.84 2006-05-17 05:15:57 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.85 2006-05-30 02:25:40 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -201,7 +201,6 @@ CLASS TWindow
    METHOD DeleteControl
    METHOD SearchParent
 
-   METHOD IsHandle( hWnd )    BLOCK { | Self, hWnd | ( ::hWnd == hWnd ) }
    METHOD Events_Size         BLOCK { || nil }
 
    ERROR HANDLER Error
@@ -1289,7 +1288,7 @@ METHOD SetActivationFocus() CLASS TForm
 Local Sp
    Sp := GetFocus()
 
-   IF ASCAN( ::aControls, { |o| o:IsHandle( Sp ) } ) == 0
+   IF ASCAN( ::aControls, { |o| o:hWnd == Sp } ) == 0
       setfocus( GetNextDlgTabItem( ::hWnd , 0 , 0 ) )
    ENDIF
 Return nil
@@ -1372,7 +1371,7 @@ METHOD FocusedControl() CLASS TForm
 *------------------------------------------------------------------------------*
 Local nFocusedControlHandle , nPos
    nFocusedControlHandle := GetFocus()
-   nPos := ASCAN( ::aControls, { |o| o:IsHandle( nFocusedControlHandle ) } )
+   nPos := ASCAN( ::aControls, { |o| o:hWnd == nFocusedControlHandle } )
 Return if( nPos == 0, "", ::aControls[ nPos ]:Name )
 
 *------------------------------------------------------------------------------*

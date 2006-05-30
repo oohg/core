@@ -1,11 +1,38 @@
 /*
- * $Id: ChangeLog,v 1.159 2006-05-26 20:07:49 declan2005 Exp $
+ * $Id: ChangeLog,v 1.160 2006-05-30 02:25:39 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-05-29 20:50 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/c_grid.c
+  * source/h_grid.prg
+    + Added ::CountPerPage and ::InsertItem methods.
+    * Some functions moved from .C to .PRG file.
+    * Changed some &cWindow to (cWindow) macro substitution.
+  * source/h_scroll.prg
+    ! Fixed default initialization.
+  * include/oohg.h
+  * source/c_controlmisc.c
+    + Added lAux[10] (control specific) to OCTRL structure.
+    + Added more message symbols.
+  * source/h_browse.prg
+    * ::AdjustRightScroll() method modified.
+    * DBCommit() added to all DbUnLock() calls.
+  + include/i_xbrowse.ch
+  * include/oohg.ch
+  + source/h_scrollbutton.prg
+  + source/h_xbrowse.prg
+  * source/makelib.bat
+    + TScrollButton control added.
+    + xBrowse control added.
+  * source/h_browse.prg
+  * source/h_radio.prg
+  * source/h_windows.prg
+    - ::IsHandle() method removed.
 
 2006-05-26 15:04 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source/h_report.prg

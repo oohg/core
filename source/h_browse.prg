@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.46 2006-05-17 05:17:08 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.47 2006-05-30 02:25:40 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -102,6 +102,7 @@ CLASS TBrowse FROM TGrid
    DATA Lock            INIT .F.
    DATA WorkArea        INIT ""
    DATA VScroll         INIT nil
+   DATA ScrollButton    INIT nil
    DATA nValue          INIT 0
    DATA aRecMap         INIT {}
    DATA AllowAppend     INIT .F.
@@ -109,7 +110,6 @@ CLASS TBrowse FROM TGrid
    DATA RecCount        INIT 0
    DATA aFields         INIT {}
    DATA lEof            INIT .F.
-   DATA nButtonActive   INIT 0
    DATA OnAppend        INIT {}
    DATA aReplaceField   INIT {}
    DATA lEditing        INIT .F.
@@ -123,8 +123,6 @@ CLASS TBrowse FROM TGrid
    METHOD Hide
    METHOD ForceHide
    METHOD RefreshData
-
-   METHOD IsHandle
 
    METHOD Events_Enter
    METHOD Events_Notify
@@ -216,8 +214,7 @@ Local hsum, ScrollBarButtonHandle := 0, nWidth2, nCol2
    ::WorkArea := WorkArea
    ::AllowDelete := AllowDelete
    ::aFields := aFields
-   ::aRecMap :=  {}
-   ::AuxHandle := 0
+   ::aRecMap := {}
    ::AllowAppend := AllowAppend
    ::aReplaceField := replacefields
 
@@ -229,25 +226,23 @@ Local hsum, ScrollBarButtonHandle := 0, nWidth2, nCol2
       ::VScroll:nWidth := GETVSCROLLBARWIDTH()
       ::VScroll:SetRange( 1, 100 )
 
-      nCol2 := x + nWidth2
-      IF lRtl .AND. ! ::Parent:lRtl
-         ::nCol := x + GETVSCROLLBARWIDTH()
-         nCol2 := x
-         ::VScroll:nCol := -GETVSCROLLBARWIDTH()
+      IF ::lRtl .AND. ! ::Parent:lRtl
+         ::nCol := ::nCol + GETVSCROLLBARWIDTH()
+         nCol2 := -GETVSCROLLBARWIDTH()
       Else
-         ::VScroll:nCol := nWidth2
+         nCol2 := nWidth2
       ENDIF
+      ::VScroll:nCol := nCol2
+
+      ::ScrollButton := TScrollButton():Define( , Self, nCol2, ::nHeight - GETHSCROLLBARHEIGHT(), GETVSCROLLBARWIDTH() , GETHSCROLLBARHEIGHT() )
 
       if hsum > w - GETVSCROLLBARWIDTH() - 4
          ::VScroll:nRow := 0
-         ::VScroll:nHeight := h - GETHSCROLLBARHEIGHT()
-         ScrollBarButtonHandle := InitVScrollBarButton ( ::ContainerhWnd, nCol2, y + h - GETHSCROLLBARHEIGHT() , GETVSCROLLBARWIDTH() , GETHSCROLLBARHEIGHT() )
-         ::nButtonActive := 1
+         ::VScroll:nHeight := ::nHeight - GETHSCROLLBARHEIGHT()
       Else
          ::VScroll:nRow := 0
-         ::VScroll:nHeight := h
-         ScrollBarButtonHandle := InitVScrollBarButton ( ::ContainerhWnd, nCol2, y + h - GETHSCROLLBARHEIGHT() , 0 , 0 )
-         ::nButtonActive := 0
+         ::VScroll:nHeight := ::nHeight
+         ::ScrollButton:Visible := .F.
       EndIf
 
       ::VScroll:Define( , Self )
@@ -266,9 +261,6 @@ Local hsum, ScrollBarButtonHandle := 0, nWidth2, nCol2
 
    // Add to browselist array to update on window activation
    aAdd( ::Parent:BrowseList, Self )
-
-   // Add Vertical scrollbar button
-   ::AuxHandle := ScrollBarButtonHandle
 
    ::SizePos()
 
@@ -933,6 +925,7 @@ Local oEditControl, uOldValue, cMemVar, bReplaceField
 
    If ::Lock
       ( ::WorkArea )->( DbUnlock() )
+      ( ::WorkArea )->( DbCommit() )
    EndIf
 
    ( ::WorkArea )->( DbGoTo( nOldRecNo ) )
@@ -984,6 +977,7 @@ Local lRet, BackRec, bReplaceField
       EndIf
       If ::Lock
          ( ::WorkArea )->( DbUnLock() )
+         ( ::WorkArea )->( DbCommit() )
       EndIf
       ( ::WorkArea )->( DbGoTo( BackRec ) )
    Endif
@@ -1078,39 +1072,95 @@ Local cField, cArea, nPos, aStruct
    EndIf
 Return .T.
 
-*-----------------------------------------------------------------------------*
-METHOD AdjustRightScroll() CLASS TBrowse
-*-----------------------------------------------------------------------------*
-Local hws, lRet, nButton, nCol
-   lRet := .F.
-   If ::VScroll != nil
-      hws := _OOHG_GridArrayWidths( ::hWnd, ::aWidths )
-      nButton := IF( ( hws > ::Width - GETVSCROLLBARWIDTH() - 4 ), 1, 0 )
-      IF ::nButtonActive != nButton
-         ::nButtonActive := nButton
-         ::Refresh()
-         nCol := if( ::lRtl .AND. ! ::Parent:lRtl, 0, ::Width - GETVSCROLLBARWIDTH() )
-         if nButton == 1
-            ::VScroll:Height := ::Height - GETHSCROLLBARHEIGHT()
-            MoveWindow( ::AuxHandle, ::ContainerCol + nCol, ::ContainerRow + ::Height - GETHSCROLLBARHEIGHT() , GETVSCROLLBARWIDTH() , GETHSCROLLBARHEIGHT() , .t. )
-         Else
-            ::VScroll:Height := ::Height
-            MoveWindow( ::AuxHandle, ::ContainerCol + nCol, ::ContainerRow + ::Height - GETHSCROLLBARHEIGHT() , 0 , 0 , .t. )
-         EndIf
-*         ReDrawWindow( ::AuxHandle )
-         lRet := .T.
-      ENDIF
-   EndIf
-Return lRet
+#pragma BEGINDUMP
+#define s_Super s_TGrid
+
+#include "hbapi.h"
+#include "hbapiitm.h"
+#include "hbvm.h"
+#include "hbstack.h"
+#include <windows.h>
+#include <commctrl.h>
+#include "../include/oohg.h"
+extern int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam );
+
+// -----------------------------------------------------------------------------
+// METHOD AdjustRightScroll() CLASS TBrowse
+HB_FUNC_STATIC( TBROWSE_ADJUSTRIGHTSCROLL )
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   LONG lStyle;
+   BOOL bChanged = 0;
+   PHB_ITEM pVScroll, pRet;
+
+   lStyle = GetWindowLong( oSelf->hWnd, GWL_STYLE );
+   if( lStyle & WS_VSCROLL )
+   {
+      bChanged = 1;
+   }
+   else
+   {
+      lStyle = ( lStyle & WS_HSCROLL ) ? 1 : 0;
+      if( lStyle != oSelf->lAux[ 0 ] )
+      {
+         oSelf->lAux[ 0 ] = lStyle;
+
+         _OOHG_Send( pSelf, s_VScroll );
+         hb_vmSend( 0 );
+         pRet = hb_param( -1, HB_IT_OBJECT );
+         if( pRet )
+         {
+            int iHeight;
+
+            pVScroll = hb_itemNew( NULL );
+            hb_itemCopy( pVScroll, pRet );
+
+            _OOHG_Send( pSelf, s_Height );
+            hb_vmSend( 0 );
+            iHeight = hb_parni( -1 );
+
+            if( lStyle )
+            {
+               _OOHG_Send( pVScroll, s_Height );
+               hb_vmPushInteger( iHeight - GetSystemMetrics( SM_CYHSCROLL ) );
+               hb_vmSend( 1 );
+            }
+            else
+            {
+               _OOHG_Send( pVScroll, s_Height );
+               hb_vmPushInteger( iHeight );
+               hb_vmSend( 1 );
+            }
+
+            _OOHG_Send( pSelf, s_ScrollButton );
+            hb_vmSend( 0 );
+            _OOHG_Send( hb_param( -1, HB_IT_OBJECT ), s_Visible );
+            hb_vmPushLogical( lStyle );
+            hb_vmSend( 1 );
+
+            hb_itemRelease( pVScroll );
+         }
+
+         bChanged = 1;
+      }
+   }
+
+   if( bChanged )
+   {
+      _OOHG_Send( pSelf, s_Refresh );
+      hb_vmSend( 0 );
+   }
+   hb_retl( bChanged );
+}
+#pragma ENDDUMP
 
 *-----------------------------------------------------------------------------*
 METHOD ColumnWidth( nColumn, nWidth ) CLASS TBrowse
 *-----------------------------------------------------------------------------*
 Local nRet
    nRet := ::Super:ColumnWidth( nColumn, nWidth )
-   IF ::AdjustRightScroll()
-      ::Refresh()
-   ENDIF
+   ::AdjustRightScroll()
 Return nRet
 
 *-----------------------------------------------------------------------------*
@@ -1118,9 +1168,7 @@ METHOD ColumnAutoFit( nColumn ) CLASS TBrowse
 *-----------------------------------------------------------------------------*
 Local nRet
    nRet := ::Super:ColumnAutoFit( nColumn )
-   IF ::AdjustRightScroll()
-      ::Refresh()
-   ENDIF
+   ::AdjustRightScroll()
 Return nRet
 
 *-----------------------------------------------------------------------------*
@@ -1128,9 +1176,7 @@ METHOD ColumnAutoFitH( nColumn ) CLASS TBrowse
 *-----------------------------------------------------------------------------*
 Local nRet
    nRet := ::Super:ColumnAutoFitH( nColumn )
-   IF ::AdjustRightScroll()
-      ::Refresh()
-   ENDIF
+   ::AdjustRightScroll()
 Return nRet
 
 *-----------------------------------------------------------------------------*
@@ -1138,9 +1184,7 @@ METHOD ColumnsAutoFit() CLASS TBrowse
 *-----------------------------------------------------------------------------*
 Local nRet
    nRet := ::Super:ColumnsAutoFit()
-   IF ::AdjustRightScroll()
-      ::Refresh()
-   ENDIF
+   ::AdjustRightScroll()
 Return nRet
 
 *-----------------------------------------------------------------------------*
@@ -1148,9 +1192,7 @@ METHOD ColumnsAutoFitH() CLASS TBrowse
 *-----------------------------------------------------------------------------*
 Local nRet
    nRet := ::Super:ColumnsAutoFitH()
-   IF ::AdjustRightScroll()
-      ::Refresh()
-   ENDIF
+   ::AdjustRightScroll()
 Return nRet
 
 *-----------------------------------------------------------------------------*
@@ -1245,10 +1287,6 @@ Local oVScroll, cWorkArea
 
 Return NIL
 
-
-
-
-
 *-----------------------------------------------------------------------------*
 METHOD Refresh() CLASS TBrowse
 *-----------------------------------------------------------------------------*
@@ -1331,7 +1369,7 @@ Return nil
 *-----------------------------------------------------------------------------*
 METHOD SizePos( Row, Col, Width, Height ) CLASS TBrowse
 *-----------------------------------------------------------------------------*
-Local uRet
+Local uRet, nWidth
 
    IF VALTYPE( Row ) == "N"
       ::nRow := Row
@@ -1347,19 +1385,28 @@ Local uRet
    ENDIF
 
    If ::VScroll != nil
-      uRet := MoveWindow( ::hWnd, ::ContainerCol + if( ::lRtl .AND. ! ::Parent:lRtl, GETVSCROLLBARWIDTH(), 0 ), ::ContainerRow, ::Width - GETVSCROLLBARWIDTH(), ::Height , .t. )
+      nWidth := ::VScroll:Width
 
-      // Force button move/resize and browse refresh
-      ::nButtonActive := 2
-      ::AdjustRightScroll()
+      If ::lRtl .AND. ! ::Parent:lRtl
+         uRet := MoveWindow( ::hWnd, ::ContainerCol + nWidth, ::ContainerRow, ::nWidth - nWidth, ::nHeight, .T. )
+         ::VScroll:Col      := - nWidth
+         ::ScrollButton:Col := - nWidth
+      Else
+         uRet := MoveWindow( ::hWnd, ::ContainerCol,          ::ContainerRow, ::nWidth - nWidth, ::nHeight, .T. )
+         ::VScroll:Col      := ::Width - ::VScroll:Width
+         ::ScrollButton:Col := ::Width - ::VScroll:Width
+      EndIf
 
+      ::VScroll:Height   := ::Height - ::ScrollButton:Height
+      ::ScrollButton:Row := ::Height - ::ScrollButton:Height
+      AEVAL( ::aControls, { |o| o:SizePos() } )
    else
-
-      uRet := MoveWindow( ::hWnd, ::ContainerCol + if( ::lRtl .AND. ! ::Parent:lRtl, GETVSCROLLBARWIDTH(), 0 ), ::ContainerRow, ::nWidth, ::nHeight , .T. )
-
+      uRet := MoveWindow( ::hWnd, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight , .T. )
    EndIf
-*   ReDrawWindow( ::hWnd )
-   ::Refresh()
+
+   IF ! ::AdjustRightScroll()
+      ::Refresh()
+   ENDIF
 Return uRet
 
 *-----------------------------------------------------------------------------*
@@ -1387,16 +1434,7 @@ METHOD Enabled( lEnabled ) CLASS TBrowse
 *------------------------------------------------------------------------------*
    IF VALTYPE( lEnabled ) == "L"
       ::Super:Enabled := lEnabled
-      If ::VScroll != nil
-         ::VScroll:Enabled := lEnabled
-      ENDIF
-      If ::AuxHandle != 0
-         IF ::Super:Enabled
-            EnableWindow( ::AuxHandle )
-         ELSE
-            DisableWindow( ::AuxHandle )
-         EndIf
-      ENDIF
+      AEVAL( ::aControls, { |o| o:Enabled := o:Enabled } )
    ENDIF
 RETURN ::Super:Enabled
 
@@ -1404,16 +1442,7 @@ RETURN ::Super:Enabled
 METHOD Show() CLASS TBrowse
 *------------------------------------------------------------------------------*
    ::Super:Show()
-   If ::VScroll != nil
-      ::VScroll:Show()
-   EndIf
-   If ::AuxHandle != 0
-      If ::ContainerVisible
-         CShowControl( ::AuxHandle )
-      Else
-         HideWindow( ::AuxHandle )
-      EndIf
-   EndIf
+   AEVAL( ::aControls, { |o| o:Show() } )
    ProcessMessages()
 RETURN nil
 
@@ -1421,24 +1450,14 @@ RETURN nil
 METHOD Hide() CLASS TBrowse
 *------------------------------------------------------------------------------*
    ::Super:Hide()
-   If ::VScroll != nil
-      ::VScroll:Hide()
-   EndIf
-   If ::AuxHandle != 0
-      HideWindow( ::AuxHandle )
-   EndIf
+   AEVAL( ::aControls, { |o| o:Hide() } )
    ProcessMessages()
 RETURN nil
 
 *------------------------------------------------------------------------------*
 METHOD ForceHide() CLASS TBrowse
 *------------------------------------------------------------------------------*
-   If ::VScroll != nil
-      ::VScroll:ForceHide()
-   EndIf
-   If ::AuxHandle != 0
-      HideWindow( ::AuxHandle )
-   EndIf
+   AEVAL( ::aControls, { |o| o:ForceHide() } )
 RETURN ::Super:ForceHide()
 
 *-----------------------------------------------------------------------------*
@@ -1456,13 +1475,6 @@ Local nValue := ::nValue
 RETURN nil
 
 *-----------------------------------------------------------------------------*
-METHOD IsHandle( hWnd ) CLASS TBrowse
-*-----------------------------------------------------------------------------*
-RETURN ( hWnd == ::hWnd ) .OR. ;
-       ( ::VScroll != nil .AND. hWnd == ::VScroll:hWnd ) .OR. ;
-       ( ::AuxHandle != 0 .AND. hWnd == ::AuxHandle )
-
-*-----------------------------------------------------------------------------*
 METHOD Events_Enter() CLASS TBrowse
 *-----------------------------------------------------------------------------*
    If Select( ::WorkArea ) != 0
@@ -1471,16 +1483,6 @@ METHOD Events_Enter() CLASS TBrowse
 Return nil
 
 #pragma BEGINDUMP
-#define s_Super s_TGrid
-
-#include "hbapi.h"
-#include "hbvm.h"
-#include "hbstack.h"
-#include <windows.h>
-#include <commctrl.h>
-#include "../include/oohg.h"
-extern int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam );
-
 // -----------------------------------------------------------------------------
 // METHOD Events_Notify( wParam, lParam ) CLASS TBrowse
 HB_FUNC_STATIC( TBROWSE_EVENTS_NOTIFY )
@@ -1500,23 +1502,9 @@ HB_FUNC_STATIC( TBROWSE_EVENTS_NOTIFY )
 
       case NM_CUSTOMDRAW:
       {
-         POCTRL oSelf;
-         LONG lStyle;
-
          pSelf = hb_stackSelfItem();
-         oSelf = _OOHG_GetControlInfo( pSelf );
-
-         lStyle = GetWindowLong( oSelf->hWnd, GWL_STYLE );
-         if( lStyle & WS_VSCROLL )
-         {
-            // _OOHG_Send( pSelf, s_AdjustRightScroll );
-            _OOHG_Send( pSelf, s_Refresh );
-            hb_vmSend( 0 );
-         }
-         // else
-         // {
-         // TODO: Checks for WS_HSCROLL status (exists / doesn't exists) and ::nButtonActive value
-         // }
+         _OOHG_Send( pSelf, s_AdjustRightScroll );
+         hb_vmSend( 0 );
          hb_retni( TGrid_Notify_CustomDraw( pSelf, lParam ) );
          break;
       }
@@ -1668,19 +1656,9 @@ Local nr , RecordCount , BackRec
 
 Return nr
 
-EXTERN INSERTUP, INSERTDOWN, INSERTPRIOR, INSERTNEXT, INITVSCROLLBARBUTTON
+EXTERN INSERTUP, INSERTDOWN, INSERTPRIOR, INSERTNEXT
 
 #pragma BEGINDUMP
-
-// #define _WIN32_IE      0x0500
-// #define HB_OS_WIN_32_USED
-// #define _WIN32_WINNT   0x0400
-// #include <shlobj.h>
-
-// #include "hbapiitm.h"
-// #include "winreg.h"
-// #include "tchar.h"
-
 HB_FUNC (INSERTUP)
 {
 			keybd_event(
@@ -1721,31 +1699,6 @@ HB_FUNC (INSERTNEXT)
 			);
 }
 
-HB_FUNC( INITVSCROLLBARBUTTON )
-{
-	HWND hwnd;
-	HWND hbutton;
-	int Style ;
-
-	hwnd = (HWND) hb_parnl (1);
-
-	Style =  WS_CHILD | WS_VISIBLE | SS_SUNKEN ;
-
-	hbutton = CreateWindow( "static" ,
-                           "" ,
-                           Style ,
-                           hb_parni(2) ,
-                           hb_parni(3) ,
-                           hb_parni(4) ,
-                           hb_parni(5) ,
-                           hwnd ,
-                           (HMENU) NULL ,
-                           GetModuleHandle(NULL) ,
-                           NULL ) ;
-
-	hb_retnl ( (LONG) hbutton );
-}
-
 #pragma ENDDUMP
 
 Function SetBrowseSync( lValue )
@@ -1753,16 +1706,3 @@ Function SetBrowseSync( lValue )
       _OOHG_BrowseSyncStatus := lValue
    ENDIF
 Return _OOHG_BrowseSyncStatus
-
-
-
-
-
-
-
-
-
-
-
-
-/// TEMP!!! CLASE SCROLLBARBUTTON!!!

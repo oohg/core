@@ -1,11 +1,11 @@
 /*
- * $Id: oohg.ch,v 1.4 2006-05-30 02:25:40 guerra000 Exp $
+ * $Id: h_scrollbutton.prg,v 1.1 2006-05-30 02:25:40 guerra000 Exp $
  */
 /*
  * ooHG source code:
- * Main include calls
+ * Browse's ScrollButton functions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2006 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.guerra.com.mx
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -91,64 +91,62 @@
 	Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
+#include "oohg.ch"
+#include "hbclass.ch"
+#include "i_windefs.ch"
 
-#ifndef __OOHG__
-#define __OOHG__
+CLASS TScrollButton FROM TControl
+   DATA Type            INIT "SCROLLBUTTON" READONLY
 
-#include "i_var.ch"
-#include "i_media.ch"
-#include "i_pseudofunc.ch"
-#include "i_exec.ch"
-#include "i_comm.ch"
-#include "i_keybd.ch"
-#include "i_checkbox.ch"
-#include "i_menu.ch"
-#include "i_misc.ch"
-#include "i_timer.ch"
-#include "i_frame.ch"
-#include "i_slider.ch"
-#include "i_progressbar.ch"
-#include "i_progressmeter.ch"
-#include "i_window.ch"
-#include "i_button.ch"
-#include "i_image.ch"
-#include "i_radiogroup.ch"
-#include "i_label.ch"
-#include "i_combobox.ch"
-#include "i_datepicker.ch"
-#include "i_listbox.ch"
-#include "i_spinner.ch"
-#include "i_textbox.ch"
-#include "i_editbox.ch"
-#include "i_grid.ch"
-#include "i_tab.ch"
-#include "i_controlmisc.ch"
-#include "i_color.ch"
-#include "i_toolbar.ch"
-#include "i_splitbox.ch"
-#include "i_tree.ch"
-#include "i_status.ch"
-#include "i_ini.ch"
-#include "i_encrypt.ch"
-#include "i_help.ch"
-#include "i_monthcal.ch"
-#include "i_region.ch"
-#include "i_socket.ch"
-#include "i_ipaddress.ch"
-#include "i_altsyntax.ch"
-#include "i_scrsaver.ch"
-#include "i_registry.ch"
-#include "i_edit.ch"
-#include "i_report.ch"
-#include "i_lang.ch"
-#include "i_this.ch"
-#include "i_hyperlink.ch"
-#include "i_zip.ch"
-#include "i_graph.ch"
-#include "i_richeditbox.ch"
-#include "i_browse.ch"
-#include "i_dll.ch"
-#include "i_tooltip.ch"
-#include "i_xbrowse.ch"
+   METHOD Define
+ENDCLASS
 
-#endif
+*-----------------------------------------------------------------------------*
+METHOD Define( ControlName, ParentForm, x, y, w, h ) CLASS TScrollButton
+*-----------------------------------------------------------------------------*
+Local ControlHandle
+
+   ::SetForm( ControlName, ParentForm /* , FontName, FontSize, FontColor, BackColor,, lRtl */ )
+
+   ASSIGN ::nWidth  VALUE w TYPE "N"
+   ASSIGN ::nHeight VALUE h TYPE "N"
+   ASSIGN ::nRow    VALUE y TYPE "N"
+   ASSIGN ::nCol    VALUE x TYPE "N"
+
+   ControlHandle := InitVScrollBarButton( ::ContainerhWnd, ::ContainerCol, ::ContainerRow, ::Width, ::Height )
+
+   ::Register( ControlHandle, ControlName /* , HelpId, , ToolTip */ )
+
+Return Self
+
+EXTERN INITVSCROLLBARBUTTON
+
+#pragma BEGINDUMP
+#include "hbapi.h"
+#include <windows.h>
+#include <commctrl.h>
+#include "../include/oohg.h"
+
+static WNDPROC lpfnOldWndProc = 0;
+
+static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+{
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
+}
+
+HB_FUNC( INITVSCROLLBARBUTTON )
+{
+	HWND hbutton;
+   int Style;
+
+   Style = WS_CHILD | WS_VISIBLE | SS_SUNKEN;
+
+   hbutton = CreateWindow( "static", "", Style, hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ),
+                           ( HWND ) hb_parnl( 1 ), ( HMENU ) NULL, GetModuleHandle( NULL ), NULL );
+
+   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hbutton, GWL_WNDPROC, ( LONG ) SubClassFunc );
+
+   hb_retnl( ( LONG ) hbutton );
+}
+
+#pragma ENDDUMP

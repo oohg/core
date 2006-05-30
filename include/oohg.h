@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.h,v 1.23 2006-05-17 05:13:39 guerra000 Exp $
+ * $Id: oohg.h,v 1.24 2006-05-30 02:25:40 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -64,6 +64,7 @@ typedef struct OOHG_Window {
    LONG       lFontColor, lBackColor;
    HBRUSH     BrushHandle;
    LONG       lFontColorSelected, lBackColorSelected;
+   LONG       lAux[ 10 ];
 
 //   int        iRow, iCol, iWidth, iHeight;
 //   HB_ITEM    oParent;
@@ -146,4 +147,13 @@ DWORD _OOHG_RTL_Status( BOOL bRtl );
 #define s_OverWndProc          39
 #define s_hWndClient           40
 #define s_Refresh              41
-#define s_LastSymbol           42
+#define s_AuxHandle            42
+#define s_ContainerCol         43
+#define s_ContainerRow         44
+#define s_lRtl                 45
+#define s_Width                46
+#define s_Height               47
+#define s_VScroll              48
+#define s_ScrollButton         49
+#define s_Visible              50
+#define s_LastSymbol           51
