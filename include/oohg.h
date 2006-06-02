@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.h,v 1.24 2006-05-30 02:25:40 guerra000 Exp $
+ * $Id: oohg.h,v 1.25 2006-06-02 02:05:11 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -156,4 +156,6 @@ DWORD _OOHG_RTL_Status( BOOL bRtl );
 #define s_VScroll              48
 #define s_ScrollButton         49
 #define s_Visible              50
-#define s_LastSymbol           51
+#define s_Events_HScroll       51
+#define s_Events_VScroll       52
+#define s_LastSymbol           53

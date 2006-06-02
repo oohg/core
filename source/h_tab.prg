@@ -1,9 +1,9 @@
 /*
- * $Id: h_tab.prg,v 1.17 2006-04-26 18:31:24 declan2005 Exp $
+ * $Id: h_tab.prg,v 1.18 2006-06-02 02:05:11 guerra000 Exp $
  */
 /*
  * ooHG source code:
- * PRG tab functions
+ * Tab functions
  *
  * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.guerra.com.mx
@@ -96,8 +96,9 @@
 #include "i_windefs.ch"
 
 CLASS TTab FROM TControl
-   DATA Type      INIT "TAB" READONLY
-   DATA aPages    INIT {}
+   DATA Type       INIT "TAB" READONLY
+   DATA aPages     INIT {}
+   DATA lInternals INIT .F.
 //            himl = ImageList_Create( cx , cy , ILC_COLOR8 | ILC_MASK , l + 1 , l + 1 );
 //            ImageList_AddMasked( himl, hbmp, CLR_DEFAULT ) ;
    DATA ImageListColor      INIT CLR_DEFAULT
@@ -129,13 +130,15 @@ ENDCLASS
 METHOD Define( ControlName, ParentForm, x, y, w, h, aCaptions, aPageMap, ;
                value, fontname, fontsize, tooltip, change, Buttons, Flat, ;
                HotTrack, Vertical, notabstop, aMnemonic, bold, italic, ;
-               underline, strikeout, Images ) CLASS TTab
+               underline, strikeout, Images, lRtl, lInternals ) CLASS TTab
 *-----------------------------------------------------------------------------*
 Local z
 Local Caption, Page, Image, Mnemonic
 Local ControlHandle
 
-   ::SetForm( ControlName, ParentForm, FontName, FontSize )
+   ASSIGN ::lInternals VALUE lInternals TYPE "L"
+
+   ::SetForm( ControlName, ParentForm, FontName, FontSize,,,, lRtl )
 
    // Since we still can't set a TAB's backcolor, we assume it (and
    // internal controls) as system-default backcolor  :(
@@ -151,8 +154,18 @@ Local ControlHandle
       Images := {}
    ENDIF
 
-   ControlHandle = InitTabControl( ::ContainerhWnd, 0, x, y, w, h , {}, value, '', 0 , Buttons , Flat , HotTrack , Vertical , notabstop )
-   SetWindowPos( ControlHandle, 0, 0, 0, 0, 0, 3 )
+   ASSIGN ::nWidth  VALUE w TYPE "N"
+   ASSIGN ::nHeight VALUE h TYPE "N"
+   ASSIGN ::nRow    VALUE y TYPE "N"
+   ASSIGN ::nCol    VALUE x TYPE "N"
+
+   ControlHandle = InitTabControl( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, {}, value, '', 0 , Buttons , Flat , HotTrack , Vertical , notabstop , ::lRtl )
+   IF ! ::lInternals
+      SetWindowPos( ControlHandle, 0, 0, 0, 0, 0, 3 )
+   ENDIF
+
+   ::Register( ControlHandle, ControlName, , , ToolTip )
+   ::SetFont( , , bold, italic, underline, strikeout )
 
    // Add page by page
    z := 1
@@ -181,10 +194,6 @@ Local ControlHandle
       z++
    ENDDO
 
-   ::Register( ControlHandle, ControlName, , , ToolTip )
-   ::SetFont( , , bold, italic, underline, strikeout )
-   ::SizePos( y, x, w, h )
-
    ::OnChange   :=  Change
 
    IF VALTYPE( value ) == "N"
@@ -201,39 +210,23 @@ Return Self
 METHOD Refresh() CLASS TTab
 *-----------------------------------------------------------------------------*
 Local nPage
-
    nPage := IF( ::Visible, ::Value, 0 )
-
-   AEVAL( ::aPages, { |p,i| if( i == nPage, , p:ForceHide() ) } )
-
-   IF nPage >= 1 .AND. nPage <= Len( ::aPages )
-      AEVAL( ::aPages[ nPage ]:aControls, { |o| o:Visible := o:Visible } )
-   ENDIF
-
+   // AEVAL( ::aPages, { |p,i| p:Position := i } )
+   // AEVAL( ::aPages, { |p,i| if( i == nPage, p:Show(), p:ForceHide() ) } )
+   AEVAL( ::aPages, { |p,i| p:Position := i , if( i == nPage, p:Show(), p:ForceHide() ) } )
 Return Nil
 
 *-----------------------------------------------------------------------------*
 METHOD Release() CLASS TTab
 *-----------------------------------------------------------------------------*
-Local i
-
-   // Delete controls inside TAB
-   FOR i := 1 TO LEN( ::aPages )
-      do while LEN( ::aPages[ i ]:aControls ) != 0
-         ::aPages[ i ]:aControls[ 1 ]:Release()
-      enddo
-   NEXT
-
+   AEVAL( ::aPages, { |o| o:Release() } )
 Return ::Super:Release()
 
 *-----------------------------------------------------------------------------*
 METHOD SizePos( Row, Col, Width, Height ) CLASS TTab
 *-----------------------------------------------------------------------------*
-
    ::Super:SizePos( Row, Col, Width, Height )
-
-   AEVAL( ::aPages, { |p| AEVAL( p:aControls, { |o| o:SizePos() } ) } )
-
+   AEVAL( ::aPages, { |o| o:Events_Size() } )
 Return Nil
 
 *-----------------------------------------------------------------------------*
@@ -253,7 +246,7 @@ LOCAL nPos
       ::Super:Enabled := lEnabled
       nPos := TabCtrl_GetCurSel( ::hWnd )
       IF nPos <= LEN( ::aPages ) .AND. nPos >= 1
-         AEVAL( ::aPages[ nPos ]:aControls, { |o| o:Enabled := o:Enabled } )
+         ::aPages[ nPos ]:Enabled := ::aPages[ nPos ]:Enabled
       ENDIF
    ENDIF
 RETURN ::Super:Enabled
@@ -267,7 +260,7 @@ LOCAL nPos, aPages
    aPages := ::aPages
    IF nPos <= LEN( aPages ) .AND. nPos >= 1
       IF aPages[ nPos ]:Visible
-         AEVAL( aPages[ nPos ]:aControls, { |o| o:Visible := o:Visible } )
+         aPages[ nPos ]:Show()
       ELSE
          aPages[ nPos ]:ForceHide()
       ENDIF
@@ -292,7 +285,7 @@ METHOD ForceHide() CLASS TTab
 LOCAL nPos
    nPos := TabCtrl_GetCurSel( ::hWnd )
    IF nPos <= LEN( ::aPages ) .AND. nPos >= 1
-      AEVAL( ::aPages[ nPos ]:aControls, { |o| o:ForceHide() } )
+      ::aPages[ nPos ]:ForceHide()
    ENDIF
 RETURN ::Super:ForceHide()
 
@@ -302,11 +295,8 @@ METHOD Events_Notify( wParam, lParam ) CLASS TTab
 Local nNotify := GetNotifyCode( lParam )
 
    If nNotify == TCN_SELCHANGE
-
       ::Refresh()
-
       ::DoEvent( ::OnChange )
-
       Return nil
 
    EndIf
@@ -314,7 +304,7 @@ Local nNotify := GetNotifyCode( lParam )
 Return ::Super:Events_Notify( wParam, lParam )
 
 *-----------------------------------------------------------------------------*
-METHOD AddPage( Position , Caption , Image, aControls, Mnemonic ) CLASS TTab
+METHOD AddPage( Position, Caption, Image, aControls, Mnemonic, Name, oSubClass ) CLASS TTab
 *-----------------------------------------------------------------------------*
 Local oPage, nPos, nKey
 
@@ -338,9 +328,16 @@ Local oPage, nPos, nKey
       aControls := {}
 	EndIf
 
-   oPage := TTabPage():SetForm( , Self )
+   TABCTRL_INSERTITEM( ::hWnd, Position - 1 , Caption )
 
-   TABCTRL_INSERTITEM ( ::hWnd, Position - 1 , Caption )
+   If ValType( oSubClass ) == "O"
+      oPage := oSubClass
+   ElseIf ::lInternals
+      oPage := TTabPageInternal()
+   Else
+      oPage := TTabPage()
+   EndIf
+   oPage:Define( Name, Self, Position )
 
    oPage:Caption   := Caption
    oPage:Picture   := Image
@@ -351,8 +348,6 @@ Local oPage, nPos, nKey
    AADD( ::aPages, nil )
    AINS( ::aPages, Position )
    ::aPages[ Position ] := oPage
-
-   AEVAL( ::aPages, { |o,i| o:Position := i } )
 
    IF ! Empty( Image )
       SetTabPageImage( ::hWnd, ::AddBitMap( Image ) - 1 )
@@ -378,29 +373,34 @@ Local oPage, nPos, nKey
 
    ::Refresh()
 
-Return Nil
+Return oPage
 
 *------------------------------------------------------------------------------*
-Function _BeginTabPage( caption, image, Position )
+Function _BeginTabPage( caption, image, Position, Name, oSubClass )
 *------------------------------------------------------------------------------*
-local oCtrl
+local oCtrl, oPage
    IF _OOHG_LastFrame() == "TABPAGE"
       // ERROR: Last page not finished
       _EndTabPage()
    ENDIF
    IF _OOHG_LastFrame() == "TAB"
       oCtrl := ATAIL( _OOHG_ActiveFrame )
-      oCtrl:AddPage( Position, Caption, Image )
-      _OOHG_AddFrame( ATAIL( oCtrl:aPages ) )
+      oPage := oCtrl:AddPage( Position, Caption, Image,,, Name, oSubClass )
    Else
       // ERROR: No TAB started
+      oPage := NIL
    EndIf
-Return Nil
+Return oPage
 
 *------------------------------------------------------------------------------*
 Function _EndTabPage()
 *------------------------------------------------------------------------------*
-Return _OOHG_DeleteFrame( "TABPAGE" )
+   IF _OOHG_LastFrame() == "TABPAGE"    // _OOHG_OldTab ... it will fail!
+      _OOHG_DeleteFrame( "TABPAGE" )
+   ELSE
+      END WINDOW
+   ENDIF
+RETURN nil
 
 *------------------------------------------------------------------------------*
 Function _EndTab()
@@ -459,7 +459,7 @@ Local NewValue
       NewValue := 1
    EndIf
 
-   TABCTRL_SETCURSEL ( ::hWnd, NewValue )
+   TABCTRL_SETCURSEL( ::hWnd, NewValue )
 
    ::Refresh()
 
@@ -490,12 +490,34 @@ CLASS TTabPage FROM TControl
    DATA Position  INIT 0
    DATA nImage    INIT -1
 
+   METHOD Define
+   METHOD Enabled
+
    METHOD ContainerVisible
 
    METHOD AddControl
    METHOD SetFocus            BLOCK { |Self| ::Container:SetFocus() , ::Container:Value := ::Position , Self }
    METHOD ForceHide           BLOCK { |Self| AEVAL( ::aControls, { |o| o:ForceHide() } ) }
+   METHOD Show                BLOCK { |Self| AEVAL( ::aControls, { |o| o:Visible := o:Visible } ) }
+   METHOD Events_Size         BLOCK { |Self| AEVAL( ::aControls, { |o| o:SizePos() } ) }
 ENDCLASS
+
+*-----------------------------------------------------------------------------*
+METHOD Define( ControlName, ParentForm, Position ) CLASS TTabPage
+*-----------------------------------------------------------------------------*
+   Empty( Position )
+   ::SetForm( ControlName, ParentForm )
+   _OOHG_AddFrame( Self )
+Return Self
+
+*-----------------------------------------------------------------------------*
+METHOD Enabled( lEnabled ) CLASS TTabPage
+*-----------------------------------------------------------------------------*
+   IF VALTYPE( lEnabled ) == "L"
+      ::Super:Enabled := lEnabled
+      AEVAL( ::aControls, { |o| o:Enabled := o:Enabled } )
+   ENDIF
+RETURN ::Super:Enabled
 
 *-----------------------------------------------------------------------------*
 METHOD ContainerVisible() CLASS TTabPage
@@ -521,3 +543,227 @@ METHOD AddControl( oCtrl , Row , Col ) CLASS TTabPage
    oCtrl:Visible := oCtrl:Visible
 
 Return Nil
+
+
+
+
+
+CLASS TTabPageInternal FROM TFormInternal
+   DATA Type      INIT "TABPAGE" READONLY
+   DATA Picture   INIT ""
+   DATA Position  INIT 0
+   DATA nImage    INIT -1
+
+   METHOD Define
+   METHOD Events_Size
+
+   METHOD ContainerVisible
+
+   METHOD SetFocus            BLOCK { |Self| ::Container:SetFocus() , ::Container:Value := ::Position , ::Super:SetFocus() }
+ENDCLASS
+
+*-----------------------------------------------------------------------------*
+METHOD Define( ControlName, ParentForm, Position ) CLASS TTabPageInternal
+*-----------------------------------------------------------------------------*
+Local aArea
+
+   ::SearchParent( ParentForm )
+   ASSIGN Position VALUE Position TYPE "N" DEFAULT LEN( ::Container:aPages ) + 1
+   aArea := _OOHG_TabPage_GetArea( ::Container, Position )
+   ::Super:Define( ControlName,, aArea[ 1 ], aArea[ 2 ], aArea[ 3 ], aArea[ 4 ], ParentForm )
+
+   ::RowMargin := - aArea[ 2 ]
+   ::ColMargin := - aArea[ 1 ]
+Return Self
+
+*-----------------------------------------------------------------------------*
+METHOD Events_Size() CLASS TTabPageInternal
+*-----------------------------------------------------------------------------*
+Local aArea
+   aArea := _OOHG_TabPage_GetArea( ::Container, ::Position )
+   ::SizePos( aArea[ 2 ], aArea[ 1 ], aArea[ 3 ], aArea[ 4 ] )
+Return NIL
+
+*-----------------------------------------------------------------------------*
+METHOD ContainerVisible() CLASS TTabPageInternal
+*-----------------------------------------------------------------------------*
+Local lRet := .F.
+   IF ::Super:ContainerVisible
+      lRet := ( TabCtrl_GetCurSel( ::Container:hWnd ) == ::Position )
+   ENDIF
+RETURN lRet
+
+STATIC FUNCTION _OOHG_TabPage_GetArea( oTab, nPosition )
+LOCAL aRect
+   aRect := TabCtrl_GetItemRect( oTab:hWnd, nPosition - 1 )
+   aRect := { 2, aRect[ 4 ] + 2, oTab:Width - 2, oTab:Height - 2 }
+RETURN { aRect[ 1 ], aRect[ 2 ], aRect[ 3 ] - aRect[ 1 ], aRect[ 4 ] - aRect[ 2 ] } // { Col, Row, Width, Height }
+
+
+
+
+
+EXTERN InitTabControl, SetTabCaption, SetTabPageImage
+EXTERN TabCtrl_SetCurSel, TabCtrl_GetCurSel, TabCtrl_InsertItem, TabCtrl_DeleteItem, TabCtrl_GetItemRect
+
+#pragma BEGINDUMP
+
+#include <windows.h>
+#include <commctrl.h>
+#include "hbapi.h"
+#include "../include/oohg.h"
+
+static WNDPROC lpfnOldWndProc = 0;
+
+static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+{
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
+}
+
+HB_FUNC( INITTABCONTROL )
+{
+	PHB_ITEM hArray;
+	HWND hwnd;
+	HWND hbutton;
+	TC_ITEM tie;
+	int i;
+
+	int Style = WS_CHILD | WS_VISIBLE ;
+   int iStyleEx = _OOHG_RTL_Status( hb_parl( 16 ) );
+
+   if( hb_parl (11) )
+	{
+		Style = Style | TCS_BUTTONS ;
+	}
+
+   if( hb_parl (12) )
+	{
+		Style = Style | TCS_FLATBUTTONS ;
+	}
+
+   if( hb_parl (13) )
+	{
+		Style = Style | TCS_HOTTRACK ;
+	}
+
+   if( hb_parl (14) )
+	{
+		Style = Style | TCS_VERTICAL ;
+	}
+
+   if( ! hb_parl (15) )
+	{
+		Style = Style | WS_TABSTOP ;
+	}
+
+	hArray = hb_param( 7, HB_IT_ARRAY );
+
+	hwnd = (HWND) hb_parnl (1);
+
+   hbutton = CreateWindowEx( iStyleEx, WC_TABCONTROL , NULL ,
+	Style ,
+	hb_parni(3), hb_parni(4) , hb_parni(5), hb_parni(6) ,
+	hwnd,(HMENU)hb_parni(2) , GetModuleHandle(NULL) , NULL ) ;
+
+	tie.mask = TCIF_TEXT ;
+	tie.iImage = -1;
+
+   for( i = hb_parinfa( 7, 0 ); i > 0; i-- )
+   {
+      tie.pszText = hb_arrayGetCPtr( hArray, i );
+      TabCtrl_InsertItem( hbutton, 0, &tie );
+   }
+
+   TabCtrl_SetCurSel( hbutton, hb_parni( 8 ) - 1 );
+
+   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hbutton, GWL_WNDPROC, ( LONG ) SubClassFunc );
+
+   hb_retnl( ( LONG ) hbutton );
+}
+
+HB_FUNC (TABCTRL_SETCURSEL)
+{
+
+	HWND hwnd;
+	int s;
+
+	hwnd = (HWND) hb_parnl (1);
+
+	s = hb_parni (2);
+
+	TabCtrl_SetCurSel( hwnd , s-1 );
+
+}
+
+HB_FUNC (TABCTRL_GETCURSEL)
+{
+	HWND hwnd;
+	hwnd = (HWND) hb_parnl (1);
+	hb_retni ( TabCtrl_GetCurSel( hwnd ) + 1 ) ;
+}
+
+HB_FUNC (TABCTRL_INSERTITEM)
+{
+	HWND hwnd ;
+	TC_ITEM tie ;
+	int i ;
+
+	hwnd = (HWND) hb_parnl (1) ;
+	i = hb_parni (2) ;
+
+	tie.mask = TCIF_TEXT ;
+	tie.iImage = -1 ;
+	tie.pszText = hb_parc(3) ;
+
+	TabCtrl_InsertItem(hwnd, i, &tie) ;
+
+}
+
+HB_FUNC (TABCTRL_DELETEITEM)
+{
+	HWND hwnd ;
+	int i ;
+
+	hwnd = (HWND) hb_parnl (1) ;
+	i = hb_parni (2) ;
+
+	TabCtrl_DeleteItem(hwnd, i) ;
+
+}
+
+HB_FUNC( SETTABCAPTION )
+{
+
+	TC_ITEM tie;
+
+	tie.mask = TCIF_TEXT ;
+
+	tie.pszText = hb_parc(3) ;
+
+	TabCtrl_SetItem ( (HWND) hb_parnl (1) , hb_parni (2)-1 , &tie);
+
+}
+
+HB_FUNC( SETTABPAGEIMAGE )
+{
+   TC_ITEM tie;
+
+//            himl = ImageList_Create( cx , cy , ILC_COLOR8 | ILC_MASK , l + 1 , l + 1 );
+//            ImageList_AddMasked( himl, hbmp, CLR_DEFAULT ) ;
+   tie.mask = TCIF_IMAGE ;
+   tie.iImage = hb_parni( 2 );
+   TabCtrl_SetItem( ( HWND ) hb_parnl( 1 ), hb_parni( 2 ), &tie );
+}
+
+HB_FUNC( TABCTRL_GETITEMRECT )
+{
+   RECT rect;
+
+   TabCtrl_GetItemRect( ( HWND ) hb_parnl( 1 ), hb_parni( 2 ), &rect );
+   hb_reta( 4 );
+   hb_storni( rect.left,   -1, 1 );
+   hb_storni( rect.top,    -1, 2 );
+   hb_storni( rect.right,  -1, 3 );
+   hb_storni( rect.bottom, -1, 4 );
+}
+#pragma ENDDUMP

@@ -1,11 +1,76 @@
 /*
- * $Id: ChangeLog,v 1.160 2006-05-30 02:25:39 guerra000 Exp $
+ * $Id: ChangeLog,v 1.161 2006-06-02 02:05:11 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-06-01 21:03 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * include/oohg.h
+  * source/c_controlmisc.c
+  * source/h_controlmisc.prg
+  * source/h_windows.prg
+  * source/h_scroll.prg
+    * Fixed "TAB" next-control movement for Internal windows.
+    * ::HScrollBar and ::VScrollBar properties added for
+      TForm. These controls manages scrollbar's movement in
+      forms.
+    + Added GetScrollRangeMin() function.
+    * Moved ::Events_VScroll() and ::Events_HScroll() methods
+      to TWindow.
+    * Fixed scroll's skip for PAGE skip.
+
+/* Al darle click en el scrollbar de un FORM, se mueve una pantalla entera */
+
+    * WM_HSCROLL and WM_VSCROLL event handling moved to TWindow.
+    * ::ContainerRow, ::ContainerCol and ::ContainerhWnd methods
+      now in TForm.
+    * ::VirtualWidth and ::VirtualHeight properties can be
+      changed in runtime.
+    * _OOHG_SelectSubClass() function.
+  * source/c_windows.c
+    * Fixed ::Row, ::Col, ::Width, ::Height return value when
+      window is not defined.
+  * include/i_tab.ch
+  - source/c_tab.c
+  * source/h_tab.prg
+  * source/makelib.bat
+    * Moved source code from c_tab.c to h_tab.prg .
+    - c_tab.c removed.
+    * RTL and SUBCLASS clauses for TAB.
+    * NAME, OBJ and SUBCLASS clauses added to TABPAGE.
+    * INTERNALS clause for TAB. tab pages can be INTERNAL windows.
+
+   /* TabPages can be now internal forms. It optimizes control's
+      handling (most actions performed by Operating System).
+      Showing/hidding, moving a TabPage is done with a simple
+      object instead of all of them.
+      It's possible to have a virtual-sized TabPage (scrollbars
+      for a single TabPage).
+      It's possible to assign a backcolor for individual TabPages.
+      Since TabPages are (intenal) forms, controls inside them
+      are registered to TabPages instead of tab's parent form
+      ( TForm:Tab:aPages[n]:MyControl instead of TForm:MyControl ).
+      NAME clause sets a new FORM name to TabPage. OBJ clause
+      stores TabPage object on any variable.
+   */
+
+/* SUBCLASS: Para poder aplicar subclases con la sintaxis tradicional,
+   sin necesidad de volver a definir el comando. Por ejemplo,
+
+   ...
+   CLASS MiBoton FROM TButton
+   ...
+   ENDCLASS
+   ...
+   @ ... BUTTON ... SUBCLASS MiBoton
+   ...
+
+   El control será definido de MiBoton() en vez de TButton() (hay que
+   aplicarlo a todos los controles, y las ventanas).
+ */
 
 2006-05-29 20:50 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/c_grid.c

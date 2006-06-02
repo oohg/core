@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.55 2006-05-17 05:19:15 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.56 2006-06-02 02:05:11 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -112,27 +112,9 @@ STATIC _OOHG_lMultiple := .T.    // Allows the same applicaton runs more one ins
 #pragma ENDDUMP
 
 *-----------------------------------------------------------------------------*
-Function _Getvalue ( ControlName, ParentForm )
+Function _Getvalue( ControlName, ParentForm )
 *-----------------------------------------------------------------------------*
-Local Self := GetControlObject( ControlName, ParentForm )
-
-	If Pcount() == 2
-
-		If Upper (ControlName) == 'VSCROLLBAR'
-
-			Return GetScrollPos ( GetFormHandle ( ParentForm )  , 1 )
-
-		EndIf
-
-		If Upper (ControlName) == 'HSCROLLBAR'
-
-			Return GetScrollPos ( GetFormHandle ( ParentForm )  , 0 )
-
-		EndIf
-
-	EndIf
-
-Return ::Value
+Return GetControlObject( ControlName, ParentForm ):Value
 
 *-----------------------------------------------------------------------------*
 Function _Setvalue( ControlName, ParentForm, Value )
@@ -894,21 +876,11 @@ Local RetVal, oWnd, oCtrl
 
 	ElseIf Pcount() == 3 // CONTROL
 
-		If ( Upper(Arg2) == 'VSCROLLBAR' .Or. Upper(Arg2) == 'HSCROLLBAR' )
-
-			If .Not. _IsWindowDefined ( Arg1 )
-            MsgOOHGError("Window: "+ Arg1 + " is not defined. Program terminated" )
-			Endif
-
-		Else
-
-			If .Not. _IsControlDefined ( Arg2 , Arg1  )
-            MsgOOHGError ("Control: " + Arg2 + " Of " + Arg1 + " Not defined. Program Terminated" )
-			endif
-
+      If ! _IsControlDefined( Arg2, Arg1 )
+         MsgOOHGError( "Control: " + Arg2 + " Of " + Arg1 + " Not defined. Program Terminated." )
 		EndIf
 
-		Arg3 := Upper (Arg3)
+      Arg3 := Upper( Arg3 )
 
       oCtrl := GetControlObject( Arg2, Arg1 )
 
@@ -1487,10 +1459,10 @@ CLASS TControl FROM TWindow
    METHOD Register
    METHOD Refresh             BLOCK { || nil }
    METHOD Release
+   METHOD SetFont
    METHOD ContainerRow        BLOCK { |Self| IF( ::Container != NIL, ::Container:ContainerRow + ::Container:RowMargin, ::Parent:RowMargin ) + ::Row }
    METHOD ContainerCol        BLOCK { |Self| IF( ::Container != NIL, ::Container:ContainerCol + ::Container:ColMargin, ::Parent:ColMargin ) + ::Col }
    METHOD ContainerhWnd       BLOCK { |Self| IF( ::Container == NIL, ::Parent:hWnd, if( Empty( ::Container:ContainerhWndValue ), ::Container:ContainerhWnd, ::Container:ContainerhWndValue ) ) }
-   METHOD SetFont
    METHOD FontName            SETGET
    METHOD FontSize            SETGET
    METHOD FontBold            SETGET
@@ -1512,7 +1484,6 @@ CLASS TControl FROM TWindow
    METHOD Events_Enter
    METHOD Events_Command
    METHOD Events_Notify
-   METHOD Events_VScroll      BLOCK { || nil }
    METHOD Events_DrawItem     BLOCK { || nil }
    METHOD Events_MeasureItem  BLOCK { || nil }
 ENDCLASS

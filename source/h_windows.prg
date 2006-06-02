@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.85 2006-05-30 02:25:40 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.86 2006-06-02 02:05:11 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -167,6 +167,8 @@ CLASS TWindow
    DATA OverWndProc         INIT nil
    DATA lInternal           INIT .T.
    DATA lForm               INIT .F.
+   DATA HScrollBar          INIT nil
+   DATA VScrollBar          INIT nil
 
    DATA OnClick             INIT nil
    DATA OnGotFocus          INIT nil
@@ -202,6 +204,8 @@ CLASS TWindow
    METHOD SearchParent
 
    METHOD Events_Size         BLOCK { || nil }
+   METHOD Events_VScroll      BLOCK { || nil }
+   METHOD Events_HScroll      BLOCK { || nil }
 
    ERROR HANDLER Error
    METHOD Control
@@ -532,6 +536,36 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )
          }
          break;
 
+      case WM_HSCROLL:
+         if( lParam )
+         {
+            _OOHG_Send( GetControlObjectByHandle( ( LONG ) lParam ), s_Events_HScroll );
+            hb_vmPushLong( wParam );
+            hb_vmSend( 1 );
+         }
+         else
+         {
+            _OOHG_Send( pSelf, s_Events_HScroll );
+            hb_vmPushLong( wParam );
+            hb_vmSend( 1 );
+         }
+         break;
+
+      case WM_VSCROLL:
+         if( lParam )
+         {
+            _OOHG_Send( GetControlObjectByHandle( ( LONG ) lParam ), s_Events_VScroll );
+            hb_vmPushLong( wParam );
+            hb_vmSend( 1 );
+         }
+         else
+         {
+            _OOHG_Send( pSelf, s_Events_VScroll );
+            hb_vmPushLong( wParam );
+            hb_vmSend( 1 );
+         }
+         break;
+
       default:
          _OOHG_Send( pSelf, s_WndProc );
          hb_vmSend( 0 );
@@ -555,7 +589,6 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )
 }
 
 #pragma ENDDUMP
-
 
 *------------------------------------------------------------------------------*
 METHOD Enabled( lEnabled ) CLASS TWindow
@@ -871,6 +904,24 @@ Local cRet
    EndIf
 Return cRet
 
+#pragma BEGINDUMP
+HB_FUNC( _OOHG_SELECTSUBCLASS ) // _OOHG_SelectSubClass( oClass, oSubClass )
+{
+   PHB_ITEM pRet, pCopy;
+
+   pCopy = hb_itemNew( NULL );
+   pRet = hb_param( 2, HB_IT_OBJECT );
+   if( ! pRet )
+   {
+      pRet = hb_param( 1, HB_IT_ANY );
+   }
+   hb_itemCopy( pCopy, pRet );
+   hb_itemReturn( pCopy );
+   hb_itemRelease( pCopy );
+// Return if( ValType( oSubClass ) == "O", oSubClass, oClass )
+}
+#pragma ENDDUMP
+
 *------------------------------------------------------------------------------*
 CLASS TForm FROM TWindow
 *------------------------------------------------------------------------------*
@@ -899,8 +950,8 @@ CLASS TForm FROM TWindow
    DATA OnMaximize     INIT nil
    DATA OnMinimize     INIT nil
 
-   DATA VirtualHeight  INIT 0
-   DATA VirtualWidth   INIT 0
+   DATA nVirtualHeight INIT 0
+   DATA nVirtualWidth  INIT 0
    DATA RangeHeight    INIT 0
    DATA RangeWidth     INIT 0
 
@@ -923,6 +974,8 @@ CLASS TForm FROM TWindow
    METHOD Row                 SETGET
    METHOD Cursor              SETGET
    METHOD BackColor           SETGET
+   METHOD VirtualWidth        SETGET
+   METHOD VirtualHeight       SETGET
 
    METHOD FocusedControl
    METHOD SizePos
@@ -948,6 +1001,8 @@ CLASS TForm FROM TWindow
 
    METHOD Events
    METHOD Events_Destroy
+   METHOD Events_VScroll
+   METHOD Events_HScroll
    METHOD MessageLoop
 
 ENDCLASS
@@ -1054,12 +1109,24 @@ Local Formhandle
       mdi := .F.
    EndIf
 
+   ASSIGN ::nRow    VALUE y TYPE "N"
+   ASSIGN ::nCol    VALUE x TYPE "N"
+   ASSIGN ::nWidth  VALUE w TYPE "N"
+   ASSIGN ::nHeight VALUE h TYPE "N"
+
+   If ::lInternal
+      x := ::ContainerCol
+      y := ::ContainerRow
+   Else
+      x := ::nCol
+      y := ::nRow
+   EndIf
    If nWindowType == 2
-      Formhandle := InitWindowMDIClient( Caption, x, y, w, h, Parent, "MDICLIENT", nStyle, nStyleEx, lRtl )
+      Formhandle := InitWindowMDIClient( Caption, x, y, ::nWidth, ::nHeight, Parent, "MDICLIENT", nStyle, nStyleEx, lRtl )
    Else
       UnRegisterWindow( FormName )
       ::BrushHandle := RegisterWindow( icon, FormName, aRGB, nWindowType )
-      Formhandle := InitWindow( Caption, x, y, w, h, Parent, FormName, nStyle, nStyleEx, lRtl )
+      Formhandle := InitWindow( Caption, x, y, ::nWidth, ::nHeight, Parent, FormName, nStyle, nStyleEx, lRtl )
    EndIf
 
    if Valtype( cursor ) $ "CM"
@@ -1091,13 +1158,32 @@ Local Formhandle
 
    InitDummy( FormHandle )
 
-   ::nRow    := y
-   ::nCol    := x
-   ::nWidth  := w
-   ::nHeight := h
+   ::HScrollBar := TScrollBar():Define( "HSCROLLBAR", Self,,,,,,,, ;
+                   { |Scroll| _OOHG_Eval( ::OnScrollLeft, Scroll ) }, ;
+                   { |Scroll| _OOHG_Eval( ::OnScrollRight, Scroll ) }, ;
+                   { |Scroll| _OOHG_Eval( ::OnHScrollBox, Scroll ) }, ;
+                   { |Scroll| _OOHG_Eval( ::OnHScrollBox, Scroll ) }, ;
+                   { |Scroll| _OOHG_Eval( ::OnHScrollBox, Scroll ) }, ;
+                   { |Scroll| _OOHG_Eval( ::OnHScrollBox, Scroll ) }, ;
+                   { |Scroll,n| _OOHG_Eval( ::OnHScrollBox, Scroll, n ) }, ;
+                   ,,,,,, SB_HORZ, .T. )
+   ::HScrollBar:nLineSkip  := 1
+   ::HScrollBar:nPageSkip  := 20
 
-   ::VirtualHeight := VirtualHeight
-   ::VirtualWidth := VirtualWidth
+   ::VScrollBar := TScrollBar():Define( "VSCROLLBAR", Self,,,,,,,, ;
+                   { |Scroll| _OOHG_Eval( ::OnScrollUp, Scroll ) }, ;
+                   { |Scroll| _OOHG_Eval( ::OnScrollDown, Scroll ) }, ;
+                   { |Scroll| _OOHG_Eval( ::OnVScrollBox, Scroll ) }, ;
+                   { |Scroll| _OOHG_Eval( ::OnVScrollBox, Scroll ) }, ;
+                   { |Scroll| _OOHG_Eval( ::OnVScrollBox, Scroll ) }, ;
+                   { |Scroll| _OOHG_Eval( ::OnVScrollBox, Scroll ) }, ;
+                   { |Scroll,n| _OOHG_Eval( ::OnVScrollBox, Scroll, n ) }, ;
+                   ,,,,,, SB_VERT, .T. )
+   ::VScrollBar:nLineSkip  := 1
+   ::VScrollBar:nPageSkip  := 20
+
+   ::nVirtualHeight := VirtualHeight
+   ::nVirtualWidth  := VirtualWidth
    ValidateScrolls( Self, .F. )
 
    ::OnRelease := ReleaseProcedure
@@ -1367,6 +1453,24 @@ METHOD Row( nRow ) CLASS TForm
 Return GetWindowRow( ::hWnd )
 
 *------------------------------------------------------------------------------*
+METHOD VirtualWidth( nSize ) CLASS TForm
+*------------------------------------------------------------------------------*
+   If valtype( nSize ) == "N"
+      ::nVirtualWidth := nSize
+      ValidateScrolls( Self, .T. )
+   EndIf
+Return ::nVirtualWidth
+
+*------------------------------------------------------------------------------*
+METHOD VirtualHeight( nSize ) CLASS TForm
+*------------------------------------------------------------------------------*
+   If valtype( nSize ) == "N"
+      ::nVirtualHeight := nSize
+      ValidateScrolls( Self, .T. )
+   EndIf
+Return ::nVirtualHeight
+
+*------------------------------------------------------------------------------*
 METHOD FocusedControl() CLASS TForm
 *------------------------------------------------------------------------------*
 Local nFocusedControlHandle , nPos
@@ -1549,6 +1653,26 @@ Local mVar, i
 
 Return nil
 
+*-----------------------------------------------------------------------------*
+METHOD Events_VScroll( wParam ) CLASS TForm
+*-----------------------------------------------------------------------------*
+Local uRet
+   uRet := ::VScrollBar:Events_VScroll( wParam )
+   ::RowMargin := - ::VScrollBar:Value
+   AEVAL( ::aControls, { |o| If( o:Container == nil, o:SizePos(), ) } )
+   ReDrawWindow( ::hWnd )
+Return uRet
+
+*-----------------------------------------------------------------------------*
+METHOD Events_HScroll( wParam ) CLASS TForm
+*-----------------------------------------------------------------------------*
+Local uRet
+   uRet := ::HScrollBar:Events_HScroll( wParam )
+   ::ColMargin := - ::HScrollBar:Value
+   AEVAL( ::aControls, { |o| If( o:Container == nil, o:SizePos(), ) } )
+   ReDrawWindow( ::hWnd )
+Return uRet
+
 #pragma BEGINDUMP
 
 // -----------------------------------------------------------------------------
@@ -1635,17 +1759,23 @@ Local oWnd, oCtrl
       If oWnd:hWnd != 0 .AND. oWnd:RangeHeight > 0
 
 			If HIWORD(wParam) == 120
-				if GetScrollPos(hwnd,SB_VERT) < 20
+            oWnd:VScrollBar:LineUp()
+/*
+            If oWnd:VScrollBar:Value < 20
 					SetScrollPos ( hwnd , SB_VERT , 0 , 1 )
 				Else
 					SendMessage ( hwnd , WM_VSCROLL , SB_PAGEUP , 0 )
 				endif
+*/
 			Else
+            oWnd:VScrollBar:LineDown()
+/*
 				if GetScrollPos(hwnd,SB_VERT) >= GetScrollRangeMax ( hwnd , SB_VERT ) - 10
 					SetScrollPos ( hwnd , SB_VERT , GetScrollRangeMax ( hwnd , SB_VERT ) , 1 )
 				else
 					SendMessage ( hwnd , WM_VSCROLL , SB_PAGEDOWN , 0 )
 				endif
+*/
 			EndIf
 
 		EndIf
@@ -1698,74 +1828,6 @@ Local oWnd, oCtrl
       HelpTopic( GetControlObjectByHandle( GetHelpData( lParam ) ):HelpId , 2 )
 
         ***********************************************************************
-	case nMsg == WM_VSCROLL
-        ***********************************************************************
-
-      if lParam == 0
-
-			* Vertical ScrollBar Processing
-
-         if ::RangeHeight > 0
-
-				If LoWord(wParam) == SB_LINEDOWN
-
-               ::RowMargin := - ( GetScrollPos(hwnd,SB_VERT) + 1 )
-               SetScrollPos ( hwnd , SB_VERT , - ::RowMargin , 1 )
-
-				ElseIf LoWord(wParam) == SB_LINEUP
-
-               ::RowMargin := - ( GetScrollPos(hwnd,SB_VERT) - 1 )
-               SetScrollPos ( hwnd , SB_VERT , - ::RowMargin , 1 )
-
-				ElseIf LoWord(wParam) == SB_PAGEUP
-
-               ::RowMargin := - ( GetScrollPos(hwnd,SB_VERT) - 20 )
-               SetScrollPos ( hwnd , SB_VERT , - ::RowMargin , 1 )
-
-				ElseIf LoWord(wParam) == SB_PAGEDOWN
-
-               ::RowMargin := - ( GetScrollPos(hwnd,SB_VERT) + 20 )
-               SetScrollPos ( hwnd , SB_VERT , - ::RowMargin , 1 )
-
-				ElseIf LoWord(wParam) == SB_THUMBPOSITION
-
-               ::RowMargin := - HIWORD(wParam)
-               SetScrollPos ( hwnd , SB_VERT , - ::RowMargin , 1 )
-
-				EndIf
-
-				* Control Repositioning
-
-				If LoWord(wParam) == SB_THUMBPOSITION .Or. LoWord(wParam) == SB_LINEDOWN .Or. LoWord(wParam) == SB_LINEUP .or. LoWord(wParam) == SB_PAGEUP .or. LoWord(wParam) == SB_PAGEDOWN
-               AEVAL( ::aControls, { |o| If( o:Container == nil, o:SizePos(), ) } )
-               ReDrawWindow( hwnd )
-				EndIf
-
-			EndIf
-
-			If LoWord(wParam) == SB_LINEDOWN
-            ::DoEvent( ::OnScrollDown, '' )
-			ElseIf LoWord(wParam) == SB_LINEUP
-            ::DoEvent( ::OnScrollUp, '' )
-			ElseIf LoWord(wParam) == SB_THUMBPOSITION ;
-				.or. ;
-				LoWord(wParam) == SB_PAGEUP ;
-				.or. ;
-				LoWord(wParam) == SB_PAGEDOWN
-
-            ::DoEvent( ::OnVScrollBox, '' )
-
-			EndIf
-
-      Else
-
-         Return GetControlObjectByHandle( lParam ):Events_VScroll( wParam )
-
-		EndIf
-
-
-
-        ***********************************************************************
 	case nMsg == WM_TASKBAR
         ***********************************************************************
 
@@ -1797,101 +1859,25 @@ Local oWnd, oCtrl
 	case nMsg == WM_NEXTDLGCTL
         ***********************************************************************
 
-			If Wparam == 0
-
-            NextControlHandle := GetNextDlgTabItem ( GetActiveWindow() , GetFocus() , 0 )
-
-			Else
-
-            NextControlHandle := GetNextDlgTabItem ( GetActiveWindow() , GetFocus() , 1 )
-
-			EndIf
+         If LoWord( lParam ) != 0
+            // wParam contains next control's handler
+            NextControlHandle := wParam
+         Else
+            // wParam indicates next control's direction
+            NextControlHandle := GetNextDlgTabItem( hWnd, GetFocus(), wParam )
+         EndIf
 
          oCtrl := GetControlObjectByHandle( NextControlHandle )
 
          if oCtrl:hWnd == NextControlHandle
-
             oCtrl:SetFocus()
-
          else
-
 				setfocus( NextControlHandle )
-
          endif
 
-        ***********************************************************************
-	case nMsg == WM_HSCROLL
-        ***********************************************************************
-
-      i := aScan( _OOHG_aFormhWnd, hWnd )
-*****      Self := GetFormObjectByHandle( hWnd )
-
-		if i > 0
-
-			* Horizontal ScrollBar Processing
-
-         if ::RangeWidth > 0 .And. lParam == 0
-
-				If LoWord(wParam) == SB_LINERIGHT
-
-               ::ColMargin := - ( GetScrollPos(hwnd,SB_HORZ) + 1 )
-               SetScrollPos ( hwnd , SB_HORZ , - ::ColMargin , 1 )
-
-				ElseIf LoWord(wParam) == SB_LINELEFT
-
-               ::ColMargin := - ( GetScrollPos(hwnd,SB_HORZ) - 1 )
-               SetScrollPos ( hwnd , SB_HORZ , - ::ColMargin , 1 )
-
-				ElseIf LoWord(wParam) == SB_PAGELEFT
-
-               ::ColMargin := - ( GetScrollPos(hwnd,SB_HORZ) - 20 )
-               SetScrollPos ( hwnd , SB_HORZ , - ::ColMargin , 1 )
-
-				ElseIf LoWord(wParam) == SB_PAGERIGHT
-
-               ::ColMargin := - ( GetScrollPos(hwnd,SB_HORZ) + 20 )
-               SetScrollPos ( hwnd , SB_HORZ , - ::ColMargin , 1 )
-
-				ElseIf LoWord(wParam) == SB_THUMBPOSITION
-
-               ::ColMargin := - HIWORD(wParam)
-               SetScrollPos ( hwnd , SB_HORZ , - ::ColMargin , 1 )
-
-				EndIf
-
-				* Control Repositioning
-
-				If LoWord(wParam) == SB_THUMBPOSITION .Or. LoWord(wParam) == SB_LINELEFT .Or. LoWord(wParam) == SB_LINERIGHT .OR. LoWord(wParam) == SB_PAGELEFT	.OR. LoWord(wParam) == SB_PAGERIGHT
-               AEVAL( ::aControls, { |o| If( o:Container == nil, o:SizePos(), ) } )
-               RedrawWindow( hwnd )
-				EndIf
-
-			EndIf
-
-			If LoWord(wParam) == SB_LINERIGHT
-
-            ::DoEvent( ::OnScrollRight, '' )
-
-			ElseIf LoWord(wParam) == SB_LINELEFT
-
-            ::DoEvent( ::OnScrollLeft, '' )
-
-			ElseIf	LoWord(wParam) == SB_THUMBPOSITION ;
-				.or. ;
-				LoWord(wParam) == SB_PAGELEFT ;
-				.or. ;
-				LoWord(wParam) == SB_PAGERIGHT
-
-            ::DoEvent( ::OnHScrollBox, '' )
-
-			EndIf
-
-		EndIf
-
-      oCtrl := GetControlObjectByHandle( lParam )
-			If LoWord (wParam) == TB_ENDTRACK
-            oCtrl:DoEvent( oCtrl:OnChange )
-			EndIf
+         * To update the default pushbutton border!
+         * To set the default control identifier!
+         * Return 0
 
         ***********************************************************************
 	case nMsg == WM_PAINT
@@ -2059,6 +2045,11 @@ Procedure ValidateScrolls( Self, lMove )
 *-----------------------------------------------------------------------------*
 Local hWnd, nVirtualWidth, nVirtualHeight
 Local aRect, w, h, hscroll, vscroll
+
+   If ::hWnd == 0 .OR. ::HScrollBar == nil .OR. ::VScrollBar == nil
+      Return
+   EndIf
+
    // Initializes variables
    hWnd := ::hWnd
    nVirtualWidth := ::VirtualWidth
@@ -2092,14 +2083,18 @@ Local aRect, w, h, hscroll, vscroll
 
    // Shows/hides scroll bars
    _SetScroll( hWnd, hscroll, vscroll )
+   ::VScrollBar:lAutoMove := vscroll
+   ::VScrollBar:nPageSkip := h
+   ::HScrollBar:lAutoMove := hscroll
+   ::HScrollBar:nPageSkip := w
 
    // Verifies there's no "extra" space derived from resize
    If vscroll
-      SetScrollRange( hWnd, SB_VERT, 0, ::VirtualHeight, 1 )
-      SetScrollPage( hWnd, SB_VERT, h )
+      ::VScrollBar:SetRange( 0, ::VirtualHeight )
+      ::VScrollBar:Page := h
       If ::RangeHeight < ( - ::RowMargin )
          ::RowMargin := - ::RangeHeight
-         SetScrollPos( hWnd, SB_VERT, ::RangeHeight, 1 )
+         ::VScrollBar:Value := ::RangeHeight
       Else
          vscroll := .F.
       EndIf
@@ -2108,11 +2103,11 @@ Local aRect, w, h, hscroll, vscroll
       vscroll := .T.
    EndIf
    If hscroll
-      SetScrollRange( hWnd, SB_HORZ, 0, ::VirtualWidth, 1 )
-      SetScrollPage( hWnd, SB_HORZ, w )
+      ::HScrollBar:SetRange( 0, ::VirtualWidth )
+      ::HScrollBar:Page := w
       If ::RangeWidth < ( - ::ColMargin )
          ::ColMargin := - ::RangeWidth
-         SetScrollPos( hWnd, SB_HORZ, ::RangeWidth, 1 )
+         ::HScrollBar:Value := ::RangeWidth
       Else
          hscroll := .F.
       EndIf
@@ -2378,6 +2373,11 @@ CLASS TFormInternal FROM TForm
    METHOD Define
    METHOD Define2
    METHOD SizePos
+   METHOD Row       SETGET
+   METHOD Col       SETGET
+
+   METHOD ContainerRow        BLOCK { |Self| IF( ::Container != NIL, ::Container:ContainerRow + ::Container:RowMargin, ::Parent:RowMargin ) + ::Row }
+   METHOD ContainerCol        BLOCK { |Self| IF( ::Container != NIL, ::Container:ContainerCol + ::Container:ColMargin, ::Parent:ColMargin ) + ::Col }
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -2391,7 +2391,8 @@ Local nStyle := 0, nStyleEx := 0
 
    ::SearchParent( oParent )
    ::Focused := ( ValType( Focused ) == "L" .AND. Focused )
-   nStyle   += WS_CHILD
+   nStyle += WS_CHILD
+   nStyleEx += WS_EX_CONTROLPARENT
 
    ::Define2( FormName, Caption, x, y, w, h, ::Parent:hWnd, .F., .T., .T., .T., .T., ;
               .T., virtualheight, virtualwidth, hscrollbox, vscrollbox, fontname, fontsize, aRGB, cursor, ;
@@ -2435,14 +2436,10 @@ Return Self
 METHOD SizePos( nRow, nCol, nWidth, nHeight ) CLASS TFormInternal
 *------------------------------------------------------------------------------*
 Local uRet
-   if valtype( nCol ) != "N"
-      nCol := ::nCol
-   else
+   if valtype( nCol ) == "N"
       ::nCol := nCol
    endif
-   if valtype( nRow ) != "N"
-      nRow := ::nRow
-   else
+   if valtype( nRow ) == "N"
       ::nRow := nRow
    endif
    if valtype( nWidth ) != "N"
@@ -2455,12 +2452,26 @@ Local uRet
    else
       ::nHeight := nHeight
    endif
-   nCol += ::Parent:ColMargin
-   nRow += ::Parent:RowMargin
 
-   uRet := MoveWindow( ::hWnd , nCol , nRow , nWidth , nHeight , .t. )
+   uRet := MoveWindow( ::hWnd, ::ContainerCol, ::ContainerRow, nWidth, nHeight, .t. )
    ValidateScrolls( Self, .T. )
 Return uRet
+
+*------------------------------------------------------------------------------*
+METHOD Col( nCol ) CLASS TFormInternal
+*------------------------------------------------------------------------------*
+   IF PCOUNT() > 0
+      ::SizePos( , nCol )
+   ENDIF
+RETURN ::nCol
+
+*------------------------------------------------------------------------------*
+METHOD Row( nRow ) CLASS TFormInternal
+*------------------------------------------------------------------------------*
+   IF PCOUNT() > 0
+      ::SizePos( nRow )
+   ENDIF
+RETURN ::nRow
 
 
 
@@ -2486,6 +2497,7 @@ Local nStyle := 0, nStyleEx := 0
    ::Focused := ( ValType( Focused ) == "L" .AND. Focused )
    nStyle += WS_CHILD
    nStyleEx += WS_EX_STATICEDGE + WS_EX_TOOLWINDOW
+   // nStyleEx += WS_EX_CONTROLPARENT    // SHIFT-TAB is not working :(
 
    If ! ::SetSplitBoxInfo()
       MsgOOHGError( "SplitChild Windows Can be Defined Only Inside SplitBox. Program terminated." )

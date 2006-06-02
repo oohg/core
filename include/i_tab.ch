@@ -1,5 +1,5 @@
 /*
- * $Id: i_tab.ch,v 1.3 2005-10-22 06:04:31 guerra000 Exp $
+ * $Id: i_tab.ch,v 1.4 2006-06-02 02:05:11 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -111,20 +111,29 @@
                 [ <vertical: VERTICAL> ]       ;
 		[ ON CHANGE <change> ] ;
                 [ <notabstop: NOTABSTOP> ]       ;
+                [ <rtl: RTL> ]       ;
+                [ SUBCLASS <subclass> ] ;
+                [ <internals: INTERNALS> ]       ;
 	=>;
-[ <obj> := ] TTab():Define( <(name)> , <(parent)> , <col> , <row> , <w> , <h> , {}, {}, <value> , <f> , <s> , <tooltip> , <{change}> , <.buttons.> , <.flat.> , <.hottrack.> , <.vertical.>, <.notabstop.> , , <.bold.>, <.italic.>, <.underline.>, <.strikeout.> , {} )
+             [ <obj> := ] _OOHG_SelectSubClass( TTab(), [ <subclass>() ] ): ;
+             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, {}, {}, <value>, <f>, <s>, <tooltip>, ;
+                     <{change}>, <.buttons.>, <.flat.>, <.hottrack.>, <.vertical.>, <.notabstop.>, , ;
+                     <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, {}, <.rtl.>, <.internals.> )
 
-#command PAGE <caption> [ IMAGE <image> ] ;
+#command PAGE <caption> [ IMAGE <image> ] [ NAME <name> ] [ OBJ <obj> ] [ SUBCLASS <subclass> ] ;
 	=>;
-	_BeginTabPage ( <caption> , <image> )
+        [ <obj> := ] ;
+        _BeginTabPage( <caption>, <image>,, <name>, [ <subclass>() ] )
 
-#command DEFINE PAGE <caption>  [ IMAGE <image> ] ;
+#command DEFINE PAGE <caption> [ IMAGE <image> ] [ NAME <name> ] [ OBJ <obj> ] [ SUBCLASS <subclass> ] ;
 	=>;
-	_BeginTabPage ( <caption> , <image> )
+        [ <obj> := ] ;
+        _BeginTabPage( <caption>, <image>,, <name>, [ <subclass>() ] )
 
-#command DEFINE TAB PAGE <caption>  [ IMAGE <image> ] ;
+#command DEFINE TAB PAGE <caption> [ IMAGE <image> ] [ NAME <name> ] [ OBJ <obj> ] [ SUBCLASS <subclass> ] ;
 	=>;
-	_BeginTabPage ( <caption> , <image> )
+        [ <obj> := ] ;
+        _BeginTabPage( <caption>, <image>,, <name>, [ <subclass>() ] )
 
 #command END PAGE ;
 	=>;

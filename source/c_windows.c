@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.42 2006-05-01 04:09:47 guerra000 Exp $
+ * $Id: c_windows.c,v 1.43 2006-06-02 02:05:11 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -799,46 +799,34 @@ HB_FUNC (GETDESKTOPHEIGHT)
 
 HB_FUNC (GETWINDOWROW)
 {
-	RECT rect;
-	int y ;
-	GetWindowRect((HWND) hb_parnl (1), &rect) ;
-	y = rect.top ;
-
-	hb_retni(y);
-
+   RECT rect;
+   hb_xmemset( &rect, 0, sizeof( rect ) );
+   GetWindowRect( ( HWND ) hb_parnl( 1 ), &rect );
+   hb_retni( rect.top );
 }
 
 HB_FUNC (GETWINDOWCOL)
 {
-	RECT rect;
-	int x ;
-	GetWindowRect((HWND) hb_parnl (1), &rect) ;
-	x = rect.left ;
-
-	hb_retni(x);
-
+   RECT rect;
+   hb_xmemset( &rect, 0, sizeof( rect ) );
+   GetWindowRect( ( HWND ) hb_parnl( 1 ), &rect );
+   hb_retni( rect.left );
 }
 
 HB_FUNC (GETWINDOWWIDTH)
 {
-	RECT rect;
-	int w ;
-	GetWindowRect((HWND) hb_parnl (1), &rect) ;
-	w = rect.right - rect.left ;
-
-	hb_retni(w);
-
+   RECT rect;
+   hb_xmemset( &rect, 0, sizeof( rect ) );
+   GetWindowRect( ( HWND ) hb_parnl( 1 ), &rect );
+   hb_retni( rect.right - rect.left );
 }
 
 HB_FUNC (GETWINDOWHEIGHT)
 {
-	RECT rect;
-	int h ;
-	GetWindowRect((HWND) hb_parnl (1), &rect) ;
-	h = rect.bottom - rect.top ;
-
-	hb_retni(h);
-
+   RECT rect;
+   hb_xmemset( &rect, 0, sizeof( rect ) );
+   GetWindowRect( ( HWND ) hb_parnl( 1 ), &rect );
+   hb_retni( rect.bottom - rect.top );
 }
 
 HB_FUNC (GETTITLEHEIGHT)
