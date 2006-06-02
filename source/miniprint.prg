@@ -1,5 +1,5 @@
 /*
- * $Id: miniprint.prg,v 1.14 2006-04-09 14:58:19 declan2005 Exp $
+ * $Id: miniprint.prg,v 1.15 2006-06-02 12:44:40 declan2005 Exp $
  */
 /*----------------------------------------------------------------------------
  MINIGUI - Harbour Win32 GUI library source code
@@ -790,8 +790,12 @@ Procedure _HMG_PRINTER_PreviewClose()
 
  
         _HMG_PRINTER_PPNAV.Release
+                                                
         _HMG_PRINTER_WAIT.Release
-        _HMG_PRINTER_SHOWPREVIEW.Release
+        if iswindowdefined("_HMG_PRINTER_SHOWPREVIEW")
+          _HMG_PRINTER_SHOWPREVIEW.Release
+        endif
+
         if iswindowdefined("_HMG_PRINTER_SHOWTHUMBNAILS")
           _HMG_PRINTER_SHOWTHUMBNAILS.Release
         endif
