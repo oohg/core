@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.1 2006-05-30 02:25:40 guerra000 Exp $
+ * $Id: h_xbrowse.prg,v 1.2 2006-06-03 20:30:45 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -147,7 +147,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                dynamicforecolor, aPicture, lRtl, inplace, editcontrols, ;
                readonly, valid, validmessages, editcell, aWhenFields ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
-Local nWidth2, nCol2, hsum, lLocked
+Local nWidth2, nCol2, lLocked
 
    ASSIGN ::WorkArea VALUE WorkArea TYPE "CMO"
    ASSIGN ::aFields  VALUE aFields  TYPE "A"
@@ -186,7 +186,6 @@ Local nWidth2, nCol2, hsum, lLocked
    ASSIGN ::aReplaceField VALUE replacefields TYPE "A"
 
    If ! novscroll
-      hsum := _OOHG_GridArrayWidths( ::hWnd, ::aWidths )
 
       ::VScroll := TScrollBar()
       ::VScroll:nWidth := GETVSCROLLBARWIDTH()
@@ -202,7 +201,7 @@ Local nWidth2, nCol2, hsum, lLocked
 
       ::ScrollButton := TScrollButton():Define( , Self, nCol2, ::nHeight - GETHSCROLLBARHEIGHT(), GETVSCROLLBARWIDTH() , GETHSCROLLBARHEIGHT() )
 
-      if hsum > w - GETVSCROLLBARWIDTH() - 4
+      If IsWindowStyle( ::hWnd, WS_HSCROLL )
          ::VScroll:nRow := 0
          ::VScroll:nHeight := ::nHeight - GETHSCROLLBARHEIGHT()
       Else
@@ -528,7 +527,11 @@ Local uRet, nWidth
          ::ScrollButton:Col := ::Width - ::VScroll:Width
       EndIf
 
-      ::VScroll:Height   := ::Height - ::ScrollButton:Height
+      If IsWindowStyle( ::hWnd, WS_HSCROLL )
+         ::VScroll:Height := ::Height - ::ScrollButton:Height
+      Else
+         ::VScroll:Height := ::Height
+      EndIf
       ::ScrollButton:Row := ::Height - ::ScrollButton:Height
       AEVAL( ::aControls, { |o| o:SizePos() } )
    else

@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.43 2006-06-02 02:05:11 guerra000 Exp $
+ * $Id: c_windows.c,v 1.44 2006-06-03 20:30:45 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1527,4 +1527,16 @@ DWORD _OOHG_RTL_Status( BOOL bRtl )
 HB_FUNC( GETSYSTEMMETRICS )
 {
     hb_retni( GetSystemMetrics( hb_parni( 1 ) ) );
+}
+
+HB_FUNC( GETWINDOWSTYLE )
+{
+   hb_retnl( GetWindowLong( ( HWND ) hb_parnl( 1 ), GWL_STYLE ) );
+}
+
+HB_FUNC( ISWINDOWSTYLE )
+{
+   LONG ulRequest = hb_parnl( 2 );
+
+   hb_retl( ( GetWindowLong( ( HWND ) hb_parnl( 1 ), GWL_STYLE ) & ulRequest ) == ulRequest );
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.47 2006-05-30 02:25:40 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.48 2006-06-03 20:30:45 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -166,7 +166,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                dynamicforecolor, aPicture, lRtl, onappend, editcell, ;
                editcontrols, replacefields ) CLASS TBrowse
 *-----------------------------------------------------------------------------*
-Local hsum, ScrollBarButtonHandle := 0, nWidth2, nCol2
+Local nWidth2, nCol2
 
    IF ! ValType( WorkArea ) $ "CM" .OR. Empty( WorkArea )
       WorkArea := ALIAS()
@@ -220,8 +220,6 @@ Local hsum, ScrollBarButtonHandle := 0, nWidth2, nCol2
 
    if ! novscroll
 
-      hsum := _OOHG_GridArrayWidths( ::hWnd, ::aWidths )
-
       ::VScroll := TScrollBar()
       ::VScroll:nWidth := GETVSCROLLBARWIDTH()
       ::VScroll:SetRange( 1, 100 )
@@ -236,7 +234,7 @@ Local hsum, ScrollBarButtonHandle := 0, nWidth2, nCol2
 
       ::ScrollButton := TScrollButton():Define( , Self, nCol2, ::nHeight - GETHSCROLLBARHEIGHT(), GETVSCROLLBARWIDTH() , GETHSCROLLBARHEIGHT() )
 
-      if hsum > w - GETVSCROLLBARWIDTH() - 4
+      If IsWindowStyle( ::hWnd, WS_HSCROLL )
          ::VScroll:nRow := 0
          ::VScroll:nHeight := ::nHeight - GETHSCROLLBARHEIGHT()
       Else
@@ -1370,19 +1368,10 @@ Return nil
 METHOD SizePos( Row, Col, Width, Height ) CLASS TBrowse
 *-----------------------------------------------------------------------------*
 Local uRet, nWidth
-
-   IF VALTYPE( Row ) == "N"
-      ::nRow := Row
-   ENDIF
-   IF VALTYPE( Col ) == "N"
-      ::nCol := Col
-   ENDIF
-   IF VALTYPE( Width ) == "N"
-      ::nWidth := Width
-   ENDIF
-   IF VALTYPE( Height ) == "N"
-      ::nHeight := Height
-   ENDIF
+   ASSIGN ::nRow    VALUE Row    TYPE "N"
+   ASSIGN ::nCol    VALUE Col    TYPE "N"
+   ASSIGN ::nWidth  VALUE Width  TYPE "N"
+   ASSIGN ::nHeight VALUE Height TYPE "N"
 
    If ::VScroll != nil
       nWidth := ::VScroll:Width
@@ -1397,7 +1386,11 @@ Local uRet, nWidth
          ::ScrollButton:Col := ::Width - ::VScroll:Width
       EndIf
 
-      ::VScroll:Height   := ::Height - ::ScrollButton:Height
+      If IsWindowStyle( ::hWnd, WS_HSCROLL )
+         ::VScroll:Height := ::Height - ::ScrollButton:Height
+      Else
+         ::VScroll:Height := ::Height
+      EndIf
       ::ScrollButton:Row := ::Height - ::ScrollButton:Height
       AEVAL( ::aControls, { |o| o:SizePos() } )
    else

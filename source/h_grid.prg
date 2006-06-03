@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.41 2006-05-30 02:25:40 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.42 2006-06-03 20:30:45 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -323,6 +323,7 @@ METHOD EditItem2( nItem, aItems, aEditControls, aMemVars, cTitle ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local l, actpos := {0,0,0,0}, GCol, IRow, i, oWnd, nWidth, nMaxHigh, oMain
 Local oCtrl, aEditControls2, nRow, lSplitWindow, nControlsMaxHeight
+Local aReturn
 
    If ::lNested
       Return {}
@@ -383,11 +384,13 @@ Local oCtrl, aEditControls2, nRow, lSplitWindow, nControlsMaxHeight
    nMaxHigh := Min( nControlsMaxHeight, nRow ) + 70 + GetTitleHeight()
    IRow := MAX( MIN( IRow, ( GetSystemMetrics( SM_CYFULLSCREEN ) - nMaxHigh ) ), 0 )
 
-   If lSplitWindow
-      DEFINE WINDOW 0 OBJ oMain AT IRow,GCol ;
-         WIDTH nWidth HEIGHT nMaxHigh ;
-         TITLE cTitle MODAL NOSIZE
+   aReturn := {}
 
+   DEFINE WINDOW 0 OBJ oMain AT IRow,GCol ;
+      WIDTH nWidth HEIGHT nMaxHigh ;
+      TITLE cTitle MODAL NOSIZE
+
+   If lSplitWindow
       DEFINE SPLITBOX
          DEFINE WINDOW 0 OBJ oWnd;
             WIDTH nWidth ;
@@ -395,11 +398,7 @@ Local oCtrl, aEditControls2, nRow, lSplitWindow, nControlsMaxHeight
             VIRTUAL HEIGHT nRow + 20 ;
 				SPLITCHILD NOCAPTION FONT 'Arial' SIZE 10 BREAK FOCUSED
    Else
-      DEFINE WINDOW 0 OBJ oWnd AT IRow,GCol ;
-         WIDTH nWidth HEIGHT nMaxHigh ;
-         TITLE cTitle MODAL NOSIZE
-
-      oMain := oWnd
+      oWnd := oMain
    EndIf
 
    nRow := 10
@@ -442,10 +441,10 @@ Local oCtrl, aEditControls2, nRow, lSplitWindow, nControlsMaxHeight
    Endif
 
    @ nRow,  25 BUTTON 0 PARENT ( oWnd ) CAPTION _OOHG_Messages( 1, 6 ) ;
-         ACTION ( TGrid_EditItem_Check( aEditControls2, aItems, oMain ) )
+         ACTION ( TGrid_EditItem_Check( aEditControls2, aItems, oMain, aReturn ) )
 
    @ nRow, 145 BUTTON 0 PARENT ( oWnd ) CAPTION _OOHG_Messages( 1, 7 ) ;
-         ACTION ( aItems := {}, oMain:Release() )
+         ACTION oMain:Release()
 
 	END WINDOW
 
@@ -468,7 +467,7 @@ Local oCtrl, aEditControls2, nRow, lSplitWindow, nControlsMaxHeight
 
    ::lNested := .F.
 
-Return aItems
+Return aReturn
 
 Static Function TGrid_EditItem_When( aEditControls )
 Local nItem, lEnabled, aValues
@@ -492,7 +491,7 @@ Local nItem, lEnabled, aValues
    Next
 Return aValues
 
-Static Procedure TGrid_EditItem_Check( aEditControls, aItems, oWnd )
+Static Procedure TGrid_EditItem_Check( aEditControls, aItems, oWnd, aReturn )
 Local lRet, nItem, aValues, lValid
    // Save values
    aValues := TGrid_EditItem_When( aEditControls )
@@ -514,7 +513,8 @@ Local lRet, nItem, aValues, lValid
 
    // If all controls are valid, save values into "aItems"
    If lRet
-      AEVAL( aValues, { |u,i| aItems[ i ] := u } )
+      ASIZE( aReturn, LEN( aItems ) )
+      AEVAL( aValues, { |u,i| aItems[ i ] := aReturn [ i ] := u } )
       oWnd:Release()
    Endif
 Return
