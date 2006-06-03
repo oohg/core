@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.86 2006-06-02 02:05:11 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.87 2006-06-03 18:17:32 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -2392,7 +2392,7 @@ Local nStyle := 0, nStyleEx := 0
    ::SearchParent( oParent )
    ::Focused := ( ValType( Focused ) == "L" .AND. Focused )
    nStyle += WS_CHILD
-   nStyleEx += WS_EX_CONTROLPARENT
+   // nStyleEx += WS_EX_CONTROLPARENT             // This is not working with RADIO controls :()
 
    ::Define2( FormName, Caption, x, y, w, h, ::Parent:hWnd, .F., .T., .T., .T., .T., ;
               .T., virtualheight, virtualwidth, hscrollbox, vscrollbox, fontname, fontsize, aRGB, cursor, ;
