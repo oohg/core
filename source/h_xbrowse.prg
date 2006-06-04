@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.2 2006-06-03 20:30:45 guerra000 Exp $
+ * $Id: h_xbrowse.prg,v 1.3 2006-06-04 22:57:44 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -916,7 +916,7 @@ Return uRet
 *-----------------------------------------------------------------------------*
 METHOD EditItem_B( lAppend ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
-Local cWorkArea, cTitle, z
+Local cWorkArea, cTitle, z, nOld
 Local uOldValue, oEditControl, cMemVar, bReplaceField
 Local aItems, aEditControls, aMemVars, aReplaceFields
 
@@ -950,6 +950,8 @@ Local aItems, aEditControls, aMemVars, aReplaceFields
 
    If lAppend
       cTitle := _OOHG_Messages( 2, 1 )
+* TODO: RECNO() / GOTO codeblck...
+      nOld := ( cWorkArea )->( RecNo( 0 ) )
 * TODO: APPEND (blank) codeblock...
       ( cWorkArea )->( DbGoTo( 0 ) )
    Else
@@ -1010,6 +1012,12 @@ Local aItems, aEditControls, aMemVars, aReplaceFields
       ::Refresh()
 
       _OOHG_Eval( ::OnEditCell, 0, 0 )
+
+   Else
+      If lAppend
+* TODO: GOTO codeblck...
+         ( cWorkArea )->( DbGoTo( nOld ) )
+      EndIf
    EndIf
 
    If ::Lock
