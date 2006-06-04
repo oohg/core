@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.h,v 1.25 2006-06-02 02:05:11 guerra000 Exp $
+ * $Id: oohg.h,v 1.26 2006-06-04 22:58:34 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -48,6 +48,9 @@
  * If you do not wish that, delete this exception notice.
  *
  */
+
+#define HWNDparam( pos )     ( ( HWND ) hb_parnl( pos ) )
+#define HWNDret( hwnd )      ( hb_retnl( ( long ) hwnd ) )
 
 struct IMAGE_PARAMETER {
    char *cString;

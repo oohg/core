@@ -1,5 +1,5 @@
 /*
- * $Id: h_radio.prg,v 1.13 2006-05-30 02:25:40 guerra000 Exp $
+ * $Id: h_radio.prg,v 1.14 2006-06-04 22:58:34 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -213,15 +213,30 @@ Return uRet
 *-----------------------------------------------------------------------------*
 METHOD Value( nValue ) CLASS TRadioGroup
 *-----------------------------------------------------------------------------*
+LOCAL nOldValue, aNewValue, I, oItem, nLen
    IF VALTYPE( nValue ) == "N"
-      ASCAN( ::aControls, { |o| SendMessage( o:hWnd, BM_GETCHECK, BST_UNCHECKED, 0 ) } )
-      SendMessage( ::aControls[ nValue ]:hWnd, BM_SETCHECK, BST_CHECKED, 0 )
-      if ::TabStop .and. IsTabStop( ::aControls[ nValue ]:hWnd )
-         SetTabStop( ::aControls[ nValue ]:hWnd, .f. )
-		endif
+      nValue := INT( nValue )
+      nLen := LEN( ::aControls )
+      aNewValue := AFILL( ARRAY( nLen ), BST_UNCHECKED )
+      IF nValue >= 1 .AND. nValue <= nLen
+         nOldValue := nValue
+         aNewValue[ nValue ] := BST_CHECKED
+         If ::TabStop .and. IsTabStop( ::aControls[ nValue ]:hWnd )
+            SetTabStop( ::aControls[ nValue ]:hWnd, .f. )
+         EndIf
+      ELSE
+         nOldValue := 0
+      ENDIF
+      FOR I := 1 TO nLen
+         oItem := ::aControls[ I ]
+         If SendMessage( oItem:hWnd, BM_GETCHECK, 0, 0 ) != aNewValue[ I ]
+            SendMessage( oItem:hWnd, BM_SETCHECK, aNewValue[ I ], 0 )
+         EndIf
+      NEXT
+   Else
+      nOldValue := ASCAN( ::aControls, { |o| SendMessage( o:hWnd, BM_GETCHECK, 0, 0 ) == BST_CHECKED } )
    ENDIF
-   nValue := ASCAN( ::aControls, { |o| SendMessage( o:hWnd, BM_GETCHECK, 0, 0 ) == BST_CHECKED } )
-RETURN nValue
+RETURN nOldValue
 
 *-----------------------------------------------------------------------------*
 METHOD Enabled( lEnabled ) CLASS TRadioGroup
@@ -329,7 +344,7 @@ HB_FUNC( INITRADIOGROUP )
 	HWND hbutton;
 	int Style = BS_NOTIFY | WS_CHILD | BS_AUTORADIOBUTTON | WS_GROUP ;
 
-	hwnd = (HWND) hb_parnl (1);
+   hwnd = HWNDparam( 1 );
 
 	if ( !hb_parl(9) )
 	{
@@ -348,7 +363,7 @@ HB_FUNC( INITRADIOGROUP )
 
    lpfnOldWndProcA = ( WNDPROC ) SetWindowLong( ( HWND ) hbutton, GWL_WNDPROC, ( LONG ) SubClassFuncA );
 
-	hb_retnl ( (LONG) hbutton );
+   HWNDret( hbutton );
 }
 
 HB_FUNC( INITRADIOBUTTON )
@@ -357,7 +372,7 @@ HB_FUNC( INITRADIOBUTTON )
 	HWND hbutton;
 	int Style = BS_NOTIFY | WS_CHILD | BS_AUTORADIOBUTTON ;
 
-	hwnd = (HWND) hb_parnl (1);
+   hwnd = HWNDparam( 1 );
 
 	if ( !hb_parl(9) )
 	{
@@ -371,7 +386,7 @@ HB_FUNC( INITRADIOBUTTON )
 
    lpfnOldWndProcB = ( WNDPROC ) SetWindowLong( ( HWND ) hbutton, GWL_WNDPROC, ( LONG ) SubClassFuncB );
 
-	hb_retnl ( (LONG) hbutton );
+   HWNDret( hbutton );
 }
 
 HB_FUNC( SETRADIOSTYLE )
@@ -389,7 +404,7 @@ HB_FUNC( SETRADIOSTYLE )
 		Style = Style | WS_VISIBLE ;
 	}
 
-	SetWindowLong ( (HWND) hb_parnl(1) , GWL_STYLE , Style ) ;
+   SetWindowLong( HWNDparam( 1 ), GWL_STYLE, Style );
 
 }
 
@@ -397,9 +412,9 @@ HB_FUNC( ISTABSTOP )
 {
    int Style;
    int Result;
-   Style = GetWindowLong( (HWND) hb_parnl(1), GWL_STYLE );
+   Style = GetWindowLong( HWNDparam( 1 ), GWL_STYLE );
    Result = FALSE;
-   if (Style & WS_TABSTOP)
+   if( Style & WS_TABSTOP )
    {
       Result = TRUE;
    }
@@ -408,14 +423,16 @@ HB_FUNC( ISTABSTOP )
 
 HB_FUNC( SETTABSTOP )
 {
-   int Style = GetWindowLong( (HWND) hb_parnl(1), GWL_STYLE );
-   if (hb_parl(2))
+   HWND hWnd = HWNDparam( 1 );
+   int iStyle = GetWindowLong( hWnd, GWL_STYLE );
+
+   if( hb_parl( 2 ) )
    {
-    SetWindowLong( (HWND) hb_parnl(1), GWL_STYLE, Style | WS_TABSTOP );
+      SetWindowLong( hWnd, GWL_STYLE, iStyle | WS_TABSTOP );
    }
    else
    {
-    SetWindowLong( (HWND) hb_parnl(1), GWL_STYLE, Style - WS_TABSTOP );
+      SetWindowLong( hWnd, GWL_STYLE, iStyle & ~WS_TABSTOP );
    }
 }
 
