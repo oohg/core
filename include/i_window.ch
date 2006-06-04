@@ -1,5 +1,5 @@
 /*
- * $Id: i_window.ch,v 1.15 2006-03-29 05:54:14 guerra000 Exp $
+ * $Id: i_window.ch,v 1.16 2006-06-04 22:59:30 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -203,6 +203,7 @@
                         [ GRIPPERTEXT <grippertext> ] ;
                         [ <break: BREAK> ] ;
                         [ <focused: FOCUSED> ] ;
+                        [ SUBCLASS <subclass> ] ;
 	=>;
         [ <obj> := ] ;
         DefineWindow( <(w)>, <title>, <col>, <row>, <wi>, <h>, <.nominimize.>, <.nomaximize.>, <.nosize.>, ;
@@ -216,7 +217,7 @@
                       <{MinimizeProcedure}>, <cursor>, <.noautorelease.>, <parent>, ;
                       <{interactivecloseprocedure}>, <.focused.>, <.break.>, <grippertext>, <.rtl.>, ;
                       <.main.>, <.splitchild.>, <.child.>, <.modal.>, <.modalsize.>, <.mdi.>, <.internal.>, ;
-                      <.mdichild.>, <.mdiclient.> ) ;;
+                      <.mdichild.>, <.mdiclient.>, [ <subclass>() ] ) ;;
         DECLARE WINDOW <w>
 
 	#xcommand LOAD WINDOW <w> ;
@@ -323,6 +324,7 @@
                         [ GRIPPERTEXT <grippertext> ] ;
                         [ <break: BREAK> ] ;
                         [ <focused: FOCUSED> ] ;
+                        [ SUBCLASS <subclass> ] ;
 	=>;
         DECLARE WINDOW <w>  ;;
         [ <obj> := ] ;
@@ -337,7 +339,7 @@
                       <{MinimizeProcedure}>, <cursor>, <.noautorelease.>, <parent>, ;
                       <{interactivecloseprocedure}>, <.focused.>, <.break.>, <grippertext>, <.rtl.>, ;
                       <.main.>, <.splitchild.>, <.child.>, <.modal.>, <.modalsize.>, <.mdi.>, <.internal.>, ;
-                      <.mdichild.>, <.mdiclient.> )
+                      <.mdichild.>, <.mdiclient.>, [ <subclass>() ] )
 
 	#xcommand LOAD WINDOW <w> ;
 	=> ;
@@ -470,6 +472,7 @@ SetProperty ( <(Arg1)> , <(Arg2)> , <Arg3> )
                         [ GRIPPERTEXT <grippertext> ] ;
                         [ <break: BREAK> ] ;
                         [ <focused: FOCUSED> ] ;
+                        [ SUBCLASS <subclass> ] ;
 	=>;
         [ <obj> := ] ;
         DefineWindow( , <title>, <col>, <row>, <wi>, <h>, <.nominimize.>, <.nomaximize.>, <.nosize.>, ;
@@ -483,4 +486,4 @@ SetProperty ( <(Arg1)> , <(Arg2)> , <Arg3> )
                       <{MinimizeProcedure}>, <cursor>, <.noautorelease.>, <parent>, ;
                       <{interactivecloseprocedure}>, <.focused.>, <.break.>, <grippertext>, <.rtl.>, ;
                       <.main.>, <.splitchild.>, <.child.>, <.modal.>, <.modalsize.>, <.mdi.>, <.internal.>, ;
-                      <.mdichild.>, <.mdiclient.> )
+                      <.mdichild.>, <.mdiclient.>, [ <subclass>() ] )

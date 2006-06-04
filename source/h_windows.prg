@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.87 2006-06-03 18:17:32 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.88 2006-06-04 22:59:30 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -2615,7 +2615,7 @@ FUNCTION DefineWindow( FormName, Caption, x, y, w, h, nominimize, nomaximize, no
                        minimizeprocedure, cursor, NoAutoRelease, oParent, ;
                        InteractiveCloseProcedure, Focused, Break, GripperText, lRtl, ;
                        main, splitchild, child, modal, modalsize, mdi, internal, ;
-                       mdichild, mdiclient )
+                       mdichild, mdiclient, subclass )
 *------------------------------------------------------------------------------*
 Local nStyle := 0, nStyleEx := 0
 Local Self
@@ -2669,7 +2669,8 @@ Local aError := {}
    endif
 
    If main
-      Self := TFormMain():Define( FormName, Caption, x, y, w, h, nominimize, nomaximize, nosize, ;
+      Self := _OOHG_SelectSubClass( TFormMain(), subclass )
+      ::Define( FormName, Caption, x, y, w, h, nominimize, nomaximize, nosize, ;
                nosysmenu, nocaption, initprocedure, ReleaseProcedure, ;
                MouseDragProcedure, SizeProcedure, ClickProcedure, ;
                MouseMoveProcedure, aRGB, PaintProcedure, noshow, topmost, ;
@@ -2679,12 +2680,14 @@ Local aError := {}
                hscrollbox, vscrollbox, helpbutton, maximizeprocedure, ;
                minimizeprocedure, cursor, InteractiveCloseProcedure, lRtl, mdi )
    ElseIf splitchild
-      Self := TFormSplit():Define( FormName, w, h, break, grippertext, nocaption, caption, aRGB, ;
+      Self := _OOHG_SelectSubClass( TFormSplit(), subclass )
+      ::Define( FormName, w, h, break, grippertext, nocaption, caption, aRGB, ;
                fontname, fontsize, gotfocus, lostfocus, virtualheight, ;
                VirtualWidth, Focused, scrollleft, scrollright, scrollup, ;
                scrolldown, hscrollbox, vscrollbox, cursor, lRtl, mdi )
    ElseIf modal
-      Self := TFormModal():Define( FormName, Caption, x, y, w, h, oParent, nosize, nosysmenu, ;
+      Self := _OOHG_SelectSubClass( TFormModal(), subclass )
+      ::Define( FormName, Caption, x, y, w, h, oParent, nosize, nosysmenu, ;
                nocaption, InitProcedure, ReleaseProcedure, ;
                MouseDragProcedure, SizeProcedure, ClickProcedure, ;
                MouseMoveProcedure, aRGB, PaintProcedure, icon, FontName, ;
@@ -2693,7 +2696,8 @@ Local aError := {}
                vscrollbox, helpbutton, cursor, noshow, NoAutoRelease, ;
                InteractiveCloseProcedure, lRtl, .F., mdi, topmost )
    ElseIf modalsize
-      Self := TFormModal():Define( FormName, Caption, x, y, w, h, oParent, nosize, nosysmenu, ;
+      Self := _OOHG_SelectSubClass( TFormModal(), subclass )
+      ::Define( FormName, Caption, x, y, w, h, oParent, nosize, nosysmenu, ;
                nocaption, InitProcedure, ReleaseProcedure, ;
                MouseDragProcedure, SizeProcedure, ClickProcedure, ;
                MouseMoveProcedure, aRGB, PaintProcedure, icon, FontName, ;
@@ -2702,13 +2706,15 @@ Local aError := {}
                vscrollbox, helpbutton, cursor, noshow, NoAutoRelease, ;
                InteractiveCloseProcedure, lRtl, .F., mdi, topmost )
    ElseIf mdiclient
-      Self := TFormMDIClient():Define( FormName, Caption, x, y, w, h, MouseDragProcedure, ;
+      Self := _OOHG_SelectSubClass( TFormMDIClient(), subclass )
+      ::Define( FormName, Caption, x, y, w, h, MouseDragProcedure, ;
                ClickProcedure, MouseMoveProcedure, aRGB, PaintProcedure, ;
                icon, fontname, fontsize, GotFocus, LostFocus, Virtualheight, ;
                VirtualWidth, scrollleft, scrollright, scrollup, scrolldown, ;
                hscrollbox, vscrollbox, cursor, oParent, Focused, lRtl )
    ElseIf mdichild
-      Self := TFormMDIChild():Define( FormName, Caption, x, y, w, h, nominimize, nomaximize, nosize, ;
+      Self := _OOHG_SelectSubClass( TFormMDIChild(), subclass )
+      ::Define( FormName, Caption, x, y, w, h, nominimize, nomaximize, nosize, ;
                nosysmenu, nocaption, initprocedure, ReleaseProcedure, ;
                MouseDragProcedure, SizeProcedure, ClickProcedure, ;
                MouseMoveProcedure, aRGB, PaintProcedure, noshow, ;
@@ -2718,13 +2724,15 @@ Local aError := {}
                minimizeprocedure, cursor, NoAutoRelease, oParent, ;
                InteractiveCloseProcedure, Focused, lRtl )
    ElseIf internal
-      Self := TFormInternal():Define( FormName, Caption, x, y, w, h, oParent, aRGB, fontname, fontsize, ;
+      Self := _OOHG_SelectSubClass( TFormInternal(), subclass )
+      ::Define( FormName, Caption, x, y, w, h, oParent, aRGB, fontname, fontsize, ;
                ClickProcedure, MouseDragProcedure, MouseMoveProcedure, ;
                PaintProcedure, noshow, icon, GotFocus, LostFocus, Virtualheight, ;
                VirtualWidth, scrollleft, scrollright, scrollup, scrolldown, ;
                hscrollbox, vscrollbox, cursor, Focused, lRtl, mdi )
    Else // Child and "S"
-      Self := TForm():Define( FormName, Caption, x, y, w, h, nominimize, nomaximize, nosize, ;
+      Self := _OOHG_SelectSubClass( TForm(), subclass )
+      ::Define( FormName, Caption, x, y, w, h, nominimize, nomaximize, nosize, ;
                nosysmenu, nocaption, initprocedure, ReleaseProcedure, ;
                MouseDragProcedure, SizeProcedure, ClickProcedure, ;
                MouseMoveProcedure, aRGB, PaintProcedure, noshow, topmost, ;
