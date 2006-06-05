@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.3 2006-06-04 22:57:44 guerra000 Exp $
+ * $Id: h_xbrowse.prg,v 1.4 2006-06-05 00:53:41 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -951,7 +951,7 @@ Local aItems, aEditControls, aMemVars, aReplaceFields
    If lAppend
       cTitle := _OOHG_Messages( 2, 1 )
 * TODO: RECNO() / GOTO codeblck...
-      nOld := ( cWorkArea )->( RecNo( 0 ) )
+      nOld := ( cWorkArea )->( RecNo() )
 * TODO: APPEND (blank) codeblock...
       ( cWorkArea )->( DbGoTo( 0 ) )
    Else

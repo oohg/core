@@ -1,5 +1,5 @@
 /*
- * $Id: i_tab.ch,v 1.4 2006-06-02 02:05:11 guerra000 Exp $
+ * $Id: i_tab.ch,v 1.5 2006-06-05 00:53:41 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -123,17 +123,17 @@
 #command PAGE <caption> [ IMAGE <image> ] [ NAME <name> ] [ OBJ <obj> ] [ SUBCLASS <subclass> ] ;
 	=>;
         [ <obj> := ] ;
-        _BeginTabPage( <caption>, <image>,, <name>, [ <subclass>() ] )
+        _BeginTabPage( <caption>, <image>,, <(name)>, [ <subclass>() ] )
 
 #command DEFINE PAGE <caption> [ IMAGE <image> ] [ NAME <name> ] [ OBJ <obj> ] [ SUBCLASS <subclass> ] ;
 	=>;
         [ <obj> := ] ;
-        _BeginTabPage( <caption>, <image>,, <name>, [ <subclass>() ] )
+        _BeginTabPage( <caption>, <image>,, <(name)>, [ <subclass>() ] )
 
 #command DEFINE TAB PAGE <caption> [ IMAGE <image> ] [ NAME <name> ] [ OBJ <obj> ] [ SUBCLASS <subclass> ] ;
 	=>;
         [ <obj> := ] ;
-        _BeginTabPage( <caption>, <image>,, <name>, [ <subclass>() ] )
+        _BeginTabPage( <caption>, <image>,, <(name)>, [ <subclass>() ] )
 
 #command END PAGE ;
 	=>;
