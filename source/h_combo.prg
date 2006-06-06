@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.15 2006-04-21 05:34:26 guerra000 Exp $
+ * $Id: h_combo.prg,v 1.16 2006-06-06 02:59:34 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -102,6 +102,7 @@ CLASS TCombo FROM TLabel
    DATA Field     INIT ""
    DATA nValue    INIT 0
    DATA ValueSource   INIT ""
+   DATA nTextHeight   INIT 0
 
    METHOD Define
    METHOD Refresh
@@ -126,7 +127,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, rows, value, fontname, ;
                fontsize, tooltip, changeprocedure, h, gotfocus, lostfocus, ;
                uEnter, HelpId, invisible, notabstop, sort, bold, italic, ;
                underline, strikeout, itemsource, valuesource, displaychange, ;
-               ondisplaychangeprocedure, break, GripperText, aImage, lRtl ) CLASS TCombo
+               ondisplaychangeprocedure, break, GripperText, aImage, lRtl, ;
+               TextHeight ) CLASS TCombo
 *-----------------------------------------------------------------------------*
 Local ControlHandle , rcount := 0 , BackRec , cset := 0 , WorkArea , cField
 
@@ -140,6 +142,7 @@ Local ControlHandle , rcount := 0 , BackRec , cset := 0 , WorkArea , cField
    DEFAULT notabstop    TO FALSE
    DEFAULT sort		TO FALSE
    DEFAULT GripperText	TO ""
+   ASSIGN ::nTextHeight VALUE TextHeight TYPE "N"
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, , , .t. , lRtl )
    ::SetFont( , , bold, italic, underline, strikeout )
@@ -495,19 +498,29 @@ HB_FUNC_STATIC( TCOMBO_EVENTS_MEASUREITEM )   // METHOD Events_MeasureItem( lPar
    HDC hDC = GetDC( hWnd );
    HFONT hFont, hOldFont;
    SIZE sz;
+   int iSize;
 
-   // Convert ::FONTHANDLE to ( HFONT ) oSelf->hFontHandle
-   _OOHG_Send( pSelf, s_FontHandle );
+   // Checks for a pre-defined text size
+   _OOHG_Send( pSelf, s_nTextHeight );
    hb_vmSend( 0 );
-   hFont = ( HFONT ) hb_parnl( -1 );
+   iSize = hb_parni( -1 );
+   if( ! iSize )
+   {
+      // TODO: Convert ::FONTHANDLE to ( HFONT ) oSelf->hFontHandle
+      _OOHG_Send( pSelf, s_FontHandle );
+      hb_vmSend( 0 );
+      hFont = ( HFONT ) hb_parnl( -1 );
 
-   hOldFont = ( HFONT ) SelectObject( hDC, hFont );
-   GetTextExtentPoint32( hDC, "_", 1, &sz );
+      hOldFont = ( HFONT ) SelectObject( hDC, hFont );
+      GetTextExtentPoint32( hDC, "_", 1, &sz );
 
-   SelectObject( hDC, hOldFont );
-   ReleaseDC( hWnd, hDC );
+      SelectObject( hDC, hOldFont );
+      ReleaseDC( hWnd, hDC );
 
-   lpmis->itemHeight = sz.cy + 2;
+      iSize = sz.cy;
+   }
+
+   lpmis->itemHeight = iSize + 2;
 
    hb_retnl( 1 );
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: i_textbox.ch,v 1.8 2006-02-11 06:19:32 guerra000 Exp $
+ * $Id: i_textbox.ch,v 1.9 2006-06-06 02:59:34 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -127,9 +127,10 @@
                         [ <autoskip: AUTOSKIP> ]        ;
                         [ <noborder: NOBORDER> ]        ;
                         [ FOCUSEDPOS <focusedpos> ]     ;
+                        [ SUBCLASS <subclass> ]         ;
          =>;
-[ <obj> := ] iif( <.numeric.>, TTextNum(), TText() ):Define( ;
-                        <(name)>, <(parent)>, <col>, <row>, <width>, <height>, <value>, ;
+        [ <obj> := ] _OOHG_SelectSubClass( iif( <.numeric.>, TTextNum(), TText() ), [ <subclass>() ] ): ;
+                        Define( <(name)>, <(parent)>, <col>, <row>, <width>, <height>, <value>, ;
                         <fontname>, <fontsize>, <tooltip>, <maxlenght>, ;
                         <.upper.>, <.lower.>, <.password.>, ;
                         <{lostfocus}>, <{gotfocus}>, <{change}>, <{enter}>, ;
@@ -173,8 +174,10 @@
                 [ <autoskip: AUTOSKIP> ]        ;
                 [ <noborder: NOBORDER> ]        ;
                 [ FOCUSEDPOS <focusedpos> ]     ;
+                [ SUBCLASS <subclass> ]         ;
 	=>;
-[ <obj> := ] TTextMasked():Define( <(name)>, <(parent)>, <col>, <row>, <inputmask> , ;
+        [ <obj> := ] _OOHG_SelectSubClass( TTextMasked(), [ <subclass>() ] ): ;
+                        Define( <(name)>, <(parent)>, <col>, <row>, <inputmask> , ;
                         <w> , <value> , <fontname> , <fontsize> , <tooltip> , ;
                         <{lostfocus}>  , <{gotfocus}> , <{change}> , <height> , ;
                         <{enter}> , <.RightAlign.>  , <helpid> , <format> , <.bold.>, ;
@@ -215,8 +218,10 @@
                 [ <autoskip: AUTOSKIP> ]        ;
                 [ <noborder: NOBORDER> ]        ;
                 [ FOCUSEDPOS <focusedpos> ]     ;
+                [ SUBCLASS <subclass> ]         ;
 	=>;
-[ <obj> := ] TTextCharMask():Define( <(name)>, <(parent)>, <col>, <row>, <inputmask> , ;
+        [ <obj> := ] _OOHG_SelectSubClass( TTextCharMask(), [ <subclass>() ] ): ;
+                        Define( <(name)>, <(parent)>, <col>, <row>, <inputmask> , ;
                         <w> , <value> , <fontname> , <fontsize> , <tooltip> , ;
                         <{lostfocus}>  , <{gotfocus}> , <{change}> , <height> , ;
                         <{enter}> , <.RightAlign.>  , <helpid> ,<.bold.>, <.italic.>, ;
@@ -257,8 +262,10 @@
                 [ <autoskip: AUTOSKIP> ]        ;
                 [ <noborder: NOBORDER> ]        ;
                 [ FOCUSEDPOS <focusedpos> ]     ;
+                [ SUBCLASS <subclass> ]         ;
 	=>;
-[ <obj> := ] TTextCharMask():Define( <(name)>, <(parent)>, <col>, <row>, "" , <w> , ;
+        [ <obj> := ] _OOHG_SelectSubClass( TTextCharMask(), [ <subclass>() ] ): ;
+                        Define( <(name)>, <(parent)>, <col>, <row>, "" , <w> , ;
                         <value> , <fontname> , <fontsize> , <tooltip> , <{lostfocus}> , ;
                         <{gotfocus}> , <{change}> , <height> , <{enter}> , <.RightAlign.> , ;
                         <helpid> , <.bold.>, <.italic.>, <.underline.>, <.strikeout.> , ;
@@ -298,8 +305,10 @@
                 [ <autoskip: AUTOSKIP> ]        ;
                 [ <noborder: NOBORDER> ]        ;
                 [ FOCUSEDPOS <focusedpos> ]     ;
+                [ SUBCLASS <subclass> ]         ;
 	=>;
-[ <obj> := ] TTextPicture():Define( <(name)>, <(parent)>, <col>, <row>, <w> , <height> , ;
+        [ <obj> := ] _OOHG_SelectSubClass( TTextPicture(), [ <subclass>() ] ): ;
+                        Define( <(name)>, <(parent)>, <col>, <row>, <w> , <height> , ;
                         <value> , <inputmask> , <fontname> , <fontsize> , <tooltip> , ;
                         <{lostfocus}> , <{gotfocus}> , <{change}> , <{enter}> , ;
                         <.RightAlign.> , <helpid> , <.readonly.> , <.bold.> , <.italic.> , ;

@@ -1,11 +1,30 @@
 /*
- * $Id: ChangeLog,v 1.166 2006-06-05 00:53:41 guerra000 Exp $
+ * $Id: ChangeLog,v 1.167 2006-06-06 02:59:34 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-06-05 21:58 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_window.ch
+  * source/h_windows.prg
+    ! Temporal patch for allow or deny WS_EX_CONTROLPARENT style
+      at internal windows' creation. :(
+    + CLIENTAREA clause added.
+  * source/h_controlmisc.prg
+    ! Some cleanup.
+  * include/i_textbox.ch
+    * SUBCLASS clause added.
+  * include/i_combobox.ch
+  * include/oohg.h
+  * source/c_controlmisc.c
+  * source/h_combo.prg
+    * SUBCLASS clause added.
+    * TEXTHEIGHT property added. Defines text's height for combo's
+      items. It's not the "final" combobox's height... it's the
+      item's height, adding borders.
 
 2006-06-04 19:54 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_xbrowse.prg

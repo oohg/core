@@ -1,5 +1,5 @@
 /*
- * $Id: i_combobox.ch,v 1.4 2005-10-22 06:04:31 guerra000 Exp $
+ * $Id: i_combobox.ch,v 1.5 2006-06-06 02:59:34 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -119,14 +119,18 @@
                 [ IMAGE <aImage> ] ;
 		[ <sort : SORT> ] ;
                 [ <rtl: RTL> ] ;
+                [ TEXTHEIGHT <textheight> ] ;
+                [ SUBCLASS <subclass> ]         ;
 	=>;
-        [ <obj> := ] TCombo():Define( <(name)>, <(parent)>, <col>, <row>, <w>, <aRows> , <value>, ;
-                  <f>, <n>, <tooltip>, <{changeprocedure}>, <h>, ;
-                  <{gotfocus}>, <{lostfocus}>, <{enter}>, <helpid>, ;
-                  <.invisible.>, <.notabstop.>, <.sort.> ,<.bold.>, ;
+        [ <obj> := ] _OOHG_SelectSubClass( TCombo(), [ <subclass>() ] ): ;
+                Define( <(name)>, <(parent)>, <col>, <row>, <w>, <aRows> , <value>, ;
+                <f>, <n>, <tooltip>, <{changeprocedure}>, <h>, ;
+                <{gotfocus}>, <{lostfocus}>, <{enter}>, <helpid>, ;
+                <.invisible.>, <.notabstop.>, <.sort.> ,<.bold.>, ;
                 <.italic.>, <.underline.>, <.strikeout.> , <(itemsource)> , ;
                 <(valuesource)> , <.displaychange.> , ;
-                <{ondisplaychangeprocedure}> ,  .f. , "", <aImage>, <.rtl.> )
+                <{ondisplaychangeprocedure}> ,  .f. , "", <aImage>, <.rtl.>, ;
+                <textheight> )
 
 // SPLITBOX VERSION
 
@@ -160,10 +164,14 @@
                 [ IMAGE <aImage> ] ;
 		[ <sort : SORT> ] ;
                 [ <rtl: RTL> ] ;
+                [ TEXTHEIGHT <textheight> ] ;
+                [ SUBCLASS <subclass> ]         ;
 	=>;
-        [ <obj> := ] TCombo():Define( <(name)>, <(parent)>, , , <w>, <aRows> , <value>, ;
+        [ <obj> := ] _OOHG_SelectSubClass( TCombo(), [ <subclass>() ] ): ;
+                  Define( <(name)>, <(parent)>, , , <w>, <aRows> , <value>, ;
                   <f>, <n>, <tooltip>, <{changeprocedure}>, <h>, <{gotfocus}>, ;
                   <{lostfocus}>, <{enter}>, <helpid>, <.invisible.>, <.notabstop.>, ;
                   <.sort.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , ;
                   <(itemsource)> , <(valuesource)> , <.displaychange.> , ;
-                  <{ondisplaychangeprocedure}> , <.break.> , <grippertext>, <aImage>, <.rtl.> )
+                  <{ondisplaychangeprocedure}> , <.break.> , <grippertext>, <aImage>, ;
+                  <.rtl.>, <textheight> )

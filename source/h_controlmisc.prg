@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.56 2006-06-02 02:05:11 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.57 2006-06-06 02:59:34 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -119,29 +119,20 @@ Return GetControlObject( ControlName, ParentForm ):Value
 *-----------------------------------------------------------------------------*
 Function _Setvalue( ControlName, ParentForm, Value )
 *-----------------------------------------------------------------------------*
-Local Self := GetControlObject( ControlName, ParentForm )
-
-	do case
-
-   case ::Type == "STATUS"
-         SetStatus( ::hWnd, value )
-
-	endcase
-
-Return ::Value := value
+Return ( GetControlObject( ControlName, ParentForm ):Value := Value )
 
 *-----------------------------------------------------------------------------*
-Function _AddItem ( ControlName, ParentForm, Value )
+Function _AddItem( ControlName, ParentForm, Value )
 *-----------------------------------------------------------------------------*
 Return GetControlObject( ControlName, ParentForm ):AddItem( Value )
 
 *-----------------------------------------------------------------------------*
-Function _DeleteItem ( ControlName, ParentForm, Value )
+Function _DeleteItem( ControlName, ParentForm, Value )
 *-----------------------------------------------------------------------------*
 Return GetControlObject( ControlName, ParentForm ):DeleteItem( Value )
 
 *-----------------------------------------------------------------------------*
-Function _DeleteAllItems ( ControlName, ParentForm )
+Function _DeleteAllItems( ControlName, ParentForm )
 *-----------------------------------------------------------------------------*
 Return GetControlObject( ControlName, ParentForm ):DeleteAllItems()
 
@@ -166,119 +157,119 @@ Function GetControlParentHandle( ControlName, ParentForm )
 Return GetControlObject( ControlName, ParentForm ):ContainerhWnd     // :Parent:hWnd
 
 *-----------------------------------------------------------------------------*
-Function GetControlId (ControlName,ParentForm)
+Function GetControlId( ControlName, ParentForm )
 *-----------------------------------------------------------------------------*
 Return GetControlObject( ControlName, ParentForm ):Id
 
 *-----------------------------------------------------------------------------*
-Function GetControlType (ControlName,ParentForm)
+Function GetControlType( ControlName, ParentForm )
 *-----------------------------------------------------------------------------*
 Return GetControlObject( ControlName, ParentForm ):Type
 
 *-----------------------------------------------------------------------------*
-Function GetControlValue (ControlName,ParentForm)
+Function GetControlValue( ControlName, ParentForm )
 *-----------------------------------------------------------------------------*
 Return GetControlObject( ControlName, ParentForm ):Value
 
 *-----------------------------------------------------------------------------*
-Function _IsControlDefined( ControlName , FormName )
+Function _IsControlDefined( ControlName, FormName )
 *-----------------------------------------------------------------------------*
 Local mVar
    mVar := '_' + FormName + '_' + ControlName
 Return ( Type( mVar ) == "O" .AND. ( &mVar ):hWnd != -1 )
 
 *-----------------------------------------------------------------------------*
-Function _SetFocus ( ControlName , ParentForm )
+Function _SetFocus( ControlName, ParentForm )
 *-----------------------------------------------------------------------------*
 Return GetControlObject( ControlName , ParentForm ):SetFocus()
 
 *-----------------------------------------------------------------------------*
-Function _DisableControl ( ControlName , ParentForm )
+Function _DisableControl( ControlName, ParentForm )
 *-----------------------------------------------------------------------------*
 Return GetControlObject( ControlName, ParentForm ):Enabled := .F.
 
 *-----------------------------------------------------------------------------*
-Function _EnableControl ( ControlName,ParentForm )
+Function _EnableControl( ControlName, ParentForm )
 *-----------------------------------------------------------------------------*
 Return GetControlObject( ControlName, ParentForm ):Enabled := .T.
 
 *-----------------------------------------------------------------------------*
-Function _ShowControl ( ControlName,ParentForm )
+Function _ShowControl( ControlName, ParentForm )
 *-----------------------------------------------------------------------------*
 Return GetControlObject( ControlName, ParentForm ):Show()
 
 *-----------------------------------------------------------------------------*
-Function _HideControl ( ControlName,ParentForm )
+Function _HideControl( ControlName, ParentForm )
 *-----------------------------------------------------------------------------*
 Return GetControlObject( ControlName, ParentForm ):Hide()
 
 *-----------------------------------------------------------------------------*
-Function _SetItem ( ControlName, ParentForm, Item , Value )
+Function _SetItem( ControlName, ParentForm, Item, Value )
 *-----------------------------------------------------------------------------*
 Return GetControlObject( ControlName, ParentForm ):Item( Item, Value )
 
 *-----------------------------------------------------------------------------*
-Function _GetItem ( ControlName, ParentForm, Item )
+Function _GetItem( ControlName, ParentForm, Item )
 *-----------------------------------------------------------------------------*
 Return GetControlObject( Controlname, ParentForm ):Item( Item )
 
 *-----------------------------------------------------------------------------*
-Function _SetControlSizePos ( ControlName, ParentForm, row, col, width, height )
+Function _SetControlSizePos( ControlName, ParentForm, row, col, width, height )
 *-----------------------------------------------------------------------------*
 Return GetControlObject( Controlname, ParentForm ):SizePos( row, col, width, height )
 
 *-----------------------------------------------------------------------------*
-Function _GetItemCount ( ControlName, ParentForm )
+Function _GetItemCount( ControlName, ParentForm )
 *-----------------------------------------------------------------------------*
 Return GetControlObject( Controlname, ParentForm ):ItemCount
 
 *-----------------------------------------------------------------------------*
-Function _GetControlRow (ControlName,ParentForm)
+Function _GetControlRow( ControlName, ParentForm )
 *-----------------------------------------------------------------------------*
 Return GetControlObject( ControlName, ParentForm ):Row
 
 *-----------------------------------------------------------------------------*
-Function _GetControlCol (ControlName,ParentForm)
+Function _GetControlCol( ControlName, ParentForm )
 *-----------------------------------------------------------------------------*
 Return GetControlObject( ControlName, ParentForm ):Col
 
 *-----------------------------------------------------------------------------*
-Function _GetControlWidth (ControlName,ParentForm)
+Function _GetControlWidth( ControlName, ParentForm )
 *-----------------------------------------------------------------------------*
 Return GetControlObject( ControlName, ParentForm ):Width
 
 *-----------------------------------------------------------------------------*
-Function _GetControlHeight (ControlName,ParentForm)
+Function _GetControlHeight( ControlName, ParentForm )
 *-----------------------------------------------------------------------------*
 Return GetControlObject( ControlName, ParentForm ):Height
 
 *-----------------------------------------------------------------------------*
-Function _SetControlCol ( ControlName, ParentForm, Value )
+Function _SetControlCol( ControlName, ParentForm, Value )
 *-----------------------------------------------------------------------------*
 Return GetControlObject( ControlName, ParentForm ):SizePos( , Value )
 
 *-----------------------------------------------------------------------------*
-Function _SetControlRow ( ControlName, ParentForm, Value )
+Function _SetControlRow( ControlName, ParentForm, Value )
 *-----------------------------------------------------------------------------*
 Return GetControlObject( ControlName, ParentForm ):SizePos( Value )
 
 *-----------------------------------------------------------------------------*
-Function _SetControlWidth ( ControlName, ParentForm, Value )
+Function _SetControlWidth( ControlName, ParentForm, Value )
 *-----------------------------------------------------------------------------*
 Return GetControlObject( ControlName, ParentForm ):SizePos( , , Value )
 
 *-----------------------------------------------------------------------------*
-Function _SetControlHeight ( ControlName, ParentForm, Value )
+Function _SetControlHeight( ControlName, ParentForm, Value )
 *-----------------------------------------------------------------------------*
 Return GetControlObject( ControlName, ParentForm ):SizePos( , , , Value )
 
 *-----------------------------------------------------------------------------*
-Function _SetPicture ( ControlName, ParentForm, FileName )
+Function _SetPicture( ControlName, ParentForm, FileName )
 *-----------------------------------------------------------------------------*
 Return GetControlObject( ControlName, ParentForm ):Picture := FileName
 
 *-----------------------------------------------------------------------------*
-Function _GetPicture ( ControlName, ParentForm )
+Function _GetPicture( ControlName, ParentForm )
 *-----------------------------------------------------------------------------*
 Return GetControlObject( ControlName, ParentForm ):Picture
 
@@ -288,47 +279,47 @@ Function _GetControlAction( ControlName, ParentForm )
 Return GetControlObject( ControlName, ParentForm ):OnClick
 
 *-----------------------------------------------------------------------------*
-Function _GetToolTip ( ControlName, ParentForm )
+Function _GetToolTip( ControlName, ParentForm )
 *-----------------------------------------------------------------------------*
 Return GetControlObject( ControlName, ParentForm ):ToolTip
 
 *-----------------------------------------------------------------------------*
-Function _SetToolTip ( ControlName, ParentForm , Value  )
+Function _SetToolTip( ControlName, ParentForm, Value  )
 *-----------------------------------------------------------------------------*
 Return GetControlObject( ControlName, ParentForm ):ToolTip := Value
 
 *-----------------------------------------------------------------------------*
-Function _SetRangeMin ( ControlName, ParentForm , Value  )
+Function _SetRangeMin( ControlName, ParentForm, Value  )
 *-----------------------------------------------------------------------------*
 Return ( GetControlObject( ControlName, ParentForm ):RangeMin := Value )
 
 *-----------------------------------------------------------------------------*
-Function _SetRangeMax ( ControlName, ParentForm , Value  )
+Function _SetRangeMax( ControlName, ParentForm, Value  )
 *-----------------------------------------------------------------------------*
 Return ( GetControlObject( ControlName, ParentForm ):RangeMax := Value )
 
 *-----------------------------------------------------------------------------*
-Function _GetRangeMin ( ControlName, ParentForm )
+Function _GetRangeMin( ControlName, ParentForm )
 *-----------------------------------------------------------------------------*
 Return GetControlObject( ControlName, ParentForm ):RangeMin
 
 *-----------------------------------------------------------------------------*
-Function _GetRangeMax ( ControlName, ParentForm )
+Function _GetRangeMax( ControlName, ParentForm )
 *-----------------------------------------------------------------------------*
 Return GetControlObject( ControlName, ParentForm ):RangeMax
 
 *-----------------------------------------------------------------------------*
-Function _SetMultiCaption ( ControlName, ParentForm , Column , Value  )
+Function _SetMultiCaption( ControlName, ParentForm, Column, Value )
 *-----------------------------------------------------------------------------*
 Return GetControlObject( ControlName, ParentForm ):Caption( Column, Value )
 
 *-----------------------------------------------------------------------------*
-Function _GetMultiCaption ( ControlName, ParentForm , Item )
+Function _GetMultiCaption( ControlName, ParentForm, Item )
 *-----------------------------------------------------------------------------*
 Return GetControlObject( ControlName, ParentForm ):Caption( Item )
 
 *-----------------------------------------------------------------------------*
-Function InputWindow ( Title , aLabels , aValues , aFormats , row , col )
+Function InputWindow( Title, aLabels, aValues, aFormats, row, col )
 *-----------------------------------------------------------------------------*
 Local i , l , ControlRow , e := 0 ,LN , CN ,r , c , wHeight , diff
 Local oInputWindow, aResult
@@ -484,95 +475,70 @@ Function _InputWindowCancel( oInputWindow, aResult )
 Return Nil
 
 *-----------------------------------------------------------------------------*
-Function _ReleaseControl ( ControlName, ParentForm )
+Function _ReleaseControl( ControlName, ParentForm )
 *-----------------------------------------------------------------------------*
 Return GetControlObject( ControlName, ParentForm ):Release()
 
 *-----------------------------------------------------------------------------*
-Function _IsControlVisibleFromHandle (Handle)
+Function _IsControlVisibleFromHandle( Handle )
 *-----------------------------------------------------------------------------*
 Return GetControlObjectByHandle( Handle ):ContainerVisible
 
 *-----------------------------------------------------------------------------*
-Function _SetCaretPos( ControlName , FormName , Pos )
+Function _SetCaretPos( ControlName, FormName, Pos )
 *-----------------------------------------------------------------------------*
 Return SendMessage( GetControlObject( ControlName, FormName ):hWnd, EM_SETSEL , Pos , Pos )
 
 *-----------------------------------------------------------------------------*
-Function _GetCaretPos ( ControlName , FormName )
+Function _GetCaretPos( ControlName, FormName )
 *-----------------------------------------------------------------------------*
 Return ( HiWord ( SendMessage( GetControlObject( ControlName, FormName ):hWnd, EM_GETSEL , 0 , 0 ) ) )
 
 *------------------------------------------------------------------------------*
 FUNCTION Random( nLimit )
 *------------------------------------------------------------------------------*
-//  Static snRandom := Nil
-//  Local nDecimals, cLimit
-
-//  DEFAULT snRandom TO Seconds() / Exp(1)
   DEFAULT nLimit   TO 65535
-
-//  snRandom  := Log( snRandom + Sqrt(2) ) * Exp(3)
-//  snRandom  := Val( Str(snRandom - Int(snRandom), 17, 15 ) )
-//  cLimit    := Transform( nLimit, "@N" )
-
-//  nDecimals := At(".", cLimit)
-
-//  if nDecimals > 0
-//     nDecimals := Len(cLimit)-nDecimals
-//  endif
-
-//Return Round( nLimit * snRandom, nDecimals )
 Return hb_random( nLimit )
 
 *------------------------------------------------------------------------------*
-Function SetProperty( Arg1 , Arg2 , Arg3 , Arg4 , Arg5 , Arg6 , Arg7 )
+Function SetProperty( Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7 )
 *------------------------------------------------------------------------------*
 Local oWnd, oCtrl
 
 	if Pcount() == 3 // Window
 
 		If .Not. _IsWindowDefined ( Arg1 )
-         MsgOOHGError("Window: "+ Arg1 + " is not defined. Program terminated" )
+         MsgOOHGError("Window: "+ Arg1 + " is not defined. Program terminated." )
 		Endif
 
       oWnd := GetFormObject( Arg1 )
+      Arg2 := Upper( Arg2 )
 
-		Arg2 := Upper (Arg2)
-
-		if Arg2 == 'TITLE'
-
+      If Arg2 == "TITLE"
          oWnd:Title := Arg3
 
-		ELseIf Arg2 == 'HEIGHT'
-
+      ELseIf Arg2 == "HEIGHT"
          oWnd:Height := Arg3
 
-		ElseIf Arg2 == 'WIDTH'
-
+      ElseIf Arg2 == "WIDTH"
          oWnd:Width := Arg3
 
-		ElseIf Arg2 == 'COL'
-
+      ElseIf Arg2 == "COL"
          oWnd:Col := Arg3
 
-		ElseIf Arg2 == 'ROW'
-
+      ElseIf Arg2 == "ROW"
          oWnd:Row := Arg3
 
-		ElseIf Arg2 == 'NOTIFYICON'
-
+      ElseIf Arg2 == "NOTIFYICON"
          oWnd:NotifyIconName := Arg3
 
-		ElseIf Arg2 == 'NOTIFYTOOLTIP'
-
+      ElseIf Arg2 == "NOTIFYTOOLTIP"
          oWnd:NotifyIconTooltip := Arg3
 
       ElseIf Arg2 == "BACKCOLOR"
          oWnd:BackColor := Arg3
 
-		ElseIf Arg2 == 'CURSOR'
-
+      ElseIf Arg2 == "CURSOR"
          oWnd:Cursor := Arg3
 
 		EndIf
@@ -580,207 +546,149 @@ Local oWnd, oCtrl
 	ElseIf Pcount() == 4 // CONTROL
 
 		If .Not. _IsControlDefined ( Arg2 , Arg1  )
-         MsgOOHGError ("Control: " + Arg2 + " Of " + Arg1 + " Not defined. Program Terminated" )
+         MsgOOHGError ("Control: " + Arg2 + " of " + Arg1 + " Not defined. Program Terminated." )
 		endif
 
       oCtrl := GetControlObject( Arg2, Arg1 )
+      Arg3 := Upper( Arg3 )
 
-		Arg3 := Upper (Arg3)
-
-		If     Arg3 == 'VALUE'
-
+      If     Arg3 == "VALUE"
          oCtrl:Value := Arg4
 
-      ElseIf Arg3 == 'ALLOWEDIT'
-
+      ElseIf Arg3 == "ALLOWEDIT"
          oCtrl:AllowEdit := Arg4
 
-		ElseIf Arg3 == 'ALLOWAPPEND'
-
+      ElseIf Arg3 == "ALLOWAPPEND"
          oCtrl:AllowAppend := Arg4
 
-		ElseIf Arg3 == 'ALLOWDELETE'
-
+      ElseIf Arg3 == "ALLOWDELETE"
          oCtrl:AllowDelete := Arg4
 
-		ElseIf Arg3 == 'PICTURE'
-
+      ElseIf Arg3 == "PICTURE"
          oCtrl:Picture := Arg4
 
-		ElseIf Arg3 == 'TOOLTIP'
-
+      ElseIf Arg3 == "TOOLTIP"
          oCtrl:Tooltip := Arg4
 
-		ElseIf Arg3 == 'FONTNAME'
-
+      ElseIf Arg3 == "FONTNAME"
          oCtrl:SetFont( Arg4 )
 
-		ElseIf Arg3 == 'FONTSIZE'
-
+      ElseIf Arg3 == "FONTSIZE"
          oCtrl:SetFont( , Arg4 )
 
-		ElseIf Arg3 == 'FONTBOLD'
-
+      ElseIf Arg3 == "FONTBOLD"
          oCtrl:SetFont( , , Arg4 )
 
-		ElseIf Arg3 == 'FONTITALIC'
-
+      ElseIf Arg3 == "FONTITALIC"
          oCtrl:SetFont( , , , Arg4 )
 
-		ElseIf Arg3 == 'FONTUNDERLINE'
-
+      ElseIf Arg3 == "FONTUNDERLINE"
          oCtrl:SetFont( , , , , Arg4 )
 
-		ElseIf Arg3 == 'FONTSTRIKEOUT'
-
+      ElseIf Arg3 == "FONTSTRIKEOUT"
          oCtrl:SetFont( , , , , , Arg4 )
 
-		ElseIf Arg3 == 'CAPTION'
+      ElseIf Arg3 == "CAPTION"
+         oCtrl:Caption := Arg4
 
-         SetWindowText( oCtrl:hWnd, Arg4 )
+      ElseIf Arg3 == "DISPLAYVALUE"
+         oCtrl:Caption := Arg4
 
-		ElseIf Arg3 == 'DISPLAYVALUE'
-
-         SetWindowText( oCtrl:hWnd, Arg4 )
-
-		ElseIf Arg3 == 'ROW'
-
+      ElseIf Arg3 == "ROW"
          oCtrl:Row := Arg4
 
-		ElseIf Arg3 == 'COL'
-
+      ElseIf Arg3 == "COL"
          oCtrl:Col := Arg4
 
-		ElseIf Arg3 == 'WIDTH'
-
+      ElseIf Arg3 == "WIDTH"
          oCtrl:Width := Arg4
 
-		ElseIf Arg3 == 'HEIGHT'
-
+      ElseIf Arg3 == "HEIGHT"
          oCtrl:Height := Arg4
 
-		ElseIf Arg3 == 'VISIBLE'
-
+      ElseIf Arg3 == "VISIBLE"
          oCtrl:Visible := Arg4
 
-		ElseIf Arg3 == 'ENABLED'
-
+      ElseIf Arg3 == "ENABLED"
          oCtrl:Enabled := Arg4
 
-		ElseIf Arg3 == 'CHECKED'
-
+      ElseIf Arg3 == "CHECKED"
          oCtrl:Checked := Arg4
 
-		ElseIf Arg3 == 'RANGEMIN'
-
+      ElseIf Arg3 == "RANGEMIN"
          oCtrl:RangeMin := Arg4
 
-		ElseIf Arg3 == 'RANGEMAX'
-
+      ElseIf Arg3 == "RANGEMAX"
          oCtrl:RangeMax := Arg4
 
-		ElseIf Arg3 == 'REPEAT'
-
+      ElseIf Arg3 == "REPEAT"
 			If Arg4 == .t.
             oCtrl:RepeatOn()
 			Else
             oCtrl:RepeatOff()
 			EndIf
 
-		ElseIf Arg3 == 'SPEED'
-
+      ElseIf Arg3 == "SPEED"
          oCtrl:Speed( Arg4 )
 
-		ElseIf Arg3 == 'VOLUME'
-
+      ElseIf Arg3 == "VOLUME"
          oCtrl:Volume( Arg4 )
 
-		ElseIf Arg3 == 'ZOOM'
-
+      ElseIf Arg3 == "ZOOM"
          oCtrl:Zoom( Arg4 )
 
-		ElseIf Arg3 == 'POSITION'
-
+      ElseIf Arg3 == "POSITION"
 			If Arg4 == 0
             oCtrl:PositionHome()
 			ElseIf Arg4 == 1
             oCtrl:PositionEnd()
 			EndIf
 
-		ElseIf Arg3 == 'CARETPOS'
+      ElseIf Arg3 == "CARETPOS"
+         _SetCaretPos( Arg2 , Arg1 , Arg4 )
 
-			_SetCaretPos ( Arg2 , Arg1 , Arg4 )
-
-		ElseIf Arg3 == 'BACKCOLOR'
-
+      ElseIf Arg3 == "BACKCOLOR"
          oCtrl:BackColor := Arg4
 
-		ElseIf Arg3 == 'FONTCOLOR'
-
+      ElseIf Arg3 == "FONTCOLOR"
          oCtrl:FontColor := Arg4
 
-		ElseIf Arg3 == 'FORECOLOR'
-
+      ElseIf Arg3 == "FORECOLOR"
          oCtrl:FontColor := Arg4
 
-		ElseIf Arg3 == 'ADDRESS'
-
+      ElseIf Arg3 == "ADDRESS"
          oCtrl:Address := Arg4
 
-		ElseIf Arg3 == 'READONLY'
-
+      ElseIf Arg3 == "READONLY"
          SetTextEditReadOnly( oCtrl:hWnd, Arg4 )
 
-		ElseIf Arg3 == 'ITEMCOUNT'
-
+      ElseIf Arg3 == "ITEMCOUNT"
          ListView_SetItemCount( oCtrl:hWnd, Arg4 )
 
 		EndIf
 
 	ElseIf Pcount() == 5 // CONTROL (WITH ARGUMENT OR TOOLBAR BUTTON)
 
-		Arg3 := Upper (Arg3)
-
+      Arg3 := Upper( Arg3 )
       oCtrl := GetControlObject( Arg2, Arg1 )
 
-		If     Arg3 == 'CAPTION'
+      If ! _IsControlDefined( Arg2, Arg1 )
+         MsgOOHGError( "Control: " + Arg2 + " of " + Arg1 + " Not defined. Program Terminated." )
+      EndIf
 
-			If .Not. _IsControlDefined ( Arg2 , Arg1  )
-            MsgOOHGError ("Control: " + Arg2 + " Of " + Arg1 + " Not defined. Program Terminated" )
-			endif
+      If     Arg3 == "CAPTION"
+         oCtrl:Caption( Arg4, Arg5 )
 
-         oCtrl:Caption( Arg4 , Arg5 )
+      ElseIf Arg3 == "HEADER"
+         oCtrl:Caption( Arg4, Arg5 )
 
-		ElseIf Arg3 == 'HEADER'
-
-			If .Not. _IsControlDefined ( Arg2 , Arg1  )
-            MsgOOHGError ("Control: " + Arg2 + " Of " + Arg1 + " Not defined. Program Terminated" )
-			endif
-
-         oCtrl:Caption( Arg4 , Arg5 )
-
-		ElseIf Arg3 == 'ITEM'
-
-			If .Not. _IsControlDefined ( Arg2 , Arg1  )
-            MsgOOHGError ("Control: " + Arg2 + " Of " + Arg1 + " Not defined. Program Terminated" )
-			endif
-
+      ElseIf Arg3 == "ITEM"
          oCtrl:Item( Arg4, Arg5 )
 
-		ElseIf Arg3 == 'ICON'
+      ElseIf Arg3 == "ICON"
+         _SetStatusIcon( Arg2, Arg1, Arg4, Arg5 )
 
-			If .Not. _IsControlDefined ( Arg2 , Arg1  )
-            MsgOOHGError ("Control: " + Arg2 + " Of " + Arg1 + " Not defined. Program Terminated" )
-			endif
-
-			_SetStatusIcon ( Arg2 , Arg1 , Arg4 , Arg5 )
-
-      ElseIf Arg3 == 'COLUMNWIDTH'
-
-			If .Not. _IsControlDefined ( Arg2 , Arg1  )
-            MsgOOHGError ("Control: " + Arg2 + " Of " + Arg1 + " Not defined. Program Terminated" )
-			endif
-
+      ElseIf Arg3 == "COLUMNWIDTH"
          oCtrl:ColumnWidth( Arg4, Arg5 )
 
 		Else
@@ -792,7 +700,7 @@ Local oWnd, oCtrl
                MsgOOHGError('Control Does Not Belong To Container')
 				EndIf
 
-            SetProperty( Arg1 , Arg3 , Arg4 , Arg5 )
+            SetProperty( Arg1, Arg3, Arg4, Arg5 )
 			EndIf
 
 		EndIf
@@ -805,7 +713,7 @@ Local oWnd, oCtrl
 		EndIf
 */
 
-      SetProperty( Arg1 , Arg4 , Arg5 , Arg6 )
+      SetProperty( Arg1, Arg4, Arg5, Arg6 )
 
 	ElseIf Pcount() == 7 // TAB CHILD CONTROL WITH ARGUMENT
 
@@ -815,14 +723,14 @@ Local oWnd, oCtrl
 		EndIf
 */
 
-      SetProperty( Arg1 , Arg4 , Arg5 , Arg6 , Arg7 )
+      SetProperty( Arg1, Arg4, Arg5, Arg6, Arg7 )
 
 	EndIf
 
 Return Nil
 
 *------------------------------------------------------------------------------*
-Function GetProperty( Arg1 , Arg2 , Arg3 , Arg4 , Arg5 , Arg6 )
+Function GetProperty( Arg1, Arg2, Arg3, Arg4, Arg5, Arg6 )
 *------------------------------------------------------------------------------*
 Local RetVal, oWnd, oCtrl
 
