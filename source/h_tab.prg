@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.18 2006-06-02 02:05:11 guerra000 Exp $
+ * $Id: h_tab.prg,v 1.19 2006-06-09 03:32:54 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -324,10 +324,6 @@ Local oPage, nPos, nKey
       ENDIF
 	EndIf
 
-   If ValType( aControls ) != "A"
-      aControls := {}
-	EndIf
-
    TABCTRL_INSERTITEM( ::hWnd, Position - 1 , Caption )
 
    If ValType( oSubClass ) == "O"
@@ -341,9 +337,6 @@ Local oPage, nPos, nKey
 
    oPage:Caption   := Caption
    oPage:Picture   := Image
-   oPage:aControls := aControls
-   oPage:aControlsNames := ARRAY( LEN( aControls ) )
-   AEVAL( aControls, { |o,i| oPage:aControlsNames[ i ] := UPPER( ALLTRIM( o:Name ) ) + CHR( 255 ) } )
 
    AADD( ::aPages, nil )
    AINS( ::aPages, Position )
@@ -353,7 +346,11 @@ Local oPage, nPos, nKey
       SetTabPageImage( ::hWnd, ::AddBitMap( Image ) - 1 )
    ENDIF
 
-   nPos := At( '&' , Caption )
+   If ValType( aControls ) == "A"
+      AEVAL( aControls, { |o| ::AddControl( o, Position ) } )
+   EndIf
+
+   nPos := At( '&', Caption )
 
    IF nPos > 0 .AND. nPos < LEN( Caption )
       nPos := AT( Upper( SubStr( Caption, nPos + 1, 1 ) ), "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789" )
@@ -415,6 +412,10 @@ Return Nil
 *-----------------------------------------------------------------------------*
 METHOD AddControl( oCtrl , PageNumber , Row , Col ) CLASS TTab
 *-----------------------------------------------------------------------------*
+
+   If ValType( oCtrl ) $ "CM"
+      oCtrl := ::Parent:Control( oCtrl )
+   EndIf
 
    IF valtype( PageNumber ) != "N" .OR. PageNumber > LEN( ::aPages )
       PageNumber := LEN( ::aPages )

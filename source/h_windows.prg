@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.89 2006-06-06 02:59:34 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.90 2006-06-09 03:32:54 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -167,8 +167,6 @@ CLASS TWindow
    DATA OverWndProc         INIT nil
    DATA lInternal           INIT .T.
    DATA lForm               INIT .F.
-   DATA HScrollBar          INIT nil
-   DATA VScrollBar          INIT nil
 
    DATA OnClick             INIT nil
    DATA OnGotFocus          INIT nil
@@ -202,6 +200,7 @@ CLASS TWindow
    METHOD AddControl
    METHOD DeleteControl
    METHOD SearchParent
+   METHOD ParentDefaults
 
    METHOD Events_Size         BLOCK { || nil }
    METHOD Events_VScroll      BLOCK { || nil }
@@ -742,6 +741,62 @@ Local nPos
 Return uParent
 
 *-----------------------------------------------------------------------------*
+METHOD ParentDefaults( cFontName, nFontSize, uFontColor ) CLASS TWindow
+*-----------------------------------------------------------------------------*
+   // Font Name:
+   If ValType( cFontName ) == "C" .AND. ! EMPTY( cFontName )
+      // Specified font
+      ::cFontName := cFontName
+   ElseIf ValType( ::cFontName ) == "C" .AND. ! Empty( ::cFontName )
+      // Pre-registered
+   elseif ::Container != nil .AND. ValType( ::Container:cFontName ) == "C" .AND. ! Empty( ::Container:cFontName )
+      // Container
+      ::cFontName := ::Container:cFontName
+   elseif ::Parent != nil .AND. ValType( ::Parent:cFontName ) == "C" .AND. ! Empty( ::Parent:cFontName )
+      // Parent form
+      ::cFontName := ::Parent:cFontName
+   else
+       // Default
+      ::cFontName := _OOHG_DefaultFontName
+   endif
+
+   // Font Size:
+   If ValType( nFontSize ) == "N" .AND. nFontSize != 0
+      // Specified size
+      ::nFontSize := nFontSize
+   ElseIf ValType( ::nFontSize ) == "N" .AND. ::nFontSize != 0
+      // Pre-registered
+   elseif ::Container != nil .AND. ValType( ::Container:nFontSize ) == "N" .AND. ::Container:nFontSize != 0
+      // Container
+      ::nFontSize := ::Container:nFontSize
+   elseif ::Parent != nil .AND. ValType( ::Parent:nFontSize ) == "N" .AND. ::Parent:nFontSize != 0
+      // Parent form
+      ::nFontSize := ::Parent:nFontSize
+   else
+       // Default
+      ::nFontSize := _OOHG_DefaultFontSize
+   endif
+
+   // Font Color:
+   If ValType( uFontColor ) $ "ANCM"
+      // Specified color
+      ::FontColor := uFontColor
+   ElseIf ValType( ::FontColor ) $ "ANCM"
+      // Pre-registered
+      * To detect about "-1" !!!
+   elseif ::Container != nil .AND. ValType( ::Container:FontColor ) $ "ANCM"
+      // Container
+      ::FontColor := ::Container:FontColor
+   elseif ::Parent != nil .AND. ValType( ::Parent:FontColor ) $ "ANCM"
+      // Parent form
+      ::FontColor := ::Parent:FontColor
+   else
+       // Default
+   endif
+
+Return Self
+
+*-----------------------------------------------------------------------------*
 METHOD Error() CLASS TWindow
 *-----------------------------------------------------------------------------*
 Local nPos, cMessage
@@ -1144,29 +1199,13 @@ Local Formhandle, aClientRect
       ::Height := ::Height + ::Height - aClientRect[ 4 ] - aClientRect[ 2 ]
    EndIf
 
-   // Font Name:
-   if ! empty( FontName )
-      // Specified font
-      ::cFontName := FontName
-   else
-       // Default
-      ::cFontName := _OOHG_DefaultFontName
-   endif
-
-   // Font Size:
-   if ! empty( FontSize )
-      // Specified size
-      ::nFontSize := FontSize
-   else
-       // Default
-      ::nFontSize := _OOHG_DefaultFontSize
-   endif
+   ::ParentDefaults( FontName, FontSize )
 
    AADD( _OOHG_ActiveForm, Self )
 
    InitDummy( FormHandle )
 
-   ::HScrollBar := TScrollBar():Define( "HSCROLLBAR", Self,,,,,,,, ;
+   TScrollBar():Define( "HSCROLLBAR", Self,,,,,,,, ;
                    { |Scroll| _OOHG_Eval( ::OnScrollLeft, Scroll ) }, ;
                    { |Scroll| _OOHG_Eval( ::OnScrollRight, Scroll ) }, ;
                    { |Scroll| _OOHG_Eval( ::OnHScrollBox, Scroll ) }, ;
@@ -1178,7 +1217,7 @@ Local Formhandle, aClientRect
    ::HScrollBar:nLineSkip  := 1
    ::HScrollBar:nPageSkip  := 20
 
-   ::VScrollBar := TScrollBar():Define( "VSCROLLBAR", Self,,,,,,,, ;
+   TScrollBar():Define( "VSCROLLBAR", Self,,,,,,,, ;
                    { |Scroll| _OOHG_Eval( ::OnScrollUp, Scroll ) }, ;
                    { |Scroll| _OOHG_Eval( ::OnScrollDown, Scroll ) }, ;
                    { |Scroll| _OOHG_Eval( ::OnVScrollBox, Scroll ) }, ;
@@ -1359,11 +1398,7 @@ Local b
    EnableWindow( ::hWnd )
    SendMessage( ::hWnd, WM_SYSCOMMAND, SC_CLOSE, 0 )
 
-   // HACK! This window doesn't receive WM_DESTROY and/or WM_CLOSE
-   If ::Type == "D"
-      // How MDICLIENT window is closed?
-      ::Events_Destroy()
-   EndIf
+   ::Events_Destroy()
 
    _OOHG_InteractiveClose := b
 
@@ -1610,52 +1645,54 @@ Local mVar, i
       ::aControls[ 1 ]:Release()
    ENDDO
 
-   // Delete Notify icon
-   ShowNotifyIcon( ::hWnd, .F. , 0, "" )
-   DeleteObject( ::NotifyMenuHandle )
+   IF ::Active
+      // Delete Notify icon
+      ShowNotifyIcon( ::hWnd, .F. , 0, "" )
+      DeleteObject( ::NotifyMenuHandle )
 
-   // Update Form Index Variable
-   If ! Empty( ::Name )
-      mVar := '_' + ::Name
-      if type( mVar ) != 'U'
-         __MVPUT( mVar , 0 )
+      // Update Form Index Variable
+      If ! Empty( ::Name )
+         mVar := '_' + ::Name
+         if type( mVar ) != 'U'
+            __MVPUT( mVar , 0 )
+         EndIf
       EndIf
-   EndIf
 
-   // Removes from container
-   If ::Container != NIL
-      ::Container:DeleteControl( Self )
-   EndIf
+      // Removes from container
+      If ::Container != NIL
+         ::Container:DeleteControl( Self )
+      EndIf
 
-   // Removes from parent
-   If ::Parent != NIL
-      ::Parent:DeleteControl( Self )
-   EndIf
+      // Removes from parent
+      If ::Parent != NIL
+         ::Parent:DeleteControl( Self )
+      EndIf
 
-   // Verify if window was multi-activated
-   ::ActivateCount[ 1 ]--
-   If Len( _OOHG_MessageLoops ) > 0
-      If ATAIL( _OOHG_MessageLoops )[ 1 ] < 1
+      // Verify if window was multi-activated
+      ::ActivateCount[ 1 ]--
+      If Len( _OOHG_MessageLoops ) > 0
+         If ATAIL( _OOHG_MessageLoops )[ 1 ] < 1
+            PostQuitMessage( 0 )
+         Endif
+      ElseIf ::ActivateCount[ 1 ] < 1
          PostQuitMessage( 0 )
       Endif
-   ElseIf ::ActivateCount[ 1 ] < 1
-      PostQuitMessage( 0 )
-   Endif
 
-   // Removes WINDOW from the array
-   i := Ascan( _OOHG_aFormhWnd, ::hWnd )
-   IF i > 0
-      _OOHG_DeleteArrayItem( _OOHG_aFormhWnd, I )
-      _OOHG_DeleteArrayItem( _OOHG_aFormObjects, I )
-   ENDIF
+      // Removes WINDOW from the array
+      i := Ascan( _OOHG_aFormhWnd, ::hWnd )
+      IF i > 0
+         _OOHG_DeleteArrayItem( _OOHG_aFormhWnd, I )
+         _OOHG_DeleteArrayItem( _OOHG_aFormObjects, I )
+      ENDIF
 
-   *** ::Type == "MODAL"
-   // Eliminates active modal
-   IF Len( _OOHG_ActiveModal ) != 0 .AND. ATAIL( _OOHG_ActiveModal ):hWnd == ::hWnd
-      _OOHG_DeleteArrayItem( _OOHG_ActiveModal, Len( _OOHG_ActiveModal ) )
-   ENDIF
+      *** ::Type == "MODAL"
+      // Eliminates active modal
+      IF Len( _OOHG_ActiveModal ) != 0 .AND. ATAIL( _OOHG_ActiveModal ):hWnd == ::hWnd
+         _OOHG_DeleteArrayItem( _OOHG_ActiveModal, Len( _OOHG_ActiveModal ) )
+      ENDIF
 
-   ::Active := .F.
+      ::Active := .F.
+   EndIf
 
    ::Super:Release()
 
@@ -2049,7 +2086,7 @@ Procedure ValidateScrolls( Self, lMove )
 Local hWnd, nVirtualWidth, nVirtualHeight
 Local aRect, w, h, hscroll, vscroll
 
-   If ::hWnd == 0 .OR. ::HScrollBar == nil .OR. ::VScrollBar == nil
+   If ::hWnd == 0 .OR. ::Control( "HScrollBar" ) == nil .OR. ::Control( "VScrollBar" ) == nil
       Return
    EndIf
 

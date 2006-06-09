@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.4 2006-06-05 00:53:41 guerra000 Exp $
+ * $Id: h_xbrowse.prg,v 1.5 2006-06-09 03:32:54 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1093,7 +1093,7 @@ Local cField, cArea, nPos, aStruct
 
    If ValType( uOldValue ) == "U"
       // uOldValue := &( ::WorkArea + "->( " + ::aFields[ nCol ] + " )" )
-      uOldValue := EVAL( TXBrowse_UpDate_Blocks( Self )[ nCol ], ::WorkArea )
+      uOldValue := EVAL( TXBrowse_UpDate_Block_Direct( ::aFields[ nCol ], ::WorkArea ) )
    EndIf
 
    If ValType( ::aReplaceField ) == "A" .AND. Len( ::aReplaceField ) >= nCol

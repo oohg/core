@@ -1,11 +1,22 @@
 /*
- * $Id: ChangeLog,v 1.167 2006-06-06 02:59:34 guerra000 Exp $
+ * $Id: ChangeLog,v 1.168 2006-06-09 03:32:53 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-06-08 22:32 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/c_controlmisc.prg
+  * source/h_tab.prg
+  * source/h_windows.prg
+    ! Fixed SCOLLBAR registration for internal TAB pages.
+    * ::FontName, ::FontSize, ::FontColor default values are taken
+      from parent.
+  * source/h_browse.prg
+  * source/h_xbrowse.prg
+    ! Fixed cell's value when it'll be edited.
 
 2006-06-05 21:58 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * include/i_window.ch

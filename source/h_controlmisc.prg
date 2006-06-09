@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.57 2006-06-06 02:59:34 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.58 2006-06-09 03:32:54 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1461,55 +1461,7 @@ METHOD SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BkColor,
    ::StartInfo( -1 )
    ::SearchParent( ParentForm )
 
-   // Font Name:
-   If ValType( FontName ) == "C" .AND. ! EMPTY( FontName )
-      // Specified font
-      ::cFontName := FontName
-   ElseIf ValType( ::cFontName ) == "C" .AND. ! Empty( ::cFontName )
-      // Pre-registered
-   elseif ::Container != nil .AND. ValType( ::Container:cFontName ) == "C" .AND. ! Empty( ::Container:cFontName )
-      // Container
-      ::cFontName := ::Container:cFontName
-   elseif ValType( ::Parent:cFontName ) == "C" .AND. ! Empty( ::Parent:cFontName )
-      // Parent form
-      ::cFontName := ::Parent:cFontName
-   else
-       // Default
-      ::cFontName := _OOHG_DefaultFontName
-   endif
-
-   // Font Size:
-   If ValType( FontSize ) == "N" .AND. FontSize != 0
-      // Specified size
-      ::nFontSize := FontSize
-   ElseIf ValType( ::nFontSize ) == "N" .AND. ::nFontSize != 0
-      // Pre-registered
-   elseif ::Container != nil .AND. ValType( ::Container:nFontSize ) == "N" .AND. ::Container:nFontSize != 0
-      // Container
-      ::nFontSize := ::Container:nFontSize
-   elseif ValType( ::Parent:nFontSize ) == "N" .AND. ::Parent:nFontSize != 0
-      // Parent form
-      ::nFontSize := ::Parent:nFontSize
-   else
-       // Default
-      ::nFontSize := _OOHG_DefaultFontSize
-   endif
-
-   // Font Color:
-   If ValType( FontColor ) $ "ANCM"
-      // Specified color
-      ::FontColor := FontColor
-   ElseIf ValType( ::FontColor ) $ "ANCM"
-      // Pre-registered
-   elseif ::Container != nil .AND. ValType( ::Container:FontColor ) $ "ANCM"
-      // Container
-      ::FontColor := ::Container:FontColor
-   elseif ValType( ::Parent:FontColor ) $ "ANCM"
-      // Parent form
-      ::FontColor := ::Parent:FontColor
-   else
-       // Default
-   endif
+   ::ParentDefaults( FontName, FontSize, FontColor )
 
    IF valtype( lEditBox ) == "L" .AND. lEditBox
       // Background Color (edit or listbox):
