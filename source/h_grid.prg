@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.42 2006-06-03 20:30:45 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.43 2006-06-10 16:37:17 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -142,6 +142,7 @@ CLASS TGrid FROM TControl
 
    METHOD AddItem
    METHOD InsertItem
+   METHOD InsertBlank
    METHOD DeleteItem
    METHOD DeleteAllItems      BLOCK { | Self | ListViewReset( ::hWnd ), ::GridForeColor := nil, ::GridBackColor := nil }
    METHOD Item
@@ -1031,20 +1032,36 @@ METHOD AddItem( aRow, uForeColor, uBackColor ) CLASS TGrid
    aRow := TGrid_SetArray( Self, aRow )
    ::SetItemColor( ::ItemCount() + 1, uForeColor, uBackColor, aRow )
    AddListViewItems( ::hWnd , aRow )
-
 Return Nil
 
 *-----------------------------------------------------------------------------*
 METHOD InsertItem( nItem, aRow, uForeColor, uBackColor ) CLASS TGrid
 *-----------------------------------------------------------------------------*
    if Len( ::aHeaders ) != Len( aRow )
-      MsgOOHGError( "Grid.AddItem: Item size mismatch. Program Terminated" )
+      MsgOOHGError( "Grid.InsertItem: Item size mismatch. Program Terminated" )
 	EndIf
 
    aRow := TGrid_SetArray( Self, aRow )
-   ::SetItemColor( ::ItemCount() + 1, uForeColor, uBackColor, aRow )
+   ::InsertBlank( nItem )
+   ::SetItemColor( nItem, uForeColor, uBackColor, aRow )
    InsertListViewItem( ::hWnd, aRow, nItem )
+Return Nil
 
+*-----------------------------------------------------------------------------*
+METHOD InsertBlank( nItem ) CLASS TGrid
+*-----------------------------------------------------------------------------*
+Local aGrid
+   aGrid := ::GridForeColor
+   If ValType( aGrid ) == "A" .AND. Len( aGrid ) >= nItem
+      AADD( aGrid, nil )
+      AINS( aGrid, nItem )
+   EndIf
+   aGrid := ::GridBackColor
+   If ValType( aGrid ) == "A" .AND. Len( aGrid ) >= nItem
+      AADD( aGrid, nil )
+      AINS( aGrid, nItem )
+   EndIf
+   InsertListViewItem( ::hWnd, ARRAY( LEN( ::aHeaders ) ), nItem )
 Return Nil
 
 *-----------------------------------------------------------------------------*

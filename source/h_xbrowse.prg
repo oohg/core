@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.6 2006-06-10 03:19:53 guerra000 Exp $
+ * $Id: h_xbrowse.prg,v 1.7 2006-06-10 16:37:17 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -738,8 +738,9 @@ Local nValue
       If nValue <= 1
          If ::ItemCount >= ::CountPerPage
             ::DeleteItem( ::ItemCount )
+            DO EVENTS
          EndIf
-         ::InsertItem( 1, ARRAY( LEN( ::aFields ) ) )
+         ::InsertBlank( 1 )
       Else
          nValue--
       EndIf
@@ -782,10 +783,9 @@ Local nSkip, nCountPerPage
       nCountPerPage := ::CountPerPage
       nSkip := ::DbSkip( nCountPerPage )
       If nSkip != nCountPerPage
+         ::Refresh( nCountPerPage )
          If ::AllowAppend
             ::EditItem( .T. )
-         Else
-            ::Refresh( nCountPerPage )
          EndIf
       ElseIf nSkip != 0
          ::Refresh( , .T. )
