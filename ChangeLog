@@ -1,11 +1,18 @@
 /*
- * $Id: ChangeLog,v 1.168 2006-06-09 03:32:53 guerra000 Exp $
+ * $Id: ChangeLog,v 1.169 2006-06-10 03:19:53 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-06-09 22:20 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_xbrowse.prg
+    * Prevents not refresh browse if workarea is not specified.
+  * source/h_tab.prg
+    * For INTERNAL TabPages, control's "parent" is TabPage:Parent
+      (instead of self TabPage).
 
 2006-06-08 22:32 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/c_controlmisc.prg

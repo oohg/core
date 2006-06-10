@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.5 2006-06-09 03:32:54 guerra000 Exp $
+ * $Id: h_xbrowse.prg,v 1.6 2006-06-10 03:19:53 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -224,8 +224,7 @@ Local nWidth2, nCol2, lLocked
       ::Visible := ::Visible
    EndIf
 
-   ASSIGN ::lLocked VALUE lLocked   TYPE "L"
-   ASSIGN lLocked   VALUE ::lLocked TYPE "L" DEFAULT .F.
+   ASSIGN lLocked VALUE ::lLocked TYPE "L" DEFAULT .F.
    ::lLocked := .F.
    ::Refresh( value )
    ::lLocked := lLocked
@@ -246,7 +245,9 @@ Return Self
 METHOD Refresh( nCurrent, lNoEmptyBottom ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
 Local nRow, nCount, nSkipped
-   If ! ::lLocked
+   If Empty( ::WorkArea ) .OR. ( ValType( ::WorkArea ) $ "CM" .AND. Select( ::WorkArea ) == 0 )
+      // No workarea specified...
+   ElseIf ! ::lLocked
       nCount := ::CountPerPage
       ASSIGN nCurrent       VALUE nCurrent       TYPE "N" DEFAULT ::Value
       ASSIGN lNoEmptyBottom VALUE lNoEmptyBottom TYPE "L" DEFAULT .F.

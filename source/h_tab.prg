@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.19 2006-06-09 03:32:54 guerra000 Exp $
+ * $Id: h_tab.prg,v 1.20 2006-06-10 03:19:53 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -392,11 +392,7 @@ Return oPage
 *------------------------------------------------------------------------------*
 Function _EndTabPage()
 *------------------------------------------------------------------------------*
-   IF _OOHG_LastFrame() == "TABPAGE"    // _OOHG_OldTab ... it will fail!
-      _OOHG_DeleteFrame( "TABPAGE" )
-   ELSE
-      END WINDOW
-   ENDIF
+   _OOHG_DeleteFrame( "TABPAGE" )
 RETURN nil
 
 *------------------------------------------------------------------------------*
@@ -550,15 +546,20 @@ Return Nil
 
 
 CLASS TTabPageInternal FROM TFormInternal
-   DATA Type      INIT "TABPAGE" READONLY
-   DATA Picture   INIT ""
-   DATA Position  INIT 0
-   DATA nImage    INIT -1
+   DATA Type       INIT "TABPAGE" READONLY
+   DATA Picture    INIT ""
+   DATA Position   INIT 0
+   DATA nImage     INIT -1
+   DATA nRowMargin INIT 0
+   DATA nColMargin INIT 0
 
    METHOD Define
    METHOD Events_Size
 
    METHOD ContainerVisible
+
+   METHOD RowMargin           SETGET
+   METHOD ColMargin           SETGET
 
    METHOD SetFocus            BLOCK { |Self| ::Container:SetFocus() , ::Container:Value := ::Position , ::Super:SetFocus() }
 ENDCLASS
@@ -572,6 +573,9 @@ Local aArea
    ASSIGN Position VALUE Position TYPE "N" DEFAULT LEN( ::Container:aPages ) + 1
    aArea := _OOHG_TabPage_GetArea( ::Container, Position )
    ::Super:Define( ControlName,, aArea[ 1 ], aArea[ 2 ], aArea[ 3 ], aArea[ 4 ], ParentForm )
+   END WINDOW
+   ::ContainerhWndValue := ::hWnd
+   _OOHG_AddFrame( Self )
 
    ::RowMargin := - aArea[ 2 ]
    ::ColMargin := - aArea[ 1 ]
@@ -599,6 +603,18 @@ LOCAL aRect
    aRect := TabCtrl_GetItemRect( oTab:hWnd, nPosition - 1 )
    aRect := { 2, aRect[ 4 ] + 2, oTab:Width - 2, oTab:Height - 2 }
 RETURN { aRect[ 1 ], aRect[ 2 ], aRect[ 3 ] - aRect[ 1 ], aRect[ 4 ] - aRect[ 2 ] } // { Col, Row, Width, Height }
+
+*-----------------------------------------------------------------------------*
+METHOD RowMargin( nRow ) CLASS TTabPageInternal
+*-----------------------------------------------------------------------------*
+   ASSIGN ::nRowMargin VALUE nRow Type "N"
+RETURN - ::ContainerRow + ::nRowMargin
+
+*-----------------------------------------------------------------------------*
+METHOD ColMargin( nCol ) CLASS TTabPageInternal
+*-----------------------------------------------------------------------------*
+   ASSIGN ::nColMargin VALUE nCol Type "N"
+RETURN - ::ContainerCol + ::nColMargin
 
 
 
