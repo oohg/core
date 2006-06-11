@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.7 2006-06-10 16:37:17 guerra000 Exp $
+ * $Id: h_xbrowse.prg,v 1.8 2006-06-11 19:39:04 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -77,7 +77,7 @@ CLASS TXBROWSE FROM TGrid
    METHOD Refresh
    METHOD RefreshRow
    METHOD MoveTo
-   METHOD Value            SETGET
+   METHOD CurrentRow       SETGET
 
    METHOD SizePos
    METHOD Enabled          SETGET
@@ -101,6 +101,7 @@ CLASS TXBROWSE FROM TGrid
    METHOD EditItem
    METHOD EditItem_B
    METHOD EditCell
+   METHOD EditAllCells
    METHOD GetCellType
 
    METHOD AdjustRightScroll
@@ -249,7 +250,7 @@ Local nRow, nCount, nSkipped
       // No workarea specified...
    ElseIf ! ::lLocked
       nCount := ::CountPerPage
-      ASSIGN nCurrent       VALUE nCurrent       TYPE "N" DEFAULT ::Value
+      ASSIGN nCurrent       VALUE nCurrent       TYPE "N" DEFAULT ::CurrentRow
       ASSIGN lNoEmptyBottom VALUE lNoEmptyBottom TYPE "L" DEFAULT .F.
       nCurrent := MAX( MIN( nCurrent, nCount ), 1 )
       // Top of screen
@@ -285,7 +286,7 @@ Local nRow, nCount, nSkipped
       Else
          nCurrent := nRow
       EndIf
-      ::Value := nCurrent
+      ::CurrentRow := nCurrent
    EndIf
 Return Self
 
@@ -436,7 +437,7 @@ Return uValue
 METHOD MoveTo( nTo, nFrom ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
    If ! ::lLocked
-      ASSIGN nTo   VALUE nTo   TYPE "N" DEFAULT ::Value
+      ASSIGN nTo   VALUE nTo   TYPE "N" DEFAULT ::CurrentRow
       ASSIGN nFrom VALUE nFrom TYPE "N" DEFAULT ::nValue
       nFrom := Max( Min( nFrom, ::ItemCount ), 1 )
       nTo   := Max( Min( nTo,   ::CountPerPage ), 1 )
@@ -458,12 +459,12 @@ METHOD MoveTo( nTo, nFrom ) CLASS TXBrowse
             EndIf
          EndIf
       EndDo
-      ::Value := nFrom
+      ::CurrentRow := nFrom
    EndIf
 Return Self
 
 *-----------------------------------------------------------------------------*
-METHOD Value( nValue ) CLASS TXBrowse
+METHOD CurrentRow( nValue ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
 Local oVScroll, aPosition, cWorkArea
    If ValType( nValue ) == "N" .AND. ! ::lLocked
@@ -640,7 +641,7 @@ Local nvKey
 
    If nNotify == NM_CLICK  .or. nNotify == LVN_BEGINDRAG
       If ! ::lLocked
-         ::MoveTo( ::Value, ::nValue )
+         ::MoveTo( ::CurrentRow, ::nValue )
       Else
          ::Super:Value := ::nValue
       EndIf
@@ -734,7 +735,7 @@ METHOD Up() CLASS TXBrowse
 *-----------------------------------------------------------------------------*
 Local nValue
    If ! ::lLocked .AND. ::DbSkip( -1 ) == -1
-      nValue := ::Value
+      nValue := ::CurrentRow
       If nValue <= 1
          If ::ItemCount >= ::CountPerPage
             ::DeleteItem( ::ItemCount )
@@ -745,7 +746,7 @@ Local nValue
          nValue--
       EndIf
       ::RefreshRow( nValue )
-      ::Value := nValue
+      ::CurrentRow := nValue
    EndIf
 Return Self
 
@@ -754,14 +755,14 @@ METHOD Down() CLASS TXBrowse
 *-----------------------------------------------------------------------------*
 Local nValue
    If ! ::lLocked .AND. ::DbSkip( 1 ) == 1
-      nValue := ::Value
+      nValue := ::CurrentRow
       If nValue >= ::CountPerPage
          ::DeleteItem( 1 )
       Else
          nValue++
       EndIf
       ::RefreshRow( nValue )
-      ::Value := nValue
+      ::CurrentRow := nValue
    ElseIf ::AllowAppend
       ::EditItem( .T. )
    EndIf
@@ -811,19 +812,21 @@ Local cWorkArea
 Return Self
 
 *-----------------------------------------------------------------------------*
-METHOD GoBottom() CLASS TXBrowse
+METHOD GoBottom( lAppend ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
 Local cWorkArea
+   ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
    If ! ::lLocked
       If ValType( ::goBottomBlock ) == "B"
          EVAL( ::goBottomBlock, ::WorkArea )
       Else
          cWorkArea := TXBrowse_GetWorkArea( ::WorkArea )
          If ! Empty( cWorkArea )
-            ( cWorkArea )->( DBGOBOTTOM() )
+            ( cWorkArea )->( DbGoBottom() )
          EndIf
       EndIf
-      ::Refresh( ::CountPerPage )
+      // If it's for APPEND, leaves a blank line ;)
+      ::Refresh( ::CountPerPage - IF( lAppend, 1, 0 ) )
    EndIf
 Return Self
 
@@ -844,7 +847,7 @@ Local cWorkArea, aPosition
          cWorkArea := TXBrowse_GetWorkArea( ::WorkArea )
          If ! Empty( cWorkArea )
             aPosition := TXBrowse_GetPosition( cWorkArea )
-            nPos := nPos * aPosition[ 2 ] / ::VScroll:RangeMax
+            nPos := nPos * aPosition[ 2 ] / VScroll:RangeMax
             #ifdef __XHARBOUR__
                ( ::WorkArea )->( OrdKeyGoTo( nPos ) )
             #else
@@ -867,7 +870,7 @@ METHOD Delete() CLASS TXBrowse
 *-----------------------------------------------------------------------------*
 Local Value, cWorkArea
 
-   Value := ::Value
+   Value := ::CurrentRow
 	If Value == 0
       Return .F.
 	EndIf
@@ -921,9 +924,7 @@ Local cWorkArea, cTitle, z, nOld
 Local uOldValue, oEditControl, cMemVar, bReplaceField
 Local aItems, aEditControls, aMemVars, aReplaceFields
 
-   If ValType( lAppend ) != "L"
-      lAppend := .F.
-   EndIf
+   ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
 
 * TODO: APPEND codeblock...
    cWorkArea := TXBrowse_GetWorkArea( ::WorkArea )
@@ -933,20 +934,13 @@ Local aItems, aEditControls, aMemVars, aReplaceFields
 
    If ::InPlace
       If lAppend
-         // Go bottom
-         If ValType( ::goBottomBlock ) == "B"
-            EVAL( ::goBottomBlock, ::WorkArea )
-         Else
-            ( cWorkArea )->( DBGOBOTTOM() )
-         EndIf
-         ::Refresh( ::CountPerPage - 1 )
-* TODO: APPEND codeblock...
-         ( cWorkArea )->( DbAppend() )
-         ( cWorkArea )->( _OOHG_Eval( ::OnAppend ) )
-         ::RefreshRow( ::ItemCount + 1 )
-         ::Value := ::ItemCount + 1
+         ::GoBottom( .T. )
+         ::InsertBlank( ::ItemCount + 1 )
+         ::CurrentRow := ::ItemCount + 1
+* TODO: APPEND (blank) codeblock...
+         ( cWorkArea )->( DbGoTo( 0 ) )
       EndIf
-      Return ::EditAllCells()
+      Return ::EditAllCells( ,, lAppend )
    EndIf
 
    If lAppend
@@ -990,7 +984,7 @@ Local aItems, aEditControls, aMemVars, aReplaceFields
       EndIf
    EndIf
 
-   aItems := ( cWorkArea )->( ::EditItem2( ::Value, aItems, aEditControls, aMemVars, cTitle ) )
+   aItems := ( cWorkArea )->( ::EditItem2( ::CurrentRow, aItems, aEditControls, aMemVars, cTitle ) )
 
    If ! Empty( aItems )
 
@@ -1031,35 +1025,29 @@ Local aItems, aEditControls, aMemVars, aReplaceFields
 Return .T.
 
 *-----------------------------------------------------------------------------*
-METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar ) CLASS TXBrowse
+METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
-Local lRet, BackRec, bReplaceField, cWorkArea
-   IF ValType( nRow ) != "N"
-      nRow := ::Value
-   ENDIF
-   IF ValType( nCol ) != "N"
-      nCol := 1
-   ENDIF
-   If nRow < 1 .OR. nRow > ::ItemCount() .OR. nCol < 1 .OR. nCol > Len( ::aHeaders )
+Local lRet, bReplaceField, cWorkArea
+   ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
+   ASSIGN nRow    VALUE nRow    TYPE "N" DEFAULT ::CurrentRow
+   ASSIGN nCol    VALUE nCol    TYPE "N" DEFAULT 1
+   If nRow < 1 .OR. nRow > ::ItemCount() + IF( lAppend, 1, 0 ) .OR. nCol < 1 .OR. nCol > Len( ::aHeaders )
       // Cell out of range
       lRet := .F.
-*   ElseIf Select( ::WorkArea ) == 0
-*      // It the specified area does not exists, set recordcount to 0 and return
-*      ::RecCount := 0
-*      lRet := .F.
    ElseIf VALTYPE( ::ReadOnly ) == "A" .AND. Len( ::ReadOnly ) >= nCol .AND. ValType( ::ReadOnly[ nCol ] ) == "L" .AND. ::ReadOnly[ nCol ]
       // Read only column
       PlayHand()
       lRet := .F.
    Else
-
       cWorkArea := TXBrowse_GetWorkArea( ::WorkArea )
 
       // If LOCK clause is present, try to lock.
+      If lAppend
+         //
+
 * TODO: RLOCK codeblock...
-      If ::Lock .AND. ! ( cWorkArea )->( RLock() )
+      ElseIf ::Lock .AND. ! ( cWorkArea )->( RLock() )
          MsgExclamation( _OOHG_Messages( 3, 9 ), _OOHG_Messages( 3, 10 ) )
-         ( cWorkArea )->( DbGoTo( BackRec ) )
          Return .F.
       EndIf
 
@@ -1067,7 +1055,12 @@ Local lRet, BackRec, bReplaceField, cWorkArea
 
       lRet := ::EditCell2( @nRow, @nCol, EditControl, uOldValue, @uValue, cMemVar )
       If lRet
-         _OOHG_EVAL( bReplaceField, uValue, ::WorkArea )
+         If lAppend
+* TODO: APPEND codeblock...
+            ( cWorkArea )->( DbAppend() )
+            ( cWorkArea )->( _OOHG_Eval( ::OnAppend ) )
+         EndIf
+         _OOHG_EVAL( bReplaceField, uValue, cWorkArea )
          ::Refresh()
          _OOHG_EVAL( ::OnEditCell, nRow, nCol )
       EndIf
@@ -1076,6 +1069,33 @@ Local lRet, BackRec, bReplaceField, cWorkArea
          ( cWorkArea )->( DbUnLock() )
          ( cWorkArea )->( DbCommit() )
       EndIf
+   Endif
+Return lRet
+
+*-----------------------------------------------------------------------------*
+METHOD EditAllCells( nRow, nCol, lAppend ) CLASS TXBrowse
+*-----------------------------------------------------------------------------*
+Local lRet
+   ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
+   ASSIGN nRow    VALUE nRow    TYPE "N" DEFAULT ::CurrentRow
+   ASSIGN nCol    VALUE nCol    TYPE "N" DEFAULT 1
+   If nRow < 1 .OR. nRow > ::ItemCount() + IF( lAppend, 1, 0 ) .OR. nCol < 1 .OR. nCol > Len( ::aHeaders )
+      // Cell out of range
+      Return .F.
+   EndIf
+
+   lRet := .T.
+   Do While nCol <= Len( ::aHeaders ) .AND. lRet
+      If VALTYPE( ::ReadOnly ) == "A" .AND. Len( ::ReadOnly ) >= nCol .AND. ValType( ::ReadOnly[ nCol ] ) == "L" .AND. ::ReadOnly[ nCol ]
+         // Read only column
+      Else
+         lRet := ::EditCell( nRow, nCol,,,,, lAppend )
+         lAppend := .F.
+      EndIf
+      nCol++
+   EndDo
+   If lRet // .OR. nCol > Len( ::aHeaders )
+      ListView_Scroll( ::hWnd, - _OOHG_GridArrayWidths( ::hWnd, ::aWidths ), 0 )
    Endif
 Return lRet
 
@@ -1127,6 +1147,7 @@ Local cField, cArea, nPos, aStruct
       EndIf
    Else
       cArea := cField := ""
+      nPos := 0
    EndIf
 
    // Determines control type

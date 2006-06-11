@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.49 2006-06-09 03:32:54 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.50 2006-06-11 19:39:04 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -97,40 +97,22 @@
 
 STATIC _OOHG_BrowseSyncStatus := .F.
 
-CLASS TBrowse FROM TGrid
+CLASS TBrowse FROM TXBrowse
    DATA Type            INIT "BROWSE" READONLY
-   DATA Lock            INIT .F.
-   DATA WorkArea        INIT ""
-   DATA VScroll         INIT nil
-   DATA ScrollButton    INIT nil
-   DATA nValue          INIT 0
    DATA aRecMap         INIT {}
-   DATA AllowAppend     INIT .F.
-   DATA AllowDelete     INIT .F.
    DATA RecCount        INIT 0
-   DATA aFields         INIT {}
    DATA lEof            INIT .F.
-   DATA OnAppend        INIT {}
-   DATA aReplaceField   INIT {}
-   DATA lEditing        INIT .F.
 
    METHOD Define
    METHOD Refresh
-   METHOD SizePos
    METHOD Value               SETGET
-   METHOD Enabled             SETGET
-   METHOD Show
-   METHOD Hide
-   METHOD ForceHide
    METHOD RefreshData
 
    METHOD Events_Enter
    METHOD Events_Notify
 
    METHOD EditCell
-   METHOD EditItem
    METHOD EditItem_B
-   METHOD GetCellType
 
    METHOD BrowseOnChange
    METHOD FastUpdate
@@ -138,13 +120,6 @@ CLASS TBrowse FROM TGrid
    METHOD SetValue
    METHOD Delete
    METHOD UpDate
-   METHOD AdjustRightScroll
-
-   METHOD ColumnWidth
-   METHOD ColumnAutoFit
-   METHOD ColumnAutoFitH
-   METHOD ColumnsAutoFit
-   METHOD ColumnsAutoFitH
 
    METHOD Home
    METHOD End
@@ -152,6 +127,8 @@ CLASS TBrowse FROM TGrid
    METHOD PageDown
    METHOD Up
    METHOD Down
+   MESSAGE GoTop    METHOD Home
+   MESSAGE GoBottom METHOD End
    METHOD SetScrollPos
 ENDCLASS
 
@@ -563,9 +540,10 @@ Local _RecNo , _DeltaScroll
 Return nil
 
 *-----------------------------------------------------------------------------*
-METHOD End() CLASS TBrowse
+METHOD End( lAppend ) CLASS TBrowse
 *-----------------------------------------------------------------------------*
 Local _RecNo , _DeltaScroll , _BottomRec
+   ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
 
    _DeltaScroll := ListView_GetSubItemRect ( ::hWnd, 0 , 0 )
 
@@ -578,7 +556,8 @@ Local _RecNo , _DeltaScroll , _BottomRec
    _BottomRec := ( ::WorkArea )->( RecNo() )
    ::scrollUpdate()
 
-   ( ::WorkArea )->( DbSkip( - LISTVIEWGETCOUNTPERPAGE ( ::hWnd ) + 1 ) )
+   // If it's for APPEND, leaves a blank line ;)
+   ( ::WorkArea )->( DbSkip( - ::CountPerPage + IF( lAppend, 2, 1 ) ) )
    ::Update()
    ListView_Scroll( ::hWnd, _DeltaScroll[2] * (-1) , 0 )
    ( ::WorkArea )->( DbGoTo( _RecNo ) )
@@ -791,284 +770,60 @@ Local Value, nRecNo
 Return Nil
 
 *-----------------------------------------------------------------------------*
-METHOD EditItem( append ) CLASS TBrowse
-*-----------------------------------------------------------------------------*
-Local uRet
-   uRet := nil
-   If ! ::lEditing
-      ::lEditing := .T.
-      If ::VScroll != nil
-         // Kills scrollbar's events...
-         ::VScroll:Enabled := .F.
-         ::VScroll:Enabled := .T.
-      EndIf
-      uRet := ::EditItem_B( append )
-      ::lEditing := .F.
-   EndIf
-Return uRet
-
-*-----------------------------------------------------------------------------*
 METHOD EditItem_B( append ) CLASS TBrowse
 *-----------------------------------------------------------------------------*
-Local nOldRecNo, nNewRecNo, nItem, z, cTitle
-Local aItems, aEditControls, aMemVars, aReplaceFields
-Local oEditControl, uOldValue, cMemVar, bReplaceField
+Local nOldRecNo, nItem, cWorkArea, lRet
 
-   If ValType( append ) != "L"
-      append := .F.
-   EndIf
+   ASSIGN append VALUE append TYPE "L" DEFAULT .F.
 
-   If Select( ::WorkArea ) == 0
+   cWorkArea := ::WorkArea
+   If Select( cWorkArea ) == 0
       ::RecCount := 0
-      Return nil
-	EndIf
+      Return .F.
+   EndIf
 
    nItem := LISTVIEW_GETFIRSTITEM( ::hWnd )
 
    If nItem == 0 .AND. ! append
-      Return Nil
+      Return .F.
    EndIf
 
-   nOldRecNo := ( ::WorkArea )->( RecNo() )
+   nOldRecNo := ( cWorkArea )->( RecNo() )
 
-   If ::InPlace
-
-      If append
-         ( ::WorkArea )->( DbAppend() )
-         nNewRecNo := ( ::WorkArea )->( RecNo() )
-         ::scrollUpdate()
-         ( ::WorkArea )->( _OOHG_Eval( ::OnAppend ) )
-         ( ::WorkArea )->( DbSkip( - LISTVIEWGETCOUNTPERPAGE( ::hWnd ) + 1 ) )
-         ::Update()
-         ( ::WorkArea )->( DbGoTo( nOldRecNo ) )
-         ListView_SetCursel( ::hWnd, ASCAN( ::aRecMap, nNewRecNo ) )
-         ::BrowseOnChange()
-      EndIf
-
-      Return ::EditAllCells()
-
+   If ! append
+      ( cWorkArea )->( DbGoTo( ::aRecMap[ nItem ] ) )
    EndIf
 
-   If append
-      cTitle := _OOHG_Messages( 2, 1 )
-      ( ::WorkArea )->( DbGoTo( 0 ) )
-   Else
-      cTitle := if( ValType( ::cRowEditTitle ) $ "CM", ::cRowEditTitle, _OOHG_Messages( 2, 2 ) )
-      ( ::WorkArea )->( DbGoTo( ::aRecMap[ nItem ] ) )
+   lRet := ::Super:EditItem_B( append )
+
+   If lRet .AND. append
+      nOldRecNo := ( cWorkArea )->( RecNo() )
+      ::Value := nOldRecNo
    EndIf
 
-   aItems := ARRAY( Len( ::aHeaders ) )
-   aEditControls := ARRAY( Len( aItems ) )
-   aMemVars := ARRAY( Len( aItems ) )
-   aReplaceFields := ARRAY( Len( aItems ) )
+   ( cWorkArea )->( DbGoTo( nOldRecNo ) )
 
-   For z := 1 To Len( aItems )
-
-      oEditControl := uOldValue := cMemVar := bReplaceField := nil
-      ::GetCellType( z, @oEditControl, @uOldValue, @cMemVar, @bReplaceField )
-      If ValType( uOldValue ) $ "CM"
-         uOldValue := AllTrim( uOldValue )
-      EndIf
-      // MixedFields??? If field is from other workarea...
-      aEditControls[ z ] := oEditControl
-      aItems[ z ] := uOldValue
-      aMemVars[ z ] := cMemVar
-      aReplaceFields[ z ] := bReplaceField
-
-// MIXEDFIELDS!!!!
-//      If append .AND. MixedFields
-//         MsgOOHGError( _OOHG_Messages( 3, 8 ), _OOHG_Messages( 3, 3 ) )
-//      EndIf
-
-   Next z
-
-   If ::lock .AND. ! append
-      If ! ( ::WorkArea )->( RLock() )
-         MsgExclamation( _OOHG_Messages( 3, 9 ), _OOHG_Messages( 3, 10 ) )
-         ( ::WorkArea )->( DbGoTo( nOldRecNo ) )
-         ::SetFocus()
-         Return Nil
-      EndIf
-   EndIf
-
-   aItems := ( ::WorkArea )->( ::EditItem2( nItem, aItems, aEditControls, aMemVars, cTitle ) )
-
-   If ! Empty( aItems )
-
-      If append
-         ( ::WorkArea )->( DBAppend() )
-         nNewRecNo := ( ::WorkArea )->( RecNo() )
-         ( ::WorkArea )->( _OOHG_Eval( ::OnAppend ) )
-      EndIf
-
-      For z := 1 To Len( aItems )
-
-         If ValType( ::ReadOnly ) == 'A' .AND. Len( ::ReadOnly ) >= z .AND. ValType( ::ReadOnly[ z ] ) == "L" .AND. ::ReadOnly[ z ]
-            // Readonly field
-         Else
-            _OOHG_EVAL( aReplaceFields[ z ], aItems[ z ] )
-         EndIf
-
-      Next z
-
-      If append
-         ::Value := nNewRecNo
-      Else
-         ::Refresh()
-      EndIf
-
-      _OOHG_Eval( ::OnEditCell, 0, 0 )
-
-   EndIf
-
-   If ::Lock
-      ( ::WorkArea )->( DbUnlock() )
-      ( ::WorkArea )->( DbCommit() )
-   EndIf
-
-   ( ::WorkArea )->( DbGoTo( nOldRecNo ) )
-
-   ::SetFocus()
-
-Return Nil
+Return lRet
 
 *-----------------------------------------------------------------------------*
 METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar ) CLASS TBrowse
 *-----------------------------------------------------------------------------*
-Local lRet, BackRec, bReplaceField
-   IF ValType( nRow ) != "N"
-      nRow := LISTVIEW_GETFIRSTITEM( ::hWnd )
-   ENDIF
-   IF ValType( nCol ) != "N"
-      nCol := 1
-   ENDIF
-   If nRow < 1 .OR. nRow > ::ItemCount() .OR. nCol < 1 .OR. nCol > Len( ::aHeaders )
+Local lRet, BackRec
+   ASSIGN nRow VALUE nRow TYPE "N" DEFAULT ::CurrentRow
+   If nRow < 1 .OR. nRow > ::ItemCount()
       // Cell out of range
       lRet := .F.
    ElseIf Select( ::WorkArea ) == 0
       // It the specified area does not exists, set recordcount to 0 and return
       ::RecCount := 0
       lRet := .F.
-   ElseIf VALTYPE( ::ReadOnly ) == "A" .AND. Len( ::ReadOnly ) >= nCol .AND. ValType( ::ReadOnly[ nCol ] ) == "L" .AND. ::ReadOnly[ nCol ]
-      // Read only column
-      PlayHand()
-      lRet := .F.
    Else
-
       BackRec := ( ::WorkArea )->( RecNo() )
       ( ::WorkArea )->( DbGoTo( ::aRecMap[ nRow ] ) )
-
-      // If LOCK clause is present, try to lock.
-      If ::Lock .AND. ! ( ::WorkArea )->( RLock() )
-         MsgExclamation( _OOHG_Messages( 3, 9 ), _OOHG_Messages( 3, 10 ) )
-         ( ::WorkArea )->( DbGoTo( BackRec ) )
-         Return .F.
-      EndIf
-
-      ::GetCellType( nCol, @EditControl, @uOldValue, @cMemVar, @bReplaceField )
-
-      lRet := ::EditCell2( @nRow, @nCol, EditControl, uOldValue, @uValue, cMemVar )
-      If lRet
-         _OOHG_EVAL( bReplaceField, uValue )
-         ::Refresh()
-         _OOHG_EVAL( ::OnEditCell, nRow, nCol )
-      EndIf
-      If ::Lock
-         ( ::WorkArea )->( DbUnLock() )
-         ( ::WorkArea )->( DbCommit() )
-      EndIf
+      lRet := ::Super:EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar )
       ( ::WorkArea )->( DbGoTo( BackRec ) )
    Endif
 Return lRet
-
-*-----------------------------------------------------------------------------*
-METHOD GetCellType( nCol, EditControl, uOldValue, cMemVar, bReplaceField ) CLASS TBrowse
-*-----------------------------------------------------------------------------*
-Local cField, cArea, nPos, aStruct
-
-   If ValType( nCol ) != "N"
-      nCol := 1
-   EndIf
-   If nCol < 1 .OR. nCol > Len( ::aHeaders )
-      // Cell out of range
-      Return .F.
-   EndIf
-
-   If ValType( uOldValue ) == "U"
-      // uOldValue := &( ::WorkArea + "->( " + ::aFields[ nCol ] + " )" )
-      uOldValue := EVAL( TBrowse_UpDate_Block_Direct( ::aFields[ nCol ], ::WorkArea ) )
-   EndIf
-
-   If ValType( ::aReplaceField ) == "A" .AND. Len( ::aReplaceField ) >= nCol
-      bReplaceField := ::aReplaceField[ nCol ]
-   Else
-      bReplaceField := nil
-   EndIf
-
-   // Default cMemVar & bReplaceField
-   If ValType( ::aFields[ nCol ] ) $ "CM"
-      cField := Upper( AllTrim( ::aFields[ nCol ] ) )
-      nPos := At( '->', cField )
-      If nPos != 0 .AND. Select( Trim( Left( cField, nPos - 1 ) ) ) != 0
-         cArea := Trim( Left( cField, nPos - 1 ) )
-         cField := Ltrim( SubStr( cField, nPos + 2 ) )
-      Else
-         cArea := ::WorkArea
-      EndIf
-      aStruct := ( cArea )->( DbStruct() )
-      nPos := aScan( aStruct, { |a| a[ 1 ] == cField } )
-      If nPos == 0
-         cArea := cField := ""
-      Else
-         If ! ValType( cMemVar ) $ "CM" .OR. Empty( cMemVar )
-            cMemVar := "MemVar" + cArea + cField
-         EndIf
-         If ValType( bReplaceField ) != "B"
-            bReplaceField := FieldWBlock( cField, Select( cArea ) )
-         EndIf
-      EndIf
-   Else
-      cArea := cField := ""
-   EndIf
-
-   // Determines control type
-   EditControl := GetEditControlFromArray( EditControl, ::EditControls, nCol, Self )
-   If ValType( EditControl ) != "O"
-      If ValType( ::Picture ) == "A" .AND. Len( ::Picture ) >= nCol
-         If ValType( ::Picture[ nCol ] ) $ "CM"
-            EditControl := TGridControlTextBox():New( ::Picture[ nCol ],, ValType( uOldValue ) )
-         ElseIf ValType( ::Picture[ nCol ] ) == "L" .AND. ::Picture[ nCol ]
-            EditControl := TGridControlImageList():New( Self )
-         EndIf
-      EndIf
-      If ValType( EditControl ) != "O" .AND. nPos != 0
-         // Checks according to field type
-         Do Case
-            Case aStruct[ nPos ][ 2 ] == "N"
-               If aStruct[ nPos ][ 4 ] == 0
-                  EditControl := TGridControlTextBox():New( Replicate( "9", aStruct[ nPos ][ 3 ] ),, "N" )
-               Else
-                  EditControl := TGridControlTextBox():New( Replicate( "9", aStruct[ nPos ][ 3 ] - aStruct[ nPos ][ 4 ] - 1 ) + "." + Replicate( "9", aStruct[ nPos ][ 4 ] ),, "N" )
-               EndIf
-            Case aStruct[ nPos ][ 2 ] == "L"
-               // EditControl := TGridControlCheckBox():New()
-               EditControl := TGridControlLComboBox():New()
-            Case aStruct[ nPos ][ 2 ] == "M"
-               EditControl := TGridControlMemo():New()
-            Case aStruct[ nPos ][ 2 ] == "D"
-               // EditControl := TGridControlDatePicker():New( .T. )
-               EditControl := TGridControlTextBox():New( "@D",, "D" )
-            Case aStruct[ nPos ][ 2 ] == "C"
-               EditControl := TGridControlTextBox():New( "@S" + Ltrim( Str( aStruct[ nPos ][ 3 ] ) ),, "C" )
-            OtherWise
-               // Non-implemented field type!!!
-         EndCase
-      EndIf
-      If ValType( EditControl ) != "O"
-         EditControl := GridControlObjectByType( uOldValue )
-      EndIf
-   EndIf
-Return .T.
 
 #pragma BEGINDUMP
 #define s_Super s_TGrid
@@ -1081,117 +836,7 @@ Return .T.
 #include <commctrl.h>
 #include "../include/oohg.h"
 extern int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam );
-
-// -----------------------------------------------------------------------------
-// METHOD AdjustRightScroll() CLASS TBrowse
-HB_FUNC_STATIC( TBROWSE_ADJUSTRIGHTSCROLL )
-{
-   PHB_ITEM pSelf = hb_stackSelfItem();
-   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
-   LONG lStyle;
-   BOOL bChanged = 0;
-   PHB_ITEM pVScroll, pRet;
-
-   lStyle = GetWindowLong( oSelf->hWnd, GWL_STYLE );
-   if( lStyle & WS_VSCROLL )
-   {
-      bChanged = 1;
-   }
-   else
-   {
-      lStyle = ( lStyle & WS_HSCROLL ) ? 1 : 0;
-      if( lStyle != oSelf->lAux[ 0 ] )
-      {
-         oSelf->lAux[ 0 ] = lStyle;
-
-         _OOHG_Send( pSelf, s_VScroll );
-         hb_vmSend( 0 );
-         pRet = hb_param( -1, HB_IT_OBJECT );
-         if( pRet )
-         {
-            int iHeight;
-
-            pVScroll = hb_itemNew( NULL );
-            hb_itemCopy( pVScroll, pRet );
-
-            _OOHG_Send( pSelf, s_Height );
-            hb_vmSend( 0 );
-            iHeight = hb_parni( -1 );
-
-            if( lStyle )
-            {
-               _OOHG_Send( pVScroll, s_Height );
-               hb_vmPushInteger( iHeight - GetSystemMetrics( SM_CYHSCROLL ) );
-               hb_vmSend( 1 );
-            }
-            else
-            {
-               _OOHG_Send( pVScroll, s_Height );
-               hb_vmPushInteger( iHeight );
-               hb_vmSend( 1 );
-            }
-
-            _OOHG_Send( pSelf, s_ScrollButton );
-            hb_vmSend( 0 );
-            _OOHG_Send( hb_param( -1, HB_IT_OBJECT ), s_Visible );
-            hb_vmPushLogical( lStyle );
-            hb_vmSend( 1 );
-
-            hb_itemRelease( pVScroll );
-         }
-
-         bChanged = 1;
-      }
-   }
-
-   if( bChanged )
-   {
-      _OOHG_Send( pSelf, s_Refresh );
-      hb_vmSend( 0 );
-   }
-   hb_retl( bChanged );
-}
 #pragma ENDDUMP
-
-*-----------------------------------------------------------------------------*
-METHOD ColumnWidth( nColumn, nWidth ) CLASS TBrowse
-*-----------------------------------------------------------------------------*
-Local nRet
-   nRet := ::Super:ColumnWidth( nColumn, nWidth )
-   ::AdjustRightScroll()
-Return nRet
-
-*-----------------------------------------------------------------------------*
-METHOD ColumnAutoFit( nColumn ) CLASS TBrowse
-*-----------------------------------------------------------------------------*
-Local nRet
-   nRet := ::Super:ColumnAutoFit( nColumn )
-   ::AdjustRightScroll()
-Return nRet
-
-*-----------------------------------------------------------------------------*
-METHOD ColumnAutoFitH( nColumn ) CLASS TBrowse
-*-----------------------------------------------------------------------------*
-Local nRet
-   nRet := ::Super:ColumnAutoFitH( nColumn )
-   ::AdjustRightScroll()
-Return nRet
-
-*-----------------------------------------------------------------------------*
-METHOD ColumnsAutoFit() CLASS TBrowse
-*-----------------------------------------------------------------------------*
-Local nRet
-   nRet := ::Super:ColumnsAutoFit()
-   ::AdjustRightScroll()
-Return nRet
-
-*-----------------------------------------------------------------------------*
-METHOD ColumnsAutoFitH() CLASS TBrowse
-*-----------------------------------------------------------------------------*
-Local nRet
-   nRet := ::Super:ColumnsAutoFitH()
-   ::AdjustRightScroll()
-Return nRet
 
 *-----------------------------------------------------------------------------*
 METHOD BrowseOnChange() CLASS TBrowse
@@ -1365,44 +1010,6 @@ Local cWorkArea, hWnd
 Return nil
 
 *-----------------------------------------------------------------------------*
-METHOD SizePos( Row, Col, Width, Height ) CLASS TBrowse
-*-----------------------------------------------------------------------------*
-Local uRet, nWidth
-   ASSIGN ::nRow    VALUE Row    TYPE "N"
-   ASSIGN ::nCol    VALUE Col    TYPE "N"
-   ASSIGN ::nWidth  VALUE Width  TYPE "N"
-   ASSIGN ::nHeight VALUE Height TYPE "N"
-
-   If ::VScroll != nil
-      nWidth := ::VScroll:Width
-
-      If ::lRtl .AND. ! ::Parent:lRtl
-         uRet := MoveWindow( ::hWnd, ::ContainerCol + nWidth, ::ContainerRow, ::nWidth - nWidth, ::nHeight, .T. )
-         ::VScroll:Col      := - nWidth
-         ::ScrollButton:Col := - nWidth
-      Else
-         uRet := MoveWindow( ::hWnd, ::ContainerCol,          ::ContainerRow, ::nWidth - nWidth, ::nHeight, .T. )
-         ::VScroll:Col      := ::Width - ::VScroll:Width
-         ::ScrollButton:Col := ::Width - ::VScroll:Width
-      EndIf
-
-      If IsWindowStyle( ::hWnd, WS_HSCROLL )
-         ::VScroll:Height := ::Height - ::ScrollButton:Height
-      Else
-         ::VScroll:Height := ::Height
-      EndIf
-      ::ScrollButton:Row := ::Height - ::ScrollButton:Height
-      AEVAL( ::aControls, { |o| o:SizePos() } )
-   else
-      uRet := MoveWindow( ::hWnd, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight , .T. )
-   EndIf
-
-   IF ! ::AdjustRightScroll()
-      ::Refresh()
-   ENDIF
-Return uRet
-
-*-----------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TBrowse
 *-----------------------------------------------------------------------------*
 Local nItem
@@ -1422,37 +1029,6 @@ Local nItem
 	EndIf
 RETURN uValue
 
-*------------------------------------------------------------------------------*
-METHOD Enabled( lEnabled ) CLASS TBrowse
-*------------------------------------------------------------------------------*
-   IF VALTYPE( lEnabled ) == "L"
-      ::Super:Enabled := lEnabled
-      AEVAL( ::aControls, { |o| o:Enabled := o:Enabled } )
-   ENDIF
-RETURN ::Super:Enabled
-
-*------------------------------------------------------------------------------*
-METHOD Show() CLASS TBrowse
-*------------------------------------------------------------------------------*
-   ::Super:Show()
-   AEVAL( ::aControls, { |o| o:Show() } )
-   ProcessMessages()
-RETURN nil
-
-*------------------------------------------------------------------------------*
-METHOD Hide() CLASS TBrowse
-*------------------------------------------------------------------------------*
-   ::Super:Hide()
-   AEVAL( ::aControls, { |o| o:Hide() } )
-   ProcessMessages()
-RETURN nil
-
-*------------------------------------------------------------------------------*
-METHOD ForceHide() CLASS TBrowse
-*------------------------------------------------------------------------------*
-   AEVAL( ::aControls, { |o| o:ForceHide() } )
-RETURN ::Super:ForceHide()
-
 *-----------------------------------------------------------------------------*
 METHOD RefreshData() CLASS TBrowse
 *-----------------------------------------------------------------------------*
@@ -1460,10 +1036,8 @@ Local nValue := ::nValue
    IF ValType( nValue ) != "N" .OR. nValue == 0
       ::Refresh()
       ::nValue := ::Value
-   ElseIf ::Value == nValue
-      ::Refresh()
    Else
-      ::Value := nValue
+      ::Refresh()
    ENDIF
 RETURN nil
 
@@ -1517,8 +1091,7 @@ HB_FUNC_STATIC( TBROWSE_EVENTS_NOTIFY )
 FUNCTION TBrowse_Events_Notify2( wParam, lParam )
 Local Self := QSelf()
 Local nNotify := GetNotifyCode( lParam )
-Local nvKey
-Local r, DeltaSelect
+Local nvKey, r, DeltaSelect
 
    If nNotify == NM_CLICK  .or. nNotify == LVN_BEGINDRAG
 
@@ -1602,52 +1175,15 @@ Return ::Super:Events_Notify( wParam, lParam )
 *-----------------------------------------------------------------------------*
 METHOD SetScrollPos( nPos ) CLASS TBrowse
 *-----------------------------------------------------------------------------*
-Local nr , RecordCount , BackRec
-
+Local BackRec
    If Select( ::WorkArea ) != 0
-
       BackRec := ( ::WorkArea )->( RecNo() )
-
-      If ( ::WorkArea )->( OrdKeyCount() ) > 0
-         RecordCount := ( ::WorkArea )->( OrdKeyCount() )
-      Else
-         RecordCount := ( ::WorkArea )->( RecCount() )
-      EndIf
-
-      IF nPos == 1
-         ( ::WorkArea )->( DBGoTop() )
-      ElseIf nPos == ::VScroll:RangeMax
-         ( ::WorkArea )->( DBGoBottom() )
-      Else
-         nr := nPos * RecordCount / ::VScroll:RangeMax
-         #ifdef __XHARBOUR__
-            ( ::WorkArea )->( OrdKeyGoTo( nr ) )
-         #else
-            If nr < ( RecordCount / 2 )
-               ( ::WorkArea )->( DbGoTop() )
-               ( ::WorkArea )->( DbSkip( nr ) )
-            Else
-               ( ::WorkArea )->( DbGoBottom() )
-               ( ::WorkArea )->( DbSkip( nr - RecordCount ) )
-            EndIf
-         #endif
-      ENDIF
-
-      If ( ::WorkArea )->( Eof() )
-         ( ::WorkArea )->( DbSkip( -1 ) )
-      EndIf
-
-      nr := ( ::WorkArea )->( RecNo() )
-
-      ::VScroll:Value := nPos
-
+      ::Super:SetScrollPos( nPos, ::VScroll )
+      ::Value := ( ::WorkArea )->( RecNo() )
       ( ::WorkArea )->( DbGoTo( BackRec ) )
-
-      ::Value := nr
-
+      ::BrowseOnChange()
    EndIf
-
-Return nr
+Return nil
 
 EXTERN INSERTUP, INSERTDOWN, INSERTPRIOR, INSERTNEXT
 

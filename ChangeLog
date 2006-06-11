@@ -1,11 +1,20 @@
 /*
- * $Id: ChangeLog,v 1.170 2006-06-10 16:37:17 guerra000 Exp $
+ * $Id: ChangeLog,v 1.171 2006-06-11 19:39:04 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-06-11 14:38 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_browse.prg
+  * source/h_xbrowse.prg
+    ! Added missing variable initialization.
+    * Changed ::Value method to ::CurrentRow in xBrowse.
+    * TBrowse converted to a TXBrowse's subclass.
+    * APPEND INPLACE must not to create a new record if first
+      cell' edition is cancelled by user (ESC).
 
 2006-06-10 11:37 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_grid.prg
