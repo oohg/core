@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.43 2006-06-10 16:37:17 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.44 2006-06-11 21:11:16 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -793,8 +793,6 @@ Local r, r2, lRet := .F.
          r[ 2 ] += r2[ 1 ] + 3
 
          _SetThisCellInfo( ::hWnd, nRow, nCol )
-
-         r[ 4 ] += 6
 
          EditControl:cMemVar := cMemVar
          If ValType( ::Valid ) == "A" .AND. Len( ::Valid ) >= nCol
@@ -1871,6 +1869,7 @@ CLASS TGridControlTextBox FROM TGridControl
    DATA cType INIT ""
 
    METHOD New
+   METHOD CreateWindow
    METHOD CreateControl
    METHOD Str2Val
    METHOD GridValue
@@ -1899,6 +1898,9 @@ METHOD New( cPicture, cFunction, cType ) CLASS TGridControlTextBox
       ::cMask := "L"
    EndIf
 Return Self
+
+METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize ) CLASS TGridControlTextBox
+Return ::Super:CreateWindow( uValue, nRow - 3, nCol - 3, nWidth + 6, nHeight + 6, cFontName, nFontSize )
 
 METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGridControlTextBox
    If Valtype( uValue ) == "C"
@@ -1989,6 +1991,7 @@ CLASS TGridControlDatePicker FROM TGridControl
    DATA lUpDown
 
    METHOD New
+   METHOD CreateWindow
    METHOD CreateControl
    METHOD Str2Val(uValue)   BLOCK { |Self,uValue| Empty( Self ), CTOD( uValue ) }
    METHOD GridValue(uValue) BLOCK { |Self,uValue| Empty( Self ), DTOC( uValue ) }
@@ -2000,6 +2003,9 @@ METHOD New( lUpDown ) CLASS TGridControlDatePicker
    Endif
    ::lUpDown := lUpDown
 Return Self
+
+METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize ) CLASS TGridControlDatePicker
+Return ::Super:CreateWindow( uValue, nRow - 3, nCol - 3, nWidth + 6, nHeight + 6, cFontName, nFontSize )
 
 METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGridControlDatePicker
    If ValType( uValue ) == "C"
@@ -2019,6 +2025,7 @@ CLASS TGridControlComboBox FROM TGridControl
    DATA oGrid  INIT nil
 
    METHOD New
+   METHOD CreateWindow
    METHOD CreateControl
    METHOD Str2Val
    METHOD GridValue(uValue) BLOCK { |Self,uValue| if( ( uValue >= 1 .AND. uValue <= Len( ::aItems ) ), ::aItems[ uValue ], "" ) }
@@ -2030,6 +2037,9 @@ METHOD New( aItems, oGrid ) CLASS TGridControlComboBox
    EndIf
    ::oGrid := oGrid
 Return Self
+
+METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize ) CLASS TGridControlComboBox
+Return ::Super:CreateWindow( uValue, nRow - 3, nCol - 3, nWidth + 6, nHeight + 6, cFontName, nFontSize )
 
 METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGridControlComboBox
    Empty( nHeight )
@@ -2052,6 +2062,7 @@ CLASS TGridControlSpinner FROM TGridControl
    DATA nRangeMax INIT 100
 
    METHOD New
+   METHOD CreateWindow
    METHOD CreateControl
    METHOD Str2Val(uValue)   BLOCK { |Self,uValue| Empty( Self ), Val( AllTrim( uValue ) ) }
    METHOD GridValue(uValue) BLOCK { |Self,uValue| Empty( Self ), LTrim( Str( uValue ) ) }
@@ -2065,6 +2076,9 @@ METHOD New( nRangeMin, nRangeMax ) CLASS TGridControlSpinner
       ::nRangeMax := nRangeMax
    EndIf
 Return Self
+
+METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize ) CLASS TGridControlSpinner
+Return ::Super:CreateWindow( uValue, nRow - 3, nCol - 3, nWidth + 6, nHeight + 6, cFontName, nFontSize )
 
 METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGridControlSpinner
    If ValType( uValue ) == "C"
@@ -2080,6 +2094,7 @@ CLASS TGridControlCheckBox FROM TGridControl
    DATA cFalse INIT ".F."
 
    METHOD New
+   METHOD CreateWindow
    METHOD CreateControl
    METHOD Str2Val(uValue)   BLOCK { |Self,uValue| ( uValue == ::cTrue .OR. UPPER( uValue ) == ".T." ) }
    METHOD GridValue(uValue) BLOCK { |Self,uValue| If( uValue, ::cTrue, ::cFalse ) }
@@ -2093,6 +2108,9 @@ METHOD New( cTrue, cFalse ) CLASS TGridControlCheckBox
       ::cFalse := cFalse
    EndIf
 Return Self
+
+METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize ) CLASS TGridControlCheckBox
+Return ::Super:CreateWindow( uValue, nRow - 3, nCol - 3, nWidth + 6, nHeight + 6, cFontName, nFontSize )
 
 METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGridControlCheckBox
    If ValType( uValue ) == "C"
@@ -2108,6 +2126,7 @@ CLASS TGridControlImageList FROM TGridControl
    DATA oGrid
 
    METHOD New
+   METHOD CreateWindow
    METHOD CreateControl
    METHOD Str2Val(uValue)   BLOCK { |Self,uValue| Empty( Self ), Val( uValue ) }
    METHOD ControlValue      BLOCK { |Self| ::oControl:Value - 1 }
@@ -2116,6 +2135,9 @@ ENDCLASS
 METHOD New( oGrid ) CLASS TGridControlImageList
    ::oGrid := oGrid
 Return Self
+
+METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize ) CLASS TGridControlImageList
+Return ::Super:CreateWindow( uValue, nRow - 3, nCol - 3, nWidth + 6, nHeight + 6, cFontName, nFontSize )
 
 METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGridControlImageList
    Empty( nHeight )
@@ -2137,6 +2159,7 @@ CLASS TGridControlLComboBox FROM TGridControl
    DATA cFalse INIT ".F."
 
    METHOD New
+   METHOD CreateWindow
    METHOD CreateControl
    METHOD Str2Val(uValue)   BLOCK { |Self,uValue| ( uValue == ::cTrue .OR. UPPER( uValue ) == ".T." ) }
    METHOD GridValue(uValue) BLOCK { |Self,uValue| If( uValue, ::cTrue, ::cFalse ) }
@@ -2151,6 +2174,9 @@ METHOD New( cTrue, cFalse ) CLASS TGridControlLComboBox
       ::cFalse := cFalse
    EndIf
 Return Self
+
+METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize ) CLASS TGridControlLComboBox
+Return ::Super:CreateWindow( uValue, nRow - 3, nCol - 3, nWidth + 6, nHeight + 6, cFontName, nFontSize )
 
 METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGridControlLComboBox
    Empty( nHeight )
