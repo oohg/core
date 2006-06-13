@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.8 2006-06-11 19:39:04 guerra000 Exp $
+ * $Id: h_xbrowse.prg,v 1.9 2006-06-13 03:57:51 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -76,6 +76,7 @@ CLASS TXBROWSE FROM TGrid
    METHOD Define
    METHOD Refresh
    METHOD RefreshRow
+   METHOD ColumnBlock
    METHOD MoveTo
    METHOD CurrentRow       SETGET
 
@@ -293,15 +294,14 @@ Return Self
 *-----------------------------------------------------------------------------*
 METHOD RefreshRow( nRow ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
-Local aItem, cWorkArea, aBlocks
+Local aItem, cWorkArea
    If ! ::lLocked
       cWorkArea := ::WorkArea
       If ValType( cWorkArea ) $ "CM" .AND. Empty( cWorkArea )
          cWorkArea := nil
       EndIf
       aItem := ARRAY( LEN( ::aFields ) )
-      aBlocks := TXBrowse_UpDate_Blocks( Self )
-      AEVAL( aBlocks, { |b,i| aItem[ i ] := EVAL( b, cWorkArea ) } )
+      AEVAL( aItem, { |x,i| aItem[ i ] := EVAL( ::ColumnBlock( i, .F., x ), cWorkArea ) } )
 
       If ::ItemCount < nRow
          If ValType( cWorkArea ) $ "CM"
@@ -319,117 +319,118 @@ Local aItem, cWorkArea, aBlocks
    EndIf
 Return Self
 
-Static Function TXBrowse_UpDate_Blocks( Self )
-Local aBlocks, nCol, nCount, oEditControl, cWorkArea, cValue
-   nCount := LEN( ::aFields )
-   aBlocks := ARRAY( nCount )
+*-----------------------------------------------------------------------------*
+METHOD ColumnBlock( nCol, lDirect ) CLASS TXBrowse
+*-----------------------------------------------------------------------------*
+Local oEditControl, cWorkArea, cValue, uPicture
+Local bRet
+   ASSIGN lDirect VALUE lDirect TYPE "L" DEFAULT .F.
+   IF ! VALTYPE( nCol ) == "N" .OR. nCol < 1 .OR. nCol > LEN( ::aFields )
+      RETURN { || "" }
+   ENDIF
    cWorkArea := ::WorkArea
    If ValType( cWorkArea ) $ "CM" .AND. Empty( cWorkArea )
       cWorkArea := nil
    EndIf
-   For nCol := 1 TO nCount
+   cValue := ::aFields[ nCol ]
+   bRet := nil
+   If ! lDirect
       oEditControl := GetEditControlFromArray( NIL, ::EditControls, nCol, Self )
-      cValue := ::aFields[ nCol ]
       If ValType( oEditControl ) == "O"
-         aBlocks[ nCol ] := TXBrowse_UpDate_Block_EditControl( cValue, cWorkArea, oEditControl )
-      ElseIf ValType( ::Picture[ nCol ] ) $ "CM"
-         aBlocks[ nCol ] := TXBrowse_UpDate_Block_Picture( cValue, cWorkArea, ::Picture[ nCol ] )
-      ElseIf ValType( ::Picture[ nCol ] ) == "L" .AND. ::Picture[ nCol ]
-         aBlocks[ nCol ] := TXBrowse_UpDate_Block_Direct( cValue, cWorkArea )
+         // Edit Control
+         If ValType( cWorkArea ) $ "CM"
+            If ValType( cValue ) == "B"
+               bRet := { |wa| oEditControl:GridValue( ( cWorkArea ) -> ( EVAL( cValue, wa ) ) ) }
+            Else
+               bRet := { || oEditControl:GridValue( ( cWorkArea ) -> ( &( cValue ) ) ) }
+            EndIf
+         Else
+            If ValType( cValue ) == "B"
+               bRet := { |wa| oEditControl:GridValue( EVAL( cValue, wa ) ) }
+            Else
+               bRet := { || oEditControl:GridValue( &( cValue ) ) }
+            EndIf
+         EndIf
       Else
-         aBlocks[ nCol ] := TXBrowse_UpDate_Block_Convert( cValue, cWorkArea )
-      EndIf
-   Next
-Return aBlocks
-
-Static Function TXBrowse_UpDate_Block_EditControl( cValue, cArea, oEditControl )
-Local bBlock
-   If ValType( cArea ) $ "CM"
-      If ValType( cValue ) == "B"
-         bBlock := { |wa| oEditControl:GridValue( ( cArea ) -> ( EVAL( cValue, wa ) ) ) }
-      Else
-         bBlock := { || oEditControl:GridValue( ( cArea ) -> ( &( cValue ) ) ) }
-      EndIf
-   Else
-      If ValType( cValue ) == "B"
-         bBlock := { |wa| oEditControl:GridValue( EVAL( cValue, wa ) ) }
-      Else
-         bBlock := { || oEditControl:GridValue( &( cValue ) ) }
-      EndIf
-   EndIf
-Return bBlock
-
-Static Function TXBrowse_UpDate_Block_Picture( cValue, cArea, cPicture )
-Local bBlock
-   If ValType( cArea ) $ "CM"
-      If ValType( cValue ) == "B"
-         bBlock := { |wa| Trim( Transform( ( cArea ) -> ( EVAL( cValue, wa ) ), cPicture ) ) }
-      Else
-         bBlock := { || Trim( Transform( ( cArea ) -> ( &( cValue ) ), cPicture ) ) }
-      EndIf
-   Else
-      If ValType( cValue ) == "B"
-         bBlock := { |wa| Trim( Transform( EVAL( cValue, wa ), cPicture ) ) }
-      Else
-         bBlock := { || Trim( Transform( &( cValue ), cPicture ) ) }
-      EndIf
-   EndIf
-Return bBlock
-
-Static Function TXBrowse_UpDate_Block_Direct( cValue, cArea )
-Local bBlock
-   If ValType( cArea ) $ "CM"
-      If ValType( cValue ) == "B"
-         bBlock := { |wa| ( cArea ) -> ( EVAL( cValue, wa ) ) }
-      Else
-         // bBlock := { || ( cArea ) -> ( &( cValue ) ) }
-         bBlock := &( " { || " + cArea + " -> ( " + cValue + " ) } " )
-      EndIf
-   Else
-      If ValType( cValue ) == "B"
-         bBlock := cValue
-      Else
-         // bBlock := { || &( cValue ) }
-         bBlock := &( " { || " + cValue + " } " )
+         ASSIGN uPicture VALUE ::Picture TYPE "A" DEFAULT {}
+         uPicture := IF( Len( uPicture ) < nCol, nil, uPicture[ nCol ] )
+         If ValType( uPicture ) $ "CM"
+            // Picture
+            If ValType( cWorkArea ) $ "CM"
+               If ValType( cValue ) == "B"
+                  bRet := { |wa| Trim( Transform( ( cWorkArea ) -> ( EVAL( cValue, wa ) ), uPicture ) ) }
+               Else
+                  bRet := { || Trim( Transform( ( cWorkArea ) -> ( &( cValue ) ), uPicture ) ) }
+               EndIf
+            Else
+               If ValType( cValue ) == "B"
+                  bRet := { |wa| Trim( Transform( EVAL( cValue, wa ), uPicture ) ) }
+               Else
+                  bRet := { || Trim( Transform( &( cValue ), uPicture ) ) }
+               EndIf
+            EndIf
+         ElseIf ValType( uPicture ) == "L" .AND. uPicture
+            // Direct value
+         Else
+            // Convert
+            If ValType( cWorkArea ) $ "CM"
+               If ValType( cValue ) == "B"
+                  bRet := { |wa| TXBrowse_UpDate_PerType( ( cWorkArea ) -> ( EVAL( cValue, wa ) ) ) }
+               Else
+                  // bRet := { || TXBrowse_UpDate_PerType( ( cWorkArea ) -> ( &( cValue ) ) ) }
+                  bRet := &( " { || TXBrowse_UpDate_PerType( " + cWorkArea + " -> ( " + cValue + " ) ) } " )
+               EndIf
+            Else
+               If ValType( cValue ) == "B"
+                  bRet := { |wa| TXBrowse_UpDate_PerType( EVAL( cValue, wa ) ) }
+               Else
+                  // bRet := { || TXBrowse_UpDate_PerType( &( cValue ) ) }
+                  bRet := &( " { || TXBrowse_UpDate_PerType( " + cValue + " ) } " )
+               EndIf
+            EndIf
+         EndIf
       EndIf
    EndIf
-Return bBlock
-
-Static Function TXBrowse_UpDate_Block_Convert( cValue, cArea )
-Local bBlock
-   If ValType( cArea ) $ "CM"
-      If ValType( cValue ) == "B"
-         bBlock := { |wa| TBrowse_UpDate_PerType( ( cArea ) -> ( EVAL( cValue, wa ) ) ) }
+   If bRet == nil
+      // Direct value
+      If ValType( cWorkArea ) $ "CM"
+         If ValType( cValue ) == "B"
+            bRet := { |wa| ( cWorkArea ) -> ( EVAL( cValue, wa ) ) }
+         Else
+            // bRet := { || ( cWorkArea ) -> ( &( cValue ) ) }
+            bRet := &( " { || " + cWorkArea + " -> ( " + cValue + " ) } " )
+         EndIf
       Else
-         // bBlock := { || TBrowse_UpDate_PerType( ( cArea ) -> ( &( cValue ) ) ) }
-         bBlock := &( " { || TBrowse_UpDate_PerType( " + cArea + " -> ( " + cValue + " ) ) } " )
-      EndIf
-   Else
-      If ValType( cValue ) == "B"
-         bBlock := { |wa| TBrowse_UpDate_PerType( EVAL( cValue, wa ) ) }
-      Else
-         // bBlock := { || TBrowse_UpDate_PerType( &( cValue ) ) }
-         bBlock := &( " { || TBrowse_UpDate_PerType( " + cValue + " ) } " )
+         If ValType( cValue ) == "B"
+            bRet := cValue
+         Else
+            // bRet := { || &( cValue ) }
+            bRet := &( " { || " + cValue + " } " )
+         EndIf
       EndIf
    EndIf
-Return bBlock
+Return bRet
 
-Static Function TXBrowse_UpDate_PerType( uValue )
+Function TXBrowse_UpDate_PerType( uValue )
 Local cType := ValType( uValue )
-   If     cType == 'C'
+   If     cType == "C"
       uValue := rTrim( uValue )
-   ElseIf cType == 'N'
+   ElseIf cType == "N"
       uValue := lTrim( Str( uValue ) )
-   ElseIf cType == 'L'
-      uValue := IIF( uValue, '.T.', '.F.' )
-   ElseIf cType == 'D'
+   ElseIf cType == "L"
+      uValue := IIF( uValue, ".T.", ".F." )
+   ElseIf cType == "D"
       uValue := Dtoc( uValue )
-   ElseIf cType == 'M'
+   ElseIf cType == "M"
       uValue := '<Memo>'
-   ElseIf cType == 'A'
+   ElseIf cType == "A"
       uValue := "<Array>"
+   ElseIf cType == "H"
+      uValue := "<Hash>"
+   ElseIf cType == "O"
+      uValue := "<Object>"
    Else
-      uValue := 'Nil'
+      uValue := "Nil"
    EndIf
 Return uValue
 
@@ -936,7 +937,7 @@ Local aItems, aEditControls, aMemVars, aReplaceFields
       If lAppend
          ::GoBottom( .T. )
          ::InsertBlank( ::ItemCount + 1 )
-         ::CurrentRow := ::ItemCount + 1
+         ::CurrentRow := ::ItemCount
 * TODO: APPEND (blank) codeblock...
          ( cWorkArea )->( DbGoTo( 0 ) )
       EndIf
@@ -1031,7 +1032,7 @@ Local lRet, bReplaceField, cWorkArea
    ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
    ASSIGN nRow    VALUE nRow    TYPE "N" DEFAULT ::CurrentRow
    ASSIGN nCol    VALUE nCol    TYPE "N" DEFAULT 1
-   If nRow < 1 .OR. nRow > ::ItemCount() + IF( lAppend, 1, 0 ) .OR. nCol < 1 .OR. nCol > Len( ::aHeaders )
+   If nRow < 1 .OR. nRow > ::ItemCount() .OR. nCol < 1 .OR. nCol > Len( ::aHeaders )
       // Cell out of range
       lRet := .F.
    ElseIf VALTYPE( ::ReadOnly ) == "A" .AND. Len( ::ReadOnly ) >= nCol .AND. ValType( ::ReadOnly[ nCol ] ) == "L" .AND. ::ReadOnly[ nCol ]
@@ -1061,7 +1062,7 @@ Local lRet, bReplaceField, cWorkArea
             ( cWorkArea )->( _OOHG_Eval( ::OnAppend ) )
          EndIf
          _OOHG_EVAL( bReplaceField, uValue, cWorkArea )
-         ::Refresh()
+         ::RefreshRow( nRow )
          _OOHG_EVAL( ::OnEditCell, nRow, nCol )
       EndIf
       If ::Lock
@@ -1079,7 +1080,7 @@ Local lRet
    ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
    ASSIGN nRow    VALUE nRow    TYPE "N" DEFAULT ::CurrentRow
    ASSIGN nCol    VALUE nCol    TYPE "N" DEFAULT 1
-   If nRow < 1 .OR. nRow > ::ItemCount() + IF( lAppend, 1, 0 ) .OR. nCol < 1 .OR. nCol > Len( ::aHeaders )
+   If nRow < 1 .OR. nRow > ::ItemCount() .OR. nCol < 1 .OR. nCol > Len( ::aHeaders )
       // Cell out of range
       Return .F.
    EndIf
@@ -1090,6 +1091,9 @@ Local lRet
          // Read only column
       Else
          lRet := ::EditCell( nRow, nCol,,,,, lAppend )
+         IF ! lRet .AND. lAppend
+            ::GoBottom()
+         ENDIF
          lAppend := .F.
       EndIf
       nCol++
@@ -1114,7 +1118,7 @@ Local cField, cArea, nPos, aStruct
 
    If ValType( uOldValue ) == "U"
       // uOldValue := &( ::WorkArea + "->( " + ::aFields[ nCol ] + " )" )
-      uOldValue := EVAL( TXBrowse_UpDate_Block_Direct( ::aFields[ nCol ], ::WorkArea ) )
+      uOldValue := EVAL( ::ColumnBlock( nCol, .T. ), ::WorkArea )
    EndIf
 
    If ValType( ::aReplaceField ) == "A" .AND. Len( ::aReplaceField ) >= nCol

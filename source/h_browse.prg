@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.50 2006-06-11 19:39:04 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.51 2006-06-13 03:57:51 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -175,7 +175,7 @@ Local nWidth2, nCol2
       nWidth2 := w - GETVSCROLLBARWIDTH()
    ENDIF
 
-   ::Super:Define( ControlName, ParentForm, x, y, nWidth2, h, aHeaders, aWidths, {}, nil, ;
+   ::TGrid:Define( ControlName, ParentForm, x, y, nWidth2, h, aHeaders, aWidths, {}, nil, ;
                    fontname, fontsize, tooltip, , , aHeadClick, , , ;
                    nogrid, aImage, aJust, break, HelpId, bold, italic, underline, strikeout, nil, ;
                    nil, nil, edit, backcolor, fontcolor, dynamicbackcolor, dynamicforecolor, aPicture, ;
@@ -265,7 +265,7 @@ Local lColor, aFields, cWorkArea, hWnd, nWidth
    lColor := ! ( Empty( ::DynamicForeColor ) .AND. Empty( ::DynamicBackColor ) )
    nWidth := LEN( ::aFields )
    aFields := ARRAY( nWidth )
-   AEVAL( ::aFields, { |c,i| aFields[ i ] := TBrowse_UpDate_Block( Self, i, c ) } )
+   AEVAL( ::aFields, { |c,i| aFields[ i ] := ::ColumnBlock( i ), c } )
    hWnd := ::hWnd
 
    ::lEof := .F.
@@ -318,115 +318,6 @@ Local lColor, aFields, cWorkArea, hWnd, nWidth
    ::aRecMap := _BrowseRecMap
 
 Return nil
-
-Static Function TBrowse_UpDate_Block( Self, nColumn, cValue )
-Local bBlock, oEditControl
-   oEditControl := GetEditControlFromArray( NIL, ::EditControls, nColumn, Self )
-   If ValType( oEditControl ) == "O"
-      // bBlock := &( "{ || __aEditControls[ " + LTRIM( STR( nColumn ) ) + " ]:GridValue( " + ::WorkArea + "->( " + cValue + " ) ) }" )
-      bBlock := TBrowse_UpDate_Block_EditControl( cValue, ::WorkArea, oEditControl )
-   ElseIf ValType( ::Picture[ nColumn ] ) $ "CM"
-      // bBlock := &( "{ || Trim( Transform( " + ::WorkArea + "->( " + cValue + " ), __aPicture[ " + LTRIM( STR( nColumn ) ) + " ] ) ) }" )
-      bBlock := TBrowse_UpDate_Block_Picture( cValue, ::WorkArea, ::Picture[ nColumn ] )
-   ElseIf ValType( ::Picture[ nColumn ] ) == "L" .AND. ::Picture[ nColumn ]
-      // bBlock := &( "{ || " + ::WorkArea + "->( " + cValue + " ) }" )
-      bBlock := TBrowse_UpDate_Block_Direct( cValue, ::WorkArea )
-   Else
-      // bBlock := &( "{ || TBrowse_UpDate_PerType( " + ::WorkArea + "->( " + cValue + " ) ) }" )
-      bBlock := TBrowse_UpDate_Block_Convert( cValue, ::WorkArea )
-   EndIf
-Return bBlock
-
-Static Function TBrowse_UpDate_Block_EditControl( cValue, cArea, oEditControl )
-Local bBlock
-   If ! Empty( cArea )
-      If ValType( cValue ) == "B"
-         bBlock := { || oEditControl:GridValue( ( cArea ) -> ( EVAL( cValue ) ) ) }
-      Else
-         bBlock := { || oEditControl:GridValue( ( cArea ) -> ( &( cValue ) ) ) }
-      EndIf
-   Else
-      If ValType( cValue ) == "B"
-         bBlock := { || oEditControl:GridValue( EVAL( cValue ) ) }
-      Else
-         bBlock := { || oEditControl:GridValue( &( cValue ) ) }
-      EndIf
-   EndIf
-Return bBlock
-
-Static Function TBrowse_UpDate_Block_Picture( cValue, cArea, cPicture )
-Local bBlock
-   If ! Empty( cArea )
-      If ValType( cValue ) == "B"
-         bBlock := { || Trim( Transform( ( cArea ) -> ( EVAL( cValue ) ), cPicture ) ) }
-      Else
-         bBlock := { || Trim( Transform( ( cArea ) -> ( &( cValue ) ), cPicture ) ) }
-      EndIf
-   Else
-      If ValType( cValue ) == "B"
-         bBlock := { || Trim( Transform( EVAL( cValue ), cPicture ) ) }
-      Else
-         bBlock := { || Trim( Transform( &( cValue ), cPicture ) ) }
-      EndIf
-   EndIf
-Return bBlock
-
-Static Function TBrowse_UpDate_Block_Direct( cValue, cArea )
-Local bBlock
-   If ! Empty( cArea )
-      If ValType( cValue ) == "B"
-         bBlock := { || ( cArea ) -> ( EVAL( cValue ) ) }
-      Else
-         // bBlock := { || ( cArea ) -> ( &( cValue ) ) }
-         bBlock := &( " { || " + cArea + " -> ( " + cValue + " ) } " )
-      EndIf
-   Else
-      If ValType( cValue ) == "B"
-         bBlock := cValue
-      Else
-         // bBlock := { || &( cValue ) }
-         bBlock := &( " { || " + cValue + " } " )
-      EndIf
-   EndIf
-Return bBlock
-
-Static Function TBrowse_UpDate_Block_Convert( cValue, cArea )
-Local bBlock
-   If ! Empty( cArea )
-      If ValType( cValue ) == "B"
-         bBlock := { || TBrowse_UpDate_PerType( ( cArea ) -> ( EVAL( cValue ) ) ) }
-      Else
-         // bBlock := { || TBrowse_UpDate_PerType( ( cArea ) -> ( &( cValue ) ) ) }
-         bBlock := &( " { || TBrowse_UpDate_PerType( " + cArea + " -> ( " + cValue + " ) ) } " )
-      EndIf
-   Else
-      If ValType( cValue ) == "B"
-         bBlock := { || TBrowse_UpDate_PerType( EVAL( cValue ) ) }
-      Else
-         // bBlock := { || TBrowse_UpDate_PerType( &( cValue ) ) }
-         bBlock := &( " { || TBrowse_UpDate_PerType( " + cValue + " ) } " )
-      EndIf
-   EndIf
-Return bBlock
-
-Function TBrowse_UpDate_PerType( uValue )
-Local cType := ValType( uValue )
-   If     cType == 'C'
-      uValue := rTrim( uValue )
-   ElseIf cType == 'N'
-      uValue := lTrim( Str( uValue ) )
-   ElseIf cType == 'L'
-      uValue := IIF( uValue, '.T.', '.F.' )
-   ElseIf cType == 'D'
-      uValue := Dtoc( uValue )
-   ElseIf cType == 'M'
-      uValue := '<Memo>'
-   ElseIf cType == 'A'
-      uValue := "<Array>"
-   Else
-      uValue := 'Nil'
-   EndIf
-Return uValue
 
 *-----------------------------------------------------------------------------*
 METHOD PageDown() CLASS TBrowse
@@ -806,10 +697,11 @@ Local nOldRecNo, nItem, cWorkArea, lRet
 Return lRet
 
 *-----------------------------------------------------------------------------*
-METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar ) CLASS TBrowse
+METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend ) CLASS TBrowse
 *-----------------------------------------------------------------------------*
 Local lRet, BackRec
-   ASSIGN nRow VALUE nRow TYPE "N" DEFAULT ::CurrentRow
+   ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
+   ASSIGN nRow    VALUE nRow    TYPE "N" DEFAULT ::CurrentRow
    If nRow < 1 .OR. nRow > ::ItemCount()
       // Cell out of range
       lRet := .F.
@@ -819,8 +711,15 @@ Local lRet, BackRec
       lRet := .F.
    Else
       BackRec := ( ::WorkArea )->( RecNo() )
-      ( ::WorkArea )->( DbGoTo( ::aRecMap[ nRow ] ) )
-      lRet := ::Super:EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar )
+      IF lAppend
+         ( ::WorkArea )->( DbGoTo( 0 ) )
+      Else
+         ( ::WorkArea )->( DbGoTo( ::aRecMap[ nRow ] ) )
+      EndIf
+      lRet := ::Super:EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend )
+      If lRet .AND. lAppend
+         AADD( ::aRecMap, ( ::WorkArea )->( RecNo() ) )
+      EndIf
       ( ::WorkArea )->( DbGoTo( BackRec ) )
    Endif
 Return lRet
