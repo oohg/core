@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.9 2006-06-13 03:57:51 guerra000 Exp $
+ * $Id: h_xbrowse.prg,v 1.10 2006-06-14 03:26:02 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -755,7 +755,9 @@ Return Self
 METHOD Down() CLASS TXBrowse
 *-----------------------------------------------------------------------------*
 Local nValue
-   If ! ::lLocked .AND. ::DbSkip( 1 ) == 1
+   If ::lEditing .OR. ::lLocked
+      // Do not move
+   ElseIf ::DbSkip( 1 ) == 1
       nValue := ::CurrentRow
       If nValue >= ::CountPerPage
          ::DeleteItem( 1 )
@@ -781,7 +783,9 @@ Return Self
 METHOD PageDown() CLASS TXBrowse
 *-----------------------------------------------------------------------------*
 Local nSkip, nCountPerPage
-   If ! ::lLocked
+   If ::lEditing .OR. ::lLocked
+      // Do not move
+   Else
       nCountPerPage := ::CountPerPage
       nSkip := ::DbSkip( nCountPerPage )
       If nSkip != nCountPerPage
@@ -1085,6 +1089,7 @@ Local lRet
       Return .F.
    EndIf
 
+*   DO EVENTS
    lRet := .T.
    Do While nCol <= Len( ::aHeaders ) .AND. lRet
       If VALTYPE( ::ReadOnly ) == "A" .AND. Len( ::ReadOnly ) >= nCol .AND. ValType( ::ReadOnly[ nCol ] ) == "L" .AND. ::ReadOnly[ nCol ]
