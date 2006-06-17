@@ -1,11 +1,18 @@
 /*
- * $Id: ChangeLog,v 1.174 2006-06-14 03:26:01 guerra000 Exp $
+ * $Id: ChangeLog,v 1.175 2006-06-17 02:52:27 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-06-16 21:52 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_timer.prg
+    * Checks timers for not to re-enable an enabled timer, and not
+      re-disable a disabled timer.
+    * Disabled timers are not re-enabled when a new value is assigned
+      (they must be re-enabled with an ::Enabled := .T.  call).
 
 2006-06-13 22:26 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_xbrowse.prg

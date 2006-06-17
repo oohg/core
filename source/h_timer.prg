@@ -1,5 +1,5 @@
 /*
- * $Id: h_timer.prg,v 1.3 2006-02-11 06:19:33 guerra000 Exp $
+ * $Id: h_timer.prg,v 1.4 2006-06-17 02:52:27 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -107,34 +107,36 @@ ENDCLASS
 *-----------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, Interval, ProcedureName ) CLASS TTimer
 *-----------------------------------------------------------------------------*
-Local id
+Local Id
 
    ::SetForm( ControlName, ParentForm )
 
-	Id := _GetId()
-   InitTimer( ::Parent:hWnd, id , Interval )
+   Id := _GetId()
+   InitTimer( ::Parent:hWnd, id, Interval )
 
    ::Register( 0, ControlName, , , , Id )
 
-   ::OnClick := ProcedureName
-   ::Interval :=  Interval
+   ::OnClick  := ProcedureName
+   ::Interval := Interval
 
 Return Self
 
 *-----------------------------------------------------------------------------*
 METHOD Value( nValue ) CLASS TTimer
 *-----------------------------------------------------------------------------*
-   IF VALTYPE( nValue ) == "N"
-      KillTimer( ::Parent:hWnd, ::Id )
-      InitTimer( ::Parent:hWnd, ::Id, nValue )
+   If VALTYPE( nValue ) == "N"
+      If ::lEnabled
+         KillTimer( ::Parent:hWnd, ::Id )
+         InitTimer( ::Parent:hWnd, ::Id, nValue )
+      EndIf
       ::Interval := nValue
-   ENDIF
+   EndIf
 RETURN ::Interval
 
 *-----------------------------------------------------------------------------*
 METHOD Enabled( lEnabled ) CLASS TTimer
 *-----------------------------------------------------------------------------*
-   IF VALTYPE( lEnabled ) == "L"
+   IF VALTYPE( lEnabled ) == "L" .AND. ::lEnabled != lEnabled
       IF lEnabled
          InitTimer( ::Parent:hWnd, ::Id, ::Interval )
       ELSE
@@ -147,7 +149,8 @@ RETURN ::lEnabled
 *-----------------------------------------------------------------------------*
 METHOD Release() CLASS TTimer
 *-----------------------------------------------------------------------------*
-
-   KillTimer( ::Parent:hWnd, ::Id )
-
+   If ::lEnabled
+      KillTimer( ::Parent:hWnd, ::Id )
+   EndIf
+   ::lEnabled := .F.
 RETURN ::Super:Release()
