@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.4 2006-04-09 14:58:19 declan2005 Exp $
+ * $Id: winprint.prg,v 1.5 2006-06-19 16:23:53 declan2005 Exp $
  */
 // -----------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -1379,8 +1379,8 @@ local i:=1,pi:=1,wl, oHBPreview
 ,"Paginas:";
 ,"Zoom Maximo/Minimo";
 ,"Opciones de Impresion";
-,"Imprimir Desde";
-,"Hasta";
+,"Imprimir De";
+,"a";
 ,"Copias";
 ,"Imprimir rango";
 ,"Todo a partir de desde";
