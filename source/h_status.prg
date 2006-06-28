@@ -1,5 +1,5 @@
 /*
- * $Id: h_status.prg,v 1.11 2006-02-11 06:19:33 guerra000 Exp $
+ * $Id: h_status.prg,v 1.12 2006-06-28 03:42:13 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -107,6 +107,7 @@ CLASS TMessageBar FROM TControl
    METHOD Item
    METHOD Events_Notify
    METHOD Events_Size
+   METHOD RefreshData
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -162,6 +163,9 @@ Local ControlHandle
 *      ::SetDate()
    ENDIF
 
+   // Add to browselist array to update on window activation
+   aAdd( ::Parent:BrowseList, Self )
+
 Return Self
 /*
 AGREGAR: lTop!!!  acImages!!!
@@ -198,7 +202,7 @@ local nrItem, oTimer
    oTimer := TTimer():Define( 'StatusTimer' , ::Parent:Name , 1000 , { || ::Item( nrItem , Time() ) } )
 
    oTimer:Container := Self
-   ::AddControl( oTimer )
+   ::aControls[ nrItem ]:AddControl( oTimer )
 
 Return Nil
 
@@ -232,7 +236,7 @@ local nrItem1 , nrItem2 , nrItem3 , oTimer
           SetStatusItemIcon( ::hWnd, nrItem3 , if ( IsInsertActive() , "zzz_led_on" , "zzz_led_off" ) ) } )
 
    oTimer:Container := Self
-   ::AddControl( oTimer )
+   ::aControls[ nrItem1 ]:AddControl( oTimer )
 
 Return Nil
 
@@ -276,11 +280,20 @@ Return ::Super:Events_Notify( wParam, lParam )
 *-----------------------------------------------------------------------------*
 METHOD Events_Size() CLASS TMessageBar
 *-----------------------------------------------------------------------------*
-   RefreshItemBar( ::hWnd, ::Parent:hWnd )
+   ::RefreshData()
+Return Super:Events_Size()
+
+*-----------------------------------------------------------------------------*
+METHOD RefreshData() CLASS TMessageBar
+*-----------------------------------------------------------------------------*
+Local aWidths
+   aWidths := ARRAY( LEN( ::aControls ) )
+   AEVAL( ::aControls, { |o,i| aWidths[ i ] := o:Width } )
+   RefreshItemBar( ::hWnd, aWidths )
    IF LEN( ::aControls ) > 0
       ::aControls[ 1 ]:Width := GetItemWidth( ::hWnd, 1 )
    ENDIF
-Return Super:Events_Size()
+Return Self
 
 *-----------------------------------------------------------------------------*
 Function _EndMessageBar()
@@ -391,3 +404,247 @@ Return _OOHG_ActiveMessageBar:SetClock( nSize, cToolTip, uAction )
 
 FUNCTION _SetStatusKeybrd( nSize, cToolTip, uAction )
 Return _OOHG_ActiveMessageBar:SetKeybrd( nSize, cToolTip, uAction )
+
+
+
+
+
+EXTERN InitMessageBar, InitItemBar, SetItemBar
+EXTERN GetItemBar, GetItemCount, GetItemWidth, RefreshItemBar, KeyToggle, SetStatusItemIcon
+
+#pragma BEGINDUMP
+// #include <shlobj.h>
+
+#include <windows.h>
+#include <commctrl.h>
+#include "hbapi.h"
+// #include "hbvm.h"
+// #include "hbstack.h"
+// #include "hbapiitm.h"
+// #include "winreg.h"
+// #include "tchar.h"
+// #include <stdlib.h>
+
+#include "../include/oohg.h"
+
+#define NUM_OF_PARTS 40
+
+HB_FUNC( INITMESSAGEBAR )
+{
+    HWND hwnd;
+    HWND hWndSB;
+    int   ptArray[ NUM_OF_PARTS ];   // Array defining the number of parts/sections
+    int  nrOfParts = 1;
+    int  iStyle;
+
+    hwnd = HWNDparam( 1 );
+
+    iStyle = WS_CHILD | WS_VISIBLE | WS_BORDER | SBT_TOOLTIPS;
+    if( hb_parl( 4 ) )
+    {
+       iStyle |= CCS_TOP;
+    }
+
+    hWndSB = CreateStatusWindow( iStyle, hb_parc(2), hwnd, hb_parni (3));
+    if(hWndSB)
+    {
+	SendMessage(hWndSB, SB_SETPARTS, nrOfParts,  (LPARAM)(LPINT)ptArray);
+    }
+
+    HWNDret( hWndSB );
+}
+//--------------------------------------------------------
+
+//void InitializeStatusBar(HWND hWndStatusbar, char *cMsg, int nSize, int nMsg)
+
+HB_FUNC( INITITEMBAR )
+{
+    HWND  hWndSB;
+	int   cSpaceInBetween = 8;
+   int   ptArray[ NUM_OF_PARTS ];   // Array defining the number of parts/sections
+	int   nrOfParts = 0;
+    int   n ;
+	RECT  rect;
+	HDC   hDC;
+	WORD  displayFlags;
+    HICON hIcon;
+	int   cx;
+	int   cy;
+
+    hWndSB = HWNDparam( 1 );
+      switch(hb_parni(8))
+      {
+         case  0:  displayFlags = 0 ; break;
+         case  1:  displayFlags = SBT_POPOUT ; break;
+         case  2:  displayFlags = SBT_NOBORDERS ; break;
+         default : displayFlags = 0;
+      }
+
+
+    if ( hb_parnl (5)) {
+       nrOfParts = SendMessage( hWndSB, SB_GETPARTS, 0, 0 );
+      SendMessage(hWndSB,SB_GETPARTS, NUM_OF_PARTS, (LPARAM)(LPINT)ptArray);
+	}
+    nrOfParts ++ ;
+
+
+    hDC = GetDC(hWndSB);
+    GetClientRect(hWndSB, &rect);
+
+    if (hb_parnl (5) == 0){
+	    ptArray[nrOfParts-1] = rect.right;
+    	}
+    else {
+
+        for ( n = 0 ; n < nrOfParts-1  ; n++)
+            {
+	        ptArray[n] -=  hb_parni (4) - cSpaceInBetween ;
+	        }
+	    ptArray[nrOfParts-1] = rect.right;
+    }
+
+	ReleaseDC(hWndSB, hDC);
+
+	SendMessage(hWndSB,  SB_SETPARTS, nrOfParts,(LPARAM)(LPINT)ptArray);
+
+	cy = rect.bottom - rect.top-4;
+	cx = cy;
+
+	hIcon = (HICON)LoadImage(0, hb_parc(6),IMAGE_ICON ,cx,cy , LR_LOADFROMFILE );
+
+	if (hIcon==NULL)
+	{
+		hIcon = (HICON)LoadImage(GetModuleHandle(NULL),hb_parc(6),IMAGE_ICON ,cx,cy, 0 );
+	}
+
+	if (!(hIcon ==NULL))
+	{
+		SendMessage(hWndSB,SB_SETICON,(WPARAM)nrOfParts-1, (LPARAM)hIcon );
+	}
+
+	SendMessage(hWndSB, SB_SETTEXT, nrOfParts-1 | displayFlags, (LPARAM) hb_parc (2));
+	SendMessage(hWndSB, SB_SETTIPTEXT,(WPARAM)nrOfParts-1, (LPARAM) hb_parc (7));
+
+	hb_retni( nrOfParts );
+
+}
+
+HB_FUNC( SETITEMBAR )
+{
+    SendMessage( HWNDparam( 1 ), SB_SETTEXT, hb_parni( 3 ) , ( LPARAM ) hb_parc( 2 ) );
+}
+
+HB_FUNC( GETITEMBAR )
+{
+    char cString[ 1024 ] = "";
+    SendMessage( HWNDparam( 1 ), SB_GETTEXT, ( WPARAM ) hb_parni( 2 ) - 1, ( LPARAM ) cString );
+    hb_retc( cString );
+}
+
+HB_FUNC( GETITEMCOUNT )
+{
+    hb_retni( SendMessage( HWNDparam( 1 ), SB_GETPARTS, 0, 0 ) );
+}
+
+HB_FUNC( GETITEMWIDTH )
+{
+   HWND  hWnd;
+   int   *piItems;
+   unsigned int iItems, iSize, iPos;
+
+   hWnd = HWNDparam( 1 );
+   iPos = hb_parni( 2 );
+   iItems = SendMessage( hWnd, SB_GETPARTS, 0, 0 );
+   iSize = 0;
+   if( iItems != 0 && iPos <= iItems )
+   {
+      piItems = hb_xgrab( sizeof( int ) * iItems );
+      SendMessage( hWnd, SB_GETPARTS, iItems, ( LPARAM ) piItems );
+      if( iPos == 1 )
+      {
+         iSize = piItems[ iPos - 1 ];
+      }
+      else
+      {
+         iSize = piItems[ iPos - 1 ] - piItems[ iPos - 2 ];
+      }
+      hb_xfree( piItems );
+   }
+   hb_retni( iSize );
+}
+
+HB_FUNC( REFRESHITEMBAR )   // ( hWnd, Parent:hWnd, aWidths )
+{
+   HWND  hWnd;
+   int   *piItems;
+   int   iItems, iWidth, iCount;
+   RECT  rect;
+
+   hWnd = HWNDparam( 1 );
+   iItems = SendMessage( hWnd, SB_GETPARTS, 0, 0 );
+   if( iItems != 0 )
+   {
+      GetWindowRect( hWnd, &rect );
+      iWidth = rect.right - rect.left;
+
+      piItems = hb_xgrab( sizeof( int ) * iItems );
+      for( iCount = iItems; iCount >= 1; iCount-- )
+      {
+         piItems[ iCount - 1 ] = iWidth;
+         iWidth -= hb_parni( 2, iCount );
+      }
+      SendMessage( hWnd, SB_SETPARTS, iItems, ( LPARAM ) piItems );
+      MoveWindow( hWnd, 0, 0, 0, 0, TRUE );
+      hb_xfree( piItems );
+   }
+   hb_retni( iItems );
+}
+
+HB_FUNC ( KEYTOGGLE )
+{
+   BYTE pBuffer[ 256 ];
+   WORD wKey = ( WORD ) hb_parni( 1 );
+
+   GetKeyboardState( pBuffer );
+
+   if( pBuffer[ wKey ] & 0x01 )
+      pBuffer[ wKey ] &= 0xFE;
+   else
+      pBuffer[ wKey ] |= 0x01;
+
+   SetKeyboardState( pBuffer );
+}
+
+HB_FUNC_EXTERN( SETSTATUSITEMICON )
+{
+
+	HWND  hwnd;
+	RECT  rect;
+	HICON hIcon ;
+	int   cx;
+	int   cy;
+
+    hwnd = HWNDparam( 1 );
+
+	// Unloads from memory current icon
+
+	DestroyIcon ( (HICON) SendMessage(hwnd,SB_GETICON,(WPARAM) hb_parni(2)-1, (LPARAM) 0 ) ) ;
+
+	//
+
+	GetClientRect(hwnd, &rect);
+
+	cy = rect.bottom - rect.top-4;
+	cx = cy;
+
+	hIcon = (HICON)LoadImage(GetModuleHandle(NULL),hb_parc(3),IMAGE_ICON ,cx,cy, 0 );
+
+	if (hIcon==NULL)
+	{
+		hIcon = (HICON)LoadImage(0, hb_parc(3),IMAGE_ICON ,cx,cy, LR_LOADFROMFILE );
+	}
+
+	SendMessage(hwnd,SB_SETICON,(WPARAM) hb_parni(2)-1, (LPARAM)hIcon );
+
+}
+#pragma ENDDUMP

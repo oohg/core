@@ -1,11 +1,19 @@
 /*
- * $Id: ChangeLog,v 1.176 2006-06-19 17:15:22 declan2005 Exp $
+ * $Id: ChangeLog,v 1.177 2006-06-28 03:42:12 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-06-27 22:42 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  - source/c_status.c
+  * source/h_status.prg
+  * source/makelib.bat
+    ! Fixed statusbar's bug when minimizing window.
+    * Moved source code from c_status.c to h_status.prg .
+    - c_status.c removed.
 
 2006-06-19 11:18 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source/winprint.prg
@@ -134,9 +142,6 @@
     * Moved ::Events_VScroll() and ::Events_HScroll() methods
       to TWindow.
     * Fixed scroll's skip for PAGE skip.
-
-/* Al darle click en el scrollbar de un FORM, se mueve una pantalla entera */
-
     * WM_HSCROLL and WM_VSCROLL event handling moved to TWindow.
     * ::ContainerRow, ::ContainerCol and ::ContainerhWnd methods
       now in TForm.
@@ -169,21 +174,6 @@
       NAME clause sets a new FORM name to TabPage. OBJ clause
       stores TabPage object on any variable.
    */
-
-/* SUBCLASS: Para poder aplicar subclases con la sintaxis tradicional,
-   sin necesidad de volver a definir el comando. Por ejemplo,
-
-   ...
-   CLASS MiBoton FROM TButton
-   ...
-   ENDCLASS
-   ...
-   @ ... BUTTON ... SUBCLASS MiBoton
-   ...
-
-   El control será definido de MiBoton() en vez de TButton() (hay que
-   aplicarlo a todos los controles, y las ventanas).
- */
 
 2006-05-29 20:50 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/c_grid.c
