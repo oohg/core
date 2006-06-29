@@ -1,11 +1,18 @@
 /*
- * $Id: ChangeLog,v 1.177 2006-06-28 03:42:12 guerra000 Exp $
+ * $Id: ChangeLog,v 1.178 2006-06-29 14:24:03 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-06-29 09:24 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_status.prg
+    ! Fixed (hacked :( ) refresh statusbar when it comes back from
+      minimized to maximized window.
+  * ./compile.bat
+    * Changed GTGUI library instead of GTWIN (for non-debug compilation).
 
 2006-06-27 22:42 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   - source/c_status.c

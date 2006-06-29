@@ -1,5 +1,5 @@
 /*
- * $Id: h_status.prg,v 1.12 2006-06-28 03:42:13 guerra000 Exp $
+ * $Id: h_status.prg,v 1.13 2006-06-29 14:24:04 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -573,7 +573,7 @@ HB_FUNC( GETITEMWIDTH )
    hb_retni( iSize );
 }
 
-HB_FUNC( REFRESHITEMBAR )   // ( hWnd, Parent:hWnd, aWidths )
+HB_FUNC( REFRESHITEMBAR )   // ( hWnd, aWidths )
 {
    HWND  hWnd;
    int   *piItems;
@@ -586,6 +586,11 @@ HB_FUNC( REFRESHITEMBAR )   // ( hWnd, Parent:hWnd, aWidths )
    {
       GetWindowRect( hWnd, &rect );
       iWidth = rect.right - rect.left;
+      if( iWidth == 0 )    // HACK to force show :(
+      {
+         GetWindowRect( GetParent( hWnd ), &rect );
+         iWidth = rect.right - rect.left;
+      }
 
       piItems = hb_xgrab( sizeof( int ) * iItems );
       for( iCount = iItems; iCount >= 1; iCount-- )

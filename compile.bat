@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: compile.bat,v 1.10 2006-03-15 06:36:32 guerra000 Exp $
+rem $Id: compile.bat,v 1.11 2006-06-29 14:24:04 guerra000 Exp $
 rem
 cls
 
@@ -11,12 +11,14 @@ IF "%HG_ROOT%"=="" SET HG_ROOT=c:\oohg
 IF "%HG_HRB%"==""  SET HG_HRB=c:\harbour
 
 if exist %1.exe del %1.exe
+SET HG_USE_GT=gtwin
 
 Rem Debug Compile
 
 for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/d" GOTO DEBUG_COMP
 for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/D" GOTO DEBUG_COMP
 
+if exist %HG_HRB%\lib\gtgui.lib SET HG_USE_GT=gtgui
 %HG_HRB%\bin\harbour %1.prg -n -i%HG_HRB%\include;%HG_ROOT%\include; %2 %3
 
 GOTO C_COMP
@@ -44,7 +46,7 @@ echo %1.map, + >> b32.bc
 echo %HG_ROOT%\lib\oohg.lib + >> b32.bc
 
 Rem *** Compiler libraries ***
-for %%a in (rtl vm gtwin lang codepage macro rdd dbfntx dbfcdx dbffpt common debug pp) do echo %HG_HRB%\lib\%%a.lib + >> b32.bc
+for %%a in (rtl vm %HG_USE_GT% lang codepage macro rdd dbfntx dbfcdx dbffpt common debug pp) do echo %HG_HRB%\lib\%%a.lib + >> b32.bc
 
 Rem *** Compiler-dependant libraries ***
 if exist %HG_HRB%\lib\dbfdbt.lib  echo %HG_HRB%\lib\dbfdbt.lib + >> b32.bc
