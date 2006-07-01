@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.h,v 1.27 2006-06-06 02:59:34 guerra000 Exp $
+ * $Id: oohg.h,v 1.28 2006-07-01 15:53:47 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -49,8 +49,10 @@
  *
  */
 
-#define HWNDparam( pos )     ( ( HWND ) hb_parnl( pos ) )
-#define HWNDret( hwnd )      ( hb_retnl( ( long ) hwnd ) )
+#define HWNDparam( pos )          ( ( HWND ) hb_parnl( pos ) )
+#define HWNDret( hWnd )           ( hb_retnl( ( long ) hWnd ) )
+#define ValidHandler( hWnd )      ( ( hWnd ) != 0 && ( HWND )( hWnd ) != ( HWND )( ~0 ) )
+#define HWNDpush( hWnd )          ( hb_vmPushLong( ( long ) hWnd ) )
 
 struct IMAGE_PARAMETER {
    char *cString;

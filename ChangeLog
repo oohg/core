@@ -1,11 +1,25 @@
 /*
- * $Id: ChangeLog,v 1.178 2006-06-29 14:24:03 guerra000 Exp $
+ * $Id: ChangeLog,v 1.179 2006-07-01 15:53:46 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-07-01 10:53 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_xbrowse.prg
+    + ooHGRegister() class added. A mini-TDBF class.
+    * Auto-ooHGRegister implemented in XBrowse.
+    ! Fixed cell edition when database is empty and record is edited.
+  * include/oohg.h
+    + ValidHandler() and HWNDpush() macros added.
+  * source/h_windows.prg
+    + ValidHandler() function added.
+    + Checks for not try to close a previous-closed form.
+  * source/c_windows.c
+    + Added hbvmpub.h and hbapicls.h include files in c_windows.c
+      for avoid compilation error in HARBOUR.
 
 2006-06-29 09:24 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_status.prg

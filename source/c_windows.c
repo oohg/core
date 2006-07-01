@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.44 2006-06-03 20:30:45 guerra000 Exp $
+ * $Id: c_windows.c,v 1.45 2006-07-01 15:53:47 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -119,6 +119,10 @@
 #include "hbvm.h"
 #include "hbstack.h"
 #include "hbapiitm.h"
+#ifndef __XHARBOUR__
+   #include "hbvmpub.h"
+   #include "hbapicls.h"
+#endif
 #include "winreg.h"
 #include "tchar.h"
 #include <commctrl.h>

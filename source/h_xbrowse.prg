@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.10 2006-06-14 03:26:02 guerra000 Exp $
+ * $Id: h_xbrowse.prg,v 1.11 2006-07-01 15:53:47 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -56,7 +56,8 @@
 CLASS TXBROWSE FROM TGrid
    DATA Type              INIT "XBROWSE" READONLY
    DATA aFields           INIT nil
-   DATA WorkArea          INIT nil
+   DATA oWorkArea         INIT nil
+   DATA uWorkArea         INIT nil
    DATA VScroll           INIT nil
    DATA ScrollButton      INIT nil
    DATA nValue            INIT 0
@@ -69,8 +70,6 @@ CLASS TXBROWSE FROM TGrid
    DATA skipBlock         INIT nil
    DATA goTopBlock        INIT nil
    DATA goBottomBlock     INIT nil
-   DATA getPositionBlock  INIT nil
-   DATA setPositionBlock  INIT nil
    DATA lLocked           INIT .F.
 
    METHOD Define
@@ -113,6 +112,8 @@ CLASS TXBROWSE FROM TGrid
    METHOD ColumnsAutoFit
    METHOD ColumnsAutoFitH
 
+   METHOD WorkArea         SETGET
+
 /* from grid:
    METHOD AddColumn
    METHOD DeleteColumn
@@ -133,12 +134,6 @@ CLASS TXBROWSE FROM TGrid
 */
 ENDCLASS
 
-Static Function TXBrowse_GetWorkArea( cWorkArea )
-   If ! ValType( cWorkArea ) $ "CM" .OR. Empty( cWorkArea )
-      cWorkArea := ALIAS()
-   EndIf
-Return cWorkArea
-
 *-----------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                aFields, WorkArea, value, AllowDelete, lock, novscroll, ;
@@ -154,9 +149,8 @@ Local nWidth2, nCol2, lLocked
    ASSIGN ::WorkArea VALUE WorkArea TYPE "CMO"
    ASSIGN ::aFields  VALUE aFields  TYPE "A"
    If ValType( ::aFields ) != "A"
-      ::WorkArea := TXBrowse_GetWorkArea( ::WorkArea )
-      ::aFields := ( ::WorkArea )->( DBSTRUCT() )
-      AEVAL( ::aFields, { |x,i| ::aFields[ i ] := ::WorkArea + "->" + x[ 1 ] } )
+      ::aFields := ::oWorkArea:DbStruct()
+      AEVAL( ::aFields, { |x,i| ::aFields[ i ] := ::oWorkArea:cAlias__ + "->" + x[ 1 ] } )
    EndIf
 
    ASSIGN ::aHeaders VALUE aHeaders TYPE "A" DEFAULT {}
@@ -467,19 +461,13 @@ Return Self
 *-----------------------------------------------------------------------------*
 METHOD CurrentRow( nValue ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
-Local oVScroll, aPosition, cWorkArea
+Local oVScroll, aPosition
    If ValType( nValue ) == "N" .AND. ! ::lLocked
       ::nValue := nValue
       ::Super:Value := nValue
       oVScroll := ::VScroll
       If oVScroll != NIL
-         cWorkArea := ::WorkArea
-         aPosition := _OOHG_EVAL( ::getPositionBlock, cWorkArea )
-         If ValType( aPosition ) != "A" .OR. Len( aPosition ) < 2 .OR. ;
-            ValType( aPosition[ 1 ] ) != "N" .OR. ValType( aPosition[ 2 ] ) != "N"
-            cWorkArea := TXBrowse_GetWorkArea( cWorkArea )
-            aPosition := TXBrowse_GetPosition( cWorkArea )
-         EndIf
+         aPosition := { ::oWorkArea:OrdKeyNo(), ::oWorkArea:OrdKeyCount() }
          If aPosition[ 2 ] == 0
             oVScroll:RangeMax := oVScroll:RangeMin
             oVScroll:Value := oVScroll:RangeMax
@@ -493,20 +481,6 @@ Local oVScroll, aPosition, cWorkArea
       EndIf
    EndIf
 Return ::Super:Value
-
-Static Function TXBrowse_GetPosition( cWorkArea )
-Local aPosition
-   If ! Empty( cWorkArea )
-      aPosition := { 0, ( cWorkArea )->( OrdKeyCount() ) }
-      If aPosition[ 2 ] > 0
-         aPosition[ 1 ] := ( cWorkArea )->( OrdKeyNo() )
-      Else
-         aPosition := { ( cWorkArea )->( RecNo() ), ( cWorkArea )->( RecCount() ) }
-      EndIf
-   Else
-      aPosition := { 0, 0 }
-   EndIf
-Return aPosition
 
 *-----------------------------------------------------------------------------*
 METHOD SizePos( Row, Col, Width, Height ) CLASS TXBrowse
@@ -696,38 +670,12 @@ Return ::Super:Events_Notify( wParam, lParam )
 *-----------------------------------------------------------------------------*
 METHOD DbSkip( nRows ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
-Local nCount, cWorkArea
+Local nCount
    ASSIGN nRows VALUE nRows TYPE "N" DEFAULT 1
    If ValType( ::skipBlock ) == "B"
       nCount := EVAL( ::skipBlock, nRows, ::WorkArea )
    Else
-      nCount := 0
-      cWorkArea := TXBrowse_GetWorkArea( ::WorkArea )
-      If ! Empty( cWorkArea )
-         If nRows == 0
-            ( cWorkArea )->( DBSKIP( 0 ) )
-         ElseIf nRows > 0
-            Do While nRows > 0 .AND. ! ( cWorkArea )->( EOF() )
-               ( cWorkArea )->( DBSKIP( 1 ) )
-               If ( cWorkArea )->( EOF() )
-                  ( cWorkArea )->( DBSKIP( -1 ) )
-                  Exit
-               EndIf
-               nCount++
-               nRows--
-            EndDo
-         Else
-            Do While nRows < 0 .AND. ! ( cWorkArea )->( BOF() )
-               ( cWorkArea )->( DBSKIP( -1 ) )
-               If ( cWorkArea )->( BOF() )
-                  // ( cWorkArea )->( DBSKIP( 1 ) )
-                  Exit
-               EndIf
-               nCount--
-               nRows++
-            EndDo
-         EndIf
-      EndIf
+      nCount := ::oWorkArea:Skipper( nRows )
    EndIf
 Return nCount
 
@@ -802,15 +750,11 @@ Return Self
 *-----------------------------------------------------------------------------*
 METHOD GoTop() CLASS TXBrowse
 *-----------------------------------------------------------------------------*
-Local cWorkArea
    If ! ::lLocked
       If ValType( ::goTopBlock ) == "B"
          EVAL( ::goTopBlock, ::WorkArea )
       Else
-         cWorkArea := TXBrowse_GetWorkArea( ::WorkArea )
-         If ! Empty( cWorkArea )
-            ( cWorkArea )->( DBGOTOP() )
-         EndIf
+         ::oWorkArea:GoTop()
       EndIf
       ::Refresh( 1 )
    EndIf
@@ -819,16 +763,12 @@ Return Self
 *-----------------------------------------------------------------------------*
 METHOD GoBottom( lAppend ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
-Local cWorkArea
    ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
    If ! ::lLocked
       If ValType( ::goBottomBlock ) == "B"
          EVAL( ::goBottomBlock, ::WorkArea )
       Else
-         cWorkArea := TXBrowse_GetWorkArea( ::WorkArea )
-         If ! Empty( cWorkArea )
-            ( cWorkArea )->( DbGoBottom() )
-         EndIf
+         ::oWorkArea:GoBottom()
       EndIf
       // If it's for APPEND, leaves a blank line ;)
       ::Refresh( ::CountPerPage - IF( lAppend, 1, 0 ) )
@@ -838,7 +778,7 @@ Return Self
 *-----------------------------------------------------------------------------*
 METHOD SetScrollPos( nPos, VScroll ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
-Local cWorkArea, aPosition
+Local aPosition
    If ::lLocked
       // Do nothing!
    ElseIf nPos <= VScroll:RangeMin
@@ -846,26 +786,27 @@ Local cWorkArea, aPosition
    ElseIf nPos >= VScroll:RangeMax
       ::GoBottom()
    Else
-      If ValType( ::setPositionBlock ) == "B"
-         EVAL( ::setPositionBlock, nPos, ::WorkArea )
-      Else
-         cWorkArea := TXBrowse_GetWorkArea( ::WorkArea )
-         If ! Empty( cWorkArea )
-            aPosition := TXBrowse_GetPosition( cWorkArea )
-            nPos := nPos * aPosition[ 2 ] / VScroll:RangeMax
-            #ifdef __XHARBOUR__
-               ( ::WorkArea )->( OrdKeyGoTo( nPos ) )
-            #else
-               If nPos < ( aPosition[ 2 ] / 2 )
-                  ( ::WorkArea )->( DbGoTop() )
-                  ( ::WorkArea )->( DbSkip( nPos ) )
-               Else
-                  ( ::WorkArea )->( DbGoBottom() )
-                  ( ::WorkArea )->( DbSkip( nPos - aPosition[ 2 ] ) )
-               EndIf
-            #endif
+      aPosition := { ::oWorkArea:OrdKeyNo(), ::oWorkArea:OrdKeyCount() }
+      nPos := nPos * aPosition[ 2 ] / VScroll:RangeMax
+      #ifdef __XHARBOUR__
+         ::oWorkArea:OrdKeyGoTo( nPos )
+      #else
+         If nPos < ( aPosition[ 2 ] / 2 )
+            If ValType( ::goTopBlock ) == "B"
+               EVAL( ::goTopBlock, ::WorkArea )
+            Else
+               ::oWorkArea:GoTop()
+            EndIf
+            ::DbSkip( MAX( nPos - 1, 0 ) )
+         Else
+            If ValType( ::goBottomBlock ) == "B"
+               EVAL( ::goBottomBlock, ::WorkArea )
+            Else
+               ::oWorkArea:GoBottom()
+            EndIf
+            ::DbSkip( - MAX( aPosition[ 2 ] - nPos - 1, 0 ) )
          EndIf
-      EndIf
+      #endif
       ::Refresh( , .T. )
    EndIf
 Return Self
@@ -873,30 +814,25 @@ Return Self
 *-----------------------------------------------------------------------------*
 METHOD Delete() CLASS TXBrowse
 *-----------------------------------------------------------------------------*
-Local Value, cWorkArea
+Local Value
 
    Value := ::CurrentRow
 	If Value == 0
       Return .F.
 	EndIf
 
-   cWorkArea := TXBrowse_GetWorkArea( ::WorkArea )
-   If Empty( cWorkArea )
-      Return .F.
-   EndIf
-
    If ::Lock
-* TODO: RLOCK codeblock...
-      If ! ( cWorkArea )->( Rlock() )
+      If ! ::oWorkArea:Lock()
          MsgStop( "Record is being editied by another user. Retry later.", "Delete Record" )
          Return .F.
       Endif
    EndIf
 
-* TODO: DELETE codeblock...
-   ( cWorkArea )->( DbDelete() )
+   ::oWorkArea:Delete()
 
-   * To Unlock???
+   If ::Lock
+      ::oWorkArea:UnLock()
+   EndIf
 
    If ::DbSkip( 1 ) == 0
       ::GoBottom()
@@ -925,16 +861,19 @@ Return uRet
 *-----------------------------------------------------------------------------*
 METHOD EditItem_B( lAppend ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
-Local cWorkArea, cTitle, z, nOld
+Local oWorkArea, cTitle, z, nOld
 Local uOldValue, oEditControl, cMemVar, bReplaceField
 Local aItems, aEditControls, aMemVars, aReplaceFields
 
    ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
 
-* TODO: APPEND codeblock...
-   cWorkArea := TXBrowse_GetWorkArea( ::WorkArea )
-   If Empty( cWorkArea )
-      Return .F.
+   oWorkArea := ::oWorkArea
+   If oWorkArea:EOF()
+      If ! lAppend .AND. ! ::AllowAppend
+         Return .F.
+      Else
+         lAppend := .T.
+      Endif
    EndIf
 
    If ::InPlace
@@ -942,18 +881,15 @@ Local aItems, aEditControls, aMemVars, aReplaceFields
          ::GoBottom( .T. )
          ::InsertBlank( ::ItemCount + 1 )
          ::CurrentRow := ::ItemCount
-* TODO: APPEND (blank) codeblock...
-         ( cWorkArea )->( DbGoTo( 0 ) )
+         oWorkArea:GoTo( 0 )
       EndIf
       Return ::EditAllCells( ,, lAppend )
    EndIf
 
    If lAppend
       cTitle := _OOHG_Messages( 2, 1 )
-* TODO: RECNO() / GOTO codeblck...
-      nOld := ( cWorkArea )->( RecNo() )
-* TODO: APPEND (blank) codeblock...
-      ( cWorkArea )->( DbGoTo( 0 ) )
+      nOld := oWorkArea:RecNo()
+      oWorkArea:GoTo( 0 )
    Else
       cTitle := if( ValType( ::cRowEditTitle ) $ "CM", ::cRowEditTitle, _OOHG_Messages( 2, 2 ) )
    EndIf
@@ -980,23 +916,29 @@ Local aItems, aEditControls, aMemVars, aReplaceFields
 //      EndIf
    Next z
 
-   If ::lock .AND. ! lAppend
-* TODO: RLOCK codeblock...
-      If ! ( cWorkArea )->( RLock() )
+   If ::Lock .AND. ! lAppend
+      If ! oWorkArea:Lock()
          MsgExclamation( _OOHG_Messages( 3, 9 ), _OOHG_Messages( 3, 10 ) )
          ::SetFocus()
          Return .F.
       EndIf
    EndIf
 
-   aItems := ( cWorkArea )->( ::EditItem2( ::CurrentRow, aItems, aEditControls, aMemVars, cTitle ) )
+   If ! EMPTY( oWorkArea:cAlias__ )
+      aItems := ( oWorkArea:cAlias__ )->( ::EditItem2( ::CurrentRow, aItems, aEditControls, aMemVars, cTitle ) )
+   Else
+      aItems := ::EditItem2( ::CurrentRow, aItems, aEditControls, aMemVars, cTitle )
+   EndIf
 
    If ! Empty( aItems )
 
       If lAppend
-* TODO: APPEND codeblock...
-         ( cWorkArea )->( DBAppend() )
-         ( cWorkArea )->( _OOHG_Eval( ::OnAppend ) )
+         oWorkArea:Append()
+         If ! EMPTY( oWorkArea:cAlias__ )
+            ( oWorkArea:cAlias__ )->( _OOHG_Eval( ::OnAppend ) )
+         Else
+            _OOHG_Eval( ::OnAppend )
+         EndIf
       EndIf
 
       For z := 1 To Len( aItems )
@@ -1015,15 +957,13 @@ Local aItems, aEditControls, aMemVars, aReplaceFields
 
    Else
       If lAppend
-* TODO: GOTO codeblck...
-         ( cWorkArea )->( DbGoTo( nOld ) )
+         oWorkArea:GoTo( nOld )
       EndIf
    EndIf
 
    If ::Lock
-* TODO: UNLOCK codeblock...
-      ( cWorkArea )->( DbUnlock() )
-      ( cWorkArea )->( DbCommit() )
+      oWorkArea:Unlock()
+      oWorkArea:Commit()
    EndIf
 
    ::SetFocus()
@@ -1032,7 +972,7 @@ Return .T.
 *-----------------------------------------------------------------------------*
 METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
-Local lRet, bReplaceField, cWorkArea
+Local lRet, bReplaceField, oWorkArea
    ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
    ASSIGN nRow    VALUE nRow    TYPE "N" DEFAULT ::CurrentRow
    ASSIGN nCol    VALUE nCol    TYPE "N" DEFAULT 1
@@ -1043,15 +983,20 @@ Local lRet, bReplaceField, cWorkArea
       // Read only column
       PlayHand()
       lRet := .F.
+   ElseIf ::oWorkArea:EOF() .AND. ! lAppend .AND. ! ::AllowAppend
+      // "fake" record, and don't allows append
+      lRet := .F.
    Else
-      cWorkArea := TXBrowse_GetWorkArea( ::WorkArea )
+      oWorkArea := ::oWorkArea
+      If oWorkArea:EOF()
+         lAppend := .T.
+      Endif
 
       // If LOCK clause is present, try to lock.
       If lAppend
          //
 
-* TODO: RLOCK codeblock...
-      ElseIf ::Lock .AND. ! ( cWorkArea )->( RLock() )
+      ElseIf ::Lock .AND. ! oWorkArea:Lock()
          MsgExclamation( _OOHG_Messages( 3, 9 ), _OOHG_Messages( 3, 10 ) )
          Return .F.
       EndIf
@@ -1061,18 +1006,20 @@ Local lRet, bReplaceField, cWorkArea
       lRet := ::EditCell2( @nRow, @nCol, EditControl, uOldValue, @uValue, cMemVar )
       If lRet
          If lAppend
-* TODO: APPEND codeblock...
-            ( cWorkArea )->( DbAppend() )
-            ( cWorkArea )->( _OOHG_Eval( ::OnAppend ) )
+            oWorkArea:Append()
+            If ! EMPTY( oWorkArea:cAlias__ )
+               ( oWorkArea:cAlias__ )->( _OOHG_Eval( ::OnAppend ) )
+            Else
+               _OOHG_Eval( ::OnAppend )
+            EndIf
          EndIf
-         _OOHG_EVAL( bReplaceField, uValue, cWorkArea )
+         _OOHG_EVAL( bReplaceField, uValue, ::WorkArea )
          ::RefreshRow( nRow )
          _OOHG_EVAL( ::OnEditCell, nRow, nCol )
       EndIf
       If ::Lock
-* TODO: UNLOCK codeblock...
-         ( cWorkArea )->( DbUnLock() )
-         ( cWorkArea )->( DbCommit() )
+         oWorkArea:UnLock()
+         oWorkArea:Commit()
       EndIf
    Endif
 Return lRet
@@ -1139,11 +1086,13 @@ Local cField, cArea, nPos, aStruct
       If nPos != 0 .AND. Select( Trim( Left( cField, nPos - 1 ) ) ) != 0
          cArea := Trim( Left( cField, nPos - 1 ) )
          cField := Ltrim( SubStr( cField, nPos + 2 ) )
+         aStruct := ( cArea )->( DbStruct() )
+         nPos := ( cArea )->( FieldPos( cField ) )
       Else
-         cArea := ::WorkArea
+         cArea := ::oWorkArea:cAlias__
+         aStruct := ::oWorkArea:DbStruct()
+         nPos := ::oWorkArea:FieldPos( cField )
       EndIf
-      aStruct := ( cArea )->( DbStruct() )
-      nPos := aScan( aStruct, { |a| a[ 1 ] == cField } )
       If nPos == 0
          cArea := cField := ""
       Else
@@ -1307,3 +1256,161 @@ Local nRet
    nRet := ::Super:ColumnsAutoFitH()
    ::AdjustRightScroll()
 Return nRet
+
+*-----------------------------------------------------------------------------*
+METHOD WorkArea( uWorkArea ) CLASS TXBrowse
+*-----------------------------------------------------------------------------*
+   IF PCOUNT() > 0
+      IF VALTYPE( uWorkArea ) == "O"
+         ::uWorkArea := uWorkArea
+         ::oWorkArea := uWorkArea
+      ELSEIF VALTYPE( uWorkArea ) $ "CM"
+         uWorkArea := ALLTRIM( UPPER( uWorkArea ) )
+         ::uWorkArea := uWorkArea
+         ::oWorkArea := ooHGRecord():Use( uWorkArea )
+      ELSE
+         ::uWorkArea := nil
+         ::oWorkArea := nil
+      ENDIF
+   ENDIF
+RETURN ::uWorkArea
+
+
+
+
+
+*-----------------------------------------------------------------------------*
+CLASS ooHGRecord
+*-----------------------------------------------------------------------------*
+   DATA cAlias__
+
+   METHOD New
+   METHOD Use
+   METHOD Skipper
+   METHOD OrdScope
+
+   METHOD Field      BLOCK { | Self, nPos |                   ( ::cAlias__ )->( Field( nPos ) ) }
+   METHOD FieldBlock BLOCK { | Self, cField |                 ( ::cAlias__ )->( FieldBlock( cField ) ) }
+   METHOD FieldGet   BLOCK { | Self, nPos |                   ( ::cAlias__ )->( FieldGet( nPos ) ) }
+   METHOD FieldName  BLOCK { | Self, nPos |                   ( ::cAlias__ )->( FieldName( nPos ) ) }
+   METHOD FieldPos   BLOCK { | Self, cField |                 ( ::cAlias__ )->( FieldPos( cField ) ) }
+   METHOD FieldPut   BLOCK { | Self, nPos, uValue |           ( ::cAlias__ )->( FieldPut( nPos, uValue ) ) }
+   METHOD Locate     BLOCK { | Self, bFor, bWhile, nNext, nRec, lRest | ( ::cAlias__ )->( __dbLocate( bFor, bWhile, nNext, nRec, lRest ) ) }
+   METHOD Seek       BLOCK { | Self, uKey, lSoftSeek, lLast | ( ::cAlias__ )->( DbSeek( uKey, lSoftSeek, lLast ) ) }
+   METHOD Skip       BLOCK { | Self, nCount |                 ( ::cAlias__ )->( DbSkip( nCount ) ) }
+   METHOD GoTo       BLOCK { | Self, nRecord |                ( ::cAlias__ )->( DbGoTo( nRecord ) ) }
+   METHOD GoTop      BLOCK { | Self |                         ( ::cAlias__ )->( DbGoTop() ) }
+   METHOD GoBottom   BLOCK { | Self |                         ( ::cAlias__ )->( DbGoBottom() ) }
+   METHOD Commit     BLOCK { | Self |                         ( ::cAlias__ )->( DbCommit() ) }
+   METHOD Unlock     BLOCK { | Self |                         ( ::cAlias__ )->( DbUnlock() ) }
+   METHOD Delete     BLOCK { | Self |                         ( ::cAlias__ )->( DbDelete() ) }
+   METHOD Close      BLOCK { | Self |                         ( ::cAlias__ )->( DbCloseArea() ) }
+   METHOD BOF        BLOCK { | Self |                         ( ::cAlias__ )->( BOF() ) }
+   METHOD EOF        BLOCK { | Self |                         ( ::cAlias__ )->( EOF() ) }
+   METHOD RecNo      BLOCK { | Self |                         ( ::cAlias__ )->( RecNo() ) }
+   METHOD RecCount   BLOCK { | Self |                         ( ::cAlias__ )->( RecCount() ) }
+   METHOD Found      BLOCK { | Self |                         ( ::cAlias__ )->( Found() ) }
+   METHOD SetOrder   BLOCK { | Self, uOrder |                 ( ::cAlias__ )->( ORDSETFOCUS( uOrder ) ) }
+   METHOD SetIndex   BLOCK { | Self, cFile, lAdditive |       IF( EMPTY( lAdditive ), ( ::cAlias__ )->( ordListClear() ), ) , ( ::cAlias__ )->( ordListAdd( cFile ) ) }
+   METHOD Append     BLOCK { | Self |                         ( ::cAlias__ )->( DbAppend() ) }
+   METHOD Lock       BLOCK { | Self |                         ( ::cAlias__ )->( RLock() ) }
+   METHOD Filter     BLOCK { | Self, cFilter |                IF( EMPTY( cFilter ), ( ::cAlias__ )->( DbClearFilter() ), ( ::cAlias__ )->( DbSetFilter( { || &cFilter } , cFilter ) ) ) }
+   METHOD DbStruct   BLOCK { | Self |                         ( ::cAlias__ )->( DbStruct() ) }
+   METHOD OrdKeyNo   BLOCK { | Self |                         IF( ( ::cAlias__ )->( OrdKeyCount() ) > 0, ( ::cAlias__ )->( OrdKeyNo() ), ( ::cAlias__ )->( RecNo() ) ) }
+   METHOD OrdKeyCount BLOCK { | Self |                        IF( ( ::cAlias__ )->( OrdKeyCount() ) > 0, ( ::cAlias__ )->( OrdKeyCount() ), ( ::cAlias__ )->( RecCount() ) ) }
+   #ifdef __XHARBOUR__
+   METHOD OrdKeyGoTo BLOCK { | Self, nRecord |                ( ::cAlias__ )->( OrdKeyGoTo( nRecord ) ) }
+   #endif
+
+   ERROR HANDLER FieldAssign
+ENDCLASS
+
+*-----------------------------------------------------------------------------*
+METHOD FieldAssign( xValue ) CLASS ooHGRecord
+*-----------------------------------------------------------------------------*
+LOCAL nPos, cMessage, uRet, cAlias, lError
+   cAlias := ::cAlias__
+   cMessage := ALLTRIM( UPPER( __GetMessage() ) )
+   lError := .T.
+   IF PCOUNT() == 0
+      nPos := ( cAlias )->( FieldPos( cMessage ) )
+      IF nPos > 0
+         uRet := ( cAlias )->( FieldGet( nPos ) )
+         lError := .F.
+      ENDIF
+   ELSEIF PCOUNT() == 1
+      nPos := ( cAlias )->( FieldPos( SUBSTR( cMessage, 2 ) ) )
+      IF nPos > 0
+         uRet := ( cAlias )->( FieldPut( nPos, xValue ) )
+         lError := .F.
+      ENDIF
+   ENDIF
+   IF lError
+      uRet := NIL
+      ::MsgNotFound( cMessage )
+   ENDIF
+RETURN uRet
+
+*-----------------------------------------------------------------------------*
+METHOD New( cFile, cAlias, cRDD, lShared, lReadOnly ) CLASS ooHGRecord
+*-----------------------------------------------------------------------------*
+   DbUseArea( .T., cRDD, cFile, cAlias, lShared, lReadOnly )
+   ::cAlias__ := ALIAS()
+RETURN Self
+
+*-----------------------------------------------------------------------------*
+METHOD Use( cAlias ) CLASS ooHGRecord
+*-----------------------------------------------------------------------------*
+   IF ! VALTYPE( cAlias ) $ "CM" .OR. EMPTY( cAlias )
+      ::cAlias__ := ALIAS()
+   ELSE
+      ::cAlias__ := UPPER( ALLTRIM( cAlias ) )
+   ENDIF
+RETURN Self
+
+*-----------------------------------------------------------------------------*
+METHOD Skipper( nSkip ) CLASS ooHGRecord
+*-----------------------------------------------------------------------------*
+LOCAL nCount
+   nCount := 0
+   nSkip := IF( VALTYPE( nSkip ) == "N", INT( nSkip ), 1 )
+   IF nSkip == 0
+      ::Skip( 0 )
+   ELSE
+      DO WHILE nSkip != 0
+         IF nSkip > 0
+            ::Skip( 1 )
+            IF ::EOF()
+               ::Skip( -1 )
+               EXIT
+            ELSE
+               nCount++
+               nSkip--
+            ENDIF
+         ELSE
+            ::Skip( -1 )
+            IF ::BOF()
+               EXIT
+            ELSE
+               nCount--
+               nSkip++
+            ENDIF
+         ENDIF
+      ENDDO
+   ENDIF
+RETURN nCount
+
+*-----------------------------------------------------------------------------*
+METHOD OrdScope( uFrom, uTo ) CLASS ooHGRecord
+*-----------------------------------------------------------------------------*
+   IF PCOUNT() == 0
+      ( ::cAlias )->( ORDSCOPE( 0, nil ) )
+      ( ::cAlias )->( ORDSCOPE( 1, nil ) )
+   ELSEIF PCOUNT() == 1
+      ( ::cAlias )->( ORDSCOPE( 0, uFrom ) )
+      ( ::cAlias )->( ORDSCOPE( 1, uFrom ) )
+   ELSE
+      ( ::cAlias )->( ORDSCOPE( 0, uFrom ) )
+      ( ::cAlias )->( ORDSCOPE( 1, uTo ) )
+   ENDIF
+RETURN nil

@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.90 2006-06-09 03:32:54 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.91 2006-07-01 15:53:47 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -245,7 +245,7 @@ HB_FUNC_STATIC( TWINDOW_RELEASE )
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
 
    // ImageList
-   if( oSelf->ImageList )
+   if( ValidHandler( oSelf->ImageList ) )
    {
       ImageList_Destroy( oSelf->ImageList );
       oSelf->ImageList = 0;
@@ -260,16 +260,16 @@ HB_FUNC_STATIC( TWINDOW_RELEASE )
    }
 
    // Brush handle
-   if( oSelf->BrushHandle )
+   if( ValidHandler( oSelf->BrushHandle ) )
    {
       DeleteObject( oSelf->BrushHandle );
       oSelf->BrushHandle = NULL;
    }
 
    // ::hWnd := -1
-   oSelf->hWnd = ( HWND ) -1;
+   oSelf->hWnd = ( HWND )( ~0 );
    _OOHG_Send( pSelf, s__hWnd );
-   hb_vmPushInteger( -1 );
+   HWNDpush( ~0 );
    hb_vmSend( 1 );
 }
 
@@ -340,7 +340,7 @@ HB_FUNC_STATIC( TWINDOW_FONTCOLOR )
 
    if( _OOHG_DetermineColorReturn( hb_param( 1, HB_IT_ANY ), &oSelf->lFontColor, ( hb_pcount() >= 1 ) ) )
    {
-      if( oSelf->hWnd )
+      if( ValidHandler( oSelf->hWnd ) )
       {
          RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
       }
@@ -356,7 +356,7 @@ HB_FUNC_STATIC( TWINDOW_BACKCOLOR )
 
    if( _OOHG_DetermineColorReturn( hb_param( 1, HB_IT_ANY ), &oSelf->lBackColor, ( hb_pcount() >= 1 ) ) )
    {
-      if( oSelf->hWnd )
+      if( ValidHandler( oSelf->hWnd ) )
       {
          RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
       }
@@ -372,7 +372,7 @@ HB_FUNC_STATIC( TWINDOW_FONTCOLORSELECTED )
 
    if( _OOHG_DetermineColorReturn( hb_param( 1, HB_IT_ANY ), &oSelf->lFontColorSelected, ( hb_pcount() >= 1 ) ) )
    {
-      if( oSelf->hWnd )
+      if( ValidHandler( oSelf->hWnd ) )
       {
          RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
       }
@@ -388,7 +388,7 @@ HB_FUNC_STATIC( TWINDOW_BACKCOLORSELECTED )
 
    if( _OOHG_DetermineColorReturn( hb_param( 1, HB_IT_ANY ), &oSelf->lBackColorSelected, ( hb_pcount() >= 1 ) ) )
    {
-      if( oSelf->hWnd )
+      if( ValidHandler( oSelf->hWnd ) )
       {
          RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
       }
@@ -572,7 +572,7 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )
          {
             hb_vmPushSymbol( &hb_symEval );
             hb_vmPush( hb_param( -1, HB_IT_BLOCK ) );
-            hb_vmPushLong( ( LONG ) hWnd );
+            HWNDpush( hWnd );
             hb_vmPushLong( message );
             hb_vmPushLong( wParam );
             hb_vmPushLong( lParam );
@@ -695,7 +695,7 @@ Local nPos
             uParent := _OOHG_ActiveForm[ nPos ]
          Else
             uParent := GetFormObjectByHandle( GetActiveWindow() )
-            If uParent:hWnd == 0
+            If ! ValidHandler( uParent:hWnd )
                If _OOHG_UserWindow != NIL .AND. ascan( _OOHG_aFormhWnd, _OOHG_UserWindow:hWnd ) > 0
                   uParent := _OOHG_UserWindow
                ElseIf Len( _OOHG_ActiveModal ) > 0 .AND. ascan( _OOHG_aFormhWnd, ATAIL( _OOHG_ActiveModal ):hWnd ) > 0
@@ -1395,8 +1395,10 @@ Local b
 
 	* Release Window
 
-   EnableWindow( ::hWnd )
-   SendMessage( ::hWnd, WM_SYSCOMMAND, SC_CLOSE, 0 )
+   If ValidHandler( ::hWnd )
+      EnableWindow( ::hWnd )
+      SendMessage( ::hWnd, WM_SYSCOMMAND, SC_CLOSE, 0 )
+   EndIf
 
    ::Events_Destroy()
 
@@ -1542,7 +1544,7 @@ HB_FUNC_STATIC( TFORM_BACKCOLOR )
          DeleteObject( oSelf->BrushHandle );
          oSelf->BrushHandle = 0;
       }
-      if( oSelf->hWnd )
+      if( ValidHandler( oSelf->hWnd ) )
       {
          if( oSelf->lBackColor != -1 )
          {
@@ -1745,7 +1747,7 @@ HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
          hb_vmPushSymbol( s_Events2 );
          hb_vmPushNil();
          hb_vmPush( pSelf );
-         hb_vmPushLong( ( LONG ) hWnd );
+         HWNDpush( hWnd );
          hb_vmPushLong( message );
          hb_vmPushLong( wParam );
          hb_vmPushLong( lParam );
@@ -1760,7 +1762,7 @@ HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
 FUNCTION _OOHG_TForm_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TForm
 *-----------------------------------------------------------------------------*
 Local i, aPos, NextControlHandle, xRetVal
-Local oWnd, oCtrl
+Local oCtrl
 * Local hWnd := ::hWnd
 
 	do case
@@ -1783,44 +1785,12 @@ Local oWnd, oCtrl
 	case nMsg == WM_MOUSEWHEEL
         ***********************************************************************
 
-/*
-      oWnd := GetFormObjectByHandle( GetFocus() )
+      If ValidHandler( ::hWnd ) .AND. ::RangeHeight > 0
 
-      IF oWnd:hWnd == 0
-
-         oCtrl := GetControlObjectByHandle( GetFocus() )
-
-         IF oCtrl:hWnd != 0
-
-            oWnd := oCtrl:Parent
-
-         ENDIF
-
-      ENDIF
-*/
-
-      oWnd := Self
-
-      If oWnd:hWnd != 0 .AND. oWnd:RangeHeight > 0
-
-			If HIWORD(wParam) == 120
-            oWnd:VScrollBar:LineUp()
-/*
-            If oWnd:VScrollBar:Value < 20
-					SetScrollPos ( hwnd , SB_VERT , 0 , 1 )
-				Else
-					SendMessage ( hwnd , WM_VSCROLL , SB_PAGEUP , 0 )
-				endif
-*/
+         If HIWORD( wParam ) == 120
+            ::VScrollBar:LineUp()
 			Else
-            oWnd:VScrollBar:LineDown()
-/*
-				if GetScrollPos(hwnd,SB_VERT) >= GetScrollRangeMax ( hwnd , SB_VERT ) - 10
-					SetScrollPos ( hwnd , SB_VERT , GetScrollRangeMax ( hwnd , SB_VERT ) , 1 )
-				else
-					SendMessage ( hwnd , WM_VSCROLL , SB_PAGEDOWN , 0 )
-				endif
-*/
+            ::VScrollBar:LineDown()
 			EndIf
 
 		EndIf
@@ -2007,7 +1977,7 @@ Local oWnd, oCtrl
 
 //         EndIf
 
-      ElseIf ( oCtrl := GetControlObjectByHandle( lParam ) ):hWnd != 0
+      ElseIf ValidHandler( ( oCtrl := GetControlObjectByHandle( lParam ) ):hWnd )
 
          // By handle
 
@@ -2086,7 +2056,7 @@ Procedure ValidateScrolls( Self, lMove )
 Local hWnd, nVirtualWidth, nVirtualHeight
 Local aRect, w, h, hscroll, vscroll
 
-   If ::hWnd == 0 .OR. ::Control( "HScrollBar" ) == nil .OR. ::Control( "VScrollBar" ) == nil
+   If ! ValidHandler( ::hWnd ) .OR. ::Control( "HScrollBar" ) == nil .OR. ::Control( "VScrollBar" ) == nil
       Return
    EndIf
 
@@ -2333,7 +2303,7 @@ METHOD Show() CLASS TFormModal
 */
    If ::oPrevWindow == NIL .OR. ASCAN( _OOHG_aFormhWnd, ::oPrevWindow:hWnd ) == 0
       ::oPrevWindow := GetFormObjectByHandle( GetActiveWindow() )
-      If ::oPrevWindow:hWnd == 0
+      If ! ValidHandler( ::oPrevWindow:hWnd )
          ::oPrevWindow := NIL
          If _OOHG_UserWindow != NIL .AND. ascan( _OOHG_aFormhWnd, _OOHG_UserWindow:hWnd ) > 0
             ::oPrevWindow := _OOHG_UserWindow
@@ -2392,7 +2362,7 @@ METHOD OnHideFocusManagement() CLASS TFormModal
 *-----------------------------------------------------------------------------*
 
    // Re-enables locked forms
-   AEVAL( ::LockedForms, { |o| IF( o:hWnd != -1, EnableWindow( o:hWnd ), ) } )
+   AEVAL( ::LockedForms, { |o| IF( ValidHandler( o:hWnd ), EnableWindow( o:hWnd ), ) } )
    ::LockedForms := {}
 
    If ::oPrevWindow == nil .OR. ! ::oPrevWindow:Active
@@ -2635,7 +2605,7 @@ Local nStyle := 0, nStyleEx := 0
    nStyleEx += WS_EX_MDICHILD
 
    // If MDIclient window doesn't exists, create it.
-   If ::Parent:hWndClient == 0
+   If ! ValidHandler( ::Parent:hWndClient )
       oParent := TFormMDIClient():Define( ,,,,,,,,,,,,,,,,,,,,,,,,, ::Parent )
       ::SearchParent( oParent )
    EndIf
@@ -3252,6 +3222,7 @@ RETURN 1
 EXTERN IsXPThemeActive, _OOHG_Eval, EVAL
 EXTERN _OOHG_ShowContextMenus, _OOHG_GlobalRTL, _OOHG_NestedSameEvent
 EXTERN _SetTooltipBackcolor, _SetTooltipForecolor
+EXTERN ValidHandler
 
 #pragma BEGINDUMP
 
@@ -3337,6 +3308,13 @@ HB_FUNC( _SETTOOLTIPBACKCOLOR )
 HB_FUNC( _SETTOOLTIPFORECOLOR )
 {
    _OOHG_DetermineColorReturn( hb_param( 1, HB_IT_ANY ), &_OOHG_TooltipForecolor, ( hb_pcount() >= 1 ) );
+}
+
+HB_FUNC( VALIDHANDLER )
+{
+   HWND hWnd;
+   hWnd = HWNDparam( 1 );
+   hb_retl( ValidHandler( hWnd ) );
 }
 
 #pragma ENDDUMP
