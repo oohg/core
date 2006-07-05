@@ -1,5 +1,5 @@
 /*
- * $Id: c_font.c,v 1.1 2005-08-07 00:02:34 guerra000 Exp $
+ * $Id: c_font.c,v 1.2 2006-07-05 02:39:54 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -96,16 +96,6 @@
 #define _WIN32_WINNT   0x0400
 #include <shlobj.h>
 
-#if defined(__MINGW32__)
-  #define UDM_GETPOS32 0x0472
-  #define UDM_SETPOS32 0x0471
-#endif
-
-#if defined(_MSC_VER)
-  #define UDM_SETPOS32 (WM_USER+113)
-  #define UDM_GETPOS32 (WM_USER+114)
-#endif
-
 #include <windows.h>
 #include <commctrl.h>
 #include "hbapi.h"
@@ -114,6 +104,7 @@
 #include "hbapiitm.h"
 #include "winreg.h"
 #include "tchar.h"
+#include "../include/oohg.h"
 
 HFONT PrepareFont (char *Fontname, int FontSize, int Weight, int Italic, int Underline, int StrikeOut )
 {
@@ -167,7 +158,7 @@ HB_FUNC ( _SETFONT )
 	font = PrepareFont ( hb_parc(2) ,
                         (LPARAM) hb_parni(3) ,
                         bold , italic, underline, strikeout ) ;
-	SendMessage( (HWND) hb_parnl (1) , (UINT)WM_SETFONT,(WPARAM) font , 1 ) ;
+    SendMessage( HWNDparam( 1 ) , (UINT)WM_SETFONT,(WPARAM) font , 1 ) ;
 	hb_retnl ( (LONG) font );
 }
 
@@ -198,5 +189,5 @@ HB_FUNC ( SETFONTNAMESIZE )
 		strikeout = 1;
 	}
 
-	SendMessage( (HWND) hb_parnl(1) , (UINT)WM_SETFONT , (WPARAM) PrepareFont ( hb_parc(2) , (LPARAM) hb_parni(3),bold,italic,underline,strikeout) , 1 ) ;
+    SendMessage( HWNDparam( 1 ) , (UINT)WM_SETFONT , (WPARAM) PrepareFont ( hb_parc(2) , (LPARAM) hb_parni(3),bold,italic,underline,strikeout) , 1 ) ;
 }

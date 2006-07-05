@@ -1,5 +1,5 @@
 /*
- * $Id: c_image.c,v 1.6 2006-05-01 04:09:47 guerra000 Exp $
+ * $Id: c_image.c,v 1.7 2006-07-05 02:39:54 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -127,7 +127,7 @@ HB_FUNC (INITIMAGE)
    HWND hwnd;
    int Style, StyleEx;
 
-   hwnd = ( HWND ) hb_parnl( 1 );
+   hwnd = HWNDparam( 1 );
 
    StyleEx = _OOHG_RTL_Status( hb_parl( 9 ) );
 
@@ -145,7 +145,7 @@ HB_FUNC (INITIMAGE)
 
    lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) h, GWL_WNDPROC, ( LONG ) SubClassFunc );
 
-   hb_retnl( ( LONG ) h );
+   HWNDret( h );
 }
 
 HB_FUNC( C_SETPICTURE )
@@ -159,10 +159,10 @@ HB_FUNC( C_SETPICTURE )
 
    HBITMAP hBitmap;
 
-   hBitmap = loadolepicture( hb_parc( 2 ), hb_parni( 3 ), hb_parni( 4 ), ( HWND ) hb_parnl( 1 ), hb_parl( 5 ), hb_parl( 6 ), 0 );
+   hBitmap = loadolepicture( hb_parc( 2 ), hb_parni( 3 ), hb_parni( 4 ), HWNDparam( 1 ), hb_parl( 5 ), hb_parl( 6 ), 0 );
    if( hBitmap != NULL )
    {
-      SendMessage( ( HWND ) hb_parnl( 1 ), ( UINT ) STM_SETIMAGE, ( WPARAM ) IMAGE_BITMAP, ( LPARAM ) hBitmap );
+      SendMessage( HWNDparam( 1 ), ( UINT ) STM_SETIMAGE, ( WPARAM ) IMAGE_BITMAP, ( LPARAM ) hBitmap );
    }
 
    hb_retnl( ( LONG ) hBitmap );
@@ -181,7 +181,7 @@ HBITMAP loadolepicture(char * filename,int width,int height, HWND handle, int sc
 
 	IStream *iStream ;
 	IPicture *iPicture = NULL;
-	HGLOBAL hGlobal;
+    HGLOBAL hGlobal = NULL;
 	HANDLE hFile;
     DWORD nFileSize = 0;
 	DWORD nReadByte;
@@ -282,7 +282,7 @@ HBITMAP loadolepicture(char * filename,int width,int height, HWND handle, int sc
 
 			CreateStreamOnHGlobal(hGlobal, TRUE, &iStream);
 
-			OleLoadPicture(iStream, nFileSize, TRUE, &IID_IPicture, (LPVOID*)&iPicture);
+            OleLoadPicture( iStream, nFileSize, TRUE, &IID_IPicture, ( LPVOID * ) &iPicture );
 			if (iPicture==NULL)
 			{
 				return NULL;

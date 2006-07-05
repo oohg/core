@@ -1,5 +1,5 @@
 /*
- * $Id: c_tree.c,v 1.5 2006-05-01 04:09:47 guerra000 Exp $
+ * $Id: c_tree.c,v 1.6 2006-07-05 02:39:54 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -156,21 +156,21 @@ HB_FUNC( INITTREE )
                             hb_parni(3),
                             hb_parni(4),
                             hb_parni(5),
-                            (HWND) hb_parnl(1) ,
+                            HWNDparam( 1 ),
                             (HMENU) hb_parni(6) ,
                             GetModuleHandle(NULL),
                             NULL);
 
    lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hWndTV, GWL_WNDPROC, ( LONG ) SubClassFunc );
 
-   hb_retnl( (LONG) hWndTV ) ;
+   HWNDret( hWndTV );
 
 }
 
 HB_FUNC (ADDTREEITEM)
 {
 
-	HWND hWndTV = (HWND) hb_parnl(1)  ;
+    HWND hWndTV = HWNDparam( 1 );
 
 	HTREEITEM hPrev = (HTREEITEM) hb_parnl(2) ;
 	HTREEITEM hRet ;
@@ -209,79 +209,43 @@ HB_FUNC (ADDTREEITEM)
 
 }
 
-HB_FUNC (TREEVIEW_GETSELECTION)
+HB_FUNC( TREEVIEW_GETSELECTION )
 {
-
-	HWND TreeHandle ;
-	HTREEITEM ItemHandle ;
-
-	TreeHandle = (HWND) hb_parnl (1) ;
-
-	ItemHandle = TreeView_GetSelection( TreeHandle );
-
-	hb_retnl ( (LONG) ItemHandle ) ;
-
+   HWNDret( TreeView_GetSelection( HWNDparam( 1 ) ) );
 }
 
 HB_FUNC (TREEVIEW_SELECTITEM)
 {
-
-	HWND		TreeHandle ;
-	HTREEITEM	ItemHandle ;
-
-	TreeHandle = (HWND) hb_parnl (1) ;
-	ItemHandle = (HTREEITEM) hb_parnl (2) ;
-
-	TreeView_SelectItem ( TreeHandle , ItemHandle ) ;
-
+   TreeView_SelectItem( HWNDparam( 1 ), ( HTREEITEM ) hb_parnl( 2 ) );
 }
 
 HB_FUNC (TREEVIEW_DELETEITEM)
 {
-
-	HWND		TreeHandle ;
 	HTREEITEM	ItemHandle ;
 
-	TreeHandle = (HWND) hb_parnl (1) ;
 	ItemHandle = (HTREEITEM) hb_parnl (2) ;
 
-	TreeView_DeleteItem ( TreeHandle , ItemHandle ) ;
-
+    TreeView_DeleteItem ( HWNDparam( 1 ), ItemHandle );
 }
 
-HB_FUNC (TREEVIEW_DELETEALLITEMS)
+HB_FUNC( TREEVIEW_DELETEALLITEMS )
 {
-
-	HWND		TreeHandle ;
-
-	TreeHandle = (HWND) hb_parnl (1) ;
-
-	TreeView_DeleteAllItems ( TreeHandle ) ;
-
+   TreeView_DeleteAllItems( HWNDparam( 1 ) );
 }
 
-HB_FUNC (TREEVIEW_GETCOUNT)
+HB_FUNC( TREEVIEW_GETCOUNT )
 {
-
-	HWND		TreeHandle ;
-
-	TreeHandle = (HWND) hb_parnl (1) ;
-
-	hb_retni ( TreeView_GetCount ( TreeHandle ) ) ;
-
+   hb_retni( TreeView_GetCount( HWNDparam( 1 ) ) );
 }
 
-HB_FUNC (TREEVIEW_GETPREVSIBLING)
+HB_FUNC( TREEVIEW_GETPREVSIBLING )
 {
-
-	HWND		TreeHandle ;
 	HTREEITEM	ItemHandle ;
 	HTREEITEM	PrevItemHandle ;
 
-	TreeHandle = (HWND) hb_parnl (1) ;
 	ItemHandle = (HTREEITEM) hb_parnl (2) ;
 
-	PrevItemHandle = TreeView_GetPrevSibling ( TreeHandle , ItemHandle ) ;
+    PrevItemHandle = TreeView_GetPrevSibling ( HWNDparam( 1 ), ItemHandle ) ;
 
 	hb_retnl ( (LONG) PrevItemHandle ) ;
 
@@ -289,15 +253,12 @@ HB_FUNC (TREEVIEW_GETPREVSIBLING)
 
 HB_FUNC (TREEVIEW_GETITEM)
 {
-
-	HWND		TreeHandle ;
 	HTREEITEM	TreeItemHandle ;
 	TV_ITEM		TreeItem ;
 	char		ItemText [256] ;
 
 	memset(&TreeItem, 0, sizeof(TV_ITEM)) ;
 
-	TreeHandle = (HWND) hb_parnl (1) ;
 	TreeItemHandle = (HTREEITEM) hb_parnl (2) ;
 
 	TreeItem.mask = TVIF_HANDLE | TVIF_TEXT ;
@@ -306,22 +267,19 @@ HB_FUNC (TREEVIEW_GETITEM)
 	TreeItem.pszText = ItemText ;
 	TreeItem.cchTextMax = 256 ;
 
-	TreeView_GetItem ( (HWND)TreeHandle , &TreeItem ) ;
+    TreeView_GetItem ( HWNDparam( 1 ), &TreeItem ) ;
 
 	hb_retc ( ItemText ) ;
 
 }
 HB_FUNC (TREEVIEW_SETITEM)
 {
-
-	HWND		TreeHandle ;
 	HTREEITEM	TreeItemHandle ;
 	TV_ITEM		TreeItem ;
 	char		ItemText [256] ;
 
 	memset(&TreeItem, 0, sizeof(TV_ITEM)) ;
 
-	TreeHandle = (HWND) hb_parnl (1) ;
 	TreeItemHandle = (HTREEITEM) hb_parnl (2) ;
 	strcpy ( ItemText , hb_parc(3) ) ;
 
@@ -331,8 +289,7 @@ HB_FUNC (TREEVIEW_SETITEM)
 	TreeItem.pszText = ItemText ;
 	TreeItem.cchTextMax = 256 ;
 
-	TreeView_SetItem ( (HWND)TreeHandle , &TreeItem ) ;
-
+    TreeView_SetItem( HWNDparam( 1 ), &TreeItem ) ;
 }
 
 HB_FUNC (TREEVIEW_GETSELECTIONID)
@@ -342,69 +299,54 @@ HB_FUNC (TREEVIEW_GETSELECTIONID)
 	HTREEITEM ItemHandle ;
 
 	TV_ITEM		TreeItem ;
-	LPARAM		lParam ;
 
-	TreeHandle = (HWND) hb_parnl (1) ;
+    TreeHandle = HWNDparam( 1 );
 	ItemHandle = TreeView_GetSelection( TreeHandle );
 
-	memset(&TreeItem, 0, sizeof(TV_ITEM)) ;
+    memset( &TreeItem, 0, sizeof( TV_ITEM ) );
 
-	TreeItem.mask = TVIF_HANDLE | TVIF_PARAM ;
-	TreeItem.hItem	= ItemHandle ;
+    TreeItem.mask = TVIF_HANDLE | TVIF_PARAM;
+    TreeItem.hItem  = ItemHandle;
 
-	TreeItem.lParam = lParam ;
+    TreeView_GetItem( TreeHandle , &TreeItem );
 
-	TreeView_GetItem ( (HWND)TreeHandle , &TreeItem ) ;
-
-	hb_retnl ( TreeItem.lParam ) ;
+    hb_retnl( TreeItem.lParam );
 
 }
 
 
 HB_FUNC (TREEVIEW_GETNEXTSIBLING)
 {
-
-	HWND		TreeHandle ;
 	HTREEITEM	ItemHandle ;
 	HTREEITEM	PrevItemHandle ;
 
-	TreeHandle = (HWND) hb_parnl (1) ;
 	ItemHandle = (HTREEITEM) hb_parnl (2) ;
 
-	PrevItemHandle = TreeView_GetNextSibling ( TreeHandle , ItemHandle ) ;
+    PrevItemHandle = TreeView_GetNextSibling ( HWNDparam( 1 ), ItemHandle ) ;
 
 	hb_retnl ( (LONG) PrevItemHandle ) ;
-
 }
 
 HB_FUNC (TREEVIEW_GETCHILD)
 {
-
-	HWND		TreeHandle ;
 	HTREEITEM	ItemHandle ;
 	HTREEITEM	PrevItemHandle ;
 
-	TreeHandle = (HWND) hb_parnl (1) ;
 	ItemHandle = (HTREEITEM) hb_parnl (2) ;
 
-	PrevItemHandle = TreeView_GetChild ( TreeHandle , ItemHandle ) ;
+    PrevItemHandle = TreeView_GetChild( HWNDparam( 1 ), ItemHandle ) ;
 
 	hb_retnl ( (LONG) PrevItemHandle ) ;
-
 }
 
 HB_FUNC (TREEVIEW_GETPARENT)
 {
-
-	HWND		TreeHandle ;
 	HTREEITEM	ItemHandle ;
 	HTREEITEM	PrevItemHandle ;
 
-	TreeHandle = (HWND) hb_parnl (1) ;
 	ItemHandle = (HTREEITEM) hb_parnl (2) ;
 
-	PrevItemHandle = TreeView_GetParent ( TreeHandle , ItemHandle ) ;
+    PrevItemHandle = TreeView_GetParent ( HWNDparam( 1 ), ItemHandle ) ;
 
 	hb_retnl ( (LONG) PrevItemHandle ) ;
-
 }

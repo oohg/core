@@ -1,5 +1,5 @@
 /*
- * $Id: c_help.c,v 1.1 2005-08-07 00:03:18 guerra000 Exp $
+ * $Id: c_help.c,v 1.2 2006-07-05 02:39:54 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -94,7 +94,11 @@
 #include <windows.h>
 #include "hbapi.h"
 #include "hbapiitm.h"
-#include <Htmlhelp.h>
+#if ! defined( __MINGW32__ )
+   #include <Htmlhelp.h>
+#endif
+#include <commctrl.h>
+#include "../include/oohg.h"
 
 HB_FUNC( WINHELP )
 {
@@ -113,12 +117,12 @@ HB_FUNC( WINHELP )
 
    if( hb_parni( 3 ) )
    {
-//		HtmlHelp(( HWND ) hb_parnl( 1 ),  hb_parc( 2 ), HH_DISPLAY_TOPIC	,0);
-      rezult = WinHelp( ( HWND ) hb_parnl( 1 ), ( LPCTSTR ) hb_parc( 2 ), styl, context );
+//      HtmlHelp( HWNDparam( 1 ),  hb_parc( 2 ), HH_DISPLAY_TOPIC    ,0);
+      rezult = WinHelp( HWNDparam( 1 ), ( LPCTSTR ) hb_parc( 2 ), styl, context );
    }
    else
    {
-      rezult = WinHelp( ( HWND ) hb_parnl( 1 ), ( LPCTSTR ) hb_parc( 2 ), styl, context );
+      rezult = WinHelp( HWNDparam( 1 ), ( LPCTSTR ) hb_parc( 2 ), styl, context );
    }
    hb_retni( rezult );
 }

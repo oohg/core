@@ -1,5 +1,5 @@
 /*
- * $Id: h_splitbox.prg,v 1.4 2006-05-01 04:09:47 guerra000 Exp $
+ * $Id: h_splitbox.prg,v 1.5 2006-07-05 02:39:54 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -175,6 +175,14 @@ EXTERN SetSplitBoxItem
 
 #pragma BEGINDUMP
 
+#ifndef _WIN32_IE
+   #define _WIN32_IE 0x0400
+#endif
+#if ( _WIN32_IE < 0x0400 )
+   #undef _WIN32_IE
+   #define _WIN32_IE 0x0400
+#endif
+
 #include <hbapi.h>
 #include <windows.h>
 #include <commctrl.h>
@@ -189,7 +197,7 @@ static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 
 HB_FUNC( INITSPLITBOX )
 {
-   HWND hwndOwner = (HWND) hb_parnl ( 1 ) ;
+   HWND hwndOwner = HWNDparam( 1 );
    REBARINFO     rbi;
    HWND   hwndRB;
    INITCOMMONCONTROLSEX icex;
@@ -238,13 +246,13 @@ HB_FUNC( INITSPLITBOX )
 
    lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hwndRB, GWL_WNDPROC, ( LONG ) SubClassFunc );
 
-   hb_retnl ( ( LONG ) hwndRB );
+   HWNDret( hwndRB );
 }
 
 HB_FUNC( SIZEREBAR )
 {
-   SendMessage( ( HWND ) hb_parnl( 1 ), RB_SHOWBAND, ( WPARAM )( INT ) 0, ( LPARAM )( BOOL ) 0 );
-   SendMessage( ( HWND ) hb_parnl( 1 ), RB_SHOWBAND, ( WPARAM )( INT ) 0, ( LPARAM )( BOOL ) 1 );
+   SendMessage( HWNDparam( 1 ), RB_SHOWBAND, ( WPARAM )( INT ) 0, ( LPARAM )( BOOL ) 0 );
+   SendMessage( HWNDparam( 1 ), RB_SHOWBAND, ( WPARAM )( INT ) 0, ( LPARAM )( BOOL ) 1 );
 }
 
 HB_FUNC ( ADDSPLITBOXITEM )
@@ -259,7 +267,7 @@ HB_FUNC ( ADDSPLITBOXITEM )
      Style = Style | RBBS_BREAK ;
   }
 
-  GetWindowRect ( (HWND) hb_parnl ( 1 ) , &rc ) ;
+  GetWindowRect( HWNDparam( 1 ) , &rc );
 
   rbBand.cbSize = sizeof(REBARBANDINFO);
   rbBand.fMask  = RBBIM_TEXT | RBBIM_STYLE | RBBIM_CHILD | RBBIM_CHILDSIZE | RBBIM_SIZE ;
@@ -267,7 +275,7 @@ HB_FUNC ( ADDSPLITBOXITEM )
   rbBand.hbmBack= 0;
 
   rbBand.lpText     = hb_parc(5);
-  rbBand.hwndChild  = (HWND)hb_parnl( 1 );
+  rbBand.hwndChild  = HWNDparam( 1 );
 
 
   if ( !hb_parl (8) )
@@ -297,7 +305,7 @@ HB_FUNC ( ADDSPLITBOXITEM )
      }
   }
 
-  SendMessage( (HWND) hb_parnl( 2 ) , RB_INSERTBAND , (WPARAM)-1 , (LPARAM) &rbBand ) ;
+  SendMessage( HWNDparam( 2 ) , RB_INSERTBAND , (WPARAM)-1 , (LPARAM) &rbBand );
 
 }
 
@@ -308,8 +316,8 @@ HB_FUNC( SETSPLITBOXITEM )
    int iCount;
 
 	rbBand.cbSize = sizeof(REBARBANDINFO);
-   iCount = SendMessage( (HWND) hb_parnl( 2 ) , RB_GETBANDCOUNT, 0 , 0 ) - 1;
-   SendMessage( (HWND) hb_parnl( 2 ) , RB_GETBANDINFO, iCount, (LPARAM) &rbBand );
+   iCount = SendMessage( HWNDparam( 2 ) , RB_GETBANDCOUNT, 0 , 0 ) - 1;
+   SendMessage( HWNDparam( 2 ) , RB_GETBANDINFO, iCount, (LPARAM) &rbBand );
 
    if( ISLOG( 4 ) )
    {
@@ -330,11 +338,11 @@ HB_FUNC( SETSPLITBOXITEM )
       rbBand.lpText = hb_parc( 5 );
    }
 
-	GetWindowRect ( (HWND) hb_parnl ( 1 ) , &rc ) ;
+   GetWindowRect( HWNDparam( 1 ), &rc );
 
    rbBand.fMask  |= RBBIM_CHILDSIZE | RBBIM_SIZE ;
 
-   // rbBand.hwndChild  = (HWND)hb_parnl( 1 );
+   // rbBand.hwndChild  = HWNDparam( 1 );
 
 	if ( !hb_parl (8) )
 	{
@@ -362,7 +370,7 @@ HB_FUNC( SETSPLITBOXITEM )
 		}
 	}
 
-   SendMessage( (HWND) hb_parnl( 2 ) , RB_SETBANDINFO, iCount, (LPARAM) &rbBand );
+   SendMessage( HWNDparam( 2 ), RB_SETBANDINFO, iCount, (LPARAM) &rbBand );
 }
 
 #pragma ENDDUMP

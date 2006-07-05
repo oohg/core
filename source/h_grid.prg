@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.44 2006-06-11 21:11:16 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.45 2006-07-05 02:39:54 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -845,6 +845,15 @@ Local lRet
 Return lRet
 
 #pragma BEGINDUMP
+
+#ifndef _WIN32_IE
+   #define _WIN32_IE 0x0400
+#endif
+#if ( _WIN32_IE < 0x0400 )
+   #undef _WIN32_IE
+   #define _WIN32_IE 0x0400
+#endif
+
 #define s_Super s_TControl
 #include "hbapi.h"
 #include "hbapiitm.h"
@@ -858,7 +867,7 @@ Return lRet
 HB_FUNC_STATIC( TGRID_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TGrid
 // -----------------------------------------------------------------------------
 {
-   HWND hWnd      = ( HWND )   hb_parnl( 1 );
+   HWND hWnd      = HWNDparam( 1 );
    UINT message   = ( UINT )   hb_parni( 2 );
    WPARAM wParam  = ( WPARAM ) hb_parni( 3 );
    LPARAM lParam  = ( LPARAM ) hb_parnl( 4 );
@@ -897,7 +906,7 @@ HB_FUNC_STATIC( TGRID_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
       _OOHG_Send( pSelf, s_Super );
       hb_vmSend( 0 );
       _OOHG_Send( hb_param( -1, HB_IT_OBJECT ), s_Events );
-      hb_vmPushLong( ( LONG ) hWnd );
+      HWNDpush( hWnd );
       hb_vmPushLong( message );
       hb_vmPushLong( wParam );
       hb_vmPushLong( lParam );
@@ -1471,7 +1480,7 @@ HB_FUNC( INITLISTVIEW )
    i.dwICC = ICC_DATE_CLASSES;
    InitCommonControlsEx( &i );
 
-   hwnd = ( HWND ) hb_parnl( 1 );
+   hwnd = HWNDparam( 1 );
 
    StyleEx = WS_EX_CLIENTEDGE | _OOHG_RTL_Status( hb_parl( 13 ) );
 
@@ -1493,9 +1502,9 @@ HB_FUNC( INITLISTVIEW )
       ListView_SetItemCount( hbutton , hb_parni( 11 ) ) ;
    }
 
-   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hbutton, GWL_WNDPROC, ( LONG ) SubClassFunc );
+   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( hbutton, GWL_WNDPROC, ( LONG ) SubClassFunc );
 
-   hb_retnl( (LONG) hbutton );
+   HWNDret( hbutton );
 }
 
 HB_FUNC( INITLISTVIEWCOLUMNS )
@@ -1510,7 +1519,7 @@ HB_FUNC( INITLISTVIEWCOLUMNS )
    int s;
    int iColumn;
 
-   hc = ( HWND ) hb_parnl( 1 );
+   hc = HWNDparam( 1 );
 
    iLen = hb_parinfa( 2, 0 ) - 1;
    hArray = hb_param( 2, HB_IT_ARRAY );
@@ -1576,7 +1585,7 @@ HB_FUNC( ADDLISTVIEWITEMS )
    {
       return;
    }
-   h = ( HWND ) hb_parnl( 1 );
+   h = HWNDparam( 1 );
    c = ListView_GetItemCount( h );
 
    // First "default" item
@@ -1604,7 +1613,7 @@ HB_FUNC( INSERTLISTVIEWITEM )
    {
       return;
    }
-   h = ( HWND ) hb_parnl( 1 );
+   h = HWNDparam( 1 );
    c = hb_parni( 3 ) - 1;
 
    // First "default" item
@@ -1622,7 +1631,7 @@ HB_FUNC( INSERTLISTVIEWITEM )
 
 HB_FUNC( LISTVIEWSETITEM )
 {
-   _OOHG_ListView_FillItem( ( HWND ) hb_parnl( 1 ), hb_parni( 3 ) - 1, hb_param( 2, HB_IT_ARRAY ) );
+   _OOHG_ListView_FillItem( HWNDparam( 1 ), hb_parni( 3 ) - 1, hb_param( 2, HB_IT_ARRAY ) );
 }
 
 HB_FUNC( LISTVIEWGETITEM )
@@ -1633,7 +1642,7 @@ HB_FUNC( LISTVIEWGETITEM )
    LV_ITEM LI;
    PHB_ITEM pArray, pString;
 
-   h = ( HWND ) hb_parnl( 1 );
+   h = HWNDparam( 1 );
 
    c = hb_parni( 2 ) - 1;
 
@@ -1674,7 +1683,7 @@ HB_FUNC( LISTVIEWGETITEM )
 
 HB_FUNC( FILLGRIDFROMARRAY )
 {
-   HWND hWnd = ( HWND ) hb_parnl( 1 );
+   HWND hWnd = HWNDparam( 1 );
    ULONG iCount = ListView_GetItemCount( hWnd );
    PHB_ITEM pScreen = hb_param( 2, HB_IT_ARRAY );
    ULONG iLen = hb_arrayLen( pScreen );

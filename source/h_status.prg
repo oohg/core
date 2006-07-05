@@ -1,5 +1,5 @@
 /*
- * $Id: h_status.prg,v 1.13 2006-06-29 14:24:04 guerra000 Exp $
+ * $Id: h_status.prg,v 1.14 2006-07-05 02:39:54 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -413,7 +413,14 @@ EXTERN InitMessageBar, InitItemBar, SetItemBar
 EXTERN GetItemBar, GetItemCount, GetItemWidth, RefreshItemBar, KeyToggle, SetStatusItemIcon
 
 #pragma BEGINDUMP
-// #include <shlobj.h>
+
+#ifndef _WIN32_IE
+   #define _WIN32_IE 0x0400
+#endif
+#if ( _WIN32_IE < 0x0400 )
+   #undef _WIN32_IE
+   #define _WIN32_IE 0x0400
+#endif
 
 #include <windows.h>
 #include <commctrl.h>
@@ -522,11 +529,10 @@ HB_FUNC( INITITEMBAR )
 		SendMessage(hWndSB,SB_SETICON,(WPARAM)nrOfParts-1, (LPARAM)hIcon );
 	}
 
-	SendMessage(hWndSB, SB_SETTEXT, nrOfParts-1 | displayFlags, (LPARAM) hb_parc (2));
-	SendMessage(hWndSB, SB_SETTIPTEXT,(WPARAM)nrOfParts-1, (LPARAM) hb_parc (7));
+   SendMessage( hWndSB, SB_SETTEXT, ( nrOfParts - 1 ) | displayFlags, ( LPARAM ) hb_parc( 2 ) );
+   SendMessage( hWndSB, SB_SETTIPTEXT, ( WPARAM ) nrOfParts - 1, ( LPARAM ) hb_parc( 7 ) );
 
 	hb_retni( nrOfParts );
-
 }
 
 HB_FUNC( SETITEMBAR )

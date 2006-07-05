@@ -1,5 +1,5 @@
 /*
- * $Id: c_winapimisc.c,v 1.3 2006-04-07 05:47:41 guerra000 Exp $
+ * $Id: c_winapimisc.c,v 1.4 2006-07-05 02:39:54 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -95,6 +95,10 @@
 #define HB_OS_WIN_32_USED
 #define _WIN32_WINNT   0x0400
 #include <shlobj.h>
+// #include <stdlib.h>
+#ifdef __MINGW32__
+   #define ultoa    _ultoa
+#endif
 
 #include <windows.h>
 #include <commctrl.h>
@@ -104,7 +108,7 @@
 #include "hbapiitm.h"
 #include "winreg.h"
 #include "tchar.h"
-
+#include "../include/oohg.h"
 
 #include "hbapifs.h"
 
@@ -290,8 +294,8 @@ HB_FUNC( PAINTBKGND )
     RECT recClie;
     HDC hdc;
 
-	hwnd  = (HWND) hb_parnl (1);
-    hdc   = GetDC(hwnd);
+    hwnd  = HWNDparam( 1 );
+    hdc   = GetDC( hwnd );
 
     GetClientRect(hwnd, &recClie);
 
@@ -351,7 +355,7 @@ HB_FUNC( _PROCESSMESS )
 HB_FUNC ( POSTMESSAGE )
 {
     hb_retnl( (LONG) PostMessage(
-                       (HWND) hb_parnl( 1 ),
+                       HWNDparam( 1 ),
                        (UINT) hb_parni( 2 ),
                        (WPARAM) hb_parnl( 3 ),
                        (LPARAM) hb_parnl( 4 ) ) );
@@ -360,7 +364,7 @@ HB_FUNC ( POSTMESSAGE )
 HB_FUNC ( DEFWINDOWPROC )
 {
     hb_retnl( (LONG) DefWindowProc(
-                       (HWND) hb_parnl( 1 ),
+                       HWNDparam( 1 ),
                        (UINT) hb_parni( 2 ),
                        (WPARAM) hb_parnl( 3 ),
                        (LPARAM) hb_parnl( 4 ) ) );
@@ -378,15 +382,12 @@ HB_FUNC( SETBKMODE )
 
 HB_FUNC( GETNEXTDLGTABITEM )
 {
-   hb_retnl( (LONG) GetNextDlgTabItem( (HWND) hb_parnl( 1 ),
-                                       (HWND) hb_parnl( 2 ),
-                                       hb_parl( 3 )
-                                     ) ) ;
+   HWNDret( GetNextDlgTabItem( HWNDparam( 1 ), HWNDparam( 2 ), hb_parl( 3 ) ) ) ;
 }
 
 HB_FUNC( SHELLEXECUTE )
 {
-   hb_retnl( (LONG) ShellExecute( (HWND) hb_parnl(1),ISNIL(2) ? NULL : (LPCSTR) hb_parc(2),(LPCSTR) hb_parc(3),ISNIL(4) ? NULL : (LPCSTR) hb_parc(4),ISNIL(5) ? NULL : (LPCSTR) hb_parc(5),hb_parni(6) ) ) ;
+   hb_retnl( (LONG) ShellExecute( HWNDparam( 1 ), ISNIL(2) ? NULL : (LPCSTR) hb_parc(2),(LPCSTR) hb_parc(3),ISNIL(4) ? NULL : (LPCSTR) hb_parc(4),ISNIL(5) ? NULL : (LPCSTR) hb_parc(5),hb_parni(6) ) ) ;
 }
 
 HB_FUNC( WAITRUN )
@@ -430,24 +431,21 @@ HB_FUNC( WAITRUN )
 
 }
 
-
 HB_FUNC( CREATEMUTEX )
 {
-   SECURITY_ATTRIBUTES *sa;
+   SECURITY_ATTRIBUTES *sa = NULL;
 
-   if( ISCHAR( 2 ) )
+   if( ISCHAR( 2 ) && ! ISNIL( 1 ) )
    {
       sa = ( SECURITY_ATTRIBUTES * ) hb_itemGetCPtr( hb_param( 1, HB_IT_STRING ) );
    }
 
-   hb_retnl( (ULONG) CreateMutex( ISNIL( 1 ) ? NULL : sa,
-                                  hb_parnl( 2 )         ,
-                                  hb_parc( 3 ) ) );
+   hb_retnl( ( ULONG ) CreateMutex( sa, hb_parnl( 2 ), hb_parc( 3 ) ) );
 }
 
-HB_FUNC (GETLASTERROR )
+HB_FUNC( GETLASTERROR )
 {
-  hb_retnl( (LONG) GetLastError() ) ;
+   hb_retnl( ( LONG ) GetLastError() ) ;
 }
 
 HB_FUNC ( CREATEFOLDER )
@@ -498,7 +496,7 @@ HB_FUNC ( GETSYSCOLOR )
 
 HB_FUNC ( SETWINDOWLONG )
 {
-   hb_retnl( SetWindowLong( (HWND) hb_parnl(1), hb_parni(2), hb_parnl(3) ));
+   hb_retnl( SetWindowLong( HWNDparam( 1 ), hb_parni(2), hb_parnl(3) ));
 }
 
 /**************************************************************************************/
@@ -514,8 +512,12 @@ HB_FUNC ( SETWINDOWLONG )
 
 HB_FUNC( WINVERSION )
 {
-   #define VER_SUITE_PERSONAL 0x00000200
-   #define VER_SUITE_BLADE    0x00000400
+   #ifndef VER_SUITE_PERSONAL
+      #define VER_SUITE_PERSONAL 0x00000200
+   #endif
+   #ifndef VER_SUITE_BLADE
+      #define VER_SUITE_BLADE    0x00000400
+   #endif
 
    OSVERSIONINFOEX osvi;
    BOOL            bOsVersionInfoEx;
@@ -729,5 +731,5 @@ HB_FUNC( WINVERSION )
 
 HB_FUNC( SETWINDOWPOS )
 {
-   hb_retl( SetWindowPos( ( HWND ) hb_parnl( 1 ), ( HWND ) hb_parni( 2 ), hb_parni( 4 ), hb_parni( 3 ), hb_parni( 5 ), hb_parni( 6 ), hb_parni( 7 ) ) );
+   hb_retl( SetWindowPos( HWNDparam( 1 ), HWNDparam( 2 ), hb_parni( 4 ), hb_parni( 3 ), hb_parni( 5 ), hb_parni( 6 ), hb_parni( 7 ) ) );
 }

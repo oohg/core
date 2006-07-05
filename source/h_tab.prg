@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.20 2006-06-10 03:19:53 guerra000 Exp $
+ * $Id: h_tab.prg,v 1.21 2006-07-05 02:39:54 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -625,6 +625,14 @@ EXTERN TabCtrl_SetCurSel, TabCtrl_GetCurSel, TabCtrl_InsertItem, TabCtrl_DeleteI
 
 #pragma BEGINDUMP
 
+#ifndef _WIN32_IE
+   #define _WIN32_IE 0x0400
+#endif
+#if ( _WIN32_IE < 0x0400 )
+   #undef _WIN32_IE
+   #define _WIN32_IE 0x0400
+#endif
+
 #include <windows.h>
 #include <commctrl.h>
 #include "hbapi.h"
@@ -675,7 +683,7 @@ HB_FUNC( INITTABCONTROL )
 
 	hArray = hb_param( 7, HB_IT_ARRAY );
 
-	hwnd = (HWND) hb_parnl (1);
+   hwnd = HWNDparam( 1 );
 
    hbutton = CreateWindowEx( iStyleEx, WC_TABCONTROL , NULL ,
 	Style ,
@@ -695,7 +703,7 @@ HB_FUNC( INITTABCONTROL )
 
    lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hbutton, GWL_WNDPROC, ( LONG ) SubClassFunc );
 
-   hb_retnl( ( LONG ) hbutton );
+   HWNDret( hbutton );
 }
 
 HB_FUNC (TABCTRL_SETCURSEL)
@@ -704,7 +712,7 @@ HB_FUNC (TABCTRL_SETCURSEL)
 	HWND hwnd;
 	int s;
 
-	hwnd = (HWND) hb_parnl (1);
+   hwnd = HWNDparam( 1 );
 
 	s = hb_parni (2);
 
@@ -715,37 +723,27 @@ HB_FUNC (TABCTRL_SETCURSEL)
 HB_FUNC (TABCTRL_GETCURSEL)
 {
 	HWND hwnd;
-	hwnd = (HWND) hb_parnl (1);
+   hwnd = HWNDparam( 1 );
 	hb_retni ( TabCtrl_GetCurSel( hwnd ) + 1 ) ;
 }
 
 HB_FUNC (TABCTRL_INSERTITEM)
 {
-	HWND hwnd ;
-	TC_ITEM tie ;
-	int i ;
+   TC_ITEM tie;
+   int i;
 
-	hwnd = (HWND) hb_parnl (1) ;
-	i = hb_parni (2) ;
+   i = hb_parni( 2 );
 
-	tie.mask = TCIF_TEXT ;
-	tie.iImage = -1 ;
-	tie.pszText = hb_parc(3) ;
+   tie.mask = TCIF_TEXT;
+   tie.iImage = -1;
+   tie.pszText = hb_parc( 3 );
 
-	TabCtrl_InsertItem(hwnd, i, &tie) ;
-
+   TabCtrl_InsertItem( HWNDparam( 1 ), i, &tie );
 }
 
-HB_FUNC (TABCTRL_DELETEITEM)
+HB_FUNC( TABCTRL_DELETEITEM )
 {
-	HWND hwnd ;
-	int i ;
-
-	hwnd = (HWND) hb_parnl (1) ;
-	i = hb_parni (2) ;
-
-	TabCtrl_DeleteItem(hwnd, i) ;
-
+   TabCtrl_DeleteItem( HWNDparam( 1 ), hb_parni( 2 ) );
 }
 
 HB_FUNC( SETTABCAPTION )
@@ -757,8 +755,7 @@ HB_FUNC( SETTABCAPTION )
 
 	tie.pszText = hb_parc(3) ;
 
-	TabCtrl_SetItem ( (HWND) hb_parnl (1) , hb_parni (2)-1 , &tie);
-
+   TabCtrl_SetItem( HWNDparam( 1 ), hb_parni( 2 ) - 1, &tie );
 }
 
 HB_FUNC( SETTABPAGEIMAGE )
@@ -769,14 +766,14 @@ HB_FUNC( SETTABPAGEIMAGE )
 //            ImageList_AddMasked( himl, hbmp, CLR_DEFAULT ) ;
    tie.mask = TCIF_IMAGE ;
    tie.iImage = hb_parni( 2 );
-   TabCtrl_SetItem( ( HWND ) hb_parnl( 1 ), hb_parni( 2 ), &tie );
+   TabCtrl_SetItem( HWNDparam( 1 ), hb_parni( 2 ), &tie );
 }
 
 HB_FUNC( TABCTRL_GETITEMRECT )
 {
    RECT rect;
 
-   TabCtrl_GetItemRect( ( HWND ) hb_parnl( 1 ), hb_parni( 2 ), &rect );
+   TabCtrl_GetItemRect( HWNDparam( 1 ), hb_parni( 2 ), &rect );
    hb_reta( 4 );
    hb_storni( rect.left,   -1, 1 );
    hb_storni( rect.top,    -1, 2 );

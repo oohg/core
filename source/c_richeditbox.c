@@ -1,5 +1,5 @@
 /*
- * $Id: c_richeditbox.c,v 1.4 2006-05-01 04:09:47 guerra000 Exp $
+ * $Id: c_richeditbox.c,v 1.5 2006-07-05 02:39:54 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -116,48 +116,46 @@ static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 
 HB_FUNC( INITRICHEDITBOX )
 {
-
-	HWND hwnd;
-	HWND hwndRE;
+   HWND hwnd;
+   HWND hwndRE = 0;
     int Style, StyleEx ;
 
    StyleEx = WS_EX_CLIENTEDGE | _OOHG_RTL_Status( hb_parl( 13 ) );
 
-	hwnd = (HWND) hb_parnl (1);
+   hwnd = HWNDparam( 1 );
 
-	Style = ES_MULTILINE | ES_WANTRETURN | WS_CHILD | WS_VSCROLL | WS_HSCROLL ;
+   Style = ES_MULTILINE | ES_WANTRETURN | WS_CHILD | WS_VSCROLL | WS_HSCROLL ;
 
-	if ( hb_parl (10) )
-	{
-		Style = Style | ES_READONLY ;
-	}
+   if( hb_parl( 10 ) )
+   {
+      Style = Style | ES_READONLY;
+   }
 
-	if ( ! hb_parl (11) )
-	{
-		Style = Style | WS_VISIBLE ;
-	}
+   if( ! hb_parl( 11 ) )
+   {
+      Style = Style | WS_VISIBLE;
+   }
 
-	if ( ! hb_parl (12) )
-	{
-		Style = Style | WS_TABSTOP ;
-	}
+   if( ! hb_parl( 12 ) )
+   {
+      Style = Style | WS_TABSTOP ;
+   }
 
-        InitCommonControls();
-        if ( LoadLibrary("RichEd20.dll"))
-		{
-            hwndRE = CreateWindowEx( StyleEx, RICHEDIT_CLASS , (LPSTR) NULL,
-	          Style ,
-		hb_parni(3), hb_parni(4) , hb_parni(5), hb_parni(6) ,
-		hwnd,(HMENU)hb_parni(2) , GetModuleHandle(NULL) , NULL ) ;
+   InitCommonControls();
+   if ( LoadLibrary("RichEd20.dll"))
+   {
+      hwndRE = CreateWindowEx( StyleEx, RICHEDIT_CLASS , (LPSTR) NULL,
+              Style, hb_parni(3), hb_parni(4), hb_parni(5), hb_parni(6),
+              hwnd, (HMENU)hb_parni(2), GetModuleHandle(NULL), NULL ) ;
 
-   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hwndRE, GWL_WNDPROC, ( LONG ) SubClassFunc );
+      lpfnOldWndProc = ( WNDPROC ) SetWindowLong( hwndRE, GWL_WNDPROC, ( LONG ) SubClassFunc );
 
-		SendMessage ( hwndRE , (UINT)EM_LIMITTEXT ,(WPARAM) hb_parni(9) , (LPARAM) 0 ) ;
+      SendMessage( hwndRE, (UINT) EM_LIMITTEXT, (WPARAM) hb_parni(9) , (LPARAM) 0 );
 
-		SendMessage ( hwndRE , (UINT) EM_SETEVENTMASK, (WPARAM) 0 , (LPARAM) ENM_CHANGE ) ;
+      SendMessage( hwndRE, (UINT) EM_SETEVENTMASK, (WPARAM) 0 , (LPARAM) ENM_CHANGE );
 
-        }
+   }
 
-	hb_retnl ( (LONG) hwndRE );
+   HWNDret( hwndRE );
 
 }

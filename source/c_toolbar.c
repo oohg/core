@@ -1,5 +1,5 @@
 /*
- * $Id: c_toolbar.c,v 1.4 2006-05-01 04:09:47 guerra000 Exp $
+ * $Id: c_toolbar.c,v 1.5 2006-07-05 02:39:54 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -116,6 +116,11 @@ static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 
 #define NUM_TOOLBAR_BUTTONS 10
 
+#ifdef MAKELONG
+   #undef MAKELONG
+#endif
+#define MAKELONG(a, b)      ((LONG)(((WORD)((DWORD_PTR)(a) & 0xffff)) | (((DWORD)((WORD)((DWORD_PTR)(b) & 0xffff))) << 16)))
+
 HB_FUNC( INITTOOLBAR )
 {
    HWND hwnd;
@@ -126,7 +131,7 @@ HB_FUNC( INITTOOLBAR )
    int ExStyle;
    int TbExStyle = TBSTYLE_EX_DRAWDDARROWS ;
 
-   hwnd = (HWND) hb_parnl (1);
+   hwnd = HWNDparam( 1 );
 
    ExStyle = _OOHG_RTL_Status( hb_parl( 15 ) );
 
@@ -168,10 +173,10 @@ HB_FUNC( INITTOOLBAR )
 		SendMessage(hwndTB,TB_SETBITMAPSIZE,0,(LPARAM) MAKELONG(hb_parni(6),hb_parni(7)));
 	}
 
-	SendMessage(hwndTB,TB_SETEXTENDEDSTYLE,0,(LPARAM) TbExStyle );
+    SendMessage( hwndTB, TB_SETEXTENDEDSTYLE, 0, ( LPARAM ) TbExStyle );
 
-	ShowWindow(hwndTB,SW_SHOW);
-	hb_retnl ( (LONG) hwndTB );
+    ShowWindow( hwndTB, SW_SHOW );
+    HWNDret( hwndTB );
 }
 
 HB_FUNC( INITTOOLBUTTON )
@@ -243,7 +248,7 @@ HB_FUNC( INITTOOLBUTTON )
 	tbb[nBtn].iBitmap = nPoz;
 	tbb[nBtn].idCommand = hb_parni(3);
 	tbb[nBtn].fsState = TBSTATE_ENABLED;
-	tbb[nBtn].fsStyle = Style;
+    tbb[nBtn].fsStyle = ( WORD ) Style;
 	nBtn++;
 
    	if ( hb_parl (10) )
@@ -253,13 +258,13 @@ HB_FUNC( INITTOOLBUTTON )
 		nBtn++;
 	}
 
-	SendMessage(hwndTB, TB_BUTTONSTRUCTSIZE,(WPARAM) sizeof(TBBUTTON), 0);
+   SendMessage( hwndTB, TB_BUTTONSTRUCTSIZE, ( WPARAM ) sizeof( TBBUTTON ), 0 );
 
-	SendMessage(hwndTB,TB_ADDBUTTONS,nBtn,(LPARAM)&tbb);
+   SendMessage( hwndTB, TB_ADDBUTTONS, nBtn, ( LPARAM ) &tbb );
 
-	ShowWindow(hwndTB,SW_SHOW);
+   ShowWindow( hwndTB, SW_SHOW );
 
-	hb_retnl ( (LONG) himage );
+   HWNDret( himage );
 }
 
 
@@ -268,7 +273,7 @@ HB_FUNC( CDISABLETOOLBARBUTTON )
 {
    long RetVal;
 
-   RetVal = SendMessage((HWND) hb_parnl(1), TB_ENABLEBUTTON,hb_parni(2),MAKELONG(0,0));
+   RetVal = SendMessage( HWNDparam( 1 ), TB_ENABLEBUTTON, hb_parni( 2 ), MAKELONG( 0, 0 ) );
 
    hb_retnl( RetVal );
 
@@ -320,7 +325,6 @@ HB_FUNC( GETSIZETOOLBAR )
 
 LONG WidestBtn(LPCTSTR pszStr, HWND hwnd)
 {
-   INT      i;
    SIZE     sz;
    LOGFONT  lf;
    HFONT    hFont;
@@ -414,37 +418,24 @@ HB_FUNC( CHECKBUTTONBAR )          // hb_parni(2) -> Position in ToolBar
 HB_FUNC( GETBUTTONBARRECT )
 {
    RECT rc;
-   SendMessage((HWND) hb_parnl(1), TB_GETITEMRECT,(WPARAM) hb_parnl(2),(LPARAM) &rc);
-  hb_retnl( MAKELONG(rc.left,rc.bottom) );
+   SendMessage( HWNDparam( 1 ), TB_GETITEMRECT,(WPARAM) hb_parnl(2),(LPARAM) &rc);
+   hb_retnl( MAKELONG(rc.left,rc.bottom) );
  }
 
-HB_FUNC ( GETBUTTONPOS )
+HB_FUNC( GETBUTTONPOS )
 {
    hb_retnl( (LONG) (((NMTOOLBAR FAR *) hb_parnl(1))->iItem) );
 }
 
 HB_FUNC( GETBUTTONBARCOUNT)
 {
-	hb_retni ( SendMessage((HWND) hb_parnl(1), TB_BUTTONCOUNT,0,0) );
+    hb_retni ( SendMessage( HWNDparam( 1 ), TB_BUTTONCOUNT,0,0) );
 }
 
 HB_FUNC( SETBUTTONID)
 {
 	hb_retni ( SendMessage((HWND) hb_parnl(1), TB_SETCMDID,hb_parni(2),hb_parni(3)) );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 HB_FUNC( SHOWTOOLBUTTONTIP )
 {
