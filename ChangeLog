@@ -1,11 +1,39 @@
 /*
- * $Id: ChangeLog,v 1.179 2006-07-01 15:53:46 guerra000 Exp $
+ * $Id: ChangeLog,v 1.180 2006-07-05 02:43:00 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-07-04 21:36 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_xbrowse.prg
+    * Moved ooHGRegister:Filter() method to function instead of
+      inline command for avoid compiler error.
+  * source/c_windows.c
+    - Removed hbvmpub.h include file.
+    * Changed GetFormObjectByHandle() parameter from LONG to HWND.
+  * include/oohg.h
+  * source/c_controlmisc.c
+  * source/c_windows.c
+  * source/h_windows.prg
+    * Changed GetControlObjectByHandle() parameter from LONG to HWND.
+  * source/c_font.c
+  * source/c_help.c
+  * source/c_image.c
+  * source/c_richeditbox.c
+  * source/c_toolbar.c
+  * source/c_tree.c
+  * source/c_windows.c
+  * source/c_winapimisc.c
+  * source/h_grid.prg
+  * source/h_splitbox.prg
+  * source/h_status.prg
+  * source/h_tab.prg
+    * Fixed warnings.
+  * source/makelib.bat
+    * Small modifications/optimizations.
 
 2006-07-01 10:53 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_xbrowse.prg
