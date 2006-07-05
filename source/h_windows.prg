@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.91 2006-07-01 15:53:47 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.92 2006-07-05 02:42:11 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -427,7 +427,7 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )
    switch( message )
    {
       case WM_CTLCOLORSTATIC:
-         _OOHG_Send( GetControlObjectByHandle( ( LONG ) lParam ), s_Events_Color );
+         _OOHG_Send( GetControlObjectByHandle( ( HWND ) lParam ), s_Events_Color );
          hb_vmPushLong( wParam );
          hb_vmPushLong( COLOR_3DFACE );
          hb_vmSend( 2 );
@@ -435,21 +435,21 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )
 
       case WM_CTLCOLOREDIT:
       case WM_CTLCOLORLISTBOX:
-         _OOHG_Send( GetControlObjectByHandle( ( LONG ) lParam ), s_Events_Color );
+         _OOHG_Send( GetControlObjectByHandle( ( HWND ) lParam ), s_Events_Color );
          hb_vmPushLong( wParam );
          hb_vmPushLong( COLOR_WINDOW );
          hb_vmSend( 2 );
          break;
 
       case WM_NOTIFY:
-         _OOHG_Send( GetControlObjectByHandle( ( LONG ) ( ( ( NMHDR FAR * ) lParam )->hwndFrom ) ), s_Events_Notify );
+         _OOHG_Send( GetControlObjectByHandle( ( ( NMHDR FAR * ) lParam )->hwndFrom ), s_Events_Notify );
          hb_vmPushLong( wParam );
          hb_vmPushLong( lParam );
          hb_vmSend( 2 );
          break;
 
       case WM_DRAWITEM:
-         _OOHG_Send( GetControlObjectByHandle( ( LONG ) ( ( ( LPDRAWITEMSTRUCT ) lParam )->hwndItem ) ), s_Events_DrawItem );
+         _OOHG_Send( GetControlObjectByHandle( ( ( LPDRAWITEMSTRUCT ) lParam )->hwndItem ), s_Events_DrawItem );
          hb_vmPushLong( lParam );
          hb_vmSend( 1 );
          break;
@@ -474,7 +474,7 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )
             HWND hForm;
 
             SetFocus( ( HWND ) wParam );
-            pControl = GetControlObjectByHandle( ( LONG ) wParam );
+            pControl = GetControlObjectByHandle( ( HWND ) wParam );
 
             // Check if control have context menu
             pContext = NULL;
@@ -538,7 +538,7 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )
       case WM_HSCROLL:
          if( lParam )
          {
-            _OOHG_Send( GetControlObjectByHandle( ( LONG ) lParam ), s_Events_HScroll );
+            _OOHG_Send( GetControlObjectByHandle( ( HWND ) lParam ), s_Events_HScroll );
             hb_vmPushLong( wParam );
             hb_vmSend( 1 );
          }
@@ -553,7 +553,7 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )
       case WM_VSCROLL:
          if( lParam )
          {
-            _OOHG_Send( GetControlObjectByHandle( ( LONG ) lParam ), s_Events_VScroll );
+            _OOHG_Send( GetControlObjectByHandle( ( HWND ) lParam ), s_Events_VScroll );
             hb_vmPushLong( wParam );
             hb_vmSend( 1 );
          }
@@ -633,7 +633,7 @@ Local myobject, cWork
    DEFAULT x    TO 4
    DEFAULT y    TO 2
 
-   bringwindowtotop( ::Hwnd)
+   bringwindowtotop( ::hWnd )
 
    WNDCOPY( ::hWnd, .F., cWork ) //// save as BMP
 
@@ -2841,7 +2841,7 @@ Local i, oWnd
 
 	EndIf
 
-   For i = 1 to len (_OOHG_aFormhWnd)
+   For i = 1 to len ( _OOHG_aFormhWnd )
       oWnd := _OOHG_aFormObjects[ i ]
       if oWnd:Active
 

@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.h,v 1.28 2006-07-01 15:53:47 guerra000 Exp $
+ * $Id: oohg.h,v 1.29 2006-07-05 02:42:11 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -49,10 +49,17 @@
  *
  */
 
-#define HWNDparam( pos )          ( ( HWND ) hb_parnl( pos ) )
-#define HWNDret( hWnd )           ( hb_retnl( ( long ) hWnd ) )
-#define ValidHandler( hWnd )      ( ( hWnd ) != 0 && ( HWND )( hWnd ) != ( HWND )( ~0 ) )
-#define HWNDpush( hWnd )          ( hb_vmPushLong( ( long ) hWnd ) )
+#ifdef OOHG_HWND_POINTER
+   #define HWNDparam( pos )          ( ( HWND ) hb_parptr( pos ) )
+   #define HWNDret( hWnd )           ( hb_retptr( hWnd ) )
+   #define HWNDpush( hWnd )          ( hb_vmPushPointer( hWnd ) )
+#else
+   #define HWNDparam( pos )          ( ( HWND ) hb_parnl( pos ) )
+   #define HWNDret( hWnd )           ( hb_retnl( ( long ) hWnd ) )
+   #define HWNDpush( hWnd )          ( hb_vmPushLong( ( long ) hWnd ) )
+#endif
+
+#define ValidHandler( hWnd )         ( ( hWnd ) != 0 && ( HWND )( hWnd ) != ( HWND )( ~0 ) )
 
 struct IMAGE_PARAMETER {
    char *cString;
@@ -97,7 +104,7 @@ typedef struct OOHG_Window {
 } OCTRL, *POCTRL;
 
 extern void ImageFillParameter( struct IMAGE_PARAMETER *pResult, PHB_ITEM pString );
-extern PHB_ITEM GetControlObjectByHandle( LONG hWnd );
+extern PHB_ITEM GetControlObjectByHandle( HWND hWnd );
 extern PHB_ITEM GetControlObjectById( LONG lId );
 extern void _OOHG_Send( PHB_ITEM pSelf, int iSymbol );
 void _OOHG_DoEvent( PHB_ITEM pSelf, int iSymbol );
@@ -165,3 +172,9 @@ DWORD _OOHG_RTL_Status( BOOL bRtl );
 #define s_Events_VScroll       52
 #define s_nTextHeight          53
 #define s_LastSymbol           54
+
+// Hack for MinGW and static functions (object's methods)
+#ifdef __MINGW32__
+   #undef  HB_FUNC_STATIC
+   #define HB_FUNC_STATIC( x )     HB_FUNC( x )
+#endif
