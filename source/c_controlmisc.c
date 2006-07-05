@@ -1,5 +1,5 @@
 /*
- * $Id: c_controlmisc.c,v 1.36 2006-06-06 02:59:34 guerra000 Exp $
+ * $Id: c_controlmisc.c,v 1.37 2006-07-05 02:41:26 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -95,19 +95,8 @@
 #define HB_OS_WIN_32_USED
 #define _WIN32_WINNT   0x0400
 #include <shlobj.h>
-
-#if defined(__MINGW32__)
-  #define UDM_GETPOS32 0x0472
-  #define UDM_SETPOS32 0x0471
-#endif
-
-#if defined(_MSC_VER)
-  #define UDM_SETPOS32 (WM_USER+113)
-  #define UDM_GETPOS32 (WM_USER+114)
-#endif
-
-#include <windows.h>
 #include <commctrl.h>
+#include <windows.h>
 #include "hbapi.h"
 #include "hbvm.h"
 #include "hbstack.h"
@@ -324,7 +313,7 @@ HB_FUNC ( DELETEOBJECT )
 
 HB_FUNC( CSHOWCONTROL )
 {
-   ShowWindow( ( HWND ) hb_parnl( 1 ), SW_SHOW );
+   ShowWindow( HWNDparam( 1 ), SW_SHOW );
 }
 
 HB_FUNC( INITTOOLTIP )
@@ -341,7 +330,7 @@ HB_FUNC( INITTOOLTIP )
    InitCommonControls();
 
    htooltip = CreateWindowEx( 0, "tooltips_class32", "", Style,
-                              0, 0, 0, 0, ( HWND ) hb_parnl( 1 ),
+                              0, 0, 0, 0, HWNDparam( 1 ),
                               NULL, GetModuleHandle( NULL ), NULL );
 
    if( _OOHG_DetermineColor( hb_param( 3, HB_IT_ANY ), &lColor ) )
@@ -354,7 +343,7 @@ HB_FUNC( INITTOOLTIP )
       SendMessage( htooltip, TTM_SETTIPTEXTCOLOR, lColor, 0 );
    }
 
-   hb_retnl( ( LONG ) htooltip );
+   HWNDret( htooltip );
 }
 
 HB_FUNC ( SETTOOLTIP )
@@ -362,19 +351,19 @@ HB_FUNC ( SETTOOLTIP )
 
 	static  TOOLINFO  ti;
 
-	HWND hWnd ;
-	char *Text ;
-	HWND hWnd_ToolTip ;
+    HWND hWnd;
+    char *Text;
+    HWND hWnd_ToolTip;
 
-	hWnd = (HWND) hb_parnl (1) ;
-	Text = hb_parc (2) ;
-	hWnd_ToolTip = (HWND) hb_parnl (3) ;
+    hWnd = HWNDparam( 1 );
+    Text = hb_parc( 2 );
+    hWnd_ToolTip = HWNDparam( 3 );
 
 	memset(&ti,0,sizeof(ti));
 
 	ti.cbSize=sizeof(ti);
 	ti.uFlags=TTF_SUBCLASS|TTF_IDISHWND;
-	ti.hwnd=GetParent(hWnd);
+    ti.hwnd=GetParent( hWnd );
 	ti.uId=(UINT)hWnd;
 
 	if(SendMessage(hWnd_ToolTip,(UINT)TTM_GETTOOLINFO,(WPARAM)0,(LPARAM)&ti))
@@ -384,7 +373,7 @@ HB_FUNC ( SETTOOLTIP )
 
 	ti.cbSize=sizeof(ti);
 	ti.uFlags=TTF_SUBCLASS|TTF_IDISHWND;
-	ti.hwnd=GetParent(hWnd);
+    ti.hwnd=GetParent( hWnd );
 	ti.uId=(UINT)hWnd;
 	ti.lpszText=Text;
 	SendMessage(hWnd_ToolTip,(UINT)TTM_ADDTOOL,(WPARAM)0,(LPARAM)&ti);
@@ -392,21 +381,16 @@ HB_FUNC ( SETTOOLTIP )
 	hb_retni(0);
 
 }
-HB_FUNC ( HIDEWINDOW )
+
+HB_FUNC( HIDEWINDOW )
 {
-	HWND hwnd;
-
-	hwnd = (HWND) hb_parnl (1);
-
-	ShowWindow(hwnd, SW_HIDE);
-
-	return ;
+   ShowWindow( HWNDparam( 1 ), SW_HIDE );
 }
 
 HB_FUNC ( CHECKDLGBUTTON )
 {
 	CheckDlgButton(
-	(HWND) hb_parnl (2),
+    HWNDparam( 2 ),
 	hb_parni(1),
 	BST_CHECKED);
 }
@@ -414,7 +398,7 @@ HB_FUNC ( CHECKDLGBUTTON )
 HB_FUNC ( UNCHECKDLGBUTTON )
 {
 	CheckDlgButton(
-	(HWND) hb_parnl (2),
+    HWNDparam( 2 ),
 	hb_parni(1),
 	BST_UNCHECKED);
 }
@@ -422,7 +406,7 @@ HB_FUNC ( UNCHECKDLGBUTTON )
 HB_FUNC ( SETDLGITEMTEXT )
 {
     SetDlgItemText(
-       (HWND) hb_parnl (3) ,
+       HWNDparam( 3 ),
        hb_parni( 1 ),
        (LPCTSTR) hb_parc( 2 )
     );
@@ -430,7 +414,7 @@ HB_FUNC ( SETDLGITEMTEXT )
 
 HB_FUNC ( SETFOCUS )
 {
-   hb_retnl( (LONG) SetFocus( (HWND) hb_parnl( 1 ) ) );
+   HWNDret( SetFocus( HWNDparam( 1 ) ) );
 }
 
 HB_FUNC ( GETDLGITEMTEXT )
@@ -439,7 +423,7 @@ HB_FUNC ( GETDLGITEMTEXT )
    char *cText = (char*) hb_xgrab( iLen+1 );
 
 	GetDlgItemText(
-	(HWND) hb_parnl (2),	// handle of dialog box
+    HWNDparam( 2 ),    // handle of dialog box
 	hb_parni(1),		// identifier of control
 	(LPTSTR) cText,       	// address of buffer for text
 	iLen                   	// maximum size of string
@@ -449,25 +433,14 @@ HB_FUNC ( GETDLGITEMTEXT )
    hb_xfree( cText );
 }
 
-HB_FUNC ( ISDLGBUTTONCHECKED )
+HB_FUNC( ISDLGBUTTONCHECKED )
 {
-	UINT r ;
-
-	r = IsDlgButtonChecked( (HWND) hb_parnl (2), hb_parni( 1 ) );
-
-	if ( r == BST_CHECKED )
-	{
-		hb_retl( TRUE );
-	}
-	else
-	{
-		hb_retl( FALSE );
-	}
+   hb_retl( ( IsDlgButtonChecked( HWNDparam( 2 ), hb_parni( 1 ) ) == BST_CHECKED ) );
 }
 
 HB_FUNC ( SETSPINNERVALUE )
 {
-	SendMessage((HWND) hb_parnl(1) ,
+    SendMessage( HWNDparam( 1 ),
 		(UINT)UDM_SETPOS32 ,
 		(WPARAM)0,
 		(LPARAM) (INT) hb_parni (2)
@@ -476,7 +449,7 @@ HB_FUNC ( SETSPINNERVALUE )
 HB_FUNC ( GETSPINNERVALUE )
 {
 	hb_retnl (
-	SendMessage((HWND) hb_parnl(1) ,
+    SendMessage( HWNDparam( 1 ),
 		(UINT)UDM_GETPOS32 ,
 		(WPARAM) 0 ,
 		(LPARAM) 0 )
@@ -525,7 +498,7 @@ HB_FUNC ( INSERTSHIFTTAB )
 
 HB_FUNC ( RELEASECONTROL )
 {
-	SendMessage( (HWND) hb_parnl(1) , WM_SYSCOMMAND , SC_CLOSE , 0 ) ;
+   SendMessage( HWNDparam( 1 ), WM_SYSCOMMAND , SC_CLOSE , 0 );
 }
 
 
@@ -590,10 +563,10 @@ HB_FUNC( SYSTEMPARAMETERSINFO )
 HB_FUNC( GETTEXTWIDTH )  // returns the width of a string in pixels
 {
    HDC   hDC        = ( HDC ) hb_parnl( 1 );
-   HWND  hWnd;
+   HWND  hWnd = 0;
    BOOL  bDestroyDC = FALSE;
    HFONT hFont = ( HFONT ) hb_parnl( 3 );
-   HFONT hOldFont;
+   HFONT hOldFont = 0;
    SIZE sz;
 
    if( ! hDC )
@@ -620,10 +593,10 @@ HB_FUNC( GETTEXTWIDTH )  // returns the width of a string in pixels
 HB_FUNC( GETTEXTHEIGHT )  // returns the width of a string in pixels
 {
    HDC   hDC        = ( HDC ) hb_parnl( 1 );
-   HWND  hWnd;
+   HWND  hWnd = 0;
    BOOL  bDestroyDC = FALSE;
    HFONT hFont = ( HFONT ) hb_parnl( 3 );
-   HFONT hOldFont;
+   HFONT hOldFont = 0;
    SIZE sz;
 
    if( ! hDC )
@@ -678,11 +651,11 @@ HB_FUNC ( GETSHOWCMD )
 	HWND h;
         int i;
 
-	h = (HWND) hb_parnl( 1 ) ;
+    h = HWNDparam( 1 );
 
 	WP.length = sizeof(WINDOWPLACEMENT) ;
 
-	GetWindowPlacement( (HWND) h , &WP ) ;
+    GetWindowPlacement( h, &WP ) ;
 
         i =  WP.showCmd;
 
@@ -857,7 +830,7 @@ HB_FUNC( _OOHG_INIT_C_VARS_CONTROLS_C_SIDE )
    hb_itemCopy( _OOHG_aControlIds,     hb_param( 3, HB_IT_ARRAY ) );
 }
 
-PHB_ITEM GetControlObjectByHandle( LONG hWnd )
+PHB_ITEM GetControlObjectByHandle( HWND hWnd )
 {
    PHB_ITEM pControl;
    ULONG ulCount;
@@ -872,7 +845,11 @@ PHB_ITEM GetControlObjectByHandle( LONG hWnd )
    pControl = 0;
    for( ulCount = 1; ulCount <= hb_arrayLen( _OOHG_aControlhWnd ); ulCount++ )
    {
-      if( hWnd == hb_arrayGetNL( _OOHG_aControlhWnd, ulCount ) )
+      #ifdef OOHG_HWND_POINTER
+         if( hWnd == ( HWND ) hb_arrayGetPtr( _OOHG_aControlhWnd, ulCount ) )
+      #else
+         if( ( LONG ) hWnd == hb_arrayGetNL( _OOHG_aControlhWnd, ulCount ) )
+      #endif
       {
          pControl = hb_arrayGetItemPtr( _OOHG_aControlObjects, ulCount );
          ulCount = hb_arrayLen( _OOHG_aControlhWnd );
@@ -894,7 +871,7 @@ HB_FUNC( GETCONTROLOBJECTBYHANDLE )
    PHB_ITEM pReturn;
 
    pReturn = hb_itemNew( NULL );
-   hb_itemCopy( pReturn, GetControlObjectByHandle( hb_parnl( 1 ) ) );
+   hb_itemCopy( pReturn, GetControlObjectByHandle( HWNDparam( 1 ) ) );
 
    hb_itemReturn( pReturn );
    hb_itemRelease( pReturn );
@@ -983,10 +960,10 @@ HB_FUNC( GETCLIPBOARDTEXT )
 
 HB_FUNC( GETPARENT )
 {
-   hb_retnl( ( LONG ) GetParent( ( HWND ) hb_parnl( 1 ) ) );
+   HWNDret( GetParent( HWNDparam( 1 ) ) );
 }
 
 HB_FUNC( GETDLGCTRLID )
 {
-   hb_retnl( GetDlgCtrlID( ( HWND ) hb_parnl( 1 ) ) );
+   hb_retnl( GetDlgCtrlID( HWNDparam( 1 ) ) );
 }
