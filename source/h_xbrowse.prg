@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.11 2006-07-01 15:53:47 guerra000 Exp $
+ * $Id: h_xbrowse.prg,v 1.12 2006-07-05 02:40:42 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1288,6 +1288,7 @@ CLASS ooHGRecord
    METHOD Use
    METHOD Skipper
    METHOD OrdScope
+   METHOD Filter
 
    METHOD Field      BLOCK { | Self, nPos |                   ( ::cAlias__ )->( Field( nPos ) ) }
    METHOD FieldBlock BLOCK { | Self, cField |                 ( ::cAlias__ )->( FieldBlock( cField ) ) }
@@ -1314,7 +1315,6 @@ CLASS ooHGRecord
    METHOD SetIndex   BLOCK { | Self, cFile, lAdditive |       IF( EMPTY( lAdditive ), ( ::cAlias__ )->( ordListClear() ), ) , ( ::cAlias__ )->( ordListAdd( cFile ) ) }
    METHOD Append     BLOCK { | Self |                         ( ::cAlias__ )->( DbAppend() ) }
    METHOD Lock       BLOCK { | Self |                         ( ::cAlias__ )->( RLock() ) }
-   METHOD Filter     BLOCK { | Self, cFilter |                IF( EMPTY( cFilter ), ( ::cAlias__ )->( DbClearFilter() ), ( ::cAlias__ )->( DbSetFilter( { || &cFilter } , cFilter ) ) ) }
    METHOD DbStruct   BLOCK { | Self |                         ( ::cAlias__ )->( DbStruct() ) }
    METHOD OrdKeyNo   BLOCK { | Self |                         IF( ( ::cAlias__ )->( OrdKeyCount() ) > 0, ( ::cAlias__ )->( OrdKeyNo() ), ( ::cAlias__ )->( RecNo() ) ) }
    METHOD OrdKeyCount BLOCK { | Self |                        IF( ( ::cAlias__ )->( OrdKeyCount() ) > 0, ( ::cAlias__ )->( OrdKeyCount() ), ( ::cAlias__ )->( RecCount() ) ) }
@@ -1413,4 +1413,14 @@ METHOD OrdScope( uFrom, uTo ) CLASS ooHGRecord
       ( ::cAlias )->( ORDSCOPE( 0, uFrom ) )
       ( ::cAlias )->( ORDSCOPE( 1, uTo ) )
    ENDIF
+RETURN nil
+
+*-----------------------------------------------------------------------------*
+METHOD Filter( cFilter ) CLASS ooHGRecord
+*-----------------------------------------------------------------------------*
+   If EMPTY( cFilter )
+      ( ::cAlias__ )->( DbClearFilter() )
+   Else
+      ( ::cAlias__ )->( DbSetFilter( { || &( cFilter ) } , cFilter ) )
+   EndIf
 RETURN nil
