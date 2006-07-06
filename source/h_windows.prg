@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.93 2006-07-06 13:47:11 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.94 2006-07-06 14:01:10 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -194,8 +194,8 @@ CLASS TWindow
    METHOD Events
 
    METHOD Enabled             SETGET
-   METHOD Enable              BLOCK { || ::Enabled := .T. }
-   METHOD Disable             BLOCK { || ::Enabled := .F. }
+   METHOD Enable              BLOCK { |Self| ::Enabled := .T. }
+   METHOD Disable             BLOCK { |Self| ::Enabled := .F. }
    METHOD RTL                 SETGET
    METHOD Action              SETGET
    METHOD Print
