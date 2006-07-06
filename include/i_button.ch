@@ -1,5 +1,5 @@
 /*
- * $Id: i_button.ch,v 1.5 2006-03-16 03:16:16 guerra000 Exp $
+ * $Id: i_button.ch,v 1.6 2006-07-06 13:47:11 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -113,8 +113,10 @@
 		[ <invisible: INVISIBLE> ] ;
                 [ <rtl: RTL> ] ;
                 [ <noprefix: NOPREFIX> ] ;
+                [ SUBCLASS <subclass> ] ;
 	=>;
-        [ <obj> := ] TButton():Define( <(name)>, <(parent)>, <col>, <row>, <caption>, <{action}>, ;
+        [ <obj> := ] _OOHG_SelectSubClass( TButton(), [ <subclass>() ] ): ;
+                   Define( <(name)>, <(parent)>, <col>, <row>, <caption>, <{action}>, ;
                    <w>, <h>, <font>, <size>, <tooltip>, <{gotfocus}>,<{lostfocus}>, <.flat.>, <.notabstop.>, ;
                    <helpid>, <.invisible.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.>, <.rtl.>, <.noprefix.> )
 
@@ -134,7 +136,9 @@
 		[ HELPID <helpid> ] 		;
 		[ <invisible: INVISIBLE> ] ;
                 [ <rtl: RTL> ] ;
+                [ SUBCLASS <subclass> ] ;
 	=>;
-        [ <obj> := ] TButton():DefineImage( <(name)>, <(parent)>, <col>, <row>, "", <{action}>, ;
+        [ <obj> := ] _OOHG_SelectSubClass( TButton(), [ <subclass>() ] ): ;
+                        DefineImage( <(name)>, <(parent)>, <col>, <row>, "", <{action}>, ;
                         <w>, <h>, <bitmap>, <tooltip>, <{gotfocus}>, <{lostfocus}>, ;
                         <.flat.>, <.notrans.>, <helpid>, <.invisible.>, <.notabstop.>, <.rtl.> )

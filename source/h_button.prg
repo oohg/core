@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.13 2006-05-01 04:09:47 guerra000 Exp $
+ * $Id: h_button.prg,v 1.14 2006-07-06 13:47:11 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -101,6 +101,8 @@ CLASS TButton FROM TControl
    DATA cPicture  INIT ""
    DATA lNoTransparent INIT .F.
    // DATA ImgHandle INIT 0   // ::AuxHandle
+   DATA nWidth    INIT 100
+   DATA nHeight   INIT 28
 
    METHOD Define
    METHOD DefineImage
@@ -117,11 +119,11 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, ProcedureName, w, h, ;
 *-----------------------------------------------------------------------------*
 Local ControlHandle, nStyle
 
-   DEFAULT w         TO 100
-   DEFAULT h         TO 28
-   DEFAULT lostfocus TO ""
-   DEFAULT gotfocus  TO ""
-   DEFAULT invisible TO FALSE
+   ASSIGN ::nCol    VALUE x TYPE "N"
+   ASSIGN ::nRow    VALUE y TYPE "N"
+   ASSIGN ::nWidth  VALUE w TYPE "N"
+   ASSIGN ::nHeight VALUE h TYPE "N"
+   ASSIGN invisible VALUE invisible TYPE "L" DEFAULT .F.
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize,,,, lRtl )
 
@@ -130,7 +132,7 @@ Local ControlHandle, nStyle
              if( ValType( invisible ) != "L" .OR. ! invisible, WS_VISIBLE, 0 ) + ;
              if( ValType( lNoPrefix ) == "L" .AND. lNoPrefix,  SS_NOPREFIX, 0 )
 
-   ControlHandle := InitButton( ::ContainerhWnd, Caption, 0, x, y, w, h, ::lRtl, nStyle )
+   ControlHandle := InitButton( ::ContainerhWnd, Caption, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, ::lRtl, nStyle )
 
    ::Register( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
@@ -150,8 +152,11 @@ METHOD DefineImage( ControlName, ParentForm, x, y, Caption, ProcedureName, ;
 *-----------------------------------------------------------------------------*
 Local ControlHandle, nStyle
 
-	DEFAULT invisible TO FALSE
-	DEFAULT notabstop TO FALSE
+   ASSIGN ::nCol    VALUE x TYPE "N"
+   ASSIGN ::nRow    VALUE y TYPE "N"
+   ASSIGN ::nWidth  VALUE w TYPE "N"
+   ASSIGN ::nHeight VALUE h TYPE "N"
+   ASSIGN invisible VALUE invisible TYPE "L" DEFAULT .F.
 
    ::SetForm( ControlName, ParentForm,,,,,, lRtl )
 
@@ -169,7 +174,7 @@ Local ControlHandle, nStyle
    ::OnLostFocus := LostFocus
    ::OnGotFocus :=  GotFocus
    ::Caption := Caption
-   ::lNoTransparent := notrans
+   ASSIGN ::lNoTransparent VALUE notrans TYPE "L" DEFAULT .F.
    ::Picture := image
 
 Return Self
@@ -212,11 +217,8 @@ static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 
 HB_FUNC( INITBUTTON )
 {
-   HWND hwnd;
    HWND hbutton;
    int Style, StyleEx;
-
-   hwnd = (HWND) hb_parnl (1);
 
    Style =  BS_NOTIFY | WS_CHILD | BS_PUSHBUTTON | hb_parni( 9 );
 
@@ -229,35 +231,34 @@ HB_FUNC( INITBUTTON )
                            hb_parni(5) ,
                            hb_parni(6) ,
                            hb_parni(7) ,
-                           hwnd ,
+                           HWNDparam( 1 ),
                            (HMENU)hb_parni(3) ,
                            GetModuleHandle(NULL) ,
                            NULL ) ;
 
-   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hbutton, GWL_WNDPROC, ( LONG ) SubClassFunc );
+   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( hbutton, GWL_WNDPROC, ( LONG ) SubClassFunc );
 
-   hb_retnl( ( LONG ) hbutton );
+   HWNDret( hbutton );
 }
 
 HB_FUNC( _SETBTNPICTURE )
 {
 	HWND hwnd;
 	HWND himage;
-    int ImgStyle;
+   int ImgStyle;
 
-	hwnd = (HWND) hb_parnl (1);
+   hwnd = HWNDparam( 1 );
 
-    ImgStyle = LR_LOADMAP3DCOLORS;
-    if( ! hb_parl( 3 ) )
-    {
-       ImgStyle |= LR_LOADTRANSPARENT;
-    }
+   ImgStyle = LR_LOADMAP3DCOLORS;
+   if( ! hb_parl( 3 ) )
+   {
+      ImgStyle |= LR_LOADTRANSPARENT;
+   }
 
-    himage = ( HWND ) _OOHG_LoadImage( hb_parc( 2 ), ImgStyle, 0, 0, hwnd );
+   himage = ( HWND ) _OOHG_LoadImage( hb_parc( 2 ), ImgStyle, 0, 0, hwnd );
 
-	SendMessage(hwnd,(UINT)BM_SETIMAGE,(WPARAM)IMAGE_BITMAP,(LPARAM)himage);
+   SendMessage( hwnd, ( UINT ) BM_SETIMAGE, ( WPARAM ) IMAGE_BITMAP, ( LPARAM ) himage );
 
-	hb_retnl ( (LONG) himage );
-
+   HWNDret( himage );
 }
 #pragma ENDDUMP

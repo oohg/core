@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.92 2006-07-05 02:42:11 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.93 2006-07-06 13:47:11 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -194,6 +194,8 @@ CLASS TWindow
    METHOD Events
 
    METHOD Enabled             SETGET
+   METHOD Enable              BLOCK { || ::Enabled := .T. }
+   METHOD Disable             BLOCK { || ::Enabled := .F. }
    METHOD RTL                 SETGET
    METHOD Action              SETGET
    METHOD Print
@@ -990,6 +992,7 @@ CLASS TForm FROM TWindow
    DATA hWndClient     INIT 0
    DATA lInternal      INIT .F.
    DATA lForm          INIT .T.
+   DATA lReleasing     INIT .F.
 
    DATA OnRelease      INIT nil
    DATA OnInit         INIT nil
@@ -1296,7 +1299,9 @@ Return Nil
 METHOD Activate( lNoStop, oWndLoop ) CLASS TForm
 *-----------------------------------------------------------------------------*
 
-   If _OOHG_ThisEventType == 'WINDOW_RELEASE'
+   ASSIGN lNoStop VALUE lNoStop TYPE "L" DEFAULT .F.
+
+   If _OOHG_ThisEventType == 'WINDOW_RELEASE' .AND. ! lNoStop
       MsgOOHGError("ACTIVATE WINDOW: activate windows within an 'on release' window procedure is not allowed. Program terminated" )
 	EndIf
 
@@ -1326,9 +1331,6 @@ METHOD Activate( lNoStop, oWndLoop ) CLASS TForm
    Endif
 
    // Checks for non-stop window
-   If ValType( lNoStop ) != "L"
-      lNoStop := .F.
-   EndIf
    If ValType( oWndLoop ) != "O"
       oWndLoop := IF( lNoStop .AND. ValType( _OOHG_Main ) == "O", _OOHG_Main, Self )
    EndIf
@@ -1378,32 +1380,25 @@ Return nil
 *-----------------------------------------------------------------------------*
 METHOD Release() CLASS TForm
 *-----------------------------------------------------------------------------*
-Local b
+   If ! ::lReleasing
+      ::lReleasing := .T.
 
-   b := _OOHG_InteractiveClose
-   _OOHG_InteractiveClose := 1
+      If ! ::Active
+         MsgOOHGError( "Window: " + ::Name + " is not active. Program terminated." )
+      Endif
 
-   If ! ::Active
-      MsgOOHGError("Window: "+ ::Name + " is not active. Program terminated" )
-	Endif
+      * Release Window
 
-   If _OOHG_ThisEventType == 'WINDOW_RELEASE'
-      If _OOHG_ThisForm != nil .AND. ::Name == _OOHG_ThisForm:Name
-         MsgOOHGError("Release a window in its own 'on release' procedure or release the main window in any 'on release' procedure is not allowed. Program terminated" )
-		EndIf
-	EndIf
+      If ValidHandler( ::hWnd )
+         EnableWindow( ::hWnd )
+         SendMessage( ::hWnd, WM_SYSCOMMAND, SC_CLOSE, 0 )
+      EndIf
 
-	* Release Window
+      ::Events_Destroy()
 
-   If ValidHandler( ::hWnd )
-      EnableWindow( ::hWnd )
-      SendMessage( ::hWnd, WM_SYSCOMMAND, SC_CLOSE, 0 )
-   EndIf
-
-   ::Events_Destroy()
-
-   _OOHG_InteractiveClose := b
-
+//   Else
+//      MsgOOHGError( "Release a window in its own 'on release' procedure or release the main window in any 'on release' procedure is not allowed. Program terminated." )
+   Endif
 Return Nil
 
 *-----------------------------------------------------------------------------*
@@ -1627,7 +1622,7 @@ Return lRet
 METHOD DoEvent( bBlock, cEventType ) CLASS TForm
 *-----------------------------------------------------------------------------*
 Local lRetVal := .F.
-	if valtype( bBlock )=='B'
+   if valtype( bBlock ) == "B"
 		_PushEventInfo()
       _OOHG_ThisEventType := cEventType
       _OOHG_ThisType := 'W'
@@ -1641,6 +1636,10 @@ Return lRetVal
 METHOD Events_Destroy() CLASS TForm
 *-----------------------------------------------------------------------------*
 Local mVar, i
+
+   // Release hot keys
+   aEval( ::aHotKeys, { |a| ReleaseHotKey( ::hWnd, a[ HOTKEY_ID ] ) } )
+   ::aHotKeys := {}
 
    // Remove Child Controls
    DO WHILE LEN( ::aControls ) > 0
@@ -1994,44 +1993,41 @@ Local oCtrl
 	case nMsg == WM_CLOSE
         ***********************************************************************
 
-      * Process Interactive Close Event / Setting
+      NOTE : Since ::lReleasing could be changed on each process, it must be validated any time
 
-      If ValType( ::OnInteractiveClose ) == 'B'
+      // Process Interactive Close Event / Setting
+      If ! ::lReleasing .AND. ValType( ::OnInteractiveClose ) == 'B'
          xRetVal := ::DoEvent( ::OnInteractiveClose, 'WINDOW_ONINTERACTIVECLOSE' )
          If ValType( xRetVal ) == 'L' .AND. ! xRetVal
             Return 1
          EndIf
       EndIf
 
-      If ! ::CheckInteractiveClose()
+      If ! ::lReleasing .AND. ! ::CheckInteractiveClose()
          Return 1
       EndIf
 
-      * Process AutoRelease Property
-
-      if ! ::AutoRelease
+      // Process AutoRelease Property
+      if ! ::lReleasing .AND. ! ::AutoRelease
          ::Hide()
-         Return (1)
+         Return 1
       EndIf
 
-      * If Not AutoRelease Destroy Window
+      // If Not AutoRelease Destroy Window
+
+      ::lReleasing := .T.
+      ::DoEvent( ::OnRelease, 'WINDOW_RELEASE' )
 
       if ::Type == "A"
          ReleaseAllWindows()
       Else
-         if valtype( ::OnRelease ) == 'B'
-            ::DoEvent( ::OnRelease, 'WINDOW_RELEASE' )
-         EndIf
-
 /*
 Testing...
          If ::Type == "M" .AND. ::ActivateCount[ 1 ] > 1 .OR. ! ::ActivateCount == ATAIL( _OOHG_MessageLoops )
             MsgOOHGError( "Modal windows MUST not be closed while it have sub-windows. Program terminated." )
          EndIf
 */
-
          ::OnHideFocusManagement()
-
       EndIf
 
         ***********************************************************************
@@ -2198,13 +2194,13 @@ Return ::Super:Activate( lNoStop, oWndLoop )
 *-----------------------------------------------------------------------------*
 METHOD Release() CLASS TFormMain
 *-----------------------------------------------------------------------------*
-
-   If _OOHG_ThisEventType == 'WINDOW_RELEASE'
-      MsgOOHGError("Release a window in its own 'on release' procedure or release the main window in any 'on release' procedure is not allowed. Program terminated" )
-   Else
+   If ! ::lReleasing
+      ::lReleasing := .T.
+      ::DoEvent( ::OnRelease, 'WINDOW_RELEASE' )
       ReleaseAllWindows()
+//   Else
+//      MsgOOHGError("Release a window in its own 'on release' procedure or release the main window in any 'on release' procedure is not allowed. Program terminated" )
    EndIf
-
 Return ::Super:Release()
 
 *-----------------------------------------------------------------------------*
@@ -2836,16 +2832,18 @@ Function ReleaseAllWindows()
 *-----------------------------------------------------------------------------*
 Local i, oWnd
 
-   If _OOHG_ThisEventType == 'WINDOW_RELEASE'
-      MsgOOHGError("Release a window in its own 'on release' procedure or release the main window in any 'on release' procedure is not allowed. Program terminated" )
-
-	EndIf
+//   If _OOHG_ThisEventType == 'WINDOW_RELEASE'
+//      MsgOOHGError( "Release a window in its own 'on release' procedure or release the main window in any 'on release' procedure is not allowed. Program terminated." )
+//   EndIf
 
    For i = 1 to len ( _OOHG_aFormhWnd )
       oWnd := _OOHG_aFormObjects[ i ]
       if oWnd:Active
 
-         oWnd:DoEvent( oWnd:OnRelease, 'WINDOW_RELEASE' )
+         If ! oWnd:lReleasing
+            oWnd:lReleasing := .T.
+            oWnd:DoEvent( oWnd:OnRelease, 'WINDOW_RELEASE' )
+         EndIf
 
          if .Not. Empty ( oWnd:NotifyIconName )
             oWnd:NotifyIconName := ''
@@ -2855,6 +2853,7 @@ Local i, oWnd
 		Endif
 
       aeval( oWnd:aHotKeys, { |a| ReleaseHotKey( oWnd:hWnd, a[ HOTKEY_ID ] ) } )
+      oWnd:aHotKeys := {}
 
 	Next i
 

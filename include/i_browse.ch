@@ -1,5 +1,5 @@
 /*
- * $Id: i_browse.ch,v 1.8 2005-10-22 06:04:31 guerra000 Exp $
+ * $Id: i_browse.ch,v 1.9 2006-07-06 13:47:11 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -148,9 +148,10 @@
                 [ ON EDITCELL <editcell> ]      ;
                 [ COLUMNCONTROLS <editcontrols> ] ;
                 [ REPLACEFIELD <replacefields> ] ;
+                [ SUBCLASS <subclass> ]         ;
 	=>;
-[ <oObj> := ] TBrowse():Define( ;
-                <(name)> ,      ;
+             [ <oObj> := ] _OOHG_SelectSubClass( TBrowse(), [ <subclass>() ] ): ;
+                Define( <(name)> , ;
                 <(parent)> ,    ;
 		<col> ,		;
 		<row> ,		;
@@ -249,9 +250,10 @@
                 [ ON EDITCELL <editcell> ]      ;
                 [ COLUMNCONTROLS <editcontrols> ] ;
                 [ REPLACEFIELD <replacefields> ] ;
+                [ SUBCLASS <subclass> ]         ;
 	=>;
-[ <oObj> := ] TBrowse():Define( ;
-                <(name)> ,      ;
+             [ <oObj> := ] _OOHG_SelectSubClass( TBrowse(), [ <subclass>() ] ): ;
+                Define( <(name)> ,      ;
                 <(parent)> ,    ;
 		 ,		;
 		 ,		;

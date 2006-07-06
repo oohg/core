@@ -1,11 +1,22 @@
 /*
- * $Id: ChangeLog,v 1.180 2006-07-05 02:43:00 guerra000 Exp $
+ * $Id: ChangeLog,v 1.181 2006-07-06 13:47:10 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-07-06 08:47 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_browse.ch
+  * include/i_button.ch
+    + SUBCLASS clause added.
+  * source/h_button.prg
+    * Small implementation changes.
+  * source/h_windows.prg
+    * ::lReleasing property added, for avoid nest form's release.
+    * ::Enable() and ::Disable() properties added. They calls
+      ::Enabled := lValue .
 
 2006-07-04 21:36 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_xbrowse.prg
