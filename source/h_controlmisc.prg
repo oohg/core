@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.58 2006-06-09 03:32:54 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.59 2006-07-15 23:54:38 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1597,7 +1597,9 @@ Local mVar
 
    ::Parent:DeleteControl( Self )
 
-   ReleaseControl( ::hWnd )
+   If ValidHandler( ::hWnd )
+      ReleaseControl( ::hWnd )
+   EndIf
 
    DeleteObject( ::FontHandle )
    DeleteObject( ::AuxHandle )

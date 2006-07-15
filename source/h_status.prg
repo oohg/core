@@ -1,5 +1,5 @@
 /*
- * $Id: h_status.prg,v 1.14 2006-07-05 02:39:54 guerra000 Exp $
+ * $Id: h_status.prg,v 1.15 2006-07-15 23:54:38 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -185,7 +185,7 @@ Function _EndStatusBar ( cParentForm, acCaptions, anWidths, acImages, abActions,
 *-----------------------------------------------------------------------------*
 METHOD SetClock( Width , ToolTip , action ) CLASS TMessageBar
 *-----------------------------------------------------------------------------*
-local nrItem, oTimer
+local nrItem
 
    If ValType( Width ) != 'N'
 		Width := 70
@@ -199,17 +199,14 @@ local nrItem, oTimer
 
    nrItem := TItemMessage():Define( "TimerBar",  Self, 0, 0, Time(), action , Width, 0, "" , ToolTip )
 
-   oTimer := TTimer():Define( 'StatusTimer' , ::Parent:Name , 1000 , { || ::Item( nrItem , Time() ) } )
-
-   oTimer:Container := Self
-   ::aControls[ nrItem ]:AddControl( oTimer )
+   TTimer():Define( 'StatusTimer', ::aControls[ nrItem ], 1000 , { || ::Item( nrItem , Time() ) } )
 
 Return Nil
 
 *-----------------------------------------------------------------------------*
 METHOD SetKeybrd( Width , ToolTip , action ) CLASS TMessageBar
 *-----------------------------------------------------------------------------*
-local nrItem1 , nrItem2 , nrItem3 , oTimer
+local nrItem1 , nrItem2 , nrItem3
 
 	If ValType (Width) == 'U'
       Width := 45
@@ -230,13 +227,10 @@ local nrItem1 , nrItem2 , nrItem3 , oTimer
    nrItem3 := TItemMessage():Define( "TimerInsert", Self, 0, 0, "Ins", If ( empty (Action), {|| KeyToggle( VK_INSERT ) }, Action ), GetTextWidth( NIL, "Ins", ::FontHandle ) + 36, 0,;
                      if ( IsInsertActive() , "zzz_led_on" , "zzz_led_off" ), "", ToolTip)
 
-   oTimer := TTimer():Define( 'StatusKeyBrd' , ::Parent:Name , 400 , ;
+   TTimer():Define( "StatusKeyBrd", ::aControls[ nrItem1 ], 400 , ;
       {|| SetStatusItemIcon( ::hWnd, nrItem1 , if ( IsNumLockActive() , "zzz_led_on" , "zzz_led_off" ) ), ;
           SetStatusItemIcon( ::hWnd, nrItem2 , if ( IsCapsLockActive() , "zzz_led_on" , "zzz_led_off" ) ), ;
           SetStatusItemIcon( ::hWnd, nrItem3 , if ( IsInsertActive() , "zzz_led_on" , "zzz_led_off" ) ) } )
-
-   oTimer:Container := Self
-   ::aControls[ nrItem1 ]:AddControl( oTimer )
 
 Return Nil
 
@@ -261,7 +255,7 @@ Local x
 
       x := GetItemPos( lParam )
 
-      x := ASCAN( ::aControls, { |o| o:hWnd == x + 1 } )
+      x := ASCAN( ::aControls, { |o| o:nPosition == x + 1 } )
 
       if x != 0
 
@@ -309,6 +303,7 @@ Return Nil
 
 CLASS TItemMessage FROM TControl
    DATA Type      INIT "ITEMMESSAGE" READONLY
+   DATA nPosition INIT 0
 
    METHOD Define
    METHOD SizePos
@@ -354,7 +349,8 @@ Local i, styl, nKey, ControlHandle
       ControlHandle := InitItemBar ( ::Container:hWnd, Caption, 0, w, 1, Icon , ToolTip, styl )
 	EndIf
 
-   ::Register( ControlHandle, ControlName, , , ToolTip )
+   ::Register( 0, ControlName, , , ToolTip )
+   ::nPosition := ControlHandle
    ::SizePos( y, x, w, h )
 
    ::OnClick := ProcedureName
