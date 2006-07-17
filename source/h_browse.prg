@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.51 2006-06-13 03:57:51 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.52 2006-07-17 02:59:54 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -280,10 +280,12 @@ Local lColor, aFields, cWorkArea, hWnd, nWidth
       ::GridBackColor := nil
    EndIf
 
-   x := 1
+   x := 0
    nCurrentLength := ::ItemCount()
 
-   Do While x <= PageLength .AND. ! ( cWorkArea )->( Eof() )
+   Do While x < PageLength .AND. ! ( cWorkArea )->( Eof() )
+
+      x++
 
       aTemp := ARRAY( nWidth )
 
@@ -303,7 +305,6 @@ Local lColor, aFields, cWorkArea, hWnd, nWidth
       aadd( _BrowseRecMap , ( cWorkArea )->( RecNo() ) )
 
       ( cWorkArea )->( DbSkip() )
-      x++
    EndDo
 
    Do While nCurrentLength > Len( _BrowseRecMap )

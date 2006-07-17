@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.16 2006-06-06 02:59:34 guerra000 Exp $
+ * $Id: h_combo.prg,v 1.17 2006-07-17 02:59:54 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -179,13 +179,8 @@ Local ControlHandle , rcount := 0 , BackRec , cset := 0 , WorkArea , cField
    ::SetFont()
    ::SizePos( y, x, w, h )
 
-   ::OnClick := ondisplaychangeprocedure
    ::Field :=  cField
    ::nValue   :=  Value
-   ::OnLostFocus := LostFocus
-   ::OnGotFocus :=  GotFocus
-   ::OnChange   :=  ChangeProcedure
-   ::OnDblClick := uEnter
    ::WorkArea := WorkArea
    ::ValueSource :=  valuesource
 
@@ -233,6 +228,12 @@ Local ControlHandle , rcount := 0 , BackRec , cset := 0 , WorkArea , cField
 	if valtype ( ItemSource ) != 'U'
       aAdd( ::Parent:BrowseList, Self )
 	EndIf
+
+   ::OnClick := ondisplaychangeprocedure
+   ::OnLostFocus := LostFocus
+   ::OnGotFocus :=  GotFocus
+   ::OnChange   :=  ChangeProcedure
+   ::OnDblClick := uEnter
 
 Return Self
 
