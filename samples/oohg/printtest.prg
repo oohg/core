@@ -18,15 +18,23 @@ set date ansi
 			ITEM 'hbprinter' ACTION printtest("HBPRINTER")
 			ITEM 'miniprint' ACTION printtest("MINIPRINT")
                         ITEM 'dos' ACTION printtest("DOSPRINT")
+                        ITEM 'excel' ACTION printtest("EXCELPRINT")
+
 			ITEM 'report form hbprinter' ACTION repof("HBPRINTER")
                         ITEM 'report form MINIPRINT' ACTION repof("MINIPRINT")
+
                         ITEM 'report form DOS' ACTION repof("DOSPRINT")
+                        ITEM 'report form excelprint' ACTION repof("EXCELPRINT")
+
                         ITEM 'edit demo hbprinter' ACTION editp("HBPRINTER")
                         ITEM 'edit demo miniprint' ACTION editp("MINIPRINT")
                         ITEM 'edit demo DOS' ACTION editp("DOSPRINT")
+                        ITEM 'edit demo EXCEL' ACTION editp("EXCELPRINT")
+
                         ITEM 'editex demo hbprinter' ACTION editpx("HBPRINTER")
                         ITEM 'editex demo miniprint' ACTION editpx("MINIPRINT")
                         ITEM 'editex demo DOS' ACTION editpx("DOSPRINT")
+                        ITEM 'editex demo EXCEL' ACTION editpx("EXCELPRINT")
 		END POPUP
 	END MENU
 

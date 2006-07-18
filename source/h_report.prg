@@ -1,5 +1,5 @@
 /*
- * $Id: h_report.prg,v 1.26 2006-05-27 20:14:15 declan2005 Exp $
+ * $Id: h_report.prg,v 1.27 2006-07-18 22:36:24 declan2005 Exp $
  */
 /*
  * DO REPORT Command support procedures For MiniGUI Library.
@@ -91,6 +91,7 @@ MEMVAR _OOHG_printlibrary
 MEMVAR oprint
 MEMVAR nposat
 MEMVAR lgroupeject
+MEMVAR lexcel
 
 FUNCTION easyreport(ctitle,aheaders1,aheaders2,afields,awidths,atotals,nlpp,ldos,lpreview,cgraphic,nfi,nci,nff,ncf,lmul,cgrpby,chdrgrp,llandscape,ncpl,lselect,calias,nllmargin,aformats,npapersize,cheader,lnoprop,lgroupeject)
 PRIVATE ctitle1,sicvar
@@ -183,7 +184,9 @@ ENDCLASS
 
 METHOD easyreport1(ctitle,aheaders1,aheaders2,afields,awidths,atotals,nlpp,ldos,lpreview,cgraphic,nfi,nci,nff,ncf,lmul,cgrpby,chdrgrp,llandscape,ncpl,lselect,calias,nllmargin,aformats,npapersize,cheader,lnoprop,lgroupeject) CLASS TREPORT
 local nlin,i,aresul,lmode,swt:=0,grpby,k,ncvcopt,swmemo,clinea,ti,nmemo,nspace
-private  wfield,wfielda,wfieldt
+private  wfield,wfielda,wfieldt,lexcel:=.F.
+
+
   if nllmargin = NIL
    repobject:nlmargin:=0
 else
@@ -244,6 +247,10 @@ else
   elseif _OOHG_printlibrary="MINIPRINT"
        oprint:=tprint("MINIPRINT")
        oprint:init()
+  elseif _OOHG_printlibrary="EXCELPRINT"
+       oprint:=tprint("EXCELPRINT")
+       oprint:init()
+       lexcel:=.T.
   elseif _OOHG_printlibrary="DOSPRINT"
        oprint:=tprint("DOSPRINT")
        oprint:init()
@@ -364,7 +371,7 @@ do while .not. eof()
 ********
         crompe:=&(grpby)
         nlin++
-        oprint:printdata(nlin,repobject:nlmargin,  '** ' +hb_oemtoansi(chdrgrp)+' ** '+hb_oemtoansi(&(grpby)),,repobject:nfsize,.T.)
+        oprint:printdata(nlin,repobject:nlmargin,  '** ' + (chdrgrp)+' ** '+ (&(grpby)),,repobject:nfsize,.T.)
         nlin++
       endif
    endif
@@ -538,24 +545,42 @@ if len(ctitle2)>0
    ncenter2:=((nsum-len(ctitle2))/2)-1
 endif
 repobject:npager++
-clinea:=trim(_oohg_MESSAGES(1,8) )+ space(6-len(trim(_OOHG_MESSAGES(1,8) ))) + str(repobject:npager,4)
-clinea1:=space(ncenter)+ctitle1
-clinea2:=space(nsum+len(awidths)-11)+dtoc(date())
-oprint:printdata(nlin,repobject:nlmargin , clinea,,repobject:nfsize )
-oprint:printdata(nlin,repobject:nlmargin , clinea1,,repobject:nfsize+1,.T. )
-oprint:printdata(nlin,repobject:nlmargin , clinea2,,repobject:nfsize )
-
-/////////
-if len(ctitle2)>0
-   nlin++
-   clinea1:=space(ncenter2)+ctitle2
-   clinea2:=space(nsum+len(awidths)-11)+time()
-   oprint:printdata(nlin,repobject:nlmargin, clinea1,,repobject:nfsize+1,.T. )
-   oprint:printdata(nlin,repobject:nlmargin, clinea2,,repobject:nfsize )
-else
-   nlin++
-   clinea2:=space(nsum+len(awidths)-11)+time()
+if .not. lexcel
+   clinea:=trim(_oohg_MESSAGES(1,8) )+ space(6-len(trim(_OOHG_MESSAGES(1,8) ))) + str(repobject:npager,4)
+   clinea1:=space(ncenter)+ctitle1
+   clinea2:=space(nsum+len(awidths)-11)+dtoc(date())
+   oprint:printdata(nlin,repobject:nlmargin , clinea,,repobject:nfsize )
+   oprint:printdata(nlin,repobject:nlmargin , clinea1,,repobject:nfsize+1,.T. )
    oprint:printdata(nlin,repobject:nlmargin , clinea2,,repobject:nfsize )
+else
+   clinea:=trim(_oohg_MESSAGES(1,8) )+ space(6-len(trim(_OOHG_MESSAGES(1,8) ))) + str(repobject:npager,4)+"       "+ctitle1+"       "+dtoc(date())
+   oprint:printdata(nlin,repobject:nlmargin , clinea,,repobject:nfsize )
+endif
+
+
+if .not. lexcel
+
+   if len(ctitle2)>0
+      nlin++
+      clinea1:=space(ncenter2)+ctitle2
+      clinea2:=space(nsum+len(awidths)-11)+time()
+      oprint:printdata(nlin,repobject:nlmargin, clinea1,,repobject:nfsize+1,.T. )
+      oprint:printdata(nlin,repobject:nlmargin, clinea2,,repobject:nfsize )
+   else
+      nlin++
+      clinea2:=space(nsum+len(awidths)-11)+time()
+      oprint:printdata(nlin,repobject:nlmargin , clinea2,,repobject:nfsize )
+   endif
+else
+   if len(ctitle2)>0
+      nlin++
+      clinea1:=space(ncenter2)+ctitle2+"       "+time()
+      oprint:printdata(nlin,repobject:nlmargin , clinea1,,repobject:nfsize )
+   else
+      nlin++
+      clinea1:=space(nsum+len(awidths)-11)+time()
+      oprint:printdata(nlin,repobject:nlmargin , clinea1,,repobject:nfsize )
+   endif
 endif
 
 nlin++

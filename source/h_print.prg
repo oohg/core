@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.29 2006-04-28 15:51:08 declan2005 Exp $
+* $Id: h_print.prg,v 1.30 2006-07-18 22:36:24 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -19,6 +19,8 @@ memvar _HMG_PRINTER_NAME
 memvar _HMG_PRINTER_PAGECOUNT
 memvar _HMG_PRINTER_HDC_BAK
 memvar _OOHG_printer_docname
+memvar oPrintexcel
+memvar oPrinthoja
 ////memvar sicvar
 
 *-------------------------
@@ -33,6 +35,8 @@ if clibx=NIL
          o_print_:=tminiprint()
       elseif _OOHG_printlibrary="DOSPRINT"
          o_print_:=tdosprint()
+      elseif _OOHG_printlibrary="EXCELPRINT"
+         o_print_:=texcelprint()
       else
          o_print_:=thbprinter()
       endif
@@ -48,8 +52,10 @@ else
          o_print_:=tminiprint()
       elseif clibx="DOSPRINT"
          o_print_:=tdosprint()
+      elseif clibx="EXCELPRINT"
+         o_print_:=texcelprint()
       else
-         o_print_:=thbprinter()
+         o_print_:=tminiprint()
       endif
     else
       o_print_:=tminiprint()
@@ -84,6 +90,9 @@ DATA lwinhide           INIT .T.   READONLY
 DATA cversion           INIT  "(oohg)V 1.4" READONLY
 DATA cargo              INIT  .F.
 
+DATA nlinpag            INIT 0            READONLY
+DATA alincelda          INIT {}           READONLY
+DATA nunitslin          INIT 1            READONLY
 
 *-------------------------
 METHOD init()
@@ -324,7 +333,6 @@ return self
 *-------------------------
 METHOD getdefprinter() CLASS TPRINTBASE
 *-------------------------
-/////local cdefprinter:= ::getdefprinterx()
 RETURN ::getdefprinterx()
 
 *-------------------------
@@ -658,18 +666,18 @@ METHOD printdatax(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext) CLA
 if .not. lbold
 if calign="R"
    textalign( 2 )
-   @ nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2  +((nlen+1)*nsize/4.75) PRINT (ctext) font cfont size nsize COLOR ::acolor
+   @ nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2  +((nlen+1)*nsize/4.75) PRINT (ctext) font cfont size nsize COLOR acolor
    textalign( 0 )
 else
-   @ nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 PRINT (ctext) font cfont size nsize COLOR ::acolor
+   @ nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 PRINT (ctext) font cfont size nsize COLOR acolor
 endif
 else
 if calign="R"
    textalign( 2 )
-   @ nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2+((nlen+1)*nsize/4.75) PRINT (ctext) font cfont size nsize  BOLD COLOR ::acolor
+   @ nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2+((nlen+1)*nsize/4.75) PRINT (ctext) font cfont size nsize  BOLD COLOR acolor
    textalign( 0 )
 else
-   @ nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 PRINT (ctext) font cfont size nsize  BOLD COLOR ::acolor
+   @ nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 PRINT (ctext) font cfont size nsize  BOLD COLOR acolor
 endif
 endif
 
@@ -959,7 +967,7 @@ METHOD PRINTDATAx(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext) CLA
    Empty( aColor )
 change font "F0" name cfont size nsize
 change font "F1" name cfont size nsize BOLD
-SET TEXTCOLOR ::acolor
+SET TEXTCOLOR acolor
 if .not. lbold
 if calign="R"
 set text align right
@@ -1305,4 +1313,198 @@ if cOp="-" .and. print_preview.edit_p.fontsize > 7
    print_preview.edit_p.fontsize:=  print_preview.edit_p.fontsize - 2
 endif
 return nil
+
+
+/// based upon contribution of Jose Miguel josemisu@yahoo.com.ar
+
+CREATE CLASS TEXCELPRINT FROM TPRINTBASE
+
+*-------------------------
+METHOD initx() 
+*-------------------------
+
+*-------------------------
+METHOD begindocx()
+*-------------------------
+
+*-------------------------
+METHOD enddocx()
+*-------------------------
+
+*-------------------------
+METHOD beginpagex()
+*-------------------------
+
+*-------------------------
+METHOD endpagex()
+*-------------------------
+
+*-------------------------
+METHOD releasex() 
+*-------------------------
+
+*-------------------------
+METHOD printdatax()
+*-------------------------
+
+*-------------------------
+METHOD printimage() BLOCK {|| NIL }
+*-------------------------
+
+*-------------------------
+METHOD printlinex() BLOCK {|| NIL }
+*-------------------------
+
+*-------------------------
+METHOD printrectanglex BLOCK {|| NIL }
+*-------------------------
+
+*-------------------------
+METHOD selprinterx()
+*-------------------------
+
+*-------------------------
+METHOD getdefprinterx() BLOCK {|| NIL }
+*-------------------------
+
+*-------------------------
+METHOD setcolorx() BLOCK {|| NIL }
+*-------------------------
+
+*-------------------------
+METHOD setpreviewsizex() BLOCK {|| NIL }
+*-------------------------
+
+*-------------------------
+METHOD printroundrectanglex() BLOCK {|| NIL }
+*-------------------------
+
+*-------------------------
+method condendosx() BLOCK {|| NIL }
+*-------------------------
+
+*-------------------------
+method normaldosx() BLOCK {|| NIL }
+*-------------------------
+
+*-------------------------
+METHOD setunitsx()    // mm o rowcol , mm por renglon
+*-------------------------
+
+ENDCLASS
+
+
+
+
+*-------------------------
+METHOD initx() CLASS TEXCELPRINT
+*-------------------------
+::impreview:=.F.
+::cprintlibrary:="EXCELPRINT"
+return self
+
+*-------------------------
+METHOD selprinterx( lselect , lpreview, llandscape , npapersize ,cprinterx) CLASS TEXCELPRINT
+*-------------------------
+Public oPrintExcel, oPrintHoja
+
+   oPrintExcel := TOleAuto():New( "Excel.Application" )
+   IF Ole2TxtError() != 'S_OK'
+      MsgStop('Excel no esta disponible','error')
+        ::lprerror:=.T.
+        ::exit:=.T.
+      RETURN Nil
+   ENDIF
+return self
+
+*-------------------------
+METHOD begindocx(cdoc) CLASS TEXCELPRINT
+*-------------------------
+   oPrintExcel:WorkBooks:Add()
+   oPrintExcel:Sheets("Hoja1"):Name := "Listado"
+   oPrintHoja:=oPrintExcel:Get( "ActiveSheet" )
+   oPrintHoja:Cells:Font:Name := "Arial"
+   oPrintHoja:Cells:Font:Size := 10
+return self
+
+
+*-------------------------
+METHOD enddocx() CLASS TEXCELPRINT
+*-------------------------
+local nCol
+FOR nCol:=1 TO FCOUNT()
+   oPrintHoja:Columns( nCol ):AutoFit()
+NEXT
+oPrintHoja:Cells( 1, 1 ):Select()
+oPrintExcel:Visible := .T.
+oPrintHoja:End()
+oPrintExcel:End()
+RETURN self
+
+METHOD releasex() CLASS TEXCELPRINT
+release oPrintHOja
+release oPrintExcel
+RETURN self
+
+
+*-------------------------
+METHOD beginpagex() CLASS TEXCELPRINT
+*-------------------------
+return self
+
+
+*-------------------------
+METHOD endpagex() CLASS TEXCELPRINT
+*-------------------------
+::nlinpag:=LEN(::alincelda)+1
+::alincelda:={}
+return self
+
+
+*-------------------------
+METHOD setunitsx(cunitsx,nunitslinx) CLASS TEXCELPRINT
+*-------------------------
+if cunitsx="MM"
+   ::cunits:="MM"
+else
+   ::cunits:="ROWCOL"
+endif
+if nunitslinx=NIL
+   ::nunitslin:=1
+else
+   ::nunitslin:=nunitslinx
+endif
+RETURN self
+
+
+*-------------------------
+METHOD printdatax(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext) CLASS TEXCELPRINT
+*-------------------------
+local alinceldax
+if ::nunitslin>1
+   nlin:=round(nlin/::nunitslin,0)
+endif
+nlin:=nlin+::nlinpag
+IF LEN(::alincelda)<nlin
+   DO WHILE LEN(::alincelda)<nlin
+      AADD(::alincelda,0)
+   ENDDO
+ENDIF
+::alincelda[nlin]:=::alincelda[nlin]+1
+alinceldax:=::alincelda[nlin]
+oPrintHoja:Cells(nlin,alinceldax):Value := ctext
+oPrintHoja:Cells(nlin,alinceldax):Font:Name := cfont
+oPrintHoja:Cells(nlin,alinceldax):Font:Size := nsize
+oPrintHoja:Cells(nlin,alinceldax):Font:Bold := lbold
+do case
+case calign="R"
+   oPrintHoja:Cells(nlin,alinceldax):HorizontalAlignment:= -4152  //Derecha
+case calign="C"
+   oPrintHoja:Cells(nlin,alinceldax):HorizontalAlignment:= -4108  //Centrar
+endcase
+return self
+
+
+
+
 
