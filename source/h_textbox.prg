@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.27 2006-05-04 04:02:34 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.28 2006-07-18 02:00:34 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -929,7 +929,7 @@ METHOD Define( ControlName, ParentForm, x, y, inputmask, width, value, ;
 
    ::Super:Define( ControlName, ParentForm, x, y, width, height, value, ;
                Format + inputmask, fontname, fontsize, tooltip, lostfocus, ;
-               gotfocus, change, enter, rightalign, HelpId, readonly, bold, ;
+               gotfocus, , enter, rightalign, HelpId, readonly, bold, ;
                italic, underline, strikeout, field, backcolor, fontcolor, ;
                invisible, notabstop, lRtl, lAutoSkip, lNoBorder, OnFocusPos )
 
@@ -940,6 +940,8 @@ METHOD Define( ControlName, ParentForm, x, y, inputmask, width, value, ;
       ::Value       := value
       ::lInsert     := .F.
    Endif
+
+   ::OnChange := Change
 
 Return Self
 

@@ -1,5 +1,5 @@
 /*
- * $Id: h_label.prg,v 1.14 2006-03-16 03:16:17 guerra000 Exp $
+ * $Id: h_label.prg,v 1.15 2006-07-18 02:00:34 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -100,6 +100,8 @@ CLASS TLabel FROM TControl
    DATA Type      INIT "LABEL" READONLY
    DATA lAutoSize INIT .F.
    DATA IconWidth INIT 0
+   DATA nWidth    INIT 120
+   DATA nHeight   INIT 24
 
    METHOD SetText( cText )     BLOCK { | Self, cText | ::Caption := cText }
    METHOD GetText()            BLOCK { | Self | ::Caption }
@@ -108,6 +110,7 @@ CLASS TLabel FROM TControl
    METHOD Value      SETGET
    METHOD Caption    SETGET
    METHOD AutoSize   SETGET
+   METHOD Align      SETGET
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -119,11 +122,12 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, w, h, fontname, ;
 *-----------------------------------------------------------------------------*
 Local ControlHandle, nStyle, nStyleEx
 
-   DEFAULT w             TO 120
-   DEFAULT h             TO 24
-   DEFAULT ProcedureName TO ""
-   DEFAULT invisible     TO FALSE
-   DEFAULT ltransparent  TO FALSE
+   ASSIGN ::nCol        VALUE x TYPE "N"
+   ASSIGN ::nRow        VALUE y TYPE "N"
+   ASSIGN ::nWidth      VALUE w TYPE "N"
+   ASSIGN ::nHeight     VALUE h TYPE "N"
+   ASSIGN invisible     VALUE invisible    TYPE "L" DEFAULT .F.
+   ASSIGN ::Transparent VALUE ltransparent TYPE "L" DEFAULT .F.
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, aRGB_font, aRGB_bk, , lRtl )
 
@@ -142,7 +146,7 @@ Local ControlHandle, nStyle, nStyleEx
    EndIf
 
    nStyleEx := if( ValType( CLIENTEDGE ) == "L"   .AND. CLIENTEDGE,   WS_EX_CLIENTEDGE,  0 ) + ;
-               if( ValType( lTRANSPARENT ) == "L" .AND. lTRANSPARENT, WS_EX_TRANSPARENT, 0 )
+               if( ::Transparent, WS_EX_TRANSPARENT, 0 )
 
    Controlhandle := InitLabel( ::ContainerhWnd, Caption, 0, x, y, w, h, '', 0, Nil , nStyle, nStyleEx, ::lRtl )
 
@@ -150,9 +154,8 @@ Local ControlHandle, nStyle, nStyleEx
    ::SetFont( , , bold, italic, underline, strikeout )
    ::SizePos( y, x, w, h )
 
+   ASSIGN ::AutoSize VALUE autosize TYPE "L" DEFAULT ::AutoSize
    ::OnClick := ProcedureName
-   ::Transparent := ltransparent
-   ::AutoSize := autosize
 
 Return Self
 
@@ -190,3 +193,62 @@ Local cCaption
       EndIf
    EndIf
 Return ::lAutoSize
+
+*-----------------------------------------------------------------------------*
+METHOD Align( nAlign ) CLASS TLabel
+*-----------------------------------------------------------------------------*
+Return LabelSetAlign( ::hWnd, nAlign )
+
+*EXTERN InitLabel
+
+#pragma BEGINDUMP
+
+#include <hbapi.h>
+#include <windows.h>
+#include <commctrl.h>
+#include "../include/oohg.h"
+
+static WNDPROC lpfnOldWndProc = 0;
+
+static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+{
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
+}
+
+HB_FUNC( INITLABEL )
+{
+   HWND hwnd;
+   HWND hbutton;
+
+   int Style, ExStyle;
+
+   hwnd = HWNDparam( 1 );
+   Style = hb_parni( 11 ) | WS_CHILD | SS_NOTIFY;
+   ExStyle = hb_parni( 12 ) | _OOHG_RTL_Status( hb_parl( 13 ) );
+
+   hbutton = CreateWindowEx( ExStyle , "static" , hb_parc(2) ,
+   Style,
+   hb_parni(4), hb_parni(5) , hb_parni(6), hb_parni(7),
+   hwnd, (HMENU)hb_parni(3) , GetModuleHandle(NULL) , NULL ) ;
+
+   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( hbutton, GWL_WNDPROC, ( LONG ) SubClassFunc );
+
+   HWNDret( hbutton );
+}
+
+HB_FUNC( LABELSETALIGN )
+{
+   HWND hWnd;
+
+   hWnd = HWNDparam( 1 );
+
+   if( ISNUM( 2 ) )
+   {
+      SetWindowLong( hWnd, GWL_STYLE, ( ( GetWindowLong( hWnd, GWL_STYLE ) & ( ~ 0x3F ) ) | ( hb_parni( 2 ) & 0x3F ) ) );
+      RedrawWindow( hWnd, 0, 0, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+   }
+
+   hb_retnl( GetWindowLong( hWnd, GWL_STYLE ) & 0x3F );
+}
+
+#pragma ENDDUMP
