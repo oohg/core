@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.187 2006-07-18 22:43:00 declan2005 Exp $
+ * $Id: ChangeLog,v 1.188 2006-07-19 03:46:03 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,6 +7,20 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2006-07-18 22:45 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_tab.prg
+    * Fixed ::ContainerVisible work
+  * source/h_combo.prg
+  * source/h_radio.prg
+  * source/h_spinner.prg
+  * source/h_tab.prg
+  * source/h_windows.prg
+  * source/h_xbrowse.prg
+    * Show/hide will be performed by ::Visible method. ::Show() and
+      ::Hide() will simply call ::Visible .
+  * source/h_progressmeter.prg
+    * Fixed ::FontColor and ::BackColor assignment.
+    * Fixed ::Visible assignment.
 
 2006-07-18 17:28 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source/h_print.prg

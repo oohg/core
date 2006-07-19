@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.17 2006-07-17 02:59:54 guerra000 Exp $
+ * $Id: h_combo.prg,v 1.18 2006-07-19 03:46:04 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -107,7 +107,7 @@ CLASS TCombo FROM TLabel
    METHOD Define
    METHOD Refresh
    METHOD Value               SETGET
-   METHOD Hide                BLOCK { |Self| SendMessage( ::hWnd, 335, 0, 0 ) , ::Super:Hide() }
+   METHOD Visible             SETGET
    METHOD ForceHide           BLOCK { |Self| SendMessage( ::hWnd, 335, 0, 0 ) , ::Super:ForceHide() }
    METHOD RefreshData
 
@@ -321,6 +321,17 @@ Local WorkArea, BackRec, RCount, AuxVal
 		EndIf
 
 RETURN uValue
+
+*-----------------------------------------------------------------------------*
+METHOD Visible( lVisible ) CLASS TCombo
+*-----------------------------------------------------------------------------*
+   IF VALTYPE( lVisible ) == "N"
+      ::Super:Visible := lVisible
+      IF ! lVisible
+         SendMessage( ::hWnd, 335, 0, 0 )
+      ENDIF
+   ENDIF
+RETURN ::lVisible
 
 *-----------------------------------------------------------------------------*
 METHOD RefreshData() CLASS TCombo

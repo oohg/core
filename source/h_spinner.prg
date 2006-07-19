@@ -1,5 +1,5 @@
 /*
- * $Id: h_spinner.prg,v 1.8 2006-04-21 05:34:27 guerra000 Exp $
+ * $Id: h_spinner.prg,v 1.9 2006-07-19 03:46:04 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -103,8 +103,7 @@ CLASS TSpinner FROM TControl
 
    METHOD Define
    METHOD SizePos
-   METHOD Show
-   METHOD Hide                BLOCK { |Self| HideWindow( ::AuxHandle ) , ::Super:Hide() }
+   METHOD Visible             SETGET
    METHOD Value               SETGET
    METHOD Enabled             SETGET
    METHOD ForceHide           BLOCK { |Self| HideWindow( ::AuxHandle ) , ::Super:ForceHide() }
@@ -177,15 +176,17 @@ Local uRet
 Return uRet
 
 *-----------------------------------------------------------------------------*
-METHOD Show() CLASS TSpinner
+METHOD Visible( lVisible ) CLASS TSpinner
 *-----------------------------------------------------------------------------*
-   ::Super:Show()
-   IF ::ContainerVisible
-      CShowControl( ::AuxHandle )
-   ELSE
-      HideWindow( ::AuxHandle )
+   IF VALTYPE( lVisible ) == "L"
+      ::Super:Visible := lVisible
+      IF lVisible .AND. ::ContainerVisible
+         CShowControl( ::AuxHandle )
+      ELSE
+         HideWindow( ::AuxHandle )
+      ENDIF
    ENDIF
-Return nil
+Return ::lVisible
 
 *-----------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TSpinner

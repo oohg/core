@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.94 2006-07-06 14:01:10 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.95 2006-07-19 03:46:04 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -215,8 +215,8 @@ CLASS TWindow
    METHOD SetKey                // Application-controlled hotkeys
    METHOD LookForKey
    METHOD Visible             SETGET
-   METHOD Show
-   METHOD Hide
+   METHOD Show                BLOCK { |Self| ::Visible := .T. }
+   METHOD Hide                BLOCK { |Self| ::Visible := .F. }
    METHOD ForceHide           BLOCK { |Self| HideWindow( ::hWnd ) }
 
    METHOD ContainerVisible    BLOCK { |Self| ::lVisible .AND. IF( ::Container != NIL, ::Container:ContainerVisible, .T. ) }
@@ -899,33 +899,15 @@ Return lDone
 METHOD Visible( lVisible ) CLASS TWindow
 *------------------------------------------------------------------------------*
    If ValType( lVisible ) == "L"
-      If lVisible
-         ::Show()
+      ::lVisible := lVisible
+      If lVisible .AND. ::ContainerVisible
+         CShowControl( ::hWnd )
       Else
-         ::Hide()
+         HideWindow( ::hWnd )
       EndIf
+      ProcessMessages()
    EndIf
 Return ::lVisible
-
-*------------------------------------------------------------------------------*
-METHOD Show() CLASS TWindow
-*------------------------------------------------------------------------------*
-   ::lVisible := .T.
-   IF ::ContainerVisible
-      CShowControl( ::hWnd )
-   ELSE
-      HideWindow( ::hWnd )
-   ENDIF
-   ProcessMessages()
-Return nil
-
-*------------------------------------------------------------------------------*
-METHOD Hide() CLASS TWindow
-*------------------------------------------------------------------------------*
-   ::lVisible := .F.
-   HideWindow( ::hWnd )
-   ProcessMessages()
-Return nil
 
 *------------------------------------------------------------------------------*
 FUNCTION _OOHG_AddFrame( oFrame )
@@ -1040,7 +1022,7 @@ CLASS TForm FROM TWindow
    METHOD Define
    METHOD Define2
    METHOD Register
-   METHOD Hide
+   METHOD Visible       SETGET
    METHOD Activate
    METHOD Release
    METHOD Center()      BLOCK { | Self | C_Center( ::hWnd ) }
@@ -1289,11 +1271,15 @@ Local mVar
 RETURN Self
 
 *-----------------------------------------------------------------------------*
-METHOD Hide() CLASS TForm
+METHOD Visible( lVisible ) CLASS TForm
 *-----------------------------------------------------------------------------*
-   ::Super:Hide()
-   ::OnHideFocusManagement()
-Return Nil
+   IF VALTYPE( lVisible ) == "L"
+      ::Super:Visible := lVisible
+      IF ! lVisible
+         ::OnHideFocusManagement()
+      ENDIF
+   ENDIF
+Return ::lVisible
 
 *-----------------------------------------------------------------------------*
 METHOD Activate( lNoStop, oWndLoop ) CLASS TForm
@@ -2225,8 +2211,7 @@ CLASS TFormModal FROM TForm
    DATA oPrevWindow    INIT nil
 
    METHOD Define
-   METHOD Hide
-   METHOD Show
+   METHOD Visible      SETGET
    METHOD Activate
    METHOD Release
    METHOD OnHideFocusManagement
@@ -2267,62 +2252,48 @@ Local oParent
 Return Self
 
 *-----------------------------------------------------------------------------*
-METHOD Hide() CLASS TFormModal
+METHOD Visible( lVisible ) CLASS TFormModal
 *-----------------------------------------------------------------------------*
-   If IsWindowVisible( ::hWnd )
-      If Len( _OOHG_ActiveModal ) == 0 .OR. ATAIL( _OOHG_ActiveModal ):hWnd <> ::hWnd
-         MsgOOHGError( "Non top modal windows can't be hide. Program terminated." )
-/*
-Testing...
-      ElseIf ::ActivateCount[ 1 ] > 1 .OR. ! ::ActivateCount == ATAIL( _OOHG_MessageLoops )
-         MsgOOHGError( "Modal windows can't be hidden when it have sub-windows. Program terminated." )
-*/
-      EndIf
-	EndIf
-Return ::Super:Hide()
+   IF VALTYPE( lVisible ) == "L"
+      IF lVisible
+         // Find Parent
+         If ::oPrevWindow == NIL .OR. ASCAN( _OOHG_aFormhWnd, ::oPrevWindow:hWnd ) == 0
+            ::oPrevWindow := GetFormObjectByHandle( GetActiveWindow() )
+            If ! ValidHandler( ::oPrevWindow:hWnd )
+               ::oPrevWindow := NIL
+               If _OOHG_UserWindow != NIL .AND. ascan( _OOHG_aFormhWnd, _OOHG_UserWindow:hWnd ) > 0
+                  ::oPrevWindow := _OOHG_UserWindow
+               ElseIf Len( _OOHG_ActiveModal ) != 0 .AND. ascan( _OOHG_aFormhWnd, ATAIL( _OOHG_ActiveModal ):hWnd ) > 0
+                  ::oPrevWindow := ATAIL( _OOHG_ActiveModal )
+               ElseIf _OOHG_Main != nil
+                  ::oPrevWindow := _OOHG_Main
+               Else
+                  // Not mandatory MAIN
+                  // NO PARENT DETECTED!
+               Endif
+            EndIf
+         EndIf
 
-*-----------------------------------------------------------------------------*
-METHOD Show() CLASS TFormModal
-*-----------------------------------------------------------------------------*
-   // Find Parent
+         AEVAL( _OOHG_aFormObjects, { |o| if( ! o:lInternal .AND. o:hWnd != ::hWnd .AND. IsWindowEnabled( o:hWnd ), ( AADD( ::LockedForms, o ), DisableWindow( o:hWnd ) ) , ) } )
 
-/*
-   If Len( _OOHG_ActiveModal ) != 0
-      ::oPrevWindow := ATAIL( _OOHG_ActiveModal )
-   Else
-      IF _OOHG_UserWindow != NIL .AND. ascan( _OOHG_aFormhWnd, _OOHG_UserWindow:hWnd ) > 0
-         ::oPrevWindow := _OOHG_UserWindow
-      else
-         ::oPrevWindow := _OOHG_Main
-      endif
-   endif
-*/
-   If ::oPrevWindow == NIL .OR. ASCAN( _OOHG_aFormhWnd, ::oPrevWindow:hWnd ) == 0
-      ::oPrevWindow := GetFormObjectByHandle( GetActiveWindow() )
-      If ! ValidHandler( ::oPrevWindow:hWnd )
-         ::oPrevWindow := NIL
-         If _OOHG_UserWindow != NIL .AND. ascan( _OOHG_aFormhWnd, _OOHG_UserWindow:hWnd ) > 0
-            ::oPrevWindow := _OOHG_UserWindow
-         ElseIf Len( _OOHG_ActiveModal ) != 0 .AND. ascan( _OOHG_aFormhWnd, ATAIL( _OOHG_ActiveModal ):hWnd ) > 0
-            ::oPrevWindow := ATAIL( _OOHG_ActiveModal )
-         ElseIf _OOHG_Main != nil
-            ::oPrevWindow := _OOHG_Main
-         Else
-            // Not mandatory MAIN
-            // NO PARENT DETECTED!
-         Endif
-      EndIf
-   EndIf
+         AADD( _OOHG_ActiveModal, Self )
+         EnableWindow( ::hWnd )
 
-   AEVAL( _OOHG_aFormObjects, { |o| if( ! o:lInternal .AND. o:hWnd != ::hWnd .AND. IsWindowEnabled( o:hWnd ), ( AADD( ::LockedForms, o ), DisableWindow( o:hWnd ) ) , ) } )
-
-   AADD( _OOHG_ActiveModal, Self )
-   EnableWindow( ::hWnd )
-
-   If ! ::SetFocusedSplitChild()
-      ::SetActivationFocus()
-	EndIf
-Return ::Super:Show()
+         If ! ::SetFocusedSplitChild()
+            ::SetActivationFocus()
+         EndIf
+      ELSE
+         If IsWindowVisible( ::hWnd )
+            If Len( _OOHG_ActiveModal ) == 0 .OR. ATAIL( _OOHG_ActiveModal ):hWnd <> ::hWnd
+               MsgOOHGError( "Non top modal windows can't be hide. Program terminated." )
+// Testing...
+//             ElseIf ::ActivateCount[ 1 ] > 1 .OR. ! ::ActivateCount == ATAIL( _OOHG_MessageLoops )
+//                MsgOOHGError( "Modal windows can't be hidden when it have sub-windows. Program terminated." )
+            EndIf
+         EndIf
+      ENDIF
+   ENDIF
+RETURN ( ::Super:Visible := lVisible )
 
 *-----------------------------------------------------------------------------*
 METHOD Activate( lNoStop, oWndLoop ) CLASS TFormModal

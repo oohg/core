@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.12 2006-07-05 02:40:42 guerra000 Exp $
+ * $Id: h_xbrowse.prg,v 1.13 2006-07-19 03:46:04 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -81,8 +81,7 @@ CLASS TXBROWSE FROM TGrid
 
    METHOD SizePos
    METHOD Enabled          SETGET
-   METHOD Show
-   METHOD Hide
+   METHOD Visible          SETGET
    METHOD ForceHide
    METHOD RefreshData
 
@@ -530,20 +529,14 @@ METHOD Enabled( lEnabled ) CLASS TXBrowse
 RETURN ::Super:Enabled
 
 *------------------------------------------------------------------------------*
-METHOD Show() CLASS TXBrowse
+METHOD Visible( lVisible ) CLASS TXBrowse
 *------------------------------------------------------------------------------*
-   ::Super:Show()
-   AEVAL( ::aControls, { |o| o:Show() } )
-   ProcessMessages()
-RETURN nil
-
-*------------------------------------------------------------------------------*
-METHOD Hide() CLASS TXBrowse
-*------------------------------------------------------------------------------*
-   ::Super:Hide()
-   AEVAL( ::aControls, { |o| o:Hide() } )
-   ProcessMessages()
-RETURN nil
+   IF VALTYPE( lVisible ) == "L"
+      ::Super:Visible := lVisible
+      AEVAL( ::aControls, { |o| o:Visible := lVisible } )
+      ProcessMessages()
+   ENDIF
+RETURN ::lVisible
 
 *------------------------------------------------------------------------------*
 METHOD ForceHide() CLASS TXBrowse
