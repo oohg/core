@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.95 2006-07-19 03:46:04 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.96 2006-07-24 00:47:35 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -431,16 +431,16 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )
       case WM_CTLCOLORSTATIC:
          _OOHG_Send( GetControlObjectByHandle( ( HWND ) lParam ), s_Events_Color );
          hb_vmPushLong( wParam );
-         hb_vmPushLong( COLOR_3DFACE );
-         hb_vmSend( 2 );
+         // hb_vmPushLong( COLOR_3DFACE );
+         hb_vmSend( 1 );
          break;
 
       case WM_CTLCOLOREDIT:
       case WM_CTLCOLORLISTBOX:
          _OOHG_Send( GetControlObjectByHandle( ( HWND ) lParam ), s_Events_Color );
          hb_vmPushLong( wParam );
-         hb_vmPushLong( COLOR_WINDOW );
-         hb_vmSend( 2 );
+         // hb_vmPushLong( COLOR_WINDOW );
+         hb_vmSend( 1 );
          break;
 
       case WM_NOTIFY:
@@ -2674,7 +2674,7 @@ Local aError := {}
                scrolldown, hscrollbox, vscrollbox, cursor, lRtl, mdi, clientarea )
    ElseIf modal
       Self := _OOHG_SelectSubClass( TFormModal(), subclass )
-      ::Define( FormName, Caption, x, y, w, h, oParent, nosize, nosysmenu, ;
+      ::Define( FormName, Caption, x, y, w, h, oParent, .T., nosysmenu, ;
                nocaption, InitProcedure, ReleaseProcedure, ;
                MouseDragProcedure, SizeProcedure, ClickProcedure, ;
                MouseMoveProcedure, aRGB, PaintProcedure, icon, FontName, ;

@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: compile.bat,v 1.11 2006-06-29 14:24:04 guerra000 Exp $
+rem $Id: compile.bat,v 1.12 2006-07-24 00:47:35 guerra000 Exp $
 rem
 cls
 
@@ -63,11 +63,9 @@ if exist %HG_HRB%\lib\hbole.lib   echo %HG_HRB%\lib\hbole.lib + >> b32.bc
 if exist %HG_HRB%\lib\dll.lib     echo %HG_HRB%\lib\dll.lib + >> b32.bc
 
 Rem *** "Related" libraries ***
-if exist %HG_HRB%\lib\hbprinter.lib  echo %HG_HRB%\lib\hbprinter.lib + >> b32.bc
-if exist %HG_ROOT%\lib\hbprinter.lib echo %HG_ROOT%\lib\hbprinter.lib + >> b32.bc
 if exist %HG_HRB%\lib\socket.lib     echo %HG_HRB%\lib\socket.lib + >> b32.bc
 if exist %HG_ROOT%\lib\socket.lib    echo %HG_ROOT%\lib\socket.lib + >> b32.bc
-if exist %HG_HRB%\lib\miniprint.lib  echo %HG_HRB%\lib\miniprint.lib + >> b32.bc
+if exist %HG_ROOT%\lib\hbprinter.lib echo %HG_ROOT%\lib\hbprinter.lib + >> b32.bc
 if exist %HG_ROOT%\lib\miniprint.lib echo %HG_ROOT%\lib\miniprint.lib + >> b32.bc
 
 Rem *** ODBC Libraries Link ***

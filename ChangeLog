@@ -1,11 +1,21 @@
 /*
- * $Id: ChangeLog,v 1.188 2006-07-19 03:46:03 guerra000 Exp $
+ * $Id: ChangeLog,v 1.189 2006-07-24 00:47:35 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-07-23 19:47 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * ./compile.bat
+    * hbprinter.lib and miniprint.lib will not be searched in
+      harbour\lib directory.
+  * source/h_windows.prg
+    ! Fixed MODAL for not to allow resize.
+  * source/h_controlmisc.prg
+  * source/h_windows.prg
+    * Controls' default back color is now processed by DefWindowProc.
 
 2006-07-18 22:45 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_tab.prg

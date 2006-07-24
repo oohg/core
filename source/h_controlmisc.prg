@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.59 2006-07-15 23:54:38 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.60 2006-07-24 00:47:35 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1833,7 +1833,7 @@ HB_FUNC_STATIC( TCONTROL_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam
    }
 }
 
-HB_FUNC_STATIC( TCONTROL_EVENTS_COLOR )   // METHOD Events_Color( wParam, ColorDefault ) CLASS TControl
+HB_FUNC_STATIC( TCONTROL_EVENTS_COLOR )   // METHOD Events_Color( wParam ) CLASS TControl
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
@@ -1858,56 +1858,21 @@ HB_FUNC_STATIC( TCONTROL_EVENTS_COLOR )   // METHOD Events_Color( wParam, ColorD
       SetBkColor( hdc, ( COLORREF ) oSelf->lBackColor );
       DeleteObject( oSelf->BrushHandle );
       oSelf->BrushHandle = CreateSolidBrush( oSelf->lBackColor );
+      hb_retnl( ( LONG ) oSelf->BrushHandle );
    }
    else
    {
-      DeleteObject( oSelf->BrushHandle );
-      oSelf->BrushHandle = CreateSolidBrush( GetSysColor( hb_parnl( 2 ) ) );
-      SetBkColor( hdc, ( COLORREF ) GetSysColor( hb_parnl( 2 ) ) );
+      if( ValidHandler( oSelf->BrushHandle ) )
+      {
+         DeleteObject( oSelf->BrushHandle );
+         oSelf->BrushHandle = NULL;
+      }
+      hb_ret();
    }
 
-   hb_retnl( ( LONG ) oSelf->BrushHandle );
 }
 
 #pragma ENDDUMP
-
-/*
-*-----------------------------------------------------------------------------*
-METHOD Events_Color( wParam, ColorDefault ) CLASS TControl
-*-----------------------------------------------------------------------------*
-   // case nMsg == WM_CTLCOLORSTATIC
-   // If ::Type == "LABEL" .Or. ::Type == "CHECKBOX" .Or. ::Type == "RADIOGROUP" .Or. ::Type == "FRAME" .Or. ::Type == "SLIDER"
-   // ColorDefault := COLOR_3DFACE
-
-   // case nMsg == WM_CTLCOLOREDIT .Or. nMsg == WM_CTLCOLORLISTBOX
-   // If ::Type == "TEXT" .or. ::Type == "LIST" .or. ::Type == "SPINNER"
-   // ColorDefault := COLOR_WINDOW
-
-   If ::FontColor != Nil
-      SetTextColor( wParam, ::FontColor[ 1 ], ::FontColor[ 2 ], ::FontColor[ 3 ] )
-   EndIf
-
-   If ::Transparent
-      SetBkMode( wParam , TRANSPARENT )
-      Return ( GetStockObject( NULL_BRUSH ) )
-   EndIf
-
-   If ! empty( ::BackColor )
-
-      SetBkColor( wParam, ::BackColor[ 1 ], ::BackColor[ 2 ], ::BackColor[ 3 ] )
-      DeleteObject( ::BrushHandle )
-      ::BrushHandle := CreateSolidBrush( ::BackColor[ 1 ], ::BackColor[ 2 ], ::BackColor[ 3 ] )
-
-   Else
-
-      DeleteObject( ::BrushHandle )
-      ::BrushHandle := CreateSolidBrush( GetRed ( GetSysColor ( ColorDefault ) ) , GetGreen ( GetSysColor ( ColorDefault ) ) , GetBlue ( GetSysColor ( ColorDefault ) ) )
-      SetBkColor( wParam, GetRed ( GetSysColor( ColorDefault ) ) , GetGreen ( GetSysColor ( ColorDefault ) ) , GetBlue ( GetSysColor ( ColorDefault ) ) )
-
-   EndIf
-
-Return ::BrushHandle
-*/
 
 *-----------------------------------------------------------------------------*
 METHOD Events_Command( wParam ) CLASS TControl
