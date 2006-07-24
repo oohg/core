@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.30 2006-07-18 22:36:24 declan2005 Exp $
+* $Id: h_print.prg,v 1.31 2006-07-24 01:00:12 guerra000 Exp $
 */
 
 #include 'hbclass.ch'
@@ -42,7 +42,7 @@ if clibx=NIL
       endif
    else
        o_print_:=tminiprint()
-      _OOHG_printlibrary="MINIPRINT"     
+      _OOHG_printlibrary="MINIPRINT"
    endif
 else
    if valtype(clibx)="C"
@@ -59,7 +59,7 @@ else
       endif
     else
       o_print_:=tminiprint()
-      _OOHG_printlibrary="MINIPRINT"     
+      _OOHG_printlibrary="MINIPRINT"
     endif
 endif
 RETURN o_Print_
@@ -711,7 +711,7 @@ METHOD selprinterx( lselect , lpreview, llandscape , npapersize ,cprinterx,nres)
 local worientation,lsucess
 
 if nres=NIL
-   nres:=PRINTER_RES_MEDIUM 
+   nres:=PRINTER_RES_MEDIUM
 endif
 IF llandscape
    Worientation:= PRINTER_ORIENT_LANDSCAPE
@@ -1057,7 +1057,7 @@ if npapersize#NIL
 endif
 
 if nres#NIL
-   SET QUALITY nres   ////:=PRINTER_RES_MEDIUM 
+   SET QUALITY nres   ////:=PRINTER_RES_MEDIUM
 endif
 
 return self
@@ -1320,7 +1320,7 @@ return nil
 CREATE CLASS TEXCELPRINT FROM TPRINTBASE
 
 *-------------------------
-METHOD initx() 
+METHOD initx()
 *-------------------------
 
 *-------------------------
@@ -1340,7 +1340,7 @@ METHOD endpagex()
 *-------------------------
 
 *-------------------------
-METHOD releasex() 
+METHOD releasex()
 *-------------------------
 
 *-------------------------
@@ -1407,6 +1407,11 @@ return self
 METHOD selprinterx( lselect , lpreview, llandscape , npapersize ,cprinterx) CLASS TEXCELPRINT
 *-------------------------
 Public oPrintExcel, oPrintHoja
+empty(lselect)
+empty(lpreview)
+empty(llandscape)
+empty(npapersize)
+empty(cprinterx)
 
    oPrintExcel := TOleAuto():New( "Excel.Application" )
    IF Ole2TxtError() != 'S_OK'
@@ -1420,6 +1425,7 @@ return self
 *-------------------------
 METHOD begindocx(cdoc) CLASS TEXCELPRINT
 *-------------------------
+empty(cdoc)
    oPrintExcel:WorkBooks:Add()
    oPrintExcel:Sheets("Hoja1"):Name := "Listado"
    oPrintHoja:=oPrintExcel:Get( "ActiveSheet" )
@@ -1481,6 +1487,10 @@ RETURN self
 METHOD printdatax(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext) CLASS TEXCELPRINT
 *-------------------------
 local alinceldax
+empty(ncol)
+empty(data)
+empty(acolor)
+empty(nlen)
 if ::nunitslin>1
    nlin:=round(nlin/::nunitslin,0)
 endif
