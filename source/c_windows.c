@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.47 2006-07-15 23:54:38 guerra000 Exp $
+ * $Id: c_windows.c,v 1.48 2006-07-26 01:20:57 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1513,9 +1513,32 @@ HB_FUNC( GETWINDOWSTYLE )
    hb_retnl( GetWindowLong( HWNDparam( 1 ), GWL_STYLE ) );
 }
 
+HB_FUNC( SETWINDOWSTYLE )
+{
+   hb_retnl( SetWindowLong( HWNDparam( 1 ), GWL_STYLE, hb_parnl( 2 ) ) );
+}
+
 HB_FUNC( ISWINDOWSTYLE )
 {
    LONG ulRequest = hb_parnl( 2 );
 
    hb_retl( ( GetWindowLong( HWNDparam( 1 ), GWL_STYLE ) & ulRequest ) == ulRequest );
+}
+
+HB_FUNC( GETWINDOWSTYLEFLAG )
+{
+   hb_retnl( GetWindowLong( HWNDparam( 1 ), GWL_STYLE ) & hb_parnl( 2 ) );
+}
+
+HB_FUNC( SETWINDOWSTYLEFLAG )
+{
+   HWND hWnd;
+   long lMask, lNewValue;
+
+   hWnd = HWNDparam( 1 );
+   lMask = hb_parnl( 2 );
+   lNewValue = ISNUM( 3 ) ? hb_parnl( 3 ) : lMask;
+
+   SetWindowLong( hWnd, GWL_STYLE, ( ( GetWindowLong( hWnd, GWL_STYLE ) & ( ~ lMask ) ) | ( lNewValue & lMask ) ) );
+   RedrawWindow( hWnd, 0, 0, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
 }

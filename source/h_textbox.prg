@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.28 2006-07-18 02:00:34 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.29 2006-07-26 01:20:57 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -114,6 +114,7 @@ CLASS TText FROM TLabel
    METHOD Value       SETGET
    METHOD SetFocus
    METHOD CaretPos    SETGET
+   METHOD ReadOnly    SETGET
    METHOD Events_Enter
    METHOD Events_Command
 ENDCLASS
@@ -258,6 +259,14 @@ METHOD CaretPos( nPos ) CLASS TText
       SendMessage( ::hWnd, EM_SETSEL, nPos, nPos )
    ENDIF
 Return HiWord( SendMessage( ::hWnd, EM_GETSEL, 0, 0 ) )
+
+*------------------------------------------------------------------------------*
+METHOD ReadOnly( lReadOnly ) CLASS TText
+*------------------------------------------------------------------------------*
+   IF ValType( lReadOnly ) == "L"
+      SendMessage( ::hWnd, EM_SETREADONLY, IF( lReadOnly, 1, 0 ), 0 )
+   ENDIF
+Return IsWindowStyle( ::hWnd, ES_READONLY )
 
 *------------------------------------------------------------------------------*
 METHOD Events_Enter() CLASS TText

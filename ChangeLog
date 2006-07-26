@@ -1,11 +1,24 @@
 /*
- * $Id: ChangeLog,v 1.190 2006-07-24 01:00:11 guerra000 Exp $
+ * $Id: ChangeLog,v 1.191 2006-07-26 01:20:57 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-07-25 20:25 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_label.prg
+    * Fixed initial painting for TRANSPARENT labels.
+  * source/c_windows.c
+    * Windows' style functions added.
+  * include/i_windefs.ch
+  * source/h_textbox.prg
+    + ::ReadOnly set/get property added.
+  + include/i_internal.ch
+  * include/oohg.ch
+  + source/h_internal.prg
+    + TInternal() control added. Internal windows as controls version.
 
 2006-07-23 20:01 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_print.prg

@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.14 2006-01-18 05:43:43 guerra000 Exp $
+ * $Id: i_windefs.ch,v 1.15 2006-07-26 01:20:57 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -515,12 +515,15 @@
 #define LBN_SELCHANGE	1
 #define EN_SETFOCUS	256
 #define EN_KILLFOCUS	512
+
 #define EM_SETMODIFY	185
 #define EM_GETLINE	196
 #define EM_SETSEL	177
 #define EM_GETSEL	176
 #define EM_UNDO		199
+#define EM_SETREADONLY          207
 #define EM_SETBKGNDCOLOR	1091
+
 #define EN_CHANGE       768
 #define EN_UPDATE       1024
 #define MK_LBUTTON	1

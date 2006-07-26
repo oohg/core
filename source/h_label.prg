@@ -1,5 +1,5 @@
 /*
- * $Id: h_label.prg,v 1.15 2006-07-18 02:00:34 guerra000 Exp $
+ * $Id: h_label.prg,v 1.16 2006-07-26 01:20:57 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -148,11 +148,14 @@ Local ControlHandle, nStyle, nStyleEx
    nStyleEx := if( ValType( CLIENTEDGE ) == "L"   .AND. CLIENTEDGE,   WS_EX_CLIENTEDGE,  0 ) + ;
                if( ::Transparent, WS_EX_TRANSPARENT, 0 )
 
-   Controlhandle := InitLabel( ::ContainerhWnd, Caption, 0, x, y, w, h, '', 0, Nil , nStyle, nStyleEx, ::lRtl )
+   Controlhandle := InitLabel( ::ContainerhWnd, Caption, 0, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight, '', 0, Nil , nStyle, nStyleEx, ::lRtl )
 
    ::Register( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
-   ::SizePos( y, x, w, h )
+
+   If ::Transparent
+      RedrawWindowControlRect( ::ContainerhWnd, ::ContainerRow, ::ContainerCol, ::ContainerRow + ::Height, ::ContainerCol + ::Width )
+   EndIf
 
    ASSIGN ::AutoSize VALUE autosize TYPE "L" DEFAULT ::AutoSize
    ::OnClick := ProcedureName
