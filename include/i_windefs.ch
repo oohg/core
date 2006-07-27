@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.15 2006-07-26 01:20:57 guerra000 Exp $
+ * $Id: i_windefs.ch,v 1.16 2006-07-27 04:17:44 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -446,8 +446,6 @@
 #define SIZEICONIC	1
 #define SIZE_RESTORED	0
 #define SIZENORMAL	0
-#define	TBN_FIRST	(-700)
-#define TBN_DROPDOWN	(TBN_FIRST-10)
 
 #define OPAQUE	2
 #define DKGRAY_BRUSH	3
@@ -579,5 +577,13 @@
 #define SS_PATHELLIPSIS     32768
 #define SS_WORDELLIPSIS     49152
 #define SS_ELLIPSISMASK     49152
+
+// Toolbutton notifications
+#define	TBN_FIRST	(-700)
+#define TBN_DROPDOWN	(TBN_FIRST-10)
+#define TBN_GETINFOTIPA (TBN_FIRST-18)
+#define TBN_GETINFOTIPW (TBN_FIRST-19)
+
+#define TBN_GETINFOTIP  TBN_GETINFOTIPA
 
 #endif

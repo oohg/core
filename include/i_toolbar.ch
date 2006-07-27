@@ -1,5 +1,5 @@
 /*
- * $Id: i_toolbar.ch,v 1.4 2005-11-02 17:27:43 guerra000 Exp $
+ * $Id: i_toolbar.ch,v 1.5 2006-07-27 04:17:44 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -111,8 +111,10 @@
 		[ <border : BORDER> ] ;
 	        [ <break: BREAK> ] ;
                 [ <rtl: RTL> ] ;
+                [ SUBCLASS <subclass> ] ;
       => ;
-        [ <obj> := ] TToolBar():Define( <(name)>, <(parent)>, 0, 0, <w>, <h>, <caption>, <{action}>,<f>,<s> ,<tooltip> , <.flat.> , <.bottom.> , <.righttext.> , <.break.> , <.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <.border.> , <.rtl.> )
+        [ <obj> := ] _OOHG_SelectSubClass( TToolBar(), [ <subclass>() ] ): ;
+                     Define( <(name)>, <(parent)>, 0, 0, <w>, <h>, <caption>, <{action}>,<f>,<s> ,<tooltip> , <.flat.> , <.bottom.> , <.righttext.> , <.break.> , <.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <.border.> , <.rtl.> )
 
 #xcommand  END TOOLBAR ;
       => ;
@@ -120,79 +122,18 @@
 
 
 #xcommand BUTTON <name> ;
+                [ OBJ <obj> ];
 		[ CAPTION <caption> ] ;
 		[ PICTURE <bitmap> ] ;
-		[ ACTION <action> ] ;
-		[ <separator: SEPARATOR> ] ;
-	        [ <autosize: AUTOSIZE> ] ;
-		[ <dropdown: DROPDOWN> ] ;
-		[ <wholedropdown: WHOLEDROPDOWN> ] ;
-		[ <check: CHECK> ] ;
-		[ <group: GROUP> ] ;
-	=>;
-        TToolButton():Define( <(name)>, 0, 0, <caption> , <{action}> , , ,<bitmap> ,"" ,   ,  , .f. ,<.separator.> , <.autosize.> , <.check.> , <.group.> , <.dropdown.> , <.wholedropdown.> )
-
-#xcommand BUTTON <name> ;
-		[ CAPTION <caption> ] ;
-		[ PICTURE <bitmap> ] ;
-		[ ON CLICK <action> ] ;
-		[ <separator: SEPARATOR> ] ;
-	        [ <autosize: AUTOSIZE> ] ;
-		[ <dropdown: DROPDOWN> ] ;
-		[ <wholedropdown: WHOLEDROPDOWN> ] ;
-		[ <check: CHECK> ] ;
-		[ <group: GROUP> ] ;
-	=>;
-        TToolButton():Define( <(name)>, 0, 0, <caption> , <{action}> , , ,<bitmap> ,"" ,   ,  , .f. ,<.separator.>  , <.autosize.> , <.check.> , <.group.>  , <.dropdown.>  , <.wholedropdown.> )
-
-#xcommand BUTTON <name> ;
-		[ CAPTION <caption> ] ;
-		[ PICTURE <bitmap> ] ;
-		[ ONCLICK <action> ] ;
-		[ <separator: SEPARATOR> ] ;
-	        [ <autosize: AUTOSIZE> ] ;
-		[ <dropdown: DROPDOWN> ] ;
-		[ <wholedropdown: WHOLEDROPDOWN> ] ;
-		[ <check: CHECK> ] ;
-		[ <group: GROUP> ] ;
-	=>;
-        TToolButton():Define( <(name)>, 0, 0, <caption> , <{action}> , , ,<bitmap> ,"" ,   ,  , .f. ,<.separator.>  , <.autosize.> , <.check.> , <.group.>  , <.dropdown.>  , <.wholedropdown.> )
-
-#xcommand BUTTON <name> ;
-		[ PICTURE <bitmap> ] ;
+                [ <dummy: ACTION, ON CLICK, ONCLICK> <action> ] ;
 		[ TOOLTIP <tooltip> ]	;
-		[ ACTION <action> ] ;
 		[ <separator: SEPARATOR> ] ;
 	        [ <autosize: AUTOSIZE> ] ;
 		[ <dropdown: DROPDOWN> ] ;
 		[ <wholedropdown: WHOLEDROPDOWN> ] ;
 		[ <check: CHECK> ] ;
 		[ <group: GROUP> ] ;
+                [ SUBCLASS <subclass> ] ;
 	=>;
-        TToolButton():Define( <(name)>, 0, 0,  , <{action}> , , ,<bitmap> , <tooltip> ,   ,  , .f. ,<.separator.>  , <.autosize.> , <.check.> , <.group.>  , <.dropdown.>  , <.wholedropdown.> )
-
-#xcommand BUTTON <name> ;
-		[ PICTURE <bitmap> ] ;
-		[ TOOLTIP <tooltip> ]	;
-		[ ON CLICK <action> ] ;
-		[ <separator: SEPARATOR> ] ;
-	        [ <autosize: AUTOSIZE> ] ;
-		[ <dropdown: DROPDOWN> ] ;
-		[ <wholedropdown: WHOLEDROPDOWN> ] ;
-		[ <check: CHECK> ] ;
-		[ <group: GROUP> ] ;
-	=>;
-        TToolButton():Define( <(name)>, 0, 0,  , <{action}> , , ,<bitmap> , <tooltip> ,   ,  , .f. ,<.separator.>  , <.autosize.> , <.check.> , <.group.> , <.dropdown.>  , <.wholedropdown.> )
-
-#xcommand BUTTON <name> ;
-		[ PICTURE <bitmap> ] ;
-		[ TOOLTIP <tooltip> ]	;
-		[ ONCLICK <action> ] ;
-		[ <separator: SEPARATOR> ] ;
-	        [ <autosize: AUTOSIZE> ] ;
-		[ <dropdown: DROPDOWN> ] ;
-		[ <wholedropdown: WHOLEDROPDOWN> ] ;
-		[ <check: CHECK> ] ;
-		[ <group: GROUP> ] ;
-	=>;
-        TToolButton():Define( <(name)>, 0, 0,  , <{action}> , , ,<bitmap> , <tooltip> ,   ,  , .f. ,<.separator.>  , <.autosize.> , <.check.> , <.group.> , <.dropdown.>  , <.wholedropdown.> )
+        [ <obj> := ] _OOHG_SelectSubClass( TToolButton(), [ <subclass>() ] ): ;
+                     Define( <(name)>, 0, 0, <caption>, <{action}>, , , <bitmap>, <tooltip>, , , .f., <.separator.>, <.autosize.>, <.check.>, <.group.>, <.dropdown.>, <.wholedropdown.> )

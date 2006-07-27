@@ -1,5 +1,5 @@
 /*
- * $Id: c_toolbar.c,v 1.5 2006-07-05 02:39:54 guerra000 Exp $
+ * $Id: c_toolbar.c,v 1.6 2006-07-27 04:17:44 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -459,4 +459,28 @@ HB_FUNC ( GETTOOLBUTTONID )
 
 	hb_retni ( lpttt->hdr.idFrom ) ;
 
+}
+
+HB_FUNC( _TOOLBARGETINFOTIP )
+{
+   hb_retni( ( ( LPNMTBGETINFOTIP ) hb_parnl( 1 ) ) -> iItem );
+}
+
+HB_FUNC( _TOOLBARSETINFOTIP )
+{
+   LPNMTBGETINFOTIP lpInfo = ( LPNMTBGETINFOTIP ) hb_parnl( 1 );
+   int iLen;
+
+   iLen = hb_parclen( 2 );
+   if( iLen >= lpInfo->cchTextMax )
+   {
+      iLen = lpInfo->cchTextMax;
+      if( iLen > 0 )
+      {
+         iLen--;
+      }
+   }
+
+   hb_xmemcpy( lpInfo->pszText, hb_parc( 2 ), iLen );
+   lpInfo->pszText[ iLen ] = 0;
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.45 2006-07-05 02:39:54 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.46 2006-07-27 04:17:44 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -734,7 +734,7 @@ Return lRet
 *-----------------------------------------------------------------------------*
 METHOD EditCell2( nRow, nCol, EditControl, uOldValue, uValue, cMemVar ) CLASS TGrid
 *-----------------------------------------------------------------------------*
-Local r, r2, lRet := .F.
+Local r, r2, lRet := .F., nWidth
    IF ValType( cMemVar ) != "C"
       cMemVar := "_OOHG_NULLVAR_"
    ENDIF
@@ -773,14 +773,17 @@ Local r, r2, lRet := .F.
       If ValType( EditControl ) != "O"
          MsgExclamation( "ooHG can't determine cell type for INPLACE edit." )
       Else
+         r := { 0, 0, 0, 0 }
+         GetClientRect( ::hWnd, r )
+         nWidth := r[ 3 ] - r[ 1 ]
          r2 := { 0, 0, 0, 0 }
          GetWindowRect( ::hWnd, r2 )
          ListView_EnsureVisible( ::hWnd, nRow - 1 )
          r := LISTVIEW_GETSUBITEMRECT( ::hWnd, nRow - 1, nCol - 1 )
          r[ 3 ] := ListView_GetColumnWidth( ::hWnd, nCol - 1 )
          // Ensures cell is visible
-         If r[ 2 ] + r[ 3 ] + GetVScrollBarWidth() > ::Width
-            ListView_Scroll( ::hWnd, ( r[ 2 ] + r[ 3 ] + GetVScrollBarWidth() - ::Width ), 0 )
+         If r[ 2 ] + r[ 3 ] + GetVScrollBarWidth() > nWidth
+            ListView_Scroll( ::hWnd, ( r[ 2 ] + r[ 3 ] + GetVScrollBarWidth() - nWidth ), 0 )
             r := LISTVIEW_GETSUBITEMRECT( ::hWnd, nRow - 1, nCol - 1 )
             r[ 3 ] := ListView_GetColumnWidth( ::hWnd, nCol - 1 )
          EndIf
@@ -800,6 +803,9 @@ Local r, r2, lRet := .F.
          EndIf
          If ValType( ::ValidMessages ) == "A" .AND. Len( ::ValidMessages ) >= nCol
             EditControl:cValidMessage := ::ValidMessages[ nCol ]
+         EndIf
+         If ValType( uValue ) $ "CM"
+            uValue := TRIM( uValue )
          EndIf
          lRet := EditControl:CreateWindow( uValue, r[ 1 ], r[ 2 ], r[ 3 ], r[ 4 ], ::FontName, ::FontSize )
          If lRet

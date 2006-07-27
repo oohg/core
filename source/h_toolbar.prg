@@ -1,5 +1,5 @@
 /*
- * $Id: h_toolbar.prg,v 1.14 2006-03-30 04:54:37 guerra000 Exp $
+ * $Id: h_toolbar.prg,v 1.15 2006-07-27 04:17:44 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -230,6 +230,15 @@ Local ws, x, aPos
       Return nil
 */
 
+   ElseIf nNotify == TBN_GETINFOTIP
+      ws := _ToolBarGetInfoTip( lParam )
+      x  := Ascan ( ::aControls, { |o| o:Id == ws } )
+      IF x > 0
+         If VALTYPE( ::aControls[ x ]:ToolTip ) $ "CM"
+            _ToolBarSetInfoTip( lParam, ::aControls[ x ]:ToolTip )
+         Endif
+      ENDIF
+
    EndIf
 
 Return ::Super:Events_Notify( wParam, lParam )
@@ -284,6 +293,10 @@ Empty( FLAT )
 	endif
 	if valtype(gotfocus) == "U"
       gotfocus := ""
+	endif
+
+	if valtype(caption) == "U"
+      caption := tooltip
 	endif
 
 	if valtype(caption) == "U"
