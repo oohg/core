@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.22 2006-07-19 03:46:04 guerra000 Exp $
+ * $Id: h_tab.prg,v 1.23 2006-07-28 03:11:46 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -210,9 +210,10 @@ METHOD Refresh() CLASS TTab
 *-----------------------------------------------------------------------------*
 Local nPage
    nPage := IF( ::Visible, ::Value, 0 )
-   // AEVAL( ::aPages, { |p,i| p:Position := i } )
-   // AEVAL( ::aPages, { |p,i| if( i == nPage, p:Show(), p:ForceHide() ) } )
-   AEVAL( ::aPages, { |p,i| p:Position := i , if( i == nPage, p:Show(), p:ForceHide() ) } )
+   AEVAL( ::aPages, { |p,i| p:Position := i , if( i == nPage, , p:ForceHide() ) } )
+   IF nPage >= 1 .AND. nPage <= LEN( ::aPages )
+      ::aPages[ nPage ]:Show()
+   ENDIF
 Return Nil
 
 *-----------------------------------------------------------------------------*

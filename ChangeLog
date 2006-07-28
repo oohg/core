@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog,v 1.192 2006-07-27 04:17:44 guerra000 Exp $
+ * $Id: ChangeLog,v 1.193 2006-07-28 03:11:46 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-07-27 22:12 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_tab.prg
+    * ::Refresh() will first hide all pages and then show the
+      selected one, for avoid a wrong visual effect.
 
 2006-07-26 23:15 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_grid.prg
