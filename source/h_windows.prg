@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.96 2006-07-24 00:47:35 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.97 2006-07-29 02:57:06 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -689,24 +689,37 @@ Local nPos
    If ! ::lInternal
       // Search form's parent
       If ValType( uParent ) != "O"
-         If LEN( _OOHG_ActiveForm ) > 0
-            nPos := LEN( _OOHG_ActiveForm )
-            Do While nPos > 1 .AND. _OOHG_ActiveForm[ nPos ]:lInternal
-               nPos--
-            EndDo
-            uParent := _OOHG_ActiveForm[ nPos ]
+         uParent := nil
+         // Checks _OOHG_UserWindow
+         If _OOHG_UserWindow != NIL .AND. ValidHandler( _OOHG_UserWindow:hWnd ) .AND. ascan( _OOHG_aFormhWnd, _OOHG_UserWindow:hWnd ) > 0
+            uParent := _OOHG_UserWindow
          Else
-            uParent := GetFormObjectByHandle( GetActiveWindow() )
-            If ! ValidHandler( uParent:hWnd )
-               If _OOHG_UserWindow != NIL .AND. ascan( _OOHG_aFormhWnd, _OOHG_UserWindow:hWnd ) > 0
-                  uParent := _OOHG_UserWindow
-               ElseIf Len( _OOHG_ActiveModal ) > 0 .AND. ascan( _OOHG_aFormhWnd, ATAIL( _OOHG_ActiveModal ):hWnd ) > 0
-                  uParent := ATAIL( _OOHG_ActiveModal )
-               ElseIf _OOHG_Main != nil
-                  uParent := _OOHG_Main
+            // Checks _OOHG_ActiveModal
+            nPos := RASCAN( _OOHG_ActiveModal, { |o| ValidHandler( o:hWnd ) .AND. ascan( _OOHG_aFormhWnd, o:hWnd ) > 0 } )
+            If nPos > 0
+               uParent := _OOHG_ActiveModal[ nPos ]
+            Else
+               // Checks _OOHG_ActiveForm (active)
+               nPos := RASCAN( _OOHG_ActiveForm, { |o| o:Active .AND. ValidHandler( o:hWnd ) .AND. ! o:lInternal .AND. ascan( _OOHG_aFormhWnd, o:hWnd ) > 0 } )
+               If nPos > 0
+                  uParent := _OOHG_ActiveModal[ nPos ]
                Else
-                  // Not mandatory MAIN
-                  // NO PARENT DETECTED!
+                  // Checks _OOHG_ActiveForm (any)
+                  nPos := RASCAN( _OOHG_ActiveForm, { |o| ValidHandler( o:hWnd ) .AND. ! o:lInternal .AND. ascan( _OOHG_aFormhWnd, o:hWnd ) > 0 } )
+                  If nPos > 0
+                     uParent := _OOHG_ActiveModal[ nPos ]
+                  Else
+                     uParent := GetFormObjectByHandle( GetActiveWindow() )
+                     If ! ValidHandler( uParent:hWnd )
+                        If _OOHG_Main != nil
+                           uParent := _OOHG_Main
+                        Else
+                           // Not mandatory MAIN
+                           // NO PARENT DETECTED!
+                           uParent := nil
+                        EndIf
+                     EndIf
+                  EndIf
                Endif
             Endif
          EndIf
@@ -741,6 +754,16 @@ Local nPos
 
    EndIf
 Return uParent
+
+#ifndef __XHARBOUR__
+STATIC FUNCTION RASCAN( aSource, bCode )
+LOCAL nPos
+   nPos := LEN( aSource )
+   DO WHILE nPos > 0 .AND. ! EVAL( bCode, aSource[ nPos ], nPos )
+      nPos--
+   ENDDO
+RETURN nPos
+#endif
 
 *-----------------------------------------------------------------------------*
 METHOD ParentDefaults( cFontName, nFontSize, uFontColor ) CLASS TWindow
@@ -1954,13 +1977,12 @@ Local oCtrl
 
          // From MENU
 
-//         IF HiWord(wParam) == 0 .And. oCtrl:Type = "MENU"
-
-//         If oCtrl:Type = "TOOLBUTTON"
-
          oCtrl:DoEvent( oCtrl:OnClick )
-
-//         EndIf
+         If ! oCtrl:NestedClick
+            oCtrl:NestedClick := ! _OOHG_NestedSameEvent()
+            oCtrl:DoEvent( oCtrl:OnClick )
+            oCtrl:NestedClick := .F.
+         EndIf
 
       ElseIf ValidHandler( ( oCtrl := GetControlObjectByHandle( lParam ) ):hWnd )
 

@@ -1,11 +1,17 @@
 /*
- * $Id: ChangeLog,v 1.193 2006-07-28 03:11:46 guerra000 Exp $
+ * $Id: ChangeLog,v 1.194 2006-07-29 02:57:05 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-07-28 21:56 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_windows.prg
+    * Changed the way PARENT window is detected.
+    * Locks any menu to be nested while the same event is currently
+      performed (configurable via _OOHG_NestedSameEvent() function).
 
 2006-07-27 22:12 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_tab.prg
