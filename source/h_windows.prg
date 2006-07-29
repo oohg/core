@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.97 2006-07-29 02:57:06 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.98 2006-07-29 16:37:35 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -699,15 +699,15 @@ Local nPos
             If nPos > 0
                uParent := _OOHG_ActiveModal[ nPos ]
             Else
-               // Checks _OOHG_ActiveForm (active)
-               nPos := RASCAN( _OOHG_ActiveForm, { |o| o:Active .AND. ValidHandler( o:hWnd ) .AND. ! o:lInternal .AND. ascan( _OOHG_aFormhWnd, o:hWnd ) > 0 } )
+               // Checks any active window
+               nPos := RASCAN( _OOHG_aFormObjects, { |o| o:Active .AND. ValidHandler( o:hWnd ) .AND. ! o:lInternal } )
                If nPos > 0
-                  uParent := _OOHG_ActiveModal[ nPos ]
+                  uParent := _OOHG_aFormObjects[ nPos ]
                Else
-                  // Checks _OOHG_ActiveForm (any)
+                  // Checks _OOHG_ActiveForm
                   nPos := RASCAN( _OOHG_ActiveForm, { |o| ValidHandler( o:hWnd ) .AND. ! o:lInternal .AND. ascan( _OOHG_aFormhWnd, o:hWnd ) > 0 } )
                   If nPos > 0
-                     uParent := _OOHG_ActiveModal[ nPos ]
+                     uParent := _OOHG_ActiveForm[ nPos ]
                   Else
                      uParent := GetFormObjectByHandle( GetActiveWindow() )
                      If ! ValidHandler( uParent:hWnd )
@@ -1977,7 +1977,6 @@ Local oCtrl
 
          // From MENU
 
-         oCtrl:DoEvent( oCtrl:OnClick )
          If ! oCtrl:NestedClick
             oCtrl:NestedClick := ! _OOHG_NestedSameEvent()
             oCtrl:DoEvent( oCtrl:OnClick )
