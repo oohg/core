@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.25 2006-03-18 16:02:27 guerra000 Exp $
+ * $Id: i_altsyntax.ch,v 1.26 2006-08-05 22:14:20 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1372,7 +1372,7 @@ Check Box/Button
 
 #xcommand END CHECKBUTTON ;
 	=>;
-        IIF ( _OOHG_ActiveControlPicture == NIL , _DefineCheckButton (;
+        TCheckBox():Define( ;
                 _OOHG_ActiveControlName,;
                 _OOHG_ActiveControlOf,;
                 _OOHG_ActiveControlCol,;
@@ -1393,24 +1393,9 @@ Check Box/Button
                 _OOHG_ActiveControlFontBold , ;
                 _OOHG_ActiveControlFontItalic , ;
                 _OOHG_ActiveControlFontUnderLine , ;
-                _OOHG_ActiveControlFontStrikeOut ) , ;
-           _DefineImageCheckButton ( ;
-                _OOHG_ActiveControlName,;
-                _OOHG_ActiveControlOf,;
-                _OOHG_ActiveControlCol,;
-                _OOHG_ActiveControlRow,;
-                _OOHG_ActiveControlPicture,;
-                _OOHG_ActiveControlValue ,;
-		"" ,;
-		0 , ;
-                _OOHG_ActiveControlTooltip  , ;
-                _OOHG_ActiveControlOnChange  , ;
-                _OOHG_ActiveControlWidth , ;
-                _OOHG_ActiveControlHeight , ;
-                _OOHG_ActiveControlOnLostFocus, ;
-                _OOHG_ActiveControlOnGotFocus , ;
-                _OOHG_ActiveControlHelpId, ;
-                _OOHG_ActiveControlInvisible ) )
+                _OOHG_ActiveControlFontStrikeOut, ;
+                ,,,,,, .T., ;
+                _OOHG_ActiveControlPicture )
 
 /*----------------------------------------------------------------------------
 Combo Box

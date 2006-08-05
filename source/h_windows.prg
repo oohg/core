@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.99 2006-08-05 02:17:49 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.100 2006-08-05 22:14:20 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -578,17 +578,18 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )
 
       case WM_LBUTTONDOWN:
          _OOHG_SetMouseCoords( pSelf, LOWORD( lParam ), HIWORD( lParam ) );
+         hb_ret();
+         break;
+
+      case WM_LBUTTONUP:
+         _OOHG_SetMouseCoords( pSelf, LOWORD( lParam ), HIWORD( lParam ) );
          _OOHG_Send( pSelf, s_OnClick );
          hb_vmSend( 0 );
          _OOHG_Send( pSelf, s_DoEvent );
          hb_vmPush( hb_param( -1, HB_IT_ANY ) );
          hb_vmPushString( "", 0 );
          hb_vmSend( 2 );
-         hb_ret();
-         break;
-
-      case WM_LBUTTONUP:
-         _OOHG_SetMouseCoords( pSelf, LOWORD( lParam ), HIWORD( lParam ) );
+         hb_retni( 1 );
          hb_ret();
          break;
 

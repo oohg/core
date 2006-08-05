@@ -1,11 +1,33 @@
 /*
- * $Id: ChangeLog,v 1.196 2006-08-05 02:21:01 guerra000 Exp $
+ * $Id: ChangeLog,v 1.197 2006-08-05 22:14:20 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-08-05 17:12 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_xbrowse.prg
+    ! Fixed edit inplace value re-assignment.
+  * source/h_textarray.prg
+    + ::Clear() method added.
+    + Added extensions to ::Write and ::WriteRaw methods.
+  * include/i_progressmeter.ch
+  * source/h_progressmeter.prg
+    + Added CLIENTEDGE clause.
+  * include/i_altsyntax.ch
+  * include/i_checkbox.ch
+  - source/c_checkbox.c
+  * source/h_checkbox.prg
+  * source/makelib.bat
+    * Moved source code from c_checkbox.c to h_checkbox.prg .
+    - c_checkbox.c removed.
+    + SUBCLASS and RTL clauses added.
+    * TCheckBox class re-structured for [IMAGE]CHECKBUTTON controls.
+  * source/h_toolbar.prg
+  * source/h_windows.prg
+    * Fixed mouse click functionality.
 
 2006-08-04 21:17 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * include/i_vars.ch

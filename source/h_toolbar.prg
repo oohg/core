@@ -1,5 +1,5 @@
 /*
- * $Id: h_toolbar.prg,v 1.15 2006-07-27 04:17:44 guerra000 Exp $
+ * $Id: h_toolbar.prg,v 1.16 2006-08-05 22:14:20 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -103,6 +103,7 @@ CLASS TToolBar FROM TControl
    METHOD Define
    METHOD Events_Size
    METHOD Events_Notify
+   METHOD Events
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -244,6 +245,16 @@ Local ws, x, aPos
 Return ::Super:Events_Notify( wParam, lParam )
 
 
+*-----------------------------------------------------------------------------*
+METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TToolBar
+*-----------------------------------------------------------------------------*
+   IF nMsg == WM_COMMAND .AND. LOWORD( wParam ) != 0
+      // Prevents a double menu click
+      Return nil
+   ENDIF
+RETURN ::Super:Events( hWnd, nMsg, wParam, lParam )
+
+
 
 
 
@@ -368,9 +379,6 @@ METHOD Enabled( lEnabled ) CLASS TToolButton
       ENDIF
    ENDIF
 RETURN ::Super:Enabled
-
-
-
 
 *-----------------------------------------------------------------------------*
 METHOD Events_Notify( wParam, lParam ) CLASS TToolButton

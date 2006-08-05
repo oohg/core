@@ -1,5 +1,5 @@
 /*
- * $Id: i_checkbox.ch,v 1.3 2005-10-22 06:04:31 guerra000 Exp $
+ * $Id: i_checkbox.ch,v 1.4 2006-08-05 22:14:20 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -94,7 +94,7 @@
 #command @ <row>,<col> CHECKBOX <name> ;
                 [ OBJ <obj> ] ;
 		[ <dummy1: OF, PARENT> <parent> ] ;
-		CAPTION <caption> ;
+                [ CAPTION <caption> ] ;
 		[ WIDTH <w> ] ;
 		[ HEIGHT <h> ] ;
 		[ FIELD <field> ]		;
@@ -116,12 +116,19 @@
 		[ <invisible: INVISIBLE> ] ;
 		[ <notabstop: NOTABSTOP> ] ;
                 [ <autosize: AUTOSIZE > ] ;
+                [ SUBCLASS <subclass> ]           ;
+                [ <rtl: RTL> ]                    ;
 	=>;
-[ <obj> := ] TCheckBox():Define( <(name)>, <(parent)>, <col>, <row>, <caption>, <value> ,<f> ,<n> , <tooltip>  , <{change}>  , [<w>] , [<h>] , <{lostfocus}>, <{gotfocus}>  , <helpid>, <.invisible.>, <.notabstop.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <(field)> , <backcolor> , <fontcolor> , <.transparent.>, <.autosize.> )
+        [ <obj> := ] _OOHG_SelectSubClass( TCheckBox(), [ <subclass>() ] ): ;
+                Define( <(name)>, <(parent)>, <col>, <row>, <caption>, <value>, <f>, <n>, ;
+                <tooltip>, <{change}>, [<w>], [<h>], <{lostfocus}>, <{gotfocus}>, <helpid>, ;
+                <.invisible.>, <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, ;
+                <(field)>, <backcolor>, <fontcolor>, <.transparent.>, <.autosize.>, <.rtl.> )
 
 #command @ <row>,<col> CHECKBUTTON <name> ;
+                [ OBJ <obj> ] ;
 		[ <dummy1: OF, PARENT> <parent> ] ;
-		CAPTION <caption>  ;
+                [ CAPTION <caption> ] ;
 		[ WIDTH <w> ] ;
 		[ HEIGHT <h> ] ;
 		[ VALUE <value> ] ;
@@ -138,21 +145,12 @@
 		[ HELPID <helpid> ] 		;
 		[ <invisible: INVISIBLE> ] ;
 		[ <notabstop: NOTABSTOP> ] ;
+                [ SUBCLASS <subclass> ]           ;
+                [ <rtl: RTL> ]                    ;
+                [ PICTURE <bitmap> ]              ;
 	=>;
-        _DefineCheckButton ( <(name)>, <(parent)>, <col>, <row>, <caption>, <value> ,<f> ,<n> , <tooltip>  , <{change}>  , [<w>] , [<h>] , <{lostfocus}>, <{gotfocus}>  , <helpid>, <.invisible.>, <.notabstop.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> )
-
-#command @ <row>,<col> CHECKBUTTON <name> ;
-		[ <dummy1: OF, PARENT> <parent> ] ;
-		PICTURE <bitmap> ;
-		[ WIDTH <w> ] ;
-		[ HEIGHT <h> ] ;
-		[ VALUE <value> ] ;
-		[ TOOLTIP <tooltip> ] ;
-		[ ON GOTFOCUS <gotfocus> ] ;
-		[ ON CHANGE <change> ] ;
-		[ ON LOSTFOCUS <lostfocus> ] ;
-		[ HELPID <helpid> ] 		;
-		[ <invisible: INVISIBLE> ] ;
-		[ <notabstop: NOTABSTOP> ] ;
-	=>;
-        _DefineImageCheckButton ( <(name)>, <(parent)>, <col>, <row>, <bitmap>, <value> ,"" ,0 , <tooltip>  , <{change}>  , [<w>] , [<h>] , <{lostfocus}>, <{gotfocus}> , <helpid>, <.invisible.>, <.notabstop.> )
+        [ <obj> := ] _OOHG_SelectSubClass( TCheckBox(), [ <subclass>() ] ): ;
+                Define( <(name)>, <(parent)>, <col>, <row>, <caption>, <value>, <f>, <n>, ;
+                <tooltip>, <{change}>, [<w>], [<h>], <{lostfocus}>, <{gotfocus}>, <helpid>, ;
+                <.invisible.>, <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, ;
+                ,,,,, <.rtl.>, .T., <bitmap> )

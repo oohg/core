@@ -1,5 +1,5 @@
 /*
- * $Id: h_checkbox.prg,v 1.7 2006-02-11 06:19:33 guerra000 Exp $
+ * $Id: h_checkbox.prg,v 1.8 2006-08-05 22:14:20 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -98,11 +98,14 @@
 
 CLASS TCheckBox FROM TLabel
    DATA Type      INIT "CHECKBOX" READONLY
-   DATA Picture   INIT ""
+   DATA cPicture  INIT ""
    DATA IconWidth INIT 19
+   DATA nWidth    INIT 100
+   DATA nHeight   INIT 28
 
    METHOD Define
    METHOD Value       SETGET
+   METHOD Picture     SETGET
    METHOD Events_Command
 ENDCLASS
 
@@ -110,34 +113,49 @@ ENDCLASS
 METHOD Define( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
                fontsize, tooltip, changeprocedure, w, h, lostfocus, gotfocus, ;
                HelpId, invisible, notabstop, bold, italic, underline, ;
-               strikeout, field, backcolor, fontcolor, transparent, autosize ) CLASS TCheckBox
+               strikeout, field, backcolor, fontcolor, transparent, autosize, ;
+               lRtl, lButton, BitMap ) CLASS TCheckBox
 *-----------------------------------------------------------------------------*
-Local ControlHandle
+Local ControlHandle, nStyle := 0, nStyleEx := 0
 
+   ASSIGN ::nCol        VALUE x TYPE "N"
+   ASSIGN ::nRow        VALUE y TYPE "N"
+   ASSIGN ::nWidth      VALUE w TYPE "N"
+   ASSIGN ::nHeight     VALUE h TYPE "N"
+   ASSIGN invisible     VALUE invisible    TYPE "L" DEFAULT .F.
    DEFAULT value           TO FALSE
-   DEFAULT w               TO 100
-   DEFAULT h               TO 28
-   DEFAULT lostfocus       TO ""
-   DEFAULT gotfocus        TO ""
-   DEFAULT changeprocedure TO ""
-   DEFAULT invisible       TO FALSE
    DEFAULT notabstop       TO FALSE
    DEFAULT autosize        TO FALSE
+   DEFAULT lButton         TO FALSE
 
-   ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor )
+   ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor,, lRtl )
 
-   Controlhandle := InitCheckBox ( ::ContainerhWnd, Caption, 0, x, y, '', 0 , w , h, invisible, notabstop )
+   nStyle := if( ValType( NoTabStop ) != "L" .OR. ! NoTabStop, WS_TABSTOP, 0 ) + ;
+             if( ValType( invisible ) != "L" .OR. ! invisible, WS_VISIBLE, 0 )
+
+   IF lButton
+      nStyle += BS_PUSHLIKE
+      autosize := .F.
+   ELSE
+      nStyleEx += WS_EX_TRANSPARENT
+   ENDIF
+
+   IF VALTYPE( BitMap ) $ "CM"
+      nStyle += BS_BITMAP
+   ENDIF
+
+   Controlhandle := InitCheckBox( ::ContainerhWnd, Caption, 0, ::ContainerCol, ::ContainerRow, '', 0 , ::nWidth, ::nHeight, nStyle, nStyleEx, ::lRtl )
 
    ::Register( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
-   ::SizePos( y, x, w, h )
 
    ::Transparent := transparent
    ::OnLostFocus := LostFocus
    ::OnGotFocus  := GotFocus
-   ::OnChange    := ChangeProcedure
    ::Autosize    := autosize
    ::Caption     := Caption
+
+   ::Picture  :=  BitMap
 
    If ValType( Field ) $ 'CM' .AND. ! empty( Field )
       ::VarName := alltrim( Field )
@@ -151,80 +169,9 @@ Local ControlHandle
       aAdd ( ::Parent:BrowseList, Self )
 	EndIf
 
+   ::OnChange    := ChangeProcedure
+
 Return Self
-
-*-----------------------------------------------------------------------------*
-Function _DefineCheckButton ( ControlName, ParentForm, x, y, Caption, Value, ;
-                              fontname, fontsize, tooltip, changeprocedure, ;
-                              w, h, lostfocus, gotfocus, HelpId, invisible, ;
-                              notabstop , bold, italic, underline, strikeout )
-*-----------------------------------------------------------------------------*
-Local Self
-
-// AJ
-Local ControlHandle
-
-   DEFAULT value           TO FALSE
-   DEFAULT w               TO 100
-   DEFAULT h               TO 28
-   DEFAULT lostfocus       TO ""
-   DEFAULT gotfocus        TO ""
-   DEFAULT changeprocedure TO ""
-   DEFAULT invisible       TO FALSE
-   DEFAULT notabstop       TO FALSE
-
-   Self := TCheckBox():SetForm( ControlName, ParentForm, FontName, FontSize )
-
-   Controlhandle := InitCheckButton ( ::ContainerhWnd, Caption, 0, x, y, '', 0 , w , h, invisible, notabstop )
-
-   ::Register( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
-   ::SetFont( , , bold, italic, underline, strikeout )
-   ::SizePos( y, x, w, h )
-
-   ::OnLostFocus := LostFocus
-   ::OnGotFocus :=  GotFocus
-   ::OnChange   :=  ChangeProcedure
-   ::Caption := Caption
-
-   ::Value := value
-
-Return Nil
-*-----------------------------------------------------------------------------*
-Function _DefineImageCheckButton ( ControlName, ParentForm, x, y, BitMap, ;
-                                   Value, fontname, fontsize, tooltip, ;
-                                   changeprocedure, w, h, lostfocus, gotfocus,;
-                                   HelpId, invisible, notabstop )
-*-----------------------------------------------------------------------------*
-Local Self
-
-// AJ
-Local ControlHandle
-
-   DEFAULT value           TO FALSE
-   DEFAULT w               TO 100
-   DEFAULT h               TO 28
-   DEFAULT lostfocus       TO ""
-   DEFAULT gotfocus        TO ""
-   DEFAULT changeprocedure TO ""
-   DEFAULT invisible       TO FALSE
-   DEFAULT notabstop       TO FALSE
-
-   Self := TCheckBox():SetForm( ControlName, ParentForm, FontName, FontSize )
-
-   Controlhandle := InitImageCheckButton ( ::ContainerhWnd, "", 0, x, y, '', 0 , bitmap , w , h, invisible, notabstop )
-
-   ::Register( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
-   ::SetFont()
-   ::SizePos( y, x, w, h )
-
-   ::OnLostFocus := LostFocus
-   ::OnGotFocus :=  GotFocus
-   ::OnChange   :=  ChangeProcedure
-   ::Picture  :=  BitMap
-
-   ::Value := value
-
-Return Nil
 
 *------------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TCheckBox
@@ -235,6 +182,16 @@ METHOD Value( uValue ) CLASS TCheckBox
       uValue := ( SendMessage( ::hWnd, BM_GETCHECK , 0 , 0 ) == BST_CHECKED )
    ENDIF
 RETURN uValue
+
+*-----------------------------------------------------------------------------*
+METHOD Picture( cPicture ) CLASS TCheckBox
+*-----------------------------------------------------------------------------*
+   IF VALTYPE( cPicture ) $ "CM"
+      DeleteObject( ::AuxHandle )
+      ::AuxHandle := _SetBtnPicture( ::hWnd, cPicture, .T. ) // ::lNoTransparent
+      ::cPicture := cPicture
+   ENDIF
+Return ::cPicture
 
 *------------------------------------------------------------------------------*
 METHOD Events_Command( wParam ) CLASS TCheckBox
@@ -250,3 +207,50 @@ Local Hi_wParam := HIWORD( wParam )
    EndIf
 
 Return ::Super:Events_Command( wParam )
+
+
+
+
+
+EXTERN InitCheckBox
+
+#pragma BEGINDUMP
+
+#include "hbapi.h"
+#include "hbvm.h"
+#include "hbstack.h"
+#include "hbapiitm.h"
+#include <windows.h>
+#include <commctrl.h>
+#include "../include/oohg.h"
+
+static WNDPROC lpfnOldWndProc = 0;
+
+static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+{
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
+}
+
+HB_FUNC( INITCHECKBOX )
+{
+	HWND hwnd;
+	HWND hbutton;
+   int Style, StyleEx;
+
+   hwnd = HWNDparam( 1 );
+
+   Style = BS_NOTIFY | WS_CHILD | BS_AUTOCHECKBOX | hb_parni( 10 );
+
+   StyleEx = hb_parni( 11 ) | _OOHG_RTL_Status( hb_parl( 12 ) );
+
+   hbutton = CreateWindowEx( StyleEx, "button" , hb_parc(2) ,
+	Style ,
+	hb_parni(4), hb_parni(5) , hb_parni(8), hb_parni(9) ,
+	hwnd,(HMENU)hb_parni(3) , GetModuleHandle(NULL) , NULL ) ;
+
+   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( hbutton, GWL_WNDPROC, ( LONG ) SubClassFunc );
+
+   HWNDret( hbutton );
+}
+
+#pragma ENDDUMP

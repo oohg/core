@@ -1,5 +1,5 @@
 /*
- * $Id: h_textarray.prg,v 1.1 2006-08-05 02:20:30 guerra000 Exp $
+ * $Id: h_textarray.prg,v 1.2 2006-08-05 22:14:20 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -68,6 +68,7 @@ CLASS TTextArray FROM TControl
    METHOD Write          SETGET
    METHOD WriteRaw       SETGET
    METHOD Scroll
+   METHOD Clear
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -299,95 +300,98 @@ static void TTextArray_Scroll( POCTRL oSelf, int iCol1, int iRow1, int iCol2, in
    PCHARCELL pCell;
    RECT rect;
 
-   RANGEMINMAX( 0, iCol1, ( oSelf->lAux[ 0 ] - 1 ) )
-   RANGEMINMAX( 0, iCol2, ( oSelf->lAux[ 0 ] - 1 ) )
-   RANGEMINMAX( 0, iRow1, ( oSelf->lAux[ 1 ] - 1 ) )
-   RANGEMINMAX( 0, iRow2, ( oSelf->lAux[ 1 ] - 1 ) )
-   LO_HI_AUX( iCol1, iCol2, iAux )
-   LO_HI_AUX( iRow1, iRow2, iAux )
-
-   RANGEMINMAX( ( iRow1 - iRow2 - 1 ), iVert,  ( iRow2 - iRow1 + 1 ) )
-   RANGEMINMAX( ( iCol1 - iCol2 - 1 ), iHoriz, ( iCol2 - iCol1 + 1 ) )
-
-   pCell = ( PCHARCELL ) oSelf->AuxBuffer;
-
-   if( iVert > 0 )
+   if( oSelf->AuxBuffer && oSelf->lAux[ 0 ] && oSelf->lAux[ 1 ] )
    {
-      iDelta = iRow2 - iRow1 + 1 - iVert;
-      iRow = iRow1;
-      while( iDelta )
-      {
-         memcpy( &pCell[ ( iRow * oSelf->lAux[ 0 ] ) + iCol1 ], &pCell[ ( ( iRow + iVert ) * oSelf->lAux[ 0 ] ) + iCol1 ], ( sizeof( CHARCELL ) * ( iCol2 - iCol1 + 1 ) ) );
-         iRow++;
-         iDelta--;
-      }
-      while( iVert )
-      {
-         for( iAux = iCol1; iAux <= iCol2; iAux++ )
-         {
-            TTextArray_Empty( &pCell[ ( iRow * oSelf->lAux[ 0 ] ) + iAux ], oSelf );
-         }
-         iRow++;
-         iVert--;
-      }
-   }
-   else if( iVert < 0 )
-   {
-      iDelta = iRow2 - iRow1 + 1 - iVert;
-      iRow = iRow2;
-      while( iDelta )
-      {
-         memcpy( &pCell[ ( iRow * oSelf->lAux[ 0 ] ) + iCol1 ], &pCell[ ( ( iRow + iVert ) * oSelf->lAux[ 0 ] ) + iCol1 ], ( sizeof( CHARCELL ) * ( iCol2 - iCol1 + 1 ) ) );
-         iRow--;
-         iDelta--;
-      }
-      while( iVert )
-      {
-         for( iAux = iCol1; iAux <= iCol2; iAux++ )
-         {
-            TTextArray_Empty( &pCell[ ( iRow * oSelf->lAux[ 0 ] ) + iAux ], oSelf );
-         }
-         iRow--;
-         iVert++;
-      }
-   }
+      RANGEMINMAX( 0, iCol1, ( oSelf->lAux[ 0 ] - 1 ) )
+      RANGEMINMAX( 0, iCol2, ( oSelf->lAux[ 0 ] - 1 ) )
+      RANGEMINMAX( 0, iRow1, ( oSelf->lAux[ 1 ] - 1 ) )
+      RANGEMINMAX( 0, iRow2, ( oSelf->lAux[ 1 ] - 1 ) )
+      LO_HI_AUX( iCol1, iCol2, iAux )
+      LO_HI_AUX( iRow1, iRow2, iAux )
 
-   if( iHoriz > 0 )
-   {
-      iDelta = iCol2 - iCol1 + 1 - iHoriz;
-      iRow = iRow1;
-      while( iRow <= iRow2 )
-      {
-         memcpy( &pCell[ ( iRow * oSelf->lAux[ 0 ] ) + iCol1 ], &pCell[ ( iRow * oSelf->lAux[ 0 ] ) + iCol1 + iHoriz ], ( sizeof( CHARCELL ) * iDelta ) );
-         for( iAux = iCol1 + iDelta; iAux <= iCol2; iAux++ )
-         {
-            TTextArray_Empty( &pCell[ ( iRow * oSelf->lAux[ 0 ] ) + iAux ], oSelf );
-         }
-         iRow++;
-      }
-   }
-   else if( iHoriz < 0 )
-   {
-      iRow = iRow1;
-      while( iRow <= iRow2 )
-      {
-         for( iAux = iCol2; iAux >= iCol1 - iHoriz; iAux-- )
-         {
-            memcpy( &pCell[ ( iRow * oSelf->lAux[ 0 ] ) + iAux ], &pCell[ ( iRow * oSelf->lAux[ 0 ] ) + iAux + iHoriz ], sizeof( CHARCELL ) );
-         }
-         for( ; iAux >= iCol1; iAux-- )
-         {
-            TTextArray_Empty( &pCell[ ( iRow * oSelf->lAux[ 0 ] ) + iAux ], oSelf );
-         }
-         iRow++;
-      }
-   }
+      RANGEMINMAX( ( iRow1 - iRow2 - 1 ), iVert,  ( iRow2 - iRow1 + 1 ) )
+      RANGEMINMAX( ( iCol1 - iCol2 - 1 ), iHoriz, ( iCol2 - iCol1 + 1 ) )
 
-   rect.top    = iRow1 * oSelf->lAux[ 5 ];
-   rect.left   = iCol1 * oSelf->lAux[ 4 ];
-   rect.bottom = ( iRow2 + 1 ) * oSelf->lAux[ 5 ];
-   rect.right  = ( iCol2 + 1 ) * oSelf->lAux[ 4 ];
-   RedrawWindow( oSelf->hWnd, &rect, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+      pCell = ( PCHARCELL ) oSelf->AuxBuffer;
+
+      if( iVert > 0 )
+      {
+         iDelta = iRow2 - iRow1 + 1 - iVert;
+         iRow = iRow1;
+         while( iDelta )
+         {
+            memcpy( &pCell[ ( iRow * oSelf->lAux[ 0 ] ) + iCol1 ], &pCell[ ( ( iRow + iVert ) * oSelf->lAux[ 0 ] ) + iCol1 ], ( sizeof( CHARCELL ) * ( iCol2 - iCol1 + 1 ) ) );
+            iRow++;
+            iDelta--;
+         }
+         while( iVert )
+         {
+            for( iAux = iCol1; iAux <= iCol2; iAux++ )
+            {
+               TTextArray_Empty( &pCell[ ( iRow * oSelf->lAux[ 0 ] ) + iAux ], oSelf );
+            }
+            iRow++;
+            iVert--;
+         }
+      }
+      else if( iVert < 0 )
+      {
+         iDelta = iRow2 - iRow1 + 1 - iVert;
+         iRow = iRow2;
+         while( iDelta )
+         {
+            memcpy( &pCell[ ( iRow * oSelf->lAux[ 0 ] ) + iCol1 ], &pCell[ ( ( iRow + iVert ) * oSelf->lAux[ 0 ] ) + iCol1 ], ( sizeof( CHARCELL ) * ( iCol2 - iCol1 + 1 ) ) );
+            iRow--;
+            iDelta--;
+         }
+         while( iVert )
+         {
+            for( iAux = iCol1; iAux <= iCol2; iAux++ )
+            {
+               TTextArray_Empty( &pCell[ ( iRow * oSelf->lAux[ 0 ] ) + iAux ], oSelf );
+            }
+            iRow--;
+            iVert++;
+         }
+      }
+
+      if( iHoriz > 0 )
+      {
+         iDelta = iCol2 - iCol1 + 1 - iHoriz;
+         iRow = iRow1;
+         while( iRow <= iRow2 )
+         {
+            memcpy( &pCell[ ( iRow * oSelf->lAux[ 0 ] ) + iCol1 ], &pCell[ ( iRow * oSelf->lAux[ 0 ] ) + iCol1 + iHoriz ], ( sizeof( CHARCELL ) * iDelta ) );
+            for( iAux = iCol1 + iDelta; iAux <= iCol2; iAux++ )
+            {
+               TTextArray_Empty( &pCell[ ( iRow * oSelf->lAux[ 0 ] ) + iAux ], oSelf );
+            }
+            iRow++;
+         }
+      }
+      else if( iHoriz < 0 )
+      {
+         iRow = iRow1;
+         while( iRow <= iRow2 )
+         {
+            for( iAux = iCol2; iAux >= iCol1 - iHoriz; iAux-- )
+            {
+               memcpy( &pCell[ ( iRow * oSelf->lAux[ 0 ] ) + iAux ], &pCell[ ( iRow * oSelf->lAux[ 0 ] ) + iAux + iHoriz ], sizeof( CHARCELL ) );
+            }
+            for( ; iAux >= iCol1; iAux-- )
+            {
+               TTextArray_Empty( &pCell[ ( iRow * oSelf->lAux[ 0 ] ) + iAux ], oSelf );
+            }
+            iRow++;
+         }
+      }
+
+      rect.top    = iRow1 * oSelf->lAux[ 5 ];
+      rect.left   = iCol1 * oSelf->lAux[ 4 ];
+      rect.bottom = ( iRow2 + 1 ) * oSelf->lAux[ 5 ];
+      rect.right  = ( iCol2 + 1 ) * oSelf->lAux[ 4 ];
+      RedrawWindow( oSelf->hWnd, &rect, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+   }
 }
 
 static void TTextArray_ReSize( POCTRL oSelf, int iRow, int iCol )
@@ -586,11 +590,25 @@ HB_FUNC_STATIC( TTEXTARRAY_WRITE )
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
    BYTE *pBuffer, cByte;
    ULONG lBuffer;
+   LONG lFontColor, lBackColor, lAuxColor;
    int iRow, iCol;
 
-   iCol = ISNUM( 2 ) ? hb_parni( 2 ) : oSelf->lAux[ 2 ];
-   iRow = ISNUM( 3 ) ? hb_parni( 3 ) : oSelf->lAux[ 3 ];
+   iCol = ISNUM( 3 ) ? hb_parni( 3 ) : oSelf->lAux[ 2 ];
+   iRow = ISNUM( 2 ) ? hb_parni( 2 ) : oSelf->lAux[ 3 ];
    TTextArray_MoveTo( oSelf, iRow, iCol );
+
+   lFontColor = oSelf->lFontColor;
+   lBackColor = oSelf->lBackColor;
+   lAuxColor = -1;
+   if( _OOHG_DetermineColor( hb_param( 4, HB_IT_ANY ), &lAuxColor ) )
+   {
+      oSelf->lFontColor = lAuxColor;
+   }
+   lAuxColor = -1;
+   if( _OOHG_DetermineColor( hb_param( 5, HB_IT_ANY ), &lAuxColor ) )
+   {
+      oSelf->lBackColor = lAuxColor;
+   }
 
    if( ISCHAR( 1 ) && oSelf->AuxBuffer && oSelf->lAux[ 0 ] && oSelf->lAux[ 1 ] )
    {
@@ -621,19 +639,36 @@ HB_FUNC_STATIC( TTEXTARRAY_WRITE )
          lBuffer--;
       }
    }
+
+   oSelf->lFontColor = lFontColor;
+   oSelf->lBackColor = lBackColor;
 }
 
-HB_FUNC_STATIC( TTEXTARRAY_WRITERAW )
+HB_FUNC_STATIC( TTEXTARRAY_WRITERAW )   // ( cText, nCol, nRow, FontColor, BackColor )
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
    BYTE *pBuffer;
    ULONG lBuffer;
+   LONG lFontColor, lBackColor, lAuxColor;
    int iRow, iCol;
 
-   iCol = ISNUM( 2 ) ? hb_parni( 2 ) : oSelf->lAux[ 2 ];
-   iRow = ISNUM( 3 ) ? hb_parni( 3 ) : oSelf->lAux[ 3 ];
+   iCol = ISNUM( 3 ) ? hb_parni( 3 ) : oSelf->lAux[ 2 ];
+   iRow = ISNUM( 2 ) ? hb_parni( 2 ) : oSelf->lAux[ 3 ];
    TTextArray_MoveTo( oSelf, iRow, iCol );
+
+   lFontColor = oSelf->lFontColor;
+   lBackColor = oSelf->lBackColor;
+   lAuxColor = -1;
+   if( _OOHG_DetermineColor( hb_param( 4, HB_IT_ANY ), &lAuxColor ) )
+   {
+      oSelf->lFontColor = lAuxColor;
+   }
+   lAuxColor = -1;
+   if( _OOHG_DetermineColor( hb_param( 5, HB_IT_ANY ), &lAuxColor ) )
+   {
+      oSelf->lBackColor = lAuxColor;
+   }
 
    if( ISCHAR( 1 ) && oSelf->AuxBuffer && oSelf->lAux[ 0 ] && oSelf->lAux[ 1 ] )
    {
@@ -645,6 +680,9 @@ HB_FUNC_STATIC( TTEXTARRAY_WRITERAW )
          lBuffer--;
       }
    }
+
+   oSelf->lFontColor = lFontColor;
+   oSelf->lBackColor = lBackColor;
 }
 
 HB_FUNC_STATIC( TTEXTARRAY_SCROLL )
@@ -654,14 +692,48 @@ HB_FUNC_STATIC( TTEXTARRAY_SCROLL )
 
    int iCol1, iRow1, iCol2, iRow2, iVert, iHoriz;
 
-   iCol1  = ISNUM( 2 ) ? hb_parni( 2 ) : 0;
-   iRow1  = ISNUM( 1 ) ? hb_parni( 1 ) : 0;
-   iCol2  = ISNUM( 4 ) ? hb_parni( 4 ) : oSelf->lAux[ 0 ] - 1;
-   iRow2  = ISNUM( 3 ) ? hb_parni( 3 ) : oSelf->lAux[ 1 ] - 1;
-   iVert  = ISNUM( 5 ) ? hb_parni( 5 ) : 0;
-   iHoriz = ISNUM( 6 ) ? hb_parni( 6 ) : 0;
+   if( oSelf->AuxBuffer && oSelf->lAux[ 0 ] && oSelf->lAux[ 1 ] )
+   {
+      iCol1  = ISNUM( 2 ) ? hb_parni( 2 ) : 0;
+      iRow1  = ISNUM( 1 ) ? hb_parni( 1 ) : 0;
+      iCol2  = ISNUM( 4 ) ? hb_parni( 4 ) : oSelf->lAux[ 0 ] - 1;
+      iRow2  = ISNUM( 3 ) ? hb_parni( 3 ) : oSelf->lAux[ 1 ] - 1;
+      iVert  = ISNUM( 5 ) ? hb_parni( 5 ) : 0;
+      iHoriz = ISNUM( 6 ) ? hb_parni( 6 ) : 0;
 
-   TTextArray_Scroll( oSelf, iCol1, iRow1, iCol2, iRow2, iVert, iHoriz );
+      TTextArray_Scroll( oSelf, iCol1, iRow1, iCol2, iRow2, iVert, iHoriz );
+   }
+}
+
+HB_FUNC_STATIC( TTEXTARRAY_CLEAR )
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+
+   int iCol, iCol1, iRow1, iCol2, iRow2;
+
+   if( oSelf->AuxBuffer && oSelf->lAux[ 0 ] && oSelf->lAux[ 1 ] )
+   {
+      iCol1  = ISNUM( 2 ) ? hb_parni( 2 ) : 0;
+      iRow1  = ISNUM( 1 ) ? hb_parni( 1 ) : 0;
+      iCol2  = ISNUM( 4 ) ? hb_parni( 4 ) : oSelf->lAux[ 0 ] - 1;
+      iRow2  = ISNUM( 3 ) ? hb_parni( 3 ) : oSelf->lAux[ 1 ] - 1;
+
+      RANGEMINMAX( 0, iCol1, ( oSelf->lAux[ 0 ] - 1 ) )
+      RANGEMINMAX( 0, iCol2, ( oSelf->lAux[ 0 ] - 1 ) )
+      RANGEMINMAX( 0, iRow1, ( oSelf->lAux[ 1 ] - 1 ) )
+      RANGEMINMAX( 0, iRow2, ( oSelf->lAux[ 1 ] - 1 ) )
+      LO_HI_AUX( iCol1, iCol2, iCol )
+      LO_HI_AUX( iRow1, iRow2, iCol )
+
+      while( iRow1 <= iRow2 )
+      {
+         for( iCol = iCol1; iCol <= iCol2; iCol++ )
+         {
+            TTextArray_Empty( &( ( ( PCHARCELL )( oSelf->AuxBuffer ) )[ ( iRow1 * oSelf->lAux[ 0 ] ) + iCol ] ), oSelf );
+         }
+      }
+   }
 }
 
 static LRESULT CALLBACK _OOHG_TextArray_WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )

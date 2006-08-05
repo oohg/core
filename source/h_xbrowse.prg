@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.13 2006-07-19 03:46:04 guerra000 Exp $
+ * $Id: h_xbrowse.prg,v 1.14 2006-08-05 22:14:21 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -294,7 +294,8 @@ Local aItem, cWorkArea
          cWorkArea := nil
       EndIf
       aItem := ARRAY( LEN( ::aFields ) )
-      AEVAL( aItem, { |x,i| aItem[ i ] := EVAL( ::ColumnBlock( i, .F., x ), cWorkArea ) } )
+      AEVAL( aItem, { |x,i| aItem[ i ] := EVAL( ::ColumnBlock( i, .T. ), cWorkArea ), x } )
+      AEVAL( aItem, { |x,i| IF( VALTYPE( x ) $ "CM", aItem[ i ] := TRIM( x ),  ) } )
 
       If ::ItemCount < nRow
          If ValType( cWorkArea ) $ "CM"

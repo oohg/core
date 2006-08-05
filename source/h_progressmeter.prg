@@ -1,5 +1,5 @@
 /*
- * $Id: h_progressmeter.prg,v 1.8 2006-08-05 02:14:22 guerra000 Exp $
+ * $Id: h_progressmeter.prg,v 1.9 2006-08-05 22:14:20 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -59,6 +59,8 @@ CLASS TProgressMeter FROM TLabel
    DATA nRangeMax   INIT 100
    DATA nPercent    INIT 0
    DATA nValue      INIT 0
+   DATA nWidth      INIT 100
+   DATA nHeight     INIT 18
 
    METHOD Define
    METHOD Value               SETGET
@@ -74,7 +76,8 @@ ENDCLASS
 *-----------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, x, y, w, h, lo, hi, value, tooltip, ;
                fontname, fontsize, bold, italic, underline, strikeout, ;
-               FontColor, BackColor, ProcedureName, HelpId, invisible, lRtl ) CLASS TProgressMeter
+               FontColor, BackColor, ProcedureName, HelpId, invisible, lRtl, ;
+               CLIENTEDGE ) CLASS TProgressMeter
 *-----------------------------------------------------------------------------*
 Local ControlHandle, nStyle, nStyleEx
 
@@ -102,7 +105,7 @@ Local ControlHandle, nStyle, nStyleEx
 
    nStyle := if( ValType( invisible ) != "L" .OR. ! invisible, WS_VISIBLE,  0 )
 
-   nStyleEx := 0 // if( ValType( CLIENTEDGE ) == "L"   .AND. CLIENTEDGE,   WS_EX_CLIENTEDGE,  0 ) + ;
+   nStyleEx := if( ValType( CLIENTEDGE ) == "L"   .AND. CLIENTEDGE,   WS_EX_CLIENTEDGE,  0 )
 
    Controlhandle := InitLabel( ::ContainerhWnd, "", 0, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight, '', 0, Nil , nStyle, nStyleEx, ::lRtl )
 
