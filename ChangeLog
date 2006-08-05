@@ -1,11 +1,40 @@
 /*
- * $Id: ChangeLog,v 1.195 2006-07-29 16:37:35 guerra000 Exp $
+ * $Id: ChangeLog,v 1.196 2006-08-05 02:21:01 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-08-04 21:17 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_vars.ch
+  * include/oohg.h
+  * source/c_controlmisc.c
+  * source/h_controlmisc.prg
+  * source/h_init.prg
+  * source/h_windows.prg
+    * Moved WM_COMMAND and WM_TIMER messages from TForm to TWindow.
+    * Moved ::FontHandle to TForm, at C level.
+    * _OOHG_MouseCol and _OOHG_MouseRow moved to C-level variable.
+    * Moved WM_LBUTTONUP, WM_LBUTTONDOWN and WM_MOUSEMOVE messages from
+      TForm to TWindow.
+
+  * source/h_combo.prg
+    * Approach ::FontHandle at C level.
+
+  + include/i_textarray.ch
+  * include/oohg.ch
+  + source/h_textarray.prg
+  * source/makelib.bat
+    + TEXTARRAY control added.
+
+  * source/h_progressmeter.prg
+    * Optimized from two labels to a single control with WM_PAINT
+      processing.
+
+  * source/h_tab.prg
+    * Fixed PAGE initialization.
 
 2006-07-29 11:37 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_windows.prg
