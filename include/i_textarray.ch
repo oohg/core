@@ -1,9 +1,9 @@
 /*
- * $Id: oohg.ch,v 1.6 2006-08-05 02:20:29 guerra000 Exp $
+ * $Id: i_textarray.ch,v 1.1 2006-08-05 02:20:29 guerra000 Exp $
  */
 /*
  * ooHG source code:
- * Main include calls
+ * TextArray definitions
  *
  * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.guerra.com.mx
@@ -82,75 +82,42 @@
 
  Parts of this project are based upon:
 
-	"Harbour GUI framework for Win32"
- 	Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- 	Copyright 2001 Antonio Linares <alinares@fivetech.com>
-	www - http://www.harbour-project.org
+        "Harbour GUI framework for Win32"
+        Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
+        Copyright 2001 Antonio Linares <alinares@fivetech.com>
+        www - http://www.harbour-project.org
 
-	"Harbour Project"
-	Copyright 1999-2003, http://www.harbour-project.org/
+        "Harbour Project"
+        Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-
-#ifndef __OOHG__
-#define __OOHG__
-
-#include "i_var.ch"
-#include "i_media.ch"
-#include "i_pseudofunc.ch"
-#include "i_exec.ch"
-#include "i_comm.ch"
-#include "i_keybd.ch"
-#include "i_checkbox.ch"
-#include "i_menu.ch"
-#include "i_misc.ch"
-#include "i_timer.ch"
-#include "i_frame.ch"
-#include "i_slider.ch"
-#include "i_progressbar.ch"
-#include "i_progressmeter.ch"
-#include "i_window.ch"
-#include "i_button.ch"
-#include "i_image.ch"
-#include "i_radiogroup.ch"
-#include "i_label.ch"
-#include "i_combobox.ch"
-#include "i_datepicker.ch"
-#include "i_listbox.ch"
-#include "i_spinner.ch"
-#include "i_textbox.ch"
-#include "i_editbox.ch"
-#include "i_grid.ch"
-#include "i_tab.ch"
-#include "i_controlmisc.ch"
-#include "i_color.ch"
-#include "i_toolbar.ch"
-#include "i_splitbox.ch"
-#include "i_tree.ch"
-#include "i_status.ch"
-#include "i_ini.ch"
-#include "i_encrypt.ch"
-#include "i_help.ch"
-#include "i_monthcal.ch"
-#include "i_region.ch"
-#include "i_socket.ch"
-#include "i_ipaddress.ch"
-#include "i_altsyntax.ch"
-#include "i_scrsaver.ch"
-#include "i_registry.ch"
-#include "i_edit.ch"
-#include "i_report.ch"
-#include "i_lang.ch"
-#include "i_this.ch"
-#include "i_hyperlink.ch"
-#include "i_zip.ch"
-#include "i_graph.ch"
-#include "i_richeditbox.ch"
-#include "i_browse.ch"
-#include "i_dll.ch"
-#include "i_tooltip.ch"
-#include "i_xbrowse.ch"
-#include "i_internal.ch"
-#include "i_textarray.ch"
-
-#endif
+#command @ <row>,<col> TEXTARRAY <name>   ;
+        [ OBJ <obj> ] ;
+	[ <dummy1: OF, PARENT> <parent> ] ;
+	[ ACTION <action> ] ;
+	[ WIDTH <width> ]   ;
+	[ HEIGHT <height> ]   ;
+        [ ROWCOUNT <rowcount> ] ;
+        [ COLCOUNT <colcount> ] ;
+	[ FONT <fontname> ]   ;
+	[ SIZE <fontsize> ]   ;
+	[ <bold : BOLD> ] ;
+	[ <italic : ITALIC> ] ;
+	[ <underline : UNDERLINE> ] ;
+	[ <strikeout : STRIKEOUT> ] ;
+	[ TOOLTIP <tooltip> ] ;
+	[ BACKCOLOR <backcolor> ] ;
+	[ FONTCOLOR <fontcolor> ] ;
+	[ <border: BORDER> ] ;
+	[ <clientedge: CLIENTEDGE> ] ;
+	[ HELPID <helpid> ] 		;
+        [ <invisible: INVISIBLE> ]      ;
+        [ <rtl: RTL> ]                  ;
+        [ SUBCLASS <subclass> ]         ;
+        [ VALUE <value> ]               ;
+	=>;
+        [ <obj> := ] _OOHG_SelectSubClass( TTextArray(), [ <subclass>() ] ): ;
+                   Define( <(name)>, <(parent)>, <col>, <row>, <width>, <height>, <rowcount>, <colcount>, ;
+                           <.border.>, <.clientedge.>, <fontcolor>, <backcolor>, <{action}>, ;
+                           <fontname>, <fontsize>, <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, ;
+                           <tooltip>, <helpid>, <.invisible.>, <.rtl.>, <value> )
