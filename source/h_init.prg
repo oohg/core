@@ -1,5 +1,5 @@
 /*
- * $Id: h_init.prg,v 1.16 2006-04-21 05:34:26 guerra000 Exp $
+ * $Id: h_init.prg,v 1.17 2006-08-05 02:17:49 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -127,9 +127,6 @@ INIT PROCEDURE _OOHG_INIT()
    _OOHG_DefaultFontSize         := 9
 
    _OOHG_TempWindowName       := ""
-
-   _OOHG_MouseRow          := 0
-   _OOHG_MouseCol          := 0
 
    _OOHG_ActiveFrame := {}
 

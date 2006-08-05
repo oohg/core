@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.h,v 1.29 2006-07-05 02:42:11 guerra000 Exp $
+ * $Id: oohg.h,v 1.30 2006-08-05 02:17:49 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -77,6 +77,7 @@ typedef struct OOHG_Window {
    HBRUSH     BrushHandle;
    LONG       lFontColorSelected, lBackColorSelected;
    LONG       lAux[ 10 ];
+   HFONT      hFontHandle;
 
 //   int        iRow, iCol, iWidth, iHeight;
 //   HB_ITEM    oParent;
@@ -171,7 +172,11 @@ DWORD _OOHG_RTL_Status( BOOL bRtl );
 #define s_Events_HScroll       51
 #define s_Events_VScroll       52
 #define s_nTextHeight          53
-#define s_LastSymbol           54
+#define s_Events_Enter         54
+#define s_Id                   55
+#define s_NestedClick          56
+#define s__NestedClick         57
+#define s_LastSymbol           58
 
 // Hack for MinGW and static functions (object's methods)
 #ifdef __MINGW32__

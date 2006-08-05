@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.98 2006-07-29 16:37:35 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.99 2006-08-05 02:17:49 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -130,7 +130,27 @@ int  _OOHG_GlobalRTL = 0;             // Force RTL functionality
 int  _OOHG_NestedSameEvent = 0;       // Allows to nest an event currently performed (i.e. CLICK button)
 LONG _OOHG_TooltipBackcolor = -1;     // Tooltip's backcolor
 LONG _OOHG_TooltipForecolor = -1;     // Tooltip's forecolor
+int  _OOHG_MouseCol = 0;              // Mouse's column
+int  _OOHG_MouseRow = 0;              // Mouse's row
 PHB_ITEM _OOHG_LastSelf = NULL;
+
+void _OOHG_SetMouseCoords( PHB_ITEM pSelf, int iCol, int iRow )
+{
+   PHB_ITEM pSelf2;
+
+   pSelf2 = hb_itemNew( NULL );
+   hb_itemCopy( pSelf2, pSelf );
+
+   _OOHG_Send( pSelf2, s_ColMargin );
+   hb_vmSend( 0 );
+   _OOHG_MouseCol = iCol - hb_parni( -1 );
+
+   _OOHG_Send( pSelf2, s_RowMargin );
+   hb_vmSend( 0 );
+   _OOHG_MouseRow = iRow - hb_parni( -1 );
+
+   hb_itemRelease( pSelf2 );
+}
 
 #pragma ENDDUMP
 
@@ -186,6 +206,7 @@ CLASS TWindow
    METHOD SetFocus
    METHOD ImageList           SETGET
    METHOD BrushHandle         SETGET
+   METHOD FontHandle          SETGET
    METHOD FontColor           SETGET
    METHOD BackColor           SETGET
    METHOD FontColorSelected   SETGET
@@ -207,6 +228,7 @@ CLASS TWindow
    METHOD Events_Size         BLOCK { || nil }
    METHOD Events_VScroll      BLOCK { || nil }
    METHOD Events_HScroll      BLOCK { || nil }
+   METHOD Events_Enter        BLOCK { || nil }
 
    ERROR HANDLER Error
    METHOD Control
@@ -329,10 +351,23 @@ HB_FUNC_STATIC( TWINDOW_BRUSHHANDLE )
 
    if( hb_pcount() >= 1 && ISNUM( 1 ) )
    {
-      oSelf->BrushHandle = ( HBRUSH ) hb_parnl( 1 );
+      oSelf->BrushHandle = ( HBRUSH ) HWNDparam( 1 );
    }
 
    HWNDret( oSelf->BrushHandle );
+}
+
+HB_FUNC_STATIC( TWINDOW_FONTHANDLE )
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+
+   if( hb_pcount() >= 1 && ISNUM( 1 ) )
+   {
+      oSelf->hFontHandle = ( HFONT ) HWNDparam( 1 );
+   }
+
+   HWNDret( oSelf->hFontHandle );
 }
 
 HB_FUNC_STATIC( TWINDOW_FONTCOLOR )
@@ -450,6 +485,131 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )
          hb_vmSend( 2 );
          break;
 
+      case WM_COMMAND:
+         if( wParam == 1 )
+         {
+            // Enter key
+            _OOHG_Send( GetControlObjectByHandle( GetFocus() ), s_Events_Enter );
+            hb_vmSend( 0 );
+            break;
+         }
+         else
+         {
+            PHB_ITEM pControl, pOnClick;
+
+            pControl = hb_itemNew( NULL );
+            hb_itemCopy( pControl, GetControlObjectById( LOWORD( wParam ) ) );
+            _OOHG_Send( pControl, s_Id );
+            hb_vmSend( 0 );
+            if( hb_parni( -1 ) != 0 )
+            {
+               // By Id
+               // From MENU
+               _OOHG_Send( pControl, s_NestedClick );
+               hb_vmSend( 0 );
+               if( ! hb_parl( -1 ) )
+               {
+                  _OOHG_Send( pControl, s__NestedClick );
+                  hb_vmPushLogical( ! _OOHG_NestedSameEvent );
+                  hb_vmSend( 1 );
+
+                  pOnClick = hb_itemNew( NULL );
+                  _OOHG_Send( pControl, s_OnClick );
+                  hb_vmSend( 0 );
+                  hb_itemCopy( pOnClick, hb_param( -1, HB_IT_ANY ) );
+                  _OOHG_Send( pControl, s_DoEvent );
+                  hb_vmPush( pOnClick );
+                  hb_vmSend( 1 );
+                  hb_itemRelease( pOnClick );
+
+                  _OOHG_Send( pControl, s__NestedClick );
+                  hb_vmPushLogical( 0 );
+                  hb_vmSend( 1 );
+               }
+            }
+            else
+            {
+               hb_itemCopy( pControl, GetControlObjectByHandle( ( HWND ) lParam ) );
+               _OOHG_Send( pControl, s_hWnd );
+               hb_vmSend( 0 );
+               if( ValidHandler( HWNDparam( -1 ) ) )
+               {
+                  // By handle
+                  _OOHG_Send( pControl, s_Events_Command );
+                  hb_vmPushLong( wParam );
+                  hb_vmSend( 1 );
+                  hb_itemRelease( pControl );   // There's a break!
+                  break;
+               }
+//               else
+//               {
+//                  if( HIWORD( wParam ) == 1 )
+//                  {
+//                     _OOHG_Send( pControl, s_Events_Accelerator );
+//                     hb_vmPushLong( wParam );
+//                     hb_vmSend( 1 );
+//                     break;
+//                  }
+//               }
+            }
+            hb_itemRelease( pControl );
+            hb_ret();
+         }
+         break;
+
+      case WM_TIMER:
+         {
+            PHB_ITEM pControl, pOnClick;
+
+            pControl = hb_itemNew( NULL );
+            hb_itemCopy( pControl, GetControlObjectById( LOWORD( wParam ) ) );
+            pOnClick = hb_itemNew( NULL );
+            _OOHG_Send( pControl, s_OnClick );
+            hb_vmSend( 0 );
+            hb_itemCopy( pOnClick, hb_param( -1, HB_IT_ANY ) );
+            _OOHG_Send( pControl, s_DoEvent );
+            hb_vmPush( pOnClick );
+            hb_vmSend( 1 );
+            hb_itemRelease( pOnClick );
+            hb_itemRelease( pControl );
+         }
+         hb_ret();
+         break;
+
+      case WM_LBUTTONDOWN:
+         _OOHG_SetMouseCoords( pSelf, LOWORD( lParam ), HIWORD( lParam ) );
+         _OOHG_Send( pSelf, s_OnClick );
+         hb_vmSend( 0 );
+         _OOHG_Send( pSelf, s_DoEvent );
+         hb_vmPush( hb_param( -1, HB_IT_ANY ) );
+         hb_vmPushString( "", 0 );
+         hb_vmSend( 2 );
+         hb_ret();
+         break;
+
+      case WM_LBUTTONUP:
+         _OOHG_SetMouseCoords( pSelf, LOWORD( lParam ), HIWORD( lParam ) );
+         hb_ret();
+         break;
+
+      case WM_MOUSEMOVE:
+         _OOHG_SetMouseCoords( pSelf, LOWORD( lParam ), HIWORD( lParam ) );
+         if( wParam == MK_LBUTTON )
+         {
+            _OOHG_Send( pSelf, s_OnMouseDrag );
+         }
+         else
+         {
+            _OOHG_Send( pSelf, s_OnMouseMove );
+         }
+         hb_vmSend( 0 );
+         _OOHG_Send( pSelf, s_DoEvent );
+         hb_vmPush( hb_param( -1, HB_IT_ANY ) );
+         hb_vmPushString( "", 0 );
+         hb_vmSend( 2 );
+         hb_ret();
+         break;
+
       case WM_DRAWITEM:
          _OOHG_Send( GetControlObjectByHandle( ( ( LPDRAWITEMSTRUCT ) lParam )->hwndItem ), s_Events_DrawItem );
          hb_vmPushLong( lParam );
@@ -508,15 +668,7 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )
             // If there's a context menu, show it
             if( pContext )
             {
-//               int iRow, iCol;
-//               // _OOHG_MouseRow := HIWORD( lParam ) - ::RowMargin
-//               _OOHG_Send( pSelf, s_RowMargin );
-//               hb_vmSend( 0 );
-//               iRow = HIWORD( lParam ) - hb_parni( -1 );
-//               // _OOHG_MouseCol := LOWORD( lParam ) - ::ColMargin
-//               _OOHG_Send( pSelf, s_ColMargin );
-//               hb_vmSend( 0 );
-//               iCol = LOWORD( lParam ) - hb_parni( -1 );
+               _OOHG_SetMouseCoords( pSelf, LOWORD( lParam ), HIWORD( lParam ) );
 
                // HMENU
                _OOHG_Send( pContext, s_hWnd );
@@ -998,6 +1150,7 @@ CLASS TForm FROM TWindow
    DATA lInternal      INIT .F.
    DATA lForm          INIT .T.
    DATA lReleasing     INIT .F.
+   DATA cWndClass      INIT ""
 
    DATA OnRelease      INIT nil
    DATA OnInit         INIT nil
@@ -1187,9 +1340,11 @@ Local Formhandle, aClientRect
    If nWindowType == 2
       Formhandle := InitWindowMDIClient( Caption, x, y, ::nWidth, ::nHeight, Parent, "MDICLIENT", nStyle, nStyleEx, lRtl )
    Else
-      UnRegisterWindow( FormName )
-      ::BrushHandle := RegisterWindow( icon, FormName, aRGB, nWindowType )
-      Formhandle := InitWindow( Caption, x, y, ::nWidth, ::nHeight, Parent, FormName, nStyle, nStyleEx, lRtl )
+      // ::cWndClass := IF( ::lInternal, _OOHG_GetNullName(), FormName )
+      ::cWndClass := FormName
+      UnRegisterWindow( ::cWndClass )
+      ::BrushHandle := RegisterWindow( icon, ::cWndClass, aRGB, nWindowType )
+      Formhandle := InitWindow( Caption, x, y, ::nWidth, ::nHeight, Parent, ::cWndClass, nStyle, nStyleEx, lRtl )
    EndIf
 
    if Valtype( cursor ) $ "CM"
@@ -1702,9 +1857,10 @@ Local mVar, i
       ENDIF
 
       ::Active := .F.
-   EndIf
+      ::Super:Release()
+*      UnRegisterWindow( ::cWndClass )
 
-   ::Super:Release()
+   EndIf
 
 Return nil
 
@@ -1914,37 +2070,6 @@ Local oCtrl
          return 1
 
         ***********************************************************************
-	case nMsg == WM_LBUTTONDOWN
-        ***********************************************************************
-      _OOHG_MouseRow := HIWORD( lParam ) - ::RowMargin
-      _OOHG_MouseCol := LOWORD( lParam ) - ::ColMargin
-      ::DoEvent( ::OnClick, '' )
-
-        ***********************************************************************
-	case nMsg == WM_LBUTTONUP
-        ***********************************************************************
-      // Dummy...
-      // _OOHG_MouseState := 0
-
-        ***********************************************************************
-	case nMsg == WM_MOUSEMOVE
-        ***********************************************************************
-      _OOHG_MouseRow := HIWORD(lParam) - ::RowMargin
-      _OOHG_MouseCol := LOWORD(lParam) - ::ColMargin
-
-		if wParam == MK_LBUTTON
-         ::DoEvent( ::OnMouseDrag, '' )
-		Else
-         ::DoEvent( ::OnMouseMove, '' )
-		Endif
-
-        ***********************************************************************
-	case nMsg == WM_TIMER
-        ***********************************************************************
-      oCtrl := GetControlObjectById( wParam )
-      oCtrl:DoEvent( oCtrl:OnClick )
-
-        ***********************************************************************
 	case nMsg == WM_SIZE
         ***********************************************************************
       ValidateScrolls( Self, .T. )
@@ -1961,40 +2086,6 @@ Local oCtrl
 
       // AEVAL( ::aControls, { |o| o:Events_Size() } )
       AEVAL( ::aControls, { |o| If( o:Container == nil, o:Events_Size(), ) } )
-
-        ***********************************************************************
-	case nMsg == WM_COMMAND
-        ***********************************************************************
-
-      IF wParam == 1
-         // Enter key
-         Return GetControlObjectByHandle( GetFocus() ):Events_Enter()
-      ENDIF
-
-      IF ( oCtrl := GetControlObjectById( LoWord( wParam ) ) ):Id != 0
-
-         // By Id
-
-         // From MENU
-
-         If ! oCtrl:NestedClick
-            oCtrl:NestedClick := ! _OOHG_NestedSameEvent()
-            oCtrl:DoEvent( oCtrl:OnClick )
-            oCtrl:NestedClick := .F.
-         EndIf
-
-      ElseIf ValidHandler( ( oCtrl := GetControlObjectByHandle( lParam ) ):hWnd )
-
-         // By handle
-
-         Return oCtrl:Events_Command( wParam )
-
-      ElseIf HIWORD( wParam ) == 1
-
-         // From accelerator
-*         Return GetControlObjectByHandle( lParam ):Events_Accelerator( wParam )
-
-      ENDIF
 
         ***********************************************************************
 	case nMsg == WM_CLOSE
@@ -3306,6 +3397,16 @@ HB_FUNC( VALIDHANDLER )
    HWND hWnd;
    hWnd = HWNDparam( 1 );
    hb_retl( ValidHandler( hWnd ) );
+}
+
+HB_FUNC( _OOHG_GETMOUSECOL )
+{
+   hb_retni( _OOHG_MouseCol );
+}
+
+HB_FUNC( _OOHG_GETMOUSEROW )
+{
+   hb_retni( _OOHG_MouseRow );
 }
 
 #pragma ENDDUMP

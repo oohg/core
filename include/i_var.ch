@@ -1,5 +1,5 @@
 /*
- * $Id: i_var.ch,v 1.13 2006-04-21 05:34:26 guerra000 Exp $
+ * $Id: i_var.ch,v 1.14 2006-08-05 02:17:49 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -97,8 +97,8 @@
 MEMVAR _OOHG_AllVars
 
 #xtranslate  _OOHG_Main                => _OOHG_AllVars \[   1 \]
-#xtranslate  _OOHG_MouseRow            => _OOHG_AllVars \[   5 \]
-#xtranslate  _OOHG_MouseCol            => _OOHG_AllVars \[   6 \]
+#xtranslate  _OOHG_MouseRow            => _OOHG_GetMouseRow()
+#xtranslate  _OOHG_MouseCol            => _OOHG_GetMouseCol()
 #xtranslate  _OOHG_ActiveFrame         => _OOHG_AllVars \[   8 \]
 
 #xtranslate  _OOHG_TempWindowName      => _OOHG_AllVars \[   9 \]

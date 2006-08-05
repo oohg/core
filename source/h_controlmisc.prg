@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.60 2006-07-24 00:47:35 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.61 2006-08-05 02:17:49 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1343,7 +1343,6 @@ Return GetWindowText( GetControlObject( ControlName, ParentForm ):hWnd )
 CLASS TControl FROM TWindow
 *------------------------------------------------------------------------------*
    DATA cToolTip    INIT ""
-   DATA FontHandle  INIT 0
    DATA AuxHandle   INIT 0
    DATA Transparent INIT .F.
    DATA HelpId      INIT 0
@@ -1797,26 +1796,6 @@ HB_FUNC_STATIC( TCONTROL_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam
          {
             SetCursor( ( HCURSOR ) lData );
          }
-
-         // _OOHG_MouseRow := HIWORD( lParam ) - ::RowMargin
-         // _OOHG_MouseCol := LOWORD( lParam ) - ::ColMargin
-         if( wParam == MK_LBUTTON )
-         {
-            _OOHG_Send( pSelf, s_OnMouseDrag );
-         }
-         else
-         {
-            _OOHG_Send( pSelf, s_OnMouseMove );
-         }
-         hb_vmSend( 0 );
-         if( hb_param( -1, HB_IT_BLOCK ) )
-         {
-            _OOHG_Send( pSelf, s_DoEvent );
-            hb_vmPush( hb_param( -1, HB_IT_BLOCK ) );
-            hb_vmPushString( "", 0 );
-            hb_vmSend( 2 );
-         }
-
          hb_ret();
          break;
 
