@@ -1,5 +1,5 @@
 /*
- * $Id: h_progressmeter.prg,v 1.7 2006-07-19 03:46:04 guerra000 Exp $
+ * $Id: h_progressmeter.prg,v 1.8 2006-08-05 02:14:22 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -51,13 +51,12 @@
 
 #include "oohg.ch"
 #include "hbclass.ch"
+#include "i_windefs.ch"
 
 CLASS TProgressMeter FROM TLabel
    DATA Type        INIT "PROGRESSMETER" READONLY
    DATA nRangeMin   INIT 0
    DATA nRangeMax   INIT 100
-   DATA oLabel      INIT nil    // Left side label
-   DATA nLeftWidth  INIT 0
    DATA nPercent    INIT 0
    DATA nValue      INIT 0
 
@@ -67,13 +66,9 @@ CLASS TProgressMeter FROM TLabel
 
    METHOD RangeMin            SETGET
    METHOD RangeMax            SETGET
-   METHOD FontColor           SETGET
-   METHOD BackColor           SETGET
-   METHOD Visible             SETGET
-   METHOD SizePos
-   METHOD SetFont
-* fontname, fontsize, bold, italic, underline, strikeout
-* tooltip, ProcedureName, HelpId, invisible, etc.
+
+   METHOD Events
+   METHOD SetPercent
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -81,35 +76,43 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, lo, hi, value, tooltip, ;
                fontname, fontsize, bold, italic, underline, strikeout, ;
                FontColor, BackColor, ProcedureName, HelpId, invisible, lRtl ) CLASS TProgressMeter
 *-----------------------------------------------------------------------------*
+Local ControlHandle, nStyle, nStyleEx
 
    IF FontColor != NIL
       ::FontColor := FontColor
    ENDIF
    IF ::FontColor == NIL
-      ::FontColor := { 0, 0, 255 }
+      ::FontColor := { 255, 255, 255 }
    ENDIF
 
    IF BackColor != NIL
       ::BackColor := BackColor
    ENDIF
    IF ::BackColor == NIL
-      ::BackColor := { 255, 255, 255 }
+      ::BackColor := { 0, 0, 255 }
    ENDIF
 
-   ::Super:Define( ControlName, ParentForm, x, y, "", w, h, fontname, ;
-               fontsize, bold, .F., .F., .F., .F., ;
-               .F., ::BackColor, ::FontColor, ProcedureName, tooltip, ;
-               HelpId, invisible, italic, underline, strikeout, .F., ;
-               .F., .F., lRtl, .T. )
+   ASSIGN ::nCol        VALUE x TYPE "N"
+   ASSIGN ::nRow        VALUE y TYPE "N"
+   ASSIGN ::nWidth      VALUE w TYPE "N"
+   ASSIGN ::nHeight     VALUE h TYPE "N"
+   ASSIGN invisible     VALUE invisible    TYPE "L" DEFAULT .F.
+
+   ::SetForm( ControlName, ParentForm, FontName, FontSize, ::FontColor, ::BackColor, , lRtl )
+
+   nStyle := if( ValType( invisible ) != "L" .OR. ! invisible, WS_VISIBLE,  0 )
+
+   nStyleEx := 0 // if( ValType( CLIENTEDGE ) == "L"   .AND. CLIENTEDGE,   WS_EX_CLIENTEDGE,  0 ) + ;
+
+   Controlhandle := InitLabel( ::ContainerhWnd, "", 0, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight, '', 0, Nil , nStyle, nStyleEx, ::lRtl )
+
+   ::Register( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
+   ::SetFont( , , bold, italic, underline, strikeout )
+
+   ::OnClick := ProcedureName
 
    ::RangeMin := lo
    ::RangeMax := hi
-
-   ::oLabel := TLabel():Define( "0", ::Parent:Name, ::Col, ::Row, "", ::Width, ::Height, ::cFontName, ;
-               ::nFontSize, ::bold, .F., .F., .F., .F., ;
-               .F., ::FontColor, ::BackColor, ::OnClick, ::ToolTip, ;
-               ::HelpId, invisible, ::italic, ::underline, ::strikeout, .F., ;
-               .F., .F., ::lRtl, .T., .F. )
 
    ::Value := If( Valtype( value ) == "N", value, ::RangeMin )
    ::ReCalc( .T. )
@@ -128,30 +131,12 @@ RETURN ::nValue
 *------------------------------------------------------------------------------*
 METHOD ReCalc( lForce ) CLASS TProgressMeter
 *------------------------------------------------------------------------------*
-Local nPercent, nIntPercent, cText, nWidth
-   IF ValType( ::oLabel ) != "O"
-      Return nil
-   ENDIF
+Local nPercent
    IF ValType( lForce ) != "L"
       lForce := .F.
    ENDIF
-   // Percent text
    nPercent := ( ::nValue - ::RangeMin ) / ( ::RangeMax - ::RangeMin )
-   nIntPercent := INT( nPercent * 100 )
-   IF lForce .OR. ::nPercent != nIntPercent
-      ::nPercent := nIntPercent
-      cText := LTRIM( STR( nIntPercent ) ) + "%"
-      nWidth := Int( Max( ( ::nWidth - GetTextWidth( 0, cText, ::FontHandle ) ) / 2, 0 ) / GetTextWidth( 0, " ", ::FontHandle ) )
-      cText := Space( nWidth ) + cText
-      ::Caption := cText
-      ::oLabel:Caption := cText
-   ENDIF
-   // Displayed label
-   nWidth := Int( ::Width * Min( Max( nPercent, 0 ), 1 ) )
-   IF lForce .OR. nWidth != ::nLeftWidth
-      ::nLeftWidth := nWidth
-      ::oLabel:Width := nWidth
-   ENDIF
+   ::SetPercent( nPercent * 100, lForce )
 RETURN nil
 
 *------------------------------------------------------------------------------*
@@ -172,55 +157,119 @@ METHOD RangeMax( uValue ) CLASS TProgressMeter
    ENDIF
 RETURN ::nRangeMax
 
-*------------------------------------------------------------------------------*
-METHOD FontColor( uValue ) CLASS TProgressMeter
-*------------------------------------------------------------------------------*
-   IF PCOUNT() > 0
-      ::Super:FontColor := uValue
-      IF ValType( ::oLabel ) == "O"
-         ::oLabel:BackColor := ::Super:FontColor
-      Endif
-   ENDIF
-RETURN ::Super:FontColor
+#pragma BEGINDUMP
 
-*------------------------------------------------------------------------------*
-METHOD BackColor( uValue ) CLASS TProgressMeter
-*------------------------------------------------------------------------------*
-   IF PCOUNT() > 0
-      ::Super:BackColor := uValue
-      IF ValType( ::oLabel ) == "O"
-         ::oLabel:FontColor := ::Super:BackColor
-      Endif
-   ENDIF
-RETURN ::Super:BackColor
+#define s_Super s_TLabel
 
-*------------------------------------------------------------------------------*
-METHOD Visible( lVisible ) CLASS TProgressMeter
-*------------------------------------------------------------------------------*
-   IF VALTYPE( lVisible ) == "L"
-      ::Super:Visible := lVisible
-      IF ValType( ::oLabel ) == "O"
-         ::oLabel:Visible := lVisible
-      Endif
-   ENDIF
-RETURN ::lVisible
+#include "hbapi.h"
+#include "hbapiitm.h"
+#include "hbvm.h"
+#include "hbstack.h"
+#include <windows.h>
+#include <commctrl.h>
+#include "../include/oohg.h"
 
-*-----------------------------------------------------------------------------*
-METHOD SizePos( Row, Col, Width, Height ) CLASS TProgressMeter
-*-----------------------------------------------------------------------------*
-Local uRet := ::Super:SizePos( Row, Col, Width, Height )
-   IF ValType( ::oLabel ) == "O"
-      ::oLabel:SizePos( ::Row, ::Col, ::Width, ::Height )
-   Endif
-   ::ReCalc( .T. )
-Return uRet
+// lAux[ 0 ] = Percent
 
-*-----------------------------------------------------------------------------*
-METHOD SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout ) CLASS TProgressMeter
-*-----------------------------------------------------------------------------*
-Local uRet := ::Super:SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout )
-   IF ValType( ::oLabel ) == "O"
-      ::oLabel:SetFont( ::cFontName, ::nFontSize, ::Bold, ::Italic, ::Underline, ::Strikeout )
-   EndIf
-   ::ReCalc( .T. )
-Return uRet
+HB_FUNC_STATIC( TPROGRESSMETER_EVENTS )
+{
+   HWND hWnd      = ( HWND )   hb_parnl( 1 );
+   UINT message   = ( UINT )   hb_parni( 2 );
+   WPARAM wParam  = ( WPARAM ) hb_parni( 3 );
+   LPARAM lParam  = ( LPARAM ) hb_parnl( 4 );
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+
+   switch( message )
+   {
+      case WM_PAINT:
+         {
+            PAINTSTRUCT ps;
+            HDC         hdc;
+            HFONT       hOldFont;
+            RECT        updateRect, rect2;
+            COLORREF    FontColor, BackColor, xFont, xBack;
+            int         x, iWidth1, iWidth2;
+            char        cPercent[ 100 ];
+
+            if ( ! GetUpdateRect( hWnd, &updateRect, FALSE ) )
+            {
+               hb_retni( 0 );
+            }
+            else
+            {
+               GetClientRect( hWnd, &rect2 );
+               iWidth2 = rect2.right - rect2.left;
+               x = iWidth2 / 2;
+               iWidth1 = iWidth2 * oSelf->lAux[ 0 ] / 10000;
+               sprintf( cPercent, "%i%%", oSelf->lAux[ 0 ] / 100 );
+               hdc = BeginPaint( hWnd, &ps );
+               xFont = ( ( oSelf->lFontColor == -1 ) ? GetSysColor( COLOR_WINDOWTEXT ) : oSelf->lFontColor );
+               xBack = ( ( oSelf->lBackColor == -1 ) ? GetSysColor( COLOR_WINDOW     ) : oSelf->lBackColor );
+               FontColor = SetTextColor( hdc, xFont );
+               BackColor = SetBkColor(   hdc, xBack );
+               SetTextAlign( hdc, TA_CENTER );
+               hOldFont = ( HFONT ) SelectObject( hdc, oSelf->hFontHandle );
+               rect2.right = iWidth1;
+               ExtTextOut( hdc, x, 0, ETO_CLIPPED | ETO_OPAQUE, &rect2, cPercent, strlen( cPercent ), NULL );
+               rect2.left = iWidth1;
+               rect2.right = iWidth2;
+               SetTextColor( hdc, xBack );
+               SetBkColor(   hdc, xFont );
+               ExtTextOut( hdc, x, 0, ETO_CLIPPED | ETO_OPAQUE, &rect2, cPercent, strlen( cPercent ), NULL );
+               SelectObject( hdc, hOldFont );
+               SetTextColor( hdc, FontColor );
+               SetBkColor( hdc, BackColor );
+               EndPaint( hWnd, &ps );
+               hb_retni( 1 );
+            }
+         }
+         break;
+
+      default:
+         _OOHG_Send( pSelf, s_Super );
+         hb_vmSend( 0 );
+         _OOHG_Send( hb_param( -1, HB_IT_OBJECT ), s_Events );
+         hb_vmPushLong( ( LONG ) hWnd );
+         hb_vmPushLong( message );
+         hb_vmPushLong( wParam );
+         hb_vmPushLong( lParam );
+         hb_vmSend( 4 );
+         break;
+   }
+}
+
+HB_FUNC_STATIC( TPROGRESSMETER_SETPERCENT )
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   double dNum;
+   LONG lNum;
+
+   dNum = oSelf->lAux[ 0 ];
+   hb_retnd( dNum / 100 );
+
+   if( ISNUM( 1 ) )
+   {
+      dNum = hb_parnd( 1 ) * 100;
+      if( dNum > 10000 )
+      {
+         lNum = 10000;
+      }
+      else if( dNum < 0 )
+      {
+         lNum = 0;
+      }
+      else
+      {
+         lNum = dNum;
+      }
+      if( lNum != oSelf->lAux[ 0 ] || ( ISLOG( 2 ) && hb_parl( 2 ) ) )
+      {
+         oSelf->lAux[ 0 ] = lNum;
+         RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+      }
+   }
+}
+
+#pragma ENDDUMP
