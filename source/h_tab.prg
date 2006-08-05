@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.23 2006-07-28 03:11:46 guerra000 Exp $
+ * $Id: h_tab.prg,v 1.24 2006-08-05 02:13:30 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -166,6 +166,8 @@ Local ControlHandle
    ::Register( ControlHandle, ControlName, , , ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
 
+   _OOHG_AddFrame( Self )
+
    // Add page by page
    z := 1
    DO WHILE z <= LEN( aCaptions ) .AND. z <= LEN( aPageMap ) .AND. z <= LEN( Images )
@@ -200,8 +202,6 @@ Local ControlHandle
    ELSE
       ::Value := 1
    ENDIF
-
-   _OOHG_AddFrame( Self )
 
 Return Self
 
@@ -373,6 +373,7 @@ local oCtrl, oPage
    IF _OOHG_LastFrame() == "TAB"
       oCtrl := ATAIL( _OOHG_ActiveFrame )
       oPage := oCtrl:AddPage( Position, Caption, Image,,, Name, oSubClass )
+      _OOHG_AddFrame( oPage )
    Else
       // ERROR: No TAB started
       oPage := NIL
@@ -494,7 +495,6 @@ METHOD Define( ControlName, ParentForm, Position ) CLASS TTabPage
 *-----------------------------------------------------------------------------*
    Empty( Position )
    ::SetForm( ControlName, ParentForm )
-   _OOHG_AddFrame( Self )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -576,7 +576,6 @@ Local aArea
    ::Super:Define( ControlName,, aArea[ 1 ], aArea[ 2 ], aArea[ 3 ], aArea[ 4 ], ParentForm )
    END WINDOW
    ::ContainerhWndValue := ::hWnd
-   _OOHG_AddFrame( Self )
 
    ::RowMargin := - aArea[ 2 ]
    ::ColMargin := - aArea[ 1 ]
@@ -589,17 +588,6 @@ Local aArea
    aArea := _OOHG_TabPage_GetArea( ::Container, ::Position )
    ::SizePos( aArea[ 2 ], aArea[ 1 ], aArea[ 3 ], aArea[ 4 ] )
 Return NIL
-
-/*
-*-----------------------------------------------------------------------------*
-METHOD ContainerVisible() CLASS TTabPageInternal
-*-----------------------------------------------------------------------------*
-Local lRet := .F.
-   IF IsWindowVisible( ::hWnd ) // ::Super:ContainerVisible
-      lRet := ( TabCtrl_GetCurSel( ::Container:hWnd ) == ::Position )
-   ENDIF
-RETURN lRet
-*/
 
 STATIC FUNCTION _OOHG_TabPage_GetArea( oTab, nPosition )
 LOCAL aRect
