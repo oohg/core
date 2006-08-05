@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.18 2006-07-19 03:46:04 guerra000 Exp $
+ * $Id: h_combo.prg,v 1.19 2006-08-05 02:15:01 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -503,7 +503,7 @@ HB_FUNC_STATIC( TCOMBO_EVENTS_DRAWITEM )   // METHOD Events_DrawItem( lParam )
 HB_FUNC_STATIC( TCOMBO_EVENTS_MEASUREITEM )   // METHOD Events_MeasureItem( lParam )
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
-//   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
    LPMEASUREITEMSTRUCT lpmis = ( LPMEASUREITEMSTRUCT ) hb_parnl( 1 );
 
    HWND hWnd = GetActiveWindow();
@@ -518,10 +518,7 @@ HB_FUNC_STATIC( TCOMBO_EVENTS_MEASUREITEM )   // METHOD Events_MeasureItem( lPar
    iSize = hb_parni( -1 );
    if( ! iSize )
    {
-      // TODO: Convert ::FONTHANDLE to ( HFONT ) oSelf->hFontHandle
-      _OOHG_Send( pSelf, s_FontHandle );
-      hb_vmSend( 0 );
-      hFont = ( HFONT ) hb_parnl( -1 );
+      hFont = oSelf->hFontHandle;
 
       hOldFont = ( HFONT ) SelectObject( hDC, hFont );
       GetTextExtentPoint32( hDC, "_", 1, &sz );
