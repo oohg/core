@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.19 2006-08-05 02:15:01 guerra000 Exp $
+ * $Id: h_combo.prg,v 1.20 2006-08-06 18:17:29 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -325,7 +325,7 @@ RETURN uValue
 *-----------------------------------------------------------------------------*
 METHOD Visible( lVisible ) CLASS TCombo
 *-----------------------------------------------------------------------------*
-   IF VALTYPE( lVisible ) == "N"
+   IF VALTYPE( lVisible ) == "L"
       ::Super:Visible := lVisible
       IF ! lVisible
          SendMessage( ::hWnd, 335, 0, 0 )
