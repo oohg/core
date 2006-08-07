@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.61 2006-08-05 02:17:49 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.62 2006-08-07 01:55:39 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1796,6 +1796,19 @@ HB_FUNC_STATIC( TCONTROL_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam
          {
             SetCursor( ( HCURSOR ) lData );
          }
+         if( wParam == MK_LBUTTON )
+         {
+            _OOHG_Send( pSelf, s_OnMouseDrag );
+         }
+         else
+         {
+            _OOHG_Send( pSelf, s_OnMouseMove );
+         }
+         hb_vmSend( 0 );
+         _OOHG_Send( pSelf, s_DoEvent );
+         hb_vmPush( hb_param( -1, HB_IT_ANY ) );
+         hb_vmPushString( "", 0 );
+         hb_vmSend( 2 );
          hb_ret();
          break;
 

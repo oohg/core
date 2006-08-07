@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.100 2006-08-05 22:14:20 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.101 2006-08-07 01:55:39 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -573,41 +573,6 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )
             hb_itemRelease( pOnClick );
             hb_itemRelease( pControl );
          }
-         hb_ret();
-         break;
-
-      case WM_LBUTTONDOWN:
-         _OOHG_SetMouseCoords( pSelf, LOWORD( lParam ), HIWORD( lParam ) );
-         hb_ret();
-         break;
-
-      case WM_LBUTTONUP:
-         _OOHG_SetMouseCoords( pSelf, LOWORD( lParam ), HIWORD( lParam ) );
-         _OOHG_Send( pSelf, s_OnClick );
-         hb_vmSend( 0 );
-         _OOHG_Send( pSelf, s_DoEvent );
-         hb_vmPush( hb_param( -1, HB_IT_ANY ) );
-         hb_vmPushString( "", 0 );
-         hb_vmSend( 2 );
-         hb_retni( 1 );
-         hb_ret();
-         break;
-
-      case WM_MOUSEMOVE:
-         _OOHG_SetMouseCoords( pSelf, LOWORD( lParam ), HIWORD( lParam ) );
-         if( wParam == MK_LBUTTON )
-         {
-            _OOHG_Send( pSelf, s_OnMouseDrag );
-         }
-         else
-         {
-            _OOHG_Send( pSelf, s_OnMouseMove );
-         }
-         hb_vmSend( 0 );
-         _OOHG_Send( pSelf, s_DoEvent );
-         hb_vmPush( hb_param( -1, HB_IT_ANY ) );
-         hb_vmPushString( "", 0 );
-         hb_vmSend( 2 );
          hb_ret();
          break;
 
@@ -1901,8 +1866,39 @@ HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
 
    switch( message )
    {
-    //  case WM_CONTEXTMENU:
-         // Dummy... only for not to delete SWITCH structure...
+      case WM_LBUTTONUP:
+         _OOHG_SetMouseCoords( pSelf, LOWORD( lParam ), HIWORD( lParam ) );
+         _OOHG_Send( pSelf, s_OnClick );
+         hb_vmSend( 0 );
+         _OOHG_Send( pSelf, s_DoEvent );
+         hb_vmPush( hb_param( -1, HB_IT_ANY ) );
+         hb_vmPushString( "", 0 );
+         hb_vmSend( 2 );
+         hb_ret();
+         break;
+
+      case WM_LBUTTONDOWN:
+         _OOHG_SetMouseCoords( pSelf, LOWORD( lParam ), HIWORD( lParam ) );
+         hb_ret();
+         break;
+
+      case WM_MOUSEMOVE:
+         _OOHG_SetMouseCoords( pSelf, LOWORD( lParam ), HIWORD( lParam ) );
+         if( wParam == MK_LBUTTON )
+         {
+            _OOHG_Send( pSelf, s_OnMouseDrag );
+         }
+         else
+         {
+            _OOHG_Send( pSelf, s_OnMouseMove );
+         }
+         hb_vmSend( 0 );
+         _OOHG_Send( pSelf, s_DoEvent );
+         hb_vmPush( hb_param( -1, HB_IT_ANY ) );
+         hb_vmPushString( "", 0 );
+         hb_vmSend( 2 );
+         hb_ret();
+         break;
 
       default:
          if( ! s_Events2 )
