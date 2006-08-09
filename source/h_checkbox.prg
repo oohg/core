@@ -1,5 +1,5 @@
 /*
- * $Id: h_checkbox.prg,v 1.8 2006-08-05 22:14:20 guerra000 Exp $
+ * $Id: h_checkbox.prg,v 1.9 2006-08-09 15:25:04 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -123,6 +123,7 @@ Local ControlHandle, nStyle := 0, nStyleEx := 0
    ASSIGN ::nWidth      VALUE w TYPE "N"
    ASSIGN ::nHeight     VALUE h TYPE "N"
    ASSIGN invisible     VALUE invisible    TYPE "L" DEFAULT .F.
+   ASSIGN ::Transparent VALUE transparent  TYPE "L"
    DEFAULT value           TO FALSE
    DEFAULT notabstop       TO FALSE
    DEFAULT autosize        TO FALSE
@@ -149,7 +150,6 @@ Local ControlHandle, nStyle := 0, nStyleEx := 0
    ::Register( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
 
-   ::Transparent := transparent
    ::OnLostFocus := LostFocus
    ::OnGotFocus  := GotFocus
    ::Autosize    := autosize
