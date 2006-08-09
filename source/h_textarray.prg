@@ -1,5 +1,5 @@
 /*
- * $Id: h_textarray.prg,v 1.2 2006-08-05 22:14:20 guerra000 Exp $
+ * $Id: h_textarray.prg,v 1.3 2006-08-09 02:02:16 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -336,7 +336,7 @@ static void TTextArray_Scroll( POCTRL oSelf, int iCol1, int iRow1, int iCol2, in
       }
       else if( iVert < 0 )
       {
-         iDelta = iRow2 - iRow1 + 1 - iVert;
+         iDelta = iRow2 - iRow1 + 1 + iVert;
          iRow = iRow2;
          while( iDelta )
          {
@@ -480,7 +480,7 @@ static void TTextArray_ReSize( POCTRL oSelf, int iRow, int iCol )
    RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
 }
 
-static void TTextArray_Out( POCTRL oSelf, BYTE cByte )
+static void TTextArray_Out( POCTRL oSelf, BYTE cByte, RECT *rect2 )
 {
    PCHARCELL pCell;
    RECT rect;
@@ -507,7 +507,17 @@ static void TTextArray_Out( POCTRL oSelf, BYTE cByte )
       rect.left   = oSelf->lAux[ 2 ] * oSelf->lAux[ 4 ];
       rect.bottom = rect.top  + oSelf->lAux[ 5 ];
       rect.right  = rect.left + oSelf->lAux[ 4 ];
-      RedrawWindow( oSelf->hWnd, &rect, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+      if( rect2 )
+      {
+         if( rect.top    < rect2->top )    rect2->top    = rect.top;
+         if( rect.left   < rect2->left )   rect2->left   = rect.left;
+         if( rect.bottom > rect2->bottom ) rect2->bottom = rect.bottom;
+         if( rect.right  > rect2->right )  rect2->right  = rect.right;
+      }
+      else
+      {
+         RedrawWindow( oSelf->hWnd, &rect, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+      }
 
       oSelf->lAux[ 2 ]++;
    }
@@ -592,6 +602,15 @@ HB_FUNC_STATIC( TTEXTARRAY_WRITE )
    ULONG lBuffer;
    LONG lFontColor, lBackColor, lAuxColor;
    int iRow, iCol;
+   RECT rect;
+
+   GetClientRect( oSelf->hWnd, &rect );
+   iRow = rect.top;
+   rect.top = rect.bottom;
+   rect.bottom = iRow;
+   iRow = rect.left;
+   rect.left = rect.right;
+   rect.right = iRow;
 
    iCol = ISNUM( 3 ) ? hb_parni( 3 ) : oSelf->lAux[ 2 ];
    iRow = ISNUM( 2 ) ? hb_parni( 2 ) : oSelf->lAux[ 3 ];
@@ -633,7 +652,7 @@ HB_FUNC_STATIC( TTEXTARRAY_WRITE )
                break;
 
             default:
-               TTextArray_Out( oSelf, cByte );
+               TTextArray_Out( oSelf, cByte, &rect );
                break;
          }
          lBuffer--;
@@ -642,6 +661,11 @@ HB_FUNC_STATIC( TTEXTARRAY_WRITE )
 
    oSelf->lFontColor = lFontColor;
    oSelf->lBackColor = lBackColor;
+
+   if( rect.top < rect.bottom && rect.left < rect.right )
+   {
+      RedrawWindow( oSelf->hWnd, &rect, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+   }
 }
 
 HB_FUNC_STATIC( TTEXTARRAY_WRITERAW )   // ( cText, nCol, nRow, FontColor, BackColor )
@@ -652,6 +676,15 @@ HB_FUNC_STATIC( TTEXTARRAY_WRITERAW )   // ( cText, nCol, nRow, FontColor, BackC
    ULONG lBuffer;
    LONG lFontColor, lBackColor, lAuxColor;
    int iRow, iCol;
+   RECT rect;
+
+   GetClientRect( oSelf->hWnd, &rect );
+   iRow = rect.top;
+   rect.top = rect.bottom;
+   rect.bottom = iRow;
+   iRow = rect.left;
+   rect.left = rect.right;
+   rect.right = iRow;
 
    iCol = ISNUM( 3 ) ? hb_parni( 3 ) : oSelf->lAux[ 2 ];
    iRow = ISNUM( 2 ) ? hb_parni( 2 ) : oSelf->lAux[ 3 ];
@@ -676,13 +709,18 @@ HB_FUNC_STATIC( TTEXTARRAY_WRITERAW )   // ( cText, nCol, nRow, FontColor, BackC
       lBuffer = hb_parclen( 1 );
       while( lBuffer )
       {
-         TTextArray_Out( oSelf, *pBuffer++ );
+         TTextArray_Out( oSelf, *pBuffer++, &rect );
          lBuffer--;
       }
    }
 
    oSelf->lFontColor = lFontColor;
    oSelf->lBackColor = lBackColor;
+
+   if( rect.top < rect.bottom && rect.left < rect.right )
+   {
+      RedrawWindow( oSelf->hWnd, &rect, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+   }
 }
 
 HB_FUNC_STATIC( TTEXTARRAY_SCROLL )
@@ -732,6 +770,7 @@ HB_FUNC_STATIC( TTEXTARRAY_CLEAR )
          {
             TTextArray_Empty( &( ( ( PCHARCELL )( oSelf->AuxBuffer ) )[ ( iRow1 * oSelf->lAux[ 0 ] ) + iCol ] ), oSelf );
          }
+         iRow1++;
       }
    }
 }

@@ -1,11 +1,25 @@
 /*
- * $Id: ChangeLog,v 1.199 2006-08-07 01:55:38 guerra000 Exp $
+ * $Id: ChangeLog,v 1.200 2006-08-09 02:02:14 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-08-08 21:02 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_windows.prg
+    * An activated window is registered as _OOHG_UserWindow if it's
+      shown.
+    * Added missing "_OOHG_ThisForm := Self" to TForm:DoEvent() method.
+  * source/h_textarray.prg
+    * Fixed ::Scroll( ,,,, -1 ) method.
+    * Fixed ::Clear() method.
+  * source/h_browse.prg
+  * source/h_xbrowse.prg
+    * Re-assign order of control registration (first SCROLLBAR and
+      SCROLLBUTTON are created, then SCROLLBUTTON is stored in
+      ::VScroll).
 
 2006-08-06 20:56 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_controlmisc.prg

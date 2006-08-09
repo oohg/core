@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.101 2006-08-07 01:55:39 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.102 2006-08-09 02:02:16 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1478,6 +1478,7 @@ METHOD Activate( lNoStop, oWndLoop ) CLASS TForm
 */
 
    If ::lVisible
+      _OOHG_UserWindow := Self
       ::Show()
    EndIf
 
@@ -1554,15 +1555,9 @@ METHOD ProcessInitProcedure() CLASS TForm
 *-----------------------------------------------------------------------------*
    if valtype( ::OnInit )=='B'
       ProcessMessages()
-      _PushEventInfo()
-      _OOHG_ThisEventType := 'WINDOW_INIT'
-      _OOHG_ThisForm := Self
-      _OOHG_ThisType := 'W'
-      _OOHG_ThisControl := nil
       AADD( _OOHG_MessageLoops, ::ActivateCount )
-      Eval( ::OnInit )
+      ::DoEvent( ::OnInit, "WINDOW_INIT" )
       _OOHG_DeleteArrayItem( _OOHG_MessageLoops, Len( _OOHG_MessageLoops ) )
-      _PopEventInfo()
    EndIf
    AEVAL( ::SplitChildList, { |o| o:ProcessInitProcedure() } )
 Return nil
@@ -1752,11 +1747,12 @@ Return lRet
 METHOD DoEvent( bBlock, cEventType ) CLASS TForm
 *-----------------------------------------------------------------------------*
 Local lRetVal := .F.
-   if valtype( bBlock ) == "B"
+   If valtype( bBlock ) == "B"
 		_PushEventInfo()
+      _OOHG_ThisForm      := Self
       _OOHG_ThisEventType := cEventType
-      _OOHG_ThisType := 'W'
-      _OOHG_ThisControl := NIL
+      _OOHG_ThisType      := "W"
+      _OOHG_ThisControl   := NIL
 		lRetVal := Eval( bBlock )
 		_PopEventInfo()
 	EndIf
@@ -3240,36 +3236,26 @@ Return Nil
 *------------------------------------------------------------------------------*
 Procedure _PushEventInfo
 *------------------------------------------------------------------------------*
-
-   aadd ( _OOHG_aEventInfo , { _OOHG_ThisForm, _OOHG_ThisEventType , _OOHG_ThisType , _OOHG_ThisControl } )
-
+   aAdd( _OOHG_aEventInfo, { _OOHG_ThisForm, _OOHG_ThisEventType, _OOHG_ThisType, _OOHG_ThisControl } )
 Return
 
 *------------------------------------------------------------------------------*
-Procedure _PopEventInfo
+Procedure _PopEventInfo()
 *------------------------------------------------------------------------------*
 Local l
-
    l := Len( _OOHG_aEventInfo )
-
-	if l > 0
-
-      _OOHG_ThisForm   := _OOHG_aEventInfo [l] [1]
-      _OOHG_ThisEventType   := _OOHG_aEventInfo [l] [2]
-      _OOHG_ThisType     := _OOHG_aEventInfo [l] [3]
-      _OOHG_ThisControl    := _OOHG_aEventInfo [l] [4]
-
-      asize( _OOHG_aEventInfo , l - 1 )
-
+   If l > 0
+      _OOHG_ThisForm      := _OOHG_aEventInfo[ l ][ 1 ]
+      _OOHG_ThisEventType := _OOHG_aEventInfo[ l ][ 2 ]
+      _OOHG_ThisType      := _OOHG_aEventInfo[ l ][ 3 ]
+      _OOHG_ThisControl   := _OOHG_aEventInfo[ l ][ 4 ]
+      aSize( _OOHG_aEventInfo, l - 1 )
 	Else
-
-      _OOHG_ThisForm := nil
-      _OOHG_ThisType := ''
+      _OOHG_ThisForm      := nil
+      _OOHG_ThisType      := ''
       _OOHG_ThisEventType := ''
-      _OOHG_ThisControl := nil
-
+      _OOHG_ThisControl   := nil
 	EndIf
-
 Return
 
 Function SetInteractiveClose( nValue )

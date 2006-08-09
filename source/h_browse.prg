@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.52 2006-07-17 02:59:54 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.53 2006-08-09 02:02:15 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -143,7 +143,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                dynamicforecolor, aPicture, lRtl, onappend, editcell, ;
                editcontrols, replacefields ) CLASS TBrowse
 *-----------------------------------------------------------------------------*
-Local nWidth2, nCol2
+Local nWidth2, nCol2, oScroll
 
    IF ! ValType( WorkArea ) $ "CM" .OR. Empty( WorkArea )
       WorkArea := ALIAS()
@@ -197,9 +197,11 @@ Local nWidth2, nCol2
 
    if ! novscroll
 
-      ::VScroll := TScrollBar()
-      ::VScroll:nWidth := GETVSCROLLBARWIDTH()
-      ::VScroll:SetRange( 1, 100 )
+      ::ScrollButton := TScrollButton():Define( , Self, nCol2, ::nHeight - GETHSCROLLBARHEIGHT(), GETVSCROLLBARWIDTH() , GETHSCROLLBARHEIGHT() )
+
+      oScroll := TScrollBar()
+      oScroll:nWidth := GETVSCROLLBARWIDTH()
+      oScroll:SetRange( 1, 100 )
 
       IF ::lRtl .AND. ! ::Parent:lRtl
          ::nCol := ::nCol + GETVSCROLLBARWIDTH()
@@ -207,20 +209,19 @@ Local nWidth2, nCol2
       Else
          nCol2 := nWidth2
       ENDIF
-      ::VScroll:nCol := nCol2
-
-      ::ScrollButton := TScrollButton():Define( , Self, nCol2, ::nHeight - GETHSCROLLBARHEIGHT(), GETVSCROLLBARWIDTH() , GETHSCROLLBARHEIGHT() )
+      oScroll:nCol := nCol2
 
       If IsWindowStyle( ::hWnd, WS_HSCROLL )
-         ::VScroll:nRow := 0
-         ::VScroll:nHeight := ::nHeight - GETHSCROLLBARHEIGHT()
+         oScroll:nRow := 0
+         oScroll:nHeight := ::nHeight - GETHSCROLLBARHEIGHT()
       Else
-         ::VScroll:nRow := 0
-         ::VScroll:nHeight := ::nHeight
+         oScroll:nRow := 0
+         oScroll:nHeight := ::nHeight
          ::ScrollButton:Visible := .F.
       EndIf
 
-      ::VScroll:Define( , Self )
+      oScroll:Define( , Self )
+      ::VScroll := oScroll
       ::VScroll:OnLineUp   := { || ::SetFocus():Up() }
       ::VScroll:OnLineDown := { || ::SetFocus():Down() }
       ::VScroll:OnPageUp   := { || ::SetFocus():PageUp() }
