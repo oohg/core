@@ -1,11 +1,23 @@
 /*
- * $Id: ChangeLog,v 1.201 2006-08-09 15:25:03 guerra000 Exp $
+ * $Id: ChangeLog,v 1.202 2006-08-13 19:18:19 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-08-13 14:18 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_textarray.prg
+    * Added support for scrollbars (array higher than window area).
+    * Cursor added.
+  * source/h_browse.prg
+    * Changed some direct-API calls to grid's methods.
+  * source/h_xbrowse.prg
+    * Fixed value display for non-text results at ::RefreshRow()
+      method (direct-API usage :( ).
+  * source/h_grid.prg
+    * Allows to create grid with no columns.
 
 2006-08-09 10:23 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_checkbox.prg

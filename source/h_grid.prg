@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.46 2006-07-27 04:17:44 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.47 2006-08-13 19:18:20 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -99,8 +99,8 @@ CLASS TGrid FROM TControl
    DATA Type             INIT "GRID" READONLY
    DATA nWidth           INIT 240
    DATA nHeight          INIT 120
-   DATA aWidths          INIT nil
-   DATA aHeaders         INIT nil
+   DATA aWidths          INIT {}
+   DATA aHeaders         INIT {}
    DATA aHeadClick       INIT nil
    DATA aJust            INIT nil
    DATA AllowEdit        INIT .F.
@@ -199,11 +199,7 @@ Local ControlHandle, aImageList
    ASSIGN ::aWidths    VALUE aWidths    TYPE "A"
    ASSIGN ::aHeaders   VALUE aHeaders   TYPE "A"
 
-   If ValType( ::aHeaders ) != "A"
-      MsgOOHGError( "Grid: HEADERS not defined .Program Terminated." )
-   ElseIf ValType( ::aWidths ) != "A"
-      MsgOOHGError( "Grid: WIDTHS not defined. Program Terminated." )
-   ElseIf Len( ::aHeaders ) != Len( ::aWidths )
+   If Len( ::aHeaders ) != Len( ::aWidths )
       MsgOOHGError( "Grid: HEADERS/WIDTHS array size mismatch. Program Terminated." )
 	EndIf
    If ValType( aRows ) == 'A'

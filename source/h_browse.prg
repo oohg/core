@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.53 2006-08-09 02:02:15 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.54 2006-08-13 19:18:20 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -271,7 +271,7 @@ Local lColor, aFields, cWorkArea, hWnd, nWidth
 
    ::lEof := .F.
 
-   PageLength := ListViewGetCountPerPage( hWnd )
+   PageLength := ::CountPerPage
 
    If lColor
       ::GridForeColor := ARRAY( PageLength )
@@ -309,7 +309,7 @@ Local lColor, aFields, cWorkArea, hWnd, nWidth
    EndDo
 
    Do While nCurrentLength > Len( _BrowseRecMap )
-      ListViewDeleteString( hWnd, nCurrentLength )
+      ::DeleteItem( nCurrentLength )
       nCurrentLength--
    EndDo
 
@@ -348,7 +348,7 @@ Local _RecNo , _DeltaScroll, s
 
       If Len( ::aRecMap ) == 0
          ( ::WorkArea )->( DbGoBottom() )
-         ( ::WorkArea )->( DbSkip( - LISTVIEWGETCOUNTPERPAGE ( ::hWnd ) + 1 ) )
+         ( ::WorkArea )->( DbSkip( - ::CountPerPage + 1 ) )
       Else
          ( ::WorkArea )->( DbGoTo( ::aRecMap[ Len( ::aRecMap ) ] ) )
       EndIf
@@ -365,7 +365,7 @@ Local _RecNo , _DeltaScroll, s
 
 	Else
 
-      ::FastUpdate( LISTVIEWGETCOUNTPERPAGE( ::hWnd ) - s, Len( ::aRecMap ) )
+      ::FastUpdate( ::CountPerPage - s, Len( ::aRecMap ) )
 
 	EndIf
 
@@ -391,7 +391,7 @@ Local _RecNo , _DeltaScroll
       Else
          ( ::WorkArea )->( DbGoTo( ::aRecMap[ 1 ] ) )
       EndIf
-      ( ::WorkArea )->( DbSkip( - LISTVIEWGETCOUNTPERPAGE ( ::hWnd ) + 1 ) )
+      ( ::WorkArea )->( DbSkip( - ::CountPerPage + 1 ) )
       ::scrollUpdate()
       ::Update()
       ListView_Scroll( ::hWnd, _DeltaScroll[2] * (-1) , 0 )
@@ -577,13 +577,13 @@ Local _RecNo , NewPos := 50, _DeltaScroll , m , hWnd, cWorkArea
 
    If Value > ( cWorkArea )->( RecCount() )
       ::nValue := 0
-      ListViewReset( hWnd )
+      ::DeleteAllItems()
       ::BrowseOnChange()
       Return nil
 	EndIf
 
    If valtype ( mp ) != "N"
-      m := int( ListViewGetCountPerPage( hWnd ) / 2 )
+      m := int( ::CountPerPage / 2 )
 	else
 		m := mp
 	endif
@@ -841,7 +841,7 @@ Local cWorkArea, hWnd
    hWnd := ::hWnd
 
    If Select( cWorkArea ) == 0
-      ListViewReset( hWnd )
+      ::DeleteAllItems()
       Return nil
 	EndIf
 
@@ -887,7 +887,7 @@ Local cWorkArea, hWnd
 
    If ( cWorkArea )->( Eof() )
 
-      ListViewReset ( hWnd )
+      ::DeleteAllItems()
 
       ( cWorkArea )->( DbGoTo( _RecNo ) )
 

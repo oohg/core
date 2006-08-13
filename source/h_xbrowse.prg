@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.15 2006-08-09 02:02:16 guerra000 Exp $
+ * $Id: h_xbrowse.prg,v 1.16 2006-08-13 19:18:20 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -295,21 +295,19 @@ Local aItem, cWorkArea
          cWorkArea := nil
       EndIf
       aItem := ARRAY( LEN( ::aFields ) )
-      AEVAL( aItem, { |x,i| aItem[ i ] := EVAL( ::ColumnBlock( i, .T. ), cWorkArea ), x } )
+      AEVAL( aItem, { |x,i| aItem[ i ] := EVAL( ::ColumnBlock( i ), cWorkArea ), x } )
       AEVAL( aItem, { |x,i| IF( VALTYPE( x ) $ "CM", aItem[ i ] := TRIM( x ),  ) } )
 
-      If ::ItemCount < nRow
-         If ValType( cWorkArea ) $ "CM"
-            ( cWorkArea )->( ::AddItem( aItem, ::DynamicForeColor, ::DynamicBackColor ) )
-         Else
-            ::AddItem( aItem, ::DynamicForeColor, ::DynamicBackColor )
-         EndIf
+      If ValType( cWorkArea ) $ "CM"
+         ( cWorkArea )->( ::SetItemColor( nRow,,, aItem ) )
       Else
-         If ValType( cWorkArea ) $ "CM"
-            ( cWorkArea )->( ::Item( nRow, aItem, ::DynamicForeColor, ::DynamicBackColor ) )
-         Else
-            ::Item( nRow, aItem, ::DynamicForeColor, ::DynamicBackColor )
-         EndIf
+         ::SetItemColor( nRow,,, aItem )
+      EndIf
+
+      If ::ItemCount < nRow
+         AddListViewItems( ::hWnd, aItem )
+      Else
+         ListViewSetItem( ::hWnd, aItem, nRow )
       EndIf
    EndIf
 Return Self
