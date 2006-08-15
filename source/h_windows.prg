@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.102 2006-08-09 02:02:16 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.103 2006-08-15 02:37:52 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -713,7 +713,7 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )
 METHOD Enabled( lEnabled ) CLASS TWindow
 *------------------------------------------------------------------------------*
    IF VALTYPE( lEnabled ) == "L"
-      IF lEnabled
+      IF lEnabled .AND. ( ::Container == NIL .OR. ::Container:Enabled )
          EnableWindow( ::hWnd )
       ELSE
          DisableWindow( ::hWnd )
