@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.103 2006-08-15 02:37:52 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.104 2006-08-20 02:26:44 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -496,6 +496,7 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )
          else
          {
             PHB_ITEM pControl, pOnClick;
+            BOOL bClicked = 0;
 
             pControl = hb_itemNew( NULL );
             hb_itemCopy( pControl, GetControlObjectById( LOWORD( wParam ) ) );
@@ -513,14 +514,18 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )
                   hb_vmPushLogical( ! _OOHG_NestedSameEvent );
                   hb_vmSend( 1 );
 
-                  pOnClick = hb_itemNew( NULL );
                   _OOHG_Send( pControl, s_OnClick );
                   hb_vmSend( 0 );
-                  hb_itemCopy( pOnClick, hb_param( -1, HB_IT_ANY ) );
-                  _OOHG_Send( pControl, s_DoEvent );
-                  hb_vmPush( pOnClick );
-                  hb_vmSend( 1 );
-                  hb_itemRelease( pOnClick );
+                  if( hb_param( -1, HB_IT_BLOCK ) )
+                  {
+                     pOnClick = hb_itemNew( NULL );
+                     hb_itemCopy( pOnClick, hb_param( -1, HB_IT_ANY ) );
+                     _OOHG_Send( pControl, s_DoEvent );
+                     hb_vmPush( pOnClick );
+                     hb_vmSend( 1 );
+                     hb_itemRelease( pOnClick );
+                     bClicked = 1;
+                  }
 
                   _OOHG_Send( pControl, s__NestedClick );
                   hb_vmPushLogical( 0 );
@@ -553,7 +558,14 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )
 //               }
             }
             hb_itemRelease( pControl );
-            hb_ret();
+            if( bClicked )
+            {
+               hb_retni( 1 );
+            }
+            else
+            {
+               hb_ret();
+            }
          }
          break;
 

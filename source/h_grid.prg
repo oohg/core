@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.47 2006-08-13 19:18:20 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.48 2006-08-20 02:26:44 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -406,6 +406,10 @@ Local aReturn
       nRow += aEditControls2[ i ]:nDefHeight + 6
       If ValType( aMemVars ) == "A" .AND. Len( aMemVars ) >= i
          aEditControls2[ i ]:cMemVar := aMemVars[ i ]
+         // "Creates" memvars
+         If ValType( aMemVars[ i ] ) $ "CM" .AND. ! Empty( aMemVars[ i ] )
+            &( aMemVars[ i ] ) := nil
+         EndIf
       EndIf
       If ValType( ::Valid ) == "A" .AND. Len( ::Valid ) >= i
          aEditControls2[ i ]:bValid := ::Valid[ i ]

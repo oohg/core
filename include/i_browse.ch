@@ -1,5 +1,5 @@
 /*
- * $Id: i_browse.ch,v 1.9 2006-07-06 13:47:11 guerra000 Exp $
+ * $Id: i_browse.ch,v 1.10 2006-08-20 02:26:44 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -187,7 +187,7 @@
 		<.novscroll.> , ;
 		<.append.> , ;
 		<aReadOnly> , ;
-		<{aValidFields}> , ;
+                <aValidFields> , ;
 		<aValidMessages> , ;
                 <.edit.> , ;
                 <dynamicbackcolor> , ;
@@ -289,7 +289,7 @@
 		<.novscroll.> , ;
 		<.append.> , ;
 		<aReadOnly> , ;
-		 <{aValidFields}> , ;
+                <aValidFields> , ;
 		<aValidMessages> , ;
                 <.edit.>  , ;
                 <dynamicbackcolor> , ;

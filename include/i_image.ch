@@ -1,5 +1,5 @@
 /*
- * $Id: i_image.ch,v 1.3 2005-10-22 06:04:31 guerra000 Exp $
+ * $Id: i_image.ch,v 1.4 2006-08-20 02:26:44 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -91,7 +91,7 @@
         Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-#xcommand @ <row>,<col> IMAGE <name> ;
+#command @ <row>,<col> IMAGE <name> ;
         [ OBJ <obj> ] ;
 	[ <dummy1: OF, PARENT> <parent> ] ;
 	PICTURE <filename> ;
@@ -102,5 +102,10 @@
 	[ HELPID <helpid> ] 		;
 	[ <invisible: INVISIBLE> ] ;
         [ <rtl: RTL> ] ;
+        [ SUBCLASS <subclass> ] ;
+        [ <whitebackground: WHITEBACKGROUND> ] ;
  =>;
- [ <obj> := ] TImage():Define( <(name)>, <(parent)>, <col>, <row>, <filename> ,<w>, <h>, <{action}> , <helpid> , <.invisible.> , <.stretch.> , .f. , <.rtl.> )
+        [ <obj> := ] _OOHG_SelectSubClass( TImage(), [ <subclass>() ] ): ;
+        Define( <(name)>, <(parent)>, <col>, <row>, <filename>, <w>, <h>, ;
+        <{action}>, <helpid>, <.invisible.>, <.stretch.>, ;
+        <.whitebackground.>, <.rtl.> )
