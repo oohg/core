@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.104 2006-08-20 02:26:44 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.105 2006-08-21 00:37:03 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -2346,20 +2346,23 @@ METHOD Define( FormName, Caption, x, y, w, h, Parent, nosize, nosysmenu, ;
                clientarea ) CLASS TFormModal
 *-----------------------------------------------------------------------------*
 Local nStyle := WS_POPUP, nStyleEx := 0
-Local oParent
+Local oParent, hParent
 
    If ValType( modalsize ) != "L"
       modalsize := .F.
    EndIf
 
    oParent := ::SearchParent( Parent )
-   If ValType( oParent ) != "O"
-      * Must have a parent!
+   If ValType( oParent ) == "O"
+      hParent := oParent:hWnd
+   ELSE
+      hParent := 0
+      * Must have a parent!!!!!
    EndIf
 
    ::oPrevWindow := oParent
 
-   ::Define2( FormName, Caption, x, y, w, h, oParent:hWnd, helpbutton, ( ! modalsize ), ( ! modalsize ), nosize, nosysmenu, ;
+   ::Define2( FormName, Caption, x, y, w, h, hParent, helpbutton, ( ! modalsize ), ( ! modalsize ), nosize, nosysmenu, ;
               nocaption, virtualheight, virtualwidth, hscrollbox, vscrollbox, fontname, fontsize, aRGB, cursor, ;
               icon, noshow, gotfocus, lostfocus, scrollleft, scrollright, scrollup, scrolldown, nil, ;
               nil, initprocedure, ReleaseProcedure, SizeProcedure, ClickProcedure, PaintProcedure, ;

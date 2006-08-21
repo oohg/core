@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.16 2006-07-27 04:17:44 guerra000 Exp $
+ * $Id: i_windefs.ch,v 1.17 2006-08-21 00:37:01 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -176,9 +176,9 @@
 #define NM_RELEASEDCAPTURE (NM_FIRST-16)
 #define NM_SETCURSOR    (NM_FIRST-17)   // uses NMMOUSE struct
 #define NM_CHAR         (NM_FIRST-18)   // uses NMCHAR struct
-// #define NM_TOOLTIPSCREATED (NM_FIRST-19)   // notify of when the tooltips window is create
-// #define NM_LDOWN        (NM_FIRST-20)
-// #define NM_RDOWN        (NM_FIRST-21)
+#define NM_TOOLTIPSCREATED (NM_FIRST-19)   // notify of when the tooltips window is create
+#define NM_LDOWN        (NM_FIRST-20)
+#define NM_RDOWN        (NM_FIRST-21)
 
 // System Colors
 #define COLOR_SCROLLBAR         0
@@ -206,9 +206,9 @@
 #define COLOR_3DLIGHT           22
 #define COLOR_INFOTEXT          23
 #define COLOR_INFOBK            24
-// #define COLOR_HOTLIGHT          26
-// #define COLOR_GRADIENTACTIVECAPTION 27
-// #define COLOR_GRADIENTINACTIVECAPTION 28
+#define COLOR_HOTLIGHT          26
+#define COLOR_GRADIENTACTIVECAPTION 27
+#define COLOR_GRADIENTINACTIVECAPTION 28
 #define COLOR_DESKTOP           COLOR_BACKGROUND
 #define COLOR_3DFACE            COLOR_BTNFACE
 #define COLOR_3DSHADOW          COLOR_BTNSHADOW
