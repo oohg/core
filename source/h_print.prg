@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.31 2006-07-24 01:00:12 guerra000 Exp $
+* $Id: h_print.prg,v 1.32 2006-08-21 19:58:37 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -21,6 +21,17 @@ memvar _HMG_PRINTER_HDC_BAK
 memvar _OOHG_printer_docname
 memvar oPrintexcel
 memvar oPrinthoja
+memvar oprintrtf1
+memvar oprintrtf2
+memvar oprintrtf3
+memvar rutaficrtf1
+memvar ntcsvprint
+memvar ntcsvprint1
+memvar oprintcsv1
+memvar milinea1
+memvar milinea2
+memvar oprintcsv2
+memvar oprintcsv3
 ////memvar sicvar
 
 *-------------------------
@@ -37,6 +48,10 @@ if clibx=NIL
          o_print_:=tdosprint()
       elseif _OOHG_printlibrary="EXCELPRINT"
          o_print_:=texcelprint()
+      elseif _OOHG_printlibrary="RTFPRINT"
+         o_print_:=trtfprint()
+      elseif _OOHG_printlibrary="CSVPRINT"
+         o_print_:=tcsvprint()
       else
          o_print_:=thbprinter()
       endif
@@ -54,6 +69,10 @@ else
          o_print_:=tdosprint()
       elseif clibx="EXCELPRINT"
          o_print_:=texcelprint()
+      elseif clibx="RTFPRINT"
+         o_print_:=trtfprint()
+      elseif clibx="CSVPRINT"
+         o_print_:=tcsvprint()
       else
          o_print_:=tminiprint()
       endif
@@ -87,7 +106,7 @@ DATA nwpen              INIT 0.1   READONLY //// pen width
 DATA tempfile           INIT gettempdir()+"T"+alltrim(str(int(hb_random(999999)),8))+".prn" READONLY
 DATA impreview          INIT .F.  READONLY
 DATA lwinhide           INIT .T.   READONLY
-DATA cversion           INIT  "(oohg)V 1.4" READONLY
+DATA cversion           INIT  "(oohg)V 1.6" READONLY
 DATA cargo              INIT  .F.
 
 DATA nlinpag            INIT 0            READONLY
@@ -1512,6 +1531,502 @@ case calign="R"
 case calign="C"
    oPrintHoja:Cells(nlin,alinceldax):HorizontalAlignment:= -4108  //Centrar
 endcase
+return self
+
+
+//////////////////////// RTF
+
+CREATE CLASS TRTFPRINT FROM TPRINTBASE
+
+
+*-------------------------
+METHOD initx()
+*-------------------------
+
+*-------------------------
+METHOD begindocx()
+*-------------------------
+
+*-------------------------
+METHOD enddocx()
+*-------------------------
+
+*-------------------------
+METHOD beginpagex()
+*-------------------------
+
+*-------------------------
+METHOD endpagex()
+*-------------------------
+
+*-------------------------
+METHOD releasex() BLOCK {|| NIL }
+*-------------------------
+
+*-------------------------
+METHOD printdatax()
+*-------------------------
+
+*-------------------------
+METHOD printimage() BLOCK {|| NIL }
+*-------------------------
+
+*-------------------------
+METHOD printlinex()
+*-------------------------
+
+*-------------------------
+METHOD printrectanglex BLOCK {|| NIL }
+*-------------------------
+
+*-------------------------
+METHOD selprinterx()
+*-------------------------
+
+*-------------------------
+METHOD getdefprinterx() BLOCK {|| NIL }
+*-------------------------
+
+*-------------------------
+METHOD setcolorx() BLOCK {|| NIL }
+*-------------------------
+
+*-------------------------
+METHOD setpreviewsizex() BLOCK {|| NIL }
+*-------------------------
+
+*-------------------------
+METHOD printroundrectanglex() BLOCK {|| NIL }
+*-------------------------
+
+*-------------------------
+method condendosx()
+*-------------------------
+
+*-------------------------
+method normaldosx()
+*-------------------------
+
+*-------------------------
+METHOD setunits()   // mm o rowcol , mm por renglon
+*-------------------------
+
+ENDCLASS
+
+
+*-------------------------
+METHOD initx() CLASS TRTFPRINT
+*-------------------------
+::impreview:=.F.
+::cprintlibrary:="RTFPRINT"
+return self
+
+
+*-------------------------
+METHOD begindocx(cdoc) CLASS TRTFPRINT
+*-------------------------
+local _nhandle,wr
+
+local   MARGENSUP:=LTRIM(STR(ROUND(15*56.7,0)))
+local   MARGENINF:=LTRIM(STR(ROUND(15*56.7,0)))
+local   MARGENIZQ:=LTRIM(STR(ROUND(10*56.7,0)))
+local   MARGENDER:=LTRIM(STR(ROUND(10*56.7,0)))
+
+
+AADD(oPrintRTF1,"{\rtf1\ansi\ansicpg1252\uc1 \deff0\deflang3082\deflangfe3082{\fonttbl{\f0\froman\fcharset0\fprq2{\*\panose 02020603050405020304}Times New Roman;}{\f2\fmodern\fcharset0\fprq1{\*\panose 02070309020205020404}Courier New;}")
+AADD(oPrintRTF1,"{\f106\froman\fcharset238\fprq2 Times New Roman CE;}{\f107\froman\fcharset204\fprq2 Times New Roman Cyr;}{\f109\froman\fcharset161\fprq2 Times New Roman Greek;}{\f110\froman\fcharset162\fprq2 Times New Roman Tur;}")
+AADD(oPrintRTF1,"{\f111\froman\fcharset177\fprq2 Times New Roman (Hebrew);}{\f112\froman\fcharset178\fprq2 Times New Roman (Arabic);}{\f113\froman\fcharset186\fprq2 Times New Roman Baltic;}{\f122\fmodern\fcharset238\fprq1 Courier New CE;}")
+AADD(oPrintRTF1,"{\f123\fmodern\fcharset204\fprq1 Courier New Cyr;}{\f125\fmodern\fcharset161\fprq1 Courier New Greek;}{\f126\fmodern\fcharset162\fprq1 Courier New Tur;}{\f127\fmodern\fcharset177\fprq1 Courier New (Hebrew);}")
+AADD(oPrintRTF1,"{\f128\fmodern\fcharset178\fprq1 Courier New (Arabic);}{\f129\fmodern\fcharset186\fprq1 Courier New Baltic;}}{\colortbl;\red0\green0\blue0;\red0\green0\blue255;\red0\green255\blue255;\red0\green255\blue0;\red255\green0\blue255;\red255\green0\blue0;")
+AADD(oPrintRTF1,"\red255\green255\blue0;\red255\green255\blue255;\red0\green0\blue128;\red0\green128\blue128;\red0\green128\blue0;\red128\green0\blue128;\red128\green0\blue0;\red128\green128\blue0;\red128\green128\blue128;\red192\green192\blue192;}{\stylesheet{")
+AADD(oPrintRTF1,"\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang3082\langfe3082\cgrid\langnp3082\langfenp3082 \snext0 Normal;}{\*\cs10 \additive Default Paragraph Font;}}{\info{\author nobody }{\operator Jose Miguel}")
+AADD(oPrintRTF1,"{\creatim\yr2000\mo12\dy29\hr17\min26}{\revtim\yr2002\mo3\dy6\hr9\min32}{\printim\yr2002\mo3\dy4\hr16\min32}{\version10}{\edmins16}{\nofpages1}{\nofwords167}{\nofchars954}{\*\company xyz}{\nofcharsws0}{\vern8249}}")
+*AADD(oPrintRTF1,"\paperw11907\paperh16840\margl284\margr284\margt1134\margb1134 \widowctrl\ftnbj\aenddoc\hyphhotz425\noxlattoyen\expshrtn\noultrlspc\dntblnsbdb\nospaceforul\hyphcaps0\horzdoc\dghspace120\dgvspace120\dghorigin1701\dgvorigin1984\dghshow0\dgvshow3")
+AADD(oPrintRTF1,IF(oPrintRTF3=.T.,"\paperw16840\paperh11907","\paperw11907\paperh16840")+ ;
+   "\margl"+MARGENIZQ+"\margr"+MARGENDER+"\margt"+MARGENSUP+"\margb"+MARGENINF+ ;
+   " \widowctrl\ftnbj\aenddoc\hyphhotz425\noxlattoyen\expshrtn\noultrlspc\dntblnsbdb\nospaceforul\hyphcaps0\horzdoc\dghspace120\dgvspace120\dghorigin1701\dgvorigin1984\dghshow0\dgvshow3")
+AADD(oPrintRTF1,"\jcompress\viewkind1\viewscale80\nolnhtadjtbl \fet0\sectd \psz9\linex0\headery851\footery851\colsx709\sectdefaultcl {\*\pnseclvl1\pnucrm\pnstart1\pnindent720\pnhang{\pntxta .}}{\*\pnseclvl2\pnucltr\pnstart1\pnindent720\pnhang{\pntxta .}}{\*\pnseclvl3")
+AADD(oPrintRTF1,"\pndec\pnstart1\pnindent720\pnhang{\pntxta .}}{\*\pnseclvl4\pnlcltr\pnstart1\pnindent720\pnhang{\pntxta )}}{\*\pnseclvl5\pndec\pnstart1\pnindent720\pnhang{\pntxtb (}{\pntxta )}}{\*\pnseclvl6\pnlcltr\pnstart1\pnindent720\pnhang{\pntxtb (}{\pntxta )}}")
+AADD(oPrintRTF1,"{\*\pnseclvl7\pnlcrm\pnstart1\pnindent720\pnhang{\pntxtb (}{\pntxta )}}{\*\pnseclvl8\pnlcltr\pnstart1\pnindent720\pnhang{\pntxtb (}{\pntxta )}}{\*\pnseclvl9\pnlcrm\pnstart1\pnindent720\pnhang{\pntxtb (}{\pntxta )}}\pard\plain ")
+AADD(oPrintRTF1,"\qj \li0\ri0\nowidctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang3082\langfe3082\cgrid\langnp3082\langfenp3082")
+IF ::cunits="MM"
+   AADD(oPrintRTF1,"{\b\f0\lang1034\langfe3082\cgrid0\langnp1034")
+ELSE
+   AADD(oPrintRTF1,"{\b\f2\lang1034\langfe3082\cgrid0\langnp1034")
+ENDIF
+
+return self
+
+
+*-------------------------
+METHOD enddocx() CLASS TRTFPRINT
+*-------------------------
+local nTRTFPRINT
+private rutaficrtf1
+IF RIGHT(oPrintRTF1[LEN(oPrintRTF1)],6)=" \page"
+   oPrintRTF1[LEN(oPrintRTF1)]:=LEFT(oPrintRTF1[LEN(oPrintRTF1)] , LEN(oPrintRTF1[LEN(oPrintRTF1)])-6 )
+ENDIF
+AADD(oPrintRTF1,"\par }}")
+RUTAFICRTF1:=GetCurrentFolder()
+SET PRINTER TO &RUTAFICRTF1\printer.RTF
+SET DEVICE TO PRINTER
+SETPRC(0,0)
+FOR nTRTFPRINT=1 TO LEN(oPrintRTF1)
+   @ PROW(),PCOL() SAY oPrintRTF1[nTRTFPRINT]
+   @ PROW()+1,0 SAY ""
+NEXT
+SET DEVICE TO SCREEN
+SET PRINTER TO
+RELEASE oPrintRTF1,oPrintRTF2,oPrintRTF3
+IF ShellExecute(0, "open", "soffice.exe", "printer.RTF" , RUTAFICRTF1 , 1)<=32
+   IF ShellExecute(0, "open", "WinWord.exe", "printer.RTF" , RUTAFICRTF1 , 1)<=32
+      IF ShellExecute(0, "open", "printer.RTF" , RUTAFICRTF1 , , 1)<=32
+         MSGINFO("No se ha localizado el programa asociado a la extemsion RTF"+CHR(13)+CHR(13)+ ;
+                 "El fichero se ha guardado en:"+CHR(13)+RUTAFICRTF1+"\printer.RTF")
+      ENDIF
+   ENDIF
+ENDIF
+RETURN self
+
+
+*-------------------------
+METHOD beginpagex() CLASS TRTFPRINT
+*-------------------------
+return self
+
+
+*-------------------------
+METHOD endpagex() CLASS TRTFPRINT
+*-------------------------
+local milinea,nTRTFPRINT1,nTRTFPRINT2
+ASORT(::alincelda,,, { |x, y| STR(x[1])+STR(x[2]) < STR(y[1])+STR(y[2]) })
+MiLinea:=0
+FOR nTRTFPRINT1=1 TO LEN(::alincelda)
+   IF MiLinea<::alincelda[nTRTFPRINT1,1]
+      DO WHILE MiLinea<::alincelda[nTRTFPRINT1,1]
+         AADD(oPrintRTF1,"\par ")
+         MiLinea++
+      ENDDO
+      IF ::cunits="MM"
+         oPrintRTF1[LEN(oPrintRTF1)]:=oPrintRTF1[LEN(oPrintRTF1)]+"}\pard \qj \li0\ri0\nowidctlpar"
+         FOR nTRTFPRINT2=1 TO LEN(::alincelda)
+            IF ::alincelda[nTRTFPRINT2,1]=::alincelda[nTRTFPRINT1,1]
+               do case
+               case ::alincelda[nTRTFPRINT2,5]="R"
+                  oPrintRTF1[LEN(oPrintRTF1)]:=oPrintRTF1[LEN(oPrintRTF1)]+"\tqr"+"\tx"+LTRIM(STR(ROUND((::alincelda[nTRTFPRINT2,2]-10)*56.7,0)))
+               case ::alincelda[nTRTFPRINT2,5]="C"
+                  oPrintRTF1[LEN(oPrintRTF1)]:=oPrintRTF1[LEN(oPrintRTF1)]+"\tqc"+"\tx"+LTRIM(STR(ROUND((::alincelda[nTRTFPRINT2,2]-10)*56.7,0)))
+               otherwise
+                  oPrintRTF1[LEN(oPrintRTF1)]:=oPrintRTF1[LEN(oPrintRTF1)]+"\tql"+"\tx"+LTRIM(STR(ROUND((::alincelda[nTRTFPRINT2,2]-10)*56.7,0)))
+               endcase
+            ENDIF
+         NEXT
+         oPrintRTF1[LEN(oPrintRTF1)]:=oPrintRTF1[LEN(oPrintRTF1)]+"\faauto\adjustright\rin0\lin0\itap0 {"
+      ENDIF
+   ENDIF
+   IF oPrintRTF2<>::alincelda[nTRTFPRINT1,4]
+      oPrintRTF2:=::alincelda[nTRTFPRINT1,4]
+      DO CASE
+      CASE oPrintRTF2<=8
+         IF ::cunits="MM"
+            oPrintRTF1[LEN(oPrintRTF1)]:=oPrintRTF1[LEN(oPrintRTF1)]+"}{\b\f0\fs16\lang1034\langfe3082\cgrid0\langnp1034"
+         ELSE
+            oPrintRTF1[LEN(oPrintRTF1)]:=oPrintRTF1[LEN(oPrintRTF1)]+"}{\b\f2\fs16\lang1034\langfe3082\cgrid0\langnp1034"
+         ENDIF
+      CASE oPrintRTF2>=9 .AND. oPrintRTF2<=10
+         IF ::cunits="MM"
+            oPrintRTF1[LEN(oPrintRTF1)]:=oPrintRTF1[LEN(oPrintRTF1)]+"}{\b\f0\lang1034\langfe3082\cgrid0\langnp1034"
+         ELSE
+            oPrintRTF1[LEN(oPrintRTF1)]:=oPrintRTF1[LEN(oPrintRTF1)]+"}{\b\f2\lang1034\langfe3082\cgrid0\langnp1034"
+         ENDIF
+      CASE oPrintRTF2>=11 .AND. oPrintRTF2<=12
+         IF ::cunits="MM"
+            oPrintRTF1[LEN(oPrintRTF1)]:=oPrintRTF1[LEN(oPrintRTF1)]+"}{\b\f0\fs24\lang1034\langfe3082\cgrid\langnp1034"
+         ELSE
+            oPrintRTF1[LEN(oPrintRTF1)]:=oPrintRTF1[LEN(oPrintRTF1)]+"}{\b\f2\fs24\lang1034\langfe3082\cgrid\langnp1034"
+         ENDIF
+      CASE oPrintRTF2>=13
+         IF ::cunits="MM"
+            oPrintRTF1[LEN(oPrintRTF1)]:=oPrintRTF1[LEN(oPrintRTF1)]+"}{\b\f0\fs28\lang1034\langfe3082\cgrid\langnp1034"
+         ELSE
+            oPrintRTF1[LEN(oPrintRTF1)]:=oPrintRTF1[LEN(oPrintRTF1)]+"}{\b\f2\fs28\lang1034\langfe3082\cgrid\langnp1034"
+         ENDIF
+      ENDCASE
+   ENDIF
+
+   IF ::cunits="MM"
+      oPrintRTF1[LEN(oPrintRTF1)]:=oPrintRTF1[LEN(oPrintRTF1)]+"\tab "
+   ENDIF
+
+   oPrintRTF1[LEN(oPrintRTF1)]:=oPrintRTF1[LEN(oPrintRTF1)]+::alincelda[nTRTFPRINT1,3]
+NEXT
+oPrintRTF1[LEN(oPrintRTF1)]:=oPrintRTF1[LEN(oPrintRTF1)]+" \page"
+::alincelda:={}
+return self
+
+
+*-------------------------
+METHOD setunits(cunitsx,cunitslinx) CLASS TRTFPRINT
+*-------------------------
+if cunitsx="MM"
+   ::cunits:="MM"
+else
+   ::cunits:="ROWCOL"
+endif
+if cunitslinx=NIL
+   ::nunitslin:=1
+else
+   ::nunitslin:=cunitslinx
+endif
+RETURN self
+
+
+*-------------------------
+METHOD printdatax(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext) CLASS TRTFPRINT
+*-------------------------
+if ::nunitslin>1
+   nlin:=round(nlin/::nunitslin,0)
+endif
+IF ::cunits="MM"
+   ctext:=ALLTRIM(ctext)
+ENDIF
+AADD(::alincelda,{nlin,ncol,ctext,nsize,calign})
+return self
+
+
+*-------------------------
+METHOD printlinex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen ) CLASS TRTFPRINT
+*-------------------------
+return self
+
+
+*-------------------------
+METHOD selprinterx( lselect , lpreview, llandscape , npapersize ,cprinterx) CLASS TRTFPRINT
+*-------------------------
+PUBLIC oPrintRTF1,oPrintRTF2,oPrintRTF3
+oPrintRTF1:={}
+oPrintRTF2:=10
+oPrintRTF3:=llandscape
+return self
+
+
+*-------------------------
+METHOD condendosx() CLASS TRTFPRINT
+*-------------------------
+return self
+
+
+*-------------------------
+METHOD normaldosx() CLASS TRTFPRINT
+*-------------------------
+return self
+
+
+
+//////////////////////// CSV
+
+CREATE CLASS TCSVPRINT FROM TPRINTBASE
+
+
+*-------------------------
+METHOD initx()
+*-------------------------
+
+*-------------------------
+METHOD begindocx()
+*-------------------------
+
+*-------------------------
+METHOD enddocx()
+*-------------------------
+
+*-------------------------
+METHOD beginpagex()
+*-------------------------
+
+*-------------------------
+METHOD endpagex()
+*-------------------------
+
+*-------------------------
+METHOD releasex() BLOCK { || NIL }
+*-------------------------
+
+*-------------------------
+METHOD printdatax()
+*-------------------------
+
+*-------------------------
+METHOD printimage() BLOCK { || NIL }
+*-------------------------
+
+*-------------------------
+METHOD printlinex()
+*-------------------------
+
+*-------------------------
+METHOD printrectanglex BLOCK { || NIL }
+*-------------------------
+
+*-------------------------
+METHOD selprinterx()
+*-------------------------
+
+*-------------------------
+METHOD getdefprinterx() BLOCK { || NIL }
+*-------------------------
+
+*-------------------------
+METHOD setcolorx() BLOCK { || NIL }
+*-------------------------
+
+*-------------------------
+METHOD setpreviewsizex() BLOCK { || NIL }
+*-------------------------
+
+*-------------------------
+METHOD printroundrectanglex() BLOCK { || NIL }
+*-------------------------
+
+*-------------------------
+method condendosx()
+*-------------------------
+
+*-------------------------
+method normaldosx()
+*-------------------------
+
+*-------------------------
+METHOD setunits()   // mm o rowcol , mm por renglon
+*-------------------------
+
+ENDCLASS
+
+
+*-------------------------
+METHOD initx() CLASS TCSVPRINT
+*-------------------------
+::impreview:=.F.
+::cprintlibrary:="CSVPRINT"
+return self
+
+
+*-------------------------
+METHOD begindocx(cdoc) CLASS TCSVPRINT
+*-------------------------
+local _nhandle,wr
+return self
+
+
+*-------------------------
+METHOD enddocx() CLASS TCSVPRINT
+*-------------------------
+RUTAFICRTF1:=GetCurrentFolder()
+SET PRINTER TO &RUTAFICRTF1\printer.CSV
+SET DEVICE TO PRINTER
+SETPRC(0,0)
+FOR nTCSVPRINT=1 TO LEN(oPrintCSV1)
+   @ PROW(),PCOL() SAY oPrintCSV1[nTCSVPRINT]
+   @ PROW()+1,0 SAY ""
+NEXT
+SET DEVICE TO SCREEN
+SET PRINTER TO
+RELEASE oPrintCSV1,oPrintCSV2,oPrintCSV3
+IF ShellExecute(0, "open", "soffice.exe", "printer.CSV" , RUTAFICRTF1 , 1)<=32
+   IF ShellExecute(0, "open", "Excel.exe", "printer.CSV" , RUTAFICRTF1 , 1)<=32
+      IF ShellExecute(0, "open", "printer.CSV" , RUTAFICRTF1 , , 1)<=32
+         MSGINFO("No se ha localizado el programa asociado a la extemsion CSV"+CHR(13)+CHR(13)+ ;
+                 "El fichero se ha guardado en:"+CHR(13)+RUTAFICRTF1+"\printer.CSV")
+      ENDIF
+   ENDIF
+ENDIF
+RETURN self
+
+
+*-------------------------
+METHOD beginpagex() CLASS TCSVPRINT
+*-------------------------
+return self
+
+
+*-------------------------
+METHOD endpagex() CLASS TCSVPRINT
+*-------------------------
+ASORT(::alincelda,,, { |x, y| STR(x[1])+STR(x[2]) < STR(y[1])+STR(y[2]) })
+MiLinea1:=0
+MiLinea2:=0
+FOR nTCSVPRINT1=1 TO LEN(::alincelda)
+   IF MiLinea1<::alincelda[nTCSVPRINT1,1]
+      DO WHILE MiLinea1<::alincelda[nTCSVPRINT1,1]
+         AADD(oPrintCSV1,"")
+         MiLinea1++
+      ENDDO
+   ENDIF
+
+   IF LEN(oPrintCSV1[LEN(oPrintCSV1)])=0
+      oPrintCSV1[LEN(oPrintCSV1)]:=::alincelda[nTCSVPRINT1,3]
+   ELSE
+      oPrintCSV1[LEN(oPrintCSV1)]:=oPrintCSV1[LEN(oPrintCSV1)]+";"+STRTRAN(::alincelda[nTCSVPRINT1,3],";",",")
+   ENDIF
+NEXT
+::alincelda:={}
+return self
+
+
+*-------------------------
+METHOD setunits(cunitsx,cunitslinx) CLASS TCSVPRINT
+*-------------------------
+if cunitsx="MM"
+   ::cunits:="MM"
+else
+   ::cunits:="ROWCOL"
+endif
+if cunitslinx=NIL
+   ::nunitslin:=1
+else
+   ::nunitslin:=cunitslinx
+endif
+RETURN self
+
+
+*-------------------------
+METHOD printdatax(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext) CLASS TCSVPRINT
+*-------------------------
+if ::nunitslin>1
+   nlin:=round(nlin/::nunitslin,0)
+endif
+IF ::cunits="MM"
+   ctext:=ALLTRIM(ctext)
+ENDIF
+AADD(::alincelda,{nlin,ncol,ctext,nsize,calign})
+return self
+
+
+*-------------------------
+METHOD printlinex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen ) CLASS TCSVPRINT
+*-------------------------
+return self
+
+
+*-------------------------
+METHOD selprinterx( lselect , lpreview, llandscape , npapersize ,cprinterx) CLASS TCSVPRINT
+*-------------------------
+PUBLIC oPrintCSV1,oPrintCSV2,oPrintCSV3
+oPrintCSV1:={}
+oPrintCSV2:=10
+oPrintCSV3:=llandscape
+return self
+
+
+*-------------------------
+METHOD condendosx() CLASS TCSVPRINT
+*-------------------------
+return self
+
+
+*-------------------------
+METHOD normaldosx() CLASS TCSVPRINT
+*-------------------------
 return self
 
 

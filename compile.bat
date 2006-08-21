@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: compile.bat,v 1.12 2006-07-24 00:47:35 guerra000 Exp $
+rem $Id: compile.bat,v 1.13 2006-08-21 19:58:37 declan2005 Exp $
 rem
 cls
 
@@ -8,7 +8,7 @@ Rem Set Paths
 
 IF "%HG_BCC%"==""  SET HG_BCC=c:\borland\bcc55
 IF "%HG_ROOT%"=="" SET HG_ROOT=c:\oohg
-IF "%HG_HRB%"==""  SET HG_HRB=c:\harbour
+IF "%HG_HRB%"==""  SET HG_HRB=c:\oohg\harbour
 
 if exist %1.exe del %1.exe
 SET HG_USE_GT=gtwin

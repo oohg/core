@@ -20,21 +20,33 @@ set date ansi
                         ITEM 'dos' ACTION printtest("DOSPRINT")
                         ITEM 'excel' ACTION printtest("EXCELPRINT")
 
+                        ITEM 'RTF' ACTION printtest("RTFPRINT")
+                        ITEM 'CSV' ACTION printtest("CSVPRINT")
+
 			ITEM 'report form hbprinter' ACTION repof("HBPRINTER")
                         ITEM 'report form MINIPRINT' ACTION repof("MINIPRINT")
 
                         ITEM 'report form DOS' ACTION repof("DOSPRINT")
                         ITEM 'report form excelprint' ACTION repof("EXCELPRINT")
+                        ITEM 'report form RTF' ACTION repof("RTFPRINT")
+                        ITEM 'report form CSV' ACTION repof("CSVPRINT")
 
                         ITEM 'edit demo hbprinter' ACTION editp("HBPRINTER")
                         ITEM 'edit demo miniprint' ACTION editp("MINIPRINT")
                         ITEM 'edit demo DOS' ACTION editp("DOSPRINT")
                         ITEM 'edit demo EXCEL' ACTION editp("EXCELPRINT")
+                        ITEM 'edit demo RTF' ACTION editp("RTFPRINT")
+                        ITEM 'edit demo CSV' ACTION editp("CSVPRINT")
+
 
                         ITEM 'editex demo hbprinter' ACTION editpx("HBPRINTER")
                         ITEM 'editex demo miniprint' ACTION editpx("MINIPRINT")
                         ITEM 'editex demo DOS' ACTION editpx("DOSPRINT")
                         ITEM 'editex demo EXCEL' ACTION editpx("EXCELPRINT")
+
+                        ITEM 'editex demo RTF' ACTION editpx("RTFPRINT")
+                        ITEM 'editex demo CSV' ACTION editpx("CSVPRINT")
+
 		END POPUP
 	END MENU
 

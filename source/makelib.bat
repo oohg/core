@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: makelib.bat,v 1.28 2006-08-05 22:14:21 guerra000 Exp $
+rem $Id: makelib.bat,v 1.29 2006-08-21 19:58:37 declan2005 Exp $
 rem
 cls
 
@@ -8,7 +8,7 @@ Rem Set Paths
 
 IF "%HG_BCC%"==""  SET HG_BCC=c:\borland\bcc55
 IF "%HG_ROOT%"=="" SET HG_ROOT=c:\oohg
-IF "%HG_HRB%"==""  SET HG_HRB=c:\harbour
+IF "%HG_HRB%"==""  SET HG_HRB=c:\oohg\harbour
 
 IF NOT EXIST %hg_root%\lib\oohg.lib MD %hg_root%\lib >nul
 
