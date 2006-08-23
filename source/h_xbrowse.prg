@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.16 2006-08-13 19:18:20 guerra000 Exp $
+ * $Id: h_xbrowse.prg,v 1.17 2006-08-23 03:37:59 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -927,11 +927,6 @@ Local aItems, aEditControls, aMemVars, aReplaceFields
 
       If lAppend
          oWorkArea:Append()
-         If ! EMPTY( oWorkArea:cAlias__ )
-            ( oWorkArea:cAlias__ )->( _OOHG_Eval( ::OnAppend ) )
-         Else
-            _OOHG_Eval( ::OnAppend )
-         EndIf
       EndIf
 
       For z := 1 To Len( aItems )
@@ -943,6 +938,14 @@ Local aItems, aEditControls, aMemVars, aReplaceFields
          EndIf
 
       Next z
+
+      If lAppend
+         If ! EMPTY( oWorkArea:cAlias__ )
+            ( oWorkArea:cAlias__ )->( _OOHG_Eval( ::OnAppend ) )
+         Else
+            _OOHG_Eval( ::OnAppend )
+         EndIf
+      EndIf
 
       ::Refresh()
 
@@ -1000,13 +1003,15 @@ Local lRet, bReplaceField, oWorkArea
       If lRet
          If lAppend
             oWorkArea:Append()
+         EndIf
+         _OOHG_EVAL( bReplaceField, uValue, ::WorkArea )
+         If lAppend
             If ! EMPTY( oWorkArea:cAlias__ )
                ( oWorkArea:cAlias__ )->( _OOHG_Eval( ::OnAppend ) )
             Else
                _OOHG_Eval( ::OnAppend )
             EndIf
          EndIf
-         _OOHG_EVAL( bReplaceField, uValue, ::WorkArea )
          ::RefreshRow( nRow )
          _OOHG_EVAL( ::OnEditCell, nRow, nCol )
       EndIf

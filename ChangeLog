@@ -1,11 +1,20 @@
 /*
- * $Id: ChangeLog,v 1.207 2006-08-21 19:58:37 declan2005 Exp $
+ * $Id: ChangeLog,v 1.208 2006-08-23 03:37:58 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-08-22 22:37 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_xbrowse.prg
+    * Moved ::OnAppend codeblock evaluation after fields' update.
+
+2006-08-22 22:24 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_print.prg
+    * Removed warnings.
+    * Fixed first page name assignment for TExcelPrint.
 
 2006-08-21 14:36 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source/h_print.prg
@@ -14,8 +23,8 @@
   * samples/oohg/printtest.prg
      * update samples
   * source/makelib.bat
-  * compile.bat  
-    * fixed paths according to instalation 
+  * compile.bat
+    * fixed paths according to instalation
 
 2006-08-20 14:52 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source/h_error.prg

@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.32 2006-08-21 19:58:37 declan2005 Exp $
+* $Id: h_print.prg,v 1.33 2006-08-23 03:37:59 guerra000 Exp $
 */
 
 #include 'hbclass.ch'
@@ -1446,8 +1446,8 @@ METHOD begindocx(cdoc) CLASS TEXCELPRINT
 *-------------------------
 empty(cdoc)
    oPrintExcel:WorkBooks:Add()
-   oPrintExcel:Sheets("Hoja1"):Name := "Listado"
    oPrintHoja:=oPrintExcel:Get( "ActiveSheet" )
+   oPrintHoja:Name := "Listado"
    oPrintHoja:Cells:Font:Name := "Arial"
    oPrintHoja:Cells:Font:Size := 10
 return self
@@ -1625,13 +1625,12 @@ return self
 *-------------------------
 METHOD begindocx(cdoc) CLASS TRTFPRINT
 *-------------------------
-local _nhandle,wr
-
 local   MARGENSUP:=LTRIM(STR(ROUND(15*56.7,0)))
 local   MARGENINF:=LTRIM(STR(ROUND(15*56.7,0)))
 local   MARGENIZQ:=LTRIM(STR(ROUND(10*56.7,0)))
 local   MARGENDER:=LTRIM(STR(ROUND(10*56.7,0)))
 
+Empty( cdoc )
 
 AADD(oPrintRTF1,"{\rtf1\ansi\ansicpg1252\uc1 \deff0\deflang3082\deflangfe3082{\fonttbl{\f0\froman\fcharset0\fprq2{\*\panose 02020603050405020304}Times New Roman;}{\f2\fmodern\fcharset0\fprq1{\*\panose 02070309020205020404}Courier New;}")
 AADD(oPrintRTF1,"{\f106\froman\fcharset238\fprq2 Times New Roman CE;}{\f107\froman\fcharset204\fprq2 Times New Roman Cyr;}{\f109\froman\fcharset161\fprq2 Times New Roman Greek;}{\f110\froman\fcharset162\fprq2 Times New Roman Tur;}")
@@ -1784,6 +1783,11 @@ RETURN self
 *-------------------------
 METHOD printdatax(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext) CLASS TRTFPRINT
 *-------------------------
+Empty( data )
+Empty( cfont )
+Empty( lbold )
+Empty( acolor )
+Empty( nlen )
 if ::nunitslin>1
    nlin:=round(nlin/::nunitslin,0)
 endif
@@ -1797,6 +1801,12 @@ return self
 *-------------------------
 METHOD printlinex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen ) CLASS TRTFPRINT
 *-------------------------
+Empty( nlin )
+Empty( ncol )
+Empty( nlinf )
+Empty( ncolf )
+Empty( atcolor )
+Empty( ntwpen )
 return self
 
 
@@ -1804,6 +1814,10 @@ return self
 METHOD selprinterx( lselect , lpreview, llandscape , npapersize ,cprinterx) CLASS TRTFPRINT
 *-------------------------
 PUBLIC oPrintRTF1,oPrintRTF2,oPrintRTF3
+Empty( lselect )
+Empty( lpreview )
+Empty( npapersize )
+Empty( cprinterx )
 oPrintRTF1:={}
 oPrintRTF2:=10
 oPrintRTF3:=llandscape
@@ -1914,7 +1928,7 @@ return self
 *-------------------------
 METHOD begindocx(cdoc) CLASS TCSVPRINT
 *-------------------------
-local _nhandle,wr
+Empty( cdoc )
 return self
 
 
@@ -1992,6 +2006,11 @@ RETURN self
 *-------------------------
 METHOD printdatax(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext) CLASS TCSVPRINT
 *-------------------------
+Empty( data )
+Empty( cfont )
+Empty( lbold )
+Empty( acolor )
+Empty( nlen )
 if ::nunitslin>1
    nlin:=round(nlin/::nunitslin,0)
 endif
@@ -2004,6 +2023,12 @@ return self
 
 *-------------------------
 METHOD printlinex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen ) CLASS TCSVPRINT
+Empty( nlin )
+Empty( ncol )
+Empty( nlinf )
+Empty( ncolf )
+Empty( atcolor )
+Empty( ntwpen )
 *-------------------------
 return self
 
@@ -2012,6 +2037,10 @@ return self
 METHOD selprinterx( lselect , lpreview, llandscape , npapersize ,cprinterx) CLASS TCSVPRINT
 *-------------------------
 PUBLIC oPrintCSV1,oPrintCSV2,oPrintCSV3
+Empty( lselect )
+Empty( lpreview )
+Empty( npapersize )
+Empty( cprinterx )
 oPrintCSV1:={}
 oPrintCSV2:=10
 oPrintCSV3:=llandscape
