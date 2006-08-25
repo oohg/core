@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.54 2006-08-13 19:18:20 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.55 2006-08-25 13:57:41 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1074,12 +1074,18 @@ Local nvKey, r, DeltaSelect
 Return ::Super:Events_Notify( wParam, lParam )
 
 *-----------------------------------------------------------------------------*
-METHOD SetScrollPos( nPos ) CLASS TBrowse
+METHOD SetScrollPos( nPos, VScroll ) CLASS TBrowse
 *-----------------------------------------------------------------------------*
 Local BackRec
-   If Select( ::WorkArea ) != 0
+   If Select( ::WorkArea ) == 0
+      // Not workarea selected
+   ElseIf nPos <= VScroll:RangeMin
+      ::GoTop()
+   ElseIf nPos >= VScroll:RangeMax
+      ::GoBottom()
+   Else
       BackRec := ( ::WorkArea )->( RecNo() )
-      ::Super:SetScrollPos( nPos, ::VScroll )
+      ::Super:SetScrollPos( nPos, VScroll )
       ::Value := ( ::WorkArea )->( RecNo() )
       ( ::WorkArea )->( DbGoTo( BackRec ) )
       ::BrowseOnChange()
