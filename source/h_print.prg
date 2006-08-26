@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.33 2006-08-23 03:37:59 guerra000 Exp $
+* $Id: h_print.prg,v 1.34 2006-08-26 16:45:53 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -100,7 +100,7 @@ DATA aports             INIT {}   READONLY
 DATA lprerror           INIT .F.  READONLY
 DATA exit               INIT  .F. READONLY
 DATA acolor             INIT {1,1,1}  READONLY
-DATA cfontname          INIT "courier new" READONLY
+DATA cfontname          INIT "Courier New" READONLY
 DATA nfontsize          INIT 10 READONLY
 DATA nwpen              INIT 0.1   READONLY //// pen width
 DATA tempfile           INIT gettempdir()+"T"+alltrim(str(int(hb_random(999999)),8))+".prn" READONLY
@@ -289,9 +289,9 @@ WIDTH 25  ;
 HEIGHT 30 ;
 STRETCH
 
-@ 22,225 LABEL LABEL_101 VALUE '......' FONT "Courier new" SIZE 10
+@ 22,225 LABEL LABEL_101 VALUE '......' FONT "Courier New" SIZE 10
 
-@ 55,10  label label_1 value cdoc WIDTH 300 HEIGHT 32 FONT "Courier new"
+@ 55,10  label label_1 value cdoc WIDTH 300 HEIGHT 32 FONT "Courier New"
 
 DEFINE TIMER TIMER_101  ;
 INTERVAL 1000  ;
@@ -1224,7 +1224,7 @@ ny:=getdesktopheight()
          HEIGHT ny-40-70 ;
          VALUE WR ;
          READONLY ;
-         FONT 'Courier new' ;
+         FONT 'Courier New' ;
          SIZE 10
 
          @ 10,nx-40 button but_4 caption "X" width 30 action ( print_preview.release() )
@@ -1447,9 +1447,9 @@ METHOD begindocx(cdoc) CLASS TEXCELPRINT
 empty(cdoc)
    oPrintExcel:WorkBooks:Add()
    oPrintHoja:=oPrintExcel:Get( "ActiveSheet" )
-   oPrintHoja:Name := "Listado"
-   oPrintHoja:Cells:Font:Name := "Arial"
-   oPrintHoja:Cells:Font:Size := 10
+   oPrintHoja:Name := "List"
+   oPrintHoja:Cells:Font:Name := ::cfontname
+   oPrintHoja:Cells:Font:Size := ::nfontsize
 return self
 
 
