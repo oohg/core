@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.105 2006-08-21 00:37:03 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.106 2006-08-27 17:46:14 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1006,7 +1006,7 @@ Return _OOHG_SetKey( ::aKeys, nKey, nFlags, bAction )
 METHOD LookForKey( nKey, nFlags ) CLASS TWindow
 *-----------------------------------------------------------------------------*
 Local lDone
-   If LookForKey_Check_HotKey( ::aKeys, nKey, nFlags )
+   If LookForKey_Check_HotKey( ::aKeys, nKey, nFlags, Self )
       lDone := .T.
    ElseIf LookForKey_Check_bKeyDown( ::bKeyDown, nKey, nFlags )
       lDone := .T.
@@ -1015,7 +1015,7 @@ Local lDone
    ElseIf ValType( ::Parent ) == "O" .AND. ::lInternal
       lDone := ::Parent:LookForKey( nKey, nFlags )
    Else
-      If LookForKey_Check_HotKey( _OOHG_HotKeys, nKey, nFlags )
+      If LookForKey_Check_HotKey( _OOHG_HotKeys, nKey, nFlags, nil )
          lDone := .T.
       ElseIf LookForKey_Check_bKeyDown( _OOHG_bKeyDown, nKey, nFlags )
          lDone := .T.
@@ -1025,11 +1025,15 @@ Local lDone
    EndIf
 Return lDone
 
-STATIC FUNCTION LookForKey_Check_HotKey( aKeys, nKey, nFlags )
+STATIC FUNCTION LookForKey_Check_HotKey( aKeys, nKey, nFlags, Self )
 Local nPos, lDone
    nPos := ASCAN( aKeys, { |a| a[ HOTKEY_KEY ] == nKey .AND. nFlags == a[ HOTKEY_MOD ] } )
    If nPos > 0
-      Eval( aKeys[ nPos ][ HOTKEY_ACTION ], nKey, nFlags )
+      If Self == NIL
+         Eval( aKeys[ nPos ][ HOTKEY_ACTION ], nKey, nFlags )
+      Else
+         ::DoEvent( { || Eval( aKeys[ nPos ][ HOTKEY_ACTION ], nKey, nFlags ) }, "" )
+      EndIf
       lDone := .T.
    Else
       lDone := .F.

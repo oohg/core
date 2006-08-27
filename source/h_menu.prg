@@ -1,5 +1,5 @@
 /*
- * $Id: h_menu.prg,v 1.10 2006-04-19 13:35:27 guerra000 Exp $
+ * $Id: h_menu.prg,v 1.11 2006-08-27 17:46:14 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -204,7 +204,7 @@ Local id
 
    ::Register( ControlHandle, Name, , , , Id )
 
-   ::Type := "MENU"
+   ::Type := "MENUITEM"
 
    ::xId := ::Id
 
@@ -246,7 +246,6 @@ METHOD DefineContext( Parent ) CLASS TMenu
 *------------------------------------------------------------------------------*
    ::SetForm( , Parent )
    ::Register( CreatePopupMenu() )
-   ::Type := "CONTEXT"
    ::Parent:ContextMenu := Self
    AADD( _OOHG_xMenuActive, Self )
 Return Self
@@ -256,7 +255,6 @@ METHOD DefineNotify( Parent ) CLASS TMenu
 *------------------------------------------------------------------------------*
    ::SetForm( , Parent )
    ::Register( CreatePopupMenu() )
-   ::Type := "CONTEXT"
    ::Parent:NotifyMenuHandle := ::hWnd
    AADD( _OOHG_xMenuActive, Self )
 Return Self
@@ -264,9 +262,12 @@ Return Self
 *------------------------------------------------------------------------------*
 METHOD DefineDropDown( Button , Parent ) CLASS TMenu
 *------------------------------------------------------------------------------*
+   If VALTYPE( Button ) == "O"
+      Parent := Button:Parent
+      Button := Button:Name
+   EndIf
    ::SetForm( , Parent )
    ::Register( CreatePopupMenu() )
-   ::Type := "DROPDOWN"
    GetControlObject( Button, ::Parent:Name ):ContextMenu := Self
    AADD( _OOHG_xMenuActive, Self )
 Return Self

@@ -1,5 +1,5 @@
 /*
- * $Id: h_status.prg,v 1.15 2006-07-15 23:54:38 guerra000 Exp $
+ * $Id: h_status.prg,v 1.16 2006-08-27 17:46:14 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -586,13 +586,9 @@ HB_FUNC( REFRESHITEMBAR )   // ( hWnd, aWidths )
    iItems = SendMessage( hWnd, SB_GETPARTS, 0, 0 );
    if( iItems != 0 )
    {
-      GetWindowRect( hWnd, &rect );
+      // GetWindowRect( hWnd, &rect );
+      GetClientRect( GetParent( hWnd ), &rect );
       iWidth = rect.right - rect.left;
-      if( iWidth == 0 )    // HACK to force show :(
-      {
-         GetWindowRect( GetParent( hWnd ), &rect );
-         iWidth = rect.right - rect.left;
-      }
 
       piItems = hb_xgrab( sizeof( int ) * iItems );
       for( iCount = iItems; iCount >= 1; iCount-- )
