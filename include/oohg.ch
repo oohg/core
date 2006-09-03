@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.ch,v 1.6 2006-08-05 02:20:29 guerra000 Exp $
+ * $Id: oohg.ch,v 1.7 2006-09-03 12:39:32 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -152,5 +152,6 @@
 #include "i_xbrowse.ch"
 #include "i_internal.ch"
 #include "i_textarray.ch"
+#include "common.ch"
 
 #endif
