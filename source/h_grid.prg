@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.48 2006-08-20 02:26:44 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.49 2006-09-03 02:04:14 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -310,6 +310,7 @@ Local nItem, aItems, aEditControls, nColumn
    If ! Empty( aItems )
       ::Item( nItem, ASIZE( aItems, LEN( ::aHeaders ) ) )
       _SetThisCellInfo( ::hWnd, nItem, 1 )
+      _OOHG_ThisItemCellValue := nil
       _OOHG_Eval( ::OnEditCell, nItem, 0 )
       _ClearThisCellInfo()
    EndIf
@@ -500,6 +501,7 @@ Local lRet, nItem, aValues, lValid
    // Check VALID clauses
    lRet := .T.
    For nItem := 1 To Len( aEditControls )
+      _OOHG_ThisItemCellValue := aValues[ nItem ]
       lValid := _OOHG_Eval( aEditControls[ nItem ]:bValid, aValues[ nItem ] )
       If ValType( lValid ) == "L" .AND. ! lValid
          lRet := .F.
@@ -726,6 +728,7 @@ Local lRet
       ENDIF
       ::Cell( nRow, nCol, uValue )
       _SetThisCellInfo( ::hWnd, nRow, nCol )
+      _OOHG_ThisItemCellValue := uValue
       _OOHG_Eval( ::OnEditCell, nRow, nCol )
       _ClearThisCellInfo()
    ENDIF
@@ -1850,6 +1853,7 @@ Local lValid, uValue
       &( ::cMemVar ) := uValue
    EndIf
 
+   _OOHG_ThisItemCellValue := uValue
    lValid := _OOHG_Eval( ::bValid, uValue )
    If ValType( lValid ) != "L"
       lValid := .T.

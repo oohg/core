@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.29 2006-07-26 01:20:57 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.30 2006-09-03 02:04:14 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -600,6 +600,7 @@ HB_FUNC_STATIC( TTEXTPICTURE_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lP
       case WM_CHAR:
       case WM_PASTE:
       case WM_KEYDOWN:
+      case WM_LBUTTONDOWN:
          HB_FUNCNAME( TTEXTPICTURE_EVENTS2 )();
          break;
 
@@ -666,6 +667,12 @@ Local aValidMask := ::ValidMask
       //    _SetNextFocus()
       // EndIf
       Return 1
+
+   ElseIf nMsg == WM_LBUTTONDOWN
+      If ! ::lFocused
+         ::SetFocus()
+         Return 1
+      EndIf
 
    Endif
 Return ::Super:Events( hWnd, nMsg, wParam, lParam )

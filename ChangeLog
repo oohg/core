@@ -1,11 +1,22 @@
 /*
- * $Id: ChangeLog,v 1.211 2006-08-27 17:46:13 guerra000 Exp $
+ * $Id: ChangeLog,v 1.212 2006-09-03 02:04:14 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-09-02 21:04 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_grid.prg
+    ! Fixed This.CellValue assignment.
+  * source/h_textbox.prg
+    * Don't move cursor to mouse's click position when masked textbox
+      got focus via mouse click.
+  * include/i_progressmeter.ch
+    * Included missing HELPID and INVISIBLE clauses.
+  * source/h_windows.prg
+    * Few default values.
 
 2006-08-27 12:45 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_menu.prg

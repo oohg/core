@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.106 2006-08-27 17:46:14 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.107 2006-09-03 02:04:14 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1133,6 +1133,8 @@ CLASS TForm FROM TWindow
    DATA lForm          INIT .T.
    DATA lReleasing     INIT .F.
    DATA cWndClass      INIT ""
+   DATA nWidth         INIT 300
+   DATA nHeight        INIT 300
 
    DATA OnRelease      INIT nil
    DATA OnInit         INIT nil
@@ -1271,13 +1273,8 @@ Local Formhandle, aClientRect
 		Caption := ""
 	endif
 
-   if valtype( VirtualHeight ) != "N"
-      VirtualHeight := 0
-	endif
-
-   if valtype( VirtualWidth ) != "N"
-      VirtualWidth := 0
-   endif
+   ASSIGN ::nVirtualHeight VALUE VirtualHeight TYPE "N"
+   ASSIGN ::nVirtualWidth  VALUE VirtualWidth  TYPE "N"
 
    if ! Valtype( aRGB ) $ 'AN'
       aRGB := GetSysColor( COLOR_3DFACE )
@@ -1374,8 +1371,6 @@ Local Formhandle, aClientRect
    ::VScrollBar:nLineSkip  := 1
    ::VScrollBar:nPageSkip  := 20
 
-   ::nVirtualHeight := VirtualHeight
-   ::nVirtualWidth  := VirtualWidth
    ValidateScrolls( Self, .F. )
 
    ::OnRelease := ReleaseProcedure
