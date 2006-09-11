@@ -1,5 +1,5 @@
 /*
- * $Id: h_label.prg,v 1.16 2006-07-26 01:20:57 guerra000 Exp $
+ * $Id: h_label.prg,v 1.17 2006-09-11 02:22:18 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -200,7 +200,7 @@ Return ::lAutoSize
 *-----------------------------------------------------------------------------*
 METHOD Align( nAlign ) CLASS TLabel
 *-----------------------------------------------------------------------------*
-Return LabelSetAlign( ::hWnd, nAlign )
+Return WindowStyleFlag( ::hWnd, 0x3F, nAlign )
 
 *EXTERN InitLabel
 
@@ -238,20 +238,4 @@ HB_FUNC( INITLABEL )
 
    HWNDret( hbutton );
 }
-
-HB_FUNC( LABELSETALIGN )
-{
-   HWND hWnd;
-
-   hWnd = HWNDparam( 1 );
-
-   if( ISNUM( 2 ) )
-   {
-      SetWindowLong( hWnd, GWL_STYLE, ( ( GetWindowLong( hWnd, GWL_STYLE ) & ( ~ 0x3F ) ) | ( hb_parni( 2 ) & 0x3F ) ) );
-      RedrawWindow( hWnd, 0, 0, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
-   }
-
-   hb_retnl( GetWindowLong( hWnd, GWL_STYLE ) & 0x3F );
-}
-
 #pragma ENDDUMP

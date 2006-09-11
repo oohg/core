@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.48 2006-07-26 01:20:57 guerra000 Exp $
+ * $Id: c_windows.c,v 1.49 2006-09-11 02:22:18 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1525,20 +1525,18 @@ HB_FUNC( ISWINDOWSTYLE )
    hb_retl( ( GetWindowLong( HWNDparam( 1 ), GWL_STYLE ) & ulRequest ) == ulRequest );
 }
 
-HB_FUNC( GETWINDOWSTYLEFLAG )
-{
-   hb_retnl( GetWindowLong( HWNDparam( 1 ), GWL_STYLE ) & hb_parnl( 2 ) );
-}
-
-HB_FUNC( SETWINDOWSTYLEFLAG )
+HB_FUNC( WINDOWSTYLEFLAG )
 {
    HWND hWnd;
-   long lMask, lNewValue;
+   long lMask;
 
    hWnd = HWNDparam( 1 );
    lMask = hb_parnl( 2 );
-   lNewValue = ISNUM( 3 ) ? hb_parnl( 3 ) : lMask;
+   if( ISNUM( 3 ) )
+   {
+      SetWindowLong( hWnd, GWL_STYLE, ( ( GetWindowLong( hWnd, GWL_STYLE ) & ( ~ lMask ) ) | ( hb_parnl( 3 ) & lMask ) ) );
+      RedrawWindow( hWnd, 0, 0, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+   }
 
-   SetWindowLong( hWnd, GWL_STYLE, ( ( GetWindowLong( hWnd, GWL_STYLE ) & ( ~ lMask ) ) | ( lNewValue & lMask ) ) );
-   RedrawWindow( hWnd, 0, 0, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+   hb_retnl( GetWindowLong( HWNDparam( 1 ), GWL_STYLE ) & hb_parnl( 2 ) );
 }
