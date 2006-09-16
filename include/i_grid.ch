@@ -1,5 +1,5 @@
 /*
- * $Id: i_grid.ch,v 1.8 2005-10-22 06:04:31 guerra000 Exp $
+ * $Id: i_grid.ch,v 1.9 2006-09-16 19:35:48 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -144,52 +144,19 @@
 		[ VALIDMESSAGES <aValidMessages> ] ;
                 [ ON EDITCELL <editcell> ]      ;
                 [ WHEN <aWhenFields> ]          ;
+                [ SUBCLASS <subclass> ]         ;
+                [ <disabled: DISABLED> ]        ;
 	=>;
-[ <obj> := ] iif( <.multiselect.>, TGridMulti(), TGrid() ):Define( ;
-                <(name)> ,      ;
-                <(parent)> ,    ;
-		<col> ,		;
-		<row> ,		;
-		<w> , 		;
-		<h> , 		;
-		<headers> , 	;
-		<widths> , 	;
-		<rows> , 	;
-		<value> ,	;
-		<fontname> , 	;
-		<fontsize> , 	;
-		<tooltip> , 	;
-		<{change}> ,	;
-		<{dblclick}> ,  ;
-		<aHeadClick> ,	;
-		<{gotfocus}> ,	;
-		<{lostfocus}>,  ;
-		<.style.>,	;
-		<aImage>,	;
-		<aJust>  , 	;
-		<.break.> , 	;
-		<helpid> ,	;
-		<.bold.>, 	;
-		<.italic.>, 	;
-		<.underline.>, 	;
-		<.strikeout.> , ;
-		<.ownerdata.> , ;
-		<{dispinfo}> ,  ;
-		<itemcount> , 	;
-                <.edit.> ,      ;
-                <backcolor>,    ;
-                <fontcolor>,    ;
-                <dynamicbackcolor>, ;
-                <dynamicforecolor>, ;
-                <Picture>,      ;
-                <.rtl.>,        ;
-                <.inplace.>,    ;
-                <editcontrols>, ;
-                <aReadOnly>,    ;
-                <aValidFields>, ;
-                <aValidMessages>, ;
-                <{editcell}>    ;
-                <aWhenFields> )
+        [ <obj> := ] _OOHG_SelectSubClass( iif( <.multiselect.>, TGridMulti(), TGrid() ), [ <subclass>() ] ): ;
+                     Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, ;
+                     <widths>, <rows>, <value>, <fontname>, <fontsize>, <tooltip>, ;
+                     <{change}>, <{dblclick}>, <aHeadClick>, <{gotfocus}>, <{lostfocus}>, ;
+                     <.style.>, <aImage>, <aJust>, <.break.>, <helpid>, <.bold.>, ;
+                     <.italic.>, <.underline.>, <.strikeout.>, <.ownerdata.>, <{dispinfo}>, ;
+                     <itemcount>, <.edit.>, <backcolor>, <fontcolor>, <dynamicbackcolor>, ;
+                     <dynamicforecolor>, <Picture>, <.rtl.>, <.inplace.>, <editcontrols>, ;
+                     <aReadOnly>, <aValidFields>, <aValidMessages>, <{editcell}>, ;
+                     <aWhenFields>, <.disabled.> )
 
 ///////////////////////////////////////////////////////////////////////////////
 // GRID (SPLITBOX VERSION)
@@ -238,51 +205,18 @@
 		[ VALIDMESSAGES <aValidMessages> ] ;
                 [ ON EDITCELL <editcell> ]      ;
                 [ WHEN <aWhenFields> ]          ;
+                [ SUBCLASS <subclass> ]         ;
+                [ <disabled: DISABLED> ]        ;
 	=>;
-[ <obj> := ] iif( <.multiselect.>, TGridMulti(), TGrid() ):Define( ;
-                <(name)> ,      ;
-                <(parent)> ,    ;
-		,		;
-		,		;
-		<w> , 		;
-		<h> , 		;
-		<headers> , 	;
-		<widths> , 	;
-		<rows> , 	;
-		<value> ,	;
-		<fontname> , 	;
-		<fontsize> , 	;
-		<tooltip> , 	;
-		<{change}> ,	;
-		<{dblclick}> ,  ;
-		<aHeadClick> ,	;
-		<{gotfocus}> ,	;
-		<{lostfocus}>,  ;
-		<.style.>,	;
-		<aImage>,	;
-		<aJust>  , 	;
-		<.break.> , 	;
-		<helpid> ,	;
-		<.bold.>, 	;
-		<.italic.>, 	;
-		<.underline.>, 	;
-		<.strikeout.> , ;
-		<.ownerdata.> , ;
-		<{dispinfo}> ,  ;
-		<itemcount> , 	;
-                <.edit.> ,      ;
-                <backcolor> ,   ;
-                <fontcolor>,    ;
-                <dynamicbackcolor>, ;
-                <dynamicforecolor>, ;
-                <Picture>,      ;
-                <.rtl.>,        ;
-                <.inplace.>,    ;
-                <editcontrols>, ;
-                <aReadOnly>,    ;
-                <aValidFields>, ;
-                <aValidMessages>, ;
-                <{editcell}>,   ;
-                <aWhenFields> )
+        [ <obj> := ] _OOHG_SelectSubClass( iif( <.multiselect.>, TGridMulti(), TGrid() ), [ <subclass>() ] ): ;
+                     Define( <(name)>, <(parent)>, , , <w>, <h>, <headers>, ;
+                     <widths>, <rows>, <value>, <fontname>, <fontsize>, <tooltip>, ;
+                     <{change}>, <{dblclick}>, <aHeadClick>, <{gotfocus}>, <{lostfocus}>, ;
+                     <.style.>, <aImage>, <aJust>, <.break.>, <helpid>, <.bold.>, ;
+                     <.italic.>, <.underline.>, <.strikeout.>, <.ownerdata.>, <{dispinfo}>, ;
+                     <itemcount>, <.edit.>, <backcolor>, <fontcolor>, <dynamicbackcolor>, ;
+                     <dynamicforecolor>, <Picture>, <.rtl.>, <.inplace.>, <editcontrols>, ;
+                     <aReadOnly>, <aValidFields>, <aValidMessages>, <{editcell}>, ;
+                     <aWhenFields>, <.disabled.> )
 
 ///////////////////////////////////////////////////////////////////////////////

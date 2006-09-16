@@ -1,5 +1,5 @@
 /*
- * $Id: i_button.ch,v 1.6 2006-07-06 13:47:11 guerra000 Exp $
+ * $Id: i_button.ch,v 1.7 2006-09-16 19:35:48 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -114,11 +114,13 @@
                 [ <rtl: RTL> ] ;
                 [ <noprefix: NOPREFIX> ] ;
                 [ SUBCLASS <subclass> ] ;
+                [ <disabled: DISABLED> ] ;
 	=>;
         [ <obj> := ] _OOHG_SelectSubClass( TButton(), [ <subclass>() ] ): ;
                    Define( <(name)>, <(parent)>, <col>, <row>, <caption>, <{action}>, ;
                    <w>, <h>, <font>, <size>, <tooltip>, <{gotfocus}>,<{lostfocus}>, <.flat.>, <.notabstop.>, ;
-                   <helpid>, <.invisible.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.>, <.rtl.>, <.noprefix.> )
+                   <helpid>, <.invisible.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.>, <.rtl.>, ;
+                   <.noprefix.>, <.disabled.> )
 
 #xcommand @ <row>,<col> BUTTON <name> ;
                 [ OBJ <obj> ] ;
@@ -137,8 +139,10 @@
 		[ <invisible: INVISIBLE> ] ;
                 [ <rtl: RTL> ] ;
                 [ SUBCLASS <subclass> ] ;
+                [ <disabled: DISABLED> ] ;
 	=>;
         [ <obj> := ] _OOHG_SelectSubClass( TButton(), [ <subclass>() ] ): ;
                         DefineImage( <(name)>, <(parent)>, <col>, <row>, "", <{action}>, ;
                         <w>, <h>, <bitmap>, <tooltip>, <{gotfocus}>, <{lostfocus}>, ;
-                        <.flat.>, <.notrans.>, <helpid>, <.invisible.>, <.notabstop.>, <.rtl.> )
+                        <.flat.>, <.notrans.>, <helpid>, <.invisible.>, <.notabstop.>, ;
+                        <.rtl.>, , <.disabled.> )

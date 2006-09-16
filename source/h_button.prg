@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.14 2006-07-06 13:47:11 guerra000 Exp $
+ * $Id: h_button.prg,v 1.15 2006-09-16 19:35:48 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -100,7 +100,6 @@ CLASS TButton FROM TControl
    DATA Type      INIT "BUTTON" READONLY
    DATA cPicture  INIT ""
    DATA lNoTransparent INIT .F.
-   // DATA ImgHandle INIT 0   // ::AuxHandle
    DATA nWidth    INIT 100
    DATA nHeight   INIT 28
 
@@ -115,7 +114,7 @@ ENDCLASS
 METHOD Define( ControlName, ParentForm, x, y, Caption, ProcedureName, w, h, ;
                fontname, fontsize, tooltip, gotfocus, lostfocus, flat, ;
                NoTabStop, HelpId, invisible, bold, italic, underline, ;
-               strikeout, lRtl, lNoPrefix ) CLASS TButton
+               strikeout, lRtl, lNoPrefix, lDisabled ) CLASS TButton
 *-----------------------------------------------------------------------------*
 Local ControlHandle, nStyle
 
@@ -131,6 +130,10 @@ Local ControlHandle, nStyle
              if( ValType( NoTabStop ) != "L" .OR. ! NoTabStop, WS_TABSTOP, 0 ) + ;
              if( ValType( invisible ) != "L" .OR. ! invisible, WS_VISIBLE, 0 ) + ;
              if( ValType( lNoPrefix ) == "L" .AND. lNoPrefix,  SS_NOPREFIX, 0 )
+   If Valtype( lDisabled ) == "L" .AND. lDisabled
+      nStyle += WS_DISABLED
+      ::lEnabled := .F.
+   EndIf
 
    ControlHandle := InitButton( ::ContainerhWnd, Caption, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, ::lRtl, nStyle )
 
@@ -148,7 +151,7 @@ Return Self
 *-----------------------------------------------------------------------------*
 METHOD DefineImage( ControlName, ParentForm, x, y, Caption, ProcedureName, ;
                     w, h, image, tooltip, gotfocus, lostfocus, flat, ;
-                    notrans, HelpId, invisible, notabstop, lRtl ) CLASS TButton
+                    notrans, HelpId, invisible, notabstop, lRtl, lDisabled ) CLASS TButton
 *-----------------------------------------------------------------------------*
 Local ControlHandle, nStyle
 
@@ -164,6 +167,10 @@ Local ControlHandle, nStyle
              if( ValType( flat ) == "L"      .AND. flat,       BS_FLAT, 0 ) + ;
              if( ValType( NoTabStop ) != "L" .OR. ! NoTabStop, WS_TABSTOP, 0 ) + ;
              if( ValType( invisible ) != "L" .OR. ! invisible, WS_VISIBLE, 0 )
+   If Valtype( lDisabled ) == "L" .AND. lDisabled
+      nStyle += WS_DISABLED
+      ::lEnabled := .F.
+   EndIf
 
    ControlHandle := InitButton( ::ContainerhWnd, Caption, 0, x, y, w, h, ::lRtl, nStyle )
 

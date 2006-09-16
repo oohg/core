@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.49 2006-09-03 02:04:14 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.50 2006-09-16 19:35:48 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -168,7 +168,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                ondispinfo, itemcount, editable, backcolor, fontcolor, ;
                dynamicbackcolor, dynamicforecolor, aPicture, lRtl, inplace, ;
                editcontrols, readonly, valid, validmessages, editcell, ;
-               aWhenFields ) CLASS TGrid
+               aWhenFields, lDisabled ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local nStyle := LVS_SINGLESEL
 
@@ -179,7 +179,7 @@ Local nStyle := LVS_SINGLESEL
               ondispinfo, itemcount, editable, backcolor, fontcolor, ;
               dynamicbackcolor, dynamicforecolor, aPicture, lRtl, nStyle, ;
               inplace, editcontrols, readonly, valid, validmessages, ;
-              editcell, aWhenFields )
+              editcell, aWhenFields, lDisabled )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -190,7 +190,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                 ondispinfo, itemcount, editable, backcolor, fontcolor, ;
                 dynamicbackcolor, dynamicforecolor, aPicture, lRtl, nStyle, ;
                 inplace, editcontrols, readonly, valid, validmessages, ;
-                editcell, aWhenFields ) CLASS TGrid
+                editcell, aWhenFields, lDisabled ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local ControlHandle, aImageList
 
@@ -220,6 +220,11 @@ Local ControlHandle, aImageList
    ASSIGN ::Picture    VALUE aPicture   TYPE "A"
 
    ASSIGN nogrid       VALUE nogrid     TYPE "L" DEFAULT .F.
+
+   If Valtype( lDisabled ) == "L" .AND. lDisabled
+      nStyle += WS_DISABLED
+      ::lEnabled := .F.
+   EndIf
 
    If Valtype( ::aJust ) != "A"
       ::aJust := aFill( Array( len( ::aHeaders ) ), 0 )
@@ -1353,7 +1358,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                ondispinfo, itemcount, editable, backcolor, fontcolor, ;
                dynamicbackcolor, dynamicforecolor, aPicture, lRtl, inplace, ;
                editcontrols, readonly, valid, validmessages, editcell, ;
-               aWhenFields ) CLASS TGridMulti
+               aWhenFields, lDisabled ) CLASS TGridMulti
 *-----------------------------------------------------------------------------*
 Local nStyle := 0
    ::Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
@@ -1363,7 +1368,7 @@ Local nStyle := 0
               ondispinfo, itemcount, editable, backcolor, fontcolor, ;
               dynamicbackcolor, dynamicforecolor, aPicture, lRtl, nStyle, ;
               inplace, editcontrols, readonly, valid, validmessages, ;
-              editcell, aWhenFields )
+              editcell, aWhenFields, lDisabled )
 Return Self
 
 *-----------------------------------------------------------------------------*
