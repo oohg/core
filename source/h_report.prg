@@ -1,5 +1,5 @@
 /*
- * $Id: h_report.prg,v 1.28 2006-08-21 19:58:37 declan2005 Exp $
+ * $Id: h_report.prg,v 1.29 2006-09-20 19:06:23 declan2005 Exp $
  */
 /*
  * DO REPORT Command support procedures For MiniGUI Library.
@@ -403,7 +403,7 @@ do while .not. eof()
                case type('&wfielda')=='D'
                     clinea:=clinea+ substr(dtoc(wfield),1,awidths[i])+space(awidths[i]-len(substr(dtoc(wfield),1,awidths[i])) )+" "
                case type('&wfielda')=='L'
-                    clinea:=clinea+wfield+" "
+                    clinea:=clinea+iif(wfield,"T","F")+space(awidths[i]-1)+" "
               case type('&wfielda')=='M' .or. type('&wfielda')=='C' //// ojo no quitar la a
                   nmemo:=mlcount(rtrim(wfield),awidths[i])
                   if nmemo>0
