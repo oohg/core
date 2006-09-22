@@ -1,5 +1,5 @@
 /*
- * $Id: h_report.prg,v 1.29 2006-09-20 19:06:23 declan2005 Exp $
+ * $Id: h_report.prg,v 1.30 2006-09-22 19:43:15 declan2005 Exp $
  */
 /*
  * DO REPORT Command support procedures For MiniGUI Library.
@@ -316,7 +316,7 @@ do case
 endcase
 
 *****************=======================================
-oprint:selprinter(lselect,lpreview,llandscape,npapersize)
+oprint:selprinter(lselect,lpreview,llandscape,npapersize,,,-2)
 if oprint:lprerror
    oprint:release()
    RETURN NIL
