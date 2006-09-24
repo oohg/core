@@ -1,5 +1,5 @@
 /*
- * $Id: c_dialogs.c,v 1.1 2005-08-07 00:02:34 guerra000 Exp $
+ * $Id: c_dialogs.c,v 1.2 2006-09-24 16:36:36 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -161,7 +161,7 @@ HB_FUNC ( CHOOSEFONT )
 	lf.lfCharSet = hb_parni (8) ;
 
 	cf.lStructSize = sizeof(CHOOSEFONT);
-	cf.hwndOwner = (HWND)NULL;
+	cf.hwndOwner = hwnd ;
 	cf.hDC = (HDC)NULL;
 	cf.lpLogFont = &lf;
 	cf.Flags = CF_SCREENFONTS | CF_EFFECTS | CF_INITTOLOGFONTSTRUCT	;
