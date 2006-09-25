@@ -1,5 +1,5 @@
 /*
- * $Id: h_edit.prg,v 1.12 2006-03-27 03:14:29 guerra000 Exp $
+ * $Id: h_edit.prg,v 1.13 2006-09-25 00:53:16 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -1492,7 +1492,6 @@ oprint:printdata(9,30, ordname(),"times new roman",10,.F.) ///
                 case _aEstructura[nIndice,2] == "L"
 
                         cTexto := iif( (_cArea)->( FieldGet( nIndice ) ), _OOHG_Messages( 6, 20 ), _OOHG_Messages( 6, 21 ) )
-                        @ nFila, nColumna say cTexto font "f10" to print
                         oprint:printdata(nfila,ncolumna,ctexto, ,,)
                         nColumna += _aAnchoCampo[nItem] +2
                 case _aEstructura[nIndice,2] == "N"
