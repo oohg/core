@@ -1,5 +1,5 @@
 /*
- * $Id: h_menu.prg,v 1.11 2006-08-27 17:46:14 guerra000 Exp $
+ * $Id: h_menu.prg,v 1.12 2006-09-25 02:36:39 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -142,6 +142,7 @@ RETURN ( xGetMenuCheckState( ::Container:hWnd, ::xId ) == 1 )
 METHOD DefineMain( Parent ) CLASS TMenu
 *------------------------------------------------------------------------------*
    ::SetForm( , Parent )
+   ::Container := NIL
    ::Register( CreateMenu() )
    ::Type := "MAIN"
    SetMenu( ::Parent:hWnd, ::hWnd )
@@ -245,6 +246,7 @@ Return Nil
 METHOD DefineContext( Parent ) CLASS TMenu
 *------------------------------------------------------------------------------*
    ::SetForm( , Parent )
+   ::Container := NIL
    ::Register( CreatePopupMenu() )
    ::Parent:ContextMenu := Self
    AADD( _OOHG_xMenuActive, Self )
@@ -254,6 +256,7 @@ Return Self
 METHOD DefineNotify( Parent ) CLASS TMenu
 *------------------------------------------------------------------------------*
    ::SetForm( , Parent )
+   ::Container := NIL
    ::Register( CreatePopupMenu() )
    ::Parent:NotifyMenuHandle := ::hWnd
    AADD( _OOHG_xMenuActive, Self )
@@ -267,6 +270,7 @@ METHOD DefineDropDown( Button , Parent ) CLASS TMenu
       Button := Button:Name
    EndIf
    ::SetForm( , Parent )
+   ::Container := NIL
    ::Register( CreatePopupMenu() )
    GetControlObject( Button, ::Parent:Name ):ContextMenu := Self
    AADD( _OOHG_xMenuActive, Self )

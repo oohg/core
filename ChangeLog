@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.220 2006-09-25 01:55:49 declan2005 Exp $
+ * $Id: ChangeLog,v 1.221 2006-09-25 02:36:38 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,11 +7,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2006-09-24 19:34 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_menu.prg
+    * Fixed for not allows MENUes to be "contained" inside any
+      control (menues are attached to forms, not controls).
+
 2006-09-24 20:48 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source/h_edit.prg
     * fixed printing problem when logical field (miniprint)
   * source/winprint.prg
-    * fixed owner window dialog  
+    * fixed owner window dialog
   * source/miniprint.prg
     * fixed owner window dialog
 
