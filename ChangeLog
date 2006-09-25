@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.218 2006-09-24 16:36:36 declan2005 Exp $
+ * $Id: ChangeLog,v 1.219 2006-09-25 01:07:18 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,6 +7,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2006-09-24 19:09 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/c_windows.c
+  * source/h_windows.prg
+    * Added DbCloseAll() and OleUnitialize() to ExitProcess().
 
 2006-09-24 11:33 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source/c_dialogs.c

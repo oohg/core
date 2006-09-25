@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.49 2006-09-11 02:22:18 guerra000 Exp $
+ * $Id: c_windows.c,v 1.50 2006-09-25 01:07:18 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -469,9 +469,15 @@ HB_FUNC( SHOWWINDOW )
    ShowWindow( HWNDparam( 1 ), SW_SHOW );
 }
 
-HB_FUNC( EXITPROCESS )
+HB_FUNC( _EXITPROCESS )
 {
-	ExitProcess(0);
+   ExitProcess( hb_parni( 1 ) );
+}
+
+HB_FUNC( _EXITPROCESS2 )
+{
+   OleUninitialize();
+   ExitProcess( hb_parni( 1 ) );
 }
 
 HB_FUNC( INITSTATUS )

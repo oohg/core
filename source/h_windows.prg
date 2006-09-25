@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.107 2006-09-03 02:04:14 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.108 2006-09-25 01:07:18 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -3297,6 +3297,10 @@ Return uRet
 Static Function _OOHG_MacroCall_Error( oError )
    BREAK oError
 RETURN 1
+
+FUNCTION ExitProcess( nExit )
+   DBCloseAll()
+RETURN _ExitProcess2( nExit )
 
 EXTERN IsXPThemeActive, _OOHG_Eval, EVAL
 EXTERN _OOHG_ShowContextMenus, _OOHG_GlobalRTL, _OOHG_NestedSameEvent
