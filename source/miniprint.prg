@@ -1,5 +1,5 @@
 /*
- * $Id: miniprint.prg,v 1.15 2006-06-02 12:44:40 declan2005 Exp $
+ * $Id: miniprint.prg,v 1.16 2006-09-25 01:55:49 declan2005 Exp $
  */
 /*----------------------------------------------------------------------------
  MINIGUI - Harbour Win32 GUI library source code
@@ -2414,7 +2414,7 @@ HB_FUNC ( _HMG_PRINTER_PRINTDIALOG )
 	pd.hDevMode = (HANDLE) NULL; 
 	pd.hDevNames = (HANDLE) NULL; 
 	pd.Flags = PD_RETURNDC | PD_PRINTSETUP ; 
-	pd.hwndOwner = NULL ; 
+        pd.hwndOwner = GetActiveWindow() ; 
 	pd.hDC = (HDC) NULL; 
 	pd.nFromPage = 1; 
 	pd.nToPage = 1; 

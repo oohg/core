@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.6 2006-06-19 17:15:22 declan2005 Exp $
+ * $Id: winprint.prg,v 1.7 2006-09-25 01:55:49 declan2005 Exp $
  */
 // -----------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -1854,6 +1854,8 @@ HB_FUNC (RR_PRINTERNAME)
 
 HB_FUNC (RR_PRINTDIALOG)
 {
+  HWND hwnd ;
+
   LPCTSTR pDevice;
   memset( &pdlg,0, sizeof( pdlg ) );
   pdlg.lStructSize = sizeof( pdlg );
@@ -1862,6 +1864,9 @@ HB_FUNC (RR_PRINTDIALOG)
   pdlg.nToPage=1;
 //  pdlg.nMinPage=1;
 //  pdlg.nMaxPage=999999;
+  hwnd = GetActiveWindow() ;
+  pdlg.hwndOwner  = hwnd ;
+  
 
   if ( PrintDlg( &pdlg ) )
     {
