@@ -1,5 +1,5 @@
 /*
- * $Id: i_report.ch,v 1.8 2006-05-26 20:07:50 declan2005 Exp $
+ * $Id: i_report.ch,v 1.9 2006-09-28 15:05:07 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -63,7 +63,7 @@
                 [ CPL    <ncpl> ]		;
                 [ LMARGIN <nllmargin> ]         ;
                 [ PAPERSIZE <npapersize> ]      ;
-                [ <lnoprop:> NOFIXED ]    ;
+                [ <lnoprop: NOFIXED> ]    ;
 		[ <ldos: DOSMODE> ]		;
                 [ <lpreview: PREVIEW> ]         ;
                 [ <lselect: SELECT> ]           ;

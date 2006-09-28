@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.34 2006-08-26 16:45:53 declan2005 Exp $
+* $Id: h_print.prg,v 1.35 2006-09-28 15:05:07 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -101,7 +101,7 @@ DATA lprerror           INIT .F.  READONLY
 DATA exit               INIT  .F. READONLY
 DATA acolor             INIT {1,1,1}  READONLY
 DATA cfontname          INIT "Courier New" READONLY
-DATA nfontsize          INIT 10 READONLY
+DATA nfontsize          INIT 10 
 DATA nwpen              INIT 0.1   READONLY //// pen width
 DATA tempfile           INIT gettempdir()+"T"+alltrim(str(int(hb_random(999999)),8))+".prn" READONLY
 DATA impreview          INIT .F.  READONLY
