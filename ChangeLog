@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.222 2006-09-28 15:05:58 declan2005 Exp $
+ * $Id: ChangeLog,v 1.223 2006-09-28 15:07:57 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -8,7 +8,7 @@
 */
 
 
-2006-09-28 11:33 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+2006-09-28 10:33 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source/h_print.prg
   * include/i_report.ch
     * fixed NOFIXED parameter problem in do Report form.
