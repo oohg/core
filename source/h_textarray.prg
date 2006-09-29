@@ -1,5 +1,5 @@
 /*
- * $Id: h_textarray.prg,v 1.4 2006-08-13 19:18:20 guerra000 Exp $
+ * $Id: h_textarray.prg,v 1.5 2006-09-29 03:27:35 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -98,8 +98,8 @@ Local ControlHandle, nStyle, nStyleEx
    ::Register( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
 
-   ASSIGN ::RowCount VALUE RowCount TYPE "N" DEFAULT 10
-   ASSIGN ::ColCount VALUE ColCount TYPE "N" DEFAULT 10
+   ASSIGN ::RowCount VALUE RowCount TYPE "N" DEFAULT TTextArray_MaxChars( Self, 0 )
+   ASSIGN ::ColCount VALUE ColCount TYPE "N" DEFAULT TTextArray_MaxChars( Self, 1 )
 
    ::Write( value )
 
@@ -211,9 +211,10 @@ static void Redraw( POCTRL oSelf, int iCol1, int iRow1, int iCol2, int iRow2 )
       lStyle2 = ( lStyle &~ ( WS_HSCROLL | WS_VSCROLL ) ) |
                 ( bHorizontal ? WS_HSCROLL : 0 )          |
                 ( bVertical   ? WS_VSCROLL : 0 );
-      if( lStyle != lStyle )
+      if( lStyle != lStyle2 )
       {
          SetWindowLong( oSelf->hWnd, GWL_STYLE, lStyle2 );
+         RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
          bChange = 1;
       }
       if( bHorizontal )
@@ -226,6 +227,7 @@ static void Redraw( POCTRL oSelf, int iCol1, int iRow1, int iCol2, int iRow2 )
             iPos = ScrollInfo.nPos;
             ScrollInfo.fMask = SIF_PAGE | SIF_RANGE;
             ScrollInfo.nPage = rect.right - rect.left;
+            ScrollInfo.nMin  = 0;
             ScrollInfo.nMax  = ( oSelf->lAux[ 0 ] * oSelf->lAux[ 4 ] ) - 1;
             SetScrollInfo( oSelf->hWnd, SB_HORZ, &ScrollInfo, 1 );
             ScrollInfo.fMask = SIF_PAGE | SIF_POS | SIF_RANGE | SIF_TRACKPOS;
@@ -246,6 +248,7 @@ static void Redraw( POCTRL oSelf, int iCol1, int iRow1, int iCol2, int iRow2 )
             iPos = ScrollInfo.nPos;
             ScrollInfo.fMask = SIF_PAGE | SIF_RANGE;
             ScrollInfo.nPage = rect.bottom - rect.top;
+            ScrollInfo.nMin  = 0;
             ScrollInfo.nMax  = ( oSelf->lAux[ 1 ] * oSelf->lAux[ 5 ] ) - 1;
             SetScrollInfo( oSelf->hWnd, SB_VERT, &ScrollInfo, 1 );
             ScrollInfo.fMask = SIF_PAGE | SIF_POS | SIF_RANGE | SIF_TRACKPOS;
@@ -263,10 +266,10 @@ static void Redraw( POCTRL oSelf, int iCol1, int iRow1, int iCol2, int iRow2 )
       }
       else
       {
-         iAux = rect.left - GetScrollPos( oSelf->hWnd, SB_HORZ );
+         iAux = rect.left - ( bHorizontal ? GetScrollPos( oSelf->hWnd, SB_HORZ ) : 0 );
          iCol1 = (   iCol1       * oSelf->lAux[ 4 ] ) + iAux;
          iCol2 = ( ( iCol2 + 1 ) * oSelf->lAux[ 4 ] ) + iAux;
-         iAux = rect.top - GetScrollPos( oSelf->hWnd, SB_VERT );
+         iAux = rect.top - ( bVertical ? GetScrollPos( oSelf->hWnd, SB_VERT ) : 0 );
          iRow1 = (   iRow1       * oSelf->lAux[ 5 ] ) + iAux;
          iRow2 = ( ( iRow2 + 1 ) * oSelf->lAux[ 5 ] ) + iAux;
          RANGEMINMAX( rect.left, iCol1, rect.right )
@@ -632,6 +635,31 @@ HB_FUNC_STATIC( TTEXTARRAY_SETFONTSIZE )   // ( Self )   !!! NOT A CLASS METHOD 
       oSelf->lAux[ 5 ] = sz.cy;
       Redraw( oSelf, 0, 0, oSelf->lAux[ 0 ] - 1, oSelf->lAux[ 1 ] - 1 );
    }
+}
+
+HB_FUNC_STATIC( TTEXTARRAY_MAXCHARS )   // ( Self, nOrd )   !!! NOT A CLASS METHOD !!!
+{
+   PHB_ITEM pSelf;
+   POCTRL oSelf;
+   RECT rect;
+   int iRet = 0;
+
+   pSelf = hb_param( 1, HB_IT_OBJECT );
+   if( pSelf )
+   {
+      oSelf = _OOHG_GetControlInfo( pSelf );
+      GetClientRect( oSelf->hWnd, &rect );
+
+      if( hb_parni( 2 ) )   // == 1
+      {
+         iRet = ( rect.right - rect.left ) / oSelf->lAux[ 4 ];
+      }
+      else
+      {
+         iRet = ( rect.bottom - rect.top ) / oSelf->lAux[ 5 ];
+      }
+   }
+   hb_retni( iRet );
 }
 
 HB_FUNC_STATIC( TTEXTARRAY_CURSORTIMER )   // ( Self )   !!! NOT A CLASS METHOD !!!

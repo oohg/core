@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.223 2006-09-28 15:07:57 declan2005 Exp $
+ * $Id: ChangeLog,v 1.224 2006-09-29 03:27:35 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,6 +7,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2006-09-28 22:25 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_textarray.prg
+    ! Fixed initial display when scrollbar is required.
+    * ROWCOUNT and COLCOUNT are now assigned in default using
+      control's size instead of a fixed value of 10.
 
 2006-09-28 10:33 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source/h_print.prg
