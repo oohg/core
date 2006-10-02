@@ -1,5 +1,5 @@
 /*
- * $Id: h_textarray.prg,v 1.6 2006-10-02 03:04:27 guerra000 Exp $
+ * $Id: h_textarray.prg,v 1.7 2006-10-02 03:06:06 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1163,6 +1163,7 @@ HB_FUNC_STATIC( TTEXTARRAY_DEVPOS )   // ( nRow, nCol )
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   int iRow, iCol;
 
    iRow = ISNUM( 1 ) ? hb_parni( 1 ) : oSelf->lAux[ 3 ];
    iCol = ISNUM( 2 ) ? hb_parni( 2 ) : oSelf->lAux[ 2 ];
