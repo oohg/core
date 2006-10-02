@@ -1,5 +1,5 @@
 /*
- * $Id: h_textarray.prg,v 1.5 2006-09-29 03:27:35 guerra000 Exp $
+ * $Id: h_textarray.prg,v 1.6 2006-10-02 03:04:27 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -65,11 +65,15 @@ CLASS TTextArray FROM TControl
    METHOD ColCount       SETGET
    METHOD TextRow        SETGET
    METHOD TextCol        SETGET
-   METHOD Write          SETGET
-   METHOD WriteRaw       SETGET
    METHOD CursorType     SETGET
    METHOD Scroll
    METHOD Clear
+   METHOD Write
+   METHOD WriteRaw
+   METHOD WriteLn(t,c,r,f,b)   BLOCK { |Self,t,c,r,f,b| ::Write(t,c,r,f,b) , ::Write( CHR( 13 ) + CHR( 10 ) ) }
+   METHOD QQOut(t)             BLOCK { |Self,t| ::Write(t) }
+   METHOD QOut(t)              BLOCK { |Self,t| ::Write( CHR( 13 ) + CHR( 10 ) ) , ::Write(t) }
+   METHOD DevPos
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -1153,6 +1157,17 @@ HB_FUNC_STATIC( TTEXTARRAY_CLEAR )   // ( nTop, nLeft, nBottom, nRight )
          iRow1++;
       }
    }
+}
+
+HB_FUNC_STATIC( TTEXTARRAY_DEVPOS )   // ( nRow, nCol )
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+
+   iRow = ISNUM( 1 ) ? hb_parni( 1 ) : oSelf->lAux[ 3 ];
+   iCol = ISNUM( 2 ) ? hb_parni( 2 ) : oSelf->lAux[ 2 ];
+   TTextArray_MoveTo( oSelf, iRow, iCol );
+   hb_ret();
 }
 
 static LRESULT CALLBACK _OOHG_TextArray_WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
