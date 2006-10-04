@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.50 2006-09-16 19:35:48 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.51 2006-10-04 16:28:41 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -1065,7 +1065,8 @@ METHOD InsertItem( nItem, aRow, uForeColor, uBackColor ) CLASS TGrid
    aRow := TGrid_SetArray( Self, aRow )
    ::InsertBlank( nItem )
    ::SetItemColor( nItem, uForeColor, uBackColor, aRow )
-   InsertListViewItem( ::hWnd, aRow, nItem )
+   ListViewSetItem( ::hWnd, aRow, nItem )
+/////   InsertListViewItem( ::hWnd, aRow, nItem )
 Return Nil
 
 *-----------------------------------------------------------------------------*
