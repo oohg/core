@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.35 2006-09-28 15:05:07 declan2005 Exp $
+* $Id: h_print.prg,v 1.36 2006-10-05 18:25:59 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -418,7 +418,8 @@ if ::cunits="MM"
    ::nmhor:=1
    ::nhfij:=0
 else
-   ::nmhor  := (::nfontsize)/4.75
+////   ::nmhor  := (::nfontsize)/4.75
+   ::nmhor  := nsize/4.75
    ::nmver  := (::nfontsize)/2.45
    ::nvfij  := (12/1.65)
    ::nhfij  := (12/3.70)
