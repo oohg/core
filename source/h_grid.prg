@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.54 2006-10-07 19:03:51 declan2005 Exp $
+ * $Id: h_grid.prg,v 1.55 2006-10-07 22:21:05 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -160,15 +160,13 @@ CLASS TGrid FROM TControl
    METHOD ColumnAutoFitH
    METHOD ColumnsAutoFit
    METHOD ColumnsAutoFitH
- 
+   
    METHOD Up   
    METHOD Down
    METHOD PageDown
    METHOD PageUP
    METHOD GoTop
    METHOD GoBottom
-
-
 
 ENDCLASS
 
@@ -193,6 +191,64 @@ Local nStyle := LVS_SINGLESEL
               inplace, editcontrols, readonly, valid, validmessages, ;
               editcell, aWhenFields, lDisabled )
 Return Self
+
+*----------------------------------------------------------------------------*
+METHOD Up() CLASS TGrid
+*----------------------------------------------------------------------------*
+IF ::value>0
+   ::value--
+ENDIF
+return self
+
+
+*---------------------------------------------------------------------------*
+METHOD Down() CLASS TGrid
+*---------------------------------------------------------------------------*
+IF ::value < ::itemcount
+   ::value++
+ENDIF
+return self
+
+
+*--------------------------------------------------------------------------*
+METHOD PageUp() CLASS TGrid
+*--------------------------------------------------------------------------*
+if ::value > ::CountPerPage
+   ::value := ::value - ::CountPerPage
+///   ::refresh()
+else
+   ::GoTop()
+endif
+return self
+
+*-------------------------------------------------------------------------*
+METHOD PageDown() CLASS TGrid
+*-------------------------------------------------------------------------*
+if ::value < ::itemcount - ::CountPerPage
+   ::value := ::value + ::CountPerPage
+///   ::refresh()
+else
+  ::GoBottom()
+endif
+return self
+
+*---------------------------------------------------------------------------*
+METHOD GoTop() CLASS TGrid
+*---------------------------------------------------------------------------*
+IF ::itemcount > 0
+   ::value := 1
+ENDIF
+return self
+
+
+*---------------------------------------------------------------------------*
+METHOD GoBottom() CLASS TGrid
+*---------------------------------------------------------------------------*
+IF ::itemcount > 0
+   ::value := ::Itemcount
+ENDIF
+return self
+
 
 *-----------------------------------------------------------------------------*
 METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
@@ -297,62 +353,6 @@ Local ControlHandle, aImageList
    ASSIGN ::OnDispInfo  VALUE ondispinfo TYPE "B"
 
 Return Self
-
-
-*----------------------------------------------------------------------------*
-METHOD Up() CLASS TGrid
-*----------------------------------------------------------------------------*
-IF ::value>0
-   ::value--
-ENDIF
-return self
-
-
-*---------------------------------------------------------------------------*
-METHOD Down() CLASS TGrid
-*---------------------------------------------------------------------------*
-IF ::value < ::itemcount
-   ::value++
-ENDIF
-return self
-
-
-*--------------------------------------------------------------------------*
-METHOD PageUp() CLASS TGrid
-*--------------------------------------------------------------------------*
-if ::value > ::CountPerPage
-   ::value := ::value - ::CountPerPage
-   ::refresh()
-endif
-return self
-
-*-------------------------------------------------------------------------*
-METHOD PageDown() CLASS TGrid
-*-------------------------------------------------------------------------*
-if ::value < ::itemcount - ::CountPerPage
-   ::value := ::value + ::CountPerPage
-   ::refresh()
-endif
-return self
-
-*---------------------------------------------------------------------------*
-METHOD GoTop() CLASS TGrid
-*---------------------------------------------------------------------------*
-IF ::itemcount > 0
-   ::value := 1
-ENDIF
-return self
-
-
-*---------------------------------------------------------------------------*
-METHOD GoBottom() CLASS TGrid
-*---------------------------------------------------------------------------*
-IF ::itemcount > 0
-   ::value := ::Itemcount
-ENDIF
-return self
-
-
 
 *-----------------------------------------------------------------------------*
 METHOD EditItem() CLASS TGrid
@@ -1134,7 +1134,7 @@ METHOD InsertItem( nItem, aRow, uForeColor, uBackColor ) CLASS TGrid
    ::InsertBlank( nItem )
    ::SetItemColor( nItem, uForeColor, uBackColor, aRow )
    ListViewSetItem( ::hWnd, aRow, nItem )
-   if ::value > 0
+   if ::value>0
       ::value--
    endif
 Return Nil
