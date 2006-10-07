@@ -1,5 +1,5 @@
 /*
- * $Id: h_status.prg,v 1.17 2006-10-07 04:00:52 guerra000 Exp $
+ * $Id: h_status.prg,v 1.18 2006-10-07 16:17:11 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -208,12 +208,17 @@ local nrItem
 Return Nil
 
 STATIC FUNCTION TMessageBar_AmPmClock()
-LOCAL cTime
+LOCAL cTime, nHour
    cTime := TIME()
-   IF cTime < "13"
-      cTime := cTime + " am"
+   nHour := VAL( LEFT( cTime, 2 ) )
+   IF nHour > 12
+      cTime := STRZERO( nHour - 12, 2 ) + SUBSTR( cTime, 3 ) + " pm"
+   ELSEIF nHour == 12
+      cTime := cTime + " pm"
+   ELSEIF nHour == 0
+      cTime := "12" + SUBSTR( cTime, 3 ) + " am"
    ELSE
-      cTime := STRZERO( VAL( LEFT( cTime, 2 ) ) - 12, 2 ) + SUBSTR( cTime, 3 ) + " pm"
+      cTime := cTime + " am"
    ENDIF
 RETURN cTime
 
