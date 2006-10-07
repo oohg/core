@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.52 2006-10-07 04:00:52 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.53 2006-10-07 18:56:57 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -160,6 +160,16 @@ CLASS TGrid FROM TControl
    METHOD ColumnAutoFitH
    METHOD ColumnsAutoFit
    METHOD ColumnsAutoFitH
+ 
+   METHOD Up   
+   METHOD Down
+   METHOD PageDown
+   METHOD PageUP
+   METHOD GoTop
+   METHOD GoBottom
+
+
+
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -287,6 +297,62 @@ Local ControlHandle, aImageList
    ASSIGN ::OnDispInfo  VALUE ondispinfo TYPE "B"
 
 Return Self
+
+
+*----------------------------------------------------------------------------*
+METHOD Up() CLASS TGrid
+*----------------------------------------------------------------------------*
+IF ::value>0
+   ::value--
+ENDIF
+return self
+
+
+*---------------------------------------------------------------------------*
+METHOD Down() CLASS TGrid
+*---------------------------------------------------------------------------*
+IF ::value < ::itemcount
+   ::value++
+ENDIF
+return self
+
+
+*--------------------------------------------------------------------------*
+METHOD PageUp() CLASS TGrid
+*--------------------------------------------------------------------------*
+if ::value > ::CountPerPage
+   ::value := ::value - ::CountPerPage
+   ::refresh()
+endif
+return self
+
+*-------------------------------------------------------------------------*
+METHOD PageDown() CLASS TGrid
+*-------------------------------------------------------------------------*
+if ::value < ::itemcount - ::CountPerPage
+   ::value := ::value + ::CountPerPage
+   ::refresh()
+endif
+return self
+
+*---------------------------------------------------------------------------*
+METHOD GoTop() CLASS TGrid
+*---------------------------------------------------------------------------*
+IF ::itemcount > 0
+   ::value := 1
+ENDIF
+return self
+
+
+*---------------------------------------------------------------------------*
+METHOD GoBottom() CLASS TGrid
+*---------------------------------------------------------------------------*
+IF ::itemcount > 0
+   ::value := ::Itemcount
+ENDIF
+return self
+
+
 
 *-----------------------------------------------------------------------------*
 METHOD EditItem() CLASS TGrid
