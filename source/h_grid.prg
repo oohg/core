@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.51 2006-10-04 16:28:41 declan2005 Exp $
+ * $Id: h_grid.prg,v 1.52 2006-10-07 04:00:52 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -134,6 +134,8 @@ CLASS TGrid FROM TControl
    METHOD DeleteColumn
 
    METHOD Cell
+   METHOD CellCaption( nRow, nCol, uValue )         BLOCK { | Self, nRow, nCol, uValue | CellRawValue( ::hWnd, nRow, nCol, 1, uValue ) }
+   METHOD CellImage( nRow, nCol, uValue )           BLOCK { | Self, nRow, nCol, uValue | CellRawValue( ::hWnd, nRow, nCol, 2, uValue ) }
    METHOD EditCell
    METHOD EditCell2
    METHOD EditAllCells
@@ -1728,7 +1730,51 @@ HB_FUNC( FILLGRIDFROMARRAY )
    }
 }
 
+HB_FUNC( CELLRAWVALUE )   // hWnd, nRow, nCol, nType, uValue
+{
+   HWND hWnd;
+   LV_ITEM LI;
+   char buffer[ 1024 ];
+   int iType;
 
+   hWnd = HWNDparam( 1 );
+   iType = hb_parni( 4 );
+
+   LI.mask = LVIF_TEXT | LVIF_IMAGE;
+   LI.state = 0;
+   LI.stateMask = 0;
+   LI.iItem = hb_parni( 2 ) - 1;
+   LI.iSubItem = hb_parni( 3 ) - 1;
+   LI.cchTextMax = 1022;
+   LI.pszText = buffer;
+   buffer[ 0 ] = 0;
+   buffer[ 1023 ] = 0;
+
+   ListView_GetItem( hWnd, &LI );
+
+   if( iType == 1 && ISCHAR( 5 ) )
+   {
+      LI.cchTextMax = 1022;
+      LI.pszText = hb_parc( 5 );
+      ListView_SetItem( hWnd, &LI );
+   }
+   else if( iType == 2 && ISNUM( 5 ) )
+   {
+      LI.iImage = hb_parni( 5 );
+      ListView_SetItem( hWnd, &LI );
+   }
+
+   ListView_GetItem( hWnd, &LI );
+
+   if( iType == 1 )
+   {
+      hb_retc( LI.pszText );
+   }
+   else // if( iType == 2 )
+   {
+      hb_retni( LI.iImage );
+   }
+}
 #pragma ENDDUMP
 
 

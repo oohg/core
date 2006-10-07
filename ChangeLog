@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.228 2006-10-05 18:25:59 declan2005 Exp $
+ * $Id: ChangeLog,v 1.229 2006-10-07 04:00:52 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,6 +7,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2006-10-06 23:00 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_altsyntax.ch
+  * include/i_browse.ch
+    * Fixed definition for ON HEADCLICK.
+  * include/i_status.ch
+  * source/h_status.prg
+    + AMPM clause added.
+  * source/h_grid.prg
+    + Methods ::CellCaption() and ::CellImage() added.
 
 2006-10-5 13:24 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source/h_print.prg

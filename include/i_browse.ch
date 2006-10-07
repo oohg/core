@@ -1,5 +1,5 @@
 /*
- * $Id: i_browse.ch,v 1.10 2006-08-20 02:26:44 guerra000 Exp $
+ * $Id: i_browse.ch,v 1.11 2006-10-07 04:00:52 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -268,7 +268,7 @@
 		<tooltip> , 	;
 		<{change}> ,	;
 		<{dblclick}> ,  ;
-		<{aHeadClick}> ,;
+                <aHeadClick> ,  ;
 		<{gotfocus}> ,	;
 		<{lostfocus}>, 	;
                 <(WorkArea)> ,  ;

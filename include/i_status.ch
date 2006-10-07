@@ -1,5 +1,5 @@
 /*
- * $Id: i_status.ch,v 1.3 2005-11-02 17:33:03 guerra000 Exp $
+ * $Id: i_status.ch,v 1.4 2006-10-07 04:00:52 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -132,8 +132,9 @@
              [ WIDTH <nSize> ] ;
              [ ACTION <uAction> ] ;
              [ TOOLTIP <cToolTip> ] ;
+             [ <ampm: AMPM> ] ;
        => ;
-        _SetStatusClock( <nSize> , <cToolTip> , <{uAction}> )
+        _SetStatusClock( <nSize> , <cToolTip> , <{uAction}> , <.ampm.> )
 
 #xcommand KEYBOARD ;
              [ WIDTH <nSize> ] ;

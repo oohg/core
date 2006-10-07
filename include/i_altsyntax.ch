@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.26 2006-08-05 22:14:20 guerra000 Exp $
+ * $Id: i_altsyntax.ch,v 1.27 2006-10-07 04:00:52 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -526,11 +526,11 @@ Frame
 
 #xcommand ONHEADCLICK <aHeadClick> ;
 	=>;
-        _OOHG_ActiveControlOnHeadClick   := <{aHeadClick}>
+        _OOHG_ActiveControlOnHeadClick   := <aHeadClick>
 
 #xcommand ON HEADCLICK <aHeadClick> ;
 	=>;
-        _OOHG_ActiveControlOnHeadClick   := <{aHeadClick}>
+        _OOHG_ActiveControlOnHeadClick   := <aHeadClick>
 
 #xcommand DYNAMICBACKCOLOR <aDynamicBackColor> ;
         =>;

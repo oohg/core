@@ -1,5 +1,5 @@
 /*
- * $Id: h_status.prg,v 1.16 2006-08-27 17:46:14 guerra000 Exp $
+ * $Id: h_status.prg,v 1.17 2006-10-07 04:00:52 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -183,25 +183,39 @@ Function _EndStatusBar ( cParentForm, acCaptions, anWidths, acImages, abActions,
 */
 
 *-----------------------------------------------------------------------------*
-METHOD SetClock( Width , ToolTip , action ) CLASS TMessageBar
+METHOD SetClock( Width, ToolTip, action, lAmPm ) CLASS TMessageBar
 *-----------------------------------------------------------------------------*
 local nrItem
 
+   If ValType( lAmPm ) != "L"
+      lAmPm := .F.
+   EndIf
    If ValType( Width ) != 'N'
-		Width := 70
+      Width := If( lAmPm, 95, 70 )
 	EndIf
    If ! ValType( ToolTip ) $ "CM"
 		ToolTip := 'Clock'
 	EndIf
-   If ValType( Action ) == 'U'
-		Action := ''
-	EndIf
 
-   nrItem := TItemMessage():Define( "TimerBar",  Self, 0, 0, Time(), action , Width, 0, "" , ToolTip )
-
-   TTimer():Define( 'StatusTimer', ::aControls[ nrItem ], 1000 , { || ::Item( nrItem , Time() ) } )
+   If ! lAmPm
+      nrItem := TItemMessage():Define( "TimerBar", Self, 0, 0, Time(), action, Width, 0, "", ToolTip )
+      TTimer():Define( 'StatusTimer', ::aControls[ nrItem ], 1000, { || ::Item( nrItem, Time() ) } )
+   Else
+      nrItem := TItemMessage():Define( "TimerBar", Self, 0, 0, TMessageBar_AmPmClock(), action, Width, 0, "", ToolTip )
+      TTimer():Define( 'StatusTimer', ::aControls[ nrItem ], 1000, { || ::Item( nrItem, TMessageBar_AmPmClock() ) } )
+   Endif
 
 Return Nil
+
+STATIC FUNCTION TMessageBar_AmPmClock()
+LOCAL cTime
+   cTime := TIME()
+   IF cTime < "13"
+      cTime := cTime + " am"
+   ELSE
+      cTime := STRZERO( VAL( LEFT( cTime, 2 ) ) - 12, 2 ) + SUBSTR( cTime, 3 ) + " pm"
+   ENDIF
+RETURN cTime
 
 *-----------------------------------------------------------------------------*
 METHOD SetKeybrd( Width , ToolTip , action ) CLASS TMessageBar
@@ -395,8 +409,8 @@ Return 0
 
 
 
-FUNCTION _SetStatusClock( nSize, cToolTip, uAction )
-Return _OOHG_ActiveMessageBar:SetClock( nSize, cToolTip, uAction )
+FUNCTION _SetStatusClock( nSize, cToolTip, uAction, lAmPm )
+Return _OOHG_ActiveMessageBar:SetClock( nSize, cToolTip, uAction, lAmPm )
 
 FUNCTION _SetStatusKeybrd( nSize, cToolTip, uAction )
 Return _OOHG_ActiveMessageBar:SetKeybrd( nSize, cToolTip, uAction )
