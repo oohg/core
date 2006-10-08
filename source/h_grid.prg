@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.55 2006-10-07 22:21:05 declan2005 Exp $
+ * $Id: h_grid.prg,v 1.56 2006-10-08 11:59:06 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -1134,9 +1134,6 @@ METHOD InsertItem( nItem, aRow, uForeColor, uBackColor ) CLASS TGrid
    ::InsertBlank( nItem )
    ::SetItemColor( nItem, uForeColor, uBackColor, aRow )
    ListViewSetItem( ::hWnd, aRow, nItem )
-   if ::value>0
-      ::value--
-   endif
 Return Nil
 
 *-----------------------------------------------------------------------------*

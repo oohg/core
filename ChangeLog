@@ -1,11 +1,15 @@
 /*
- * $Id: ChangeLog,v 1.232 2006-10-07 22:21:05 declan2005 Exp $
+ * $Id: ChangeLog,v 1.233 2006-10-08 11:59:06 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-10-08 6:52 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+  * source/h_grid.prg
+    * adjusting pointer in insertitem method are now out to avoid problems in large inserts.
 
 
 2006-10-07 17:16 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
