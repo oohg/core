@@ -1,5 +1,5 @@
 /*
- * $Id: h_report.prg,v 1.30 2006-09-22 19:43:15 declan2005 Exp $
+ * $Id: h_report.prg,v 1.31 2006-10-15 22:40:23 declan2005 Exp $
  */
 /*
  * DO REPORT Command support procedures For MiniGUI Library.
@@ -281,37 +281,37 @@ do case
             ncvcopt:=1
             repobject:nfsize:=12
             if lnoprop
-               oprint:nfontsize:=12
+               oprint:setcpl(80)
             endif
          case ncpl= 96
             ncvcopt:=2
             repobject:nfsize=10
             if lnoprop
-               oprint:nfontsize:=10
+               oprint:setcpl(96)
             endif
          case ncpl= 120
             ncvcopt:=3
             repobject:nfsize:=8
             if lnoprop
-               oprint:nfontsize:=8
+               oprint:setcpl(120)
             endif
          case ncpl= 140
             ncvcopt:=4
            repobject:nfsize:=7
            if lnoprop
-              oprint:nfontsize:=7
+              oprint:setcpl(140)
            endif
          case ncpl= 160
             ncvcopt:=5
             repobject:nfsize:=6
             if lnoprop
-                oprint:nfontsize:=6
+                oprint:setcpl(160)
             endif
          otherwise
             ncvcopt:=1
             repobject:nfsize:=12
             if lnoprop
-                oprint:nfontsize:=12
+                oprint:setcpl(80)
             endif
 endcase
 
@@ -397,7 +397,8 @@ do while .not. eof()
        endif
             do case
                case type('&wfielda')=='C'
-                 clinea:=clinea+substr(wfield,1,awidths[i])+space(awidths[i]-len(substr(wfield,1,awidths[i]) ))+" "
+               clinea:=clinea+substr(wfield,1,awidths[i])+space(awidths[i]-len(substr(wfield,1,awidths[i]) ))+" "
+////                    clinea:=clinea + iif(.not.(aformats[i]==NIL),space(awidths[i]-len(transform(wfield,aformats[i])))+transform(wfield,aformats[i]),str(wfield,awidths[i]))+ space(awidths[i] -   len(  iif(.not.(aformats[i]==''),space(awidths[i]-len(transform(wfield,aformats[i])))+transform(wfield,aformats[i]),str(wfield,awidths[i])))   )+" "
                case type('&wfielda')=='N'
                     clinea:=clinea + iif(.not.(aformats[i]==NIL),space(awidths[i]-len(transform(wfield,aformats[i])))+transform(wfield,aformats[i]),str(wfield,awidths[i]))+ space(awidths[i] -   len(  iif(.not.(aformats[i]==''),space(awidths[i]-len(transform(wfield,aformats[i])))+transform(wfield,aformats[i]),str(wfield,awidths[i])))   )+" "
                case type('&wfielda')=='D'

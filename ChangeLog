@@ -1,11 +1,19 @@
 /*
- * $Id: ChangeLog,v 1.234 2006-10-15 03:12:19 guerra000 Exp $
+ * $Id: ChangeLog,v 1.235 2006-10-15 22:40:22 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+
+2006-10-15 17:18 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+  * source/h_print.prg
+    * fixed problem in right align in TPRINT
+    + methods  ::setcpl() , ::setprop() added
+  * source/h_report.prg
+    * little changes because h_print new methods in TPRINT
 
 2006-10-14 22:11 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * include/oohg.h
