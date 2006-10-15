@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.h,v 1.30 2006-08-05 02:17:49 guerra000 Exp $
+ * $Id: oohg.h,v 1.31 2006-10-15 03:12:19 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -78,6 +78,7 @@ typedef struct OOHG_Window {
    LONG       lFontColorSelected, lBackColorSelected;
    LONG       lAux[ 10 ];
    HFONT      hFontHandle;
+   LONG       lOldBackColor, lUseBackColor;
 
 //   int        iRow, iCol, iWidth, iHeight;
 //   HB_ITEM    oParent;

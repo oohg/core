@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.109 2006-10-01 02:09:30 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.110 2006-10-15 03:12:19 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -309,6 +309,8 @@ HB_FUNC_STATIC( TWINDOW_STARTINFO )
    oSelf->lBackColor = -1;
    oSelf->lFontColorSelected = -1;
    oSelf->lBackColorSelected = -1;
+   oSelf->lOldBackColor = -1;
+   oSelf->lUseBackColor = -1;
 
    // HACK! Latest created control... Needed for WM_MEASUREITEM :(
    if( ! _OOHG_LastSelf )

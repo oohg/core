@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.62 2006-08-07 01:55:39 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.63 2006-10-15 03:12:19 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1830,6 +1830,7 @@ HB_FUNC_STATIC( TCONTROL_EVENTS_COLOR )   // METHOD Events_Color( wParam ) CLASS
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
    HDC hdc = ( HDC ) hb_parnl( 1 );
+   LONG lBackColor;
 
    if( oSelf->lFontColor != -1 )
    {
@@ -1845,11 +1846,16 @@ HB_FUNC_STATIC( TCONTROL_EVENTS_COLOR )   // METHOD Events_Color( wParam ) CLASS
       return;
    }
 
-   if( oSelf->lBackColor != -1 )
+   lBackColor = ( oSelf->lUseBackColor != -1 ) ? oSelf->lUseBackColor : oSelf->lBackColor;
+   if( lBackColor != -1 )
    {
-      SetBkColor( hdc, ( COLORREF ) oSelf->lBackColor );
-      DeleteObject( oSelf->BrushHandle );
-      oSelf->BrushHandle = CreateSolidBrush( oSelf->lBackColor );
+      SetBkColor( hdc, ( COLORREF ) lBackColor );
+      if( lBackColor != oSelf->lOldBackColor )
+      {
+         oSelf->lOldBackColor = lBackColor;
+         DeleteObject( oSelf->BrushHandle );
+         oSelf->BrushHandle = CreateSolidBrush( lBackColor );
+      }
       hb_retnl( ( LONG ) oSelf->BrushHandle );
    }
    else
@@ -1859,6 +1865,7 @@ HB_FUNC_STATIC( TCONTROL_EVENTS_COLOR )   // METHOD Events_Color( wParam ) CLASS
          DeleteObject( oSelf->BrushHandle );
          oSelf->BrushHandle = NULL;
       }
+      oSelf->lOldBackColor = -1;
       hb_ret();
    }
 
