@@ -1,5 +1,5 @@
 /*
- * $Id: c_controlmisc.c,v 1.38 2006-08-05 02:17:49 guerra000 Exp $
+ * $Id: c_controlmisc.c,v 1.39 2006-10-16 03:16:56 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -220,6 +220,8 @@ POCTRL _OOHG_GetControlInfo( PHB_ITEM pSelf )
       memset( pString, 0, _OOHG_Struct_Size );
       ( ( POCTRL ) pString )->lFontColor = -1;
       ( ( POCTRL ) pString )->lBackColor = -1;
+      ( ( POCTRL ) pString )->lUseBackColor = -1;
+      ( ( POCTRL ) pString )->lOldBackColor = -1;
 
       if( HB_IS_STRING( hb_arrayGetItemPtr( pArray, 1 ) ) && hb_arrayGetCLen( pArray, 1 ) )
       {
