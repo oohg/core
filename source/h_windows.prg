@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.110 2006-10-15 03:12:19 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.111 2006-10-18 19:18:37 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -771,10 +771,10 @@ Local myobject, cWork
       cWork := '_oohg_t' + alltrim( str( int( random( 999999 ) ) ) ) + '.bmp'
    enddo
 
-   DEFAULT y1    TO 45
-   DEFAULT x1    TO 120
-   DEFAULT x    TO 4
-   DEFAULT y    TO 2
+   DEFAULT y1    TO 44
+   DEFAULT x1    TO 110
+   DEFAULT x    TO 1
+   DEFAULT y    TO 1
 
    bringwindowtotop( ::hWnd )
 
