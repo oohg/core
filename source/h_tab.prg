@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.24 2006-08-05 02:13:30 guerra000 Exp $
+ * $Id: h_tab.prg,v 1.25 2006-10-19 07:28:43 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -123,6 +123,10 @@ CLASS TTab FROM TControl
    METHOD DeleteControl
    METHOD DeletePage
    METHOD Caption
+
+   METHOD RealPosition
+   METHOD HidePage
+   METHOD ShowPage
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -233,9 +237,10 @@ Return Nil
 METHOD Value( nValue ) CLASS TTab
 *-----------------------------------------------------------------------------*
    IF VALTYPE( nValue ) == "N"
-      TABCTRL_SETCURSEL( ::hWnd, nValue )
+      TabCtrl_SetCurSel( ::hWnd, ::RealPosition( nValue ) )
       ::Refresh()
    ENDIF
+* AQUI!
 RETURN TABCTRL_GETCURSEL( ::hWnd )
 
 *-----------------------------------------------------------------------------*
@@ -244,7 +249,7 @@ METHOD Enabled( lEnabled ) CLASS TTab
 LOCAL nPos
    IF VALTYPE( lEnabled ) == "L"
       ::Super:Enabled := lEnabled
-      nPos := TabCtrl_GetCurSel( ::hWnd )
+      nPos := ::Value
       IF nPos <= LEN( ::aPages ) .AND. nPos >= 1
          ::aPages[ nPos ]:Enabled := ::aPages[ nPos ]:Enabled
       ENDIF
@@ -257,7 +262,7 @@ METHOD Visible( lVisible ) CLASS TTab
 LOCAL nPos, aPages
    IF VALTYPE( lVisible ) == "L"
       ::Super:Visible := lVisible
-      nPos := TabCtrl_GetCurSel( ::hWnd )
+      nPos := ::Value
       aPages := ::aPages
       IF nPos <= LEN( aPages ) .AND. nPos >= 1
          IF lVisible .AND. aPages[ nPos ]:Visible
@@ -273,7 +278,7 @@ RETURN ::lVisible
 METHOD ForceHide() CLASS TTab
 *-----------------------------------------------------------------------------*
 LOCAL nPos
-   nPos := TabCtrl_GetCurSel( ::hWnd )
+   nPos := ::Value
    IF nPos <= LEN( ::aPages ) .AND. nPos >= 1
       ::aPages[ nPos ]:ForceHide()
    ENDIF
@@ -314,8 +319,6 @@ Local oPage, nPos, nKey
       ENDIF
 	EndIf
 
-   TABCTRL_INSERTITEM( ::hWnd, Position - 1 , Caption )
-
    If ValType( oSubClass ) == "O"
       oPage := oSubClass
    ElseIf ::lInternals
@@ -323,17 +326,21 @@ Local oPage, nPos, nKey
    Else
       oPage := TTabPage()
    EndIf
-   oPage:Define( Name, Self, Position )
+   oPage:Define( Name, Self )
 
    oPage:Caption   := Caption
    oPage:Picture   := Image
+   oPage:Position  := Position
 
    AADD( ::aPages, nil )
    AINS( ::aPages, Position )
    ::aPages[ Position ] := oPage
 
+   TABCTRL_INSERTITEM( ::hWnd, ::RealPosition( Position ) - 1 , Caption )
+
    IF ! Empty( Image )
-      SetTabPageImage( ::hWnd, ::AddBitMap( Image ) - 1 )
+      oPage:nImage := ::AddBitMap( Image ) - 1
+      SetTabPageImage( ::hWnd, oPage:nImage, ::RealPosition( Position ) )
    ENDIF
 
    If ValType( aControls ) == "A"
@@ -351,8 +358,7 @@ Local oPage, nPos, nKey
                    VK_Y, VK_Z, VK_0, VK_1, VK_2, VK_3, VK_4, VK_5, ;
                    VK_6, VK_7, VK_8, VK_9 }[ nPos ]
          IF VALTYPE( Mnemonic ) != "B"
-*            Mnemonic := {|| ( ::Value := Position , iif ( valtype( ::OnChange ) =='B' , Eval( ::OnChange ) , Nil ) ) }
-            Mnemonic := {|| ( oPage:SetFocus() , iif ( valtype( ::OnChange ) =='B' , Eval( ::OnChange ) , Nil ) ) }
+            Mnemonic := {|| oPage:SetFocus() }
          ENDIF
          ::Parent:HotKey( nKey, MOD_ALT, Mnemonic )
       ENDIF
@@ -427,29 +433,24 @@ Return Nil
 *-----------------------------------------------------------------------------*
 METHOD DeletePage( Position ) CLASS TTab
 *-----------------------------------------------------------------------------*
-Local NewValue
+Local nValue, nRealPosition
 
    IF VALTYPE( Position ) != "N" .OR. Position < 1 .OR. Position > LEN( ::aPages )
       Position := LEN( ::aPages )
    ENDIF
 
-   // Control Map
+   nValue := ::Value
+   nRealPosition := ::RealPosition( Position )
 
    ::aPages[ Position ]:Release()
-
    _OOHG_DeleteArrayItem( ::aPages, Position )
+   IF nRealPosition != 0
+      TabCtrl_DeleteItem( ::hWnd, nRealPosition - 1 )
+   ENDIF
 
-   TabCtrl_DeleteItem( ::hWnd, Position - 1 )
-
-   NewValue := Position - 1
-
-   If NewValue == 0
-      NewValue := 1
-   EndIf
-
-   TABCTRL_SETCURSEL( ::hWnd, NewValue )
-
-   ::Refresh()
+   IF nValue == Position
+      ::Refresh()
+   ENDIF
 
 Return Nil
 
@@ -458,7 +459,10 @@ METHOD Caption( nColumn, uValue ) CLASS TTab
 *-----------------------------------------------------------------------------*
    IF VALTYPE( uValue ) $ "CM"
       ::aPages[ nColumn ]:Caption := uValue
-      SETTABCAPTION( ::hWnd, nColumn, uValue )
+      uValue := ::RealPosition( uValue )
+      IF uValue != 0
+         SetTabCaption( ::hWnd, nColumn, uValue )
+      ENDIF
    ENDIF
 Return ::aPages[ nColumn ]:Caption
 
@@ -466,6 +470,50 @@ Return ::aPages[ nColumn ]:Caption
 METHOD DeleteControl( oCtrl ) CLASS TTab
 *-----------------------------------------------------------------------------*
 Return AEVAL( ::aPages, { |o| o:DeleteControl( oCtrl ) } )
+
+*-----------------------------------------------------------------------------*
+METHOD RealPosition( nPage ) CLASS TTab
+*-----------------------------------------------------------------------------*
+LOCAL nCount := 0
+   IF nPage >= 1 .AND. nPage <= LEN( ::aPages ) .AND. ! ::aPages[ nPage ]:lHidden
+      AEVAL( ::aPages, { |o| IF( o:lHidden, , nCount++ ) }, 1, nPage )
+   ENDIF
+RETURN nCount
+
+*-----------------------------------------------------------------------------*
+METHOD HidePage( nPage ) CLASS TTab
+*-----------------------------------------------------------------------------*
+LOCAL nRealPosition, nValue
+   IF nPage >= 1 .AND. nPage <= LEN( ::aPages ) .AND. ! ::aPages[ nPage ]:lHidden
+      // Disable hotkey!
+      nValue := ::Value
+      nRealPosition := ::RealPosition( nPage )
+      TabCtrl_DeleteItem( ::hWnd, nRealPosition - 1 )
+      ::aPages[ nPage ]:ForceHide()
+      ::aPages[ nPage ]:lHidden := .T.
+      IF nValue == nPage
+         ::Refresh()
+      ENDIF
+   ENDIF
+RETURN nil
+
+*-----------------------------------------------------------------------------*
+METHOD ShowPage( nPage ) CLASS TTab
+*-----------------------------------------------------------------------------*
+LOCAL nRealPosition
+   IF nPage >= 1 .AND. nPage <= LEN( ::aPages ) .AND. ::aPages[ nPage ]:lHidden
+      ::aPages[ nPage ]:lHidden := .F.
+      nRealPosition := ::RealPosition( nPage )
+      TABCTRL_INSERTITEM( ::hWnd, nRealPosition - 1 , ::aPages[ nPage ]:Caption )
+      IF ::aPages[ nPage ]:nImage != -1
+         SetTabPageImage( ::hWnd, ::aPages[ nPage ]:nImage, nRealPosition )
+      ENDIF
+      IF ::Value == nPage
+         ::Refresh()
+      ENDIF
+      // Enable hotkey!
+   ENDIF
+RETURN nil
 
 
 
@@ -477,6 +525,7 @@ CLASS TTabPage FROM TControl
    DATA Picture   INIT ""
    DATA Position  INIT 0
    DATA nImage    INIT -1
+   DATA lHidden   INIT .F.
 
    METHOD Define
    METHOD Enabled
@@ -485,15 +534,14 @@ CLASS TTabPage FROM TControl
    METHOD ContainerVisible
 
    METHOD AddControl
-   METHOD SetFocus            BLOCK { |Self| ::Container:SetFocus() , ::Container:Value := ::Position , Self }
+   METHOD SetFocus            BLOCK { |Self| ::Container:SetFocus() , ::Container:Value := ::Position , ::Container:DoEvent( ::Container:OnChange ) , Self }
    METHOD ForceHide           BLOCK { |Self| AEVAL( ::aControls, { |o| o:ForceHide() } ) }
    METHOD Events_Size         BLOCK { |Self| AEVAL( ::aControls, { |o| o:SizePos() } ) }
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
-METHOD Define( ControlName, ParentForm, Position ) CLASS TTabPage
+METHOD Define( ControlName, ParentForm ) CLASS TTabPage
 *-----------------------------------------------------------------------------*
-   Empty( Position )
    ::SetForm( ControlName, ParentForm )
 Return Self
 
@@ -520,24 +568,18 @@ METHOD ContainerVisible() CLASS TTabPage
 *-----------------------------------------------------------------------------*
 Local lRet := .F.
    IF ::Super:ContainerVisible
-      lRet := ( TabCtrl_GetCurSel( ::Container:hWnd ) == ::Position )
+      lRet := ( ::Container:Value == ::Position )
    ENDIF
 RETURN lRet
 
 *-----------------------------------------------------------------------------*
 METHOD AddControl( oCtrl , Row , Col ) CLASS TTabPage
 *-----------------------------------------------------------------------------*
-
    oCtrl:Visible := oCtrl:Visible
-
    ::Super:AddControl( oCtrl )
-
    oCtrl:Container := Self
-
    oCtrl:SizePos( Row, Col )
-
    oCtrl:Visible := oCtrl:Visible
-
 Return Nil
 
 
@@ -549,30 +591,26 @@ CLASS TTabPageInternal FROM TFormInternal
    DATA Picture    INIT ""
    DATA Position   INIT 0
    DATA nImage     INIT -1
+   DATA lHidden    INIT .F.
    DATA nRowMargin INIT 0
    DATA nColMargin INIT 0
 
    METHOD Define
    METHOD Events_Size
 
-/*
-   METHOD ContainerVisible
-*/
-
    METHOD RowMargin           SETGET
    METHOD ColMargin           SETGET
 
-   METHOD SetFocus            BLOCK { |Self| ::Container:SetFocus() , ::Container:Value := ::Position , ::Super:SetFocus() }
+   METHOD SetFocus            BLOCK { |Self| ::Container:SetFocus() , ::Container:Value := ::Position , ::Super:SetFocus() , ::Container:DoEvent( ::Container:OnChange ) , Self }
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
-METHOD Define( ControlName, ParentForm, Position ) CLASS TTabPageInternal
+METHOD Define( ControlName, ParentForm ) CLASS TTabPageInternal
 *-----------------------------------------------------------------------------*
 Local aArea
 
    ::SearchParent( ParentForm )
-   ASSIGN Position VALUE Position TYPE "N" DEFAULT LEN( ::Container:aPages ) + 1
-   aArea := _OOHG_TabPage_GetArea( ::Container, Position )
+   aArea := _OOHG_TabPage_GetArea( ::Container )
    ::Super:Define( ControlName,, aArea[ 1 ], aArea[ 2 ], aArea[ 3 ], aArea[ 4 ], ParentForm )
    END WINDOW
    ::ContainerhWndValue := ::hWnd
@@ -585,13 +623,13 @@ Return Self
 METHOD Events_Size() CLASS TTabPageInternal
 *-----------------------------------------------------------------------------*
 Local aArea
-   aArea := _OOHG_TabPage_GetArea( ::Container, ::Position )
+   aArea := _OOHG_TabPage_GetArea( ::Container )
    ::SizePos( aArea[ 2 ], aArea[ 1 ], aArea[ 3 ], aArea[ 4 ] )
 Return NIL
 
-STATIC FUNCTION _OOHG_TabPage_GetArea( oTab, nPosition )
+STATIC FUNCTION _OOHG_TabPage_GetArea( oTab )
 LOCAL aRect
-   aRect := TabCtrl_GetItemRect( oTab:hWnd, nPosition - 1 )
+   aRect := TabCtrl_GetItemRect( oTab:hWnd, 0 )
    aRect := { 2, aRect[ 4 ] + 2, oTab:Width - 2, oTab:Height - 2 }
 RETURN { aRect[ 1 ], aRect[ 2 ], aRect[ 3 ] - aRect[ 1 ], aRect[ 4 ] - aRect[ 2 ] } // { Col, Row, Width, Height }
 
@@ -611,7 +649,7 @@ RETURN - ::ContainerCol + ::nColMargin
 
 
 
-EXTERN InitTabControl, SetTabCaption, SetTabPageImage
+EXTERN InitTabControl, SetTabCaption
 EXTERN TabCtrl_SetCurSel, TabCtrl_GetCurSel, TabCtrl_InsertItem, TabCtrl_DeleteItem, TabCtrl_GetItemRect
 
 #pragma BEGINDUMP
@@ -757,7 +795,7 @@ HB_FUNC( SETTABPAGEIMAGE )
 //            ImageList_AddMasked( himl, hbmp, CLR_DEFAULT ) ;
    tie.mask = TCIF_IMAGE ;
    tie.iImage = hb_parni( 2 );
-   TabCtrl_SetItem( HWNDparam( 1 ), hb_parni( 2 ), &tie );
+   TabCtrl_SetItem( HWNDparam( 1 ), hb_parni( 3 ) - 1, &tie );
 }
 
 HB_FUNC( TABCTRL_GETITEMRECT )

@@ -1,11 +1,18 @@
 /*
- * $Id: ChangeLog,v 1.238 2006-10-19 02:17:56 guerra000 Exp $
+ * $Id: ChangeLog,v 1.239 2006-10-19 07:28:42 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-10-19 02:33 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_tab.prg
+    + Added ::RealPosition, ::HidePage( nPage ) and ::ShowPage( nPage )
+      methods, for allow virtually-hidden TAB pages.
+
+/* CURRENTLY EXPERIMENTAL!!! Take care for this update!!! */
 
 2006-10-18 21:15 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * include/i_window.ch
