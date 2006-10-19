@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.111 2006-10-18 19:18:37 declan2005 Exp $
+ * $Id: h_windows.prg,v 1.112 2006-10-19 02:17:57 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -214,6 +214,7 @@ CLASS TWindow
    METHOD Caption             SETGET
    METHOD Events
 
+   METHOD Object              BLOCK { |Self| Self }
    METHOD Enabled             SETGET
    METHOD Enable              BLOCK { |Self| ::Enabled := .T. }
    METHOD Disable             BLOCK { |Self| ::Enabled := .F. }
@@ -2895,6 +2896,16 @@ Function GetFormObject( FormName )
 Local mVar
    mVar := '_' + FormName
 Return IF( Type( mVar ) == "O", &mVar, TForm() )
+
+*-----------------------------------------------------------------------------*
+Function GetExistingFormObject( FormName )
+*-----------------------------------------------------------------------------*
+Local mVar
+   mVar := '_' + FormName
+   If ! Type( mVar ) == "O"
+      MsgOOHGError( "Window " + FormName + " not defined. Program Terminated." )
+   EndIf
+Return &mVar
 
 *-----------------------------------------------------------------------------*
 Function GetWindowType( FormName )

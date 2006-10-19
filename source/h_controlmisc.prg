@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.63 2006-10-15 03:12:19 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.64 2006-10-19 02:17:57 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -487,12 +487,12 @@ Return GetControlObjectByHandle( Handle ):ContainerVisible
 *-----------------------------------------------------------------------------*
 Function _SetCaretPos( ControlName, FormName, Pos )
 *-----------------------------------------------------------------------------*
-Return SendMessage( GetControlObject( ControlName, FormName ):hWnd, EM_SETSEL , Pos , Pos )
+Return ( GetControlObject( ControlName, FormName ):CaretPos := Pos )
 
 *-----------------------------------------------------------------------------*
 Function _GetCaretPos( ControlName, FormName )
 *-----------------------------------------------------------------------------*
-Return ( HiWord ( SendMessage( GetControlObject( ControlName, FormName ):hWnd, EM_GETSEL , 0 , 0 ) ) )
+Return GetControlObject( ControlName, FormName ):CaretPos
 
 *------------------------------------------------------------------------------*
 FUNCTION Random( nLimit )
@@ -645,7 +645,7 @@ Local oWnd, oCtrl
 			EndIf
 
       ElseIf Arg3 == "CARETPOS"
-         _SetCaretPos( Arg2 , Arg1 , Arg4 )
+         oCtrl:CaretPos := Arg4
 
       ElseIf Arg3 == "BACKCOLOR"
          oCtrl:BackColor := Arg4
@@ -660,7 +660,7 @@ Local oWnd, oCtrl
          oCtrl:Address := Arg4
 
       ElseIf Arg3 == "READONLY"
-         SetTextEditReadOnly( oCtrl:hWnd, Arg4 )
+         oCtrl:ReadOnly := Arg4
 
       ElseIf Arg3 == "ITEMCOUNT"
          ListView_SetItemCount( oCtrl:hWnd, Arg4 )
@@ -875,7 +875,7 @@ Local RetVal, oWnd, oCtrl
          RetVal := oCtrl:Position
 
 		ElseIf Arg3 == 'CARETPOS'
-         RetVal := _GetCaretPos( Arg2 , Arg1 )
+         RetVal := oCtrl:CaretPos
 
 		ElseIf Arg3 == 'BACKCOLOR'
          RetVal := oCtrl:BackColor
@@ -1956,11 +1956,21 @@ Return nil
 
 
 *-----------------------------------------------------------------------------*
-Function GetControlObject(ControlName,FormName)
+Function GetControlObject( ControlName, FormName )
 *-----------------------------------------------------------------------------*
 Local mVar
    mVar := '_' + FormName + '_' + ControlName
 Return IF( Type( mVar ) == "O", &mVar, TControl() )
+
+*-----------------------------------------------------------------------------*
+Function GetExistingControlObject( ControlName, FormName )
+*-----------------------------------------------------------------------------*
+Local mVar
+   mVar := '_' + FormName + '_' + ControlName
+   If ! Type( mVar ) == "O"
+      MsgOOHGError( "Control: " + ControlName + " of " + FormName + " not defined. Program Terminated." )
+   EndIf
+Return &mVar
 
 *-----------------------------------------------------------------------------*
 Function _GetId()
