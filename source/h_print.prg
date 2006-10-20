@@ -1,9 +1,8 @@
 /*
-* $Id: h_print.prg,v 1.37 2006-10-15 22:40:23 declan2005 Exp $
+* $Id: h_print.prg,v 1.38 2006-10-20 20:20:00 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
-#include 'common.ch'
 #include 'oohg.ch'
 #include 'miniprint.ch'
 #include 'winprint.ch'
@@ -307,7 +306,7 @@ METHOD setcpl(ncpl) CLASS TPRINTBASE
 *-------------------------
 do case
    case ncpl=60
-        ::nfotnsize:=14
+        ::nfontsize:=14
    case ncpl=80
         ::nfontsize:=12
    case ncpl=96
@@ -337,9 +336,9 @@ return nil
 METHOD init( ) CLASS TPRINTBASE
 *-------------------------
 if iswindowactive(_oohg_winreport)
-msgstop("Print preview pending, close first")
-::exit:=.T.
-return nil
+   msgstop("Print preview pending, close first")
+   ::exit:=.T.
+   return nil
 endif
 Public _OOHG_printer_docname
 ::initx()
@@ -350,12 +349,12 @@ METHOD selprinter( lselect , lpreview, llandscape , npapersize ,cprinterx, lhide
 *-------------------------
 local lsucess := .T.
 if ::exit
-::lprerror:=.T.
-return nil
+   ::lprerror:=.T.
+   return nil
 endif
 
 if lhide#NIL
-::lwinhide:=lhide
+   ::lwinhide:=lhide
 endif
 
 SETPRC(0,0)
@@ -368,7 +367,7 @@ return self
 *-------------------------
 METHOD BEGINDOC(cdoc) CLASS TPRINTBASE
 *-------------------------
-
+local olabel,oimage
 DEFAULT cDoc to "ooHG printing"
 
 
@@ -380,26 +379,26 @@ TITLE cdoc MODAL NOSHOW NOSIZE NOSYSMENU NOCAPTION  ;
 end window
 
 
-DEFINE WINDOW _oohg_winreport ;
+DEFINE WINDOW _oohg_winreport  ;
 AT 0,0 ;
 WIDTH 400 HEIGHT 120 ;
 TITLE cdoc CHILD NOSIZE NOSYSMENU NOCAPTION ;
 
 @ 5,5 frame myframe width 390 height 110
 
-@ 15,195 IMAGE IMAGE_101 ;
+@ 15,195 IMAGE IMAGE_101 obj oimage ;
 picture 'hbprint_print'  ;
 WIDTH 25  ;
 HEIGHT 30 ;
 STRETCH
 
-@ 22,225 LABEL LABEL_101 VALUE '......' FONT "Courier New" SIZE 10
+@ 22,225 LABEL LABEL_101  VALUE '......' FONT "Courier New" SIZE 10
 
-@ 55,10  label label_1 value cdoc WIDTH 300 HEIGHT 32 FONT "Courier New"
+@ 55,10  label label_1 obj olabel value cdoc WIDTH 300 HEIGHT 32 FONT "Courier New"
 
 DEFINE TIMER TIMER_101  ;
 INTERVAL 1000  ;
-ACTION action_timer()
+ACTION action_timer(olabel,oimage)
 
 if .not. ::lwinhide
    _oohg_winreport.hide()
@@ -416,11 +415,11 @@ return self
 
 
 *-------------------------
-function action_timer()
+static function action_timer(olabel,oimage)
 *-------------------------
 if iswindowdefined(_oohg_winreport)
-_oohg_winreport.label_1.fontbold:=IIF(_oohg_winreport.label_1.fontbold,.F.,.T.)
-_oohg_winreport.image_101.visible:=IIF(_oohg_winreport.label_1.fontbold,.T.,.F.)
+   olabel:fontbold := IIF(olabel:fontbold,.F.,.T.)
+   oimage:visible :=  IIF(olabel:fontbold,.T.,.F.)
 endif
 return nil
 
@@ -462,9 +461,9 @@ RETURN ::getdefprinterx()
 METHOD setunits(cunitsx) CLASS TPRINTBASE
 *-------------------------
 if cunitsx="MM"
-::cunits:="MM"
+   ::cunits:="MM"
 else
-::cunits:="ROWCOL"
+   ::cunits:="ROWCOL"
 endif
 RETURN nil
 
@@ -524,7 +523,7 @@ else
    if ::lprop
       ::nmver  := (::nfontsize)/2.45
    else
-      ::nmver  :=  (10)/2.45
+      ::nmver  :=  10/2.45
    endif
    ::nvfij  := (12/1.65)
    ::nhfij  := (12/3.70)
@@ -550,15 +549,20 @@ DEFAULT nlinf to 4
 DEFAULT ncolf to 4
 
 if ::cunits="MM"
-::nmver:=1
-::nvfij:=0
-::nmhor:=1
-::nhfij:=0
+   ::nmver:=1
+   ::nvfij:=0
+   ::nmhor:=1
+   ::nhfij:=0
 else
-::nmhor  := (::nfontsize)/4.75
-::nmver  := (::nfontsize)/2.45
-::nvfij  := (12/1.65)
-::nhfij  := (12/3.70)
+   ::nmhor  := (::nfontsize)/4.75
+   if ::lprop
+      ::nmver  := (::nfontsize)/2.45
+   else
+      ::nmver  :=  10/2.45
+   endif
+
+   ::nvfij  := (12/1.65)
+   ::nhfij  := (12/3.70)
 endif
 ::printimagex(nlin,ncol,nlinf,ncolf,cimage)
 return self
@@ -580,15 +584,20 @@ DEFAULT atcolor to ::acolor
 DEFAULT ntwpen to ::nwpen
 
 if ::cunits="MM"
-::nmver:=1
-::nvfij:=0
-::nmhor:=1
-::nhfij:=0
+   ::nmver:=1
+   ::nvfij:=0
+   ::nmhor:=1
+   ::nhfij:=0
 else
-::nmhor  := (::nfontsize)/4.75
-::nmver  := (::nfontsize)/2.45
-::nvfij  := (12/1.65)
-::nhfij  := (12/3.70)
+   ::nmhor  := (::nfontsize)/4.75
+   if ::lprop
+      ::nmver  := (::nfontsize)/2.45
+   else
+      ::nmver  :=  10/2.45
+   endif
+
+   ::nvfij  := (12/1.65)
+   ::nhfij  := (12/3.70)
 endif
 ::printlinex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen )
 
@@ -611,15 +620,22 @@ DEFAULT atcolor to ::acolor
 DEFAULT ntwpen to ::nwpen
 
 if ::cunits="MM"
-::nmver:=1
-::nvfij:=0
-::nmhor:=1
-::nhfij:=0
+   ::nmver:=1
+   ::nvfij:=0
+   ::nmhor:=1
+   ::nhfij:=0
 else
-::nmhor  := (::nfontsize)/4.75
-::nmver  := (::nfontsize)/2.45
-::nvfij  := (12/1.65)
-::nhfij  := (12/3.70)
+   ::nmhor  := (::nfontsize)/4.75
+   
+   if ::lprop
+      ::nmver  := (::nfontsize)/2.45
+   else
+      ::nmver  :=  10/2.45
+   endif
+
+
+   ::nvfij  := (12/1.65)
+   ::nhfij  := (12/3.70)
 endif
 ::printrectanglex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen )
 
@@ -642,15 +658,21 @@ DEFAULT atcolor to ::acolor
 DEFAULT ntwpen to ::nwpen
 
 if ::cunits="MM"
-::nmver:=1
-::nvfij:=0
-::nmhor:=1
-::nhfij:=0
+   ::nmver:=1
+   ::nvfij:=0
+   ::nmhor:=1
+   ::nhfij:=0
 else
-::nmhor  := (::nfontsize)/4.75
-::nmver  := (::nfontsize)/2.45
-::nvfij  := (12/1.65)
-::nhfij  := (12/3.70)
+   ::nmhor  := (::nfontsize)/4.75
+
+   if ::lprop
+      ::nmver  := (::nfontsize)/2.45
+   else
+      ::nmver  :=  10/2.45
+   endif
+
+   ::nvfij  := (12/1.65)
+   ::nhfij  := (12/3.70)
 endif
 
 ::printroundrectanglex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen )
@@ -822,8 +844,6 @@ METHOD printlinex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen ) CLASS TMINIPRINT
 @  (nlin+.2)*::nmver+::nvfij,ncol*::nmhor+::nhfij*2 PRINT LINE TO  (nlinf+.2)*::nmver+::nvfij,ncolf*::nmhor+::nhfij*2  COLOR atcolor PENWIDTH ntwpen  //// CPEN
 return self
 
-
-
 *-------------------------
 METHOD printrectanglex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen ) CLASS TMINIPRINT
 *-------------------------
@@ -837,32 +857,32 @@ METHOD selprinterx( lselect , lpreview, llandscape , npapersize ,cprinterx,nres)
 local worientation,lsucess
 
 if nres=NIL
-nres:=PRINTER_RES_MEDIUM
+   nres:=PRINTER_RES_MEDIUM
 endif
 IF llandscape
-Worientation:= PRINTER_ORIENT_LANDSCAPE
+   Worientation:= PRINTER_ORIENT_LANDSCAPE
 ELSE
-Worientation:= PRINTER_ORIENT_PORTRAIT
+   Worientation:= PRINTER_ORIENT_PORTRAIT
 ENDIF
 
 if lselect .and. lpreview .and. cprinterx = NIL
-::cPrinter := GetPrinter()
-If Empty (::cPrinter)
-::lprerror:=.T.
-Return Nil
-EndIf
+   ::cPrinter := GetPrinter()
+   If Empty (::cPrinter)
+      ::lprerror:=.T.
+      Return Nil
+   EndIf
 
 if npapersize#NIL
-SELECT PRINTER ::cprinter to lsucess ;
-ORIENTATION worientation ;
-PAPERSIZE npapersize       ;
-QUALITY nres ;
-PREVIEW
+   SELECT PRINTER ::cprinter to lsucess ;
+   ORIENTATION worientation ;
+   PAPERSIZE npapersize       ;
+   QUALITY nres ;
+   PREVIEW
 else
-SELECT PRINTER ::cprinter to lsucess ;
-ORIENTATION worientation ;
-QUALITY nres ;
-PREVIEW
+   SELECT PRINTER ::cprinter to lsucess ;
+   ORIENTATION worientation ;
+   QUALITY nres ;
+   PREVIEW
 endif
 endif
 
