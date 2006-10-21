@@ -1,11 +1,24 @@
 /*
- * $Id: ChangeLog,v 1.240 2006-10-20 20:20:00 declan2005 Exp $
+ * $Id: ChangeLog,v 1.241 2006-10-21 21:07:26 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-10-21 16:04 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  + include/i_hotkeybox.ch
+  * include/oohg.ch
+  + source/h_hotkeybox.prg
+  * source/makelib.bat
+    + THotKeyBox() control added. Idea borrowed from HMG experimental.
+
+  * source/h_print.prg
+    * Fixed warnings.
+
+  * include/i_window.ch
+    * Fixed VISIBLE:= wrong preprocessing.
 
 2006-10-20 15:16 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source/h_print.prg

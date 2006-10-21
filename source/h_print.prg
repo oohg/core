@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.38 2006-10-20 20:20:00 declan2005 Exp $
+* $Id: h_print.prg,v 1.39 2006-10-21 21:07:26 guerra000 Exp $
 */
 
 #include 'hbclass.ch'
@@ -319,7 +319,7 @@ do case
         ::nfontsize:=6
    otherwise
         ::nfontsize:=12
-endcase 
+endcase
 return nil
 
 *-------------------------
@@ -626,7 +626,7 @@ if ::cunits="MM"
    ::nhfij:=0
 else
    ::nmhor  := (::nfontsize)/4.75
-   
+
    if ::lprop
       ::nmver  := (::nfontsize)/2.45
    else
@@ -811,6 +811,7 @@ METHOD printdatax(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext) CLA
 *-------------------------
 Empty( Data )
 Empty( aColor )
+Empty( nLen )
 if .not. lbold
    if calign="R"
       textalign( 2 )
@@ -1111,6 +1112,7 @@ METHOD PRINTDATAx(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext) CLA
 *-------------------------
 Empty( Data )
 Empty( aColor )
+Empty( nLen )
 change font "F0" name cfont size nsize
 change font "F1" name cfont size nsize BOLD
 SET TEXTCOLOR acolor
