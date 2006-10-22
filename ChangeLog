@@ -1,11 +1,23 @@
 /*
- * $Id: ChangeLog,v 1.241 2006-10-21 21:07:26 guerra000 Exp $
+ * $Id: ChangeLog,v 1.242 2006-10-22 01:09:22 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-10-21 20:08 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_keybd.ch
+  * source/h_hotkey.prg
+    * THotKey control added. Hot keys managed as controls
+      ( ::Enabled := lvalue ).
+
+  * source/h_windows.prg
+    * ::Click() method added. Same as Form.Control.OnClick .
+
+  * source/h_tab.prg
+    * Fixed some ::ShowPage / ::HidePage issues.
 
 2006-10-21 16:04 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   + include/i_hotkeybox.ch

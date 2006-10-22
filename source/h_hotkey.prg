@@ -1,9 +1,9 @@
 /*
- * $Id: h_hotkey.prg,v 1.6 2006-02-25 16:29:27 guerra000 Exp $
+ * $Id: h_hotkey.prg,v 1.7 2006-10-22 01:09:22 guerra000 Exp $
  */
 /*
  * ooHG source code:
- * PRG hot keys functions
+ * Hot keys functions
  *
  * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.guerra.com.mx
@@ -92,6 +92,7 @@
 ---------------------------------------------------------------------------*/
 
 #include "oohg.ch"
+#include "hbclass.ch"
 
 STATIC aKeyTables := { "LBUTTON", "RBUTTON", "CANCEL", "MBUTTON", "XBUTTON1", "XBUTTON2", ".7", "BACK", "TAB", ".10", ;
                        ".11", "CLEAR", "RETURN", ".14", ".15", "SHIFT", "CONTROL", "MENU", "PAUSE", "CAPITAL", ;
@@ -111,23 +112,22 @@ STATIC aKeyTables := { "LBUTTON", "RBUTTON", "CANCEL", "MBUTTON", "XBUTTON1", "X
                        ".151", ".152", ".153", ".154", ".155", ".156", ".157", ".158", ".159", "LSHIFT", ;
                        "RSHIFT", "LCONTROL", "RCONTROL", "LMENU", "RMENU" } // 165
 
+#define _HOTKEYMETHOD   SetKey
+
 *------------------------------------------------------------------------------*
 Function _DefineHotKey( cParentForm, nMod, nKey, bAction )
 *------------------------------------------------------------------------------*
-// Return ( TControl():SetForm( "", cParentForm ):Parent ):HotKey( nKey, nMod, bAction )
-Return ( TControl():SetForm( "", cParentForm ):Parent ):SetKey( nKey, nMod, bAction )
+Return ( TControl():SetForm( "", cParentForm ):Parent ):_HOTKEYMETHOD( nKey, nMod, bAction )
 
 *------------------------------------------------------------------------------*
 Function _ReleaseHotKey( cParentForm, nMod, nKey )
 *------------------------------------------------------------------------------*
-// Return ( TControl():SetForm( "", cParentForm ):Parent ):HotKey( nKey, nMod, nil )
-Return ( TControl():SetForm( "", cParentForm ):Parent ):SetKey( nKey, nMod, nil )
+Return ( TControl():SetForm( "", cParentForm ):Parent ):_HOTKEYMETHOD( nKey, nMod, nil )
 
 *------------------------------------------------------------------------------*
 Function _GetHotKey( cParentForm, nMod, nKey )
 *------------------------------------------------------------------------------*
-// Return ( TControl():SetForm( "", cParentForm ):Parent ):HotKey( nKey, nMod )
-Return ( TControl():SetForm( "", cParentForm ):Parent ):SetKey( nKey, nMod )
+Return ( TControl():SetForm( "", cParentForm ):Parent ):_HOTKEYMETHOD( nKey, nMod )
 
 *------------------------------------------------------------------------------*
 Function _PushKey( nKey )
@@ -161,7 +161,7 @@ LOCAL aKey, nAlt, nCtrl, nShift, nWin, nPos, cKey2, cText
             nAlt := MOD_ALT
          ELSEIF cText == "CTRL" .OR. cText == "CONTROL"
             nCtrl := MOD_CONTROL
-         ELSEIF cText == "SHIFT"
+         ELSEIF cText == "SHIFT" .OR. cText == "SHFT"
             nShift := MOD_SHIFT
          ELSEIF cText == "WIN"
             nWin := MOD_WIN
@@ -180,11 +180,9 @@ LOCAL aKey, oWnd, bCode
    aKey := _DetermineKey( cKey )
    IF aKey[ 1 ] != 0
       oWnd := TControl():SetForm( "", cParentForm ):Parent
-      // bCode := oWnd:HotKey( aKey[ 1 ], aKey[ 2 ] )
-      bCode := oWnd:SetKey( aKey[ 1 ], aKey[ 2 ] )
+      bCode := oWnd:_HOTKEYMETHOD( aKey[ 1 ], aKey[ 2 ] )
       IF PCOUNT() > 2
-         // oWnd:HotKey( aKey[ 1 ], aKey[ 2 ], bAction )
-         oWnd:SetKey( aKey[ 1 ], aKey[ 2 ], bAction )
+         oWnd:_HOTKEYMETHOD( aKey[ 1 ], aKey[ 2 ], bAction )
       ENDIF
    ELSE
       MsgOOHGError( "HOTKEY: Key combination name not valid: " + cKey + ". Program Terminated." )
@@ -197,14 +195,80 @@ EXTERN InitHotKey, ReleaseHotKey
 #pragma BEGINDUMP
 #include <hbapi.h>
 #include <windows.h>
+#include <commctrl.h>
+#include "../include/oohg.h"
 
 HB_FUNC( INITHOTKEY )   // InitHotKey( hWnd, nMod, nKey, nHotKeyID )
 {
-   RegisterHotKey( ( HWND ) hb_parnl( 1 ), hb_parni( 4 ), hb_parni( 2 ), hb_parni( 3 ) );
+   RegisterHotKey( HWNDparam( 1 ), hb_parni( 4 ), hb_parni( 2 ), hb_parni( 3 ) );
 }
 
 HB_FUNC( RELEASEHOTKEY )   // ReleaseHotKey( hWnd, nHotKeyID )
 {
-   UnregisterHotKey( ( HWND ) hb_parnl( 1 ), hb_parni( 2 ) );
+   UnregisterHotKey( HWNDparam( 1 ), hb_parni( 2 ) );
 }
 #pragma ENDDUMP
+
+
+
+
+
+CLASS THotKey FROM TControl
+   DATA Type      INIT "HOTKEY" READONLY
+   DATA nKey      INIT 0
+   DATA nMod      INIT 0
+   DATA OnClick
+
+   METHOD Define
+   METHOD Enabled      SETGET
+   METHOD Release
+ENDCLASS
+
+*-----------------------------------------------------------------------------*
+METHOD Define( ControlName, ParentForm, nMod, nKey, bAction, lDisabled ) CLASS THotKey
+*-----------------------------------------------------------------------------*
+LOCAL aKey
+   IF VALTYPE( nKey ) $ "CM"
+      aKey := _DetermineKey( nKey )
+      nKey := aKey[ 1 ]
+      IF ValType( nMod ) == "N"
+         nMod := nMod + aKey[ 2 ]    // MUST BE A BINARY OR!!!
+      ELSE
+         nMod := aKey[ 2 ]
+      ENDIF
+   ENDIF
+
+   ASSIGN ::nKey    VALUE nKey    TYPE "N"
+   ASSIGN ::nMod    VALUE nMod    TYPE "N"
+   ASSIGN ::OnClick VALUE bAction TYPE "B"
+
+   ::SetForm( ControlName, ParentForm )
+   IF ValType( lDisabled ) == "L" .AND. lDisabled
+      ::lEnabled := .F.
+   ELSE
+      ::Parent:_HOTKEYMETHOD( ::nKey, ::nMod, ::OnClick )
+   ENDIF
+   ::Register( 0, ControlName )
+Return Self
+
+*-----------------------------------------------------------------------------*
+METHOD Enabled( lEnabled ) CLASS THotKey
+*-----------------------------------------------------------------------------*
+   IF VALTYPE( lEnabled ) == "L" .AND. ::lEnabled != lEnabled
+      IF lEnabled
+         ::Parent:_HOTKEYMETHOD( ::nKey, ::nMod, ::OnClick )
+      ELSE
+         ::Parent:_HOTKEYMETHOD( ::nKey, ::nMod, nil )
+      ENDIF
+      ::lEnabled := lEnabled
+   ENDIF
+RETURN ::lEnabled
+
+*-----------------------------------------------------------------------------*
+METHOD Release() CLASS THotKey
+*-----------------------------------------------------------------------------*
+   If ::lEnabled
+      ::Parent:_HOTKEYMETHOD( ::nKey, ::nMod, nil )
+      ::lEnabled := .F.
+   EndIf
+RETURN ::Super:Release()

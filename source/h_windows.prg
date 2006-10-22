@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.112 2006-10-19 02:17:57 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.113 2006-10-22 01:09:22 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -218,6 +218,7 @@ CLASS TWindow
    METHOD Enabled             SETGET
    METHOD Enable              BLOCK { |Self| ::Enabled := .T. }
    METHOD Disable             BLOCK { |Self| ::Enabled := .F. }
+   METHOD Click               BLOCK { |Self| ::DoEvent( ::OnClick ) }
    METHOD TabStop             SETGET
    METHOD RTL                 SETGET
    METHOD Action              SETGET

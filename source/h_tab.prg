@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.25 2006-10-19 07:28:43 guerra000 Exp $
+ * $Id: h_tab.prg,v 1.26 2006-10-22 01:09:22 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -199,13 +199,13 @@ Local ControlHandle
       z++
    ENDDO
 
-   ::OnChange   :=  Change
-
    IF VALTYPE( value ) == "N"
       ::Value := value
    ELSE
       ::Value := 1
    ENDIF
+
+   ::OnChange   :=  Change
 
 Return Self
 
@@ -214,7 +214,7 @@ METHOD Refresh() CLASS TTab
 *-----------------------------------------------------------------------------*
 Local nPage
    nPage := IF( ::Visible, ::Value, 0 )
-   AEVAL( ::aPages, { |p,i| p:Position := i , if( i == nPage, , p:ForceHide() ) } )
+   AEVAL( ::aPages, { |p,i| p:Position := i , p:ForceHide() } )
    IF nPage >= 1 .AND. nPage <= LEN( ::aPages )
       ::aPages[ nPage ]:Show()
    ENDIF
@@ -236,12 +236,18 @@ Return Nil
 *-----------------------------------------------------------------------------*
 METHOD Value( nValue ) CLASS TTab
 *-----------------------------------------------------------------------------*
+LOCAL nPos, nCount
    IF VALTYPE( nValue ) == "N"
-      TabCtrl_SetCurSel( ::hWnd, ::RealPosition( nValue ) )
-      ::Refresh()
+      nPos := ::RealPosition( nValue )
+      IF nPos != 0
+         TabCtrl_SetCurSel( ::hWnd, nPos )
+         ::Refresh()
+      ENDIF
    ENDIF
-* AQUI!
-RETURN TABCTRL_GETCURSEL( ::hWnd )
+   nPos := TABCTRL_GETCURSEL( ::hWnd )
+   nCount := 0
+   nValue := ASCAN( ::aPages, { |o| IF( o:lHidden, , nCount++ ), ( nCount == nPos ) } )
+RETURN nValue
 
 *-----------------------------------------------------------------------------*
 METHOD Enabled( lEnabled ) CLASS TTab
@@ -301,7 +307,7 @@ Return ::Super:Events_Notify( wParam, lParam )
 *-----------------------------------------------------------------------------*
 METHOD AddPage( Position, Caption, Image, aControls, Mnemonic, Name, oSubClass ) CLASS TTab
 *-----------------------------------------------------------------------------*
-Local oPage, nPos, nKey
+Local oPage, nPos
 
    IF VALTYPE( Position ) != "N" .OR. Position < 1 .OR. Position > LEN( ::aPages )
       Position := LEN( ::aPages ) + 1
@@ -350,21 +356,17 @@ Local oPage, nPos, nKey
    nPos := At( '&', Caption )
 
    IF nPos > 0 .AND. nPos < LEN( Caption )
-      nPos := AT( Upper( SubStr( Caption, nPos + 1, 1 ) ), "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789" )
-      IF nPos > 0
-         nKey := { VK_A, VK_B, VK_C, VK_D, VK_E, VK_F, VK_G, VK_H, ;
-                   VK_I, VK_J, VK_K, VK_L, VK_M, VK_N, VK_O, VK_P, ;
-                   VK_Q, VK_R, VK_S, VK_T, VK_U, VK_V, VK_W, VK_X, ;
-                   VK_Y, VK_Z, VK_0, VK_1, VK_2, VK_3, VK_4, VK_5, ;
-                   VK_6, VK_7, VK_8, VK_9 }[ nPos ]
-         IF VALTYPE( Mnemonic ) != "B"
-            Mnemonic := {|| oPage:SetFocus() }
-         ENDIF
-         ::Parent:HotKey( nKey, MOD_ALT, Mnemonic )
+      IF VALTYPE( Mnemonic ) != "B"
+         Mnemonic := { || oPage:SetFocus() }
       ENDIF
+      DEFINE HOTKEY 0 PARENT ( ::Parent ) KEY "ALT+" + SubStr( Caption, nPos + 1, 1 ) ACTION EVAL( Mnemonic )
    ENDIF
 
-   ::Refresh()
+   If ::Value == Position
+      ::Refresh()
+   Else
+      oPage:ForceHide()
+   EndIf
 
 Return oPage
 
@@ -483,16 +485,17 @@ RETURN nCount
 *-----------------------------------------------------------------------------*
 METHOD HidePage( nPage ) CLASS TTab
 *-----------------------------------------------------------------------------*
-LOCAL nRealPosition, nValue
+LOCAL nPos
    IF nPage >= 1 .AND. nPage <= LEN( ::aPages ) .AND. ! ::aPages[ nPage ]:lHidden
       // Disable hotkey!
-      nValue := ::Value
-      nRealPosition := ::RealPosition( nPage )
-      TabCtrl_DeleteItem( ::hWnd, nRealPosition - 1 )
-      ::aPages[ nPage ]:ForceHide()
+      TabCtrl_DeleteItem( ::hWnd, ::RealPosition( nPage ) - 1 )
       ::aPages[ nPage ]:lHidden := .T.
-      IF nValue == nPage
-         ::Refresh()
+      nPos := ::Value
+      IF nPos == 0
+         ::Value := 1
+      ELSE
+         ::aPages[ nPos ]:ForceHide()
+         ::aPages[ nPos ]:Show()
       ENDIF
    ENDIF
 RETURN nil
@@ -526,6 +529,7 @@ CLASS TTabPage FROM TControl
    DATA Position  INIT 0
    DATA nImage    INIT -1
    DATA lHidden   INIT .F.
+   DATA Caption   INIT ""
 
    METHOD Define
    METHOD Enabled
@@ -594,6 +598,7 @@ CLASS TTabPageInternal FROM TFormInternal
    DATA lHidden    INIT .F.
    DATA nRowMargin INIT 0
    DATA nColMargin INIT 0
+   DATA Caption    INIT ""
 
    METHOD Define
    METHOD Events_Size

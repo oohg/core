@@ -1,5 +1,5 @@
 /*
- * $Id: i_keybd.ch,v 1.4 2006-02-25 04:07:28 guerra000 Exp $
+ * $Id: i_keybd.ch,v 1.5 2006-10-22 01:09:22 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -112,6 +112,10 @@ SetInteractiveClose( 2 )
 SetInteractiveClose( 3 )
 
 
+
+///////////////////////////////////////////////////////////////////////////////
+// Set Navigation
+///////////////////////////////////////////////////////////////////////////////
 
 #xtranslate SET NAVIGATION EXTENDED ;
 => ;
@@ -268,7 +272,11 @@ _OOHG_ExtendedNavigation := .F.
 #define MOD_SHIFT	4
 #define MOD_WIN         8
 
-// End
+
+
+///////////////////////////////////////////////////////////////////////////////
+// Hot key commands
+///////////////////////////////////////////////////////////////////////////////
 
 #xcommand ON KEY <key> [ OF <parent> ] ACTION <action> ;
           => ;
@@ -281,6 +289,8 @@ _OOHG_ExtendedNavigation := .F.
 #xcommand STORE KEY <key> OF <parent> TO <baction> ;
           => ;
           <baction> := _DefineAnyKey( <(parent)>, <(key)> )
+
+
 
 ///////////////////////////////////////////////////////////////////////////////
 // PUSH KEY COMMAND
@@ -406,3 +416,21 @@ _PushKey ( VK_SCROLL )
 => ;
 _PushKey ( VK_NUMLOCK )
 */
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+// Hot key control
+///////////////////////////////////////////////////////////////////////////////
+
+#command DEFINE HOTKEY <name> ;
+                [ OBJ <obj> ] ;
+		[ <dummy1: OF, PARENT> <parent> ] ;
+                [ KEY <key> ] ;
+                [ MODIFIERS <mod> ] ;
+                [ ACTION <action> ] ;
+                [ SUBCLASS <subclass> ] ;
+                [ <disabled: DISABLED> ] ;
+	=>;
+        [ <obj> := ] _OOHG_SelectSubClass( THotKey(), [ <subclass>() ] ): ;
+                     Define( <(name)>, <(parent)>, <mod>, <key>, <{action}>, <disabled> )
