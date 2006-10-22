@@ -1,5 +1,5 @@
 /*
- * $Id: h_status.prg,v 1.18 2006-10-07 16:17:11 guerra000 Exp $
+ * $Id: h_status.prg,v 1.19 2006-10-22 02:32:17 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -332,7 +332,7 @@ ENDCLASS
 METHOD Define( ControlName, ParentControl, x, y, Caption, ProcedureName, w, ;
                h, icon, cstyl, tooltip ) CLASS TItemMessage
 *-----------------------------------------------------------------------------*
-Local i, styl, nKey, ControlHandle
+Local i, styl, ControlHandle
 
    if valtype( ParentControl ) == 'U'
       ParentControl := _OOHG_ActiveMessageBar
@@ -375,21 +375,10 @@ Local i, styl, nKey, ControlHandle
    ::OnClick := ProcedureName
    ::Caption := Caption
 
-   Caption := Upper( Caption )
-
    i := At( "&", Caption )
-
-   IF i > 0 .AND. i < LEN( Caption )
-      i := AT( Upper( SubStr( Caption, i + 1, 1 ) ), "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789" )
-      IF i > 0
-         nKey := { VK_A, VK_B, VK_C, VK_D, VK_E, VK_F, VK_G, VK_H, ;
-                   VK_I, VK_J, VK_K, VK_L, VK_M, VK_N, VK_O, VK_P, ;
-                   VK_Q, VK_R, VK_S, VK_T, VK_U, VK_V, VK_W, VK_X, ;
-                   VK_Y, VK_Z, VK_0, VK_1, VK_2, VK_3, VK_4, VK_5, ;
-                   VK_6, VK_7, VK_8, VK_9 }[ i ]
-         ::Parent:HotKey( nKey, MOD_ALT, ProcedureName )
-      ENDIF
-   ENDIF
+   If i > 0 .AND. i < LEN( Caption )
+      DEFINE HOTKEY 0 PARENT ( ::Parent ) KEY "ALT+" + SubStr( Caption, i + 1, 1 ) ACTION ::Click()
+	EndIf
 
 Return ControlHandle
 

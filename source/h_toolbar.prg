@@ -1,5 +1,5 @@
 /*
- * $Id: h_toolbar.prg,v 1.16 2006-08-05 22:14:20 guerra000 Exp $
+ * $Id: h_toolbar.prg,v 1.17 2006-10-22 02:32:17 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -274,7 +274,7 @@ METHOD Define( ControlName, x, y, Caption, ProcedureName, w, h, image, ;
                tooltip, gotfocus, lostfocus, flat, separator, autosize, ;
                check, group, dropdown, WHOLEDROPDOWN ) CLASS TToolButton
 *-----------------------------------------------------------------------------*
-Local i, nKey, ControlHandle, id, nPos
+Local ControlHandle, id, nPos
 
 Empty( FLAT )
 
@@ -335,26 +335,9 @@ Empty( FLAT )
    ::OnGotFocus :=  GotFocus
    ::Caption := Caption
 
-	Caption := Upper ( Caption )
-
-	i := at ( '&' , Caption )
-
-   If i > 0 .AND. i < LEN( Caption )
-
-      i := AT( Upper( SubStr( Caption, i + 1, 1 ) ), "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789" )
-      IF i > 0
-         nKey := { VK_A, VK_B, VK_C, VK_D, VK_E, VK_F, VK_G, VK_H, ;
-                   VK_I, VK_J, VK_K, VK_L, VK_M, VK_N, VK_O, VK_P, ;
-                   VK_Q, VK_R, VK_S, VK_T, VK_U, VK_V, VK_W, VK_X, ;
-                   VK_Y, VK_Z, VK_0, VK_1, VK_2, VK_3, VK_4, VK_5, ;
-                   VK_6, VK_7, VK_8, VK_9 }[ i ]
-*         IF VALTYPE( Mnemonic ) != "B"
-**            ProcedureName := {|| ( ::Value := Position , iif ( valtype( ::OnChange ) =='B' , Eval( ::OnChange ) , Nil ) ) }
-*            ProcedureName := {|| ( oPage:SetFocus() , iif ( valtype( ::OnChange ) =='B' , Eval( ::OnChange ) , Nil ) ) }
-*         ENDIF
-         ::Parent:HotKey( nKey, MOD_ALT, ProcedureName )
-      EndIf
-
+   nPos := At( '&', Caption )
+   If nPos > 0 .AND. nPos < LEN( Caption )
+      DEFINE HOTKEY 0 PARENT ( ::Parent ) KEY "ALT+" + SubStr( Caption, nPos + 1, 1 ) ACTION ::Click()
 	EndIf
 
 Return Self
