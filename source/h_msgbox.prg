@@ -1,5 +1,5 @@
 /*
- * $Id: h_msgbox.prg,v 1.1 2005-08-07 00:12:51 guerra000 Exp $
+ * $Id: h_msgbox.prg,v 1.2 2006-10-23 22:21:51 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -199,3 +199,79 @@ Function MsgBox ( Message , Title )
 	c_msgbox(message,title)
 
 Return Nil
+
+
+
+*-----------------------------------------------------------------------------*
+Function autoMsgBox ( Message , Title )
+*-----------------------------------------------------------------------------*
+
+	DEFAULT Message TO ''
+	DEFAULT Title TO ''
+
+        message :=  autotype(Message)
+	c_msgbox(message,title)
+
+Return Nil
+
+
+
+*-----------------------------------------------------------------------------*
+Function autoMsgExclamation ( Message , Title )
+*-----------------------------------------------------------------------------*
+
+	DEFAULT Message TO ''
+	DEFAULT Title TO ''
+        message := autotype(Message)
+	c_msgexclamation(message,title)
+
+Return Nil
+
+*-----------------------------------------------------------------------------*
+Function autoMsgStop ( Message , Title )
+*-----------------------------------------------------------------------------*
+
+	DEFAULT Message TO ''
+	DEFAULT Title TO ''
+        message := autotype(Message)
+	c_msgstop(message,title)
+
+Return Nil
+
+
+*-----------------------------------------------------------------------------*
+Function autoMsgInfo ( Message , Title )
+*-----------------------------------------------------------------------------*
+
+	DEFAULT Message TO ''
+	DEFAULT Title TO ''
+        message := autotype(Message)
+	c_msginfo(message,title)
+
+Return Nil
+
+
+
+Static function autotype( Message)
+ctype:=valtype(Message)
+do case
+   case ctype="C"
+        cMessage:=Message
+   case ctype="N"
+        cMessage:=str(Message)
+   case ctype="L"
+        cMessage:=iif(Message,".T.",".F")
+   case cType="D"
+        cMessage:=dtos(Message)
+   case cType="O"
+        cMessage:="Object/Handle "+str(message:Hwnd)
+   case ctype="M"
+        cMessage:=Message
+   case ctype="A"
+        cMessage:="{ Array }"
+   case ctype="B"
+        cMessage:="{|| Codeblock }"
+   otherwise
+        cMessage:="<NIL>"
+endcase
+return cMessage
