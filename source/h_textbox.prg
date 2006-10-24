@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.31 2006-09-11 02:22:18 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.32 2006-10-24 04:08:32 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -101,10 +101,12 @@
 CLASS TText FROM TLabel
    DATA Type            INIT "TEXT" READONLY
    DATA lSetting        INIT .F.
-   DATA nMaxLenght      INIT 0
+   DATA nMaxLength      INIT 0
    DATA lAutoSkip       INIT .F.
    DATA lSettingFocus   INIT .F.
    DATA nOnFocusPos     INIT -2
+   DATA nWidth          INIT 120
+   DATA nHeight         INIT 24
 
    METHOD Define
    METHOD Define2
@@ -115,13 +117,14 @@ CLASS TText FROM TLabel
    METHOD SetFocus
    METHOD CaretPos    SETGET
    METHOD ReadOnly    SETGET
+   METHOD MaxLength   SETGET
    METHOD Events_Enter
    METHOD Events_Command
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
 METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, cValue, ;
-               cFontName, nFontSize, cToolTip, nMaxLenght, lUpper, lLower, ;
+               cFontName, nFontSize, cToolTip, nMaxLength, lUpper, lLower, ;
                lPassword, uLostFocus, uGotFocus, uChange, uEnter, right, ;
                HelpId, readonly, bold, italic, underline, strikeout, field, ;
                backcolor, fontcolor, invisible, notabstop, lRtl, lAutoSkip, ;
@@ -133,7 +136,7 @@ Local nStyle := ES_AUTOHSCROLL, nStyleEx := 0
              IF( Valtype( lLower ) == "L" .AND. lLower, ES_LOWERCASE, 0 )
 
    ::Define2( cControlName, cParentForm, nx, ny, nWidth, nHeight, cValue, ;
-              cFontName, nFontSize, cToolTip, nMaxLenght, lPassword, ;
+              cFontName, nFontSize, cToolTip, nMaxLength, lPassword, ;
               uLostFocus, uGotFocus, uChange, uEnter, right, HelpId, ;
               readonly, bold, italic, underline, strikeout, field, ;
               backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, ;
@@ -142,8 +145,8 @@ Local nStyle := ES_AUTOHSCROLL, nStyleEx := 0
 Return Self
 
 *-----------------------------------------------------------------------------*
-METHOD Define2( cControlName, cParentForm, nx, ny, nWidth, nHeight, cValue, ;
-                cFontName, nFontSize, cToolTip, nMaxLenght, lPassword, ;
+METHOD Define2( cControlName, cParentForm, x, y, w, h, cValue, ;
+                cFontName, nFontSize, cToolTip, nMaxLength, lPassword, ;
                 uLostFocus, uGotFocus, uChange, uEnter, right, HelpId, ;
                 readonly, bold, italic, underline, strikeout, field, ;
                 backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, ;
@@ -153,23 +156,17 @@ Local nControlHandle
 local break
 
    // Assign STANDARD values to optional params.
-	DEFAULT nWidth     TO 120
-	DEFAULT nHeight    TO 24
-	DEFAULT uChange    TO ""
-	DEFAULT uGotFocus  TO ""
-	DEFAULT uLostFocus TO ""
-	DEFAULT uEnter     TO ""
+   ASSIGN ::nCol    VALUE x TYPE "N"
+   ASSIGN ::nRow    VALUE y TYPE "N"
+   ASSIGN ::nWidth  VALUE w TYPE "N"
+   ASSIGN ::nHeight VALUE h TYPE "N"
 
-   If ValType( nMaxLenght ) == "N" .AND. nMaxLenght >= 0
-      ::nMaxLenght := Int( nMaxLenght )
+   If ValType( nMaxLength ) == "N" .AND. nMaxLength >= 0
+      ::nMaxLength := Int( nMaxLength )
    EndIf
 
-   IF ValType( nStyle ) != "N"
-      nStyle := 0
-   ENDIF
-   IF ValType( nStyleEx ) != "N"
-      nStyleEx := 0
-   ENDIF
+   ASSIGN nStyle   VALUE nStyle   TYPE "N" DEFAULT 0
+   ASSIGN nStyleEx VALUE nStyleEx TYPE "N" DEFAULT 0
 
    IF ValType( invisible ) != "L"
       invisible := .F.
@@ -192,11 +189,10 @@ local break
 
 	// Creates the control window.
    ::SetSplitBoxInfo( Break, )
-   nControlHandle := InitTextBox( ::ContainerhWnd, 0, nx, ny, nWidth, nHeight, nStyle, ::nMaxLenght, ::lRtl, nStyleEx )
+   nControlHandle := InitTextBox( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, ::nMaxLength, ::lRtl, nStyleEx )
 
    ::Register( nControlHandle, cControlName, HelpId, ! Invisible, cToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
-   ::SizePos( ny, nx, nWidth, nHeight )
 
    If ValType( Field ) $ 'CM' .AND. ! empty( Field )
       ::VarName := alltrim( Field )
@@ -273,6 +269,15 @@ METHOD ReadOnly( lReadOnly ) CLASS TText
 Return IsWindowStyle( ::hWnd, ES_READONLY )
 
 *------------------------------------------------------------------------------*
+METHOD MaxLength( nLen ) CLASS TText
+*------------------------------------------------------------------------------*
+   IF ValType( nLen ) == "N"
+      ::nMaxLength := IF( nLen > 1, nLen, 0 )
+      SendMessage( ::hWnd, EM_LIMITTEXT, ::nMaxLength, 0 )
+   ENDIF
+Return SendMessage( ::hWnd, EM_GETLIMITTEXT, 0, 0 )
+
+*------------------------------------------------------------------------------*
 METHOD Events_Enter() CLASS TText
 *------------------------------------------------------------------------------*
    ::lSettingFocus := .F.
@@ -299,14 +304,16 @@ Local Hi_wParam := HIWORD( wParam )
          ::lSetting := .F.
       Else
          ::DoEvent( ::OnChange )
-         If ::lAutoSkip .AND. ::nMaxLenght > 0 .AND. HiWord( SendMessage( ::hWnd, EM_GETSEL, 0, 0 ) ) >= ::nMaxLenght
+         If ::lAutoSkip .AND. ::nMaxLength > 0 .AND. HiWord( SendMessage( ::hWnd, EM_GETSEL, 0, 0 ) ) >= ::nMaxLength
             _SetNextFocus()
          EndIf
       EndIf
       Return nil
 
    elseif Hi_wParam == EN_KILLFOCUS
-      ::DoEvent( ::OnLostFocus )
+      If ! ::ContainerReleasing
+         ::DoEvent( ::OnLostFocus )
+      EndIf
       Return nil
 
    elseif Hi_wParam == EN_SETFOCUS
@@ -326,6 +333,7 @@ CLASS TTextPicture FROM TText
    DATA Type           INIT "TEXTPICTURE" READONLY
    DATA lBritish       INIT .F.
 
+   DATA cPicture       INIT ""
    DATA PictureFun     INIT ""
    DATA PictureFunShow INIT ""
    DATA PictureMask    INIT ""
@@ -342,6 +350,7 @@ CLASS TTextPicture FROM TText
    METHOD Define
 
    METHOD Value       SETGET
+   METHOD Picture     SETGET
    METHOD Events
    METHOD Events_Command
 ENDCLASS
@@ -571,6 +580,14 @@ Local cType, uDate
          uValue := NIL
    ENDCASE
 Return uValue
+
+*------------------------------------------------------------------------------*
+METHOD Picture( cPicture ) CLASS TTextPicture
+*------------------------------------------------------------------------------*
+   If ValType( cPicture ) $ "CM"
+      ::cPicture := cPicture
+   EndIf
+RETURN ::cPicture
 
 STATIC FUNCTION xUnTransform( Self, cCaption )
 Local cRet
@@ -846,7 +863,7 @@ ENDCLASS
 
 *-----------------------------------------------------------------------------*
 METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, cValue, ;
-               cFontName, nFontSize, cToolTip, nMaxLenght, lUpper, lLower, ;
+               cFontName, nFontSize, cToolTip, nMaxLength, lUpper, lLower, ;
                lPassword, uLostFocus, uGotFocus, uChange , uEnter , right  , ;
                HelpId, readonly, bold, italic, underline, strikeout, field , ;
                backcolor , fontcolor , invisible , notabstop, lRtl, lAutoSkip, ;
@@ -858,7 +875,7 @@ Local nStyle := ES_NUMBER + ES_AUTOHSCROLL, nStyleEx := 0
    Empty( lLower )
 
    ::Define2( cControlName, cParentForm, nx, ny, nWidth, nHeight, cValue, ;
-              cFontName, nFontSize, cToolTip, nMaxLenght, lPassword, ;
+              cFontName, nFontSize, cToolTip, nMaxLength, lPassword, ;
               uLostFocus, uGotFocus, uChange, uEnter, right, HelpId, ;
               readonly, bold, italic, underline, strikeout, field, ;
               backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, ;

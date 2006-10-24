@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.20 2006-08-06 18:17:29 guerra000 Exp $
+ * $Id: h_combo.prg,v 1.21 2006-10-24 04:08:31 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -340,6 +340,33 @@ METHOD RefreshData() CLASS TCombo
    ::Value := ::nValue
 RETURN nil
 
+*-----------------------------------------------------------------------------*
+METHOD Events_Command( wParam ) CLASS TCombo
+*-----------------------------------------------------------------------------*
+Local Hi_wParam := HIWORD( wParam )
+
+   if Hi_wParam == CBN_SELCHANGE
+      ::DoEvent( ::OnChange )
+      Return nil
+
+   elseif Hi_wParam == CBN_KILLFOCUS
+      If ! ::ContainerReleasing
+         ::DoEvent( ::OnLostFocus )
+      Endif
+      Return nil
+
+   elseif Hi_wParam == CBN_SETFOCUS
+      ::DoEvent( ::OnGotFocus )
+      Return nil
+
+   elseif Hi_wParam == CBN_EDITCHANGE
+      ::DoEvent( ::OnClick )
+      Return nil
+
+   EndIf
+
+Return ::Super:Events_Command( wParam )
+
 #pragma BEGINDUMP
 #include <hbapi.h>
 #include <hbvm.h>
@@ -384,44 +411,6 @@ void TCombo_SetImageBuffer( POCTRL oSelf, struct IMAGE_PARAMETER pStruct, int nI
       }
       pImage[ 0 ] = pStruct.iImage1;
       pImage[ 1 ] = pStruct.iImage2;
-   }
-}
-
-HB_FUNC_STATIC( TCOMBO_EVENTS_COMMAND )   // METHOD Events_Command( wParam )
-{
-   PHB_ITEM pSelf = hb_stackSelfItem();
-//   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
-   WPARAM wParam = ( WPARAM ) hb_parnl( 1 );
-
-   switch( HIWORD( wParam ) )
-   {
-      case CBN_SELCHANGE:
-         _OOHG_DoEvent( pSelf, s_OnChange );
-         hb_ret();
-         break;
-
-      case CBN_KILLFOCUS:
-         _OOHG_DoEvent( pSelf, s_OnLostFocus );
-         hb_ret();
-         break;
-
-      case CBN_SETFOCUS:
-         _OOHG_DoEvent( pSelf, s_OnGotFocus );
-         hb_ret();
-         break;
-
-      case CBN_EDITCHANGE:
-         _OOHG_DoEvent( pSelf, s_OnClick );
-         hb_ret();
-         break;
-
-      default:
-         _OOHG_Send( pSelf, s_Super );
-         hb_vmSend( 0 );
-         _OOHG_Send( hb_param( -1, HB_IT_ANY ), s_Events_Command );
-         hb_vmPushLong( ( LONG ) wParam );
-         hb_vmSend( 1 );
-         break;
    }
 }
 

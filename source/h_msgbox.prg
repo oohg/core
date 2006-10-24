@@ -1,5 +1,5 @@
 /*
- * $Id: h_msgbox.prg,v 1.2 2006-10-23 22:21:51 declan2005 Exp $
+ * $Id: h_msgbox.prg,v 1.3 2006-10-24 04:08:32 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -253,6 +253,7 @@ Return Nil
 
 
 Static function autotype( Message)
+Local cMessage, ctype
 ctype:=valtype(Message)
 do case
    case ctype="C"

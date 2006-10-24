@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.113 2006-10-22 01:09:22 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.114 2006-10-24 04:08:32 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -187,6 +187,7 @@ CLASS TWindow
    DATA OverWndProc         INIT nil
    DATA lInternal           INIT .T.
    DATA lForm               INIT .F.
+   DATA lReleasing          INIT .F.
 
    DATA OnClick             INIT nil
    DATA OnGotFocus          INIT nil
@@ -245,6 +246,7 @@ CLASS TWindow
    METHOD ForceHide           BLOCK { |Self| HideWindow( ::hWnd ) }
 
    METHOD ContainerVisible    BLOCK { |Self| ::lVisible .AND. IF( ::Container != NIL, ::Container:ContainerVisible, .T. ) }
+   METHOD ContainerReleasing  BLOCK { |Self| ::lReleasing .OR. IF( ::Container != NIL, ::Container:ContainerReleasing, IF( ::Parent != NIL, ::Parent:ContainerReleasing, .F. ) ) }
 
    // Specific HACKS :(
    METHOD SetSplitBox         BLOCK { || .F. }
@@ -1144,7 +1146,6 @@ CLASS TForm FROM TWindow
    DATA hWndClient     INIT 0
    DATA lInternal      INIT .F.
    DATA lForm          INIT .T.
-   DATA lReleasing     INIT .F.
    DATA cWndClass      INIT ""
    DATA nWidth         INIT 300
    DATA nHeight        INIT 300
@@ -1986,7 +1987,9 @@ Local oCtrl
 
          ::LastFocusedControl := GetFocus()
 
-         ::DoEvent( ::OnLostFocus, 'WINDOW_LOSTFOCUS' )
+         If ! ::ContainerReleasing
+            ::DoEvent( ::OnLostFocus, 'WINDOW_LOSTFOCUS' )
+         EndIf
 
 		Else
 

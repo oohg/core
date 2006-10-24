@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.64 2006-10-19 02:17:57 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.65 2006-10-24 04:08:31 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1879,10 +1879,6 @@ METHOD Events_Command( wParam ) CLASS TControl
 Local Hi_wParam := HIWORD( wParam )
 
    If Hi_wParam == BN_CLICKED .OR. Hi_wParam == STN_CLICKED  // Same value.....
-
-      // Default: ::OnClick
-      // If ::Type == "LABEL" .Or. ::Type = "IMAGE" .OR. ::Type = "BUTTON"
-
       If ! ::NestedClick
          ::NestedClick := ! _OOHG_NestedSameEvent()
          ::DoEvent( ::OnClick )
@@ -1890,23 +1886,22 @@ Local Hi_wParam := HIWORD( wParam )
       EndIf
 
    elseif Hi_wParam == EN_CHANGE
-
       ::DoEvent( ::OnChange )
 
    elseif Hi_wParam == EN_KILLFOCUS
-
-      ::DoEvent( ::OnLostFocus )
+      If ! ::ContainerReleasing
+         ::DoEvent( ::OnLostFocus )
+      EndIf
 
    elseif Hi_wParam == EN_SETFOCUS
-
       ::DoEvent( ::OnGotFocus )
 
    elseif Hi_wParam == BN_KILLFOCUS
-
-      ::DoEvent( ::OnLostFocus )
+      If ! ::ContainerReleasing
+         ::DoEvent( ::OnLostFocus )
+      EndIf
 
    elseif Hi_wParam == BN_SETFOCUS
-
       ::DoEvent( ::OnGotFocus )
 
    EndIf
@@ -1936,7 +1931,9 @@ Local nNotify := GetNotifyCode( lParam )
 wParam++ // DUMMY...
 
    If nNotify == NM_KILLFOCUS
-      ::DoEvent( ::OnLostFocus )
+      If ! ::ContainerReleasing
+         ::DoEvent( ::OnLostFocus )
+      EndIf
 
    elseif nNotify == NM_SETFOCUS
       ::DoEvent( ::OnGotFocus )
