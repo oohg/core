@@ -1,5 +1,5 @@
 /*
- * $Id: h_msgbox.prg,v 1.3 2006-10-24 04:08:32 guerra000 Exp $
+ * $Id: h_msgbox.prg,v 1.4 2006-10-24 13:06:52 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -252,7 +252,9 @@ Return Nil
 
 
 
+*-----------------------------------------------------------------------------*
 Static function autotype( Message)
+*-----------------------------------------------------------------------------*
 Local cMessage, ctype
 ctype:=valtype(Message)
 do case
@@ -263,9 +265,9 @@ do case
    case ctype="L"
         cMessage:=iif(Message,".T.",".F")
    case cType="D"
-        cMessage:=dtos(Message)
+        cMessage:=Dtos(Message)
    case cType="O"
-        cMessage:="Object/Handle "+str(message:Hwnd)
+        cMessage:=":Object:"
    case ctype="M"
         cMessage:=Message
    case ctype="A"
