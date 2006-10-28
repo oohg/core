@@ -1,5 +1,5 @@
 /*
- * $Id: i_xbrowse.ch,v 1.1 2006-05-30 02:25:40 guerra000 Exp $
+ * $Id: i_xbrowse.ch,v 1.2 2006-10-28 03:06:35 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -128,7 +128,7 @@
                 [ <inplace : INPLACE> ]    ;
                 [ <append : APPEND> ]      ;
                 [ ON HEADCLICK <aHeadClick> ]    ;
-                [ WHEN <aWhenFields> ]          ;
+                [ <dummy2: WHEN, COLUMNWHEN> <aWhenFields> ] ;
                 [ VALID <aValidFields> ]        ;
                 [ VALIDMESSAGES <aValidMessages> ] ;
                 [ READONLY <aReadOnly> ]   ;

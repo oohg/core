@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.114 2006-10-24 04:08:32 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.115 2006-10-28 03:06:35 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -855,7 +855,7 @@ Local nPos
                      uParent := _OOHG_ActiveForm[ nPos ]
                   Else
                      uParent := GetFormObjectByHandle( GetActiveWindow() )
-                     If ! ValidHandler( uParent:hWnd )
+                     If ! ValidHandler( uParent:hWnd ) .OR. ! uParent:Active
                         If _OOHG_Main != nil
                            uParent := _OOHG_Main
                         Else
@@ -2419,12 +2419,13 @@ METHOD Visible( lVisible ) CLASS TFormModal
          EndIf
       ELSE
          If IsWindowVisible( ::hWnd )
-            If Len( _OOHG_ActiveModal ) == 0 .OR. ATAIL( _OOHG_ActiveModal ):hWnd <> ::hWnd
-               MsgOOHGError( "Non top modal windows can't be hide. Program terminated." )
-// Testing...
-//             ElseIf ::ActivateCount[ 1 ] > 1 .OR. ! ::ActivateCount == ATAIL( _OOHG_MessageLoops )
-//                MsgOOHGError( "Modal windows can't be hidden when it have sub-windows. Program terminated." )
-            EndIf
+//// Why not?
+////             If Len( _OOHG_ActiveModal ) == 0 .OR. ATAIL( _OOHG_ActiveModal ):hWnd <> ::hWnd
+////                MsgOOHGError( "Non top modal windows can't be hide. Program terminated." )
+//// // Testing...
+//// //             ElseIf ::ActivateCount[ 1 ] > 1 .OR. ! ::ActivateCount == ATAIL( _OOHG_MessageLoops )
+//// //                MsgOOHGError( "Modal windows can't be hidden when it have sub-windows. Program terminated." )
+////             EndIf
          EndIf
       ENDIF
    ENDIF

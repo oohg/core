@@ -1,11 +1,20 @@
 /*
- * $Id: ChangeLog,v 1.249 2006-10-26 03:29:21 guerra000 Exp $
+ * $Id: ChangeLog,v 1.250 2006-10-28 03:06:34 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-10-27 22:03 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_windows.prg
+    * Validates for current window is active when searchs for parent.
+    * Allows to hide non top modal windows. (Why not?)
+  * include/i_browse.ch
+  * include/i_grid.ch
+  * include/i_xbrowse.ch
+    * COLUMNWHEN is the same of WHEN clause.
 
 2006-10-25 22:28 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_grid.prg

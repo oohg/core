@@ -1,5 +1,5 @@
 /*
- * $Id: i_grid.ch,v 1.9 2006-09-16 19:35:48 guerra000 Exp $
+ * $Id: i_grid.ch,v 1.10 2006-10-28 03:06:35 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -143,7 +143,7 @@
 		[ VALID <aValidFields> ]	;
 		[ VALIDMESSAGES <aValidMessages> ] ;
                 [ ON EDITCELL <editcell> ]      ;
-                [ WHEN <aWhenFields> ]          ;
+                [ <dummy2: WHEN, COLUMNWHEN> <aWhenFields> ] ;
                 [ SUBCLASS <subclass> ]         ;
                 [ <disabled: DISABLED> ]        ;
 	=>;
@@ -204,7 +204,7 @@
 		[ VALID <aValidFields> ]	;
 		[ VALIDMESSAGES <aValidMessages> ] ;
                 [ ON EDITCELL <editcell> ]      ;
-                [ WHEN <aWhenFields> ]          ;
+                [ <dummy2: WHEN, COLUMNWHEN> <aWhenFields> ] ;
                 [ SUBCLASS <subclass> ]         ;
                 [ <disabled: DISABLED> ]        ;
 	=>;
