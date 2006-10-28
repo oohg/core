@@ -1,5 +1,5 @@
 /*
- * $Id: h_progressmeter.prg,v 1.9 2006-08-05 22:14:20 guerra000 Exp $
+ * $Id: h_progressmeter.prg,v 1.10 2006-10-28 20:49:15 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -99,17 +99,16 @@ Local ControlHandle, nStyle, nStyleEx
    ASSIGN ::nRow        VALUE y TYPE "N"
    ASSIGN ::nWidth      VALUE w TYPE "N"
    ASSIGN ::nHeight     VALUE h TYPE "N"
-   ASSIGN invisible     VALUE invisible    TYPE "L" DEFAULT .F.
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, ::FontColor, ::BackColor, , lRtl )
 
-   nStyle := if( ValType( invisible ) != "L" .OR. ! invisible, WS_VISIBLE,  0 )
+   nStyle := ::InitStyle( ,, Invisible )
 
    nStyleEx := if( ValType( CLIENTEDGE ) == "L"   .AND. CLIENTEDGE,   WS_EX_CLIENTEDGE,  0 )
 
    Controlhandle := InitLabel( ::ContainerhWnd, "", 0, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight, '', 0, Nil , nStyle, nStyleEx, ::lRtl )
 
-   ::Register( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
+   ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
 
    ::OnClick := ProcedureName

@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.65 2006-10-24 04:08:31 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.66 2006-10-28 20:49:15 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1363,6 +1363,7 @@ CLASS TControl FROM TWindow
    METHOD Height    SETGET
    METHOD ToolTip   SETGET
    METHOD SetForm
+   METHOD InitStyle
    METHOD Register
    METHOD Refresh             BLOCK { || nil }
    METHOD Release
@@ -1516,6 +1517,36 @@ METHOD SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BkColor,
    EndIf
 
 RETURN Self
+
+*------------------------------------------------------------------------------*
+METHOD InitStyle( nStyle, nStyleEx, lInvisible, lNoTabStop, lDisabled ) CLASS TControl
+*------------------------------------------------------------------------------*
+   If ValType( nStyle ) != "N"
+      nStyle := 0
+   EndIf
+   If ValType( nStyleEx ) != "N"
+      nStyleEx := 0
+   EndIf
+
+   If ValType( lInvisible ) == "L"
+      ::lVisible := ! lInvisible
+   EndIf
+   If ::lVisible
+      nStyle += WS_VISIBLE
+   EndIf
+
+   If ValType( lNoTabStop ) != "L" .OR. ! lNoTabStop
+      nStyle += WS_TABSTOP
+   EndIf
+
+   If ValType( lDisabled ) == "L"
+      ::lEnabled := ! lDisabled
+   EndIf
+   If ! ::lEnabled
+      nStyle += WS_DISABLED
+   EndIf
+
+Return nStyle
 
 *------------------------------------------------------------------------------*
 METHOD Register( hWnd, cName, HelpId, Visible, ToolTip, Id ) CLASS TControl

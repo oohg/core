@@ -1,11 +1,25 @@
 /*
- * $Id: ChangeLog,v 1.250 2006-10-28 03:06:34 guerra000 Exp $
+ * $Id: ChangeLog,v 1.251 2006-10-28 20:49:15 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-10-28 15:44 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_button.prg
+  * source/h_checkbox.prg
+  * source/h_controlmisc.prg
+  * source/h_hotkeybox.prg
+  * source/h_internal.prg
+  * source/h_label.prg
+  * source/h_progressmeter.prg
+  * source/h_spinner.prg
+  * source/h_textarray.prg
+  * source/h_textbox.prg
+    + ::InitStyle() method added. It initializes INVISIBLE, NOTABSTOP
+      and DISABLE clauses.
 
 2006-10-27 22:03 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_windows.prg

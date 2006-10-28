@@ -1,5 +1,5 @@
 /*
- * $Id: h_hotkeybox.prg,v 1.1 2006-10-21 21:07:26 guerra000 Exp $
+ * $Id: h_hotkeybox.prg,v 1.2 2006-10-28 20:49:15 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -78,24 +78,17 @@ Local ControlHandle, nStyle := 0, nStyleEx := 0
    ASSIGN ::nRow      VALUE y TYPE "N"
    ASSIGN ::nWidth    VALUE w TYPE "N"
    ASSIGN ::nHeight   VALUE h TYPE "N"
-   ASSIGN invisible   VALUE invisible TYPE "L" DEFAULT .F.
    If ValType( lNoAlt ) == "L"
       ::lForceAlt := ! lNoAlt
    EndIf
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, .T., lRtl )
 
-   // Style definition
-   nStyle += IF( ! invisible,                                 WS_VISIBLE,   0 ) + ;
-             IF( Valtype( notabstop ) != "L" .OR. !notabstop, WS_TABSTOP,   0 )
-   IF Valtype( lDisabled ) == "L" .AND. lDisabled
-      nStyle += WS_DISABLED
-      ::lEnabled := .F.
-   EndIf
+   nStyle += ::InitStyle( ,, Invisible, NoTabStop, lDisabled )
 
    ControlHandle := InitHotKeyBox( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, ::lRtl, nStyleEx )
 
-   ::Register( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
+   ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
 
    ::Value := cValue

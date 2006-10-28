@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.15 2006-09-16 19:35:48 guerra000 Exp $
+ * $Id: h_button.prg,v 1.16 2006-10-28 20:49:15 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -122,22 +122,16 @@ Local ControlHandle, nStyle
    ASSIGN ::nRow    VALUE y TYPE "N"
    ASSIGN ::nWidth  VALUE w TYPE "N"
    ASSIGN ::nHeight VALUE h TYPE "N"
-   ASSIGN invisible VALUE invisible TYPE "L" DEFAULT .F.
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize,,,, lRtl )
 
-   nStyle := if( ValType( flat ) == "L"      .AND. flat,       BS_FLAT, 0 )    + ;
-             if( ValType( NoTabStop ) != "L" .OR. ! NoTabStop, WS_TABSTOP, 0 ) + ;
-             if( ValType( invisible ) != "L" .OR. ! invisible, WS_VISIBLE, 0 ) + ;
+   nStyle := ::InitStyle( ,, Invisible, NoTabStop, lDisabled ) + ;
+             if( ValType( flat ) == "L"      .AND. flat,       BS_FLAT, 0 )    + ;
              if( ValType( lNoPrefix ) == "L" .AND. lNoPrefix,  SS_NOPREFIX, 0 )
-   If Valtype( lDisabled ) == "L" .AND. lDisabled
-      nStyle += WS_DISABLED
-      ::lEnabled := .F.
-   EndIf
 
    ControlHandle := InitButton( ::ContainerhWnd, Caption, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, ::lRtl, nStyle )
 
-   ::Register( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
+   ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
    ::SizePos( y, x, w, h )
 
@@ -159,22 +153,15 @@ Local ControlHandle, nStyle
    ASSIGN ::nRow    VALUE y TYPE "N"
    ASSIGN ::nWidth  VALUE w TYPE "N"
    ASSIGN ::nHeight VALUE h TYPE "N"
-   ASSIGN invisible VALUE invisible TYPE "L" DEFAULT .F.
 
    ::SetForm( ControlName, ParentForm,,,,,, lRtl )
-
-   nStyle := BS_BITMAP + ;
-             if( ValType( flat ) == "L"      .AND. flat,       BS_FLAT, 0 ) + ;
-             if( ValType( NoTabStop ) != "L" .OR. ! NoTabStop, WS_TABSTOP, 0 ) + ;
-             if( ValType( invisible ) != "L" .OR. ! invisible, WS_VISIBLE, 0 )
-   If Valtype( lDisabled ) == "L" .AND. lDisabled
-      nStyle += WS_DISABLED
-      ::lEnabled := .F.
-   EndIf
+   nStyle := ::InitStyle( ,, Invisible, NoTabStop, lDisabled ) + ;
+             BS_BITMAP + ;
+             if( ValType( flat ) == "L"      .AND. flat,       BS_FLAT, 0 )
 
    ControlHandle := InitButton( ::ContainerhWnd, Caption, 0, x, y, w, h, ::lRtl, nStyle )
 
-   ::Register( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
+   ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
    ::SizePos( y, x, w, h )
 
    ::OnClick := ProcedureName

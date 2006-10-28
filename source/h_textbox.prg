@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.32 2006-10-24 04:08:32 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.33 2006-10-28 20:49:15 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -168,22 +168,13 @@ local break
    ASSIGN nStyle   VALUE nStyle   TYPE "N" DEFAULT 0
    ASSIGN nStyleEx VALUE nStyleEx TYPE "N" DEFAULT 0
 
-   IF ValType( invisible ) != "L"
-      invisible := .F.
-   ENDIF
-
    ::SetForm( cControlName, cParentForm, cFontName, nFontSize, FontColor, BackColor, .T., lRtl )
 
    // Style definition
-   nStyle += IF( Valtype( lPassword ) == "L" .AND. lPassword, ES_PASSWORD,  0 ) + ;
+   nStyle += ::InitStyle( ,, Invisible, NoTabStop, lDisabled ) + ;
+             IF( Valtype( lPassword ) == "L" .AND. lPassword, ES_PASSWORD,  0 ) + ;
              IF( Valtype( right     ) == "L" .AND. right,     ES_RIGHT,     0 ) + ;
-             IF( Valtype( readonly  ) == "L" .AND. readonly,  ES_READONLY,  0 ) + ;
-             IF( ! invisible,                                 WS_VISIBLE,   0 ) + ;
-             IF( Valtype( notabstop ) != "L" .OR. !notabstop, WS_TABSTOP,   0 )
-   IF Valtype( lDisabled ) == "L" .AND. lDisabled
-      nStyle += WS_DISABLED
-      ::lEnabled := .F.
-   EndIf
+             IF( Valtype( readonly  ) == "L" .AND. readonly,  ES_READONLY,  0 )
 
    nStyleEx += IF( Valtype( lNoBorder ) != "L" .OR. ! lNoBorder, WS_EX_CLIENTEDGE, 0 )
 
@@ -191,7 +182,7 @@ local break
    ::SetSplitBoxInfo( Break, )
    nControlHandle := InitTextBox( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, ::nMaxLength, ::lRtl, nStyleEx )
 
-   ::Register( nControlHandle, cControlName, HelpId, ! Invisible, cToolTip )
+   ::Register( nControlHandle, cControlName, HelpId,, cToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
 
    If ValType( Field ) $ 'CM' .AND. ! empty( Field )

@@ -1,5 +1,5 @@
 /*
- * $Id: h_checkbox.prg,v 1.9 2006-08-09 15:25:04 guerra000 Exp $
+ * $Id: h_checkbox.prg,v 1.10 2006-10-28 20:49:15 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -122,7 +122,6 @@ Local ControlHandle, nStyle := 0, nStyleEx := 0
    ASSIGN ::nRow        VALUE y TYPE "N"
    ASSIGN ::nWidth      VALUE w TYPE "N"
    ASSIGN ::nHeight     VALUE h TYPE "N"
-   ASSIGN invisible     VALUE invisible    TYPE "L" DEFAULT .F.
    ASSIGN ::Transparent VALUE transparent  TYPE "L"
    DEFAULT value           TO FALSE
    DEFAULT notabstop       TO FALSE
@@ -131,8 +130,7 @@ Local ControlHandle, nStyle := 0, nStyleEx := 0
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor,, lRtl )
 
-   nStyle := if( ValType( NoTabStop ) != "L" .OR. ! NoTabStop, WS_TABSTOP, 0 ) + ;
-             if( ValType( invisible ) != "L" .OR. ! invisible, WS_VISIBLE, 0 )
+   nStyle := ::InitStyle( ,, Invisible, NoTabStop )
 
    IF lButton
       nStyle += BS_PUSHLIKE
@@ -147,7 +145,7 @@ Local ControlHandle, nStyle := 0, nStyleEx := 0
 
    Controlhandle := InitCheckBox( ::ContainerhWnd, Caption, 0, ::ContainerCol, ::ContainerRow, '', 0 , ::nWidth, ::nHeight, nStyle, nStyleEx, ::lRtl )
 
-   ::Register( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
+   ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
 
    ::OnLostFocus := LostFocus

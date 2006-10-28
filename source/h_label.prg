@@ -1,5 +1,5 @@
 /*
- * $Id: h_label.prg,v 1.17 2006-09-11 02:22:18 guerra000 Exp $
+ * $Id: h_label.prg,v 1.18 2006-10-28 20:49:15 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -126,12 +126,11 @@ Local ControlHandle, nStyle, nStyleEx
    ASSIGN ::nRow        VALUE y TYPE "N"
    ASSIGN ::nWidth      VALUE w TYPE "N"
    ASSIGN ::nHeight     VALUE h TYPE "N"
-   ASSIGN invisible     VALUE invisible    TYPE "L" DEFAULT .F.
    ASSIGN ::Transparent VALUE ltransparent TYPE "L" DEFAULT .F.
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, aRGB_font, aRGB_bk, , lRtl )
 
-   nStyle := if( ValType( invisible ) != "L" .OR. ! invisible, WS_VISIBLE,  0 ) + ;
+   nStyle := ::InitStyle( ,, Invisible ) + ;
              if( ValType( BORDER ) == "L"    .AND. BORDER,     WS_BORDER,   0 ) + ;
              if( ValType( HSCROLL ) == "L"   .AND. HSCROLL,    WS_HSCROLL,  0 ) + ;
              if( ValType( VSCROLL ) == "L"   .AND. VSCROLL,    WS_VSCROLL,  0 ) + ;
@@ -150,7 +149,7 @@ Local ControlHandle, nStyle, nStyleEx
 
    Controlhandle := InitLabel( ::ContainerhWnd, Caption, 0, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight, '', 0, Nil , nStyle, nStyleEx, ::lRtl )
 
-   ::Register( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
+   ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
 
    If ::Transparent

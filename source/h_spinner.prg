@@ -1,5 +1,5 @@
 /*
- * $Id: h_spinner.prg,v 1.9 2006-07-19 03:46:04 guerra000 Exp $
+ * $Id: h_spinner.prg,v 1.10 2006-10-28 20:49:15 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -128,16 +128,13 @@ Local ControlHandle
    DEFAULT change    TO ""
    DEFAULT lostfocus TO ""
    DEFAULT gotfocus  TO ""
-   DEFAULT invisible TO FALSE
-   DEFAULT notabstop TO FALSE
    DEFAULT wrap      TO FALSE
    DEFAULT readonly  TO FALSE
    DEFAULT increment TO 1
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, .T., lRtl )
 
-   nStyle += if( ValType( invisible ) != "L" .OR. ! invisible, WS_VISIBLE, 0 ) + ;
-             if( ValType( notabstop ) != "L" .OR. ! notabstop, WS_TABSTOP, 0 ) + ;
+   nStyle += ::InitStyle( ,, Invisible, NoTabStop ) + ;
              if( ValType( readonly )  == "L" .AND.  readonly,  ES_READONLY, 0 )
 
    nStyleEx += IF( Valtype( lNoBorder ) != "L" .OR. ! lNoBorder, WS_EX_CLIENTEDGE, 0 )
@@ -146,7 +143,7 @@ Local ControlHandle
 
    ::AuxHandle := InitSpinner( ::ContainerhWnd, 0, x + w, y, 15, h, rl, rh , invisible, wrap, ControlHandle, ::lRtl )
 
-   ::Register( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
+   ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
    ::SizePos( y, x, w, h )
 

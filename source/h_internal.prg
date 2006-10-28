@@ -1,5 +1,5 @@
 /*
- * $Id: h_internal.prg,v 1.1 2006-07-26 01:20:57 guerra000 Exp $
+ * $Id: h_internal.prg,v 1.2 2006-10-28 20:49:15 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -87,7 +87,6 @@ Local ControlHandle, nStyle, nStyleEx := 0
    ASSIGN ::nRow        VALUE y TYPE "N"
    ASSIGN ::nWidth      VALUE w TYPE "N"
    ASSIGN ::nHeight     VALUE h TYPE "N"
-   ASSIGN Invisible     VALUE Invisible   TYPE "L" DEFAULT .F.
    ASSIGN ::Transparent VALUE Transparent TYPE "L" DEFAULT .F.
 
    if valtype( VirtualHeight ) != "N"
@@ -100,8 +99,7 @@ Local ControlHandle, nStyle, nStyleEx := 0
 
    ::SetForm( ControlName, ParentForm,,,, backcolor,, lRtl )
 
-   nStyle := if( ValType( NoTabStop ) != "L" .OR. ! NoTabStop, WS_TABSTOP, 0 ) + ;
-             if( ValType( invisible ) != "L" .OR. ! invisible, WS_VISIBLE, 0 ) + ;
+   nStyle := ::InitStyle( ,, Invisible, NoTabStop ) + ;
              if( ValType( BORDER ) == "L"    .AND. BORDER,     WS_BORDER, 0 )  + ;
              SS_NOTIFY
 
@@ -115,7 +113,7 @@ Local ControlHandle, nStyle, nStyleEx := 0
    // This window is a LABEL!!!
    Controlhandle := InitLabel( ::ContainerhWnd, "", 0, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight, '', 0, Nil , nStyle, nStyleEx, ::lRtl )
 
-   ::Register( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
+   ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
 
    ::OnClick := OnClick
    ::OnLostFocus := LostFocus

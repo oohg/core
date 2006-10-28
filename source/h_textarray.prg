@@ -1,5 +1,5 @@
 /*
- * $Id: h_textarray.prg,v 1.7 2006-10-02 03:06:06 guerra000 Exp $
+ * $Id: h_textarray.prg,v 1.8 2006-10-28 20:49:15 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -88,18 +88,17 @@ Local ControlHandle, nStyle, nStyleEx
    ASSIGN ::nRow        VALUE y TYPE "N"
    ASSIGN ::nWidth      VALUE w TYPE "N"
    ASSIGN ::nHeight     VALUE h TYPE "N"
-   ASSIGN invisible     VALUE invisible    TYPE "L" DEFAULT .F.
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, , lRtl )
 
-   nStyle := if( ValType( invisible ) != "L" .OR. ! invisible, WS_VISIBLE,  0 ) + ;
+   nStyle := ::InitStyle( ,, Invisible ) + ;
              if( ValType( BORDER ) == "L"    .AND. BORDER,     WS_BORDER,   0 )
 
    nStyleEx := if( ValType( CLIENTEDGE ) == "L"   .AND. CLIENTEDGE,   WS_EX_CLIENTEDGE,  0 )
 
    Controlhandle := InitTextArray( ::ContainerhWnd, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight, nStyle, nStyleEx, ::lRtl )
 
-   ::Register( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
+   ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
 
    ASSIGN ::RowCount VALUE RowCount TYPE "N" DEFAULT TTextArray_MaxChars( Self, 0 )
