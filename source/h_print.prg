@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.39 2006-10-21 21:07:26 guerra000 Exp $
+* $Id: h_print.prg,v 1.40 2006-10-29 23:31:09 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -8,6 +8,7 @@
 #include 'winprint.ch'
 
 memvar _OOHG_PRINTLIBRARY
+memvar _OOHG_printer_docname
 memvar _HMG_PRINTER_APRINTERPROPERTIES
 memvar _HMG_PRINTER_HDC
 memvar _HMG_PRINTER_COPIES
@@ -17,7 +18,6 @@ memvar _HMG_PRINTER_TIMESTAMP
 memvar _HMG_PRINTER_NAME
 memvar _HMG_PRINTER_PAGECOUNT
 memvar _HMG_PRINTER_HDC_BAK
-memvar _OOHG_printer_docname
 memvar oPrintexcel
 memvar oPrinthoja
 memvar oprintrtf1
@@ -31,7 +31,7 @@ memvar milinea1
 memvar milinea2
 memvar oprintcsv2
 memvar oprintcsv3
-////memvar sicvar
+memvar cname
 
 *-------------------------
 FUNCTION TPrint( clibx )
@@ -340,7 +340,7 @@ if iswindowactive(_oohg_winreport)
    ::exit:=.T.
    return nil
 endif
-Public _OOHG_printer_docname
+// public _oohg_printer_docname
 ::initx()
 RETURN self
 
@@ -767,10 +767,13 @@ return self
 
 
 *-------------------------
-METHOD begindocx(  cdoc ) CLASS TMINIPRINT
+METHOD begindocx(  cDoc ) CLASS TMINIPRINT
 *-------------------------
-_OOHG_printer_docname:=cdoc
-START PRINTDOC NAME cDoc
+if cDoc#Nil
+   START PRINTDOC NAME cDoc
+else
+   START PRINTDOC  
+endif
 return self
 
 *-------------------------
@@ -873,110 +876,110 @@ if lselect .and. lpreview .and. cprinterx = NIL
       Return Nil
    EndIf
 
-if npapersize#NIL
-   SELECT PRINTER ::cprinter to lsucess ;
-   ORIENTATION worientation ;
-   PAPERSIZE npapersize       ;
-   QUALITY nres ;
-   PREVIEW
-else
-   SELECT PRINTER ::cprinter to lsucess ;
-   ORIENTATION worientation ;
-   QUALITY nres ;
-   PREVIEW
-endif
+   if npapersize#NIL
+      SELECT PRINTER ::cprinter to lsucess ;
+      ORIENTATION worientation ;
+      PAPERSIZE npapersize       ;
+      QUALITY nres ;
+      PREVIEW
+   else
+      SELECT PRINTER ::cprinter to lsucess ;
+      ORIENTATION worientation ;
+      QUALITY nres ;
+      PREVIEW
+   endif
 endif
 
 if (.not. lselect) .and. lpreview .and. cprinterx = NIL
 
-if npapersize#NIL
-SELECT PRINTER DEFAULT TO lsucess ;
-ORIENTATION worientation  ;
-PAPERSIZE npapersize       ;
-QUALITY nres ;
-PREVIEW
-else
-SELECT PRINTER DEFAULT TO lsucess ;
-ORIENTATION worientation  ;
-QUALITY nres ;
-PREVIEW
-endif
+   if npapersize#NIL
+      SELECT PRINTER DEFAULT TO lsucess ;
+      ORIENTATION worientation  ;
+      PAPERSIZE npapersize       ;
+      QUALITY nres ;
+      PREVIEW
+   else
+     SELECT PRINTER DEFAULT TO lsucess ;
+     ORIENTATION worientation  ;
+     QUALITY nres ;
+     PREVIEW
+   endif
 endif
 
 if (.not. lselect) .and. (.not. lpreview) .and. cprinterx = NIL
 
-if npapersize#NIL
-SELECT PRINTER DEFAULT TO lsucess  ;
-ORIENTATION worientation  ;
-QUALITY nres ;
-PAPERSIZE npapersize
-else
-SELECT PRINTER DEFAULT TO lsucess  ;
-QUALITY nres ;
-ORIENTATION worientation
-endif
+   if npapersize#NIL
+      SELECT PRINTER DEFAULT TO lsucess  ;
+      ORIENTATION worientation  ;
+      QUALITY nres ;
+      PAPERSIZE npapersize
+   else
+      SELECT PRINTER DEFAULT TO lsucess  ;
+      QUALITY nres ;
+      ORIENTATION worientation
+   endif
 endif
 
 if lselect .and. .not. lpreview .and. cprinterx = NIL
-::cPrinter := GetPrinter()
-If Empty (::cPrinter)
-::lprerror:=.T.
-Return Nil
-EndIf
+   ::cPrinter := GetPrinter()
+   If Empty (::cPrinter)
+      ::lprerror:=.T.
+      Return Nil
+   EndIf
 
-if npapersize#NIL
-SELECT PRINTER ::cprinter to lsucess ;
-ORIENTATION worientation ;
-QUALITY nres ;
-PAPERSIZE npapersize
-else
-SELECT PRINTER ::cprinter to lsucess ;
-QUALITY nres ;
-ORIENTATION worientation
-endif
+   if npapersize#NIL
+      SELECT PRINTER ::cprinter to lsucess ;
+      ORIENTATION worientation ;
+      QUALITY nres ;
+      PAPERSIZE npapersize
+   else
+      SELECT PRINTER ::cprinter to lsucess ;
+      QUALITY nres ;
+      ORIENTATION worientation
+   endif
 endif
 
 if cprinterx # NIL .AND. lpreview
-If Empty (cprinterx)
-::lprerror:=.T.
-Return Nil
-EndIf
+   If Empty (cprinterx)
+      ::lprerror:=.T.
+      Return Nil
+   EndIf
 
-if npapersize#NIL
-SELECT PRINTER cprinterx to lsucess ;
-ORIENTATION worientation ;
-QUALITY nres ;
-PAPERSIZE npapersize ;
-PREVIEW
-else
-SELECT PRINTER cprinterx to lsucess ;
-ORIENTATION worientation ;
-QUALITY nres ;
-PREVIEW
-endif
+   if npapersize#NIL
+      SELECT PRINTER cprinterx to lsucess ;
+      ORIENTATION worientation ;
+      QUALITY nres ;
+      PAPERSIZE npapersize ;
+      PREVIEW
+   else
+      SELECT PRINTER cprinterx to lsucess ;
+      ORIENTATION worientation ;
+      QUALITY nres ;
+      PREVIEW
+   endif
 endif
 
 if cprinterx # NIL .AND. .not. lpreview
-If Empty (cprinterx)
-::lprerror:=.T.
-Return Nil
-EndIf
+   If Empty (cprinterx)
+      ::lprerror:=.T.
+      Return Nil
+   EndIf
 
-if npapersize#NIL
-SELECT PRINTER cprinterx to lsucess ;
-ORIENTATION worientation ;
-QUALITY nres ;
-PAPERSIZE npapersize
-else
-SELECT PRINTER cprinterx to lsucess ;
-QUALITY nres ;
-ORIENTATION worientation
-endif
+   if npapersize#NIL
+      SELECT PRINTER cprinterx to lsucess ;
+      ORIENTATION worientation ;
+      QUALITY nres ;
+      PAPERSIZE npapersize
+   else
+      SELECT PRINTER cprinterx to lsucess ;
+      QUALITY nres ;
+      ORIENTATION worientation
+   endif
 endif
 
 IF .NOT. lsucess
-::lprerror:=.T.
-return nil
+   ::lprerror:=.T.
+   return nil
 ENDIF
 return self
 
@@ -1166,45 +1169,45 @@ METHOD selprinterx( lselect , lpreview, llandscape , npapersize ,cprinterx,nres 
 *-------------------------
 
 if lselect .and. lpreview .and. cprinterx=NIL
-SELECT BY DIALOG PREVIEW
+   SELECT BY DIALOG PREVIEW
 endif
 if lselect .and. (.not. lpreview) .and. cprinterx=NIL
-SELECT BY DIALOG
+   SELECT BY DIALOG
 endif
 if (.not. lselect) .and. lpreview .and. cprinterx=NIL
-SELECT DEFAULT PREVIEW
+   SELECT DEFAULT PREVIEW
 endif
 if (.not. lselect) .and. (.not. lpreview) .and. cprinterx=NIL
-SELECT DEFAULT
+   SELECT DEFAULT
 endif
 
 if cprinterx # NIL
-IF lpreview
-SELECT PRINTER cprinterx PREVIEW
-ELSE
-SELECT PRINTER cprinterx
-ENDIF
+   IF lpreview
+      SELECT PRINTER cprinterx PREVIEW
+   ELSE
+      SELECT PRINTER cprinterx
+   ENDIF
 endif
 
 IF HBPRNERROR != 0
-::lprerror:=.T.
-return nil
+   ::lprerror:=.T.
+   return nil
 ENDIF
 define font "f0" name ::cfontname size ::nfontsize
 define font "f1" name ::cfontname size ::nfontsize BOLD
 define pen "C0" WIDTH ::nwpen COLOR ::acolor
 select pen "C0"
 if llandscape
-set page orientation DMORIENT_LANDSCAPE font "f0"
+   set page orientation DMORIENT_LANDSCAPE font "f0"
 else
-set page orientation DMORIENT_PORTRAIT  font "f0"
+   set page orientation DMORIENT_PORTRAIT  font "f0"
 endif
 if npapersize#NIL
-set page papersize npapersize
+   set page papersize npapersize
 endif
 
 if nres#NIL
-SET QUALITY nres   ////:=PRINTER_RES_MEDIUM
+   SET QUALITY nres   ////:=PRINTER_RES_MEDIUM
 endif
 
 return self
@@ -1339,42 +1342,42 @@ SET DEVICE TO SCREEN
 SET PRINTER TO
 _nhandle:=FOPEN(::tempfile,0+64)
 if ::impreview
-wr:=memoread((::tempfile))
-DEFINE WINDOW PRINT_PREVIEW  ;
-AT 0,0 ;
-WIDTH nx HEIGHT ny-70 ;
-TITLE 'Preview -----> ' + ::tempfile ;
-MODAL
+   wr:=memoread((::tempfile))
+   DEFINE WINDOW PRINT_PREVIEW  ;
+   AT 0,0 ;
+   WIDTH nx HEIGHT ny-70 ;
+   TITLE 'Preview -----> ' + ::tempfile ;
+   MODAL
 
-@ 0,0 EDITBOX EDIT_P ;
-OF PRINT_PREVIEW ;
-WIDTH nx-50 ;
-HEIGHT ny-40-70 ;
-VALUE WR ;
-READONLY ;
-FONT 'Courier New' ;
-SIZE 10
+   @ 0,0 EDITBOX EDIT_P ;
+   OF PRINT_PREVIEW ;
+   WIDTH nx-50 ;
+   HEIGHT ny-40-70 ;
+   VALUE WR ;
+   READONLY ;
+   FONT 'Courier New' ;
+   SIZE 10
 
-@ 10,nx-40 button but_4 caption "X" width 30 action ( print_preview.release() )
-@ 110,nx-40 button but_1 caption "+ +" width 30 action zoom("+")
-@ 210,nx-40 button but_2 caption "- -" width 30 action zoom("-")
-@ 310,nx-40 button but_3 caption "P" width 30 action (::printdos())
+   @ 10,nx-40 button but_4 caption "X" width 30 action ( print_preview.release() )
+   @ 110,nx-40 button but_1 caption "+ +" width 30 action zoom("+")
+   @ 210,nx-40 button but_2 caption "- -" width 30 action zoom("-")
+   @ 310,nx-40 button but_3 caption "P" width 30 action (::printdos())
 
 
-END WINDOW
+   END WINDOW
 
-CENTER WINDOW PRINT_PREVIEW
-ACTIVATE WINDOW PRINT_PREVIEW
+   CENTER WINDOW PRINT_PREVIEW
+   ACTIVATE WINDOW PRINT_PREVIEW
 
 else
 
-::PRINTDOS()
+   ::PRINTDOS()
 
 endif
 
 IF FILE(::tempfile)
-fclose(_nhandle)
-ERASE &(::tempfile)
+   fclose(_nhandle)
+   ERASE &(::tempfile)
 ENDIF
 
 
@@ -1418,7 +1421,7 @@ return self
 METHOD printlinex(nlin,ncol,nlinf,ncolf /* ,atcolor,ntwpen */ ) CLASS TDOSPRINT
 *-------------------------
 if nlin=nlinf
-@ nlin,ncol say replicate("-",ncolf-ncol+1)
+   @ nlin,ncol say replicate("-",ncolf-ncol+1)
 endif
 return self
 
@@ -1428,10 +1431,10 @@ METHOD selprinterx( lselect , lpreview /* , llandscape , npapersize ,cprinterx *
 *-------------------------
 Empty( lSelect )
 do while file(::tempfile)
-::tempfile:=gettempdir()+"T"+alltrim(str(int(hb_random(999999)),8))+".prn"
+   ::tempfile:=gettempdir()+"T"+alltrim(str(int(hb_random(999999)),8))+".prn"
 enddo
 if lpreview
-::impreview:=.T.
+   ::impreview:=.T.
 endif
 return self
 
@@ -1454,11 +1457,11 @@ return self
 static function zoom(cOp)
 *-------------------------
 if cOp="+" .and. print_preview.edit_p.fontsize <= 24
-print_preview.edit_p.fontsize:=  print_preview.edit_p.fontsize + 2
+   print_preview.edit_p.fontsize:=  print_preview.edit_p.fontsize + 2
 endif
 
 if cOp="-" .and. print_preview.edit_p.fontsize > 7
-print_preview.edit_p.fontsize:=  print_preview.edit_p.fontsize - 2
+   print_preview.edit_p.fontsize:=  print_preview.edit_p.fontsize - 2
 endif
 return nil
 
@@ -1563,20 +1566,20 @@ empty(cprinterx)
 
 oPrintExcel := TOleAuto():New( "Excel.Application" )
 IF Ole2TxtError() != 'S_OK'
-MsgStop('Excel no esta disponible','error')
-::lprerror:=.T.
-::exit:=.T.
-RETURN Nil
+   MsgStop('Excel no esta disponible','error')
+   ::lprerror:=.T.
+   ::exit:=.T.
+   RETURN Nil
 ENDIF
 return self
 
 *-------------------------
 METHOD begindocx(cdoc) CLASS TEXCELPRINT
 *-------------------------
-empty(cdoc)
+default cDoc to "List"
 oPrintExcel:WorkBooks:Add()
 oPrintHoja:=oPrintExcel:Get( "ActiveSheet" )
-oPrintHoja:Name := "List"
+oPrintHoja:Name := cDoc
 oPrintHoja:Cells:Font:Name := ::cfontname
 oPrintHoja:Cells:Font:Size := ::nfontsize
 return self
@@ -1587,7 +1590,7 @@ METHOD enddocx() CLASS TEXCELPRINT
 *-------------------------
 local nCol
 FOR nCol:=1 TO FCOUNT()
-oPrintHoja:Columns( nCol ):AutoFit()
+    oPrintHoja:Columns( nCol ):AutoFit()
 NEXT
 oPrintHoja:Cells( 1, 1 ):Select()
 oPrintExcel:Visible := .T.
@@ -1622,14 +1625,14 @@ return self
 METHOD setunitsx(cunitsx,nunitslinx) CLASS TEXCELPRINT
 *-------------------------
 if cunitsx="MM"
-::cunits:="MM"
+   ::cunits:="MM"
 else
-::cunits:="ROWCOL"
+   ::cunits:="ROWCOL"
 endif
 if nunitslinx=NIL
-::nunitslin:=1
+   ::nunitslin:=1
 else
-::nunitslin:=nunitslinx
+   ::nunitslin:=nunitslinx
 endif
 RETURN self
 
@@ -1643,13 +1646,13 @@ empty(data)
 empty(acolor)
 empty(nlen)
 if ::nunitslin>1
-nlin:=round(nlin/::nunitslin,0)
+   nlin:=round(nlin/::nunitslin,0)
 endif
 nlin:=nlin+::nlinpag
 IF LEN(::alincelda)<nlin
-DO WHILE LEN(::alincelda)<nlin
-AADD(::alincelda,0)
-ENDDO
+   DO WHILE LEN(::alincelda)<nlin
+      AADD(::alincelda,0)
+   ENDDO
 ENDIF
 ::alincelda[nlin]:=::alincelda[nlin]+1
 alinceldax:=::alincelda[nlin]
@@ -1659,9 +1662,9 @@ oPrintHoja:Cells(nlin,alinceldax):Font:Size := nsize
 oPrintHoja:Cells(nlin,alinceldax):Font:Bold := lbold
 do case
 case calign="R"
-oPrintHoja:Cells(nlin,alinceldax):HorizontalAlignment:= -4152  //Derecha
+  oPrintHoja:Cells(nlin,alinceldax):HorizontalAlignment:= -4152  //Derecha
 case calign="C"
-oPrintHoja:Cells(nlin,alinceldax):HorizontalAlignment:= -4108  //Centrar
+  oPrintHoja:Cells(nlin,alinceldax):HorizontalAlignment:= -4108  //Centrar
 endcase
 return self
 
@@ -1762,7 +1765,9 @@ local   MARGENINF:=LTRIM(STR(ROUND(15*56.7,0)))
 local   MARGENIZQ:=LTRIM(STR(ROUND(10*56.7,0)))
 local   MARGENDER:=LTRIM(STR(ROUND(10*56.7,0)))
 
-Empty( cdoc )
+////Empty( cdoc )
+
+Default cDoc to "List"
 
 AADD(oPrintRTF1,"{\rtf1\ansi\ansicpg1252\uc1 \deff0\deflang3082\deflangfe3082{\fonttbl{\f0\froman\fcharset0\fprq2{\*\panose 02020603050405020304}Times New Roman;}{\f2\fmodern\fcharset0\fprq1{\*\panose 02070309020205020404}Courier New;}")
 AADD(oPrintRTF1,"{\f106\froman\fcharset238\fprq2 Times New Roman CE;}{\f107\froman\fcharset204\fprq2 Times New Roman Cyr;}{\f109\froman\fcharset161\fprq2 Times New Roman Greek;}{\f110\froman\fcharset162\fprq2 Times New Roman Tur;}")
@@ -1781,9 +1786,9 @@ AADD(oPrintRTF1,"\pndec\pnstart1\pnindent720\pnhang{\pntxta .}}{\*\pnseclvl4\pnl
 AADD(oPrintRTF1,"{\*\pnseclvl7\pnlcrm\pnstart1\pnindent720\pnhang{\pntxtb (}{\pntxta )}}{\*\pnseclvl8\pnlcltr\pnstart1\pnindent720\pnhang{\pntxtb (}{\pntxta )}}{\*\pnseclvl9\pnlcrm\pnstart1\pnindent720\pnhang{\pntxtb (}{\pntxta )}}\pard\plain ")
 AADD(oPrintRTF1,"\qj \li0\ri0\nowidctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang3082\langfe3082\cgrid\langnp3082\langfenp3082")
 IF ::cunits="MM"
-AADD(oPrintRTF1,"{\b\f0\lang1034\langfe3082\cgrid0\langnp1034")
+   AADD(oPrintRTF1,"{\b\f0\lang1034\langfe3082\cgrid0\langnp1034")
 ELSE
-AADD(oPrintRTF1,"{\b\f2\lang1034\langfe3082\cgrid0\langnp1034")
+   AADD(oPrintRTF1,"{\b\f2\lang1034\langfe3082\cgrid0\langnp1034")
 ENDIF
 
 return self
@@ -1795,7 +1800,7 @@ METHOD enddocx() CLASS TRTFPRINT
 local nTRTFPRINT
 private rutaficrtf1
 IF RIGHT(oPrintRTF1[LEN(oPrintRTF1)],6)=" \page"
-oPrintRTF1[LEN(oPrintRTF1)]:=LEFT(oPrintRTF1[LEN(oPrintRTF1)] , LEN(oPrintRTF1[LEN(oPrintRTF1)])-6 )
+   oPrintRTF1[LEN(oPrintRTF1)]:=LEFT(oPrintRTF1[LEN(oPrintRTF1)] , LEN(oPrintRTF1[LEN(oPrintRTF1)])-6 )
 ENDIF
 AADD(oPrintRTF1,"\par }}")
 RUTAFICRTF1:=GetCurrentFolder()
@@ -1810,12 +1815,12 @@ SET DEVICE TO SCREEN
 SET PRINTER TO
 RELEASE oPrintRTF1,oPrintRTF2,oPrintRTF3
 IF ShellExecute(0, "open", "soffice.exe", "printer.RTF" , RUTAFICRTF1 , 1)<=32
-IF ShellExecute(0, "open", "WinWord.exe", "printer.RTF" , RUTAFICRTF1 , 1)<=32
-IF ShellExecute(0, "open", "printer.RTF" , RUTAFICRTF1 , , 1)<=32
-MSGINFO("No se ha localizado el programa asociado a la extemsion RTF"+CHR(13)+CHR(13)+ ;
-"El fichero se ha guardado en:"+CHR(13)+RUTAFICRTF1+"\printer.RTF")
-ENDIF
-ENDIF
+   IF ShellExecute(0, "open", "WinWord.exe", "printer.RTF" , RUTAFICRTF1 , 1)<=32
+      IF ShellExecute(0, "open", "printer.RTF" , RUTAFICRTF1 , , 1)<=32
+         MSGINFO("No se ha localizado el programa asociado a la extemsion RTF"+CHR(13)+CHR(13)+ ;
+         "El fichero se ha guardado en:"+CHR(13)+RUTAFICRTF1+"\printer.RTF")
+      ENDIF
+   ENDIF
 ENDIF
 RETURN self
 
@@ -1833,60 +1838,60 @@ local milinea,nTRTFPRINT1,nTRTFPRINT2
 ASORT(::alincelda,,, { |x, y| STR(x[1])+STR(x[2]) < STR(y[1])+STR(y[2]) })
 MiLinea:=0
 FOR nTRTFPRINT1=1 TO LEN(::alincelda)
-IF MiLinea<::alincelda[nTRTFPRINT1,1]
-DO WHILE MiLinea<::alincelda[nTRTFPRINT1,1]
-AADD(oPrintRTF1,"\par ")
-MiLinea++
-ENDDO
-IF ::cunits="MM"
-oPrintRTF1[LEN(oPrintRTF1)]:=oPrintRTF1[LEN(oPrintRTF1)]+"}\pard \qj \li0\ri0\nowidctlpar"
-FOR nTRTFPRINT2=1 TO LEN(::alincelda)
-IF ::alincelda[nTRTFPRINT2,1]=::alincelda[nTRTFPRINT1,1]
-do case
-  case ::alincelda[nTRTFPRINT2,5]="R"
-     oPrintRTF1[LEN(oPrintRTF1)]:=oPrintRTF1[LEN(oPrintRTF1)]+"\tqr"+"\tx"+LTRIM(STR(ROUND((::alincelda[nTRTFPRINT2,2]-10)*56.7,0)))
-  case ::alincelda[nTRTFPRINT2,5]="C"
-     oPrintRTF1[LEN(oPrintRTF1)]:=oPrintRTF1[LEN(oPrintRTF1)]+"\tqc"+"\tx"+LTRIM(STR(ROUND((::alincelda[nTRTFPRINT2,2]-10)*56.7,0)))
-  otherwise
-     oPrintRTF1[LEN(oPrintRTF1)]:=oPrintRTF1[LEN(oPrintRTF1)]+"\tql"+"\tx"+LTRIM(STR(ROUND((::alincelda[nTRTFPRINT2,2]-10)*56.7,0)))
-endcase
-ENDIF
-NEXT
-oPrintRTF1[LEN(oPrintRTF1)]:=oPrintRTF1[LEN(oPrintRTF1)]+"\faauto\adjustright\rin0\lin0\itap0 {"
-ENDIF
-ENDIF
+    IF MiLinea<::alincelda[nTRTFPRINT1,1]
+       DO WHILE MiLinea<::alincelda[nTRTFPRINT1,1]
+          AADD(oPrintRTF1,"\par ")
+          MiLinea++
+       ENDDO
+       IF ::cunits="MM"
+          oPrintRTF1[LEN(oPrintRTF1)]:=oPrintRTF1[LEN(oPrintRTF1)]+"}\pard \qj \li0\ri0\nowidctlpar"
+          FOR nTRTFPRINT2=1 TO LEN(::alincelda)
+              IF ::alincelda[nTRTFPRINT2,1]=::alincelda[nTRTFPRINT1,1]
+              do case
+              case ::alincelda[nTRTFPRINT2,5]="R"
+              oPrintRTF1[LEN(oPrintRTF1)]:=oPrintRTF1[LEN(oPrintRTF1)]+"\tqr"+"\tx"+LTRIM(STR(ROUND((::alincelda[nTRTFPRINT2,2]-10)*56.7,0)))
+              case ::alincelda[nTRTFPRINT2,5]="C"
+              oPrintRTF1[LEN(oPrintRTF1)]:=oPrintRTF1[LEN(oPrintRTF1)]+"\tqc"+"\tx"+LTRIM(STR(ROUND((::alincelda[nTRTFPRINT2,2]-10)*56.7,0)))
+              otherwise
+              oPrintRTF1[LEN(oPrintRTF1)]:=oPrintRTF1[LEN(oPrintRTF1)]+"\tql"+"\tx"+LTRIM(STR(ROUND((::alincelda[nTRTFPRINT2,2]-10)*56.7,0)))
+              endcase
+              ENDIF
+         NEXT
+         oPrintRTF1[LEN(oPrintRTF1)]:=oPrintRTF1[LEN(oPrintRTF1)]+"\faauto\adjustright\rin0\lin0\itap0 {"
+      ENDIF
+    ENDIF
 IF oPrintRTF2<>::alincelda[nTRTFPRINT1,4]
-oPrintRTF2:=::alincelda[nTRTFPRINT1,4]
-DO CASE
-CASE oPrintRTF2<=8
-IF ::cunits="MM"
-oPrintRTF1[LEN(oPrintRTF1)]:=oPrintRTF1[LEN(oPrintRTF1)]+"}{\b\f0\fs16\lang1034\langfe3082\cgrid0\langnp1034"
-ELSE
-oPrintRTF1[LEN(oPrintRTF1)]:=oPrintRTF1[LEN(oPrintRTF1)]+"}{\b\f2\fs16\lang1034\langfe3082\cgrid0\langnp1034"
-ENDIF
-CASE oPrintRTF2>=9 .AND. oPrintRTF2<=10
-IF ::cunits="MM"
-oPrintRTF1[LEN(oPrintRTF1)]:=oPrintRTF1[LEN(oPrintRTF1)]+"}{\b\f0\lang1034\langfe3082\cgrid0\langnp1034"
-ELSE
-oPrintRTF1[LEN(oPrintRTF1)]:=oPrintRTF1[LEN(oPrintRTF1)]+"}{\b\f2\lang1034\langfe3082\cgrid0\langnp1034"
-ENDIF
-CASE oPrintRTF2>=11 .AND. oPrintRTF2<=12
-IF ::cunits="MM"
-oPrintRTF1[LEN(oPrintRTF1)]:=oPrintRTF1[LEN(oPrintRTF1)]+"}{\b\f0\fs24\lang1034\langfe3082\cgrid\langnp1034"
-ELSE
-oPrintRTF1[LEN(oPrintRTF1)]:=oPrintRTF1[LEN(oPrintRTF1)]+"}{\b\f2\fs24\lang1034\langfe3082\cgrid\langnp1034"
-ENDIF
-CASE oPrintRTF2>=13
-IF ::cunits="MM"
-oPrintRTF1[LEN(oPrintRTF1)]:=oPrintRTF1[LEN(oPrintRTF1)]+"}{\b\f0\fs28\lang1034\langfe3082\cgrid\langnp1034"
-ELSE
-oPrintRTF1[LEN(oPrintRTF1)]:=oPrintRTF1[LEN(oPrintRTF1)]+"}{\b\f2\fs28\lang1034\langfe3082\cgrid\langnp1034"
-ENDIF
-ENDCASE
+   oPrintRTF2:=::alincelda[nTRTFPRINT1,4]
+   DO CASE
+   CASE oPrintRTF2<=8
+   IF ::cunits="MM"
+      oPrintRTF1[LEN(oPrintRTF1)]:=oPrintRTF1[LEN(oPrintRTF1)]+"}{\b\f0\fs16\lang1034\langfe3082\cgrid0\langnp1034"
+   ELSE
+      oPrintRTF1[LEN(oPrintRTF1)]:=oPrintRTF1[LEN(oPrintRTF1)]+"}{\b\f2\fs16\lang1034\langfe3082\cgrid0\langnp1034"
+   ENDIF
+   CASE oPrintRTF2>=9 .AND. oPrintRTF2<=10
+   IF ::cunits="MM"
+      oPrintRTF1[LEN(oPrintRTF1)]:=oPrintRTF1[LEN(oPrintRTF1)]+"}{\b\f0\lang1034\langfe3082\cgrid0\langnp1034"
+   ELSE
+      oPrintRTF1[LEN(oPrintRTF1)]:=oPrintRTF1[LEN(oPrintRTF1)]+"}{\b\f2\lang1034\langfe3082\cgrid0\langnp1034"
+   ENDIF
+   CASE oPrintRTF2>=11 .AND. oPrintRTF2<=12
+   IF ::cunits="MM"
+   oPrintRTF1[LEN(oPrintRTF1)]:=oPrintRTF1[LEN(oPrintRTF1)]+"}{\b\f0\fs24\lang1034\langfe3082\cgrid\langnp1034"
+   ELSE
+   oPrintRTF1[LEN(oPrintRTF1)]:=oPrintRTF1[LEN(oPrintRTF1)]+"}{\b\f2\fs24\lang1034\langfe3082\cgrid\langnp1034"
+   ENDIF
+   CASE oPrintRTF2>=13
+   IF ::cunits="MM"
+   oPrintRTF1[LEN(oPrintRTF1)]:=oPrintRTF1[LEN(oPrintRTF1)]+"}{\b\f0\fs28\lang1034\langfe3082\cgrid\langnp1034"
+   ELSE
+   oPrintRTF1[LEN(oPrintRTF1)]:=oPrintRTF1[LEN(oPrintRTF1)]+"}{\b\f2\fs28\lang1034\langfe3082\cgrid\langnp1034"
+   ENDIF
+   ENDCASE
 ENDIF
 
 IF ::cunits="MM"
-oPrintRTF1[LEN(oPrintRTF1)]:=oPrintRTF1[LEN(oPrintRTF1)]+"\tab "
+   oPrintRTF1[LEN(oPrintRTF1)]:=oPrintRTF1[LEN(oPrintRTF1)]+"\tab "
 ENDIF
 
 oPrintRTF1[LEN(oPrintRTF1)]:=oPrintRTF1[LEN(oPrintRTF1)]+::alincelda[nTRTFPRINT1,3]
@@ -1900,14 +1905,14 @@ return self
 METHOD setunits(cunitsx,cunitslinx) CLASS TRTFPRINT
 *-------------------------
 if cunitsx="MM"
-::cunits:="MM"
+   ::cunits:="MM"
 else
-::cunits:="ROWCOL"
+   ::cunits:="ROWCOL"
 endif
 if cunitslinx=NIL
-::nunitslin:=1
+   ::nunitslin:=1
 else
-::nunitslin:=cunitslinx
+   ::nunitslin:=cunitslinx
 endif
 RETURN self
 
@@ -1921,10 +1926,10 @@ Empty( lbold )
 Empty( acolor )
 Empty( nlen )
 if ::nunitslin>1
-nlin:=round(nlin/::nunitslin,0)
+   nlin:=round(nlin/::nunitslin,0)
 endif
 IF ::cunits="MM"
-ctext:=ALLTRIM(ctext)
+   ctext:=ALLTRIM(ctext)
 ENDIF
 AADD(::alincelda,{nlin,ncol,ctext,nsize,calign})
 return self
@@ -2060,7 +2065,7 @@ return self
 *-------------------------
 METHOD begindocx(cdoc) CLASS TCSVPRINT
 *-------------------------
-Empty( cdoc )
+Default cDoc to "List"
 return self
 
 
@@ -2079,12 +2084,12 @@ SET DEVICE TO SCREEN
 SET PRINTER TO
 RELEASE oPrintCSV1,oPrintCSV2,oPrintCSV3
 IF ShellExecute(0, "open", "soffice.exe", "printer.CSV" , RUTAFICRTF1 , 1)<=32
-IF ShellExecute(0, "open", "Excel.exe", "printer.CSV" , RUTAFICRTF1 , 1)<=32
-IF ShellExecute(0, "open", "printer.CSV" , RUTAFICRTF1 , , 1)<=32
-MSGINFO("No se ha localizado el programa asociado a la extemsion CSV"+CHR(13)+CHR(13)+ ;
-"El fichero se ha guardado en:"+CHR(13)+RUTAFICRTF1+"\printer.CSV")
-ENDIF
-ENDIF
+   IF ShellExecute(0, "open", "Excel.exe", "printer.CSV" , RUTAFICRTF1 , 1)<=32
+      IF ShellExecute(0, "open", "printer.CSV" , RUTAFICRTF1 , , 1)<=32
+         MSGINFO("No se ha localizado el programa asociado a la extemsion CSV"+CHR(13)+CHR(13)+ ;
+         "El fichero se ha guardado en:"+CHR(13)+RUTAFICRTF1+"\printer.CSV")
+      ENDIF
+   ENDIF
 ENDIF
 RETURN self
 
@@ -2103,16 +2108,16 @@ MiLinea1:=0
 MiLinea2:=0
 FOR nTCSVPRINT1=1 TO LEN(::alincelda)
 IF MiLinea1<::alincelda[nTCSVPRINT1,1]
-DO WHILE MiLinea1<::alincelda[nTCSVPRINT1,1]
-AADD(oPrintCSV1,"")
-MiLinea1++
-ENDDO
+   DO WHILE MiLinea1<::alincelda[nTCSVPRINT1,1]
+      AADD(oPrintCSV1,"")
+      MiLinea1++
+   ENDDO
 ENDIF
 
 IF LEN(oPrintCSV1[LEN(oPrintCSV1)])=0
-oPrintCSV1[LEN(oPrintCSV1)]:=::alincelda[nTCSVPRINT1,3]
+   oPrintCSV1[LEN(oPrintCSV1)]:=::alincelda[nTCSVPRINT1,3]
 ELSE
-oPrintCSV1[LEN(oPrintCSV1)]:=oPrintCSV1[LEN(oPrintCSV1)]+";"+STRTRAN(::alincelda[nTCSVPRINT1,3],";",",")
+   oPrintCSV1[LEN(oPrintCSV1)]:=oPrintCSV1[LEN(oPrintCSV1)]+";"+STRTRAN(::alincelda[nTCSVPRINT1,3],";",",")
 ENDIF
 NEXT
 ::alincelda:={}
@@ -2123,14 +2128,14 @@ return self
 METHOD setunits(cunitsx,cunitslinx) CLASS TCSVPRINT
 *-------------------------
 if cunitsx="MM"
-::cunits:="MM"
+   ::cunits:="MM"
 else
-::cunits:="ROWCOL"
+   ::cunits:="ROWCOL"
 endif
 if cunitslinx=NIL
-::nunitslin:=1
+   ::nunitslin:=1
 else
-::nunitslin:=cunitslinx
+   ::nunitslin:=cunitslinx
 endif
 RETURN self
 
@@ -2144,10 +2149,10 @@ Empty( lbold )
 Empty( acolor )
 Empty( nlen )
 if ::nunitslin>1
-nlin:=round(nlin/::nunitslin,0)
+   nlin:=round(nlin/::nunitslin,0)
 endif
 IF ::cunits="MM"
-ctext:=ALLTRIM(ctext)
+   ctext:=ALLTRIM(ctext)
 ENDIF
 AADD(::alincelda,{nlin,ncol,ctext,nsize,calign})
 return self
@@ -2190,12 +2195,4 @@ return self
 METHOD normaldosx() CLASS TCSVPRINT
 *-------------------------
 return self
-
-
-
-
-
-
-
-
 

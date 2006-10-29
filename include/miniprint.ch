@@ -37,7 +37,6 @@
 	"Harbour Project"
 	Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
-
 * Select Printer <cPrinter> [ TO <lSelect> ]
 
 #xcommand SELECT PRINTER <cPrinter> ;
@@ -203,9 +202,10 @@ _HMG_printer_preview := <.Preview.> ;;
 _HMG_printer_InitUserMessages() ;;
 _HMG_printer_timestamp := strzero( Seconds() * 100 , 8 ) 
 
-#xcommand START PRINTDOC [ NAME <_oohg_printer_docname> ]  ;
+#xcommand START PRINTDOC [ NAME <cname> ]  ;
 => ;
-if ( _HMG_printer_preview , ( _HMG_printer_PageCount := 0 , _HMG_printer_hdc_bak := _HMG_printer_hdc ) ,  _HMG_PRINTER_StartDoc ( _HMG_printer_hdc, if(_oohg_printer_docname = NIL,"oohg Print System",_oohg_printer_docname ) ) )
+_hmg_printer_setjobname( <cname> ) ;;
+if ( _HMG_printer_preview , ( _HMG_printer_PageCount := 0 , _HMG_printer_hdc_bak := _HMG_printer_hdc ) ,  _HMG_PRINTER_StartDoc ( _HMG_printer_hdc, _oohg_printer_docname  ) )
 
 #xcommand START PRINTPAGE ;
 => ;

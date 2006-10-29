@@ -1,5 +1,5 @@
 /*
- * $Id: miniprint.prg,v 1.16 2006-09-25 01:55:49 declan2005 Exp $
+ * $Id: miniprint.prg,v 1.17 2006-10-29 23:31:09 declan2005 Exp $
  */
 /*----------------------------------------------------------------------------
  MINIGUI - Harbour Win32 GUI library source code
@@ -87,6 +87,7 @@ memvar _HMG_printer_thumbscroll
 memvar _HMG_printer_PrevPageNumber
 memvar _HMG_printer_usermessages
 memvar _OOHG_printer_docname
+memvar cname
 
 *------------------------------------------------------------------------------*
 Procedure _HMG_PRINTER_SHOWPREVIEW
@@ -109,10 +110,6 @@ Public _HMG_printer_zoomclick_xoffset := 0
 Public _HMG_printer_thumbupdate := .T.
 Public _HMG_printer_thumbscroll
 Public _HMG_printer_PrevPageNumber := 0
-if type ( "_OOHG_printer_docname") # 'C'
-   PUblic _OOHG_printer_docname:="OOHG printing"
-endif
-
 
         if _HMG_printer_hdc_bak == 0
 		Return
@@ -128,7 +125,14 @@ endif
 
         _HMG_printer_SizeFactor := GetDesktopHeight() / _HMG_PRINTER_GETPAGEHEIGHT(_HMG_printer_hdc_bak) * 0.63
 
-        define window _HMG_PRINTER_Wait at 0,0 width 310 height 85 title '' child noshow nocaption
+        define window _oohg_auxil at 0,0 width 0 height 0 height 0 title " " noshow
+
+        end window
+
+        activate window _oohg_auxil nowait
+
+        define window _HMG_PRINTER_Wait  at 0,0 width 310 height 85 title ' ' child noshow nocaption
+	
 		define label label_1
 			row 30
 			col 5
@@ -592,22 +596,6 @@ endif
 
         _HMG_printer_hdc := _HMG_printer_hdc_bak
 
-      //  If ModalHandle != 0
-       //
-      //          For i := 1 To Len ( _HMG_aFormHandles )
-      //                  If _HMG_aFormDeleted [i] == .F.
-      ///                          If _HMG_aFormType [i] != 'X'
-     //                                   If _HMG_aFormHandles [i] != ModalHandle
-     //                                           DisableWindow (_HMG_aFormHandles [i] )
-     //                                   EndIf
-     //                           EndIf
-     //                   EndIf
-     //           Next i
-
-     //           EnableWIndow ( ModalHandle )
-     //           SetFocus ( ModalHandle )
-     //   Endif
-
         setinteractiveclose(icb)
 
 Return
@@ -792,6 +780,8 @@ Procedure _HMG_PRINTER_PreviewClose()
         _HMG_PRINTER_PPNAV.Release
                                                 
         _HMG_PRINTER_WAIT.Release
+        _oohg_auxil.release
+
         if iswindowdefined("_HMG_PRINTER_SHOWPREVIEW")
           _HMG_PRINTER_SHOWPREVIEW.Release
         endif
@@ -1411,6 +1401,8 @@ Procedure _HMG_printer_InitUserMessages
 *------------------------------------------------------------------------------*
 Local	cLang	:= ""   
 Public  _HMG_printer_usermessages [29]
+Public _OOHG_printer_docname:="OOHG printing system"
+
 
 	cLang := Set ( _SET_LANGUAGE )
 
@@ -1961,6 +1953,18 @@ FUNCTION GETPRINTABLEAREAVERTICALOFFSET()
 	ENDIF
 
 RETURN ( _HMG_PRINTER_GETPRINTABLEAREAPHYSICALOFFSETY ( _HMG_printer_hdc ) / _HMG_PRINTER_GETPRINTABLEAREALOGPIXELSY ( _HMG_printer_hdc ) * 25.4 )
+
+function _hmg_printer_setjobname( cName )
+
+        if valtype ( cName ) = 'U'
+	                _OOHG_printer_docname := 'oohg Printing System'
+        else
+			_oohg_printer_docname := cName
+        endif
+		
+return nil
+							
+
 
 *------------------------------------------------------------------------------*
 FUNCTION textALIGN(nAlign)

@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: compile.bat,v 1.13 2006-08-21 19:58:37 declan2005 Exp $
+rem $Id: compile.bat,v 1.14 2006-10-29 23:31:08 declan2005 Exp $
 rem
 cls
 
@@ -88,9 +88,9 @@ for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/A" echo %HG_HRB%\lib\ace32.li
 
 Rem *** MySql Libraries Linking ***
 for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/m" echo %HG_HRB%\lib\mysql.lib + >> b32.bc
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/m" echo %HG_HRB%\lib\libmysql.lib + >> b32.bc
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/m" echo %HG_HRB%\lib\libmysqldll.lib + >> b32.bc
 for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/M" echo %HG_HRB%\lib\mysql.lib + >> b32.bc
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/M" echo %HG_HRB%\lib\libmysql.lib + >> b32.bc
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/M" echo %HG_HRB%\lib\libmysqldll.lib + >> b32.bc
 
 echo cw32.lib + >> b32.bc
 echo import32.lib, >> b32.bc
