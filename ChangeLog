@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog,v 1.253 2006-10-30 00:16:44 guerra000 Exp $
+ * $Id: ChangeLog,v 1.254 2006-10-30 15:43:20 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-10-30 10:42 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+  * source/h_print.prg
+     * fixed problem in sheet name in Texcelprint introduced in last tprint commit
+    
 
 2006-10-29 18:14 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * include/i_button.ch

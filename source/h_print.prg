@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.40 2006-10-29 23:31:09 declan2005 Exp $
+* $Id: h_print.prg,v 1.41 2006-10-30 15:43:20 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -1574,12 +1574,11 @@ ENDIF
 return self
 
 *-------------------------
-METHOD begindocx(cdoc) CLASS TEXCELPRINT
+METHOD begindocx() CLASS TEXCELPRINT
 *-------------------------
-default cDoc to "List"
 oPrintExcel:WorkBooks:Add()
 oPrintHoja:=oPrintExcel:Get( "ActiveSheet" )
-oPrintHoja:Name := cDoc
+oPrintHoja:Name := "List"
 oPrintHoja:Cells:Font:Name := ::cfontname
 oPrintHoja:Cells:Font:Size := ::nfontsize
 return self
