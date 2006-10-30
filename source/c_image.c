@@ -1,5 +1,5 @@
 /*
- * $Id: c_image.c,v 1.7 2006-07-05 02:39:54 guerra000 Exp $
+ * $Id: c_image.c,v 1.8 2006-10-30 00:16:44 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -110,259 +110,8 @@
 #include <winuser.h>
 #include <wingdi.h>
 #include "olectl.h"
-#include "../include/oohg.h"
 
-static WNDPROC lpfnOldWndProc = 0;
-
-static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
-{
-   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
-}
-
-HBITMAP loadolepicture(char * filename,int width,int height, HWND handle, int scalestrech , int whitebackground , int transparent ) ;
-
-HB_FUNC (INITIMAGE)
-{
-   HWND h;
-   HWND hwnd;
-   int Style, StyleEx;
-
-   hwnd = HWNDparam( 1 );
-
-   StyleEx = _OOHG_RTL_Status( hb_parl( 9 ) );
-
-   Style = WS_CHILD | SS_BITMAP | SS_NOTIFY;
-
-   if( ! hb_parl( 8 ) )
-   {
-      Style |= WS_VISIBLE;
-   }
-
-   h = CreateWindowEx(StyleEx,"static",NULL,
-        Style,
-        hb_parni(3), hb_parni(4), 0, 0,
-        hwnd,(HMENU)hb_parni(2) , GetModuleHandle(NULL) , NULL ) ;
-
-   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) h, GWL_WNDPROC, ( LONG ) SubClassFunc );
-
-   HWNDret( h );
-}
-
-HB_FUNC( C_SETPICTURE )
-{
-// 1. CONTROL HANDLE
-// 2. FILENAME
-// 3. WIDTH
-// 4. HEIGHT
-// 5. scalestrech
-// 6. whitebackground
-
-   HBITMAP hBitmap;
-
-   hBitmap = loadolepicture( hb_parc( 2 ), hb_parni( 3 ), hb_parni( 4 ), HWNDparam( 1 ), hb_parl( 5 ), hb_parl( 6 ), 0 );
-   if( hBitmap != NULL )
-   {
-      SendMessage( HWNDparam( 1 ), ( UINT ) STM_SETIMAGE, ( WPARAM ) IMAGE_BITMAP, ( LPARAM ) hBitmap );
-   }
-
-   hb_retnl( ( LONG ) hBitmap );
-}
-
-HBITMAP loadolepicture(char * filename,int width,int height, HWND handle, int scalestrech , int whitebackground  , int transparent )
-{
-
-	HINSTANCE hinstance=GetModuleHandle(NULL);
-
-	LPVOID lpVoid ;
-	int nSize ;
-
-	HRSRC hSource ;
-	HGLOBAL hGlobalres ;
-
-	IStream *iStream ;
-	IPicture *iPicture = NULL;
-    HGLOBAL hGlobal = NULL;
-	HANDLE hFile;
-    DWORD nFileSize = 0;
-	DWORD nReadByte;
-	RECT rect,rect2;
-	HBITMAP hpic,hpic2;
-	BITMAP bm;
-	long lWidth,lHeight;
-	HDC imgDC = GetDC ( handle ) ;
-	HDC tmpDC = CreateCompatibleDC(imgDC);
-	HDC tmp2DC = CreateCompatibleDC(imgDC);
-
-    if (width==0 && height==0)
-	{
-		GetClientRect(handle,&rect);
-	}
-	else
-	{
-		SetRect(&rect,0,0,width,height);
-	}
-
-	SetRect(&rect2,0,0,rect.right,rect.bottom);
-
-	if ( transparent == 0 )
-	{
-		hpic2 = (HBITMAP)LoadImage(0,filename,IMAGE_BITMAP,0,0,LR_LOADFROMFILE|LR_CREATEDIBSECTION ) ;
-	}
-	else
-	{
-		hpic2 = (HBITMAP)LoadImage(0,filename,IMAGE_BITMAP,0,0,LR_LOADFROMFILE|LR_CREATEDIBSECTION  | LR_LOADMAP3DCOLORS | LR_LOADTRANSPARENT  );
-	}
-
-	if (hpic2==NULL)
-	{
-
-		if ( transparent == 0 )
-		{
-			hpic2 = (HBITMAP)LoadImage(GetModuleHandle(NULL),filename,IMAGE_BITMAP,0,0,LR_CREATEDIBSECTION);
-		}
-		else
-		{
-			hpic2 = (HBITMAP)LoadImage(GetModuleHandle(NULL),filename,IMAGE_BITMAP,0,0,LR_CREATEDIBSECTION  | LR_LOADMAP3DCOLORS | LR_LOADTRANSPARENT  );
-		}
-
-	}
-
-	if (hpic2!=NULL)
-	{
-		GetObject(hpic2,sizeof(BITMAP),&bm);
-		lWidth=bm.bmWidth;
-		lHeight=bm.bmHeight;
-		SelectObject(tmp2DC,hpic2);
-	}
-	else
-	{
-		hFile = CreateFile(filename, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-
-		if (hFile == INVALID_HANDLE_VALUE)
-		{
-
-			hSource = FindResource(hinstance,filename,"GIF");
-
-			if (hSource==NULL)
-			{
-				hSource = FindResource(hinstance,filename,"JPG");
-			}
-
-			if (hSource==NULL)
-			{
-				return NULL ;
-			}
-
-			hGlobalres = LoadResource(hinstance, hSource);
-
-			if (hGlobalres==NULL)
-			{
-				return NULL ;
-			}
-
-			lpVoid = LockResource(hGlobalres);
-
-			if (lpVoid==NULL)
-			{
-				return NULL ;
-			}
-
-			nSize = SizeofResource(hinstance, hSource);
-
-			hGlobal=GlobalAlloc(GPTR, nSize);
-
-			if (hGlobal==NULL)
-			{
-				return NULL;
-			}
-
-			memcpy(hGlobal,lpVoid, nSize);
-
-			FreeResource(hGlobalres);
-
-			CreateStreamOnHGlobal(hGlobal, TRUE, &iStream);
-
-            OleLoadPicture( iStream, nFileSize, TRUE, &IID_IPicture, ( LPVOID * ) &iPicture );
-			if (iPicture==NULL)
-			{
-				return NULL;
-			}
-
-			iPicture->lpVtbl->get_Width(iPicture,&lWidth);
-			iPicture->lpVtbl->get_Height(iPicture,&lHeight);
-
-		}
-		else
-		{
-
-			nFileSize = GetFileSize(hFile, NULL);
-			hGlobal = GlobalAlloc(GPTR, nFileSize);
-			ReadFile(hFile, hGlobal, nFileSize, &nReadByte, NULL);
-			CloseHandle(hFile);
-			CreateStreamOnHGlobal(hGlobal, TRUE, &iStream);
-			OleLoadPicture(iStream, nFileSize, TRUE, &IID_IPicture, (LPVOID*)&iPicture);
-
-			if (iPicture==NULL)
-			{
-				return NULL ;
-			}
-
-			iPicture->lpVtbl->get_Width(iPicture,&lWidth);
-			iPicture->lpVtbl->get_Height(iPicture,&lHeight);
-
-		}
-
-	}
-
-	if (scalestrech==0)
-	{
-		if ((int)lWidth*rect.bottom/lHeight <= rect.right)
-		{
-			rect.right=(int)lWidth*rect.bottom/lHeight;
-		}
-		else
-		{
-			rect.bottom=(int)lHeight*rect.right/lWidth;
-		}
-	}
-
-	rect.left = (int) (width-rect.right)/2;
-	rect.top = (int) (height-rect.bottom)/2;
-
-	hpic=CreateCompatibleBitmap(imgDC,width,height);
-
-	SelectObject(tmpDC,hpic);
-
-    if( whitebackground )
-	{
-		  FillRect(tmpDC,&rect2,(HBRUSH) GetStockObject(WHITE_BRUSH));
-	}
-	else
-	{
-		FillRect(tmpDC,&rect2,(HBRUSH) GetSysColorBrush(COLOR_BTNFACE));
-	}
-
-	if (iPicture!=NULL)
-	{
-		iPicture->lpVtbl->Render(iPicture,tmpDC,rect.left,rect.top,rect.right,rect.bottom, 0, lHeight, lWidth, -lHeight, NULL);
-		iPicture->lpVtbl->Release(iPicture);
-		GlobalFree(hGlobal);
-	}
-	else
-	{
-		StretchBlt(tmpDC,rect.left,rect.top,rect.right,rect.bottom,tmp2DC,0,0,lWidth,lHeight,SRCCOPY);
-		DeleteDC(tmp2DC);
-		DeleteObject(hpic2);
-	}
-
-	DeleteDC(imgDC);
-	DeleteDC(tmpDC);
-
-	return hpic;
-
-}
-
-HANDLE _OOHG_OleLoadPicture( HGLOBAL hGlobal, HWND hWnd )
+HANDLE _OOHG_OleLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG lBackColor )
 {
    HANDLE hImage = 0;
    IStream *iStream;
@@ -370,6 +119,8 @@ HANDLE _OOHG_OleLoadPicture( HGLOBAL hGlobal, HWND hWnd )
    long lWidth, lHeight;
    long lWidth2, lHeight2;
    HDC hdc1, hdc2;
+   RECT rect;
+HBRUSH hBrush;
 
    CreateStreamOnHGlobal( hGlobal, FALSE, &iStream );
    OleLoadPicture( iStream, 0, TRUE, &IID_IPicture, ( LPVOID * ) &iPicture );
@@ -387,6 +138,20 @@ HANDLE _OOHG_OleLoadPicture( HGLOBAL hGlobal, HWND hWnd )
       hImage = CreateCompatibleBitmap( hdc1, lWidth2, lHeight2 );
       SelectObject( hdc2, hImage );
 
+
+    if( lBackColor == -1 )
+	{
+        hBrush = CreateSolidBrush( COLOR_BTNFACE );
+	}
+	else
+	{
+        hBrush = CreateSolidBrush( lBackColor );
+	}
+SetRect( &rect, 0, 0, lWidth2, lHeight2 );
+          FillRect(hdc2,&rect,hBrush);
+DeleteObject( hBrush );
+
+
       iPicture->lpVtbl->Render( iPicture, hdc2, 0, 0, lWidth2, lHeight2, 0, lHeight, lWidth, -lHeight, NULL );
       iPicture->lpVtbl->Release( iPicture );
 
@@ -397,13 +162,81 @@ HANDLE _OOHG_OleLoadPicture( HGLOBAL hGlobal, HWND hWnd )
    return hImage;
 }
 
-HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, HWND hWnd )
+HBITMAP _OOHG_ScaleImage( HWND hWnd, HBITMAP hImage, int iWidth, int iHeight, int scalestrech, LONG BackColor )
+{
+   RECT rect,rect2;
+   HBITMAP hpic = 0;
+   BITMAP bm;
+   long lWidth, lHeight;
+   HDC imgDC, tmpDC, tmp2DC;
+   HBRUSH hBrush;
+
+   if( hWnd && hImage )
+   {
+      imgDC = GetDC( hWnd );
+      tmpDC = CreateCompatibleDC( imgDC );
+      tmp2DC = CreateCompatibleDC( imgDC );
+
+      if( iWidth == 0 && iHeight == 0 )
+      {
+         GetClientRect( hWnd, &rect );
+      }
+      else
+      {
+         SetRect( &rect, 0, 0, iWidth, iHeight );
+      }
+      SetRect( &rect2, 0, 0, rect.right, rect.bottom );
+
+      if( BackColor == -1 )
+      {
+         hBrush = CreateSolidBrush( GetSysColor( COLOR_BTNFACE ) );
+      }
+      else
+      {
+         hBrush = CreateSolidBrush( BackColor );
+      }
+      FillRect( tmp2DC, &rect2, hBrush );
+
+      GetObject( hImage, sizeof( BITMAP ), &bm );
+      lWidth  = bm.bmWidth;
+      lHeight = bm.bmHeight;
+      SelectObject( tmp2DC, hImage );
+
+      if( ! scalestrech )
+      {
+         if( (int)lWidth*rect.bottom/lHeight <= rect.right )
+         {
+            rect.right  = ( int ) lWidth  * rect.bottom / lHeight;
+         }
+         else
+         {
+            rect.bottom = ( int ) lHeight * rect.right  / lWidth;
+         }
+      }
+
+      rect.left = ( iWidth  - rect.right  ) / 2;
+      rect.top  = ( iHeight - rect.bottom ) / 2;
+
+      hpic = CreateCompatibleBitmap( imgDC, iWidth, iHeight );
+
+      SelectObject( tmpDC, hpic );
+
+      FillRect( tmpDC, &rect2, hBrush );
+
+      StretchBlt( tmpDC, rect.left, rect.top, rect.right, rect.bottom, tmp2DC, 0, 0, lWidth, lHeight, SRCCOPY );
+
+      DeleteDC(tmp2DC);
+      DeleteDC( imgDC );
+      DeleteDC( tmpDC );
+      DeleteObject( hBrush );
+   }
+
+   return hpic;
+}
+
+HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, HWND hWnd, LONG lBackColor )
 {
    HANDLE hImage;
-
-   // Transparent: iAttributes |= LR_LOADMAP3DCOLORS | LR_LOADTRANSPARENT;
-
-   // iAttributes |= LR_CREATEDIBSECTION;
 
    // RESOURCE: Searchs for BITMAP image
    hImage = LoadImage( GetModuleHandle( NULL ), cImage, IMAGE_BITMAP, nWidth, nHeight, iAttributes );
@@ -434,7 +267,7 @@ HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, 
                if( hGlobal )
                {
                   memcpy( hGlobal, lpVoid, nSize );
-                  hImage = _OOHG_OleLoadPicture( hGlobal, hWnd );
+                  hImage = _OOHG_OleLoadPicture( hGlobal, hWnd, lBackColor );
                   GlobalFree( hGlobal );
                }
             }
@@ -462,7 +295,7 @@ HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, 
          if( hGlobal )
          {
             ReadFile( hFile, hGlobal, nSize, &nReadByte, NULL );
-            hImage = _OOHG_OleLoadPicture( hGlobal, hWnd );
+            hImage = _OOHG_OleLoadPicture( hGlobal, hWnd, lBackColor );
             GlobalFree( hGlobal );
          }
          CloseHandle( hFile );

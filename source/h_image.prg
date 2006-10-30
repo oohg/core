@@ -1,5 +1,5 @@
 /*
- * $Id: h_image.prg,v 1.7 2006-02-28 06:22:20 guerra000 Exp $
+ * $Id: h_image.prg,v 1.8 2006-10-30 00:16:44 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -93,48 +93,56 @@
 
 #include "oohg.ch"
 #include "hbclass.ch"
+#include "i_windefs.ch"
 
 CLASS TImage FROM TControl
    DATA Type            INIT "IMAGE" READONLY
    DATA cPicture        INIT ""
    DATA Stretch         INIT .F.
-   DATA WhiteBackground INIT .F.
    DATA bOnClick        INIT ""
+   DATA nWidth          INIT 100
+   DATA nHeight         INIT 100
 
    METHOD Define
    METHOD Picture       SETGET
+   METHOD HBitMap       SETGET
+   METHOD Buffer        SETGET
    METHOD OnClick       SETGET
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, x, y, FileName, w, h, ProcedureName, ;
-               HelpId, invisible, stretch, lWhiteBackground, lRtl ) CLASS TImage
+               HelpId, invisible, stretch, lWhiteBackground, lRtl, backcolor, ;
+               cBuffer, hBitMap ) CLASS TImage
 *-----------------------------------------------------------------------------*
-Local ControlHandle
+Local ControlHandle, nStyle
 
-   ::SetForm( ControlName, ParentForm,,,,,, lRtl )
+   ASSIGN ::nCol    VALUE x TYPE "N"
+   ASSIGN ::nRow    VALUE y TYPE "N"
+   ASSIGN ::nWidth  VALUE w TYPE "N"
+   ASSIGN ::nHeight VALUE h TYPE "N"
 
-	if valtype(w) == "U"
-		w := 100
-	endif
+   ::SetForm( ControlName, ParentForm,,,, BackColor,, lRtl )
+   If ValType( lWhiteBackground ) == "L" .AND. lWhiteBackground
+      ::BackColor := WHITE
+   EndIf
 
-	if valtype(h) == "U"
-		h := 100
-	endif
+   nStyle := ::InitStyle( ,, Invisible )
 
-	if valtype(ProcedureName) == "U"
-		ProcedureName := ""
-	endif
+   ControlHandle := InitImage( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, ::lRtl )
 
-   ControlHandle := InitImage( ::ContainerhWnd, 0, x, y , FileName ,w,h,invisible , ::lRtl )
+   ::Register( ControlHandle, ControlName, HelpId )
 
-   ::Register( ControlHandle, ControlName, HelpId, ! Invisible )
-   ::SizePos( y, x, w, h )
+   ::OnClick := ProcedureName
+   ::Stretch := stretch
 
-   ::OnClick         := ProcedureName
-   ::Stretch         := stretch
-   ::WhiteBackground := lWhiteBackground
-   ::AuxHandle := ::Picture( FileName )
+   ::Picture := FileName
+   If ! ValidHandler( ::AuxHandle )
+      ::Buffer := cBuffer
+      If ! ValidHandler( ::AuxHandle )
+         ::HBitMap := hBitMap
+      EndIf
+   EndIf
 
 Return Self
 
@@ -143,17 +151,36 @@ METHOD Picture( cPicture ) CLASS TImage
 *-----------------------------------------------------------------------------*
    IF VALTYPE( cPicture ) $ "CM"
       DeleteObject( ::AuxHandle )
-      ::AuxHandle := C_SetPicture( ::hWnd, cPicture, ::Width, ::Height, ::Stretch, ::WhiteBackground )
       ::cPicture := cPicture
+      ::AuxHandle := TImage_SetPicture( Self, cPicture, ::Stretch )
    ENDIF
 Return ::cPicture
+
+*-----------------------------------------------------------------------------*
+METHOD HBitMap( hBitMap ) CLASS TImage
+*-----------------------------------------------------------------------------*
+   If ValType( hBitMap ) $ "NP"
+      DeleteObject( ::AuxHandle )
+      ::AuxHandle := hBitMap
+      SendMessage( ::hWnd, STM_SETIMAGE, IMAGE_BITMAP, hBitMap )
+   EndIf
+Return ::AuxHandle
+
+*-----------------------------------------------------------------------------*
+METHOD Buffer( cBuffer ) CLASS TImage
+*-----------------------------------------------------------------------------*
+   If ValType( cBuffer ) $ "CM"
+      DeleteObject( ::AuxHandle )
+      ::AuxHandle := TImage_SetBuffer( Self, cBuffer, ::Stretch )
+   EndIf
+Return nil
 
 *-----------------------------------------------------------------------------*
 METHOD OnClick( bOnClick ) CLASS TImage
 *-----------------------------------------------------------------------------*
    If PCOUNT() > 0
       ::bOnClick := bOnClick
-      _UPDATE_SS_NOTIFY( ::hWnd, ( ValType( bOnClick ) == "B" ) )
+      WindowStyleFlag( ::hWnd, SS_NOTIFY, IF( ValType( bOnClick ) == "B", SS_NOTIFY, 0 ) )
    EndIf
 Return ::bOnClick
 
@@ -161,24 +188,91 @@ Return ::bOnClick
 
 #include "hbapi.h"
 #include <windows.h>
+#include <commctrl.h>
+#include "../include/oohg.h"
 
-HB_FUNC( _UPDATE_SS_NOTIFY )
+static WNDPROC lpfnOldWndProc = 0;
+
+static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
-   HWND hwnd;
-   LONG myret;
-   hwnd = ( HWND ) hb_parnl (1);
-   myret = GetWindowLong( hwnd, GWL_STYLE );
-   if( hb_parnl( 2 ) )
-   {
-      myret = myret | SS_NOTIFY;
-   }
-   else
-   {
-      myret = myret &~ SS_NOTIFY;
-   }
-   SetWindowLong( hwnd, GWL_STYLE, myret );
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
+}
 
-   hb_retni( myret );
+HB_FUNC( INITIMAGE )   // ( hWnd, hMenu, nCol, nRow, nWidth, nHeight, nStyle, lRtl )
+{
+   HWND h;
+   HWND hwnd;
+   int Style, StyleEx;
+
+   hwnd = HWNDparam( 1 );
+
+   StyleEx = _OOHG_RTL_Status( hb_parl( 8 ) );
+
+   Style = hb_parni( 7 ) | WS_CHILD | SS_BITMAP | SS_NOTIFY;
+
+   h = CreateWindowEx( StyleEx, "static", NULL,
+        Style,
+        hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
+        hwnd, ( HMENU ) HWNDparam( 2 ), GetModuleHandle( NULL ), NULL ) ;
+
+   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) h, GWL_WNDPROC, ( LONG ) SubClassFunc );
+
+   HWNDret( h );
+}
+
+HB_FUNC( TIMAGE_SETPICTURE )   // ( oSelf, cFile, lScaleStretch )
+{
+   POCTRL oSelf = _OOHG_GetControlInfo( hb_param( 1, HB_IT_OBJECT ) );
+   RECT rect;
+
+   HBITMAP hBitmap = 0, hBitmap2;
+   int iAttributes;
+
+   iAttributes = LR_CREATEDIBSECTION;
+//   if( transparent )
+//   {
+//      iAttributes |= LR_LOADMAP3DCOLORS | LR_LOADTRANSPARENT;
+//   }
+   GetWindowRect( oSelf->hWnd, &rect );
+   hBitmap2 = _OOHG_LoadImage( hb_parc( 2 ), iAttributes, rect.right - rect.left, rect.bottom - rect.top, oSelf->hWnd, oSelf->lBackColor );
+
+   if( hBitmap2 )
+   {
+      hBitmap = _OOHG_ScaleImage( oSelf->hWnd, hBitmap2, rect.right - rect.left, rect.bottom - rect.top, hb_parl( 3 ), oSelf->lBackColor );
+      DeleteObject( hBitmap2 );
+   }
+
+   SendMessage( oSelf->hWnd, STM_SETIMAGE, ( WPARAM ) IMAGE_BITMAP, ( LPARAM ) hBitmap );
+
+   HWNDret( hBitmap );
+}
+
+HB_FUNC( TIMAGE_SETBUFFER )   // ( oSelf, cBuffer, lScaleStretch )
+{
+   POCTRL oSelf = _OOHG_GetControlInfo( hb_param( 1, HB_IT_OBJECT ) );
+   HBITMAP hBitmap = 0, hBitmap2;
+   RECT rect;
+   HGLOBAL hGlobal;
+
+   if( hb_parclen( 2 ) )
+   {
+      hGlobal = GlobalAlloc( GPTR, hb_parclen( 2 ) );
+      if( hGlobal )
+      {
+         memcpy( hGlobal, hb_parc( 2 ), hb_parclen( 2 ) );
+         hBitmap2 = _OOHG_OleLoadPicture( hGlobal, oSelf->hWnd, oSelf->lBackColor );
+         GlobalFree( hGlobal );
+         if( hBitmap2 )
+         {
+            GetWindowRect( oSelf->hWnd, &rect );
+            hBitmap = _OOHG_ScaleImage( oSelf->hWnd, hBitmap2, rect.right - rect.left, rect.bottom - rect.top, hb_parl( 3 ), oSelf->lBackColor );
+            DeleteObject( hBitmap2 );
+         }
+      }
+   }
+   SendMessage( oSelf->hWnd, STM_SETIMAGE, ( WPARAM ) IMAGE_BITMAP, ( LPARAM ) hBitmap );
+
+   HWNDret( hBitmap );
 }
 
 #pragma ENDDUMP

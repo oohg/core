@@ -1,5 +1,5 @@
 /*
- * $Id: i_checkbox.ch,v 1.4 2006-08-05 22:14:20 guerra000 Exp $
+ * $Id: i_checkbox.ch,v 1.5 2006-10-30 00:16:44 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -148,9 +148,13 @@
                 [ SUBCLASS <subclass> ]           ;
                 [ <rtl: RTL> ]                    ;
                 [ PICTURE <bitmap> ]              ;
+                [ BUFFER <buffer> ] ;
+                [ HBITMAP <hbitmap> ] ;
+		[ <notrans: NOTRANSPARENT> ] ;
+                [ <scale: FORCESCALE> ] ;
 	=>;
         [ <obj> := ] _OOHG_SelectSubClass( TCheckBox(), [ <subclass>() ] ): ;
                 Define( <(name)>, <(parent)>, <col>, <row>, <caption>, <value>, <f>, <n>, ;
                 <tooltip>, <{change}>, [<w>], [<h>], <{lostfocus}>, <{gotfocus}>, <helpid>, ;
                 <.invisible.>, <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, ;
-                ,,,,, <.rtl.>, .T., <bitmap> )
+                ,,,,, <.rtl.>, .T., <bitmap>, <buffer>, <hbitmap>, <.notrans.>, <.scale.> )

@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.16 2006-10-28 20:49:15 guerra000 Exp $
+ * $Id: h_button.prg,v 1.17 2006-10-30 00:16:44 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -92,7 +92,6 @@
 ---------------------------------------------------------------------------*/
 
 #include "oohg.ch"
-#include "common.ch"
 #include "hbclass.ch"
 #include "i_windefs.ch"
 
@@ -102,11 +101,13 @@ CLASS TButton FROM TControl
    DATA lNoTransparent INIT .F.
    DATA nWidth    INIT 100
    DATA nHeight   INIT 28
+   DATA lScale    INIT .F.
 
    METHOD Define
-   METHOD DefineImage
    METHOD SetFocus
    METHOD Picture     SETGET
+   METHOD HBitMap     SETGET
+   METHOD Buffer      SETGET
    METHOD Value       SETGET
 ENDCLASS
 
@@ -114,7 +115,8 @@ ENDCLASS
 METHOD Define( ControlName, ParentForm, x, y, Caption, ProcedureName, w, h, ;
                fontname, fontsize, tooltip, gotfocus, lostfocus, flat, ;
                NoTabStop, HelpId, invisible, bold, italic, underline, ;
-               strikeout, lRtl, lNoPrefix, lDisabled ) CLASS TButton
+               strikeout, lRtl, lNoPrefix, lDisabled, cBuffer, hBitMap, ;
+               cImage, lNoTransparent, lScale ) CLASS TButton
 *-----------------------------------------------------------------------------*
 Local ControlHandle, nStyle
 
@@ -124,52 +126,30 @@ Local ControlHandle, nStyle
    ASSIGN ::nHeight VALUE h TYPE "N"
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize,,,, lRtl )
-
    nStyle := ::InitStyle( ,, Invisible, NoTabStop, lDisabled ) + ;
-             if( ValType( flat ) == "L"      .AND. flat,       BS_FLAT, 0 )    + ;
-             if( ValType( lNoPrefix ) == "L" .AND. lNoPrefix,  SS_NOPREFIX, 0 )
+             if( ValType( flat ) == "L"      .AND. flat,       BS_FLAT, 0 )     + ;
+             if( ValType( lNoPrefix ) == "L" .AND. lNoPrefix,  SS_NOPREFIX, 0 ) + ;
+             if( ! ValType( caption ) $ "CM",                  BS_BITMAP, 0 )
 
    ControlHandle := InitButton( ::ContainerhWnd, Caption, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, ::lRtl, nStyle )
 
    ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
-   ::SizePos( y, x, w, h )
 
    ::OnClick := ProcedureName
    ::OnLostFocus := LostFocus
    ::OnGotFocus :=  GotFocus
    ::Caption := Caption
 
-Return Self
-
-*-----------------------------------------------------------------------------*
-METHOD DefineImage( ControlName, ParentForm, x, y, Caption, ProcedureName, ;
-                    w, h, image, tooltip, gotfocus, lostfocus, flat, ;
-                    notrans, HelpId, invisible, notabstop, lRtl, lDisabled ) CLASS TButton
-*-----------------------------------------------------------------------------*
-Local ControlHandle, nStyle
-
-   ASSIGN ::nCol    VALUE x TYPE "N"
-   ASSIGN ::nRow    VALUE y TYPE "N"
-   ASSIGN ::nWidth  VALUE w TYPE "N"
-   ASSIGN ::nHeight VALUE h TYPE "N"
-
-   ::SetForm( ControlName, ParentForm,,,,,, lRtl )
-   nStyle := ::InitStyle( ,, Invisible, NoTabStop, lDisabled ) + ;
-             BS_BITMAP + ;
-             if( ValType( flat ) == "L"      .AND. flat,       BS_FLAT, 0 )
-
-   ControlHandle := InitButton( ::ContainerhWnd, Caption, 0, x, y, w, h, ::lRtl, nStyle )
-
-   ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
-   ::SizePos( y, x, w, h )
-
-   ::OnClick := ProcedureName
-   ::OnLostFocus := LostFocus
-   ::OnGotFocus :=  GotFocus
-   ::Caption := Caption
-   ASSIGN ::lNoTransparent VALUE notrans TYPE "L" DEFAULT .F.
-   ::Picture := image
+   ASSIGN ::lNoTransparent VALUE lNoTransparent TYPE "L"
+   ASSIGN ::lScale         VALUE lScale         TYPE "L"
+   ::Picture := cImage
+   If ! ValidHandler( ::AuxHandle )
+      ::Buffer := cBuffer
+      If ! ValidHandler( ::AuxHandle )
+         ::HBitMap := hBitMap
+      EndIf
+   EndIf
 
 Return Self
 
@@ -184,17 +164,36 @@ METHOD Picture( cPicture ) CLASS TButton
 *-----------------------------------------------------------------------------*
    IF VALTYPE( cPicture ) $ "CM"
       DeleteObject( ::AuxHandle )
-      ::AuxHandle := _SetBtnPicture( ::hWnd, cPicture, ::lNoTransparent )
       ::cPicture := cPicture
+      ::AuxHandle := TButton_SetPicture( Self, cPicture, ::lNoTransparent, ::lScale )
    ENDIF
 Return ::cPicture
+
+*-----------------------------------------------------------------------------*
+METHOD HBitMap( hBitMap ) CLASS TButton
+*-----------------------------------------------------------------------------*
+   If ValType( hBitMap ) $ "NP"
+      DeleteObject( ::AuxHandle )
+      ::AuxHandle := hBitMap
+      SendMessage( ::hWnd, BM_SETIMAGE, IMAGE_BITMAP, hBitMap )
+   EndIf
+Return ::AuxHandle
+
+*-----------------------------------------------------------------------------*
+METHOD Buffer( cBuffer ) CLASS TButton
+*-----------------------------------------------------------------------------*
+   If ValType( cBuffer ) $ "CM"
+      DeleteObject( ::AuxHandle )
+      ::AuxHandle := TButton_SetBuffer( Self, cBuffer, ::lScale )
+   EndIf
+Return nil
 
 *------------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TButton
 *------------------------------------------------------------------------------*
 Return ( ::Caption := uValue )
 
-EXTERN InitButton, _SetBtnPicture
+EXTERN TButton_SetPicture, TButton_SetBuffer
 
 #pragma BEGINDUMP
 #include <hbapi.h>
@@ -235,13 +234,12 @@ HB_FUNC( INITBUTTON )
    HWNDret( hbutton );
 }
 
-HB_FUNC( _SETBTNPICTURE )
+HB_FUNC( TBUTTON_SETPICTURE )   // ( Self, cImage, lTransparent, lScale )
 {
-	HWND hwnd;
-	HWND himage;
+   POCTRL oSelf = _OOHG_GetControlInfo( hb_param( 1, HB_IT_OBJECT ) );
+   HBITMAP himage, hBitmap2;
    int ImgStyle;
-
-   hwnd = HWNDparam( 1 );
+   RECT rect;
 
    ImgStyle = LR_LOADMAP3DCOLORS;
    if( ! hb_parl( 3 ) )
@@ -249,10 +247,51 @@ HB_FUNC( _SETBTNPICTURE )
       ImgStyle |= LR_LOADTRANSPARENT;
    }
 
-   himage = ( HWND ) _OOHG_LoadImage( hb_parc( 2 ), ImgStyle, 0, 0, hwnd );
+   himage = _OOHG_LoadImage( hb_parc( 2 ), ImgStyle, 0, 0, oSelf->hWnd, oSelf->lBackColor );
+   if( himage && hb_parl( 4 ) )
+   {
+      hBitmap2 = himage;
+      GetWindowRect( oSelf->hWnd, &rect );
+      himage = _OOHG_ScaleImage( oSelf->hWnd, hBitmap2, rect.right - rect.left, rect.bottom - rect.top, 0, oSelf->lBackColor );
+      DeleteObject( hBitmap2 );
+   }
 
-   SendMessage( hwnd, ( UINT ) BM_SETIMAGE, ( WPARAM ) IMAGE_BITMAP, ( LPARAM ) himage );
+   SendMessage( oSelf->hWnd, BM_SETIMAGE, ( WPARAM ) IMAGE_BITMAP, ( LPARAM ) himage );
 
    HWNDret( himage );
 }
+
+HB_FUNC( TBUTTON_SETBUFFER )   // ( oSelf, cBuffer, lScale )
+{
+   POCTRL oSelf = _OOHG_GetControlInfo( hb_param( 1, HB_IT_OBJECT ) );
+   HBITMAP hBitmap, hBitmap2;
+   HGLOBAL hGlobal;
+   RECT rect;
+
+   if( hb_parclen( 2 ) )
+   {
+      hGlobal = GlobalAlloc( GPTR, hb_parclen( 2 ) );
+      if( hGlobal )
+      {
+         memcpy( hGlobal, hb_parc( 2 ), hb_parclen( 2 ) );
+         hBitmap = _OOHG_OleLoadPicture( hGlobal, oSelf->hWnd, oSelf->lBackColor );
+         GlobalFree( hGlobal );
+         if( hBitmap && hb_parl( 3 ) )
+         {
+            hBitmap2 = hBitmap;
+            GetWindowRect( oSelf->hWnd, &rect );
+            hBitmap = _OOHG_ScaleImage( oSelf->hWnd, hBitmap2, rect.right - rect.left, rect.bottom - rect.top, 0, oSelf->lBackColor );
+            DeleteObject( hBitmap2 );
+         }
+      }
+   }
+   else
+   {
+      hBitmap = 0;
+   }
+   SendMessage( oSelf->hWnd, BM_SETIMAGE, ( WPARAM ) IMAGE_BITMAP, ( LPARAM ) hBitmap );
+
+   HWNDret( hBitmap );
+}
+
 #pragma ENDDUMP

@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.18 2006-10-24 04:08:31 guerra000 Exp $
+ * $Id: i_windefs.ch,v 1.19 2006-10-30 00:16:44 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -587,5 +587,17 @@
 #define TBN_GETINFOTIPW (TBN_FIRST-19)
 
 #define TBN_GETINFOTIP  TBN_GETINFOTIPA
+
+// Static Control Mesages
+#define STM_SETICON         0x0170
+#define STM_GETICON         0x0171
+#define STM_SETIMAGE        0x0172
+#define STM_GETIMAGE        0x0173
+#define STM_MSGMAX          0x0174
+
+#define IMAGE_BITMAP        0
+#define IMAGE_ICON          1
+#define IMAGE_CURSOR        2
+#define IMAGE_ENHMETAFILE   3
 
 #endif

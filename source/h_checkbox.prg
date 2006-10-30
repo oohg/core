@@ -1,5 +1,5 @@
 /*
- * $Id: h_checkbox.prg,v 1.10 2006-10-28 20:49:15 guerra000 Exp $
+ * $Id: h_checkbox.prg,v 1.11 2006-10-30 00:16:44 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -102,10 +102,14 @@ CLASS TCheckBox FROM TLabel
    DATA IconWidth INIT 19
    DATA nWidth    INIT 100
    DATA nHeight   INIT 28
+   DATA lNoTransparent INIT .F.
+   DATA lScale    INIT .F.
 
    METHOD Define
    METHOD Value       SETGET
    METHOD Picture     SETGET
+   METHOD Buffer      SETGET
+   METHOD hBitMap     SETGET
    METHOD Events_Command
 ENDCLASS
 
@@ -114,7 +118,8 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
                fontsize, tooltip, changeprocedure, w, h, lostfocus, gotfocus, ;
                HelpId, invisible, notabstop, bold, italic, underline, ;
                strikeout, field, backcolor, fontcolor, transparent, autosize, ;
-               lRtl, lButton, BitMap ) CLASS TCheckBox
+               lRtl, lButton, BitMap, cBuffer, hBitMap, lNoTransparent, ;
+               lScale ) CLASS TCheckBox
 *-----------------------------------------------------------------------------*
 Local ControlHandle, nStyle := 0, nStyleEx := 0
 
@@ -139,7 +144,7 @@ Local ControlHandle, nStyle := 0, nStyleEx := 0
       nStyleEx += WS_EX_TRANSPARENT
    ENDIF
 
-   IF VALTYPE( BitMap ) $ "CM"
+   IF VALTYPE( BitMap ) $ "CM" .OR. VALTYPE( cBuffer ) $ "CM" .OR. VALTYPE( hBitMap ) $ "NP"
       nStyle += BS_BITMAP
    ENDIF
 
@@ -153,7 +158,15 @@ Local ControlHandle, nStyle := 0, nStyleEx := 0
    ::Autosize    := autosize
    ::Caption     := Caption
 
-   ::Picture  :=  BitMap
+   ASSIGN ::lNoTransparent VALUE lNoTransparent TYPE "L"
+   ASSIGN ::lScale         VALUE lScale         TYPE "L"
+   ::Picture := BitMap
+   If ! ValidHandler( ::AuxHandle )
+      ::Buffer := cBuffer
+      If ! ValidHandler( ::AuxHandle )
+         ::HBitMap := hBitMap
+      EndIf
+   EndIf
 
    If ValType( Field ) $ 'CM' .AND. ! empty( Field )
       ::VarName := alltrim( Field )
@@ -186,24 +199,38 @@ METHOD Picture( cPicture ) CLASS TCheckBox
 *-----------------------------------------------------------------------------*
    IF VALTYPE( cPicture ) $ "CM"
       DeleteObject( ::AuxHandle )
-      ::AuxHandle := _SetBtnPicture( ::hWnd, cPicture, .T. ) // ::lNoTransparent
       ::cPicture := cPicture
+      ::AuxHandle := TButton_SetPicture( Self, cPicture, ::lNoTransparent, ::lScale )
    ENDIF
 Return ::cPicture
+
+*-----------------------------------------------------------------------------*
+METHOD HBitMap( hBitMap ) CLASS TCheckBox
+*-----------------------------------------------------------------------------*
+   If ValType( hBitMap ) $ "NP"
+      DeleteObject( ::AuxHandle )
+      ::AuxHandle := hBitMap
+      SendMessage( ::hWnd, BM_SETIMAGE, IMAGE_BITMAP, hBitMap )
+   EndIf
+Return ::AuxHandle
+
+*-----------------------------------------------------------------------------*
+METHOD Buffer( cBuffer ) CLASS TCheckBox
+*-----------------------------------------------------------------------------*
+   If ValType( cBuffer ) $ "CM"
+      DeleteObject( ::AuxHandle )
+      ::AuxHandle := TButton_SetBuffer( Self, cBuffer, ::lScale )
+   EndIf
+Return nil
 
 *------------------------------------------------------------------------------*
 METHOD Events_Command( wParam ) CLASS TCheckBox
 *------------------------------------------------------------------------------*
 Local Hi_wParam := HIWORD( wParam )
-
    If Hi_wParam == BN_CLICKED
-
       ::DoEvent( ::OnChange )
-
       Return nil
-
    EndIf
-
 Return ::Super:Events_Command( wParam )
 
 

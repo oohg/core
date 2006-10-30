@@ -1,11 +1,28 @@
 /*
- * $Id: ChangeLog,v 1.252 2006-10-29 23:31:08 declan2005 Exp $
+ * $Id: ChangeLog,v 1.253 2006-10-30 00:16:44 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-10-29 18:14 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_button.ch
+  * include/i_checkbox.ch
+  * include/i_image.ch
+  * include/i_windefs.ch
+  * include/oohg.h
+  * source/c_image.c
+  * source/h_button.prg
+  * source/h_checkbox.prg
+  * source/h_image.prg
+    * Moved some C (TImage specific) code to PRG level.
+    + BACKCOLOR clause added (not only WHITEBACKGROUND).
+    + BUFFER clause added (gets image from character buffer).
+    + HBITMAP clause added (gets image from an existing HBITMAP).
+  * source/miniprint.prg
+    * Fixed double "HEIGHT" definition.
 
 2006-10-29 17:54 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source/h_print.prg

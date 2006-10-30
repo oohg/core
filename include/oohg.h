@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.h,v 1.31 2006-10-15 03:12:19 guerra000 Exp $
+ * $Id: oohg.h,v 1.32 2006-10-30 00:16:44 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -115,7 +115,9 @@ extern int GetKeyFlagState( void );
 POCTRL _OOHG_GetControlInfo( PHB_ITEM pSelf );
 BOOL _OOHG_DetermineColor( PHB_ITEM pColor, LONG *lColor );
 BOOL _OOHG_DetermineColorReturn( PHB_ITEM pColor, LONG *lColor, BOOL fUpdate );
-HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, HWND hWnd );
+HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, HWND hWnd, LONG BackColor );
+HANDLE _OOHG_OleLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG BackColor );
+HBITMAP _OOHG_ScaleImage( HWND hWnd, HBITMAP hImage, int iWidth, int iHeight, int scalestrech, LONG BackColor );
 DWORD _OOHG_RTL_Status( BOOL bRtl );
 
 // Symbol tables

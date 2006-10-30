@@ -1,5 +1,5 @@
 /*
- * $Id: i_button.ch,v 1.7 2006-09-16 19:35:48 guerra000 Exp $
+ * $Id: i_button.ch,v 1.8 2006-10-30 00:16:44 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -94,7 +94,6 @@
 #xcommand @ <row>,<col> BUTTON <name> ;
                 [ OBJ <obj> ] ;
 		[ <dummy1: OF, PARENT> <parent> ] ;
-		CAPTION <caption> ;
 		[ <dummy2: ACTION,ON CLICK,ONCLICK> <action> ];
 		[ WIDTH <w> ] ;
 		[ HEIGHT <h> ] ;
@@ -115,34 +114,15 @@
                 [ <noprefix: NOPREFIX> ] ;
                 [ SUBCLASS <subclass> ] ;
                 [ <disabled: DISABLED> ] ;
+                [ CAPTION <caption> ] ;
+                [ PICTURE <bitmap> ] ;
+                [ BUFFER <buffer> ] ;
+                [ HBITMAP <hbitmap> ] ;
+		[ <notrans: NOTRANSPARENT> ] ;
+                [ <scale: FORCESCALE> ] ;
 	=>;
         [ <obj> := ] _OOHG_SelectSubClass( TButton(), [ <subclass>() ] ): ;
                    Define( <(name)>, <(parent)>, <col>, <row>, <caption>, <{action}>, ;
                    <w>, <h>, <font>, <size>, <tooltip>, <{gotfocus}>,<{lostfocus}>, <.flat.>, <.notabstop.>, ;
                    <helpid>, <.invisible.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.>, <.rtl.>, ;
-                   <.noprefix.>, <.disabled.> )
-
-#xcommand @ <row>,<col> BUTTON <name> ;
-                [ OBJ <obj> ] ;
-		[ <dummy1: OF, PARENT> <parent> ] ;
-		PICTURE <bitmap> ;
-		[ <dummy2: ACTION,ON CLICK,ONCLICK> <action> ];
-		[ WIDTH <w> ] ;
-		[ HEIGHT <h> ] ;
-		[ TOOLTIP <tooltip>]  ;
-		[ <flat: FLAT> ] ;
-		[ <notrans: NOTRANSPARENT> ] ;
-		[ ON GOTFOCUS <gotfocus> ] ;
-		[ ON LOSTFOCUS <lostfocus> ] ;
-		[ <notabstop: NOTABSTOP> ] ;
-		[ HELPID <helpid> ] 		;
-		[ <invisible: INVISIBLE> ] ;
-                [ <rtl: RTL> ] ;
-                [ SUBCLASS <subclass> ] ;
-                [ <disabled: DISABLED> ] ;
-	=>;
-        [ <obj> := ] _OOHG_SelectSubClass( TButton(), [ <subclass>() ] ): ;
-                        DefineImage( <(name)>, <(parent)>, <col>, <row>, "", <{action}>, ;
-                        <w>, <h>, <bitmap>, <tooltip>, <{gotfocus}>, <{lostfocus}>, ;
-                        <.flat.>, <.notrans.>, <helpid>, <.invisible.>, <.notabstop.>, ;
-                        <.rtl.>, , <.disabled.> )
+                   <.noprefix.>, <.disabled.>, <buffer>, <hbitmap>, <bitmap>, <.notrans.>, <.scale.> )

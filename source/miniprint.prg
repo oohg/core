@@ -1,5 +1,5 @@
 /*
- * $Id: miniprint.prg,v 1.17 2006-10-29 23:31:09 declan2005 Exp $
+ * $Id: miniprint.prg,v 1.18 2006-10-30 00:16:44 guerra000 Exp $
  */
 /*----------------------------------------------------------------------------
  MINIGUI - Harbour Win32 GUI library source code
@@ -125,14 +125,14 @@ Public _HMG_printer_PrevPageNumber := 0
 
         _HMG_printer_SizeFactor := GetDesktopHeight() / _HMG_PRINTER_GETPAGEHEIGHT(_HMG_printer_hdc_bak) * 0.63
 
-        define window _oohg_auxil at 0,0 width 0 height 0 height 0 title " " noshow
+        define window _oohg_auxil at 0,0 width 0 height 0 title " " noshow
 
         end window
 
         activate window _oohg_auxil nowait
 
         define window _HMG_PRINTER_Wait  at 0,0 width 310 height 85 title ' ' child noshow nocaption
-	
+
 		define label label_1
 			row 30
 			col 5
