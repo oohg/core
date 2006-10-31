@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.50 2006-09-25 01:07:18 guerra000 Exp $
+ * $Id: c_windows.c,v 1.51 2006-10-31 04:14:09 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -461,6 +461,21 @@ HB_FUNC( _DOMESSAGELOOP )
    while( GetMessage( &Msg, NULL, 0, 0 ) )
    {
       _OOHG_ProcessMessage( &Msg );
+   }
+}
+
+HB_FUNC( _PROCESSMESS )
+{
+   MSG Msg;
+
+   if( PeekMessage( ( LPMSG ) &Msg, 0, 0, 0, PM_REMOVE ) )
+   {
+      _OOHG_ProcessMessage( &Msg );
+      hb_retl( 1 );
+   }
+   else
+   {
+      hb_retl( 0 );
    }
 }
 

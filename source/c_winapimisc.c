@@ -1,5 +1,5 @@
 /*
- * $Id: c_winapimisc.c,v 1.4 2006-07-05 02:39:54 guerra000 Exp $
+ * $Id: c_winapimisc.c,v 1.5 2006-10-31 04:14:09 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -336,20 +336,6 @@ HB_FUNC( GETTEMPDIR )
    char szBuffer[ MAX_PATH + 1 ] = {0} ;
    GetTempPath(MAX_PATH, szBuffer);
    hb_retc(szBuffer);
-}
-
-HB_FUNC( _PROCESSMESS )
-{
-  MSG Msg;
-
-  if( PeekMessage((LPMSG) &Msg, 0, 0, 0, PM_REMOVE) )
-  {
-     TranslateMessage(&Msg);
-     DispatchMessage(&Msg);
-     hb_retl(1);
-  }
-  else
-    hb_retl(0);
 }
 
 HB_FUNC ( POSTMESSAGE )

@@ -1,5 +1,5 @@
 /*
- * $Id: c_image.c,v 1.8 2006-10-30 00:16:44 guerra000 Exp $
+ * $Id: c_image.c,v 1.9 2006-10-31 04:14:09 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -120,7 +120,7 @@ HANDLE _OOHG_OleLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG lBackColor )
    long lWidth2, lHeight2;
    HDC hdc1, hdc2;
    RECT rect;
-HBRUSH hBrush;
+   HBRUSH hBrush;
 
    CreateStreamOnHGlobal( hGlobal, FALSE, &iStream );
    OleLoadPicture( iStream, 0, TRUE, &IID_IPicture, ( LPVOID * ) &iPicture );
@@ -130,27 +130,27 @@ HBRUSH hBrush;
       iPicture->lpVtbl->get_Height( iPicture, &lHeight );
 
       // Must be pixel's size!!!
-      lWidth2 = lWidth;
-      lHeight2 = lHeight;
+      // Determines control's size
+      GetClientRect( hWnd, &rect );
+      lWidth2 = rect.right;
+      lHeight2 = rect.bottom;
+      SetRect( &rect, 0, 0, lWidth2, lHeight2 );
 
       hdc1 = GetDC( hWnd );
       hdc2 = CreateCompatibleDC( hdc1 );
       hImage = CreateCompatibleBitmap( hdc1, lWidth2, lHeight2 );
       SelectObject( hdc2, hImage );
 
-
-    if( lBackColor == -1 )
-	{
-        hBrush = CreateSolidBrush( COLOR_BTNFACE );
-	}
-	else
-	{
-        hBrush = CreateSolidBrush( lBackColor );
-	}
-SetRect( &rect, 0, 0, lWidth2, lHeight2 );
-          FillRect(hdc2,&rect,hBrush);
-DeleteObject( hBrush );
-
+      if( lBackColor == -1 )
+      {
+         hBrush = CreateSolidBrush( COLOR_BTNFACE );
+      }
+      else
+      {
+         hBrush = CreateSolidBrush( lBackColor );
+      }
+      FillRect( hdc2, &rect, hBrush );
+      DeleteObject( hBrush );
 
       iPicture->lpVtbl->Render( iPicture, hdc2, 0, 0, lWidth2, lHeight2, 0, lHeight, lWidth, -lHeight, NULL );
       iPicture->lpVtbl->Release( iPicture );

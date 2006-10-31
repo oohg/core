@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.27 2006-10-07 04:00:52 guerra000 Exp $
+ * $Id: i_altsyntax.ch,v 1.28 2006-10-31 04:14:09 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -253,6 +253,7 @@ MEMVAR _OOHG_ActiveControlInfo
 #xtranslate _OOHG_ActiveControlNoTabStop      => _OOHG_ActiveControlInfo \[ 18 \]
 #xtranslate _OOHG_ActiveControlInvisible      => _OOHG_ActiveControlInfo \[ 19 \]
 #xtranslate _OOHG_ActiveControlHelpId         => _OOHG_ActiveControlInfo \[ 20 \]
+#xtranslate _OOHG_ActiveControlDisabled       => _OOHG_ActiveControlInfo \[ 21 \]
 */
 MEMVAR _OOHG_ActiveControlName
 MEMVAR _OOHG_ActiveControlOf
@@ -274,6 +275,7 @@ MEMVAR _OOHG_ActiveControlTooltip
 MEMVAR _OOHG_ActiveControlNoTabStop
 MEMVAR _OOHG_ActiveControlInvisible
 MEMVAR _OOHG_ActiveControlHelpId
+MEMVAR _OOHG_ActiveControlDisabled
 
 #xtranslate _OOHG_ClearActiveControlInfo( <name> ) => ;
         PUBLIC _OOHG_ActiveControlInfo \[ 150 \] ;;
@@ -296,7 +298,8 @@ MEMVAR _OOHG_ActiveControlHelpId
         _OOHG_ActiveControlTooltip       := Nil          ;;
         _OOHG_ActiveControlNoTabStop     := .f.          ;;
         _OOHG_ActiveControlInvisible     := .f.          ;;
-        _OOHG_ActiveControlHelpId        := Nil
+        _OOHG_ActiveControlHelpId        := Nil          ;;
+        _OOHG_ActiveControlDisabled      := .f.
 
 #xcommand PARENT <of> ;
         =>;
@@ -373,6 +376,10 @@ MEMVAR _OOHG_ActiveControlHelpId
 #xcommand HELPID <helpid> ;
         =>;
         _OOHG_ActiveControlHelpId := <helpid>
+
+#xcommand DISABLED <disabled> ;
+        =>;
+        _OOHG_ActiveControlDisabled := <disabled>
 
 
 
@@ -1219,8 +1226,7 @@ Button
 
 #xcommand END BUTTON ;
         =>;
-        iif ( _OOHG_ActiveControlPicture == Nil ,;
-                 TButton():Define(;
+        TButton():Define( ;
                     _OOHG_ActiveControlName,;
                     _OOHG_ActiveControlOf ,;
                     _OOHG_ActiveControlCol ,;
@@ -1240,29 +1246,16 @@ Button
                     _OOHG_ActiveControlInvisible ,;
                     _OOHG_ActiveControlFontBold ,;
                     _OOHG_ActiveControlFontItalic ,;
-                    _OOHG_ActiveControlFontUnderLine ,;
-                    _OOHG_ActiveControlFontStrikeOut,;
-                    _OOHG_ActiveControlRtl,;
-                    _OOHG_ActiveControlNoPrefix ) ,;
-                 TButton():DefineImage(;
-                    _OOHG_ActiveControlName,;
-                    _OOHG_ActiveControlOf,;
-                    _OOHG_ActiveControlCol,;
-                    _OOHG_ActiveControlRow,;
-		    "",;
-                    _OOHG_ActiveControlAction ,;
-                    _OOHG_ActiveControlWidth ,;
-                    _OOHG_ActiveControlHeight ,;
-                    _OOHG_ActiveControlPicture ,;
-                    _OOHG_ActiveControlTooltip ,;
-                    _OOHG_ActiveControlOnGotfocus  ,;
-                    _OOHG_ActiveControlOnLostfocus  ,;
-                    _OOHG_ActiveControlFlat  ,;
-                     .not. _OOHG_ActiveControlTransparent ,;
-                    _OOHG_ActiveControlHelpId ,;
-                    _OOHG_ActiveControlInvisible ,;
-                    _OOHG_ActiveControlNoTabStop ,;
-                    _OOHG_ActiveControlRtl ) )
+                    _OOHG_ActiveControlFontUnderLine, ;
+                    _OOHG_ActiveControlFontStrikeOut, ;
+                    _OOHG_ActiveControlRtl, ;
+                    _OOHG_ActiveControlNoPrefix, ;
+                    _OOHG_ActiveControlDisabled, ;
+                    nil, ;
+                    nil, ;
+                    _OOHG_ActiveControlPicture, ;
+                    .not. _OOHG_ActiveControlTransparent, ;
+                    nil )
 
 /*----------------------------------------------------------------------------
 Image

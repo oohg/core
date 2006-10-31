@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.254 2006-10-30 15:43:20 declan2005 Exp $
+ * $Id: ChangeLog,v 1.255 2006-10-31 04:14:09 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,10 +7,19 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2006-10-30 22:12 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/c_winapimisc.c
+  * source/c_windows.c
+    * _PROCESSMESS (DO EVENTS) moved from c_winapimisc.c to c_windows.c.
+    * Fixed hot keys when DO EVENTS loop.
+  * include/i_altsyntax.ch
+    * Fixed image BUTTON definition.
+  * source/c_image.c
+    * Fixed image creation for high-sized images.
+
 2006-10-30 10:42 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source/h_print.prg
      * fixed problem in sheet name in Texcelprint introduced in last tprint commit
-    
 
 2006-10-29 18:14 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * include/i_button.ch
