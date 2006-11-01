@@ -1,5 +1,5 @@
 /*
- * $Id: h_slider.prg,v 1.6 2006-02-11 06:19:33 guerra000 Exp $
+ * $Id: h_slider.prg,v 1.7 2006-11-01 04:07:05 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -94,15 +94,14 @@
 #include "oohg.ch"
 #include "common.ch"
 #include "hbclass.ch"
-
-#define TBM_SETPOS 1029
-#define TBM_GETPOS 1024
+#include "i_windefs.ch"
 
 CLASS TSlider FROM TControl
    DATA Type      INIT "SLIDER" READONLY
    DATA nRangeMin   INIT 0
    DATA nRangeMax   INIT 0
 
+   METHOD Define
    METHOD Value               SETGET
 
    METHOD RangeMin            SETGET
@@ -111,34 +110,50 @@ CLASS TSlider FROM TControl
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
-Function _DefineSlider ( ControlName, ParentForm, x, y, w, h ,LO, HI, value, ;
-                         tooltip, change, vertical, noticks, both, top, left, ;
-                         HelpId, invisible, notabstop , backcolor )
+METHOD Define( ControlName, ParentForm, x, y, w, h, LO, HI, value, tooltip, ;
+               change, vertical, noticks, both, top, left, HelpId, invisible, ;
+               notabstop, backcolor, lRtl, lDisabled ) CLASS TSlider
 *-----------------------------------------------------------------------------*
-Local Controlhandle
-Local Self
+Local ControlHandle, nStyle
 
-   DEFAULT w         TO if( vertical, 35 + if( both, 5, 0 ), 120 )
-   DEFAULT h         TO if( vertical, 120, 35 + if( both, 5, 0 ) )
-   DEFAULT value     TO Int ( ( hi - lo ) / 2 )
-   DEFAULT change    TO ""
-   DEFAULT invisible TO FALSE
-   DEFAULT notabstop TO FALSE
+   ASSIGN ::nCol        VALUE x  TYPE "N"
+   ASSIGN ::nRow        VALUE y  TYPE "N"
+   ASSIGN ::nWidth      VALUE w  TYPE "N"
+   ASSIGN ::nHeight     VALUE h  TYPE "N"
+   ASSIGN ::nRangeMin   VALUE Lo TYPE "N"
+   ASSIGN ::nRangeMax   VALUE Hi TYPE "N"
 
-   Self := TSlider():SetForm( ControlName, ParentForm, , , , BackColor )
+   ASSIGN vertical VALUE vertical TYPE "L" DEFAULT .F.
+   ASSIGN both     VALUE both     TYPE "L" DEFAULT .F.
+   If ::nWidth == 0
+      ::nWidth := if( vertical, 35 + if( both, 5, 0 ), 120 )
+   Endif
+   If ::nHeight == 0
+      ::nHeight := if( vertical, 120, 35 + if( both, 5, 0 ) )
+   Endif
 
-   ControlHandle := InitSlider ( ::ContainerhWnd, 0, x, y, w, h, lo, hi, vertical, noticks, both, top, left, invisible, notabstop )
+   ::SetForm( ControlName, ParentForm, , , , BackColor, , lRtl )
 
-	SendMessage( ControlHandle , TBM_SETPOS ,1,  value )
+   nStyle := ::InitStyle( ,, invisible, notabstop, lDisabled ) + ;
+             if( ValType( vertical ) == "L"   .AND. vertical,   TBS_VERT,    0 ) + ;
+             if( ValType( noticks ) == "L"    .AND. noticks,    TBS_NOTICKS, TBS_AUTOTICKS ) + ;
+             if( ValType( both ) == "L"       .AND. both,       TBS_BOTH,    0 ) + ;
+             if( ValType( top ) == "L"        .AND. top,        TBS_TOP,     0 ) + ;
+             if( ValType( left ) == "L"       .AND. left,       TBS_LEFT,    0 )
 
-   ::Register( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
-   ::SizePos( y, x, w, h )
+   ControlHandle := InitSlider( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, ::RangeMin, ::RangeMax, nStyle, ::lRtl )
+
+   ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
+
+   If ValType( value ) == "N"
+      ::Value := value
+   Else
+      ::Value := Int( ( ::RangeMax - ::RangeMin ) / 2 )
+   EndIf
 
    ::OnChange   :=  Change
-   ::nRangeMin  :=   Lo
-   ::nRangeMax  :=   Hi
 
-Return Nil
+Return Self
 
 *------------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TSlider
@@ -146,14 +161,16 @@ METHOD Value( uValue ) CLASS TSlider
    IF VALTYPE( uValue ) == "N"
       SendMessage( ::hWnd, TBM_SETPOS, 1, uValue )
    ENDIF
-RETURN SendMessage( ::hWnd, TBM_GETPOS, 0, 0)
+RETURN SendMessage( ::hWnd, TBM_GETPOS, 0, 0 )
 
 *------------------------------------------------------------------------------*
 METHOD RangeMin( uValue ) CLASS TSlider
 *------------------------------------------------------------------------------*
    IF VALTYPE( uValue ) == "N"
       ::nRangeMin := uValue
-      SetSliderRange( ::hWnd, uValue, ::nRangeMax )
+      If ValidHandler( ::hWnd )
+         SetSliderRange( ::hWnd, uValue, ::nRangeMax )
+      EndIf
    ENDIF
 RETURN ::nRangeMin
 
@@ -162,7 +179,9 @@ METHOD RangeMax( uValue ) CLASS TSlider
 *------------------------------------------------------------------------------*
    IF VALTYPE( uValue ) == "N"
       ::nRangeMax := uValue
-      SetSliderRange( ::hWnd, ::nRangeMin, uValue )
+      If ValidHandler( ::hWnd )
+         SetSliderRange( ::hWnd, ::nRangeMin, uValue )
+      EndIf
    ENDIF
 RETURN ::nRangeMax
 
@@ -172,9 +191,58 @@ METHOD BackColor( uValue ) CLASS TSlider
 Local f
    IF VALTYPE( uValue ) == "A"
       ::Super:BackColor := uValue
-      RedrawWindow ( ::hWnd )
+      RedrawWindow( ::hWnd )
 		f := GetFocus()
       setfocus( ::hWnd )
       setfocus( f )
    ENDIF
 RETURN ::Super:BackColor
+
+#pragma BEGINDUMP
+
+#include "hbapi.h"
+#include <windows.h>
+#include <commctrl.h>
+#include "../include/oohg.h"
+
+static WNDPROC lpfnOldWndProc = 0;
+
+static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+{
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
+}
+
+HB_FUNC( INITSLIDER )
+{
+   HWND hwnd, hbutton;
+   int Style, StyleEx;
+
+	INITCOMMONCONTROLSEX  i;
+   i.dwSize = sizeof( INITCOMMONCONTROLSEX );
+	i.dwICC = ICC_DATE_CLASSES;
+   InitCommonControlsEx( &i );
+
+   hwnd = HWNDparam( 1 );
+
+   StyleEx = _OOHG_RTL_Status( hb_parl( 10 ) );
+
+   Style = hb_parni( 9 ) | WS_CHILD;
+
+   hbutton = CreateWindowEx( StyleEx, TRACKBAR_CLASS, 0,
+      Style,
+      hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
+      hwnd, ( HMENU ) HWNDparam( 2 ), GetModuleHandle( NULL ), NULL );
+
+   SendMessage( hbutton, TBM_SETRANGE, TRUE, MAKELONG( hb_parni( 7 ), hb_parni( 8 ) ) );
+
+   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( hbutton, GWL_WNDPROC, ( LONG ) SubClassFunc );
+
+   HWNDret( hbutton );
+}
+
+HB_FUNC( SETSLIDERRANGE )
+{
+   SendMessage( HWNDparam( 1 ), TBM_SETRANGE, TRUE, MAKELONG( hb_parni( 2 ), hb_parni( 3 ) ) );
+}
+
+#pragma ENDDUMP

@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.19 2006-10-30 00:16:44 guerra000 Exp $
+ * $Id: i_windefs.ch,v 1.20 2006-11-01 04:07:05 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -527,8 +527,6 @@
 #define EM_SETBKGNDCOLOR	1091
 
 #define MK_LBUTTON	1
-#define TBM_SETPOS	1029
-#define TBM_GETPOS	1024
 #define PBM_SETPOS	1026
 #define PBM_GETPOS   1032
 #define SC_CLOSE	61536
@@ -579,6 +577,24 @@
 #define SS_PATHELLIPSIS     32768
 #define SS_WORDELLIPSIS     49152
 #define SS_ELLIPSISMASK     49152
+
+// Slider definitions
+#define TBM_SETPOS          1029
+#define TBM_GETPOS          1024
+#define TBS_HORZ            0
+#define TBS_AUTOTICKS       1
+#define TBS_VERT            2
+#define TBS_BOTTOM          0
+#define TBS_TOP             4
+#define TBS_RIGHT           0
+#define TBS_LEFT            4
+#define TBS_BOTH            8
+#define TBS_NOTICKS         16
+#define TBS_ENABLESELRANGE  32
+#define TBS_FIXEDLENGTH     64
+#define TBS_NOTHUMB         128
+#define TBS_TOOLTIPS        256
+#define TBS_REVERSED        512
 
 // Toolbutton notifications
 #define	TBN_FIRST	(-700)

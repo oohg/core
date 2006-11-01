@@ -1,5 +1,5 @@
 /*
- * $Id: h_label.prg,v 1.18 2006-10-28 20:49:15 guerra000 Exp $
+ * $Id: h_label.prg,v 1.19 2006-11-01 04:07:05 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -130,7 +130,7 @@ Local ControlHandle, nStyle, nStyleEx
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, aRGB_font, aRGB_bk, , lRtl )
 
-   nStyle := ::InitStyle( ,, Invisible ) + ;
+   nStyle := ::InitStyle( ,, Invisible, .T. ) + ;
              if( ValType( BORDER ) == "L"    .AND. BORDER,     WS_BORDER,   0 ) + ;
              if( ValType( HSCROLL ) == "L"   .AND. HSCROLL,    WS_HSCROLL,  0 ) + ;
              if( ValType( VSCROLL ) == "L"   .AND. VSCROLL,    WS_VSCROLL,  0 ) + ;

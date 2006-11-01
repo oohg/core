@@ -1,11 +1,28 @@
 /*
- * $Id: ChangeLog,v 1.255 2006-10-31 04:14:09 guerra000 Exp $
+ * $Id: ChangeLog,v 1.256 2006-11-01 04:07:04 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-10-31 22:05 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_image.prg
+    * Removed scale operation (it's done by IMAGE control itself).
+  * source/h_label.prg
+    * Removed TABSTOP style to label.
+  * include/i_altsyntax.ch
+  * include/i_slider.ch
+  * include/i_windefs.ch
+  - source/c_slider.c
+  * source/h_slider.prg
+  * source/makelib.bat
+    * Moved _DefineSlider() function to TSlider():Define() method.
+    + SUBCLASS, RTL and DISABLED clauses added.
+    * Moved C code to h_slider.prg file.
+    - c_slider.c file removed.
+    * Slider subclassed.
 
 2006-10-30 22:12 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source/c_winapimisc.c

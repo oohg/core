@@ -1,5 +1,5 @@
 /*
- * $Id: h_image.prg,v 1.8 2006-10-30 00:16:44 guerra000 Exp $
+ * $Id: h_image.prg,v 1.9 2006-11-01 04:07:05 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -250,8 +250,7 @@ HB_FUNC( TIMAGE_SETPICTURE )   // ( oSelf, cFile, lScaleStretch )
 HB_FUNC( TIMAGE_SETBUFFER )   // ( oSelf, cBuffer, lScaleStretch )
 {
    POCTRL oSelf = _OOHG_GetControlInfo( hb_param( 1, HB_IT_OBJECT ) );
-   HBITMAP hBitmap = 0, hBitmap2;
-   RECT rect;
+   HBITMAP hBitmap = 0;
    HGLOBAL hGlobal;
 
    if( hb_parclen( 2 ) )
@@ -260,14 +259,8 @@ HB_FUNC( TIMAGE_SETBUFFER )   // ( oSelf, cBuffer, lScaleStretch )
       if( hGlobal )
       {
          memcpy( hGlobal, hb_parc( 2 ), hb_parclen( 2 ) );
-         hBitmap2 = _OOHG_OleLoadPicture( hGlobal, oSelf->hWnd, oSelf->lBackColor );
+         hBitmap = _OOHG_OleLoadPicture( hGlobal, oSelf->hWnd, oSelf->lBackColor );
          GlobalFree( hGlobal );
-         if( hBitmap2 )
-         {
-            GetWindowRect( oSelf->hWnd, &rect );
-            hBitmap = _OOHG_ScaleImage( oSelf->hWnd, hBitmap2, rect.right - rect.left, rect.bottom - rect.top, hb_parl( 3 ), oSelf->lBackColor );
-            DeleteObject( hBitmap2 );
-         }
       }
    }
    SendMessage( oSelf->hWnd, STM_SETIMAGE, ( WPARAM ) IMAGE_BITMAP, ( LPARAM ) hBitmap );

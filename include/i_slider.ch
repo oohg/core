@@ -1,5 +1,5 @@
 /*
- * $Id: i_slider.ch,v 1.2 2005-10-22 06:04:31 guerra000 Exp $
+ * $Id: i_slider.ch,v 1.3 2006-11-01 04:07:05 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -92,8 +92,9 @@
 ---------------------------------------------------------------------------*/
 
 #command @ <row>,<col> SLIDER <name> ;
+                [ OBJ <obj> ] ;
 		[ <dummy1: OF, PARENT> <parent> ] ;
-		RANGE <lo>,<hi> ;
+                [ RANGE <lo>,<hi> ] ;
 		[ VALUE <value> ] ;
 		[ WIDTH <w> ] ;
 		[ HEIGHT <h> ] ;
@@ -108,20 +109,12 @@
 		[ HELPID <helpid> ] 		;
 		[ <invisible : INVISIBLE> ] ;
 		[ <notabstop : NOTABSTOP> ] ;
+                [ <rtl: RTL> ] ;
+                [ SUBCLASS <subclass> ] ;
+                [ <disabled: DISABLED> ] ;
 	=>;
-        _DefineSlider ( <(name)>, ;
-                   <(parent)>, ;
-                   <col>, ;
-                   <row>, ;
-                   <w>, ;
-                   <h> , ;
-                   <lo>, ;
-                   <hi>, ;
-                   <value>, ;
-                   <tooltip>, ;
-                   <{change}>, ;
-                   <.vertical.>, ;
-                   <.noticks.>, ;
-                   <.both.>, ;
-                   <.top.>, ;
-                   <.left.>  , <helpid>, <.invisible.>, <.notabstop.> , <backcolor> )
+        [ <obj> := ] _OOHG_SelectSubClass( TSlider(), [ <subclass>() ] ): ;
+                   Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h> , <lo>, <hi>, ;
+                   <value>, <tooltip>, <{change}>, <.vertical.>, <.noticks.>, ;
+                   <.both.>, <.top.>, <.left.>, <helpid>, <.invisible.>, ;
+                   <.notabstop.>, <backcolor>, <.rtl.>, <.disabled.> )

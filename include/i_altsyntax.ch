@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.28 2006-10-31 04:14:09 guerra000 Exp $
+ * $Id: i_altsyntax.ch,v 1.29 2006-11-01 04:07:05 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -883,7 +883,7 @@ Slider
 
 #xcommand END SLIDER;
 	=>;
-	_DefineSlider(;
+        TSlider():Define( ;
                 _OOHG_ActiveControlName,;
                 _OOHG_ActiveControlOf,;
                 _OOHG_ActiveControlCol,;
@@ -903,7 +903,9 @@ Slider
                 _OOHG_ActiveControlHelpId,;
                 _OOHG_ActiveControlInvisible ,;
                 _OOHG_ActiveControlNoTabStop , ;
-                _OOHG_ActiveControlBackColor )
+                _OOHG_ActiveControlBackColor , ;
+                _OOHG_ActiveControlRtl , ;
+                _OOHG_ActiveControlDisabled )
 
 /*----------------------------------------------------------------------------
 Text Box
