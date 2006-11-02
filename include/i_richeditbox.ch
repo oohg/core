@@ -1,5 +1,5 @@
 /*
- * $Id: i_richeditbox.ch,v 1.3 2005-10-22 06:04:31 guerra000 Exp $
+ * $Id: i_richeditbox.ch,v 1.4 2006-11-02 05:59:53 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -116,8 +116,15 @@
 		[ <invisible: INVISIBLE> ] ;
 		[ <notabstop: NOTABSTOP> ] ;
                 [ <rtl: RTL> ] ;
+                [ SUBCLASS <subclass> ] ;
+                [ <disabled: DISABLED> ] ;
 	=>;
-        [ <obj> := ] TEditRich():Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <value> ,<f>,<s> , <tooltip>  , <maxlenght>  , <{gotfocus}>  , <{change}>  , <{lostfocus}>  , <.readonly.> , .f. , <helpid>, <.invisible.>, <.notabstop.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <(field)> , <backcolor>, <.rtl.> )
+        [ <obj> := ] _OOHG_SelectSubClass( TEditRich(), [ <subclass>() ] ): ;
+                     Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <value>, <f>, ;
+                     <s>, <tooltip>, <maxlenght>, <{gotfocus}>, <{change}>, <{lostfocus}>, ;
+                     <.readonly.>, .f., <helpid>, <.invisible.>, <.notabstop.>, <.bold.>, ;
+                     <.italic.>, <.underline.>, <.strikeout.>, <(field)> , <backcolor>, ;
+                     <.rtl.>, <.disabled.> )
 
 //SPLITBOX VERSION
 
@@ -147,5 +154,11 @@
 		[ <invisible: INVISIBLE> ] ;
 		[ <notabstop: NOTABSTOP> ] ;
                 [ <rtl: RTL> ] ;
+                [ SUBCLASS <subclass> ] ;
+                [ <disabled: DISABLED> ] ;
 	=>;
-        [ <obj> := ] TEditRich():Define( <(name)>, <(parent)>, , , <w>, <h>, <value> ,<f>,<s> , <tooltip>  , <maxlenght>  , <{gotfocus}>  , <{change}>  , <{lostfocus}>  , <.readonly.> , <.break.>  , <helpid>, <.invisible.>, <.notabstop.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <(field)>  , <backcolor>, <.rtl.> )
+        [ <obj> := ] _OOHG_SelectSubClass( TEditRich(), [ <subclass>() ] ): ;
+                     Define( <(name)>, <(parent)>, , , <w>, <h>, <value>, <f>, <s>, <tooltip>, ;
+                     <maxlenght>, <{gotfocus}>, <{change}>, <{lostfocus}>, <.readonly.>, <.break.>, ;
+                     <helpid>, <.invisible.>, <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, ;
+                     <.strikeout.>, <(field)>, <backcolor>, <.rtl.>, <.disabled.> )

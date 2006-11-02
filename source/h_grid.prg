@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.57 2006-10-26 03:29:21 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.58 2006-11-02 05:59:53 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -231,10 +231,7 @@ Local ControlHandle, aImageList
 
    ASSIGN nogrid       VALUE nogrid     TYPE "L" DEFAULT .F.
 
-   If Valtype( lDisabled ) == "L" .AND. lDisabled
-      nStyle += WS_DISABLED
-      ::lEnabled := .F.
-   EndIf
+   nStyle := ::InitStyle( nStyle,, .F., .F., lDisabled )
 
    If Valtype( ::aJust ) != "A"
       ::aJust := aFill( Array( len( ::aHeaders ) ), 0 )
@@ -267,7 +264,6 @@ Local ControlHandle, aImageList
 
    ::Register( ControlHandle, ControlName, HelpId, , ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
-//   ::SizePos( y, x, w, h )
 
    ::FontColor := ::Super:FontColor
    ::BackColor := ::Super:BackColor
@@ -1561,7 +1557,7 @@ HB_FUNC( INITLISTVIEW )
 
    StyleEx = WS_EX_CLIENTEDGE | _OOHG_RTL_Status( hb_parl( 13 ) );
 
-   style = LVS_SHOWSELALWAYS | WS_CHILD | WS_TABSTOP | WS_VISIBLE | LVS_REPORT;
+   style = LVS_SHOWSELALWAYS | WS_CHILD | LVS_REPORT;
    if ( hb_parl( 10 ) )
    {
       style = style | LVS_OWNERDATA;

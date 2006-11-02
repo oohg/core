@@ -1,11 +1,22 @@
 /*
- * $Id: ChangeLog,v 1.256 2006-11-01 04:07:04 guerra000 Exp $
+ * $Id: ChangeLog,v 1.257 2006-11-02 05:59:53 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-11-01 23:55 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_grid.prg
+    * Simple initialization modification.
+  * include/i_richeditbox.ch
+  - source/c_richeditbox.c
+  * source/h_richeditbox.prg
+  * source/makelib.bat
+    + SUBCLASS and DISABLED clauses added.
+    * Moved C code to h_richeditbox.prg file.
+    - c_richeditbox.c file removed.
 
 2006-10-31 22:05 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_image.prg

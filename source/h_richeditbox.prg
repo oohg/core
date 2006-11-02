@@ -1,5 +1,5 @@
 /*
- * $Id: h_richeditbox.prg,v 1.12 2006-10-26 03:29:21 guerra000 Exp $
+ * $Id: h_richeditbox.prg,v 1.13 2006-11-02 05:59:53 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -98,6 +98,8 @@
 
 CLASS TEditRich FROM TEdit
    DATA Type      INIT "RICHEDIT" READONLY
+   DATA nWidth    INIT 120
+   DATA nHeight   INIT 240
 
    METHOD Define
    METHOD BackColor   SETGET
@@ -107,21 +109,21 @@ ENDCLASS
 METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
                fontsize, tooltip, maxlenght, gotfocus, change, lostfocus, ;
                readonly, break, HelpId, invisible, notabstop, bold, italic, ;
-               underline, strikeout, field, backcolor, lRtl ) CLASS TEditRich
+               underline, strikeout, field, backcolor, lRtl, lDisabled ) CLASS TEditRich
 *-----------------------------------------------------------------------------*
-Local ControlHandle
+Local ControlHandle, nStyle
 
-   DEFAULT w         TO 120
-   DEFAULT h         TO 240
-   DEFAULT value     TO ""
-   DEFAULT change    TO ""
-   DEFAULT lostfocus TO ""
-   DEFAULT gotfocus  TO ""
-   DEFAULT Maxlenght TO 64738
-   DEFAULT invisible TO FALSE
-   DEFAULT notabstop TO FALSE
+   ASSIGN ::nWidth  VALUE w TYPE "N"
+   ASSIGN ::nHeight VALUE h TYPE "N"
+   ASSIGN ::nRow    VALUE y TYPE "N"
+   ASSIGN ::nCol    VALUE x TYPE "N"
+
+   // DEFAULT Maxlenght TO 64738
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, , BackColor, .T., lRtl )
+
+   nStyle := ::InitStyle( ,, Invisible, NoTabStop, lDisabled ) + ;
+             if( ValType( readonly ) == "L"  .AND. readonly,   ES_READONLY, 0 )
 
    If ValType( Field ) $ 'CM' .AND. ! empty( Field )
       ::VarName := alltrim( Field )
@@ -130,25 +132,22 @@ Local ControlHandle
 	EndIf
 
    ::SetSplitBoxInfo( Break, )
-   ControlHandle := InitRichEditBox( ::ContainerhWnd, 0, x, y, w, h, '', 0 , maxlenght , readonly, invisible, notabstop, ::lRtl )
+   ControlHandle := InitRichEditBox( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, maxlenght, ::lRtl )
 
-   ::Register( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
+   ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
-   ::SizePos( y, x, w, h )
 
    ::Value := value
+
+	if valtype ( Field ) != 'U'
+      aAdd( ::Parent:BrowseList, Self )
+	EndIf
+
+   ::BackColor := ::BackColor
 
    ::OnLostFocus := LostFocus
    ::OnGotFocus :=  GotFocus
    ::OnChange   :=  Change
-
-	if valtype ( Field ) != 'U'
-      aAdd ( ::Parent:BrowseList, Self )
-	EndIf
-
-   if valtype ( ::BackColor ) == 'A'
-      SendMessage ( ::hWnd, EM_SETBKGNDCOLOR  , 0 , RGB ( ::BackColor[1] , ::BackColor[2] , ::BackColor[3] ) )
-	EndIf
 
 Return Self
 
@@ -160,6 +159,40 @@ Return Self
 #include <commctrl.h>
 #include <richedit.h>
 #include "../include/oohg.h"
+
+static WNDPROC lpfnOldWndProc = 0;
+
+static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+{
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
+}
+
+HB_FUNC( INITRICHEDITBOX )
+{
+   HWND hwnd;
+   HWND hwndRE = 0;
+   int Style, StyleEx ;
+
+   StyleEx = WS_EX_CLIENTEDGE | _OOHG_RTL_Status( hb_parl( 9 ) );
+
+   hwnd = HWNDparam( 1 );
+
+   Style = ES_MULTILINE | ES_WANTRETURN | WS_CHILD | WS_VSCROLL | WS_HSCROLL | hb_parni( 7 );
+
+   InitCommonControls();
+   if ( LoadLibrary( "RichEd20.dll" ) )
+   {
+      hwndRE = CreateWindowEx( StyleEx, RICHEDIT_CLASS , (LPSTR) NULL,
+              Style, hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
+              hwnd, (HMENU) HWNDparam( 2 ), GetModuleHandle( NULL ), NULL );
+
+      lpfnOldWndProc = ( WNDPROC ) SetWindowLong( hwndRE, GWL_WNDPROC, ( LONG ) SubClassFunc );
+      SendMessage( hwndRE, EM_LIMITTEXT, ( WPARAM ) hb_parni( 8 ), 0 );
+      SendMessage( hwndRE, EM_SETEVENTMASK, 0, ( LPARAM ) ENM_CHANGE );
+   }
+
+   HWNDret( hwndRE );
+}
 
 HB_FUNC_STATIC( TEDITRICH_BACKCOLOR )
 {
