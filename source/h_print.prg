@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.41 2006-10-30 15:43:20 declan2005 Exp $
+* $Id: h_print.prg,v 1.42 2006-11-05 20:45:54 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -1356,7 +1356,8 @@ if ::impreview
    VALUE WR ;
    READONLY ;
    FONT 'Courier New' ;
-   SIZE 10
+   SIZE 10 ;
+   BACKCOLOR WHITE
 
    @ 10,nx-40 button but_4 caption "X" width 30 action ( print_preview.release() )
    @ 110,nx-40 button but_1 caption "+ +" width 30 action zoom("+")
