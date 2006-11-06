@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.42 2006-11-05 20:45:54 declan2005 Exp $
+* $Id: h_print.prg,v 1.43 2006-11-06 15:58:20 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -1077,6 +1077,7 @@ return self
 *-------------------------
 METHOD BEGINDOCx (cdoc) CLASS THBPRINTER
 *-------------------------
+::setpreviewsize(2)
 START DOC NAME cDoc
 return self
 
