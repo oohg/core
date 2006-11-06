@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.7 2006-09-25 01:55:49 declan2005 Exp $
+ * $Id: winprint.prg,v 1.8 2006-11-06 16:29:24 declan2005 Exp $
  */
 // -----------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -1583,6 +1583,8 @@ next pi
     ::ahs[1,6]:=::ahs[1,4]-::ahs[1,2]+1
   endif
 
+  declare window hbpreview1
+
   DEFINE WINDOW HBPREVIEW OBJ oHBPreview AT  ::ahs[1,1] , ::ahs[1,1] ;
          WIDTH ::ahs[1,6] HEIGHT ::ahs[1,5] ;
           TITLE ::aopisy[1] ICON 'zzz_Printicon' ;
@@ -1602,7 +1604,7 @@ next pi
          END STATUSBAR
 
                @ 15 ,::ahs[1,6]-150 LABEL prl VALUE ::aopisy[12] WIDTH  80 HEIGHT 18 FONT 'Arial' SIZE 08
-               @ 13 ,::ahs[1,6]-77  COMBOBOX combo_1  ITEMS ::npages VALUE 1 WIDTH 58 FONT 'Arial' SIZE  8 ON CHANGE {|| ::page := ::CurPage:=HBPREVIEW.combo_1.value,::PrevShow() }
+               @ 13 ,::ahs[1,6]-77  COMBOBOX combo_1  ITEMS ::npages VALUE 1 WIDTH 58 FONT 'Arial' SIZE  8 ON CHANGE {|| ::page := ::CurPage:=HBPREVIEW.combo_1.value,::PrevShow(),HBPREVIEW1.setfocus() }
 
          DEFINE SPLITBOX
                DEFINE TOOLBAR TB1 BUTTONSIZE 50,33 FONT 'Arial Narrow' SIZE 8 FLAT BREAK // RIGHTTEXT
@@ -1634,6 +1636,7 @@ next pi
                       VIRTUAL HEIGHT ::ahs[2,5]-::ahs[3,5]-::ahs[4,5] ;
                       TITLE ::aopisy[13]   SPLITCHILD  GRIPPERTEXT "P" ;
                       NOSYSMENU NOCAPTION ;
+                      ON MOUSECLICK  ( HBPREVIEW1.setfocus() )
 
 
                       aadd(::ahs,{0,0,0,0,0,0,GetFormHandle("hbpreview1")})
@@ -1692,6 +1695,7 @@ next pi
          END SPLITBOX
   END WINDOW
   ::PrevShow()
+  HBPREVIEW1.setfocus()  
   ACTIVATE WINDOW HBPREVIEW
 return nil
 
