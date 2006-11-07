@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.260 2006-11-06 16:29:24 declan2005 Exp $
+ * $Id: ChangeLog,v 1.261 2006-11-07 00:37:55 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,6 +7,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2006-11-6 19:32 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+  * source/h_grid.prg
+     + new method ::toexcel() added
+  * source/h_xbrowse.prg
+     + new method ::toexcel() added
+   
 2006-11-6 11:25 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source/winprint.prg
      * little fixes in hbprinter in order to improve a better preview

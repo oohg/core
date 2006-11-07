@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.17 2006-08-23 03:37:59 guerra000 Exp $
+ * $Id: h_xbrowse.prg,v 1.18 2006-11-07 00:37:55 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -112,6 +112,8 @@ CLASS TXBROWSE FROM TGrid
    METHOD ColumnsAutoFitH
 
    METHOD WorkArea         SETGET
+
+   METHOD toExcel
 
 /* from grid:
    METHOD AddColumn
@@ -527,6 +529,51 @@ METHOD Enabled( lEnabled ) CLASS TXBrowse
       AEVAL( ::aControls, { |o| o:Enabled := o:Enabled } )
    ENDIF
 RETURN ::Super:Enabled
+
+*------------------------------------------------------------------------------*
+METHOD toExcel( cTitle ) CLASS TXBrowse
+*------------------------------------------------------------------------------*
+ Local LIN:=4
+ LOCAL oExcel, oHoja,i
+
+ default ctitle to ""
+
+ oExcel := TOleAuto():New( "Excel.Application" )
+ oExcel:WorkBooks:Add()
+ oHoja := oExcel:Get( "ActiveSheet" )
+ oHoja:Cells:Font:Name := "Arial"
+ oHoja:Cells:Font:Size := 10
+
+ oHoja:Cells( 1, 1 ):Value := upper( cTitle )
+ oHoja:Cells( 1, 1 ):font:bold := .T.
+
+  for i:= 1 to len( ::aHeaders )
+     oHoja:Cells( LIN, i ):Value := upper( ::aHeaders[i] )
+     oHoja:Cells( LIN, i ):font:bold:= .T.
+  next i
+  LIN++
+  LIN++
+  ::gotop()
+  Do While .not. ( ::workarea )->( eof( ) )  
+     for i:= 1 to len ( ::aFields )
+         oHoja:Cells( LIN, i ):Value := &( ::aFields[i] )
+     next i
+      ( ::workarea )->( DbSkip( ) )
+     LIN++
+  Enddo
+
+FOR i:=1 TO len( ::aHeaders )
+   oHoja:Columns( i ):AutoFit()
+NEXT
+
+oHoja:Cells( 1, 1 ):Select()
+oExcel:Visible := .T.
+
+oHoja:End()
+oExcel:End()
+
+
+RETURN 
 
 *------------------------------------------------------------------------------*
 METHOD Visible( lVisible ) CLASS TXBrowse
