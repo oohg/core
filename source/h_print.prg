@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.43 2006-11-06 15:58:20 declan2005 Exp $
+* $Id: h_print.prg,v 1.44 2006-11-08 00:34:03 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -107,6 +107,7 @@ DATA impreview          INIT .F.  READONLY
 DATA lwinhide           INIT .T.   READONLY
 DATA cversion           INIT  "(oohg)V 1.6" READONLY
 DATA cargo              INIT  .F.
+////DATA cString            INIT  ""
 
 DATA nlinpag            INIT 0            READONLY
 DATA alincelda          INIT {}           READONLY
@@ -177,6 +178,7 @@ METHOD NORMALDOS() BLOCK { || nil }
 *-------------------------
 METHOD normaldosx() BLOCK { || nil }
 *-------------------------
+
 
 *-------------------------
 METHOD endpage()
@@ -1247,6 +1249,11 @@ return self
 
 CREATE CLASS TDOSPRINT FROM TPRINTBASE
 
+
+DATA cString INIT ""
+DATA cbusca INIT ""
+DATA nOccur INIT 0
+
 *-------------------------
 METHOD initx()
 *-------------------------
@@ -1314,7 +1321,14 @@ method condendosx()
 *-------------------------
 method normaldosx()
 *-------------------------
+
+method searchstring()
+
+method nextsearch()
+
 ENDCLASS
+
+
 
 *-------------------------
 METHOD initx() CLASS TDOSPRINT
@@ -1350,7 +1364,7 @@ if ::impreview
    TITLE 'Preview -----> ' + ::tempfile ;
    MODAL
 
-   @ 0,0 EDITBOX EDIT_P ;
+   @ 0,0 RICHEDITBOX EDIT_P ;
    OF PRINT_PREVIEW ;
    WIDTH nx-50 ;
    HEIGHT ny-40-70 ;
@@ -1360,11 +1374,12 @@ if ::impreview
    SIZE 10 ;
    BACKCOLOR WHITE
 
-   @ 10,nx-40 button but_4 caption "X" width 30 action ( print_preview.release() )
+   @ 010,nx-40 button but_4 caption "X" width 30 action ( print_preview.release() )
    @ 110,nx-40 button but_1 caption "+ +" width 30 action zoom("+")
    @ 210,nx-40 button but_2 caption "- -" width 30 action zoom("-")
    @ 310,nx-40 button but_3 caption "P" width 30 action (::printdos())
-
+   @ 410,nx-40 button but_5 caption "S" width 30 action  (::searchstring(print_preview.edit_p.value))
+   @ 510,nx-40 button but_6 caption "N" width 30 action  ::nextsearch()
 
    END WINDOW
 
@@ -1373,7 +1388,7 @@ if ::impreview
 
 else
 
-   ::PRINTDOS()
+  ::PRINTDOS()
 
 endif
 
@@ -1382,9 +1397,8 @@ IF FILE(::tempfile)
    ERASE &(::tempfile)
 ENDIF
 
-
-
 RETURN self
+
 
 *-------------------------
 METHOD beginpagex() CLASS TDOSPRINT
@@ -1468,7 +1482,53 @@ endif
 return nil
 
 
-/// based upon contribution of Jose Miguel josemisu@yahoo.com.ar
+*-------------------------
+Method searchstring(cTarget) CLASS TDOSPRINT
+*-------------------------
+print_preview.but_6.enabled:=.F.
+print_preview.edit_p.caretpos:=1
+::nOccur:=0
+::cBusca:= cTarget
+::cString := ""
+::cString  := inputbox('Text: ','Search String')
+if empty(::cString)
+   return(NIL)
+endif
+print_preview.but_6.enabled:=.t.
+::nextsearch()
+return(nil)
+
+*-----------------------------------------------------*
+Method nextsearch( )
+*-----------------------------------------------------*
+local cString,ncount,ncaretpos
+cString := UPPER(::cstring)
+ncount:=STRCOUNT( chr(13),cString, print_preview.edit_p.caretpos )
+nCaretpos := ATNUM(ALLTRIM(cString),UPPER(::cBusca),::nOccur++) 
+
+print_preview.edit_p.setfocus
+if nCaretpos>0
+
+   print_preview.edit_p.caretpos:=nCaretPos   ///// -(ncount*2)
+   print_preview.edit_p.refresh
+else
+   print_preview.but_6.enabled:=.F.
+   msginfo("End search","Information")
+endif
+return nil
+
+function strcount(cbusca,cencuentra,n)
+local nc:=0,i
+cbusca:=alltrim(cbusca)
+for i:=1 to n 
+    if upper(substr(cencuentra,i,len(cbusca)))=upper(cbusca)
+       nc++
+    endif
+next i
+return nc
+
+
+/// excelprint based upon contribution of Jose Miguel josemisu@yahoo.com.ar
 
 CREATE CLASS TEXCELPRINT FROM TPRINTBASE
 

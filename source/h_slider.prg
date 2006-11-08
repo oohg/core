@@ -1,5 +1,5 @@
 /*
- * $Id: h_slider.prg,v 1.7 2006-11-01 04:07:05 guerra000 Exp $
+ * $Id: h_slider.prg,v 1.8 2006-11-08 00:34:03 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -95,6 +95,16 @@
 #include "common.ch"
 #include "hbclass.ch"
 #include "i_windefs.ch"
+
+
+
+memvar TBS_VERT
+memvar TBS_NOTICKS
+memvar TBS_AUTOTICKS
+memvar TBS_BOTH
+memvar TBS_TOP
+memvar TBS_LEFT
+
 
 CLASS TSlider FROM TControl
    DATA Type      INIT "SLIDER" READONLY

@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.59 2006-11-07 00:37:55 declan2005 Exp $
+ * $Id: h_grid.prg,v 1.60 2006-11-08 00:34:03 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -394,7 +394,7 @@ oHoja:End()
 oExcel:End()
 
 
-RETURN 
+RETURN nil
 
 
 *-----------------------------------------------------------------------------*

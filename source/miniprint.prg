@@ -1,5 +1,5 @@
 /*
- * $Id: miniprint.prg,v 1.18 2006-10-30 00:16:44 guerra000 Exp $
+ * $Id: miniprint.prg,v 1.19 2006-11-08 00:34:03 declan2005 Exp $
  */
 /*----------------------------------------------------------------------------
  MINIGUI - Harbour Win32 GUI library source code
@@ -457,105 +457,88 @@ Public _HMG_printer_PrevPageNumber := 0
 			NOSIZE ;
 			NOSYSMENU
 
-			DEFINE BUTTON b1
-				ROW 2
-				COL 2
-				WIDTH 30
-				HEIGHT 30
-				PICTURE "HP_TOP"
-                                TOOLTIP _HMG_printer_usermessages [03]
-                                ACTION ( _HMG_printer_CurrentPageNumber:=1 , _HMG_PRINTER_PreviewRefresh()  )
-			END BUTTON
 
-			DEFINE BUTTON b2
-				ROW 2
-				COL 32
-				WIDTH 30
-				HEIGHT 30
-				PICTURE "HP_BACK"
-                                TOOLTIP _HMG_printer_usermessages [04]
+                        @ 2,2 BUTTON b1 ;
+                               WIDTH 30  ;
+                                HEIGHT 30  ;
+                                PICTURE "HP_TOP" ;
+                                TOOLTIP _HMG_printer_usermessages[03] ;
+                                ACTION (  ejecuta()  )
+
+
+
+                        @ 2,32 BUTTON b2 ;
+                               WIDTH 30  ;
+                                HEIGHT 30  ;
+                                PICTURE "HP_BACK" ;
+                                TOOLTIP _HMG_printer_usermessages[04] ;
                                 ACTION ( _HMG_printer_CurrentPageNumber-- , _HMG_PRINTER_PreviewRefresh()  )
-			END BUTTON
 
-			DEFINE BUTTON b3
-				ROW 2
-				COL 62
-				WIDTH 30
-				HEIGHT 30
-				PICTURE "HP_NEXT"
-                                TOOLTIP _HMG_printer_usermessages [05]
+
+                        @ 2,62  BUTTON b3 ;
+                                WIDTH 30  ;
+                                HEIGHT 30  ;
+                                PICTURE "HP_NEXT" ;
+                                TOOLTIP _HMG_printer_usermessages[05] ;
                                 ACTION ( _HMG_printer_CurrentPageNumber++ , _HMG_PRINTER_PreviewRefresh()  )
-			END BUTTON
 
-			DEFINE BUTTON b4
-				ROW 2
-				COL 92
-				WIDTH 30
-				HEIGHT 30
-				PICTURE "HP_END"
-                                TOOLTIP _HMG_printer_usermessages [06]
+
+                        @ 2,92 BUTTON b4 ;
+                                WIDTH 30  ;
+                                HEIGHT 30  ;
+                                PICTURE "HP_END" ;
+                                TOOLTIP _HMG_printer_usermessages[06] ;
                                 ACTION ( _HMG_printer_CurrentPageNumber:= _HMG_printer_PageCount, _HMG_PRINTER_PreviewRefresh()  )
-			END BUTTON
 
-			DEFINE CHECKBUTTON thumbswitch
-				ROW 2
-				COL 126
-				WIDTH 30
-				HEIGHT 30
-				PICTURE "HP_THUMBNAIL"
-                                TOOLTIP _HMG_printer_usermessages [28] + ' [Ctrl+T]'
-                                OnChange _HMG_PRINTER_ProcessTHUMBNAILS()
-			END CHECKBUTTON
 
-			DEFINE BUTTON GoToPage
-				ROW 2
-				COL 156
-				WIDTH 30
-				HEIGHT 30
-				PICTURE "HP_GOPAGE"
-                                TOOLTIP _HMG_printer_usermessages [07] + ' [Ctrl+G]'
+                        @ 2,126 CHECKBUTTON thumbswitch ;
+                                WIDTH 30               ;
+                                HEIGHT 30               ;
+                                PICTURE "HP_THUMBNAIL"   ;
+                                TOOLTIP _HMG_printer_usermessages[28] + ' [Ctrl+T]' ;
+                                On Change _HMG_PRINTER_ProcessTHUMBNAILS()
+
+
+                        @ 2,156 BUTTON GoToPage ;
+                                WIDTH 30         ;
+                                HEIGHT 30         ;
+                                PICTURE "HP_GOPAGE" ;
+                                TOOLTIP _HMG_printer_usermessages[07] + ' [Ctrl+G]' ;
                                 ACTION _HMG_PRINTER_GO_TO_PAGE()
-			END BUTTON
 
-			DEFINE CHECKBUTTON b5
-				ROW 2
-				COL 186
-				WIDTH 30
-				HEIGHT 30
-				PICTURE "HP_ZOOM"
-                                TOOLTIP _HMG_printer_usermessages [08] + ' [*]'
+
+                        @ 2,186 CHECKBUTTON b5 ;
+                                WIDTH 30 ;
+                                HEIGHT 30 ;
+                                PICTURE "HP_ZOOM" ;
+                                TOOLTIP _HMG_printer_usermessages[08] + ' [*]' ;
                                 ON CHANGE _HMG_PRINTER_Zoom()
-			END CHECKBUTTON
 
-			DEFINE BUTTON b12
-				ROW 2
-				COL 216
-				WIDTH 30
-				HEIGHT 30
-				PICTURE "HP_PRINT"
-                                TOOLTIP _HMG_printer_usermessages [09] + ' [Ctrl+P]'
+
+                        @ 2,216 BUTTON b12 ;
+                                WIDTH 30 ;
+                                HEIGHT 30  ;
+                                PICTURE "HP_PRINT" ;
+                                TOOLTIP _HMG_printer_usermessages[09] + ' [Ctrl+P]' ;
                                 ACTION _HMG_PRINTER_PrintPages()
-			END BUTTON
 
-			DEFINE BUTTON b7
-				ROW 2
-				COL 246
-				WIDTH 30
-				HEIGHT 30
-				PICTURE "HP_SAVE"
-                                TOOLTIP _HMG_printer_usermessages [27] + ' [Ctrl+S]'
+
+
+                        @ 2,246 BUTTON b7 ;
+                                WIDTH 30   ;
+                                HEIGHT 30   ;
+                                PICTURE "HP_SAVE" ;
+                                TOOLTIP _HMG_printer_usermessages[27] + ' [Ctrl+S]' ;
                                 ACTION _HMG_printer_savepages()
-			END BUTTON
 
-			DEFINE BUTTON b6
-				ROW 2
-				COL 280
-				WIDTH 30
-				HEIGHT 30
-				PICTURE "HP_CLOSE"
-                                TOOLTIP _HMG_printer_usermessages [26] + ' [Ctrl+C]'
+
+                        @ 2,280 BUTTON b6 ;
+                                WIDTH 30   ;
+                                HEIGHT 30   ;
+                                PICTURE "HP_CLOSE" ;
+                                TOOLTIP _HMG_printer_usermessages[26] + ' [Ctrl+C]' ;
                                 ACTION _HMG_PRINTER_PreviewClose()
-			END BUTTON
+
 
                         ON KEY HOME             ACTION ( _HMG_printer_CurrentPageNumber:=1 , _HMG_PRINTER_PreviewRefresh()  )
                         ON KEY PRIOR            ACTION ( _HMG_printer_CurrentPageNumber-- , _HMG_PRINTER_PreviewRefresh()  )
@@ -599,6 +582,12 @@ Public _HMG_printer_PrevPageNumber := 0
         setinteractiveclose(icb)
 
 Return
+
+static procedure ejecuta()
+_HMG_printer_CurrentPageNumber:=1
+_HMG_PRINTER_PreviewRefresh() 
+return
+
 *---a---------------------------------------------------------------------------*
 Procedure CreateThumbNails
 *------------------------------------------------------------------------------*

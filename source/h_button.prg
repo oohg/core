@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.17 2006-10-30 00:16:44 guerra000 Exp $
+ * $Id: h_button.prg,v 1.18 2006-11-08 00:34:03 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -94,6 +94,8 @@
 #include "oohg.ch"
 #include "hbclass.ch"
 #include "i_windefs.ch"
+
+memvar IMAGE_BITMAP
 
 CLASS TButton FROM TControl
    DATA Type      INIT "BUTTON" READONLY

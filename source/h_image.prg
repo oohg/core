@@ -1,5 +1,5 @@
 /*
- * $Id: h_image.prg,v 1.9 2006-11-01 04:07:05 guerra000 Exp $
+ * $Id: h_image.prg,v 1.10 2006-11-08 00:34:03 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -94,6 +94,9 @@
 #include "oohg.ch"
 #include "hbclass.ch"
 #include "i_windefs.ch"
+
+memvar STM_SETIMAGE
+memvar IMAGE_BITMAP
 
 CLASS TImage FROM TControl
    DATA Type            INIT "IMAGE" READONLY
