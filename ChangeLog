@@ -1,11 +1,20 @@
 /*
- * $Id: ChangeLog,v 1.263 2006-11-09 04:44:00 guerra000 Exp $
+ * $Id: ChangeLog,v 1.264 2006-11-09 19:37:13 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+  
+2006-11-9 14:34 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+  * source/h_print.prg  
+    *  replace ATNUM function in CT with own function.  
+  * source/h_image.prg
+  * source/h_slider.prg
+  * source/h_button.prg
+  * source/h_checkbox.prg
+    *  remove memvar declaration 
 
 2006-11-08 22:41 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_windows.prg
@@ -23,7 +32,7 @@
      * fixed warnings
   * source/h_image.prg
   * source/h_slider.prg
-  * source/h_buttonr.prg
+  * source/h_button.prg
   * source/h_checkbox.prg
   * source/miniprint.prg
     * fixed ambiguos references

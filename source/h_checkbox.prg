@@ -1,5 +1,5 @@
 /*
- * $Id: h_checkbox.prg,v 1.12 2006-11-08 00:34:03 declan2005 Exp $
+ * $Id: h_checkbox.prg,v 1.13 2006-11-09 19:37:16 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -96,7 +96,6 @@
 #include "hbclass.ch"
 #include "i_windefs.ch"
 
-memvar IMAGE_BITMAP
 
 CLASS TCheckBox FROM TLabel
    DATA Type      INIT "CHECKBOX" READONLY
