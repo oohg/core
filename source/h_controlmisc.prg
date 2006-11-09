@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.66 2006-10-28 20:49:15 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.67 2006-11-09 04:44:00 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -382,7 +382,7 @@ Local oInputWindow, aResult
 			LN := 'Label_' + Alltrim(Str(i,2,0))
 			CN := 'Control_' + Alltrim(Str(i,2,0))
 
-			@ ControlRow , 10 LABEL &LN OF _InputWindow VALUE aLabels [i] WIDTH 90
+         @ ControlRow , 10 LABEL &LN OF _InputWindow VALUE aLabels [i] WIDTH 110 NOWORDWRAP
 
 			do case
 			case ValType ( aValues [i] ) == 'L'

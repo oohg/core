@@ -1,11 +1,18 @@
 /*
- * $Id: ChangeLog,v 1.262 2006-11-08 00:34:03 declan2005 Exp $
+ * $Id: ChangeLog,v 1.263 2006-11-09 04:44:00 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-11-08 22:41 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_windows.prg
+    ! Fixed vertical scrollbar movement with mouse wheel.
+  * source/h_controlmisc.prg
+    * Modified control's label definition to higher lenght and
+      NOWORDWRAP at InputWindow().
 
 2006-11-7 19:28 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source/h_grid.prg
@@ -26,7 +33,7 @@
      + new method ::toexcel() added
   * source/h_xbrowse.prg
      + new method ::toexcel() added
-   
+
 2006-11-6 11:25 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source/winprint.prg
      * little fixes in hbprinter in order to improve a better preview

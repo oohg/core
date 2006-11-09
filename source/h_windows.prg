@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.115 2006-10-28 03:06:35 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.116 2006-11-09 04:44:00 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1970,9 +1970,9 @@ Local oCtrl
       If ValidHandler( ::hWnd ) .AND. ::RangeHeight > 0
 
          If HIWORD( wParam ) == 120
-            ::VScrollBar:LineUp()
+            ::Events_VScroll( SB_LINEUP )
 			Else
-            ::VScrollBar:LineDown()
+            ::Events_VScroll( SB_LINEDOWN )
 			EndIf
 
 		EndIf
