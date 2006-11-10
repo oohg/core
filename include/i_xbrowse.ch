@@ -1,5 +1,5 @@
 /*
- * $Id: i_xbrowse.ch,v 1.2 2006-10-28 03:06:35 guerra000 Exp $
+ * $Id: i_xbrowse.ch,v 1.3 2006-11-10 03:35:01 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -145,8 +145,10 @@
                 [ ON EDITCELL <editcell> ]      ;
                 [ COLUMNCONTROLS <editcontrols> ] ;
                 [ REPLACEFIELD <replacefields> ] ;
+                [ SUBCLASS <subclass> ]         ;
+                [ <reccount: RECCOUNT> ]        ;
 	=>;
-       [ <oObj> := ] TXBrowse():Define( ;
+       [ <oObj> := ] _OOHG_SelectSubClass( TXBrowse(), [ <subclass>() ] ):Define( ;
                <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, <widths>, ;
                <Fields>, <(workarea)>, <value>, <.Delete.>, <.lock.>, <.novscroll.>, ;
                <.append.>, <{onappend}>, <replacefields>, ;
@@ -156,4 +158,4 @@
                <.edit.>, <backcolor>, <fontcolor>, ;
                <dynamicbackcolor>, <dynamicforecolor>, <Picture>, <.rtl.>, <.inplace.>, ;
                <editcontrols>, <aReadOnly>, <{aValidFields}>, <aValidMessages>, <{editcell}>, ;
-               <aWhenFields> )
+               <aWhenFields>, <.reccount.> )

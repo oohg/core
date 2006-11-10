@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.55 2006-08-25 13:57:41 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.56 2006-11-10 03:35:01 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -141,41 +141,39 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                inplace, novscroll, AllowAppend, readonly, valid, ;
                validmessages, edit, dynamicbackcolor, aWhenFields, ;
                dynamicforecolor, aPicture, lRtl, onappend, editcell, ;
-               editcontrols, replacefields ) CLASS TBrowse
+               editcontrols, replacefields, lRecCount ) CLASS TBrowse
 *-----------------------------------------------------------------------------*
 Local nWidth2, nCol2, oScroll
 
    IF ! ValType( WorkArea ) $ "CM" .OR. Empty( WorkArea )
       WorkArea := ALIAS()
    ENDIF
-   if valtype( aFields ) != "A"
-      aFields := ( WorkArea )->( DBSTRUCT() )
-      AEVAL( aFields, { |x,i| aFields[ i ] := WorkArea + "->" + x[ 1 ] } )
-   endif
 
-   if valtype( aHeaders ) != "A"
-      aHeaders := Array( len( aFields ) )
-   else
-      aSize( aHeaders, len( aFields ) )
-   endif
-   aEval( aHeaders, { |x,i| aHeaders[ i ] := iif( ! ValType( x ) $ "CM", if( valtype( aFields[ i ] ) $ "CM", aFields[ i ], "" ), x ) } )
+   ASSIGN ::aFields  VALUE aFields  TYPE "A"
+   If ValType( ::aFields ) != "A"
+      ::aFields := ( WorkArea )->( DBSTRUCT() )
+      AEVAL( ::aFields, { |x,i| ::aFields[ i ] := WorkArea + "->" + x[ 1 ] } )
+   EndIf
+
+   ASSIGN ::aHeaders VALUE aHeaders TYPE "A" DEFAULT {}
+   aSize( ::aHeaders, len( ::aFields ) )
+   aEval( ::aHeaders, { |x,i| ::aHeaders[ i ] := iif( ! ValType( x ) $ "CM", if( valtype( ::aFields[ i ] ) $ "CM", ::aFields[ i ], "" ), x ) } )
+
+   ASSIGN ::aWidths  VALUE aWidths  TYPE "A" DEFAULT {}
+   aSize( ::aWidths, len( ::aFields ) )
+   aEval( ::aWidths, { |x,i| ::aWidths[ i ] := iif( ! ValType( x ) == "N", 100, x ) } )
 
    // If splitboxed force no vertical scrollbar
 
+   ASSIGN novscroll VALUE novscroll TYPE "L" DEFAULT .F.
    if valtype(x) != "N" .or. valtype(y) != "N"
       novscroll := .T.
    endif
 
-   IF valtype( w ) != "N"
-      w := 240
-   ENDIF
-   IF novscroll
-      nWidth2 := w
-   Else
-      nWidth2 := w - GETVSCROLLBARWIDTH()
-   ENDIF
+   ASSIGN w         VALUE w         TYPE "N" DEFAULT ::nWidth
+   nWidth2 := if( novscroll, w, w - GETVSCROLLBARWIDTH() )
 
-   ::TGrid:Define( ControlName, ParentForm, x, y, nWidth2, h, aHeaders, aWidths, {}, nil, ;
+   ::TGrid:Define( ControlName, ParentForm, x, y, nWidth2, h, ::aHeaders, ::aWidths, {}, nil, ;
                    fontname, fontsize, tooltip, , , aHeadClick, , , ;
                    nogrid, aImage, aJust, break, HelpId, bold, italic, underline, strikeout, nil, ;
                    nil, nil, edit, backcolor, fontcolor, dynamicbackcolor, dynamicforecolor, aPicture, ;
@@ -187,13 +185,15 @@ Local nWidth2, nCol2, oScroll
    IF ValType( Value ) == "N"
       ::nValue := Value
    ENDIF
-   ::Lock := Lock
+
+   ASSIGN ::Lock          VALUE lock          TYPE "L"
+   ASSIGN ::AllowDelete   VALUE AllowDelete   TYPE "L"
+   ASSIGN ::AllowAppend   VALUE AllowAppend   TYPE "L"
+   ASSIGN ::aReplaceField VALUE replacefields TYPE "A"
+   ASSIGN ::lRecCount     VALUE lRecCount     TYPE "L"
+
    ::WorkArea := WorkArea
-   ::AllowDelete := AllowDelete
-   ::aFields := aFields
    ::aRecMap := {}
-   ::AllowAppend := AllowAppend
-   ::aReplaceField := replacefields
 
    if ! novscroll
 
@@ -815,6 +815,9 @@ Local oVScroll, cWorkArea
          ActualRecord := ( cWorkArea )->( RecNo() )
          RecordCount := ( cWorkArea )->( RecCount() )
 		EndIf
+      If ::lRecCount
+         RecordCount := ( cWorkArea )->( RecCount() )
+      EndIf
 
       ::nValue := ( cWorkArea )->( RecNo() )
       ::RecCount := RecordCount

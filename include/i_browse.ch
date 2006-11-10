@@ -1,5 +1,5 @@
 /*
- * $Id: i_browse.ch,v 1.12 2006-10-28 03:06:35 guerra000 Exp $
+ * $Id: i_browse.ch,v 1.13 2006-11-10 03:35:01 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -149,56 +149,18 @@
                 [ COLUMNCONTROLS <editcontrols> ] ;
                 [ REPLACEFIELD <replacefields> ] ;
                 [ SUBCLASS <subclass> ]         ;
+                [ <reccount: RECCOUNT> ]        ;
 	=>;
              [ <oObj> := ] _OOHG_SelectSubClass( TBrowse(), [ <subclass>() ] ): ;
-                Define( <(name)> , ;
-                <(parent)> ,    ;
-		<col> ,		;
-		<row> ,		;
-		<w> , 		;
-		<h> , 		;
-		<headers> , 	;
-		<widths> , 	;
-		<Fields> , 	;
-		<value> ,	;
-		<fontname> , 	;
-		<fontsize> , 	;
-		<tooltip> , 	;
-		<{change}> ,	;
-		<{dblclick}> ,  ;
-		<aHeadClick> ,  ;
-		<{gotfocus}> ,	;
-		<{lostfocus}>, 	;
-                <(workarea)> ,  ;
-		<.Delete.>,  	;
-		<.style.> ,	;
-		<aImage> ,	;
-		<aJust> , ;
-		<helpid>  , ;
-		<.bold.> , ;
-		<.italic.> , ;
-		<.underline.> , ;
-		<.strikeout.> , ;
-		<.break.>  , ;
-		<backcolor> , ;
-		<fontcolor> , ;
-		<.lock.>  , ;
-		<.inplace.> , ;
-		<.novscroll.> , ;
-		<.append.> , ;
-		<aReadOnly> , ;
-                <aValidFields> , ;
-		<aValidMessages> , ;
-                <.edit.> , ;
-                <dynamicbackcolor> , ;
-                <aWhenFields> , ;
-                <dynamicforecolor>, ;
-                <Picture>, ;
-                <.rtl.>, ;
-                <{onappend}>, ;
-                <{editcell}>, ;
-                <editcontrols>, ;
-                <replacefields> )
+                Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, <widths>, ;
+                <Fields>, <value>, <fontname>, <fontsize>, <tooltip>, <{change}>, ;
+                <{dblclick}>, <aHeadClick>, <{gotfocus}>, <{lostfocus}>, <(workarea)> ,  ;
+                <.Delete.>, <.style.>, <aImage>, <aJust>, <helpid>, <.bold.>, ;
+                <.italic.>, <.underline.>, <.strikeout.>, <.break.>, <backcolor>, ;
+                <fontcolor>, <.lock.>, <.inplace.>, <.novscroll.>, <.append.>, ;
+                <aReadOnly>, <aValidFields>, <aValidMessages>, <.edit.>, ;
+                <dynamicbackcolor>, <aWhenFields>, <dynamicforecolor>, <Picture>, <.rtl.>, ;
+                <{onappend}>, <{editcell}>, <editcontrols>, <replacefields>, <.reccount.> )
 
 ///////////////////////////////////////////////////////////////////////////////
 // SPLITBOX BROWSE
@@ -251,56 +213,18 @@
                 [ COLUMNCONTROLS <editcontrols> ] ;
                 [ REPLACEFIELD <replacefields> ] ;
                 [ SUBCLASS <subclass> ]         ;
+                [ <reccount: RECCOUNT> ]        ;
 	=>;
              [ <oObj> := ] _OOHG_SelectSubClass( TBrowse(), [ <subclass>() ] ): ;
-                Define( <(name)> ,      ;
-                <(parent)> ,    ;
-		 ,		;
-		 ,		;
-		<w> , 		;
-		<h> , 		;
-		<headers> , 	;
-		<widths> , 	;
-		<Fields> , 	;
-		<value> ,	;
-		<fontname> , 	;
-		<fontsize> , 	;
-		<tooltip> , 	;
-		<{change}> ,	;
-		<{dblclick}> ,  ;
-                <aHeadClick> ,  ;
-		<{gotfocus}> ,	;
-		<{lostfocus}>, 	;
-                <(WorkArea)> ,  ;
-		<.Delete.>,  	;
-		<.style.> ,	;
-		<aImage> ,	;
-		<aJust> , ;
-		<helpid>  , ;
-		<.bold.> , ;
-		<.italic.> , ;
-		<.underline.> , ;
-		<.strikeout.> , ;
-		<.break.>  , ;
-		<backcolor> , ;
-		<fontcolor> , ;
-		<.lock.> , ;
-		<.inplace.> , ;
-		<.novscroll.> , ;
-		<.append.> , ;
-		<aReadOnly> , ;
-                <aValidFields> , ;
-		<aValidMessages> , ;
-                <.edit.>  , ;
-                <dynamicbackcolor> , ;
-                <aWhenFields> , ;
-                <dynamicforecolor>, ;
-                <Picture>, ;
-                <.rtl.>, ;
-                <{onappend}>, ;
-                <{editcell}>, ;
-                <editcontrols>, ;
-                <replacefields> )
+                Define( <(name)>, <(parent)>, , , <w>, <h>, <headers>, <widths>, <Fields>, ;
+                <value>, <fontname>, <fontsize>, <tooltip>, <{change}>, <{dblclick}>, ;
+                <aHeadClick>, <{gotfocus}>, <{lostfocus}>, <(WorkArea)>, <.Delete.>, ;
+                <.style.>, <aImage>, <aJust>, <helpid>, <.bold.>, <.italic.>, ;
+                <.underline.>, <.strikeout.>, <.break.>, <backcolor>, <fontcolor>, ;
+                <.lock.>, <.inplace.>, <.novscroll.>, <.append.>, <aReadOnly>, ;
+                <aValidFields>, <aValidMessages>, <.edit.>, <dynamicbackcolor>, ;
+                <aWhenFields>, <dynamicforecolor>, <Picture>, <.rtl.>, <{onappend}>, ;
+                <{editcell}>, <editcontrols>, <replacefields>, <.reccount.> )
 
 #command SET BROWSESYNC ON  => SetBrowseSync( .T. )
 #command SET BROWSESYNC OFF => SetBrowseSync( .F. )

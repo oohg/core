@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.19 2006-11-08 00:34:03 declan2005 Exp $
+ * $Id: h_xbrowse.prg,v 1.20 2006-11-10 03:35:01 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -71,6 +71,7 @@ CLASS TXBROWSE FROM TGrid
    DATA goTopBlock        INIT nil
    DATA goBottomBlock     INIT nil
    DATA lLocked           INIT .F.
+   DATA lRecCount         INIT .F.
 
    METHOD Define
    METHOD Refresh
@@ -113,7 +114,7 @@ CLASS TXBROWSE FROM TGrid
 
    METHOD WorkArea         SETGET
 
-   METHOD toExcel
+   METHOD ToExcel
 
 /* from grid:
    METHOD AddColumn
@@ -143,7 +144,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                nogrid, aImage, aJust, break, HelpId, bold, italic, underline, ;
                strikeout, editable, backcolor, fontcolor, dynamicbackcolor, ;
                dynamicforecolor, aPicture, lRtl, inplace, editcontrols, ;
-               readonly, valid, validmessages, editcell, aWhenFields ) CLASS TXBrowse
+               readonly, valid, validmessages, editcell, aWhenFields, ;
+               lRecCount ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
 Local nWidth2, nCol2, lLocked, oScroll
 
@@ -181,6 +183,7 @@ Local nWidth2, nCol2, lLocked, oScroll
    ASSIGN ::AllowDelete   VALUE AllowDelete   TYPE "L"
    ASSIGN ::AllowAppend   VALUE AllowAppend   TYPE "L"
    ASSIGN ::aReplaceField VALUE replacefields TYPE "A"
+   ASSIGN ::lRecCount     VALUE lRecCount     TYPE "L"
 
    If ! novscroll
 
@@ -468,7 +471,11 @@ Local oVScroll, aPosition
       ::Super:Value := nValue
       oVScroll := ::VScroll
       If oVScroll != NIL
-         aPosition := { ::oWorkArea:OrdKeyNo(), ::oWorkArea:OrdKeyCount() }
+         If ::lRecCount
+            aPosition := { ::oWorkArea:OrdKeyNo(), ::oWorkArea:RecCount() }
+         Else
+            aPosition := { ::oWorkArea:OrdKeyNo(), ::oWorkArea:OrdKeyCount() }
+         EndIf
          If aPosition[ 2 ] == 0
             oVScroll:RangeMax := oVScroll:RangeMin
             oVScroll:Value := oVScroll:RangeMax
@@ -531,7 +538,7 @@ METHOD Enabled( lEnabled ) CLASS TXBrowse
 RETURN ::Super:Enabled
 
 *------------------------------------------------------------------------------*
-METHOD toExcel( cTitle ) CLASS TXBrowse
+METHOD ToExcel( cTitle ) CLASS TXBrowse
 *------------------------------------------------------------------------------*
  Local LIN:=4
  LOCAL oExcel, oHoja,i
@@ -554,7 +561,7 @@ METHOD toExcel( cTitle ) CLASS TXBrowse
   LIN++
   LIN++
   ::gotop()
-  Do While .not. ( ::workarea )->( eof( ) )  
+  Do While .not. ( ::workarea )->( eof( ) )
      for i:= 1 to len ( ::aFields )
          oHoja:Cells( LIN, i ):Value := &( ::aFields[i] )
      next i
@@ -826,7 +833,11 @@ Local aPosition
    ElseIf nPos >= VScroll:RangeMax
       ::GoBottom()
    Else
-      aPosition := { ::oWorkArea:OrdKeyNo(), ::oWorkArea:OrdKeyCount() }
+      If ::lRecCount
+         aPosition := { ::oWorkArea:OrdKeyNo(), ::oWorkArea:RecCount() }
+      Else
+         aPosition := { ::oWorkArea:OrdKeyNo(), ::oWorkArea:OrdKeyCount() }
+      EndIf
       nPos := nPos * aPosition[ 2 ] / VScroll:RangeMax
       #ifdef __XHARBOUR__
          ::oWorkArea:OrdKeyGoTo( nPos )
@@ -978,7 +989,7 @@ Local aItems, aEditControls, aMemVars, aReplaceFields
 
       For z := 1 To Len( aItems )
 
-         If ValType( ::ReadOnly ) == 'A' .AND. Len( ::ReadOnly ) >= z .AND. ValType( ::ReadOnly[ z ] ) == "L" .AND. ::ReadOnly[ z ]
+         If ::IsColumnReadOnly( z )
             // Readonly field
          Else
             _OOHG_EVAL( aReplaceFields[ z ], aItems[ z ] )
@@ -1022,7 +1033,7 @@ Local lRet, bReplaceField, oWorkArea
    If nRow < 1 .OR. nRow > ::ItemCount() .OR. nCol < 1 .OR. nCol > Len( ::aHeaders )
       // Cell out of range
       lRet := .F.
-   ElseIf VALTYPE( ::ReadOnly ) == "A" .AND. Len( ::ReadOnly ) >= nCol .AND. ValType( ::ReadOnly[ nCol ] ) == "L" .AND. ::ReadOnly[ nCol ]
+   ElseIf ::IsColumnReadOnly( nCol )
       // Read only column
       PlayHand()
       lRet := .F.
@@ -1084,7 +1095,7 @@ Local lRet
 *   DO EVENTS
    lRet := .T.
    Do While nCol <= Len( ::aHeaders ) .AND. lRet
-      If VALTYPE( ::ReadOnly ) == "A" .AND. Len( ::ReadOnly ) >= nCol .AND. ValType( ::ReadOnly[ nCol ] ) == "L" .AND. ::ReadOnly[ nCol ]
+      If ::IsColumnReadOnly( nCol )
          // Read only column
       Else
          lRet := ::EditCell( nRow, nCol,,,,, lAppend )

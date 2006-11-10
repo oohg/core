@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.60 2006-11-08 00:34:03 declan2005 Exp $
+ * $Id: h_grid.prg,v 1.61 2006-11-10 03:35:01 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -141,6 +141,7 @@ CLASS TGrid FROM TControl
    METHOD EditAllCells
    METHOD EditItem
    METHOD EditItem2
+   METHOD IsColumnReadOnly
    METHOD toexcel
 
    METHOD AddItem
@@ -371,16 +372,16 @@ METHOD toExcel( cTitle ) CLASS TGrid
   LIN++
   LIN++
   ::gotop()
- 
-  Do while .T.   
+
+  Do while .T.
      for i:= 1 to len ( ::aHeaders )
          oHoja:Cells( LIN, i ):Value := ::cell( ::value , i )
      next i
-     if  ::Value  = ::Itemcount    
+     if  ::Value  = ::Itemcount
          Exit
      endif
      ::Value++
-     LIN++   
+     LIN++
   Enddo
 
 FOR i:=1 TO LEN( ::Aheaders )
@@ -538,7 +539,7 @@ Local aReturn
       If ValType( ::aWhen ) == "A" .AND. Len( ::aWhen ) >= i
          aEditControls2[ i ]:bWhen := ::aWhen[ i ]
       EndIf
-      If ValType( ::ReadOnly ) == "A" .AND. Len( ::ReadOnly ) >= i .AND. ValType( ::ReadOnly[ i ] ) == "L" .AND. ::ReadOnly[ i ]
+      If ::IsColumnReadOnly( i )
          aEditControls2[ i ]:Enabled := .F.
          aEditControls2[ i ]:bWhen := { || .F. }
       EndIf
@@ -637,6 +638,13 @@ Local lRet, nItem, aValues, lValid
       oWnd:Release()
    Endif
 Return
+
+*-----------------------------------------------------------------------------*
+METHOD IsColumnReadOnly( nCol ) CLASS TGrid
+*-----------------------------------------------------------------------------*
+LOCAL uReadOnly
+   uReadOnly := _OOHG_GetArrayItem( ::ReadOnly, nCol )
+RETURN ( VALTYPE( uReadOnly ) == "L" .AND. uReadOnly )
 
 *-----------------------------------------------------------------------------*
 METHOD AddColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor, lNoDelete, uPicture ) CLASS TGrid
@@ -865,7 +873,7 @@ Local r, r2, lRet := .F., nWidth
    ENDIF
    IF nRow < 1 .OR. nRow > ::ItemCount() .OR. nCol < 1 .OR. nCol > Len( ::aHeaders )
       // Cell out of range
-   ElseIf VALTYPE( ::ReadOnly ) == "A" .AND. Len( ::ReadOnly ) >= nCol .AND. ValType( ::ReadOnly[ nCol ] ) == "L" .AND. ::ReadOnly[ nCol ]
+   ElseIf ::IsColumnReadOnly( nCol )
       // Read only column
       PlayHand()
    Else
@@ -957,7 +965,7 @@ Local lRet
 
    lRet := .T.
    Do While nCol <= Len( ::aHeaders ) .AND. lRet
-      If VALTYPE( ::ReadOnly ) == "A" .AND. Len( ::ReadOnly ) >= nCol .AND. ValType( ::ReadOnly[ nCol ] ) == "L" .AND. ::ReadOnly[ nCol ]
+      If ::IsColumnReadOnly( nCol )
          // Read only column
       Else
          lRet := ::EditCell( nRow, nCol )
@@ -1122,7 +1130,7 @@ Local lvc, aCellData, _ThisQueryTemp, lWhen
 
       If ::InPlace
 
-         If ValType( ::ReadOnly ) == "A" .AND. Len( ::ReadOnly ) >= _OOHG_ThisItemColIndex .AND. ValType( ::ReadOnly[ _OOHG_ThisItemColIndex ] ) == "L" .AND. ::ReadOnly[ _OOHG_ThisItemColIndex ]
+         If ::IsColumnReadOnly( _OOHG_ThisItemColIndex )
             // Cell is readonly
          ElseIf ValType( ::aWhen ) == "A" .AND. Len( ::aWhen ) >= _OOHG_ThisItemColIndex .AND. ValType( ( lWhen := _OOHG_EVAL( ::aWhen[ _OOHG_ThisItemColIndex ] ) ) ) == "L" .AND. ! lWhen
             // Cell denies WHEN clause
