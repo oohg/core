@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.20 2006-11-10 03:35:01 guerra000 Exp $
+ * $Id: h_xbrowse.prg,v 1.21 2006-11-11 16:32:14 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -546,6 +546,10 @@ METHOD ToExcel( cTitle ) CLASS TXBrowse
  default ctitle to ""
 
  oExcel := TOleAuto():New( "Excel.Application" )
+ IF Ole2TxtError() != 'S_OK'
+    MsgStop('Excel not found','error')
+    RETURN Nil
+ ENDIF
  oExcel:WorkBooks:Add()
  oHoja := oExcel:Get( "ActiveSheet" )
  oHoja:Cells:Font:Name := "Arial"

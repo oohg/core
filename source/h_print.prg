@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.46 2006-11-11 16:17:26 declan2005 Exp $
+* $Id: h_print.prg,v 1.47 2006-11-11 16:32:14 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -1646,7 +1646,7 @@ empty(cprinterx)
 
 oPrintExcel := TOleAuto():New( "Excel.Application" )
 IF Ole2TxtError() != 'S_OK'
-   MsgStop('Excel no esta disponible','error')
+   MsgStop('Excel not found','error')
    ::lprerror:=.T.
    ::exit:=.T.
    RETURN Nil
