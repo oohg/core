@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.45 2006-11-09 19:37:16 declan2005 Exp $
+* $Id: h_print.prg,v 1.46 2006-11-11 16:17:26 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -1503,14 +1503,13 @@ Method nextsearch( )
 *-----------------------------------------------------*
 local cString,ncount,ncaretpos
 cString := UPPER(::cstring)
-ncount:=STRCOUNT( chr(13),cString, print_preview.edit_p.caretpos )
-////nCaretpos := AT(ALLTRIM(cString),SUBSTR(UPPER(::cBusca),::nOccur))
-nCaretpos := myAT(ALLTRIM(cString),UPPER(::cBusca),::nOccur)
-::nOccur:=nCaretpos+1 ////////  +len(::Cbusca)
+////ncount:=STRCOUNT( chr(13),cString, print_preview.edit_p.caretpos )
+nCaretpos := ATplus(ALLTRIM(cString),UPPER(::cBusca),::nOccur)
+::nOccur:=nCaretpos+1 
 
 print_preview.edit_p.setfocus
-if nCaretpos>0               //////(ncount*2)
-   print_preview.edit_p.caretpos:=nCaretPos   ///////// -(ncount*2)
+if nCaretpos>0               
+   print_preview.edit_p.caretpos:=nCaretPos   
    print_preview.edit_p.refresh
 else
    print_preview.but_6.enabled:=.F.
@@ -1530,12 +1529,15 @@ return nc
 
 
 *-------------------------
-static function myat(cbusca,ctodo,ninicio)
+static function atplus(cbusca,ctodo,ninicio)
 *-------------------------
-local i,nposluna
+local i,nposluna,lencbusca,lenctodo,uppercbusca
 nposluna:=0
-for i:= ninicio to len(ctodo)
-    if upper(substr(ctodo,i,len(cbusca)))=upper(cbusca)
+lenctodo:=len(ctodo)
+lencbusca:=len(cbusca)
+uppercbusca:=upper(cbusca)
+for i:= ninicio to lenctodo
+    if upper(substr(ctodo,i,lencbusca))=uppercbusca
        nposluna:=i
        exit
     endif

@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.266 2006-11-11 15:34:13 declan2005 Exp $
+ * $Id: ChangeLog,v 1.267 2006-11-11 16:17:26 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,13 +7,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-
+2006-11-11 11:13 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+  * source/h_print.prg
+    * rename function myat with atplus and optimize.
 
 2006-11-11 10:26 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * include/h_controlmisc.ch
-      * changed message in EXIT Procedure statement 
+      * changed message in EXIT Procedure statement 3581932
   
-
 2006-11-09 21:18 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * include/i_browse.ch
   * include/i_xbrowse.ch
