@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.19 2006-11-09 19:37:16 declan2005 Exp $
+ * $Id: h_button.prg,v 1.20 2006-11-11 21:07:01 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -117,7 +117,7 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, ProcedureName, w, h, ;
                fontname, fontsize, tooltip, gotfocus, lostfocus, flat, ;
                NoTabStop, HelpId, invisible, bold, italic, underline, ;
                strikeout, lRtl, lNoPrefix, lDisabled, cBuffer, hBitMap, ;
-               cImage, lNoTransparent, lScale ) CLASS TButton
+               cImage, lNoTransparent, lScale, lCancel ) CLASS TButton
 *-----------------------------------------------------------------------------*
 Local ControlHandle, nStyle
 
@@ -144,6 +144,7 @@ Local ControlHandle, nStyle
 
    ASSIGN ::lNoTransparent VALUE lNoTransparent TYPE "L"
    ASSIGN ::lScale         VALUE lScale         TYPE "L"
+   ASSIGN ::lCancel        VALUE lCancel        TYPE "L"
    ::Picture := cImage
    If ! ValidHandler( ::AuxHandle )
       ::Buffer := cBuffer

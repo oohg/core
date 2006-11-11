@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.67 2006-11-09 04:44:00 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.68 2006-11-11 21:07:01 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1356,6 +1356,8 @@ CLASS TControl FROM TWindow
    DATA SetImageListCommand INIT 0   // Must be explicit for each control
    DATA SetImageListWParam  INIT TVSIL_NORMAL
    DATA hCursor     INIT 0
+   DATA postBlock   INIT nil
+   DATA lCancel     INIT .F.
 
    METHOD Row       SETGET
    METHOD Col       SETGET
@@ -1386,6 +1388,7 @@ CLASS TControl FROM TWindow
    METHOD AddBitMap
 
    METHOD DoEvent
+   METHOD DoLostFocus
 
    METHOD Events
    METHOD Events_Color
@@ -1803,6 +1806,28 @@ Local lRetVal
 
 Return lRetVal
 
+*-----------------------------------------------------------------------------*
+METHOD DoLostFocus() CLASS TControl
+*-----------------------------------------------------------------------------*
+Local uRet := nil, nFocus, oFocus
+   If ! ::ContainerReleasing
+      nFocus := GetFocus()
+      If nFocus > 0
+         oFocus := GetControlObjectByHandle( nFocus )
+         If ! oFocus:lCancel
+            uRet := _OOHG_Eval( ::postBlock, Self )
+            If ValType( uRet ) == "L" .AND. ! uRet
+               ::SetFocus()
+               Return 1
+            EndIf
+            uRet := nil
+         EndIf
+      EndIf
+
+      ::DoEvent( ::OnLostFocus )
+   EndIf
+Return uRet
+
 #pragma BEGINDUMP
 #define s_Super s_TWindow
 
@@ -1920,17 +1945,13 @@ Local Hi_wParam := HIWORD( wParam )
       ::DoEvent( ::OnChange )
 
    elseif Hi_wParam == EN_KILLFOCUS
-      If ! ::ContainerReleasing
-         ::DoEvent( ::OnLostFocus )
-      EndIf
+      Return ::DoLostFocus()
 
    elseif Hi_wParam == EN_SETFOCUS
       ::DoEvent( ::OnGotFocus )
 
    elseif Hi_wParam == BN_KILLFOCUS
-      If ! ::ContainerReleasing
-         ::DoEvent( ::OnLostFocus )
-      EndIf
+      Return ::DoLostFocus()
 
    elseif Hi_wParam == BN_SETFOCUS
       ::DoEvent( ::OnGotFocus )
@@ -1962,9 +1983,7 @@ Local nNotify := GetNotifyCode( lParam )
 wParam++ // DUMMY...
 
    If nNotify == NM_KILLFOCUS
-      If ! ::ContainerReleasing
-         ::DoEvent( ::OnLostFocus )
-      EndIf
+      Return ::DoLostFocus()
 
    elseif nNotify == NM_SETFOCUS
       ::DoEvent( ::OnGotFocus )

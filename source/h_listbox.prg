@@ -1,5 +1,5 @@
 /*
- * $Id: h_listbox.prg,v 1.9 2006-10-24 04:08:32 guerra000 Exp $
+ * $Id: h_listbox.prg,v 1.10 2006-11-11 21:07:02 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -191,10 +191,7 @@ Local Hi_wParam := HIWORD( wParam )
       Return nil
 
    elseif Hi_wParam == LBN_KILLFOCUS
-      If ! ::ContainerReleasing
-         ::DoEvent( ::OnLostFocus )
-      Endif
-      Return nil
+      Return ::DoLostFocus()
 
    elseif Hi_wParam == LBN_SETFOCUS
       ::DoEvent( ::OnGotFocus )

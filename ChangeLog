@@ -1,11 +1,31 @@
 /*
- * $Id: ChangeLog,v 1.268 2006-11-11 16:32:14 declan2005 Exp $
+ * $Id: ChangeLog,v 1.269 2006-11-11 21:07:01 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-11-11 15:04 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_window.ch
+    ! Fixed typo in .Cell declaration.
+  * source/h_combo.prg
+  * source/h_controlmisc.prg
+  * source/h_listbox.prg
+  * source/h_textbox.prg
+    + Method ::DoLostFocus() added. Centralizes all ::OnLostFocus
+      calls.  VALID clause is now possible.
+    + ::postBlock property added (VALID codeblock).
+    + ::lCancel property added. ::lCancel (.T.) buttons would be
+      used for abort a VALID clause (i.e. VALID clause forces to
+      enter a valid text code, but user wants to exit).
+  * include/i_button.ch
+  * source/h_button.prg
+    + CANCEL clause added.
+  * include/i_textbox.ch
+  * source/h_textbox.prg
+    + VALID clause added.
 
 2006-11-11 11:31 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source/h_print.prg
@@ -18,9 +38,9 @@
     * rename function myat with atplus and optimize.
 
 2006-11-11 10:26 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
-  * include/h_controlmisc.ch
+  * include/i_controlmisc.ch
       * changed message in EXIT Procedure statement 3581932
-  
+
 2006-11-09 21:18 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * include/i_browse.ch
   * include/i_xbrowse.ch

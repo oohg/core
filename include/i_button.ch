@@ -1,5 +1,5 @@
 /*
- * $Id: i_button.ch,v 1.8 2006-10-30 00:16:44 guerra000 Exp $
+ * $Id: i_button.ch,v 1.9 2006-11-11 21:07:01 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -120,9 +120,11 @@
                 [ HBITMAP <hbitmap> ] ;
 		[ <notrans: NOTRANSPARENT> ] ;
                 [ <scale: FORCESCALE> ] ;
+                [ <cancel: CANCEL> ] ;
 	=>;
         [ <obj> := ] _OOHG_SelectSubClass( TButton(), [ <subclass>() ] ): ;
                    Define( <(name)>, <(parent)>, <col>, <row>, <caption>, <{action}>, ;
                    <w>, <h>, <font>, <size>, <tooltip>, <{gotfocus}>,<{lostfocus}>, <.flat.>, <.notabstop.>, ;
                    <helpid>, <.invisible.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.>, <.rtl.>, ;
-                   <.noprefix.>, <.disabled.>, <buffer>, <hbitmap>, <bitmap>, <.notrans.>, <.scale.> )
+                   <.noprefix.>, <.disabled.>, <buffer>, <hbitmap>, <bitmap>, <.notrans.>, <.scale.>, ;
+                   <.cancel.> )

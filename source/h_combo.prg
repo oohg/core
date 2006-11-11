@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.21 2006-10-24 04:08:31 guerra000 Exp $
+ * $Id: h_combo.prg,v 1.22 2006-11-11 21:07:01 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -350,10 +350,7 @@ Local Hi_wParam := HIWORD( wParam )
       Return nil
 
    elseif Hi_wParam == CBN_KILLFOCUS
-      If ! ::ContainerReleasing
-         ::DoEvent( ::OnLostFocus )
-      Endif
-      Return nil
+      Return ::DoLostFocus()
 
    elseif Hi_wParam == CBN_SETFOCUS
       ::DoEvent( ::OnGotFocus )

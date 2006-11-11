@@ -1,5 +1,5 @@
 /*
- * $Id: i_textbox.ch,v 1.10 2006-09-11 02:22:18 guerra000 Exp $
+ * $Id: i_textbox.ch,v 1.11 2006-11-11 21:07:01 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -129,6 +129,7 @@
                         [ FOCUSEDPOS <focusedpos> ]     ;
                         [ SUBCLASS <subclass> ]         ;
                         [ <disabled: DISABLED> ]        ;
+                        [ VALID <valid> ]               ;
          =>;
         [ <obj> := ] _OOHG_SelectSubClass( iif( <.numeric.>, TTextNum(), TText() ), [ <subclass>() ] ): ;
                         Define( <(name)>, <(parent)>, <col>, <row>, <width>, <height>, <value>, ;
@@ -138,7 +139,8 @@
                         <.RightAlign.>, <helpid>, <.readonly.> ,<.bold.>, ;
                         <.italic.>, <.underline.>, <.strikeout.> , <(field)> , ;
                         <backcolor> , <fontcolor> , <.invisible.> , <.notabstop.> , ;
-                        <.rtl.>, <.autoskip.>, <.noborder.>, <focusedpos>, <.disabled.> )
+                        <.rtl.>, <.autoskip.>, <.noborder.>, <focusedpos>, <.disabled.>, ;
+                        <{valid}> )
 
 
 // TEXTBOX ( NUMERIC INPUTMASK )
@@ -177,6 +179,7 @@
                 [ FOCUSEDPOS <focusedpos> ]     ;
                 [ SUBCLASS <subclass> ]         ;
                 [ <disabled: DISABLED> ]        ;
+                [ VALID <valid> ]               ;
 	=>;
         [ <obj> := ] _OOHG_SelectSubClass( TTextMasked(), [ <subclass>() ] ): ;
                         Define( <(name)>, <(parent)>, <col>, <row>, <inputmask> , ;
@@ -186,7 +189,7 @@
                         <.italic.>, <.underline.>, <.strikeout.>  , <(field)>  , ;
                         <backcolor> , <fontcolor> , <.readonly.> , <.invisible.> , ;
                         <.notabstop.> , <.rtl.> , <.autoskip.>, <.noborder.> , ;
-                        <focusedpos>, <.disabled.> )
+                        <focusedpos>, <.disabled.>, <{valid}> )
 
 // TEXTBOX ( CHARACTER INPUTMASK )
 
@@ -222,6 +225,7 @@
                 [ FOCUSEDPOS <focusedpos> ]     ;
                 [ SUBCLASS <subclass> ]         ;
                 [ <disabled: DISABLED> ]        ;
+                [ VALID <valid> ]               ;
 	=>;
         [ <obj> := ] _OOHG_SelectSubClass( TTextCharMask(), [ <subclass>() ] ): ;
                         Define( <(name)>, <(parent)>, <col>, <row>, <inputmask> , ;
@@ -231,7 +235,7 @@
                         <.underline.>, <.strikeout.> , <(field)> , <backcolor> , ;
                         <fontcolor> , .f. , <.readonly.> , <.invisible.> , ;
                         <.notabstop.> , <.rtl.> , <.autoskip.>, <.noborder.> , ;
-                        <focusedpos>, <.disabled.> )
+                        <focusedpos>, <.disabled.>, <{valid}> )
 
 // TEXTBOX ( DATE TYPE )
 
@@ -267,6 +271,7 @@
                 [ FOCUSEDPOS <focusedpos> ]     ;
                 [ SUBCLASS <subclass> ]         ;
                 [ <disabled: DISABLED> ]        ;
+                [ VALID <valid> ]               ;
 	=>;
         [ <obj> := ] _OOHG_SelectSubClass( TTextCharMask(), [ <subclass>() ] ): ;
                         Define( <(name)>, <(parent)>, <col>, <row>, "" , <w> , ;
@@ -275,7 +280,7 @@
                         <helpid> , <.bold.>, <.italic.>, <.underline.>, <.strikeout.> , ;
                         <(field)> , <backcolor> , <fontcolor> , <.date.> , <.readonly.> , ;
                         <.invisible.> , <.notabstop.> , <.rtl.> , <.autoskip.>, <.noborder.> , ;
-                        <focusedpos>, <.disabled.> )
+                        <focusedpos>, <.disabled.>, <{valid}> )
 
 // TEXTBOX ( PICTURE MASK )
 
@@ -311,6 +316,7 @@
                 [ FOCUSEDPOS <focusedpos> ]     ;
                 [ SUBCLASS <subclass> ]         ;
                 [ <disabled: DISABLED> ]        ;
+                [ VALID <valid> ]               ;
 	=>;
         [ <obj> := ] _OOHG_SelectSubClass( TTextPicture(), [ <subclass>() ] ): ;
                         Define( <(name)>, <(parent)>, <col>, <row>, <w> , <height> , ;
@@ -319,4 +325,4 @@
                         <.RightAlign.> , <helpid> , <.readonly.> , <.bold.> , <.italic.> , ;
                         <.underline.> , <.strikeout.> , <(field)> , <backcolor> , ;
                         <fontcolor> , <.invisible.> , <.notabstop.> , <.rtl.> , <.autoskip.>, ;
-                        <.noborder.> , <focusedpos>, <.disabled.> )
+                        <.noborder.> , <focusedpos>, <.disabled.>, <{valid}> ) ) )
