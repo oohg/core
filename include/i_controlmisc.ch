@@ -1,5 +1,5 @@
 /*
- * $Id: i_controlmisc.ch,v 1.3 2005-10-22 06:04:31 guerra000 Exp $
+ * $Id: i_controlmisc.ch,v 1.4 2006-11-11 15:34:13 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -192,5 +192,5 @@ SetProperty ( <(Arg1)> , <(Arg2)> , <(Arg3)> , \{<Arg4>\} )
 #xcommand EXIT PROCEDURE <name> ;
 => ;
 INIT PROCEDURE <name> ;;
-	MsgStop ('EXIT PROCEDURE Statement is not Supported in MiniGUI. Use Main Window ON RELEASE Event Procedure Instead. Program Terminated','MiniGUI Error') ;;
+	MsgStop ('EXIT PROCEDURE Statement is not Supported in ooHG. Use Main Window ON RELEASE Event Procedure Instead. Program Terminated','ooHG Error') ;;
         ExitProcess()
