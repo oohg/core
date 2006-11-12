@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.62 2006-11-11 16:32:14 declan2005 Exp $
+ * $Id: h_grid.prg,v 1.63 2006-11-12 17:44:55 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -605,6 +605,7 @@ Local nItem, lEnabled, aValues
 
    // WHEN clause
    For nItem := 1 To Len( aEditControls )
+      _OOHG_ThisItemCellValue := aValues[ nItem ]
       lEnabled := _OOHG_EVAL( aEditControls[ nItem ]:bWhen )
       If ValType( lEnabled ) == "L" .AND. ! lEnabled
          aEditControls[ nItem ]:Enabled := .F.
@@ -1136,10 +1137,16 @@ Local lvc, aCellData, _ThisQueryTemp, lWhen
 
          If ::IsColumnReadOnly( _OOHG_ThisItemColIndex )
             // Cell is readonly
-         ElseIf ValType( ::aWhen ) == "A" .AND. Len( ::aWhen ) >= _OOHG_ThisItemColIndex .AND. ValType( ( lWhen := _OOHG_EVAL( ::aWhen[ _OOHG_ThisItemColIndex ] ) ) ) == "L" .AND. ! lWhen
-            // Cell denies WHEN clause
          Else
-            ::EditCell( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
+            If ValType( ::aWhen ) == "A" .AND. Len( ::aWhen ) >= _OOHG_ThisItemColIndex
+               _OOHG_ThisItemCellValue := ::Cell( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
+               lWhen := _OOHG_EVAL( ::aWhen[ _OOHG_ThisItemColIndex ] )
+            Else
+               lWhen := .T.
+            EndIf
+            If ValType( lWhen ) != "L" .OR. lWhen
+               ::EditCell( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
+            EndIf
          EndIf
 
       ElseIf ::AllowEdit

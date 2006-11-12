@@ -1,11 +1,15 @@
 /*
- * $Id: ChangeLog,v 1.270 2006-11-12 02:21:15 guerra000 Exp $
+ * $Id: ChangeLog,v 1.271 2006-11-12 17:44:55 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-11-12 11:39 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_grid.prg
+    * Added This.CellValue assingment at WHEN checking.
 
 2006-11-11 20:17 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * include/i_textbox.ch
