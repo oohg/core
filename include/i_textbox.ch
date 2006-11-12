@@ -1,5 +1,5 @@
 /*
- * $Id: i_textbox.ch,v 1.11 2006-11-11 21:07:01 guerra000 Exp $
+ * $Id: i_textbox.ch,v 1.12 2006-11-12 02:21:15 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -325,4 +325,4 @@
                         <.RightAlign.> , <helpid> , <.readonly.> , <.bold.> , <.italic.> , ;
                         <.underline.> , <.strikeout.> , <(field)> , <backcolor> , ;
                         <fontcolor> , <.invisible.> , <.notabstop.> , <.rtl.> , <.autoskip.>, ;
-                        <.noborder.> , <focusedpos>, <.disabled.>, <{valid}> ) ) )
+                        <.noborder.> , <focusedpos>, <.disabled.>, <{valid}> )

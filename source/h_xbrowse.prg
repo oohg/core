@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.21 2006-11-11 16:32:14 declan2005 Exp $
+ * $Id: h_xbrowse.prg,v 1.22 2006-11-12 02:21:15 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -187,18 +187,18 @@ Local nWidth2, nCol2, lLocked, oScroll
 
    If ! novscroll
 
-      ::ScrollButton := TScrollButton():Define( , Self, nCol2, ::nHeight - GETHSCROLLBARHEIGHT(), GETVSCROLLBARWIDTH() , GETHSCROLLBARHEIGHT() )
-
-      oScroll := TScrollBar()
-      oScroll:nWidth := GETVSCROLLBARWIDTH()
-      oScroll:SetRange( 1, 100 )
-
       IF ::lRtl .AND. ! ::Parent:lRtl
          ::nCol := ::nCol + GETVSCROLLBARWIDTH()
          nCol2 := -GETVSCROLLBARWIDTH()
       Else
          nCol2 := nWidth2
       ENDIF
+
+      ::ScrollButton := TScrollButton():Define( , Self, nCol2, ::nHeight - GETHSCROLLBARHEIGHT(), GETVSCROLLBARWIDTH() , GETHSCROLLBARHEIGHT() )
+
+      oScroll := TScrollBar()
+      oScroll:nWidth := GETVSCROLLBARWIDTH()
+      oScroll:SetRange( 1, 100 )
       oScroll:nCol := nCol2
 
       If IsWindowStyle( ::hWnd, WS_HSCROLL )
