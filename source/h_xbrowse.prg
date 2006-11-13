@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.22 2006-11-12 02:21:15 guerra000 Exp $
+ * $Id: h_xbrowse.prg,v 1.23 2006-11-13 05:10:52 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -145,22 +145,47 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                strikeout, editable, backcolor, fontcolor, dynamicbackcolor, ;
                dynamicforecolor, aPicture, lRtl, inplace, editcontrols, ;
                readonly, valid, validmessages, editcell, aWhenFields, ;
-               lRecCount ) CLASS TXBrowse
+               lRecCount, columninfo ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
-Local nWidth2, nCol2, lLocked, oScroll
+Local nWidth2, nCol2, lLocked, oScroll, z
+
+   ASSIGN ::aFields  VALUE aFields  TYPE "A"
+   ASSIGN ::aHeaders VALUE aHeaders TYPE "A" DEFAULT {}
+   ASSIGN ::aWidths  VALUE aWidths  TYPE "A" DEFAULT {}
+   ASSIGN ::aJust    VALUE aJust    TYPE "A" DEFAULT {}
+
+   If ValType( columninfo ) == "A" .AND. LEN( columninfo ) > 0
+      ASIZE( ::aFields,  LEN( columninfo ) )
+      ASIZE( ::aHeaders, LEN( columninfo ) )
+      ASIZE( ::aWidths,  LEN( columninfo ) )
+      ASIZE( ::aJust,    LEN( columninfo ) )
+      FOR z := 1 TO LEN( columninfo )
+         If ValType( columninfo[ z ] ) == "A"
+            If LEN( columninfo[ z ] ) >= 1 .AND. ValType( columninfo[ z ][ 1 ] ) $ "CMB"
+               ::aFields[ z ]  := columninfo[ z ][ 1 ]
+            EndIf
+            If LEN( columninfo[ z ] ) >= 2 .AND. ValType( columninfo[ z ][ 1 ] ) $ "CM"
+               ::aHeaders[ z ] := columninfo[ z ][ 2 ]
+            EndIf
+            If LEN( columninfo[ z ] ) >= 3 .AND. ValType( columninfo[ z ][ 1 ] ) $ "N"
+               ::aWidths[ z ]  := columninfo[ z ][ 3 ]
+            EndIf
+            If LEN( columninfo[ z ] ) >= 4 .AND. ValType( columninfo[ z ][ 1 ] ) $ "N"
+               ::aJust[ z ]    := columninfo[ z ][ 4 ]
+            EndIf
+         EndIf
+      NEXT
+   EndIf
 
    ASSIGN ::WorkArea VALUE WorkArea TYPE "CMO"
-   ASSIGN ::aFields  VALUE aFields  TYPE "A"
    If ValType( ::aFields ) != "A"
       ::aFields := ::oWorkArea:DbStruct()
       AEVAL( ::aFields, { |x,i| ::aFields[ i ] := ::oWorkArea:cAlias__ + "->" + x[ 1 ] } )
    EndIf
 
-   ASSIGN ::aHeaders VALUE aHeaders TYPE "A" DEFAULT {}
    aSize( ::aHeaders, len( ::aFields ) )
    aEval( ::aHeaders, { |x,i| ::aHeaders[ i ] := iif( ! ValType( x ) $ "CM", if( valtype( ::aFields[ i ] ) $ "CM", ::aFields[ i ], "" ), x ) } )
 
-   ASSIGN ::aWidths  VALUE aWidths  TYPE "A" DEFAULT {}
    aSize( ::aWidths, len( ::aFields ) )
    aEval( ::aWidths, { |x,i| ::aWidths[ i ] := iif( ! ValType( x ) == "N", 100, x ) } )
 

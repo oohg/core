@@ -1,5 +1,5 @@
 /*
- * $Id: i_browse.ch,v 1.13 2006-11-10 03:35:01 guerra000 Exp $
+ * $Id: i_browse.ch,v 1.14 2006-11-13 05:10:52 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -150,6 +150,7 @@
                 [ REPLACEFIELD <replacefields> ] ;
                 [ SUBCLASS <subclass> ]         ;
                 [ <reccount: RECCOUNT> ]        ;
+                [ COLUMNINFO <columninfo> ]     ;
 	=>;
              [ <oObj> := ] _OOHG_SelectSubClass( TBrowse(), [ <subclass>() ] ): ;
                 Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, <widths>, ;
@@ -160,7 +161,8 @@
                 <fontcolor>, <.lock.>, <.inplace.>, <.novscroll.>, <.append.>, ;
                 <aReadOnly>, <aValidFields>, <aValidMessages>, <.edit.>, ;
                 <dynamicbackcolor>, <aWhenFields>, <dynamicforecolor>, <Picture>, <.rtl.>, ;
-                <{onappend}>, <{editcell}>, <editcontrols>, <replacefields>, <.reccount.> )
+                <{onappend}>, <{editcell}>, <editcontrols>, <replacefields>, <.reccount.>, ;
+                <columninfo> )
 
 ///////////////////////////////////////////////////////////////////////////////
 // SPLITBOX BROWSE
@@ -214,6 +216,7 @@
                 [ REPLACEFIELD <replacefields> ] ;
                 [ SUBCLASS <subclass> ]         ;
                 [ <reccount: RECCOUNT> ]        ;
+                [ COLUMNINFO <columninfo> ]     ;
 	=>;
              [ <oObj> := ] _OOHG_SelectSubClass( TBrowse(), [ <subclass>() ] ): ;
                 Define( <(name)>, <(parent)>, , , <w>, <h>, <headers>, <widths>, <Fields>, ;
@@ -224,7 +227,8 @@
                 <.lock.>, <.inplace.>, <.novscroll.>, <.append.>, <aReadOnly>, ;
                 <aValidFields>, <aValidMessages>, <.edit.>, <dynamicbackcolor>, ;
                 <aWhenFields>, <dynamicforecolor>, <Picture>, <.rtl.>, <{onappend}>, ;
-                <{editcell}>, <editcontrols>, <replacefields>, <.reccount.> )
+                <{editcell}>, <editcontrols>, <replacefields>, <.reccount.>, ;
+                <columninfo> )
 
 #command SET BROWSESYNC ON  => SetBrowseSync( .T. )
 #command SET BROWSESYNC OFF => SetBrowseSync( .F. )
