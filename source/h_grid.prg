@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.63 2006-11-12 17:44:55 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.64 2006-11-13 02:54:33 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -142,6 +142,7 @@ CLASS TGrid FROM TControl
    METHOD EditItem
    METHOD EditItem2
    METHOD IsColumnReadOnly
+   METHOD IsColumnWhen
    METHOD toexcel
 
    METHOD AddItem
@@ -652,6 +653,13 @@ LOCAL uReadOnly
 RETURN ( VALTYPE( uReadOnly ) == "L" .AND. uReadOnly )
 
 *-----------------------------------------------------------------------------*
+METHOD IsColumnWhen( nCol ) CLASS TGrid
+*-----------------------------------------------------------------------------*
+LOCAL uWhen
+   uWhen := _OOHG_GetArrayItem( ::aWhen, nCol )
+RETURN ( VALTYPE( uWhen ) != "L" .OR. uWhen )
+
+*-----------------------------------------------------------------------------*
 METHOD AddColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor, lNoDelete, uPicture ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local nColumns, uGridColor, uDynamicColor
@@ -876,11 +884,15 @@ Local r, r2, lRet := .F., nWidth
    IF ValType( nCol ) != "N"
       nCol := 1
    ENDIF
+   _OOHG_ThisItemCellValue := ::Cell( nRow, nCol )
    IF nRow < 1 .OR. nRow > ::ItemCount() .OR. nCol < 1 .OR. nCol > Len( ::aHeaders )
       // Cell out of range
    ElseIf ::IsColumnReadOnly( nCol )
       // Read only column
       PlayHand()
+   ElseIf ! ::IsColumnWhen( nCol )
+      // Not a valid WHEN
+
    Else
 
       // Cell value
@@ -970,8 +982,11 @@ Local lRet
 
    lRet := .T.
    Do While nCol <= Len( ::aHeaders ) .AND. lRet
+      _OOHG_ThisItemCellValue := ::Cell( nRow, nCol )
       If ::IsColumnReadOnly( nCol )
          // Read only column
+      ElseIf ! ::IsColumnWhen( nCol )
+         // Not a valid WHEN
       Else
          lRet := ::EditCell( nRow, nCol )
       EndIf
@@ -1069,7 +1084,7 @@ Return nil
 METHOD Events_Notify( wParam, lParam ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local nNotify := GetNotifyCode( lParam )
-Local lvc, aCellData, _ThisQueryTemp, lWhen
+Local lvc, aCellData, _ThisQueryTemp
 
    If nNotify == NM_CUSTOMDRAW
 
@@ -1135,18 +1150,13 @@ Local lvc, aCellData, _ThisQueryTemp, lWhen
 
       If ::InPlace
 
+         _OOHG_ThisItemCellValue := ::Cell( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
          If ::IsColumnReadOnly( _OOHG_ThisItemColIndex )
             // Cell is readonly
+         ElseIf ! ::IsColumnWhen( _OOHG_ThisItemColIndex )
+            // Not a valid WHEN
          Else
-            If ValType( ::aWhen ) == "A" .AND. Len( ::aWhen ) >= _OOHG_ThisItemColIndex
-               _OOHG_ThisItemCellValue := ::Cell( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
-               lWhen := _OOHG_EVAL( ::aWhen[ _OOHG_ThisItemColIndex ] )
-            Else
-               lWhen := .T.
-            EndIf
-            If ValType( lWhen ) != "L" .OR. lWhen
-               ::EditCell( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
-            EndIf
+            ::EditCell( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
          EndIf
 
       ElseIf ::AllowEdit
