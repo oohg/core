@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.47 2006-11-11 16:32:14 declan2005 Exp $
+* $Id: h_print.prg,v 1.48 2006-11-13 02:33:18 guerra000 Exp $
 */
 
 #include 'hbclass.ch'
@@ -774,7 +774,7 @@ METHOD begindocx(  cDoc ) CLASS TMINIPRINT
 if cDoc#Nil
    START PRINTDOC NAME cDoc
 else
-   START PRINTDOC  
+   START PRINTDOC
 endif
 return self
 
@@ -1501,15 +1501,15 @@ return(nil)
 *-----------------------------------------------------*
 Method nextsearch( )
 *-----------------------------------------------------*
-local cString,ncount,ncaretpos
+local cString,ncaretpos
 cString := UPPER(::cstring)
 ////ncount:=STRCOUNT( chr(13),cString, print_preview.edit_p.caretpos )
 nCaretpos := ATplus(ALLTRIM(cString),UPPER(::cBusca),::nOccur)
-::nOccur:=nCaretpos+1 
+::nOccur:=nCaretpos+1
 
 print_preview.edit_p.setfocus
-if nCaretpos>0               
-   print_preview.edit_p.caretpos:=nCaretPos   
+if nCaretpos>0
+   print_preview.edit_p.caretpos:=nCaretPos
    print_preview.edit_p.refresh
 else
    print_preview.but_6.enabled:=.F.
@@ -1520,7 +1520,7 @@ return nil
 static function strcount(cbusca,cencuentra,n)
 local nc:=0,i
 cbusca:=alltrim(cbusca)
-for i:=1 to n 
+for i:=1 to n
     if upper(substr(cencuentra,i,len(cbusca)))=upper(cbusca)
        nc++
     endif

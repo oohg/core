@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.51 2006-10-31 04:14:09 guerra000 Exp $
+ * $Id: c_windows.c,v 1.52 2006-11-13 02:33:18 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -270,6 +270,13 @@ LRESULT APIENTRY _OOHG_WndProcForm( HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM
    hb_itemCopy( pSelf, GetFormObjectByHandle( hWnd ) );
 
    iReturn = _OOHG_WndProc( pSelf, hWnd, uiMsg, wParam, lParam, lpfnOldWndProc );
+
+   if( uiMsg == WM_NCDESTROY )
+   {
+      _OOHG_Send( pSelf, s_Name );
+      hb_vmSend( 0 );
+      UnregisterClass( hb_parc( -1 ), GetModuleHandle( NULL ) );
+   }
 
    hb_itemReturn( pSave );
    hb_itemRelease( pSave );
@@ -844,11 +851,6 @@ HB_FUNC (GETBORDERHEIGHT)
 HB_FUNC (GETBORDERWIDTH)
 {
 	hb_retni ( GetSystemMetrics( SM_CXSIZEFRAME ) ) ;
-}
-
-HB_FUNC (GETMENUBARHEIGHT)
-{
-	hb_retni ( GetSystemMetrics( SM_CYMENU ) ) ;
 }
 
 HB_FUNC ( ISWINDOWVISIBLE )

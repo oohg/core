@@ -1,11 +1,33 @@
 /*
- * $Id: ChangeLog,v 1.271 2006-11-12 17:44:55 guerra000 Exp $
+ * $Id: ChangeLog,v 1.272 2006-11-13 02:33:18 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-11-12 20:28 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/c_windows.c
+  * source/h_windows.prg
+    * Unregister form's class when it's destroyed.
+    + ::ReDraw() method added.
+    * Releases menu when form is destroyed.
+    * Releases context menu when window/control is released.
+  * include/i_menu.ch
+  * include/oohg.ch
+  * source/c_controlmisc.c
+  * source/c_windows.c
+  - source/c_menu.c
+  * source/h_menu.prg
+  * source/makelib.bat
+    * Moved C code to h_menu.prg file.
+    - c_menu.c file removed.
+    + FROM POPUP clause added. Indicates item's parent popup.
+    * ::Hilited property added.
+    * TMenu class sub-classed into menus and items.
+  * source/h_print.prg
+    * Warning fixed.
 
 2006-11-12 11:39 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_grid.prg

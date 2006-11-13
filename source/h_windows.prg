@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.116 2006-11-09 04:44:00 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.117 2006-11-13 02:33:18 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -244,6 +244,7 @@ CLASS TWindow
    METHOD Show                BLOCK { |Self| ::Visible := .T. }
    METHOD Hide                BLOCK { |Self| ::Visible := .F. }
    METHOD ForceHide           BLOCK { |Self| HideWindow( ::hWnd ) }
+   METHOD ReDraw              BLOCK { |Self| RedrawWindow( ::hWnd ) }
 
    METHOD ContainerVisible    BLOCK { |Self| ::lVisible .AND. IF( ::Container != NIL, ::Container:ContainerVisible, .T. ) }
    METHOD ContainerReleasing  BLOCK { |Self| ::lReleasing .OR. IF( ::Container != NIL, ::Container:ContainerReleasing, IF( ::Parent != NIL, ::Parent:ContainerReleasing, .F. ) ) }
@@ -293,6 +294,18 @@ HB_FUNC_STATIC( TWINDOW_RELEASE )
    {
       DeleteObject( oSelf->BrushHandle );
       oSelf->BrushHandle = NULL;
+   }
+
+   // Context menu
+   _OOHG_Send( pSelf, s_ContextMenu );
+   hb_vmSend( 0 );
+   if( hb_param( -1, HB_IT_OBJECT ) )
+   {
+      _OOHG_Send( hb_param( -1, HB_IT_OBJECT ), s_Release );
+      hb_vmSend( 0 );
+      _OOHG_Send( pSelf, s__ContextMenu );
+      hb_vmPushNil();
+      hb_vmSend( 1 );
    }
 
    // ::hWnd := -1
@@ -658,7 +671,7 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )
                // HMENU
                _OOHG_Send( pContext, s_hWnd );
                hb_vmSend( 0 );
-               TrackPopupMenu( ( HMENU ) hb_parnl( -1 ), 0, ( int ) LOWORD( lParam ), ( int ) HIWORD( lParam ), 0, hForm, 0 );
+               TrackPopupMenu( ( HMENU ) HWNDparam( -1 ), 0, ( int ) LOWORD( lParam ), ( int ) HIWORD( lParam ), 0, hForm, 0 );
                PostMessage( hForm, WM_NULL, 0, 0 );
                hb_itemRelease( pContext );
                hb_retni( 1 );
@@ -1146,7 +1159,6 @@ CLASS TForm FROM TWindow
    DATA hWndClient     INIT 0
    DATA lInternal      INIT .F.
    DATA lForm          INIT .T.
-   DATA cWndClass      INIT ""
    DATA nWidth         INIT 300
    DATA nHeight        INIT 300
 
@@ -1333,11 +1345,9 @@ Local Formhandle, aClientRect
    If nWindowType == 2
       Formhandle := InitWindowMDIClient( Caption, x, y, ::nWidth, ::nHeight, Parent, "MDICLIENT", nStyle, nStyleEx, lRtl )
    Else
-      // ::cWndClass := IF( ::lInternal, _OOHG_GetNullName(), FormName )
-      ::cWndClass := FormName
-      UnRegisterWindow( ::cWndClass )
-      ::BrushHandle := RegisterWindow( icon, ::cWndClass, aRGB, nWindowType )
-      Formhandle := InitWindow( Caption, x, y, ::nWidth, ::nHeight, Parent, ::cWndClass, nStyle, nStyleEx, lRtl )
+      UnRegisterWindow( FormName )
+      ::BrushHandle := RegisterWindow( icon, FormName, aRGB, nWindowType )
+      Formhandle := InitWindow( Caption, x, y, ::nWidth, ::nHeight, Parent, FormName, nStyle, nStyleEx, lRtl )
    EndIf
 
    if Valtype( cursor ) $ "CM"
@@ -1802,6 +1812,11 @@ Local mVar, i
       ShowNotifyIcon( ::hWnd, .F. , 0, "" )
       DeleteObject( ::NotifyMenuHandle )
 
+      If ::oMenu != NIL
+         ::oMenu:Release()
+         ::oMenu := nil
+      EndIf
+
       // Update Form Index Variable
       If ! Empty( ::Name )
          mVar := '_' + ::Name
@@ -1845,7 +1860,6 @@ Local mVar, i
 
       ::Active := .F.
       ::Super:Release()
-*      UnRegisterWindow( ::cWndClass )
 
    EndIf
 

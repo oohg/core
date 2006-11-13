@@ -1,5 +1,5 @@
 /*
- * $Id: h_menu.prg,v 1.12 2006-09-25 02:36:39 guerra000 Exp $
+ * $Id: h_menu.prg,v 1.13 2006-11-13 02:33:18 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -98,87 +98,166 @@ STATIC _OOHG_xMenuActive := {}
 
 CLASS TMenu FROM TControl
    DATA Type      INIT "MENU" READONLY
+   DATA lMain     INIT .F.
+
+   METHOD Define
+   METHOD Release     BLOCK { |Self| DestroyMenu( ::hWnd ), ::Super:Release() }
+ENDCLASS
+
+*------------------------------------------------------------------------------*
+METHOD Define( Parent ) CLASS TMenu
+*------------------------------------------------------------------------------*
+   ::SetForm( , Parent )
+   ::Container := NIL
+   ::Register( CreateMenu() )
+   AADD( _OOHG_xMenuActive, Self )
+Return Self
+
+
+
+
+
+CLASS TMenuMain FROM TMenu
+   DATA lMain     INIT .T.
+
+   METHOD Define
+   METHOD Release     BLOCK { |Self| ::Parent:oMenu := nil, ::Super:Release() }
+ENDCLASS
+
+*------------------------------------------------------------------------------*
+METHOD Define( Parent ) CLASS TMenuMain
+*------------------------------------------------------------------------------*
+   ::SetForm( , Parent )
+   ::Container := NIL
+   ::Register( CreateMenu() )
+   AADD( _OOHG_xMenuActive, Self )
+   SetMenu( ::Parent:hWnd, ::hWnd )
+   If ::Parent:oMenu != nil
+      // Error: MAIN MENU already defined for this window
+      ::Parent:oMenu:Release()
+   EndIf
+   ::Parent:oMenu := Self
+Return Self
+
+
+
+
+
+CLASS TMenuContext FROM TMenu
+   METHOD Define
+   METHOD Release     BLOCK { |Self| ::Parent:ContextMenu := nil, ::Super:Release() }
+ENDCLASS
+
+*------------------------------------------------------------------------------*
+METHOD Define( Parent ) CLASS TMenuContext
+*------------------------------------------------------------------------------*
+   ::Super:Define( Parent )
+   If ::Parent:ContextMenu != nil
+      ::Parent:ContextMenu:Release()
+   EndIf
+   ::Parent:ContextMenu := Self
+Return Self
+
+
+
+
+
+CLASS TMenuNotify FROM TMenu
+   METHOD Define
+   METHOD Release     BLOCK { |Self| ::Parent:NotifyMenuHandle := 0, ::Super:Release() }
+ENDCLASS
+
+*------------------------------------------------------------------------------*
+METHOD Define( Parent ) CLASS TMenuNotify
+*------------------------------------------------------------------------------*
+   ::Super:Define( Parent )
+   ::Parent:NotifyMenuHandle := ::hWnd
+Return Self
+
+
+
+
+
+CLASS TMenuDropDown FROM TMenu
+   METHOD Define
+   METHOD Release     BLOCK { |Self| ::Container:ContextMenu := nil, ::Super:Release() }
+ENDCLASS
+
+*------------------------------------------------------------------------------*
+METHOD Define( Button, Parent ) CLASS TMenuDropDown
+*------------------------------------------------------------------------------*
+LOCAL oContainer
+   If VALTYPE( Button ) == "O"
+      Parent := Button:Parent
+      Button := Button:Name
+   EndIf
+   ::Super:Define( Parent )
+   oContainer := GetControlObject( Button, ::Parent:Name )
+   If oContainer:ContextMenu != nil
+      oContainer:ContextMenu:Release()
+   EndIf
+   oContainer:ContextMenu := Self
+Return Self
+
+*------------------------------------------------------------------------------*
+Function _EndMenu()
+*------------------------------------------------------------------------------*
+Local oMenu
+   IF LEN( _OOHG_xMenuActive ) > 0
+      oMenu := ATAIL( _OOHG_xMenuActive )
+      IF oMenu:lMain
+         // SetMenu( oMenu:Parent:hWnd, oMenu:hWnd )
+         DrawMenuBar( oMenu:Parent:hWnd )
+      ENDIF
+      ASIZE( _OOHG_xMenuActive, LEN( _OOHG_xMenuActive ) - 1 )
+   ENDIF
+Return Nil
+
+
+
+
+
+CLASS TMenuItem FROM TControl
+   DATA Type      INIT "MENUITEM" READONLY
    DATA xId       INIT 0
    DATA cCaption  INIT ""
+   DATA lMain     INIT .F.
 
-   METHOD DefineMain
    METHOD DefinePopUp
-   METHOD DefineContext
-   METHOD DefineNotify
-   METHOD DefineDropDown
    METHOD DefineItem
 
-   METHOD Enabled     SETGET
-   METHOD Checked     SETGET
+   METHOD Enabled      SETGET
+   METHOD Checked      SETGET
+   METHOD Hilited      SETGET
+   METHOD Release
 
    METHOD DefaultItem( nItem )    BLOCK { |Self,nItem| SetMenuDefaultItem( ::Container:hWnd, nItem ) }
 ENDCLASS
 
 *------------------------------------------------------------------------------*
-METHOD Enabled( lEnabled ) CLASS TMenu
+METHOD DefinePopUp( Caption, Name, checked, disabled, Parent, hilited, Image ) CLASS TMenuItem
 *------------------------------------------------------------------------------*
-   IF VALTYPE( lEnabled ) == "L"
-      IF lEnabled
-         xEnableMenuItem( ::Container:hWnd, ::xId )
-      ELSE
-         xDisableMenuItem( ::Container:hWnd, ::xId )
-      ENDIF
-   ENDIF
-RETURN ( xGetMenuEnabledState( ::Container:hWnd, ::xId ) == 1 )
-
-*------------------------------------------------------------------------------*
-METHOD Checked( lChecked ) CLASS TMenu
-*------------------------------------------------------------------------------*
-   IF VALTYPE( lChecked ) == "L"
-      IF lChecked
-         xCheckMenuItem( ::Container:hWnd, ::xId )
-      ELSE
-         xUncheckMenuItem( ::Container:hWnd, ::xId )
-      ENDIF
-   ENDIF
-RETURN ( xGetMenuCheckState( ::Container:hWnd, ::xId ) == 1 )
-
-*------------------------------------------------------------------------------*
-METHOD DefineMain( Parent ) CLASS TMenu
-*------------------------------------------------------------------------------*
-   ::SetForm( , Parent )
-   ::Container := NIL
-   ::Register( CreateMenu() )
-   ::Type := "MAIN"
-   SetMenu( ::Parent:hWnd, ::hWnd )
-   If ::Parent:oMenu != nil
-      // Error: MAIN MENU already defined for this window
+   If Empty( Parent )
+      Parent := ATAIL( _OOHG_xMenuActive )
    EndIf
-   ::Parent:oMenu := Self
-   AADD( _OOHG_xMenuActive, Self )
-Return Self
-
-*------------------------------------------------------------------------------*
-METHOD DefinePopUp( Caption , Name , checked , disabled ) CLASS TMenu
-*------------------------------------------------------------------------------*
-
-   ::SetForm( Name, ATAIL( _OOHG_xMenuActive ) )
-
+   ::SetForm( Name, Parent )
    ::Register( CreatePopupMenu(), Name )
-
-   ::Type := "POPUP"
-
    ::xId := ::hWnd
-
    AADD( _OOHG_xMenuActive, Self )
-
    AppendMenuPopup( ::Container:hWnd, ::hWnd, Caption )
-
    ::cCaption := Caption
-
+   If Valtype( image ) $ 'CM'
+      MenuItem_SetBitMaps( ::Container:hWnd, ::xId, image, '' )
+   EndIf
    if ValType( checked ) == "L" .AND. checked
       ::Checked := .T.
    EndIf
-
    if ValType( disabled ) == "L" .AND. disabled
       ::Enabled := .F.
    EndIf
-
+   if ValType( hilited ) == "L" .AND. hilited
+      ::Hilited := .T.
+   EndIf
 Return Self
 
 *------------------------------------------------------------------------------*
@@ -188,90 +267,209 @@ Function _EndMenuPopup()
 Return Nil
 
 *------------------------------------------------------------------------------*
-METHOD DefineItem( caption , action , name , Image , checked , disabled ) CLASS TMenu
+METHOD DefineItem( caption, action, name, Image, checked, disabled, Parent, hilited ) CLASS TMenuItem
 *------------------------------------------------------------------------------*
-Local Controlhandle
-Local id
-
-   Id := _GetId()
-
-   Controlhandle := AppendMenuString( ATAIL( _OOHG_xMenuActive ):hWnd, id, caption )
-
-   if Valtype( image ) $ 'CM'
-      MenuItem_SetBitMaps( ATAIL( _OOHG_xMenuActive ):hWnd, Id, image, '' )
+Local Controlhandle, id
+   If Empty( Parent )
+      Parent := ATAIL( _OOHG_xMenuActive )
    EndIf
-
-   ::SetForm( Name, ATAIL( _OOHG_xMenuActive ) )
-
+   ::SetForm( Name, Parent )
+   Id := _GetId()
+   Controlhandle := AppendMenuString( ::Container:hWnd, id, caption )
    ::Register( ControlHandle, Name, , , , Id )
-
-   ::Type := "MENUITEM"
-
    ::xId := ::Id
-
    ::OnClick := action
-
    ::cCaption := Caption
-
+   If Valtype( image ) $ 'CM'
+      MenuItem_SetBitMaps( ::Container:hWnd, ::xId, image, '' )
+   EndIf
    if ValType( checked ) == "L" .AND. checked
       ::Checked := .T.
    EndIf
-
    if ValType( disabled ) == "L" .AND. disabled
       ::Enabled := .F.
    EndIf
-
-Return Self
-
-*------------------------------------------------------------------------------*
-Function _DefineSeparator()
-*------------------------------------------------------------------------------*
-   AppendMenuSeparator( ATAIL( _OOHG_xMenuActive ):hWnd )
-Return Nil
-
-*------------------------------------------------------------------------------*
-Function _EndMenu()
-*------------------------------------------------------------------------------*
-Local oMenu
-   IF LEN( _OOHG_xMenuActive ) > 0
-      oMenu := ATAIL( _OOHG_xMenuActive )
-      IF oMenu:Type == "MAIN"
-         SetMenu( oMenu:Parent:hWnd, oMenu:hWnd )
-      ENDIF
-      ASIZE( _OOHG_xMenuActive, LEN( _OOHG_xMenuActive ) - 1 )
-   ENDIF
-Return Nil
-
-*------------------------------------------------------------------------------*
-METHOD DefineContext( Parent ) CLASS TMenu
-*------------------------------------------------------------------------------*
-   ::SetForm( , Parent )
-   ::Container := NIL
-   ::Register( CreatePopupMenu() )
-   ::Parent:ContextMenu := Self
-   AADD( _OOHG_xMenuActive, Self )
-Return Self
-
-*------------------------------------------------------------------------------*
-METHOD DefineNotify( Parent ) CLASS TMenu
-*------------------------------------------------------------------------------*
-   ::SetForm( , Parent )
-   ::Container := NIL
-   ::Register( CreatePopupMenu() )
-   ::Parent:NotifyMenuHandle := ::hWnd
-   AADD( _OOHG_xMenuActive, Self )
-Return Self
-
-*------------------------------------------------------------------------------*
-METHOD DefineDropDown( Button , Parent ) CLASS TMenu
-*------------------------------------------------------------------------------*
-   If VALTYPE( Button ) == "O"
-      Parent := Button:Parent
-      Button := Button:Name
+   if ValType( hilited ) == "L" .AND. hilited
+      ::Hilited := .T.
    EndIf
-   ::SetForm( , Parent )
-   ::Container := NIL
-   ::Register( CreatePopupMenu() )
-   GetControlObject( Button, ::Parent:Name ):ContextMenu := Self
-   AADD( _OOHG_xMenuActive, Self )
 Return Self
+
+*------------------------------------------------------------------------------*
+METHOD Enabled( lEnabled ) CLASS TMenuItem
+*------------------------------------------------------------------------------*
+Return MenuEnabled( ::Container:hWnd, ::xId, lEnabled )
+
+*------------------------------------------------------------------------------*
+METHOD Checked( lChecked ) CLASS TMenuItem
+*------------------------------------------------------------------------------*
+Return MenuChecked( ::Container:hWnd, ::xId, lChecked )
+
+*------------------------------------------------------------------------------*
+METHOD Hilited( lHilited ) CLASS TMenuItem
+*------------------------------------------------------------------------------*
+Return MenuHilited( ::Container:hWnd, ::xId, lHilited, ::Parent:hWnd )
+
+*------------------------------------------------------------------------------*
+METHOD Release() CLASS TMenuItem
+*------------------------------------------------------------------------------*
+   DeleteMenu( ::Container:hWnd, ::xId )
+   If ::lMain
+      DrawMenuBar( ::Parent:hWnd )
+   EndIf
+Return ::Super:Release()
+
+*------------------------------------------------------------------------------*
+Function _DefineSeparator( Parent )
+*------------------------------------------------------------------------------*
+   If Empty( Parent )
+      Parent := ATAIL( _OOHG_xMenuActive )
+   EndIf
+   AppendMenuSeparator( Parent:hWnd )
+Return Nil
+
+EXTERN TrackPopUpMenu, SetMenuDefaultItem, GetMenuBarHeight
+
+#pragma BEGINDUMP
+
+#include <windows.h>
+#include <commctrl.h>
+#include "hbapi.h"
+#include "../include/oohg.h"
+
+HB_FUNC( TRACKPOPUPMENU )
+{
+   HWND hwnd = HWNDparam( 4 );
+
+   SetForegroundWindow( hwnd );
+   TrackPopupMenu( ( HMENU ) HWNDparam( 1 ), 0, hb_parni( 2 ), hb_parni( 3 ), 0, hwnd, 0 );
+   PostMessage( hwnd, WM_NULL, 0, 0 );
+}
+
+HB_FUNC( APPENDMENUSTRING )
+{
+   hb_retnl( AppendMenu( ( HMENU ) HWNDparam( 1 ), MF_STRING, hb_parni( 2 ), hb_parc( 3 ) ) );
+}
+
+HB_FUNC( APPENDMENUSEPARATOR )
+{
+   hb_retnl( AppendMenu( ( HMENU ) HWNDparam( 1 ), MF_SEPARATOR, 0, NULL ) );
+}
+
+HB_FUNC( APPENDMENUPOPUP )
+{
+   hb_retnl( AppendMenu( ( HMENU ) HWNDparam( 1 ), MF_POPUP | MF_STRING, hb_parni( 2 ), hb_parc( 3 ) ) );
+}
+
+HB_FUNC( CREATEMENU )
+{
+   HWNDret( CreateMenu() );
+}
+
+HB_FUNC( CREATEPOPUPMENU )
+{
+   HWNDret( CreatePopupMenu() );
+}
+
+HB_FUNC( SETMENU )
+{
+   SetMenu( HWNDparam( 1 ), ( HMENU ) HWNDparam( 2 ) );
+}
+
+HB_FUNC( MENUCHECKED )
+{
+   HMENU hMenu = ( HMENU ) HWNDparam( 1 );
+   int iItem = hb_parni( 2 );
+
+   if( ISLOG( 3 ) )
+   {
+      CheckMenuItem( hMenu, iItem, MF_BYCOMMAND | ( hb_parl( 3 ) ? MF_CHECKED : MF_UNCHECKED ) );
+   }
+
+   if( GetMenuState( hMenu, iItem, MF_BYCOMMAND ) & MF_CHECKED )
+	{
+      hb_retl( 1 );
+	}
+	else
+	{
+      hb_retl( 0 );
+	}
+}
+
+HB_FUNC( MENUENABLED )
+{
+   HMENU hMenu = ( HMENU ) HWNDparam( 1 );
+   int iItem = hb_parni( 2 );
+
+   if( ISLOG( 3 ) )
+   {
+      EnableMenuItem( hMenu, iItem, MF_BYCOMMAND | ( hb_parl( 3 ) ? MF_ENABLED : MF_GRAYED ) );
+   }
+
+   if( GetMenuState( hMenu, iItem, MF_BYCOMMAND ) & MF_GRAYED )
+	{
+      hb_retl( 0 );
+	}
+	else
+	{
+      hb_retl( 1 );
+	}
+}
+
+HB_FUNC( MENUHILITED )
+{
+   HMENU hMenu = ( HMENU ) HWNDparam( 1 );
+   int iItem = hb_parni( 2 );
+
+   if( ISLOG( 3 ) )
+   {
+      HiliteMenuItem( HWNDparam( 4 ), hMenu, iItem, MF_BYCOMMAND | ( hb_parl( 3 ) ? MF_HILITE : MF_UNHILITE ) );
+   }
+
+   if( GetMenuState( hMenu, iItem, MF_BYCOMMAND ) & MF_HILITE )
+	{
+      hb_retl( 1 );
+	}
+	else
+	{
+      hb_retl( 0 );
+	}
+}
+
+HB_FUNC( MENUITEM_SETBITMAPS )
+{
+   HMENU hMenu = ( HMENU ) HWNDparam( 1 );
+   HBITMAP himage1, himage2;
+   int iAttributes = LR_LOADMAP3DCOLORS | LR_LOADTRANSPARENT;
+
+   himage1 = _OOHG_LoadImage( hb_parc( 3 ), iAttributes, 32, 32, ( HWND ) hMenu, -1 );
+   himage2 = _OOHG_LoadImage( hb_parc( 4 ), iAttributes, 32, 32, ( HWND ) hMenu, -1 );
+
+   SetMenuItemBitmaps( hMenu, hb_parni( 2 ), MF_BYCOMMAND, himage1, himage2 );
+}
+
+HB_FUNC( SETMENUDEFAULTITEM )
+{
+   SetMenuDefaultItem( ( HMENU ) HWNDparam( 1 ), hb_parni( 2 ) - 1, TRUE );
+}
+
+HB_FUNC( GETMENUBARHEIGHT )
+{
+   hb_retni( GetSystemMetrics( SM_CYMENU ) );
+}
+
+HB_FUNC( DESTROYMENU )
+{
+   DestroyMenu( ( HMENU ) HWNDparam( 1 ) );
+}
+
+HB_FUNC( DRAWMENUBAR )
+{
+   DrawMenuBar( HWNDparam( 1 ) );
+}
+
+HB_FUNC( DELETEMENU )
+{
+   DeleteMenu( ( HMENU ) HWNDparam( 1 ), hb_parni( 2 ), MF_BYCOMMAND );
+}
+
+#pragma ENDDUMP
