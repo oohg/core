@@ -1,5 +1,5 @@
 /*
- * $Id: h_menu.prg,v 1.13 2006-11-13 02:33:18 guerra000 Exp $
+ * $Id: h_menu.prg,v 1.14 2006-11-13 15:30:49 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -258,6 +258,7 @@ METHOD DefinePopUp( Caption, Name, checked, disabled, Parent, hilited, Image ) C
    if ValType( hilited ) == "L" .AND. hilited
       ::Hilited := .T.
    EndIf
+   ::lMain := ::Container:lMain
 Return Self
 
 *------------------------------------------------------------------------------*
@@ -292,6 +293,7 @@ Local Controlhandle, id
    if ValType( hilited ) == "L" .AND. hilited
       ::Hilited := .T.
    EndIf
+   ::lMain := ::Container:lMain
 Return Self
 
 *------------------------------------------------------------------------------*
@@ -449,7 +451,12 @@ HB_FUNC( MENUITEM_SETBITMAPS )
 
 HB_FUNC( SETMENUDEFAULTITEM )
 {
-   SetMenuDefaultItem( ( HMENU ) HWNDparam( 1 ), hb_parni( 2 ) - 1, TRUE );
+   HMENU hMenu = ( HMENU ) HWNDparam( 1 );
+
+   if( ValidHandler( hMenu ) )
+   {
+      SetMenuDefaultItem( hMenu, hb_parni( 2 ) - 1, TRUE );
+   }
 }
 
 HB_FUNC( GETMENUBARHEIGHT )
@@ -459,17 +466,32 @@ HB_FUNC( GETMENUBARHEIGHT )
 
 HB_FUNC( DESTROYMENU )
 {
-   DestroyMenu( ( HMENU ) HWNDparam( 1 ) );
+   HMENU hMenu = ( HMENU ) HWNDparam( 1 );
+
+   if( ValidHandler( hMenu ) )
+   {
+      DestroyMenu( hMenu );
+   }
 }
 
 HB_FUNC( DRAWMENUBAR )
 {
-   DrawMenuBar( HWNDparam( 1 ) );
+   HWND hWnd = HWNDparam( 1 );
+
+   if( ValidHandler( hWnd ) )
+   {
+      DrawMenuBar( hWnd );
+   }
 }
 
 HB_FUNC( DELETEMENU )
 {
-   DeleteMenu( ( HMENU ) HWNDparam( 1 ), hb_parni( 2 ), MF_BYCOMMAND );
+   HMENU hMenu = ( HMENU ) HWNDparam( 1 );
+
+   if( ValidHandler( hMenu ) )
+   {
+      DeleteMenu( hMenu, hb_parni( 2 ), MF_BYCOMMAND );
+   }
 }
 
 #pragma ENDDUMP

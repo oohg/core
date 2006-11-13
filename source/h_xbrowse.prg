@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.23 2006-11-13 05:10:52 guerra000 Exp $
+ * $Id: h_xbrowse.prg,v 1.24 2006-11-13 15:30:49 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -155,7 +155,11 @@ Local nWidth2, nCol2, lLocked, oScroll, z
    ASSIGN ::aJust    VALUE aJust    TYPE "A" DEFAULT {}
 
    If ValType( columninfo ) == "A" .AND. LEN( columninfo ) > 0
-      ASIZE( ::aFields,  LEN( columninfo ) )
+      If ValType( ::aFields ) == "A"
+         ASIZE( ::aFields,  LEN( columninfo ) )
+      Else
+         ::aFields := ARRAY( LEN( columninfo ) )
+      Endif
       ASIZE( ::aHeaders, LEN( columninfo ) )
       ASIZE( ::aWidths,  LEN( columninfo ) )
       ASIZE( ::aJust,    LEN( columninfo ) )
@@ -164,13 +168,13 @@ Local nWidth2, nCol2, lLocked, oScroll, z
             If LEN( columninfo[ z ] ) >= 1 .AND. ValType( columninfo[ z ][ 1 ] ) $ "CMB"
                ::aFields[ z ]  := columninfo[ z ][ 1 ]
             EndIf
-            If LEN( columninfo[ z ] ) >= 2 .AND. ValType( columninfo[ z ][ 1 ] ) $ "CM"
+            If LEN( columninfo[ z ] ) >= 2 .AND. ValType( columninfo[ z ][ 2 ] ) $ "CM"
                ::aHeaders[ z ] := columninfo[ z ][ 2 ]
             EndIf
-            If LEN( columninfo[ z ] ) >= 3 .AND. ValType( columninfo[ z ][ 1 ] ) $ "N"
+            If LEN( columninfo[ z ] ) >= 3 .AND. ValType( columninfo[ z ][ 3 ] ) $ "N"
                ::aWidths[ z ]  := columninfo[ z ][ 3 ]
             EndIf
-            If LEN( columninfo[ z ] ) >= 4 .AND. ValType( columninfo[ z ][ 1 ] ) $ "N"
+            If LEN( columninfo[ z ] ) >= 4 .AND. ValType( columninfo[ z ][ 4 ] ) $ "N"
                ::aJust[ z ]    := columninfo[ z ][ 4 ]
             EndIf
          EndIf
@@ -195,7 +199,7 @@ Local nWidth2, nCol2, lLocked, oScroll, z
 
    ::Define2( ControlName, ParentForm, x, y, nWidth2, h, ::aHeaders, aWidths, ;
               ,, fontname, fontsize, tooltip,,, ;
-              aHeadClick,,, nogrid, aImage, aJust, ;
+              aHeadClick,,, nogrid, aImage, ::aJust, ;
               break, HelpId, bold, italic, underline, strikeout,, ;
               ,, editable, backcolor, fontcolor, dynamicbackcolor, ;
               dynamicforecolor, aPicture, lRtl, LVS_SINGLESEL, ;
