@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.29 2006-11-01 04:07:05 guerra000 Exp $
+ * $Id: i_altsyntax.ch,v 1.30 2006-11-14 04:27:09 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1786,7 +1786,8 @@ Label
                 _OOHG_ActiveControlCenterAlign , ;
                 _OOHG_ActiveControlRtl , ;
                 _OOHG_ActiveControlNoWordWrap , ;
-                _OOHG_ActiveControlNoPrefix )
+                _OOHG_ActiveControlNoPrefix , ;
+                _OOHG_ActiveControlPicture )
 
 
 #xcommand DEFINE IPADDRESS <name> ;

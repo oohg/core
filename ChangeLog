@@ -1,11 +1,19 @@
 /*
- * $Id: ChangeLog,v 1.275 2006-11-13 15:30:49 guerra000 Exp $
+ * $Id: ChangeLog,v 1.276 2006-11-14 04:27:09 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-11-13 22:25 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_tab.prg
+    ! Fixed INTERNAL page creation size.
+  * include/i_altsyntax.ch
+  * include/i_label.ch
+  * source/h_label.prg
+    + PICTURE clause added. Any ::Value assigned is TRANSFORMed first.
 
 2006-11-13 09:29 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_browse.prg

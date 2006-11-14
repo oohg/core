@@ -1,5 +1,5 @@
 /*
- * $Id: h_label.prg,v 1.19 2006-11-01 04:07:05 guerra000 Exp $
+ * $Id: h_label.prg,v 1.20 2006-11-14 04:27:09 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -102,6 +102,7 @@ CLASS TLabel FROM TControl
    DATA IconWidth INIT 0
    DATA nWidth    INIT 120
    DATA nHeight   INIT 24
+   DATA Picture   INIT nil
 
    METHOD SetText( cText )     BLOCK { | Self, cText | ::Caption := cText }
    METHOD GetText()            BLOCK { | Self | ::Caption }
@@ -118,7 +119,8 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, w, h, fontname, ;
                fontsize, bold, BORDER, CLIENTEDGE, HSCROLL, VSCROLL, ;
                lTRANSPARENT, aRGB_bk, aRGB_font, ProcedureName, tooltip, ;
                HelpId, invisible, italic, underline, strikeout, autosize, ;
-               rightalign, centeralign, lRtl, lNoWordWrap, lNoPrefix ) CLASS TLabel
+               rightalign, centeralign, lRtl, lNoWordWrap, lNoPrefix, ;
+               cPicture ) CLASS TLabel
 *-----------------------------------------------------------------------------*
 Local ControlHandle, nStyle, nStyleEx
 
@@ -127,6 +129,7 @@ Local ControlHandle, nStyle, nStyleEx
    ASSIGN ::nWidth      VALUE w TYPE "N"
    ASSIGN ::nHeight     VALUE h TYPE "N"
    ASSIGN ::Transparent VALUE ltransparent TYPE "L" DEFAULT .F.
+   ASSIGN ::Picture     VALUE cPicture     TYPE "CM"
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, aRGB_font, aRGB_bk, , lRtl )
 
@@ -147,10 +150,12 @@ Local ControlHandle, nStyle, nStyleEx
    nStyleEx := if( ValType( CLIENTEDGE ) == "L"   .AND. CLIENTEDGE,   WS_EX_CLIENTEDGE,  0 ) + ;
                if( ::Transparent, WS_EX_TRANSPARENT, 0 )
 
-   Controlhandle := InitLabel( ::ContainerhWnd, Caption, 0, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight, '', 0, Nil , nStyle, nStyleEx, ::lRtl )
+   Controlhandle := InitLabel( ::ContainerhWnd, "", 0, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight, '', 0, Nil , nStyle, nStyleEx, ::lRtl )
 
    ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
+
+   ::Value := Caption
 
    If ::Transparent
       RedrawWindowControlRect( ::ContainerhWnd, ::ContainerRow, ::ContainerCol, ::ContainerRow + ::Height, ::ContainerCol + ::Width )
@@ -164,7 +169,14 @@ Return Self
 *-----------------------------------------------------------------------------*
 METHOD Value( cValue ) CLASS TLabel
 *-----------------------------------------------------------------------------*
-Return ( ::Caption := cValue )
+   If PCOUNT() > 0
+      If ValType( ::Picture ) $ "CM"
+         ::Caption := TRANSFORM( cValue, ::Picture )
+      Else
+         ::Caption := cValue
+      EndIf
+   Endif
+Return ::Caption
 
 *-----------------------------------------------------------------------------*
 METHOD Caption( cValue ) CLASS TLabel

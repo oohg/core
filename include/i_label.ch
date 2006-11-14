@@ -1,5 +1,5 @@
 /*
- * $Id: i_label.ch,v 1.6 2006-03-16 03:16:16 guerra000 Exp $
+ * $Id: i_label.ch,v 1.7 2006-11-14 04:27:09 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -120,8 +120,10 @@
         [ <rtl: RTL> ]                  ;
         [ <nowordwrap: NOWORDWRAP> ]    ;
         [ <noprefix: NOPREFIX> ] ;
+        [ PICTURE <picture> ] ;
+        [ SUBCLASS <subclass> ] ;
 	=>;
-        [ <obj> := ] TLabel():Define( ;
+        [ <obj> := ] _OOHG_SelectSubClass( TLabel(), [ <subclass>() ] ):Define( ;
         <(name)>,    ;
         <(parent)>,    ;
 	<col>,     ;
@@ -151,4 +153,5 @@
         <.centeralign.> , ;
         <.rtl.> , ;
         <.nowordwrap.> , ;
-        <.noprefix.> )
+        <.noprefix.> , ;
+        <picture> )

@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.26 2006-10-22 01:09:22 guerra000 Exp $
+ * $Id: h_tab.prg,v 1.27 2006-11-14 04:27:09 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -343,6 +343,8 @@ Local oPage, nPos
    ::aPages[ Position ] := oPage
 
    TABCTRL_INSERTITEM( ::hWnd, ::RealPosition( Position ) - 1 , Caption )
+
+   oPage:Events_Size()
 
    IF ! Empty( Image )
       oPage:nImage := ::AddBitMap( Image ) - 1
