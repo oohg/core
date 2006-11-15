@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.117 2006-11-13 02:33:18 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.118 2006-11-15 03:04:10 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -3457,7 +3457,7 @@ Function _OOHG_GetArrayItem( uaArray, nItem, uExtra1, uExtra2 )
 Local uRet
    IF ValType( uaArray ) != "A"
       uRet := uaArray
-   ElseIf LEN( uaArray ) >= nItem
+   ElseIf LEN( uaArray ) >= nItem .AND. nItem >= 1
       uRet := uaArray[ nItem ]
    Else
       uRet := NIL
