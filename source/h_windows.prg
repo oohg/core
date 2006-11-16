@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.118 2006-11-15 03:04:10 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.119 2006-11-16 03:37:54 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -2687,6 +2687,7 @@ Local nStyle := 0, nStyleEx := 0
               2, lRtl, .F.,, clientarea )
 
    ::Parent:hWndClient := ::hWnd
+   ::hWndClient := ::hWnd
 
 Return Self
 
