@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.64 2006-11-13 02:54:33 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.65 2006-11-17 04:24:33 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -431,8 +431,7 @@ Local nItem, aItems, aEditControls, nColumn
    aItems := ::EditItem2( nItem, aItems, aEditControls,, if( ValType( ::cRowEditTitle ) $ "CM", ::cRowEditTitle, _OOHG_Messages( 1, 5 ) ) )
    If ! Empty( aItems )
       ::Item( nItem, ASIZE( aItems, LEN( ::aHeaders ) ) )
-      _SetThisCellInfo( ::hWnd, nItem, 1 )
-      _OOHG_ThisItemCellValue := nil
+      _SetThisCellInfo( ::hWnd, nItem, 1, nil )
       _OOHG_Eval( ::OnEditCell, nItem, 0 )
       _ClearThisCellInfo()
    EndIf
@@ -753,7 +752,7 @@ Local uTemp, x
          Else
             aGrid[ x ] := ARRAY( nWidth )
          ENDIF
-         _SetThisCellInfo( hWnd, x, nColumn )
+         _SetThisCellInfo( hWnd, x, nColumn, nil )
          aGrid[ x ][ nColumn ] := _OOHG_GetArrayItem( uDynamicColor, nColumn, x )
          _ClearThisCellInfo()
       NEXT
@@ -864,8 +863,7 @@ Local lRet
          uValue := Trim( uValue )
       ENDIF
       ::Cell( nRow, nCol, uValue )
-      _SetThisCellInfo( ::hWnd, nRow, nCol )
-      _OOHG_ThisItemCellValue := uValue
+      _SetThisCellInfo( ::hWnd, nRow, nCol, uValue )
       _OOHG_Eval( ::OnEditCell, nRow, nCol )
       _ClearThisCellInfo()
    ENDIF
@@ -939,8 +937,6 @@ Local r, r2, lRet := .F., nWidth
          r[ 1 ] += r2[ 2 ] + 2
          r[ 2 ] += r2[ 1 ] + 3
 
-         _SetThisCellInfo( ::hWnd, nRow, nCol )
-
          EditControl:cMemVar := cMemVar
          If ValType( ::Valid ) == "A" .AND. Len( ::Valid ) >= nCol
             EditControl:bValid := ::Valid[ nCol ]
@@ -951,6 +947,7 @@ Local r, r2, lRet := .F., nWidth
          If ValType( uValue ) $ "CM"
             uValue := TRIM( uValue )
          EndIf
+         _SetThisCellInfo( ::hWnd, nRow, nCol, uValue )
          lRet := EditControl:CreateWindow( uValue, r[ 1 ], r[ 2 ], r[ 3 ], r[ 4 ], ::FontName, ::FontSize )
          If lRet
             uValue := EditControl:Value
@@ -1300,7 +1297,7 @@ Local aTemp, nLen
             AEVAL( uColor, { |x,i| uColor[ i ] := uDynamicColor[ i ], x }, nLen + 1 )
          ENDIF
       ENDIF
-      AEVAL( aTemp, { |x,i| _SetThisCellInfo( hWnd, nItem, i ), aTemp[ i ] := _OOHG_GetArrayItem( uColor, i, nItem, uExtra ), x } )
+      AEVAL( aTemp, { |x,i| _SetThisCellInfo( hWnd, nItem, i, uExtra[ i ] ), aTemp[ i ] := _OOHG_GetArrayItem( uColor, i, nItem, uExtra ), x } )
       _ClearThisCellInfo()
       aGrid[ nItem ] := aTemp
    ENDIF
@@ -1582,7 +1579,7 @@ Local aCellData
 Return aCellData
 
 *------------------------------------------------------------------------------*
-Procedure _SetThisCellInfo( hWnd, nRow, nCol )
+Procedure _SetThisCellInfo( hWnd, nRow, nCol, uValue )
 *------------------------------------------------------------------------------*
 Local aControlRect, aCellRect
    aControlRect := { 0, 0, 0, 0 }
@@ -1596,6 +1593,7 @@ Local aControlRect, aCellRect
    _OOHG_ThisItemCellCol    := aCellRect[ 2 ] + aControlRect[ 1 ] + 3
    _OOHG_ThisItemCellWidth  := aCellRect[ 3 ]
    _OOHG_ThisItemCellHeight := aCellRect[ 4 ]
+   _OOHG_ThisItemCellValue  := uValue
 Return
 
 *------------------------------------------------------------------------------*
