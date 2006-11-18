@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.20 2006-11-01 04:07:05 guerra000 Exp $
+ * $Id: i_windefs.ch,v 1.21 2006-11-18 19:39:52 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -615,5 +615,12 @@
 #define IMAGE_ICON          1
 #define IMAGE_CURSOR        2
 #define IMAGE_ENHMETAFILE   3
+
+// Menu flags
+#define MF_POPUP            0x0010
+#define MF_MENUBARBREAK     0x0020
+#define MF_MENUBREAK        0x0040
+#define MF_SYSMENU          0x2000
+#define MF_RIGHTJUSTIFY     0x4000
 
 #endif
