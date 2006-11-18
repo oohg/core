@@ -1,5 +1,5 @@
 /*
- * $Id: h_scrsaver.prg,v 1.2 2005-08-18 04:07:28 guerra000 Exp $
+ * $Id: h_scrsaver.prg,v 1.3 2006-11-18 13:45:46 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -123,7 +123,7 @@ Function _BeginScrSaver( cSSaver, lNoShow, cInit, cRelease, cPaint, nTimer, aBac
 
    IF lNoShow
 
-	DEFINE WINDOW &cSSaver AT 0, 0 ;
+	DEFINE WINDOW &cSsaver AT 0, 0 ;
 		WIDTH x HEIGHT y ;
 		MAIN NOSHOW ;
 		TOPMOST NOSIZE NOCAPTION ;
@@ -137,7 +137,7 @@ Function _BeginScrSaver( cSSaver, lNoShow, cInit, cRelease, cPaint, nTimer, aBac
 	      BACKCOLOR aBackClr
    ELSE
 
-	DEFINE WINDOW &cSSaver AT 0, 0 ;
+	DEFINE WINDOW &cSsaver AT 0, 0 ;
 		WIDTH x HEIGHT y ;
 		MAIN ;
 		TOPMOST NOSIZE NOCAPTION ;
@@ -145,9 +145,9 @@ Function _BeginScrSaver( cSSaver, lNoShow, cInit, cRelease, cPaint, nTimer, aBac
 		ON INIT (ShowCursor(.F.), ;
 			SystemParametersInfo( SPI_SCREENSAVERRUNNING, 1, @Dummy, 0 )) ;
 		ON RELEASE _ReleaseScrSaver(cRelease, cSSaver, cPaint) ;
-		ON MOUSECLICK (IF(_lValidScrSaver(), &cSSaver.Release, )) ;
+		ON MOUSECLICK (IF(_lValidScrSaver(), DoMethod(cSSaver,'Release')  , )) ;
 		ON MOUSEMOVE (a := GetCursorPos(), IF( a[1] # y / 2 .AND. a[2] # x / 2, ;
-			IF(_lValidScrSaver(), &cSSaver.Release, ), )) ;
+			IF(_lValidScrSaver(), DoMethod(cSSaver,'Release'), ), )) ;
 	      BACKCOLOR aBackClr
    ENDIF
 
@@ -243,7 +243,7 @@ function _ReleaseScrSaver( cRelease, cSSaver, cPaint )
 	ShowCursor(.T.)
 
 	IF cPaint # NIL
-		&cSSaver.Timer_SSaver.Enabled := .F.
+                SetProperty( cSSaver, "Timer_SSaver", "Enabled", .F. )
 	ENDIF
 
 	SystemParametersInfo( SPI_SCREENSAVERRUNNING, 0, @Dummy, 0 )
