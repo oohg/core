@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.65 2006-11-17 04:24:33 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.66 2006-11-18 03:04:57 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -157,6 +157,7 @@ CLASS TGrid FROM TControl
    METHOD Header
    METHOD FontColor      SETGET
    METHOD BackColor      SETGET
+   METHOD ColumnCount
    METHOD SetRangeColor
    METHOD ColumnWidth
    METHOD ColumnAutoFit
@@ -523,7 +524,7 @@ Local aReturn
    nRow := 10
 
    For i := 1 to l
-      @ nRow + 3, 10 LABEL 0 PARENT ( oWnd ) VALUE Alltrim( ::aHeaders[ i ] ) + ":"
+      @ nRow + 3, 10 LABEL 0 PARENT ( oWnd ) VALUE Alltrim( ::aHeaders[ i ] ) + ":" WIDTH 110 NOWORDWRAP
       aEditControls2[ i ]:CreateControl( aItems[ i ], oWnd:Name, nRow, 120, aEditControls2[ i ]:nDefWidth, aEditControls2[ i ]:nDefHeight )
       nRow += aEditControls2[ i ]:nDefHeight + 6
       If ValType( aMemVars ) == "A" .AND. Len( aMemVars ) >= i
@@ -607,6 +608,7 @@ Local nItem, lEnabled, aValues
    For nItem := 1 To Len( aEditControls )
       _OOHG_ThisItemCellValue := aValues[ nItem ]
       lEnabled := _OOHG_EVAL( aEditControls[ nItem ]:bWhen )
+      _CheckCellNewValue( aEditControls[ nItem ], @aValues[ nItem ] )
       If ValType( lEnabled ) == "L" .AND. ! lEnabled
          aEditControls[ nItem ]:Enabled := .F.
       Else
@@ -625,6 +627,7 @@ Local lRet, nItem, aValues, lValid
    For nItem := 1 To Len( aEditControls )
       _OOHG_ThisItemCellValue := aValues[ nItem ]
       lValid := _OOHG_Eval( aEditControls[ nItem ]:bValid, aValues[ nItem ] )
+      _CheckCellNewValue( aEditControls[ nItem ], @aValues[ nItem ] )
       If ValType( lValid ) == "L" .AND. ! lValid
          lRet := .F.
          If ValType( aEditControls[ nItem ]:cValidMessage ) $ "CM" .AND. ! Empty( aEditControls[ nItem ]:cValidMessage )
@@ -865,6 +868,7 @@ Local lRet
       ::Cell( nRow, nCol, uValue )
       _SetThisCellInfo( ::hWnd, nRow, nCol, uValue )
       _OOHG_Eval( ::OnEditCell, nRow, nCol )
+      // _CheckCellNewValue( EditControl, @uValue )
       _ClearThisCellInfo()
    ENDIF
 Return lRet
@@ -873,6 +877,11 @@ Return lRet
 METHOD EditCell2( nRow, nCol, EditControl, uOldValue, uValue, cMemVar ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local r, r2, lRet := .F., nWidth
+   If ::lNested
+      Return .F.
+   EndIf
+   ::lNested := .T.
+
    IF ValType( cMemVar ) != "C"
       cMemVar := "_OOHG_NULLVAR_"
    ENDIF
@@ -960,6 +969,7 @@ Local r, r2, lRet := .F., nWidth
 
       EndIf
    EndIf
+   ::lNested := .F.
 Return lRet
 
 *-----------------------------------------------------------------------------*
@@ -977,6 +987,11 @@ Local lRet
       Return .F.
    EndIf
 
+   If ::lNested
+      Return .F.
+   EndIf
+   ::lNested := .T.
+
    lRet := .T.
    Do While nCol <= Len( ::aHeaders ) .AND. lRet
       _OOHG_ThisItemCellValue := ::Cell( nRow, nCol )
@@ -992,6 +1007,7 @@ Local lRet
    If lRet // .OR. nCol > Len( ::aHeaders )
       ListView_Scroll( ::hWnd, - _OOHG_GridArrayWidths( ::hWnd, ::aWidths ), 0 )
    Endif
+   ::lNested := .F.
 Return lRet
 
 #pragma BEGINDUMP
@@ -1360,6 +1376,24 @@ HB_FUNC_STATIC( TGRID_BACKCOLOR )
 
    // Return value was set in _OOHG_DetermineColorReturn()
 }
+
+HB_FUNC_STATIC( TGRID_COLUMNCOUNT )
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   int iCount;
+
+   if( ValidHandler( oSelf->hWnd ) )
+   {
+      iCount = Header_GetItemCount( ListView_GetHeader( oSelf->hWnd ) );
+   }
+   else
+   {
+      iCount = 0;
+   }
+
+   hb_retni( iCount );
+}
 #pragma ENDDUMP
 
 *-----------------------------------------------------------------------------*
@@ -1605,6 +1639,22 @@ Procedure _ClearThisCellInfo()
    _OOHG_ThisItemCellCol    := 0
    _OOHG_ThisItemCellWidth  := 0
    _OOHG_ThisItemCellHeight := 0
+Return
+
+*------------------------------------------------------------------------------*
+Procedure _CheckCellNewValue( oControl, uValue )
+*------------------------------------------------------------------------------*
+Local uValue2
+   uValue2 := _OOHG_ThisItemCellValue
+   If uValue == uValue2
+      If ValType( oControl:cMemVar ) $ "CM"
+         uValue2 := &( oControl:cMemVar )
+      EndIf
+   EndIf
+   If ! uValue == uValue2
+      oControl:ControlValue := uValue2
+      uValue := uValue2
+   EndIf
 Return
 
 EXTERN InitListView, InitListViewColumns, AddListViewItems, InsertListViewItem
@@ -2006,8 +2056,9 @@ CLASS TGridControl
 //   METHOD CreateControl
    METHOD Str2Val(uValue)   BLOCK { |Self,uValue| Empty( Self ), uValue }
    METHOD GridValue(uValue) BLOCK { |Self,uValue| Empty( Self ), If( ValType( uValue ) $ "CM", Trim( uValue ), uValue ) }
-   METHOD ControlValue      BLOCK { |Self| ::oControl:Value }
    METHOD SetFocus          BLOCK { |Self| ::oControl:SetFocus() }
+   METHOD SetValue(uValue)  BLOCK { |Self,uValue| ::oControl:Value := uValue }
+   METHOD ControlValue      SETGET
    METHOD Enabled           SETGET
    METHOD OnLostFocus       SETGET
 ENDCLASS
@@ -2041,6 +2092,7 @@ Local lValid, uValue
 
    _OOHG_ThisItemCellValue := uValue
    lValid := _OOHG_Eval( ::bValid, uValue )
+   _CheckCellNewValue( Self, @uValue )
    If ValType( lValid ) != "L"
       lValid := .T.
    EndIf
@@ -2057,6 +2109,12 @@ Local lValid, uValue
       ::oControl:SetFocus()
    Endif
 Return lValid
+
+METHOD ControlValue( uValue ) CLASS TGridControl
+   If PCOUNT() >= 1
+      ::oControl:Value := uValue
+   EndIf
+Return ::oControl:Value
 
 METHOD Enabled( uValue ) CLASS TGridControl
 Return ( ::oControl:Enabled := uValue )
@@ -2334,7 +2392,7 @@ CLASS TGridControlImageList FROM TGridControl
    METHOD CreateWindow
    METHOD CreateControl
    METHOD Str2Val(uValue)   BLOCK { |Self,uValue| Empty( Self ), Val( uValue ) }
-   METHOD ControlValue      BLOCK { |Self| ::oControl:Value - 1 }
+   METHOD ControlValue      SETGET
 ENDCLASS
 
 METHOD New( oGrid ) CLASS TGridControlImageList
@@ -2357,6 +2415,12 @@ METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGrid
    ::oControl:Value := uValue + 1
 Return ::oControl
 
+METHOD ControlValue( uValue ) CLASS TGridControlImageList
+   If PCOUNT() >= 1
+      ::oControl:Value := uValue + 1
+   EndIf
+Return ::oControl:Value - 1
+
 *-----------------------------------------------------------------------------*
 CLASS TGridControlLComboBox FROM TGridControl
 *-----------------------------------------------------------------------------*
@@ -2368,7 +2432,7 @@ CLASS TGridControlLComboBox FROM TGridControl
    METHOD CreateControl
    METHOD Str2Val(uValue)   BLOCK { |Self,uValue| ( uValue == ::cTrue .OR. UPPER( uValue ) == ".T." ) }
    METHOD GridValue(uValue) BLOCK { |Self,uValue| If( uValue, ::cTrue, ::cFalse ) }
-   METHOD ControlValue      BLOCK { |Self| ( ::oControl:Value == 1 ) }
+   METHOD ControlValue      SETGET
 ENDCLASS
 
 METHOD New( cTrue, cFalse ) CLASS TGridControlLComboBox
@@ -2391,3 +2455,9 @@ METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGrid
    uValue := if( uValue, 1, 2 )
    @ nRow,nCol COMBOBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth VALUE uValue ITEMS { ::cTrue, ::cFalse }
 Return ::oControl
+
+METHOD ControlValue( uValue ) CLASS TGridControlLComboBox
+   If PCOUNT() >= 1
+      ::oControl:Value := If( uValue, 1, 2 )
+   EndIf
+Return ( ::oControl:Value == 1 )
