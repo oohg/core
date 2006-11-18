@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.119 2006-11-16 03:37:54 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.120 2006-11-18 23:25:13 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -166,6 +166,7 @@ CLASS TWindow
    DATA nCol       INIT 0
    DATA nWidth     INIT 0
    DATA nHeight    INIT 0
+   DATA Active     INIT .F.
    DATA cFontName  INIT ""
    DATA nFontSize  INIT 0
    DATA Bold       INIT .F.
@@ -1034,9 +1035,9 @@ Return _OOHG_SetKey( ::aKeys, nKey, nFlags, bAction )
 METHOD LookForKey( nKey, nFlags ) CLASS TWindow
 *-----------------------------------------------------------------------------*
 Local lDone
-   If LookForKey_Check_HotKey( ::aKeys, nKey, nFlags, Self )
+   If ::Active .AND. LookForKey_Check_HotKey( ::aKeys, nKey, nFlags, Self )
       lDone := .T.
-   ElseIf LookForKey_Check_bKeyDown( ::bKeyDown, nKey, nFlags )
+   ElseIf ::Active .AND. LookForKey_Check_bKeyDown( ::bKeyDown, nKey, nFlags )
       lDone := .T.
    ElseIf ValType( ::Container ) == "O"
       lDone := ::Container:LookForKey( nKey, nFlags )
@@ -1149,7 +1150,6 @@ HB_FUNC( _OOHG_SELECTSUBCLASS ) // _OOHG_SelectSubClass( oClass, oSubClass )
 *------------------------------------------------------------------------------*
 CLASS TForm FROM TWindow
 *------------------------------------------------------------------------------*
-   DATA Active         INIT .F.
    DATA ToolTipHandle  INIT 0
    DATA Focused        INIT .F.
    DATA LastFocusedControl INIT 0

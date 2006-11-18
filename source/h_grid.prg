@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.67 2006-11-18 21:35:52 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.68 2006-11-18 23:25:13 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -993,11 +993,6 @@ Local lRet
       Return .F.
    EndIf
 
-   If ::lNested
-      Return .F.
-   EndIf
-   ::lNested := .T.
-
    lRet := .T.
    Do While nCol <= Len( ::aHeaders ) .AND. lRet
       _OOHG_ThisItemCellValue := ::Cell( nRow, nCol )
@@ -1647,6 +1642,9 @@ Procedure _ClearThisCellInfo()
    _OOHG_ThisItemCellHeight := 0
 Return
 
+Function _CheckCellNewValue()
+Return .F.
+/*
 *------------------------------------------------------------------------------*
 Function _CheckCellNewValue( oControl, uValue )
 *------------------------------------------------------------------------------*
@@ -1669,6 +1667,7 @@ Local lChange, uValue2
       lChange := .F.
    EndIf
 Return lChange
+*/
 
 EXTERN InitListView, InitListViewColumns, AddListViewItems, InsertListViewItem
 EXTERN ListViewSetItem, ListViewGetItem, FillGridFromArray

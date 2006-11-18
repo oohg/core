@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.68 2006-11-11 21:07:01 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.69 2006-11-18 23:25:13 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1562,6 +1562,7 @@ EMPTY(cName)
 
    ::hWnd := hWnd
    ::SethWnd( hWnd )
+   ::Active := .T.
 
    ::Parent:AddControl( Self )
 
