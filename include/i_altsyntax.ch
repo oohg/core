@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.31 2006-11-16 14:09:27 guerra000 Exp $
+ * $Id: i_altsyntax.ch,v 1.32 2006-11-18 21:35:52 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1911,7 +1911,10 @@ iif( _OOHG_ActiveControlMultiSelect, TGridMulti(), TGrid() ):Define( ;
                 _OOHG_ActiveControlValid , ;
                 _OOHG_ActiveControlValidMessages, ;
                 _OOHG_ActiveControlEditCell, ;
-                _OOHG_ActiveControlWhen )
+                _OOHG_ActiveControlWhen, ;
+                _OOHG_ActiveControlDisabled, ;
+                _OOHG_ActiveControlNoTabStop, ;
+                _OOHG_ActiveControlInvisible )
 
 /*----------------------------------------------------------------------------
 BROWSE

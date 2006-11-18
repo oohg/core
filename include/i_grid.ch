@@ -1,5 +1,5 @@
 /*
- * $Id: i_grid.ch,v 1.10 2006-10-28 03:06:35 guerra000 Exp $
+ * $Id: i_grid.ch,v 1.11 2006-11-18 21:35:52 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -146,6 +146,8 @@
                 [ <dummy2: WHEN, COLUMNWHEN> <aWhenFields> ] ;
                 [ SUBCLASS <subclass> ]         ;
                 [ <disabled: DISABLED> ]        ;
+                [ <notabstop: NOTABSTOP> ]      ;
+                [ <invisible: INVISIBLE> ]      ;
 	=>;
         [ <obj> := ] _OOHG_SelectSubClass( iif( <.multiselect.>, TGridMulti(), TGrid() ), [ <subclass>() ] ): ;
                      Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, ;
@@ -156,7 +158,7 @@
                      <itemcount>, <.edit.>, <backcolor>, <fontcolor>, <dynamicbackcolor>, ;
                      <dynamicforecolor>, <Picture>, <.rtl.>, <.inplace.>, <editcontrols>, ;
                      <aReadOnly>, <aValidFields>, <aValidMessages>, <{editcell}>, ;
-                     <aWhenFields>, <.disabled.> )
+                     <aWhenFields>, <.disabled.>, <.notabstop.>, <.invisible.> )
 
 ///////////////////////////////////////////////////////////////////////////////
 // GRID (SPLITBOX VERSION)
@@ -207,6 +209,8 @@
                 [ <dummy2: WHEN, COLUMNWHEN> <aWhenFields> ] ;
                 [ SUBCLASS <subclass> ]         ;
                 [ <disabled: DISABLED> ]        ;
+                [ <notabstop: NOTABSTOP> ]      ;
+                [ <invisible: INVISIBLE> ]      ;
 	=>;
         [ <obj> := ] _OOHG_SelectSubClass( iif( <.multiselect.>, TGridMulti(), TGrid() ), [ <subclass>() ] ): ;
                      Define( <(name)>, <(parent)>, , , <w>, <h>, <headers>, ;
@@ -217,6 +221,6 @@
                      <itemcount>, <.edit.>, <backcolor>, <fontcolor>, <dynamicbackcolor>, ;
                      <dynamicforecolor>, <Picture>, <.rtl.>, <.inplace.>, <editcontrols>, ;
                      <aReadOnly>, <aValidFields>, <aValidMessages>, <{editcell}>, ;
-                     <aWhenFields>, <.disabled.> )
+                     <aWhenFields>, <.disabled.>, <.notabstop.>, <.invisible.> )
 
 ///////////////////////////////////////////////////////////////////////////////

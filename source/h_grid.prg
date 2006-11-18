@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.66 2006-11-18 03:04:57 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.67 2006-11-18 21:35:52 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -182,7 +182,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                ondispinfo, itemcount, editable, backcolor, fontcolor, ;
                dynamicbackcolor, dynamicforecolor, aPicture, lRtl, inplace, ;
                editcontrols, readonly, valid, validmessages, editcell, ;
-               aWhenFields, lDisabled ) CLASS TGrid
+               aWhenFields, lDisabled, lNoTabStop, lInvisible ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local nStyle := LVS_SINGLESEL
 
@@ -193,7 +193,7 @@ Local nStyle := LVS_SINGLESEL
               ondispinfo, itemcount, editable, backcolor, fontcolor, ;
               dynamicbackcolor, dynamicforecolor, aPicture, lRtl, nStyle, ;
               inplace, editcontrols, readonly, valid, validmessages, ;
-              editcell, aWhenFields, lDisabled )
+              editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -204,7 +204,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                 ondispinfo, itemcount, editable, backcolor, fontcolor, ;
                 dynamicbackcolor, dynamicforecolor, aPicture, lRtl, nStyle, ;
                 inplace, editcontrols, readonly, valid, validmessages, ;
-                editcell, aWhenFields, lDisabled ) CLASS TGrid
+                editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local ControlHandle, aImageList
 
@@ -235,7 +235,7 @@ Local ControlHandle, aImageList
 
    ASSIGN nogrid       VALUE nogrid     TYPE "L" DEFAULT .F.
 
-   nStyle := ::InitStyle( nStyle,, .F., .F., lDisabled )
+   nStyle := ::InitStyle( nStyle,, lInvisible, lNoTabStop, lDisabled )
 
    If Valtype( ::aJust ) != "A"
       ::aJust := aFill( Array( len( ::aHeaders ) ), 0 )
@@ -608,7 +608,9 @@ Local nItem, lEnabled, aValues
    For nItem := 1 To Len( aEditControls )
       _OOHG_ThisItemCellValue := aValues[ nItem ]
       lEnabled := _OOHG_EVAL( aEditControls[ nItem ]:bWhen )
-      _CheckCellNewValue( aEditControls[ nItem ], @aValues[ nItem ] )
+      If _CheckCellNewValue( aEditControls[ nItem ], aValues[ nItem ] )
+         aValues[ nItem ] := _OOHG_ThisItemCellValue
+      EndIf
       If ValType( lEnabled ) == "L" .AND. ! lEnabled
          aEditControls[ nItem ]:Enabled := .F.
       Else
@@ -627,7 +629,9 @@ Local lRet, nItem, aValues, lValid
    For nItem := 1 To Len( aEditControls )
       _OOHG_ThisItemCellValue := aValues[ nItem ]
       lValid := _OOHG_Eval( aEditControls[ nItem ]:bValid, aValues[ nItem ] )
-      _CheckCellNewValue( aEditControls[ nItem ], @aValues[ nItem ] )
+      If _CheckCellNewValue( aEditControls[ nItem ], aValues[ nItem ] )
+         aValues[ nItem ] := _OOHG_ThisItemCellValue
+      EndIf
       If ValType( lValid ) == "L" .AND. ! lValid
          lRet := .F.
          If ValType( aEditControls[ nItem ]:cValidMessage ) $ "CM" .AND. ! Empty( aEditControls[ nItem ]:cValidMessage )
@@ -868,7 +872,9 @@ Local lRet
       ::Cell( nRow, nCol, uValue )
       _SetThisCellInfo( ::hWnd, nRow, nCol, uValue )
       _OOHG_Eval( ::OnEditCell, nRow, nCol )
-      // _CheckCellNewValue( EditControl, @uValue )
+      If _CheckCellNewValue( EditControl, @uValue )
+         ::Cell( nRow, nCol, uValue )
+      EndIf
       _ClearThisCellInfo()
    ENDIF
 Return lRet
@@ -1528,7 +1534,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                ondispinfo, itemcount, editable, backcolor, fontcolor, ;
                dynamicbackcolor, dynamicforecolor, aPicture, lRtl, inplace, ;
                editcontrols, readonly, valid, validmessages, editcell, ;
-               aWhenFields, lDisabled ) CLASS TGridMulti
+               aWhenFields, lDisabled, lNoTabStop, lInvisible ) CLASS TGridMulti
 *-----------------------------------------------------------------------------*
 Local nStyle := 0
    ::Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
@@ -1538,7 +1544,7 @@ Local nStyle := 0
               ondispinfo, itemcount, editable, backcolor, fontcolor, ;
               dynamicbackcolor, dynamicforecolor, aPicture, lRtl, nStyle, ;
               inplace, editcontrols, readonly, valid, validmessages, ;
-              editcell, aWhenFields, lDisabled )
+              editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -1642,9 +1648,9 @@ Procedure _ClearThisCellInfo()
 Return
 
 *------------------------------------------------------------------------------*
-Procedure _CheckCellNewValue( oControl, uValue )
+Function _CheckCellNewValue( oControl, uValue )
 *------------------------------------------------------------------------------*
-Local uValue2
+Local lChange, uValue2
    uValue2 := _OOHG_ThisItemCellValue
    If uValue == uValue2
       If ValType( oControl:cMemVar ) $ "CM"
@@ -1653,9 +1659,16 @@ Local uValue2
    EndIf
    If ! uValue == uValue2
       oControl:ControlValue := uValue2
+      _OOHG_ThisItemCellValue := uValue2
+      If ValType( oControl:cMemVar ) $ "CM"
+         &( oControl:cMemVar ) := uValue2
+      EndIf
       uValue := uValue2
+      lChange := .T.
+   Else
+      lChange := .F.
    EndIf
-Return
+Return lChange
 
 EXTERN InitListView, InitListViewColumns, AddListViewItems, InsertListViewItem
 EXTERN ListViewSetItem, ListViewGetItem, FillGridFromArray
