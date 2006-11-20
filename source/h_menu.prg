@@ -1,5 +1,5 @@
 /*
- * $Id: h_menu.prg,v 1.15 2006-11-18 19:39:52 guerra000 Exp $
+ * $Id: h_menu.prg,v 1.16 2006-11-20 02:33:18 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -181,7 +181,7 @@ Return Self
 
 CLASS TMenuDropDown FROM TMenu
    METHOD Define
-   METHOD Release     BLOCK { |Self| ::Container:ContextMenu := nil, ::Super:Release() }
+   METHOD Release
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -199,6 +199,14 @@ LOCAL oContainer
    EndIf
    oContainer:ContextMenu := Self
 Return Self
+
+*------------------------------------------------------------------------------*
+METHOD Release() CLASS TMenuDropDown
+*------------------------------------------------------------------------------*
+   If ::Container != nil
+      ::Container:ContextMenu := nil
+   Endif
+Return ::Super:Release()
 
 *------------------------------------------------------------------------------*
 Function _EndMenu()

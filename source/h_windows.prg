@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.120 2006-11-18 23:25:13 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.121 2006-11-20 02:33:18 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -684,6 +684,48 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )
          }
          else
          {
+            hb_ret();
+         }
+         break;
+
+      case WM_MENURBUTTONUP:
+         {
+            PHB_ITEM pMenu;
+            MENUITEMINFO MenuItemInfo;
+            POINT Point;
+
+            pMenu = hb_itemNew( NULL );
+            hb_itemCopy( pMenu, GetControlObjectByHandle( ( HWND ) lParam ) );
+            _OOHG_Send( pMenu, s_hWnd );
+            hb_vmSend( 0 );
+            if( ValidHandler( HWNDparam( -1 ) ) )
+            {
+               memset( &MenuItemInfo, 0, sizeof( MenuItemInfo ) );
+               MenuItemInfo.cbSize = sizeof( MenuItemInfo );
+               MenuItemInfo.fMask = MIIM_ID | MIIM_SUBMENU;
+               GetMenuItemInfo( ( HMENU ) lParam, wParam, MF_BYPOSITION, &MenuItemInfo );
+               if( MenuItemInfo.hSubMenu )
+               {
+                  hb_itemCopy( pMenu, GetControlObjectByHandle( ( HWND ) MenuItemInfo.hSubMenu ) );
+               }
+               else
+               {
+                  hb_itemCopy( pMenu, GetControlObjectById( MenuItemInfo.wID ) );
+               }
+               _OOHG_Send( pMenu, s_ContextMenu );
+               hb_vmSend( 0 );
+               if( hb_param( -1, HB_IT_OBJECT ) )
+               {
+                  hb_itemCopy( pMenu, hb_param( -1, HB_IT_OBJECT ) );
+                  GetCursorPos( &Point );
+                  // HMENU
+                  _OOHG_Send( pMenu, s_hWnd );
+                  hb_vmSend( 0 );
+                  TrackPopupMenuEx( ( HMENU ) HWNDparam( -1 ), TPM_RECURSE, Point.x, Point.y, hWnd, 0 );
+                  PostMessage( hWnd, WM_NULL, 0, 0 );
+               }
+            }
+            hb_itemRelease( pMenu );
             hb_ret();
          }
          break;

@@ -1,11 +1,17 @@
 /*
- * $Id: ChangeLog,v 1.285 2006-11-18 23:25:12 guerra000 Exp $
+ * $Id: ChangeLog,v 1.286 2006-11-20 02:33:17 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-11-19 18:53 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_menu.prg
+    ! Fixed TMenuDropDown ::Release method.
+  * source/h_windows.prg
+    + Added CONTEXT MENU capabilities to menu items, too.
 
 2006-11-18 17:17 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_grid.prg
