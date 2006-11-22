@@ -1,5 +1,5 @@
 /*
- * $Id: h_textarray.prg,v 1.8 2006-10-28 20:49:15 guerra000 Exp $
+ * $Id: h_textarray.prg,v 1.9 2006-11-22 05:15:58 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -168,6 +168,112 @@ static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 #define RANGEMINMAX( iMin, iValue, iMax )   if( iValue < ( iMin ) ) { iValue = (iMin); } else if( iValue > ( iMax ) ) { iValue = ( iMax ); }
 #define LO_HI_AUX( _Lo, _Hi, _Aux )         if( _Lo > _Hi ) { _Aux = _Hi; _Hi = _Lo; _Lo = _Aux; }
 
+static void FillClear( RECT *rect, HDC hdc, LONG lColor )
+{
+   COLORREF OldColor;
+
+   OldColor = SetBkColor( hdc, lColor );
+// transparent??
+   ExtTextOut( hdc, 0, 0, ETO_CLIPPED | ETO_OPAQUE, rect, "", 0, NULL );
+   SetBkColor( hdc, OldColor );
+}
+
+void RePaint( POCTRL oSelf, HDC hdc2, RECT *updateRect )
+{
+   CHARCELL    sNull, *pCell;
+   COLORREF    FontColor, BackColor;
+   LONG        x, y, lCell, lMaxCell, lStartX, lStartY;
+   HFONT       hOldFont;
+   RECT        rect2, ClientRect, updateRect2;
+   HDC         hdc;
+
+   if( ! ValidHandler( oSelf->hWnd ) )
+   {
+      return;
+   }
+
+   hdc = hdc2 ? hdc2 : GetDC( oSelf->hWnd );
+
+   if( ! updateRect )
+   {
+      updateRect = &updateRect2;
+      GetClientRect( oSelf->hWnd, updateRect );
+   }
+
+   TTextArray_Empty( &sNull, oSelf );
+   sNull.FontColor = ( ( sNull.FontColor == -1 ) ? GetSysColor( COLOR_WINDOWTEXT ) : sNull.FontColor );
+   sNull.BackColor = ( ( sNull.BackColor == -1 ) ? GetSysColor( COLOR_WINDOW )     : sNull.BackColor );
+
+   FontColor = SetTextColor( hdc, sNull.FontColor );
+   BackColor = SetBkColor(   hdc, sNull.BackColor );
+   SetTextAlign( hdc, TA_LEFT );  // TA_CENTER
+
+   if( ! oSelf->AuxBuffer )
+   {
+      FillClear( updateRect, hdc, sNull.BackColor );
+   }
+   else
+   {
+      GetClientRect( oSelf->hWnd, &ClientRect );
+      lStartY = - ClientRect.top  + GetScrollPos( oSelf->hWnd, SB_VERT );
+      lStartX = - ClientRect.left + GetScrollPos( oSelf->hWnd, SB_HORZ );
+      hOldFont = ( HFONT ) SelectObject( hdc, oSelf->hFontHandle );
+      lMaxCell = oSelf->AuxBufferLen / sizeof( CHARCELL );
+      y = ( updateRect->top + lStartY ) / oSelf->lAux[ 5 ];
+      if( y < 0 )
+      {
+         y = ( ClientRect.top + lStartY ) / oSelf->lAux[ 5 ];
+      }
+      rect2.top = ( y * oSelf->lAux[ 5 ] ) - lStartY;
+      rect2.bottom = rect2.top + oSelf->lAux[ 5 ];
+      while( rect2.top <= updateRect->bottom )
+      {
+         x = ( updateRect->left + lStartX ) / oSelf->lAux[ 4 ];
+         if( x < 0 )
+         {
+            x = ( ClientRect.left + lStartX ) / oSelf->lAux[ 4 ];
+         }
+         rect2.left = ( x * oSelf->lAux[ 4 ] ) - lStartX;
+         rect2.right = rect2.left + oSelf->lAux[ 4 ];
+         lCell = ( y * oSelf->lAux[ 0 ] ) + x;
+         pCell = &( ( ( PCHARCELL )( oSelf->AuxBuffer ) )[ lCell ] );
+         if( x > oSelf->lAux[ 0 ] )
+         {
+            x = oSelf->lAux[ 0 ];
+         }
+         while( x <= oSelf->lAux[ 0 ] && rect2.left <= updateRect->right )
+         {
+            if( lCell >= lMaxCell || x >= oSelf->lAux[ 0 ] )
+            {
+               pCell = &sNull;
+               rect2.right = updateRect->right;
+            }
+            SetTextColor( hdc, ( ( pCell->FontColor == -1 ) ? GetSysColor( COLOR_WINDOWTEXT ) : pCell->FontColor ) );
+            SetBkColor(   hdc, ( ( pCell->BackColor == -1 ) ? GetSysColor( COLOR_WINDOW )     : pCell->BackColor ) );
+// transparent??
+// any different font??
+            ExtTextOut( hdc, rect2.left, rect2.top, ETO_CLIPPED | ETO_OPAQUE, &rect2, ( char * ) &( pCell->character ), 1, NULL );
+            lCell++;
+            pCell++;
+            rect2.left = rect2.right;
+            rect2.right += oSelf->lAux[ 4 ];
+            x++;
+         }
+         rect2.top = rect2.bottom;
+         rect2.bottom += oSelf->lAux[ 5 ];
+         y++;
+      }
+      SelectObject( hdc, hOldFont );
+   }
+   SetTextColor( hdc, FontColor );
+   SetBkColor( hdc, BackColor );
+
+   if( ! hdc2 )
+   {
+      ReleaseDC( oSelf->hWnd, hdc );
+   }
+}
+
 static void Redraw( POCTRL oSelf, int iCol1, int iRow1, int iCol2, int iRow2 )
 {
    int iAux, iPos;
@@ -217,7 +323,7 @@ static void Redraw( POCTRL oSelf, int iCol1, int iRow1, int iCol2, int iRow2 )
       if( lStyle != lStyle2 )
       {
          SetWindowLong( oSelf->hWnd, GWL_STYLE, lStyle2 );
-         RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+         RePaint( oSelf, NULL, NULL );
          bChange = 1;
       }
       if( bHorizontal )
@@ -285,7 +391,7 @@ static void Redraw( POCTRL oSelf, int iCol1, int iRow1, int iCol2, int iRow2 )
             rect.bottom = iRow2;
             rect.left   = iCol1;
             rect.right  = iCol2;
-            RedrawWindow( oSelf->hWnd, &rect, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+            RePaint( oSelf, NULL, NULL );
          }
       }
    }
@@ -354,16 +460,6 @@ static void DrawCursor( POCTRL oSelf, BOOL bStatus )
    }
 }
 
-static void FillClear( RECT *rect, HDC hdc, LONG lColor )
-{
-   COLORREF OldColor;
-
-   OldColor = SetBkColor( hdc, lColor );
-// transparent??
-   ExtTextOut( hdc, 0, 0, ETO_CLIPPED | ETO_OPAQUE, rect, "", 0, NULL );
-   SetBkColor( hdc, OldColor );
-}
-
 static BOOL bRegistered = 0;
 
 HB_FUNC_STATIC( TTEXTARRAY_EVENTS )
@@ -381,11 +477,7 @@ HB_FUNC_STATIC( TTEXTARRAY_EVENTS )
          {
             PAINTSTRUCT ps;
             HDC         hdc;
-            HFONT       hOldFont;
-            RECT        updateRect, rect2, ClientRect;
-            COLORREF    FontColor, BackColor;
-            LONG        x, y, lCell, lMaxCell, lStartX, lStartY;
-            CHARCELL    sNull, *pCell;
+            RECT        updateRect;
 
             if ( ! GetUpdateRect( hWnd, &updateRect, FALSE ) )
             {
@@ -393,74 +485,8 @@ HB_FUNC_STATIC( TTEXTARRAY_EVENTS )
             }
             else
             {
-               TTextArray_Empty( &sNull, oSelf );
-               sNull.FontColor = ( ( sNull.FontColor == -1 ) ? GetSysColor( COLOR_WINDOWTEXT ) : sNull.FontColor );
-               sNull.BackColor = ( ( sNull.BackColor == -1 ) ? GetSysColor( COLOR_WINDOW )     : sNull.BackColor );
-
                hdc = BeginPaint( hWnd, &ps );
-               FontColor = SetTextColor( hdc, sNull.FontColor );
-               BackColor = SetBkColor(   hdc, sNull.BackColor );
-               SetTextAlign( hdc, TA_LEFT );  // TA_CENTER
-
-               if( ! oSelf->AuxBuffer )
-               {
-                  FillClear( &updateRect, hdc, sNull.BackColor );
-               }
-               else
-               {
-                  GetClientRect( oSelf->hWnd, &ClientRect );
-                  lStartY = - ClientRect.top  + GetScrollPos( oSelf->hWnd, SB_VERT );
-                  lStartX = - ClientRect.left + GetScrollPos( oSelf->hWnd, SB_HORZ );
-                  hOldFont = ( HFONT ) SelectObject( hdc, oSelf->hFontHandle );
-                  lMaxCell = oSelf->AuxBufferLen / sizeof( CHARCELL );
-                  y = ( updateRect.top + lStartY ) / oSelf->lAux[ 5 ];
-                  if( y < 0 )
-                  {
-                     y = ( ClientRect.top + lStartY ) / oSelf->lAux[ 5 ];
-                  }
-                  rect2.top = ( y * oSelf->lAux[ 5 ] ) - lStartY;
-                  rect2.bottom = rect2.top + oSelf->lAux[ 5 ];
-                  while( rect2.top <= updateRect.bottom )
-                  {
-                     x = ( updateRect.left + lStartX ) / oSelf->lAux[ 4 ];
-                     if( x < 0 )
-                     {
-                        x = ( ClientRect.left + lStartX ) / oSelf->lAux[ 4 ];
-                     }
-                     rect2.left = ( x * oSelf->lAux[ 4 ] ) - lStartX;
-                     rect2.right = rect2.left + oSelf->lAux[ 4 ];
-                     lCell = ( y * oSelf->lAux[ 0 ] ) + x;
-                     pCell = &( ( ( PCHARCELL )( oSelf->AuxBuffer ) )[ lCell ] );
-                     if( x > oSelf->lAux[ 0 ] )
-                     {
-                        x = oSelf->lAux[ 0 ];
-                     }
-                     while( x <= oSelf->lAux[ 0 ] && rect2.left <= updateRect.right )
-                     {
-                        if( lCell >= lMaxCell || x >= oSelf->lAux[ 0 ] )
-                        {
-                           pCell = &sNull;
-                           rect2.right = updateRect.right;
-                        }
-                        SetTextColor( hdc, ( ( pCell->FontColor == -1 ) ? GetSysColor( COLOR_WINDOWTEXT ) : pCell->FontColor ) );
-                        SetBkColor(   hdc, ( ( pCell->BackColor == -1 ) ? GetSysColor( COLOR_WINDOW )     : pCell->BackColor ) );
-// transparent??
-// any different font??
-                        ExtTextOut( hdc, rect2.left, rect2.top, ETO_CLIPPED | ETO_OPAQUE, &rect2, ( char * ) &( pCell->character ), 1, NULL );
-                        lCell++;
-                        pCell++;
-                        rect2.left = rect2.right;
-                        rect2.right += oSelf->lAux[ 4 ];
-                        x++;
-                     }
-                     rect2.top = rect2.bottom;
-                     rect2.bottom += oSelf->lAux[ 5 ];
-                     y++;
-                  }
-                  SelectObject( hdc, hOldFont );
-               }
-               SetTextColor( hdc, FontColor );
-               SetBkColor( hdc, BackColor );
+               RePaint( oSelf, hdc, &updateRect );
                EndPaint( hWnd, &ps );
                hb_retni( 1 );
             }
@@ -527,7 +553,7 @@ HB_FUNC_STATIC( TTEXTARRAY_EVENTS )
             if( iOldPos != iNewPos && oSelf->AuxBuffer && oSelf->lAux[ 0 ] && oSelf->lAux[ 1 ] )
             {
                SetScrollPos( oSelf->hWnd, SB_HORZ, iNewPos, 1 );
-               Redraw( oSelf, 0, 0, oSelf->lAux[ 0 ] - 1, oSelf->lAux[ 1 ] - 1 );
+               RePaint( oSelf, NULL, NULL );
                hb_ret();
             }
          }
@@ -593,7 +619,7 @@ HB_FUNC_STATIC( TTEXTARRAY_EVENTS )
             if( iOldPos != iNewPos && oSelf->AuxBuffer && oSelf->lAux[ 0 ] && oSelf->lAux[ 1 ] )
             {
                SetScrollPos( oSelf->hWnd, SB_VERT, iNewPos, 1 );
-               Redraw( oSelf, 0, 0, oSelf->lAux[ 0 ] - 1, oSelf->lAux[ 1 ] - 1 );
+               RePaint( oSelf, NULL, NULL );
                hb_ret();
             }
          }
@@ -636,7 +662,7 @@ HB_FUNC_STATIC( TTEXTARRAY_SETFONTSIZE )   // ( Self )   !!! NOT A CLASS METHOD 
 
       oSelf->lAux[ 4 ] = sz.cx;
       oSelf->lAux[ 5 ] = sz.cy;
-      Redraw( oSelf, 0, 0, oSelf->lAux[ 0 ] - 1, oSelf->lAux[ 1 ] - 1 );
+      RePaint( oSelf, NULL, NULL );
    }
 }
 
@@ -856,7 +882,7 @@ static void TTextArray_ReSize( POCTRL oSelf, int iRow, int iCol )
       oSelf->lAux[ 3 ] = iRow - 1;
    }
 
-   RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+   RePaint( oSelf, NULL, NULL );
 }
 
 static void TTextArray_Out( POCTRL oSelf, BYTE cByte, RECT *rect2 )

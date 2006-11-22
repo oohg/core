@@ -1,11 +1,22 @@
 /*
- * $Id: ChangeLog,v 1.287 2006-11-22 01:12:33 declan2005 Exp $
+ * $Id: ChangeLog,v 1.288 2006-11-22 05:15:58 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-11-21 23:15 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_progressmeter.prg
+    + ::Caption functionality added.
+    + ::Align property added.
+  * source/h_textarray.prg
+    * Modified repaint calls for avoid flicks.
+  * source/h_textbox.prg
+    ! Fixed READONLY for TTextPicture().
+  * source/h_status.prg
+    + ::AddItem() method added.
 
 2006-11-21 20:10 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * include/i_windows.ch

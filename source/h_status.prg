@@ -1,5 +1,5 @@
 /*
- * $Id: h_status.prg,v 1.19 2006-10-22 02:32:17 guerra000 Exp $
+ * $Id: h_status.prg,v 1.20 2006-11-22 05:15:58 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -100,6 +100,7 @@ STATIC _OOHG_ActiveMessageBar := nil
 CLASS TMessageBar FROM TControl
    DATA Type      INIT "MESSAGEBAR" READONLY
 
+   METHOD AddItem
    METHOD SetClock
    METHOD SetKeybrd
 
@@ -181,6 +182,11 @@ Function _EndStatusBar ( cParentForm, acCaptions, anWidths, acImages, abActions,
 						lTop		;
 					)
 */
+
+*-----------------------------------------------------------------------------*
+METHOD AddItem( Caption, Width, action, ToolTip ) CLASS TMessageBar
+*-----------------------------------------------------------------------------*
+Return TItemMessage():Define( "STATUSITEM", Self,,, Caption, action, Width,,,, ToolTip )
 
 *-----------------------------------------------------------------------------*
 METHOD SetClock( Width, ToolTip, action, lAmPm ) CLASS TMessageBar

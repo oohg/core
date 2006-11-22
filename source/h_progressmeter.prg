@@ -1,5 +1,5 @@
 /*
- * $Id: h_progressmeter.prg,v 1.10 2006-10-28 20:49:15 guerra000 Exp $
+ * $Id: h_progressmeter.prg,v 1.11 2006-11-22 05:15:58 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -70,7 +70,8 @@ CLASS TProgressMeter FROM TLabel
    METHOD RangeMax            SETGET
 
    METHOD Events
-   METHOD SetPercent
+   METHOD SetPercent          SETGET
+   METHOD Align               SETGET
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -101,6 +102,8 @@ Local ControlHandle, nStyle, nStyleEx
    ASSIGN ::nHeight     VALUE h TYPE "N"
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, ::FontColor, ::BackColor, , lRtl )
+
+   ::Align := 6 // TA_CENTER
 
    nStyle := ::InitStyle( ,, Invisible )
 
@@ -172,6 +175,73 @@ RETURN ::nRangeMax
 #include "../include/oohg.h"
 
 // lAux[ 0 ] = Percent
+// lAux[ 1 ] = Align
+
+void ProgressMeter_Paint( POCTRL oSelf, HDC hdc )
+{
+   HDC         hdc2;
+   RECT        rect2;
+   COLORREF    FontColor, BackColor, xFont, xBack;
+   HFONT       hOldFont;
+   int         x, iWidth1, iWidth2, len;
+   char        cPercent[ 100 ], *txt;
+
+   if( ! ValidHandler( oSelf->hWnd ) )
+   {
+      return;
+   }
+
+   hdc2 = hdc ? hdc : GetDC( oSelf->hWnd );
+
+   GetClientRect( oSelf->hWnd, &rect2 );
+   iWidth2 = rect2.right - rect2.left;
+   iWidth1 = iWidth2 * oSelf->lAux[ 0 ] / 10000;
+   if( ( oSelf->lAux[ 1 ] & TA_CENTER ) == TA_CENTER )
+   {
+      x = iWidth2 / 2;
+   }
+   else if( ( oSelf->lAux[ 1 ] & TA_RIGHT ) == TA_RIGHT )
+   {
+      x = iWidth2;
+   }
+   else
+   {
+      x = 0;
+   }
+
+   if( oSelf->AuxBuffer )
+   {
+      txt = ( char * ) oSelf->AuxBuffer;
+   }
+   else
+   {
+      sprintf( cPercent, "%i%%", oSelf->lAux[ 0 ] / 100 );
+      txt = cPercent;
+   }
+   len = strlen( txt );
+
+   xFont = ( ( oSelf->lFontColor == -1 ) ? GetSysColor( COLOR_WINDOWTEXT ) : oSelf->lFontColor );
+   xBack = ( ( oSelf->lBackColor == -1 ) ? GetSysColor( COLOR_WINDOW     ) : oSelf->lBackColor );
+   FontColor = SetTextColor( hdc2, xFont );
+   BackColor = SetBkColor(   hdc2, xBack );
+   SetTextAlign( hdc2, oSelf->lAux[ 1 ] );
+   hOldFont = ( HFONT ) SelectObject( hdc2, oSelf->hFontHandle );
+   rect2.right = iWidth1;
+   ExtTextOut( hdc2, x, 0, ETO_CLIPPED | ETO_OPAQUE, &rect2, txt, len, NULL );
+   rect2.left = iWidth1;
+   rect2.right = iWidth2;
+   SetTextColor( hdc2, xBack );
+   SetBkColor(   hdc2, xFont );
+   ExtTextOut( hdc2, x, 0, ETO_CLIPPED | ETO_OPAQUE, &rect2, txt, len, NULL );
+   SelectObject( hdc2, hOldFont );
+   SetTextColor( hdc2, FontColor );
+   SetBkColor( hdc2, BackColor );
+
+   if( ! hdc )
+   {
+      ReleaseDC( oSelf->hWnd, hdc2 );
+   }
+}
 
 HB_FUNC_STATIC( TPROGRESSMETER_EVENTS )
 {
@@ -188,11 +258,7 @@ HB_FUNC_STATIC( TPROGRESSMETER_EVENTS )
          {
             PAINTSTRUCT ps;
             HDC         hdc;
-            HFONT       hOldFont;
-            RECT        updateRect, rect2;
-            COLORREF    FontColor, BackColor, xFont, xBack;
-            int         x, iWidth1, iWidth2;
-            char        cPercent[ 100 ];
+            RECT        updateRect;
 
             if ( ! GetUpdateRect( hWnd, &updateRect, FALSE ) )
             {
@@ -200,31 +266,91 @@ HB_FUNC_STATIC( TPROGRESSMETER_EVENTS )
             }
             else
             {
-               GetClientRect( hWnd, &rect2 );
-               iWidth2 = rect2.right - rect2.left;
-               x = iWidth2 / 2;
-               iWidth1 = iWidth2 * oSelf->lAux[ 0 ] / 10000;
-               sprintf( cPercent, "%i%%", oSelf->lAux[ 0 ] / 100 );
                hdc = BeginPaint( hWnd, &ps );
-               xFont = ( ( oSelf->lFontColor == -1 ) ? GetSysColor( COLOR_WINDOWTEXT ) : oSelf->lFontColor );
-               xBack = ( ( oSelf->lBackColor == -1 ) ? GetSysColor( COLOR_WINDOW     ) : oSelf->lBackColor );
-               FontColor = SetTextColor( hdc, xFont );
-               BackColor = SetBkColor(   hdc, xBack );
-               SetTextAlign( hdc, TA_CENTER );
-               hOldFont = ( HFONT ) SelectObject( hdc, oSelf->hFontHandle );
-               rect2.right = iWidth1;
-               ExtTextOut( hdc, x, 0, ETO_CLIPPED | ETO_OPAQUE, &rect2, cPercent, strlen( cPercent ), NULL );
-               rect2.left = iWidth1;
-               rect2.right = iWidth2;
-               SetTextColor( hdc, xBack );
-               SetBkColor(   hdc, xFont );
-               ExtTextOut( hdc, x, 0, ETO_CLIPPED | ETO_OPAQUE, &rect2, cPercent, strlen( cPercent ), NULL );
-               SelectObject( hdc, hOldFont );
-               SetTextColor( hdc, FontColor );
-               SetBkColor( hdc, BackColor );
+               ProgressMeter_Paint( oSelf, hdc );
                EndPaint( hWnd, &ps );
                hb_retni( 1 );
             }
+         }
+         break;
+
+      case WM_GETTEXT:
+         {
+            char *txt;
+            unsigned long len;
+            char cPercent[ 100 ];
+
+            if( oSelf->AuxBuffer )
+            {
+               txt = ( char * ) oSelf->AuxBuffer;
+            }
+            else
+            {
+               sprintf( cPercent, "%i%%", oSelf->lAux[ 0 ] / 100 );
+               txt = cPercent;
+            }
+            len = strlen( txt ) + 1;
+            if( len > wParam )
+            {
+               len = wParam;
+               if( len == 0 )
+               {
+                  len = 1;
+               }
+            }
+            len--;
+            if( len )
+            {
+               memcpy( ( char * ) lParam, txt, len );
+            }
+            ( ( char * ) lParam )[ len ] = 0;
+
+            hb_retnl( len );
+         }
+         break;
+
+      case WM_GETTEXTLENGTH:
+         if( oSelf->AuxBuffer )
+         {
+            hb_retnl( strlen( ( char * ) oSelf->AuxBuffer ) );
+         }
+         else
+         {
+            char cPercent[ 100 ];
+            sprintf( cPercent, "%i%%", oSelf->lAux[ 0 ] / 100 );
+            hb_retnl( strlen( cPercent ) );
+         }
+         break;
+
+      case WM_SETTEXT:
+         {
+            unsigned long iLen;
+
+            iLen = lParam ? strlen( ( char * ) lParam ) : 0;
+            if( iLen )
+            {
+               if( iLen > oSelf->AuxBufferLen )
+               {
+                  if( oSelf->AuxBuffer )
+                  {
+                     hb_xfree( oSelf->AuxBuffer );
+                  }
+                  oSelf->AuxBuffer = hb_xgrab( iLen + 1 );
+                  oSelf->AuxBufferLen = iLen;
+               }
+               memcpy( oSelf->AuxBuffer, ( char * ) lParam, iLen + 1 );
+            }
+            else
+            {
+               if( oSelf->AuxBuffer )
+               {
+                  hb_xfree( oSelf->AuxBuffer );
+                  oSelf->AuxBuffer = NULL;
+                  oSelf->AuxBufferLen = 0;
+               }
+            }
+            ProgressMeter_Paint( oSelf, NULL );
+            hb_retni( TRUE );
          }
          break;
 
@@ -248,9 +374,6 @@ HB_FUNC_STATIC( TPROGRESSMETER_SETPERCENT )
    double dNum;
    LONG lNum;
 
-   dNum = oSelf->lAux[ 0 ];
-   hb_retnd( dNum / 100 );
-
    if( ISNUM( 1 ) )
    {
       dNum = hb_parnd( 1 ) * 100;
@@ -269,9 +392,25 @@ HB_FUNC_STATIC( TPROGRESSMETER_SETPERCENT )
       if( lNum != oSelf->lAux[ 0 ] || ( ISLOG( 2 ) && hb_parl( 2 ) ) )
       {
          oSelf->lAux[ 0 ] = lNum;
-         RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+         ProgressMeter_Paint( oSelf, NULL );
       }
    }
+
+   hb_retnd( oSelf->lAux[ 0 ] / 100 );
+}
+
+HB_FUNC_STATIC( TPROGRESSMETER_ALIGN )
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+
+   if( ISNUM( 1 ) )
+   {
+      oSelf->lAux[ 1 ] = hb_parni( 1 );
+      ProgressMeter_Paint( oSelf, NULL );
+   }
+
+   hb_retni( oSelf->lAux[ 1 ] );
 }
 
 #pragma ENDDUMP

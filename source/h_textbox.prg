@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.34 2006-11-11 21:07:02 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.35 2006-11-22 05:15:58 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -609,8 +609,11 @@ HB_FUNC_STATIC( TTEXTPICTURE_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lP
       case WM_PASTE:
       case WM_KEYDOWN:
       case WM_LBUTTONDOWN:
-         HB_FUNCNAME( TTEXTPICTURE_EVENTS2 )();
-         break;
+         if( ( GetWindowLong( hWnd, GWL_STYLE ) & ES_READONLY ) == 0 )
+         {
+            HB_FUNCNAME( TTEXTPICTURE_EVENTS2 )();
+            break;
+         }
 
       default:
          _OOHG_Send( pSelf, s_Super );
