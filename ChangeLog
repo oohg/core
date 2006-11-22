@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.289 2006-11-22 20:35:53 declan2005 Exp $
+ * $Id: ChangeLog,v 1.290 2006-11-22 21:32:26 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -9,6 +9,7 @@
 
 2006-11-22 15:31 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source/h_grid.prg
+      + :editgrid() Method
       + added ::Append Clause in order to append items automatically
       + added ::Fullmove Clause in order to permit navigate all grid at editmode time.
       * added controls to avoid problems in slow machines or in full cpu use.
