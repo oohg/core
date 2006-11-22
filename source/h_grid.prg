@@ -2,7 +2,7 @@
 *===============================================================================================
 
 /*
- * $Id: h_grid.prg,v 1.69 2006-11-22 20:35:53 declan2005 Exp $
+ * $Id: h_grid.prg,v 1.70 2006-11-22 21:40:02 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -163,7 +163,6 @@ CLASS TGrid FROM TControl
    METHOD DeleteItem
    METHOD DeleteAllItems      BLOCK { | Self | ListViewReset( ::hWnd ), ::GridForeColor := nil, ::GridBackColor := nil }
    METHOD Item
-   METHOD EditGrid
    METHOD SetItemColor
    METHOD ItemCount           BLOCK { | Self | ListViewGetItemCount( ::hWnd ) }
    METHOD CountPerPage        BLOCK { | Self | ListViewGetCountPerPage( ::hWnd ) }
