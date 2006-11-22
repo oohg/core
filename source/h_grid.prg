@@ -1,7 +1,7 @@
 *===============================================================================================
 
 /*
- * $Id: h_grid.prg,v 1.71 2006-11-22 23:49:03 declan2005 Exp $
+ * $Id: h_grid.prg,v 1.72 2006-11-22 23:58:24 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -1147,11 +1147,10 @@ Local lRet
          lRet := ::EditCell( nRow, nCol )
       EndIf
       if ::lappendmode .and. .not. lret
-         if ::ncolpos = 1
+         if nCol = 1
                ::deleteitem(::itemcount())
                ::lappendmode:=.F.
                ::value:= ::itemcount()
-              //// ::nrowpos:=::value
          endif
       endif
       nCol++
