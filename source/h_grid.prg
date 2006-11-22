@@ -1,8 +1,7 @@
-
 *===============================================================================================
 
 /*
- * $Id: h_grid.prg,v 1.70 2006-11-22 21:40:02 declan2005 Exp $
+ * $Id: h_grid.prg,v 1.71 2006-11-22 23:49:03 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -332,12 +331,11 @@ Local aNew,i
          ::additem( anew, NIL, NIL )
          ::nrowpos++
          KEYBD_EVENT(VK_RETURN)
-
 RETURN NIL
 
 METHOD EDITGRID(nrow,ncol) CLASS TGRID
 
-   Local lRet, Uvalue,i,lnomas, nLast
+   Local lRet, Uvalue,i, nLast
    IF ValType( nRow ) != "N"
       nRow := LISTVIEW_GETFIRSTITEM( ::hWnd )
    ENDIF
@@ -379,7 +377,6 @@ METHOD EDITGRID(nrow,ncol) CLASS TGRID
          if ::lappendmode .and. .not. lret
             if ::ncolpos = 1
                ::deleteitem(::itemcount())
-               ProcessMessages()
                ::lappendmode:=.F.
                ::value:= ::itemcount()
                ::nrowpos:=::value
@@ -403,7 +400,6 @@ METHOD EDITGRID(nrow,ncol) CLASS TGRID
 
       ::value:=::nrowpos
       ::ncolpos++
-      ProcessMessages()
    EndDo
 
    if ::ncolpos=1 .and. ::value>1
@@ -1150,8 +1146,15 @@ Local lRet
       Else
          lRet := ::EditCell( nRow, nCol )
       EndIf
+      if ::lappendmode .and. .not. lret
+         if ::ncolpos = 1
+               ::deleteitem(::itemcount())
+               ::lappendmode:=.F.
+               ::value:= ::itemcount()
+              //// ::nrowpos:=::value
+         endif
+      endif
       nCol++
-      ProcessMessages()
    EndDo
    If lRet // .OR. nCol > Len( ::aHeaders )
       ListView_Scroll( ::hWnd, - _OOHG_GridArrayWidths( ::hWnd, ::aWidths ), 0 )
@@ -2275,6 +2278,7 @@ Local lRet := .F.
 
           ON KEY RETURN OF ( ::oWindow ) ACTION ( IF(iswindowactive(wn),lRet := ::Valid(),Nil ))
           ON KEY ESCAPE OF ( ::oWindow ) ACTION ( IF(iswindowactive(wn), ::oWindow:Release(),Nil))
+
 
           ::CreateControl( uValue, ::oWindow, 0, 0, nWidth, nHeight )
           ::Value := ::ControlValue
