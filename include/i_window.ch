@@ -1,5 +1,5 @@
 /*
- * $Id: i_window.ch,v 1.21 2006-11-11 21:07:01 guerra000 Exp $
+ * $Id: i_window.ch,v 1.22 2006-11-22 01:12:33 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -111,7 +111,6 @@
 // 16. ToolBar Button Full Name Property Set
 // 17-27. Tab Child Controls (same sequence of standard controls from 4 to 14)
 
-#ifdef __XHARBOUR__
 
 	#xcommand DECLARE WINDOW <w> ;
 	=>;
@@ -236,133 +235,6 @@
         DECLARE WINDOW <w>;;
         #include \<<ww>.fmg\>
 
-#else
-
-	#xcommand DECLARE WINDOW <w> ;
-	=>;
-        #xtranslate <w> . <p:Name,Title,Height,Width,Col,Row,BackColor,FocusedControl,hWnd,Object,Cursor> => GetExistingFormObject( <(w)> ):<p> ;;
-        #xtranslate <w> . <p:NotifyIcon,NotifyToolTip> => GetProperty ( <(w)>, <(p)> ) ;;
-        #xtranslate <w> . <p:NotifyIcon,NotifyToolTip> := <n> => SetProperty ( <(w)>, <(p)> , <n> ) ;;
-        #xtranslate <w> . <p:Activate,Center,Release,Maximize,Minimize,Restore,Show,Hide,Print,SetFocus> [()] => GetExistingFormObject( <(w)> ):<p> () ;;
-        #xtranslate <w> . <c> . <p:Value,Name,Address,BackColor,FontColor,Picture,ToolTip,FontName,FontSize,FontBold,FontUnderline,FontItalic,FontStrikeOut,Caption,Row,Col,Width,Height,Visible,Enabled,Checked,ItemCount,RangeMin,RangeMax,CaretPos,ForeColor> => GetExistingControlObject( <(c)>, <(w)> ):<p> ;;
-        #xtranslate <w> . <c> . <p:DisplayValue,Position,ForeColor> => GetProperty ( <(w)>, <(c)> , <(p)> ) ;;
-        #xtranslate <w> . <c> . <p:DisplayValue,Position,ForeColor> := <n> => SetProperty ( <(w)>, <(c)> , <(p)> , <n> ) ;;
-        #xtranslate <w> . <c> . <p:AllowAppend,AllowDelete,AllowEdit> => GetExistingControlObject( <(c)>, <(w)> ):<p> ;;
-        #xtranslate <w> . <c> . <p:Caption,Header,Item,Icon,ColumnWidth> (<arg>) => GetProperty ( <(w)>, <(c)> , <(p)> , <arg> ) ;;
-        #xtranslate <w> . <c> . <p:Caption,Header,Item,Icon,ColumnWidth> (<arg>) := <n> => SetProperty ( <(w)>, <(c)> , <(p)> , <arg> , <n> ) ;;
-        #xtranslate <w> . <c> . <p:EnableUpdate,DisableUpdate> => DATE() ;;
-        #xtranslate <w> . <c> . <p:Cell> (<arg1>,<arg2>) => GetProperty ( <(w)>, <(c)> , <(p)> , <arg1> , <arg2> ) ;;
-        #xtranslate <w> . <c> . <p:Cell> (<arg1>,<arg2>) := <n> => SetProperty ( <(w)>, <(c)> , <(p)> , <arg1> , <arg2> , <n> ) ;;
-        #xtranslate <w> . <c> . <p:Refresh,SetFocus,DeleteAllItems,Release,Show,Hide,Play,Stop,Close,Pause,Eject,OpenDialog,Resume,ColumnsAutoFit,ColumnsAutoFitH> [()] => GetExistingControlObject( <(c)>, <(w)> ):<p> () ;;
-        #xtranslate <w> . <c> . <p:Save,Action,OnClick> [()] => Domethod ( <(w)>, <(c)> , <(p)> ) ;;
-        #xtranslate <w> . <c> . <p:AddItem,DeleteItem,Open,DeletePage,DeleteColumn,Expand,Collapse,Seek,ColumnAutoFit,ColumnAutoFitH> (<a>) => GetExistingControlObject( <(c)>, <(w)> ):<p> ( <a> ) ;;
-        #xtranslate <w> . <c> . <p:AddItem,AddPage> (<a1> , <a2>) => Domethod ( <(w)>, <(c)> , <(p)> , <a1> , <a2> ) ;;
-        #xtranslate <w> . <c> . <p:AddItem,AddPage> (<a1> , <a2> , <a3> ) => Domethod ( <(w)>, <(c)> , <(p)> , <a1> , <a2> , <a3> ) ;;
-        #xtranslate <w> . <c> . <p:AddItem,AddColumn,AddControl> (<a1> , <a2> , <a3> , <a4> ) => Domethod ( <(w)>, <(c)> , <(p)> , <a1> , <a2> , <a3> , <a4> ) ;;
-        #xtranslate <w> . <c> . <p:Name,Length,hWnd,Object,ReadOnly> => GetExistingControlObject( <(c)>, <(w)> ):<p> ;;
-        #xtranslate <w> . <c> . <p:Speed,Volume,Zoom> := <n> => GetExistingControlObject( <(c)>, <(w)> ):<p> ( <n> ) ;;
-        #xtranslate <w> . <x> . <c> . <p:Caption,Enabled> => GetProperty ( <(w)> , <(x)> , <(c)> , <(p)> ) ;;
-        #xtranslate <w> . <x> . <c> . <p:Caption,Enabled> := <n> => SetProperty ( <(w)> , <(x)> , <(c)> , <(p)> , <n> ) ;;
-        #xtranslate <w> . <x> (<k>) . <c> . <p:Value,Name,Value,Address,BackColor,FontColor,Picture,ToolTip,FontName,FontSize,FontBold,FontItalic,FontUnderline,FontStrikeOut,Caption,Row,DisplayValue,Col,Width,Height,Visible,Enabled,Checked,ItemCount,RangeMin,RangeMax,Position,CaretPos,ForeColor> => GetProperty ( <(w)>, <(x)> , <k> , <(c)> , <(p)> ) ;;
-        #xtranslate <w> . <x> (<k>) . <c> . <p:Value,Name,Value,Address,BackColor,FontColor,Picture,ToolTip,FontName,FontSize,FontBold,FontItalic,FontUnderline,FontStrikeOut,Caption,Row,DisplayValue,Col,Width,Height,Visible,Enabled,Checked,ItemCount,RangeMin,RangeMax,Position,CaretPos,ForeColor> := <n> => SetProperty ( <(w)> , <(x)> , <k> , <(c)> , <(p)> , <n> ) ;;
-        #xtranslate <w> . <x> (<k>) . <c> . <p:Caption,Header,Item,Icon> (<arg>) => GetProperty ( <(w)>, <(x)> , <k> , <(c)> , <(p)> , <arg> ) ;;
-        #xtranslate <w> . <x> (<k>) . <c> . <p:Caption,Header,Item,Icon> (<arg>) := <n> => SetProperty ( <(w)>, <(x)> , <k> , <(c)> , <(p)> , <arg> , <n> ) ;;
-        #xtranslate <w> . <x> (<k>) . <c> . <p:Refresh,SetFocus,DeleteAllItems,Release,Show,Save,Hide,Play,Stop,Close,Pause,Eject,OpenDialog,Resume,Action,OnClick> [()] => Domethod ( <(w)>, <(x)> , <k> , <(c)> , <(p)> ) ;;
-        #xtranslate <w> . <x> (<k>) . <c> . <p:AddItem,DeleteItem,Open,DeletePage,DeleteColumn,Expand,Collapse,Seek> (<a>) => Domethod ( <(w)>, <(x)> , <k> , <(c)> , <(p)> , <a> ) ;;
-        #xtranslate <w> . <x> (<k>) . <c> . <p:AddItem,AddPage> (<a1> , <a2>) => Domethod ( <(w)>, <(x)> , <k> , <(c)> , <(p)> , <a1> , <a2> ) ;;
-        #xtranslate <w> . <x> (<k>) . <c> . <p:AddItem,AddPage> (<a1> , <a2> , <a3> ) => Domethod ( <(w)>, <(x)> , <k> , <(c)> , <(p)> , <a1> , <a2> , <a3> ) ;;
-        #xtranslate <w> . <x> (<k>) . <c> . <p:AddItem,AddColumn,AddControl> (<a1> , <a2> , <a3> , <a4> ) => Domethod ( <(w)>, <(x)> , <k> , <(c)> , <(p)> , <a1> , <a2> , <a3> , <a4> ) ;;
-        #xtranslate <w> . <x> (<k>) . <c> . <p:Name,Length,hWnd,Object> => GetProperty ( <(w)>, <(x)> , <k> , <(c)> , <(p)> ) ;;
-        #xtranslate <w> . <x> (<k>) . <c> . <p:ReadOnly,Speed,Volume,Zoom> := <n> => SetProperty ( <(w)>, <(x)> , <k> , <(c)> , <(p)> , <n> )
-
-        #xtranslate VISIBLE:= => VISIBLE :=
-
-        #xcommand DEFINE WINDOW <w> ;
-                        [ OBJ <obj> ] ;
-                        [ <dummy: OF, PARENT> <parent> ] ;
-                        [ AT <row>,<col> ] ;
-                        [ WIDTH <wi> ] ;
-                        [ HEIGHT <h> ] ;
-			[ VIRTUAL WIDTH <vWidth> ] ;
-			[ VIRTUAL HEIGHT <vHeight> ] ;
-			[ TITLE <title> ] ;
-			[ ICON <icon> ] ;
-			[ <main:  MAIN> ] ;
-			[ <child: CHILD> ] ;
-                        [ <modal: MODAL> ] ;
-                        [ <modalsize: MODALSIZE> ] ;
-                        [ <splitchild: SPLITCHILD> ] ;
-                        [ <mdi: MDI> ] ;
-                        [ <mdiclient: MDICLIENT> ] ;
-                        [ <mdichild: MDICHILD> ] ;
-                        [ <internal: INTERNAL> ] ;
-			[ <noshow: NOSHOW> ] ;
-			[ <topmost: TOPMOST> ] ;
-			[ <noautorelease: NOAUTORELEASE> ] ;
-			[ <nominimize: NOMINIMIZE> ] ;
-			[ <nomaximize: NOMAXIMIZE> ] ;
-			[ <nosize: NOSIZE> ] ;
-			[ <nosysmenu: NOSYSMENU> ] ;
-			[ <nocaption: NOCAPTION> ] ;
-			[ CURSOR <cursor> ] ;
-			[ ON INIT <InitProcedure> ] ;
-			[ ON RELEASE <ReleaseProcedure> ] ;
-			[ ON INTERACTIVECLOSE <interactivecloseprocedure> ] ;
-			[ ON MOUSECLICK <ClickProcedure> ] ;
-			[ ON MOUSEDRAG <MouseDragProcedure> ] ;
-			[ ON MOUSEMOVE <MouseMoveProcedure> ] ;
-			[ ON SIZE <SizeProcedure> ] ;
-			[ ON MAXIMIZE <MaximizeProcedure> ] ;
-			[ ON MINIMIZE <MinimizeProcedure> ] ;
-			[ ON PAINT <PaintProcedure> ] ;
-		        [ BACKCOLOR <backcolor> ] ;
-			[ FONT <FontName> SIZE <FontSize> ] ;
-			[ NOTIFYICON <NotifyIcon> ] ;
-			[ NOTIFYTOOLTIP <NotifyIconTooltip> ] ;
-			[ ON NOTIFYCLICK <NotifyLeftClick> ] ;
-			[ ON GOTFOCUS <GotFocusProcedure> ] ;
-			[ ON LOSTFOCUS <LostFocusProcedure> ] ;
-			[ ON SCROLLUP <scrollup> ] ;
-			[ ON SCROLLDOWN <scrolldown> ] ;
-			[ ON SCROLLLEFT <scrollleft> ] ;
-			[ ON SCROLLRIGHT <scrollright> ] ;
-			[ ON HSCROLLBOX <hScrollBox> ] ;
-			[ ON VSCROLLBOX <vScrollBox> ] ;
-			[ <helpbutton:  HELPBUTTON> ] ;
-                        [ <rtl: RTL> ] ;
-                        [ GRIPPERTEXT <grippertext> ] ;
-                        [ <break: BREAK> ] ;
-                        [ <focused: FOCUSED> ] ;
-                        [ SUBCLASS <subclass> ] ;
-                        [ <clientarea: CLIENTAREA> ] ;
-	=>;
-        DECLARE WINDOW <w>  ;;
-        [ <obj> := ] ;
-        DefineWindow( <(w)>, <title>, <col>, <row>, <wi>, <h>, <.nominimize.>, <.nomaximize.>, <.nosize.>, ;
-                      <.nosysmenu.>, <.nocaption.>, <{InitProcedure}>, <{ReleaseProcedure}>, ;
-                      <{MouseDragProcedure}>, <{SizeProcedure}>, <{ClickProcedure}>, ;
-                      <{MouseMoveProcedure}>, <backcolor>, <{PaintProcedure}>, <.noshow.>, <.topmost.>, ;
-                      <icon>, <FontName>, <FontSize>, <NotifyIcon>, <NotifyIconTooltip>, ;
-                      <{NotifyLeftClick}>, <{GotFocusProcedure}>, <{LostFocusProcedure}>, <vHeight>, ;
-                      <vWidth>, <{scrollleft}>, <{scrollright}>, <{scrollup}>, <{scrolldown}>, ;
-                      <{hScrollBox}>, <{vScrollBox}>, <.helpbutton.>, <{MaximizeProcedure}>, ;
-                      <{MinimizeProcedure}>, <cursor>, <.noautorelease.>, <parent>, ;
-                      <{interactivecloseprocedure}>, <.focused.>, <.break.>, <grippertext>, <.rtl.>, ;
-                      <.main.>, <.splitchild.>, <.child.>, <.modal.>, <.modalsize.>, <.mdi.>, <.internal.>, ;
-                      <.mdichild.>, <.mdiclient.>, [ <subclass>() ], <.clientarea.> )
-
-	#xcommand LOAD WINDOW <w> ;
-	=> ;
-	DECLARE WINDOW <w> ;;
-        _OOHG_TempWindowName := <(w)> ;;
-	#include <<w>.fmg>
-
-	#xcommand LOAD WINDOW <ww> AS <w> ;
-	=> ;
-	DECLARE WINDOW <w> ;;
-        _OOHG_TempWindowName := <(w)> ; #include <<ww>.fmg>
-
-#endif
 
 #command RELEASE WINDOW <name> ;
 	=>;
