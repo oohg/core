@@ -1,5 +1,5 @@
 /*
- * $Id: h_report.prg,v 1.32 2006-11-23 12:39:02 declan2005 Exp $
+ * $Id: h_report.prg,v 1.33 2006-11-23 13:30:11 declan2005 Exp $
  */
 /*
  * DO REPORT Command support procedures For MiniGUI Library.
@@ -389,37 +389,49 @@ do while .not. eof()
    swmemo:=.F.
    for i:=1 to len(afields)
        wfielda:=afields[i]
-       wfield:=&(wfielda)
-       if type('&wfielda')=='M'
-          swmemo=.T.
-          wfieldt:=wfield
-          ti:=i
+       if type('&wfielda')=='B'
+          wfield:=eval(&wfielda)
+          wtipo:=valtype(wfield)
+       else
+          wfield:=&(wfielda)
+          wtipo=type('&wfielda')
+          if type('&wfielda')=='M'
+             swmemo=.T.
+             wfieldt:=wfield
+             ti:=i
+          endif
+          if type('&wfielda')=='O'
+             wfield:="< Object >"
+             wtipo:="C" 
+          endif
+          if type('&wfielda')=='A'
+             wfield:="< Array >"
+             wtipo:="C" 
+          endif
+       
        endif
+       
+             
             do case
-               case type('&wfielda')=='C'
+               case wtipo == 'C'
                clinea:=clinea+substr(wfield,1,awidths[i])+space(awidths[i]-len(substr(wfield,1,awidths[i]) ))+" "
-////                    clinea:=clinea + iif(.not.(aformats[i]==NIL),space(awidths[i]-len(transform(wfield,aformats[i])))+transform(wfield,aformats[i]),str(wfield,awidths[i]))+ space(awidths[i] -   len(  iif(.not.(aformats[i]==''),space(awidths[i]-len(transform(wfield,aformats[i])))+transform(wfield,aformats[i]),str(wfield,awidths[i])))   )+" "
-               case type('&wfielda')=='N'
+////                  clinea:=clinea + iif(.not.(aformats[i]==NIL),space(awidths[i]-len(transform(wfield,aformats[i])))+transform(wfield,aformats[i]),str(wfield,awidths[i]))+ space(awidths[i] -   len(  iif(.not.(aformats[i]==''),space(awidths[i]-len(transform(wfield,aformats[i])))+transform(wfield,aformats[i]),str(wfield,awidths[i])))   )+" "
+               case wtipo == 'N'
                     clinea:=clinea + iif(.not.(aformats[i]==NIL),space(awidths[i]-len(transform(wfield,aformats[i])))+transform(wfield,aformats[i]),str(wfield,awidths[i]))+ space(awidths[i] -   len(  iif(.not.(aformats[i]==''),space(awidths[i]-len(transform(wfield,aformats[i])))+transform(wfield,aformats[i]),str(wfield,awidths[i])))   )+" "
-               case type('&wfielda')=='D'
+               case wtipo == 'D'
                     clinea:=clinea+ substr(dtoc(wfield),1,awidths[i])+space(awidths[i]-len(substr(dtoc(wfield),1,awidths[i])) )+" "
-               case type('&wfielda')=='L'
+               case wtipo == 'L'
                     clinea:=clinea+iif(wfield,"T","F")+space(awidths[i]-1)+" "
                  
-              case type('&wfielda')=='M' .or. type('&wfielda')=='C' //// ojo no quitar la a
+              case wtipo == 'M' .or. wtipo == 'C' //// ojo no quitar la a
                   nmemo:=mlcount(rtrim(wfield),awidths[i])
                   if nmemo>0
                      clinea:=clinea + rtrim(justificalinea(memoline(rtrim(wfield),awidths[i] ,1),awidths[i]))+space(awidths[i]-len(rtrim(justificalinea(memoline(rtrim(wfield),awidths[i] ,1),awidths[i])) ) )+" "
                   else
                      clinea:=clinea + space(awidths[i])+" "
                   endif
-               otherwise
-               if type('&wfielda')=='B'
-                  cf:=eval(&wfielda)
-                  clinea:=clinea+cf+space(awidths[i]-len(cf))+" "
-               else 
+               otherwise       
                   clinea:=clinea+replicate('_',awidths[i])+" "
-               endif
             endcase
        if atotals[i]
           aresul[i]:=aresul[i]+wfield
