@@ -1,5 +1,5 @@
 /*
- * $Id: h_report.prg,v 1.33 2006-11-23 13:30:11 declan2005 Exp $
+ * $Id: h_report.prg,v 1.34 2006-11-23 14:13:57 declan2005 Exp $
  */
 /*
  * DO REPORT Command support procedures For MiniGUI Library.
@@ -183,7 +183,7 @@ ENDCLASS
 
 
 METHOD easyreport1(ctitle,aheaders1,aheaders2,afields,awidths,atotals,nlpp,ldos,lpreview,cgraphic,nfi,nci,nff,ncf,lmul,cgrpby,chdrgrp,llandscape,ncpl,lselect,calias,nllmargin,aformats,npapersize,cheader,lnoprop,lgroupeject) CLASS TREPORT
-local nlin,i,aresul,lmode,swt:=0,grpby,k,ncvcopt,swmemo,clinea,ti,nmemo,nspace
+local nlin,i,aresul,lmode,swt:=0,grpby,k,ncvcopt,swmemo,clinea,ti,nmemo,nspace,wtipo
 private  wfield,wfielda,wfieldt,lexcel:=.F.
 
 
