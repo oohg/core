@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.48 2006-11-13 02:33:18 guerra000 Exp $
+* $Id: h_print.prg,v 1.49 2006-11-23 01:01:26 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -1374,12 +1374,12 @@ if ::impreview
    SIZE 10 ;
    BACKCOLOR WHITE
 
-   @ 010,nx-40 button but_4 caption "X" width 30 action ( print_preview.release() )
-   @ 110,nx-40 button but_1 caption "+ +" width 30 action zoom("+")
-   @ 210,nx-40 button but_2 caption "- -" width 30 action zoom("-")
-   @ 310,nx-40 button but_3 caption "P" width 30 action (::printdos())
-   @ 410,nx-40 button but_5 caption "S" width 30 action  (::searchstring(print_preview.edit_p.value))
-   @ 510,nx-40 button but_6 caption "N" width 30 action  ::nextsearch()
+   @ 010,nx-40 button but_4 caption "X" width 30 action ( print_preview.release() ) tooltip "close"
+   @ 090,nx-40 button but_1 caption "+ +" width 30 action zoom("+") tooltip "zoom +"
+   @ 170,nx-40 button but_2 caption "- -" width 30 action zoom("-") tooltip "zoom -"
+   @ 250,nx-40 button but_3 caption "P" width 30 action (::printdos()) tooltip "Print DOS mode"
+   @ 330,nx-40 button but_5 caption "S" width 30 action  (::searchstring(print_preview.edit_p.value)) tooltip "Search"
+   @ 410,nx-40 button but_6 caption "N" width 30 action  ::nextsearch() tooltip "Next Search"
 
    END WINDOW
 

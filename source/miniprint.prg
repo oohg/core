@@ -1,5 +1,5 @@
 /*
- * $Id: miniprint.prg,v 1.19 2006-11-08 00:34:03 declan2005 Exp $
+ * $Id: miniprint.prg,v 1.20 2006-11-23 01:01:26 declan2005 Exp $
  */
 /*----------------------------------------------------------------------------
  MINIGUI - Harbour Win32 GUI library source code
@@ -147,10 +147,10 @@ Public _HMG_printer_PrevPageNumber := 0
 
         DEFINE WINDOW _HMG_PRINTER_SHOWPREVIEW ;
 			AT 0,0 ;
-			WIDTH GetDesktopWidth() - 103 ;
-			HEIGHT GetDesktopHeight() - 103  ;
-			VIRTUAL WIDTH ( GetDesktopWidth() - 103 ) * 2 ;
-			VIRTUAL HEIGHT ( GetDesktopHeight() - 103 ) * 2 ;
+                        WIDTH GetDesktopWidth() - 123 ;
+                        HEIGHT GetDesktopHeight() - 123  ;
+                        VIRTUAL WIDTH ( GetDesktopWidth() - 123 ) * 2 ;
+                        VIRTUAL HEIGHT ( GetDesktopHeight() - 123 ) * 2 ;
                         TITLE _HMG_printer_usermessages [01] + ' [' + alltrim(str(_HMG_printer_CurrentPageNumber)) + '/'+alltrim(str(_HMG_printer_PageCount)) + ']';
 			CHILD ;
 			NOSIZE ;
