@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog,v 1.294 2006-11-23 13:47:40 declan2005 Exp $
+ * $Id: ChangeLog,v 1.295 2006-11-23 16:58:59 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+
+2006-11-23 11:57 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+  * source/h_print
+    * In Tprint ::method printdata now print codeblocks.
 
 2006-11-23 7:35 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source/h_report.prg

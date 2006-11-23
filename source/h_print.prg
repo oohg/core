@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.49 2006-11-23 01:01:26 declan2005 Exp $
+* $Id: h_print.prg,v 1.50 2006-11-23 16:59:00 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -472,18 +472,27 @@ RETURN nil
 *-------------------------
 METHOD printdata(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen) CLASS TPRINTBASE
 *-------------------------
-local ctext,cspace
+local ctext,cspace,uAux,cTipo:=Valtype(data)
+do While cTipo == "B"       
+   uAux:=EVal(data)
+   cTipo:=valType(uAux)
+   data:=uAux
+enddo
 do case
-case valtype(data)=='C'
+case cTipo == 'C'
    ctext:=data
-case valtype(data)=='N'
+case cTipo == 'N'
    ctext:=alltrim(str(data))
-case valtype(data)=='D'
+case cTipo == 'D'
    ctext:=dtoc(data)
-case valtype(data)=='L'
+case Ctipo == 'L'
    ctext:= iif(data,'T','F')
-case valtype(data)=='M'
+case cTipo == 'M'
    ctext:=data
+case cTipo == 'O'
+   ctext:="< Object >"
+case cTipo == 'A'
+   ctext:="< Array >"
 otherwise
    ctext:=""
 endcase
