@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.293 2006-11-23 12:39:01 declan2005 Exp $
+ * $Id: ChangeLog,v 1.294 2006-11-23 13:47:40 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -9,11 +9,11 @@
 
 2006-11-23 7:35 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source/h_report.prg
-    * now "do report" permit codeblocks in fields. (codeblocks that result in char expresion)
+    * now "do report" permit codeblocks in fields. 
 
 2006-11-22 19:47 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source/miniprint.prg
-     * adjusting preview size por certains resolution
+     * adjusting preview size for certains resolution
   * source/h_print.prg
      * adding tooltips to dospreview and adjusting button positions 
 
