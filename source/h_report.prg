@@ -1,5 +1,5 @@
 /*
- * $Id: h_report.prg,v 1.31 2006-10-15 22:40:23 declan2005 Exp $
+ * $Id: h_report.prg,v 1.32 2006-11-23 12:39:02 declan2005 Exp $
  */
 /*
  * DO REPORT Command support procedures For MiniGUI Library.
@@ -405,6 +405,7 @@ do while .not. eof()
                     clinea:=clinea+ substr(dtoc(wfield),1,awidths[i])+space(awidths[i]-len(substr(dtoc(wfield),1,awidths[i])) )+" "
                case type('&wfielda')=='L'
                     clinea:=clinea+iif(wfield,"T","F")+space(awidths[i]-1)+" "
+                 
               case type('&wfielda')=='M' .or. type('&wfielda')=='C' //// ojo no quitar la a
                   nmemo:=mlcount(rtrim(wfield),awidths[i])
                   if nmemo>0
@@ -413,7 +414,12 @@ do while .not. eof()
                      clinea:=clinea + space(awidths[i])+" "
                   endif
                otherwise
-               clinea:=clinea+replicate('_',awidths[i])+" "
+               if type('&wfielda')=='B'
+                  cf:=eval(&wfielda)
+                  clinea:=clinea+cf+space(awidths[i]-len(cf))+" "
+               else 
+                  clinea:=clinea+replicate('_',awidths[i])+" "
+               endif
             endcase
        if atotals[i]
           aresul[i]:=aresul[i]+wfield

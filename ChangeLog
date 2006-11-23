@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.292 2006-11-23 01:01:25 declan2005 Exp $
+ * $Id: ChangeLog,v 1.293 2006-11-23 12:39:01 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,6 +7,9 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2006-11-23 7:35 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+  * source/h_report.prg
+    * now "do report" permit codeblocks in fields. (codeblocks that result in char expresion)
 
 2006-11-22 19:47 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source/miniprint.prg
