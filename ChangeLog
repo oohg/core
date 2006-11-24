@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.295 2006-11-23 16:58:59 declan2005 Exp $
+ * $Id: ChangeLog,v 1.296 2006-11-24 15:56:48 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,6 +7,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2006-11-24 10:41 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+  * source/h_grid.prg
+    * changed form name in createwindow method to avoid same names from our own programs
+    * adjusting adding blank dates in appenditem method
+  * source/winprint.prg
+    * adjusting window preview for certain resolutions.
 
 2006-11-23 11:57 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source/h_print

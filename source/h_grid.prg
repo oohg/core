@@ -1,7 +1,7 @@
 *===============================================================================================
 
 /*
- * $Id: h_grid.prg,v 1.72 2006-11-22 23:58:24 declan2005 Exp $
+ * $Id: h_grid.prg,v 1.73 2006-11-24 15:56:48 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -322,7 +322,7 @@ Local aNew,i
                 anew[i]:=""
              endif
              if Valtype(anew[i])="D"
-                anew[i]:=ctod("    .  .  ")
+                anew[i]:=stod("        ")             
              endif
              if Valtype(anew[i])="L"
                 anew[i]:=.F.
@@ -2269,14 +2269,14 @@ ENDCLASS
 
 METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize ) CLASS TGridControl
 Local lRet := .F.
-   if .not. iswindowdefined(wn)
-       DEFINE WINDOW wn OBJ ::oWindow ;
+   if .not. iswindowdefined(_oohg_gridwn)
+       DEFINE WINDOW _oohg_gridwn OBJ ::oWindow ;
           AT nRow, nCol WIDTH nWidth HEIGHT nHeight ;
           MODAL NOSIZE NOCAPTION ;
           FONT cFontName SIZE nFontSize
 
-          ON KEY RETURN OF ( ::oWindow ) ACTION ( IF(iswindowactive(wn),lRet := ::Valid(),Nil ))
-          ON KEY ESCAPE OF ( ::oWindow ) ACTION ( IF(iswindowactive(wn), ::oWindow:Release(),Nil))
+          ON KEY RETURN OF ( ::oWindow ) ACTION ( IF(iswindowactive(_oohg_gridwn),lRet := ::Valid(),Nil ))
+          ON KEY ESCAPE OF ( ::oWindow ) ACTION ( IF(iswindowactive(_oohg_gridwn), ::oWindow:Release(),Nil))
 
 
           ::CreateControl( uValue, ::oWindow, 0, 0, nWidth, nHeight )
@@ -2284,7 +2284,7 @@ Local lRet := .F.
 
       END WINDOW
    endif
-   if iswindowdefined(wn) .and. .not. iswindowactive(wn)      
+   if iswindowdefined(_oohg_gridwn) .and. .not. iswindowactive(_oohg_gridwn)      
       if valtype(::oControl)="O" 
          ::oControl:SetFocus()
       endif

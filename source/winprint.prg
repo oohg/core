@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.8 2006-11-06 16:29:24 declan2005 Exp $
+ * $Id: winprint.prg,v 1.9 2006-11-24 15:56:48 declan2005 Exp $
  */
 // -----------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -1586,7 +1586,7 @@ next pi
   declare window hbpreview1
 
   DEFINE WINDOW HBPREVIEW OBJ oHBPreview AT  ::ahs[1,1] , ::ahs[1,1] ;
-         WIDTH ::ahs[1,6] HEIGHT ::ahs[1,5] ;
+         WIDTH ::ahs[1,6] HEIGHT ::ahs[1,5]-45 ;
           TITLE ::aopisy[1] ICON 'zzz_Printicon' ;
           MODAL NOSIZE ;
           FONT 'Arial' SIZE 9
