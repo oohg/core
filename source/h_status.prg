@@ -1,5 +1,5 @@
 /*
- * $Id: h_status.prg,v 1.20 2006-11-22 05:15:58 guerra000 Exp $
+ * $Id: h_status.prg,v 1.21 2006-11-25 04:14:46 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -99,13 +99,22 @@ STATIC _OOHG_ActiveMessageBar := nil
 
 CLASS TMessageBar FROM TControl
    DATA Type      INIT "MESSAGEBAR" READONLY
+   DATA aClicks   INIT nil
+   DATA aWidths   INIT nil
+
+   METHOD Define
 
    METHOD AddItem
+   METHOD Item
+   METHOD Caption(nItem,cCaption)        BLOCK { |Self,nItem,cCaption| ::Item( nItem, cCaption ) }
+   METHOD ItemWidth
+   METHOD ItemCount        BLOCK { |Self| GetItemCount( ::hWnd ) }
+
+   METHOD BackColor        SETGET
+
    METHOD SetClock
    METHOD SetKeybrd
 
-   METHOD Define
-   METHOD Item
    METHOD Events_Notify
    METHOD Events_Size
    METHOD RefreshData
@@ -120,36 +129,33 @@ Local ControlHandle
 
    EMPTY( nClrF )
    EMPTY( nClrB )
-   y := x := 0
+   EMPTY( x )
+   EMPTY( y )
+   EMPTY( h )
 
 	if valtype (caption) == 'U'
       caption := ""
 	EndIf
-	if valtype (w) == 'U'
-		w := 50
-	EndIf
-	if valtype (h) == 'U'
-		h := 0
-	EndIf
+
+   ::aClicks := {}
+   ::aWidths := {}
 
    ::SetForm( ControlName, ParentForm, FontName, nFontSize )
    ::Container := nil
 
    _OOHG_ActiveMessageBar := Self
 
-//   ControlHandle := InitMessageBar( ::Parent:hWnd, Caption, 0, 0, 0, w , h, '', 0, clock, date, kbd  )
    ControlHandle := InitMessageBar( ::Parent:hWnd, Caption, 0, lTop  )
 
    ::Register( ControlHandle, ControlName, , , ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
-   ::SizePos( y, x, w, h )
 
    ::OnClick := ProcedureName
    ::Caption := Caption
 
    // Re-defines first status item
-   IF ! Empty( Caption )
-      TItemMessage():Define( , Self, , , Caption, ProcedureName, w, h, , , tooltip )
+   IF ValType( Caption ) $ "CM"
+      ::AddItem( Caption, w, ProcedureName, ToolTip )
    Endif
 
    IF VALTYPE( clock ) == "L" .AND. clock
@@ -168,25 +174,67 @@ Local ControlHandle
    aAdd( ::Parent:BrowseList, Self )
 
 Return Self
-/*
-AGREGAR: lTop!!!  acImages!!!
-Function _EndStatusBar ( cParentForm, acCaptions, anWidths, acImages, abActions, acToolTips, anStyles, ;
-            cFontName, nFontSize, lFontBold, lFontItalic, lFontUnderLine, lFontStrikeOut, lTop )
-	nControlhandle := InitStatusBar (	nParentHandle	, ;
-						nId		, ;
-						acCaptions	, ;
-						anWidths	, ;
-						acImages	, ;
-						acToolTips	, ;
-						anStyles	, ;
-						lTop		;
-					)
-*/
 
 *-----------------------------------------------------------------------------*
-METHOD AddItem( Caption, Width, action, ToolTip ) CLASS TMessageBar
+METHOD AddItem( Caption, Width, action, ToolTip, icon, cstyl ) CLASS TMessageBar
 *-----------------------------------------------------------------------------*
-Return TItemMessage():Define( "STATUSITEM", Self,,, Caption, action, Width,,,, ToolTip )
+Local styl, nItem, i
+
+   ASSIGN Width VALUE Width TYPE "N" DEFAULT 50
+
+	do case
+      case ! ValType( cStyl ) $ "CM"
+         styl := 0
+      case Upper( cStyl ) == "RAISED"
+         styl := 1
+      case Upper( cStyl ) == "FLAT"
+         styl := 2
+      otherwise
+         styl := 0
+ 	endcase
+
+   If LEN( ::aWidths ) == 0
+      nItem := InitItemBar( ::hWnd, Caption, 0, Width, 0, Icon, ToolTip, styl )
+   Else
+      nItem := InitItemBar( ::hWnd, Caption, 0, Width, 1, Icon, ToolTip, styl )
+   EndIf
+
+   ASIZE( ::aClicks, nItem )
+   ::aClicks[ nItem ] := action
+
+   ASIZE( ::aWidths, nItem )
+   ::aWidths[ nItem ] := Width
+
+   i := At( "&", Caption )
+   If i > 0 .AND. i < LEN( Caption )
+      DEFINE HOTKEY 0 PARENT ( Self ) KEY "ALT+" + SubStr( Caption, i + 1, 1 ) ACTION _OOHG_Eval( ::aClicks[ nItem ] )
+	EndIf
+
+   _OOHG_AddFrame( Self )
+   ::ContainerhWndValue := ::hWnd
+
+Return nItem
+
+*-----------------------------------------------------------------------------*
+METHOD Item( nItem, uValue ) CLASS TMessageBar
+*-----------------------------------------------------------------------------*
+   IF VALTYPE( uValue ) $ "CM"
+      SetItemBar( ::hWnd, uValue, nItem - 1 )
+   ENDIF
+RETURN GetItemBar( ::hWnd, nItem - 1 )
+
+*-----------------------------------------------------------------------------*
+METHOD ItemWidth( nItem, nWidth ) CLASS TMessageBar
+*-----------------------------------------------------------------------------*
+   If ValType( nWidth ) == "N" .AND. nItem >= 2 .AND. nItem <= ::ItemCount
+      If Len( ::aWidths ) < ::ItemCount
+         ASIZE( ::aWidths, ::ItemCount )
+      EndIf
+      ::aWidths[ nItem ] := nWidth
+      RefreshItemBar( ::hWnd, ::aWidths )
+      ::aWidths[ 1 ] := GetItemWidth( ::hWnd, 1 )
+   EndIf
+Return GetItemWidth( ::hWnd, nItem )
 
 *-----------------------------------------------------------------------------*
 METHOD SetClock( Width, ToolTip, action, lAmPm ) CLASS TMessageBar
@@ -204,11 +252,11 @@ local nrItem
 	EndIf
 
    If ! lAmPm
-      nrItem := TItemMessage():Define( "TimerBar", Self, 0, 0, Time(), action, Width, 0, "", ToolTip )
-      TTimer():Define( 'StatusTimer', ::aControls[ nrItem ], 1000, { || ::Item( nrItem, Time() ) } )
+      nrItem := ::AddItem( Time(), Width, action, ToolTip )
+      TTimer():Define( , Self, 1000, { || ::Item( nrItem, Time() ) } )
    Else
-      nrItem := TItemMessage():Define( "TimerBar", Self, 0, 0, TMessageBar_AmPmClock(), action, Width, 0, "", ToolTip )
-      TTimer():Define( 'StatusTimer', ::aControls[ nrItem ], 1000, { || ::Item( nrItem, TMessageBar_AmPmClock() ) } )
+      nrItem := ::AddItem( TMessageBar_AmPmClock(), Width, action, ToolTip )
+      TTimer():Define( , Self, 1000, { || ::Item( nrItem, TMessageBar_AmPmClock() ) } )
    Endif
 
 Return Nil
@@ -243,16 +291,21 @@ local nrItem1 , nrItem2 , nrItem3
 		Action := ''
 	EndIf
 
-   nrItem1 := TItemMessage():Define( "TimerNum", Self, 0, 0, "Num", If ( empty (Action), {|| KeyToggle( VK_NUMLOCK ) }, Action ), GetTextWidth( NIL, "Num", ::FontHandle ) + 36, 0, ;
-                     if ( IsNumLockActive() , "zzz_led_on" , "zzz_led_off" ), "", ToolTip)
+   nrItem1 := ::AddItem( "Num",  GetTextWidth( NIL, "Num",  ::FontHandle ) + 36, action, ToolTip, if( IsNumLockActive(),  "zzz_led_on", "zzz_led_off" ) )
+   nrItem2 := ::AddItem( "Caps", GetTextWidth( NIL, "Caps", ::FontHandle ) + 36, action, ToolTip, if( IsCapsLockActive(), "zzz_led_on", "zzz_led_off" ) )
+   nrItem3 := ::AddItem( "Ins",  GetTextWidth( NIL, "Ins",  ::FontHandle ) + 36, action, ToolTip, if( IsCapsLockActive(), "zzz_led_on", "zzz_led_off" ) )
 
-   nrItem2 := TItemMessage():Define( "TimerCaps", Self, 0, 0, "Caps", If ( empty (Action), {|| KeyToggle( VK_CAPITAL ) }, Action ), GetTextWidth( NIL, "Caps", ::FontHandle ) + 36, 0,;
-                     if ( IsCapsLockActive() , "zzz_led_on" , "zzz_led_off" ), "", ToolTip)
+   If Empty( Action )
+      ::aClicks[ nrItem1 ] := { || KeyToggle( VK_NUMLOCK ) }
+      ::aClicks[ nrItem2 ] := { || KeyToggle( VK_CAPITAL ) }
+      ::aClicks[ nrItem3 ] := { || KeyToggle( VK_INSERT ) }
+   Else
+      ::aClicks[ nrItem1 ] := Action
+      ::aClicks[ nrItem2 ] := Action
+      ::aClicks[ nrItem3 ] := Action
+   EndIf
 
-   nrItem3 := TItemMessage():Define( "TimerInsert", Self, 0, 0, "Ins", If ( empty (Action), {|| KeyToggle( VK_INSERT ) }, Action ), GetTextWidth( NIL, "Ins", ::FontHandle ) + 36, 0,;
-                     if ( IsInsertActive() , "zzz_led_on" , "zzz_led_off" ), "", ToolTip)
-
-   TTimer():Define( "StatusKeyBrd", ::aControls[ nrItem1 ], 400 , ;
+   TTimer():Define( , Self, 400 , ;
       {|| SetStatusItemIcon( ::hWnd, nrItem1 , if ( IsNumLockActive() , "zzz_led_on" , "zzz_led_off" ) ), ;
           SetStatusItemIcon( ::hWnd, nrItem2 , if ( IsCapsLockActive() , "zzz_led_on" , "zzz_led_off" ) ), ;
           SetStatusItemIcon( ::hWnd, nrItem3 , if ( IsInsertActive() , "zzz_led_on" , "zzz_led_off" ) ) } )
@@ -260,150 +313,43 @@ local nrItem1 , nrItem2 , nrItem3
 Return Nil
 
 *-----------------------------------------------------------------------------*
-METHOD Item( nItem, uValue ) CLASS TMessageBar
-*-----------------------------------------------------------------------------*
-   IF VALTYPE( uValue  ) $ "CM"
-      ::aControls[ nItem ]:Caption := uValue
-      SetItemBar( ::hWnd, uValue, nItem - 1 )
-   ENDIF
-RETURN ::aControls[ nItem ]:Caption
-
-*-----------------------------------------------------------------------------*
 METHOD Events_Notify( wParam, lParam ) CLASS TMessageBar
 *-----------------------------------------------------------------------------*
 Local nNotify := GetNotifyCode( lParam )
 Local x
-
    If nNotify == NM_CLICK
-
       DefWindowProc( ::hWnd, NM_CLICK, wParam, lParam )
-
-      x := GetItemPos( lParam )
-
-      x := ASCAN( ::aControls, { |o| o:nPosition == x + 1 } )
-
-      if x != 0
-
-         if ::aControls[ x ]:DoEvent( ::aControls[ x ]:OnClick )
-
+      x := GetItemPos( lParam ) + 1
+      if x > 0 .AND. x <= Len( ::aClicks )
+         if ::DoEvent( ::aClicks[ x ] )
             Return nil
-
          EndIf
-
       EndIf
-
    EndIf
-
 Return ::Super:Events_Notify( wParam, lParam )
 
 *-----------------------------------------------------------------------------*
 METHOD Events_Size() CLASS TMessageBar
 *-----------------------------------------------------------------------------*
    ::RefreshData()
+   AEVAL( ::aControls, { |o| o:Events_Size() } )
 Return Super:Events_Size()
 
 *-----------------------------------------------------------------------------*
 METHOD RefreshData() CLASS TMessageBar
 *-----------------------------------------------------------------------------*
-Local aWidths
-   aWidths := ARRAY( LEN( ::aControls ) )
-   AEVAL( ::aControls, { |o,i| aWidths[ i ] := o:Width } )
-   RefreshItemBar( ::hWnd, aWidths )
-   IF LEN( ::aControls ) > 0
-      ::aControls[ 1 ]:Width := GetItemWidth( ::hWnd, 1 )
+   RefreshItemBar( ::hWnd, ::aWidths )
+   IF LEN( ::aWidths ) >= 1
+      ::aWidths[ 1 ] := GetItemWidth( ::hWnd, 1 )
    ENDIF
 Return Self
 
 *-----------------------------------------------------------------------------*
 Function _EndMessageBar()
 *-----------------------------------------------------------------------------*
-
    _OOHG_ActiveMessageBar := nil
-
+   _OOHG_DeleteFrame( "MESSAGEBAR" )
 Return Nil
-
-
-
-
-
-CLASS TItemMessage FROM TControl
-   DATA Type      INIT "ITEMMESSAGE" READONLY
-   DATA nPosition INIT 0
-
-   METHOD Define
-   METHOD SizePos
-ENDCLASS
-
-*-----------------------------------------------------------------------------*
-METHOD Define( ControlName, ParentControl, x, y, Caption, ProcedureName, w, ;
-               h, icon, cstyl, tooltip ) CLASS TItemMessage
-*-----------------------------------------------------------------------------*
-Local i, styl, ControlHandle
-
-   if valtype( ParentControl ) == 'U'
-      ParentControl := _OOHG_ActiveMessageBar
-   EndIf
-
-   ::SetForm( , ParentControl )
-   IF VALTYPE( ControlName ) $ "CM" .AND. upper( alltrim( ControlName ) ) == "STATUSITEM" .AND. ::Parent:Control( "STATUSITEM" ) == nil
-      ::Name := "STATUSITEM"
-   ENDIF
-
-	do case
-      case ! ValType( cStyl ) $ "CM"
-         styl := 0
-      case Upper( cStyl ) == "RAISED"
-         styl := 1
-      case Upper( cStyl ) == "FLAT"
-         styl := 2
-      otherwise
-         styl := 0
- 	endcase
-
-   if valtype( w ) != "N"
-		w := 70
-	endif
-
-   if valtype( h ) != "N"
-		h := 0
-	endif
-
-   If LEN( ::Container:aControls ) == 0
-      ControlHandle := InitItemBar ( ::Container:hWnd, Caption, 0, 0, 0, Icon , ToolTip, styl )
-	Else
-      ControlHandle := InitItemBar ( ::Container:hWnd, Caption, 0, w, 1, Icon , ToolTip, styl )
-	EndIf
-
-   ::Register( 0, ControlName, , , ToolTip )
-   ::nPosition := ControlHandle
-   ::SizePos( y, x, w, h )
-
-   ::OnClick := ProcedureName
-   ::Caption := Caption
-
-   i := At( "&", Caption )
-   If i > 0 .AND. i < LEN( Caption )
-      DEFINE HOTKEY 0 PARENT ( ::Parent ) KEY "ALT+" + SubStr( Caption, i + 1, 1 ) ACTION ::Click()
-	EndIf
-
-Return ControlHandle
-
-*-----------------------------------------------------------------------------*
-METHOD SizePos( Row, Col, Width, Height ) CLASS TItemMessage
-*-----------------------------------------------------------------------------*
-   IF VALTYPE( Row ) == "N"
-      ::nRow := Row
-   ENDIF
-   IF VALTYPE( Col ) == "N"
-      ::nCol := Col
-   ENDIF
-   IF VALTYPE( Width ) == "N"
-      ::nWidth := Width
-   ENDIF
-   IF VALTYPE( Height ) == "N"
-      ::nHeight := Height
-   ENDIF
-Return 0
 
 
 
@@ -415,12 +361,12 @@ Return _OOHG_ActiveMessageBar:SetClock( nSize, cToolTip, uAction, lAmPm )
 FUNCTION _SetStatusKeybrd( nSize, cToolTip, uAction )
 Return _OOHG_ActiveMessageBar:SetKeybrd( nSize, cToolTip, uAction )
 
+FUNCTION _SetStatusItem( Caption, Width, action, ToolTip, icon, cstyl )
+Return _OOHG_ActiveMessageBar:AddItem( Caption, Width, action, ToolTip, icon, cstyl )
 
 
 
 
-EXTERN InitMessageBar, InitItemBar, SetItemBar
-EXTERN GetItemBar, GetItemCount, GetItemWidth, RefreshItemBar, KeyToggle, SetStatusItemIcon
 
 #pragma BEGINDUMP
 
@@ -435,45 +381,62 @@ EXTERN GetItemBar, GetItemCount, GetItemWidth, RefreshItemBar, KeyToggle, SetSta
 #include <windows.h>
 #include <commctrl.h>
 #include "hbapi.h"
-// #include "hbvm.h"
-// #include "hbstack.h"
-// #include "hbapiitm.h"
-// #include "winreg.h"
-// #include "tchar.h"
-// #include <stdlib.h>
+#include "hbstack.h"
 
 #include "../include/oohg.h"
+
+static WNDPROC lpfnOldWndProc = 0;
+
+static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+{
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
+}
 
 #define NUM_OF_PARTS 40
 
 HB_FUNC( INITMESSAGEBAR )
 {
-    HWND hwnd;
-    HWND hWndSB;
-    int   ptArray[ NUM_OF_PARTS ];   // Array defining the number of parts/sections
-    int  nrOfParts = 1;
-    int  iStyle;
+   HWND hWndSB;
+   int  iStyle;
 
-    hwnd = HWNDparam( 1 );
+   iStyle = WS_CHILD | WS_VISIBLE | WS_BORDER | SBT_TOOLTIPS;
+   if( hb_parl( 4 ) )
+   {
+      iStyle |= CCS_TOP;
+   }
 
-    iStyle = WS_CHILD | WS_VISIBLE | WS_BORDER | SBT_TOOLTIPS;
-    if( hb_parl( 4 ) )
-    {
-       iStyle |= CCS_TOP;
-    }
+   hWndSB = CreateStatusWindow( iStyle, hb_parc( 2 ), HWNDparam( 1 ), hb_parni ( 3 ) );
 
-    hWndSB = CreateStatusWindow( iStyle, hb_parc(2), hwnd, hb_parni (3));
-    if(hWndSB)
-    {
-	SendMessage(hWndSB, SB_SETPARTS, nrOfParts,  (LPARAM)(LPINT)ptArray);
-    }
+   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( hWndSB, GWL_WNDPROC, ( LONG ) SubClassFunc );
 
-    HWNDret( hWndSB );
+   HWNDret( hWndSB );
 }
-//--------------------------------------------------------
 
-//void InitializeStatusBar(HWND hWndStatusbar, char *cMsg, int nSize, int nMsg)
+HB_FUNC( GETITEMCOUNT )
+{
+   hb_retni( SendMessage( HWNDparam( 1 ), SB_GETPARTS, 0, 0 ) );
+}
 
+HB_FUNC( SETITEMBAR )
+{
+   SendMessage( HWNDparam( 1 ), SB_SETTEXT, hb_parni( 3 ), ( LPARAM ) hb_parc( 2 ) );
+}
+
+HB_FUNC( GETITEMBAR )
+{
+   char *cString;
+   HWND hWnd;
+   int iPos;
+
+   hWnd = HWNDparam( 1 );
+   iPos = hb_parni( 2 );
+   cString = hb_xgrab( LOWORD( SendMessage( hWnd, SB_GETTEXTLENGTH, iPos, 0 ) ) + 1 );
+   SendMessage( hWnd, SB_GETTEXT, ( WPARAM ) iPos, ( LPARAM ) cString );
+   hb_retc( cString );
+   hb_xfree( cString );
+}
+
+//////////// to check...
 HB_FUNC( INITITEMBAR )
 {
     HWND  hWndSB;
@@ -545,23 +508,7 @@ HB_FUNC( INITITEMBAR )
 	hb_retni( nrOfParts );
 }
 
-HB_FUNC( SETITEMBAR )
-{
-    SendMessage( HWNDparam( 1 ), SB_SETTEXT, hb_parni( 3 ) , ( LPARAM ) hb_parc( 2 ) );
-}
-
-HB_FUNC( GETITEMBAR )
-{
-    char cString[ 1024 ] = "";
-    SendMessage( HWNDparam( 1 ), SB_GETTEXT, ( WPARAM ) hb_parni( 2 ) - 1, ( LPARAM ) cString );
-    hb_retc( cString );
-}
-
-HB_FUNC( GETITEMCOUNT )
-{
-    hb_retni( SendMessage( HWNDparam( 1 ), SB_GETPARTS, 0, 0 ) );
-}
-
+//////////// to check...
 HB_FUNC( GETITEMWIDTH )
 {
    HWND  hWnd;
@@ -589,6 +536,7 @@ HB_FUNC( GETITEMWIDTH )
    hb_retni( iSize );
 }
 
+//////////// to check...
 HB_FUNC( REFRESHITEMBAR )   // ( hWnd, aWidths )
 {
    HWND  hWnd;
@@ -605,10 +553,13 @@ HB_FUNC( REFRESHITEMBAR )   // ( hWnd, aWidths )
       iWidth = rect.right - rect.left;
 
       piItems = hb_xgrab( sizeof( int ) * iItems );
-      for( iCount = iItems; iCount >= 1; iCount-- )
+      SendMessage( hWnd, SB_GETPARTS, iItems, ( WPARAM ) piItems );
+      iCount = iItems;
+      while( iCount )
       {
-         piItems[ iCount - 1 ] = iWidth;
-         iWidth -= hb_parni( 2, iCount );
+         iCount--;
+         piItems[ iCount ] = iWidth;
+         iWidth -= hb_parni( 2, iCount + 1 );
       }
       SendMessage( hWnd, SB_SETPARTS, iItems, ( LPARAM ) piItems );
       MoveWindow( hWnd, 0, 0, 0, 0, TRUE );
@@ -617,21 +568,7 @@ HB_FUNC( REFRESHITEMBAR )   // ( hWnd, aWidths )
    hb_retni( iItems );
 }
 
-HB_FUNC ( KEYTOGGLE )
-{
-   BYTE pBuffer[ 256 ];
-   WORD wKey = ( WORD ) hb_parni( 1 );
-
-   GetKeyboardState( pBuffer );
-
-   if( pBuffer[ wKey ] & 0x01 )
-      pBuffer[ wKey ] &= 0xFE;
-   else
-      pBuffer[ wKey ] |= 0x01;
-
-   SetKeyboardState( pBuffer );
-}
-
+//////////// to check...
 HB_FUNC_EXTERN( SETSTATUSITEMICON )
 {
 
@@ -663,5 +600,39 @@ HB_FUNC_EXTERN( SETSTATUSITEMICON )
 
 	SendMessage(hwnd,SB_SETICON,(WPARAM) hb_parni(2)-1, (LPARAM)hIcon );
 
+}
+
+HB_FUNC( KEYTOGGLE )
+{
+   BYTE pBuffer[ 256 ];
+   WORD wKey = ( WORD ) hb_parni( 1 );
+
+   GetKeyboardState( pBuffer );
+
+   if( pBuffer[ wKey ] & 0x01 )
+      pBuffer[ wKey ] &= 0xFE;
+   else
+      pBuffer[ wKey ] |= 0x01;
+
+   SetKeyboardState( pBuffer );
+}
+
+HB_FUNC_STATIC( TMESSAGEBAR_BACKCOLOR )
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   COLORREF  Color;
+
+   if( _OOHG_DetermineColorReturn( hb_param( 1, HB_IT_ANY ), &oSelf->lBackColor, ( hb_pcount() >= 1 ) ) )
+   {
+      if( ValidHandler( oSelf->hWnd ) )
+      {
+         Color = ( oSelf->lBackColor == -1 ) ? CLR_DEFAULT : oSelf->lBackColor;
+         SendMessage( oSelf->hWnd, SB_SETBKCOLOR, 0, Color );
+         RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+      }
+   }
+
+   // Return value was set in _OOHG_DetermineColorReturn()
 }
 #pragma ENDDUMP

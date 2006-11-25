@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.121 2006-11-20 02:33:18 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.122 2006-11-25 04:14:46 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -487,16 +487,16 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )
       case WM_CTLCOLORSTATIC:
          _OOHG_Send( GetControlObjectByHandle( ( HWND ) lParam ), s_Events_Color );
          hb_vmPushLong( wParam );
-         // hb_vmPushLong( COLOR_3DFACE );
-         hb_vmSend( 1 );
+         hb_vmPushLong( GetSysColor( COLOR_3DFACE ) );
+         hb_vmSend( 2 );
          break;
 
       case WM_CTLCOLOREDIT:
       case WM_CTLCOLORLISTBOX:
          _OOHG_Send( GetControlObjectByHandle( ( HWND ) lParam ), s_Events_Color );
          hb_vmPushLong( wParam );
-         // hb_vmPushLong( COLOR_WINDOW );
-         hb_vmSend( 1 );
+         hb_vmPushLong( GetSysColor( COLOR_WINDOW ) );
+         hb_vmSend( 2 );
          break;
 
       case WM_NOTIFY:

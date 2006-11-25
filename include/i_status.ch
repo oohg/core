@@ -1,5 +1,5 @@
 /*
- * $Id: i_status.ch,v 1.4 2006-10-07 04:00:52 guerra000 Exp $
+ * $Id: i_status.ch,v 1.5 2006-11-25 04:14:46 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -102,9 +102,10 @@
 		[ <italic : ITALIC> ] ;
 		[ <underline : UNDERLINE> ] ;
 		[ <strikeout : STRIKEOUT> ] ;
+                [ MESSAGE <msg> ] ;
       => ;
          [ <obj> := ] ;
-         TMessageBar():Define( "StatusBar", <(parent)>, 0, 0, 0, 0, , "", <fontname>, <fontsize>, "", .f., .f., <.kbd.>,;
+         TMessageBar():Define( "StatusBar", <(parent)>, 0, 0, 0, 0, <msg>,, <fontname>, <fontsize>, "", .f., .f., <.kbd.>,;
                                Nil , Nil ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.>, <.top.> )
 
 #xcommand  END STATUSBAR ;
@@ -118,15 +119,17 @@
 	 [ <styl:FLAT,RAISED> ] ;
          [ TOOLTIP <cToolTip> ] ;
        => ;
-          TItemMessage():Define( "STATUSITEM",  , 0, 0, <cMsg>, <{uAction}>, <nSize>, 0,;
-                     <cBitmap>, <(styl)>, <cToolTip>)
+         _SetStatusItem( <cMsg>, <nSize>, <{uAction}>, <cToolTip>, <cBitmap>, <(styl)> )
 
 #xcommand DATE ;
 	[ <w: WIDTH > <nSize> ] ;
 	[ ACTION <uAction> ] ;
 	[ TOOLTIP <cToolTip> ] ;
+        [ <styl:FLAT,RAISED> ] ;
        => ;
-          TItemMessage():Define( "STATUSITEM",  , 0, 0, Dtoc(Date()), <{uAction}>, if ( <.w.> == .f. , if ( lower ( left ( set ( _SET_DATEFORMAT ) , 4 ) ) == "yyyy" .or. lower ( right ( set ( _SET_DATEFORMAT ) , 4 ) ) == "yyyy", 90 , 70 ) , <nSize> ) , 0, "", <cToolTip>)
+        _SetStatusItem( Dtoc( Date() ), ;
+                        if ( <.w.> == .f. , if ( lower ( left ( set ( _SET_DATEFORMAT ) , 4 ) ) == "yyyy" .or. lower ( right ( set ( _SET_DATEFORMAT ) , 4 ) ) == "yyyy", 90 , 70 ) , <nSize> ) , ) , ;
+                        <{uAction}>, <cToolTip>,, <(styl)> )
 
 #xcommand CLOCK ;
              [ WIDTH <nSize> ] ;

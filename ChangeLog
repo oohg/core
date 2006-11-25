@@ -1,11 +1,24 @@
 /*
- * $Id: ChangeLog,v 1.296 2006-11-24 15:56:48 declan2005 Exp $
+ * $Id: ChangeLog,v 1.297 2006-11-25 04:14:46 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-11-24 22:13 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_controlmisc.prg
+  * source/h_windows.prg
+    ! Fixed BACKCOLOR implementation.
+  * include/i_status.ch
+  * source/h_status.prg
+    * STATUSBAR internal desing changed.
+    + TItemMessage() class removed. Statusbar's parts are now
+      managed directly from control.
+    + ::BackColor functionality added.
+    + STATUSBAR is now a CONTAINER control (you can add so easy
+      a progressbar/progressmeter or something else :) )
 
 2006-11-24 10:41 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source/h_grid.prg
@@ -20,13 +33,13 @@
 
 2006-11-23 7:35 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source/h_report.prg
-    * now "do report" permit codeblocks in fields. 
+    * now "do report" permit codeblocks in fields.
 
 2006-11-22 19:47 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source/miniprint.prg
      * adjusting preview size for certains resolution
   * source/h_print.prg
-     * adding tooltips to dospreview and adjusting button positions 
+     * adding tooltips to dospreview and adjusting button positions
 
 2006-11-22 18:46 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source/h_grid.prg
@@ -66,7 +79,7 @@
     * Locked checkout for This.CellValue change in VALID
       verification :(
   * source/h_controlmisc.prg
-  * source/h_window.prg
+  * source/h_windows.prg
     * Disabled hotkey checking for forms/controls under creation.
 
 2006-11-18 15:30 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
