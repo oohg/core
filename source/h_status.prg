@@ -1,5 +1,5 @@
 /*
- * $Id: h_status.prg,v 1.21 2006-11-25 04:14:46 guerra000 Exp $
+ * $Id: h_status.prg,v 1.22 2006-11-25 15:27:14 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -133,10 +133,6 @@ Local ControlHandle
    EMPTY( y )
    EMPTY( h )
 
-	if valtype (caption) == 'U'
-      caption := ""
-	EndIf
-
    ::aClicks := {}
    ::aWidths := {}
 
@@ -173,6 +169,9 @@ Local ControlHandle
    // Add to browselist array to update on window activation
    aAdd( ::Parent:BrowseList, Self )
 
+   _OOHG_AddFrame( Self )
+   ::ContainerhWndValue := ::hWnd
+
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -182,16 +181,15 @@ Local styl, nItem, i
 
    ASSIGN Width VALUE Width TYPE "N" DEFAULT 50
 
-	do case
-      case ! ValType( cStyl ) $ "CM"
-         styl := 0
-      case Upper( cStyl ) == "RAISED"
+   styl := 0
+   If ValType( cStyl ) $ "CM" .AND. ! Empty( cStyl )
+      cStyl := UPPER( ALLTRIM( cStyl ) )
+      If     "RAISED" = cStyl
          styl := 1
-      case Upper( cStyl ) == "FLAT"
+      ElseIf "FLAT"   = cStyl
          styl := 2
-      otherwise
-         styl := 0
- 	endcase
+      EndIf
+   EndIf
 
    If LEN( ::aWidths ) == 0
       nItem := InitItemBar( ::hWnd, Caption, 0, Width, 0, Icon, ToolTip, styl )
@@ -209,9 +207,6 @@ Local styl, nItem, i
    If i > 0 .AND. i < LEN( Caption )
       DEFINE HOTKEY 0 PARENT ( Self ) KEY "ALT+" + SubStr( Caption, i + 1, 1 ) ACTION _OOHG_Eval( ::aClicks[ nItem ] )
 	EndIf
-
-   _OOHG_AddFrame( Self )
-   ::ContainerhWndValue := ::hWnd
 
 Return nItem
 
