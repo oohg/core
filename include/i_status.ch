@@ -1,5 +1,5 @@
 /*
- * $Id: i_status.ch,v 1.5 2006-11-25 04:14:46 guerra000 Exp $
+ * $Id: i_status.ch,v 1.6 2006-11-26 23:07:36 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -103,10 +103,11 @@
 		[ <underline : UNDERLINE> ] ;
 		[ <strikeout : STRIKEOUT> ] ;
                 [ MESSAGE <msg> ] ;
+                [ SUBCLASS <subclass> ]         ;
       => ;
-         [ <obj> := ] ;
-         TMessageBar():Define( "StatusBar", <(parent)>, 0, 0, 0, 0, <msg>,, <fontname>, <fontsize>, "", .f., .f., <.kbd.>,;
-                               Nil , Nil ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.>, <.top.> )
+         [ <obj> := ] _OOHG_SelectSubClass( TMessageBar(), [ <subclass>() ] ): ;
+                      Define( "StatusBar", <(parent)>, 0, 0, 0, 0, <msg>,, <fontname>, <fontsize>, "", .f., .f., ;
+                              <.kbd.>, Nil , Nil ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.>, <.top.> )
 
 #xcommand  END STATUSBAR ;
       => ;
@@ -128,7 +129,7 @@
         [ <styl:FLAT,RAISED> ] ;
        => ;
         _SetStatusItem( Dtoc( Date() ), ;
-                        if ( <.w.> == .f. , if ( lower ( left ( set ( _SET_DATEFORMAT ) , 4 ) ) == "yyyy" .or. lower ( right ( set ( _SET_DATEFORMAT ) , 4 ) ) == "yyyy", 90 , 70 ) , <nSize> ) , ) , ;
+                        if( <.w.>, <nSize>, if( "yyyy" $ lower( set( _SET_DATEFORMAT ) ), 95, 75 ) ), ;
                         <{uAction}>, <cToolTip>,, <(styl)> )
 
 #xcommand CLOCK ;

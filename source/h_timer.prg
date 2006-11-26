@@ -1,5 +1,5 @@
 /*
- * $Id: h_timer.prg,v 1.4 2006-06-17 02:52:27 guerra000 Exp $
+ * $Id: h_timer.prg,v 1.5 2006-11-26 23:07:36 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -105,20 +105,14 @@ CLASS TTimer FROM TControl
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
-METHOD Define( ControlName, ParentForm, Interval, ProcedureName ) CLASS TTimer
+METHOD Define( ControlName, ParentForm, Interval, ProcedureName, lDisabled ) CLASS TTimer
 *-----------------------------------------------------------------------------*
-Local Id
-
    ::SetForm( ControlName, ParentForm )
-
-   Id := _GetId()
-   InitTimer( ::Parent:hWnd, id, Interval )
-
-   ::Register( 0, ControlName, , , , Id )
-
+   ::InitStyle( ,,,, lDisabled )
+   ::Register( 0, ControlName, , , , _GetId() )
    ::OnClick  := ProcedureName
-   ::Interval := Interval
-
+   // "Real" initialization
+   ::Value := Interval
 Return Self
 
 *-----------------------------------------------------------------------------*
