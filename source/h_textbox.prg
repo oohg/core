@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.35 2006-11-22 05:15:58 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.36 2006-12-02 18:25:39 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -112,6 +112,7 @@ CLASS TText FROM TLabel
    METHOD Define2
 
    METHOD RefreshData
+   METHOD Refresh     BLOCK { |Self| ::RefreshData() }
 
    METHOD Value       SETGET
    METHOD SetFocus
