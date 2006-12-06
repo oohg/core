@@ -1,5 +1,5 @@
 /*
- * $Id: i_graph.ch,v 1.3 2005-10-22 06:04:31 guerra000 Exp $
+ * $Id: i_graph.ch,v 1.4 2006-12-06 05:22:27 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -90,6 +90,22 @@
         "Harbour Project"
         Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
+
+#xcommand DRAW TEXT IN WINDOW <windowname> ;
+          AT <nRow>,<nCol> ;
+          VALUE <cString> ;
+          [FONT <cFont>] ;
+          [SIZE <nSize>] ;
+          [BACKCOLOR <aBkRGB>] ;
+          [FONTCOLOR <aRGB>] ;
+          [<lBold : BOLD> ] ;
+          [<lItalic : ITALIC> ] ;
+          [<lUnderline : UNDERLINE> ] ;
+          [<lStrikeout : STRIKEOUT> ] ;
+          [ <transparent: TRANSPARENT> ] ;
+       =>  ;
+          drawtextout(<(windowname)>,<nRow>,<nCol>,<cString>,<aRGB>,<aBkRGB>,<cFont>,<nSize>, ;
+                <.lBold.>,<.lItalic.>,<.lUnderline.>,<.lStrikeout.>,<.transparent.>)
 
 #xcommand DRAW LINE IN WINDOW <windowname> AT <frow>,<fcol> ;
              TO <trow>,<tcol> ;

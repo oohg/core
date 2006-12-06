@@ -1,5 +1,5 @@
 /*
- * $Id: h_graph.prg,v 1.4 2006-05-17 05:15:57 guerra000 Exp $
+ * $Id: h_graph.prg,v 1.5 2006-12-06 05:22:27 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -92,6 +92,28 @@
 ---------------------------------------------------------------------------*/
 
 #include "oohg.ch"
+
+function drawtextout(window,row,col,string,fontcolor,backcolor,fontname,fontsize,bold,italic,underline,strikeout,transparent)
+Local oWnd, oControl
+Local row1, col1
+
+   oControl := TControl()
+   oControl:SetForm( , window, FontName, FontSize, FontColor, BackColor )
+   oWnd := oControl:Parent
+
+   if oWnd:hWnd > 0
+
+      oControl:SetFont( ,, bold, italic, underline, strikeout )
+      col1 := col + GetTextWidth(  0, string, oControl:FontHandle )
+      row1 := row + GetTextHeight( 0, string, oControl:FontHandle )
+      DeleteObject( oControl:FontHandle )
+
+      oWnd:GraphCommand := { | hWnd, aData | _OOHG_GraphCommand( hWnd, aData ) }
+      aadd( oWnd:GraphData, _OOHG_NewGraphCommand_Text( oWnd:hWnd, 0, row, col, row1, col1, oControl:FontColor, string, oControl:BackColor, transparent, bold, italic, underline, strikeout, oControl:fontname, oControl:fontsize ) )
+
+	endif
+
+return nil
 
 function drawline(window,row,col,row1,col1,penrgb,penwidth)
 Local oWnd := GetFormObject( Window )

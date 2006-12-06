@@ -1,11 +1,19 @@
 /*
- * $Id: ChangeLog,v 1.300 2006-12-02 18:25:39 guerra000 Exp $
+ * $Id: ChangeLog,v 1.301 2006-12-06 05:22:27 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-12-05 23:21 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_controlmisc.prg
+    ! Added missing Form.Grid.Cell() syntax functionality.
+  * include/i_graph.ch
+  * source/c_graph.c
+  * source/h_graph.prg
+    + DRAW TEXT command added. Idea borrowed from HMG Experimental.
 
 2006-12-02 12:24 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_grid.prg

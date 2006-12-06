@@ -1,5 +1,5 @@
 /*
- * $Id: c_graph.c,v 1.2 2006-05-17 05:15:57 guerra000 Exp $
+ * $Id: c_graph.c,v 1.3 2006-12-06 05:22:27 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -105,8 +105,8 @@ HB_FUNC ( LINEDRAW )
    HDC hdc1;
    HGDIOBJ hgdiobj1;
    HPEN hpen;
-   hWnd1 = (HWND) hb_parnl(1);
-   hdc1 = GetDC( (HWND) hWnd1 );
+   hWnd1 = HWNDparam( 1 );
+   hdc1 = GetDC( hWnd1 );
    hpen = CreatePen( (int) PS_SOLID, (int) hb_parni(7), (COLORREF) RGB( (int) hb_parni(6,1), (int) hb_parni(6,2), (int) hb_parni(6,3) ) );
    hgdiobj1 = SelectObject( (HDC) hdc1, hpen );
    MoveToEx( (HDC) hdc1, (int) hb_parni(3), (int) hb_parni(2), NULL );
@@ -123,8 +123,8 @@ HB_FUNC ( RECTDRAW )
    HGDIOBJ hgdiobj1,hgdiobj2;
    HPEN hpen;
    HBRUSH hbrush;
-   hWnd1 = (HWND) hb_parnl (1);
-   hdc1 = GetDC((HWND) hWnd1);
+   hWnd1 = HWNDparam( 1 );
+   hdc1 = GetDC( hWnd1 );
    hpen = CreatePen( (int) PS_SOLID, (int) hb_parni(7), (COLORREF) RGB( (int) hb_parni(6,1), (int) hb_parni(6,2), (int) hb_parni(6,3) ) );
 
    hgdiobj1 = SelectObject((HDC) hdc1, hpen);
@@ -153,8 +153,8 @@ HB_FUNC ( ROUNDRECTDRAW )
    HGDIOBJ hgdiobj1,hgdiobj2;
    HPEN hpen;
    HBRUSH hbrush;
-   hWnd1 = (HWND) hb_parnl (1);
-   hdc1 = GetDC((HWND) hWnd1);
+   hWnd1 = HWNDparam( 1 );
+   hdc1 = GetDC( hWnd1);
    hpen = CreatePen( (int) PS_SOLID, (int) hb_parni(9), (COLORREF) RGB( (int) hb_parni(8,1), (int) hb_parni(8,2), (int) hb_parni(8,3) ) );
    hgdiobj1 = SelectObject((HDC) hdc1, hpen);
    if (hb_parl(11))
@@ -182,8 +182,8 @@ HB_FUNC ( ELLIPSEDRAW )
    HGDIOBJ hgdiobj1,hgdiobj2;
    HPEN hpen;
    HBRUSH hbrush;
-   hWnd1 = (HWND) hb_parnl (1);
-   hdc1 = GetDC((HWND) hWnd1);
+   hWnd1 = HWNDparam( 1 );
+   hdc1 = GetDC( hWnd1 );
    hpen = CreatePen( (int) PS_SOLID, (int) hb_parni(7), (COLORREF) RGB( (int) hb_parni(6,1), (int) hb_parni(6,2), (int) hb_parni(6,3) ) );
    hgdiobj1 = SelectObject((HDC) hdc1, hpen);
    if (hb_parl(9))
@@ -210,8 +210,8 @@ HB_FUNC ( ARCDRAW )
    HDC hdc1;
    HGDIOBJ hgdiobj1;
    HPEN hpen;
-   hWnd1 = (HWND) hb_parnl (1);
-   hdc1 = GetDC((HWND) hWnd1);
+   hWnd1 = HWNDparam( 1 );
+   hdc1 = GetDC( hWnd1);
    hpen = CreatePen( (int) PS_SOLID, (int) hb_parni(11), (COLORREF) RGB( (int) hb_parni(10,1), (int) hb_parni(10,2), (int) hb_parni(10,3) ) );
    hgdiobj1 = SelectObject( (HDC) hdc1, hpen );
    Arc((HDC) hdc1,(int) hb_parni(3),(int) hb_parni(2),(int) hb_parni(5),(int) hb_parni(4),(int) hb_parni(7),(int) hb_parni(6),(int) hb_parni(9),(int) hb_parni(8));
@@ -227,8 +227,8 @@ HB_FUNC ( PIEDRAW )
    HGDIOBJ hgdiobj1,hgdiobj2;
    HPEN hpen;
    HBRUSH hbrush;
-   hWnd1 = (HWND) hb_parnl (1);
-   hdc1 = GetDC((HWND) hWnd1);
+   hWnd1 = HWNDparam( 1 );
+   hdc1 = GetDC( hWnd1 );
    hpen = CreatePen( (int) PS_SOLID, (int) hb_parni(11), (COLORREF) RGB( (int) hb_parni(10,1), (int) hb_parni(10,2), (int) hb_parni(10,3) ) );
    hgdiobj1 = SelectObject((HDC) hdc1, hpen);
    if (hb_parl(13))
@@ -259,8 +259,8 @@ HB_FUNC( POLYGONDRAW )
    POINT apoints[1024];
    int number=hb_parinfa(2,0);
    int i;
-   hWnd1 = (HWND) hb_parnl (1);
-   hdc1 = GetDC((HWND) hWnd1);
+   hWnd1 = HWNDparam( 1 );
+   hdc1 = GetDC( hWnd1 );
    hpen = CreatePen( (int) PS_SOLID, (int) hb_parni(5), (COLORREF) RGB( (int) hb_parni(4,1), (int) hb_parni(4,2), (int) hb_parni(4,3) ) );
    hgdiobj1 = SelectObject((HDC) hdc1, hpen);
    if (hb_parl(7))
@@ -295,8 +295,8 @@ HB_FUNC( POLYBEZIERDRAW )
    POINT apoints[1024];
    DWORD number=(DWORD) hb_parinfa(2,0);
    DWORD i;
-   hWnd1 = (HWND) hb_parnl (1);
-   hdc1 = GetDC((HWND) hWnd1);
+   hWnd1 = HWNDparam( 1 );
+   hdc1 = GetDC( hWnd1 );
    hpen = CreatePen( (int) PS_SOLID, (int) hb_parni(5), (COLORREF) RGB( (int) hb_parni(4,1), (int) hb_parni(4,2), (int) hb_parni(4,3) ) );
    hgdiobj1 = SelectObject((HDC) hdc1, hpen);
    for(i = 0; i <= number-1; i++)
@@ -357,7 +357,7 @@ HB_FUNC( WNDBOXINDRAW )
    HDC hDC;
    HWND hWnd;
 
-   hWnd = ( HWND ) hb_parnl( 1 );
+   hWnd = HWNDparam( 1 );
    hDC = GetDC( hWnd );
 
    rct.top    = hb_parni( 2 );
@@ -372,12 +372,12 @@ HB_FUNC( WNDBOXINDRAW )
 
 HB_FUNC ( GETDC )
 {
-   hb_retnl( (ULONG) GetDC( (HWND) hb_parnl(1) ) ) ;
+   hb_retnl( (ULONG) GetDC( HWNDparam( 1 ) ) );
 }
 
 HB_FUNC ( RELEASEDC )
 {
-   hb_retl( ReleaseDC( (HWND) hb_parnl(1), (HDC) hb_parnl(2) ) ) ;
+   hb_retl( ReleaseDC( HWNDparam( 1 ), (HDC) hb_parnl(2) ) ) ;
 }
 
 struct _OOHG_GraphData {
@@ -399,6 +399,8 @@ struct _OOHG_GraphData {
    int  pointcount;
    char points;
 };
+
+HFONT PrepareFont( char *Fontname, int FontSize, int Weight, int Italic, int Underline, int StrikeOut );
 
 void _OOHG_GraphCommand( HDC hDC, struct _OOHG_GraphData *pData )
 {
@@ -539,6 +541,42 @@ void _OOHG_GraphCommand( HDC hDC, struct _OOHG_GraphData *pData )
          DeleteObject( hpen );
          break;
 
+      case 10:      // TextOut
+         {
+            COLORREF    FontColor, BackColor;
+            HFONT       hOldFont, hFont;
+            RECT        rct;
+            char        *cBuffer;
+
+            FontColor = SetTextColor( hDC, pData->penrgb );
+            BackColor = SetBkColor(   hDC, pData->fillrgb );
+            if( pData->fill )
+            {
+                SetBkMode( hDC, TRANSPARENT );
+            }
+            rct.top    = pData->top;
+            rct.left   = pData->left;
+            rct.bottom = pData->bottom;
+            rct.right  = pData->right;
+            hFont = PrepareFont( &pData->points, pData->width, pData->top2, pData->left2, pData->bottom2, pData->right2 );
+            hOldFont = ( HFONT ) SelectObject( hDC, hFont );
+            cBuffer = &pData->points;
+            cBuffer += pData->penwidth + 1;
+            if( pData->fill )
+            {
+               ExtTextOut( hDC, pData->left, pData->top, ETO_CLIPPED, &rct, cBuffer, pData->height, NULL );
+            }
+            else
+            {
+               ExtTextOut( hDC, pData->left, pData->top, ETO_CLIPPED | ETO_OPAQUE, &rct, cBuffer, pData->height, NULL );
+            }
+            SelectObject( hDC, hOldFont );
+            SetTextColor( hDC, FontColor );
+            SetBkColor( hDC, BackColor );
+
+         }
+         break;
+
    }
 }
 
@@ -555,7 +593,7 @@ HB_FUNC( _OOHG_GRAPHCOMMAND )
       ulCount = hb_arrayLen( pArray );
       if( ulCount )
       {
-         hWnd = ( HWND ) hb_parnl( 1 );
+         hWnd = HWNDparam( 1 );
          hDC = GetDC( hWnd );
          for( ulPos = 1; ulPos <= ulCount; ulPos++ )
          {
@@ -570,7 +608,8 @@ HB_FUNC( _OOHG_GRAPHCOMMAND )
    }
 }
 
-HB_FUNC( _OOHG_NEWGRAPHCOMMAND )
+HB_FUNC( _OOHG_NEWGRAPHCOMMAND ) // ( hWnd, nType, top, left, bottom, right, penrgb, penwidth, fillrgb, lFill,
+                                 //   top2, left2, bottom2, right2, width, height )
 {
    struct _OOHG_GraphData pStruct, *pData;
    HWND hWnd;
@@ -623,8 +662,8 @@ HB_FUNC( _OOHG_NEWGRAPHCOMMAND )
    pData->width    = hb_parni( 15 );
    pData->height   = hb_parni( 16 );
 
-   hWnd = ( HWND ) hb_parnl( 1 );
-   if( hWnd != 0 && ( int ) hWnd != -1 )
+   hWnd = HWNDparam( 1 );
+   if( ValidHandler( hWnd ) )
    {
       hDC = GetDC( hWnd );
       _OOHG_GraphCommand( hDC, pData );
@@ -636,4 +675,51 @@ HB_FUNC( _OOHG_NEWGRAPHCOMMAND )
    {
       hb_xfree( pData );
    }
+}
+
+HB_FUNC( _OOHG_NEWGRAPHCOMMAND_TEXT )
+{
+   struct _OOHG_GraphData *pData;
+   HWND hWnd;
+   HDC hDC;
+   LONG lColor, lSize;
+   char *cBuffer;
+
+   lSize = sizeof( struct _OOHG_GraphData ) + hb_parclen( 8 ) + hb_parclen( 15 ) + 5;
+   pData = hb_xgrab( lSize );
+
+   pData->type     = 10;
+   pData->top      = hb_parni(  3 );
+   pData->left     = hb_parni(  4 );
+   pData->bottom   = hb_parni(  5 );
+   pData->right    = hb_parni(  6 );
+   lColor = -1;
+   _OOHG_DetermineColor( hb_param(  7, HB_IT_ANY ), &lColor );
+   pData->penrgb   = lColor;
+   pData->penwidth = hb_parclen( 15 );               // LEN( fontname )
+   cBuffer = &pData->points;
+   memcpy( cBuffer, hb_parc( 15 ), pData->penwidth + 1 );
+   cBuffer += hb_parclen( 15 ) + 1;
+   lColor = -1;
+   _OOHG_DetermineColor( hb_param(  9, HB_IT_ANY ), &lColor );
+   pData->fillrgb  = lColor;
+   pData->fill     = hb_parl( 10 );                  // Transparent
+   pData->top2     = hb_parl( 11 ) ? FW_BOLD : FW_NORMAL; // Bold
+   pData->left2    = hb_parl( 12 ) ? 1 : 0;          // Italic
+   pData->bottom2  = hb_parl( 13 ) ? 1 : 0;          // Underline
+   pData->right2   = hb_parl( 14 ) ? 1 : 0;          // StrikeOut
+   pData->width    = hb_parni( 16 );                 // FontSize
+   pData->height   = hb_parclen( 8 );                // LEN( String )
+   memcpy( cBuffer, hb_parc( 8 ), pData->height + 1 );
+
+   hWnd = HWNDparam( 1 );
+   if( ValidHandler( hWnd ) )
+   {
+      hDC = GetDC( hWnd );
+      _OOHG_GraphCommand( hDC, pData );
+      ReleaseDC( hWnd, hDC );
+   }
+
+   hb_retclen( ( char * ) pData, lSize );
+   hb_xfree( pData );
 }

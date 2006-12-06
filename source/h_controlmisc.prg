@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.70 2006-11-25 04:14:46 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.71 2006-12-06 05:22:27 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -707,13 +707,19 @@ Local oWnd, oCtrl
 
 	ElseIf Pcount() == 6 // TAB CHILD CONTROL
 
-/*
-      If aScan ( GetControlObject( Arg2, Arg1 ):aPages[ Arg3 ], GetControlObject( Arg4 , Arg1 ):hWnd ) == 0
-         MsgOOHGError('Control Does Not Belong To Container')
+      If ! _IsControlDefined( Arg2, Arg1 )
+         MsgOOHGError( "Control: " + Arg2 + " Of " + Arg1 + " Not defined. Program Terminated." )
 		EndIf
-*/
+      Arg3 := Upper( Arg3 )
+      oCtrl := GetControlObject( Arg2, Arg1 )
 
-      SetProperty( Arg1, Arg4, Arg5, Arg6 )
+      If     Arg3 == "CELL"
+         oCtrl:Cell( Arg4 , Arg5 , Arg6 )
+
+      Else
+         SetProperty( Arg1, Arg4, Arg5, Arg6 )
+
+      EndIf
 
 	ElseIf Pcount() == 7 // TAB CHILD CONTROL WITH ARGUMENT
 
@@ -954,21 +960,21 @@ Local RetVal, oWnd, oCtrl
 
 	ElseIf Pcount() == 5 // TAB CHILD CONTROL (WITHOUT ARGUMENT)
 
-/*
-      If aScan ( GetControlObject( Arg2, Arg1 ):aPages[ Arg3 ], GetControlObject( Arg4 , Arg1 ):hWnd ) == 0
-         MsgOOHGError('Control Does Not Belong To Container')
+      If ! _IsControlDefined( Arg2, Arg1 )
+         MsgOOHGError( "Control: " + Arg2 + " Of " + Arg1 + " Not defined. Program Terminated." )
 		EndIf
-*/
+      Arg3 := Upper( Arg3 )
+      oCtrl := GetControlObject( Arg2, Arg1 )
 
-      RetVal := GetProperty( Arg1 , Arg4 , Arg5 )
+      If     Arg3 == "CELL"
+         RetVal := oCtrl:Cell( Arg4 , Arg5 )
+
+      Else
+         RetVal := GetProperty( Arg1 , Arg4 , Arg5 )
+
+      EndIf
 
 	ElseIf Pcount() == 6 // TAB CHILD CONTROL (WITH ARGUMENT)
-
-/*
-      If aScan ( GetControlObject( Arg2, Arg1 ):aPages[ Arg3 ], GetControlObject( Arg4 , Arg1 ):hWnd ) == 0
-         MsgOOHGError('Control Does Not Belong To Container')
-		EndIf
-*/
 
       RetVal := GetProperty( Arg1 , Arg4 , Arg5 , Arg6 )
 
