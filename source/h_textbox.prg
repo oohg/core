@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.36 2006-12-02 18:25:39 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.37 2006-12-09 03:49:50 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -103,7 +103,6 @@ CLASS TText FROM TLabel
    DATA lSetting        INIT .F.
    DATA nMaxLength      INIT 0
    DATA lAutoSkip       INIT .F.
-   DATA lSettingFocus   INIT .F.
    DATA nOnFocusPos     INIT -2
    DATA nWidth          INIT 120
    DATA nHeight         INIT 24
@@ -119,7 +118,6 @@ CLASS TText FROM TLabel
    METHOD CaretPos    SETGET
    METHOD ReadOnly    SETGET
    METHOD MaxLength   SETGET
-   METHOD Events_Enter
    METHOD Events_Command
 ENDCLASS
 
@@ -239,7 +237,6 @@ Local uRet, nLen
    ElseIf ::nOnFocusPos >= 0
       SendMessage( ::hWnd, EM_SETSEL, ::nOnFocusPos, ::nOnFocusPos )
    EndIf
-   ::lSettingFocus := .T.
 Return uRet
 
 *------------------------------------------------------------------------------*
@@ -266,20 +263,6 @@ METHOD MaxLength( nLen ) CLASS TText
       SendMessage( ::hWnd, EM_LIMITTEXT, ::nMaxLength, 0 )
    ENDIF
 Return SendMessage( ::hWnd, EM_GETLIMITTEXT, 0, 0 )
-
-*------------------------------------------------------------------------------*
-METHOD Events_Enter() CLASS TText
-*------------------------------------------------------------------------------*
-   ::lSettingFocus := .F.
-   ::DoEvent( ::OnEnter )
-   If ! ::lSettingFocus
-      If _OOHG_ExtendedNavigation
-         _SetNextFocus()
-      EndIf
-   Else
-      ::lSettingFocus := .F.
-   EndIf
-Return nil
 
 *------------------------------------------------------------------------------*
 METHOD Events_Command( wParam ) CLASS TText

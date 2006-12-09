@@ -1,5 +1,5 @@
 /*
- * $Id: h_tree.prg,v 1.9 2006-05-04 04:02:35 guerra000 Exp $
+ * $Id: h_tree.prg,v 1.10 2006-12-09 03:49:50 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -116,7 +116,6 @@ CLASS TTree FROM TControl
    METHOD Expand
 
    METHOD Value       SETGET
-   METHOD Events_Enter
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -569,14 +568,6 @@ Local TreeItemHandle, aPos
       uValue :=  TreeView_GetSelectionId( ::hWnd )
    EndIf
 RETURN uValue
-
-*-----------------------------------------------------------------------------*
-METHOD Events_Enter() CLASS TTree
-*-----------------------------------------------------------------------------*
-
-   ::DoEvent( ::OnEnter )
-
-Return nil
 
 *------------------------------------------------------------------------------*
 Function _DefineTreeNode ( text, aImage , Id )

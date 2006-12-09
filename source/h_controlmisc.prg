@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.71 2006-12-06 05:22:27 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.72 2006-12-09 03:49:50 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -99,7 +99,8 @@
 STATIC _OOHG_aControlhWnd := {}, _OOHG_aControlObjects := {}
 STATIC _OOHG_aControlIds := {},  _OOHG_aControlNames := {}
 
-STATIC _OOHG_lMultiple := .T.    // Allows the same applicaton runs more one instance at a time
+STATIC _OOHG_lMultiple := .T.         // Allows the same applicaton runs more one instance at a time
+STATIC _OOHG_lSettingFocus := .F.     // If there's a ::SetFocus() call inside ON ENTER event.
 
 #pragma BEGINDUMP
 #include "hbapi.h"
@@ -1388,6 +1389,7 @@ CLASS TControl FROM TWindow
    METHOD OnEnter             SETGET
    METHOD SizePos
    METHOD Move
+   METHOD SetFocus            BLOCK { |Self| _OOHG_lSettingFocus := .T., ::Super:SetFocus() }
    METHOD Value               BLOCK { || nil }
    METHOD SaveData
    METHOD RefreshData
@@ -1961,15 +1963,15 @@ Return nil
 *-----------------------------------------------------------------------------*
 METHOD Events_Enter() CLASS TControl
 *-----------------------------------------------------------------------------*
-
+   _OOHG_lSettingFocus := .F.
    ::DoEvent( ::OnEnter )
-
-   If _OOHG_ExtendedNavigation == .T.
-
-      _SetNextFocus()
-
+   If ! _OOHG_lSettingFocus
+      If _OOHG_ExtendedNavigation
+         _SetNextFocus()
+      EndIf
+   Else
+      _OOHG_lSettingFocus := .F.
    EndIf
-
 Return nil
 
 *-----------------------------------------------------------------------------*

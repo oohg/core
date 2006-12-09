@@ -1,5 +1,5 @@
 /*
- * $Id: h_editbox.prg,v 1.9 2006-03-30 04:54:37 guerra000 Exp $
+ * $Id: h_editbox.prg,v 1.10 2006-12-09 03:49:50 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -100,7 +100,6 @@ CLASS TEdit FROM TText
    DATA Type      INIT "EDIT" READONLY
 
    METHOD Define
-   METHOD SetFocus          BLOCK { |Self| SetFocus( ::hWnd ) }
    METHOD Events_Enter      BLOCK { || nil }
 ENDCLASS
 

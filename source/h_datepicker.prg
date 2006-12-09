@@ -1,5 +1,5 @@
 /*
- * $Id: h_datepicker.prg,v 1.7 2006-02-11 06:19:33 guerra000 Exp $
+ * $Id: h_datepicker.prg,v 1.8 2006-12-09 03:49:50 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -101,7 +101,6 @@ CLASS TDatePick FROM TControl
 
    METHOD Define
    METHOD Value            SETGET
-   METHOD Events_Enter
    METHOD Events_Notify
 ENDCLASS
 
@@ -161,20 +160,6 @@ METHOD Value( uValue ) CLASS TDatePick
    ENDIF
 Return SToD( StrZero( GetDatePickYear( ::hWnd ), 4 ) + StrZero( GetDatePickMonth( ::hWnd ), 2 ) + StrZero( GetDatePickDay( ::hWnd ), 2 ) )
 
-*-----------------------------------------------------------------------------*
-METHOD Events_Enter() CLASS TDatePick
-*-----------------------------------------------------------------------------*
-
-   ::DoEvent( ::OnClick )
-
-   If _OOHG_ExtendedNavigation == .T.
-
-      _SetNextFocus()
-
-   EndIf
-
-Return nil
-
 
 *-----------------------------------------------------------------------------*
 METHOD Events_Notify( wParam, lParam ) CLASS TDatePick
@@ -194,15 +179,13 @@ Return ::Super:Events_Notify( wParam, lParam )
 
 
 
-CLASS TtimePick FROM TControl
+CLASS TTimePick FROM TControl
    DATA Type      INIT "TIMEPICK" READONLY
 
-      METHOD Define
-      METHOD Value            SETGET
-      METHOD Events_Enter
-      METHOD Events_Notify
+   METHOD Define
+   METHOD Value            SETGET
+   METHOD Events_Notify
 ENDCLASS
-
 
 METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
                fontsize, tooltip, change, lostfocus, gotfocus, shownone, ;
@@ -259,21 +242,6 @@ METHOD Value( uValue ) CLASS TTimePick
    ENDIF
 Return StrZero(GetDatePickHour ( ::hWnd ), 2 ) + ":" + StrZero ( GetDatePickMinute ( ::hWnd ), 2 ) + ":" + StrZero ( GetDatePickSecond (::hWnd ), 2 )
 
-
-*-----------------------------------------------------------------------------*
-METHOD Events_Enter() CLASS TTimePick
-*-----------------------------------------------------------------------------*
-
-   ::DoEvent( ::OnClick )
-
-   If _OOHG_ExtendedNavigation == .T.
-
-      _SetNextFocus()
-
-   EndIf
-
-Return nil
-
 *-----------------------------------------------------------------------------*
 METHOD Events_Notify( wParam, lParam ) CLASS TTimePick
 *-----------------------------------------------------------------------------*
@@ -288,4 +256,3 @@ Local nNotify := GetNotifyCode( lParam )
    EndIf
 
 Return ::Super:Events_Notify( wParam, lParam )
-
