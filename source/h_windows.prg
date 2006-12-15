@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.122 2006-11-25 04:14:46 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.123 2006-12-15 04:06:20 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -344,7 +344,10 @@ HB_FUNC_STATIC( TWINDOW_SETFOCUS )
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
    PHB_ITEM pReturn;
 
-   SetFocus( oSelf->hWnd );
+   if( ValidHandler( oSelf->hWnd ) )
+   {
+      SetFocus( oSelf->hWnd );
+   }
 
    pReturn = hb_itemNew( NULL );
    hb_itemCopy( pReturn, pSelf );
@@ -2447,22 +2450,21 @@ METHOD Visible( lVisible ) CLASS TFormModal
 *-----------------------------------------------------------------------------*
    IF VALTYPE( lVisible ) == "L"
       IF lVisible
-         // Find Parent
-         If ::oPrevWindow == NIL .OR. ASCAN( _OOHG_aFormhWnd, ::oPrevWindow:hWnd ) == 0
+         // Find Previous window
+         If     aScan( _OOHG_aFormhWnd, GetActiveWindow() ) > 0
             ::oPrevWindow := GetFormObjectByHandle( GetActiveWindow() )
-            If ! ValidHandler( ::oPrevWindow:hWnd )
-               ::oPrevWindow := NIL
-               If _OOHG_UserWindow != NIL .AND. ascan( _OOHG_aFormhWnd, _OOHG_UserWindow:hWnd ) > 0
-                  ::oPrevWindow := _OOHG_UserWindow
-               ElseIf Len( _OOHG_ActiveModal ) != 0 .AND. ascan( _OOHG_aFormhWnd, ATAIL( _OOHG_ActiveModal ):hWnd ) > 0
-                  ::oPrevWindow := ATAIL( _OOHG_ActiveModal )
-               ElseIf _OOHG_Main != nil
-                  ::oPrevWindow := _OOHG_Main
-               Else
-                  // Not mandatory MAIN
-                  // NO PARENT DETECTED!
-               Endif
-            EndIf
+         ElseIf _OOHG_UserWindow != NIL .AND. ascan( _OOHG_aFormhWnd, _OOHG_UserWindow:hWnd ) > 0
+            ::oPrevWindow := _OOHG_UserWindow
+         ElseIf Len( _OOHG_ActiveModal ) != 0 .AND. ascan( _OOHG_aFormhWnd, ATAIL( _OOHG_ActiveModal ):hWnd ) > 0
+            ::oPrevWindow := ATAIL( _OOHG_ActiveModal )
+         ElseIf ::Parent != NIL .AND. ascan( _OOHG_aFormhWnd, ::Parent:hWnd ) > 0
+            ::oPrevWindow := _OOHG_UserWindow
+         ElseIf _OOHG_Main != nil
+            ::oPrevWindow := _OOHG_Main
+         Else
+            ::oPrevWindow := NIL
+            // Not mandatory MAIN
+            // NO PREVIOUS DETECTED!
          EndIf
 
          AEVAL( _OOHG_aFormObjects, { |o| if( ! o:lInternal .AND. o:hWnd != ::hWnd .AND. IsWindowEnabled( o:hWnd ), ( AADD( ::LockedForms, o ), DisableWindow( o:hWnd ) ) , ) } )
@@ -2524,7 +2526,7 @@ METHOD OnHideFocusManagement() CLASS TFormModal
    AEVAL( ::LockedForms, { |o| IF( ValidHandler( o:hWnd ), EnableWindow( o:hWnd ), ) } )
    ::LockedForms := {}
 
-   If ::oPrevWindow == nil .OR. ! ::oPrevWindow:Active
+   If ::oPrevWindow == nil
       // _OOHG_Main:SetFocus()
 	Else
       ::oPrevWindow:SetFocus()
