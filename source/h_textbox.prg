@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.37 2006-12-09 03:49:50 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.38 2006-12-17 04:09:23 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -902,6 +902,7 @@ Return ::Super:Events_Command( wParam )
 
 
 
+/*
 *-----------------------------------------------------------------------------*
 CLASS TTextMasked FROM TTextPicture
 *-----------------------------------------------------------------------------*
@@ -998,4 +999,102 @@ METHOD Define( ControlName, ParentForm, x, y, inputmask, width, value, ;
                invisible, notabstop, lRtl, lAutoSkip, lNoBorder, OnFocusPos, ;
                lDisabled, bValid )
 
+Return Self
+*/
+
+
+
+
+
+*-----------------------------------------------------------------------------*
+FUNCTION DefineTextBox( cControlName, cParentForm, x, y, Width, Height, ;
+                        Value, cFontName, nFontSize, cToolTip, nMaxLength, ;
+                        lUpper, lLower, lPassword, uLostFocus, uGotFocus, ;
+                        uChange, uEnter, right, HelpId, readonly, bold, ;
+                        italic, underline, strikeout, field, backcolor, ;
+                        fontcolor, invisible, notabstop, lRtl, lAutoSkip, ;
+                        lNoBorder, OnFocusPos, lDisabled, bValid, ;
+                        date, numeric, inputmask, format, subclass )
+*-----------------------------------------------------------------------------*
+Local Self, lInsert
+
+   // If format is specified, inputmask is enabled
+   If ValType( format ) $ "CM"
+      If ValType( inputmask ) $ "CM"
+         inputmask := "@" + format + " " + inputmask
+      Else
+         inputmask := "@" + format
+      EndIf
+   EndIf
+
+   lInsert := nil
+
+   // Checks for date textbox
+   If ( ValType( date ) == "L" .AND. date ) .OR. ValType( value ) == "D"
+      lInsert := .F.
+      numeric := .F.
+      If ValType( Value ) $ "CM"
+         Value := CTOD( Value )
+      ElseIf ValType( Value ) != "D"
+         Value := STOD( "" )
+      EndIf
+      If ! ValType( inputmask ) $ "CM"
+         inputmask := "@D"
+      EndIf
+   EndIf
+
+   // Checks for numeric textbox
+   If ValType( numeric ) != "L"
+      numeric := .F.
+   ElseIf numeric
+      lInsert := .F.
+      If ValType( Value ) $ "CM"
+         Value := VAL( Value )
+      ElseIf ValType( Value ) != "N"
+         Value := 0
+      EndIf
+   EndIf
+
+   If ValType( inputmask ) $ "CM"
+      // If inputmask is defined, it's TTextPicture()
+      Self := _OOHG_SelectSubClass( TTextPicture(), subclass )
+      ASSIGN ::lInsert VALUE lInsert TYPE "L"
+      If numeric
+         // It's numeric
+         right := .T.
+
+         ::Define( cControlName, cParentForm, x, y, width, height, value, ;
+                   inputmask, cFontname, nFontsize, cTooltip, uLostfocus, ;
+                   uGotfocus, , uEnter, right, HelpId, readonly, bold, ;
+                   italic, underline, strikeout, field, backcolor, fontcolor, ;
+                   invisible, notabstop, lRtl, lAutoSkip, lNoBorder, OnFocusPos, ;
+                   lDisabled, bValid )
+
+         If ::DataType == "N"
+            ::PictureMask := StrTran( ::PictureMask, ",", "" )
+            ::nDecimal    := AT( ".", ::PictureMask )
+            ::ValidMask   := ValidatePicture( ::PictureMask )
+            ::Value       := value
+            ::lInsert     := .F.
+         Endif
+
+         ::OnChange := uChange
+      Else
+         // It's not numeric
+         ::Define( cControlName, cParentForm, x, y, width, height, value, ;
+                   inputmask, cFontname, nFontsize, cTooltip, uLostfocus, ;
+                   uGotfocus, uChange, uEnter, right, HelpId, readonly, bold, ;
+                   italic, underline, strikeout, field, backcolor, fontcolor, ;
+                   invisible, notabstop, lRtl, lAutoSkip, lNoBorder, OnFocusPos, ;
+                   lDisabled, bValid )
+      EndIf
+   Else
+      Self := _OOHG_SelectSubClass( iif( numeric, TTextNum(), TText() ), subclass )
+      ::Define( cControlName, cParentForm, x, y, Width, Height, Value, ;
+                cFontName, nFontSize, cToolTip, nMaxLength, lUpper, lLower, ;
+                lPassword, uLostFocus, uGotFocus, uChange, uEnter, right, ;
+                HelpId, readonly, bold, italic, underline, strikeout, field, ;
+                backcolor, fontcolor, invisible, notabstop, lRtl, lAutoSkip, ;
+                lNoBorder, OnFocusPos, lDisabled, bValid )
+   EndIf
 Return Self

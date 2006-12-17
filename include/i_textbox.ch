@@ -1,5 +1,5 @@
 /*
- * $Id: i_textbox.ch,v 1.12 2006-11-12 02:21:15 guerra000 Exp $
+ * $Id: i_textbox.ch,v 1.13 2006-12-17 04:09:23 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -91,6 +91,7 @@
 	Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
+/*
 // TEXTBOX
 
 #command @ <row>, <col> TEXTBOX <name>               	;
@@ -326,3 +327,56 @@
                         <.underline.> , <.strikeout.> , <(field)> , <backcolor> , ;
                         <fontcolor> , <.invisible.> , <.notabstop.> , <.rtl.> , <.autoskip.>, ;
                         <.noborder.> , <focusedpos>, <.disabled.>, <{valid}> )
+*/
+
+#command @ <row>, <col> TEXTBOX <name>               	;
+                        [ OBJ <obj> ]                   ;
+			[ <dummy1: OF, PARENT> <parent> ] ;
+                        [ HEIGHT <height> ]          	;
+                        [ WIDTH <width> ]            	;
+			[ FIELD <field> ]		;
+                        [ VALUE <value> ]            	;
+			[ < readonly: READONLY > ] 	;
+                        [ FONT <fontname> ]          	;
+                        [ SIZE <fontsize> ]          	;
+                        [ <bold : BOLD> ]               ;
+                        [ <italic : ITALIC> ]           ;
+                        [ <underline : UNDERLINE> ]     ;
+                        [ <strikeout : STRIKEOUT> ]     ;
+                        [ TOOLTIP <tooltip> ]        	;
+                        [ BACKCOLOR <backcolor> ]       ;
+                        [ FONTCOLOR <fontcolor> ]       ;
+                        [ MAXLENGTH <maxlenght> ]    	;
+                        [ <upper: UPPERCASE> ]       	;
+                        [ <lower: LOWERCASE> ]       	;
+                        [ <password: PASSWORD> ]     	;
+                        [ ON CHANGE <change> ]       	;
+                        [ ON GOTFOCUS <gotfocus> ]   	;
+                        [ ON LOSTFOCUS <lostfocus> ] 	;
+                        [ ON ENTER <enter> ]		;
+                        [ <RightAlign: RIGHTALIGN> ]	;
+			[ <invisible: INVISIBLE> ]	;
+			[ <notabstop: NOTABSTOP> ]	;
+                        [ <rtl: RTL> ]                  ;
+                        [ HELPID <helpid> ] 		;
+                        [ <autoskip: AUTOSKIP> ]        ;
+                        [ <noborder: NOBORDER> ]        ;
+                        [ FOCUSEDPOS <focusedpos> ]     ;
+                        [ <disabled: DISABLED> ]        ;
+                        [ VALID <valid> ]               ;
+                        [ < date : DATE > ]             ;
+                        [ <numeric: NUMERIC> ]       	;
+                        [ <dummy2: INPUTMASK, PICTURE> <inputmask> ] ;
+                        [ FORMAT <format> ]             ;
+                        [ SUBCLASS <subclass> ]         ;
+         =>;
+        [ <obj> := ] DefineTextBox( <(name)>, <(parent)>, <col>, <row>, <width>, <height>, ;
+                        <value>, <fontname>, <fontsize>, <tooltip>, <maxlenght>, ;
+                        <.upper.>, <.lower.>, <.password.>, ;
+                        <{lostfocus}>, <{gotfocus}>, <{change}>, <{enter}>, ;
+                        <.RightAlign.>, <helpid>, <.readonly.> ,<.bold.>, ;
+                        <.italic.>, <.underline.>, <.strikeout.> , <(field)> , ;
+                        <backcolor> , <fontcolor> , <.invisible.> , <.notabstop.> , ;
+                        <.rtl.>, <.autoskip.>, <.noborder.>, <focusedpos>, <.disabled.>, ;
+                        <{valid}>, <.date.>, <.numeric.>, <inputmask>, <format>, ;
+                        [ <subclass>() ] )
