@@ -1,5 +1,5 @@
 /*
- * $Id: h_dialogs.prg,v 1.3 2005-08-26 06:04:53 guerra000 Exp $
+ * $Id: h_dialogs.prg,v 1.4 2006-12-27 17:15:58 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -157,6 +157,11 @@ local n
 
 		if len( cfiles ) > 0
 			if valtype( cfiles ) == "A"
+                        FOR n := 1 TO LEN( cfiles )
+                            if at( "\\", cfiles[n] ) > 0
+                                 cfiles[n] := strtran( cfiles[n] , "\\", "\" )
+                            endif
+                        NEXT
 				fileslist := aclone( cfiles )
 			else
 				aadd( fileslist, cfiles )

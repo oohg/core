@@ -1,5 +1,5 @@
 /*
- * $Id: c_winapimisc.c,v 1.5 2006-10-31 04:14:09 guerra000 Exp $
+ * $Id: c_winapimisc.c,v 1.6 2006-12-27 17:15:58 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -101,6 +101,7 @@
 #endif
 
 #include <windows.h>
+#include <lmcons.h>
 #include <commctrl.h>
 #include "hbapi.h"
 #include "hbvm.h"
@@ -719,3 +720,40 @@ HB_FUNC( SETWINDOWPOS )
 {
    hb_retl( SetWindowPos( HWNDparam( 1 ), HWNDparam( 2 ), hb_parni( 4 ), hb_parni( 3 ), hb_parni( 5 ), hb_parni( 6 ), hb_parni( 7 ) ) );
 }
+
+
+HB_FUNC ( GETCOMPUTERNAME )
+{
+         TCHAR lpBuffer[129];
+         DWORD nSize = 128;
+         GetComputerName( lpBuffer, &nSize );
+         hb_retc( lpBuffer );
+}
+
+HB_FUNC ( GETUSERNAME )
+{
+        TCHAR lpBuffer[UNLEN + 1];
+        DWORD nSize = UNLEN;
+        GetUserName( lpBuffer, &nSize );
+        hb_retc( lpBuffer );
+}
+
+// Jacek Kubica <kubica@wssk.wroc.pl> HMG 1.1 Experimental Build 11a
+
+HB_FUNC ( GETSHORTPATHNAME )
+{
+        char buffer[ MAX_PATH + 1 ] = {0};
+        DWORD iRet;
+
+        iRet = GetShortPathName( hb_parc(1), buffer, MAX_PATH ) ;
+        if (iRet < MAX_PATH)
+           {
+              hb_storclen( buffer, iRet, 2);
+           }
+           else
+           {
+            hb_storc( "", 2 );
+          }
+                                                                                                           hb_retnl( iRet ) ;
+                                                                                                                }
+

@@ -1,11 +1,19 @@
 /*
- * $Id: ChangeLog,v 1.304 2006-12-17 04:09:23 guerra000 Exp $
+ * $Id: ChangeLog,v 1.305 2006-12-27 17:15:58 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2006-12-27 11:40 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+  * source/h_dialogs.prg
+    * fixed problem in getfile() multiselect mode root path
+  * source/c_winapimisc.c
+    + getcomputername() gets the net name  (borrowed from experimental)
+    + getusername() gets the current username (borrowed from experimental) added include <lmcons.h>
+    + getshortpathname() get the short path name  (borrowed from experimental)
 
 2006-12-16 22:08 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * include/i_textbox.ch
