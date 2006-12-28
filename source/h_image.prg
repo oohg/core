@@ -1,5 +1,5 @@
 /*
- * $Id: h_image.prg,v 1.11 2006-11-09 19:37:16 declan2005 Exp $
+ * $Id: h_image.prg,v 1.12 2006-12-28 01:44:47 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -128,7 +128,7 @@ Local ControlHandle, nStyle
       ::BackColor := WHITE
    EndIf
 
-   nStyle := ::InitStyle( ,, Invisible )
+   nStyle := ::InitStyle( ,, Invisible, .T. )
 
    ControlHandle := InitImage( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, ::lRtl )
 

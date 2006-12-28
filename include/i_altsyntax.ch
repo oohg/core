@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.32 2006-11-18 21:35:52 guerra000 Exp $
+ * $Id: i_altsyntax.ch,v 1.33 2006-12-28 01:44:47 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -972,9 +972,7 @@ Text Box
 
 #xcommand END TEXTBOX;
 	=>;
-        iif( _OOHG_ActiveControlPicture == Nil ,;
-              iif( _OOHG_ActiveControlInputMask == Nil .and. _OOHG_ActiveControlDateType == .F. ,;
-                   iif( _OOHG_ActiveControlNumeric, TTextNum(), TText() ):Define( ;
+        DefineTextBox( ;
                         _OOHG_ActiveControlName,;
                         _OOHG_ActiveControlOf,;
                         _OOHG_ActiveControlCol,;
@@ -1008,109 +1006,13 @@ Text Box
                         _OOHG_ActiveControlRtl , ;
                         _OOHG_ActiveControlAutoSkip , ;
                         _OOHG_ActiveControlNoBorder , ;
-                        _OOHG_ActiveControlFocusedPos );
-              ,;
-                   iif( _OOHG_ActiveControlNumeric, ;
-                        TTextMasked():Define( ;
-                        _OOHG_ActiveControlName,;
-                        _OOHG_ActiveControlOf,;
-                        _OOHG_ActiveControlCol,;
-                        _OOHG_ActiveControlRow,;
-                        _OOHG_ActiveControlInputMask,;
-                        _OOHG_ActiveControlWidth,;
-                        _OOHG_ActiveControlValue,;
-                        _OOHG_ActiveControlFont,;
-                        _OOHG_ActiveControlSize,;
-                        _OOHG_ActiveControlTooltip,;
-                        _OOHG_ActiveControlOnLostFocus,;
-                        _OOHG_ActiveControlOnGotFocus,;
-                        _OOHG_ActiveControlOnChange,;
-                        _OOHG_ActiveControlHeight,;
-                        _OOHG_ActiveControlOnEnter,;
-                        _OOHG_ActiveControlRightAlign,;
-                        _OOHG_ActiveControlHelpId,;
-                        _OOHG_ActiveControlFormat , ;
-                        _OOHG_ActiveControlFontBold , ;
-                        _OOHG_ActiveControlFontItalic , ;
-                        _OOHG_ActiveControlFontUnderLine , ;
-                        _OOHG_ActiveControlFontStrikeOut,;
-                        _OOHG_ActiveControlField, ;
-                        _OOHG_ActiveControlBackColor, ;
-                        _OOHG_ActiveControlFontColor, ;
-                        _OOHG_ActiveControlReadonly, ;
-                        _OOHG_ActiveControlInvisible, ;
-                        _OOHG_ActiveControlNoTabStop, ;
-                        _OOHG_ActiveControlRtl, ;
-                        _OOHG_ActiveControlAutoSkip , ;
-                        _OOHG_ActiveControlNoBorder , ;
-                        _OOHG_ActiveControlFocusedPos ) , ;
-                     TTextCharMask():Define( _OOHG_ActiveControlName, ;
-                        _OOHG_ActiveControlOf, ;
-                        _OOHG_ActiveControlCol, ;
-                        _OOHG_ActiveControlRow, ;
+                        _OOHG_ActiveControlFocusedPos , ;
+                        _OOHG_ActiveControlDisabled , ;
+                        _OOHG_ActiveControlValid , ;
+                        _OOHG_ActiveControlDateType , ;
+                        _OOHG_ActiveControlNumeric , ;
                         _OOHG_ActiveControlInputMask , ;
-                        _OOHG_ActiveControlWidth , ;
-                        _OOHG_ActiveControlValue , ;
-                        _OOHG_ActiveControlFont , ;
-                        _OOHG_ActiveControlSize , ;
-                        _OOHG_ActiveControlTooltip , ;
-                        _OOHG_ActiveControlOnLostFocus  , ;
-                        _OOHG_ActiveControlOnGotFocus , ;
-                        _OOHG_ActiveControlOnChange , ;
-                        _OOHG_ActiveControlHeight , ;
-                        _OOHG_ActiveControlOnEnter , ;
-                        _OOHG_ActiveControlRightAlign  , ;
-                        _OOHG_ActiveControlHelpId  , ;
-                        _OOHG_ActiveControlFontBold , ;
-                        _OOHG_ActiveControlFontItalic , ;
-                        _OOHG_ActiveControlFontUnderLine , ;
-                        _OOHG_ActiveControlFontStrikeOut , ;
-                        _OOHG_ActiveControlField , ;
-                        _OOHG_ActiveControlBackColor,;
-                        _OOHG_ActiveControlFontColor,;
-                        _OOHG_ActiveControlDateType,;
-                        _OOHG_ActiveControlReadonly,;
-                        _OOHG_ActiveControlInvisible,;
-                        _OOHG_ActiveControlNoTabStop, ;
-                        _OOHG_ActiveControlRtl, ;
-                        _OOHG_ActiveControlAutoSkip , ;
-                        _OOHG_ActiveControlNoBorder , ;
-                        _OOHG_ActiveControlFocusedPos ) ) ;
-              ) ;
-        ,;
-              TTextPicture():Define( ;
-                        _OOHG_ActiveControlName ,;
-                        _OOHG_ActiveControlOf ,;
-                        _OOHG_ActiveControlCol ,;
-                        _OOHG_ActiveControlRow ,;
-                        _OOHG_ActiveControlWidth ,;
-                        _OOHG_ActiveControlHeight ,;
-                        _OOHG_ActiveControlValue ,;
-                        _OOHG_ActiveControlPicture ,;
-                        _OOHG_ActiveControlFont ,;
-                        _OOHG_ActiveControlSize ,;
-                        _OOHG_ActiveControlTooltip ,;
-                        _OOHG_ActiveControlOnLostFocus ,;
-                        _OOHG_ActiveControlOnGotFocus ,;
-                        _OOHG_ActiveControlOnChange ,;
-                        _OOHG_ActiveControlOnEnter ,;
-                        _OOHG_ActiveControlRightAlign ,;
-                        _OOHG_ActiveControlHelpId ,;
-                        _OOHG_ActiveControlReadonly ,;
-                        _OOHG_ActiveControlFontBold ,;
-                        _OOHG_ActiveControlFontItalic ,;
-                        _OOHG_ActiveControlFontUnderLine ,;
-                        _OOHG_ActiveControlFontStrikeOut ,;
-                        _OOHG_ActiveControlField ,;
-                        _OOHG_ActiveControlBackColor ,;
-                        _OOHG_ActiveControlFontColor ,;
-                        _OOHG_ActiveControlInvisible ,;
-                        _OOHG_ActiveControlNoTabStop ,;
-                        _OOHG_ActiveControlRtl ,;
-                        _OOHG_ActiveControlAutoSkip ,;
-                        _OOHG_ActiveControlNoBorder ,;
-                        _OOHG_ActiveControlFocusedPos ) ;
-	)
+                        _OOHG_ActiveControlFormat )
 
 /*----------------------------------------------------------------------------
 Month Calendar

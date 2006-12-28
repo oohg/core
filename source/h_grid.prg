@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.74 2006-12-02 18:25:39 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.75 2006-12-28 01:44:47 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -842,6 +842,11 @@ Local nColumns, uGridColor, uDynamicColor
    AINS( ::Picture, nColIndex )
    ::Picture[ nColIndex ] := iif( ( ValType( uPicture ) $ "CM" .AND. ! Empty( uPicture ) ) .OR. ValType( uPicture ) == "L", uPicture, nil )
 
+   // Update Widths
+   ASIZE( ::aWidths, nColumns )
+   AINS( ::aWidths, nColIndex )
+   ::aWidths[ nColIndex ] := nWidth
+
    IF ValType( lNoDelete ) != "L"
       lNoDelete := .F.
    ENDIF
@@ -925,6 +930,7 @@ Local nColumns
 	EndIf
 
    _OOHG_DeleteArrayItem( ::aHeaders, nColIndex )
+   _OOHG_DeleteArrayItem( ::aWidths,  nColIndex )
    _OOHG_DeleteArrayItem( ::Picture,  nColIndex )
 
    _OOHG_DeleteArrayItem( ::DynamicForeColor, nColIndex )
