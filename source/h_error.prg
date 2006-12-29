@@ -1,5 +1,5 @@
 /*
- * $Id: h_error.prg,v 1.22 2006-11-29 14:51:30 declan2005 Exp $
+ * $Id: h_error.prg,v 1.23 2006-12-29 16:30:23 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -104,6 +104,10 @@
 *-Recieve: Message (String)
 *-Return: Nil
 *------------------------------------------------------------------------------
+#include "oohg.ch"
+#include "error.ch"
+#include "common.ch"
+
 Function MsgOOHGError(Message)
     Local n, ai, HtmArch, xText, txtarch
     MemVar _OOHG_TXTERROR
@@ -159,9 +163,7 @@ endif
     ShowError( ai )
 Return Nil
 
-#include "oohg.ch"
-#include "error.ch"
-#include "common.ch"
+
 
 *------------------------------------------------------------------------------*
 PROCEDURE ErrorSys
@@ -401,7 +403,7 @@ RETURN (.T.)
 *------------------------------------------------------------------------------
 Function ooHGVersion()
 *------------------------------------------------------------------------------
-Return "ooHG V1.6 - 2006.11.29"
+Return "ooHG V1.4 - 2006.11.29"
 
 Function MiniGuiVersion()
 Return ooHGVersion()
