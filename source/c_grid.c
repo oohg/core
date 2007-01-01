@@ -1,5 +1,5 @@
 /*
- * $Id: c_grid.c,v 1.17 2007-01-01 20:52:13 guerra000 Exp $
+ * $Id: c_grid.c,v 1.18 2007-01-01 22:30:14 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -166,46 +166,41 @@ HB_FUNC ( LISTVIEWGETMULTISEL )
 
 }
 
-HB_FUNC ( LISTVIEWSETMULTISEL )
+HB_FUNC( LISTVIEWSETMULTISEL )
 {
+   PHB_ITEM wArray;
+   HWND hwnd = HWNDparam( 1 );
+   int i, l, n;
 
-	PHB_ITEM wArray;
+   wArray = hb_param( 2, HB_IT_ARRAY );
 
-        HWND hwnd = HWNDparam( 1 );
+   l = hb_parinfa( 2, 0 ) - 1 ;
 
-	int i ;
-	int l ;
-	int n ;
+   n = SendMessage( hwnd, LVM_GETITEMCOUNT , 0 , 0 );
 
-	wArray = hb_param( 2, HB_IT_ARRAY );
+   // CLEAR CURRENT SELECTIONS
 
-	l = hb_parinfa( 2, 0 ) - 1 ;
+   for( i=0 ; i<n ; i++ )
+   {
+      ListView_SetItemState( hwnd, (WPARAM) i ,0 , LVIS_FOCUSED | LVIS_SELECTED );
+   }
 
-        n = SendMessage( HWNDparam( 1 ), LVM_GETITEMCOUNT , 0 , 0 );
+   // SET NEW SELECTIONS
 
-	// CLEAR CURRENT SELECTIONS
-
-	for( i=0 ; i<n ; i++ )
-	{
-                ListView_SetItemState( HWNDparam( 1 ), (WPARAM) i ,0 , LVIS_FOCUSED | LVIS_SELECTED );
-	}
-
-	// SET NEW SELECTIONS
-
-    for( i = 0; i <= l; i++ )
-	{
-        ListView_SetItemState( HWNDparam( 1 ), hb_arrayGetNI( wArray, i + 1 ) - 1, LVIS_FOCUSED | LVIS_SELECTED, LVIS_FOCUSED | LVIS_SELECTED );
-	}
+   for( i = 0; i <= l; i++ )
+   {
+      ListView_SetItemState( hwnd, hb_arrayGetNI( wArray, i + 1 ) - 1, LVIS_FOCUSED | LVIS_SELECTED, LVIS_FOCUSED | LVIS_SELECTED );
+   }
 
 }
 
 HB_FUNC ( LISTVIEWGETITEMROW )
 {
-	POINT point;
+   POINT point;
 
-        ListView_GetItemPosition ( HWNDparam( 1 ), hb_parni (2) , &point ) ;
+   ListView_GetItemPosition( HWNDparam( 1 ), hb_parni( 2 ), &point ) ;
 
-	hb_retnl ( point.y ) ;
+   hb_retnl( point.y );
 }
 
 HB_FUNC ( LISTVIEWGETITEMCOUNT )

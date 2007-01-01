@@ -1,11 +1,20 @@
 /*
- * $Id: ChangeLog,v 1.308 2007-01-01 20:52:13 guerra000 Exp $
+ * $Id: ChangeLog,v 1.309 2007-01-01 22:30:13 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-01-01 16:30 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * ./compile.bat
+  * source/makelib.bat
+    * Default C compiler must be Borland C.
+  * source/c_grid.c
+    ! Fixed warning.
+  * source/makelib_mingw.bat
+    * Sets PATH environment variable to MinGW.
 
 2007-01-01 14:46 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   + source/common_make.bat
