@@ -1,5 +1,5 @@
 /*
- * $Id: c_monthcal.c,v 1.4 2006-05-01 04:09:47 guerra000 Exp $
+ * $Id: c_monthcal.c,v 1.5 2007-01-01 20:52:13 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -124,7 +124,7 @@ HB_FUNC ( INITMONTHCAL )
 	icex.dwICC  = ICC_DATE_CLASSES;
 	InitCommonControlsEx(&icex);
 
-	hwnd = (HWND) hb_parnl (1);
+   hwnd = HWNDparam( 1 );
 
    StyleEx = _OOHG_RTL_Status( hb_parl( 12 ) );
 
@@ -167,13 +167,13 @@ HB_FUNC ( INITMONTHCAL )
 
    lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hmonthcal, GWL_WNDPROC, ( LONG ) SubClassFunc );
 
-   hb_retnl( ( LONG ) hmonthcal );
+   HWNDret( hmonthcal );
 
 }
 
 HB_FUNC( ADJUSTMONTHCALSIZE )
 {
-   HWND hWnd = ( HWND ) hb_parnl( 1 );
+   HWND hWnd = HWNDparam( 1 );
    // RECT rOld;
    RECT rMin;
 
@@ -191,7 +191,7 @@ HB_FUNC( SETMONTHCAL )
 	SYSTEMTIME sysTime;
     char *cDate = 0;
 
-	hwnd = (HWND) hb_parnl (1);
+   hwnd = HWNDparam( 1 );
 
     if( ISDATE( 2 ) )
     {
@@ -230,7 +230,7 @@ HB_FUNC ( GETMONTHCALYEAR )
 {
 	HWND hwnd;
 	SYSTEMTIME st;
-	hwnd = (HWND) hb_parnl (1);
+   hwnd = HWNDparam( 1 );
 
 	SendMessage(hwnd, MCM_GETCURSEL, 0, (LPARAM) &st);
 	hb_retni(st.wYear);
@@ -240,7 +240,7 @@ HB_FUNC ( GETMONTHCALMONTH )
 {
 	HWND hwnd;
 	SYSTEMTIME st;
-	hwnd = (HWND) hb_parnl (1);
+   hwnd = HWNDparam( 1 );
 
 	SendMessage(hwnd, MCM_GETCURSEL, 0, (LPARAM) &st);
 	hb_retni(st.wMonth);
@@ -250,7 +250,7 @@ HB_FUNC ( GETMONTHCALDAY )
 {
 	HWND hwnd;
 	SYSTEMTIME st;
-	hwnd = (HWND) hb_parnl (1);
+   hwnd = HWNDparam( 1 );
 
 	SendMessage(hwnd, MCM_GETCURSEL, 0, (LPARAM) &st);
 	hb_retni(st.wDay);
@@ -263,7 +263,7 @@ HB_FUNC ( GETMONTHCALDATE )
     int iNum;
     char cDate[ 9 ];
 
-	hwnd = (HWND) hb_parnl (1);
+   hwnd = HWNDparam( 1 );
 	SendMessage(hwnd, MCM_GETCURSEL, 0, (LPARAM) &st);
 
     cDate[ 8 ] = 0;

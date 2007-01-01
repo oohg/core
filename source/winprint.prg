@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.9 2006-11-24 15:56:48 declan2005 Exp $
+ * $Id: winprint.prg,v 1.10 2007-01-01 20:52:13 guerra000 Exp $
  */
 // -----------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -2086,8 +2086,8 @@ HB_FUNC (RR_GETPRINTERS)
   DWORD dwSize = 0;
   DWORD dwPrinters = 0;
   DWORD i;
-  LPBYTE pBuffer ;
-  LPBYTE cBuffer ;
+  char * pBuffer ;
+  char * cBuffer ;
   PRINTER_INFO_4* pInfo4;
   PRINTER_INFO_5* pInfo5;
   DWORD level;
@@ -2114,7 +2114,7 @@ HB_FUNC (RR_GETPRINTERS)
             hb_retc(",,");
             return;
      }
-  EnumPrinters(flags, NULL,level, pBuffer, dwSize, &dwSize, &dwPrinters);
+  EnumPrinters(flags, NULL,level, ( BYTE * ) pBuffer, dwSize, &dwSize, &dwPrinters);
 
   if (dwPrinters == 0)
      {
@@ -2186,7 +2186,7 @@ HB_FUNC (RR_ABORTDOC)
 
 HB_FUNC (RR_DEVICECAPABILITIES)
 {
-  LPBYTE cBuffer,pBuffer,nBuffer,sBuffer,bnBuffer,bwBuffer,bcBuffer;
+  char *cBuffer, *pBuffer, *nBuffer, *sBuffer, *bnBuffer, *bwBuffer, *bcBuffer;
   DWORD  numpapers,numbins,i;
   LPPOINT lp;
   char buffer [sizeof(long)*8+1] ;
@@ -2555,12 +2555,12 @@ HB_FUNC (RR_CLOSEMFILE)
 {
  UINT size;
  HENHMETAFILE hh;
- LPBYTE eBuffer;
+ char *eBuffer;
  LPENHMETAHEADER eHeader;
  hh=CloseEnhMetaFile(hDC);
  size=GetEnhMetaFileBits(hh,0,NULL);
  eBuffer = GlobalAlloc(GPTR, (DWORD) size);
- GetEnhMetaFileBits(hh,size,eBuffer);
+ GetEnhMetaFileBits(hh,size, ( BYTE * ) eBuffer);
  eHeader=(LPENHMETAHEADER) eBuffer;
       eHeader->szlDevice.cx=devcaps[4];
       eHeader->szlDevice.cy=devcaps[3];
@@ -3185,7 +3185,7 @@ HB_FUNC (RR_PREVIEWPLAY)
         RECT rect;
         HDC imgDC = GetWindowDC((HWND) hb_parnl(1));
         HDC tmpDC = CreateCompatibleDC(imgDC);
-        HENHMETAFILE hh=SetEnhMetaFileBits((UINT) hb_parclen(2,1),hb_parc(2,1));
+        HENHMETAFILE hh=SetEnhMetaFileBits((UINT) hb_parclen(2,1), ( BYTE * ) hb_parc(2,1));
         if (tmpDC==NULL)
            {
               ReleaseDC((HWND) hb_parnl(1),imgDC);
@@ -3214,7 +3214,7 @@ HB_FUNC (RR_PLAYTHUMB)
    RECT rect;
    HDC tmpDC;
    HDC imgDC=GetWindowDC((HWND) hb_parnl(1,5));
-   HENHMETAFILE hh=SetEnhMetaFileBits((UINT) hb_parclen(2,1),hb_parc(2,1));
+   HENHMETAFILE hh=SetEnhMetaFileBits((UINT) hb_parclen(2,1), ( BYTE * ) hb_parc(2,1));
    int i;
    i= hb_parni(4)-1;
    tmpDC=CreateCompatibleDC(imgDC);
@@ -3233,7 +3233,7 @@ HB_FUNC (RR_PLAYTHUMB)
 HB_FUNC (RR_PLAYENHMETAFILE)
 {
    RECT rect;
-   HENHMETAFILE hh=SetEnhMetaFileBits((UINT) hb_parclen(1,1),hb_parc(1,1));
+   HENHMETAFILE hh=SetEnhMetaFileBits((UINT) hb_parclen(1,1), ( BYTE * ) hb_parc(1,1));
    SetRect(&rect,0,0,hb_parnl(1,5),hb_parnl(1,4));
    PlayEnhMetaFile((HDC) hb_parnl(2),hh,&rect);
    DeleteEnhMetaFile(hh);
@@ -3254,7 +3254,7 @@ HB_FUNC (RR_LALABYE)
 
 HB_FUNC( RR_LOADSTRING )
 {
-  LPBYTE cBuffer;
+  char *cBuffer;
   cBuffer = GlobalAlloc(GPTR,255);
   LoadString(GetModuleHandle(NULL),hb_parni(1),(LPSTR) cBuffer,254);
   hb_retc(cBuffer);

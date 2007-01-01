@@ -1,5 +1,5 @@
 /*
- * $Id: c_cursor.c,v 1.2 2005-08-25 06:06:51 guerra000 Exp $
+ * $Id: c_cursor.c,v 1.3 2007-01-01 20:52:13 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -111,6 +111,7 @@ Status:		Public Domain
 #include "hbapiitm.h"
 #include "winreg.h"
 #include "tchar.h"
+#include "../include/oohg.h"
 
 HB_FUNC ( LOADCURSOR )
 {
@@ -224,7 +225,7 @@ HB_FUNC ( SETWINDOWCURSOR )
 	}
 
 
-	SetClassLong( (HWND) hb_parnl(1) ,    // window handle
+        SetClassLong( HWNDparam( 1 ),    // window handle
 		GCL_HCURSOR,      // change cursor
 		(LONG) ch );   // new cursor
 
@@ -232,7 +233,7 @@ HB_FUNC ( SETWINDOWCURSOR )
 
 HB_FUNC ( SETARROWCURSOR )
 {
-   SetClassLong( ( HWND ) hb_parnl( 1 ) ,    // window handle
+   SetClassLong( HWNDparam( 1 ),    // window handle
                  GCL_HCURSOR,      // change cursor
                  ( LONG ) LoadCursor( NULL, IDC_ARROW ) );   // new cursor
 }

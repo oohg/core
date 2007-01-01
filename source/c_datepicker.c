@@ -1,5 +1,5 @@
 /*
- * $Id: c_datepicker.c,v 1.5 2006-05-01 04:09:47 guerra000 Exp $
+ * $Id: c_datepicker.c,v 1.6 2007-01-01 20:52:13 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -122,17 +122,17 @@ static LRESULT APIENTRY SubClassFuncB( HWND hWnd, UINT msg, WPARAM wParam, LPARA
 
 HB_FUNC( INITDATEPICK )
 {
-	HWND hwnd;
-	HWND hbutton;
-    int Style = WS_CHILD;
-    int StyleEx;
+   HWND hwnd;
+   HWND hbutton;
+   int Style = WS_CHILD;
+   int StyleEx;
 
 	INITCOMMONCONTROLSEX  i;
 	i.dwSize = sizeof(INITCOMMONCONTROLSEX);
 	i.dwICC = ICC_DATE_CLASSES;
 	InitCommonControlsEx(&i);
 
-	hwnd = (HWND) hb_parnl (1);
+   hwnd = HWNDparam( 1 );
 
    StyleEx = WS_EX_CLIENTEDGE | _OOHG_RTL_Status( hb_parl( 14 ) );
 
@@ -168,7 +168,7 @@ HB_FUNC( INITDATEPICK )
 
    lpfnOldWndProcA = ( WNDPROC ) SetWindowLong( ( HWND ) hbutton, GWL_WNDPROC, ( LONG ) SubClassFuncA );
 
-   hb_retnl ( (LONG) hbutton );
+   HWNDret( hbutton );
 }
 
 HB_FUNC ( SETDATEPICK )
@@ -179,7 +179,7 @@ HB_FUNC ( SETDATEPICK )
 	int m;
 	int d;
 
-	hwnd = (HWND) hb_parnl (1);
+        hwnd = HWNDparam( 1 );
 
 	y = hb_parni(2);
 	m = hb_parni(3);
@@ -202,7 +202,7 @@ HB_FUNC ( GETDATEPICKYEAR )
 {
 	HWND hwnd;
 	SYSTEMTIME st;
-	hwnd = (HWND) hb_parnl (1);
+        hwnd = HWNDparam( 1 );
 
 	SendMessage(hwnd, DTM_GETSYSTEMTIME, 0, (LPARAM) &st);
 	hb_retni(st.wYear);
@@ -212,7 +212,7 @@ HB_FUNC ( GETDATEPICKMONTH )
 {
 	HWND hwnd;
 	SYSTEMTIME st;
-	hwnd = (HWND) hb_parnl (1);
+        hwnd = HWNDparam( 1 );
 
 	SendMessage(hwnd, DTM_GETSYSTEMTIME, 0, (LPARAM) &st);
 	hb_retni(st.wMonth);
@@ -222,7 +222,7 @@ HB_FUNC ( GETDATEPICKDAY )
 {
 	HWND hwnd;
 	SYSTEMTIME st;
-	hwnd = (HWND) hb_parnl (1);
+        hwnd = HWNDparam( 1 );
 
 	SendMessage(hwnd, DTM_GETSYSTEMTIME, 0, (LPARAM) &st);
 	hb_retni(st.wDay);
@@ -232,12 +232,12 @@ HB_FUNC ( SETDATEPICKNULL )
 {
 	HWND hwnd;
 
-	hwnd = (HWND) hb_parnl (1);
+        hwnd = HWNDparam( 1 );
 
 	SendMessage(hwnd, DTM_SETSYSTEMTIME,GDT_NONE, (LPARAM) 0 );
 }
 
-HB_FUNC ( INITTIMEPICK )
+HB_FUNC( INITTIMEPICK )
 {
    HWND hwnd;
    HWND hbutton;
@@ -248,7 +248,7 @@ HB_FUNC ( INITTIMEPICK )
    i.dwICC = ICC_DATE_CLASSES;
    InitCommonControlsEx(&i);
 
-   hwnd = (HWND) hb_parnl (1);
+   hwnd = HWNDparam( 1 );
 
    if ( hb_parl (9) )
    {
@@ -275,7 +275,7 @@ HB_FUNC ( INITTIMEPICK )
 
    lpfnOldWndProcB = ( WNDPROC ) SetWindowLong( ( HWND ) hbutton, GWL_WNDPROC, ( LONG ) SubClassFuncB );
 
-   hb_retnl ( (LONG) hbutton );
+   HWNDret( hbutton );
 }
 
 HB_FUNC ( SETTIMEPICK )
@@ -286,7 +286,7 @@ HB_FUNC ( SETTIMEPICK )
    int m;
    int s;
 
-   hwnd = (HWND) hb_parnl (1);
+   hwnd = HWNDparam( 1 );
 
    h = hb_parni(2);
    m = hb_parni(3);
@@ -309,8 +309,9 @@ HB_FUNC ( GETDATEPICKHOUR )
 {
    SYSTEMTIME st;
 
-   if( SendMessage((HWND) hb_parnl (1), DTM_GETSYSTEMTIME, 0, (LPARAM) &st)==GDT_VALID) {
-   hb_retni(st.wHour);
+   if( SendMessage( HWNDparam( 1 ), DTM_GETSYSTEMTIME, 0, (LPARAM) &st)==GDT_VALID)
+   {
+      hb_retni(st.wHour);
    }
    else
    {
@@ -322,7 +323,7 @@ HB_FUNC ( GETDATEPICKMINUTE )
 {
    SYSTEMTIME st;
 
-   if( SendMessage((HWND) hb_parnl (1), DTM_GETSYSTEMTIME, 0, (LPARAM) &st)==GDT_VALID ) {
+   if( SendMessage( HWNDparam( 1 ), DTM_GETSYSTEMTIME, 0, (LPARAM) &st)==GDT_VALID ) {
    hb_retni(st.wMinute);
    }
    else
@@ -335,11 +336,12 @@ HB_FUNC ( GETDATEPICKSECOND )
 {
    SYSTEMTIME st;
 
-   if( SendMessage( (HWND) hb_parnl (1), DTM_GETSYSTEMTIME, 0, (LPARAM) &st)==GDT_VALID ) {
-   hb_retni(st.wSecond);
-    }
+   if( SendMessage( HWNDparam( 1 ), DTM_GETSYSTEMTIME, 0, (LPARAM) &st)==GDT_VALID )
+   {
+      hb_retni(st.wSecond);
+   }
    else
    {
-     hb_retni(-1);
+      hb_retni(-1);
    }
 }

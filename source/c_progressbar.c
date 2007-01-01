@@ -1,5 +1,5 @@
 /*
- * $Id: c_progressbar.c,v 1.4 2006-05-01 04:09:47 guerra000 Exp $
+ * $Id: c_progressbar.c,v 1.5 2007-01-01 20:52:13 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -125,7 +125,7 @@ HB_FUNC( INITPROGRESSBAR )
 	i.dwICC = ICC_DATE_CLASSES;
 	InitCommonControlsEx(&i);
 
-	hwnd = (HWND) hb_parnl (1);
+   hwnd = HWNDparam( 1 );
 
    StyleEx = WS_EX_CLIENTEDGE | _OOHG_RTL_Status( hb_parl( 13 ) );
 
@@ -161,20 +161,20 @@ HB_FUNC( INITPROGRESSBAR )
 
    lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hbutton, GWL_WNDPROC, ( LONG ) SubClassFunc );
 
-	hb_retnl ( (LONG) hbutton );
+   HWNDret( hbutton );
 }
 
 HB_FUNC ( SETPROGRESSBARRANGE )
 {
-	SendMessage((HWND) hb_parnl (1),PBM_SETRANGE,0,MAKELONG(hb_parni(2),hb_parni(3)));
+        SendMessage( HWNDparam( 1 ), PBM_SETRANGE,0,MAKELONG(hb_parni(2),hb_parni(3)));
 }
 
 HB_FUNC ( SETPROGRESSBARBKCOLOR )
 {
-	SendMessage((HWND) hb_parnl (1),PBM_SETBKCOLOR,0,RGB(hb_parni(2),hb_parni(3),hb_parni(4)));
+        SendMessage( HWNDparam( 1 ), PBM_SETBKCOLOR,0,RGB(hb_parni(2),hb_parni(3),hb_parni(4)));
 }
 
 HB_FUNC ( SETPROGRESSBARBARCOLOR )
 {
-	SendMessage((HWND) hb_parnl (1),PBM_SETBARCOLOR,0,RGB(hb_parni(2),hb_parni(3),hb_parni(4)));
+        SendMessage( HWNDparam( 1 ), PBM_SETBARCOLOR,0,RGB(hb_parni(2),hb_parni(3),hb_parni(4)));
 }

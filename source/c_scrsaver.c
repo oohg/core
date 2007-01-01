@@ -1,5 +1,5 @@
 /*
- * $Id: c_scrsaver.c,v 1.1 2005-08-07 00:04:19 guerra000 Exp $
+ * $Id: c_scrsaver.c,v 1.2 2007-01-01 20:52:13 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -105,7 +105,7 @@
 #include "hbapiitm.h"
 #include "winreg.h"
 #include "tchar.h"
-
+#include "../include/oohg.h"
 
 typedef BOOL (WINAPI *VERIFYSCREENSAVEPWD)(HWND hwnd);
 typedef VOID (WINAPI *PWDCHANGEPASSWORD) (LPCSTR lpcRegkeyname,HWND hwnd,UINT uiReserved1,UINT uiReserved2);
@@ -139,9 +139,9 @@ HB_FUNC( VERIFYPASSWORD )
 		hb_retl( FALSE );
 	}
 
-	hwnd = (HWND) hb_parnl (1);
+        hwnd = HWNDparam( 1 );
 
-	bres = VerifyScreenSavePwd(hwnd);
+        bres = VerifyScreenSavePwd(hwnd);
 	FreeLibrary(hpwdcpl);
 
 	hb_retl( bres );
@@ -166,7 +166,7 @@ HB_FUNC( CHANGEPASSWORD )
 		hb_retl( FALSE );
 	}
 
-	hwnd = (HWND) hb_parnl (1);
+        hwnd = HWNDparam( 1 );
 	PwdChangePassword("SCRSAVE", hwnd, 0, 0);
 	FreeLibrary(hmpr);
 

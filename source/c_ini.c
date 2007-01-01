@@ -1,5 +1,5 @@
 /*
- * $Id: c_ini.c,v 1.1 2005-08-07 00:03:18 guerra000 Exp $
+ * $Id: c_ini.c,v 1.2 2007-01-01 20:52:13 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -94,8 +94,10 @@
 #define HB_OS_WIN_32_USED
 #define _WIN32_WINNT   0x0400
 #include <windows.h>
+#include <commctrl.h>
 #include "hbapi.h"
 #include "hbapiitm.h"
+#include "../include/oohg.h"
 
 HB_FUNC (GETPRIVATEPROFILESTRING )
 {

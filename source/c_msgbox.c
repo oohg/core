@@ -1,5 +1,5 @@
 /*
- * $Id: c_msgbox.c,v 1.1 2005-08-07 00:04:18 guerra000 Exp $
+ * $Id: c_msgbox.c,v 1.2 2007-01-01 20:52:13 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -107,12 +107,11 @@
 
 HB_FUNC( C_MSGRETRYCANCEL )
 {
+   int r ;
 
-	int r ;
+   r = MessageBox( GetActiveWindow(), hb_parc( 1 ), hb_parc( 2 ), MB_RETRYCANCEL | MB_ICONQUESTION | MB_SYSTEMMODAL );
 
-	r = MessageBox( GetActiveWindow(), hb_parc(1),hb_parc(2) , MB_RETRYCANCEL | MB_ICONQUESTION | MB_SYSTEMMODAL ) ;
-
-	hb_retni ( r ) ;
+   hb_retni( r ) ;
 
 }
 

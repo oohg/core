@@ -1,5 +1,5 @@
 /*
- * $Id: miniprint.prg,v 1.20 2006-11-23 01:01:26 declan2005 Exp $
+ * $Id: miniprint.prg,v 1.21 2007-01-01 20:52:13 guerra000 Exp $
  */
 /*----------------------------------------------------------------------------
  MINIGUI - Harbour Win32 GUI library source code
@@ -2429,7 +2429,7 @@ HB_FUNC ( _HMG_PRINTER_PRINTDIALOG )
 
 		hb_reta( 4 );
 		hb_stornl	( (LONG) pd.hDC		, -1, 1 ); 
-		hb_storc	( pDevMode->dmDeviceName, -1, 2 ); 
+                hb_storc        ( ( char * ) pDevMode->dmDeviceName, -1, 2 ); 
 		hb_storni	( pDevMode->dmCopies	, -1, 3 ); 
 		hb_storni	( pDevMode->dmCollate	, -1, 4 ); 
 
@@ -2454,8 +2454,8 @@ HB_FUNC (APRINTERS)   //Pier Release
       DWORD dwSize = 0;
       DWORD dwPrinters = 0;
       DWORD i;
-      LPBYTE pBuffer;
-      LPBYTE cBuffer ;
+      char *pBuffer;
+      char *cBuffer ;
       PRINTER_INFO_4* pInfo_4;
       PRINTER_INFO_5* pInfo_5;
       osVer.dwOSVersionInfoSize = sizeof( osVer );
@@ -2481,7 +2481,7 @@ HB_FUNC (APRINTERS)   //Pier Release
 			GlobalFree(pBuffer);
             return;
          }
-         EnumPrinters(flags, NULL, level, pBuffer, dwSize, &dwSize, &dwPrinters);
+         EnumPrinters(flags, NULL, level, ( BYTE * ) pBuffer, dwSize, &dwSize, &dwPrinters);
          if (dwPrinters == 0)
          {
             hb_reta(0);
@@ -3238,7 +3238,7 @@ HB_FUNC (GETDEFAULTPRINTER)
 	DWORD BufferSize = 254;
 
 	char DefaultPrinter [254] ;
-	char Buffer [254] ;
+        // char Buffer [254] ;
 
 	osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
 

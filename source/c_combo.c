@@ -1,5 +1,5 @@
 /*
- * $Id: c_combo.c,v 1.9 2006-05-01 04:09:47 guerra000 Exp $
+ * $Id: c_combo.c,v 1.10 2007-01-01 20:52:13 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -120,7 +120,7 @@ HB_FUNC( INITCOMBOBOX )
    HWND hbutton;
    int Style, StyleEx;
 
-   hwnd = (HWND) hb_parnl (1);
+   hwnd = HWNDparam( 1 );
 
    StyleEx = _OOHG_RTL_Status( hb_parl( 14 ) );
 
@@ -169,49 +169,49 @@ HB_FUNC( INITCOMBOBOX )
 
    lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hbutton, GWL_WNDPROC, ( LONG ) SubClassFunc );
 
-   hb_retnl ( (LONG) hbutton );
+   HWNDret( hbutton );
 }
 
 HB_FUNC( COMBOADDSTRING )
 {
-   HWND hWnd = ( HWND ) hb_parnl( 1 );
+   HWND hWnd = HWNDparam( 1 );
 
    SendMessage( hWnd, CB_INSERTSTRING, ( WPARAM ) ComboBox_GetCount( hWnd ), ( LPARAM ) hb_parc( 2 ) );
 }
 
 HB_FUNC( COMBOINSERTSTRING )
 {
-   SendMessage( ( HWND ) hb_parnl( 1 ), CB_INSERTSTRING, ( WPARAM ) hb_parni( 3 ) - 1, ( LPARAM ) hb_parc( 2 ) );
+   SendMessage( HWNDparam( 1 ), CB_INSERTSTRING, ( WPARAM ) hb_parni( 3 ) - 1, ( LPARAM ) hb_parc( 2 ) );
 }
 
 HB_FUNC( COMBOSETCURSEL )
 {
-   SendMessage( ( HWND ) hb_parnl( 1 ), CB_SETCURSEL, ( WPARAM ) hb_parni( 2 ) - 1, 0 );
+   SendMessage( HWNDparam( 1 ), CB_SETCURSEL, ( WPARAM ) hb_parni( 2 ) - 1, 0 );
 }
 
 HB_FUNC( COMBOGETCURSEL )
 {
-   hb_retni ( SendMessage( (HWND) hb_parnl( 1 ) , CB_GETCURSEL , 0 , 0 )  + 1 );
+   hb_retni ( SendMessage( HWNDparam( 1 ), CB_GETCURSEL , 0 , 0 )  + 1 );
 }
 
 HB_FUNC (COMBOBOXDELETESTRING )
 {
-	SendMessage( (HWND) hb_parnl( 1 ), CB_DELETESTRING, (WPARAM) hb_parni(2)-1, 0);
+   SendMessage( HWNDparam( 1 ), CB_DELETESTRING, (WPARAM) hb_parni(2)-1, 0);
 }
 
 HB_FUNC ( COMBOBOXRESET )
 {
-	SendMessage( (HWND) hb_parnl( 1 ), CB_RESETCONTENT, 0, 0 );
+   SendMessage( HWNDparam( 1 ), CB_RESETCONTENT, 0, 0 );
 }
 
 HB_FUNC ( COMBOGETSTRING )
 {
-	char cString [1024] = "" ;
-	SendMessage( (HWND) hb_parnl( 1 ), CB_GETLBTEXT , (WPARAM) hb_parni(2) - 1, (LPARAM) cString );
-	hb_retc(cString) ;
+   char cString [1024] = "" ;
+   SendMessage( HWNDparam( 1 ), CB_GETLBTEXT , (WPARAM) hb_parni(2) - 1, (LPARAM) cString );
+   hb_retc( cString );
 }
 
 HB_FUNC ( COMBOBOXGETITEMCOUNT )
 {
-   hb_retnl ( SendMessage( (HWND) hb_parnl( 1 ) , CB_GETCOUNT , 0, 0 ) ) ;
+   hb_retnl ( SendMessage( HWNDparam( 1 ), CB_GETCOUNT, 0, 0 ) );
 }

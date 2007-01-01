@@ -1,5 +1,5 @@
 /*
- * $Id: c_spinner.c,v 1.4 2006-05-01 04:09:47 guerra000 Exp $
+ * $Id: c_spinner.c,v 1.5 2007-01-01 20:52:13 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -126,7 +126,7 @@ HB_FUNC( INITSPINNER )
    i.dwSize = sizeof(INITCOMMONCONTROLSEX);
    InitCommonControlsEx(&i);
 
-   hwnd = ( HWND ) hb_parnl( 1 );
+   hwnd = HWNDparam( 1 );
 
    if ( !hb_parl (9) )
    {
@@ -156,13 +156,13 @@ HB_FUNC( INITSPINNER )
 
    lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hupdown, GWL_WNDPROC, ( LONG ) SubClassFunc );
 
-   hb_retnl( ( LONG ) hupdown );
+   HWNDret( hupdown );
 
 }
 
 HB_FUNC( SETSPINNERRANGE )
 {
-	SendMessage ( (HWND) hb_parnl (1), UDM_SETRANGE32, (WPARAM)hb_parni(2) , (LPARAM) hb_parni(3) ) ;
+        SendMessage ( HWNDparam( 1 ), UDM_SETRANGE32, (WPARAM)hb_parni(2) , (LPARAM) hb_parni(3) ) ;
 }
 
 HB_FUNC( SETSPINNERINCREMENT )
@@ -170,5 +170,5 @@ HB_FUNC( SETSPINNERINCREMENT )
    UDACCEL inc ;
    inc.nSec = 0;
    inc.nInc = hb_parnl(2);
-   SendMessage ( (HWND) hb_parnl (1), UDM_SETACCEL, (WPARAM) 1 , (LPARAM) &inc ) ;
+   SendMessage ( HWNDparam( 1 ), UDM_SETACCEL, (WPARAM) 1 , (LPARAM) &inc ) ;
 }

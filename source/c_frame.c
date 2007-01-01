@@ -1,5 +1,5 @@
 /*
- * $Id: c_frame.c,v 1.4 2006-05-01 04:09:47 guerra000 Exp $
+ * $Id: c_frame.c,v 1.5 2007-01-01 20:52:13 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -125,11 +125,11 @@ HB_FUNC( INITFRAME )
    HWND hbutton;
    int StyleEx;
 
-   hwnd = (HWND) hb_parnl (1);
+   hwnd = HWNDparam( 1 );
 
    StyleEx = _OOHG_RTL_Status( hb_parl( 9 ) );
 
-    if ( ! hb_parl (8) )
+   if ( ! hb_parl (8) )
 	{
         hbutton = CreateWindowEx( StyleEx, "BUTTON" , hb_parc(7) ,
 		WS_CHILD | WS_VISIBLE | BS_GROUPBOX | BS_NOTIFY	 ,
@@ -137,7 +137,7 @@ HB_FUNC( INITFRAME )
 		hwnd,(HMENU)hb_parni(2) , GetModuleHandle(NULL) , NULL ) ;
         lpfnOldWndProcA = ( WNDPROC ) SetWindowLong( ( HWND ) hbutton, GWL_WNDPROC, ( LONG ) SubClassFuncA );
 	}
-	else
+   else
 	{
 		hbutton = CreateWindow( "BUTTON" , hb_parc(7) ,
 		WS_CHILD | WS_VISIBLE | BS_GROUPBOX | BS_NOTIFY	 ,
@@ -146,5 +146,5 @@ HB_FUNC( INITFRAME )
         lpfnOldWndProcB = ( WNDPROC ) SetWindowLong( ( HWND ) hbutton, GWL_WNDPROC, ( LONG ) SubClassFuncB );
 	}
 
-   hb_retnl ( (LONG) hbutton );
+   HWNDret( hbutton );
 }

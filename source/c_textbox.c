@@ -1,5 +1,5 @@
 /*
- * $Id: c_textbox.c,v 1.7 2006-05-01 04:09:47 guerra000 Exp $
+ * $Id: c_textbox.c,v 1.8 2007-01-01 20:52:13 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -125,7 +125,7 @@ HB_FUNC( INITTEXTBOX )
    StyleEx = hb_parni( 10 ) | _OOHG_RTL_Status( hb_parl( 9 ) );
 
    // Get the handle of the parent window/form.
-   hwnd = ( HWND ) hb_parnl( 1 );
+   hwnd = HWNDparam( 1 );
 
    // Creates the child control.
    hedit = CreateWindowEx( StyleEx,
@@ -148,11 +148,11 @@ HB_FUNC( INITTEXTBOX )
 
    lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hedit, GWL_WNDPROC, ( LONG ) SubClassFunc );
 
-   hb_retnl( ( LONG ) hedit );
+   HWNDret( hedit );
 
 }
 
 HB_FUNC( SETTEXTEDITREADONLY )
 {
-	SendMessage( (HWND) hb_parnl (1) , (UINT)EM_SETREADONLY, (WPARAM)hb_parl(2), (LPARAM)0);
+        SendMessage( HWNDparam( 1 ), (UINT)EM_SETREADONLY, (WPARAM)hb_parl(2), (LPARAM)0);
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: c_listbox.c,v 1.5 2006-05-01 04:09:47 guerra000 Exp $
+ * $Id: c_listbox.c,v 1.6 2007-01-01 20:52:13 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -120,7 +120,7 @@ HB_FUNC( INITLISTBOX )
 	int Style = WS_CHILD | WS_VSCROLL | LBS_DISABLENOSCROLL | LBS_NOTIFY | LBS_NOINTEGRALHEIGHT ;
    int StyleEx;
 
-	hwnd = (HWND) hb_parnl (1);
+        hwnd = HWNDparam( 1 );
 
    StyleEx = WS_EX_CLIENTEDGE | _OOHG_RTL_Status( hb_parl( 11 ) );
 
@@ -154,20 +154,20 @@ HB_FUNC( INITLISTBOX )
 
    lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hbutton, GWL_WNDPROC, ( LONG ) SubClassFunc );
 
-   hb_retnl ( (LONG) hbutton );
+   HWNDret( hbutton );
 }
 
 HB_FUNC ( LISTBOXADDSTRING )
 {
    char *cString = hb_parc( 2 );
-   SendMessage( (HWND) hb_parnl( 1 ), LB_ADDSTRING, 0, (LPARAM) cString );
+   SendMessage( HWNDparam( 1 ), LB_ADDSTRING, 0, (LPARAM) cString );
 }
 
 HB_FUNC ( LISTBOXGETSTRING )
 {
 
 	char cString [1024] = "" ;
-	SendMessage( (HWND) hb_parnl( 1 ), LB_GETTEXT, (WPARAM) hb_parni(2) - 1, (LPARAM) cString );
+        SendMessage( HWNDparam( 1 ), LB_GETTEXT, (WPARAM) hb_parni(2) - 1, (LPARAM) cString );
 	hb_retc(cString) ;
 
 }
@@ -175,34 +175,34 @@ HB_FUNC ( LISTBOXGETSTRING )
 HB_FUNC ( LISTBOXINSERTSTRING )
 {
    char *cString = hb_parc( 2 );
-   SendMessage( (HWND) hb_parnl( 1 ), LB_INSERTSTRING, (WPARAM) hb_parni(3) - 1 , (LPARAM) cString );
+   SendMessage( HWNDparam( 1 ), LB_INSERTSTRING, (WPARAM) hb_parni(3) - 1 , (LPARAM) cString );
 }
 
 
 HB_FUNC ( LISTBOXSETCURSEL )
 {
-   SendMessage( (HWND) hb_parnl( 1 ), LB_SETCURSEL, (WPARAM) hb_parni(2)-1, 0);
+   SendMessage( HWNDparam( 1 ), LB_SETCURSEL, (WPARAM) hb_parni(2)-1, 0);
 }
 
 HB_FUNC ( LISTBOXGETCURSEL )
 {
-	hb_retni ( SendMessage( (HWND) hb_parnl( 1 ) , LB_GETCURSEL , 0 , 0 )  + 1 );
+        hb_retni ( SendMessage( HWNDparam( 1 ), LB_GETCURSEL , 0 , 0 )  + 1 );
 }
 
 HB_FUNC ( LISTBOXDELETESTRING )
 {
-	SendMessage( (HWND) hb_parnl( 1 ), LB_DELETESTRING, (WPARAM) hb_parni(2)-1, 0);
+        SendMessage( HWNDparam( 1 ), LB_DELETESTRING, (WPARAM) hb_parni(2)-1, 0);
 }
 
 HB_FUNC ( LISTBOXRESET )
 {
-	SendMessage( (HWND) hb_parnl( 1 ), LB_RESETCONTENT, 0, 0 );
+        SendMessage( HWNDparam( 1 ), LB_RESETCONTENT, 0, 0 );
 }
 
 HB_FUNC ( LISTBOXGETMULTISEL )
 {
 
-	HWND hwnd = (HWND) hb_parnl(1) ;
+        HWND hwnd = HWNDparam( 1 );
 	int i ;
     int *buffer;
 	int n ;
@@ -234,7 +234,7 @@ HB_FUNC ( LISTBOXSETMULTISEL )
 
 	PHB_ITEM wArray;
 
-	HWND hwnd = (HWND) hb_parnl(1) ;
+        HWND hwnd = HWNDparam( 1 );
 
 	int i ;
 	int n ;
@@ -264,5 +264,5 @@ HB_FUNC ( LISTBOXSETMULTISEL )
 
 HB_FUNC ( LISTBOXGETITEMCOUNT )
 {
-   hb_retnl ( SendMessage( (HWND) hb_parnl( 1 ), LB_GETCOUNT , 0, 0 ) ) ;
+   hb_retnl ( SendMessage( HWNDparam( 1 ), LB_GETCOUNT , 0, 0 ) ) ;
 }

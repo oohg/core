@@ -1,5 +1,5 @@
 /*
- * $Id: c_media.c,v 1.1 2005-08-07 00:04:18 guerra000 Exp $
+ * $Id: c_media.c,v 1.2 2007-01-01 20:52:13 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -95,7 +95,9 @@
 
 #include <windows.h>
 #include <mmsystem.h>
+#include <commctrl.h>
 #include "hbapi.h"
+#include "../include/oohg.h"
 
 #include <commctrl.h>
 
@@ -188,7 +190,7 @@ HB_FUNC ( INITPLAYER )
 	if (  hb_parl (16) )
 		Style = Style | MCIWNDF_SHOWPOS ;
 
-	hwnd=MCIWndCreate((HWND) hb_parnl(1),NULL,Style,hb_parc(2));
+        hwnd=MCIWndCreate( HWNDparam( 1 ),NULL,Style,hb_parc(2));
 
 	if(hwnd == NULL)
 	{
@@ -197,13 +199,13 @@ HB_FUNC ( INITPLAYER )
 	return;
 	}
         MoveWindow(hwnd,hb_parnl(3),hb_parnl(4),hb_parnl(5),hb_parnl(6),TRUE);
-	hb_retnl ((LONG)hwnd);
+        HWNDret( hwnd );
 }
 
 HB_FUNC (MCIFUNC)
 {
- HWND mcihand= (HWND) hb_parnl(1);
- int  func =  hb_parni(2);
+   HWND mcihand = HWNDparam( 1 );
+   int  func =  hb_parni(2);
       switch(func)
       {
          case  1:  hb_retnl( MCIWndPlay(mcihand)) ; break;
@@ -242,7 +244,7 @@ HB_FUNC ( INITANIMATE )
 	if (  hb_parl (8) )
 		Style = Style | ACS_TRANSPARENT ;
 
-	hwnd=Animate_Create((HWND) hb_parnl(1),NULL,Style,GetModuleHandle(NULL));
+        hwnd=Animate_Create( HWNDparam( 1 ),NULL,Style,GetModuleHandle(NULL));
 
 	if(hwnd == NULL)
 	{
@@ -251,35 +253,36 @@ HB_FUNC ( INITANIMATE )
 	return;
 	}
         MoveWindow(hwnd,hb_parnl(2),hb_parnl(3),hb_parnl(4),hb_parnl(5),TRUE);
-	hb_retnl ((LONG)hwnd);
+        HWNDret( hwnd );
 }
 
 HB_FUNC ( OPENANIMATE )
 {
-  Animate_Open((HWND) hb_parnl(1),hb_parc(2));
+  Animate_Open( HWNDparam( 1 ), hb_parc(2));
 }
 
 HB_FUNC ( PLAYANIMATE )
 {
-  Animate_Play((HWND) hb_parnl(1),0,-1,1);
+  Animate_Play( HWNDparam( 1 ), 0, -1, 1 );
 }
 
 HB_FUNC ( SEEKANIMATE )
 {
-  Animate_Seek((HWND) hb_parnl(1),hb_parni(2));
+  Animate_Seek( HWNDparam( 1 ), hb_parni(2));
 }
+
 HB_FUNC ( STOPANIMATE )
 {
-  Animate_Stop((HWND) hb_parnl(1));
+  Animate_Stop( HWNDparam( 1 ) );
 }
 
 HB_FUNC ( CLOSEANIMATE )
 {
-  Animate_Close((HWND) hb_parnl(1));
+  Animate_Close( HWNDparam( 1 ) );
 }
 
 HB_FUNC ( DESTROYANIMATE )
 {
-  DestroyWindow((HWND) hb_parnl(1));
+  DestroyWindow( HWNDparam( 1 ) );
 }
 #endif

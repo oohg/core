@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.75 2006-12-28 01:44:47 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.76 2007-01-01 20:52:13 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1173,6 +1173,14 @@ Return lRet
 #if ( _WIN32_IE < 0x0400 )
    #undef _WIN32_IE
    #define _WIN32_IE 0x0400
+#endif
+
+#ifndef _WIN32_WINNT
+   #define _WIN32_WINNT 0x0400
+#endif
+#if ( _WIN32_WINNT < 0x0400 )
+   #undef _WIN32_WINNT
+   #define _WIN32_WINNT 0x0400
 #endif
 
 #define s_Super s_TControl

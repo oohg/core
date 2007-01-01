@@ -1,5 +1,5 @@
 /*
- * $Id: c_crypt.c,v 1.1 2005-08-07 00:02:01 guerra000 Exp $
+ * $Id: c_crypt.c,v 1.2 2007-01-01 20:52:13 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -54,7 +54,7 @@
 
 HB_FUNC( CHARXOR )
 {
-   BYTE *cData, *cMask, *cRet, *cPos;
+   char *cData, *cMask, *cRet, *cPos;
    ULONG ulData, ulMask, ulRemain, ulMaskPos;
 
    ulData = hb_parclen( 1 );
