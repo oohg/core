@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.50 2006-11-23 16:59:00 declan2005 Exp $
+* $Id: h_print.prg,v 1.51 2007-01-02 02:26:22 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -51,6 +51,8 @@ if clibx=NIL
          o_print_:=trtfprint()
       elseif _OOHG_printlibrary="CSVPRINT"
          o_print_:=tcsvprint()
+      elseif _OOHG_printlibrary="HTMLPRINT"
+         o_print_:=thtmlprint()
       else
          o_print_:=thbprinter()
       endif
@@ -72,6 +74,8 @@ else
          o_print_:=trtfprint()
       elseif clibx="CSVPRINT"
          o_print_:=tcsvprint()
+      elseif clibx="HTMLPRINT"
+         o_print_:=thtmlprint()
       else
          o_print_:=tminiprint()
       endif
@@ -1758,6 +1762,37 @@ return self
 
 
 //////////////////////// RTF
+
+CREATE CLASS THTMLPRINT FROM TEXCELPRINT
+
+*-------------------------
+METHOD enddocx()
+*-------------------------
+
+
+ENDCLASS
+
+METHOD enddocx() CLASS THTMLPRINT
+local nCol,cRuta
+FOR nCol:=1 TO FCOUNT()
+    oPrintHoja:Columns( nCol ):AutoFit()
+NEXT
+oPrintHoja:Cells( 1, 1 ):Select()
+/////oPrintExcel:Visible := .T.
+cRuta:=GetCurrentFolder()
+///oPrintExcel:Saveas(cRuta+"Printer.html",44)   //// graba como html
+oPrintHoja:SaveAs("Printer.html", 44 ,.f.,.f.)
+oPrintHoja:End()
+oPrintExcel:Quit()
+release oPrinthoja
+release oPrintexcel
+////oPrintExcel:End()
+///IF ShellExecute(0, "open", "rundll32.exe", "url.dll,FileProtocolHandler " + "Printer.html", ,1) <=32
+///         MSGINFO("No se ha localizado el programa asociado a la extemsion RTF"+CHR(13)+CHR(13)+ ;
+///         "El fichero se ha guardado en:"+CHR(13)+cRuta+"\printer.RTF")
+///ENDIF
+RETURN self
+
 
 CREATE CLASS TRTFPRINT FROM TPRINTBASE
 

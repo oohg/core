@@ -1,5 +1,5 @@
 /*
- * $Id: h_report.prg,v 1.34 2006-11-23 14:13:57 declan2005 Exp $
+ * $Id: h_report.prg,v 1.35 2007-01-02 02:26:22 declan2005 Exp $
  */
 /*
  * DO REPORT Command support procedures For MiniGUI Library.
@@ -259,6 +259,10 @@ else
        oprint:=tprint("CSVPRINT")
        oprint:init()
        lexcel:=.T.
+  elseif _OOHG_printlibrary="HTMLPRINT"
+       oprint:=tprint("HTMLPRINT")
+       oprint:init()
+       lexcel:=.T.
 
   elseif _OOHG_printlibrary="DOSPRINT"
        oprint:=tprint("DOSPRINT")
@@ -411,7 +415,6 @@ do while .not. eof()
        
        endif
        
-             
             do case
                case wtipo == 'C'
                clinea:=clinea+substr(wfield,1,awidths[i])+space(awidths[i]-len(substr(wfield,1,awidths[i]) ))+" "
