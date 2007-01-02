@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.20 2006-11-11 21:07:01 guerra000 Exp $
+ * $Id: h_button.prg,v 1.21 2007-01-02 04:31:45 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -266,7 +266,7 @@ HB_FUNC( TBUTTON_SETPICTURE )   // ( Self, cImage, lTransparent, lScale )
 HB_FUNC( TBUTTON_SETBUFFER )   // ( oSelf, cBuffer, lScale )
 {
    POCTRL oSelf = _OOHG_GetControlInfo( hb_param( 1, HB_IT_OBJECT ) );
-   HBITMAP hBitmap, hBitmap2;
+   HBITMAP hBitmap = 0, hBitmap2;
    HGLOBAL hGlobal;
    RECT rect;
 
@@ -286,10 +286,6 @@ HB_FUNC( TBUTTON_SETBUFFER )   // ( oSelf, cBuffer, lScale )
             DeleteObject( hBitmap2 );
          }
       }
-   }
-   else
-   {
-      hBitmap = 0;
    }
    SendMessage( oSelf->hWnd, BM_SETIMAGE, ( WPARAM ) IMAGE_BITMAP, ( LPARAM ) hBitmap );
 

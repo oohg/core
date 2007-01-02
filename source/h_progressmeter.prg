@@ -1,5 +1,5 @@
 /*
- * $Id: h_progressmeter.prg,v 1.11 2006-11-22 05:15:58 guerra000 Exp $
+ * $Id: h_progressmeter.prg,v 1.12 2007-01-02 04:31:45 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -215,7 +215,7 @@ void ProgressMeter_Paint( POCTRL oSelf, HDC hdc )
    }
    else
    {
-      sprintf( cPercent, "%i%%", oSelf->lAux[ 0 ] / 100 );
+      sprintf( cPercent, "%i%%", ( int )( oSelf->lAux[ 0 ] / 100 ) );
       txt = cPercent;
    }
    len = strlen( txt );
@@ -286,7 +286,7 @@ HB_FUNC_STATIC( TPROGRESSMETER_EVENTS )
             }
             else
             {
-               sprintf( cPercent, "%i%%", oSelf->lAux[ 0 ] / 100 );
+               sprintf( cPercent, "%i%%", ( int )( oSelf->lAux[ 0 ] / 100 ) );
                txt = cPercent;
             }
             len = strlen( txt ) + 1;
@@ -317,7 +317,7 @@ HB_FUNC_STATIC( TPROGRESSMETER_EVENTS )
          else
          {
             char cPercent[ 100 ];
-            sprintf( cPercent, "%i%%", oSelf->lAux[ 0 ] / 100 );
+            sprintf( cPercent, "%i%%", ( int )( oSelf->lAux[ 0 ] / 100 ) );
             hb_retnl( strlen( cPercent ) );
          }
          break;

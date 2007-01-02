@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: common_make.bat,v 1.1 2007-01-01 20:52:13 guerra000 Exp $
+rem $Id: common_make.bat,v 1.2 2007-01-02 04:31:45 guerra000 Exp $
 rem
 
 if "%1"=="" goto INFO
@@ -36,7 +36,9 @@ if errorlevel 1 goto EXIT
 goto EXIT
 
 :INFO
+echo ooHG - Library compilation.
+echo .
 echo This file must be called from MAKELIB.BAT
-echo
+echo .
 
 :EXIT

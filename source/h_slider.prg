@@ -1,5 +1,5 @@
 /*
- * $Id: h_slider.prg,v 1.9 2006-11-09 19:37:16 declan2005 Exp $
+ * $Id: h_slider.prg,v 1.10 2007-01-02 04:31:45 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -200,6 +200,14 @@ Local f
 RETURN ::Super:BackColor
 
 #pragma BEGINDUMP
+
+#ifndef _WIN32_IE
+   #define _WIN32_IE 0x0400
+#endif
+#if ( _WIN32_IE < 0x0400 )
+   #undef _WIN32_IE
+   #define _WIN32_IE 0x0400
+#endif
 
 #include "hbapi.h"
 #include <windows.h>
