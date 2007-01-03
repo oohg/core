@@ -22,6 +22,8 @@ set date ansi
 
                         ITEM 'RTF' ACTION printtest("RTFPRINT")
                         ITEM 'CSV' ACTION printtest("CSVPRINT")
+                        ITEM 'HTML' ACTION printtest("HTMLPRINT")
+
 
 			ITEM 'report form hbprinter' ACTION repof("HBPRINTER")
                         ITEM 'report form MINIPRINT' ACTION repof("MINIPRINT")
@@ -30,6 +32,8 @@ set date ansi
                         ITEM 'report form excelprint' ACTION repof("EXCELPRINT")
                         ITEM 'report form RTF' ACTION repof("RTFPRINT")
                         ITEM 'report form CSV' ACTION repof("CSVPRINT")
+
+                        ITEM 'report form HTML' ACTION repof("HTMLPRINT")
 
                         ITEM 'edit demo hbprinter' ACTION editp("HBPRINTER")
                         ITEM 'edit demo miniprint' ACTION editp("MINIPRINT")

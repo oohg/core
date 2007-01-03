@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.51 2007-01-02 02:26:22 declan2005 Exp $
+* $Id: h_print.prg,v 1.52 2007-01-03 13:52:53 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -1773,7 +1773,7 @@ METHOD enddocx()
 ENDCLASS
 
 METHOD enddocx() CLASS THTMLPRINT
-local nCol,cRuta
+local nCol,cRuta,cMydoc
 FOR nCol:=1 TO FCOUNT()
     oPrintHoja:Columns( nCol ):AutoFit()
 NEXT
@@ -1787,10 +1787,11 @@ oPrintExcel:Quit()
 release oPrinthoja
 release oPrintexcel
 ////oPrintExcel:End()
-///IF ShellExecute(0, "open", "rundll32.exe", "url.dll,FileProtocolHandler " + "Printer.html", ,1) <=32
-///         MSGINFO("No se ha localizado el programa asociado a la extemsion RTF"+CHR(13)+CHR(13)+ ;
-///         "El fichero se ha guardado en:"+CHR(13)+cRuta+"\printer.RTF")
-///ENDIF
+cMydoc:=GetMyDocumentsFolder()
+IF ShellExecute(0, "open", "rundll32.exe", "url.dll,FileProtocolHandler "+ cMydoc+ "\Printer.html", ,1) <=32
+     MSGINFO("html Extension not asociated"+CHR(13)+CHR(13)+ ;
+     "File saved in:"+CHR(13)+rutaficrtf1+"\printer.html")
+ENDIF
 RETURN self
 
 
@@ -1937,14 +1938,18 @@ NEXT
 SET DEVICE TO SCREEN
 SET PRINTER TO
 RELEASE oPrintRTF1,oPrintRTF2,oPrintRTF3
-IF ShellExecute(0, "open", "soffice.exe", "printer.RTF" , RUTAFICRTF1 , 1)<=32
-   IF ShellExecute(0, "open", "WinWord.exe", "printer.RTF" , RUTAFICRTF1 , 1)<=32
-      IF ShellExecute(0, "open", "printer.RTF" , RUTAFICRTF1 , , 1)<=32
-         MSGINFO("No se ha localizado el programa asociado a la extemsion RTF"+CHR(13)+CHR(13)+ ;
-         "El fichero se ha guardado en:"+CHR(13)+RUTAFICRTF1+"\printer.RTF")
-      ENDIF
-   ENDIF
+IF ShellExecute(0, "open", "rundll32.exe", "url.dll,FileProtocolHandler "+ RUTAFICRTF1 + "\Printer.rtf", ,1) <=32
+         MSGINFO("RTF Extension not asociated"+CHR(13)+CHR(13)+ ;
+         "File saved in:"+CHR(13)+rutaficrtf1+"\printer.rtf")
 ENDIF
+//IF ShellExecute(0, "open", "soffice.exe", "printer.RTF" , RUTAFICRTF1 , 1)<=32
+///   IF ShellExecute(0, "open", "WinWord.exe", "printer.RTF" , RUTAFICRTF1 , 1)<=32
+///      IF ShellExecute(0, "open", "printer.RTF" , RUTAFICRTF1 , , 1)<=32
+///         MSGINFO("No se ha localizado el programa asociado a la extemsion RTF"+CHR(13)+CHR(13)+ ;
+//         "El fichero se ha guardado en:"+CHR(13)+RUTAFICRTF1+"\printer.RTF")
+///      ENDIF
+///   ENDIF
+///ENDIF
 RETURN self
 
 
@@ -2206,14 +2211,20 @@ NEXT
 SET DEVICE TO SCREEN
 SET PRINTER TO
 RELEASE oPrintCSV1,oPrintCSV2,oPrintCSV3
-IF ShellExecute(0, "open", "soffice.exe", "printer.CSV" , RUTAFICRTF1 , 1)<=32
-   IF ShellExecute(0, "open", "Excel.exe", "printer.CSV" , RUTAFICRTF1 , 1)<=32
-      IF ShellExecute(0, "open", "printer.CSV" , RUTAFICRTF1 , , 1)<=32
-         MSGINFO("No se ha localizado el programa asociado a la extemsion CSV"+CHR(13)+CHR(13)+ ;
-         "El fichero se ha guardado en:"+CHR(13)+RUTAFICRTF1+"\printer.CSV")
-      ENDIF
-   ENDIF
+
+IF ShellExecute(0, "open", "rundll32.exe", "url.dll,FileProtocolHandler "+ RUTAFICRTF1 + "\Printer.csv", ,1) <=32
+         MSGINFO("CSV Extension not asociated"+CHR(13)+CHR(13)+ ;
+         "File saved in:"+CHR(13)+rutaficrtf1+"\printer.csv")
 ENDIF
+
+///IF ShellExecute(0, "open", "soffice.exe", rutaficrtf1+"\printer.CSV" , nil , 1)<=32
+///   IF ShellExecute(0, "open", "Excel.exe", rutaficrtf1+"\printer.CSV" , nil , 1)<=32
+//      IF ShellExecute(0, "open", rutaficrtf1+"\printer.CSV" , nil ,  1)<=32
+//         MSGINFO("No se ha localizado el programa asociado a la extemsion CSV"+CHR(13)+CHR(13)+ ;
+//         "El fichero se ha guardado en:"+CHR(13)+RUTAFICRTF1+"\printer.CSV")
+//     ENDIF
+  // ENDIF
+///ENDIF
 RETURN self
 
 
