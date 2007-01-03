@@ -1,100 +1,1565 @@
 
+CLASS TTEXTARRAY FROM TCONTROL                                                                                          
+   DATA TYPE       INIT "TEXTARRAY" READONLY                                                                            
+                                                                                                                        
+   METHOD DEFINE                                                                                                        
+   METHOD SETFONT                                                                                                       
+                                                                                                                        
+   METHOD EVENTS                                                                                                        
+                                                                                                                        
+   METHOD ROWCOUNT       SETGET                                                                                         
+   METHOD COLCOUNT       SETGET                                                                                         
+   METHOD TEXTROW        SETGET                                                                                         
+   METHOD TEXTCOL        SETGET                                                                                         
+   METHOD CURSORTYPE     SETGET                                                                                         
+   METHOD SCROLL                                                                                                        
+   METHOD CLEAR                                                                                                         
+   METHOD WRITE                                                                                                         
+   METHOD WRITERAW                                                                                                      
+   METHOD WRITELN(T,C,R,F,B)   BLOCK { |SELF,T,C,R,F,B| ::WRITE(T,C,R,F,B) , ::WRITE( CHR( 13 ) + CHR( 10 ) ) }         
+   METHOD QQOUT(T)             BLOCK { |SELF,T| ::WRITE(T) }                                                            
+   METHOD QOUT(T)              BLOCK { |SELF,T| ::WRITE( CHR( 13 ) + CHR( 10 ) ) , ::WRITE(T) }                         
+   METHOD DEVPOS                                                                                                        
+ENDCLASS                                                                                                                
 
+CLASS TREG32                                                                                                            
+   DATA CREGKEY, NKEY, NHANDLE, NERROR, LERROR                                                                          
+   METHOD NEW( NKEY, CREGKEY, LSHOWERROR )                                                                              
+   METHOD CREATE( NKEY, CREGKEY, LSHOWERROR )                                                                           
+   METHOD GET( CSUBKEY, UVAR )                                                                                          
+   METHOD SET( CSUBKEY, UVAR )                                                                                          
+   METHOD DELETE( CSUBKEY )                                                                                             
+   METHOD KEYDELETE( CSUBKEY )                                                                                          
+   METHOD CLOSE()    BLOCK {| SELF | IF( ::LERROR, , REGCLOSEKEY( ::NHANDLE ) ) }                                       
+ENDCLASS                                                                                                                
 
-OOHG Classes
+CLASS TEDITRICH FROM TEDIT                                                                                              
+   DATA TYPE      INIT "RICHEDIT" READONLY                                                                              
+   DATA NWIDTH    INIT 120                                                                                              
+   DATA NHEIGHT   INIT 240                                                                                              
+                                                                                                                        
+   METHOD DEFINE                                                                                                        
+   METHOD BACKCOLOR   SETGET                                                                                            
+ENDCLASS                                                                                                                
 
+CLASS TSCROLLBAR FROM TCONTROL                                                                                          
+   DATA TYPE         INIT "SCROLLBAR" READONLY                                                                          
+   DATA SCROLLTYPE   INIT SB_CTL                                                                                        
+   DATA FROMHWND     INIT 0                                                                                             
+   DATA NRANGEMIN    INIT 1                                                                                             
+   DATA NRANGEMAX    INIT 100                                                                                           
+   DATA ONLINEUP     INIT NIL                                                                                           
+   DATA ONLINEDOWN   INIT NIL                                                                                           
+   DATA ONPAGEUP     INIT NIL                                                                                           
+   DATA ONPAGEDOWN   INIT NIL                                                                                           
+   DATA ONTOP        INIT NIL                                                                                           
+   DATA ONBOTTOM     INIT NIL                                                                                           
+   DATA ONTHUMB      INIT NIL                                                                                           
+   DATA ONTRACK      INIT NIL                                                                                           
+   DATA ONENDTRACK   INIT NIL                                                                                           
+   DATA NFACTOR      INIT 1                                                                                             
+   DATA NLINESKIP    INIT 0                                                                                             
+   DATA NPAGESKIP    INIT 0                                                                                             
+   DATA NORIENT      INIT SB_VERT                                                                                       
+   DATA LAUTOMOVE    INIT .F.                                                                                           
+                                                                                                                        
+   METHOD DEFINE                                                                                                        
+   METHOD VALUE               SETGET                                                                                    
+   METHOD RANGEMIN            SETGET                                                                                    
+   METHOD RANGEMAX            SETGET                                                                                    
+   METHOD SETRANGE                                                                                                      
+   METHOD PAGE                SETGET                                                                                    
+                                                                                                                        
+   METHOD LINEUP                                                                                                        
+   METHOD LINEDOWN                                                                                                      
+   METHOD PAGEUP                                                                                                        
+   METHOD PAGEDOWN                                                                                                      
+   METHOD TOP                                                                                                           
+   METHOD BOTTOM                                                                                                        
+   METHOD THUMB                                                                                                         
+                                                                                                                        
+   MESSAGE LINELEFT  METHOD LINEUP                                                                                      
+   MESSAGE LINERIGHT METHOD LINEDOWN                                                                                    
+   MESSAGE PAGELEFT  METHOD PAGEUP                                                                                      
+   MESSAGE PAGERIGHT METHOD PAGEDOWN                                                                                    
+   MESSAGE LEFT      METHOD TOP                                                                                         
+   MESSAGE RIGHT     METHOD BOTTOM                                                                                      
+                                                                                                                        
+   METHOD ONLINELEFT          SETGET                                                                                    
+   METHOD ONLINERIGHT         SETGET                                                                                    
+   METHOD ONPAGELEFT          SETGET                                                                                    
+   METHOD ONPAGERIGHT         SETGET                                                                                    
+   METHOD ONLEFT              SETGET                                                                                    
+   METHOD ONRIGHT             SETGET                                                                                    
+                                                                                                                        
+   METHOD EVENTS_VSCROLL                                                                                                
+   MESSAGE EVENTS_HSCROLL METHOD EVENTS_VSCROLL                                                                         
+ENDCLASS                                                                                                                
 
-TWINDOW ----
-           |
-           |
-           |---- TFORM
-           |
-           |
-           |---- TCONTROL ---|
-                             |
-                             |
-                             |---- TBUTTON
-                             |
-                             |
-                             |---- TLABEL ----------|
-                             |                      |
-                             |                      |
-                             |---- TIMAGE           |---- TTEXT----------|
-                             |                      |                    |
-                             |                      |                    |
-                             |---- TSPINNER         |---- THYPERLINK     |------ TTEXTPICTURE -----|
-                             |                      |                    |                         |
-                             |                      |                    |                         |
-                             |---- TTREE            |---- TCHECKBOX      |------ TTEXNUM           |---- TTEXTMASKED
-                             |                      |                    |                         |
-                             |                      |                    |                         |
-                             |---- TDATEPICK        |---- TRADIOGROUP    |------ TEDIT -----       |---- TTEXTCHARMASK
-                             |                      |                                      |
-                             |                      |                                      |
-                             |---- TTIMEPICK        |---- TRADIOITEM                       |-------TEDITRICH
-                             |                      |
-                             |                      |
-                             |---- TSCROLLBAR       |---- TCOMBO
-                             |                      |
-                             |                      |
-                             |---- TMESSAGEBAR      |---- TIPADDRESS
-                             |                      |
-                             |                      |
-                             |---- TITEMMESSAGE     |---- TPROGRESSMETER
-                             |
-                             |
-                             |---- TTAB
-                             |
-                             |
-                             |---- TTABPAGE
-                             |
-                             |
-                             |---- TLIST------------|
-                             |                      |
-                             |                      |
-                             |---- TFRAME           |---- TLISTMULTI
-                             |
-                             |
-                             |---- TGRID------------|
-                             |                      |
-                             |                      |
-                             |---- TTOOLBAR         |---- TBROWSE
-                             |                      |
-                             |                      |
-                             |---- TPLAYER          |---- TGRIDMULTI
-                             |                      |
-                             |                      |
-                             |---- TANIMATBOX       |---- TGRIDCONTROLTEXTBOX
-                             |                      |
-                             |                      |
-                             |---- TMENU            |---- TGRIDCONTROLMEMO
-                             |                      |
-                             |                      | 
-                             |---- TMONTHCAL        |---- TGRIDCONTROLDATEPICKER
-                             |                      |
-                             |                      |
-                             |---- TPROGRESSBAR     |---- TGRIDCONTROLCOMBOBOX
-                             |                      |
-                             |                      |
-                             |---- TSLIDER          |---- TGRIDCONTROLSPINNER
-                             |                      |
-                             |                      |
-                             |---- TTIMER           |---- TGRIDCONTROLCHECKBOX
-                             |                      |
-                             |                      |
-                             |---- TTOOLBUTTON      |---- TGRIDCONTROLIMAGELIST
-                                                    |
-                                                    |
-TPRINT -------|                                     |---- TGRIDCONTROLLCOMBOBOX
-              |
-              |
-              |-----TREPORT
-              | 
-              |
-TREG32        |-----THBPRINTER
-              |
-              |
-              |-----TMINIPRINT
-              |
-              |
-              |-----TDOSPRINT
+CLASS TSLIDER FROM TCONTROL                                                                                             
+   DATA TYPE      INIT "SLIDER" READONLY                                                                                
+   DATA NRANGEMIN   INIT 0                                                                                              
+   DATA NRANGEMAX   INIT 0                                                                                              
+                                                                                                                        
+   METHOD DEFINE                                                                                                        
+   METHOD VALUE               SETGET                                                                                    
+                                                                                                                        
+   METHOD RANGEMIN            SETGET                                                                                    
+   METHOD RANGEMAX            SETGET                                                                                    
+   METHOD BACKCOLOR           SETGET                                                                                    
+ENDCLASS                                                                                                                
+
+CLASS TSPINNER FROM TCONTROL                                                                                            
+   DATA TYPE      INIT "SPINNER" READONLY                                                                               
+   DATA NRANGEMIN   INIT 0                                                                                              
+   DATA NRANGEMAX   INIT 0                                                                                              
+                                                                                                                        
+   METHOD DEFINE                                                                                                        
+   METHOD SIZEPOS                                                                                                       
+   METHOD VISIBLE             SETGET                                                                                    
+   METHOD VALUE               SETGET                                                                                    
+   METHOD ENABLED             SETGET                                                                                    
+   METHOD FORCEHIDE           BLOCK { |SELF| HIDEWINDOW( ::AUXHANDLE ) , ::SUPER:FORCEHIDE() }                          
+                                                                                                                        
+   METHOD RANGEMIN            SETGET                                                                                    
+   METHOD RANGEMAX            SETGET                                                                                    
+ENDCLASS                                                                                                                
+
+CLASS TSCROLLBUTTON FROM TCONTROL                                                                                       
+   DATA TYPE            INIT "SCROLLBUTTON" READONLY                                                                    
+                                                                                                                        
+   METHOD DEFINE                                                                                                        
+ENDCLASS                                                                                                                
+
+CLASS TTAB FROM TCONTROL                                                                                                
+   DATA TYPE       INIT "TAB" READONLY                                                                                  
+   DATA APAGES     INIT {}                                                                                              
+   DATA LINTERNALS INIT .F.                                                                                             
+//            HIML = IMAGELIST_CREATE( CX , CY , ILC_COLOR8 | ILC_MASK , L + 1 , L + 1 );                               
+//            IMAGELIST_ADDMASKED( HIML, HBMP, CLR_DEFAULT ) ;                                                          
+   DATA IMAGELISTCOLOR      INIT CLR_DEFAULT                                                                            
+   DATA IMAGELISTFLAGS      INIT LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS                              
+   DATA SETIMAGELISTCOMMAND INIT TCM_SETIMAGELIST                                                                       
+   DATA SETIMAGELISTWPARAM  INIT 0                                                                                      
+                                                                                                                        
+   METHOD DEFINE                                                                                                        
+                                                                                                                        
+   METHOD REFRESH                                                                                                       
+   METHOD RELEASE                                                                                                       
+   METHOD SIZEPOS                                                                                                       
+   METHOD VALUE               SETGET                                                                                    
+   METHOD ENABLED             SETGET                                                                                    
+   METHOD VISIBLE             SETGET                                                                                    
+   METHOD FORCEHIDE                                                                                                     
+                                                                                                                        
+   METHOD EVENTS_NOTIFY                                                                                                 
+                                                                                                                        
+   METHOD ADDPAGE                                                                                                       
+   METHOD ADDCONTROL                                                                                                    
+   METHOD DELETECONTROL                                                                                                 
+   METHOD DELETEPAGE                                                                                                    
+   METHOD CAPTION                                                                                                       
+                                                                                                                        
+   METHOD REALPOSITION                                                                                                  
+   METHOD HIDEPAGE                                                                                                      
+   METHOD SHOWPAGE                                                                                                      
+ENDCLASS                                                                                                                
+
+CLASS TTABPAGE FROM TCONTROL                                                                                            
+   DATA TYPE      INIT "TABPAGE" READONLY                                                                               
+   DATA PICTURE   INIT ""                                                                                               
+   DATA POSITION  INIT 0                                                                                                
+   DATA NIMAGE    INIT -1                                                                                               
+   DATA LHIDDEN   INIT .F.                                                                                              
+   DATA CAPTION   INIT ""                                                                                               
+                                                                                                                        
+   METHOD DEFINE                                                                                                        
+   METHOD ENABLED                                                                                                       
+   METHOD VISIBLE             SETGET                                                                                    
+                                                                                                                        
+   METHOD CONTAINERVISIBLE                                                                                              
+                                                                                                                        
+   METHOD ADDCONTROL                                                                                                    
+   METHOD SETFOCUS            BLOCK { |SELF| ::CONTAINER:SETFOCUS() , ::CONTAINER:VALUE := ::POSITION ,                 
+::CONTAINER:DOEVENT( ::CONTAINER:ONCHANGE ) , SELF }                                                                    
+   METHOD FORCEHIDE           BLOCK { |SELF| AEVAL( ::ACONTROLS, { |O| O:FORCEHIDE() } ) }                              
+   METHOD EVENTS_SIZE         BLOCK { |SELF| AEVAL( ::ACONTROLS, { |O| O:SIZEPOS() } ) }                                
+ENDCLASS                                                                                                                
+
+CLASS TTABPAGEINTERNAL FROM TFORMINTERNAL                                                                               
+   DATA TYPE       INIT "TABPAGE" READONLY                                                                              
+   DATA PICTURE    INIT ""                                                                                              
+   DATA POSITION   INIT 0                                                                                               
+   DATA NIMAGE     INIT -1                                                                                              
+   DATA LHIDDEN    INIT .F.                                                                                             
+   DATA NROWMARGIN INIT 0                                                                                               
+   DATA NCOLMARGIN INIT 0                                                                                               
+   DATA CAPTION    INIT ""                                                                                              
+                                                                                                                        
+   METHOD DEFINE                                                                                                        
+   METHOD EVENTS_SIZE                                                                                                   
+                                                                                                                        
+   METHOD ROWMARGIN           SETGET                                                                                    
+   METHOD COLMARGIN           SETGET                                                                                    
+                                                                                                                        
+   METHOD SETFOCUS            BLOCK { |SELF| ::CONTAINER:SETFOCUS() , ::CONTAINER:VALUE := ::POSITION ,                 
+::SUPER:SETFOCUS() , ::CONTAINER:DOEVENT( ::CONTAINER:ONCHANGE ) , SELF }                                               
+ENDCLASS                                                                                                                
+
+CLASS TEDIT FROM TTEXT                                                                                                  
+   DATA TYPE      INIT "EDIT" READONLY                                                                                  
+                                                                                                                        
+   METHOD DEFINE                                                                                                        
+   METHOD EVENTS_ENTER      BLOCK { || NIL }                                                                            
+ENDCLASS                                                                                                                
+
+CLASS TSPLITBOX FROM TCONTROL                                                                                           
+   DATA TYPE           INIT "SPLITBOX" READONLY                                                                         
+   DATA LFORCEBREAK    INIT .T.                                                                                         
+   DATA CGRIPPERTEXT   INIT ""                                                                                          
+   DATA LINVERTED      INIT .F.                                                                                         
+   DATA NMINWIDTH      INIT NIL                                                                                         
+   DATA NMINHEIGHT     INIT NIL                                                                                         
+                                                                                                                        
+   METHOD DEFINE                                                                                                        
+   METHOD SIZEPOS        BLOCK { |SELF| SIZEREBAR( ::HWND ) , REDRAWWINDOW( ::HWND ) }                                  
+   METHOD REFRESH        BLOCK { |SELF| SIZEREBAR( ::HWND ) , REDRAWWINDOW( ::HWND ) }                                  
+   METHOD EVENTS_SIZE    BLOCK { |SELF| SIZEREBAR( ::HWND ) , REDRAWWINDOW( ::HWND ) }                                  
+   METHOD REFRESHDATA    BLOCK { |SELF| SIZEREBAR( ::HWND ) , REDRAWWINDOW( ::HWND ) }                                  
+   METHOD ADDCONTROL                                                                                                    
+   METHOD SETSPLITBOX                                                                                                   
+ENDCLASS                                                                                                                
+
+CLASS TGRID FROM TCONTROL                                                                                               
+   DATA TYPE             INIT "GRID" READONLY                                                                           
+   DATA NWIDTH           INIT 240                                                                                       
+   DATA NHEIGHT          INIT 120                                                                                       
+   DATA AWIDTHS          INIT {}                                                                                        
+   DATA AHEADERS         INIT {}                                                                                        
+   DATA AHEADCLICK       INIT NIL                                                                                       
+   DATA AJUST            INIT NIL                                                                                       
+   DATA ALLOWEDIT        INIT .F.                                                                                       
+   DATA GRIDFORECOLOR    INIT {}                                                                                        
+   DATA GRIDBACKCOLOR    INIT {}                                                                                        
+   DATA DYNAMICFORECOLOR INIT {}                                                                                        
+   DATA DYNAMICBACKCOLOR INIT {}                                                                                        
+   DATA PICTURE          INIT NIL                                                                                       
+   DATA ONDISPINFO       INIT NIL                                                                                       
+   DATA SETIMAGELISTCOMMAND INIT LVM_SETIMAGELIST                                                                       
+   DATA SETIMAGELISTWPARAM  INIT LVSIL_SMALL                                                                            
+   DATA INPLACE          INIT .F.                                                                                       
+   DATA FULLMOVE          INIT .F.                                                                                      
+   DATA APPEND           INIT .F.                                                                                       
+   DATA EDITCONTROLS     INIT NIL                                                                                       
+   DATA READONLY         INIT NIL                                                                                       
+   DATA VALID            INIT NIL                                                                                       
+   DATA VALIDMESSAGES    INIT NIL                                                                                       
+   DATA ONEDITCELL       INIT NIL                                                                                       
+   DATA AWHEN            INIT {}                                                                                        
+   DATA CROWEDITTITLE    INIT NIL                                                                                       
+   DATA LNESTED          INIT .F.                                                                                       
+                                                                                                                        
+   DATA NROWPOS      INIT 1                                                                                             
+   DATA NCOLPOS      INIT 1                                                                                             
+   DATA LEDITMODE    INIT .F.                                                                                           
+   DATA LAPPENDMODE INIT .F.                                                                                            
+                                                                                                                        
+   METHOD DEFINE                                                                                                        
+   METHOD DEFINE2                                                                                                       
+   METHOD VALUE            SETGET                                                                                       
+                                                                                                                        
+   METHOD EVENTS                                                                                                        
+   METHOD EVENTS_ENTER                                                                                                  
+   METHOD EVENTS_NOTIFY                                                                                                 
+                                                                                                                        
+   METHOD ADDCOLUMN                                                                                                     
+   METHOD DELETECOLUMN                                                                                                  
+                                                                                                                        
+   METHOD CELL                                                                                                          
+   METHOD CELLCAPTION( NROW, NCOL, UVALUE )         BLOCK { | SELF, NROW, NCOL, UVALUE | CELLRAWVALUE( ::HWND, NROW,    
+NCOL, 1, UVALUE ) }                                                                                                     
+   METHOD CELLIMAGE( NROW, NCOL, UVALUE )           BLOCK { | SELF, NROW, NCOL, UVALUE | CELLRAWVALUE( ::HWND, NROW,    
+NCOL, 2, UVALUE ) }                                                                                                     
+   METHOD EDITCELL                                                                                                      
+   METHOD EDITCELL2                                                                                                     
+   METHOD EDITALLCELLS                                                                                                  
+   METHOD EDITITEM                                                                                                      
+   METHOD EDITITEM2                                                                                                     
+   METHOD EDITGRID                                                                                                      
+   METHOD ISCOLUMNREADONLY                                                                                              
+   METHOD ISCOLUMNWHEN                                                                                                  
+   METHOD TOEXCEL                                                                                                       
+                                                                                                                        
+   METHOD ADDITEM                                                                                                       
+   METHOD APPENDITEM                                                                                                    
+   METHOD INSERTITEM                                                                                                    
+   METHOD INSERTBLANK                                                                                                   
+   METHOD DELETEITEM                                                                                                    
+   METHOD DELETEALLITEMS      BLOCK { | SELF | LISTVIEWRESET( ::HWND ), ::GRIDFORECOLOR := NIL, ::GRIDBACKCOLOR := NIL }
+   METHOD ITEM                                                                                                          
+   METHOD SETITEMCOLOR                                                                                                  
+   METHOD ITEMCOUNT           BLOCK { | SELF | LISTVIEWGETITEMCOUNT( ::HWND ) }                                         
+   METHOD COUNTPERPAGE        BLOCK { | SELF | LISTVIEWGETCOUNTPERPAGE( ::HWND ) }                                      
+   METHOD HEADER                                                                                                        
+   METHOD FONTCOLOR      SETGET                                                                                         
+   METHOD BACKCOLOR      SETGET                                                                                         
+   METHOD COLUMNCOUNT                                                                                                   
+   METHOD SETRANGECOLOR                                                                                                 
+   METHOD COLUMNWIDTH                                                                                                   
+   METHOD COLUMNAUTOFIT                                                                                                 
+   METHOD COLUMNAUTOFITH                                                                                                
+   METHOD COLUMNSAUTOFIT                                                                                                
+   METHOD COLUMNSAUTOFITH                                                                                               
+                                                                                                                        
+   METHOD UP                                                                                                            
+   METHOD DOWN                                                                                                          
+   METHOD LEFT                                                                                                          
+   METHOD RIGHT                                                                                                         
+   METHOD PAGEDOWN                                                                                                      
+   METHOD PAGEUP                                                                                                        
+   METHOD GOTOP                                                                                                         
+   METHOD GOBOTTOM                                                                                                      
+                                                                                                                        
+ENDCLASS                                                                                                                
+
+CLASS TGRIDMULTI FROM TGRID                                                                                             
+   DATA TYPE      INIT "MULTIGRID" READONLY                                                                             
+                                                                                                                        
+   METHOD DEFINE                                                                                                        
+   METHOD VALUE                                                                                                         
+ENDCLASS                                                                                                                
+
+CLASS TGRIDCONTROL                                                                                                      
+*-----------------------------------------------------------------------------*                                         
+   DATA OCONTROL      INIT NIL                                                                                          
+   DATA OWINDOW       INIT NIL                                                                                          
+   DATA VALUE         INIT NIL                                                                                          
+   DATA BWHEN         INIT NIL                                                                                          
+   DATA CMEMVAR       INIT NIL                                                                                          
+   DATA BVALID        INIT NIL                                                                                          
+   DATA CVALIDMESSAGE INIT NIL                                                                                          
+   DATA NDEFWIDTH     INIT 140                                                                                          
+   DATA NDEFHEIGHT    INIT 24                                                                                           
+                                                                                                                        
+   METHOD NEW               BLOCK { |SELF| SELF }                                                                       
+   METHOD CREATEWINDOW                                                                                                  
+   METHOD VALID                                                                                                         
+//   METHOD CREATECONTROL                                                                                               
+   METHOD STR2VAL(UVALUE)   BLOCK { |SELF,UVALUE| EMPTY( SELF ), UVALUE }                                               
+   METHOD GRIDVALUE(UVALUE) BLOCK { |SELF,UVALUE| EMPTY( SELF ), IF( VALTYPE( UVALUE ) $ "CM", TRIM( UVALUE ), UVALUE ) 
+}                                                                                                                       
+   METHOD SETFOCUS          BLOCK { |SELF| ::OCONTROL:SETFOCUS() }                                                      
+   METHOD SETVALUE(UVALUE)  BLOCK { |SELF,UVALUE| ::OCONTROL:VALUE := UVALUE }                                          
+   METHOD CONTROLVALUE      SETGET                                                                                      
+   METHOD ENABLED           SETGET                                                                                      
+   METHOD ONLOSTFOCUS       SETGET                                                                                      
+ENDCLASS                                                                                                                
+
+CLASS TGRIDCONTROLTEXTBOX FROM TGRIDCONTROL                                                                             
+*-----------------------------------------------------------------------------*                                         
+   DATA CMASK INIT ""                                                                                                   
+   DATA CTYPE INIT ""                                                                                                   
+                                                                                                                        
+   METHOD NEW                                                                                                           
+   METHOD CREATEWINDOW                                                                                                  
+   METHOD CREATECONTROL                                                                                                 
+   METHOD STR2VAL                                                                                                       
+   METHOD GRIDVALUE                                                                                                     
+ENDCLASS                                                                                                                
+
+CLASS TGRIDCONTROLMEMO FROM TGRIDCONTROL                                                                                
+*-----------------------------------------------------------------------------*                                         
+   DATA NDEFHEIGHT    INIT 84                                                                                           
+                                                                                                                        
+   METHOD CREATEWINDOW                                                                                                  
+   METHOD CREATECONTROL                                                                                                 
+ENDCLASS                                                                                                                
+
+CLASS TGRIDCONTROLDATEPICKER FROM TGRIDCONTROL                                                                          
+*-----------------------------------------------------------------------------*                                         
+   DATA LUPDOWN                                                                                                         
+                                                                                                                        
+   METHOD NEW                                                                                                           
+   METHOD CREATEWINDOW                                                                                                  
+   METHOD CREATECONTROL                                                                                                 
+   METHOD STR2VAL(UVALUE)   BLOCK { |SELF,UVALUE| EMPTY( SELF ), CTOD( UVALUE ) }                                       
+   METHOD GRIDVALUE(UVALUE) BLOCK { |SELF,UVALUE| EMPTY( SELF ), DTOC( UVALUE ) }                                       
+ENDCLASS                                                                                                                
+
+CLASS TGRIDCONTROLCOMBOBOX FROM TGRIDCONTROL                                                                            
+*-----------------------------------------------------------------------------*                                         
+   DATA AITEMS INIT {}                                                                                                  
+   DATA OGRID  INIT NIL                                                                                                 
+                                                                                                                        
+   METHOD NEW                                                                                                           
+   METHOD CREATEWINDOW                                                                                                  
+   METHOD CREATECONTROL                                                                                                 
+   METHOD STR2VAL                                                                                                       
+   METHOD GRIDVALUE(UVALUE) BLOCK { |SELF,UVALUE| IF( ( UVALUE >= 1 .AND. UVALUE <= LEN( ::AITEMS ) ), ::AITEMS[ UVALUE 
+], "" ) }                                                                                                               
+ENDCLASS                                                                                                                
+
+CLASS TGRIDCONTROLSPINNER FROM TGRIDCONTROL                                                                             
+*-----------------------------------------------------------------------------*                                         
+   DATA NRANGEMIN INIT 0                                                                                                
+   DATA NRANGEMAX INIT 100                                                                                              
+                                                                                                                        
+   METHOD NEW                                                                                                           
+   METHOD CREATEWINDOW                                                                                                  
+   METHOD CREATECONTROL                                                                                                 
+   METHOD STR2VAL(UVALUE)   BLOCK { |SELF,UVALUE| EMPTY( SELF ), VAL( ALLTRIM( UVALUE ) ) }                             
+   METHOD GRIDVALUE(UVALUE) BLOCK { |SELF,UVALUE| EMPTY( SELF ), LTRIM( STR( UVALUE ) ) }                               
+ENDCLASS                                                                                                                
+
+CLASS TGRIDCONTROLCHECKBOX FROM TGRIDCONTROL                                                                            
+*-----------------------------------------------------------------------------*                                         
+   DATA CTRUE  INIT ".T."                                                                                               
+   DATA CFALSE INIT ".F."                                                                                               
+                                                                                                                        
+   METHOD NEW                                                                                                           
+   METHOD CREATEWINDOW                                                                                                  
+   METHOD CREATECONTROL                                                                                                 
+   METHOD STR2VAL(UVALUE)   BLOCK { |SELF,UVALUE| ( UVALUE == ::CTRUE .OR. UPPER( UVALUE ) == ".T." ) }                 
+   METHOD GRIDVALUE(UVALUE) BLOCK { |SELF,UVALUE| IF( UVALUE, ::CTRUE, ::CFALSE ) }                                     
+ENDCLASS                                                                                                                
+
+CLASS TGRIDCONTROLIMAGELIST FROM TGRIDCONTROL                                                                           
+*-----------------------------------------------------------------------------*                                         
+   DATA OGRID                                                                                                           
+                                                                                                                        
+   METHOD NEW                                                                                                           
+   METHOD CREATEWINDOW                                                                                                  
+   METHOD CREATECONTROL                                                                                                 
+   METHOD STR2VAL(UVALUE)   BLOCK { |SELF,UVALUE| EMPTY( SELF ), VAL( UVALUE ) }                                        
+   METHOD CONTROLVALUE      SETGET                                                                                      
+ENDCLASS                                                                                                                
+
+CLASS TGRIDCONTROLLCOMBOBOX FROM TGRIDCONTROL                                                                           
+*-----------------------------------------------------------------------------*                                         
+   DATA CTRUE  INIT ".T."                                                                                               
+   DATA CFALSE INIT ".F."                                                                                               
+                                                                                                                        
+   METHOD NEW                                                                                                           
+   METHOD CREATEWINDOW                                                                                                  
+   METHOD CREATECONTROL                                                                                                 
+   METHOD STR2VAL(UVALUE)   BLOCK { |SELF,UVALUE| ( UVALUE == ::CTRUE .OR. UPPER( UVALUE ) == ".T." ) }                 
+   METHOD GRIDVALUE(UVALUE) BLOCK { |SELF,UVALUE| IF( UVALUE, ::CTRUE, ::CFALSE ) }                                     
+   METHOD CONTROLVALUE      SETGET                                                                                      
+ENDCLASS                                                                                                                
+
+CLASS TCONTROL FROM TWINDOW                                                                                             
+*------------------------------------------------------------------------------*                                        
+   DATA CTOOLTIP    INIT ""                                                                                             
+   DATA AUXHANDLE   INIT 0                                                                                              
+   DATA TRANSPARENT INIT .F.                                                                                            
+   DATA HELPID      INIT 0                                                                                              
+   DATA ONCHANGE    INIT NIL                                                                                            
+   DATA ONDBLCLICK  INIT NIL                                                                                            
+   DATA BLOCK       INIT NIL                                                                                            
+   DATA VARNAME     INIT ""                                                                                             
+   DATA ID          INIT 0                                                                                              
+   DATA IMAGELISTCOLOR      INIT CLR_NONE                                                                               
+   DATA IMAGELISTFLAGS      INIT LR_LOADTRANSPARENT                                                                     
+   DATA SETIMAGELISTCOMMAND INIT 0   // MUST BE EXPLICIT FOR EACH CONTROL                                               
+   DATA SETIMAGELISTWPARAM  INIT TVSIL_NORMAL                                                                           
+   DATA HCURSOR     INIT 0                                                                                              
+   DATA POSTBLOCK   INIT NIL                                                                                            
+   DATA LCANCEL     INIT .F.                                                                                            
+                                                                                                                        
+   METHOD ROW       SETGET                                                                                              
+   METHOD COL       SETGET                                                                                              
+   METHOD WIDTH     SETGET                                                                                              
+   METHOD HEIGHT    SETGET                                                                                              
+   METHOD TOOLTIP   SETGET                                                                                              
+   METHOD SETFORM                                                                                                       
+   METHOD INITSTYLE                                                                                                     
+   METHOD REGISTER                                                                                                      
+   METHOD REFRESH             BLOCK { || NIL }                                                                          
+   METHOD RELEASE                                                                                                       
+   METHOD SETFONT                                                                                                       
+   METHOD CONTAINERROW        BLOCK { |SELF| IF( ::CONTAINER != NIL, ::CONTAINER:CONTAINERROW + ::CONTAINER:ROWMARGIN,  
+::PARENT:ROWMARGIN ) + ::ROW }                                                                                          
+   METHOD CONTAINERCOL        BLOCK { |SELF| IF( ::CONTAINER != NIL, ::CONTAINER:CONTAINERCOL + ::CONTAINER:COLMARGIN,  
+::PARENT:COLMARGIN ) + ::COL }                                                                                          
+   METHOD CONTAINERHWND       BLOCK { |SELF| IF( ::CONTAINER == NIL, ::PARENT:HWND, IF( EMPTY(                          
+::CONTAINER:CONTAINERHWNDVALUE ), ::CONTAINER:CONTAINERHWND, ::CONTAINER:CONTAINERHWNDVALUE ) ) }                       
+   METHOD FONTNAME            SETGET                                                                                    
+   METHOD FONTSIZE            SETGET                                                                                    
+   METHOD FONTBOLD            SETGET                                                                                    
+   METHOD FONTITALIC          SETGET                                                                                    
+   METHOD FONTUNDERLINE       SETGET                                                                                    
+   METHOD FONTSTRIKEOUT       SETGET                                                                                    
+   METHOD ONENTER             SETGET                                                                                    
+   METHOD SIZEPOS                                                                                                       
+   METHOD MOVE                                                                                                          
+   METHOD SETFOCUS            BLOCK { |SELF| _OOHG_LSETTINGFOCUS := .T., ::SUPER:SETFOCUS() }                           
+   METHOD VALUE               BLOCK { || NIL }                                                                          
+   METHOD SAVEDATA                                                                                                      
+   METHOD REFRESHDATA                                                                                                   
+   METHOD ADDBITMAP                                                                                                     
+                                                                                                                        
+   METHOD DOEVENT                                                                                                       
+   METHOD DOLOSTFOCUS                                                                                                   
+                                                                                                                        
+   METHOD EVENTS                                                                                                        
+   METHOD EVENTS_COLOR                                                                                                  
+   METHOD EVENTS_ENTER                                                                                                  
+   METHOD EVENTS_COMMAND                                                                                                
+   METHOD EVENTS_NOTIFY                                                                                                 
+   METHOD EVENTS_DRAWITEM     BLOCK { || NIL }                                                                          
+   METHOD EVENTS_MEASUREITEM  BLOCK { || NIL }                                                                          
+ENDCLASS                                                                                                                
+
+CLASS TTOOLBAR FROM TCONTROL                                                                                            
+   DATA TYPE      INIT "TOOLBAR" READONLY                                                                               
+                                                                                                                        
+   METHOD DEFINE                                                                                                        
+   METHOD EVENTS_SIZE                                                                                                   
+   METHOD EVENTS_NOTIFY                                                                                                 
+   METHOD EVENTS                                                                                                        
+ENDCLASS                                                                                                                
+
+CLASS TTOOLBUTTON FROM TCONTROL                                                                                         
+   DATA TYPE      INIT "TOOLBUTTON" READONLY                                                                            
+   DATA POSITION  INIT 0                                                                                                
+                                                                                                                        
+   METHOD DEFINE                                                                                                        
+   METHOD VALUE      SETGET                                                                                             
+   METHOD ENABLED    SETGET                                                                                             
+                                                                                                                        
+   METHOD EVENTS_NOTIFY                                                                                                 
+ENDCLASS                                                                                                                
+
+CLASS TPROGRESSMETER FROM TLABEL                                                                                        
+   DATA TYPE        INIT "PROGRESSMETER" READONLY                                                                       
+   DATA NRANGEMIN   INIT 0                                                                                              
+   DATA NRANGEMAX   INIT 100                                                                                            
+   DATA NPERCENT    INIT 0                                                                                              
+   DATA NVALUE      INIT 0                                                                                              
+   DATA NWIDTH      INIT 100                                                                                            
+   DATA NHEIGHT     INIT 18                                                                                             
+                                                                                                                        
+   METHOD DEFINE                                                                                                        
+   METHOD VALUE               SETGET                                                                                    
+   METHOD RECALC                                                                                                        
+                                                                                                                        
+   METHOD RANGEMIN            SETGET                                                                                    
+   METHOD RANGEMAX            SETGET                                                                                    
+                                                                                                                        
+   METHOD EVENTS                                                                                                        
+   METHOD SETPERCENT          SETGET                                                                                    
+   METHOD ALIGN               SETGET                                                                                    
+ENDCLASS                                                                                                                
+
+CLASS TMESSAGEBAR FROM TCONTROL                                                                                         
+   DATA TYPE      INIT "MESSAGEBAR" READONLY                                                                            
+   DATA ACLICKS   INIT NIL                                                                                              
+   DATA AWIDTHS   INIT NIL                                                                                              
+                                                                                                                        
+   METHOD DEFINE                                                                                                        
+                                                                                                                        
+   METHOD ADDITEM                                                                                                       
+   METHOD ITEM                                                                                                          
+   METHOD CAPTION(NITEM,CCAPTION)        BLOCK { |SELF,NITEM,CCAPTION| ::ITEM( NITEM, CCAPTION ) }                      
+   METHOD ITEMWIDTH                                                                                                     
+   METHOD ITEMCOUNT        BLOCK { |SELF| GETITEMCOUNT( ::HWND ) }                                                      
+                                                                                                                        
+   METHOD BACKCOLOR        SETGET                                                                                       
+                                                                                                                        
+   METHOD SETCLOCK                                                                                                      
+   METHOD SETKEYBRD                                                                                                     
+                                                                                                                        
+   METHOD EVENTS_NOTIFY                                                                                                 
+   METHOD EVENTS_SIZE                                                                                                   
+   METHOD REFRESHDATA                                                                                                   
+ENDCLASS                                                                                                                
+
+CLASS TXBROWSE FROM TGRID                                                                                               
+   DATA TYPE              INIT "XBROWSE" READONLY                                                                       
+   DATA AFIELDS           INIT NIL                                                                                      
+   DATA OWORKAREA         INIT NIL                                                                                      
+   DATA UWORKAREA         INIT NIL                                                                                      
+   DATA VSCROLL           INIT NIL                                                                                      
+   DATA SCROLLBUTTON      INIT NIL                                                                                      
+   DATA NVALUE            INIT 0                                                                                        
+   DATA ALLOWAPPEND       INIT .F.                                                                                      
+   DATA ALLOWDELETE       INIT .F.                                                                                      
+   DATA AREPLACEFIELD     INIT NIL                                                                                      
+   DATA ONAPPEND          INIT NIL                                                                                      
+   DATA LOCK              INIT .F.                                                                                      
+   DATA LEDITING          INIT .F.                                                                                      
+   DATA SKIPBLOCK         INIT NIL                                                                                      
+   DATA GOTOPBLOCK        INIT NIL                                                                                      
+   DATA GOBOTTOMBLOCK     INIT NIL                                                                                      
+   DATA LLOCKED           INIT .F.                                                                                      
+   DATA LRECCOUNT         INIT .F.                                                                                      
+                                                                                                                        
+   METHOD DEFINE                                                                                                        
+   METHOD REFRESH                                                                                                       
+   METHOD REFRESHROW                                                                                                    
+   METHOD COLUMNBLOCK                                                                                                   
+   METHOD MOVETO                                                                                                        
+   METHOD CURRENTROW       SETGET                                                                                       
+                                                                                                                        
+   METHOD SIZEPOS                                                                                                       
+   METHOD ENABLED          SETGET                                                                                       
+   METHOD VISIBLE          SETGET                                                                                       
+   METHOD FORCEHIDE                                                                                                     
+   METHOD REFRESHDATA                                                                                                   
+                                                                                                                        
+   METHOD EVENTS_NOTIFY                                                                                                 
+                                                                                                                        
+   METHOD DBSKIP                                                                                                        
+   METHOD UP                                                                                                            
+   METHOD DOWN                                                                                                          
+   METHOD GOTOP                                                                                                         
+   METHOD GOBOTTOM                                                                                                      
+   METHOD PAGEUP                                                                                                        
+   METHOD PAGEDOWN                                                                                                      
+   METHOD SETSCROLLPOS                                                                                                  
+                                                                                                                        
+   METHOD DELETE                                                                                                        
+   METHOD EDITITEM                                                                                                      
+   METHOD EDITITEM_B                                                                                                    
+   METHOD EDITCELL                                                                                                      
+   METHOD EDITALLCELLS                                                                                                  
+   METHOD GETCELLTYPE                                                                                                   
+                                                                                                                        
+   METHOD ADJUSTRIGHTSCROLL                                                                                             
+                                                                                                                        
+   METHOD COLUMNWIDTH                                                                                                   
+   METHOD COLUMNAUTOFIT                                                                                                 
+   METHOD COLUMNAUTOFITH                                                                                                
+   METHOD COLUMNSAUTOFIT                                                                                                
+   METHOD COLUMNSAUTOFITH                                                                                               
+                                                                                                                        
+   METHOD WORKAREA         SETGET                                                                                       
+                                                                                                                        
+   METHOD TOEXCEL                                                                                                       
+                                                                                                                        
+/* FROM GRID:                                                                                                           
+   METHOD ADDCOLUMN                                                                                                     
+   METHOD DELETECOLUMN                                                                                                  
+                                                                                                                        
+   METHOD ADDITEM                                                                                                       
+   METHOD INSERTITEM                                                                                                    
+   METHOD DELETEITEM                                                                                                    
+   METHOD DELETEALLITEMS      BLOCK { | SELF | LISTVIEWRESET( ::HWND ), ::GRIDFORECOLOR := NIL, ::GRIDBACKCOLOR := NIL }
+   METHOD ITEM                                                                                                          
+   METHOD ITEMCOUNT           BLOCK { | SELF | LISTVIEWGETITEMCOUNT( ::HWND ) }                                         
+*/                                                                                                                      
+/* TBROWSE:                                                                                                             
+   METHOD ADDCOLUMN( OCOL )                                                                                             
+   METHOD DELCOLUMN( NPOS )               // DELETE A COLUMN OBJECT FROM A BROWSE                                       
+   METHOD INSCOLUMN( NPOS, OCOL )         // INSERT A COLUMN OBJECT IN A BROWSE                                         
+   METHOD GETCOLUMN( NCOLUMN )            // GETS A SPECIFIC TBCOLUMN OBJECT                                            
+   METHOD SETCOLUMN( NCOLUMN, OCOL )      // REPLACES ONE TBCOLUMN OBJECT WITH ANOTHER                                  
+*/                                                                                                                      
+ENDCLASS                                                                                                                
+
+CLASS OOHGRECORD                                                                                                        
+*-----------------------------------------------------------------------------*                                         
+   DATA CALIAS__                                                                                                        
+                                                                                                                        
+   METHOD NEW                                                                                                           
+   METHOD USE                                                                                                           
+   METHOD SKIPPER                                                                                                       
+   METHOD ORDSCOPE                                                                                                      
+   METHOD FILTER                                                                                                        
+                                                                                                                        
+   METHOD FIELD      BLOCK { | SELF, NPOS |                   ( ::CALIAS__ )->( FIELD( NPOS ) ) }                       
+   METHOD FIELDBLOCK BLOCK { | SELF, CFIELD |                 ( ::CALIAS__ )->( FIELDBLOCK( CFIELD ) ) }                
+   METHOD FIELDGET   BLOCK { | SELF, NPOS |                   ( ::CALIAS__ )->( FIELDGET( NPOS ) ) }                    
+   METHOD FIELDNAME  BLOCK { | SELF, NPOS |                   ( ::CALIAS__ )->( FIELDNAME( NPOS ) ) }                   
+   METHOD FIELDPOS   BLOCK { | SELF, CFIELD |                 ( ::CALIAS__ )->( FIELDPOS( CFIELD ) ) }                  
+   METHOD FIELDPUT   BLOCK { | SELF, NPOS, UVALUE |           ( ::CALIAS__ )->( FIELDPUT( NPOS, UVALUE ) ) }            
+   METHOD LOCATE     BLOCK { | SELF, BFOR, BWHILE, NNEXT, NREC, LREST | ( ::CALIAS__ )->( __DBLOCATE( BFOR, BWHILE,     
+NNEXT, NREC, LREST ) ) }                                                                                                
+   METHOD SEEK       BLOCK { | SELF, UKEY, LSOFTSEEK, LLAST | ( ::CALIAS__ )->( DBSEEK( UKEY, LSOFTSEEK, LLAST ) ) }    
+   METHOD SKIP       BLOCK { | SELF, NCOUNT |                 ( ::CALIAS__ )->( DBSKIP( NCOUNT ) ) }                    
+   METHOD GOTO       BLOCK { | SELF, NRECORD |                ( ::CALIAS__ )->( DBGOTO( NRECORD ) ) }                   
+   METHOD GOTOP      BLOCK { | SELF |                         ( ::CALIAS__ )->( DBGOTOP() ) }                           
+   METHOD GOBOTTOM   BLOCK { | SELF |                         ( ::CALIAS__ )->( DBGOBOTTOM() ) }                        
+   METHOD COMMIT     BLOCK { | SELF |                         ( ::CALIAS__ )->( DBCOMMIT() ) }                          
+   METHOD UNLOCK     BLOCK { | SELF |                         ( ::CALIAS__ )->( DBUNLOCK() ) }                          
+   METHOD DELETE     BLOCK { | SELF |                         ( ::CALIAS__ )->( DBDELETE() ) }                          
+   METHOD CLOSE      BLOCK { | SELF |                         ( ::CALIAS__ )->( DBCLOSEAREA() ) }                       
+   METHOD BOF        BLOCK { | SELF |                         ( ::CALIAS__ )->( BOF() ) }                               
+   METHOD EOF        BLOCK { | SELF |                         ( ::CALIAS__ )->( EOF() ) }                               
+   METHOD RECNO      BLOCK { | SELF |                         ( ::CALIAS__ )->( RECNO() ) }                             
+   METHOD RECCOUNT   BLOCK { | SELF |                         ( ::CALIAS__ )->( RECCOUNT() ) }                          
+   METHOD FOUND      BLOCK { | SELF |                         ( ::CALIAS__ )->( FOUND() ) }                             
+   METHOD SETORDER   BLOCK { | SELF, UORDER |                 ( ::CALIAS__ )->( ORDSETFOCUS( UORDER ) ) }               
+   METHOD SETINDEX   BLOCK { | SELF, CFILE, LADDITIVE |       IF( EMPTY( LADDITIVE ), ( ::CALIAS__ )->( ORDLISTCLEAR()  
+), ) , ( ::CALIAS__ )->( ORDLISTADD( CFILE ) ) }                                                                        
+   METHOD APPEND     BLOCK { | SELF |                         ( ::CALIAS__ )->( DBAPPEND() ) }                          
+   METHOD LOCK       BLOCK { | SELF |                         ( ::CALIAS__ )->( RLOCK() ) }                             
+   METHOD DBSTRUCT   BLOCK { | SELF |                         ( ::CALIAS__ )->( DBSTRUCT() ) }                          
+   METHOD ORDKEYNO   BLOCK { | SELF |                         IF( ( ::CALIAS__ )->( ORDKEYCOUNT() ) > 0, ( ::CALIAS__   
+)->( ORDKEYNO() ), ( ::CALIAS__ )->( RECNO() ) ) }                                                                      
+   METHOD ORDKEYCOUNT BLOCK { | SELF |                        IF( ( ::CALIAS__ )->( ORDKEYCOUNT() ) > 0, ( ::CALIAS__   
+)->( ORDKEYCOUNT() ), ( ::CALIAS__ )->( RECCOUNT() ) ) }                                                                
+   #IFDEF __XHARBOUR__                                                                                                  
+   METHOD ORDKEYGOTO BLOCK { | SELF, NRECORD |                ( ::CALIAS__ )->( ORDKEYGOTO( NRECORD ) ) }               
+   #ENDIF                                                                                                               
+                                                                                                                        
+   ERROR HANDLER FIELDASSIGN                                                                                            
+ENDCLASS                                                                                                                
+
+CLASS HBPRINTER                                                                                                         
+                                                                                                                        
+   DATA    HDC INIT 0                                                                                                   
+   DATA    HDCREF INIT 0                                                                                                
+   DATA    PRINTERNAME INIT ""                                                                                          
+                                                                                                                        
+   DATA    NFROMPAGE INIT 1                                                                                             
+   DATA    NTOPAGE   INIT 0                                                                                             
+   DATA    CURPAGE   INIT 1                                                                                             
+   DATA    NCOPIES   INIT 1                                                                                             
+   DATA    NWHATTOPRINT INIT 0                                                                                          
+   DATA    PRINTOPT  INIT 1                                                                                             
+                                                                                                                        
+   DATA    PRINTERDEFAULT INIT ""                                                                                       
+   DATA    ERROR INIT 0                                                                                                 
+   DATA    PAPERNAMES INIT {}                                                                                           
+   DATA    BINNAMES INIT {}                                                                                             
+   DATA    DOCNAME INIT "HBPRINTER"                                                                                     
+   DATA    TEXTCOLOR INIT 0                                                                                             
+   DATA    BKCOLOR INIT 0XFFFFFF                                                                                        
+   DATA    BKMODE INIT 1         &&TRANSPARENT                                                                          
+   DATA    POLYFILLMODE INIT 1                                                                                          
+   DATA    CARGO INIT {0,0,0,0,0,0,0,0,0,0}                                                                             
+   DATA    FONTS INIT {{},{},0,{}}                                                                                      
+   DATA    BRUSHES INIT {{},{}}                                                                                         
+   DATA    PENS INIT {{},{}}                                                                                            
+   DATA    REGIONS INIT {{},{}}                                                                                         
+   DATA    IMAGELISTS INIT {{},{}}                                                                                      
+   DATA    UNITS INIT 0                                                                                                 
+   DATA    DEVCAPS INIT {0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0}                                                             
+   DATA    MAXROW INIT 0                                                                                                
+   DATA    MAXCOL INIT 0                                                                                                
+   DATA    METAFILES INIT {}                                                                                            
+   DATA    PREVIEWMODE INIT .F.                                                                                         
+   DATA    THUMBNAILS INIT .F.                                                                                          
+   DATA    VIEWPORTORG INIT {0,0}                                                                                       
+   DATA    PREVIEWRECT INIT {0,0,0,0}                                                                                   
+   DATA    PRINTINGEMF INIT .F.                                                                                         
+   DATA    PRINTING INIT .F.                                                                                            
+   DATA    PREVIEWSCALE INIT 1                                                                                          
+   DATA    PRINTERS INIT {}                                                                                             
+   DATA    PORTS INIT {}                                                                                                
+   DATA    ILOSCSTRON INIT 0                                                                                            
+   DATA    NGROUP INIT -1                                                                                               
+   DATA    PAGE INIT 1                                                                                                  
+   DATA    ATH INIT {}                                                                                                  
+   DATA    DX INIT 0                                                                                                    
+   DATA    DY INIT 0                                                                                                    
+   DATA    AHS INIT {}                                                                                                  
+   DATA    AZOOM INIT {0,0,0,0}                                                                                         
+   DATA    SCALE INIT 1                                                                                                 
+   DATA    NPAGES INIT {}                                                                                               
+   DATA    AOPISY INIT {}                                                                                               
+                                                                                                                        
+   METHOD NEW()                                                                                                         
+   METHOD SELECTPRINTER( CPRINTER ,LPREV)                                                                               
+   METHOD SETDEVMODE(WHAT,NEWVALUE)                                                                                     
+   METHOD STARTDOC(LDOCNAME)                                                                                            
+   METHOD SETPAGE(ORIENT,SIZE,FONTNAME)                                                                                 
+   METHOD STARTPAGE()                                                                                                   
+   METHOD ENDPAGE()                                                                                                     
+   METHOD ENDDOC()                                                                                                      
+   METHOD SETTEXTCOLOR(CLR)                                                                                             
+   METHOD GETTEXTCOLOR()     INLINE ::TEXTCOLOR                                                                         
+   METHOD SETBKCOLOR(CLR)                                                                                               
+   METHOD GETBKCOLOR()       INLINE ::BKCOLOR                                                                           
+   METHOD SETBKMODE(NMODE)                                                                                              
+   METHOD GETBKMODE()        INLINE ::BKMODE                                                                            
+   METHOD DEFINEIMAGELIST(DEFNAME,CPICTURE,NICONS)                                                                      
+   METHOD DRAWIMAGELIST(DEFNAME,NICON,ROW,COL,TOROW,TOCOL,LSTYLE,COLOR)                                                 
+   METHOD DEFINEBRUSH(DEFNAME,LSTYLE,LCOLOR,LHATCH)                                                                     
+   METHOD MODIFYBRUSH(DEFNAME,LSTYLE,LCOLOR,LHATCH)                                                                     
+   METHOD SELECTBRUSH(DEFNAME)                                                                                          
+   METHOD DEFINEPEN(DEFNAME,LSTYLE,LWIDTH,LCOLOR)                                                                       
+   METHOD MODIFYPEN(DEFNAME,LSTYLE,LWIDTH,LCOLOR)                                                                       
+   METHOD SELECTPEN(DEFNAME)                                                                                            
+   METHOD DEFINEFONT(DEFNAME,LFONTNAME,LFONTSIZE,LFONTWIDTH,LANGLE,LWEIGHT,LITALIC,LUNDERLINE,LSTRIKEOUT)               
+   METHOD                                                                                                               
+MODIFYFONT(DEFNAME,LFONTNAME,LFONTSIZE,LFONTWIDTH,LANGLE,LWEIGHT,LNWEIGHT,LITALIC,LNITALIC,LUNDERLINE,LNUNDERLINE,LSTRIK
+EOUT,LNSTRIKEOUT)                                                                                                       
+   METHOD SELECTFONT(DEFNAME)                                                                                           
+   METHOD GETOBJBYNAME(DEFNAME,WHAT,RETPOS)                                                                             
+   METHOD DRAWTEXT(ROW,COL,TOROW,TOCOL,TXT,STYLE,DEFNAME)                                                               
+   METHOD TEXTOUT(ROW,COL,TXT,DEFNAME)                                                                                  
+   METHOD SAY(ROW,COL,TXT,DEFNAME,LCOLOR,LALIGN)                                                                        
+   METHOD SETCHARSET(CHARSET) INLINE RR_SETCHARSET(CHARSET,,SELF) // DUMMY SELF                                         
+   METHOD RECTANGLE(ROW,COL,TOROW,TOCOL,DEFPEN,DEFBRUSH)                                                                
+   METHOD ROUNDRECT(ROW,COL,TOROW,TOCOL,WIDTHELLIPSE,HEIGHTELLIPSE,DEFPEN,DEFBRUSH)                                     
+   METHOD FILLRECT(ROW,COL,TOROW,TOCOL,DEFBRUSH)                                                                        
+   METHOD FRAMERECT(ROW,COL,TOROW,TOCOL,DEFBRUSH)                                                                       
+   METHOD INVERTRECT(ROW,COL,TOROW,TOCOL)                                                                               
+   METHOD ELLIPSE(ROW,COL,TOROW,TOCOL,DEFPEN,DEFBRUSH)                                                                  
+   METHOD ARC(ROW,COL,TOROW,TOCOL,ROWSARC,COLSARC,ROWEARC,COLEARC,DEFPEN)                                               
+   METHOD ARCTO(ROW,COL,TOROW,TOCOL,ROWRAD1,COLRAD1,ROWRAD2,COLRAD2,DEFPEN)                                             
+   METHOD CHORD(ROW,COL,TOROW,TOCOL,ROWRAD1,COLRAD1,ROWRAD2,COLRAD2,DEFPEN,DEFBRUSH)                                    
+   METHOD PIE(ROW,COL,TOROW,TOCOL,ROWRAD1,COLRAD1,ROWRAD2,COLRAD2,DEFPEN,DEFBRUSH)                                      
+   METHOD POLYGON(APOINTS,DEFPEN,DEFBRUSH,STYLE)                                                                        
+   METHOD POLYBEZIER(APOINTS,DEFPEN)                                                                                    
+   METHOD POLYBEZIERTO(APOINTS,DEFPEN)                                                                                  
+   METHOD SETUNITS(NEWVALUE,R,C)                                                                                        
+   METHOD CONVERT(ARR,LSIZE)                                                                                            
+   METHOD DEFINERECTRGN(DEFNAME,ROW,COL,TOROW,TOCOL)                                                                    
+   METHOD DEFINEPOLYGONRGN(DEFNAME,APOINTS,STYLE)                                                                       
+   METHOD DEFINEELLIPTICRGN(DEFNAME,ROW,COL,TOROW,TOCOL)                                                                
+   METHOD DEFINEROUNDRECTRGN(DEFNAME,ROW,COL,TOROW,TOCOL,WIDTHELLIPSE,HEIGHTELLIPSE)                                    
+   METHOD COMBINERGN(DEFNAME,REG1,REG2,STYLE)                                                                           
+   METHOD SELECTCLIPRGN(DEFNAME)                                                                                        
+   METHOD DELETECLIPRGN()                                                                                               
+   METHOD SETPOLYFILLMODE(STYLE)                                                                                        
+   METHOD GETPOLYFILLMODE()   INLINE ::POLYFILLMODE                                                                     
+   METHOD SETVIEWPORTORG(ROW,COL)                                                                                       
+   METHOD GETVIEWPORTORG()                                                                                              
+   METHOD DXCOLORS(PAR)                                                                                                 
+   METHOD SETRGB(RED,GREEN,BLUE)                                                                                        
+   METHOD SETTEXTCHAREXTRA(COL)                                                                                         
+   METHOD GETTEXTCHAREXTRA()                                                                                            
+   METHOD SETTEXTJUSTIFICATION(COL)                                                                                     
+   METHOD GETTEXTJUSTIFICATION()                                                                                        
+   METHOD SETTEXTALIGN(STYLE)                                                                                           
+   METHOD GETTEXTALIGN()                                                                                                
+   METHOD PICTURE(ROW,COL,TOROW,TOCOL,CPICTURE,EXTROW,EXTCOL)                                                           
+   METHOD LINE(ROW,COL,TOROW,TOCOL,DEFPEN)                                                                              
+   METHOD LINETO(ROW,COL,DEFPEN)                                                                                        
+   METHOD SAVEMETAFILES(NR)                                                                                             
+   METHOD GETTEXTEXTENT(CTEXT,APOINT,DEFFONT)                                                                           
+   METHOD END()                                                                                                         
+   METHOD REPORTDATA(L_X1,L_X2,L_X3,L_X4,L_X5,L_X6)                                                                     
+   METHOD PREVIEW(X,Y,WIDTH,HEIGHT)                                                                                     
+   METHOD PREVPRINT()                                                                                                   
+   METHOD PREVSHOW()                                                                                                    
+   METHOD PREVTHUMB()                                                                                                   
+// NEW METHOD                                                                                                           
+   METHOD PRINTOPTION()                                                                                                 
+                                                                                                                        
+ENDCLASS                                                                                                                
+
+CLASS TMENU FROM TCONTROL                                                                                               
+   DATA TYPE      INIT "MENU" READONLY                                                                                  
+   DATA LMAIN     INIT .F.                                                                                              
+                                                                                                                        
+   METHOD DEFINE                                                                                                        
+   METHOD RELEASE     BLOCK { |SELF| DESTROYMENU( ::HWND ), ::SUPER:RELEASE() }                                         
+ENDCLASS                                                                                                                
+
+CLASS TMENUMAIN FROM TMENU                                                                                              
+   DATA LMAIN     INIT .T.                                                                                              
+                                                                                                                        
+   METHOD DEFINE                                                                                                        
+   METHOD RELEASE     BLOCK { |SELF| ::PARENT:OMENU := NIL, ::SUPER:RELEASE() }                                         
+ENDCLASS                                                                                                                
+
+CLASS TMENUCONTEXT FROM TMENU                                                                                           
+   METHOD DEFINE                                                                                                        
+   METHOD RELEASE     BLOCK { |SELF| ::PARENT:CONTEXTMENU := NIL, ::SUPER:RELEASE() }                                   
+ENDCLASS                                                                                                                
+
+CLASS TMENUNOTIFY FROM TMENU                                                                                            
+   METHOD DEFINE                                                                                                        
+   METHOD RELEASE     BLOCK { |SELF| ::PARENT:NOTIFYMENUHANDLE := 0, ::SUPER:RELEASE() }                                
+ENDCLASS                                                                                                                
+
+CLASS TMENUDROPDOWN FROM TMENU                                                                                          
+   METHOD DEFINE                                                                                                        
+   METHOD RELEASE                                                                                                       
+ENDCLASS                                                                                                                
+
+CLASS TMENUITEM FROM TCONTROL                                                                                           
+   DATA TYPE      INIT "MENUITEM" READONLY                                                                              
+   DATA XID       INIT 0                                                                                                
+   DATA LMAIN     INIT .F.                                                                                              
+                                                                                                                        
+   METHOD DEFINEPOPUP                                                                                                   
+   METHOD DEFINEITEM                                                                                                    
+                                                                                                                        
+   METHOD ENABLED      SETGET                                                                                           
+   METHOD CHECKED      SETGET                                                                                           
+   METHOD HILITED      SETGET                                                                                           
+   METHOD CAPTION      SETGET                                                                                           
+   METHOD RELEASE                                                                                                       
+                                                                                                                        
+   METHOD DEFAULTITEM( NITEM )    BLOCK { |SELF,NITEM| SETMENUDEFAULTITEM( ::CONTAINER:HWND, NITEM ) }                  
+ENDCLASS                                                                                                                
+
+CLASS TDATEPICK FROM TCONTROL                                                                                           
+   DATA TYPE      INIT "DATEPICK" READONLY                                                                              
+                                                                                                                        
+   METHOD DEFINE                                                                                                        
+   METHOD VALUE            SETGET                                                                                       
+   METHOD EVENTS_NOTIFY                                                                                                 
+ENDCLASS                                                                                                                
+
+CLASS TTIMEPICK FROM TCONTROL                                                                                           
+   DATA TYPE      INIT "TIMEPICK" READONLY                                                                              
+                                                                                                                        
+   METHOD DEFINE                                                                                                        
+   METHOD VALUE            SETGET                                                                                       
+   METHOD EVENTS_NOTIFY                                                                                                 
+ENDCLASS                                                                                                                
+
+CLASS TTIMER FROM TCONTROL                                                                                              
+   DATA TYPE      INIT "TIMER" READONLY                                                                                 
+   DATA INTERVAL  INIT 0                                                                                                
+                                                                                                                        
+   METHOD DEFINE                                                                                                        
+   METHOD VALUE        SETGET                                                                                           
+   METHOD ENABLED      SETGET                                                                                           
+   METHOD RELEASE                                                                                                       
+ENDCLASS                                                                                                                
+
+CLASS TIMAGE FROM TCONTROL                                                                                              
+   DATA TYPE            INIT "IMAGE" READONLY                                                                           
+   DATA CPICTURE        INIT ""                                                                                         
+   DATA STRETCH         INIT .F.                                                                                        
+   DATA BONCLICK        INIT ""                                                                                         
+   DATA NWIDTH          INIT 100                                                                                        
+   DATA NHEIGHT         INIT 100                                                                                        
+                                                                                                                        
+   METHOD DEFINE                                                                                                        
+   METHOD PICTURE       SETGET                                                                                          
+   METHOD HBITMAP       SETGET                                                                                          
+   METHOD BUFFER        SETGET                                                                                          
+   METHOD ONCLICK       SETGET                                                                                          
+ENDCLASS                                                                                                                
+
+CLASS TTREE FROM TCONTROL                                                                                               
+   DATA TYPE          INIT "TREE" READONLY                                                                              
+   DATA ITEMIDS       INIT .F.                                                                                          
+   DATA ATREEMAP      INIT {}                                                                                           
+   DATA ATREEIDMAP    INIT {}                                                                                           
+   DATA ATREENODE     INIT {}                                                                                           
+   DATA INITVALUE     INIT 0                                                                                            
+   DATA SETIMAGELISTCOMMAND INIT TVM_SETIMAGELIST                                                                       
+                                                                                                                        
+   METHOD DEFINE                                                                                                        
+   METHOD ADDITEM                                                                                                       
+   METHOD DELETEITEM                                                                                                    
+   METHOD DELETEALLITEMS                                                                                                
+   METHOD ITEM                                                                                                          
+   METHOD ITEMCOUNT      BLOCK { | SELF | TREEVIEW_GETCOUNT( ::HWND ) }                                                 
+   METHOD COLLAPSE                                                                                                      
+   METHOD EXPAND                                                                                                        
+                                                                                                                        
+   METHOD VALUE       SETGET                                                                                            
+ENDCLASS                                                                                                                
+
+CLASS TTEXT FROM TLABEL                                                                                                 
+   DATA TYPE            INIT "TEXT" READONLY                                                                            
+   DATA LSETTING        INIT .F.                                                                                        
+   DATA NMAXLENGTH      INIT 0                                                                                          
+   DATA LAUTOSKIP       INIT .F.                                                                                        
+   DATA NONFOCUSPOS     INIT -2                                                                                         
+   DATA NWIDTH          INIT 120                                                                                        
+   DATA NHEIGHT         INIT 24                                                                                         
+                                                                                                                        
+   METHOD DEFINE                                                                                                        
+   METHOD DEFINE2                                                                                                       
+                                                                                                                        
+   METHOD REFRESHDATA                                                                                                   
+   METHOD REFRESH     BLOCK { |SELF| ::REFRESHDATA() }                                                                  
+                                                                                                                        
+   METHOD VALUE       SETGET                                                                                            
+   METHOD SETFOCUS                                                                                                      
+   METHOD CARETPOS    SETGET                                                                                            
+   METHOD READONLY    SETGET                                                                                            
+   METHOD MAXLENGTH   SETGET                                                                                            
+   METHOD EVENTS_COMMAND                                                                                                
+ENDCLASS                                                                                                                
+
+CLASS TTEXTPICTURE FROM TTEXT                                                                                           
+   DATA TYPE           INIT "TEXTPICTURE" READONLY                                                                      
+   DATA LBRITISH       INIT .F.                                                                                         
+                                                                                                                        
+   DATA CPICTURE       INIT ""                                                                                          
+   DATA PICTUREFUN     INIT ""                                                                                          
+   DATA PICTUREFUNSHOW INIT ""                                                                                          
+   DATA PICTUREMASK    INIT ""                                                                                          
+   DATA PICTURESHOW    INIT ""                                                                                          
+                                                                                                                        
+   DATA VALIDMASK      INIT {}                                                                                          
+   DATA VALIDMASKSHOW  INIT {}                                                                                          
+   DATA NDECIMAL       INIT 0                                                                                           
+   DATA NDECIMALSHOW   INIT 0                                                                                           
+   DATA DATATYPE       INIT "."                                                                                         
+   DATA LINSERT        INIT .T.                                                                                         
+   DATA LFOCUSED       INIT .F.                                                                                         
+                                                                                                                        
+   METHOD DEFINE                                                                                                        
+                                                                                                                        
+   METHOD VALUE       SETGET                                                                                            
+   METHOD PICTURE     SETGET                                                                                            
+   METHOD EVENTS                                                                                                        
+   METHOD EVENTS_COMMAND                                                                                                
+ENDCLASS                                                                                                                
+
+CLASS TTEXTNUM FROM TTEXT                                                                                               
+*-----------------------------------------------------------------------------*                                         
+   DATA TYPE          INIT "NUMTEXT" READONLY                                                                           
+                                                                                                                        
+   METHOD DEFINE                                                                                                        
+   METHOD VALUE       SETGET                                                                                            
+   METHOD EVENTS_COMMAND                                                                                                
+ENDCLASS                                                                                                                
+
+CLASS TTEXTMASKED FROM TTEXTPICTURE                                                                                     
+*-----------------------------------------------------------------------------*                                         
+   DATA TYPE          INIT "MASKEDTEXT" READONLY                                                                        
+                                                                                                                        
+   METHOD DEFINE                                                                                                        
+ENDCLASS                                                                                                                
+
+CLASS TTEXTCHARMASK FROM TTEXTPICTURE                                                                                   
+*-----------------------------------------------------------------------------*                                         
+   DATA TYPE          INIT "CHARMASKTEXT" READONLY                                                                      
+                                                                                                                        
+   METHOD DEFINE                                                                                                        
+ENDCLASS                                                                                                                
+
+CLASS TWINDOW                                                                                                           
+*------------------------------------------------------------------------------*                                        
+   DATA HWND       INIT 0                                                                                               
+   DATA ACONTROLINFO INIT { CHR( 0 ) }                                                                                  
+   DATA NAME       INIT ""                                                                                              
+   DATA TYPE       INIT ""                                                                                              
+   DATA PARENT     INIT NIL                                                                                             
+   DATA NROW       INIT 0                                                                                               
+   DATA NCOL       INIT 0                                                                                               
+   DATA NWIDTH     INIT 0                                                                                               
+   DATA NHEIGHT    INIT 0                                                                                               
+   DATA ACTIVE     INIT .F.                                                                                             
+   DATA CFONTNAME  INIT ""                                                                                              
+   DATA NFONTSIZE  INIT 0                                                                                               
+   DATA BOLD       INIT .F.                                                                                             
+   DATA ITALIC     INIT .F.                                                                                             
+   DATA UNDERLINE  INIT .F.                                                                                             
+   DATA STRIKEOUT  INIT .F.                                                                                             
+   DATA ROWMARGIN  INIT 0                                                                                               
+   DATA COLMARGIN  INIT 0                                                                                               
+   DATA CONTAINER           INIT NIL                                                                                    
+   DATA CONTAINERHWNDVALUE  INIT NIL                                                                                    
+   DATA LRTL                INIT .F.                                                                                    
+   DATA LVISIBLE            INIT .T.                                                                                    
+   DATA CONTEXTMENU         INIT NIL                                                                                    
+   DATA CARGO               INIT NIL                                                                                    
+   DATA LENABLED            INIT .T.                                                                                    
+   DATA ACONTROLS           INIT {}                                                                                     
+   DATA ACONTROLSNAMES      INIT {}                                                                                     
+   DATA WNDPROC             INIT NIL                                                                                    
+   DATA OVERWNDPROC         INIT NIL                                                                                    
+   DATA LINTERNAL           INIT .T.                                                                                    
+   DATA LFORM               INIT .F.                                                                                    
+   DATA LRELEASING          INIT .F.                                                                                    
+                                                                                                                        
+   DATA ONCLICK             INIT NIL                                                                                    
+   DATA ONGOTFOCUS          INIT NIL                                                                                    
+   DATA ONLOSTFOCUS         INIT NIL                                                                                    
+   DATA ONMOUSEDRAG         INIT NIL                                                                                    
+   DATA ONMOUSEMOVE         INIT NIL                                                                                    
+   DATA AKEYS               INIT {}  // { ID, MOD, KEY, ACTION }   APPLICATION-CONTROLLED HOTKEYS                       
+   DATA AHOTKEYS            INIT {}  // { ID, MOD, KEY, ACTION }   OPERATINGSYSTEM-CONTROLLED HOTKEYS                   
+   DATA BKEYDOWN            INIT NIL     // WM_KEYDOWN HANDLER                                                          
+   DATA NESTEDCLICK         INIT .F.                                                                                    
+                                                                                                                        
+   DATA DEFBKCOLOREDIT      INIT NIL                                                                                    
+                                                                                                                        
+   METHOD SETHWND                                                                                                       
+   METHOD RELEASE                                                                                                       
+   METHOD STARTINFO                                                                                                     
+   METHOD SETFOCUS                                                                                                      
+   METHOD IMAGELIST           SETGET                                                                                    
+   METHOD BRUSHHANDLE         SETGET                                                                                    
+   METHOD FONTHANDLE          SETGET                                                                                    
+   METHOD FONTCOLOR           SETGET                                                                                    
+   METHOD BACKCOLOR           SETGET                                                                                    
+   METHOD FONTCOLORSELECTED   SETGET                                                                                    
+   METHOD BACKCOLORSELECTED   SETGET                                                                                    
+   METHOD CAPTION             SETGET                                                                                    
+   METHOD EVENTS                                                                                                        
+                                                                                                                        
+   METHOD OBJECT              BLOCK { |SELF| SELF }                                                                     
+   METHOD ENABLED             SETGET                                                                                    
+   METHOD ENABLE              BLOCK { |SELF| ::ENABLED := .T. }                                                         
+   METHOD DISABLE             BLOCK { |SELF| ::ENABLED := .F. }                                                         
+   METHOD CLICK               BLOCK { |SELF| ::DOEVENT( ::ONCLICK ) }                                                   
+   METHOD TABSTOP             SETGET                                                                                    
+   METHOD RTL                 SETGET                                                                                    
+   METHOD ACTION              SETGET                                                                                    
+   METHOD PRINT                                                                                                         
+   METHOD ADDCONTROL                                                                                                    
+   METHOD DELETECONTROL                                                                                                 
+   METHOD SEARCHPARENT                                                                                                  
+   METHOD PARENTDEFAULTS                                                                                                
+                                                                                                                        
+   METHOD EVENTS_SIZE         BLOCK { || NIL }                                                                          
+   METHOD EVENTS_VSCROLL      BLOCK { || NIL }                                                                          
+   METHOD EVENTS_HSCROLL      BLOCK { || NIL }                                                                          
+   METHOD EVENTS_ENTER        BLOCK { || NIL }                                                                          
+                                                                                                                        
+   ERROR HANDLER ERROR                                                                                                  
+   METHOD CONTROL                                                                                                       
+                                                                                                                        
+   METHOD HOTKEY                // OPERATINGSYSTEM-CONTROLLED HOTKEYS                                                   
+   METHOD SETKEY                // APPLICATION-CONTROLLED HOTKEYS                                                       
+   METHOD LOOKFORKEY                                                                                                    
+   METHOD VISIBLE             SETGET                                                                                    
+   METHOD SHOW                BLOCK { |SELF| ::VISIBLE := .T. }                                                         
+   METHOD HIDE                BLOCK { |SELF| ::VISIBLE := .F. }                                                         
+   METHOD FORCEHIDE           BLOCK { |SELF| HIDEWINDOW( ::HWND ) }                                                     
+   METHOD REDRAW              BLOCK { |SELF| REDRAWWINDOW( ::HWND ) }                                                   
+                                                                                                                        
+   METHOD CONTAINERVISIBLE    BLOCK { |SELF| ::LVISIBLE .AND. IF( ::CONTAINER != NIL, ::CONTAINER:CONTAINERVISIBLE, .T. 
+) }                                                                                                                     
+   METHOD CONTAINERRELEASING  BLOCK { |SELF| ::LRELEASING .OR. IF( ::CONTAINER != NIL, ::CONTAINER:CONTAINERRELEASING,  
+IF( ::PARENT != NIL, ::PARENT:CONTAINERRELEASING, .F. ) ) }                                                             
+                                                                                                                        
+   // SPECIFIC HACKS :(                                                                                                 
+   METHOD SETSPLITBOX         BLOCK { || .F. }                                                                          
+   METHOD SETSPLITBOXINFO     BLOCK { |SELF,A,B,C,D| IF( ::CONTAINER != NIL, ::CONTAINER:SETSPLITBOX( A,B,C,D ), .F. ) }
+ENDCLASS                                                                                                                
+
+CLASS TFORM FROM TWINDOW                                                                                                
+*------------------------------------------------------------------------------*                                        
+   DATA TOOLTIPHANDLE  INIT 0                                                                                           
+   DATA FOCUSED        INIT .F.                                                                                         
+   DATA LASTFOCUSEDCONTROL INIT 0                                                                                       
+   DATA AUTORELEASE    INIT .F.                                                                                         
+   DATA ACTIVATECOUNT  INIT { 0 }                                                                                       
+   DATA OMENU          INIT NIL                                                                                         
+   DATA HWNDCLIENT     INIT 0                                                                                           
+   DATA LINTERNAL      INIT .F.                                                                                         
+   DATA LFORM          INIT .T.                                                                                         
+   DATA NWIDTH         INIT 300                                                                                         
+   DATA NHEIGHT        INIT 300                                                                                         
+                                                                                                                        
+   DATA ONRELEASE      INIT NIL                                                                                         
+   DATA ONINIT         INIT NIL                                                                                         
+   DATA ONSIZE         INIT NIL                                                                                         
+   DATA ONPAINT        INIT NIL                                                                                         
+   DATA ONSCROLLUP     INIT NIL                                                                                         
+   DATA ONSCROLLDOWN   INIT NIL                                                                                         
+   DATA ONSCROLLLEFT   INIT NIL                                                                                         
+   DATA ONSCROLLRIGHT  INIT NIL                                                                                         
+   DATA ONHSCROLLBOX   INIT NIL                                                                                         
+   DATA ONVSCROLLBOX   INIT NIL                                                                                         
+   DATA ONINTERACTIVECLOSE INIT NIL                                                                                     
+   DATA ONMAXIMIZE     INIT NIL                                                                                         
+   DATA ONMINIMIZE     INIT NIL                                                                                         
+                                                                                                                        
+   DATA NVIRTUALHEIGHT INIT 0                                                                                           
+   DATA NVIRTUALWIDTH  INIT 0                                                                                           
+   DATA RANGEHEIGHT    INIT 0                                                                                           
+   DATA RANGEWIDTH     INIT 0                                                                                           
+                                                                                                                        
+   DATA GRAPHTASKS     INIT {}                                                                                          
+   DATA GRAPHCOMMAND   INIT NIL                                                                                         
+   DATA GRAPHDATA      INIT {}                                                                                          
+   DATA BROWSELIST     INIT {}    // CONTROLS TO BE REFRESH AT FORM'S DRAW.                                             
+   DATA SPLITCHILDLIST INIT {}    // INTERNAL WINDOWS.                                                                  
+                                                                                                                        
+   DATA NOTIFYICONLEFTCLICK   INIT NIL                                                                                  
+   DATA NOTIFYMENUHANDLE      INIT 0                                                                                    
+   DATA CNOTIFYICONNAME       INIT ""                                                                                   
+   DATA CNOTIFYICONTOOLTIP    INIT ""                                                                                   
+   METHOD NOTIFYICONNAME      SETGET                                                                                    
+   METHOD NOTIFYICONTOOLTIP   SETGET                                                                                    
+   METHOD TITLE               SETGET                                                                                    
+   METHOD HEIGHT              SETGET                                                                                    
+   METHOD WIDTH               SETGET                                                                                    
+   METHOD COL                 SETGET                                                                                    
+   METHOD ROW                 SETGET                                                                                    
+   METHOD CURSOR              SETGET                                                                                    
+   METHOD BACKCOLOR           SETGET                                                                                    
+   METHOD VIRTUALWIDTH        SETGET                                                                                    
+   METHOD VIRTUALHEIGHT       SETGET                                                                                    
+                                                                                                                        
+   METHOD FOCUSEDCONTROL                                                                                                
+   METHOD SIZEPOS                                                                                                       
+   METHOD DEFINE                                                                                                        
+   METHOD DEFINE2                                                                                                       
+   METHOD REGISTER                                                                                                      
+   METHOD VISIBLE       SETGET                                                                                          
+   METHOD ACTIVATE                                                                                                      
+   METHOD RELEASE                                                                                                       
+   METHOD CENTER()      BLOCK { | SELF | C_CENTER( ::HWND ) }                                                           
+   METHOD RESTORE()     BLOCK { | SELF | RESTORE( ::HWND ) }                                                            
+   METHOD MINIMIZE()    BLOCK { | SELF | MINIMIZE( ::HWND ) }                                                           
+   METHOD MAXIMIZE()    BLOCK { | SELF | MAXIMIZE( ::HWND ) }                                                           
+                                                                                                                        
+   METHOD SETFOCUSEDSPLITCHILD                                                                                          
+   METHOD SETACTIVATIONFOCUS                                                                                            
+   METHOD PROCESSINITPROCEDURE                                                                                          
+   METHOD REFRESHDATA                                                                                                   
+   METHOD DELETECONTROL                                                                                                 
+   METHOD ONHIDEFOCUSMANAGEMENT                                                                                         
+   METHOD CHECKINTERACTIVECLOSE()                                                                                       
+   METHOD DOEVENT                                                                                                       
+                                                                                                                        
+   METHOD EVENTS                                                                                                        
+   METHOD EVENTS_DESTROY                                                                                                
+   METHOD EVENTS_VSCROLL                                                                                                
+   METHOD EVENTS_HSCROLL                                                                                                
+   METHOD MESSAGELOOP                                                                                                   
+                                                                                                                        
+ENDCLASS                                                                                                                
+
+CLASS TFORMMAIN FROM TFORM                                                                                              
+*-----------------------------------------------------------------------------*                                         
+   DATA TYPE           INIT "A" READONLY                                                                                
+   DATA LFIRSTACTIVATE INIT .F.                                                                                         
+                                                                                                                        
+   METHOD DEFINE                                                                                                        
+   METHOD ACTIVATE                                                                                                      
+   METHOD RELEASE                                                                                                       
+                                                                                                                        
+   METHOD CHECKINTERACTIVECLOSE                                                                                         
+ENDCLASS                                                                                                                
+
+CLASS TFORMMODAL FROM TFORM                                                                                             
+*-----------------------------------------------------------------------------*                                         
+   DATA TYPE           INIT "M" READONLY                                                                                
+   DATA LOCKEDFORMS    INIT {}                                                                                          
+   DATA OPREVWINDOW    INIT NIL                                                                                         
+                                                                                                                        
+   METHOD DEFINE                                                                                                        
+   METHOD VISIBLE      SETGET                                                                                           
+   METHOD ACTIVATE                                                                                                      
+   METHOD RELEASE                                                                                                       
+   METHOD ONHIDEFOCUSMANAGEMENT                                                                                         
+ENDCLASS                                                                                                                
+
+CLASS TFORMINTERNAL FROM TFORM                                                                                          
+*-----------------------------------------------------------------------------*                                         
+   DATA TYPE           INIT "I" READONLY                                                                                
+   DATA LINTERNAL      INIT .T.                                                                                         
+                                                                                                                        
+   METHOD DEFINE                                                                                                        
+   METHOD DEFINE2                                                                                                       
+   METHOD SIZEPOS                                                                                                       
+   METHOD ROW       SETGET                                                                                              
+   METHOD COL       SETGET                                                                                              
+                                                                                                                        
+   METHOD CONTAINERROW        BLOCK { |SELF| IF( ::CONTAINER != NIL, ::CONTAINER:CONTAINERROW + ::CONTAINER:ROWMARGIN,  
+::PARENT:ROWMARGIN ) + ::ROW }                                                                                          
+   METHOD CONTAINERCOL        BLOCK { |SELF| IF( ::CONTAINER != NIL, ::CONTAINER:CONTAINERCOL + ::CONTAINER:COLMARGIN,  
+::PARENT:COLMARGIN ) + ::COL }                                                                                          
+ENDCLASS                                                                                                                
+
+CLASS TFORMSPLIT FROM TFORMINTERNAL                                                                                     
+*-----------------------------------------------------------------------------*                                         
+   DATA TYPE           INIT "X" READONLY                                                                                
+                                                                                                                        
+   METHOD DEFINE                                                                                                        
+ENDCLASS                                                                                                                
+
+CLASS TFORMMDICLIENT FROM TFORMINTERNAL                                                                                 
+*-----------------------------------------------------------------------------*                                         
+   DATA TYPE           INIT "D" READONLY                                                                                
+                                                                                                                        
+   METHOD DEFINE                                                                                                        
+ENDCLASS                                                                                                                
+
+CLASS TFORMMDICHILD FROM TFORMINTERNAL                                                                                  
+*-----------------------------------------------------------------------------*                                         
+   DATA TYPE           INIT "L" READONLY                                                                                
+                                                                                                                        
+   METHOD DEFINE                                                                                                        
+ENDCLASS                                                                                                                
+
+CLASS TBROWSE FROM TXBROWSE                                                                                             
+   DATA TYPE            INIT "BROWSE" READONLY                                                                          
+   DATA ARECMAP         INIT {}                                                                                         
+   DATA RECCOUNT        INIT 0                                                                                          
+   DATA LEOF            INIT .F.                                                                                        
+                                                                                                                        
+   METHOD DEFINE                                                                                                        
+   METHOD REFRESH                                                                                                       
+   METHOD VALUE               SETGET                                                                                    
+   METHOD REFRESHDATA                                                                                                   
+                                                                                                                        
+   METHOD EVENTS_ENTER                                                                                                  
+   METHOD EVENTS_NOTIFY                                                                                                 
+                                                                                                                        
+   METHOD EDITCELL                                                                                                      
+   METHOD EDITITEM_B                                                                                                    
+                                                                                                                        
+   METHOD BROWSEONCHANGE                                                                                                
+   METHOD FASTUPDATE                                                                                                    
+   METHOD SCROLLUPDATE                                                                                                  
+   METHOD SETVALUE                                                                                                      
+   METHOD DELETE                                                                                                        
+   METHOD UPDATE                                                                                                        
+                                                                                                                        
+   METHOD HOME                                                                                                          
+   METHOD END                                                                                                           
+   METHOD PAGEUP                                                                                                        
+   METHOD PAGEDOWN                                                                                                      
+   METHOD UP                                                                                                            
+   METHOD DOWN                                                                                                          
+   MESSAGE GOTOP    METHOD HOME                                                                                         
+   MESSAGE GOBOTTOM METHOD END                                                                                          
+   METHOD SETSCROLLPOS                                                                                                  
+ENDCLASS                                                                                                                
+
+CLASS TBUTTON FROM TCONTROL                                                                                             
+   DATA TYPE      INIT "BUTTON" READONLY                                                                                
+   DATA CPICTURE  INIT ""                                                                                               
+   DATA LNOTRANSPARENT INIT .F.                                                                                         
+   DATA NWIDTH    INIT 100                                                                                              
+   DATA NHEIGHT   INIT 28                                                                                               
+   DATA LSCALE    INIT .F.                                                                                              
+                                                                                                                        
+   METHOD DEFINE                                                                                                        
+   METHOD SETFOCUS                                                                                                      
+   METHOD PICTURE     SETGET                                                                                            
+   METHOD HBITMAP     SETGET                                                                                            
+   METHOD BUFFER      SETGET                                                                                            
+   METHOD VALUE       SETGET                                                                                            
+ENDCLASS                                                                                                                
+
+CLASS TCHECKBOX FROM TLABEL                                                                                             
+   DATA TYPE      INIT "CHECKBOX" READONLY                                                                              
+   DATA CPICTURE  INIT ""                                                                                               
+   DATA ICONWIDTH INIT 19                                                                                               
+   DATA NWIDTH    INIT 100                                                                                              
+   DATA NHEIGHT   INIT 28                                                                                               
+   DATA LNOTRANSPARENT INIT .F.                                                                                         
+   DATA LSCALE    INIT .F.                                                                                              
+                                                                                                                        
+   METHOD DEFINE                                                                                                        
+   METHOD VALUE       SETGET                                                                                            
+   METHOD PICTURE     SETGET                                                                                            
+   METHOD BUFFER      SETGET                                                                                            
+   METHOD HBITMAP     SETGET                                                                                            
+   METHOD EVENTS_COMMAND                                                                                                
+ENDCLASS                                                                                                                
+
+CLASS TCOMBO FROM TLABEL                                                                                                
+   DATA TYPE      INIT "COMBO" READONLY                                                                                 
+   DATA WORKAREA  INIT ""                                                                                               
+   DATA FIELD     INIT ""                                                                                               
+   DATA NVALUE    INIT 0                                                                                                
+   DATA VALUESOURCE   INIT ""                                                                                           
+   DATA NTEXTHEIGHT   INIT 0                                                                                            
+                                                                                                                        
+   METHOD DEFINE                                                                                                        
+   METHOD REFRESH                                                                                                       
+   METHOD VALUE               SETGET                                                                                    
+   METHOD VISIBLE             SETGET                                                                                    
+   METHOD FORCEHIDE           BLOCK { |SELF| SENDMESSAGE( ::HWND, 335, 0, 0 ) , ::SUPER:FORCEHIDE() }                   
+   METHOD REFRESHDATA                                                                                                   
+                                                                                                                        
+   METHOD EVENTS_COMMAND                                                                                                
+   METHOD EVENTS_DRAWITEM                                                                                               
+   METHOD EVENTS_MEASUREITEM                                                                                            
+                                                                                                                        
+   METHOD ADDITEM                                                                                                       
+   METHOD DELETEITEM                                                                                                    
+   METHOD DELETEALLITEMS                                                                                                
+   METHOD ITEM                                                                                                          
+   METHOD ITEMCOUNT                                                                                                     
+ENDCLASS                                                                                                                
+
+CLASS TFRAME FROM TCONTROL                                                                                              
+   DATA TYPE      INIT "FRAME" READONLY                                                                                 
+                                                                                                                        
+   METHOD DEFINE                                                                                                        
+ENDCLASS                                                                                                                
+
+CLASS THOTKEY FROM TCONTROL                                                                                             
+   DATA TYPE      INIT "HOTKEY" READONLY                                                                                
+   DATA NKEY      INIT 0                                                                                                
+   DATA NMOD      INIT 0                                                                                                
+   DATA ONCLICK                                                                                                         
+                                                                                                                        
+   METHOD DEFINE                                                                                                        
+   METHOD ENABLED      SETGET                                                                                           
+   METHOD RELEASE                                                                                                       
+ENDCLASS                                                                                                                
+
+CLASS THOTKEYBOX FROM TLABEL                                                                                            
+   DATA TYPE            INIT "HOTKEYBOX" READONLY                                                                       
+   DATA NWIDTH          INIT 120                                                                                        
+   DATA NHEIGHT         INIT 40                                                                                         
+   DATA LFORCEALT       INIT .T.                                                                                        
+                                                                                                                        
+   METHOD DEFINE                                                                                                        
+                                                                                                                        
+   METHOD VALUE       SETGET                                                                                            
+ENDCLASS                                                                                                                
+
+CLASS THYPERLINK FROM TLABEL                                                                                            
+   DATA TYPE        INIT "HYPERLINK" READONLY                                                                           
+   DATA URL         INIT ""                                                                                             
+                                                                                                                        
+   METHOD DEFINE                                                                                                        
+   METHOD ADDRESS   SETGET                                                                                              
+ENDCLASS                                                                                                                
+
+CLASS TINTERNAL FROM TCONTROL                                                                                           
+*------------------------------------------------------------------------------*                                        
+   DATA TYPE      INIT "INTERNAL" READONLY                                                                              
+   DATA NVIRTUALHEIGHT INIT 0                                                                                           
+   DATA NVIRTUALWIDTH  INIT 0                                                                                           
+   DATA RANGEHEIGHT    INIT 0                                                                                           
+   DATA RANGEWIDTH     INIT 0                                                                                           
+   DATA HSCROLLBAR     INIT NIL                                                                                         
+   DATA VSCROLLBAR     INIT NIL                                                                                         
+                                                                                                                        
+   METHOD DEFINE                                                                                                        
+   METHOD REFRESHDATA                                                                                                   
+   METHOD EVENTS_VSCROLL                                                                                                
+   METHOD EVENTS_HSCROLL                                                                                                
+   METHOD VIRTUALWIDTH        SETGET                                                                                    
+   METHOD VIRTUALHEIGHT       SETGET                                                                                    
+ENDCLASS                                                                                                                
+
+CLASS TIPADDRESS FROM TLABEL                                                                                            
+   DATA TYPE          INIT "IPADDRESS" READONLY                                                                         
+                                                                                                                        
+   METHOD DEFINE                                                                                                        
+   METHOD VALUE       SETGET                                                                                            
+   METHOD STRING      SETGET                                                                                            
+ENDCLASS                                                                                                                
+
+CLASS TLABEL FROM TCONTROL                                                                                              
+   DATA TYPE      INIT "LABEL" READONLY                                                                                 
+   DATA LAUTOSIZE INIT .F.                                                                                              
+   DATA ICONWIDTH INIT 0                                                                                                
+   DATA NWIDTH    INIT 120                                                                                              
+   DATA NHEIGHT   INIT 24                                                                                               
+   DATA PICTURE   INIT NIL                                                                                              
+                                                                                                                        
+   METHOD SETTEXT( CTEXT )     BLOCK { | SELF, CTEXT | ::CAPTION := CTEXT }                                             
+   METHOD GETTEXT()            BLOCK { | SELF | ::CAPTION }                                                             
+                                                                                                                        
+   METHOD DEFINE                                                                                                        
+   METHOD VALUE      SETGET                                                                                             
+   METHOD CAPTION    SETGET                                                                                             
+   METHOD AUTOSIZE   SETGET                                                                                             
+   METHOD ALIGN      SETGET                                                                                             
+ENDCLASS                                                                                                                
+
+CLASS TLIST FROM TCONTROL                                                                                               
+   DATA TYPE      INIT "LIST" READONLY                                                                                  
+                                                                                                                        
+   METHOD DEFINE                                                                                                        
+   METHOD DEFINE2                                                                                                       
+   METHOD VALUE             SETGET                                                                                      
+   METHOD EVENTS_COMMAND                                                                                                
+                                                                                                                        
+   METHOD ADDITEM(UVALUE)     BLOCK { |SELF,UVALUE| LISTBOXADDSTRING( ::HWND, UVALUE ) }                                
+   METHOD DELETEITEM(NITEM)   BLOCK { |SELF,NITEM| LISTBOXDELETESTRING( ::HWND, NITEM ) }                               
+   METHOD DELETEALLITEMS      BLOCK { | SELF | LISTBOXRESET( ::HWND ) }                                                 
+   METHOD ITEM                                                                                                          
+   METHOD ITEMCOUNT           BLOCK { | SELF | LISTBOXGETITEMCOUNT( ::HWND ) }                                          
+/*                                                                                                                      
+   METHOD FONTCOLOR      SETGET                                                                                         
+   METHOD BACKCOLOR      SETGET                                                                                         
+*/                                                                                                                      
+                                                                                                                        
+ENDCLASS                                                                                                                
+
+CLASS TLISTMULTI FROM TLIST                                                                                             
+   DATA TYPE      INIT "MULTILIST" READONLY                                                                             
+                                                                                                                        
+   METHOD DEFINE                                                                                                        
+   METHOD VALUE   SETGET                                                                                                
+ENDCLASS                                                                                                                
+
+CLASS TPLAYER FROM TCONTROL                                                                                             
+   DATA TYPE      INIT "PLAYER" READONLY                                                                                
+                                                                                                                        
+   METHOD RELEASE                                                                                                       
+   METHOD PLAY()             BLOCK { |SELF| MCIFUNC( ::HWND,  1 ) }                                                     
+   METHOD STOP()             BLOCK { |SELF| MCIFUNC( ::HWND,  2 ) }                                                     
+   METHOD PAUSE()            BLOCK { |SELF| MCIFUNC( ::HWND,  3 ) }                                                     
+   METHOD CLOSE()            BLOCK { |SELF| MCIFUNC( ::HWND,  4 ) }                                                     
+   METHOD EJECT()            BLOCK { |SELF| MCIFUNC( ::HWND,  6 ) }                                                     
+   METHOD POSITIONEND()      BLOCK { |SELF| MCIFUNC( ::HWND,  7 ) }                                                     
+   METHOD POSITIONHOME()     BLOCK { |SELF| MCIFUNC( ::HWND,  8 ) }                                                     
+   METHOD OPEN(FILE)         BLOCK { |SELF,FILE| MCIFUNC( ::HWND,  9, FILE ) }                                          
+   METHOD OPENDIALOG()       BLOCK { |SELF| MCIFUNC( ::HWND, 10 ) }                                                     
+   METHOD PLAYREVERSE()      BLOCK { |SELF| MCIFUNC( ::HWND, 11 ) }                                                     
+   METHOD RESUME()           BLOCK { |SELF| MCIFUNC( ::HWND, 12 ) }                                                     
+   METHOD REPEAT(STATUS)     BLOCK { |SELF,STATUS| MCIFUNC( ::HWND, 13, STATUS ) }                                      
+   METHOD REPEATON()         BLOCK { |SELF| MCIFUNC( ::HWND, 13, .T. ) }                                                
+   METHOD REPEATOFF()        BLOCK { |SELF| MCIFUNC( ::HWND, 13, .F. ) }                                                
+   METHOD SPEED(SPEED)       BLOCK { |SELF,SPEED| MCIFUNC( ::HWND, 14, SPEED ) }                                        
+   METHOD ZOOM(ZOOM)         BLOCK { |SELF,ZOOM| MCIFUNC( ::HWND, 16, ZOOM ) }                                          
+   METHOD LENGTH()           BLOCK { |SELF| MCIFUNC( ::HWND, 17 ) }                                                     
+   METHOD VOLUME             SETGET                                                                                     
+   METHOD POSITION           SETGET                                                                                     
+ENDCLASS                                                                                                                
+
+CLASS TANIMATEBOX FROM TCONTROL                                                                                         
+   DATA TYPE      INIT "ANIMATEBOX" READONLY                                                                            
+                                                                                                                        
+   METHOD RELEASE                                                                                                       
+                                                                                                                        
+   METHOD OPEN(FILE)         BLOCK { |SELF,FILE| OPENANIMATE( ::HWND, FILE ) }                                          
+   METHOD PLAY               BLOCK { |SELF| PLAYANIMATE( ::HWND ) }                                                     
+   METHOD STOP               BLOCK { |SELF| STOPANIMATE( ::HWND ) }                                                     
+   METHOD CLOSE              BLOCK { |SELF| CLOSEANIMATE( ::HWND ) }                                                    
+   METHOD SEEK(FRAME)        BLOCK { |SELF,FRAME| SEEKANIMATE( ::HWND, FRAME ) }                                        
+ENDCLASS                                                                                                                
+
+CLASS TMONTHCAL FROM TCONTROL                                                                                           
+   DATA TYPE      INIT "MONTHCAL" READONLY                                                                              
+                                                                                                                        
+   METHOD DEFINE                                                                                                        
+   METHOD VALUE            SETGET                                                                                       
+   METHOD SETFONT                                                                                                       
+   METHOD EVENTS_NOTIFY                                                                                                 
+ENDCLASS                                                                                                                
+
+CLASS TPROGRESSBAR FROM TCONTROL                                                                                        
+   DATA TYPE      INIT "PROGRESSBAR" READONLY                                                                           
+   DATA NRANGEMIN   INIT 0                                                                                              
+   DATA NRANGEMAX   INIT 0                                                                                              
+                                                                                                                        
+   METHOD DEFINE                                                                                                        
+   METHOD VALUE               SETGET                                                                                    
+                                                                                                                        
+   METHOD RANGEMIN            SETGET                                                                                    
+   METHOD RANGEMAX            SETGET                                                                                    
+   METHOD FONTCOLOR           SETGET                                                                                    
+   METHOD BACKCOLOR           SETGET                                                                                    
+ENDCLASS                                                                                                                
+
+CLASS TRADIOGROUP FROM TLABEL                                                                                           
+   DATA TYPE          INIT "RADIOGROUP" READONLY                                                                        
+   DATA TABSTOP       INIT .T.                                                                                          
+   DATA ICONWIDTH     INIT 19                                                                                           
+                                                                                                                        
+   METHOD ROWMARGIN   BLOCK { |SELF| - ::ROW }                                                                          
+   METHOD COLMARGIN   BLOCK { |SELF| - ::COL }                                                                          
+                                                                                                                        
+   METHOD DEFINE                                                                                                        
+   METHOD SETFONT                                                                                                       
+   METHOD SIZEPOS                                                                                                       
+   METHOD VALUE               SETGET                                                                                    
+   METHOD ENABLED             SETGET                                                                                    
+   METHOD FORCEHIDE           BLOCK { |SELF| AEVAL( ::ACONTROLS, { |O| O:FORCEHIDE() } ) }                              
+   METHOD SETFOCUS                                                                                                      
+   METHOD VISIBLE             SETGET                                                                                    
+                                                                                                                        
+   METHOD CAPTION                                                                                                       
+                                                                                                                        
+   METHOD EVENTS_COMMAND                                                                                                
+ENDCLASS                                                                                                                
+
+CLASS TRADIOITEM FROM TLABEL                                                                                            
+   DATA TYPE          INIT "RADIOITEM" READONLY                                                                         
+   DATA ICONWIDTH     INIT 19                                                                                           
+                                                                                                                        
+   METHOD EVENTS_COMMAND                                                                                                
+ENDCLASS                                                                                                                
+

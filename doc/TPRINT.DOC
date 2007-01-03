@@ -2,6 +2,7 @@ CLASE TPRINT
 
 TPRINT(ctlibrary)  inicializa  la clase y Se le dice a tprint() que
 libreria de impresion usar, los valores posibles son "HBPRINTER", "MINIPRINT","DOSPRINT" ,
+"EXCELPRINT"
 si no se especifica ningun valor se asume "MINIPRINT"
 
 
