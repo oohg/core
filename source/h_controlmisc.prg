@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.72 2006-12-09 03:49:50 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.73 2007-01-03 14:38:35 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -672,7 +672,6 @@ Local oWnd, oCtrl
 
       Arg3 := Upper( Arg3 )
       oCtrl := GetControlObject( Arg2, Arg1 )
-
       If ! _IsControlDefined( Arg2, Arg1 )
          MsgOOHGError( "Control: " + Arg2 + " of " + Arg1 + " Not defined. Program Terminated." )
       EndIf
@@ -691,6 +690,12 @@ Local oWnd, oCtrl
 
       ElseIf Arg3 == "COLUMNWIDTH"
          oCtrl:ColumnWidth( Arg4, Arg5 )
+
+      ElseIf Arg3 == "PICTURE"
+         oCtrl:Picture( Arg4, Arg5 )
+
+      ElseIf Arg3 == "IMAGE"
+         oCtrl:Picture( Arg4, Arg5 )
 
 		Else
 			// If Property Not Matched Look For ToolBar Button
@@ -906,41 +911,29 @@ Local RetVal, oWnd, oCtrl
 
 	ElseIf Pcount() == 4 // CONTROL (WITH ARGUMENT OR TOOLBAR BUTTON)
 
-		Arg3 := Upper (Arg3)
-
+      Arg3 := Upper( Arg3 )
       oCtrl := GetControlObject( Arg2, Arg1 )
+      If ! _IsControlDefined( Arg2, Arg1 )
+         MsgOOHGError( "Control: " + Arg2 + " of " + Arg1 + " Not defined. Program Terminated." )
+      EndIf
 
-		If     Arg3 == 'ITEM'
-
-			If .Not. _IsControlDefined ( Arg2 , Arg1  )
-            MsgOOHGError ("Control: " + Arg2 + " Of " + Arg1 + " Not defined. Program Terminated" )
-			endif
-
+      If     Arg3 == "ITEM"
          RetVal := oCtrl:Item( Arg4 )
 
-		ElseIf Arg3 == 'CAPTION'
-
-			If .Not. _IsControlDefined ( Arg2 , Arg1  )
-            MsgOOHGError ("Control: " + Arg2 + " Of " + Arg1 + " Not defined. Program Terminated" )
-			endif
-
+      ElseIf Arg3 == "CAPTION"
          RetVal := oCtrl:Caption( Arg4 )
 
-		ElseIf Arg3 == 'HEADER'
-
-			If .Not. _IsControlDefined ( Arg2 , Arg1  )
-            MsgOOHGError ("Control: " + Arg2 + " Of " + Arg1 + " Not defined. Program Terminated" )
-			endif
-
+      ElseIf Arg3 == "HEADER"
          RetVal := oCtrl:Caption( Arg4 )
 
-      ElseIf Arg3 == 'COLUMNWIDTH'
-
-			If .Not. _IsControlDefined ( Arg2 , Arg1  )
-            MsgOOHGError ("Control: " + Arg2 + " Of " + Arg1 + " Not defined. Program Terminated" )
-			endif
-
+      ElseIf Arg3 == "COLUMNWIDTH"
          RetVal := oCtrl:ColumnWidth( Arg4 )
+
+      ElseIf Arg3 == "PICTURE"
+         oCtrl:Picture( Arg4 )
+
+      ElseIf Arg3 == "IMAGE"
+         oCtrl:Picture( Arg4 )
 
 		Else
 

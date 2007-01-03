@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.27 2006-11-14 04:27:09 guerra000 Exp $
+ * $Id: h_tab.prg,v 1.28 2007-01-03 14:38:35 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -123,6 +123,7 @@ CLASS TTab FROM TControl
    METHOD DeleteControl
    METHOD DeletePage
    METHOD Caption
+   METHOD Picture
 
    METHOD RealPosition
    METHOD HidePage
@@ -469,6 +470,21 @@ METHOD Caption( nColumn, uValue ) CLASS TTab
       ENDIF
    ENDIF
 Return ::aPages[ nColumn ]:Caption
+
+*-----------------------------------------------------------------------------*
+METHOD Picture( nColumn, uValue ) CLASS TTab
+*-----------------------------------------------------------------------------*
+LOCAL oPage, nRealPosition
+   oPage := ::aPages[ nColumn ]
+   IF VALTYPE( uValue ) $ "CM"
+      oPage:Picture := uValue
+      oPage:nImage := ::AddBitMap( uValue ) - 1
+      nRealPosition := ::RealPosition( nColumn )
+      IF nRealPosition != 0
+         SetTabPageImage( ::hWnd, oPage:nImage, nRealPosition )
+      ENDIF
+   ENDIF
+Return oPage:Picture
 
 *-----------------------------------------------------------------------------*
 METHOD DeleteControl( oCtrl ) CLASS TTab
