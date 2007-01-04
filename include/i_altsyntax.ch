@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.33 2006-12-28 01:44:47 guerra000 Exp $
+ * $Id: i_altsyntax.ch,v 1.34 2007-01-04 14:53:47 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -932,7 +932,8 @@ Text Box
         _OOHG_ActiveControlFormat        := Nil          ;;
         _OOHG_ActiveControlNoBorder      := .f.          ;;
         _OOHG_ActiveControlAutoSkip      := .f.          ;;
-        _OOHG_ActiveControlFocusedPos    := Nil
+        _OOHG_ActiveControlFocusedPos    := Nil          ;;
+        _OOHG_ActiveControlValid         := Nil
 
 #xcommand UPPERCASE <uppercase>;
 	=>;
