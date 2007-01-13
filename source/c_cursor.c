@@ -1,5 +1,5 @@
 /*
- * $Id: c_cursor.c,v 1.3 2007-01-01 20:52:13 guerra000 Exp $
+ * $Id: c_cursor.c,v 1.4 2007-01-13 14:16:46 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -153,12 +153,12 @@ HB_FUNC( CURSORHELP )
 {
    hb_retnl( (long) SetCursor( LoadCursor( 0, IDC_HELP ) ) );
 }
-/*
+
 HB_FUNC( CURSORWAIT )
 {
    hb_retnl( (long) SetCursor( LoadCursor( 0, IDC_WAIT ) ) );
 }
-*/
+
 HB_FUNC( CURSORCROSS )
 {
    hb_retnl( (long) SetCursor( LoadCursor( 0, IDC_CROSS ) ) );
