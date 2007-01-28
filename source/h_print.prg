@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.52 2007-01-03 13:52:53 declan2005 Exp $
+* $Id: h_print.prg,v 1.53 2007-01-28 16:05:40 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -1688,6 +1688,9 @@ oPrintHoja:Cells( 1, 1 ):Select()
 oPrintExcel:Visible := .T.
 oPrintHoja:End()
 oPrintExcel:End()
+//#ifdef __HARBOUR__
+///OleUninitialize()
+///#endif
 RETURN self
 
 
@@ -1781,12 +1784,18 @@ oPrintHoja:Cells( 1, 1 ):Select()
 /////oPrintExcel:Visible := .T.
 cRuta:=GetCurrentFolder()
 ///oPrintExcel:Saveas(cRuta+"Printer.html",44)   //// graba como html
-oPrintHoja:SaveAs("Printer.html", 44 ,.f.,.f.)
-oPrintHoja:End()
+oPrintExcel:Set( "DisplayAlerts", .f. )
+oPrintHoja:SaveAs("Printer.html", 44,"","", .f. , .f.)
 oPrintExcel:Quit()
+oPrintHoja:End()
+oPrintExcel:end()
 release oPrinthoja
-release oPrintexcel
-////oPrintExcel:End()
+release oPrintExcel
+
+#ifdef __HARBOUR__
+OleUninitialize()
+#endif
+
 cMydoc:=GetMyDocumentsFolder()
 IF ShellExecute(0, "open", "rundll32.exe", "url.dll,FileProtocolHandler "+ cMydoc+ "\Printer.html", ,1) <=32
      MSGINFO("html Extension not asociated"+CHR(13)+CHR(13)+ ;
