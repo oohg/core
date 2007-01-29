@@ -1,5 +1,5 @@
 /*
- * $Id: c_cursor.c,v 1.4 2007-01-13 14:16:46 declan2005 Exp $
+ * $Id: c_cursor.c,v 1.5 2007-01-29 00:20:29 declan2005 Exp $
  */
 /*
  * ooHG source code:
