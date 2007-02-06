@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.317 2007-01-28 16:05:39 declan2005 Exp $
+ * $Id: ChangeLog,v 1.318 2007-02-06 00:13:25 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,10 +7,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2007-02-05 18:10 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_status.ch
+  * source/h_status.prg
+    + NOAUTOADJUST clause added.
+  * source/h_editbox.prg
+    ! Prevents EDITBOX's window closes pressing ESCAPE key.
+
 2007-01-28 10:57 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source/h_print.prg
     * optimizing HTMLprint method.
-
 
 2007-01-13 9:10 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source/c_cursor.c

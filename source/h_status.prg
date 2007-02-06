@@ -1,5 +1,5 @@
 /*
- * $Id: h_status.prg,v 1.22 2006-11-25 15:27:14 guerra000 Exp $
+ * $Id: h_status.prg,v 1.23 2007-02-06 00:13:25 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -101,6 +101,7 @@ CLASS TMessageBar FROM TControl
    DATA Type      INIT "MESSAGEBAR" READONLY
    DATA aClicks   INIT nil
    DATA aWidths   INIT nil
+   DATA lAutoAdjust   INIT .T.
 
    METHOD Define
 
@@ -123,7 +124,8 @@ ENDCLASS
 *-----------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, y, x, w, h, caption, ProcedureName, ;
                fontname, nFontsize, tooltip, clock, date, kbd, nClrF, nClrB, ;
-               bold, italic, underline, strikeout, lTop ) CLASS TMessageBar
+               bold, italic, underline, strikeout, lTop, lNoAutoAdjust, ;
+               Width, icon, cstyl ) CLASS TMessageBar
 *-----------------------------------------------------------------------------*
 Local ControlHandle
 
@@ -131,6 +133,7 @@ Local ControlHandle
    EMPTY( nClrB )
    EMPTY( x )
    EMPTY( y )
+   EMPTY( w )
    EMPTY( h )
 
    ::aClicks := {}
@@ -148,10 +151,13 @@ Local ControlHandle
 
    ::OnClick := ProcedureName
    ::Caption := Caption
+   IF VALTYPE( lNoAutoAdjust ) == "L"
+      ::lAutoAdjust := ! lNoAutoAdjust
+   ENDIF
 
    // Re-defines first status item
-   IF ValType( Caption ) $ "CM"
-      ::AddItem( Caption, w, ProcedureName, ToolTip )
+   If ValType( Caption ) $ "CM"
+      ::AddItem( Caption, Width, ProcedureName, ToolTip, icon, cstyl )
    Endif
 
    IF VALTYPE( clock ) == "L" .AND. clock
@@ -191,7 +197,9 @@ Local styl, nItem, i
       EndIf
    EndIf
 
-   If LEN( ::aWidths ) == 0
+   If ! ::lAutoAdjust
+      nItem := InitItemBar( ::hWnd, Caption, 0, Width, 2, Icon, ToolTip, styl )
+   ElseIf LEN( ::aWidths ) == 0
       nItem := InitItemBar( ::hWnd, Caption, 0, Width, 0, Icon, ToolTip, styl )
    Else
       nItem := InitItemBar( ::hWnd, Caption, 0, Width, 1, Icon, ToolTip, styl )
@@ -226,7 +234,7 @@ METHOD ItemWidth( nItem, nWidth ) CLASS TMessageBar
          ASIZE( ::aWidths, ::ItemCount )
       EndIf
       ::aWidths[ nItem ] := nWidth
-      RefreshItemBar( ::hWnd, ::aWidths )
+      RefreshItemBar( ::hWnd, ::aWidths, ::lAutoAdjust )
       ::aWidths[ 1 ] := GetItemWidth( ::hWnd, 1 )
    EndIf
 Return GetItemWidth( ::hWnd, nItem )
@@ -333,7 +341,7 @@ Return Super:Events_Size()
 *-----------------------------------------------------------------------------*
 METHOD RefreshData() CLASS TMessageBar
 *-----------------------------------------------------------------------------*
-   RefreshItemBar( ::hWnd, ::aWidths )
+   RefreshItemBar( ::hWnd, ::aWidths, ::lAutoAdjust )
    IF LEN( ::aWidths ) >= 1
       ::aWidths[ 1 ] := GetItemWidth( ::hWnd, 1 )
    ENDIF
@@ -434,55 +442,67 @@ HB_FUNC( GETITEMBAR )
 //////////// to check...
 HB_FUNC( INITITEMBAR )
 {
-    HWND  hWndSB;
+   HWND  hWndSB;
 	int   cSpaceInBetween = 8;
    int   ptArray[ NUM_OF_PARTS ];   // Array defining the number of parts/sections
 	int   nrOfParts = 0;
-    int   n ;
+   int   n ;
 	RECT  rect;
 	HDC   hDC;
 	WORD  displayFlags;
-    HICON hIcon;
+   HICON hIcon;
 	int   cx;
 	int   cy;
 
-    hWndSB = HWNDparam( 1 );
-      switch(hb_parni(8))
-      {
-         case  0:  displayFlags = 0 ; break;
-         case  1:  displayFlags = SBT_POPOUT ; break;
-         case  2:  displayFlags = SBT_NOBORDERS ; break;
-         default : displayFlags = 0;
-      }
+   hWndSB = HWNDparam( 1 );
+   switch( hb_parni( 8 ) )
+   {
+      case  0:  displayFlags = 0 ; break;
+      case  1:  displayFlags = SBT_POPOUT ; break;
+      case  2:  displayFlags = SBT_NOBORDERS ; break;
+      default : displayFlags = 0;
+   }
 
 
-    if ( hb_parnl (5)) {
-       nrOfParts = SendMessage( hWndSB, SB_GETPARTS, 0, 0 );
-      SendMessage(hWndSB,SB_GETPARTS, NUM_OF_PARTS, (LPARAM)(LPINT)ptArray);
+   if ( hb_parnl( 5 ) )
+   {
+      nrOfParts = SendMessage( hWndSB, SB_GETPARTS, 0, 0 );
+      SendMessage( hWndSB, SB_GETPARTS, NUM_OF_PARTS, ( LPARAM )( LPINT ) ptArray );
 	}
-    nrOfParts ++ ;
+   nrOfParts ++ ;
 
+   hDC = GetDC( hWndSB );
+   GetClientRect( hWndSB, &rect );
 
-    hDC = GetDC(hWndSB);
-    GetClientRect(hWndSB, &rect);
+   if( hb_parnl( 5 ) == 2 )
+   {
+      if( nrOfParts == 1 )
+      {
+         ptArray[ 0 ] = hb_parni( 4 );
+      }
+      else
+      {
+         ptArray[ nrOfParts - 1 ] = ptArray[ nrOfParts - 2 ] + hb_parni( 4 );
+      }
+   }
+   else if( hb_parnl( 5 ) == 0 )
+   {
+      ptArray[ nrOfParts - 1 ] = rect.right;
+   }
+   else
+   {
+      for( n = 0; n < nrOfParts - 1; n++ )
+      {
+         ptArray[ n ] -= hb_parni( 4 ) - cSpaceInBetween;
+      }
+      ptArray[ nrOfParts - 1 ] = rect.right;
+   }
 
-    if (hb_parnl (5) == 0){
-	    ptArray[nrOfParts-1] = rect.right;
-    	}
-    else {
+   ReleaseDC( hWndSB, hDC );
 
-        for ( n = 0 ; n < nrOfParts-1  ; n++)
-            {
-	        ptArray[n] -=  hb_parni (4) - cSpaceInBetween ;
-	        }
-	    ptArray[nrOfParts-1] = rect.right;
-    }
+   SendMessage( hWndSB, SB_SETPARTS, nrOfParts, ( LPARAM ) ( LPINT ) ptArray );
 
-	ReleaseDC(hWndSB, hDC);
-
-	SendMessage(hWndSB,  SB_SETPARTS, nrOfParts,(LPARAM)(LPINT)ptArray);
-
-	cy = rect.bottom - rect.top-4;
+   cy = rect.bottom - rect.top - 4;
 	cx = cy;
 
 	hIcon = (HICON)LoadImage(0, hb_parc(6),IMAGE_ICON ,cx,cy , LR_LOADFROMFILE );
@@ -532,7 +552,7 @@ HB_FUNC( GETITEMWIDTH )
 }
 
 //////////// to check...
-HB_FUNC( REFRESHITEMBAR )   // ( hWnd, aWidths )
+HB_FUNC( REFRESHITEMBAR )   // ( hWnd, aWidths, lAutoAdjust )
 {
    HWND  hWnd;
    int   *piItems;
@@ -549,12 +569,24 @@ HB_FUNC( REFRESHITEMBAR )   // ( hWnd, aWidths )
 
       piItems = hb_xgrab( sizeof( int ) * iItems );
       SendMessage( hWnd, SB_GETPARTS, iItems, ( WPARAM ) piItems );
-      iCount = iItems;
-      while( iCount )
+      if( hb_parl( 3 ) )
       {
-         iCount--;
-         piItems[ iCount ] = iWidth;
-         iWidth -= hb_parni( 2, iCount + 1 );
+         iCount = iItems;
+         while( iCount )
+         {
+            iCount--;
+            piItems[ iCount ] = iWidth;
+            iWidth -= hb_parni( 2, iCount + 1 );
+         }
+      }
+      else
+      {
+         iWidth = 0;
+         for( iCount = 0; iCount < iItems; iCount++ )
+         {
+            iWidth += hb_parni( 2, iCount + 1 );
+            piItems[ iCount ] = iWidth;
+         }
       }
       SendMessage( hWnd, SB_SETPARTS, iItems, ( LPARAM ) piItems );
       MoveWindow( hWnd, 0, 0, 0, 0, TRUE );

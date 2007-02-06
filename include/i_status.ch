@@ -1,5 +1,5 @@
 /*
- * $Id: i_status.ch,v 1.6 2006-11-26 23:07:36 guerra000 Exp $
+ * $Id: i_status.ch,v 1.7 2007-02-06 00:13:25 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -104,10 +104,18 @@
 		[ <strikeout : STRIKEOUT> ] ;
                 [ MESSAGE <msg> ] ;
                 [ SUBCLASS <subclass> ]         ;
+                [ <noautoadjust: NOAUTOADJUST> ] ;
+                [ WIDTH <nSize> ] ;
+                [ ACTION <uAction> ] ;
+                [ ICON <cBitmap> ] ;
+                [ <styl:FLAT,RAISED> ] ;
+                [ TOOLTIP <cToolTip> ] ;
       => ;
          [ <obj> := ] _OOHG_SelectSubClass( TMessageBar(), [ <subclass>() ] ): ;
-                      Define( "StatusBar", <(parent)>, 0, 0, 0, 0, <msg>,, <fontname>, <fontsize>, "", .f., .f., ;
-                              <.kbd.>, Nil , Nil ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.>, <.top.> )
+                      Define( "StatusBar", <(parent)>, 0, 0, 0, 0, <msg>, <{uAction}>, <fontname>, ;
+                      <fontsize>, <cToolTip>, .f., .f., <.kbd.>, Nil , Nil ,<.bold.>, <.italic.>, ;
+                      <.underline.>, <.strikeout.>, <.top.>, <.noautoadjust.>, <nSize>, <cBitmap>, ;
+                      <(styl)> )
 
 #xcommand  END STATUSBAR ;
       => ;

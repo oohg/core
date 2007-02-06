@@ -1,5 +1,5 @@
 /*
- * $Id: h_editbox.prg,v 1.11 2007-01-03 14:38:35 guerra000 Exp $
+ * $Id: h_editbox.prg,v 1.12 2007-02-06 00:13:25 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -101,6 +101,7 @@ CLASS TEdit FROM TText
    DATA nOnFocusPos     INIT -3
 
    METHOD Define
+   METHOD LookForKey
    METHOD Events_Enter      BLOCK { || nil }
 ENDCLASS
 
@@ -130,3 +131,13 @@ Local nStyle := ES_MULTILINE + ES_WANTRETURN, nStyleEx := 0
 empty(break)
 
 Return Self
+
+*-----------------------------------------------------------------------------*
+METHOD LookForKey( nKey, nFlags ) CLASS TEdit
+*-----------------------------------------------------------------------------*
+Local lDone
+   lDone := ::Super:LookForKey( nKey, nFlags )
+   If nKey == VK_ESCAPE
+      lDone := .T.
+   EndIf
+Return lDone
