@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.58 2006-11-13 15:30:49 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.59 2007-02-23 02:37:56 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -957,9 +957,9 @@ Local nItem
       If nItem > 0 .AND. nItem <= Len( ::aRecMap )
          uValue := ::aRecMap[ nItem ]
       Else
-         uValue := ::nValue
+         uValue := 0 // ::nValue
       Endif
-	EndIf
+   EndIf
 RETURN uValue
 
 *-----------------------------------------------------------------------------*

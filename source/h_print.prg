@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.53 2007-01-28 16:05:40 declan2005 Exp $
+* $Id: h_print.prg,v 1.54 2007-02-23 02:37:56 guerra000 Exp $
 */
 
 #include 'hbclass.ch'
@@ -1688,7 +1688,7 @@ oPrintHoja:Cells( 1, 1 ):Select()
 oPrintExcel:Visible := .T.
 oPrintHoja:End()
 oPrintExcel:End()
-//#ifdef __HARBOUR__
+//#ifndef __XHARBOUR__
 ///OleUninitialize()
 ///#endif
 RETURN self
@@ -1792,7 +1792,7 @@ oPrintExcel:end()
 release oPrinthoja
 release oPrintExcel
 
-#ifdef __HARBOUR__
+#ifndef __XHARBOUR__
 OleUninitialize()
 #endif
 
