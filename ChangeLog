@@ -1,11 +1,23 @@
 /*
- * $Id: ChangeLog,v 1.320 2007-02-23 02:37:56 guerra000 Exp $
+ * $Id: ChangeLog,v 1.321 2007-03-04 19:34:56 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-03-04 13:32 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_xbrowse.prg
+    ! Included missing ThisCell* info when ON EDITCELL is called.
+  * doc/classes.txt
+  * include/i_altsyntax.ch
+  * include/i_browse.ch
+  * source/h_browse.prg
+    * TBROWSE class name moved to TOBROWSE (for avoid conflicts with
+      Clipper's TBROWSE).
+  * source/h_print.prg
+    * Added OleUninitialize() function as a static funcion.
 
 2007-02-22 20:44 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_browse.prg

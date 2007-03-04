@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.59 2007-02-23 02:37:56 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.60 2007-03-04 19:34:56 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -97,7 +97,7 @@
 
 STATIC _OOHG_BrowseSyncStatus := .F.
 
-CLASS TBrowse FROM TXBrowse
+CLASS TOBrowse FROM TXBrowse
    DATA Type            INIT "BROWSE" READONLY
    DATA aRecMap         INIT {}
    DATA RecCount        INIT 0
@@ -141,7 +141,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                inplace, novscroll, AllowAppend, readonly, valid, ;
                validmessages, edit, dynamicbackcolor, aWhenFields, ;
                dynamicforecolor, aPicture, lRtl, onappend, editcell, ;
-               editcontrols, replacefields, lRecCount, columninfo ) CLASS TBrowse
+               editcontrols, replacefields, lRecCount, columninfo ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local nWidth2, nCol2, oScroll, z
 
@@ -279,7 +279,7 @@ Local nWidth2, nCol2, oScroll, z
 Return Self
 
 *-----------------------------------------------------------------------------*
-METHOD UpDate() CLASS TBrowse
+METHOD UpDate() CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local PageLength , aTemp, _BrowseRecMap := {} , x
 Local nCurrentLength
@@ -351,7 +351,7 @@ Local lColor, aFields, cWorkArea, hWnd, nWidth
 Return nil
 
 *-----------------------------------------------------------------------------*
-METHOD PageDown() CLASS TBrowse
+METHOD PageDown() CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local _RecNo , _DeltaScroll, s
 
@@ -403,7 +403,7 @@ Local _RecNo , _DeltaScroll, s
 Return nil
 
 *-----------------------------------------------------------------------------*
-METHOD PageUp() CLASS TBrowse
+METHOD PageUp() CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local _RecNo , _DeltaScroll
 
@@ -438,7 +438,7 @@ Local _RecNo , _DeltaScroll
 Return nil
 
 *-----------------------------------------------------------------------------*
-METHOD Home() CLASS TBrowse
+METHOD Home() CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local _RecNo , _DeltaScroll
 
@@ -462,7 +462,7 @@ Local _RecNo , _DeltaScroll
 Return nil
 
 *-----------------------------------------------------------------------------*
-METHOD End( lAppend ) CLASS TBrowse
+METHOD End( lAppend ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local _RecNo , _DeltaScroll , _BottomRec
    ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
@@ -491,7 +491,7 @@ Local _RecNo , _DeltaScroll , _BottomRec
 Return nil
 
 *-----------------------------------------------------------------------------*
-METHOD Up() CLASS TBrowse
+METHOD Up() CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local s  , _RecNo , _DeltaScroll := { Nil , Nil , Nil , Nil }
 
@@ -530,7 +530,7 @@ Local s  , _RecNo , _DeltaScroll := { Nil , Nil , Nil , Nil }
 Return nil
 
 *-----------------------------------------------------------------------------*
-METHOD Down() CLASS TBrowse
+METHOD Down() CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local s , _RecNo , _DeltaScroll
 
@@ -581,7 +581,7 @@ Local s , _RecNo , _DeltaScroll
 Return nil
 
 *-----------------------------------------------------------------------------*
-METHOD SetValue( Value, mp ) CLASS TBrowse
+METHOD SetValue( Value, mp ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local _RecNo , NewPos := 50, _DeltaScroll , m , hWnd, cWorkArea
 
@@ -655,7 +655,7 @@ Local _RecNo , NewPos := 50, _DeltaScroll , m , hWnd, cWorkArea
 Return nil
 
 *-----------------------------------------------------------------------------*
-METHOD Delete() CLASS TBrowse
+METHOD Delete() CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local Value, nRecNo
 
@@ -692,7 +692,7 @@ Local Value, nRecNo
 Return Nil
 
 *-----------------------------------------------------------------------------*
-METHOD EditItem_B( append ) CLASS TBrowse
+METHOD EditItem_B( append ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local nOldRecNo, nItem, cWorkArea, lRet
 
@@ -728,7 +728,7 @@ Local nOldRecNo, nItem, cWorkArea, lRet
 Return lRet
 
 *-----------------------------------------------------------------------------*
-METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend ) CLASS TBrowse
+METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local lRet, BackRec
    ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
@@ -769,7 +769,7 @@ extern int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam );
 #pragma ENDDUMP
 
 *-----------------------------------------------------------------------------*
-METHOD BrowseOnChange() CLASS TBrowse
+METHOD BrowseOnChange() CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 LOCAL cWorkArea
 
@@ -790,7 +790,7 @@ LOCAL cWorkArea
 Return nil
 
 *-----------------------------------------------------------------------------*
-METHOD FastUpdate( d, nRow ) CLASS TBrowse
+METHOD FastUpdate( d, nRow ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local ActualRecord , RecordCount
 
@@ -822,7 +822,7 @@ Local ActualRecord , RecordCount
 Return nil
 
 *-----------------------------------------------------------------------------*
-METHOD ScrollUpdate() CLASS TBrowse
+METHOD ScrollUpdate() CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local ActualRecord , RecordCount
 Local oVScroll, cWorkArea
@@ -864,7 +864,7 @@ Local oVScroll, cWorkArea
 Return NIL
 
 *-----------------------------------------------------------------------------*
-METHOD Refresh() CLASS TBrowse
+METHOD Refresh() CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local s , _RecNo , _DeltaScroll, v
 Local cWorkArea, hWnd
@@ -943,7 +943,7 @@ Local cWorkArea, hWnd
 Return nil
 
 *-----------------------------------------------------------------------------*
-METHOD Value( uValue ) CLASS TBrowse
+METHOD Value( uValue ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local nItem
    IF VALTYPE( uValue ) == "N"
@@ -963,7 +963,7 @@ Local nItem
 RETURN uValue
 
 *-----------------------------------------------------------------------------*
-METHOD RefreshData() CLASS TBrowse
+METHOD RefreshData() CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local nValue := ::nValue
    IF ValType( nValue ) != "N" .OR. nValue == 0
@@ -975,7 +975,7 @@ Local nValue := ::nValue
 RETURN nil
 
 *-----------------------------------------------------------------------------*
-METHOD Events_Enter() CLASS TBrowse
+METHOD Events_Enter() CLASS TOBrowse
 *-----------------------------------------------------------------------------*
    If Select( ::WorkArea ) != 0
       ::Super:Events_Enter()
@@ -984,8 +984,8 @@ Return nil
 
 #pragma BEGINDUMP
 // -----------------------------------------------------------------------------
-// METHOD Events_Notify( wParam, lParam ) CLASS TBrowse
-HB_FUNC_STATIC( TBROWSE_EVENTS_NOTIFY )
+// METHOD Events_Notify( wParam, lParam ) CLASS TOBrowse
+HB_FUNC_STATIC( TOBROWSE_EVENTS_NOTIFY )
 // -----------------------------------------------------------------------------
 {
    LONG wParam = hb_parnl( 1 );
@@ -997,7 +997,7 @@ HB_FUNC_STATIC( TBROWSE_EVENTS_NOTIFY )
       case NM_CLICK:
       case LVN_BEGINDRAG:
       case LVN_KEYDOWN:
-         HB_FUNCNAME( TBROWSE_EVENTS_NOTIFY2 )();
+         HB_FUNCNAME( TOBROWSE_EVENTS_NOTIFY2 )();
          break;
 
       case NM_CUSTOMDRAW:
@@ -1021,7 +1021,7 @@ HB_FUNC_STATIC( TBROWSE_EVENTS_NOTIFY )
 }
 #pragma ENDDUMP
 
-FUNCTION TBrowse_Events_Notify2( wParam, lParam )
+FUNCTION TOBrowse_Events_Notify2( wParam, lParam )
 Local Self := QSelf()
 Local nNotify := GetNotifyCode( lParam )
 Local nvKey, r, DeltaSelect
@@ -1106,7 +1106,7 @@ Local nvKey, r, DeltaSelect
 Return ::Super:Events_Notify( wParam, lParam )
 
 *-----------------------------------------------------------------------------*
-METHOD SetScrollPos( nPos, VScroll ) CLASS TBrowse
+METHOD SetScrollPos( nPos, VScroll ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local BackRec
    If Select( ::WorkArea ) == 0

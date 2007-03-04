@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.24 2006-11-13 15:30:49 guerra000 Exp $
+ * $Id: h_xbrowse.prg,v 1.25 2007-03-04 19:34:56 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1039,8 +1039,9 @@ Local aItems, aEditControls, aMemVars, aReplaceFields
       EndIf
 
       ::Refresh()
-
+      _SetThisCellInfo( ::hWnd, 0, 0, nil )
       _OOHG_Eval( ::OnEditCell, 0, 0 )
+      _ClearThisCellInfo()
 
    Else
       If lAppend
@@ -1104,7 +1105,9 @@ Local lRet, bReplaceField, oWorkArea
             EndIf
          EndIf
          ::RefreshRow( nRow )
+         _SetThisCellInfo( ::hWnd, nRow, nCol, uValue )
          _OOHG_EVAL( ::OnEditCell, nRow, nCol )
+         _ClearThisCellInfo()
       EndIf
       If ::Lock
          oWorkArea:UnLock()

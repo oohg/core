@@ -1,5 +1,5 @@
 /*
- * $Id: i_browse.ch,v 1.14 2006-11-13 05:10:52 guerra000 Exp $
+ * $Id: i_browse.ch,v 1.15 2007-03-04 19:34:56 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -152,7 +152,7 @@
                 [ <reccount: RECCOUNT> ]        ;
                 [ COLUMNINFO <columninfo> ]     ;
 	=>;
-             [ <oObj> := ] _OOHG_SelectSubClass( TBrowse(), [ <subclass>() ] ): ;
+             [ <oObj> := ] _OOHG_SelectSubClass( TOBrowse(), [ <subclass>() ] ): ;
                 Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, <widths>, ;
                 <Fields>, <value>, <fontname>, <fontsize>, <tooltip>, <{change}>, ;
                 <{dblclick}>, <aHeadClick>, <{gotfocus}>, <{lostfocus}>, <(workarea)> ,  ;
@@ -218,7 +218,7 @@
                 [ <reccount: RECCOUNT> ]        ;
                 [ COLUMNINFO <columninfo> ]     ;
 	=>;
-             [ <oObj> := ] _OOHG_SelectSubClass( TBrowse(), [ <subclass>() ] ): ;
+             [ <oObj> := ] _OOHG_SelectSubClass( TOBrowse(), [ <subclass>() ] ): ;
                 Define( <(name)>, <(parent)>, , , <w>, <h>, <headers>, <widths>, <Fields>, ;
                 <value>, <fontname>, <fontsize>, <tooltip>, <{change}>, <{dblclick}>, ;
                 <aHeadClick>, <{gotfocus}>, <{lostfocus}>, <(WorkArea)>, <.Delete.>, ;

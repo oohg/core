@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.54 2007-02-23 02:37:56 guerra000 Exp $
+* $Id: h_print.prg,v 1.55 2007-03-04 19:34:56 guerra000 Exp $
 */
 
 #include 'hbclass.ch'
@@ -32,6 +32,15 @@ memvar milinea2
 memvar oprintcsv2
 memvar oprintcsv3
 memvar cname
+
+#pragma BEGINDUMP
+#include "hbapi.h"
+#include "windows.h"
+HB_FUNC( OLEUNINITIALIZE )
+{
+   OleUninitialize();
+}
+#pragma ENDDUMP
 
 *-------------------------
 FUNCTION TPrint( clibx )
@@ -477,7 +486,7 @@ RETURN nil
 METHOD printdata(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen) CLASS TPRINTBASE
 *-------------------------
 local ctext,cspace,uAux,cTipo:=Valtype(data)
-do While cTipo == "B"       
+do While cTipo == "B"
    uAux:=EVal(data)
    cTipo:=valType(uAux)
    data:=uAux

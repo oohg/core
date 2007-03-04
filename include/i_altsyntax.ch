@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.34 2007-01-04 14:53:47 guerra000 Exp $
+ * $Id: i_altsyntax.ch,v 1.35 2007-03-04 19:34:56 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1859,7 +1859,7 @@ BROWSE
 
 #xcommand END BROWSE ;
 	=>;
-TBrowse():Define( _OOHG_ActiveControlName ,        ;
+TOBrowse():Define( _OOHG_ActiveControlName ,        ;
                 _OOHG_ActiveControlOf ,  ;
                 _OOHG_ActiveControlCol ,         ;
                 _OOHG_ActiveControlRow ,         ;
