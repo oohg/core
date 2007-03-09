@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.76 2007-01-01 20:52:13 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.77 2007-03-09 05:40:33 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -163,6 +163,7 @@ CLASS TGrid FROM TControl
    METHOD SetItemColor
    METHOD ItemCount           BLOCK { | Self | ListViewGetItemCount( ::hWnd ) }
    METHOD CountPerPage        BLOCK { | Self | ListViewGetCountPerPage( ::hWnd ) }
+   METHOD FirstSelectedItem   BLOCK { | Self | ListView_GetFirstItem( ::hWnd ) }
    METHOD Header
    METHOD FontColor      SETGET
    METHOD BackColor      SETGET
@@ -335,7 +336,7 @@ METHOD EDITGRID(nrow,ncol) CLASS TGrid
 
    Local lRet, i, nLast
    IF ValType( nRow ) != "N"
-      nRow := LISTVIEW_GETFIRSTITEM( ::hWnd )
+      nRow := ::FirstSelectedItem
    ENDIF
    IF ValType( nCol ) != "N"
       nCol := 1
@@ -376,8 +377,8 @@ METHOD EDITGRID(nrow,ncol) CLASS TGrid
             if ::ncolpos = 1
                ::deleteitem(::itemcount())
                ::lappendmode:=.F.
-               ::value:= ::itemcount()
-               ::nrowpos:=::value
+               ::value := ::itemcount()
+               ::nrowpos := ::FirstSelectedItem
             endif
          endif
 
@@ -396,11 +397,11 @@ METHOD EDITGRID(nrow,ncol) CLASS TGrid
       endif
 
 
-      ::value:=::nrowpos
+      ::value := ::nrowpos
       ::ncolpos++
    EndDo
 
-   if ::ncolpos=1 .and. ::value>1
+   if ::ncolpos=1 .and. ::FirstSelectedItem > 1
       ::Value := ::nrowpos-1
    endif
    If lRet // .OR. nCol > Len( ::aHeaders )
@@ -591,7 +592,7 @@ Local aReturn
    EndIf
 
    If ValType( nItem ) != "N"
-      nItem := LISTVIEW_GETFIRSTITEM( ::hWnd )
+      nItem := ::FirstSelectedItem
    EndIf
    If nItem == 0 .OR. nItem > ::ItemCount
       Return {}
@@ -960,7 +961,7 @@ METHOD Value( uValue ) CLASS TGrid
       ListView_SetCursel( ::hWnd, uValue )
       ListView_EnsureVisible( ::hWnd, uValue )
    ELSE
-      uValue := LISTVIEW_GETFIRSTITEM( ::hWnd )
+      uValue := ::FirstSelectedItem
    ENDIF
 RETURN uValue
 
@@ -985,7 +986,7 @@ METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar ) CLASS TGr
 *-----------------------------------------------------------------------------*
 Local lRet
    IF ValType( nRow ) != "N"
-      nRow := LISTVIEW_GETFIRSTITEM( ::hWnd )
+      nRow := ::FirstSelectedItem
    ENDIF
    IF ValType( nCol ) != "N"
       nCol := 1
@@ -1039,7 +1040,7 @@ Local r, r2, lRet := .F., nWidth
       cMemVar := "_OOHG_NULLVAR_"
    ENDIF
    IF ValType( nRow ) != "N"
-      nRow := LISTVIEW_GETFIRSTITEM( ::hWnd )
+      nRow := ::FirstSelectedItem
    ENDIF
    IF ValType( nCol ) != "N"
       nCol := 1
@@ -1130,7 +1131,7 @@ METHOD EditAllCells( nRow, nCol ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local lRet
    IF ValType( nRow ) != "N"
-      nRow := LISTVIEW_GETFIRSTITEM( ::hWnd )
+      nRow := ::FirstSelectedItem
    ENDIF
    IF ValType( nCol ) != "N"
       nCol := 1
@@ -1154,7 +1155,7 @@ Local lRet
          if nCol = 1
                ::deleteitem(::itemcount())
                ::lappendmode:=.F.
-               ::value:= ::itemcount()
+               ::value := ::itemcount()
          endif
       endif
       nCol++
@@ -1276,10 +1277,9 @@ Local lvc, aCellData, _ThisQueryTemp, nvkey
 
      nvKey := GetGridvKey( lParam )
 
-     if nvkey == 40
+     if nvkey == VK_DOWN
 
-
-       if ::value == ::itemcount() .and. .not. ::leditmode
+       if ::FirstSelectedItem == ::itemcount() .and. .not. ::leditmode
            if ::Append
               ::appenditem()
            endif

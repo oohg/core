@@ -1,11 +1,21 @@
 /*
- * $Id: ChangeLog,v 1.321 2007-03-04 19:34:56 guerra000 Exp $
+ * $Id: ChangeLog,v 1.322 2007-03-09 05:40:32 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-03-08 13:32 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_grid.prg
+    ! Fixed bug pressing DOWN key on MULTIGRID.
+    + ::FirstSelectedItem() method added.
+  * source/h_button.prg
+    ! Fixed not caption shown (button is defined for IMAGE) when
+      control is created with TButton():Define() without parameters.
+    + ::DefineImage() method added. It creates control for IMAGE for
+      TButton():DefineImage() syntax.
 
 2007-03-04 13:32 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_xbrowse.prg

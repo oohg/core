@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.21 2007-01-02 04:31:45 guerra000 Exp $
+ * $Id: h_button.prg,v 1.22 2007-03-09 05:40:33 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -105,6 +105,7 @@ CLASS TButton FROM TControl
    DATA lScale    INIT .F.
 
    METHOD Define
+   METHOD DefineImage
    METHOD SetFocus
    METHOD Picture     SETGET
    METHOD HBitMap     SETGET
@@ -119,18 +120,23 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, ProcedureName, w, h, ;
                strikeout, lRtl, lNoPrefix, lDisabled, cBuffer, hBitMap, ;
                cImage, lNoTransparent, lScale, lCancel ) CLASS TButton
 *-----------------------------------------------------------------------------*
-Local ControlHandle, nStyle
+Local ControlHandle, nStyle, lBitMap
 
    ASSIGN ::nCol    VALUE x TYPE "N"
    ASSIGN ::nRow    VALUE y TYPE "N"
    ASSIGN ::nWidth  VALUE w TYPE "N"
    ASSIGN ::nHeight VALUE h TYPE "N"
 
+   lBitMap := ! ValType( caption ) $ "CM" .AND. ;
+              ( ValType( cImage ) $ "CM" .OR. ;
+                ValType( cBuffer ) $ "CM" .OR. ;
+                ValidHandler( hBitMap ) )
+
    ::SetForm( ControlName, ParentForm, FontName, FontSize,,,, lRtl )
    nStyle := ::InitStyle( ,, Invisible, NoTabStop, lDisabled ) + ;
              if( ValType( flat ) == "L"      .AND. flat,       BS_FLAT, 0 )     + ;
              if( ValType( lNoPrefix ) == "L" .AND. lNoPrefix,  SS_NOPREFIX, 0 ) + ;
-             if( ! ValType( caption ) $ "CM",                  BS_BITMAP, 0 )
+             if( lBitMap,                                      BS_BITMAP, 0 )
 
    ControlHandle := InitButton( ::ContainerhWnd, Caption, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, ::lRtl, nStyle )
 
@@ -154,6 +160,22 @@ Local ControlHandle, nStyle
    EndIf
 
 Return Self
+
+*------------------------------------------------------------------------------*
+METHOD DefineImage( ControlName, ParentForm, x, y, Caption, ProcedureName, w, h, ;
+                    fontname, fontsize, tooltip, gotfocus, lostfocus, flat, ;
+                    NoTabStop, HelpId, invisible, bold, italic, underline, ;
+                    strikeout, lRtl, lNoPrefix, lDisabled, cBuffer, hBitMap, ;
+                    cImage, lNoTransparent, lScale, lCancel ) CLASS TButton
+*------------------------------------------------------------------------------*
+   If Empty( cBuffer )
+      cBuffer := ""
+   EndIf
+Return ::Define( ControlName, ParentForm, x, y, Caption, ProcedureName, w, h, ;
+                 fontname, fontsize, tooltip, gotfocus, lostfocus, flat, ;
+                 NoTabStop, HelpId, invisible, bold, italic, underline, ;
+                 strikeout, lRtl, lNoPrefix, lDisabled, cBuffer, hBitMap, ;
+                 cImage, lNoTransparent, lScale, lCancel )
 
 *------------------------------------------------------------------------------*
 METHOD SetFocus() CLASS TButton
