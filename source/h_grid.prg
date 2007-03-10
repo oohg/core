@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.77 2007-03-09 05:40:33 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.78 2007-03-10 21:33:50 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -436,7 +436,7 @@ METHOD EDITGRID(nrow,ncol) CLASS TGrid
          ::nrowpos++
       endif
    else
-      IF ::value < ::itemcount
+      IF ::FirstSelectedItem < ::itemcount
          ::value++
       ENDIF
    endif
@@ -448,7 +448,7 @@ METHOD EDITGRID(nrow,ncol) CLASS TGrid
          ::nrowpos--
       endif
    else
-      IF ::value > 1
+      IF ::FirstSelectedItem > 1
          ::value--
       ENDIF
    endif
@@ -457,7 +457,7 @@ METHOD EDITGRID(nrow,ncol) CLASS TGrid
 *--------------------------------------------------------------------------*
 METHOD PageUp() CLASS TGrid
 *--------------------------------------------------------------------------*
-   if ::value > ::CountPerPage
+   if ::FirstSelectedItem > ::CountPerPage
       ::value := ::value - ::CountPerPage
    else
       ::GoTop()
@@ -467,7 +467,7 @@ return self
 *-------------------------------------------------------------------------*
 METHOD PageDown() CLASS TGrid
 *-------------------------------------------------------------------------*
-   if ::value < ::itemcount - ::CountPerPage
+   if ::FirstSelectedItem < ::itemcount - ::CountPerPage
       ::value := ::value + ::CountPerPage
    else
      ::GoBottom()
@@ -491,55 +491,56 @@ METHOD GoBottom() CLASS TGrid
 return self
 
 *-----------------------------------------------------------------------------*
-METHOD toExcel( cTitle ) CLASS TGrid
+METHOD toExcel( cTitle, nRow ) CLASS TGrid
 *-----------------------------------------------------------------------------*
  Local LIN:=4
  LOCAL oExcel, oHoja,i
 
- default ctitle to ""
+   default ctitle to ""
 
- oExcel := TOleAuto():New( "Excel.Application" )
- IF Ole2TxtError() != 'S_OK'
-   MsgStop('Excel not found','error')
-   RETURN Nil
- ENDIF
- oExcel:WorkBooks:Add()
- oHoja := oExcel:Get( "ActiveSheet" )
- oHoja:Cells:Font:Name := "Arial"
- oHoja:Cells:Font:Size := 10
+   oExcel := TOleAuto():New( "Excel.Application" )
+   IF Ole2TxtError() != 'S_OK'
+      MsgStop('Excel not found','error')
+      RETURN Nil
+   ENDIF
+   oExcel:WorkBooks:Add()
+   oHoja := oExcel:Get( "ActiveSheet" )
+   oHoja:Cells:Font:Name := "Arial"
+   oHoja:Cells:Font:Size := 10
 
- oHoja:Cells( 1, 1 ):Value := upper( cTitle )
- oHoja:Cells( 1, 1 ):font:bold := .T.
+   oHoja:Cells( 1, 1 ):Value := upper( cTitle )
+   oHoja:Cells( 1, 1 ):font:bold := .T.
 
-  for i:= 1 to len( ::aHeaders )
-     oHoja:Cells( LIN, i ):Value := upper( ::aHeaders[i] )
-     oHoja:Cells( LIN, i ):font:bold:= .T.
-  next i
-  LIN++
-  LIN++
-  ::gotop()
+   for i:= 1 to len( ::aHeaders )
+      oHoja:Cells( LIN, i ):Value := upper( ::aHeaders[i] )
+      oHoja:Cells( LIN, i ):font:bold:= .T.
+   next i
+   LIN++
+   LIN++
+   ::gotop()
 
-  Do while .T.
-     for i:= 1 to len ( ::aHeaders )
-         oHoja:Cells( LIN, i ):Value := ::cell( ::value , i )
-     next i
-     if  ::Value  = ::Itemcount
-         Exit
-     endif
-     ::Value++
-     LIN++
-  Enddo
+   If ValType( nRow ) != "N" .OR. nRow < 1
+      nRow := ::FirstSelectedItem
+   EndIf
+   Do while nRow <= ::ItemCount .AND. nRow > 0
+      for i := 1 to len( ::aHeaders )
+         oHoja:Cells( LIN, i ):Value := ::cell( nRow, i )
+      next i
+      nRow++
+      LIN++
+   Enddo
 
-FOR i:=1 TO LEN( ::Aheaders )
-   oHoja:Columns( i ):AutoFit()
-NEXT
+   FOR i:=1 TO LEN( ::Aheaders )
+      oHoja:Columns( i ):AutoFit()
+   NEXT
 
-oHoja:Cells( 1, 1 ):Select()
-oExcel:Visible := .T.
+   oHoja:Cells( 1, 1 ):Select()
+   oExcel:Visible := .T.
 
-oHoja:End()
-oExcel:End()
-
+   #ifndef __XHARBOUR__
+      oHoja:End()
+      oExcel:End()
+   #endif
 
 RETURN nil
 
@@ -548,7 +549,7 @@ RETURN nil
 METHOD EditItem() CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local nItem, aItems, aEditControls, nColumn
-   nItem := ::Value
+   nItem := ::FirstSelectedItem
    If nItem == 0
       Return NIL
    EndIf

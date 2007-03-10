@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.22 2007-03-09 05:40:33 guerra000 Exp $
+ * $Id: h_button.prg,v 1.23 2007-03-10 21:33:50 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -131,6 +131,13 @@ Local ControlHandle, nStyle, lBitMap
               ( ValType( cImage ) $ "CM" .OR. ;
                 ValType( cBuffer ) $ "CM" .OR. ;
                 ValidHandler( hBitMap ) )
+   If ! lBitMap .AND. Empty( caption )
+      If ( Valtype( cImage ) $ "CM" .AND. ! Empty( cImage ) ) .OR. ;
+         ( Valtype( cBuffer ) $ "CM" .AND. ! Empty( cBuffer ) ) .OR. ;
+         ValidHandler( hBitMap )
+         lBitMap := .T.
+      EndIf
+   EndIf
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize,,,, lRtl )
    nStyle := ::InitStyle( ,, Invisible, NoTabStop, lDisabled ) + ;

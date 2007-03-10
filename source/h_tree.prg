@@ -1,5 +1,5 @@
 /*
- * $Id: h_tree.prg,v 1.10 2006-12-09 03:49:50 guerra000 Exp $
+ * $Id: h_tree.prg,v 1.11 2007-03-10 21:33:50 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -201,7 +201,7 @@ Return Self
 METHOD AddItem( Value , Parent, aImage , Id ) CLASS TTree
 *------------------------------------------------------------------------------*
 Local TreeItemHandle
-Local 	ImgDef, iUnSel, iSel
+Local ImgDef, iUnSel, iSel
 Local NewHandle , TempHandle , i , aPos , ChildHandle , BackHandle , ParentHandle
 
       if ! ::ItemIds
@@ -214,7 +214,7 @@ Local NewHandle , TempHandle , i , aPos , ChildHandle , BackHandle , ParentHandl
 
 		ImgDef := iif( valtype( aImage ) == "A" , len( aImage ), 0 )  //Tree+
 
-		if Parent != 0
+      if ! Empty( Parent )
 
          if ! ::ItemIds
             TreeItemHandle := ::aTreeMap [ Parent ]
