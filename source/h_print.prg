@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.55 2007-03-04 19:34:56 guerra000 Exp $
+* $Id: h_print.prg,v 1.56 2007-03-14 14:19:43 guerra000 Exp $
 */
 
 #include 'hbclass.ch'
@@ -18,8 +18,6 @@ memvar _HMG_PRINTER_TIMESTAMP
 memvar _HMG_PRINTER_NAME
 memvar _HMG_PRINTER_PAGECOUNT
 memvar _HMG_PRINTER_HDC_BAK
-memvar oPrintexcel
-memvar oPrinthoja
 memvar oprintrtf1
 memvar oprintrtf2
 memvar oprintrtf3
@@ -1572,6 +1570,9 @@ return nposluna
 
 CREATE CLASS TEXCELPRINT FROM TPRINTBASE
 
+    DATA oExcel INIT nil
+    DATA oHoja  INIT nil
+
 *-------------------------
 METHOD initx()
 *-------------------------
@@ -1659,14 +1660,13 @@ return self
 *-------------------------
 METHOD selprinterx( lselect , lpreview, llandscape , npapersize ,cprinterx) CLASS TEXCELPRINT
 *-------------------------
-Public oPrintExcel, oPrintHoja
 empty(lselect)
 empty(lpreview)
 empty(llandscape)
 empty(npapersize)
 empty(cprinterx)
 
-oPrintExcel := TOleAuto():New( "Excel.Application" )
+::oExcel := TOleAuto():New( "Excel.Application" )
 IF Ole2TxtError() != 'S_OK'
    MsgStop('Excel not found','error')
    ::lprerror:=.T.
@@ -1678,11 +1678,11 @@ return self
 *-------------------------
 METHOD begindocx() CLASS TEXCELPRINT
 *-------------------------
-oPrintExcel:WorkBooks:Add()
-oPrintHoja:=oPrintExcel:Get( "ActiveSheet" )
-oPrintHoja:Name := "List"
-oPrintHoja:Cells:Font:Name := ::cfontname
-oPrintHoja:Cells:Font:Size := ::nfontsize
+::oExcel:WorkBooks:Add()
+::oHoja := ::oExcel:Get( "ActiveSheet" )
+::oHoja:Name := "List"
+::oHoja:Cells:Font:Name := ::cfontname
+::oHoja:Cells:Font:Size := ::nfontsize
 return self
 
 
@@ -1691,23 +1691,23 @@ METHOD enddocx() CLASS TEXCELPRINT
 *-------------------------
 local nCol
 FOR nCol:=1 TO FCOUNT()
-    oPrintHoja:Columns( nCol ):AutoFit()
+    ::oHoja:Columns( nCol ):AutoFit()
 NEXT
-oPrintHoja:Cells( 1, 1 ):Select()
-oPrintExcel:Visible := .T.
-oPrintHoja:End()
-oPrintExcel:End()
-//#ifndef __XHARBOUR__
+::oHoja:Cells( 1, 1 ):Select()
+::oExcel:Visible := .T.
+#ifndef __XHARBOUR__
+::oHoja:End()
+::oExcel:End()
 ///OleUninitialize()
-///#endif
+#endif
 RETURN self
 
 
 *-------------------------
 METHOD releasex() CLASS TEXCELPRINT
 *-------------------------
-release oPrintHOja
-release oPrintExcel
+   ::oHoja := nil
+   ::oExcel := nil
 RETURN self
 
 
@@ -1760,15 +1760,15 @@ IF LEN(::alincelda)<nlin
 ENDIF
 ::alincelda[nlin]:=::alincelda[nlin]+1
 alinceldax:=::alincelda[nlin]
-oPrintHoja:Cells(nlin,alinceldax):Value := ctext
-oPrintHoja:Cells(nlin,alinceldax):Font:Name := cfont
-oPrintHoja:Cells(nlin,alinceldax):Font:Size := nsize
-oPrintHoja:Cells(nlin,alinceldax):Font:Bold := lbold
+::oHoja:Cells(nlin,alinceldax):Value := ctext
+::oHoja:Cells(nlin,alinceldax):Font:Name := cfont
+::oHoja:Cells(nlin,alinceldax):Font:Size := nsize
+::oHoja:Cells(nlin,alinceldax):Font:Bold := lbold
 do case
 case calign="R"
-  oPrintHoja:Cells(nlin,alinceldax):HorizontalAlignment:= -4152  //Derecha
+   ::oHoja:Cells(nlin,alinceldax):HorizontalAlignment:= -4152  //Derecha
 case calign="C"
-  oPrintHoja:Cells(nlin,alinceldax):HorizontalAlignment:= -4108  //Centrar
+   ::oHoja:Cells(nlin,alinceldax):HorizontalAlignment:= -4108  //Centrar
 endcase
 return self
 
@@ -1787,19 +1787,21 @@ ENDCLASS
 METHOD enddocx() CLASS THTMLPRINT
 local nCol,cRuta,cMydoc
 FOR nCol:=1 TO FCOUNT()
-    oPrintHoja:Columns( nCol ):AutoFit()
+    ::oHoja:Columns( nCol ):AutoFit()
 NEXT
-oPrintHoja:Cells( 1, 1 ):Select()
-/////oPrintExcel:Visible := .T.
+::oHoja:Cells( 1, 1 ):Select()
+///// ::oExcel:Visible := .T.
 cRuta:=GetCurrentFolder()
-///oPrintExcel:Saveas(cRuta+"Printer.html",44)   //// graba como html
-oPrintExcel:Set( "DisplayAlerts", .f. )
-oPrintHoja:SaveAs("Printer.html", 44,"","", .f. , .f.)
-oPrintExcel:Quit()
-oPrintHoja:End()
-oPrintExcel:end()
-release oPrinthoja
-release oPrintExcel
+/// ::oExcel:Saveas(cRuta+"Printer.html",44)   //// graba como html
+::oExcel:Set( "DisplayAlerts", .f. )
+::oHoja:SaveAs("Printer.html", 44,"","", .f. , .f.)
+::oExcel:Quit()
+#ifndef __XHARBOUR__
+::oHoja:End()
+::oExcel:end()
+#endif
+::ohoja := nil
+::oExcel := nil
 
 #ifndef __XHARBOUR__
 OleUninitialize()
