@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.73 2007-01-03 14:38:35 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.74 2007-03-19 20:40:41 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1779,10 +1779,10 @@ Local nPos
       nPos := 1
    Else
       If ValType( uImage ) == "A"
-         nPos := ImageList_Add( ::ImageList, uImage[ 1 ], ::ImageListFlags )
-         AEVAL( ::ImageList, { |c| ImageList_Add( ::ImageList, c, ::ImageListFlags ) }, 2 )
+         nPos := ImageList_Add( ::ImageList, uImage[ 1 ], ::ImageListFlags, ::ImageListColor )
+         AEVAL( ::ImageList, { |c| ImageList_Add( ::ImageList, c, ::ImageListFlags, ::ImageListColor ) }, 2 )
       Else
-         nPos := ImageList_Add( ::ImageList, uImage, ::ImageListFlags )
+         nPos := ImageList_Add( ::ImageList, uImage, ::ImageListFlags, ::ImageListColor )
       EndIf
    Endif
    SendMessage( ::hWnd, ::SetImageListCommand, ::SetImageListWParam, ::ImageList )

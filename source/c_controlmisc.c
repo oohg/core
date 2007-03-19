@@ -1,5 +1,5 @@
 /*
- * $Id: c_controlmisc.c,v 1.40 2006-11-13 02:33:18 guerra000 Exp $
+ * $Id: c_controlmisc.c,v 1.41 2007-03-19 20:40:41 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -683,36 +683,38 @@ HB_FUNC( IMAGELIST_INIT )
 {
    HIMAGELIST himl = 0;
    HBITMAP hbmp;
+   BITMAP bm;
    PHB_ITEM hArray;
    char *caption;
    int iLen, s, cx = 0, cy = 0, iStyle;
+   COLORREF clrDefault;
 
    iLen = hb_parinfa( 1, 0 );
    hArray = hb_param( 1, HB_IT_ARRAY );
    if( iLen != 0 )
    {
+      clrDefault = ( COLORREF ) hb_parni( 2 );
       iStyle = hb_parni( 3 );
-      caption = hb_arrayGetCPtr( hArray, 1 );
 
-      himl = ImageList_LoadImage( GetModuleHandle( NULL ), caption, 0, iLen + 1 , hb_parni( 2 ), IMAGE_BITMAP, iStyle );
-      if ( himl == NULL )
-      {
-         himl = ImageList_LoadImage( GetModuleHandle( NULL ), caption, 0, iLen + 1, hb_parni( 2 ), IMAGE_BITMAP, iStyle | LR_LOADFROMFILE );
-      }
-
-      ImageList_GetIconSize( himl, &cx, &cy );
-
-      for( s = 2; s <= iLen; s++ )
+      for( s = 1; s <= iLen; s++ )
       {
          caption = hb_arrayGetCPtr( hArray, s );
 
-         hbmp = ( HBITMAP ) LoadImage( GetModuleHandle( NULL ), caption, IMAGE_BITMAP, cx, cy, iStyle );
+         hbmp = ( HBITMAP ) LoadImage( GetModuleHandle( NULL ), caption, IMAGE_BITMAP, 0, 0, iStyle );
          if( hbmp == NULL )
          {
-            hbmp = ( HBITMAP ) LoadImage( GetModuleHandle( NULL ), caption, IMAGE_BITMAP, cx, cy, iStyle | LR_LOADFROMFILE );
+            hbmp = ( HBITMAP ) LoadImage( GetModuleHandle( NULL ), caption, IMAGE_BITMAP, 0, 0, iStyle | LR_LOADFROMFILE );
          }
 
-         ImageList_Add( himl, hbmp, NULL );
+         if( ! himl )
+         {
+            GetObject( hbmp, sizeof( bm ), &bm );
+            cx = bm.bmWidth;
+            cy = bm.bmHeight;
+            himl = ImageList_Create( cx, cy, ILC_COLOR32 | ILC_MASK, 16, 16 );
+         }
+
+         ImageList_AddMasked( himl, hbmp, clrDefault );
          DeleteObject( hbmp ) ;
       }
    }
@@ -734,6 +736,7 @@ HB_FUNC( IMAGELIST_ADD )
    HBITMAP hbmp;
    int cx, cy, ic = 0;
    int iStyle = hb_parni( 3 );
+   COLORREF clrDefault = ( COLORREF ) hb_parni( 4 );
 
    if ( himl != NULL )
    {
@@ -745,7 +748,7 @@ HB_FUNC( IMAGELIST_ADD )
          hbmp = ( HBITMAP ) LoadImage( GetModuleHandle( NULL ), hb_parc( 2 ), IMAGE_BITMAP, cx, cy, iStyle | LR_LOADFROMFILE );
       }
 
-      ImageList_Add( himl, hbmp, NULL );
+      ImageList_AddMasked( himl, hbmp, clrDefault );
       DeleteObject( hbmp );
 
       ic = ImageList_GetImageCount( himl );

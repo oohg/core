@@ -1,5 +1,5 @@
 /*
- * $Id: h_menu.prg,v 1.16 2006-11-20 02:33:18 guerra000 Exp $
+ * $Id: h_menu.prg,v 1.17 2007-03-19 20:40:41 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -480,8 +480,8 @@ HB_FUNC( MENUITEM_SETBITMAPS )
    HBITMAP himage1, himage2;
    int iAttributes = LR_LOADMAP3DCOLORS | LR_LOADTRANSPARENT;
 
-   himage1 = _OOHG_LoadImage( hb_parc( 3 ), iAttributes, 32, 32, ( HWND ) hMenu, -1 );
-   himage2 = _OOHG_LoadImage( hb_parc( 4 ), iAttributes, 32, 32, ( HWND ) hMenu, -1 );
+   himage1 = _OOHG_LoadImage( hb_parc( 3 ), iAttributes, 0, 0, ( HWND ) hMenu, -1 );
+   himage2 = _OOHG_LoadImage( hb_parc( 4 ), iAttributes, 0, 0, ( HWND ) hMenu, -1 );
 
    SetMenuItemBitmaps( hMenu, hb_parni( 2 ), MF_BYCOMMAND, himage1, himage2 );
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.28 2007-01-03 14:38:35 guerra000 Exp $
+ * $Id: h_tab.prg,v 1.29 2007-03-19 20:40:42 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -99,8 +99,6 @@ CLASS TTab FROM TControl
    DATA Type       INIT "TAB" READONLY
    DATA aPages     INIT {}
    DATA lInternals INIT .F.
-//            himl = ImageList_Create( cx , cy , ILC_COLOR8 | ILC_MASK , l + 1 , l + 1 );
-//            ImageList_AddMasked( himl, hbmp, CLR_DEFAULT ) ;
    DATA ImageListColor      INIT CLR_DEFAULT
    DATA ImageListFlags      INIT LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
    DATA SetImageListCommand INIT TCM_SETIMAGELIST
@@ -814,8 +812,6 @@ HB_FUNC( SETTABPAGEIMAGE )
 {
    TC_ITEM tie;
 
-//            himl = ImageList_Create( cx , cy , ILC_COLOR8 | ILC_MASK , l + 1 , l + 1 );
-//            ImageList_AddMasked( himl, hbmp, CLR_DEFAULT ) ;
    tie.mask = TCIF_IMAGE ;
    tie.iImage = hb_parni( 2 );
    TabCtrl_SetItem( HWNDparam( 1 ), hb_parni( 3 ) - 1, &tie );
