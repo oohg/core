@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.57 2007-03-20 20:56:34 declan2005 Exp $
+* $Id: h_print.prg,v 1.58 2007-03-20 21:35:10 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -1786,13 +1786,10 @@ ENDCLASS
 
 METHOD enddocx() CLASS THTMLPRINT
 local nCol,cRuta,cMydoc
-/////oSheet:UsedRange:Columns:Count(
-///FOR nCol:=1 TO FCOUNT()
 For nCol:= 1 to ::oHoja:UsedRange:Columns:Count()
     ::oHoja:Columns( nCol ):AutoFit()
 NEXT
 ::oHoja:Cells( 1, 1 ):Select()
-///// ::oExcel:Visible := .T.
 cRuta:=GetCurrentFolder()
 /// ::oExcel:Saveas(cRuta+"Printer.html",44)   //// graba como html
 ::oExcel:Set( "DisplayAlerts", .f. )
@@ -1812,7 +1809,7 @@ OleUninitialize()
 cMydoc:=GetMyDocumentsFolder()
 IF ShellExecute(0, "open", "rundll32.exe", "url.dll,FileProtocolHandler "+ cMydoc+ "\Printer.html", ,1) <=32
      MSGINFO("html Extension not asociated"+CHR(13)+CHR(13)+ ;
-     "File saved in:"+CHR(13)+rutaficrtf1+"\printer.html")
+     "File saved in:"+CHR(13)+cMydoc+"\printer.html")
 ENDIF
 RETURN self
 
@@ -1949,7 +1946,7 @@ IF RIGHT(oPrintRTF1[LEN(oPrintRTF1)],6)=" \page"
    oPrintRTF1[LEN(oPrintRTF1)]:=LEFT(oPrintRTF1[LEN(oPrintRTF1)] , LEN(oPrintRTF1[LEN(oPrintRTF1)])-6 )
 ENDIF
 AADD(oPrintRTF1,"\par }}")
-RUTAFICRTF1:=GetCurrentFolder()
+RUTAFICRTF1:=GetmydocumentsFolder()
 SET PRINTER TO &RUTAFICRTF1\printer.RTF
 SET DEVICE TO PRINTER
 SETPRC(0,0)
@@ -1964,14 +1961,6 @@ IF ShellExecute(0, "open", "rundll32.exe", "url.dll,FileProtocolHandler "+ RUTAF
          MSGINFO("RTF Extension not asociated"+CHR(13)+CHR(13)+ ;
          "File saved in:"+CHR(13)+rutaficrtf1+"\printer.rtf")
 ENDIF
-//IF ShellExecute(0, "open", "soffice.exe", "printer.RTF" , RUTAFICRTF1 , 1)<=32
-///   IF ShellExecute(0, "open", "WinWord.exe", "printer.RTF" , RUTAFICRTF1 , 1)<=32
-///      IF ShellExecute(0, "open", "printer.RTF" , RUTAFICRTF1 , , 1)<=32
-///         MSGINFO("No se ha localizado el programa asociado a la extemsion RTF"+CHR(13)+CHR(13)+ ;
-//         "El fichero se ha guardado en:"+CHR(13)+RUTAFICRTF1+"\printer.RTF")
-///      ENDIF
-///   ENDIF
-///ENDIF
 RETURN self
 
 
