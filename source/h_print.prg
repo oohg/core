@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.56 2007-03-14 14:19:43 guerra000 Exp $
+* $Id: h_print.prg,v 1.57 2007-03-20 20:56:34 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -1690,7 +1690,7 @@ return self
 METHOD enddocx() CLASS TEXCELPRINT
 *-------------------------
 local nCol
-FOR nCol:=1 TO FCOUNT()
+FOR nCol:=1 TO ::oHoja:UsedRange:Columns:Count()
     ::oHoja:Columns( nCol ):AutoFit()
 NEXT
 ::oHoja:Cells( 1, 1 ):Select()
@@ -1786,7 +1786,9 @@ ENDCLASS
 
 METHOD enddocx() CLASS THTMLPRINT
 local nCol,cRuta,cMydoc
-FOR nCol:=1 TO FCOUNT()
+/////oSheet:UsedRange:Columns:Count(
+///FOR nCol:=1 TO FCOUNT()
+For nCol:= 1 to ::oHoja:UsedRange:Columns:Count()
     ::oHoja:Columns( nCol ):AutoFit()
 NEXT
 ::oHoja:Cells( 1, 1 ):Select()
