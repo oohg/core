@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.25 2007-03-04 19:34:56 guerra000 Exp $
+ * $Id: h_xbrowse.prg,v 1.26 2007-03-21 02:32:51 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -181,7 +181,7 @@ Local nWidth2, nCol2, lLocked, oScroll, z
       NEXT
    EndIf
 
-   ASSIGN ::WorkArea VALUE WorkArea TYPE "CMO"
+   ASSIGN ::WorkArea VALUE WorkArea TYPE "CMO" DEFAULT ALIAS()
    If ValType( ::aFields ) != "A"
       ::aFields := ::oWorkArea:DbStruct()
       AEVAL( ::aFields, { |x,i| ::aFields[ i ] := ::oWorkArea:cAlias__ + "->" + x[ 1 ] } )
@@ -1356,7 +1356,7 @@ METHOD WorkArea( uWorkArea ) CLASS TXBrowse
       IF VALTYPE( uWorkArea ) == "O"
          ::uWorkArea := uWorkArea
          ::oWorkArea := uWorkArea
-      ELSEIF VALTYPE( uWorkArea ) $ "CM"
+      ELSEIF VALTYPE( uWorkArea ) $ "CM" .AND. ! EMPTY( uWorkArea )
          uWorkArea := ALLTRIM( UPPER( uWorkArea ) )
          ::uWorkArea := uWorkArea
          ::oWorkArea := ooHGRecord():Use( uWorkArea )
