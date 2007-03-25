@@ -1,5 +1,5 @@
 /*
- * $Id: h_menu.prg,v 1.17 2007-03-19 20:40:41 guerra000 Exp $
+ * $Id: h_menu.prg,v 1.18 2007-03-25 04:14:36 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -102,6 +102,7 @@ CLASS TMenu FROM TControl
    DATA lMain     INIT .F.
 
    METHOD Define
+   METHOD Activate
    METHOD Release     BLOCK { |Self| DestroyMenu( ::hWnd ), ::Super:Release() }
 ENDCLASS
 
@@ -114,6 +115,16 @@ METHOD Define( Parent ) CLASS TMenu
    AADD( _OOHG_xMenuActive, Self )
 Return Self
 
+*------------------------------------------------------------------------------*
+METHOD Activate( nRow, nCol ) CLASS TMenu
+*------------------------------------------------------------------------------*
+Local aPos
+   aPos := GetCursorPos()
+   ASSIGN aPos[ 1 ] VALUE nRow TYPE "N"
+   ASSIGN aPos[ 2 ] VALUE nCol TYPE "N"
+   TrackPopupMenu( ::hWnd, aPos[ 2 ], aPos[ 1 ], ::Parent:hWnd )
+Return nil
+
 
 
 
@@ -122,6 +133,7 @@ CLASS TMenuMain FROM TMenu
    DATA lMain     INIT .T.
 
    METHOD Define
+   METHOD Activate    BLOCK { || nil }
    METHOD Release     BLOCK { |Self| ::Parent:oMenu := nil, ::Super:Release() }
 ENDCLASS
 
@@ -165,14 +177,17 @@ Return Self
 
 CLASS TMenuNotify FROM TMenu
    METHOD Define
-   METHOD Release     BLOCK { |Self| ::Parent:NotifyMenuHandle := 0, ::Super:Release() }
+   METHOD Release     BLOCK { |Self| ::Parent:NotifyMenu := nil, ::Super:Release() }
 ENDCLASS
 
 *------------------------------------------------------------------------------*
 METHOD Define( Parent ) CLASS TMenuNotify
 *------------------------------------------------------------------------------*
    ::Super:Define( Parent )
-   ::Parent:NotifyMenuHandle := ::hWnd
+   IF ::Parent:NotifyMenu != nil
+      ::Parent:NotifyMenu:Release()
+   ENDIF
+   ::Parent:NotifyMenu := Self
 Return Self
 
 

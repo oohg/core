@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.h,v 1.33 2006-11-13 02:33:18 guerra000 Exp $
+ * $Id: oohg.h,v 1.34 2007-03-25 04:14:36 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -182,7 +182,8 @@ DWORD _OOHG_RTL_Status( BOOL bRtl );
 #define s_TInternal            58
 #define s__ContextMenu         59
 #define s_Release              60
-#define s_LastSymbol           61
+#define s_Activate             61
+#define s_LastSymbol           62
 
 // Hack for MinGW and static functions (object's methods)
 #ifdef __MINGW32__

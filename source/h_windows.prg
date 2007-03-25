@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.124 2007-01-02 04:31:45 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.125 2007-03-25 04:14:36 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -651,49 +651,36 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )
          if( _OOHG_ShowContextMenus )
          {
             PHB_ITEM pControl, pContext;
-            HWND hForm;
+
+            // Sets mouse coords
+            _OOHG_SetMouseCoords( pSelf, LOWORD( lParam ), HIWORD( lParam ) );
 
             SetFocus( ( HWND ) wParam );
             pControl = GetControlObjectByHandle( ( HWND ) wParam );
 
             // Check if control have context menu
-            pContext = NULL;
             _OOHG_Send( pControl, s_ContextMenu );
             hb_vmSend( 0 );
-            if( hb_param( -1, HB_IT_OBJECT ) )
+            pContext = hb_param( -1, HB_IT_OBJECT );
+            if( ! pContext )
             {
-               pContext = hb_itemNew( NULL );
-               hb_itemCopy( pContext, hb_param( -1, HB_IT_OBJECT ) );
-               _OOHG_Send( pControl, s_Parent );
-               hb_vmSend( 0 );
-               _OOHG_Send( hb_param( -1, HB_IT_OBJECT ), s_hWnd );
-               hb_vmSend( 0 );
-               hForm = HWNDparam( -1 );
-            }
-            else
-            {
+               // TODO: Check for CONTEXTMENU at container control...
+
                // Check if form have context menu
                _OOHG_Send( pSelf, s_ContextMenu );
                hb_vmSend( 0 );
-               if( hb_param( -1, HB_IT_OBJECT ) )
-               {
-                  pContext = hb_itemNew( NULL );
-                  hb_itemCopy( pContext, hb_param( -1, HB_IT_OBJECT ) );
-                  hForm = hWnd;
-               }
+               pContext = hb_param( -1, HB_IT_OBJECT );
             }
 
             // If there's a context menu, show it
             if( pContext )
             {
-               _OOHG_SetMouseCoords( pSelf, LOWORD( lParam ), HIWORD( lParam ) );
 
                // HMENU
-               _OOHG_Send( pContext, s_hWnd );
-               hb_vmSend( 0 );
-               TrackPopupMenu( ( HMENU ) HWNDparam( -1 ), 0, ( int ) LOWORD( lParam ), ( int ) HIWORD( lParam ), 0, hForm, 0 );
-               PostMessage( hForm, WM_NULL, 0, 0 );
-               hb_itemRelease( pContext );
+               _OOHG_Send( pContext, s_Activate );
+               hb_vmPushLong( HIWORD( lParam ) );
+               hb_vmPushLong( LOWORD( lParam ) );
+               hb_vmSend( 2 );
                hb_retni( 1 );
             }
             else
@@ -1249,7 +1236,7 @@ CLASS TForm FROM TWindow
    DATA SplitChildList INIT {}    // INTERNAL windows.
 
    DATA NotifyIconLeftClick   INIT nil
-   DATA NotifyMenuHandle      INIT 0
+   DATA NotifyMenu            INIT nil
    DATA cNotifyIconName       INIT ""
    DATA cNotifyIconToolTip    INIT ""
    METHOD NotifyIconName      SETGET
@@ -1871,7 +1858,9 @@ Local mVar, i
    IF ::Active
       // Delete Notify icon
       ShowNotifyIcon( ::hWnd, .F. , 0, "" )
-      DeleteObject( ::NotifyMenuHandle )
+      If ::NotifyMenu != nil
+         ::NotifyMenu:Release()
+      EndIf
 
       If ::oMenu != NIL
          ::oMenu:Release()
@@ -2018,7 +2007,7 @@ HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
 *-----------------------------------------------------------------------------*
 FUNCTION _OOHG_TForm_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TForm
 *-----------------------------------------------------------------------------*
-Local i, aPos, NextControlHandle, xRetVal
+Local i, NextControlHandle, xRetVal
 Local oCtrl
 * Local hWnd := ::hWnd
 
@@ -2103,22 +2092,16 @@ Local oCtrl
         ***********************************************************************
 
 		If wParam == ID_TASKBAR .and. lParam # WM_MOUSEMOVE
-			aPos := GETCURSORPOS()
 
 			do case
-
 				case lParam == WM_LBUTTONDOWN
-
                   ::DoEvent( ::NotifyIconLeftClick, '' )
 
 				case lParam == WM_RBUTTONDOWN
-
                if _OOHG_ShowContextMenus()
-
-                  if ::NotifyMenuHandle != 0
-                     TrackPopupMenu( ::NotifyMenuHandle, aPos[2] , aPos[1] , hWnd )
+                  if ::NotifyMenuHandle != nil
+                     ::NotifyMenu:Activate()
                   Endif
-
 					EndIf
 
 			endcase

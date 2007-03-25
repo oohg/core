@@ -1,5 +1,5 @@
 /*
- * $Id: h_toolbar.prg,v 1.17 2006-10-22 02:32:17 guerra000 Exp $
+ * $Id: h_toolbar.prg,v 1.18 2007-03-25 04:14:36 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -195,7 +195,7 @@ Local ws, x, aPos
          aPos:= {0,0,0,0}
          GetWindowRect( ::hWnd, aPos )
          ws := GetButtonBarRect( ::hWnd, ::aControls[ x ]:Position - 1 )
-         TrackPopupMenu ( ::aControls[ x ]:ContextMenu:hWnd , aPos[1]+LoWord(ws) ,aPos[2]+HiWord(ws)+(aPos[4]-aPos[2]-HiWord(ws))/2 , ::hWnd )
+         ::aControls[ x ]:ContextMenu:Activate( aPos[2]+HiWord(ws)+(aPos[4]-aPos[2]-HiWord(ws))/2 , aPos[1]+LoWord(ws) )
       ENDIF
       Return nil
 
@@ -226,7 +226,8 @@ Local ws, x, aPos
          aPos:= {0,0,0,0}
          GetWindowRect( ::hWnd, aPos )
          ws := GetButtonBarRect( ::hWnd, ::aControls[ x ]:Position - 1 )
-         TrackPopupMenu ( ::aControls[ x ]:ContextMenu:hWnd , aPos[1]+LoWord(ws) ,aPos[2]+HiWord(ws)+(aPos[4]-aPos[2]-HiWord(ws))/2 , ::hWnd )
+         // TrackPopupMenu ( ::aControls[ x ]:ContextMenu:hWnd , aPos[1]+LoWord(ws) ,aPos[2]+HiWord(ws)+(aPos[4]-aPos[2]-HiWord(ws))/2 , ::hWnd )
+         ::aControls[ x ]:ContextMenu:Activate( aPos[2]+HiWord(ws)+(aPos[4]-aPos[2]-HiWord(ws))/2 , aPos[1]+LoWord(ws) )
       ENDIF
       Return nil
 */
