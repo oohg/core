@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.74 2007-03-19 20:40:41 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.75 2007-03-25 05:06:09 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -531,10 +531,10 @@ Local oWnd, oCtrl
          oWnd:Row := Arg3
 
       ElseIf Arg2 == "NOTIFYICON"
-         oWnd:NotifyIconName := Arg3
+         oWnd:NotifyIcon := Arg3
 
       ElseIf Arg2 == "NOTIFYTOOLTIP"
-         oWnd:NotifyIconTooltip := Arg3
+         oWnd:NotifyTooltip := Arg3
 
       ElseIf Arg2 == "BACKCOLOR"
          oWnd:BackColor := Arg3
@@ -777,11 +777,11 @@ Local RetVal, oWnd, oCtrl
 		ElseIf Arg2 == 'ROW'
          RetVal := oWnd:Row
 
-		ElseIf Arg2 == 'NOTIFYICON'
-         RetVal := oWnd:NotifyIconName
+      ElseIf Arg2 == "NOTIFYICON"
+         RetVal := oWnd:NotifyIcon
 
-		ElseIf Arg2 == 'NOTIFYTOOLTIP'
-         RetVal := oWnd:NotifyIconTooltip
+      ElseIf Arg2 == "NOTIFYTOOLTIP"
+         RetVal := oWnd:NotifyTooltip
 
       ElseIf Arg2 == "BACKCOLOR"
          RetVal := oWnd:BackColor

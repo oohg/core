@@ -1,11 +1,19 @@
 /*
- * $Id: ChangeLog,v 1.328 2007-03-25 04:14:35 guerra000 Exp $
+ * $Id: ChangeLog,v 1.329 2007-03-25 05:06:08 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-03-24 23:05 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * doc/classes.txt
+  * include/i_this.ch
+  * include/i_window.ch
+  * source/h_controlmisc.prg
+  * source/h_windows.prg
+    * Fixed some This.* issues.
 
 2007-03-24 22:13 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * doc/classes.txt
@@ -14,6 +22,7 @@
   * source/h_menu.prg
   * source/h_toolbar.prg
   * source/h_windows.prg
+    + ::Activate() method added.
 
 2007-03-20 20:42 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_xbrowse.prg

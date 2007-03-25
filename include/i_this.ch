@@ -1,5 +1,5 @@
 /*
- * $Id: i_this.ch,v 1.3 2005-10-22 06:04:31 guerra000 Exp $
+ * $Id: i_this.ch,v 1.4 2007-03-25 05:06:09 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -93,15 +93,13 @@
 
 // WINDOWS (THIS)
 
-#xtranslate This . <p:Title,NotifyIcon,NotifyTooltip,FocusedControl> => GetProperty ( _OOHG_THISFORM:NAME , <(p)> )
-#xtranslate This . <p:Title,Cursor,NotifyTooltip> := <arg> => SetProperty ( _OOHG_THISFORM:NAME , <(p)> , <arg> )
-#xtranslate This . <p:Activate,Center,Release,Maximize,Minimize,Restore> [ () ] => DoMethod ( _OOHG_THISFORM:NAME , <(p)> )
+#xtranslate This . <p:Title,NotifyIcon,NotifyTooltip,FocusedControl> => _OOHG_THISFORM:<p>
+#xtranslate This . <p:Activate,Center,Release,Maximize,Minimize,Restore,Show,Hide,SetFocus> [ () ] => _OOHG_THISFORM:<p>()
 
 // WINDOWS (THISWINDOW)
 
-#xtranslate ThisWindow . <p:Title,NotifyIcon,NotifyTooltip,FocusedControl,Name,Row,Col,Width,Height> => GetProperty ( _OOHG_THISFORM:NAME , <(p)> )
-#xtranslate ThisWindow . <p:Title,Cursor,NotifyIcon,NotifyTooltip,Row,Col,Width,Height> := <arg> => SetProperty ( _OOHG_THISFORM:NAME , <(p)> , <arg> )
-#xtranslate ThisWindow . <p:Activate,Center,Release,Maximize,Minimize,Restore,Show,Hide,SetFocus> [ () ] => DoMethod ( _OOHG_THISFORM:NAME , <(p)> )
+#xtranslate ThisWindow . <p:Title,NotifyIcon,NotifyTooltip,FocusedControl,Name,Row,Col,Width,Height> => _OOHG_THISFORM:<p>
+#xtranslate ThisWindow . <p:Activate,Center,Release,Maximize,Minimize,Restore,Show,Hide,SetFocus> [ () ] => _OOHG_THISFORM:<p>()
 
 // CONTROLS
 

@@ -1,5 +1,5 @@
 /*
- * $Id: i_window.ch,v 1.24 2007-03-10 21:33:50 guerra000 Exp $
+ * $Id: i_window.ch,v 1.25 2007-03-25 05:06:09 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -114,9 +114,7 @@
 
 	#xcommand DECLARE WINDOW <w> ;
 	=>;
-        #xtranslate <w> . \<p:Name,Title,Height,Width,Col,Row,BackColor,FocusedControl,hWnd,Object,Cursor\> => GetExistingFormObject( <(w)> ):\<p\> ;;
-        #xtranslate <w> . \<p:NotifyIcon,NotifyToolTip\> => GetProperty ( <(w)>, \<(p)> ) ;;
-        #xtranslate <w> . \<p:NotifyIcon,NotifyToolTip\> := \<n\> => SetProperty ( <(w)>, \<(p)> , \<n\> ) ;;
+        #xtranslate <w> . \<p:Name,Title,Height,Width,Col,Row,BackColor,FocusedControl,hWnd,Object,Cursor,NotifyIcon,NotifyToolTip\> => GetExistingFormObject( <(w)> ):\<p\> ;;
         #xtranslate <w> . \<p:Activate,Center,Release,Maximize,Minimize,Restore,Show,Hide,Print,SetFocus\> \[()\] => GetExistingFormObject( <(w)> ):\<p\> () ;;
         #xtranslate <w> . \<c\> . \<p:Value,Name,Address,BackColor,FontColor,Picture,ToolTip,FontName,FontSize,FontBold,FontUnderline,FontItalic,FontStrikeOut,Caption,Row,Col,Width,Height,Visible,Enabled,Checked,ItemCount,RangeMin,RangeMax,CaretPos,ForeColor\> => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ;;
         #xtranslate <w> . \<c\> . \<p:DisplayValue,Position,ForeColor\> => GetProperty ( <(w)>, \<(c)\> , \<(p)\> ) ;;

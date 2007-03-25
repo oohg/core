@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.125 2007-03-25 04:14:36 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.126 2007-03-25 05:06:09 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1239,8 +1239,8 @@ CLASS TForm FROM TWindow
    DATA NotifyMenu            INIT nil
    DATA cNotifyIconName       INIT ""
    DATA cNotifyIconToolTip    INIT ""
-   METHOD NotifyIconName      SETGET
-   METHOD NotifyIconToolTip   SETGET
+   METHOD NotifyIcon          SETGET
+   METHOD NotifyToolTip       SETGET
    METHOD Title               SETGET
    METHOD Height              SETGET
    METHOD Width               SETGET
@@ -1467,6 +1467,8 @@ Local Formhandle, aClientRect
    ::BackColor := aRGB
    ::AutoRelease := ! ( ValType( NoAutoRelease ) == "L" .AND. NoAutoRelease )
 
+   _OOHG_ThisForm := Self
+
 Return Self
 
 
@@ -1646,19 +1648,19 @@ METHOD ProcessInitProcedure() CLASS TForm
 Return nil
 
 *-----------------------------------------------------------------------------*
-METHOD NotifyIconName( IconName ) CLASS TForm
+METHOD NotifyIcon( IconName ) CLASS TForm
 *-----------------------------------------------------------------------------*
    IF PCOUNT() > 0
-      ChangeNotifyIcon( ::hWnd, LoadTrayIcon(GETINSTANCE(), IconName ) , ::NotifyIconTooltip )
+      ChangeNotifyIcon( ::hWnd, LoadTrayIcon(GETINSTANCE(), IconName ) , ::NotifyTooltip )
       ::cNotifyIconName := IconName
    ENDIF
 RETURN ::cNotifyIconName
 
 *-----------------------------------------------------------------------------*
-METHOD NotifyIconTooltip( TooltipText ) CLASS TForm
+METHOD NotifyTooltip( TooltipText ) CLASS TForm
 *-----------------------------------------------------------------------------*
    IF PCOUNT() > 0
-      ChangeNotifyIcon( ::hWnd, LoadTrayIcon(GETINSTANCE(), ::NotifyIconName ) , TooltipText )
+      ChangeNotifyIcon( ::hWnd, LoadTrayIcon(GETINSTANCE(), ::NotifyIcon ) , TooltipText )
       ::cNotifyIconTooltip := TooltipText
    ENDIF
 RETURN ::cNotifyIconTooltip
@@ -2354,8 +2356,8 @@ Local nStyle := 0, nStyleEx := 0
       NotifyIconName := ""
    Else
       ShowNotifyIcon( ::hWnd, .T. , LoadTrayIcon(GETINSTANCE(), NotifyIconName ), NotifyIconTooltip )
-      ::NotifyIconName := NotifyIconName
-      ::NotifyIconToolTip := NotifyIconToolTip
+      ::NotifyIcon := NotifyIconName
+      ::NotifyToolTip := NotifyIconToolTip
       ::NotifyIconLeftClick := NotifyIconLeftClick
    endif
 
@@ -2928,8 +2930,8 @@ Local aError := {}
       NotifyIconName := ""
    Else
       ShowNotifyIcon( ::hWnd, .T. , LoadTrayIcon(GETINSTANCE(), NotifyIconName ), NotifyIconTooltip )
-      ::NotifyIconName := NotifyIconName
-      ::NotifyIconToolTip := NotifyIconToolTip
+      ::NotifyIcon := NotifyIconName
+      ::NotifyToolTip := NotifyIconToolTip
       ::NotifyIconLeftClick := NotifyIconLeftClick
    endif
 
@@ -3020,8 +3022,8 @@ Local i, oWnd
             oWnd:DoEvent( oWnd:OnRelease, 'WINDOW_RELEASE' )
          EndIf
 
-         if .Not. Empty ( oWnd:NotifyIconName )
-            oWnd:NotifyIconName := ''
+         if .Not. Empty ( oWnd:NotifyIcon )
+            oWnd:NotifyIcon := ''
             ShowNotifyIcon( oWnd:hWnd, .F., NIL, NIL )
 			EndIf
 
