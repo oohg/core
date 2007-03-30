@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.38 2006-12-17 04:09:23 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.39 2007-03-30 01:52:38 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -516,12 +516,23 @@ Return aValid
 *------------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TTextPicture
 *------------------------------------------------------------------------------*
-Local cType, uDate
+Local cType, uDate, cAux
    IF PCount() > 0
       cType := ValType( uValue )
       cType := If( cType == "M", "C", cType )
       IF cType == ::DataType
-         ::Caption := Transform( uValue, if( ::lFocused, ::PictureFun + ::PictureMask, ::PictureFunShow + ::PictureShow ) )
+         IF ::lFocused
+            cAux := Transform( uValue, ::PictureFun + ::PictureMask )
+            IF LEN( cAux ) < LEN( ::PictureMask )
+               cAux := cAux + SPACE( LEN( ::PictureMask ) - LEN( cAux ) )
+            ENDIF
+         ELSE
+            cAux := Transform( uValue, ::PictureFunShow + ::PictureShow )
+            IF LEN( cAux ) < LEN( ::PictureShow )
+               cAux := cAux + SPACE( LEN( ::PictureShow ) - LEN( cAux ) )
+            ENDIF
+         ENDIF
+         ::Caption := cAux
       Else
          // Wrong data types
       ENDIF
