@@ -1,5 +1,5 @@
 /*
- * $Id: h_activex.prg,v 1.1 2007-03-25 22:41:42 guerra000 Exp $
+ * $Id: h_activex.prg,v 1.2 2007-03-30 03:30:18 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -78,6 +78,7 @@ LOCAL nStyle, oError, nControlHandle, hAtl, bErrorBlock
 
 Return Self
 
+/*
 *-----------------------------------------------------------------------------*
 METHOD __Error( uParam1, uParam2, uParam3, uParam4, uParam5, uParam6, uParam7, uParam8, uParam9 ) CLASS TActiveX
 *-----------------------------------------------------------------------------*
@@ -105,6 +106,7 @@ Local cMessage, uRet
       uRet := ::oOle:Set( cMessage, uParam1, uParam2, uParam3, uParam4, uParam5, uParam6, uParam7, uParam8, uParam9 )
    EndIf
 Return uRet
+*/
 
 /*-----------------------------------------------------------------------------------------------*/
 
@@ -112,6 +114,8 @@ Return uRet
 #include <windows.h>
 #include <commctrl.h>
 #include <hbapi.h>
+#include <hbvm.h>
+#include <hbstack.h>
 #include "../include/oohg.h"
 
 static WNDPROC lpfnOldWndProc = 0;
@@ -119,6 +123,42 @@ static WNDPROC lpfnOldWndProc = 0;
 static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
    return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
+}
+
+#ifdef HB_ITEM_NIL
+   #define hb_dynsymSymbol( pDynSym )        ( ( pDynSym )->pSymbol )
+#endif
+
+PHB_SYMB s___GetMessage = NULL;
+
+// -----------------------------------------------------------------------------
+HB_FUNC_STATIC( TACTIVEX___ERROR )
+// -----------------------------------------------------------------------------
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   PHB_SYMB sMessage;
+   int iPCount;
+
+   if( ! s___GetMessage )
+   {
+      s___GetMessage = hb_dynsymSymbol( hb_dynsymFind( "__GETMESSAGE" ) );
+   }
+
+   hb_vmPushSymbol( s___GetMessage );
+   hb_vmPushNil();
+   hb_vmDo( 0 );
+   sMessage = hb_dynsymSymbol( hb_dynsymFind( hb_parc( -1 ) ) );
+
+   _OOHG_Send( pSelf, s_oOle );
+   hb_vmSend( 0 );
+
+   hb_vmPushSymbol( sMessage );
+   hb_vmPush( hb_param( -1, HB_IT_ANY ) );
+   for( iPCount = 1; iPCount <= hb_pcount() ; iPCount++ )
+   {
+      hb_vmPush( hb_param( iPCount, HB_IT_ANY ) );
+   }
+   hb_vmSend( hb_pcount() );
 }
 
 typedef HRESULT ( WINAPI *LPAtlAxWinInit )    ( void );

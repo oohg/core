@@ -1,5 +1,5 @@
 /*
- * $Id: c_controlmisc.c,v 1.42 2007-03-25 04:14:36 guerra000 Exp $
+ * $Id: c_controlmisc.c,v 1.43 2007-03-30 03:30:17 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -173,6 +173,7 @@ char *s_SymbolNames[] = { "EVENTS_NOTIFY",
                           "_CONTEXTMENU",
                           "RELEASE",
                           "ACTIVATE",
+                          "OOLE",
                           "LastSymbol" };
 
 void _OOHG_Send( PHB_ITEM pSelf, int iSymbol )
