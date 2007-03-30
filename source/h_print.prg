@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.58 2007-03-20 21:35:10 declan2005 Exp $
+* $Id: h_print.prg,v 1.59 2007-03-30 21:55:20 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -1695,11 +1695,12 @@ FOR nCol:=1 TO ::oHoja:UsedRange:Columns:Count()
 NEXT
 ::oHoja:Cells( 1, 1 ):Select()
 ::oExcel:Visible := .T.
+///::oHoja:end()
+///::oExcel:end()
 #ifndef __XHARBOUR__
-::oHoja:End()
-::oExcel:End()
-///OleUninitialize()
+////  OleUninitialize()
 #endif
+
 RETURN self
 
 
@@ -1796,14 +1797,14 @@ cRuta:=GetCurrentFolder()
 ::oHoja:SaveAs("Printer.html", 44,"","", .f. , .f.)
 ::oExcel:Quit()
 #ifndef __XHARBOUR__
-::oHoja:End()
-::oExcel:end()
+///::oHoja:End()
+///::oExcel:end()
 #endif
 ::ohoja := nil
 ::oExcel := nil
 
 #ifndef __XHARBOUR__
-OleUninitialize()
+/////  OleUninitialize()
 #endif
 
 cMydoc:=GetMyDocumentsFolder()
