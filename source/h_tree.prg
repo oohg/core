@@ -1,5 +1,5 @@
 /*
- * $Id: h_tree.prg,v 1.11 2007-03-10 21:33:50 guerra000 Exp $
+ * $Id: h_tree.prg,v 1.12 2007-03-31 02:06:11 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -198,7 +198,7 @@ Local Controlhandle , ImgDefNode, ImgDefItem, aBitmaps := array(4)
 Return Self
 
 *------------------------------------------------------------------------------*
-METHOD AddItem( Value , Parent, aImage , Id ) CLASS TTree
+METHOD AddItem( Value, Parent, Id, aImage ) CLASS TTree
 *------------------------------------------------------------------------------*
 Local TreeItemHandle
 Local ImgDef, iUnSel, iSel

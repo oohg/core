@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.78 2007-03-10 21:33:50 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.79 2007-03-31 02:06:11 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1405,26 +1405,28 @@ Return ::Super:Events_Notify( wParam, lParam )
 *-----------------------------------------------------------------------------*
 METHOD AddItem( aRow, uForeColor, uBackColor ) CLASS TGrid
 *-----------------------------------------------------------------------------*
-   if Len( ::aHeaders ) != Len( aRow )
+Local aText
+   If Len( ::aHeaders ) != Len( aRow )
       MsgOOHGError( "Grid.AddItem: Item size mismatch. Program Terminated" )
-	EndIf
+   EndIf
 
-   aRow := TGrid_SetArray( Self, aRow )
+   aText := TGrid_SetArray( Self, aRow )
    ::SetItemColor( ::ItemCount() + 1, uForeColor, uBackColor, aRow )
-   AddListViewItems( ::hWnd , aRow )
+   AddListViewItems( ::hWnd , aText )
 Return Nil
 
 *-----------------------------------------------------------------------------*
 METHOD InsertItem( nItem, aRow, uForeColor, uBackColor ) CLASS TGrid
 *-----------------------------------------------------------------------------*
-   if Len( ::aHeaders ) != Len( aRow )
+Local aText
+   If Len( ::aHeaders ) != Len( aRow )
       MsgOOHGError( "Grid.InsertItem: Item size mismatch. Program Terminated" )
-	EndIf
+   EndIf
 
-   aRow := TGrid_SetArray( Self, aRow )
+   aText := TGrid_SetArray( Self, aRow )
    ::InsertBlank( nItem )
    ::SetItemColor( nItem, uForeColor, uBackColor, aRow )
-   ListViewSetItem( ::hWnd, aRow, nItem )
+   ListViewSetItem( ::hWnd, aText, nItem )
 Return Nil
 
 *-----------------------------------------------------------------------------*

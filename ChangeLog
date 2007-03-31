@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.333 2007-03-30 21:55:19 declan2005 Exp $
+ * $Id: ChangeLog,v 1.334 2007-03-31 02:06:10 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,6 +7,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2007-03-30 20:16 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_grid.prg
+    ! Fixed parameter for dynamic color.
+  * source/h_tree.prg
+    * Swapped third and fourth parameters (now it's
+      ::AddItem( Value, Parent, Id, aImage ) )
+  * source/common_make.bat
+    * Splitted PRGs file list for compilation under Win9X.
 
 2007-03-30 16:52 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source/h_print.prg
