@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: compile_pc.bat,v 1.1 2007-01-01 20:52:13 guerra000 Exp $
+rem $Id: compile_pc.bat,v 1.2 2007-04-03 22:55:53 guerra000 Exp $
 rem
 cls
 
@@ -37,7 +37,7 @@ if errorlevel 1 goto exit1
 
 if errorlevel 1 goto exit2
 
-if exist %1.rc %HG_PC%\bin\porc /F%1.res %1.rc
+if exist %1.rc %HG_PC%\bin\porc /Fo%1.res %1.rc
 if errorlevel 1 goto exit3
 
 echo /OUT:%1.exe > pc.lnk

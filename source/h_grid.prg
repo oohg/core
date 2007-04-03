@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.79 2007-03-31 02:06:11 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.80 2007-04-03 22:55:53 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -809,30 +809,30 @@ LOCAL uWhen
 RETURN ( VALTYPE( uWhen ) != "L" .OR. uWhen )
 
 *-----------------------------------------------------------------------------*
-METHOD AddColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor, lNoDelete, uPicture ) CLASS TGrid
+METHOD AddColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor, lNoDelete, uPicture, uEditControl ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local nColumns, uGridColor, uDynamicColor
 
-	// Set Default Values
+   // Set Default Values
    nColumns := Len( ::aHeaders ) + 1
 
    If ValType( nColIndex ) != 'N' .OR. nColIndex > nColumns
       nColIndex := nColumns
    ElseIf nColIndex < 1
       nColIndex := 1
-	EndIf
+   EndIf
 
    If ! ValType( cCaption ) $ 'CM'
-		cCaption := ''
-	EndIf
+      cCaption := ''
+   EndIf
 
    If ValType( nWidth ) != 'N'
-		nWidth := 120
-	EndIf
+      nWidth := 120
+   EndIf
 
    If ValType( nJustify ) != 'N'
-		nJustify := 0
-	EndIf
+      nJustify := 0
+   EndIf
 
    // Update Headers
    ASIZE( ::aHeaders, nColumns )
@@ -867,7 +867,18 @@ Local nColumns, uGridColor, uDynamicColor
    ::GridBackColor := uGridColor
    ::DynamicBackColor := uDynamicColor
 
-	// Call C-Level Routine
+   // Update edit control
+   IF VALTYPE( uEditControl ) != NIL
+      IF VALTYPE( ::EditControl ) != "A"
+         ::EditControl := ARRAY( nColumns )
+      ELSEIF LEN( ::EditControl ) < nColumns
+         ASIZE( ::EditControl, nColumns )
+      ENDIF
+      AINS( ::EditControl, nColIndex )
+      ::EditControl[ nColIndex ] := uEditControl
+   ENDIF
+
+   // Call C-Level Routine
    ListView_AddColumn( ::hWnd, nColIndex, nWidth, cCaption, nJustify, lNoDelete )
 
 Return nil

@@ -1,11 +1,19 @@
 /*
- * $Id: ChangeLog,v 1.334 2007-03-31 02:06:10 guerra000 Exp $
+ * $Id: ChangeLog,v 1.335 2007-04-03 22:55:53 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-04-03 17:58 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * ./compile_pc.bat
+    ! Fixed resource compilation. Reported by MigSoft.
+  * source/h_grid.prg
+    ! Added EDIT CONTROL specification for ::AddColumn() method.
+  * source/h_windows.prg
+    ! Fixed ::FocusedControl for controls with more than one handler.
 
 2007-03-30 20:16 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_grid.prg

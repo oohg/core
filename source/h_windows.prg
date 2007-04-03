@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.126 2007-03-25 05:06:09 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.127 2007-04-03 22:55:53 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1723,9 +1723,18 @@ Return ::nVirtualHeight
 *------------------------------------------------------------------------------*
 METHOD FocusedControl() CLASS TForm
 *------------------------------------------------------------------------------*
-Local nFocusedControlHandle , nPos
-   nFocusedControlHandle := GetFocus()
-   nPos := ASCAN( ::aControls, { |o| o:hWnd == nFocusedControlHandle } )
+Local hWnd, nPos
+   hWnd := GetFocus()
+   nPos := 0
+   DO WHILE nPos == 0
+      nPos := ASCAN( ::aControls, { |o| o:hWnd == hWnd } )
+      IF nPos == 0
+         hWnd := GetParent( hWnd )
+         IF hWnd == ::hWnd .OR. ! ValidHandler( hWnd )
+            EXIT
+         ENDIF
+      ENDIF
+   ENDDO
 Return if( nPos == 0, "", ::aControls[ nPos ]:Name )
 
 *------------------------------------------------------------------------------*
