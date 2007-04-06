@@ -1,5 +1,5 @@
 //
-// $Id: oohg.rc,v 1.1 2006-01-23 00:44:01 guerra000 Exp $
+// $Id: oohg.rc,v 1.2 2007-04-06 13:52:28 declan2005 Exp $
 //
 
 // MANIFEST FOR CREATE 'XP-STYLE' APPLICATIONS
@@ -26,3 +26,35 @@ MINIGUI_EDIT_SET        BITMAP          edit_set.bmp
 ZZZ_AAAWINDOW           ICON            WINDOW.ICO
 ZZZ_LED_ON              ICON            LED_ON.ICO
 ZZZ_LED_OFF             ICON            LED_OFF.ICO
+
+
+// HBPRINT PRINT PREVIEW IMAGE BUTTONS
+
+zzz_printicon               ICON    print.ico
+hbprint_end             BITMAP  hbprint_end.bmp
+hbprint_next            BITMAP  hbprint_next.bmp
+hbprint_top             BITMAP  hbprint_top.bmp
+hbprint_back            BITMAP  hbprint_back.bmp
+hbprint_close           BITMAP  hbprint_close.bmp
+hbprint_print           BITMAP  hbprint_print.bmp
+hbprint_save            BITMAP  hbprint_save.bmp
+hbprint_zoomin          BITMAP  hbprint_zoomin.bmp
+hbprint_zoomout         BITMAP  hbprint_zoomout.bmp
+hbprint_option          BITMAP  hbprint_option.bmp
+
+
+
+// MINIPRINT PRINT PREVIEW IMAGE BUTTONS
+
+HP_END		BITMAP	HP_END.BMP
+HP_TOP		BITMAP	HP_TOP.BMP
+HP_NEXT		BITMAP	HP_NEXT.BMP
+HP_BACK		BITMAP	HP_BACK.BMP
+HP_PRINT	BITMAP	HP_PRINT.BMP
+HP_ZOOM		BITMAP	HP_ZOOM.BMP
+HP_GOPAGE	BITMAP	HP_GOPAGE.BMP
+HP_CLOSE	BITMAP	HP_CLOSE.BMP
+HP_SAVE		BITMAP	HP_SAVE.BMP
+HP_THUMBNAIL	BITMAP	hp_thumbnail.bmp
+HP_GLASS	CURSOR	HP_GLASS.CUR
+

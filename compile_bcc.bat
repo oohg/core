@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: compile_bcc.bat,v 1.1 2007-01-01 20:52:13 guerra000 Exp $
+rem $Id: compile_bcc.bat,v 1.2 2007-04-06 13:52:27 declan2005 Exp $
 rem
 cls
 
@@ -96,8 +96,6 @@ echo cw32.lib + >> b32.bc
 echo import32.lib, >> b32.bc
 
 if exist %1.res echo %1.res + >> b32.bc
-if exist %HG_ROOT%\resources\hbprinter.res echo %HG_ROOT%\resources\hbprinter.res + >> b32.bc
-if exist %HG_ROOT%\resources\miniprint.res echo %HG_ROOT%\resources\miniprint.res + >> b32.bc
 if exist %HG_ROOT%\resources\oohg.res      echo %HG_ROOT%\resources\oohg.res + >> b32.bc
 
 Rem Debug Link

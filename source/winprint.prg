@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.10 2007-01-01 20:52:13 guerra000 Exp $
+ * $Id: winprint.prg,v 1.11 2007-04-06 13:52:28 declan2005 Exp $
  */
 // -----------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -1453,7 +1453,7 @@ case wl="PLWIN"
 ,"Drukowanie ....";
 ,"Czekam na zmiane papieru..."}
 case wl="PT"
-::aopisy:={"inspec‡ao pr‚via";
+::aopisy:={"Inspeção Prévia";
 ,"&Cancelar";
 ,"&Imprimir";
 ,"&Salvar";
