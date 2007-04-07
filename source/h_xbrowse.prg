@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.26 2007-03-21 02:32:51 guerra000 Exp $
+ * $Id: h_xbrowse.prg,v 1.27 2007-04-07 17:05:20 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1496,14 +1496,14 @@ RETURN nCount
 METHOD OrdScope( uFrom, uTo ) CLASS ooHGRecord
 *-----------------------------------------------------------------------------*
    IF PCOUNT() == 0
-      ( ::cAlias )->( ORDSCOPE( 0, nil ) )
-      ( ::cAlias )->( ORDSCOPE( 1, nil ) )
+      ( ::cAlias__ )->( ORDSCOPE( 0, nil ) )
+      ( ::cAlias__ )->( ORDSCOPE( 1, nil ) )
    ELSEIF PCOUNT() == 1
-      ( ::cAlias )->( ORDSCOPE( 0, uFrom ) )
-      ( ::cAlias )->( ORDSCOPE( 1, uFrom ) )
+      ( ::cAlias__ )->( ORDSCOPE( 0, uFrom ) )
+      ( ::cAlias__ )->( ORDSCOPE( 1, uFrom ) )
    ELSE
-      ( ::cAlias )->( ORDSCOPE( 0, uFrom ) )
-      ( ::cAlias )->( ORDSCOPE( 1, uTo ) )
+      ( ::cAlias__ )->( ORDSCOPE( 0, uFrom ) )
+      ( ::cAlias__ )->( ORDSCOPE( 1, uTo ) )
    ENDIF
 RETURN nil
 
