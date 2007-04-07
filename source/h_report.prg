@@ -1,5 +1,5 @@
 /*
- * $Id: h_report.prg,v 1.35 2007-01-02 02:26:22 declan2005 Exp $
+ * $Id: h_report.prg,v 1.36 2007-04-07 01:36:19 declan2005 Exp $
  */
 /*
  * DO REPORT Command support procedures For MiniGUI Library.
@@ -213,6 +213,9 @@ for i:=1 to len(afields)
 next i
 if grpby<>NIL
    grpby:=upper(grpby)
+   grpby:=strtran(grpby,'"','')   //// a¤adi esto por inconvenientes en el rompimiento de control
+   grpby:=strtran(grpby,"'","")   //// a¤adi esto por inconvenientes en el rompimiento de control
+
 endif
 select(calias)
 lmode:=.T.
@@ -349,6 +352,7 @@ do while .not. eof()
 ////   ncol:=repobject:nlmargin
    swt:=0
    if grpby<>NIL
+
       if .not.(&(grpby) = crompe)
             if ascan(atotals,.T.)>0
                oprint:printdata(nlin,repobject:nlmargin, '** Subtotal **',,repobject:nfsize,.T.)
@@ -384,7 +388,7 @@ do while .not. eof()
 ********
         crompe:=&(grpby)
         nlin++
-        oprint:printdata(nlin,repobject:nlmargin,  '** ' + (chdrgrp)+' ** '+ (&(grpby)),,repobject:nfsize,.T.)
+        oprint:printdata(nlin,repobject:nlmargin,  '** ' + (chdrgrp)+' '+ (&(grpby)),,repobject:nfsize,.T.)
         nlin++
       endif
    endif
@@ -646,7 +650,7 @@ nlin:=nlin+2
 
 ///if grpby<>NIL
 if repobject:npager=1 .and. grpby#NIL
-   oprint:printdata(nlin,repobject:nlmargin, '** ' +chdrgrp+' ** '+  &(grpby) , ,repobject:nfsize ,.T.   )
+   oprint:printdata(nlin,repobject:nlmargin, '** ' +chdrgrp+' '+  &(grpby) , ,repobject:nfsize ,.T.   )
    nlin++
 endif
 return nlin
