@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.59 2007-03-30 21:55:20 declan2005 Exp $
+* $Id: h_print.prg,v 1.60 2007-04-08 00:19:50 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -30,15 +30,6 @@ memvar milinea2
 memvar oprintcsv2
 memvar oprintcsv3
 memvar cname
-
-#pragma BEGINDUMP
-#include "hbapi.h"
-#include "windows.h"
-HB_FUNC( OLEUNINITIALIZE )
-{
-   OleUninitialize();
-}
-#pragma ENDDUMP
 
 *-------------------------
 FUNCTION TPrint( clibx )
@@ -116,7 +107,7 @@ DATA nwpen              INIT 0.1   READONLY //// pen width
 DATA tempfile           INIT gettempdir()+"T"+alltrim(str(int(hb_random(999999)),8))+".prn" READONLY
 DATA impreview          INIT .F.  READONLY
 DATA lwinhide           INIT .T.   READONLY
-DATA cversion           INIT  "(oohg)V 1.6" READONLY
+DATA cversion           INIT  "(oohg)V 1.7" READONLY
 DATA cargo              INIT  .F.
 ////DATA cString            INIT  ""
 
@@ -297,7 +288,7 @@ ENDCLASS
 METHOD setpreviewsize(ntam) CLASS TPRINTBASE
 *-------------------------
 if ntam=NIL .or. ntam>5
-ntam:=1
+   ntam:=3
 endif
 ::setpreviewsizex(ntam)
 return self
@@ -1099,7 +1090,7 @@ return self
 *-------------------------
 METHOD BEGINDOCx (cdoc) CLASS THBPRINTER
 *-------------------------
-::setpreviewsize(2)
+::setpreviewsize(3)
 START DOC NAME cDoc
 return self
 
@@ -1695,11 +1686,11 @@ FOR nCol:=1 TO ::oHoja:UsedRange:Columns:Count()
 NEXT
 ::oHoja:Cells( 1, 1 ):Select()
 ::oExcel:Visible := .T.
-///::oHoja:end()
-///::oExcel:end()
 #ifndef __XHARBOUR__
-////  OleUninitialize()
+  ::oHoja:end()
+  ::oExcel:end()
 #endif
+
 
 RETURN self
 
@@ -1797,15 +1788,12 @@ cRuta:=GetCurrentFolder()
 ::oHoja:SaveAs("Printer.html", 44,"","", .f. , .f.)
 ::oExcel:Quit()
 #ifndef __XHARBOUR__
-///::oHoja:End()
-///::oExcel:end()
+  ::oHoja:End()
+  ::oExcel:end()
 #endif
 ::ohoja := nil
 ::oExcel := nil
 
-#ifndef __XHARBOUR__
-/////  OleUninitialize()
-#endif
 
 cMydoc:=GetMyDocumentsFolder()
 IF ShellExecute(0, "open", "rundll32.exe", "url.dll,FileProtocolHandler "+ cMydoc+ "\Printer.html", ,1) <=32
