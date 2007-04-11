@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: compile_pc.bat,v 1.2 2007-04-03 22:55:53 guerra000 Exp $
+rem $Id: compile_pc.bat,v 1.3 2007-04-11 14:30:20 guerra000 Exp $
 rem
 cls
 
@@ -98,7 +98,7 @@ Rem *** PellesC libraries ***
 for %%a in (crt kernel32 winspool user32 advapi32 ole32 uuid oleaut32 mpr) do echo %%a.lib >> pc.lnk
 for %%a in (comdlg32 comctl32 gdi32 olepro32 shell32 winmm vfw32) do echo %%a.lib >> pc.lnk
 
-if exist %1.res echo %1.res pc.lnk
+if exist %1.res echo %1.res >> pc.lnk
 if exist %HG_ROOT%\resources\hbprinter.res echo %HG_ROOT%\resources\hbprinter.res >> pc.lnk
 if exist %HG_ROOT%\resources\miniprint.res echo %HG_ROOT%\resources\miniprint.res >> pc.lnk
 if exist %HG_ROOT%\resources\oohg.res      echo %HG_ROOT%\resources\oohg.res >> pc.lnk
