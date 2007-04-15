@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.60 2007-04-08 00:19:50 declan2005 Exp $
+* $Id: h_print.prg,v 1.61 2007-04-15 14:48:46 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -1741,6 +1741,7 @@ empty(ncol)
 empty(data)
 empty(acolor)
 empty(nlen)
+nlin++
 if ::nunitslin>1
    nlin:=round(nlin/::nunitslin,0)
 endif

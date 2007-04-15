@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.340 2007-04-11 14:30:20 guerra000 Exp $
+ * $Id: ChangeLog,v 1.341 2007-04-15 14:48:46 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,9 +7,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2007-04-15 9:44 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+  * source/h_print.prg
+   ! fixed print at row 0 in excel. (Thanks Sergio for report )
+
 2007-04-11 09:38 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * ./compile_pc.bat
     ! Fixed compilation when resurce file exists.
+
 
 2007-04-07 19:13 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source/h_report.prg
