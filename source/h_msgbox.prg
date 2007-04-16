@@ -1,5 +1,5 @@
 /*
- * $Id: h_msgbox.prg,v 1.4 2006-10-24 13:06:52 declan2005 Exp $
+ * $Id: h_msgbox.prg,v 1.5 2007-04-16 19:20:53 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -263,7 +263,7 @@ do case
    case ctype="N"
         cMessage:=str(Message)
    case ctype="L"
-        cMessage:=iif(Message,".T.",".F")
+        cMessage:=iif(Message,".T.",".F.")
    case cType="D"
         cMessage:=Dtos(Message)
    case cType="O"
