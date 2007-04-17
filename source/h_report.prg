@@ -1,5 +1,5 @@
 /*
- * $Id: h_report.prg,v 1.37 2007-04-08 00:19:50 declan2005 Exp $
+ * $Id: h_report.prg,v 1.38 2007-04-17 11:58:49 declan2005 Exp $
  */
 /*
  * DO REPORT Command support procedures For MiniGUI Library.
@@ -1024,14 +1024,18 @@ PROCEDURE __ReportForm( cFRMName, lPrinter, cAltFile, lNoConsole, bFor, ;
                        lBEject, lSummary )
 ******************************************************************************
 
-LOCAL lPrintOn, lConsoleOn
-LOCAL cExtraFile, lExtraState
+////LOCAL lConsoleOn, lprinton
+////LOCAL cExtraFile, lExtraState
 LOCAL nCol, nGroup
 LOCAL xBreakVal, lBroke := .F.
 LOCAL err, sAuxST
 LOCAL lAnyTotals
 LOCAL lAnySubTotals ,lSale
-Private  lUseLetter 
+Private  lUseLetter
+
+empty(cAltFile)
+empty(lNoConsole)
+empty(lplain)
 
 sicvar:=setinteractiveclose()
 SET INTERACTIVECLOSE ON
@@ -1258,7 +1262,7 @@ LOCAL lEjectGrp := .F.
 LOCAL nMaxLines
 LOCAL nLine
 LOCAL cLine
-LOCAL nLastElement
+/////LOCAL nLastElement
 
 LOCAL lAnySubTotals
 
@@ -1512,7 +1516,7 @@ STATIC PROCEDURE CabezalReporte
 LOCAL nLinesInHeader := 0
 LOCAL aPageHeader    := {}
 LOCAL nHeadingLength := aReportData[RP_WIDTH] - aReportData[RP_LMARGIN] - 30
-LOCAL nCol, nLine, nMaxColLength, nGroup, cHeader
+LOCAL nCol, nLine, nMaxColLength,  cHeader
 LOCAL nHeadLine
 LOCAL nRPageSize
 LOCAL aTempPgHeader
@@ -1751,7 +1755,7 @@ LOCAL cDefPath
 LOCAL aPaths
 LOCAL nPathIndex := 0
 
-LOCAL s, paths
+///LOCAL paths
 LOCAL i
 LOCAL aHeader
 LOCAL nHeaderIndex
