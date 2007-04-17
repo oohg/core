@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.61 2007-04-15 14:48:46 declan2005 Exp $
+* $Id: h_print.prg,v 1.62 2007-04-17 19:44:27 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -93,6 +93,8 @@ DATA nmver              INIT (10)/2.45   READONLY
 DATA nhfij              INIT (12/3.70)   READONLY
 DATA nvfij              INIT (12/1.65)   READONLY
 DATA cunits             INIT "ROWCOL"    READONLY
+DATA nlmargin           INIT 0
+DATA ntmargin           INIT 0
 DATA cprinter           INIT ""          READONLY
 
 DATA aprinters          INIT {}   READONLY
@@ -124,7 +126,6 @@ METHOD init()
 METHOD initx() BLOCK { || nil }
 *-------------------------
 
-
 *-------------------------
 METHOD setprop()
 *-------------------------
@@ -132,7 +133,6 @@ METHOD setprop()
 *-------------------------
 METHOD setcpl()
 *-------------------------
-
 
 *-------------------------
 METHOD begindoc()
@@ -272,12 +272,19 @@ METHOD printroundrectangle()
 *-------------------------
 
 *-------------------------
-METHOD printroundrectanglex() BLOCK { || nil }
+METHOD printroundrectanglex()  BLOCK { || nil }
 *-------------------------
-
 
 *-------------------------
 METHOD version() INLINE ::cversion
+*-------------------------
+
+*-------------------------
+METHOD setlmargin()
+*-------------------------
+
+*-------------------------
+METHOD settmargin()
 *-------------------------
 
 ENDCLASS
@@ -417,6 +424,15 @@ activate window _oohg_winreport NOWAIT
 return self
 
 
+METHOD setlmargin(nlmar) CLASS TPRINTBASE
+::nlmargin := nlmar
+return self
+
+METHOD settmargin(ntmar) CLASS TPRINTBASE
+::ntmargin := ntmar
+return self
+
+
 
 *-------------------------
 static function action_timer(olabel,oimage)
@@ -544,7 +560,7 @@ endif
 
 ctext:= cspace + ctext
 
-::printdatax(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext)
+::printdatax(::ntmargin+nlin,::nlmargin+ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext)
 return self
 
 
@@ -577,7 +593,7 @@ else
    ::nvfij  := (12/1.65)
    ::nhfij  := (12/3.70)
 endif
-::printimagex(nlin,ncol,nlinf,ncolf,cimage)
+::printimagex(::ntmargin+nlin,::nlmargin+ncol,nlinf,::nlmargin+ncolf,cimage)
 return self
 
 
@@ -612,7 +628,7 @@ else
    ::nvfij  := (12/1.65)
    ::nhfij  := (12/3.70)
 endif
-::printlinex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen )
+::printlinex(::ntmargin+nlin,::nlmargin+ncol,nlinf,::nlmargin+ncolf,atcolor,ntwpen )
 
 return self
 
@@ -650,7 +666,7 @@ else
    ::nvfij  := (12/1.65)
    ::nhfij  := (12/3.70)
 endif
-::printrectanglex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen )
+::printrectanglex(::ntmargin+nlin,::nlmargin+ncol,nlinf,::nlmargin+ncolf,atcolor,ntwpen )
 
 return self
 
@@ -688,7 +704,7 @@ else
    ::nhfij  := (12/3.70)
 endif
 
-::printroundrectanglex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen )
+::printroundrectanglex(::ntmargin+nlin,::nlmargin+ncol,nlinf,::nlmargin+ncolf,atcolor,ntwpen )
 
 return self
 
