@@ -1,5 +1,5 @@
 /*
- * $Id: h_report.prg,v 1.38 2007-04-17 11:58:49 declan2005 Exp $
+ * $Id: h_report.prg,v 1.39 2007-04-17 15:17:25 declan2005 Exp $
  */
 /*
  * DO REPORT Command support procedures For MiniGUI Library.
@@ -86,7 +86,6 @@ MEMVAR WORIENTATION
 MEMVAR LSUCESS
 MEMVAR CBAT
 MEMVAR _OOHG_printlibrary
-///MEMVAR oprint
 MEMVAR nposat
 MEMVAR lgroupeject
 MEMVAR lexcel
@@ -425,7 +424,6 @@ do while .not. eof()
             do case
                case wtipo == 'C'
                clinea:=clinea+substr(wfield,1,awidths[i])+space(awidths[i]-len(substr(wfield,1,awidths[i]) ))+" "
-////                  clinea:=clinea + iif(.not.(aformats[i]==NIL),space(awidths[i]-len(transform(wfield,aformats[i])))+transform(wfield,aformats[i]),str(wfield,awidths[i]))+ space(awidths[i] -   len(  iif(.not.(aformats[i]==''),space(awidths[i]-len(transform(wfield,aformats[i])))+transform(wfield,aformats[i]),str(wfield,awidths[i])))   )+" "
                case wtipo == 'N'
                     clinea:=clinea + iif(.not.(aformats[i]==NIL),space(awidths[i]-len(transform(wfield,aformats[i])))+transform(wfield,aformats[i]),str(wfield,awidths[i]))+ space(awidths[i] -   len(  iif(.not.(aformats[i]==''),space(awidths[i]-len(transform(wfield,aformats[i])))+transform(wfield,aformats[i]),str(wfield,awidths[i])))   )+" "
                case wtipo == 'D'
@@ -651,7 +649,7 @@ next i
 oprint:printdata(nlin,repobject:nlmargin, clinea,,repobject:nfsize   )
 nlin:=nlin+2
 
-///if grpby<>NIL
+
 if repobject:npager=1 .and. grpby#NIL
    oprint:printdata(nlin,repobject:nlmargin, '** ' +chdrgrp+' '+  &(grpby) , ,repobject:nfsize ,.T.   )
    nlin++
@@ -1024,8 +1022,6 @@ PROCEDURE __ReportForm( cFRMName, lPrinter, cAltFile, lNoConsole, bFor, ;
                        lBEject, lSummary )
 ******************************************************************************
 
-////LOCAL lConsoleOn, lprinton
-////LOCAL cExtraFile, lExtraState
 LOCAL nCol, nGroup
 LOCAL xBreakVal, lBroke := .F.
 LOCAL err, sAuxST
@@ -1215,7 +1211,7 @@ IF lSummary != NIL
 
     ******* Si pidió un eject al final del reporte, lo largo *********
     IF aReportData[ RP_AEJECT ]
-       EjectPage()
+////       EjectPage()  en windows es mejor no mandar este eject en dos si es valido
     ENDIF
 
 
@@ -1262,7 +1258,6 @@ LOCAL lEjectGrp := .F.
 LOCAL nMaxLines
 LOCAL nLine
 LOCAL cLine
-/////LOCAL nLastElement
 
 LOCAL lAnySubTotals
 
@@ -1755,8 +1750,6 @@ LOCAL cDefPath
 LOCAL aPaths
 LOCAL nPathIndex := 0
 
-///LOCAL paths
-LOCAL i
 LOCAL aHeader
 LOCAL nHeaderIndex
 
