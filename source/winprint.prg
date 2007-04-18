@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.11 2007-04-06 13:52:28 declan2005 Exp $
+ * $Id: winprint.prg,v 1.12 2007-04-18 15:24:43 declan2005 Exp $
  */
 // -----------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -484,9 +484,16 @@ local lhand:=::getobjbyname(lfontname,"F")
     return self
  endif
  lfontname:=if(lfontname==NIL,"",upper(alltrim(lfontname)))
- if(lfontsize==NIL,lfontsize:=-1,0)
- if(lfontwidth==nil,lfontwidth:=0,0)
- if(langle==NIL,langle:=-1,0)
+ if lfontsize==NIL
+    lfontsize:=-1
+ endif
+
+ if lfontwidth==NIL
+      lfontwidth:=0
+ endif
+ if langle==NIL
+    langle:=-1
+ endif
  lweight:=if(empty(lweight),0,1)
  litalic:=if(empty(litalic),0,1)
  lunderline:=if(empty(lunderline),0,1)
@@ -514,18 +521,43 @@ local lhand:=0,lpos:=0
     return self
  endif
 
- if(lfontname<>NIL ,::Fonts[4,lpos,1]:=upper(alltrim(lfontname)),"")
- if(lfontsize<>NIL ,::Fonts[4,lpos,2]:=lfontsize,"")
- if(lfontwidth<>NIL,::Fonts[4,lpos,3]:=lfontwidth,"")
- if(langle<>NIL    ,::Fonts[4,lpos,4]:=langle,"")
- if(lweight ,::Fonts[4,lpos,5]:=1,"")
- if(lnweight,::Fonts[4,lpos,5]:=0,"")
- if(litalic ,::Fonts[4,lpos,6]:=1,"")
- if(lnitalic,::Fonts[4,lpos,6]:=0,"")
- if(lunderline ,::Fonts[4,lpos,7]:=1,"")
- if(lnunderline,::Fonts[4,lpos,7]:=0,"")
- if(lstrikeout ,::Fonts[4,lpos,8]:=1,"")
- if(lnstrikeout,::Fonts[4,lpos,8]:=0,"")
+ if lfontname<>NIL 
+   ::Fonts[4,lpos,1]:=upper(alltrim(lfontname))
+ endif
+
+ if lfontsize<>NIL
+    ::Fonts[4,lpos,2]:=lfontsize
+ endif
+ if lfontwidth<>NIL
+   ::Fonts[4,lpos,3]:=lfontwidth
+   endif
+if langle<>NIL
+    ::Fonts[4,lpos,4]:=langle
+endif
+ if lweight 
+   ::Fonts[4,lpos,5]:=1
+ endif
+ if lnweight
+    ::Fonts[4,lpos,5]:=0
+ endif
+ if litalic 
+    ::Fonts[4,lpos,6]:=1
+ endif
+ if lnitalic
+    ::Fonts[4,lpos,6]:=0
+ endif
+ if lunderline 
+   ::Fonts[4,lpos,7]:=1
+ endif
+ if lnunderline
+   ::Fonts[4,lpos,7]:=0
+ endif
+ if lstrikeout 
+    ::Fonts[4,lpos,8]:=1
+ endif
+ if lnstrikeout
+   ::Fonts[4,lpos,8]:=0
+ endif
 
 
  ::Fonts[1,lpos]:=rr_createfont(::Fonts[4,lpos,1],::Fonts[4,lpos,2],-::Fonts[4,lpos,3],::Fonts[4,lpos,4]*10,::Fonts[4,lpos,5],::Fonts[4,lpos,6],::Fonts[4,lpos,7],::Fonts[4,lpos,8])
@@ -563,8 +595,12 @@ local oldvalue:=::UNITS
            ::MaxRow:=::DevCaps[3]
            ::MaxCol:=::DevCaps[4]
       case ::Units==4
-           if(valtype(r)=="N",::MaxRow:=r-1,"")
-           if(valtype(c)=="N",::MaxCol:=c-1,"")
+           if valtype(r)=="N"
+              ::MaxRow:=r-1
+           endif
+           if valtype(c)=="N"
+              ::MaxCol:=c-1
+           endif
    endcase
 return oldvalue
 
@@ -592,8 +628,12 @@ return aret
 
 METHOD DrawText(row,col,torow,tocol,txt,style,defname) CLASS HBPrinter
 local lhf:=::getobjbyname(defname,"F")
-     if(torow==NIL,torow:=::maxrow,"")
-     if(tocol==NIL,tocol:=::maxcol,"")
+     if torow==NIL
+        torow:=::maxrow
+      endif
+     if tocol==NIL
+        tocol:=::maxcol
+     endif
      rr_drawtext(::Convert({row,col}),::Convert({torow,tocol}),txt,style,lhf)
 return self
 
@@ -663,9 +703,15 @@ local lhi:=::getobjbyname(defname,"I")
    if empty(lhi)
       return self
    endif
-   if(color==NIL,color:=-1,"")
-   if(torow==NIL,torow:=::maxrow,"")
-   if(tocol==NIL,tocol:=::maxcol,"")
+   if color==NIL
+     color:=-1
+   endif
+   if torow==NIL
+      torow:=::maxrow
+   endif
+   if tocol==NIL
+    tocol:=::maxcol
+   endif
    ::error:=rr_drawimagelist(lhi[1],nicon,::convert({row,col}),::convert({torow-row,tocol-col}),lhi[3],lhi[4],lstyle,color)
 return self
 
@@ -673,71 +719,111 @@ return self
 
 METHOD Rectangle(row,col,torow,tocol,defpen,defbrush) CLASS HBPrinter
 local lhp:=::getobjbyname(defpen,"P"),lhb:=::getobjbyname(defbrush,"B")
-   if(torow==NIL,torow:=::maxrow,"")
-   if(tocol==NIL,tocol:=::maxcol,"")
+   if torow==NIL
+      torow:=::maxrow
+   endif
+   if tocol==NIL
+      tocol:=::maxcol
+   endif
    ::error=rr_rectangle(::convert({row,col}),::convert({torow,tocol}),lhp,lhb)
 return self
 
 METHOD FrameRect(row,col,torow,tocol,defbrush) CLASS HBPrinter
 local lhb:=::getobjbyname(defbrush,"B")
-   if(torow==NIL,torow:=::maxrow,"")
-   if(tocol==NIL,tocol:=::maxcol,"")
+   if torow==NIL 
+      torow:=::maxrow
+   endif
+   if tocol==NIL
+     tocol:=::maxcol
+   endif
    ::error=rr_framerect(::convert({row,col}),::convert({torow,tocol}),lhb)
 return self
 
 METHOD RoundRect(row,col,torow,tocol,widthellipse,heightellipse,defpen,defbrush) CLASS HBPrinter
 local lhp:=::getobjbyname(defpen,"P"),lhb:=::getobjbyname(defbrush,"B")
-   if(torow==NIL,torow:=::maxrow,"")
-   if(tocol==NIL,tocol:=::maxcol,"")
+   if torow==NIL
+     torow:=::maxrow
+   endif
+   if tocol==NIL
+      tocol:=::maxcol
+   endif
    ::error=rr_roundrect(::convert({row,col}),::convert({torow,tocol}),::convert({widthellipse,heightellipse}),lhp,lhb)
 return self
 
 METHOD FillRect(row,col,torow,tocol,defbrush) CLASS HBPrinter
 local lhb:=::getobjbyname(defbrush,"B")
-   if(torow==NIL,torow:=::maxrow,"")
-   if(tocol==NIL,tocol:=::maxcol,"")
+   if torow==NIL
+      torow:=::maxrow
+    endif
+   if tocol==NIL
+      tocol:=::maxcol
+   endif
    ::error=rr_fillrect(::convert({row,col}),::convert({torow,tocol}),lhb)
 return self
 
 METHOD InvertRect(row,col,torow,tocol) CLASS HBPrinter
-   if(torow==NIL,torow:=::maxrow,"")
-   if(tocol==NIL,tocol:=::maxcol,"")
+   if torow==NIL
+     torow:=::maxrow
+   endif
+   if tocol==NIL
+      tocol:=::maxcol
+   endif
    ::error=rr_invertrect(::convert({row,col}),::convert({torow,tocol}))
 return self
 
 METHOD Ellipse(row,col,torow,tocol,defpen,defbrush) CLASS HBPrinter
 local lhp:=::getobjbyname(defpen,"P"),lhb:=::getobjbyname(defbrush,"B")
-   if(torow==NIL,torow:=::maxrow,"")
-   if(tocol==NIL,tocol:=::maxcol,"")
+   if torow==NIL
+     torow:=::maxrow
+   endif
+   if tocol==NIL
+     tocol:=::maxcol
+   endif
    ::error=rr_ellipse(::convert({row,col}),::convert({torow,tocol}),lhp,lhb)
 return self
 
 METHOD Arc(row,col,torow,tocol,rowsarc,colsarc,rowearc,colearc,defpen) CLASS HBPrinter
 local lhp:=::getobjbyname(defpen,"P")
-   if(torow==NIL,torow:=::maxrow,"")
-   if(tocol==NIL,tocol:=::maxcol,"")
+   if torow==NIL
+      torow:=::maxrow
+   endif
+   if tocol==NIL
+     tocol:=::maxcol
+   endif
    ::error=rr_arc(::convert({row,col}),::convert({torow,tocol}),::convert({rowsarc,colsarc}),::convert({rowearc,colearc}),lhp)
 return self
 
 METHOD ArcTo(row,col,torow,tocol,rowrad1,colrad1,rowrad2,colrad2,defpen) CLASS HBPrinter
 local lhp:=::getobjbyname(defpen,"P")
-   if(torow==NIL,torow:=::maxrow,"")
-   if(tocol==NIL,tocol:=::maxcol,"")
+   if torow==NIL
+      torow:=::maxrow
+   endif
+   if tocol==NIL
+      tocol:=::maxcol
+   endif
    ::error=rr_arcto(::convert({row,col}),::convert({torow,tocol}),::convert({rowrad1,colrad1}),::convert({rowrad2,colrad2}),lhp)
 return self
 
 
 METHOD Chord(row,col,torow,tocol,rowrad1,colrad1,rowrad2,colrad2,defpen,defbrush) CLASS HBPrinter
 local lhp:=::getobjbyname(defpen,"P"),lhb:=::getobjbyname(defbrush,"B")
-   if(torow==NIL,torow:=::maxrow,"")
-   if(tocol==NIL,tocol:=::maxcol,"")
+   if torow==NIL
+      torow:=::maxrow
+   endif
+   if tocol==NIL
+      tocol:=::maxcol
+   endif
    ::error=rr_chord(::convert({row,col}),::convert({torow,tocol}),::convert({rowrad1,colrad1}),::convert({rowrad2,colrad2}),lhp,lhb)
 return self
 
 METHOD Pie(row,col,torow,tocol,rowrad1,colrad1,rowrad2,colrad2,defpen,defbrush) CLASS HBPrinter
 local lhp:=::getobjbyname(defpen,"P"),lhb:=::getobjbyname(defbrush,"B")
-   if(torow==NIL,torow:=::maxrow,"")
-   if(tocol==NIL,tocol:=::maxcol,"")
+   if torow==NIL
+      torow:=::maxrow
+   endif
+   if tocol==NIL
+      tocol:=::maxcol
+   endif
    ::error=rr_pie(::convert({row,col}),::convert({torow,tocol}),::convert({rowrad1,colrad1}),::convert({rowrad2,colrad2}),lhp,lhb)
 return self
 
@@ -765,8 +851,12 @@ return self
 
 METHOD Line(row,col,torow,tocol,defpen) CLASS HBPrinter
 local lhp:=::getobjbyname(defpen,"P")
-   if(torow==NIL,torow:=::maxrow,"")
-   if(tocol==NIL,tocol:=::maxcol,"")
+   if torow==NIL
+      torow:=::maxrow
+   endif
+   if tocol==NIL
+      tocol:=::maxcol
+   endif
    ::error=rr_line(::convert({row,col}),::convert({torow,tocol}),lhp)
 return self
 
@@ -809,8 +899,12 @@ local lhand:=::getobjbyname(defname,"R")
  if lhand<>0
     return self
  endif
- if(torow==NIL,torow:=::maxrow,"")
- if(tocol==NIL,tocol:=::maxcol,"")
+ if torow==NIL
+    torow:=::maxrow
+ endif
+ if tocol==NIL
+    tocol:=::maxcol
+ endif
  aadd(::Regions[1],rr_creatergn(::convert({row,col}),::convert({torow,tocol}),1))
  aadd(::Regions[2],upper(alltrim(defname)))
 return self
@@ -820,8 +914,12 @@ local lhand:=::getobjbyname(defname,"R")
  if lhand<>0
     return self
  endif
- if(torow==NIL,torow:=::maxrow,"")
- if(tocol==NIL,tocol:=::maxcol,"")
+ if torow==NIL
+    torow:=::maxrow
+ endif
+ if tocol==NIL
+    tocol:=::maxcol
+ endif
  aadd(::Regions[1],rr_creatergn(::convert({row,col}),::convert({torow,tocol}),2))
  aadd(::Regions[2],upper(alltrim(defname)))
 return self
@@ -831,8 +929,12 @@ local lhand:=::getobjbyname(defname,"R")
  if lhand<>0
     return self
  endif
- if(torow==NIL,torow:=::maxrow,"")
- if(tocol==NIL,tocol:=::maxcol,"")
+ if torow==NIL
+   torow:=::maxrow
+ endif
+ if tocol==NIL
+    tocol:=::maxcol
+ endif
  aadd(::Regions[1],rr_creatergn(::convert({row,col}),::convert({torow,tocol}),3,::convert({widthellipse,heightellipse})))
  aadd(::Regions[2],upper(alltrim(defname)))
 return self
@@ -1078,11 +1180,19 @@ return rr_gettextalign()
 
 METHOD Picture(row,col,torow,tocol,cpicture,extrow,extcol) CLASS HBPrinter
 local lp1:=::convert({row,col}),lp2,lp3
- if(torow==NIL,torow:=::maxrow,"")
- if(tocol==NIL,tocol:=::maxcol,"")
+ if torow==NIL
+    torow:=::maxrow
+ endif
+ if tocol==NIL
+    tocol:=::maxcol
+ endif
  lp2:=::convert({torow,tocol},1)
- if(extrow==NIL,extrow:=0,"")
- if(extcol==NIL,extcol:=0,"")
+ if extrow==NIL
+   extrow:=0
+ endif
+ if extcol==NIL
+    extcol:=0
+ endif
  lp3:=::convert({extrow,extcol})
  rr_drawpicture(cpicture,lp1,lp2,lp3)
 return self
@@ -1608,7 +1718,8 @@ next pi
 
          DEFINE SPLITBOX
                DEFINE TOOLBAR TB1 BUTTONSIZE 50,33 FONT 'Arial Narrow' SIZE 8 FLAT BREAK // RIGHTTEXT
-                        BUTTON B1 CAPTION  ::aopisy[2]     PICTURE 'hbprint_close'   ACTION {||  _ReleaseWindow ("HBPREVIEW1" ),if(::iloscstron>1 .and. ::thumbnails,_ReleaseWindow ("HBPREVIEW2" ),""), oHBPreview:Release()}
+////                        BUTTON B1 CAPTION  ::aopisy[2]     PICTURE 'hbprint_close'   ACTION {||  _ReleaseWindow ("HBPREVIEW1" ),if(::iloscstron>1 .and. ::thumbnails,_ReleaseWindow ("HBPREVIEW2" ),""), oHBPreview:Release()}
+                        BUTTON B1 CAPTION  ::aopisy[2]     PICTURE 'hbprint_close'   ACTION MYCLOSEP(::iloscstron,::thumbnails ,oHBPreview)
                         BUTTON B2 CAPTION  ::aopisy[3]    PICTURE 'hbprint_print'   ACTION {|| ::prevprint() }
                         BUTTON B3 CAPTION  ::aopisy[4]     PICTURE 'hbprint_save'    ACTION {|| ::savemetafiles()}
                         if ::iloscstron>1
@@ -1699,6 +1810,13 @@ next pi
   ACTIVATE WINDOW HBPREVIEW
 return nil
 
+FUNCTION MYCLOSEP(T1,T2,OT3)
+_ReleaseWindow ("HBPREVIEW1" )
+IF T1>1 .and. T2
+  _ReleaseWindow ("HBPREVIEW2" )
+ENDIF
+oT3:Release()
+return nil
 *******************************************
 METHOD PrintOption() CLASS HBPrinter
 *******************************************
