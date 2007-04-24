@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.127 2007-04-03 22:55:53 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.128 2007-04-24 22:12:12 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -1476,10 +1476,18 @@ Return Self
 Function _SetToolTipBalloon ( lNewBalloon )
 *--------------------------------------------------
 Static lBalloon := .F.
-Local lOldBalloon := lBalloon
+Local oreg,lOldBalloon := lBalloon
+Local lSiono
+
+
 
         If lNewBalloon <> Nil
-           lBalloon := lNewBalloon
+        if lNewBalloon
+           oreg:=TReg32():New(HKEY_CURRENT_USER,"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced",.F.)
+           oreg:get("EnableBalloonTips",lsiono)
+           oreg:close()           
+        endif
+            lBalloon := lNewBalloon
         Endif
 
 return lOldBalloon
@@ -3150,7 +3158,7 @@ Function InputBox ( cInputPrompt , cDialogCaption , cDefaultValue , nTimeout , c
       SIZE 10           ;
       BACKCOLOR ( GetFormObjectByHandle( GetActiveWindow() ):BackColor )
 
-      ON KEY ESCAPE ACTION ( _OOHG_DialogCancelled := .T. , _InputBox.Release )
+      ON KEY ESCAPE ACTION ( _OOHG_DialogCancelled := .T. , if(iswindowactive(_Inputbox), _InputBox.Release ,nil)   )
 
 		@ 07,10 LABEL _Label		;
 			VALUE cInputPrompt	;
@@ -3166,17 +3174,17 @@ Function InputBox ( cInputPrompt , cDialogCaption , cDefaultValue , nTimeout , c
 			VALUE cDefaultValue	;
 			HEIGHT 26 + mo		;
 			WIDTH 320		;
-         ON ENTER ( _OOHG_DialogCancelled := .F. , RetVal := _InputBox._TextBox.Value , _InputBox.Release )
+         ON ENTER ( _OOHG_DialogCancelled := .F. , RetVal := _InputBox._TextBox.Value , if(iswindowactive(_Inputbox), _InputBox.Release ,nil)   )
 
                 endif
 //
 		@ 67+mo,120 BUTTON _Ok		;
 			CAPTION if( Set ( _SET_LANGUAGE ) == 'ES', 'Aceptar' ,'Ok' )		;
-         ACTION ( _OOHG_DialogCancelled := .F. , RetVal := _InputBox._TextBox.Value , _InputBox.Release )
+         ACTION ( _OOHG_DialogCancelled := .F. , RetVal := _InputBox._TextBox.Value , if(iswindowactive(_Inputbox), _InputBox.Release ,nil)   )
 
 		@ 67+mo,230 BUTTON _Cancel		;
 			CAPTION if( Set ( _SET_LANGUAGE ) == 'ES', 'Cancelar', 'Cancel'	);
-         ACTION   ( _OOHG_DialogCancelled := .T. , _InputBox.Release )
+         ACTION   ( _OOHG_DialogCancelled := .T. , if(iswindowactive(_Inputbox), _InputBox.Release ,nil)   )
 
 			If ValType (nTimeout) != 'U'
 
@@ -3184,7 +3192,7 @@ Function InputBox ( cInputPrompt , cDialogCaption , cDefaultValue , nTimeout , c
 
 					DEFINE TIMER _InputBox ;
 					INTERVAL nTimeout ;
-					ACTION  ( RetVal := cTimeoutValue , _InputBox.Release )
+					ACTION  ( RetVal := cTimeoutValue , if(iswindowactive(_Inputbox), _InputBox.Release ,nil)   )
 
 				Else
 
