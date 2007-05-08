@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.63 2007-05-08 20:40:27 declan2005 Exp $
+* $Id: h_print.prg,v 1.64 2007-05-08 21:15:20 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -2582,7 +2582,7 @@ return self
 METHOD getdefprinterx() CLASS TPDFPRINT
 *-------------------------
 local cdefprinter
-GET DEFAULT PRINTER TO cdefprinter
+////GET DEFAULT PRINTER TO cdefprinter
 return cdefprinter
 
 
