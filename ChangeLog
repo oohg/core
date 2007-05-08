@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.345 2007-04-24 22:12:12 declan2005 Exp $
+ * $Id: ChangeLog,v 1.346 2007-05-08 20:40:27 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -8,6 +8,16 @@
 
 
 */
+
+2007-05-08 15:32 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+  * source/h_print.prg
+  * source/h_report.prg
+  + source/h_pdf.prg
+    + added "PDFPRINT" support to TPRINT, thanks to Marcelo Torres by contributed code
+  * source/makelib_bcc.bat
+  * source/common_make.bat
+  * source/makelib_mingw.bat
+    + added new sources to makelib     
 
 2007-04-24 17:10 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source/h_windows.prg

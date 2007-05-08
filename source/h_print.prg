@@ -1,11 +1,15 @@
 /*
-* $Id: h_print.prg,v 1.62 2007-04-17 19:44:27 declan2005 Exp $
+* $Id: h_print.prg,v 1.63 2007-05-08 20:40:27 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
 #include 'oohg.ch'
 #include 'miniprint.ch'
 #include 'winprint.ch'
+
+#include "fileio.ch"
+//#include "common.ch"
+
 
 memvar _OOHG_PRINTLIBRARY
 memvar _OOHG_printer_docname
@@ -51,6 +55,8 @@ if clibx=NIL
          o_print_:=tcsvprint()
       elseif _OOHG_printlibrary="HTMLPRINT"
          o_print_:=thtmlprint()
+      elseif _OOHG_printlibrary="PDFPRINT"
+         o_print_:=tpdfprint()
       else
          o_print_:=thbprinter()
       endif
@@ -74,6 +80,8 @@ else
          o_print_:=tcsvprint()
       elseif clibx="HTMLPRINT"
          o_print_:=thtmlprint()
+      elseif clibx="PDFPRINT"
+         o_print_:=tpdfprint()
       else
          o_print_:=tminiprint()
       endif
@@ -1799,10 +1807,11 @@ For nCol:= 1 to ::oHoja:UsedRange:Columns:Count()
     ::oHoja:Columns( nCol ):AutoFit()
 NEXT
 ::oHoja:Cells( 1, 1 ):Select()
-cRuta:=GetCurrentFolder()
+///cRuta:=GetCurrentFolder()
+cRuta:=GetmydocumentsFolder()
 /// ::oExcel:Saveas(cRuta+"Printer.html",44)   //// graba como html
 ::oExcel:Set( "DisplayAlerts", .f. )
-::oHoja:SaveAs("Printer.html", 44,"","", .f. , .f.)
+::oHoja:SaveAs(cRuta+"\Printer.html", 44,"","", .f. , .f.)
 ::oExcel:Quit()
 #ifndef __XHARBOUR__
   ::oHoja:End()
@@ -2217,7 +2226,7 @@ return self
 *-------------------------
 METHOD enddocx() CLASS TCSVPRINT
 *-------------------------
-RUTAFICRTF1:=GetCurrentFolder()
+RUTAFICRTF1:=GetmydocumentsFolder()
 SET PRINTER TO &RUTAFICRTF1\printer.CSV
 SET DEVICE TO PRINTER
 SETPRC(0,0)
@@ -2346,4 +2355,257 @@ return self
 METHOD normaldosx() CLASS TCSVPRINT
 *-------------------------
 return self
+
+
+//////////////// clase tpdfprint
+*---------------------------------------
+CREATE CLASS TPDFPRINT FROM TPRINTBASE
+
+/////PRIVATE:
+DATA oPDF        as object                     //el objeto pdf
+DATA cDocument   as character init ""          //nombre del documento
+DATA cPageSize   as character init ""          //tamaño de pagina.
+DATA cPageOrient as character init ""          //P = portrait, L = Landscape
+DATA nFontType   as numeric   init 1           //tipo de fuente(normal=0 o negrita=1)
+DATA lPreview    as logical   init .f.         //indica si abrimos el pdf al finalizar
+DATA aPaper      as array     init {} hidden   //array con los tipos de papel soportados por la clase pdf.
+
+
+METHOD initx()
+METHOD begindocx()
+METHOD enddocx()
+METHOD beginpagex()
+METHOD endpagex()
+METHOD releasex()
+METHOD printdatax()
+METHOD printimagex()
+METHOD printlinex()
+METHOD printrectanglex
+METHOD selprinterx()
+METHOD getdefprinterx()
+METHOD setcolorx()
+METHOD setpreviewsizex()
+METHOD printroundrectanglex()
+
+ENDCLASS
+*---------------------------------------
+
+*-------------------------
+METHOD INITx() CLASS TPDFPRINT
+*-------------------------
+
+*-----Estos son los unicos que tipos de papel que soporta-------*
+aadd(::aPaper,{DMPAPER_LETTER      , "LETTER"   })
+aadd(::aPaper,{DMPAPER_LEGAL       , "LEGAL"    })
+aadd(::aPaper,{DMPAPER_TABLOID     , "LEDGER"   })
+aadd(::aPaper,{DMPAPER_EXECUTIVE   , "EXECUTIVE"})
+aadd(::aPaper,{DMPAPER_A3          , "A3"       })
+aadd(::aPaper,{DMPAPER_A4          , "A4"       })
+aadd(::aPaper,{DMPAPER_ENV_10      , "COM10"    })
+aadd(::aPaper,{DMPAPER_B4          , "JIS B4"   })
+aadd(::aPaper,{DMPAPER_B5          , "JIS B5"   })
+aadd(::aPaper,{DMPAPER_P32K        , "JPOST"    })
+aadd(::aPaper,{DMPAPER_ENV_C5      , "C5"       })
+aadd(::aPaper,{DMPAPER_ENV_DL      , "DL"       })
+aadd(::aPaper,{DMPAPER_ENV_B5      , "B5"       })
+aadd(::aPaper,{DMPAPER_ENV_MONARCH , "MONARCH"  })
+
+::cprintlibrary:="PDFPRINT"
+
+return self
+
+
+*-------------------------
+METHOD BEGINDOCx (cdoc) CLASS TPDFPRINT
+*-------------------------
+local cpdfname:= Getmydocumentsfolder()+"\pdfprint.pdf"
+::oPdf := TPDF():init(cpdfname)
+return self
+
+
+*-------------------------
+METHOD ENDDOCx() CLASS TPDFPRINT
+*-------------------------
+
+::oPdf:Close()
+
+return self
+
+
+*-------------------------
+METHOD BEGINPAGEx() CLASS TPDFPRINT
+*-------------------------
+
+::oPdf:NewPage( ::cPageSize, ::cPageOrient, , ::cFontName, ::nFontType, ::nFontSize )
+
+return self
+
+
+*-------------------------
+METHOD ENDPAGEx() CLASS TPDFPRINT
+*-------------------------
+
+return self
+
+
+*-------------------------
+METHOD RELEASEx() CLASS TPDFPRINT
+*-------------------------
+local cMydoc := getmydocumentsfolder()
+
+IF ShellExecute(0, "open", "rundll32.exe", "url.dll,FileProtocolHandler "+ cMydoc+ "\Pdfprint.pdf", ,1) <=32
+     MSGINFO("html Extension not asociated"+CHR(13)+CHR(13)+ ;
+     "File saved in:"+CHR(13)+cMydoc+"\pdfprint.pdf")
+ENDIF
+
+return self
+
+
+*-------------------------
+METHOD PRINTDATAx(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext,nangle) CLASS TPDFPRINT
+*-------------------------
+local nType   := 0
+local nlength := 0
+
+Default cFont to ::cFontName
+Default nSize to ::nFontSize
+Default lBold to .f.
+
+
+
+/*Tipo de letras. ver pdf.ch*/
+If lBold
+   nType := 1  //negrita  bold
+Else
+   nType := 0   //Normal  normal
+Endif
+
+::oPdf:SetFont(cFont, nType, nSize)
+
+
+   IF ::cunits == "MM"
+      nlin += 3
+   Endif
+   if ::cunits == "MM"
+      ::oPdf:AtSay( ctext, nlin, nCol, "M" )
+   else
+      ::oPdf:AtSay( ctext, nlin*::nmver+::nvfij , nCol*::nmhor+ ::nhfij*2, "M")
+   endif
+/////     ::oPdf:AtSay( ctext, nlin , nCol, IIF(::cunits == "MM","M","R"))
+return self
+
+
+*-------------------------
+METHOD printimagex(nlin,ncol,nlinf,ncolf,cimage) CLASS TPDFPRINT
+*-------------------------
+
+cImage := Upper(cImage)
+
+*----Solo soporta jpg y tiff como formatos de imagen------*
+IF At(".JPG",cImage) = 0 .and. At(".TIF",cImage) = 0
+   Return Self
+Endif
+
+*----Ajustamos las medidas al hbprinter-----*
+nlinf := nlinf - nlin
+ncolf := nColf - nCol
+
+if ::cunits == "MM"
+   ::oPdf:Image( cImage, nlin,ncol,"M",nlinf,ncolf)
+else
+   ::oPdf:Image( cImage, nlin*::nmver+::nvfij,ncol*::nmhor+ ::nhfij*2,"M",nlinf*::nmver+::nvfij,ncolf*::nmhor+ ::nhfij*2)
+endif
+
+
+return self
+
+
+*-------------------------
+METHOD printlinex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen ) CLASS TPDFPRINT
+*-------------------------
+
+if nlin = nlinf
+   ::printrectanglex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen*2 )
+endif
+
+return self
+
+
+*-------------------------
+METHOD printrectanglex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen ) CLASS TPDFPRINT
+*-------------------------
+
+Default ntwpen to ::nwpen
+
+if ::cunits=="MM"
+   ::oPdf:Box(nlin,ncol,nlinf,ncolf,ntwpen*2,,"M")
+else
+   ::oPdf:Box(nlin*::nmver+::nvfij,ncol*::nmhor+ ::nhfij*2,nlinf*::nmver+::nvfij,ncolf*::nmhor+ ::nhfij*2,ntwpen*2,,"R")
+endif
+
+return self
+
+
+*-------------------------
+METHOD selprinterx( lselect , lpreview, llandscape , npapersize ,cprinterx) CLASS TPDFPRINT
+*-------------------------
+local nPos := 0
+
+Default lpreview to .f.
+Default llandscape to .t.
+Default npapersize to 0
+
+/*lSelect no lo tomamos en cuenta aqui*/
+
+*----Si se va a necesitar abrir el pdf al finalizar la generacion------*
+::lPreview := lpreview
+*----Establecemos la orientacion de la hoja-----*
+::cPageOrient := IIF(lLandScape,"L","P")
+
+*----Establecemos el tamaño del papel------*
+
+nPos := aScan(::aPaper,{|x|x[1] = npapersize})
+
+If nPos > 0
+   ::cPageSize := ::aPaper[nPos][2]
+Else
+   ::cPageSize := "LETTER"
+Endif
+
+/*cprinterx no lo tomamos en cuenta aqui*/
+
+
+return self
+
+
+*-------------------------
+METHOD getdefprinterx() CLASS TPDFPRINT
+*-------------------------
+local cdefprinter
+GET DEFAULT PRINTER TO cdefprinter
+return cdefprinter
+
+
+*-------------------------
+METHOD setcolorx() CLASS TPDFPRINT
+*-------------------------
+/*CHANGE PEN "C0" WIDTH ::nwpen COLOR ::acolor
+SELECT PEN "C0"*/
+return self
+
+
+*-------------------------
+METHOD setpreviewsizex(ntam) CLASS TPDFPRINT
+*-------------------------
+/*SET PREVIEW SCALE ntam*/
+return self
+
+
+*-------------------------
+METHOD printroundrectanglex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen ) CLASS TPDFPRINT
+*-------------------------
+/////*Que hace esto?  hace un rectangulo con bordes redondeados por como aqui no se peude va sin redondeo
+   ::printrectanglex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen )
+return self
+
 
