@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.64 2007-05-08 21:15:20 declan2005 Exp $
+* $Id: h_print.prg,v 1.65 2007-05-09 03:22:21 guerra000 Exp $
 */
 
 #include 'hbclass.ch'
@@ -2416,7 +2416,7 @@ return self
 
 
 *-------------------------
-METHOD BEGINDOCx (cdoc) CLASS TPDFPRINT
+METHOD BEGINDOCx () CLASS TPDFPRINT
 *-------------------------
 local cpdfname:= Getmydocumentsfolder()+"\pdfprint.pdf"
 ::oPdf := TPDF():init(cpdfname)
@@ -2462,7 +2462,7 @@ return self
 
 
 *-------------------------
-METHOD PRINTDATAx(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext,nangle) CLASS TPDFPRINT
+METHOD PRINTDATAx(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext) CLASS TPDFPRINT
 *-------------------------
 local nType   := 0
 local nlength := 0
@@ -2471,7 +2471,10 @@ Default cFont to ::cFontName
 Default nSize to ::nFontSize
 Default lBold to .f.
 
-
+empty( data )
+empty( acolor )
+empty( calign )
+empty( nlen )
 
 /*Tipo de letras. ver pdf.ch*/
 If lBold
@@ -2536,6 +2539,7 @@ METHOD printrectanglex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen ) CLASS TPDFPRINT
 *-------------------------
 
 Default ntwpen to ::nwpen
+empty(atcolor)
 
 if ::cunits=="MM"
    ::oPdf:Box(nlin,ncol,nlinf,ncolf,ntwpen*2,,"M")
@@ -2547,13 +2551,15 @@ return self
 
 
 *-------------------------
-METHOD selprinterx( lselect , lpreview, llandscape , npapersize ,cprinterx) CLASS TPDFPRINT
+METHOD selprinterx( lselect , lpreview, llandscape , npapersize ) CLASS TPDFPRINT
 *-------------------------
 local nPos := 0
 
 Default lpreview to .f.
 Default llandscape to .t.
 Default npapersize to 0
+
+empty( lselect )
 
 /*lSelect no lo tomamos en cuenta aqui*/
 
@@ -2595,7 +2601,7 @@ return self
 
 
 *-------------------------
-METHOD setpreviewsizex(ntam) CLASS TPDFPRINT
+METHOD setpreviewsizex( /* ntam */) CLASS TPDFPRINT
 *-------------------------
 /*SET PREVIEW SCALE ntam*/
 return self

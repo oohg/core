@@ -1,13 +1,17 @@
 /*
- * $Id: ChangeLog,v 1.346 2007-05-08 20:40:27 declan2005 Exp $
+ * $Id: ChangeLog,v 1.347 2007-05-09 03:22:20 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
-
-
 */
+
+2007-05-08 22:21 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_pdf.prg
+  * source/h_print.prg
+    * Removed some blank spaces for avoid compiler crash.
+    * Fixed warnings.
 
 2007-05-08 15:32 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source/h_print.prg
@@ -17,7 +21,7 @@
   * source/makelib_bcc.bat
   * source/common_make.bat
   * source/makelib_mingw.bat
-    + added new sources to makelib     
+    + added new sources to makelib
 
 2007-04-24 17:10 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source/h_windows.prg
@@ -48,7 +52,7 @@
 2007-04-07 19:13 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source/h_report.prg
   * source/h_print.prg
-    + added support for Report form (.frm files "clipper,fox,dabase" ) 
+    + added support for Report form (.frm files "clipper,fox,dabase" )
       based upon contribution of Daniel Piperno.
 
 2007-04-07 12:09 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
@@ -82,7 +86,7 @@
 
 2007-03-30 16:52 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source/h_print.prg
-      * roll back changes in order to quit excel from memory, because 
+      * roll back changes in order to quit excel from memory, because
         ole problems.
 
 2007-03-29 21:29 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
