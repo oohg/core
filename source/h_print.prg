@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.65 2007-05-09 03:22:21 guerra000 Exp $
+* $Id: h_print.prg,v 1.66 2007-05-09 23:04:37 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -117,7 +117,7 @@ DATA nwpen              INIT 0.1   READONLY //// pen width
 DATA tempfile           INIT gettempdir()+"T"+alltrim(str(int(hb_random(999999)),8))+".prn" READONLY
 DATA impreview          INIT .F.  READONLY
 DATA lwinhide           INIT .T.   READONLY
-DATA cversion           INIT  "(oohg)V 1.7" READONLY
+DATA cversion           INIT  "(oohg)V 2.1" READONLY
 DATA cargo              INIT  .F.
 ////DATA cString            INIT  ""
 
@@ -601,7 +601,7 @@ else
    ::nvfij  := (12/1.65)
    ::nhfij  := (12/3.70)
 endif
-::printimagex(::ntmargin+nlin,::nlmargin+ncol,nlinf,::nlmargin+ncolf,cimage)
+::printimagex(::ntmargin+nlin,::nlmargin+ncol,::ntmargin+nlinf,::nlmargin+ncolf,cimage)
 return self
 
 
@@ -636,7 +636,7 @@ else
    ::nvfij  := (12/1.65)
    ::nhfij  := (12/3.70)
 endif
-::printlinex(::ntmargin+nlin,::nlmargin+ncol,nlinf,::nlmargin+ncolf,atcolor,ntwpen )
+::printlinex(::ntmargin+nlin,::nlmargin+ncol,::ntmargin+nlinf,::nlmargin+ncolf,atcolor,ntwpen )
 
 return self
 
@@ -674,7 +674,7 @@ else
    ::nvfij  := (12/1.65)
    ::nhfij  := (12/3.70)
 endif
-::printrectanglex(::ntmargin+nlin,::nlmargin+ncol,nlinf,::nlmargin+ncolf,atcolor,ntwpen )
+::printrectanglex(::ntmargin+nlin,::nlmargin+ncol,::ntmargin+nlinf,::nlmargin+ncolf,atcolor,ntwpen )
 
 return self
 
@@ -712,7 +712,7 @@ else
    ::nhfij  := (12/3.70)
 endif
 
-::printroundrectanglex(::ntmargin+nlin,::nlmargin+ncol,nlinf,::nlmargin+ncolf,atcolor,ntwpen )
+::printroundrectanglex(::ntmargin+nlin,::nlmargin+ncol,::ntmargin+nlinf,::nlmargin+ncolf,atcolor,ntwpen )
 
 return self
 
@@ -850,7 +850,10 @@ return nil
 METHOD printdatax(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext) CLASS TMINIPRINT
 *-------------------------
 Empty( Data )
-Empty( aColor )
+////Empty( aColor )
+
+default aColor to ::acolor
+
 Empty( nLen )
 if .not. lbold
    if calign="R"
@@ -882,12 +885,14 @@ return self
 *-------------------------
 METHOD printlinex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen ) CLASS TMINIPRINT
 *-------------------------
+default atColor to ::acolor
 @  (nlin+.2)*::nmver+::nvfij,ncol*::nmhor+::nhfij*2 PRINT LINE TO  (nlinf+.2)*::nmver+::nvfij,ncolf*::nmhor+::nhfij*2  COLOR atcolor PENWIDTH ntwpen  //// CPEN
 return self
 
 *-------------------------
 METHOD printrectanglex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen ) CLASS TMINIPRINT
 *-------------------------
+default atColor to ::acolor
 @  nlin*::nmver+::nvfij,ncol*::nmhor+::nhfij*2 PRINT RECTANGLE TO  (nlinf+0.5)*::nmver+::nvfij,ncolf*::nmhor+::nhfij*2 COLOR atcolor  PENWIDTH ntwpen  //// CPEN
 return self
 
@@ -1029,6 +1034,7 @@ return getDefaultPrinter()
 *-------------------------
 METHOD printroundrectanglex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen ) CLASS TMINIPRINT
 *-------------------------
+default atColor to ::acolor
 @  nlin*::nmver+::nvfij,ncol*::nmhor+::nhfij*2 PRINT RECTANGLE TO  (nlinf+0.5)*::nmver+::nvfij,ncolf*::nmhor+::nhfij*2 COLOR atcolor  PENWIDTH ntwpen  ROUNDED //// CPEN
 return self
 
@@ -1152,7 +1158,8 @@ return self
 METHOD PRINTDATAx(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext) CLASS THBPRINTER
 *-------------------------
 Empty( Data )
-Empty( aColor )
+///Empty( aColor )
+default aColor to ::acolor
 Empty( nLen )
 change font "F0" name cfont size nsize
 change font "F1" name cfont size nsize BOLD
@@ -1187,6 +1194,7 @@ return self
 *-------------------------
 METHOD printlinex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen ) CLASS thbprinter
 *-------------------------
+default atColor to ::acolor
 CHANGE PEN "C0" WIDTH ntwpen*10  COLOR atcolor
 SELECT PEN "C0"
 @  nlin*::nmver+::nvfij,ncol*::nmhor+::nhfij*2 , (nlinf)*::nmver+::nvfij,ncolf*::nmhor+::nhfij*2  LINE PEN "C0"  //// CPEN
@@ -1196,6 +1204,7 @@ return self
 *-------------------------
 METHOD printrectanglex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen ) CLASS THBPRINTER
 *-------------------------
+default atColor to ::acolor
 CHANGE PEN "C0" WIDTH ntwpen*10 COLOR atcolor
 SELECT PEN "C0"
 @  nlin*::nmver+::nvfij,ncol*::nmhor+::nhfij*2, (nlinf+0.5)*::nmver+::nvfij, ncolf*::nmhor+::nhfij*2  RECTANGLE  PEN "C0" //// CPEN  RECTANGLE  ///// [PEN <cpen>] [BRUSH <cbrush>]
@@ -1277,6 +1286,7 @@ return self
 *-------------------------
 METHOD printroundrectanglex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen ) CLASS THBPRINTER
 *-------------------------
+default atColor to ::acolor
 CHANGE PEN "C0" WIDTH ntwpen*10 COLOR atcolor
 SELECT PEN "C0"
 hbprn:RoundRect( nlin*::nmver+::nvfij  ,ncol*::nmhor+::nhfij*2 ,(nlinf+0.5)*::nmver+::nvfij ,ncolf*::nmhor+::nhfij*2 ,10, 10,"C0")
@@ -2466,15 +2476,23 @@ METHOD PRINTDATAx(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext) CLA
 *-------------------------
 local nType   := 0
 local nlength := 0
+local cColor  := Chr(253)
+local I
 
 Default cFont to ::cFontName
 Default nSize to ::nFontSize
 Default lBold to .f.
+default aColor to ::acolor
+
 
 empty( data )
-empty( acolor )
 empty( calign )
 empty( nlen )
+
+For Each I in aColor
+    cColor += Chr(I)
+Next
+
 
 /*Tipo de letras. ver pdf.ch*/
 If lBold
@@ -2489,12 +2507,14 @@ Endif
    IF ::cunits == "MM"
       nlin += 3
    Endif
+
+   cText:=cColor + cText
+
    if ::cunits == "MM"
       ::oPdf:AtSay( ctext, nlin, nCol, "M" )
    else
       ::oPdf:AtSay( ctext, nlin*::nmver+::nvfij , nCol*::nmhor+ ::nhfij*2, "M")
    endif
-/////     ::oPdf:AtSay( ctext, nlin , nCol, IIF(::cunits == "MM","M","R"))
 return self
 
 
@@ -2526,9 +2546,9 @@ return self
 *-------------------------
 METHOD printlinex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen ) CLASS TPDFPRINT
 *-------------------------
-
-if nlin = nlinf
-   ::printrectanglex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen*2 )
+default atColor to ::acolor
+if nlin = nlinf .or. ncol = ncolf
+   ::printrectanglex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen /2)
 endif
 
 return self
@@ -2537,14 +2557,27 @@ return self
 *-------------------------
 METHOD printrectanglex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen ) CLASS TPDFPRINT
 *-------------------------
+local cColor  := ""
+local I
+local nvval  := 3.04
+local nhval  := 3.00
+default atColor to ::acolor
 
 Default ntwpen to ::nwpen
-empty(atcolor)
+
+
+////empty(atcolor)
+
+For Each I in atColor
+    cColor += Chr(I)
+Next
 
 if ::cunits=="MM"
-   ::oPdf:Box(nlin,ncol,nlinf,ncolf,ntwpen*2,,"M")
+///   ::oPdf:Box(nlin,ncol,nlinf,ncolf,ntwpen*2,,"M",cColor)
+      ::oPdf:Box1(nlin*nvVal,ncol*nhval,nlinf*nvval,ncolf*nhval,ntwpen*2,cColor)
 else
-   ::oPdf:Box(nlin*::nmver+::nvfij,ncol*::nmhor+ ::nhfij*2,nlinf*::nmver+::nvfij,ncolf*::nmhor+ ::nhfij*2,ntwpen*2,,"R")
+////   ::oPdf:Box(nlin*::nmver+::nvfij,ncol*::nmhor+ ::nhfij*2,nlinf*::nmver+::nvfij,ncolf*::nmhor+ ::nhfij*2,ntwpen*2,,"M",cColor)
+   ::oPdf:Box1(nlin*nvVal*::nmver+::nvfij,ncol*nhval*::nmhor+ ::nhfij*2,nlinf*nvval*::nmver+::nvfij,ncolf*nhval*::nmhor+ ::nhfij*2,ntwpen*2,cColor)
 endif
 
 return self
@@ -2580,7 +2613,6 @@ Endif
 
 /*cprinterx no lo tomamos en cuenta aqui*/
 
-
 return self
 
 
@@ -2588,22 +2620,18 @@ return self
 METHOD getdefprinterx() CLASS TPDFPRINT
 *-------------------------
 local cdefprinter
-////GET DEFAULT PRINTER TO cdefprinter
 return cdefprinter
 
 
 *-------------------------
 METHOD setcolorx() CLASS TPDFPRINT
 *-------------------------
-/*CHANGE PEN "C0" WIDTH ::nwpen COLOR ::acolor
-SELECT PEN "C0"*/
 return self
 
 
 *-------------------------
 METHOD setpreviewsizex( /* ntam */) CLASS TPDFPRINT
 *-------------------------
-/*SET PREVIEW SCALE ntam*/
 return self
 
 

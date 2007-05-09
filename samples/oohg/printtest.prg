@@ -23,6 +23,7 @@ set date ansi
                         ITEM 'RTF' ACTION printtest("RTFPRINT")
                         ITEM 'CSV' ACTION printtest("CSVPRINT")
                         ITEM 'HTML' ACTION printtest("HTMLPRINT")
+                        ITEM 'PDF'  ACTION printtest("PDFPRINT")
 
 
 			ITEM 'report form hbprinter' ACTION repof("HBPRINTER")
@@ -32,8 +33,10 @@ set date ansi
                         ITEM 'report form excelprint' ACTION repof("EXCELPRINT")
                         ITEM 'report form RTF' ACTION repof("RTFPRINT")
                         ITEM 'report form CSV' ACTION repof("CSVPRINT")
-
                         ITEM 'report form HTML' ACTION repof("HTMLPRINT")
+                        ITEM 'report form PDF' ACTION repof("PDFPRINT")
+
+
 
                         ITEM 'edit demo hbprinter' ACTION editp("HBPRINTER")
                         ITEM 'edit demo miniprint' ACTION editp("MINIPRINT")
@@ -74,13 +77,18 @@ if oprint:lprerror
       oprint:begindoc()
       oprint:setpreviewsize(1)  /// tamaœo del preview  1 menor,2 mas grande ,3 mas...
       oprint:beginpage()
+      oprint:printdata(0,1,"impresion linea 0")
+      oprint:setlmargin(4)
+      oprint:settmargin(2)
+      oprint:printdata(1,1,"margen izquierdo a 4 caracteres, de arriba 2 lineas")
       oprint:printdata(8,10,"esta es una prueba con times new roman size 14","times new roman",14,.F.) ///
-      oprint:printdata(11,10,"esta es una prueba") ///
+      oprint:printdata(11,10,"esta es una prueba",,,,{0,0,255}) ///
       oprint:printdata(12,10,"esta es una prueba con negrita",,,.T.) ///
       oprint:printdata(13,10,.T.)
       oprint:printdata(13,20,.F.)
 
       oprint:printdata(14,10,"esto es left", , , .F. , ,"L" ,30)
+      oprint:setcolor({0,128,255})  
       oprint:printdata(15,10,"esta es center", , , .F. , ,"C" ,30)
       oprint:printdata(16,10,1500.00, ,10 , .F. , ,"R" ,30) ///a la derecha courier new
       oprint:printdata(17,10,25000.00 ,,10 , .F. , ,"R" ,30)
@@ -90,11 +98,11 @@ if oprint:lprerror
       oprint:printdata(19,10, TRANSFORM(25000.00,"999,999.99"),"arial",10 , .F. , ,"R" ,)
       oprint:printdata(29,40,"TPRINT Version: "+oprint:version())
       oprint:printimage(21,10,30,30,"cvcjpg.jpg")
-      oprint:printline(21,10,30,30,,2)
-      oprint:setcolor({0,128,255})  /// cambia el color en curso a azul
-      oprint:printrectangle(35,10,50,30,,3)
+      oprint:printline(21,10,21,30,,1)
+      oprint:printrectangle(35,10,50,30,{0,0,255},1)
+////      oprint:printrectangle(35,10,50,30)
       oprint:printroundrectangle(35,40,50,55)
-      oprint:printline(54,10,54,50,,4)
+      oprint:printline(51,50,58,50,,1)
       oprint:endpage()
       oprint:enddoc()
       oprint:RELEASE()
