@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.128 2007-04-24 22:12:12 declan2005 Exp $
+ * $Id: h_windows.prg,v 1.129 2007-05-10 00:09:08 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1573,15 +1573,14 @@ METHOD Activate( lNoStop, oWndLoop ) CLASS TForm
    If ::lVisible
       _OOHG_UserWindow := Self
       ::Show()
+      If ! ::SetFocusedSplitChild()
+         ::SetActivationFocus()
+      EndIf
    EndIf
 
    ::Active := .T.
    ::ProcessInitProcedure()
    ::RefreshData()
-
-   If ! ::SetFocusedSplitChild()
-      ::SetActivationFocus()
-   EndIf
 
    // Starts the Message Loop
    If ! lNoStop

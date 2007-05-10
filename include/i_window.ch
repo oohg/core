@@ -1,5 +1,5 @@
 /*
- * $Id: i_window.ch,v 1.25 2007-03-25 05:06:09 guerra000 Exp $
+ * $Id: i_window.ch,v 1.26 2007-05-10 00:09:07 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -225,13 +225,13 @@
 	=> ;
         _OOHG_TempWindowName := <(w)>;;
         DECLARE WINDOW <w>;;
-        #include \< <w>.fmg\>
+        #include \<<w>.fmg\>
 
 	#xcommand LOAD WINDOW <ww> AS <w> ;
 	=> ;
         _OOHG_TempWindowName := <(w)>;;
         DECLARE WINDOW <w>;;
-        #include \< <ww>.fmg\>
+        #include \<<ww>.fmg\>
 
 
 #command RELEASE WINDOW <name> ;
