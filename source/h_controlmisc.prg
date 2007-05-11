@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.75 2007-03-25 05:06:09 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.76 2007-05-11 04:42:14 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1792,20 +1792,19 @@ Return nPos
 METHOD DoEvent( bBlock ) CLASS TControl
 *-----------------------------------------------------------------------------*
 Local lRetVal
-	if valtype( bBlock )=='B'
+   If valtype( bBlock ) == "B"
 		_PushEventInfo()
-      _OOHG_ThisForm := ::Parent
-      _OOHG_ThisType := 'C'
-      _OOHG_ThisControl := Self
+      _OOHG_ThisForm      := ::Parent
+      _OOHG_ThisType      := "C"
+      _OOHG_ThisEventType := ""
+      _OOHG_ThisControl   := Self
+      _OOHG_ThisObject    := Self
 		Eval( bBlock )
 		_PopEventInfo()
-
 		lRetVal := .T.
-
 	Else
 		lRetVal := .F.
 	EndIf
-
 Return lRetVal
 
 *-----------------------------------------------------------------------------*

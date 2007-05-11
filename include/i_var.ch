@@ -1,5 +1,5 @@
 /*
- * $Id: i_var.ch,v 1.14 2006-08-05 02:17:49 guerra000 Exp $
+ * $Id: i_var.ch,v 1.15 2007-05-11 04:42:14 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -124,5 +124,6 @@ MEMVAR _OOHG_AllVars
 #xtranslate  _OOHG_ThisEventType       => _OOHG_AllVars \[  25 \]
 
 #xtranslate  _OOHG_ThisControl         => _OOHG_AllVars \[  27 \]
+#xtranslate  _OOHG_ThisObject          => _OOHG_AllVars \[  28 \]
 
 #xtranslate  _OOHG_ThisItemCellValue   => _OOHG_AllVars \[  29 \]

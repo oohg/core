@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.129 2007-05-10 00:09:08 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.130 2007-05-11 04:42:14 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1485,7 +1485,7 @@ Local lSiono
         if lNewBalloon
            oreg:=TReg32():New(HKEY_CURRENT_USER,"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced",.F.)
            oreg:get("EnableBalloonTips",lsiono)
-           oreg:close()           
+           oreg:close()
         endif
             lBalloon := lNewBalloon
         Endif
@@ -1854,6 +1854,7 @@ Local lRetVal := .F.
       _OOHG_ThisEventType := cEventType
       _OOHG_ThisType      := "W"
       _OOHG_ThisControl   := NIL
+      _OOHG_ThisObject    := Self
 		lRetVal := Eval( bBlock )
 		_PopEventInfo()
 	EndIf
@@ -3353,7 +3354,7 @@ Return Nil
 *------------------------------------------------------------------------------*
 Procedure _PushEventInfo
 *------------------------------------------------------------------------------*
-   aAdd( _OOHG_aEventInfo, { _OOHG_ThisForm, _OOHG_ThisEventType, _OOHG_ThisType, _OOHG_ThisControl } )
+   aAdd( _OOHG_aEventInfo, { _OOHG_ThisForm, _OOHG_ThisEventType, _OOHG_ThisType, _OOHG_ThisControl, _OOHG_ThisObject } )
 Return
 
 *------------------------------------------------------------------------------*
@@ -3366,12 +3367,14 @@ Local l
       _OOHG_ThisEventType := _OOHG_aEventInfo[ l ][ 2 ]
       _OOHG_ThisType      := _OOHG_aEventInfo[ l ][ 3 ]
       _OOHG_ThisControl   := _OOHG_aEventInfo[ l ][ 4 ]
+      _OOHG_ThisObject    := _OOHG_aEventInfo[ l ][ 5 ]
       aSize( _OOHG_aEventInfo, l - 1 )
 	Else
       _OOHG_ThisForm      := nil
       _OOHG_ThisType      := ''
       _OOHG_ThisEventType := ''
       _OOHG_ThisControl   := nil
+      _OOHG_ThisObject    := nil
 	EndIf
 Return
 

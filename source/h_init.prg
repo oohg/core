@@ -1,5 +1,5 @@
 /*
- * $Id: h_init.prg,v 1.17 2006-08-05 02:17:49 guerra000 Exp $
+ * $Id: h_init.prg,v 1.18 2007-05-11 04:42:14 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -103,10 +103,11 @@ INIT PROCEDURE _OOHG_INIT()
 
    _OOHG_Main        := nil
 
+   _OOHG_ThisType        := ''
    _OOHG_ThisForm := NIL
    _OOHG_ThisControl := nil
-
    _OOHG_ThisEventType := ''
+   _OOHG_ThisObject := ''
 
    _OOHG_ExtendedNavigation := .F.
 
@@ -120,8 +121,6 @@ INIT PROCEDURE _OOHG_INIT()
    _OOHG_ThisQueryData     := ""
    _OOHG_ThisQueryRowIndex  := 0
    _OOHG_ThisQueryColIndex  := 0
-
-   _OOHG_ThisType        := ''
 
    _OOHG_DefaultFontName         := 'Arial'
    _OOHG_DefaultFontSize         := 9

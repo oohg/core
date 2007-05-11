@@ -1,5 +1,5 @@
 /*
- * $Id: i_this.ch,v 1.4 2007-03-25 05:06:09 guerra000 Exp $
+ * $Id: i_this.ch,v 1.5 2007-05-11 04:42:14 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -91,22 +91,27 @@
 	Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
+// COMMON (THIS)
+
+#xtranslate This . <p:Release,Show,Hide,SetFocus> [ () ] => _OOHG_ThisObject:<p>()
+#xtranslate This . <p:Name,Row,Col,Width,Height,Caption,BackColor,Visible,Enabled> => _OOHG_ThisObject:<p>
+
 // WINDOWS (THIS)
 
-#xtranslate This . <p:Title,NotifyIcon,NotifyTooltip,FocusedControl> => _OOHG_THISFORM:<p>
-#xtranslate This . <p:Activate,Center,Release,Maximize,Minimize,Restore,Show,Hide,SetFocus> [ () ] => _OOHG_THISFORM:<p>()
+#xtranslate This . <p:Title,NotifyIcon,NotifyTooltip,FocusedControl> => _OOHG_ThisForm:<p>
+#xtranslate This . <p:Activate,Center,Maximize,Minimize,Restore> [ () ] => _OOHG_ThisForm:<p>()
 
 // WINDOWS (THISWINDOW)
 
-#xtranslate ThisWindow . <p:Title,NotifyIcon,NotifyTooltip,FocusedControl,Name,Row,Col,Width,Height> => _OOHG_THISFORM:<p>
-#xtranslate ThisWindow . <p:Activate,Center,Release,Maximize,Minimize,Restore,Show,Hide,SetFocus> [ () ] => _OOHG_THISFORM:<p>()
+#xtranslate ThisWindow . <p:Title,NotifyIcon,NotifyTooltip,FocusedControl,Name,Row,Col,Width,Height> => _OOHG_ThisForm:<p>
+#xtranslate ThisWindow . <p:Activate,Center,Release,Maximize,Minimize,Restore,Show,Hide,SetFocus> [ () ] => _OOHG_ThisForm:<p>()
 
 // CONTROLS
 
 * Property without arguments
 
-#xtranslate This . <p:BackColor,FontColor,ForeColor,Value,Address,Picture,Tooltip,FontName,FontSize,FontBold,FontItalic,FontUnderline,FontStrikeout,Caption,Displayvalue,Visible,Enabled,Checked,ItemCount,RangeMin,RangeMax,Length,Position,CaretPos> => GetProperty ( _OOHG_THISFORM:NAME , _OOHG_THISCONTROL:NAME , <(p)> )
-#xtranslate This . <p:BackColor,FontColor,ForeColor,Value,ReadOnly,Address,Picture,Tooltip,FontName,FontSize,FontBold,FontItalic,FontUnderline,FontStrikeout,Caption,DisplayValue,Enabled,Checked,RangeMin,RangeMax,Repeat,Speed,Volume,Zoom,Position,CaretPos> := <arg> => SetProperty ( _OOHG_THISFORM:NAME , _OOHG_THISCONTROL:NAME , <(p)> , <arg> )
+#xtranslate This . <p:FontColor,ForeColor,Value,Address,Picture,Tooltip,FontName,FontSize,FontBold,FontItalic,FontUnderline,FontStrikeout,Displayvalue,Checked,ItemCount,RangeMin,RangeMax,Length,Position,CaretPos> => GetProperty ( _OOHG_THISFORM:NAME , _OOHG_THISCONTROL:NAME , <(p)> )
+#xtranslate This . <p:FontColor,ForeColor,Value,ReadOnly,Address,Picture,Tooltip,FontName,FontSize,FontBold,FontItalic,FontUnderline,FontStrikeout,DisplayValue,Checked,RangeMin,RangeMax,Repeat,Speed,Volume,Zoom,Position,CaretPos> := <arg> => SetProperty ( _OOHG_THISFORM:NAME , _OOHG_THISCONTROL:NAME , <(p)> , <arg> )
 
 * Property with 1 argument
 
@@ -133,13 +138,6 @@
 
 #xtranslate This . <p:AddControl,AddColumn> ( <arg1> , <arg2> , <arg3>  , <arg4> ) => DoMethod ( _OOHG_THISFORM:NAME , _OOHG_THISCONTROL:NAME , <(p)> , <arg1> , <arg2> , <arg3> , <arg4> )
 
-
-// COMMON ( REQUIRES TYPE CHECK )
-
-#xtranslate This . <p:Name,Row,Col,Width,Height>        => if ( _OOHG_THISType == 'C' , GetProperty ( _OOHG_THISFORM:NAME , _OOHG_THISCONTROL:NAME , <(p)> ) , GetProperty ( _OOHG_THISFORM:NAME , <(p)> ) )
-#xtranslate This . <p:Row,Col,Width,Height>     := <arg> => if ( _OOHG_THISType == 'C' , SetProperty ( _OOHG_THISFORM:NAME , _OOHG_THISCONTROL:NAME , <(p)> , <arg> ) , SetProperty ( _OOHG_THISFORM:NAME , <(p)> , <arg> ) )
-#xtranslate This . <p:Show,Hide,SetFocus> [ () ]        => if ( _OOHG_THISType == 'C' , DoMethod ( _OOHG_THISFORM:NAME , _OOHG_THISCONTROL:NAME , <(p)> ) , DoMethod ( _OOHG_THISFORM:NAME , <(p)> ) )
-
 // EVENT PROCEDURES
 
 #xtranslate This . QueryRowIndex => _OOHG_THISQueryRowIndex
@@ -152,3 +150,8 @@
 #xtranslate This . CellWidth => _OOHG_THISItemCellWidth
 #xtranslate This . CellHeight => _OOHG_THISItemCellHeight
 #xtranslate This . CellValue => _OOHG_THISItemCellValue
+
+// "Virtual" variables
+
+#xtranslate This : <x> => _OOHG_ThisObject:<x>
+#xtranslate ThisWindow : <x> => _OOHG_ThisForm:<x>
