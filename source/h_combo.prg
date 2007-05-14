@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.22 2006-11-11 21:07:01 guerra000 Exp $
+ * $Id: h_combo.prg,v 1.23 2007-05-14 04:24:19 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -202,7 +202,7 @@ Local ControlHandle , rcount := 0 , BackRec , cset := 0 , WorkArea , cField
 
 			Do While ! (WorkArea)->(Eof())
 				rcount++
-	        		if value == (WorkArea)->(RecNo())
+            if value == (WorkArea)->(RecNo())
 					cset := rcount
 				EndIf
 				ComboAddString (ControlHandle, (WorkArea)->&(cField) )
@@ -270,18 +270,18 @@ Local WorkArea, BackRec, RCount, AuxVal
       If ValType ( ::WorkArea ) $ 'CM'
          ::nValue  := uValue
          WorkArea := ::WorkArea
-		        rcount := 0
+         rcount := 0
 			BackRec := (WorkArea)->(RecNo())
 			(WorkArea)->(DBGoTop())
 			Do While ! (WorkArea)->(Eof())
 				rcount++
-               if uValue == (WorkArea)->(RecNo())
+            if uValue == If( Empty( ::ValueSource ), ( WorkArea )->( RecNo() ), &( ::ValueSource ) )
 					Exit
 				EndIf
 				(WorkArea)->(DBSkip())
 			EndDo
-			(WorkArea)->(DBGoTo(BackRec))
-         ComboSetCurSel( ::hWnd ,rcount)
+         (WorkArea)->( DBGoTo(BackRec) )
+         ComboSetCurSel( ::hWnd ,rcount )
 		Else
          ComboSetCursel( ::hWnd , uValue )
 		EndIf

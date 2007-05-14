@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog,v 1.351 2007-05-14 02:25:09 guerra000 Exp $
+ * $Id: ChangeLog,v 1.352 2007-05-14 04:24:18 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-05-13 23:24 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_combo.prg
+    * Fixed ::Value assignment when ::ValueSource is defined.
+      Reported/fixed by jose. Thanks!
 
 2007-05-13 21:22 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/common_make.bat
