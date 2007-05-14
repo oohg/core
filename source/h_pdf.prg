@@ -1,5 +1,5 @@
 /*
-* $Id: h_pdf.prg,v 1.3 2007-05-09 23:04:37 declan2005 Exp $
+* $Id: h_pdf.prg,v 1.4 2007-05-14 02:22:48 guerra000 Exp $
 */
 //컴컴컴컴컴컴컴컴컴컴컴컴�\\
 //
@@ -264,7 +264,7 @@ CREATE CLASS tPdf
 
 EXPORT:
 DATA aReport
-DATA afo INIT ;
+DATA afo1 INIT ;
  { 250, ;
    250, ;
    250, ;
@@ -1160,8 +1160,9 @@ DATA afo INIT ;
  0, ;
  0, ;
  0, ;
- 0, ;
-   278, ;
+ 0 }
+DATA afo2 INIT ;
+ { 278, ;
    278, ;
    278, ;
    278, ;
@@ -2056,8 +2057,9 @@ DATA afo INIT ;
  0, ;
  0, ;
  0, ;
- 0, ;
-   600, ;
+ 0 }
+DATA afo3 INIT ;
+ { 600, ;
    600, ;
    600, ;
    600, ;
@@ -3025,7 +3027,7 @@ ENDCLASS
 
 METHOD Init( cFile, nLen, lOptimize )
 
-local cTemp, nI, nJ, n1, n2 := 896, n12,ndesp
+local cTemp
 
 DEFAULT nLen  TO 200
 DEFAULT lOptimize TO .f.
@@ -3067,22 +3069,9 @@ DEFAULT lOptimize TO .f.
 ::aReport[ PAGEIMAGES   ] := {}
 ::aReport[ PAGEFONTS] := {}
 
-
-n1:= 5376 / ( 2 * n2 )
-::aReport[ FONTWIDTH] := array( n1, n2 )
-
 ::aReport[ OPTIMIZE ] := lOptimize
 ::aReport[ NEXTOBJ  ] := ::aReport[ REPORTOBJ ] + 4
-n12 := 2 * n2
-ndesp:=0
-for nI := 1 to 3
-
-   for nJ := 1 to 896
-   ndesp++
-  ::aReport[ FONTWIDTH ][ nI ][ nJ ] :=  ::AFo [ ndesp ]
-   next
-next
-::Afo:={}
+::aReport[ FONTWIDTH ] := { ::afo1, ::afo2, ::afo3 }
 ::aReport[ DOCLEN   ] := 0
 cTemp := "%PDF-1.3" + CRLF
 ::aReport[ DOCLEN   ] += len( cTemp )
