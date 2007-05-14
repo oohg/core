@@ -1,11 +1,26 @@
 /*
- * $Id: ChangeLog,v 1.350 2007-05-11 04:42:14 guerra000 Exp $
+ * $Id: ChangeLog,v 1.351 2007-05-14 02:25:09 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-05-13 21:22 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/common_make.bat
+  - source/c_toolbar.c
+  * source/h_toolbar.prg
+  * source/makelib_bcc.bat
+  * source/makelib_minwg.bat
+    * Moved C code to h_toolbar.prg file.
+    - c_toolbar.c file removed.
+    * Codification style fixes.
+  * include/i_window.ch
+    * Fixed for allow "control inside TAB page" semi-OOP notation
+      (TAB control name ignored).
+  * source/h_pdf.prg
+    * ::AFO array splitted to 3 arrays.
 
 2007-05-10 23:40 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * include/i_this.ch
@@ -57,7 +72,6 @@
   * source/h_print.prg
    + added ::setlmargin() and ::settmargin()  methods   ( left and top )
 
-
 2007-04-17 6:57 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source/h_report.prg
    ! fixed unused variables in xharbour.
@@ -69,7 +83,6 @@
 2007-04-11 09:38 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * ./compile_pc.bat
     ! Fixed compilation when resurce file exists.
-
 
 2007-04-07 19:13 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source/h_report.prg
