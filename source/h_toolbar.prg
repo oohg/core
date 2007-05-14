@@ -1,5 +1,5 @@
 /*
- * $Id: h_toolbar.prg,v 1.18 2007-03-25 04:14:36 guerra000 Exp $
+ * $Id: h_toolbar.prg,v 1.19 2007-05-14 02:24:45 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -117,30 +117,22 @@ Local ControlHandle, id, lSplitActive
 		caption := ""
 	EndIf
 
-	if valtype (w) == 'U'
-		w := 0
-	EndIf
-
-	if valtype (h) == 'U'
-		h := 0
-	EndIf
+   ASSIGN ::nCol        VALUE x TYPE "N"
+   ASSIGN ::nRow        VALUE y TYPE "N"
+   ASSIGN ::nWidth      VALUE w TYPE "N"
+   ASSIGN ::nHeight     VALUE h TYPE "N"
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize,,,, lRtl )
-
-   If ::Parent:Type == "X"
-      MsgOOHGError("ToolBars Can't Be Defined Inside SplitChild Windows. Program terminated" )
-	Endif
 
    _OOHG_ActiveToolBar := Self
 
 	Id := _GetId()
 
-   lSplitActive := ::SetSplitBoxInfo( Break, caption, w,, .T. )
-   ControlHandle := InitToolBar( ::ContainerhWnd, Caption, id, 0, 0, w, h, "", 0, flat, bottom, righttext, lSplitActive, border, ::lRtl )
+   lSplitActive := ::SetSplitBoxInfo( Break, caption, ::nWidth,, .T. )
+   ControlHandle := InitToolBar( ::ContainerhWnd, Caption, id, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight, "", 0, flat, bottom, righttext, lSplitActive, border, ::lRtl )
 
    ::Register( ControlHandle, ControlName, , , ToolTip, Id )
    ::SetFont( , , bold, italic, underline, strikeout )
-   ::SizePos( y, x, w, h )
 
    ::OnClick := ProcedureName
 
@@ -277,13 +269,17 @@ METHOD Define( ControlName, x, y, Caption, ProcedureName, w, h, image, ;
 *-----------------------------------------------------------------------------*
 Local ControlHandle, id, nPos
 
+   ASSIGN ::nCol        VALUE x TYPE "N"
+   ASSIGN ::nRow        VALUE y TYPE "N"
+   ASSIGN ::nWidth      VALUE w TYPE "N"
+   ASSIGN ::nHeight     VALUE h TYPE "N"
+
 Empty( FLAT )
 
    ::SetForm( ControlName, _OOHG_ActiveToolBar )
 
-   If ValType( WHOLEDROPDOWN ) != "L"
-      WHOLEDROPDOWN := .F.
-   EndIf
+   ASSIGN WHOLEDROPDOWN VALUE WHOLEDROPDOWN TYPE "L" DEFAULT .F.
+   ASSIGN Caption       VALUE Caption TYPE "CM" DEFAULT ""
 
    If valtype( ProcedureName ) == "B" .and. WHOLEDROPDOWN
       MsgOOHGError( "Action and WholeDropDown clauses can't be used simultaneously. Program terminated" )
@@ -291,44 +287,11 @@ Empty( FLAT )
 
 	id := _GetId()
 
-	if valtype(Caption) == "U"
-		Caption := ""
-	endif
-	if valtype(w) == "U"
-		w := 0
-	endif
-	if valtype(h) == "U"
-		h := 0
-	endif
-	if valtype(lostfocus) == "U"
-		lostfocus := ""
-	endif
-	if valtype(gotfocus) == "U"
-      gotfocus := ""
-	endif
-
-	if valtype(caption) == "U"
-      caption := tooltip
-	endif
-
-	if valtype(caption) == "U"
-		caption := ""
-	endif
-
-   ControlHandle := InitToolButton( ::ContainerhWnd, Caption, id , 0, 0, 0, 0, image , 0 , separator , autosize , check , group , dropdown , WHOLEDROPDOWN )
-
-/*
-   if valtype(image) $ "CM"
-      if ControlHandle == 0
-         MsgOOHGError ('ToolBar Button Image: ' + chr(34) + Image + chr(34) + ' Not Available. Program terminated' )
-      EndIf
-   EndIf
-*/
+   ControlHandle := InitToolButton( ::ContainerhWnd, Caption, id , ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight, image , 0 , separator , autosize , check , group , dropdown , WHOLEDROPDOWN )
 
    nPos := GetButtonBarCount( ::ContainerhWnd ) - if( separator, 1, 0 )
 
    ::Register( ControlHandle, ControlName, , , ToolTip, Id )
-   ::SizePos( y, x, w, h )
 
    ::OnClick := ProcedureName
    ::Position  :=  nPos
@@ -368,17 +331,369 @@ RETURN ::Super:Enabled
 METHOD Events_Notify( wParam, lParam ) CLASS TToolButton
 *-----------------------------------------------------------------------------*
 Local nNotify := GetNotifyCode( lParam )
-
    If nNotify == TTN_NEEDTEXT
-
-         If VALTYPE( ::ToolTip ) $ "CM"
-
-            ShowToolButtonTip ( lParam , ::ToolTip )
-
-         Endif
-
+      If VALTYPE( ::ToolTip ) $ "CM"
+         ShowToolButtonTip( lParam , ::ToolTip )
+      Endif
       Return nil
-
    EndIf
-
 Return ::Super:Events_Notify( wParam, lParam )
+
+#pragma BEGINDUMP
+
+#define _WIN32_IE      0x0500
+#define HB_OS_WIN_32_USED
+#define _WIN32_WINNT   0x0400
+#include <shlobj.h>
+
+#include <windows.h>
+#include <commctrl.h>
+#include "hbapi.h"
+#include "hbvm.h"
+#include "hbstack.h"
+#include "hbapiitm.h"
+#include "winreg.h"
+#include "tchar.h"
+#include <stdlib.h>
+#include "../include/oohg.h"
+
+static WNDPROC lpfnOldWndProc = 0;
+
+static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+{
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
+}
+
+#define NUM_TOOLBAR_BUTTONS 20
+
+#ifdef MAKELONG
+   #undef MAKELONG
+#endif
+#define MAKELONG(a, b)      ((LONG)(((WORD)((DWORD_PTR)(a) & 0xffff)) | (((DWORD)((WORD)((DWORD_PTR)(b) & 0xffff))) << 16)))
+
+HB_FUNC( INITTOOLBAR )
+{
+   HWND hwnd;
+   HWND hwndTB;
+   int Style = WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN |
+               WS_CLIPSIBLINGS | TBSTYLE_TOOLTIPS;
+
+   int ExStyle;
+   int TbExStyle = TBSTYLE_EX_DRAWDDARROWS ;
+
+   hwnd = HWNDparam( 1 );
+
+   ExStyle = _OOHG_RTL_Status( hb_parl( 15 ) );
+
+   if( hb_parl (14) )
+   {
+      ExStyle |= WS_EX_CLIENTEDGE;
+   }
+
+	if ( hb_parl (10) )
+	{
+		Style = Style | TBSTYLE_FLAT ;
+	}
+
+	if ( hb_parl (11) )
+	{
+		Style = Style | CCS_BOTTOM ;
+	}
+
+	if ( hb_parl (12) )
+	{
+		Style = Style | TBSTYLE_LIST ;
+	}
+
+	if ( hb_parl (13) )
+	{
+		Style = Style | CCS_NOPARENTALIGN | CCS_NODIVIDER | CCS_NORESIZE;
+	}
+
+	hwndTB = CreateWindowEx( ExStyle, TOOLBARCLASSNAME, (LPSTR) NULL,
+		Style ,
+		0, 0 ,0 ,0,
+		hwnd, (HMENU)hb_parni(3), GetModuleHandle(NULL), NULL);
+
+   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hwndTB, GWL_WNDPROC, ( LONG ) SubClassFunc );
+
+	if (hb_parni(6) && hb_parni(7))
+	{
+		SendMessage(hwndTB,TB_SETBUTTONSIZE,hb_parni(6),hb_parni(7));
+		SendMessage(hwndTB,TB_SETBITMAPSIZE,0,(LPARAM) MAKELONG(hb_parni(6),hb_parni(7)));
+	}
+
+    SendMessage( hwndTB, TB_SETEXTENDEDSTYLE, 0, ( LPARAM ) TbExStyle );
+
+    ShowWindow( hwndTB, SW_SHOW );
+    HWNDret( hwndTB );
+}
+
+HB_FUNC( INITTOOLBUTTON )
+{
+	HWND hwndTB;
+	HWND himage;
+	TBADDBITMAP tbab;
+	TBBUTTON tbb[NUM_TOOLBAR_BUTTONS];
+	int index;
+	int nPoz;
+	int nBtn;
+	int Style ;
+
+   memset( tbb, 0, sizeof( tbb ) );
+
+   hwndTB = HWNDparam( 1 );
+
+   himage = _OOHG_LoadImage( hb_parc( 8 ), LR_LOADMAP3DCOLORS | LR_LOADTRANSPARENT, 0, 0, hwndTB, -1 );
+
+	// Add the bitmap containing button images to the toolbar.
+
+	Style =  TBSTYLE_BUTTON ;
+
+	if ( hb_parl(11) )
+	{
+		Style = Style | TBSTYLE_AUTOSIZE ;
+	}
+
+	nBtn = 0;
+	tbab.hInst = NULL;
+	tbab.nID   = (int)himage;
+	nPoz = SendMessage(hwndTB, TB_ADDBITMAP, (WPARAM) 1,(LPARAM) &tbab);
+
+	// Add the strings
+
+	if (strlen(hb_parc(2)) > 0 )
+	{
+		index = SendMessage(hwndTB,TB_ADDSTRING,0,(LPARAM) hb_parc(2));
+		tbb[nBtn].iString = index;
+	}
+
+	if ( hb_parl(12) )
+	{
+		Style = Style | BTNS_CHECK ;
+	}
+
+	if ( hb_parl(13) )
+	{
+		Style = Style | BTNS_GROUP ;
+	}
+
+	if ( hb_parl(14) )
+	{
+      		Style = Style | BTNS_DROPDOWN ;
+	}
+
+	if ( hb_parl(15) )
+	{
+      		Style = Style | BTNS_WHOLEDROPDOWN ;
+	}
+
+	SendMessage(hwndTB,TB_AUTOSIZE,0,0);
+
+	// Button New
+
+	tbb[nBtn].iBitmap = nPoz;
+	tbb[nBtn].idCommand = hb_parni(3);
+	tbb[nBtn].fsState = TBSTATE_ENABLED;
+    tbb[nBtn].fsStyle = ( WORD ) Style;
+	nBtn++;
+
+   	if ( hb_parl (10) )
+	{
+		tbb[nBtn].fsState = 0;
+		tbb[nBtn].fsStyle = TBSTYLE_SEP;
+		nBtn++;
+	}
+
+   SendMessage( hwndTB, TB_BUTTONSTRUCTSIZE, ( WPARAM ) sizeof( TBBUTTON ), 0 );
+
+   SendMessage( hwndTB, TB_ADDBUTTONS, nBtn, ( LPARAM ) &tbb );
+
+   ShowWindow( hwndTB, SW_SHOW );
+
+   HWNDret( himage );
+}
+
+HB_FUNC( CDISABLETOOLBARBUTTON )
+{
+   hb_retnl( SendMessage( HWNDparam( 1 ), TB_ENABLEBUTTON, hb_parni( 2 ), MAKELONG( 0, 0 ) ) );
+}
+
+HB_FUNC( CENABLETOOLBARBUTTON )
+{
+   hb_retnl( SendMessage( HWNDparam( 1 ), TB_ENABLEBUTTON, hb_parni(2), MAKELONG(1,0)) );
+}
+
+HB_FUNC( GETSIZETOOLBAR )
+{
+	SIZE lpSize;
+	TBBUTTON lpBtn;
+	int i, nBtn;
+	OSVERSIONINFO osvi;
+
+   SendMessage( HWNDparam( 1 ), TB_GETMAXSIZE, 0, (LPARAM)&lpSize );
+
+	osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+	GetVersionEx(&osvi);
+
+   nBtn = SendMessage( HWNDparam( 1 ), TB_BUTTONCOUNT, 0, 0 );
+
+   for( i = 0 ; i < nBtn ; i++ )
+	{
+      SendMessage( HWNDparam( 1 ),TB_GETBUTTON, i, (LPARAM)  &lpBtn);
+
+		if (osvi.dwPlatformId != VER_PLATFORM_WIN32_NT && osvi.dwMajorVersion >= 4)
+		{
+			if (lpBtn.fsStyle & BTNS_DROPDOWN )
+			{
+				lpSize.cx = lpSize.cx + 15 ;
+			}
+		}
+
+   }
+
+	hb_retnl( MAKELONG(lpSize.cy,lpSize.cx) );
+}
+
+LONG WidestBtn(LPCTSTR pszStr, HWND hwnd)
+{
+   SIZE     sz;
+   LOGFONT  lf;
+   HFONT    hFont;
+   HDC      hdc;
+
+   SystemParametersInfo(SPI_GETICONTITLELOGFONT,sizeof(LOGFONT),&lf,0);
+
+   hdc = GetDC(hwnd);
+   hFont = CreateFontIndirect(&lf);
+   SelectObject(hdc,hFont);
+
+   GetTextExtentPoint32(hdc, pszStr, strlen(pszStr), &sz);
+
+   ReleaseDC(hwnd, hdc);
+   DeleteObject(hFont);
+
+   return (MAKELONG(sz.cx ,sz.cy) );
+}
+
+HB_FUNC( MAXTEXTBTNTOOLBAR )      //(HWND hwndTB, int cx, int cy)
+{
+	char cString[255] = "" ;
+
+	int i,nBtn;
+	int tmax = 0;
+	int ty = 0;
+	DWORD tSize;
+	DWORD Style;
+	TBBUTTON lpBtn;
+   HWND hWnd;
+
+   hWnd = HWNDparam( 1 );
+   nBtn  = SendMessage( hWnd, TB_BUTTONCOUNT,0,0);
+   for( i = 0; i < nBtn; i++ )
+   {
+      SendMessage( hWnd, TB_GETBUTTON, i, (LPARAM)  &lpBtn);
+      SendMessage( hWnd, TB_GETBUTTONTEXT , lpBtn.idCommand, (LPARAM)(LPCTSTR) cString);
+
+      tSize = WidestBtn(cString, hWnd );
+		ty = HIWORD(tSize);
+
+	    if (tmax < LOWORD(tSize) ) tmax = LOWORD(tSize);
+
+	}
+    if (tmax == 0){
+        SendMessage( hWnd, TB_SETBUTTONSIZE, hb_parni(2),hb_parni(3));//  -ty);
+        SendMessage( hWnd, TB_SETBITMAPSIZE,  0,(LPARAM)MAKELONG(hb_parni(2),hb_parni(3)));
+    }
+    else{
+      Style = SendMessage( hWnd, TB_GETSTYLE, 0, 0);
+    	if (Style & TBSTYLE_LIST){
+            SendMessage( hWnd, TB_SETBUTTONSIZE, hb_parni(2),hb_parni(3)+2);
+            SendMessage( hWnd, TB_SETBITMAPSIZE,0,(LPARAM) MAKELONG(hb_parni(3),hb_parni(3)));
+        }else{
+            SendMessage( hWnd, TB_SETBUTTONSIZE, hb_parni(2),hb_parni(3)-ty+2);
+            SendMessage( hWnd, TB_SETBITMAPSIZE,0,(LPARAM) MAKELONG(hb_parni(3)-ty,hb_parni(3)-ty));
+        }
+       SendMessage( hWnd,TB_SETBUTTONWIDTH, 0, (LPARAM) MAKELONG(hb_parni(2),hb_parni(2)+2));
+    }
+   SendMessage( hWnd,TB_AUTOSIZE,0,0);  //JP62
+}
+
+
+HB_FUNC( ISBUTTONBARCHECKED)          // hb_parni(2) -> Position in ToolBar
+{
+   TBBUTTON lpBtn;
+
+   SendMessage( HWNDparam( 1 ),TB_GETBUTTON, hb_parni(2), (LPARAM)  &lpBtn);
+   hb_retl( SendMessage( HWNDparam( 1 ),TB_ISBUTTONCHECKED , lpBtn.idCommand , 0 ) );
+}
+
+HB_FUNC( CHECKBUTTONBAR )          // hb_parni(2) -> Position in ToolBar
+{
+	TBBUTTON lpBtn;
+   SendMessage( HWNDparam( 1 ),TB_GETBUTTON, hb_parni(2), (LPARAM)  &lpBtn);
+   SendMessage( HWNDparam( 1 ),TB_CHECKBUTTON , lpBtn.idCommand , hb_parl(3) );
+}
+
+HB_FUNC( GETBUTTONBARRECT )
+{
+   RECT rc;
+   SendMessage( HWNDparam( 1 ), TB_GETITEMRECT,(WPARAM) hb_parnl(2),(LPARAM) &rc);
+   hb_retnl( MAKELONG(rc.left,rc.bottom) );
+ }
+
+HB_FUNC( GETBUTTONPOS )
+{
+   hb_retnl( (LONG) (((NMTOOLBAR FAR *) hb_parnl(1))->iItem) );
+}
+
+HB_FUNC( GETBUTTONBARCOUNT)
+{
+    hb_retni ( SendMessage( HWNDparam( 1 ), TB_BUTTONCOUNT,0,0) );
+}
+
+HB_FUNC( SETBUTTONID )
+{
+   hb_retni ( SendMessage( HWNDparam( 1 ), TB_SETCMDID,hb_parni(2),hb_parni(3)) );
+}
+
+HB_FUNC( SHOWTOOLBUTTONTIP )
+{
+	LPTOOLTIPTEXT lpttt;
+   lpttt = (LPTOOLTIPTEXT) hb_parnl( 1 );
+   lpttt->hinst = GetModuleHandle( NULL );
+   lpttt->lpszText = hb_parc( 2 );
+}
+
+HB_FUNC ( GETTOOLBUTTONID )
+{
+	LPTOOLTIPTEXT lpttt;
+	lpttt = (LPTOOLTIPTEXT) hb_parnl(1) ;
+	hb_retni ( lpttt->hdr.idFrom ) ;
+}
+
+HB_FUNC( _TOOLBARGETINFOTIP )
+{
+   hb_retni( ( ( LPNMTBGETINFOTIP ) hb_parnl( 1 ) ) -> iItem );
+}
+
+HB_FUNC( _TOOLBARSETINFOTIP )
+{
+   LPNMTBGETINFOTIP lpInfo = ( LPNMTBGETINFOTIP ) hb_parnl( 1 );
+   int iLen;
+
+   iLen = hb_parclen( 2 );
+   if( iLen >= lpInfo->cchTextMax )
+   {
+      iLen = lpInfo->cchTextMax;
+      if( iLen > 0 )
+      {
+         iLen--;
+      }
+   }
+
+   hb_xmemcpy( lpInfo->pszText, hb_parc( 2 ), iLen );
+   lpInfo->pszText[ iLen ] = 0;
+}
+
+#pragma ENDDUMP
