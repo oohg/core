@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.130 2007-05-11 04:42:14 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.131 2007-05-15 02:30:52 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -2117,8 +2117,8 @@ Local oCtrl
                   ::DoEvent( ::NotifyIconLeftClick, '' )
 
 				case lParam == WM_RBUTTONDOWN
-               if _OOHG_ShowContextMenus()
-                  if ::NotifyMenuHandle != nil
+               If _OOHG_ShowContextMenus()
+                  If ::NotifyMenu != nil
                      ::NotifyMenu:Activate()
                   Endif
 					EndIf

@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.76 2007-05-11 04:42:14 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.77 2007-05-15 02:30:52 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -508,11 +508,7 @@ Local oWnd, oCtrl
 
 	if Pcount() == 3 // Window
 
-		If .Not. _IsWindowDefined ( Arg1 )
-         MsgOOHGError("Window: "+ Arg1 + " is not defined. Program terminated." )
-		Endif
-
-      oWnd := GetFormObject( Arg1 )
+      oWnd := GetExistingFormObject( Arg1 )
       Arg2 := Upper( Arg2 )
 
       If Arg2 == "TITLE"
@@ -546,11 +542,7 @@ Local oWnd, oCtrl
 
 	ElseIf Pcount() == 4 // CONTROL
 
-		If .Not. _IsControlDefined ( Arg2 , Arg1  )
-         MsgOOHGError ("Control: " + Arg2 + " of " + Arg1 + " Not defined. Program Terminated." )
-		endif
-
-      oCtrl := GetControlObject( Arg2, Arg1 )
+      oCtrl := GetExistingControlObject( Arg2, Arg1 )
       Arg3 := Upper( Arg3 )
 
       If     Arg3 == "VALUE"
@@ -670,11 +662,8 @@ Local oWnd, oCtrl
 
 	ElseIf Pcount() == 5 // CONTROL (WITH ARGUMENT OR TOOLBAR BUTTON)
 
+      oCtrl := GetExistingControlObject( Arg2, Arg1 )
       Arg3 := Upper( Arg3 )
-      oCtrl := GetControlObject( Arg2, Arg1 )
-      If ! _IsControlDefined( Arg2, Arg1 )
-         MsgOOHGError( "Control: " + Arg2 + " of " + Arg1 + " Not defined. Program Terminated." )
-      EndIf
 
       If     Arg3 == "CAPTION"
          oCtrl:Caption( Arg4, Arg5 )
@@ -711,13 +700,10 @@ Local oWnd, oCtrl
 
 		EndIf
 
-	ElseIf Pcount() == 6 // TAB CHILD CONTROL
+   ElseIf Pcount() == 6 // CONTROL (WITH 2 ARGUMENTS)
 
-      If ! _IsControlDefined( Arg2, Arg1 )
-         MsgOOHGError( "Control: " + Arg2 + " Of " + Arg1 + " Not defined. Program Terminated." )
-		EndIf
+      oCtrl := GetExistingControlObject( Arg2, Arg1 )
       Arg3 := Upper( Arg3 )
-      oCtrl := GetControlObject( Arg2, Arg1 )
 
       If     Arg3 == "CELL"
          oCtrl:Cell( Arg4 , Arg5 , Arg6 )
@@ -726,16 +712,6 @@ Local oWnd, oCtrl
          SetProperty( Arg1, Arg4, Arg5, Arg6 )
 
       EndIf
-
-	ElseIf Pcount() == 7 // TAB CHILD CONTROL WITH ARGUMENT
-
-/*
-      If aScan ( GetControlObject( Arg2, Arg1 ):aPages[ Arg3 ], GetControlObject( Arg4 , Arg1 ):hWnd ) == 0
-         MsgOOHGError('Control Does Not Belong To Container')
-		EndIf
-*/
-
-      SetProperty( Arg1, Arg4, Arg5, Arg6, Arg7 )
 
 	EndIf
 
@@ -748,13 +724,8 @@ Local RetVal, oWnd, oCtrl
 
 	if Pcount() == 2 // WINDOW
 
-		If .Not. _IsWindowDefined ( Arg1 )
-         MsgOOHGError("Window: "+ Arg1 + " is not defined. Program terminated" )
-		Endif
-
-		Arg2 := Upper (Arg2)
-
-      oWnd := GetFormObject( Arg1 )
+      oWnd := GetExistingFormObject( Arg1 )
+      Arg2 := Upper( Arg2 )
 
 		if Arg2 == 'TITLE'
          RetVal := oWnd:Title
@@ -796,17 +767,11 @@ Local RetVal, oWnd, oCtrl
 
 	ElseIf Pcount() == 3 // CONTROL
 
-      If ! _IsControlDefined( Arg2, Arg1 )
-         MsgOOHGError( "Control: " + Arg2 + " Of " + Arg1 + " Not defined. Program Terminated." )
-		EndIf
-
+      oCtrl := GetExistingControlObject( Arg2, Arg1 )
       Arg3 := Upper( Arg3 )
 
-      oCtrl := GetControlObject( Arg2, Arg1 )
-
 		If     Arg3 == 'VALUE'
-         // RetVal := oCtrl:Value
-         RetVal := _GetValue( Arg2, Arg1 )
+         RetVal := oCtrl:Value
 
 		ElseIf Arg3 == 'NAME'
          RetVal := oCtrl:Name
@@ -911,11 +876,8 @@ Local RetVal, oWnd, oCtrl
 
 	ElseIf Pcount() == 4 // CONTROL (WITH ARGUMENT OR TOOLBAR BUTTON)
 
+      oCtrl := GetExistingControlObject( Arg2, Arg1 )
       Arg3 := Upper( Arg3 )
-      oCtrl := GetControlObject( Arg2, Arg1 )
-      If ! _IsControlDefined( Arg2, Arg1 )
-         MsgOOHGError( "Control: " + Arg2 + " of " + Arg1 + " Not defined. Program Terminated." )
-      EndIf
 
       If     Arg3 == "ITEM"
          RetVal := oCtrl:Item( Arg4 )
@@ -952,25 +914,15 @@ Local RetVal, oWnd, oCtrl
 
 		EndIf
 
-	ElseIf Pcount() == 5 // TAB CHILD CONTROL (WITHOUT ARGUMENT)
+   ElseIf Pcount() == 5 // CONTROL (WITH 2 ARGUMENTS)
 
-      If ! _IsControlDefined( Arg2, Arg1 )
-         MsgOOHGError( "Control: " + Arg2 + " Of " + Arg1 + " Not defined. Program Terminated." )
-		EndIf
+      oCtrl := GetExistingControlObject( Arg2, Arg1 )
       Arg3 := Upper( Arg3 )
-      oCtrl := GetControlObject( Arg2, Arg1 )
 
       If     Arg3 == "CELL"
          RetVal := oCtrl:Cell( Arg4 , Arg5 )
 
-      Else
-         RetVal := GetProperty( Arg1 , Arg4 , Arg5 )
-
       EndIf
-
-	ElseIf Pcount() == 6 // TAB CHILD CONTROL (WITH ARGUMENT)
-
-      RetVal := GetProperty( Arg1 , Arg4 , Arg5 , Arg6 )
 
 	EndIf
 
@@ -983,15 +935,8 @@ Local oWnd, oCtrl
 
 	if Pcount() == 2 // Window
 
-      If ValType ( Arg1 ) $ 'CM'
-			If .Not. _IsWindowDefined ( Arg1 )
-            MsgOOHGError("Window: "+ Arg1 + " is not defined. Program terminated" )
-			Endif
-		EndIf
-
-      oWnd := GetFormObject( Arg1 )
-
-		Arg2 := Upper (Arg2)
+      oWnd := GetExistingFormObject( Arg1 )
+      Arg2 := Upper( Arg2 )
 
 		if Arg2 == 'ACTIVATE'
          if ValType( Arg1 ) == 'A'
@@ -1004,14 +949,13 @@ Local oWnd, oCtrl
          oWnd:Center()
 
 		ElseIf Arg2 == 'RELEASE'
-         _ReleaseWindow( Arg1 )
+         oWnd:Release()
 
 		ElseIf Arg2 == 'MAXIMIZE'
          oWnd:Maximize()
 
 		ElseIf Arg2 == 'MINIMIZE'
          oWnd:Minimize()
-         _MinimizeWindow( Arg1 )
 
 		ElseIf Arg2 == 'RESTORE'
          oWnd:Restore()
@@ -1034,13 +978,8 @@ Local oWnd, oCtrl
 
 	ElseIf Pcount() == 3 // CONTROL
 
-		If .Not. _IsControlDefined ( Arg2 , Arg1  )
-         MsgOOHGError ("Control: " + Arg2 + " Of " + Arg1 + " Not defined. Program Terminated" )
-		endif
-
-      oCtrl := GetControlObject( Arg2, Arg1 )
-
-		Arg3 := Upper (Arg3)
+      oCtrl := GetExistingControlObject( Arg2, Arg1 )
+      Arg3 := Upper( Arg3 )
 
 		If     Arg3 == 'REFRESH'
          oCtrl:Refresh()
@@ -1103,168 +1042,82 @@ Local oWnd, oCtrl
 
 	ElseIf Pcount() == 4 // CONTROL (WITH 1 ARGUMENT)
 
-		If .Not. _IsControlDefined ( Arg2 , Arg1  )
-         MsgOOHGError ("Control: " + Arg2 + " Of " + Arg1 + " Not defined. Program Terminated" )
-		endif
-
-		Arg3 := Upper (Arg3)
-
-      oCtrl := GetControlObject( Arg2, Arg1 )
+      oCtrl := GetExistingControlObject( Arg2, Arg1 )
+      Arg3 := Upper( Arg3 )
 
 		If     Arg3 == 'DELETEITEM'
-
          oCtrl:DeleteItem( Arg4 )
 
 		ElseIf Arg3 == 'DELETEPAGE'
-
          oCtrl:DeletePage( Arg4 )
 
 		ElseIf Arg3 == 'OPEN'
-
          oCtrl:Open( Arg4 )
 
 		ElseIf Arg3 == 'SEEK'
-
          oCtrl:Seek( Arg4 )
 
 		ElseIf Arg3 == 'ADDITEM'
-
          oCtrl:AddItem( Arg4 )
 
 		ElseIf Arg3 == 'EXPAND'
-
          oCtrl:Expand( Arg4 )
 
 		ElseIf Arg3 == 'COLLAPSE'
-
          oCtrl:Collapse( Arg4 )
 
 		ElseIf Arg3 == 'DELETECOLUMN'
-
          oCtrl:DeleteColumn( Arg4 )
 
       ElseIf Arg3 == 'COLUMNAUTOFIT'
-
          oCtrl:ColumnAutoFit( Arg4 )
 
       ElseIf Arg3 == 'COLUMNAUTOFITH'
-
          oCtrl:ColumnAutoFitH( Arg4 )
 
 		EndIf
 
-   ElseIf Pcount() == 5 .And. ValType (Arg3) $ 'CM'
-		 // CONTROL (WITH 2 ARGUMENTS)
+   ElseIf Pcount() == 5 // CONTROL (WITH 2 ARGUMENTS)
 
-		If .Not. _IsControlDefined ( Arg2 , Arg1  )
-         MsgOOHGError ("Control: " + Arg2 + " Of " + Arg1 + " Not defined. Program Terminated" )
-		endif
-
-		Arg3 := Upper (Arg3)
-
-      oCtrl := GetControlObject( Arg2, Arg1 )
+      oCtrl := GetExistingControlObject( Arg2, Arg1 )
+      Arg3 := Upper( Arg3 )
 
 		If     Arg3 == 'ADDITEM'
-
          oCtrl:AddItem( Arg4 , Arg5 )
 
 		ElseIf Arg3 == 'ADDPAGE'
-
          oCtrl:AddPage( Arg4 , Arg5 )
 
 		EndIf
 
-	ElseIf Pcount()=5  .And. ValType (Arg3)=='N'
-		// TAB CHILD WITHOUT ARGUMENTS
-/*
-      If aScan ( GetControlObject( Arg2, Arg1 ):aPages[ Arg3 ], GetControlObject( Arg4 , Arg1 ):hWnd ) == 0
-         MsgOOHGError('Control Does Not Belong To Container')
-		EndIf
-*/
+   ElseIf Pcount() == 6 // CONTROL (WITH 3 ARGUMENTS)
 
-		DoMethod ( Arg1 , Arg4 , Arg5 )
-
-   ElseIf Pcount() == 6 .And. ValType (Arg3) $ 'CM'
-		// CONTROL (WITH 3 ARGUMENTS)
-
-		If .Not. _IsControlDefined ( Arg2 , Arg1  )
-         MsgOOHGError ("Control: " + Arg2 + " Of " + Arg1 + " Not defined. Program Terminated" )
-		endif
-
-      oCtrl := GetControlObject( Arg2, Arg1 )
-
-		Arg3 := Upper (Arg3)
+      oCtrl := GetExistingControlObject( Arg2, Arg1 )
+      Arg3 := Upper( Arg3 )
 
 		If     Arg3 == 'ADDITEM'
-
          oCtrl:AddItem( Arg4 , Arg5 , Arg6 )
 
 		ElseIf Arg3 == 'ADDPAGE'
-
          oCtrl:AddPage( Arg4 , Arg5 , Arg6 )
 
 		EndIf
 
-	ElseIf Pcount() == 6 .And. ValType (Arg3) == 'N'
-		// TAB CHILD WITH 1 ARGUMENT
-/*
-      If aScan ( GetControlObject( Arg2, Arg1 ):aPages[ Arg3 ], GetControlObject( Arg4 , Arg1 ):hWnd ) == 0
-         MsgOOHGError('Control Does Not Belong To Container')
-		EndIf
-*/
-		DoMethod ( Arg1 , Arg4 , Arg5 , Arg6 )
+   ElseIf Pcount() == 7 // CONTROL (WITH 4 ARGUMENTS)
 
-   ElseIf Pcount() == 7 .And. ValType (Arg3) $ 'CM'
-		// CONTROL (WITH 4 ARGUMENTS)
-
-		If .Not. _IsControlDefined ( Arg2 , Arg1  )
-         MsgOOHGError ("Control: " + Arg2 + " Of " + Arg1 + " Not defined. Program Terminated" )
-		endif
-
-      oCtrl := GetControlObject( Arg2, Arg1 )
-
-		Arg3 := Upper (Arg3)
+      oCtrl := GetExistingControlObject( Arg2, Arg1 )
+      Arg3 := Upper( Arg3 )
 
 		If     Arg3 == 'ADDCONTROL'
-
          oCtrl:AddControl( GetControlObject( Arg4, Arg1 ), Arg5 , Arg6 , Arg7 )
 
 		ElseIf     Arg3 == 'ADDCOLUMN'
-
          oCtrl:AddColumn( Arg4 , Arg5 , Arg6 , Arg7 )
 
 		ElseIf     Arg3 == 'ADDITEM'
-
          oCtrl:AddItem( Arg4 , Arg5 , Arg6 , Arg7 )
 
 		EndIf
-
-	ElseIf Pcount() == 7 .And. ValType (Arg3) == 'N'
-		// TAB CHILD WITH 2 ARGUMENTS
-/*
-      If aScan ( GetControlObject( Arg2, Arg1 ):aPages[ Arg3 ], GetControlObject( Arg4 , Arg1 ):hWnd ) == 0
-         MsgOOHGError('Control Does Not Belong To Container')
-		EndIf
-*/
-		DoMethod ( Arg1 , Arg4 , Arg5 , Arg6 , Arg7 )
-
-	ElseIf Pcount() == 8
-		// TAB CHILD WITH 3 ARGUMENTS
-/*
-      If aScan ( GetControlObject( Arg2, Arg1 ):aPages[ Arg3 ], GetControlObject( Arg4 , Arg1 ):hWnd ) == 0
-         MsgOOHGError('Control Does Not Belong To Container')
-		EndIf
-*/
-		DoMethod ( Arg1 , Arg4 , Arg5 , Arg6 , Arg7 , Arg8 )
-
-	ElseIf Pcount() == 9
-		// TAB CHILD WITH 4 ARGUMENTS
-/*
-      If aScan ( GetControlObject( Arg2, Arg1 ):aPages[ Arg3 ], GetControlObject( Arg4 , Arg1 ):hWnd ) == 0
-         MsgOOHGError('Control Does Not Belong To Container')
-		EndIf
-*/
-		DoMethod ( Arg1 , Arg4 , Arg5 , Arg6 , Arg7 , Arg8 , Arg9 )
 
 	EndIf
 
@@ -1276,8 +1129,7 @@ return nil
 *--------------------------------------------------------*
 Function cFileNoPath( cPathMask )
 *--------------------------------------------------------*
-    local n := RAt( "\", cPathMask )
-
+local n := RAt( "\", cPathMask )
 Return If( n > 0 .and. n < Len( cPathMask ), ;
 	Right( cPathMask, Len( cPathMask ) - n ), ;
 	If( ( n := At( ":", cPathMask ) ) > 0, ;
@@ -1286,9 +1138,8 @@ Return If( n > 0 .and. n < Len( cPathMask ), ;
 *--------------------------------------------------------*
 Function cFileNoExt( cPathMask )
 *--------------------------------------------------------*
-   local cName := AllTrim( cFileNoPath( cPathMask ) )
-   local n     := At( ".", cName )
-
+local cName := AllTrim( cFileNoPath( cPathMask ) )
+local n     := At( ".", cName )
 Return AllTrim( If( n > 0, Left( cName, n - 1 ), cName ) )
 
 *-----------------------------------------------------------------------------*

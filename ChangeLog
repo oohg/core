@@ -1,11 +1,18 @@
 /*
- * $Id: ChangeLog,v 1.352 2007-05-14 04:24:18 guerra000 Exp $
+ * $Id: ChangeLog,v 1.353 2007-05-15 02:30:51 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-05-14 21:30 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_windows.prg
+    ! Fixed (wrong) ::NotifyMenuHandle usage.
+  * source/h_controlmisc.prg
+    ! Removed unused code for "control inside TAB page" semi-OOP
+      notation in GetProperty/SetProperty/DoMethod.
 
 2007-05-13 23:24 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_combo.prg
