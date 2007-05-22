@@ -1,5 +1,5 @@
 /*
- * $Id: miniprint.prg,v 1.21 2007-01-01 20:52:13 guerra000 Exp $
+ * $Id: miniprint.prg,v 1.22 2007-05-22 16:37:42 declan2005 Exp $
  */
 /*----------------------------------------------------------------------------
  MINIGUI - Harbour Win32 GUI library source code
@@ -1231,6 +1231,11 @@ Procedure _HMG_PRINTER_ScrollDown
 
         _HMG_PRINTER_PreviewRefresh()
 Return
+
+#ifndef __XHARBOUR__
+  Function getdefaultprinter()
+  return  getdefaultprinterc()
+#endif
 *------------------------------------------------------------------------------*
 Function GetPrinter()
 *------------------------------------------------------------------------------*
@@ -3229,7 +3234,7 @@ HB_FUNC ( _HMG_PRINTER_SETPRINTERPROPERTIES )
 }
 
 
-HB_FUNC (GETDEFAULTPRINTER)
+HB_FUNC (GETDEFAULTPRINTERC)
 {
         
 	OSVERSIONINFO osvi;

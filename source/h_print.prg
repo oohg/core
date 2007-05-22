@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.66 2007-05-09 23:04:37 declan2005 Exp $
+* $Id: h_print.prg,v 1.67 2007-05-22 16:37:42 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -1028,7 +1028,7 @@ return self
 *-------------------------
 METHOD getdefprinterx() CLASS TMINIPRINT
 *-------------------------
-return getDefaultPrinter()
+return getdefaultprinter()
 
 
 *-------------------------
