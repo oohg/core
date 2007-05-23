@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.354 2007-05-22 16:37:41 declan2005 Exp $
+ * $Id: ChangeLog,v 1.355 2007-05-23 04:15:16 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,12 +7,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2007-05-22 23:13 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_controlmisc.prg
+    ! Removed warnings.
 
 2007-05-22 11:35 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source/h_print.prg
   * source/miniprint.prg
      ! fixed to avoid Dup fuction getdefaultprinter in xharbour mingw.
-
 
 2007-05-14 21:30 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_windows.prg

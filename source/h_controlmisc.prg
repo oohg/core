@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.77 2007-05-15 02:30:52 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.78 2007-05-23 04:15:16 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -502,7 +502,7 @@ FUNCTION Random( nLimit )
 Return hb_random( nLimit )
 
 *------------------------------------------------------------------------------*
-Function SetProperty( Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7 )
+Function SetProperty( Arg1, Arg2, Arg3, Arg4, Arg5, Arg6 )
 *------------------------------------------------------------------------------*
 Local oWnd, oCtrl
 
@@ -718,7 +718,7 @@ Local oWnd, oCtrl
 Return Nil
 
 *------------------------------------------------------------------------------*
-Function GetProperty( Arg1, Arg2, Arg3, Arg4, Arg5, Arg6 )
+Function GetProperty( Arg1, Arg2, Arg3, Arg4, Arg5 )
 *------------------------------------------------------------------------------*
 Local RetVal, oWnd, oCtrl
 
@@ -929,7 +929,7 @@ Local RetVal, oWnd, oCtrl
 Return RetVal
 
 *------------------------------------------------------------------------------*
-Function DoMethod( Arg1 , Arg2 , Arg3 , Arg4 , Arg5 , Arg6 , Arg7 , Arg8 , Arg9 )
+Function DoMethod( Arg1 , Arg2 , Arg3 , Arg4 , Arg5 , Arg6 , Arg7 )
 *------------------------------------------------------------------------------*
 Local oWnd, oCtrl
 
@@ -1233,7 +1233,7 @@ CLASS TControl FROM TWindow
    METHOD OnEnter             SETGET
    METHOD SizePos
    METHOD Move
-   METHOD SetFocus            BLOCK { |Self| _OOHG_lSettingFocus := .T., ::Super:SetFocus() }
+   METHOD SetFocus            BLOCK { |Self| _OOHG_lSettingFocus := .T., GetFormObjectByHandle( ::ContainerhWnd ):LastFocusedControl := ::hWnd, ::Super:SetFocus() }
    METHOD Value               BLOCK { || nil }
    METHOD SaveData
    METHOD RefreshData
