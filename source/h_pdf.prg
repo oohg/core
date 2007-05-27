@@ -1,5 +1,5 @@
 /*
-* $Id: h_pdf.prg,v 1.4 2007-05-14 02:22:48 guerra000 Exp $
+* $Id: h_pdf.prg,v 1.5 2007-05-27 22:43:39 guerra000 Exp $
 */
 //컴컴컴컴컴컴컴컴컴컴컴컴�\\
 //
@@ -32,13 +32,9 @@
   * "B5",        6.93,  9.84 } }
 */
 
-
-
 #include "hbclass.ch"
 #include "fileio.ch"
 #include "oohg.ch"
-
-
 
 #define CRLF chr(13)+chr(10)
 
@@ -4119,9 +4115,13 @@ local nI, nLen := len( ::aReport[ HEADER ] ), nTemp, aTemp, nHeight
  ELSEIF ::aReport[ HEADER ][ nI ][ 2 ] == "PDFIMAGE"
 IF ::aReport[ HEADER ][ nI ][ 8 ] == 0 // picture in header, first at all, not at any page yet
    aTemp := ::ImageInfo( ::aReport[ HEADER ][ nI ][ 4 ] )
-   nHeight := aTemp[ IMAGE_HEIGHT ] / aTemp[ IMAGE_YRES ] * 25.4
-   IF ::aReport[ HEADER ][ nI ][ 7 ] == "D"
-  nHeight := ::M2X( nHeight )
+   IF LEN( aTemp ) != 0
+      nHeight := aTemp[ IMAGE_HEIGHT ] / aTemp[ IMAGE_YRES ] * 25.4
+      IF ::aReport[ HEADER ][ nI ][ 7 ] == "D"
+         nHeight := ::M2X( nHeight )
+      ENDIF
+   ELSE
+      nHeight := ::aReport[ HEADER ][ nI ][ 8 ]
    ENDIF
 ELSE
    nHeight := ::aReport[ HEADER ][ nI ][ 8 ]
@@ -4380,7 +4380,12 @@ RETURN self
 METHOD ImageInfo( cFile )
 
 local cTemp := upper(substr( cFile, rat('.', cFile) + 1 )), aTemp := {}
+
+* TODO: Check for resource
+
    do case
+   case ! file( cFile )
+  aTemp := {}
    case cTemp == "TIF"
   aTemp := ::TIFFInfo( cFile )
    case cTemp == "JPG"
@@ -4834,7 +4839,7 @@ return nRet
 
 METHOD ClosePage()
 
-local cTemp, cBuffer, nBuffer, nRead, nI, k, nImage, nFont, nImageHandle
+local cTemp, cBuffer, nBuffer, nRead, nI, k, nImage, nFont, nImageHandle, aImageInfo
 
    aadd( ::aReport[ REFS  ], ::aReport[ DOCLEN] )
 
@@ -4879,11 +4884,16 @@ local cTemp, cBuffer, nBuffer, nRead, nI, k, nImage, nFont, nImageHandle
   cTemp += CRLF + "/XObject" + CRLF + "<<"
   for nI := 1 to len( ::aReport[ PAGEIMAGES ] )
  nImage := ascan( ::aReport[ IMAGES ], { |arr| arr[1] == ::aReport[ PAGEIMAGES ][ nI ][ 1 ] } )
- IF nImage == 0
-aadd( ::aReport[ IMAGES ], { ::aReport[ PAGEIMAGES ][ nI ][ 1 ], ++::aReport[ NEXTOBJ ], ::ImageInfo( ::aReport[ PAGEIMAGES ][ nI ][ 1 ] ) } )
-nImage := len( ::aReport[ IMAGES ] )
- ENDIF
- cTemp += CRLF + "/Image" + ltrim(str( nImage )) + " " + ltrim(str( ::aReport[ IMAGES ][ nImage ][ 2 ])) + " 0 R"
+   IF nImage == 0
+      aImageInfo := ::ImageInfo( ::aReport[ PAGEIMAGES ][ nI ][ 1 ] )
+      IF LEN( aImageInfo ) != 0
+         aadd( ::aReport[ IMAGES ], { ::aReport[ PAGEIMAGES ][ nI ][ 1 ], ++::aReport[ NEXTOBJ ], aImageInfo } )
+         nImage := len( ::aReport[ IMAGES ] )
+      ENDIF
+   ENDIF
+   IF nImage != 0
+      cTemp += CRLF + "/Image" + ltrim(str( nImage )) + " " + ltrim(str( ::aReport[ IMAGES ][ nImage ][ 2 ])) + " 0 R"
+   ENDIF
   next
   cTemp += CRLF + ">>"
    ENDIF
@@ -4902,20 +4912,22 @@ nImage := len( ::aReport[ IMAGES ] )
    fwrite( ::aReport[ HANDLE ], cTemp )
 
    IF len( ::aReport[ PAGEIMAGES ] ) > 0
-  cTemp := ""
-  for nI := 1 to len( ::aReport[ PAGEIMAGES ] )
- cTemp += CRLF + "q"
- nImage := ascan( ::aReport[ IMAGES ], { |arr| arr[1] == ::aReport[ PAGEIMAGES ][ nI ][ 1 ] } )
- cTemp += CRLF + ltrim(str( IIF( ::aReport[ PAGEIMAGES ][ nI ][ 5 ] == 0, ::M2X( ::aReport[ IMAGES ][ nImage ][ 3 ][ IMAGE_WIDTH ] / ::aReport[ IMAGES ][ nImage ][ 3 ][ IMAGE_XRES ] * 25.4 ), ::aReport[ PAGEIMAGES ][ nI ][ 5 ]))) + ;
- " 0 0 " + ;
- ltrim(str( IIF( ::aReport[ PAGEIMAGES ][ nI ][ 4 ] == 0, ::M2X( ::aReport[ IMAGES ][ nImage ][ 3 ][ IMAGE_HEIGHT ] / ::aReport[ IMAGES ][ nImage ][ 3 ][ IMAGE_YRES ] * 25.4 ), ::aReport[ PAGEIMAGES ][ nI ][ 4 ]))) + ;
- " " + ltrim(str( ::aReport[ PAGEIMAGES ][ nI ][ 3 ] )) + ;
- " " + ltrim(str( ::aReport[ PAGEY ] - ::aReport[ PAGEIMAGES ][ nI ][ 2 ] - ;
- IIF( ::aReport[ PAGEIMAGES ][ nI ][ 4 ] == 0, ::M2X( ::aReport[ IMAGES ][ nImage ][ 3 ][ IMAGE_HEIGHT ] / ::aReport[ IMAGES ][ nImage ][ 3 ][ IMAGE_YRES ] * 25.4 ), ::aReport[ PAGEIMAGES ][ nI ][ 4 ]))) + " cm"
- cTemp += CRLF + "/Image" + ltrim(str( nImage )) + " Do"
- cTemp += CRLF + "Q"
-  next
-  ::aReport[ PAGEBUFFER ] := cTemp + ::aReport[ PAGEBUFFER ]
+      cTemp := ""
+      for nI := 1 to len( ::aReport[ PAGEIMAGES ] )
+         nImage := ascan( ::aReport[ IMAGES ], { |arr| arr[1] == ::aReport[ PAGEIMAGES ][ nI ][ 1 ] } )
+         IF nImage != 0
+            cTemp += CRLF + "q"
+            cTemp += CRLF + ltrim(str( IIF( ::aReport[ PAGEIMAGES ][ nI ][ 5 ] == 0, ::M2X( ::aReport[ IMAGES ][ nImage ][ 3 ][ IMAGE_WIDTH ] / ::aReport[ IMAGES ][ nImage ][ 3 ][ IMAGE_XRES ] * 25.4 ), ::aReport[ PAGEIMAGES ][ nI ][ 5 ]))) + ;
+                     " 0 0 " + ;
+                     ltrim(str( IIF( ::aReport[ PAGEIMAGES ][ nI ][ 4 ] == 0, ::M2X( ::aReport[ IMAGES ][ nImage ][ 3 ][ IMAGE_HEIGHT ] / ::aReport[ IMAGES ][ nImage ][ 3 ][ IMAGE_YRES ] * 25.4 ), ::aReport[ PAGEIMAGES ][ nI ][ 4 ]))) + ;
+                     " " + ltrim(str( ::aReport[ PAGEIMAGES ][ nI ][ 3 ] )) + ;
+                     " " + ltrim(str( ::aReport[ PAGEY ] - ::aReport[ PAGEIMAGES ][ nI ][ 2 ] - ;
+                     IIF( ::aReport[ PAGEIMAGES ][ nI ][ 4 ] == 0, ::M2X( ::aReport[ IMAGES ][ nImage ][ 3 ][ IMAGE_HEIGHT ] / ::aReport[ IMAGES ][ nImage ][ 3 ][ IMAGE_YRES ] * 25.4 ), ::aReport[ PAGEIMAGES ][ nI ][ 4 ]))) + " cm"
+            cTemp += CRLF + "/Image" + ltrim(str( nImage )) + " Do"
+            cTemp += CRLF + "Q"
+         ENDIF
+      next
+      ::aReport[ PAGEBUFFER ] := cTemp + ::aReport[ PAGEBUFFER ]
    ENDIF
 
    cTemp := ::aReport[ PAGEBUFFER ]
@@ -5296,8 +5308,3 @@ endif
 return lRet
 
 //컴컴컴컴컴컴컴컴컴컴컴컴�\\
-
-
-
-
-
