@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.67 2007-05-22 16:37:42 declan2005 Exp $
+* $Id: h_print.prg,v 1.68 2007-05-30 18:05:12 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -8,8 +8,6 @@
 #include 'winprint.ch'
 
 #include "fileio.ch"
-//#include "common.ch"
-
 
 memvar _OOHG_PRINTLIBRARY
 memvar _OOHG_printer_docname
@@ -2436,9 +2434,12 @@ return self
 *-------------------------
 METHOD ENDDOCx() CLASS TPDFPRINT
 *-------------------------
-
+local cMydoc := getmydocumentsfolder()
 ::oPdf:Close()
-
+IF ShellExecute(0, "open", "rundll32.exe", "url.dll,FileProtocolHandler "+ cMydoc+ "\Pdfprint.pdf", ,1) <=32
+     MSGINFO("html Extension not asociated"+CHR(13)+CHR(13)+ ;
+     "File saved in:"+CHR(13)+cMydoc+"\pdfprint.pdf")
+ENDIF
 return self
 
 
@@ -2461,13 +2462,6 @@ return self
 *-------------------------
 METHOD RELEASEx() CLASS TPDFPRINT
 *-------------------------
-local cMydoc := getmydocumentsfolder()
-
-IF ShellExecute(0, "open", "rundll32.exe", "url.dll,FileProtocolHandler "+ cMydoc+ "\Pdfprint.pdf", ,1) <=32
-     MSGINFO("html Extension not asociated"+CHR(13)+CHR(13)+ ;
-     "File saved in:"+CHR(13)+cMydoc+"\pdfprint.pdf")
-ENDIF
-
 return self
 
 
