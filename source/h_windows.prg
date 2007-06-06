@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.131 2007-05-15 02:30:52 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.132 2007-06-06 00:32:08 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1209,6 +1209,7 @@ CLASS TForm FROM TWindow
    DATA lForm          INIT .T.
    DATA nWidth         INIT 300
    DATA nHeight        INIT 300
+   DATA lShowed        INIT .F.
 
    DATA OnRelease      INIT nil
    DATA OnInit         INIT nil
@@ -1514,6 +1515,11 @@ METHOD Visible( lVisible ) CLASS TForm
       ::Super:Visible := lVisible
       IF ! lVisible
          ::OnHideFocusManagement()
+      ELSEIF ! ::lShowed
+         If ! ::SetFocusedSplitChild()
+            ::SetActivationFocus()
+         EndIf
+         ::lShowed := .T.
       ENDIF
    ENDIF
 Return ::lVisible
@@ -1573,9 +1579,9 @@ METHOD Activate( lNoStop, oWndLoop ) CLASS TForm
    If ::lVisible
       _OOHG_UserWindow := Self
       ::Show()
-      If ! ::SetFocusedSplitChild()
-         ::SetActivationFocus()
-      EndIf
+      // If ! ::SetFocusedSplitChild()
+      //    ::SetActivationFocus()
+      // EndIf
    EndIf
 
    ::Active := .T.
