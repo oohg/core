@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.68 2007-05-30 18:05:12 declan2005 Exp $
+* $Id: h_print.prg,v 1.69 2007-06-07 13:46:51 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -1798,7 +1798,7 @@ endcase
 return self
 
 
-//////////////////////// RTF
+//////////////////////// 
 
 CREATE CLASS THTMLPRINT FROM TEXCELPRINT
 
@@ -2494,6 +2494,17 @@ If lBold
 Else
    nType := 0   //Normal  normal
 Endif
+
+if "roman"$lower(cFont)
+   cFont:="TIMES"
+else
+   if "helvetica"$lower(cfont) .or. "arial"$lower(cfont)
+      cFont:="HELVETICA"
+   else
+      cFont:="COURIER"
+   endif
+endif
+
 
 ::oPdf:SetFont(cFont, nType, nSize)
 
