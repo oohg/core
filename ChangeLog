@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.361 2007-06-07 13:48:40 declan2005 Exp $
+ * $Id: ChangeLog,v 1.362 2007-06-09 19:06:00 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,9 +7,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2007-06-09 14:03 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+   * source/h_print.prg
+     ! fixing prblems with ::lmargin() and ::tmargin() in Excel, RTF, HTML and CSV
+
 2007-06-07 8:37 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
    * source/h_print.prg
-     adjunsting fonts in PDF, it's posible print with arial, helvetica, times new roman and courier new 
+     ! adjunsting fonts in PDF, it's posible print with arial, helvetica, times new roman and courier new 
      fonts, with other fonts, courier new is selected by default.
 
 2007-06-05 19:34 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
@@ -18,7 +22,7 @@
 
 2007-05-30 13:02 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
    * source/h_print.prg
-     moved process to another method because extrange results.
+    ! moved process to another method because extrange results.
 
 2007-05-29 14:43 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source/c_winapimisc.c

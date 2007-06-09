@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.69 2007-06-07 13:46:51 declan2005 Exp $
+* $Id: h_print.prg,v 1.70 2007-06-09 19:06:00 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -848,7 +848,6 @@ return nil
 METHOD printdatax(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext) CLASS TMINIPRINT
 *-------------------------
 Empty( Data )
-////Empty( aColor )
 
 default aColor to ::acolor
 
@@ -1769,7 +1768,7 @@ RETURN self
 METHOD printdatax(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext) CLASS TEXCELPRINT
 *-------------------------
 local alinceldax
-empty(ncol)
+////empty(ncol)
 empty(data)
 empty(acolor)
 empty(nlen)
@@ -1785,7 +1784,7 @@ IF LEN(::alincelda)<nlin
 ENDIF
 ::alincelda[nlin]:=::alincelda[nlin]+1
 alinceldax:=::alincelda[nlin]
-::oHoja:Cells(nlin,alinceldax):Value := ctext
+::oHoja:Cells(nlin,alinceldax):Value := space(ncol)+ctext
 ::oHoja:Cells(nlin,alinceldax):Font:Name := cfont
 ::oHoja:Cells(nlin,alinceldax):Font:Size := nsize
 ::oHoja:Cells(nlin,alinceldax):Font:Bold := lbold
@@ -1798,7 +1797,7 @@ endcase
 return self
 
 
-//////////////////////// 
+////////////////////////
 
 CREATE CLASS THTMLPRINT FROM TEXCELPRINT
 
@@ -1815,9 +1814,7 @@ For nCol:= 1 to ::oHoja:UsedRange:Columns:Count()
     ::oHoja:Columns( nCol ):AutoFit()
 NEXT
 ::oHoja:Cells( 1, 1 ):Select()
-///cRuta:=GetCurrentFolder()
 cRuta:=GetmydocumentsFolder()
-/// ::oExcel:Saveas(cRuta+"Printer.html",44)   //// graba como html
 ::oExcel:Set( "DisplayAlerts", .f. )
 ::oHoja:SaveAs(cRuta+"\Printer.html", 44,"","", .f. , .f.)
 ::oExcel:Quit()
@@ -1827,12 +1824,9 @@ cRuta:=GetmydocumentsFolder()
 #endif
 ::ohoja := nil
 ::oExcel := nil
-
-
-cMydoc:=GetMyDocumentsFolder()
-IF ShellExecute(0, "open", "rundll32.exe", "url.dll,FileProtocolHandler "+ cMydoc+ "\Printer.html", ,1) <=32
+IF ShellExecute(0, "open", "rundll32.exe", "url.dll,FileProtocolHandler "+ cRuta+ "\Printer.html", ,1) <=32
      MSGINFO("html Extension not asociated"+CHR(13)+CHR(13)+ ;
-     "File saved in:"+CHR(13)+cMydoc+"\printer.html")
+     "File saved in:"+CHR(13)+cRuta+"\printer.html")
 ENDIF
 RETURN self
 
@@ -2087,13 +2081,14 @@ Empty( cfont )
 Empty( lbold )
 Empty( acolor )
 Empty( nlen )
+nlin++
 if ::nunitslin>1
    nlin:=round(nlin/::nunitslin,0)
 endif
 IF ::cunits="MM"
    ctext:=ALLTRIM(ctext)
 ENDIF
-AADD(::alincelda,{nlin,ncol,ctext,nsize,calign})
+AADD(::alincelda,{nlin,ncol,space(::nlmargin)+ctext,nsize,calign})
 return self
 
 
@@ -2250,15 +2245,6 @@ IF ShellExecute(0, "open", "rundll32.exe", "url.dll,FileProtocolHandler "+ RUTAF
          MSGINFO("CSV Extension not asociated"+CHR(13)+CHR(13)+ ;
          "File saved in:"+CHR(13)+rutaficrtf1+"\printer.csv")
 ENDIF
-
-///IF ShellExecute(0, "open", "soffice.exe", rutaficrtf1+"\printer.CSV" , nil , 1)<=32
-///   IF ShellExecute(0, "open", "Excel.exe", rutaficrtf1+"\printer.CSV" , nil , 1)<=32
-//      IF ShellExecute(0, "open", rutaficrtf1+"\printer.CSV" , nil ,  1)<=32
-//         MSGINFO("No se ha localizado el programa asociado a la extemsion CSV"+CHR(13)+CHR(13)+ ;
-//         "El fichero se ha guardado en:"+CHR(13)+RUTAFICRTF1+"\printer.CSV")
-//     ENDIF
-  // ENDIF
-///ENDIF
 RETURN self
 
 
@@ -2282,11 +2268,12 @@ IF MiLinea1<::alincelda[nTCSVPRINT1,1]
    ENDDO
 ENDIF
 
-IF LEN(oPrintCSV1[LEN(oPrintCSV1)])=0
-   oPrintCSV1[LEN(oPrintCSV1)]:=::alincelda[nTCSVPRINT1,3]
-ELSE
-   oPrintCSV1[LEN(oPrintCSV1)]:=oPrintCSV1[LEN(oPrintCSV1)]+";"+STRTRAN(::alincelda[nTCSVPRINT1,3],";",",")
-ENDIF
+   IF LEN(oPrintCSV1[LEN(oPrintCSV1)])=0
+      oPrintCSV1[LEN(oPrintCSV1)]:=::alincelda[nTCSVPRINT1,3]
+    ELSE
+      oPrintCSV1[LEN(oPrintCSV1)]:=oPrintCSV1[LEN(oPrintCSV1)]+";"+STRTRAN(::alincelda[nTCSVPRINT1,3],";",",")
+    ENDIF
+
 NEXT
 ::alincelda:={}
 return self
@@ -2316,13 +2303,14 @@ Empty( cfont )
 Empty( lbold )
 Empty( acolor )
 Empty( nlen )
+nlin++
 if ::nunitslin>1
    nlin:=round(nlin/::nunitslin,0)
 endif
 IF ::cunits="MM"
    ctext:=ALLTRIM(ctext)
 ENDIF
-AADD(::alincelda,{nlin,ncol,ctext,nsize,calign})
+AADD(::alincelda,{nlin,ncol,space(::nlmargin)+ctext,nsize,calign})
 return self
 
 
@@ -2364,8 +2352,6 @@ METHOD normaldosx() CLASS TCSVPRINT
 *-------------------------
 return self
 
-
-//////////////// clase tpdfprint
 *---------------------------------------
 CREATE CLASS TPDFPRINT FROM TPRINTBASE
 
