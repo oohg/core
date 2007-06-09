@@ -1,5 +1,5 @@
 /*
- * $Id: h_textarray.prg,v 1.9 2006-11-22 05:15:58 guerra000 Exp $
+ * $Id: h_textarray.prg,v 1.10 2007-06-09 22:56:25 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -80,7 +80,7 @@ ENDCLASS
 METHOD Define( ControlName, ParentForm, x, y, w, h, RowCount, ColCount, ;
                BORDER, CLIENTEDGE, FontColor, BackColor, ProcedureName, ;
                fontname, fontsize, bold, italic, underline, strikeout, ;
-               ToolTip, HelpId, invisible, lRtl, value ) CLASS TTextArray
+               ToolTip, HelpId, invisible, lRtl, value, NoTabStop, lDisabled ) CLASS TTextArray
 *-----------------------------------------------------------------------------*
 Local ControlHandle, nStyle, nStyleEx
 
@@ -91,7 +91,7 @@ Local ControlHandle, nStyle, nStyleEx
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, , lRtl )
 
-   nStyle := ::InitStyle( ,, Invisible ) + ;
+   nStyle := ::InitStyle( ,, Invisible, NoTabStop, lDisabled ) + ;
              if( ValType( BORDER ) == "L"    .AND. BORDER,     WS_BORDER,   0 )
 
    nStyleEx := if( ValType( CLIENTEDGE ) == "L"   .AND. CLIENTEDGE,   WS_EX_CLIENTEDGE,  0 )

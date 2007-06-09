@@ -1,5 +1,5 @@
 /*
- * $Id: i_textarray.ch,v 1.1 2006-08-05 02:20:29 guerra000 Exp $
+ * $Id: i_textarray.ch,v 1.2 2007-06-09 22:56:25 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -115,9 +115,11 @@
         [ <rtl: RTL> ]                  ;
         [ SUBCLASS <subclass> ]         ;
         [ VALUE <value> ]               ;
+        [ <notabstop: NOTABSTOP> ]      ;
+        [ <disabled: DISABLED> ]        ;
 	=>;
         [ <obj> := ] _OOHG_SelectSubClass( TTextArray(), [ <subclass>() ] ): ;
                    Define( <(name)>, <(parent)>, <col>, <row>, <width>, <height>, <rowcount>, <colcount>, ;
                            <.border.>, <.clientedge.>, <fontcolor>, <backcolor>, <{action}>, ;
                            <fontname>, <fontsize>, <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, ;
-                           <tooltip>, <helpid>, <.invisible.>, <.rtl.>, <value> )
+                           <tooltip>, <helpid>, <.invisible.>, <.rtl.>, <value>, <.notabstop.>, <.disabled.> )
