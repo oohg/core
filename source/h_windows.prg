@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.132 2007-06-06 00:32:08 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.133 2007-06-09 22:55:54 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -238,6 +238,7 @@ CLASS TWindow
    METHOD Disable             BLOCK { |Self| ::Enabled := .F. }
    METHOD Click               BLOCK { |Self| ::DoEvent( ::OnClick ) }
    METHOD TabStop             SETGET
+   METHOD Style               SETGET
    METHOD RTL                 SETGET
    METHOD Action              SETGET
    METHOD Print
@@ -810,6 +811,14 @@ METHOD TabStop( lTabStop ) CLASS TWindow
       WindowStyleFlag( ::hWnd, WS_TABSTOP, IF( lTabStop, WS_TABSTOP, 0 ) )
    ENDIF
 RETURN ( WindowStyleFlag( ::hWnd, WS_TABSTOP ) != 0 )
+
+*------------------------------------------------------------------------------*
+METHOD Style( nStyle ) CLASS TWindow
+*------------------------------------------------------------------------------*
+   IF VALTYPE( nStyle ) == "N"
+      SetWindowStyle( ::hWnd, nStyle )
+   ENDIF
+RETURN GetWindowStyle( ::hWnd )
 
 *------------------------------------------------------------------------------*
 METHOD RTL( lRTL ) CLASS TWindow
