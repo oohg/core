@@ -1,5 +1,5 @@
 /*
- * $Id: h_toolbar.prg,v 1.19 2007-05-14 02:24:45 guerra000 Exp $
+ * $Id: h_toolbar.prg,v 1.20 2007-06-09 22:55:15 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -301,7 +301,7 @@ Empty( FLAT )
 
    nPos := At( '&', Caption )
    If nPos > 0 .AND. nPos < LEN( Caption )
-      DEFINE HOTKEY 0 PARENT ( ::Parent ) KEY "ALT+" + SubStr( Caption, nPos + 1, 1 ) ACTION ::Click()
+      DEFINE HOTKEY 0 PARENT ( ::Parent ) KEY "ALT+" + SubStr( Caption, nPos + 1, 1 ) ACTION IF( ::Enabled, ::Click(), )
 	EndIf
 
 Return Self
