@@ -1,5 +1,5 @@
 /*
- * $Id: h_media.prg,v 1.4 2006-02-11 06:19:33 guerra000 Exp $
+ * $Id: h_media.prg,v 1.5 2007-06-25 04:35:57 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -93,11 +93,14 @@
 
 #include "oohg.ch"
 #include "hbclass.ch"
+#include "i_windefs.ch"
 
 CLASS TPlayer FROM TControl
    DATA Type      INIT "PLAYER" READONLY
 
+   METHOD Define
    METHOD Release
+
    METHOD Play()             BLOCK { |Self| mcifunc( ::hWnd,  1 ) }
    METHOD Stop()             BLOCK { |Self| mcifunc( ::hWnd,  2 ) }
    METHOD Pause()            BLOCK { |Self| mcifunc( ::hWnd,  3 ) }
@@ -120,34 +123,40 @@ CLASS TPlayer FROM TControl
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
-Function _DefinePlayer(ControlName,ParentForm,file,col,row,w,h,noasw,noasm,noed,nom,noo,nop,sha,shm,shn,shp , HelpId )
+METHOD Define( ControlName, ParentForm, file, col, row, w, h, noasw, noasm, ;
+               noed, nom, noo, nop, sha, shm, shn, shp, HelpId, Invisible, ;
+               NoTabStop, lDisabled, lRtl ) CLASS TPlayer
 *-----------------------------------------------------------------------------*
-Local hh
-Local Self
+Local hh, nStyle
 
-   Self := TPlayer():SetForm( ControlName, ParentForm )
+   ASSIGN ::nCol    VALUE col TYPE "N"
+   ASSIGN ::nRow    VALUE row TYPE "N"
+   ASSIGN ::nWidth  VALUE w   TYPE "N"
+   ASSIGN ::nHeight VALUE h   TYPE "N"
 
-   Hh :=InitPlayer ( ::ContainerhWnd, ;
-				file 				, ;
-				col 				, ;
-				row				, ;
-				w				, ;
-				h				, ;
-				noasw				, ;
-				noasm				, ;
-				noed				, ;
-				nom				, ;
-				noo				, ;
-				nop				, ;
-				sha				, ;
-				shm				, ;
-				shn				, ;
-				shp )
+   ::SetForm( ControlName, ParentForm,,,,,, lRtl )
+
+   IF Valtype( sha ) == "L" .AND. sha
+      shm := shn := shp := .T.
+   ENDIF
+
+   nStyle := ::InitStyle( ,, Invisible, NoTabStop, lDisabled ) + ;
+             WS_CHILD + WS_BORDER + ;
+             IF( Valtype( noasw ) == "L" .AND. noasw, MCIWNDF_NOAUTOSIZEWINDOW,  0 ) + ;
+             IF( Valtype( noasm ) == "L" .AND. noasm, MCIWNDF_NOAUTOSIZEMOVIE,  0 ) + ;
+             IF( Valtype( noed ) == "L" .AND. noed, MCIWNDF_NOERRORDLG,  0 ) + ;
+             IF( Valtype( nom ) == "L" .AND. nom, MCIWNDF_NOMENU,  0 ) + ;
+             IF( Valtype( noo ) == "L" .AND. noo, MCIWNDF_NOOPEN,  0 ) + ;
+             IF( Valtype( nop ) == "L" .AND. nop, MCIWNDF_NOPLAYBAR,  0 ) + ;
+             IF( Valtype( shm ) == "L" .AND. shm, MCIWNDF_SHOWMODE,  0 ) + ;
+             IF( Valtype( shn ) == "L" .AND. shn, MCIWNDF_SHOWNAME,  0 ) + ;
+             IF( Valtype( shp ) == "L" .AND. shp, MCIWNDF_SHOWPOS,  0 )
+
+   hh := InitPlayer ( ::ContainerhWnd, file, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle )
 
    ::Register( hh, ControlName, HelpId )
-   ::SizePos( row, col, w, h )
 
-Return Nil
+Return Self
 
 *-----------------------------------------------------------------------------*
 METHOD Release() CLASS TPlayer
@@ -198,8 +207,9 @@ Return Nil
 CLASS TAnimateBox FROM TControl
    DATA Type      INIT "ANIMATEBOX" READONLY
 
-   METHOD Release
+   METHOD Define
 
+   METHOD Release            BLOCK { |Self| destroyanimate( ::hWnd ) , ::Super:Release() }
    METHOD Open(File)         BLOCK { |Self,File| openanimate( ::hWnd, File ) }
    METHOD Play               BLOCK { |Self| playanimate( ::hWnd ) }
    METHOD Stop               BLOCK { |Self| stopanimate( ::hWnd ) }
@@ -208,26 +218,156 @@ CLASS TAnimateBox FROM TControl
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
-Function _DefineAnimateBox(ControlName,ParentForm,col,row,w,h,autoplay,center,transparent,file , HelpId )
+METHOD Define( ControlName, ParentForm, col, row, w, h, autoplay, center, ;
+               transparent, file, HelpId, Invisible, NoTabStop, lDisabled, ;
+               lRtl ) CLASS TAnimateBox
 *-----------------------------------------------------------------------------*
-Local hh
-Local Self
+Local hh, nStyle
 
-   Self := TAnimateBox():SetForm( ControlName, ParentForm )
+   ASSIGN ::nCol    VALUE col TYPE "N"
+   ASSIGN ::nRow    VALUE row TYPE "N"
+   ASSIGN ::nWidth  VALUE w   TYPE "N"
+   ASSIGN ::nHeight VALUE h   TYPE "N"
 
-   hh := InitAnimate( ::ContainerhWnd, col, row, w, h, autoplay, center, transparent )
+   ::SetForm( ControlName, ParentForm,,,,,, lRtl )
+
+   nStyle := ::InitStyle( ,, Invisible, NoTabStop, lDisabled ) + ;
+             WS_CHILD + WS_BORDER + ;
+             IF( Valtype( autoplay ) == "L" .AND. autoplay, ACS_AUTOPLAY,  0 ) + ;
+             IF( Valtype( center ) == "L" .AND. center, ACS_CENTER,  0 ) + ;
+             IF( Valtype( transparent ) == "L" .AND. transparent, ACS_TRANSPARENT,  0 )
+
+   hh := InitAnimate( ::ContainerhWnd, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle )
 
    ::Register( hh, ControlName, HelpId )
-   ::SizePos( row, col, w, h )
 
 	if valtype(file) <> 'U'
       ::Open( File )
 	EndIf
 
-Return Nil
+Return Self
 
-*-----------------------------------------------------------------------------*
-METHOD Release() CLASS TAnimateBox
-*-----------------------------------------------------------------------------*
-   destroyanimate( ::hWnd )
-RETURN ::Super:Release()
+EXTERN MCIFUNC
+
+#pragma BEGINDUMP
+#include <hbapi.h>
+#include <windows.h>
+#include <vfw.h>
+#include <commctrl.h>
+#include "../include/oohg.h"
+
+/*
+static WNDPROC lpfnOldWndProcA = 0;
+static WNDPROC lpfnOldWndProcB = 0;
+
+static LRESULT APIENTRY SubClassFuncA( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+{
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProcA );
+}
+
+static LRESULT APIENTRY SubClassFuncB( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+{
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProcB );
+}
+*/
+
+HB_FUNC ( INITANIMATE )
+{
+	HWND hwnd;
+
+   hwnd = Animate_Create( HWNDparam( 1 ), NULL, hb_parni( 6 ), GetModuleHandle( NULL ) );
+
+   if( ! hwnd )
+	{
+      MessageBox(0, "AnimateBox Creation Failed!", "Error!",
+      MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
+      return;
+	}
+
+//   lpfnOldWndProcA = ( WNDPROC ) SetWindowLong( ( HWND ) hwnd, GWL_WNDPROC, ( LONG ) SubClassFuncA );
+
+   MoveWindow( hwnd, hb_parnl( 2 ), hb_parnl( 3 ), hb_parnl( 4 ), hb_parnl( 5 ), TRUE );
+   HWNDret( hwnd );
+}
+
+HB_FUNC( OPENANIMATE )
+{
+   Animate_Open( HWNDparam( 1 ), hb_parc(2));
+}
+
+HB_FUNC( PLAYANIMATE )
+{
+   Animate_Play( HWNDparam( 1 ), 0, -1, 1 );
+}
+
+HB_FUNC( SEEKANIMATE )
+{
+   Animate_Seek( HWNDparam( 1 ), hb_parni(2));
+}
+
+HB_FUNC( STOPANIMATE )
+{
+   Animate_Stop( HWNDparam( 1 ) );
+}
+
+HB_FUNC( CLOSEANIMATE )
+{
+   Animate_Close( HWNDparam( 1 ) );
+}
+
+HB_FUNC( DESTROYANIMATE )
+{
+   DestroyWindow( HWNDparam( 1 ) );
+}
+
+HB_FUNC( INITPLAYER )
+{
+	HWND hwnd;
+
+   hwnd = MCIWndCreate( HWNDparam( 1 ), NULL, hb_parni( 7 ), hb_parc( 2 ) );
+
+   if( ! hwnd )
+	{
+      MessageBox(0, "Player Creation Failed!", "Error!",
+      MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
+      return;
+	}
+
+//   lpfnOldWndProcB = ( WNDPROC ) SetWindowLong( ( HWND ) hwnd, GWL_WNDPROC, ( LONG ) SubClassFuncB );
+
+   MoveWindow( hwnd, hb_parnl( 3 ), hb_parnl( 4 ), hb_parnl( 5 ), hb_parnl( 6 ), TRUE );
+   HWNDret( hwnd );
+}
+
+HB_FUNC( MCIFUNC )
+{
+   HWND mcihand = HWNDparam( 1 );
+   int  func = hb_parni( 2 );
+
+   switch( func )
+   {
+      case  1:  hb_retnl( MCIWndPlay(mcihand)) ; break;
+      case  2:  hb_retnl( MCIWndStop(mcihand)) ; break;
+      case  3:  hb_retnl( MCIWndPause(mcihand)) ; break;
+      case  4:  hb_retnl( MCIWndClose(mcihand)) ; break;
+      case  5:            MCIWndDestroy(mcihand) ; hb_retnl(0);break;
+      case  6:  hb_retnl( MCIWndEject(mcihand)) ; break;
+      case  7:  hb_retnl( MCIWndEnd(mcihand)) ; break;
+      case  8:  hb_retnl( MCIWndHome(mcihand)) ; break;
+      case  9:  hb_retnl( MCIWndOpen(mcihand,hb_parc(3),NULL)) ; break;
+      case 10:  hb_retnl( MCIWndOpenDialog(mcihand)) ; break;
+      case 11:  hb_retnl( MCIWndPlayReverse(mcihand)) ; break;
+      case 12:  hb_retnl( MCIWndResume(mcihand)) ; break;
+      case 13:            MCIWndSetRepeat(mcihand,hb_parl(3)) ;hb_retnl(0); break;
+      case 14:  hb_retnl( MCIWndSetSpeed(mcihand,hb_parni(3))) ; break;
+      case 15:  hb_retnl( MCIWndSetVolume(mcihand,hb_parni(3))) ; break;
+      case 16:            MCIWndSetZoom(mcihand,hb_parni(3)) ; hb_retnl(0); break;
+      case 17:  hb_retnl( MCIWndGetLength(mcihand)) ; break;
+      case 18:  hb_retnl( MCIWndGetPosition(mcihand)) ; break;
+      case 19:  hb_retnl( MCIWndGetVolume(mcihand) ) ; break;
+      case 20:  hb_retnl( MCIWndSeek(mcihand,hb_parni(3)) ) ; hb_retnl(0); break;
+      default: hb_retnl( 0 ) ;
+   }
+}
+
+#pragma ENDDUMP

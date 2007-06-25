@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.21 2006-11-18 19:39:52 guerra000 Exp $
+ * $Id: i_windefs.ch,v 1.22 2007-06-25 04:35:57 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -622,5 +622,21 @@
 #define MF_MENUBREAK        0x0040
 #define MF_SYSMENU          0x2000
 #define MF_RIGHTJUSTIFY     0x4000
+
+// Media
+#define MCIWNDF_NOAUTOSIZEWINDOW    1
+#define MCIWNDF_NOPLAYBAR           2
+#define MCIWNDF_NOAUTOSIZEMOVIE     4
+#define MCIWNDF_NOMENU              8
+#define MCIWNDF_SHOWNAME            16
+#define MCIWNDF_SHOWPOS             32
+#define MCIWNDF_SHOWMODE            64
+#define MCIWNDF_SHOWALL             112
+#define MCIWNDF_NOERRORDLG          0x4000
+#define MCIWNDF_NOOPEN              0x8000
+#define ACS_CENTER                  1
+#define ACS_TRANSPARENT             2
+#define ACS_AUTOPLAY                4
+#define ACS_TIMER                   8
 
 #endif

@@ -1,5 +1,5 @@
 /*
- * $Id: i_media.ch,v 1.2 2005-10-22 06:04:31 guerra000 Exp $
+ * $Id: i_media.ch,v 1.3 2007-06-25 04:35:57 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -95,6 +95,7 @@
 // ANIMATEBOX COMMANDS
 ///////////////////////////////////////////////////////////////////////////////
 #command @ <row>,<col>  ANIMATEBOX <name> ;
+                        [ OBJ <obj> ]                   ;
 			[ <dummy1: OF, PARENT> <parent> ] ;
 			WIDTH <w> ;
 			HEIGHT <h> ;
@@ -103,8 +104,15 @@
 			[ <center : CENTER> ] ;
 			[ <transparent: TRANSPARENT> ] ;
 			[ HELPID <helpid> ] 		;
+                        [ SUBCLASS <subclass> ]         ;
+			[ <invisible: INVISIBLE> ]	;
+			[ <notabstop: NOTABSTOP> ]	;
+                        [ <disabled: DISABLED> ]        ;
+                        [ <rtl: RTL> ]                  ;
 	=>;
-    _DefineAnimateBox( <(name)>,<(parent)>,<col>, <row>, <w>, <h>, <.autoplay.>, <.center.>, <.transparent.>,<file> , <helpid> )
+        [ <obj> := ] _OOHG_SelectSubClass( TAnimateBox(), [ <subclass>() ] ): ;
+        Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <.autoplay.>, <.center.>, <.transparent.>, <file>, <helpid>, ;
+                <.invisible.>, <.notabstop.>, <.disabled.>, <.rtl.> )
 
 #command OPEN ANIMATEBOX <ControlName> OF <ParentForm> FILE <FileName> ;
 => ;
@@ -158,10 +166,11 @@ GetControlObject( <(ControlName)> , <(ParentForm)> ):Release()
 // PLAYER COMMANDS
 /////////////////////////////////////////////////////////////////////////////
 #command @ <row>,<col>  PLAYER <name> ;
+                        [ OBJ <obj> ]                   ;
 			[ <dummy1: OF, PARENT> <parent> ] ;
-			WIDTH <w> ;
-			HEIGHT <h> ;
-                        FILE <file> ;
+                        [ WIDTH <w> ] ;
+                        [ HEIGHT <h> ] ;
+                        [ FILE <file> ] ;
 			[ <noautosizewindow: NOAUTOSIZEWINDOW> ] ;
 			[ <noautosizemovie : NOAUTOSIZEMOVIE> ] ;
 			[ <noerrordlg: NOERRORDLG> ] ;
@@ -173,8 +182,16 @@ GetControlObject( <(ControlName)> , <(ParentForm)> ):Release()
 			[ <showname: SHOWNAME> ] ;
 			[ <showposition: SHOWPOSITION> ] ;
 			[ HELPID <helpid> ] 		;
+                        [ SUBCLASS <subclass> ]         ;
+			[ <invisible: INVISIBLE> ]	;
+			[ <notabstop: NOTABSTOP> ]	;
+                        [ <disabled: DISABLED> ]        ;
+                        [ <rtl: RTL> ]                  ;
 	=>;
-    _DefinePlayer( <(name)>,<(parent)>,<file>,<col>, <row>, <w>, <h>, <.noautosizewindow.>, <.noautosizemovie.>, <.noerrordlg.>,<.nomenu.>,<.noopen.>,<.noplaybar.>,<.showall.>,<.showmode.>,<.showname.>,<.showposition.> , <helpid> )
+        [ <obj> := ] _OOHG_SelectSubClass( TPlayer(), [ <subclass>() ] ): ;
+        Define( <(name)>, <(parent)>, <file>, <col>, <row>, <w>, <h>, <.noautosizewindow.>, <.noautosizemovie.>, ;
+                <.noerrordlg.>, <.nomenu.>, <.noopen.>, <.noplaybar.>, <.showall.>, <.showmode.>, <.showname.>, ;
+                <.showposition.>, <helpid>, <.invisible.>, <.notabstop.>, <.disabled.>, <.rtl.> )
 
 #command PLAY PLAYER <name> OF <parent> ;
 	=> ;

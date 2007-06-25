@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.35 2007-03-04 19:34:56 guerra000 Exp $
+ * $Id: i_altsyntax.ch,v 1.36 2007-06-25 04:35:57 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -651,7 +651,7 @@ List Box
 
 #xcommand END ANIMATEBOX;
 	=>;
-	_DefineAnimateBox(;
+        TAnimateBox():Define(;
                 _OOHG_ActiveControlName,;
                 _OOHG_ActiveControlOf,;
                 _OOHG_ActiveControlCol,;
@@ -662,7 +662,11 @@ List Box
                 _OOHG_ActiveControlCenter,;
                 _OOHG_ActiveControlTransparent,;
                 _OOHG_ActiveControlFile,;
-                _OOHG_ActiveControlHelpId)
+                _OOHG_ActiveControlHelpId,;
+                _OOHG_ActiveControlInvisible,;
+                _OOHG_ActiveControlNoTabStop,;
+                _OOHG_ActiveControlDisabled,;
+                _OOHG_ActiveControlRtl)
 
 #xcommand DEFINE PLAYER <name> ;
 	=>;
@@ -721,7 +725,7 @@ List Box
 
 #xcommand END PLAYER;
 	=>;
-	_DefinePlayer(;
+        TPlayer():Define(;
                 _OOHG_ActiveControlName,;
                 _OOHG_ActiveControlOf,;
                 _OOHG_ActiveControlFile,;
@@ -739,7 +743,11 @@ List Box
                 _OOHG_ActiveControlShowMode,;
                 _OOHG_ActiveControlShowName,;
                 _OOHG_ActiveControlShowPosition,;
-                _OOHG_ActiveControlHelpId)
+                _OOHG_ActiveControlHelpId,;
+                _OOHG_ActiveControlInvisible,;
+                _OOHG_ActiveControlNoTabStop,;
+                _OOHG_ActiveControlDisabled,;
+                _OOHG_ActiveControlRtl)
 
 /*----------------------------------------------------------------------------
 Progress Bar
