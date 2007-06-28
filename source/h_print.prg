@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.70 2007-06-09 19:06:00 declan2005 Exp $
+* $Id: h_print.prg,v 1.71 2007-06-28 23:50:08 guerra000 Exp $
 */
 
 #include 'hbclass.ch'
@@ -1809,7 +1809,7 @@ METHOD enddocx()
 ENDCLASS
 
 METHOD enddocx() CLASS THTMLPRINT
-local nCol,cRuta,cMydoc
+local nCol,cRuta
 For nCol:= 1 to ::oHoja:UsedRange:Columns:Count()
     ::oHoja:Columns( nCol ):AutoFit()
 NEXT
