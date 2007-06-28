@@ -1,5 +1,5 @@
 /*
- * $Id: c_controlmisc.c,v 1.43 2007-03-30 03:30:17 guerra000 Exp $
+ * $Id: c_controlmisc.c,v 1.44 2007-06-28 23:46:40 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -319,7 +319,7 @@ BOOL _OOHG_DetermineColorReturn( PHB_ITEM pColor, LONG *lColor, BOOL fUpdate )
 
 HB_FUNC ( DELETEOBJECT )
 {
-   hb_retl ( DeleteObject( (HGDIOBJ) hb_parnl( 1 ) ) ) ;
+   hb_retl( DeleteObject( (HGDIOBJ) HWNDparam( 1 ) ) );
 }
 
 HB_FUNC( CSHOWCONTROL )
@@ -398,32 +398,22 @@ HB_FUNC( HIDEWINDOW )
    ShowWindow( HWNDparam( 1 ), SW_HIDE );
 }
 
-HB_FUNC ( CHECKDLGBUTTON )
+HB_FUNC( CHECKDLGBUTTON )
 {
-	CheckDlgButton(
-    HWNDparam( 2 ),
-	hb_parni(1),
-	BST_CHECKED);
+   CheckDlgButton( HWNDparam( 2 ), hb_parni( 1 ), BST_CHECKED );
 }
 
-HB_FUNC ( UNCHECKDLGBUTTON )
+HB_FUNC( UNCHECKDLGBUTTON )
 {
-	CheckDlgButton(
-    HWNDparam( 2 ),
-	hb_parni(1),
-	BST_UNCHECKED);
+   CheckDlgButton( HWNDparam( 2 ), hb_parni( 1 ), BST_UNCHECKED );
 }
 
-HB_FUNC ( SETDLGITEMTEXT )
+HB_FUNC( SETDLGITEMTEXT )
 {
-    SetDlgItemText(
-       HWNDparam( 3 ),
-       hb_parni( 1 ),
-       (LPCTSTR) hb_parc( 2 )
-    );
+   SetDlgItemText( HWNDparam( 3 ), hb_parni( 1 ), (LPCTSTR) hb_parc( 2 ) );
 }
 
-HB_FUNC ( SETFOCUS )
+HB_FUNC( SETFOCUS )
 {
    HWNDret( SetFocus( HWNDparam( 1 ) ) );
 }
@@ -433,8 +423,8 @@ HB_FUNC ( GETDLGITEMTEXT )
    USHORT iLen = 32768;
    char *cText = (char*) hb_xgrab( iLen+1 );
 
-	GetDlgItemText(
-    HWNDparam( 2 ),    // handle of dialog box
+   GetDlgItemText(
+        HWNDparam( 2 ),    // handle of dialog box
 	hb_parni(1),		// identifier of control
 	(LPTSTR) cText,       	// address of buffer for text
 	iLen                   	// maximum size of string
@@ -449,15 +439,15 @@ HB_FUNC( ISDLGBUTTONCHECKED )
    hb_retl( ( IsDlgButtonChecked( HWNDparam( 2 ), hb_parni( 1 ) ) == BST_CHECKED ) );
 }
 
-HB_FUNC ( SETSPINNERVALUE )
+HB_FUNC( SETSPINNERVALUE )
 {
-    SendMessage( HWNDparam( 1 ),
+   SendMessage( HWNDparam( 1 ),
 		(UINT)UDM_SETPOS32 ,
 		(WPARAM)0,
 		(LPARAM) (INT) hb_parni (2)
 		) ;
 }
-HB_FUNC ( GETSPINNERVALUE )
+HB_FUNC( GETSPINNERVALUE )
 {
 	hb_retnl (
     SendMessage( HWNDparam( 1 ),
@@ -542,7 +532,7 @@ HB_FUNC ( GETMODULEFILENAME )
 {
    BYTE bBuffer[ MAX_PATH + 1 ] = { 0 } ;
 
-   GetModuleFileName( ( HMODULE ) hb_parnl( 1 ), ( char * ) bBuffer, 249 );
+   GetModuleFileName( ( HMODULE ) HWNDparam( 1 ), ( char * ) bBuffer, 249 );
    hb_retc( ( char * ) bBuffer );
 }
 
@@ -573,10 +563,10 @@ HB_FUNC( SYSTEMPARAMETERSINFO )
 
 HB_FUNC( GETTEXTWIDTH )  // returns the width of a string in pixels
 {
-   HDC   hDC        = ( HDC ) hb_parnl( 1 );
+   HDC   hDC        = ( HDC ) HWNDparam( 1 );
    HWND  hWnd = 0;
    BOOL  bDestroyDC = FALSE;
-   HFONT hFont = ( HFONT ) hb_parnl( 3 );
+   HFONT hFont = ( HFONT ) HWNDparam( 3 );
    HFONT hOldFont = 0;
    SIZE sz;
 
@@ -603,10 +593,10 @@ HB_FUNC( GETTEXTWIDTH )  // returns the width of a string in pixels
 
 HB_FUNC( GETTEXTHEIGHT )  // returns the width of a string in pixels
 {
-   HDC   hDC        = ( HDC ) hb_parnl( 1 );
+   HDC   hDC        = ( HDC ) HWNDparam( 1 );
    HWND  hWnd = 0;
    BOOL  bDestroyDC = FALSE;
-   HFONT hFont = ( HFONT ) hb_parnl( 3 );
+   HFONT hFont = ( HFONT ) HWNDparam( 3 );
    HFONT hOldFont = 0;
    SIZE sz;
 
@@ -708,16 +698,19 @@ HB_FUNC( IMAGELIST_INIT )
             hbmp = ( HBITMAP ) LoadImage( GetModuleHandle( NULL ), caption, IMAGE_BITMAP, 0, 0, iStyle | LR_LOADFROMFILE );
          }
 
-         if( ! himl )
+         if( hbmp )
          {
-            GetObject( hbmp, sizeof( bm ), &bm );
-            cx = bm.bmWidth;
-            cy = bm.bmHeight;
-            himl = ImageList_Create( cx, cy, ILC_COLOR32 | ILC_MASK, 16, 16 );
-         }
+            if( ! himl )
+            {
+               GetObject( hbmp, sizeof( bm ), &bm );
+               cx = bm.bmWidth;
+               cy = bm.bmHeight;
+               himl = ImageList_Create( cx, cy, ILC_COLOR32 | ILC_MASK, 16, 16 );
+            }
 
-         ImageList_AddMasked( himl, hbmp, clrDefault );
-         DeleteObject( hbmp ) ;
+            ImageList_AddMasked( himl, hbmp, clrDefault );
+            DeleteObject( hbmp );
+         }
       }
    }
 
@@ -729,29 +722,32 @@ HB_FUNC( IMAGELIST_INIT )
 
 HB_FUNC( IMAGELIST_DESTROY )
 {
-   hb_retl( ImageList_Destroy( ( HIMAGELIST ) hb_parnl( 1 ) ) );
+   hb_retl( ImageList_Destroy( ( HIMAGELIST ) HWNDparam( 1 ) ) );
 }
 
 HB_FUNC( IMAGELIST_ADD )
 {
-   HIMAGELIST himl = ( HIMAGELIST ) hb_parnl( 1 );
+   HIMAGELIST himl = ( HIMAGELIST ) HWNDparam( 1 );
    HBITMAP hbmp;
    int cx, cy, ic = 0;
    int iStyle = hb_parni( 3 );
    COLORREF clrDefault = ( COLORREF ) hb_parni( 4 );
 
-   if ( himl != NULL )
+   if( himl )
    {
       ImageList_GetIconSize( himl, &cx, &cy );
 
       hbmp = ( HBITMAP ) LoadImage( GetModuleHandle( NULL ), hb_parc( 2 ), IMAGE_BITMAP, cx, cy, iStyle );
-      if( hbmp == NULL )
+      if( ! hbmp )
       {
          hbmp = ( HBITMAP ) LoadImage( GetModuleHandle( NULL ), hb_parc( 2 ), IMAGE_BITMAP, cx, cy, iStyle | LR_LOADFROMFILE );
       }
 
-      ImageList_AddMasked( himl, hbmp, clrDefault );
-      DeleteObject( hbmp );
+      if( hbmp )
+      {
+         ImageList_AddMasked( himl, hbmp, clrDefault );
+         DeleteObject( hbmp );
+      }
 
       ic = ImageList_GetImageCount( himl );
    }
@@ -761,12 +757,12 @@ HB_FUNC( IMAGELIST_ADD )
 
 HB_FUNC( IMAGELIST_GETIMAGECOUNT )
 {
-   hb_retni( ImageList_GetImageCount( ( HIMAGELIST ) hb_parnl( 1 ) ) );
+   hb_retni( ImageList_GetImageCount( ( HIMAGELIST ) HWNDparam( 1 ) ) );
 }
 
 HB_FUNC( IMAGELIST_DUPLICATE )
 {
-   hb_retnl( ( LONG ) ImageList_Duplicate( ( HIMAGELIST ) hb_parnl( 1 ) ) );
+   HWNDret( ImageList_Duplicate( ( HIMAGELIST ) HWNDparam( 1 ) ) );
 }
 
 void ImageFillParameter( struct IMAGE_PARAMETER *pResult, PHB_ITEM pString )

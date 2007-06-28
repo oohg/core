@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.78 2007-05-23 04:15:16 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.79 2007-06-28 23:46:41 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1620,23 +1620,31 @@ Return nil
 *-----------------------------------------------------------------------------*
 METHOD AddBitMap( uImage ) CLASS TControl
 *-----------------------------------------------------------------------------*
-Local nPos
-   If ::ImageList == 0
+Local nPos, nCount
+   If ! ValidHandler( ::ImageList )
       If ValType( uImage ) == "A"
          ::ImageList := ImageList_Init( uImage, ::ImageListColor, ::ImageListFlags )[ 1 ]
       Else
          ::ImageList := ImageList_Init( { uImage }, ::ImageListColor, ::ImageListFlags )[ 1 ]
       EndIf
-      nPos := 1
+      If ValidHandler( ::ImageList )
+         nPos := 1
+         SendMessage( ::hWnd, ::SetImageListCommand, ::SetImageListWParam, ::ImageList )
+      Else
+         nPos := 0
+      EndIf
    Else
+      nCount := ImageList_GetImageCount( ::ImageList )
       If ValType( uImage ) == "A"
          nPos := ImageList_Add( ::ImageList, uImage[ 1 ], ::ImageListFlags, ::ImageListColor )
          AEVAL( ::ImageList, { |c| ImageList_Add( ::ImageList, c, ::ImageListFlags, ::ImageListColor ) }, 2 )
       Else
          nPos := ImageList_Add( ::ImageList, uImage, ::ImageListFlags, ::ImageListColor )
       EndIf
+      If nCount == ImageList_GetImageCount( ::ImageList )
+         nPos := 0
+      EndIf
    Endif
-   SendMessage( ::hWnd, ::SetImageListCommand, ::SetImageListWParam, ::ImageList )
 Return nPos
 
 *-----------------------------------------------------------------------------*
@@ -1644,18 +1652,18 @@ METHOD DoEvent( bBlock ) CLASS TControl
 *-----------------------------------------------------------------------------*
 Local lRetVal
    If valtype( bBlock ) == "B"
-		_PushEventInfo()
+      _PushEventInfo()
       _OOHG_ThisForm      := ::Parent
       _OOHG_ThisType      := "C"
       _OOHG_ThisEventType := ""
       _OOHG_ThisControl   := Self
       _OOHG_ThisObject    := Self
-		Eval( bBlock )
-		_PopEventInfo()
-		lRetVal := .T.
-	Else
-		lRetVal := .F.
-	EndIf
+      Eval( bBlock )
+      _PopEventInfo()
+      lRetVal := .T.
+   Else
+      lRetVal := .F.
+   EndIf
 Return lRetVal
 
 *-----------------------------------------------------------------------------*
