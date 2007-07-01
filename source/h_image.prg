@@ -1,5 +1,5 @@
 /*
- * $Id: h_image.prg,v 1.12 2006-12-28 01:44:47 guerra000 Exp $
+ * $Id: h_image.prg,v 1.13 2007-07-01 04:44:56 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -100,21 +100,27 @@ CLASS TImage FROM TControl
    DATA Type            INIT "IMAGE" READONLY
    DATA cPicture        INIT ""
    DATA Stretch         INIT .F.
+   DATA AutoSize        INIT .T.
    DATA bOnClick        INIT ""
    DATA nWidth          INIT 100
    DATA nHeight         INIT 100
+   DATA hImage          INIT nil
 
    METHOD Define
    METHOD Picture       SETGET
    METHOD HBitMap       SETGET
    METHOD Buffer        SETGET
    METHOD OnClick       SETGET
+
+   METHOD SizePos
+   METHOD RePaint
+   METHOD Release
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, x, y, FileName, w, h, ProcedureName, ;
                HelpId, invisible, stretch, lWhiteBackground, lRtl, backcolor, ;
-               cBuffer, hBitMap ) CLASS TImage
+               cBuffer, hBitMap, autosize ) CLASS TImage
 *-----------------------------------------------------------------------------*
 Local ControlHandle, nStyle
 
@@ -122,6 +128,9 @@ Local ControlHandle, nStyle
    ASSIGN ::nRow    VALUE y TYPE "N"
    ASSIGN ::nWidth  VALUE w TYPE "N"
    ASSIGN ::nHeight VALUE h TYPE "N"
+
+   ASSIGN ::Stretch    VALUE stretch  TYPE "L"
+   ASSIGN ::AutoSize   VALUE autosize TYPE "L"
 
    ::SetForm( ControlName, ParentForm,,,, BackColor,, lRtl )
    If ValType( lWhiteBackground ) == "L" .AND. lWhiteBackground
@@ -135,7 +144,6 @@ Local ControlHandle, nStyle
    ::Register( ControlHandle, ControlName, HelpId )
 
    ::OnClick := ProcedureName
-   ::Stretch := stretch
 
    ::Picture := FileName
    If ! ValidHandler( ::AuxHandle )
@@ -150,10 +158,16 @@ Return Self
 *-----------------------------------------------------------------------------*
 METHOD Picture( cPicture ) CLASS TImage
 *-----------------------------------------------------------------------------*
+LOCAL nAttrib
    IF VALTYPE( cPicture ) $ "CM"
       DeleteObject( ::AuxHandle )
       ::cPicture := cPicture
-      ::AuxHandle := TImage_SetPicture( Self, cPicture, ::Stretch )
+      nAttrib := LR_CREATEDIBSECTION
+      // IF ::Transparent
+      //    nAttrib += LR_LOADMAP3DCOLORS + LR_LOADTRANSPARENT
+      // ENDIF
+      ::AuxHandle := _OOHG_BitmapFromFile( Self, cPicture, nAttrib )
+      ::RePaint()
    ENDIF
 Return ::cPicture
 
@@ -163,7 +177,7 @@ METHOD HBitMap( hBitMap ) CLASS TImage
    If ValType( hBitMap ) $ "NP"
       DeleteObject( ::AuxHandle )
       ::AuxHandle := hBitMap
-      SendMessage( ::hWnd, STM_SETIMAGE, IMAGE_BITMAP, hBitMap )
+      ::RePaint()
    EndIf
 Return ::AuxHandle
 
@@ -172,7 +186,8 @@ METHOD Buffer( cBuffer ) CLASS TImage
 *-----------------------------------------------------------------------------*
    If ValType( cBuffer ) $ "CM"
       DeleteObject( ::AuxHandle )
-      ::AuxHandle := TImage_SetBuffer( Self, cBuffer, ::Stretch )
+      ::AuxHandle := _OOHG_BitmapFromBuffer( Self, cBuffer )
+      ::RePaint()
    EndIf
 Return nil
 
@@ -184,6 +199,33 @@ METHOD OnClick( bOnClick ) CLASS TImage
       WindowStyleFlag( ::hWnd, SS_NOTIFY, IF( ValType( bOnClick ) == "B", SS_NOTIFY, 0 ) )
    EndIf
 Return ::bOnClick
+
+*-----------------------------------------------------------------------------*
+METHOD SizePos( Row, Col, Width, Height ) CLASS TImage
+*-----------------------------------------------------------------------------*
+LOCAL uRet
+   uRet := ::Super:SizePos( Row, Col, Width, Height )
+   IF ! ::AutoSize .OR. ! ::Stretch
+      SendMessage( ::hWnd, STM_SETIMAGE, IMAGE_BITMAP, ::hImage )
+   ENDIF
+RETURN uRet
+
+*-----------------------------------------------------------------------------*
+METHOD RePaint() CLASS TImage
+*-----------------------------------------------------------------------------*
+   IF ValidHandler( ::hImage )
+      DeleteObject( ::hImage )
+   ENDIF
+   ::hImage := _OOHG_SetBitmap( Self, ::AuxHandle, STM_SETIMAGE, ::Stretch, ::AutoSize )
+RETURN Self
+
+*-----------------------------------------------------------------------------*
+METHOD Release() CLASS TImage
+*-----------------------------------------------------------------------------*
+   IF ValidHandler( ::hImage )
+      DeleteObject( ::hImage )
+   ENDIF
+RETURN ::Super:Release()
 
 #pragma BEGINDUMP
 
@@ -219,54 +261,6 @@ HB_FUNC( INITIMAGE )   // ( hWnd, hMenu, nCol, nRow, nWidth, nHeight, nStyle, lR
    lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) h, GWL_WNDPROC, ( LONG ) SubClassFunc );
 
    HWNDret( h );
-}
-
-HB_FUNC( TIMAGE_SETPICTURE )   // ( oSelf, cFile, lScaleStretch )
-{
-   POCTRL oSelf = _OOHG_GetControlInfo( hb_param( 1, HB_IT_OBJECT ) );
-   RECT rect;
-
-   HBITMAP hBitmap = 0, hBitmap2;
-   int iAttributes;
-
-   iAttributes = LR_CREATEDIBSECTION;
-//   if( transparent )
-//   {
-//      iAttributes |= LR_LOADMAP3DCOLORS | LR_LOADTRANSPARENT;
-//   }
-   GetWindowRect( oSelf->hWnd, &rect );
-   hBitmap2 = _OOHG_LoadImage( hb_parc( 2 ), iAttributes, rect.right - rect.left, rect.bottom - rect.top, oSelf->hWnd, oSelf->lBackColor );
-
-   if( hBitmap2 )
-   {
-      hBitmap = _OOHG_ScaleImage( oSelf->hWnd, hBitmap2, rect.right - rect.left, rect.bottom - rect.top, hb_parl( 3 ), oSelf->lBackColor );
-      DeleteObject( hBitmap2 );
-   }
-
-   SendMessage( oSelf->hWnd, STM_SETIMAGE, ( WPARAM ) IMAGE_BITMAP, ( LPARAM ) hBitmap );
-
-   HWNDret( hBitmap );
-}
-
-HB_FUNC( TIMAGE_SETBUFFER )   // ( oSelf, cBuffer, lScaleStretch )
-{
-   POCTRL oSelf = _OOHG_GetControlInfo( hb_param( 1, HB_IT_OBJECT ) );
-   HBITMAP hBitmap = 0;
-   HGLOBAL hGlobal;
-
-   if( hb_parclen( 2 ) )
-   {
-      hGlobal = GlobalAlloc( GPTR, hb_parclen( 2 ) );
-      if( hGlobal )
-      {
-         memcpy( hGlobal, hb_parc( 2 ), hb_parclen( 2 ) );
-         hBitmap = _OOHG_OleLoadPicture( hGlobal, oSelf->hWnd, oSelf->lBackColor );
-         GlobalFree( hGlobal );
-      }
-   }
-   SendMessage( oSelf->hWnd, STM_SETIMAGE, ( WPARAM ) IMAGE_BITMAP, ( LPARAM ) hBitmap );
-
-   HWNDret( hBitmap );
 }
 
 #pragma ENDDUMP

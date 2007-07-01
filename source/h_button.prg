@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.23 2007-03-10 21:33:50 guerra000 Exp $
+ * $Id: h_button.prg,v 1.24 2007-07-01 04:44:56 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -193,10 +193,17 @@ Return ::Super:SetFocus()
 *-----------------------------------------------------------------------------*
 METHOD Picture( cPicture ) CLASS TButton
 *-----------------------------------------------------------------------------*
+LOCAL hBitMap, nAttrib
    IF VALTYPE( cPicture ) $ "CM"
       DeleteObject( ::AuxHandle )
       ::cPicture := cPicture
-      ::AuxHandle := TButton_SetPicture( Self, cPicture, ::lNoTransparent, ::lScale )
+      nAttrib := LR_LOADMAP3DCOLORS
+      IF ! ::lNoTransparent
+         nAttrib += LR_LOADTRANSPARENT
+      ENDIF
+      hBitMap := _OOHG_BitmapFromFile( Self, cPicture, nAttrib )
+      ::AuxHandle := _OOHG_SetBitmap( Self, hBitMap, BM_SETIMAGE, .F., ::lScale )
+      DeleteObject( hBitMap )
    ENDIF
 Return ::cPicture
 
@@ -205,17 +212,20 @@ METHOD HBitMap( hBitMap ) CLASS TButton
 *-----------------------------------------------------------------------------*
    If ValType( hBitMap ) $ "NP"
       DeleteObject( ::AuxHandle )
-      ::AuxHandle := hBitMap
-      SendMessage( ::hWnd, BM_SETIMAGE, IMAGE_BITMAP, hBitMap )
+      ::AuxHandle := _OOHG_SetBitmap( Self, hBitMap, BM_SETIMAGE, .F., ::lScale )
+      DeleteObject( hBitMap )
    EndIf
 Return ::AuxHandle
 
 *-----------------------------------------------------------------------------*
 METHOD Buffer( cBuffer ) CLASS TButton
 *-----------------------------------------------------------------------------*
+LOCAL hBitMap
    If ValType( cBuffer ) $ "CM"
       DeleteObject( ::AuxHandle )
-      ::AuxHandle := TButton_SetBuffer( Self, cBuffer, ::lScale )
+      hBitMap := _OOHG_BitmapFromBuffer( Self, cBuffer )
+      ::AuxHandle := _OOHG_SetBitmap( Self, hBitMap, BM_SETIMAGE, .F., ::lScale )
+      DeleteObject( hBitMap )
    EndIf
 Return nil
 
@@ -223,8 +233,6 @@ Return nil
 METHOD Value( uValue ) CLASS TButton
 *------------------------------------------------------------------------------*
 Return ( ::Caption := uValue )
-
-EXTERN TButton_SetPicture, TButton_SetBuffer
 
 #pragma BEGINDUMP
 #include <hbapi.h>
@@ -263,62 +271,6 @@ HB_FUNC( INITBUTTON )
    lpfnOldWndProc = ( WNDPROC ) SetWindowLong( hbutton, GWL_WNDPROC, ( LONG ) SubClassFunc );
 
    HWNDret( hbutton );
-}
-
-HB_FUNC( TBUTTON_SETPICTURE )   // ( Self, cImage, lTransparent, lScale )
-{
-   POCTRL oSelf = _OOHG_GetControlInfo( hb_param( 1, HB_IT_OBJECT ) );
-   HBITMAP himage, hBitmap2;
-   int ImgStyle;
-   RECT rect;
-
-   ImgStyle = LR_LOADMAP3DCOLORS;
-   if( ! hb_parl( 3 ) )
-   {
-      ImgStyle |= LR_LOADTRANSPARENT;
-   }
-
-   himage = _OOHG_LoadImage( hb_parc( 2 ), ImgStyle, 0, 0, oSelf->hWnd, oSelf->lBackColor );
-   if( himage && hb_parl( 4 ) )
-   {
-      hBitmap2 = himage;
-      GetWindowRect( oSelf->hWnd, &rect );
-      himage = _OOHG_ScaleImage( oSelf->hWnd, hBitmap2, rect.right - rect.left, rect.bottom - rect.top, 0, oSelf->lBackColor );
-      DeleteObject( hBitmap2 );
-   }
-
-   SendMessage( oSelf->hWnd, BM_SETIMAGE, ( WPARAM ) IMAGE_BITMAP, ( LPARAM ) himage );
-
-   HWNDret( himage );
-}
-
-HB_FUNC( TBUTTON_SETBUFFER )   // ( oSelf, cBuffer, lScale )
-{
-   POCTRL oSelf = _OOHG_GetControlInfo( hb_param( 1, HB_IT_OBJECT ) );
-   HBITMAP hBitmap = 0, hBitmap2;
-   HGLOBAL hGlobal;
-   RECT rect;
-
-   if( hb_parclen( 2 ) )
-   {
-      hGlobal = GlobalAlloc( GPTR, hb_parclen( 2 ) );
-      if( hGlobal )
-      {
-         memcpy( hGlobal, hb_parc( 2 ), hb_parclen( 2 ) );
-         hBitmap = _OOHG_OleLoadPicture( hGlobal, oSelf->hWnd, oSelf->lBackColor );
-         GlobalFree( hGlobal );
-         if( hBitmap && hb_parl( 3 ) )
-         {
-            hBitmap2 = hBitmap;
-            GetWindowRect( oSelf->hWnd, &rect );
-            hBitmap = _OOHG_ScaleImage( oSelf->hWnd, hBitmap2, rect.right - rect.left, rect.bottom - rect.top, 0, oSelf->lBackColor );
-            DeleteObject( hBitmap2 );
-         }
-      }
-   }
-   SendMessage( oSelf->hWnd, BM_SETIMAGE, ( WPARAM ) IMAGE_BITMAP, ( LPARAM ) hBitmap );
-
-   HWNDret( hBitmap );
 }
 
 #pragma ENDDUMP

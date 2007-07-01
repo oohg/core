@@ -1,5 +1,5 @@
 /*
- * $Id: h_checkbox.prg,v 1.13 2006-11-09 19:37:16 declan2005 Exp $
+ * $Id: h_checkbox.prg,v 1.14 2007-07-01 04:44:56 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -198,10 +198,17 @@ RETURN uValue
 *-----------------------------------------------------------------------------*
 METHOD Picture( cPicture ) CLASS TCheckBox
 *-----------------------------------------------------------------------------*
+LOCAL hBitMap, nAttrib
    IF VALTYPE( cPicture ) $ "CM"
       DeleteObject( ::AuxHandle )
       ::cPicture := cPicture
-      ::AuxHandle := TButton_SetPicture( Self, cPicture, ::lNoTransparent, ::lScale )
+      nAttrib := LR_LOADMAP3DCOLORS
+      IF ! ::lNoTransparent
+         nAttrib += LR_LOADTRANSPARENT
+      ENDIF
+      hBitMap := _OOHG_BitmapFromFile( Self, cPicture, nAttrib )
+      ::AuxHandle := _OOHG_SetBitmap( Self, hBitMap, BM_SETIMAGE, .F., ::lScale )
+      DeleteObject( hBitMap )
    ENDIF
 Return ::cPicture
 
@@ -210,17 +217,20 @@ METHOD HBitMap( hBitMap ) CLASS TCheckBox
 *-----------------------------------------------------------------------------*
    If ValType( hBitMap ) $ "NP"
       DeleteObject( ::AuxHandle )
-      ::AuxHandle := hBitMap
-      SendMessage( ::hWnd, BM_SETIMAGE, IMAGE_BITMAP, hBitMap )
+      ::AuxHandle := _OOHG_SetBitmap( Self, hBitMap, BM_SETIMAGE, .F., ::lScale )
+      DeleteObject( hBitMap )
    EndIf
 Return ::AuxHandle
 
 *-----------------------------------------------------------------------------*
 METHOD Buffer( cBuffer ) CLASS TCheckBox
 *-----------------------------------------------------------------------------*
+LOCAL hBitMap
    If ValType( cBuffer ) $ "CM"
       DeleteObject( ::AuxHandle )
-      ::AuxHandle := TButton_SetBuffer( Self, cBuffer, ::lScale )
+      hBitMap := _OOHG_BitmapFromBuffer( Self, cBuffer )
+      ::AuxHandle := _OOHG_SetBitmap( Self, hBitMap, BM_SETIMAGE, .F., ::lScale )
+      DeleteObject( hBitMap )
    EndIf
 Return nil
 

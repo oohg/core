@@ -1,5 +1,5 @@
 /*
- * $Id: c_image.c,v 1.10 2007-06-28 23:46:41 guerra000 Exp $
+ * $Id: c_image.c,v 1.11 2007-07-01 04:44:56 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -110,6 +110,7 @@
 #include <winuser.h>
 #include <wingdi.h>
 #include "olectl.h"
+#include "../include/oohg.h"
 
 HANDLE _OOHG_OleLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG lBackColor )
 {
@@ -172,28 +173,18 @@ HANDLE _OOHG_OleLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG lBackColor )
 
 HBITMAP _OOHG_ScaleImage( HWND hWnd, HBITMAP hImage, int iWidth, int iHeight, int scalestrech, LONG BackColor )
 {
-   RECT rect,rect2;
+   RECT fromRECT, toRECT;
    HBITMAP hpic = 0;
    BITMAP bm;
    long lWidth, lHeight;
-   HDC imgDC, tmpDC, tmp2DC;
+   HDC imgDC, fromDC, toDC;
    HBRUSH hBrush;
 
    if( hWnd && hImage )
    {
       imgDC = GetDC( hWnd );
-      tmpDC = CreateCompatibleDC( imgDC );
-      tmp2DC = CreateCompatibleDC( imgDC );
-
-      if( iWidth == 0 && iHeight == 0 )
-      {
-         GetClientRect( hWnd, &rect );
-      }
-      else
-      {
-         SetRect( &rect, 0, 0, iWidth, iHeight );
-      }
-      SetRect( &rect2, 0, 0, rect.right, rect.bottom );
+      fromDC = CreateCompatibleDC( imgDC );
+      toDC = CreateCompatibleDC( imgDC );
 
       if( BackColor == -1 )
       {
@@ -203,39 +194,46 @@ HBITMAP _OOHG_ScaleImage( HWND hWnd, HBITMAP hImage, int iWidth, int iHeight, in
       {
          hBrush = CreateSolidBrush( BackColor );
       }
-      FillRect( tmp2DC, &rect2, hBrush );
+      hBrush = CreateSolidBrush( 0x0000FF );
 
+      // FROM parameters
       GetObject( hImage, sizeof( BITMAP ), &bm );
       lWidth  = bm.bmWidth;
       lHeight = bm.bmHeight;
-      SelectObject( tmp2DC, hImage );
+      SetRect( &fromRECT, 0, 0, lWidth, lHeight );
+      FillRect( fromDC, &fromRECT, hBrush );
+      SelectObject( fromDC, hImage );
 
-      if( ! scalestrech )
+      // TO parameters
+      GetClientRect( hWnd, &toRECT );
+      if( scalestrech )
       {
-         if( (int)lWidth*rect.bottom/lHeight <= rect.right )
+         iWidth  = toRECT.right - toRECT.left;
+         iHeight = toRECT.bottom - toRECT.top;
+      }
+      else if( iWidth == 0 && iHeight == 0 )
+      {
+         iWidth  = toRECT.right - toRECT.left;
+         iHeight = toRECT.bottom - toRECT.top;
+         if( (int)lWidth*iHeight/lHeight <= iWidth )
          {
-            rect.right  = ( int ) lWidth  * rect.bottom / lHeight;
+            iWidth  = ( int ) lWidth  * iHeight / lHeight;
          }
          else
          {
-            rect.bottom = ( int ) lHeight * rect.right  / lWidth;
+            iHeight = ( int ) lHeight * iWidth  / lWidth;
          }
       }
-
-      rect.left = ( iWidth  - rect.right  ) / 2;
-      rect.top  = ( iHeight - rect.bottom ) / 2;
-
+      SetRect( &toRECT, 0, 0, iWidth, iHeight );
       hpic = CreateCompatibleBitmap( imgDC, iWidth, iHeight );
+      FillRect( toDC, &toRECT, hBrush );
+      SelectObject( toDC, hpic );
 
-      SelectObject( tmpDC, hpic );
+      StretchBlt( toDC, 0, 0, iWidth, iHeight, fromDC, 0, 0, lWidth, lHeight, SRCCOPY );
 
-      FillRect( tmpDC, &rect2, hBrush );
-
-      StretchBlt( tmpDC, rect.left, rect.top, rect.right, rect.bottom, tmp2DC, 0, 0, lWidth, lHeight, SRCCOPY );
-
-      DeleteDC(tmp2DC);
       DeleteDC( imgDC );
-      DeleteDC( tmpDC );
+      DeleteDC( fromDC);
+      DeleteDC( toDC );
       DeleteObject( hBrush );
    }
 
@@ -311,4 +309,94 @@ HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, 
    }
 
    return hImage;
+}
+
+HB_FUNC( _OOHG_BITMAPFROMFILE )   // ( oSelf, cFile, iAttributes )
+{
+   POCTRL oSelf = _OOHG_GetControlInfo( hb_param( 1, HB_IT_OBJECT ) );
+   RECT rect;
+   HBITMAP hBitmap;
+   int iAttributes;
+
+   iAttributes = hb_parni( 3 );
+   GetWindowRect( oSelf->hWnd, &rect );
+   hBitmap = _OOHG_LoadImage( hb_parc( 2 ), iAttributes, 0, 0, oSelf->hWnd, oSelf->lBackColor );
+
+   HWNDret( hBitmap );
+}
+
+HB_FUNC( _OOHG_BITMAPFROMBUFFER )   // ( oSelf, cBuffer )
+{
+   POCTRL oSelf = _OOHG_GetControlInfo( hb_param( 1, HB_IT_OBJECT ) );
+   HBITMAP hBitmap = 0;
+   HGLOBAL hGlobal;
+
+   if( hb_parclen( 2 ) )
+   {
+      hGlobal = GlobalAlloc( GPTR, hb_parclen( 2 ) );
+      if( hGlobal )
+      {
+         memcpy( hGlobal, hb_parc( 2 ), hb_parclen( 2 ) );
+         hBitmap = _OOHG_OleLoadPicture( hGlobal, oSelf->hWnd, oSelf->lBackColor );
+         GlobalFree( hGlobal );
+      }
+   }
+
+   HWNDret( hBitmap );
+}
+
+HB_FUNC( _OOHG_SETBITMAP )   // ( oSelf, hBitmap, iMessage, lScaleStretch, lAutoSize )
+{
+   POCTRL oSelf = _OOHG_GetControlInfo( hb_param( 1, HB_IT_OBJECT ) );
+   HBITMAP hBitmap1, hBitmap2 = 0;
+
+   hBitmap1 = ( HBITMAP ) HWNDparam( 2 );
+   if( hBitmap1 )
+   {
+      if( hb_parl( 4 ) )           // Stretch
+      {
+         hBitmap2 = _OOHG_ScaleImage( oSelf->hWnd, hBitmap1, 0, 0, TRUE, oSelf->lBackColor );
+      }
+      else if( hb_parl( 5 ) )      // AutoSize
+      {
+         hBitmap2 = _OOHG_ScaleImage( oSelf->hWnd, hBitmap1, 0, 0, FALSE, oSelf->lBackColor );
+      }
+      else                         // No scale
+      {
+         BITMAP bm;
+         GetObject( hBitmap1, sizeof( bm ), &bm );
+         hBitmap2 = _OOHG_ScaleImage( oSelf->hWnd, hBitmap1, bm.bmWidth, bm.bmHeight, FALSE, oSelf->lBackColor );
+      }
+   }
+   SendMessage( oSelf->hWnd, hb_parni( 3 ), ( WPARAM ) IMAGE_BITMAP, ( LPARAM ) hBitmap2 );
+
+   HWNDret( hBitmap2 );
+}
+
+HB_FUNC( _BITMAPWIDTH )
+{
+   BITMAP bm;
+   HBITMAP hBmp;
+
+   memset( &bm, 0, sizeof( bm ) );
+   hBmp = ( HBITMAP ) HWNDparam( 1 );
+   if( hBmp )
+   {
+      GetObject( ( HBITMAP ) HWNDparam( 1 ), sizeof( bm ), &bm );
+   }
+   hb_retni( bm.bmWidth );
+}
+
+HB_FUNC( _BITMAPHEIGHT )
+{
+   BITMAP bm;
+   HBITMAP hBmp;
+
+   memset( &bm, 0, sizeof( bm ) );
+   hBmp = ( HBITMAP ) HWNDparam( 1 );
+   if( hBmp )
+   {
+      GetObject( ( HBITMAP ) HWNDparam( 1 ), sizeof( bm ), &bm );
+   }
+   hb_retni( bm.bmHeight );
 }
