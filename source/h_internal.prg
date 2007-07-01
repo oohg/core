@@ -1,5 +1,5 @@
 /*
- * $Id: h_internal.prg,v 1.2 2006-10-28 20:49:15 guerra000 Exp $
+ * $Id: h_internal.prg,v 1.3 2007-07-01 19:37:04 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -62,8 +62,12 @@ CLASS TInternal FROM TControl
    DATA nVirtualWidth  INIT 0
    DATA RangeHeight    INIT 0
    DATA RangeWidth     INIT 0
-   DATA HScrollBar     INIT nil
-   DATA VScrollBar     INIT nil
+   DATA OnScrollUp     INIT nil
+   DATA OnScrollDown   INIT nil
+   DATA OnScrollLeft   INIT nil
+   DATA OnScrollRight  INIT nil
+   DATA OnHScrollBox   INIT nil
+   DATA OnVScrollBox   INIT nil
 
    METHOD Define
    METHOD RefreshData
@@ -71,6 +75,7 @@ CLASS TInternal FROM TControl
    METHOD Events_HScroll
    METHOD VirtualWidth        SETGET
    METHOD VirtualHeight       SETGET
+   METHOD SizePos
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -121,17 +126,27 @@ Local ControlHandle, nStyle, nStyleEx := 0
    ::OnMouseDrag := MouseDragProcedure
    ::OnMouseMove := MouseMoveProcedure
 
-   ::HScrollBar            := TScrollBar()
-   ::HScrollBar:hWnd       := ::hWnd
-   ::HScrollBar:ScrollType := SB_HORZ
-   ::HScrollBar:nOrient    := SB_HORZ
+   ::HScrollBar := TScrollBar():Define( "0", Self,,,,,,,, ;
+                   { |Scroll| _OOHG_Eval( ::OnScrollLeft, Scroll ) }, ;
+                   { |Scroll| _OOHG_Eval( ::OnScrollRight, Scroll ) }, ;
+                   { |Scroll| _OOHG_Eval( ::OnHScrollBox, Scroll ) }, ;
+                   { |Scroll| _OOHG_Eval( ::OnHScrollBox, Scroll ) }, ;
+                   { |Scroll| _OOHG_Eval( ::OnHScrollBox, Scroll ) }, ;
+                   { |Scroll| _OOHG_Eval( ::OnHScrollBox, Scroll ) }, ;
+                   { |Scroll,n| _OOHG_Eval( ::OnHScrollBox, Scroll, n ) }, ;
+                   ,,,,,, SB_HORZ, .T. )
    ::HScrollBar:nLineSkip  := 1
    ::HScrollBar:nPageSkip  := 20
 
-   ::VScrollBar            := TScrollBar()
-   ::VScrollBar:hWnd       := ::hWnd
-   ::VScrollBar:ScrollType := SB_VERT
-   ::VScrollBar:nOrient    := SB_VERT
+   ::VScrollBar := TScrollBar():Define( "0", Self,,,,,,,, ;
+                   { |Scroll| _OOHG_Eval( ::OnScrollUp, Scroll ) }, ;
+                   { |Scroll| _OOHG_Eval( ::OnScrollDown, Scroll ) }, ;
+                   { |Scroll| _OOHG_Eval( ::OnVScrollBox, Scroll ) }, ;
+                   { |Scroll| _OOHG_Eval( ::OnVScrollBox, Scroll ) }, ;
+                   { |Scroll| _OOHG_Eval( ::OnVScrollBox, Scroll ) }, ;
+                   { |Scroll| _OOHG_Eval( ::OnVScrollBox, Scroll ) }, ;
+                   { |Scroll,n| _OOHG_Eval( ::OnVScrollBox, Scroll, n ) }, ;
+                   ,,,,,, SB_VERT, .T. )
    ::VScrollBar:nLineSkip  := 1
    ::VScrollBar:nPageSkip  := 20
 
@@ -158,16 +173,13 @@ METHOD RefreshData() CLASS TInternal
    AEVAL( ::aControls, { |o| o:RefreshData() } )
 Return nil
 
-// sizepos: validatescroll
-//
-
 *-----------------------------------------------------------------------------*
 METHOD Events_VScroll( wParam ) CLASS TInternal
 *-----------------------------------------------------------------------------*
 Local uRet
    uRet := ::VScrollBar:Events_VScroll( wParam )
    ::RowMargin := - ::VScrollBar:Value
-   AEVAL( ::aControls, { |o| If( o:Container == nil, o:SizePos(), ) } )
+   AEVAL( ::aControls, { |o| If( o:Container:hWnd == ::hWnd, o:SizePos(), ) } )
    ReDrawWindow( ::hWnd )
 Return uRet
 
@@ -177,7 +189,7 @@ METHOD Events_HScroll( wParam ) CLASS TInternal
 Local uRet
    uRet := ::HScrollBar:Events_HScroll( wParam )
    ::ColMargin := - ::HScrollBar:Value
-   AEVAL( ::aControls, { |o| If( o:Container == nil, o:SizePos(), ) } )
+   AEVAL( ::aControls, { |o| If( o:Container:hWnd == ::hWnd, o:SizePos(), ) } )
    ReDrawWindow( ::hWnd )
 Return uRet
 
@@ -198,6 +210,14 @@ METHOD VirtualHeight( nSize ) CLASS TInternal
       ValidateScrolls( Self, .T. )
    EndIf
 Return ::nVirtualHeight
+
+*------------------------------------------------------------------------------*
+METHOD SizePos( Row, Col, Width, Height ) CLASS TInternal
+*------------------------------------------------------------------------------*
+LOCAL uRet
+   uRet := ::Super:SizePos( Row, Col, Width, Height )
+   ValidateScrolls( Self, .T. )
+RETURN uRet
 
 *-----------------------------------------------------------------------------*
 Function _EndInternal()

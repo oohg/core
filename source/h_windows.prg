@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.133 2007-06-09 22:55:54 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.134 2007-07-01 19:37:04 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -215,6 +215,8 @@ CLASS TWindow
    DATA aHotKeys            INIT {}  // { Id, Mod, Key, Action }   OperatingSystem-controlled hotkeys
    DATA bKeyDown            INIT nil     // WM_KEYDOWN handler
    DATA NestedClick         INIT .F.
+   DATA HScrollBar          INIT nil
+   DATA VScrollBar          INIT nil
 
    DATA DefBkColorEdit      INIT nil
 
@@ -1233,6 +1235,7 @@ CLASS TForm FROM TWindow
    DATA OnInteractiveClose INIT nil
    DATA OnMaximize     INIT nil
    DATA OnMinimize     INIT nil
+   DATA OnRestore      INIT nil
 
    DATA nVirtualHeight INIT 0
    DATA nVirtualWidth  INIT 0
@@ -1300,7 +1303,8 @@ METHOD Define( FormName, Caption, x, y, w, h, nominimize, nomaximize, nosize, ;
                VirtualWidth, scrollleft, scrollright, scrollup, scrolldown, ;
                hscrollbox, vscrollbox, helpbutton, maximizeprocedure, ;
                minimizeprocedure, cursor, NoAutoRelease, oParent, ;
-               InteractiveCloseProcedure, lRtl, child, mdi, clientarea ) CLASS TForm
+               InteractiveCloseProcedure, lRtl, child, mdi, clientarea, ;
+               restoreprocedure ) CLASS TForm
 *------------------------------------------------------------------------------*
 Local nStyle := 0, nStyleEx := 0
 Local hParent
@@ -1321,7 +1325,7 @@ Local hParent
               icon, noshow, gotfocus, lostfocus, scrollleft, scrollright, scrollup, scrolldown, maximizeprocedure, ;
               minimizeprocedure, initprocedure, ReleaseProcedure, SizeProcedure, ClickProcedure, PaintProcedure, ;
               MouseMoveProcedure, MouseDragProcedure, InteractiveCloseProcedure, NoAutoRelease, nStyle, nStyleEx, ;
-              0, lRtl, mdi, topmost, clientarea )
+              0, lRtl, mdi, topmost, clientarea, restoreprocedure )
 
 Return Self
 
@@ -1331,7 +1335,7 @@ METHOD Define2( FormName, Caption, x, y, w, h, Parent, helpbutton, nominimize, n
                 icon, noshow, gotfocus, lostfocus, scrollleft, scrollright, scrollup, scrolldown, maximizeprocedure, ;
                 minimizeprocedure, initprocedure, ReleaseProcedure, SizeProcedure, ClickProcedure, PaintProcedure, ;
                 MouseMoveProcedure, MouseDragProcedure, InteractiveCloseProcedure, NoAutoRelease, nStyle, nStyleEx, ;
-                nWindowType, lRtl, mdi, topmost, clientarea ) CLASS TForm
+                nWindowType, lRtl, mdi, topmost, clientarea, restoreprocedure ) CLASS TForm
 *------------------------------------------------------------------------------*
 Local Formhandle, aClientRect
 
@@ -1429,7 +1433,7 @@ Local Formhandle, aClientRect
 
    InitDummy( FormHandle )
 
-   TScrollBar():Define( "HSCROLLBAR", Self,,,,,,,, ;
+   ::HScrollbar := TScrollBar():Define( "0", Self,,,,,,,, ;
                    { |Scroll| _OOHG_Eval( ::OnScrollLeft, Scroll ) }, ;
                    { |Scroll| _OOHG_Eval( ::OnScrollRight, Scroll ) }, ;
                    { |Scroll| _OOHG_Eval( ::OnHScrollBox, Scroll ) }, ;
@@ -1441,7 +1445,7 @@ Local Formhandle, aClientRect
    ::HScrollBar:nLineSkip  := 1
    ::HScrollBar:nPageSkip  := 20
 
-   TScrollBar():Define( "VSCROLLBAR", Self,,,,,,,, ;
+   ::VScrollbar := TScrollBar():Define( "0", Self,,,,,,,, ;
                    { |Scroll| _OOHG_Eval( ::OnScrollUp, Scroll ) }, ;
                    { |Scroll| _OOHG_Eval( ::OnScrollDown, Scroll ) }, ;
                    { |Scroll| _OOHG_Eval( ::OnVScrollBox, Scroll ) }, ;
@@ -1473,6 +1477,7 @@ Local Formhandle, aClientRect
    ::OnInteractiveClose := InteractiveCloseProcedure
    ::OnMaximize := MaximizeProcedure
    ::OnMinimize := MinimizeProcedure
+   ::OnRestore  := RestoreProcedure
    ::lVisible := ! ( ValType( NoShow ) == "L" .AND. NoShow )
    ::BackColor := aRGB
    ::AutoRelease := ! ( ValType( NoAutoRelease ) == "L" .AND. NoAutoRelease )
@@ -2191,10 +2196,12 @@ Local oCtrl
             ::DoEvent( ::OnMaximize, '' )
          ElseIf wParam == SIZE_MINIMIZED
             ::DoEvent( ::OnMinimize, '' )
-         Else
-            ::DoEvent( ::OnSize, '' )
+         ElseIf wParam == SIZE_RESTORED
+            ::DoEvent( ::OnRestore, '' )
          EndIf
       EndIf
+
+      ::DoEvent( ::OnSize, '' )
 
       // AEVAL( ::aControls, { |o| o:Events_Size() } )
       AEVAL( ::aControls, { |o| If( o:Container == nil, o:Events_Size(), ) } )
@@ -2262,7 +2269,7 @@ Procedure ValidateScrolls( Self, lMove )
 Local hWnd, nVirtualWidth, nVirtualHeight
 Local aRect, w, h, hscroll, vscroll
 
-   If ! ValidHandler( ::hWnd ) .OR. ::Control( "HScrollBar" ) == nil .OR. ::Control( "VScrollBar" ) == nil
+   If ! ValidHandler( ::hWnd ) .OR. ::HScrollBar == nil .OR. ::VScrollBar == nil
       Return
    EndIf
 
@@ -2276,8 +2283,8 @@ Local aRect, w, h, hscroll, vscroll
    vscroll := hscroll := .F.
    aRect := ARRAY( 4 )
    GetClientRect( hWnd, aRect )
-   w := aRect[ 3 ] - aRect[ 1 ]
-   h := aRect[ 4 ] - aRect[ 2 ]
+   w := aRect[ 3 ] - aRect[ 1 ] + IF( IsWindowStyle( ::hWnd, WS_VSCROLL ), GetVScrollBarWidth(),  0 )
+   h := aRect[ 4 ] - aRect[ 2 ] + IF( IsWindowStyle( ::hWnd, WS_HSCROLL ), GetHScrollBarHeight(), 0 )
    ::RangeWidth := ::RangeHeight := 0
 
    // Checks if there's space on the window
@@ -2366,7 +2373,7 @@ METHOD Define( FormName, Caption, x, y, w, h, nominimize, nomaximize, nosize, ;
                VirtualWidth, scrollleft, scrollright, scrollup, scrolldown, ;
                hscrollbox, vscrollbox, helpbutton, maximizeprocedure, ;
                minimizeprocedure, cursor, InteractiveCloseProcedure, lRtl, ;
-               mdi, clientarea ) CLASS TFormMain
+               mdi, clientarea, restoreprocedure ) CLASS TFormMain
 *-----------------------------------------------------------------------------*
 Local nStyle := 0, nStyleEx := 0
 
@@ -2382,7 +2389,7 @@ Local nStyle := 0, nStyleEx := 0
               icon, noshow, gotfocus, lostfocus, scrollleft, scrollright, scrollup, scrolldown, maximizeprocedure, ;
               minimizeprocedure, initprocedure, ReleaseProcedure, SizeProcedure, ClickProcedure, PaintProcedure, ;
               MouseMoveProcedure, MouseDragProcedure, InteractiveCloseProcedure, nil, nStyle, nStyleEx, ;
-              0, lRtl, mdi, topmost, clientarea )
+              0, lRtl, mdi, topmost, clientarea, restoreprocedure )
 
    if ! valtype( NotifyIconName ) $ "CM"
       NotifyIconName := ""
@@ -2450,7 +2457,7 @@ METHOD Define( FormName, Caption, x, y, w, h, Parent, nosize, nosysmenu, ;
                scrollleft, scrollright, scrollup, scrolldown, hscrollbox, ;
                vscrollbox, helpbutton, cursor, noshow, NoAutoRelease, ;
                InteractiveCloseProcedure, lRtl, modalsize, mdi, topmost, ;
-               clientarea ) CLASS TFormModal
+               clientarea, restoreprocedure ) CLASS TFormModal
 *-----------------------------------------------------------------------------*
 Local nStyle := WS_POPUP, nStyleEx := 0
 Local oParent, hParent
@@ -2474,7 +2481,7 @@ Local oParent, hParent
               icon, noshow, gotfocus, lostfocus, scrollleft, scrollright, scrollup, scrolldown, nil, ;
               nil, initprocedure, ReleaseProcedure, SizeProcedure, ClickProcedure, PaintProcedure, ;
               MouseMoveProcedure, MouseDragProcedure, InteractiveCloseProcedure, NoAutoRelease, nStyle, nStyleEx, ;
-              0, lRtl, mdi, topmost, clientarea )
+              0, lRtl, mdi, topmost, clientarea, restoreprocedure )
 
 Return Self
 
@@ -2608,7 +2615,7 @@ Local nStyle := 0, nStyleEx := 0
               icon, noshow, gotfocus, lostfocus, scrollleft, scrollright, scrollup, scrolldown, nil, ;
               nil, nil, nil, nil, ClickProcedure, PaintProcedure, ;
               MouseMoveProcedure, MouseDragProcedure, nil, nil, nStyle, nStyleEx, ;
-              0, lRtl, mdi,, clientarea )
+              0, lRtl, mdi,, clientarea, nil )
 
 Return Self
 
@@ -2618,7 +2625,7 @@ METHOD Define2( FormName, Caption, x, y, w, h, Parent, helpbutton, nominimize, n
                 icon, noshow, gotfocus, lostfocus, scrollleft, scrollright, scrollup, scrolldown, maximizeprocedure, ;
                 minimizeprocedure, initprocedure, ReleaseProcedure, SizeProcedure, ClickProcedure, PaintProcedure, ;
                 MouseMoveProcedure, MouseDragProcedure, InteractiveCloseProcedure, NoAutoRelease, nStyle, nStyleEx, ;
-                nWindowType, lRtl, mdi, topmost, clientarea ) CLASS TFormInternal
+                nWindowType, lRtl, mdi, topmost, clientarea, restoreprocedure ) CLASS TFormInternal
 *------------------------------------------------------------------------------*
 
    ::Super:Define2( FormName, Caption, x, y, w, h, Parent, helpbutton, nominimize, nomaximize, nosize, nosysmenu, ;
@@ -2626,7 +2633,7 @@ METHOD Define2( FormName, Caption, x, y, w, h, Parent, helpbutton, nominimize, n
                     icon, noshow, gotfocus, lostfocus, scrollleft, scrollright, scrollup, scrolldown, maximizeprocedure, ;
                     minimizeprocedure, initprocedure, ReleaseProcedure, SizeProcedure, ClickProcedure, PaintProcedure, ;
                     MouseMoveProcedure, MouseDragProcedure, InteractiveCloseProcedure, NoAutoRelease, nStyle, nStyleEx, ;
-                    nWindowType, lRtl, mdi, topmost, clientarea )
+                    nWindowType, lRtl, mdi, topmost, clientarea, restoreprocedure )
 
    ::ActivateCount[ 1 ] += 999
    aAdd( ::Parent:SplitChildList, Self )
@@ -2721,7 +2728,7 @@ Local nStyle := 0, nStyleEx := 0
               nil, .F., gotfocus, lostfocus, scrollleft, scrollright, scrollup, scrolldown, nil, ;
               nil, nil, nil, nil, nil, nil, ;
               nil, nil, nil, .F., nStyle, nStyleEx, ;
-              1, lRtl, mdi, .F., clientarea )
+              1, lRtl, mdi, .F., clientarea, nil )
 
    If ::Container:lForceBreak .AND. ! ::Container:lInverted
       Break := .T.
@@ -2761,7 +2768,7 @@ Local nStyle := 0, nStyleEx := 0
               icon, .F., gotfocus, lostfocus, scrollleft, scrollright, scrollup, scrolldown, nil, ;
               nil, nil, nil, nil, ClickProcedure, PaintProcedure, ;
               MouseMoveProcedure, MouseDragProcedure, nil, .F., nStyle, nStyleEx, ;
-              2, lRtl, .F.,, clientarea )
+              2, lRtl, .F.,, clientarea, nil )
 
    ::Parent:hWndClient := ::hWnd
    ::hWndClient := ::hWnd
@@ -2789,7 +2796,8 @@ METHOD Define( FormName, Caption, x, y, w, h, nominimize, nomaximize, nosize, ;
                VirtualWidth, scrollleft, scrollright, scrollup, scrolldown, ;
                hscrollbox, vscrollbox, helpbutton, maximizeprocedure, ;
                minimizeprocedure, cursor, NoAutoRelease, oParent, ;
-               InteractiveCloseProcedure, Focused, lRtl, clientarea ) CLASS TFormMDIChild
+               InteractiveCloseProcedure, Focused, lRtl, clientarea, ;
+               restoreprocedure ) CLASS TFormMDIChild
 *------------------------------------------------------------------------------*
 Local nStyle := 0, nStyleEx := 0
 
@@ -2810,7 +2818,7 @@ Local nStyle := 0, nStyleEx := 0
               icon, noshow, gotfocus, lostfocus, scrollleft, scrollright, scrollup, scrolldown, maximizeprocedure, ;
               minimizeprocedure, initprocedure, ReleaseProcedure, SizeProcedure, ClickProcedure, PaintProcedure, ;
               MouseMoveProcedure, MouseDragProcedure, InteractiveCloseProcedure, NoAutoRelease, nStyle, nStyleEx, ;
-              3, lRtl,,, clientarea )
+              3, lRtl,,, clientarea, restoreprocedure )
 
 Return Self
 
@@ -2830,7 +2838,7 @@ FUNCTION DefineWindow( FormName, Caption, x, y, w, h, nominimize, nomaximize, no
                        minimizeprocedure, cursor, NoAutoRelease, oParent, ;
                        InteractiveCloseProcedure, Focused, Break, GripperText, lRtl, ;
                        main, splitchild, child, modal, modalsize, mdi, internal, ;
-                       mdichild, mdiclient, subclass, clientarea )
+                       mdichild, mdiclient, subclass, clientarea, restoreprocedure )
 *------------------------------------------------------------------------------*
 Local nStyle := 0, nStyleEx := 0
 Local Self
@@ -2893,7 +2901,8 @@ Local aError := {}
                NotifyIconLeftClick, GotFocus, LostFocus, virtualheight, ;
                VirtualWidth, scrollleft, scrollright, scrollup, scrolldown, ;
                hscrollbox, vscrollbox, helpbutton, maximizeprocedure, ;
-               minimizeprocedure, cursor, InteractiveCloseProcedure, lRtl, mdi, clientarea )
+               minimizeprocedure, cursor, InteractiveCloseProcedure, lRtl, mdi, ;
+               clientarea, restoreprocedure )
    ElseIf splitchild
       Self := _OOHG_SelectSubClass( TFormSplit(), subclass )
       ::Define( FormName, w, h, break, grippertext, nocaption, caption, aRGB, ;
@@ -2909,7 +2918,8 @@ Local aError := {}
                FontSize, GotFocus, LostFocus, virtualheight, VirtualWidth, ;
                scrollleft, scrollright, scrollup, scrolldown, hscrollbox, ;
                vscrollbox, helpbutton, cursor, noshow, NoAutoRelease, ;
-               InteractiveCloseProcedure, lRtl, .F., mdi, topmost, clientarea )
+               InteractiveCloseProcedure, lRtl, .F., mdi, topmost, clientarea, ;
+               restoreprocedure )
    ElseIf modalsize
       Self := _OOHG_SelectSubClass( TFormModal(), subclass )
       ::Define( FormName, Caption, x, y, w, h, oParent, nosize, nosysmenu, ;
@@ -2919,7 +2929,8 @@ Local aError := {}
                FontSize, GotFocus, LostFocus, virtualheight, VirtualWidth, ;
                scrollleft, scrollright, scrollup, scrolldown, hscrollbox, ;
                vscrollbox, helpbutton, cursor, noshow, NoAutoRelease, ;
-               InteractiveCloseProcedure, lRtl, .F., mdi, topmost, clientarea )
+               InteractiveCloseProcedure, lRtl, .F., mdi, topmost, clientarea, ;
+               restoreprocedure )
    ElseIf mdiclient
       Self := _OOHG_SelectSubClass( TFormMDIClient(), subclass )
       ::Define( FormName, Caption, x, y, w, h, MouseDragProcedure, ;
@@ -2937,7 +2948,7 @@ Local aError := {}
                VirtualWidth, scrollleft, scrollright, scrollup, scrolldown, ;
                hscrollbox, vscrollbox, helpbutton, maximizeprocedure, ;
                minimizeprocedure, cursor, NoAutoRelease, oParent, ;
-               InteractiveCloseProcedure, Focused, lRtl, clientarea )
+               InteractiveCloseProcedure, Focused, lRtl, clientarea, restoreprocedure )
    ElseIf internal
       Self := _OOHG_SelectSubClass( TFormInternal(), subclass )
       ::Define( FormName, Caption, x, y, w, h, oParent, aRGB, fontname, fontsize, ;
@@ -2955,7 +2966,8 @@ Local aError := {}
                VirtualWidth, scrollleft, scrollright, scrollup, scrolldown, ;
                hscrollbox, vscrollbox, helpbutton, maximizeprocedure, ;
                minimizeprocedure, cursor, NoAutoRelease, oParent, ;
-               InteractiveCloseProcedure, lRtl, child, mdi, clientarea )
+               InteractiveCloseProcedure, lRtl, child, mdi, clientarea, ;
+               restoreprocedure )
    EndIf
 
    if ! valtype( NotifyIconName ) $ "CM"
@@ -3111,30 +3123,6 @@ Return GetFormObject( FormName ):Minimize()
 Function _SetWindowSizePos( FormName , row , col , width , height )
 *-----------------------------------------------------------------------------*
 Return GetFormObject( FormName ):SizePos( row , col , width , height )
-
-*-----------------------------------------------------------------------------*
-Function _DefineWindow( FormName, Caption, x, y, w, h ,nominimize ,nomaximize ,nosize ,nosysmenu, nocaption , StatusBar , StatusText ,initprocedure ,ReleaseProcedure , MouseDragProcedure ,SizeProcedure , ClickProcedure , MouseMoveProcedure, aRGB , PaintProcedure , noshow , topmost , main , icon , child , fontname , fontsize , NotifyIconName , NotifyIconTooltip , NotifyIconLeftClick , GotFocus , LostFocus , virtualheight , VirtualWidth , scrollleft , scrollright , scrollup , scrolldown , hscrollbox , vscrollbox , helpbutton , maximizeprocedure , minimizeprocedure , cursor , NoAutoRelease , InteractiveCloseProcedure, lRtl )
-*-----------------------------------------------------------------------------*
-Local Self := TForm()
-
-   // Unused parameters
-   Empty( StatusBar )
-   Empty( StatusText )
-
-   ::Define( FormName, Caption, x, y, w, h, nominimize, nomaximize, nosize, ;
-             nosysmenu, nocaption, initprocedure, ReleaseProcedure, ;
-             MouseDragProcedure, SizeProcedure, ClickProcedure, ;
-             MouseMoveProcedure, aRGB, PaintProcedure, noshow, topmost, ;
-             icon, fontname, fontsize, NotifyIconName, NotifyIconTooltip, ;
-             NotifyIconLeftClick, GotFocus, LostFocus, Virtualheight, ;
-             VirtualWidth, scrollleft, scrollright, scrollup, scrolldown, ;
-             hscrollbox, vscrollbox, helpbutton, maximizeprocedure, ;
-             minimizeprocedure, cursor, NoAutoRelease, nil, ;
-             InteractiveCloseProcedure, .F., nil, nil, lRtl, ;
-             main, .F., child, .F., .F., .F., .F., ;
-             .F., .F. )
-
-Return Self
 
 *-----------------------------------------------------------------------------*
 Function _EndWindow()

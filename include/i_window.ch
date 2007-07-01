@@ -1,5 +1,5 @@
 /*
- * $Id: i_window.ch,v 1.27 2007-05-14 02:23:30 guerra000 Exp $
+ * $Id: i_window.ch,v 1.28 2007-07-01 19:37:04 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -195,6 +195,7 @@
 			[ ON SIZE <SizeProcedure> ] ;
 			[ ON MAXIMIZE <MaximizeProcedure> ] ;
 			[ ON MINIMIZE <MinimizeProcedure> ] ;
+                        [ ON RESTORE <RestoreProcedure> ] ;
 			[ ON PAINT <PaintProcedure> ] ;
 		        [ BACKCOLOR <backcolor> ] ;
 			[ FONT <FontName> SIZE <FontSize> ] ;
@@ -229,7 +230,7 @@
                       <{MinimizeProcedure}>, <cursor>, <.noautorelease.>, <parent>, ;
                       <{interactivecloseprocedure}>, <.focused.>, <.break.>, <grippertext>, <.rtl.>, ;
                       <.main.>, <.splitchild.>, <.child.>, <.modal.>, <.modalsize.>, <.mdi.>, <.internal.>, ;
-                      <.mdichild.>, <.mdiclient.>, [ <subclass>() ], <.clientarea.> ) ;;
+                      <.mdichild.>, <.mdiclient.>, [ <subclass>() ], <.clientarea.>, <{RestoreProcedure}> ) ;;
         DECLARE WINDOW <w>
 
 	#xcommand LOAD WINDOW <w> ;
@@ -344,6 +345,7 @@ SetProperty ( <(Arg1)> , <(Arg2)> , <Arg3> )
 			[ ON SIZE <SizeProcedure> ] ;
 			[ ON MAXIMIZE <MaximizeProcedure> ] ;
 			[ ON MINIMIZE <MinimizeProcedure> ] ;
+                        [ ON RESTORE <RestoreProcedure> ] ;
 			[ ON PAINT <PaintProcedure> ] ;
 		        [ BACKCOLOR <backcolor> ] ;
 			[ FONT <FontName> SIZE <FontSize> ] ;
@@ -378,4 +380,4 @@ SetProperty ( <(Arg1)> , <(Arg2)> , <Arg3> )
                       <{MinimizeProcedure}>, <cursor>, <.noautorelease.>, <parent>, ;
                       <{interactivecloseprocedure}>, <.focused.>, <.break.>, <grippertext>, <.rtl.>, ;
                       <.main.>, <.splitchild.>, <.child.>, <.modal.>, <.modalsize.>, <.mdi.>, <.internal.>, ;
-                      <.mdichild.>, <.mdiclient.>, [ <subclass>() ], <.clientarea.> )
+                      <.mdichild.>, <.mdiclient.>, [ <subclass>() ], <.clientarea.>, <{RestoreProcedure}> )

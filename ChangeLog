@@ -1,11 +1,23 @@
 /*
- * $Id: ChangeLog,v 1.366 2007-07-01 04:44:56 guerra000 Exp $
+ * $Id: ChangeLog,v 1.367 2007-07-01 19:37:03 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-07-01 14:33 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  + include/i_scroll.ch
+  * include/oohg.ch
+    + @...SCROLL command added.
+  * include/i_window.ch
+  * source/h_internal.prg
+  * source/h_window.prg
+    ! Fixed virtual width for "internal window" controls.
+    + TForm's ON RESTORE clause added.
+  * source/h_scroll.prg
+    * Moves window's controls while scrollbar is tracked.
 
 2007-06-30 23:38 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * include/i_image.ch

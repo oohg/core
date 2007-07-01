@@ -1,5 +1,5 @@
 /*
- * $Id: h_scroll.prg,v 1.11 2006-06-02 02:05:11 guerra000 Exp $
+ * $Id: h_scroll.prg,v 1.12 2007-07-01 19:37:04 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -89,6 +89,7 @@ CLASS TScrollBar FROM TControl
    METHOD Top
    METHOD Bottom
    METHOD Thumb
+   METHOD Track
 
    MESSAGE LineLeft  METHOD LineUp
    MESSAGE LineRight METHOD LineDown
@@ -112,9 +113,10 @@ ENDCLASS
 METHOD Define( ControlName, ParentForm, x, y, w, h, RangeMin, RangeMax, ;
                change, lineup, linedown, pageup, pagedown, top, bottom, ;
                thumb, track, endtrack, HelpId, invisible, ToolTip, lRtl, ;
-               nOrient, lSubControl ) CLASS TScrollBar
+               nOrient, lSubControl, value, lDisabled, nLineSkip, nPageSkip, ;
+               lAutoMove ) CLASS TScrollBar
 *-----------------------------------------------------------------------------*
-Local ControlHandle
+Local ControlHandle, nStyle
 
    If ::nWidth == 0
       ::nWidth := GETVSCROLLBARWIDTH()
@@ -124,28 +126,34 @@ Local ControlHandle
    EndIf
    ASSIGN ::nWidth    VALUE w         TYPE "N"
    ASSIGN ::nHeight   VALUE h         TYPE "N"
-   ASSIGN invisible   VALUE invisible TYPE "L" DEFAULT .F.
    ASSIGN ::nRangeMin VALUE RangeMin  TYPE "N"
    ASSIGN ::nRangeMax VALUE RangeMax  TYPE "N"
    ASSIGN ::nRow      VALUE y         TYPE "N"
    ASSIGN ::nCol      VALUE x         TYPE "N"
    ASSIGN ::nOrient   VALUE nOrient   TYPE "N" DEFAULT SB_VERT
+   ASSIGN ::nLineSkip VALUE nLineSkip TYPE "N"
+   ASSIGN ::nPageSkip VALUE nPageSkip TYPE "N"
+   ASSIGN ::lAutoMove VALUE lAutoMove TYPE "L"
 
    ::SetForm( ControlName, ParentForm,,,,,, lRtl )
 
+   nStyle := ::InitStyle( ,, Invisible, .T., lDisabled )
+
    If ValType( lSubControl ) == "L" .AND. lSubControl
       ::ScrollType := ::nOrient
-      ::Register( 0,             ControlName, HelpId, ! invisible, ToolTip, 0 )
+      ::Register( 0,             ControlName, HelpId,, ToolTip, 0 )
       ::FromhWnd := IF( ::Container != nil, ::Container:hWnd, ::ContainerhWnd )
    Else
       ::ScrollType := SB_CTL
-      ControlHandle := InitScrollBar( ::ContainerhWnd, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight, ::lRtl, ::nOrient )
-      ::Register( ControlHandle, ControlName, HelpId, ! invisible, ToolTip, ControlHandle )
+      ControlHandle := InitScrollBar( ::ContainerhWnd, ::ContainerCol, ::ContainerRow, ::Width, ::Height, ::lRtl, ::nOrient, nStyle )
+      ::Register( ControlHandle, ControlName, HelpId,, ToolTip, ControlHandle )
       ::FromhWnd := ControlHandle
    EndIf
 
    ::SetRange( ::nRangeMin, ::nRangeMax )
    SetScrollRange( ::FromhWnd, ::ScrollType, ::nRangeMin, ::nRangeMax, 1 )
+
+   ::Value := value
 
    ASSIGN ::OnChange   VALUE change   TYPE "B"
    ASSIGN ::OnLineUp   VALUE lineup   TYPE "B"
@@ -324,6 +332,16 @@ METHOD Thumb( nPos ) CLASS TScrollBar
 Return Self
 
 *-----------------------------------------------------------------------------*
+METHOD Track( nPos ) CLASS TScrollBar
+*-----------------------------------------------------------------------------*
+   If ::lAutoMove
+      ::Value := nPos
+   EndIf
+   _OOHG_EVAL( ::OnTrack, Self, nPos )
+   ::DoEvent( ::OnChange )
+Return Self
+
+*-----------------------------------------------------------------------------*
 METHOD Events_VScroll( wParam ) CLASS TScrollBar
 *-----------------------------------------------------------------------------*
 Local Lo_wParam := LoWord( wParam )
@@ -350,8 +368,7 @@ Local Lo_wParam := LoWord( wParam )
       ::Thumb( HiWord( wParam ) )
 
    elseif Lo_wParam == SB_THUMBTRACK
-      _OOHG_EVAL( ::OnTrack, Self, HiWord( wParam ) )
-      ::DoEvent( ::OnChange )
+      ::Track( HiWord( wParam ) )
 
    elseif Lo_wParam == TB_ENDTRACK
       _OOHG_EVAL( ::OnEndTrack, Self, HiWord( wParam ) )
@@ -396,11 +413,11 @@ HB_FUNC( INITSCROLLBAR )  // ( hWnd, nCol, nRow, nWidth, nHeight, lRtl, nType )
    int nType = hb_parni( 7 );
    int iStyle, iStyleEx;
 
-	hwnd = (HWND) hb_parnl (1);
+   hwnd = HWNDparam( 1 );
 
    iStyleEx = _OOHG_RTL_Status( hb_parl( 6 ) );
 
-   iStyle = WS_CHILD | WS_VISIBLE;
+   iStyle = hb_parni( 8 ) | WS_CHILD;
    switch( nType )
    {
       case SB_HORZ:
@@ -425,7 +442,7 @@ HB_FUNC( INITSCROLLBAR )  // ( hWnd, nCol, nRow, nWidth, nHeight, lRtl, nType )
 
    lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hscrollbar, GWL_WNDPROC, ( LONG ) SubClassFunc );
 
-   hb_retnl( (LONG) hscrollbar );
+   HWNDret( hscrollbar );
 }
 
 HB_FUNC( GETVSCROLLBARWIDTH )
@@ -440,17 +457,17 @@ HB_FUNC( GETHSCROLLBARHEIGHT )
 
 HB_FUNC( SETSCROLLPOS ) // ( hWnd, fnBar, nPos, lRedraw )
 {
-   hb_retni( SetScrollPos( ( HWND ) hb_parnl( 1 ), hb_parni( 2 ), hb_parni( 3 ), hb_parl( 4 ) ) );
+   hb_retni( SetScrollPos( HWNDparam( 1 ), hb_parni( 2 ), hb_parni( 3 ), hb_parl( 4 ) ) );
 }
 
 HB_FUNC( SETSCROLLRANGE ) // ( hWnd, fnBar, nRangeMin, nRangeMax, lRedraw )
 {
-   hb_retl( SetScrollRange( ( HWND ) hb_parnl( 1 ), hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parl( 5 ) ) );
+   hb_retl( SetScrollRange( HWNDparam( 1 ), hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parl( 5 ) ) );
 }
 
 HB_FUNC( GETSCROLLPOS ) // ( hWnd, fnBar )
 {
-   hb_retni( GetScrollPos( ( HWND ) hb_parnl( 1 ), hb_parni( 2 ) ) );
+   hb_retni( GetScrollPos( HWNDparam( 1 ), hb_parni( 2 ) ) );
 }
 
 HB_FUNC( ISSCROLLLOCKACTIVE )
@@ -460,7 +477,7 @@ HB_FUNC( ISSCROLLLOCKACTIVE )
 
 HB_FUNC( _SETSCROLL )
 {
-   HWND hWnd = ( HWND ) hb_parnl( 1 );
+   HWND hWnd = HWNDparam( 1 );
    LONG nStyle;
    BOOL bChange = 0;
 
@@ -521,7 +538,7 @@ HB_FUNC( _SETSCROLL )
 
 HB_FUNC( SETSCROLLPAGE ) // ( hWnd, fnBar [ , size ] )
 {
-   HWND hWnd = ( HWND ) hb_parnl( 1 );
+   HWND hWnd = HWNDparam( 1 );
    int iType = hb_parni( 2 );
    SCROLLINFO pScrollInfo;
    int iPage;
@@ -544,7 +561,7 @@ HB_FUNC( GETSCROLLRANGEMIN ) // ( hWnd, fnBar )
 {
    int MinPos, MaxPos;
 
-   GetScrollRange( ( HWND ) hb_parnl( 1 ), hb_parni( 2 ), &MinPos, &MaxPos );
+   GetScrollRange( HWNDparam( 1 ), hb_parni( 2 ), &MinPos, &MaxPos );
    hb_retni( MinPos );
 }
 
@@ -552,7 +569,7 @@ HB_FUNC( GETSCROLLRANGEMAX ) // ( hWnd, fnBar )
 {
    int MinPos, MaxPos;
 
-   GetScrollRange( ( HWND ) hb_parnl( 1 ), hb_parni( 2 ), &MinPos, &MaxPos );
+   GetScrollRange( HWNDparam( 1 ), hb_parni( 2 ), &MinPos, &MaxPos );
    hb_retni( MaxPos );
 }
 
@@ -583,7 +600,7 @@ HB_FUNC( SETSCROLLINFO ) // ( hWnd, nMax, nPos, nPage, nMin )
    }
    if( lpsi.fMask )
    {
-      hb_retni( SetScrollInfo( ( HWND ) hb_parnl( 1 ), SB_CTL, ( LPSCROLLINFO ) &lpsi, 1 ) );
+      hb_retni( SetScrollInfo( HWNDparam( 1 ), SB_CTL, ( LPSCROLLINFO ) &lpsi, 1 ) );
    }
    else
    {
