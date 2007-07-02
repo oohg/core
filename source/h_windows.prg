@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.134 2007-07-01 19:37:04 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.135 2007-07-02 03:37:34 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1290,6 +1290,7 @@ CLASS TForm FROM TWindow
    METHOD Events_Destroy
    METHOD Events_VScroll
    METHOD Events_HScroll
+   METHOD ScrollControls
    METHOD MessageLoop
 
 ENDCLASS
@@ -1960,8 +1961,7 @@ METHOD Events_VScroll( wParam ) CLASS TForm
 Local uRet
    uRet := ::VScrollBar:Events_VScroll( wParam )
    ::RowMargin := - ::VScrollBar:Value
-   AEVAL( ::aControls, { |o| If( o:Container == nil, o:SizePos(), ) } )
-   ReDrawWindow( ::hWnd )
+   ::ScrollControls()
 Return uRet
 
 *-----------------------------------------------------------------------------*
@@ -1970,9 +1970,15 @@ METHOD Events_HScroll( wParam ) CLASS TForm
 Local uRet
    uRet := ::HScrollBar:Events_HScroll( wParam )
    ::ColMargin := - ::HScrollBar:Value
+   ::ScrollControls()
+Return uRet
+
+*-----------------------------------------------------------------------------*
+METHOD ScrollControls() CLASS TForm
+*-----------------------------------------------------------------------------*
    AEVAL( ::aControls, { |o| If( o:Container == nil, o:SizePos(), ) } )
    ReDrawWindow( ::hWnd )
-Return uRet
+RETURN Self
 
 #pragma BEGINDUMP
 
@@ -2024,6 +2030,32 @@ HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
          hb_ret();
          break;
 
+      case WM_MOUSEWHEEL:
+         _OOHG_Send( pSelf, s_hWnd );
+         hb_vmSend( 0 );
+         if( ValidHandler( HWNDparam( -1 ) ) )
+         {
+            _OOHG_Send( pSelf, s_RangeHeight );
+            hb_vmSend( 0 );
+            if( hb_parnl( -1 ) > 0 )
+            {
+               if( ( short ) HIWORD( wParam ) > 0 )
+               {
+                  _OOHG_Send( pSelf, s_Events_VScroll );
+                  hb_vmPushLong( SB_LINEUP );
+                  hb_vmSend( 1 );
+               }
+               else
+               {
+                  _OOHG_Send( pSelf, s_Events_VScroll );
+                  hb_vmPushLong( SB_LINEDOWN );
+                  hb_vmSend( 1 );
+               }
+            }
+         }
+         hb_ret();
+         break;
+
       default:
          if( ! s_Events2 )
          {
@@ -2065,20 +2097,6 @@ Local oCtrl
          _OOHG_EVAL( ::aHotKeys[ i ][ HOTKEY_ACTION ] )
 
       EndIf
-
-        ***********************************************************************
-	case nMsg == WM_MOUSEWHEEL
-        ***********************************************************************
-
-      If ValidHandler( ::hWnd ) .AND. ::RangeHeight > 0
-
-         If HIWORD( wParam ) == 120
-            ::Events_VScroll( SB_LINEUP )
-			Else
-            ::Events_VScroll( SB_LINEDOWN )
-			EndIf
-
-		EndIf
 
         ***********************************************************************
 	case nMsg == WM_ACTIVATE
@@ -2341,8 +2359,7 @@ Local aRect, w, h, hscroll, vscroll
 
    // Reubicates controls
    If lMove .AND. ( vscroll .OR. hscroll )
-      AEVAL( ::aControls, { |o| If( o:Container == nil, o:SizePos(), ) } )
-      RedrawWindow( hWnd )
+      ::ScrollControls()
    EndIf
 Return
 

@@ -1,5 +1,5 @@
 /*
- * $Id: h_internal.prg,v 1.3 2007-07-01 19:37:04 guerra000 Exp $
+ * $Id: h_internal.prg,v 1.4 2007-07-02 03:37:34 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -76,6 +76,8 @@ CLASS TInternal FROM TControl
    METHOD VirtualWidth        SETGET
    METHOD VirtualHeight       SETGET
    METHOD SizePos
+   METHOD ScrollControls
+   METHOD Events
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -115,8 +117,7 @@ Local ControlHandle, nStyle, nStyleEx := 0
       nStyleEx += WS_EX_CONTROLPARENT
    EndIf
 
-   // This window is a LABEL!!!
-   Controlhandle := InitLabel( ::ContainerhWnd, "", 0, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight, '', 0, Nil , nStyle, nStyleEx, ::lRtl )
+   Controlhandle := InitInternal( ::ContainerhWnd, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight, nStyle, nStyleEx, ::lRtl )
 
    ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
 
@@ -179,8 +180,7 @@ METHOD Events_VScroll( wParam ) CLASS TInternal
 Local uRet
    uRet := ::VScrollBar:Events_VScroll( wParam )
    ::RowMargin := - ::VScrollBar:Value
-   AEVAL( ::aControls, { |o| If( o:Container:hWnd == ::hWnd, o:SizePos(), ) } )
-   ReDrawWindow( ::hWnd )
+   ::ScrollControls()
 Return uRet
 
 *-----------------------------------------------------------------------------*
@@ -189,8 +189,7 @@ METHOD Events_HScroll( wParam ) CLASS TInternal
 Local uRet
    uRet := ::HScrollBar:Events_HScroll( wParam )
    ::ColMargin := - ::HScrollBar:Value
-   AEVAL( ::aControls, { |o| If( o:Container:hWnd == ::hWnd, o:SizePos(), ) } )
-   ReDrawWindow( ::hWnd )
+   ::ScrollControls()
 Return uRet
 
 *------------------------------------------------------------------------------*
@@ -219,7 +218,137 @@ LOCAL uRet
    ValidateScrolls( Self, .T. )
 RETURN uRet
 
+*------------------------------------------------------------------------------*
+METHOD ScrollControls() CLASS TInternal
+*------------------------------------------------------------------------------*
+   AEVAL( ::aControls, { |o| If( o:Container:hWnd == ::hWnd, o:SizePos(), ) } )
+   ReDrawWindow( ::hWnd )
+RETURN Self
+
 *-----------------------------------------------------------------------------*
 Function _EndInternal()
 *-----------------------------------------------------------------------------*
 Return _OOHG_DeleteFrame( "INTERNAL" )
+
+#pragma BEGINDUMP
+
+#ifndef _WIN32_WINNT
+   #define _WIN32_WINNT 0x0400
+#endif
+#if ( _WIN32_WINNT < 0x0400 )
+   #undef _WIN32_WINNT
+   #define _WIN32_WINNT 0x0400
+#endif
+
+#define s_Super s_TControl
+
+#include "hbapi.h"
+#include "hbapiitm.h"
+#include "hbvm.h"
+#include "hbstack.h"
+#include <windows.h>
+#include <commctrl.h>
+#include "../include/oohg.h"
+
+static WNDPROC lpfnOldWndProc = 0;
+
+static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+{
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
+}
+
+static BOOL bRegistered = 0;
+
+static LRESULT CALLBACK _OOHG_TInternal_WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
+{
+   return DefWindowProc( hWnd, message, wParam, lParam );
+}
+
+void _OOHG_TInternal_Register( void )
+{
+   WNDCLASS WndClass;
+
+   memset( &WndClass, 0, sizeof( WndClass ) );
+   WndClass.style         = CS_HREDRAW | CS_VREDRAW | CS_OWNDC | CS_DBLCLKS;
+   WndClass.lpfnWndProc   = _OOHG_TInternal_WndProc;
+   WndClass.lpszClassName = "_OOHG_TINTERNAL";
+   WndClass.hInstance     = GetModuleHandle( NULL );
+   WndClass.hbrBackground = ( HBRUSH )( COLOR_BTNFACE + 1 );
+
+   if( ! RegisterClass( &WndClass ) )
+   {
+      char cBuffError[ 1000 ];
+      sprintf( cBuffError, "_OOHG_TINTERNAL Registration Failed! Error %i", ( int ) GetLastError() );
+      MessageBox( 0, cBuffError, "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
+      ExitProcess( 0 );
+   }
+
+   bRegistered = 1;
+}
+
+HB_FUNC( INITINTERNAL )
+{
+   HWND hwnd;
+   HWND hbutton;
+
+   int Style, ExStyle;
+
+   if( ! bRegistered )
+   {
+      _OOHG_TInternal_Register();
+   }
+
+   hwnd = HWNDparam( 1 );
+   Style = hb_parni( 6 ) | WS_CHILD;
+   ExStyle = hb_parni( 7 ) | _OOHG_RTL_Status( hb_parl( 8 ) );
+
+   hbutton = CreateWindowEx( ExStyle, "_OOHG_TINTERNAL", "", Style,
+             hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ),
+             hwnd, NULL, GetModuleHandle( NULL ), NULL );
+
+   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( hbutton, GWL_WNDPROC, ( LONG ) SubClassFunc );
+
+   HWNDret( hbutton );
+}
+
+HB_FUNC_STATIC( TINTERNAL_EVENTS )
+{
+   HWND hWnd      = ( HWND )   hb_parnl( 1 );
+   UINT message   = ( UINT )   hb_parni( 2 );
+   WPARAM wParam  = ( WPARAM ) hb_parni( 3 );
+   LPARAM lParam  = ( LPARAM ) hb_parnl( 4 );
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+
+   switch( message )
+   {
+      case WM_MOUSEWHEEL:
+         if( ( short ) HIWORD( wParam ) > 0 )
+         {
+            _OOHG_Send( pSelf, s_Events_VScroll );
+            hb_vmPushLong( SB_LINEUP );
+            hb_vmSend( 1 );
+         }
+         else
+         {
+            _OOHG_Send( pSelf, s_Events_VScroll );
+            hb_vmPushLong( SB_LINEDOWN );
+            hb_vmSend( 1 );
+         }
+         hb_retni( 1 );
+         break;
+
+      default:
+         _OOHG_Send( pSelf, s_Super );
+         hb_vmSend( 0 );
+         _OOHG_Send( hb_param( -1, HB_IT_OBJECT ), s_Events );
+         hb_vmPushLong( ( LONG ) hWnd );
+         hb_vmPushLong( message );
+         hb_vmPushLong( wParam );
+         hb_vmPushLong( lParam );
+         hb_vmSend( 4 );
+         break;
+   }
+}
+
+#pragma ENDDUMP

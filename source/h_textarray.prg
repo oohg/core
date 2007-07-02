@@ -1,5 +1,5 @@
 /*
- * $Id: h_textarray.prg,v 1.10 2007-06-09 22:56:25 guerra000 Exp $
+ * $Id: h_textarray.prg,v 1.11 2007-07-02 03:37:34 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -624,6 +624,15 @@ HB_FUNC_STATIC( TTEXTARRAY_EVENTS )
             }
          }
          break;
+
+/*
+      case WM_MOUSEWHEEL:
+               _OOHG_Send( pSelf, s_Events_VScroll );
+               hb_vmPushLong( ( HIWORD( wParam ) == WHEEL_DELTA ) ? SB_LINEUP : SB_LINEDOWN );
+               hb_vmSend( 1 );
+         hb_ret();
+         break;
+*/
 
       default:
          _OOHG_Send( pSelf, s_Super );
