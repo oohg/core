@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.369 2007-07-03 00:50:31 declan2005 Exp $
+ * $Id: ChangeLog,v 1.370 2007-07-03 01:16:56 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,14 +7,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-
+2007-07-02 20:20 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/c_image.c
+    ! Removed wrong brush creation.
 
 2007-07-02 19:47 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
-
   * source/h_internal.prg
   * source/c_image.c
    ! harbour warnings removed.
-
 
 2007-07-01 22:36 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * include/oohg.h
