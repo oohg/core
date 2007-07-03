@@ -1,5 +1,5 @@
 /*
- * $Id: c_image.c,v 1.11 2007-07-01 04:44:56 guerra000 Exp $
+ * $Id: c_image.c,v 1.12 2007-07-03 00:50:32 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -188,11 +188,11 @@ HBITMAP _OOHG_ScaleImage( HWND hWnd, HBITMAP hImage, int iWidth, int iHeight, in
 
       if( BackColor == -1 )
       {
-         hBrush = CreateSolidBrush( GetSysColor( COLOR_BTNFACE ) );
+//////         hBrush = CreateSolidBrush( GetSysColor( COLOR_BTNFACE ) );
       }
       else
       {
-         hBrush = CreateSolidBrush( BackColor );
+  ////       hBrush = CreateSolidBrush( BackColor );
       }
       hBrush = CreateSolidBrush( 0x0000FF );
 

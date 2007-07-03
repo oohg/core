@@ -1,5 +1,5 @@
 /*
- * $Id: h_internal.prg,v 1.4 2007-07-02 03:37:34 guerra000 Exp $
+ * $Id: h_internal.prg,v 1.5 2007-07-03 00:50:32 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -318,7 +318,7 @@ HB_FUNC_STATIC( TINTERNAL_EVENTS )
    WPARAM wParam  = ( WPARAM ) hb_parni( 3 );
    LPARAM lParam  = ( LPARAM ) hb_parnl( 4 );
    PHB_ITEM pSelf = hb_stackSelfItem();
-   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+ //////  POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
 
    switch( message )
    {
