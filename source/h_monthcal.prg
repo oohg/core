@@ -1,5 +1,5 @@
 /*
- * $Id: h_monthcal.prg,v 1.5 2006-02-11 06:19:33 guerra000 Exp $
+ * $Id: h_monthcal.prg,v 1.6 2007-07-09 17:04:06 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -115,6 +115,7 @@ Local ControlHandle
 
    DEFAULT value     TO date()
    DEFAULT change    TO ""
+   DEFAULT invisible TO FALSE
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize,,,, lRtl )
 
