@@ -1,5 +1,5 @@
 /*
- * $Id: h_splitbox.prg,v 1.5 2006-07-05 02:39:54 guerra000 Exp $
+ * $Id: h_splitbox.prg,v 1.6 2007-07-15 04:48:43 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -315,6 +315,7 @@ HB_FUNC( SETSPLITBOXITEM )
 	RECT          rc;
    int iCount;
 
+   memset( &rbBand, 0, sizeof( REBARBANDINFO ) );
 	rbBand.cbSize = sizeof(REBARBANDINFO);
    iCount = SendMessage( HWNDparam( 2 ) , RB_GETBANDCOUNT, 0 , 0 ) - 1;
    SendMessage( HWNDparam( 2 ) , RB_GETBANDINFO, iCount, (LPARAM) &rbBand );

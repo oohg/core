@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.371 2007-07-09 17:04:05 declan2005 Exp $
+ * $Id: ChangeLog,v 1.372 2007-07-15 04:48:43 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,10 +7,30 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2007-07-14 23:46 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_combo.ch
+  * source/common_make.bat
+  - source/c_combo.c
+  * source/h_combo.prg
+  * source/makelib_bcc.bat
+  * source/makelib_minwg.bat
+    ! Fixed / optimized value assignment when ITEMSOURCE is used.
+    * Moved C code to h_combo.prg file.
+    - c_combo.c file removed.
+    * Codification style fixes.
+  * source/c_image.c
+  * source/h_image.prg
+    ! OLE image takes same size than window.
+    ! Image doesn't protects size.
+  * source/h_splitbox.prg
+    ! Buffer initialized.
+  * source/winprint.prg
+    * Form "HBPreview1" moved to ::oHBPreview1 property.
+    * Fixed scroll movement.
+
 2007-07-09 11:59 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source/h_monthcal.prg
    ! fixed default invisible propertie for oop creation
-
 
 2007-07-02 20:20 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/c_image.c

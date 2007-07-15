@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.12 2007-04-18 15:24:43 declan2005 Exp $
+ * $Id: winprint.prg,v 1.13 2007-07-15 04:48:43 guerra000 Exp $
  */
 // -----------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -75,6 +75,7 @@ CLASS HBPrinter
    DATA    scale INIT 1
    DATA    npages INIT {}
    DATA    aopisy INIT {}
+   DATA    oHBPreview1 INIT nil
 
    METHOD New()
    METHOD SelectPrinter( cPrinter ,lPrev)
@@ -521,7 +522,7 @@ local lhand:=0,lpos:=0
     return self
  endif
 
- if lfontname<>NIL 
+ if lfontname<>NIL
    ::Fonts[4,lpos,1]:=upper(alltrim(lfontname))
  endif
 
@@ -534,25 +535,25 @@ local lhand:=0,lpos:=0
 if langle<>NIL
     ::Fonts[4,lpos,4]:=langle
 endif
- if lweight 
+ if lweight
    ::Fonts[4,lpos,5]:=1
  endif
  if lnweight
     ::Fonts[4,lpos,5]:=0
  endif
- if litalic 
+ if litalic
     ::Fonts[4,lpos,6]:=1
  endif
  if lnitalic
     ::Fonts[4,lpos,6]:=0
  endif
- if lunderline 
+ if lunderline
    ::Fonts[4,lpos,7]:=1
  endif
  if lnunderline
    ::Fonts[4,lpos,7]:=0
  endif
- if lstrikeout 
+ if lstrikeout
     ::Fonts[4,lpos,8]:=1
  endif
  if lnstrikeout
@@ -730,7 +731,7 @@ return self
 
 METHOD FrameRect(row,col,torow,tocol,defbrush) CLASS HBPrinter
 local lhb:=::getobjbyname(defbrush,"B")
-   if torow==NIL 
+   if torow==NIL
       torow:=::maxrow
    endif
    if tocol==NIL
@@ -1314,10 +1315,9 @@ local spos
     msgstop(::aopisy[18],"")
  endif
  HideWindow(::ahs[6,7])
-   _SetControlHeight("i1","hbpreview1",::azoom[3]+20)
-   _SetControlWidth ("i1","hbpreview1",::azoom[4])
-   SetScrollRange(::ahs[5,7],SB_VERT,0,::azoom[3]+20,1)
-   SetScrollRange(::ahs[5,7],SB_HORZ,0,::azoom[4],1)
+   ::oHBPreview1:i1:SizePos( ,, ::azoom[4], ::azoom[3] )
+   ::oHBPreview1:VirtualHeight := ::azoom[3]+20
+   ::oHBPreview1:VirtualWidth := ::azoom[4]+20
 
  if !rr_previewplay(::ahs[6,7],::METAFILES[::page],::azoom)
       ::scale:=::scale/1.25
@@ -1693,8 +1693,6 @@ next pi
     ::ahs[1,6]:=::ahs[1,4]-::ahs[1,2]+1
   endif
 
-  declare window hbpreview1
-
   DEFINE WINDOW HBPREVIEW OBJ oHBPreview AT  ::ahs[1,1] , ::ahs[1,1] ;
          WIDTH ::ahs[1,6] HEIGHT ::ahs[1,5]-45 ;
           TITLE ::aopisy[1] ICON 'zzz_Printicon' ;
@@ -1714,12 +1712,12 @@ next pi
          END STATUSBAR
 
                @ 15 ,::ahs[1,6]-150 LABEL prl VALUE ::aopisy[12] WIDTH  80 HEIGHT 18 FONT 'Arial' SIZE 08
-               @ 13 ,::ahs[1,6]-77  COMBOBOX combo_1  ITEMS ::npages VALUE 1 WIDTH 58 FONT 'Arial' SIZE  8 ON CHANGE {|| ::page := ::CurPage:=HBPREVIEW.combo_1.value,::PrevShow(),HBPREVIEW1.setfocus() }
+               @ 13 ,::ahs[1,6]-77  COMBOBOX combo_1  ITEMS ::npages VALUE 1 WIDTH 58 FONT 'Arial' SIZE  8 ON CHANGE {|| ::page := ::CurPage:=HBPREVIEW.combo_1.value,::PrevShow(),::oHBPreview1:setfocus() }
 
          DEFINE SPLITBOX
                DEFINE TOOLBAR TB1 BUTTONSIZE 50,33 FONT 'Arial Narrow' SIZE 8 FLAT BREAK // RIGHTTEXT
-////                        BUTTON B1 CAPTION  ::aopisy[2]     PICTURE 'hbprint_close'   ACTION {||  _ReleaseWindow ("HBPREVIEW1" ),if(::iloscstron>1 .and. ::thumbnails,_ReleaseWindow ("HBPREVIEW2" ),""), oHBPreview:Release()}
-                        BUTTON B1 CAPTION  ::aopisy[2]     PICTURE 'hbprint_close'   ACTION MYCLOSEP(::iloscstron,::thumbnails ,oHBPreview)
+////                        BUTTON B1 CAPTION  ::aopisy[2]     PICTURE 'hbprint_close'   ACTION {||  ::oHBPreview1:Release(),if(::iloscstron>1 .and. ::thumbnails,_ReleaseWindow ("HBPREVIEW2" ),""), oHBPreview:Release()}
+                        BUTTON B1 CAPTION  ::aopisy[2]     PICTURE 'hbprint_close'   ACTION MYCLOSEP(::iloscstron,::thumbnails ,oHBPreview,::oHBPreview1)
                         BUTTON B2 CAPTION  ::aopisy[3]    PICTURE 'hbprint_print'   ACTION {|| ::prevprint() }
                         BUTTON B3 CAPTION  ::aopisy[4]     PICTURE 'hbprint_save'    ACTION {|| ::savemetafiles()}
                         if ::iloscstron>1
@@ -1741,19 +1739,19 @@ next pi
                aadd(::ahs,{0,0,0,0,0,0,oHBPreview:StatusBar:hWnd})
                rr_getclientrect(::ahs[4])
 
-               DEFINE WINDOW HBPREVIEW1  ;
+               DEFINE WINDOW 0 OBJ ::oHBPreview1 ;
                       WIDTH ::ahs[2,6]-15  HEIGHT ::ahs[2,5]-::ahs[3,5]-::ahs[4,5]-10 ;
                       VIRTUAL WIDTH ::ahs[2,6] -5;
                       VIRTUAL HEIGHT ::ahs[2,5]-::ahs[3,5]-::ahs[4,5] ;
                       TITLE ::aopisy[13]   SPLITCHILD  GRIPPERTEXT "P" ;
                       NOSYSMENU NOCAPTION ;
-                      ON MOUSECLICK  ( HBPREVIEW1.setfocus() )
+                      ON MOUSECLICK  ( ::oHBPreview1:setfocus() )
 
 
-                      aadd(::ahs,{0,0,0,0,0,0,GetFormHandle("hbpreview1")})
+                      aadd(::ahs,{0,0,0,0,0,0, ::oHBPreview1:hWnd})
                       rr_getclientrect(::ahs[5])
                       @ ::ahs[5,2]+10,::ahs[5,1]+10 IMAGE I1  PICTURE "" WIDTH ::ahs[5,6]-10 HEIGHT ::ahs[5,5]-10
-                      aadd(::ahs,{0,0,0,0,0,0,GetControlHandle("i1","hbpreview1")})
+                      aadd(::ahs,{0,0,0,0,0,0,::oHBPreview1:i1:hWnd})
                       rr_getclientrect(::ahs[6])
 
                END WINDOW
@@ -1806,12 +1804,12 @@ next pi
          END SPLITBOX
   END WINDOW
   ::PrevShow()
-  HBPREVIEW1.setfocus()  
+  ::oHBPreview1:setfocus()
   ACTIVATE WINDOW HBPREVIEW
 return nil
 
-FUNCTION MYCLOSEP(T1,T2,OT3)
-_ReleaseWindow ("HBPREVIEW1" )
+FUNCTION MYCLOSEP(T1,T2,OT3,oHBPreview1)
+oHBPreview1:Release()
 IF T1>1 .and. T2
   _ReleaseWindow ("HBPREVIEW2" )
 ENDIF
@@ -1988,7 +1986,7 @@ HB_FUNC (RR_PRINTDIALOG)
 //  pdlg.nMaxPage=999999;
   hwnd = GetActiveWindow() ;
   pdlg.hwndOwner  = hwnd ;
-  
+
 
   if ( PrintDlg( &pdlg ) )
     {

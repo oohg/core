@@ -1,5 +1,5 @@
 /*
- * $Id: c_image.c,v 1.13 2007-07-03 01:16:56 guerra000 Exp $
+ * $Id: c_image.c,v 1.14 2007-07-15 04:48:43 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -119,7 +119,6 @@ HANDLE _OOHG_OleLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG lBackColor )
    IPicture *iPicture;
    long lWidth, lHeight;
    long lWidth2, lHeight2;
-   float fAux;
    HDC hdc1, hdc2;
    RECT rect;
    HBRUSH hBrush;
@@ -131,17 +130,23 @@ HANDLE _OOHG_OleLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG lBackColor )
       iPicture->lpVtbl->get_Width( iPicture, &lWidth );
       iPicture->lpVtbl->get_Height( iPicture, &lHeight );
 
-      // GetClientRect( hWnd, &rect );
-      // lWidth2 = rect.right;
-      // lHeight2 = rect.bottom;
+      GetClientRect( hWnd, &rect );
+      lWidth2 = rect.right;
+      lHeight2 = rect.bottom;
 
-      iPicture->lpVtbl->get_CurDC( iPicture, &hdc1 );
-      hdc1 = CreateCompatibleDC( hdc1 );
-      fAux = ( ( lWidth * GetDeviceCaps( hdc1, LOGPIXELSX ) ) / 2540 + 0.5 );
-      lWidth2 = fAux;
-      fAux = ( ( lHeight * GetDeviceCaps( hdc1, LOGPIXELSY ) ) / 2540 + 0.5 );
-      lHeight2 = fAux;
-      DeleteDC( hdc1 );
+/*
+      {
+         float fAux;
+
+         iPicture->lpVtbl->get_CurDC( iPicture, &hdc1 );
+         hdc1 = CreateCompatibleDC( hdc1 );
+         fAux = ( ( lWidth * GetDeviceCaps( hdc1, LOGPIXELSX ) ) / 2540 ) + 0.5;
+         lWidth2 = fAux;
+         fAux = ( ( lHeight * GetDeviceCaps( hdc1, LOGPIXELSY ) ) / 2540 ) + 0.5;
+         lHeight2 = fAux;
+         DeleteDC( hdc1 );
+      }
+ */
 
       SetRect( &rect, 0, 0, lWidth2, lHeight2 );
 
@@ -152,7 +157,7 @@ HANDLE _OOHG_OleLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG lBackColor )
 
       if( lBackColor == -1 )
       {
-         hBrush = CreateSolidBrush( COLOR_BTNFACE );
+         hBrush = CreateSolidBrush( GetSysColor( COLOR_BTNFACE ) );
       }
       else
       {

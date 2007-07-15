@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.23 2007-05-14 04:24:19 guerra000 Exp $
+ * $Id: h_combo.prg,v 1.24 2007-07-15 04:48:43 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -103,6 +103,9 @@ CLASS TCombo FROM TLabel
    DATA nValue    INIT 0
    DATA ValueSource   INIT ""
    DATA nTextHeight   INIT 0
+   DATA aValues       INIT {}
+   DATA nWidth    INIT 120
+   DATA nHeight   INIT 150
 
    METHOD Define
    METHOD Refresh
@@ -128,18 +131,15 @@ METHOD Define( ControlName, ParentForm, x, y, w, rows, value, fontname, ;
                uEnter, HelpId, invisible, notabstop, sort, bold, italic, ;
                underline, strikeout, itemsource, valuesource, displaychange, ;
                ondisplaychangeprocedure, break, GripperText, aImage, lRtl, ;
-               TextHeight ) CLASS TCombo
+               TextHeight, lDisabled ) CLASS TCombo
 *-----------------------------------------------------------------------------*
-Local ControlHandle , rcount := 0 , BackRec , cset := 0 , WorkArea , cField
+Local ControlHandle , rcount := 0 , cset := 0 , WorkArea , cField, nStyle
 
-   DEFAULT w               TO 120
-   DEFAULT h               TO 150
-   DEFAULT changeprocedure TO ""
-   DEFAULT gotfocus     TO ""
-   DEFAULT lostfocus    TO ""
+   ASSIGN ::nCol        VALUE x TYPE "N"
+   ASSIGN ::nRow        VALUE y TYPE "N"
+   ASSIGN ::nWidth      VALUE w TYPE "N"
+   ASSIGN ::nHeight     VALUE h TYPE "N"
    DEFAULT rows         TO {}
-   DEFAULT invisible    TO FALSE
-   DEFAULT notabstop    TO FALSE
    DEFAULT sort		TO FALSE
    DEFAULT GripperText	TO ""
    ASSIGN ::nTextHeight VALUE TextHeight TYPE "N"
@@ -164,25 +164,24 @@ Local ControlHandle , rcount := 0 , BackRec , cset := 0 , WorkArea , cField
 		EndIf
 	EndIf
 
-	if valtype(value) == "U"
-		value := 0
-	endif
+#define CBS_SORT               0x0100
+#define CBS_DROPDOWN           0x0002
+#define CBS_DROPDOWNLIST       0x0003
+#define CBS_NOINTEGRALHEIGHT   0x0400
+   nStyle := ::InitStyle( ,, Invisible, notabstop, lDisabled ) + ;
+             if( ValType( SORT ) == "L"          .AND. SORT,          CBS_SORT,    0 ) + ;
+             if( ValType( displaychange ) != "L" .OR. ! displaychange, CBS_DROPDOWNLIST, CBS_DROPDOWN ) + ;
+             if( ( "XP" $ OS() ), CBS_NOINTEGRALHEIGHT, 0 )
 
-   ::SetSplitBoxInfo( Break, GripperText, w )
-   ControlHandle := InitComboBox( ::ContainerhWnd, 0, x, y, w, '', 0, h, invisible, notabstop, sort, displaychange, ( "XP" $ OS() ), ::lRtl )
+   ::SetSplitBoxInfo( Break, GripperText, ::nWidth )
+   ControlHandle := InitComboBox( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight, nStyle, ::lRtl )
 
-	if valtype(uEnter) == "U"
-		uEnter := ""
-	endif
-
-   ::Register( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
+   ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
    ::SetFont()
-   ::SizePos( y, x, w, h )
 
-   ::Field :=  cField
-   ::nValue   :=  Value
+   ::Field := cField
    ::WorkArea := WorkArea
-   ::ValueSource :=  valuesource
+   ::ValueSource := valuesource
 
    if valtype( aImage ) == "A"
       ::AddBitMap( aImage )
@@ -193,39 +192,15 @@ Local ControlHandle , rcount := 0 , BackRec , cset := 0 , WorkArea , cField
 	EndIf
 
    If  ValType( WorkArea ) $ "CM"
-
-		If Select ( WorkArea ) != 0
-
-			BackRec := (WorkArea)->(RecNo())
-
-			(WorkArea)->(DBGoTop())
-
-			Do While ! (WorkArea)->(Eof())
-				rcount++
-            if value == (WorkArea)->(RecNo())
-					cset := rcount
-				EndIf
-				ComboAddString (ControlHandle, (WorkArea)->&(cField) )
-				(WorkArea)->(DBSkip())
-			EndDo
-
-			(WorkArea)->(DBGoTo(BackRec))
-
-			ComboSetCurSel (ControlHandle,cset)
-
-		EndIf
-
+      ::Refresh()
 	Else
-
       AEval( rows, { |x| ::AddItem( x ) } )
-
-		if value <> 0
-         ComboSetCurSel( ControlHandle, Value )
-		endif
-
 	EndIf
 
-	if valtype ( ItemSource ) != 'U'
+   ::Value := Value
+   ::nValue := Value
+
+   if valtype( ItemSource ) != 'U'
       aAdd( ::Parent:BrowseList, Self )
 	EndIf
 
@@ -240,87 +215,47 @@ Return Self
 *-----------------------------------------------------------------------------*
 METHOD Refresh() CLASS TCombo
 *-----------------------------------------------------------------------------*
-Local BackRec , WorkArea , cField
-
-   cField := ::Field
-
+Local BackRec , WorkArea , cField , aValues
    WorkArea := ::WorkArea
-
-	BackRec := (WorkArea)->(RecNo())
-
-	(WorkArea)->(DBGoTop())
-
-   ComboboxReset ( ::hWnd )
-
-	Do While ! (WorkArea)->(Eof())
-      ComboAddString ( ::hWnd, (WorkArea)->&(cField) )
-		(WorkArea)->(DBSkip())
-	EndDo
-
-	(WorkArea)->(DBGoTo(BackRec))
-
+   If Select( WorkArea ) != 0
+      cField := ::Field
+      BackRec := ( WorkArea )->( RecNo() )
+      ( WorkArea )->( DBGoTop() )
+      ComboboxReset( ::hWnd )
+      aValues := {}
+      Do While ! (WorkArea)->(Eof())
+         ComboAddString( ::hWnd, ( WorkArea )-> &( cField ) )
+         AADD( aValues, IF( EMPTY( ::ValueSource ), ( WorkArea )->( RecNo() ), &( ::ValueSource ) ) )
+         ( WorkArea )->( DBSkip() )
+      EndDo
+      ( WorkArea )->( DBGoTo( BackRec ) )
+      ::aValues := aValues
+   EndIf
 Return nil
 
 *-----------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TCombo
 *-----------------------------------------------------------------------------*
-Local WorkArea, BackRec, RCount, AuxVal
-   IF VALTYPE( uValue ) == "N"
-
-      If ValType ( ::WorkArea ) $ 'CM'
-         ::nValue  := uValue
-         WorkArea := ::WorkArea
-         rcount := 0
-			BackRec := (WorkArea)->(RecNo())
-			(WorkArea)->(DBGoTop())
-			Do While ! (WorkArea)->(Eof())
-				rcount++
-            if uValue == If( Empty( ::ValueSource ), ( WorkArea )->( RecNo() ), &( ::ValueSource ) )
-					Exit
-				EndIf
-				(WorkArea)->(DBSkip())
-			EndDo
-         (WorkArea)->( DBGoTo(BackRec) )
-         ComboSetCurSel( ::hWnd ,rcount )
-		Else
+LOCAL uRet
+   IF LEN( ::aValues ) == 0
+      IF ValType( uValue ) == "N"
          ComboSetCursel( ::hWnd , uValue )
-		EndIf
-
-   ELSEIF PCOUNT() > 0
-*      MsgOOHGError('COMBOBOX: Value property wrong type (only numeric allowed). Program terminated')
+      ENDIF
+      uRet := ComboGetCursel( ::hWnd )
+   ELSE
+      IF VALTYPE( ::aValues[ 1 ] ) == VALTYPE( uValue ) .OR. ;
+         ( VALTYPE( uValue ) $ "CM" .AND. VALTYPE( ::aValues[ 1 ] ) $ "CM" )
+         ComboSetCursel( ::hWnd, ASCAN( ::aValues, uValue ) )
+      ENDIF
+      uRet := ComboGetCursel( ::hWnd )
+      IF uRet >= 1 .AND. uRet <= LEN( ::aValues )
+         uRet := ::aValues[ uRet ]
+      ELSE
+         uRet := 0
+      ENDIF
    ENDIF
-
-      If ValType ( ::WorkArea ) $ 'CM'
-
-         auxval := ComboGetCursel ( ::hWnd )
-			rcount := 0
-
-         WorkArea := ::WorkArea
-
-			BackRec := (WorkArea)->(RecNo())
-			(WorkArea)->(DBGoTop())
-
-			Do While ! (WorkArea)->(Eof())
-				rcount++
-            if rcount == auxval
-
-               If Empty ( ::ValueSource )
-                  uValue := (WorkArea)->(RecNo())
-					Else
-                  uValue := &( ::ValueSource )
-					EndIf
-
-				EndIf
-				(WorkArea)->(DBSkip())
-			EndDo
-
-			(WorkArea)->(DBGoTo(BackRec))
-
-		Else
-         uValue := ComboGetCursel ( ::hWnd )
-		EndIf
-
-RETURN uValue
+   ::nValue := uRet
+RETURN uRet
 
 *-----------------------------------------------------------------------------*
 METHOD Visible( lVisible ) CLASS TCombo
@@ -373,6 +308,86 @@ Return ::Super:Events_Command( wParam )
 #include <windowsx.h>
 #include "../include/oohg.h"
 #define s_Super s_TLabel
+
+static WNDPROC lpfnOldWndProc = 0;
+
+static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+{
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
+}
+
+HB_FUNC( INITCOMBOBOX )
+{
+   HWND hwnd;
+   HWND hbutton;
+   int Style, StyleEx;
+
+   hwnd = HWNDparam( 1 );
+
+   StyleEx = _OOHG_RTL_Status( hb_parl( 8 ) );
+
+   Style = hb_parni( 7 ) | WS_CHILD | WS_VSCROLL | CBS_HASSTRINGS | CBS_OWNERDRAWFIXED; // CBS_OWNERDRAWVARIABLE;
+
+   hbutton = CreateWindowEx( StyleEx, "COMBOBOX",
+                           "" ,
+                           Style ,
+                           hb_parni(3) ,
+                           hb_parni(4) ,
+                           hb_parni(5) ,
+                           hb_parni(6) ,
+                           hwnd ,
+                           (HMENU)hb_parni(2) ,
+                           GetModuleHandle(NULL) ,
+                           NULL ) ;
+
+   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hbutton, GWL_WNDPROC, ( LONG ) SubClassFunc );
+
+   HWNDret( hbutton );
+}
+
+HB_FUNC( COMBOADDSTRING )
+{
+   HWND hWnd = HWNDparam( 1 );
+
+   SendMessage( hWnd, CB_INSERTSTRING, ( WPARAM ) ComboBox_GetCount( hWnd ), ( LPARAM ) hb_parc( 2 ) );
+}
+
+HB_FUNC( COMBOINSERTSTRING )
+{
+   SendMessage( HWNDparam( 1 ), CB_INSERTSTRING, ( WPARAM ) hb_parni( 3 ) - 1, ( LPARAM ) hb_parc( 2 ) );
+}
+
+HB_FUNC( COMBOSETCURSEL )
+{
+   SendMessage( HWNDparam( 1 ), CB_SETCURSEL, ( WPARAM ) hb_parni( 2 ) - 1, 0 );
+}
+
+HB_FUNC( COMBOGETCURSEL )
+{
+   hb_retni( SendMessage( HWNDparam( 1 ), CB_GETCURSEL , 0 , 0 ) + 1 );
+}
+
+HB_FUNC (COMBOBOXDELETESTRING )
+{
+   SendMessage( HWNDparam( 1 ), CB_DELETESTRING, (WPARAM) hb_parni( 2 ) - 1, 0 );
+}
+
+HB_FUNC ( COMBOBOXRESET )
+{
+   SendMessage( HWNDparam( 1 ), CB_RESETCONTENT, 0, 0 );
+}
+
+HB_FUNC ( COMBOGETSTRING )
+{
+   char cString [1024] = "" ;
+   SendMessage( HWNDparam( 1 ), CB_GETLBTEXT, ( WPARAM ) hb_parni( 2 ) - 1, ( LPARAM ) cString );
+   hb_retc( cString );
+}
+
+HB_FUNC ( COMBOBOXGETITEMCOUNT )
+{
+   hb_retnl( SendMessage( HWNDparam( 1 ), CB_GETCOUNT, 0, 0 ) );
+}
 
 void TCombo_SetImageBuffer( POCTRL oSelf, struct IMAGE_PARAMETER pStruct, int nItem )
 {

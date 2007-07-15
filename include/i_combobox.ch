@@ -1,5 +1,5 @@
 /*
- * $Id: i_combobox.ch,v 1.5 2006-06-06 02:59:34 guerra000 Exp $
+ * $Id: i_combobox.ch,v 1.6 2007-07-15 04:48:43 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -121,6 +121,7 @@
                 [ <rtl: RTL> ] ;
                 [ TEXTHEIGHT <textheight> ] ;
                 [ SUBCLASS <subclass> ]         ;
+                [ <disabled : DISABLED> ] ;
 	=>;
         [ <obj> := ] _OOHG_SelectSubClass( TCombo(), [ <subclass>() ] ): ;
                 Define( <(name)>, <(parent)>, <col>, <row>, <w>, <aRows> , <value>, ;
@@ -130,7 +131,7 @@
                 <.italic.>, <.underline.>, <.strikeout.> , <(itemsource)> , ;
                 <(valuesource)> , <.displaychange.> , ;
                 <{ondisplaychangeprocedure}> ,  .f. , "", <aImage>, <.rtl.>, ;
-                <textheight> )
+                <textheight>, <.disabled.> )
 
 // SPLITBOX VERSION
 
