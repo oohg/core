@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.374 2007-07-15 22:19:32 declan2005 Exp $
+ * $Id: ChangeLog,v 1.375 2007-07-15 22:20:36 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -22,7 +22,6 @@
   * source/h_windows.prg
     * Help topic moved to a form's message.
 
->>>>>>> 1.373
 2007-07-14 23:46 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * include/i_combo.ch
   * source/common_make.bat
