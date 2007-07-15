@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.80 2007-04-03 22:55:53 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.81 2007-07-15 22:19:33 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -498,13 +498,15 @@ METHOD toExcel( cTitle, nRow ) CLASS TGrid
 
    default ctitle to ""
 
-   oExcel := TOleAuto():New( "Excel.Application" )
-   IF Ole2TxtError() != 'S_OK'
-      MsgStop('Excel not found','error')
-      RETURN Nil
-   ENDIF
+   //////oExcel := TOleAuto():New( "Excel.Application" )
+   oExcel := CreateObject( "Excel.Application" )
+///   IF Ole2TxtError() != 'S_OK'
+///      MsgStop('Excel not found','error')
+///      RETURN Nil
+///   ENDIF
    oExcel:WorkBooks:Add()
-   oHoja := oExcel:Get( "ActiveSheet" )
+   oHoja:=oExcel:ActiveSheet()
+////   oHoja := oExcel:Get( "ActiveSheet" )
    oHoja:Cells:Font:Name := "Arial"
    oHoja:Cells:Font:Size := 10
 
@@ -536,13 +538,10 @@ METHOD toExcel( cTitle, nRow ) CLASS TGrid
 
    oHoja:Cells( 1, 1 ):Select()
    oExcel:Visible := .T.
+   oHoja := NIL
+   oExcel:= NIL
 
-   #ifndef __XHARBOUR__
-      oHoja:End()
-      oExcel:End()
-   #endif
-
-RETURN nil
+  RETURN nil
 
 
 *-----------------------------------------------------------------------------*
@@ -1489,8 +1488,10 @@ Local aTemp, nColumn, xValue, oEditControl
    aTemp := Array( Len( uValue ) )
    For nColumn := 1 To Len( uValue )
       xValue := uValue[ nColumn ]
+///      automsgbox(xvalue)
       oEditControl := GetEditControlFromArray( nil, ::EditControls, nColumn, Self )
       If ValType( oEditControl ) == "O"
+/////      automsgbox(xvalue)
          aTemp[ nColumn ] := oEditControl:GridValue( xValue )
       ElseIf ValType( ::Picture[ nColumn ] ) $ "CM"
          aTemp[ nColumn ] := Trim( Transform( xValue, ::Picture[ nColumn ] ) )

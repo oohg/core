@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.27 2007-04-07 17:05:20 guerra000 Exp $
+ * $Id: h_xbrowse.prg,v 1.28 2007-07-15 22:19:33 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -573,14 +573,15 @@ METHOD ToExcel( cTitle ) CLASS TXBrowse
  LOCAL oExcel, oHoja,i
 
  default ctitle to ""
-
- oExcel := TOleAuto():New( "Excel.Application" )
- IF Ole2TxtError() != 'S_OK'
-    MsgStop('Excel not found','error')
-    RETURN Nil
- ENDIF
+ oExcel := CreateObject( "Excel.Application" )
+//// oExcel := TOleAuto():New( "Excel.Application" )
+/// IF Ole2TxtError() != 'S_OK'
+///    MsgStop('Excel not found','error')
+//    RETURN Nil
+/// ENDIF
  oExcel:WorkBooks:Add()
- oHoja := oExcel:Get( "ActiveSheet" )
+ oHoja:=oExcel:ActiveSheet()
+//// oHoja := oExcel:Get( "ActiveSheet" )
  oHoja:Cells:Font:Name := "Arial"
  oHoja:Cells:Font:Size := 10
 
@@ -609,8 +610,8 @@ NEXT
 oHoja:Cells( 1, 1 ):Select()
 oExcel:Visible := .T.
 
-oHoja:End()
-oExcel:End()
+oHoja := NIL
+oExcel:= NIL
 
 
 RETURN nil
@@ -1496,14 +1497,14 @@ RETURN nCount
 METHOD OrdScope( uFrom, uTo ) CLASS ooHGRecord
 *-----------------------------------------------------------------------------*
    IF PCOUNT() == 0
-      ( ::cAlias__ )->( ORDSCOPE( 0, nil ) )
-      ( ::cAlias__ )->( ORDSCOPE( 1, nil ) )
+      ( ::cAlias )->( ORDSCOPE( 0, nil ) )
+      ( ::cAlias )->( ORDSCOPE( 1, nil ) )
    ELSEIF PCOUNT() == 1
-      ( ::cAlias__ )->( ORDSCOPE( 0, uFrom ) )
-      ( ::cAlias__ )->( ORDSCOPE( 1, uFrom ) )
+      ( ::cAlias )->( ORDSCOPE( 0, uFrom ) )
+      ( ::cAlias )->( ORDSCOPE( 1, uFrom ) )
    ELSE
-      ( ::cAlias__ )->( ORDSCOPE( 0, uFrom ) )
-      ( ::cAlias__ )->( ORDSCOPE( 1, uTo ) )
+      ( ::cAlias )->( ORDSCOPE( 0, uFrom ) )
+      ( ::cAlias )->( ORDSCOPE( 1, uTo ) )
    ENDIF
 RETURN nil
 

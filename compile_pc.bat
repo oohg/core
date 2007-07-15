@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: compile_pc.bat,v 1.3 2007-04-11 14:30:20 guerra000 Exp $
+rem $Id: compile_pc.bat,v 1.4 2007-07-15 22:19:33 declan2005 Exp $
 rem
 cls
 
@@ -62,6 +62,7 @@ Rem *** Additional libraries ***
 if exist %HG_HRB%\lib\libct.lib   echo %HG_HRB%\lib\libct.lib >> pc.lnk
 if exist %HG_HRB%\lib\libmisc.lib echo %HG_HRB%\lib\libmisc.lib >> pc.lnk
 if exist %HG_HRB%\lib\hbole.lib   echo %HG_HRB%\lib\hbole.lib >> pc.lnk
+if exist %HG_HRB%\lib\hboleaut.lib   echo %HG_HRB%\lib\hboleaut.lib >> pc.lnk
 if exist %HG_HRB%\lib\dll.lib     echo %HG_HRB%\lib\dll.lib >> pc.lnk
 
 Rem *** "Related" libraries ***

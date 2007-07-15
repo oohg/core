@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.71 2007-06-28 23:50:08 guerra000 Exp $
+* $Id: h_print.prg,v 1.72 2007-07-15 22:19:33 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -1688,20 +1688,22 @@ empty(llandscape)
 empty(npapersize)
 empty(cprinterx)
 
-::oExcel := TOleAuto():New( "Excel.Application" )
-IF Ole2TxtError() != 'S_OK'
-   MsgStop('Excel not found','error')
-   ::lprerror:=.T.
-   ::exit:=.T.
-   RETURN Nil
-ENDIF
+::oExcel := CreateObject( "Excel.Application" )
+*::oExcel := TOleAuto():New( "Excel.Application" )
+*IF Ole2TxtError() != 'S_OK'
+*   MsgStop('Excel not found','error')
+*   ::lprerror:=.T.
+*   ::exit:=.T.
+*   RETURN Nil
+*ENDIF
 return self
 
 *-------------------------
 METHOD begindocx() CLASS TEXCELPRINT
 *-------------------------
 ::oExcel:WorkBooks:Add()
-::oHoja := ::oExcel:Get( "ActiveSheet" )
+**::oHoja := ::oExcel:Get( "ActiveSheet" )
+::oHoja:=::oExcel:ActiveSheet()
 ::oHoja:Name := "List"
 ::oHoja:Cells:Font:Name := ::cfontname
 ::oHoja:Cells:Font:Size := ::nfontsize
@@ -1717,11 +1719,12 @@ FOR nCol:=1 TO ::oHoja:UsedRange:Columns:Count()
 NEXT
 ::oHoja:Cells( 1, 1 ):Select()
 ::oExcel:Visible := .T.
-#ifndef __XHARBOUR__
-  ::oHoja:end()
-  ::oExcel:end()
-#endif
-
+*#ifndef __XHARBOUR__
+*  ::oHoja:end()
+*  ::oExcel:end()
+*#endif
+::oHoja:= NIL
+::oExcel:= NIL
 
 RETURN self
 
@@ -1818,10 +1821,10 @@ cRuta:=GetmydocumentsFolder()
 ::oExcel:Set( "DisplayAlerts", .f. )
 ::oHoja:SaveAs(cRuta+"\Printer.html", 44,"","", .f. , .f.)
 ::oExcel:Quit()
-#ifndef __XHARBOUR__
-  ::oHoja:End()
-  ::oExcel:end()
-#endif
+////#ifndef __XHARBOUR__
+///  ::oHoja:End()
+///  ::oExcel:end()
+///#endif
 ::ohoja := nil
 ::oExcel := nil
 IF ShellExecute(0, "open", "rundll32.exe", "url.dll,FileProtocolHandler "+ cRuta+ "\Printer.html", ,1) <=32

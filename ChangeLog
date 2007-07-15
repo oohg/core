@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.373 2007-07-15 17:25:14 guerra000 Exp $
+ * $Id: ChangeLog,v 1.374 2007-07-15 22:19:32 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,10 +7,22 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+
+2007-07-15 17:07 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+
+  * source/h_print.prg
+  * source/h_grid.prg
+  * source/h_xbrowse.prg
+  * compile_bcc.bat
+  * compile_pc.bat
+    * change old ole syntax to new oleaut syntax and new library
+
+
 2007-07-15 12:24 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_windows.prg
     * Help topic moved to a form's message.
 
+>>>>>>> 1.373
 2007-07-14 23:46 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * include/i_combo.ch
   * source/common_make.bat
