@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.135 2007-07-02 03:37:34 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.136 2007-07-15 17:25:16 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1290,6 +1290,7 @@ CLASS TForm FROM TWindow
    METHOD Events_Destroy
    METHOD Events_VScroll
    METHOD Events_HScroll
+   METHOD HelpTopic(lParam)   BLOCK { | Self, lParam | HelpTopic( GetControlObjectByHandle( GetHelpData( lParam ) ):HelpId , 2 ), nil }
    METHOD ScrollControls
    METHOD MessageLoop
 
@@ -2142,7 +2143,7 @@ Local oCtrl
 	case nMsg == WM_HELP
         ***********************************************************************
 
-      HelpTopic( GetControlObjectByHandle( GetHelpData( lParam ) ):HelpId , 2 )
+      RETURN ::HelpTopic( GetControlObjectByHandle( GetHelpData( lParam ) ):HelpId , 2 )
 
         ***********************************************************************
 	case nMsg == WM_TASKBAR
