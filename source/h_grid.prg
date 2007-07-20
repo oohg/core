@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.81 2007-07-15 22:19:33 declan2005 Exp $
+ * $Id: h_grid.prg,v 1.82 2007-07-20 13:38:25 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -868,13 +868,13 @@ Local nColumns, uGridColor, uDynamicColor
 
    // Update edit control
    IF VALTYPE( uEditControl ) != NIL
-      IF VALTYPE( ::EditControl ) != "A"
-         ::EditControl := ARRAY( nColumns )
-      ELSEIF LEN( ::EditControl ) < nColumns
-         ASIZE( ::EditControl, nColumns )
+      IF VALTYPE( ::EditControls ) != "A"
+         ::EditControls := ARRAY( nColumns )
+      ELSEIF LEN( ::EditControls ) < nColumns
+         ASIZE( ::EditControls, nColumns )
       ENDIF
-      AINS( ::EditControl, nColIndex )
-      ::EditControl[ nColIndex ] := uEditControl
+      AINS( ::EditControls, nColIndex )
+      ::EditControls[ nColIndex ] := uEditControl
    ENDIF
 
    // Call C-Level Routine
