@@ -1,11 +1,17 @@
 /*
- * $Id: ChangeLog,v 1.376 2007-07-20 13:38:25 guerra000 Exp $
+ * $Id: ChangeLog,v 1.377 2007-07-26 14:04:24 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-07-26 09:02 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_combo.prg
+    + TGridControlComboBoxText() subclass added, for manage string
+      values from an array ("COMBOBOXTEXT" columncontrol).
+  * Fixed columncontrol name checking.
 
 2007-07-20 08:37 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_grid.prg

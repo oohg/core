@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.82 2007-07-20 13:38:25 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.83 2007-07-26 14:04:25 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -2206,27 +2206,30 @@ HB_FUNC( CELLRAWVALUE )   // hWnd, nRow, nCol, nType, uValue
 *-----------------------------------------------------------------------------*
 FUNCTION GridControlObject( aEditControl, oGrid )
 *-----------------------------------------------------------------------------*
-Local oGridControl, aEdit2
+Local oGridControl, aEdit2, cControl
    oGridControl := nil
    If ValType( aEditControl ) == "A" .AND. Len( aEditControl ) >= 1 .AND. ValType( aEditControl[ 1 ] ) $ "CM"
       aEdit2 := ACLONE( aEditControl )
       ASIZE( aEdit2, 4 )
+      cControl := UPPER( ALLTRIM( aEditControl[ 1 ] ) )
       Do Case
-         Case aEditControl[ 1 ] == "MEMO"
+         Case cControl == "MEMO"
             oGridControl := TGridControlMemo():New()
-         Case aEditControl[ 1 ] == "DATEPICKER"
+         Case cControl == "DATEPICKER"
             oGridControl := TGridControlDatePicker():New( aEdit2[ 2 ] )
-         Case aEditControl[ 1 ] == "COMBOBOX"
+         Case cControl == "COMBOBOX"
             oGridControl := TGridControlComboBox():New( aEdit2[ 2 ], oGrid )
-         Case aEditControl[ 1 ] == "SPINNER"
+         Case cControl == "COMBOBOXTEXT"
+            oGridControl := TGridControlComboBoxText():New( aEdit2[ 2 ], oGrid )
+         Case cControl == "SPINNER"
             oGridControl := TGridControlSpinner():New( aEdit2[ 2 ], aEdit2[ 3 ] )
-         Case aEditControl[ 1 ] == "CHECKBOX"
+         Case cControl == "CHECKBOX"
             oGridControl := TGridControlCheckBox():New( aEdit2[ 2 ], aEdit2[ 3 ] )
-         Case aEditControl[ 1 ] == "TEXTBOX"
+         Case cControl == "TEXTBOX"
             oGridControl := TGridControlTextBox():New( aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 2 ] )
-         Case aEditControl[ 1 ] == "IMAGELIST"
+         Case cControl == "IMAGELIST"
             oGridControl := TGridControlDatePicker():New( oGrid )
-         Case aEditControl[ 1 ] == "LCOMBOBOX"
+         Case cControl == "LCOMBOBOX"
             oGridControl := TGridControlLComboBox():New( aEdit2[ 2 ], aEdit2[ 3 ] )
       EndCase
    EndIf
@@ -2309,9 +2312,8 @@ Local lRet := .F.
           MODAL NOSIZE NOCAPTION ;
           FONT cFontName SIZE nFontSize
 
-          ON KEY RETURN OF ( ::oWindow ) ACTION ( IF(iswindowactive(_oohg_gridwn),lRet := ::Valid(),Nil ))
-          ON KEY ESCAPE OF ( ::oWindow ) ACTION ( IF(iswindowactive(_oohg_gridwn), ::oWindow:Release(),Nil))
-
+          ON KEY RETURN OF ( ::oWindow ) ACTION ( IF( ::oWindow:Active, lRet := ::Valid(), Nil ) )
+          ON KEY ESCAPE OF ( ::oWindow ) ACTION ( IF( ::oWindow:Active, ::oWindow:Release(), Nil ) )
 
           ::CreateControl( uValue, ::oWindow, 0, 0, nWidth, nHeight )
           ::Value := ::ControlValue
@@ -2564,6 +2566,52 @@ Return ::oControl
 
 METHOD Str2Val( uValue ) CLASS TGridControlComboBox
 Return ASCAN( ::aItems, { |c| c == uValue } )
+
+*-----------------------------------------------------------------------------*
+CLASS TGridControlComboBoxText FROM TGridControl
+*-----------------------------------------------------------------------------*
+   DATA aItems INIT {}
+   DATA oGrid  INIT nil
+
+   METHOD New
+   METHOD CreateWindow
+   METHOD CreateControl
+   METHOD Str2Val
+   METHOD GridValue(uValue) BLOCK { |Self,uValue| ::Str2Val(uValue) }
+   METHOD ControlValue      SETGET
+ENDCLASS
+
+METHOD New( aItems, oGrid ) CLASS TGridControlComboBoxText
+   If ValType( aItems ) == "A"
+      ::aItems := aItems
+   EndIf
+   ::oGrid := oGrid
+Return Self
+
+METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize ) CLASS TGridControlComboBoxText
+Return ::Super:CreateWindow( uValue, nRow - 3, nCol - 3, nWidth + 6, nHeight + 6, cFontName, nFontSize )
+
+METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGridControlComboBoxText
+   Empty( nHeight )
+   uValue := aScan( ::aItems, { |c| c == uValue } )
+   @ nRow,nCol COMBOBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth VALUE uValue ITEMS ::aItems
+   If ! Empty( ::oGrid ) .AND. ::oGrid:ImageList != 0
+      ::oControl:ImageList := ImageList_Duplicate( ::oGrid:ImageList )
+   EndIf
+Return ::oControl
+
+METHOD Str2Val( uValue ) CLASS TGridControlComboBoxText
+Local nPos
+   nPos := ASCAN( ::aItems, { |c| c == uValue } )
+Return IF( nPos == 0, "", ::aItems[ nPos ] )
+
+METHOD ControlValue( uValue ) CLASS TGridControlComboBoxText
+Local nPos
+   If PCOUNT() >= 1
+      ::oControl:Value := ::Str2Val( uValue )
+   EndIf
+   nPos := ::oControl:Value
+Return IF( nPos == 0, "", ::aItems[ nPos ] )
 
 *-----------------------------------------------------------------------------*
 CLASS TGridControlSpinner FROM TGridControl
