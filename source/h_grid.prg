@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.83 2007-07-26 14:04:25 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.84 2007-07-27 16:57:09 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -498,15 +498,15 @@ METHOD toExcel( cTitle, nRow ) CLASS TGrid
 
    default ctitle to ""
 
-   //////oExcel := TOleAuto():New( "Excel.Application" )
-   oExcel := CreateObject( "Excel.Application" )
-///   IF Ole2TxtError() != 'S_OK'
-///      MsgStop('Excel not found','error')
-///      RETURN Nil
-///   ENDIF
+   oExcel := TOleAuto():New( "Excel.Application" )
+   ///oExcel := CreateObject( "Excel.Application" )
+   IF Ole2TxtError() != 'S_OK'
+      MsgStop('Excel not found','error')
+      RETURN Nil
+   ENDIF
    oExcel:WorkBooks:Add()
-   oHoja:=oExcel:ActiveSheet()
-////   oHoja := oExcel:Get( "ActiveSheet" )
+///   oHoja:=oExcel:ActiveSheet()
+   oHoja := oExcel:Get( "ActiveSheet" )
    oHoja:Cells:Font:Name := "Arial"
    oHoja:Cells:Font:Size := 10
 

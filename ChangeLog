@@ -1,11 +1,19 @@
 /*
- * $Id: ChangeLog,v 1.377 2007-07-26 14:04:24 guerra000 Exp $
+ * $Id: ChangeLog,v 1.378 2007-07-27 16:57:09 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-07-27 11:54 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+  * source/h_print.prg
+  * source/h_grid.prg
+  * source/h_xbrowse.prg
+  * compile_bcc.bat
+  * compile_pc.bat
+    * revert new ole syntax to old ole syntax but preserve new hboleaut library
 
 2007-07-26 09:02 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_combo.prg

@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.72 2007-07-15 22:19:33 declan2005 Exp $
+* $Id: h_print.prg,v 1.73 2007-07-27 16:57:10 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -1117,7 +1117,7 @@ return self
 *-------------------------
 METHOD BEGINDOCx (cdoc) CLASS THBPRINTER
 *-------------------------
-::setpreviewsize(3)
+::setpreviewsize(2)
 START DOC NAME cDoc
 return self
 
@@ -1155,7 +1155,7 @@ return self
 METHOD PRINTDATAx(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext) CLASS THBPRINTER
 *-------------------------
 Empty( Data )
-///Empty( aColor )
+
 default aColor to ::acolor
 Empty( nLen )
 change font "F0" name cfont size nsize
@@ -1559,7 +1559,9 @@ else
 endif
 return nil
 
+*-------------------------
 static function strcount(cbusca,cencuentra,n)
+*-------------------------
 local nc:=0,i
 cbusca:=alltrim(cbusca)
 for i:=1 to n
@@ -1670,8 +1672,6 @@ METHOD setunitsx()    // mm o rowcol , mm por renglon
 ENDCLASS
 
 
-
-
 *-------------------------
 METHOD initx() CLASS TEXCELPRINT
 *-------------------------
@@ -1688,22 +1688,22 @@ empty(llandscape)
 empty(npapersize)
 empty(cprinterx)
 
-::oExcel := CreateObject( "Excel.Application" )
-*::oExcel := TOleAuto():New( "Excel.Application" )
-*IF Ole2TxtError() != 'S_OK'
-*   MsgStop('Excel not found','error')
-*   ::lprerror:=.T.
-*   ::exit:=.T.
-*   RETURN Nil
-*ENDIF
+///::oExcel := CreateObject( "Excel.Application" )
+::oExcel := TOleAuto():New( "Excel.Application" )
+IF Ole2TxtError() != 'S_OK'
+   MsgStop('Excel not found','error')
+   ::lprerror:=.T.
+   ::exit:=.T.
+   RETURN Nil
+ENDIF
 return self
 
 *-------------------------
 METHOD begindocx() CLASS TEXCELPRINT
 *-------------------------
 ::oExcel:WorkBooks:Add()
-**::oHoja := ::oExcel:Get( "ActiveSheet" )
-::oHoja:=::oExcel:ActiveSheet()
+::oHoja := ::oExcel:Get( "ActiveSheet" )
+///::oHoja:=::oExcel:ActiveSheet()
 ::oHoja:Name := "List"
 ::oHoja:Cells:Font:Name := ::cfontname
 ::oHoja:Cells:Font:Size := ::nfontsize
@@ -2567,10 +2567,8 @@ For Each I in atColor
 Next
 
 if ::cunits=="MM"
-///   ::oPdf:Box(nlin,ncol,nlinf,ncolf,ntwpen*2,,"M",cColor)
       ::oPdf:Box1(nlin*nvVal,ncol*nhval,nlinf*nvval,ncolf*nhval,ntwpen*2,cColor)
 else
-////   ::oPdf:Box(nlin*::nmver+::nvfij,ncol*::nmhor+ ::nhfij*2,nlinf*::nmver+::nvfij,ncolf*::nmhor+ ::nhfij*2,ntwpen*2,,"M",cColor)
    ::oPdf:Box1(nlin*nvVal*::nmver+::nvfij,ncol*nhval*::nmhor+ ::nhfij*2,nlinf*nvval*::nmver+::nvfij,ncolf*nhval*::nmhor+ ::nhfij*2,ntwpen*2,cColor)
 endif
 
@@ -2583,7 +2581,7 @@ METHOD selprinterx( lselect , lpreview, llandscape , npapersize ) CLASS TPDFPRIN
 local nPos := 0
 
 Default lpreview to .f.
-Default llandscape to .t.
+Default llandscape to .f.
 Default npapersize to 0
 
 empty( lselect )
@@ -2632,7 +2630,7 @@ return self
 *-------------------------
 METHOD printroundrectanglex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen ) CLASS TPDFPRINT
 *-------------------------
-/////*Que hace esto?  hace un rectangulo con bordes redondeados por como aqui no se peude va sin redondeo
+/////*Que hace esto?  hace un rectangulo con bordes redondeados por como aqui no se puede va sin redondeo
    ::printrectanglex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen )
 return self
 
