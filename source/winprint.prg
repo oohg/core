@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.13 2007-07-15 04:48:43 guerra000 Exp $
+ * $Id: winprint.prg,v 1.14 2007-07-28 18:25:44 guerra000 Exp $
  */
 // -----------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -743,10 +743,16 @@ return self
 METHOD RoundRect(row,col,torow,tocol,widthellipse,heightellipse,defpen,defbrush) CLASS HBPrinter
 local lhp:=::getobjbyname(defpen,"P"),lhb:=::getobjbyname(defbrush,"B")
    if torow==NIL
-     torow:=::maxrow
+     torow := ::maxrow
    endif
    if tocol==NIL
-      tocol:=::maxcol
+      tocol := ::maxcol
+   endif
+   if widthellipse == NIL
+     widthellipse := 0
+   endif
+   if heightellipse == NIL
+     heightellipse := 0
    endif
    ::error=rr_roundrect(::convert({row,col}),::convert({torow,tocol}),::convert({widthellipse,heightellipse}),lhp,lhb)
 return self
