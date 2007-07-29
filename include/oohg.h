@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.h,v 1.36 2007-07-02 03:37:34 guerra000 Exp $
+ * $Id: oohg.h,v 1.37 2007-07-29 05:19:59 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -116,7 +116,7 @@ POCTRL _OOHG_GetControlInfo( PHB_ITEM pSelf );
 BOOL _OOHG_DetermineColor( PHB_ITEM pColor, LONG *lColor );
 BOOL _OOHG_DetermineColorReturn( PHB_ITEM pColor, LONG *lColor, BOOL fUpdate );
 HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, HWND hWnd, LONG BackColor );
-HANDLE _OOHG_OleLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG BackColor );
+HANDLE _OOHG_OleLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG BackColor, long lWidth2, long lHeight2 );
 HBITMAP _OOHG_ScaleImage( HWND hWnd, HBITMAP hImage, int iWidth, int iHeight, int scalestrech, LONG BackColor );
 DWORD _OOHG_RTL_Status( BOOL bRtl );
 

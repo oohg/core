@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.24 2007-07-01 04:44:56 guerra000 Exp $
+ * $Id: h_button.prg,v 1.25 2007-07-29 05:19:59 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -103,6 +103,7 @@ CLASS TButton FROM TControl
    DATA nWidth    INIT 100
    DATA nHeight   INIT 28
    DATA lScale    INIT .F.
+   DATA AutoSize  INIT .F.
 
    METHOD Define
    METHOD DefineImage
@@ -201,7 +202,7 @@ LOCAL hBitMap, nAttrib
       IF ! ::lNoTransparent
          nAttrib += LR_LOADTRANSPARENT
       ENDIF
-      hBitMap := _OOHG_BitmapFromFile( Self, cPicture, nAttrib )
+      hBitMap := _OOHG_BitmapFromFile( Self, cPicture, nAttrib, ::AutoSize )
       ::AuxHandle := _OOHG_SetBitmap( Self, hBitMap, BM_SETIMAGE, .F., ::lScale )
       DeleteObject( hBitMap )
    ENDIF
@@ -223,7 +224,7 @@ METHOD Buffer( cBuffer ) CLASS TButton
 LOCAL hBitMap
    If ValType( cBuffer ) $ "CM"
       DeleteObject( ::AuxHandle )
-      hBitMap := _OOHG_BitmapFromBuffer( Self, cBuffer )
+      hBitMap := _OOHG_BitmapFromBuffer( Self, cBuffer, ::AutoSize )
       ::AuxHandle := _OOHG_SetBitmap( Self, hBitMap, BM_SETIMAGE, .F., ::lScale )
       DeleteObject( hBitMap )
    EndIf

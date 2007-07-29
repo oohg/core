@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.136 2007-07-15 17:25:16 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.137 2007-07-29 05:19:59 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1290,7 +1290,7 @@ CLASS TForm FROM TWindow
    METHOD Events_Destroy
    METHOD Events_VScroll
    METHOD Events_HScroll
-   METHOD HelpTopic(lParam)   BLOCK { | Self, lParam | HelpTopic( GetControlObjectByHandle( GetHelpData( lParam ) ):HelpId , 2 ), nil }
+   METHOD HelpTopic(lParam)   BLOCK { | Self, lParam | HelpTopic( GetControlObjectByHandle( GetHelpData( lParam ) ):HelpId , 2 ), Self, nil }
    METHOD ScrollControls
    METHOD MessageLoop
 

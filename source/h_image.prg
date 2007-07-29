@@ -1,5 +1,5 @@
 /*
- * $Id: h_image.prg,v 1.14 2007-07-15 04:48:43 guerra000 Exp $
+ * $Id: h_image.prg,v 1.15 2007-07-29 05:19:59 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -166,7 +166,7 @@ LOCAL nAttrib
       // IF ::Transparent
       //    nAttrib += LR_LOADMAP3DCOLORS + LR_LOADTRANSPARENT
       // ENDIF
-      ::AuxHandle := _OOHG_BitmapFromFile( Self, cPicture, nAttrib )
+      ::AuxHandle := _OOHG_BitmapFromFile( Self, cPicture, nAttrib, ::AutoSize )
       ::RePaint()
    ENDIF
 Return ::cPicture
@@ -186,7 +186,7 @@ METHOD Buffer( cBuffer ) CLASS TImage
 *-----------------------------------------------------------------------------*
    If ValType( cBuffer ) $ "CM"
       DeleteObject( ::AuxHandle )
-      ::AuxHandle := _OOHG_BitmapFromBuffer( Self, cBuffer )
+      ::AuxHandle := _OOHG_BitmapFromBuffer( Self, cBuffer, ::AutoSize )
       ::RePaint()
    EndIf
 Return nil
@@ -206,7 +206,7 @@ METHOD SizePos( Row, Col, Width, Height ) CLASS TImage
 LOCAL uRet
    uRet := ::Super:SizePos( Row, Col, Width, Height )
    IF ! ::AutoSize .OR. ! ::Stretch
-      // SendMessage( ::hWnd, STM_SETIMAGE, IMAGE_BITMAP, ::hImage )
+      SendMessage( ::hWnd, STM_SETIMAGE, IMAGE_BITMAP, ::hImage )
    ENDIF
 RETURN uRet
 

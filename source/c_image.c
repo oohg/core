@@ -1,5 +1,5 @@
 /*
- * $Id: c_image.c,v 1.14 2007-07-15 04:48:43 guerra000 Exp $
+ * $Id: c_image.c,v 1.15 2007-07-29 05:19:59 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -112,13 +112,12 @@
 #include "olectl.h"
 #include "../include/oohg.h"
 
-HANDLE _OOHG_OleLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG lBackColor )
+HANDLE _OOHG_OleLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG lBackColor, long lWidth2, long lHeight2 )
 {
    HANDLE hImage = 0;
    IStream *iStream;
    IPicture *iPicture;
    long lWidth, lHeight;
-   long lWidth2, lHeight2;
    HDC hdc1, hdc2;
    RECT rect;
    HBRUSH hBrush;
@@ -130,12 +129,15 @@ HANDLE _OOHG_OleLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG lBackColor )
       iPicture->lpVtbl->get_Width( iPicture, &lWidth );
       iPicture->lpVtbl->get_Height( iPicture, &lHeight );
 
-      GetClientRect( hWnd, &rect );
-      lWidth2 = rect.right;
-      lHeight2 = rect.bottom;
-
-/*
+      if( lWidth2 && lHeight2 )
       {
+         // GetClientRect( hWnd, &rect );
+         // lWidth2 = rect.right;
+         // lHeight2 = rect.bottom;
+      }
+      else
+      {
+         // Takes "real" image size
          float fAux;
 
          iPicture->lpVtbl->get_CurDC( iPicture, &hdc1 );
@@ -146,7 +148,6 @@ HANDLE _OOHG_OleLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG lBackColor )
          lHeight2 = fAux;
          DeleteDC( hdc1 );
       }
- */
 
       SetRect( &rect, 0, 0, lWidth2, lHeight2 );
 
@@ -248,8 +249,12 @@ HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, 
 {
    HANDLE hImage;
 
-   // RESOURCE: Searchs for BITMAP image
+   // Searchs image form RESOURCE
    hImage = LoadImage( GetModuleHandle( NULL ), cImage, IMAGE_BITMAP, nWidth, nHeight, iAttributes );
+   if( ! hImage )
+   {
+      hImage = LoadImage( GetModuleHandle( NULL ), cImage, IMAGE_ICON, nWidth, nHeight, iAttributes );
+   }
    if( ! hImage )
    {
       HRSRC hSource;
@@ -257,12 +262,30 @@ HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, 
       LPVOID lpVoid;
       DWORD nSize;
 
-      // RESOURCE: Tries for GIF type
-      hSource = FindResource( GetModuleHandle( NULL ), cImage, "GIF" );
+      hSource = FindResource( GetModuleHandle( NULL ), cImage, "BMP" );
       if( ! hSource )
       {
-         // RESOURCE: Tries for JPG type
+         hSource = FindResource( GetModuleHandle( NULL ), cImage, "BITMAP" );
+      }
+      if( ! hSource )
+      {
+         hSource = FindResource( GetModuleHandle( NULL ), cImage, "GIF" );
+      }
+      if( ! hSource )
+      {
          hSource = FindResource( GetModuleHandle( NULL ), cImage, "JPG" );
+      }
+      if( ! hSource )
+      {
+         hSource = FindResource( GetModuleHandle( NULL ), cImage, "JPEG" );
+      }
+      if( ! hSource )
+      {
+         hSource = FindResource( GetModuleHandle( NULL ), cImage, "ICO" );
+      }
+      if( ! hSource )
+      {
+         hSource = FindResource( GetModuleHandle( NULL ), cImage, "ICON" );
       }
       if( hSource )
       {
@@ -277,7 +300,7 @@ HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, 
                if( hGlobal )
                {
                   memcpy( hGlobal, lpVoid, nSize );
-                  hImage = _OOHG_OleLoadPicture( hGlobal, hWnd, lBackColor );
+                  hImage = _OOHG_OleLoadPicture( hGlobal, hWnd, lBackColor, nWidth, nHeight );
                   GlobalFree( hGlobal );
                }
             }
@@ -286,10 +309,14 @@ HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, 
       }
    }
 
-   // FILE: Searchs for BITMAP image
+   // Searchs image form FILE
    if( ! hImage )
    {
       hImage = LoadImage( 0, cImage, IMAGE_BITMAP, nWidth, nHeight, iAttributes | LR_LOADFROMFILE );
+   }
+   if( ! hImage )
+   {
+      hImage = LoadImage( 0, cImage, IMAGE_ICON, nWidth, nHeight, iAttributes | LR_LOADFROMFILE );
    }
    if( ! hImage )
    {
@@ -305,7 +332,7 @@ HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, 
          if( hGlobal )
          {
             ReadFile( hFile, hGlobal, nSize, &nReadByte, NULL );
-            hImage = _OOHG_OleLoadPicture( hGlobal, hWnd, lBackColor );
+            hImage = _OOHG_OleLoadPicture( hGlobal, hWnd, lBackColor, nWidth, nHeight );
             GlobalFree( hGlobal );
          }
          CloseHandle( hFile );
@@ -315,33 +342,55 @@ HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, 
    return hImage;
 }
 
-HB_FUNC( _OOHG_BITMAPFROMFILE )   // ( oSelf, cFile, iAttributes )
+HB_FUNC( _OOHG_BITMAPFROMFILE )   // ( oSelf, cFile, iAttributes, lAutoSize )
 {
    POCTRL oSelf = _OOHG_GetControlInfo( hb_param( 1, HB_IT_OBJECT ) );
-   RECT rect;
    HBITMAP hBitmap;
    int iAttributes;
+   long lWidth, lHeight;
 
    iAttributes = hb_parni( 3 );
-   GetWindowRect( oSelf->hWnd, &rect );
-   hBitmap = _OOHG_LoadImage( hb_parc( 2 ), iAttributes, 0, 0, oSelf->hWnd, oSelf->lBackColor );
+   if( hb_parl( 4 ) )
+   {
+      RECT rect;
+      GetClientRect( oSelf->hWnd, &rect );
+      lWidth = rect.right;
+      lHeight = rect.bottom;
+   }
+   else
+   {
+      lWidth = lHeight = 0;
+   }
+   hBitmap = _OOHG_LoadImage( hb_parc( 2 ), iAttributes, lWidth, lHeight, oSelf->hWnd, oSelf->lBackColor );
 
    HWNDret( hBitmap );
 }
 
-HB_FUNC( _OOHG_BITMAPFROMBUFFER )   // ( oSelf, cBuffer )
+HB_FUNC( _OOHG_BITMAPFROMBUFFER )   // ( oSelf, cBuffer, lAutoSize )
 {
    POCTRL oSelf = _OOHG_GetControlInfo( hb_param( 1, HB_IT_OBJECT ) );
    HBITMAP hBitmap = 0;
    HGLOBAL hGlobal;
+   long lWidth, lHeight;
 
    if( hb_parclen( 2 ) )
    {
       hGlobal = GlobalAlloc( GPTR, hb_parclen( 2 ) );
       if( hGlobal )
       {
+         if( hb_parl( 3 ) )
+         {
+            RECT rect;
+            GetClientRect( oSelf->hWnd, &rect );
+            lWidth = rect.right;
+            lHeight = rect.bottom;
+         }
+         else
+         {
+            lWidth = lHeight = 0;
+         }
          memcpy( hGlobal, hb_parc( 2 ), hb_parclen( 2 ) );
-         hBitmap = _OOHG_OleLoadPicture( hGlobal, oSelf->hWnd, oSelf->lBackColor );
+         hBitmap = _OOHG_OleLoadPicture( hGlobal, oSelf->hWnd, oSelf->lBackColor, lWidth, lHeight );
          GlobalFree( hGlobal );
       }
    }
