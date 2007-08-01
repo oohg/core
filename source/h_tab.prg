@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.29 2007-03-19 20:40:42 guerra000 Exp $
+ * $Id: h_tab.prg,v 1.30 2007-08-01 05:27:36 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -105,6 +105,8 @@ CLASS TTab FROM TControl
    DATA SetImageListWParam  INIT 0
 
    METHOD Define
+   METHOD EndTab              BLOCK { || _EndTab() }
+   METHOD EndPage             BLOCK { || _EndTabPage() }
 
    METHOD Refresh
    METHOD Release
@@ -548,6 +550,7 @@ CLASS TTabPage FROM TControl
    DATA Caption   INIT ""
 
    METHOD Define
+   METHOD EndPage             BLOCK { || _EndTabPage() }
    METHOD Enabled
    METHOD Visible             SETGET
 
@@ -617,6 +620,7 @@ CLASS TTabPageInternal FROM TFormInternal
    DATA Caption    INIT ""
 
    METHOD Define
+   METHOD EndPage             BLOCK { || _EndTabPage() }
    METHOD Events_Size
 
    METHOD RowMargin           SETGET

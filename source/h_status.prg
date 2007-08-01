@@ -1,5 +1,5 @@
 /*
- * $Id: h_status.prg,v 1.23 2007-02-06 00:13:25 guerra000 Exp $
+ * $Id: h_status.prg,v 1.24 2007-08-01 05:27:36 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -104,6 +104,7 @@ CLASS TMessageBar FROM TControl
    DATA lAutoAdjust   INIT .T.
 
    METHOD Define
+   METHOD EndStatus           BLOCK { || _EndMessageBar() }
 
    METHOD AddItem
    METHOD Item

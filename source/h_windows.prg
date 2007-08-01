@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.137 2007-07-29 05:19:59 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.138 2007-08-01 05:27:36 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1268,6 +1268,7 @@ CLASS TForm FROM TWindow
    METHOD SizePos
    METHOD Define
    METHOD Define2
+   METHOD EndWindow
    METHOD Register
    METHOD Visible       SETGET
    METHOD Activate
@@ -1488,6 +1489,17 @@ Local Formhandle, aClientRect
 
 Return Self
 
+*------------------------------------------------------------------------------*
+METHOD EndWindow() CLASS TForm
+*------------------------------------------------------------------------------*
+LOCAL nPos
+   nPos := ASCAN( _OOHG_ActiveForm, { |o| o:Name == ::Name .AND. o:hWnd == ::hWnd } )
+   If nPos > 0
+      _OOHG_DeleteArrayItem( _OOHG_ActiveForm, nPos )
+   Else
+      // TODO: Window structure already closed
+	EndIf
+Return Nil
 
 *--------------------------------------------------
 Function _SetToolTipBalloon ( lNewBalloon )
@@ -3146,7 +3158,7 @@ Return GetFormObject( FormName ):SizePos( row , col , width , height )
 Function _EndWindow()
 *-----------------------------------------------------------------------------*
    If Len( _OOHG_ActiveForm ) > 0
-      _OOHG_DeleteArrayItem( _OOHG_ActiveForm, Len( _OOHG_ActiveForm ) )
+      ATAIL( _OOHG_ActiveForm ):EndWindow()
 	EndIf
 Return Nil
 
