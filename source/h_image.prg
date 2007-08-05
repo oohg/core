@@ -1,5 +1,5 @@
 /*
- * $Id: h_image.prg,v 1.15 2007-07-29 05:19:59 guerra000 Exp $
+ * $Id: h_image.prg,v 1.16 2007-08-05 23:29:25 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -205,7 +205,7 @@ METHOD SizePos( Row, Col, Width, Height ) CLASS TImage
 *-----------------------------------------------------------------------------*
 LOCAL uRet
    uRet := ::Super:SizePos( Row, Col, Width, Height )
-   IF ! ::AutoSize .OR. ! ::Stretch
+   IF ! ::AutoSize .OR. ::Stretch
       SendMessage( ::hWnd, STM_SETIMAGE, IMAGE_BITMAP, ::hImage )
    ENDIF
 RETURN uRet
