@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.29 2007-07-27 16:57:10 declan2005 Exp $
+ * $Id: h_xbrowse.prg,v 1.30 2007-08-05 13:52:38 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -580,8 +580,8 @@ METHOD ToExcel( cTitle ) CLASS TXBrowse
     RETURN Nil
  ENDIF
  oExcel:WorkBooks:Add()
-/// oHoja:=oExcel:ActiveSheet()
- oHoja := oExcel:Get( "ActiveSheet" )
+ oHoja:=oExcel:ActiveSheet()
+ ////oHoja := oExcel:Get( "ActiveSheet" )
  oHoja:Cells:Font:Name := "Arial"
  oHoja:Cells:Font:Size := 10
 

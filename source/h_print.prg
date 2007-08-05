@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.73 2007-07-27 16:57:10 declan2005 Exp $
+* $Id: h_print.prg,v 1.74 2007-08-05 13:52:38 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -1626,7 +1626,7 @@ METHOD printdatax()
 *-------------------------
 
 *-------------------------
-METHOD printimage() BLOCK {|| NIL }
+METHOD printimagex()
 *-------------------------
 
 *-------------------------
@@ -1702,8 +1702,8 @@ return self
 METHOD begindocx() CLASS TEXCELPRINT
 *-------------------------
 ::oExcel:WorkBooks:Add()
-::oHoja := ::oExcel:Get( "ActiveSheet" )
-///::oHoja:=::oExcel:ActiveSheet()
+////::oHoja := ::oExcel:Get( "ActiveSheet" )
+::oHoja:=::oExcel:ActiveSheet()
 ::oHoja:Name := "List"
 ::oHoja:Cells:Font:Name := ::cfontname
 ::oHoja:Cells:Font:Size := ::nfontsize
@@ -1768,6 +1768,19 @@ RETURN self
 
 
 *-------------------------
+METHOD printimagex(nlin,ncol,nlinf,ncolf,cimage) CLASS TEXCELPRINT
+*-------------------------
+local cfolder :=  getcurrentfolder()+"\"
+local ccol :=alltrim(str(ncol))
+local crango := "A"+ccol+":"+"A"+ccol
+::oHoja:range( crango ):Select()
+cimage:=cfolder+cimage
+////msgbox(cimage)
+::oHoja:Pictures:Insert(cimage)
+
+RETURN self
+
+*-------------------------
 METHOD printdatax(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext) CLASS TEXCELPRINT
 *-------------------------
 local alinceldax
@@ -1818,7 +1831,7 @@ For nCol:= 1 to ::oHoja:UsedRange:Columns:Count()
 NEXT
 ::oHoja:Cells( 1, 1 ):Select()
 cRuta:=GetmydocumentsFolder()
-::oExcel:Set( "DisplayAlerts", .f. )
+::oExcel:DisplayAlerts :=.F. 
 ::oHoja:SaveAs(cRuta+"\Printer.html", 44,"","", .f. , .f.)
 ::oExcel:Quit()
 ////#ifndef __XHARBOUR__
