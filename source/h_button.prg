@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.25 2007-07-29 05:19:59 guerra000 Exp $
+ * $Id: h_button.prg,v 1.26 2007-08-05 17:36:00 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -198,9 +198,10 @@ LOCAL hBitMap, nAttrib
    IF VALTYPE( cPicture ) $ "CM"
       DeleteObject( ::AuxHandle )
       ::cPicture := cPicture
-      nAttrib := LR_LOADMAP3DCOLORS
-      IF ! ::lNoTransparent
-         nAttrib += LR_LOADTRANSPARENT
+      IF ::lNoTransparent
+         nAttrib := LR_LOADMAP3DCOLORS
+      ELSE
+         nAttrib := LR_LOADTRANSPARENT
       ENDIF
       hBitMap := _OOHG_BitmapFromFile( Self, cPicture, nAttrib, ::AutoSize )
       ::AuxHandle := _OOHG_SetBitmap( Self, hBitMap, BM_SETIMAGE, .F., ::lScale )
