@@ -1,5 +1,5 @@
 /*
- * $Id: h_textarray.prg,v 1.12 2007-08-05 23:29:25 guerra000 Exp $
+ * $Id: h_textarray.prg,v 1.13 2007-08-06 00:20:51 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -240,7 +240,7 @@ static void RePaint( POCTRL oSelf, HDC hdc2, RECT *updateRect )
    }
    else
    {
-      char cText[ SELF_COLCOUNT( oSelf ) + 2 ];
+      char *cText = hb_xgrab( SELF_COLCOUNT( oSelf ) + 2 );
       int iTextIndex, iLeft;
 
       GetClientRect( oSelf->hWnd, &ClientRect );
@@ -286,7 +286,7 @@ static void RePaint( POCTRL oSelf, HDC hdc2, RECT *updateRect )
             }
             else if( ! SELF_FIXED( oSelf ) || ! IsSameChar( &xCell, pCell ) )
             {
-               RePaint_Out( hdc, &xCell, &rect2, &cText[ 0 ], iTextIndex );
+               RePaint_Out( hdc, &xCell, &rect2, cText, iTextIndex );
                memcpy( &xCell, pCell, sizeof( CHARCELL ) );
                rect2.left = iLeft;
                iTextIndex = 0;
@@ -299,12 +299,13 @@ static void RePaint( POCTRL oSelf, HDC hdc2, RECT *updateRect )
             rect2.right += oSelf->lAux[ 4 ];
             x++;
          }
-         RePaint_Out( hdc, &xCell, &rect2, &cText[ 0 ], iTextIndex );
+         RePaint_Out( hdc, &xCell, &rect2, cText, iTextIndex );
          rect2.top = rect2.bottom;
          rect2.bottom += oSelf->lAux[ 5 ];
          y++;
       }
       SelectObject( hdc, hOldFont );
+      hb_xfree( cText );
    }
    SetTextColor( hdc, FontColor );
    SetBkColor( hdc, BackColor );
