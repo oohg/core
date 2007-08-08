@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.74 2007-08-05 13:52:38 declan2005 Exp $
+* $Id: h_print.prg,v 1.75 2007-08-08 14:49:58 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -1596,6 +1596,8 @@ CREATE CLASS TEXCELPRINT FROM TPRINTBASE
 
     DATA oExcel INIT nil
     DATA oHoja  INIT nil
+    DATA cTlinea INIT ""
+
 
 *-------------------------
 METHOD initx()
@@ -1714,15 +1716,16 @@ return self
 METHOD enddocx() CLASS TEXCELPRINT
 *-------------------------
 local nCol
+///     ::oHoja:Cells(nlin,alinceldax):Select() 			//------Select row-------//
+//     Copyclipboard(space(ncol)+ctext)				//----copy the data at the clipboard-----//
+///     ::oHoja:Paste()					//----paste in the excel page-----//
+///     ClearClipboard()     si no copio y pego toda una hoja entera esto no tiene sentido......
+
 FOR nCol:=1 TO ::oHoja:UsedRange:Columns:Count()
     ::oHoja:Columns( nCol ):AutoFit()
 NEXT
 ::oHoja:Cells( 1, 1 ):Select()
 ::oExcel:Visible := .T.
-*#ifndef __XHARBOUR__
-*  ::oHoja:end()
-*  ::oExcel:end()
-*#endif
 ::oHoja:= NIL
 ::oExcel:= NIL
 
@@ -1775,7 +1778,6 @@ local ccol :=alltrim(str(ncol))
 local crango := "A"+ccol+":"+"A"+ccol
 ::oHoja:range( crango ):Select()
 cimage:=cfolder+cimage
-////msgbox(cimage)
 ::oHoja:Pictures:Insert(cimage)
 
 RETURN self
@@ -1800,10 +1802,19 @@ IF LEN(::alincelda)<nlin
 ENDIF
 ::alincelda[nlin]:=::alincelda[nlin]+1
 alinceldax:=::alincelda[nlin]
-::oHoja:Cells(nlin,alinceldax):Value := space(ncol)+ctext
-::oHoja:Cells(nlin,alinceldax):Font:Name := cfont
-::oHoja:Cells(nlin,alinceldax):Font:Size := nsize
-::oHoja:Cells(nlin,alinceldax):Font:Bold := lbold
+///::cTlinea:=::cTlinea+ ctext+chr(13)+chr(10)   //// mirando como hacrlo con el portapapeles, pero no es nada facil...
+
+
+::oHoja:Cells(nlin,alinceldax):Value := "'"+space(ncol)+ctext
+if cfont#::cfontname
+   ::oHoja:Cells(nlin,alinceldax):Font:Name := cfont
+endif
+if nsize#::nfontsize
+   ::oHoja:Cells(nlin,alinceldax):Font:Size := nsize
+endif
+IF lbold
+   ::oHoja:Cells(nlin,alinceldax):Font:Bold := lbold
+ENDIF
 do case
 case calign="R"
    ::oHoja:Cells(nlin,alinceldax):HorizontalAlignment:= -4152  //Derecha
@@ -2647,4 +2658,53 @@ METHOD printroundrectanglex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen ) CLASS TPDFPRI
    ::printrectanglex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen )
 return self
 
+#pragma BEGINDUMP
 
+#define HB_OS_WIN_32_USED
+#define _WIN32_WINNT 0x0400
+#include <windows.h>
+#include "hbapi.h"
+#include "hbapiitm.h"
+
+HB_FUNC ( COPYCLIPBOARD )
+{
+ HGLOBAL hglbCopy;
+ char * lptstrCopy;
+ char * cStr = hb_parc( 1 );
+ int nLen = strlen( cStr );
+
+ if ( !OpenClipboard( GetActiveWindow() ) )
+ return;
+
+ EmptyClipboard();
+
+ hglbCopy = GlobalAlloc( GMEM_DDESHARE, (nLen+1) * sizeof(TCHAR) );
+ if (hglbCopy == NULL)
+    {
+     CloseClipboard();
+     return;
+    }
+
+// Lock the handle and copy the text to the buffer.
+
+ lptstrCopy = (char*) GlobalLock( hglbCopy );
+ memcpy( lptstrCopy, cStr, nLen * sizeof(TCHAR));
+ lptstrCopy[nLen] = (TCHAR) 0; // null character
+ GlobalUnlock(hglbCopy);
+
+ // Place the handle on the clipboard.
+ SetClipboardData( CF_TEXT, hglbCopy );
+
+ CloseClipboard();
+}
+ //vacia el clipboard
+ HB_FUNC(CLEARCLIPBOARD)
+ {
+  if ( !OpenClipboard( GetActiveWindow() ) )
+  return;
+
+  EmptyClipboard();
+  CloseClipboard();
+ }
+
+#pragma ENDDUMP

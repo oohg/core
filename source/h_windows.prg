@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.138 2007-08-01 05:27:36 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.139 2007-08-08 14:49:58 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -857,20 +857,25 @@ Local myobject, cWork
 
    WNDCOPY( ::hWnd, .F., cWork ) //// save as BMP
 
-   myobject:= Tprint()
-   myobject:init()
-   myobject:selprinter(.T. , .T. , .T.  )  /// select,preview,landscape
-   if myobject:lprerror
-      myobject:release()
+   With Object myobject:=Tprint()
+
+   :init()
+   :selprinter(.T. , .T. , .T.  )  /// select,preview,landscape
+   if :lprerror
+      :release()
       return nil
    endif
-   myobject:begindoc("ooHG printing" )
-   myobject:beginpage()
-   myobject:printimage(y,x,y1,x1,cwork)
-   myobject:endpage()
-   myobject:enddoc()
-   myobject:release()
+   :begindoc("ooHG printing" )
+   :beginpage()
+   :printimage(y,x,y1,x1,cwork)
+   :endpage()
+   :enddoc()
+   :release()
+
+   End
+  
    release myobject
+
    FErase( cWork )
 return nil
 
