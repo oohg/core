@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.75 2007-08-08 14:49:58 declan2005 Exp $
+* $Id: h_print.prg,v 1.76 2007-08-09 21:32:10 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -1776,6 +1776,10 @@ METHOD printimagex(nlin,ncol,nlinf,ncolf,cimage) CLASS TEXCELPRINT
 local cfolder :=  getcurrentfolder()+"\"
 local ccol :=alltrim(str(ncol))
 local crango := "A"+ccol+":"+"A"+ccol
+empty(nlin)
+empty(nlinf)
+empty(ncolf)
+
 ::oHoja:range( crango ):Select()
 cimage:=cfolder+cimage
 ::oHoja:Pictures:Insert(cimage)
