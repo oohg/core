@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.388 2007-08-09 22:34:00 declan2005 Exp $
+ * $Id: ChangeLog,v 1.389 2007-08-10 13:53:34 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,7 +7,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2007-08-09 16.31 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+2007-08-10 8:52 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+  * source/h_error.prg
+    ! update control version.
+
+2007-08-09 16:31 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source/h_print.prg
     ! fix warnings because declared vars and not used.
 
