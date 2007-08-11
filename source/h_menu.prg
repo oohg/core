@@ -1,5 +1,5 @@
 /*
- * $Id: h_menu.prg,v 1.18 2007-03-25 04:14:36 guerra000 Exp $
+ * $Id: h_menu.prg,v 1.19 2007-08-11 03:15:18 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -104,6 +104,7 @@ CLASS TMenu FROM TControl
    METHOD Define
    METHOD Activate
    METHOD Release     BLOCK { |Self| DestroyMenu( ::hWnd ), ::Super:Release() }
+   METHOD EndMenu     BLOCK { || _EndMenu() }
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -254,6 +255,7 @@ CLASS TMenuItem FROM TControl
    METHOD Hilited      SETGET
    METHOD Caption      SETGET
    METHOD Release
+   METHOD EndPopUp     BLOCK { || _EndMenuPopup() }
 
    METHOD DefaultItem( nItem )    BLOCK { |Self,nItem| SetMenuDefaultItem( ::Container:hWnd, nItem ) }
 ENDCLASS

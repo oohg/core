@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.139 2007-08-08 14:49:58 declan2005 Exp $
+ * $Id: h_windows.prg,v 1.140 2007-08-11 03:15:18 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -2160,7 +2160,7 @@ Local oCtrl
 	case nMsg == WM_HELP
         ***********************************************************************
 
-      RETURN ::HelpTopic( GetControlObjectByHandle( GetHelpData( lParam ) ):HelpId , 2 )
+      RETURN ::HelpTopic( lParam )
 
         ***********************************************************************
 	case nMsg == WM_TASKBAR
