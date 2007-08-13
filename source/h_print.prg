@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.76 2007-08-09 21:32:10 declan2005 Exp $
+* $Id: h_print.prg,v 1.77 2007-08-13 16:01:16 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -494,7 +494,7 @@ endif
 RETURN nil
 
 *-------------------------
-METHOD printdata(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen) CLASS TPRINTBASE
+METHOD printdata(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen,litalic) CLASS TPRINTBASE
 *-------------------------
 local ctext,cspace,uAux,cTipo:=Valtype(data)
 do While cTipo == "B"
@@ -542,6 +542,8 @@ DEFAULT ctext to ""
 
 DEFAULT lbold to .F.
 
+DEFAULT litalic to .F.
+
 DEFAULT cfont to ::cfontname
 
 DEFAULT nsize to ::nfontsize
@@ -566,7 +568,7 @@ endif
 
 ctext:= cspace + ctext
 
-::printdatax(::ntmargin+nlin,::nlmargin+ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext)
+::printdatax(::ntmargin+nlin,::nlmargin+ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext,litalic)
 return self
 
 
@@ -845,13 +847,35 @@ release _HMG_PRINTER_HDC_BAK
 return nil
 
 *-------------------------
-METHOD printdatax(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext) CLASS TMINIPRINT
+METHOD printdatax(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext,litalic) CLASS TMINIPRINT
 *-------------------------
 Empty( Data )
 
 default aColor to ::acolor
 
 Empty( nLen )
+
+do case
+   case litalic
+     if .not. lbold
+   if calign="R"
+      textalign( 2 )
+       @ nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 +(len(ctext))*::nmhor  PRINT (ctext) font cfont size nsize ITALIC COLOR acolor
+      textalign( 0 )
+   else
+      @ nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 PRINT (ctext) font cfont size nsize ITALIC COLOR acolor
+   endif
+else
+   if calign="R"
+      textalign( 2 )
+      @ nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 +(len(ctext))*::nmhor  PRINT (ctext) font cfont size nsize  BOLD ITALIC COLOR acolor
+      textalign( 0 )
+   else
+      @ nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 PRINT (ctext) font cfont size nsize  BOLD ITALIC COLOR acolor
+   endif
+endif
+
+ otherwise
 if .not. lbold
    if calign="R"
       textalign( 2 )
@@ -869,7 +893,7 @@ else
       @ nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 PRINT (ctext) font cfont size nsize  BOLD COLOR acolor
    endif
 endif
-
+endcase
 return self
 
 *-------------------------
@@ -1152,32 +1176,59 @@ return self
 
 
 *-------------------------
-METHOD PRINTDATAx(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext) CLASS THBPRINTER
+METHOD PRINTDATAx(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext,litalic) CLASS THBPRINTER
 *-------------------------
 Empty( Data )
 
 default aColor to ::acolor
 Empty( nLen )
-change font "F0" name cfont size nsize
-change font "F1" name cfont size nsize BOLD
+
+   define font "F0" name cfont size nsize
+   define font "F1" name cfont size nsize BOLD
+
+
+  define font "F2" name cfont size nsize ITALIC
+  define font "F3" name cfont size nsize BOLD ITALIC
+
+  select font "F0"
+  change font "F0" name cfont size nsize
+  
+  if lbold
+      select font "F1"
+      change font "F1" name cfont size nsize BOLD
+  endif
+
+  if litalic
+     if lbold
+        select font "F3"
+        change font "F3" name cfont size nsize BOLD ITALIC
+     else
+        select font "F2"
+        change font "F2" name cfont size nsize ITALIC
+     endif
+  endif
+
+
 SET TEXTCOLOR acolor
+
 if .not. lbold
    if calign="R"
       set text align right
-      @ nlin*::nmver+::nvfij,ncol*::nmhor+::nhfij*2 +(len(ctext))*::nmhor  SAY (ctext) font "F0" TO PRINT
+      @ nlin*::nmver+::nvfij,ncol*::nmhor+::nhfij*2 +(len(ctext))*::nmhor  SAY (ctext) TO PRINT
       set text align left
    else
-      @ nlin*::nmver+::nvfij,ncol*::nmhor+::nhfij*2 SAY (ctext) font "F0" TO PRINT
+      @ nlin*::nmver+::nvfij,ncol*::nmhor+::nhfij*2 SAY (ctext) TO PRINT
    endif
 else
    if calign="R"
       set text align right
-      @ nlin*::nmver+::nvfij,ncol*::nmhor+::nhfij*2 +(len(ctext))*::nmhor  SAY (ctext) font "F1" TO PRINT
+          @ nlin*::nmver+::nvfij,ncol*::nmhor+::nhfij*2 +(len(ctext))*::nmhor  SAY (ctext) TO PRINT
       set text align left
    else
-      @ nlin*::nmver+::nvfij,ncol*::nmhor+::nhfij*2  SAY (ctext) font "F1" TO PRINT
+        @ nlin*::nmver+::nvfij,ncol*::nmhor+::nhfij*2  SAY (ctext) TO PRINT
    endif
 endif
+
 return self
 
 
@@ -1237,8 +1288,10 @@ IF HBPRNERROR != 0
    ::lprerror:=.T.
    return nil
 ENDIF
+
 define font "f0" name ::cfontname size ::nfontsize
 define font "f1" name ::cfontname size ::nfontsize BOLD
+
 define pen "C0" WIDTH ::nwpen COLOR ::acolor
 select pen "C0"
 if llandscape
@@ -1457,7 +1510,7 @@ return self
 
 
 *-------------------------
-METHOD printdatax(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext) CLASS TDOSPRINT
+METHOD printdatax(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext,litalic) CLASS TDOSPRINT
 *-------------------------
 Empty( Data )
 Empty( cFont )
@@ -1465,6 +1518,7 @@ Empty( nSize )
 Empty( aColor )
 Empty( cAlign )
 Empty( nLen )
+Empty( lItalic)
 
 if .not. lbold
    @ nlin,ncol say (ctext)
@@ -1787,7 +1841,7 @@ cimage:=cfolder+cimage
 RETURN self
 
 *-------------------------
-METHOD printdatax(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext) CLASS TEXCELPRINT
+METHOD printdatax(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext,litalic) CLASS TEXCELPRINT
 *-------------------------
 local alinceldax
 ////empty(ncol)
@@ -1819,6 +1873,13 @@ endif
 IF lbold
    ::oHoja:Cells(nlin,alinceldax):Font:Bold := lbold
 ENDIF
+
+IF lItalic
+   ::oHoja:Cells(nlin,alinceldax):Font:Italic := lItalic
+ENDIF
+
+
+
 do case
 case calign="R"
    ::oHoja:Cells(nlin,alinceldax):HorizontalAlignment:= -4152  //Derecha
@@ -2105,13 +2166,14 @@ RETURN self
 
 
 *-------------------------
-METHOD printdatax(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext) CLASS TRTFPRINT
+METHOD printdatax(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext,lItalic) CLASS TRTFPRINT
 *-------------------------
 Empty( data )
 Empty( cfont )
 Empty( lbold )
 Empty( acolor )
 Empty( nlen )
+Empty( lItalic )
 nlin++
 if ::nunitslin>1
    nlin:=round(nlin/::nunitslin,0)
@@ -2327,13 +2389,15 @@ RETURN self
 
 
 *-------------------------
-METHOD printdatax(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext) CLASS TCSVPRINT
+METHOD printdatax(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext,lItalic) CLASS TCSVPRINT
 *-------------------------
 Empty( data )
 Empty( cfont )
 Empty( lbold )
 Empty( acolor )
 Empty( nlen )
+Empty( lItalic )
+
 nlin++
 if ::nunitslin>1
    nlin:=round(nlin/::nunitslin,0)
@@ -2483,7 +2547,7 @@ return self
 
 
 *-------------------------
-METHOD PRINTDATAx(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext) CLASS TPDFPRINT
+METHOD PRINTDATAx(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext,lItalic ) CLASS TPDFPRINT
 *-------------------------
 local nType   := 0
 local nlength := 0
@@ -2492,7 +2556,7 @@ local I
 
 Default cFont to ::cFontName
 Default nSize to ::nFontSize
-Default lBold to .f.
+////Default lBold to .f.
 default aColor to ::acolor
 
 
@@ -2504,13 +2568,20 @@ For Each I in aColor
     cColor += Chr(I)
 Next
 
-
-/*Tipo de letras. ver pdf.ch*/
 If lBold
-   nType := 1  //negrita  bold
+   nType := 1  ///  bold
 Else
-   nType := 0   //Normal  normal
+   nType := 0  ///  normal
 Endif
+
+If lItalic
+   if lBold
+       ntype:=3   /// bold and italic
+   else
+      ntype:= 2   /// only italic
+   endif
+Endif
+
 
 if "roman"$lower(cFont)
    cFont:="TIMES"
