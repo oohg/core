@@ -1,5 +1,5 @@
 /*
- * $Id: h_image.prg,v 1.16 2007-08-05 23:29:25 guerra000 Exp $
+ * $Id: h_image.prg,v 1.17 2007-08-20 04:42:11 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -205,9 +205,7 @@ METHOD SizePos( Row, Col, Width, Height ) CLASS TImage
 *-----------------------------------------------------------------------------*
 LOCAL uRet
    uRet := ::Super:SizePos( Row, Col, Width, Height )
-   IF ! ::AutoSize .OR. ::Stretch
-      SendMessage( ::hWnd, STM_SETIMAGE, IMAGE_BITMAP, ::hImage )
-   ENDIF
+   ::RePaint()
 RETURN uRet
 
 *-----------------------------------------------------------------------------*
@@ -216,7 +214,17 @@ METHOD RePaint() CLASS TImage
    IF ValidHandler( ::hImage )
       DeleteObject( ::hImage )
    ENDIF
-   ::hImage := _OOHG_SetBitmap( Self, ::AuxHandle, STM_SETIMAGE, ::Stretch, ::AutoSize )
+   ::Super:SizePos()
+   IF ::Stretch
+      SendMessage( ::hWnd, STM_SETIMAGE, IMAGE_BITMAP, ::AuxHandle )
+      ::hImage := NIL
+      ::Super:SizePos()
+   ELSEIF ::AutoSize
+      ::hImage := _OOHG_SetBitmap( Self, ::AuxHandle, STM_SETIMAGE, ::Stretch, ::AutoSize )
+   ELSE
+      SendMessage( ::hWnd, STM_SETIMAGE, IMAGE_BITMAP, ::AuxHandle )
+      ::hImage := NIL
+   ENDIF
 RETURN Self
 
 *-----------------------------------------------------------------------------*
