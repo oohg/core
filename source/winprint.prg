@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.14 2007-07-28 18:25:44 guerra000 Exp $
+ * $Id: winprint.prg,v 1.15 2007-08-28 06:16:40 guerra000 Exp $
  */
 // -----------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -1298,7 +1298,7 @@ return self
 **************************************
 METHOD PrevShow() CLASS HBPrinter
 **************************************
-local spos
+local spos, hImage
 
  IF ::Thumbnails
     ::Prevthumb()
@@ -1325,10 +1325,13 @@ local spos
    ::oHBPreview1:VirtualHeight := ::azoom[3]+20
    ::oHBPreview1:VirtualWidth := ::azoom[4]+20
 
- if !rr_previewplay(::ahs[6,7],::METAFILES[::page],::azoom)
+ hImage := rr_previewplay(::ahs[6,7],::METAFILES[::page],::azoom)
+ if ! ValidHandler( hImage )
       ::scale:=::scale/1.25
       ::PrevShow()
       msgstop(::aopisy[18],::aopisy[1])
+ else
+      ::oHBPreview1:i1:hbitmap := hImage
  endif
  rr_scrollwindow(::ahs[5,7],-spos[1]*::azoom[4],-spos[2]*::azoom[3])
  CShowControl(::ahs[6,7])
@@ -3311,7 +3314,7 @@ HB_FUNC (RR_PREVIEWPLAY)
         if (tmpDC==NULL)
            {
               ReleaseDC((HWND) hb_parnl(1),imgDC);
-              hb_retl(0);
+              hb_retnl( 0 );
            }
         if (himgbmp!=0)
            DeleteObject(himgbmp);
@@ -3324,10 +3327,7 @@ HB_FUNC (RR_PREVIEWPLAY)
         SendMessage((HWND) hb_parnl (1),(UINT)STM_SETIMAGE,(WPARAM)IMAGE_BITMAP,(LPARAM) himgbmp);
         ReleaseDC((HWND) hb_parnl(1),imgDC);
         DeleteDC(tmpDC);
-        if (himgbmp==0)
-             hb_retl(0);
-        else
-             hb_retl(1);
+        hb_retnl( ( long ) himgbmp );
 }
 
 
