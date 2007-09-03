@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.15 2007-08-28 06:16:40 guerra000 Exp $
+ * $Id: winprint.prg,v 1.16 2007-09-03 00:30:32 guerra000 Exp $
  */
 // -----------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -1938,7 +1938,6 @@ static int devcaps[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0};
 static int preview=0;
 static int polyfillmode=1;
 static HRGN hrgn = NULL;
-static HBITMAP himgbmp;
 static HBITMAP hbmp[]= {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 static OSVERSIONINFO osvi;
 
@@ -1967,7 +1966,6 @@ HB_FUNC (RR_FINISH)
  preview=0;
  polyfillmode=1;
  hrgn = NULL;
- himgbmp  = NULL;
  memset(&hbmp,0,sizeof(hbmp));
 
 }
@@ -2426,8 +2424,6 @@ HB_FUNC (RR_DELETEMFILES)
  UINT i;
  for(i = 1; i <= hb_parinfa(1,0); i++)
     DeleteEnhMetaFile((HENHMETAFILE) hb_parnl(1,i,1));
- if (himgbmp!=NULL)
-    DeleteObject(himgbmp);
  for(i = 1; i <= 15 ; i++)
    if (hbmp[i]!=NULL)
       DeleteObject(hbmp[i]);
@@ -3311,20 +3307,18 @@ HB_FUNC (RR_PREVIEWPLAY)
         HDC imgDC = GetWindowDC((HWND) hb_parnl(1));
         HDC tmpDC = CreateCompatibleDC(imgDC);
         HENHMETAFILE hh=SetEnhMetaFileBits((UINT) hb_parclen(2,1), ( BYTE * ) hb_parc(2,1));
+        HBITMAP himgbmp;
         if (tmpDC==NULL)
            {
               ReleaseDC((HWND) hb_parnl(1),imgDC);
               hb_retnl( 0 );
            }
-        if (himgbmp!=0)
-           DeleteObject(himgbmp);
         SetRect(&rect ,0,0,hb_parnl(3,4),hb_parnl(3,3));
         himgbmp=CreateCompatibleBitmap(imgDC,rect.right,rect.bottom);
-        DeleteObject(SelectObject(tmpDC,(HBITMAP) himgbmp));
+        SelectObject(tmpDC,(HBITMAP) himgbmp);
         FillRect(tmpDC,&rect,(HBRUSH) GetStockObject(WHITE_BRUSH));
         PlayEnhMetaFile(tmpDC,hh,&rect);
         DeleteEnhMetaFile(hh);
-        SendMessage((HWND) hb_parnl (1),(UINT)STM_SETIMAGE,(WPARAM)IMAGE_BITMAP,(LPARAM) himgbmp);
         ReleaseDC((HWND) hb_parnl(1),imgDC);
         DeleteDC(tmpDC);
         hb_retnl( ( long ) himgbmp );
