@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.36 2007-06-25 04:35:57 guerra000 Exp $
+ * $Id: i_altsyntax.ch,v 1.37 2007-09-06 04:59:51 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1278,7 +1278,7 @@ Check Box/Button
 
 #xcommand END CHECKBUTTON ;
 	=>;
-        TCheckBox():Define( ;
+        TButtonCheck():Define( ;
                 _OOHG_ActiveControlName,;
                 _OOHG_ActiveControlOf,;
                 _OOHG_ActiveControlCol,;
@@ -1300,7 +1300,8 @@ Check Box/Button
                 _OOHG_ActiveControlFontItalic , ;
                 _OOHG_ActiveControlFontUnderLine , ;
                 _OOHG_ActiveControlFontStrikeOut, ;
-                ,,,,,, .T., ;
+                _OOHG_ActiveControlField, ;
+                , .T., ;
                 _OOHG_ActiveControlPicture )
 
 /*----------------------------------------------------------------------------

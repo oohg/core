@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.26 2007-08-05 17:36:00 guerra000 Exp $
+ * $Id: h_button.prg,v 1.27 2007-09-06 04:59:51 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -96,22 +96,21 @@
 #include "i_windefs.ch"
 
 
-CLASS TButton FROM TControl
+CLASS TButton FROM TImage
    DATA Type      INIT "BUTTON" READONLY
-   DATA cPicture  INIT ""
    DATA lNoTransparent INIT .F.
    DATA nWidth    INIT 100
    DATA nHeight   INIT 28
-   DATA lScale    INIT .F.
    DATA AutoSize  INIT .F.
+   DATA OnClick   INIT nil
 
    METHOD Define
    METHOD DefineImage
    METHOD SetFocus
    METHOD Picture     SETGET
-   METHOD HBitMap     SETGET
-   METHOD Buffer      SETGET
    METHOD Value       SETGET
+
+   METHOD RePaint
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -141,7 +140,7 @@ Local ControlHandle, nStyle, lBitMap
    EndIf
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize,,,, lRtl )
-   nStyle := ::InitStyle( ,, Invisible, NoTabStop, lDisabled ) + ;
+   nStyle := ::InitStyle( ,, Invisible, NoTabStop, lDisabled ) + BS_PUSHBUTTON + ;
              if( ValType( flat ) == "L"      .AND. flat,       BS_FLAT, 0 )     + ;
              if( ValType( lNoPrefix ) == "L" .AND. lNoPrefix,  SS_NOPREFIX, 0 ) + ;
              if( lBitMap,                                      BS_BITMAP, 0 )
@@ -157,7 +156,7 @@ Local ControlHandle, nStyle, lBitMap
    ::Caption := Caption
 
    ASSIGN ::lNoTransparent VALUE lNoTransparent TYPE "L"
-   ASSIGN ::lScale         VALUE lScale         TYPE "L"
+   ASSIGN ::AutoSize       VALUE lScale         TYPE "L"
    ASSIGN ::lCancel        VALUE lCancel        TYPE "L"
    ::Picture := cImage
    If ! ValidHandler( ::AuxHandle )
@@ -194,47 +193,46 @@ Return ::Super:SetFocus()
 *-----------------------------------------------------------------------------*
 METHOD Picture( cPicture ) CLASS TButton
 *-----------------------------------------------------------------------------*
-LOCAL hBitMap, nAttrib
+LOCAL nAttrib
    IF VALTYPE( cPicture ) $ "CM"
       DeleteObject( ::AuxHandle )
       ::cPicture := cPicture
-      IF ::lNoTransparent
-         nAttrib := LR_LOADMAP3DCOLORS
-      ELSE
-         nAttrib := LR_LOADTRANSPARENT
+
+      nAttrib := LR_LOADMAP3DCOLORS
+      IF ! ::lNoTransparent
+         nAttrib += LR_LOADTRANSPARENT
       ENDIF
-      hBitMap := _OOHG_BitmapFromFile( Self, cPicture, nAttrib, ::AutoSize )
-      ::AuxHandle := _OOHG_SetBitmap( Self, hBitMap, BM_SETIMAGE, .F., ::lScale )
-      DeleteObject( hBitMap )
+
+//      IF ::lNoTransparent
+//         nAttrib := LR_LOADMAP3DCOLORS
+//      ELSE
+//         nAttrib := LR_LOADTRANSPARENT
+//      ENDIF
+
+      ::AuxHandle := _OOHG_BitmapFromFile( Self, cPicture, nAttrib, ::AutoSize )
+      ::RePaint()
    ENDIF
 Return ::cPicture
-
-*-----------------------------------------------------------------------------*
-METHOD HBitMap( hBitMap ) CLASS TButton
-*-----------------------------------------------------------------------------*
-   If ValType( hBitMap ) $ "NP"
-      DeleteObject( ::AuxHandle )
-      ::AuxHandle := _OOHG_SetBitmap( Self, hBitMap, BM_SETIMAGE, .F., ::lScale )
-      DeleteObject( hBitMap )
-   EndIf
-Return ::AuxHandle
-
-*-----------------------------------------------------------------------------*
-METHOD Buffer( cBuffer ) CLASS TButton
-*-----------------------------------------------------------------------------*
-LOCAL hBitMap
-   If ValType( cBuffer ) $ "CM"
-      DeleteObject( ::AuxHandle )
-      hBitMap := _OOHG_BitmapFromBuffer( Self, cBuffer, ::AutoSize )
-      ::AuxHandle := _OOHG_SetBitmap( Self, hBitMap, BM_SETIMAGE, .F., ::lScale )
-      DeleteObject( hBitMap )
-   EndIf
-Return nil
 
 *------------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TButton
 *------------------------------------------------------------------------------*
 Return ( ::Caption := uValue )
+
+*-----------------------------------------------------------------------------*
+METHOD RePaint() CLASS TButton
+*-----------------------------------------------------------------------------*
+   IF ValidHandler( ::hImage )
+      DeleteObject( ::hImage )
+   ENDIF
+   ::TControl:SizePos()
+   IF ::Stretch .OR. ::AutoSize
+      ::hImage := _OOHG_SetBitmap( Self, ::AuxHandle, BM_SETIMAGE, ::Stretch, ::AutoSize )
+   ELSE
+      SendMessage( ::hWnd, BM_SETIMAGE, IMAGE_BITMAP, ::AuxHandle )
+      ::hImage := NIL
+   ENDIF
+RETURN Self
 
 #pragma BEGINDUMP
 #include <hbapi.h>
@@ -254,11 +252,13 @@ HB_FUNC( INITBUTTON )
    HWND hbutton;
    int Style, StyleEx;
 
-   Style =  BS_NOTIFY | WS_CHILD | BS_PUSHBUTTON | hb_parni( 9 );
+   Style =  BS_NOTIFY | WS_CHILD | hb_parni( 9 );
 
    StyleEx = _OOHG_RTL_Status( hb_parl( 8 ) );
 
-   hbutton = CreateWindowEx(StyleEx, "button" ,
+   StyleEx = hb_parni( 10 ) | _OOHG_RTL_Status( hb_parl( 12 ) );
+
+   hbutton = CreateWindowEx( StyleEx, "button" ,
                            hb_parc(2) ,
                            Style ,
                            hb_parni(4) ,
@@ -276,3 +276,115 @@ HB_FUNC( INITBUTTON )
 }
 
 #pragma ENDDUMP
+
+
+
+
+
+CLASS TButtonCheck FROM TButton
+   DATA Type      INIT "CHECKBUTTON" READONLY
+   DATA nWidth    INIT 100
+   DATA nHeight   INIT 28
+
+   METHOD Define
+   METHOD DefineImage
+   METHOD Value       SETGET
+   METHOD Events_Command
+ENDCLASS
+
+*-----------------------------------------------------------------------------*
+METHOD Define( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
+               fontsize, tooltip, changeprocedure, w, h, lostfocus, gotfocus, ;
+               HelpId, invisible, notabstop, bold, italic, underline, ;
+               strikeout, field, lRtl, BitMap, cBuffer, hBitMap, ;
+               lNoTransparent, lScale ) CLASS TButtonCheck
+*-----------------------------------------------------------------------------*
+Local ControlHandle, nStyle := 0
+
+   ASSIGN ::nCol        VALUE x TYPE "N"
+   ASSIGN ::nRow        VALUE y TYPE "N"
+   ASSIGN ::nWidth      VALUE w TYPE "N"
+   ASSIGN ::nHeight     VALUE h TYPE "N"
+   IF VALTYPE( value ) != "L"
+      value := .F.
+   ENDIF
+
+   ::SetForm( ControlName, ParentForm, FontName, FontSize,,,, lRtl )
+
+   nStyle := ::InitStyle( ,, Invisible, NoTabStop ) + BS_AUTOCHECKBOX + ;
+             BS_PUSHLIKE
+
+   IF VALTYPE( BitMap ) $ "CM" .OR. VALTYPE( cBuffer ) $ "CM" .OR. VALTYPE( hBitMap ) $ "NP"
+      nStyle += BS_BITMAP
+   ENDIF
+
+   ControlHandle := InitButton( ::ContainerhWnd, Caption, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, ::lRtl, nStyle )
+
+   ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
+   ::SetFont( , , bold, italic, underline, strikeout )
+
+   ::OnLostFocus := LostFocus
+   ::OnGotFocus  := GotFocus
+   ::Caption     := Caption
+
+   ASSIGN ::lNoTransparent VALUE lNoTransparent TYPE "L"
+   ASSIGN ::AutoSize       VALUE lScale         TYPE "L"
+   ::Picture := BitMap
+   If ! ValidHandler( ::AuxHandle )
+      ::Buffer := cBuffer
+      If ! ValidHandler( ::AuxHandle )
+         ::HBitMap := hBitMap
+      EndIf
+   EndIf
+
+   If ValType( Field ) $ 'CM' .AND. ! empty( Field )
+      ::VarName := alltrim( Field )
+      ::Block := &( "{ |x| if( PCount() == 0, " + Field + ", " + Field + " := x ) }" )
+      Value := EVAL( ::Block )
+	EndIf
+
+   ::Value := value
+
+	if valtype ( Field ) != 'U'
+      aAdd ( ::Parent:BrowseList, Self )
+	EndIf
+
+   ::OnChange    := ChangeProcedure
+
+Return Self
+
+*-----------------------------------------------------------------------------*
+METHOD DefineImage( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
+                    fontsize, tooltip, changeprocedure, w, h, lostfocus, gotfocus, ;
+                    HelpId, invisible, notabstop, bold, italic, underline, ;
+                    strikeout, field, lRtl, BitMap, cBuffer, hBitMap, ;
+                    lNoTransparent, lScale ) CLASS TButtonCheck
+*-----------------------------------------------------------------------------*
+   If Empty( cBuffer )
+      cBuffer := ""
+   EndIf
+Return ::Define( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
+                 fontsize, tooltip, changeprocedure, w, h, lostfocus, gotfocus, ;
+                 HelpId, invisible, notabstop, bold, italic, underline, ;
+                 strikeout, field, lRtl, BitMap, cBuffer, hBitMap, ;
+                 lNoTransparent, lScale )
+
+*------------------------------------------------------------------------------*
+METHOD Value( uValue ) CLASS TButtonCheck
+*------------------------------------------------------------------------------*
+   IF VALTYPE( uValue ) == "L"
+      SendMessage( ::hWnd, BM_SETCHECK, if( uValue, BST_CHECKED, BST_UNCHECKED ), 0 )
+   ELSE
+      uValue := ( SendMessage( ::hWnd, BM_GETCHECK , 0 , 0 ) == BST_CHECKED )
+   ENDIF
+RETURN uValue
+
+*------------------------------------------------------------------------------*
+METHOD Events_Command( wParam ) CLASS TButtonCheck
+*------------------------------------------------------------------------------*
+Local Hi_wParam := HIWORD( wParam )
+   If Hi_wParam == BN_CLICKED
+      ::DoEvent( ::OnChange )
+      Return nil
+   EndIf
+Return ::Super:Events_Command( wParam )

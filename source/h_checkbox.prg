@@ -1,5 +1,5 @@
 /*
- * $Id: h_checkbox.prg,v 1.15 2007-07-29 05:19:59 guerra000 Exp $
+ * $Id: h_checkbox.prg,v 1.16 2007-09-06 04:59:51 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -103,14 +103,9 @@ CLASS TCheckBox FROM TLabel
    DATA IconWidth INIT 19
    DATA nWidth    INIT 100
    DATA nHeight   INIT 28
-   DATA lNoTransparent INIT .F.
-   DATA lScale    INIT .F.
 
    METHOD Define
    METHOD Value       SETGET
-   METHOD Picture     SETGET
-   METHOD Buffer      SETGET
-   METHOD hBitMap     SETGET
    METHOD Events_Command
 ENDCLASS
 
@@ -119,8 +114,7 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
                fontsize, tooltip, changeprocedure, w, h, lostfocus, gotfocus, ;
                HelpId, invisible, notabstop, bold, italic, underline, ;
                strikeout, field, backcolor, fontcolor, transparent, autosize, ;
-               lRtl, lButton, BitMap, cBuffer, hBitMap, lNoTransparent, ;
-               lScale ) CLASS TCheckBox
+               lRtl ) CLASS TCheckBox
 *-----------------------------------------------------------------------------*
 Local ControlHandle, nStyle := 0, nStyleEx := 0
 
@@ -129,25 +123,16 @@ Local ControlHandle, nStyle := 0, nStyleEx := 0
    ASSIGN ::nWidth      VALUE w TYPE "N"
    ASSIGN ::nHeight     VALUE h TYPE "N"
    ASSIGN ::Transparent VALUE transparent  TYPE "L"
-   DEFAULT value           TO FALSE
-   DEFAULT notabstop       TO FALSE
-   DEFAULT autosize        TO FALSE
-   DEFAULT lButton         TO FALSE
+
+   IF VALTYPE( value ) != "L"
+      value := .F.
+   ENDIF
+   ASSIGN autosize      VALUE autosize TYPE "L" DEFAULT .F.
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor,, lRtl )
 
-   nStyle := ::InitStyle( ,, Invisible, NoTabStop )
-
-   IF lButton
-      nStyle += BS_PUSHLIKE
-      autosize := .F.
-   ELSE
-      nStyleEx += WS_EX_TRANSPARENT
-   ENDIF
-
-   IF VALTYPE( BitMap ) $ "CM" .OR. VALTYPE( cBuffer ) $ "CM" .OR. VALTYPE( hBitMap ) $ "NP"
-      nStyle += BS_BITMAP
-   ENDIF
+   nStyle := ::InitStyle( ,, Invisible, NoTabStop ) + BS_AUTOCHECKBOX
+   nStyleEx += WS_EX_TRANSPARENT
 
    Controlhandle := InitCheckBox( ::ContainerhWnd, Caption, 0, ::ContainerCol, ::ContainerRow, '', 0 , ::nWidth, ::nHeight, nStyle, nStyleEx, ::lRtl )
 
@@ -158,16 +143,6 @@ Local ControlHandle, nStyle := 0, nStyleEx := 0
    ::OnGotFocus  := GotFocus
    ::Autosize    := autosize
    ::Caption     := Caption
-
-   ASSIGN ::lNoTransparent VALUE lNoTransparent TYPE "L"
-   ASSIGN ::lScale         VALUE lScale         TYPE "L"
-   ::Picture := BitMap
-   If ! ValidHandler( ::AuxHandle )
-      ::Buffer := cBuffer
-      If ! ValidHandler( ::AuxHandle )
-         ::HBitMap := hBitMap
-      EndIf
-   EndIf
 
    If ValType( Field ) $ 'CM' .AND. ! empty( Field )
       ::VarName := alltrim( Field )
@@ -195,45 +170,6 @@ METHOD Value( uValue ) CLASS TCheckBox
    ENDIF
 RETURN uValue
 
-*-----------------------------------------------------------------------------*
-METHOD Picture( cPicture ) CLASS TCheckBox
-*-----------------------------------------------------------------------------*
-LOCAL hBitMap, nAttrib
-   IF VALTYPE( cPicture ) $ "CM"
-      DeleteObject( ::AuxHandle )
-      ::cPicture := cPicture
-      nAttrib := LR_LOADMAP3DCOLORS
-      IF ! ::lNoTransparent
-         nAttrib += LR_LOADTRANSPARENT
-      ENDIF
-      hBitMap := _OOHG_BitmapFromFile( Self, cPicture, nAttrib, ::AutoSize )
-      ::AuxHandle := _OOHG_SetBitmap( Self, hBitMap, BM_SETIMAGE, .F., ::lScale )
-      DeleteObject( hBitMap )
-   ENDIF
-Return ::cPicture
-
-*-----------------------------------------------------------------------------*
-METHOD HBitMap( hBitMap ) CLASS TCheckBox
-*-----------------------------------------------------------------------------*
-   If ValType( hBitMap ) $ "NP"
-      DeleteObject( ::AuxHandle )
-      ::AuxHandle := _OOHG_SetBitmap( Self, hBitMap, BM_SETIMAGE, .F., ::lScale )
-      DeleteObject( hBitMap )
-   EndIf
-Return ::AuxHandle
-
-*-----------------------------------------------------------------------------*
-METHOD Buffer( cBuffer ) CLASS TCheckBox
-*-----------------------------------------------------------------------------*
-LOCAL hBitMap
-   If ValType( cBuffer ) $ "CM"
-      DeleteObject( ::AuxHandle )
-      hBitMap := _OOHG_BitmapFromBuffer( Self, cBuffer, ::AutoSize )
-      ::AuxHandle := _OOHG_SetBitmap( Self, hBitMap, BM_SETIMAGE, .F., ::lScale )
-      DeleteObject( hBitMap )
-   EndIf
-Return nil
-
 *------------------------------------------------------------------------------*
 METHOD Events_Command( wParam ) CLASS TCheckBox
 *------------------------------------------------------------------------------*
@@ -247,8 +183,6 @@ Return ::Super:Events_Command( wParam )
 
 
 
-
-EXTERN InitCheckBox
 
 #pragma BEGINDUMP
 
@@ -275,7 +209,7 @@ HB_FUNC( INITCHECKBOX )
 
    hwnd = HWNDparam( 1 );
 
-   Style = BS_NOTIFY | WS_CHILD | BS_AUTOCHECKBOX | hb_parni( 10 );
+   Style = BS_NOTIFY | WS_CHILD | hb_parni( 10 );
 
    StyleEx = hb_parni( 11 ) | _OOHG_RTL_Status( hb_parl( 12 ) );
 

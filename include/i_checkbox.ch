@@ -1,5 +1,5 @@
 /*
- * $Id: i_checkbox.ch,v 1.5 2006-10-30 00:16:44 guerra000 Exp $
+ * $Id: i_checkbox.ch,v 1.6 2007-09-06 04:59:51 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -124,37 +124,3 @@
                 <tooltip>, <{change}>, [<w>], [<h>], <{lostfocus}>, <{gotfocus}>, <helpid>, ;
                 <.invisible.>, <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, ;
                 <(field)>, <backcolor>, <fontcolor>, <.transparent.>, <.autosize.>, <.rtl.> )
-
-#command @ <row>,<col> CHECKBUTTON <name> ;
-                [ OBJ <obj> ] ;
-		[ <dummy1: OF, PARENT> <parent> ] ;
-                [ CAPTION <caption> ] ;
-		[ WIDTH <w> ] ;
-		[ HEIGHT <h> ] ;
-		[ VALUE <value> ] ;
-		[ FONT <f> ] ;
-		[ SIZE <n> ] ;
-		[ <bold : BOLD> ] ;
-		[ <italic : ITALIC> ] ;
-		[ <underline : UNDERLINE> ] ;
-		[ <strikeout : STRIKEOUT> ] ;
-		[ TOOLTIP <tooltip> ] ;
-		[ ON GOTFOCUS <gotfocus> ] ;
-		[ ON CHANGE <change> ] ;
-		[ ON LOSTFOCUS <lostfocus> ] ;
-		[ HELPID <helpid> ] 		;
-		[ <invisible: INVISIBLE> ] ;
-		[ <notabstop: NOTABSTOP> ] ;
-                [ SUBCLASS <subclass> ]           ;
-                [ <rtl: RTL> ]                    ;
-                [ PICTURE <bitmap> ]              ;
-                [ BUFFER <buffer> ] ;
-                [ HBITMAP <hbitmap> ] ;
-		[ <notrans: NOTRANSPARENT> ] ;
-                [ <scale: FORCESCALE> ] ;
-	=>;
-        [ <obj> := ] _OOHG_SelectSubClass( TCheckBox(), [ <subclass>() ] ): ;
-                Define( <(name)>, <(parent)>, <col>, <row>, <caption>, <value>, <f>, <n>, ;
-                <tooltip>, <{change}>, [<w>], [<h>], <{lostfocus}>, <{gotfocus}>, <helpid>, ;
-                <.invisible.>, <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, ;
-                ,,,,, <.rtl.>, .T., <bitmap>, <buffer>, <hbitmap>, <.notrans.>, <.scale.> )
