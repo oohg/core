@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: makelib_bcc.bat,v 1.5 2007-07-15 04:48:43 guerra000 Exp $
+rem $Id: makelib_bcc.bat,v 1.6 2007-09-10 21:40:15 declan2005 Exp $
 rem
 cls
 
@@ -19,7 +19,7 @@ IF EXIST %hg_root%\lib\miniprint.lib del %hg_root%\lib\miniprint.lib
 call common_make "%hg_hrb%\lib\tip.lib"
 if errorlevel 1 goto EXIT1
 
-SET OOHG_X_FLAGS=-c -O2 -tW -tWM -d -a8 -OS -5 -6 -I%hg_hrb%\include;%hg_bcc%\include; -L%hg_hrb%\lib;%hg_bcc%\lib;
+SET OOHG_X_FLAGS=-c -D_HB_API_INTERNAL_ -O2 -tW -tWM -d -a8 -OS -5 -6 -I%hg_hrb%\include;%hg_bcc%\include; -L%hg_hrb%\lib;%hg_bcc%\lib;
 
 %hg_bcc%\bin\bcc32 %OOHG_X_FLAGS% h_scrsaver.c h_edit.c h_edit_ex.c h_error.c h_ipaddress.c c_ipaddress.c h_monthcal.c c_monthcal.c h_help.c c_help.c h_crypt.c c_crypt.c h_status.c h_tree.c c_tree.c h_toolbar.c h_init.c h_media.c c_media.c h_winapimisc.c h_slider.c c_controlmisc.c c_datepicker.c c_resource.c h_cursor.c c_cursor.c c_ini.c h_ini.c h_report.c h_registry.c h_font.c c_font.c h_hyperlink.c h_richeditbox.c h_scroll.c h_http.c h_zip.c h_progressmeter.c h_comm.c h_print.c h_activex.c h_pdf.c
 if errorlevel 1 goto EXIT2
