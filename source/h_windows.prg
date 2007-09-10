@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.141 2007-09-10 05:05:20 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.142 2007-09-10 05:39:16 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1636,7 +1636,9 @@ Return Nil
 *-----------------------------------------------------------------------------*
 METHOD MessageLoop() CLASS TForm
 *-----------------------------------------------------------------------------*
+   AADD( _OOHG_MessageLoops, ::ActivateCount )
    _OOHG_DoMessageLoop( ::ActivateCount )
+   _OOHG_DeleteArrayItem( _OOHG_MessageLoops, Len( _OOHG_MessageLoops ) )
 /*
    AADD( _OOHG_MessageLoops, ::ActivateCount )
    _DoMessageLoop()
@@ -1952,8 +1954,8 @@ Local mVar, i
       EndIf
 
       // Verify if window was multi-activated
-/*
       ::ActivateCount[ 1 ]--
+/*
       If Len( _OOHG_MessageLoops ) > 0
          If ATAIL( _OOHG_MessageLoops )[ 1 ] < 1
             PostQuitMessage( 0 )
