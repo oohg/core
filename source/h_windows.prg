@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.140 2007-08-11 03:15:18 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.141 2007-09-10 05:05:20 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -873,7 +873,7 @@ Local myobject, cWork
    :release()
 
    End
-  
+
    release myobject
 
    FErase( cWork )
@@ -1218,7 +1218,7 @@ CLASS TForm FROM TWindow
    DATA Focused        INIT .F.
    DATA LastFocusedControl INIT 0
    DATA AutoRelease    INIT .F.
-   DATA ActivateCount  INIT { 0 }
+   DATA ActivateCount  INIT { 0, NIL }
    DATA oMenu          INIT nil
    DATA hWndClient     INIT 0
    DATA lInternal      INIT .F.
@@ -1490,7 +1490,13 @@ Local Formhandle, aClientRect
    ::BackColor := aRGB
    ::AutoRelease := ! ( ValType( NoAutoRelease ) == "L" .AND. NoAutoRelease )
 
+   // Assigns ThisForm the currently defined window
+   _PushEventInfo()
    _OOHG_ThisForm := Self
+   _OOHG_ThisEventType := "WINDOW_DEFINE"
+   _OOHG_ThisType      := "W"
+   _OOHG_ThisControl   := NIL
+   _OOHG_ThisObject    := Self
 
 Return Self
 
@@ -1504,6 +1510,7 @@ LOCAL nPos
    Else
       // TODO: Window structure already closed
 	EndIf
+   _PopEventInfo()
 Return Nil
 
 *--------------------------------------------------
@@ -1512,8 +1519,6 @@ Function _SetToolTipBalloon ( lNewBalloon )
 Static lBalloon := .F.
 Local oreg,lOldBalloon := lBalloon
 Local lSiono
-
-
 
         If lNewBalloon <> Nil
         if lNewBalloon
@@ -1631,12 +1636,15 @@ Return Nil
 *-----------------------------------------------------------------------------*
 METHOD MessageLoop() CLASS TForm
 *-----------------------------------------------------------------------------*
+   _OOHG_DoMessageLoop( ::ActivateCount )
+/*
    AADD( _OOHG_MessageLoops, ::ActivateCount )
    _DoMessageLoop()
    _OOHG_DeleteArrayItem( _OOHG_MessageLoops, Len( _OOHG_MessageLoops ) )
    If Len( _OOHG_MessageLoops ) > 0 .AND. ATAIL( _OOHG_MessageLoops )[ 1 ] < 1
       PostQuitMessage( 0 )
    EndIf
+*/
 Return nil
 
 *-----------------------------------------------------------------------------*
@@ -1944,6 +1952,7 @@ Local mVar, i
       EndIf
 
       // Verify if window was multi-activated
+/*
       ::ActivateCount[ 1 ]--
       If Len( _OOHG_MessageLoops ) > 0
          If ATAIL( _OOHG_MessageLoops )[ 1 ] < 1
@@ -1951,6 +1960,11 @@ Local mVar, i
          Endif
       ElseIf ::ActivateCount[ 1 ] < 1
          PostQuitMessage( 0 )
+      Endif
+*/
+      If ::ActivateCount[ 1 ] < 1
+         _MessageLoopEnd( ::ActivateCount[ 2 ] )
+         ::ActivateCount[ 2 ] := NIL
       Endif
 
       // Removes WINDOW from the array

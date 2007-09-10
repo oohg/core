@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.52 2006-11-13 02:33:18 guerra000 Exp $
+ * $Id: c_windows.c,v 1.53 2007-09-10 05:05:20 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -468,6 +468,41 @@ HB_FUNC( _DOMESSAGELOOP )
    while( GetMessage( &Msg, NULL, 0, 0 ) )
    {
       _OOHG_ProcessMessage( &Msg );
+   }
+}
+
+HB_FUNC( _OOHG_DOMESSAGELOOP )
+{
+   MSG Msg;
+   int iSwitch;
+
+   if( ISARRAY( 1 ) && hb_parinfa( 1, 0 ) >= 2 )
+   {
+      hb_storptr( ( void * ) &iSwitch , 1, 2 );
+   }
+
+   iSwitch = 1;
+   while( iSwitch )
+   {
+      if( GetMessage( &Msg, NULL, 0, 0 ) )
+      {
+         _OOHG_ProcessMessage( &Msg );
+      }
+      else
+      {
+         iSwitch = 0;
+      }
+   }
+}
+
+HB_FUNC( _MESSAGELOOPEND )
+{
+   int *pSwitch;
+   pSwitch = ( int * ) hb_parptr( 1 );
+
+   if( pSwitch )
+   {
+      *pSwitch = 0;
    }
 }
 

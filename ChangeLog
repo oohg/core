@@ -1,11 +1,17 @@
 /*
- * $Id: ChangeLog,v 1.395 2007-09-06 04:59:51 guerra000 Exp $
+ * $Id: ChangeLog,v 1.396 2007-09-10 05:05:19 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-09-10 00:04 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/c_windows.c
+  * source/h_windows.prg
+    ! Fixed ThisWindow after window release.
+    * Changed the way each _DoMessageLoop() ends.
 
 2007-09-05 23:54 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * include/i_altsyntax.ch
