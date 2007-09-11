@@ -1,5 +1,5 @@
 /*
- * $Id: i_button.ch,v 1.10 2007-09-06 04:59:51 guerra000 Exp $
+ * $Id: i_button.ch,v 1.11 2007-09-11 04:26:05 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -162,4 +162,4 @@
                 Define( <(name)>, <(parent)>, <col>, <row>, <caption>, <value>, <f>, <n>, ;
                 <tooltip>, <{change}>, [<w>], [<h>], <{lostfocus}>, <{gotfocus}>, <helpid>, ;
                 <.invisible.>, <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, ;
-                <(field)>, <.rtl.>, .T., <bitmap>, <buffer>, <hbitmap>, <.notrans.>, <.scale.> )
+                <(field)>, <.rtl.>, <bitmap>, <buffer>, <hbitmap>, <.notrans.>, <.scale.> )
