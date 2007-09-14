@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.142 2007-09-10 05:39:16 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.143 2007-09-14 03:57:22 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -100,7 +100,6 @@ STATIC _OOHG_aFormhWnd := {}, _OOHG_aFormObjects := {}
 STATIC _OOHG_aEventInfo := {}        // Event's stack
 STATIC _OOHG_UserWindow := nil       // User's window
 STATIC _OOHG_InteractiveClose := 1   // Interactive close
-STATIC _OOHG_MessageLoops := {}      // Message loops
 STATIC _OOHG_ActiveModal := {}       // Modal windows' stack
 STATIC _OOHG_DialogCancelled := .F.  //
 STATIC _OOHG_HotKeys := {}           // Application-wide hot keys
@@ -1218,7 +1217,7 @@ CLASS TForm FROM TWindow
    DATA Focused        INIT .F.
    DATA LastFocusedControl INIT 0
    DATA AutoRelease    INIT .F.
-   DATA ActivateCount  INIT { 0, NIL }
+   DATA ActivateCount  INIT { 0, NIL, .T. }
    DATA oMenu          INIT nil
    DATA hWndClient     INIT 0
    DATA lInternal      INIT .F.
@@ -1636,17 +1635,9 @@ Return Nil
 *-----------------------------------------------------------------------------*
 METHOD MessageLoop() CLASS TForm
 *-----------------------------------------------------------------------------*
-   AADD( _OOHG_MessageLoops, ::ActivateCount )
-   _OOHG_DoMessageLoop( ::ActivateCount )
-   _OOHG_DeleteArrayItem( _OOHG_MessageLoops, Len( _OOHG_MessageLoops ) )
-/*
-   AADD( _OOHG_MessageLoops, ::ActivateCount )
-   _DoMessageLoop()
-   _OOHG_DeleteArrayItem( _OOHG_MessageLoops, Len( _OOHG_MessageLoops ) )
-   If Len( _OOHG_MessageLoops ) > 0 .AND. ATAIL( _OOHG_MessageLoops )[ 1 ] < 1
-      PostQuitMessage( 0 )
-   EndIf
-*/
+   IF ::ActivateCount[ 3 ]
+      _OOHG_DoMessageLoop( ::ActivateCount )
+   ENDIF
 Return nil
 
 *-----------------------------------------------------------------------------*
@@ -1696,9 +1687,7 @@ METHOD ProcessInitProcedure() CLASS TForm
 *-----------------------------------------------------------------------------*
    if valtype( ::OnInit )=='B'
       ProcessMessages()
-      AADD( _OOHG_MessageLoops, ::ActivateCount )
       ::DoEvent( ::OnInit, "WINDOW_INIT" )
-      _OOHG_DeleteArrayItem( _OOHG_MessageLoops, Len( _OOHG_MessageLoops ) )
    EndIf
    AEVAL( ::SplitChildList, { |o| o:ProcessInitProcedure() } )
 Return nil
@@ -1955,18 +1944,10 @@ Local mVar, i
 
       // Verify if window was multi-activated
       ::ActivateCount[ 1 ]--
-/*
-      If Len( _OOHG_MessageLoops ) > 0
-         If ATAIL( _OOHG_MessageLoops )[ 1 ] < 1
-            PostQuitMessage( 0 )
-         Endif
-      ElseIf ::ActivateCount[ 1 ] < 1
-         PostQuitMessage( 0 )
-      Endif
-*/
       If ::ActivateCount[ 1 ] < 1
          _MessageLoopEnd( ::ActivateCount[ 2 ] )
          ::ActivateCount[ 2 ] := NIL
+         ::ActivateCount[ 3 ] := .F.
       Endif
 
       // Removes WINDOW from the array
@@ -2290,12 +2271,6 @@ Local oCtrl
       if ::Type == "A"
          ReleaseAllWindows()
       Else
-/*
-Testing...
-         If ::Type == "M" .AND. ::ActivateCount[ 1 ] > 1 .OR. ! ::ActivateCount == ATAIL( _OOHG_MessageLoops )
-            MsgOOHGError( "Modal windows MUST not be closed while it have sub-windows. Program terminated." )
-         EndIf
-*/
          ::OnHideFocusManagement()
       EndIf
 
@@ -2565,16 +2540,6 @@ METHOD Visible( lVisible ) CLASS TFormModal
 
          If ! ::SetFocusedSplitChild()
             ::SetActivationFocus()
-         EndIf
-      ELSE
-         If IsWindowVisible( ::hWnd )
-//// Why not?
-////             If Len( _OOHG_ActiveModal ) == 0 .OR. ATAIL( _OOHG_ActiveModal ):hWnd <> ::hWnd
-////                MsgOOHGError( "Non top modal windows can't be hide. Program terminated." )
-//// // Testing...
-//// //             ElseIf ::ActivateCount[ 1 ] > 1 .OR. ! ::ActivateCount == ATAIL( _OOHG_MessageLoops )
-//// //                MsgOOHGError( "Modal windows can't be hidden when it have sub-windows. Program terminated." )
-////             EndIf
          EndIf
       ENDIF
    ENDIF
