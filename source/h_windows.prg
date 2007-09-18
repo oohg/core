@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.143 2007-09-14 03:57:22 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.144 2007-09-18 17:30:40 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1569,19 +1569,19 @@ METHOD Activate( lNoStop, oWndLoop ) CLASS TForm
 
    If _OOHG_ThisEventType == 'WINDOW_RELEASE' .AND. ! lNoStop
       MsgOOHGError("ACTIVATE WINDOW: activate windows within an 'on release' window procedure is not allowed. Program terminated" )
-	EndIf
+   Endif
 
    If Len( _OOHG_ActiveForm ) > 0
       MsgOOHGError("ACTIVATE WINDOW: DEFINE WINDOW Structure is not closed. Program terminated" )
-	Endif
+   Endif
 
    If _OOHG_ThisEventType == 'WINDOW_GOTFOCUS'
       MsgOOHGError("ACTIVATE WINDOW / Activate(): Not allowed in window's GOTFOCUS event procedure. Program terminated" )
-	Endif
+   Endif
 
    If _OOHG_ThisEventType == 'WINDOW_LOSTFOCUS'
       MsgOOHGError("ACTIVATE WINDOW / Activate(): Not allowed in window's LOSTFOCUS event procedure. Program terminated" )
-	Endif
+   Endif
 
 	// Main Check
 
@@ -1596,15 +1596,6 @@ METHOD Activate( lNoStop, oWndLoop ) CLASS TForm
       MsgOOHGError( "Window: " + ::Name + " already active. Program terminated" )
    Endif
 
-   // Checks for non-stop window
-   If ValType( oWndLoop ) != "O"
-      oWndLoop := IF( lNoStop .AND. ValType( _OOHG_Main ) == "O", _OOHG_Main, Self )
-   EndIf
-   ::ActivateCount := oWndLoop:ActivateCount
-   ::ActivateCount[ 1 ]++
-
-   // Show window
-
 * Testing... it allows to create non-modal windows when modal windows are active.
 * The problem is, what should do when modal window is ... disabled? hidden? WM_CLOSE? WM_DESTROY?
 /*
@@ -1613,6 +1604,15 @@ METHOD Activate( lNoStop, oWndLoop ) CLASS TForm
       endif
 */
 
+   // Checks for non-stop window
+   If ValType( oWndLoop ) != "O"
+      oWndLoop := IF( lNoStop .AND. ValType( _OOHG_Main ) == "O", _OOHG_Main, Self )
+   EndIf
+   ::ActivateCount := oWndLoop:ActivateCount
+   ::ActivateCount[ 1 ]++
+   ::Active := .T.
+
+   // Show window
    If ::lVisible
       _OOHG_UserWindow := Self
       ::Show()
@@ -1621,7 +1621,6 @@ METHOD Activate( lNoStop, oWndLoop ) CLASS TForm
       // EndIf
    EndIf
 
-   ::Active := .T.
    ::ProcessInitProcedure()
    ::RefreshData()
 
@@ -1635,7 +1634,7 @@ Return Nil
 *-----------------------------------------------------------------------------*
 METHOD MessageLoop() CLASS TForm
 *-----------------------------------------------------------------------------*
-   IF ::ActivateCount[ 3 ]
+   IF ::ActivateCount[ 3 ] .AND. ::ActivateCount[ 1 ] > 0
       _OOHG_DoMessageLoop( ::ActivateCount )
    ENDIF
 Return nil
