@@ -1,5 +1,5 @@
 /*
- * $Id: h_frame.prg,v 1.4 2006-02-11 06:19:33 guerra000 Exp $
+ * $Id: h_frame.prg,v 1.5 2007-09-21 16:00:12 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -106,6 +106,8 @@ METHOD Define( ControlName, ParentForm, y, x, w, h, caption, fontname, ;
                backcolor, fontcolor, transparent, lRtl ) CLASS TFrame
 *-----------------------------------------------------------------------------*
 Local ControlHandle
+
+        DEFAULT caption to ""
 
 	if valtype (caption) == 'U'
 		caption := ""
