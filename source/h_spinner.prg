@@ -1,5 +1,5 @@
 /*
- * $Id: h_spinner.prg,v 1.10 2006-10-28 20:49:15 guerra000 Exp $
+ * $Id: h_spinner.prg,v 1.11 2007-09-21 18:41:14 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -122,8 +122,12 @@ METHOD Define( ControlName, ParentForm, x, y, w, value, fontname, fontsize, ;
 Local nStyle := ES_NUMBER + ES_AUTOHSCROLL, nStyleEx := 0
 Local ControlHandle
 
+   DEFAULT x         TO 0
+   DEFAULT y         TO 0
    DEFAULT w         TO 120
    DEFAULT h         TO 24
+   DEFAULT rl        TO 1
+   DEFAULT rh        TO 100
    DEFAULT value     TO rl
    DEFAULT change    TO ""
    DEFAULT lostfocus TO ""
