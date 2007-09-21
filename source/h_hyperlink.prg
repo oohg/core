@@ -1,5 +1,5 @@
 /*
- * $Id: h_hyperlink.prg,v 1.4 2005-08-25 05:57:42 guerra000 Exp $
+ * $Id: h_hyperlink.prg,v 1.5 2007-09-21 20:20:37 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -110,8 +110,10 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, url, w, h, fontname, ;
                italic, autosize, handcursor, lRtl ) CLASS THyperLink
 *-----------------------------------------------------------------------------*
 
-   DEFAULT Url           TO ""
+   DEFAULT Url           TO "http://www.oohg.org"
+   DEFAULT Caption       TO "www.oohg.org"
    DEFAULT aRGB_font     TO {0,0,255}
+   DEFAULT handcursor    TO .F.
 
    ::Super:Define( ControlName, ParentForm, x, y, Caption, w, h, fontname, ;
                    fontsize, bold, BORDER, CLIENTEDGE, HSCROLL, VSCROLL, ;
