@@ -1,5 +1,5 @@
 /*
- * $Id: h_menu.prg,v 1.19 2007-08-11 03:15:18 guerra000 Exp $
+ * $Id: h_menu.prg,v 1.20 2007-09-21 02:43:28 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -105,6 +105,7 @@ CLASS TMenu FROM TControl
    METHOD Activate
    METHOD Release     BLOCK { |Self| DestroyMenu( ::hWnd ), ::Super:Release() }
    METHOD EndMenu     BLOCK { || _EndMenu() }
+   METHOD Separator   BLOCK { |Self| AppendMenuSeparator( ::hWnd ) }
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -256,6 +257,7 @@ CLASS TMenuItem FROM TControl
    METHOD Caption      SETGET
    METHOD Release
    METHOD EndPopUp     BLOCK { || _EndMenuPopup() }
+   METHOD Separator    BLOCK { |Self| AppendMenuSeparator( ::hWnd ) }
 
    METHOD DefaultItem( nItem )    BLOCK { |Self,nItem| SetMenuDefaultItem( ::Container:hWnd, nItem ) }
 ENDCLASS
@@ -355,13 +357,12 @@ METHOD Release() CLASS TMenuItem
 Return ::Super:Release()
 
 *------------------------------------------------------------------------------*
-Function _DefineSeparator( Parent )
+Function _DefineSeparator( oMenu )
 *------------------------------------------------------------------------------*
-   If Empty( Parent )
-      Parent := ATAIL( _OOHG_xMenuActive )
+   If Empty( oMenu )
+      oMenu := ATAIL( _OOHG_xMenuActive )
    EndIf
-   AppendMenuSeparator( Parent:hWnd )
-Return Nil
+Return oMenu:Separator()
 
 EXTERN TrackPopUpMenu, SetMenuDefaultItem, GetMenuBarHeight
 
