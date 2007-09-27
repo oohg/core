@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.77 2007-08-13 16:01:16 declan2005 Exp $
+* $Id: h_print.prg,v 1.78 2007-09-27 22:23:26 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -1143,6 +1143,12 @@ METHOD BEGINDOCx (cdoc) CLASS THBPRINTER
 *-------------------------
 ::setpreviewsize(2)
 START DOC NAME cDoc
+  define font "F0" name "courier new" size 10
+   define font "F1" name "courier new" size 10 BOLD
+
+
+  define font "F2" name "courier new" size 10 ITALIC
+  define font "F3" name "courier new" size 10 BOLD ITALIC
 return self
 
 
@@ -1182,13 +1188,6 @@ Empty( Data )
 
 default aColor to ::acolor
 Empty( nLen )
-
-   define font "F0" name cfont size nsize
-   define font "F1" name cfont size nsize BOLD
-
-
-  define font "F2" name cfont size nsize ITALIC
-  define font "F3" name cfont size nsize BOLD ITALIC
 
   select font "F0"
   change font "F0" name cfont size nsize
