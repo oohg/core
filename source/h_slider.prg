@@ -1,5 +1,5 @@
 /*
- * $Id: h_slider.prg,v 1.14 2007-10-04 11:31:52 declan2005 Exp $
+ * $Id: h_slider.prg,v 1.15 2007-10-04 19:57:08 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -112,20 +112,6 @@ CLASS TSlider FROM TControl
    METHOD Events_Vscroll
 ENDCLASS
 
-METHOD Events_Hscroll ( wParam )   CLASS TSlider
-IF loword( wParam ) == TB_ENDTRACK
-   ::DoEvent( ::OnChange )
-endif
-
-Return nil
-
-METHOD Events_Vscroll ( wParam )   CLASS TSlider
-IF loword( wParam ) == TB_ENDTRACK
-   ::DoEvent( ::OnChange )
-endif
-
-Return nil
-
 
 
 
@@ -180,6 +166,7 @@ METHOD Value( uValue ) CLASS TSlider
 *------------------------------------------------------------------------------*
    IF VALTYPE( uValue ) == "N"
       SendMessage( ::hWnd, TBM_SETPOS, 1, uValue )
+      SendMessage( ::hwnd, WM_HSCROLL, TB_ENDTRACK,0)
    ENDIF
 RETURN SendMessage( ::hWnd, TBM_GETPOS, 0, 0 )
 
@@ -217,6 +204,26 @@ Local f
       setfocus( f )
    ENDIF
 RETURN ::Super:BackColor
+
+*------------------------------------------------*
+METHOD Events_Hscroll ( wParam )   CLASS TSlider
+*------------------------------------------------*
+IF loword( wParam ) == TB_ENDTRACK
+   ::DoEvent( ::OnChange )
+ELSE
+  Return ::Super:Events_HScroll( wParam )
+ENDIF
+Return NIL
+
+*-------------------------------------------------*
+METHOD Events_Vscroll ( wParam )   CLASS TSlider
+*-------------------------------------------------*
+IF loword( wParam ) == TB_ENDTRACK
+   ::DoEvent( ::OnChange )
+ELSE
+   Return ::Super:Events_VScroll( wParam )
+ENDIF
+Return NIL
 
 #pragma BEGINDUMP
 
