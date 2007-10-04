@@ -1,5 +1,5 @@
 /*
- * $Id: h_slider.prg,v 1.13 2007-10-04 02:29:20 declan2005 Exp $
+ * $Id: h_slider.prg,v 1.14 2007-10-04 11:31:52 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -113,16 +113,14 @@ CLASS TSlider FROM TControl
 ENDCLASS
 
 METHOD Events_Hscroll ( wParam )   CLASS TSlider
-
-IF wParam == TB_ENDTRACK
+IF loword( wParam ) == TB_ENDTRACK
    ::DoEvent( ::OnChange )
 endif
 
 Return nil
 
 METHOD Events_Vscroll ( wParam )   CLASS TSlider
-
-IF wParam == TB_ENDTRACK
+IF loword( wParam ) == TB_ENDTRACK
    ::DoEvent( ::OnChange )
 endif
 
