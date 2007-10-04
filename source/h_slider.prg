@@ -1,5 +1,5 @@
 /*
- * $Id: h_slider.prg,v 1.11 2007-10-04 02:06:17 declan2005 Exp $
+ * $Id: h_slider.prg,v 1.12 2007-10-04 02:25:02 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -109,6 +109,7 @@ CLASS TSlider FROM TControl
    METHOD RangeMax            SETGET
    METHOD BackColor           SETGET
    METHOD Events_Hscroll
+   METHOD Events_Vscroll
 ENDCLASS
 
 METHOD Events_Hscroll ( wParam )   CLASS TSlider
@@ -117,7 +118,17 @@ IF wParam == TB_ENDTRACK
    ::DoEvent( ::OnChange )
 endif
 
-Return ::Super:Events_hScroll( wParam )
+Return nil
+
+METHOD Events_Hscroll ( wParam )   CLASS TSlider
+
+IF wParam == TB_ENDTRACK
+   ::DoEvent( ::OnChange )
+endif
+
+Return nil
+
+
 
 
 *-----------------------------------------------------------------------------*
