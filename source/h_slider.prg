@@ -1,5 +1,5 @@
 /*
- * $Id: h_slider.prg,v 1.10 2007-01-02 04:31:45 guerra000 Exp $
+ * $Id: h_slider.prg,v 1.11 2007-10-04 02:06:17 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -108,7 +108,17 @@ CLASS TSlider FROM TControl
    METHOD RangeMin            SETGET
    METHOD RangeMax            SETGET
    METHOD BackColor           SETGET
+   METHOD Events_Hscroll
 ENDCLASS
+
+METHOD Events_Hscroll ( wParam )   CLASS TSlider
+
+IF wParam == TB_ENDTRACK
+   ::DoEvent( ::OnChange )
+endif
+
+Return ::Super:Events_hScroll( wParam )
+
 
 *-----------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, x, y, w, h, LO, HI, value, tooltip, ;
