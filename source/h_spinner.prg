@@ -1,5 +1,5 @@
 /*
- * $Id: h_spinner.prg,v 1.11 2007-09-21 18:41:14 declan2005 Exp $
+ * $Id: h_spinner.prg,v 1.12 2007-10-05 11:42:11 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -139,9 +139,9 @@ Local ControlHandle
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, .T., lRtl )
 
    nStyle += ::InitStyle( ,, Invisible, NoTabStop ) + ;
-             if( ValType( readonly )  == "L" .AND.  readonly,  ES_READONLY, 0 )
+             if(  HB_IsLogical ( readonly )  .AND.  readonly,  ES_READONLY, 0 )
 
-   nStyleEx += IF( Valtype( lNoBorder ) != "L" .OR. ! lNoBorder, WS_EX_CLIENTEDGE, 0 )
+   nStyleEx += IF( !HB_IsLogical( lNoBorder ) .OR. ! lNoBorder, WS_EX_CLIENTEDGE, 0 )
 
    ControlHandle := InitTextBox( ::ContainerhWnd, 0, x, y, w, h, nStyle, 0, ::lRtl, nStyleEx )
 
@@ -157,8 +157,8 @@ Local ControlHandle
    ::RangeMin   :=   Rl
    ::RangeMax   :=   Rh
 
-	if valtype(value) == "N"
-      SetSpinnerValue ( ::AuxHandle, Value )
+	if HB_IsNumeric(value)
+           SetSpinnerValue ( ::AuxHandle, Value )
 	endif
 
 	if increment <> 1
@@ -179,7 +179,7 @@ Return uRet
 *-----------------------------------------------------------------------------*
 METHOD Visible( lVisible ) CLASS TSpinner
 *-----------------------------------------------------------------------------*
-   IF VALTYPE( lVisible ) == "L"
+   IF HB_IsLogical( lVisible )
       ::Super:Visible := lVisible
       IF lVisible .AND. ::ContainerVisible
          CShowControl( ::AuxHandle )
@@ -192,15 +192,16 @@ Return ::lVisible
 *-----------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TSpinner
 *-----------------------------------------------------------------------------*
-   IF VALTYPE( uValue ) == "N"
+   IF HB_IsNumeric ( uValue )
       SetSpinnerValue( ::AuxHandle, uValue )
+      ::DoEvent( ::OnChange )
    ENDIF
 Return GetSpinnerValue( ::AuxHandle )
 
 *-----------------------------------------------------------------------------*
 METHOD Enabled( lEnabled ) CLASS TSpinner
 *-----------------------------------------------------------------------------*
-   IF VALTYPE( lEnabled ) == "L"
+   IF HB_IsLogical( lEnabled )
       ::Super:Enabled := lEnabled
       IF ::Super:Enabled
          EnableWindow( ::AuxHandle )
@@ -213,7 +214,7 @@ Return ::Super:Enabled
 *-----------------------------------------------------------------------------*
 METHOD RangeMin( nValue ) CLASS TSpinner
 *-----------------------------------------------------------------------------*
-   IF VALTYPE( nValue ) == "N"
+   IF HB_IsNumeric( nValue )
       ::nRangeMin := nValue
       SetSpinnerRange( ::hWnd, ::nRangeMin, ::nRangeMax )
    ENDIF
@@ -222,7 +223,7 @@ Return ::nRangeMin
 *-----------------------------------------------------------------------------*
 METHOD RangeMax( nValue ) CLASS TSpinner
 *-----------------------------------------------------------------------------*
-   IF VALTYPE( nValue ) == "N"
+   IF HB_IsNumeric( nValue )
       ::nRangeMax := nValue
       SetSpinnerRange( ::hWnd, ::nRangeMin, ::nRangeMax )
    ENDIF

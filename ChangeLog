@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.408 2007-10-04 02:06:16 declan2005 Exp $
+ * $Id: ChangeLog,v 1.409 2007-10-05 11:42:10 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,6 +7,20 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+
+2007-10-05 6:38 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_slider.prg
+    !change fired way when chaneg value programatically
+    ! optimazing code
+  * source/h_spinner.prg
+    ! optimazing code
+    + added fired event when changed programatically   
+  /// usefull functions HB_IsNumeric(), HB_IsLogical(), HB_IsArray()
+
+2007-10-04 14:53 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_slider.prg
+    added sendmessage to ::value() method in order to fire event on change
+    if change programatically.
 
 2007-10-03 20:59 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_slider.prg

@@ -1,5 +1,5 @@
 /*
- * $Id: h_slider.prg,v 1.15 2007-10-04 19:57:08 declan2005 Exp $
+ * $Id: h_slider.prg,v 1.16 2007-10-05 11:42:11 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -140,18 +140,18 @@ Local ControlHandle, nStyle
 
    ::SetForm( ControlName, ParentForm, , , , BackColor, , lRtl )
 
-   nStyle := ::InitStyle( ,, invisible, notabstop, lDisabled ) + ;
-             if( ValType( vertical ) == "L"   .AND. vertical,   TBS_VERT,    0 ) + ;
-             if( ValType( noticks ) == "L"    .AND. noticks,    TBS_NOTICKS, TBS_AUTOTICKS ) + ;
-             if( ValType( both ) == "L"       .AND. both,       TBS_BOTH,    0 ) + ;
-             if( ValType( top ) == "L"        .AND. top,        TBS_TOP,     0 ) + ;
-             if( ValType( left ) == "L"       .AND. left,       TBS_LEFT,    0 )
+    nStyle := ::InitStyle( ,, invisible, notabstop, lDisabled ) + ;
+             if( HB_IsLogical( vertical ) .AND. vertical,   TBS_VERT,    0 ) + ;
+             if( HB_IsLogical( noticks )     .AND. noticks,    TBS_NOTICKS, TBS_AUTOTICKS ) + ;
+             if( HB_IsLogical( both )        .AND. both,       TBS_BOTH,    0 ) + ;
+             if( HB_IsLogical( top )         .AND. top,        TBS_TOP,     0 ) + ;
+             if( HB_IsLogical( left )       .AND. left,       TBS_LEFT,    0 )
 
    ControlHandle := InitSlider( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, ::RangeMin, ::RangeMax, nStyle, ::lRtl )
 
    ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
 
-   If ValType( value ) == "N"
+   If HB_IsNumeric( value )
       ::Value := value
    Else
       ::Value := Int( ( ::RangeMax - ::RangeMin ) / 2 )
@@ -164,16 +164,17 @@ Return Self
 *------------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TSlider
 *------------------------------------------------------------------------------*
-   IF VALTYPE( uValue ) == "N"
+   IF HB_IsNumeric ( uValue )
       SendMessage( ::hWnd, TBM_SETPOS, 1, uValue )
-      SendMessage( ::hwnd, WM_HSCROLL, TB_ENDTRACK,0)
+      //// SendMessage( ::hwnd, WM_HSCROLL, TB_ENDTRACK,0)
+      ::DoEvent( ::OnChange )
    ENDIF
 RETURN SendMessage( ::hWnd, TBM_GETPOS, 0, 0 )
 
 *------------------------------------------------------------------------------*
 METHOD RangeMin( uValue ) CLASS TSlider
 *------------------------------------------------------------------------------*
-   IF VALTYPE( uValue ) == "N"
+   IF HB_IsNumeric ( uValue )
       ::nRangeMin := uValue
       If ValidHandler( ::hWnd )
          SetSliderRange( ::hWnd, uValue, ::nRangeMax )
@@ -184,7 +185,7 @@ RETURN ::nRangeMin
 *------------------------------------------------------------------------------*
 METHOD RangeMax( uValue ) CLASS TSlider
 *------------------------------------------------------------------------------*
-   IF VALTYPE( uValue ) == "N"
+   IF HB_IsNumeric( uValue )
       ::nRangeMax := uValue
       If ValidHandler( ::hWnd )
          SetSliderRange( ::hWnd, ::nRangeMin, uValue )
@@ -196,7 +197,7 @@ RETURN ::nRangeMax
 METHOD BackColor( uValue ) CLASS TSlider
 *------------------------------------------------------------------------------*
 Local f
-   IF VALTYPE( uValue ) == "A"
+   IF HB_IsArray( uValue )
       ::Super:BackColor := uValue
       RedrawWindow( ::hWnd )
 		f := GetFocus()
