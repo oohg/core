@@ -1,5 +1,5 @@
 /*
- * $Id: h_progressbar.prg,v 1.7 2007-09-21 16:18:14 declan2005 Exp $
+ * $Id: h_progressbar.prg,v 1.8 2007-10-05 22:17:31 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -148,7 +148,7 @@ Return Self
 *------------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TProgressBar
 *------------------------------------------------------------------------------*
-   IF VALTYPE( uValue ) == "N"
+   IF HB_IsNumeric( uValue )
       SendMessage( ::hWnd, PBM_SETPOS, uValue, 0 )
    ENDIF
 RETURN SendMessage( ::hWnd, PBM_GETPOS, 0, 0)
@@ -156,7 +156,7 @@ RETURN SendMessage( ::hWnd, PBM_GETPOS, 0, 0)
 *------------------------------------------------------------------------------*
 METHOD RangeMin( uValue ) CLASS TProgressBar
 *------------------------------------------------------------------------------*
-   IF VALTYPE( uValue ) == "N"
+   IF HB_IsNumeric( uValue )
       ::nRangeMin := uValue
       SetProgressBarRange( ::hWnd, uValue, ::nRangeMax )
    ENDIF
@@ -165,7 +165,7 @@ RETURN ::nRangeMin
 *------------------------------------------------------------------------------*
 METHOD RangeMax( uValue ) CLASS TProgressBar
 *------------------------------------------------------------------------------*
-   IF VALTYPE( uValue ) == "N"
+   IF HB_IsNumeric( uValue )
       ::nRangeMax := uValue
       SetProgressBarRange( ::hWnd, ::nRangeMin, uValue )
    ENDIF
@@ -174,7 +174,7 @@ RETURN ::nRangeMax
 *------------------------------------------------------------------------------*
 METHOD FontColor( uValue ) CLASS TProgressBar
 *------------------------------------------------------------------------------*
-   IF VALTYPE( uValue ) == "A"
+   IF HB_IsNumeric( uValue )
       ::Super:FontColor := uValue
       SetProgressBarBarColor( ::hWnd, ::FontColor[1], ::FontColor[2], ::FontColor[3] )
    ENDIF
@@ -183,7 +183,7 @@ RETURN ::Super:FontColor
 *------------------------------------------------------------------------------*
 METHOD BackColor( uValue ) CLASS TProgressBar
 *------------------------------------------------------------------------------*
-   IF VALTYPE( uValue ) == "A"
+   IF HB_IsArray( uValue )
       ::Super:BackColor := uValue
       SetProgressBarBkColor( ::hWnd, ::BackColor[1], ::BackColor[2], ::BackColor[3] )
    ENDIF

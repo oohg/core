@@ -1,5 +1,5 @@
 /*
- * $Id: h_scroll.prg,v 1.12 2007-07-01 19:37:04 guerra000 Exp $
+ * $Id: h_scroll.prg,v 1.13 2007-10-05 22:17:31 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -139,7 +139,7 @@ Local ControlHandle, nStyle
 
    nStyle := ::InitStyle( ,, Invisible, .T., lDisabled )
 
-   If ValType( lSubControl ) == "L" .AND. lSubControl
+   If HB_IsLogical( lSubControl ) .AND. lSubControl
       ::ScrollType := ::nOrient
       ::Register( 0,             ControlName, HelpId,, ToolTip, 0 )
       ::FromhWnd := IF( ::Container != nil, ::Container:hWnd, ::ContainerhWnd )
@@ -171,7 +171,7 @@ Return Self
 *-----------------------------------------------------------------------------*
 METHOD Value( nValue ) CLASS TScrollBar
 *-----------------------------------------------------------------------------*
-   if valtype( nValue ) == "N"
+   if HB_IsNumeric( nValue )
       SetScrollPos( ::FromhWnd, ::ScrollType, nValue / ::nFactor, 1 )
    endif
 Return GetScrollPos( ::FromhWnd, ::ScrollType ) * ::nFactor
@@ -192,7 +192,7 @@ Return ::nRangeMax
 METHOD SetRange( nRangeMin, nRangeMax ) CLASS TScrollBar
 *-----------------------------------------------------------------------------*
 LOCAL nMax
-   If ValType( nRangeMin ) == "N" .OR. ValType( nRangeMax ) == "N"
+   If HB_IsNumeric( nRangeMin ) .OR. HB_IsNumeric( nRangeMax )
       ASSIGN ::nRangeMin VALUE nRangeMin TYPE "N"
       ASSIGN ::nRangeMax VALUE nRangeMax TYPE "N"
       nMax := MAX( ABS( ::nRangeMin ), ABS( ::nRangeMax ) )
@@ -208,7 +208,7 @@ Return nil
 *-----------------------------------------------------------------------------*
 METHOD Page( nValue ) CLASS TScrollBar
 *-----------------------------------------------------------------------------*
-   if valtype( nValue ) == "N"
+   if HB_IsNumeric( nValue ) 
       SetScrollPage( ::FromhWnd, ::ScrollType, nValue / ::nFactor )
    endif
 Return SetScrollPage( ::FromhWnd, ::ScrollType ) * ::nFactor
