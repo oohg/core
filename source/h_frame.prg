@@ -1,5 +1,5 @@
 /*
- * $Id: h_frame.prg,v 1.5 2007-09-21 16:00:12 declan2005 Exp $
+ * $Id: h_frame.prg,v 1.6 2007-10-06 22:16:44 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -110,17 +110,17 @@ Local ControlHandle
         DEFAULT caption to ""
 
 	if valtype (caption) == 'U'
-		caption := ""
-		fontname := "Arial"
-		fontsize := 1
+            caption := ""
+	    fontname := "Arial"
+	    fontsize := 1
 	EndIf
 
-	if valtype (w) == 'U'
-		w := 140
+	if valtype(w) == 'U'
+           w := 140
 	EndIf
 
-	if valtype (h) == 'U'
-		h := 140
+	if valtype(h) == 'U'
+	    h := 140
 	EndIf
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, , lRtl )

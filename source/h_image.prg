@@ -1,5 +1,5 @@
 /*
- * $Id: h_image.prg,v 1.17 2007-08-20 04:42:11 guerra000 Exp $
+ * $Id: h_image.prg,v 1.18 2007-10-06 22:16:44 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -133,7 +133,7 @@ Local ControlHandle, nStyle
    ASSIGN ::AutoSize   VALUE autosize TYPE "L"
 
    ::SetForm( ControlName, ParentForm,,,, BackColor,, lRtl )
-   If ValType( lWhiteBackground ) == "L" .AND. lWhiteBackground
+   If HB_IsLogical( lWhiteBackground ) .AND. lWhiteBackground
       ::BackColor := WHITE
    EndIf
 
@@ -159,7 +159,7 @@ Return Self
 METHOD Picture( cPicture ) CLASS TImage
 *-----------------------------------------------------------------------------*
 LOCAL nAttrib
-   IF VALTYPE( cPicture ) $ "CM"
+   IF HB_IsString( cPicture ) 
       DeleteObject( ::AuxHandle )
       ::cPicture := cPicture
       nAttrib := LR_CREATEDIBSECTION

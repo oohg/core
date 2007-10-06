@@ -1,5 +1,5 @@
 /*
- * $Id: h_editbox.prg,v 1.12 2007-02-06 00:13:25 guerra000 Exp $
+ * $Id: h_editbox.prg,v 1.13 2007-10-06 22:16:44 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -114,11 +114,11 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
 *-----------------------------------------------------------------------------*
 Local nStyle := ES_MULTILINE + ES_WANTRETURN, nStyleEx := 0
 
-   DEFAULT h         TO 240
+   DEFAULT h   TO 240
 *   DEFAULT Maxlenght TO 64738
 
-   nStyle += IF( Valtype( novscroll ) == "L" .AND. novscroll, ES_AUTOVSCROLL, WS_VSCROLL ) + ;
-             IF( Valtype( nohscroll ) == "L" .AND. nohscroll, 0,              WS_HSCROLL )
+   nStyle += IF( HB_IsLogical( novscroll ) .AND. novscroll, ES_AUTOVSCROLL, WS_VSCROLL ) + ;
+             IF( HB_IsLogical( nohscroll ) .AND. nohscroll, 0,              WS_HSCROLL )
 
    ::Define2( ControlName, ParentForm, x, y, w, h, value, ;
               fontname, fontsize, tooltip, maxlenght, .f., ;

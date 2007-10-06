@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.39 2007-03-30 01:52:38 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.40 2007-10-06 22:16:44 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -131,8 +131,8 @@ METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, cValue, ;
 *-----------------------------------------------------------------------------*
 Local nStyle := ES_AUTOHSCROLL, nStyleEx := 0
 
-   nStyle += IF( Valtype( lUpper ) == "L" .AND. lUpper, ES_UPPERCASE, 0 ) + ;
-             IF( Valtype( lLower ) == "L" .AND. lLower, ES_LOWERCASE, 0 )
+   nStyle += IF( HB_IsLogical( lUpper ) .AND. lUpper, ES_UPPERCASE, 0 ) + ;
+             IF( HB_IsLogical( lLower ) .AND. lLower, ES_LOWERCASE, 0 )
 
    ::Define2( cControlName, cParentForm, nx, ny, nWidth, nHeight, cValue, ;
               cFontName, nFontSize, cToolTip, nMaxLength, lPassword, ;
@@ -161,7 +161,7 @@ local break
    ASSIGN ::nWidth  VALUE w TYPE "N"
    ASSIGN ::nHeight VALUE h TYPE "N"
 
-   If ValType( nMaxLength ) == "N" .AND. nMaxLength >= 0
+   If HB_IsNumeric( nMaxLength ) .AND. nMaxLength >= 0
       ::nMaxLength := Int( nMaxLength )
    EndIf
 
@@ -172,11 +172,11 @@ local break
 
    // Style definition
    nStyle += ::InitStyle( ,, Invisible, NoTabStop, lDisabled ) + ;
-             IF( Valtype( lPassword ) == "L" .AND. lPassword, ES_PASSWORD,  0 ) + ;
-             IF( Valtype( right     ) == "L" .AND. right,     ES_RIGHT,     0 ) + ;
-             IF( Valtype( readonly  ) == "L" .AND. readonly,  ES_READONLY,  0 )
+             IF( HB_IsLogical( lPassword ) .AND. lPassword, ES_PASSWORD,  0 ) + ;
+             IF( HB_IsLogical( right     ) .AND. right,     ES_RIGHT,     0 ) + ;
+             IF( HB_IsLogical( readonly  ) .AND. readonly,  ES_READONLY,  0 )
 
-   nStyleEx += IF( Valtype( lNoBorder ) != "L" .OR. ! lNoBorder, WS_EX_CLIENTEDGE, 0 )
+   nStyleEx += IF( !HB_IsLogical( lNoBorder ) .OR. ! lNoBorder, WS_EX_CLIENTEDGE, 0 )
 
 	// Creates the control window.
    ::SetSplitBoxInfo( Break, )
@@ -185,7 +185,7 @@ local break
    ::Register( nControlHandle, cControlName, HelpId,, cToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
 
-   If ValType( Field ) $ 'CM' .AND. ! empty( Field )
+   If HB_IsString( Field ) .AND. ! empty( Field )
       ::VarName := alltrim( Field )
       ::Block := &( "{ |x| if( PCount() == 0, " + Field + ", " + Field + " := x ) }" )
       cValue := EVAL( ::Block )
@@ -209,9 +209,9 @@ METHOD RefreshData() CLASS TText
 *-----------------------------------------------------------------------------*
 Local uValue
 
-   IF valtype( ::Block ) == "B"
+   IF HB_IsBlock( ::Block )
       uValue := EVAL( ::Block )
-      If valtype ( uValue ) $ 'CM'
+      If HB_IsString ( uValue ) $ 'CM'
          uValue := rtrim( uValue )
       EndIf
       ::Value := uValue
@@ -222,7 +222,7 @@ Return NIL
 *------------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TText
 *------------------------------------------------------------------------------*
-Return ( ::Caption := IF( ValType( uValue ) $ "CM", RTrim( uValue ), NIL ) )
+Return ( ::Caption := IF( HB_IsString( uValue ) , RTrim( uValue ), NIL ) )
 
 *------------------------------------------------------------------------------*
 METHOD SetFocus() CLASS TText
@@ -242,7 +242,7 @@ Return uRet
 *------------------------------------------------------------------------------*
 METHOD CaretPos( nPos ) CLASS TText
 *------------------------------------------------------------------------------*
-   IF ValType( nPos ) == "N"
+   IF HB_IsNumeric( nPos )
       SendMessage( ::hWnd, EM_SETSEL, nPos, nPos )
    ENDIF
 Return HiWord( SendMessage( ::hWnd, EM_GETSEL, 0, 0 ) )
@@ -250,7 +250,7 @@ Return HiWord( SendMessage( ::hWnd, EM_GETSEL, 0, 0 ) )
 *------------------------------------------------------------------------------*
 METHOD ReadOnly( lReadOnly ) CLASS TText
 *------------------------------------------------------------------------------*
-   IF ValType( lReadOnly ) == "L"
+   IF HB_IsLogical( lReadOnly )
       SendMessage( ::hWnd, EM_SETREADONLY, IF( lReadOnly, 1, 0 ), 0 )
    ENDIF
 Return IsWindowStyle( ::hWnd, ES_READONLY )
@@ -258,7 +258,7 @@ Return IsWindowStyle( ::hWnd, ES_READONLY )
 *------------------------------------------------------------------------------*
 METHOD MaxLength( nLen ) CLASS TText
 *------------------------------------------------------------------------------*
-   IF ValType( nLen ) == "N"
+   IF HB_IsNumeric( nLen )
       ::nMaxLength := IF( nLen > 1, nLen, 0 )
       SendMessage( ::hWnd, EM_LIMITTEXT, ::nMaxLength, 0 )
    ENDIF
@@ -335,7 +335,7 @@ METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, uValue, ;
 *-----------------------------------------------------------------------------*
 Local nStyle := ES_AUTOHSCROLL, nStyleEx := 0
 
-   IF ValType( uValue ) == "N"
+   IF HB_IsNumeric( uValue )
       right := .T.
    ElseIf ValType( uValue ) == "U"
       uValue := ""
@@ -357,7 +357,7 @@ Local cType, cPicFun, cPicMask, nPos, nScroll
 
    cType := ValType( uValue )
 
-   IF ! ValType( cInputMask ) $ "CM"
+   IF ! HB_IsString( cInputMask )
       cInputMask := ""
    ENDIF
    ::lBritish := .F.
@@ -565,7 +565,7 @@ Return uValue
 *------------------------------------------------------------------------------*
 METHOD Picture( cPicture ) CLASS TTextPicture
 *------------------------------------------------------------------------------*
-   If ValType( cPicture ) $ "CM"
+   If HB_IsString( cPicture )
       ::cPicture := cPicture
    EndIf
 RETURN ::cPicture
@@ -832,9 +832,6 @@ Local cPictureMask, aValidMask
 Return ::Super:Events_Command( wParam )
 
 
-
-
-
 *-----------------------------------------------------------------------------*
 CLASS TTextNum FROM TText
 *-----------------------------------------------------------------------------*
@@ -870,7 +867,7 @@ Return Self
 *------------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TTextNum
 *------------------------------------------------------------------------------*
-   IF VALTYPE( uValue ) == "N"
+   IF HB_IsNumeric( uValue )
       uValue := Int( uValue )
       ::Caption := AllTrim( Str( uValue ) )
    ELSE
@@ -910,9 +907,6 @@ Local cText, nPos, nCursorPos, lChange
 Return ::Super:Events_Command( wParam )
 
 
-
-
-
 /*
 *-----------------------------------------------------------------------------*
 CLASS TTextMasked FROM TTextPicture
@@ -937,13 +931,13 @@ METHOD Define( ControlName, ParentForm, x, y, inputmask, width, value, ;
 
    rightalign := .T.
 
-   IF ValType( Format ) $ "CM" .AND. ! Empty( Format )
+   IF HB_IsString( Format ) .AND. ! Empty( Format )
       Format := "@" + Alltrim( Format ) + " "
    Else
       Format := ""
    ENDIF
 
-   IF ! ValType( inputmask ) $ "CM" .OR. Empty( inputmask )
+   IF ! HB_IsString( inputmask ) .OR. Empty( inputmask )
       inputmask := ""
    ENDIF
 
@@ -971,9 +965,6 @@ METHOD Define( ControlName, ParentForm, x, y, inputmask, width, value, ;
 Return Self
 
 
-
-
-
 *-----------------------------------------------------------------------------*
 CLASS TTextCharMask FROM TTextPicture
 *-----------------------------------------------------------------------------*
@@ -991,12 +982,12 @@ METHOD Define( ControlName, ParentForm, x, y, inputmask, width, value, ;
                lDisabled, bValid ) CLASS TTextCharMask
 *------------------------------------------------------------------------------*
 
-   IF ValType( date ) == "L" .AND. date
+   IF HB_IsLogical( date ) .AND. date
       ::lInsert := .F.
       inputmask := StrTran( StrTran( StrTran( StrTran( StrTran( StrTran( SET( _SET_DATEFORMAT ), "Y", "9" ), "y", "9" ), "M", "9" ), "m", "9" ), "D", "9" ), "d", "9" )
-      If ValType( Value ) $ "CM"
+      IF HB_IsString( Value )
          Value := CTOD( Value )
-      ElseIf ValType( Value ) != "D"
+      ElseIf !HB_IsDate( Value )
          Value := STOD( "" )
       ENDIF
    ElseIf ValType( Value ) == "U"
@@ -1013,10 +1004,6 @@ METHOD Define( ControlName, ParentForm, x, y, inputmask, width, value, ;
 Return Self
 */
 
-
-
-
-
 *-----------------------------------------------------------------------------*
 FUNCTION DefineTextBox( cControlName, cParentForm, x, y, Width, Height, ;
                         Value, cFontName, nFontSize, cToolTip, nMaxLength, ;
@@ -1030,8 +1017,8 @@ FUNCTION DefineTextBox( cControlName, cParentForm, x, y, Width, Height, ;
 Local Self, lInsert
 
    // If format is specified, inputmask is enabled
-   If ValType( format ) $ "CM"
-      If ValType( inputmask ) $ "CM"
+   If HB_IsString( format )
+      If HB_IsString( inputmask )
          inputmask := "@" + format + " " + inputmask
       Else
          inputmask := "@" + format
@@ -1041,32 +1028,32 @@ Local Self, lInsert
    lInsert := nil
 
    // Checks for date textbox
-   If ( ValType( date ) == "L" .AND. date ) .OR. ValType( value ) == "D"
+   If ( HB_IsLogical( date ) .AND. date ) .OR. HB_IsDate( value )
       lInsert := .F.
       numeric := .F.
-      If ValType( Value ) $ "CM"
+      If HB_IsString( Value )
          Value := CTOD( Value )
-      ElseIf ValType( Value ) != "D"
+      ElseIf !HB_IsDate( Value )
          Value := STOD( "" )
       EndIf
-      If ! ValType( inputmask ) $ "CM"
+      If ! HB_IsString( inputmask )
          inputmask := "@D"
       EndIf
    EndIf
 
    // Checks for numeric textbox
-   If ValType( numeric ) != "L"
+   If !HB_IsLogical( numeric )
       numeric := .F.
    ElseIf numeric
       lInsert := .F.
-      If ValType( Value ) $ "CM"
+      If HB_IsString( Value )
          Value := VAL( Value )
-      ElseIf ValType( Value ) != "N"
+      ElseIf !HB_IsNumeric( Value )
          Value := 0
       EndIf
    EndIf
 
-   If ValType( inputmask ) $ "CM"
+   If HB_IsString( inputmask ) 
       // If inputmask is defined, it's TTextPicture()
       Self := _OOHG_SelectSubClass( TTextPicture(), subclass )
       ASSIGN ::lInsert VALUE lInsert TYPE "L"

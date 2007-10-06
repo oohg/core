@@ -1,5 +1,5 @@
 /*
- * $Id: h_hyperlink.prg,v 1.5 2007-09-21 20:20:37 declan2005 Exp $
+ * $Id: h_hyperlink.prg,v 1.6 2007-10-06 22:16:44 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -133,7 +133,7 @@ Return Self
 METHOD Address( cUrl ) CLASS THyperLink
 *------------------------------------------------------------------------------*
 
-   IF VALTYPE( cUrl ) $ "CM"
+   IF HB_IsString( cUrl )
       if at("@", cUrl )>0
 
          ::OnClick := {||ShellExecute(0, "open", "rundll32.exe", "url.dll,FileProtocolHandler mailto:"+cUrl, ,1)}

@@ -1,5 +1,5 @@
 /*
- * $Id: h_ipaddress.prg,v 1.4 2006-02-11 06:19:33 guerra000 Exp $
+ * $Id: h_ipaddress.prg,v 1.5 2007-10-06 22:16:44 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -142,11 +142,11 @@ METHOD Value( uValue ) CLASS TIpAddress
    IF pcount() > 0
       If Len( uValue ) == 0
          ClearIpAddress( ::hWnd )
-      Elseif VALTYPE( uValue ) == "A"
+      Elseif HB_IsArray( uValue )
          SetIPAddress( ::hWnd, uValue[1], uValue[2], uValue[3], uValue[4] )
-      Elseif VALTYPE( uValue ) $ "CM"
-         SetIPAddress( ::hWnd, uValue )
-		EndIf
+      Elseif HB_IsString( uValue )
+         SetIPAddress( ::hWnd, uValue )        
+      EndIf
    ENDIF
 RETURN GetIPAddress( ::hWnd )
 

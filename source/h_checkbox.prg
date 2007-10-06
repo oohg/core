@@ -1,5 +1,5 @@
 /*
- * $Id: h_checkbox.prg,v 1.16 2007-09-06 04:59:51 guerra000 Exp $
+ * $Id: h_checkbox.prg,v 1.17 2007-10-06 22:16:44 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -124,7 +124,7 @@ Local ControlHandle, nStyle := 0, nStyleEx := 0
    ASSIGN ::nHeight     VALUE h TYPE "N"
    ASSIGN ::Transparent VALUE transparent  TYPE "L"
 
-   IF VALTYPE( value ) != "L"
+   IF !HB_IsLogical( value )
       value := .F.
    ENDIF
    ASSIGN autosize      VALUE autosize TYPE "L" DEFAULT .F.
@@ -144,7 +144,7 @@ Local ControlHandle, nStyle := 0, nStyleEx := 0
    ::Autosize    := autosize
    ::Caption     := Caption
 
-   If ValType( Field ) $ 'CM' .AND. ! empty( Field )
+   If HB_IsString( Field )  .AND. ! empty( Field )
       ::VarName := alltrim( Field )
       ::Block := &( "{ |x| if( PCount() == 0, " + Field + ", " + Field + " := x ) }" )
       Value := EVAL( ::Block )
@@ -152,9 +152,9 @@ Local ControlHandle, nStyle := 0, nStyleEx := 0
 
    ::Value := value
 
-	if valtype ( Field ) != 'U'
+   if valtype ( Field ) != 'U'
       aAdd ( ::Parent:BrowseList, Self )
-	EndIf
+   EndIf
 
    ::OnChange    := ChangeProcedure
 
@@ -163,8 +163,9 @@ Return Self
 *------------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TCheckBox
 *------------------------------------------------------------------------------*
-   IF VALTYPE( uValue ) == "L"
+   IF HB_IsLogical( uValue )
       SendMessage( ::hWnd, BM_SETCHECK, if( uValue, BST_CHECKED, BST_UNCHECKED ), 0 )
+      ::DoEvent( ::OnChange )
    ELSE
       uValue := ( SendMessage( ::hWnd, BM_GETCHECK , 0 , 0 ) == BST_CHECKED )
    ENDIF

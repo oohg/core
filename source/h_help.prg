@@ -1,5 +1,5 @@
 /*
- * $Id: h_help.prg,v 1.2 2005-08-26 06:04:16 guerra000 Exp $
+ * $Id: h_help.prg,v 1.3 2007-10-06 22:16:44 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -105,17 +105,17 @@ LOCAL hFile
 
    _OOHG_ActiveHelpFile := ""
 
-	if ! File( cFile )
+   if ! File( cFile )
       MsgInfo( "Help File " + cFile + " Not Found " )
       Return .F.
-	endif
+   endif
 
    hFile := FOpen( cFile, FO_READ + FO_SHARED )
 
-	If FError() != 0
+   If FError() != 0
       MsgInfo( "Error opening Help file. DOS ERROR: " + Str( FError(), 2, 0 ) )
       Return .F.
-	EndIf
+   EndIf
 
    _OOHG_ActiveHelpFile := cFile
 
@@ -128,10 +128,10 @@ Local ret:=0
 
    If ! empty( _OOHG_ActiveHelpFile )
 
-      if valtype( nTopic ) != 'N'
+      if !HB_IsNumeric( nTopic )
          nTopic := 0
       endif
-      if valtype( nMet ) != 'N'
+      if !HB_IsNumeric( nMet )
          nMet := 0
       endif
 

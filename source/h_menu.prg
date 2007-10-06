@@ -1,5 +1,5 @@
 /*
- * $Id: h_menu.prg,v 1.20 2007-09-21 02:43:28 guerra000 Exp $
+ * $Id: h_menu.prg,v 1.21 2007-10-06 22:16:44 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -205,7 +205,7 @@ ENDCLASS
 METHOD Define( Button, Parent ) CLASS TMenuDropDown
 *------------------------------------------------------------------------------*
 LOCAL oContainer
-   If VALTYPE( Button ) == "O"
+   If HB_IsObject( Button )
       Parent := Button:Parent
       Button := Button:Name
    EndIf
@@ -276,16 +276,16 @@ LOCAL nStyle
    AADD( _OOHG_xMenuActive, Self )
    nStyle := MF_POPUP + IF( ValType( lRight ) == "L" .AND. lRight, MF_RIGHTJUSTIFY, 0 )
    AppendMenuString( ::Container:hWnd, ::hWnd, Caption, nStyle )
-   If Valtype( image ) $ 'CM'
+   If HB_IsString( image )
       MenuItem_SetBitMaps( ::Container:hWnd, ::xId, image, '' )
    EndIf
-   if ValType( checked ) == "L" .AND. checked
+   if HB_IsLogical( checked )  .AND. checked
       ::Checked := .T.
    EndIf
-   if ValType( disabled ) == "L" .AND. disabled
+   if HB_IsLogical( disabled ) .AND. disabled
       ::Enabled := .F.
    EndIf
-   if ValType( hilited ) == "L" .AND. hilited
+   if HB_IsLogical( hilited ) .AND. hilited
       ::Hilited := .T.
    EndIf
    ::lMain := ::Container:lMain
@@ -307,21 +307,21 @@ Local nStyle, Controlhandle, id
    EndIf
    ::SetForm( Name, Parent )
    Id := _GetId()
-   nStyle := IF( ValType( lRight ) == "L" .AND. lRight, MF_RIGHTJUSTIFY, 0 )
+   nStyle := IF( HB_IsLogical( lRight ) .AND. lRight, MF_RIGHTJUSTIFY, 0 )
    Controlhandle := AppendMenuString( ::Container:hWnd, id, caption, nStyle )
    ::Register( ControlHandle, Name, , , , Id )
    ::xId := ::Id
    ::OnClick := action
-   If Valtype( image ) $ 'CM'
+   If HB_IsString( image )
       MenuItem_SetBitMaps( ::Container:hWnd, ::xId, image, '' )
    EndIf
-   if ValType( checked ) == "L" .AND. checked
+   if HB_IsLogical( checked )  .AND. checked
       ::Checked := .T.
    EndIf
-   if ValType( disabled ) == "L" .AND. disabled
+   if HB_IsLogical( disabled )  .AND. disabled
       ::Enabled := .F.
    EndIf
-   if ValType( hilited ) == "L" .AND. hilited
+   if HB_IsLogical( hilited ) .AND. hilited
       ::Hilited := .T.
    EndIf
    ::lMain := ::Container:lMain

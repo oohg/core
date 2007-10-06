@@ -1,5 +1,5 @@
 /*
- * $Id: h_media.prg,v 1.5 2007-06-25 04:35:57 guerra000 Exp $
+ * $Id: h_media.prg,v 1.6 2007-10-06 22:16:44 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -136,21 +136,21 @@ Local hh, nStyle
 
    ::SetForm( ControlName, ParentForm,,,,,, lRtl )
 
-   IF Valtype( sha ) == "L" .AND. sha
+   IF HB_IsLogical( sha ) .AND. sha
       shm := shn := shp := .T.
    ENDIF
 
    nStyle := ::InitStyle( ,, Invisible, NoTabStop, lDisabled ) + ;
              WS_CHILD + WS_BORDER + ;
-             IF( Valtype( noasw ) == "L" .AND. noasw, MCIWNDF_NOAUTOSIZEWINDOW,  0 ) + ;
-             IF( Valtype( noasm ) == "L" .AND. noasm, MCIWNDF_NOAUTOSIZEMOVIE,  0 ) + ;
-             IF( Valtype( noed ) == "L" .AND. noed, MCIWNDF_NOERRORDLG,  0 ) + ;
-             IF( Valtype( nom ) == "L" .AND. nom, MCIWNDF_NOMENU,  0 ) + ;
-             IF( Valtype( noo ) == "L" .AND. noo, MCIWNDF_NOOPEN,  0 ) + ;
-             IF( Valtype( nop ) == "L" .AND. nop, MCIWNDF_NOPLAYBAR,  0 ) + ;
-             IF( Valtype( shm ) == "L" .AND. shm, MCIWNDF_SHOWMODE,  0 ) + ;
-             IF( Valtype( shn ) == "L" .AND. shn, MCIWNDF_SHOWNAME,  0 ) + ;
-             IF( Valtype( shp ) == "L" .AND. shp, MCIWNDF_SHOWPOS,  0 )
+             IF( HB_IsLogical( noasw ) .AND. noasw, MCIWNDF_NOAUTOSIZEWINDOW,  0 ) + ;
+             IF( HB_IsLogical( noasm ) .AND. noasm, MCIWNDF_NOAUTOSIZEMOVIE,  0 ) + ;
+             IF( HB_IsLogical( noed )  .AND. noed, MCIWNDF_NOERRORDLG,  0 ) + ;
+             IF( HB_IsLogical( nom ) .AND. nom, MCIWNDF_NOMENU,  0 ) + ;
+             IF( HB_IsLogical( noo ) .AND. noo, MCIWNDF_NOOPEN,  0 ) + ;
+             IF( HB_IsLogical( nop ) .AND. nop, MCIWNDF_NOPLAYBAR,  0 ) + ;
+             IF( HB_IsLogical( shm ) .AND. shm, MCIWNDF_SHOWMODE,  0 ) + ;
+             IF( HB_IsLogical( shn ) .AND. shn, MCIWNDF_SHOWNAME,  0 ) + ;
+             IF( HB_IsLogical( shp ) .AND. shp, MCIWNDF_SHOWPOS,  0 )
 
    hh := InitPlayer ( ::ContainerhWnd, file, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle )
 
@@ -167,7 +167,7 @@ RETURN ::Super:Release()
 *-----------------------------------------------------------------------------*
 METHOD Volume( nVolume ) CLASS TPlayer
 *-----------------------------------------------------------------------------*
-   IF VALTYPE( nVolume ) == "N"
+   IF HB_IsNumeric( nVolume )
       mcifunc( ::hWnd, 15, nVolume )
    ENDIF
 Return mcifunc( ::hWnd, 19 )
@@ -175,7 +175,7 @@ Return mcifunc( ::hWnd, 19 )
 *-----------------------------------------------------------------------------*
 METHOD Position( nPosition ) CLASS TPlayer
 *-----------------------------------------------------------------------------*
-   IF VALTYPE( nPosition ) == "N"
+   IF HB_IsNumeric( nPosition )
       mcifunc( ::hWnd, 20, nPosition )
    ENDIF
 Return mcifunc( ::hWnd, 18 )
@@ -233,9 +233,9 @@ Local hh, nStyle
 
    nStyle := ::InitStyle( ,, Invisible, NoTabStop, lDisabled ) + ;
              WS_CHILD + WS_BORDER + ;
-             IF( Valtype( autoplay ) == "L" .AND. autoplay, ACS_AUTOPLAY,  0 ) + ;
-             IF( Valtype( center ) == "L" .AND. center, ACS_CENTER,  0 ) + ;
-             IF( Valtype( transparent ) == "L" .AND. transparent, ACS_TRANSPARENT,  0 )
+             IF( HB_IsLogical( autoplay ) .AND. autoplay, ACS_AUTOPLAY,  0 ) + ;
+             IF( HB_IsLogical( center ) .AND. center, ACS_CENTER,  0 ) + ;
+             IF( HB_IsLogical( transparent )  .AND. transparent, ACS_TRANSPARENT,  0 )
 
    hh := InitAnimate( ::ContainerhWnd, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle )
 

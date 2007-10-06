@@ -1,11 +1,30 @@
 /*
- * $Id: ChangeLog,v 1.410 2007-10-05 22:17:24 declan2005 Exp $
+ * $Id: ChangeLog,v 1.411 2007-10-06 22:16:43 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-10-06 17:11 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  *source/h_menu.prg
+  *source/h_media.prg
+  *source/h_edit.prg
+  *source/h_radio.prg
+  *source/h_textbox.prg
+  *source/h_checkbox.prg
+  *source/h_combo.prg
+  *source/h_datepicker.prg
+  *source/h_editbox.prg
+  *source/h_frame.prg
+  *source/h_help.prg
+  *source/h_hyperlink.prg
+  *source/h_image.prg
+  *source/h_ipaddress.prg
+   ! optimizing code
+   + added fired event when changed programatically  for
+    ( datepicker timepicker combo chechkbox )
 
 
 2007-10-05 17:12 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
@@ -17,7 +36,7 @@
 
 2007-10-05 6:38 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_slider.prg
-    !change fired way when chaneg value programatically
+    !change fired way when change value programatically
     ! optimazing code
   * source/h_spinner.prg
     ! optimazing code

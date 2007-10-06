@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.24 2007-07-15 04:48:43 guerra000 Exp $
+ * $Id: h_combo.prg,v 1.25 2007-10-06 22:16:44 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -169,8 +169,8 @@ Local ControlHandle , rcount := 0 , cset := 0 , WorkArea , cField, nStyle
 #define CBS_DROPDOWNLIST       0x0003
 #define CBS_NOINTEGRALHEIGHT   0x0400
    nStyle := ::InitStyle( ,, Invisible, notabstop, lDisabled ) + ;
-             if( ValType( SORT ) == "L"          .AND. SORT,          CBS_SORT,    0 ) + ;
-             if( ValType( displaychange ) != "L" .OR. ! displaychange, CBS_DROPDOWNLIST, CBS_DROPDOWN ) + ;
+             if( HB_IsLogical( SORT )           .AND. SORT,          CBS_SORT,    0 ) + ;
+             if( !HB_IsLogical( displaychange ) .OR. ! displaychange, CBS_DROPDOWNLIST, CBS_DROPDOWN ) + ;
              if( ( "XP" $ OS() ), CBS_NOINTEGRALHEIGHT, 0 )
 
    ::SetSplitBoxInfo( Break, GripperText, ::nWidth )
@@ -183,7 +183,7 @@ Local ControlHandle , rcount := 0 , cset := 0 , WorkArea , cField, nStyle
    ::WorkArea := WorkArea
    ::ValueSource := valuesource
 
-   if valtype( aImage ) == "A"
+   if HB_IsArray( aImage )
       ::AddBitMap( aImage )
    EndIf
 
@@ -191,7 +191,7 @@ Local ControlHandle , rcount := 0 , cset := 0 , WorkArea , cField, nStyle
 *      _OOHG_acontrolrangemin [k] := FindWindowEx( Controlhandle , 0, "Edit", Nil )
 	EndIf
 
-   If  ValType( WorkArea ) $ "CM"
+   If  HB_IsString( WorkArea )
       ::Refresh()
 	Else
       AEval( rows, { |x| ::AddItem( x ) } )
@@ -238,14 +238,16 @@ METHOD Value( uValue ) CLASS TCombo
 *-----------------------------------------------------------------------------*
 LOCAL uRet
    IF LEN( ::aValues ) == 0
-      IF ValType( uValue ) == "N"
+      IF HB_IsNumeric( uValue )
          ComboSetCursel( ::hWnd , uValue )
+          ::DoEvent( ::OnChange )
       ENDIF
       uRet := ComboGetCursel( ::hWnd )
    ELSE
       IF VALTYPE( ::aValues[ 1 ] ) == VALTYPE( uValue ) .OR. ;
-         ( VALTYPE( uValue ) $ "CM" .AND. VALTYPE( ::aValues[ 1 ] ) $ "CM" )
+         ( HB_IsString( uValue ) .AND. HB_IsString( ::aValues[ 1 ] ) )
          ComboSetCursel( ::hWnd, ASCAN( ::aValues, uValue ) )
+          ::DoEvent( ::OnChange )
       ENDIF
       uRet := ComboGetCursel( ::hWnd )
       IF uRet >= 1 .AND. uRet <= LEN( ::aValues )
@@ -260,7 +262,7 @@ RETURN uRet
 *-----------------------------------------------------------------------------*
 METHOD Visible( lVisible ) CLASS TCombo
 *-----------------------------------------------------------------------------*
-   IF VALTYPE( lVisible ) == "L"
+   IF HB_IsLogical( lVisible )
       ::Super:Visible := lVisible
       IF ! lVisible
          SendMessage( ::hWnd, 335, 0, 0 )

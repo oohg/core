@@ -1,5 +1,5 @@
 /*
- * $Id: h_datepicker.prg,v 1.8 2006-12-09 03:49:50 guerra000 Exp $
+ * $Id: h_datepicker.prg,v 1.9 2007-10-06 22:16:44 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -124,7 +124,7 @@ Local ControlHandle
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, , , .t. , lRtl )
 
-   If ValType( Field ) $ 'CM' .AND. ! empty( Field )
+   If HB_IsString( Field ) .AND. ! empty( Field )
       ::VarName := alltrim( Field )
       ::Block := &( "{ |x| if( PCount() == 0, " + Field + ", " + Field + " := x ) }" )
       Value := EVAL( ::Block )
@@ -153,10 +153,12 @@ Return Self
 *-----------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TDatePick
 *-----------------------------------------------------------------------------*
-   IF ValType( uValue ) == "D"
+   IF HB_IsDate( uValue )
       SetDatePick( ::hWnd, year( uValue ), month( uValue ), day( uValue ) )
+      ::DoEvent( ::OnChange )
    ELSEIF PCOUNT() > 0
       SetDatePickNull( ::hWnd )
+      ::DoEvent( ::OnChange )
    ENDIF
 Return SToD( StrZero( GetDatePickYear( ::hWnd ), 4 ) + StrZero( GetDatePickMonth( ::hWnd ), 2 ) + StrZero( GetDatePickDay( ::hWnd ), 2 ) )
 
@@ -206,7 +208,7 @@ Local ControlHandle
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, , , .t. , lRtl )
 
-   If ValType( Field ) $ 'CM' .AND. ! empty( Field )
+   If HB_IsString( Field ) .AND. ! empty( Field )
       ::VarName := alltrim( Field )
       ::Block := &( "{ |x| if( PCount() == 0, " + Field + ", " + Field + " := x ) }" )
       Value := EVAL( ::Block )
@@ -235,10 +237,12 @@ Return Self
 *-----------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TTimePick
 *-----------------------------------------------------------------------------*
-   IF ValType( uValue ) == "C"
+   IF HB_IsChar( uValue )
       SetTimePick( ::hWnd ,VAL(left(uValue,2)),VAL(SUBSTR(uValue,4,2)),VAL( SUBSTR(uValue,7,2 )) )
+       ::DoEvent( ::OnChange )
    ELSEIF PCOUNT() > 0
       SettimePick (::hWnd,,VAL(left(TIME(),2)),VAL(SUBSTR(TIME(),4,2)),VAL( SUBSTR(TIME(),7,2) ))
+       ::DoEvent( ::OnChange )
    ENDIF
 Return StrZero(GetDatePickHour ( ::hWnd ), 2 ) + ":" + StrZero ( GetDatePickMinute ( ::hWnd ), 2 ) + ":" + StrZero ( GetDatePickSecond (::hWnd ), 2 )
 

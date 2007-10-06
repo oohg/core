@@ -1,5 +1,5 @@
 /*
- * $Id: h_radio.prg,v 1.15 2006-07-19 03:46:04 guerra000 Exp $
+ * $Id: h_radio.prg,v 1.16 2007-10-06 22:16:44 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -178,7 +178,7 @@ Local ControlHandle
       oItem:Caption := aOptions[ i ]
 	next i
 
-   if valtype( Value ) == "N" .AND. Value >= 1 .AND. Value <= Len( ::aControls )
+   if HB_IsNumeric( Value ) .AND. Value >= 1 .AND. Value <= Len( ::aControls )
       SendMessage( ::aControls[ value ]:hWnd, BM_SETCHECK , BST_CHECKED , 0 )
       if notabstop .and. IsTabStop( ::aControls[ value ]:hWnd )
          SetTabStop( ::aControls[ value ]:hWnd, .f. )
@@ -213,7 +213,7 @@ Return uRet
 METHOD Value( nValue ) CLASS TRadioGroup
 *-----------------------------------------------------------------------------*
 LOCAL nOldValue, aNewValue, I, oItem, nLen
-   IF VALTYPE( nValue ) == "N"
+   IF HB_IsNumeric( nValue )
       nValue := INT( nValue )
       nLen := LEN( ::aControls )
       aNewValue := AFILL( ARRAY( nLen ), BST_UNCHECKED )
@@ -230,6 +230,8 @@ LOCAL nOldValue, aNewValue, I, oItem, nLen
          oItem := ::aControls[ I ]
          If SendMessage( oItem:hWnd, BM_GETCHECK, 0, 0 ) != aNewValue[ I ]
             SendMessage( oItem:hWnd, BM_SETCHECK, aNewValue[ I ], 0 )
+            //////// ojo aqui en esta linea de abajo
+            ::Container:DoEvent( ::Container:OnChange )
          EndIf
       NEXT
    Else
@@ -240,7 +242,7 @@ RETURN nOldValue
 *-----------------------------------------------------------------------------*
 METHOD Enabled( lEnabled ) CLASS TRadioGroup
 *-----------------------------------------------------------------------------*
-   IF VALTYPE( lEnabled ) == "L"
+   IF HB_IsLogical( lEnabled )
       ::Super:Enabled := lEnabled
       AEVAL( ::aControls, { |o| o:Enabled := o:Enabled } )
    ENDIF
@@ -259,7 +261,7 @@ Return Self
 *-----------------------------------------------------------------------------*
 METHOD Visible( lVisible ) CLASS TRadioGroup
 *-----------------------------------------------------------------------------*
-   IF VALTYPE( lVisible ) == "L"
+   IF HB_IsLogical( lVisible )
       ::Super:Visible := lVisible
       IF lVisible
          AEVAL( ::aControls, { |o| o:Visible := o:Visible } )
@@ -286,9 +288,6 @@ Local Hi_wParam := HIWORD( wParam )
       Return nil
    EndIf
 Return ::Super:Events_Command( wParam )
-
-
-
 
 
 CLASS TRadioItem FROM TLabel
