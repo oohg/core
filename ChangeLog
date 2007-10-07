@@ -1,11 +1,18 @@
 /*
- * $Id: ChangeLog,v 1.412 2007-10-07 14:03:50 declan2005 Exp $
+ * $Id: ChangeLog,v 1.413 2007-10-07 18:04:57 migsoft Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-10-07 13:18 UTC-0500 Miguel Angel Juárez A. <migsoft@oohg.org>
+  * source/winprint.prg
+    ! fix on button size of toolbar
+  * source/h_edit.prg
+    * added condition when is EOF and action when double click in browse
+
 
 2007-10-07 08:56 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   *include/i_var.ch
@@ -67,7 +74,7 @@
 
 2007-09-21 13:40 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_spinner.prg
-    ! fix default lr and hr values in oop syntax 
+    ! fix default lr and hr values in oop syntax
 
 2007-09-21 11:14 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_progressbar.prg
@@ -75,7 +82,7 @@
 
 2007-09-21 10:58 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_frame.prg
-    ! fix default caption value in oop syntax 
+    ! fix default caption value in oop syntax
 
 2007-09-20 21:47 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_menu.prg

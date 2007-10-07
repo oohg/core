@@ -1,5 +1,5 @@
 /*
- * $Id: h_edit.prg,v 1.14 2007-10-06 22:16:44 declan2005 Exp $
+ * $Id: h_edit.prg,v 1.15 2007-10-07 18:04:57 migsoft Exp $
  */
 /*
  * ooHG source code:
@@ -255,7 +255,7 @@ InitMessages()
 
 // Control de parámetros.
 // Area de la base de datos.---------------------------------------------------
-if ( ! HB_IsString( cArea ) ) .or. Empty( cArea )
+if ( ! ValType( cArea ) $ "CM" ) .or. Empty( cArea )
         MsgOOHGError( _OOHG_Messages( 8, 1 ), "" )
 else
         _cArea       := cArea
@@ -269,7 +269,7 @@ if ( nCampos > 16 )
 endif
 
 // Titulo de la ventana.-------------------------------------------------------
-if ( ! HB_IsString( cTitulo ) ) .or. Empty( cTitulo )
+if ( ! ValType( cTitulo ) $ "CM" ) .or. Empty( cTitulo )
         _cTitulo := cArea
 else
         _cTitulo := cTitulo
@@ -277,14 +277,14 @@ endif
 
 // Nombre de los campos.-------------------------------------------------------
 _aCampos := Array( nCampos )
-if ( !HB_IsArray( aCampos ) ) .or. ( Len( aCampos ) != nCampos )
+if ( ValType( aCampos ) != "A" ) .or. ( Len( aCampos ) != nCampos )
         _aCampos   := Array( nCampos )
         for nItem := 1 to nCampos
                 _aCampos[nItem] := Lower( _aEstructura[nItem,1] )
         next
 else
         for nItem := 1 to nCampos
-                if ! HB_IsString( aCampos[nItem] )
+                if ! Valtype( aCampos[nItem] ) $ "CM"
                         _aCampos[nItem] := Lower( _aEstructura[nItem,1] )
                 else
                         _aCampos[nItem] := aCampos[nItem]
@@ -294,14 +294,14 @@ endif
 
 // Array de controles editables.-----------------------------------------------
 _aEditables := Array( nCampos )
-if ( !HB_IsArray( aEditables ) ) .or. ( Len( aEditables ) != nCampos )
+if ( ValType( aEditables ) != "A" ) .or. ( Len( aEditables ) != nCampos )
         _aEditables := Array( nCampos )
         for nItem := 1 to nCampos
                 _aEditables[nItem] := .t.
         next
 else
         for nItem := 1 to nCampos
-                if HB_IsLogical( aEditables[nItem] )
+                if Valtype( aEditables[nItem] ) != "L"
                         _aEditables[nItem] := .t.
                 else
                         _aEditables[nItem] := aEditables[nItem]
@@ -310,14 +310,14 @@ else
 endif
 
 // Bloque de codigo de la acción guardar.--------------------------------------
-if !HB_IsBlock( bGuardar )
+if ValType( bGuardar ) != "B"
         _bGuardar := NIL
 else
         _bGuardar := bGuardar
 endif
 
 // Bloque de código de la acción buscar.---------------------------------------
-if !HB_IsBlock( bBuscar )
+if ValType( bBuscar ) != "B"
         _bBuscar := NIL
 else
         _bBuscar := bBuscar
@@ -461,6 +461,7 @@ next
         workarea &_cArea ;
         fields   aBrwCampos ;
         value    (_cArea)->( RecNo() ) ;
+        ON DBLCLICK ABMEventos( ABM_EVENTO_EDITAR ) ;
         on change {|| (_cArea)->( dbGoTo( wndABM.brwBrowse.Value ) ), ABMRefresh( ABM_MODO_VER ) }
 
 // Definición de los botones.--------------------------------------------------
@@ -864,7 +865,7 @@ do case
 
         // Pulsación del botón BUSCAR.-----------------------------------------
         case nEvento == ABM_EVENTO_BUSCAR
-                if !HB_IsBlock( _bBuscar )
+                if ValType( _bBuscar ) != "B"
                         if Empty( (_cArea)->( ordSetFocus() ) )
                                 msgExclamation( _OOHG_Messages( 5, 2 ), "" )
                         else
@@ -907,6 +908,7 @@ do case
         // Pulsación del botón SIGUIENTE.--------------------------------------
         case nEvento == ABM_EVENTO_SIGUIENTE
                 (_cArea)->( dbSkip( 1 ) )
+                iif(  (_cArea)->( recno() ) == (_cArea)->( LastRec()+ 1 ) , (_cArea)->( DbGoBottom() ), Nil )
                 wndABM:brwBrowse:Value := (_cArea)->( RecNo() )
                 wndABM:lblRegistro:Value := AllTrim( Str( (_cArea)->(RecNo()) ) )
                 wndABM:lblTotales:Value  := AllTrim( Str( (_cArea)->(RecCount()) ) )
@@ -920,7 +922,7 @@ do case
 
         // Pulsación del botón GUARDAR.----------------------------------------
         case nEvento == ABM_EVENTO_GUARDAR
-                if ( !HB_IsBlock( _bGuardar ) )
+                if ( ValType( _bGuardar ) != "B" )
 
                         // Guarda el registro.
                         if .not. _lEditar
@@ -956,7 +958,7 @@ do case
                                 aAdd( aValores, wndABM:Control( _OOHG_aControles[nItem,1] ):Value )
                         next
                         lGuardar := Eval( _bGuardar, aValores, _lEditar )
-                        lGuardar := iif( !HB_IsLogical( lGuardar ) , .t., lGuardar )
+                        lGuardar := iif( ValType( lGuardar ) != "L", .t., lGuardar )
                         if lGuardar
                                 (_cArea)->( dbCommit() )
 

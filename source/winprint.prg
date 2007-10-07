@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.16 2007-09-03 00:30:32 guerra000 Exp $
+ * $Id: winprint.prg,v 1.17 2007-10-07 18:04:57 migsoft Exp $
  */
 // -----------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -1724,7 +1724,7 @@ next pi
                @ 13 ,::ahs[1,6]-77  COMBOBOX combo_1  ITEMS ::npages VALUE 1 WIDTH 58 FONT 'Arial' SIZE  8 ON CHANGE {|| ::page := ::CurPage:=HBPREVIEW.combo_1.value,::PrevShow(),::oHBPreview1:setfocus() }
 
          DEFINE SPLITBOX
-               DEFINE TOOLBAR TB1 BUTTONSIZE 50,33 FONT 'Arial Narrow' SIZE 8 FLAT BREAK // RIGHTTEXT
+               DEFINE TOOLBAR TB1 BUTTONSIZE 50,37 FONT 'Arial Narrow' SIZE 8 FLAT BREAK // RIGHTTEXT
 ////                        BUTTON B1 CAPTION  ::aopisy[2]     PICTURE 'hbprint_close'   ACTION {||  ::oHBPreview1:Release(),if(::iloscstron>1 .and. ::thumbnails,_ReleaseWindow ("HBPREVIEW2" ),""), oHBPreview:Release()}
                         BUTTON B1 CAPTION  ::aopisy[2]     PICTURE 'hbprint_close'   ACTION MYCLOSEP(::iloscstron,::thumbnails ,oHBPreview,::oHBPreview1)
                         BUTTON B2 CAPTION  ::aopisy[3]    PICTURE 'hbprint_print'   ACTION {|| ::prevprint() }
