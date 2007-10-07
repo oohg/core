@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.413 2007-10-07 18:04:57 migsoft Exp $
+ * $Id: ChangeLog,v 1.414 2007-10-07 22:52:56 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,17 +7,21 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2007-10-07 17:53 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_keybd.ch
+  * source/h_hotkey.prg
+  * source/h_windows.prg
+    + ACCELERATOR hotkey added.
+
 2007-10-07 13:18 UTC-0500 Miguel Angel Juárez A. <migsoft@oohg.org>
   * source/winprint.prg
     ! fix on button size of toolbar
   * source/h_edit.prg
     * added condition when is EOF and action when double click in browse
 
-
 2007-10-07 08:56 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   *include/i_var.ch
    added translate  HB_ISCHAR => ISCHARACTER for xharbour
-
 
 2007-10-06 17:11 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   *source/h_menu.prg
@@ -38,13 +42,11 @@
    + added fired event when changed programatically  for
     ( datepicker timepicker combo chechkbox )
 
-
 2007-10-05 17:12 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_progressbar.prg
-  * source/h_label.prg 
+  * source/h_label.prg
   * source/h_scroll.prg
     ! optimizing code
-
 
 2007-10-05 6:38 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_slider.prg
@@ -52,7 +54,7 @@
     ! optimazing code
   * source/h_spinner.prg
     ! optimazing code
-    + added fired event when changed programatically   
+    + added fired event when changed programatically
   /// usefull functions HB_IsNumeric(), HB_IsLogical(), HB_IsArray()
 
 2007-10-04 14:53 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
@@ -70,7 +72,7 @@
 
 2007-09-21 15:20 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_hyperlink.prg
-    ! fix default url and caption values in oop syntax 
+    ! fix default url and caption values in oop syntax
 
 2007-09-21 13:40 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_spinner.prg
@@ -78,7 +80,7 @@
 
 2007-09-21 11:14 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_progressbar.prg
-    ! fix default vertical value in oop syntax 
+    ! fix default vertical value in oop syntax
 
 2007-09-21 10:58 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_frame.prg

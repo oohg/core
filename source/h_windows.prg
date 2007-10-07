@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.144 2007-09-18 17:30:40 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.145 2007-10-07 22:52:57 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -212,6 +212,7 @@ CLASS TWindow
    DATA OnMouseMove         INIT nil
    DATA aKeys               INIT {}  // { Id, Mod, Key, Action }   Application-controlled hotkeys
    DATA aHotKeys            INIT {}  // { Id, Mod, Key, Action }   OperatingSystem-controlled hotkeys
+   DATA aAcceleratorKeys    INIT {}  // { Id, Mod, Key, Action }   Accelerator hotkeys
    DATA bKeyDown            INIT nil     // WM_KEYDOWN handler
    DATA NestedClick         INIT .F.
    DATA HScrollBar          INIT nil
@@ -258,6 +259,7 @@ CLASS TWindow
 
    METHOD HotKey                // OperatingSystem-controlled hotkeys
    METHOD SetKey                // Application-controlled hotkeys
+   METHOD AcceleratorKey        // Accelerator hotkeys
    METHOD LookForKey
    METHOD Visible             SETGET
    METHOD Show                BLOCK { |Self| ::Visible := .T. }
@@ -1095,6 +1097,32 @@ METHOD SetKey( nKey, nFlags, bAction ) CLASS TWindow
 Return _OOHG_SetKey( ::aKeys, nKey, nFlags, bAction )
 
 *-----------------------------------------------------------------------------*
+METHOD AcceleratorKey( nKey, nFlags, bAction ) CLASS TWindow
+*-----------------------------------------------------------------------------*
+Local nPos, nId, uRet := nil
+   nPos := ASCAN( ::aAcceleratorKeys, { |a| a[ HOTKEY_KEY ] == nKey .AND. a[ HOTKEY_MOD ] == nFlags } )
+   If nPos > 0
+      uRet := ::aAcceleratorKeys[ nPos ][ HOTKEY_ACTION ]
+   EndIf
+   If PCOUNT() > 2
+      If ValType( bAction ) == "B"
+         If nPos > 0
+            ::aAcceleratorKeys[ nPos ][ HOTKEY_ACTION ] := bAction
+         Else
+            nId := _GetId()
+            AADD( ::aAcceleratorKeys, { nId, nFlags, nKey, bAction } )
+            InitHotKey( ::hWnd, nFlags, nKey, nId )
+         EndIf
+      Else
+         If nPos > 0
+            ReleaseHotKey( ::hWnd, ::aAcceleratorKeys[ nPos ][ HOTKEY_ID ] )
+            _OOHG_DeleteArrayItem( ::aAcceleratorKeys, nPos )
+         EndIf
+      Endif
+   EndIf
+Return uRet
+
+*-----------------------------------------------------------------------------*
 METHOD LookForKey( nKey, nFlags ) CLASS TWindow
 *-----------------------------------------------------------------------------*
 Local lDone
@@ -1905,6 +1933,8 @@ Local mVar, i
    // Release hot keys
    aEval( ::aHotKeys, { |a| ReleaseHotKey( ::hWnd, a[ HOTKEY_ID ] ) } )
    ::aHotKeys := {}
+   aEval( ::aAcceleratorKeys, { |a| ReleaseHotKey( ::hWnd, a[ HOTKEY_ID ] ) } )
+   ::aAcceleratorKeys := {}
 
    // Remove Child Controls
    DO WHILE LEN( ::aControls ) > 0
@@ -2102,14 +2132,16 @@ Local oCtrl
 	case nMsg == WM_HOTKEY
         ***********************************************************************
 
-		* Process HotKeys
-
+      // Process HotKeys
       i := ASCAN( ::aHotKeys, { |a| a[ HOTKEY_ID ] == wParam } )
-
       If i > 0
-
          _OOHG_EVAL( ::aHotKeys[ i ][ HOTKEY_ACTION ] )
+      EndIf
 
+      // Accelerators
+      i := ASCAN( ::aAcceleratorKeys, { |a| a[ HOTKEY_ID ] == wParam } )
+      If i > 0
+         _OOHG_EVAL( ::aAcceleratorKeys[ i ][ HOTKEY_ACTION ] )
       EndIf
 
         ***********************************************************************
@@ -3003,6 +3035,7 @@ Local I, hWnd
    FOR I := 1 TO LEN( _OOHG_aFormhWnd )
       hWnd := _OOHG_aFormObjects[ I ]:hWnd
       AEVAL( _OOHG_aFormObjects[ I ]:aHotKeys, { |a| ReleaseHotKey( hWnd, a[ HOTKEY_ID ] ) } )
+      AEVAL( _OOHG_aFormObjects[ I ]:aAcceleratorKeys, { |a| ReleaseHotKey( hWnd, a[ HOTKEY_ID ] ) } )
    NEXT
 Return
 
@@ -3090,6 +3123,8 @@ Local i, oWnd
 
       aeval( oWnd:aHotKeys, { |a| ReleaseHotKey( oWnd:hWnd, a[ HOTKEY_ID ] ) } )
       oWnd:aHotKeys := {}
+      aeval( oWnd:aAcceleratorKeys, { |a| ReleaseHotKey( oWnd:hWnd, a[ HOTKEY_ID ] ) } )
+      oWnd:aAcceleratorKeys := {}
 
 	Next i
 

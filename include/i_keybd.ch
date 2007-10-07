@@ -1,5 +1,5 @@
 /*
- * $Id: i_keybd.ch,v 1.5 2006-10-22 01:09:22 guerra000 Exp $
+ * $Id: i_keybd.ch,v 1.6 2007-10-07 22:52:57 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -293,128 +293,30 @@ _OOHG_ExtendedNavigation := .F.
 
 
 ///////////////////////////////////////////////////////////////////////////////
+// Accelerator commands
+///////////////////////////////////////////////////////////////////////////////
+
+#xcommand SET ACCELERATOR <key> [ OF <parent> ] ACTION <action> ;
+          => ;
+          _DefineAccelerator( <(parent)>, <(key)>, <{action}> )
+
+#xcommand RELEASE ACCELERATOR <key> OF <parent> ;
+          => ;
+          _DefineAccelerator( <(parent)>, <(key)>, nil )
+
+#xcommand STORE ACCELERATOR <key> OF <parent> TO <baction> ;
+          => ;
+          <baction> := _DefineAccelerator( <(parent)>, <(key)> )
+
+
+
+///////////////////////////////////////////////////////////////////////////////
 // PUSH KEY COMMAND
 ///////////////////////////////////////////////////////////////////////////////
 /*
-#xcommand PUSH KEY F1 ;
+#xcommand PUSH KEY <key> ;
 => ;
-_PushKey ( VK_F1 )
-
-#xcommand PUSH KEY F2  ;
-=> ;
-_PushKey ( VK_F2 )
-
-#xcommand PUSH KEY F3  ;
-=> ;
-_PushKey ( VK_F3 )
-
-#xcommand PUSH KEY F4 ;
-=> ;
-_PushKey ( VK_F4 )
-
-#xcommand PUSH KEY F5 ;
-=> ;
-_PushKey ( VK_F5 )
-
-#xcommand PUSH KEY F6 ;
-=> ;
-_PushKey ( VK_F6 )
-
-#xcommand PUSH KEY F7 ;
-=> ;
-_PushKey ( VK_F7 )
-
-#xcommand PUSH KEY F8 ;
-=> ;
-_PushKey ( VK_F8 )
-
-#xcommand PUSH KEY F9 ;
-=> ;
-_PushKey ( VK_F9 )
-
-#xcommand PUSH KEY F10  ;
-=> ;
-_PushKey ( VK_F10 )
-
-#xcommand PUSH KEY F11  ;
-=> ;
-_PushKey ( VK_F11 )
-
-#xcommand PUSH KEY F12 ;
-=> ;
-_PushKey ( VK_F12 )
-
-#xcommand PUSH KEY BACK ;
-=> ;
-_PushKey ( VK_BACK )
-
-#xcommand PUSH KEY TAB ;
-=> ;
-_PushKey ( VK_TAB )
-
-#xcommand PUSH KEY RETURN ;
-=> ;
-_PushKey ( VK_RETURN )
-
-#xcommand PUSH KEY ESCAPE ;
-=> ;
-_PushKey ( VK_ESCAPE )
-
-#xcommand PUSH KEY SPACE ;
-=> ;
-_PushKey ( VK_SPACE )
-
-#xcommand PUSH KEY END ;
-=> ;
-_PushKey ( VK_END )
-
-#xcommand PUSH KEY HOME ;
-=> ;
-_PushKey ( VK_HOME )
-
-#xcommand PUSH KEY LEFT ;
-=> ;
-_PushKey ( VK_LEFT )
-
-#xcommand PUSH KEY UP ;
-=> ;
-_PushKey ( VK_UP  )
-
-#xcommand PUSH KEY RIGHT ;
-=> ;
-_PushKey ( VK_RIGHT )
-
-#xcommand PUSH KEY DOWN ;
-=> ;
-_PushKey ( VK_DOWN )
-
-#xcommand PUSH KEY INSERT ;
-=> ;
-_PushKey ( VK_INSERT )
-
-#xcommand PUSH KEY DELETE ;
-=> ;
-_PushKey ( VK_DELETE )
-
-#xcommand PUSH KEY PRIOR ;
-=> ;
-_PushKey ( VK_PRIOR )
-
-#xcommand PUSH KEY NEXT ;
-=> ;
-_PushKey ( VK_NEXT )
-
-#xcommand PUSH KEY CAPSLOCK ;
-=> ;
-_PushKey ( VK_CAPITAL )
-
-#xcommand PUSH KEY SCROLLLOCK ;
-=> ;
-_PushKey ( VK_SCROLL )
-
-#xcommand PUSH KEY NUMLOCK ;
-=> ;
-_PushKey ( VK_NUMLOCK )
+_PushKeyCommand( <(key)> )
 */
 
 

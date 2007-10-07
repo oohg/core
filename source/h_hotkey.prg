@@ -1,5 +1,5 @@
 /*
- * $Id: h_hotkey.prg,v 1.8 2006-10-22 15:18:23 guerra000 Exp $
+ * $Id: h_hotkey.prg,v 1.9 2007-10-07 22:52:57 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -137,6 +137,19 @@ Function _PushKey( nKey )
 Return Nil
 
 *------------------------------------------------------------------------------*
+Function _PushKeyCommand( cKey )
+*------------------------------------------------------------------------------*
+LOCAL aKey
+   aKey := _DetermineKey( cKey )
+   IF aKey[ 1 ] != 0
+      Keybd_Event( aKey[ 1 ], .f. )
+      Keybd_Event( aKey[ 1 ], .t. )
+   ELSE
+      MsgOOHGError( "PUSH KEY: Key combination name not valid: " + cKey + ". Program Terminated." )
+   ENDIF
+Return Nil
+
+*------------------------------------------------------------------------------*
 FUNCTION _DetermineKey( cKey )
 *------------------------------------------------------------------------------*
 LOCAL aKey, nAlt, nCtrl, nShift, nWin, nPos, cKey2, cText
@@ -186,6 +199,23 @@ LOCAL aKey, oWnd, bCode
       ENDIF
    ELSE
       MsgOOHGError( "HOTKEY: Key combination name not valid: " + cKey + ". Program Terminated." )
+      // bCode := NIL
+   ENDIF
+Return bCode
+
+*------------------------------------------------------------------------------*
+Function _DefineAccelerator( cParentForm, cKey, bAction )
+*------------------------------------------------------------------------------*
+LOCAL aKey, oWnd, bCode
+   aKey := _DetermineKey( cKey )
+   IF aKey[ 1 ] != 0
+      oWnd := TControl():SetForm( "", cParentForm ):Parent
+      bCode := oWnd:AcceleratorKey( aKey[ 1 ], aKey[ 2 ] )
+      IF PCOUNT() > 2
+         oWnd:AcceleratorKey( aKey[ 1 ], aKey[ 2 ], bAction )
+      ENDIF
+   ELSE
+      MsgOOHGError( "ACCELERATOR: Key combination name not valid: " + cKey + ". Program Terminated." )
       // bCode := NIL
    ENDIF
 Return bCode
