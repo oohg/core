@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.414 2007-10-07 22:52:56 guerra000 Exp $
+ * $Id: ChangeLog,v 1.415 2007-10-08 00:44:42 migsoft Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,13 +7,17 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2007-10-07 13:18 UTC-0500 Miguel Angel Juarez A. <migsoft@oohg.org>
+  * source/h_edit.prg
+    ! optimized condition
+
 2007-10-07 17:53 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * include/i_keybd.ch
   * source/h_hotkey.prg
   * source/h_windows.prg
     + ACCELERATOR hotkey added.
 
-2007-10-07 13:18 UTC-0500 Miguel Angel Juárez A. <migsoft@oohg.org>
+2007-10-07 13:18 UTC-0500 Miguel Angel Juarez A. <migsoft@oohg.org>
   * source/winprint.prg
     ! fix on button size of toolbar
   * source/h_edit.prg
