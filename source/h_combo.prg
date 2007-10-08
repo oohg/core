@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.25 2007-10-06 22:16:44 declan2005 Exp $
+ * $Id: h_combo.prg,v 1.26 2007-10-08 21:19:04 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -191,7 +191,7 @@ Local ControlHandle , rcount := 0 , cset := 0 , WorkArea , cField, nStyle
 *      _OOHG_acontrolrangemin [k] := FindWindowEx( Controlhandle , 0, "Edit", Nil )
 	EndIf
 
-   If  HB_IsString( WorkArea )
+   If  VALTYPE( WorkArea ) $ "CM"
       ::Refresh()
 	Else
       AEval( rows, { |x| ::AddItem( x ) } )
@@ -245,7 +245,7 @@ LOCAL uRet
       uRet := ComboGetCursel( ::hWnd )
    ELSE
       IF VALTYPE( ::aValues[ 1 ] ) == VALTYPE( uValue ) .OR. ;
-         ( HB_IsString( uValue ) .AND. HB_IsString( ::aValues[ 1 ] ) )
+         ( VALTYPE( uValue ) $ "CM" .AND. VALTYPE( ::aValues[ 1 ] ) $ "CM" )
          ComboSetCursel( ::hWnd, ASCAN( ::aValues, uValue ) )
           ::DoEvent( ::OnChange )
       ENDIF

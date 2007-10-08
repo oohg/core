@@ -1,5 +1,5 @@
 /*
- * $Id: h_label.prg,v 1.21 2007-10-05 22:17:30 declan2005 Exp $
+ * $Id: h_label.prg,v 1.22 2007-10-08 21:19:04 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -170,7 +170,7 @@ Return Self
 METHOD Value( cValue ) CLASS TLabel
 *-----------------------------------------------------------------------------*
    If PCOUNT() > 0
-      If HB_IsString( ::Picture )
+      If VALTYPE( ::Picture ) $ "CM"
          ::Caption := TRANSFORM( cValue, ::Picture )
       Else
          ::Caption := cValue
@@ -181,7 +181,7 @@ Return ::Caption
 *-----------------------------------------------------------------------------*
 METHOD Caption( cValue ) CLASS TLabel
 *-----------------------------------------------------------------------------*
-   IF HB_IsString( cValue )
+   IF VALTYPE( cValue ) $ "CM"
       if ::lAutoSize
          ::SizePos( , , GetTextWidth( nil, cValue , ::FontHandle ) + ::IconWidth, GetTextHeight( nil, cValue , ::FontHandle ) )
       EndIf

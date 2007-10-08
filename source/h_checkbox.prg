@@ -1,5 +1,5 @@
 /*
- * $Id: h_checkbox.prg,v 1.17 2007-10-06 22:16:44 declan2005 Exp $
+ * $Id: h_checkbox.prg,v 1.18 2007-10-08 21:19:04 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -144,7 +144,7 @@ Local ControlHandle, nStyle := 0, nStyleEx := 0
    ::Autosize    := autosize
    ::Caption     := Caption
 
-   If HB_IsString( Field )  .AND. ! empty( Field )
+   If VALTYPE( Field ) $ "CM"  .AND. ! empty( Field )
       ::VarName := alltrim( Field )
       ::Block := &( "{ |x| if( PCount() == 0, " + Field + ", " + Field + " := x ) }" )
       Value := EVAL( ::Block )

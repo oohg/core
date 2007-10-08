@@ -1,5 +1,5 @@
 /*
- * $Id: h_datepicker.prg,v 1.9 2007-10-06 22:16:44 declan2005 Exp $
+ * $Id: h_datepicker.prg,v 1.10 2007-10-08 21:19:04 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -124,7 +124,7 @@ Local ControlHandle
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, , , .t. , lRtl )
 
-   If HB_IsString( Field ) .AND. ! empty( Field )
+   If VALTYPE( Field ) $ "CM" .AND. ! empty( Field )
       ::VarName := alltrim( Field )
       ::Block := &( "{ |x| if( PCount() == 0, " + Field + ", " + Field + " := x ) }" )
       Value := EVAL( ::Block )
@@ -208,7 +208,7 @@ Local ControlHandle
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, , , .t. , lRtl )
 
-   If HB_IsString( Field ) .AND. ! empty( Field )
+   If VALTYPE( Field ) $ "CM" .AND. ! empty( Field )
       ::VarName := alltrim( Field )
       ::Block := &( "{ |x| if( PCount() == 0, " + Field + ", " + Field + " := x ) }" )
       Value := EVAL( ::Block )
@@ -237,7 +237,7 @@ Return Self
 *-----------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TTimePick
 *-----------------------------------------------------------------------------*
-   IF HB_IsChar( uValue )
+   IF VALTYPE( uValue ) == "C"
       SetTimePick( ::hWnd ,VAL(left(uValue,2)),VAL(SUBSTR(uValue,4,2)),VAL( SUBSTR(uValue,7,2 )) )
        ::DoEvent( ::OnChange )
    ELSEIF PCOUNT() > 0

@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.145 2007-10-07 22:52:57 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.146 2007-10-08 21:19:04 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -797,7 +797,7 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )
 *------------------------------------------------------------------------------*
 METHOD Enabled( lEnabled ) CLASS TWindow
 *------------------------------------------------------------------------------*
-   IF VALTYPE( lEnabled ) == "L"
+   IF HB_IsLogical( lEnabled ) 
       IF lEnabled .AND. ( ::Container == NIL .OR. ::Container:Enabled )
          EnableWindow( ::hWnd )
       ELSE
@@ -810,7 +810,7 @@ RETURN ::lEnabled
 *------------------------------------------------------------------------------*
 METHOD TabStop( lTabStop ) CLASS TWindow
 *------------------------------------------------------------------------------*
-   IF VALTYPE( lTabStop ) == "L"
+   IF HB_IsLogical( lTabStop ) 
       WindowStyleFlag( ::hWnd, WS_TABSTOP, IF( lTabStop, WS_TABSTOP, 0 ) )
    ENDIF
 RETURN ( WindowStyleFlag( ::hWnd, WS_TABSTOP ) != 0 )
@@ -818,7 +818,7 @@ RETURN ( WindowStyleFlag( ::hWnd, WS_TABSTOP ) != 0 )
 *------------------------------------------------------------------------------*
 METHOD Style( nStyle ) CLASS TWindow
 *------------------------------------------------------------------------------*
-   IF VALTYPE( nStyle ) == "N"
+   IF HB_IsNumeric( nStyle )
       SetWindowStyle( ::hWnd, nStyle )
    ENDIF
 RETURN GetWindowStyle( ::hWnd )
@@ -826,7 +826,7 @@ RETURN GetWindowStyle( ::hWnd )
 *------------------------------------------------------------------------------*
 METHOD RTL( lRTL ) CLASS TWindow
 *------------------------------------------------------------------------------*
-   If ValType( lRTL ) == "L"
+   If HB_IsLogical( lRTL ) 
       _UpdateRTL( ::hWnd, lRtl )
       ::lRtl := lRtl
    EndIf
@@ -912,7 +912,7 @@ Local nPos
 
    If ! ::lInternal
       // Search form's parent
-      If ValType( uParent ) != "O"
+      If !HB_IsObject( uParent ) 
          uParent := nil
          // Checks _OOHG_UserWindow
          If _OOHG_UserWindow != NIL .AND. ValidHandler( _OOHG_UserWindow:hWnd ) .AND. ascan( _OOHG_aFormhWnd, _OOHG_UserWindow:hWnd ) > 0
@@ -951,7 +951,7 @@ Local nPos
 
    Else
       // Searchs control's parent
-      If ValType( uParent ) != "O"
+      If !HB_IsObject( uParent ) 
          If LEN( _OOHG_ActiveForm ) > 0
             uParent := ATAIL( _OOHG_ActiveForm )
          ElseIf len( _OOHG_ActiveFrame ) > 0
@@ -1010,15 +1010,15 @@ METHOD ParentDefaults( cFontName, nFontSize, uFontColor ) CLASS TWindow
    endif
 
    // Font Size:
-   If ValType( nFontSize ) == "N" .AND. nFontSize != 0
+   If HB_IsNumeric( nFontSize ) .AND. nFontSize != 0
       // Specified size
       ::nFontSize := nFontSize
-   ElseIf ValType( ::nFontSize ) == "N" .AND. ::nFontSize != 0
+   ElseIf HB_IsNumeric( ::nFontSize ) .AND. ::nFontSize != 0
       // Pre-registered
-   elseif ::Container != nil .AND. ValType( ::Container:nFontSize ) == "N" .AND. ::Container:nFontSize != 0
+   elseif ::Container != nil .AND. HB_IsNumeric( ::Container:nFontSize ) .AND. ::Container:nFontSize != 0
       // Container
       ::nFontSize := ::Container:nFontSize
-   elseif ::Parent != nil .AND. ValType( ::Parent:nFontSize ) == "N" .AND. ::Parent:nFontSize != 0
+   elseif ::Parent != nil .AND. HB_IsNumeric( ::Parent:nFontSize ) .AND. ::Parent:nFontSize != 0
       // Parent form
       ::nFontSize := ::Parent:nFontSize
    else
@@ -1074,7 +1074,7 @@ Local nPos, nId, uRet := nil
       uRet := ::aHotKeys[ nPos ][ HOTKEY_ACTION ]
    EndIf
    If PCOUNT() > 2
-      If ValType( bAction ) == "B"
+      If HB_IsBlock( bAction ) 
          If nPos > 0
             ::aHotKeys[ nPos ][ HOTKEY_ACTION ] := bAction
          Else
@@ -1105,7 +1105,7 @@ Local nPos, nId, uRet := nil
       uRet := ::aAcceleratorKeys[ nPos ][ HOTKEY_ACTION ]
    EndIf
    If PCOUNT() > 2
-      If ValType( bAction ) == "B"
+      If HB_IsBlock( bAction ) 
          If nPos > 0
             ::aAcceleratorKeys[ nPos ][ HOTKEY_ACTION ] := bAction
          Else
@@ -1130,9 +1130,9 @@ Local lDone
       lDone := .T.
    ElseIf ::Active .AND. LookForKey_Check_bKeyDown( ::bKeyDown, nKey, nFlags )
       lDone := .T.
-   ElseIf ValType( ::Container ) == "O"
+   ElseIf HB_IsObject( ::Container )
       lDone := ::Container:LookForKey( nKey, nFlags )
-   ElseIf ValType( ::Parent ) == "O" .AND. ::lInternal
+   ElseIf HB_IsObject( ::Parent ) .AND. ::lInternal
       lDone := ::Parent:LookForKey( nKey, nFlags )
    Else
       If LookForKey_Check_HotKey( _OOHG_HotKeys, nKey, nFlags, nil )
@@ -1162,9 +1162,9 @@ Return lDone
 
 STATIC FUNCTION LookForKey_Check_bKeyDown( bKeyDown, nKey, nFlags )
 Local lDone
-   If ValType( bKeyDown ) == "B"
+   If HB_IsBlock( bKeyDown )
       lDone := Eval( bKeyDown, nKey, nFlags )
-      If ValType( lDone ) != "L"
+      If !HB_IsLogical( lDone ) 
          lDone := .F.
       EndIf
    Else
@@ -1175,7 +1175,7 @@ Return lDone
 *------------------------------------------------------------------------------*
 METHOD Visible( lVisible ) CLASS TWindow
 *------------------------------------------------------------------------------*
-   If ValType( lVisible ) == "L"
+   If HB_IsLogical( lVisible ) 
       ::lVisible := lVisible
       If lVisible .AND. ::ContainerVisible
          CShowControl( ::hWnd )
@@ -1344,7 +1344,7 @@ METHOD Define( FormName, Caption, x, y, w, h, nominimize, nomaximize, nosize, ;
 Local nStyle := 0, nStyleEx := 0
 Local hParent
 
-   If ValType( child ) == "L" .AND. child
+   If HB_IsLogical( child ) .AND. child
       ::Type := "C"
       oParent := ::SearchParent( oParent )
       hParent := oParent:hWnd
@@ -1376,7 +1376,7 @@ Local Formhandle, aClientRect
 
    If _OOHG_GlobalRTL()
       lRtl := .T.
-   ElseIf ValType( lRtl ) != "L"
+   ElseIf !HB_IsLogical( lRtl ) 
       lRtl := .F.
    Endif
 
@@ -1403,19 +1403,19 @@ Local Formhandle, aClientRect
       aRGB := GetSysColor( COLOR_3DFACE )
 	EndIf
 
-   If ValType( helpbutton ) == "L" .AND. helpbutton
+   If HB_IsLogical( helpbutton ) .AND. helpbutton
       nStyleEx += WS_EX_CONTEXTHELP
    Else
-      nStyle += if( ValType( nominimize ) != "L" .OR. ! nominimize, WS_MINIMIZEBOX, 0 ) + ;
-                if( ValType( nomaximize ) != "L" .OR. ! nomaximize, WS_MAXIMIZEBOX, 0 )
+      nStyle += if( !HB_IsLogical( nominimize ) .OR. ! nominimize, WS_MINIMIZEBOX, 0 ) + ;
+                if( !HB_IsLogical( nomaximize ) .OR. ! nomaximize, WS_MAXIMIZEBOX, 0 )
    EndIf
-   nStyle    += if( ValType( nosize )     != "L" .OR. ! nosize,    WS_SIZEBOX, 0 ) + ;
-                if( ValType( nosysmenu )  != "L" .OR. ! nosysmenu, WS_SYSMENU, 0 ) + ;
-                if( ValType( nocaption )  != "L" .OR. ! nocaption, WS_CAPTION, 0 )
+   nStyle    += if( !HB_IsLogical( nosize )   .OR. ! nosize,    WS_SIZEBOX, 0 ) + ;
+                if( !HB_IsLogical( nosysmenu ) .OR. ! nosysmenu, WS_SYSMENU, 0 ) + ;
+                if( !HB_IsLogical( nocaption )  .OR. ! nocaption, WS_CAPTION, 0 )
 
-   nStyleEx += if( ValType( topmost ) == "L" .AND. topmost, WS_EX_TOPMOST, 0 )
+   nStyleEx += if( HB_IsLogical( topmost ) .AND. topmost, WS_EX_TOPMOST, 0 )
 
-   If ValType( mdi ) == "L" .AND. mdi
+   If HB_IsLogical( mdi ) .AND. mdi
       If nWindowType != 0
          *  mdichild .OR. mdiclient // .OR. splitchild
          * These windows' types can't be MDI FRAME
@@ -1513,9 +1513,9 @@ Local Formhandle, aClientRect
    ::OnMaximize := MaximizeProcedure
    ::OnMinimize := MinimizeProcedure
    ::OnRestore  := RestoreProcedure
-   ::lVisible := ! ( ValType( NoShow ) == "L" .AND. NoShow )
+   ::lVisible := ! ( HB_IsLogical( NoShow ) .AND. NoShow )
    ::BackColor := aRGB
-   ::AutoRelease := ! ( ValType( NoAutoRelease ) == "L" .AND. NoAutoRelease )
+   ::AutoRelease := ! ( HB_IsLogical( NoAutoRelease ) .AND. NoAutoRelease )
 
    // Assigns ThisForm the currently defined window
    _PushEventInfo()
@@ -1576,7 +1576,7 @@ RETURN Self
 *-----------------------------------------------------------------------------*
 METHOD Visible( lVisible ) CLASS TForm
 *-----------------------------------------------------------------------------*
-   IF VALTYPE( lVisible ) == "L"
+   IF HB_IsLogical( lVisible ) 
       ::Super:Visible := lVisible
       IF ! lVisible
          ::OnHideFocusManagement()
@@ -1633,8 +1633,8 @@ METHOD Activate( lNoStop, oWndLoop ) CLASS TForm
 */
 
    // Checks for non-stop window
-   If ValType( oWndLoop ) != "O"
-      oWndLoop := IF( lNoStop .AND. ValType( _OOHG_Main ) == "O", _OOHG_Main, Self )
+   If !HB_IsObject( oWndLoop )
+      oWndLoop := IF( lNoStop .AND. HB_IsObject( _OOHG_Main ) , _OOHG_Main, Self )
    EndIf
    ::ActivateCount := oWndLoop:ActivateCount
    ::ActivateCount[ 1 ]++
@@ -1712,7 +1712,7 @@ Return nil
 *-----------------------------------------------------------------------------*
 METHOD ProcessInitProcedure() CLASS TForm
 *-----------------------------------------------------------------------------*
-   if valtype( ::OnInit )=='B'
+   if HB_IsBlock( ::OnInit )
       ProcessMessages()
       ::DoEvent( ::OnInit, "WINDOW_INIT" )
    EndIf
@@ -1745,7 +1745,7 @@ Return ( ::Caption := cTitle )
 *------------------------------------------------------------------------------*
 METHOD Height( nHeight ) CLASS TForm
 *------------------------------------------------------------------------------*
-   if valtype( nHeight ) == "N"
+   if HB_IsNumeric( nHeight ) 
       ::SizePos( , , , nHeight )
    endif
 Return GetWindowHeight( ::hWnd )
@@ -1753,7 +1753,7 @@ Return GetWindowHeight( ::hWnd )
 *------------------------------------------------------------------------------*
 METHOD Width( nWidth ) CLASS TForm
 *------------------------------------------------------------------------------*
-   if valtype( nWidth ) == "N"
+   if HB_IsNumeric( nWidth ) 
       ::SizePos( , , nWidth )
    endif
 Return GetWindowWidth( ::hWnd )
@@ -1761,7 +1761,7 @@ Return GetWindowWidth( ::hWnd )
 *------------------------------------------------------------------------------*
 METHOD Col( nCol ) CLASS TForm
 *------------------------------------------------------------------------------*
-   if valtype( nCol ) == "N"
+   if HB_IsNumeric( nCol ) 
       ::SizePos( , nCol )
    endif
 Return GetWindowCol( ::hWnd )
@@ -1769,7 +1769,7 @@ Return GetWindowCol( ::hWnd )
 *------------------------------------------------------------------------------*
 METHOD Row( nRow ) CLASS TForm
 *------------------------------------------------------------------------------*
-   If valtype( nRow ) == "N"
+   If HB_IsNumeric( nRow ) 
       ::SizePos( nRow )
    EndIf
 Return GetWindowRow( ::hWnd )
@@ -1777,7 +1777,7 @@ Return GetWindowRow( ::hWnd )
 *------------------------------------------------------------------------------*
 METHOD VirtualWidth( nSize ) CLASS TForm
 *------------------------------------------------------------------------------*
-   If valtype( nSize ) == "N"
+   If HB_IsNumeric( nSize ) 
       ::nVirtualWidth := nSize
       ValidateScrolls( Self, .T. )
    EndIf
@@ -1786,7 +1786,7 @@ Return ::nVirtualWidth
 *------------------------------------------------------------------------------*
 METHOD VirtualHeight( nSize ) CLASS TForm
 *------------------------------------------------------------------------------*
-   If valtype( nSize ) == "N"
+   If HB_IsNumeric( nSize ) 
       ::nVirtualHeight := nSize
       ValidateScrolls( Self, .T. )
    EndIf
@@ -1854,16 +1854,16 @@ METHOD SizePos( nRow, nCol, nWidth, nHeight ) CLASS TForm
 *------------------------------------------------------------------------------*
 local actpos:={0,0,0,0}
    GetWindowRect( ::hWnd, actpos )
-   if valtype( nCol ) != "N"
+   if !HB_IsNumeric( nCol )
       nCol := actpos[ 1 ]
    endif
-   if valtype( nRow ) != "N"
+   if !HB_IsNumeric( nRow )
       nRow := actpos[ 2 ]
    endif
-   if valtype( nWidth ) != "N"
+   if !HB_IsNumeric( nWidth )
       nWidth := actpos[ 3 ] - actpos[ 1 ]
    endif
-   if valtype( nHeight ) != "N"
+   if !HB_IsNumeric( nHeight )
       nHeight := actpos[ 4 ] - actpos[ 2 ]
    endif
 Return MoveWindow( ::hWnd , nCol , nRow , nWidth , nHeight , .t. )
@@ -1913,7 +1913,7 @@ Return lRet
 METHOD DoEvent( bBlock, cEventType ) CLASS TForm
 *-----------------------------------------------------------------------------*
 Local lRetVal := .F.
-   If valtype( bBlock ) == "B"
+   If HB_IsBlock( bBlock ) 
 		_PushEventInfo()
       _OOHG_ThisForm      := Self
       _OOHG_ThisEventType := cEventType
@@ -2277,9 +2277,9 @@ Local oCtrl
       NOTE : Since ::lReleasing could be changed on each process, it must be validated any time
 
       // Process Interactive Close Event / Setting
-      If ! ::lReleasing .AND. ValType( ::OnInteractiveClose ) == 'B'
+      If ! ::lReleasing .AND. HB_IsBlock( ::OnInteractiveClose )
          xRetVal := ::DoEvent( ::OnInteractiveClose, 'WINDOW_ONINTERACTIVECLOSE' )
-         If ValType( xRetVal ) == 'L' .AND. ! xRetVal
+         If HB_IsLogical( xRetVal ) .AND. ! xRetVal
             Return 1
          EndIf
       EndIf
@@ -2335,7 +2335,7 @@ Local aRect, w, h, hscroll, vscroll
    hWnd := ::hWnd
    nVirtualWidth := ::VirtualWidth
    nVirtualHeight := ::VirtualHeight
-   If ValType( lMove ) != "L"
+   If !HB_IsLogical( lMove )
       lMove := .F.
    EndIf
    vscroll := hscroll := .F.
@@ -2519,12 +2519,12 @@ METHOD Define( FormName, Caption, x, y, w, h, Parent, nosize, nosysmenu, ;
 Local nStyle := WS_POPUP, nStyleEx := 0
 Local oParent, hParent
 
-   If ValType( modalsize ) != "L"
+   If !HB_Islogical( modalsize )
       modalsize := .F.
    EndIf
 
    oParent := ::SearchParent( Parent )
-   If ValType( oParent ) == "O"
+   If HB_IsObject( oParent ) 
       hParent := oParent:hWnd
    ELSE
       hParent := 0
@@ -2545,7 +2545,7 @@ Return Self
 *-----------------------------------------------------------------------------*
 METHOD Visible( lVisible ) CLASS TFormModal
 *-----------------------------------------------------------------------------*
-   IF VALTYPE( lVisible ) == "L"
+   IF HB_IsLogical( lVisible ) 
       IF lVisible
          // Find Previous window
          If     aScan( _OOHG_aFormhWnd, GetActiveWindow() ) > 0
@@ -2585,10 +2585,10 @@ METHOD Activate( lNoStop, oWndLoop ) CLASS TFormModal
    // EndIf
 
    // Checks for non-stop window
-   IF ValType( lNoStop ) != "L"
+   IF !HB_IsLogical( lNoStop )
       lNoStop := .F.
    ENDIF
-   IF lNoStop .AND. ValType( oWndLoop ) != "O" .AND. ValType( ::oPrevWindow ) == "O"
+   IF lNoStop .AND. !HB_IsObject( oWndLoop ) .AND. HB_IsObject( ::oPrevWindow ) 
       oWndLoop := ::oPrevWindow
    ENDIF
 
@@ -2650,7 +2650,7 @@ METHOD Define( FormName, Caption, x, y, w, h, oParent, aRGB, fontname, fontsize,
 Local nStyle := 0, nStyleEx := 0
 
    ::SearchParent( oParent )
-   ::Focused := ( ValType( Focused ) == "L" .AND. Focused )
+   ::Focused := ( HB_IsLogical( Focused ) .AND. Focused )
    nStyle += WS_CHILD
    If _OOHG_SetControlParent()
       // This is not working when there's a RADIO control :(
@@ -2699,18 +2699,18 @@ Return Self
 METHOD SizePos( nRow, nCol, nWidth, nHeight ) CLASS TFormInternal
 *------------------------------------------------------------------------------*
 Local uRet
-   if valtype( nCol ) == "N"
+   if HB_IsNumeric( nCol )
       ::nCol := nCol
    endif
-   if valtype( nRow ) == "N"
+   if HB_IsNumeric( nRow )
       ::nRow := nRow
    endif
-   if valtype( nWidth ) != "N"
+   if !HB_IsNumeric( nWidth )
       nWidth := ::nWidth
    else
       ::nWidth := nWidth
    endif
-   if valtype( nHeight ) != "N"
+   if !HB_IsNumeric( nHeight )
       nHeight := ::nHeight
    else
       ::nHeight := nHeight
@@ -2758,7 +2758,7 @@ METHOD Define( FormName, w, h, break, grippertext, nocaption, title, aRGB, ;
 Local nStyle := 0, nStyleEx := 0
 
    ::SearchParent()
-   ::Focused := ( ValType( Focused ) == "L" .AND. Focused )
+   ::Focused := ( HB_IsLogical( Focused ) .AND. Focused )
    nStyle += WS_CHILD
    nStyleEx += WS_EX_STATICEDGE + WS_EX_TOOLWINDOW
    If _OOHG_SetControlParent()
@@ -2803,7 +2803,7 @@ METHOD Define( FormName, Caption, x, y, w, h, MouseDragProcedure, ;
 *------------------------------------------------------------------------------*
 Local nStyle := 0, nStyleEx := 0
 
-   ::Focused := ( ValType( Focused ) == "L" .AND. Focused )
+   ::Focused := ( HB_IsLogical( Focused ) .AND. Focused )
    ::SearchParent( oParent )
 
 * ventana MDI FRAME
@@ -2848,7 +2848,7 @@ METHOD Define( FormName, Caption, x, y, w, h, nominimize, nomaximize, nosize, ;
 *------------------------------------------------------------------------------*
 Local nStyle := 0, nStyleEx := 0
 
-   ::Focused := ( ValType( Focused ) == "L" .AND. Focused )
+   ::Focused := ( HB_IsLogical( Focused ) .AND. Focused )
    ::SearchParent( oParent )
 
    nStyle   += WS_CHILD
@@ -2893,42 +2893,42 @@ Local aError := {}
 
 ///////////////////// Check for non-"implemented" parameters at Tform's subclasses....
 
-   If ValType( main ) != "L"
+   If !HB_IsLogical( main )
       main := .F.
    ElseIf main
       AADD( aError, "MAIN" )
    EndIf
-   If ValType( splitchild ) != "L"
+   If !HB_IsLogical( splitchild )
       splitchild := .F.
    ElseIf splitchild
       AADD( aError, "SPLITCHILD" )
    EndIf
-   If ValType( child ) != "L"
+   If !HB_IsLogical( child )
       child := .F.
    ElseIf child
       AADD( aError, "CHILD" )
    EndIf
-   If ValType( modal ) != "L"
+   If !HB_IsLogical( modal )
       modal := .F.
    ElseIf modal
       AADD( aError, "MODAL" )
    EndIf
-   If ValType( modalsize ) != "L"
+   If !HB_IsLogical( modalsize )
       modalsize := .F.
    ElseIf modalsize
       AADD( aError, "MODALSIZE" )
    EndIf
-   If ValType( mdiclient ) != "L"
+   If !HB_IsLogical( mdiclient )
       mdiclient := .F.
    ElseIf mdiclient
       AADD( aError, "MDICLIENT" )
    EndIf
-   If ValType( mdichild ) != "L"
+   If !HB_IsLogical( mdichild )
       mdichild := .F.
    ElseIf mdichild
       AADD( aError, "MDICHILD" )
    EndIf
-   If ValType( internal ) != "L"
+   If !HB_IsLogical( internal )
       internal := .F.
    ElseIf internal
       AADD( aError, "INTERNAL" )
@@ -3194,7 +3194,7 @@ Function InputBox ( cInputPrompt , cDialogCaption , cDefaultValue , nTimeout , c
 
 	RetVal := ''
 
-   If ValType (lMultiLine) == 'L' .AND. lMultiLine
+   If HB_IsLogical (lMultiLine) .AND. lMultiLine
       mo := 150
 	Else
 		mo := 0
@@ -3318,10 +3318,10 @@ Local z, aForm2, oWndActive, oWnd, lModal
    aForm2 := ACLONE( aForm )
 
    // Validates NOWAIT flag
-   IF ValType( lNoWait ) != "L"
+   IF !HB_IsLogical( lNoWait )
       lNoWait := .F.
    ENDIF
-   oWndActive := IF( lNoWait .AND. ValType( _OOHG_Main ) == "O", _OOHG_Main, GetFormObject( aForm2[ 1 ] ) )
+   oWndActive := IF( lNoWait .AND. HB_IsObject( _OOHG_Main ) , _OOHG_Main, GetFormObject( aForm2[ 1 ] ) )
 
    // Looks for MAIN window
    If _OOHG_Main != NIL
@@ -3433,7 +3433,7 @@ Return
 
 Function SetInteractiveClose( nValue )
 Local nRet := _OOHG_InteractiveClose
-   If ValType( nValue ) == "N" .AND. nValue >= 0 .AND. nValue <= 3
+   If HB_IsNumeric( nValue ) .AND. nValue >= 0 .AND. nValue <= 3
       _OOHG_InteractiveClose := INT( nValue )
    EndIf
 Return nRet
@@ -3573,14 +3573,14 @@ HB_FUNC( _OOHG_GETMOUSEROW )
 
 Function _OOHG_GetArrayItem( uaArray, nItem, uExtra1, uExtra2 )
 Local uRet
-   IF ValType( uaArray ) != "A"
+   IF !HB_IsArray( uaArray ) 
       uRet := uaArray
    ElseIf LEN( uaArray ) >= nItem .AND. nItem >= 1
       uRet := uaArray[ nItem ]
    Else
       uRet := NIL
    ENDIF
-   IF ValType( uRet ) == "B"
+   IF HB_IsBlock( uRet ) 
       uRet := Eval( uRet, nItem, uExtra1, uExtra2 )
    ENDIF
 Return uRet
@@ -3589,7 +3589,7 @@ Function _OOHG_DeleteArrayItem( aArray, nItem )
 #ifdef __XHARBOUR__
    Return ADel( aArray, nItem, .T. )
 #else
-   IF ValType( aArray ) == "A" .AND. Len( aArray ) >= nItem
+   IF HB_IsArray( aArray ) .AND. Len( aArray ) >= nItem
       ADel( aArray, nItem )
       ASize( aArray, Len( aArray ) - 1 )
    ENDIF
@@ -3603,8 +3603,8 @@ Local nPos, uRet := nil
       uRet := aKeys[ nPos ][ HOTKEY_ACTION ]
    EndIf
    If PCOUNT() > 2
-      If ValType( bAction ) == "B"
-         If ValType( nId ) != "N"
+      If HB_IsBlock( bAction )
+         If !HB_IsNumeric( nId ) 
             nId := 0
          EndIf
          If nPos > 0
@@ -3623,7 +3623,7 @@ Return uRet
 FUNCTION _OOHG_SetbKeyDown( bKeyDown )
 Local uRet
    uRet := _OOHG_bKeyDown
-   If ValType( bKeyDown ) == "B"
+   If HB_IsBlock( bKeyDown ) 
       _OOHG_bKeyDown := bKeyDown
    ElseIf PCOUNT() > 0
       _OOHG_bKeyDown := nil
@@ -3647,7 +3647,7 @@ Return
 // PATCH :(
 FUNCTION _OOHG_SetControlParent( lNewState )
 STATIC lState := .F.
-   If ValType( lNewState ) == "L"
+   If HB_IsLogical( lNewState ) 
       lState := lNewState
    EndIf
 RETURN lState

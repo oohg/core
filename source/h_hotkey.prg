@@ -1,5 +1,5 @@
 /*
- * $Id: h_hotkey.prg,v 1.9 2007-10-07 22:52:57 guerra000 Exp $
+ * $Id: h_hotkey.prg,v 1.10 2007-10-08 21:19:04 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -261,7 +261,7 @@ LOCAL aKey
    IF VALTYPE( nKey ) $ "CM"
       aKey := _DetermineKey( nKey )
       nKey := aKey[ 1 ]
-      IF ValType( nMod ) == "N"
+      IF HB_IsNumeric( nMod )
          nMod := nMod + aKey[ 2 ]    // MUST BE A BINARY OR!!!
       ELSE
          nMod := aKey[ 2 ]
@@ -274,7 +274,7 @@ LOCAL aKey
 
    ::SetForm( ControlName, ParentForm )
    ::Container := nil
-   IF ValType( lDisabled ) == "L" .AND. lDisabled
+   IF HB_IsLogical( lDisabled ) .AND. lDisabled
       ::lEnabled := .F.
    ELSE
       ::Parent:_HOTKEYMETHOD( ::nKey, ::nMod, ::OnClick )
@@ -285,7 +285,7 @@ Return Self
 *-----------------------------------------------------------------------------*
 METHOD Enabled( lEnabled ) CLASS THotKey
 *-----------------------------------------------------------------------------*
-   IF VALTYPE( lEnabled ) == "L" .AND. ::lEnabled != lEnabled
+   IF HB_IsLogical( lEnabled ) .AND. ::lEnabled != lEnabled
       IF lEnabled
          ::Parent:_HOTKEYMETHOD( ::nKey, ::nMod, ::OnClick )
       ELSE

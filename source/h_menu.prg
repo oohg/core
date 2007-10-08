@@ -1,5 +1,5 @@
 /*
- * $Id: h_menu.prg,v 1.21 2007-10-06 22:16:44 declan2005 Exp $
+ * $Id: h_menu.prg,v 1.22 2007-10-08 21:19:04 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -276,7 +276,7 @@ LOCAL nStyle
    AADD( _OOHG_xMenuActive, Self )
    nStyle := MF_POPUP + IF( ValType( lRight ) == "L" .AND. lRight, MF_RIGHTJUSTIFY, 0 )
    AppendMenuString( ::Container:hWnd, ::hWnd, Caption, nStyle )
-   If HB_IsString( image )
+   If VALTYPE( image ) $ "CM"
       MenuItem_SetBitMaps( ::Container:hWnd, ::xId, image, '' )
    EndIf
    if HB_IsLogical( checked )  .AND. checked
@@ -312,7 +312,7 @@ Local nStyle, Controlhandle, id
    ::Register( ControlHandle, Name, , , , Id )
    ::xId := ::Id
    ::OnClick := action
-   If HB_IsString( image )
+   If VALTYPE( image ) $ "CM"
       MenuItem_SetBitMaps( ::Container:hWnd, ::xId, image, '' )
    EndIf
    if HB_IsLogical( checked )  .AND. checked

@@ -1,5 +1,5 @@
 /*
- * $Id: h_image.prg,v 1.18 2007-10-06 22:16:44 declan2005 Exp $
+ * $Id: h_image.prg,v 1.19 2007-10-08 21:19:04 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -159,7 +159,7 @@ Return Self
 METHOD Picture( cPicture ) CLASS TImage
 *-----------------------------------------------------------------------------*
 LOCAL nAttrib
-   IF HB_IsString( cPicture ) 
+   IF VALTYPE( cPicture ) $ "CM"
       DeleteObject( ::AuxHandle )
       ::cPicture := cPicture
       nAttrib := LR_CREATEDIBSECTION
@@ -184,7 +184,7 @@ Return ::AuxHandle
 *-----------------------------------------------------------------------------*
 METHOD Buffer( cBuffer ) CLASS TImage
 *-----------------------------------------------------------------------------*
-   If ValType( cBuffer ) $ "CM"
+   If VALTYPE( cBuffer ) $ "CM"
       DeleteObject( ::AuxHandle )
       ::AuxHandle := _OOHG_BitmapFromBuffer( Self, cBuffer, ::AutoSize )
       ::RePaint()

@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.40 2007-10-06 22:16:44 declan2005 Exp $
+ * $Id: h_textbox.prg,v 1.41 2007-10-08 21:19:04 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -185,7 +185,7 @@ local break
    ::Register( nControlHandle, cControlName, HelpId,, cToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
 
-   If HB_IsString( Field ) .AND. ! empty( Field )
+   If VALTYPE( Field ) $"CM" .AND. ! empty( Field )
       ::VarName := alltrim( Field )
       ::Block := &( "{ |x| if( PCount() == 0, " + Field + ", " + Field + " := x ) }" )
       cValue := EVAL( ::Block )
@@ -211,7 +211,7 @@ Local uValue
 
    IF HB_IsBlock( ::Block )
       uValue := EVAL( ::Block )
-      If HB_IsString ( uValue ) $ 'CM'
+      If VALTYPE ( uValue ) $ 'CM'
          uValue := rtrim( uValue )
       EndIf
       ::Value := uValue
@@ -222,7 +222,7 @@ Return NIL
 *------------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TText
 *------------------------------------------------------------------------------*
-Return ( ::Caption := IF( HB_IsString( uValue ) , RTrim( uValue ), NIL ) )
+Return ( ::Caption := IF( VALTYPE( uValue ) $ "CM" , RTrim( uValue ), NIL ) )
 
 *------------------------------------------------------------------------------*
 METHOD SetFocus() CLASS TText
@@ -357,7 +357,7 @@ Local cType, cPicFun, cPicMask, nPos, nScroll
 
    cType := ValType( uValue )
 
-   IF ! HB_IsString( cInputMask )
+   IF ! VALTYPE( cInputMask ) $ "CM"
       cInputMask := ""
    ENDIF
    ::lBritish := .F.
@@ -565,7 +565,7 @@ Return uValue
 *------------------------------------------------------------------------------*
 METHOD Picture( cPicture ) CLASS TTextPicture
 *------------------------------------------------------------------------------*
-   If HB_IsString( cPicture )
+   If VALTYPE( cPicture ) $ "CM"
       ::cPicture := cPicture
    EndIf
 RETURN ::cPicture
@@ -931,13 +931,13 @@ METHOD Define( ControlName, ParentForm, x, y, inputmask, width, value, ;
 
    rightalign := .T.
 
-   IF HB_IsString( Format ) .AND. ! Empty( Format )
+   IF VALTYPE( Format ) $"CM" .AND. ! Empty( Format )
       Format := "@" + Alltrim( Format ) + " "
    Else
       Format := ""
    ENDIF
 
-   IF ! HB_IsString( inputmask ) .OR. Empty( inputmask )
+   IF ! VALTYPE( inputmask ) $ "CM" .OR. Empty( inputmask )
       inputmask := ""
    ENDIF
 
@@ -985,7 +985,7 @@ METHOD Define( ControlName, ParentForm, x, y, inputmask, width, value, ;
    IF HB_IsLogical( date ) .AND. date
       ::lInsert := .F.
       inputmask := StrTran( StrTran( StrTran( StrTran( StrTran( StrTran( SET( _SET_DATEFORMAT ), "Y", "9" ), "y", "9" ), "M", "9" ), "m", "9" ), "D", "9" ), "d", "9" )
-      IF HB_IsString( Value )
+      IF VALTYPE( Value ) $"CM"
          Value := CTOD( Value )
       ElseIf !HB_IsDate( Value )
          Value := STOD( "" )
@@ -1017,8 +1017,8 @@ FUNCTION DefineTextBox( cControlName, cParentForm, x, y, Width, Height, ;
 Local Self, lInsert
 
    // If format is specified, inputmask is enabled
-   If HB_IsString( format )
-      If HB_IsString( inputmask )
+   If VALTYPE( format ) $"CM"
+      If VALTYPE( inputmask ) $"CM"
          inputmask := "@" + format + " " + inputmask
       Else
          inputmask := "@" + format
@@ -1031,12 +1031,12 @@ Local Self, lInsert
    If ( HB_IsLogical( date ) .AND. date ) .OR. HB_IsDate( value )
       lInsert := .F.
       numeric := .F.
-      If HB_IsString( Value )
+      If VALTYPE( Value )$"CM"
          Value := CTOD( Value )
       ElseIf !HB_IsDate( Value )
          Value := STOD( "" )
       EndIf
-      If ! HB_IsString( inputmask )
+      If ! VALTYPE( inputmask ) $"CM"
          inputmask := "@D"
       EndIf
    EndIf
@@ -1046,14 +1046,14 @@ Local Self, lInsert
       numeric := .F.
    ElseIf numeric
       lInsert := .F.
-      If HB_IsString( Value )
+      If VALTYPE( Value ) $"CM"
          Value := VAL( Value )
       ElseIf !HB_IsNumeric( Value )
          Value := 0
       EndIf
    EndIf
 
-   If HB_IsString( inputmask ) 
+   If VALTYPE( inputmask ) $ "CM"
       // If inputmask is defined, it's TTextPicture()
       Self := _OOHG_SelectSubClass( TTextPicture(), subclass )
       ASSIGN ::lInsert VALUE lInsert TYPE "L"

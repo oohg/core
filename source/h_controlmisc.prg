@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.79 2007-06-28 23:46:41 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.80 2007-10-08 21:19:04 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -333,7 +333,7 @@ Local oInputWindow, aResult
 
 		if ValType ( aValues[i] ) == 'C'
 
-			if ValType ( aFormats[i] ) == 'N'
+			if HB_IsNumeric ( aFormats[i] ) 
 
 				If aFormats[i] > 32
 					e++
@@ -343,7 +343,7 @@ Local oInputWindow, aResult
 
 		EndIf
 
-		if ValType ( aValues[i] ) == 'M'
+		if HB_IsMemo ( aValues[i] ) 
 			e++
 		EndIf
 
@@ -386,19 +386,19 @@ Local oInputWindow, aResult
          @ ControlRow , 10 LABEL &LN OF _InputWindow VALUE aLabels [i] WIDTH 110 NOWORDWRAP
 
 			do case
-			case ValType ( aValues [i] ) == 'L'
+			case HB_IsLogical ( aValues [i] )
 
 				@ ControlRow , 120 CHECKBOX &CN OF _InputWindow CAPTION '' VALUE aValues[i]
 				ControlRow := ControlRow + 30
 
-			case ValType ( aValues [i] ) == 'D'
+			case HB_IsDate ( aValues [i] ) 
 
 				@ ControlRow , 120 DATEPICKER &CN  OF _InputWindow VALUE aValues[i] WIDTH 140
 				ControlRow := ControlRow + 30
 
-			case ValType ( aValues [i] ) == 'N'
+			case HB_IsNumeric ( aValues [i] )
 
-				If ValType ( aFormats [i] ) == 'A'
+				If HB_Isarray ( aFormats [i] ) 
 
 					@ ControlRow , 120 COMBOBOX &CN  OF _InputWindow ITEMS aFormats[i] VALUE aValues[i] WIDTH 140  FONT 'Arial' SIZE 10
 					ControlRow := ControlRow + 30
@@ -416,7 +416,7 @@ Local oInputWindow, aResult
 
 			case ValType ( aValues [i] ) == 'C'
 
-				If ValType ( aFormats [i] ) == 'N'
+				If HB_IsNumeric ( aFormats [i] ) 
 					If  aFormats [i] <= 32
 						@ ControlRow , 120 TEXTBOX &CN  OF _InputWindow VALUE aValues[i] WIDTH 140 FONT 'Arial' SIZE 10 MAXLENGTH aFormats [i]
 						ControlRow := ControlRow + 30
@@ -426,7 +426,7 @@ Local oInputWindow, aResult
 					EndIf
 				EndIf
 
-			case ValType ( aValues [i] ) == 'M'
+			case HB_IsMemo ( aValues [i] ) 
 
 				@ ControlRow , 120 EDITBOX &CN  OF _InputWindow WIDTH 140 HEIGHT 90 VALUE aValues[i] FONT 'Arial' SIZE 10
 				ControlRow := ControlRow + 94
@@ -939,7 +939,7 @@ Local oWnd, oCtrl
       Arg2 := Upper( Arg2 )
 
 		if Arg2 == 'ACTIVATE'
-         if ValType( Arg1 ) == 'A'
+         if HB_IsArray( Arg1 ) 
             _ActivateWindow( Arg1 )
 			Else
             oWnd:Activate()
@@ -1318,7 +1318,7 @@ METHOD SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BkColor,
 
    ::ParentDefaults( FontName, FontSize, FontColor )
 
-   IF valtype( lEditBox ) == "L" .AND. lEditBox
+   IF HB_IsLogical( lEditBox ) .AND. lEditBox
       // Background Color (edit or listbox):
       if ValType( BkColor ) $ "ANCM"
          // Specified color
@@ -1361,7 +1361,7 @@ METHOD SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BkColor,
    // Right-to-left
    If _OOHG_GlobalRTL()
       ::lRtl := .T.
-   ElseIf ValType( lRtl ) == "L"
+   ElseIf HB_IsLogical( lRtl ) 
       ::lRtl := lRtl
    ElseIf ! Empty( ::Container )
       ::lRtl := ::Container:lRtl
@@ -1376,25 +1376,25 @@ RETURN Self
 *------------------------------------------------------------------------------*
 METHOD InitStyle( nStyle, nStyleEx, lInvisible, lNoTabStop, lDisabled ) CLASS TControl
 *------------------------------------------------------------------------------*
-   If ValType( nStyle ) != "N"
+   If !HB_IsNumeric( nStyle )
       nStyle := 0
    EndIf
-   If ValType( nStyleEx ) != "N"
+   If !HB_IsNumeric( nStyleEx ) 
       nStyleEx := 0
    EndIf
 
-   If ValType( lInvisible ) == "L"
+   If HB_IsLogical( lInvisible ) 
       ::lVisible := ! lInvisible
    EndIf
    If ::lVisible
       nStyle += WS_VISIBLE
    EndIf
 
-   If ValType( lNoTabStop ) != "L" .OR. ! lNoTabStop
+   If !HB_IsLogical( lNoTabStop ) .OR. ! lNoTabStop
       nStyle += WS_TABSTOP
    EndIf
 
-   If ValType( lDisabled ) == "L"
+   If HB_IsLogical( lDisabled ) 
       ::lEnabled := ! lDisabled
    EndIf
    If ! ::lEnabled
@@ -1422,17 +1422,17 @@ EMPTY(cName)
       ::Container:AddControl( Self )
    ENDIF
 
-   IF VALTYPE( HelpId ) == "N"
+   IF HB_IsNumeric( HelpId ) 
       ::HelpId := HelpId
    ENDIF
 
-   IF VALTYPE( Visible ) == "L"
+   IF HB_IsLogical( Visible )
       ::Visible := Visible
    ENDIF
 
    ::ToolTip := ToolTip
 
-   If VALTYPE( Id ) == "N"
+   If HB_IsNumeric( Id ) 
       ::Id := Id
    Else
       ::Id := GetDlgCtrlId( ::hWnd )
@@ -1506,19 +1506,19 @@ METHOD SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout ) CLASS T
    IF ! EMPTY( FontName ) .AND. VALTYPE( FontName ) $ "CM"
       ::cFontName := FontName
    ENDIF
-   IF ! EMPTY( FontSize ) .AND. VALTYPE( FontSize ) == "N"
+   IF ! EMPTY( FontSize ) .AND. HB_IsNumeric( FontSize )
       ::nFontSize := FontSize
    ENDIF
-   IF VALTYPE( Bold ) == "L"
+   IF HB_Islogical( Bold )
       ::Bold := Bold
    ENDIF
-   IF VALTYPE( Italic ) == "L"
+   IF HB_IsLogical( Italic )
       ::Italic := Italic
    ENDIF
-   IF VALTYPE( Underline ) == "L"
+   IF HB_IsLogical( Underline )
       ::Underline := Underline
    ENDIF
-   IF VALTYPE( Strikeout ) == "L"
+   IF HB_IsLogical( Strikeout )
       ::Strikeout := Strikeout
    ENDIF
    ::FontHandle := _SetFont( ::hWnd, ::cFontName, ::nFontSize, ::Bold, ::Italic, ::Underline, ::Strikeout )
@@ -1535,7 +1535,7 @@ Return ::cFontName
 *-----------------------------------------------------------------------------*
 METHOD FontSize( nFontSize ) CLASS TControl
 *-----------------------------------------------------------------------------*
-   If ValType( nFontSize ) == "N"
+   If HB_IsNumeric( nFontSize ) 
       ::SetFont( , nFontSize )
    EndIf
 Return ::nFontSize
@@ -1543,7 +1543,7 @@ Return ::nFontSize
 *-----------------------------------------------------------------------------*
 METHOD FontBold( lBold ) CLASS TControl
 *-----------------------------------------------------------------------------*
-   If ValType( lBold ) == "L"
+   If HB_IsLogical( lBold ) 
       ::SetFont( ,, lBold )
    EndIf
 Return ::Bold
@@ -1551,7 +1551,7 @@ Return ::Bold
 *-----------------------------------------------------------------------------*
 METHOD FontItalic( lItalic ) CLASS TControl
 *-----------------------------------------------------------------------------*
-   If ValType( lItalic ) == "L"
+   If HB_IsLogical( lItalic ) 
       ::SetFont( ,,, lItalic )
    EndIf
 Return ::Italic
@@ -1559,7 +1559,7 @@ Return ::Italic
 *-----------------------------------------------------------------------------*
 METHOD FontUnderline( lUnderline ) CLASS TControl
 *-----------------------------------------------------------------------------*
-   If ValType( lUnderline ) == "L"
+   If HB_IsLogical( lUnderline ) 
       ::SetFont( ,,,, lUnderline )
    EndIf
 Return ::Underline
@@ -1567,7 +1567,7 @@ Return ::Underline
 *-----------------------------------------------------------------------------*
 METHOD FontStrikeout( lStrikeout ) CLASS TControl
 *-----------------------------------------------------------------------------*
-   If ValType( lStrikeout ) == "L"
+   If HB_Islogical( lStrikeout )
       ::SetFont( ,,,,, lStrikeout )
    EndIf
 Return ::Strikeout
@@ -1575,7 +1575,7 @@ Return ::Strikeout
 *-----------------------------------------------------------------------------*
 METHOD OnEnter( bOnEnter ) CLASS TControl
 *-----------------------------------------------------------------------------*
-   If ValType( bOnEnter ) == "B"
+   If HB_IsBlock( bOnEnter ) 
       ::OnDblClick := bOnEnter
    EndIf
 Return ::OnDblClick
@@ -1583,16 +1583,16 @@ Return ::OnDblClick
 *-----------------------------------------------------------------------------*
 METHOD SizePos( Row, Col, Width, Height ) CLASS TControl
 *-----------------------------------------------------------------------------*
-   IF VALTYPE( Row ) == "N"
+   IF HB_IsNumeric( Row )
       ::nRow := Row
    ENDIF
-   IF VALTYPE( Col ) == "N"
+   IF HB_IsNumeric( Col )
       ::nCol := Col
    ENDIF
-   IF VALTYPE( Width ) == "N"
+   IF HB_IsNumeric( Width )
       ::nWidth := Width
    ENDIF
-   IF VALTYPE( Height ) == "N"
+   IF HB_IsNumeric( Height ) 
       ::nHeight := Height
    ENDIF
 Return MoveWindow( ::hWnd, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight , .T. )
@@ -1611,7 +1611,7 @@ Return _OOHG_EVAL( ::Block, ::Value )
 METHOD RefreshData() CLASS TControl
 *-----------------------------------------------------------------------------*
    // Since not all controls haves ::Value property, it must be checked here
-   IF VALTYPE( ::Block ) == "B"
+   IF HB_IsBlock( ::Block ) 
       ::Value := _OOHG_EVAL( ::Block )
    ENDIF
    ::Refresh()
@@ -1622,7 +1622,7 @@ METHOD AddBitMap( uImage ) CLASS TControl
 *-----------------------------------------------------------------------------*
 Local nPos, nCount
    If ! ValidHandler( ::ImageList )
-      If ValType( uImage ) == "A"
+      If HB_IsArray( uImage ) 
          ::ImageList := ImageList_Init( uImage, ::ImageListColor, ::ImageListFlags )[ 1 ]
       Else
          ::ImageList := ImageList_Init( { uImage }, ::ImageListColor, ::ImageListFlags )[ 1 ]
@@ -1635,7 +1635,7 @@ Local nPos, nCount
       EndIf
    Else
       nCount := ImageList_GetImageCount( ::ImageList )
-      If ValType( uImage ) == "A"
+      If HB_IsArray( uImage ) 
          nPos := ImageList_Add( ::ImageList, uImage[ 1 ], ::ImageListFlags, ::ImageListColor )
          AEVAL( ::ImageList, { |c| ImageList_Add( ::ImageList, c, ::ImageListFlags, ::ImageListColor ) }, 2 )
       Else
@@ -1651,7 +1651,7 @@ Return nPos
 METHOD DoEvent( bBlock ) CLASS TControl
 *-----------------------------------------------------------------------------*
 Local lRetVal
-   If valtype( bBlock ) == "B"
+   If HB_IsBlock( bBlock ) 
       _PushEventInfo()
       _OOHG_ThisForm      := ::Parent
       _OOHG_ThisType      := "C"
@@ -1676,7 +1676,7 @@ Local uRet := nil, nFocus, oFocus
          oFocus := GetControlObjectByHandle( nFocus )
          If ! oFocus:lCancel
             uRet := _OOHG_Eval( ::postBlock, Self )
-            If ValType( uRet ) == "L" .AND. ! uRet
+            If HB_IsLogical( uRet ) .AND. ! uRet
                ::SetFocus()
                Return 1
             EndIf
@@ -1914,9 +1914,9 @@ Return Left ( StartUpFolder , Rat ( '\' , StartUpFolder ) - 1 )
 Function _OOHG_SetMultiple( lMultiple, lWarning )
 *------------------------------------------------------------------------------*
 Local lRet := _OOHG_lMultiple
-   If VALTYPE( lMultiple ) == "L"
+   If HB_IsLogical( lMultiple )
       _OOHG_lMultiple := lMultiple
-   ElseIf VALTYPE( lMultiple ) == "N"
+   ElseIf HB_IsNumeric( lMultiple )
       _OOHG_lMultiple := ( lMultiple != 0 )
    ElseIf VALTYPE( lMultiple ) $ "CM"
       If UPPER( ALLTRIM( lMultiple ) ) == "ON"
@@ -1927,7 +1927,7 @@ Local lRet := _OOHG_lMultiple
    EndIf
    If ! _OOHG_lMultiple .AND. ;
       ( EMPTY( CreateMutex( , .T., strtran(GetModuleFileName(),'\','_') ) ) .OR. (GetLastError() > 0) )
-      If ValType( lWarning ) == "L" .AND. lWarning
+      If HB_IsLogical( lWarning ) .AND. lWarning
          InitMessages()
          MsgStop( _OOHG_Messages( 1, 4 ) )
       Endif

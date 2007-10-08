@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.17 2007-10-07 18:04:57 migsoft Exp $
+ * $Id: winprint.prg,v 1.18 2007-10-08 21:19:04 declan2005 Exp $
  */
 // -----------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -192,7 +192,7 @@ local txtp:="",txtb:="",t:={0,0,1,.t.}
       ::PrinterName:=cPrinter
 
    ENDIF
-   IF valtype(lPrev)=="L"
+   IF HB_IsLogical(lPrev)
      if lprev
       ::PreviewMode:=.t.
      endif
@@ -309,9 +309,9 @@ local lret:=::Textcolor
 
         // BEGIN RL 2003-08-03
 
-        IF VALTYPE (clr) == 'N'
+        IF HB_IsNumeric (clr)
             ::TextColor:=rr_settextcolor(clr)
-        ELSEIF VALTYPE (clr) == 'A'
+        ELSEIF HB_IsArray (clr) 
             ::TextColor:=rr_settextcolor( RGB ( clr [1] , clr [2] , clr [3] ) )
         ENDIF
 
@@ -330,9 +330,9 @@ local lret:=::BkColor
 
         // BEGIN RL 2003-08-03
 
-        IF VALTYPE (clr) == 'N'
+        IF HB_IsNumeric (clr)
           ::BkColor:=rr_setbkcolor(clr)
-        ELSEIF VALTYPE (clr) == 'A'
+        ELSEIF HB_IsArray (clr) 
           ::BkColor:=rr_setbkcolor( RGB ( clr [1] , clr [2] , clr [3] ) )
         ENDIF
 
@@ -354,7 +354,7 @@ local lhand:=::getobjbyname(defname,"B")
 
         // BEGIN RL 2003-08-03
 
-        IF VALTYPE (lcolor) == 'A'
+        IF HB_IsArray (lcolor) 
             lcolor := RGB ( lcolor [1] , lcolor [2] , lcolor [3] )
         ENDIF
 
@@ -394,7 +394,7 @@ local lhand:=0,lpos:=0
 
         // BEGIN RL 2003-08-03
 
-        IF VALTYPE (lcolor) == 'A'
+        IF HB_IsArray (lcolor) 
             lcolor := RGB ( lcolor [1] , lcolor [2] , lcolor [3] )
         ENDIF
 
@@ -418,7 +418,7 @@ local lhand:=::getobjbyname(defname,"P")
 
         // BEGIN RL 2003-08-03
 
-        IF VALTYPE (lcolor) == 'A'
+        IF HB_IsArray (lcolor) 
             lcolor := RGB ( lcolor [1] , lcolor [2] , lcolor [3] )
         ENDIF
 
@@ -453,7 +453,7 @@ local lhand:=0,lpos:=0
 
         // BEGIN RL 2003-08-03
 
-        IF VALTYPE (lcolor) == 'A'
+        IF HB_IsArray (lcolor) 
             lcolor := RGB ( lcolor [1] , lcolor [2] , lcolor [3] )
         ENDIF
 
@@ -580,7 +580,7 @@ return self
 
 METHOD SetUnits(newvalue,r,c) CLASS HBPrinter
 local oldvalue:=::UNITS
-   newvalue:=if(valtype(newvalue)=="N",newvalue,0)
+   newvalue:=if(HB_IsNumeric(newvalue),newvalue,0)
    ::UNITS:=if(newvalue<0 .or. newvalue>4,0,newvalue)
    do case
       case ::Units==0
@@ -596,10 +596,10 @@ local oldvalue:=::UNITS
            ::MaxRow:=::DevCaps[3]
            ::MaxCol:=::DevCaps[4]
       case ::Units==4
-           if valtype(r)=="N"
+           if HB_IsNumeric(r)
               ::MaxRow:=r-1
            endif
-           if valtype(c)=="N"
+           if HB_IsNumeric(c)
               ::MaxCol:=c-1
            endif
    endcase
@@ -647,12 +647,12 @@ METHOD Say(row,col,txt,defname,lcolor,lalign)    CLASS HBPrinter
 local atxt:={},i,lhf:=::getobjbyname(defname,"F"),font:=0,oldalign
 local apos
   do case
-     case valtype(txt)=="N"    ;  aadd(atxt,str(txt))
-     case valtype(txt)=="D"    ;  aadd(atxt,dtoc(txt))
-     case valtype(txt)=="L"    ;  aadd(atxt,if(txt,".T.",".F."))
+     case HB_IsNumeric(txt)    ;  aadd(atxt,str(txt))
+     case HB_IsDate(txt)    ;  aadd(atxt,dtoc(txt))
+     case HB_IsLogical(txt)    ;  aadd(atxt,if(txt,".T.",".F."))
      case valtype(txt)=="U"    ;  aadd(atxt,"NIL")
      case valtype(txt)$"BO"    ;  aadd(atxt,"")
-     case valtype(txt)=="A"    ;  aeval(txt,{|x| aadd(atxt,sayconvert(x)) })
+     case HB_IsArray(txt)    ;  aeval(txt,{|x| aadd(atxt,sayconvert(x)) })
      case valtype(txt)$"MC"    ;  atxt:=str2arr(txt,hb_osnewline())
   endcase
   apos:=::convert({row,col})
@@ -660,9 +660,9 @@ local apos
 
         // BEGIN RL 2003-08-03
 
-        IF VALTYPE (lcolor) == 'N'
+        IF HB_IsNumeric (lcolor)
             rr_settextcolor(lcolor)
-        ELSEIF VALTYPE (lcolor) == 'A'
+        ELSEIF HB_IsArray (lcolor)
             rr_settextcolor( RGB ( lcolor [1] , lcolor [2] , lcolor [3] ) )
         ENDIF
 
@@ -1157,7 +1157,7 @@ if valtype(par)=="C"
    par:=lower(alltrim(par))
    aeval(rgbcolornames,{|x| if(x[1]==par,ltemp:=x[2],'')})
    return ltemp
-elseif valtype(par)=="N"
+elseif HB_IsNumeric(par)
    return if(par<=len(rgbcolornames),rgbcolornames[par,2],0)
 endif
 return 0
@@ -1217,9 +1217,9 @@ return lrec
 static Function sayconvert(ltxt)
   do case
      case valtype(ltxt)$"MC"    ;  return ltxt
-     case valtype(ltxt)=="N"    ;  return str(ltxt)
-     case valtype(ltxt)=="D"    ;  return dtoc(ltxt)
-     case valtype(ltxt)=="L"    ;  return if(ltxt,".T.",".F.")
+     case HB_IsNumeric(ltxt)    ;  return str(ltxt)
+     case HB_IsDate(ltxt)    ;  return dtoc(ltxt)
+     case HB_IsLogical(ltxt)    ;  return if(ltxt,".T.",".F.")
   endcase
 return ""
 
@@ -1239,12 +1239,12 @@ DO CASE
       cList := SUBSTR( cList, nPos + nlencd )
    ENDDO
    AADD( aList, cList )
- CASE VALTYPE(CDELIMITER)=='N'
+ CASE HB_IsNumeric(CDELIMITER)
    DO WHILE len((nPos:=left(clist,cdelimiter)))==cdelimiter
       aadd(alist,npos)
       clist:=substr(clist,cdelimiter+1)
    ENDDO
- CASE VALTYPE(CDELIMITER)=='A'
+ CASE HB_IsArray(CDELIMITER)
    AEVAL(CDELIMITER,{|X| NLENCD+=X})
    DO WHILE len((nPos:=left(clist,NLENCD)))==NLENCD
       asub:={}

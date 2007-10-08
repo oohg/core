@@ -1,5 +1,5 @@
 /*
- * $Id: i_var.ch,v 1.16 2007-10-07 14:03:50 declan2005 Exp $
+ * $Id: i_var.ch,v 1.17 2007-10-08 21:19:04 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -128,6 +128,4 @@ MEMVAR _OOHG_AllVars
 
 #xtranslate  _OOHG_ThisItemCellValue   => _OOHG_AllVars \[  29 \]
 
-#ifdef __XHARBOUR__
-#xtranslate HB_ISCHAR( <x> ) => ISCHARACTER( <x> )
-#endif
+

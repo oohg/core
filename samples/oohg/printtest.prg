@@ -75,7 +75,7 @@ if oprint:lprerror
       return nil
       endif
       oprint:begindoc()
-      oprint:setpreviewsize(1)  /// tamaÏo del preview  1 menor,2 mas grande ,3 mas...
+      oprint:setpreviewsize(1)  /// tamaño del preview  1 menor,2 mas grande ,3 mas...
       oprint:beginpage()
       oprint:printdata(0,1,"impresion linea 0")
       oprint:setlmargin(4)
