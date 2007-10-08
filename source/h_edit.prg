@@ -1,5 +1,5 @@
 /*
- * $Id: h_edit.prg,v 1.16 2007-10-08 00:35:30 migsoft Exp $
+ * $Id: h_edit.prg,v 1.17 2007-10-08 21:32:37 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -255,7 +255,7 @@ InitMessages()
 
 // Control de parámetros.
 // Area de la base de datos.---------------------------------------------------
-if ( ! HB_IsString( cArea ) ) .or. Empty( cArea )
+if ( ! VALTYPE( cArea ) $"CM" ) .or. Empty( cArea )
         MsgOOHGError( _OOHG_Messages( 8, 1 ), "" )
 else
         _cArea       := cArea
@@ -269,7 +269,7 @@ if ( nCampos > 16 )
 endif
 
 // Titulo de la ventana.-------------------------------------------------------
-if ( ! HB_IsString( cTitulo ) ) .or. Empty( cTitulo )
+if ( ! VALTYPE( cTitulo ) $ "CM" ) .or. Empty( cTitulo )
         _cTitulo := cArea
 else
         _cTitulo := cTitulo
@@ -284,7 +284,7 @@ if ( !HB_IsArray( aCampos ) ) .or. ( Len( aCampos ) != nCampos )
         next
 else
         for nItem := 1 to nCampos
-                if ! HB_IsString( aCampos[nItem] )
+                if ! VALTYPE( aCampos[nItem] $ "CM" )
                         _aCampos[nItem] := Lower( _aEstructura[nItem,1] )
                 else
                         _aCampos[nItem] := aCampos[nItem]
