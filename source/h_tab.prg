@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.30 2007-08-01 05:27:36 guerra000 Exp $
+ * $Id: h_tab.prg,v 1.31 2007-10-09 20:44:08 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -148,13 +148,13 @@ Local ControlHandle
    // internal controls) as system-default backcolor  :(
    ::BackColor := -1
 
-   IF VALTYPE( aCaptions ) != "A"
-      aCaptions := {}
+   IF !HB_IsArray( aCaptions )
+       aCaptions := {}
    ENDIF
-   IF VALTYPE( aPageMap ) != "A"
+   IF !HB_IsArray( aPageMap )
       aPageMap := {}
    ENDIF
-   IF VALTYPE( Images ) != "A"
+   IF !HB_IsArray( Images )
       Images := {}
    ENDIF
 
@@ -186,12 +186,12 @@ Local ControlHandle
       ELSE
          Caption := ""
       ENDIF
-      IF z <= LEN( aPageMap ) .AND. VALTYPE( aPageMap[ z ] ) == "A"
+      IF z <= LEN( aPageMap ) .AND. HB_IsArray( aPageMap[ z ] )
          Page := aPageMap[ z ]
       ELSE
          Page := {}
       ENDIF
-      IF z <= LEN( aMnemonic ) .AND. VALTYPE( aMnemonic[ z ] ) == "B"
+      IF z <= LEN( aMnemonic ) .AND. HB_IsBLock( aMnemonic[ z ] )
          Mnemonic := aMnemonic[ z ]
       ELSE
          Mnemonic := nil
@@ -200,7 +200,7 @@ Local ControlHandle
       z++
    ENDDO
 
-   IF VALTYPE( value ) == "N"
+   IF HB_IsNumeric( value )
       ::Value := value
    ELSE
       ::Value := 1
@@ -238,7 +238,7 @@ Return Nil
 METHOD Value( nValue ) CLASS TTab
 *-----------------------------------------------------------------------------*
 LOCAL nPos, nCount
-   IF VALTYPE( nValue ) == "N"
+   IF HB_IsNumeric( nValue )
       nPos := ::RealPosition( nValue )
       IF nPos != 0
          TabCtrl_SetCurSel( ::hWnd, nPos )
@@ -254,7 +254,7 @@ RETURN nValue
 METHOD Enabled( lEnabled ) CLASS TTab
 *-----------------------------------------------------------------------------*
 LOCAL nPos
-   IF VALTYPE( lEnabled ) == "L"
+   IF HB_IsLogical( lEnabled )
       ::Super:Enabled := lEnabled
       nPos := ::Value
       IF nPos <= LEN( ::aPages ) .AND. nPos >= 1
@@ -267,7 +267,7 @@ RETURN ::Super:Enabled
 METHOD Visible( lVisible ) CLASS TTab
 *-----------------------------------------------------------------------------*
 LOCAL nPos, aPages
-   IF VALTYPE( lVisible ) == "L"
+   IF HB_IsLogical( lVisible )
       ::Super:Visible := lVisible
       nPos := ::Value
       aPages := ::aPages
@@ -310,7 +310,7 @@ METHOD AddPage( Position, Caption, Image, aControls, Mnemonic, Name, oSubClass )
 *-----------------------------------------------------------------------------*
 Local oPage, nPos
 
-   IF VALTYPE( Position ) != "N" .OR. Position < 1 .OR. Position > LEN( ::aPages )
+   IF !HB_IsNumeric( Position ) .OR. Position < 1 .OR. Position > LEN( ::aPages )
       Position := LEN( ::aPages ) + 1
    ENDIF
 
@@ -326,7 +326,7 @@ Local oPage, nPos
       ENDIF
 	EndIf
 
-   If ValType( oSubClass ) == "O"
+   If HB_IsObject( oSubClass )
       oPage := oSubClass
    ElseIf ::lInternals
       oPage := TTabPageInternal()
@@ -352,14 +352,14 @@ Local oPage, nPos
       SetTabPageImage( ::hWnd, oPage:nImage, ::RealPosition( Position ) )
    ENDIF
 
-   If ValType( aControls ) == "A"
+   If HB_IsArray( aControls )
       AEVAL( aControls, { |o| ::AddControl( o, Position ) } )
    EndIf
 
    nPos := At( '&', Caption )
 
    IF nPos > 0 .AND. nPos < LEN( Caption )
-      IF VALTYPE( Mnemonic ) != "B"
+      IF !HB_IsBlock( Mnemonic )
          Mnemonic := { || oPage:SetFocus() }
       ENDIF
       DEFINE HOTKEY 0 PARENT ( ::Parent ) KEY "ALT+" + SubStr( Caption, nPos + 1, 1 ) ACTION EVAL( Mnemonic )
@@ -415,7 +415,7 @@ METHOD AddControl( oCtrl , PageNumber , Row , Col ) CLASS TTab
       oCtrl := ::Parent:Control( oCtrl )
    EndIf
 
-   IF valtype( PageNumber ) != "N" .OR. PageNumber > LEN( ::aPages )
+   IF !HB_IsNumeric( PageNumber ) .OR. PageNumber > LEN( ::aPages )
       PageNumber := LEN( ::aPages )
    ENDIF
 
@@ -423,11 +423,11 @@ METHOD AddControl( oCtrl , PageNumber , Row , Col ) CLASS TTab
       PageNumber := 1
    ENDIF
 
-   IF valtype( Row ) != "N"
+   IF !HB_IsNumeric( Row )
       Row := oCtrl:ContainerRow - ::ContainerRow
    ENDIF
 
-   IF valtype( Col ) != "N"
+   IF !HB_IsNumeric( Col )
       Col := oCtrl:ContainerCol - ::ContainerCol
    ENDIF
 
@@ -440,7 +440,7 @@ METHOD DeletePage( Position ) CLASS TTab
 *-----------------------------------------------------------------------------*
 Local nValue, nRealPosition
 
-   IF VALTYPE( Position ) != "N" .OR. Position < 1 .OR. Position > LEN( ::aPages )
+   IF !HB_IsNumeric( Position ) .OR. Position < 1 .OR. Position > LEN( ::aPages )
       Position := LEN( ::aPages )
    ENDIF
 
@@ -571,7 +571,7 @@ Return Self
 *-----------------------------------------------------------------------------*
 METHOD Enabled( lEnabled ) CLASS TTabPage
 *-----------------------------------------------------------------------------*
-   IF VALTYPE( lEnabled ) == "L"
+   IF HB_IsLogical( lEnabled )
       ::Super:Enabled := lEnabled
       AEVAL( ::aControls, { |o| o:Enabled := o:Enabled } )
    ENDIF
@@ -580,7 +580,7 @@ RETURN ::Super:Enabled
 *-----------------------------------------------------------------------------*
 METHOD Visible( lVisible ) CLASS TTabPage
 *-----------------------------------------------------------------------------*
-   IF VALTYPE( lVisible ) == "L"
+   IF HB_IsLogical( lVisible )
       ::Super:Visible := lVisible
       AEVAL( ::aControls, { |o| o:Visible := o:Visible } )
    ENDIF
