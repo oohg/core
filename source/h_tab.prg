@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.32 2007-10-10 13:40:03 declan2005 Exp $
+ * $Id: h_tab.prg,v 1.33 2007-10-10 13:47:36 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -349,7 +349,7 @@ Local oPage, nPos
 
    IF ! Empty( Image )
       oPage:nImage := ::AddBitMap( Image ) - 1
-      SetTabPageImage( ::hWnd, oPage:nImage, ::RealPosition( Position ) )
+      SetTabPageImage( ::hWnd, ::RealPosition( Position ),  oPage:nImage,  )
    ENDIF
 
    If HB_IsArray( aControls )
@@ -530,7 +530,7 @@ LOCAL nRealPosition
       nRealPosition := ::RealPosition( nPage )
       TABCTRL_INSERTITEM( ::hWnd, nRealPosition - 1 , ::aPages[ nPage ]:Caption )
       IF ::aPages[ nPage ]:nImage != -1
-         SetTabPageImage( ::hWnd, ::aPages[ nPage ]:nImage, nRealPosition )
+         SetTabPageImage( ::hWnd, , nRealPosition , ::aPages[ nPage ]:nImage)
       ENDIF
       IF ::Value == nPage
          ::Refresh()
