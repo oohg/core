@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.31 2007-10-09 20:44:08 declan2005 Exp $
+ * $Id: h_tab.prg,v 1.32 2007-10-10 13:40:03 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -462,11 +462,13 @@ Return Nil
 *-----------------------------------------------------------------------------*
 METHOD Caption( nColumn, uValue ) CLASS TTab
 *-----------------------------------------------------------------------------*
+LOCAL nRealPosition
    IF VALTYPE( uValue ) $ "CM"
       ::aPages[ nColumn ]:Caption := uValue
-      uValue := ::RealPosition( uValue )
-      IF uValue != 0
-         SetTabCaption( ::hWnd, nColumn, uValue )
+      nRealPosition := ::RealPosition( nColumn )
+      IF nRealposition != 0
+         SetTabCaption( ::hWnd, nRealposition, Uvalue )
+         ::refresh()
       ENDIF
    ENDIF
 Return ::aPages[ nColumn ]:Caption
@@ -481,7 +483,8 @@ LOCAL oPage, nRealPosition
       oPage:nImage := ::AddBitMap( uValue ) - 1
       nRealPosition := ::RealPosition( nColumn )
       IF nRealPosition != 0
-         SetTabPageImage( ::hWnd, oPage:nImage, nRealPosition )
+         SetTabPageImage( ::hWnd, nRealPosition, oPage:nImage )
+         ::refresh()
       ENDIF
    ENDIF
 Return oPage:Picture
@@ -817,8 +820,8 @@ HB_FUNC( SETTABPAGEIMAGE )
    TC_ITEM tie;
 
    tie.mask = TCIF_IMAGE ;
-   tie.iImage = hb_parni( 2 );
-   TabCtrl_SetItem( HWNDparam( 1 ), hb_parni( 3 ) - 1, &tie );
+   tie.iImage = hb_parni( 3 );
+   TabCtrl_SetItem( HWNDparam( 1 ), hb_parni( 2 ) - 1, &tie );
 }
 
 HB_FUNC( TABCTRL_GETITEMRECT )
