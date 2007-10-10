@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.146 2007-10-08 21:19:04 declan2005 Exp $
+ * $Id: h_windows.prg,v 1.147 2007-10-10 15:01:43 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -2258,14 +2258,18 @@ Local oCtrl
       If ::Active
          If wParam == SIZE_MAXIMIZED
             ::DoEvent( ::OnMaximize, '' )
+            ::DoEvent( ::OnSize, '' )
          ElseIf wParam == SIZE_MINIMIZED
             ::DoEvent( ::OnMinimize, '' )
+            ::DoEvent( ::OnSize, '' )
          ElseIf wParam == SIZE_RESTORED
             ::DoEvent( ::OnRestore, '' )
+            ::DoEvent( ::OnSize, '' )
          EndIf
+
       EndIf
 
-      ::DoEvent( ::OnSize, '' )
+
 
       // AEVAL( ::aControls, { |o| o:Events_Size() } )
       AEVAL( ::aControls, { |o| If( o:Container == nil, o:Events_Size(), ) } )
