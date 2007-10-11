@@ -1,5 +1,5 @@
 /*
- * $Id: c_grid.c,v 1.19 2007-01-12 01:55:39 guerra000 Exp $
+ * $Id: c_grid.c,v 1.20 2007-10-11 14:20:07 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -203,16 +203,6 @@ HB_FUNC( LISTVIEWGETITEMCOUNT )
    hb_retnl( ListView_GetItemCount( HWNDparam( 1 ) ) );
 }
 
-HB_FUNC( SETGRIDCOLOMNHEADER )
-{
-   LV_COLUMN COL;
-
-   COL.mask = LVCF_FMT | LVCF_TEXT;
-   COL.fmt = LVCFMT_LEFT;
-   COL.pszText = hb_parc( 3 );
-
-   ListView_SetColumn( HWNDparam( 1 ), hb_parni( 2 ) - 1 , &COL );
-}
 
 HB_FUNC( LISTVIEWGETCOUNTPERPAGE )
 {

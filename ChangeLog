@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.420 2007-10-10 15:01:42 declan2005 Exp $
+ * $Id: ChangeLog,v 1.421 2007-10-11 14:20:06 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,6 +7,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2007-10-11 9:15 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_controlmisc.prg
+    ! fixed change header with setproperty.
+  * source/h_grid.prg
+  * source/c_grid.c 
+    ! syntax correct and reformating.
 
 2007-10-10 9:54 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   *source/h_windows.prg

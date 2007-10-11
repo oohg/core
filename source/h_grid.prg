@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.86 2007-10-08 21:19:04 declan2005 Exp $
+ * $Id: h_grid.prg,v 1.87 2007-10-11 14:20:07 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -499,13 +499,11 @@ METHOD toExcel( cTitle, nRow ) CLASS TGrid
    default ctitle to ""
 
    oExcel := TOleAuto():New( "Excel.Application" )
-   ///oExcel := CreateObject( "Excel.Application" )
    IF Ole2TxtError() != 'S_OK'
       MsgStop('Excel not found','error')
       RETURN Nil
    ENDIF
    oExcel:WorkBooks:Add()
-///   oHoja:=oExcel:ActiveSheet()
    oHoja := oExcel:ActiveSheet()
    oHoja:Cells:Font:Name := "Arial"
    oHoja:Cells:Font:Size := 10
@@ -1365,8 +1363,7 @@ Local lvc, aCellData, _ThisQueryTemp, nvkey
          ElseIf ! ::IsColumnWhen( _OOHG_ThisItemColIndex )
             // Not a valid WHEN
          Else
-    ///            ::EditCell( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
-                ::EditGrid(  _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
+            ::EditGrid(  _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
          EndIf
          return nil
       endif
@@ -1551,7 +1548,7 @@ METHOD Header( nColumn, uValue ) CLASS TGrid
 *-----------------------------------------------------------------------------*
    IF VALTYPE( uValue ) $ "CM"
       ::aHeaders[ nColumn ] := uValue
-      SETGRIDCOLOMNHEADER( ::hWnd, nColumn, uValue )
+      SETGRIDCOLUMNHEADER( ::hWnd, nColumn, uValue )
    ENDIF
 Return ::aHeaders[ nColumn ]
 
@@ -2011,6 +2008,19 @@ static void _OOHG_ListView_FillItem( HWND hWnd, int nItem, PHB_ITEM pItems )
       ListView_SetItem( hWnd, &LI );
    }
 }
+HB_FUNC ( SETGRIDCOLUMNHEADER )
+{
+        LV_COLUMN COL;
+
+        COL.mask = LVCF_FMT | LVCF_TEXT ;
+        COL.pszText = hb_parc(3) ;
+        COL.fmt = hb_parni(4) ;
+
+        ListView_SetColumn ( (HWND) hb_parnl (1) , hb_parni (2)-1 , &COL ) ;
+}
+
+
+
 
 HB_FUNC( ADDLISTVIEWITEMS )
 {

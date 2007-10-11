@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.80 2007-10-08 21:19:04 declan2005 Exp $
+ * $Id: h_controlmisc.prg,v 1.81 2007-10-11 14:20:07 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -669,7 +669,7 @@ Local oWnd, oCtrl
          oCtrl:Caption( Arg4, Arg5 )
 
       ElseIf Arg3 == "HEADER"
-         oCtrl:Caption( Arg4, Arg5 )
+         oCtrl:header( Arg4, Arg5 )   ////20071011 Ciro /////en vez de oCtrl:Caption()
 
       ElseIf Arg3 == "ITEM"
          oCtrl:Item( Arg4, Arg5 )
