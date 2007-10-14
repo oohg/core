@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.87 2007-10-11 14:20:07 declan2005 Exp $
+ * $Id: h_grid.prg,v 1.88 2007-10-14 22:43:29 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -249,11 +249,11 @@ Local ControlHandle, aImageList
 
    nStyle := ::InitStyle( nStyle,, lInvisible, lNoTabStop, lDisabled )
 
-   If !HB_IsArray( ::aJust ) 
+   If !HB_IsArray( ::aJust )
       ::aJust := aFill( Array( len( ::aHeaders ) ), 0 )
 	else
       aSize( ::aJust, len( ::aHeaders ) )
-      aEval( ::aJust, { |x,i| ::aJust[ i ] := iif( !HB_IsArray( x ) , 0, x ) } )
+      aEval( ::aJust, { |x,i| ::aJust[ i ] := iif( ! HB_IsNumeric( x ) , 0, x ) } )
 	endif
 
    if !HB_IsArray( ::Picture )
@@ -338,7 +338,7 @@ METHOD EDITGRID(nrow,ncol) CLASS TGrid
    IF !HB_IsNumeric( nRow )
       nRow := ::FirstSelectedItem
    ENDIF
-   IF !HB_IsNumeric( nCol ) 
+   IF !HB_IsNumeric( nCol )
       nCol := 1
    ENDIF
    ::nrowpos:=nrow
@@ -827,7 +827,7 @@ Local nColumns, uGridColor, uDynamicColor
       nWidth := 120
    EndIf
 
-   If !HB_IsNumeric( nJustify ) 
+   If !HB_IsNumeric( nJustify )
       nJustify := 0
    EndIf
 
@@ -897,7 +897,7 @@ Local uTemp, x
    IF ! lNoDelete
       uDynamicColor := nil
    ElseIf HB_IsArray( aGrid ) .OR. ValType( uColor ) $ "ANB" .OR. ValType( uDynamicColor ) $ "ANB"
-      IF HB_IsArray( aGrid ) 
+      IF HB_IsArray( aGrid )
          IF Len( aGrid ) < nItemCount
             ASIZE( aGrid, nItemCount )
          Else
@@ -907,7 +907,7 @@ Local uTemp, x
          aGrid := ARRAY( nItemCount )
       ENDIF
       FOR x := 1 TO nItemCount
-         IF HB_IsArray( aGrid[ x ] ) 
+         IF HB_IsArray( aGrid[ x ] )
             IF LEN( aGrid[ x ] ) < nWidth
                 ASIZE( aGrid[ x ], nWidth )
             ENDIF
@@ -966,7 +966,7 @@ Return nil
 *-----------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TGrid
 *-----------------------------------------------------------------------------*
-   IF HB_IsNumeric( uValue ) 
+   IF HB_IsNumeric( uValue )
       ListView_SetCursel( ::hWnd, uValue )
       ListView_EnsureVisible( ::hWnd, uValue )
    ELSE
@@ -997,7 +997,7 @@ Local lRet
    IF !HB_IsNumeric( nRow )
       nRow := ::FirstSelectedItem
    ENDIF
-   IF HB_IsNumeric( nCol ) 
+   IF HB_IsNumeric( nCol )
       nCol := 1
    ENDIF
    If nRow < 1 .OR. nRow > ::ItemCount() .OR. nCol < 1 .OR. nCol > Len( ::aHeaders )
@@ -1015,7 +1015,7 @@ Local lRet
       If HB_IsNumeric( uOldValue )
          If HB_IsLogical( ::Picture[ nCol ] ) .AND. ::Picture[ nCol ]
             EditControl := TGridControlImageList():New( Self )
-         ElseIf HB_IsNumeric( ListViewGetItem( ::hWnd, nRow, Len( ::aHeaders ) )[ nCol ] ) 
+         ElseIf HB_IsNumeric( ListViewGetItem( ::hWnd, nRow, Len( ::aHeaders ) )[ nCol ] )
             EditControl := TGridControlImageList():New( Self )
          EndIf
       Endif
@@ -1051,7 +1051,7 @@ Local r, r2, lRet := .F., nWidth
    IF !HB_IsNumeric( nRow )
       nRow := ::FirstSelectedItem
    ENDIF
-   IF !HB_IsNumeric( nCol ) 
+   IF !HB_IsNumeric( nCol )
       nCol := 1
    ENDIF
    _OOHG_ThisItemCellValue := ::Cell( nRow, nCol )
@@ -1074,7 +1074,7 @@ Local r, r2, lRet := .F., nWidth
 
       // Determines control type
       EditControl := GetEditControlFromArray( EditControl, ::EditControls, nCol, Self )
-      If HB_IsObject( EditControl ) 
+      If HB_IsObject( EditControl )
          // EditControl specified
       ElseIf ValType( ::Picture[ nCol ] ) == "C"
          // Picture-based
@@ -1084,7 +1084,7 @@ Local r, r2, lRet := .F., nWidth
          EditControl := GridControlObjectByType( uValue )
       EndIf
 
-      If !HB_IsObject( EditControl ) 
+      If !HB_IsObject( EditControl )
          MsgExclamation( "ooHG can't determine cell type for INPLACE edit." )
       Else
          r := { 0, 0, 0, 0 }
@@ -1142,7 +1142,7 @@ Local lRet
    IF !HB_IsNumeric( nRow )
       nRow := ::FirstSelectedItem
    ENDIF
-   IF !HB_IsNumeric( nCol ) 
+   IF !HB_IsNumeric( nCol )
       nCol := 1
    ENDIF
    If nRow < 1 .OR. nRow > ::ItemCount() .OR. nCol < 1 .OR. nCol > Len( ::aHeaders )
@@ -1301,7 +1301,7 @@ Local lvc, aCellData, _ThisQueryTemp, nvkey
 
       * Grid OnQueryData ............................
 
-      if HB_IsBlock( ::OnDispInfo ) 
+      if HB_IsBlock( ::OnDispInfo )
 
          _PushEventInfo()
          _OOHG_ThisForm := ::Parent
@@ -1311,7 +1311,7 @@ Local lvc, aCellData, _ThisQueryTemp, nvkey
          _OOHG_ThisQueryRowIndex  := _ThisQueryTemp [1]
          _OOHG_ThisQueryColIndex  := _ThisQueryTemp [2]
          Eval( ::OnDispInfo )
-         IF HB_IsNumeric( _OOHG_ThisQueryData ) 
+         IF HB_IsNumeric( _OOHG_ThisQueryData )
             SetGridQueryImage ( lParam , _OOHG_ThisQueryData )
          ElseIf ValType( _OOHG_ThisQueryData ) $ "CM"
             SetGridQueryData ( lParam , _OOHG_ThisQueryData )
@@ -1332,7 +1332,7 @@ Local lvc, aCellData, _ThisQueryTemp, nvkey
 
    elseif nNotify == LVN_COLUMNCLICK
 
-      if HB_IsArray ( ::aHeadClick ) 
+      if HB_IsArray ( ::aHeadClick )
          lvc := GetGridColumn(lParam) + 1
          if len ( ::aHeadClick ) >= lvc
             ::DoEvent ( ::aHeadClick [lvc] )
@@ -1384,7 +1384,7 @@ Local lvc, aCellData, _ThisQueryTemp, nvkey
 
          ::EditItem()
 
-      ElseIf HB_IsBlock( ::OnDblClick ) 
+      ElseIf HB_IsBlock( ::OnDblClick )
 
          Eval( ::OnDblClick )
 
@@ -1487,7 +1487,7 @@ Local aTemp, nColumn, xValue, oEditControl
       xValue := uValue[ nColumn ]
 ///      automsgbox(xvalue)
       oEditControl := GetEditControlFromArray( nil, ::EditControls, nColumn, Self )
-      If HB_IsObject( oEditControl ) 
+      If HB_IsObject( oEditControl )
 /////      automsgbox(xvalue)
          aTemp[ nColumn ] := oEditControl:GridValue( xValue )
       ElseIf ValType( ::Picture[ nColumn ] ) $ "CM"
@@ -1503,7 +1503,7 @@ METHOD SetItemColor( nItem, uForeColor, uBackColor, uExtra ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 LOCAL nWidth
    nWidth := LEN( ::aHeaders )
-   IF !HB_IsArray( uExtra ) 
+   IF !HB_IsArray( uExtra )
       uExtra := ARRAY( nWidth )
    ELSEIF LEN( uExtra ) < nWidth
       ASIZE( uExtra, nWidth )
@@ -1518,7 +1518,7 @@ Local aTemp, nLen
       uColor := uDynamicColor
    ENDIF
    IF ValType( uColor ) $ "ANB"
-      IF HB_IsArray( aGrid ) 
+      IF HB_IsArray( aGrid )
          IF Len( aGrid ) < nItem
             ASIZE( aGrid, nItem )
          ENDIF
@@ -1655,7 +1655,7 @@ Return nil
 STATIC Function TGrid_FillColorArea( aGrid, uColor, nTop, nLeft, nBottom, nRight, hWnd )
 Local nAux
    IF ValType( uColor ) $ "ANB"
-      IF !HB_IsArray( aGrid ) 
+      IF !HB_IsArray( aGrid )
          aGrid := ARRAY( nBottom )
       ELSEIF LEN( aGrid ) < nBottom
          ASIZE( aGrid, nBottom )
@@ -1768,7 +1768,7 @@ Return Self
 *-----------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TGridMulti
 *-----------------------------------------------------------------------------*
-   IF HB_IsArray( uValue ) 
+   IF HB_IsArray( uValue )
       LISTVIEWSETMULTISEL( ::hWnd, uValue )
       If Len( uValue ) > 0
          ListView_EnsureVisible( ::hWnd, uValue[ 1 ] )

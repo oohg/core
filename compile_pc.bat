@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: compile_pc.bat,v 1.5 2007-07-27 16:57:09 declan2005 Exp $
+rem $Id: compile_pc.bat,v 1.6 2007-10-14 22:43:28 guerra000 Exp $
 rem
 cls
 
@@ -96,7 +96,7 @@ for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/M" echo %HG_HRB%\lib\libmysql
 
 Rem *** PellesC libraries ***
 for %%a in (crt kernel32 winspool user32 advapi32 ole32 uuid oleaut32 mpr) do echo %%a.lib >> pc.lnk
-for %%a in (comdlg32 comctl32 gdi32 olepro32 shell32 winmm vfw32) do echo %%a.lib >> pc.lnk
+for %%a in (comdlg32 comctl32 gdi32 olepro32 shell32 winmm vfw32 wsock32) do echo %%a.lib >> pc.lnk
 
 if exist %1.res echo %1.res >> pc.lnk
 if exist %HG_ROOT%\resources\hbprinter.res echo %HG_ROOT%\resources\hbprinter.res >> pc.lnk

@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.421 2007-10-11 14:20:06 declan2005 Exp $
+ * $Id: ChangeLog,v 1.422 2007-10-14 22:43:28 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,16 +7,22 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2007-10-14 17:42 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * ./compile_pc.bat
+    + WSOCK32.LIB added.
+  * source/h_grid.prg
+    ! Fixed JUSTIFY array.
+
 2007-10-11 9:15 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_controlmisc.prg
     ! fixed change header with setproperty.
   * source/h_grid.prg
-  * source/c_grid.c 
+  * source/c_grid.c
     ! syntax correct and reformating.
 
 2007-10-10 9:54 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   *source/h_windows.prg
-  ! fixed onsize event only when windows is active 
+  ! fixed onsize event only when windows is active
 
 2007-10-10 8:36 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   *source/h_tab.prg
