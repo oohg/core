@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.147 2007-10-10 15:01:43 declan2005 Exp $
+ * $Id: h_windows.prg,v 1.148 2007-10-15 01:23:32 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -797,7 +797,7 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )
 *------------------------------------------------------------------------------*
 METHOD Enabled( lEnabled ) CLASS TWindow
 *------------------------------------------------------------------------------*
-   IF HB_IsLogical( lEnabled ) 
+   IF HB_IsLogical( lEnabled )
       IF lEnabled .AND. ( ::Container == NIL .OR. ::Container:Enabled )
          EnableWindow( ::hWnd )
       ELSE
@@ -810,7 +810,7 @@ RETURN ::lEnabled
 *------------------------------------------------------------------------------*
 METHOD TabStop( lTabStop ) CLASS TWindow
 *------------------------------------------------------------------------------*
-   IF HB_IsLogical( lTabStop ) 
+   IF HB_IsLogical( lTabStop )
       WindowStyleFlag( ::hWnd, WS_TABSTOP, IF( lTabStop, WS_TABSTOP, 0 ) )
    ENDIF
 RETURN ( WindowStyleFlag( ::hWnd, WS_TABSTOP ) != 0 )
@@ -826,7 +826,7 @@ RETURN GetWindowStyle( ::hWnd )
 *------------------------------------------------------------------------------*
 METHOD RTL( lRTL ) CLASS TWindow
 *------------------------------------------------------------------------------*
-   If HB_IsLogical( lRTL ) 
+   If HB_IsLogical( lRTL )
       _UpdateRTL( ::hWnd, lRtl )
       ::lRtl := lRtl
    EndIf
@@ -912,7 +912,7 @@ Local nPos
 
    If ! ::lInternal
       // Search form's parent
-      If !HB_IsObject( uParent ) 
+      If !HB_IsObject( uParent )
          uParent := nil
          // Checks _OOHG_UserWindow
          If _OOHG_UserWindow != NIL .AND. ValidHandler( _OOHG_UserWindow:hWnd ) .AND. ascan( _OOHG_aFormhWnd, _OOHG_UserWindow:hWnd ) > 0
@@ -951,7 +951,7 @@ Local nPos
 
    Else
       // Searchs control's parent
-      If !HB_IsObject( uParent ) 
+      If !HB_IsObject( uParent )
          If LEN( _OOHG_ActiveForm ) > 0
             uParent := ATAIL( _OOHG_ActiveForm )
          ElseIf len( _OOHG_ActiveFrame ) > 0
@@ -1074,7 +1074,7 @@ Local nPos, nId, uRet := nil
       uRet := ::aHotKeys[ nPos ][ HOTKEY_ACTION ]
    EndIf
    If PCOUNT() > 2
-      If HB_IsBlock( bAction ) 
+      If HB_IsBlock( bAction )
          If nPos > 0
             ::aHotKeys[ nPos ][ HOTKEY_ACTION ] := bAction
          Else
@@ -1105,7 +1105,7 @@ Local nPos, nId, uRet := nil
       uRet := ::aAcceleratorKeys[ nPos ][ HOTKEY_ACTION ]
    EndIf
    If PCOUNT() > 2
-      If HB_IsBlock( bAction ) 
+      If HB_IsBlock( bAction )
          If nPos > 0
             ::aAcceleratorKeys[ nPos ][ HOTKEY_ACTION ] := bAction
          Else
@@ -1164,7 +1164,7 @@ STATIC FUNCTION LookForKey_Check_bKeyDown( bKeyDown, nKey, nFlags )
 Local lDone
    If HB_IsBlock( bKeyDown )
       lDone := Eval( bKeyDown, nKey, nFlags )
-      If !HB_IsLogical( lDone ) 
+      If !HB_IsLogical( lDone )
          lDone := .F.
       EndIf
    Else
@@ -1175,7 +1175,7 @@ Return lDone
 *------------------------------------------------------------------------------*
 METHOD Visible( lVisible ) CLASS TWindow
 *------------------------------------------------------------------------------*
-   If HB_IsLogical( lVisible ) 
+   If HB_IsLogical( lVisible )
       ::lVisible := lVisible
       If lVisible .AND. ::ContainerVisible
          CShowControl( ::hWnd )
@@ -1376,7 +1376,7 @@ Local Formhandle, aClientRect
 
    If _OOHG_GlobalRTL()
       lRtl := .T.
-   ElseIf !HB_IsLogical( lRtl ) 
+   ElseIf !HB_IsLogical( lRtl )
       lRtl := .F.
    Endif
 
@@ -1576,7 +1576,7 @@ RETURN Self
 *-----------------------------------------------------------------------------*
 METHOD Visible( lVisible ) CLASS TForm
 *-----------------------------------------------------------------------------*
-   IF HB_IsLogical( lVisible ) 
+   IF HB_IsLogical( lVisible )
       ::Super:Visible := lVisible
       IF ! lVisible
          ::OnHideFocusManagement()
@@ -1745,7 +1745,7 @@ Return ( ::Caption := cTitle )
 *------------------------------------------------------------------------------*
 METHOD Height( nHeight ) CLASS TForm
 *------------------------------------------------------------------------------*
-   if HB_IsNumeric( nHeight ) 
+   if HB_IsNumeric( nHeight )
       ::SizePos( , , , nHeight )
    endif
 Return GetWindowHeight( ::hWnd )
@@ -1753,7 +1753,7 @@ Return GetWindowHeight( ::hWnd )
 *------------------------------------------------------------------------------*
 METHOD Width( nWidth ) CLASS TForm
 *------------------------------------------------------------------------------*
-   if HB_IsNumeric( nWidth ) 
+   if HB_IsNumeric( nWidth )
       ::SizePos( , , nWidth )
    endif
 Return GetWindowWidth( ::hWnd )
@@ -1761,7 +1761,7 @@ Return GetWindowWidth( ::hWnd )
 *------------------------------------------------------------------------------*
 METHOD Col( nCol ) CLASS TForm
 *------------------------------------------------------------------------------*
-   if HB_IsNumeric( nCol ) 
+   if HB_IsNumeric( nCol )
       ::SizePos( , nCol )
    endif
 Return GetWindowCol( ::hWnd )
@@ -1769,7 +1769,7 @@ Return GetWindowCol( ::hWnd )
 *------------------------------------------------------------------------------*
 METHOD Row( nRow ) CLASS TForm
 *------------------------------------------------------------------------------*
-   If HB_IsNumeric( nRow ) 
+   If HB_IsNumeric( nRow )
       ::SizePos( nRow )
    EndIf
 Return GetWindowRow( ::hWnd )
@@ -1777,7 +1777,7 @@ Return GetWindowRow( ::hWnd )
 *------------------------------------------------------------------------------*
 METHOD VirtualWidth( nSize ) CLASS TForm
 *------------------------------------------------------------------------------*
-   If HB_IsNumeric( nSize ) 
+   If HB_IsNumeric( nSize )
       ::nVirtualWidth := nSize
       ValidateScrolls( Self, .T. )
    EndIf
@@ -1786,7 +1786,7 @@ Return ::nVirtualWidth
 *------------------------------------------------------------------------------*
 METHOD VirtualHeight( nSize ) CLASS TForm
 *------------------------------------------------------------------------------*
-   If HB_IsNumeric( nSize ) 
+   If HB_IsNumeric( nSize )
       ::nVirtualHeight := nSize
       ValidateScrolls( Self, .T. )
    EndIf
@@ -1913,7 +1913,7 @@ Return lRet
 METHOD DoEvent( bBlock, cEventType ) CLASS TForm
 *-----------------------------------------------------------------------------*
 Local lRetVal := .F.
-   If HB_IsBlock( bBlock ) 
+   If HB_IsBlock( bBlock )
 		_PushEventInfo()
       _OOHG_ThisForm      := Self
       _OOHG_ThisEventType := cEventType
@@ -2258,21 +2258,17 @@ Local oCtrl
       If ::Active
          If wParam == SIZE_MAXIMIZED
             ::DoEvent( ::OnMaximize, '' )
-            ::DoEvent( ::OnSize, '' )
          ElseIf wParam == SIZE_MINIMIZED
             ::DoEvent( ::OnMinimize, '' )
-            ::DoEvent( ::OnSize, '' )
          ElseIf wParam == SIZE_RESTORED
             ::DoEvent( ::OnRestore, '' )
-            ::DoEvent( ::OnSize, '' )
          EndIf
 
+         ::DoEvent( ::OnSize, '' )
+
+         // AEVAL( ::aControls, { |o| o:Events_Size() } )
+         AEVAL( ::aControls, { |o| If( o:Container == nil, o:Events_Size(), ) } )
       EndIf
-
-
-
-      // AEVAL( ::aControls, { |o| o:Events_Size() } )
-      AEVAL( ::aControls, { |o| If( o:Container == nil, o:Events_Size(), ) } )
 
         ***********************************************************************
 	case nMsg == WM_CLOSE
@@ -2528,7 +2524,7 @@ Local oParent, hParent
    EndIf
 
    oParent := ::SearchParent( Parent )
-   If HB_IsObject( oParent ) 
+   If HB_IsObject( oParent )
       hParent := oParent:hWnd
    ELSE
       hParent := 0
@@ -2549,8 +2545,8 @@ Return Self
 *-----------------------------------------------------------------------------*
 METHOD Visible( lVisible ) CLASS TFormModal
 *-----------------------------------------------------------------------------*
-   IF HB_IsLogical( lVisible ) 
-      IF lVisible
+   IF HB_IsLogical( lVisible )
+      IF lVisible .AND. ! ::lVisible
          // Find Previous window
          If     aScan( _OOHG_aFormhWnd, GetActiveWindow() ) > 0
             ::oPrevWindow := GetFormObjectByHandle( GetActiveWindow() )
@@ -2592,7 +2588,7 @@ METHOD Activate( lNoStop, oWndLoop ) CLASS TFormModal
    IF !HB_IsLogical( lNoStop )
       lNoStop := .F.
    ENDIF
-   IF lNoStop .AND. !HB_IsObject( oWndLoop ) .AND. HB_IsObject( ::oPrevWindow ) 
+   IF lNoStop .AND. !HB_IsObject( oWndLoop ) .AND. HB_IsObject( ::oPrevWindow )
       oWndLoop := ::oPrevWindow
    ENDIF
 

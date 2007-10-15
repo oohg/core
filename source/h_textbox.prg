@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.41 2007-10-08 21:19:04 declan2005 Exp $
+ * $Id: h_textbox.prg,v 1.42 2007-10-15 01:23:32 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -335,13 +335,17 @@ METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, uValue, ;
 *-----------------------------------------------------------------------------*
 Local nStyle := ES_AUTOHSCROLL, nStyleEx := 0
 
-   IF HB_IsNumeric( uValue )
-      right := .T.
-   ElseIf ValType( uValue ) == "U"
+   If uValue == nil
       uValue := ""
-   ENDIF
+   ElseIf HB_IsNumeric( uValue )
+      right := .T.
+      ::lInsert := .F.
+   EndIf
 
-   SetMask( Self, uValue, cInputMask )
+   If ValType( cInputMask ) $ "CM"
+      ::cPicture := cInputMask
+   EndIf
+   ::Picture( ::cPicture, uValue )
 
    ::Define2( cControlName, cParentForm, nx, ny, nWidth, nHeight, uValue, ;
               cFontName, nFontSize, cToolTip, 0, .F., ;
@@ -352,157 +356,173 @@ Local nStyle := ES_AUTOHSCROLL, nStyleEx := 0
 
 Return Self
 
-STATIC PROCEDURE SetMask( Self, uValue, cInputMask )
+*------------------------------------------------------------------------------*
+METHOD Picture( cInputMask, uValue ) CLASS TTextPicture
+*------------------------------------------------------------------------------*
 Local cType, cPicFun, cPicMask, nPos, nScroll
-
-   cType := ValType( uValue )
-
-   IF ! VALTYPE( cInputMask ) $ "CM"
-      cInputMask := ""
-   ENDIF
-   ::lBritish := .F.
-
-   cPicFun := ""
-   IF Left( cInputMask, 1 ) == "@"
-      nPos := At( " ", cInputMask )
-      IF nPos != 0
-         cPicMask := Substr( cInputMask, nPos + 1 )
-         cInputMask := Upper( Left( cInputMask, nPos - 1 ) )
-      Else
-         cPicMask := ""
-         cInputMask := Upper( cInputMask )
+   If VALTYPE( cInputMask ) $ "CM"
+      IF uValue == nil
+         uValue := ::Value
       ENDIF
 
-      IF "A" $ cInputMask
-         IF cType $ "CM" .AND. EMPTY( cPicMask )
-            cPicMask := Replicate( "A", Len( uValue ) )
+      cType := ValType( uValue )
+
+      IF ! VALTYPE( cInputMask ) $ "CM"
+         cInputMask := ""
+      ENDIF
+      ::lBritish := .F.
+
+      cPicFun := ""
+      IF Left( cInputMask, 1 ) == "@"
+         nPos := At( " ", cInputMask )
+         IF nPos != 0
+            cPicMask := Substr( cInputMask, nPos + 1 )
+            cInputMask := Upper( Left( cInputMask, nPos - 1 ) )
+         Else
+            cPicMask := ""
+            cInputMask := Upper( cInputMask )
          ENDIF
-         cInputMask := StrTran( cInputMask, "A", "" )
-      ENDIF
+
+         IF "A" $ cInputMask
+            IF cType $ "CM" .AND. EMPTY( cPicMask )
+               cPicMask := Replicate( "A", Len( uValue ) )
+            ENDIF
+            cInputMask := StrTran( cInputMask, "A", "" )
+         ENDIF
 
 /*
-      IF "B" $ cInputMask
-         cPicFun += "B"
-         cInputMask := StrTran( cInputMask, "B", "" )
-      ENDIF
+         IF "B" $ cInputMask
+            cPicFun += "B"
+            cInputMask := StrTran( cInputMask, "B", "" )
+         ENDIF
 */
 
-      IF "C" $ cInputMask
-         cPicFun += "C"
-         cInputMask := StrTran( cInputMask, "C", "" )
-      ENDIF
-
-      IF "D" $ cInputMask
-         cPicMask := StrTran( StrTran( StrTran( StrTran( StrTran( StrTran( SET( _SET_DATEFORMAT ), "Y", "9" ), "y", "9" ), "M", "9" ), "m", "9" ), "D", "9" ), "d", "9" )
-         cInputMask := StrTran( cInputMask, "D", "" )
-      ENDIF
-
-      IF "E" $ cInputMask
-         ::lBritish := .T.
-         If cType != "N"
-            cPicMask := If( __SETCENTURY(), "99/99/9999", "99/99/99" )
-         Endif
-         cPicFun += "E"
-         cInputMask := StrTran( cInputMask, "E", "" )
-      ENDIF
-
-      IF "K" $ cInputMask
-         // Since all text is selected when textbox gets focus, it's automatic
-         cInputMask := StrTran( cInputMask, "K", "" )
-      ENDIF
-
-      IF "R" $ cInputMask
-         cPicFun += "R"
-         cInputMask := StrTran( cInputMask, "R", "" )
-      ENDIF
-
-      DO WHILE "S" $ cInputMask
-         nScroll := 0
-         // It's automatic at textbox's width
-         nPos := At( "S", cInputMask )
-         cInputMask := Left( cInputMask, nPos - 1 ) + SubStr( cInputMask, nPos + 1 )
-         DO WHILE Len( cInputMask ) >= nPos .AND. SubStr( cInputMask, nPos, 1 ) $ "0123456789"
-            nScroll := ( nScroll * 10 ) + VAL( SubStr( cInputMask, nPos, 1 ) )
-            cInputMask := Left( cInputMask, nPos - 1 ) + SubStr( cInputMask, nPos + 1 )
-         ENDDO
-         IF cType $ "CM" .AND. Empty( cPicMask ) .AND. nScroll > 0
-            cPicMask := Replicate( "X", nScroll )
+         IF "C" $ cInputMask
+            cPicFun += "C"
+            cInputMask := StrTran( cInputMask, "C", "" )
          ENDIF
-      ENDDO
 
-      IF "X" $ cInputMask
-         cPicFun += "X"
-         cInputMask := StrTran( cInputMask, "X", "" )
-      ENDIF
-
-      IF "Z" $ cInputMask
-         cPicFun += "Z"
-         cInputMask := StrTran( cInputMask, "Z", "" )
-      ENDIF
-
-      IF "(" $ cInputMask
-         cPicFun += "("
-         cInputMask := StrTran( cInputMask, "(", "" )
-      ENDIF
-
-      IF ")" $ cInputMask
-         cPicFun += ")"
-         cInputMask := StrTran( cInputMask, ")", "" )
-      ENDIF
-
-      IF "!" $ cInputMask
-         IF cType $ "CM" .AND. EMPTY( cPicMask )
-            cPicMask := Replicate( "!", Len( uValue ) )
-         ENDIF
-         cInputMask := StrTran( cInputMask, "!", "" )
-      ENDIF
-
-      IF ! cInputMask == "@"
-         MsgOOHGError( "@...TEXTBOX: Wrong Format Definition" )
-      ENDIF
-
-      IF ! Empty( cPicFun )
-         cPicFun := "@" + cPicFun + " "
-      ENDIF
-
-   Else
-      cPicMask := cInputMask
-   ENDIF
-
-   IF Empty( cPicMask )
-      DO CASE
-         CASE cType $ "CM"
-            cPicMask := Replicate( "X", Len( uValue ) )
-         CASE cType $ "N"
-            cPicMask := STR( uValue )
-            nPos := At( ".", cPicMask )
-            cPicMask := Replicate( "#", Len( cPicMask ) )
-            IF nPos != 0
-               cPicMask := Left( cPicMask, nPos - 1 ) + "." + SubStr( cPicMask, nPos + 1 )
-            ENDIF
-         CASE cType $ "D"
+         IF "D" $ cInputMask
             cPicMask := StrTran( StrTran( StrTran( StrTran( StrTran( StrTran( SET( _SET_DATEFORMAT ), "Y", "9" ), "y", "9" ), "M", "9" ), "m", "9" ), "D", "9" ), "d", "9" )
-         CASE cType $ "L"
-            cPicMask := "L"
-         OTHERWISE
-            // Invalid data type
-      ENDCASE
-   ENDIF
+            cInputMask := StrTran( cInputMask, "D", "" )
+         ENDIF
 
-   ::PictureFunShow := cPicFun
-   ::PictureFun     := IF( ::lBritish, "E", "" ) + IF( "R" $ cPicFun, "R", "" )
-   IF ! Empty( ::PictureFun )
-      ::PictureFun := "@" + ::PictureFun + " "
-   ENDIF
-   ::PictureShow    := cPicMask
-   ::PictureMask    := cPicMask
-   ::DataType       := If( cType == "M", "C", cType )
-   ::nDecimal       := If( cType == "N", AT( ".", cPicMask ), 0 )
-   ::nDecimalShow   := If( cType == "N", AT( ".", cPicMask ), 0 )
-   ::ValidMask      := ValidatePicture( cPicMask )
-   ::ValidMaskShow  := ValidatePicture( cPicMask )
+         IF "E" $ cInputMask
+            ::lBritish := .T.
+            If cType != "N"
+               cPicMask := If( __SETCENTURY(), "99/99/9999", "99/99/99" )
+            Endif
+            cPicFun += "E"
+            cInputMask := StrTran( cInputMask, "E", "" )
+         ENDIF
 
-Return
+         IF "K" $ cInputMask
+            // Since all text is selected when textbox gets focus, it's automatic
+            cInputMask := StrTran( cInputMask, "K", "" )
+         ENDIF
+
+         IF "R" $ cInputMask
+            cPicFun += "R"
+            cInputMask := StrTran( cInputMask, "R", "" )
+         ENDIF
+
+         DO WHILE "S" $ cInputMask
+            nScroll := 0
+            // It's automatic at textbox's width
+            nPos := At( "S", cInputMask )
+            cInputMask := Left( cInputMask, nPos - 1 ) + SubStr( cInputMask, nPos + 1 )
+            DO WHILE Len( cInputMask ) >= nPos .AND. SubStr( cInputMask, nPos, 1 ) $ "0123456789"
+               nScroll := ( nScroll * 10 ) + VAL( SubStr( cInputMask, nPos, 1 ) )
+               cInputMask := Left( cInputMask, nPos - 1 ) + SubStr( cInputMask, nPos + 1 )
+            ENDDO
+            IF cType $ "CM" .AND. Empty( cPicMask ) .AND. nScroll > 0
+               cPicMask := Replicate( "X", nScroll )
+            ENDIF
+         ENDDO
+
+         IF "X" $ cInputMask
+            cPicFun += "X"
+            cInputMask := StrTran( cInputMask, "X", "" )
+         ENDIF
+
+         IF "Z" $ cInputMask
+            cPicFun += "Z"
+            cInputMask := StrTran( cInputMask, "Z", "" )
+         ENDIF
+
+         IF "(" $ cInputMask
+            cPicFun += "("
+            cInputMask := StrTran( cInputMask, "(", "" )
+         ENDIF
+
+         IF ")" $ cInputMask
+            cPicFun += ")"
+            cInputMask := StrTran( cInputMask, ")", "" )
+         ENDIF
+
+         IF "!" $ cInputMask
+            IF cType $ "CM" .AND. EMPTY( cPicMask )
+               cPicMask := Replicate( "!", Len( uValue ) )
+            ENDIF
+            cInputMask := StrTran( cInputMask, "!", "" )
+         ENDIF
+
+         IF ! cInputMask == "@"
+            MsgOOHGError( "@...TEXTBOX: Wrong Format Definition" )
+         ENDIF
+
+         IF ! Empty( cPicFun )
+            cPicFun := "@" + cPicFun + " "
+         ENDIF
+
+      Else
+         cPicMask := cInputMask
+      ENDIF
+
+      IF Empty( cPicMask )
+         DO CASE
+            CASE cType $ "CM"
+               cPicMask := Replicate( "X", Len( uValue ) )
+            CASE cType $ "N"
+               cPicMask := STR( uValue )
+               nPos := At( ".", cPicMask )
+               cPicMask := Replicate( "#", Len( cPicMask ) )
+               IF nPos != 0
+                  cPicMask := Left( cPicMask, nPos - 1 ) + "." + SubStr( cPicMask, nPos + 1 )
+               ENDIF
+            CASE cType $ "D"
+               cPicMask := StrTran( StrTran( StrTran( StrTran( StrTran( StrTran( SET( _SET_DATEFORMAT ), "Y", "9" ), "y", "9" ), "M", "9" ), "m", "9" ), "D", "9" ), "d", "9" )
+            CASE cType $ "L"
+               cPicMask := "L"
+            OTHERWISE
+               // Invalid data type
+         ENDCASE
+      ENDIF
+
+      ::PictureFunShow := cPicFun
+      ::PictureFun     := IF( ::lBritish, "E", "" ) + IF( "R" $ cPicFun, "R", "" )
+      IF ! Empty( ::PictureFun )
+         ::PictureFun := "@" + ::PictureFun + " "
+      ENDIF
+      ::PictureShow    := cPicMask
+      ::PictureMask    := cPicMask
+      ::DataType       := If( cType == "M", "C", cType )
+      ::nDecimal       := If( cType == "N", AT( ".", cPicMask ), 0 )
+      ::nDecimalShow   := If( cType == "N", AT( ".", cPicMask ), 0 )
+      ::ValidMask      := ValidatePicture( cPicMask )
+      ::ValidMaskShow  := ValidatePicture( cPicMask )
+
+      If ::DataType == "N"
+         ::PictureMask := StrTran( ::PictureMask, ",", "" )
+         ::nDecimal    := AT( ".", ::PictureMask )
+         ::ValidMask   := ValidatePicture( ::PictureMask )
+      Endif
+
+      ::cPicture := ::PictureFunShow + ::PictureShow
+      ::Value := uValue
+   EndIf
+
+RETURN ::cPicture
 
 STATIC FUNCTION ValidatePicture( cPicture )
 Local aValid, nPos
@@ -517,6 +537,10 @@ Return aValid
 METHOD Value( uValue ) CLASS TTextPicture
 *------------------------------------------------------------------------------*
 Local cType, uDate, cAux
+   IF ! ValidHandler( ::hWnd )
+      Return nil
+   ENDIF
+
    IF PCount() > 0
       cType := ValType( uValue )
       cType := If( cType == "M", "C", cType )
@@ -561,14 +585,6 @@ Local cType, uDate, cAux
          uValue := NIL
    ENDCASE
 Return uValue
-
-*------------------------------------------------------------------------------*
-METHOD Picture( cPicture ) CLASS TTextPicture
-*------------------------------------------------------------------------------*
-   If VALTYPE( cPicture ) $ "CM"
-      ::cPicture := cPicture
-   EndIf
-RETURN ::cPicture
 
 STATIC FUNCTION xUnTransform( Self, cCaption )
 Local cRet
@@ -1057,35 +1073,12 @@ Local Self, lInsert
       // If inputmask is defined, it's TTextPicture()
       Self := _OOHG_SelectSubClass( TTextPicture(), subclass )
       ASSIGN ::lInsert VALUE lInsert TYPE "L"
-      If numeric
-         // It's numeric
-         right := .T.
-
-         ::Define( cControlName, cParentForm, x, y, width, height, value, ;
-                   inputmask, cFontname, nFontsize, cTooltip, uLostfocus, ;
-                   uGotfocus, , uEnter, right, HelpId, readonly, bold, ;
-                   italic, underline, strikeout, field, backcolor, fontcolor, ;
-                   invisible, notabstop, lRtl, lAutoSkip, lNoBorder, OnFocusPos, ;
-                   lDisabled, bValid )
-
-         If ::DataType == "N"
-            ::PictureMask := StrTran( ::PictureMask, ",", "" )
-            ::nDecimal    := AT( ".", ::PictureMask )
-            ::ValidMask   := ValidatePicture( ::PictureMask )
-            ::Value       := value
-            ::lInsert     := .F.
-         Endif
-
-         ::OnChange := uChange
-      Else
-         // It's not numeric
-         ::Define( cControlName, cParentForm, x, y, width, height, value, ;
-                   inputmask, cFontname, nFontsize, cTooltip, uLostfocus, ;
-                   uGotfocus, uChange, uEnter, right, HelpId, readonly, bold, ;
-                   italic, underline, strikeout, field, backcolor, fontcolor, ;
-                   invisible, notabstop, lRtl, lAutoSkip, lNoBorder, OnFocusPos, ;
-                   lDisabled, bValid )
-      EndIf
+      ::Define( cControlName, cParentForm, x, y, width, height, value, ;
+                inputmask, cFontname, nFontsize, cTooltip, uLostfocus, ;
+                uGotfocus, uChange, uEnter, right, HelpId, readonly, bold, ;
+                italic, underline, strikeout, field, backcolor, fontcolor, ;
+                invisible, notabstop, lRtl, lAutoSkip, lNoBorder, OnFocusPos, ;
+                lDisabled, bValid )
    Else
       Self := _OOHG_SelectSubClass( iif( numeric, TTextNum(), TText() ), subclass )
       ::Define( cControlName, cParentForm, x, y, Width, Height, Value, ;

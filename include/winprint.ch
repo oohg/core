@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.ch,v 1.1 2005-08-06 23:53:55 guerra000 Exp $
+ * $Id: winprint.ch,v 1.2 2007-10-15 01:23:32 guerra000 Exp $
  */
 // ---------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -19,7 +19,7 @@ MEMVAR HBPRN
 #xcommand INIT PRINTSYS =>  hbprn:=hbprinter():new()
 #xcommand START DOC [NAME <docname>] => hbprn:startdoc(<docname>)
 #xcommand START PAGE => hbprn:startpage()
-#xcommand END PAGE => If ( LEN( _OOHG_ActiveFrame ) > 0 , _EndTabPage() , hbprn:endpage() )
+#xcommand END PAGE => If ( EMPTY( _OOHG_ActiveFrame ) , _EndTabPage() , hbprn:endpage() )
 #xcommand END DOC => hbprn:enddoc()
 #xcommand RELEASE PRINTSYS =>  hbprn:end()
 
