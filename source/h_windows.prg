@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.148 2007-10-15 01:23:32 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.149 2007-10-16 04:03:36 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -2546,7 +2546,7 @@ Return Self
 METHOD Visible( lVisible ) CLASS TFormModal
 *-----------------------------------------------------------------------------*
    IF HB_IsLogical( lVisible )
-      IF lVisible .AND. ! ::lVisible
+      IF lVisible
          // Find Previous window
          If     aScan( _OOHG_aFormhWnd, GetActiveWindow() ) > 0
             ::oPrevWindow := GetFormObjectByHandle( GetActiveWindow() )
@@ -3573,14 +3573,14 @@ HB_FUNC( _OOHG_GETMOUSEROW )
 
 Function _OOHG_GetArrayItem( uaArray, nItem, uExtra1, uExtra2 )
 Local uRet
-   IF !HB_IsArray( uaArray ) 
+   IF !HB_IsArray( uaArray )
       uRet := uaArray
    ElseIf LEN( uaArray ) >= nItem .AND. nItem >= 1
       uRet := uaArray[ nItem ]
    Else
       uRet := NIL
    ENDIF
-   IF HB_IsBlock( uRet ) 
+   IF HB_IsBlock( uRet )
       uRet := Eval( uRet, nItem, uExtra1, uExtra2 )
    ENDIF
 Return uRet
@@ -3604,7 +3604,7 @@ Local nPos, uRet := nil
    EndIf
    If PCOUNT() > 2
       If HB_IsBlock( bAction )
-         If !HB_IsNumeric( nId ) 
+         If !HB_IsNumeric( nId )
             nId := 0
          EndIf
          If nPos > 0
@@ -3623,7 +3623,7 @@ Return uRet
 FUNCTION _OOHG_SetbKeyDown( bKeyDown )
 Local uRet
    uRet := _OOHG_bKeyDown
-   If HB_IsBlock( bKeyDown ) 
+   If HB_IsBlock( bKeyDown )
       _OOHG_bKeyDown := bKeyDown
    ElseIf PCOUNT() > 0
       _OOHG_bKeyDown := nil
@@ -3647,7 +3647,7 @@ Return
 // PATCH :(
 FUNCTION _OOHG_SetControlParent( lNewState )
 STATIC lState := .F.
-   If HB_IsLogical( lNewState ) 
+   If HB_IsLogical( lNewState )
       lState := lNewState
    EndIf
 RETURN lState
