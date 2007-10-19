@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.88 2007-10-14 22:43:29 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.89 2007-10-19 04:20:31 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -865,7 +865,7 @@ Local nColumns, uGridColor, uDynamicColor
    ::DynamicBackColor := uDynamicColor
 
    // Update edit control
-   IF VALTYPE( uEditControl ) != NIL
+   IF VALTYPE( uEditControl ) != NIL .OR. HB_IsArray( ::EditControls )
       IF !HB_IsArray( ::EditControls )
          ::EditControls := ARRAY( nColumns )
       ELSEIF LEN( ::EditControls ) < nColumns
@@ -957,6 +957,13 @@ Local nColumns
       ::GridForeColor := nil
       ::GridBackColor := nil
    EndIf
+
+   // Update edit control
+   IF HB_IsArray( ::EditControls )
+      IF LEN( ::EditControls ) >= nColIndex
+         ADEL( ::EditControls, nColIndex )
+      ENDIF
+   ENDIF
 
 	// Call C-Level Routine
    ListView_DeleteColumn( ::hWnd, nColIndex, lNoDelete )
@@ -1929,7 +1936,7 @@ HB_FUNC( INITLISTVIEW )
    hbutton = CreateWindowEx(StyleEx,"SysListView32","",
    ( style | hb_parni( 12 ) ),
    hb_parni(3), hb_parni(4) , hb_parni(5), hb_parni(6) ,
-   hwnd,(HMENU)hb_parni(2) , GetModuleHandle(NULL) , NULL ) ;
+   hwnd, HWNDparam( 2 ) , GetModuleHandle(NULL) , NULL ) ;
 
    SendMessage(hbutton,LVM_SETEXTENDEDLISTVIEWSTYLE, 0, hb_parni(9) | LVS_EX_FULLROWSELECT | LVS_EX_HEADERDRAGDROP | LVS_EX_SUBITEMIMAGES );
 
@@ -2008,7 +2015,8 @@ static void _OOHG_ListView_FillItem( HWND hWnd, int nItem, PHB_ITEM pItems )
       ListView_SetItem( hWnd, &LI );
    }
 }
-HB_FUNC ( SETGRIDCOLUMNHEADER )
+
+HB_FUNC( SETGRIDCOLUMNHEADER )
 {
         LV_COLUMN COL;
 
@@ -2016,11 +2024,8 @@ HB_FUNC ( SETGRIDCOLUMNHEADER )
         COL.pszText = hb_parc(3) ;
         COL.fmt = hb_parni(4) ;
 
-        ListView_SetColumn ( (HWND) hb_parnl (1) , hb_parni (2)-1 , &COL ) ;
+        ListView_SetColumn ( HWNDparam( 1 ) , hb_parni (2)-1 , &COL ) ;
 }
-
-
-
 
 HB_FUNC( ADDLISTVIEWITEMS )
 {
@@ -2250,7 +2255,7 @@ FUNCTION GridControlObjectByType( uValue )
 *-----------------------------------------------------------------------------*
 Local oGridControl := NIL, cMask, nPos
    Do Case
-      Case HB_IsNumeric( uValue ) 
+      Case HB_IsNumeric( uValue )
          cMask := Str( uValue )
          cMask := Replicate( "9", Len( cMask ) )
          nPos := At( ".", cMask )
@@ -2283,7 +2288,7 @@ Function GetEditControlFromArray( oEditControl, aEditControls, nColumn, oGrid )
          oEditControl := GridControlObject( oEditControl, oGrid )
       EndIf
    EndIf
-   If !HB_IsObject( oEditControl ) 
+   If !HB_IsObject( oEditControl )
       oEditControl := nil
    EndIf
 Return oEditControl
@@ -2352,7 +2357,7 @@ Local lValid, uValue
    _OOHG_ThisItemCellValue := uValue
    lValid := _OOHG_Eval( ::bValid, uValue )
    _CheckCellNewValue( Self, @uValue )
-   If !HB_IsLogical( lValid ) 
+   If !HB_IsLogical( lValid )
       lValid := .T.
    EndIf
 
@@ -2432,7 +2437,7 @@ METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGrid
       @ nRow,nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue INPUTMASK ::cMask
    ElseIf HB_IsNumeric( uValue )
       @ nRow,nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue NUMERIC
-   ElseIf HB_IsDAte( uValue ) 
+   ElseIf HB_IsDAte( uValue )
       @ nRow,nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue DATE
    Else
       @ nRow,nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue
@@ -2520,7 +2525,7 @@ CLASS TGridControlDatePicker FROM TGridControl
 ENDCLASS
 
 METHOD New( lUpDown ) CLASS TGridControlDatePicker
-   If !HB_IsLogical( lUpDown ) 
+   If !HB_IsLogical( lUpDown )
       lUpDown := .F.
    Endif
    ::lUpDown := lUpDown
@@ -2554,7 +2559,7 @@ CLASS TGridControlComboBox FROM TGridControl
 ENDCLASS
 
 METHOD New( aItems, oGrid ) CLASS TGridControlComboBox
-   If HB_IsArray( aItems ) 
+   If HB_IsArray( aItems )
       ::aItems := aItems
    EndIf
    ::oGrid := oGrid
@@ -2592,7 +2597,7 @@ CLASS TGridControlComboBoxText FROM TGridControl
 ENDCLASS
 
 METHOD New( aItems, oGrid ) CLASS TGridControlComboBoxText
-   If HB_IsArray( aItems ) 
+   If HB_IsArray( aItems )
       ::aItems := aItems
    EndIf
    ::oGrid := oGrid
@@ -2640,7 +2645,7 @@ METHOD New( nRangeMin, nRangeMax ) CLASS TGridControlSpinner
    If HB_IsNumeric( nRangeMin )
       ::nRangeMin := nRangeMin
    EndIf
-   If HB_IsNumeric( nRangeMax ) 
+   If HB_IsNumeric( nRangeMax )
       ::nRangeMax := nRangeMax
    EndIf
 Return Self
