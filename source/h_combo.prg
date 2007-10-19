@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.26 2007-10-08 21:19:04 declan2005 Exp $
+ * $Id: h_combo.prg,v 1.27 2007-10-19 14:15:56 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -113,6 +113,7 @@ CLASS TCombo FROM TLabel
    METHOD Visible             SETGET
    METHOD ForceHide           BLOCK { |Self| SendMessage( ::hWnd, 335, 0, 0 ) , ::Super:ForceHide() }
    METHOD RefreshData
+   METHOD Displayvalue        BLOCK { |Self| ::caption  }   /// Caption Alias 
 
    METHOD Events_Command
    METHOD Events_DrawItem
