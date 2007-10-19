@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.27 2007-10-19 14:15:56 declan2005 Exp $
+ * $Id: h_combo.prg,v 1.28 2007-10-19 18:31:55 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -113,7 +113,7 @@ CLASS TCombo FROM TLabel
    METHOD Visible             SETGET
    METHOD ForceHide           BLOCK { |Self| SendMessage( ::hWnd, 335, 0, 0 ) , ::Super:ForceHide() }
    METHOD RefreshData
-   METHOD Displayvalue        BLOCK { |Self| ::caption  }   /// Caption Alias 
+   METHOD Displayvalue        SETGET    /// Caption Alias
 
    METHOD Events_Command
    METHOD Events_DrawItem
@@ -125,6 +125,8 @@ CLASS TCombo FROM TLabel
    METHOD Item
    METHOD ItemCount
 ENDCLASS
+
+
 
 *-----------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, x, y, w, rows, value, fontname, ;
@@ -233,6 +235,11 @@ Local BackRec , WorkArea , cField , aValues
       ::aValues := aValues
    EndIf
 Return nil
+
+*------------------------------------------------------------------------------*
+METHOD Displayvalue( cValue ) CLASS TCombo
+*------------------------------------------------------------------------------*
+Return ( ::Caption := cValue )
 
 *-----------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TCombo
