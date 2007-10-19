@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.89 2007-10-19 04:20:31 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.90 2007-10-19 04:22:48 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1936,7 +1936,7 @@ HB_FUNC( INITLISTVIEW )
    hbutton = CreateWindowEx(StyleEx,"SysListView32","",
    ( style | hb_parni( 12 ) ),
    hb_parni(3), hb_parni(4) , hb_parni(5), hb_parni(6) ,
-   hwnd, HWNDparam( 2 ) , GetModuleHandle(NULL) , NULL ) ;
+   hwnd, ( HMENU ) HWNDparam( 2 ) , GetModuleHandle(NULL) , NULL ) ;
 
    SendMessage(hbutton,LVM_SETEXTENDEDLISTVIEWSTYLE, 0, hb_parni(9) | LVS_EX_FULLROWSELECT | LVS_EX_HEADERDRAGDROP | LVS_EX_SUBITEMIMAGES );
 
