@@ -1,11 +1,15 @@
 /*
- * $Id: ChangeLog,v 1.424 2007-10-16 04:03:35 guerra000 Exp $
+ * $Id: ChangeLog,v 1.425 2007-10-19 03:41:58 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-10-18 22:37 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * include/winprint.ch
+    * Verifies for ooHG's variables initialized on END PAGE.
 
 2007-10-15 23:02 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_windows.prg
