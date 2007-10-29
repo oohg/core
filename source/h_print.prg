@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.78 2007-09-27 22:23:26 declan2005 Exp $
+* $Id: h_print.prg,v 1.79 2007-10-29 21:43:04 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -9,85 +9,90 @@
 
 #include "fileio.ch"
 
-memvar _OOHG_PRINTLIBRARY
-memvar _OOHG_printer_docname
-memvar _HMG_PRINTER_APRINTERPROPERTIES
-memvar _HMG_PRINTER_HDC
-memvar _HMG_PRINTER_COPIES
-memvar _HMG_PRINTER_COLLATE
-memvar _HMG_PRINTER_PREVIEW
-memvar _HMG_PRINTER_TIMESTAMP
-memvar _HMG_PRINTER_NAME
-memvar _HMG_PRINTER_PAGECOUNT
-memvar _HMG_PRINTER_HDC_BAK
-memvar oprintrtf1
-memvar oprintrtf2
-memvar oprintrtf3
-memvar rutaficrtf1
-memvar ntcsvprint
-memvar ntcsvprint1
-memvar oprintcsv1
-memvar milinea1
-memvar milinea2
-memvar oprintcsv2
-memvar oprintcsv3
-memvar cname
+MEMVAR _OOHG_PRINTLIBRARY
+MEMVAR _OOHG_printer_docname
+MEMVAR _HMG_PRINTER_APRINTERPROPERTIES
+MEMVAR _HMG_PRINTER_HDC
+MEMVAR _HMG_PRINTER_COPIES
+MEMVAR _HMG_PRINTER_COLLATE
+MEMVAR _HMG_PRINTER_PREVIEW
+MEMVAR _HMG_PRINTER_TIMESTAMP
+MEMVAR _HMG_PRINTER_NAME
+MEMVAR _HMG_PRINTER_PAGECOUNT
+MEMVAR _HMG_PRINTER_HDC_BAK
+MEMVAR oprintrtf1
+MEMVAR oprintrtf2
+MEMVAR oprintrtf3
+MEMVAR rutaficrtf1
+MEMVAR ntcsvprint
+MEMVAR ntcsvprint1
+MEMVAR oprintcsv1
+MEMVAR milinea1
+MEMVAR milinea2
+MEMVAR oprintcsv2
+MEMVAR oprintcsv3
+MEMVAR cname
+MEMVAR amicolor
 
 *-------------------------
 FUNCTION TPrint( clibx )
 *-------------------------
 LOCAL o_Print_
-if clibx=NIL
-   if type("_OOHG_printlibrary")="C"
-      if _OOHG_printlibrary="HBPRINTER"
+IF clibx=NIL
+   IF type("_OOHG_printlibrary")="C"
+      IF _OOHG_printlibrary="HBPRINTER"
          o_print_:=thbprinter()
-      elseif _OOHG_printlibrary="MINIPRINT"
+      ELSEIF _OOHG_printlibrary="MINIPRINT"
          o_print_:=tminiprint()
-      elseif _OOHG_printlibrary="DOSPRINT"
+      ELSEIF _OOHG_printlibrary="DOSPRINT"
          o_print_:=tdosprint()
-      elseif _OOHG_printlibrary="EXCELPRINT"
+      ELSEIF _OOHG_printlibrary="EXCELPRINT"
          o_print_:=texcelprint()
-      elseif _OOHG_printlibrary="RTFPRINT"
+      ELSEIF _OOHG_printlibrary="CALCPRINT"
+         o_print_:=tcalcprint()
+      ELSEIF _OOHG_printlibrary="RTFPRINT"
          o_print_:=trtfprint()
-      elseif _OOHG_printlibrary="CSVPRINT"
+      ELSEIF _OOHG_printlibrary="CSVPRINT"
          o_print_:=tcsvprint()
-      elseif _OOHG_printlibrary="HTMLPRINT"
+      ELSEIF _OOHG_printlibrary="HTMLPRINT"
          o_print_:=thtmlprint()
-      elseif _OOHG_printlibrary="PDFPRINT"
+      ELSEIF _OOHG_printlibrary="PDFPRINT"
          o_print_:=tpdfprint()
-      else
+      ELSE
          o_print_:=thbprinter()
-      endif
-   else
+      ENDIF
+   ELSE
       o_print_:=tminiprint()
       _OOHG_printlibrary="MINIPRINT"
-   endif
-else
-   if valtype(clibx)="C"
-      if clibx="HBPRINTER"
+   ENDIF
+ELSE
+   IF valtype(clibx)="C"
+      IF clibx="HBPRINTER"
          o_print_:=thbprinter()
-      elseif clibx="MINIPRINT"
+      ELSEIF clibx="MINIPRINT"
          o_print_:=tminiprint()
-      elseif clibx="DOSPRINT"
+      ELSEIF clibx="DOSPRINT"
          o_print_:=tdosprint()
-      elseif clibx="EXCELPRINT"
+      ELSEIF clibx="EXCELPRINT"
          o_print_:=texcelprint()
-      elseif clibx="RTFPRINT"
+      ELSEIF clibx="CALCPRINT"
+         o_print_:=tcalcprint()
+      ELSEIF clibx="RTFPRINT"
          o_print_:=trtfprint()
-      elseif clibx="CSVPRINT"
+      ELSEIF clibx="CSVPRINT"
          o_print_:=tcsvprint()
-      elseif clibx="HTMLPRINT"
+      ELSEIF clibx="HTMLPRINT"
          o_print_:=thtmlprint()
-      elseif clibx="PDFPRINT"
+      ELSEIF clibx="PDFPRINT"
          o_print_:=tpdfprint()
-      else
+      ELSE
          o_print_:=tminiprint()
-      endif
-   else
+      ENDIF 
+   ELSE
       o_print_:=tminiprint()
       _OOHG_printlibrary="MINIPRINT"
-   endif
-endif
+   ENDIF 
+ENDIF 
 RETURN o_Print_
 
 
@@ -115,7 +120,7 @@ DATA nwpen              INIT 0.1   READONLY //// pen width
 DATA tempfile           INIT gettempdir()+"T"+alltrim(str(int(hb_random(999999)),8))+".prn" READONLY
 DATA impreview          INIT .F.  READONLY
 DATA lwinhide           INIT .T.   READONLY
-DATA cversion           INIT  "(oohg)V 2.1" READONLY
+DATA cversion           INIT  "(oohg)V 2.3" READONLY
 DATA cargo              INIT  .F.
 ////DATA cString            INIT  ""
 
@@ -300,23 +305,23 @@ ENDCLASS
 *-------------------------
 METHOD setpreviewsize(ntam) CLASS TPRINTBASE
 *-------------------------
-if ntam=NIL .or. ntam>5
+IF ntam=NIL .or. ntam>5
    ntam:=3
-endif
+ENDIF 
 ::setpreviewsizex(ntam)
-return self
+RETURN self
 
 
 *-------------------------
 METHOD setprop(lmode) CLASS TPRINTBASE
 *-------------------------
 DEFAULT lmode to .F.
-if lmode
+IF lmode
    ::lprop:=.T.
-else
+ELSE
    ::lprop:=.F.
-endif
-return nil
+ENDIF 
+RETURN nil
 
 *-------------------------
 METHOD setcpl(ncpl) CLASS TPRINTBASE
@@ -337,26 +342,26 @@ do case
    otherwise
         ::nfontsize:=12
 endcase
-return nil
+RETURN nil
 
 *-------------------------
 METHOD release() CLASS TPRINTBASE
 *-------------------------
-if ::exit
-   return nil
-endif
+IF ::exit
+   RETURN nil
+ENDIF 
 ////setinteractiveclose(::cargo)
 ::releasex()
-return nil
+RETURN nil
 
 *-------------------------
 METHOD init( ) CLASS TPRINTBASE
 *-------------------------
-if iswindowactive(_oohg_winreport)
+IF iswindowactive(_oohg_winreport)
    msgstop("Print preview pending, close first")
    ::exit:=.T.
-   return nil
-endif
+   RETURN nil
+ENDIF 
 // public _oohg_printer_docname
 ::initx()
 RETURN self
@@ -365,20 +370,20 @@ RETURN self
 METHOD selprinter( lselect , lpreview, llandscape , npapersize ,cprinterx, lhide,nres ) CLASS TPRINTBASE
 *-------------------------
 local lsucess := .T.
-if ::exit
+IF ::exit
    ::lprerror:=.T.
-   return nil
-endif
+   RETURN nil
+ENDIF 
 
-if lhide#NIL
+IF lhide#NIL
    ::lwinhide:=lhide
-endif
+ENDIF 
 
 SETPRC(0,0)
 DEFAULT llandscape to .F.
 
 ::selprinterx( lselect , lpreview, llandscape , npapersize ,cprinterx, nres)
-return self
+RETURN self
 
 
 *-------------------------
@@ -417,9 +422,9 @@ DEFINE TIMER TIMER_101  ;
 INTERVAL 1000  ;
 ACTION action_timer(olabel,oimage)
 
-if .not. ::lwinhide
+IF .not. ::lwinhide
    _oohg_winreport.hide()
-endif
+ENDIF 
 
 end window
 center window _oohg_winreport
@@ -427,27 +432,25 @@ activate window _modalhide NOWAIT
 activate window _oohg_winreport NOWAIT
 
 ::begindocx(cdoc)
-return self
+RETURN self
 
 
 METHOD setlmargin(nlmar) CLASS TPRINTBASE
 ::nlmargin := nlmar
-return self
+RETURN self
 
 METHOD settmargin(ntmar) CLASS TPRINTBASE
 ::ntmargin := ntmar
-return self
-
-
+RETURN self
 
 *-------------------------
 static function action_timer(olabel,oimage)
 *-------------------------
-if iswindowdefined(_oohg_winreport)
+IF iswindowdefined(_oohg_winreport)
    olabel:fontbold := IIF(olabel:fontbold,.F.,.T.)
    oimage:visible :=  IIF(olabel:fontbold,.T.,.F.)
-endif
-return nil
+ENDIF 
+RETURN nil
 
 *-------------------------
 METHOD ENDDOC() CLASS TPRINTBASE
@@ -455,7 +458,7 @@ METHOD ENDDOC() CLASS TPRINTBASE
 ::enddocx()
 _oohg_winreport.release()
 _modalhide.release()
-return self
+RETURN self
 
 
 *-------------------------
@@ -463,20 +466,19 @@ METHOD SETCOLOR(atColor) CLASS TPRINTBASE
 *-------------------------
 ::acolor:=atColor
 ::setcolorx()
-return self
+RETURN self
 
 *-------------------------
 METHOD beginPAGE() CLASS TPRINTBASE
 *-------------------------
 ::beginpagex()
-return self
+RETURN self
 
 *-------------------------
 METHOD ENDPAGE() CLASS TPRINTBASE
 *-------------------------
 ::endpagex()
-return self
-
+RETURN self
 
 *-------------------------
 METHOD getdefprinter() CLASS TPRINTBASE
@@ -486,11 +488,11 @@ RETURN ::getdefprinterx()
 *-------------------------
 METHOD setunits(cunitsx) CLASS TPRINTBASE
 *-------------------------
-if cunitsx="MM"
+IF cunitsx="MM"
    ::cunits:="MM"
-else
+ELSE
    ::cunits:="ROWCOL"
-endif
+ENDIF 
 RETURN nil
 
 *-------------------------
@@ -522,7 +524,6 @@ otherwise
 endcase
 
 DEFAULT calign to "L"
-
 DEFAULT nlen to 15
 
 do case
@@ -535,186 +536,160 @@ otherwise
 endcase
 
 DEFAULT nlin to 1
-
 DEFAULT ncol to 1
-
 DEFAULT ctext to ""
-
 DEFAULT lbold to .F.
-
 DEFAULT litalic to .F.
-
 DEFAULT cfont to ::cfontname
-
 DEFAULT nsize to ::nfontsize
-
 DEFAULT acolor to ::acolor
 
-if ::cunits="MM"
+IF ::cunits="MM"
    ::nmver:=1
    ::nvfij:=0
    ::nmhor:=1
    ::nhfij:=0
-else
+ELSE
    ::nmhor  := nsize/4.75
-   if ::lprop
+   IF ::lprop
       ::nmver  := (::nfontsize)/2.45
-   else
+   ELSE
       ::nmver  :=  10/2.45
-   endif
+   ENDIF 
    ::nvfij  := (12/1.65)
    ::nhfij  := (12/3.70)
-endif
+ENDIF 
 
 ctext:= cspace + ctext
 
 ::printdatax(::ntmargin+nlin,::nlmargin+ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext,litalic)
-return self
-
+RETURN self
 
 *-------------------------
 METHOD printimage(nlin,ncol,nlinf,ncolf,cimage) CLASS TPRINTBASE
 *-------------------------
 DEFAULT nlin to 1
-
 DEFAULT ncol to 1
-
 DEFAULT cimage to ""
-
 DEFAULT nlinf to 4
-
 DEFAULT ncolf to 4
 
-if ::cunits="MM"
+IF ::cunits="MM"
    ::nmver:=1
    ::nvfij:=0
    ::nmhor:=1
    ::nhfij:=0
-else
+ELSE
    ::nmhor  := (::nfontsize)/4.75
-   if ::lprop
+   IF ::lprop
       ::nmver  := (::nfontsize)/2.45
-   else
+   ELSE
       ::nmver  :=  10/2.45
-   endif
+   ENDIF 
 
    ::nvfij  := (12/1.65)
    ::nhfij  := (12/3.70)
-endif
+ENDIF 
 ::printimagex(::ntmargin+nlin,::nlmargin+ncol,::ntmargin+nlinf,::nlmargin+ncolf,cimage)
-return self
+RETURN self
 
 
 *-------------------------
 METHOD printline(nlin,ncol,nlinf,ncolf,atcolor,ntwpen ) CLASS TPRINTBASE
 *-------------------------
 DEFAULT nlin to 1
-
 DEFAULT ncol to 1
-
 DEFAULT nlinf to 4
-
 DEFAULT ncolf to 4
-
 DEFAULT atcolor to ::acolor
-
 DEFAULT ntwpen to ::nwpen
 
-if ::cunits="MM"
+IF ::cunits="MM"
    ::nmver:=1
    ::nvfij:=0
    ::nmhor:=1
    ::nhfij:=0
-else
+ELSE
    ::nmhor  := (::nfontsize)/4.75
-   if ::lprop
+   IF ::lprop
       ::nmver  := (::nfontsize)/2.45
-   else
+   ELSE
       ::nmver  :=  10/2.45
-   endif
+   ENDIF 
 
    ::nvfij  := (12/1.65)
    ::nhfij  := (12/3.70)
-endif
+ENDIF 
 ::printlinex(::ntmargin+nlin,::nlmargin+ncol,::ntmargin+nlinf,::nlmargin+ncolf,atcolor,ntwpen )
-
-return self
+RETURN self
 
 *-------------------------
 METHOD printrectangle(nlin,ncol,nlinf,ncolf,atcolor,ntwpen ) CLASS TPRINTBASE
 *-------------------------
 
 DEFAULT nlin to 1
-
 DEFAULT ncol to 1
-
 DEFAULT nlinf to 4
-
 DEFAULT ncolf to 4
 
 DEFAULT atcolor to ::acolor
-
 DEFAULT ntwpen to ::nwpen
 
-if ::cunits="MM"
+IF ::cunits="MM"
    ::nmver:=1
    ::nvfij:=0
    ::nmhor:=1
    ::nhfij:=0
-else
+ELSE
    ::nmhor  := (::nfontsize)/4.75
 
-   if ::lprop
+   IF ::lprop
       ::nmver  := (::nfontsize)/2.45
-   else
+   ELSE
       ::nmver  :=  10/2.45
-   endif
+   ENDIF 
 
 
    ::nvfij  := (12/1.65)
    ::nhfij  := (12/3.70)
-endif
+ENDIF 
 ::printrectanglex(::ntmargin+nlin,::nlmargin+ncol,::ntmargin+nlinf,::nlmargin+ncolf,atcolor,ntwpen )
 
-return self
+RETURN self
 
 
 *------------------------
 METHOD printroundrectangle(nlin,ncol,nlinf,ncolf,atcolor,ntwpen ) CLASS TPRINTBASE
 *-------------------------
 DEFAULT nlin to 1
-
 DEFAULT ncol to 1
-
 DEFAULT nlinf to 4
-
 DEFAULT ncolf to 4
 
 DEFAULT atcolor to ::acolor
-
 DEFAULT ntwpen to ::nwpen
 
-if ::cunits="MM"
+IF ::cunits="MM"
    ::nmver:=1
    ::nvfij:=0
    ::nmhor:=1
    ::nhfij:=0
-else
+ELSE
    ::nmhor  := (::nfontsize)/4.75
 
-   if ::lprop
+   IF ::lprop
       ::nmver  := (::nfontsize)/2.45
-   else
+   ELSE
       ::nmver  :=  10/2.45
-   endif
+   ENDIF 
 
    ::nvfij  := (12/1.65)
    ::nhfij  := (12/3.70)
-endif
+ENDIF 
 
 ::printroundrectanglex(::ntmargin+nlin,::nlmargin+ncol,::ntmargin+nlinf,::nlmargin+ncolf,atcolor,ntwpen )
 
-return self
+RETURN self
 
 *-------------------------
 method printdos() CLASS TPRINTBASE
@@ -727,7 +702,7 @@ FWRITE( nHdl, "rem comando auxiliar de impresion" + CHR( 13 ) + CHR( 10 ) )
 FCLOSE( nHdl )
 waitrun( cBat, 0 )
 erase &cbat
-return nil
+RETURN nil
 
 CREATE CLASS TMINIPRINT FROM TPRINTBASE
 
@@ -800,36 +775,36 @@ public _HMG_PRINTER_HDC_BAK
 
 ::aprinters:=aprinters()
 ::cprintlibrary:="MINIPRINT"
-return self
+RETURN self
 
 
 *-------------------------
 METHOD begindocx(  cDoc ) CLASS TMINIPRINT
 *-------------------------
-if cDoc#Nil
+IF cDoc#Nil
    START PRINTDOC NAME cDoc
-else
+ELSE
    START PRINTDOC
-endif
-return self
+ENDIF 
+RETURN self
 
 *-------------------------
 METHOD enddocx() CLASS TMINIPRINT
 *-------------------------
 END PRINTDOC
-return self
+RETURN self
 
 *-------------------------
 METHOD beginpagex() CLASS TMINIPRINT
 *-------------------------
 START PRINTPAGE
-return self
+RETURN self
 
 *-------------------------
 METHOD endpagex() CLASS TMINIPRINT
 *-------------------------
 END PRINTPAGE
-return self
+RETURN self
 
 
 *-------------------------
@@ -844,78 +819,76 @@ release _HMG_PRINTER_TIMESTAMP
 release _HMG_PRINTER_NAME
 release _HMG_PRINTER_PAGECOUNT
 release _HMG_PRINTER_HDC_BAK
-return nil
+RETURN nil
 
 *-------------------------
 METHOD printdatax(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext,litalic) CLASS TMINIPRINT
 *-------------------------
 Empty( Data )
-
-default aColor to ::acolor
-
+DEFAULT aColor to ::acolor
 Empty( nLen )
 
 do case
    case litalic
-     if .not. lbold
-   if calign="R"
+     IF .not. lbold
+   IF calign="R"
       textalign( 2 )
        @ nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 +(len(ctext))*::nmhor  PRINT (ctext) font cfont size nsize ITALIC COLOR acolor
       textalign( 0 )
-   else
+   ELSE
       @ nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 PRINT (ctext) font cfont size nsize ITALIC COLOR acolor
-   endif
-else
-   if calign="R"
+   ENDIF 
+ELSE
+   IF calign="R"
       textalign( 2 )
       @ nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 +(len(ctext))*::nmhor  PRINT (ctext) font cfont size nsize  BOLD ITALIC COLOR acolor
       textalign( 0 )
-   else
+   ELSE
       @ nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 PRINT (ctext) font cfont size nsize  BOLD ITALIC COLOR acolor
-   endif
-endif
+   ENDIF 
+ENDIF 
 
- otherwise
-if .not. lbold
-   if calign="R"
+   otherwise
+IF .not. lbold
+   IF calign="R"
       textalign( 2 )
        @ nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 +(len(ctext))*::nmhor  PRINT (ctext) font cfont size nsize COLOR acolor
       textalign( 0 )
-   else
+   ELSE
       @ nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 PRINT (ctext) font cfont size nsize COLOR acolor
-   endif
-else
-   if calign="R"
+   ENDIF 
+ELSE
+   IF calign="R"
       textalign( 2 )
       @ nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 +(len(ctext))*::nmhor  PRINT (ctext) font cfont size nsize  BOLD COLOR acolor
       textalign( 0 )
-   else
+   ELSE
       @ nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 PRINT (ctext) font cfont size nsize  BOLD COLOR acolor
-   endif
-endif
+   ENDIF 
+ENDIF 
 endcase
-return self
+RETURN self
 
 *-------------------------
 METHOD printimagex(nlin,ncol,nlinf,ncolf,cimage) CLASS TMINIPRINT
 *-------------------------
 @  nlin*::nmver+::nvfij , ncol*::nmhor+::nhfij*2 PRINT IMAGE cimage WIDTH ((ncolf - ncol-1)*::nmhor + ::nhfij) HEIGHT ((nlinf+0.5 - nlin)*::nmver+::nvfij)
-return self
+RETURN self
 
 
 *-------------------------
 METHOD printlinex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen ) CLASS TMINIPRINT
 *-------------------------
-default atColor to ::acolor
+DEFAULT atColor to ::acolor
 @  (nlin+.2)*::nmver+::nvfij,ncol*::nmhor+::nhfij*2 PRINT LINE TO  (nlinf+.2)*::nmver+::nvfij,ncolf*::nmhor+::nhfij*2  COLOR atcolor PENWIDTH ntwpen  //// CPEN
-return self
+RETURN self
 
 *-------------------------
 METHOD printrectanglex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen ) CLASS TMINIPRINT
 *-------------------------
-default atColor to ::acolor
+DEFAULT atColor to ::acolor
 @  nlin*::nmver+::nvfij,ncol*::nmhor+::nhfij*2 PRINT RECTANGLE TO  (nlinf+0.5)*::nmver+::nvfij,ncolf*::nmhor+::nhfij*2 COLOR atcolor  PENWIDTH ntwpen  //// CPEN
-return self
+RETURN self
 
 
 *-------------------------
@@ -923,141 +896,141 @@ METHOD selprinterx( lselect , lpreview, llandscape , npapersize ,cprinterx,nres)
 *-------------------------
 local worientation,lsucess
 
-if nres=NIL
+IF nres=NIL
    nres:=PRINTER_RES_MEDIUM
-endif
+ENDIF 
 IF llandscape
    Worientation:= PRINTER_ORIENT_LANDSCAPE
 ELSE
    Worientation:= PRINTER_ORIENT_PORTRAIT
 ENDIF
 
-if lselect .and. lpreview .and. cprinterx = NIL
+IF lselect .and. lpreview .and. cprinterx = NIL
    ::cPrinter := GetPrinter()
    If Empty (::cPrinter)
       ::lprerror:=.T.
       Return Nil
    EndIf
 
-   if npapersize#NIL
+   IF npapersize#NIL
       SELECT PRINTER ::cprinter to lsucess ;
       ORIENTATION worientation ;
       PAPERSIZE npapersize       ;
       QUALITY nres ;
       PREVIEW
-   else
+   ELSE
       SELECT PRINTER ::cprinter to lsucess ;
       ORIENTATION worientation ;
       QUALITY nres ;
       PREVIEW
-   endif
-endif
+   ENDIF 
+ENDIF 
 
-if (.not. lselect) .and. lpreview .and. cprinterx = NIL
+IF (.not. lselect) .and. lpreview .and. cprinterx = NIL
 
-   if npapersize#NIL
+   IF npapersize#NIL
       SELECT PRINTER DEFAULT TO lsucess ;
       ORIENTATION worientation  ;
       PAPERSIZE npapersize       ;
       QUALITY nres ;
       PREVIEW
-   else
+   ELSE
      SELECT PRINTER DEFAULT TO lsucess ;
      ORIENTATION worientation  ;
      QUALITY nres ;
      PREVIEW
-   endif
-endif
+   ENDIF 
+ENDIF 
 
-if (.not. lselect) .and. (.not. lpreview) .and. cprinterx = NIL
+IF (.not. lselect) .and. (.not. lpreview) .and. cprinterx = NIL
 
-   if npapersize#NIL
+   IF npapersize#NIL
       SELECT PRINTER DEFAULT TO lsucess  ;
       ORIENTATION worientation  ;
       QUALITY nres ;
       PAPERSIZE npapersize
-   else
+   ELSE
       SELECT PRINTER DEFAULT TO lsucess  ;
       QUALITY nres ;
       ORIENTATION worientation
-   endif
-endif
+   ENDIF 
+ENDIF 
 
-if lselect .and. .not. lpreview .and. cprinterx = NIL
+IF lselect .and. .not. lpreview .and. cprinterx = NIL
    ::cPrinter := GetPrinter()
    If Empty (::cPrinter)
       ::lprerror:=.T.
       Return Nil
    EndIf
 
-   if npapersize#NIL
+   IF npapersize#NIL
       SELECT PRINTER ::cprinter to lsucess ;
       ORIENTATION worientation ;
       QUALITY nres ;
       PAPERSIZE npapersize
-   else
+   ELSE
       SELECT PRINTER ::cprinter to lsucess ;
       QUALITY nres ;
       ORIENTATION worientation
-   endif
-endif
+   ENDIF 
+ENDIF 
 
-if cprinterx # NIL .AND. lpreview
+IF cprinterx # NIL .AND. lpreview
    If Empty (cprinterx)
       ::lprerror:=.T.
       Return Nil
    EndIf
 
-   if npapersize#NIL
+   IF npapersize#NIL
       SELECT PRINTER cprinterx to lsucess ;
       ORIENTATION worientation ;
       QUALITY nres ;
       PAPERSIZE npapersize ;
       PREVIEW
-   else
+   ELSE
       SELECT PRINTER cprinterx to lsucess ;
       ORIENTATION worientation ;
       QUALITY nres ;
       PREVIEW
-   endif
-endif
+   ENDIF 
+ENDIF 
 
-if cprinterx # NIL .AND. .not. lpreview
+IF cprinterx # NIL .AND. .not. lpreview
    If Empty (cprinterx)
       ::lprerror:=.T.
       Return Nil
    EndIf
 
-   if npapersize#NIL
+   IF npapersize#NIL
       SELECT PRINTER cprinterx to lsucess ;
       ORIENTATION worientation ;
       QUALITY nres ;
       PAPERSIZE npapersize
-   else
+   ELSE
       SELECT PRINTER cprinterx to lsucess ;
       QUALITY nres ;
       ORIENTATION worientation
-   endif
-endif
+   ENDIF 
+ENDIF 
 
 IF .NOT. lsucess
    ::lprerror:=.T.
-   return nil
+   RETURN nil
 ENDIF
-return self
+RETURN self
 
 *-------------------------
 METHOD getdefprinterx() CLASS TMINIPRINT
 *-------------------------
-return getdefaultprinter()
+RETURN getdefaultprinter()
 
 
 *-------------------------
 METHOD printroundrectanglex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen ) CLASS TMINIPRINT
 *-------------------------
-default atColor to ::acolor
+DEFAULT atColor to ::acolor
 @  nlin*::nmver+::nvfij,ncol*::nmhor+::nhfij*2 PRINT RECTANGLE TO  (nlinf+0.5)*::nmver+::nvfij,ncolf*::nmhor+::nhfij*2 COLOR atcolor  PENWIDTH ntwpen  ROUNDED //// CPEN
-return self
+RETURN self
 
 
 CREATE CLASS THBPRINTER FROM TPRINTBASE
@@ -1135,7 +1108,7 @@ GET PRINTERS TO ::aprinters
 GET PORTS TO ::aports
 SET UNITS MM
 ::cprintlibrary:="HBPRINTER"
-return self
+RETURN self
 
 
 *-------------------------
@@ -1143,34 +1116,34 @@ METHOD BEGINDOCx (cdoc) CLASS THBPRINTER
 *-------------------------
 ::setpreviewsize(2)
 START DOC NAME cDoc
-  define font "F0" name "courier new" size 10
-   define font "F1" name "courier new" size 10 BOLD
+ define font "F0" name "courier new" size 10
+ define font "F1" name "courier new" size 10 BOLD
 
 
-  define font "F2" name "courier new" size 10 ITALIC
-  define font "F3" name "courier new" size 10 BOLD ITALIC
-return self
+ define font "F2" name "courier new" size 10 ITALIC
+ define font "F3" name "courier new" size 10 BOLD ITALIC
+RETURN self
 
 
 *-------------------------
 METHOD ENDDOCx() CLASS THBPRINTER
 *-------------------------
 END DOC
-return self
+RETURN self
 
 
 *-------------------------
 METHOD BEGINPAGEx() CLASS THBPRINTER
 *-------------------------
 START PAGE
-return self
+RETURN self
 
 
 *-------------------------
 METHOD ENDPAGEx() CLASS THBPRINTER
 *-------------------------
 END PAGE
-return self
+RETURN self
 
 
 *-------------------------
@@ -1178,7 +1151,7 @@ METHOD RELEASEx() CLASS THBPRINTER
 *-------------------------
 RELEASE PRINTSYS
 RELEASE HBPRN
-return self
+RETURN self
 
 
 *-------------------------
@@ -1186,106 +1159,102 @@ METHOD PRINTDATAx(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext,lita
 *-------------------------
 Empty( Data )
 
-default aColor to ::acolor
+DEFAULT aColor to ::acolor
 Empty( nLen )
 
-  select font "F0"
-  change font "F0" name cfont size nsize
-  
-  if lbold
-      select font "F1"
-      change font "F1" name cfont size nsize BOLD
-  endif
+select font "F0"
+change font "F0" name cfont size nsize
 
-  if litalic
-     if lbold
-        select font "F3"
-        change font "F3" name cfont size nsize BOLD ITALIC
-     else
-        select font "F2"
-        change font "F2" name cfont size nsize ITALIC
-     endif
-  endif
+IF lbold
+   select font "F1"
+   change font "F1" name cfont size nsize BOLD
+ENDIF 
 
+IF litalic
+   IF lbold
+      select font "F3"
+      change font "F3" name cfont size nsize BOLD ITALIC
+   ELSE
+      select font "F2"
+      change font "F2" name cfont size nsize ITALIC
+   ENDIF 
+ENDIF 
 
 SET TEXTCOLOR acolor
 
-if .not. lbold
-   if calign="R"
+IF .not. lbold
+   IF calign="R"
       set text align right
       @ nlin*::nmver+::nvfij,ncol*::nmhor+::nhfij*2 +(len(ctext))*::nmhor  SAY (ctext) TO PRINT
       set text align left
-   else
+   ELSE
       @ nlin*::nmver+::nvfij,ncol*::nmhor+::nhfij*2 SAY (ctext) TO PRINT
-   endif
-else
-   if calign="R"
+   ENDIF 
+ELSE
+   IF calign="R"
       set text align right
           @ nlin*::nmver+::nvfij,ncol*::nmhor+::nhfij*2 +(len(ctext))*::nmhor  SAY (ctext) TO PRINT
       set text align left
-   else
+   ELSE
         @ nlin*::nmver+::nvfij,ncol*::nmhor+::nhfij*2  SAY (ctext) TO PRINT
-   endif
-endif
-
-return self
+   ENDIF 
+ENDIF 
+RETURN self
 
 
 *-------------------------
 METHOD printimagex(nlin,ncol,nlinf,ncolf,cimage) CLASS thbprinter
 *-------------------------
 @  nlin*::nmver+::nvfij ,ncol*::nmhor+::nhfij*2 PICTURE cimage SIZE  (nlinf+0.5-nlin-4)*::nmver+::nvfij , (ncolf-ncol-3)*::nmhor+::nhfij*2
-return self
+RETURN self
 
 
 *-------------------------
 METHOD printlinex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen ) CLASS thbprinter
 *-------------------------
-default atColor to ::acolor
+DEFAULT atColor to ::acolor
 CHANGE PEN "C0" WIDTH ntwpen*10  COLOR atcolor
 SELECT PEN "C0"
 @  nlin*::nmver+::nvfij,ncol*::nmhor+::nhfij*2 , (nlinf)*::nmver+::nvfij,ncolf*::nmhor+::nhfij*2  LINE PEN "C0"  //// CPEN
-return self
-
+RETURN self
 
 *-------------------------
 METHOD printrectanglex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen ) CLASS THBPRINTER
 *-------------------------
-default atColor to ::acolor
+DEFAULT atColor to ::acolor
 CHANGE PEN "C0" WIDTH ntwpen*10 COLOR atcolor
 SELECT PEN "C0"
 @  nlin*::nmver+::nvfij,ncol*::nmhor+::nhfij*2, (nlinf+0.5)*::nmver+::nvfij, ncolf*::nmhor+::nhfij*2  RECTANGLE  PEN "C0" //// CPEN  RECTANGLE  ///// [PEN <cpen>] [BRUSH <cbrush>]
-return self
-
+RETURN self
 
 *-------------------------
 METHOD selprinterx( lselect , lpreview, llandscape , npapersize ,cprinterx,nres ) CLASS THBPRINTER
 *-------------------------
 
-if lselect .and. lpreview .and. cprinterx=NIL
+IF lselect .and. lpreview .and. cprinterx=NIL
    SELECT BY DIALOG PREVIEW
-endif
-if lselect .and. (.not. lpreview) .and. cprinterx=NIL
+ENDIF 
+IF lselect .and. (.not. lpreview) .and. cprinterx=NIL
    SELECT BY DIALOG
-endif
-if (.not. lselect) .and. lpreview .and. cprinterx=NIL
+ENDIF 
+IF (.not. lselect) .and. lpreview .and. cprinterx=NIL
    SELECT DEFAULT PREVIEW
-endif
-if (.not. lselect) .and. (.not. lpreview) .and. cprinterx=NIL
+ENDIF 
+IF (.not. lselect) .and. (.not. lpreview) .and. cprinterx=NIL
    SELECT DEFAULT
-endif
+ENDIF 
 
-if cprinterx # NIL
+IF cprinterx # NIL
    IF lpreview
       SELECT PRINTER cprinterx PREVIEW
    ELSE
       SELECT PRINTER cprinterx
    ENDIF
-endif
+ENDIF 
 
 IF HBPRNERROR != 0
    ::lprerror:=.T.
-   return nil
+   RETURN nil
 ENDIF
 
 define font "f0" name ::cfontname size ::nfontsize
@@ -1293,20 +1262,20 @@ define font "f1" name ::cfontname size ::nfontsize BOLD
 
 define pen "C0" WIDTH ::nwpen COLOR ::acolor
 select pen "C0"
-if llandscape
+IF llandscape
    set page orientation DMORIENT_LANDSCAPE font "f0"
-else
+ELSE
    set page orientation DMORIENT_PORTRAIT  font "f0"
-endif
-if npapersize#NIL
+ENDIF 
+IF npapersize#NIL
    set page papersize npapersize
-endif
+ENDIF 
 
-if nres#NIL
+IF nres#NIL
    SET QUALITY nres   ////:=PRINTER_RES_MEDIUM
-endif
+ENDIF 
 
-return self
+RETURN self
 
 
 *-------------------------
@@ -1314,7 +1283,7 @@ METHOD getdefprinterx() CLASS THBPRINTER
 *-------------------------
 local cdefprinter
 GET DEFAULT PRINTER TO cdefprinter
-return cdefprinter
+RETURN cdefprinter
 
 
 *-------------------------
@@ -1322,24 +1291,24 @@ METHOD setcolorx() CLASS THBPRINTER
 *-------------------------
 CHANGE PEN "C0" WIDTH ::nwpen COLOR ::acolor
 SELECT PEN "C0"
-return self
+RETURN self
 
 
 *-------------------------
 METHOD setpreviewsizex(ntam) CLASS THBPRINTER
 *-------------------------
 SET PREVIEW SCALE ntam
-return self
+RETURN self
 
 
 *-------------------------
 METHOD printroundrectanglex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen ) CLASS THBPRINTER
 *-------------------------
-default atColor to ::acolor
+DEFAULT atColor to ::acolor
 CHANGE PEN "C0" WIDTH ntwpen*10 COLOR atcolor
 SELECT PEN "C0"
 hbprn:RoundRect( nlin*::nmver+::nvfij  ,ncol*::nmhor+::nhfij*2 ,(nlinf+0.5)*::nmver+::nvfij ,ncolf*::nmhor+::nhfij*2 ,10, 10,"C0")
-return self
+RETURN self
 
 CREATE CLASS TDOSPRINT FROM TPRINTBASE
 
@@ -1429,7 +1398,7 @@ METHOD initx() CLASS TDOSPRINT
 *-------------------------
 ::impreview:=.F.
 ::cprintlibrary:="DOSPRINT"
-return self
+RETURN self
 
 
 *-------------------------
@@ -1437,7 +1406,7 @@ METHOD begindocx() CLASS TDOSPRINT
 *-------------------------
 SET PRINTER TO &(::tempfile)
 SET DEVICE TO PRINT
-return self
+RETURN self
 
 *-------------------------
 METHOD enddocx() CLASS TDOSPRINT
@@ -1450,7 +1419,7 @@ ny:=getdesktopheight()
 SET DEVICE TO SCREEN
 SET PRINTER TO
 _nhandle:=FOPEN(::tempfile,0+64)
-if ::impreview
+IF ::impreview
    wr:=memoread((::tempfile))
    DEFINE WINDOW PRINT_PREVIEW  ;
    AT 0,0 ;
@@ -1480,11 +1449,11 @@ if ::impreview
    CENTER WINDOW PRINT_PREVIEW
    ACTIVATE WINDOW PRINT_PREVIEW
 
-else
+ELSE
 
   ::PRINTDOS()
 
-endif
+ENDIF 
 
 IF FILE(::tempfile)
    fclose(_nhandle)
@@ -1498,14 +1467,14 @@ RETURN self
 METHOD beginpagex() CLASS TDOSPRINT
 *-------------------------
 @ 0,0 SAY ""
-return self
+RETURN self
 
 
 *-------------------------
 METHOD endpagex() CLASS TDOSPRINT
 *-------------------------
 EJECT
-return self
+RETURN self
 
 
 *-------------------------
@@ -1519,62 +1488,62 @@ Empty( cAlign )
 Empty( nLen )
 Empty( lItalic)
 
-if .not. lbold
+IF .not. lbold
    @ nlin,ncol say (ctext)
-else
+ELSE
    @ nlin,ncol say (ctext)
    @ nlin,ncol say (ctext)
-endif
-return self
+ENDIF 
+RETURN self
 
 
 *-------------------------
 METHOD printlinex(nlin,ncol,nlinf,ncolf /* ,atcolor,ntwpen */ ) CLASS TDOSPRINT
 *-------------------------
-if nlin=nlinf
+IF nlin=nlinf
    @ nlin,ncol say replicate("-",ncolf-ncol+1)
-endif
-return self
+ENDIF 
+RETURN self
 
 
 *-------------------------
 METHOD selprinterx( lselect , lpreview /* , llandscape , npapersize ,cprinterx */ ) CLASS TDOSPRINT
 *-------------------------
 Empty( lSelect )
-do while file(::tempfile)
+DO WHILE file(::tempfile)
    ::tempfile:=gettempdir()+"T"+alltrim(str(int(hb_random(999999)),8))+".prn"
-enddo
-if lpreview
+ENDDO
+IF lpreview
    ::impreview:=.T.
-endif
-return self
+ENDIF 
+RETURN self
 
 
 *-------------------------
 METHOD condendosx() CLASS TDOSPRINT
 *-------------------------
 @ prow(), pcol() say chr(15)
-return self
+RETURN self
 
 
 *-------------------------
 METHOD normaldosx() CLASS TDOSPRINT
 *-------------------------
 @ prow(), pcol() say chr(18)
-return self
+RETURN self
 
 
 *-------------------------
 static function zoom(cOp)
 *-------------------------
-if cOp="+" .and. print_preview.edit_p.fontsize <= 24
+IF cOp="+" .and. print_preview.edit_p.fontsize <= 24
    print_preview.edit_p.fontsize:=  print_preview.edit_p.fontsize + 2
-endif
+ENDIF 
 
-if cOp="-" .and. print_preview.edit_p.fontsize > 7
+IF cOp="-" .and. print_preview.edit_p.fontsize > 7
    print_preview.edit_p.fontsize:=  print_preview.edit_p.fontsize - 2
-endif
-return nil
+ENDIF 
+RETURN nil
 
 
 *-------------------------
@@ -1586,12 +1555,12 @@ print_preview.edit_p.caretpos:=1
 ::cBusca:= cTarget
 ::cString := ""
 ::cString  := inputbox('Text: ','Search String')
-if empty(::cString)
-   return(NIL)
-endif
+IF empty(::cString)
+   RETURN(NIL)
+ENDIF 
 print_preview.but_6.enabled:=.t.
 ::nextsearch()
-return(nil)
+RETURN(nil)
 
 *-----------------------------------------------------*
 Method nextsearch( )
@@ -1603,14 +1572,14 @@ nCaretpos := ATplus(ALLTRIM(cString),UPPER(::cBusca),::nOccur)
 ::nOccur:=nCaretpos+1
 
 print_preview.edit_p.setfocus
-if nCaretpos>0
+IF nCaretpos>0
    print_preview.edit_p.caretpos:=nCaretPos
    print_preview.edit_p.refresh
-else
+ELSE
    print_preview.but_6.enabled:=.F.
    msginfo("End search","Information")
-endif
-return nil
+ENDIF 
+RETURN nil
 
 *-------------------------
 static function strcount(cbusca,cencuentra,n)
@@ -1618,11 +1587,11 @@ static function strcount(cbusca,cencuentra,n)
 local nc:=0,i
 cbusca:=alltrim(cbusca)
 for i:=1 to n
-    if upper(substr(cencuentra,i,len(cbusca)))=upper(cbusca)
+    IF upper(substr(cencuentra,i,len(cbusca)))=upper(cbusca)
        nc++
-    endif
+    ENDIF 
 next i
-return nc
+RETURN nc
 
 
 *-------------------------
@@ -1634,14 +1603,12 @@ lenctodo:=len(ctodo)
 lencbusca:=len(cbusca)
 uppercbusca:=upper(cbusca)
 for i:= ninicio to lenctodo
-    if upper(substr(ctodo,i,lencbusca))=uppercbusca
+    IF upper(substr(ctodo,i,lencbusca))=uppercbusca
        nposluna:=i
        exit
-    endif
+    ENDIF 
 next i
-return nposluna
-
-
+RETURN nposluna
 
 /// excelprint based upon contribution of Jose Miguel josemisu@yahoo.com.ar
 
@@ -1650,7 +1617,6 @@ CREATE CLASS TEXCELPRINT FROM TPRINTBASE
     DATA oExcel INIT nil
     DATA oHoja  INIT nil
     DATA cTlinea INIT ""
-
 
 *-------------------------
 METHOD initx()
@@ -1732,7 +1698,7 @@ METHOD initx() CLASS TEXCELPRINT
 *-------------------------
 ::impreview:=.F.
 ::cprintlibrary:="EXCELPRINT"
-return self
+RETURN self
 
 *-------------------------
 METHOD selprinterx( lselect , lpreview, llandscape , npapersize ,cprinterx) CLASS TEXCELPRINT
@@ -1751,18 +1717,17 @@ IF Ole2TxtError() != 'S_OK'
    ::exit:=.T.
    RETURN Nil
 ENDIF
-return self
+RETURN self
 
 *-------------------------
 METHOD begindocx() CLASS TEXCELPRINT
 *-------------------------
 ::oExcel:WorkBooks:Add()
-////::oHoja := ::oExcel:Get( "ActiveSheet" )
 ::oHoja:=::oExcel:ActiveSheet()
 ::oHoja:Name := "List"
 ::oHoja:Cells:Font:Name := ::cfontname
 ::oHoja:Cells:Font:Size := ::nfontsize
-return self
+RETURN self
 
 
 *-------------------------
@@ -1781,22 +1746,21 @@ NEXT
 ::oExcel:Visible := .T.
 ::oHoja:= NIL
 ::oExcel:= NIL
-
 RETURN self
 
 
 *-------------------------
 METHOD releasex() CLASS TEXCELPRINT
 *-------------------------
-   ::oHoja := nil
-   ::oExcel := nil
+::oHoja := nil
+::oExcel := nil
 RETURN self
 
 
 *-------------------------
 METHOD beginpagex() CLASS TEXCELPRINT
 *-------------------------
-return self
+RETURN self
 
 
 *-------------------------
@@ -1804,22 +1768,22 @@ METHOD endpagex() CLASS TEXCELPRINT
 *-------------------------
 ::nlinpag:=LEN(::alincelda)+1
 ::alincelda:={}
-return self
+RETURN self
 
 
 *-------------------------
 METHOD setunitsx(cunitsx,nunitslinx) CLASS TEXCELPRINT
 *-------------------------
-if cunitsx="MM"
+IF cunitsx="MM"
    ::cunits:="MM"
-else
+ELSE
    ::cunits:="ROWCOL"
-endif
-if nunitslinx=NIL
+ENDIF 
+IF nunitslinx=NIL
    ::nunitslin:=1
-else
+ELSE
    ::nunitslin:=nunitslinx
-endif
+ENDIF 
 RETURN self
 
 
@@ -1848,9 +1812,9 @@ empty(data)
 empty(acolor)
 empty(nlen)
 nlin++
-if ::nunitslin>1
+IF ::nunitslin>1
    nlin:=round(nlin/::nunitslin,0)
-endif
+ENDIF 
 nlin:=nlin+::nlinpag
 IF LEN(::alincelda)<nlin
    DO WHILE LEN(::alincelda)<nlin
@@ -1861,14 +1825,13 @@ ENDIF
 alinceldax:=::alincelda[nlin]
 ///::cTlinea:=::cTlinea+ ctext+chr(13)+chr(10)   //// mirando como hacrlo con el portapapeles, pero no es nada facil...
 
-
 ::oHoja:Cells(nlin,alinceldax):Value := "'"+space(ncol)+ctext
-if cfont#::cfontname
+IF cfont#::cfontname
    ::oHoja:Cells(nlin,alinceldax):Font:Name := cfont
-endif
-if nsize#::nfontsize
+ENDIF 
+IF nsize#::nfontsize
    ::oHoja:Cells(nlin,alinceldax):Font:Size := nsize
-endif
+ENDIF 
 IF lbold
    ::oHoja:Cells(nlin,alinceldax):Font:Bold := lbold
 ENDIF
@@ -1877,16 +1840,13 @@ IF lItalic
    ::oHoja:Cells(nlin,alinceldax):Font:Italic := lItalic
 ENDIF
 
-
-
 do case
 case calign="R"
    ::oHoja:Cells(nlin,alinceldax):HorizontalAlignment:= -4152  //Derecha
 case calign="C"
    ::oHoja:Cells(nlin,alinceldax):HorizontalAlignment:= -4108  //Centrar
 endcase
-return self
-
+RETURN self
 
 ////////////////////////
 
@@ -1895,7 +1855,6 @@ CREATE CLASS THTMLPRINT FROM TEXCELPRINT
 *-------------------------
 METHOD enddocx()
 *-------------------------
-
 
 ENDCLASS
 
@@ -1906,13 +1865,9 @@ For nCol:= 1 to ::oHoja:UsedRange:Columns:Count()
 NEXT
 ::oHoja:Cells( 1, 1 ):Select()
 cRuta:=GetmydocumentsFolder()
-::oExcel:DisplayAlerts :=.F. 
+::oExcel:DisplayAlerts :=.F.
 ::oHoja:SaveAs(cRuta+"\Printer.html", 44,"","", .f. , .f.)
 ::oExcel:Quit()
-////#ifndef __XHARBOUR__
-///  ::oHoja:End()
-///  ::oExcel:end()
-///#endif
 ::ohoja := nil
 ::oExcel := nil
 IF ShellExecute(0, "open", "rundll32.exe", "url.dll,FileProtocolHandler "+ cRuta+ "\Printer.html", ,1) <=32
@@ -1923,7 +1878,6 @@ RETURN self
 
 
 CREATE CLASS TRTFPRINT FROM TPRINTBASE
-
 
 *-------------------------
 METHOD initx()
@@ -2005,8 +1959,7 @@ METHOD initx() CLASS TRTFPRINT
 *-------------------------
 ::impreview:=.F.
 ::cprintlibrary:="RTFPRINT"
-return self
-
+RETURN self
 
 *-------------------------
 METHOD begindocx(cdoc) CLASS TRTFPRINT
@@ -2042,7 +1995,7 @@ ELSE
    AADD(oPrintRTF1,"{\b\f2\lang1034\langfe3082\cgrid0\langnp1034")
 ENDIF
 
-return self
+RETURN self
 
 
 *-------------------------
@@ -2075,8 +2028,7 @@ RETURN self
 *-------------------------
 METHOD beginpagex() CLASS TRTFPRINT
 *-------------------------
-return self
-
+RETURN self
 
 *-------------------------
 METHOD endpagex() CLASS TRTFPRINT
@@ -2145,22 +2097,22 @@ oPrintRTF1[LEN(oPrintRTF1)]:=oPrintRTF1[LEN(oPrintRTF1)]+::alincelda[nTRTFPRINT1
 NEXT
 oPrintRTF1[LEN(oPrintRTF1)]:=oPrintRTF1[LEN(oPrintRTF1)]+" \page"
 ::alincelda:={}
-return self
+RETURN self
 
 
 *-------------------------
 METHOD setunits(cunitsx,cunitslinx) CLASS TRTFPRINT
 *-------------------------
-if cunitsx="MM"
+IF cunitsx="MM"
    ::cunits:="MM"
-else
+ELSE
    ::cunits:="ROWCOL"
-endif
-if cunitslinx=NIL
+ENDIF 
+IF cunitslinx=NIL
    ::nunitslin:=1
-else
+ELSE
    ::nunitslin:=cunitslinx
-endif
+ENDIF 
 RETURN self
 
 
@@ -2174,14 +2126,14 @@ Empty( acolor )
 Empty( nlen )
 Empty( lItalic )
 nlin++
-if ::nunitslin>1
+IF ::nunitslin>1
    nlin:=round(nlin/::nunitslin,0)
-endif
+ENDIF 
 IF ::cunits="MM"
    ctext:=ALLTRIM(ctext)
 ENDIF
 AADD(::alincelda,{nlin,ncol,space(::nlmargin)+ctext,nsize,calign})
-return self
+RETURN self
 
 
 *-------------------------
@@ -2193,7 +2145,7 @@ Empty( nlinf )
 Empty( ncolf )
 Empty( atcolor )
 Empty( ntwpen )
-return self
+RETURN self
 
 
 *-------------------------
@@ -2207,20 +2159,19 @@ Empty( cprinterx )
 oPrintRTF1:={}
 oPrintRTF2:=10
 oPrintRTF3:=llandscape
-return self
+RETURN self
 
 
 *-------------------------
 METHOD condendosx() CLASS TRTFPRINT
 *-------------------------
-return self
+RETURN self
 
 
 *-------------------------
 METHOD normaldosx() CLASS TRTFPRINT
 *-------------------------
-return self
-
+RETURN self
 
 
 //////////////////////// CSV
@@ -2308,14 +2259,14 @@ METHOD initx() CLASS TCSVPRINT
 *-------------------------
 ::impreview:=.F.
 ::cprintlibrary:="CSVPRINT"
-return self
+RETURN self
 
 
 *-------------------------
 METHOD begindocx(cdoc) CLASS TCSVPRINT
 *-------------------------
 Default cDoc to "List"
-return self
+RETURN self
 
 
 *-------------------------
@@ -2343,7 +2294,7 @@ RETURN self
 *-------------------------
 METHOD beginpagex() CLASS TCSVPRINT
 *-------------------------
-return self
+RETURN self
 
 
 *-------------------------
@@ -2368,22 +2319,21 @@ ENDIF
 
 NEXT
 ::alincelda:={}
-return self
-
+RETURN self
 
 *-------------------------
 METHOD setunits(cunitsx,cunitslinx) CLASS TCSVPRINT
 *-------------------------
-if cunitsx="MM"
+IF cunitsx="MM"
    ::cunits:="MM"
-else
+ELSE
    ::cunits:="ROWCOL"
-endif
-if cunitslinx=NIL
+ENDIF 
+IF cunitslinx=NIL
    ::nunitslin:=1
-else
+ELSE
    ::nunitslin:=cunitslinx
-endif
+ENDIF 
 RETURN self
 
 
@@ -2398,14 +2348,14 @@ Empty( nlen )
 Empty( lItalic )
 
 nlin++
-if ::nunitslin>1
+IF ::nunitslin>1
    nlin:=round(nlin/::nunitslin,0)
-endif
+ENDIF 
 IF ::cunits="MM"
    ctext:=ALLTRIM(ctext)
 ENDIF
 AADD(::alincelda,{nlin,ncol,space(::nlmargin)+ctext,nsize,calign})
-return self
+RETURN self
 
 
 *-------------------------
@@ -2418,7 +2368,7 @@ Empty( ncolf )
 Empty( atcolor )
 Empty( ntwpen )
 *-------------------------
-return self
+RETURN self
 
 
 *-------------------------
@@ -2432,19 +2382,19 @@ Empty( cprinterx )
 oPrintCSV1:={}
 oPrintCSV2:=10
 oPrintCSV3:=llandscape
-return self
+RETURN self
 
 
 *-------------------------
 METHOD condendosx() CLASS TCSVPRINT
 *-------------------------
-return self
+RETURN self
 
 
 *-------------------------
 METHOD normaldosx() CLASS TCSVPRINT
 *-------------------------
-return self
+RETURN self
 
 *---------------------------------------
 CREATE CLASS TPDFPRINT FROM TPRINTBASE
@@ -2482,7 +2432,7 @@ ENDCLASS
 METHOD INITx() CLASS TPDFPRINT
 *-------------------------
 
-*-----Estos son los unicos que tipos de papel que soporta-------*
+*-----Estos son los unicos tipos de papel que soporta-------*
 aadd(::aPaper,{DMPAPER_LETTER      , "LETTER"   })
 aadd(::aPaper,{DMPAPER_LEGAL       , "LEGAL"    })
 aadd(::aPaper,{DMPAPER_TABLOID     , "LEDGER"   })
@@ -2500,7 +2450,7 @@ aadd(::aPaper,{DMPAPER_ENV_MONARCH , "MONARCH"  })
 
 ::cprintlibrary:="PDFPRINT"
 
-return self
+RETURN self
 
 
 *-------------------------
@@ -2508,7 +2458,7 @@ METHOD BEGINDOCx () CLASS TPDFPRINT
 *-------------------------
 local cpdfname:= Getmydocumentsfolder()+"\pdfprint.pdf"
 ::oPdf := TPDF():init(cpdfname)
-return self
+RETURN self
 
 
 *-------------------------
@@ -2520,29 +2470,26 @@ IF ShellExecute(0, "open", "rundll32.exe", "url.dll,FileProtocolHandler "+ cMydo
      MSGINFO("html Extension not asociated"+CHR(13)+CHR(13)+ ;
      "File saved in:"+CHR(13)+cMydoc+"\pdfprint.pdf")
 ENDIF
-return self
+RETURN self
 
 
 *-------------------------
 METHOD BEGINPAGEx() CLASS TPDFPRINT
 *-------------------------
-
 ::oPdf:NewPage( ::cPageSize, ::cPageOrient, , ::cFontName, ::nFontType, ::nFontSize )
-
-return self
+RETURN self
 
 
 *-------------------------
 METHOD ENDPAGEx() CLASS TPDFPRINT
 *-------------------------
-
-return self
+RETURN self
 
 
 *-------------------------
 METHOD RELEASEx() CLASS TPDFPRINT
 *-------------------------
-return self
+RETURN self
 
 
 *-------------------------
@@ -2556,7 +2503,7 @@ local I
 Default cFont to ::cFontName
 Default nSize to ::nFontSize
 ////Default lBold to .f.
-default aColor to ::acolor
+DEFAULT aColor to ::acolor
 
 
 empty( data )
@@ -2574,77 +2521,76 @@ Else
 Endif
 
 If lItalic
-   if lBold
+   IF lBold
        ntype:=3   /// bold and italic
-   else
+   ELSE
       ntype:= 2   /// only italic
-   endif
+   ENDIF 
 Endif
 
 
-if "roman"$lower(cFont)
+IF "roman"$lower(cFont)
    cFont:="TIMES"
-else
-   if "helvetica"$lower(cfont) .or. "arial"$lower(cfont)
+ELSE
+   IF "helvetica"$lower(cfont) .or. "arial"$lower(cfont)
       cFont:="HELVETICA"
-   else
+   ELSE
       cFont:="COURIER"
-   endif
-endif
+   ENDIF 
+ENDIF 
 
 
 ::oPdf:SetFont(cFont, nType, nSize)
 
 
-   IF ::cunits == "MM"
-      nlin += 3
-   Endif
+IF ::cunits == "MM"
+   nlin += 3
+Endif
 
-   cText:=cColor + cText
+cText:=cColor + cText
 
-   if ::cunits == "MM"
-      ::oPdf:AtSay( ctext, nlin, nCol, "M" )
-   else
-      ::oPdf:AtSay( ctext, nlin*::nmver+::nvfij , nCol*::nmhor+ ::nhfij*2, "M")
-   endif
-return self
+IF ::cunits == "MM"
+   ::oPdf:AtSay( ctext, nlin, nCol, "M" )
+ELSE
+   ::oPdf:AtSay( ctext, nlin*::nmver+::nvfij , nCol*::nmhor+ ::nhfij*2, "M")
+ENDIF 
+RETURN self
 
 
 *-------------------------
 METHOD printimagex(nlin,ncol,nlinf,ncolf,cimage) CLASS TPDFPRINT
 *-------------------------
 
-cImage := Upper(cImage)
-
-*----Solo soporta jpg y tiff como formatos de imagen------*
-IF At(".JPG",cImage) = 0 .and. At(".TIF",cImage) = 0
-   Return Self
-Endif
+IF HB_IsString(cImage)
+   cImage := Upper(cImage)
+ *----Solo soporta jpg y tiff como formatos de imagen------*
+   IF At(".JPG",cImage) = 0 .and. At(".TIF",cImage) = 0
+      Return Self
+   Endif
+ELSE
+  Return Self
+ENDIF
 
 *----Ajustamos las medidas al hbprinter-----*
 nlinf := nlinf - nlin
 ncolf := nColf - nCol
 
-if ::cunits == "MM"
+IF ::cunits == "MM"
    ::oPdf:Image( cImage, nlin,ncol,"M",nlinf,ncolf)
-else
+ELSE
    ::oPdf:Image( cImage, nlin*::nmver+::nvfij,ncol*::nmhor+ ::nhfij*2,"M",nlinf*::nmver+::nvfij,ncolf*::nmhor+ ::nhfij*2)
-endif
-
-
-return self
+ENDIF 
+RETURN self
 
 
 *-------------------------
 METHOD printlinex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen ) CLASS TPDFPRINT
 *-------------------------
-default atColor to ::acolor
-if nlin = nlinf .or. ncol = ncolf
+DEFAULT atColor to ::acolor
+IF nlin = nlinf .or. ncol = ncolf
    ::printrectanglex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen /2)
-endif
-
-return self
-
+ENDIF 
+RETURN self
 
 *-------------------------
 METHOD printrectanglex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen ) CLASS TPDFPRINT
@@ -2653,25 +2599,21 @@ local cColor  := ""
 local I
 local nvval  := 3.04
 local nhval  := 3.00
-default atColor to ::acolor
+DEFAULT atColor to ::acolor
 
 Default ntwpen to ::nwpen
-
-
-////empty(atcolor)
 
 For Each I in atColor
     cColor += Chr(I)
 Next
 
-if ::cunits=="MM"
+IF ::cunits=="MM"
       ::oPdf:Box1(nlin*nvVal,ncol*nhval,nlinf*nvval,ncolf*nhval,ntwpen*2,cColor)
-else
+ELSE
    ::oPdf:Box1(nlin*nvVal*::nmver+::nvfij,ncol*nhval*::nmhor+ ::nhfij*2,nlinf*nvval*::nmver+::nvfij,ncolf*nhval*::nmhor+ ::nhfij*2,ntwpen*2,cColor)
-endif
+ENDIF 
 
-return self
-
+RETURN self
 
 *-------------------------
 METHOD selprinterx( lselect , lpreview, llandscape , npapersize ) CLASS TPDFPRINT
@@ -2703,26 +2645,26 @@ Endif
 
 /*cprinterx no lo tomamos en cuenta aqui*/
 
-return self
+RETURN self
 
 
 *-------------------------
 METHOD getdefprinterx() CLASS TPDFPRINT
 *-------------------------
 local cdefprinter
-return cdefprinter
+RETURN cdefprinter
 
 
 *-------------------------
 METHOD setcolorx() CLASS TPDFPRINT
 *-------------------------
-return self
+RETURN self
 
 
 *-------------------------
 METHOD setpreviewsizex( /* ntam */) CLASS TPDFPRINT
 *-------------------------
-return self
+RETURN self
 
 
 *-------------------------
@@ -2730,55 +2672,240 @@ METHOD printroundrectanglex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen ) CLASS TPDFPRI
 *-------------------------
 /////*Que hace esto?  hace un rectangulo con bordes redondeados por como aqui no se puede va sin redondeo
    ::printrectanglex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen )
+RETURN self
+
+
+//////////////////////// CALC Contribucion de Jose Miguel con ajustes CVC
+
+CREATE CLASS TCALCPRINT FROM TPRINTBASE
+
+    DATA oServiceManager INIT nil
+    DATA oDesktop INIT nil
+    DATA oDocument INIT nil
+    DATA oSchedule INIT nil
+    DATA oSheet INIT nil
+    DATA oCell INIT nil
+    DATA oColums INIT nil
+    DATA oColumn INIT nil
+
+*-------------------------
+METHOD initx()
+*-------------------------
+
+*-------------------------
+METHOD begindocx()
+*-------------------------
+
+*-------------------------
+METHOD enddocx()
+*-------------------------
+
+*-------------------------
+METHOD beginpagex()
+*-------------------------
+
+*-------------------------
+METHOD endpagex()
+*-------------------------
+
+*-------------------------
+METHOD releasex()
+*-------------------------
+
+*-------------------------
+METHOD printdatax()
+*-------------------------
+
+*-------------------------
+METHOD printimage() BLOCK { || nil }
+*-------------------------
+
+*-------------------------
+METHOD printlinex() BLOCK {|| NIL }
+*-------------------------
+
+*-------------------------
+METHOD printrectanglex BLOCK { || nil }
+*-------------------------
+
+*-------------------------
+METHOD selprinterx()
+*-------------------------
+
+*-------------------------
+METHOD getdefprinterx() BLOCK { || nil }
+*-------------------------
+
+*-------------------------
+METHOD setcolorx() BLOCK { || nil }
+*-------------------------
+
+*-------------------------
+METHOD setpreviewsizex() BLOCK { || nil }
+*-------------------------
+
+*-------------------------
+METHOD printroundrectanglex() BLOCK { || nil }
+*-------------------------
+
+*-------------------------
+method condendosx() BLOCK {|| NIL }
+*-------------------------
+
+*-------------------------
+method normaldosx() BLOCK {|| NIL }
+*-------------------------
+
+*-------------------------
+METHOD setunits()   // mm o rowcol , mm por renglon
+*-------------------------
+
+ENDCLASS
+
+
+*-------------------------
+METHOD initx() CLASS TCALCPRINT
+*-------------------------
+::impreview:=.F.
+::cprintlibrary:="CALCPRINT"
 return self
 
-#pragma BEGINDUMP
+*-------------------------
+METHOD selprinterx( lselect , lpreview, llandscape , npapersize ,cprinterx) CLASS TCALCPRINT
+*-------------------------
+empty(lselect)
+empty(lpreview)
+empty(llandscape)
+empty(npapersize)
+empty(cprinterx)
 
-#define HB_OS_WIN_32_USED
-#define _WIN32_WINNT 0x0400
-#include <windows.h>
-#include "hbapi.h"
-#include "hbapiitm.h"
+::oServiceManager := TOleAuto():New("com.sun.star.ServiceManager")
+::oDesktop := ::oServiceManager:createInstance("com.sun.star.frame.Desktop")
+IF ::oDesktop = NIL
+   MsgStop('OpenOficce Calc no encontrado','error')
+   RETURN Nil
+ENDIF
+return self
 
-HB_FUNC ( COPYCLIPBOARD )
-{
- HGLOBAL hglbCopy;
- char * lptstrCopy;
- char * cStr = hb_parc( 1 );
- int nLen = strlen( cStr );
+*-------------------------
+METHOD begindocx() CLASS TCALCPRINT
+*-------------------------
+::oDocument := ::oDesktop:loadComponentFromURL("private:factory/scalc","_blank", 0, {})
+::oSchedule := ::oDocument:GetSheets()
+::oSheet := ::oSchedule:GetByIndex(0)
+*::oSheet:CharFontName := ::cfontname
+*::oSheet:CharHeight   := ::nfontsize
+return self
 
- if ( !OpenClipboard( GetActiveWindow() ) )
- return;
 
- EmptyClipboard();
+*-------------------------
+METHOD enddocx() CLASS TCALCPRINT
+*-------------------------
+::oSheet:getColumns():setPropertyValue("OptimalWidth", .T.)
+RETURN self
 
- hglbCopy = GlobalAlloc( GMEM_DDESHARE, (nLen+1) * sizeof(TCHAR) );
- if (hglbCopy == NULL)
-    {
-     CloseClipboard();
-     return;
-    }
 
-// Lock the handle and copy the text to the buffer.
+*-------------------------
+METHOD releasex() CLASS TCALCPRINT
+*-------------------------
+   ::oServiceManager := nil
+   ::oDesktop := nil
+   ::oDocument := nil
+   ::oSchedule := nil
+   ::oSheet := nil
+   ::oCell := nil
+   ::oColums := nil
+   ::oColumn := nil
+RETURN self
 
- lptstrCopy = (char*) GlobalLock( hglbCopy );
- memcpy( lptstrCopy, cStr, nLen * sizeof(TCHAR));
- lptstrCopy[nLen] = (TCHAR) 0; // null character
- GlobalUnlock(hglbCopy);
 
- // Place the handle on the clipboard.
- SetClipboardData( CF_TEXT, hglbCopy );
+*-------------------------
+METHOD beginpagex() CLASS TCALCPRINT
+*-------------------------
+return self
 
- CloseClipboard();
-}
- //vacia el clipboard
- HB_FUNC(CLEARCLIPBOARD)
- {
-  if ( !OpenClipboard( GetActiveWindow() ) )
-  return;
 
-  EmptyClipboard();
-  CloseClipboard();
- }
+*-------------------------
+METHOD endpagex() CLASS TCALCPRINT
+*-------------------------
+local MiLinea,nTEXECLPRINT1,MiCol2
+ASORT(::alincelda,,, { |x, y| STR(x[1])+STR(x[2]) < STR(y[1])+STR(y[2]) })
+IF ::nlinpag=0 .AND. LEN(::alincelda)>0
+   ::cfontname:=::alincelda[1,6]
+   ::nfontsize:=::alincelda[1,4]
+   ::oSheet:CharFontName := ::cfontname
+   ::oSheet:CharHeight   := ::nfontsize
+ENDIF
+MiLinea:=0
+MiCol2:=1
+FOR nTEXECLPRINT1=1 TO LEN(::alincelda)
+   DO WHILE MiLinea<::alincelda[nTEXECLPRINT1,1]
+      MiLinea++
+      MiCol2:=1
+   ENDDO
+   ::oCell:=::oSheet:getCellByPosition(MiCol2-1,::nlinpag+MiLinea) // columna,linea
+   IF VALTYPE(::alincelda[nTEXECLPRINT1,3])="N"
+      ::oCell:SetValue(::alincelda[nTEXECLPRINT1,3])
+   ELSE
+      ::oCell:SetString(::alincelda[nTEXECLPRINT1,3])
+   ENDIF
+   IF ::alincelda[nTEXECLPRINT1,6]<>::cfontname
+      ::oCell:CharFontName:=::alincelda[nTEXECLPRINT1,6]
+   ENDIF
+   IF ::alincelda[nTEXECLPRINT1,4]<>::nfontsize
+      ::oCell:CharHeight  :=::alincelda[nTEXECLPRINT1,4]
+   ENDIF
+   IF ::alincelda[nTEXECLPRINT1,7]=.T.
+      ::oCell:CharWeight=150
+   ENDIF
+   do case
+   case ::alincelda[nTEXECLPRINT1,5]="R"
+      ::oCell:HoriJustify:=3
+   case ::alincelda[nTEXECLPRINT1,5]="C"
+      ::oCell:HoriJustify:=2
+   endcase
+   aMiColor:=::alincelda[nTEXECLPRINT1,8]
+   IF aMiColor[3]<>0 .OR. aMiColor[2]<>0 .OR. aMiColor[1]<>0
+      ::oCell:CharColor:=RGB(aMiColor[3],aMiColor[2],aMiColor[1])
+   ENDIF
+   MiCol2++
+NEXT
+::nlinpag:= ::nlinpag + MiLinea+1
+::alincelda:={}
+return self
 
-#pragma ENDDUMP
+
+*-------------------------
+METHOD setunits(cunitsx,cunitslinx) CLASS TCALCPRINT
+*-------------------------
+if cunitsx="MM"
+   ::cunits:="MM"
+else
+   ::cunits:="ROWCOL"
+endif
+if cunitslinx=NIL
+   ::nunitslin:=1
+else
+   ::nunitslin:=cunitslinx
+endif
+RETURN self
+
+
+*-------------------------
+METHOD printdatax(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext,nangle) CLASS TCALCPRINT
+*-------------------------
+local alinceldax
+empty(ncol)
+empty(data)
+empty(acolor)
+empty(nlen)
+if ::nunitslin>1
+   nlin:=round(nlin/::nunitslin,0)
+endif
+IF ::cunits="MM"
+   ctext:=ALLTRIM(ctext)
+ENDIF
+AADD(::alincelda,{nlin,ncol,ctext,nsize,calign,cfont,lbold,acolor})
+return self
+
+
