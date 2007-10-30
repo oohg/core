@@ -1,5 +1,5 @@
 /*
- * $Id: c_activex.c,v 1.1 2007-09-13 03:44:31 guerra000 Exp $ 
+ * $Id: c_activex.c,v 1.2 2007-10-30 02:35:57 declan2005 Exp $ 
  */ 
 /* 
  * ooHG source code: 
@@ -22,6 +22,11 @@
  * 
  * 
  */
+
+
+#ifndef NONAMELESSUNION
+#define NONAMELESSUNION
+#endif
  
    #ifndef __STDC__ 
       #define __STDC__ 1 
