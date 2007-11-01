@@ -1,5 +1,5 @@
 /*
- * $Id: c_activex.c,v 1.2 2007-10-30 02:35:57 declan2005 Exp $ 
+ * $Id: c_activex.c,v 1.3 2007-11-01 22:57:02 declan2005 Exp $ 
  */ 
 /* 
  * ooHG source code: 
@@ -48,10 +48,6 @@
  
 static WNDPROC lpfnOldWndProc = 0; 
  
-static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam ) 
-{ 
-   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc ); 
-} 
  
 #ifdef HB_ITEM_NIL 
    #define hb_dynsymSymbol( pDynSym )        ( ( pDynSym )->pSymbol ) 
@@ -119,7 +115,7 @@ HB_FUNC( INITACTIVEX ) // hWnd, cProgId -> hActiveXWnd
    hControl = CreateWindowEx( iStyleEx, "AtlAxWin", hb_parc( 2 ), iStyle, 
               hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ), HWNDparam( 1 ), 0, 0, NULL ); 
  
-   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hControl, GWL_WNDPROC, ( LONG ) SubClassFunc ); 
+//////   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hControl, GWL_WNDPROC, ( LONG ) SubClassFunc ); 
  
    HWNDret( hControl ); 
 } 
