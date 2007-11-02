@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.79 2007-10-29 21:43:04 declan2005 Exp $
+* $Id: h_print.prg,v 1.80 2007-11-02 10:37:21 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -1189,7 +1189,7 @@ IF .not. lbold
       set text align left
    ELSE
       @ nlin*::nmver+::nvfij,ncol*::nmhor+::nhfij*2 SAY (ctext) TO PRINT
-   ENDIF 
+   ENDIF
 ELSE
    IF calign="R"
       set text align right
@@ -1396,8 +1396,20 @@ ENDCLASS
 *-------------------------
 METHOD initx() CLASS TDOSPRINT
 *-------------------------
+local i
 ::impreview:=.F.
 ::cprintlibrary:="DOSPRINT"
+////////////////////
+PUBLIC hbprn
+INIT PRINTSYS
+GET PRINTERS TO ::aprinters
+GET PORTS TO ::aports
+RELEASE PRINTSYS
+RELEASE HBPRN
+for I:=1 to len (::aports)
+  automsgbox(::aprinters[i]+" - "+::aports[i])
+next i
+//////////////////
 RETURN self
 
 
@@ -1453,7 +1465,7 @@ ELSE
 
   ::PRINTDOS()
 
-ENDIF 
+ENDIF
 
 IF FILE(::tempfile)
    fclose(_nhandle)
@@ -1493,7 +1505,7 @@ IF .not. lbold
 ELSE
    @ nlin,ncol say (ctext)
    @ nlin,ncol say (ctext)
-ENDIF 
+ENDIF
 RETURN self
 
 
@@ -1502,7 +1514,7 @@ METHOD printlinex(nlin,ncol,nlinf,ncolf /* ,atcolor,ntwpen */ ) CLASS TDOSPRINT
 *-------------------------
 IF nlin=nlinf
    @ nlin,ncol say replicate("-",ncolf-ncol+1)
-ENDIF 
+ENDIF
 RETURN self
 
 
@@ -1515,7 +1527,11 @@ DO WHILE file(::tempfile)
 ENDDO
 IF lpreview
    ::impreview:=.T.
-ENDIF 
+ENDIF
+//////////////////////////
+
+
+/////////////////////////
 RETURN self
 
 
@@ -2670,7 +2686,7 @@ RETURN self
 *-------------------------
 METHOD printroundrectanglex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen ) CLASS TPDFPRINT
 *-------------------------
-/////*Que hace esto?  hace un rectangulo con bordes redondeados por como aqui no se puede va sin redondeo
+/////*Que hace esto?  hace un rectangulo con bordes redondeados pero como aqui no se puede va sin redondeo
    ::printrectanglex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen )
 RETURN self
 
@@ -2894,7 +2910,7 @@ RETURN self
 *-------------------------
 METHOD printdatax(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext,nangle) CLASS TCALCPRINT
 *-------------------------
-local alinceldax
+empty(nangle)
 empty(ncol)
 empty(data)
 empty(acolor)

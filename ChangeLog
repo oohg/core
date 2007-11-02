@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.431 2007-11-01 22:57:01 declan2005 Exp $
+ * $Id: ChangeLog,v 1.432 2007-11-02 10:37:20 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,7 +7,9 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-
+2007-11-02 05:35 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_print.prg
+    ! fixed warnings for xharbour.
 
 2007-11-01 17:55 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/c_activex.c
@@ -21,11 +23,12 @@
 2007-10-29 16:38 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_print.prg
   * source/h_report.prg
-    * added class TCalCprint for open office  thanks to Jose Miguel
+    + added class TCalCprint for open office  thanks to Jose Miguel
 
 2007-10-19 13:30 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_combo.prg
-    * converted to setget to assign displayvalue on DISPLAYEDIT clause
+    * converted displayvalue to setget in order to assign displayvalue 
+      on DISPLAYEDIT clause
 
 2007-10-19 9:12 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_combo.prg
