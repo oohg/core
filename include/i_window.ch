@@ -1,5 +1,5 @@
 /*
- * $Id: i_window.ch,v 1.28 2007-07-01 19:37:04 guerra000 Exp $
+ * $Id: i_window.ch,v 1.29 2007-11-03 19:52:51 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -381,3 +381,17 @@ SetProperty ( <(Arg1)> , <(Arg2)> , <Arg3> )
                       <{interactivecloseprocedure}>, <.focused.>, <.break.>, <grippertext>, <.rtl.>, ;
                       <.main.>, <.splitchild.>, <.child.>, <.modal.>, <.modalsize.>, <.mdi.>, <.internal.>, ;
                       <.mdichild.>, <.mdiclient.>, [ <subclass>() ], <.clientarea.>, <{RestoreProcedure}> )
+
+////////////////////////////////////////////////////////////
+// Set AutoAdjust
+////////////////////////////////////////////////////////////
+
+#xtranslate SET AUTOADJUST ON ;
+=> ;
+_OOHG_AutoAdjust := .T.
+
+#xtranslate SET AUTOADJUST OFF ;
+=> ;
+_OOHG_AutoAdjust := .F.
+
+////////////////////////////////////////////////////////////

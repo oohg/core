@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.150 2007-11-03 18:24:57 declan2005 Exp $
+ * $Id: h_windows.prg,v 1.151 2007-11-03 19:52:51 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -1273,7 +1273,6 @@ CLASS TForm FROM TWindow
    DATA OnMaximize     INIT nil
    DATA OnMinimize     INIT nil
    DATA OnRestore      INIT nil
-   DATA SetAutoadjust  INIT .F.
 
    DATA nVirtualHeight INIT 0
    DATA nVirtualWidth  INIT 0
@@ -1301,8 +1300,8 @@ CLASS TForm FROM TWindow
    METHOD BackColor           SETGET
    METHOD VirtualWidth        SETGET
    METHOD VirtualHeight       SETGET
-   
-   METHOD Autoadjust
+
+   METHOD AutoAdjust
 
    METHOD FocusedControl
    METHOD SizePos
@@ -1535,6 +1534,8 @@ Local Formhandle, aClientRect
    _OOHG_ThisObject    := Self
 
 Return Self
+
+
 
 *------------------------------------------------------------------------------*
 METHOD EndWindow() CLASS TForm
@@ -2335,7 +2336,7 @@ Local oCtrl
          EndIf
 
          ::DoEvent( ::OnSize, '' )
-         if ::setautoadjust
+         if _OOHG_AutoAdjust
             ::autoadjust()
          endif
 

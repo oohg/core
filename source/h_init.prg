@@ -1,5 +1,5 @@
 /*
- * $Id: h_init.prg,v 1.18 2007-05-11 04:42:14 guerra000 Exp $
+ * $Id: h_init.prg,v 1.19 2007-11-03 19:52:51 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -99,9 +99,9 @@ STATIC _OOHG_Messages := { {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {} }
 
 INIT PROCEDURE _OOHG_INIT()
 
-   Public _OOHG_AllVars[ 29 ]
+   Public _OOHG_AllVars[ 30 ]
 
-   _OOHG_Main        := nil
+    _OOHG_Main        := nil
 
    _OOHG_ThisType        := ''
    _OOHG_ThisForm := NIL
@@ -130,6 +130,8 @@ INIT PROCEDURE _OOHG_INIT()
    _OOHG_ActiveFrame := {}
 
    _OOHG_THISItemCellValue := Nil
+   
+   _OOHG_AutoAdjust := .F.
 
 	InitMessages()
 
