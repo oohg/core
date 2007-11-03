@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.149 2007-10-16 04:03:36 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.150 2007-11-03 18:24:57 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -1182,7 +1182,9 @@ METHOD Visible( lVisible ) CLASS TWindow
       Else
          HideWindow( ::hWnd )
       EndIf
-      ProcessMessages()
+
+       ProcessMessages()    //// ojo con esto
+
    EndIf
 Return ::lVisible
 
@@ -1253,6 +1255,9 @@ CLASS TForm FROM TWindow
    DATA nWidth         INIT 300
    DATA nHeight        INIT 300
    DATA lShowed        INIT .F.
+   
+   DATA nOldw          INIT 0
+   DATA nOLdh          INIT 0
 
    DATA OnRelease      INIT nil
    DATA OnInit         INIT nil
@@ -1268,6 +1273,7 @@ CLASS TForm FROM TWindow
    DATA OnMaximize     INIT nil
    DATA OnMinimize     INIT nil
    DATA OnRestore      INIT nil
+   DATA SetAutoadjust  INIT .F.
 
    DATA nVirtualHeight INIT 0
    DATA nVirtualWidth  INIT 0
@@ -1295,6 +1301,8 @@ CLASS TForm FROM TWindow
    METHOD BackColor           SETGET
    METHOD VirtualWidth        SETGET
    METHOD VirtualHeight       SETGET
+   
+   METHOD Autoadjust
 
    METHOD FocusedControl
    METHOD SizePos
@@ -1343,6 +1351,7 @@ METHOD Define( FormName, Caption, x, y, w, h, nominimize, nomaximize, nosize, ;
 *------------------------------------------------------------------------------*
 Local nStyle := 0, nStyleEx := 0
 Local hParent
+
 
    If HB_IsLogical( child ) .AND. child
       ::Type := "C"
@@ -1536,7 +1545,9 @@ LOCAL nPos
       _OOHG_DeleteArrayItem( _OOHG_ActiveForm, nPos )
    Else
       // TODO: Window structure already closed
-	EndIf
+   EndIf
+   ::nOldw := ::width
+   ::nOldh := ::height
    _PopEventInfo()
 Return Nil
 
@@ -1588,6 +1599,7 @@ METHOD Visible( lVisible ) CLASS TForm
       ENDIF
    ENDIF
 Return ::lVisible
+
 
 *-----------------------------------------------------------------------------*
 METHOD Activate( lNoStop, oWndLoop ) CLASS TForm
@@ -1753,7 +1765,7 @@ Return GetWindowHeight( ::hWnd )
 *------------------------------------------------------------------------------*
 METHOD Width( nWidth ) CLASS TForm
 *------------------------------------------------------------------------------*
-   if HB_IsNumeric( nWidth )
+   if HB_IsNumeric( nWidth )  
       ::SizePos( , , nWidth )
    endif
 Return GetWindowWidth( ::hWnd )
@@ -1816,6 +1828,64 @@ METHOD Cursor( uValue ) CLASS TForm
       SetWindowCursor( ::hWnd, uValue )
    ENDIF
 Return nil
+
+*-------------------------------------------------
+method autoadjust() class tform
+*-----------------------------------
+local i,l,nwidth,nheight,ocontrol,ctype,newrow,newcol,newwidth,newheight, newfontsize
+
+l:=len(::acontrols)
+
+if getdesktopwidth() < ::nwidth
+   nwidth:= getdesktopwidth()
+else
+   nwidth:= ::width
+endif
+if getdesktopheight() < ::nheight
+   nheight:= getdesktopheight()
+else
+   nheight:= ::height
+endif
+
+::hide()
+
+for i:=1 to l
+
+   ocontrol:=::acontrols[i]
+   ctype:="-"+ocontrol:type+"-"
+
+   if !(ctype $ "-SCROLLBAR-SCROLLBUTTON-MESSAGEBAR-MENU-TIMER-MENUITEM-")
+
+      newrow:=ocontrol:row * nheight / ::nOLdh
+      newcol:=ocontrol:col * nwidth / ::nOLdw
+
+      newwidth:=ocontrol:width * nwidth / ::nOLdw
+      newheight:=ocontrol:height * nwidth / ::nOLdw
+
+      newfontsize:=ocontrol:fontsize * nheight / ::nOLdh
+
+//// posicion nueva
+      ocontrol:row:=newrow
+      ocontrol:col:=newcol
+
+///// tama¤o nuevo
+      ocontrol:width:=newwidth
+      ocontrol:height:=newheight
+
+///// tama¤o letra
+///if ctype!="COMBO
+      ocontrol:fontsize:=newfontsize
+////endif
+
+   endif
+next i
+
+::nOLdh := nheight
+::nOLdw := nwidth
+
+::show()
+
+return nil
 
 #pragma BEGINDUMP
 HB_FUNC_STATIC( TFORM_BACKCOLOR )
@@ -2265,6 +2335,9 @@ Local oCtrl
          EndIf
 
          ::DoEvent( ::OnSize, '' )
+         if ::setautoadjust
+            ::autoadjust()
+         endif
 
          // AEVAL( ::aControls, { |o| o:Events_Size() } )
          AEVAL( ::aControls, { |o| If( o:Container == nil, o:Events_Size(), ) } )

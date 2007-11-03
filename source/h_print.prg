@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.80 2007-11-02 10:37:21 declan2005 Exp $
+* $Id: h_print.prg,v 1.81 2007-11-03 18:24:57 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -1399,17 +1399,6 @@ METHOD initx() CLASS TDOSPRINT
 local i
 ::impreview:=.F.
 ::cprintlibrary:="DOSPRINT"
-////////////////////
-PUBLIC hbprn
-INIT PRINTSYS
-GET PRINTERS TO ::aprinters
-GET PORTS TO ::aports
-RELEASE PRINTSYS
-RELEASE HBPRN
-for I:=1 to len (::aports)
-  automsgbox(::aprinters[i]+" - "+::aports[i])
-next i
-//////////////////
 RETURN self
 
 

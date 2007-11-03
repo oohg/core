@@ -1,11 +1,23 @@
 /*
- * $Id: ChangeLog,v 1.432 2007-11-02 10:37:20 declan2005 Exp $
+ * $Id: ChangeLog,v 1.433 2007-11-03 18:24:56 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+
+
+2007-11-03 13:20 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_print.prg
+    * removed unused code.
+  * source/h_label.prg
+    - removed redrawwindow() from autosize ::method()
+  * source/h_windows.prg
+    + added setautoadjust switch (.T./.F.) and ::autoadjust()  method
+    the first set autoadjust automatic on resize forms
+    the second is the self method manual.
 
 2007-11-02 05:35 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_print.prg

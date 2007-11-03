@@ -1,5 +1,5 @@
 /*
- * $Id: h_label.prg,v 1.22 2007-10-08 21:19:04 declan2005 Exp $
+ * $Id: h_label.prg,v 1.23 2007-11-03 18:24:57 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -203,7 +203,6 @@ Local cCaption
       If lValue
          cCaption := GetWindowText( ::hWnd )
          ::SizePos( , , GetTextWidth( NIL, cCaption, ::FontHandle ) + ::IconWidth, GetTextHeight( NIL, cCaption, ::FontHandle ) )
-         RedrawWindow( ::hWnd )
       EndIf
    EndIf
 Return ::lAutoSize
