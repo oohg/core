@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.151 2007-11-03 19:52:51 declan2005 Exp $
+ * $Id: h_windows.prg,v 1.152 2007-11-04 15:43:34 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -1255,7 +1255,7 @@ CLASS TForm FROM TWindow
    DATA nWidth         INIT 300
    DATA nHeight        INIT 300
    DATA lShowed        INIT .F.
-   
+
    DATA nOldw          INIT 0
    DATA nOLdh          INIT 0
 
@@ -1548,7 +1548,7 @@ LOCAL nPos
       // TODO: Window structure already closed
    EndIf
    ::nOldw := ::width
-   ::nOldh := ::height
+   ::nOldh := :: height
    _PopEventInfo()
 Return Nil
 
@@ -1831,62 +1831,54 @@ METHOD Cursor( uValue ) CLASS TForm
 Return nil
 
 *-------------------------------------------------
-method autoadjust() class tform
+METHOD AutoAdjust() CLASS TFORM
 *-----------------------------------
-local i,l,nwidth,nheight,ocontrol,ctype,newrow,newcol,newwidth,newheight, newfontsize
+LOCAL i,l,nWidth,nHeight,oControl,lSwvisible,nDivw,nDivh
 
-l:=len(::acontrols)
+IF GetDesktopWidth() < ::nWidth
+   nWidth:= GetDesktopWidth()
+ELSE
+   nWidth:= ::width
+ENDIF
 
-if getdesktopwidth() < ::nwidth
-   nwidth:= getdesktopwidth()
-else
-   nwidth:= ::width
-endif
-if getdesktopheight() < ::nheight
-   nheight:= getdesktopheight()
-else
-   nheight:= ::height
-endif
+IF GetDesktopHeight() < ::nHeight
+   nHeight:= GetdeskTopHeight()
+ELSE
+   nHeight:= ::height
+ENDIF
 
-::hide()
+lSwvisible:=.T.
+IF !::visible
+    lSwvisible := .F.
+ELSE
+  ::hide()
+ENDIF
 
-for i:=1 to l
+l:=len(::aControls)
 
-   ocontrol:=::acontrols[i]
-   ctype:="-"+ocontrol:type+"-"
+FOR i:=1 TO l
 
-   if !(ctype $ "-SCROLLBAR-SCROLLBUTTON-MESSAGEBAR-MENU-TIMER-MENUITEM-")
+   oControl:=::aControls[i]
 
-      newrow:=ocontrol:row * nheight / ::nOLdh
-      newcol:=ocontrol:col * nwidth / ::nOLdw
+   nDivw:=nWidth/::nOldw
+   nDivh:=nHeight/::nOldh
 
-      newwidth:=ocontrol:width * nwidth / ::nOLdw
-      newheight:=ocontrol:height * nwidth / ::nOLdw
+   IF oControl:lAdjust
+////  posicion nueva
+      ocontrol:sizepos( oControl:row * nDivh ,oControl:col * nDivw , oControl:width * nDivw ,oControl:height * nDivh )
+///// tamaño letra nuevo tentativo aun pensandolo...
+      oControl:fontsize:=oControl:fontsize * nDivw
+   ENDIF
+NEXT i
 
-      newfontsize:=ocontrol:fontsize * nheight / ::nOLdh
+::nOLdw := nWidth
+::nOldh := nHeight
 
-//// posicion nueva
-      ocontrol:row:=newrow
-      ocontrol:col:=newcol
+IF lSwvisible
+   ::show()
+ENDIF
 
-///// tama¤o nuevo
-      ocontrol:width:=newwidth
-      ocontrol:height:=newheight
-
-///// tama¤o letra
-///if ctype!="COMBO
-      ocontrol:fontsize:=newfontsize
-////endif
-
-   endif
-next i
-
-::nOLdh := nheight
-::nOLdw := nwidth
-
-::show()
-
-return nil
+RETURN nil
 
 #pragma BEGINDUMP
 HB_FUNC_STATIC( TFORM_BACKCOLOR )

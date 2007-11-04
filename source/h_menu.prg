@@ -1,5 +1,5 @@
 /*
- * $Id: h_menu.prg,v 1.22 2007-10-08 21:19:04 declan2005 Exp $
+ * $Id: h_menu.prg,v 1.23 2007-11-04 15:43:34 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -100,6 +100,8 @@ STATIC _OOHG_xMenuActive := {}
 CLASS TMenu FROM TControl
    DATA Type      INIT "MENU" READONLY
    DATA lMain     INIT .F.
+   
+   DATA ladjust  INIT .F.
 
    METHOD Define
    METHOD Activate
@@ -247,6 +249,8 @@ CLASS TMenuItem FROM TControl
    DATA Type      INIT "MENUITEM" READONLY
    DATA xId       INIT 0
    DATA lMain     INIT .F.
+   
+   DATA ladjust  INIT .F.
 
    METHOD DefinePopUp
    METHOD DefineItem

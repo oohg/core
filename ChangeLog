@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.435 2007-11-03 19:52:51 declan2005 Exp $
+ * $Id: ChangeLog,v 1.436 2007-11-04 15:43:34 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,6 +7,17 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+
+2007-11-04 8:17 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_windows.prg
+  * source/h_controlmisc.prg
+  * source/h_hstatus.prg
+  * source/h_scrollbutton.prg
+  * source/h_hmenu.prg
+  * source/h_scroll.prg
+  * source/h_toolbar.prg
+    * optimizing ::autoadjust()
+   
 
 2007-11-03 14:47 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * include/i_var.ch

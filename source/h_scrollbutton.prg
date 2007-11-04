@@ -1,5 +1,5 @@
 /*
- * $Id: h_scrollbutton.prg,v 1.1 2006-05-30 02:25:40 guerra000 Exp $
+ * $Id: h_scrollbutton.prg,v 1.2 2007-11-04 15:43:34 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -97,6 +97,8 @@
 
 CLASS TScrollButton FROM TControl
    DATA Type            INIT "SCROLLBUTTON" READONLY
+   
+   DATA ladjust  INIT .F.
 
    METHOD Define
 ENDCLASS

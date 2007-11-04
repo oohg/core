@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.81 2007-10-11 14:20:07 declan2005 Exp $
+ * $Id: h_controlmisc.prg,v 1.82 2007-11-04 15:43:34 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -343,7 +343,7 @@ Local oInputWindow, aResult
 
 		EndIf
 
-		if HB_IsMemo ( aValues[i] ) 
+		if HB_IsMemo ( aValues[i] )
 			e++
 		EndIf
 
@@ -1210,6 +1210,8 @@ CLASS TControl FROM TWindow
    DATA postBlock   INIT nil
    DATA lCancel     INIT .F.
 
+   DATA ladjust     INIT .T.
+
    METHOD Row       SETGET
    METHOD Col       SETGET
    METHOD Width     SETGET
@@ -1416,7 +1418,9 @@ EMPTY(cName)
    ::SethWnd( hWnd )
    ::Active := .T.
 
+
    ::Parent:AddControl( Self )
+
 
    IF ::Container != nil
       ::Container:AddControl( Self )
@@ -1592,7 +1596,7 @@ METHOD SizePos( Row, Col, Width, Height ) CLASS TControl
    IF HB_IsNumeric( Width )
       ::nWidth := Width
    ENDIF
-   IF HB_IsNumeric( Height ) 
+   IF HB_IsNumeric( Height )
       ::nHeight := Height
    ENDIF
 Return MoveWindow( ::hWnd, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight , .T. )

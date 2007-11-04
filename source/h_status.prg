@@ -1,5 +1,5 @@
 /*
- * $Id: h_status.prg,v 1.24 2007-08-01 05:27:36 guerra000 Exp $
+ * $Id: h_status.prg,v 1.25 2007-11-04 15:43:34 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -102,6 +102,8 @@ CLASS TMessageBar FROM TControl
    DATA aClicks   INIT nil
    DATA aWidths   INIT nil
    DATA lAutoAdjust   INIT .T.
+
+   DATA ladjust  INIT .F.  /// redimensionar
 
    METHOD Define
    METHOD EndStatus           BLOCK { || _EndMessageBar() }

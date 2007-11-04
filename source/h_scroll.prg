@@ -1,5 +1,5 @@
 /*
- * $Id: h_scroll.prg,v 1.13 2007-10-05 22:17:31 declan2005 Exp $
+ * $Id: h_scroll.prg,v 1.14 2007-11-04 15:43:34 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -74,6 +74,8 @@ CLASS TScrollBar FROM TControl
    DATA nPageSkip    INIT 0
    DATA nOrient      INIT SB_VERT
    DATA lAutoMove    INIT .F.
+   
+   DATA ladjust  INIT .F.
 
    METHOD Define
    METHOD Value               SETGET

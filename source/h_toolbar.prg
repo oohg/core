@@ -1,5 +1,5 @@
 /*
- * $Id: h_toolbar.prg,v 1.20 2007-06-09 22:55:15 guerra000 Exp $
+ * $Id: h_toolbar.prg,v 1.21 2007-11-04 15:43:34 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -99,6 +99,8 @@ STATIC _OOHG_ActiveToolBar := NIL    // Active toolbar
 
 CLASS TToolBar FROM TControl
    DATA Type      INIT "TOOLBAR" READONLY
+
+   DATA lAdjust   INIT .F.
 
    METHOD Define
    METHOD Events_Size
@@ -254,6 +256,8 @@ RETURN ::Super:Events( hWnd, nMsg, wParam, lParam )
 CLASS TToolButton FROM TControl
    DATA Type      INIT "TOOLBUTTON" READONLY
    DATA Position  INIT 0
+   
+   DATA lAdjust   INIT .F.
 
    METHOD Define
    METHOD Value      SETGET
