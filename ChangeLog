@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog,v 1.436 2007-11-04 15:43:34 declan2005 Exp $
+ * $Id: ChangeLog,v 1.437 2007-11-04 21:32:57 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-11-04 8:17 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_windows.prg
+    * added monitoring WM_EXITSIZEMOVE windows message to control end resizewindows
+      with mouse in order to ::autoadjust()
 
 
 2007-11-04 8:17 UTC-0500 Ciro Vargas C. <cvc@oohg.org>

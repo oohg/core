@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.152 2007-11-04 15:43:34 declan2005 Exp $
+ * $Id: h_windows.prg,v 1.153 2007-11-04 21:32:57 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -2316,25 +2316,37 @@ Local oCtrl
         ***********************************************************************
 	case nMsg == WM_SIZE
         ***********************************************************************
-      ValidateScrolls( Self, .T. )
-
+       ValidateScrolls( Self, .T. )
       If ::Active
          If wParam == SIZE_MAXIMIZED
             ::DoEvent( ::OnMaximize, '' )
+            if _OOHG_AutoAdjust
+               ::autoadjust()
+            endif
          ElseIf wParam == SIZE_MINIMIZED
             ::DoEvent( ::OnMinimize, '' )
          ElseIf wParam == SIZE_RESTORED
             ::DoEvent( ::OnRestore, '' )
+            if _OOHG_AutoAdjust
+               ::autoadjust()
+            endif
          EndIf
 
          ::DoEvent( ::OnSize, '' )
-         if _OOHG_AutoAdjust
-            ::autoadjust()
-         endif
 
          // AEVAL( ::aControls, { |o| o:Events_Size() } )
          AEVAL( ::aControls, { |o| If( o:Container == nil, o:Events_Size(), ) } )
       EndIf
+
+      ***********************************************************************
+	case nMsg ==  WM_EXITSIZEMOVE
+      ***********************************************************************
+       If ::Active
+         if _OOHG_AutoAdjust
+            ::autoadjust()
+         endif
+       Endif
+
 
         ***********************************************************************
 	case nMsg == WM_CLOSE
