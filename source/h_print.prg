@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.81 2007-11-03 18:24:57 declan2005 Exp $
+* $Id: h_print.prg,v 1.82 2007-11-04 20:09:21 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -1396,7 +1396,6 @@ ENDCLASS
 *-------------------------
 METHOD initx() CLASS TDOSPRINT
 *-------------------------
-local i
 ::impreview:=.F.
 ::cprintlibrary:="DOSPRINT"
 RETURN self
