@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.153 2007-11-04 21:32:57 declan2005 Exp $
+ * $Id: h_windows.prg,v 1.154 2007-11-05 04:36:06 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -266,6 +266,9 @@ CLASS TWindow
    METHOD Hide                BLOCK { |Self| ::Visible := .F. }
    METHOD ForceHide           BLOCK { |Self| HideWindow( ::hWnd ) }
    METHOD ReDraw              BLOCK { |Self| RedrawWindow( ::hWnd ) }
+   METHOD GetTextWidth
+   METHOD GetTextHeight
+   METHOD GetMaxCharsInWidth
 
    METHOD ContainerVisible    BLOCK { |Self| ::lVisible .AND. IF( ::Container != NIL, ::Container:ContainerVisible, .T. ) }
    METHOD ContainerReleasing  BLOCK { |Self| ::lReleasing .OR. IF( ::Container != NIL, ::Container:ContainerReleasing, IF( ::Parent != NIL, ::Parent:ContainerReleasing, .F. ) ) }
@@ -1094,7 +1097,12 @@ Return uRet
 *-----------------------------------------------------------------------------*
 METHOD SetKey( nKey, nFlags, bAction ) CLASS TWindow
 *-----------------------------------------------------------------------------*
-Return _OOHG_SetKey( ::aKeys, nKey, nFlags, bAction )
+Local bCode
+   bCode := _OOHG_SetKey( ::aKeys, nKey, nFlags )
+   If PCOUNT() > 2
+      _OOHG_SetKey( ::aKeys, nKey, nFlags, bAction )
+   EndIf
+Return bCode
 
 *-----------------------------------------------------------------------------*
 METHOD AcceleratorKey( nKey, nFlags, bAction ) CLASS TWindow
@@ -1187,6 +1195,43 @@ METHOD Visible( lVisible ) CLASS TWindow
 
    EndIf
 Return ::lVisible
+
+*------------------------------------------------------------------------------*
+METHOD GetTextWidth( cString ) CLASS TWindow
+*------------------------------------------------------------------------------*
+Return GetTextWidth( nil, cString, ::FontHandle )
+
+*------------------------------------------------------------------------------*
+METHOD GetTextHeight( cString ) CLASS TWindow
+*------------------------------------------------------------------------------*
+Return GetTextHeight( nil, cString, ::FontHandle )
+
+*------------------------------------------------------------------------------*
+METHOD GetMaxCharsInWidth( cString, nWidth ) CLASS TWindow
+*------------------------------------------------------------------------------*
+Local nChars, nMin, nMax, nSize
+   If ! VALTYPE( cString ) $ "CM" .OR. LEN( cString ) == 0 .OR. ! HB_ISNUMERIC( nWidth ) .OR. nWidth <= 0
+      nChars := 0
+   Else
+      nSize := ::GetTextWidth( cString )
+      nMax := LEN( cString )
+      If nSize <= nWidth
+         nChars := nMax
+      Else
+         nMin := 0
+         Do While nMax != nMin + 1
+            nChars := INT( ( nMin + nMax ) / 2 )
+            nSize := ::GetTextWidth( LEFT( cString, nChars ) )
+            If nSize <= nWidth
+               nMin := nChars
+            Else
+               nMax := nChars
+            EndIf
+         EndDo
+         nChars := nMin
+      EndIf
+   EndIf
+Return nChars
 
 *------------------------------------------------------------------------------*
 FUNCTION _OOHG_AddFrame( oFrame )
@@ -1766,7 +1811,7 @@ Return GetWindowHeight( ::hWnd )
 *------------------------------------------------------------------------------*
 METHOD Width( nWidth ) CLASS TForm
 *------------------------------------------------------------------------------*
-   if HB_IsNumeric( nWidth )  
+   if HB_IsNumeric( nWidth )
       ::SizePos( , , nWidth )
    endif
 Return GetWindowWidth( ::hWnd )
@@ -3517,7 +3562,25 @@ Local nRet := _OOHG_InteractiveClose
 Return nRet
 
 Function SetAppHotKey( nKey, nFlags, bAction )
-Return _OOHG_SetKey( _OOHG_HotKeys, nKey, nFlags, bAction )
+Local bCode
+   bCode := _OOHG_SetKey( _OOHG_HotKeys, nKey, nFlags )
+   If PCOUNT() > 2
+      _OOHG_SetKey( _OOHG_HotKeys, nKey, nFlags, bAction )
+   EndIf
+Return bCode
+
+Function SetAppHotKeyByName( cKey, bAction )
+Local aKey, bCode
+   aKey := _DetermineKey( cKey )
+   If aKey[ 1 ] != 0
+      bCode := _OOHG_SetKey( _OOHG_HotKeys, aKey[ 1 ], aKey[ 2 ] )
+      If PCOUNT() > 1
+         _OOHG_SetKey( _OOHG_HotKeys, aKey[ 1 ], aKey[ 2 ], bAction )
+      EndIf
+   Else
+      bCode := NIL
+   EndIf
+Return bCode
 
 Function _OOHG_MacroCall( cMacro )
 Local uRet, oError
@@ -3680,7 +3743,7 @@ Local nPos, uRet := nil
    If nPos > 0
       uRet := aKeys[ nPos ][ HOTKEY_ACTION ]
    EndIf
-   If PCOUNT() > 2
+   If PCOUNT() > 3
       If HB_IsBlock( bAction )
          If !HB_IsNumeric( nId )
             nId := 0

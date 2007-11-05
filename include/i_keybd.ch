@@ -1,5 +1,5 @@
 /*
- * $Id: i_keybd.ch,v 1.6 2007-10-07 22:52:57 guerra000 Exp $
+ * $Id: i_keybd.ch,v 1.7 2007-11-05 04:36:06 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -307,6 +307,24 @@ _OOHG_ExtendedNavigation := .F.
 #xcommand STORE ACCELERATOR <key> OF <parent> TO <baction> ;
           => ;
           <baction> := _DefineAccelerator( <(parent)>, <(key)> )
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+// Application-wide hot keys commands
+///////////////////////////////////////////////////////////////////////////////
+
+#xcommand SET APPLICATION KEY <key> ACTION <action> ;
+          => ;
+          SetAppHotKeyByName( <key>, <{action}> )
+
+#xcommand RELEASE APPLICATION KEY <key> ;
+          => ;
+          SetAppHotKeyByName( <key>, nil )
+
+#xcommand STORE APPLICATION KEY <key> TO <baction> ;
+          => ;
+          <baction> := SetAppHotKeyByName( <key> )
 
 
 

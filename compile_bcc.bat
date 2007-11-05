@@ -1,10 +1,10 @@
 @echo off
 rem
-rem $Id: compile_bcc.bat,v 1.4 2007-07-27 16:57:09 declan2005 Exp $
+rem $Id: compile_bcc.bat,v 1.5 2007-11-05 04:36:05 guerra000 Exp $
 rem
 cls
 
-Rem Set Paths 
+Rem Set Paths
 
 IF "%HG_BCC%"==""  SET HG_BCC=c:\borland\bcc55
 IF "%HG_ROOT%"=="" SET HG_ROOT=c:\oohg
@@ -33,7 +33,7 @@ ECHO OPTIONS NORUNATSTARTUP > INIT.CLD
 
 if errorlevel 1 goto exit1
 
-%HG_BCC%\bin\bcc32 -c -O2 -tW -M -I%HG_HRB%\include;%HG_BCC%\include; -L%HG_BCC%\lib; %1.c
+%HG_BCC%\bin\bcc32 -c -O2 -tW -M -I%HG_HRB%\include;%HG_BCC%\include;%HG_ROOT%\include; -L%HG_BCC%\lib; %1.c
 if errorlevel 1 goto exit2
 
 if exist %1.rc %HG_BCC%\bin\brc32 -r %1.rc

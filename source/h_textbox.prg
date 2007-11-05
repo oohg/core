@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.42 2007-10-15 01:23:32 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.43 2007-11-05 04:36:06 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -316,12 +316,14 @@ CLASS TTextPicture FROM TText
    DATA DataType       INIT "."
    DATA lInsert        INIT .T.
    DATA lFocused       INIT .F.
+   DATA xUndo          INIT nil
 
    METHOD Define
 
    METHOD Value       SETGET
    METHOD Picture     SETGET
    METHOD Events
+   METHOD KeyPressed
    METHOD Events_Command
 ENDCLASS
 
@@ -601,7 +603,7 @@ Return cRet
 #include "hbstack.h"
 #include <windows.h>
 #include <commctrl.h>
-#include "../include/oohg.h"
+#include "oohg.h"
 #define s_Super s_TText
 
 // -----------------------------------------------------------------------------
@@ -620,6 +622,7 @@ HB_FUNC_STATIC( TTEXTPICTURE_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lP
       case WM_PASTE:
       case WM_KEYDOWN:
       case WM_LBUTTONDOWN:
+      case WM_UNDO:
          if( ( GetWindowLong( hWnd, GWL_STYLE ) & ES_READONLY ) == 0 )
          {
             HB_FUNCNAME( TTEXTPICTURE_EVENTS2 )();
@@ -693,11 +696,35 @@ Local aValidMask := ::ValidMask
    ElseIf nMsg == WM_LBUTTONDOWN
       If ! ::lFocused
          ::SetFocus()
+         ::xUndo := ::Value
          Return 1
       EndIf
 
+   ElseIf nMsg == WM_UNDO .OR. ;
+          ( nMsg == WM_KEYDOWN .AND. wParam == VK_Z .AND. GetKeyFlagState() == MOD_CONTROL )
+      cText := ::Value
+      ::Value := ::xUndo
+      ::xUndo := cText
+      If ::lFocused
+         ::SetFocus()
+      EndIf
+      Return 1
+
    Endif
 Return ::Super:Events( hWnd, nMsg, wParam, lParam )
+
+*------------------------------------------------------------------------------*
+METHOD KeyPressed( cString, nPos ) CLASS TTextPicture
+*------------------------------------------------------------------------------*
+   If ! VALTYPE( cString ) $ "CM"
+      cString := ""
+   EndIf
+   If ! HB_ISNUMERIC( nPos ) .OR. nPos < -2
+      nPos := ::CaretPos
+   ElseIf nPos < 0
+      nPos := LEN( ::Caption )
+   EndIf
+RETURN TTextPicture_Events2_String( Self, ::Caption, nPos, cString, ::ValidMask, ::PictureMask, ::lInsert )
 
 STATIC FUNCTION TTextPicture_Events2_Key( Self, cText, nPos, cChar, aValidMask, cPictureMask, lInsert )
 Local lChange := .F., nPos1, cMask
@@ -842,10 +869,14 @@ Local cPictureMask, aValidMask
       ::lFocused := .T.
       ::lSetting := .T.
       ::Caption := Transform( cText, ::PictureFun + ::PictureMask )
+      ::xUndo := ::Value
 
    Endif
 
 Return ::Super:Events_Command( wParam )
+
+
+
 
 
 *-----------------------------------------------------------------------------*

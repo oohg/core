@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: makelib_mingw.bat,v 1.8 2007-09-13 03:44:31 guerra000 Exp $
+rem $Id: makelib_mingw.bat,v 1.9 2007-11-05 04:36:06 guerra000 Exp $
 rem
 cls
 
@@ -19,7 +19,7 @@ IF EXIST %hg_root%\lib\libminiprint.a del %hg_root%\lib\libminiprint.a
 call common_make "%hg_hrb%\lib\libtip.a"
 if errorlevel 1 goto EXIT1
 
-SET OOHG_X_FLAGS=-Wall -mno-cygwin -O3 -c -I%hg_hrb%\include -I%hg_mgw%\include -L%hg_hrb%\lib -L%hg_mgw%\lib
+SET OOHG_X_FLAGS=-Wall -mno-cygwin -O3 -c -I%hg_hrb%\include -I%hg_mgw%\include -I%hg_root%\include -L%hg_hrb%\lib -L%hg_mgw%\lib
 
 SET _PATH2=%PATH%
 SET PATH=%hg_mgw%\bin;%PATH%

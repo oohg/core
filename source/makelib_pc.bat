@@ -1,10 +1,10 @@
 @echo off
 rem
-rem $Id: makelib_pc.bat,v 1.1 2007-01-01 20:52:13 guerra000 Exp $
+rem $Id: makelib_pc.bat,v 1.2 2007-11-05 04:36:06 guerra000 Exp $
 rem
 cls
 
-Rem Set Paths 
+Rem Set Paths
 
 IF "%HG_PC%"==""   SET HG_PC=c:\pellesc
 IF "%HG_ROOT%"=="" SET HG_ROOT=c:\oohg
@@ -19,9 +19,9 @@ IF EXIST %hg_root%\lib\miniprint.lib del %hg_root%\lib\miniprint.lib
 call common_make "%hg_hrb%\lib\tip.lib"
 if errorlevel 1 goto EXIT1
 
-SET OOHG_X_FLAGS= /Ze /Zx /Go /Tx86-coff /I%hg_pc%\include /I%hg_pc%\include\Win /I%hg_hrb%\include /D__WIN32__
+SET OOHG_X_FLAGS= /Ze /Zx /Go /Tx86-coff /I%hg_pc%\include /I%hg_pc%\include\Win /I%hg_hrb%\include /I%hg_root%\include /D__WIN32__
 
-for %%a in (%HG_FILES_PRG% %HG_FILES_C%) do %hg_pc%\bin\pocc %OOHG_X_FLAGS% %%a.c
+for %%a in (%HG_FILES_PRG% %HG_FILES_C%) do if not errorlevel 1 %hg_pc%\bin\pocc %OOHG_X_FLAGS% %%a.c
 if errorlevel 1 goto EXIT2
 if exist winprint.c  %hg_pc%\bin\pocc %OOHG_X_FLAGS% winprint.c
 if errorlevel 1 goto EXIT2

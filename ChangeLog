@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.437 2007-11-04 21:32:57 declan2005 Exp $
+ * $Id: ChangeLog,v 1.438 2007-11-05 04:36:05 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,22 +7,41 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2007-11-04 8:17 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+2007-11-04 22:34 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/c_activex.c
+    * Removed unused static variable.
+  * source/h_windows.prg
+    + TWindow:GetTextWidth and TWindow:GetTextHeight methods added.
+    + TWindow:GetMaxCharsInWidth() method added. Returns how many
+      characters fits on a specified width (according to control's
+      font).
+  * ./compile_bcc.bat
+  * ./compile_pc.bat
+  * source/makelib_bcc.bat
+  * source/makelib_mingw.bat
+  * source/makelib_pc.bat
+    + Include search to oohg\include at C level added.
+  * source/h_textbox.prg
+    + CTRL-Z functionality added as UNDO for TTextPicture.
+  * include/i_keybd.ch
+  * source/h_windows.prg
+    + SET APPLICATION KEY (application-wide hot key) command added.
+    ! Fixed STORE KEY command (it was disabling hot key).
+
+2007-11-04 08:17 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_windows.prg
     * added monitoring WM_EXITSIZEMOVE windows message to control end resizewindows
       with mouse in order to ::autoadjust()
 
-
-2007-11-04 8:17 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+2007-11-04 08:17 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_windows.prg
   * source/h_controlmisc.prg
-  * source/h_hstatus.prg
+  * source/h_status.prg
   * source/h_scrollbutton.prg
   * source/h_hmenu.prg
   * source/h_scroll.prg
   * source/h_toolbar.prg
     * optimizing ::autoadjust()
-   
 
 2007-11-03 14:47 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * include/i_var.ch
@@ -31,7 +50,6 @@
   * source/h_init.prg
    - removed switch setautoadjust
    + added new setting SET AUTOADJUST ON/OFF
-
 
 2007-11-03 13:20 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_print.prg
@@ -64,7 +82,7 @@
 
 2007-10-19 13:30 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_combo.prg
-    * converted displayvalue to setget in order to assign displayvalue 
+    * converted displayvalue to setget in order to assign displayvalue
       on DISPLAYEDIT clause
 
 2007-10-19 9:12 UTC-0500 Ciro Vargas C. <cvc@oohg.org>

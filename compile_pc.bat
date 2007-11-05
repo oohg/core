@@ -1,10 +1,10 @@
 @echo off
 rem
-rem $Id: compile_pc.bat,v 1.6 2007-10-14 22:43:28 guerra000 Exp $
+rem $Id: compile_pc.bat,v 1.7 2007-11-05 04:36:05 guerra000 Exp $
 rem
 cls
 
-Rem Set Paths 
+Rem Set Paths
 
 IF "%HG_PC%"==""   SET HG_PC=c:\pellesc
 IF "%HG_ROOT%"=="" SET HG_ROOT=c:\oohg
@@ -33,7 +33,7 @@ ECHO OPTIONS NORUNATSTARTUP > INIT.CLD
 
 if errorlevel 1 goto exit1
 
-%HG_PC%\bin\pocc /Ze /Zx /Go /Tx86-coff /I%hg_pc%\include /I%hg_pc%\include\Win /I%hg_hrb%\include /D__WIN32__ %1.c
+%HG_PC%\bin\pocc /Ze /Zx /Go /Tx86-coff /I%hg_pc%\include /I%hg_pc%\include\Win /I%hg_hrb%\include /I%hg_root%\include /D__WIN32__ %1.c
 
 if errorlevel 1 goto exit2
 
