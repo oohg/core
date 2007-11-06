@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.440 2007-11-06 11:23:30 declan2005 Exp $
+ * $Id: ChangeLog,v 1.441 2007-11-06 12:31:05 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -24,7 +24,7 @@
     + Added SET ADJUSTFONT on/off
     + Added SET ADJUSTWIDTH on/off 
        to setting globals autoadjust params
-    + added ::getwindowstate() method to know if window is maximized/minimized/normal 
+    + added Twindow:getwindowstate() method to know if window is maximized/minimized/normal 
     + added iswindowmaximized() at C level
     + added iswindowminimized()  at C level
 
@@ -77,7 +77,7 @@
   * source/h_print.prg
     * removed unused code.
   * source/h_label.prg
-    - removed redrawwindow() from autosize ::method()
+    - removed redrawwindow() from ::autosize() method
   * source/h_windows.prg
     + added setautoadjust switch (.T./.F.) and ::autoadjust()  method
     the first set autoadjust automatic on resize forms
