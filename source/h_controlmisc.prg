@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.82 2007-11-04 15:43:34 declan2005 Exp $
+ * $Id: h_controlmisc.prg,v 1.83 2007-11-06 02:13:18 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -1187,9 +1187,6 @@ Function _GetCaption( ControlName , ParentForm )
 Return GetWindowText( GetControlObject( ControlName, ParentForm ):hWnd )
 
 
-
-
-
 *------------------------------------------------------------------------------*
 CLASS TControl FROM TWindow
 *------------------------------------------------------------------------------*
@@ -1210,7 +1207,11 @@ CLASS TControl FROM TWindow
    DATA postBlock   INIT nil
    DATA lCancel     INIT .F.
 
-   DATA ladjust     INIT .T.
+
+   DATA lAdjust     INIT .T.
+   DATA lFixFont    INIT .F.
+   DATA lfixwidth   INIT .F.
+
 
    METHOD Row       SETGET
    METHOD Col       SETGET
@@ -1579,7 +1580,7 @@ Return ::Strikeout
 *-----------------------------------------------------------------------------*
 METHOD OnEnter( bOnEnter ) CLASS TControl
 *-----------------------------------------------------------------------------*
-   If HB_IsBlock( bOnEnter ) 
+   If HB_IsBlock( bOnEnter )
       ::OnDblClick := bOnEnter
    EndIf
 Return ::OnDblClick

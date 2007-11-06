@@ -1,11 +1,28 @@
 /*
- * $Id: ChangeLog,v 1.438 2007-11-05 04:36:05 guerra000 Exp $
+ * $Id: ChangeLog,v 1.439 2007-11-06 02:13:18 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-11-05 21:12 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_windows.prg
+  * source/h_controlmisc.prg
+  * source/h_toolbar.prg
+  * source/h_init.prg
+  * source/c_windows.c
+  * include/i_windefs.ch
+  * include/i_window.ch
+  * include/i_ivar.ch
+    + Added SET ADJUSTFONT on/off
+    + Added SET ADJUSTWIDTH on/off 
+       to setting globals autoadjust params
+    + added ::getwindowstate() method to know if window is maximized/minimized/normal 
+    + added iswindowmaximized() at C level
+    + added iswindowminimized()  at C level
+
 
 2007-11-04 22:34 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source/c_activex.c

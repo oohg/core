@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.53 2007-09-10 05:05:20 guerra000 Exp $
+ * $Id: c_windows.c,v 1.54 2007-11-06 02:13:18 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -893,6 +893,18 @@ HB_FUNC ( ISWINDOWVISIBLE )
    hb_retl( IsWindowVisible( HWNDparam( 1 ) ) ) ;
 }
 
+
+HB_FUNC ( ISWINDOWMAXIMIZED )
+{
+   hb_retl( IsZoomed( HWNDparam( 1 ) ) ) ;
+  }
+
+HB_FUNC ( ISWINDOWMINIMIZED )
+{
+   hb_retl( IsIconic( HWNDparam( 1 ) ) ) ;
+  }
+
+
 //----------------------------------------------------------------------------//
 HB_FUNC ( SHOWNOTIFYICON )
 {
@@ -1598,3 +1610,6 @@ HB_FUNC( WINDOWSTYLEFLAG )
 
    hb_retnl( GetWindowLong( HWNDparam( 1 ), GWL_STYLE ) & hb_parnl( 2 ) );
 }
+
+
+

@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.22 2007-06-25 04:35:57 guerra000 Exp $
+ * $Id: i_windefs.ch,v 1.23 2007-11-06 02:13:18 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -120,6 +120,8 @@
 #define WM_NCPAINT      133
 #define WM_NCACTIVATE   134
 #define WM_GETDLGCODE	135
+#define WM_NCLBUTTONUP  162
+#define WM_NCLBUTTONDOWN 161
 #define WM_KEYDOWN	256
 #define WM_KEYUP        257
 #define WM_CHAR         258

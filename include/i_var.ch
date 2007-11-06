@@ -1,5 +1,5 @@
 /*
- * $Id: i_var.ch,v 1.18 2007-11-03 19:52:51 declan2005 Exp $
+ * $Id: i_var.ch,v 1.19 2007-11-06 02:13:18 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -132,6 +132,9 @@ MEMVAR _OOHG_AllVars
 
 #xtranslate  _OOHG_AutoAdjust          => _OOHG_AllVars \[  30 \]
 
+#xtranslate  _OOHG_AdjustWidth         => _OOHG_AllVArs \[  31 \]
+
+#xtranslate  _OOHG_AdjustFont          => _OOHG_AllVArs \[  32 \]
 
 
 

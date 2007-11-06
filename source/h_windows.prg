@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.154 2007-11-05 04:36:06 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.155 2007-11-06 02:13:18 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -106,6 +106,8 @@ STATIC _OOHG_HotKeys := {}           // Application-wide hot keys
 STATIC _OOHG_ActiveForm := {}        // Forms under creation
 STATIC _OOHG_bKeyDown := nil         // Application-wide WM_KEYDOWN handler
 
+
+
 #include "hbclass.ch"
 
 // C static variables
@@ -169,6 +171,7 @@ void _OOHG_SetMouseCoords( PHB_ITEM pSelf, int iCol, int iRow )
 
 #pragma ENDDUMP
 
+
 *------------------------------------------------------------------------------*
 CLASS TWindow
 *------------------------------------------------------------------------------*
@@ -217,6 +220,15 @@ CLASS TWindow
    DATA NestedClick         INIT .F.
    DATA HScrollBar          INIT nil
    DATA VScrollBar          INIT nil
+   
+    //////// all redimension Vars
+   DATA nOldw          INIT 0
+   DATA nOLdh          INIT 0
+   DATA nWindowState   INIT  0   /// 2 Maximizada 1 minimizada  0 Normal
+  
+   
+   ///////
+
 
    DATA DefBkColorEdit      INIT nil
 
@@ -1301,8 +1313,6 @@ CLASS TForm FROM TWindow
    DATA nHeight        INIT 300
    DATA lShowed        INIT .F.
 
-   DATA nOldw          INIT 0
-   DATA nOLdh          INIT 0
 
    DATA OnRelease      INIT nil
    DATA OnInit         INIT nil
@@ -1361,6 +1371,8 @@ CLASS TForm FROM TWindow
    METHOD Restore()     BLOCK { | Self | Restore( ::hWnd ) }
    METHOD Minimize()    BLOCK { | Self | Minimize( ::hWnd ) }
    METHOD Maximize()    BLOCK { | Self | Maximize( ::hWnd ) }
+   
+   METHOD getWindowState()
 
    METHOD SetFocusedSplitChild
    METHOD SetActivationFocus
@@ -1592,9 +1604,7 @@ LOCAL nPos
    Else
       // TODO: Window structure already closed
    EndIf
-   ::nOldw := ::width
-   ::nOldh := :: height
-   _PopEventInfo()
+  _PopEventInfo()
 Return Nil
 
 *--------------------------------------------------
@@ -1652,6 +1662,11 @@ METHOD Activate( lNoStop, oWndLoop ) CLASS TForm
 *-----------------------------------------------------------------------------*
 
    ASSIGN lNoStop VALUE lNoStop TYPE "L" DEFAULT .F.
+   
+
+ ::nOldw := ::width
+ ::nOldh := :: height
+ ::nWindowState := ::GetWindowState()   ///obtiene el estado inicial de la ventana
 
    If _OOHG_ThisEventType == 'WINDOW_RELEASE' .AND. ! lNoStop
       MsgOOHGError("ACTIVATE WINDOW: activate windows within an 'on release' window procedure is not allowed. Program terminated" )
@@ -1710,10 +1725,12 @@ METHOD Activate( lNoStop, oWndLoop ) CLASS TForm
    ::ProcessInitProcedure()
    ::RefreshData()
 
+
    // Starts the Message Loop
    If ! lNoStop
       ::MessageLoop()
    EndIf
+
 
 Return Nil
 
@@ -1909,10 +1926,23 @@ FOR i:=1 TO l
    nDivh:=nHeight/::nOldh
 
    IF oControl:lAdjust
-////  posicion nueva
-      ocontrol:sizepos( oControl:row * nDivh ,oControl:col * nDivw , oControl:width * nDivw ,oControl:height * nDivh )
-///// tamaño letra nuevo tentativo aun pensandolo...
-      oControl:fontsize:=oControl:fontsize * nDivw
+///      automsgbox(ocontrol:row)
+///      automsgbox(ocontrol:col)
+///           ocontrol:sizepos( oControl:row * nDivh , oControl:col * nDivw ,  oControl:width * nDivw ,oControl:height * nDivh  )
+////  posicion nueva siempre
+      ocontrol:sizepos( oControl:row * nDivh , oControl:col * nDivw ,  , )
+/////      tamaño nuevo opcional
+      if  _OOHG_adjustWidth
+         if .not. oControl:lfixwidth
+            ocontrol:sizepos( , ,  oControl:width * nDivw ,oControl:height * nDivh )
+         endif
+      endif
+///// tamaño letra opcional
+      IF  _OOHG_adjustFont
+          if .not. oControl:lfixfont
+             oControl:fontsize:=oControl:fontsize * nDivw
+          endif
+      ENDIF
    ENDIF
 NEXT i
 
@@ -1956,6 +1986,19 @@ HB_FUNC_STATIC( TFORM_BACKCOLOR )
    // Return value was set in _OOHG_DetermineColorReturn()
 }
 #pragma ENDDUMP
+
+ *----------------------------------
+Method GetWindowstate( ) CLASS Tform
+*----------------------------------
+  If IsWindowmaximized( ::Hwnd )
+     Return 2
+  elseif IsWindowminimized( ::Hwnd )
+     Return 1
+  else
+     Return 0
+  EndIf
+Return nil
+
 
 *------------------------------------------------------------------------------*
 METHOD SizePos( nRow, nCol, nWidth, nHeight ) CLASS TForm
@@ -2233,7 +2276,6 @@ FUNCTION _OOHG_TForm_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TForm
 Local i, NextControlHandle, xRetVal
 Local oCtrl
 * Local hWnd := ::hWnd
-
 	do case
 
         ***********************************************************************
@@ -2362,37 +2404,38 @@ Local oCtrl
 	case nMsg == WM_SIZE
         ***********************************************************************
        ValidateScrolls( Self, .T. )
-      If ::Active
-         If wParam == SIZE_MAXIMIZED
-            ::DoEvent( ::OnMaximize, '' )
-            if _OOHG_AutoAdjust
-               ::autoadjust()
-            endif
-         ElseIf wParam == SIZE_MINIMIZED
-            ::DoEvent( ::OnMinimize, '' )
-         ElseIf wParam == SIZE_RESTORED
-            ::DoEvent( ::OnRestore, '' )
-            if _OOHG_AutoAdjust
-               ::autoadjust()
-            endif
-         EndIf
+       If ::Active
+           if ::GetWindowstate() #  ::nWindowState
+               ::nWindowState:= ::GetWindowState()
+               DO CASE
+                  CASE ::nWindowState ==  2   //// maximizada
+                       ::DoEvent( ::OnMaximize, '' )
+                       IF _OOHG_AutoAdjust
+                         ::Autoadjust()
+                       ENDIF
+                  CASE ::nWindowState ==  1  //// minimizada
+                       ::DoEvent( ::OnMinimize, '' )
+                  CASE ::nWindowState ==  0  //// normal
+                       ::DoEvent( ::OnRestore, '' )
+                       IF _OOHG_AutoAdjust
+                        ::Autoadjust()
+                       ENDIF
+               ENDCASE
+           endif
 
-         ::DoEvent( ::OnSize, '' )
+           ::DoEvent( ::OnSize, '' )
+           AEVAL( ::aControls, { |o| If( o:Container == nil, o:Events_Size(), ) } )
+        endif
 
-         // AEVAL( ::aControls, { |o| o:Events_Size() } )
-         AEVAL( ::aControls, { |o| If( o:Container == nil, o:Events_Size(), ) } )
-      EndIf
 
       ***********************************************************************
-	case nMsg ==  WM_EXITSIZEMOVE
+        case nMsg ==  WM_EXITSIZEMOVE
       ***********************************************************************
        If ::Active
          if _OOHG_AutoAdjust
-            ::autoadjust()
+            ::Autoadjust()
          endif
        Endif
-
-
         ***********************************************************************
 	case nMsg == WM_CLOSE
         ***********************************************************************
@@ -3709,6 +3752,7 @@ HB_FUNC( _OOHG_GETMOUSEROW )
 {
    hb_retni( _OOHG_MouseRow );
 }
+
 
 #pragma ENDDUMP
 

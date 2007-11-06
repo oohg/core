@@ -1,5 +1,5 @@
 /*
- * $Id: i_window.ch,v 1.29 2007-11-03 19:52:51 declan2005 Exp $
+ * $Id: i_window.ch,v 1.30 2007-11-06 02:13:18 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -393,5 +393,22 @@ _OOHG_AutoAdjust := .T.
 #xtranslate SET AUTOADJUST OFF ;
 => ;
 _OOHG_AutoAdjust := .F.
+
+#xtranslate SET ADJUSTWIDTH ON ;
+=> ;
+_OOHG_AdjustWidth := .T.
+
+#xtranslate SET ADJUSTWIDTH OFF ;
+=> ;
+_OOHG_AdjustWidth := .F.
+
+#xtranslate SET ADJUSTFONT ON ;
+=> ;
+_OOHG_AdjustFont := .T.
+
+#xtranslate SET ADJUSTFONT OFF ;
+=> ;
+_OOHG_AdjustFont := .F.
+
 
 ////////////////////////////////////////////////////////////
