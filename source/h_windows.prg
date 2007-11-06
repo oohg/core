@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.155 2007-11-06 02:13:18 declan2005 Exp $
+ * $Id: h_windows.prg,v 1.156 2007-11-06 11:23:31 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -1926,24 +1926,22 @@ FOR i:=1 TO l
    nDivh:=nHeight/::nOldh
 
    IF oControl:lAdjust
-///      automsgbox(ocontrol:row)
-///      automsgbox(ocontrol:col)
-///           ocontrol:sizepos( oControl:row * nDivh , oControl:col * nDivw ,  oControl:width * nDivw ,oControl:height * nDivh  )
-////  posicion nueva siempre
+////  posicion nueva siempre que este activado autoajuste
       ocontrol:sizepos( oControl:row * nDivh , oControl:col * nDivw ,  , )
-/////      tamaño nuevo opcional
-      if  _OOHG_adjustWidth
-         if .not. oControl:lfixwidth
+/////      tamaño nuevo opcional (width) solo si esta activado autoajuste
+      IF  _OOHG_adjustWidth
+         IF .not. oControl:lfixwidth  //// solo si el control tiene activado ajuste de ancho
             ocontrol:sizepos( , ,  oControl:width * nDivw ,oControl:height * nDivh )
-         endif
-      endif
-///// tamaño letra opcional
-      IF  _OOHG_adjustFont
-          if .not. oControl:lfixfont
-             oControl:fontsize:=oControl:fontsize * nDivw
-          endif
+         ENDIF
+         ///// tamaño letra opcional pero solo si esta activado el ajuste de ancho
+         IF  _OOHG_adjustFont
+             IF .not. oControl:lfixfont /// solo si el control tiene activado ajuste de font
+                oControl:fontsize:=oControl:fontsize * nDivw
+             ENDIF
+         ENDIF
       ENDIF
    ENDIF
+
 NEXT i
 
 ::nOLdw := nWidth
@@ -2404,8 +2402,8 @@ Local oCtrl
 	case nMsg == WM_SIZE
         ***********************************************************************
        ValidateScrolls( Self, .T. )
-       If ::Active
-           if ::GetWindowstate() #  ::nWindowState
+       IF ::Active
+           IF ::GetWindowstate() #  ::nWindowState
                ::nWindowState:= ::GetWindowState()
                DO CASE
                   CASE ::nWindowState ==  2   //// maximizada
@@ -2421,12 +2419,12 @@ Local oCtrl
                         ::Autoadjust()
                        ENDIF
                ENDCASE
-           endif
+
+           ENDIF
 
            ::DoEvent( ::OnSize, '' )
            AEVAL( ::aControls, { |o| If( o:Container == nil, o:Events_Size(), ) } )
-        endif
-
+        ENDIF
 
       ***********************************************************************
         case nMsg ==  WM_EXITSIZEMOVE
