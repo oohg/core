@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.444 2007-11-08 19:20:54 declan2005 Exp $
+ * $Id: ChangeLog,v 1.445 2007-11-08 19:32:54 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -9,9 +9,8 @@
 
 2007-11-08 14:10 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * h_help.prg
-    * added GetActiveHelpFile() function
+    + added GetActiveHelpFile() function
 
-=======
 2007-11-08 02:53 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * include/i_keybd.ch
     ! Fixed SET APPLICATION KEY command definition.
