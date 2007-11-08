@@ -1,5 +1,5 @@
 /*
- * $Id: i_browse.ch,v 1.15 2007-03-04 19:34:56 guerra000 Exp $
+ * $Id: i_browse.ch,v 1.16 2007-11-08 08:55:19 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -151,6 +151,7 @@
                 [ SUBCLASS <subclass> ]         ;
                 [ <reccount: RECCOUNT> ]        ;
                 [ COLUMNINFO <columninfo> ]     ;
+                [ <noshowheaders: NOHEADERS> ]  ;
 	=>;
              [ <oObj> := ] _OOHG_SelectSubClass( TOBrowse(), [ <subclass>() ] ): ;
                 Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, <widths>, ;
@@ -162,7 +163,7 @@
                 <aReadOnly>, <aValidFields>, <aValidMessages>, <.edit.>, ;
                 <dynamicbackcolor>, <aWhenFields>, <dynamicforecolor>, <Picture>, <.rtl.>, ;
                 <{onappend}>, <{editcell}>, <editcontrols>, <replacefields>, <.reccount.>, ;
-                <columninfo> )
+                <columninfo>, ! <.noshowheaders.> )
 
 ///////////////////////////////////////////////////////////////////////////////
 // SPLITBOX BROWSE
@@ -217,6 +218,7 @@
                 [ SUBCLASS <subclass> ]         ;
                 [ <reccount: RECCOUNT> ]        ;
                 [ COLUMNINFO <columninfo> ]     ;
+                [ <noshowheaders: NOHEADERS> ]  ;
 	=>;
              [ <oObj> := ] _OOHG_SelectSubClass( TOBrowse(), [ <subclass>() ] ): ;
                 Define( <(name)>, <(parent)>, , , <w>, <h>, <headers>, <widths>, <Fields>, ;
@@ -228,7 +230,7 @@
                 <aValidFields>, <aValidMessages>, <.edit.>, <dynamicbackcolor>, ;
                 <aWhenFields>, <dynamicforecolor>, <Picture>, <.rtl.>, <{onappend}>, ;
                 <{editcell}>, <editcontrols>, <replacefields>, <.reccount.>, ;
-                <columninfo> )
+                <columninfo>, ! <.noshowheaders.> )
 
 #command SET BROWSESYNC ON  => SetBrowseSync( .T. )
 #command SET BROWSESYNC OFF => SetBrowseSync( .F. )

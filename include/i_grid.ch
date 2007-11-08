@@ -1,5 +1,5 @@
 /*
- * $Id: i_grid.ch,v 1.11 2006-11-18 21:35:52 guerra000 Exp $
+ * $Id: i_grid.ch,v 1.12 2007-11-08 08:55:19 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -143,6 +143,7 @@
 		[ VALID <aValidFields> ]	;
 		[ VALIDMESSAGES <aValidMessages> ] ;
                 [ ON EDITCELL <editcell> ]      ;
+                [ <noshowheaders: NOHEADERS> ]  ;
                 [ <dummy2: WHEN, COLUMNWHEN> <aWhenFields> ] ;
                 [ SUBCLASS <subclass> ]         ;
                 [ <disabled: DISABLED> ]        ;
@@ -158,7 +159,8 @@
                      <itemcount>, <.edit.>, <backcolor>, <fontcolor>, <dynamicbackcolor>, ;
                      <dynamicforecolor>, <Picture>, <.rtl.>, <.inplace.>, <editcontrols>, ;
                      <aReadOnly>, <aValidFields>, <aValidMessages>, <{editcell}>, ;
-                     <aWhenFields>, <.disabled.>, <.notabstop.>, <.invisible.> )
+                     <aWhenFields>, <.disabled.>, <.notabstop.>, <.invisible.>, ;
+                     ! <.noshowheaders.> )
 
 ///////////////////////////////////////////////////////////////////////////////
 // GRID (SPLITBOX VERSION)
@@ -206,6 +208,7 @@
 		[ VALID <aValidFields> ]	;
 		[ VALIDMESSAGES <aValidMessages> ] ;
                 [ ON EDITCELL <editcell> ]      ;
+                [ <noshowheaders: NOHEADERS> ]  ;
                 [ <dummy2: WHEN, COLUMNWHEN> <aWhenFields> ] ;
                 [ SUBCLASS <subclass> ]         ;
                 [ <disabled: DISABLED> ]        ;
@@ -221,6 +224,7 @@
                      <itemcount>, <.edit.>, <backcolor>, <fontcolor>, <dynamicbackcolor>, ;
                      <dynamicforecolor>, <Picture>, <.rtl.>, <.inplace.>, <editcontrols>, ;
                      <aReadOnly>, <aValidFields>, <aValidMessages>, <{editcell}>, ;
-                     <aWhenFields>, <.disabled.>, <.notabstop.>, <.invisible.> )
+                     <aWhenFields>, <.disabled.>, <.notabstop.>, <.invisible.>, ;
+                     ! <.noshowheaders.> )
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.90 2007-10-19 04:22:48 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.91 2007-11-08 08:55:20 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -194,7 +194,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                ondispinfo, itemcount, editable, backcolor, fontcolor, ;
                dynamicbackcolor, dynamicforecolor, aPicture, lRtl, inplace, ;
                editcontrols, readonly, valid, validmessages, editcell, ;
-               aWhenFields, lDisabled, lNoTabStop, lInvisible ) CLASS TGrid
+               aWhenFields, lDisabled, lNoTabStop, lInvisible, lNoHeaders ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local nStyle := LVS_SINGLESEL
 
@@ -205,7 +205,8 @@ Local nStyle := LVS_SINGLESEL
               ondispinfo, itemcount, editable, backcolor, fontcolor, ;
               dynamicbackcolor, dynamicforecolor, aPicture, lRtl, nStyle, ;
               inplace, editcontrols, readonly, valid, validmessages, ;
-              editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible )
+              editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
+              lNoHeaders )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -216,7 +217,8 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                 ondispinfo, itemcount, editable, backcolor, fontcolor, ;
                 dynamicbackcolor, dynamicforecolor, aPicture, lRtl, nStyle, ;
                 inplace, editcontrols, readonly, valid, validmessages, ;
-                editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible ) CLASS TGrid
+                editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
+                lNoHeaders ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local ControlHandle, aImageList
 
@@ -247,7 +249,8 @@ Local ControlHandle, aImageList
 
    ASSIGN nogrid       VALUE nogrid     TYPE "L" DEFAULT .F.
 
-   nStyle := ::InitStyle( nStyle,, lInvisible, lNoTabStop, lDisabled )
+   nStyle := ::InitStyle( nStyle,, lInvisible, lNoTabStop, lDisabled ) + ;
+             IF( HB_ISLOGICAL( lNoHeaders ) .AND. ! lNoHeaders, LVS_NOCOLUMNHEADER , 0 )
 
    If !HB_IsArray( ::aJust )
       ::aJust := aFill( Array( len( ::aHeaders ) ), 0 )
@@ -1759,7 +1762,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                ondispinfo, itemcount, editable, backcolor, fontcolor, ;
                dynamicbackcolor, dynamicforecolor, aPicture, lRtl, inplace, ;
                editcontrols, readonly, valid, validmessages, editcell, ;
-               aWhenFields, lDisabled, lNoTabStop, lInvisible ) CLASS TGridMulti
+               aWhenFields, lDisabled, lNoTabStop, lInvisible, lNoHeaders ) CLASS TGridMulti
 *-----------------------------------------------------------------------------*
 Local nStyle := 0
    ::Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
@@ -1769,7 +1772,8 @@ Local nStyle := 0
               ondispinfo, itemcount, editable, backcolor, fontcolor, ;
               dynamicbackcolor, dynamicforecolor, aPicture, lRtl, nStyle, ;
               inplace, editcontrols, readonly, valid, validmessages, ;
-              editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible )
+              editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
+              lNoHeaders )
 Return Self
 
 *-----------------------------------------------------------------------------*

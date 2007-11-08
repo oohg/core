@@ -1,5 +1,5 @@
 /*
- * $Id: c_image.c,v 1.15 2007-07-29 05:19:59 guerra000 Exp $
+ * $Id: c_image.c,v 1.16 2007-11-08 08:55:19 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -251,10 +251,11 @@ HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, 
 
    // Searchs image form RESOURCE
    hImage = LoadImage( GetModuleHandle( NULL ), cImage, IMAGE_BITMAP, nWidth, nHeight, iAttributes );
-   if( ! hImage )
-   {
-      hImage = LoadImage( GetModuleHandle( NULL ), cImage, IMAGE_ICON, nWidth, nHeight, iAttributes );
-   }
+   // Don't search for ICON file... (for a while) it will be processed by OLE handler
+   // if( ! hImage )
+   // {
+   //    hImage = LoadImage( GetModuleHandle( NULL ), cImage, IMAGE_ICON, nWidth, nHeight, iAttributes );
+   // }
    if( ! hImage )
    {
       HRSRC hSource;
@@ -314,10 +315,11 @@ HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, 
    {
       hImage = LoadImage( 0, cImage, IMAGE_BITMAP, nWidth, nHeight, iAttributes | LR_LOADFROMFILE );
    }
-   if( ! hImage )
-   {
-      hImage = LoadImage( 0, cImage, IMAGE_ICON, nWidth, nHeight, iAttributes | LR_LOADFROMFILE );
-   }
+   // Don't search for ICON file... (for a while) it will be processed by OLE handler
+   // if( ! hImage )
+   // {
+   //    hImage = LoadImage( 0, cImage, IMAGE_ICON, nWidth, nHeight, iAttributes | LR_LOADFROMFILE );
+   // }
    if( ! hImage )
    {
       HANDLE hFile;
@@ -435,7 +437,7 @@ HB_FUNC( _BITMAPWIDTH )
    hBmp = ( HBITMAP ) HWNDparam( 1 );
    if( hBmp )
    {
-      GetObject( ( HBITMAP ) HWNDparam( 1 ), sizeof( bm ), &bm );
+      GetObject( hBmp, sizeof( bm ), &bm );
    }
    hb_retni( bm.bmWidth );
 }
@@ -449,7 +451,7 @@ HB_FUNC( _BITMAPHEIGHT )
    hBmp = ( HBITMAP ) HWNDparam( 1 );
    if( hBmp )
    {
-      GetObject( ( HBITMAP ) HWNDparam( 1 ), sizeof( bm ), &bm );
+      GetObject( hBmp, sizeof( bm ), &bm );
    }
    hb_retni( bm.bmHeight );
 }

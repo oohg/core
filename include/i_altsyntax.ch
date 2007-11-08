@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.37 2007-09-06 04:59:51 guerra000 Exp $
+ * $Id: i_altsyntax.ch,v 1.38 2007-11-08 08:55:19 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -276,6 +276,7 @@ MEMVAR _OOHG_ActiveControlNoTabStop
 MEMVAR _OOHG_ActiveControlInvisible
 MEMVAR _OOHG_ActiveControlHelpId
 MEMVAR _OOHG_ActiveControlDisabled
+MEMVAR _OOHG_ActiveControlShowHeaders
 
 #xtranslate _OOHG_ClearActiveControlInfo( <name> ) => ;
         PUBLIC _OOHG_ActiveControlInfo \[ 150 \] ;;
@@ -469,6 +470,10 @@ MEMVAR _OOHG_ActiveControlDisabled
 #xcommand AUTOSIZE		<a>;
 	=>;
         _OOHG_ActiveControlAutoSize              := <a>
+
+#xcommand SHOWHEADERS           <a>;
+	=>;
+        _OOHG_ActiveControlShowHeaders            := <a>
 
 
 /*----------------------------------------------------------------------------
@@ -1771,7 +1776,8 @@ Grid
         _OOHG_ActiveControlValid                 := Nil          ;;
         _OOHG_ActiveControlValidMessages         := Nil          ;;
         _OOHG_ActiveControlEditCell              := Nil          ;;
-        _OOHG_ActiveControlWhen                  := nil
+        _OOHG_ActiveControlWhen                  := nil          ;;
+        _OOHG_ActiveControlShowHeaders           := nil
 
 #xcommand ONAPPEND    <onappend>;
 	=>;
@@ -1826,7 +1832,8 @@ iif( _OOHG_ActiveControlMultiSelect, TGridMulti(), TGrid() ):Define( ;
                 _OOHG_ActiveControlWhen, ;
                 _OOHG_ActiveControlDisabled, ;
                 _OOHG_ActiveControlNoTabStop, ;
-                _OOHG_ActiveControlInvisible )
+                _OOHG_ActiveControlInvisible, ;
+                _OOHG_ActiveControlShowHeaders )
 
 /*----------------------------------------------------------------------------
 BROWSE
@@ -1864,7 +1871,8 @@ BROWSE
         _OOHG_ActiveControlOnAppend              := nil          ;;
         _OOHG_ActiveControlEditCell              := Nil          ;;
         _OOHG_ActiveControlEditControls          := Nil          ;;
-        _OOHG_ActiveControlReplaceFields         := Nil
+        _OOHG_ActiveControlReplaceFields         := Nil          ;;
+        _OOHG_ActiveControlShowHeaders           := nil
 
 #xcommand END BROWSE ;
 	=>;
@@ -1915,7 +1923,9 @@ TOBrowse():Define( _OOHG_ActiveControlName ,        ;
                 _OOHG_ActiveControlOnAppend, ;
                 _OOHG_ActiveControlEditCell, ;
                 _OOHG_ActiveControlEditControls, ;
-                _OOHG_ActiveControlReplaceFields )
+                _OOHG_ActiveControlReplaceFields, ;
+                ,, ;
+                _OOHG_ActiveControlShowHeaders )
 
 /*----------------------------------------------------------------------------
 Hyperlink

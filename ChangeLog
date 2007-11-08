@@ -1,11 +1,27 @@
 /*
- * $Id: ChangeLog,v 1.442 2007-11-06 13:23:47 declan2005 Exp $
+ * $Id: ChangeLog,v 1.443 2007-11-08 08:55:19 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-11-08 02:53 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_keybd.ch
+    ! Fixed SET APPLICATION KEY command definition.
+  * source/c_image.c
+    ! Small fixes.
+  * include/i_altsyntax.ch
+  * include/i_browse.ch
+  * include/i_grid.ch
+  * include/i_xbrowse.ch
+  * source/h_browse.prg
+  * source/h_grid.prg
+  * source/h_xbrowse.prg
+    + NOHEADERS clause added.
+  * include/i_richeditbox.ch
+    + (Dummy?) BREAK clause added to non-splitbox RichEdit.
 
 2007-11-06 8:13 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   *source/h_error.prg
@@ -14,7 +30,6 @@
 2007-11-06 6:20 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   *source/h_windows.prg
    * optimizing autoadjust params
-
 
 2007-11-05 21:12 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_windows.prg
@@ -26,12 +41,11 @@
   * include/i_window.ch
   * include/i_ivar.ch
     + Added SET ADJUSTFONT on/off
-    + Added SET ADJUSTWIDTH on/off 
+    + Added SET ADJUSTWIDTH on/off
        to setting globals autoadjust params
-    + added Twindow:getwindowstate() method to know if window is maximized/minimized/normal 
+    + added Twindow:getwindowstate() method to know if window is maximized/minimized/normal
     + added iswindowmaximized() at C level
     + added iswindowminimized()  at C level
-
 
 2007-11-04 22:34 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source/c_activex.c

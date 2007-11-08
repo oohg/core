@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.60 2007-03-04 19:34:56 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.61 2007-11-08 08:55:19 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -141,7 +141,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                inplace, novscroll, AllowAppend, readonly, valid, ;
                validmessages, edit, dynamicbackcolor, aWhenFields, ;
                dynamicforecolor, aPicture, lRtl, onappend, editcell, ;
-               editcontrols, replacefields, lRecCount, columninfo ) CLASS TOBrowse
+               editcontrols, replacefields, lRecCount, columninfo, lNoHeaders ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local nWidth2, nCol2, oScroll, z
 
@@ -207,7 +207,7 @@ Local nWidth2, nCol2, oScroll, z
                    nogrid, aImage, ::aJust, break, HelpId, bold, italic, underline, strikeout, nil, ;
                    nil, nil, edit, backcolor, fontcolor, dynamicbackcolor, dynamicforecolor, aPicture, ;
                    lRtl, InPlace, editcontrols, readonly, valid, validmessages, editcell, ;
-                   aWhenFields )
+                   aWhenFields, , , , lNoHeaders )
 
    ::nWidth := w
 

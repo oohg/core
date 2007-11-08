@@ -1,5 +1,5 @@
 /*
- * $Id: i_richeditbox.ch,v 1.4 2006-11-02 05:59:53 guerra000 Exp $
+ * $Id: i_richeditbox.ch,v 1.5 2007-11-08 08:55:19 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -113,6 +113,7 @@
                 [ ON CHANGE <change> ] ;
                 [ ON LOSTFOCUS <lostfocus> ] ;
 		[ HELPID <helpid> ] 		;
+		[ <break: BREAK> ] ;
 		[ <invisible: INVISIBLE> ] ;
 		[ <notabstop: NOTABSTOP> ] ;
                 [ <rtl: RTL> ] ;
@@ -122,7 +123,7 @@
         [ <obj> := ] _OOHG_SelectSubClass( TEditRich(), [ <subclass>() ] ): ;
                      Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <value>, <f>, ;
                      <s>, <tooltip>, <maxlenght>, <{gotfocus}>, <{change}>, <{lostfocus}>, ;
-                     <.readonly.>, .f., <helpid>, <.invisible.>, <.notabstop.>, <.bold.>, ;
+                     <.readonly.>, <.break.>, <helpid>, <.invisible.>, <.notabstop.>, <.bold.>, ;
                      <.italic.>, <.underline.>, <.strikeout.>, <(field)> , <backcolor>, ;
                      <.rtl.>, <.disabled.> )
 

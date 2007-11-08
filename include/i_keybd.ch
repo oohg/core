@@ -1,5 +1,5 @@
 /*
- * $Id: i_keybd.ch,v 1.7 2007-11-05 04:36:06 guerra000 Exp $
+ * $Id: i_keybd.ch,v 1.8 2007-11-08 08:55:19 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -316,15 +316,15 @@ _OOHG_ExtendedNavigation := .F.
 
 #xcommand SET APPLICATION KEY <key> ACTION <action> ;
           => ;
-          SetAppHotKeyByName( <key>, <{action}> )
+          SetAppHotKeyByName( <(key)>, <{action}> )
 
 #xcommand RELEASE APPLICATION KEY <key> ;
           => ;
-          SetAppHotKeyByName( <key>, nil )
+          SetAppHotKeyByName( <(key)>, nil )
 
 #xcommand STORE APPLICATION KEY <key> TO <baction> ;
           => ;
-          <baction> := SetAppHotKeyByName( <key> )
+          <baction> := SetAppHotKeyByName( <(key)> )
 
 
 

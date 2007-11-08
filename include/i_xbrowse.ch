@@ -1,5 +1,5 @@
 /*
- * $Id: i_xbrowse.ch,v 1.4 2006-11-13 05:10:52 guerra000 Exp $
+ * $Id: i_xbrowse.ch,v 1.5 2007-11-08 08:55:19 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -148,6 +148,7 @@
                 [ SUBCLASS <subclass> ]         ;
                 [ <reccount: RECCOUNT> ]        ;
                 [ COLUMNINFO <columninfo> ]     ;
+                [ <noshowheaders: NOHEADERS> ]  ;
 	=>;
        [ <oObj> := ] _OOHG_SelectSubClass( TXBrowse(), [ <subclass>() ] ):Define( ;
                <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, <widths>, ;
@@ -159,4 +160,4 @@
                <.edit.>, <backcolor>, <fontcolor>, ;
                <dynamicbackcolor>, <dynamicforecolor>, <Picture>, <.rtl.>, <.inplace.>, ;
                <editcontrols>, <aReadOnly>, <{aValidFields}>, <aValidMessages>, <{editcell}>, ;
-               <aWhenFields>, <.reccount.>, <columninfo> )
+               <aWhenFields>, <.reccount.>, <columninfo>, ! <.noshowheaders.> )
