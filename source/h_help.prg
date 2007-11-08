@@ -1,5 +1,5 @@
 /*
- * $Id: h_help.prg,v 1.3 2007-10-06 22:16:44 declan2005 Exp $
+ * $Id: h_help.prg,v 1.4 2007-11-08 19:20:54 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -123,7 +123,9 @@ LOCAL hFile
 
 Return .T.
 
+*-------------------------------------
 Function HelpTopic( nTopic , nMet )
+*-------------------------------------
 Local ret:=0
 
    If ! empty( _OOHG_ActiveHelpFile )
@@ -145,3 +147,8 @@ Local ret:=0
       endif
    endif
 Return ret
+
+*-------------------------------------------------------------
+Function GetActiveHelpFile()   
+*-------------------------------------------------------------
+Return _OOHG_ActiveHelpFile 
