@@ -1,16 +1,16 @@
 /*
- * $Id: c_activex.c,v 1.4 2007-11-05 04:36:06 guerra000 Exp $
+ * $Id: c_activex.c,v 1.5 2007-11-11 17:42:05 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * ActiveX control
  *
  *  Marcelo Torres, Noviembre de 2006.
- *  TActivex para [x]Harbour Minigui.
+ *  TActiveX para [x]Harbour Minigui.
  *  Adaptacion del trabajo de:
  *  ---------------------------------------------
  *  Lira Lira Oscar Joel [oSkAr]
- *  Clase TAxtiveX_FreeWin para Fivewin
+ *  Clase TActiveX_FreeWin para Fivewin
  *  Noviembre 8 del 2006
  *  email: oscarlira78@hotmail.com
  *  http://freewin.sytes.net
@@ -22,7 +22,6 @@
  *
  *
  */
-
 
 #ifndef NONAMELESSUNION
    #define NONAMELESSUNION
@@ -39,8 +38,8 @@
 #include <hbvm.h>
 #include <hbstack.h>
 #include "oohg.h"
-   #include <ocidl.h>
-   #include <hbapiitm.h>
+#include <ocidl.h>
+#include <hbapiitm.h>
 
 #ifdef HB_ITEM_NIL
    #define hb_dynsymSymbol( pDynSym )        ( ( pDynSym )->pSymbol )
@@ -78,20 +77,23 @@ HB_FUNC( TACTIVEX___ERROR )
    hb_vmSend( hb_pcount() );
 }
 
-typedef HRESULT ( WINAPI *LPAtlAxWinInit )    ( void );
-typedef HRESULT ( WINAPI *LPAtlAxGetControl ) ( HWND hwnd, IUnknown** unk );
+typedef HRESULT ( WINAPI *LPAtlAxWinInit )       ( void );
+typedef HRESULT ( WINAPI *LPAtlAxGetControl )    ( HWND, IUnknown** );
+typedef HRESULT ( WINAPI *LPAtlAxCreateControl ) ( LPCOLESTR, HWND, IStream*, IUnknown** );
 
 HMODULE hAtl = NULL;
-LPAtlAxWinInit    AtlAxWinInit;
-LPAtlAxGetControl AtlAxGetControl;
+LPAtlAxWinInit       AtlAxWinInit;
+LPAtlAxGetControl    AtlAxGetControl;
+LPAtlAxCreateControl AtlAxCreateControl;
 
 static void _Ax_Init( void )
 {
    if( ! hAtl )
    {
       hAtl = LoadLibrary( "Atl.Dll" );
-      AtlAxWinInit    = ( LPAtlAxWinInit )    GetProcAddress( hAtl, "AtlAxWinInit" );
-      AtlAxGetControl = ( LPAtlAxGetControl ) GetProcAddress( hAtl, "AtlAxGetControl" );
+      AtlAxWinInit       = ( LPAtlAxWinInit )       GetProcAddress( hAtl, "AtlAxWinInit" );
+      AtlAxGetControl    = ( LPAtlAxGetControl )    GetProcAddress( hAtl, "AtlAxGetControl" );
+      AtlAxCreateControl = ( LPAtlAxCreateControl ) GetProcAddress( hAtl, "AtlAxCreateControl" );
       ( AtlAxWinInit )();
    }
 }
@@ -101,7 +103,7 @@ HB_FUNC( INITACTIVEX ) // hWnd, cProgId -> hActiveXWnd
    HWND hControl;
    int iStyle, iStyleEx;
 
-   iStyle = WS_VISIBLE | WS_CHILD | hb_parni( 7 );
+   iStyle = WS_CHILD | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | hb_parni( 7 );
    iStyleEx = 0; // | WS_EX_CLIENTEDGE
 
    _Ax_Init();
@@ -110,6 +112,21 @@ HB_FUNC( INITACTIVEX ) // hWnd, cProgId -> hActiveXWnd
 
    HWNDret( hControl );
 }
+/*
+      IUnknown*  pUnk;
+      BSTR wString;
+      UINT uLen;
+      HWND hContainer = HWNDparam( 1 );
+      char *Caption   = hb_parc( 2 );
+
+      uLen = MultiByteToWideChar( CP_ACP, MB_PRECOMPOSED, Caption, strlen(Caption)+1, NULL, 0 );
+      wString = (BSTR) hb_xgrab( ( uLen * sizeof(WCHAR) ) + 1 );
+      MultiByteToWideChar( CP_ACP, MB_PRECOMPOSED, Caption, strlen(Caption)+1, wString, uLen );
+
+      AtlAxCreateControl( wString, hContainer, NULL, &pUnk );
+
+      hb_xfree( wString );
+*/
 
 HB_FUNC( ATLAXGETDISP ) // hWnd -> pDisp
 {
@@ -118,6 +135,7 @@ HB_FUNC( ATLAXGETDISP ) // hWnd -> pDisp
    _Ax_Init();
    AtlAxGetControl( HWNDparam( 1 ), &pUnk );
    pUnk->lpVtbl->QueryInterface( pUnk, &IID_IDispatch, ( void ** ) &pDisp );
+   pUnk->lpVtbl->Release( pUnk );
    HWNDret( pDisp );
 }
 
@@ -545,7 +563,9 @@ HB_FUNC( ATLAXGETDISP ) // hWnd -> pDisp
 
       // Allocate our IEventHandler object (actually a MyRealIEventHandler)
       // intentional misrepresentation of size
+
       thisobj = ( IEventHandler *) GlobalAlloc( GMEM_FIXED, sizeof( MyRealIEventHandler ) );
+
       if ( ! thisobj )
       {
          hr = E_OUTOFMEMORY;
@@ -640,7 +660,7 @@ HB_FUNC( ATLAXGETDISP ) // hWnd -> pDisp
 
       }
 
-      hb_retnl( hr );
+      HWNDret( hr );
 
    }
 
@@ -655,4 +675,12 @@ HB_FUNC( SHUTDOWNCONNECTIONPOINT )
       this->pIConnectionPoint->lpVtbl->Release( this->pIConnectionPoint );
       this->pIConnectionPoint = NULL;
    }
+}
+
+//------------------------------------------------------------------------------
+HB_FUNC( RELEASEDISPATCH )
+{
+   IDispatch * pObj;
+   pObj = ( IDispatch * ) HWNDparam( 1 );
+   pObj->lpVtbl->Release( pObj );
 }
