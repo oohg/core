@@ -1,5 +1,5 @@
 /*
- * $Id: c_activex.c,v 1.5 2007-11-11 17:42:05 guerra000 Exp $
+ * $Id: c_activex.c,v 1.6 2007-11-13 19:25:17 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -103,7 +103,7 @@ HB_FUNC( INITACTIVEX ) // hWnd, cProgId -> hActiveXWnd
    HWND hControl;
    int iStyle, iStyleEx;
 
-   iStyle = WS_CHILD | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | hb_parni( 7 );
+   iStyle = WS_CHILD | WS_CLIPCHILDREN | hb_parni( 7 );
    iStyleEx = 0; // | WS_EX_CLIENTEDGE
 
    _Ax_Init();
