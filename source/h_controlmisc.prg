@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.83 2007-11-06 02:13:18 declan2005 Exp $
+ * $Id: h_controlmisc.prg,v 1.84 2007-11-15 19:44:44 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -1625,9 +1625,10 @@ Return nil
 *-----------------------------------------------------------------------------*
 METHOD AddBitMap( uImage ) CLASS TControl
 *-----------------------------------------------------------------------------*
+
 Local nPos, nCount
    If ! ValidHandler( ::ImageList )
-      If HB_IsArray( uImage ) 
+      If HB_IsArray( uImage )
          ::ImageList := ImageList_Init( uImage, ::ImageListColor, ::ImageListFlags )[ 1 ]
       Else
          ::ImageList := ImageList_Init( { uImage }, ::ImageListColor, ::ImageListFlags )[ 1 ]
@@ -1640,7 +1641,7 @@ Local nPos, nCount
       EndIf
    Else
       nCount := ImageList_GetImageCount( ::ImageList )
-      If HB_IsArray( uImage ) 
+      If HB_IsArray( uImage )
          nPos := ImageList_Add( ::ImageList, uImage[ 1 ], ::ImageListFlags, ::ImageListColor )
          AEVAL( ::ImageList, { |c| ImageList_Add( ::ImageList, c, ::ImageListFlags, ::ImageListColor ) }, 2 )
       Else
@@ -1649,14 +1650,16 @@ Local nPos, nCount
       If nCount == ImageList_GetImageCount( ::ImageList )
          nPos := 0
       EndIf
+      SendMessage( ::hWnd, ::SetImageListCommand, ::SetImageListWParam, ::ImageList )
    Endif
 Return nPos
+
 
 *-----------------------------------------------------------------------------*
 METHOD DoEvent( bBlock ) CLASS TControl
 *-----------------------------------------------------------------------------*
 Local lRetVal
-   If HB_IsBlock( bBlock ) 
+   If HB_IsBlock( bBlock )
       _PushEventInfo()
       _OOHG_ThisForm      := ::Parent
       _OOHG_ThisType      := "C"
