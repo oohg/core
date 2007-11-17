@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.448 2007-11-15 19:44:44 declan2005 Exp $
+ * $Id: ChangeLog,v 1.449 2007-11-17 12:19:19 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,6 +7,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+
+2007-11-17 7:14 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_combo.prg
+    ! finally fixed, set the combo (edit) height automatic
+      remove CBS_OWNERDRAWFIXED because if is SET the height don't change
+      when the font change size or type.
+        
 2007-11-15 14:42 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_controlmisc.prg
     ! fixed problem showing images in tree and maybe in others. 
@@ -21,7 +28,7 @@
     * Updated recent changes from FreeWin.
 
 2007-11-08 14:10 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
-  * h_help.prg
+  * source/h_help.prg
     + added GetActiveHelpFile() function
 
 2007-11-08 02:53 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>

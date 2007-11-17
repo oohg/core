@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.28 2007-10-19 18:31:55 declan2005 Exp $
+ * $Id: h_combo.prg,v 1.29 2007-11-17 12:19:20 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -107,6 +107,8 @@ CLASS TCombo FROM TLabel
    DATA nWidth    INIT 120
    DATA nHeight   INIT 150
 
+   DATA hWndChild  INIT NIL
+
    METHOD Define
    METHOD Refresh
    METHOD Value               SETGET
@@ -190,7 +192,7 @@ Local ControlHandle , rcount := 0 , cset := 0 , WorkArea , cField, nStyle
       ::AddBitMap( aImage )
    EndIf
 
-	If DisplayChange == .T.
+  	If DisplayChange == .T.
 *      _OOHG_acontrolrangemin [k] := FindWindowEx( Controlhandle , 0, "Edit", Nil )
 	EndIf
 
@@ -336,7 +338,9 @@ HB_FUNC( INITCOMBOBOX )
 
    StyleEx = _OOHG_RTL_Status( hb_parl( 8 ) );
 
-   Style = hb_parni( 7 ) | WS_CHILD | WS_VSCROLL | CBS_HASSTRINGS | CBS_OWNERDRAWFIXED; // CBS_OWNERDRAWVARIABLE;
+   Style = hb_parni( 7 ) | WS_CHILD | WS_VSCROLL | CBS_HASSTRINGS; 
+   
+   ///// | CBS_OWNERDRAWFIXED; // CBS_OWNERDRAWVARIABLE;  si se coloca ownerdrawfixed el alto del combo no cambia cuando se cambia el font
 
    hbutton = CreateWindowEx( StyleEx, "COMBOBOX",
                            "" ,
