@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.449 2007-11-17 12:19:19 declan2005 Exp $
+ * $Id: ChangeLog,v 1.450 2007-11-17 16:55:20 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,6 +7,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+
+2007-11-17 11:53 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_grid.prg
+    * fixed remains in first column when edit
 
 2007-11-17 7:14 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_combo.prg

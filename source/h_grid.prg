@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.91 2007-11-08 08:55:20 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.92 2007-11-17 16:55:20 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -1007,7 +1007,7 @@ Local lRet
    IF !HB_IsNumeric( nRow )
       nRow := ::FirstSelectedItem
    ENDIF
-   IF HB_IsNumeric( nCol )
+   IF !HB_IsNumeric( nCol )
       nCol := 1
    ENDIF
    If nRow < 1 .OR. nRow > ::ItemCount() .OR. nCol < 1 .OR. nCol > Len( ::aHeaders )
@@ -2273,7 +2273,7 @@ Local oGridControl := NIL, cMask, nPos
       Case HB_IsDate( uValue )
          // oGridControl := TGridControlDatePicker():New( .T. )
          oGridControl := TGridControlTextBox():New( "@D",, "D" )
-      Case HB_IsNumeric( uValue )
+      Case ValType( uValue ) == "M"    
          oGridControl := TGridControlMemo():New()
       Case ValType( uValue ) == "C"
          oGridControl := TGridControlTextBox():New( ,, "C" )
