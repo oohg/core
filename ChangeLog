@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.450 2007-11-17 16:55:20 declan2005 Exp $
+ * $Id: ChangeLog,v 1.451 2007-11-18 21:42:35 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,6 +7,9 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2007-11-18 15:40 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_combo.prg
+    * Added management for internal textbox.
 
 2007-11-17 11:53 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_grid.prg
@@ -17,10 +20,10 @@
     ! finally fixed, set the combo (edit) height automatic
       remove CBS_OWNERDRAWFIXED because if is SET the height don't change
       when the font change size or type.
-        
+
 2007-11-15 14:42 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_controlmisc.prg
-    ! fixed problem showing images in tree and maybe in others. 
+    ! fixed problem showing images in tree and maybe in others.
 
 2007-11-13 14:21 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/c_activex.c

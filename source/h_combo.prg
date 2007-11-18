@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.29 2007-11-17 12:19:20 declan2005 Exp $
+ * $Id: h_combo.prg,v 1.30 2007-11-18 21:42:36 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -97,17 +97,16 @@
 #include "i_windefs.ch"
 
 CLASS TCombo FROM TLabel
-   DATA Type      INIT "COMBO" READONLY
-   DATA WorkArea  INIT ""
-   DATA Field     INIT ""
-   DATA nValue    INIT 0
+   DATA Type          INIT "COMBO" READONLY
+   DATA WorkArea      INIT ""
+   DATA Field         INIT ""
+   DATA nValue        INIT 0
    DATA ValueSource   INIT ""
    DATA nTextHeight   INIT 0
    DATA aValues       INIT {}
-   DATA nWidth    INIT 120
-   DATA nHeight   INIT 150
-
-   DATA hWndChild  INIT NIL
+   DATA nWidth        INIT 120
+   DATA nHeight       INIT 150
+   DATA oTextBox      INIT nil
 
    METHOD Define
    METHOD Refresh
@@ -116,6 +115,8 @@ CLASS TCombo FROM TLabel
    METHOD ForceHide           BLOCK { |Self| SendMessage( ::hWnd, 335, 0, 0 ) , ::Super:ForceHide() }
    METHOD RefreshData
    METHOD Displayvalue        SETGET    /// Caption Alias
+   METHOD FontColor           SETGET
+   METHOD BackColor           SETGET
 
    METHOD Events_Command
    METHOD Events_DrawItem
@@ -148,6 +149,7 @@ Local ControlHandle , rcount := 0 , cset := 0 , WorkArea , cField, nStyle
    DEFAULT sort		TO FALSE
    DEFAULT GripperText	TO ""
    ASSIGN ::nTextHeight VALUE TextHeight TYPE "N"
+   ASSIGN displaychange VALUE displaychange TYPE "L" DEFAULT .F.
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, , , .t. , lRtl )
    ::SetFont( , , bold, italic, underline, strikeout )
@@ -169,13 +171,14 @@ Local ControlHandle , rcount := 0 , cset := 0 , WorkArea , cField, nStyle
 		EndIf
 	EndIf
 
+#define GW_CHILD               5
 #define CBS_SORT               0x0100
 #define CBS_DROPDOWN           0x0002
 #define CBS_DROPDOWNLIST       0x0003
 #define CBS_NOINTEGRALHEIGHT   0x0400
    nStyle := ::InitStyle( ,, Invisible, notabstop, lDisabled ) + ;
              if( HB_IsLogical( SORT )           .AND. SORT,          CBS_SORT,    0 ) + ;
-             if( !HB_IsLogical( displaychange ) .OR. ! displaychange, CBS_DROPDOWNLIST, CBS_DROPDOWN ) + ;
+             if( ! displaychange, CBS_DROPDOWNLIST, CBS_DROPDOWN ) + ;
              if( ( "XP" $ OS() ), CBS_NOINTEGRALHEIGHT, 0 )
 
    ::SetSplitBoxInfo( Break, GripperText, ::nWidth )
@@ -183,6 +186,12 @@ Local ControlHandle , rcount := 0 , cset := 0 , WorkArea , cField, nStyle
 
    ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
    ::SetFont()
+
+   IF displaychange
+      ::oTextBox := TControl():SetForm( , Self )
+      ::oTextBox:Register( GetWindow( ::hWnd, GW_CHILD ) )
+      ::oTextBox:OnEnter := { || ::DoEvent( ::OnEnter ) }
+   ENDIF
 
    ::Field := cField
    ::WorkArea := WorkArea
@@ -192,7 +201,7 @@ Local ControlHandle , rcount := 0 , cset := 0 , WorkArea , cField, nStyle
       ::AddBitMap( aImage )
    EndIf
 
-  	If DisplayChange == .T.
+   If DisplayChange
 *      _OOHG_acontrolrangemin [k] := FindWindowEx( Controlhandle , 0, "Edit", Nil )
 	EndIf
 
@@ -288,6 +297,22 @@ METHOD RefreshData() CLASS TCombo
 RETURN nil
 
 *-----------------------------------------------------------------------------*
+METHOD FontColor( uColor ) CLASS TCombo
+*-----------------------------------------------------------------------------*
+   IF HB_IsObject( ::oTextBox )
+      ::oTextBox:FontColor := uColor
+   ENDIF
+RETURN ( ::Super:FontColor := uColor )
+
+*-----------------------------------------------------------------------------*
+METHOD BackColor( uColor ) CLASS TCombo
+*-----------------------------------------------------------------------------*
+   IF HB_IsObject( ::oTextBox )
+      ::oTextBox:BackColor := uColor
+   ENDIF
+RETURN ( ::Super:BackColor := uColor )
+
+*-----------------------------------------------------------------------------*
 METHOD Events_Command( wParam ) CLASS TCombo
 *-----------------------------------------------------------------------------*
 Local Hi_wParam := HIWORD( wParam )
@@ -338,8 +363,8 @@ HB_FUNC( INITCOMBOBOX )
 
    StyleEx = _OOHG_RTL_Status( hb_parl( 8 ) );
 
-   Style = hb_parni( 7 ) | WS_CHILD | WS_VSCROLL | CBS_HASSTRINGS; 
-   
+   Style = hb_parni( 7 ) | WS_CHILD | WS_VSCROLL | CBS_HASSTRINGS;
+
    ///// | CBS_OWNERDRAWFIXED; // CBS_OWNERDRAWVARIABLE;  si se coloca ownerdrawfixed el alto del combo no cambia cuando se cambia el font
 
    hbutton = CreateWindowEx( StyleEx, "COMBOBOX",
