@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.30 2007-11-18 21:42:36 guerra000 Exp $
+ * $Id: h_combo.prg,v 1.31 2007-11-19 00:28:32 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -106,7 +106,7 @@ CLASS TCombo FROM TLabel
    DATA aValues       INIT {}
    DATA nWidth        INIT 120
    DATA nHeight       INIT 150
-   DATA oTextBox      INIT nil
+   DATA oTextBox      INIT  NIL
 
    METHOD Define
    METHOD Refresh
@@ -176,9 +176,12 @@ Local ControlHandle , rcount := 0 , cset := 0 , WorkArea , cField, nStyle
 #define CBS_DROPDOWN           0x0002
 #define CBS_DROPDOWNLIST       0x0003
 #define CBS_NOINTEGRALHEIGHT   0x0400
+#define CBS_OWNERDRAWFIXED     0x0010
+
    nStyle := ::InitStyle( ,, Invisible, notabstop, lDisabled ) + ;
              if( HB_IsLogical( SORT )           .AND. SORT,          CBS_SORT,    0 ) + ;
              if( ! displaychange, CBS_DROPDOWNLIST, CBS_DROPDOWN ) + ;
+             if ( displaychange,  CBS_OWNERDRAWFIXED, ) + ;
              if( ( "XP" $ OS() ), CBS_NOINTEGRALHEIGHT, 0 )
 
    ::SetSplitBoxInfo( Break, GripperText, ::nWidth )
@@ -203,20 +206,20 @@ Local ControlHandle , rcount := 0 , cset := 0 , WorkArea , cField, nStyle
 
    If DisplayChange
 *      _OOHG_acontrolrangemin [k] := FindWindowEx( Controlhandle , 0, "Edit", Nil )
-	EndIf
+   EndIf
 
    If  VALTYPE( WorkArea ) $ "CM"
       ::Refresh()
 	Else
       AEval( rows, { |x| ::AddItem( x ) } )
-	EndIf
+   EndIf
 
    ::Value := Value
    ::nValue := Value
 
    if valtype( ItemSource ) != 'U'
       aAdd( ::Parent:BrowseList, Self )
-	EndIf
+   EndIf
 
    ::OnClick := ondisplaychangeprocedure
    ::OnLostFocus := LostFocus
@@ -259,7 +262,7 @@ LOCAL uRet
    IF LEN( ::aValues ) == 0
       IF HB_IsNumeric( uValue )
          ComboSetCursel( ::hWnd , uValue )
-          ::DoEvent( ::OnChange )
+         ::DoEvent( ::OnChange )
       ENDIF
       uRet := ComboGetCursel( ::hWnd )
    ELSE
@@ -363,7 +366,7 @@ HB_FUNC( INITCOMBOBOX )
 
    StyleEx = _OOHG_RTL_Status( hb_parl( 8 ) );
 
-   Style = hb_parni( 7 ) | WS_CHILD | WS_VSCROLL | CBS_HASSTRINGS;
+   Style = hb_parni( 7 ) | WS_CHILD | WS_VSCROLL | CBS_HASSTRINGS  ;
 
    ///// | CBS_OWNERDRAWFIXED; // CBS_OWNERDRAWVARIABLE;  si se coloca ownerdrawfixed el alto del combo no cambia cuando se cambia el font
 
