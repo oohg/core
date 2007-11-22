@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.156 2007-11-06 11:23:31 declan2005 Exp $
+ * $Id: h_windows.prg,v 1.157 2007-11-22 14:33:00 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -207,6 +207,11 @@ CLASS TWindow
    DATA lInternal           INIT .T.
    DATA lForm               INIT .F.
    DATA lReleasing          INIT .F.
+   
+   DATA lAdjust             INIT .T.
+   DATA lFixFont            INIT .F.
+   DATA lfixwidth           INIT .F.
+
 
    DATA OnClick             INIT nil
    DATA OnGotFocus          INIT nil
@@ -1600,6 +1605,9 @@ METHOD EndWindow() CLASS TForm
 LOCAL nPos
    nPos := ASCAN( _OOHG_ActiveForm, { |o| o:Name == ::Name .AND. o:hWnd == ::hWnd } )
    If nPos > 0
+      ::nOldw := ::width
+      ::nOldh := :: height
+      ::nWindowState := ::GetWindowState()   ///obtiene el estado inicial de la ventana
       _OOHG_DeleteArrayItem( _OOHG_ActiveForm, nPos )
    Else
       // TODO: Window structure already closed
@@ -1660,14 +1668,9 @@ Return ::lVisible
 *-----------------------------------------------------------------------------*
 METHOD Activate( lNoStop, oWndLoop ) CLASS TForm
 *-----------------------------------------------------------------------------*
-
+                             
    ASSIGN lNoStop VALUE lNoStop TYPE "L" DEFAULT .F.
    
-
- ::nOldw := ::width
- ::nOldh := :: height
- ::nWindowState := ::GetWindowState()   ///obtiene el estado inicial de la ventana
-
    If _OOHG_ThisEventType == 'WINDOW_RELEASE' .AND. ! lNoStop
       MsgOOHGError("ACTIVATE WINDOW: activate windows within an 'on release' window procedure is not allowed. Program terminated" )
    Endif
@@ -1932,14 +1935,14 @@ FOR i:=1 TO l
       IF  _OOHG_adjustWidth
          IF .not. oControl:lfixwidth  //// solo si el control tiene activado ajuste de ancho
             ocontrol:sizepos( , ,  oControl:width * nDivw ,oControl:height * nDivh )
-         ENDIF
-         ///// tamaño letra opcional pero solo si esta activado el ajuste de ancho
-         IF  _OOHG_adjustFont
-             IF .not. oControl:lfixfont /// solo si el control tiene activado ajuste de font
-                oControl:fontsize:=oControl:fontsize * nDivw
-             ENDIF
+            IF  _OOHG_adjustFont
+                IF .not. oControl:lfixfont .and.  !ocontrol:type == "I" /// solo si el control tiene activado ajuste de font y ajuste de ancho y no sea una ventana interna
+                   oControl:fontsize:=oControl:fontsize * nDivw
+                ENDIF
+            ENDIF
          ENDIF
       ENDIF
+
    ENDIF
 
 NEXT i
@@ -2402,29 +2405,35 @@ Local oCtrl
 	case nMsg == WM_SIZE
         ***********************************************************************
        ValidateScrolls( Self, .T. )
-       IF ::Active
+
            IF ::GetWindowstate() #  ::nWindowState
                ::nWindowState:= ::GetWindowState()
                DO CASE
                   CASE ::nWindowState ==  2   //// maximizada
-                       ::DoEvent( ::OnMaximize, '' )
+                       IF ::active
+                          ::DoEvent( ::OnMaximize, '' )
+                       ENDIF
                        IF _OOHG_AutoAdjust
-                         ::Autoadjust()
+                          ::Autoadjust()
                        ENDIF
                   CASE ::nWindowState ==  1  //// minimizada
-                       ::DoEvent( ::OnMinimize, '' )
+                       IF ::active
+                          ::DoEvent( ::OnMinimize, '' )
+                       ENDIF
                   CASE ::nWindowState ==  0  //// normal
-                       ::DoEvent( ::OnRestore, '' )
+                       IF ::active
+                          ::DoEvent( ::OnRestore, '' )
+                       ENDIF
                        IF _OOHG_AutoAdjust
                         ::Autoadjust()
                        ENDIF
                ENDCASE
 
            ENDIF
-
-           ::DoEvent( ::OnSize, '' )
-           AEVAL( ::aControls, { |o| If( o:Container == nil, o:Events_Size(), ) } )
-        ENDIF
+           IF ::active
+              ::DoEvent( ::OnSize, '' )
+              AEVAL( ::aControls, { |o| If( o:Container == nil, o:Events_Size(), ) } )
+           ENDIF
 
       ***********************************************************************
         case nMsg ==  WM_EXITSIZEMOVE
@@ -2793,7 +2802,7 @@ CLASS TFormInternal FROM TForm
 *-----------------------------------------------------------------------------*
    DATA Type           INIT "I" READONLY
    DATA lInternal      INIT .T.
-
+  
    METHOD Define
    METHOD Define2
    METHOD SizePos
@@ -3343,7 +3352,7 @@ Function _EndWindow()
 *-----------------------------------------------------------------------------*
    If Len( _OOHG_ActiveForm ) > 0
       ATAIL( _OOHG_ActiveForm ):EndWindow()
-	EndIf
+   EndIf
 Return Nil
 
 *-----------------------------------------------------------------------------*

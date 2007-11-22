@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.84 2007-11-15 19:44:44 declan2005 Exp $
+ * $Id: h_controlmisc.prg,v 1.85 2007-11-22 14:33:00 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -1206,12 +1206,6 @@ CLASS TControl FROM TWindow
    DATA hCursor     INIT 0
    DATA postBlock   INIT nil
    DATA lCancel     INIT .F.
-
-
-   DATA lAdjust     INIT .T.
-   DATA lFixFont    INIT .F.
-   DATA lfixwidth   INIT .F.
-
 
    METHOD Row       SETGET
    METHOD Col       SETGET
