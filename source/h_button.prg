@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.28 2007-09-11 04:26:05 guerra000 Exp $
+ * $Id: h_button.prg,v 1.29 2007-11-24 12:02:15 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -234,11 +234,121 @@ METHOD RePaint() CLASS TButton
    ENDIF
 RETURN Self
 
+
+CLASS TMixButton FROM TImage
+   DATA Type      INIT "BUTTON" READONLY
+   DATA lNoTransparent INIT .F.
+   DATA nWidth    INIT 100
+   DATA nHeight   INIT 28
+   DATA AutoSize  INIT .F.
+   DATA OnClick   INIT nil
+
+   METHOD Define
+  /// METHOD DefineImage
+///   METHOD SetFocus
+///   METHOD Picture     SETGET
+///   METHOD Value       SETGET
+
+///   METHOD RePaint
+ENDCLASS
+*-----------------------------------------------------------------------------*
+METHOD Define( ControlName, ParentForm, x, y, Caption, ProcedureName, w, h, ;
+               fontname, fontsize, tooltip, gotfocus, lostfocus, flat, ;
+               NoTabStop, HelpId, invisible, bold, italic, underline, ;
+               strikeout,   cImage, alignment,lrtl  ) CLASS TMixButton
+*-----------------------------------------------------------------------------*
+Local ControlHandle, nStyle, lBitMap, aRet, uvalue, cvalue, ldisabled, cbuffer, hbitmap
+
+   ASSIGN ::nCol    VALUE x TYPE "N"
+   ASSIGN ::nRow    VALUE y TYPE "N"
+   ASSIGN ::nWidth  VALUE w TYPE "N"
+   ASSIGN ::nHeight VALUE h TYPE "N"
+
+        uvalue:=valtype(alignment)
+        if uvalue == "C"
+           cvalue:= alltrim(upper(alignment))
+           DO CASE
+           CASE cvalue = "LEFT"
+                alignment := 0
+           CASE cvalue = "RIGHT"
+                alignment := 1
+           CASE cvalue = "BOTTOM"
+                alignment := 3
+           OTHERWISE
+                alignment := 2
+           ENDCASE
+        else
+           alignment := 2
+        endif
+
+   ldisabled := .F.
+
+   lBitMap := ! ValType( caption ) $ "CM" .AND. ;
+              ( ValType( cImage ) $ "CM" .OR. ;
+                ValType( cBuffer ) $ "CM" .OR. ;
+                ValidHandler( hBitMap ) )
+   If ! lBitMap .AND. Empty( caption )
+      If ( Valtype( cImage ) $ "CM" .AND. ! Empty( cImage ) ) .OR. ;
+         ( Valtype( cBuffer ) $ "CM" .AND. ! Empty( cBuffer ) ) .OR. ;
+         ValidHandler( hBitMap )
+         lBitMap := .T.
+      EndIf
+   EndIf
+
+   ::SetForm( ControlName, ParentForm, FontName, FontSize,,,, lRtl )
+
+   nStyle := ::InitStyle( ,, Invisible, NoTabStop, lDisabled ) + BS_PUSHBUTTON + ;
+             if( ValType( flat ) == "L"      .AND. flat,       BS_FLAT, 0 )     + ;
+             if( lBitMap,                                      BS_BITMAP, 0 )
+
+
+////       if( ValType( lNoPrefix ) == "L" .AND. lNoPrefix,  SS_NOPREFIX, 0 ) + ;
+
+  if "XP"$OS()
+      aRet := InitMixedButton ( ::ContainerhWnd, Caption, 0, ::ContainerCol, ::ContainerRow ,::width ,::height ,'',0 , flat , NoTabStop , invisible , cimage , alignment )
+      ControlHandle := aRet [1]
+   else
+       ControlHandle := InitButton( ::ContainerhWnd, Caption, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, ::lRtl, nStyle )
+   endif
+
+
+   ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
+   ::SetFont( , , bold, italic, underline, strikeout )
+
+   ::OnClick := ProcedureName
+   ::OnLostFocus := LostFocus
+   ::OnGotFocus :=  GotFocus
+   ::Caption := Caption
+
+/*
+  ASSIGN ::lNoTransparent VALUE lNoTransparent TYPE "L"
+   ASSIGN ::AutoSize       VALUE lScale         TYPE "L"
+   ASSIGN ::lCancel        VALUE lCancel        TYPE "L"
+*/
+
+   ::Picture := cImage
+   If ! ValidHandler( ::AuxHandle )
+////      ::Buffer := cBuffer
+      If ! ValidHandler( ::AuxHandle )
+      ///   ::HBitMap := hBitMap
+      EndIf
+   EndIf
+
+Return Self
+
+
 #pragma BEGINDUMP
 #include <hbapi.h>
 #include <windows.h>
 #include <commctrl.h>
 #include "../include/oohg.h"
+
+typedef struct {
+    HIMAGELIST himl;
+    RECT margin;
+    UINT uAlign;
+} BUTTON_IMAGELIST, *PBUTTON_IMAGELIST;
+
 
 static WNDPROC lpfnOldWndProc = 0;
 
@@ -272,6 +382,71 @@ HB_FUNC( INITBUTTON )
 
    HWNDret( hbutton );
 }
+
+HB_FUNC( INITMIXEDBUTTON )
+{
+	HWND hwnd;
+	HWND hbutton;
+	int Style ;
+	int BCM_SETIMAGELIST = 0x1600 + 2;
+	HIMAGELIST himl;
+	BUTTON_IMAGELIST bi ;
+
+	hwnd = (HWND) hb_parnl (1);
+
+	Style =  BS_NOTIFY | WS_CHILD | BS_PUSHBUTTON ;
+
+	if ( hb_parl (10) )
+	{
+		Style = Style | BS_FLAT ;
+	}
+
+	if ( ! hb_parl (11) )
+	{
+		Style = Style | WS_TABSTOP ;
+	}
+
+	if ( ! hb_parl (12) )
+	{
+		Style = Style | WS_VISIBLE ;
+	}
+
+	hbutton = CreateWindow( "button" ,
+                           hb_parc(2) ,
+                           Style ,
+                           hb_parni(4) ,
+                           hb_parni(5) ,
+                           hb_parni(6) ,
+                           hb_parni(7) ,
+                           hwnd ,
+                           (HMENU)hb_parni(3) ,
+                           GetModuleHandle(NULL) ,
+                           NULL ) ;
+
+	himl = ImageList_LoadImage( GetModuleHandle(NULL), hb_parc(13), 0, 6, CLR_DEFAULT , IMAGE_BITMAP, LR_LOADTRANSPARENT | LR_LOADMAP3DCOLORS );
+	if ( himl == NULL )
+	{
+		himl = ImageList_LoadImage( GetModuleHandle(NULL), hb_parc(13), 0, 6, CLR_DEFAULT , IMAGE_BITMAP, LR_LOADTRANSPARENT | LR_LOADFROMFILE | LR_LOADMAP3DCOLORS );
+	}
+
+	bi.himl = himl ;
+	bi.margin.left = 10 ;
+	bi.margin.top = 10 ;
+	bi.margin.bottom = 10 ;
+	bi.margin.right = 10 ;
+	bi.uAlign = hb_parni(14) ;
+
+	SendMessage( (HWND) hbutton , (UINT) BCM_SETIMAGELIST , (WPARAM) 0 , (LPARAM) &bi ) ;
+
+	hb_reta (2) ;
+
+	hb_stornl ( (LONG) hbutton , -1 , 1 ) ;
+
+	hb_stornl ( (LONG) himl , -1 , 2 ) ;
+
+}
+
+
 
 #pragma ENDDUMP
 

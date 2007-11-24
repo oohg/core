@@ -1,5 +1,5 @@
 /*
- * $Id: i_button.ch,v 1.11 2007-09-11 04:26:05 guerra000 Exp $
+ * $Id: i_button.ch,v 1.12 2007-11-24 12:02:15 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -163,3 +163,59 @@
                 <tooltip>, <{change}>, [<w>], [<h>], <{lostfocus}>, <{gotfocus}>, <helpid>, ;
                 <.invisible.>, <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, ;
                 <(field)>, <.rtl.>, <bitmap>, <buffer>, <hbitmap>, <.notrans.>, <.scale.> )
+
+
+
+
+
+#xcommand @ <row>,<col> BUTTON <name> ;
+                [ OBJ <obj> ] ;
+		[ <dummy1: OF, PARENT> <parent> ] ;
+		CAPTION <caption> ;
+		PICTURE <bitmap> ;
+		[ <alignment:LEFT,RIGHT,TOP,BOTTOM> ] ;
+		[ <dummy2: ACTION,ON CLICK,ONCLICK> <action> ] ;
+		[ WIDTH <w> ] ;
+		[ HEIGHT <h> ] ;
+		[ FONT <font> ] ;
+		[ SIZE <size> ] ;
+		[ <bold : BOLD> ] ;
+		[ <italic : ITALIC> ] ;
+		[ <underline : UNDERLINE> ] ;
+		[ <strikeout : STRIKEOUT> ] ;
+		[ TOOLTIP <tooltip> ] ;
+                [ SUBCLASS <subclass> ] ;
+                [ <rtl: RTL> ]                    ;
+		[ <flat: FLAT> ] ;
+		[ ON GOTFOCUS <gotfocus> ] ;
+		[ ON LOSTFOCUS <lostfocus> ] ;
+		[ <notabstop: NOTABSTOP> ] ;
+		[ HELPID <helpid> ] 		;
+		[ <invisible: INVISIBLE> ]  ;
+               =>;
+               [ <obj> := ] _OOHG_SelectSubClass( TMixButton(), [ <subclass>() ]): ;
+                                Define ( <(name)>, ;
+				<(parent)>,  ;
+				<col>,  ;
+				<row>,  ;
+				<caption>,  ;
+				<{action}>,  ;
+				<w>,  ;
+				<h>,  ;
+				<font>,  ;
+				<size>,  ;
+				<tooltip>,  ;
+				<{gotfocus}>,  ;
+				<{lostfocus}>,  ;
+				<.flat.>,  ;
+				<.notabstop.>,  ;
+				<helpid>,  ;
+				<.invisible.>  ,;
+				<.bold.>,  ;
+				<.italic.>,  ;
+				<.underline.>,  ;
+				<.strikeout.>,  ;
+				<bitmap>, ;
+				<"alignment">,<.rtl.> )
+
+
