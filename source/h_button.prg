@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.29 2007-11-24 12:02:15 declan2005 Exp $
+ * $Id: h_button.prg,v 1.30 2007-11-24 17:06:51 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -235,21 +235,21 @@ METHOD RePaint() CLASS TButton
 RETURN Self
 
 
-CLASS TMixButton FROM TImage
+CLASS TMixButton FROM TButton
    DATA Type      INIT "BUTTON" READONLY
    DATA lNoTransparent INIT .F.
    DATA nWidth    INIT 100
    DATA nHeight   INIT 28
    DATA AutoSize  INIT .F.
    DATA OnClick   INIT nil
+   DATA Align     INIT 2
 
    METHOD Define
   /// METHOD DefineImage
 ///   METHOD SetFocus
-///   METHOD Picture     SETGET
-///   METHOD Value       SETGET
+   METHOD Picture     SETGET
 
-///   METHOD RePaint
+
 ENDCLASS
 *-----------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, x, y, Caption, ProcedureName, w, h, ;
@@ -280,6 +280,7 @@ Local ControlHandle, nStyle, lBitMap, aRet, uvalue, cvalue, ldisabled, cbuffer, 
         else
            alignment := 2
         endif
+        ::align:= alignment
 
    ldisabled := .F.
 
@@ -311,6 +312,7 @@ Local ControlHandle, nStyle, lBitMap, aRet, uvalue, cvalue, ldisabled, cbuffer, 
        ControlHandle := InitButton( ::ContainerhWnd, Caption, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, ::lRtl, nStyle )
    endif
 
+   ::cPicture:=cImage
 
    ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
@@ -326,7 +328,7 @@ Local ControlHandle, nStyle, lBitMap, aRet, uvalue, cvalue, ldisabled, cbuffer, 
    ASSIGN ::lCancel        VALUE lCancel        TYPE "L"
 */
 
-   ::Picture := cImage
+////   ::Picture := cImage
    If ! ValidHandler( ::AuxHandle )
 ////      ::Buffer := cBuffer
       If ! ValidHandler( ::AuxHandle )
@@ -335,7 +337,19 @@ Local ControlHandle, nStyle, lBitMap, aRet, uvalue, cvalue, ldisabled, cbuffer, 
    EndIf
 
 Return Self
+*-----------------------------------------
+METHOD Picture ( cPicture ) CLASS TMixButton
+*-----------------------------------------
+ LOCAL nAttrib
+   IF VALTYPE( cPicture ) $ "CM" .and. "XP"$OS()
+      DeleteObject( ::AuxHandle )
+      ::cPicture := cPicture
 
+      ::Auxhandle := SetMixedBtnPicture ( ::Hwnd, cPicture, ::Align )
+
+       RedrawWindow( ::hwnd )
+   ENDIF
+RETURN ::cPicture
 
 #pragma BEGINDUMP
 #include <hbapi.h>
@@ -446,6 +460,31 @@ HB_FUNC( INITMIXEDBUTTON )
 
 }
 
+ HB_FUNC( SETMIXEDBTNPICTURE)
+{
+
+	int BCM_SETIMAGELIST = 0x1600 + 2;
+	HIMAGELIST himl;
+	BUTTON_IMAGELIST bi ;
+
+	himl = ImageList_LoadImage( GetModuleHandle(NULL), hb_parc(2), 0, 6, CLR_DEFAULT , IMAGE_BITMAP, LR_LOADTRANSPARENT | LR_LOADMAP3DCOLORS );
+	if ( himl == NULL )
+	{
+		himl = ImageList_LoadImage( GetModuleHandle(NULL), hb_parc(2), 0, 6, CLR_DEFAULT , IMAGE_BITMAP, LR_LOADTRANSPARENT | LR_LOADFROMFILE | LR_LOADMAP3DCOLORS );
+	}
+
+	bi.himl = himl ;
+	bi.margin.left = 10 ;
+	bi.margin.top = 10 ;
+	bi.margin.bottom = 10 ;
+	bi.margin.right = 10 ;
+	bi.uAlign = hb_parni(3) ;
+
+	SendMessage( (HWND) hb_parnl (1) , (UINT) BCM_SETIMAGELIST , (WPARAM) 0 , (LPARAM) &bi ) ;
+
+	hb_retnl( (LONG) himl );
+
+}
 
 
 #pragma ENDDUMP
