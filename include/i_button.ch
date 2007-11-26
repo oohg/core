@@ -1,5 +1,5 @@
 /*
- * $Id: i_button.ch,v 1.12 2007-11-24 12:02:15 declan2005 Exp $
+ * $Id: i_button.ch,v 1.13 2007-11-26 04:25:40 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -121,13 +121,14 @@
 		[ <notrans: NOTRANSPARENT> ] ;
                 [ <scale: FORCESCALE> ] ;
                 [ <cancel: CANCEL> ] ;
+		[ <alignment:LEFT,RIGHT,TOP,BOTTOM> ] ;
 	=>;
         [ <obj> := ] _OOHG_SelectSubClass( TButton(), [ <subclass>() ] ): ;
                    Define( <(name)>, <(parent)>, <col>, <row>, <caption>, <{action}>, ;
                    <w>, <h>, <font>, <size>, <tooltip>, <{gotfocus}>,<{lostfocus}>, <.flat.>, <.notabstop.>, ;
                    <helpid>, <.invisible.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.>, <.rtl.>, ;
                    <.noprefix.>, <.disabled.>, <buffer>, <hbitmap>, <bitmap>, <.notrans.>, <.scale.>, ;
-                   <.cancel.> )
+                   <.cancel.>, <"alignment"> )
 
 #command @ <row>,<col> CHECKBUTTON <name> ;
                 [ OBJ <obj> ] ;
@@ -156,66 +157,10 @@
                 [ HBITMAP <hbitmap> ] ;
 		[ <notrans: NOTRANSPARENT> ] ;
                 [ <scale: FORCESCALE> ] ;
-		[ FIELD <field> ]		;
+                [ FIELD <field> ] ;
 	=>;
         [ <obj> := ] _OOHG_SelectSubClass( TButtonCheck(), [ <subclass>() ] ): ;
                 Define( <(name)>, <(parent)>, <col>, <row>, <caption>, <value>, <f>, <n>, ;
                 <tooltip>, <{change}>, [<w>], [<h>], <{lostfocus}>, <{gotfocus}>, <helpid>, ;
                 <.invisible.>, <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, ;
                 <(field)>, <.rtl.>, <bitmap>, <buffer>, <hbitmap>, <.notrans.>, <.scale.> )
-
-
-
-
-
-#xcommand @ <row>,<col> BUTTON <name> ;
-                [ OBJ <obj> ] ;
-		[ <dummy1: OF, PARENT> <parent> ] ;
-		CAPTION <caption> ;
-		PICTURE <bitmap> ;
-		[ <alignment:LEFT,RIGHT,TOP,BOTTOM> ] ;
-		[ <dummy2: ACTION,ON CLICK,ONCLICK> <action> ] ;
-		[ WIDTH <w> ] ;
-		[ HEIGHT <h> ] ;
-		[ FONT <font> ] ;
-		[ SIZE <size> ] ;
-		[ <bold : BOLD> ] ;
-		[ <italic : ITALIC> ] ;
-		[ <underline : UNDERLINE> ] ;
-		[ <strikeout : STRIKEOUT> ] ;
-		[ TOOLTIP <tooltip> ] ;
-                [ SUBCLASS <subclass> ] ;
-                [ <rtl: RTL> ]                    ;
-		[ <flat: FLAT> ] ;
-		[ ON GOTFOCUS <gotfocus> ] ;
-		[ ON LOSTFOCUS <lostfocus> ] ;
-		[ <notabstop: NOTABSTOP> ] ;
-		[ HELPID <helpid> ] 		;
-		[ <invisible: INVISIBLE> ]  ;
-               =>;
-               [ <obj> := ] _OOHG_SelectSubClass( TMixButton(), [ <subclass>() ]): ;
-                                Define ( <(name)>, ;
-				<(parent)>,  ;
-				<col>,  ;
-				<row>,  ;
-				<caption>,  ;
-				<{action}>,  ;
-				<w>,  ;
-				<h>,  ;
-				<font>,  ;
-				<size>,  ;
-				<tooltip>,  ;
-				<{gotfocus}>,  ;
-				<{lostfocus}>,  ;
-				<.flat.>,  ;
-				<.notabstop.>,  ;
-				<helpid>,  ;
-				<.invisible.>  ,;
-				<.bold.>,  ;
-				<.italic.>,  ;
-				<.underline.>,  ;
-				<.strikeout.>,  ;
-				<bitmap>, ;
-				<"alignment">,<.rtl.> )
-
-

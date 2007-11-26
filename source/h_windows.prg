@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.157 2007-11-22 14:33:00 declan2005 Exp $
+ * $Id: h_windows.prg,v 1.158 2007-11-26 04:25:40 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -207,7 +207,7 @@ CLASS TWindow
    DATA lInternal           INIT .T.
    DATA lForm               INIT .F.
    DATA lReleasing          INIT .F.
-   
+
    DATA lAdjust             INIT .T.
    DATA lFixFont            INIT .F.
    DATA lfixwidth           INIT .F.
@@ -225,13 +225,13 @@ CLASS TWindow
    DATA NestedClick         INIT .F.
    DATA HScrollBar          INIT nil
    DATA VScrollBar          INIT nil
-   
+
     //////// all redimension Vars
    DATA nOldw          INIT 0
    DATA nOLdh          INIT 0
    DATA nWindowState   INIT  0   /// 2 Maximizada 1 minimizada  0 Normal
-  
-   
+
+
    ///////
 
 
@@ -248,6 +248,8 @@ CLASS TWindow
    METHOD BackColor           SETGET
    METHOD FontColorSelected   SETGET
    METHOD BackColorSelected   SETGET
+   METHOD FontColorCode       SETGET
+   METHOD BackColorCode       SETGET
    METHOD Caption             SETGET
    METHOD Events
 
@@ -450,6 +452,26 @@ HB_FUNC_STATIC( TWINDOW_FONTCOLOR )
    // Return value was set in _OOHG_DetermineColorReturn()
 }
 
+HB_FUNC_STATIC( TWINDOW_FONTCOLORCODE )
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+
+   if( hb_pcount() >= 1 )
+   {
+      if( ! _OOHG_DetermineColor( hb_param( 1, HB_IT_ANY ), &oSelf->lFontColor ) )
+      {
+         oSelf->lFontColor = -1;
+      }
+      if( ValidHandler( oSelf->hWnd ) )
+      {
+         RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+      }
+   }
+
+   hb_retnl( oSelf->lFontColor );
+}
+
 HB_FUNC_STATIC( TWINDOW_BACKCOLOR )
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
@@ -464,6 +486,26 @@ HB_FUNC_STATIC( TWINDOW_BACKCOLOR )
    }
 
    // Return value was set in _OOHG_DetermineColorReturn()
+}
+
+HB_FUNC_STATIC( TWINDOW_BACKCOLORCODE )
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+
+   if( hb_pcount() >= 1 )
+   {
+      if( ! _OOHG_DetermineColor( hb_param( 1, HB_IT_ANY ), &oSelf->lBackColor ) )
+      {
+         oSelf->lBackColor = -1;
+      }
+      if( ValidHandler( oSelf->hWnd ) )
+      {
+         RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+      }
+   }
+
+   hb_retnl( oSelf->lBackColor );
 }
 
 HB_FUNC_STATIC( TWINDOW_FONTCOLORSELECTED )
@@ -1376,7 +1418,7 @@ CLASS TForm FROM TWindow
    METHOD Restore()     BLOCK { | Self | Restore( ::hWnd ) }
    METHOD Minimize()    BLOCK { | Self | Minimize( ::hWnd ) }
    METHOD Maximize()    BLOCK { | Self | Maximize( ::hWnd ) }
-   
+
    METHOD getWindowState()
 
    METHOD SetFocusedSplitChild
@@ -1668,9 +1710,9 @@ Return ::lVisible
 *-----------------------------------------------------------------------------*
 METHOD Activate( lNoStop, oWndLoop ) CLASS TForm
 *-----------------------------------------------------------------------------*
-                             
+
    ASSIGN lNoStop VALUE lNoStop TYPE "L" DEFAULT .F.
-   
+
    If _OOHG_ThisEventType == 'WINDOW_RELEASE' .AND. ! lNoStop
       MsgOOHGError("ACTIVATE WINDOW: activate windows within an 'on release' window procedure is not allowed. Program terminated" )
    Endif
@@ -2802,7 +2844,7 @@ CLASS TFormInternal FROM TForm
 *-----------------------------------------------------------------------------*
    DATA Type           INIT "I" READONLY
    DATA lInternal      INIT .T.
-  
+
    METHOD Define
    METHOD Define2
    METHOD SizePos

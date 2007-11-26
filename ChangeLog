@@ -1,11 +1,18 @@
 /*
- * $Id: ChangeLog,v 1.456 2007-11-24 17:06:49 declan2005 Exp $
+ * $Id: ChangeLog,v 1.457 2007-11-26 04:25:39 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-11-25 22:22 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_button.ch
+  * source/h_button.prg
+    * Converted TMixButton() to part of TButton().
+  * source/h_windows.prg
+    + TWindow:FontColorCode and TWindow:BackColorCode methods added.
 
 2007-11-24 12:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_button.prg
@@ -16,13 +23,11 @@
   * include/i_button.ch
     * first approach to mixed buttons text and picture at the same time
 
-
-2007-11-22 9:29 UTC-0500 Ciro Vargas C. <cvc@oohg.org> 
+2007-11-22 9:29 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_windows.prg
   * source/h_controlmisc.prg
-    * Adjust Datas moved to sup class twindow    
+    * Adjust Datas moved to sup class twindow
     * little fixed added needed by internal windows in autoadjust method.
-
 
 2007-11-18 19:25 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_combo.prg
