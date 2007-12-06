@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.18 2007-10-08 21:19:04 declan2005 Exp $
+ * $Id: winprint.prg,v 1.19 2007-12-06 12:15:05 guerra000 Exp $
  */
 // -----------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -2162,6 +2162,7 @@ HB_FUNC (RR_SETDEVMODE)
      if (what==DM_PRINTQUALITY)   pi2->pDevMode->dmPrintQuality = (short)hb_parni(2);
      if (what==DM_COLOR)          pi2->pDevMode->dmColor = (short)hb_parni(2);
      if (what==DM_DUPLEX)         pi2->pDevMode->dmDuplex = (short)hb_parni(2);
+     if (what==DM_COLLATE)        pi2->pDevMode->dmCollate = (short)hb_parni(2);
 
      DocumentProperties(NULL, hPrinter,PrinterName,pi2->pDevMode,pi2->pDevMode,DM_IN_BUFFER | DM_OUT_BUFFER);
      SetPrinter(hPrinter, 2, (LPBYTE)pi2,0);
