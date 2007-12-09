@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.31 2007-11-26 04:25:40 guerra000 Exp $
+ * $Id: h_button.prg,v 1.32 2007-12-09 20:28:28 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -324,7 +324,6 @@ HB_FUNC( SETIMAGEXP )
    HBITMAP hBmp;
    HBITMAP hBmp2;
    BITMAP bm;
-   int iIndex;
    COLORREF clrColor;
    HWND hWnd;
 
@@ -344,14 +343,14 @@ HB_FUNC( SETIMAGEXP )
          ImageList_Destroy( himl );
       }
       clrColor = ( COLORREF ) hb_parnl( 4 );
-      if( clrColor == -1 )
+      if( clrColor == ( ~0 ) )
       {
          clrColor = GetSysColor( COLOR_BTNFACE );
       }
       GetObject( hBmp, sizeof( bm ), &bm );
       hBmp2 = _OOHG_ScaleImage( hWnd, hBmp, bm.bmWidth, bm.bmHeight, 0, clrColor );
       himl = ImageList_Create( bm.bmWidth, bm.bmHeight, ILC_COLOR32 | ILC_MASK, 2, 2 );
-      iIndex = ImageList_AddMasked( himl, hBmp2, clrColor );
+      ImageList_AddMasked( himl, hBmp2, clrColor );
       memset( &bm, 0, sizeof( bm ) );
       bi.himl = himl;
       bi.margin.left = 10;
