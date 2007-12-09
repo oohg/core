@@ -1,5 +1,5 @@
 /*
- * $Id: h_error.prg,v 1.31 2007-12-06 20:46:23 declan2005 Exp $
+ * $Id: h_error.prg,v 1.32 2007-12-09 19:53:54 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -109,58 +109,19 @@
 #include "common.ch"
 
 Function MsgOOHGError(Message)
-    Local n, ai, HtmArch, xText, txtarch
-    MemVar _OOHG_TXTERROR
+LOCAL oErrorLog
+MemVar _OOHG_TXTERROR
 
    // Kill timers and hot keys
    _KillAllTimers()
    _KillAllKeys()
 
-   If Type( "_OOHG_TXTERROR" ) != "L"
-      _OOHG_TXTERROR := .F.
+   If Type( "_OOHG_TXTERROR" ) == "L" .AND. _OOHG_TXTERROR
+      oErrorLog := TErrorTxt()
+   ELSE
+      oErrorLog := TErrorHtml()
    EndIf
-
-if  .not. _OOHG_TXTERROR
-    HtmArch := Html_ErrorLog()
-    Html_LineText(HtmArch, '<p class="updated">Date:' + Dtoc(Date()) + "  " + "Time: " + Time() )
-    n := 1
-    ai := ooHGVersion() + chr( 13 ) + chr( 10 ) + Message + chr( 13 ) + chr( 10 )
-    Html_LineText( HtmArch, "Version: " + ooHGVersion() )
-    Html_LineText( HtmArch, "Alias in use: " + alias() )
-    Html_LineText( HtmArch, "Error: "+Message +"</p>" )
-    DO WHILE ! Empty( ProcName( n ) )
-       xText := "Called from " + ProcName( n ) + "(" + AllTrim( Str( ProcLine( n++ ) ) ) + ")" + CHR( 13 ) + CHR( 10 )
-       ai += xText
-       Html_LineText( HtmArch, xText )
-    ENDDO
-    Html_Line( HtmArch )
-else
-    If .Not. File("\"+CurDir()+"\ErrorLog.txt")
-        txtArch := Fcreate("\"+CurDir()+"\ErrorLog.txt")
-    Else
-        txtArch := FOPEN("\"+CurDir()+"\ErrorLog.txt",2)
-        FSeek(txtArch,0,2)    //End Of File
-    EndIf
-
-    FWRITE(txtARCH,""+CHR(13)+CHR(10))
-    FWRITE(txtARCH,replicate("-",80)+CHR(13)+CHR(10))
-    FWRITE(txtARCH,""+CHR(13)+CHR(10))
-    FWRITE(txtARCH,"Date:" + Dtoc( Date() ) + "  " + "Time: " + Time()+CHR(13)+CHR(10))
-    n := 1
-    ai := ooHGVersion() + chr( 13 ) + chr( 10 ) + Message + chr( 13 ) + chr( 10 )
-    FWRITE(txtARCH,"Version: " + ooHGVersion()+CHR(13)+CHR(10))
-    FWRITE(txtARCH,"Alias in use: "+alias()+CHR(13)+CHR(10))
-    FWRITE(txtARCH,"Error: "+ Message+CHR(13)+CHR(10))
-    FWRITE(txtARCH,""+CHR(13)+CHR(10))
-    FWRITE(txtARCH,""+CHR(13)+CHR(10))
-    DO WHILE ! Empty( ProcName( n ) )
-       xText := "Called from " + ProcName( n ) + "(" + AllTrim( Str( ProcLine( n++ ) ) ) + ")"
-       ai += xText + chr(13)  + chr(10)
-           FWRITE(txtARCH,ai)
-    ENDDO
-    fclose(txtarch)
-endif
-    ShowError( ai )
+   oErrorLog:ErrorMessage( Message, 1 )
 Return Nil
 
 
@@ -168,18 +129,13 @@ Return Nil
 *------------------------------------------------------------------------------*
 PROCEDURE ErrorSys
 *------------------------------------------------------------------------------*
-
 	ErrorBlock( { | oError | DefError( oError ) } )
-
 RETURN
 
 STATIC FUNCTION DefError( oError )
-   LOCAL cMessage
-   LOCAL cDOSError
-   LOCAL n
-   Local Ai
-   LOCAL HtmArch, xText, txtarch
-   MemVar _OOHG_TXTERROR
+LOCAL cMessage, cDOSError
+LOCAL oErrorLog
+MemVar _OOHG_TXTERROR
 
    // By default, division by zero results in zero
    IF oError:genCode == EG_ZERODIV
@@ -201,13 +157,6 @@ STATIC FUNCTION DefError( oError )
       RETURN .F.
    ENDIF
 
-   If Type( "_OOHG_TXTERROR" ) != "L"
-      _OOHG_TXTERROR := .F.
-   EndIf
-
-   if ! _OOHG_TXTERROR
-      HtmArch := Html_ErrorLog()
-   endif
    cMessage := ErrorMessage( oError )
    IF ! Empty( oError:osCode )
       cDOSError := "(DOS Error " + LTrim( Str( oError:osCode ) ) + ")"
@@ -219,54 +168,17 @@ STATIC FUNCTION DefError( oError )
 
    // "Quit" selected
 
-
    IF ! Empty( oError:osCode )
       cMessage += " " + cDOSError
    ENDIF
-   if ! _OOHG_TXTERROR
-      Html_LineText(HtmArch, '<p class="updated">Date:' + Dtoc(Date()) + "  " + "Time: " + Time() )
-      Html_LineText(HtmArch, "Version: " + ooHGVersion()  )
-      Html_LineText(HtmArch, "Alias in use: "+alias()  )
-      Html_LineText(HtmArch, "Error: " + cMessage + "</p>" )
-      n := 2
-      ai = cmessage + chr(13) + chr (10) + chr(13) + chr (10)
-      WHILE ! Empty( ProcName( n ) )
-         xText := "Called from " + ProcName( n ) + "(" + AllTrim( Str( ProcLine( n++ ) ) ) + ")" +CHR(13) +CHR(10)
-         ai = ai + xText
-         Html_LineText(HtmArch,xText)
-      ENDDO
-      Html_Line(HtmArch)
-   else
-   If .Not. File("\"+CurDir()+"\ErrorLog.txt")
-        txtArch := Fcreate("\"+CurDir()+"\ErrorLog.txt")
-    Else
-        txtArch := FOPEN("\"+CurDir()+"\ErrorLog.txt",2)
-        FSeek(txtArch,0,2)    //End Of File
-    EndIf
 
-    FWRITE(txtARCH," "+CHR(13)+CHR(10))
-    FWRITE(txtARCH,replicate("-",80)+CHR(13)+CHR(10))
-    FWRITE(txtARCH," "+CHR(13)+CHR(10))
-    FWRITE(txtARCH,"Date:" + Dtoc( Date() ) + "  " + "Time: " + Time()+CHR(13)+CHR(10))
-      n := 2
-      ai := ooHGVersion() + chr( 13 ) + chr( 10 ) +cMessage + chr( 13 ) + chr( 10 )
-      FWRITE(txtARCH,"Version: " + ooHGVersion()+CHR(13)+CHR(10))
-    FWRITE(txtARCH,"Alias in use: "+ alias()+CHR(13)+CHR(10))
-    FWRITE(txtARCH,"Error: " + Cmessage+CHR(13)+CHR(10))
-    FWRITE(txtARCH," "+CHR(13)+CHR(10))
-    FWRITE(txtARCH," "+CHR(13)+CHR(10))
-      DO WHILE ! Empty( ProcName( n ) )
-         xText := "Called from " + ProcName( n ) + "(" + AllTrim( Str( ProcLine( n++ ) ) ) + ")"
-         ai += xText + chr(13) + chr(10)
-         FWRITE(txtARCH,xtext)
-      ENDDO
-      fclose(txtarch)
-   endif
-   ShowError(ai)
-
-   QUIT
-
-   RETURN .F.
+   If Type( "_OOHG_TXTERROR" ) == "L" .AND. _OOHG_TXTERROR
+      oErrorLog := TErrorTxt()
+   ELSE
+      oErrorLog := TErrorHtml()
+   EndIf
+   oErrorLog:ErrorMessage( cMessage, 2 )
+RETURN .F.
 
 // [vszakats]
 
@@ -303,101 +215,116 @@ STATIC FUNCTION ErrorMessage( oError )
       cMessage += ": " + oError:operation
    ENDCASE
 
-   RETURN cMessage
+RETURN cMessage
 
-*******************************************
-Function ShowError ( ErrorMesssage )
-********************************************
+#include "hbclass.ch"
 
-	dbcloseall()
+CLASS TErrorHtml
+   DATA cLine         INIT ""
+   DATA PreHeader     INIT '<HR>' + CHR( 13 ) + CHR( 10 ) + '<p class="updated">'
+   DATA PostHeader    INIT '</p>'
+   DATA FileName      INIT "ErrorLog.Htm"
+   METHOD Write
+   METHOD FileHeader
 
-	C_MSGSTOP ( ErrorMesssage , 'Program Error' )
+   METHOD ErrorMessage
+   METHOD CreateLog
+ENDCLASS
 
-   ExitProcess(0)
-
-Return Nil
-
-*------------------------------------------------------------------------------
-*-01-01-2003
-*-AUTHOR: Antonio Novo
-*-Create/Open the ErrorLog.Htm file
-*-Note: Is used in: errorsys.prg and h_error.prg
-*------------------------------------------------------------------------------
-FUNCTION HTML_ERRORLOG
-*---------------------
-    Local HtmArch := 0
-    If .Not. File("\"+CurDir()+"\ErrorLog.Htm")
-        HtmArch := HtmL_Ini("\"+CurDir()+"\ErrorLog.Htm","ooHG Errorlog File")
-        Html_Line(HtmArch)
-    Else
-        HtmArch := FOPEN("\"+CurDir()+"\ErrorLog.Htm",2)
-        FSeek(HtmArch,0,2)    //End Of File
-    EndIf
-RETURN (HtmArch)
+METHOD Write( cTxt ) CLASS TErrorHtml
+   ::cLine += RTRIM( cTxt ) + "<br>" + CHR( 13 ) + CHR( 10 )
+RETURN nil
 
 *------------------------------------------------------------------------------
 *-30-12-2002
 *-AUTHOR: Antonio Novo
 *-HTML Page Head
 *------------------------------------------------------------------------------
-FUNCTION HTML_INI(ARCH,TIT)
-*-------------------------
-    LOCAL HTMARCH
-    LOCAL cStilo:= "<style> "                       +;
-                     "body{ "                       +;
-                       "font-family: sans-serif;"   +;
-                       "background-color: #ffffff;" +;
-                       "font-size: 75%;"            +;
-                       "color: #000000;"            +;
-                       "}"                          +;
-                     "h1{"                          +;
-                       "font-family: sans-serif;"   +;
-                       "font-size: 150%;"           +;
-                       "color: #0000cc;"            +;
-                       "font-weight: bold;"         +;
-                       "background-color: #f0f0f0;" +;
-                       "}"                          +;
-                     ".updated{"                    +;
-                       "font-family: sans-serif;"   +;
-                       "color: #cc0000;"            +;
-                       "font-size: 110%;"           +;
-                       "}"                          +;
-                     ".normaltext{"                 +;
-                      "font-family: sans-serif;"    +;
-                      "font-size: 100%;"            +;
-                      "color: #000000;"             +;
-                      "font-weight: normal;"        +;
-                      "text-transform: none;"       +;
-                      "text-decoration: none;"      +;
-                    "}"                             +;
-                    "</style>"
 
-    HTMARCH := FCREATE(ARCH)
-    FWRITE(HTMARCH,"<HTML><HEAD><TITLE>"+TIT+"</TITLE></HEAD>" + cStilo +"<BODY>"+CHR(13)+CHR(10))
-    FWRITE(HTMARCH,'<H1 Align=Center>'+TIT+'</H1><BR>'+CHR(13)+CHR(10))
-RETURN (HTMARCH)
+METHOD FileHeader( cTitle ) CLASS TErrorHtml
+RETURN "<HTML><HEAD><TITLE>" + cTitle + "</TITLE></HEAD>" + CHR( 13 ) + CHR( 10 ) + ;
+       "<style> "                       + ;
+         "body{ "                       + ;
+           "font-family: sans-serif;"   + ;
+           "background-color: #ffffff;" + ;
+           "font-size: 75%;"            + ;
+           "color: #000000;"            + ;
+           "}"                          + ;
+         "h1{"                          + ;
+           "font-family: sans-serif;"   + ;
+           "font-size: 150%;"           + ;
+           "color: #0000cc;"            + ;
+           "font-weight: bold;"         + ;
+           "background-color: #f0f0f0;" + ;
+           "}"                          + ;
+         ".updated{"                    + ;
+           "font-family: sans-serif;"   + ;
+           "color: #cc0000;"            + ;
+           "font-size: 110%;"           + ;
+           "}"                          + ;
+         ".normaltext{"                 + ;
+          "font-family: sans-serif;"    + ;
+          "font-size: 100%;"            + ;
+          "color: #000000;"             + ;
+          "font-weight: normal;"        + ;
+          "text-transform: none;"       + ;
+          "text-decoration: none;"      + ;
+        "}"                             + ;
+       "</style>"                       + ;
+       "<BODY>" + CHR( 13 ) + CHR( 10 ) + ;
+       "<H1 Align=Center>" + cTitle + "</H1><br>" + CHR( 13 ) + CHR( 10 )
 
-*------------------------------------------------------------------------------
-*-30-12-2002
-*-AUTHOR: Antonio Novo
-*-HTM Page Line
-*------------------------------------------------------------------------------
-FUNCTION HTML_LINETEXT(HTMARCH,LINEA)
-*-----------------------------------
- //   LOCAL XLINEA
- //   XLINEA := RTRIM(LINEA)
-    FWRITE(HTMARCH, RTRIM( LINEA ) + "<BR>"+CHR(13)+CHR(10))
-RETURN (.T.)
+METHOD CreateLog() CLASS TErrorHtml
+LOCAL nHdl, cFile, cTop, cBottom, nPos
+   cFile := "\" + CurDir() + "\" + ::FileName
+   cBottom := MEMOREAD( cFile )
+   nPos := AT( ::PreHeader(), cBottom )
+   IF nPos == 0
+      cTop := ::FileHeader( "ooHG Errorlog File" )
+   ELSE
+      cTop := LEFT( cBottom, nPos - 1 )
+      cBottom := SUBSTR( cBottom, nPos )
+   ENDIF
+   nHdl := FCREATE( cFile )
+   FWRITE( nHdl, cTop )
+   FWRITE( nHdl, ::cLine )
+   FWRITE( nHdl, cBottom )
+   FCLOSE( nHdl )
+RETURN nil
 
-*------------------------------------------------------------------------------
-*-30-12-2002
-*-AUTHOR: Antonio Novo
-*-HTM Line
-*------------------------------------------------------------------------------
-FUNCTION HTML_LINE(HTMARCH)
-*-------------------------
-    FWRITE(HTMARCH,"<HR>"+CHR(13)+CHR(10))
-RETURN (.T.)
+METHOD ErrorMessage( cError, nPosition ) CLASS TErrorHtml
+LOCAL cTxtMsg, cText
+   cTxtMsg := ooHGVersion() + CHR( 13 ) + CHR( 10 ) + cError + CHR( 13 ) + CHR( 10 )
+   ::Write( ::PreHeader() + "Date: " + Dtoc( Date() ) + "  " + "Time: " + Time() )
+   ::Write( "Version: " + ooHGVersion() )
+   ::Write( "Alias in use: "+ alias() )
+   ::Write( "Error: " + cError + ::PostHeader() )
+   nPosition++
+   DO WHILE ! Empty( ProcName( nPosition ) )
+      cText := "Called from " + ProcName( nPosition ) + "(" + AllTrim( Str( ProcLine( nPosition++ ) ) ) + ")"
+      cTxtMsg += cText + CHR( 13 ) + CHR( 10 )
+      ::Write( cText )
+   ENDDO
+
+   ::CreateLog()
+	dbcloseall()
+   C_MSGSTOP( cTxtMsg, "Program Error" )
+   ExitProcess( 0 )
+RETURN nil
+
+CLASS TErrorTxt FROM TErrorHtml
+   DATA cLine         INIT ""
+   DATA PreHeader     INIT " " + CHR( 13 ) + CHR( 10 ) + replicate( "-", 80 ) + CHR( 13 ) + CHR( 10 ) + " " + CHR( 13 ) + CHR( 10 )
+   DATA PostHeader    INIT CHR( 13 ) + CHR( 10 ) + CHR( 13 ) + CHR( 10 )
+   DATA FileName      INIT "ErrorLog.txt"
+   METHOD Write
+   DATA FileHeader    INIT ""
+ENDCLASS
+
+METHOD Write( cTxt ) CLASS TErrorTxt
+   ::cLine += RTRIM( cTxt ) + CHR( 13 ) + CHR( 10 )
+RETURN nil
+
 
 
 *------------------------------------------------------------------------------
