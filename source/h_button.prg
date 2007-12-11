@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.32 2007-12-09 20:28:28 guerra000 Exp $
+ * $Id: h_button.prg,v 1.33 2007-12-11 12:53:43 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -249,6 +249,7 @@ METHOD RePaint() CLASS TButton
    ::TControl:SizePos()
    IF ( "XP" $ OS() .OR. "Vista" $ OS() ) .AND. ValidHandler( ::AuxHandle ) .AND. LEN( ::Caption ) > 0
       SetImageXP( ::hWnd, ::AuxHandle, ::nAlign, ::BackColorCode )
+      ::redraw()
       ::hImage := NIL
    ELSEIF ::Stretch .OR. ::AutoSize
       ::hImage := _OOHG_SetBitmap( Self, ::AuxHandle, BM_SETIMAGE, ::Stretch, ::AutoSize )
