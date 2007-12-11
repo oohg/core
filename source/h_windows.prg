@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.158 2007-11-26 04:25:40 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.159 2007-12-11 12:31:12 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -1833,7 +1833,7 @@ Return nil
 METHOD ProcessInitProcedure() CLASS TForm
 *-----------------------------------------------------------------------------*
    if HB_IsBlock( ::OnInit )
-      ProcessMessages()
+    ////  ProcessMessages()
       ::DoEvent( ::OnInit, "WINDOW_INIT" )
    EndIf
    AEVAL( ::SplitChildList, { |o| o:ProcessInitProcedure() } )
@@ -2446,7 +2446,8 @@ Local oCtrl
         ***********************************************************************
 	case nMsg == WM_SIZE
         ***********************************************************************
-       ValidateScrolls( Self, .T. )
+
+           ValidateScrolls( Self, .T. )
 
            IF ::GetWindowstate() #  ::nWindowState
                ::nWindowState:= ::GetWindowState()
@@ -2470,12 +2471,13 @@ Local oCtrl
                         ::Autoadjust()
                        ENDIF
                ENDCASE
+               AEVAL( ::aControls, { |o| If( o:type == "MESSAGEBAR", o:Events_Size(), ) } )
+               IF ::active
+                  ::DoEvent( ::OnSize, '' )
+                  AEVAL( ::aControls, { |o| If( o:Container == nil, o:Events_Size(), ) } )
+               ENDIF
+           ENDIF
 
-           ENDIF
-           IF ::active
-              ::DoEvent( ::OnSize, '' )
-              AEVAL( ::aControls, { |o| If( o:Container == nil, o:Events_Size(), ) } )
-           ENDIF
 
       ***********************************************************************
         case nMsg ==  WM_EXITSIZEMOVE
