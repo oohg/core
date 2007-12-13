@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.159 2007-12-11 12:31:12 declan2005 Exp $
+ * $Id: h_windows.prg,v 1.160 2007-12-13 19:41:53 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -2471,13 +2471,14 @@ Local oCtrl
                         ::Autoadjust()
                        ENDIF
                ENDCASE
-               AEVAL( ::aControls, { |o| If( o:type == "MESSAGEBAR", o:Events_Size(), ) } )
                IF ::active
                   ::DoEvent( ::OnSize, '' )
                   AEVAL( ::aControls, { |o| If( o:Container == nil, o:Events_Size(), ) } )
                ENDIF
            ENDIF
-
+           IF ::nOLdw # ::Width .or.  ::nOldh # ::Height
+              AEVAL( ::aControls, { |o| If( o:type == "MESSAGEBAR", o:Events_Size(), ) } )
+           ENDIF
 
       ***********************************************************************
         case nMsg ==  WM_EXITSIZEMOVE

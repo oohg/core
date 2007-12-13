@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog,v 1.462 2007-12-11 12:53:43 declan2005 Exp $
+ * $Id: ChangeLog,v 1.463 2007-12-13 19:41:52 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-13-11 14:39 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_windows.prg
+    ! little adjust in order to statusbar looks ok  if change window size
+      programatically before active window.
 
 2007-12-11 07:27 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_button.prg
