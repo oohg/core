@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.162 2007-12-17 01:53:31 declan2005 Exp $
+ * $Id: h_windows.prg,v 1.163 2007-12-17 16:04:50 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -227,8 +227,8 @@ CLASS TWindow
    DATA VScrollBar          INIT nil
 
     //////// all redimension Vars
-   DATA nOldw          INIT 0
-   DATA nOLdh          INIT 0
+   DATA nOldw          INIT NIL
+   DATA nOLdh          INIT NIL
    DATA nWindowState   INIT  0   /// 2 Maximizada 1 minimizada  0 Normal
 
 
@@ -1456,6 +1456,8 @@ Local nStyle := 0, nStyleEx := 0
 Local hParent
 
 
+
+
    If HB_IsLogical( child ) .AND. child
       ::Type := "C"
       oParent := ::SearchParent( oParent )
@@ -1833,7 +1835,7 @@ Return nil
 METHOD ProcessInitProcedure() CLASS TForm
 *-----------------------------------------------------------------------------*
    if HB_IsBlock( ::OnInit )
-    ////  ProcessMessages()
+     ///  ProcessMessages()
       ::DoEvent( ::OnInit, "WINDOW_INIT" )
    EndIf
    AEVAL( ::SplitChildList, { |o| o:ProcessInitProcedure() } )
@@ -1985,8 +1987,7 @@ FOR i:=1 TO l
          ENDIF
       ENDIF
 
-   ENDIF
-
+   ENDIF  
 NEXT i
 
 ::nOLdw := nWidth
@@ -2463,7 +2464,7 @@ Local oCtrl
                        IF ::active
                           ::DoEvent( ::OnMinimize, '' )
                        ENDIF
-                  CASE ::nWindowState ==  0  //// normal
+                  CASE ::nWindowState ==  0  //// normal   restore
                        IF ::active
                           ::DoEvent( ::OnRestore, '' )
                        ENDIF
@@ -2471,26 +2472,32 @@ Local oCtrl
                         ::Autoadjust()
                        ENDIF
                ENDCASE
-          If ::Active
-          ::DoEvent( ::OnSize, '' )          
-           if _OOHG_AutoAdjust
-            ::Autoadjust()
-           endif
-       Endif
-           ENDIF
-           IF ::nOLdw # ::Width .or.  ::nOldh # ::Height
+              If ::Active
+                ::DoEvent( ::OnSize, '' )
+                 AEVAL( ::aControls, { |o| If( o:Container == nil, o:Events_Size(), ) } )
+              Endif
               AEVAL( ::aControls, { |o| If( o:type == "MESSAGEBAR", o:Events_Size(), ) } )
+           ELSE   //// por aca cuando se cambia el tamaño programaticamente
+             IF (::noldw#NIL .or. ::noldh#NIL  ) .and. (::nOLdw # ::Width .or.  ::nOldh # ::Height)
+              If ::Active
+                ::DoEvent( ::OnSize, '' )
+              Endif
               if _OOHG_AutoAdjust
                 ::Autoadjust()
               endif
+              AEVAL( ::aControls, { |o| If( o:type == "MESSAGEBAR", o:Events_Size(), ) } )
+              If ::Active
+                 AEVAL( ::aControls, { |o| If( o:Container == nil, o:Events_Size(), ) } )
+              endif
+             ENDIF
            ENDIF
+
 
       ***********************************************************************
         case nMsg ==  WM_EXITSIZEMOVE
       ***********************************************************************
        If ::Active
           ::DoEvent( ::OnSize, '' )
-           AEVAL( ::aControls, { |o| If( o:Container == nil, o:Events_Size(), ) } )
            if _OOHG_AutoAdjust
             ::Autoadjust()
            endif
