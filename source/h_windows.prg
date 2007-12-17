@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.164 2007-12-17 17:00:06 declan2005 Exp $
+ * $Id: h_windows.prg,v 1.165 2007-12-17 21:15:58 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -2456,7 +2456,7 @@ Local oCtrl
 
            ValidateScrolls( Self, .T. )
 
-           IF ::GetWindowstate() #  ::nWindowState
+           IF ::GetWindowstate() #  ::nWindowState    //// aqui cuando cambia el estado de la ventana
                ::nWindowState:= ::GetWindowState()
                DO CASE
                   CASE ::nWindowState ==  2   //// maximizada
@@ -2499,13 +2499,14 @@ Local oCtrl
            ENDIF
 
       ***********************************************************************
-        case nMsg ==  WM_EXITSIZEMOVE    //// cuando se cambia por reajuste con el mouse
+        case nMsg ==  WM_EXITSIZEMOVE    //// cuando se cambia el tamaño por reajuste con el mouse
       ***********************************************************************
-       If ::Active
+       If ::Active  .and. (::noldw#NIL .or. ::noldh#NIL  ) .and. (::nOLdw # ::Width .or.  ::nOldh # ::Height)
           ::DoEvent( ::OnSize, '' )
            if _OOHG_AutoAdjust
             ::Autoadjust()
            endif
+           AEVAL( ::aControls, { |o| If( o:Container == nil, o:Events_Size(), ) } )
        Endif
        ::lentersizemove:=.F.
         ***********************************************************************

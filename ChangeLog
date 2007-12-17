@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.465 2007-12-17 16:04:49 declan2005 Exp $
+ * $Id: ChangeLog,v 1.466 2007-12-17 21:15:58 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,7 +7,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-
+2007-12-17 16:15 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_windows.prg
+    * optimizing On SIZE event.
+    
 2007-12-17 11:03 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_windows.prg
     ! fix problems in general wm_size event.
