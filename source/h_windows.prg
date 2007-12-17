@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.163 2007-12-17 16:04:50 declan2005 Exp $
+ * $Id: h_windows.prg,v 1.164 2007-12-17 17:00:06 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -1359,6 +1359,8 @@ CLASS TForm FROM TWindow
    DATA nWidth         INIT 300
    DATA nHeight        INIT 300
    DATA lShowed        INIT .F.
+   
+   DATA lentersizemove INIT .F.
 
 
    DATA OnRelease      INIT nil
@@ -2443,6 +2445,10 @@ Local oCtrl
          ::DoEvent( ::OnPaint, '' )
 
          return 1
+         
+        case  nMsg == WM_ENTERSIZEMOVE 
+        
+         ::lentersizemove:=.T.
 
         ***********************************************************************
 	case nMsg == WM_SIZE
@@ -2472,29 +2478,28 @@ Local oCtrl
                         ::Autoadjust()
                        ENDIF
                ENDCASE
-              If ::Active
-                ::DoEvent( ::OnSize, '' )
-                 AEVAL( ::aControls, { |o| If( o:Container == nil, o:Events_Size(), ) } )
-              Endif
-              AEVAL( ::aControls, { |o| If( o:type == "MESSAGEBAR", o:Events_Size(), ) } )
+               If ::Active
+                  ::DoEvent( ::OnSize, '' )
+                  AEVAL( ::aControls, { |o| If( o:Container == nil, o:Events_Size(), ) } )
+               Endif
+               AEVAL( ::aControls, { |o| If( o:type == "MESSAGEBAR", o:Events_Size(), ) } )
            ELSE   //// por aca cuando se cambia el tamaño programaticamente
-             IF (::noldw#NIL .or. ::noldh#NIL  ) .and. (::nOLdw # ::Width .or.  ::nOldh # ::Height)
-              If ::Active
-                ::DoEvent( ::OnSize, '' )
-              Endif
-              if _OOHG_AutoAdjust
-                ::Autoadjust()
-              endif
-              AEVAL( ::aControls, { |o| If( o:type == "MESSAGEBAR", o:Events_Size(), ) } )
-              If ::Active
-                 AEVAL( ::aControls, { |o| If( o:Container == nil, o:Events_Size(), ) } )
-              endif
-             ENDIF
+               IF (::noldw#NIL .or. ::noldh#NIL  ) .and. (::nOLdw # ::Width .or.  ::nOldh # ::Height) .and. .not. ::lentersizemove
+                  If ::Active
+                     ::DoEvent( ::OnSize, '' )
+                  Endif
+                  if _OOHG_AutoAdjust
+                     ::Autoadjust()
+                  endif
+                  AEVAL( ::aControls, { |o| If( o:type == "MESSAGEBAR", o:Events_Size(), ) } )
+                  If ::Active
+                     AEVAL( ::aControls, { |o| If( o:Container == nil, o:Events_Size(), ) } )
+                  endif
+               ENDIF
            ENDIF
 
-
       ***********************************************************************
-        case nMsg ==  WM_EXITSIZEMOVE
+        case nMsg ==  WM_EXITSIZEMOVE    //// cuando se cambia por reajuste con el mouse
       ***********************************************************************
        If ::Active
           ::DoEvent( ::OnSize, '' )
@@ -2502,6 +2507,7 @@ Local oCtrl
             ::Autoadjust()
            endif
        Endif
+       ::lentersizemove:=.F.
         ***********************************************************************
 	case nMsg == WM_CLOSE
         ***********************************************************************
