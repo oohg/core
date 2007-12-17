@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.463 2007-12-13 19:41:52 declan2005 Exp $
+ * $Id: ChangeLog,v 1.464 2007-12-17 01:49:18 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,7 +7,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2007-13-11 14:39 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+2007-12-16 20:48 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_windows.prg
+    ! fixed problem in ON SIZE event.
+
+2007-12-13 14:39 UTC-0500 Ciro Vargas C. <cvc@oohg.org> 
   * source/h_windows.prg
     ! little adjust in order to statusbar looks ok  if change window size
       programatically before active window.
