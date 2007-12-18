@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.165 2007-12-17 21:15:58 declan2005 Exp $
+ * $Id: h_windows.prg,v 1.166 2007-12-18 23:54:45 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -1361,6 +1361,7 @@ CLASS TForm FROM TWindow
    DATA lShowed        INIT .F.
    
    DATA lentersizemove INIT .F.
+   DATA ldefined       INIT .F.
 
 
    DATA OnRelease      INIT nil
@@ -1659,6 +1660,7 @@ LOCAL nPos
       // TODO: Window structure already closed
    EndIf
   _PopEventInfo()
+  ::ldefined:=.T.
 Return Nil
 
 *--------------------------------------------------
@@ -2320,7 +2322,7 @@ HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
 FUNCTION _OOHG_TForm_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TForm
 *-----------------------------------------------------------------------------*
 Local i, NextControlHandle, xRetVal
-Local oCtrl
+Local oCtrl, lminim:=.F.
 * Local hWnd := ::hWnd
 	do case
 
@@ -2445,58 +2447,44 @@ Local oCtrl
          ::DoEvent( ::OnPaint, '' )
 
          return 1
-         
-        case  nMsg == WM_ENTERSIZEMOVE 
-        
+
+        case  nMsg == WM_ENTERSIZEMOVE
+
          ::lentersizemove:=.T.
 
-        ***********************************************************************
-	case nMsg == WM_SIZE
-        ***********************************************************************
+              ***********************************************************************
+  	case nMsg == WM_SIZE
+          ***********************************************************************
+     if  !::lentersizemove
+        ValidateScrolls( Self, .T. )
+        If ::Active
+           lminim:=.F.
+           DO CASE
+           CASE wParam == SIZE_MAXIMIZED
+              ::DoEvent( ::OnMaximize, '' )
 
-           ValidateScrolls( Self, .T. )
+           CASE wParam == SIZE_MINIMIZED
+              ::DoEvent( ::OnMinimize, '' )
+              lminim:=.T.
+           CASE wParam == SIZE_RESTORED
+              ::DoEvent( ::OnRestore, '' )
+           ENDCASE
 
-           IF ::GetWindowstate() #  ::nWindowState    //// aqui cuando cambia el estado de la ventana
-               ::nWindowState:= ::GetWindowState()
-               DO CASE
-                  CASE ::nWindowState ==  2   //// maximizada
-                       IF ::active
-                          ::DoEvent( ::OnMaximize, '' )
-                       ENDIF
-                       IF _OOHG_AutoAdjust
-                          ::Autoadjust()
-                       ENDIF
-                  CASE ::nWindowState ==  1  //// minimizada
-                       IF ::active
-                          ::DoEvent( ::OnMinimize, '' )
-                       ENDIF
-                  CASE ::nWindowState ==  0  //// normal   restore
-                       IF ::active
-                          ::DoEvent( ::OnRestore, '' )
-                       ENDIF
-                       IF _OOHG_AutoAdjust
-                        ::Autoadjust()
-                       ENDIF
-               ENDCASE
-               If ::Active
-                  ::DoEvent( ::OnSize, '' )
-                  AEVAL( ::aControls, { |o| If( o:Container == nil, o:Events_Size(), ) } )
-               Endif
-               AEVAL( ::aControls, { |o| If( o:type == "MESSAGEBAR", o:Events_Size(), ) } )
-           ELSE   //// por aca cuando se cambia el tamaño programaticamente
-               IF (::noldw#NIL .or. ::noldh#NIL  ) .and. (::nOLdw # ::Width .or.  ::nOldh # ::Height) .and. .not. ::lentersizemove
-                  If ::Active
-                     ::DoEvent( ::OnSize, '' )
-                  Endif
-                  if _OOHG_AutoAdjust
-                     ::Autoadjust()
-                  endif
-                  AEVAL( ::aControls, { |o| If( o:type == "MESSAGEBAR", o:Events_Size(), ) } )
-                  If ::Active
-                     AEVAL( ::aControls, { |o| If( o:Container == nil, o:Events_Size(), ) } )
-                  endif
-               ENDIF
-           ENDIF
+              ::DoEvent( ::OnSize, '' )
+              if _OOHG_AutoAdjust  .and. ! lminim
+                  ::autoadjust()       //// cambio de tamaño activada y cualquier cambio q no sea maximizar o restaurar
+              endif
+           
+
+           AEVAL( ::aControls, { |o| If( o:Container == nil, o:Events_Size(), ) } )
+        else
+            if ::ldefined
+               if _OOHG_AutoAdjust
+                  ::autoadjust()       ////// cambio de tamaño antes de activarla si ya esta definida
+               endif
+            endif
+        EndIf
+     endif
 
       ***********************************************************************
         case nMsg ==  WM_EXITSIZEMOVE    //// cuando se cambia el tamaño por reajuste con el mouse
