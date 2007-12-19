@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.468 2007-12-19 18:32:30 declan2005 Exp $
+ * $Id: ChangeLog,v 1.469 2007-12-19 18:53:39 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -9,7 +9,7 @@
 
 2007-12-19 13:31 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_checkbox.prg
-    ! fixed problem whit TRANSPARENT in Xp or Vista
+    ! fixed problem with TRANSPARENT in Xp or Vista
 
 2007-12-18 18:50 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_windows.prg
