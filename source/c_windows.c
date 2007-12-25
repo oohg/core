@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.54 2007-11-06 02:13:18 declan2005 Exp $
+ * $Id: c_windows.c,v 1.55 2007-12-25 17:52:00 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1208,7 +1208,45 @@ WORD PaletteSize(LPSTR);
 WORD SaveDIB(HDIB , LPSTR);
 HANDLE DDBToDIB(HBITMAP , HPALETTE );
 
-HB_FUNC( WNDCOPY  )  //  hWnd        Copies any Window to the Clipboard!
+HB_FUNC( _GETBITMAP )                   // hWnd, bAll
+{
+   HWND hWnd = HWNDparam( 1 );
+   HDC  hDC  = GetDC( hWnd );
+   HDC  hMemDC;
+   RECT rct;
+   HBITMAP hBitmap, hOldBmp;
+
+   if( hb_parl( 2 ) )
+   {
+      GetWindowRect( hWnd, &rct );
+   }
+   else
+   {
+      GetClientRect( hWnd, &rct );
+   }
+
+   hMemDC = CreateCompatibleDC( hDC );
+   hBitmap = CreateCompatibleBitmap( hDC, rct.right - rct.left, rct.bottom - rct.top );
+
+   hOldBmp = ( HBITMAP ) SelectObject( hMemDC, hBitmap );
+   BitBlt( hMemDC, 0, 0, rct.right-rct.left, rct.bottom-rct.top, hDC, 0, 0, SRCCOPY );
+   SelectObject( hMemDC, hOldBmp );
+
+   DeleteDC( hMemDC );
+   ReleaseDC( hWnd, hDC );
+   HWNDret( ( HWND ) hBitmap );
+}
+
+HB_FUNC( _SAVEBITMAP )                   // hBitmap, cFile
+{
+   HANDLE hDIB;
+
+   hDIB = DDBToDIB( ( HBITMAP ) HWNDparam( 1 ), NULL );
+   SaveDIB( hDIB, ( LPSTR ) hb_parc( 2 ) );
+   GlobalFree( hDIB );
+}
+
+HB_FUNC( WNDCOPY  )  //  hWnd, bAll, cFile        Copies any Window to the Clipboard!
 {
    HWND hWnd = HWNDparam( 1 );
    BOOL bAll = hb_parl( 2 );

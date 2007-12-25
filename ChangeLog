@@ -1,11 +1,19 @@
 /*
- * $Id: ChangeLog,v 1.470 2007-12-25 02:47:14 guerra000 Exp $
+ * $Id: ChangeLog,v 1.471 2007-12-25 17:52:00 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-12-25 11:47 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_window.ch
+  * source/c_windows.c
+  * source/h_windows.prg
+    + ::SaveAs() method added.
+    + _GetBitMap() and _SaveBitMap() functions added
+      (WNDCOPY splitted).
 
 2007-12-24 20:02 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * doc/classes.txt

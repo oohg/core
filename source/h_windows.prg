@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.167 2007-12-25 02:47:14 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.168 2007-12-25 17:52:00 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -263,6 +263,8 @@ CLASS TWindow
    METHOD RTL                 SETGET
    METHOD Action              SETGET
    METHOD Print
+   METHOD SaveAs
+   METHOD GetBitMap(l)        BLOCK { |Self,l| _GetBitMap( ::hWnd, l ) }
    METHOD AddControl
    METHOD DeleteControl
    METHOD SearchParent
@@ -918,9 +920,7 @@ Local myobject, cWork
    DEFAULT x    TO 1
    DEFAULT y    TO 1
 
-   bringwindowtotop( ::hWnd )
-
-   WNDCOPY( ::hWnd, .F., cWork ) //// save as BMP
+   ::SaveAs( cWork ) //// save as BMP
 
    With Object myobject:=Tprint()
 
@@ -942,6 +942,16 @@ Local myobject, cWork
    release myobject
 
    FErase( cWork )
+return nil
+
+*-----------------------------------------------------------------------------*
+METHOD SaveAs( cFile, lAll ) CLASS TWindow
+*-----------------------------------------------------------------------------*
+Local hBitMap
+   bringwindowtotop( ::hWnd )
+   hBitMap := ::GetBitMap( lAll )
+   _SaveBitmap( hBitMap, cFile )
+   DeleteObject( hBitMap )
 return nil
 
 *-----------------------------------------------------------------------------*

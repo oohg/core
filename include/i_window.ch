@@ -1,5 +1,5 @@
 /*
- * $Id: i_window.ch,v 1.30 2007-11-06 02:13:18 declan2005 Exp $
+ * $Id: i_window.ch,v 1.31 2007-12-25 17:52:00 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -114,7 +114,7 @@
 
 	#xcommand DECLARE WINDOW <w> ;
 	=>;
-        #xtranslate <w> . \<p:Name,Title,Height,Width,Col,Row,BackColor,FocusedControl,hWnd,Object,Cursor,NotifyIcon,NotifyToolTip\> => GetExistingFormObject( <(w)> ):\<p\> ;;
+        #xtranslate <w> . \<p:Name,Title,Height,Width,Col,Row,BackColor,FocusedControl,hWnd,Object,Cursor,NotifyIcon,NotifyToolTip,SaveAs\> => GetExistingFormObject( <(w)> ):\<p\> ;;
         #xtranslate <w> . \<p:Activate,Center,Release,Maximize,Minimize,Restore,Show,Hide,Print,SetFocus\> \[()\] => GetExistingFormObject( <(w)> ):\<p\> () ;;
         #xtranslate <w> . \<c\> . \<p:Value,Name,Address,BackColor,FontColor,Picture,ToolTip,FontName,FontSize,FontBold,FontUnderline,FontItalic,FontStrikeOut,Caption,Row,Col,Width,Height,Visible,Enabled,Checked,ItemCount,RangeMin,RangeMax,CaretPos,ForeColor\> => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ;;
         #xtranslate <w> . \<c\> . \<p:DisplayValue,Position,ForeColor\> => GetProperty ( <(w)>, \<(c)\> , \<(p)\> ) ;;
@@ -143,20 +143,6 @@
         #xtranslate <w> . \<x\> (\<k\>) . \<c\> . \<p:AddItem,AddPage\> (\<a1\> , \<a2\> , \<a3\> ) => <w> . \<c\> . \<p\> ( \<a1\> , \<a2\> , \<a3\> ) ;;
         #xtranslate <w> . \<x\> (\<k\>) . \<c\> . \<p:AddItem,AddColumn,AddControl\> (\<a1\> , \<a2\> , \<a3\> , \<a4\> ) => <w> . \<c\> . \<p\> ( \<a1\> , \<a2\> , \<a3\> , \<a4\> ) ;;
         #xtranslate <w> . \<x\> (\<k\>) . \<c\> . \<p:Name,Length,hWnd,Object,ReadOnly,Speed,Volume,Zoom\> => <w> . \<c\> . \<p\>
-
-/*
-        #xtranslate <w> . \<x\> (\<k\>) . \<c\> . \<p:Value,Name,Address,BackColor,FontColor,Picture,ToolTip,FontName,FontSize,FontBold,FontItalic,FontUnderline,FontStrikeOut,Caption,Row,DisplayValue,Col,Width,Height,Visible,Enabled,Checked,ItemCount,RangeMin,RangeMax,Position,CaretPos,ForeColor\> => GetProperty ( <(w)>, \<(x)> , \<k\> , \<(c)> , \<(p)> ) ;;
-        #xtranslate <w> . \<x\> (\<k\>) . \<c\> . \<p:Value,Name,Address,BackColor,FontColor,Picture,ToolTip,FontName,FontSize,FontBold,FontItalic,FontUnderline,FontStrikeOut,Caption,Row,DisplayValue,Col,Width,Height,Visible,Enabled,Checked,ItemCount,RangeMin,RangeMax,Position,CaretPos,ForeColor\> := \<n\> => SetProperty ( <(w)> , \<(x)> , \<k\> , \<(c)> , \<(p)> , \<n\> ) ;;
-        #xtranslate <w> . \<x\> (\<k\>) . \<c\> . \<p:Caption,Header,Item,Icon\> (\<arg\>) => GetProperty ( <(w)>, \<(x)> , \<k\> , \<(c)> , \<(p)> , \<arg\> ) ;;
-        #xtranslate <w> . \<x\> (\<k\>) . \<c\> . \<p:Caption,Header,Item,Icon\> (\<arg\>) := \<n\> => SetProperty ( <(w)>, \<(x)> , \<k\> , \<(c)> , \<(p)> , \<arg\> , \<n\> ) ;;
-        #xtranslate <w> . \<x\> (\<k\>) . \<c\> . \<p:Refresh,SetFocus,DeleteAllItems,Release,Show,Save,Hide,Play,Stop,Close,Pause,Eject,OpenDialog,Resume,Action,OnClick\> \[()\] => Domethod ( <(w)>, \<(x)> , \<k\> , \<(c)> , \<(p)> ) ;;
-        #xtranslate <w> . \<x\> (\<k\>) . \<c\> . \<p:AddItem,DeleteItem,Open,DeletePage,DeleteColumn,Expand,Collapse,Seek\> (\<a\>) => Domethod ( <(w)>, \<(x)> , \<k\> , \<(c)> , \<(p)> , \<a\> ) ;;
-        #xtranslate <w> . \<x\> (\<k\>) . \<c\> . \<p:AddItem,AddPage\> (\<a1\> , \<a2\>) => Domethod ( <(w)>, \<(x)> , \<k\> , \<(c)> , \<(p)> , \<a1\> , \<a2\> ) ;;
-        #xtranslate <w> . \<x\> (\<k\>) . \<c\> . \<p:AddItem,AddPage\> (\<a1\> , \<a2\> , \<a3\> ) => Domethod ( <(w)>, \<(x)> , \<k\> , \<(c)> , \<(p)> , \<a1\> , \<a2\> , \<a3\> ) ;;
-        #xtranslate <w> . \<x\> (\<k\>) . \<c\> . \<p:AddItem,AddColumn,AddControl\> (\<a1\> , \<a2\> , \<a3\> , \<a4\> ) => Domethod ( <(w)>, \<(x)> , \<k\> , \<(c)> , \<(p)> , \<a1\> , \<a2\> , \<a3\> , \<a4\> ) ;;
-        #xtranslate <w> . \<x\> (\<k\>) . \<c\> . \<p:Name,Length,hWnd,Object\> => GetProperty ( <(w)>, \<(x)> , \<k\> , \<(c)> , \<(p)> ) ;;
-        #xtranslate <w> . \<x\> (\<k\>) . \<c\> . \<p:ReadOnly,Speed,Volume,Zoom\> := \<n\> => SetProperty ( <(w)>, \<(x)> , \<k\> , \<(c)> , \<(p)> , \<n\> )
-*/
 
         #xcommand DEFINE WINDOW <w> ;
                         [ OBJ <obj> ] ;
