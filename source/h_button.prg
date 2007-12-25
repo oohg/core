@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.34 2007-12-25 02:47:14 guerra000 Exp $
+ * $Id: h_button.prg,v 1.35 2007-12-25 18:44:37 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -101,7 +101,7 @@ CLASS TButton FROM TImage
    DATA lNoTransparent INIT .F.
    DATA nWidth    INIT 100
    DATA nHeight   INIT 28
-   DATA AutoSize  INIT .F.
+   DATA AutoFit   INIT .F.
    DATA OnClick   INIT nil
    DATA nAlign    INIT 2
 
@@ -157,7 +157,7 @@ Local ControlHandle, nStyle, lBitMap
    ::Caption := Caption
 
    ASSIGN ::lNoTransparent VALUE lNoTransparent TYPE "L"
-   ASSIGN ::AutoSize       VALUE lScale         TYPE "L"
+   ASSIGN ::AutoFit        VALUE lScale         TYPE "L"
    ASSIGN ::lCancel        VALUE lCancel        TYPE "L"
 
    IF VALTYPE( cAlign ) $ "CM"
@@ -230,7 +230,11 @@ LOCAL nAttrib
 //         nAttrib := LR_LOADTRANSPARENT
 //      ENDIF
 
-      ::AuxHandle := _OOHG_BitmapFromFile( Self, cPicture, nAttrib, ::AutoSize )
+      ::AuxHandle := _OOHG_BitmapFromFile( Self, cPicture, nAttrib, ::AutoFit .AND. ! ::ImageSize )
+      IF ::ImageSize
+         ::nWidth  := _BitMapWidth( ::AuxHandle )
+         ::nHeight := _BitMapHeight( ::AuxHandle )
+      ENDIF
       ::RePaint()
    ENDIF
 Return ::cPicture
@@ -251,8 +255,8 @@ METHOD RePaint() CLASS TButton
       SetImageXP( ::hWnd, ::AuxHandle, ::nAlign, ::BackColorCode )
       ::redraw()
       ::hImage := NIL
-   ELSEIF ::Stretch .OR. ::AutoSize
-      ::hImage := _OOHG_SetBitmap( Self, ::AuxHandle, BM_SETIMAGE, ::Stretch, ::AutoSize )
+   ELSEIF ::Stretch .OR. ::AutoFit
+      ::hImage := _OOHG_SetBitmap( Self, ::AuxHandle, BM_SETIMAGE, ::Stretch, ::AutoFit )
    ELSE
       SendMessage( ::hWnd, BM_SETIMAGE, IMAGE_BITMAP, ::AuxHandle )
       ::hImage := NIL
@@ -417,7 +421,7 @@ Local ControlHandle, nStyle := 0
    ::Caption     := Caption
 
    ASSIGN ::lNoTransparent VALUE lNoTransparent TYPE "L"
-   ASSIGN ::AutoSize       VALUE lScale         TYPE "L"
+   ASSIGN ::AutoFit        VALUE lScale         TYPE "L"
    ::Picture := BitMap
    If ! ValidHandler( ::AuxHandle )
       ::Buffer := cBuffer

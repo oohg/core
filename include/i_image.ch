@@ -1,5 +1,5 @@
 /*
- * $Id: i_image.ch,v 1.6 2007-07-01 04:44:56 guerra000 Exp $
+ * $Id: i_image.ch,v 1.7 2007-12-25 18:44:37 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -108,9 +108,10 @@
         [ BUFFER <buffer> ] ;
         [ HBITMAP <hbitmap> ] ;
         [ <noresize: NORESIZE> ] ;
+        [ <imagesize: IMAGESIZE> ] ;
  =>;
         [ <obj> := ] _OOHG_SelectSubClass( TImage(), [ <subclass>() ] ): ;
         Define( <(name)>, <(parent)>, <col>, <row>, <filename>, <w>, <h>, ;
         <{action}>, <helpid>, <.invisible.>, <.stretch.>, ;
         <.whitebackground.>, <.rtl.>, <backcolor>, <buffer>, <hbitmap>, ;
-        ! <.noresize.> )
+        ! <.noresize.>, <.imagesize.> )

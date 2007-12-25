@@ -1,5 +1,5 @@
 /*
- * $Id: h_image.prg,v 1.19 2007-10-08 21:19:04 declan2005 Exp $
+ * $Id: h_image.prg,v 1.20 2007-12-25 18:44:37 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -100,11 +100,12 @@ CLASS TImage FROM TControl
    DATA Type            INIT "IMAGE" READONLY
    DATA cPicture        INIT ""
    DATA Stretch         INIT .F.
-   DATA AutoSize        INIT .T.
+   DATA AutoFit         INIT .T.
    DATA bOnClick        INIT ""
    DATA nWidth          INIT 100
    DATA nHeight         INIT 100
    DATA hImage          INIT nil
+   DATA ImageSize       INIT .F.
 
    METHOD Define
    METHOD Picture       SETGET
@@ -120,7 +121,7 @@ ENDCLASS
 *-----------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, x, y, FileName, w, h, ProcedureName, ;
                HelpId, invisible, stretch, lWhiteBackground, lRtl, backcolor, ;
-               cBuffer, hBitMap, autosize ) CLASS TImage
+               cBuffer, hBitMap, autofit, imagesize ) CLASS TImage
 *-----------------------------------------------------------------------------*
 Local ControlHandle, nStyle
 
@@ -129,8 +130,9 @@ Local ControlHandle, nStyle
    ASSIGN ::nWidth  VALUE w TYPE "N"
    ASSIGN ::nHeight VALUE h TYPE "N"
 
-   ASSIGN ::Stretch    VALUE stretch  TYPE "L"
-   ASSIGN ::AutoSize   VALUE autosize TYPE "L"
+   ASSIGN ::Stretch    VALUE stretch   TYPE "L"
+   ASSIGN ::AutoFit    VALUE autofit   TYPE "L"
+   ASSIGN ::ImageSize  VALUE imagesize TYPE "L"
 
    ::SetForm( ControlName, ParentForm,,,, BackColor,, lRtl )
    If HB_IsLogical( lWhiteBackground ) .AND. lWhiteBackground
@@ -166,7 +168,11 @@ LOCAL nAttrib
       // IF ::Transparent
       //    nAttrib += LR_LOADMAP3DCOLORS + LR_LOADTRANSPARENT
       // ENDIF
-      ::AuxHandle := _OOHG_BitmapFromFile( Self, cPicture, nAttrib, ::AutoSize )
+      ::AuxHandle := _OOHG_BitmapFromFile( Self, cPicture, nAttrib, ::AutoFit .AND. ! ::ImageSize )
+      IF ::ImageSize
+         ::nWidth  := _BitMapWidth( ::AuxHandle )
+         ::nHeight := _BitMapHeight( ::AuxHandle )
+      ENDIF
       ::RePaint()
    ENDIF
 Return ::cPicture
@@ -177,6 +183,10 @@ METHOD HBitMap( hBitMap ) CLASS TImage
    If ValType( hBitMap ) $ "NP"
       DeleteObject( ::AuxHandle )
       ::AuxHandle := hBitMap
+      IF ::ImageSize
+         ::nWidth  := _BitMapWidth( ::AuxHandle )
+         ::nHeight := _BitMapHeight( ::AuxHandle )
+      ENDIF
       ::RePaint()
    EndIf
 Return ::AuxHandle
@@ -186,7 +196,11 @@ METHOD Buffer( cBuffer ) CLASS TImage
 *-----------------------------------------------------------------------------*
    If VALTYPE( cBuffer ) $ "CM"
       DeleteObject( ::AuxHandle )
-      ::AuxHandle := _OOHG_BitmapFromBuffer( Self, cBuffer, ::AutoSize )
+      ::AuxHandle := _OOHG_BitmapFromBuffer( Self, cBuffer, ::AutoFit .AND. ! ::ImageSize )
+      IF ::ImageSize
+         ::nWidth  := _BitMapWidth( ::AuxHandle )
+         ::nHeight := _BitMapHeight( ::AuxHandle )
+      ENDIF
       ::RePaint()
    EndIf
 Return nil
@@ -219,8 +233,8 @@ METHOD RePaint() CLASS TImage
       SendMessage( ::hWnd, STM_SETIMAGE, IMAGE_BITMAP, ::AuxHandle )
       ::hImage := NIL
       ::Super:SizePos()
-   ELSEIF ::AutoSize
-      ::hImage := _OOHG_SetBitmap( Self, ::AuxHandle, STM_SETIMAGE, ::Stretch, ::AutoSize )
+   ELSEIF ::AutoFit
+      ::hImage := _OOHG_SetBitmap( Self, ::AuxHandle, STM_SETIMAGE, ::Stretch, ::AutoFit )
    ELSE
       SendMessage( ::hWnd, STM_SETIMAGE, IMAGE_BITMAP, ::AuxHandle )
       ::hImage := NIL
