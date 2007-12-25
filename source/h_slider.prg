@@ -1,5 +1,5 @@
 /*
- * $Id: h_slider.prg,v 1.16 2007-10-05 11:42:11 declan2005 Exp $
+ * $Id: h_slider.prg,v 1.17 2007-12-25 02:47:14 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -167,7 +167,7 @@ METHOD Value( uValue ) CLASS TSlider
    IF HB_IsNumeric ( uValue )
       SendMessage( ::hWnd, TBM_SETPOS, 1, uValue )
       //// SendMessage( ::hwnd, WM_HSCROLL, TB_ENDTRACK,0)
-      ::DoEvent( ::OnChange )
+      ::DoEvent( ::OnChange, "CHANGE" )
    ENDIF
 RETURN SendMessage( ::hWnd, TBM_GETPOS, 0, 0 )
 
@@ -210,7 +210,7 @@ RETURN ::Super:BackColor
 METHOD Events_Hscroll ( wParam )   CLASS TSlider
 *------------------------------------------------*
 IF loword( wParam ) == TB_ENDTRACK
-   ::DoEvent( ::OnChange )
+   ::DoEvent( ::OnChange, "CHANGE" )
 ELSE
   Return ::Super:Events_HScroll( wParam )
 ENDIF
@@ -220,7 +220,7 @@ Return NIL
 METHOD Events_Vscroll ( wParam )   CLASS TSlider
 *-------------------------------------------------*
 IF loword( wParam ) == TB_ENDTRACK
-   ::DoEvent( ::OnChange )
+   ::DoEvent( ::OnChange, "CHANGE" )
 ELSE
    Return ::Super:Events_VScroll( wParam )
 ENDIF

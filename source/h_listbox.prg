@@ -1,5 +1,5 @@
 /*
- * $Id: h_listbox.prg,v 1.10 2006-11-11 21:07:02 guerra000 Exp $
+ * $Id: h_listbox.prg,v 1.11 2007-12-25 02:47:14 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -183,18 +183,18 @@ METHOD Events_Command( wParam ) CLASS TList
 Local Hi_wParam := HIWORD( wParam )
 
    if Hi_wParam == LBN_SELCHANGE
-      ::DoEvent( ::OnChange )
+      ::DoEvent( ::OnChange, "CHANGE" )
       Return nil
 
    elseif Hi_wParam == LBN_DBLCLK
-      ::DoEvent( ::OnDblClick )
+      ::DoEvent( ::OnDblClick, "DBLCLICK" )
       Return nil
 
    elseif Hi_wParam == LBN_KILLFOCUS
       Return ::DoLostFocus()
 
    elseif Hi_wParam == LBN_SETFOCUS
-      ::DoEvent( ::OnGotFocus )
+      ::DoEvent( ::OnGotFocus, "GOTFOCUS" )
       Return nil
 
    EndIf

@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.33 2007-12-11 12:53:43 declan2005 Exp $
+ * $Id: h_button.prg,v 1.34 2007-12-25 02:47:14 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -344,7 +344,7 @@ HB_FUNC( SETIMAGEXP )
          ImageList_Destroy( himl );
       }
       clrColor = ( COLORREF ) hb_parnl( 4 );
-      if( clrColor == ( ~0 ) )
+      if( clrColor == ( COLORREF ) ( ~0 ) )
       {
          clrColor = GetSysColor( COLOR_BTNFACE );
       }
@@ -473,7 +473,7 @@ METHOD Events_Command( wParam ) CLASS TButtonCheck
 *------------------------------------------------------------------------------*
 Local Hi_wParam := HIWORD( wParam )
    If Hi_wParam == BN_CLICKED
-      ::DoEvent( ::OnChange )
+      ::DoEvent( ::OnChange, "CHANGE" )
       Return nil
    EndIf
 Return ::Super:Events_Command( wParam )

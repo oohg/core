@@ -1,5 +1,5 @@
 /*
- * $Id: h_radio.prg,v 1.16 2007-10-06 22:16:44 declan2005 Exp $
+ * $Id: h_radio.prg,v 1.17 2007-12-25 02:47:14 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -231,7 +231,7 @@ LOCAL nOldValue, aNewValue, I, oItem, nLen
          If SendMessage( oItem:hWnd, BM_GETCHECK, 0, 0 ) != aNewValue[ I ]
             SendMessage( oItem:hWnd, BM_SETCHECK, aNewValue[ I ], 0 )
             //////// ojo aqui en esta linea de abajo
-            ::Container:DoEvent( ::Container:OnChange )
+            ::Container:DoEvent( ::Container:OnChange, "CHANGE" )
          EndIf
       NEXT
    Else
@@ -281,7 +281,7 @@ METHOD Events_Command( wParam ) CLASS TRadioGroup
 *-----------------------------------------------------------------------------*
 Local Hi_wParam := HIWORD( wParam )
    If Hi_wParam == BN_CLICKED
-      ::DoEvent( ::OnChange )
+      ::DoEvent( ::OnChange, "CHANGE" )
       If ::TabStop .AND. IsTabStop( ::hWnd )
          SetTabStop( ::hWnd, .F. )
       EndIf
@@ -302,7 +302,7 @@ METHOD Events_Command( wParam ) CLASS TRadioItem
 *-----------------------------------------------------------------------------*
 Local Hi_wParam := HIWORD( wParam )
    If Hi_wParam == BN_CLICKED
-      ::Container:DoEvent( ::Container:OnChange )
+      ::Container:DoEvent( ::Container:OnChange, "CHANGE" )
       If ::Container:TabStop .AND. IsTabStop( ::hWnd )
          SetTabStop( ::hWnd, .F. )
       EndIf

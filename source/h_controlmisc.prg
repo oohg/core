@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.85 2007-11-22 14:33:00 declan2005 Exp $
+ * $Id: h_controlmisc.prg,v 1.86 2007-12-25 02:47:14 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -333,7 +333,7 @@ Local oInputWindow, aResult
 
 		if ValType ( aValues[i] ) == 'C'
 
-			if HB_IsNumeric ( aFormats[i] ) 
+			if HB_IsNumeric ( aFormats[i] )
 
 				If aFormats[i] > 32
 					e++
@@ -391,14 +391,14 @@ Local oInputWindow, aResult
 				@ ControlRow , 120 CHECKBOX &CN OF _InputWindow CAPTION '' VALUE aValues[i]
 				ControlRow := ControlRow + 30
 
-			case HB_IsDate ( aValues [i] ) 
+			case HB_IsDate ( aValues [i] )
 
 				@ ControlRow , 120 DATEPICKER &CN  OF _InputWindow VALUE aValues[i] WIDTH 140
 				ControlRow := ControlRow + 30
 
 			case HB_IsNumeric ( aValues [i] )
 
-				If HB_Isarray ( aFormats [i] ) 
+				If HB_Isarray ( aFormats [i] )
 
 					@ ControlRow , 120 COMBOBOX &CN  OF _InputWindow ITEMS aFormats[i] VALUE aValues[i] WIDTH 140  FONT 'Arial' SIZE 10
 					ControlRow := ControlRow + 30
@@ -416,7 +416,7 @@ Local oInputWindow, aResult
 
 			case ValType ( aValues [i] ) == 'C'
 
-				If HB_IsNumeric ( aFormats [i] ) 
+				If HB_IsNumeric ( aFormats [i] )
 					If  aFormats [i] <= 32
 						@ ControlRow , 120 TEXTBOX &CN  OF _InputWindow VALUE aValues[i] WIDTH 140 FONT 'Arial' SIZE 10 MAXLENGTH aFormats [i]
 						ControlRow := ControlRow + 30
@@ -426,7 +426,7 @@ Local oInputWindow, aResult
 					EndIf
 				EndIf
 
-			case HB_IsMemo ( aValues [i] ) 
+			case HB_IsMemo ( aValues [i] )
 
 				@ ControlRow , 120 EDITBOX &CN  OF _InputWindow WIDTH 140 HEIGHT 90 VALUE aValues[i] FONT 'Arial' SIZE 10
 				ControlRow := ControlRow + 94
@@ -939,7 +939,7 @@ Local oWnd, oCtrl
       Arg2 := Upper( Arg2 )
 
 		if Arg2 == 'ACTIVATE'
-         if HB_IsArray( Arg1 ) 
+         if HB_IsArray( Arg1 )
             _ActivateWindow( Arg1 )
 			Else
             oWnd:Activate()
@@ -991,10 +991,10 @@ Local oWnd, oCtrl
          oCtrl:SetFocus()
 
 		ElseIf Arg3 == 'ACTION'
-         _OOHG_Eval( oCtrl:OnClick )
+         oCtrl:DoEvent( oCtrl:OnClick, "CLICK" )
 
 		ElseIf Arg3 == 'ONCLICK'
-         _OOHG_Eval( oCtrl:OnClick )
+         oCtrl:DoEvent( oCtrl:OnClick, "CLICK" )
 
       ElseIf Arg3 == 'COLUMNSAUTOFIT'
          oCtrl:ColumnsAutoFit()
@@ -1358,7 +1358,7 @@ METHOD SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BkColor,
    // Right-to-left
    If _OOHG_GlobalRTL()
       ::lRtl := .T.
-   ElseIf HB_IsLogical( lRtl ) 
+   ElseIf HB_IsLogical( lRtl )
       ::lRtl := lRtl
    ElseIf ! Empty( ::Container )
       ::lRtl := ::Container:lRtl
@@ -1376,11 +1376,11 @@ METHOD InitStyle( nStyle, nStyleEx, lInvisible, lNoTabStop, lDisabled ) CLASS TC
    If !HB_IsNumeric( nStyle )
       nStyle := 0
    EndIf
-   If !HB_IsNumeric( nStyleEx ) 
+   If !HB_IsNumeric( nStyleEx )
       nStyleEx := 0
    EndIf
 
-   If HB_IsLogical( lInvisible ) 
+   If HB_IsLogical( lInvisible )
       ::lVisible := ! lInvisible
    EndIf
    If ::lVisible
@@ -1391,7 +1391,7 @@ METHOD InitStyle( nStyle, nStyleEx, lInvisible, lNoTabStop, lDisabled ) CLASS TC
       nStyle += WS_TABSTOP
    EndIf
 
-   If HB_IsLogical( lDisabled ) 
+   If HB_IsLogical( lDisabled )
       ::lEnabled := ! lDisabled
    EndIf
    If ! ::lEnabled
@@ -1421,7 +1421,7 @@ EMPTY(cName)
       ::Container:AddControl( Self )
    ENDIF
 
-   IF HB_IsNumeric( HelpId ) 
+   IF HB_IsNumeric( HelpId )
       ::HelpId := HelpId
    ENDIF
 
@@ -1431,7 +1431,7 @@ EMPTY(cName)
 
    ::ToolTip := ToolTip
 
-   If HB_IsNumeric( Id ) 
+   If HB_IsNumeric( Id )
       ::Id := Id
    Else
       ::Id := GetDlgCtrlId( ::hWnd )
@@ -1534,7 +1534,7 @@ Return ::cFontName
 *-----------------------------------------------------------------------------*
 METHOD FontSize( nFontSize ) CLASS TControl
 *-----------------------------------------------------------------------------*
-   If HB_IsNumeric( nFontSize ) 
+   If HB_IsNumeric( nFontSize )
       ::SetFont( , nFontSize )
    EndIf
 Return ::nFontSize
@@ -1542,7 +1542,7 @@ Return ::nFontSize
 *-----------------------------------------------------------------------------*
 METHOD FontBold( lBold ) CLASS TControl
 *-----------------------------------------------------------------------------*
-   If HB_IsLogical( lBold ) 
+   If HB_IsLogical( lBold )
       ::SetFont( ,, lBold )
    EndIf
 Return ::Bold
@@ -1550,7 +1550,7 @@ Return ::Bold
 *-----------------------------------------------------------------------------*
 METHOD FontItalic( lItalic ) CLASS TControl
 *-----------------------------------------------------------------------------*
-   If HB_IsLogical( lItalic ) 
+   If HB_IsLogical( lItalic )
       ::SetFont( ,,, lItalic )
    EndIf
 Return ::Italic
@@ -1558,7 +1558,7 @@ Return ::Italic
 *-----------------------------------------------------------------------------*
 METHOD FontUnderline( lUnderline ) CLASS TControl
 *-----------------------------------------------------------------------------*
-   If HB_IsLogical( lUnderline ) 
+   If HB_IsLogical( lUnderline )
       ::SetFont( ,,,, lUnderline )
    EndIf
 Return ::Underline
@@ -1610,7 +1610,7 @@ Return _OOHG_EVAL( ::Block, ::Value )
 METHOD RefreshData() CLASS TControl
 *-----------------------------------------------------------------------------*
    // Since not all controls haves ::Value property, it must be checked here
-   IF HB_IsBlock( ::Block ) 
+   IF HB_IsBlock( ::Block )
       ::Value := _OOHG_EVAL( ::Block )
    ENDIF
    ::Refresh()
@@ -1650,14 +1650,14 @@ Return nPos
 
 
 *-----------------------------------------------------------------------------*
-METHOD DoEvent( bBlock ) CLASS TControl
+METHOD DoEvent( bBlock, cType ) CLASS TControl
 *-----------------------------------------------------------------------------*
 Local lRetVal
    If HB_IsBlock( bBlock )
       _PushEventInfo()
       _OOHG_ThisForm      := ::Parent
       _OOHG_ThisType      := "C"
-      _OOHG_ThisEventType := ""
+      _OOHG_ThisEventType := cType
       _OOHG_ThisControl   := Self
       _OOHG_ThisObject    := Self
       Eval( bBlock )
@@ -1686,7 +1686,7 @@ Local uRet := nil, nFocus, oFocus
          EndIf
       EndIf
 
-      ::DoEvent( ::OnLostFocus )
+      ::DoEvent( ::OnLostFocus, "LOSTFOCUS" )
    EndIf
 Return uRet
 
@@ -1716,17 +1716,12 @@ HB_FUNC_STATIC( TCONTROL_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam
          }
          if( wParam == MK_LBUTTON )
          {
-            _OOHG_Send( pSelf, s_OnMouseDrag );
+            _OOHG_DoEvent( pSelf, s_OnMouseDrag, "MOUSEDRAG" );
          }
          else
          {
-            _OOHG_Send( pSelf, s_OnMouseMove );
+            _OOHG_DoEvent( pSelf, s_OnMouseMove, "MOUSEMOVE" );
          }
-         hb_vmSend( 0 );
-         _OOHG_Send( pSelf, s_DoEvent );
-         hb_vmPush( hb_param( -1, HB_IT_ANY ) );
-         hb_vmPushString( "", 0 );
-         hb_vmSend( 2 );
          hb_ret();
          break;
 
@@ -1790,24 +1785,24 @@ Local Hi_wParam := HIWORD( wParam )
    If Hi_wParam == BN_CLICKED .OR. Hi_wParam == STN_CLICKED  // Same value.....
       If ! ::NestedClick
          ::NestedClick := ! _OOHG_NestedSameEvent()
-         ::DoEvent( ::OnClick )
+         ::DoEvent( ::OnClick, "CLICK" )
          ::NestedClick := .F.
       EndIf
 
    elseif Hi_wParam == EN_CHANGE
-      ::DoEvent( ::OnChange )
+      ::DoEvent( ::OnChange, "CHANGE" )
 
    elseif Hi_wParam == EN_KILLFOCUS
       Return ::DoLostFocus()
 
    elseif Hi_wParam == EN_SETFOCUS
-      ::DoEvent( ::OnGotFocus )
+      ::DoEvent( ::OnGotFocus, "GOTFOCUS" )
 
    elseif Hi_wParam == BN_KILLFOCUS
       Return ::DoLostFocus()
 
    elseif Hi_wParam == BN_SETFOCUS
-      ::DoEvent( ::OnGotFocus )
+      ::DoEvent( ::OnGotFocus, "GOTFOCUS" )
 
    EndIf
 
@@ -1817,7 +1812,7 @@ Return nil
 METHOD Events_Enter() CLASS TControl
 *-----------------------------------------------------------------------------*
    _OOHG_lSettingFocus := .F.
-   ::DoEvent( ::OnEnter )
+   ::DoEvent( ::OnEnter, "ENTER" )
    If ! _OOHG_lSettingFocus
       If _OOHG_ExtendedNavigation
          _SetNextFocus()
@@ -1839,13 +1834,13 @@ wParam++ // DUMMY...
       Return ::DoLostFocus()
 
    elseif nNotify == NM_SETFOCUS
-      ::DoEvent( ::OnGotFocus )
+      ::DoEvent( ::OnGotFocus, "GOTFOCUS" )
 
    elseif nNotify == NM_DBLCLK
-      ::DoEvent( ::OnDblClick )
+      ::DoEvent( ::OnDblClick, "DBLCLICK" )
 
    elseif nNotify == TVN_SELCHANGED
-      ::DoEvent( ::OnChange )
+      ::DoEvent( ::OnChange, "CHANGE" )
 
    EndIf
 

@@ -1,5 +1,5 @@
 /*
- * $Id: h_status.prg,v 1.25 2007-11-04 15:43:34 declan2005 Exp $
+ * $Id: h_status.prg,v 1.26 2007-12-25 02:47:14 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -216,7 +216,7 @@ Local styl, nItem, i
 
    i := At( "&", Caption )
    If i > 0 .AND. i < LEN( Caption )
-      DEFINE HOTKEY 0 PARENT ( Self ) KEY "ALT+" + SubStr( Caption, i + 1, 1 ) ACTION _OOHG_Eval( ::aClicks[ nItem ] )
+      DEFINE HOTKEY 0 PARENT ( Self ) KEY "ALT+" + SubStr( Caption, i + 1, 1 ) ACTION ::DoEvent( ::aClicks[ nItem ], "CLICK" )
 	EndIf
 
 Return nItem
@@ -327,7 +327,7 @@ Local x
       DefWindowProc( ::hWnd, NM_CLICK, wParam, lParam )
       x := GetItemPos( lParam ) + 1
       if x > 0 .AND. x <= Len( ::aClicks )
-         if ::DoEvent( ::aClicks[ x ] )
+         if ::DoEvent( ::aClicks[ x ], "CLICK" )
             Return nil
          EndIf
       EndIf

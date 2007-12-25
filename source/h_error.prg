@@ -1,5 +1,5 @@
 /*
- * $Id: h_error.prg,v 1.32 2007-12-09 19:53:54 guerra000 Exp $
+ * $Id: h_error.prg,v 1.33 2007-12-25 02:47:14 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -220,11 +220,13 @@ RETURN cMessage
 #include "hbclass.ch"
 
 CLASS TErrorHtml
-   DATA cLine         INIT ""
+   DATA cBufferFile   INIT ""
+   DATA cBufferScreen INIT ""
    DATA PreHeader     INIT '<HR>' + CHR( 13 ) + CHR( 10 ) + '<p class="updated">'
    DATA PostHeader    INIT '</p>'
    DATA FileName      INIT "ErrorLog.Htm"
    METHOD Write
+   METHOD Write2
    METHOD FileHeader
 
    METHOD ErrorMessage
@@ -232,8 +234,12 @@ CLASS TErrorHtml
 ENDCLASS
 
 METHOD Write( cTxt ) CLASS TErrorHtml
-   ::cLine += RTRIM( cTxt ) + "<br>" + CHR( 13 ) + CHR( 10 )
+   ::cBufferFile   += ::Write2( cTxt )
+   ::cBufferScreen += cTxt + CHR( 13 ) + CHR( 10 )
 RETURN nil
+
+METHOD Write2( cTxt ) CLASS TErrorHtml
+RETURN RTRIM( cTxt ) + "<br>" + CHR( 13 ) + CHR( 10 )
 
 *------------------------------------------------------------------------------
 *-30-12-2002
@@ -287,43 +293,55 @@ LOCAL nHdl, cFile, cTop, cBottom, nPos
    ENDIF
    nHdl := FCREATE( cFile )
    FWRITE( nHdl, cTop )
-   FWRITE( nHdl, ::cLine )
+   FWRITE( nHdl, ::cBufferFile )
    FWRITE( nHdl, cBottom )
    FCLOSE( nHdl )
 RETURN nil
 
 METHOD ErrorMessage( cError, nPosition ) CLASS TErrorHtml
-LOCAL cTxtMsg, cText
-   cTxtMsg := ooHGVersion() + CHR( 13 ) + CHR( 10 ) + cError + CHR( 13 ) + CHR( 10 )
-   ::Write( ::PreHeader() + "Date: " + Dtoc( Date() ) + "  " + "Time: " + Time() )
-   ::Write( "Version: " + ooHGVersion() )
-   ::Write( "Alias in use: "+ alias() )
-   ::Write( "Error: " + cError + ::PostHeader() )
+   #ifdef __ERROR_EVENTS__
+      Local aEvents
+   #endif
+
+   // Header
+   ::cBufferScreen += ooHGVersion() + CHR( 13 ) + CHR( 10 ) + cError + CHR( 13 ) + CHR( 10 )
+   //
+   ::cBufferFile   += ::Write2( ::PreHeader() + "Date: " + Dtoc( Date() ) + "  " + "Time: " + Time() )
+   ::cBufferFile   += ::Write2( "Version: " + ooHGVersion() )
+   ::cBufferFile   += ::Write2( "Alias in use: "+ alias() )
+   ::cBufferFile   += ::Write2( "Error: " + cError + ::PostHeader() )
+
+   // Called functions
    nPosition++
    DO WHILE ! Empty( ProcName( nPosition ) )
-      cText := "Called from " + ProcName( nPosition ) + "(" + AllTrim( Str( ProcLine( nPosition++ ) ) ) + ")"
-      cTxtMsg += cText + CHR( 13 ) + CHR( 10 )
-      ::Write( cText )
+      ::Write( "Called from " + ProcName( nPosition ) + "(" + AllTrim( Str( ProcLine( nPosition++ ) ) ) + ")" )
    ENDDO
 
-   ::CreateLog()
+   // Event list
+   #ifdef __ERROR_EVENTS__
+      aEvents := _ListEventInfo()
+      ::Write( "Events:" )
+      AEVAL( aEvents, { | c | ::Write( c ) } )
+   #endif
+
 	dbcloseall()
-   C_MSGSTOP( cTxtMsg, "Program Error" )
+   ::CreateLog()
+   C_MSGSTOP( ::cBufferScreen, "Program Error" )
    ExitProcess( 0 )
 RETURN nil
 
 CLASS TErrorTxt FROM TErrorHtml
-   DATA cLine         INIT ""
+   DATA cBufferFile   INIT ""
+   DATA cBufferScreen INIT ""
    DATA PreHeader     INIT " " + CHR( 13 ) + CHR( 10 ) + replicate( "-", 80 ) + CHR( 13 ) + CHR( 10 ) + " " + CHR( 13 ) + CHR( 10 )
    DATA PostHeader    INIT CHR( 13 ) + CHR( 10 ) + CHR( 13 ) + CHR( 10 )
    DATA FileName      INIT "ErrorLog.txt"
-   METHOD Write
+   METHOD Write2
    DATA FileHeader    INIT ""
 ENDCLASS
 
-METHOD Write( cTxt ) CLASS TErrorTxt
-   ::cLine += RTRIM( cTxt ) + CHR( 13 ) + CHR( 10 )
-RETURN nil
+METHOD Write2( cTxt ) CLASS TErrorTxt
+RETURN RTRIM( cTxt ) + CHR( 13 ) + CHR( 10 )
 
 
 

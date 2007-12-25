@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.166 2007-12-18 23:54:45 declan2005 Exp $
+ * $Id: h_windows.prg,v 1.167 2007-12-25 02:47:14 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -257,7 +257,7 @@ CLASS TWindow
    METHOD Enabled             SETGET
    METHOD Enable              BLOCK { |Self| ::Enabled := .T. }
    METHOD Disable             BLOCK { |Self| ::Enabled := .F. }
-   METHOD Click               BLOCK { |Self| ::DoEvent( ::OnClick ) }
+   METHOD Click               BLOCK { |Self| ::DoEvent( ::OnClick, "CLICK" ) }
    METHOD TabStop             SETGET
    METHOD Style               SETGET
    METHOD RTL                 SETGET
@@ -628,7 +628,8 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )
                      hb_itemCopy( pOnClick, hb_param( -1, HB_IT_ANY ) );
                      _OOHG_Send( pControl, s_DoEvent );
                      hb_vmPush( pOnClick );
-                     hb_vmSend( 1 );
+                     hb_vmPushString( "CLICK", 5 );
+                     hb_vmSend( 2 );
                      hb_itemRelease( pOnClick );
                      bClicked = 1;
                   }
@@ -687,7 +688,8 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )
             hb_itemCopy( pOnClick, hb_param( -1, HB_IT_ANY ) );
             _OOHG_Send( pControl, s_DoEvent );
             hb_vmPush( pOnClick );
-            hb_vmSend( 1 );
+            hb_vmPushString( "CLICK", 5 );
+            hb_vmSend( 2 );
             hb_itemRelease( pOnClick );
             hb_itemRelease( pControl );
          }
@@ -1216,11 +1218,7 @@ STATIC FUNCTION LookForKey_Check_HotKey( aKeys, nKey, nFlags, Self )
 Local nPos, lDone
    nPos := ASCAN( aKeys, { |a| a[ HOTKEY_KEY ] == nKey .AND. nFlags == a[ HOTKEY_MOD ] } )
    If nPos > 0
-      If Self == NIL
-         Eval( aKeys[ nPos ][ HOTKEY_ACTION ], nKey, nFlags )
-      Else
-         ::DoEvent( { || Eval( aKeys[ nPos ][ HOTKEY_ACTION ], nKey, nFlags ) }, "" )
-      EndIf
+      ::DoEvent( { || Eval( aKeys[ nPos ][ HOTKEY_ACTION ], nKey, nFlags ) }, "HOTKEY" )
       lDone := .T.
    Else
       lDone := .F.
@@ -1359,7 +1357,7 @@ CLASS TForm FROM TWindow
    DATA nWidth         INIT 300
    DATA nHeight        INIT 300
    DATA lShowed        INIT .F.
-   
+
    DATA lentersizemove INIT .F.
    DATA ldefined       INIT .F.
 
@@ -1991,7 +1989,7 @@ FOR i:=1 TO l
          ENDIF
       ENDIF
 
-   ENDIF  
+   ENDIF
 NEXT i
 
 ::nOLdw := nWidth
@@ -2241,12 +2239,7 @@ HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
    {
       case WM_LBUTTONUP:
          _OOHG_SetMouseCoords( pSelf, LOWORD( lParam ), HIWORD( lParam ) );
-         _OOHG_Send( pSelf, s_OnClick );
-         hb_vmSend( 0 );
-         _OOHG_Send( pSelf, s_DoEvent );
-         hb_vmPush( hb_param( -1, HB_IT_ANY ) );
-         hb_vmPushString( "", 0 );
-         hb_vmSend( 2 );
+         _OOHG_DoEvent( pSelf, s_OnClick, "CLICK" );
          hb_ret();
          break;
 
@@ -2259,17 +2252,12 @@ HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
          _OOHG_SetMouseCoords( pSelf, LOWORD( lParam ), HIWORD( lParam ) );
          if( wParam == MK_LBUTTON )
          {
-            _OOHG_Send( pSelf, s_OnMouseDrag );
+            _OOHG_DoEvent( pSelf, s_OnMouseDrag, "MOUSEDRAG" );
          }
          else
          {
-            _OOHG_Send( pSelf, s_OnMouseMove );
+            _OOHG_DoEvent( pSelf, s_OnMouseMove, "MOUSEMOVE" );
          }
-         hb_vmSend( 0 );
-         _OOHG_Send( pSelf, s_DoEvent );
-         hb_vmPush( hb_param( -1, HB_IT_ANY ) );
-         hb_vmPushString( "", 0 );
-         hb_vmSend( 2 );
          hb_ret();
          break;
 
@@ -2353,7 +2341,7 @@ Local oCtrl, lminim:=.F.
          ::LastFocusedControl := GetFocus()
 
          If ! ::ContainerReleasing
-            ::DoEvent( ::OnLostFocus, 'WINDOW_LOSTFOCUS' )
+            ::DoEvent( ::OnLostFocus, "WINDOW_LOSTFOCUS" )
          EndIf
 
 		Else
@@ -2376,7 +2364,7 @@ Local oCtrl, lminim:=.F.
 
          aeval( ::aHotKeys, { |a| InitHotKey( ::hWnd, a[ HOTKEY_MOD ], a[ HOTKEY_KEY ], a[ HOTKEY_ID ] ) } )
 
-         ::DoEvent( ::OnGotFocus, 'WINDOW_GOTFOCUS' )
+         ::DoEvent( ::OnGotFocus, "WINDOW_GOTFOCUS" )
 
          if ! empty( ::LastFocusedControl )
             SetFocus( ::LastFocusedControl )
@@ -2396,7 +2384,7 @@ Local oCtrl, lminim:=.F.
 
 			do case
 				case lParam == WM_LBUTTONDOWN
-                  ::DoEvent( ::NotifyIconLeftClick, '' )
+                  ::DoEvent( ::NotifyIconLeftClick, "WINDOW_NOTIFYLEFTCLICK" )
 
 				case lParam == WM_RBUTTONDOWN
                If _OOHG_ShowContextMenus()
@@ -2444,7 +2432,7 @@ Local oCtrl, lminim:=.F.
          // This must change for MDI, MDICLIENT or MDICHILD window!
          DefWindowProc( hWnd, nMsg, wParam, lParam )
 
-         ::DoEvent( ::OnPaint, '' )
+         ::DoEvent( ::OnPaint, "WINDOW_PAINT" )
 
          return 1
 
@@ -2461,20 +2449,20 @@ Local oCtrl, lminim:=.F.
            lminim:=.F.
            DO CASE
            CASE wParam == SIZE_MAXIMIZED
-              ::DoEvent( ::OnMaximize, '' )
+              ::DoEvent( ::OnMaximize, "WINDOW_MAXIMIZE" )
 
            CASE wParam == SIZE_MINIMIZED
-              ::DoEvent( ::OnMinimize, '' )
+              ::DoEvent( ::OnMinimize, "WINDOW_MINIMIZE" )
               lminim:=.T.
            CASE wParam == SIZE_RESTORED
-              ::DoEvent( ::OnRestore, '' )
+              ::DoEvent( ::OnRestore, "WINDOW_RESTORE" )
            ENDCASE
 
-              ::DoEvent( ::OnSize, '' )
+              ::DoEvent( ::OnSize, "WINDOW_SIZE" )
               if _OOHG_AutoAdjust  .and. ! lminim
                   ::autoadjust()       //// cambio de tamaño activada y cualquier cambio q no sea maximizar o restaurar
               endif
-           
+
 
            AEVAL( ::aControls, { |o| If( o:Container == nil, o:Events_Size(), ) } )
         else
@@ -2490,7 +2478,7 @@ Local oCtrl, lminim:=.F.
         case nMsg ==  WM_EXITSIZEMOVE    //// cuando se cambia el tamaño por reajuste con el mouse
       ***********************************************************************
        If ::Active  .and. (::noldw#NIL .or. ::noldh#NIL  ) .and. (::nOLdw # ::Width .or.  ::nOldh # ::Height)
-          ::DoEvent( ::OnSize, '' )
+          ::DoEvent( ::OnSize, "WINDOW_SIZE" )
            if _OOHG_AutoAdjust
             ::Autoadjust()
            endif
@@ -2505,7 +2493,7 @@ Local oCtrl, lminim:=.F.
 
       // Process Interactive Close Event / Setting
       If ! ::lReleasing .AND. HB_IsBlock( ::OnInteractiveClose )
-         xRetVal := ::DoEvent( ::OnInteractiveClose, 'WINDOW_ONINTERACTIVECLOSE' )
+         xRetVal := ::DoEvent( ::OnInteractiveClose, "WINDOW_ONINTERACTIVECLOSE" )
          If HB_IsLogical( xRetVal ) .AND. ! xRetVal
             Return 1
          EndIf
@@ -2524,7 +2512,7 @@ Local oCtrl, lminim:=.F.
       // If Not AutoRelease Destroy Window
 
       ::lReleasing := .T.
-      ::DoEvent( ::OnRelease, 'WINDOW_RELEASE' )
+      ::DoEvent( ::OnRelease, "WINDOW_RELEASE" )
 
       if ::Type == "A"
          ReleaseAllWindows()
@@ -2697,7 +2685,7 @@ METHOD Release() CLASS TFormMain
 *-----------------------------------------------------------------------------*
    If ! ::lReleasing
       ::lReleasing := .T.
-      ::DoEvent( ::OnRelease, 'WINDOW_RELEASE' )
+      ::DoEvent( ::OnRelease, "WINDOW_RELEASE" )
       ReleaseAllWindows()
 //   Else
 //      MsgOOHGError("Release a window in its own 'on release' procedure or release the main window in any 'on release' procedure is not allowed. Program terminated" )
@@ -3338,7 +3326,7 @@ Local i, oWnd
 
          If ! oWnd:lReleasing
             oWnd:lReleasing := .T.
-            oWnd:DoEvent( oWnd:OnRelease, 'WINDOW_RELEASE' )
+            oWnd:DoEvent( oWnd:OnRelease, "WINDOW_RELEASE" )
          EndIf
 
          if .Not. Empty ( oWnd:NotifyIcon )
@@ -3632,7 +3620,7 @@ Local MainName := ''
 Return Nil
 
 *------------------------------------------------------------------------------*
-Procedure _PushEventInfo
+Procedure _PushEventInfo()
 *------------------------------------------------------------------------------*
    aAdd( _OOHG_aEventInfo, { _OOHG_ThisForm, _OOHG_ThisEventType, _OOHG_ThisType, _OOHG_ThisControl, _OOHG_ThisObject } )
 Return
@@ -3657,6 +3645,25 @@ Local l
       _OOHG_ThisObject    := nil
 	EndIf
 Return
+
+*------------------------------------------------------------------------------*
+Function _ListEventInfo()
+*------------------------------------------------------------------------------*
+Local aEvents, nLen
+   If EMPTY( _OOHG_ThisObject )
+      aEvents := {}
+   Else
+      _PushEventInfo()
+      nLen := LEN( _OOHG_aEventInfo )
+      aEvents := ARRAY( nLen )
+      AEVAL( _OOHG_aEventInfo, { | a, i | aEvents[ nLen - i + 1 ] := a[ 1 ]:Name + ;
+                                 IF( a[ 4 ] == NIL, "", "." + a[ 4 ]:Name ) + ;
+                                 "." + a[ 2 ] }, 2 )
+      ASIZE( aEvents, nLen - 1 )
+      // TODO: Add line number / procedure name
+      _PopEventInfo()
+   EndIf
+Return aEvents
 
 Function SetInteractiveClose( nValue )
 Local nRet := _OOHG_InteractiveClose

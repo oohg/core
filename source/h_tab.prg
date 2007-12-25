@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.33 2007-10-10 13:47:36 declan2005 Exp $
+ * $Id: h_tab.prg,v 1.34 2007-12-25 02:47:14 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -298,7 +298,7 @@ Local nNotify := GetNotifyCode( lParam )
 
    If nNotify == TCN_SELCHANGE
       ::Refresh()
-      ::DoEvent( ::OnChange )
+      ::DoEvent( ::OnChange, "CHANGE" )
       Return nil
 
    EndIf
@@ -362,7 +362,7 @@ Local oPage, nPos
       IF !HB_IsBlock( Mnemonic )
          Mnemonic := { || oPage:SetFocus() }
       ENDIF
-      DEFINE HOTKEY 0 PARENT ( ::Parent ) KEY "ALT+" + SubStr( Caption, nPos + 1, 1 ) ACTION EVAL( Mnemonic )
+      DEFINE HOTKEY 0 PARENT ( ::Parent ) KEY "ALT+" + SubStr( Caption, nPos + 1, 1 ) ACTION ::DoEvent( Mnemonic, "CHANGE" )
    ENDIF
 
    If ::Value == Position
@@ -560,7 +560,7 @@ CLASS TTabPage FROM TControl
    METHOD ContainerVisible
 
    METHOD AddControl
-   METHOD SetFocus            BLOCK { |Self| ::Container:SetFocus() , ::Container:Value := ::Position , ::Container:DoEvent( ::Container:OnChange ) , Self }
+   METHOD SetFocus            BLOCK { |Self| ::Container:SetFocus() , ::Container:Value := ::Position , ::Container:DoEvent( ::Container:OnChange, "CHANGE" ) , Self }
    METHOD ForceHide           BLOCK { |Self| AEVAL( ::aControls, { |o| o:ForceHide() } ) }
    METHOD Events_Size         BLOCK { |Self| AEVAL( ::aControls, { |o| o:SizePos() } ) }
 ENDCLASS
@@ -629,7 +629,7 @@ CLASS TTabPageInternal FROM TFormInternal
    METHOD RowMargin           SETGET
    METHOD ColMargin           SETGET
 
-   METHOD SetFocus            BLOCK { |Self| ::Container:SetFocus() , ::Container:Value := ::Position , ::Super:SetFocus() , ::Container:DoEvent( ::Container:OnChange ) , Self }
+   METHOD SetFocus            BLOCK { |Self| ::Container:SetFocus() , ::Container:Value := ::Position , ::Super:SetFocus() , ::Container:DoEvent( ::Container:OnChange, "CHANGE" ) , Self }
 ENDCLASS
 
 *-----------------------------------------------------------------------------*

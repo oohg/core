@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.h,v 1.37 2007-07-29 05:19:59 guerra000 Exp $
+ * $Id: oohg.h,v 1.38 2007-12-25 02:47:14 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -109,7 +109,7 @@ extern void ImageFillParameter( struct IMAGE_PARAMETER *pResult, PHB_ITEM pStrin
 extern PHB_ITEM GetControlObjectByHandle( HWND hWnd );
 extern PHB_ITEM GetControlObjectById( LONG lId );
 extern void _OOHG_Send( PHB_ITEM pSelf, int iSymbol );
-void _OOHG_DoEvent( PHB_ITEM pSelf, int iSymbol );
+void _OOHG_DoEvent( PHB_ITEM pSelf, int iSymbol, char * cType );
 LRESULT APIENTRY _OOHG_WndProcCtrl( HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM lParam, WNDPROC lpfnOldWndProc );
 extern int GetKeyFlagState( void );
 POCTRL _OOHG_GetControlInfo( PHB_ITEM pSelf );

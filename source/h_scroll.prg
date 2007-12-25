@@ -1,5 +1,5 @@
 /*
- * $Id: h_scroll.prg,v 1.14 2007-11-04 15:43:34 declan2005 Exp $
+ * $Id: h_scroll.prg,v 1.15 2007-12-25 02:47:14 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -74,7 +74,7 @@ CLASS TScrollBar FROM TControl
    DATA nPageSkip    INIT 0
    DATA nOrient      INIT SB_VERT
    DATA lAutoMove    INIT .F.
-   
+
    DATA ladjust  INIT .F.
 
    METHOD Define
@@ -210,7 +210,7 @@ Return nil
 *-----------------------------------------------------------------------------*
 METHOD Page( nValue ) CLASS TScrollBar
 *-----------------------------------------------------------------------------*
-   if HB_IsNumeric( nValue ) 
+   if HB_IsNumeric( nValue )
       SetScrollPage( ::FromhWnd, ::ScrollType, nValue / ::nFactor )
    endif
 Return SetScrollPage( ::FromhWnd, ::ScrollType ) * ::nFactor
@@ -270,7 +270,7 @@ METHOD LineUp() CLASS TScrollBar
       ::Value := ::Value - ::nLineSkip
    EndIf
    _OOHG_EVAL( ::OnLineUp, Self )
-   ::DoEvent( ::OnChange )
+   ::DoEvent( ::OnChange, "CHANGE" )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -280,7 +280,7 @@ METHOD LineDown() CLASS TScrollBar
       ::Value := ::Value + ::nLineSkip
    EndIf
    _OOHG_EVAL( ::OnLineDown, Self )
-   ::DoEvent( ::OnChange )
+   ::DoEvent( ::OnChange, "CHANGE" )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -290,7 +290,7 @@ METHOD PageUp() CLASS TScrollBar
       ::Value := ::Value - ::nPageSkip
    EndIf
    _OOHG_EVAL( ::OnPageUp, Self )
-   ::DoEvent( ::OnChange )
+   ::DoEvent( ::OnChange, "CHANGE" )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -300,7 +300,7 @@ METHOD PageDown() CLASS TScrollBar
       ::Value := ::Value + ::nPageSkip
    EndIf
    _OOHG_EVAL( ::OnPageDown, Self )
-   ::DoEvent( ::OnChange )
+   ::DoEvent( ::OnChange, "CHANGE" )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -310,7 +310,7 @@ METHOD Top() CLASS TScrollBar
       ::Value := ::nRangeMin
    EndIf
    _OOHG_EVAL( ::OnTop, Self )
-   ::DoEvent( ::OnChange )
+   ::DoEvent( ::OnChange, "CHANGE" )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -320,7 +320,7 @@ METHOD Bottom() CLASS TScrollBar
       ::Value := ::nRangeMax
    EndIf
    _OOHG_EVAL( ::OnBottom, Self )
-   ::DoEvent( ::OnChange )
+   ::DoEvent( ::OnChange, "CHANGE" )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -330,7 +330,7 @@ METHOD Thumb( nPos ) CLASS TScrollBar
       ::Value := nPos
    EndIf
    _OOHG_EVAL( ::OnThumb, Self, nPos )
-   ::DoEvent( ::OnChange )
+   ::DoEvent( ::OnChange, "CHANGE" )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -340,7 +340,7 @@ METHOD Track( nPos ) CLASS TScrollBar
       ::Value := nPos
    EndIf
    _OOHG_EVAL( ::OnTrack, Self, nPos )
-   ::DoEvent( ::OnChange )
+   ::DoEvent( ::OnChange, "CHANGE" )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -374,7 +374,7 @@ Local Lo_wParam := LoWord( wParam )
 
    elseif Lo_wParam == TB_ENDTRACK
       _OOHG_EVAL( ::OnEndTrack, Self, HiWord( wParam ) )
-      ::DoEvent( ::OnChange )
+      ::DoEvent( ::OnChange, "CHANGE" )
 
    else
       Return ::Super:Events_VScroll( wParam )

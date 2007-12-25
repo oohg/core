@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.43 2007-11-05 04:36:06 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.44 2007-12-25 02:47:14 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -276,7 +276,7 @@ Local Hi_wParam := HIWORD( wParam )
       IF ::lSetting
          ::lSetting := .F.
       Else
-         ::DoEvent( ::OnChange )
+         ::DoEvent( ::OnChange, "CHANGE" )
          If ::lAutoSkip .AND. ::nMaxLength > 0 .AND. HiWord( SendMessage( ::hWnd, EM_GETSEL, 0, 0 ) ) >= ::nMaxLength
             _SetNextFocus()
          EndIf
@@ -288,7 +288,7 @@ Local Hi_wParam := HIWORD( wParam )
 
    elseif Hi_wParam == EN_SETFOCUS
       ::SetFocus()
-      ::DoEvent( ::OnGotFocus )
+      ::DoEvent( ::OnGotFocus, "GOTFOCUS" )
       Return nil
 
    Endif

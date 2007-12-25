@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.32 2007-11-19 00:32:00 declan2005 Exp $
+ * $Id: h_combo.prg,v 1.33 2007-12-25 02:47:14 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -193,7 +193,7 @@ Local ControlHandle , rcount := 0 , cset := 0 , WorkArea , cField, nStyle
    IF displaychange
       ::oTextBox := TControl():SetForm( , Self )
       ::oTextBox:Register( GetWindow( ::hWnd, GW_CHILD ) )
-      ::oTextBox:OnEnter := { || ::DoEvent( ::OnEnter ) }
+      ::oTextBox:OnEnter := { || ::DoEvent( ::OnEnter, "ENTER" ) }
    ENDIF
 
    ::Field := cField
@@ -262,14 +262,14 @@ LOCAL uRet
    IF LEN( ::aValues ) == 0
       IF HB_IsNumeric( uValue )
          ComboSetCursel( ::hWnd , uValue )
-         ::DoEvent( ::OnChange )
+         ::DoEvent( ::OnChange, "CHANGE" )
       ENDIF
       uRet := ComboGetCursel( ::hWnd )
    ELSE
       IF VALTYPE( ::aValues[ 1 ] ) == VALTYPE( uValue ) .OR. ;
          ( VALTYPE( uValue ) $ "CM" .AND. VALTYPE( ::aValues[ 1 ] ) $ "CM" )
          ComboSetCursel( ::hWnd, ASCAN( ::aValues, uValue ) )
-          ::DoEvent( ::OnChange )
+          ::DoEvent( ::OnChange, "CHANGE" )
       ENDIF
       uRet := ComboGetCursel( ::hWnd )
       IF uRet >= 1 .AND. uRet <= LEN( ::aValues )
@@ -321,18 +321,18 @@ METHOD Events_Command( wParam ) CLASS TCombo
 Local Hi_wParam := HIWORD( wParam )
 
    if Hi_wParam == CBN_SELCHANGE
-      ::DoEvent( ::OnChange )
+      ::DoEvent( ::OnChange, "CHANGE" )
       Return nil
 
    elseif Hi_wParam == CBN_KILLFOCUS
       Return ::DoLostFocus()
 
    elseif Hi_wParam == CBN_SETFOCUS
-      ::DoEvent( ::OnGotFocus )
+      ::DoEvent( ::OnGotFocus, "GOTFOCUS" )
       Return nil
 
    elseif Hi_wParam == CBN_EDITCHANGE
-      ::DoEvent( ::OnClick )
+      ::DoEvent( ::OnClick, "CLICK" )
       Return nil
 
    EndIf

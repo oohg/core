@@ -1,5 +1,5 @@
 /*
- * $Id: h_monthcal.prg,v 1.6 2007-07-09 17:04:06 declan2005 Exp $
+ * $Id: h_monthcal.prg,v 1.7 2007-12-25 02:47:14 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -156,7 +156,7 @@ Local nNotify := GetNotifyCode( lParam )
 
    If nNotify == MCN_SELECT
 
-      ::DoEvent( ::OnChange )
+      ::DoEvent( ::OnChange, "CHANGE" )
 
       Return nil
 

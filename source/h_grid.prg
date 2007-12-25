@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.92 2007-11-17 16:55:20 declan2005 Exp $
+ * $Id: h_grid.prg,v 1.93 2007-12-25 02:47:14 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1276,7 +1276,7 @@ METHOD Events_Enter() CLASS TGrid
    ElseIf ::AllowEdit
       ::EditItem()
    Else
-      ::DoEvent( ::OnEnter )
+      ::DoEvent( ::OnEnter, "ENTER" )
    EndIf
 Return nil
 
@@ -1320,7 +1320,7 @@ Local lvc, aCellData, _ThisQueryTemp, nvkey
          _ThisQueryTemp  := GETGRIDDISPINFOINDEX ( lParam )
          _OOHG_ThisQueryRowIndex  := _ThisQueryTemp [1]
          _OOHG_ThisQueryColIndex  := _ThisQueryTemp [2]
-         Eval( ::OnDispInfo )
+         ::DoEvent( ::OnDispInfo, "DISPINFO" )
          IF HB_IsNumeric( _OOHG_ThisQueryData )
             SetGridQueryImage ( lParam , _OOHG_ThisQueryData )
          ElseIf ValType( _OOHG_ThisQueryData ) $ "CM"
@@ -1336,7 +1336,7 @@ Local lvc, aCellData, _ThisQueryTemp, nvkey
    elseif nNotify == LVN_ITEMCHANGED
 
       If GetGridOldState(lParam) == 0 .and. GetGridNewState(lParam) != 0
-         ::DoEvent( ::OnChange )
+         ::DoEvent( ::OnChange, "CHANGE" )
          Return nil
       EndIf
 
@@ -1344,8 +1344,8 @@ Local lvc, aCellData, _ThisQueryTemp, nvkey
 
       if HB_IsArray ( ::aHeadClick )
          lvc := GetGridColumn(lParam) + 1
-         if len ( ::aHeadClick ) >= lvc
-            ::DoEvent ( ::aHeadClick [lvc] )
+         if len( ::aHeadClick ) >= lvc
+            ::DoEvent( ::aHeadClick[ lvc ], "HEADCLICK" )
             Return nil
          EndIf
       EndIf
@@ -1386,7 +1386,7 @@ Local lvc, aCellData, _ThisQueryTemp, nvkey
          ElseIf ! ::IsColumnWhen( _OOHG_ThisItemColIndex )
             // Not a valid WHEN
          Else
-                ::EditCell( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
+            ::EditCell( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
     ////            ::EditAllCells(  _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
          EndIf
 
@@ -1396,7 +1396,7 @@ Local lvc, aCellData, _ThisQueryTemp, nvkey
 
       ElseIf HB_IsBlock( ::OnDblClick )
 
-         Eval( ::OnDblClick )
+         ::DoEvent( ::OnDblClick, "DBLCLICK" )
 
       EndIf
 
@@ -2273,7 +2273,7 @@ Local oGridControl := NIL, cMask, nPos
       Case HB_IsDate( uValue )
          // oGridControl := TGridControlDatePicker():New( .T. )
          oGridControl := TGridControlTextBox():New( "@D",, "D" )
-      Case ValType( uValue ) == "M"    
+      Case ValType( uValue ) == "M"
          oGridControl := TGridControlMemo():New()
       Case ValType( uValue ) == "C"
          oGridControl := TGridControlTextBox():New( ,, "C" )

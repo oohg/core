@@ -1,5 +1,5 @@
 /*
- * $Id: h_datepicker.prg,v 1.10 2007-10-08 21:19:04 declan2005 Exp $
+ * $Id: h_datepicker.prg,v 1.11 2007-12-25 02:47:14 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -155,10 +155,10 @@ METHOD Value( uValue ) CLASS TDatePick
 *-----------------------------------------------------------------------------*
    IF HB_IsDate( uValue )
       SetDatePick( ::hWnd, year( uValue ), month( uValue ), day( uValue ) )
-      ::DoEvent( ::OnChange )
+      ::DoEvent( ::OnChange, "CHANGE" )
    ELSEIF PCOUNT() > 0
       SetDatePickNull( ::hWnd )
-      ::DoEvent( ::OnChange )
+      ::DoEvent( ::OnChange, "CHANGE" )
    ENDIF
 Return SToD( StrZero( GetDatePickYear( ::hWnd ), 4 ) + StrZero( GetDatePickMonth( ::hWnd ), 2 ) + StrZero( GetDatePickDay( ::hWnd ), 2 ) )
 
@@ -170,7 +170,7 @@ Local nNotify := GetNotifyCode( lParam )
 
    If nNotify == DTN_DATETIMECHANGE
 
-      ::DoEvent( ::OnChange )
+      ::DoEvent( ::OnChange, "CHANGE" )
 
       Return nil
 
@@ -239,10 +239,10 @@ METHOD Value( uValue ) CLASS TTimePick
 *-----------------------------------------------------------------------------*
    IF VALTYPE( uValue ) == "C"
       SetTimePick( ::hWnd ,VAL(left(uValue,2)),VAL(SUBSTR(uValue,4,2)),VAL( SUBSTR(uValue,7,2 )) )
-       ::DoEvent( ::OnChange )
+       ::DoEvent( ::OnChange, "CHANGE" )
    ELSEIF PCOUNT() > 0
       SettimePick (::hWnd,,VAL(left(TIME(),2)),VAL(SUBSTR(TIME(),4,2)),VAL( SUBSTR(TIME(),7,2) ))
-       ::DoEvent( ::OnChange )
+       ::DoEvent( ::OnChange, "CHANGE" )
    ENDIF
 Return StrZero(GetDatePickHour ( ::hWnd ), 2 ) + ":" + StrZero ( GetDatePickMinute ( ::hWnd ), 2 ) + ":" + StrZero ( GetDatePickSecond (::hWnd ), 2 )
 
@@ -253,7 +253,7 @@ Local nNotify := GetNotifyCode( lParam )
 
    If nNotify == DTN_DATETIMECHANGE
 
-      ::DoEvent( ::OnChange )
+      ::DoEvent( ::OnChange, "CHANGE" )
 
       Return nil
 

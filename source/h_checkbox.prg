@@ -1,5 +1,5 @@
 /*
- * $Id: h_checkbox.prg,v 1.19 2007-12-19 18:32:30 declan2005 Exp $
+ * $Id: h_checkbox.prg,v 1.20 2007-12-25 02:47:14 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -172,7 +172,7 @@ METHOD Value( uValue ) CLASS TCheckBox
 *------------------------------------------------------------------------------*
    IF HB_IsLogical( uValue )
       SendMessage( ::hWnd, BM_SETCHECK, if( uValue, BST_CHECKED, BST_UNCHECKED ), 0 )
-      ::DoEvent( ::OnChange )
+      ::DoEvent( ::OnChange, "CHANGE" )
    ELSE
       uValue := ( SendMessage( ::hWnd, BM_GETCHECK , 0 , 0 ) == BST_CHECKED )
    ENDIF
@@ -183,7 +183,7 @@ METHOD Events_Command( wParam ) CLASS TCheckBox
 *------------------------------------------------------------------------------*
 Local Hi_wParam := HIWORD( wParam )
    If Hi_wParam == BN_CLICKED
-      ::DoEvent( ::OnChange )
+      ::DoEvent( ::OnChange, "CHANGE" )
       Return nil
    EndIf
 Return ::Super:Events_Command( wParam )

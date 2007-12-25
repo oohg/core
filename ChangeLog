@@ -1,11 +1,38 @@
 /*
- * $Id: ChangeLog,v 1.469 2007-12-19 18:53:39 declan2005 Exp $
+ * $Id: ChangeLog,v 1.470 2007-12-25 02:47:14 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2007-12-24 20:02 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * doc/classes.txt
+  * include/oohg.h
+  * source/c_controlmisc.c
+  * source/h_browse.prg
+  * source/h_button.prg
+  * source/h_checkbox.prg
+  * source/h_combo.prg
+  * source/h_controlmisc.prg
+  * source/h_datepicker.prg
+  * source/h_grid.prg
+  * source/h_listbox.prg
+  * source/h_monthcal.prg
+  * source/h_radio.prg
+  * source/h_scroll.prg
+  * source/h_slider.prg
+  * source/h_spinner.prg
+  * source/h_status.prg
+  * source/h_tab.prg
+  * source/h_textbox.prg
+  * source/h_windows.prg
+    * EVENT_TYPE parameter added to ::DoEvent() method.
+  * source/h_error.prg
+  * source/h_windows.prg
+    * Error display modified.
+    * Includes events called on error log.
 
 2007-12-19 13:31 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_checkbox.prg
@@ -18,7 +45,7 @@
 2007-12-17 16:15 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_windows.prg
     * optimizing On SIZE event.
-    
+
 2007-12-17 11:03 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_windows.prg
     ! fix problems in general wm_size event.
@@ -27,7 +54,7 @@
   * source/h_windows.prg
     ! fixed problem in ON SIZE event.
 
-2007-12-13 14:39 UTC-0500 Ciro Vargas C. <cvc@oohg.org> 
+2007-12-13 14:39 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_windows.prg
     ! little adjust in order to statusbar looks ok  if change window size
       programatically before active window.

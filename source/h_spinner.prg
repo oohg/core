@@ -1,5 +1,5 @@
 /*
- * $Id: h_spinner.prg,v 1.12 2007-10-05 11:42:11 declan2005 Exp $
+ * $Id: h_spinner.prg,v 1.13 2007-12-25 02:47:14 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -194,7 +194,7 @@ METHOD Value( uValue ) CLASS TSpinner
 *-----------------------------------------------------------------------------*
    IF HB_IsNumeric ( uValue )
       SetSpinnerValue( ::AuxHandle, uValue )
-      ::DoEvent( ::OnChange )
+      ::DoEvent( ::OnChange, "CHANGE" )
    ENDIF
 Return GetSpinnerValue( ::AuxHandle )
 
