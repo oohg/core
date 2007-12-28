@@ -1,5 +1,5 @@
 /*
- * $Id: h_radio.prg,v 1.17 2007-12-25 02:47:14 guerra000 Exp $
+ * $Id: h_radio.prg,v 1.18 2007-12-28 23:34:26 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -231,7 +231,7 @@ LOCAL nOldValue, aNewValue, I, oItem, nLen
          If SendMessage( oItem:hWnd, BM_GETCHECK, 0, 0 ) != aNewValue[ I ]
             SendMessage( oItem:hWnd, BM_SETCHECK, aNewValue[ I ], 0 )
             //////// ojo aqui en esta linea de abajo
-            ::Container:DoEvent( ::Container:OnChange, "CHANGE" )
+            ::DoEvent(::OnChange, "CHANGE" )
          EndIf
       NEXT
    Else
