@@ -1,5 +1,5 @@
 /*
- * $Id: h_dialogs.prg,v 1.4 2006-12-27 17:15:58 declan2005 Exp $
+ * $Id: h_dialogs.prg,v 1.5 2007-12-31 17:08:13 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -98,8 +98,8 @@ Function GetColor( aInitColor )
 *-----------------------------------------------------------------------------*
 Local aRetVal [3] , nColor , nInitColor
 
-	if valtype ( aInitColor ) != 'U'
-		nInitColor := RGB ( aInitColor [1] , aInitColor [2] , aInitColor [3] )
+	if HB_IsArray ( aInitColor )
+           nInitColor := RGB ( aInitColor [1] , aInitColor [2] , aInitColor [3] )
 	EndIf
 
 	nColor := ChooseColor( NIL, nInitColor )
@@ -138,16 +138,16 @@ local cfiles := ''
 local fileslist := {}
 local n
 
-	IF aFilter == Nil
-		aFilter := {}
+	IF HB_IsNil (aFilter )   //// == Nil
+           aFilter := {}
 	EndIf
 
 	FOR n:=1 TO LEN(aFilter)
 	    c += aFilter[n][1] + chr(0) + aFilter[n][2] + chr(0)
 	NEXT
 
-	if valtype(multiselect) == 'U'
-		multiselect := .f.
+	if !HB_IsLogical(multiselect)
+           multiselect := .f.
 	endif
 
 	if .not. multiselect
@@ -156,15 +156,15 @@ local n
 		cfiles := C_GetFile ( c , title, cIniFolder, multiselect ,nochangedir )
 
 		if len( cfiles ) > 0
-			if valtype( cfiles ) == "A"
+			if HB_IsArray( cfiles )
                         FOR n := 1 TO LEN( cfiles )
                             if at( "\\", cfiles[n] ) > 0
                                  cfiles[n] := strtran( cfiles[n] , "\\", "\" )
                             endif
                         NEXT
-				fileslist := aclone( cfiles )
+                            fileslist := aclone( cfiles )
 			else
-				aadd( fileslist, cfiles )
+                            aadd( fileslist, cfiles )
 			endif
 		endif
 
@@ -178,12 +178,12 @@ Function Putfile ( aFilter, title, cIniFolder, nochangedir )
 *-----------------------------------------------------------------------------*
 local c:='' , n
 
-	IF aFilter == Nil
-		aFilter:={}
+	IF HB_IsNil( aFilter )     ////////////aFilter == Nil
+           aFilter:={}
 	EndIf
 
 	FOR n := 1 TO Len ( aFilter )
-		c += aFilter [n] [1] + chr(0) + aFilter [n] [2] + chr(0)
+            c += aFilter [n] [1] + chr(0) + aFilter [n] [2] + chr(0)
 	NEXT
 
 Return C_PutFile ( c, title, cIniFolder, nochangedir )
@@ -193,47 +193,47 @@ Function GetFont( cInitFontName , nInitFontSize , lBold , lItalic , anInitColor 
 *------------------------------------------------------------------------------*
 Local RetArray [8] , Tmp , rgbcolor
 
-	If ValType ( cInitFontName ) == 'U'
-		cInitFontName := ""
+	If !HB_IsString ( cInitFontName )
+           cInitFontName := ""
 	EndIf
 
-	If ValType ( nInitFontSize ) == 'U'
-		nInitFontSize := 0
+	If !HB_Isnumeric ( nInitFontSize )
+           nInitFontSize := 0
 	EndIf
 
-	If ValType ( lBold ) == 'U'
-		lBold := .F.
+	If !HB_IsLogical( lBold )
+           lBold := .F.
 	EndIf
 
-	If ValType ( lItalic ) == 'U'
-		lItalic := .F.
+	If !HB_IsLogical ( lItalic )
+           lItalic := .F.
 	EndIf
 
-	If ValType ( anInitColor ) == 'U'
-		rgbcolor := 0
+	If !HB_Isarray ( anInitColor )
+           rgbcolor := 0
 	Else
-		rgbcolor := RGB( anInitColor[1] , anInitColor[2] , anInitColor[3] )
+           rgbcolor := RGB( anInitColor[1] , anInitColor[2] , anInitColor[3] )
 	EndIf
 
-	If ValType ( lUnderLine ) == 'U'
-		lUnderLine := .F.
+	If !HB_IsLogical ( lUnderLine )
+           lUnderLine := .F.
 	EndIf
 
-	If ValType ( lStrikeOut ) == 'U'
-		lStrikeOut := .F.
+	If !HB_IsLogical ( lStrikeOut )
+           lStrikeOut := .F.
 	EndIf
 
-	If ValType ( nCharSet ) == 'U'
-		nCharSet := 0
+	If !HB_IsNumeric ( nCharSet )
+           nCharSet := 0
 	EndIf
 
 	RetArray := ChooseFont( cInitFontName , nInitFontSize , lBold , lItalic , rgbcolor , lUnderLine , lStrikeOut , nCharSet )
 
 	If ! Empty ( RetArray [1] )
-		Tmp := RetArray [5]
-		RetArray [5] := { GetRed(Tmp) , GetGreen(Tmp) , GetBlue(Tmp) }
+           Tmp := RetArray [5]
+           RetArray [5] := { GetRed(Tmp) , GetGreen(Tmp) , GetBlue(Tmp) }
 	Else
-		RetArray [5] := { Nil , Nil , Nil }
+           RetArray [5] := { Nil , Nil , Nil }
 	EndIf
 
 Return RetArray
