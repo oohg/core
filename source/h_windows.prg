@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.168 2007-12-25 17:52:00 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.169 2008-01-03 02:00:20 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -2480,7 +2480,9 @@ Local oCtrl, lminim:=.F.
                if _OOHG_AutoAdjust
                   ::autoadjust()       ////// cambio de tamaño antes de activarla si ya esta definida
                endif
+            AEVAL( ::aControls, { |o| If( o:Container == nil, o:Events_Size(), ) } )
             endif
+          
         EndIf
      endif
 
