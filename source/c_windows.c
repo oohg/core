@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.55 2007-12-25 17:52:00 guerra000 Exp $
+ * $Id: c_windows.c,v 1.56 2008-01-04 03:21:24 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -737,14 +737,14 @@ HB_FUNC( REGISTERWINDOW )
    int iWindowType = hb_parni( 4 );
    LONG lColor;
 
-   WndClass.style         = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
+   WndClass.style         = CS_HREDRAW | CS_VREDRAW | CS_OWNDC | CS_DBLCLKS;
    WndClass.lpfnWndProc   = WndProc;
    WndClass.lpszClassName = hb_parc( 2 );
 
    switch( iWindowType )
    {
       case 1:                           // Splitchild
-         WndClass.style         = CS_OWNDC;
+         WndClass.style         = CS_OWNDC | CS_DBLCLKS;
          break;
 
       case 2:                           // MDI client
@@ -754,7 +754,7 @@ HB_FUNC( REGISTERWINDOW )
          break;
 
       case 3:                           // MDI child
-         WndClass.style         = 0;
+         WndClass.style         = CS_DBLCLKS;
          WndClass.lpfnWndProc   = WndProcMdiChild;
          break;
 
@@ -768,11 +768,11 @@ HB_FUNC( REGISTERWINDOW )
 //    WndClass.cbWndExtra    = 20;   MDICHILD!
    WndClass.hInstance     = GetModuleHandle( NULL );
    WndClass.hIcon         = LoadIcon( GetModuleHandle(NULL), hb_parc( 1 ) );
-   if (WndClass.hIcon==NULL)
+   if( ! WndClass.hIcon )
    {
-      WndClass.hIcon= (HICON) LoadImage( GetModuleHandle(NULL),  hb_parc(1) , IMAGE_ICON, 0, 0, LR_LOADFROMFILE + LR_DEFAULTSIZE ) ;
+      WndClass.hIcon= ( HICON ) LoadImage( GetModuleHandle(NULL),  hb_parc(1) , IMAGE_ICON, 0, 0, LR_LOADFROMFILE + LR_DEFAULTSIZE ) ;
    }
-   if (WndClass.hIcon==NULL)
+   if( ! WndClass.hIcon )
    {
        WndClass.hIcon= LoadIcon(NULL, IDI_APPLICATION);
    }

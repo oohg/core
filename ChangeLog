@@ -1,11 +1,29 @@
 /*
- * $Id: ChangeLog,v 1.475 2008-01-03 02:00:19 declan2005 Exp $
+ * $Id: ChangeLog,v 1.476 2008-01-04 03:21:23 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-01-03 20:58 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_altsyntax.ch
+  * include/i_window.ch
+  * include/oohg.h
+  * source/c_controlmisc.c
+  * source/c_windows.c
+  * source/h_controlmisc.prg
+  * source/h_windows.prg
+    + ON DBLCLICK, ON RCLICK, ON MCLICK, ON RDBLCLICK, ON MDBLCLICK
+      events added.
+  * doc/classes.txt
+  * source/h_grid.prg
+  * source/h_hotkeybox.prg
+  * source/h_listbox.prg
+  * source/h_textbox.prg
+  * source/h_tree.prg
+    * Modified operation for WM_LBUTTONDBLCLK message.
 
 2008-01-02 20:44 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_windows.prg
@@ -17,8 +35,7 @@
 
 2007-12-28 18:33 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_radio.prg
-    ! fixed problem with ON CHange programatically 
-
+    ! fixed problem with ON CHange programatically
 
 2007-12-25 12:43 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * include/i_image.ch

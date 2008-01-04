@@ -1,5 +1,5 @@
 /*
- * $Id: h_tree.prg,v 1.12 2007-03-31 02:06:11 guerra000 Exp $
+ * $Id: h_tree.prg,v 1.13 2008-01-04 03:21:24 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -174,10 +174,6 @@ Local Controlhandle , ImgDefNode, ImgDefItem, aBitmaps := array(4)
 
 	if valtype(lostfocus) == "U"
 		lostfocus := ""
-	endif
-
-	if valtype(dblclick) == "U"
-		dblclick := ""
 	endif
 
    ::Register( ControlHandle, ControlName, HelpId, , ToolTip )

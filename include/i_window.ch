@@ -1,5 +1,5 @@
 /*
- * $Id: i_window.ch,v 1.31 2007-12-25 17:52:00 guerra000 Exp $
+ * $Id: i_window.ch,v 1.32 2008-01-04 03:21:24 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -203,6 +203,11 @@
                         [ <focused: FOCUSED> ] ;
                         [ SUBCLASS <subclass> ] ;
                         [ <clientarea: CLIENTAREA> ] ;
+                        [ ON RCLICK <RClickProcedure> ] ;
+                        [ ON MCLICK <MClickProcedure> ] ;
+                        [ ON DBLCLICK <DblClickProcedure> ] ;
+                        [ ON RDBLCLICK <RDblClickProcedure> ] ;
+                        [ ON MDBLCLICK <MDblClickProcedure> ] ;
 	=>;
         [ <obj> := ] ;
         DefineWindow( <(w)>, <title>, <col>, <row>, <wi>, <h>, <.nominimize.>, <.nomaximize.>, <.nosize.>, ;
@@ -216,7 +221,9 @@
                       <{MinimizeProcedure}>, <cursor>, <.noautorelease.>, <parent>, ;
                       <{interactivecloseprocedure}>, <.focused.>, <.break.>, <grippertext>, <.rtl.>, ;
                       <.main.>, <.splitchild.>, <.child.>, <.modal.>, <.modalsize.>, <.mdi.>, <.internal.>, ;
-                      <.mdichild.>, <.mdiclient.>, [ <subclass>() ], <.clientarea.>, <{RestoreProcedure}> ) ;;
+                      <.mdichild.>, <.mdiclient.>, [ <subclass>() ], <.clientarea.>, <{RestoreProcedure}>, ;
+                      <{RClickProcedure}>, <{MClickProcedure}>, <{DblClickProcedure}>, ;
+                      <{RDblClickProcedure}>, <{MDblClickProcedure}> ) ;;
         DECLARE WINDOW <w>
 
 	#xcommand LOAD WINDOW <w> ;
@@ -353,6 +360,11 @@ SetProperty ( <(Arg1)> , <(Arg2)> , <Arg3> )
                         [ <focused: FOCUSED> ] ;
                         [ SUBCLASS <subclass> ] ;
                         [ <clientarea: CLIENTAREA> ] ;
+                        [ ON RCLICK <RClickProcedure> ] ;
+                        [ ON MCLICK <MClickProcedure> ] ;
+                        [ ON DBLCLICK <DblClickProcedure> ] ;
+                        [ ON RDBLCLICK <RDblClickProcedure> ] ;
+                        [ ON MDBLCLICK <MDblClickProcedure> ] ;
 	=>;
         [ <obj> := ] ;
         DefineWindow( , <title>, <col>, <row>, <wi>, <h>, <.nominimize.>, <.nomaximize.>, <.nosize.>, ;
@@ -366,7 +378,9 @@ SetProperty ( <(Arg1)> , <(Arg2)> , <Arg3> )
                       <{MinimizeProcedure}>, <cursor>, <.noautorelease.>, <parent>, ;
                       <{interactivecloseprocedure}>, <.focused.>, <.break.>, <grippertext>, <.rtl.>, ;
                       <.main.>, <.splitchild.>, <.child.>, <.modal.>, <.modalsize.>, <.mdi.>, <.internal.>, ;
-                      <.mdichild.>, <.mdiclient.>, [ <subclass>() ], <.clientarea.>, <{RestoreProcedure}> )
+                      <.mdichild.>, <.mdiclient.>, [ <subclass>() ], <.clientarea.>, <{RestoreProcedure}>, ;
+                      <{RClickProcedure}>, <{MClickProcedure}>, <{DblClickProcedure}>, ;
+                      <{RDblClickProcedure}>, <{MDblClickProcedure}> )
 
 ////////////////////////////////////////////////////////////
 // Set AutoAdjust

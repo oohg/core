@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.38 2007-11-08 08:55:19 guerra000 Exp $
+ * $Id: i_altsyntax.ch,v 1.39 2008-01-04 03:21:24 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -159,6 +159,8 @@ MEMVAR _OOHG_ActiveControlOpaque
 MEMVAR _OOHG_ActiveControlHeaders
 MEMVAR _OOHG_ActiveControlWidths
 MEMVAR _OOHG_ActiveControlOnDblClick
+MEMVAR _OOHG_ActiveControlOnRDblClick
+MEMVAR _OOHG_ActiveControlOnMDblClick
 MEMVAR _OOHG_ActiveControlOnHeadClick
 MEMVAR _OOHG_ActiveControlNoLines
 MEMVAR _OOHG_ActiveControlImage
@@ -300,7 +302,12 @@ MEMVAR _OOHG_ActiveControlShowHeaders
         _OOHG_ActiveControlNoTabStop     := .f.          ;;
         _OOHG_ActiveControlInvisible     := .f.          ;;
         _OOHG_ActiveControlHelpId        := Nil          ;;
-        _OOHG_ActiveControlDisabled      := .f.
+        _OOHG_ActiveControlDisabled      := .f.          ;;
+        _OOHG_ActiveControlOnDblClick    := Nil          ;;
+        _OOHG_ActiveControlOnRDblClick   := Nil          ;;
+        _OOHG_ActiveControlOnMDblClick   := Nil          ;;
+        _OOHG_ActiveControlOnLostFocus   := Nil          ;;
+        _OOHG_ActiveControlOnGotFocus    := Nil
 
 #xcommand PARENT <of> ;
         =>;
@@ -587,10 +594,7 @@ List Box
 	=>;
         _OOHG_ClearActiveControlInfo( <(name)> ) ;;
         _OOHG_ActiveControlItems         := Nil          ;;
-        _OOHG_ActiveControlOnGotFocus    := Nil          ;;
         _OOHG_ActiveControlOnChange              := Nil          ;;
-        _OOHG_ActiveControlOnLostFocus   := Nil          ;;
-        _OOHG_ActiveControlOnDblClick    := Nil          ;;
         _OOHG_ActiveControlMultiSelect   := .f.          ;;
         _OOHG_ActiveControlBreak         := .f.          ;;
         _OOHG_ActiveControlSort          := .f.
@@ -933,8 +937,6 @@ Text Box
         _OOHG_ActiveControlLowerCase     := .f.          ;;
         _OOHG_ActiveControlNumeric       := .f.          ;;
         _OOHG_ActiveControlPassword      := .f.          ;;
-        _OOHG_ActiveControlOnLostFocus   := Nil          ;;
-        _OOHG_ActiveControlOnGotFocus    := Nil          ;;
         _OOHG_ActiveControlOnChange      := Nil          ;;
         _OOHG_ActiveControlOnEnter       := Nil          ;;
         _OOHG_ActiveControlRightAlign    := .f.          ;;
@@ -1088,8 +1090,6 @@ Button
         _OOHG_ActiveControlCaption           := Nil      ;;
         _OOHG_ActiveControlAction            := Nil      ;;
         _OOHG_ActiveControlFlat              := .f.      ;;
-        _OOHG_ActiveControlOnGotFocus        := Nil      ;;
-        _OOHG_ActiveControlOnLostFocus       := Nil      ;;
         _OOHG_ActiveControlPicture           := Nil      ;;
         _OOHG_ActiveControlTransparent       := .t.      ;;
         _OOHG_ActiveControlNoPrefix          := .F.
@@ -1217,9 +1217,7 @@ Check Box/Button
 	=>;
         _OOHG_ClearActiveControlInfo( <(name)> ) ;;
         _OOHG_ActiveControlCaption               := Nil          ;;
-        _OOHG_ActiveControlOnGotFocus    := Nil          ;;
         _OOHG_ActiveControlOnChange              := Nil          ;;
-        _OOHG_ActiveControlOnLostFocus   := Nil          ;;
         _OOHG_ActiveControlTransparent   := .f.          ;;
         _OOHG_ActiveControlAutoSize   := .f.          ;;
         _OOHG_ActiveControlField             := Nil
@@ -1229,9 +1227,7 @@ Check Box/Button
 	=>;
         _OOHG_ClearActiveControlInfo( <(name)> ) ;;
         _OOHG_ActiveControlCaption               := Nil          ;;
-        _OOHG_ActiveControlOnGotFocus    := Nil          ;;
         _OOHG_ActiveControlOnChange              := Nil          ;;
-        _OOHG_ActiveControlOnLostFocus   := Nil          ;;
         _OOHG_ActiveControlPicture           := Nil      ;;
         _OOHG_ActiveControlField             := Nil
 
@@ -1317,10 +1313,8 @@ Combo Box
 	=>;
         _OOHG_ClearActiveControlInfo( <(name)> ) ;;
         _OOHG_ActiveControlItems         := Nil          ;;
-        _OOHG_ActiveControlOnGotFocus    := Nil          ;;
         _OOHG_ActiveControlSort          := .f.          ;;
         _OOHG_ActiveControlOnChange      := Nil          ;;
-        _OOHG_ActiveControlOnLostFocus   := Nil          ;;
         _OOHG_ActiveControlOnEnter       := Nil          ;;
         _OOHG_ActiveControlItemSource   := Nil           ;;
         _OOHG_ActiveControlValueSource  := Nil           ;;
@@ -1409,10 +1403,8 @@ Datepicker
         _OOHG_ActiveControlShowNone              := .f.          ;;
         _OOHG_ActiveControlUpDown                := .f.          ;;
         _OOHG_ActiveControlRightAlign    := .f.          ;;
-        _OOHG_ActiveControlOnGotFocus    := Nil          ;;
         _OOHG_ActiveControlField             := Nil          ;;
         _OOHG_ActiveControlOnChange              := Nil          ;;
-        _OOHG_ActiveControlOnLostFocus   := Nil          ;;
         _OOHG_ActiveControlOnEnter       := Nil
 
 
@@ -1466,10 +1458,8 @@ Datepicker
         _OOHG_ActiveControlShowNone              := .f.          ;;
         _OOHG_ActiveControlUpDown                := .f.          ;;
         _OOHG_ActiveControlRightAlign    := .f.          ;;
-        _OOHG_ActiveControlOnGotFocus    := Nil          ;;
         _OOHG_ActiveControlField             := Nil          ;;
         _OOHG_ActiveControlOnChange              := Nil          ;;
-        _OOHG_ActiveControlOnLostFocus   := Nil          ;;
         _OOHG_ActiveControlOnEnter       := Nil
 
 
@@ -1513,9 +1503,7 @@ Edit Box
         _OOHG_ClearActiveControlInfo( <(name)> ) ;;
         _OOHG_ActiveControlReadonly      := .f.          ;;
         _OOHG_ActiveControlMaxLength     := Nil          ;;
-        _OOHG_ActiveControlOnGotFocus    := Nil          ;;
         _OOHG_ActiveControlOnChange      := Nil          ;;
-        _OOHG_ActiveControlOnLostFocus   := Nil          ;;
         _OOHG_ActiveControlBreak         := .f.          ;;
         _OOHG_ActiveControlField         := Nil          ;;
         _OOHG_ActiveControlNoVScroll     := .f.          ;;
@@ -1580,9 +1568,7 @@ Rich Edit Box
         _OOHG_ClearActiveControlInfo( <(name)> ) ;;
         _OOHG_ActiveControlReadonly              := .f.          ;;
         _OOHG_ActiveControlMaxLength             := Nil          ;;
-        _OOHG_ActiveControlOnGotFocus    := Nil          ;;
         _OOHG_ActiveControlOnChange              := Nil          ;;
-        _OOHG_ActiveControlOnLostFocus   := Nil          ;;
         _OOHG_ActiveControlBreak         := .f.          ;;
         _OOHG_ActiveControlField             := Nil
 
@@ -1711,9 +1697,7 @@ Label
 #xcommand DEFINE IPADDRESS <name> ;
 	=>;
         _OOHG_ClearActiveControlInfo( <(name)> ) ;;
-        _OOHG_ActiveControlOnGotFocus    := Nil          ;;
-        _OOHG_ActiveControlOnChange              := Nil          ;;
-        _OOHG_ActiveControlOnLostFocus   := Nil
+        _OOHG_ActiveControlOnChange              := Nil
 
 #xcommand END IPADDRESS ;
 =>;
@@ -1751,10 +1735,7 @@ Grid
         _OOHG_ActiveControlHeaders               := Nil          ;;
         _OOHG_ActiveControlWidths                := Nil          ;;
         _OOHG_ActiveControlItems         := Nil          ;;
-        _OOHG_ActiveControlOnGotFocus    := Nil          ;;
         _OOHG_ActiveControlOnChange              := Nil          ;;
-        _OOHG_ActiveControlOnLostFocus   := Nil          ;;
-        _OOHG_ActiveControlOnDblClick    := Nil          ;;
         _OOHG_ActiveControlOnHeadClick   := Nil          ;;
         _OOHG_ActiveControlNoLines               := .f.          ;;
         _OOHG_ActiveControlImage         := Nil          ;;
@@ -1844,10 +1825,7 @@ BROWSE
         _OOHG_ClearActiveControlInfo( <(name)> ) ;;
         _OOHG_ActiveControlHeaders               := Nil          ;;
         _OOHG_ActiveControlWidths                := Nil          ;;
-        _OOHG_ActiveControlOnGotFocus    := Nil          ;;
         _OOHG_ActiveControlOnChange              := Nil          ;;
-        _OOHG_ActiveControlOnLostFocus   := Nil          ;;
-        _OOHG_ActiveControlOnDblClick    := Nil          ;;
         _OOHG_ActiveControlOnHeadClick   := Nil          ;;
         _OOHG_ActiveControlNoLines               := .f.          ;;
         _OOHG_ActiveControlImage         := Nil          ;;
@@ -1999,8 +1977,6 @@ Spinner
         _OOHG_ActiveControlRangeLow      := Nil          ;;
         _OOHG_ActiveControlRangeHigh     := Nil          ;;
         _OOHG_ActiveControlOnChange      := Nil          ;;
-        _OOHG_ActiveControlOnLostFocus   := Nil          ;;
-        _OOHG_ActiveControlOnGotFocus    := Nil          ;;
         _OOHG_ActiveControlWrap          := .F.          ;;
         _OOHG_ActiveControlReadOnly      := .F.          ;;
         _OOHG_ActiveControlIncrement     := Nil          ;;

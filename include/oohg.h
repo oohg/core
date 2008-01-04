@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.h,v 1.38 2007-12-25 02:47:14 guerra000 Exp $
+ * $Id: oohg.h,v 1.39 2008-01-04 03:21:24 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -185,7 +185,12 @@ DWORD _OOHG_RTL_Status( BOOL bRtl );
 #define s_Activate             61
 #define s_oOle                 62
 #define s_RangeHeight          63
-#define s_LastSymbol           64
+#define s_OnRClick             64
+#define s_OnMClick             65
+#define s_OnDblClick           66
+#define s_OnRDblClick          67
+#define s_OnMDblClick          68
+#define s_LastSymbol           69
 
 // Hack for MinGW and static functions (object's methods)
 #ifdef __MINGW32__

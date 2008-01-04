@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.86 2007-12-25 02:47:14 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.87 2008-01-04 03:21:24 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1195,7 +1195,6 @@ CLASS TControl FROM TWindow
    DATA Transparent INIT .F.
    DATA HelpId      INIT 0
    DATA OnChange    INIT nil
-   DATA OnDblClick  INIT nil
    DATA Block       INIT nil
    DATA VarName     INIT ""
    DATA Id          INIT 0
@@ -1206,6 +1205,7 @@ CLASS TControl FROM TWindow
    DATA hCursor     INIT 0
    DATA postBlock   INIT nil
    DATA lCancel     INIT .F.
+   DATA OnEnter     INIT nil
 
    METHOD Row       SETGET
    METHOD Col       SETGET
@@ -1227,7 +1227,6 @@ CLASS TControl FROM TWindow
    METHOD FontItalic          SETGET
    METHOD FontUnderline       SETGET
    METHOD FontStrikeout       SETGET
-   METHOD OnEnter             SETGET
    METHOD SizePos
    METHOD Move
    METHOD SetFocus            BLOCK { |Self| _OOHG_lSettingFocus := .T., GetFormObjectByHandle( ::ContainerhWnd ):LastFocusedControl := ::hWnd, ::Super:SetFocus() }
@@ -1459,6 +1458,10 @@ Local mVar
    ::OnMouseMove    := nil
    ::OnChange       := nil
    ::OnDblClick     := nil
+   ::OnRClick       := nil
+   ::OnMClick       := nil
+   ::OnRDblClick    := nil
+   ::OnMDblClick    := nil
    ::OnEnter        := nil
 
    // Removes from container
@@ -1570,14 +1573,6 @@ METHOD FontStrikeout( lStrikeout ) CLASS TControl
       ::SetFont( ,,,,, lStrikeout )
    EndIf
 Return ::Strikeout
-
-*-----------------------------------------------------------------------------*
-METHOD OnEnter( bOnEnter ) CLASS TControl
-*-----------------------------------------------------------------------------*
-   If HB_IsBlock( bOnEnter )
-      ::OnDblClick := bOnEnter
-   EndIf
-Return ::OnDblClick
 
 *-----------------------------------------------------------------------------*
 METHOD SizePos( Row, Col, Width, Height ) CLASS TControl
@@ -1722,6 +1717,37 @@ HB_FUNC_STATIC( TCONTROL_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam
          {
             _OOHG_DoEvent( pSelf, s_OnMouseMove, "MOUSEMOVE" );
          }
+         hb_ret();
+         break;
+
+      // *** Commented for use current behaviour.
+      // case WM_LBUTTONUP:
+      //    _OOHG_DoEvent( pSelf, s_OnClick, "CLICK" );
+      //    hb_ret();
+      //    break;
+
+      case WM_LBUTTONDBLCLK:
+         _OOHG_DoEvent( pSelf, s_OnDblClick, "DBLCLICK" );
+         hb_ret();
+         break;
+
+      case WM_RBUTTONUP:
+         _OOHG_DoEvent( pSelf, s_OnRClick, "RCLICK" );
+         hb_ret();
+         break;
+
+      case WM_RBUTTONDBLCLK:
+         _OOHG_DoEvent( pSelf, s_OnRDblClick, "RDBLCLICK" );
+         hb_ret();
+         break;
+
+      case WM_MBUTTONUP:
+         _OOHG_DoEvent( pSelf, s_OnMClick, "MCLICK" );
+         hb_ret();
+         break;
+
+      case WM_MBUTTONDBLCLK:
+         _OOHG_DoEvent( pSelf, s_OnMDblClick, "MDBLCLICK" );
          hb_ret();
          break;
 

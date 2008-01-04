@@ -1,5 +1,5 @@
 /*
- * $Id: h_listbox.prg,v 1.11 2007-12-25 02:47:14 guerra000 Exp $
+ * $Id: h_listbox.prg,v 1.12 2008-01-04 03:21:24 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -184,10 +184,6 @@ Local Hi_wParam := HIWORD( wParam )
 
    if Hi_wParam == LBN_SELCHANGE
       ::DoEvent( ::OnChange, "CHANGE" )
-      Return nil
-
-   elseif Hi_wParam == LBN_DBLCLK
-      ::DoEvent( ::OnDblClick, "DBLCLICK" )
       Return nil
 
    elseif Hi_wParam == LBN_KILLFOCUS

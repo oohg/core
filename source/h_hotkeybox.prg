@@ -1,5 +1,5 @@
 /*
- * $Id: h_hotkeybox.prg,v 1.2 2006-10-28 20:49:15 guerra000 Exp $
+ * $Id: h_hotkeybox.prg,v 1.3 2008-01-04 03:21:24 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -94,9 +94,9 @@ Local ControlHandle, nStyle := 0, nStyleEx := 0
    ::Value := cValue
 
    ::OnLostFocus := uLostFocus
-   ::OnGotFocus :=  uGotFocus
-   ::OnChange   :=  uChange
-   ::OnDblClick := uEnter
+   ::OnGotFocus  := uGotFocus
+   ::OnChange    := uChange
+   ::OnEnter     := uEnter
 
 return Self
 

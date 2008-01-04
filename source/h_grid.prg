@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.93 2007-12-25 02:47:14 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.94 2008-01-04 03:21:24 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1221,48 +1221,119 @@ HB_FUNC_STATIC( TGRID_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
    WPARAM wParam  = ( WPARAM ) hb_parni( 3 );
    LPARAM lParam  = ( LPARAM ) hb_parnl( 4 );
    PHB_ITEM pSelf = hb_stackSelfItem();
+   static PHB_SYMB s_Events2 = 0;
 
-   if ( message == WM_MOUSEWHEEL )
-	{
+   switch( message )
+   {
+      case WM_MOUSEWHEEL:
+         if ( ( short ) HIWORD ( wParam ) > 0 )
+         {
+            keybd_event(
+            VK_UP ,  // virtual-key code
+            0,    // hardware scan code
+            0,    // flags specifying various function options
+            0     // additional data associated with keystroke
+            );
+         }
+         else
+         {
+            keybd_event(
+            VK_DOWN  ,  // virtual-key code
+            0,    // hardware scan code
+            0,    // flags specifying various function options
+            0     // additional data associated with keystroke
+            );
+         }
+         hb_retni( 1 );
+         break;
 
-      if ( ( short ) HIWORD ( wParam ) > 0 )
-		{
+      case WM_LBUTTONDBLCLK:
+         if( ! s_Events2 )
+         {
+            s_Events2 = hb_dynsymSymbol( hb_dynsymFind( "_OOHG_TGRID_EVENTS2" ) );
+         }
+         hb_vmPushSymbol( s_Events2 );
+         hb_vmPushNil();
+         hb_vmPush( pSelf );
+         HWNDpush( hWnd );
+         hb_vmPushLong( message );
+         hb_vmPushLong( wParam );
+         hb_vmPushLong( lParam );
+         hb_vmDo( 5 );
+         break;
 
-			keybd_event(
-			VK_UP	,	// virtual-key code
-			0,		// hardware scan code
-			0,		// flags specifying various function options
-			0		// additional data associated with keystroke
-			);
-
-		}
-		else
-		{
-
-			keybd_event(
-			VK_DOWN	,	// virtual-key code
-			0,		// hardware scan code
-			0,		// flags specifying various function options
-			0		// additional data associated with keystroke
-			);
-
-		}
-
-      hb_retni( 1 );
-	}
-	else
-	{
-      _OOHG_Send( pSelf, s_Super );
-      hb_vmSend( 0 );
-      _OOHG_Send( hb_param( -1, HB_IT_OBJECT ), s_Events );
-      HWNDpush( hWnd );
-      hb_vmPushLong( message );
-      hb_vmPushLong( wParam );
-      hb_vmPushLong( lParam );
-      hb_vmSend( 4 );
+      default:
+         _OOHG_Send( pSelf, s_Super );
+         hb_vmSend( 0 );
+         _OOHG_Send( hb_param( -1, HB_IT_OBJECT ), s_Events );
+         HWNDpush( hWnd );
+         hb_vmPushLong( message );
+         hb_vmPushLong( wParam );
+         hb_vmPushLong( lParam );
+         hb_vmSend( 4 );
+         break;
 	}
 }
 #pragma ENDDUMP
+
+*-----------------------------------------------------------------------------*
+FUNCTION _OOHG_TGrid_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TGrid
+*-----------------------------------------------------------------------------*
+Local aCellData
+   Empty( hWnd )
+   Empty( wParam )
+   Empty( lParam )
+
+   If nMsg == WM_LBUTTONDBLCLK
+
+      _PushEventInfo()
+      _OOHG_ThisForm := ::Parent
+      _OOHG_ThisType := 'C'
+      _OOHG_ThisControl := Self
+
+      aCellData := _GetGridCellData( Self )
+      _OOHG_ThisItemRowIndex   := aCellData[ 1 ]
+      _OOHG_ThisItemColIndex   := aCellData[ 2 ]
+      _OOHG_ThisItemCellRow    := aCellData[ 3 ]
+      _OOHG_ThisItemCellCol    := aCellData[ 4 ]
+      _OOHG_ThisItemCellWidth  := aCellData[ 5 ]
+      _OOHG_ThisItemCellHeight := aCellData[ 6 ]
+      _OOHG_ThisItemCellValue  := ::Cell( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
+
+      If ::fullmove
+         If ::IsColumnReadOnly( _OOHG_ThisItemColIndex )
+            // Cell is readonly
+         ElseIf ! ::IsColumnWhen( _OOHG_ThisItemColIndex )
+            // Not a valid WHEN
+         Else
+            ::EditGrid( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
+         EndIf
+
+      ElseIf ::InPlace
+         If ::IsColumnReadOnly( _OOHG_ThisItemColIndex )
+            // Cell is readonly
+         ElseIf ! ::IsColumnWhen( _OOHG_ThisItemColIndex )
+            // Not a valid WHEN
+         Else
+            ::EditCell( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
+    ////            ::EditAllCells(  _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
+         EndIf
+
+      ElseIf ::AllowEdit
+         ::EditItem()
+
+      ElseIf HB_IsBlock( ::OnDblClick )
+         ::DoEvent( ::OnDblClick, "DBLCLICK" )
+
+      EndIf
+
+      _ClearThisCellInfo()
+      _PopEventInfo()
+      Return 0
+
+   EndIf
+
+RETURN nil
 
 *-----------------------------------------------------------------------------*
 METHOD Events_Enter() CLASS TGrid
@@ -1285,7 +1356,7 @@ Return nil
 METHOD Events_Notify( wParam, lParam ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local nNotify := GetNotifyCode( lParam )
-Local lvc, aCellData, _ThisQueryTemp, nvkey
+Local lvc, _ThisQueryTemp, nvkey
 
    If nNotify == NM_CUSTOMDRAW
 
@@ -1350,61 +1421,6 @@ Local lvc, aCellData, _ThisQueryTemp, nvkey
          EndIf
       EndIf
 
-   elseif nNotify == NM_DBLCLK
-
-      _PushEventInfo()
-      _OOHG_ThisForm := ::Parent
-      _OOHG_ThisType := 'C'
-      _OOHG_ThisControl := Self
-
-      aCellData := _GetGridCellData( Self )
-      _OOHG_ThisItemRowIndex   := aCellData[ 1 ]
-      _OOHG_ThisItemColIndex   := aCellData[ 2 ]
-      _OOHG_ThisItemCellRow    := aCellData[ 3 ]
-      _OOHG_ThisItemCellCol    := aCellData[ 4 ]
-      _OOHG_ThisItemCellWidth  := aCellData[ 5 ]
-      _OOHG_ThisItemCellHeight := aCellData[ 6 ]
-
-
-      if ::fullmove
-         _OOHG_ThisItemCellValue := ::Cell( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
-         If ::IsColumnReadOnly( _OOHG_ThisItemColIndex )
-            // Cell is readonly
-         ElseIf ! ::IsColumnWhen( _OOHG_ThisItemColIndex )
-            // Not a valid WHEN
-         Else
-            ::EditGrid(  _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
-         EndIf
-         return nil
-      endif
-
-      If ::InPlace
-
-         _OOHG_ThisItemCellValue := ::Cell( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
-         If ::IsColumnReadOnly( _OOHG_ThisItemColIndex )
-            // Cell is readonly
-         ElseIf ! ::IsColumnWhen( _OOHG_ThisItemColIndex )
-            // Not a valid WHEN
-         Else
-            ::EditCell( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
-    ////            ::EditAllCells(  _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
-         EndIf
-
-      ElseIf ::AllowEdit
-
-         ::EditItem()
-
-      ElseIf HB_IsBlock( ::OnDblClick )
-
-         ::DoEvent( ::OnDblClick, "DBLCLICK" )
-
-      EndIf
-
-      _ClearThisCellInfo()
-      _PopEventInfo()
-
-      Return nil
-
 * ¨Qu‚ es -181?
    elseif nNotify == -181  // ???????
 
@@ -1413,11 +1429,6 @@ Local lvc, aCellData, _ThisQueryTemp, nvkey
    EndIf
 
 Return ::Super:Events_Notify( wParam, lParam )
-
-
-
-
-
 
 *-----------------------------------------------------------------------------*
 METHOD AddItem( aRow, uForeColor, uBackColor ) CLASS TGrid

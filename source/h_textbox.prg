@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.44 2007-12-25 02:47:14 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.45 2008-01-04 03:21:24 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -197,7 +197,7 @@ local break
    ::OnLostFocus := uLostFocus
    ::OnGotFocus  := uGotFocus
    ::OnChange    := uChange
-   ::OnDblClick  := uEnter
+   ::OnEnter     := uEnter
    ::postBlock   := bValid
    ASSIGN ::lAutoSkip   VALUE lAutoSkip  TYPE "L"
    ASSIGN ::nOnFocusPos VALUE OnFocusPos TYPE "N"
