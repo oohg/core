@@ -1,5 +1,5 @@
 /*
- * $Id: c_dialogs.c,v 1.2 2006-09-24 16:36:36 declan2005 Exp $
+ * $Id: c_dialogs.c,v 1.3 2008-01-04 14:33:44 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -327,27 +327,47 @@ HB_FUNC ( C_PUTFILE )
 
 }
 
-HB_FUNC( C_BROWSEFORFOLDER ) // Contributed By Ryszard Ryüko
+int CALLBACK BrowseCallbackProc(  HWND hWnd, UINT uMsg, LPARAM lParam, LPARAM lpData )
 {
-   HWND hwnd = GetActiveWindow();
-   BROWSEINFO bi;
-   char *lpBuffer = (char*) hb_xgrab( MAX_PATH+1);
-   LPITEMIDLIST pidlBrowse;    // PIDL selected by user
-   SHGetSpecialFolderLocation(GetActiveWindow(), hb_parni(1) , &pidlBrowse) ;
-    bi.hwndOwner = hwnd;
-    bi.pidlRoot = pidlBrowse;
-    bi.pszDisplayName = lpBuffer;
-    bi.lpszTitle = "Choose a Directory";
-    bi.ulFlags = hb_parni(2);
-    bi.lpfn = NULL;
-    bi.lParam = 0;
-
-    // Browse for a folder and return its PIDL.
-    pidlBrowse = SHBrowseForFolder(&bi);
-    SHGetPathFromIDList(pidlBrowse,lpBuffer);
-    hb_retc(lpBuffer);
-    hb_xfree( lpBuffer);
+   if(uMsg == BFFM_INITIALIZED && lParam == 0 )
+   {
+      SendMessage(hWnd, BFFM_SETSELECTION, TRUE, lpData  );
+   }
+   return 0;
 }
+
+
+HB_FUNC( C_BROWSEFORFOLDER ) // Syntax: C_BROWSEFORFOLDER([<hWnd>],[<cTitle>],<nFlags>,[<nFolderType>], [<cInitPath>] )
+{
+   HWND hwnd = ISNIL(1) ? GetActiveWindow() : (HWND) hb_parnl(1);
+   BROWSEINFO BrowseInfo;
+   char *lpBuffer = (char*) hb_xgrab( MAX_PATH + 1 );
+   LPITEMIDLIST pidlBrowse;
+
+   SHGetSpecialFolderLocation(hwnd, ISNIL(4) ? CSIDL_DRIVES : hb_parni(4), &pidlBrowse) ;
+   BrowseInfo.hwndOwner = hwnd;
+   BrowseInfo.pidlRoot = pidlBrowse;
+   BrowseInfo.pszDisplayName = lpBuffer;
+   BrowseInfo.lpszTitle = ISNIL (2) ? "Select a Folder" : hb_parc(2);
+   BrowseInfo.ulFlags = hb_parni(3);
+   BrowseInfo.lpfn = ISCHAR(5) ? BrowseCallbackProc : NULL ;
+   BrowseInfo.lParam = ISCHAR(5) ? (LPARAM) (char *) hb_parc(5) : 1 ;
+   BrowseInfo.iImage = 0;
+   pidlBrowse = SHBrowseForFolder(&BrowseInfo);
+
+   if ( pidlBrowse )
+   {
+     SHGetPathFromIDList(pidlBrowse,lpBuffer);
+     hb_retc( lpBuffer );
+   }
+   else
+   {
+     hb_retc( "" );
+   }
+
+   hb_xfree( lpBuffer);
+}
+
 
 HB_FUNC ( CHOOSECOLOR )
 {

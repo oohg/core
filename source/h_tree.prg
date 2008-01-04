@@ -1,5 +1,5 @@
 /*
- * $Id: h_tree.prg,v 1.13 2008-01-04 03:21:24 guerra000 Exp $
+ * $Id: h_tree.prg,v 1.14 2008-01-04 14:33:44 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -82,13 +82,13 @@
 
  Parts of this project are based upon:
 
-	"Harbour GUI framework for Win32"
- 	Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- 	Copyright 2001 Antonio Linares <alinares@fivetech.com>
-	www - http://www.harbour-project.org
+        "Harbour GUI framework for Win32"
+         Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
+         Copyright 2001 Antonio Linares <alinares@fivetech.com>
+        www - http://www.harbour-project.org
 
-	"Harbour Project"
-	Copyright 1999-2003, http://www.harbour-project.org/
+        "Harbour Project"
+        Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
 #include "oohg.ch"
@@ -128,53 +128,54 @@ Local Controlhandle , ImgDefNode, ImgDefItem, aBitmaps := array(4)
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, , , .t., lRtl )
 
-   if valtype(Value) == "N"
+   if HB_IsNumeric(Value)
       ::InitValue := Value
-	EndIf
-	if valtype(Width) == "U"
-		Width := 120
-	endif
-	if valtype(Height) == "U"
-		Height := 120
-	endif
+        EndIf
+        if !HB_Isnumeric(Width)
+                Width := 120
+        endif
+        if !HB_IsNumeric(Height)
+           Height := 120
+        endif
 
    ::SetSplitBoxInfo( Break, )
    ControlHandle := InitTree ( ::ContainerhWnd, col , row , width , height , 0 , '' , 0, iif(noBot,1,0), ::lRtl )
 
-	ImgDefNode := iif( valtype( aImgNode ) == "A" , len( aImgNode ), 0 )  //Tree+
-	ImgDefItem := iif( valtype( aImgItem ) == "A" , len( aImgItem ), 0 )  //Tree+
+        ImgDefNode := iif( HB_IsArray( aImgNode )  , len( aImgNode ), 0 )  //Tree+
+        ImgDefItem := iif( HB_IsArray( aImgItem )  , len( aImgItem ), 0 )  //Tree+
 
-	if ImgDefNode > 0
+        if ImgDefNode > 0
 
-		aBitmaps[1] := aImgNode[1]  			// Node default
-		aBitmaps[2] := aImgNode[ImgDefNode]
+                aBitmaps[1] := aImgNode[1]                          // Node default
+                aBitmaps[2] := aImgNode[ImgDefNode]
 
-		if ImgDefItem > 0
+                if ImgDefItem > 0
 
-			aBitmaps[3] := aImgItem[1]  		// Item default
-			aBitmaps[4] := aImgItem[ImgDefItem]
+                        aBitmaps[3] := aImgItem[1]                  // Item default
+                        aBitmaps[4] := aImgItem[ImgDefItem]
 
-		else
+                else
 
-			aBitmaps[3] := aImgNode[1]  		 // Copy Node def if no Item def
-			aBitmaps[4] := aImgNode[ImgDefNode]
+                        aBitmaps[3] := aImgNode[1]                   // Copy Node def if no Item def
+                        aBitmaps[4] := aImgNode[ImgDefNode]
 
-		endif
+                endif
 
       ::AddBitMap( aBitmaps )
-	endif
+        endif
 
-	if valtype(change) == "U"
-		change := ""
-	endif
+        if valtype(change) == "U"
+                change := ""
+        endif
 
-	if valtype(gotfocus) == "U"
-		gotfocus := ""
-	endif
+        if valtype(gotfocus) == "U"
+                gotfocus := ""
+        endif
 
-	if valtype(lostfocus) == "U"
-		lostfocus := ""
-	endif
+        if valtype(lostfocus) == "U"
+                lostfocus := ""
+        endif
+
 
    ::Register( ControlHandle, ControlName, HelpId, , ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
@@ -204,36 +205,36 @@ Local NewHandle , TempHandle , i , aPos , ChildHandle , BackHandle , ParentHandl
 
          If Parent > TreeView_GetCount( ::hWnd ) .or. Parent < 0
             MsgOOHGError ("Additem Method:  Invalid Parent Value. Program Terminated" )
-			EndIf
+                        EndIf
 
-		EndIf
+                EndIf
 
-		ImgDef := iif( valtype( aImage ) == "A" , len( aImage ), 0 )  //Tree+
+                ImgDef := iif( HB_IsArray( aImage )  , len( aImage ), 0 )  //Tree+
 
       if ! Empty( Parent )
 
          if ! ::ItemIds
             TreeItemHandle := ::aTreeMap [ Parent ]
-			Else
+                        Else
             aPos := ascan ( ::aTreeIdMap , Parent )
 
-				If aPos == 0
+                                If aPos == 0
                MsgOOHGError ("Additem Method: Invalid Parent Value. Program Terminated" )
-				EndIf
+                                EndIf
 
             TreeItemHandle := ::aTreeMap [ aPos ]
 
-			EndIf
+                        EndIf
 
-			if ImgDef == 0
+                        if ImgDef == 0
 
-				iUnsel := 2	// Pointer to defalut Node Bitmaps, no Bitmap loaded
-				iSel   := 3
-			else
+                                iUnsel := 2        // Pointer to defalut Node Bitmaps, no Bitmap loaded
+                                iSel   := 3
+                        else
             iUnSel := ::AddBitMap( aImage[1] ) -1
             iSel   := iif( ImgDef == 1, iUnSel, ::AddBitMap( aImage[2] ) -1 )
-				// If only one bitmap in array iSel = iUnsel, only one Bitmap loaded
-			endif
+                                // If only one bitmap in array iSel = iUnsel, only one Bitmap loaded
+                        endif
 
          NewHandle := AddTreeItem ( ::hWnd, TreeItemHandle , Value, iUnsel, iSel , Id )
 
@@ -241,84 +242,84 @@ Local NewHandle , TempHandle , i , aPos , ChildHandle , BackHandle , ParentHandl
 
          TempHandle := TreeView_GetChild ( ::hWnd, TreeItemHandle )
 
-			i := 0
+                        i := 0
 
-			Do While .t.
+                        Do While .t.
 
-				i++
+                                i++
 
-				If TempHandle == NewHandle
-					Exit
-				EndIf
+                                If TempHandle == NewHandle
+                                        Exit
+                                EndIf
 
             ChildHandle := TreeView_GetChild ( ::hWnd, TempHandle )
 
-				If ChildHandle == 0
-					BackHandle := TempHandle
+                                If ChildHandle == 0
+                                        BackHandle := TempHandle
                TempHandle := TreeView_GetNextSibling ( ::hWnd, TempHandle )
-				Else
-					i++
-					BackHandle := Childhandle
+                                Else
+                                        i++
+                                        BackHandle := Childhandle
                TempHandle := TreeView_GetNextSibling ( ::hWnd, ChildHandle )
-				EndIf
+                                EndIf
 
-				Do While TempHandle == 0
+                                Do While TempHandle == 0
 
                ParentHandle := TreeView_GetParent ( ::hWnd, BackHandle )
 
                TempHandle := TreeView_GetNextSibling ( ::hWnd, ParentHandle )
 
-					If TempHandle == 0
-						BackHandle := ParentHandle
-					EndIf
+                                        If TempHandle == 0
+                                                BackHandle := ParentHandle
+                                        EndIf
 
-				EndDo
+                                EndDo
 
-			EndDo
+                        EndDo
 
-			* Resize Array
+                        * Resize Array
 
          aSize ( ::aTreeMap , TreeView_GetCount ( ::hWnd ) )
          aSize ( ::aTreeIdMap, TreeView_GetCount ( ::hWnd ) )
 
-			* Insert New Element
+                        * Insert New Element
 
          if ! ::ItemIds
             aIns ( ::aTreeMap , Parent + i  )
             aIns ( ::aTreeIdMap, Parent + i  )
-			Else
+                        Else
             aIns ( ::aTreeMap , aPos + i )
             aIns ( ::aTreeIdMap, aPos + i )
-			EndIf
+                        EndIf
 
-			* Assign Handle
+                        * Assign Handle
 
          if ! ::ItemIds
             ::aTreeMap [ Parent + i ] := NewHandle
             ::aTreeIdMap [ Parent + i ] := Id
-			Else
+                        Else
 
             If ascan ( ::aTreeIdMap, Id ) != 0
                MsgOOHGError ("Additem Method:  Item Id "+alltrim(str(Id))+" Already In Use. Program Terminated" )
-				EndIf
+                                EndIf
 
             ::aTreeMap [ aPos + i ] := NewHandle
             ::aTreeIdMap [ aPos + i ] := Id
 
-			EndIf
+                        EndIf
 
-		Else
-			TreeItemHandle := 0
+                Else
+                        TreeItemHandle := 0
 
-			if ImgDef == 0
+                        if ImgDef == 0
 
-				iUnsel := 0	// Pointer to defalut Node Bitmaps, no Bitmap loaded
-				iSel   := 1
-			else
+                                iUnsel := 0        // Pointer to defalut Node Bitmaps, no Bitmap loaded
+                                iSel   := 1
+                        else
             iUnSel := ::AddBitMap( aImage[1] ) -1
             iSel   := iif( ImgDef == 1, iUnSel, ::AddBitMap( aImage[2] ) -1 )
-				// If only one bitmap in array iSel = iUnsel, only one Bitmap loaded
-			endif
+                                // If only one bitmap in array iSel = iUnsel, only one Bitmap loaded
+                        endif
 
          NewHandle := AddTreeItem ( ::hWnd , 0 , Value, iUnsel, iSel , Id )
 
@@ -328,13 +329,13 @@ Local NewHandle , TempHandle , i , aPos , ChildHandle , BackHandle , ParentHandl
 
             If ascan ( ::aTreeIdMap , Id ) != 0
                MsgOOHGError ("Additem Method:  Item Id Already In Use. Program Terminated" )
-				EndIf
+                                EndIf
 
-			EndIf
+                        EndIf
 
          aadd ( ::aTreeIdMap , Id )
 
-		EndIf
+                EndIf
 
 Return nil
 
@@ -348,61 +349,61 @@ Local TreeItemHandle
 
       if ! ::ItemIds
 
-			If Value > BeforeCount .or. Value < 1
+                        If Value > BeforeCount .or. Value < 1
             MsgOOHGError ("DeleteItem Method: Invalid Item Specified. Program Terminated" )
-			EndIf
+                        EndIf
 
          TreeItemHandle := ::aTreeMap [ Value ]
          TreeView_DeleteItem ( ::hWnd, TreeItemHandle )
 
-		Else
+                Else
 
          aPos := ascan ( ::aTreeIdMap, Value )
 
-			If aPos == 0
+                        If aPos == 0
             MsgOOHGError ("DeleteItem Method: Invalid Item Id. Program Terminated" )
-			EndIf
+                        EndIf
 
          TreeItemHandle := ::aTreeMap [ aPos ]
          TreeView_DeleteItem ( ::hWnd, TreeItemHandle )
 
-		EndIf
+                EndIf
 
       AfterCount := TreeView_GetCount ( ::hWnd )
 
-		DeletedCount := BeforeCount - AfterCount
+                DeletedCount := BeforeCount - AfterCount
 
       if ! ::ItemIds
 
-			If DeletedCount == 1
+                        If DeletedCount == 1
 
             Adel ( ::aTreeMap , Value )
 
-			Else
+                        Else
 
-				For i := 1 To DeletedCount
+                                For i := 1 To DeletedCount
                Adel ( ::aTreeMap , Value )
-				Next i
+                                Next i
 
-			EndIf
+                        EndIf
 
-		Else
+                Else
 
-			If DeletedCount == 1
+                        If DeletedCount == 1
 
             Adel ( ::aTreeMap , aPos )
             Adel ( ::aTreeIdMap, aPos )
 
-			Else
+                        Else
 
-				For i := 1 To DeletedCount
+                                For i := 1 To DeletedCount
                Adel ( ::aTreeMap , aPos )
                Adel ( ::aTreeIdMap, aPos )
-				Next i
+                                Next i
 
-			EndIf
+                        EndIf
 
-		EndIf
+                EndIf
 
       aSize ( ::aTreeMap , AfterCount )
       aSize ( ::aTreeIdMap, AfterCount )
@@ -428,50 +429,50 @@ Local aPos, TreeHandle, ItemHandle
       if ! ::ItemIds
          If Item > TreeView_GetCount ( ::hWnd ) .or. Item < 1
             MsgOOHGError ("Item Property: Invalid Item Reference. Program Terminated" )
-			EndIf
-		EndIf
+                        EndIf
+                EndIf
 
       TreeHandle := ::hWnd
 
       if ! ::ItemIds
          ItemHandle := ::aTreeMap [ Item ]
-		Else
+                Else
 
          aPos := ascan ( ::aTreeIdMap, Item )
 
-			If aPos == 0
+                        If aPos == 0
             MsgOOHGError ("Item Property: Invalid Item Id. Program Terminated" )
-			EndIf
+                        EndIf
 
          ItemHandle := ::aTreeMap [ aPos ]
 
-		EndIf
+                EndIf
 
-		TreeView_SetItem ( TreeHandle , ItemHandle , Value )
+                TreeView_SetItem ( TreeHandle , ItemHandle , Value )
 
    else
       // get
       if ! ::ItemIds
          If Item > TreeView_GetCount ( ::hWnd ) .or. Item < 1
             MsgOOHGError ("Item Property: Invalid Item Reference. Program Terminated" )
-			EndIf
-		EndIf
+                        EndIf
+                EndIf
 
       TreeHandle := ::hWnd
 
       if ! ::ItemIds
          ItemHandle := ::aTreeMap [ Item ]
-		Else
+                Else
 
          aPos := ascan ( ::aTreeIdMap, Item )
 
-			If aPos == 0
+                        If aPos == 0
             MsgOOHGError ("Item Property: Invalid Item Id. Program Terminated" )
-			EndIf
+                        EndIf
 
          ItemHandle := ::aTreeMap [ aPos ]
 
-		EndIf
+                EndIf
 
       Value   := TreeView_GetItem ( TreeHandle , ItemHandle )
 
@@ -499,7 +500,7 @@ Local ItemHandle := 0 , Pos
 
       SendMessage( ::hWnd, TVM_EXPAND, TVE_COLLAPSE, ItemHandle )
 
-	EndIf
+        EndIf
 
 Return nil
 
@@ -532,27 +533,27 @@ METHOD Value( uValue ) CLASS TTree
 *------------------------------------------------------------------------------*
 Local TreeItemHandle, aPos
 
-   IF VALTYPE( uValue ) == "N"
+   IF HB_IsNumeric( uValue ) 
 
       if ! ::ItemIds
          If uValue > TreeView_GetCount( ::hWnd )
             Return 0
-			EndIf
-		EndIf
+                        EndIf
+                EndIf
 
       if ! ::ItemIds
          TreeItemHandle :=  ::aTreeMap [ uValue ]
-		Else
+                Else
 
          aPos := ascan ( ::aTreeIdMap, uValue )
 
-			If aPos == 0
+                        If aPos == 0
             MsgOOHGError ("Value Property: Invalid TreeItem Reference. Program Terminated")
-			EndIf
+                        EndIf
 
          TreeItemHandle := ::aTreeMap [ aPos ]
 
-		EndIf
+                EndIf
 
       TreeView_SelectItem ( ::hWnd, TreeItemHandle )
 
@@ -568,25 +569,25 @@ RETURN uValue
 *------------------------------------------------------------------------------*
 Function _DefineTreeNode ( text, aImage , Id )
 *------------------------------------------------------------------------------*
-Local 	ImgDef, iUnSel, iSel
+Local         ImgDef, iUnSel, iSel
 Local Item
 
-	If ValType ( Id ) == 'U'
-		Id := 0
-	EndIf
+        If ValType ( Id ) == 'U'
+                Id := 0
+        EndIf
 
-	ImgDef := iif( valtype( aImage ) == "A" , len( aImage ), 0 )  //Tree+
+        ImgDef := iif( HB_IsArray( aImage )  , len( aImage ), 0 )  //Tree+
 
-	if ImgDef == 0
+        if ImgDef == 0
 
-		iUnsel := 0	// Pointer to defalut Node Bitmaps, no Bitmap loaded
-		iSel   := 1
+                iUnsel := 0        // Pointer to defalut Node Bitmaps, no Bitmap loaded
+                iSel   := 1
 
-	else
+        else
       iUnSel := _OOHG_ActiveTree:AddBitMap( aImage[ 1 ] ) - 1
       iSel   := iif( ImgDef == 1, iUnSel, _OOHG_ActiveTree:AddBitMap( aImage[ 2 ] ) - 1 )
-		// If only one bitmap in array iSel = iUnsel, only one Bitmap loaded
-	endif
+                // If only one bitmap in array iSel = iUnsel, only one Bitmap loaded
+        endif
 
    Item := AddTreeItem ( _OOHG_ActiveTree:hWnd, ATAIL( _OOHG_ActiveTree:aTreeNode ) , text, iUnsel, iSel , Id )
    aAdd ( _OOHG_ActiveTree:aTreeMap , Item )
@@ -608,22 +609,22 @@ Function _DefineTreeItem ( text, aImage , Id )
 *------------------------------------------------------------------------------*
 Local handle, ImgDef, iUnSel, iSel
 
-	If ValType ( Id ) == 'U'
-		Id := 0
-	EndIf
+        If ValType ( Id ) == 'U'
+                Id := 0
+        EndIf
 
-	ImgDef := iif( valtype( aImage ) == "A" , len( aImage ), 0 )  //Tree+
+        ImgDef := iif( HB_IsArray( aImage )  , len( aImage ), 0 )  //Tree+
 
-	if ImgDef == 0
+        if ImgDef == 0
 
-		iUnsel := 2	// Pointer to defalut Item Bitmaps, no Bitmap loaded
-		iSel   := 3
+                iUnsel := 2        // Pointer to defalut Item Bitmaps, no Bitmap loaded
+                iSel   := 3
 
-	else
+        else
       iUnSel := _OOHG_ActiveTree:AddBitMap( aImage[ 1 ] ) - 1
       iSel   := iif( ImgDef == 1, iUnSel, _OOHG_ActiveTree:AddBitMap( aImage[ 2 ] ) -1 )
-		// If only one bitmap in array iSel = iUnsel, only one Bitmap loaded
-	endif
+                // If only one bitmap in array iSel = iUnsel, only one Bitmap loaded
+        endif
 
    handle := AddTreeItem ( _OOHG_ActiveTree:hWnd, ATAIL( _OOHG_ActiveTree:aTreeNode ) , text, iUnSel, iSel , Id )
    aAdd ( _OOHG_ActiveTree:aTreeMap , Handle )
@@ -640,10 +641,10 @@ Local Self := _OOHG_ActiveTree
 
       If ! ::ItemIds
          TreeView_SelectItem ( ::hWnd, ::aTreeMap [ ::InitValue ] )
-		Else
+                Else
          TreeView_SelectItem ( ::hWnd, ::aTreeMap [ ascan ( ::aTreeIdMap , ::InitValue ) ] )
-		EndIf
+                EndIf
 
-	EndIf
+        EndIf
 
 Return Nil

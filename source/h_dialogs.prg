@@ -1,5 +1,5 @@
 /*
- * $Id: h_dialogs.prg,v 1.5 2007-12-31 17:08:13 declan2005 Exp $
+ * $Id: h_dialogs.prg,v 1.6 2008-01-04 14:33:44 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -117,11 +117,9 @@ Local aRetVal [3] , nColor , nInitColor
 Return aRetVal
 
 *-----------------------------------------------------------------------------*
-Function GetFolder (Title)
+Function GetFolder( cTitle, cInitPath )
 *-----------------------------------------------------------------------------*
-Local folder
-	folder := C_GETFOLDER(TITLE)
-Return folder
+Return C_Browseforfolder( NIL, cTitle, NIL, NIL, cInitPath )
 
 *-----------------------------------------------------------------------------*
 Function browseforfolder( nfolder,nflag) // Contributed By Ryszard Rylko
