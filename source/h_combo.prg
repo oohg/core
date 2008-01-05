@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.33 2007-12-25 02:47:14 guerra000 Exp $
+ * $Id: h_combo.prg,v 1.34 2008-01-05 00:24:54 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -100,7 +100,6 @@ CLASS TCombo FROM TLabel
    DATA Type          INIT "COMBO" READONLY
    DATA WorkArea      INIT ""
    DATA Field         INIT ""
-   DATA nValue        INIT 0
    DATA ValueSource   INIT ""
    DATA nTextHeight   INIT 0
    DATA aValues       INIT {}
@@ -215,38 +214,39 @@ Local ControlHandle , rcount := 0 , cset := 0 , WorkArea , cField, nStyle
    EndIf
 
    ::Value := Value
-   ::nValue := Value
 
    if valtype( ItemSource ) != 'U'
       aAdd( ::Parent:BrowseList, Self )
    EndIf
 
-   ::OnClick := ondisplaychangeprocedure
-   ::OnLostFocus := LostFocus
-   ::OnGotFocus :=  GotFocus
-   ::OnChange   :=  ChangeProcedure
-   ::OnDblClick := uEnter
+   ASSIGN ::OnClick     VALUE ondisplaychangeprocedure TYPE "B"
+   ASSIGN ::OnLostFocus VALUE LostFocus                TYPE "B"
+   ASSIGN ::OnGotFocus  VALUE GotFocus                 TYPE "B"
+   ASSIGN ::OnChange    VALUE ChangeProcedure          TYPE "B"
+   ASSIGN ::OnEnter     VALUE uEnter                   TYPE "B"
 
 Return Self
 
 *-----------------------------------------------------------------------------*
 METHOD Refresh() CLASS TCombo
 *-----------------------------------------------------------------------------*
-Local BackRec , WorkArea , cField , aValues
+Local BackRec , WorkArea , cField , aValues , uValue
    WorkArea := ::WorkArea
    If Select( WorkArea ) != 0
+      uValue := ::Value
       cField := ::Field
       BackRec := ( WorkArea )->( RecNo() )
       ( WorkArea )->( DBGoTop() )
       ComboboxReset( ::hWnd )
       aValues := {}
-      Do While ! (WorkArea)->(Eof())
+      Do While ! ( WorkArea )->( Eof() )
          ComboAddString( ::hWnd, ( WorkArea )-> &( cField ) )
          AADD( aValues, IF( EMPTY( ::ValueSource ), ( WorkArea )->( RecNo() ), &( ::ValueSource ) ) )
          ( WorkArea )->( DBSkip() )
       EndDo
       ( WorkArea )->( DBGoTo( BackRec ) )
       ::aValues := aValues
+      ::Value := uValue
    EndIf
 Return nil
 
@@ -278,7 +278,6 @@ LOCAL uRet
          uRet := 0
       ENDIF
    ENDIF
-   ::nValue := uRet
 RETURN uRet
 
 *-----------------------------------------------------------------------------*
@@ -296,7 +295,6 @@ RETURN ::lVisible
 METHOD RefreshData() CLASS TCombo
 *-----------------------------------------------------------------------------*
    ::Refresh()
-   ::Value := ::nValue
 RETURN nil
 
 *-----------------------------------------------------------------------------*

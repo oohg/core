@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.87 2008-01-04 03:21:24 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.88 2008-01-05 00:24:54 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1851,10 +1851,9 @@ Return nil
 *-----------------------------------------------------------------------------*
 METHOD Events_Notify( wParam, lParam ) CLASS TControl
 *-----------------------------------------------------------------------------*
-static last := 0, cant := 0
 Local nNotify := GetNotifyCode( lParam )
-*Local aKeys
-wParam++ // DUMMY...
+
+   Empty( wParam ) // DUMMY...
 
    If nNotify == NM_KILLFOCUS
       Return ::DoLostFocus()
@@ -1862,19 +1861,12 @@ wParam++ // DUMMY...
    elseif nNotify == NM_SETFOCUS
       ::DoEvent( ::OnGotFocus, "GOTFOCUS" )
 
-   elseif nNotify == NM_DBLCLK
-      ::DoEvent( ::OnDblClick, "DBLCLICK" )
-
    elseif nNotify == TVN_SELCHANGED
       ::DoEvent( ::OnChange, "CHANGE" )
 
    EndIf
 
 Return nil
-
-
-
-
 
 *-----------------------------------------------------------------------------*
 Function GetControlObject( ControlName, FormName )

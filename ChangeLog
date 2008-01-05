@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.477 2008-01-04 14:33:44 declan2005 Exp $
+ * $Id: ChangeLog,v 1.478 2008-01-05 00:24:53 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,15 +7,19 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-
+2008-01-04 18:19 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_combo.prg
+    ! Fixed ::OnEnter/::OnDblClick assignment.
+    * Fixed ::Refresh() for keep current value.
+  * source/h_controlmisc.prg
+    ! Removed duplicate DBLCLICK processing.
 
 2008-01-04 09:12 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_tree.prg
     * optimizing code in order to minimize user errors.
-  * source/h_dialogs.prg 
+  * source/h_dialogs.prg
   * source/c_dialogs.c
     * adding initial folder to getfolder() function.
-
 
 2008-01-03 20:58 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * include/i_altsyntax.ch
@@ -35,7 +39,6 @@
   * source/h_tree.prg
     * Modified operation for WM_LBUTTONDBLCLK message.
 
->>>>>>> 1.476
 2008-01-02 20:44 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_windows.prg
     * try to solution a toolbar problem.
