@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.170 2008-01-04 03:21:24 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.171 2008-01-06 03:06:36 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -1969,8 +1969,13 @@ FOR i:=1 TO l
 
    oControl:=::aControls[i]
 
-   nDivw:=nWidth/::nOldw
-   nDivh:=nHeight/::nOldh
+   if HB_IsNumeric(::nOldw) .and.   HB_IsNumeric(::nOldh)
+      nDivw:=nWidth/::nOldw
+      nDivh:=nHeight/::nOldh
+   else
+      nDivw:=1
+      nDivh:=1
+   endif
 
    IF oControl:lAdjust
 ////  posicion nueva siempre que este activado autoajuste
@@ -2248,6 +2253,7 @@ HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
 
       case WM_LBUTTONDBLCLK:
          _OOHG_SetMouseCoords( pSelf, LOWORD( lParam ), HIWORD( lParam ) );
+      ////   MessageBox( GetActiveWindow(), "ventana", hb_parc( 2 ), MB_SYSTEMMODAL  );
          _OOHG_DoEvent( pSelf, s_OnDblClick, "DBLCLICK" );
          hb_ret();
          break;
