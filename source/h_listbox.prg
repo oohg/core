@@ -1,5 +1,5 @@
 /*
- * $Id: h_listbox.prg,v 1.12 2008-01-04 03:21:24 guerra000 Exp $
+ * $Id: h_listbox.prg,v 1.13 2008-01-06 02:19:11 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -98,6 +98,8 @@
 
 CLASS TList FROM TControl
    DATA Type      INIT "LIST" READONLY
+   DATA nWidth    INIT 120
+   DATA nHeight   INIT 120
 
    METHOD Define
    METHOD Define2
@@ -120,13 +122,15 @@ ENDCLASS
 METHOD Define( ControlName, ParentForm, x, y, w, h, rows, value, fontname, ;
                fontsize, tooltip, changeprocedure, dblclick, gotfocus, ;
                lostfocus, break, HelpId, invisible, notabstop, sort, bold, ;
-               italic, underline, strikeout, backcolor, fontcolor, lRtl ) CLASS TList
+               italic, underline, strikeout, backcolor, fontcolor, lRtl, ;
+               lDisabled, onenter ) CLASS TList
 *-----------------------------------------------------------------------------*
 Local nStyle := 0
    ::Define2( ControlName, ParentForm, x, y, w, h, rows, value, fontname, ;
               fontsize, tooltip, changeprocedure, dblclick, gotfocus, ;
               lostfocus, break, HelpId, invisible, notabstop, sort, bold, ;
-              italic, underline, strikeout, backcolor, fontcolor, nStyle, lRtl )
+              italic, underline, strikeout, backcolor, fontcolor, nStyle, ;
+              lRtl, lDisabled, onenter )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -134,38 +138,37 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, rows, value, fontname, ;
                 fontsize, tooltip, changeprocedure, dblclick, gotfocus, ;
                 lostfocus, break, HelpId, invisible, notabstop, sort, bold, ;
                 italic, underline, strikeout, backcolor, fontcolor, nStyle, ;
-                lRtl ) CLASS TList
+                lRtl, lDisabled, onenter ) CLASS TList
 *-----------------------------------------------------------------------------*
 Local ControlHandle
 
-   DEFAULT w               TO 120
-   DEFAULT h               TO 120
-   DEFAULT gotfocus        TO ""
-   DEFAULT lostfocus       TO ""
-   DEFAULT rows            TO {}
-   DEFAULT changeprocedure TO ""
-   DEFAULT dblclick        TO ""
-   DEFAULT invisible       TO FALSE
-   DEFAULT notabstop       TO FALSE
-   DEFAULT sort            TO FALSE
+   ASSIGN ::nWidth  VALUE w TYPE "N"
+   ASSIGN ::nHeight VALUE h TYPE "N"
+   ASSIGN ::nRow    VALUE y TYPE "N"
+   ASSIGN ::nCol    VALUE x TYPE "N"
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, .T., lRtl )
 
+   nStyle := ::InitStyle( nStyle,, invisible, notabstop, lDisabled ) + ;
+             IF( HB_ISLOGICAL( sort ) .AND. sort, LBS_SORT, 0 )
+
    ::SetSplitBoxInfo( Break )
-   ControlHandle := InitListBox( ::ContainerhWnd, 0, x, y, w, h, invisible, notabstop, sort, nStyle, ::lRtl )
+   ControlHandle := InitListBox( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, ::lRtl )
 
-   ::Register( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
+   ::Register( ControlHandle, ControlName, HelpId, , ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
-   ::SizePos( y, x, w, h )
 
-   ::OnLostFocus := LostFocus
-   ::OnGotFocus :=  GotFocus
-   ::OnChange   :=  ChangeProcedure
-   ::OnDblClick := dblclick
-
-   AEVAL( rows, { |c| ListboxAddString( ControlHandle, c ) } )
+   If HB_IsArray( rows )
+      AEVAL( rows, { |c| ListboxAddString( ControlHandle, c ) } )
+   EndIf
 
    ::Value := Value
+
+   ASSIGN ::OnLostFocus VALUE lostfocus  TYPE "B"
+   ASSIGN ::OnGotFocus  VALUE gotfocus   TYPE "B"
+   ASSIGN ::OnChange    VALUE ChangeProcedure TYPE "B"
+   ASSIGN ::OnDblClick  VALUE dblclick   TYPE "B"
+   ASSIGN ::OnEnter     value onenter    TYPE "B"
 
 Return Self
 
@@ -221,14 +224,16 @@ ENDCLASS
 METHOD Define( ControlName, ParentForm, x, y, w, h, rows, value, fontname, ;
                fontsize, tooltip, changeprocedure, dblclick, gotfocus, ;
                lostfocus, break, HelpId, invisible, notabstop, sort, bold, ;
-               italic, underline, strikeout, backcolor, fontcolor, lRtl ) CLASS TListMulti
+               italic, underline, strikeout, backcolor, fontcolor, lRtl, ;
+               lDisabled, onenter ) CLASS TListMulti
 *-----------------------------------------------------------------------------*
 Local nStyle := LBS_EXTENDEDSEL + LBS_MULTIPLESEL
 
    ::Define2( ControlName, ParentForm, x, y, w, h, rows, value, fontname, ;
               fontsize, tooltip, changeprocedure, dblclick, gotfocus, ;
               lostfocus, break, HelpId, invisible, notabstop, sort, bold, ;
-              italic, underline, strikeout, backcolor, fontcolor, nStyle, lRtl )
+              italic, underline, strikeout, backcolor, fontcolor, nStyle, ;
+              lRtl, lDisabled, onenter )
 Return Self
 
 *------------------------------------------------------------------------------*
@@ -240,3 +245,139 @@ METHOD Value( uValue ) CLASS TListMulti
       LISTBOXSETMULTISEL( ::hWnd, { uValue } )
    ENDIF
 RETURN ListBoxGetMultiSel( ::hWnd )
+
+#pragma BEGINDUMP
+#include <windows.h>
+#include <commctrl.h>
+#include "hbapi.h"
+#include "oohg.h"
+
+static WNDPROC lpfnOldWndProc = 0;
+
+static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+{
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
+}
+
+HB_FUNC( INITLISTBOX )
+{
+	HWND hwnd;
+	HWND hbutton;
+   int Style = WS_CHILD | WS_VSCROLL | LBS_DISABLENOSCROLL | LBS_NOTIFY | LBS_NOINTEGRALHEIGHT | hb_parni( 7 );
+   int StyleEx;
+
+   hwnd = HWNDparam( 1 );
+
+   StyleEx = WS_EX_CLIENTEDGE | _OOHG_RTL_Status( hb_parl( 8 ) );
+
+   hbutton = CreateWindowEx( StyleEx, "LISTBOX", "", Style,
+                             hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
+                             hwnd, ( HMENU ) hb_parni( 2 ), GetModuleHandle( NULL ), NULL );
+
+   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hbutton, GWL_WNDPROC, ( LONG ) SubClassFunc );
+
+   HWNDret( hbutton );
+}
+
+HB_FUNC( LISTBOXADDSTRING )
+{
+   char *cString = hb_parc( 2 );
+   SendMessage( HWNDparam( 1 ), LB_ADDSTRING, 0, (LPARAM) cString );
+}
+
+HB_FUNC( LISTBOXGETSTRING )
+{
+	char cString [1024] = "" ;
+   SendMessage( HWNDparam( 1 ), LB_GETTEXT, (WPARAM) hb_parni(2) - 1, (LPARAM) cString );
+   hb_retc(cString);
+}
+
+HB_FUNC( LISTBOXINSERTSTRING )
+{
+   char *cString = hb_parc( 2 );
+   SendMessage( HWNDparam( 1 ), LB_INSERTSTRING, (WPARAM) hb_parni(3) - 1 , (LPARAM) cString );
+}
+
+HB_FUNC( LISTBOXSETCURSEL )
+{
+   SendMessage( HWNDparam( 1 ), LB_SETCURSEL, (WPARAM) hb_parni(2)-1, 0);
+}
+
+HB_FUNC( LISTBOXGETCURSEL )
+{
+   hb_retni( SendMessage( HWNDparam( 1 ), LB_GETCURSEL, 0, 0 )  + 1 );
+}
+
+HB_FUNC( LISTBOXDELETESTRING )
+{
+   SendMessage( HWNDparam( 1 ), LB_DELETESTRING, ( WPARAM ) hb_parni( 2 ) - 1, 0);
+}
+
+HB_FUNC( LISTBOXRESET )
+{
+   SendMessage( HWNDparam( 1 ), LB_RESETCONTENT, 0, 0 );
+}
+
+HB_FUNC( LISTBOXGETMULTISEL )
+{
+   HWND hwnd = HWNDparam( 1 );
+   int i;
+   int *buffer;
+   int n;
+
+	n = SendMessage( hwnd, LB_GETSELCOUNT, 0, 0);
+
+   if( n > 0 )
+	{
+      hb_reta( n );
+      buffer = hb_xgrab( ( n + 1 ) * sizeof( int ) );
+
+      SendMessage( hwnd, LB_GETSELITEMS, ( WPARAM ) n, ( LPARAM ) buffer );
+
+      for( i = 0; i < n; i++ )
+      {
+         hb_storni( buffer[ i ] + 1, -1, i + 1 );
+      }
+
+      hb_xfree( buffer );
+	}
+   else
+   {
+      hb_reta( 0 );
+   }
+}
+
+HB_FUNC( LISTBOXSETMULTISEL )
+{
+	PHB_ITEM wArray;
+   HWND hwnd = HWNDparam( 1 );
+   int i;
+   int n;
+   int l;
+
+	wArray = hb_param( 2, HB_IT_ARRAY );
+
+   l = hb_parinfa( 2, 0 );
+
+	n = SendMessage( hwnd , LB_GETCOUNT , 0 , 0 );
+
+	// CLEAR CURRENT SELECTIONS
+
+	for( i=0 ; i<n ; i++ )
+	{
+		SendMessage(hwnd, LB_SETSEL, (WPARAM)(0), (LPARAM) i );
+	}
+
+   // SET NEW SELECTIONS
+
+   for( i = 1; i <= l ; i++ )
+   {
+      SendMessage( hwnd, LB_SETSEL, ( WPARAM ) 1, ( LPARAM ) ( hb_arrayGetNI( wArray, i ) ) - 1 );
+   }
+}
+
+HB_FUNC( LISTBOXGETITEMCOUNT )
+{
+   hb_retnl( SendMessage( HWNDparam( 1 ), LB_GETCOUNT, 0, 0 ) );
+}
+#pragma ENDDUMP

@@ -1,5 +1,5 @@
 /*
- * $Id: i_tree.ch,v 1.3 2005-10-22 06:04:31 guerra000 Exp $
+ * $Id: i_tree.ch,v 1.4 2008-01-06 02:19:11 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -94,7 +94,7 @@
 #xcommand DEFINE TREE <name> ;
         [ OBJ <obj> ] ;
 	[ <dummy1: OF, PARENT> <parent> ] ;
-	AT <row> , <col> ;
+        [ AT <row> , <col> ] ;
 	[ WIDTH <width> ] ;
 	[ HEIGHT <height> ] ;
 	[ VALUE <value> ] ;
@@ -113,8 +113,19 @@
 	[ <itemids : ITEMIDS> ] ;
 	[ HELPID <helpid> ] 		;
         [ <rtl: RTL> ]                  ;
-=>;
-[ <obj> := ] TTree():Define( <(name)> , <(parent)> , <row> , <col> , <width> , <height> , <{change}> , <tooltip> , <fontname> , <fontsize> , <{gotfocus}> , <{lostfocus}> , <{dblclick}> , .f. , <value>  , <helpid>, <aImgNode>, <aImgItem>, <.noBut.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <.itemids.>, <.rtl.> )
+        [ ON ENTER <enter> ]            ;
+        [ <break: BREAK> ]              ;
+        [ <disabled: DISABLED> ]        ;
+        [ SUBCLASS <subclass> ]         ;
+        [ <invisible : INVISIBLE> ] ;
+        [ <notabstop : NOTABSTOP> ] ;
+        =>;
+        [ <obj> := ] _OOHG_SelectSubClass( TTree(), [ <subclass>() ] ):Define( ;
+                     <(name)>, <(parent)>, <row>, <col>, <width>, <height>, <{change}>, <tooltip>, ;
+                     <fontname>, <fontsize>, <{gotfocus}>, <{lostfocus}>, <{dblclick}>, <.break.>, ;
+                     <value>, <helpid>, <aImgNode>, <aImgItem>, <.noBut.>, ;
+                     <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, <.itemids.>, <.rtl.>, ;
+                     <{enter}>, <{disabled}>, <.invisible.>, <.notabstop.> )
 
 #xcommand NODE <text> [ IMAGES <aImage> ] [ ID <id> ];
 =>;
@@ -135,32 +146,3 @@ _DefineTreeItem (<text>, <aImage> , <id> )
 #xcommand END TREE ;
 => ;
 _EndTree()
-
-///////////////////////////////////////////////////////////////////////////////
-// SPLITBOX VERSION
-///////////////////////////////////////////////////////////////////////////////
-
-#xcommand DEFINE TREE <name> ;
-        [ OBJ <obj> ] ;
-	[ <dummy1: OF, PARENT> <parent> ] ;
-	[ WIDTH <width> ] ;
-	[ HEIGHT <height> ] ;
-	[ VALUE <value> ] ;
-	[ FONT <fontname> ] ;
-	[ SIZE <fontsize> ] ;
-	[ <bold : BOLD> ] ;
-	[ <italic : ITALIC> ] ;
-	[ <underline : UNDERLINE> ] ;
-	[ <strikeout : STRIKEOUT> ] ;
-	[ TOOLTIP <tooltip> ] ;
-	[ ON GOTFOCUS <gotfocus> ] ;
-	[ ON CHANGE <change> ] ;
-	[ ON LOSTFOCUS <lostfocus> ] ;
-	[ ON DBLCLICK <dblclick> ] ;
-	[ <itemids : ITEMIDS> ] ;
-	[ HELPID <helpid> ] 		;
-	[ NODEIMAGES <aImgNode> [ ITEMIMAGES <aImgItem> ] [ <noBut: NOROOTBUTTON> ]];
-	[ <break: BREAK> ] ;
-        [ <rtl: RTL> ]                  ;
-=>;
-[ <obj> := ] TTree():Define( <(name)> , <(parent)> ,  ,  , <width> , <height> , <{change}> , <tooltip> , <fontname> , <fontsize> , <{gotfocus}> , <{lostfocus}> , <{dblclick}> , <.break.> , <value>  , <helpid>, <aImgNode>, <aImgItem>, <.noBut.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.>  , <.itemids.>, <.rtl.> )

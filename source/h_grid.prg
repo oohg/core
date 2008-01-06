@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.94 2008-01-04 03:21:24 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.95 2008-01-06 02:19:11 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -194,7 +194,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                ondispinfo, itemcount, editable, backcolor, fontcolor, ;
                dynamicbackcolor, dynamicforecolor, aPicture, lRtl, inplace, ;
                editcontrols, readonly, valid, validmessages, editcell, ;
-               aWhenFields, lDisabled, lNoTabStop, lInvisible, lNoHeaders ) CLASS TGrid
+               aWhenFields, lDisabled, lNoTabStop, lInvisible, lNoHeaders, ;
+               onenter ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local nStyle := LVS_SINGLESEL
 
@@ -206,7 +207,7 @@ Local nStyle := LVS_SINGLESEL
               dynamicbackcolor, dynamicforecolor, aPicture, lRtl, nStyle, ;
               inplace, editcontrols, readonly, valid, validmessages, ;
               editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
-              lNoHeaders )
+              lNoHeaders, onenter )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -218,7 +219,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                 dynamicbackcolor, dynamicforecolor, aPicture, lRtl, nStyle, ;
                 inplace, editcontrols, readonly, valid, validmessages, ;
                 editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
-                lNoHeaders ) CLASS TGrid
+                lNoHeaders, onenter ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local ControlHandle, aImageList
 
@@ -266,7 +267,7 @@ Local ControlHandle, aImageList
 	endif
    aEval( ::Picture, { |x,i| ::Picture[ i ] := iif( ( ValType( x ) $ "CM" .AND. ! Empty( x ) ) .OR. HB_IsLogical( x ) , x, nil ) } )
 
-   ::SetSplitBoxInfo( Break, )
+   ::SetSplitBoxInfo( Break )
    ControlHandle := InitListView( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, '', 0, iif( nogrid, 0, 1 ) , ownerdata  , itemcount  , nStyle, ::lRtl )
 
    if HB_IsArray( aImage )
@@ -308,6 +309,7 @@ Local ControlHandle, aImageList
    ASSIGN ::OnChange    VALUE change     TYPE "B"
    ASSIGN ::OnDblClick  VALUE dblclick   TYPE "B"
    ASSIGN ::OnDispInfo  VALUE ondispinfo TYPE "B"
+   ASSIGN ::OnEnter     value onenter    TYPE "B"
 
 Return Self
 
@@ -1210,7 +1212,7 @@ Return lRet
 #include "hbstack.h"
 #include <windows.h>
 #include <commctrl.h>
-#include "..\include\oohg.h"
+#include "oohg.h"
 
 // -----------------------------------------------------------------------------
 HB_FUNC_STATIC( TGRID_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TGrid
@@ -1773,7 +1775,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                ondispinfo, itemcount, editable, backcolor, fontcolor, ;
                dynamicbackcolor, dynamicforecolor, aPicture, lRtl, inplace, ;
                editcontrols, readonly, valid, validmessages, editcell, ;
-               aWhenFields, lDisabled, lNoTabStop, lInvisible, lNoHeaders ) CLASS TGridMulti
+               aWhenFields, lDisabled, lNoTabStop, lInvisible, lNoHeaders, ;
+               onenter ) CLASS TGridMulti
 *-----------------------------------------------------------------------------*
 Local nStyle := 0
    ::Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
@@ -1784,7 +1787,7 @@ Local nStyle := 0
               dynamicbackcolor, dynamicforecolor, aPicture, lRtl, nStyle, ;
               inplace, editcontrols, readonly, valid, validmessages, ;
               editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
-              lNoHeaders )
+              lNoHeaders, onenter )
 Return Self
 
 *-----------------------------------------------------------------------------*

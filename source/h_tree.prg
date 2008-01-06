@@ -1,5 +1,5 @@
 /*
- * $Id: h_tree.prg,v 1.14 2008-01-04 14:33:44 declan2005 Exp $
+ * $Id: h_tree.prg,v 1.15 2008-01-06 02:19:11 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -99,6 +99,8 @@ STATIC _OOHG_ActiveTree := nil
 
 CLASS TTree FROM TControl
    DATA Type          INIT "TREE" READONLY
+   DATA nWidth        INIT 120
+   DATA nHeight       INIT 120
    DATA ItemIds       INIT .F.
    DATA aTreeMap      INIT {}
    DATA aTreeIdMap    INIT {}
@@ -114,6 +116,7 @@ CLASS TTree FROM TControl
    METHOD ItemCount      BLOCK { | Self | TreeView_GetCount( ::hWnd ) }
    METHOD Collapse
    METHOD Expand
+   METHOD EndTree
 
    METHOD Value       SETGET
 ENDCLASS
@@ -121,30 +124,30 @@ ENDCLASS
 *------------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, row, col, width, height, change, ;
                tooltip, fontname, fontsize, gotfocus, lostfocus, dblclick, ;
-               break, value, HelpId, aImgNode, aImgItem, noBot, bold, ;
-               italic, underline, strikeout, itemids, lRtl ) CLASS TTree
+               break, value, HelpId, aImgNode, aImgItem, noBot, bold, italic, ;
+               underline, strikeout, itemids, lRtl, onenter, lDisabled, ;
+               invisible, notabstop ) CLASS TTree
 *------------------------------------------------------------------------------*
-Local Controlhandle , ImgDefNode, ImgDefItem, aBitmaps := array(4)
+Local Controlhandle, nStyle, ImgDefNode, ImgDefItem, aBitmaps := array(4)
+
+   ASSIGN ::nWidth    VALUE Width  TYPE "N"
+   ASSIGN ::nHeight   VALUE Height TYPE "N"
+   ASSIGN ::nRow      VALUE row    TYPE "N"
+   ASSIGN ::nCol      VALUE col    TYPE "N"
+   ASSIGN ::InitValue VALUE Value  TYPE "N"
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, , , .t., lRtl )
 
-   if HB_IsNumeric(Value)
-      ::InitValue := Value
-        EndIf
-        if !HB_Isnumeric(Width)
-                Width := 120
-        endif
-        if !HB_IsNumeric(Height)
-           Height := 120
-        endif
+   nStyle := ::InitStyle( nStyle,, invisible, notabstop, lDisabled ) + ;
+             IF( HB_ISLOGICAL( noBot ) .AND. noBot, 0, TVS_LINESATROOT )
 
-   ::SetSplitBoxInfo( Break, )
-   ControlHandle := InitTree ( ::ContainerhWnd, col , row , width , height , 0 , '' , 0, iif(noBot,1,0), ::lRtl )
+   ::SetSplitBoxInfo( Break )
+   ControlHandle := InitTree( ::ContainerhWnd, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, ::lRtl )
 
-        ImgDefNode := iif( HB_IsArray( aImgNode )  , len( aImgNode ), 0 )  //Tree+
-        ImgDefItem := iif( HB_IsArray( aImgItem )  , len( aImgItem ), 0 )  //Tree+
+   ImgDefNode := iif( HB_IsArray( aImgNode )  , len( aImgNode ), 0 )  //Tree+
+   ImgDefItem := iif( HB_IsArray( aImgItem )  , len( aImgItem ), 0 )  //Tree+
 
-        if ImgDefNode > 0
+   If ImgDefNode > 0
 
                 aBitmaps[1] := aImgNode[1]                          // Node default
                 aBitmaps[2] := aImgNode[ImgDefNode]
@@ -162,33 +165,21 @@ Local Controlhandle , ImgDefNode, ImgDefItem, aBitmaps := array(4)
                 endif
 
       ::AddBitMap( aBitmaps )
-        endif
-
-        if valtype(change) == "U"
-                change := ""
-        endif
-
-        if valtype(gotfocus) == "U"
-                gotfocus := ""
-        endif
-
-        if valtype(lostfocus) == "U"
-                lostfocus := ""
-        endif
-
+   EndIf
 
    ::Register( ControlHandle, ControlName, HelpId, , ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
-   ::SizePos( Row, Col, Width, Height )
 
    ::ItemIds :=  itemids
-   ::OnLostFocus := LostFocus
-   ::OnGotFocus :=  GotFocus
-   ::OnChange   :=  Change
-   ::OnDblClick := dblclick
    ::aTreeMap   :=  {}
    ::aTreeIdMap :=  {}
    ::aTreeNode  :=  {}
+
+   ASSIGN ::OnLostFocus VALUE lostfocus  TYPE "B"
+   ASSIGN ::OnGotFocus  VALUE gotfocus   TYPE "B"
+   ASSIGN ::OnChange    VALUE Change     TYPE "B"
+   ASSIGN ::OnDblClick  VALUE dblclick   TYPE "B"
+   ASSIGN ::OnEnter     value onenter    TYPE "B"
 
    _OOHG_ActiveTree := Self
 
@@ -345,9 +336,9 @@ METHOD DeleteItem( Value ) CLASS TTree
 Local BeforeCount , AfterCount , DeletedCount , i , aPos
 Local TreeItemHandle
 
-      BeforeCount := TreeView_GetCount ( ::hWnd )
+   BeforeCount := TreeView_GetCount( ::hWnd )
 
-      if ! ::ItemIds
+   if ! ::ItemIds
 
                         If Value > BeforeCount .or. Value < 1
             MsgOOHGError ("DeleteItem Method: Invalid Item Specified. Program Terminated" )
@@ -399,23 +390,23 @@ Local TreeItemHandle
                                 For i := 1 To DeletedCount
                Adel ( ::aTreeMap , aPos )
                Adel ( ::aTreeIdMap, aPos )
-                                Next i
+         Next i
 
-                        EndIf
+      EndIf
 
-                EndIf
+   EndIf
 
-      aSize ( ::aTreeMap , AfterCount )
-      aSize ( ::aTreeIdMap, AfterCount )
+   aSize ( ::aTreeMap,   AfterCount )
+   aSize ( ::aTreeIdMap, AfterCount )
 
 Return nil
 
 *------------------------------------------------------------------------------*
 METHOD DeleteAllItems() CLASS TTree
 *------------------------------------------------------------------------------*
-      TreeView_DeleteAllItems ( ::hWnd )
-      aSize ( ::aTreeMap , 0 )
-      aSize ( ::aTreeIdMap, 0 )
+   TreeView_DeleteAllItems( ::hWnd )
+   aSize( ::aTreeMap,   0 )
+   aSize( ::aTreeIdMap, 0 )
 Return nil
 
 *------------------------------------------------------------------------------*
@@ -497,10 +488,8 @@ Local ItemHandle := 0 , Pos
    EndIf
 
    If ItemHandle > 0
-
       SendMessage( ::hWnd, TVM_EXPAND, TVE_COLLAPSE, ItemHandle )
-
-        EndIf
+   EndIf
 
 Return nil
 
@@ -529,11 +518,23 @@ Local ItemHandle := 0 , Pos
 Return nil
 
 *------------------------------------------------------------------------------*
+METHOD EndTree() CLASS TTree
+*------------------------------------------------------------------------------*
+   If ::InitValue > 0
+      If ! ::ItemIds
+         TreeView_SelectItem( ::hWnd, ::aTreeMap[ ::InitValue ] )
+      Else
+         TreeView_SelectItem( ::hWnd, ::aTreeMap[ ascan( ::aTreeIdMap, ::InitValue ) ] )
+      EndIf
+   EndIf
+Return Nil
+
+*------------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TTree
 *------------------------------------------------------------------------------*
 Local TreeItemHandle, aPos
 
-   IF HB_IsNumeric( uValue ) 
+   IF HB_IsNumeric( uValue )
 
       if ! ::ItemIds
          If uValue > TreeView_GetCount( ::hWnd )
@@ -633,18 +634,196 @@ Local handle, ImgDef, iUnSel, iSel
 Return Nil
 
 *------------------------------------------------------------------------------*
-Function _EndTree()
+Procedure _EndTree()
 *------------------------------------------------------------------------------*
-Local Self := _OOHG_ActiveTree
+   _OOHG_ActiveTree:EndTree()
+   _OOHG_ActiveTree := nil
+Return
 
-   If ::InitValue > 0
+#pragma BEGINDUMP
+// #include <shlobj.h>
+#include <windows.h>
+#include "hbapi.h"
+// #include "hbvm.h"
+// #include "hbstack.h"
+// #include "hbapiitm.h"
+// #include "winreg.h"
+// #include "tchar.h"
+#include <commctrl.h>
+#include "oohg.h"
 
-      If ! ::ItemIds
-         TreeView_SelectItem ( ::hWnd, ::aTreeMap [ ::InitValue ] )
-                Else
-         TreeView_SelectItem ( ::hWnd, ::aTreeMap [ ascan ( ::aTreeIdMap , ::InitValue ) ] )
-                EndIf
+#define HTREEparam( x )     ( HTREEITEM ) HWNDparam( ( x ) )
+#define HTREEret( x )       HWNDret( ( HWND ) ( x ) )
 
-        EndIf
+static WNDPROC lpfnOldWndProc = 0;
 
-Return Nil
+static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+{
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
+}
+
+HB_FUNC( INITTREE )
+{
+	INITCOMMONCONTROLSEX icex;
+
+   HWND hWndTV;
+   UINT iStyle;
+   int StyleEx;
+
+   iStyle = hb_parni( 6 ) | WS_CHILD | TVS_HASLINES | TVS_HASBUTTONS | TVS_SHOWSELALWAYS;
+   StyleEx = WS_EX_CLIENTEDGE | _OOHG_RTL_Status( hb_parl( 7 ) );
+
+   icex.dwSize = sizeof( INITCOMMONCONTROLSEX );
+   icex.dwICC  = ICC_TREEVIEW_CLASSES ;
+	InitCommonControlsEx(&icex);
+
+   hWndTV = CreateWindowEx( StyleEx, WC_TREEVIEW, "", iStyle,
+                            hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ),
+                            HWNDparam( 1 ), NULL, GetModuleHandle( NULL ), NULL );
+
+   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hWndTV, GWL_WNDPROC, ( LONG ) SubClassFunc );
+
+   HWNDret( hWndTV );
+}
+
+HB_FUNC( ADDTREEITEM )
+{
+   HWND hWndTV = HWNDparam( 1 );
+   HTREEITEM hPrev = HTREEparam( 2 );
+	TV_ITEM tvi;
+   TV_INSERTSTRUCT is;
+
+   tvi.mask       = TVIF_TEXT | TVIF_IMAGE | TVIF_SELECTEDIMAGE | TVIF_PARAM;
+
+   tvi.pszText        = hb_parc( 3 );
+   tvi.cchTextMax     = 1024;
+   tvi.iImage         = hb_parni( 4 );
+   tvi.iSelectedImage = hb_parni( 5 );
+   tvi.lParam         = hb_parni( 6 );
+
+#ifdef __BORLANDC__
+   is.DUMMYUNIONNAME.item = tvi;
+#else
+   is.item   = tvi;
+#endif
+
+   if( ! hPrev )
+	{
+		is.hInsertAfter = hPrev;
+		is.hParent      = NULL;
+	}
+	else
+	{
+		is.hInsertAfter = TVI_LAST;
+		is.hParent      = hPrev;
+	}
+
+   HTREEret( TreeView_InsertItem( hWndTV, &is ) );
+}
+
+HB_FUNC( TREEVIEW_GETSELECTION )
+{
+   HWNDret( TreeView_GetSelection( HWNDparam( 1 ) ) );
+}
+
+HB_FUNC( TREEVIEW_SELECTITEM )
+{
+   TreeView_SelectItem( HWNDparam( 1 ), HTREEparam( 2 ) );
+}
+
+HB_FUNC( TREEVIEW_DELETEITEM )
+{
+   TreeView_DeleteItem( HWNDparam( 1 ), HTREEparam( 2 ) );
+}
+
+HB_FUNC( TREEVIEW_DELETEALLITEMS )
+{
+   TreeView_DeleteAllItems( HWNDparam( 1 ) );
+}
+
+HB_FUNC( TREEVIEW_GETCOUNT )
+{
+   hb_retni( TreeView_GetCount( HWNDparam( 1 ) ) );
+}
+
+HB_FUNC( TREEVIEW_GETPREVSIBLING )
+{
+   HTREEret( TreeView_GetPrevSibling( HWNDparam( 1 ), HTREEparam( 2 ) ) );
+}
+
+HB_FUNC( TREEVIEW_GETITEM )
+{
+   HTREEITEM   TreeItemHandle;
+   TV_ITEM     TreeItem;
+   char     ItemText [256];
+
+   memset( &TreeItem, 0, sizeof( TV_ITEM ) );
+
+   TreeItemHandle = HTREEparam( 2 );
+
+   TreeItem.mask = TVIF_HANDLE | TVIF_TEXT;
+   TreeItem.hItem = TreeItemHandle;
+
+   TreeItem.pszText = ItemText;
+	TreeItem.cchTextMax = 256 ;
+
+   TreeView_GetItem( HWNDparam( 1 ), &TreeItem );
+
+   hb_retc( ItemText );
+}
+
+HB_FUNC( TREEVIEW_SETITEM )
+{
+   HTREEITEM   TreeItemHandle;
+   TV_ITEM     TreeItem;
+   char     ItemText [256];
+
+   memset( &TreeItem, 0, sizeof( TV_ITEM ) );
+
+   TreeItemHandle = HTREEparam( 2 );
+   strcpy( ItemText , hb_parc( 3 ) );
+
+   TreeItem.mask = TVIF_HANDLE | TVIF_TEXT;
+   TreeItem.hItem = TreeItemHandle;
+
+   TreeItem.pszText = ItemText;
+   TreeItem.cchTextMax = 256;
+
+   TreeView_SetItem( HWNDparam( 1 ), &TreeItem );
+}
+
+HB_FUNC( TREEVIEW_GETSELECTIONID )
+{
+	HWND TreeHandle ;
+   HTREEITEM ItemHandle;
+
+	TV_ITEM		TreeItem ;
+
+   TreeHandle = HWNDparam( 1 );
+	ItemHandle = TreeView_GetSelection( TreeHandle );
+
+   memset( &TreeItem, 0, sizeof( TV_ITEM ) );
+
+   TreeItem.mask = TVIF_HANDLE | TVIF_PARAM;
+   TreeItem.hItem  = ItemHandle;
+
+   TreeView_GetItem( TreeHandle, &TreeItem );
+
+   hb_retnl( TreeItem.lParam );
+}
+
+HB_FUNC( TREEVIEW_GETNEXTSIBLING )
+{
+   HTREEret( TreeView_GetNextSibling( HWNDparam( 1 ), HTREEparam( 2 ) ) );
+}
+
+HB_FUNC( TREEVIEW_GETCHILD )
+{
+   HTREEret( TreeView_GetChild( HWNDparam( 1 ), HTREEparam( 2 ) ) );
+}
+
+HB_FUNC( TREEVIEW_GETPARENT )
+{
+   HTREEret( TreeView_GetParent( HWNDparam( 1 ), HTREEparam( 2 ) ) );
+}
+#pragma ENDDUMP

@@ -1,5 +1,5 @@
 /*
- * $Id: i_listbox.ch,v 1.3 2005-10-22 06:04:31 guerra000 Exp $
+ * $Id: i_listbox.ch,v 1.4 2008-01-06 02:19:11 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -117,14 +117,17 @@
 		[ <notabstop : NOTABSTOP> ] ;
 		[ <sort : SORT> ] ;
                 [ <rtl: RTL> ] ;
+                [ ON ENTER <enter> ]            ;
+                [ <disabled: DISABLED> ]        ;
+                [ SUBCLASS <subclass> ]         ;
 	=>;
-        [ <obj> := ] iif( <.multiselect.>, TListMulti(), TList() ):Define( ;
-                        <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <aRows>, ;
+        [ <obj> := ] _OOHG_SelectSubClass( iif( <.multiselect.>, TListMulti(), TList() ), [ <subclass>() ] ): ;
+                        Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <aRows>, ;
                         <value>, <fontname>, <fontsize>, <tooltip>, <{change}>, ;
                         <{dblclick}>, <{gotfocus}>, <{lostfocus}>, .f., ;
                         <helpid>, <.invisible.>, <.notabstop.>, <.sort.> , ;
 			<.bold.>, <.italic.>, <.underline.>, <.strikeout.> ,;
-                        <backcolor> , <fontcolor> , <.rtl.> )
+                        <backcolor> , <fontcolor> , <.rtl.>, <.disabled.>, <{enter}> )
 
 // SPLITBOX VERSION
 
@@ -155,12 +158,15 @@
 		[ <notabstop : NOTABSTOP> ] ;
 		[ <sort : SORT> ] ;
                 [ <rtl: RTL> ] ;
+                [ ON ENTER <enter> ]            ;
+                [ <disabled: DISABLED> ]        ;
+                [ SUBCLASS <subclass> ]         ;
 	=>;
-        [ <obj> := ] iif( <.multiselect.>, TListMulti(), TList() ):Define( ;
-                <(name)>, <(parent)>, , , <w>, <h>, <aRows>, <value>, ;
+        [ <obj> := ] _OOHG_SelectSubClass( iif( <.multiselect.>, TListMulti(), TList() ), [ <subclass>() ] ): ;
+                Define( <(name)>, <(parent)>, , , <w>, <h>, <aRows>, <value>, ;
 		<fontname>, <fontsize>, <tooltip>, <{change}>, <{dblclick}>, ;
 		<{gotfocus}>, <{lostfocus}>, <.break.>, <helpid>, ;
 		<.invisible.>, <.notabstop.>, <.sort.> ,<.bold.>, ;
 		<.italic.>, <.underline.>, <.strikeout.> , <backcolor> , ;
-                <fontcolor> , <.rtl.> )
+                <fontcolor> , <.rtl.>, <.disabled.>, <{enter}> )
 

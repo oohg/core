@@ -1,5 +1,5 @@
 /*
- * $Id: i_grid.ch,v 1.12 2007-11-08 08:55:19 guerra000 Exp $
+ * $Id: i_grid.ch,v 1.13 2008-01-06 02:19:11 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -149,6 +149,7 @@
                 [ <disabled: DISABLED> ]        ;
                 [ <notabstop: NOTABSTOP> ]      ;
                 [ <invisible: INVISIBLE> ]      ;
+                [ ON ENTER <enter> ]            ;
 	=>;
         [ <obj> := ] _OOHG_SelectSubClass( iif( <.multiselect.>, TGridMulti(), TGrid() ), [ <subclass>() ] ): ;
                      Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, ;
@@ -160,7 +161,7 @@
                      <dynamicforecolor>, <Picture>, <.rtl.>, <.inplace.>, <editcontrols>, ;
                      <aReadOnly>, <aValidFields>, <aValidMessages>, <{editcell}>, ;
                      <aWhenFields>, <.disabled.>, <.notabstop.>, <.invisible.>, ;
-                     ! <.noshowheaders.> )
+                     ! <.noshowheaders.>, <{enter}> )
 
 ///////////////////////////////////////////////////////////////////////////////
 // GRID (SPLITBOX VERSION)
@@ -214,6 +215,7 @@
                 [ <disabled: DISABLED> ]        ;
                 [ <notabstop: NOTABSTOP> ]      ;
                 [ <invisible: INVISIBLE> ]      ;
+                [ ON ENTER <enter> ]            ;
 	=>;
         [ <obj> := ] _OOHG_SelectSubClass( iif( <.multiselect.>, TGridMulti(), TGrid() ), [ <subclass>() ] ): ;
                      Define( <(name)>, <(parent)>, , , <w>, <h>, <headers>, ;
@@ -225,6 +227,6 @@
                      <dynamicforecolor>, <Picture>, <.rtl.>, <.inplace.>, <editcontrols>, ;
                      <aReadOnly>, <aValidFields>, <aValidMessages>, <{editcell}>, ;
                      <aWhenFields>, <.disabled.>, <.notabstop.>, <.invisible.>, ;
-                     ! <.noshowheaders.> )
+                     ! <.noshowheaders.>, <{enter}> )
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.62 2007-12-25 02:47:14 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.63 2008-01-06 02:19:11 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -141,7 +141,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                inplace, novscroll, AllowAppend, readonly, valid, ;
                validmessages, edit, dynamicbackcolor, aWhenFields, ;
                dynamicforecolor, aPicture, lRtl, onappend, editcell, ;
-               editcontrols, replacefields, lRecCount, columninfo, lNoHeaders ) CLASS TOBrowse
+               editcontrols, replacefields, lRecCount, columninfo, ;
+               lNoHeaders, onenter ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local nWidth2, nCol2, oScroll, z
 
@@ -207,7 +208,7 @@ Local nWidth2, nCol2, oScroll, z
                    nogrid, aImage, ::aJust, break, HelpId, bold, italic, underline, strikeout, nil, ;
                    nil, nil, edit, backcolor, fontcolor, dynamicbackcolor, dynamicforecolor, aPicture, ;
                    lRtl, InPlace, editcontrols, readonly, valid, validmessages, editcell, ;
-                   aWhenFields, , , , lNoHeaders )
+                   aWhenFields, , , , lNoHeaders, )
 
    ::nWidth := w
 
@@ -270,11 +271,12 @@ Local nWidth2, nCol2, oScroll, z
    ::SizePos()
 
    // Must be set after control is initialized
-   ::OnLostFocus := lostfocus
-   ::OnGotFocus :=  gotfocus
-   ::OnChange   :=  change
-   ::OnDblClick := dblclick
-   ::OnAppend := onappend
+   ASSIGN ::OnLostFocus VALUE lostfocus TYPE "B"
+   ASSIGN ::OnGotFocus  VALUE gotfocus  TYPE "B"
+   ASSIGN ::OnChange    VALUE change    TYPE "B"
+   ASSIGN ::OnDblClick  VALUE dblclick  TYPE "B"
+   ASSIGN ::OnAppend    VALUE onappend  TYPE "B"
+   ASSIGN ::OnEnter     value onenter   TYPE "B"
 
 Return Self
 
@@ -764,7 +766,7 @@ Return lRet
 #include "hbstack.h"
 #include <windows.h>
 #include <commctrl.h>
-#include "../include/oohg.h"
+#include "oohg.h"
 extern int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam );
 #pragma ENDDUMP
 

@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.31 2007-11-08 08:55:20 guerra000 Exp $
+ * $Id: h_xbrowse.prg,v 1.32 2008-01-06 02:19:11 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -145,7 +145,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                strikeout, editable, backcolor, fontcolor, dynamicbackcolor, ;
                dynamicforecolor, aPicture, lRtl, inplace, editcontrols, ;
                readonly, valid, validmessages, editcell, aWhenFields, ;
-               lRecCount, columninfo, lNoHeaders ) CLASS TXBrowse
+               lRecCount, columninfo, lNoHeaders, onenter ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
 Local nWidth2, nCol2, lLocked, oScroll, z
 
@@ -268,6 +268,7 @@ Local nWidth2, nCol2, lLocked, oScroll, z
    ASSIGN ::OnChange    VALUE change    TYPE "B"
    ASSIGN ::OnDblClick  VALUE dblclick  TYPE "B"
    ASSIGN ::OnAppend    VALUE onappend  TYPE "B"
+   ASSIGN ::OnEnter     value onenter   TYPE "B"
 
 Return Self
 
@@ -647,7 +648,7 @@ RETURN Self
 #include "hbstack.h"
 #include <windows.h>
 #include <commctrl.h>
-#include "../include/oohg.h"
+#include "oohg.h"
 extern int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam );
 
 // -----------------------------------------------------------------------------

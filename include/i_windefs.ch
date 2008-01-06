@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.23 2007-11-06 02:13:18 declan2005 Exp $
+ * $Id: i_windefs.ch,v 1.24 2008-01-06 02:19:11 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -381,6 +381,23 @@
 #define TVSIL_STATE        2
 #define TVE_COLLAPSE       1
 #define TVE_EXPAND         2
+//
+#define TVS_HASBUTTONS        1
+#define TVS_HASLINES          2
+#define TVS_LINESATROOT       4
+#define TVS_EDITLABELS        8
+#define TVS_DISABLEDRAGDROP   16
+#define TVS_SHOWSELALWAYS     32
+#define TVS_RTLREADING        64
+#define TVS_NOTOOLTIPS        128
+#define TVS_CHECKBOXES        256
+#define TVS_TRACKSELECT       512
+#define TVS_SINGLEEXPAND      1024
+#define TVS_INFOTIP           2048
+#define TVS_FULLROWSELECT     4096
+#define TVS_NOSCROLL          8192
+#define TVS_NONEVENHEIGHT     16384
+#define TVS_NOHSCROLL         32768
 
 // Tab control messages
 #define TCM_FIRST          0x1300
