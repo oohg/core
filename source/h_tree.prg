@@ -1,5 +1,5 @@
 /*
- * $Id: h_tree.prg,v 1.15 2008-01-06 02:19:11 guerra000 Exp $
+ * $Id: h_tree.prg,v 1.16 2008-01-08 15:45:57 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -641,16 +641,29 @@ Procedure _EndTree()
 Return
 
 #pragma BEGINDUMP
-// #include <shlobj.h>
+#define _WIN32_IE      0x0500
+
+#ifndef HB_OS_WIN_32_USED
+   #define HB_OS_WIN_32_USED
+#endif
+
+#define _WIN32_WINNT   0x0400
+
+#define WM_TASKBAR     WM_USER+1043
+
+#include <shlobj.h>
 #include <windows.h>
 #include "hbapi.h"
-// #include "hbvm.h"
-// #include "hbstack.h"
-// #include "hbapiitm.h"
-// #include "winreg.h"
-// #include "tchar.h"
+#include "hbvm.h"
+#include "hbstack.h"
+#include "hbapiitm.h"
+#include "winreg.h"
+#include "tchar.h"
+
 #include <commctrl.h>
+
 #include "oohg.h"
+
 
 #define HTREEparam( x )     ( HTREEITEM ) HWNDparam( ( x ) )
 #define HTREEret( x )       HWNDret( ( HWND ) ( x ) )
