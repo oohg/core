@@ -1,5 +1,5 @@
 /*
- * $Id: i_var.ch,v 1.19 2007-11-06 02:13:18 declan2005 Exp $
+ * $Id: i_var.ch,v 1.20 2008-01-12 20:19:38 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -127,7 +127,7 @@ MEMVAR _OOHG_AllVars
 #xtranslate  _OOHG_ThisObject          => _OOHG_AllVars \[  28 \]
 
 
- 
+
 #xtranslate  _OOHG_ThisItemCellValue   => _OOHG_AllVars \[  29 \]
 
 #xtranslate  _OOHG_AutoAdjust          => _OOHG_AllVars \[  30 \]
@@ -136,9 +136,5 @@ MEMVAR _OOHG_AllVars
 
 #xtranslate  _OOHG_AdjustFont          => _OOHG_AllVArs \[  32 \]
 
-
-
-
-
-
+#xtranslate  _OOHG_SameEnterDblClick   => _OOHG_AllVArs \[  33 \]
 

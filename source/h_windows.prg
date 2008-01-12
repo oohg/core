@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.171 2008-01-06 03:06:36 declan2005 Exp $
+ * $Id: h_windows.prg,v 1.172 2008-01-12 20:19:38 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1197,7 +1197,7 @@ Local lDone
    ElseIf HB_IsObject( ::Parent ) .AND. ::lInternal
       lDone := ::Parent:LookForKey( nKey, nFlags )
    Else
-      If LookForKey_Check_HotKey( _OOHG_HotKeys, nKey, nFlags, nil )
+      If LookForKey_Check_HotKey( _OOHG_HotKeys, nKey, nFlags, TForm() )
          lDone := .T.
       ElseIf LookForKey_Check_bKeyDown( _OOHG_bKeyDown, nKey, nFlags )
          lDone := .T.
@@ -2116,8 +2116,8 @@ Local lRetVal := .F.
    If HB_IsBlock( bBlock )
 		_PushEventInfo()
       _OOHG_ThisForm      := Self
-      _OOHG_ThisEventType := cEventType
       _OOHG_ThisType      := "W"
+      ASSIGN _OOHG_ThisEventType VALUE cEventType TYPE "CM" DEFAULT ""
       _OOHG_ThisControl   := NIL
       _OOHG_ThisObject    := Self
 		lRetVal := Eval( bBlock )

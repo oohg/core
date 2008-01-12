@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.481 2008-01-08 15:45:57 declan2005 Exp $
+ * $Id: ChangeLog,v 1.482 2008-01-12 20:19:38 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,6 +7,28 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2008-01-12 14:16 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_xbrowse.prg
+    * Functionality of ooHGRecord:New() and ooHGRecord:Use()
+      inverted ( ooHGRecord:Use() opens a new file,
+      ooHGRecord:New() assigns an existing area).
+  * source/h_controlmisc.prg
+  * source/h_windows.prg
+    * Checks for event-type parameter is string on ::DoEvent().
+    ! Fixed SET APPLICATION KEY event launch.
+  * include/i_controlmisc.ch
+  * include/i_var.ch
+  * source/h_grid.prg
+  * source/h_init.prg
+  * source/h_listbox.prg
+  * source/h_tree.prg
+    * Added support for perform the same procedure for ENTER and
+      DBLCLICK events.
+  * source/h_error.prg
+    * User can select it's own error handler
+      (subclass from OOHG_TErrorHtml).
+  + samples/oohg/xbrowsearray.prg
+    + XBROWSE displays an array.
 
 2008-01-08 10:40 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_tree.prg
@@ -15,7 +37,6 @@
 2008-01-05 21:47 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_windows.prg
     ! fix problem with autoadjust and hbprinter and others.
-
 
 2008-01-05 20:15 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * include/i_altsyntax.ch

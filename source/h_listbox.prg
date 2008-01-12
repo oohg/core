@@ -1,5 +1,5 @@
 /*
- * $Id: h_listbox.prg,v 1.13 2008-01-06 02:19:11 guerra000 Exp $
+ * $Id: h_listbox.prg,v 1.14 2008-01-12 20:19:38 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -104,6 +104,10 @@ CLASS TList FROM TControl
    METHOD Define
    METHOD Define2
    METHOD Value             SETGET
+
+   DATA bOnEnter           INIT nil
+   METHOD OnEnter          SETGET
+
    METHOD Events_Command
 
    METHOD AddItem(uValue)     BLOCK { |Self,uValue| ListBoxAddstring( ::hWnd, uValue ) }
@@ -179,6 +183,22 @@ METHOD Value( uValue ) CLASS TList
       ListBoxSetCursel( ::hWnd, uValue )
    ENDIF
 RETURN ListBoxGetCursel( ::hWnd )
+
+*-----------------------------------------------------------------------------*
+METHOD OnEnter( bEnter ) CLASS TList
+*-----------------------------------------------------------------------------*
+LOCAL bRet
+   IF HB_IsBlock( bEnter )
+      IF _OOHG_SameEnterDblClick
+         ::OnDblClick := bEnter
+      ELSE
+         ::bOnEnter := bEnter
+      ENDIF
+      bRet := bEnter
+   ELSE
+      bRet := IF( _OOHG_SameEnterDblClick, ::OnDblClick, ::bOnEnter )
+   ENDIF
+RETURN bRet
 
 *-----------------------------------------------------------------------------*
 METHOD Events_Command( wParam ) CLASS TList

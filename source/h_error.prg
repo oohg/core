@@ -1,5 +1,5 @@
 /*
- * $Id: h_error.prg,v 1.33 2007-12-25 02:47:14 guerra000 Exp $
+ * $Id: h_error.prg,v 1.34 2008-01-12 20:19:38 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -108,23 +108,13 @@
 #include "error.ch"
 #include "common.ch"
 
-Function MsgOOHGError(Message)
-LOCAL oErrorLog
-MemVar _OOHG_TXTERROR
-
+Function MsgOOHGError( cMessage )
    // Kill timers and hot keys
    _KillAllTimers()
    _KillAllKeys()
 
-   If Type( "_OOHG_TXTERROR" ) == "L" .AND. _OOHG_TXTERROR
-      oErrorLog := TErrorTxt()
-   ELSE
-      oErrorLog := TErrorHtml()
-   EndIf
-   oErrorLog:ErrorMessage( Message, 1 )
+   OwnErrorHandler():ErrorMessage( cMessage, 1 )
 Return Nil
-
-
 
 *------------------------------------------------------------------------------*
 PROCEDURE ErrorSys
@@ -134,8 +124,6 @@ RETURN
 
 STATIC FUNCTION DefError( oError )
 LOCAL cMessage, cDOSError
-LOCAL oErrorLog
-MemVar _OOHG_TXTERROR
 
    // By default, division by zero results in zero
    IF oError:genCode == EG_ZERODIV
@@ -172,12 +160,7 @@ MemVar _OOHG_TXTERROR
       cMessage += " " + cDOSError
    ENDIF
 
-   If Type( "_OOHG_TXTERROR" ) == "L" .AND. _OOHG_TXTERROR
-      oErrorLog := TErrorTxt()
-   ELSE
-      oErrorLog := TErrorHtml()
-   EndIf
-   oErrorLog:ErrorMessage( cMessage, 2 )
+   OwnErrorHandler():ErrorMessage( cMessage, 2 )
 RETURN .F.
 
 // [vszakats]
@@ -217,9 +200,21 @@ STATIC FUNCTION ErrorMessage( oError )
 
 RETURN cMessage
 
+STATIC FUNCTION OwnErrorHandler()
+Local oErrorLog
+MemVar _OOHG_TxtError
+   If Type( "_OOHG_TXTERROR" ) == "L" .AND. _OOHG_TxtError
+      oErrorLog := OOHG_TErrorTxt()
+   ElseIf Type( "_OOHG_TXTERROR" ) == "O"
+      oErrorLog := _OOHG_TxtError
+   ELSE
+      oErrorLog := OOHG_TErrorHtml()
+   EndIf
+RETURN oErrorLog
+
 #include "hbclass.ch"
 
-CLASS TErrorHtml
+CLASS OOHG_TErrorHtml
    DATA cBufferFile   INIT ""
    DATA cBufferScreen INIT ""
    DATA PreHeader     INIT '<HR>' + CHR( 13 ) + CHR( 10 ) + '<p class="updated">'
@@ -233,12 +228,12 @@ CLASS TErrorHtml
    METHOD CreateLog
 ENDCLASS
 
-METHOD Write( cTxt ) CLASS TErrorHtml
+METHOD Write( cTxt ) CLASS OOHG_TErrorHtml
    ::cBufferFile   += ::Write2( cTxt )
    ::cBufferScreen += cTxt + CHR( 13 ) + CHR( 10 )
 RETURN nil
 
-METHOD Write2( cTxt ) CLASS TErrorHtml
+METHOD Write2( cTxt ) CLASS OOHG_TErrorHtml
 RETURN RTRIM( cTxt ) + "<br>" + CHR( 13 ) + CHR( 10 )
 
 *------------------------------------------------------------------------------
@@ -247,7 +242,7 @@ RETURN RTRIM( cTxt ) + "<br>" + CHR( 13 ) + CHR( 10 )
 *-HTML Page Head
 *------------------------------------------------------------------------------
 
-METHOD FileHeader( cTitle ) CLASS TErrorHtml
+METHOD FileHeader( cTitle ) CLASS OOHG_TErrorHtml
 RETURN "<HTML><HEAD><TITLE>" + cTitle + "</TITLE></HEAD>" + CHR( 13 ) + CHR( 10 ) + ;
        "<style> "                       + ;
          "body{ "                       + ;
@@ -280,7 +275,7 @@ RETURN "<HTML><HEAD><TITLE>" + cTitle + "</TITLE></HEAD>" + CHR( 13 ) + CHR( 10 
        "<BODY>" + CHR( 13 ) + CHR( 10 ) + ;
        "<H1 Align=Center>" + cTitle + "</H1><br>" + CHR( 13 ) + CHR( 10 )
 
-METHOD CreateLog() CLASS TErrorHtml
+METHOD CreateLog() CLASS OOHG_TErrorHtml
 LOCAL nHdl, cFile, cTop, cBottom, nPos
    cFile := "\" + CurDir() + "\" + ::FileName
    cBottom := MEMOREAD( cFile )
@@ -298,7 +293,7 @@ LOCAL nHdl, cFile, cTop, cBottom, nPos
    FCLOSE( nHdl )
 RETURN nil
 
-METHOD ErrorMessage( cError, nPosition ) CLASS TErrorHtml
+METHOD ErrorMessage( cError, nPosition ) CLASS OOHG_TErrorHtml
    #ifdef __ERROR_EVENTS__
       Local aEvents
    #endif
@@ -330,7 +325,7 @@ METHOD ErrorMessage( cError, nPosition ) CLASS TErrorHtml
    ExitProcess( 0 )
 RETURN nil
 
-CLASS TErrorTxt FROM TErrorHtml
+CLASS OOHG_TErrorTxt FROM OOHG_TErrorHtml
    DATA cBufferFile   INIT ""
    DATA cBufferScreen INIT ""
    DATA PreHeader     INIT " " + CHR( 13 ) + CHR( 10 ) + replicate( "-", 80 ) + CHR( 13 ) + CHR( 10 ) + " " + CHR( 13 ) + CHR( 10 )
@@ -340,10 +335,8 @@ CLASS TErrorTxt FROM TErrorHtml
    DATA FileHeader    INIT ""
 ENDCLASS
 
-METHOD Write2( cTxt ) CLASS TErrorTxt
+METHOD Write2( cTxt ) CLASS OOHG_TErrorTxt
 RETURN RTRIM( cTxt ) + CHR( 13 ) + CHR( 10 )
-
-
 
 *------------------------------------------------------------------------------
 Function ooHGVersion()

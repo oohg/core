@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.95 2008-01-06 02:19:11 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.96 2008-01-12 20:19:38 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -132,6 +132,9 @@ CLASS TGrid FROM TControl
    METHOD Define
    METHOD Define2
    METHOD Value            SETGET
+
+   DATA bOnEnter           INIT nil
+   METHOD OnEnter          SETGET
 
    METHOD Events
    METHOD Events_Enter
@@ -312,6 +315,22 @@ Local ControlHandle, aImageList
    ASSIGN ::OnEnter     value onenter    TYPE "B"
 
 Return Self
+
+*-----------------------------------------------------------------------------*
+METHOD OnEnter( bEnter ) CLASS TGrid
+*-----------------------------------------------------------------------------*
+LOCAL bRet
+   IF HB_IsBlock( bEnter )
+      IF _OOHG_SameEnterDblClick
+         ::OnDblClick := bEnter
+      ELSE
+         ::bOnEnter := bEnter
+      ENDIF
+      bRet := bEnter
+   ELSE
+      bRet := IF( _OOHG_SameEnterDblClick, ::OnDblClick, ::bOnEnter )
+   ENDIF
+RETURN bRet
 
 METHOD appenditem() CLASS TGrid
 Local aNew,i

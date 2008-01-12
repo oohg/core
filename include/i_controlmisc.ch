@@ -1,5 +1,5 @@
 /*
- * $Id: i_controlmisc.ch,v 1.4 2006-11-11 15:34:13 declan2005 Exp $
+ * $Id: i_controlmisc.ch,v 1.5 2008-01-12 20:19:38 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -194,3 +194,6 @@ SetProperty ( <(Arg1)> , <(Arg2)> , <(Arg3)> , \{<Arg4>\} )
 INIT PROCEDURE <name> ;;
 	MsgStop ('EXIT PROCEDURE Statement is not Supported in ooHG. Use Main Window ON RELEASE Event Procedure Instead. Program Terminated','ooHG Error') ;;
         ExitProcess()
+
+#translate SET SAMEENTERDBLCLICK OFF => _OOHG_SameEnterDblClick := .F.
+#translate SET SAMEENTERDBLCLICK ON  => _OOHG_SameEnterDblClick := .T.

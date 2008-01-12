@@ -1,5 +1,5 @@
 /*
- * $Id: h_tree.prg,v 1.16 2008-01-08 15:45:57 declan2005 Exp $
+ * $Id: h_tree.prg,v 1.17 2008-01-12 20:19:38 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -113,12 +113,15 @@ CLASS TTree FROM TControl
    METHOD DeleteItem
    METHOD DeleteAllItems
    METHOD Item
-   METHOD ItemCount      BLOCK { | Self | TreeView_GetCount( ::hWnd ) }
+   METHOD ItemCount        BLOCK { | Self | TreeView_GetCount( ::hWnd ) }
    METHOD Collapse
    METHOD Expand
    METHOD EndTree
 
-   METHOD Value       SETGET
+   METHOD Value            SETGET
+
+   DATA bOnEnter           INIT nil
+   METHOD OnEnter          SETGET
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -566,6 +569,22 @@ Local TreeItemHandle, aPos
       uValue :=  TreeView_GetSelectionId( ::hWnd )
    EndIf
 RETURN uValue
+
+*-----------------------------------------------------------------------------*
+METHOD OnEnter( bEnter ) CLASS TTree
+*-----------------------------------------------------------------------------*
+LOCAL bRet
+   IF HB_IsBlock( bEnter )
+      IF _OOHG_SameEnterDblClick
+         ::OnDblClick := bEnter
+      ELSE
+         ::bOnEnter := bEnter
+      ENDIF
+      bRet := bEnter
+   ELSE
+      bRet := IF( _OOHG_SameEnterDblClick, ::OnDblClick, ::bOnEnter )
+   ENDIF
+RETURN bRet
 
 *------------------------------------------------------------------------------*
 Function _DefineTreeNode ( text, aImage , Id )

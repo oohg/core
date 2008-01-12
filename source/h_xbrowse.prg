@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.32 2008-01-06 02:19:11 guerra000 Exp $
+ * $Id: h_xbrowse.prg,v 1.33 2008-01-12 20:19:38 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -570,50 +570,49 @@ RETURN ::Super:Enabled
 *------------------------------------------------------------------------------*
 METHOD ToExcel( cTitle ) CLASS TXBrowse
 *------------------------------------------------------------------------------*
- Local LIN:=4
- LOCAL oExcel, oHoja,i
+Local LIN := 4
+LOCAL oExcel, oHoja, i
 
- default ctitle to ""
- ///oExcel := CreateObject( "Excel.Application" )
- oExcel := TOleAuto():New( "Excel.Application" )
- IF Ole2TxtError() != 'S_OK'
-    MsgStop('Excel not found','error')
-    RETURN Nil
- ENDIF
- oExcel:WorkBooks:Add()
- oHoja:=oExcel:ActiveSheet()
- ////oHoja := oExcel:Get( "ActiveSheet" )
- oHoja:Cells:Font:Name := "Arial"
- oHoja:Cells:Font:Size := 10
+   default ctitle to ""
+   ///oExcel := CreateObject( "Excel.Application" )
+   oExcel := TOleAuto():New( "Excel.Application" )
+   IF Ole2TxtError() != 'S_OK'
+      MsgStop('Excel not found','error')
+      RETURN Nil
+   ENDIF
+   oExcel:WorkBooks:Add()
+   oHoja := oExcel:ActiveSheet()
+   ////oHoja := oExcel:Get( "ActiveSheet" )
+   oHoja:Cells:Font:Name := "Arial"
+   oHoja:Cells:Font:Size := 10
 
- oHoja:Cells( 1, 1 ):Value := upper( cTitle )
- oHoja:Cells( 1, 1 ):font:bold := .T.
+   oHoja:Cells( 1, 1 ):Value := upper( cTitle )
+   oHoja:Cells( 1, 1 ):font:bold := .T.
 
-  for i:= 1 to len( ::aHeaders )
-     oHoja:Cells( LIN, i ):Value := upper( ::aHeaders[i] )
-     oHoja:Cells( LIN, i ):font:bold:= .T.
-  next i
-  LIN++
-  LIN++
-  ::gotop()
-  Do While .not. ( ::workarea )->( eof( ) )
-     for i:= 1 to len ( ::aFields )
+   for i:= 1 to len( ::aHeaders )
+      oHoja:Cells( LIN, i ):Value := upper( ::aHeaders[i] )
+      oHoja:Cells( LIN, i ):font:bold:= .T.
+   next i
+   LIN++
+   LIN++
+   ::gotop()
+   Do While ! ::oWorkArea:Eof()
+      for i:= 1 to len ( ::aFields )
          oHoja:Cells( LIN, i ):Value := &( ::aFields[i] )
-     next i
-      ( ::workarea )->( DbSkip( ) )
-     LIN++
-  Enddo
+      next i
+      ::DbSkip()
+      LIN++
+   Enddo
 
-FOR i:=1 TO len( ::aHeaders )
-   oHoja:Columns( i ):AutoFit()
-NEXT
+   FOR i := 1 TO LEN( ::aHeaders )
+      oHoja:Columns( i ):AutoFit()
+   NEXT
 
-oHoja:Cells( 1, 1 ):Select()
-oExcel:Visible := .T.
+   oHoja:Cells( 1, 1 ):Select()
+   oExcel:Visible := .T.
 
-oHoja := NIL
-oExcel:= NIL
-
+   oHoja  := NIL
+   oExcel := NIL
 
 RETURN nil
 
@@ -1027,7 +1026,7 @@ Local aItems, aEditControls, aMemVars, aReplaceFields
          If ::IsColumnReadOnly( z )
             // Readonly field
          Else
-            _OOHG_EVAL( aReplaceFields[ z ], aItems[ z ] )
+            _OOHG_EVAL( aReplaceFields[ z ], aItems[ z ], oWorkArea )
          EndIf
 
       Next z
@@ -1098,7 +1097,7 @@ Local lRet, bReplaceField, oWorkArea
          If lAppend
             oWorkArea:Append()
          EndIf
-         _OOHG_EVAL( bReplaceField, uValue, ::WorkArea )
+         _OOHG_EVAL( bReplaceField, uValue, oWorkArea )
          If lAppend
             If ! EMPTY( oWorkArea:cAlias__ )
                ( oWorkArea:cAlias__ )->( _OOHG_Eval( ::OnAppend ) )
@@ -1361,7 +1360,7 @@ METHOD WorkArea( uWorkArea ) CLASS TXBrowse
       ELSEIF VALTYPE( uWorkArea ) $ "CM" .AND. ! EMPTY( uWorkArea )
          uWorkArea := ALLTRIM( UPPER( uWorkArea ) )
          ::uWorkArea := uWorkArea
-         ::oWorkArea := ooHGRecord():Use( uWorkArea )
+         ::oWorkArea := ooHGRecord():New( uWorkArea )
       ELSE
          ::uWorkArea := nil
          ::oWorkArea := nil
@@ -1446,20 +1445,20 @@ LOCAL nPos, cMessage, uRet, cAlias, lError
 RETURN uRet
 
 *-----------------------------------------------------------------------------*
-METHOD New( cFile, cAlias, cRDD, lShared, lReadOnly ) CLASS ooHGRecord
-*-----------------------------------------------------------------------------*
-   DbUseArea( .T., cRDD, cFile, cAlias, lShared, lReadOnly )
-   ::cAlias__ := ALIAS()
-RETURN Self
-
-*-----------------------------------------------------------------------------*
-METHOD Use( cAlias ) CLASS ooHGRecord
+METHOD New( cAlias ) CLASS ooHGRecord
 *-----------------------------------------------------------------------------*
    IF ! VALTYPE( cAlias ) $ "CM" .OR. EMPTY( cAlias )
       ::cAlias__ := ALIAS()
    ELSE
       ::cAlias__ := UPPER( ALLTRIM( cAlias ) )
    ENDIF
+RETURN Self
+
+*-----------------------------------------------------------------------------*
+METHOD Use( cFile, cAlias, cRDD, lShared, lReadOnly ) CLASS ooHGRecord
+*-----------------------------------------------------------------------------*
+   DbUseArea( .T., cRDD, cFile, cAlias, lShared, lReadOnly )
+   ::cAlias__ := ALIAS()
 RETURN Self
 
 *-----------------------------------------------------------------------------*
