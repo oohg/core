@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.172 2008-01-12 20:19:38 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.173 2008-01-13 17:01:06 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -235,9 +235,7 @@ CLASS TWindow
    DATA nOLdh          INIT NIL
    DATA nWindowState   INIT  0   /// 2 Maximizada 1 minimizada  0 Normal
 
-
    ///////
-
 
    DATA DefBkColorEdit      INIT nil
 
@@ -286,6 +284,7 @@ CLASS TWindow
    METHOD SetKey                // Application-controlled hotkeys
    METHOD AcceleratorKey        // Accelerator hotkeys
    METHOD LookForKey
+   METHOD ReleaseAttached
    METHOD Visible             SETGET
    METHOD Show                BLOCK { |Self| ::Visible := .T. }
    METHOD Hide                BLOCK { |Self| ::Visible := .F. }
@@ -294,6 +293,9 @@ CLASS TWindow
    METHOD GetTextWidth
    METHOD GetTextHeight
    METHOD GetMaxCharsInWidth
+
+   METHOD DebugMessageName
+   METHOD DebugMessageQuery
 
    METHOD ContainerVisible    BLOCK { |Self| ::lVisible .AND. IF( ::Container != NIL, ::Container:ContainerVisible, .T. ) }
    METHOD ContainerReleasing  BLOCK { |Self| ::lReleasing .OR. IF( ::Container != NIL, ::Container:ContainerReleasing, IF( ::Parent != NIL, ::Parent:ContainerReleasing, .F. ) ) }
@@ -1230,6 +1232,23 @@ Local lDone
    EndIf
 Return lDone
 
+*-----------------------------------------------------------------------------*
+METHOD ReleaseAttached() CLASS TWindow
+*-----------------------------------------------------------------------------*
+
+   // Release hot keys
+   aEval( ::aHotKeys, { |a| ReleaseHotKey( ::hWnd, a[ HOTKEY_ID ] ) } )
+   ::aHotKeys := {}
+   aEval( ::aAcceleratorKeys, { |a| ReleaseHotKey( ::hWnd, a[ HOTKEY_ID ] ) } )
+   ::aAcceleratorKeys := {}
+
+   // Remove Child Controls
+   DO WHILE LEN( ::aControls ) > 0
+      ::aControls[ 1 ]:Release()
+   ENDDO
+
+Return nil
+
 *------------------------------------------------------------------------------*
 METHOD Visible( lVisible ) CLASS TWindow
 *------------------------------------------------------------------------------*
@@ -1282,6 +1301,107 @@ Local nChars, nMin, nMax, nSize
       EndIf
    EndIf
 Return nChars
+
+*------------------------------------------------------------------------------*
+METHOD DebugMessageName( nMsg ) CLASS TWindow
+*------------------------------------------------------------------------------*
+STATIC aNames := NIL
+LOCAL cName
+   IF aNames == NIL
+      aNames := { "WM_CREATE", "WM_DESTROY", "WM_MOVE", NIL, "WM_SIZE", ;
+                  "WM_ACTIVATE", "WM_SETFOCUS", "WM_KILLFOCUS", NIL, NIL, ;
+                  NIL, NIL, "WM_GETTEXT", NIL, "WM_PAINT", ;
+                  "WM_CLOSE", NIL, "WM_QUIT", NIL, "WM_ERASEBKGND", ;
+                  NIL, NIL, NIL, "WM_SHOWWINDOW", NIL, ;
+                  NIL, NIL, "WM_ACTIVATEAPP", NIL, NIL, ;
+                  NIL, NIL, NIL, NIL, NIL, ;
+                  NIL, NIL, NIL, NIL, "WM_NEXTDLGCTL", ;
+                  NIL, NIL, "WM_DRAWITEM", NIL, NIL, ;
+                  "WM_VKEYTOITEM", NIL, NIL, NIL, NIL, ;
+                  NIL, NIL, NIL, NIL, NIL, ;
+                  NIL, NIL, NIL, NIL, NIL, ;
+                  NIL, NIL, NIL, NIL, NIL, ;
+                  NIL, NIL, NIL, NIL, "WM_WINDOWPOSCHANGING", ;
+                  "WM_WINDOWPOSCHANGED", NIL, NIL, NIL, NIL, ;
+                  NIL, NIL, "WM_NOTIFY", NIL, NIL, ;
+                  NIL, NIL, "WM_HELP", NIL, NIL, ;
+                  NIL, NIL, NIL, NIL, NIL, ;
+                  NIL, NIL, NIL, NIL, NIL, ;
+                  NIL, NIL, NIL, NIL, NIL, ;
+                  NIL, NIL, NIL, NIL, NIL, ;
+                  NIL, NIL, NIL, NIL, NIL, ;
+                  NIL, NIL, NIL, NIL, NIL, ;
+                  NIL, NIL, NIL, NIL, NIL, ;
+                  NIL, NIL, "WM_CONTEXTMENU", NIL, NIL, ;
+                  NIL, NIL, NIL, NIL, NIL, ;
+                  NIL, NIL, "WM_NCPAINT", "WM_NCACTIVATE", "WM_GETDLGCODE", ;
+                  NIL, NIL, NIL, NIL, NIL, ;
+                  NIL, NIL, NIL, NIL, NIL, ;
+                  NIL, NIL, NIL, NIL, NIL, ;
+                  NIL, NIL, NIL, NIL, NIL, ;
+                  NIL, NIL, NIL, NIL, NIL, ;
+                  "WM_NCLBUTTONDOWN", "WM_NCLBUTTONUP" }
+   ENDIF
+   IF nMsg == 0
+      cName := "WM_NULL"
+   ELSEIF LEN( aNames ) >= nMsg .AND. aNames[ nMsg ] != NIL
+      cName := aNames[ nMsg ]
+   ELSE
+      cName := "(unknown_" + _OOHG_HEX( nMsg ) + ")"
+   ENDIF
+RETURN cName
+
+*------------------------------------------------------------------------------*
+METHOD DebugMessageQuery( nMsg, wParam, lParam ) CLASS TWindow
+*------------------------------------------------------------------------------*
+RETURN IF( ::lForm, "", ::Parent:Name + "." ) + ::Name + ": " + ;
+       "(0x" + _OOHG_HEX( nMsg, 4 ) + ") " + ::DebugMessageName( nMsg ) + ;
+       " 0x" + _OOHG_HEX( wParam, 8 ) + " 0x" + _OOHG_HEX( lParam, 8 )
+
+#pragma BEGINDUMP
+HB_FUNC( _OOHG_HEX )   // nNum, nDigits
+{
+   char cLine[ 50 ], cBuffer[ 50 ];
+   unsigned int iNum;
+   int iCount, iLen, iDigit;
+
+   iCount = 0;
+   iNum = ( unsigned int ) hb_parni( 1 );
+   iLen = hb_parni( 2 );
+   while( iNum )
+   {
+      iDigit = iNum & 0xF;
+      if( iDigit > 9 )
+      {
+         iDigit += 7;
+      }
+      cBuffer[ iCount++ ] = '0' + iDigit;
+      iNum = iNum >> 4;
+   }
+   if( ! iCount )
+   {
+      cBuffer[ iCount++ ] = '0';
+   }
+   if( iLen > 0 )
+   {
+      if( iLen > 45 )
+      {
+         iLen = 45;
+      }
+      while( iCount < iLen )
+      {
+         cBuffer[ iCount++ ] = '0';
+      }
+      iCount = iLen;
+   }
+   iLen = 0;
+   while( iCount )
+   {
+      cLine[ iLen++ ] = cBuffer[ --iCount ];
+   }
+   hb_retclen( cLine, iLen );
+}
+#pragma ENDDUMP
 
 *------------------------------------------------------------------------------*
 FUNCTION _OOHG_AddFrame( oFrame )
@@ -1799,6 +1919,8 @@ METHOD Release() CLASS TForm
          MsgOOHGError( "Window: " + ::Name + " is not active. Program terminated." )
       Endif
 
+      ::ReleaseAttached()
+
       * Release Window
 
       If ValidHandler( ::hWnd )
@@ -2130,16 +2252,7 @@ METHOD Events_Destroy() CLASS TForm
 *-----------------------------------------------------------------------------*
 Local mVar, i
 
-   // Release hot keys
-   aEval( ::aHotKeys, { |a| ReleaseHotKey( ::hWnd, a[ HOTKEY_ID ] ) } )
-   ::aHotKeys := {}
-   aEval( ::aAcceleratorKeys, { |a| ReleaseHotKey( ::hWnd, a[ HOTKEY_ID ] ) } )
-   ::aAcceleratorKeys := {}
-
-   // Remove Child Controls
-   DO WHILE LEN( ::aControls ) > 0
-      ::aControls[ 1 ]:Release()
-   ENDDO
+   ::ReleaseAttached()
 
    IF ::Active
       // Delete Notify icon

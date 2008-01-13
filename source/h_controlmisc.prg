@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.89 2008-01-12 20:19:38 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.90 2008-01-13 17:01:06 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1464,15 +1464,12 @@ Local mVar
    ::OnMDblClick    := nil
    ::OnEnter        := nil
 
+   ::ReleaseAttached()
+
    // Removes from container
    IF ::Container != nil
       ::Container:DeleteControl( Self )
    ENDIF
-
-   // Attached controls
-   DO WHILE LEN( ::aControls ) > 0
-      ::aControls[ 1 ]:Release()
-   ENDDO
 
    // Delete it from arrays
    mVar := aScan( _OOHG_aControlNames, { |c| c == UPPER( ::Parent:Name + CHR( 255 ) + ::Name ) } )

@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.24 2008-01-06 02:19:11 guerra000 Exp $
+ * $Id: i_windefs.ch,v 1.25 2008-01-13 17:01:06 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -657,5 +657,16 @@
 #define ACS_TRANSPARENT             2
 #define ACS_AUTOPLAY                4
 #define ACS_TIMER                   8
+
+// Combobox
+#define GW_CHILD               5
+#define CBS_SORT               0x0100
+#define CBS_DROPDOWN           0x0002
+#define CBS_DROPDOWNLIST       0x0003
+#define CBS_NOINTEGRALHEIGHT   0x0400
+#define CBS_OWNERDRAWFIXED     0x0010
+
+#define CB_GETDROPPEDSTATE     0x0157
+#define CB_SHOWDROPDOWN        0x014F
 
 #endif

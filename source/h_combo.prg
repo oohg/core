@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.34 2008-01-05 00:24:54 guerra000 Exp $
+ * $Id: h_combo.prg,v 1.35 2008-01-13 17:01:06 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -116,6 +116,7 @@ CLASS TCombo FROM TLabel
    METHOD Displayvalue        SETGET    /// Caption Alias
    METHOD FontColor           SETGET
    METHOD BackColor           SETGET
+   METHOD Release
 
    METHOD Events_Command
    METHOD Events_DrawItem
@@ -169,13 +170,6 @@ Local ControlHandle , rcount := 0 , cset := 0 , WorkArea , cField, nStyle
 			cField := Right ( ItemSource , Len (ItemSource) - at ( '>', ItemSource ) )
 		EndIf
 	EndIf
-
-#define GW_CHILD               5
-#define CBS_SORT               0x0100
-#define CBS_DROPDOWN           0x0002
-#define CBS_DROPDOWNLIST       0x0003
-#define CBS_NOINTEGRALHEIGHT   0x0400
-#define CBS_OWNERDRAWFIXED     0x0010
 
    nStyle := ::InitStyle( ,, Invisible, notabstop, lDisabled ) + ;
              if( HB_IsLogical( SORT )           .AND. SORT,          CBS_SORT,    0 ) + ;
@@ -312,6 +306,14 @@ METHOD BackColor( uColor ) CLASS TCombo
       ::oTextBox:BackColor := uColor
    ENDIF
 RETURN ( ::Super:BackColor := uColor )
+
+*-----------------------------------------------------------------------------*
+METHOD Release() CLASS TCombo
+*-----------------------------------------------------------------------------*
+   If ! SendMessage( ::hWnd, CB_GETDROPPEDSTATE, 0, 0 ) == 0
+      SendMessage( ::hWnd, CB_SHOWDROPDOWN, 0, 0 )
+   EndIf
+Return ::Super:Release()
 
 *-----------------------------------------------------------------------------*
 METHOD Events_Command( wParam ) CLASS TCombo
