@@ -1,5 +1,5 @@
 /*
- * $Id: h_datepicker.prg,v 1.11 2007-12-25 02:47:14 guerra000 Exp $
+ * $Id: h_datepicker.prg,v 1.12 2008-01-13 22:51:39 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -124,23 +124,13 @@ Local ControlHandle
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, , , .t. , lRtl )
 
-   If VALTYPE( Field ) $ "CM" .AND. ! empty( Field )
-      ::VarName := alltrim( Field )
-      ::Block := &( "{ |x| if( PCount() == 0, " + Field + ", " + Field + " := x ) }" )
-      Value := EVAL( ::Block )
-	EndIf
-
    ControlHandle := InitDatePick ( ::ContainerhWnd, 0, x, y, w, h , '' , 0 , shownone , updown , rightalign, invisible, notabstop , ::lRtl )
-
-	If Empty (Value)
-		SetDatePickNull (ControlHandle)
-	Else
-		SetDatePick( ControlHandle ,year(value), month(value), day(value) )
-	EndIf
 
    ::Register( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
    ::SizePos( y, x, w, h )
+
+   ::Value := ::SetVarBlock( Field, Value )
 
    ::OnClick := Enter
    ::OnLostFocus := LostFocus
@@ -208,23 +198,13 @@ Local ControlHandle
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, , , .t. , lRtl )
 
-   If VALTYPE( Field ) $ "CM" .AND. ! empty( Field )
-      ::VarName := alltrim( Field )
-      ::Block := &( "{ |x| if( PCount() == 0, " + Field + ", " + Field + " := x ) }" )
-      Value := EVAL( ::Block )
-	EndIf
-
    ControlHandle := InitTimePick ( ::ContainerhWnd, 0, x, y, w, h , '' , 0 , shownone , updown , rightalign, invisible, notabstop , ::lRtl )
-
-	If Empty (Value)
-             SettimePick (ControlHandle,,VAL(left(TIME(),2)),VAL(SUBSTR(TIME(),4,2)),VAL( SUBSTR(TIME(),7,2) ))
-	Else
-             SetTimePick( ControlHandle ,VAL(left(Value,2)),VAL(SUBSTR(Value,4,2)),VAL( SUBSTR(Value,7,2 )) )
-	EndIf
 
    ::Register( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
    ::SizePos( y, x, w, h )
+
+   ::Value := ::SetVarBlock( Field, Value )
 
    ::OnClick := Enter
    ::OnLostFocus := LostFocus

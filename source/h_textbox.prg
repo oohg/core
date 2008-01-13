@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.45 2008-01-04 03:21:24 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.46 2008-01-13 22:51:40 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -185,14 +185,7 @@ local break
    ::Register( nControlHandle, cControlName, HelpId,, cToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
 
-   If VALTYPE( Field ) $"CM" .AND. ! empty( Field )
-      ::VarName := alltrim( Field )
-      ::Block := &( "{ |x| if( PCount() == 0, " + Field + ", " + Field + " := x ) }" )
-      cValue := EVAL( ::Block )
-      aAdd( ::Parent:BrowseList, Self )
-	EndIf
-
-   ::Value := cValue
+   ::Value := ::SetVarBlock( Field, cValue )
 
    ::OnLostFocus := uLostFocus
    ::OnGotFocus  := uGotFocus
@@ -208,7 +201,6 @@ return Self
 METHOD RefreshData() CLASS TText
 *-----------------------------------------------------------------------------*
 Local uValue
-
    IF HB_IsBlock( ::Block )
       uValue := EVAL( ::Block )
       If VALTYPE ( uValue ) $ 'CM'
@@ -216,7 +208,6 @@ Local uValue
       EndIf
       ::Value := uValue
    ENDIF
-
 Return NIL
 
 *------------------------------------------------------------------------------*

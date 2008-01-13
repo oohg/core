@@ -1,5 +1,5 @@
 /*
- * $Id: h_checkbox.prg,v 1.20 2007-12-25 02:47:14 guerra000 Exp $
+ * $Id: h_checkbox.prg,v 1.21 2008-01-13 22:51:39 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -151,17 +151,7 @@ Local ControlHandle, nStyle := 0, nStyleEx := 0
    ::Autosize    := autosize
    ::Caption     := Caption
 
-   If VALTYPE( Field ) $ "CM"  .AND. ! empty( Field )
-      ::VarName := alltrim( Field )
-      ::Block := &( "{ |x| if( PCount() == 0, " + Field + ", " + Field + " := x ) }" )
-      Value := EVAL( ::Block )
-	EndIf
-
-   ::Value := value
-
-   if valtype ( Field ) != 'U'
-      aAdd ( ::Parent:BrowseList, Self )
-   EndIf
+   ::Value := ::SetVarBlock( Field, Value )
 
    ::OnChange    := ChangeProcedure
 

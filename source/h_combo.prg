@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.35 2008-01-13 17:01:06 guerra000 Exp $
+ * $Id: h_combo.prg,v 1.36 2008-01-13 22:51:39 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -208,10 +208,6 @@ Local ControlHandle , rcount := 0 , cset := 0 , WorkArea , cField, nStyle
    EndIf
 
    ::Value := Value
-
-   if valtype( ItemSource ) != 'U'
-      aAdd( ::Parent:BrowseList, Self )
-   EndIf
 
    ASSIGN ::OnClick     VALUE ondisplaychangeprocedure TYPE "B"
    ASSIGN ::OnLostFocus VALUE LostFocus                TYPE "B"

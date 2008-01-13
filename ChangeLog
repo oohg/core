@@ -1,11 +1,35 @@
 /*
- * $Id: ChangeLog,v 1.483 2008-01-13 17:01:06 guerra000 Exp $
+ * $Id: ChangeLog,v 1.484 2008-01-13 22:51:39 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-01-13 16:49 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * doc/classes.txt
+  * source/h_browse.prg
+  * source/h_button.prg
+  * source/h_checkbox.prg
+  * source/h_combo.prg
+  * source/h_internal.prg
+  * source/h_richeditbox.prg
+  * source/h_splitbox.prg
+  * source/h_status.prg
+  * source/h_textbox.prg
+  * source/h_windows.prg
+  * source/h_xbrowse.prg
+    - TForm:BrowseList property removed. All controls will be
+      checked.
+  * source/h_button.prg
+  * source/h_checkbox.prg
+  * source/h_controlmisc.prg
+  * source/h_datepicker.prg
+  * source/h_richeditbox.prg
+  * source/h_textbox.prg
+    + ::SetVarBlock() method added. Assigns any variable/field to
+      ::Block .
 
 2008-01-13 11:00 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * include/i_windefs.ch

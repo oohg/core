@@ -1,5 +1,5 @@
 /*
- * $Id: h_richeditbox.prg,v 1.13 2006-11-02 05:59:53 guerra000 Exp $
+ * $Id: h_richeditbox.prg,v 1.14 2008-01-13 22:51:39 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -125,23 +125,13 @@ Local ControlHandle, nStyle
    nStyle := ::InitStyle( ,, Invisible, NoTabStop, lDisabled ) + ;
              if( ValType( readonly ) == "L"  .AND. readonly,   ES_READONLY, 0 )
 
-   If ValType( Field ) $ 'CM' .AND. ! empty( Field )
-      ::VarName := alltrim( Field )
-      ::Block := &( "{ |x| if( PCount() == 0, " + Field + ", " + Field + " := x ) }" )
-      Value := EVAL( ::Block )
-	EndIf
-
    ::SetSplitBoxInfo( Break, )
    ControlHandle := InitRichEditBox( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, maxlenght, ::lRtl )
 
    ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
 
-   ::Value := value
-
-	if valtype ( Field ) != 'U'
-      aAdd( ::Parent:BrowseList, Self )
-	EndIf
+   ::Value := ::SetVarBlock( Field, Value )
 
    ::BackColor := ::BackColor
 

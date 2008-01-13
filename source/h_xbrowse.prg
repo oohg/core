@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.33 2008-01-12 20:19:38 guerra000 Exp $
+ * $Id: h_xbrowse.prg,v 1.34 2008-01-13 22:51:40 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -258,9 +258,6 @@ Local nWidth2, nCol2, lLocked, oScroll, z
    ::lLocked := .F.
    ::Refresh( value )
    ::lLocked := lLocked
-
-   // Add to browselist array to update on window activation
-   aAdd( ::Parent:BrowseList, Self )
 
    // Must be set after control is initialized
    ASSIGN ::OnLostFocus VALUE lostfocus TYPE "B"

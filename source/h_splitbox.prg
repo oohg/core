@@ -1,5 +1,5 @@
 /*
- * $Id: h_splitbox.prg,v 1.6 2007-07-15 04:48:43 guerra000 Exp $
+ * $Id: h_splitbox.prg,v 1.7 2008-01-13 22:51:39 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -138,7 +138,6 @@ Local ControlHandle
    ::ContainerhWndValue := ::hWnd
 
    _OOHG_AddFrame( Self )
-   aAdd( ::Parent:BrowseList, Self )
 
 Return Self
 

@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.63 2008-01-06 02:19:11 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.64 2008-01-13 22:51:39 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -264,9 +264,6 @@ Local nWidth2, nCol2, oScroll, z
       // non-visible TAB page.
       ::Visible := ::Visible
    EndIf
-
-   // Add to browselist array to update on window activation
-   aAdd( ::Parent:BrowseList, Self )
 
    ::SizePos()
 

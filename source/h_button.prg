@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.35 2007-12-25 18:44:37 guerra000 Exp $
+ * $Id: h_button.prg,v 1.36 2008-01-13 22:51:39 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -430,17 +430,7 @@ Local ControlHandle, nStyle := 0
       EndIf
    EndIf
 
-   If ValType( Field ) $ 'CM' .AND. ! empty( Field )
-      ::VarName := alltrim( Field )
-      ::Block := &( "{ |x| if( PCount() == 0, " + Field + ", " + Field + " := x ) }" )
-      Value := EVAL( ::Block )
-	EndIf
-
-   ::Value := value
-
-	if valtype ( Field ) != 'U'
-      aAdd ( ::Parent:BrowseList, Self )
-	EndIf
+   ::Value := ::SetVarBlock( Field, Value )
 
    ::OnChange    := ChangeProcedure
 

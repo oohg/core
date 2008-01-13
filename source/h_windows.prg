@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.173 2008-01-13 17:01:06 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.174 2008-01-13 22:51:40 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1498,7 +1498,6 @@ CLASS TForm FROM TWindow
    DATA GraphTasks     INIT {}
    DATA GraphCommand   INIT nil
    DATA GraphData      INIT {}
-   DATA BrowseList     INIT {}    // Controls to be refresh at form's draw.
    DATA SplitChildList INIT {}    // INTERNAL windows.
 
    DATA NotifyIconLeftClick   INIT nil
@@ -2194,11 +2193,6 @@ Return MoveWindow( ::hWnd , nCol , nRow , nWidth , nHeight , .t. )
 METHOD DeleteControl( oControl ) CLASS TForm
 *-----------------------------------------------------------------------------*
 Local nPos
-   // Removes from ::BrowseList
-   nPos := aScan( ::BrowseList, { |o| o:hWnd == oControl:hWnd } )
-   If nPos > 0
-      _OOHG_DeleteArrayItem( ::BrowseList, nPos )
-   EndIf
    // Removes INTERNAL window from ::SplitChildList
    // If oControl:lForm .....
    nPos := aScan( ::SplitChildList, { |o| o:hWnd == oControl:hWnd } )
@@ -2210,7 +2204,7 @@ Return ::Super:DeleteControl( oControl )
 *-----------------------------------------------------------------------------*
 METHOD RefreshData() CLASS TForm
 *-----------------------------------------------------------------------------*
-   AEVAL( ::BrowseList, { |o| o:RefreshData() } )
+   AEVAL( ::aControls, { |o| o:RefreshData() } )
 Return nil
 
 *-----------------------------------------------------------------------------*
@@ -3069,7 +3063,6 @@ METHOD Define2( FormName, Caption, x, y, w, h, Parent, helpbutton, nominimize, n
 
    ::ActivateCount[ 1 ] += 999
    aAdd( ::Parent:SplitChildList, Self )
-   aAdd( ::Parent:BrowseList, Self )
    ::Parent:AddControl( Self )
    ::Active := .T.
    If ::lVisible

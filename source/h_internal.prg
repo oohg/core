@@ -1,5 +1,5 @@
 /*
- * $Id: h_internal.prg,v 1.5 2007-07-03 00:50:32 declan2005 Exp $
+ * $Id: h_internal.prg,v 1.6 2008-01-13 22:51:39 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -156,9 +156,6 @@ Local ControlHandle, nStyle, nStyleEx := 0
    ValidateScrolls( Self, .F. )
 
    ::hCursor := LoadCursorFromFile( icon )
-
-   // Add to browselist array to update on window activation
-   aAdd( ::Parent:BrowseList, Self )
 
    If ::Transparent
       RedrawWindowControlRect( ::ContainerhWnd, ::ContainerRow, ::ContainerCol, ::ContainerRow + ::Height, ::ContainerCol + ::Width )

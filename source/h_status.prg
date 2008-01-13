@@ -1,5 +1,5 @@
 /*
- * $Id: h_status.prg,v 1.26 2007-12-25 02:47:14 guerra000 Exp $
+ * $Id: h_status.prg,v 1.27 2008-01-13 22:51:40 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -174,9 +174,6 @@ Local ControlHandle
    IF VALTYPE( date ) == "L" .AND. date
 *      ::SetDate()
    ENDIF
-
-   // Add to browselist array to update on window activation
-   aAdd( ::Parent:BrowseList, Self )
 
    _OOHG_AddFrame( Self )
    ::ContainerhWndValue := ::hWnd

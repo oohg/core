@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.90 2008-01-13 17:01:06 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.91 2008-01-13 22:51:39 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1231,6 +1231,7 @@ CLASS TControl FROM TWindow
    METHOD Move
    METHOD SetFocus            BLOCK { |Self| _OOHG_lSettingFocus := .T., GetFormObjectByHandle( ::ContainerhWnd ):LastFocusedControl := ::hWnd, ::Super:SetFocus() }
    METHOD Value               BLOCK { || nil }
+   METHOD SetVarBlock
    METHOD SaveData
    METHOD RefreshData
    METHOD AddBitMap
@@ -1599,6 +1600,20 @@ METHOD SaveData() CLASS TControl
 Return _OOHG_EVAL( ::Block, ::Value )
 
 *-----------------------------------------------------------------------------*
+METHOD SetVarBlock( cField, uValue ) CLASS TControl
+*-----------------------------------------------------------------------------*
+   If ValType( cField ) $ "CM" .AND. ! Empty( cField )
+      ::VarName := AllTrim( cField )
+	EndIf
+   If ValType( ::VarName ) $ "CM" .AND. ! Empty( ::VarName )
+      ::Block := &( "{ | _x_ | if( PCount() == 0, ( " + ::VarName + " ), ( " + ::VarName + " := _x_ ) ) }" )
+	EndIf
+   If HB_IsBlock( ::Block )
+      uValue := EVAL( ::Block )
+   EndIf
+Return uValue
+
+*-----------------------------------------------------------------------------*
 METHOD RefreshData() CLASS TControl
 *-----------------------------------------------------------------------------*
    // Since not all controls haves ::Value property, it must be checked here
@@ -1611,7 +1626,6 @@ Return nil
 *-----------------------------------------------------------------------------*
 METHOD AddBitMap( uImage ) CLASS TControl
 *-----------------------------------------------------------------------------*
-
 Local nPos, nCount
    If ! ValidHandler( ::ImageList )
       If HB_IsArray( uImage )
