@@ -1,5 +1,5 @@
 /*
- * $Id: h_progressmeter.prg,v 1.12 2007-01-02 04:31:45 guerra000 Exp $
+ * $Id: h_progressmeter.prg,v 1.13 2008-01-14 00:58:35 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -114,13 +114,13 @@ Local ControlHandle, nStyle, nStyleEx
    ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
 
-   ::OnClick := ProcedureName
-
    ::RangeMin := lo
    ::RangeMax := hi
 
    ::Value := If( Valtype( value ) == "N", value, ::RangeMin )
    ::ReCalc( .T. )
+
+   ASSIGN ::OnClick     VALUE ProcedureName TYPE "B"
 
 Return Self
 
@@ -172,7 +172,7 @@ RETURN ::nRangeMax
 #include "hbstack.h"
 #include <windows.h>
 #include <commctrl.h>
-#include "../include/oohg.h"
+#include "oohg.h"
 
 // lAux[ 0 ] = Percent
 // lAux[ 1 ] = Align

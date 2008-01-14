@@ -1,5 +1,5 @@
 /*
- * $Id: h_checkbox.prg,v 1.21 2008-01-13 22:51:39 guerra000 Exp $
+ * $Id: h_checkbox.prg,v 1.22 2008-01-14 00:58:34 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -146,14 +146,14 @@ Local ControlHandle, nStyle := 0, nStyleEx := 0
    ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
 
-   ::OnLostFocus := LostFocus
-   ::OnGotFocus  := GotFocus
    ::Autosize    := autosize
    ::Caption     := Caption
 
-   ::Value := ::SetVarBlock( Field, Value )
+   ::SetVarBlock( Field, Value )
 
-   ::OnChange    := ChangeProcedure
+   ASSIGN ::OnLostFocus VALUE lostfocus TYPE "B"
+   ASSIGN ::OnGotFocus  VALUE gotfocus  TYPE "B"
+   ASSIGN ::OnChange    VALUE ChangeProcedure TYPE "B"
 
 Return Self
 
@@ -190,7 +190,7 @@ Return ::Super:Events_Command( wParam )
 #include "hbapiitm.h"
 #include <windows.h>
 #include <commctrl.h>
-#include "../include/oohg.h"
+#include "oohg.h"
 
 static WNDPROC lpfnOldWndProc = 0;
 

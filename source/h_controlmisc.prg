@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.91 2008-01-13 22:51:39 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.92 2008-01-14 00:58:34 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -109,7 +109,7 @@ STATIC _OOHG_lSettingFocus := .F.     // If there's a ::SetFocus() call inside O
 #include "hbstack.h"
 #include <windows.h>
 #include <commctrl.h>
-#include "../include/oohg.h"
+#include "oohg.h"
 #pragma ENDDUMP
 
 *-----------------------------------------------------------------------------*
@@ -1609,9 +1609,11 @@ METHOD SetVarBlock( cField, uValue ) CLASS TControl
       ::Block := &( "{ | _x_ | if( PCount() == 0, ( " + ::VarName + " ), ( " + ::VarName + " := _x_ ) ) }" )
 	EndIf
    If HB_IsBlock( ::Block )
-      uValue := EVAL( ::Block )
+      ::Value := EVAL( ::Block )
+   ElseIf PCount() > 1
+      ::Value := uValue
    EndIf
-Return uValue
+Return nil
 
 *-----------------------------------------------------------------------------*
 METHOD RefreshData() CLASS TControl

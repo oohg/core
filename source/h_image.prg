@@ -1,5 +1,5 @@
 /*
- * $Id: h_image.prg,v 1.20 2007-12-25 18:44:37 guerra000 Exp $
+ * $Id: h_image.prg,v 1.21 2008-01-14 00:58:34 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -145,8 +145,6 @@ Local ControlHandle, nStyle
 
    ::Register( ControlHandle, ControlName, HelpId )
 
-   ::OnClick := ProcedureName
-
    ::Picture := FileName
    If ! ValidHandler( ::AuxHandle )
       ::Buffer := cBuffer
@@ -154,6 +152,8 @@ Local ControlHandle, nStyle
          ::HBitMap := hBitMap
       EndIf
    EndIf
+
+   ASSIGN ::OnClick     VALUE ProcedureName TYPE "B"
 
 Return Self
 
@@ -254,7 +254,7 @@ RETURN ::Super:Release()
 #include "hbapi.h"
 #include <windows.h>
 #include <commctrl.h>
-#include "../include/oohg.h"
+#include "oohg.h"
 
 static WNDPROC lpfnOldWndProc = 0;
 

@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.96 2008-01-12 20:19:38 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.97 2008-01-14 00:58:34 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -309,7 +309,7 @@ Local ControlHandle, aImageList
    // Must be set after control is initialized
    ASSIGN ::OnLostFocus VALUE lostfocus  TYPE "B"
    ASSIGN ::OnGotFocus  VALUE gotfocus   TYPE "B"
-   ASSIGN ::OnChange    VALUE change     TYPE "B"
+   ASSIGN ::OnChange    VALUE Change     TYPE "B"
    ASSIGN ::OnDblClick  VALUE dblclick   TYPE "B"
    ASSIGN ::OnDispInfo  VALUE ondispinfo TYPE "B"
    ASSIGN ::OnEnter     value onenter    TYPE "B"

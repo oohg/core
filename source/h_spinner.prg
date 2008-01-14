@@ -1,5 +1,5 @@
 /*
- * $Id: h_spinner.prg,v 1.13 2007-12-25 02:47:14 guerra000 Exp $
+ * $Id: h_spinner.prg,v 1.14 2008-01-14 00:58:35 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -129,9 +129,6 @@ Local ControlHandle
    DEFAULT rl        TO 1
    DEFAULT rh        TO 100
    DEFAULT value     TO rl
-   DEFAULT change    TO ""
-   DEFAULT lostfocus TO ""
-   DEFAULT gotfocus  TO ""
    DEFAULT wrap      TO FALSE
    DEFAULT readonly  TO FALSE
    DEFAULT increment TO 1
@@ -151,9 +148,9 @@ Local ControlHandle
    ::SetFont( , , bold, italic, underline, strikeout )
    ::SizePos( y, x, w, h )
 
-   ::OnLostFocus := LostFocus
-   ::OnGotFocus :=  GotFocus
-   ::OnChange   :=  Change
+   ASSIGN ::OnLostFocus VALUE lostfocus TYPE "B"
+   ASSIGN ::OnGotFocus  VALUE gotfocus  TYPE "B"
+   ASSIGN ::OnChange    VALUE Change    TYPE "B"
    ::RangeMin   :=   Rl
    ::RangeMax   :=   Rh
 

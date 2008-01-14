@@ -1,5 +1,5 @@
 /*
- * $Id: h_hotkeybox.prg,v 1.3 2008-01-04 03:21:24 guerra000 Exp $
+ * $Id: h_hotkeybox.prg,v 1.4 2008-01-14 00:58:34 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -93,10 +93,10 @@ Local ControlHandle, nStyle := 0, nStyleEx := 0
 
    ::Value := cValue
 
-   ::OnLostFocus := uLostFocus
-   ::OnGotFocus  := uGotFocus
-   ::OnChange    := uChange
-   ::OnEnter     := uEnter
+   ASSIGN ::OnLostFocus VALUE uLostFocus TYPE "B"
+   ASSIGN ::OnGotFocus  VALUE uGotFocus  TYPE "B"
+   ASSIGN ::OnChange    VALUE uChange    TYPE "B"
+   ASSIGN ::OnEnter     value uEnter     TYPE "B"
 
 return Self
 
@@ -110,7 +110,7 @@ Return HotKeyBoxValue( ::hWnd, uValue, ::lForceAlt )
 #include <windows.h>
 #include <commctrl.h>
 #include <hbapiitm.h>
-#include "../include/oohg.h"
+#include "oohg.h"
 
 static WNDPROC lpfnOldWndProc = 0;
 

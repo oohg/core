@@ -1,5 +1,5 @@
 /*
- * $Id: h_radio.prg,v 1.18 2007-12-28 23:34:26 declan2005 Exp $
+ * $Id: h_radio.prg,v 1.19 2008-01-14 00:58:35 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -130,7 +130,6 @@ Local ControlHandle
 
    DEFAULT Width      TO 120
    DEFAULT Spacing    TO 25
-   DEFAULT change     TO ""
    DEFAULT invisible  TO FALSE
    DEFAULT notabstop  TO FALSE
    DEFAULT autosize   TO FALSE
@@ -145,7 +144,6 @@ Local ControlHandle
    ::SizePos( y, x, Width, Spacing * len( aOptions ) )
 
    ::Transparent :=  transparent
-   ::OnChange   :=  Change
    ::TabStop := NoTabStop
    ::AutoSize := autosize
 
@@ -188,6 +186,8 @@ Local ControlHandle
          SetTabStop( ::hWnd, .T. )
 		endif
 	EndIf
+
+   ASSIGN ::OnChange    VALUE Change    TYPE "B"
 
 Return Self
 
@@ -321,7 +321,7 @@ EXTERN InitRadioGroup, InitRadioButton, SetRadioStyle, IsTabStop, SetTabStop
 #include "hbapi.h"
 #include <windows.h>
 #include <commctrl.h>
-#include "../include/oohg.h"
+#include "oohg.h"
 
 static WNDPROC lpfnOldWndProcA = 0, lpfnOldWndProcB = 0;
 

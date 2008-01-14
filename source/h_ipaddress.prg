@@ -1,5 +1,5 @@
 /*
- * $Id: h_ipaddress.prg,v 1.5 2007-10-06 22:16:44 declan2005 Exp $
+ * $Id: h_ipaddress.prg,v 1.6 2008-01-14 00:58:35 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -112,9 +112,6 @@ Local ControlHandle
 
    DEFAULT w         TO 120
    DEFAULT h         TO 24
-   DEFAULT change    TO ""
-   DEFAULT lostfocus TO ""
-   DEFAULT gotfocus  TO ""
    DEFAULT invisible TO FALSE
    DEFAULT notabstop TO FALSE
 
@@ -130,9 +127,9 @@ Local ControlHandle
    ::SetFont( , , bold, italic, underline, strikeout )
    ::SizePos( y, x, w, h )
 
-   ::OnLostFocus := LostFocus
-   ::OnGotFocus :=  GotFocus
-   ::OnChange   :=  Change
+   ASSIGN ::OnLostFocus VALUE lostfocus TYPE "B"
+   ASSIGN ::OnGotFocus  VALUE gotfocus  TYPE "B"
+   ASSIGN ::OnChange    VALUE Change    TYPE "B"
 
 Return Self
 
@@ -145,7 +142,7 @@ METHOD Value( uValue ) CLASS TIpAddress
       Elseif HB_IsArray( uValue )
          SetIPAddress( ::hWnd, uValue[1], uValue[2], uValue[3], uValue[4] )
       Elseif HB_IsString( uValue )
-         SetIPAddress( ::hWnd, uValue )        
+         SetIPAddress( ::hWnd, uValue )
       EndIf
    ENDIF
 RETURN GetIPAddress( ::hWnd )

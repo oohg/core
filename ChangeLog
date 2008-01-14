@@ -1,11 +1,44 @@
 /*
- * $Id: ChangeLog,v 1.484 2008-01-13 22:51:39 guerra000 Exp $
+ * $Id: ChangeLog,v 1.485 2008-01-14 00:58:34 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-01-13 18:52 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_button.prg
+  * source/h_checkbox.prg
+  * source/h_controlmisc.prg
+  * source/h_datepicker.prg
+  * source/h_richeditbox.prg
+  * source/h_textbox.prg
+    * ::SetVarBlock() assigns automatically new ::Value from ::Block.
+  * include/i_altsyntax.ch
+  * source/h_button.prg
+  * source/h_checkbox.prg
+  * source/h_datepicker.prg
+  * source/h_grid.prg
+  * source/h_hotkeybox.prg
+  * source/h_image.prg
+  * source/h_internal.prg
+  * source/h_ipaddress.prg
+  * source/h_label.prg
+  * source/h_monthcal.prg
+  * source/h_progressmeter.prg
+  * source/h_radio.prg
+  * source/h_richeditbox.prg
+  * source/h_slider.prg
+  * source/h_spinner.prg
+  * source/h_status.prg
+  * source/h_tab.prg
+  * source/h_textarray.prg
+  * source/h_textbox.prg
+  * source/h_toolbar.prg
+  * source/h_windows.prg
+    * ::OnGotFocus, ::OnLostFocus, ::OnChange, ::OnEnter, ::OnClick
+      initialization allows pre-assigned values.
 
 2008-01-13 16:49 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * doc/classes.txt

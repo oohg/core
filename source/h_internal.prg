@@ -1,5 +1,5 @@
 /*
- * $Id: h_internal.prg,v 1.6 2008-01-13 22:51:39 guerra000 Exp $
+ * $Id: h_internal.prg,v 1.7 2008-01-14 00:58:35 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -121,12 +121,6 @@ Local ControlHandle, nStyle, nStyleEx := 0
 
    ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
 
-   ::OnClick := OnClick
-   ::OnLostFocus := LostFocus
-   ::OnGotFocus :=  GotFocus
-   ::OnMouseDrag := MouseDragProcedure
-   ::OnMouseMove := MouseMoveProcedure
-
    ::HScrollBar := TScrollBar():Define( "0", Self,,,,,,,, ;
                    { |Scroll| _OOHG_Eval( ::OnScrollLeft, Scroll ) }, ;
                    { |Scroll| _OOHG_Eval( ::OnScrollRight, Scroll ) }, ;
@@ -163,6 +157,13 @@ Local ControlHandle, nStyle, nStyleEx := 0
 
    ::ContainerhWndValue := ::hWnd
    _OOHG_AddFrame( Self )
+
+   ASSIGN ::OnClick     VALUE OnClick   TYPE "B"
+   ASSIGN ::OnLostFocus VALUE LostFocus TYPE "B"
+   ASSIGN ::OnGotFocus  VALUE GotFocus  TYPE "B"
+   ::OnMouseDrag := MouseDragProcedure
+   ::OnMouseMove := MouseMoveProcedure
+
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -245,7 +246,7 @@ Return _OOHG_DeleteFrame( "INTERNAL" )
 #include "hbstack.h"
 #include <windows.h>
 #include <commctrl.h>
-#include "../include/oohg.h"
+#include "oohg.h"
 
 static WNDPROC lpfnOldWndProc = 0;
 

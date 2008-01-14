@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.34 2007-12-25 02:47:14 guerra000 Exp $
+ * $Id: h_tab.prg,v 1.35 2008-01-14 00:58:35 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -136,8 +136,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aCaptions, aPageMap, ;
                HotTrack, Vertical, notabstop, aMnemonic, bold, italic, ;
                underline, strikeout, Images, lRtl, lInternals ) CLASS TTab
 *-----------------------------------------------------------------------------*
-Local z
-Local Caption, Page, Image, Mnemonic
+Local Caption, Page, Image, Mnemonic, z
 Local ControlHandle
 
    ASSIGN ::lInternals VALUE lInternals TYPE "L"
@@ -206,7 +205,7 @@ Local ControlHandle
       ::Value := 1
    ENDIF
 
-   ::OnChange   :=  Change
+   ASSIGN ::OnChange    VALUE Change    TYPE "B"
 
 Return Self
 
@@ -693,7 +692,7 @@ EXTERN TabCtrl_SetCurSel, TabCtrl_GetCurSel, TabCtrl_InsertItem, TabCtrl_DeleteI
 #include <windows.h>
 #include <commctrl.h>
 #include "hbapi.h"
-#include "../include/oohg.h"
+#include "oohg.h"
 
 static WNDPROC lpfnOldWndProc = 0;
 

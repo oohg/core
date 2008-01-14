@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.36 2008-01-13 22:51:39 guerra000 Exp $
+ * $Id: h_button.prg,v 1.37 2008-01-14 00:58:34 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -102,8 +102,8 @@ CLASS TButton FROM TImage
    DATA nWidth    INIT 100
    DATA nHeight   INIT 28
    DATA AutoFit   INIT .F.
-   DATA OnClick   INIT nil
    DATA nAlign    INIT 2
+   DATA OnClick   INIT nil
 
    METHOD Define
    METHOD DefineImage
@@ -151,9 +151,6 @@ Local ControlHandle, nStyle, lBitMap
    ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
 
-   ::OnClick := ProcedureName
-   ::OnLostFocus := LostFocus
-   ::OnGotFocus :=  GotFocus
    ::Caption := Caption
 
    ASSIGN ::lNoTransparent VALUE lNoTransparent TYPE "L"
@@ -186,6 +183,10 @@ Local ControlHandle, nStyle, lBitMap
          ::HBitMap := hBitMap
       EndIf
    EndIf
+
+   ASSIGN ::OnClick     VALUE ProcedureName TYPE "B"
+   ASSIGN ::OnLostFocus VALUE LostFocus     TYPE "B"
+   ASSIGN ::OnGotFocus  VALUE GotFocus      TYPE "B"
 
 Return Self
 
@@ -416,8 +417,6 @@ Local ControlHandle, nStyle := 0
    ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
 
-   ::OnLostFocus := LostFocus
-   ::OnGotFocus  := GotFocus
    ::Caption     := Caption
 
    ASSIGN ::lNoTransparent VALUE lNoTransparent TYPE "L"
@@ -430,9 +429,11 @@ Local ControlHandle, nStyle := 0
       EndIf
    EndIf
 
-   ::Value := ::SetVarBlock( Field, Value )
+   ::SetVarBlock( Field, Value )
 
-   ::OnChange    := ChangeProcedure
+   ASSIGN ::OnLostFocus VALUE lostfocus TYPE "B"
+   ASSIGN ::OnGotFocus  VALUE gotfocus  TYPE "B"
+   ASSIGN ::OnChange    VALUE ChangeProcedure TYPE "B"
 
 Return Self
 

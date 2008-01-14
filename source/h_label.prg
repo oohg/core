@@ -1,5 +1,5 @@
 /*
- * $Id: h_label.prg,v 1.23 2007-11-03 18:24:57 declan2005 Exp $
+ * $Id: h_label.prg,v 1.24 2008-01-14 00:58:35 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -162,7 +162,7 @@ Local ControlHandle, nStyle, nStyleEx
    EndIf
 
    ASSIGN ::AutoSize VALUE autosize TYPE "L" DEFAULT ::AutoSize
-   ::OnClick := ProcedureName
+   ASSIGN ::OnClick  VALUE ProcedureName TYPE "B"
 
 Return Self
 
@@ -219,7 +219,7 @@ Return WindowStyleFlag( ::hWnd, 0x3F, nAlign )
 #include <hbapi.h>
 #include <windows.h>
 #include <commctrl.h>
-#include "../include/oohg.h"
+#include "oohg.h"
 
 static WNDPROC lpfnOldWndProc = 0;
 

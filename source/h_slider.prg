@@ -1,5 +1,5 @@
 /*
- * $Id: h_slider.prg,v 1.17 2007-12-25 02:47:14 guerra000 Exp $
+ * $Id: h_slider.prg,v 1.18 2008-01-14 00:58:35 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -157,7 +157,7 @@ Local ControlHandle, nStyle
       ::Value := Int( ( ::RangeMax - ::RangeMin ) / 2 )
    EndIf
 
-   ::OnChange   :=  Change
+   ASSIGN ::OnChange    VALUE Change    TYPE "B"
 
 Return Self
 
@@ -239,7 +239,7 @@ Return NIL
 #include "hbapi.h"
 #include <windows.h>
 #include <commctrl.h>
-#include "../include/oohg.h"
+#include "oohg.h"
 
 static WNDPROC lpfnOldWndProc = 0;
 

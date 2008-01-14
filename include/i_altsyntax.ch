@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.40 2008-01-06 02:19:11 guerra000 Exp $
+ * $Id: i_altsyntax.ch,v 1.41 2008-01-14 00:58:34 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -307,7 +307,9 @@ MEMVAR _OOHG_ActiveControlShowHeaders
         _OOHG_ActiveControlOnRDblClick   := Nil          ;;
         _OOHG_ActiveControlOnMDblClick   := Nil          ;;
         _OOHG_ActiveControlOnLostFocus   := Nil          ;;
-        _OOHG_ActiveControlOnGotFocus    := Nil
+        _OOHG_ActiveControlOnGotFocus    := Nil          ;;
+        _OOHG_ActiveControlOnChange      := Nil          ;;
+        _OOHG_ActiveControlOnEnter       := nil
 
 #xcommand PARENT <of> ;
         =>;
@@ -594,11 +596,9 @@ List Box
 	=>;
         _OOHG_ClearActiveControlInfo( <(name)> ) ;;
         _OOHG_ActiveControlItems         := Nil          ;;
-        _OOHG_ActiveControlOnChange              := Nil          ;;
         _OOHG_ActiveControlMultiSelect   := .f.          ;;
         _OOHG_ActiveControlBreak         := .f.          ;;
-        _OOHG_ActiveControlSort          := .f.          ;;
-        _OOHG_ActiveControlOnEnter       := nil
+        _OOHG_ActiveControlSort          := .f.
 
 #xcommand SORT	<sort>	;
 	=>;
@@ -821,7 +821,6 @@ Radio Group
 	=>;
         _OOHG_ClearActiveControlInfo( <(name)> ) ;;
         _OOHG_ActiveControlOptions               := Nil          ;;
-        _OOHG_ActiveControlOnChange              := Nil          ;;
         _OOHG_ActiveControlSpacing               := Nil          ;;
         _OOHG_ActiveControlTransparent           := .f.          ;;
         _OOHG_ActiveControlAutoSize              := .f.          ;;
@@ -878,7 +877,6 @@ Slider
         _OOHG_ClearActiveControlInfo( <(name)> ) ;;
         _OOHG_ActiveControlRangeLow              := Nil          ;;
         _OOHG_ActiveControlRangeHigh             := Nil          ;;
-        _OOHG_ActiveControlOnChange              := Nil          ;;
         _OOHG_ActiveControlVertical              := .f.          ;;
         _OOHG_ActiveControlNoTicks               := .f.          ;;
         _OOHG_ActiveControlBoth          := .f.          ;;
@@ -940,8 +938,6 @@ Text Box
         _OOHG_ActiveControlLowerCase     := .f.          ;;
         _OOHG_ActiveControlNumeric       := .f.          ;;
         _OOHG_ActiveControlPassword      := .f.          ;;
-        _OOHG_ActiveControlOnChange      := Nil          ;;
-        _OOHG_ActiveControlOnEnter       := Nil          ;;
         _OOHG_ActiveControlRightAlign    := .f.          ;;
         _OOHG_ActiveControlReadonly      := .f.          ;;
         _OOHG_ActiveControlDateType      := .f.          ;;
@@ -1042,8 +1038,7 @@ Month Calendar
         _OOHG_ClearActiveControlInfo( <(name)> ) ;;
         _OOHG_ActiveControlNoToday               := .f.          ;;
         _OOHG_ActiveControlNoTodayCircle := .f.          ;;
-        _OOHG_ActiveControlWeekNumbers   := .f.          ;;
-        _OOHG_ActiveControlOnChange              := Nil
+        _OOHG_ActiveControlWeekNumbers   := .f.
 
 #xcommand NOTODAY	<notoday>;
 	=>;
@@ -1220,7 +1215,6 @@ Check Box/Button
 	=>;
         _OOHG_ClearActiveControlInfo( <(name)> ) ;;
         _OOHG_ActiveControlCaption               := Nil          ;;
-        _OOHG_ActiveControlOnChange              := Nil          ;;
         _OOHG_ActiveControlTransparent   := .f.          ;;
         _OOHG_ActiveControlAutoSize   := .f.          ;;
         _OOHG_ActiveControlField             := Nil
@@ -1230,7 +1224,6 @@ Check Box/Button
 	=>;
         _OOHG_ClearActiveControlInfo( <(name)> ) ;;
         _OOHG_ActiveControlCaption               := Nil          ;;
-        _OOHG_ActiveControlOnChange              := Nil          ;;
         _OOHG_ActiveControlPicture           := Nil      ;;
         _OOHG_ActiveControlField             := Nil
 
@@ -1317,8 +1310,6 @@ Combo Box
         _OOHG_ClearActiveControlInfo( <(name)> ) ;;
         _OOHG_ActiveControlItems         := Nil          ;;
         _OOHG_ActiveControlSort          := .f.          ;;
-        _OOHG_ActiveControlOnChange      := Nil          ;;
-        _OOHG_ActiveControlOnEnter       := Nil          ;;
         _OOHG_ActiveControlItemSource   := Nil           ;;
         _OOHG_ActiveControlValueSource  := Nil           ;;
         _OOHG_ActiveControlBreak         := .f.          ;;
@@ -1406,9 +1397,7 @@ Datepicker
         _OOHG_ActiveControlShowNone              := .f.          ;;
         _OOHG_ActiveControlUpDown                := .f.          ;;
         _OOHG_ActiveControlRightAlign    := .f.          ;;
-        _OOHG_ActiveControlField             := Nil          ;;
-        _OOHG_ActiveControlOnChange              := Nil          ;;
-        _OOHG_ActiveControlOnEnter       := Nil
+        _OOHG_ActiveControlField             := Nil
 
 
 #xcommand SHOWNONE  <shownone> ;
@@ -1460,10 +1449,8 @@ Datepicker
         _OOHG_ClearActiveControlInfo( <(name)> ) ;;
         _OOHG_ActiveControlShowNone              := .f.          ;;
         _OOHG_ActiveControlUpDown                := .f.          ;;
-        _OOHG_ActiveControlRightAlign    := .f.          ;;
-        _OOHG_ActiveControlField             := Nil          ;;
-        _OOHG_ActiveControlOnChange              := Nil          ;;
-        _OOHG_ActiveControlOnEnter       := Nil
+        _OOHG_ActiveControlRightAlign            := .f.          ;;
+        _OOHG_ActiveControlField                 := Nil
 
 
 #xcommand END TIMEPICKER ;
@@ -1506,7 +1493,6 @@ Edit Box
         _OOHG_ClearActiveControlInfo( <(name)> ) ;;
         _OOHG_ActiveControlReadonly      := .f.          ;;
         _OOHG_ActiveControlMaxLength     := Nil          ;;
-        _OOHG_ActiveControlOnChange      := Nil          ;;
         _OOHG_ActiveControlBreak         := .f.          ;;
         _OOHG_ActiveControlField         := Nil          ;;
         _OOHG_ActiveControlNoVScroll     := .f.          ;;
@@ -1571,9 +1557,8 @@ Rich Edit Box
         _OOHG_ClearActiveControlInfo( <(name)> ) ;;
         _OOHG_ActiveControlReadonly              := .f.          ;;
         _OOHG_ActiveControlMaxLength             := Nil          ;;
-        _OOHG_ActiveControlOnChange              := Nil          ;;
-        _OOHG_ActiveControlBreak         := .f.          ;;
-        _OOHG_ActiveControlField             := Nil
+        _OOHG_ActiveControlBreak                 := .f.          ;;
+        _OOHG_ActiveControlField                 := Nil
 
 #xcommand END RICHEDITBOX ;
 	=>;
@@ -1699,8 +1684,7 @@ Label
 
 #xcommand DEFINE IPADDRESS <name> ;
 	=>;
-        _OOHG_ClearActiveControlInfo( <(name)> ) ;;
-        _OOHG_ActiveControlOnChange              := Nil
+        _OOHG_ClearActiveControlInfo( <(name)> )
 
 #xcommand END IPADDRESS ;
 =>;
@@ -1738,7 +1722,6 @@ Grid
         _OOHG_ActiveControlHeaders               := Nil          ;;
         _OOHG_ActiveControlWidths                := Nil          ;;
         _OOHG_ActiveControlItems         := Nil          ;;
-        _OOHG_ActiveControlOnChange              := Nil          ;;
         _OOHG_ActiveControlOnHeadClick   := Nil          ;;
         _OOHG_ActiveControlNoLines               := .f.          ;;
         _OOHG_ActiveControlImage         := Nil          ;;
@@ -1761,8 +1744,7 @@ Grid
         _OOHG_ActiveControlValidMessages         := Nil          ;;
         _OOHG_ActiveControlEditCell              := Nil          ;;
         _OOHG_ActiveControlWhen                  := nil          ;;
-        _OOHG_ActiveControlShowHeaders           := nil          ;;
-        _OOHG_ActiveControlOnEnter               := nil
+        _OOHG_ActiveControlShowHeaders           := nil
 
 #xcommand ONAPPEND    <onappend>;
 	=>;
@@ -1830,7 +1812,6 @@ BROWSE
         _OOHG_ClearActiveControlInfo( <(name)> ) ;;
         _OOHG_ActiveControlHeaders               := Nil          ;;
         _OOHG_ActiveControlWidths                := Nil          ;;
-        _OOHG_ActiveControlOnChange              := Nil          ;;
         _OOHG_ActiveControlOnHeadClick   := Nil          ;;
         _OOHG_ActiveControlNoLines               := .f.          ;;
         _OOHG_ActiveControlImage         := Nil          ;;
@@ -1855,8 +1836,7 @@ BROWSE
         _OOHG_ActiveControlEditCell              := Nil          ;;
         _OOHG_ActiveControlEditControls          := Nil          ;;
         _OOHG_ActiveControlReplaceFields         := Nil          ;;
-        _OOHG_ActiveControlShowHeaders           := nil          ;;
-        _OOHG_ActiveControlOnEnter               := nil
+        _OOHG_ActiveControlShowHeaders           := nil
 
 #xcommand END BROWSE ;
 	=>;
@@ -1983,7 +1963,6 @@ Spinner
         _OOHG_ClearActiveControlInfo( <(name)> ) ;;
         _OOHG_ActiveControlRangeLow      := Nil          ;;
         _OOHG_ActiveControlRangeHigh     := Nil          ;;
-        _OOHG_ActiveControlOnChange      := Nil          ;;
         _OOHG_ActiveControlWrap          := .F.          ;;
         _OOHG_ActiveControlReadOnly      := .F.          ;;
         _OOHG_ActiveControlIncrement     := Nil          ;;

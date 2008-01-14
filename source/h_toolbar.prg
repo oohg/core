@@ -1,5 +1,5 @@
 /*
- * $Id: h_toolbar.prg,v 1.22 2007-11-06 02:13:18 declan2005 Exp $
+ * $Id: h_toolbar.prg,v 1.23 2008-01-14 00:58:35 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -137,9 +137,9 @@ Local ControlHandle, id, lSplitActive
    ::Register( ControlHandle, ControlName, , , ToolTip, Id )
    ::SetFont( , , bold, italic, underline, strikeout )
 
-   ::OnClick := ProcedureName
-
    ::ContainerhWndValue := ::hWnd
+
+   ASSIGN ::OnClick     VALUE ProcedureName TYPE "B"
 
 Return Self
 
@@ -257,7 +257,7 @@ RETURN ::Super:Events( hWnd, nMsg, wParam, lParam )
 CLASS TToolButton FROM TControl
    DATA Type      INIT "TOOLBUTTON" READONLY
    DATA Position  INIT 0
-   
+
    DATA lAdjust   INIT .F.
 
    METHOD Define
@@ -298,16 +298,17 @@ Empty( FLAT )
 
    ::Register( ControlHandle, ControlName, , , ToolTip, Id )
 
-   ::OnClick := ProcedureName
    ::Position  :=  nPos
-   ::OnLostFocus := LostFocus
-   ::OnGotFocus :=  GotFocus
    ::Caption := Caption
 
    nPos := At( '&', Caption )
    If nPos > 0 .AND. nPos < LEN( Caption )
       DEFINE HOTKEY 0 PARENT ( ::Parent ) KEY "ALT+" + SubStr( Caption, nPos + 1, 1 ) ACTION IF( ::Enabled, ::Click(), )
 	EndIf
+
+   ASSIGN ::OnClick     VALUE ProcedureName TYPE "B"
+   ASSIGN ::OnLostFocus VALUE lostfocus TYPE "B"
+   ASSIGN ::OnGotFocus  VALUE gotfocus  TYPE "B"
 
 Return Self
 
@@ -360,7 +361,7 @@ Return ::Super:Events_Notify( wParam, lParam )
 #include "winreg.h"
 #include "tchar.h"
 #include <stdlib.h>
-#include "../include/oohg.h"
+#include "oohg.h"
 
 static WNDPROC lpfnOldWndProc = 0;
 

@@ -1,5 +1,5 @@
 /*
- * $Id: h_richeditbox.prg,v 1.14 2008-01-13 22:51:39 guerra000 Exp $
+ * $Id: h_richeditbox.prg,v 1.15 2008-01-14 00:58:35 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -131,13 +131,13 @@ Local ControlHandle, nStyle
    ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
 
-   ::Value := ::SetVarBlock( Field, Value )
+   ::SetVarBlock( Field, Value )
 
    ::BackColor := ::BackColor
 
-   ::OnLostFocus := LostFocus
-   ::OnGotFocus :=  GotFocus
-   ::OnChange   :=  Change
+   ASSIGN ::OnLostFocus VALUE lostfocus TYPE "B"
+   ASSIGN ::OnGotFocus  VALUE gotfocus  TYPE "B"
+   ASSIGN ::OnChange    VALUE Change    TYPE "B"
 
 Return Self
 
@@ -148,7 +148,7 @@ Return Self
 #include <windows.h>
 #include <commctrl.h>
 #include <richedit.h>
-#include "../include/oohg.h"
+#include "oohg.h"
 
 static WNDPROC lpfnOldWndProc = 0;
 

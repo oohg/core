@@ -1,5 +1,5 @@
 /*
- * $Id: h_monthcal.prg,v 1.7 2007-12-25 02:47:14 guerra000 Exp $
+ * $Id: h_monthcal.prg,v 1.8 2008-01-14 00:58:35 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -114,7 +114,6 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
 Local ControlHandle
 
    DEFAULT value     TO date()
-   DEFAULT change    TO ""
    DEFAULT invisible TO FALSE
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize,,,, lRtl )
@@ -125,8 +124,7 @@ Local ControlHandle
    ::SizePos( y, x, w, h )
    ::SetFont( , , bold, italic, underline, strikeout )
 
-   ::OnChange   :=  Change
-
+   ASSIGN ::OnChange    VALUE Change    TYPE "B"
    ::Value := value
 
 Return Self

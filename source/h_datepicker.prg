@@ -1,5 +1,5 @@
 /*
- * $Id: h_datepicker.prg,v 1.12 2008-01-13 22:51:39 guerra000 Exp $
+ * $Id: h_datepicker.prg,v 1.13 2008-01-14 00:58:34 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -113,12 +113,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
 *-----------------------------------------------------------------------------*
 Local ControlHandle
 
-   DEFAULT value     TO ctod ('  /  /  ')
    DEFAULT w         TO 120
    DEFAULT h         TO 24
-   DEFAULT change    TO ""
-   DEFAULT lostfocus TO ""
-   DEFAULT gotfocus  TO ""
    DEFAULT invisible TO FALSE
    DEFAULT notabstop TO FALSE
 
@@ -130,12 +126,12 @@ Local ControlHandle
    ::SetFont( , , bold, italic, underline, strikeout )
    ::SizePos( y, x, w, h )
 
-   ::Value := ::SetVarBlock( Field, Value )
+   ::SetVarBlock( Field, Value )
 
-   ::OnClick := Enter
-   ::OnLostFocus := LostFocus
-   ::OnGotFocus :=  GotFocus
-   ::OnChange   :=  Change
+   ASSIGN ::OnLostFocus VALUE lostfocus TYPE "B"
+   ASSIGN ::OnGotFocus  VALUE gotfocus  TYPE "B"
+   ASSIGN ::OnChange    VALUE Change    TYPE "B"
+   ASSIGN ::OnEnter     value Enter     TYPE "B"
 
 Return Self
 
@@ -159,9 +155,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TDatePick
 Local nNotify := GetNotifyCode( lParam )
 
    If nNotify == DTN_DATETIMECHANGE
-
       ::DoEvent( ::OnChange, "CHANGE" )
-
       Return nil
 
    EndIf
@@ -186,12 +180,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
 *-----------------------------------------------------------------------------*
 Local ControlHandle
 
-   DEFAULT value     TO time()
    DEFAULT w         TO 120
    DEFAULT h         TO 24
-   DEFAULT change    TO ""
-   DEFAULT lostfocus TO ""
-   DEFAULT gotfocus  TO ""
    DEFAULT invisible TO FALSE
    DEFAULT notabstop TO FALSE
 ////   DEFAULT cTimeFormat  TO "HH:mm:ss"
@@ -204,12 +194,12 @@ Local ControlHandle
    ::SetFont( , , bold, italic, underline, strikeout )
    ::SizePos( y, x, w, h )
 
-   ::Value := ::SetVarBlock( Field, Value )
+   ::SetVarBlock( Field, Value )
 
-   ::OnClick := Enter
-   ::OnLostFocus := LostFocus
-   ::OnGotFocus :=  GotFocus
-   ::OnChange   :=  Change
+   ASSIGN ::OnLostFocus VALUE lostfocus TYPE "B"
+   ASSIGN ::OnGotFocus  VALUE gotfocus  TYPE "B"
+   ASSIGN ::OnChange    VALUE Change    TYPE "B"
+   ASSIGN ::OnEnter     value Enter     TYPE "B"
 
 Return Self
 
@@ -232,9 +222,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TTimePick
 Local nNotify := GetNotifyCode( lParam )
 
    If nNotify == DTN_DATETIMECHANGE
-
       ::DoEvent( ::OnChange, "CHANGE" )
-
       Return nil
 
    EndIf

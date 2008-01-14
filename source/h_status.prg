@@ -1,5 +1,5 @@
 /*
- * $Id: h_status.prg,v 1.27 2008-01-13 22:51:40 guerra000 Exp $
+ * $Id: h_status.prg,v 1.28 2008-01-14 00:58:35 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -152,7 +152,6 @@ Local ControlHandle
    ::Register( ControlHandle, ControlName, , , ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
 
-   ::OnClick := ProcedureName
    ::Caption := Caption
    IF VALTYPE( lNoAutoAdjust ) == "L"
       ::lAutoAdjust := ! lNoAutoAdjust
@@ -177,6 +176,8 @@ Local ControlHandle
 
    _OOHG_AddFrame( Self )
    ::ContainerhWndValue := ::hWnd
+
+   ASSIGN ::OnClick     VALUE ProcedureName TYPE "B"
 
 Return Self
 
@@ -385,8 +386,7 @@ Return _OOHG_ActiveMessageBar:AddItem( Caption, Width, action, ToolTip, icon, cs
 #include <commctrl.h>
 #include "hbapi.h"
 #include "hbstack.h"
-
-#include "../include/oohg.h"
+#include "oohg.h"
 
 static WNDPROC lpfnOldWndProc = 0;
 

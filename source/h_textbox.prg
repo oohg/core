@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.46 2008-01-13 22:51:40 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.47 2008-01-14 00:58:35 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -185,12 +185,12 @@ local break
    ::Register( nControlHandle, cControlName, HelpId,, cToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
 
-   ::Value := ::SetVarBlock( Field, cValue )
+   ::SetVarBlock( Field, cValue )
 
-   ::OnLostFocus := uLostFocus
-   ::OnGotFocus  := uGotFocus
-   ::OnChange    := uChange
-   ::OnEnter     := uEnter
+   ASSIGN ::OnLostFocus VALUE uLostFocus TYPE "B"
+   ASSIGN ::OnGotFocus  VALUE uGotFocus  TYPE "B"
+   ASSIGN ::OnChange    VALUE uChange    TYPE "B"
+   ASSIGN ::OnEnter     value uEnter     TYPE "B"
    ::postBlock   := bValid
    ASSIGN ::lAutoSkip   VALUE lAutoSkip  TYPE "L"
    ASSIGN ::nOnFocusPos VALUE OnFocusPos TYPE "N"
@@ -945,102 +945,8 @@ Local cText, nPos, nCursorPos, lChange
 Return ::Super:Events_Command( wParam )
 
 
-/*
-*-----------------------------------------------------------------------------*
-CLASS TTextMasked FROM TTextPicture
-*-----------------------------------------------------------------------------*
-   DATA Type          INIT "MASKEDTEXT" READONLY
-
-   METHOD Define
-ENDCLASS
-
-*------------------------------------------------------------------------------*
-METHOD Define( ControlName, ParentForm, x, y, inputmask, width, value, ;
-               fontname, fontsize, tooltip, lostfocus, gotfocus, change, ;
-               height, enter, rightalign, HelpId, Format, bold, italic, ;
-               underline, strikeout, field, backcolor, fontcolor, readonly, ;
-               invisible, notabstop, lRtl, lAutoSkip, lNoBorder, OnFocusPos, ;
-               lDisabled, bValid ) CLASS TTextMasked
-*------------------------------------------------------------------------------*
-
-   If ValType( Value ) == "U"
-      Value := 0
-   EndIf
-
-   rightalign := .T.
-
-   IF VALTYPE( Format ) $"CM" .AND. ! Empty( Format )
-      Format := "@" + Alltrim( Format ) + " "
-   Else
-      Format := ""
-   ENDIF
-
-   IF ! VALTYPE( inputmask ) $ "CM" .OR. Empty( inputmask )
-      inputmask := ""
-   ENDIF
-
-*         if c!='9' .and.  c!='$' .and. c!='*' .and. c!='.' .and. c!= ','  .and. c != ' ' .and. c!='€'
-*         MsgOOHGError("@...TEXTBOX: Wrong InputMask Definition" )
-*      EndIf
-
-   ::Super:Define( ControlName, ParentForm, x, y, width, height, value, ;
-               Format + inputmask, fontname, fontsize, tooltip, lostfocus, ;
-               gotfocus, , enter, rightalign, HelpId, readonly, bold, ;
-               italic, underline, strikeout, field, backcolor, fontcolor, ;
-               invisible, notabstop, lRtl, lAutoSkip, lNoBorder, OnFocusPos, ;
-               lDisabled, bValid )
-
-   If ::DataType == "N"
-      ::PictureMask := StrTran( ::PictureMask, ",", "" )
-      ::nDecimal    := AT( ".", ::PictureMask )
-      ::ValidMask   := ValidatePicture( ::PictureMask )
-      ::Value       := value
-      ::lInsert     := .F.
-   Endif
-
-   ::OnChange := Change
-
-Return Self
 
 
-*-----------------------------------------------------------------------------*
-CLASS TTextCharMask FROM TTextPicture
-*-----------------------------------------------------------------------------*
-   DATA Type          INIT "CHARMASKTEXT" READONLY
-
-   METHOD Define
-ENDCLASS
-
-*------------------------------------------------------------------------------*
-METHOD Define( ControlName, ParentForm, x, y, inputmask, width, value, ;
-               fontname, fontsize, tooltip, lostfocus, gotfocus, change, ;
-               height, enter, rightalign, HelpId, bold, italic, underline, ;
-               strikeout, field, backcolor, fontcolor, date, readonly, ;
-               invisible, notabstop, lRtl, lAutoSkip, lNoBorder, OnFocusPos, ;
-               lDisabled, bValid ) CLASS TTextCharMask
-*------------------------------------------------------------------------------*
-
-   IF HB_IsLogical( date ) .AND. date
-      ::lInsert := .F.
-      inputmask := StrTran( StrTran( StrTran( StrTran( StrTran( StrTran( SET( _SET_DATEFORMAT ), "Y", "9" ), "y", "9" ), "M", "9" ), "m", "9" ), "D", "9" ), "d", "9" )
-      IF VALTYPE( Value ) $"CM"
-         Value := CTOD( Value )
-      ElseIf !HB_IsDate( Value )
-         Value := STOD( "" )
-      ENDIF
-   ElseIf ValType( Value ) == "U"
-      Value := ""
-   ENDIF
-
-   ::Super:Define( ControlName, ParentForm, x, y, width, height, value, ;
-               inputmask, fontname, fontsize, tooltip, lostfocus, ;
-               gotfocus, change, enter, rightalign, HelpId, readonly, bold, ;
-               italic, underline, strikeout, field, backcolor, fontcolor, ;
-               invisible, notabstop, lRtl, lAutoSkip, lNoBorder, OnFocusPos, ;
-               lDisabled, bValid )
-
-Return Self
-*/
 
 *-----------------------------------------------------------------------------*
 FUNCTION DefineTextBox( cControlName, cParentForm, x, y, Width, Height, ;

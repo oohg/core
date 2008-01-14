@@ -1,5 +1,5 @@
 /*
- * $Id: h_textarray.prg,v 1.13 2007-08-06 00:20:51 guerra000 Exp $
+ * $Id: h_textarray.prg,v 1.14 2008-01-14 00:58:35 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -111,9 +111,9 @@ Local ControlHandle, nStyle, nStyleEx
 *      RedrawWindowControlRect( ::ContainerhWnd, ::ContainerRow, ::ContainerCol, ::ContainerRow + ::Height, ::ContainerCol + ::Width )
 *   EndIf
 
-   ::OnClick := ProcedureName
-
    DEFINE TIMER 0 OF ( Self ) INTERVAL 500 ACTION TTextArray_CursorTimer( Self )
+
+   ASSIGN ::OnClick     VALUE ProcedureName TYPE "B"
 
 Return Self
 
@@ -135,7 +135,7 @@ Return Nil
 #include "hbstack.h"
 #include <windows.h>
 #include <commctrl.h>
-#include "../include/oohg.h"
+#include "oohg.h"
 
 typedef struct {
    BYTE     character;

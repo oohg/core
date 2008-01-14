@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.174 2008-01-13 22:51:40 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.175 2008-01-14 00:58:35 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -136,7 +136,7 @@ STATIC _OOHG_bKeyDown := nil         // Application-wide WM_KEYDOWN handler
 #include <windows.h>
 #include <commctrl.h>
 #include <olectl.h>
-#include "../include/oohg.h"
+#include "oohg.h"
 
 #ifdef HB_ITEM_NIL
    #define hb_dynsymSymbol( pDynSym )        ( ( pDynSym )->pSymbol )
@@ -1724,14 +1724,14 @@ Local Formhandle, aClientRect
    ::OnRelease := ReleaseProcedure
    ::OnInit := InitProcedure
    ::OnSize := SizeProcedure
-   ::OnClick := ClickProcedure
+   ASSIGN ::OnClick     VALUE ClickProcedure TYPE "B"
    ::OnRClick := RClickProcedure
    ::OnMClick := MClickProcedure
    ::OnDblClick := DblClickProcedure
    ::OnRDblClick := RDblClickProcedure
    ::OnMDblClick := MDblClickProcedure
-   ::OnGotFocus := GotFocus
-   ::OnLostFocus := LostFocus
+   ASSIGN ::OnLostFocus VALUE LostFocus TYPE "B"
+   ASSIGN ::OnGotFocus  VALUE GotFocus  TYPE "B"
    ::OnPaint := PaintProcedure
    ::OnMouseDrag := MouseDragProcedure
    ::OnMouseMove := MouseMoveProcedure
