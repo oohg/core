@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.92 2008-01-14 00:58:34 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.93 2008-01-14 02:12:54 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1622,7 +1622,6 @@ METHOD RefreshData() CLASS TControl
    IF HB_IsBlock( ::Block )
       ::Value := _OOHG_EVAL( ::Block )
    ENDIF
-   ::Refresh()
 Return nil
 
 *-----------------------------------------------------------------------------*

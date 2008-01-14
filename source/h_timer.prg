@@ -1,5 +1,5 @@
 /*
- * $Id: h_timer.prg,v 1.5 2006-11-26 23:07:36 guerra000 Exp $
+ * $Id: h_timer.prg,v 1.6 2008-01-14 02:12:54 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -148,3 +148,32 @@ METHOD Release() CLASS TTimer
    EndIf
    ::lEnabled := .F.
 RETURN ::Super:Release()
+
+EXTERN InitTimer, KillTimer
+
+#pragma BEGINDUMP
+#define _WIN32_IE      0x0500
+#define HB_OS_WIN_32_USED
+#define _WIN32_WINNT   0x0400
+#include <shlobj.h>
+
+#include <windows.h>
+#include <commctrl.h>
+#include "hbapi.h"
+#include "hbvm.h"
+#include "hbstack.h"
+#include "hbapiitm.h"
+#include "winreg.h"
+#include "tchar.h"
+#include "oohg.h"
+
+HB_FUNC( INITTIMER )
+{
+   SetTimer( HWNDparam( 1 ),( UINT ) hb_parni( 2 ), ( UINT ) hb_parni( 3 ), ( TIMERPROC ) NULL );
+}
+
+HB_FUNC( KILLTIMER )
+{
+   KillTimer( HWNDparam( 1 ), ( UINT ) hb_parni( 2 ) );
+}
+#pragma ENDDUMP

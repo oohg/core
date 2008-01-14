@@ -1,5 +1,5 @@
 /*
- * $Id: h_help.prg,v 1.4 2007-11-08 19:20:54 declan2005 Exp $
+ * $Id: h_help.prg,v 1.5 2008-01-14 02:12:54 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -149,6 +149,51 @@ Local ret:=0
 Return ret
 
 *-------------------------------------------------------------
-Function GetActiveHelpFile()   
+Function GetActiveHelpFile()
 *-------------------------------------------------------------
-Return _OOHG_ActiveHelpFile 
+Return _OOHG_ActiveHelpFile
+
+EXTERN WINHELP, WINHLP
+
+#pragma BEGINDUMP
+#include <windows.h>
+#include "hbapi.h"
+#include "hbapiitm.h"
+#if ! defined( __MINGW32__ )
+   #include <Htmlhelp.h>
+#endif
+#include <commctrl.h>
+#include "oohg.h"
+
+HB_FUNC( WINHELP )
+{
+   DWORD context;
+   UINT styl;
+   BOOL rezult;
+
+   switch( hb_parni( 4 ) )
+   {
+//      case 0:  styl = HELP_CONTENTS ;     context = 0 ;             break;
+      case 0:  styl = HELP_FINDER ;       context = 0 ;             break;
+      case 1:  styl = HELP_CONTEXT ;      context = hb_parni( 5 ) ; break;
+      case 2:  styl = HELP_CONTEXTPOPUP ; context = hb_parni( 5 ) ; break;
+      default: styl = HELP_CONTENTS ;     context = 0 ;             break;
+   }
+
+   if( hb_parni( 3 ) )
+   {
+//      HtmlHelp( HWNDparam( 1 ),  hb_parc( 2 ), HH_DISPLAY_TOPIC    ,0);
+      rezult = WinHelp( HWNDparam( 1 ), ( LPCTSTR ) hb_parc( 2 ), styl, context );
+   }
+   else
+   {
+      rezult = WinHelp( HWNDparam( 1 ), ( LPCTSTR ) hb_parc( 2 ), styl, context );
+   }
+   hb_retni( rezult );
+}
+
+HB_FUNC( WINHLP )
+{
+   HB_FUNCNAME( WINHELP )();
+}
+#pragma ENDDUMP

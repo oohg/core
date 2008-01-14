@@ -1,5 +1,5 @@
 /*
- * $Id: h_ini.prg,v 1.2 2005-08-26 06:04:16 guerra000 Exp $
+ * $Id: h_ini.prg,v 1.3 2008-01-14 02:12:54 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -232,3 +232,59 @@ FUNCTION CToA( cArray )
       cArray := SubStr( cArray, 6 + nLen )
    END
 RETURN aArray
+
+EXTERN GETPRIVATEPROFILESTRING, WRITEPRIVATEPROFILESTRING, DELINIENTRY, DELINISECTION
+
+#pragma BEGINDUMP
+#define HB_OS_WIN_32_USED
+#define _WIN32_WINNT   0x0400
+#include <windows.h>
+#include <commctrl.h>
+#include "hbapi.h"
+#include "hbapiitm.h"
+#include "oohg.h"
+
+HB_FUNC (GETPRIVATEPROFILESTRING )
+{
+   TCHAR bBuffer[ 1024 ] = { 0 };
+   DWORD dwLen ;
+   char * lpSection = hb_parc( 1 );
+   char * lpEntry = ISCHAR(2) ? hb_parc( 2 ) : NULL ;
+   char * lpDefault = hb_parc( 3 );
+   char * lpFileName = hb_parc( 4 );
+   dwLen = GetPrivateProfileString( lpSection , lpEntry ,lpDefault , bBuffer, sizeof( bBuffer ) , lpFileName);
+   if( dwLen )
+     hb_retclen( ( char * ) bBuffer, dwLen );
+   else
+      hb_retc( lpDefault );
+}
+
+HB_FUNC( WRITEPRIVATEPROFILESTRING )
+{
+   char * lpSection = hb_parc( 1 );
+   char * lpEntry = ISCHAR(2) ? hb_parc( 2 ) : NULL ;
+   char * lpData = ISCHAR(3) ? hb_parc( 3 ) : NULL ;
+   char * lpFileName= hb_parc( 4 );
+
+   if ( WritePrivateProfileString( lpSection , lpEntry , lpData , lpFileName ) )
+      hb_retl( TRUE ) ;
+   else
+      hb_retl(FALSE);
+}
+
+HB_FUNC( DELINIENTRY )
+{
+   hb_retl( WritePrivateProfileString( hb_parc( 1 ),         // Section
+                                       hb_parc( 2 ),         // Entry
+                                       NULL,                 // String
+                                       hb_parc( 3 ) ) );     // INI File
+}
+
+HB_FUNC( DELINISECTION )
+{
+   hb_retl( WritePrivateProfileString( hb_parc( 1 ),       // Section
+                                       NULL,               // Entry
+                                       "",                 // String
+                                       hb_parc( 2 ) ) );   // INI File
+}
+#pragma ENDDUMP

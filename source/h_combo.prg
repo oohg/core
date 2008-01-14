@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.36 2008-01-13 22:51:39 guerra000 Exp $
+ * $Id: h_combo.prg,v 1.37 2008-01-14 02:12:54 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -285,7 +285,7 @@ RETURN ::lVisible
 METHOD RefreshData() CLASS TCombo
 *-----------------------------------------------------------------------------*
    ::Refresh()
-RETURN nil
+RETURN ::Super:RefreshData()
 
 *-----------------------------------------------------------------------------*
 METHOD FontColor( uColor ) CLASS TCombo
@@ -342,7 +342,7 @@ Return ::Super:Events_Command( wParam )
 #include <windows.h>
 #include <commctrl.h>
 #include <windowsx.h>
-#include "../include/oohg.h"
+#include "oohg.h"
 #define s_Super s_TLabel
 
 static WNDPROC lpfnOldWndProc = 0;

@@ -1,11 +1,35 @@
 /*
- * $Id: ChangeLog,v 1.485 2008-01-14 00:58:34 guerra000 Exp $
+ * $Id: ChangeLog,v 1.486 2008-01-14 02:12:54 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-01-13 19:51 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_combo.prg
+  * source/h_controlmisc.prg
+    * Removed ::Refresh() from TControl():RefreshData().
+  - source/c_crypt.c
+  - source/c_help.c
+  - source/c_ini.c
+  - source/c_timer.c
+  * source/common_make.bat
+  * source/h_crypt.prg
+  * source/h_help.prg
+  * source/h_ini.prg
+  * source/h_timer.prg
+  * source/makelib_bcc.bat
+  * source/makelib_mingw.bat
+    * Moved C code from c_crypt.c to h_crypt.prg file.
+    * Moved C code from c_help.c to h_help.prg file.
+    * Moved C code from c_ini.c to h_ini.prg file.
+    * Moved C code from c_timer.c to h_timer.prg file.
+    - c_crypt.c removed.
+    - c_help.c removed.
+    - c_ini.c removed.
+    - c_timer.c removed.
 
 2008-01-13 18:52 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_button.prg
