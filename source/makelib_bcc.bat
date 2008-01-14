@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: makelib_bcc.bat,v 1.10 2008-01-14 02:12:54 guerra000 Exp $
+rem $Id: makelib_bcc.bat,v 1.11 2008-01-14 02:44:23 guerra000 Exp $
 rem
 cls
 
@@ -21,7 +21,11 @@ if errorlevel 1 goto EXIT1
 
 SET OOHG_X_FLAGS=-c -O2 -tW -tWM -d -a8 -OS -5 -6 -I%hg_hrb%\include;%hg_bcc%\include;%hg_root%\include; -L%hg_hrb%\lib;%hg_bcc%\lib;
 
-for %%a in (%HG_FILES_PRG% %HG_FILES_C%) do if not errorlevel 1 %hg_bcc%\bin\bcc32 %OOHG_X_FLAGS% %%a.c
+for %%a in (%HG_FILES1_PRG%) do if not errorlevel 1 %hg_bcc%\bin\bcc32 %OOHG_X_FLAGS% %%a.c
+if errorlevel 1 goto EXIT2
+for %%a in (%HG_FILES2_PRG%) do if not errorlevel 1 %hg_bcc%\bin\bcc32 %OOHG_X_FLAGS% %%a.c
+if errorlevel 1 goto EXIT2
+for %%a in (%HG_FILES_C%)    do if not errorlevel 1 %hg_bcc%\bin\bcc32 %OOHG_X_FLAGS% %%a.c
 if errorlevel 1 goto EXIT2
 if exist winprint.c  %hg_bcc%\bin\bcc32 %OOHG_X_FLAGS% winprint.c
 if errorlevel 1 goto EXIT2
@@ -51,5 +55,6 @@ if exist winprint.c  del winprint.c
 if exist miniprint.c del miniprint.c
 
 SET OOHG_X_FLAGS=
-SET HG_FILES_PRG=
+SET HG_FILES1_PRG=
+SET HG_FILES2_PRG=
 SET HG_FILES_C=

@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: makelib_pc.bat,v 1.2 2007-11-05 04:36:06 guerra000 Exp $
+rem $Id: makelib_pc.bat,v 1.3 2008-01-14 02:44:23 guerra000 Exp $
 rem
 cls
 
@@ -21,7 +21,11 @@ if errorlevel 1 goto EXIT1
 
 SET OOHG_X_FLAGS= /Ze /Zx /Go /Tx86-coff /I%hg_pc%\include /I%hg_pc%\include\Win /I%hg_hrb%\include /I%hg_root%\include /D__WIN32__
 
-for %%a in (%HG_FILES_PRG% %HG_FILES_C%) do if not errorlevel 1 %hg_pc%\bin\pocc %OOHG_X_FLAGS% %%a.c
+for %%a in (%HG_FILES1_PRG%) do if not errorlevel 1 %hg_pc%\bin\pocc %OOHG_X_FLAGS% %%a.c
+if errorlevel 1 goto EXIT2
+for %%a in (%HG_FILES2_PRG%) do if not errorlevel 1 %hg_pc%\bin\pocc %OOHG_X_FLAGS% %%a.c
+if errorlevel 1 goto EXIT2
+for %%a in (%HG_FILES_C%)    do if not errorlevel 1 %hg_pc%\bin\pocc %OOHG_X_FLAGS% %%a.c
 if errorlevel 1 goto EXIT2
 if exist winprint.c  %hg_pc%\bin\pocc %OOHG_X_FLAGS% winprint.c
 if errorlevel 1 goto EXIT2
@@ -29,7 +33,9 @@ if exist miniprint.c %hg_pc%\bin\pocc %OOHG_X_FLAGS% miniprint.c
 if errorlevel 1 goto EXIT2
 
 ECHO /out:%hg_root%\lib\oohg.lib >%hg_root%\lib\oohg.def
-for %%a in (%HG_FILES_PRG% %HG_FILES_C%) do ECHO %%a.obj >>%hg_root%\lib\oohg.def
+for %%a in (%HG_FILES1_PRG%) do ECHO %%a.obj >>%hg_root%\lib\oohg.def
+for %%a in (%HG_FILES2_PRG%) do ECHO %%a.obj >>%hg_root%\lib\oohg.def
+for %%a in (%HG_FILES_C%)    do ECHO %%a.obj >>%hg_root%\lib\oohg.def
 %hg_pc%\bin\polib @%hg_root%\lib\oohg.def
 if errorlevel 2 goto EXIT3
 if exist winprint.obj  %hg_pc%\bin\polib /out:%hg_root%\lib\hbprinter winprint.obj
@@ -52,5 +58,6 @@ if exist winprint.c  del winprint.c
 if exist miniprint.c del miniprint.c
 
 SET OOHG_X_FLAGS=
-SET HG_FILES_PRG=
+SET HG_FILES1_PRG=
+SET HG_FILES2_PRG=
 SET HG_FILES_C=

@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: makelib_mingw.bat,v 1.11 2008-01-14 02:12:54 guerra000 Exp $
+rem $Id: makelib_mingw.bat,v 1.12 2008-01-14 02:44:23 guerra000 Exp $
 rem
 cls
 
@@ -24,7 +24,11 @@ SET OOHG_X_FLAGS=-Wall -mno-cygwin -O3 -c -I%hg_hrb%\include -I%hg_mgw%\include 
 SET _PATH2=%PATH%
 SET PATH=%hg_mgw%\bin;%PATH%
 
-for %%a in (%HG_FILES_PRG% %HG_FILES_C%) do if not errorlevel 1 gcc %OOHG_X_FLAGS% %%a.c
+for %%a in (%HG_FILES1_PRG%) do if not errorlevel 1 gcc %OOHG_X_FLAGS% %%a.c
+if errorlevel 1 goto EXIT2
+for %%a in (%HG_FILES2_PRG%) do if not errorlevel 1 gcc %OOHG_X_FLAGS% %%a.c
+if errorlevel 1 goto EXIT2
+for %%a in (%HG_FILES_C%)    do if not errorlevel 1 gcc %OOHG_X_FLAGS% %%a.c
 if errorlevel 1 goto EXIT2
 if exist winprint.c  gcc %OOHG_X_FLAGS% winprint.c
 if errorlevel 1 goto EXIT2
@@ -51,5 +55,6 @@ if exist winprint.c  del winprint.c
 if exist miniprint.c del miniprint.c
 
 SET OOHG_X_FLAGS=
-SET HG_FILES_PRG=
+SET HG_FILES1_PRG=
+SET HG_FILES2_PRG=
 SET HG_FILES_C=
