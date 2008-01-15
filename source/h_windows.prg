@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.175 2008-01-14 00:58:35 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.176 2008-01-15 04:52:13 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1913,6 +1913,7 @@ METHOD Release() CLASS TForm
 *-----------------------------------------------------------------------------*
    If ! ::lReleasing
       ::lReleasing := .T.
+      ::DoEvent( ::OnRelease, "WINDOW_RELEASE" )
 
       If ! ::Active
          MsgOOHGError( "Window: " + ::Name + " is not active. Program terminated." )
@@ -2638,6 +2639,7 @@ Local oCtrl, lminim:=.F.
            AEVAL( ::aControls, { |o| If( o:Container == nil, o:Events_Size(), ) } )
        Endif
        ::lentersizemove:=.F.
+
         ***********************************************************************
 	case nMsg == WM_CLOSE
         ***********************************************************************
@@ -2664,8 +2666,10 @@ Local oCtrl, lminim:=.F.
 
       // If Not AutoRelease Destroy Window
 
-      ::lReleasing := .T.
-      ::DoEvent( ::OnRelease, "WINDOW_RELEASE" )
+      IF ! ::lReleasing
+         ::lReleasing := .T.
+         ::DoEvent( ::OnRelease, "WINDOW_RELEASE" )
+      ENDIF
 
       if ::Type == "A"
          ReleaseAllWindows()
