@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.64 2008-01-13 22:51:39 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.65 2008-01-21 00:16:47 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -971,7 +971,7 @@ Local nValue := ::nValue
    Else
       ::Refresh()
    ENDIF
-RETURN nil
+RETURN ::Super:RefreshData()
 
 *-----------------------------------------------------------------------------*
 METHOD Events_Enter() CLASS TOBrowse

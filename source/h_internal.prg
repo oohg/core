@@ -1,5 +1,5 @@
 /*
- * $Id: h_internal.prg,v 1.7 2008-01-14 00:58:35 guerra000 Exp $
+ * $Id: h_internal.prg,v 1.8 2008-01-21 00:16:47 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -70,7 +70,6 @@ CLASS TInternal FROM TControl
    DATA OnVScrollBox   INIT nil
 
    METHOD Define
-   METHOD RefreshData
    METHOD Events_VScroll
    METHOD Events_HScroll
    METHOD VirtualWidth        SETGET
@@ -165,12 +164,6 @@ Local ControlHandle, nStyle, nStyleEx := 0
    ::OnMouseMove := MouseMoveProcedure
 
 Return Self
-
-*-----------------------------------------------------------------------------*
-METHOD RefreshData() CLASS TInternal
-*-----------------------------------------------------------------------------*
-   AEVAL( ::aControls, { |o| o:RefreshData() } )
-Return nil
 
 *-----------------------------------------------------------------------------*
 METHOD Events_VScroll( wParam ) CLASS TInternal

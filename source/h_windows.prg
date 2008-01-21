@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.176 2008-01-15 04:52:13 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.177 2008-01-21 00:16:47 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -207,6 +207,8 @@ CLASS TWindow
    DATA lInternal           INIT .T.
    DATA lForm               INIT .F.
    DATA lReleasing          INIT .F.
+   DATA Block               INIT nil
+   DATA VarName             INIT ""
 
    DATA lAdjust             INIT .T.
    DATA lFixFont            INIT .F.
@@ -260,10 +262,13 @@ CLASS TWindow
    METHOD Enable              BLOCK { |Self| ::Enabled := .T. }
    METHOD Disable             BLOCK { |Self| ::Enabled := .F. }
    METHOD Click               BLOCK { |Self| ::DoEvent( ::OnClick, "CLICK" ) }
+   METHOD Value               BLOCK { || nil }
    METHOD TabStop             SETGET
    METHOD Style               SETGET
    METHOD RTL                 SETGET
    METHOD Action              SETGET
+   METHOD SaveData
+   METHOD RefreshData
    METHOD Print
    METHOD SaveAs
    METHOD GetBitMap(l)        BLOCK { |Self,l| _GetBitMap( ::hWnd, l ) }
@@ -898,6 +903,22 @@ METHOD Action( bAction ) CLASS TWindow
 Return ::OnClick
 
 *-----------------------------------------------------------------------------*
+METHOD SaveData() CLASS TWindow
+*-----------------------------------------------------------------------------*
+   _OOHG_EVAL( ::Block, ::Value )
+   AEVAL( ::aControls, { |o| If( o:Container == nil, o:SaveData(), ) } )
+Return nil
+
+*-----------------------------------------------------------------------------*
+METHOD RefreshData() CLASS TWindow
+*-----------------------------------------------------------------------------*
+   If HB_IsBlock( ::Block )
+      ::Value := _OOHG_EVAL( ::Block )
+   EndIf
+   AEVAL( ::aControls, { |o| If( o:Container == nil, o:RefreshData(), ) } )
+Return nil
+
+*-----------------------------------------------------------------------------*
 METHOD Print( y, x, y1, x1 ) CLASS TWindow
 *-----------------------------------------------------------------------------*
 Local myobject, cWork
@@ -1474,7 +1495,6 @@ CLASS TForm FROM TWindow
    DATA lentersizemove INIT .F.
    DATA ldefined       INIT .F.
 
-
    DATA OnRelease      INIT nil
    DATA OnInit         INIT nil
    DATA OnSize         INIT nil
@@ -1537,7 +1557,6 @@ CLASS TForm FROM TWindow
    METHOD SetFocusedSplitChild
    METHOD SetActivationFocus
    METHOD ProcessInitProcedure
-   METHOD RefreshData
    METHOD DeleteControl
    METHOD OnHideFocusManagement
    METHOD CheckInteractiveClose()
@@ -1891,12 +1910,10 @@ METHOD Activate( lNoStop, oWndLoop ) CLASS TForm
    ::ProcessInitProcedure()
    ::RefreshData()
 
-
    // Starts the Message Loop
    If ! lNoStop
       ::MessageLoop()
    EndIf
-
 
 Return Nil
 
@@ -2201,12 +2218,6 @@ Local nPos
       _OOHG_DeleteArrayItem( ::SplitChildList, nPos )
    EndIf
 Return ::Super:DeleteControl( oControl )
-
-*-----------------------------------------------------------------------------*
-METHOD RefreshData() CLASS TForm
-*-----------------------------------------------------------------------------*
-   AEVAL( ::aControls, { |o| o:RefreshData() } )
-Return nil
 
 *-----------------------------------------------------------------------------*
 METHOD OnHideFocusManagement() CLASS TForm

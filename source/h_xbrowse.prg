@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.34 2008-01-13 22:51:40 guerra000 Exp $
+ * $Id: h_xbrowse.prg,v 1.35 2008-01-21 00:16:47 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -633,7 +633,7 @@ RETURN ::Super:ForceHide()
 METHOD RefreshData() CLASS TXBrowse
 *-----------------------------------------------------------------------------*
    ::Refresh()
-RETURN Self
+RETURN ::Super:RefreshData()
 
 #pragma BEGINDUMP
 #define s_Super s_TGrid

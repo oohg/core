@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.93 2008-01-14 02:12:54 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.94 2008-01-21 00:16:47 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1187,6 +1187,9 @@ Function _GetCaption( ControlName , ParentForm )
 Return GetWindowText( GetControlObject( ControlName, ParentForm ):hWnd )
 
 
+
+
+
 *------------------------------------------------------------------------------*
 CLASS TControl FROM TWindow
 *------------------------------------------------------------------------------*
@@ -1195,8 +1198,6 @@ CLASS TControl FROM TWindow
    DATA Transparent INIT .F.
    DATA HelpId      INIT 0
    DATA OnChange    INIT nil
-   DATA Block       INIT nil
-   DATA VarName     INIT ""
    DATA Id          INIT 0
    DATA ImageListColor      INIT CLR_NONE
    DATA ImageListFlags      INIT LR_LOADTRANSPARENT
@@ -1230,10 +1231,7 @@ CLASS TControl FROM TWindow
    METHOD SizePos
    METHOD Move
    METHOD SetFocus            BLOCK { |Self| _OOHG_lSettingFocus := .T., GetFormObjectByHandle( ::ContainerhWnd ):LastFocusedControl := ::hWnd, ::Super:SetFocus() }
-   METHOD Value               BLOCK { || nil }
    METHOD SetVarBlock
-   METHOD SaveData
-   METHOD RefreshData
    METHOD AddBitMap
 
    METHOD DoEvent
@@ -1595,11 +1593,6 @@ METHOD Move( Row, Col, Width, Height ) CLASS TControl
 Return ::SizePos( Row, Col, Width, Height )
 
 *-----------------------------------------------------------------------------*
-METHOD SaveData() CLASS TControl
-*-----------------------------------------------------------------------------*
-Return _OOHG_EVAL( ::Block, ::Value )
-
-*-----------------------------------------------------------------------------*
 METHOD SetVarBlock( cField, uValue ) CLASS TControl
 *-----------------------------------------------------------------------------*
    If ValType( cField ) $ "CM" .AND. ! Empty( cField )
@@ -1613,15 +1606,6 @@ METHOD SetVarBlock( cField, uValue ) CLASS TControl
    ElseIf PCount() > 1
       ::Value := uValue
    EndIf
-Return nil
-
-*-----------------------------------------------------------------------------*
-METHOD RefreshData() CLASS TControl
-*-----------------------------------------------------------------------------*
-   // Since not all controls haves ::Value property, it must be checked here
-   IF HB_IsBlock( ::Block )
-      ::Value := _OOHG_EVAL( ::Block )
-   ENDIF
 Return nil
 
 *-----------------------------------------------------------------------------*

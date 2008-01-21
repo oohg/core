@@ -1,11 +1,27 @@
 /*
- * $Id: ChangeLog,v 1.488 2008-01-15 04:52:13 guerra000 Exp $
+ * $Id: ChangeLog,v 1.489 2008-01-21 00:16:46 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-01-20 18:14 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_hyperlink.prg
+    * Added file:// URL. Suggested by Manfred Güttler.
+  * doc/classes.txt
+  * source/h_controlmisc.prg
+  * source/h_browse.prg
+  * source/h_internal.prg
+  * source/h_splitbox.prg
+  * source/h_status.prg
+  * source/h_textbox.prg
+  * source/h_xbrowse.prg
+  * source/h_windows.prg
+    * ::SaveData() and ::RefreshData() moved to TWindow.
+    * ::SaveData() and ::RefreshData() calls themselves from it's
+      attached controls (TForm:SaveData() saves all controls).
 
 2008-01-14 22:52 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_windows.prg

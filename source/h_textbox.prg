@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.47 2008-01-14 00:58:35 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.48 2008-01-21 00:16:47 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -208,6 +208,7 @@ Local uValue
       EndIf
       ::Value := uValue
    ENDIF
+   AEVAL( ::aControls, { |o| If( o:Container == nil, o:RefreshData(), ) } )
 Return NIL
 
 *------------------------------------------------------------------------------*

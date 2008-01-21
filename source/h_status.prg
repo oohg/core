@@ -1,5 +1,5 @@
 /*
- * $Id: h_status.prg,v 1.28 2008-01-14 00:58:35 guerra000 Exp $
+ * $Id: h_status.prg,v 1.29 2008-01-21 00:16:47 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -346,7 +346,7 @@ METHOD RefreshData() CLASS TMessageBar
    IF LEN( ::aWidths ) >= 1
       ::aWidths[ 1 ] := GetItemWidth( ::hWnd, 1 )
    ENDIF
-Return Self
+Return ::Super:RefreshData()
 
 *-----------------------------------------------------------------------------*
 Function _EndMessageBar()

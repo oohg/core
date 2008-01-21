@@ -1,5 +1,5 @@
 /*
- * $Id: h_hyperlink.prg,v 1.6 2007-10-06 22:16:44 declan2005 Exp $
+ * $Id: h_hyperlink.prg,v 1.7 2008-01-21 00:16:47 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -132,23 +132,21 @@ Return Self
 *------------------------------------------------------------------------------*
 METHOD Address( cUrl ) CLASS THyperLink
 *------------------------------------------------------------------------------*
-
-   IF HB_IsString( cUrl )
-      if at("@", cUrl )>0
-
-         ::OnClick := {||ShellExecute(0, "open", "rundll32.exe", "url.dll,FileProtocolHandler mailto:"+cUrl, ,1)}
+   If HB_IsString( cUrl )
+      If Left( cUrl, 5 ) == "http:"
+         ::OnClick := {|| ShellExecute( 0, "open", "rundll32.exe", "url.dll,FileProtocolHandler " + cUrl, , 1 ) }
          ::URL := cUrl
-
-      elseif at("http",cUrl)>0
-
-         ::OnClick := {||ShellExecute(0, "open", "rundll32.exe", "url.dll,FileProtocolHandler " + cUrl, ,1)}
+      ElseIf Left( cUrl, 5 ) == "file:"
+         ::OnClick := {|| ShellExecute( 0, "open", "explorer.exe", cUrl, , 1 ) }
          ::URL := cUrl
-
-		else
-
-         MsgOOHGError ("Control: " + ::Name + " must have valid email or url defined. Program Terminated")
-
+      ElseIf Left( cUrl, 7 ) == "mailto:"
+         ::OnClick := {|| ShellExecute( 0, "open", "rundll32.exe", "url.dll,FileProtocolHandler " + cUrl, , 1 ) }
+         ::URL := cUrl
+      ElseIf At( "@", cUrl ) > 0
+         ::OnClick := {|| ShellExecute( 0, "open", "rundll32.exe", "url.dll,FileProtocolHandler mailto:" + cUrl, , 1 ) }
+         ::URL := cUrl
+      Else
+         MsgOOHGError( "Control: " + ::Name + " must have valid email or url defined. Program Terminated." )
 		EndIf
-   ENDIF
-
+   EndIf
 Return ::URL

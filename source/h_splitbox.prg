@@ -1,5 +1,5 @@
 /*
- * $Id: h_splitbox.prg,v 1.7 2008-01-13 22:51:39 guerra000 Exp $
+ * $Id: h_splitbox.prg,v 1.8 2008-01-21 00:16:47 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -107,7 +107,7 @@ CLASS TSplitBox FROM TControl
    METHOD SizePos        BLOCK { |Self| SizeRebar( ::hWnd ) , RedrawWindow( ::hWnd ) }
    METHOD Refresh        BLOCK { |Self| SizeRebar( ::hWnd ) , RedrawWindow( ::hWnd ) }
    METHOD Events_Size    BLOCK { |Self| SizeRebar( ::hWnd ) , RedrawWindow( ::hWnd ) }
-   METHOD RefreshData    BLOCK { |Self| SizeRebar( ::hWnd ) , RedrawWindow( ::hWnd ) }
+   METHOD RefreshData    BLOCK { |Self| SizeRebar( ::hWnd ) , RedrawWindow( ::hWnd ) , ::Super:RefreshData() }
    METHOD AddControl
    METHOD SetSplitBox
 ENDCLASS
