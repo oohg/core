@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog,v 1.489 2008-01-21 00:16:46 guerra000 Exp $
+ * $Id: ChangeLog,v 1.490 2008-01-21 01:02:21 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-01-20 18:56 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_windows.prg
+    * MODAL windows becomes resizeables by default. It's required
+      to use NOSIZE, NOMINIMIZE, and NOMAXIMIZE clauses.
 
 2008-01-20 18:14 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_hyperlink.prg

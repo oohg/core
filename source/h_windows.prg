@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.177 2008-01-21 00:16:47 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.178 2008-01-21 01:02:21 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -105,8 +105,6 @@ STATIC _OOHG_DialogCancelled := .F.  //
 STATIC _OOHG_HotKeys := {}           // Application-wide hot keys
 STATIC _OOHG_ActiveForm := {}        // Forms under creation
 STATIC _OOHG_bKeyDown := nil         // Application-wide WM_KEYDOWN handler
-
-
 
 #include "hbclass.ch"
 
@@ -1869,26 +1867,9 @@ METHOD Activate( lNoStop, oWndLoop ) CLASS TForm
       MsgOOHGError("ACTIVATE WINDOW / Activate(): Not allowed in window's LOSTFOCUS event procedure. Program terminated" )
    Endif
 
-	// Main Check
-
-   // Not mandatory MAIN
-   // If _OOHG_Main == nil
-   //    MsgOOHGError( "ACTIVATE WINDOW: Main Window not defined. Program terminated." )
-   // ElseIf ! _OOHG_Main:lFirstActivate
-   //    MsgOOHGError( "ACTIVATE WINDOW: Main Window Must be Activated In First ACTIVATE WINDOW Command. Program terminated." )
-   // EndIf
-
    If ::Active
       MsgOOHGError( "Window: " + ::Name + " already active. Program terminated" )
    Endif
-
-* Testing... it allows to create non-modal windows when modal windows are active.
-* The problem is, what should do when modal window is ... disabled? hidden? WM_CLOSE? WM_DESTROY?
-/*
-      If Len( _OOHG_ActiveModal ) != 0 .AND. ATAIL( _OOHG_ActiveModal ):Active
-         MsgOOHGError("Non Modal Windows can't be activated when a modal window is active. " + ::Name + ". Program Terminated" )
-      endif
-*/
 
    // Checks for non-stop window
    If !HB_IsObject( oWndLoop )
@@ -2372,7 +2353,6 @@ HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
 
       case WM_LBUTTONDBLCLK:
          _OOHG_SetMouseCoords( pSelf, LOWORD( lParam ), HIWORD( lParam ) );
-      ////   MessageBox( GetActiveWindow(), "ventana", hb_parc( 2 ), MB_SYSTEMMODAL  );
          _OOHG_DoEvent( pSelf, s_OnDblClick, "DBLCLICK" );
          hb_ret();
          break;
@@ -2902,14 +2882,13 @@ METHOD Define( FormName, Caption, x, y, w, h, Parent, nosize, nosysmenu, ;
                InteractiveCloseProcedure, lRtl, modalsize, mdi, topmost, ;
                clientarea, restoreprocedure, RClickProcedure, ;
                MClickProcedure, DblClickProcedure, RDblClickProcedure, ;
-               MDblClickProcedure ) CLASS TFormModal
+               MDblClickProcedure, nominimize, nomaximize, maximizeprocedure, ;
+               minimizeprocedure ) CLASS TFormModal
 *-----------------------------------------------------------------------------*
 Local nStyle := WS_POPUP, nStyleEx := 0
 Local oParent, hParent
 
-   If !HB_Islogical( modalsize )
-      modalsize := .F.
-   EndIf
+   Empty( modalsize )
 
    oParent := ::SearchParent( Parent )
    If HB_IsObject( oParent )
@@ -2921,10 +2900,10 @@ Local oParent, hParent
 
    ::oPrevWindow := oParent
 
-   ::Define2( FormName, Caption, x, y, w, h, hParent, helpbutton, ( ! modalsize ), ( ! modalsize ), nosize, nosysmenu, ;
+   ::Define2( FormName, Caption, x, y, w, h, hParent, helpbutton, nominimize, nomaximize, nosize, nosysmenu, ;
               nocaption, virtualheight, virtualwidth, hscrollbox, vscrollbox, fontname, fontsize, aRGB, cursor, ;
-              icon, noshow, gotfocus, lostfocus, scrollleft, scrollright, scrollup, scrolldown, nil, ;
-              nil, initprocedure, ReleaseProcedure, SizeProcedure, ClickProcedure, PaintProcedure, ;
+              icon, noshow, gotfocus, lostfocus, scrollleft, scrollright, scrollup, scrolldown, maximizeprocedure, ;
+              minimizeprocedure, initprocedure, ReleaseProcedure, SizeProcedure, ClickProcedure, PaintProcedure, ;
               MouseMoveProcedure, MouseDragProcedure, InteractiveCloseProcedure, NoAutoRelease, nStyle, nStyleEx, ;
               0, lRtl, mdi, topmost, clientarea, restoreprocedure, RClickProcedure, MClickProcedure, ;
               DblClickProcedure, RDblClickProcedure, MDblClickProcedure )
@@ -2968,11 +2947,6 @@ RETURN ( ::Super:Visible := lVisible )
 *-----------------------------------------------------------------------------*
 METHOD Activate( lNoStop, oWndLoop ) CLASS TFormModal
 *-----------------------------------------------------------------------------*
-   // Not mandatory MAIN
-   // If _OOHG_Main == nil
-   //    MsgOOHGError("ACTIVATE WINDOW: Main Window Must be Activated In First ACTIVATE WINDOW Command. Program terminated" )
-   // EndIf
-
    // Checks for non-stop window
    IF !HB_IsLogical( lNoStop )
       lNoStop := .F.
@@ -2983,7 +2957,6 @@ METHOD Activate( lNoStop, oWndLoop ) CLASS TFormModal
 
    // Since this window disables all other windows, it must be visible!
    ::lVisible := .T.
-
 Return ::Super:Activate( lNoStop, oWndLoop )
 
 *-----------------------------------------------------------------------------*
@@ -2997,7 +2970,6 @@ Return ::Super:Release()
 *-----------------------------------------------------------------------------*
 METHOD OnHideFocusManagement() CLASS TFormModal
 *-----------------------------------------------------------------------------*
-
    // Re-enables locked forms
    AEVAL( ::LockedForms, { |o| IF( ValidHandler( o:hWnd ), EnableWindow( o:hWnd ), ) } )
    ::LockedForms := {}
@@ -3007,7 +2979,6 @@ METHOD OnHideFocusManagement() CLASS TFormModal
 	Else
       ::oPrevWindow:SetFocus()
 	EndIf
-
 Return ::Super:OnHideFocusManagement()
 
 
@@ -3360,19 +3331,7 @@ Local aError := {}
                scrolldown, hscrollbox, vscrollbox, cursor, lRtl, mdi, clientarea, ;
                RClickProcedure, MClickProcedure, DblClickProcedure, ;
                RDblClickProcedure, MDblClickProcedure )
-   ElseIf modal
-      Self := _OOHG_SelectSubClass( TFormModal(), subclass )
-      ::Define( FormName, Caption, x, y, w, h, oParent, .T., nosysmenu, ;
-               nocaption, InitProcedure, ReleaseProcedure, ;
-               MouseDragProcedure, SizeProcedure, ClickProcedure, ;
-               MouseMoveProcedure, aRGB, PaintProcedure, icon, FontName, ;
-               FontSize, GotFocus, LostFocus, virtualheight, VirtualWidth, ;
-               scrollleft, scrollright, scrollup, scrolldown, hscrollbox, ;
-               vscrollbox, helpbutton, cursor, noshow, NoAutoRelease, ;
-               InteractiveCloseProcedure, lRtl, .F., mdi, topmost, clientarea, ;
-               restoreprocedure, RClickProcedure, MClickProcedure, ;
-               DblClickProcedure, RDblClickProcedure, MDblClickProcedure )
-   ElseIf modalsize
+   ElseIf modal .OR. modalsize
       Self := _OOHG_SelectSubClass( TFormModal(), subclass )
       ::Define( FormName, Caption, x, y, w, h, oParent, nosize, nosysmenu, ;
                nocaption, InitProcedure, ReleaseProcedure, ;
@@ -3383,7 +3342,8 @@ Local aError := {}
                vscrollbox, helpbutton, cursor, noshow, NoAutoRelease, ;
                InteractiveCloseProcedure, lRtl, .F., mdi, topmost, clientarea, ;
                restoreprocedure, RClickProcedure, MClickProcedure, ;
-               DblClickProcedure, RDblClickProcedure, MDblClickProcedure )
+               DblClickProcedure, RDblClickProcedure, MDblClickProcedure, ;
+               nominimize, nomaximize, maximizeprocedure, minimizeprocedure )
    ElseIf mdiclient
       Self := _OOHG_SelectSubClass( TFormMDIClient(), subclass )
       ::Define( FormName, Caption, x, y, w, h, MouseDragProcedure, ;
