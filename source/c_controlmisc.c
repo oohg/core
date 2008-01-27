@@ -1,5 +1,5 @@
 /*
- * $Id: c_controlmisc.c,v 1.47 2008-01-04 03:21:24 guerra000 Exp $
+ * $Id: c_controlmisc.c,v 1.48 2008-01-27 06:47:35 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -103,7 +103,7 @@
 #include "hbapiitm.h"
 #include "winreg.h"
 #include "tchar.h"
-#include "../include/oohg.h"
+#include "oohg.h"
 
 #ifdef HB_ITEM_NIL
    #define hb_dynsymSymbol( pDynSym )        ( ( pDynSym )->pSymbol )
@@ -894,7 +894,7 @@ HB_FUNC( GETCONTROLOBJECTBYHANDLE )
    hb_itemRelease( pReturn );
 }
 
-PHB_ITEM GetControlObjectById( LONG lId )
+PHB_ITEM GetControlObjectById( LONG lId, HWND hWnd )
 {
    PHB_ITEM pControl;
    ULONG ulCount;
@@ -911,9 +911,15 @@ PHB_ITEM GetControlObjectById( LONG lId )
    {
       for( ulCount = 1; ulCount <= hb_arrayLen( _OOHG_aControlIds ); ulCount++ )
       {
-         // if( lId  == hb_arrayGetNL( hb_arrayGetItemPtr( _OOHG_aControlIds, ulCount ), 1 ) &&
-         //     hWnd == hb_arrayGetNL( hb_arrayGetItemPtr( _OOHG_aControlIds, ulCount ), 2 ) )
-         if( lId  == hb_arrayGetNL( _OOHG_aControlIds, ulCount ) )
+         if( lId  == hb_arrayGetNL( hb_arrayGetItemPtr( _OOHG_aControlIds, ulCount ), 1 ) &&
+             hWnd ==
+#ifdef OOHG_HWND_POINTER
+                     hb_arrayGetPtr( hb_arrayGetItemPtr( _OOHG_aControlIds, ulCount ), 2 )
+#else
+                     ( HWND ) hb_arrayGetNL( hb_arrayGetItemPtr( _OOHG_aControlIds, ulCount ), 2 )
+#endif
+           )
+         // if( lId  == hb_arrayGetNL( _OOHG_aControlIds, ulCount ) )
          {
             pControl = hb_arrayGetItemPtr( _OOHG_aControlObjects, ulCount );
             ulCount = hb_arrayLen( _OOHG_aControlIds );
@@ -936,7 +942,7 @@ HB_FUNC( GETCONTROLOBJECTBYID )
    PHB_ITEM pReturn;
 
    pReturn = hb_itemNew( NULL );
-   hb_itemCopy( pReturn, GetControlObjectById( hb_parnl( 1 ) ) );
+   hb_itemCopy( pReturn, GetControlObjectById( hb_parnl( 1 ), HWNDparam( 2 ) ) );
 
    hb_itemReturn( pReturn );
    hb_itemRelease( pReturn );

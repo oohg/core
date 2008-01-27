@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.19 2007-12-06 12:15:05 guerra000 Exp $
+ * $Id: winprint.prg,v 1.20 2008-01-27 06:47:35 guerra000 Exp $
  */
 // -----------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -311,7 +311,7 @@ local lret:=::Textcolor
 
         IF HB_IsNumeric (clr)
             ::TextColor:=rr_settextcolor(clr)
-        ELSEIF HB_IsArray (clr) 
+        ELSEIF HB_IsArray (clr)
             ::TextColor:=rr_settextcolor( RGB ( clr [1] , clr [2] , clr [3] ) )
         ENDIF
 
@@ -332,7 +332,7 @@ local lret:=::BkColor
 
         IF HB_IsNumeric (clr)
           ::BkColor:=rr_setbkcolor(clr)
-        ELSEIF HB_IsArray (clr) 
+        ELSEIF HB_IsArray (clr)
           ::BkColor:=rr_setbkcolor( RGB ( clr [1] , clr [2] , clr [3] ) )
         ENDIF
 
@@ -354,7 +354,7 @@ local lhand:=::getobjbyname(defname,"B")
 
         // BEGIN RL 2003-08-03
 
-        IF HB_IsArray (lcolor) 
+        IF HB_IsArray (lcolor)
             lcolor := RGB ( lcolor [1] , lcolor [2] , lcolor [3] )
         ENDIF
 
@@ -394,7 +394,7 @@ local lhand:=0,lpos:=0
 
         // BEGIN RL 2003-08-03
 
-        IF HB_IsArray (lcolor) 
+        IF HB_IsArray (lcolor)
             lcolor := RGB ( lcolor [1] , lcolor [2] , lcolor [3] )
         ENDIF
 
@@ -418,7 +418,7 @@ local lhand:=::getobjbyname(defname,"P")
 
         // BEGIN RL 2003-08-03
 
-        IF HB_IsArray (lcolor) 
+        IF HB_IsArray (lcolor)
             lcolor := RGB ( lcolor [1] , lcolor [2] , lcolor [3] )
         ENDIF
 
@@ -453,7 +453,7 @@ local lhand:=0,lpos:=0
 
         // BEGIN RL 2003-08-03
 
-        IF HB_IsArray (lcolor) 
+        IF HB_IsArray (lcolor)
             lcolor := RGB ( lcolor [1] , lcolor [2] , lcolor [3] )
         ENDIF
 
@@ -1185,7 +1185,7 @@ return rr_settextalign(style)
 METHOD GetTextAlign() CLASS HBPrinter
 return rr_gettextalign()
 
-METHOD Picture(row,col,torow,tocol,cpicture,extrow,extcol) CLASS HBPrinter
+METHOD Picture(row,col,torow,tocol,cpicture,extrow,extcol,lImageSize) CLASS HBPrinter
 local lp1:=::convert({row,col}),lp2,lp3
  if torow==NIL
     torow:=::maxrow
@@ -1201,7 +1201,7 @@ local lp1:=::convert({row,col}),lp2,lp3
     extcol:=0
  endif
  lp3:=::convert({extrow,extcol})
- rr_drawpicture(cpicture,lp1,lp2,lp3)
+ rr_drawpicture(cpicture,lp1,lp2,lp3,lImageSize)
 return self
 
 static function str2file(ctxt,cfile)
@@ -2979,6 +2979,7 @@ HB_FUNC (RR_DRAWPICTURE)
     HRGN hrgn1;
     POINT lpp;
     int lw,lh;
+    BOOL bImageSize = hb_parl( 5 );
 
     ipic=rr_loadpicture(hb_parc(1),&lwidth,&lheight);
     if (ipic==NULL)
@@ -2989,8 +2990,18 @@ HB_FUNC (RR_DRAWPICTURE)
   lh=MulDiv(lheight,devcaps[5],2540);
   if (dc==0)  { dc=(int) ((float) dr*lw/lh); }
   if (dr==0)  { dr=(int) ((float) dc*lh/lw); }
+  if( bImageSize )
+  {
+     dr = lh;
+     dc = lw;
+  }
   if (tor<=0) { tor=dr;}
   if (toc<=0) { toc=dc;}
+  if( bImageSize )
+  {
+     tor = lh;
+     toc = lw;
+  }
   x=c;
   y=r;
   xe=c+toc-1;

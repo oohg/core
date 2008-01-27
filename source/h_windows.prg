@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.178 2008-01-21 01:02:21 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.179 2008-01-27 06:47:35 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -616,7 +616,7 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )
             BOOL bClicked = 0;
 
             pControl = hb_itemNew( NULL );
-            hb_itemCopy( pControl, GetControlObjectById( LOWORD( wParam ) ) );
+            hb_itemCopy( pControl, GetControlObjectById( LOWORD( wParam ), hWnd ) );
             _OOHG_Send( pControl, s_Id );
             hb_vmSend( 0 );
             if( hb_parni( -1 ) != 0 )
@@ -688,7 +688,7 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )
          break;
 
       case WM_TIMER:
-         _OOHG_DoEvent( GetControlObjectById( LOWORD( wParam ) ), s_OnClick, "TIMER" );
+         _OOHG_DoEvent( GetControlObjectById( LOWORD( wParam ), hWnd ), s_OnClick, "TIMER" );
          hb_ret();
          break;
 
@@ -701,7 +701,7 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )
       case WM_MEASUREITEM:
          if( wParam )
          {
-            _OOHG_Send( GetControlObjectById( ( LONG ) ( ( ( LPMEASUREITEMSTRUCT ) lParam )->CtlID ) ), s_Events_MeasureItem );
+            _OOHG_Send( GetControlObjectById( ( LONG ) ( ( ( LPMEASUREITEMSTRUCT ) lParam )->CtlID ), hWnd ), s_Events_MeasureItem );
          }
          else
          {
@@ -780,7 +780,7 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )
                }
                else
                {
-                  hb_itemCopy( pMenu, GetControlObjectById( MenuItemInfo.wID ) );
+                  hb_itemCopy( pMenu, GetControlObjectById( MenuItemInfo.wID, hWnd ) );
                }
                _OOHG_Send( pMenu, s_ContextMenu );
                hb_vmSend( 0 );

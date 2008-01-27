@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.ch,v 1.3 2007-10-19 03:41:58 guerra000 Exp $
+ * $Id: winprint.ch,v 1.4 2008-01-27 06:47:35 guerra000 Exp $
  */
 // ---------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -235,6 +235,9 @@ MEMVAR HBPRN
 
 #xcommand @<row>,<col> PICTURE <cpic> SIZE <row2>,<col2> [EXTEND <row3>,<col3>] ;
            => hbprn:picture(<row>,<col>,<row2>,<col2>,<cpic>,<row3>,<col3>)
+
+#xcommand @<row>,<col> PICTURE <cpic> IMAGESIZE ;
+           => hbprn:picture(<row>,<col>,,,<cpic>,,,.T.)
 
 #xcommand @<row>,<col>,<row2>,<col2> LINE  [PEN <cpen>] ;
            => hbprn:line(<row>,<col>,<row2>,<col2>,<cpen>)

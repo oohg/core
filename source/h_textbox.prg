@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.48 2008-01-21 00:16:47 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.49 2008-01-27 06:47:35 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -507,7 +507,7 @@ Local cType, cPicFun, cPicMask, nPos, nScroll
       ::ValidMaskShow  := ValidatePicture( cPicMask )
 
       If ::DataType == "N"
-         ::PictureMask := StrTran( ::PictureMask, ",", "" )
+         ::PictureMask := StrTran( StrTran( StrTran( ::PictureMask, ",", "" ), "*", "9" ), "$", "9" )
          ::nDecimal    := AT( ".", ::PictureMask )
          ::ValidMask   := ValidatePicture( ::PictureMask )
       Endif

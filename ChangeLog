@@ -1,11 +1,27 @@
 /*
- * $Id: ChangeLog,v 1.490 2008-01-21 01:02:21 guerra000 Exp $
+ * $Id: ChangeLog,v 1.491 2008-01-27 06:47:34 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-01-27 00:45 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_textbox.prg
+    * Removed "*" and "$" mask for focused TTextboxPicture().
+  * source/h_controlmisc.prg
+    * Prevents events execution when form is releasing.
+  * include/oohg.h
+  * source/c_controlmisc.c
+  * source/h_controlmisc.prg
+  * source/h_windows.prg
+    * Added ::Parent:hWnd to _OOHG_aControlIds array, for full
+      hWnd/Id search.
+  * include/winprint.ch
+  * source/winprint.prg
+    + @ y,x PICTURE (cPicture) IMAGESIZE command added. Image assumes
+      original size.
 
 2008-01-20 18:56 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_windows.prg

@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.94 2008-01-21 00:16:47 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.95 2008-01-27 06:47:35 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1437,7 +1437,7 @@ EMPTY(cName)
 
    AADD( _OOHG_aControlhWnd,    hWnd )
    AADD( _OOHG_aControlObjects, Self )
-   AADD( _OOHG_aControlIds,     ::Id ) // { ::Id, ::ContainerhWnd } )
+   AADD( _OOHG_aControlIds,     { ::Id, ::Parent:hWnd } ) // ::Id )
    AADD( _OOHG_aControlNames,   UPPER( ::Parent:Name + CHR( 255 ) + ::Name ) )
 
    mVar := "_" + ::Parent:Name + "_" + ::Name
@@ -1644,7 +1644,9 @@ Return nPos
 METHOD DoEvent( bBlock, cEventType ) CLASS TControl
 *-----------------------------------------------------------------------------*
 Local lRetVal
-   If HB_IsBlock( bBlock )
+   If ! ::Parent == nil .AND. ::Parent:lReleasing
+      lRetVal := .F.
+   ElseIf HB_IsBlock( bBlock )
       _PushEventInfo()
       _OOHG_ThisForm      := ::Parent
       _OOHG_ThisType      := "C"
@@ -1890,7 +1892,7 @@ Local RetVal , i
 
       RetVal := Int( random( 65000 ) )
 
-      i := ascan ( _OOHG_aControlIds , retval )
+      i := ascan( _OOHG_aControlIds , { |a| a[ 1 ] == retval } )
 
 		if i == 0 .and. retval != 0
 			exit
