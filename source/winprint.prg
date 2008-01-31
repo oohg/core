@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.20 2008-01-27 06:47:35 guerra000 Exp $
+ * $Id: winprint.prg,v 1.21 2008-01-31 02:31:00 guerra000 Exp $
  */
 // -----------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -2657,9 +2657,13 @@ HB_FUNC (RR_DRAWTEXT)
    LONG xfont=hb_parnl(5);
    HFONT prevfont;
    RECT rect;
+   int iAlign;
    SetRect(&rect,hb_parnl(1,2),hb_parnl(1,1),hb_parnl(2,2),hb_parnl(2,1));
    if (xfont!=0)  prevfont=SelectObject(hDC ,(HFONT) xfont);
+   iAlign = GetTextAlign( hDC );
+   SetTextAlign( hDC, 0 );
    hb_retni(DrawText( hDC ,hb_parc(3),-1,&rect,hb_parni(4)));
+   SetTextAlign( hDC, iAlign );
    if (xfont!=0)  SelectObject(hDC,prevfont);
 }
 HB_FUNC (RR_RECTANGLE)
