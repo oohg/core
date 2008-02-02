@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.179 2008-01-27 06:47:35 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.180 2008-02-02 00:33:07 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -205,6 +205,7 @@ CLASS TWindow
    DATA lInternal           INIT .T.
    DATA lForm               INIT .F.
    DATA lReleasing          INIT .F.
+   DATA lDestroyed          INIT .F.
    DATA Block               INIT nil
    DATA VarName             INIT ""
 
@@ -1255,6 +1256,10 @@ Return lDone
 METHOD ReleaseAttached() CLASS TWindow
 *-----------------------------------------------------------------------------*
 
+   // Hides window (visual effect)
+   ::Row := -25000
+   DO EVENTS
+
    // Release hot keys
    aEval( ::aHotKeys, { |a| ReleaseHotKey( ::hWnd, a[ HOTKEY_ID ] ) } )
    ::aHotKeys := {}
@@ -1912,6 +1917,7 @@ METHOD Release() CLASS TForm
    If ! ::lReleasing
       ::lReleasing := .T.
       ::DoEvent( ::OnRelease, "WINDOW_RELEASE" )
+      ::lDestroyed := .T.
 
       If ! ::Active
          MsgOOHGError( "Window: " + ::Name + " is not active. Program terminated." )
@@ -2222,16 +2228,18 @@ Return lRet
 METHOD DoEvent( bBlock, cEventType ) CLASS TForm
 *-----------------------------------------------------------------------------*
 Local lRetVal := .F.
-   If HB_IsBlock( bBlock )
-		_PushEventInfo()
+   If ::lDestroyed
+      lRetVal := .F.
+   ElseIf HB_IsBlock( bBlock )
+      _PushEventInfo()
       _OOHG_ThisForm      := Self
       _OOHG_ThisType      := "W"
       ASSIGN _OOHG_ThisEventType VALUE cEventType TYPE "CM" DEFAULT ""
       _OOHG_ThisControl   := NIL
       _OOHG_ThisObject    := Self
-		lRetVal := Eval( bBlock )
-		_PopEventInfo()
-	EndIf
+      lRetVal := Eval( bBlock )
+      _PopEventInfo()
+   EndIf
 Return lRetVal
 
 *-----------------------------------------------------------------------------*
@@ -2660,6 +2668,7 @@ Local oCtrl, lminim:=.F.
       IF ! ::lReleasing
          ::lReleasing := .T.
          ::DoEvent( ::OnRelease, "WINDOW_RELEASE" )
+         ::lDestroyed := .T.
       ENDIF
 
       if ::Type == "A"
@@ -2837,6 +2846,7 @@ METHOD Release() CLASS TFormMain
    If ! ::lReleasing
       ::lReleasing := .T.
       ::DoEvent( ::OnRelease, "WINDOW_RELEASE" )
+      ::lDestroyed := .T.
       ReleaseAllWindows()
 //   Else
 //      MsgOOHGError("Release a window in its own 'on release' procedure or release the main window in any 'on release' procedure is not allowed. Program terminated" )
@@ -3485,6 +3495,7 @@ Local i, oWnd
          If ! oWnd:lReleasing
             oWnd:lReleasing := .T.
             oWnd:DoEvent( oWnd:OnRelease, "WINDOW_RELEASE" )
+            oWnd:lDestroyed := .T.
          EndIf
 
          if .Not. Empty ( oWnd:NotifyIcon )
