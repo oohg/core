@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.180 2008-02-02 00:33:07 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.181 2008-02-04 05:42:53 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -242,6 +242,7 @@ CLASS TWindow
 
    METHOD SethWnd
    METHOD Release
+   METHOD PreRelease
    METHOD StartInfo
    METHOD SetFocus
    METHOD ImageList           SETGET
@@ -856,6 +857,12 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )
 #pragma ENDDUMP
 
 *------------------------------------------------------------------------------*
+METHOD PreRelease() CLASS TWindow
+*------------------------------------------------------------------------------*
+   AEVAL( ::aControls, { |o| o:PreRelease() } )
+RETURN Self
+
+*------------------------------------------------------------------------------*
 METHOD Enabled( lEnabled ) CLASS TWindow
 *------------------------------------------------------------------------------*
    IF HB_IsLogical( lEnabled )
@@ -1255,10 +1262,6 @@ Return lDone
 *-----------------------------------------------------------------------------*
 METHOD ReleaseAttached() CLASS TWindow
 *-----------------------------------------------------------------------------*
-
-   // Hides window (visual effect)
-   ::Row := -25000
-   DO EVENTS
 
    // Release hot keys
    aEval( ::aHotKeys, { |a| ReleaseHotKey( ::hWnd, a[ HOTKEY_ID ] ) } )
@@ -1923,7 +1926,7 @@ METHOD Release() CLASS TForm
          MsgOOHGError( "Window: " + ::Name + " is not active. Program terminated." )
       Endif
 
-      ::ReleaseAttached()
+      ::PreRelease()
 
       * Release Window
 

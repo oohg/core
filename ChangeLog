@@ -1,11 +1,18 @@
 /*
- * $Id: ChangeLog,v 1.494 2008-02-02 00:33:07 guerra000 Exp $
+ * $Id: ChangeLog,v 1.495 2008-02-04 05:42:52 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-02-03 23:38 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_combo.prg
+  * source/h_windows.prg
+    + ::PreRelease() method added. Prepares control to be destroyed.
+  * source/h_controlmisc.prg
+    * _GetID() doesn't assigns numbers under 2000.
 
 2008-02-01 18:33 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_windows.prg

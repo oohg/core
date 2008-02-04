@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.37 2008-01-14 02:12:54 guerra000 Exp $
+ * $Id: h_combo.prg,v 1.38 2008-02-04 05:42:53 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -116,7 +116,7 @@ CLASS TCombo FROM TLabel
    METHOD Displayvalue        SETGET    /// Caption Alias
    METHOD FontColor           SETGET
    METHOD BackColor           SETGET
-   METHOD Release
+   METHOD PreRelease
 
    METHOD Events_Command
    METHOD Events_DrawItem
@@ -304,12 +304,12 @@ METHOD BackColor( uColor ) CLASS TCombo
 RETURN ( ::Super:BackColor := uColor )
 
 *-----------------------------------------------------------------------------*
-METHOD Release() CLASS TCombo
+METHOD PreRelease() CLASS TCombo
 *-----------------------------------------------------------------------------*
    If ! SendMessage( ::hWnd, CB_GETDROPPEDSTATE, 0, 0 ) == 0
       SendMessage( ::hWnd, CB_SHOWDROPDOWN, 0, 0 )
    EndIf
-Return ::Super:Release()
+Return ::Super:PreRelease()
 
 *-----------------------------------------------------------------------------*
 METHOD Events_Command( wParam ) CLASS TCombo
