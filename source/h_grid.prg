@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.97 2008-01-14 00:58:34 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.98 2008-02-10 02:39:30 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1437,7 +1437,9 @@ Local lvc, _ThisQueryTemp, nvkey
       if HB_IsArray ( ::aHeadClick )
          lvc := GetGridColumn(lParam) + 1
          if len( ::aHeadClick ) >= lvc
+            _SetThisCellInfo( ::hWnd, 0, lvc )
             ::DoEvent( ::aHeadClick[ lvc ], "HEADCLICK" )
+            _ClearThisCellInfo()
             Return nil
          EndIf
       EndIf

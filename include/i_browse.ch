@@ -1,5 +1,5 @@
 /*
- * $Id: i_browse.ch,v 1.17 2008-01-06 02:19:11 guerra000 Exp $
+ * $Id: i_browse.ch,v 1.18 2008-02-10 02:39:30 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -153,6 +153,9 @@
                 [ COLUMNINFO <columninfo> ]     ;
                 [ <noshowheaders: NOHEADERS> ]  ;
                 [ ON ENTER <enter> ]            ;
+                [ <disabled: DISABLED> ]        ;
+                [ <notabstop: NOTABSTOP> ]      ;
+                [ <invisible: INVISIBLE> ]      ;
 	=>;
              [ <oObj> := ] _OOHG_SelectSubClass( TOBrowse(), [ <subclass>() ] ): ;
                 Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, <widths>, ;
@@ -164,7 +167,8 @@
                 <aReadOnly>, <aValidFields>, <aValidMessages>, <.edit.>, ;
                 <dynamicbackcolor>, <aWhenFields>, <dynamicforecolor>, <Picture>, <.rtl.>, ;
                 <{onappend}>, <{editcell}>, <editcontrols>, <replacefields>, <.reccount.>, ;
-                <columninfo>, ! <.noshowheaders.>, <{enter}> )
+                <columninfo>, ! <.noshowheaders.>, <{enter}>, <.disabled.>, <.notabstop.>, ;
+                <.invisible.> )
 
 ///////////////////////////////////////////////////////////////////////////////
 // SPLITBOX BROWSE
@@ -221,6 +225,9 @@
                 [ COLUMNINFO <columninfo> ]     ;
                 [ <noshowheaders: NOHEADERS> ]  ;
                 [ ON ENTER <enter> ]            ;
+                [ <disabled: DISABLED> ]        ;
+                [ <notabstop: NOTABSTOP> ]      ;
+                [ <invisible: INVISIBLE> ]      ;
 	=>;
              [ <oObj> := ] _OOHG_SelectSubClass( TOBrowse(), [ <subclass>() ] ): ;
                 Define( <(name)>, <(parent)>, , , <w>, <h>, <headers>, <widths>, <Fields>, ;
@@ -232,7 +239,8 @@
                 <aValidFields>, <aValidMessages>, <.edit.>, <dynamicbackcolor>, ;
                 <aWhenFields>, <dynamicforecolor>, <Picture>, <.rtl.>, <{onappend}>, ;
                 <{editcell}>, <editcontrols>, <replacefields>, <.reccount.>, ;
-                <columninfo>, ! <.noshowheaders.>, <{enter}> )
+                <columninfo>, ! <.noshowheaders.>, <{enter}>, <.disabled.>, <.notabstop.>, ;
+                <.invisible.> )
 
 #command SET BROWSESYNC ON  => SetBrowseSync( .T. )
 #command SET BROWSESYNC OFF => SetBrowseSync( .F. )

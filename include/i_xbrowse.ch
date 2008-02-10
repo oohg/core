@@ -1,5 +1,5 @@
 /*
- * $Id: i_xbrowse.ch,v 1.6 2008-01-06 02:19:11 guerra000 Exp $
+ * $Id: i_xbrowse.ch,v 1.7 2008-02-10 02:39:30 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -150,6 +150,9 @@
                 [ COLUMNINFO <columninfo> ]     ;
                 [ <noshowheaders: NOHEADERS> ]  ;
                 [ ON ENTER <enter> ]            ;
+                [ <disabled: DISABLED> ]        ;
+                [ <notabstop: NOTABSTOP> ]      ;
+                [ <invisible: INVISIBLE> ]      ;
 	=>;
        [ <oObj> := ] _OOHG_SelectSubClass( TXBrowse(), [ <subclass>() ] ):Define( ;
                <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, <widths>, ;
@@ -161,4 +164,5 @@
                <.edit.>, <backcolor>, <fontcolor>, ;
                <dynamicbackcolor>, <dynamicforecolor>, <Picture>, <.rtl.>, <.inplace.>, ;
                <editcontrols>, <aReadOnly>, <{aValidFields}>, <aValidMessages>, <{editcell}>, ;
-               <aWhenFields>, <.reccount.>, <columninfo>, ! <.noshowheaders.>, <{enter}> )
+               <aWhenFields>, <.reccount.>, <columninfo>, ! <.noshowheaders.>, <{enter}>, ;
+               <.disabled.>, <.notabstop.>, <.invisible.> )
