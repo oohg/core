@@ -1,5 +1,5 @@
 /*
- * $Id: h_richeditbox.prg,v 1.15 2008-01-14 00:58:35 guerra000 Exp $
+ * $Id: h_richeditbox.prg,v 1.16 2008-02-12 05:43:17 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -103,6 +103,7 @@ CLASS TEditRich FROM TEdit
 
    METHOD Define
    METHOD BackColor   SETGET
+   METHOD RichValue   SETGET
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -140,6 +141,14 @@ Local ControlHandle, nStyle
    ASSIGN ::OnChange    VALUE Change    TYPE "B"
 
 Return Self
+
+*-----------------------------------------------------------------------------*
+METHOD RichValue( cValue ) CLASS TEditRich
+*-----------------------------------------------------------------------------*
+   If VALTYPE( cValue ) $ "CM"
+      RichStreamIn( ::hWnd, cValue )
+   EndIf
+RETURN RichStreamOut( ::hWnd )
 
 #pragma BEGINDUMP
 #include "hbapi.h"
@@ -206,5 +215,139 @@ HB_FUNC_STATIC( TEDITRICH_BACKCOLOR )
    }
 
    // Return value was set in _OOHG_DetermineColorReturn()
+}
+
+struct StreamInfo {
+   LONG lSize;
+   LONG lRead;
+   char *cBuffer;
+   struct StreamInfo *pNext;
+};
+
+EDITSTREAMCALLBACK CALLBACK EditStreamCallbackIn( DWORD_PTR dwCookie, LPBYTE pbBuff, LONG cb, LONG *pcb )
+{
+   struct StreamInfo *si;
+   LONG lMax;
+
+   si = ( struct StreamInfo * ) dwCookie;
+
+   if( si->lSize == si->lRead )
+   {
+      *pcb = 0;
+   }
+   else
+   {
+      lMax = si->lSize - si->lRead;
+      if( cb < lMax )
+      {
+         lMax = cb;
+      }
+      memcpy( pbBuff, si->cBuffer + si->lRead, lMax );
+      si->lRead += lMax;
+      *pcb = lMax;
+   }
+   return 0;
+}
+
+HB_FUNC( RICHSTREAMIN )   // hWnd, cValue
+{
+   int iType = SF_RTF;
+   EDITSTREAM es;
+   struct StreamInfo si;
+
+   si.lSize = hb_parclen( 2 );
+   si.lRead = 0;
+   si.cBuffer = hb_parc( 2 );
+
+   es.dwCookie = ( DWORD_PTR ) &si;
+   es.dwError = 0;
+   es.pfnCallback = ( EDITSTREAMCALLBACK ) EditStreamCallbackIn;
+
+   SendMessage( HWNDparam( 1 ), EM_STREAMIN, ( WPARAM ) iType, ( LPARAM ) &es );
+}
+
+EDITSTREAMCALLBACK CALLBACK EditStreamCallbackOut( DWORD_PTR dwCookie, LPBYTE pbBuff, LONG cb, LONG *pcb )
+{
+   struct StreamInfo *si;
+
+   si = ( struct StreamInfo * ) dwCookie;
+
+   if( cb == 0 )
+   {
+      *pcb = 0;
+   }
+   else
+   {
+      // Locates next available block
+      while( si->lSize != 0 )
+      {
+         if( si->pNext )
+         {
+            si = si->pNext;
+         }
+         else
+         {
+            si->pNext = hb_xgrab( sizeof( struct StreamInfo ) );
+            si = si->pNext;
+            si->lSize = 0;
+            si->pNext = NULL;
+         }
+      }
+
+      si->cBuffer = hb_xgrab( cb );
+      memcpy( si->cBuffer, pbBuff, cb );
+      si->lSize = cb;
+      *pcb = cb;
+   }
+   return 0;
+}
+
+HB_FUNC( RICHSTREAMOUT )   // hWnd
+{
+   int iType = SF_RTF;
+   EDITSTREAM es;
+   struct StreamInfo *si, *si2;
+   LONG lSize, lRead;
+   char *cBuffer;
+
+   si = hb_xgrab( sizeof( struct StreamInfo ) );
+   si->lSize = 0;
+   si->pNext = NULL;
+
+   es.dwCookie = ( DWORD_PTR ) si;
+   es.dwError = 0;
+   es.pfnCallback = ( EDITSTREAMCALLBACK ) EditStreamCallbackOut;
+
+   SendMessage( HWNDparam( 1 ), EM_STREAMOUT, ( WPARAM ) iType, ( LPARAM ) &es );
+
+   lSize = si->lSize;
+   si2 = si->pNext;
+   while( si2 )
+   {
+      si2 = si2->pNext;
+      lSize += si2->lSize;
+   }
+
+   if( lSize == 0 )
+   {
+      hb_retc( "" );
+      hb_xfree( si );
+   }
+   else
+   {
+      cBuffer = hb_xgrab( lSize );
+      lRead = 0;
+      while( si )
+      {
+         memcpy( cBuffer + lRead, si->cBuffer, si->lSize );
+         hb_xfree( si->cBuffer );
+         lRead += si->lSize;
+         si2 = si;
+         si = si->pNext;
+         hb_xfree( si2 );
+      }
+      hb_retclen( cBuffer, lSize );
+      hb_xfree( cBuffer );
+   }
 }
 #pragma ENDDUMP

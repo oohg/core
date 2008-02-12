@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.98 2008-02-10 02:39:30 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.99 2008-02-12 05:43:17 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -177,6 +177,7 @@ CLASS TGrid FROM TControl
    METHOD ColumnAutoFitH
    METHOD ColumnsAutoFit
    METHOD ColumnsAutoFitH
+   METHOD SortColumn
 
    METHOD Up
    METHOD Down
@@ -1777,6 +1778,11 @@ Local nColumn, nWidth, nSum := 0
    NEXT
 Return nWidth
 
+*-----------------------------------------------------------------------------*
+METHOD SortColumn( nColumn, lDescending ) CLASS TGrid
+*-----------------------------------------------------------------------------*
+Return ListView_SortItemsEx( ::hWnd, nColumn, lDescending )
+
 
 
 
@@ -2250,6 +2256,60 @@ HB_FUNC( CELLRAWVALUE )   // hWnd, nRow, nCol, nType, uValue
    {
       hb_retni( LI.iImage );
    }
+}
+
+typedef struct __OOHG_SortItemsInfo_ {
+   HWND hWnd;
+   int  iColumn;
+   BOOL bDescending;
+} _OOHG_SortItemsInfo;
+
+PFNLVCOMPARE CALLBACK _OOHG_SortItems( LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort )
+{
+   _OOHG_SortItemsInfo *si;
+   int iRet;
+   LVITEM lvItem1, lvItem2;
+   char cString1[ 1024 ], cString2[ 1024 ];
+
+   si = ( _OOHG_SortItemsInfo * ) lParamSort;
+
+   lvItem1.mask       = LVIF_TEXT;
+   lvItem1.iItem      = lParam1;
+   lvItem1.iSubItem   = si->iColumn;
+   lvItem1.cchTextMax = 1022;
+   lvItem1.pszText    = cString1;
+   cString1[ 0 ] = cString1[ 1023 ] = 0;
+   ListView_GetItem( si->hWnd, &lvItem1 );
+   cString1[ 1023 ] = 0;
+
+   lvItem2.mask       = LVIF_TEXT;
+   lvItem2.iItem      = lParam2;
+   lvItem2.iSubItem   = si->iColumn;
+   lvItem2.cchTextMax = 1022;
+   lvItem2.pszText    = cString2;
+   cString2[ 0 ] = cString2[ 1023 ] = 0;
+   ListView_GetItem( si->hWnd, &lvItem2 );
+   cString2[ 1023 ] = 0;
+
+   iRet = strcmp( cString1, cString2 );
+   if( si->bDescending )
+   {
+      iRet = - iRet;
+   }
+
+   return ( PFNLVCOMPARE ) iRet;
+}
+
+HB_FUNC( LISTVIEW_SORTITEMSEX )   // hWnd, nColumn, lDescending
+{
+   _OOHG_SortItemsInfo si;
+
+   si.hWnd = HWNDparam( 1 );
+   si.iColumn = hb_parni( 2 ) - 1;
+   si.bDescending = hb_parl( 3 );
+   hb_retni( SendMessage( si.hWnd, LVM_SORTITEMSEX,
+                          ( WPARAM ) ( _OOHG_SortItemsInfo * ) &si,
+                          ( LPARAM ) ( PFNLVCOMPARE ) _OOHG_SortItems ) );
 }
 #pragma ENDDUMP
 
