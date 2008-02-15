@@ -1,5 +1,5 @@
 /*
- * $Id: i_this.ch,v 1.6 2008-02-10 02:39:30 guerra000 Exp $
+ * $Id: i_this.ch,v 1.7 2008-02-15 05:50:25 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -98,12 +98,12 @@
 
 // WINDOWS (THIS)
 
-#xtranslate This . <p:Title,NotifyIcon,NotifyTooltip,FocusedControl> => _OOHG_ThisForm:<p>
+#xtranslate This . <p:Title,NotifyIcon,NotifyTooltip,FocusedControl,MinWidth,MaxWidth,MinHeight,MaxHeight> => _OOHG_ThisForm:<p>
 #xtranslate This . <p:Activate,Center,Maximize,Minimize,Restore> [ () ] => _OOHG_ThisForm:<p>()
 
 // WINDOWS (THISWINDOW)
 
-#xtranslate ThisWindow . <p:Title,NotifyIcon,NotifyTooltip,FocusedControl,Name,Row,Col,Width,Height> => _OOHG_ThisForm:<p>
+#xtranslate ThisWindow . <p:Title,NotifyIcon,NotifyTooltip,FocusedControl,Name,Row,Col,Width,Height,MinWidth,MaxWidth,MinHeight,MaxHeight> => _OOHG_ThisForm:<p>
 #xtranslate ThisWindow . <p:Activate,Center,Release,Maximize,Minimize,Restore,Show,Hide,SetFocus,Object> [ () ] => _OOHG_ThisForm:<p>()
 
 // CONTROLS

@@ -1,5 +1,5 @@
 /*
- * $Id: i_window.ch,v 1.32 2008-01-04 03:21:24 guerra000 Exp $
+ * $Id: i_window.ch,v 1.33 2008-02-15 05:50:25 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -114,7 +114,7 @@
 
 	#xcommand DECLARE WINDOW <w> ;
 	=>;
-        #xtranslate <w> . \<p:Name,Title,Height,Width,Col,Row,BackColor,FocusedControl,hWnd,Object,Cursor,NotifyIcon,NotifyToolTip,SaveAs\> => GetExistingFormObject( <(w)> ):\<p\> ;;
+        #xtranslate <w> . \<p:Name,Title,Height,Width,Col,Row,BackColor,FocusedControl,hWnd,Object,Cursor,NotifyIcon,NotifyToolTip,SaveAs,MinWidth,MaxWidth,MinHeight,MaxHeight\> => GetExistingFormObject( <(w)> ):\<p\> ;;
         #xtranslate <w> . \<p:Activate,Center,Release,Maximize,Minimize,Restore,Show,Hide,Print,SetFocus\> \[()\] => GetExistingFormObject( <(w)> ):\<p\> () ;;
         #xtranslate <w> . \<c\> . \<p:Value,Name,Address,BackColor,FontColor,Picture,ToolTip,FontName,FontSize,FontBold,FontUnderline,FontItalic,FontStrikeOut,Caption,Row,Col,Width,Height,Visible,Enabled,Checked,ItemCount,RangeMin,RangeMax,CaretPos,ForeColor\> => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ;;
         #xtranslate <w> . \<c\> . \<p:DisplayValue,Position,ForeColor\> => GetProperty ( <(w)>, \<(c)\> , \<(p)\> ) ;;
@@ -208,6 +208,10 @@
                         [ ON DBLCLICK <DblClickProcedure> ] ;
                         [ ON RDBLCLICK <RDblClickProcedure> ] ;
                         [ ON MDBLCLICK <MDblClickProcedure> ] ;
+                        [ MINWIDTH <minwidth> ] ;
+                        [ MAXWIDTH <maxwidth> ] ;
+                        [ MINHEIGHT <minheight> ] ;
+                        [ MAXHEIGHT <maxheight> ] ;
 	=>;
         [ <obj> := ] ;
         DefineWindow( <(w)>, <title>, <col>, <row>, <wi>, <h>, <.nominimize.>, <.nomaximize.>, <.nosize.>, ;
@@ -223,7 +227,8 @@
                       <.main.>, <.splitchild.>, <.child.>, <.modal.>, <.modalsize.>, <.mdi.>, <.internal.>, ;
                       <.mdichild.>, <.mdiclient.>, [ <subclass>() ], <.clientarea.>, <{RestoreProcedure}>, ;
                       <{RClickProcedure}>, <{MClickProcedure}>, <{DblClickProcedure}>, ;
-                      <{RDblClickProcedure}>, <{MDblClickProcedure}> ) ;;
+                      <{RDblClickProcedure}>, <{MDblClickProcedure}>, <minwidth>, <maxwidth>, <minheight>, ;
+                      <maxheight> ) ;;
         DECLARE WINDOW <w>
 
 	#xcommand LOAD WINDOW <w> ;
@@ -365,6 +370,10 @@ SetProperty ( <(Arg1)> , <(Arg2)> , <Arg3> )
                         [ ON DBLCLICK <DblClickProcedure> ] ;
                         [ ON RDBLCLICK <RDblClickProcedure> ] ;
                         [ ON MDBLCLICK <MDblClickProcedure> ] ;
+                        [ MINWIDTH <minwidth> ] ;
+                        [ MAXWIDTH <maxwidth> ] ;
+                        [ MINHEIGHT <minheight> ] ;
+                        [ MAXHEIGHT <maxheight> ] ;
 	=>;
         [ <obj> := ] ;
         DefineWindow( , <title>, <col>, <row>, <wi>, <h>, <.nominimize.>, <.nomaximize.>, <.nosize.>, ;
@@ -380,7 +389,8 @@ SetProperty ( <(Arg1)> , <(Arg2)> , <Arg3> )
                       <.main.>, <.splitchild.>, <.child.>, <.modal.>, <.modalsize.>, <.mdi.>, <.internal.>, ;
                       <.mdichild.>, <.mdiclient.>, [ <subclass>() ], <.clientarea.>, <{RestoreProcedure}>, ;
                       <{RClickProcedure}>, <{MClickProcedure}>, <{DblClickProcedure}>, ;
-                      <{RDblClickProcedure}>, <{MDblClickProcedure}> )
+                      <{RDblClickProcedure}>, <{MDblClickProcedure}>, <minwidth>, <maxwidth>, <minheight>, ;
+                      <maxheight> )
 
 ////////////////////////////////////////////////////////////
 // Set AutoAdjust

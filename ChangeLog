@@ -1,11 +1,22 @@
 /*
- * $Id: ChangeLog,v 1.497 2008-02-12 05:43:17 guerra000 Exp $
+ * $Id: ChangeLog,v 1.498 2008-02-15 05:50:25 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+
+2008-02-14 23:50 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_this.ch
+  * include/i_window.ch
+  * source/h_windows.prg
+    + ::MinWidth, ::MaxWidth, ::MinHeight, ::MaxHeight properties added.
+    + MINWIDTH, MAXWIDTH, MINHEIGHT, MAXHEIGHT clauses added.
+  * source/c_winapimisc.prg
+  * source/h_windows.prg
+    * ::DefWindowProc() method added.
 
 2008-02-11 23:41 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_grid.prg

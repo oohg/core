@@ -1,5 +1,5 @@
 /*
- * $Id: c_winapimisc.c,v 1.7 2007-05-29 19:45:07 declan2005 Exp $
+ * $Id: c_winapimisc.c,v 1.8 2008-02-15 05:50:26 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -351,6 +351,25 @@ HB_FUNC ( POSTMESSAGE )
 HB_FUNC ( DEFWINDOWPROC )
 {
     hb_retnl( (LONG) DefWindowProc(
+                       HWNDparam( 1 ),
+                       (UINT) hb_parni( 2 ),
+                       (WPARAM) hb_parnl( 3 ),
+                       (LPARAM) hb_parnl( 4 ) ) );
+}
+
+HB_FUNC ( DEFFRAMEPROC )
+{
+    hb_retnl( (LONG) DefFrameProc(
+                       HWNDparam( 1 ),
+                       HWNDparam( 2 ),
+                       (UINT) hb_parni( 3 ),
+                       (WPARAM) hb_parnl( 4 ),
+                       (LPARAM) hb_parnl( 5 ) ) );
+}
+
+HB_FUNC ( DEFMDICHILDPROC )
+{
+    hb_retnl( (LONG) DefMDIChildProc(
                        HWNDparam( 1 ),
                        (UINT) hb_parni( 2 ),
                        (WPARAM) hb_parnl( 3 ),
