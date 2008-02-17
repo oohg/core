@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.41 2008-01-14 00:58:34 guerra000 Exp $
+ * $Id: i_altsyntax.ch,v 1.42 2008-02-17 05:47:50 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1508,7 +1508,7 @@ Edit Box
 	=>;
         _OOHG_ActiveControlMaxLength             := <maxlength>
 
-#xcommand BREAK <break> ;
+#xcommand SETBREAK <break> ;
 	=>;
         _OOHG_ActiveControlBreak         := <break>
 

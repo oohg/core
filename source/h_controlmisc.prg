@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.96 2008-02-04 05:42:53 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.97 2008-02-17 05:47:50 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1219,9 +1219,9 @@ CLASS TControl FROM TWindow
    METHOD Refresh             BLOCK { || nil }
    METHOD Release
    METHOD SetFont
-   METHOD ContainerRow        BLOCK { |Self| IF( ::Container != NIL, ::Container:ContainerRow + ::Container:RowMargin, ::Parent:RowMargin ) + ::Row }
-   METHOD ContainerCol        BLOCK { |Self| IF( ::Container != NIL, ::Container:ContainerCol + ::Container:ColMargin, ::Parent:ColMargin ) + ::Col }
-   METHOD ContainerhWnd       BLOCK { |Self| IF( ::Container == NIL, ::Parent:hWnd, if( Empty( ::Container:ContainerhWndValue ), ::Container:ContainerhWnd, ::Container:ContainerhWndValue ) ) }
+   METHOD ContainerRow        BLOCK { |Self| IF( ::Container != NIL, IF( ValidHandler( ::Container:ContainerhWndValue ), 0, ::Container:ContainerRow ) + ::Container:RowMargin, ::Parent:RowMargin ) + ::Row }
+   METHOD ContainerCol        BLOCK { |Self| IF( ::Container != NIL, IF( ValidHandler( ::Container:ContainerhWndValue ), 0, ::Container:ContainerCol ) + ::Container:ColMargin, ::Parent:ColMargin ) + ::Col }
+   METHOD ContainerhWnd       BLOCK { |Self| IF( ::Container == NIL, ::Parent:hWnd, if( ValidHandler( ::Container:ContainerhWndValue ), ::Container:ContainerhWndValue, ::Container:ContainerhWnd ) ) }
    METHOD FontName            SETGET
    METHOD FontSize            SETGET
    METHOD FontBold            SETGET

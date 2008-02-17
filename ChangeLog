@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.498 2008-02-15 05:50:25 guerra000 Exp $
+ * $Id: ChangeLog,v 1.499 2008-02-17 05:47:49 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,6 +7,22 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2008-02-16 23:44 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_windows.prg
+    + ::ForceRow and ::ForceCol properties added.
+    + ::TopMost property added.
+  * source/h_controlmisc.prg
+  * source/h_tab.prg
+  * source/h_windows.prg
+    * Fixed ::ContainerRow and ::ContainerCol values.
+  * include/i_altsyntax.ch
+  * include/i_hmg_compat.ch
+  * include/minigui.ch
+    + include/i_hmg_compat.ch file added.
+    + "SETBREAK <l>" command added.
+    * "BREAK <l>" command moved to compatibility file.
+  * source/h_editbox.prg
+    * Uncommented ::SetSplitBoxInfo() command.
 
 2008-02-14 23:50 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * include/i_this.ch

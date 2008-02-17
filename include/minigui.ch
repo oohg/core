@@ -1,5 +1,5 @@
 /*
- * $Id: minigui.ch,v 1.1 2005-08-06 23:53:55 guerra000 Exp $
+ * $Id: minigui.ch,v 1.2 2008-02-17 05:47:50 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -91,5 +91,5 @@
 	Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-
 #include "oohg.ch"
+#include "i_hmg_compat.ch"

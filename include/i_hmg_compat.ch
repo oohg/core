@@ -1,11 +1,11 @@
 /*
- * $Id: h_editbox.prg,v 1.14 2008-02-17 05:47:50 guerra000 Exp $
+ * $Id: i_hmg_compat.ch,v 1.1 2008-02-17 05:47:50 guerra000 Exp $
  */
 /*
  * ooHG source code:
- * PRG editbox functions
+ * Compatibility commands
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2008 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.guerra.com.mx
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -91,51 +91,12 @@
 	Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-#include "oohg.ch"
-#include "common.ch"
-#include "i_windefs.ch"
-#include "hbclass.ch"
+#ifndef __OOHG_HMG_COMPAT__
 
-CLASS TEdit FROM TText
-   DATA Type            INIT "EDIT" READONLY
-   DATA nOnFocusPos     INIT -3
+#define __OOHG_HMG_COMPAT__
 
-   METHOD Define
-   METHOD LookForKey
-   METHOD Events_Enter      BLOCK { || nil }
-ENDCLASS
+#xcommand BREAK <break> ;
+	=>;
+        _OOHG_ActiveControlBreak         := <break>
 
-*-----------------------------------------------------------------------------*
-METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
-               fontsize, tooltip, maxlenght, gotfocus, change, lostfocus, ;
-               readonly, break, HelpId, invisible, notabstop, bold, italic, ;
-               underline, strikeout, field, backcolor, fontcolor, novscroll, ;
-               nohscroll, lRtl, lNoBorder, OnFocusPos ) CLASS TEdit
-*-----------------------------------------------------------------------------*
-Local nStyle := ES_MULTILINE + ES_WANTRETURN, nStyleEx := 0
-
-   DEFAULT h   TO 240
-*   DEFAULT Maxlenght TO 64738
-
-   nStyle += IF( HB_IsLogical( novscroll ) .AND. novscroll, ES_AUTOVSCROLL, WS_VSCROLL ) + ;
-             IF( HB_IsLogical( nohscroll ) .AND. nohscroll, 0,              WS_HSCROLL )
-
-   ::SetSplitBoxInfo( Break )
-
-   ::Define2( ControlName, ParentForm, x, y, w, h, value, ;
-              fontname, fontsize, tooltip, maxlenght, .f., ;
-              lostfocus, gotfocus, change, nil, .f., HelpId, ;
-              readonly, bold, italic, underline, strikeout, field, ;
-              backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, .F., ;
-              nStyleEx, lNoBorder, OnFocusPos )
-Return Self
-
-*-----------------------------------------------------------------------------*
-METHOD LookForKey( nKey, nFlags ) CLASS TEdit
-*-----------------------------------------------------------------------------*
-Local lDone
-   lDone := ::Super:LookForKey( nKey, nFlags )
-   If nKey == VK_ESCAPE
-      lDone := .T.
-   EndIf
-Return lDone
+#endif

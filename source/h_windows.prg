@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.182 2008-02-15 05:50:26 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.183 2008-02-17 05:47:50 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1525,6 +1525,8 @@ CLASS TForm FROM TWindow
    DATA MaxWidth       INIT 0
    DATA MinHeight      INIT 0
    DATA MaxHeight      INIT 0
+   DATA ForceRow       INIT nil     // Must be NIL instead of 0
+   DATA ForceCol       INIT nil     // Must be NIL instead of 0
 
    DATA GraphTasks     INIT {}
    DATA GraphCommand   INIT nil
@@ -1544,6 +1546,7 @@ CLASS TForm FROM TWindow
    METHOD Row                 SETGET
    METHOD Cursor              SETGET
    METHOD BackColor           SETGET
+   METHOD TopMost             SETGET
    METHOD VirtualWidth        SETGET
    METHOD VirtualHeight       SETGET
 
@@ -2176,6 +2179,29 @@ HB_FUNC_STATIC( TFORM_BACKCOLOR )
 
    // Return value was set in _OOHG_DetermineColorReturn()
 }
+
+HB_FUNC_STATIC( TFORM_TOPMOST )
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+
+   if( ValidHandler( oSelf->hWnd ) )
+   {
+      if( ISLOG( 1 ) )
+      {
+         if( hb_parl( 1 ) )
+         {
+            SetWindowPos( oSelf->hWnd, HWND_TOPMOST,   0, 0, 0, 0, SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE );
+         }
+         else
+         {
+            SetWindowPos( oSelf->hWnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE );
+         }
+      }
+   }
+
+   hb_ret();
+}
 #pragma ENDDUMP
 
  *----------------------------------
@@ -2662,7 +2688,16 @@ Local oCtrl, lMinim := .F.
    case nMsg == WM_SIZING
         ***********************************************************************
 
-      If TForm_Sizing( wParam, lParam, ::MinWidth, ::MaxWidth, ::MinHeight, ::MaxHeight )
+      If _TForm_Sizing( wParam, lParam, ::MinWidth, ::MaxWidth, ::MinHeight, ::MaxHeight )
+         ::DefWindowProc( nMsg, wParam, lParam )
+         Return 1
+      EndIf
+
+        ***********************************************************************
+   case nMsg == WM_MOVING
+        ***********************************************************************
+
+      If _TForm_Moving( lParam, ::ForceRow, ::ForceCol )
          ::DefWindowProc( nMsg, wParam, lParam )
          Return 1
       EndIf
@@ -2722,28 +2757,21 @@ Local oCtrl, lMinim := .F.
 Return nil
 
 #pragma BEGINDUMP
-HB_FUNC_STATIC( TFORM_SIZING )   // wParam, lParam, nMinWidth, nMaxWidth, nMinHeight, nMaxHeight
+int _OOHG_AdjustSize( int iBorder, RECT * rect, int iMinWidth, int iMaxWidth, int iMinHeight, int iMaxHeight )
 {
-   RECT * rect;
    int iWidth, iHeight;
-   int iAux, iBorder;
    BOOL bChanged = 0;
 
-   rect = ( RECT * ) hb_parnl( 2 );
    iWidth  = rect->right - rect->left;
    iHeight = rect->bottom - rect->top;
 
-   iBorder = hb_parni( 1 );
-
-   iAux = hb_parni( 3 );   // nMinWidth
-   if( iAux > 0 && iAux > iWidth )
+   if( iMinWidth > 0 && iMinWidth > iWidth )
    {
-      iWidth = iAux;
+      iWidth = iMinWidth;
    }
-   iAux = hb_parni( 4 );   // nMaxWidth
-   if( iAux > 0 && iAux < iWidth )
+   if( iMaxWidth > 0 && iMaxWidth < iWidth )
    {
-      iWidth = iAux;
+      iWidth = iMaxWidth;
    }
    if( iWidth != ( rect->right - rect->left ) )
    {
@@ -2758,15 +2786,13 @@ HB_FUNC_STATIC( TFORM_SIZING )   // wParam, lParam, nMinWidth, nMaxWidth, nMinHe
       bChanged = 1;
    }
 
-   iAux = hb_parni( 5 );   // nMinHeight
-   if( iAux > 0 && iAux > iHeight )
+   if( iMinHeight > 0 && iMinHeight > iHeight )
    {
-      iHeight = iAux;
+      iHeight = iMinHeight;
    }
-   iAux = hb_parni( 6 );   // nMaxHeight
-   if( iAux > 0 && iAux < iHeight )
+   if( iMaxHeight > 0 && iMaxHeight < iHeight )
    {
-      iHeight = iAux;
+      iHeight = iMaxHeight;
    }
    if( iHeight != ( rect->bottom - rect->top ) )
    {
@@ -2781,7 +2807,58 @@ HB_FUNC_STATIC( TFORM_SIZING )   // wParam, lParam, nMinWidth, nMaxWidth, nMinHe
       bChanged = 1;
    }
 
-   hb_retl( bChanged );
+   return bChanged;
+}
+
+HB_FUNC_STATIC( _TFORM_SIZING )   // wParam, lParam, nMinWidth, nMaxWidth, nMinHeight, nMaxHeight
+{
+   hb_retl( _OOHG_AdjustSize( hb_parni( 1 ), ( RECT * ) hb_parnl( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ) ) );
+}
+
+int _OOHG_AdjustPosition( RECT * rect, int iForceRow, int iForceCol )
+{
+   BOOL bChanged = 0;
+
+   if( iForceRow >= 0 && rect->top != iForceRow )
+   {
+      rect->bottom = iForceRow + ( rect->bottom - rect->top );
+      rect->top = iForceRow;
+      bChanged = 1;
+   }
+
+   if( iForceCol >= 0 && rect->left != iForceCol )
+   {
+      rect->right = iForceCol + ( rect->right - rect->left );
+      rect->left = iForceCol;
+      bChanged = 1;
+   }
+
+   return bChanged;
+}
+
+HB_FUNC_STATIC( _TFORM_MOVING )   // lParam, nForceRow, nForceCol
+{
+   int iForceRow, iForceCol;
+
+   if( ISNUM( 2 ) )
+   {
+      iForceRow = hb_parni( 2 );
+   }
+   else
+   {
+      iForceRow = -1;
+   }
+
+   if( ISNUM( 3 ) )
+   {
+      iForceCol = hb_parni( 3 );
+   }
+   else
+   {
+      iForceCol = -1;
+   }
+
+   hb_retl( _OOHG_AdjustPosition( ( RECT * ) hb_parnl( 1 ), iForceRow, iForceCol ) );
 }
 #pragma endDUMP
 
@@ -3098,8 +3175,8 @@ CLASS TFormInternal FROM TForm
    METHOD Row       SETGET
    METHOD Col       SETGET
 
-   METHOD ContainerRow        BLOCK { |Self| IF( ::Container != NIL, ::Container:ContainerRow + ::Container:RowMargin, ::Parent:RowMargin ) + ::Row }
-   METHOD ContainerCol        BLOCK { |Self| IF( ::Container != NIL, ::Container:ContainerCol + ::Container:ColMargin, ::Parent:ColMargin ) + ::Col }
+   METHOD ContainerRow        BLOCK { |Self| IF( ::Container != NIL, IF( ValidHandler( ::Container:ContainerhWndValue ), 0, ::Container:ContainerRow ) + ::Container:RowMargin, ::Parent:RowMargin ) + ::Row }
+   METHOD ContainerCol        BLOCK { |Self| IF( ::Container != NIL, IF( ValidHandler( ::Container:ContainerhWndValue ), 0, ::Container:ContainerCol ) + ::Container:ColMargin, ::Parent:ColMargin ) + ::Col }
 ENDCLASS
 
 *------------------------------------------------------------------------------*

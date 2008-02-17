@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.35 2008-01-14 00:58:35 guerra000 Exp $
+ * $Id: h_tab.prg,v 1.36 2008-02-17 05:47:50 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -617,16 +617,11 @@ CLASS TTabPageInternal FROM TFormInternal
    DATA Position   INIT 0
    DATA nImage     INIT -1
    DATA lHidden    INIT .F.
-   DATA nRowMargin INIT 0
-   DATA nColMargin INIT 0
    DATA Caption    INIT ""
 
    METHOD Define
    METHOD EndPage             BLOCK { || _EndTabPage() }
    METHOD Events_Size
-
-   METHOD RowMargin           SETGET
-   METHOD ColMargin           SETGET
 
    METHOD SetFocus            BLOCK { |Self| ::Container:SetFocus() , ::Container:Value := ::Position , ::Super:SetFocus() , ::Container:DoEvent( ::Container:OnChange, "CHANGE" ) , Self }
 ENDCLASS
@@ -659,18 +654,6 @@ LOCAL aRect
    aRect := TabCtrl_GetItemRect( oTab:hWnd, 0 )
    aRect := { 2, aRect[ 4 ] + 2, oTab:Width - 2, oTab:Height - 2 }
 RETURN { aRect[ 1 ], aRect[ 2 ], aRect[ 3 ] - aRect[ 1 ], aRect[ 4 ] - aRect[ 2 ] } // { Col, Row, Width, Height }
-
-*-----------------------------------------------------------------------------*
-METHOD RowMargin( nRow ) CLASS TTabPageInternal
-*-----------------------------------------------------------------------------*
-   ASSIGN ::nRowMargin VALUE nRow Type "N"
-RETURN - ::ContainerRow + ::nRowMargin
-
-*-----------------------------------------------------------------------------*
-METHOD ColMargin( nCol ) CLASS TTabPageInternal
-*-----------------------------------------------------------------------------*
-   ASSIGN ::nColMargin VALUE nCol Type "N"
-RETURN - ::ContainerCol + ::nColMargin
 
 
 
