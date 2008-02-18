@@ -1,12 +1,12 @@
 /*
- * $Id: h_splitbox.prg,v 1.8 2008-01-21 00:16:47 guerra000 Exp $
+ * $Id: h_splitbox.prg,v 1.9 2008-02-18 02:45:34 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Splitbox control
  *
  * Copyright 2006 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -93,7 +93,7 @@
 
 #include "oohg.ch"
 #include "hbclass.ch"
-
+#include "i_windefs.ch"
 
 CLASS TSplitBox FROM TControl
    DATA Type           INIT "SPLITBOX" READONLY
@@ -113,24 +113,39 @@ CLASS TSplitBox FROM TControl
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
-METHOD Define( ParentForm, bottom, inverted, lRtl ) CLASS TSplitBox
+METHOD Define( ParentForm, bottom, inverted, lRtl, noattached ) CLASS TSplitBox
 *-----------------------------------------------------------------------------*
-Local ControlHandle
+Local ControlHandle, nStyle
 
    ::SetForm( , ParentForm,,,,,, lRtl )
 
-   // ::ValidateContainer()   // ::Container := nil
-
-   // This should be fixed at ::ValidateContainer()!!!!!!!!!
-/*
-   If LEN( _OOHG_ActiveFrame ) > 0
+   If ::Container != nil .AND. ! ValidHandler( ::ContainerhWndValue )
       MsgOOHGError( "SPLITBOX can't be defined inside Tab control. Program terminated." )
 	EndIf
-*/
 
-   ::lInverted := ( ValType( Inverted ) == "L" .AND. Inverted )
+   ASSIGN ::lInverted VALUE inverted   TYPE "L"
+   ASSIGN bottom      VALUE bottom     TYPE "L"
 
-   ControlHandle := InitSplitBox( ::ContainerhWnd, bottom, inverted, lRtl )
+   nStyle := ::InitStyle( ,,, .T. )
+   If ::lInverted
+      If bottom
+         nStyle += CCS_RIGHT
+      Else
+         nStyle += CCS_LEFT
+      EndIf
+   Else
+      If bottom
+         nStyle += CCS_BOTTOM
+      Else
+         nStyle += CCS_TOP
+      EndIf
+   EndIf
+
+   ControlHandle := InitSplitBox( ::ContainerhWnd, nStyle, ::lRtl )
+
+   If VALTYPE( noattached ) == "L" .AND. noattached
+      ::Style := ::Style + CCS_NOPARENTALIGN
+   EndIf
 
    ::Register( ControlHandle )
    ::SizePos()
@@ -170,6 +185,15 @@ Function _EndSplitBox()
 *-----------------------------------------------------------------------------*
 Return _OOHG_DeleteFrame( "SPLITBOX" )
 
+*-----------------------------------------------------------------------------*
+Function _ForceBreak( ParentForm )
+*-----------------------------------------------------------------------------*
+Local oControl
+   oControl := TControl()
+   oControl:SetForm( , ParentForm )
+   oControl:SetSplitBoxInfo( .T. )
+Return nil
+
 EXTERN SetSplitBoxItem
 
 #pragma BEGINDUMP
@@ -185,7 +209,7 @@ EXTERN SetSplitBoxItem
 #include <hbapi.h>
 #include <windows.h>
 #include <commctrl.h>
-#include "../include/oohg.h"
+#include "oohg.h"
 
 static WNDPROC lpfnOldWndProc = 0;
 
@@ -203,25 +227,15 @@ HB_FUNC( INITSPLITBOX )
    int ExStyle;
    int Style;
 
-   ExStyle = _OOHG_RTL_Status( hb_parl( 4 ) );
+   ExStyle = _OOHG_RTL_Status( hb_parl( 3 ) );
 
-   Style = WS_CHILD |
-           WS_VISIBLE |
+   Style = hb_parni( 2 ) |
+           WS_CHILD |
            WS_CLIPSIBLINGS |
            WS_CLIPCHILDREN |
            RBS_BANDBORDERS |
            RBS_VARHEIGHT |
            RBS_FIXEDORDER;
-
-   if ( hb_parl (2) )
-   {
-      Style |= CCS_BOTTOM;
-   }
-
-   if ( hb_parl (3) )
-   {
-      Style |= CCS_VERT;
-   }
 
    icex.dwSize = sizeof( INITCOMMONCONTROLSEX );
    icex.dwICC  = ICC_COOL_CLASSES | ICC_BAR_CLASSES;
@@ -243,7 +257,7 @@ HB_FUNC( INITSPLITBOX )
    rbi.himl   = ( HIMAGELIST ) NULL;
    SendMessage( hwndRB, RB_SETBARINFO, 0, ( LPARAM ) &rbi );
 
-   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hwndRB, GWL_WNDPROC, ( LONG ) SubClassFunc );
+   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( hwndRB, GWL_WNDPROC, ( LONG ) SubClassFunc );
 
    HWNDret( hwndRB );
 }

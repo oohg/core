@@ -1,12 +1,12 @@
 /*
- * $Id: h_textbox.prg,v 1.49 2008-01-27 06:47:35 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.50 2008-02-18 02:45:34 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG textbox functions
  *
  * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -106,6 +106,7 @@ CLASS TText FROM TLabel
    DATA nOnFocusPos     INIT -2
    DATA nWidth          INIT 120
    DATA nHeight         INIT 24
+   DATA OnTextFilled    INIT nil
 
    METHOD Define
    METHOD Define2
@@ -118,6 +119,7 @@ CLASS TText FROM TLabel
    METHOD CaretPos    SETGET
    METHOD ReadOnly    SETGET
    METHOD MaxLength   SETGET
+   METHOD DoAutoSkip
    METHOD Events_Command
 ENDCLASS
 
@@ -257,6 +259,16 @@ METHOD MaxLength( nLen ) CLASS TText
 Return SendMessage( ::hWnd, EM_GETLIMITTEXT, 0, 0 )
 
 *------------------------------------------------------------------------------*
+METHOD DoAutoSkip() CLASS TText
+*------------------------------------------------------------------------------*
+   If HB_IsBlock( ::OnTextFilled )
+      ::DoEvent( ::OnTextFilled, "TEXTFILLED" )
+   Else
+      _SetNextFocus()
+   EndIf
+Return nil
+
+*------------------------------------------------------------------------------*
 METHOD Events_Command( wParam ) CLASS TText
 *------------------------------------------------------------------------------*
 Local Hi_wParam := HIWORD( wParam )
@@ -269,8 +281,8 @@ Local Hi_wParam := HIWORD( wParam )
          ::lSetting := .F.
       Else
          ::DoEvent( ::OnChange, "CHANGE" )
-         If ::lAutoSkip .AND. ::nMaxLength > 0 .AND. HiWord( SendMessage( ::hWnd, EM_GETSEL, 0, 0 ) ) >= ::nMaxLength
-            _SetNextFocus()
+         If ::lAutoSkip .AND. ::nMaxLength > 0 .AND. ::CaretPos >= ::nMaxLength
+            ::DoAutoSkip()
          EndIf
       EndIf
       Return nil
@@ -286,6 +298,60 @@ Local Hi_wParam := HIWORD( wParam )
    Endif
 
 Return ::Super:Events_Command( wParam )
+
+EXTERN INITTEXTBOX
+
+#pragma BEGINDUMP
+#include "hbapi.h"
+#include "hbvm.h"
+#include "hbstack.h"
+#include <windows.h>
+#include <commctrl.h>
+#include "oohg.h"
+
+static WNDPROC lpfnOldWndProc = 0;
+
+static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+{
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
+}
+
+HB_FUNC( INITTEXTBOX )
+{
+   HWND hwnd;         // Handle of the parent window/form.
+   HWND hedit;        // Handle of the child window/control.
+   int StyleEx;
+
+   StyleEx = hb_parni( 10 ) | _OOHG_RTL_Status( hb_parl( 9 ) );
+
+   // Get the handle of the parent window/form.
+   hwnd = HWNDparam( 1 );
+
+   // Creates the child control.
+   hedit = CreateWindowEx( StyleEx,
+                           "EDIT",
+                           "",
+                           ( WS_CHILD | hb_parni( 7 ) ),
+                           hb_parni( 3 ),
+                           hb_parni( 4 ),
+                           hb_parni( 5 ),
+                           hb_parni( 6 ),
+                           hwnd,
+                           ( HMENU ) hb_parni( 2 ),
+                           GetModuleHandle( NULL ),
+                           NULL );
+
+   if( hb_parni( 8 ) != 0 )
+   {
+      SendMessage( hedit, ( UINT ) EM_LIMITTEXT, ( WPARAM) hb_parni( 8 ), ( LPARAM ) 0 );
+   }
+
+   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( hedit, GWL_WNDPROC, ( LONG ) SubClassFunc );
+
+   HWNDret( hedit );
+
+}
+#pragma ENDDUMP
 
 
 
@@ -309,6 +375,7 @@ CLASS TTextPicture FROM TText
    DATA lInsert        INIT .T.
    DATA lFocused       INIT .F.
    DATA xUndo          INIT nil
+   DATA cDateFormat    INIT nil
 
    METHOD Define
 
@@ -353,12 +420,14 @@ Return Self
 *------------------------------------------------------------------------------*
 METHOD Picture( cInputMask, uValue ) CLASS TTextPicture
 *------------------------------------------------------------------------------*
-Local cType, cPicFun, cPicMask, nPos, nScroll
+Local cType, cPicFun, cPicMask, nPos, nScroll, lOldCentury
    If VALTYPE( cInputMask ) $ "CM"
       IF uValue == nil
          uValue := ::Value
       ENDIF
 
+      lOldCentury := __SETCENTURY()
+      ::cDateFormat := SET( _SET_DATEFORMAT )
       cType := ValType( uValue )
 
       IF ! VALTYPE( cInputMask ) $ "CM"
@@ -391,19 +460,33 @@ Local cType, cPicFun, cPicMask, nPos, nScroll
          ENDIF
 */
 
+         IF "2" $ cInputMask
+            SET CENTURY OFF
+            cInputMask := StrTran( cInputMask, "2", "" )
+         ENDIF
+
+         IF "4" $ cInputMask
+            SET CENTURY ON
+            cInputMask := StrTran( cInputMask, "4", "" )
+         ENDIF
+
+         ::cDateFormat := SET( _SET_DATEFORMAT )
+
          IF "C" $ cInputMask
             cPicFun += "C"
             cInputMask := StrTran( cInputMask, "C", "" )
          ENDIF
 
          IF "D" $ cInputMask
-            cPicMask := StrTran( StrTran( StrTran( StrTran( StrTran( StrTran( SET( _SET_DATEFORMAT ), "Y", "9" ), "y", "9" ), "M", "9" ), "m", "9" ), "D", "9" ), "d", "9" )
+            cPicMask := ""
             cInputMask := StrTran( cInputMask, "D", "" )
          ENDIF
 
          IF "E" $ cInputMask
             ::lBritish := .T.
-            If cType != "N"
+            If cType == "D"
+               cPicMask := If( __SETCENTURY(), "dd/mm/yyyy", "dd/mm/yy" )
+            ElseIf cType != "N"
                cPicMask := If( __SETCENTURY(), "99/99/9999", "99/99/99" )
             Endif
             cPicFun += "E"
@@ -485,13 +568,18 @@ Local cType, cPicFun, cPicMask, nPos, nScroll
                   cPicMask := Left( cPicMask, nPos - 1 ) + "." + SubStr( cPicMask, nPos + 1 )
                ENDIF
             CASE cType $ "D"
-               cPicMask := StrTran( StrTran( StrTran( StrTran( StrTran( StrTran( SET( _SET_DATEFORMAT ), "Y", "9" ), "y", "9" ), "M", "9" ), "m", "9" ), "D", "9" ), "d", "9" )
+               cPicMask := ::cDateFormat
             CASE cType $ "L"
                cPicMask := "L"
             OTHERWISE
                // Invalid data type
          ENDCASE
-      ENDIF
+      EndIf
+
+      If cType $ "D"
+         ::cDateFormat := cPicMask
+         cPicMask := StrTran( StrTran( StrTran( StrTran( StrTran( StrTran( cPicMask, "Y", "9" ), "y", "9" ), "M", "9" ), "m", "9" ), "D", "9" ), "d", "9" )
+      EndIf
 
       ::PictureFunShow := cPicFun
       ::PictureFun     := IF( ::lBritish, "E", "" ) + IF( "R" $ cPicFun, "R", "" )
@@ -514,6 +602,7 @@ Local cType, cPicFun, cPicMask, nPos, nScroll
 
       ::cPicture := ::PictureFunShow + ::PictureShow
       ::Value := uValue
+      __SETCENTURY( lOldCentury )
    EndIf
 
 RETURN ::cPicture
@@ -530,31 +619,43 @@ Return aValid
 *------------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TTextPicture
 *------------------------------------------------------------------------------*
-Local cType, uDate, cAux
-   IF ! ValidHandler( ::hWnd )
+Local cType, cAux, cDateFormat, lOldCentury
+   If ! ValidHandler( ::hWnd )
       Return nil
-   ENDIF
+   EndIf
 
-   IF PCount() > 0
+   If ::DataType == "D"
+      cDateFormat := SET( _SET_DATEFORMAT )
+      lOldCentury := __SETCENTURY()
+      __SETCENTURY( ( "YYYY" $ UPPER( ::cDateFormat ) ) )
+      SET( _SET_DATEFORMAT, ::cDateFormat )
+   EndIf
+
+   If PCount() > 0
       cType := ValType( uValue )
       cType := If( cType == "M", "C", cType )
-      IF cType == ::DataType
-         IF ::lFocused
+      If cType == ::DataType
+         If cType == "D"
+            cAux := Transform( uValue, "@D" )
+            If LEN( cAux ) < LEN( ::cDateFormat )
+               cAux := cAux + SPACE( LEN( ::cDateFormat ) - LEN( cAux ) )
+            EndIf
+         ElseIf ::lFocused
             cAux := Transform( uValue, ::PictureFun + ::PictureMask )
-            IF LEN( cAux ) < LEN( ::PictureMask )
+            If LEN( cAux ) < LEN( ::PictureMask )
                cAux := cAux + SPACE( LEN( ::PictureMask ) - LEN( cAux ) )
-            ENDIF
-         ELSE
+            EndIf
+         Else
             cAux := Transform( uValue, ::PictureFunShow + ::PictureShow )
-            IF LEN( cAux ) < LEN( ::PictureShow )
+            If LEN( cAux ) < LEN( ::PictureShow )
                cAux := cAux + SPACE( LEN( ::PictureShow ) - LEN( cAux ) )
-            ENDIF
-         ENDIF
+            EndIf
+         EndIf
          ::Caption := cAux
       Else
          // Wrong data types
-      ENDIF
-   ENDIF
+      EndIf
+   EndIf
    cType := ::DataType
 
    // Removes mask
@@ -564,20 +665,19 @@ Local cType, uDate, cAux
       CASE cType == "N"
          uValue := VAL( StrTran( xUnTransform( Self, ::Caption ), " ", "" ) )
       CASE cType == "D"
-         If ::lBritish
-            uDate := SET( _SET_DATEFORMAT )
-            SET DATE BRITISH
-            uValue := CTOD( ::Caption )
-            SET( _SET_DATEFORMAT, uDate )
-         Else
-            uValue := CTOD( ::Caption )
-         EndIf
+         uValue := CTOD( ::Caption )
       CASE cType == "L"
          uValue := ( Left( xUnTransform( Self, ::Caption ), 1 ) $ "YT" + HB_LANGMESSAGE( HB_LANG_ITEM_BASE_TEXT + 1 ) )
       OTHERWISE
          // Wrong data type
          uValue := NIL
    ENDCASE
+
+   If ::DataType == "D"
+      __SETCENTURY( lOldCentury )
+      SET( _SET_DATEFORMAT, cDateFormat )
+   EndIf
+
 Return uValue
 
 STATIC FUNCTION xUnTransform( Self, cCaption )
@@ -590,19 +690,13 @@ Local cRet
 Return cRet
 
 #pragma BEGINDUMP
-#include "hbapi.h"
-#include "hbvm.h"
-#include "hbstack.h"
-#include <windows.h>
-#include <commctrl.h>
-#include "oohg.h"
 #define s_Super s_TText
 
 // -----------------------------------------------------------------------------
 HB_FUNC_STATIC( TTEXTPICTURE_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TTextPicture
 // -----------------------------------------------------------------------------
 {
-   HWND hWnd      = ( HWND )   hb_parnl( 1 );
+   HWND hWnd      = HWNDparam( 1 );
    UINT message   = ( UINT )   hb_parni( 2 );
    WPARAM wParam  = ( WPARAM ) hb_parni( 3 );
    LPARAM lParam  = ( LPARAM ) hb_parnl( 4 );
@@ -655,7 +749,7 @@ Local aValidMask := ::ValidMask
          SendMessage( ::hWnd, EM_SETSEL, nPos, nPos )
       EndIf
       If ::lAutoSkip .AND. nPos >= LEN( aValidMask )
-         _SetNextFocus()
+         ::DoAutoSkip()
       EndIf
       Return 1
 
@@ -681,7 +775,7 @@ Local aValidMask := ::ValidMask
       ENDIF
       // Must ::lAutoSkip works when PASTE?
       // If ::lAutoSkip .AND. nPos >= LEN( aValidMask )
-      //    _SetNextFocus()
+      //    ::DoAutoSkip()
       // EndIf
       Return 1
 
@@ -854,13 +948,13 @@ Local cPictureMask, aValidMask
       cText := ::Value
       ::lFocused := .F.
       ::lSetting := .T.
-      ::Caption := Transform( cText, ::PictureFunShow + ::PictureShow )
+      ::Value := cText
 
    elseif Hi_wParam == EN_SETFOCUS
       cText := ::Value
       ::lFocused := .T.
       ::lSetting := .T.
-      ::Caption := Transform( cText, ::PictureFun + ::PictureMask )
+      ::Value := cText
       ::xUndo := ::Value
 
    Endif
@@ -962,8 +1056,8 @@ FUNCTION DefineTextBox( cControlName, cParentForm, x, y, Width, Height, ;
 Local Self, lInsert
 
    // If format is specified, inputmask is enabled
-   If VALTYPE( format ) $"CM"
-      If VALTYPE( inputmask ) $"CM"
+   If VALTYPE( format ) $ "CM"
+      If VALTYPE( inputmask ) $ "CM"
          inputmask := "@" + format + " " + inputmask
       Else
          inputmask := "@" + format
@@ -976,24 +1070,24 @@ Local Self, lInsert
    If ( HB_IsLogical( date ) .AND. date ) .OR. HB_IsDate( value )
       lInsert := .F.
       numeric := .F.
-      If VALTYPE( Value )$"CM"
+      If VALTYPE( Value ) $ "CM"
          Value := CTOD( Value )
       ElseIf !HB_IsDate( Value )
          Value := STOD( "" )
       EndIf
-      If ! VALTYPE( inputmask ) $"CM"
+      If ! VALTYPE( inputmask ) $ "CM"
          inputmask := "@D"
       EndIf
    EndIf
 
    // Checks for numeric textbox
-   If !HB_IsLogical( numeric )
+   If ! HB_IsLogical( numeric )
       numeric := .F.
    ElseIf numeric
       lInsert := .F.
-      If VALTYPE( Value ) $"CM"
+      If VALTYPE( Value ) $ "CM"
          Value := VAL( Value )
-      ElseIf !HB_IsNumeric( Value )
+      ElseIf ! HB_IsNumeric( Value )
          Value := 0
       EndIf
    EndIf

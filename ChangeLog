@@ -1,11 +1,31 @@
 /*
- * $Id: ChangeLog,v 1.499 2008-02-17 05:47:49 guerra000 Exp $
+ * $Id: ChangeLog,v 1.500 2008-02-18 02:45:34 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-02-17 20:43 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_windows.prg
+    ! Fixed BREAK warning.
+  - source/c_textbox.c
+  * source/common_make.bat
+  * source/h_textbox.prg
+  * source/makelib_bcc.bat
+  * source/makelib_mingw.bat
+    + Added "@2" and "@4" picture functions for DATE values.
+    + Added "custom" date picture mask. "mm,yyyy,dd" picture works.
+    + ::OnTextFilled property added. It's executed when user types
+      last character of textbox's max length.
+    * Moved C code from c_textbox.c to h_textbox.prg file.
+    - c_textbox.c removed.
+  * include/i_splitbox.ch
+  * include/i_windefs.ch
+  * source/h_splitbox.prg
+    + FORCEBREAK command added.
+    * Splitbox's container validation fixed.
 
 2008-02-16 23:44 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_windows.prg

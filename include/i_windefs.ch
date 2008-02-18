@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.25 2008-01-13 17:01:06 guerra000 Exp $
+ * $Id: i_windefs.ch,v 1.26 2008-02-18 02:45:34 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -668,5 +668,17 @@
 
 #define CB_GETDROPPEDSTATE     0x0157
 #define CB_SHOWDROPDOWN        0x014F
+
+#define CCS_TOP                 1
+#define CCS_NOMOVEY             2
+#define CCS_BOTTOM              3
+#define CCS_NORESIZE            4
+#define CCS_NOPARENTALIGN       8
+#define CCS_ADJUSTABLE          16
+#define CCS_NODIVIDER           32
+#define CCS_VERT                128
+#define CCS_LEFT                ( CCS_VERT + CCS_TOP )
+#define CCS_RIGHT               ( CCS_VERT + CCS_BOTTOM )
+#define CCS_NOMOVEX             ( CCS_VERT + CCS_NOMOVEY )
 
 #endif

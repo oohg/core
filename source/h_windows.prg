@@ -1,12 +1,12 @@
 /*
- * $Id: h_windows.prg,v 1.183 2008-02-17 05:47:50 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.184 2008-02-18 02:45:34 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG Windows handling functions
  *
  * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -4058,7 +4058,9 @@ Local uRet, oError
 Return uRet
 
 Static Function _OOHG_MacroCall_Error( oError )
-   BREAK oError
+   IF ! EMPTY( oError )
+      BREAK oError
+   ENDIF
 RETURN 1
 
 FUNCTION ExitProcess( nExit )

@@ -1,12 +1,12 @@
 /*
- * $Id: i_splitbox.ch,v 1.4 2006-03-30 04:54:37 guerra000 Exp $
+ * $Id: i_splitbox.ch,v 1.5 2008-02-18 02:45:34 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Split box definitions
  *
  * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -95,11 +95,19 @@
                 [ OBJ <obj> ] ;
 		[ <dummy1: OF, PARENT> <parent> ] ;
 		[ <bottom: BOTTOM> ]	;
-		[ <horizontal: HORIZONTAL> ]	;
+                [ <vertical: VERTICAL> ]    ;
                 [ <rtl: RTL> ]    ;
+                [ <noattached: NOATTACHED> ]    ;
+                [ SUBCLASS <subclass> ]         ;
 =>;
-        [ <obj> := ] TSplitBox():Define( <(parent)>, <.bottom.>, <.horizontal.>, <.rtl.> )
+        [ <obj> := ] _OOHG_SelectSubClass( TSplitBox(), [ <subclass>() ] ): ;
+                     Define( <(parent)>, <.bottom.>, <.vertical.>, <.rtl.>, <.noattached.> )
 
 #xcommand END SPLITBOX ;
 =>;
-	_EndSplitBox()
+          _EndSplitBox()
+
+#xcommand FORCEBREAK ;
+          [ <dummy1: OF, PARENT> <parent> ] ;
+=>;
+          _ForceBreak( <(parent)> )
