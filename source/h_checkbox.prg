@@ -1,5 +1,5 @@
 /*
- * $Id: h_checkbox.prg,v 1.22 2008-01-14 00:58:34 guerra000 Exp $
+ * $Id: h_checkbox.prg,v 1.23 2008-02-19 15:03:25 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -129,17 +129,16 @@ Local ControlHandle, nStyle := 0, nStyleEx := 0
    ENDIF
    ASSIGN autosize      VALUE autosize TYPE "L" DEFAULT .F.
 
-   IF Transparent .and.  ( "XP" $ OS() .OR. "Vista" $ OS() )
-       transparent:=.F.
-      ::transparent:=.F.
+   IF ::Transparent .AND.  ( "XP" $ OS() .OR. "Vista" $ OS() )
+      ::Transparent := .F.
    ENDIF
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor,, lRtl )
 
    nStyle := ::InitStyle( ,, Invisible, NoTabStop ) + BS_AUTOCHECKBOX
-  if transparent
+   If ::Transparent
       nStyleEx += WS_EX_TRANSPARENT
-   endif
+   EndIf
 
    Controlhandle := InitCheckBox( ::ContainerhWnd, Caption, 0, ::ContainerCol, ::ContainerRow, '', 0 , ::nWidth, ::nHeight, nStyle, nStyleEx, ::lRtl )
 

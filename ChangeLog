@@ -1,11 +1,15 @@
 /*
- * $Id: ChangeLog,v 1.500 2008-02-18 02:45:34 guerra000 Exp $
+ * $Id: ChangeLog,v 1.501 2008-02-19 15:03:24 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-02-19 09:02 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_checkbox.prg
+    ! Fixed default TRANSPARENT value at ::Define() method.
 
 2008-02-17 20:43 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_windows.prg
