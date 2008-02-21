@@ -1,5 +1,5 @@
 /*
- * $Id: h_richeditbox.prg,v 1.16 2008-02-12 05:43:17 guerra000 Exp $
+ * $Id: h_richeditbox.prg,v 1.17 2008-02-21 06:46:06 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -104,6 +104,7 @@ CLASS TEditRich FROM TEdit
    METHOD Define
    METHOD BackColor   SETGET
    METHOD RichValue   SETGET
+   METHOD Value       SETGET
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -148,7 +149,21 @@ METHOD RichValue( cValue ) CLASS TEditRich
    If VALTYPE( cValue ) $ "CM"
       RichStreamIn( ::hWnd, cValue )
    EndIf
+   If ::Container != nil
+      ::SizePos()   // Forces repaint
+   EndIf
 RETURN RichStreamOut( ::hWnd )
+
+*-----------------------------------------------------------------------------*
+METHOD Value( cValue ) CLASS TEditRich
+*-----------------------------------------------------------------------------*
+   If VALTYPE( cValue ) $ "CM"
+      ::Caption := cValue
+   EndIf
+   If ::Container != nil
+      ::SizePos()   // Forces repaint
+   EndIf
+RETURN ::Caption
 
 #pragma BEGINDUMP
 #include "hbapi.h"
