@@ -1,11 +1,20 @@
 /*
- * $Id: ChangeLog,v 1.501 2008-02-19 15:03:24 guerra000 Exp $
+ * $Id: ChangeLog,v 1.502 2008-02-21 05:09:49 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-02-20 23:08 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_menu.ch
+  * include/i_windefs.ch
+  * source/h_menu.prg
+    * Menu SEPARATOR is another control.
+    + SUBCLASS clause added.
+  * source/h_combo.prg
+    ! Fixed incorrect LOSTFOCUS event processing via EN_KILLFOCUS.
 
 2008-02-19 09:02 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_checkbox.prg

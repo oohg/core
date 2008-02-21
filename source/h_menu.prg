@@ -1,12 +1,12 @@
 /*
- * $Id: h_menu.prg,v 1.23 2007-11-04 15:43:34 declan2005 Exp $
+ * $Id: h_menu.prg,v 1.24 2008-02-21 05:09:49 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG menu functions
  *
  * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -100,14 +100,14 @@ STATIC _OOHG_xMenuActive := {}
 CLASS TMenu FROM TControl
    DATA Type      INIT "MENU" READONLY
    DATA lMain     INIT .F.
-   
+
    DATA ladjust  INIT .F.
 
    METHOD Define
    METHOD Activate
    METHOD Release     BLOCK { |Self| DestroyMenu( ::hWnd ), ::Super:Release() }
    METHOD EndMenu     BLOCK { || _EndMenu() }
-   METHOD Separator   BLOCK { |Self| AppendMenuSeparator( ::hWnd ) }
+   METHOD Separator   BLOCK { |Self| TMenuItem():DefineSeparator( , Self ) }
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -249,11 +249,13 @@ CLASS TMenuItem FROM TControl
    DATA Type      INIT "MENUITEM" READONLY
    DATA xId       INIT 0
    DATA lMain     INIT .F.
-   
+   DATA cPicture  INIT ""
+
    DATA ladjust  INIT .F.
 
    METHOD DefinePopUp
    METHOD DefineItem
+   METHOD DefineSeparator
 
    METHOD Enabled      SETGET
    METHOD Checked      SETGET
@@ -261,7 +263,8 @@ CLASS TMenuItem FROM TControl
    METHOD Caption      SETGET
    METHOD Release
    METHOD EndPopUp     BLOCK { || _EndMenuPopup() }
-   METHOD Separator    BLOCK { |Self| AppendMenuSeparator( ::hWnd ) }
+   METHOD Separator    BLOCK { |Self| TMenuItem():DefineSeparator( , Self ) }
+   METHOD Picture      SETGET
 
    METHOD DefaultItem( nItem )    BLOCK { |Self,nItem| SetMenuDefaultItem( ::Container:hWnd, nItem ) }
 ENDCLASS
@@ -278,19 +281,13 @@ LOCAL nStyle
    ::Register( CreatePopupMenu(), Name )
    ::xId := ::hWnd
    AADD( _OOHG_xMenuActive, Self )
-   nStyle := MF_POPUP + IF( ValType( lRight ) == "L" .AND. lRight, MF_RIGHTJUSTIFY, 0 )
-   AppendMenuString( ::Container:hWnd, ::hWnd, Caption, nStyle )
-   If VALTYPE( image ) $ "CM"
-      MenuItem_SetBitMaps( ::Container:hWnd, ::xId, image, '' )
-   EndIf
-   if HB_IsLogical( checked )  .AND. checked
-      ::Checked := .T.
-   EndIf
+   nStyle := MF_POPUP + MF_STRING + IF( ValType( lRight ) == "L" .AND. lRight, MF_RIGHTJUSTIFY, 0 )
+   AppendMenu( ::Container:hWnd, ::hWnd, Caption, nStyle )
+   ::Picture := image
+   ::Checked := checked
+   ::Hilited := hilited
    if HB_IsLogical( disabled ) .AND. disabled
       ::Enabled := .F.
-   EndIf
-   if HB_IsLogical( hilited ) .AND. hilited
-      ::Hilited := .T.
    EndIf
    ::lMain := ::Container:lMain
 Return Self
@@ -305,29 +302,39 @@ Return Nil
 METHOD DefineItem( caption, action, name, Image, checked, disabled, Parent, ;
                    hilited, lRight ) CLASS TMenuItem
 *------------------------------------------------------------------------------*
-Local nStyle, Controlhandle, id
+Local nStyle, id
    If Empty( Parent )
       Parent := ATAIL( _OOHG_xMenuActive )
    EndIf
    ::SetForm( Name, Parent )
    Id := _GetId()
-   nStyle := IF( HB_IsLogical( lRight ) .AND. lRight, MF_RIGHTJUSTIFY, 0 )
-   Controlhandle := AppendMenuString( ::Container:hWnd, id, caption, nStyle )
-   ::Register( ControlHandle, Name, , , , Id )
+   nStyle := MF_STRING + IF( HB_IsLogical( lRight ) .AND. lRight, MF_RIGHTJUSTIFY, 0 )
+   AppendMenu( ::Container:hWnd, id, caption, nStyle )
+   ::Register( 0, Name, , , , Id )
    ::xId := ::Id
    ::OnClick := action
-   If VALTYPE( image ) $ "CM"
-      MenuItem_SetBitMaps( ::Container:hWnd, ::xId, image, '' )
-   EndIf
-   if HB_IsLogical( checked )  .AND. checked
-      ::Checked := .T.
-   EndIf
+   ::Picture := image
+   ::Checked := checked
+   ::Hilited := hilited
    if HB_IsLogical( disabled )  .AND. disabled
       ::Enabled := .F.
    EndIf
-   if HB_IsLogical( hilited ) .AND. hilited
-      ::Hilited := .T.
+   ::lMain := ::Container:lMain
+Return Self
+
+*------------------------------------------------------------------------------*
+METHOD DefineSeparator( name, Parent, lRight ) CLASS TMenuItem
+*------------------------------------------------------------------------------*
+Local nStyle, id
+   If Empty( Parent )
+      Parent := ATAIL( _OOHG_xMenuActive )
    EndIf
+   ::SetForm( Name, Parent )
+   Id := _GetId()
+   nStyle := MF_SEPARATOR + IF( HB_IsLogical( lRight ) .AND. lRight, MF_RIGHTJUSTIFY, 0 )
+   AppendMenu( ::Container:hWnd, Id, nStyle )
+   ::Register( 0, Name, , , , Id )
+   ::xId := ::Id
    ::lMain := ::Container:lMain
 Return Self
 
@@ -352,6 +359,17 @@ METHOD Caption( cCaption ) CLASS TMenuItem
 Return MenuCaption( ::Container:hWnd, ::xId, cCaption )
 
 *------------------------------------------------------------------------------*
+METHOD Picture( cPicture ) CLASS TMenuItem
+*------------------------------------------------------------------------------*
+   If VALTYPE( cPicture ) $ "CM"
+      // TODO: Release old image
+      // TODO: Menu items supports two images!
+      MenuItem_SetBitMaps( ::Container:hWnd, ::xId, cPicture, '' )
+      ::cPicture := cPicture
+   EndIf
+Return ::cPicture
+
+*------------------------------------------------------------------------------*
 METHOD Release() CLASS TMenuItem
 *------------------------------------------------------------------------------*
    DeleteMenu( ::Container:hWnd, ::xId )
@@ -360,14 +378,6 @@ METHOD Release() CLASS TMenuItem
    EndIf
 Return ::Super:Release()
 
-*------------------------------------------------------------------------------*
-Function _DefineSeparator( oMenu )
-*------------------------------------------------------------------------------*
-   If Empty( oMenu )
-      oMenu := ATAIL( _OOHG_xMenuActive )
-   EndIf
-Return oMenu:Separator()
-
 EXTERN TrackPopUpMenu, SetMenuDefaultItem, GetMenuBarHeight
 
 #pragma BEGINDUMP
@@ -375,45 +385,40 @@ EXTERN TrackPopUpMenu, SetMenuDefaultItem, GetMenuBarHeight
 #include <windows.h>
 #include <commctrl.h>
 #include "hbapi.h"
-#include "../include/oohg.h"
+#include "oohg.h"
 
 HB_FUNC( TRACKPOPUPMENU )
 {
    HWND hwnd = HWNDparam( 4 );
 
    SetForegroundWindow( hwnd );
-   TrackPopupMenu( ( HMENU ) HWNDparam( 1 ), 0, hb_parni( 2 ), hb_parni( 3 ), 0, hwnd, 0 );
+   TrackPopupMenu( HMENUparam( 1 ), 0, hb_parni( 2 ), hb_parni( 3 ), 0, hwnd, 0 );
    PostMessage( hwnd, WM_NULL, 0, 0 );
 }
 
-HB_FUNC( APPENDMENUSTRING )
+HB_FUNC( APPENDMENU )
 {
-   hb_retnl( AppendMenu( ( HMENU ) HWNDparam( 1 ), MF_STRING | hb_parni( 4 ), hb_parni( 2 ), hb_parc( 3 ) ) );
-}
-
-HB_FUNC( APPENDMENUSEPARATOR )
-{
-   hb_retnl( AppendMenu( ( HMENU ) HWNDparam( 1 ), MF_SEPARATOR, 0, NULL ) );
+   hb_retnl( AppendMenu( HMENUparam( 1 ), hb_parni( 4 ), hb_parni( 2 ), hb_parc( 3 ) ) );
 }
 
 HB_FUNC( CREATEMENU )
 {
-   HWNDret( CreateMenu() );
+   HMENUret( CreateMenu() );
 }
 
 HB_FUNC( CREATEPOPUPMENU )
 {
-   HWNDret( CreatePopupMenu() );
+   HMENUret( CreatePopupMenu() );
 }
 
 HB_FUNC( SETMENU )
 {
-   SetMenu( HWNDparam( 1 ), ( HMENU ) HWNDparam( 2 ) );
+   SetMenu( HWNDparam( 1 ), HMENUparam( 2 ) );
 }
 
 HB_FUNC( MENUCHECKED )
 {
-   HMENU hMenu = ( HMENU ) HWNDparam( 1 );
+   HMENU hMenu = HMENUparam( 1 );
    int iItem = hb_parni( 2 );
 
    if( ISLOG( 3 ) )
@@ -421,19 +426,12 @@ HB_FUNC( MENUCHECKED )
       CheckMenuItem( hMenu, iItem, MF_BYCOMMAND | ( hb_parl( 3 ) ? MF_CHECKED : MF_UNCHECKED ) );
    }
 
-   if( GetMenuState( hMenu, iItem, MF_BYCOMMAND ) & MF_CHECKED )
-	{
-      hb_retl( 1 );
-	}
-	else
-	{
-      hb_retl( 0 );
-	}
+   hb_retl( ( GetMenuState( hMenu, iItem, MF_BYCOMMAND ) & MF_CHECKED ) );
 }
 
 HB_FUNC( MENUENABLED )
 {
-   HMENU hMenu = ( HMENU ) HWNDparam( 1 );
+   HMENU hMenu = HMENUparam( 1 );
    int iItem = hb_parni( 2 );
 
    if( ISLOG( 3 ) )
@@ -441,19 +439,12 @@ HB_FUNC( MENUENABLED )
       EnableMenuItem( hMenu, iItem, MF_BYCOMMAND | ( hb_parl( 3 ) ? MF_ENABLED : MF_GRAYED ) );
    }
 
-   if( GetMenuState( hMenu, iItem, MF_BYCOMMAND ) & MF_GRAYED )
-	{
-      hb_retl( 0 );
-	}
-	else
-	{
-      hb_retl( 1 );
-	}
+   hb_retl( ! ( GetMenuState( hMenu, iItem, MF_BYCOMMAND ) & MF_GRAYED ) );
 }
 
 HB_FUNC( MENUHILITED )
 {
-   HMENU hMenu = ( HMENU ) HWNDparam( 1 );
+   HMENU hMenu = HMENUparam( 1 );
    int iItem = hb_parni( 2 );
 
    if( ISLOG( 3 ) )
@@ -461,19 +452,12 @@ HB_FUNC( MENUHILITED )
       HiliteMenuItem( HWNDparam( 4 ), hMenu, iItem, MF_BYCOMMAND | ( hb_parl( 3 ) ? MF_HILITE : MF_UNHILITE ) );
    }
 
-   if( GetMenuState( hMenu, iItem, MF_BYCOMMAND ) & MF_HILITE )
-	{
-      hb_retl( 1 );
-	}
-	else
-	{
-      hb_retl( 0 );
-	}
+   hb_retl( ( GetMenuState( hMenu, iItem, MF_BYCOMMAND ) & MF_HILITE ) );
 }
 
 HB_FUNC( MENUCAPTION )
 {
-   HMENU hMenu = ( HMENU ) HWNDparam( 1 );
+   HMENU hMenu = HMENUparam( 1 );
    int iItem = hb_parni( 2 );
    int iLen;
    char *cBuffer;
@@ -498,7 +482,7 @@ HB_FUNC( MENUCAPTION )
 
 HB_FUNC( MENUITEM_SETBITMAPS )
 {
-   HMENU hMenu = ( HMENU ) HWNDparam( 1 );
+   HMENU hMenu = HMENUparam( 1 );
    HBITMAP himage1, himage2;
    int iAttributes = LR_LOADMAP3DCOLORS | LR_LOADTRANSPARENT;
 
@@ -510,7 +494,7 @@ HB_FUNC( MENUITEM_SETBITMAPS )
 
 HB_FUNC( SETMENUDEFAULTITEM )
 {
-   HMENU hMenu = ( HMENU ) HWNDparam( 1 );
+   HMENU hMenu = HMENUparam( 1 );
 
    if( ValidHandler( hMenu ) )
    {
@@ -525,7 +509,7 @@ HB_FUNC( GETMENUBARHEIGHT )
 
 HB_FUNC( DESTROYMENU )
 {
-   HMENU hMenu = ( HMENU ) HWNDparam( 1 );
+   HMENU hMenu = HMENUparam( 1 );
 
    if( ValidHandler( hMenu ) )
    {
@@ -545,7 +529,7 @@ HB_FUNC( DRAWMENUBAR )
 
 HB_FUNC( DELETEMENU )
 {
-   HMENU hMenu = ( HMENU ) HWNDparam( 1 );
+   HMENU hMenu = HMENUparam( 1 );
 
    if( ValidHandler( hMenu ) )
    {

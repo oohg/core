@@ -1,12 +1,12 @@
 /*
- * $Id: h_combo.prg,v 1.38 2008-02-04 05:42:53 guerra000 Exp $
+ * $Id: h_combo.prg,v 1.39 2008-02-21 05:09:49 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG combobox functions
  *
  * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -329,6 +329,10 @@ Local Hi_wParam := HIWORD( wParam )
 
    elseif Hi_wParam == CBN_EDITCHANGE
       ::DoEvent( ::OnClick, "CLICK" )
+      Return nil
+
+   elseif Hi_wParam == EN_KILLFOCUS
+      // Avoids incorrect processing
       Return nil
 
    EndIf

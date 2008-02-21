@@ -1,12 +1,12 @@
 /*
- * $Id: i_menu.ch,v 1.5 2006-11-18 19:39:51 guerra000 Exp $
+ * $Id: i_menu.ch,v 1.6 2008-02-21 05:09:49 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Menu definitions
  *
  * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -115,61 +115,75 @@
 	=>;
         GetControlObject( <(control)> , <(form)> ):Hilited := .F.
 
-#xcommand DEFINE MAIN MENU [ OF <parent> ] [ OBJ <oObj> ] ;
+#xcommand DEFINE MAIN MENU [ OF <parent> ] [ OBJ <oObj> ] [ SUBCLASS <subclass> ] ;
 =>;
-[ <oObj> := ] TMenuMain():Define( <(parent)> )
+          [ <oObj> := ] _OOHG_SelectSubClass( TMenuMain(), [ <subclass>() ] ): ;
+                        Define( <(parent)> )
 
-#xcommand DEFINE MAINMENU [ OF <parent> ] [ OBJ <oObj> ] ;
+#xcommand DEFINE MAINMENU [ OF <parent> ] [ OBJ <oObj> ] [ SUBCLASS <subclass> ] ;
 =>;
-[ <oObj> := ] TMenuMain():Define( <(parent)> )
+          [ <oObj> := ] _OOHG_SelectSubClass( TMenuMain(), [ <subclass>() ] ): ;
+                        Define( <(parent)> )
 
-#xcommand DEFINE CONTEXT MENU [ OF <parent> ] [ OBJ <oObj> ] ;
+#xcommand DEFINE CONTEXT MENU [ OF <parent> ] [ OBJ <oObj> ] [ SUBCLASS <subclass> ] ;
 =>;
-[ <oObj> := ] TMenuContext():Define( <(parent)> )
+          [ <oObj> := ] _OOHG_SelectSubClass( TMenuContext(), [ <subclass>() ] ): ;
+                        Define( <(parent)> )
 
-#xcommand DEFINE CONTEXTMENU [ OF <parent> ] [ OBJ <oObj> ] ;
+#xcommand DEFINE CONTEXTMENU [ OF <parent> ] [ OBJ <oObj> ] [ SUBCLASS <subclass> ] ;
 =>;
-[ <oObj> := ] TMenuContext():Define( <(parent)> )
+          [ <oObj> := ] _OOHG_SelectSubClass( TMenuContext(), [ <subclass>() ] ): ;
+                        Define( <(parent)> )
 
-#xcommand DEFINE CONTEXT MENU CONTROL <Control> [ OF <parent> ] [ OBJ <oObj> ] ;
+#xcommand DEFINE CONTEXT MENU CONTROL <Control> [ OF <parent> ] [ OBJ <oObj> ] [ SUBCLASS <subclass> ] ;
 =>;
-[ <oObj> := ] TMenuDropDown():Define( <(Control)> , <(parent)> )
+          [ <oObj> := ] _OOHG_SelectSubClass( TMenuDropDown(), [ <subclass>() ] ): ;
+                        Define( <(Control)> , <(parent)> )
 
-#xcommand DEFINE CONTEXTMENU CONTROL <Control> [ OF <parent> ] [ OBJ <oObj> ] ;
+#xcommand DEFINE CONTEXTMENU CONTROL <Control> [ OF <parent> ] [ OBJ <oObj> ] [ SUBCLASS <subclass> ] ;
 =>;
-[ <oObj> := ] TMenuDropDown():Define( <(Control)> , <(parent)> )
+          [ <oObj> := ] _OOHG_SelectSubClass( TMenuDropDown(), [ <subclass>() ] ): ;
+                        Define( <(Control)> , <(parent)> )
 
-#xcommand DEFINE NOTIFY MENU [ OF <parent> ] [ OBJ <oObj> ] ;
+#xcommand DEFINE NOTIFY MENU [ OF <parent> ] [ OBJ <oObj> ] [ SUBCLASS <subclass> ] ;
 =>;
-[ <oObj> := ] TMenuNotify():Define( <(parent)> )
+          [ <oObj> := ] _OOHG_SelectSubClass( TMenuNotify(), [ <subclass>() ] ): ;
+                        Define( <(parent)> )
 
-#xcommand DEFINE NOTIFYMENU [ OF <parent> ] [ OBJ <oObj> ] ;
+#xcommand DEFINE NOTIFYMENU [ OF <parent> ] [ OBJ <oObj> ] [ SUBCLASS <subclass> ] ;
 =>;
-[ <oObj> := ] TMenuNotify():Define( <(parent)> )
+          [ <oObj> := ] _OOHG_SelectSubClass( TMenuNotify(), [ <subclass>() ] ): ;
+                        Define( <(parent)> )
 
-#xcommand POPUP <caption> [ NAME <name> ] [ OBJ <oObj> ] [ <checked:CHECKED> ] [ <disabled:DISABLED> ] [ FROM [ POPUP ] <parent> ] [ <hilited:HILITED> ] [ IMAGE <image> ] [ <right:RIGHT> ] ;
+#xcommand POPUP <caption> [ NAME <name> ] [ OBJ <oObj> ] [ <checked:CHECKED> ] [ <disabled:DISABLED> ] [ FROM [ POPUP ] <parent> ] [ <hilited:HILITED> ] [ IMAGE <image> ] [ <right:RIGHT> ] [ SUBCLASS <subclass> ] ;
 => ;
-[ <oObj> := ] TMenuItem():DefinePopUp( <caption> , <(name)> , <.checked.> , <.disabled.>, <parent>, <.hilited.>, <image>, <.right.> )
+          [ <oObj> := ] _OOHG_SelectSubClass( TMenuItem(), [ <subclass>() ] ): ;
+                        DefinePopUp( <caption> , <(name)> , <.checked.> , <.disabled.>, <parent>, <.hilited.>, <image>, <.right.> )
 
-#xcommand DEFINE POPUP <caption> [ NAME <name> ] [ OBJ <oObj> ] [ <checked:CHECKED> ] [ <disabled:DISABLED> ] [ FROM [ POPUP ] <parent> ] [ <hilited:HILITED> ] [ IMAGE <image> ] [ <right:RIGHT> ] ;
+#xcommand DEFINE POPUP <caption> [ NAME <name> ] [ OBJ <oObj> ] [ <checked:CHECKED> ] [ <disabled:DISABLED> ] [ FROM [ POPUP ] <parent> ] [ <hilited:HILITED> ] [ IMAGE <image> ] [ <right:RIGHT> ] [ SUBCLASS <subclass> ] ;
 => ;
-[ <oObj> := ] TMenuItem():DefinePopUp( <caption> , <(name)> , <.checked.> , <.disabled.>, <parent>, <.hilited.>, <image>, <.right.> )
+          [ <oObj> := ] _OOHG_SelectSubClass( TMenuItem(), [ <subclass>() ] ): ;
+                        DefinePopUp( <caption> , <(name)> , <.checked.> , <.disabled.>, <parent>, <.hilited.>, <image>, <.right.> )
 
-#xcommand DEFINE MENU POPUP <caption> [ NAME <name> ] [ OBJ <oObj> ] [ <checked:CHECKED> ] [ <disabled:DISABLED> ] [ FROM [ POPUP ] <parent> ] [ <hilited:HILITED> ] [ IMAGE <image> ] [ <right:RIGHT> ] ;
+#xcommand DEFINE MENU POPUP <caption> [ NAME <name> ] [ OBJ <oObj> ] [ <checked:CHECKED> ] [ <disabled:DISABLED> ] [ FROM [ POPUP ] <parent> ] [ <hilited:HILITED> ] [ IMAGE <image> ] [ <right:RIGHT> ] [ SUBCLASS <subclass> ] ;
 => ;
-[ <oObj> := ] TMenuItem():DefinePopUp( <caption> , <(name)> , <.checked.> , <.disabled.>, <parent>, <.hilited.>, <image>, <.right.> )
+          [ <oObj> := ] _OOHG_SelectSubClass( TMenuItem(), [ <subclass>() ] ): ;
+                        DefinePopUp( <caption> , <(name)> , <.checked.> , <.disabled.>, <parent>, <.hilited.>, <image>, <.right.> )
 
-#xcommand ITEM <caption> [ ACTION <action> ] [ NAME <name> ] [ IMAGE <image> ] [ <checked:CHECKED> ] [ OBJ <oObj> ] [ <disabled:DISABLED> ] [ FROM [ POPUP ] <parent> ] [ <hilited:HILITED> ] [ <right:RIGHT> ] ;
+#xcommand ITEM <caption> [ ACTION <action> ] [ NAME <name> ] [ IMAGE <image> ] [ <checked:CHECKED> ] [ OBJ <oObj> ] [ <disabled:DISABLED> ] [ FROM [ POPUP ] <parent> ] [ <hilited:HILITED> ] [ <right:RIGHT> ] [ SUBCLASS <subclass> ] ;
 => ;
-[ <oObj> := ] TMenuItem():DefineItem( <caption> , <{action}> , <(name)> , <image> , <.checked.> , <.disabled.>, <parent>, <.hilited.>, <.right.> )
+          [ <oObj> := ] _OOHG_SelectSubClass( TMenuItem(), [ <subclass>() ] ): ;
+                        DefineItem( <caption> , <{action}> , <(name)> , <image> , <.checked.> , <.disabled.>, <parent>, <.hilited.>, <.right.> )
 
-#xcommand MENUITEM <caption> [ ACTION <action> ] [ NAME <name> ] [ IMAGE <image> ] [ <checked:CHECKED> ] [ OBJ <oObj> ] [ <disabled:DISABLED> ] [ FROM [ POPUP ] <parent> ] [ <hilited:HILITED> ] [ <right:RIGHT> ] ;
+#xcommand MENUITEM <caption> [ ACTION <action> ] [ NAME <name> ] [ IMAGE <image> ] [ <checked:CHECKED> ] [ OBJ <oObj> ] [ <disabled:DISABLED> ] [ FROM [ POPUP ] <parent> ] [ <hilited:HILITED> ] [ <right:RIGHT> ] [ SUBCLASS <subclass> ] ;
 => ;
-[ <oObj> := ] TMenuItem():DefineItem( <caption> , <{action}> , <(name)> , <image> , <.checked.> , <.disabled.>, <parent>, <.hilited.>, <.right.> )
+          [ <oObj> := ] _OOHG_SelectSubClass( TMenuItem(), [ <subclass>() ] ): ;
+                        DefineItem( <caption> , <{action}> , <(name)> , <image> , <.checked.> , <.disabled.>, <parent>, <.hilited.>, <.right.> )
 
-#xcommand SEPARATOR [ FROM [ POPUP ] <parent> ] ;
+#xcommand SEPARATOR [ NAME <name> ] [ OBJ <oObj> ] [ FROM [ POPUP ] <parent> ] [ <right:RIGHT> ] [ SUBCLASS <subclass> ] ;
 => ;
-_DefineSeparator( <parent> )
+          [ <oObj> := ] _OOHG_SelectSubClass( TMenuItem(), [ <subclass>() ] ): ;
+                        DefineSeparator( <(name)>, <parent>, <.right.> )
 
 #xcommand END POPUP ;
 => ;
@@ -179,6 +193,7 @@ _EndMenuPopup()
 => ;
 _EndMenu()
 
-#xcommand DEFINE DROPDOWN MENU BUTTON <button> [ OF <parent> ] [ OBJ <oObj> ] ;
+#xcommand DEFINE DROPDOWN MENU BUTTON <button> [ OF <parent> ] [ OBJ <oObj> ] [ SUBCLASS <subclass> ] ;
 =>;
-[ <oObj> := ] TMenuDropDown():Define( <(button)> , <(parent)> )
+          [ <oObj> := ] _OOHG_SelectSubClass( TMenuDropDown(), [ <subclass>() ] ): ;
+                        Define( <(button)> , <(parent)> )

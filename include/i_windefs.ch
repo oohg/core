@@ -1,12 +1,12 @@
 /*
- * $Id: i_windefs.ch,v 1.26 2008-02-18 02:45:34 guerra000 Exp $
+ * $Id: i_windefs.ch,v 1.27 2008-02-21 05:09:49 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Windows' definitions
  *
  * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -636,9 +636,11 @@
 #define IMAGE_ENHMETAFILE   3
 
 // Menu flags
+#define MF_STRING           0x0000
 #define MF_POPUP            0x0010
 #define MF_MENUBARBREAK     0x0020
 #define MF_MENUBREAK        0x0040
+#define MF_SEPARATOR        0x0800
 #define MF_SYSMENU          0x2000
 #define MF_RIGHTJUSTIFY     0x4000
 
