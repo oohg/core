@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.184 2008-02-18 02:45:34 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.185 2008-02-24 17:59:01 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -281,6 +281,7 @@ CLASS TWindow
    METHOD Events_VScroll      BLOCK { || nil }
    METHOD Events_HScroll      BLOCK { || nil }
    METHOD Events_Enter        BLOCK { || nil }
+   METHOD Events_Color        BLOCK { || nil }
 
    ERROR HANDLER Error
    METHOD Control
@@ -584,7 +585,12 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )
    switch( message )
    {
       case WM_CTLCOLORSTATIC:
+/*
          _OOHG_Send( GetControlObjectByHandle( ( HWND ) lParam ), s_Events_Color );
+*/
+         _OOHG_Send( _OOHG_GetExistingObject( ( HWND ) lParam, FALSE, TRUE ), s_Events_Color );
+         // _OOHG_Send( GetControlObjectByHandle( ( HWND ) lParam ), s_Events_Color );
+
          hb_vmPushLong( wParam );
          hb_vmPushLong( GetSysColor( COLOR_3DFACE ) );
          hb_vmSend( 2 );
@@ -592,7 +598,12 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )
 
       case WM_CTLCOLOREDIT:
       case WM_CTLCOLORLISTBOX:
+/*
          _OOHG_Send( GetControlObjectByHandle( ( HWND ) lParam ), s_Events_Color );
+*/
+         _OOHG_Send( _OOHG_GetExistingObject( ( HWND ) lParam, FALSE, TRUE ), s_Events_Color );
+         // _OOHG_Send( GetControlObjectByHandle( ( HWND ) lParam ), s_Events_Color );
+
          hb_vmPushLong( wParam );
          hb_vmPushLong( GetSysColor( COLOR_WINDOW ) );
          hb_vmSend( 2 );
@@ -609,14 +620,12 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )
          if( wParam == 1 )
          {
             // Enter key
-            _OOHG_Send( GetControlObjectByHandle( GetFocus() ), s_Events_Enter );
+            _OOHG_Send( _OOHG_GetExistingObject( GetFocus(), TRUE, TRUE ), s_Events_Enter );
             hb_vmSend( 0 );
-            break;
          }
          else
          {
             PHB_ITEM pControl, pOnClick;
-            BOOL bClicked = 0;
 
             pControl = hb_itemNew( NULL );
             hb_itemCopy( pControl, GetControlObjectById( LOWORD( wParam ), hWnd ) );
@@ -626,6 +635,8 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )
             {
                // By Id
                // From MENU
+               BOOL bClicked = 0;
+
                _OOHG_Send( pControl, s_NestedClick );
                hb_vmSend( 0 );
                if( ! hb_parl( -1 ) )
@@ -652,40 +663,23 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )
                   hb_vmPushLogical( 0 );
                   hb_vmSend( 1 );
                }
-            }
-            else
-            {
-               hb_itemCopy( pControl, GetControlObjectByHandle( ( HWND ) lParam ) );
-               _OOHG_Send( pControl, s_hWnd );
-               hb_vmSend( 0 );
-               if( ValidHandler( HWNDparam( -1 ) ) )
+               hb_itemRelease( pControl );
+               if( bClicked )
                {
-                  // By handle
-                  _OOHG_Send( pControl, s_Events_Command );
-                  hb_vmPushLong( wParam );
-                  hb_vmSend( 1 );
-                  hb_itemRelease( pControl );   // There's a break!
-                  break;
+                  hb_retni( 1 );
                }
-//               else
-//               {
-//                  if( HIWORD( wParam ) == 1 )
-//                  {
-//                     _OOHG_Send( pControl, s_Events_Accelerator );
-//                     hb_vmPushLong( wParam );
-//                     hb_vmSend( 1 );
-//                     break;
-//                  }
-//               }
-            }
-            hb_itemRelease( pControl );
-            if( bClicked )
-            {
-               hb_retni( 1 );
+               else
+               {
+                  hb_ret();
+               }
             }
             else
             {
-               hb_ret();
+               hb_itemRelease( pControl );
+               // By handle
+               _OOHG_Send( _OOHG_GetExistingObject( ( HWND ) lParam, FALSE, TRUE ), s_Events_Command );
+               hb_vmPushLong( wParam );
+               hb_vmSend( 1 );
             }
          }
          break;

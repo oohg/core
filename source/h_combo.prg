@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.39 2008-02-21 05:09:49 guerra000 Exp $
+ * $Id: h_combo.prg,v 1.40 2008-02-24 17:59:01 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -105,7 +105,6 @@ CLASS TCombo FROM TLabel
    DATA aValues       INIT {}
    DATA nWidth        INIT 120
    DATA nHeight       INIT 150
-   DATA oTextBox      INIT  NIL
 
    METHOD Define
    METHOD Refresh
@@ -114,8 +113,6 @@ CLASS TCombo FROM TLabel
    METHOD ForceHide           BLOCK { |Self| SendMessage( ::hWnd, 335, 0, 0 ) , ::Super:ForceHide() }
    METHOD RefreshData
    METHOD Displayvalue        SETGET    /// Caption Alias
-   METHOD FontColor           SETGET
-   METHOD BackColor           SETGET
    METHOD PreRelease
 
    METHOD Events_Command
@@ -182,12 +179,6 @@ Local ControlHandle , rcount := 0 , cset := 0 , WorkArea , cField, nStyle
 
    ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
    ::SetFont()
-
-   IF displaychange
-      ::oTextBox := TControl():SetForm( , Self )
-      ::oTextBox:Register( GetWindow( ::hWnd, GW_CHILD ) )
-      ::oTextBox:OnEnter := { || ::DoEvent( ::OnEnter, "ENTER" ) }
-   ENDIF
 
    ::Field := cField
    ::WorkArea := WorkArea
@@ -286,22 +277,6 @@ METHOD RefreshData() CLASS TCombo
 *-----------------------------------------------------------------------------*
    ::Refresh()
 RETURN ::Super:RefreshData()
-
-*-----------------------------------------------------------------------------*
-METHOD FontColor( uColor ) CLASS TCombo
-*-----------------------------------------------------------------------------*
-   IF HB_IsObject( ::oTextBox )
-      ::oTextBox:FontColor := uColor
-   ENDIF
-RETURN ( ::Super:FontColor := uColor )
-
-*-----------------------------------------------------------------------------*
-METHOD BackColor( uColor ) CLASS TCombo
-*-----------------------------------------------------------------------------*
-   IF HB_IsObject( ::oTextBox )
-      ::oTextBox:BackColor := uColor
-   ENDIF
-RETURN ( ::Super:BackColor := uColor )
 
 *-----------------------------------------------------------------------------*
 METHOD PreRelease() CLASS TCombo

@@ -1,12 +1,12 @@
 /*
- * $Id: oohg.h,v 1.40 2008-01-27 06:47:35 guerra000 Exp $
+ * $Id: oohg.h,v 1.41 2008-02-24 17:59:01 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * C level definitions
  *
  * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * www - http://www.oohg.org
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,6 +60,9 @@
 #endif
 
 #define ValidHandler( hWnd )         ( ( hWnd ) != 0 && ( HWND )( hWnd ) != ( HWND )( ~0 ) )
+
+#define HMENUparam( pos )            ( ( HMENU ) HWNDparam( pos ) )
+#define HMENUret( hMenu )            ( HWNDret( ( HWND ) hMenu ) )
 
 struct IMAGE_PARAMETER {
    char *cString;
@@ -119,6 +122,9 @@ HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, 
 HANDLE _OOHG_OleLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG BackColor, long lWidth2, long lHeight2 );
 HBITMAP _OOHG_ScaleImage( HWND hWnd, HBITMAP hImage, int iWidth, int iHeight, int scalestrech, LONG BackColor );
 DWORD _OOHG_RTL_Status( BOOL bRtl );
+int _OOHG_SearchFormHandleInArray( HWND hWnd );
+int _OOHG_SearchControlHandleInArray( HWND hWnd );
+PHB_ITEM _OOHG_GetExistingObject( HWND hWnd, BOOL bForm, BOOL bForceAny );
 
 // Symbol tables
 #define s_Events_Notify        0

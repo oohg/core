@@ -1,12 +1,12 @@
 /*
- * $Id: c_controlmisc.c,v 1.48 2008-01-27 06:47:35 guerra000 Exp $
+ * $Id: c_controlmisc.c,v 1.49 2008-02-24 17:59:01 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Miscelaneus C controls functions
  *
  * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -847,10 +847,9 @@ HB_FUNC( _OOHG_INIT_C_VARS_CONTROLS_C_SIDE )
    hb_itemCopy( _OOHG_aControlIds,     hb_param( 3, HB_IT_ARRAY ) );
 }
 
-PHB_ITEM GetControlObjectByHandle( HWND hWnd )
+int _OOHG_SearchControlHandleInArray( HWND hWnd )
 {
-   PHB_ITEM pControl;
-   ULONG ulCount;
+   ULONG ulCount, ulPos = 0;
 
    if( ! _ooHG_Symbol_TControl )
    {
@@ -859,7 +858,6 @@ PHB_ITEM GetControlObjectByHandle( HWND hWnd )
       hb_vmDo( 0 );
    }
 
-   pControl = 0;
    for( ulCount = 1; ulCount <= hb_arrayLen( _OOHG_aControlhWnd ); ulCount++ )
    {
       #ifdef OOHG_HWND_POINTER
@@ -868,11 +866,25 @@ PHB_ITEM GetControlObjectByHandle( HWND hWnd )
          if( ( LONG ) hWnd == hb_arrayGetNL( _OOHG_aControlhWnd, ulCount ) )
       #endif
       {
-         pControl = hb_arrayGetItemPtr( _OOHG_aControlObjects, ulCount );
+         ulPos = ulCount;
          ulCount = hb_arrayLen( _OOHG_aControlhWnd );
       }
    }
-   if( ! pControl )
+
+   return ulPos;
+}
+
+PHB_ITEM GetControlObjectByHandle( HWND hWnd )
+{
+   PHB_ITEM pControl;
+   ULONG ulPos;
+
+   ulPos = _OOHG_SearchControlHandleInArray( hWnd );
+   if( ulPos )
+   {
+      pControl = hb_arrayGetItemPtr( _OOHG_aControlObjects, ulPos );
+   }
+   else
    {
       hb_vmPushSymbol( _ooHG_Symbol_TControl );
       hb_vmPushNil();

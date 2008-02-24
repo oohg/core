@@ -1,11 +1,20 @@
 /*
- * $Id: ChangeLog,v 1.503 2008-02-21 06:46:06 guerra000 Exp $
+ * $Id: ChangeLog,v 1.504 2008-02-24 17:59:00 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-02-24 11:47 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * include/oohg.h
+  * source/c_controlmisc.c
+  * source/c_windows.c
+  * source/h_windows.prg
+    * Locates parent control from "windows-hidden" subcontrols.
+  * source/h_combo.prg
+    * Removed ::oTextBox by above changes.
 
 2008-02-21 00:45 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_richeditbox.prg

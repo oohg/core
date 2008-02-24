@@ -1,12 +1,12 @@
 /*
- * $Id: c_windows.c,v 1.56 2008-01-04 03:21:24 guerra000 Exp $
+ * $Id: c_windows.c,v 1.57 2008-02-24 17:59:01 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Windows handling functions
  *
  * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -122,7 +122,7 @@
 #include "winreg.h"
 #include "tchar.h"
 #include <commctrl.h>
-#include "../include/oohg.h"
+#include "oohg.h"
 
 #ifdef HB_ITEM_NIL
    #define hb_dynsymSymbol( pDynSym )        ( ( pDynSym )->pSymbol )
@@ -145,10 +145,9 @@ HB_FUNC( _OOHG_INIT_C_VARS_C_SIDE )
    hb_itemCopy( _OOHG_aFormObjects, hb_param( 2, HB_IT_ARRAY ) );
 }
 
-PHB_ITEM GetFormObjectByHandle( HWND hWnd )
+int _OOHG_SearchFormHandleInArray( HWND hWnd )
 {
-   PHB_ITEM pForm;
-   ULONG ulCount;
+   ULONG ulCount, ulPos = 0;
 
    if( ! _ooHG_Symbol_TForm )
    {
@@ -157,7 +156,6 @@ PHB_ITEM GetFormObjectByHandle( HWND hWnd )
       hb_vmDo( 0 );
    }
 
-   pForm = 0;
    for( ulCount = 1; ulCount <= hb_arrayLen( _OOHG_aFormhWnd ); ulCount++ )
    {
       #ifdef OOHG_HWND_POINTER
@@ -166,11 +164,25 @@ PHB_ITEM GetFormObjectByHandle( HWND hWnd )
          if( ( LONG ) hWnd == hb_arrayGetNL( _OOHG_aFormhWnd, ulCount ) )
       #endif
       {
-         pForm = hb_arrayGetItemPtr( _OOHG_aFormObjects, ulCount );
+         ulPos = ulCount;
          ulCount = hb_arrayLen( _OOHG_aFormhWnd );
       }
    }
-   if( ! pForm )
+
+   return ulPos;
+}
+
+PHB_ITEM GetFormObjectByHandle( HWND hWnd )
+{
+   PHB_ITEM pForm;
+   ULONG ulPos;
+
+   ulPos = _OOHG_SearchFormHandleInArray( hWnd );
+   if( ulPos )
+   {
+      pForm = hb_arrayGetItemPtr( _OOHG_aFormObjects, ulPos );
+   }
+   else
    {
       hb_vmPushSymbol( _ooHG_Symbol_TForm );
       hb_vmPushNil();
@@ -401,6 +413,34 @@ MDICHILD:
    HWNDret( hwnd );
 }
 
+PHB_ITEM _OOHG_GetExistingObject( HWND hWnd, BOOL bForm, BOOL bForceAny )
+{
+   PHB_ITEM pItem = NULL;
+
+   while( hWnd && ! pItem )
+   {
+      if( _OOHG_SearchControlHandleInArray( hWnd ) )
+      {
+         pItem = GetControlObjectByHandle( hWnd );
+      }
+      else if( bForm && _OOHG_SearchFormHandleInArray( hWnd ) )
+      {
+         pItem = GetFormObjectByHandle( hWnd );
+      }
+      else
+      {
+         hWnd = GetParent( hWnd );
+      }
+   }
+
+   if( ! pItem )
+   {
+      pItem = GetControlObjectByHandle( hWnd );
+   }
+
+   return pItem;
+}
+
 void _OOHG_ProcessMessage( PMSG Msg )
 {
    PHB_ITEM pSelf, pSave;
@@ -415,25 +455,8 @@ void _OOHG_ProcessMessage( PMSG Msg )
       case WM_KEYDOWN:
       case WM_SYSKEYDOWN:
          hWnd = Msg->hwnd;
-         pSelf = hb_itemNew( NULL );
-         while( hWnd && ! HB_IS_OBJECT( pSelf ) )
-         {
-            hb_itemCopy( pSelf, GetFormObjectByHandle( hWnd ) );
-            _OOHG_Send( pSelf, s_hWnd );
-            hb_vmSend( 0 );
-            if( HWNDparam( -1 ) != hWnd )
-            {
-               hb_itemCopy( pSelf, GetControlObjectByHandle( hWnd ) );
-               _OOHG_Send( pSelf, s_hWnd );
-               hb_vmSend( 0 );
-               if( HWNDparam( -1 ) != hWnd )
-               {
-                  hWnd = GetParent( hWnd );
-                  hb_itemClear( pSelf );
-               }
-            }
-         }
-         if( hWnd && HB_IS_OBJECT( pSelf ) )
+         pSelf = _OOHG_GetExistingObject( hWnd, TRUE, FALSE );
+         if( pSelf )
          {
             _OOHG_Send( pSelf, s_LookForKey );
             hb_vmPushInteger( Msg->wParam );
@@ -441,11 +464,9 @@ void _OOHG_ProcessMessage( PMSG Msg )
             hb_vmSend( 2 );
             if( hb_parl( -1 ) )
             {
-               hb_itemRelease( pSelf );
                break;
             }
          }
-         hb_itemRelease( pSelf );
 
       default:
          if( ! IsWindow( GetActiveWindow() ) || ! IsDialogMessage( GetActiveWindow(), Msg ) )
