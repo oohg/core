@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.40 2008-02-24 17:59:01 guerra000 Exp $
+ * $Id: h_combo.prg,v 1.41 2008-03-10 21:15:04 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -306,7 +306,8 @@ Local Hi_wParam := HIWORD( wParam )
       ::DoEvent( ::OnClick, "CLICK" )
       Return nil
 
-   elseif Hi_wParam == EN_KILLFOCUS
+   elseif Hi_wParam == EN_KILLFOCUS .OR. ;
+          Hi_wParam == BN_KILLFOCUS
       // Avoids incorrect processing
       Return nil
 
