@@ -1,5 +1,5 @@
 /*
- * $Id: h_report.prg,v 1.41 2007-10-29 21:43:04 declan2005 Exp $
+ * $Id: h_report.prg,v 1.42 2008-03-15 14:14:45 declan2005 Exp $
  */
 /*
  * DO REPORT Command support procedures FOR MiniGUI Library.
@@ -467,7 +467,7 @@ IF nlin>nlpp
          IF .not. File(cgraphic)
          msgstop('graphic file not found','error')
       ELSE
-         oprint:printimage(nfi,nci+repobject:nlmargin,nff,repobject:nfc,cgraphic )
+         oprint:printimage(nfi,nci+repobject:nlmargin,nff,ncf,cgraphic )
       ENDIF
    ENDIF
 ENDIF
@@ -493,7 +493,7 @@ IF swmemo
              IF .not. File(cgraphic)
 	         msgstop('graphic file not found','error')
              ELSE
-                 oprint:printimage(nfi,nci+repobject:nlmargin,nff,repobject:nfc,cgraphic )
+                 oprint:printimage(nfi,nci+repobject:nlmargin,nff,ncf,cgraphic )
              ENDIF
 	 ENDIF
 	 nlin:=repobject:headers(aheaders1,aheaders2,awidths,nlin,ctitle,lmode,grpby,chdrgrp,cheader)
@@ -1298,7 +1298,7 @@ IF !lFirstPass
         AADD( aRecordHeader, "" )
 
         IF ( nGroup == 1 )
-           lEjectGrp := aReportData[ RP_GROUPS, nGroup, RG_AEJECT ]
+           lEjectGrp := aReportData[ RP_GROUPS, nGroup, RG_AEJECT ]      
         ENDIF
 
         ********** Recorro las columnas totalizando *************

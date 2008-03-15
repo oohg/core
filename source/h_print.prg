@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.83 2008-01-28 16:05:53 declan2005 Exp $
+* $Id: h_print.prg,v 1.84 2008-03-15 14:14:45 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -100,7 +100,7 @@ CREATE CLASS TPRINTBASE
 
 DATA cprintlibrary      INIT "HBPRINTER" READONLY
 DATA nmhor              INIT (10)/4.75   READONLY
-DATA nmver              INIT (10)/2.45   READONLY
+DATA nmver              INIT (10)/2.35   READONLY
 DATA nhfij              INIT (12/3.70)   READONLY
 DATA nvfij              INIT (12/1.65)   READONLY
 DATA cunits             INIT "ROWCOL"    READONLY
@@ -552,9 +552,9 @@ IF ::cunits="MM"
 ELSE
    ::nmhor  := nsize/4.75
    IF ::lprop
-      ::nmver  := (::nfontsize)/2.45
+      ::nmver  := (::nfontsize)/2.35
    ELSE
-      ::nmver  :=  10/2.45
+      ::nmver  :=  10/2.35
    ENDIF 
    ::nvfij  := (12/1.65)
    ::nhfij  := (12/3.70)
@@ -582,9 +582,9 @@ IF ::cunits="MM"
 ELSE
    ::nmhor  := (::nfontsize)/4.75
    IF ::lprop
-      ::nmver  := (::nfontsize)/2.45
+      ::nmver  := (::nfontsize)/2.35
    ELSE
-      ::nmver  :=  10/2.45
+      ::nmver  :=  10/2.35
    ENDIF 
 
    ::nvfij  := (12/1.65)
@@ -612,9 +612,9 @@ IF ::cunits="MM"
 ELSE
    ::nmhor  := (::nfontsize)/4.75
    IF ::lprop
-      ::nmver  := (::nfontsize)/2.45
+      ::nmver  := (::nfontsize)/2.35
    ELSE
-      ::nmver  :=  10/2.45
+      ::nmver  :=  10/2.35
    ENDIF 
 
    ::nvfij  := (12/1.65)
@@ -644,9 +644,9 @@ ELSE
    ::nmhor  := (::nfontsize)/4.75
 
    IF ::lprop
-      ::nmver  := (::nfontsize)/2.45
+      ::nmver  := (::nfontsize)/2.35
    ELSE
-      ::nmver  :=  10/2.45
+      ::nmver  :=  10/2.35
    ENDIF 
 
 
@@ -678,9 +678,9 @@ ELSE
    ::nmhor  := (::nfontsize)/4.75
 
    IF ::lprop
-      ::nmver  := (::nfontsize)/2.45
+      ::nmver  := (::nfontsize)/2.35
    ELSE
-      ::nmver  :=  10/2.45
+      ::nmver  :=  10/2.35
    ENDIF 
 
    ::nvfij  := (12/1.65)
