@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.185 2008-02-24 17:59:01 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.186 2008-03-17 03:32:20 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -584,13 +584,9 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )
 
    switch( message )
    {
+      case WM_CTLCOLORBTN:
       case WM_CTLCOLORSTATIC:
-/*
-         _OOHG_Send( GetControlObjectByHandle( ( HWND ) lParam ), s_Events_Color );
-*/
          _OOHG_Send( _OOHG_GetExistingObject( ( HWND ) lParam, FALSE, TRUE ), s_Events_Color );
-         // _OOHG_Send( GetControlObjectByHandle( ( HWND ) lParam ), s_Events_Color );
-
          hb_vmPushLong( wParam );
          hb_vmPushLong( GetSysColor( COLOR_3DFACE ) );
          hb_vmSend( 2 );
@@ -598,12 +594,7 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )
 
       case WM_CTLCOLOREDIT:
       case WM_CTLCOLORLISTBOX:
-/*
-         _OOHG_Send( GetControlObjectByHandle( ( HWND ) lParam ), s_Events_Color );
-*/
          _OOHG_Send( _OOHG_GetExistingObject( ( HWND ) lParam, FALSE, TRUE ), s_Events_Color );
-         // _OOHG_Send( GetControlObjectByHandle( ( HWND ) lParam ), s_Events_Color );
-
          hb_vmPushLong( wParam );
          hb_vmPushLong( GetSysColor( COLOR_WINDOW ) );
          hb_vmSend( 2 );
@@ -2659,7 +2650,7 @@ Local oCtrl, lMinim := .F.
                if _OOHG_AutoAdjust
                   ::autoadjust()       ////// cambio de tamaño antes de activarla si ya esta definida
                endif
-            AEVAL( ::aControls, { |o| If( o:Container == nil, o:Events_Size(), ) } )
+               AEVAL( ::aControls, { |o| If( o:Container == nil, o:Events_Size(), ) } )
             endif
 
         EndIf
@@ -3330,9 +3321,12 @@ Return Self
 CLASS TFormMDIClient FROM TFormInternal
 *-----------------------------------------------------------------------------*
    DATA Type           INIT "D" READONLY
+   DATA nWidth         INIT 0
+   DATA nHeight        INIT 0
 
    METHOD Define
    METHOD DefWindowProc(nMsg,wParam,lParam)       BLOCK { |Self,nMsg,wParam,lParam| DefMDIChildProc( ::hWnd, nMsg, wParam, lParam ) }
+   METHOD Events_Size
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -3345,7 +3339,7 @@ METHOD Define( FormName, Caption, x, y, w, h, MouseDragProcedure, ;
                DblClickProcedure, RDblClickProcedure, MDblClickProcedure, ;
                minwidth, maxwidth, minheight, maxheight ) CLASS TFormMDIClient
 *------------------------------------------------------------------------------*
-Local nStyle := 0, nStyleEx := 0
+Local nStyle := 0, nStyleEx := 0, aClientRect
 
    ::Focused := ( HB_IsLogical( Focused ) .AND. Focused )
    ::SearchParent( oParent )
@@ -3353,6 +3347,21 @@ Local nStyle := 0, nStyleEx := 0
 * ventana MDI FRAME
 *      nStyle   += WS_CLIPSIBLINGS + WS_CLIPCHILDREN // + WS_THICKFRAME
    nStyle   += WS_CHILD + WS_CLIPCHILDREN
+
+   aClientRect := { 0, 0, 0, 0 }
+   GetClientRect( ::Parent:hWnd, aClientRect )
+   IF ! HB_ISNUMERIC( x ) .AND. ::nCol    == 0
+      x := aClientRect[ 1 ]
+   ENDIF
+   IF ! HB_ISNUMERIC( y ) .AND. ::nRow    == 0
+      y := aClientRect[ 2 ]
+   ENDIF
+   IF ! HB_ISNUMERIC( w ) .AND. ::nWidth  == 0
+      w := aClientRect[ 3 ] - aClientRect[ 1 ]
+   ENDIF
+   IF ! HB_ISNUMERIC( h ) .AND. ::nHeight == 0
+      h := aClientRect[ 4 ] - aClientRect[ 2 ]
+   ENDIF
 
    ::Define2( FormName, Caption, x, y, w, h, ::Parent:hWnd, .F., .T., .T., .T., .T., ;
               .T., virtualheight, virtualwidth, hscrollbox, vscrollbox, fontname, fontsize, aRGB, cursor, ;
@@ -3366,6 +3375,13 @@ Local nStyle := 0, nStyleEx := 0
    ::hWndClient := ::hWnd
 
 Return Self
+
+METHOD Events_Size() CLASS TFormMDIClient
+LOCAL aClientRect
+   aClientRect := { 0, 0, 0, 0 }
+   GetClientRect( ::Parent:hWnd, aClientRect )
+   ::SizePos( aClientRect[ 2 ], aClientRect[ 1 ], aClientRect[ 3 ] - aClientRect[ 1 ], aClientRect[ 4 ] - aClientRect[ 2 ] )
+RETURN nil
 
 
 
@@ -3405,6 +3421,7 @@ Local nStyle := 0, nStyleEx := 0
    // If MDIclient window doesn't exists, create it.
    If ! ValidHandler( ::Parent:hWndClient )
       oParent := TFormMDIClient():Define( ,,,,,,,,,,,,,,,,,,,,,,,,, ::Parent )
+      oParent:EndWindow()
       ::SearchParent( oParent )
    EndIf
 

@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.57 2008-02-24 17:59:01 guerra000 Exp $
+ * $Id: c_windows.c,v 1.58 2008-03-17 03:32:20 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -433,7 +433,7 @@ PHB_ITEM _OOHG_GetExistingObject( HWND hWnd, BOOL bForm, BOOL bForceAny )
       }
    }
 
-   if( ! pItem )
+   if( ! pItem && bForceAny )
    {
       pItem = GetControlObjectByHandle( hWnd );
    }
@@ -1670,5 +1670,11 @@ HB_FUNC( WINDOWSTYLEFLAG )
    hb_retnl( GetWindowLong( HWNDparam( 1 ), GWL_STYLE ) & hb_parnl( 2 ) );
 }
 
+HB_FUNC( ANIMATEWINDOW )                // hWnd, nTime, nFlags, lHide
+{
+   int iType;
 
+   iType = ( hb_parl( 4 ) ? AW_HIDE : AW_ACTIVATE ) | hb_parl( 3 );
 
+   AnimateWindow( HWNDparam( 1 ), hb_parni( 2 ), iType );
+}
