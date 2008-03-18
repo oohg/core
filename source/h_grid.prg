@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.99 2008-02-12 05:43:17 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.100 2008-03-18 00:33:10 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -123,6 +123,8 @@ CLASS TGrid FROM TControl
    DATA aWhen            INIT {}
    DATA cRowEditTitle    INIT nil
    DATA lNested          INIT .F.
+   DATA AllowMoveColumn  INIT .T.
+   DATA AllowChangeSize  INIT .T.
 
    DATA Nrowpos      INIT 1
    DATA Ncolpos      INIT 1
@@ -1244,6 +1246,8 @@ HB_FUNC_STATIC( TGRID_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
    LPARAM lParam  = ( LPARAM ) hb_parnl( 4 );
    PHB_ITEM pSelf = hb_stackSelfItem();
    static PHB_SYMB s_Events2 = 0;
+   static PHB_SYMB s_Notify2 = 0;
+   BOOL bDefault = TRUE;
 
    switch( message )
    {
@@ -1267,6 +1271,7 @@ HB_FUNC_STATIC( TGRID_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
             );
          }
          hb_retni( 1 );
+         bDefault = FALSE;
          break;
 
       case WM_LBUTTONDBLCLK:
@@ -1282,19 +1287,41 @@ HB_FUNC_STATIC( TGRID_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
          hb_vmPushLong( wParam );
          hb_vmPushLong( lParam );
          hb_vmDo( 5 );
+         bDefault = FALSE;
          break;
 
-      default:
-         _OOHG_Send( pSelf, s_Super );
-         hb_vmSend( 0 );
-         _OOHG_Send( hb_param( -1, HB_IT_OBJECT ), s_Events );
-         HWNDpush( hWnd );
-         hb_vmPushLong( message );
-         hb_vmPushLong( wParam );
-         hb_vmPushLong( lParam );
-         hb_vmSend( 4 );
+      case WM_NOTIFY:
+         if( ( ( NMHDR FAR * ) lParam )->hwndFrom == ( HWND ) SendMessage( hWnd, LVM_GETHEADER, 0, 0 ) )
+         {
+            if( ! s_Notify2 )
+            {
+               s_Notify2 = hb_dynsymSymbol( hb_dynsymFind( "_OOHG_TGRID_NOTIFY2" ) );
+            }
+            hb_vmPushSymbol( s_Notify2 );
+            hb_vmPushNil();
+            hb_vmPush( pSelf );
+            hb_vmPushLong( wParam );
+            hb_vmPushLong( lParam );
+            hb_vmDo( 3 );
+            if( ISNUM( -1 ) )
+            {
+               bDefault = FALSE;
+            }
+         }
          break;
 	}
+
+   if( bDefault )
+   {
+      _OOHG_Send( pSelf, s_Super );
+      hb_vmSend( 0 );
+      _OOHG_Send( hb_param( -1, HB_IT_OBJECT ), s_Events );
+      HWNDpush( hWnd );
+      hb_vmPushLong( message );
+      hb_vmPushLong( wParam );
+      hb_vmPushLong( lParam );
+      hb_vmSend( 4 );
+   }
 }
 #pragma ENDDUMP
 
@@ -1353,6 +1380,36 @@ Local aCellData
       _PopEventInfo()
       Return 0
 
+   EndIf
+
+RETURN nil
+
+*-----------------------------------------------------------------------------*
+FUNCTION _OOHG_TGrid_Notify2( Self, wParam, lParam ) // CLASS TGrid
+*-----------------------------------------------------------------------------*
+Local nNotify := GetNotifyCode( lParam ), nColumn := NMHeader_iItem( lParam )
+
+   Empty( wParam ) // DUMMY...
+
+   If     nNotify == HDN_BEGINDRAG
+      If HB_IsLogical( ::AllowMoveColumn ) .AND. ! ::AllowMoveColumn
+         Return 1
+      EndIf
+   ElseIf nNotify == HDN_ENDDRAG
+      // ::AllowMoveColumn
+      // Termina a arrastrar el encabezado de nColumn
+      // RETURN 1 para no permitirlo
+   ElseIf nNotify == HDN_BEGINTRACK
+      If HB_IsLogical( ::AllowChangeSize ) .AND. ! ::AllowChangeSize
+         Return 1
+      EndIf
+   ElseIf nNotify == HDN_ENDTRACK
+      // ::AllowChangeSize
+      // Termina de cambiar el tamaño de nColumn
+   ElseIf nNotify == HDN_DIVIDERDBLCLICK
+      If HB_IsLogical( ::AllowChangeSize ) .AND. ! ::AllowChangeSize
+         Return 1
+      EndIf
    EndIf
 
 RETURN nil
@@ -1720,7 +1777,7 @@ Return aGrid
 *-----------------------------------------------------------------------------*
 METHOD ColumnWidth( nColumn, nWidth ) CLASS TGrid
 *-----------------------------------------------------------------------------*
-   IF HB_IsNumeric( nColumn ) .AND. nColumn >= 1 .AND. nColumn <= Len( ::aHeaders )
+   If HB_IsNumeric( nColumn ) .AND. nColumn >= 1 .AND. nColumn <= Len( ::aHeaders )
       If HB_IsNumeric( nWidth )
          nWidth := ListView_SetColumnWidth( ::hWnd, nColumn - 1, nWidth )
       Else
@@ -1729,7 +1786,7 @@ METHOD ColumnWidth( nColumn, nWidth ) CLASS TGrid
       ::aWidths[ nColumn ] := nWidth
    Else
       nWidth := 0
-   ENDIF
+   EndIf
 Return nWidth
 
 *-----------------------------------------------------------------------------*
@@ -2310,6 +2367,11 @@ HB_FUNC( LISTVIEW_SORTITEMSEX )   // hWnd, nColumn, lDescending
    hb_retni( SendMessage( si.hWnd, LVM_SORTITEMSEX,
                           ( WPARAM ) ( _OOHG_SortItemsInfo * ) &si,
                           ( LPARAM ) ( PFNLVCOMPARE ) _OOHG_SortItems ) );
+}
+
+HB_FUNC( NMHEADER_IITEM )
+{
+   hb_retnl( ( LONG ) ( ( ( NMHEADER * ) hb_parnl( 1 ) )->iItem ) + 1 );
 }
 #pragma ENDDUMP
 

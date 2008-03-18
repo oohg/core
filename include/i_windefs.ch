@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.27 2008-02-21 05:09:49 guerra000 Exp $
+ * $Id: i_windefs.ch,v 1.28 2008-03-18 00:33:10 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -682,5 +682,12 @@
 #define CCS_LEFT                ( CCS_VERT + CCS_TOP )
 #define CCS_RIGHT               ( CCS_VERT + CCS_BOTTOM )
 #define CCS_NOMOVEX             ( CCS_VERT + CCS_NOMOVEY )
+
+#define HDN_FIRST               -300
+#define HDN_BEGINDRAG           ( HDN_FIRST - 10 )
+#define HDN_ENDDRAG             ( HDN_FIRST - 11 )
+#define HDN_BEGINTRACK          ( HDN_FIRST - 26 )
+#define HDN_ENDTRACK            ( HDN_FIRST - 27 )
+#define HDN_DIVIDERDBLCLICK     ( HDN_FIRST - 25 )
 
 #endif
