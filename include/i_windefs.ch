@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.28 2008-03-18 00:33:10 guerra000 Exp $
+ * $Id: i_windefs.ch,v 1.29 2008-03-23 22:13:00 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -689,5 +689,26 @@
 #define HDN_BEGINTRACK          ( HDN_FIRST - 26 )
 #define HDN_ENDTRACK            ( HDN_FIRST - 27 )
 #define HDN_DIVIDERDBLCLICK     ( HDN_FIRST - 25 )
+
+#define TCS_SCROLLOPPOSITE           1
+#define TCS_BOTTOM                   2
+#define TCS_RIGHT                    2
+#define TCS_MULTISELECT              4
+#define TCS_FLATBUTTONS         8
+#define TCS_FORCEICONLEFT            16
+#define TCS_FORCELABELLEFT           32
+#define TCS_HOTTRACK            64
+#define TCS_VERTICAL            128
+#define TCS_TABS                0
+#define TCS_BUTTONS             256
+#define TCS_SINGLELINE          0
+#define TCS_MULTILINE           512
+#define TCS_RIGHTJUSTIFY        0
+#define TCS_FIXEDWIDTH               1024
+#define TCS_RAGGEDRIGHT              2048
+#define TCS_FOCUSONBUTTONDOWN        4096
+#define TCS_OWNERDRAWFIXED           8192
+#define TCS_TOOLTIPS                 16384
+#define TCS_FOCUSNEVER               32768
 
 #endif

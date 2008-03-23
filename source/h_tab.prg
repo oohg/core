@@ -1,12 +1,12 @@
 /*
- * $Id: h_tab.prg,v 1.36 2008-02-17 05:47:50 guerra000 Exp $
+ * $Id: h_tab.prg,v 1.37 2008-03-23 22:13:00 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Tab functions
  *
  * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -134,18 +134,21 @@ ENDCLASS
 METHOD Define( ControlName, ParentForm, x, y, w, h, aCaptions, aPageMap, ;
                value, fontname, fontsize, tooltip, change, Buttons, Flat, ;
                HotTrack, Vertical, notabstop, aMnemonic, bold, italic, ;
-               underline, strikeout, Images, lRtl, lInternals ) CLASS TTab
+               underline, strikeout, Images, lRtl, lInternals, Invisible, ;
+               lDisabled, multiline ) CLASS TTab
 *-----------------------------------------------------------------------------*
-Local Caption, Page, Image, Mnemonic, z
+Local Caption, Page, Image, Mnemonic, z, nStyle
 Local ControlHandle
 
    ASSIGN ::lInternals VALUE lInternals TYPE "L"
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize,,,, lRtl )
 
-   // Since we still can't set a TAB's backcolor, we assume it (and
-   // internal controls) as system-default backcolor  :(
-   ::BackColor := -1
+   IF ! ::lInternals
+      // Since we still can't set a TAB's backcolor, we assume it (and
+      // internal controls) as system-default backcolor  :(
+      ::BackColor := -1
+   ENDIF
 
    IF !HB_IsArray( aCaptions )
        aCaptions := {}
@@ -162,7 +165,14 @@ Local ControlHandle
    ASSIGN ::nRow    VALUE y TYPE "N"
    ASSIGN ::nCol    VALUE x TYPE "N"
 
-   ControlHandle = InitTabControl( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, {}, value, '', 0 , Buttons , Flat , HotTrack , Vertical , notabstop , ::lRtl )
+   nStyle := ::InitStyle( ,, Invisible, NoTabStop, lDisabled ) + ;
+             if( ValType( Vertical ) == "L"  .AND. Vertical,   TCS_VERTICAL, 0 ) + ;
+             if( ValType( HotTrack ) == "L"  .AND. HotTrack,   TCS_HOTTRACK, 0 ) + ;
+             if( ValType( Flat ) == "L"      .AND. Flat,       TCS_FLATBUTTONS, 0 ) + ;
+             if( ValType( Buttons ) == "L"   .AND. Buttons,    TCS_BUTTONS, 0 ) + ;
+             if( ValType( multiline ) == "L" .AND. multiline,  TCS_MULTILINE, 0 )
+
+   ControlHandle = InitTabControl( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, {}, value, nStyle, ::lRtl )
    IF ! ::lInternals
       SetWindowPos( ControlHandle, 0, 0, 0, 0, 0, 3 )
    ENDIF
@@ -646,7 +656,10 @@ METHOD Events_Size() CLASS TTabPageInternal
 *-----------------------------------------------------------------------------*
 Local aArea
    aArea := _OOHG_TabPage_GetArea( ::Container )
+   ::RowMargin := - aArea[ 2 ]
+   ::ColMargin := - aArea[ 1 ]
    ::SizePos( aArea[ 2 ], aArea[ 1 ], aArea[ 3 ], aArea[ 4 ] )
+   ::ScrollControls()
 Return NIL
 
 STATIC FUNCTION _OOHG_TabPage_GetArea( oTab )
@@ -687,47 +700,18 @@ static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 HB_FUNC( INITTABCONTROL )
 {
 	PHB_ITEM hArray;
-	HWND hwnd;
 	HWND hbutton;
 	TC_ITEM tie;
 	int i;
 
-	int Style = WS_CHILD | WS_VISIBLE ;
-   int iStyleEx = _OOHG_RTL_Status( hb_parl( 16 ) );
-
-   if( hb_parl (11) )
-	{
-		Style = Style | TCS_BUTTONS ;
-	}
-
-   if( hb_parl (12) )
-	{
-		Style = Style | TCS_FLATBUTTONS ;
-	}
-
-   if( hb_parl (13) )
-	{
-		Style = Style | TCS_HOTTRACK ;
-	}
-
-   if( hb_parl (14) )
-	{
-		Style = Style | TCS_VERTICAL ;
-	}
-
-   if( ! hb_parl (15) )
-	{
-		Style = Style | WS_TABSTOP ;
-	}
+   int Style = WS_CHILD | hb_parni( 9 );
+   int iStyleEx = _OOHG_RTL_Status( hb_parl( 10 ) );
 
 	hArray = hb_param( 7, HB_IT_ARRAY );
 
-   hwnd = HWNDparam( 1 );
-
-   hbutton = CreateWindowEx( iStyleEx, WC_TABCONTROL , NULL ,
-	Style ,
-	hb_parni(3), hb_parni(4) , hb_parni(5), hb_parni(6) ,
-	hwnd,(HMENU)hb_parni(2) , GetModuleHandle(NULL) , NULL ) ;
+   hbutton = CreateWindowEx( iStyleEx, WC_TABCONTROL, NULL, Style,
+                             hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
+                             HWNDparam( 1 ), HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
 
 	tie.mask = TCIF_TEXT ;
 	tie.iImage = -1;

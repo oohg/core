@@ -1,11 +1,22 @@
 /*
- * $Id: ChangeLog,v 1.508 2008-03-18 00:33:09 guerra000 Exp $
+ * $Id: ChangeLog,v 1.509 2008-03-23 22:13:00 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-03-23 16:10 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_richeditbox.prg
+    * Reverted forced repaint on ::Value and ::RichValue when control
+      is inside a container.
+  * source/h_windows.prg
+    ! Fixed autoadjust error for internal tab pages.
+  * include/i_tab.ch
+  * include/i_windefs.ch
+  * source/h_tab.prg
+    + INVISIBLE, DISABLED and MULTILINE clauses added.
 
 2008-03-17 18:30 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * include/i_windefs.ch

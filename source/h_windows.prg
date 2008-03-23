@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.186 2008-03-17 03:32:20 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.187 2008-03-23 22:13:00 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -2115,7 +2115,7 @@ FOR i:=1 TO l
          IF .not. oControl:lfixwidth  //// solo si el control tiene activado ajuste de ancho
             ocontrol:sizepos( , ,  oControl:width * nDivw ,oControl:height * nDivh )
             IF  _OOHG_adjustFont
-                IF .not. oControl:lfixfont .and.  !ocontrol:type == "I" /// solo si el control tiene activado ajuste de font y ajuste de ancho y no sea una ventana interna
+                IF ! oControl:lfixfont /// solo si el control tiene activado ajuste de font y ajuste de ancho
                    oControl:fontsize:=oControl:fontsize * nDivw
                 ENDIF
             ENDIF
@@ -3153,6 +3153,7 @@ CLASS TFormInternal FROM TForm
 *-----------------------------------------------------------------------------*
    DATA Type           INIT "I" READONLY
    DATA lInternal      INIT .T.
+   DATA lAdjust        INIT .F.
 
    METHOD Define
    METHOD Define2

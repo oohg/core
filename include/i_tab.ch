@@ -1,12 +1,12 @@
 /*
- * $Id: i_tab.ch,v 1.5 2006-06-05 00:53:41 guerra000 Exp $
+ * $Id: i_tab.ch,v 1.6 2008-03-23 22:13:00 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * TAB control definitions
  *
  * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -113,12 +113,16 @@
                 [ <notabstop: NOTABSTOP> ]       ;
                 [ <rtl: RTL> ]       ;
                 [ SUBCLASS <subclass> ] ;
-                [ <internals: INTERNALS> ]       ;
+                [ <internals: INTERNALS> ]     ;
+                [ <invisible: INVISIBLE> ]     ;
+                [ <disabled: DISABLED> ]       ;
+                [ <multiline: MULTILINE> ]     ;
 	=>;
              [ <obj> := ] _OOHG_SelectSubClass( TTab(), [ <subclass>() ] ): ;
              Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, {}, {}, <value>, <f>, <s>, <tooltip>, ;
                      <{change}>, <.buttons.>, <.flat.>, <.hottrack.>, <.vertical.>, <.notabstop.>, , ;
-                     <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, {}, <.rtl.>, <.internals.> )
+                     <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, {}, <.rtl.>, <.internals.>, ;
+                     <.invisible.>, <.disabled.>, <.multiline.> )
 
 #command PAGE <caption> [ IMAGE <image> ] [ NAME <name> ] [ OBJ <obj> ] [ SUBCLASS <subclass> ] ;
 	=>;

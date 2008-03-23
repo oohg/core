@@ -1,12 +1,12 @@
 /*
- * $Id: h_richeditbox.prg,v 1.17 2008-02-21 06:46:06 guerra000 Exp $
+ * $Id: h_richeditbox.prg,v 1.18 2008-03-23 22:13:00 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG rich edit functions
  *
  * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -104,7 +104,6 @@ CLASS TEditRich FROM TEdit
    METHOD Define
    METHOD BackColor   SETGET
    METHOD RichValue   SETGET
-   METHOD Value       SETGET
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -149,21 +148,7 @@ METHOD RichValue( cValue ) CLASS TEditRich
    If VALTYPE( cValue ) $ "CM"
       RichStreamIn( ::hWnd, cValue )
    EndIf
-   If ::Container != nil
-      ::SizePos()   // Forces repaint
-   EndIf
 RETURN RichStreamOut( ::hWnd )
-
-*-----------------------------------------------------------------------------*
-METHOD Value( cValue ) CLASS TEditRich
-*-----------------------------------------------------------------------------*
-   If VALTYPE( cValue ) $ "CM"
-      ::Caption := cValue
-   EndIf
-   If ::Container != nil
-      ::SizePos()   // Forces repaint
-   EndIf
-RETURN ::Caption
 
 #pragma BEGINDUMP
 #include "hbapi.h"
