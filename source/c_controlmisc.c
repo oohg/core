@@ -1,5 +1,5 @@
 /*
- * $Id: c_controlmisc.c,v 1.49 2008-02-24 17:59:01 guerra000 Exp $
+ * $Id: c_controlmisc.c,v 1.50 2008-03-30 05:16:32 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -715,7 +715,14 @@ HB_FUNC( IMAGELIST_INIT )
                himl = ImageList_Create( cx, cy, ILC_COLOR32 | ILC_MASK, 16, 16 );
             }
 
-            ImageList_AddMasked( himl, hbmp, clrDefault );
+            if( clrDefault == CLR_NONE )
+            {
+               ImageList_Add( himl, hbmp, NULL );
+            }
+            else
+            {
+               ImageList_AddMasked( himl, hbmp, clrDefault );
+            }
             DeleteObject( hbmp );
          }
       }
