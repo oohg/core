@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.37 2008-03-23 22:13:00 guerra000 Exp $
+ * $Id: h_tab.prg,v 1.38 2008-04-05 05:39:45 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -252,6 +252,7 @@ LOCAL nPos, nCount
       IF nPos != 0
          TabCtrl_SetCurSel( ::hWnd, nPos )
          ::Refresh()
+         ::DoEvent( ::OnChange, "CHANGE" )
       ENDIF
    ENDIF
    nPos := TABCTRL_GETCURSEL( ::hWnd )
@@ -569,7 +570,7 @@ CLASS TTabPage FROM TControl
    METHOD ContainerVisible
 
    METHOD AddControl
-   METHOD SetFocus            BLOCK { |Self| ::Container:SetFocus() , ::Container:Value := ::Position , ::Container:DoEvent( ::Container:OnChange, "CHANGE" ) , Self }
+   METHOD SetFocus            BLOCK { |Self| ::Container:SetFocus() , ::Container:Value := ::Position , Self }
    METHOD ForceHide           BLOCK { |Self| AEVAL( ::aControls, { |o| o:ForceHide() } ) }
    METHOD Events_Size         BLOCK { |Self| AEVAL( ::aControls, { |o| o:SizePos() } ) }
 ENDCLASS
@@ -633,7 +634,7 @@ CLASS TTabPageInternal FROM TFormInternal
    METHOD EndPage             BLOCK { || _EndTabPage() }
    METHOD Events_Size
 
-   METHOD SetFocus            BLOCK { |Self| ::Container:SetFocus() , ::Container:Value := ::Position , ::Super:SetFocus() , ::Container:DoEvent( ::Container:OnChange, "CHANGE" ) , Self }
+   METHOD SetFocus            BLOCK { |Self| ::Container:SetFocus() , ::Container:Value := ::Position , ::Super:SetFocus() , Self }
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
