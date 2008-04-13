@@ -1,5 +1,5 @@
 /*
- * $Id: h_image.prg,v 1.21 2008-01-14 00:58:34 guerra000 Exp $
+ * $Id: h_image.prg,v 1.22 2008-04-13 18:52:29 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -95,7 +95,6 @@
 #include "hbclass.ch"
 #include "i_windefs.ch"
 
-
 CLASS TImage FROM TControl
    DATA Type            INIT "IMAGE" READONLY
    DATA cPicture        INIT ""
@@ -153,7 +152,7 @@ Local ControlHandle, nStyle
       EndIf
    EndIf
 
-   ASSIGN ::OnClick     VALUE ProcedureName TYPE "B"
+   ASSIGN ::OnClick     VALUE ProcedureName TYPE "B" DEFAULT ::OnClick
 
 Return Self
 
@@ -266,21 +265,17 @@ static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 HB_FUNC( INITIMAGE )   // ( hWnd, hMenu, nCol, nRow, nWidth, nHeight, nStyle, lRtl )
 {
    HWND h;
-   HWND hwnd;
    int Style, StyleEx;
-
-   hwnd = HWNDparam( 1 );
 
    StyleEx = _OOHG_RTL_Status( hb_parl( 8 ) );
 
-   Style = hb_parni( 7 ) | WS_CHILD | SS_BITMAP | SS_NOTIFY;
+   Style = hb_parni( 7 ) | WS_CHILD | SS_BITMAP;
 
-   h = CreateWindowEx( StyleEx, "static", NULL,
-        Style,
-        hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
-        hwnd, ( HMENU ) HWNDparam( 2 ), GetModuleHandle( NULL ), NULL ) ;
+   h = CreateWindowEx( StyleEx, "static", NULL, Style,
+                       hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
+                       HWNDparam( 1 ), HMENUparam( 2 ), GetModuleHandle( NULL ), NULL ) ;
 
-   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) h, GWL_WNDPROC, ( LONG ) SubClassFunc );
+   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( h, GWL_WNDPROC, ( LONG ) SubClassFunc );
 
    HWNDret( h );
 }
