@@ -1,5 +1,5 @@
 /*
- * $Id: i_menu.ch,v 1.6 2008-02-21 05:09:49 guerra000 Exp $
+ * $Id: i_menu.ch,v 1.7 2008-04-26 23:36:51 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -153,6 +153,11 @@
 #xcommand DEFINE NOTIFYMENU [ OF <parent> ] [ OBJ <oObj> ] [ SUBCLASS <subclass> ] ;
 =>;
           [ <oObj> := ] _OOHG_SelectSubClass( TMenuNotify(), [ <subclass>() ] ): ;
+                        Define( <(parent)> )
+
+#xcommand DEFINE MENU DYNAMIC [ OF <parent> ] [ OBJ <oObj> ] [ SUBCLASS <subclass> ] ;
+=>;
+          [ <oObj> := ] _OOHG_SelectSubClass( TMenu(), [ <subclass>() ] ): ;
                         Define( <(parent)> )
 
 #xcommand POPUP <caption> [ NAME <name> ] [ OBJ <oObj> ] [ <checked:CHECKED> ] [ <disabled:DISABLED> ] [ FROM [ POPUP ] <parent> ] [ <hilited:HILITED> ] [ IMAGE <image> ] [ <right:RIGHT> ] [ SUBCLASS <subclass> ] ;
