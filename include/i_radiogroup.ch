@@ -1,12 +1,12 @@
 /*
- * $Id: i_radiogroup.ch,v 1.4 2006-03-18 16:02:27 guerra000 Exp $
+ * $Id: i_radiogroup.ch,v 1.5 2008-04-27 23:16:57 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Radiogroup definitions
  *
  * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * www - http://www.oohg.com.mx
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -100,8 +100,8 @@
 			[ SPACING <spacing> ] 	;
 			[ FONT <fontname> ] 	;
 			[ SIZE <fontsize> ]	;
-			[ <bold : BOLD> ] ;
-			[ <italic : ITALIC> ] ;
+                        [ <bold : BOLD> ]       ;
+                        [ <italic : ITALIC> ]   ;
 			[ <underline : UNDERLINE> ] ;
 			[ <strikeout : STRIKEOUT> ] ;
 			[ TOOLTIP <tooltip> ]	;
@@ -109,15 +109,20 @@
 			[ FONTCOLOR <fontcolor> ] ;
 			[ ON CHANGE <change> ]	;
 			[ <transparent: TRANSPARENT> ] ;
-			[ HELPID <helpid> ] 		;
+                        [ HELPID <helpid> ]     ;
 			[ <invisible : INVISIBLE> ] ;
 			[ <notabstop : NOTABSTOP> ] ;
                         [ <autosize : AUTOSIZE> ] ;
                         [ <horizontal: HORIZONTAL> ] ;
+                        [ <disabled : DISABLED> ] ;
+                        [ <rtl : RTL> ]         ;
+                        [ HEIGHT <height> ]     ;
+                        [ SUBCLASS <subclass> ] ;
 	=>;
-        [ <obj> := ] ;
-        TRadioGroup():Define( <(name)>, <(parent)>, <col>, <row>, <aOptions>, <value>, ;
-                              <fontname>, <fontsize>, <tooltip>, <{change}>, <width>, ;
-                              <spacing>, <helpid>, <.invisible.>, <.notabstop.>, <.bold.>, ;
-                              <.italic.>, <.underline.>, <.strikeout.>, <backcolor>, ;
-                              <fontcolor>, <.transparent.>, <.autosize.>, <.horizontal.> )
+        [ <obj> := ] _OOHG_SelectSubClass( TRadioGroup(), [ <subclass>() ] ): ;
+                     Define( <(name)>, <(parent)>, <col>, <row>, <aOptions>, <value>, ;
+                             <fontname>, <fontsize>, <tooltip>, <{change}>, <width>, ;
+                             <spacing>, <helpid>, <.invisible.>, <.notabstop.>, <.bold.>, ;
+                             <.italic.>, <.underline.>, <.strikeout.>, <backcolor>, ;
+                             <fontcolor>, <.transparent.>, <.autosize.>, <.horizontal.>, ;
+                             <.disabled.>, <.rtl.>, <height> )

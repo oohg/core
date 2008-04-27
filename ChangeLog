@@ -1,11 +1,22 @@
 /*
- * $Id: ChangeLog,v 1.513 2008-04-26 23:36:51 guerra000 Exp $
+ * $Id: ChangeLog,v 1.514 2008-04-27 23:16:56 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-04-27 18:15 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_radiogroup.ch
+  * source/h_radio.prg
+    ! Fixed SPACING for horizontal radio.
+    ! Fixed TABSTOP implementation.
+    + DISABLED, RTL, HEIGHT, SUBCLASS clauses added.
+  * source/h_controlmisc.prg
+    ! Fixed visible items inside TABs.
+  * source/h_windows.prg
+    + TWindow:ContainerEnabled property added.
 
 2008-04-26 18:33 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * include/i_menu.ch

@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.97 2008-02-17 05:47:50 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.98 2008-04-27 23:16:57 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1381,7 +1381,7 @@ METHOD InitStyle( nStyle, nStyleEx, lInvisible, lNoTabStop, lDisabled ) CLASS TC
    If HB_IsLogical( lInvisible )
       ::lVisible := ! lInvisible
    EndIf
-   If ::lVisible
+   If ::ContainerVisible
       nStyle += WS_VISIBLE
    EndIf
 
@@ -1392,7 +1392,7 @@ METHOD InitStyle( nStyle, nStyleEx, lInvisible, lNoTabStop, lDisabled ) CLASS TC
    If HB_IsLogical( lDisabled )
       ::lEnabled := ! lDisabled
    EndIf
-   If ! ::lEnabled
+   If ! ::ContainerEnabled
       nStyle += WS_DISABLED
    EndIf
 

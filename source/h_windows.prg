@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.187 2008-03-23 22:13:00 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.188 2008-04-27 23:16:57 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -305,6 +305,7 @@ CLASS TWindow
    METHOD DebugMessageQuery
 
    METHOD ContainerVisible    BLOCK { |Self| ::lVisible .AND. IF( ::Container != NIL, ::Container:ContainerVisible, .T. ) }
+   METHOD ContainerEnabled    BLOCK { |Self| ::lEnabled .AND. IF( ::Container != NIL, ::Container:ContainerEnabled, .T. ) }
    METHOD ContainerReleasing  BLOCK { |Self| ::lReleasing .OR. IF( ::Container != NIL, ::Container:ContainerReleasing, IF( ::Parent != NIL, ::Parent:ContainerReleasing, .F. ) ) }
 
    // Specific HACKS :(
@@ -852,12 +853,12 @@ RETURN Self
 METHOD Enabled( lEnabled ) CLASS TWindow
 *------------------------------------------------------------------------------*
    IF HB_IsLogical( lEnabled )
-      IF lEnabled .AND. ( ::Container == NIL .OR. ::Container:Enabled )
+      ::lEnabled := lEnabled
+      IF ::ContainerEnabled
          EnableWindow( ::hWnd )
       ELSE
          DisableWindow( ::hWnd )
       ENDIF
-      ::lEnabled := lEnabled
    ENDIF
 RETURN ::lEnabled
 
@@ -1267,7 +1268,7 @@ METHOD Visible( lVisible ) CLASS TWindow
 *------------------------------------------------------------------------------*
    If HB_IsLogical( lVisible )
       ::lVisible := lVisible
-      If lVisible .AND. ::ContainerVisible
+      If ::ContainerVisible
          CShowControl( ::hWnd )
       Else
          HideWindow( ::hWnd )
