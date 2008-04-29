@@ -1,5 +1,5 @@
 /*
- * $Id: h_error.prg,v 1.34 2008-01-12 20:19:38 guerra000 Exp $
+ * $Id: h_error.prg,v 1.35 2008-04-29 13:32:07 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -281,7 +281,7 @@ LOCAL nHdl, cFile, cTop, cBottom, nPos
    cBottom := MEMOREAD( cFile )
    nPos := AT( ::PreHeader(), cBottom )
    IF nPos == 0
-      cTop := ::FileHeader( "ooHG Errorlog File" )
+      cTop := ::FileHeader( "Clip2Win Errorlog File" )
    ELSE
       cTop := LEFT( cBottom, nPos - 1 )
       cBottom := SUBSTR( cBottom, nPos )
@@ -341,7 +341,7 @@ RETURN RTRIM( cTxt ) + CHR( 13 ) + CHR( 10 )
 *------------------------------------------------------------------------------
 Function ooHGVersion()
 *------------------------------------------------------------------------------
-Return "ooHG V2.4 - 2007.12.06"
+Return "ooHG V2.8 - 2008.04.28"
 
 Function MiniGuiVersion()
 Return ooHGVersion()
