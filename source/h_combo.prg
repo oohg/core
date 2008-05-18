@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.41 2008-03-10 21:15:04 guerra000 Exp $
+ * $Id: h_combo.prg,v 1.42 2008-05-18 14:34:31 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -124,9 +124,8 @@ CLASS TCombo FROM TLabel
    METHOD DeleteAllItems
    METHOD Item
    METHOD ItemCount
+   METHOD ShowDropDown
 ENDCLASS
-
-
 
 *-----------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, x, y, w, rows, value, fontname, ;
@@ -285,6 +284,17 @@ METHOD PreRelease() CLASS TCombo
       SendMessage( ::hWnd, CB_SHOWDROPDOWN, 0, 0 )
    EndIf
 Return ::Super:PreRelease()
+
+*-----------------------------------------------------------------------------*
+METHOD ShowDropDown( lShow ) CLASS TCombo
+*-----------------------------------------------------------------------------*
+   ASSIGN lShow VALUE lShow TYPE "L" DEFAULT .T.
+   If lShow
+      SendMessage( ::hWnd, CB_SHOWDROPDOWN, 1, 0 )
+   Else
+      SendMessage( ::hWnd, CB_SHOWDROPDOWN, 0, 0 )
+   EndIf
+Return nil
 
 *-----------------------------------------------------------------------------*
 METHOD Events_Command( wParam ) CLASS TCombo
