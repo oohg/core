@@ -1,5 +1,5 @@
 /*
- * $Id: c_monthcal.c,v 1.5 2007-01-01 20:52:13 guerra000 Exp $
+ * $Id: c_monthcal.c,v 1.6 2008-06-02 12:20:49 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -285,4 +285,15 @@ HB_FUNC ( GETMONTHCALDATE )
     cDate[ 6 ] = ( iNum % 10 ) + '0';
 
     hb_retds( cDate );
+}
+
+
+HB_FUNC ( GETMONTHCALFIRSTDAYOFWEEK )
+{
+	hb_retni(LOWORD(SendMessage((HWND) hb_parnl (1), MCM_GETFIRSTDAYOFWEEK, 0, 0)));
+}
+
+HB_FUNC ( SETMONTHCALFIRSTDAYOFWEEK )
+{
+	SendMessage((HWND) hb_parnl (1), MCM_SETFIRSTDAYOFWEEK, 0, hb_parni(2));
 }
