@@ -1,5 +1,5 @@
 /*
- * $Id: h_scroll.prg,v 1.15 2007-12-25 02:47:14 guerra000 Exp $
+ * $Id: h_scroll.prg,v 1.16 2008-06-02 05:35:30 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -532,7 +532,7 @@ HB_FUNC( _SETSCROLL )
    if( bChange )
    {
       SetWindowLong( hWnd, GWL_STYLE, nStyle );
-      SetWindowPos( hWnd, 0, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_NOCOPYBITS | SWP_NOOWNERZORDER | SWP_NOSENDCHANGING );
+      SetWindowPos( hWnd, 0, 0, 0, 0, 0, SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOMOVE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_NOCOPYBITS | SWP_NOOWNERZORDER | SWP_NOSENDCHANGING );
    }
 
    hb_retni( nStyle );

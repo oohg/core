@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.58 2008-03-17 03:32:20 guerra000 Exp $
+ * $Id: c_windows.c,v 1.59 2008-06-02 05:35:30 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1677,4 +1677,9 @@ HB_FUNC( ANIMATEWINDOW )                // hWnd, nTime, nFlags, lHide
    iType = ( hb_parl( 4 ) ? AW_HIDE : AW_ACTIVATE ) | hb_parl( 3 );
 
    AnimateWindow( HWNDparam( 1 ), hb_parni( 2 ), iType );
+}
+
+HB_FUNC( SHOWWINDOWNA )
+{
+   ShowWindow( HWNDparam( 1 ), SW_SHOWNA );
 }

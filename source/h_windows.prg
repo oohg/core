@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.188 2008-04-27 23:16:57 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.189 2008-06-02 05:35:30 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1274,7 +1274,7 @@ METHOD Visible( lVisible ) CLASS TWindow
          HideWindow( ::hWnd )
       EndIf
 
-       ProcessMessages()    //// ojo con esto
+      ProcessMessages()    //// ojo con esto
 
    EndIf
 Return ::lVisible
@@ -1473,7 +1473,7 @@ HB_FUNC( _OOHG_SELECTSUBCLASS ) // _OOHG_SelectSubClass( oClass, oSubClass )
 CLASS TForm FROM TWindow
 *------------------------------------------------------------------------------*
    DATA ToolTipHandle  INIT 0
-   DATA Focused        INIT .F.
+   DATA Focused        INIT .T.
    DATA LastFocusedControl INIT 0
    DATA AutoRelease    INIT .F.
    DATA ActivateCount  INIT { 0, NIL, .T. }
@@ -1545,6 +1545,8 @@ CLASS TForm FROM TWindow
    METHOD EndWindow
    METHOD Register
    METHOD Visible       SETGET
+   METHOD Show
+   METHOD Hide
    METHOD Activate
    METHOD Release
    METHOD Center()      BLOCK { | Self | C_Center( ::hWnd ) }
@@ -1557,7 +1559,6 @@ CLASS TForm FROM TWindow
 
    METHOD getWindowState()
 
-   METHOD SetFocusedSplitChild
    METHOD SetActivationFocus
    METHOD ProcessInitProcedure
    METHOD DeleteControl
@@ -1786,8 +1787,6 @@ Local Formhandle, aClientRect
 
 Return Self
 
-
-
 *------------------------------------------------------------------------------*
 METHOD EndWindow() CLASS TForm
 *------------------------------------------------------------------------------*
@@ -1839,21 +1838,55 @@ Local mVar
 RETURN Self
 
 *-----------------------------------------------------------------------------*
-METHOD Visible( lVisible ) CLASS TForm
+METHOD Visible( lVisible, nFlags, nTime ) CLASS TForm
 *-----------------------------------------------------------------------------*
+   ASSIGN nFlags VALUE nFlags TYPE "N"
+   ASSIGN nTime  VALUE nTime  TYPE "N" DEFAULT 200
    IF HB_IsLogical( lVisible )
-      ::Super:Visible := lVisible
-      IF ! lVisible
+      ::lVisible := lVisible
+      IF ! ::ContainerVisible
+         IF PCOUNT() == 1
+            HideWindow( ::hWnd )
+         ELSE
+            AnimateWindow( ::hWnd, nTime, nFlags, .T. )
+         ENDIF
          ::OnHideFocusManagement()
-      ELSEIF ! ::lShowed
-         If ! ::SetFocusedSplitChild()
+      ELSE
+         IF PCOUNT() > 1
+            AnimateWindow( ::hWnd, nTime, nFlags, .F. )
+         ELSEIF ::Focused
+            CShowControl( ::hWnd )
+         ELSE
+            ShowWindowNA( ::hWnd )
+         ENDIF
+         IF ! ::lShowed
+            ::lShowed := .T.
             ::SetActivationFocus()
-         EndIf
-         ::lShowed := .T.
+         ENDIF
+         ProcessMessages()    //// ojo con esto
       ENDIF
    ENDIF
 Return ::lVisible
 
+*-----------------------------------------------------------------------------*
+METHOD Show( nFlags, nTime ) CLASS TForm
+*-----------------------------------------------------------------------------*
+   IF PCOUNT() == 0
+      ::Visible := .T.
+   ELSE
+      ::Visible( .T., nFlags, nTime )
+   ENDIF
+RETURN .T.
+
+*-----------------------------------------------------------------------------*
+METHOD Hide( nFlags, nTime ) CLASS TForm
+*-----------------------------------------------------------------------------*
+   IF PCOUNT() == 0
+      ::Visible := .F.
+   ELSE
+      ::Visible( .F., nFlags, nTime )
+   ENDIF
+RETURN .T.
 
 *-----------------------------------------------------------------------------*
 METHOD Activate( lNoStop, oWndLoop ) CLASS TForm
@@ -1893,9 +1926,6 @@ METHOD Activate( lNoStop, oWndLoop ) CLASS TForm
    If ::lVisible
       _OOHG_UserWindow := Self
       ::Show()
-      // If ! ::SetFocusedSplitChild()
-      //    ::SetActivationFocus()
-      // EndIf
    EndIf
 
    ::ProcessInitProcedure()
@@ -1945,20 +1975,17 @@ METHOD Release() CLASS TForm
 Return Nil
 
 *-----------------------------------------------------------------------------*
-METHOD SetFocusedSplitChild() CLASS TForm
-*-----------------------------------------------------------------------------*
-Local SplitFocusFlag := .F.
-   AEVAL( ::SplitChildList, { |o| if( o:Focused, ( o:SetFocus() , SplitFocusFlag := .T. ), ) } )
-Return SplitFocusFlag
-
-*-----------------------------------------------------------------------------*
 METHOD SetActivationFocus() CLASS TForm
 *-----------------------------------------------------------------------------*
-Local Sp
-   Sp := GetFocus()
-
-   IF ASCAN( ::aControls, { |o| o:hWnd == Sp } ) == 0
-      setfocus( GetNextDlgTabItem( ::hWnd , 0 , 0 ) )
+Local Sp, nSplit
+   nSplit := ASCAN( ::SplitChildList, { |o| o:Focused } )
+   IF nSplit > 0
+      ::SplitChildList:SetFocus()
+   ELSEIF ::Focused
+      Sp := GetFocus()
+      IF ASCAN( ::aControls, { |o| o:hWnd == Sp } ) == 0
+         SetFocus( GetNextDlgTabItem( ::hWnd , 0 , 0 ) )
+      ENDIF
    ENDIF
 Return nil
 
@@ -3101,10 +3128,6 @@ METHOD Visible( lVisible ) CLASS TFormModal
 
          AADD( _OOHG_ActiveModal, Self )
          EnableWindow( ::hWnd )
-
-         If ! ::SetFocusedSplitChild()
-            ::SetActivationFocus()
-         EndIf
       ENDIF
    ENDIF
 RETURN ( ::Super:Visible := lVisible )
@@ -3155,6 +3178,7 @@ CLASS TFormInternal FROM TForm
    DATA Type           INIT "I" READONLY
    DATA lInternal      INIT .T.
    DATA lAdjust        INIT .F.
+   DATA Focused        INIT .F.
 
    METHOD Define
    METHOD Define2
