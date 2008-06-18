@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.189 2008-06-02 05:35:30 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.190 2008-06-18 13:30:47 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -1980,7 +1980,8 @@ METHOD SetActivationFocus() CLASS TForm
 Local Sp, nSplit
    nSplit := ASCAN( ::SplitChildList, { |o| o:Focused } )
    IF nSplit > 0
-      ::SplitChildList:SetFocus()
+////      ::SplitChildList:SetFocus()
+      ::SplitChildList[ nSplit ]:SetFocus()
    ELSEIF ::Focused
       Sp := GetFocus()
       IF ASCAN( ::aControls, { |o| o:hWnd == Sp } ) == 0

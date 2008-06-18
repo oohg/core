@@ -1,5 +1,5 @@
 /*
- * $Id: i_hmg_compat.ch,v 1.1 2008-02-17 05:47:50 guerra000 Exp $
+ * $Id: i_hmg_compat.ch,v 1.2 2008-06-18 13:30:46 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -98,5 +98,9 @@
 #xcommand BREAK <break> ;
 	=>;
         _OOHG_ActiveControlBreak         := <break>
+
+#define TOP //
+#define PICTALIGNMENT //
+
 
 #endif
