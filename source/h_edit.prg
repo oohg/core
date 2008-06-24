@@ -1,5 +1,5 @@
 /*
- * $Id: h_edit.prg,v 1.17 2007-10-08 21:32:37 declan2005 Exp $
+ * $Id: h_edit.prg,v 1.18 2008-06-24 15:06:07 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -284,7 +284,7 @@ if ( !HB_IsArray( aCampos ) ) .or. ( Len( aCampos ) != nCampos )
         next
 else
         for nItem := 1 to nCampos
-                if ! VALTYPE( aCampos[nItem] $ "CM" )
+                if ! (VALTYPE( aCampos[nItem] )  $ "CM" )
                         _aCampos[nItem] := Lower( _aEstructura[nItem,1] )
                 else
                         _aCampos[nItem] := aCampos[nItem]
