@@ -1,5 +1,5 @@
 /*
- * $Id: h_edit.prg,v 1.18 2008-06-24 15:06:07 declan2005 Exp $
+ * $Id: h_edit.prg,v 1.19 2008-06-24 15:39:05 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -301,7 +301,7 @@ if ( !HB_IsArray( aEditables ) ) .or. ( Len( aEditables ) != nCampos )
         next
 else
         for nItem := 1 to nCampos
-                if HB_IsLogical( aEditables[nItem] )
+                if !HB_IsLogical( aEditables[nItem] )
                         _aEditables[nItem] := .t.
                 else
                         _aEditables[nItem] := aEditables[nItem]
