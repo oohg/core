@@ -1,12 +1,12 @@
 /*
- * $Id: h_xbrowse.prg,v 1.36 2008-02-10 02:39:30 guerra000 Exp $
+ * $Id: h_xbrowse.prg,v 1.37 2008-06-28 23:07:32 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * eXtended Browse code
  *
- * Copyright 2006 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2008 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -487,6 +487,7 @@ METHOD MoveTo( nTo, nFrom ) CLASS TXBrowse
          EndIf
       EndDo
       ::CurrentRow := nFrom
+      ::DoEvent( ::OnChange, "CHANGE" )
    EndIf
 Return Self
 
@@ -496,7 +497,6 @@ METHOD CurrentRow( nValue ) CLASS TXBrowse
 Local oVScroll, aPosition
    If ValType( nValue ) == "N" .AND. ! ::lLocked
       ::nValue := nValue
-      ::Super:Value := nValue
       oVScroll := ::VScroll
       If oVScroll != NIL
          If ::lRecCount
@@ -515,6 +515,7 @@ Local oVScroll, aPosition
             oVScroll:Value := Int( aPosition[ 1 ] * 10000 / aPosition[ 2 ] )
          EndIf
       EndIf
+      ::Super:Value := nValue
    EndIf
 Return ::Super:Value
 

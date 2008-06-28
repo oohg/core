@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.520 2008-06-24 15:06:06 declan2005 Exp $
+ * $Id: ChangeLog,v 1.521 2008-06-28 23:07:32 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,6 +7,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2008-06-27 18:06 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_altsyntax.prg
+    * Converted _OOHG_ActiveControl* memvars to items on
+      _OOHG_ActiveControlInfo[ * ] array.
+  * source/h_xbrowse.prg
+    * Added ON CHANGE processing (it process twice :[ ) when
+      grid's row changes using mouse.
 
 2008-06-24 10:05 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_edit.prg
@@ -15,13 +22,12 @@
 2008-06-18 8:28 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_windows.prg
     ! foxed problem in focus splitchild (edit extended)
-  * include/i_hmg_compat.ch   
+  * include/i_hmg_compat.ch
     + added PICTALIGNMENT and TOP for HMG IDE compatiblity
 
 2008-06-02 7:19 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/c_monthcalendar.c
     + added GETMONTHCALFIRSTDAYOFWEEK  and SETMONTHCALFIRSTDAYOFWEEK  funtcions.
-
 
 2008-06-02 00:34 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/c_windows.c

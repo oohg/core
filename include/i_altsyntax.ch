@@ -1,12 +1,12 @@
 /*
- * $Id: i_altsyntax.ch,v 1.42 2008-02-17 05:47:50 guerra000 Exp $
+ * $Id: i_altsyntax.ch,v 1.43 2008-06-28 23:07:32 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Alternate syntax definitions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2008 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -95,193 +95,170 @@
 Memvariables
 ----------------------------------------------------------------------------------------------------*/
 
-MEMVAR _OOHG_ActiveControlEditControls
-MEMVAR _OOHG_ActiveControlWhen
-MEMVAR _OOHG_ActiveControlReplaceFields
-MEMVAR _OOHG_ActiveControlDynamicForeColor
-MEMVAR _OOHG_ActiveControlDynamicBackColor
-MEMVAR _OOHG_ActiveControlEditCell
-
-MEMVAR _OOHG_ActiveControlHandCursor
-MEMVAR _OOHG_ActiveControlCenterAlign
-MEMVAR _OOHG_ActiveControlNoHScroll
-MEMVAR _OOHG_ActiveControlGripperText
-MEMVAR _OOHG_ActiveControlDisplayEdit
-MEMVAR _OOHG_ActiveControlDisplayChange
-
-MEMVAR  _OOHG_ActiveControlNoVScroll
-
-MEMVAR  _OOHG_ActiveControlForeColor
-
-MEMVAR  _OOHG_ActiveControlDateType
-
-MEMVAR  _OOHG_ActiveControlInPlaceEdit
-MEMVAR  _OOHG_ActiveControlItemSource
-MEMVAR  _OOHG_ActiveControlValueSource
-
-MEMVAR  _OOHG_ActiveControlWrap
-MEMVAR  _OOHG_ActiveControlIncrement
-
-MEMVAR _OOHG_ActiveControlAddress
-
-MEMVAR _OOHG_ActiveControlItemCount
-
-MEMVAR _OOHG_ActiveControlOnQueryData
-
-MEMVAR _OOHG_ActiveControlAutoSize
-
-MEMVAR _OOHG_ActiveControlVirtual
-
-MEMVAR _OOHG_ActiveControlStretch
-
-MEMVAR _OOHG_ActiveControlCaption
-MEMVAR _OOHG_ActiveControlAction
-MEMVAR _OOHG_ActiveControlFlat
-MEMVAR _OOHG_ActiveControlOnGotFocus
-MEMVAR _OOHG_ActiveControlOnLostFocus
-MEMVAR _OOHG_ActiveControlPicture
-
-MEMVAR _OOHG_ActiveControlOnChange
-
-MEMVAR _OOHG_ActiveControlItems
-MEMVAR _OOHG_ActiveControlOnEnter
-
-MEMVAR _OOHG_ActiveControlShowNone
-MEMVAR _OOHG_ActiveControlUpDown
-MEMVAR _OOHG_ActiveControlRightAlign
-
-MEMVAR _OOHG_ActiveControlReadOnly
-MEMVAR _OOHG_ActiveControlMaxLength
-MEMVAR _OOHG_ActiveControlBreak
-
-MEMVAR _OOHG_ActiveControlOpaque
-
-MEMVAR _OOHG_ActiveControlHeaders
-MEMVAR _OOHG_ActiveControlWidths
-MEMVAR _OOHG_ActiveControlOnDblClick
-MEMVAR _OOHG_ActiveControlOnRDblClick
-MEMVAR _OOHG_ActiveControlOnMDblClick
-MEMVAR _OOHG_ActiveControlOnHeadClick
-MEMVAR _OOHG_ActiveControlNoLines
-MEMVAR _OOHG_ActiveControlImage
-MEMVAR _OOHG_ActiveControlJustify
-
-MEMVAR _OOHG_ActiveControlNoToday
-MEMVAR _OOHG_ActiveControlNoTodayCircle
-MEMVAR _OOHG_ActiveControlWeekNumbers
-
-MEMVAR _OOHG_ActiveControlMultiSelect
-MEMVAR _OOHG_ActiveControlEdit
-
-MEMVAR _OOHG_ActiveControlBorder
-MEMVAR _OOHG_ActiveControlNoBorder
-MEMVAR _OOHG_ActiveControlFocusedPos
-MEMVAR _OOHG_ActiveControlClientEdge
-MEMVAR _OOHG_ActiveControlHScroll
-MEMVAR _OOHG_ActiveControlVscroll
-MEMVAR _OOHG_ActiveControlTransparent
-MEMVAR _OOHG_ActiveControlNoWordWrap
-MEMVAR _OOHG_ActiveControlNoPrefix
-
-MEMVAR _OOHG_ActiveControlSort
-
-MEMVAR _OOHG_ActiveControlRangeLow
-MEMVAR _OOHG_ActiveControlRangeHigh
-MEMVAR _OOHG_ActiveControlVertical
-MEMVAR _OOHG_ActiveControlSmooth
-
-MEMVAR _OOHG_ActiveControlOptions
-MEMVAR _OOHG_ActiveControlSpacing
-MEMVAR _OOHG_ActiveControlHorizontal
-
-MEMVAR _OOHG_ActiveControlNoTicks
-MEMVAR _OOHG_ActiveControlBoth
-MEMVAR _OOHG_ActiveControlTop
-MEMVAR _OOHG_ActiveControlLeft
-
-MEMVAR _OOHG_ActiveControlUpperCase
-MEMVAR _OOHG_ActiveControlLowerCase
-MEMVAR _OOHG_ActiveControlNumeric
-MEMVAR _OOHG_ActiveControlPassword
-MEMVAR _OOHG_ActiveControlInputMask
-MEMVAR _OOHG_ActiveControlAutoSkip
-
-MEMVAR _OOHG_ActiveControlWorkArea
-MEMVAR _OOHG_ActiveControlFields
-MEMVAR _OOHG_ActiveControlDelete
-MEMVAR _OOHG_ActiveControlValid
-MEMVAR _OOHG_ActiveControlValidMessages
-MEMVAR _OOHG_ActiveControlLock
-MEMVAR _OOHG_ActiveControlAppendable
-
-MEMVAR _OOHG_ActiveControlFile
-MEMVAR _OOHG_ActiveControlAutoPlay
-MEMVAR _OOHG_ActiveControlCenter
-MEMVAR _OOHG_ActiveControlNoAutoSizeWindow
-MEMVAR _OOHG_ActiveControlNoAuotSizeMovie
-MEMVAR _OOHG_ActiveControlNoErrorDlg
-MEMVAR _OOHG_ActiveControlNoMenu
-MEMVAR _OOHG_ActiveControlNoOpen
-MEMVAR _OOHG_ActiveControlNoPlayBar
-MEMVAR _OOHG_ActiveControlShowAll
-MEMVAR _OOHG_ActiveControlShowMode
-MEMVAR _OOHG_ActiveControlShowName
-MEMVAR _OOHG_ActiveControlShowPosition
-
-MEMVAR _OOHG_ActiveControlFormat
-MEMVAR _OOHG_ActiveControlField
-MEMVAR _OOHG_ActiveControlOnAppend
-
 MEMVAR _OOHG_ActiveControlInfo
 
-/*
-#xtranslate _OOHG_ActiveControlName           => _OOHG_ActiveControlInfo \[  1 \]
-#xtranslate _OOHG_ActiveControlOf             => _OOHG_ActiveControlInfo \[  2 \]
-#xtranslate _OOHG_ActiveControlRow            => _OOHG_ActiveControlInfo \[  3 \]
-#xtranslate _OOHG_ActiveControlCol            => _OOHG_ActiveControlInfo \[  4 \]
-#xtranslate _OOHG_ActiveControlWidth          => _OOHG_ActiveControlInfo \[  5 \]
-#xtranslate _OOHG_ActiveControlHeight         => _OOHG_ActiveControlInfo \[  6 \]
-#xtranslate _OOHG_ActiveControlFont           => _OOHG_ActiveControlInfo \[  7 \]
-#xtranslate _OOHG_ActiveControlSize           => _OOHG_ActiveControlInfo \[  8 \]
-#xtranslate _OOHG_ActiveControlFontBold       => _OOHG_ActiveControlInfo \[  9 \]
-#xtranslate _OOHG_ActiveControlFontItalic     => _OOHG_ActiveControlInfo \[ 10 \]
-#xtranslate _OOHG_ActiveControlFontStrikeOut  => _OOHG_ActiveControlInfo \[ 11 \]
-#xtranslate _OOHG_ActiveControlFontUnderLine  => _OOHG_ActiveControlInfo \[ 12 \]
-#xtranslate _OOHG_ActiveControlFontColor      => _OOHG_ActiveControlInfo \[ 13 \]
-#xtranslate _OOHG_ActiveControlBackColor      => _OOHG_ActiveControlInfo \[ 14 \]
-#xtranslate _OOHG_ActiveControlRtl            => _OOHG_ActiveControlInfo \[ 15 \]
-#xtranslate _OOHG_ActiveControlValue          => _OOHG_ActiveControlInfo \[ 16 \]
-#xtranslate _OOHG_ActiveControlTooltip        => _OOHG_ActiveControlInfo \[ 17 \]
-#xtranslate _OOHG_ActiveControlNoTabStop      => _OOHG_ActiveControlInfo \[ 18 \]
-#xtranslate _OOHG_ActiveControlInvisible      => _OOHG_ActiveControlInfo \[ 19 \]
-#xtranslate _OOHG_ActiveControlHelpId         => _OOHG_ActiveControlInfo \[ 20 \]
-#xtranslate _OOHG_ActiveControlDisabled       => _OOHG_ActiveControlInfo \[ 21 \]
-*/
-MEMVAR _OOHG_ActiveControlName
-MEMVAR _OOHG_ActiveControlOf
-MEMVAR _OOHG_ActiveControlRow
-MEMVAR _OOHG_ActiveControlCol
-MEMVAR _OOHG_ActiveControlWidth
-MEMVAR _OOHG_ActiveControlHeight
-MEMVAR _OOHG_ActiveControlFont
-MEMVAR _OOHG_ActiveControlSize
-MEMVAR _OOHG_ActiveControlFontBold
-MEMVAR _OOHG_ActiveControlFontItalic
-MEMVAR _OOHG_ActiveControlFontStrikeOut
-MEMVAR _OOHG_ActiveControlFontUnderLine
-MEMVAR _OOHG_ActiveControlFontColor
-MEMVAR _OOHG_ActiveControlBackColor
-MEMVAR _OOHG_ActiveControlRtl
-MEMVAR _OOHG_ActiveControlValue
-MEMVAR _OOHG_ActiveControlTooltip
-MEMVAR _OOHG_ActiveControlNoTabStop
-MEMVAR _OOHG_ActiveControlInvisible
-MEMVAR _OOHG_ActiveControlHelpId
-MEMVAR _OOHG_ActiveControlDisabled
-MEMVAR _OOHG_ActiveControlShowHeaders
+#xtranslate _OOHG_ActiveControlName                   => _OOHG_ActiveControlInfo \[   1 \]
+#xtranslate _OOHG_ActiveControlOf                     => _OOHG_ActiveControlInfo \[   2 \]
+#xtranslate _OOHG_ActiveControlRow                    => _OOHG_ActiveControlInfo \[   3 \]
+#xtranslate _OOHG_ActiveControlCol                    => _OOHG_ActiveControlInfo \[   4 \]
+#xtranslate _OOHG_ActiveControlWidth                  => _OOHG_ActiveControlInfo \[   5 \]
+#xtranslate _OOHG_ActiveControlHeight                 => _OOHG_ActiveControlInfo \[   6 \]
+#xtranslate _OOHG_ActiveControlFont                   => _OOHG_ActiveControlInfo \[   7 \]
+#xtranslate _OOHG_ActiveControlSize                   => _OOHG_ActiveControlInfo \[   8 \]
+#xtranslate _OOHG_ActiveControlFontBold               => _OOHG_ActiveControlInfo \[   9 \]
+#xtranslate _OOHG_ActiveControlFontItalic             => _OOHG_ActiveControlInfo \[  10 \]
+#xtranslate _OOHG_ActiveControlFontStrikeOut          => _OOHG_ActiveControlInfo \[  11 \]
+#xtranslate _OOHG_ActiveControlFontUnderLine          => _OOHG_ActiveControlInfo \[  12 \]
+#xtranslate _OOHG_ActiveControlFontColor              => _OOHG_ActiveControlInfo \[  13 \]
+#xtranslate _OOHG_ActiveControlBackColor              => _OOHG_ActiveControlInfo \[  14 \]
+#xtranslate _OOHG_ActiveControlRtl                    => _OOHG_ActiveControlInfo \[  15 \]
+#xtranslate _OOHG_ActiveControlValue                  => _OOHG_ActiveControlInfo \[  16 \]
+#xtranslate _OOHG_ActiveControlTooltip                => _OOHG_ActiveControlInfo \[  17 \]
+#xtranslate _OOHG_ActiveControlNoTabStop              => _OOHG_ActiveControlInfo \[  18 \]
+#xtranslate _OOHG_ActiveControlInvisible              => _OOHG_ActiveControlInfo \[  19 \]
+#xtranslate _OOHG_ActiveControlHelpId                 => _OOHG_ActiveControlInfo \[  20 \]
+#xtranslate _OOHG_ActiveControlDisabled               => _OOHG_ActiveControlInfo \[  21 \]
+#xtranslate _OOHG_ActiveControlShowHeaders            => _OOHG_ActiveControlInfo \[  22 \]
 
-#xtranslate _OOHG_ClearActiveControlInfo( <name> ) => ;
-        PUBLIC _OOHG_ActiveControlInfo \[ 150 \] ;;
+#xtranslate _OOHG_ActiveControlEditControls           => _OOHG_ActiveControlInfo \[ 201 \]
+#xtranslate _OOHG_ActiveControlWhen                   => _OOHG_ActiveControlInfo \[ 202 \]
+#xtranslate _OOHG_ActiveControlReplaceFields          => _OOHG_ActiveControlInfo \[ 203 \]
+#xtranslate _OOHG_ActiveControlDynamicForeColor       => _OOHG_ActiveControlInfo \[ 204 \]
+#xtranslate _OOHG_ActiveControlDynamicBackColor       => _OOHG_ActiveControlInfo \[ 205 \]
+#xtranslate _OOHG_ActiveControlEditCell               => _OOHG_ActiveControlInfo \[ 206 \]
+
+#xtranslate _OOHG_ActiveControlHandCursor             => _OOHG_ActiveControlInfo \[ 207 \]
+#xtranslate _OOHG_ActiveControlCenterAlign            => _OOHG_ActiveControlInfo \[ 208 \]
+#xtranslate _OOHG_ActiveControlNoHScroll              => _OOHG_ActiveControlInfo \[ 209 \]
+#xtranslate _OOHG_ActiveControlGripperText            => _OOHG_ActiveControlInfo \[ 210 \]
+#xtranslate _OOHG_ActiveControlDisplayEdit            => _OOHG_ActiveControlInfo \[ 211 \]
+#xtranslate _OOHG_ActiveControlDisplayChange          => _OOHG_ActiveControlInfo \[ 212 \]
+
+#xtranslate _OOHG_ActiveControlNoVScroll              => _OOHG_ActiveControlInfo \[ 213 \]
+
+#xtranslate _OOHG_ActiveControlForeColor              => _OOHG_ActiveControlInfo \[ 214 \]
+
+#xtranslate _OOHG_ActiveControlDateType               => _OOHG_ActiveControlInfo \[ 215 \]
+
+#xtranslate _OOHG_ActiveControlInPlaceEdit            => _OOHG_ActiveControlInfo \[ 216 \]
+#xtranslate _OOHG_ActiveControlItemSource             => _OOHG_ActiveControlInfo \[ 217 \]
+#xtranslate _OOHG_ActiveControlValueSource            => _OOHG_ActiveControlInfo \[ 218 \]
+
+#xtranslate _OOHG_ActiveControlWrap                   => _OOHG_ActiveControlInfo \[ 219 \]
+#xtranslate _OOHG_ActiveControlIncrement              => _OOHG_ActiveControlInfo \[ 220 \]
+
+#xtranslate _OOHG_ActiveControlAddress                => _OOHG_ActiveControlInfo \[ 221 \]
+
+#xtranslate _OOHG_ActiveControlItemCount              => _OOHG_ActiveControlInfo \[ 222 \]
+
+#xtranslate _OOHG_ActiveControlOnQueryData            => _OOHG_ActiveControlInfo \[ 223 \]
+
+#xtranslate _OOHG_ActiveControlAutoSize               => _OOHG_ActiveControlInfo \[ 224 \]
+
+#xtranslate _OOHG_ActiveControlVirtual                => _OOHG_ActiveControlInfo \[ 225 \]
+
+#xtranslate _OOHG_ActiveControlStretch                => _OOHG_ActiveControlInfo \[ 226 \]
+
+#xtranslate _OOHG_ActiveControlCaption                => _OOHG_ActiveControlInfo \[ 227 \]
+#xtranslate _OOHG_ActiveControlAction                 => _OOHG_ActiveControlInfo \[ 228 \]
+#xtranslate _OOHG_ActiveControlFlat                   => _OOHG_ActiveControlInfo \[ 229 \]
+#xtranslate _OOHG_ActiveControlOnGotFocus             => _OOHG_ActiveControlInfo \[ 230 \]
+#xtranslate _OOHG_ActiveControlOnLostFocus            => _OOHG_ActiveControlInfo \[ 231 \]
+#xtranslate _OOHG_ActiveControlPicture                => _OOHG_ActiveControlInfo \[ 232 \]
+
+#xtranslate _OOHG_ActiveControlOnChange               => _OOHG_ActiveControlInfo \[ 233 \]
+
+#xtranslate _OOHG_ActiveControlItems                  => _OOHG_ActiveControlInfo \[ 234 \]
+#xtranslate _OOHG_ActiveControlOnEnter                => _OOHG_ActiveControlInfo \[ 235 \]
+
+#xtranslate _OOHG_ActiveControlShowNone               => _OOHG_ActiveControlInfo \[ 236 \]
+#xtranslate _OOHG_ActiveControlUpDown                 => _OOHG_ActiveControlInfo \[ 237 \]
+#xtranslate _OOHG_ActiveControlRightAlign             => _OOHG_ActiveControlInfo \[ 238 \]
+
+#xtranslate _OOHG_ActiveControlReadOnly               => _OOHG_ActiveControlInfo \[ 239 \]
+#xtranslate _OOHG_ActiveControlMaxLength              => _OOHG_ActiveControlInfo \[ 240 \]
+#xtranslate _OOHG_ActiveControlBreak                  => _OOHG_ActiveControlInfo \[ 241 \]
+
+#xtranslate _OOHG_ActiveControlOpaque                 => _OOHG_ActiveControlInfo \[ 242 \]
+
+#xtranslate _OOHG_ActiveControlHeaders                => _OOHG_ActiveControlInfo \[ 243 \]
+#xtranslate _OOHG_ActiveControlWidths                 => _OOHG_ActiveControlInfo \[ 244 \]
+#xtranslate _OOHG_ActiveControlOnDblClick             => _OOHG_ActiveControlInfo \[ 245 \]
+#xtranslate _OOHG_ActiveControlOnRDblClick            => _OOHG_ActiveControlInfo \[ 246 \]
+#xtranslate _OOHG_ActiveControlOnMDblClick            => _OOHG_ActiveControlInfo \[ 247 \]
+#xtranslate _OOHG_ActiveControlOnHeadClick            => _OOHG_ActiveControlInfo \[ 248 \]
+#xtranslate _OOHG_ActiveControlNoLines                => _OOHG_ActiveControlInfo \[ 249 \]
+#xtranslate _OOHG_ActiveControlImage                  => _OOHG_ActiveControlInfo \[ 250 \]
+#xtranslate _OOHG_ActiveControlJustify                => _OOHG_ActiveControlInfo \[ 251 \]
+
+#xtranslate _OOHG_ActiveControlNoToday                => _OOHG_ActiveControlInfo \[ 252 \]
+#xtranslate _OOHG_ActiveControlNoTodayCircle          => _OOHG_ActiveControlInfo \[ 253 \]
+#xtranslate _OOHG_ActiveControlWeekNumbers            => _OOHG_ActiveControlInfo \[ 254 \]
+
+#xtranslate _OOHG_ActiveControlMultiSelect            => _OOHG_ActiveControlInfo \[ 255 \]
+#xtranslate _OOHG_ActiveControlEdit                   => _OOHG_ActiveControlInfo \[ 256 \]
+
+#xtranslate _OOHG_ActiveControlBorder                 => _OOHG_ActiveControlInfo \[ 257 \]
+#xtranslate _OOHG_ActiveControlNoBorder               => _OOHG_ActiveControlInfo \[ 258 \]
+#xtranslate _OOHG_ActiveControlFocusedPos             => _OOHG_ActiveControlInfo \[ 259 \]
+#xtranslate _OOHG_ActiveControlClientEdge             => _OOHG_ActiveControlInfo \[ 260 \]
+#xtranslate _OOHG_ActiveControlHScroll                => _OOHG_ActiveControlInfo \[ 261 \]
+#xtranslate _OOHG_ActiveControlVscroll                => _OOHG_ActiveControlInfo \[ 262 \]
+#xtranslate _OOHG_ActiveControlTransparent            => _OOHG_ActiveControlInfo \[ 263 \]
+#xtranslate _OOHG_ActiveControlNoWordWrap             => _OOHG_ActiveControlInfo \[ 264 \]
+#xtranslate _OOHG_ActiveControlNoPrefix               => _OOHG_ActiveControlInfo \[ 265 \]
+
+#xtranslate _OOHG_ActiveControlSort                   => _OOHG_ActiveControlInfo \[ 266 \]
+
+#xtranslate _OOHG_ActiveControlRangeLow               => _OOHG_ActiveControlInfo \[ 267 \]
+#xtranslate _OOHG_ActiveControlRangeHigh              => _OOHG_ActiveControlInfo \[ 268 \]
+#xtranslate _OOHG_ActiveControlVertical               => _OOHG_ActiveControlInfo \[ 269 \]
+#xtranslate _OOHG_ActiveControlSmooth                 => _OOHG_ActiveControlInfo \[ 270 \]
+
+#xtranslate _OOHG_ActiveControlOptions                => _OOHG_ActiveControlInfo \[ 271 \]
+#xtranslate _OOHG_ActiveControlSpacing                => _OOHG_ActiveControlInfo \[ 272 \]
+#xtranslate _OOHG_ActiveControlHorizontal             => _OOHG_ActiveControlInfo \[ 273 \]
+
+#xtranslate _OOHG_ActiveControlNoTicks                => _OOHG_ActiveControlInfo \[ 274 \]
+#xtranslate _OOHG_ActiveControlBoth                   => _OOHG_ActiveControlInfo \[ 275 \]
+#xtranslate _OOHG_ActiveControlTop                    => _OOHG_ActiveControlInfo \[ 276 \]
+#xtranslate _OOHG_ActiveControlLeft                   => _OOHG_ActiveControlInfo \[ 277 \]
+
+#xtranslate _OOHG_ActiveControlUpperCase              => _OOHG_ActiveControlInfo \[ 278 \]
+#xtranslate _OOHG_ActiveControlLowerCase              => _OOHG_ActiveControlInfo \[ 279 \]
+#xtranslate _OOHG_ActiveControlNumeric                => _OOHG_ActiveControlInfo \[ 280 \]
+#xtranslate _OOHG_ActiveControlPassword               => _OOHG_ActiveControlInfo \[ 281 \]
+#xtranslate _OOHG_ActiveControlInputMask              => _OOHG_ActiveControlInfo \[ 282 \]
+#xtranslate _OOHG_ActiveControlAutoSkip               => _OOHG_ActiveControlInfo \[ 283 \]
+
+#xtranslate _OOHG_ActiveControlWorkArea               => _OOHG_ActiveControlInfo \[ 284 \]
+#xtranslate _OOHG_ActiveControlFields                 => _OOHG_ActiveControlInfo \[ 285 \]
+#xtranslate _OOHG_ActiveControlDelete                 => _OOHG_ActiveControlInfo \[ 286 \]
+#xtranslate _OOHG_ActiveControlValid                  => _OOHG_ActiveControlInfo \[ 287 \]
+#xtranslate _OOHG_ActiveControlValidMessages          => _OOHG_ActiveControlInfo \[ 288 \]
+#xtranslate _OOHG_ActiveControlLock                   => _OOHG_ActiveControlInfo \[ 289 \]
+#xtranslate _OOHG_ActiveControlAppendable             => _OOHG_ActiveControlInfo \[ 290 \]
+
+#xtranslate _OOHG_ActiveControlFile                   => _OOHG_ActiveControlInfo \[ 291 \]
+#xtranslate _OOHG_ActiveControlAutoPlay               => _OOHG_ActiveControlInfo \[ 292 \]
+#xtranslate _OOHG_ActiveControlCenter                 => _OOHG_ActiveControlInfo \[ 293 \]
+#xtranslate _OOHG_ActiveControlNoAutoSizeWindow       => _OOHG_ActiveControlInfo \[ 294 \]
+#xtranslate _OOHG_ActiveControlNoAuotSizeMovie        => _OOHG_ActiveControlInfo \[ 295 \]
+#xtranslate _OOHG_ActiveControlNoErrorDlg             => _OOHG_ActiveControlInfo \[ 296 \]
+#xtranslate _OOHG_ActiveControlNoMenu                 => _OOHG_ActiveControlInfo \[ 297 \]
+#xtranslate _OOHG_ActiveControlNoOpen                 => _OOHG_ActiveControlInfo \[ 298 \]
+#xtranslate _OOHG_ActiveControlNoPlayBar              => _OOHG_ActiveControlInfo \[ 299 \]
+#xtranslate _OOHG_ActiveControlShowAll                => _OOHG_ActiveControlInfo \[ 190 \]
+#xtranslate _OOHG_ActiveControlShowMode               => _OOHG_ActiveControlInfo \[ 191 \]
+#xtranslate _OOHG_ActiveControlShowName               => _OOHG_ActiveControlInfo \[ 192 \]
+#xtranslate _OOHG_ActiveControlShowPosition           => _OOHG_ActiveControlInfo \[ 193 \]
+
+#xtranslate _OOHG_ActiveControlFormat                 => _OOHG_ActiveControlInfo \[ 194 \]
+#xtranslate _OOHG_ActiveControlField                  => _OOHG_ActiveControlInfo \[ 195 \]
+#xtranslate _OOHG_ActiveControlOnAppend               => _OOHG_ActiveControlInfo \[ 196 \]
+
+#xcommand _OOHG_ClearActiveControlInfo( <name> ) => ;
+        PUBLIC _OOHG_ActiveControlInfo \[ 300 \] ;;
         _OOHG_ActiveControlName          := <name>       ;;
         _OOHG_ActiveControlOf            := Nil          ;;
         _OOHG_ActiveControlRow           := Nil          ;;
