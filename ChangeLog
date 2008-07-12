@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.522 2008-06-30 17:17:37 declan2005 Exp $
+ * $Id: ChangeLog,v 1.523 2008-07-12 04:59:00 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,10 +7,26 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2008-07-11 23:57 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * include/oohg.h
+  * source/c_controlmisc.c
+  * source/h_controlmisc.prg
+  * source/h_windows.prg
+    + DROPFILES event added.
+    + TWindow:AcceptFiles method added.
+    + TWindow:OnDropFiles property added.
+    + _OOHG_Eval_Array() function added.
+    + ::DoEvent() can send parameters to event functions.
+  + samples/oohg/DropFiles.prg
+    + Drag and drop files sample.
+  * source/h_windows.prg
+    + More message names added to TWindow:DebugMessageName().
+    * WM_COMMAND shows control-specific command.
+    + TWindow:DebugMessageNameCommand() method added.
+
 2008-06-30 12:05 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * include/i_hmg_compat.ch
-   ! removed TOP clause because conflict with GO TOP 
-
+   ! removed TOP clause because conflict with GO TOP
 
 2008-06-27 18:06 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * include/i_altsyntax.prg

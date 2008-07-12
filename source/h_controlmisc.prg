@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.98 2008-04-27 23:16:57 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.99 2008-07-12 04:59:00 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1641,7 +1641,7 @@ Return nPos
 
 
 *-----------------------------------------------------------------------------*
-METHOD DoEvent( bBlock, cEventType ) CLASS TControl
+METHOD DoEvent( bBlock, cEventType, aParams ) CLASS TControl
 *-----------------------------------------------------------------------------*
 Local lRetVal
    If ! ::Parent == nil .AND. ::Parent:lReleasing
@@ -1653,7 +1653,7 @@ Local lRetVal
       ASSIGN _OOHG_ThisEventType VALUE cEventType TYPE "CM" DEFAULT ""
       _OOHG_ThisControl   := Self
       _OOHG_ThisObject    := Self
-      Eval( bBlock )
+      _OOHG_Eval_Array( bBlock, aParams )
       _PopEventInfo()
       lRetVal := .T.
    Else
@@ -1709,43 +1709,43 @@ HB_FUNC_STATIC( TCONTROL_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam
          }
          if( wParam == MK_LBUTTON )
          {
-            _OOHG_DoEvent( pSelf, s_OnMouseDrag, "MOUSEDRAG" );
+            _OOHG_DoEvent( pSelf, s_OnMouseDrag, "MOUSEDRAG", NULL );
          }
          else
          {
-            _OOHG_DoEvent( pSelf, s_OnMouseMove, "MOUSEMOVE" );
+            _OOHG_DoEvent( pSelf, s_OnMouseMove, "MOUSEMOVE", NULL );
          }
          hb_ret();
          break;
 
       // *** Commented for use current behaviour.
       // case WM_LBUTTONUP:
-      //    _OOHG_DoEvent( pSelf, s_OnClick, "CLICK" );
+      //    _OOHG_DoEvent( pSelf, s_OnClick, "CLICK", NULL );
       //    hb_ret();
       //    break;
 
       case WM_LBUTTONDBLCLK:
-         _OOHG_DoEvent( pSelf, s_OnDblClick, "DBLCLICK" );
+         _OOHG_DoEvent( pSelf, s_OnDblClick, "DBLCLICK", NULL );
          hb_ret();
          break;
 
       case WM_RBUTTONUP:
-         _OOHG_DoEvent( pSelf, s_OnRClick, "RCLICK" );
+         _OOHG_DoEvent( pSelf, s_OnRClick, "RCLICK", NULL );
          hb_ret();
          break;
 
       case WM_RBUTTONDBLCLK:
-         _OOHG_DoEvent( pSelf, s_OnRDblClick, "RDBLCLICK" );
+         _OOHG_DoEvent( pSelf, s_OnRDblClick, "RDBLCLICK", NULL );
          hb_ret();
          break;
 
       case WM_MBUTTONUP:
-         _OOHG_DoEvent( pSelf, s_OnMClick, "MCLICK" );
+         _OOHG_DoEvent( pSelf, s_OnMClick, "MCLICK", NULL );
          hb_ret();
          break;
 
       case WM_MBUTTONDBLCLK:
-         _OOHG_DoEvent( pSelf, s_OnMDblClick, "MDBLCLICK" );
+         _OOHG_DoEvent( pSelf, s_OnMDblClick, "MDBLCLICK", NULL );
          hb_ret();
          break;
 

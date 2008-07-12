@@ -1,5 +1,5 @@
 /*
- * $Id: c_controlmisc.c,v 1.50 2008-03-30 05:16:32 guerra000 Exp $
+ * $Id: c_controlmisc.c,v 1.51 2008-07-12 04:59:00 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -180,6 +180,7 @@ char *s_SymbolNames[] = { "EVENTS_NOTIFY",
                           "ONDBLCLICK",
                           "ONRDBLCLICK",
                           "ONMDBLCLICK",
+                          "ONDROPFILES",
                           "LastSymbol" };
 
 void _OOHG_Send( PHB_ITEM pSelf, int iSymbol )
@@ -252,7 +253,7 @@ POCTRL _OOHG_GetControlInfo( PHB_ITEM pSelf )
    return ( POCTRL ) pString;
 }
 
-void _OOHG_DoEvent( PHB_ITEM pSelf, int iSymbol, char * cType )
+void _OOHG_DoEvent( PHB_ITEM pSelf, int iSymbol, char * cType, PHB_ITEM pArray )
 {
    PHB_ITEM pSelf2;
 
@@ -263,7 +264,15 @@ void _OOHG_DoEvent( PHB_ITEM pSelf, int iSymbol, char * cType )
    _OOHG_Send( pSelf2, s_DoEvent );
    hb_vmPush( hb_param( -1, HB_IT_ANY ) );
    hb_vmPushString( cType, strlen( cType ) );
-   hb_vmSend( 2 );
+   if( pArray && HB_IS_ARRAY( pArray ) )
+   {
+      hb_vmPush( pArray );
+      hb_vmSend( 3 );
+   }
+   else
+   {
+      hb_vmSend( 2 );
+   }
    hb_itemRelease( pSelf2 );
 }
 

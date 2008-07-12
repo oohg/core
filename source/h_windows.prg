@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.190 2008-06-18 13:30:47 declan2005 Exp $
+ * $Id: h_windows.prg,v 1.191 2008-07-12 04:59:00 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -223,6 +223,7 @@ CLASS TWindow
    DATA OnLostFocus         INIT nil
    DATA OnMouseDrag         INIT nil
    DATA OnMouseMove         INIT nil
+   DATA OnDropFiles         INIT nil
    DATA aKeys               INIT {}  // { Id, Mod, Key, Action }   Application-controlled hotkeys
    DATA aHotKeys            INIT {}  // { Id, Mod, Key, Action }   OperatingSystem-controlled hotkeys
    DATA aAcceleratorKeys    INIT {}  // { Id, Mod, Key, Action }   Accelerator hotkeys
@@ -266,6 +267,7 @@ CLASS TWindow
    METHOD TabStop             SETGET
    METHOD Style               SETGET
    METHOD RTL                 SETGET
+   METHOD AcceptFiles         SETGET
    METHOD Action              SETGET
    METHOD SaveData
    METHOD RefreshData
@@ -303,6 +305,7 @@ CLASS TWindow
 
    METHOD DebugMessageName
    METHOD DebugMessageQuery
+   METHOD DebugMessageNameCommand
 
    METHOD ContainerVisible    BLOCK { |Self| ::lVisible .AND. IF( ::Container != NIL, ::Container:ContainerVisible, .T. ) }
    METHOD ContainerEnabled    BLOCK { |Self| ::lEnabled .AND. IF( ::Container != NIL, ::Container:ContainerEnabled, .T. ) }
@@ -575,6 +578,19 @@ HB_FUNC( TWINDOW_CAPTION )
    hb_xfree( cText );
 }
 
+HB_FUNC_STATIC( TWINDOW_ACCEPTFILES )
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+
+   if( ISLOG( 1 ) )
+   {
+      DragAcceptFiles( oSelf->hWnd, hb_parnl( 1 ) );
+   }
+
+   hb_retl( ( GetWindowLong( oSelf->hWnd, GWL_EXSTYLE ) & WS_EX_ACCEPTFILES ) == WS_EX_ACCEPTFILES );
+}
+
 HB_FUNC_STATIC( TWINDOW_EVENTS )
 {
    HWND hWnd      = HWNDparam( 1 );
@@ -677,7 +693,7 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )
          break;
 
       case WM_TIMER:
-         _OOHG_DoEvent( GetControlObjectById( LOWORD( wParam ), hWnd ), s_OnClick, "TIMER" );
+         _OOHG_DoEvent( GetControlObjectById( LOWORD( wParam ), hWnd ), s_OnClick, "TIMER", NULL );
          hb_ret();
          break;
 
@@ -816,6 +832,45 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )
             _OOHG_Send( pSelf, s_Events_VScroll );
             hb_vmPushLong( wParam );
             hb_vmSend( 1 );
+         }
+         break;
+
+      case WM_DROPFILES:
+         {
+            POINT mouse;
+            HDROP hDrop;
+            PHB_ITEM pArray, pFiles;
+            UINT iCount, iPos, iLen, iLen2;
+            BYTE *pBuffer;
+
+            hDrop = ( HDROP ) wParam;
+            DragQueryPoint( hDrop, ( LPPOINT ) &mouse );
+            iCount = DragQueryFile( hDrop, ~0, NULL, 0 );
+            iLen = 0;
+            for( iPos = 0; iPos < iCount; iPos++ )
+            {
+               iLen2 = DragQueryFile( hDrop, iPos, NULL, 0 );
+               if( iLen < iLen2 )
+               {
+                  iLen = iLen2;
+               }
+            }
+            iLen++;
+            pBuffer = hb_xgrab( iLen + 1 );
+            pArray = hb_itemNew( NULL );
+            hb_arrayNew( pArray, 3 );
+            hb_itemPutNI( hb_arrayGetItemPtr( pArray, 2 ), mouse.x );
+            hb_itemPutNI( hb_arrayGetItemPtr( pArray, 3 ), mouse.x );
+            pFiles = hb_arrayGetItemPtr( pArray, 1 );
+            hb_arrayNew( pFiles, iCount );
+            for( iPos = 0; iPos < iCount; iPos++ )
+            {
+               iLen2 = DragQueryFile( hDrop, iPos, ( char * ) pBuffer, iLen );
+               hb_itemPutCL( hb_arrayGetItemPtr( pFiles, iPos + 1 ), ( char * ) pBuffer, iLen2 );
+            }
+            hb_xfree( pBuffer );
+            _OOHG_DoEvent( pSelf, s_OnDropFiles, "DROPFILES", pArray );
+            hb_itemRelease( pArray );
          }
          break;
 
@@ -1323,38 +1378,96 @@ STATIC aNames := NIL
 LOCAL cName
    IF aNames == NIL
       aNames := { "WM_CREATE", "WM_DESTROY", "WM_MOVE", NIL, "WM_SIZE", ;
-                  "WM_ACTIVATE", "WM_SETFOCUS", "WM_KILLFOCUS", NIL, NIL, ;
-                  NIL, NIL, "WM_GETTEXT", NIL, "WM_PAINT", ;
-                  "WM_CLOSE", NIL, "WM_QUIT", NIL, "WM_ERASEBKGND", ;
-                  NIL, NIL, NIL, "WM_SHOWWINDOW", NIL, ;
-                  NIL, NIL, "WM_ACTIVATEAPP", NIL, NIL, ;
-                  NIL, NIL, NIL, NIL, NIL, ;
-                  NIL, NIL, NIL, NIL, "WM_NEXTDLGCTL", ;
-                  NIL, NIL, "WM_DRAWITEM", NIL, NIL, ;
-                  "WM_VKEYTOITEM", NIL, NIL, NIL, NIL, ;
-                  NIL, NIL, NIL, NIL, NIL, ;
-                  NIL, NIL, NIL, NIL, NIL, ;
-                  NIL, NIL, NIL, NIL, NIL, ;
-                  NIL, NIL, NIL, NIL, "WM_WINDOWPOSCHANGING", ;
-                  "WM_WINDOWPOSCHANGED", NIL, NIL, NIL, NIL, ;
-                  NIL, NIL, "WM_NOTIFY", NIL, NIL, ;
-                  NIL, NIL, "WM_HELP", NIL, NIL, ;
-                  NIL, NIL, NIL, NIL, NIL, ;
-                  NIL, NIL, NIL, NIL, NIL, ;
+                  "WM_ACTIVATE", "WM_SETFOCUS", "WM_KILLFOCUS", NIL, "WM_ENABLE", ;
+                  "WM_SETREDRAW", "WM_SETTEXT", "WM_GETTEXT", "WM_GETTEXTLENGTH", "WM_PAINT", ;
+                  "WM_CLOSE", "WM_QUERYENDSESSION", "WM_QUIT", "WM_QUERYOPEN", "WM_ERASEBKGND", ;
+                  "WM_SYSCOLORCHANGE", "WM_ENDSESSION", NIL, "WM_SHOWWINDOW", NIL, ;
+                  "WM_WININICHANGE", "WM_DEVMODECHANGE", "WM_ACTIVATEAPP", "WM_FONTCHANGE", "WM_TIMECHANGE", ;
+                  "WM_CANCELMODE", "WM_SETCURSOR", "WM_MOUSEACTIVATE", "WM_CHILDACTIVATE", "WM_QUEUESYNC", ;
+                  "WM_GETMINMAXINFO", NIL, "WM_PAINTICON", "WM_ICONERASEBKGND", "WM_NEXTDLGCTL", ;
+                  NIL, "WM_SPOOLERSTATUS", "WM_DRAWITEM", "WM_MEASUREITEM", "WM_DELETEITEM", ;
+                  "WM_VKEYTOITEM", "WM_CHARTOITEM", "WM_SETFONT", "WM_GETFONT", "WM_SETHOTKEY", ;
+                  "WM_GETHOTKEY", NIL, NIL, NIL, "WM_QUERYDRAGICON", ;
+                  NIL, "WM_COMPAREITEM", NIL, NIL, NIL, ;
+                  "WM_GETOBJECT", NIL, NIL, NIL, "WM_COMPACTING", ;
+                  NIL, NIL, "WM_COMMNOTIFY", NIL, "WM_WINDOWPOSCHANGING", ;
+                  "WM_WINDOWPOSCHANGED", "WM_POWER", NIL, "WM_COPYDATA", "WM_CANCELJOURNAL", ;
+                  NIL, NIL, "WM_NOTIFY", NIL, "WM_INPUTLANGCHANGEREQUEST", ;
+                  "WM_INPUTLANGCHANGE", "WM_TCARD", "WM_HELP", "WM_USERCHANGED", "WM_NOTIFYFORMAT", ;
                   NIL, NIL, NIL, NIL, NIL, ;
                   NIL, NIL, NIL, NIL, NIL, ;
                   NIL, NIL, NIL, NIL, NIL, ;
                   NIL, NIL, NIL, NIL, NIL, ;
                   NIL, NIL, NIL, NIL, NIL, ;
-                  NIL, NIL, "WM_CONTEXTMENU", NIL, NIL, ;
-                  NIL, NIL, NIL, NIL, NIL, ;
-                  NIL, NIL, "WM_NCPAINT", "WM_NCACTIVATE", "WM_GETDLGCODE", ;
                   NIL, NIL, NIL, NIL, NIL, ;
                   NIL, NIL, NIL, NIL, NIL, ;
+                  NIL, NIL, "WM_CONTEXTMENU", "WM_STYLECHANGING", "WM_STYLECHANGED", ;
+                  "WM_DISPLAYCHANGE", "WM_GETICON", "WM_SETICON", "WM_NCCREATE", "WM_NCDESTROY", ;
+                  "WM_NCCALCSIZE", "WM_NCHITTEST", "WM_NCPAINT", "WM_NCACTIVATE", "WM_GETDLGCODE", ;
+                  "WM_SYNCPAINT", NIL, NIL, NIL, NIL, ;
                   NIL, NIL, NIL, NIL, NIL, ;
                   NIL, NIL, NIL, NIL, NIL, ;
                   NIL, NIL, NIL, NIL, NIL, ;
-                  "WM_NCLBUTTONDOWN", "WM_NCLBUTTONUP" }
+                  NIL, NIL, NIL, NIL, "WM_NCMOUSEMOVE", ;
+                  "WM_NCLBUTTONDOWN", "WM_NCLBUTTONUP", "WM_NCLBUTTONDBLCLK", "WM_NCRBUTTONDOWN", "WM_NCRBUTTONUP", ;
+                  "WM_NCRBUTTONDBLCLK", "WM_NCMBUTTONDOWN", "WM_NCMBUTTONUP", "WM_NCMBUTTONDBLCLK", NIL, ;
+                  "WM_NCXBUTTONDOWN", "WM_NCXBUTTONUP", "WM_NCXBUTTONDBLCLK" }
+      ASIZE( aNames, 1024 )
+
+      AEVAL( { "WM_KEYFIRST", ;
+               "WM_KEYUP", "WM_CHAR", "WM_DEADCHAR", "WM_SYSKEYDOWN", "WM_SYSKEYUP", ;
+               "WM_SYSCHAR", "WM_SYSDEADCHAR", "WM_KEYLAST", NIL, NIL, ;
+               NIL, NIL, "WM_IME_STARTCOMPOSITION", "WM_IME_ENDCOMPOSITION", "WM_IME_COMPOSITION", ;
+               "WM_INITDIALOG", "WM_COMMAND", "WM_SYSCOMMAND", "WM_TIMER", "WM_HSCROLL", ;
+               "WM_VSCROLL", "WM_INITMENU", "WM_INITMENUPOPUP", NIL, NIL, ;
+               NIL, NIL, NIL, NIL, NIL, ;
+               "WM_MENUSELECT", "WM_MENUCHAR", "WM_ENTERIDLE", "WM_MENURBUTTONUP", "WM_MENUDRAG", ;
+               "WM_MENUGETOBJECT", "WM_UNINITMENUPOPUP", "WM_MENUCOMMAND", "WM_CHANGEUISTATE", "WM_UPDATEUISTATE", ;
+               "WM_QUERYUISTATE", NIL, NIL, NIL, NIL, ;
+               NIL, NIL, NIL, NIL, "WM_CTLCOLORMSGBOX", ;
+               "WM_CTLCOLOREDIT", "WM_CTLCOLORLISTBOX", "WM_CTLCOLORBTN", "WM_CTLCOLORDLG", "WM_CTLCOLORSCROLLBAR", ;
+               "WM_CTLCOLORSTATIC" }, ;
+             { |c,i| aNames[ i + 0x0FF ] := c } )
+
+      AEVAL( { "WM_MOUSEMOVE", ;
+               "WM_LBUTTONDOWN", "WM_LBUTTONUP", "WM_LBUTTONDBLCLK", "WM_RBUTTONDOWN", "WM_RBUTTONUP", ;
+               "WM_RBUTTONDBLCLK", "WM_MBUTTONDOWN", "WM_MBUTTONUP", "WM_MBUTTONDBLCLK", "WM_MOUSEWHEEL", ;
+               "WM_XBUTTONDOWN", "WM_XBUTTONUP", "WM_XBUTTONDBLCLK", NIL, NIL, ;
+               "WM_PARENTNOTIFY", "WM_ENTERMENULOOP", "WM_EXITMENULOOP", "WM_NEXTMENU", "WM_SIZING", ;
+               "WM_CAPTURECHANGED", "WM_MOVING", NIL, "WM_POWERBROADCAST", "WM_DEVICECHANGE", ;
+               NIL, NIL, NIL, NIL, NIL, ;
+               NIL, "WM_MDICREATE", "WM_MDIDESTROY", "WM_MDIACTIVATE", "WM_MDIRESTORE", ;
+               "WM_MDINEXT", "WM_MDIMAXIMIZE", "WM_MDITILE", "WM_MDICASCADE", "WM_MDIICONARRANGE", ;
+               "WM_MDIGETACTIVE", NIL, NIL, NIL, NIL, ;
+               NIL, NIL, "WM_MDISETMENU", "WM_ENTERSIZEMOVE", "WM_EXITSIZEMOVE", ;
+               "WM_DROPFILES", "WM_MDIREFRESHMENU" }, ;
+             { |c,i| aNames[ i + 0x1FF ] := c } )
+
+      AEVAL( { "WM_IME_SETCONTEXT", "WM_IME_NOTIFY", "WM_IME_CONTROL", "WM_IME_COMPOSITIONFULL", "WM_IME_SELECT", ;
+               "WM_IME_CHAR", NIL, "WM_IME_REQUEST", NIL, NIL, ;
+               NIL, NIL, NIL, NIL, NIL, ;
+               "WM_IME_KEYDOWN", "WM_IME_KEYUP", NIL, NIL, NIL, ;
+               NIL, NIL, NIL, NIL, NIL, ;
+               NIL, NIL, NIL, NIL, NIL, ;
+               NIL, "WM_NCMOUSEHOVER", "WM_MOUSEHOVER", "WM_NCMOUSELEAVE", "WM_MOUSELEAVE" }, ;
+             { |c,i| aNames[ i + 0x280 ] := c } )
+
+      AEVAL( { "WM_CUT", ;
+               "WM_COPY", "WM_PASTE", "WM_CLEAR", "WM_UNDO", "WM_RENDERFORMAT", ;
+               "WM_RENDERALLFORMATS", "WM_DESTROYCLIPBOARD", "WM_DRAWCLIPBOARD", "WM_PAINTCLIPBOARD", "WM_VSCROLLCLIPBOARD", ;
+               "WM_SIZECLIPBOARD", "WM_ASKCBFORMATNAME", "WM_CHANGECBCHAIN", "WM_HSCROLLCLIPBOARD", "WM_QUERYNEWPALETTE", ;
+               "WM_PALETTEISCHANGING", "WM_PALETTECHANGED", "WM_HOTKEY", NIL, NIL, ;
+               NIL, NIL, "WM_PRINT", "WM_PRINTCLIENT", "WM_APPCOMMAND" }, ;
+             { |c,i| aNames[ i + 0x2FF ] := c } )
+
+      aNames[ 0x358 ] := "WM_HANDHELDFIRST"
+      aNames[ 0x35F ] := "WM_HANDHELDLAST"
+      aNames[ 0x360 ] := "WM_AFXFIRST"
+      aNames[ 0x37F ] := "WM_AFXLAST"
+      aNames[ 0x380 ] := "WM_PENWINFIRST"
+      aNames[ 0x38F ] := "WM_PENWINLAST"
+
+      aNames[ 0x400 ] := "WM_USER"
    ENDIF
    IF nMsg == 0
       cName := "WM_NULL"
@@ -1368,9 +1481,25 @@ RETURN cName
 *------------------------------------------------------------------------------*
 METHOD DebugMessageQuery( nMsg, wParam, lParam ) CLASS TWindow
 *------------------------------------------------------------------------------*
-RETURN IF( ::lForm, "", ::Parent:Name + "." ) + ::Name + ": " + ;
-       "(0x" + _OOHG_HEX( nMsg, 4 ) + ") " + ::DebugMessageName( nMsg ) + ;
-       " 0x" + _OOHG_HEX( wParam, 8 ) + " 0x" + _OOHG_HEX( lParam, 8 )
+LOCAL cValue, oControl
+   IF nMsg == WM_COMMAND
+      oControl := GetControlObjectById( LOWORD( wParam ) )
+      IF oControl:Id == 0
+         oControl := GetControlObjectByHandle( lParam )
+      ENDIF
+      cValue := ::Name + "." + oControl:Name + ": WM_COMMAND." + ;
+                oControl:DebugMessageNameCommand( HIWORD( wParam ) )
+   ELSE
+      cValue := IF( ::lForm, "", ::Parent:Name + "." ) + ::Name + ": " + ;
+                "(0x" + _OOHG_HEX( nMsg, 4 ) + ") " + ::DebugMessageName( nMsg ) + ;
+                " 0x" + _OOHG_HEX( wParam, 8 ) + " 0x" + _OOHG_HEX( lParam, 8 )
+   ENDIF
+RETURN cValue
+
+*------------------------------------------------------------------------------*
+METHOD DebugMessageNameCommand( nCommand ) CLASS TWindow
+*------------------------------------------------------------------------------*
+RETURN _OOHG_HEX( nCommand, 4 )
 
 #pragma BEGINDUMP
 HB_FUNC( _OOHG_HEX )   // nNum, nDigits
@@ -2281,7 +2410,7 @@ Local lRet := .T.
 Return lRet
 
 *-----------------------------------------------------------------------------*
-METHOD DoEvent( bBlock, cEventType ) CLASS TForm
+METHOD DoEvent( bBlock, cEventType, aParams ) CLASS TForm
 *-----------------------------------------------------------------------------*
 Local lRetVal := .F.
    If ::lDestroyed
@@ -2293,7 +2422,7 @@ Local lRetVal := .F.
       ASSIGN _OOHG_ThisEventType VALUE cEventType TYPE "CM" DEFAULT ""
       _OOHG_ThisControl   := NIL
       _OOHG_ThisObject    := Self
-      lRetVal := Eval( bBlock )
+      lRetVal := _OOHG_Eval_Array( bBlock, aParams )
       _PopEventInfo()
    EndIf
 Return lRetVal
@@ -2406,7 +2535,7 @@ HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
    {
       case WM_LBUTTONUP:
          _OOHG_SetMouseCoords( pSelf, LOWORD( lParam ), HIWORD( lParam ) );
-         _OOHG_DoEvent( pSelf, s_OnClick, "CLICK" );
+         _OOHG_DoEvent( pSelf, s_OnClick, "CLICK", NULL );
          hb_ret();
          break;
 
@@ -2417,13 +2546,13 @@ HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
 
       case WM_LBUTTONDBLCLK:
          _OOHG_SetMouseCoords( pSelf, LOWORD( lParam ), HIWORD( lParam ) );
-         _OOHG_DoEvent( pSelf, s_OnDblClick, "DBLCLICK" );
+         _OOHG_DoEvent( pSelf, s_OnDblClick, "DBLCLICK", NULL );
          hb_ret();
          break;
 
       case WM_RBUTTONUP:
          _OOHG_SetMouseCoords( pSelf, LOWORD( lParam ), HIWORD( lParam ) );
-         _OOHG_DoEvent( pSelf, s_OnRClick, "RCLICK" );
+         _OOHG_DoEvent( pSelf, s_OnRClick, "RCLICK", NULL );
          hb_ret();
          break;
 
@@ -2434,13 +2563,13 @@ HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
 
       case WM_RBUTTONDBLCLK:
          _OOHG_SetMouseCoords( pSelf, LOWORD( lParam ), HIWORD( lParam ) );
-         _OOHG_DoEvent( pSelf, s_OnRDblClick, "RDBLCLICK" );
+         _OOHG_DoEvent( pSelf, s_OnRDblClick, "RDBLCLICK", NULL );
          hb_ret();
          break;
 
       case WM_MBUTTONUP:
          _OOHG_SetMouseCoords( pSelf, LOWORD( lParam ), HIWORD( lParam ) );
-         _OOHG_DoEvent( pSelf, s_OnMClick, "MCLICK" );
+         _OOHG_DoEvent( pSelf, s_OnMClick, "MCLICK", NULL );
          hb_ret();
          break;
 
@@ -2451,7 +2580,7 @@ HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
 
       case WM_MBUTTONDBLCLK:
          _OOHG_SetMouseCoords( pSelf, LOWORD( lParam ), HIWORD( lParam ) );
-         _OOHG_DoEvent( pSelf, s_OnMDblClick, "MDBLCLICK" );
+         _OOHG_DoEvent( pSelf, s_OnMDblClick, "MDBLCLICK", NULL );
          hb_ret();
          break;
 
@@ -2459,11 +2588,11 @@ HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
          _OOHG_SetMouseCoords( pSelf, LOWORD( lParam ), HIWORD( lParam ) );
          if( wParam == MK_LBUTTON )
          {
-            _OOHG_DoEvent( pSelf, s_OnMouseDrag, "MOUSEDRAG" );
+            _OOHG_DoEvent( pSelf, s_OnMouseDrag, "MOUSEDRAG", NULL );
          }
          else
          {
-            _OOHG_DoEvent( pSelf, s_OnMouseMove, "MOUSEMOVE" );
+            _OOHG_DoEvent( pSelf, s_OnMouseMove, "MOUSEMOVE", NULL );
          }
          hb_ret();
          break;
@@ -4152,6 +4281,43 @@ HB_FUNC( _OOHG_EVAL )
    if( ISBLOCK( 1 ) )
    {
       HB_FUN_EVAL();
+   }
+   else
+   {
+      hb_ret();
+   }
+}
+
+HB_FUNC( _OOHG_EVAL_ARRAY )
+{
+   static PHB_SYMB s_Eval = 0;
+
+   if( ISBLOCK( 1 ) )
+   {
+      int iCount, iLen;
+      PHB_ITEM pArray, pItem;
+
+      if( ! s_Eval )
+      {
+         s_Eval = hb_dynsymSymbol( hb_dynsymFind( "EVAL" ) );
+      }
+      hb_vmPushSymbol( s_Eval );
+      hb_vmPushNil();
+      hb_vmPush( hb_param( 1, HB_IT_BLOCK ) );
+      pArray = hb_param( 2, HB_IT_ARRAY );
+      iCount = 1;
+      if( pArray )
+      {
+         iLen = hb_arrayLen( pArray );
+         while( iCount <= iLen )
+         {
+            pItem = hb_itemArrayGet( pArray, iCount );
+            hb_vmPush( pItem );
+            hb_itemRelease( pItem );
+            iCount++;
+         }
+      }
+      hb_vmDo( iCount );
    }
    else
    {
