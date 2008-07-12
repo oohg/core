@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.50 2008-02-18 02:45:34 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.51 2008-07-12 15:23:12 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -376,6 +376,7 @@ CLASS TTextPicture FROM TText
    DATA lFocused       INIT .F.
    DATA xUndo          INIT nil
    DATA cDateFormat    INIT nil
+   DATA lToUpper       INIT .F.
 
    METHOD Define
 
@@ -392,9 +393,12 @@ METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, uValue, ;
                uGotFocus, uChange, uEnter, right, HelpId, readonly, bold, ;
                italic, underline, strikeout, field, backcolor, fontcolor, ;
                invisible, notabstop, lRtl, lAutoSkip, lNoBorder, OnFocusPos, ;
-               lDisabled, bValid ) CLASS TTextPicture
+               lDisabled, bValid, lUpper, lLower ) CLASS TTextPicture
 *-----------------------------------------------------------------------------*
 Local nStyle := ES_AUTOHSCROLL, nStyleEx := 0
+
+   nStyle += IF( HB_IsLogical( lUpper ) .AND. lUpper, ES_UPPERCASE, 0 ) + ;
+             IF( HB_IsLogical( lLower ) .AND. lLower, ES_LOWERCASE, 0 )
 
    If uValue == nil
       uValue := ""
@@ -434,6 +438,7 @@ Local cType, cPicFun, cPicMask, nPos, nScroll, lOldCentury
          cInputMask := ""
       ENDIF
       ::lBritish := .F.
+      ::lToUpper := .F.
 
       cPicFun := ""
       IF Left( cInputMask, 1 ) == "@"
@@ -538,6 +543,8 @@ Local cType, cPicFun, cPicMask, nPos, nScroll, lOldCentury
          ENDIF
 
          IF "!" $ cInputMask
+            ::lToUpper := .T.
+            cPicFun += "!"
             IF cType $ "CM" .AND. EMPTY( cPicMask )
                cPicMask := Replicate( "!", Len( uValue ) )
             ENDIF
@@ -582,7 +589,7 @@ Local cType, cPicFun, cPicMask, nPos, nScroll, lOldCentury
       EndIf
 
       ::PictureFunShow := cPicFun
-      ::PictureFun     := IF( ::lBritish, "E", "" ) + IF( "R" $ cPicFun, "R", "" )
+      ::PictureFun     := IF( ::lBritish, "E", "" ) + IF( "R" $ cPicFun, "R", "" ) + IF( ::lToUpper, "!", "" )
       IF ! Empty( ::PictureFun )
          ::PictureFun := "@" + ::PictureFun + " "
       ENDIF
@@ -824,7 +831,7 @@ Local lChange := .F., nPos1, cMask
    ENDDO
    IF nPos <= Len( cPictureMask )
       cMask := Substr( cPictureMask, nPos, 1 )
-      IF cMask $ "!lLyY"
+      IF ::lToUpper .OR. cMask $ "!lLyY"
          cChar := Upper( cChar )
       ENDIF
       IF ( cMask $ "Nn"  .AND. ( IsAlpha( cChar ) .OR. IsDigit( cChar ) .OR. cChar $ " " )  ) .OR. ;
@@ -1101,7 +1108,7 @@ Local Self, lInsert
                 uGotfocus, uChange, uEnter, right, HelpId, readonly, bold, ;
                 italic, underline, strikeout, field, backcolor, fontcolor, ;
                 invisible, notabstop, lRtl, lAutoSkip, lNoBorder, OnFocusPos, ;
-                lDisabled, bValid )
+                lDisabled, bValid, lUpper, lLower )
    Else
       Self := _OOHG_SelectSubClass( iif( numeric, TTextNum(), TText() ), subclass )
       ::Define( cControlName, cParentForm, x, y, Width, Height, Value, ;
