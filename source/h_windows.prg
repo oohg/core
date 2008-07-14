@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.191 2008-07-12 04:59:00 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.192 2008-07-14 01:50:10 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1489,6 +1489,21 @@ LOCAL cValue, oControl
       ENDIF
       cValue := ::Name + "." + oControl:Name + ": WM_COMMAND." + ;
                 oControl:DebugMessageNameCommand( HIWORD( wParam ) )
+   ELSEIF nMsg == WM_CTLCOLORBTN
+      oControl := GetControlObjectByHandle( lParam )
+      cValue := ::Name + "." + oControl:Name + ": WM_CTLCOLORBTN   0x" + _OOHG_HEX( wParam, 8 )
+                oControl:DebugMessageNameCommand( HIWORD( wParam ) )
+   ELSEIF nMsg == WM_CTLCOLORSTATIC
+      oControl := GetControlObjectByHandle( lParam )
+      cValue := ::Name + "." + oControl:Name + ": WM_CTLCOLORSTATIC   0x" + _OOHG_HEX( wParam, 8 )
+                oControl:DebugMessageNameCommand( HIWORD( wParam ) )
+   ELSEIF nMsg == WM_CTLCOLOREDIT
+      oControl := GetControlObjectByHandle( lParam )
+      cValue := ::Name + "." + oControl:Name + ": WM_CTLCOLOREDIT   0x" + _OOHG_HEX( wParam, 8 )
+                oControl:DebugMessageNameCommand( HIWORD( wParam ) )
+   ELSEIF nMsg == WM_CTLCOLORLISTBOX
+      oControl := GetControlObjectByHandle( lParam )
+      cValue := ::Name + "." + oControl:Name + ": WM_CTLCOLORLISTBOX   0x" + _OOHG_HEX( wParam, 8 )
    ELSE
       cValue := IF( ::lForm, "", ::Parent:Name + "." ) + ::Name + ": " + ;
                 "(0x" + _OOHG_HEX( nMsg, 4 ) + ") " + ::DebugMessageName( nMsg ) + ;

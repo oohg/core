@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.51 2008-07-12 15:23:12 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.52 2008-07-14 01:50:10 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -377,6 +377,7 @@ CLASS TTextPicture FROM TText
    DATA xUndo          INIT nil
    DATA cDateFormat    INIT nil
    DATA lToUpper       INIT .F.
+   DATA lNumericScroll INIT .F.
 
    METHOD Define
 
@@ -405,6 +406,9 @@ Local nStyle := ES_AUTOHSCROLL, nStyleEx := 0
    ElseIf HB_IsNumeric( uValue )
       right := .T.
       ::lInsert := .F.
+      ::lNumericScroll := .T.
+   ElseIf HB_IsDate( uValue )
+      ::lNumericScroll := .T.
    EndIf
 
    If ValType( cInputMask ) $ "CM"
@@ -750,9 +754,11 @@ Local aValidMask := ::ValidMask
       cText := TTextPicture_Clear( cText, nPos, nPos2 - nPos1, aValidMask, ::lInsert )
       IF TTextPicture_Events2_Key( Self, @cText, @nPos, CHR( wParam ), aValidMask, ::PictureMask, ::lInsert )
          ::Caption := cText
-         DO WHILE nPos < Len( aValidMask ) .AND. ! aValidMask[ nPos + 1 ]
-            nPos++
-         ENDDO
+         If ! ::lNumericScroll
+            Do While nPos < Len( aValidMask ) .AND. ! aValidMask[ nPos + 1 ]
+               nPos++
+            EndDo
+         EndIf
          SendMessage( ::hWnd, EM_SETSEL, nPos, nPos )
       EndIf
       If ::lAutoSkip .AND. nPos >= LEN( aValidMask )
@@ -821,14 +827,24 @@ RETURN TTextPicture_Events2_String( Self, ::Caption, nPos, cString, ::ValidMask,
 
 STATIC FUNCTION TTextPicture_Events2_Key( Self, cText, nPos, cChar, aValidMask, cPictureMask, lInsert )
 Local lChange := .F., nPos1, cMask
-   IF ::nDecimal != 0 .AND. cChar $ if( ::lBritish, ",.", "." )
+   If ::nDecimal != 0 .AND. cChar $ if( ::lBritish, ",.", "." )
       cText := Transform( VAL( StrTran( xUnTransform( Self, cText ), " ", "" ) ), if( ::lBritish, "@E ", "" ) + cPictureMask )
       nPos := ::nDecimal
       Return .T.
    Endif
-   DO WHILE nPos <= Len( cPictureMask ) .AND. ! aValidMask[ nPos ]
+   If ::lNumericScroll .AND. nPos > 1 .AND. nPos <= Len( cPictureMask ) .AND. ! aValidMask[ nPos ] .AND. aValidMask[ nPos - 1 ]
+      nPos1 := nPos
+      Do While nPos1 > 1 .AND. aValidMask[ nPos1 - 1 ] .AND. ! SubStr( cText, nPos1, 1 ) == " "
+         nPos1--
+      EndDo
+      If SubStr( cText, nPos1, 1 ) == " "
+         cText := Left( cText, nPos1 - 1 ) + SubStr( cText, nPos1 + 1, nPos - nPos1 - 1 ) + " " + SubStr( cText, nPos )
+         nPos--
+      EndIf
+   EndIf
+   Do While nPos <= Len( cPictureMask ) .AND. ! aValidMask[ nPos ]
       nPos++
-   ENDDO
+   EndDo
    IF nPos <= Len( cPictureMask )
       cMask := Substr( cPictureMask, nPos, 1 )
       IF ::lToUpper .OR. cMask $ "!lLyY"
@@ -841,7 +857,30 @@ Local lChange := .F., nPos1, cMask
          ( cMask $ "Ll"  .AND. cChar $ ( "TFYN" + HB_LANGMESSAGE( HB_LANG_ITEM_BASE_TEXT + 1 ) + HB_LANGMESSAGE( HB_LANG_ITEM_BASE_TEXT + 2 ) ) ) .OR. ;
          ( cMask $ "Yy"  .AND. cChar $ ( "YN"   + HB_LANGMESSAGE( HB_LANG_ITEM_BASE_TEXT + 1 ) + HB_LANGMESSAGE( HB_LANG_ITEM_BASE_TEXT + 2 ) ) ) .OR. ;
            cMask $ "Xx!"
-         IF lInsert
+         If ::lNumericScroll
+            If SubStr( cText, nPos, 1 ) == " "
+               cText := Left( cText, nPos - 1 ) + cChar + SubStr( cText, nPos + 1 )
+            Else
+               nPos1 := nPos
+               Do While nPos1 < Len( cPictureMask ) .AND. aValidMask[ nPos1 + 1 ] .AND. ! SubStr( cText, nPos1, 1 ) == " "
+                  nPos1++
+               EndDo
+               If SubStr( cText, nPos1, 1 ) == " "
+                  cText := Left( cText, nPos - 1 ) + cChar + SubStr( cText, nPos, nPos1 - nPos ) + SubStr( cText, nPos1 + 1 )
+               Else
+                  nPos1 := nPos
+                  Do While nPos1 > 1 .AND. aValidMask[ nPos1 - 1 ] .AND. ! SubStr( cText, nPos1, 1 ) == " "
+                     nPos1--
+                  EndDo
+                  If SubStr( cText, nPos1, 1 ) == " "
+                     cText := Left( cText, nPos1 - 1 ) + SubStr( cText, nPos1 + 1, nPos - nPos1 - 1 ) + cChar + SubStr( cText, nPos )
+                     nPos--
+                  Else
+                     cText := Left( cText, nPos - 1 ) + cChar + SubStr( cText, nPos + 1 )
+                  EndIf
+               EndIf
+            EndIf
+         ElseIf lInsert
             nPos1 := nPos
             DO WHILE nPos1 < Len( cPictureMask ) .AND. aValidMask[ nPos1 + 1 ]
                nPos1++
