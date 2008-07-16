@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.21 2008-01-31 02:31:00 guerra000 Exp $
+ * $Id: winprint.prg,v 1.22 2008-07-16 18:36:01 declan2005 Exp $
  */
 // -----------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -1480,7 +1480,7 @@ local i:=1,pi:=1,wl, oHBPreview
 ,"Waiting for paper change..."}
   case wl="ES"
 ::aopisy:={"Vista Previa";
-,"&Cancelar";
+,"&Salir";
 ,"&Imprimir";
 ,"&Guardar";
 ,"&Primera";
