@@ -1,5 +1,5 @@
 /*
- * $Id: h_error.prg,v 1.35 2008-04-29 13:32:07 declan2005 Exp $
+ * $Id: h_error.prg,v 1.36 2008-07-19 17:45:03 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -281,7 +281,7 @@ LOCAL nHdl, cFile, cTop, cBottom, nPos
    cBottom := MEMOREAD( cFile )
    nPos := AT( ::PreHeader(), cBottom )
    IF nPos == 0
-      cTop := ::FileHeader( "Clip2Win Errorlog File" )
+      cTop := ::FileHeader( "ooHG Errorlog File" )
    ELSE
       cTop := LEFT( cBottom, nPos - 1 )
       cBottom := SUBSTR( cBottom, nPos )
