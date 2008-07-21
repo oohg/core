@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.52 2008-07-14 01:50:10 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.53 2008-07-21 01:40:05 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -455,6 +455,20 @@ Local cType, cPicFun, cPicMask, nPos, nScroll, lOldCentury
             cInputMask := Upper( cInputMask )
          ENDIF
 
+         DO WHILE "S" $ cInputMask
+            nScroll := 0
+            // It's automatic at textbox's width
+            nPos := At( "S", cInputMask )
+            cInputMask := Left( cInputMask, nPos - 1 ) + SubStr( cInputMask, nPos + 1 )
+            DO WHILE Len( cInputMask ) >= nPos .AND. SubStr( cInputMask, nPos, 1 ) $ "0123456789"
+               nScroll := ( nScroll * 10 ) + VAL( SubStr( cInputMask, nPos, 1 ) )
+               cInputMask := Left( cInputMask, nPos - 1 ) + SubStr( cInputMask, nPos + 1 )
+            ENDDO
+            IF cType $ "CM" .AND. Empty( cPicMask ) .AND. nScroll > 0
+               cPicMask := Replicate( "X", nScroll )
+            ENDIF
+         ENDDO
+
          IF "A" $ cInputMask
             IF cType $ "CM" .AND. EMPTY( cPicMask )
                cPicMask := Replicate( "A", Len( uValue ) )
@@ -511,20 +525,6 @@ Local cType, cPicFun, cPicMask, nPos, nScroll, lOldCentury
             cPicFun += "R"
             cInputMask := StrTran( cInputMask, "R", "" )
          ENDIF
-
-         DO WHILE "S" $ cInputMask
-            nScroll := 0
-            // It's automatic at textbox's width
-            nPos := At( "S", cInputMask )
-            cInputMask := Left( cInputMask, nPos - 1 ) + SubStr( cInputMask, nPos + 1 )
-            DO WHILE Len( cInputMask ) >= nPos .AND. SubStr( cInputMask, nPos, 1 ) $ "0123456789"
-               nScroll := ( nScroll * 10 ) + VAL( SubStr( cInputMask, nPos, 1 ) )
-               cInputMask := Left( cInputMask, nPos - 1 ) + SubStr( cInputMask, nPos + 1 )
-            ENDDO
-            IF cType $ "CM" .AND. Empty( cPicMask ) .AND. nScroll > 0
-               cPicMask := Replicate( "X", nScroll )
-            ENDIF
-         ENDDO
 
          IF "X" $ cInputMask
             cPicFun += "X"
