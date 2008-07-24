@@ -1,5 +1,5 @@
 /*
- * $Id: i_browse.ch,v 1.18 2008-02-10 02:39:30 guerra000 Exp $
+ * $Id: i_browse.ch,v 1.19 2008-07-24 23:50:35 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -173,7 +173,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 // SPLITBOX BROWSE
 ///////////////////////////////////////////////////////////////////////////////
-#command BROWSE <name> 		;
+#command @ nil,nil BROWSE <name> 		;
 		[ OF <parent> ] 		;
                 [ OBJ <oObj> ]                  ;
 		[ WIDTH <w> ] 			;

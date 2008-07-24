@@ -1,5 +1,5 @@
 /*
- * $Id: h_report.prg,v 1.42 2008-03-15 14:14:45 declan2005 Exp $
+ * $Id: h_report.prg,v 1.43 2008-07-24 23:50:35 declan2005 Exp $
  */
 /*
  * DO REPORT Command support procedures FOR MiniGUI Library.
@@ -1024,7 +1024,7 @@ RETURN ncol
 #include "oohg.ch"
 
 *****************************************************************************
-PROCEDURE __ReportForm( cFRMName, lPrinter, cAltFile, lNoConsole, bFor, ;
+PROCEDURE __ReportFormwin( cFRMName, lPrinter, cAltFile, lNoConsole, bFor, ;
                        bWhile, nNext, nRecord, lRest, lPlain, cHeading, ;
                        lBEject, lSummary )
 ******************************************************************************

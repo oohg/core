@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.528 2008-07-21 01:40:04 guerra000 Exp $
+ * $Id: ChangeLog,v 1.529 2008-07-24 23:50:34 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,12 +7,24 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+
+2008-07-24 18:33 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_init.prg
+     added rdd default for harbour to avoid problems for final users.      
+  * source/h_report.prg
+  * include/i_report.ch
+      changed REPORT FORM to REPORTFORMWINDOWS to avoid problems for mixed mode programs.
+  * include/i_browse.ch
+  * include/i_hmg_compat.ch
+      changed BROWSE command in splitbox to @ nil,nil BROWSE and moved to hmgcompat to avoid problems.
+      for mixed mode programs.
+
 2008-07-20 20:39 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_textbox.prg
     * Fixed @S picture for "2" and "4".
 
 2008-07-19 12:49 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
-  * source/h_eror.prg
+  * source/h_error.prg
    ! syntax error in html header
 
 2008-07-14 8:49 UTC-0500 Ciro Vargas C. <cvc@oohg.org>

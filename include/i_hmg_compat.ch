@@ -1,5 +1,5 @@
 /*
- * $Id: i_hmg_compat.ch,v 1.3 2008-06-30 17:17:38 declan2005 Exp $
+ * $Id: i_hmg_compat.ch,v 1.4 2008-07-24 23:50:35 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -100,6 +100,79 @@
         _OOHG_ActiveControlBreak         := <break>
 
 #define PICTALIGNMENT //
+
+///////////////////////////////////////////////////////////////////////////////
+// SPLITBOX BROWSE
+///////////////////////////////////////////////////////////////////////////////
+#command BROWSE <name> 		;
+		[ OF <parent> ] 		;
+                [ OBJ <oObj> ]                  ;
+		[ WIDTH <w> ] 			;
+		[ HEIGHT <h> ] 			;
+		[ HEADERS <headers> ] 		;
+		[ WIDTHS <widths> ] 		;
+		[ WORKAREA <WorkArea> ]		;
+		[ FIELDS <Fields> ] 		;
+                [ INPUTMASK <Picture> ]         ;
+		[ VALUE <value> ] 		;
+		[ FONT <fontname> ] 		;
+		[ SIZE <fontsize> ] 		;
+                [ <bold : BOLD> ]               ;
+                [ <italic : ITALIC> ]           ;
+                [ <underline : UNDERLINE> ]     ;
+                [ <strikeout : STRIKEOUT> ]     ;
+		[ TOOLTIP <tooltip> ]  		;
+                [ BACKCOLOR <backcolor> ]       ;
+                [ DYNAMICBACKCOLOR <dynamicbackcolor> ] ;
+		[ DYNAMICFORECOLOR <dynamicforecolor> ] ;
+                [ FONTCOLOR <fontcolor> ]       ;
+		[ ON GOTFOCUS <gotfocus> ] 	;
+		[ ON CHANGE <change> ]  	;
+		[ ON LOSTFOCUS <lostfocus> ] 	;
+		[ ON DBLCLICK <dblclick> ]  	;
+		[ <edit : EDIT> ] 		;
+		[ <inplace : INPLACE> ]		;
+		[ <append : APPEND> ] 		;
+		[ ON HEADCLICK <aHeadClick> ] 	;
+                [ <dummy2: WHEN, COLUMNWHEN> <aWhenFields> ] ;
+		[ VALID <aValidFields> ]	;
+		[ VALIDMESSAGES <aValidMessages> ] ;
+		[ READONLY <aReadOnly> ] 	;
+		[ <lock: LOCK> ] 		;
+		[ <Delete: DELETE> ]		;
+                [ <style: NOLINES> ]            ;
+                [ IMAGE <aImage> ]              ;
+                [ JUSTIFY <aJust> ]             ;
+		[ <novscroll: NOVSCROLL> ] 	;
+		[ HELPID <helpid> ] 		;
+		[ <break: BREAK> ] 		;
+                [ <rtl: RTL> ]                  ;
+                [ ON APPEND <onappend> ]        ;
+                [ ON EDITCELL <editcell> ]      ;
+                [ COLUMNCONTROLS <editcontrols> ] ;
+                [ REPLACEFIELD <replacefields> ] ;
+                [ SUBCLASS <subclass> ]         ;
+                [ <reccount: RECCOUNT> ]        ;
+                [ COLUMNINFO <columninfo> ]     ;
+                [ <noshowheaders: NOHEADERS> ]  ;
+                [ ON ENTER <enter> ]            ;
+                [ <disabled: DISABLED> ]        ;
+                [ <notabstop: NOTABSTOP> ]      ;
+                [ <invisible: INVISIBLE> ]      ;
+	=>;
+             [ <oObj> := ] _OOHG_SelectSubClass( TOBrowse(), [ <subclass>() ] ): ;
+                Define( <(name)>, <(parent)>, , , <w>, <h>, <headers>, <widths>, <Fields>, ;
+                <value>, <fontname>, <fontsize>, <tooltip>, <{change}>, <{dblclick}>, ;
+                <aHeadClick>, <{gotfocus}>, <{lostfocus}>, <(WorkArea)>, <.Delete.>, ;
+                <.style.>, <aImage>, <aJust>, <helpid>, <.bold.>, <.italic.>, ;
+                <.underline.>, <.strikeout.>, <.break.>, <backcolor>, <fontcolor>, ;
+                <.lock.>, <.inplace.>, <.novscroll.>, <.append.>, <aReadOnly>, ;
+                <aValidFields>, <aValidMessages>, <.edit.>, <dynamicbackcolor>, ;
+                <aWhenFields>, <dynamicforecolor>, <Picture>, <.rtl.>, <{onappend}>, ;
+                <{editcell}>, <editcontrols>, <replacefields>, <.reccount.>, ;
+                <columninfo>, ! <.noshowheaders.>, <{enter}>, <.disabled.>, <.notabstop.>, ;
+                <.invisible.> )
+
 
 
 #endif

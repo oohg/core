@@ -1,5 +1,5 @@
 /*
- * $Id: i_report.ch,v 1.9 2006-09-28 15:05:07 declan2005 Exp $
+ * $Id: i_report.ch,v 1.10 2008-07-24 23:50:35 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -96,6 +96,18 @@ easyreport  ( <ctitle> ,		 	;
                 <nllmargin>           ,  ;
                 <aformats>            ,  ;
                 <npapersize>,<cheader>,<.lnoprop.>,<.lgroupeject.> )
+
+
+#command REPORTFORMWIN <frm> [HEADING <head>] [<plain:PLAIN>] [<noej:NOEJECT>];
+                           [<sum:SUMMARY>] [<nocon:NOCONSOLE>] ;
+                           [<prn:TO PRINTER>] [TO FILE <(f)>] ;
+                           [FOR <for>] [WHILE <while>] [NEXT <next>] ;
+                           [RECORD <rec>] [<rest:REST>] [ALL] => ;
+         __ReportFormwin( <(frm)>, <.prn.>, <(f)>, <.nocon.>, ;
+                       <{for}>, <{while}>, <next>, <rec>, <.rest.>, ;
+                       <.plain.>, <head>, <.noej.>, <.sum.> )
+
+
 
 
 
