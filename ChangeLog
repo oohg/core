@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.530 2008-07-25 01:38:57 declan2005 Exp $
+ * $Id: ChangeLog,v 1.531 2008-07-25 01:39:43 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -9,7 +9,7 @@
 
 2008-07-24 20:38 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * include/i_browse.ch
-     * removed @ nil,nil Browse  is ot necesary
+     * removed @ nil,nil Browse  is not necesary
 
 2008-07-24 18:33 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_init.prg
