@@ -1,5 +1,5 @@
 /*
- * $Id: h_error.prg,v 1.37 2008-07-19 17:56:41 declan2005 Exp $
+ * $Id: h_error.prg,v 1.38 2008-08-13 16:24:48 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -341,7 +341,7 @@ RETURN RTRIM( cTxt ) + CHR( 13 ) + CHR( 10 )
 *------------------------------------------------------------------------------
 Function ooHGVersion()
 *------------------------------------------------------------------------------
-Return "ooHG V2.9 - 2008.07.19"
+Return "ooHG V3.0 - 2008.08.13"
 
 Function MiniGuiVersion()
 Return ooHGVersion()
