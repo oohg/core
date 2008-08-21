@@ -1,11 +1,15 @@
 /*
- * $Id: ChangeLog,v 1.531 2008-07-25 01:39:43 declan2005 Exp $
+ * $Id: ChangeLog,v 1.532 2008-08-21 19:58:07 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-08-21 14:57 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_init.prg
+     added gtgui default in order to hide console window. Another harbour compilation mode will be used   
 
 2008-07-24 20:38 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * include/i_browse.ch

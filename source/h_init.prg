@@ -1,5 +1,5 @@
 /*
- * $Id: h_init.prg,v 1.22 2008-07-24 23:50:35 declan2005 Exp $
+ * $Id: h_init.prg,v 1.23 2008-08-21 19:58:08 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -140,7 +140,9 @@ INIT PROCEDURE _OOHG_INIT()
    _OOHG_SameEnterDblClick :=  .F.
    
 #ifndef __XHARBOUR__
- REQUEST DBFNTX,DBFDBT
+    REQUEST DBFNTX,DBFDBT
+    REQUEST HB_GT_GUI_DEFAULT
+
 #endif
 	InitMessages()
 
