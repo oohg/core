@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.53 2008-07-21 01:40:05 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.54 2008-08-25 02:16:52 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -658,8 +658,8 @@ Local cType, cAux, cDateFormat, lOldCentury
             EndIf
          Else
             cAux := Transform( uValue, ::PictureFunShow + ::PictureShow )
-            If LEN( cAux ) < LEN( ::PictureShow )
-               cAux := cAux + SPACE( LEN( ::PictureShow ) - LEN( cAux ) )
+            If LEN( cAux ) != LEN( ::PictureShow )
+               cAux := PADR( cAux, LEN( ::PictureShow ) )
             EndIf
          EndIf
          ::Caption := cAux
@@ -832,14 +832,16 @@ Local lChange := .F., nPos1, cMask
       nPos := ::nDecimal
       Return .T.
    Endif
-   If ::lNumericScroll .AND. nPos > 1 .AND. nPos <= Len( cPictureMask ) .AND. ! aValidMask[ nPos ] .AND. aValidMask[ nPos - 1 ]
-      nPos1 := nPos
-      Do While nPos1 > 1 .AND. aValidMask[ nPos1 - 1 ] .AND. ! SubStr( cText, nPos1, 1 ) == " "
-         nPos1--
-      EndDo
-      If SubStr( cText, nPos1, 1 ) == " "
-         cText := Left( cText, nPos1 - 1 ) + SubStr( cText, nPos1 + 1, nPos - nPos1 - 1 ) + " " + SubStr( cText, nPos )
-         nPos--
+   If ::lNumericScroll .AND. nPos > 1 .AND. aValidMask[ nPos - 1 ]
+      If nPos > Len( cPictureMask ) .OR. ! aValidMask[ nPos ]
+         nPos1 := nPos
+         Do While nPos1 > 1 .AND. aValidMask[ nPos1 - 1 ] .AND. ! SubStr( cText, nPos1, 1 ) == " "
+            nPos1--
+         EndDo
+         If SubStr( cText, nPos1, 1 ) == " "
+            cText := Left( cText, nPos1 - 1 ) + SubStr( cText, nPos1 + 1, nPos - nPos1 - 1 ) + " " + SubStr( cText, nPos )
+            nPos--
+         EndIf
       EndIf
    EndIf
    Do While nPos <= Len( cPictureMask ) .AND. ! aValidMask[ nPos ]

@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.192 2008-07-14 01:50:10 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.193 2008-08-25 02:16:52 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1261,7 +1261,7 @@ METHOD LookForKey( nKey, nFlags ) CLASS TWindow
 Local lDone
    If ::Active .AND. LookForKey_Check_HotKey( ::aKeys, nKey, nFlags, Self )
       lDone := .T.
-   ElseIf ::Active .AND. LookForKey_Check_bKeyDown( ::bKeyDown, nKey, nFlags )
+   ElseIf ::Active .AND. LookForKey_Check_bKeyDown( ::bKeyDown, nKey, nFlags, Self )
       lDone := .T.
    ElseIf HB_IsObject( ::Container )
       lDone := ::Container:LookForKey( nKey, nFlags )
@@ -1270,7 +1270,7 @@ Local lDone
    Else
       If LookForKey_Check_HotKey( _OOHG_HotKeys, nKey, nFlags, TForm() )
          lDone := .T.
-      ElseIf LookForKey_Check_bKeyDown( _OOHG_bKeyDown, nKey, nFlags )
+      ElseIf LookForKey_Check_bKeyDown( _OOHG_bKeyDown, nKey, nFlags, TForm() )
          lDone := .T.
       Else
          lDone := .F.
@@ -1282,17 +1282,17 @@ STATIC FUNCTION LookForKey_Check_HotKey( aKeys, nKey, nFlags, Self )
 Local nPos, lDone
    nPos := ASCAN( aKeys, { |a| a[ HOTKEY_KEY ] == nKey .AND. nFlags == a[ HOTKEY_MOD ] } )
    If nPos > 0
-      ::DoEvent( { || Eval( aKeys[ nPos ][ HOTKEY_ACTION ], nKey, nFlags ) }, "HOTKEY" )
+      ::DoEvent( aKeys[ nPos ][ HOTKEY_ACTION ], "HOTKEY", { nKey, nFlags } )
       lDone := .T.
    Else
       lDone := .F.
    EndIf
 Return lDone
 
-STATIC FUNCTION LookForKey_Check_bKeyDown( bKeyDown, nKey, nFlags )
+STATIC FUNCTION LookForKey_Check_bKeyDown( bKeyDown, nKey, nFlags, Self )
 Local lDone
    If HB_IsBlock( bKeyDown )
-      lDone := Eval( bKeyDown, nKey, nFlags )
+      lDone := ::DoEvent( bKeyDown, "KEYDOWN", { nKey, nFlags } )
       If !HB_IsLogical( lDone )
          lDone := .F.
       EndIf
@@ -2672,13 +2672,13 @@ Local oCtrl, lMinim := .F.
       // Process HotKeys
       i := ASCAN( ::aHotKeys, { |a| a[ HOTKEY_ID ] == wParam } )
       If i > 0
-         _OOHG_EVAL( ::aHotKeys[ i ][ HOTKEY_ACTION ] )
+         ::DoEvent( ::aHotKeys[ i ][ HOTKEY_ACTION ], "HOTKEY" )
       EndIf
 
       // Accelerators
       i := ASCAN( ::aAcceleratorKeys, { |a| a[ HOTKEY_ID ] == wParam } )
       If i > 0
-         _OOHG_EVAL( ::aAcceleratorKeys[ i ][ HOTKEY_ACTION ] )
+         ::DoEvent( ::aAcceleratorKeys[ i ][ HOTKEY_ACTION ], "ACCELERATOR" )
       EndIf
 
         ***********************************************************************
