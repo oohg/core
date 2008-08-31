@@ -1,15 +1,15 @@
 @echo off
 rem
-rem $Id: common_make.bat,v 1.12 2008-02-18 02:45:34 guerra000 Exp $
+rem $Id: common_make.bat,v 1.13 2008-08-31 20:40:53 guerra000 Exp $
 rem
 
 if "%1"=="" goto INFO
 
 rem /// File list
 
-SET HG_FILES1_PRG=h_error h_ipaddress h_monthcal h_help h_status h_tree h_toolbar h_init h_media h_winapimisc h_slider h_button h_checkbox h_combo h_controlmisc h_datepicker h_editbox h_dialogs h_grid h_windows h_image h_label h_listbox h_menu h_msgbox h_frame h_progressbar h_radio h_spinner h_tab h_textbox h_timer h_cursor h_ini h_report h_registry h_font h_hyperlink h_hotkey
-SET HG_FILES2_PRG=h_graph h_richeditbox h_edit h_edit_ex h_scrsaver h_browse h_crypt h_zip h_http h_comm h_print h_scroll h_splitbox h_progressmeter h_scrollbutton h_xbrowse h_internal h_textarray h_hotkeybox h_activex h_pdf
-SET HG_FILES_C=c_ipaddress c_monthcal c_media c_controlmisc c_datepicker c_resource c_cursor c_font c_dialogs c_grid c_windows c_image c_msgbox c_frame c_progressbar c_spinner c_winapimisc c_scrsaver c_graph c_activex
+SET HG_FILES1_PRG=h_error h_windows h_form h_ipaddress h_monthcal h_help h_status h_tree h_toolbar h_init h_media h_winapimisc h_slider h_button h_checkbox h_combo h_controlmisc h_datepicker h_editbox h_dialogs h_grid h_image h_label h_listbox h_menu h_msgbox h_frame h_progressbar h_radio h_spinner h_tab h_textbox h_timer h_cursor h_ini h_report h_registry h_font
+SET HG_FILES2_PRG=h_graph h_richeditbox h_edit h_edit_ex h_scrsaver h_browse h_crypt h_zip h_http h_comm h_print h_scroll h_splitbox h_progressmeter h_scrollbutton h_xbrowse h_internal h_textarray h_hotkeybox h_activex h_pdf h_hotkey h_hyperlink
+SET HG_FILES_C=c_ipaddress c_monthcal c_media c_controlmisc c_resource c_cursor c_font c_dialogs c_grid c_windows c_image c_msgbox c_frame c_progressbar c_spinner c_winapimisc c_scrsaver c_graph c_activex
 
 rem /// Checks Harbour/xHarbour
 

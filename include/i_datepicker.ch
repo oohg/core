@@ -1,12 +1,12 @@
 /*
- * $Id: i_datepicker.ch,v 1.4 2005-10-22 06:04:31 guerra000 Exp $
+ * $Id: i_datepicker.ch,v 1.5 2008-08-31 20:40:53 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Datepicker definitions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2008 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -115,24 +115,16 @@
 		[ HELPID <helpid> ] 		;
 		[ <invisible: INVISIBLE> ] ;
 		[ <notabstop: NOTABSTOP> ] ;
+                [ <disabled: DISABLED> ] ;
+                [ <noborder: NOBORDER> ] ;
                 [ <rtl: RTL> ] ;
+                [ SUBCLASS <subclass> ] ;
 	=> ;
-        [ <obj> := ] TDatePick():Define( <(name)> , ;
-                     <(parent)> , ;
-                     <col> , ;
-                     <row> , ;
-                     <w> , ;
-                     <h> , ;
-                     <v> , ;
-                     <fontname> , ;
-                     <fontsize> , ;
-                     <tooltip> , ;
-                     <{change}> , ;
-                     <{lostfocus}> , ;
-                     <{gotfocus}> , ;
-                     <.shownone.> , ;
-                     <.updown.> , ;
-                     <.rightalign.>  , <helpid> , <.invisible.>, <.notabstop.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <(field)> , <{enter}> , <.rtl.> )
+        [ <obj> := ] _OOHG_SelectSubClass( TDatePick(), [ <subclass>() ] ): ;
+                     Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <v>, <fontname>, <fontsize>, ;
+                     <tooltip>, <{change}>, <{lostfocus}>, <{gotfocus}>, <.shownone.>, <.updown.>, <.rightalign.>, ;
+                     <helpid>, <.invisible.>, <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, ;
+                     <(field)>, <{enter}>, <.rtl.>, <.disabled.>, <.noborder.> )
 
 
 #command @ <row>,<col> TIMEPICKER <name> ;
@@ -159,21 +151,13 @@
 		[ HELPID <helpid> ] 		;
 		[ <invisible: INVISIBLE> ] ;
 		[ <notabstop: NOTABSTOP> ] ;
+                [ <disabled: DISABLED> ] ;
+                [ <noborder: NOBORDER> ] ;
                 [ <rtl: RTL> ] ;
+                [ SUBCLASS <subclass> ] ;
 	=> ;
-        [ <obj> := ] TTimePick():Define( <(name)> , ;
-                     <(parent)> , ;
-                     <col> , ;
-                     <row> , ;
-                     <w> , ;
-                     <h> , ;
-                     <v> , ;
-                     <fontname> , ;
-                     <fontsize> , ;
-                     <tooltip> , ;
-                     <{change}> , ;
-                     <{lostfocus}> , ;
-                     <{gotfocus}> , ;
-                     <.shownone.> , ;
-                     <.updown.> , ;
-                     <.rightalign.>  , <helpid> , <.invisible.>, <.notabstop.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <(field)> , <{enter}> , <.rtl.> )
+        [ <obj> := ] _OOHG_SelectSubClass( TTimePick(), [ <subclass>() ] ): ;
+                     Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <v>, <fontname>, <fontsize>, ;
+                     <tooltip>, <{change}>, <{lostfocus}>, <{gotfocus}>, <.shownone.>, <.updown.>, <.rightalign.>, ;
+                     <helpid>, <.invisible.>, <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, ;
+                     <(field)>, <{enter}>, <.rtl.>, <.disabled.>, <.noborder.> )

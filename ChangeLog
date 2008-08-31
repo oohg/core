@@ -1,11 +1,31 @@
 /*
- * $Id: ChangeLog,v 1.533 2008-08-25 02:16:51 guerra000 Exp $
+ * $Id: ChangeLog,v 1.534 2008-08-31 20:40:53 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-08-31 15:37 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_datepicker.ch
+  * source/h_datepicker.prg
+    + DISABLED, NOBORDER and SUBCLASS clauses added to
+      DATEPICKER and TIMEPICKER controls.
+  - source/c_datepicker.c
+  * source/common_make.bat
+  * source/h_datepicker.prg
+  + source/h_form.prg
+  * source/h_windows.prg
+  * source/makelib_bcc.bat
+  * source/makelib_mingw.bat
+    * Moved C code from c_datepicker.c to h_datepicker.prg file.
+    - c_datepicker.c removed.
+    + Form-specific code moved from h_windows.prg to h_form.prg
+      (there's still some to code must be moved to).
+  * source/h_tab.prg
+    * TAB control is focused when focused control is on the
+      hidden page. Reported by RIT.
 
 2008-08-24 14:27 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_textbox.prg

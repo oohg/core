@@ -1,11 +1,11 @@
 /*
- * $Id: h_tab.prg,v 1.38 2008-04-05 05:39:45 guerra000 Exp $
+ * $Id: h_tab.prg,v 1.39 2008-08-31 20:40:53 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Tab functions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -304,10 +304,18 @@ RETURN ::Super:ForceHide()
 *-----------------------------------------------------------------------------*
 METHOD Events_Notify( wParam, lParam ) CLASS TTab
 *-----------------------------------------------------------------------------*
-Local nNotify := GetNotifyCode( lParam )
+Local nNotify := GetNotifyCode( lParam ), oControl
 
    If nNotify == TCN_SELCHANGE
-      ::Refresh()
+      oControl := GetControlObjectByHandle( GetFocus() )
+      If ValidHandler( oControl:hWnd ) .AND. IsWindowVisible( oControl:hWnd )
+         ::Refresh()
+         If ! IsWindowVisible( oControl:hWnd )
+            ::SetFocus()
+         EndIf
+      Else
+         ::Refresh()
+      EndIf
       ::DoEvent( ::OnChange, "CHANGE" )
       Return nil
 
