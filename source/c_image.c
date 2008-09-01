@@ -1,12 +1,12 @@
 /*
- * $Id: c_image.c,v 1.16 2007-11-08 08:55:19 guerra000 Exp $
+ * $Id: c_image.c,v 1.17 2008-09-01 02:51:29 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * C image functions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -110,7 +110,7 @@
 #include <winuser.h>
 #include <wingdi.h>
 #include "olectl.h"
-#include "../include/oohg.h"
+#include "oohg.h"
 
 HANDLE _OOHG_OleLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG lBackColor, long lWidth2, long lHeight2 )
 {
@@ -142,9 +142,9 @@ HANDLE _OOHG_OleLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG lBackColor, long l
 
          iPicture->lpVtbl->get_CurDC( iPicture, &hdc1 );
          hdc1 = CreateCompatibleDC( hdc1 );
-         fAux = ( ( lWidth * GetDeviceCaps( hdc1, LOGPIXELSX ) ) / 2540 ) + 0.5;
+         fAux = ( ( lWidth * GetDeviceCaps( hdc1, LOGPIXELSX ) ) / 2540 ) + 0.9999;
          lWidth2 = fAux;
-         fAux = ( ( lHeight * GetDeviceCaps( hdc1, LOGPIXELSY ) ) / 2540 ) + 0.5;
+         fAux = ( ( lHeight * GetDeviceCaps( hdc1, LOGPIXELSY ) ) / 2540 ) + 0.9999;
          lHeight2 = fAux;
          DeleteDC( hdc1 );
       }
@@ -234,6 +234,7 @@ HBITMAP _OOHG_ScaleImage( HWND hWnd, HBITMAP hImage, int iWidth, int iHeight, in
       FillRect( toDC, &toRECT, hBrush );
       SelectObject( toDC, hpic );
 
+      SetStretchBltMode( toDC, COLORONCOLOR );
       StretchBlt( toDC, 0, 0, iWidth, iHeight, fromDC, 0, 0, lWidth, lHeight, SRCCOPY );
 
       DeleteDC( imgDC );
