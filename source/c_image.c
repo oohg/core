@@ -1,5 +1,5 @@
 /*
- * $Id: c_image.c,v 1.17 2008-09-01 02:51:29 guerra000 Exp $
+ * $Id: c_image.c,v 1.18 2008-09-02 04:48:51 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -246,6 +246,98 @@ HBITMAP _OOHG_ScaleImage( HWND hWnd, HBITMAP hImage, int iWidth, int iHeight, in
    return hpic;
 }
 
+HBITMAP _OOHG_RotateImage( HWND hWnd, HBITMAP hImage, LONG BackColor, int iDegree )
+{
+   RECT rect;
+   POINT point[ 3 ];
+   HBITMAP hpic = 0;
+   BITMAP bm;
+   int iWidth, iHeight;
+   HDC imgDC, fromDC, toDC;
+   HBRUSH hBrush;
+
+   if( hWnd && hImage )
+   {
+      imgDC = GetDC( hWnd );
+      fromDC = CreateCompatibleDC( imgDC );
+      toDC = CreateCompatibleDC( imgDC );
+
+      if( BackColor == -1 )
+      {
+         hBrush = CreateSolidBrush( GetSysColor( COLOR_BTNFACE ) );
+      }
+      else
+      {
+         hBrush = CreateSolidBrush( BackColor );
+      }
+
+      // FROM parameters
+      GetObject( hImage, sizeof( BITMAP ), &bm );
+      iWidth  = bm.bmWidth;
+      iHeight = bm.bmHeight;
+      SetRect( &rect, 0, 0, iWidth, iHeight );
+      FillRect( fromDC, &rect, hBrush );
+      SelectObject( fromDC, hImage );
+
+      // TO parameters
+      iDegree = iDegree % 360;
+      if( iDegree == 90 )
+      {
+         point[ 0 ].x = iHeight;
+         point[ 0 ].y = 0;
+         point[ 1 ].x = iHeight;
+         point[ 1 ].y = iWidth;
+         point[ 2 ].x = 0;
+         point[ 2 ].y = 0;
+         SetRect( &rect, 0, 0, iHeight, iWidth );
+      }
+      else if( iDegree == 180 )
+      {
+         point[ 0 ].x = iWidth - 1;
+         point[ 0 ].y = iHeight - 1;
+         point[ 1 ].x = -1;
+         point[ 1 ].y = iHeight - 1;
+         point[ 2 ].x = iWidth - 1;
+         point[ 2 ].y = -1;
+         SetRect( &rect, 0, 0, iWidth, iHeight );
+      }
+      else if( iDegree == 270 )
+      {
+         point[ 0 ].x = 0;
+         point[ 0 ].y = iWidth;
+         point[ 1 ].x = 0;
+         point[ 1 ].y = 0;
+         point[ 2 ].x = iHeight;
+         point[ 2 ].y = iWidth;
+         SetRect( &rect, 0, 0, iHeight, iWidth );
+      }
+      else
+      {
+         point[ 0 ].x = 0;
+         point[ 0 ].y = 0;
+         point[ 1 ].x = iWidth;
+         point[ 1 ].y = 0;
+         point[ 2 ].x = 0;
+         point[ 2 ].y = iHeight;
+         SetRect( &rect, 0, 0, iWidth, iHeight );
+      }
+      hpic = CreateCompatibleBitmap( imgDC, rect.right, rect.bottom );
+      FillRect( toDC, &rect, hBrush );
+      SelectObject( toDC, hpic );
+      // coordenadas!! angulo!!
+
+      SetStretchBltMode( toDC, COLORONCOLOR );
+      PlgBlt( toDC, ( POINT * ) &point, fromDC, 0, 0, iWidth, iHeight, NULL, 0, 0 );
+
+      DeleteDC( imgDC );
+      DeleteDC( fromDC);
+      DeleteDC( toDC );
+      DeleteObject( hBrush );
+   }
+
+   return hpic;
+}
+
 HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, HWND hWnd, LONG lBackColor )
 {
    HANDLE hImage;
@@ -455,4 +547,14 @@ HB_FUNC( _BITMAPHEIGHT )
       GetObject( hBmp, sizeof( bm ), &bm );
    }
    hb_retni( bm.bmHeight );
+}
+
+HB_FUNC( _OOHG_ROTATEIMAGE )            // ( oSelf, hBitMap, nDegree )
+{
+   POCTRL oSelf = _OOHG_GetControlInfo( hb_param( 1, HB_IT_OBJECT ) );
+   HBITMAP hBitmap;
+
+   hBitmap = _OOHG_RotateImage( oSelf->hWnd, ( HBITMAP ) HWNDparam( 2 ), oSelf->lBackColor, hb_parni( 3 ) );
+
+   HWNDret( hBitmap );
 }

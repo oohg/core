@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.1 2008-08-31 20:40:53 guerra000 Exp $
+ * $Id: h_form.prg,v 1.2 2008-09-02 04:48:51 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -2563,6 +2563,16 @@ LOCAL uParent, nPos
 
    EndIf
 Return uParent
+
+#ifndef __XHARBOUR__
+STATIC FUNCTION RASCAN( aSource, bCode )
+LOCAL nPos
+   nPos := LEN( aSource )
+   DO WHILE nPos > 0 .AND. ! EVAL( bCode, aSource[ nPos ], nPos )
+      nPos--
+   ENDDO
+RETURN nPos
+#endif
 
 
 
