@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.537 2008-09-07 23:12:56 guerra000 Exp $
+ * $Id: ChangeLog,v 1.538 2008-09-07 23:19:46 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -29,7 +29,7 @@
       _OOHG_AllVars.
   * source/h_print.prg
   * source/h_report.prg
-  * source/winprint.prg
+  * source/miniprint.prg
     ! Warnings from unused variables removed.
 
 2008-09-01 23:47 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
