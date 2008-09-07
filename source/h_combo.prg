@@ -1,11 +1,11 @@
 /*
- * $Id: h_combo.prg,v 1.42 2008-05-18 14:34:31 guerra000 Exp $
+ * $Id: h_combo.prg,v 1.43 2008-09-07 23:12:56 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG combobox functions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -125,6 +125,7 @@ CLASS TCombo FROM TLabel
    METHOD Item
    METHOD ItemCount
    METHOD ShowDropDown
+   METHOD SelectFirstItem     BLOCK { |Self| ComboSetCursel( ::hWnd, 1 ) }
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -133,7 +134,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, rows, value, fontname, ;
                uEnter, HelpId, invisible, notabstop, sort, bold, italic, ;
                underline, strikeout, itemsource, valuesource, displaychange, ;
                ondisplaychangeprocedure, break, GripperText, aImage, lRtl, ;
-               TextHeight, lDisabled ) CLASS TCombo
+               TextHeight, lDisabled, lFirstItem ) CLASS TCombo
 *-----------------------------------------------------------------------------*
 Local ControlHandle , rcount := 0 , cset := 0 , WorkArea , cField, nStyle
 
@@ -197,6 +198,9 @@ Local ControlHandle , rcount := 0 , cset := 0 , WorkArea , cField, nStyle
       AEval( rows, { |x| ::AddItem( x ) } )
    EndIf
 
+   If HB_IsLogical( lFirstItem ) .AND. lFirstItem .AND. ::ItemCount > 0
+      ::SelectFirstItem()
+   EndIf
    ::Value := Value
 
    ASSIGN ::OnClick     VALUE ondisplaychangeprocedure TYPE "B"

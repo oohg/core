@@ -1,11 +1,11 @@
 /*
- * $Id: i_altsyntax.ch,v 1.43 2008-06-28 23:07:32 guerra000 Exp $
+ * $Id: i_altsyntax.ch,v 1.44 2008-09-07 23:12:56 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Alternate syntax definitions
  *
- * Copyright 2008 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -94,8 +94,6 @@
 /*---------------------------------------------------------------------------------------------------
 Memvariables
 ----------------------------------------------------------------------------------------------------*/
-
-MEMVAR _OOHG_ActiveControlInfo
 
 #xtranslate _OOHG_ActiveControlName                   => _OOHG_ActiveControlInfo \[   1 \]
 #xtranslate _OOHG_ActiveControlOf                     => _OOHG_ActiveControlInfo \[   2 \]
@@ -258,7 +256,7 @@ MEMVAR _OOHG_ActiveControlInfo
 #xtranslate _OOHG_ActiveControlOnAppend               => _OOHG_ActiveControlInfo \[ 196 \]
 
 #xcommand _OOHG_ClearActiveControlInfo( <name> ) => ;
-        PUBLIC _OOHG_ActiveControlInfo \[ 300 \] ;;
+        _OOHG_ActiveControlInfo          := ARRAY( 300 ) ;;
         _OOHG_ActiveControlName          := <name>       ;;
         _OOHG_ActiveControlOf            := Nil          ;;
         _OOHG_ActiveControlRow           := Nil          ;;

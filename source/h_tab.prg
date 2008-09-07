@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.39 2008-08-31 20:40:53 guerra000 Exp $
+ * $Id: h_tab.prg,v 1.40 2008-09-07 23:12:56 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -107,6 +107,7 @@ CLASS TTab FROM TControl
    METHOD Define
    METHOD EndTab              BLOCK { || _EndTab() }
    METHOD EndPage             BLOCK { || _EndTabPage() }
+   METHOD ItemCount           BLOCK { |Self| LEN( ::aPages ) }
 
    METHOD Refresh
    METHOD Release

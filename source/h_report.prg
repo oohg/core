@@ -1,5 +1,5 @@
 /*
- * $Id: h_report.prg,v 1.43 2008-07-24 23:50:35 declan2005 Exp $
+ * $Id: h_report.prg,v 1.44 2008-09-07 23:12:56 guerra000 Exp $
  */
 /*
  * DO REPORT Command support procedures FOR MiniGUI Library.
@@ -35,58 +35,18 @@
 #include 'oohg.ch'
 
 MEMVAR NPOS
-MEMVAR NPOS1
-MEMVAR NPOS2
 MEMVAR LIN
 MEMVAR SW
-MEMVAR SW1
 MEMVAR CREPORT
 MEMVAR cgraphicalt
-MEMVAR WLARLIN
-MEMVAR AFIELDS
-MEMVAR LSELECT
-MEMVAR LDOS
 MEMVAR NGRPBY
-MEMVAR LLANDSCAPE
-MEMVAR AHEADERS1
-MEMVAR AHEADERS2
-MEMVAR CTITLE
-MEMVAR CGRAPHIC
 MEMVAR WFIELD
 MEMVAR WFIELDA
 MEMVAR WFIELDT
-MEMVAR ATOTALS
-MEMVAR AFORMATS
-MEMVAR AWIDTHS
-MEMVAR NPOSGRP
-MEMVAR NLLMARGIN
 MEMVAR CROMPE
-MEMVAR CHDRGRP
-MEMVAR WFILEREPO
-MEMVAR CALIAS
-MEMVAR NLPP
-MEMVAR NCPL
-MEMVAR LPREVIEW
-MEMVAR CFILEREPO
-MEMVAR LMUL
-MEMVAR PAGE
-MEMVAR EXT
-MEMVAR NFI
-MEMVAR NCI
-MEMVAR NFF
-MEMVAR NCF
 MEMVAR Npapersize
-MEMVAR Apapeles
 MEMVAR ipaper
-MEMVAR ctitle1
-MEMVAR ctitle2
-MEMVAR cheader
-MEMVAR CPRINTER
-MEMVAR WORIENTATION
-MEMVAR LSUCESS
-MEMVAR CBAT
 MEMVAR _OOHG_printlibrary
-MEMVAR nposat
 MEMVAR lgroupeject
 MEMVAR lexcel
 
@@ -95,7 +55,7 @@ MEMVAR lexcel
 MEMVAR LUSELETTER
 MEMVAR LFIRSTPASS
 
-STATIC oprint,nposrow,nposcol,areportdata,LP,NPAP, saux, npagenumber, nmaxlinesavail,nlinesleft,areporttotals,agrouptotals
+STATIC oprint,nposrow,nposcol,areportdata,LP,NPAP, npagenumber, nmaxlinesavail,nlinesleft,areporttotals,agrouptotals
 STATIC clengthsbuff,coffsetsbuff,cexprbuff,repobject,sicvar
 
 FUNCTION easyreport(ctitle,aheaders1,aheaders2,afields,awidths,atotals,nlpp,ldos,lpreview,cgraphic,nfi,nci,nff,ncf,lmul,cgrpby,chdrgrp,llandscape,ncpl,lselect,calias,nllmargin,aformats,npapersize,cheader,lnoprop,lgroupeject)

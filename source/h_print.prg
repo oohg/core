@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.84 2008-03-15 14:14:45 declan2005 Exp $
+* $Id: h_print.prg,v 1.85 2008-09-07 23:12:56 guerra000 Exp $
 */
 
 #include 'hbclass.ch'
@@ -31,7 +31,6 @@ MEMVAR milinea1
 MEMVAR milinea2
 MEMVAR oprintcsv2
 MEMVAR oprintcsv3
-MEMVAR cname
 MEMVAR amicolor
 
 *-------------------------
@@ -87,12 +86,12 @@ ELSE
          o_print_:=tpdfprint()
       ELSE
          o_print_:=tminiprint()
-      ENDIF 
+      ENDIF
    ELSE
       o_print_:=tminiprint()
       _OOHG_printlibrary="MINIPRINT"
-   ENDIF 
-ENDIF 
+   ENDIF
+ENDIF
 RETURN o_Print_
 
 

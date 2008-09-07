@@ -1,5 +1,5 @@
 /*
- * $Id: i_frame.ch,v 1.3 2005-10-22 06:04:31 guerra000 Exp $
+ * $Id: i_frame.ch,v 1.4 2008-09-07 23:12:56 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -108,5 +108,13 @@
 		[ <opaque: OPAQUE> ] ;
 		[ <transparent: TRANSPARENT> ] ;
                 [ <rtl: RTL> ] ;
+		[ <notabstop : NOTABSTOP> ] ;
+		[ <invisible : INVISIBLE> ] ;
+                [ <disabled : DISABLED> ] ;
+                [ SUBCLASS <subclass> ]         ;
 	=>;
-        [ <obj> := ] TFrame():Define( <(name)>, <(parent)>, <row>, <col>, <w>, <h> , <caption> , <fontname> , <fontsize> , <.opaque.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <backcolor> , <fontcolor> , <.transparent.>, <.rtl.> )
+        [ <obj> := ] _OOHG_SelectSubClass( TFrame(), [ <subclass>() ] ): ;
+                     Define( <(name)>, <(parent)>, <row>, <col>, <w>, <h>, <caption>, ;
+                     <fontname>, <fontsize>, <.opaque.>, <.bold.>, <.italic.>, ;
+                     <.underline.>, <.strikeout.>, <backcolor>, <fontcolor>, ;
+                     <.transparent.>, <.rtl.>, <.invisible.>, <.notabstop.>, <.disabled.> )

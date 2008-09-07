@@ -1,12 +1,12 @@
 /*
- * $Id: i_combobox.ch,v 1.6 2007-07-15 04:48:43 guerra000 Exp $
+ * $Id: i_combobox.ch,v 1.7 2008-09-07 23:12:56 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Combobox definitions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -122,6 +122,7 @@
                 [ TEXTHEIGHT <textheight> ] ;
                 [ SUBCLASS <subclass> ]         ;
                 [ <disabled : DISABLED> ] ;
+                [ <firstitem : FIRSTITEM> ] ;
 	=>;
         [ <obj> := ] _OOHG_SelectSubClass( TCombo(), [ <subclass>() ] ): ;
                 Define( <(name)>, <(parent)>, <col>, <row>, <w>, <aRows> , <value>, ;
@@ -131,7 +132,7 @@
                 <.italic.>, <.underline.>, <.strikeout.> , <(itemsource)> , ;
                 <(valuesource)> , <.displaychange.> , ;
                 <{ondisplaychangeprocedure}> ,  .f. , "", <aImage>, <.rtl.>, ;
-                <textheight>, <.disabled.> )
+                <textheight>, <.disabled.>, <.firstitem.> )
 
 // SPLITBOX VERSION
 
@@ -167,6 +168,8 @@
                 [ <rtl: RTL> ] ;
                 [ TEXTHEIGHT <textheight> ] ;
                 [ SUBCLASS <subclass> ]         ;
+                [ <disabled : DISABLED> ] ;
+                [ <firstitem : FIRSTITEM> ] ;
 	=>;
         [ <obj> := ] _OOHG_SelectSubClass( TCombo(), [ <subclass>() ] ): ;
                   Define( <(name)>, <(parent)>, , , <w>, <aRows> , <value>, ;
@@ -175,4 +178,4 @@
                   <.sort.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , ;
                   <(itemsource)> , <(valuesource)> , <.displaychange.> , ;
                   <{ondisplaychangeprocedure}> , <.break.> , <grippertext>, <aImage>, ;
-                  <.rtl.>, <textheight> )
+                  <.rtl.>, <textheight>, <.disabled.>, <.firstitem.> )

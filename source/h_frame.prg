@@ -1,12 +1,12 @@
 /*
- * $Id: h_frame.prg,v 1.6 2007-10-06 22:16:44 declan2005 Exp $
+ * $Id: h_frame.prg,v 1.7 2008-09-07 23:12:56 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG frame functions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -96,6 +96,8 @@
 
 CLASS TFrame FROM TControl
    DATA Type      INIT "FRAME" READONLY
+   DATA nWidth    INIT 140
+   DATA nHeight   INIT 140
 
    METHOD Define
 ENDCLASS
@@ -103,35 +105,95 @@ ENDCLASS
 *-----------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, y, x, w, h, caption, fontname, ;
                fontsize, opaque, bold, italic, underline, strikeout, ;
-               backcolor, fontcolor, transparent, lRtl ) CLASS TFrame
+               backcolor, fontcolor, transparent, lRtl, invisible, notabstop, ;
+               lDisabled ) CLASS TFrame
 *-----------------------------------------------------------------------------*
-Local ControlHandle
+Local ControlHandle, nStyle
 
-        DEFAULT caption to ""
+   ASSIGN ::nCol        VALUE x TYPE "N"
+   ASSIGN ::nRow        VALUE y TYPE "N"
+   ASSIGN ::nWidth      VALUE w TYPE "N"
+   ASSIGN ::nHeight     VALUE h TYPE "N"
 
-	if valtype (caption) == 'U'
-            caption := ""
-	    fontname := "Arial"
-	    fontsize := 1
-	EndIf
+   ASSIGN caption       VALUE caption TYPE "CM" DEFAULT ""
 
-	if valtype(w) == 'U'
-           w := 140
-	EndIf
-
-	if valtype(h) == 'U'
-	    h := 140
+   If valtype( caption ) == 'U'
+      caption := ""
+      fontname := "Arial"
+      fontsize := 1
 	EndIf
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, , lRtl )
 
-   Controlhandle := InitFrame( ::ContainerhWnd, 0, x, y, w, h , caption , opaque, ::lRtl )
+   nStyle := ::InitStyle( ,, Invisible, NoTabStop, lDisabled )
+
+   Controlhandle := InitFrame( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, caption , opaque, ::lRtl, nStyle )
 
    ::Register( ControlHandle, ControlName )
    ::SetFont( , , bold, italic, underline, strikeout )
-   ::SizePos( y, x, w, h )
 
-   ::Transparent :=  transparent
+   ::Transparent := transparent
    ::Caption := Caption
 
 Return Self
+
+#pragma BEGINDUMP
+
+#define _WIN32_IE      0x0500
+#define HB_OS_WIN_32_USED
+#define _WIN32_WINNT   0x0400
+#include <shlobj.h>
+
+#include <windows.h>
+#include <commctrl.h>
+#include "hbapi.h"
+#include "hbvm.h"
+#include "hbstack.h"
+#include "hbapiitm.h"
+#include "winreg.h"
+#include "tchar.h"
+#include "oohg.h"
+
+static WNDPROC lpfnOldWndProcA = 0;
+static WNDPROC lpfnOldWndProcB = 0;
+
+static LRESULT APIENTRY SubClassFuncA( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+{
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProcA );
+}
+
+static LRESULT APIENTRY SubClassFuncB( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+{
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProcB );
+}
+
+HB_FUNC( INITFRAME )
+{
+   HWND hwnd;
+   HWND hbutton;
+   int Style, StyleEx;
+
+   hwnd = HWNDparam( 1 );
+
+   Style = hb_parni( 10 ) | WS_CHILD | BS_GROUPBOX | BS_NOTIFY;
+   StyleEx = _OOHG_RTL_Status( hb_parl( 9 ) );
+
+   if ( ! hb_parl( 8 ) )
+	{
+      hbutton = CreateWindowEx( StyleEx, "BUTTON", hb_parc( 7 ), Style,
+                hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
+                hwnd, ( HMENU ) hb_parni( 2 ), GetModuleHandle( NULL ), NULL );
+      lpfnOldWndProcA = ( WNDPROC ) SetWindowLong( ( HWND ) hbutton, GWL_WNDPROC, ( LONG ) SubClassFuncA );
+	}
+   else
+	{
+      hbutton = CreateWindow( "BUTTON", hb_parc( 7 ), Style,
+                hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
+                hwnd, ( HMENU ) hb_parni( 2 ), GetModuleHandle( NULL ), NULL );
+      lpfnOldWndProcB = ( WNDPROC ) SetWindowLong( ( HWND ) hbutton, GWL_WNDPROC, ( LONG ) SubClassFuncB );
+	}
+
+   HWNDret( hbutton );
+}
+
+#pragma ENDDUMP

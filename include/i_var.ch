@@ -1,12 +1,12 @@
 /*
- * $Id: i_var.ch,v 1.20 2008-01-12 20:19:38 guerra000 Exp $
+ * $Id: i_var.ch,v 1.21 2008-09-07 23:12:56 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * "Global variables" definitions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -123,10 +123,10 @@ MEMVAR _OOHG_AllVars
 #xtranslate  _OOHG_ExtendedNavigation  => _OOHG_AllVars \[  24 \]
 #xtranslate  _OOHG_ThisEventType       => _OOHG_AllVars \[  25 \]
 
+#xtranslate  _OOHG_ActiveControlInfo   => _OOHG_AllVars \[  26 \]
+
 #xtranslate  _OOHG_ThisControl         => _OOHG_AllVars \[  27 \]
 #xtranslate  _OOHG_ThisObject          => _OOHG_AllVars \[  28 \]
-
-
 
 #xtranslate  _OOHG_ThisItemCellValue   => _OOHG_AllVars \[  29 \]
 

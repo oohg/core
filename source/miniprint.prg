@@ -1,5 +1,5 @@
 /*
- * $Id: miniprint.prg,v 1.23 2007-05-29 19:45:07 declan2005 Exp $
+ * $Id: miniprint.prg,v 1.24 2008-09-07 23:12:56 guerra000 Exp $
  */
 /*----------------------------------------------------------------------------
  MINIGUI - Harbour Win32 GUI library source code
@@ -87,7 +87,6 @@ memvar _HMG_printer_thumbscroll
 memvar _HMG_printer_PrevPageNumber
 memvar _HMG_printer_usermessages
 memvar _OOHG_printer_docname
-memvar cname
 
 *------------------------------------------------------------------------------*
 Procedure _HMG_PRINTER_SHOWPREVIEW

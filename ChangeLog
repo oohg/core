@@ -1,11 +1,36 @@
 /*
- * $Id: ChangeLog,v 1.536 2008-09-02 04:48:51 guerra000 Exp $
+ * $Id: ChangeLog,v 1.537 2008-09-07 23:12:56 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-09-07 18:06 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_frame.ch
+  - source/c_frame.c
+  * source/common_make.bat
+  * source/h_frame.prg
+  * source/makelib_bcc.bat
+  * source/makelib_mingw.bat
+    + DISABLED, INVISIBLE, NOTABSTOP and SUBCLASS clauses added.
+    * Moved C code from c_frame.c to h_frame.prg file.
+    - c_frame.c removed.
+  * include/i_combobox.ch
+  * source/h_combo.prg
+    + FIRSTITEM clause added.
+    + TCombo:SelectFirstItem() method added.
+  * source/h_tab.prg
+    + ::ItemCount property added. Returns how many pages have.
+  * include/i_altsyntax.ch
+  * include/i_var.ch
+    * _OOHG_ActiveControlInfo converted to an item on
+      _OOHG_AllVars.
+  * source/h_print.prg
+  * source/h_report.prg
+  * source/winprint.prg
+    ! Warnings from unused variables removed.
 
 2008-09-01 23:47 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_form.prg
