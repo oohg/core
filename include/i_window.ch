@@ -1,5 +1,5 @@
 /*
- * $Id: i_window.ch,v 1.33 2008-02-15 05:50:25 guerra000 Exp $
+ * $Id: i_window.ch,v 1.34 2008-09-10 03:59:02 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -122,7 +122,7 @@
         #xtranslate <w> . \<c\> . \<p:AllowAppend,AllowDelete,AllowEdit\> => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ;;
         #xtranslate <w> . \<c\> . \<p:Caption,Header,Item,Icon,ColumnWidth,Picture,Image\> (\<arg\>) => GetProperty ( <(w)>, \<(c)> , \<(p)> , \<arg\> ) ;;
         #xtranslate <w> . \<c\> . \<p:Caption,Header,Item,Icon,ColumnWidth,Picture,Image\> (\<arg\>) := \<n\> => SetProperty ( <(w)>, \<(c)> , \<(p)> , \<arg\> , \<n\> ) ;;
-        #xtranslate <w> . \<c\> . \<p:EnableUpdate,DisableUpdate\> => DATE() ;;
+        #xtranslate <w> . \<c\> . \<p:EnableUpdate,DisableUpdate\> => EMPTY( 0 ) ;;
         #xtranslate <w> . \<c\> . \<p:Cell\> (\<arg1\>,\<arg2\>) => GetProperty ( <(w)>, \<(c)> , \<(p)> , \<arg1\> , \<arg2\> ) ;;
         #xtranslate <w> . \<c\> . \<p:Cell\> (\<arg1\>,\<arg2\>) := \<n\> => SetProperty ( <(w)>, \<(c)> , \<(p)> , \<arg1\> , \<arg2\> , \<n\> ) ;;
         #xtranslate <w> . \<c\> . \<p:Refresh,SetFocus,DeleteAllItems,Release,Show,Hide,Play,Stop,Close,Pause,Eject,OpenDialog,Resume,ColumnsAutoFit,ColumnsAutoFitH\> \[()\] => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> () ;;
