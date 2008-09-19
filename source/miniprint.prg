@@ -1,5 +1,5 @@
 /*
- * $Id: miniprint.prg,v 1.24 2008-09-07 23:12:56 guerra000 Exp $
+ * $Id: miniprint.prg,v 1.25 2008-09-19 20:40:25 declan2005 Exp $
  */
 /*----------------------------------------------------------------------------
  MINIGUI - Harbour Win32 GUI library source code
@@ -3228,46 +3228,7 @@ HB_FUNC ( _HMG_PRINTER_SETPRINTERPROPERTIES )
 
 }
 
-#ifndef __XHARBOUR__
 
-HB_FUNC (GETDEFAULTPRINTER)
-{
-        
-	OSVERSIONINFO osvi;
-	LPPRINTER_INFO_5 PrinterInfo;
-	DWORD Needed , Returned ;
-	DWORD BufferSize = 254;
-
-	char DefaultPrinter [254] ;
-        // char Buffer [254] ;
-
-	osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-
-	GetVersionEx(&osvi);
-
-	if (osvi.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS)
-	{
-
-		EnumPrinters(PRINTER_ENUM_DEFAULT,NULL,5,NULL,0,&Needed,&Returned);
-		PrinterInfo = (LPPRINTER_INFO_5) LocalAlloc(LPTR,Needed);
-		EnumPrinters(PRINTER_ENUM_DEFAULT,NULL,5,(LPBYTE) PrinterInfo,Needed,&Needed,&Returned);
-		strcpy(DefaultPrinter,PrinterInfo->pPrinterName);
-		LocalFree(PrinterInfo);
-
-	}
-	else if (osvi.dwPlatformId == VER_PLATFORM_WIN32_NT)
-	{
-
-		GetProfileString("windows","device","",DefaultPrinter,BufferSize);
-		strtok(DefaultPrinter, ",");
-
-	}
-
-	hb_retc(DefaultPrinter);
-
-}
-
-#endif
 
 HB_FUNC ( _HMG_PRINTER_STARTPAGE_PREVIEW )
 {

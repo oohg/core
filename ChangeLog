@@ -1,11 +1,15 @@
 /*
- * $Id: ChangeLog,v 1.539 2008-09-10 03:59:01 guerra000 Exp $
+ * $Id: ChangeLog,v 1.540 2008-09-19 20:40:24 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-09-19 15:38 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/miniprint.prg
+    - removed getdefaultprinter() function from miniprint, now harbour contain this function.
 
 2008-09-09 22:57 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * include/i_window.ch
