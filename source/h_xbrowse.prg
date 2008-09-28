@@ -1,11 +1,11 @@
 /*
- * $Id: h_xbrowse.prg,v 1.37 2008-06-28 23:07:32 guerra000 Exp $
+ * $Id: h_xbrowse.prg,v 1.38 2008-09-28 18:36:57 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * eXtended Browse code
  *
- * Copyright 2008 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * This program is free software; you can redistribute it and/or modify
@@ -72,6 +72,9 @@ CLASS TXBROWSE FROM TGrid
    DATA goBottomBlock     INIT nil
    DATA lLocked           INIT .F.
    DATA lRecCount         INIT .F.
+   DATA lDescending       INIT .F.
+   DATA Eof               INIT .F.
+   DATA Bof               INIT .F.
 
    METHOD Define
    METHOD Refresh
@@ -91,6 +94,7 @@ CLASS TXBROWSE FROM TGrid
    METHOD DbSkip
    METHOD Up
    METHOD Down
+   METHOD TopBottom
    METHOD GoTop
    METHOD GoBottom
    METHOD PageUp
@@ -146,7 +150,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                dynamicforecolor, aPicture, lRtl, inplace, editcontrols, ;
                readonly, valid, validmessages, editcell, aWhenFields, ;
                lRecCount, columninfo, lNoHeaders, onenter, lDisabled, ;
-               lNoTabStop, lInvisible ) CLASS TXBrowse
+               lNoTabStop, lInvisible, lDescending ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
 Local nWidth2, nCol2, lLocked, oScroll, z
 
@@ -154,6 +158,8 @@ Local nWidth2, nCol2, lLocked, oScroll, z
    ASSIGN ::aHeaders VALUE aHeaders TYPE "A" DEFAULT {}
    ASSIGN ::aWidths  VALUE aWidths  TYPE "A" DEFAULT {}
    ASSIGN ::aJust    VALUE aJust    TYPE "A" DEFAULT {}
+
+   ASSIGN ::lDescending VALUE lDescending TYPE "L"
 
    If ValType( columninfo ) == "A" .AND. LEN( columninfo ) > 0
       If ValType( ::aFields ) == "A"
@@ -594,8 +600,8 @@ LOCAL oExcel, oHoja, i
    next i
    LIN++
    LIN++
-   ::gotop()
-   Do While ! ::oWorkArea:Eof()
+   ::GoTop()
+   Do While ! ::Eof()
       for i:= 1 to len ( ::aFields )
          oHoja:Cells( LIN, i ):Value := &( ::aFields[i] )
       next i
@@ -750,12 +756,21 @@ Return ::Super:Events_Notify( wParam, lParam )
 *-----------------------------------------------------------------------------*
 METHOD DbSkip( nRows ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
-Local nCount
+Local nCount, nSign
+   nSign := IF( ::lDescending, -1, 1 )
    ASSIGN nRows VALUE nRows TYPE "N" DEFAULT 1
    If ValType( ::skipBlock ) == "B"
-      nCount := EVAL( ::skipBlock, nRows, ::WorkArea )
+      nCount := EVAL( ::skipBlock, nRows * nSign, ::WorkArea ) * nSign
    Else
-      nCount := ::oWorkArea:Skipper( nRows )
+      nCount := ::oWorkArea:Skipper( nRows * nSign ) * nSign
+   EndIf
+   ::Bof := ::Eof := .F.
+   If ! nCount == nRows
+      If nRows < 1
+         ::Bof := .T.
+      Else
+         ::Eof := .T.
+      EndIf
    EndIf
 Return nCount
 
@@ -828,14 +843,33 @@ Local nSkip, nCountPerPage
 Return Self
 
 *-----------------------------------------------------------------------------*
-METHOD GoTop() CLASS TXBrowse
+METHOD TopBottom( nDir ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
-   If ! ::lLocked
+   If ::lDescending
+      nDir := - nDir
+   EndIf
+   If nDir == 1
+      If ValType( ::goBottomBlock ) == "B"
+         EVAL( ::goBottomBlock, ::WorkArea )
+      Else
+         ::oWorkArea:GoBottom()
+      EndIf
+   Else
       If ValType( ::goTopBlock ) == "B"
          EVAL( ::goTopBlock, ::WorkArea )
       Else
          ::oWorkArea:GoTop()
       EndIf
+   Endif
+   ::Bof := .F.
+   ::Eof := ::oWorkArea:Eof()
+Return nil
+
+*-----------------------------------------------------------------------------*
+METHOD GoTop() CLASS TXBrowse
+*-----------------------------------------------------------------------------*
+   If ! ::lLocked
+      ::TopBottom( -1 )
       ::Refresh( 1 )
    EndIf
 Return Self
@@ -845,11 +879,7 @@ METHOD GoBottom( lAppend ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
    ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
    If ! ::lLocked
-      If ValType( ::goBottomBlock ) == "B"
-         EVAL( ::goBottomBlock, ::WorkArea )
-      Else
-         ::oWorkArea:GoBottom()
-      EndIf
+      ::TopBottom( 1 )
       // If it's for APPEND, leaves a blank line ;)
       ::Refresh( ::CountPerPage - IF( lAppend, 1, 0 ) )
    EndIf
@@ -873,21 +903,17 @@ Local aPosition
       EndIf
       nPos := nPos * aPosition[ 2 ] / VScroll:RangeMax
       #ifdef __XHARBOUR__
-         ::oWorkArea:OrdKeyGoTo( nPos )
+         If ! ::lDescending
+            ::oWorkArea:OrdKeyGoTo( nPos )
+         Else
+            ::oWorkArea:OrdKeyGoTo( aPosition[ 2 ] + 1 - nPos )
+         EndIf
       #else
          If nPos < ( aPosition[ 2 ] / 2 )
-            If ValType( ::goTopBlock ) == "B"
-               EVAL( ::goTopBlock, ::WorkArea )
-            Else
-               ::oWorkArea:GoTop()
-            EndIf
+            ::TopBottom( -1 )
             ::DbSkip( MAX( nPos - 1, 0 ) )
          Else
-            If ValType( ::goBottomBlock ) == "B"
-               EVAL( ::goBottomBlock, ::WorkArea )
-            Else
-               ::oWorkArea:GoBottom()
-            EndIf
+            ::TopBottom( 1 )
             ::DbSkip( - MAX( aPosition[ 2 ] - nPos - 1, 0 ) )
          EndIf
       #endif

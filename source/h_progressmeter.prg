@@ -1,12 +1,12 @@
 /*
- * $Id: h_progressmeter.prg,v 1.13 2008-01-14 00:58:35 guerra000 Exp $
+ * $Id: h_progressmeter.prg,v 1.14 2008-09-28 18:36:57 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG progress meter functions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -105,7 +105,7 @@ Local ControlHandle, nStyle, nStyleEx
 
    ::Align := 6 // TA_CENTER
 
-   nStyle := ::InitStyle( ,, Invisible )
+   nStyle := ::InitStyle( ,, Invisible, .T. )
 
    nStyleEx := if( ValType( CLIENTEDGE ) == "L"   .AND. CLIENTEDGE,   WS_EX_CLIENTEDGE,  0 )
 

@@ -1,12 +1,12 @@
 /*
- * $Id: h_browse.prg,v 1.66 2008-02-10 02:39:30 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.67 2008-09-28 18:36:57 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG browse functions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -101,7 +101,6 @@ CLASS TOBrowse FROM TXBrowse
    DATA Type            INIT "BROWSE" READONLY
    DATA aRecMap         INIT {}
    DATA RecCount        INIT 0
-   DATA lEof            INIT .F.
 
    METHOD Define
    METHOD Refresh
@@ -127,6 +126,8 @@ CLASS TOBrowse FROM TXBrowse
    METHOD PageDown
    METHOD Up
    METHOD Down
+   METHOD TopBottom
+   METHOD DbSkip
    MESSAGE GoTop    METHOD Home
    MESSAGE GoBottom METHOD End
    METHOD SetScrollPos
@@ -142,7 +143,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                validmessages, edit, dynamicbackcolor, aWhenFields, ;
                dynamicforecolor, aPicture, lRtl, onappend, editcell, ;
                editcontrols, replacefields, lRecCount, columninfo, ;
-               lNoHeaders, onenter, lDisabled, lNoTabStop, lInvisible ) CLASS TOBrowse
+               lNoHeaders, onenter, lDisabled, lNoTabStop, lInvisible, ;
+               lDescending ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local nWidth2, nCol2, oScroll, z
 
@@ -150,6 +152,8 @@ Local nWidth2, nCol2, oScroll, z
    ASSIGN ::aHeaders VALUE aHeaders TYPE "A" DEFAULT {}
    ASSIGN ::aWidths  VALUE aWidths  TYPE "A" DEFAULT {}
    ASSIGN ::aJust    VALUE aJust    TYPE "A" DEFAULT {}
+
+   ASSIGN ::lDescending VALUE lDescending TYPE "L"
 
    If ValType( columninfo ) == "A" .AND. LEN( columninfo ) > 0
       If ValType( ::aFields ) == "A"
@@ -297,7 +301,7 @@ Local lColor, aFields, cWorkArea, hWnd, nWidth
    AEVAL( ::aFields, { |c,i| aFields[ i ] := ::ColumnBlock( i ), c } )
    hWnd := ::hWnd
 
-   ::lEof := .F.
+   ::Eof := .F.
 
    PageLength := ::CountPerPage
 
@@ -312,7 +316,7 @@ Local lColor, aFields, cWorkArea, hWnd, nWidth
    x := 0
    nCurrentLength := ::ItemCount()
 
-   Do While x < PageLength .AND. ! ( cWorkArea )->( Eof() )
+   Do While x < PageLength .AND. ! ::Eof()
 
       x++
 
@@ -333,17 +337,13 @@ Local lColor, aFields, cWorkArea, hWnd, nWidth
 
       aadd( _BrowseRecMap , ( cWorkArea )->( RecNo() ) )
 
-      ( cWorkArea )->( DbSkip() )
+      ::DbSkip()
    EndDo
 
    Do While nCurrentLength > Len( _BrowseRecMap )
       ::DeleteItem( nCurrentLength )
       nCurrentLength--
    EndDo
-
-   IF ( cWorkArea )->( Eof() )
-      ::lEof := .T.
-   EndIf
 
    ::aRecMap := _BrowseRecMap
 
@@ -365,7 +365,7 @@ Local _RecNo , _DeltaScroll, s
          Return nil
 		EndIf
 
-      if ::lEof
+      if ::Eof()
          If ::AllowAppend
             ::EditItem( .t. )
          Endif
@@ -375,8 +375,8 @@ Local _RecNo , _DeltaScroll, s
       _RecNo := ( ::WorkArea )->( RecNo() )
 
       If Len( ::aRecMap ) == 0
-         ( ::WorkArea )->( DbGoBottom() )
-         ( ::WorkArea )->( DbSkip( - ::CountPerPage + 1 ) )
+         ::TopBottom( 1 )
+         ::DbSkip( - ::CountPerPage + 1 )
       Else
          ( ::WorkArea )->( DbGoTo( ::aRecMap[ Len( ::aRecMap ) ] ) )
       EndIf
@@ -415,11 +415,11 @@ Local _RecNo , _DeltaScroll
 		EndIf
       _RecNo := ( ::WorkArea )->( RecNo() )
       If Len( ::aRecMap ) == 0
-         ( ::WorkArea )->( DbGoTop() )
+         ::TopBottom( -1 )
       Else
          ( ::WorkArea )->( DbGoTo( ::aRecMap[ 1 ] ) )
       EndIf
-      ( ::WorkArea )->( DbSkip( - ::CountPerPage + 1 ) )
+      ::DbSkip( - ::CountPerPage + 1 )
       ::scrollUpdate()
       ::Update()
       ListView_Scroll( ::hWnd, _DeltaScroll[2] * (-1) , 0 )
@@ -448,7 +448,7 @@ Local _RecNo , _DeltaScroll
       Return nil
 	EndIf
    _RecNo := ( ::WorkArea )->( RecNo() )
-   ( ::WorkArea )->( DbGoTop() )
+   ::TopBottom( -1 )
    ::scrollUpdate()
    ::Update()
    ListView_Scroll( ::hWnd, _DeltaScroll[2] * (-1) , 0 )
@@ -473,12 +473,12 @@ Local _RecNo , _DeltaScroll , _BottomRec
       Return nil
 	EndIf
    _RecNo := ( ::WorkArea )->( RecNo() )
-   ( ::WorkArea )->( DbGoBottom() )
+   ::TopBottom( 1 )
    _BottomRec := ( ::WorkArea )->( RecNo() )
    ::scrollUpdate()
 
    // If it's for APPEND, leaves a blank line ;)
-   ( ::WorkArea )->( DbSkip( - ::CountPerPage + IF( lAppend, 2, 1 ) ) )
+   ::DbSkip( - ::CountPerPage + IF( lAppend, 2, 1 ) )
    ::Update()
    ListView_Scroll( ::hWnd, _DeltaScroll[2] * (-1) , 0 )
    ( ::WorkArea )->( DbGoTo( _RecNo ) )
@@ -505,11 +505,11 @@ Local s  , _RecNo , _DeltaScroll := { Nil , Nil , Nil , Nil }
       EndIf
       _RecNo := ( ::WorkArea )->( RecNo() )
       If Len( ::aRecMap ) == 0
-         ( ::WorkArea )->( DbGoTop() )
+         ::TopBottom( -1 )
       Else
          ( ::WorkArea )->( DbGoTo( ::aRecMap[ 1 ] ) )
       EndIf
-      ( ::WorkArea )->( DbSkip( -1 ) )
+      ::DbSkip( -1 )
       ::scrollUpdate()
       ::Update()
       ListView_Scroll( ::hWnd, _DeltaScroll[2] * (-1) , 0 )
@@ -544,7 +544,7 @@ Local s , _RecNo , _DeltaScroll
          Return nil
       EndIf
 
-      if ::lEof
+      If ::Eof()
          If ::AllowAppend
             ::EditItem( .t. )
          Endif
@@ -554,11 +554,11 @@ Local s , _RecNo , _DeltaScroll
       _RecNo := ( ::WorkArea )->( RecNo() )
 
       If Len( ::aRecMap ) == 0
-         ( ::WorkArea )->( DbGoTop() )
+         ::TopBottom( -1 )
       Else
          ( ::WorkArea )->( DbGoTo( ::aRecMap[ 1 ] ) )
       EndIf
-      ( ::WorkArea )->( DbSkip() )
+      ::DbSkip()
       ::Update()
       If Len( ::aRecMap ) != 0
          ( ::WorkArea )->( DbGoTo( ATail( ::aRecMap ) ) )
@@ -578,6 +578,43 @@ Local s , _RecNo , _DeltaScroll
    ::BrowseOnChange()
 
 Return nil
+
+*-----------------------------------------------------------------------------*
+METHOD TopBottom( nDir ) CLASS TOBrowse
+*-----------------------------------------------------------------------------*
+   If ::lDescending
+      nDir := - nDir
+   EndIf
+   If nDir == 1
+      ( ::WorkArea )->( DbGoBottom() )
+   Else
+      ( ::WorkArea )->( DbGoTop() )
+   EndIf
+   ::Bof := .F.
+   ::Eof := ( ::WorkArea )->( Eof() )
+Return nil
+
+*-----------------------------------------------------------------------------*
+METHOD DbSkip( nRows ) CLASS TOBrowse
+*-----------------------------------------------------------------------------*
+LOCAL nCount
+   ASSIGN nRows VALUE nRows TYPE "N" DEFAULT 1
+   IF ! ::lDescending
+      nCount :=   ( ::WorkArea )->( DbSkip(   nRows ) )
+      ::Bof := ( ::WorkArea )->( Bof() )
+      ::Eof := ( ::WorkArea )->( Eof() )
+   ELSE
+      nCount := - ( ::WorkArea )->( DbSkip( - nRows ) )
+      If ( ::WorkArea )->( Eof() )
+         ::Bof := .T.
+         ( ::WorkArea )->( DbGoTop() )
+         ::Eof := ( ::WorkArea )->( Eof() )
+      ElseIf ( ::WorkArea )->( Bof() )
+         ::Eof := .T.
+         ( ::WorkArea )->( DbGoTo( 0 ) )
+      EndIf
+   ENDIF
+RETURN nCount
 
 *-----------------------------------------------------------------------------*
 METHOD SetValue( Value, mp ) CLASS TOBrowse
@@ -621,15 +658,14 @@ Local _RecNo , NewPos := 50, _DeltaScroll , m , hWnd, cWorkArea
    _RecNo := ( cWorkArea )->( RecNo() )
 
    ( cWorkArea )->( DbGoTo( Value ) )
-
    If ( cWorkArea )->( Eof() )
       ( cWorkArea )->( DbGoTo( _RecNo ) )
       Return nil
 	EndIf
 
 // Sin usar DBFILTER()
-   ( cWorkArea )->( DBSkip() )
-   ( cWorkArea )->( DBSkip( -1 ) )
+   ::DbSkip()
+   ::DbSkip( -1 )
    IF ( cWorkArea )->( RecNo() ) != Value
       ( cWorkArea )->( DbGoTo( _RecNo ) )
       Return nil
@@ -638,7 +674,7 @@ Local _RecNo , NewPos := 50, _DeltaScroll , m , hWnd, cWorkArea
    if pcount() < 2
       ::scrollUpdate()
    EndIf
-   ( cWorkArea )->( DbSkip( -m + 1 ) )
+   ::DbSkip( -m + 1 )
 
    ::nValue := Value
    ::Update()
@@ -675,9 +711,9 @@ Local Value, nRecNo
    Else
 
       ( ::WorkArea )->( DbDelete() )
-      ( ::WorkArea )->( DbSkip() )
-      if ( ::WorkArea )->( Eof() )
-         ( ::WorkArea )->( DbGoBottom() )
+      ::DbSkip()
+      If ::Eof()
+         ::TopBottom( 1 )
       EndIf
 
       If Set( _SET_DELETED )
@@ -890,46 +926,45 @@ Local cWorkArea, hWnd
 
    ( cWorkArea )->( DbGoTo( v ) )
 
+   ::Bof := .F.
+   ::Eof := ( cWorkArea )->( Eof() )
+
 ***************************
 
 	if s == 1 .or. s == 0
-      ( cWorkArea )->( DBSkip() )
-      ( cWorkArea )->( DBSkip( -1 ) )
+      ::DbSkip()
+      ::DbSkip( -1 )
       IF ( cWorkArea )->( RecNo() ) != v
-         ( cWorkArea )->( DbSkip() )
+         ::DbSkip()
       ENDIF
 	EndIf
 
 ***************************
 
-	if s == 0
-      if ( cWorkArea )->( INDEXORD() ) != 0
-         if ( cWorkArea )->( ORDKEYVAL() ) == Nil
-            ( cWorkArea )->( DbGoTop() )
-			endif
+   If s == 0
+      If ( cWorkArea )->( INDEXORD() ) != 0
+         If ( cWorkArea )->( ORDKEYVAL() ) == Nil
+            ::TopBottom( -1 )
+         EndIf
 		EndIf
 
-      if Set( _SET_DELETED )
-         if ( cWorkArea )->( Deleted() )
-            ( cWorkArea )->( DbGoTop() )
-			endif
+      If Set( _SET_DELETED )
+         If ( cWorkArea )->( Deleted() )
+            ::TopBottom( -1 )
+         EndIf
 		EndIf
-	endif
+   Endif
 
-   If ( cWorkArea )->( Eof() )
-
+   If ::Eof()
       ::DeleteAllItems()
-
       ( cWorkArea )->( DbGoTo( _RecNo ) )
-
       Return nil
-
 	EndIf
 
    ::scrollUpdate()
 
 	if s != 0
-      ( cWorkArea )->( DbSkip( -s+1 ) )
+      ::DbSkip( - s + 1 )
 	EndIf
 
    ::Update()
