@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: makelib_bcc.bat,v 1.14 2008-09-07 23:12:56 guerra000 Exp $
+rem $Id: makelib_bcc.bat,v 1.15 2008-09-29 00:36:45 guerra000 Exp $
 rem
 cls
 
@@ -32,7 +32,7 @@ if errorlevel 1 goto EXIT2
 if exist miniprint.c %hg_bcc%\bin\bcc32 %OOHG_X_FLAGS% miniprint.c
 if errorlevel 1 goto EXIT2
 
-%hg_bcc%\bin\tlib %hg_root%\lib\oohg +h_scrsaver.obj +h_edit.obj +h_edit_ex.obj +h_error.obj +h_ipaddress.obj +c_ipaddress.obj +h_monthcal.obj +c_monthcal.obj +h_help.obj +h_status.obj +h_tree.obj +h_toolbar.obj +h_init.obj +h_media.obj + c_media.obj  +c_resource.obj +h_cursor.obj +c_cursor.obj +h_ini.obj +h_report.obj +h_font.obj +c_font.obj +h_hyperlink.obj +c_scrsaver.obj +h_hotkey.obj +h_graph.obj +c_graph.obj +h_richeditbox.obj +h_browse.obj +h_scroll.obj +h_http.obj +h_zip.obj +h_progressmeter.obj +h_comm.obj +h_print.obj +h_splitbox.obj +h_scrollbutton.obj +h_xbrowse.obj +h_internal.obj +h_textarray.obj +h_hotkeybox.obj /P32
+%hg_bcc%\bin\tlib %hg_root%\lib\oohg +h_scrsaver.obj +h_edit.obj +h_edit_ex.obj +h_error.obj +h_ipaddress.obj +h_monthcal.obj +c_monthcal.obj +h_help.obj +h_status.obj +h_tree.obj +h_toolbar.obj +h_init.obj +h_media.obj + c_media.obj  +c_resource.obj +h_cursor.obj +c_cursor.obj +h_ini.obj +h_report.obj +h_font.obj +c_font.obj +h_hyperlink.obj +c_scrsaver.obj +h_hotkey.obj +h_graph.obj +c_graph.obj +h_richeditbox.obj +h_browse.obj +h_scroll.obj +h_http.obj +h_zip.obj +h_progressmeter.obj +h_comm.obj +h_print.obj +h_splitbox.obj +h_scrollbutton.obj +h_xbrowse.obj +h_internal.obj +h_textarray.obj +h_hotkeybox.obj /P32
 if errorlevel 2 goto EXIT3
 %hg_bcc%\bin\tlib %hg_root%\lib\oohg +h_windows.obj +h_form.obj +c_windows.obj +h_crypt.obj +h_winapimisc.obj +h_slider.obj +c_controlmisc.obj +c_dialogs.obj +c_grid.obj +c_image.obj +c_msgbox.obj +c_progressbar.obj +c_spinner.obj +c_winapimisc +h_button.obj +h_checkbox.obj +h_combo.obj +h_controlmisc.obj +h_datepicker.obj +h_editbox.obj +h_dialogs.obj +h_grid.obj +h_image.obj +h_label.obj +h_listbox.obj +h_menu.obj +h_msgbox.obj +h_frame.obj +h_progressbar.obj +h_radio.obj +h_spinner.obj +h_tab.obj +h_textbox.obj +h_timer.obj +h_registry.obj +h_activex.obj +c_activex.obj +h_pdf.obj /P32
 if errorlevel 2 goto EXIT3

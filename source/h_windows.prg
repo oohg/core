@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.195 2008-09-02 04:48:51 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.196 2008-09-29 00:36:45 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -303,6 +303,7 @@ CLASS TWindow
    METHOD DebugMessageName
    METHOD DebugMessageQuery
    METHOD DebugMessageNameCommand
+   METHOD DebugMessageQueryNotify
 
    METHOD ContainerVisible    BLOCK { |Self| ::lVisible .AND. IF( ::Container != NIL, ::Container:ContainerVisible, .T. ) }
    METHOD ContainerEnabled    BLOCK { |Self| ::lEnabled .AND. IF( ::Container != NIL, ::Container:ContainerEnabled, .T. ) }
@@ -1450,6 +1451,8 @@ LOCAL cValue, oControl
       ENDIF
       cValue := ::Name + "." + oControl:Name + ": WM_COMMAND." + ;
                 oControl:DebugMessageNameCommand( HIWORD( wParam ) )
+   ELSEIF nMsg == WM_NOTIFY
+      cValue := GetControlObjectByHandle( GethWndFrom( lParam ) ):DebugMessageQueryNotify( ::Name, wParam, lParam )
    ELSEIF nMsg == WM_CTLCOLORBTN
       oControl := GetControlObjectByHandle( lParam )
       cValue := ::Name + "." + oControl:Name + ": WM_CTLCOLORBTN   0x" + _OOHG_HEX( wParam, 8 )
@@ -1476,6 +1479,16 @@ RETURN cValue
 METHOD DebugMessageNameCommand( nCommand ) CLASS TWindow
 *------------------------------------------------------------------------------*
 RETURN _OOHG_HEX( nCommand, 4 )
+
+*------------------------------------------------------------------------------*
+METHOD DebugMessageQueryNotify( cParentName, wParam, lParam ) CLASS TWindow
+*------------------------------------------------------------------------------*
+LOCAL cValue
+   EMPTY( wParam )
+   cValue := cParentName + "." + ;
+             IF( EMPTY( ::Name ), _OOHG_HEX( GethWndFrom( lParam ), 8 ), ::Name ) + ;
+             ": WM_NOTIFY." + _OOHG_HEX( GetNotifyCode( lParam ), 6 )
+RETURN cValue
 
 #pragma BEGINDUMP
 HB_FUNC( _OOHG_HEX )   // nNum, nDigits

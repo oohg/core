@@ -1,12 +1,12 @@
 /*
- * $Id: h_ipaddress.prg,v 1.6 2008-01-14 00:58:35 guerra000 Exp $
+ * $Id: h_ipaddress.prg,v 1.7 2008-09-29 00:36:45 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG IP address functions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -97,35 +97,42 @@
 
 CLASS TIpAddress FROM TLabel
    DATA Type          INIT "IPADDRESS" READONLY
+   DATA nWidth        INIT 120
+   DATA nHeight       INIT 24
 
    METHOD Define
    METHOD Value       SETGET
    METHOD String      SETGET
+
+   EMPTY( _OOHG_AllVars )
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, x, y, w, h, aValue, fontname, ;
                fontsize, tooltip, lostfocus, gotfocus, change, HelpId, ;
-               invisible, notabstop, bold, italic, underline, strikeout, lRtl ) CLASS TIpAddress
+               invisible, notabstop, bold, italic, underline, strikeout, lRtl, ;
+               lDisabled ) CLASS TIpAddress
 *-----------------------------------------------------------------------------*
-Local ControlHandle
+Local ControlHandle, nStyle
 
-   DEFAULT w         TO 120
-   DEFAULT h         TO 24
-   DEFAULT invisible TO FALSE
-   DEFAULT notabstop TO FALSE
+   // Assign STANDARD values to optional params.
+   ASSIGN ::nCol    VALUE x TYPE "N"
+   ASSIGN ::nRow    VALUE y TYPE "N"
+   ASSIGN ::nWidth  VALUE w TYPE "N"
+   ASSIGN ::nHeight VALUE h TYPE "N"
 
-   ::SetForm( ControlName, ParentForm, FontName, FontSize, , , .t., lRtl )
+   ::SetForm( ControlName, ParentForm, FontName, FontSize, , , .T., lRtl )
 
-   ControlHandle := InitIPAddress( ::ContainerhWnd, 0, x, y, w, h , '' , 0, invisible, notabstop, ::lRtl )
+   nStyle := ::InitStyle( ,, Invisible, NoTabStop, lDisabled )
+
+   ControlHandle := InitIPAddress( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, ::lRtl )
 
 	If aValue <> Nil
-		SetIPAddress( ControlHandle , aValue[1], aValue[2], aValue[3], aValue[4] )
+      SetIPAddress( ControlHandle, aValue[ 1 ], aValue[ 2 ], aValue[ 3 ], aValue[ 4 ] )
 	EndIf
 
-   ::Register( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
+   ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
-   ::SizePos( y, x, w, h )
 
    ASSIGN ::OnLostFocus VALUE lostfocus TYPE "B"
    ASSIGN ::OnGotFocus  VALUE gotfocus  TYPE "B"
@@ -154,3 +161,118 @@ METHOD String( uValue ) CLASS TIpAddress
       ::Value := uValue
    ENDIF
 RETURN GetIPAddressString( ::hWnd )
+
+#pragma BEGINDUMP
+
+#define _WIN32_IE      0x0500
+#define HB_OS_WIN_32_USED
+#define _WIN32_WINNT   0x0400
+#include <shlobj.h>
+
+#include <windows.h>
+#include <commctrl.h>
+#include "hbapi.h"
+#include "hbvm.h"
+#include "hbstack.h"
+#include "hbapiitm.h"
+#include "winreg.h"
+#include "tchar.h"
+#include "oohg.h"
+
+static WNDPROC lpfnOldWndProc = 0;
+
+static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+{
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
+}
+
+HB_FUNC( INITIPADDRESS )
+{
+	HWND hWnd;
+	HWND hIpAddress;
+   int Style;
+   int StyleEx;
+
+   INITCOMMONCONTROLSEX i;
+   i.dwSize = sizeof( INITCOMMONCONTROLSEX );
+	i.dwICC = ICC_INTERNET_CLASSES;
+   InitCommonControlsEx( &i );
+
+   hWnd = HWNDparam( 1 );
+
+   Style = WS_CHILD | hb_parni( 7 );
+
+   StyleEx = WS_EX_CLIENTEDGE | _OOHG_RTL_Status( hb_parl( 8 ) );
+
+   hIpAddress = CreateWindowEx( StyleEx, WC_IPADDRESS, "", Style,
+                hb_parni( 3 ), hb_parni( 4 ) ,hb_parni( 5 ), hb_parni( 6 ),
+                hWnd, HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
+
+   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hIpAddress, GWL_WNDPROC, ( LONG ) SubClassFunc );
+
+   HWNDret( hIpAddress );
+}
+
+HB_FUNC( SETIPADDRESS )
+{
+   BYTE v1, v2, v3, v4, *v;
+
+   if( ISCHAR( 2 ) )
+   {
+      v = ( BYTE * ) hb_parc( 2 );
+      v1 = v[ 0 ];
+      v2 = v[ 1 ];
+      v3 = v[ 2 ];
+      v4 = v[ 3 ];
+   }
+   else
+   {
+      v1 = ( BYTE ) hb_parni( 2 );
+      v2 = ( BYTE ) hb_parni( 3 );
+      v3 = ( BYTE ) hb_parni( 4 );
+      v4 = ( BYTE ) hb_parni( 5 );
+   }
+
+   SendMessage( HWNDparam( 1 ), IPM_SETADDRESS, 0, MAKEIPADDRESS( v1, v2, v3, v4 ) );
+}
+
+HB_FUNC( GETIPADDRESS )
+{
+   DWORD pdwAddr;
+   BYTE v1, v2, v3, v4;
+
+   SendMessage( HWNDparam( 1 ), IPM_GETADDRESS, 0, ( LPARAM )( LPDWORD ) &pdwAddr );
+
+   v1 = FIRST_IPADDRESS( pdwAddr );
+   v2 = SECOND_IPADDRESS( pdwAddr );
+   v3 = THIRD_IPADDRESS( pdwAddr );
+   v4 = FOURTH_IPADDRESS( pdwAddr );
+
+   hb_reta( 4 );
+   hb_storni( ( INT ) v1, -1, 1 );
+   hb_storni( ( INT ) v2, -1, 2 );
+   hb_storni( ( INT ) v3, -1, 3 );
+   hb_storni( ( INT ) v4, -1, 4 );
+}
+
+HB_FUNC( GETIPADDRESSSTRING )
+{
+   DWORD pdwAddr;
+   BYTE v[ 4 ];
+
+   SendMessage( HWNDparam( 1 ), IPM_GETADDRESS, 0, ( LPARAM )( LPDWORD ) &pdwAddr );
+
+   v[ 0 ] = FIRST_IPADDRESS( pdwAddr );
+   v[ 1 ] = SECOND_IPADDRESS( pdwAddr );
+   v[ 2 ] = THIRD_IPADDRESS( pdwAddr );
+   v[ 3 ] = FOURTH_IPADDRESS( pdwAddr );
+
+   hb_retclen( ( char * ) &v[ 0 ], 4 );
+}
+
+HB_FUNC( CLEARIPADDRESS )
+{
+   SendMessage( HWNDparam( 1 ), IPM_CLEARADDRESS, 0, 0 );
+}
+
+#pragma ENDDUMP

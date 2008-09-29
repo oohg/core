@@ -1,12 +1,12 @@
 /*
- * $Id: i_ipaddress.ch,v 1.3 2005-10-22 06:04:31 guerra000 Exp $
+ * $Id: i_ipaddress.ch,v 1.4 2008-09-29 00:36:45 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * IP Address definitions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -110,27 +110,12 @@
 	[ HELPID <helpid> ] 		     ;
 	[ <invisible : INVISIBLE> ] ;
 	[ <notabstop : NOTABSTOP> ] ;
+        [ <disabled : DISABLED> ] ;
         [ <rtl: RTL> ]              ;
+        [ SUBCLASS <subclass> ] ;
 =>;
-   [ <obj> := ] TIPAddress():Define( ;
-      <(name)> , ;
-      <(parent)> , ;
-      <col> , ;
-      <row> , ;
-      <width> , ;
-      <height> , ;
-      [ <value> ] , ;
-      <fontname> , ;
-      <fontsize> , ;
-      <tooltip>, ;
-      <{lostfocus}> , ;
-      <{gotfocus}> , ;
-      <{change}> , ;
-      <helpid>, ;
-	<.invisible.>, ;
-	<.notabstop.> ,;
-	<.bold.>, ;
-	<.italic.>, ;
-	<.underline.>, ;
-        <.strikeout.>, ;
-        <.rtl.> )
+        [ <obj> := ] _OOHG_SelectSubClass( TIPAddress(), [ <subclass>() ] ): ;
+        Define( <(name)>, <(parent)>, <col>, <row>, <width>, <height>, [ <value> ], ;
+                <fontname>, <fontsize>, <tooltip>, <{lostfocus}>, <{gotfocus}>, ;
+                <{change}>, <helpid>, <.invisible.>, <.notabstop.>, <.bold.>, ;
+                <.italic.>, <.underline.>, <.strikeout.>, <.rtl.>, <.disabled.> )
