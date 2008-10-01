@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog,v 1.542 2008-09-29 00:36:45 guerra000 Exp $
+ * $Id: ChangeLog,v 1.543 2008-10-01 01:27:35 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-09-30 20:07 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/makelib_bcc.bat
+    * TLIB.EXE takes file names from %HG_FILES1_PRG%, %HG_FILES2_PRG%
+      and %HG_FILES_C% .
 
 2008-09-28 19:34 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * include/i_ipaddress.ch
