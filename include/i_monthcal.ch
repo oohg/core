@@ -1,12 +1,12 @@
 /*
- * $Id: i_monthcal.ch,v 1.3 2005-10-22 06:04:31 guerra000 Exp $
+ * $Id: i_monthcal.ch,v 1.4 2008-10-04 19:58:24 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Monthcal definitions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -110,18 +110,11 @@
 		[ ON CHANGE <change> ] ;
 		[ HELPID <helpid> ] 		;
                 [ <rtl: RTL> ] ;
+                [ SUBCLASS <subclass> ] ;
+                [ <disabled: DISABLED> ]        ;
 	=>;
-        [ <obj> := ] TMonthCal():Define( <(name)> , ;
-                     <(parent)> , ;
-                     <col> , ;
-                     <row> , ;
-                     0 , ;
-                     0 , ;
-                     <v> , ;
-                     <fontname> , ;
-                     <fontsize> , ;
-                     <tooltip> , ;
-                     <.notoday.> , ;
-                     <.notodaycircle.> , ;
-                     <.weeknumbers.> , ;
-                     <{change}>  , <helpid>, <.invisible.>, <.notabstop.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.>, <.rtl.> )
+        [ <obj> := ] _OOHG_SelectSubClass( TMonthCal(), [ <subclass>() ] ):Define( ;
+                     <(name)>, <(parent)>, <col>, <row>, 0, 0, <v>, <fontname>, <fontsize>, ;
+                     <tooltip>, <.notoday.>, <.notodaycircle.>, <.weeknumbers.>, <{change}>, ;
+                     <helpid>, <.invisible.>, <.notabstop.>, <.bold.>, <.italic.>, ;
+                     <.underline.>, <.strikeout.>, <.rtl.>, <.disabled.> )

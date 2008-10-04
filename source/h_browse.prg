@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.67 2008-09-28 18:36:57 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.68 2008-10-04 19:58:24 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -706,7 +706,7 @@ Local Value, nRecNo
 
    If ::Lock .AND. ! ( ::WorkArea )->( Rlock() )
 
-      MsgStop('Record is being editied by another user. Retry later','Delete Record')
+      MsgStop( _OOHG_Messages( 3, 9 ), _OOHG_Messages( 4, 2 ) )
 
    Else
 

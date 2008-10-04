@@ -1,12 +1,12 @@
 /*
- * $Id: h_monthcal.prg,v 1.8 2008-01-14 00:58:35 guerra000 Exp $
+ * $Id: h_monthcal.prg,v 1.9 2008-10-04 19:58:24 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG monthcal functions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -103,25 +103,37 @@ CLASS TMonthCal FROM TControl
    METHOD Value            SETGET
    METHOD SetFont
    METHOD Events_Notify
+
+   EMPTY( _OOHG_AllVars )
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
                fontsize, tooltip, notoday, notodaycircle, weeknumbers, ;
                change, HelpId, invisible, notabstop, bold, italic, ;
-               underline, strikeout, lRtl ) CLASS TMonthCal
+               underline, strikeout, lRtl, lDisabled ) CLASS TMonthCal
 *-----------------------------------------------------------------------------*
-Local ControlHandle
+Local ControlHandle, nStyle
 
-   DEFAULT value     TO date()
-   DEFAULT invisible TO FALSE
+   ASSIGN ::nCol        VALUE x TYPE "N"
+   ASSIGN ::nRow        VALUE y TYPE "N"
+   ASSIGN ::nWidth      VALUE w TYPE "N"
+   ASSIGN ::nHeight     VALUE h TYPE "N"
+
+   If ! HB_IsDate( value )
+      value := DATE()
+   EndIf
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize,,,, lRtl )
 
-   ControlHandle := InitMonthCal( ::ContainerhWnd, 0, x, y, w, h , notoday , notodaycircle , weeknumbers, invisible, notabstop, ::lRtl )
+   nStyle := ::InitStyle( ,, Invisible, NoTabStop, lDisabled ) + ;
+             IF( HB_IsLogical( notoday )       .AND. notoday,       MCS_NOTODAY,       0 ) + ;
+             IF( HB_IsLogical( notodaycircle ) .AND. notodaycircle, MCS_NOTODAYCIRCLE, 0 ) + ;
+             IF( HB_IsLogical( weeknumbers )   .AND. weeknumbers,   MCS_WEEKNUMBERS,   0 )
 
-   ::Register( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
-   ::SizePos( y, x, w, h )
+   ControlHandle := InitMonthCal( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight, nStyle, ::lRtl )
+
+   ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
 
    ASSIGN ::OnChange    VALUE Change    TYPE "B"
@@ -142,8 +154,8 @@ METHOD SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout ) CLASS T
 *-----------------------------------------------------------------------------*
 Local uRet
    uRet := ::Super:SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout )
-   AdjustMonthCalSize( ::hWnd, ::nCol, ::nRow )
-   ::nWidth := GetWindowWidth( ::hWnd )
+   AdjustMonthCalSize( ::hWnd, ::ContainerCol, ::ContainerRow )
+   ::nWidth  := GetWindowWidth( ::hWnd )
    ::nHeight := GetWindowHeight( ::hWnd )
 Return uRet
 
@@ -153,11 +165,173 @@ METHOD Events_Notify( wParam, lParam ) CLASS TMonthCal
 Local nNotify := GetNotifyCode( lParam )
 
    If nNotify == MCN_SELECT
-
       ::DoEvent( ::OnChange, "CHANGE" )
-
       Return nil
 
    EndIf
 
 Return ::Super:Events_Notify( wParam, lParam )
+
+#pragma BEGINDUMP
+
+#define _WIN32_IE      0x0500
+#define HB_OS_WIN_32_USED
+#define _WIN32_WINNT   0x0400
+#include <shlobj.h>
+
+#include <windows.h>
+#include <commctrl.h>
+#include "hbapi.h"
+#include "hbvm.h"
+#include "hbstack.h"
+#include "hbapiitm.h"
+#include "winreg.h"
+#include "tchar.h"
+#include "oohg.h"
+
+static WNDPROC lpfnOldWndProc = 0;
+
+static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+{
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
+}
+
+HB_FUNC( INITMONTHCAL )
+{
+   HWND hwnd;
+   HWND hmonthcal;
+   INITCOMMONCONTROLSEX icex;
+   int Style, StyleEx;
+
+   icex.dwSize = sizeof( icex );
+   icex.dwICC  = ICC_DATE_CLASSES;
+   InitCommonControlsEx( &icex );
+
+   hwnd = HWNDparam( 1 );
+
+   StyleEx = _OOHG_RTL_Status( hb_parl( 8 ) );
+
+   Style = hb_parni( 7 ) | WS_BORDER | WS_CHILD;
+
+   hmonthcal = CreateWindowEx( StyleEx, MONTHCAL_CLASS, "", Style,
+                               hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
+                               hwnd, HMENUparam( 2 ), GetModuleHandle( NULL ), NULL ) ;
+
+   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hmonthcal, GWL_WNDPROC, ( LONG ) SubClassFunc );
+
+   HWNDret( hmonthcal );
+}
+
+HB_FUNC( ADJUSTMONTHCALSIZE )
+{
+   HWND hWnd = HWNDparam( 1 );
+   RECT rMin;
+
+   MonthCal_GetMinReqRect( hWnd, &rMin );
+
+   SetWindowPos( hWnd, NULL, hb_parni( 2 ), hb_parni( 3 ), rMin.right, rMin.bottom, SWP_NOZORDER );
+}
+
+HB_FUNC( SETMONTHCAL )
+{
+   SYSTEMTIME sysTime;
+   char *cDate = 0;
+
+   if( ISDATE( 2 ) )
+   {
+      cDate = hb_pards( 2 );
+      if( cDate[ 0 ] == ' ' )
+      {
+         cDate = 0;
+      }
+      else
+      {
+         sysTime.wYear  = ( ( cDate[ 0 ] - '0' ) * 1000 ) +
+                          ( ( cDate[ 1 ] - '0' ) * 100 )  +
+                          ( ( cDate[ 2 ] - '0' ) * 10 ) + ( cDate[ 3 ] - '0' );
+         sysTime.wMonth = ( ( cDate[ 4 ] - '0' ) * 10 ) + ( cDate[ 5 ] - '0' );
+         sysTime.wDay   = ( ( cDate[ 6 ] - '0' ) * 10 ) + ( cDate[ 7 ] - '0' );
+      }
+   }
+
+   if( ! cDate )
+   {
+      sysTime.wYear  = hb_parni( 2 );
+      sysTime.wMonth = hb_parni( 3 );
+      sysTime.wDay   = hb_parni( 4 );
+   }
+
+   sysTime.wDayOfWeek = 0;
+   sysTime.wHour = 0;
+   sysTime.wMinute = 0;
+   sysTime.wSecond = 0;
+   sysTime.wMilliseconds = 0;
+
+   MonthCal_SetCurSel( HWNDparam( 1 ), &sysTime );
+}
+
+HB_FUNC( GETMONTHCALYEAR )
+{
+   SYSTEMTIME st;
+
+   SendMessage( HWNDparam( 1 ), MCM_GETCURSEL, 0, ( LPARAM ) &st );
+   hb_retni( st.wYear );
+}
+
+HB_FUNC( GETMONTHCALMONTH )
+{
+   SYSTEMTIME st;
+
+   SendMessage( HWNDparam( 1 ), MCM_GETCURSEL, 0, ( LPARAM ) &st );
+   hb_retni( st.wMonth );
+}
+
+HB_FUNC( GETMONTHCALDAY )
+{
+   SYSTEMTIME st;
+
+   SendMessage( HWNDparam( 1 ), MCM_GETCURSEL, 0, ( LPARAM ) &st );
+   hb_retni( st.wDay );
+}
+
+HB_FUNC( GETMONTHCALDATE )
+{
+   SYSTEMTIME st;
+   int iNum;
+   char cDate[ 9 ];
+
+   SendMessage( HWNDparam( 1 ), MCM_GETCURSEL, 0, ( LPARAM ) &st );
+
+   cDate[ 8 ] = 0;
+   iNum = st.wYear;
+   cDate[ 3 ] = ( iNum % 10 ) + '0';
+   iNum /= 10;
+   cDate[ 2 ] = ( iNum % 10 ) + '0';
+   iNum /= 10;
+   cDate[ 1 ] = ( iNum % 10 ) + '0';
+   iNum /= 10;
+   cDate[ 0 ] = ( iNum % 10 ) + '0';
+   iNum = st.wMonth;
+   cDate[ 5 ] = ( iNum % 10 ) + '0';
+   iNum /= 10;
+   cDate[ 4 ] = ( iNum % 10 ) + '0';
+   iNum = st.wDay;
+   cDate[ 7 ] = ( iNum % 10 ) + '0';
+   iNum /= 10;
+   cDate[ 6 ] = ( iNum % 10 ) + '0';
+
+   hb_retds( cDate );
+}
+
+
+HB_FUNC( GETMONTHCALFIRSTDAYOFWEEK )
+{
+   hb_retni( LOWORD( SendMessage( HWNDparam( 1 ), MCM_GETFIRSTDAYOFWEEK, 0, 0 ) ) );
+}
+
+HB_FUNC( SETMONTHCALFIRSTDAYOFWEEK )
+{
+   SendMessage( HWNDparam( 1 ), MCM_SETFIRSTDAYOFWEEK, 0, hb_parni( 2 ) );
+}
+
+#pragma ENDDUMP

@@ -1,11 +1,25 @@
 /*
- * $Id: ChangeLog,v 1.543 2008-10-01 01:27:35 guerra000 Exp $
+ * $Id: ChangeLog,v 1.544 2008-10-04 19:58:23 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-10-04 12:02 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_browse.prg
+    * Fixed message to multi-language when record is locked.
+      Thanks to Fernando Yurisich.
+  * include/i_monthcal.ch
+  * include/i_windefs.ch
+  - source/c_monthcal.c
+  * source/common_make.bat
+  * source/h_monthcal.prg
+  * source/makelib_mingw.bat
+    + DISABLED and SUBCLASS clauses added to MONTHCAL.
+    * Moved C code from c_monthcal.c to h_monthcal.prg file.
+    - c_monthcal.c removed.
 
 2008-09-30 20:07 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/makelib_bcc.bat

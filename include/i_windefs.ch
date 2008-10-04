@@ -1,11 +1,11 @@
 /*
- * $Id: i_windefs.ch,v 1.29 2008-03-23 22:13:00 guerra000 Exp $
+ * $Id: i_windefs.ch,v 1.30 2008-10-04 19:58:24 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Windows' definitions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -710,5 +710,12 @@
 #define TCS_OWNERDRAWFIXED           8192
 #define TCS_TOOLTIPS                 16384
 #define TCS_FOCUSNEVER               32768
+
+// MonthCal
+#define MCS_DAYSTATE            1
+#define MCS_MULTISELECT         2
+#define MCS_WEEKNUMBERS         4
+#define MCS_NOTODAYCIRCLE       8
+#define MCS_NOTODAY             16
 
 #endif
