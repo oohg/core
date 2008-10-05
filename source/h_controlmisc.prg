@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.99 2008-07-12 04:59:00 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.100 2008-10-05 15:37:27 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1287,7 +1287,9 @@ METHOD ToolTip( cToolTip ) CLASS TControl
       ELSE
          ::cToolTip := ""
       ENDIF
-      SetToolTip( ::hWnd, cToolTip, ::Parent:ToolTipHandle )
+      If HB_IsObject( ::Parent:oToolTip )
+         ::Parent:oToolTip:Item( ::hWnd, cToolTip )
+      EndIf
    ENDIF
 RETURN ::cToolTip
 

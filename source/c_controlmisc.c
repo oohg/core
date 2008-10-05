@@ -1,11 +1,11 @@
 /*
- * $Id: c_controlmisc.c,v 1.51 2008-07-12 04:59:00 guerra000 Exp $
+ * $Id: c_controlmisc.c,v 1.52 2008-10-05 15:37:27 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Miscelaneus C controls functions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -341,72 +341,6 @@ HB_FUNC ( DELETEOBJECT )
 HB_FUNC( CSHOWCONTROL )
 {
    ShowWindow( HWNDparam( 1 ), SW_SHOW );
-}
-
-HB_FUNC( INITTOOLTIP )
-{
-   HWND htooltip;
-   LONG lColor;
-   int Style = TTS_ALWAYSTIP;
-
-   if( hb_parl( 2 ) )
-   {
-      Style |= TTS_BALLOON;
-   }
-
-   InitCommonControls();
-
-   htooltip = CreateWindowEx( 0, "tooltips_class32", "", Style,
-                              0, 0, 0, 0, HWNDparam( 1 ),
-                              NULL, GetModuleHandle( NULL ), NULL );
-
-   if( _OOHG_DetermineColor( hb_param( 3, HB_IT_ANY ), &lColor ) )
-   {
-      SendMessage( htooltip, TTM_SETTIPBKCOLOR, lColor, 0 );
-   }
-
-   if( _OOHG_DetermineColor( hb_param( 4, HB_IT_ANY ), &lColor ) )
-   {
-      SendMessage( htooltip, TTM_SETTIPTEXTCOLOR, lColor, 0 );
-   }
-
-   HWNDret( htooltip );
-}
-
-HB_FUNC ( SETTOOLTIP )
-{
-
-	static  TOOLINFO  ti;
-
-    HWND hWnd;
-    char *Text;
-    HWND hWnd_ToolTip;
-
-    hWnd = HWNDparam( 1 );
-    Text = hb_parc( 2 );
-    hWnd_ToolTip = HWNDparam( 3 );
-
-	memset(&ti,0,sizeof(ti));
-
-	ti.cbSize=sizeof(ti);
-	ti.uFlags=TTF_SUBCLASS|TTF_IDISHWND;
-    ti.hwnd=GetParent( hWnd );
-	ti.uId=(UINT)hWnd;
-
-	if(SendMessage(hWnd_ToolTip,(UINT)TTM_GETTOOLINFO,(WPARAM)0,(LPARAM)&ti))
-	{
-		SendMessage(hWnd_ToolTip,(UINT)TTM_DELTOOL,(WPARAM)0,(LPARAM)&ti);
-	}
-
-	ti.cbSize=sizeof(ti);
-	ti.uFlags=TTF_SUBCLASS|TTF_IDISHWND;
-    ti.hwnd=GetParent( hWnd );
-	ti.uId=(UINT)hWnd;
-	ti.lpszText=Text;
-	SendMessage(hWnd_ToolTip,(UINT)TTM_ADDTOOL,(WPARAM)0,(LPARAM)&ti);
-
-	hb_retni(0);
-
 }
 
 HB_FUNC( HIDEWINDOW )

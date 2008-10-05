@@ -1,11 +1,11 @@
 /*
- * $Id: h_windows.prg,v 1.196 2008-09-29 00:36:45 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.197 2008-10-05 15:37:27 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG Windows handling functions
  *
- * Copyright 2008 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -138,8 +138,6 @@ STATIC _OOHG_bKeyDown := nil         // Application-wide WM_KEYDOWN handler
 int  _OOHG_ShowContextMenus = 1;      //
 int  _OOHG_GlobalRTL = 0;             // Force RTL functionality
 int  _OOHG_NestedSameEvent = 0;       // Allows to nest an event currently performed (i.e. CLICK button)
-LONG _OOHG_TooltipBackcolor = -1;     // Tooltip's backcolor
-LONG _OOHG_TooltipForecolor = -1;     // Tooltip's forecolor
 int  _OOHG_MouseCol = 0;              // Mouse's column
 int  _OOHG_MouseRow = 0;              // Mouse's row
 PHB_ITEM _OOHG_LastSelf = NULL;
@@ -1792,7 +1790,6 @@ RETURN _ExitProcess2( nExit )
 
 EXTERN IsXPThemeActive, _OOHG_Eval, EVAL
 EXTERN _OOHG_ShowContextMenus, _OOHG_GlobalRTL, _OOHG_NestedSameEvent
-EXTERN _SetTooltipBackcolor, _SetTooltipForecolor
 EXTERN ValidHandler
 
 #pragma BEGINDUMP
@@ -1906,16 +1903,6 @@ HB_FUNC( _OOHG_NESTEDSAMEEVENT )
       _OOHG_NestedSameEvent = hb_parl( 1 );
    }
    hb_retl( _OOHG_NestedSameEvent );
-}
-
-HB_FUNC( _SETTOOLTIPBACKCOLOR )
-{
-   _OOHG_DetermineColorReturn( hb_param( 1, HB_IT_ANY ), &_OOHG_TooltipBackcolor, ( hb_pcount() >= 1 ) );
-}
-
-HB_FUNC( _SETTOOLTIPFORECOLOR )
-{
-   _OOHG_DetermineColorReturn( hb_param( 1, HB_IT_ANY ), &_OOHG_TooltipForecolor, ( hb_pcount() >= 1 ) );
 }
 
 HB_FUNC( VALIDHANDLER )

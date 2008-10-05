@@ -1122,7 +1122,7 @@ ENDCLASS
 
 CLASS TFORM FROM TWINDOW
 *------------------------------------------------------------------------------*
-   DATA TOOLTIPHANDLE  INIT 0
+   DATA OTOOLTIP       INIT NIL
    DATA FOCUSED        INIT .F.
    DATA LASTFOCUSEDCONTROL INIT 0
    DATA AUTORELEASE    INIT .F.

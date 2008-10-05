@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.2 2008-09-02 04:48:51 guerra000 Exp $
+ * $Id: h_form.prg,v 1.3 2008-10-05 15:37:27 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -147,7 +147,7 @@ void _OOHG_SetMouseCoords( PHB_ITEM pSelf, int iCol, int iRow );
 *------------------------------------------------------------------------------*
 CLASS TForm FROM TWindow
 *------------------------------------------------------------------------------*
-   DATA ToolTipHandle  INIT 0
+   DATA oToolTip       INIT nil
    DATA Focused        INIT .T.
    DATA LastFocusedControl INIT 0
    DATA AutoRelease    INIT .F.
@@ -382,7 +382,7 @@ Local Formhandle
 	EndIf
 
    ::Register( FormHandle, FormName )
-   ::ToolTipHandle := InitToolTip( FormHandle, _SetToolTipBalloon(), _SetTooltipBackcolor(), _SetTooltipForecolor() )
+   ::oToolTip := TToolTip():Define( , Self )
 
    ASSIGN clientarea VALUE clientarea TYPE "L" DEFAULT .F.
    If clientarea
@@ -475,24 +475,6 @@ LOCAL nPos
   _PopEventInfo()
   ::ldefined:=.T.
 Return Nil
-
-*--------------------------------------------------
-Function _SetToolTipBalloon ( lNewBalloon )
-*--------------------------------------------------
-Static lBalloon := .F.
-Local oreg,lOldBalloon := lBalloon
-Local lSiono
-
-        If lNewBalloon <> Nil
-        if lNewBalloon
-           oreg:=TReg32():New(HKEY_CURRENT_USER,"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced",.F.)
-           oreg:get("EnableBalloonTips",lsiono)
-           oreg:close()
-        endif
-            lBalloon := lNewBalloon
-        Endif
-
-return lOldBalloon
 
 *------------------------------------------------------------------------------*
 METHOD Register( hWnd, cName ) CLASS TForm
@@ -2591,7 +2573,7 @@ Return GetFormObject( FormName ):Name
 *-----------------------------------------------------------------------------*
 Function GetFormToolTipHandle( FormName )
 *-----------------------------------------------------------------------------*
-Return GetFormObject( FormName ):ToolTipHandle
+Return GetFormObject( FormName ):oToolTip:hWnd
 
 *-----------------------------------------------------------------------------*
 Function GetFormHandle( FormName )
