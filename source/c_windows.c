@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.59 2008-06-02 05:35:30 guerra000 Exp $
+ * $Id: c_windows.c,v 1.60 2008-10-22 06:50:52 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -208,6 +208,11 @@ LRESULT APIENTRY _OOHG_WndProc( PHB_ITEM pSelf, HWND hWnd, UINT uiMsg, WPARAM wP
 {
    PHB_ITEM pResult;
    LRESULT iReturn;
+   static int iCall = 0;
+   static int iNest = 0;
+
+   iNest++;
+   iCall++;
 
    _OOHG_Send( pSelf, s_OverWndProc );
    hb_vmSend( 0 );
@@ -222,7 +227,9 @@ LRESULT APIENTRY _OOHG_WndProc( PHB_ITEM pSelf, HWND hWnd, UINT uiMsg, WPARAM wP
       hb_vmPushLong( wParam );
       hb_vmPushLong( lParam );
       hb_vmPush( pSelf );
-      hb_vmDo( 5 );
+      hb_vmPushLong( iNest );
+      hb_vmPushLong( iCall );
+      hb_vmDo( 7 );
       pResult = hb_param( -1, HB_IT_NUMERIC );
    }
 
@@ -249,6 +256,7 @@ LRESULT APIENTRY _OOHG_WndProc( PHB_ITEM pSelf, HWND hWnd, UINT uiMsg, WPARAM wP
       iReturn = CallWindowProc( lpfnOldWndProc, hWnd, uiMsg, wParam, lParam );
    }
 
+   iNest--;
    return iReturn;
 }
 

@@ -1,11 +1,24 @@
 /*
- * $Id: ChangeLog,v 1.545 2008-10-05 15:37:27 guerra000 Exp $
+ * $Id: ChangeLog,v 1.546 2008-10-22 06:50:51 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-10-22 01:48 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_radio.prg
+    ! Fixed TABSTOP when value is zero.
+  * include/i_frame.ch
+  * source/h_frame.prg
+    - NOTABSTOP clause added (FRAME is always NOTABSTOP).
+  * source/c_windows.c
+    * Added call and nest count on WndProc processing.
+  * source/h_form.prg
+    * Unregister window when it's released.
+  * source/h_windows.prg
+    * Some message names description added.
 
 2008-10-05 10:32 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * doc/classes.txt

@@ -1,12 +1,12 @@
 /*
- * $Id: i_frame.ch,v 1.4 2008-09-07 23:12:56 guerra000 Exp $
+ * $Id: i_frame.ch,v 1.5 2008-10-22 06:50:51 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Frame definitions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -108,7 +108,6 @@
 		[ <opaque: OPAQUE> ] ;
 		[ <transparent: TRANSPARENT> ] ;
                 [ <rtl: RTL> ] ;
-		[ <notabstop : NOTABSTOP> ] ;
 		[ <invisible : INVISIBLE> ] ;
                 [ <disabled : DISABLED> ] ;
                 [ SUBCLASS <subclass> ]         ;
@@ -117,4 +116,4 @@
                      Define( <(name)>, <(parent)>, <row>, <col>, <w>, <h>, <caption>, ;
                      <fontname>, <fontsize>, <.opaque.>, <.bold.>, <.italic.>, ;
                      <.underline.>, <.strikeout.>, <backcolor>, <fontcolor>, ;
-                     <.transparent.>, <.rtl.>, <.invisible.>, <.notabstop.>, <.disabled.> )
+                     <.transparent.>, <.rtl.>, <.invisible.>, <.disabled.> )

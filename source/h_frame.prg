@@ -1,5 +1,5 @@
 /*
- * $Id: h_frame.prg,v 1.7 2008-09-07 23:12:56 guerra000 Exp $
+ * $Id: h_frame.prg,v 1.8 2008-10-22 06:50:52 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -100,13 +100,14 @@ CLASS TFrame FROM TControl
    DATA nHeight   INIT 140
 
    METHOD Define
+
+   EMPTY( _OOHG_AllVars )
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, y, x, w, h, caption, fontname, ;
                fontsize, opaque, bold, italic, underline, strikeout, ;
-               backcolor, fontcolor, transparent, lRtl, invisible, notabstop, ;
-               lDisabled ) CLASS TFrame
+               backcolor, fontcolor, transparent, lRtl, invisible, lDisabled ) CLASS TFrame
 *-----------------------------------------------------------------------------*
 Local ControlHandle, nStyle
 
@@ -125,7 +126,7 @@ Local ControlHandle, nStyle
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, , lRtl )
 
-   nStyle := ::InitStyle( ,, Invisible, NoTabStop, lDisabled )
+   nStyle := ::InitStyle( ,, Invisible, .T., lDisabled )
 
    Controlhandle := InitFrame( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, caption , opaque, ::lRtl, nStyle )
 

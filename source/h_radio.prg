@@ -1,12 +1,12 @@
 /*
- * $Id: h_radio.prg,v 1.20 2008-04-27 23:16:57 guerra000 Exp $
+ * $Id: h_radio.prg,v 1.21 2008-10-22 06:50:52 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Radio button functions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.oohg.com.mx
+ * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -118,6 +118,8 @@ CLASS TRadioGroup FROM TLabel
    METHOD Caption
 
    METHOD Events_Command
+
+   EMPTY( _OOHG_AllVars )
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -191,11 +193,11 @@ Local ControlHandle, i, oItem, nStyle
    if HB_IsNumeric( Value ) .AND. Value >= 1 .AND. Value <= Len( ::aControls )
       SendMessage( ::aControls[ value ]:hWnd, BM_SETCHECK , BST_CHECKED , 0 )
       if ! notabstop
-         SetTabStop( ::aControls[ value ]:hWnd, .T. )
+         ::aControls[ Value ]:TabStop := .T.
 		endif
    Else
       if ! notabstop
-         SetTabStop( ::hWnd, .T. )
+         ::aControls[ 1 ]:TabStop := .T.
 		endif
 	EndIf
 
@@ -232,8 +234,8 @@ LOCAL nOldValue, aNewValue, I, oItem, nLen
       IF nValue >= 1 .AND. nValue <= nLen
          nOldValue := nValue
          aNewValue[ nValue ] := BST_CHECKED
-         If ::TabStop .and. IsTabStop( ::aControls[ nValue ]:hWnd )
-            SetTabStop( ::aControls[ nValue ]:hWnd, .f. )
+         If ::TabStop .and. ::aControls[ nValue ]:TabStop
+            ::aControls[ nValue ]:TabStop := .F.
          EndIf
       ELSE
          nOldValue := 0
@@ -245,8 +247,8 @@ LOCAL nOldValue, aNewValue, I, oItem, nLen
             //////// ojo aqui en esta linea de abajo
             ::DoEvent(::OnChange, "CHANGE" )
          EndIf
-         If ! ( ::TabStop .AND. nValue == I ) == IsTabStop( ::aControls[ I ]:hWnd )
-            SetTabStop( ::aControls[ I ]:hWnd, ( nValue == I ) )
+         If ! ( ::TabStop .AND. MAX( nValue, 1 ) == I ) == ::aControls[ I ]:TabStop
+            ::aControls[ I ]:TabStop := ( MAX( nValue, 1 ) == I )
          EndIf
       NEXT
    Else
@@ -270,6 +272,8 @@ Local nValue
    nValue := ::Value
    If nValue >= 1 .AND. nValue <= Len( ::aControls )
       ::aControls[ nValue ]:SetFocus()
+   Else
+      ::aControls[ 1 ]:SetFocus()
    EndIf
 Return Self
 
@@ -297,9 +301,9 @@ METHOD Events_Command( wParam ) CLASS TRadioGroup
 Local Hi_wParam := HIWORD( wParam )
 Local lTab
    If Hi_wParam == BN_CLICKED
-      lTab := ::TabStop .AND. ( SendMessage( ::hWnd, BM_GETCHECK, 0, 0 ) == BST_CHECKED )
-      If ! lTab == IsTabStop( ::hWnd )
-         SetTabStop( ::hWnd, lTab )
+      lTab := ::TabStop .AND. ::Value <= 1
+      If ! lTab == ::aControls[ 1 ]:TabStop
+         ::aControls[ 1 ]:TabStop := lTab
       EndIf
       ::DoEvent( ::OnChange, "CHANGE" )
       Return nil
@@ -321,8 +325,8 @@ Local Hi_wParam := HIWORD( wParam )
 Local lTab
    If Hi_wParam == BN_CLICKED
       lTab := ::Container:TabStop .AND. ( SendMessage( ::hWnd, BM_GETCHECK, 0, 0 ) == BST_CHECKED )
-      If ! lTab == IsTabStop( ::hWnd )
-         SetTabStop( ::hWnd, lTab )
+      If ! lTab == ::TabStop
+         ::TabStop := lTab
       EndIf
       ::Container:DoEvent( ::Container:OnChange, "CHANGE" )
       Return nil
@@ -333,7 +337,7 @@ Return ::Super:Events_Command( wParam )
 
 
 
-EXTERN InitRadioGroup, InitRadioButton, SetRadioStyle, IsTabStop, SetTabStop
+EXTERN InitRadioGroup, InitRadioButton
 
 #pragma BEGINDUMP
 // #define s_Super s_TLabel
@@ -382,52 +386,6 @@ HB_FUNC( INITRADIOBUTTON )
    lpfnOldWndProcB = ( WNDPROC ) SetWindowLong( ( HWND ) hbutton, GWL_WNDPROC, ( LONG ) SubClassFuncB );
 
    HWNDret( hbutton );
-}
-
-HB_FUNC( SETRADIOSTYLE )
-{
-	int Style ;
-
-	Style = BS_NOTIFY | WS_CHILD | BS_AUTORADIOBUTTON ;
-
-   if ( hb_parl( 2 ) )
-	{
-		Style = Style | WS_GROUP ;
-	}
-   if ( hb_parl( 3 ) )
-	{
-		Style = Style | WS_VISIBLE ;
-	}
-
-   SetWindowLong( HWNDparam( 1 ), GWL_STYLE, Style );
-}
-
-HB_FUNC( ISTABSTOP )
-{
-   int Style;
-   int Result;
-   Style = GetWindowLong( HWNDparam( 1 ), GWL_STYLE );
-   Result = FALSE;
-   if( Style & WS_TABSTOP )
-   {
-      Result = TRUE;
-   }
-   hb_retl( Result );
-}
-
-HB_FUNC( SETTABSTOP )
-{
-   HWND hWnd = HWNDparam( 1 );
-   int iStyle = GetWindowLong( hWnd, GWL_STYLE );
-
-   if( hb_parl( 2 ) )
-   {
-      SetWindowLong( hWnd, GWL_STYLE, iStyle | WS_TABSTOP );
-   }
-   else
-   {
-      SetWindowLong( hWnd, GWL_STYLE, iStyle & ~WS_TABSTOP );
-   }
 }
 
 #pragma ENDDUMP

@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.197 2008-10-05 15:37:27 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.198 2008-10-22 06:50:52 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1428,6 +1428,36 @@ LOCAL cName
       aNames[ 0x38F ] := "WM_PENWINLAST"
 
       aNames[ 0x400 ] := "WM_USER"
+
+      // Edit control messages
+      AEVAL( { "EM_GETSEL", ;
+               "EM_SETSEL", "EM_GETRECT", "EM_SETRECT", "EM_SETRECTNP", "EM_SCROLL", ;
+               "EM_LINESCROLL", "EM_SCROLLCARET", "EM_GETMODIFY", "EM_SETMODIFY", "EM_GETLINECOUNT", ;
+               "EM_LINEINDEX", "EM_SETHANDLE", "EM_GETHANDLE", "EM_GETTHUMB", NIL, ;
+               NIL, "EM_LINELENGTH", "EM_REPLACESEL", NIL, "EM_GETLINE", ;
+               "EM_SETLIMITTEXT", "EM_CANUNDO", "EM_UNDO", "EM_FMTLINES", "EM_LINEFROMCHAR", ;
+               NIL, "EM_SETTABSTOPS", "EM_SETPASSWORDCHAR", "EM_EMPTYUNDOBUFFER", "EM_GETFIRSTVISIBLELINE", ;
+               "EM_SETREADONLY", "EM_SETWORDBREAKPROC", "EM_GETWORDBREAKPROC", "EM_GETPASSWORDCHAR", "EM_SETMARGINS", ;
+               "EM_GETMARGINS", "EM_GETLIMITTEXT", "EM_POSFROMCHAR", "EM_CHARFROMPOS", "EM_SETIMESTATUS", ;
+               "EM_GETIMESTATUS" }, ;
+             { |c,i| aNames[ i + 0xAF ] := c } )
+
+      // Scroll bar messages
+      AEVAL( { "SBM_SETPOS", ;
+               "SBM_GETPOS", "SBM_SETRANGE", "SBM_GETRANGE", "SBM_ENABLE_ARROWS", NIL, ;
+               "SBM_SETRANGEREDRAW", NIL, NIL, "SBM_SETSCROLLINFO", "SBM_GETSCROLLINFO" }, ;
+             { |c,i| aNames[ i + 0xDF ] := c } )
+
+      // Button control messages
+      AEVAL( { "BM_GETCHECK", ;
+               "BM_SETCHECK", "BM_GETSTATE", "BM_SETSTATE", "BM_SETSTYLE", "BM_CLICK", ;
+               "BM_GETIMAGE", "BM_SETIMAGE" }, ;
+             { |c,i| aNames[ i + 0xEF ] := c } )
+
+      // Static control messages
+      AEVAL( { "STM_SETICON", ;
+               "STM_GETICON", "STM_SETIMAGE", "STM_GETIMAGE", "STM_MSGMAX" }, ;
+             { |c,i| aNames[ i + 0x16F ] := c } )
    ENDIF
    IF nMsg == 0
       cName := "WM_NULL"

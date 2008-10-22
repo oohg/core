@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.3 2008-10-05 15:37:27 guerra000 Exp $
+ * $Id: h_form.prg,v 1.4 2008-10-22 06:50:52 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1012,6 +1012,7 @@ Local mVar, i
 
       ::Active := .F.
       ::Super:Release()
+      UnRegisterWindow( ::Name )
 
    EndIf
 
