@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.5 2008-10-24 02:37:19 guerra000 Exp $
+ * $Id: h_form.prg,v 1.6 2008-10-24 23:21:31 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -2009,6 +2009,7 @@ CLASS TFormMDIClient FROM TFormInternal
    METHOD Define
    METHOD DefWindowProc(nMsg,wParam,lParam)       BLOCK { |Self,nMsg,wParam,lParam| DefMDIChildProc( ::hWnd, nMsg, wParam, lParam ) }
    METHOD Events_Size
+   METHOD BackColor           SETGET
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -2064,6 +2065,43 @@ LOCAL aClientRect
    GetClientRect( ::Parent:hWnd, aClientRect )
    ::SizePos( aClientRect[ 2 ], aClientRect[ 1 ], aClientRect[ 3 ] - aClientRect[ 1 ], aClientRect[ 4 ] - aClientRect[ 2 ] )
 RETURN nil
+
+#pragma BEGINDUMP
+
+static long   TFormMdiClient_BackColor   = -1;
+static HBRUSH TFormMdiClient_BrushHandle = NULL;
+
+HB_FUNC_STATIC( TFORMMDICLIENT_BACKCOLOR )
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+
+   if( _OOHG_DetermineColorReturn( hb_param( 1, HB_IT_ANY ), &TFormMdiClient_BackColor, ( hb_pcount() >= 1 ) ) )
+   {
+      if( TFormMdiClient_BrushHandle )
+      {
+         DeleteObject( TFormMdiClient_BrushHandle );
+         TFormMdiClient_BrushHandle = 0;
+      }
+      if( ValidHandler( oSelf->hWnd ) )
+      {
+         if( TFormMdiClient_BackColor != -1 )
+         {
+            TFormMdiClient_BrushHandle = CreateSolidBrush( TFormMdiClient_BackColor );
+            SetClassLong( oSelf->hWnd, GCL_HBRBACKGROUND, ( long ) TFormMdiClient_BrushHandle );
+         }
+         else
+         {
+            SetClassLong( oSelf->hWnd, GCL_HBRBACKGROUND, ( long )( COLOR_BTNFACE + 1 ) );
+         }
+         RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+      }
+   }
+
+   // Return value was set in _OOHG_DetermineColorReturn()
+}
+
+#pragma ENDDUMP
 
 
 
