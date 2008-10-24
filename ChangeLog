@@ -1,11 +1,22 @@
 /*
- * $Id: ChangeLog,v 1.546 2008-10-22 06:50:51 guerra000 Exp $
+ * $Id: ChangeLog,v 1.547 2008-10-24 02:37:19 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-10-23 21:39 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_window.ch
+    ! Fixed PARENT definition on DECLARE WINDOW command.
+  * include/oohg.h
+  * source/c_windows.c
+  * source/h_form.prg
+    ! Fixed MDICLIENT assignment.
+    * Moved TForm specific code from c_windows.c to h_form.prg .
+    * Removed duplicated form unregistration at form release.
+    ! Fixed error report when trying to activate an inexistent window.
 
 2008-10-22 01:48 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_radio.prg

@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.4 2008-10-22 06:50:52 guerra000 Exp $
+ * $Id: h_form.prg,v 1.5 2008-10-24 02:37:19 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -136,6 +136,7 @@ STATIC _OOHG_ActiveForm := {}        // Forms under creation
 #include <hbapi.h>
 #include <hbvm.h>
 #include <hbstack.h>
+#include <hbapiitm.h>
 #include <windows.h>
 #include <commctrl.h>
 #include "oohg.h"
@@ -308,19 +309,19 @@ Local Formhandle
 
    ::lRtl := lRtl
 
-   if ! valtype( FormName ) $ "CM"
+   If ! valtype( FormName ) $ "CM"
       FormName := _OOHG_TempWindowName
-	endif
+   Endif
 
    FormName := _OOHG_GetNullName( FormName )
 
    If _IsWindowDefined( FormName )
       MsgOOHGError( "Window: " + FormName + " already defined. Program Terminated" )
-	endif
+   Endif
 
-   if ! valtype( Caption ) $ "CM"
-		Caption := ""
-	endif
+   If ! valtype( Caption ) $ "CM"
+      Caption := ""
+   Endif
 
    ASSIGN ::nVirtualHeight VALUE VirtualHeight TYPE "N"
    ASSIGN ::nVirtualWidth  VALUE VirtualWidth  TYPE "N"
@@ -329,9 +330,9 @@ Local Formhandle
    ASSIGN ::MinHeight      VALUE minheight     TYPE "N"
    ASSIGN ::MaxHeight      VALUE maxheight     TYPE "N"
 
-   if ! Valtype( aRGB ) $ 'AN'
+   If ! Valtype( aRGB ) $ 'AN'
       aRGB := GetSysColor( COLOR_3DFACE )
-	EndIf
+   Endif
 
    If HB_IsLogical( helpbutton ) .AND. helpbutton
       nStyleEx += WS_EX_CONTEXTHELP
@@ -377,9 +378,9 @@ Local Formhandle
       Formhandle := InitWindow( Caption, x, y, ::nWidth, ::nHeight, Parent, FormName, nStyle, nStyleEx, lRtl )
    EndIf
 
-   if Valtype( cursor ) $ "CM"
-		SetWindowCursor( Formhandle , cursor )
-	EndIf
+   If Valtype( cursor ) $ "CM"
+      SetWindowCursor( Formhandle , cursor )
+   EndIf
 
    ::Register( FormHandle, FormName )
    ::oToolTip := TToolTip():Define( , Self )
@@ -1012,7 +1013,6 @@ Local mVar, i
 
       ::Active := .F.
       ::Super:Release()
-      UnRegisterWindow( ::Name )
 
    EndIf
 
@@ -2101,11 +2101,13 @@ Local nStyle := 0, nStyleEx := 0
    nStyleEx += WS_EX_MDICHILD
 
    // If MDIclient window doesn't exists, create it.
-   If ! ValidHandler( ::Parent:hWndClient )
+   If ValidHandler( ::Parent:hWndClient )
+      oParent := GetFormObjectByHandle( ::Parent:hWndClient )
+   Else
       oParent := TFormMDIClient():Define( ,,,,,,,,,,,,,,,,,,,,,,,,, ::Parent )
       oParent:EndWindow()
-      ::SearchParent( oParent )
    EndIf
+   ::SearchParent( oParent )
 
    ::Define2( FormName, Caption, x, y, w, h, ::Parent:hWnd, helpbutton, nominimize, nomaximize, nosize, nosysmenu, ;
               nocaption, virtualheight, virtualwidth, hscrollbox, vscrollbox, fontname, fontsize, aRGB, cursor, ;
@@ -2352,11 +2354,6 @@ Function _ActivateWindow( aForm, lNoWait )
 *-----------------------------------------------------------------------------*
 Local z, aForm2, oWndActive, oWnd, lModal
 
-   // Not mandatory MAIN
-   // If _OOHG_Main == nil
-   //    MsgOOHGError( "MAIN WINDOW not defined. Program Terminated." )
-   // EndIf
-
 * Testing... it allows to create non-modal windows when modal windows are active.
 * The problem is, what should do when modal window is ... disabled? hidden? WM_CLOSE? WM_DESTROY?
 /*
@@ -2392,6 +2389,9 @@ Local z, aForm2, oWndActive, oWnd, lModal
    lModal := .F.
    FOR z := 1 TO Len( aForm2 )
       oWnd := GetFormObject( aForm2[ z ] )
+      IF ! ValidHandler( oWnd:hWnd )
+         MsgOOHGError( "ACTIVATE WINDOW: Window " + aForm2[ z ] + " not defined. Program terminated." )
+      ENDIF
       IF oWnd:Type == "M" .AND. oWnd:lVisible
          IF lModal
             MsgOOHGError( "ACTIVATE WINDOW: Only one initially visible modal window allowed. Program terminated" )
@@ -2620,6 +2620,189 @@ Return GetFormObject( FormName ):Minimize()
 Function _SetWindowSizePos( FormName , row , col , width , height )
 *-----------------------------------------------------------------------------*
 Return GetFormObject( FormName ):SizePos( row , col , width , height )
+
+EXTERN GetFormObjectByHandle
+
+#pragma BEGINDUMP
+
+#ifdef HB_ITEM_NIL
+   #define hb_dynsymSymbol( pDynSym )        ( ( pDynSym )->pSymbol )
+#endif
+
+static PHB_SYMB _ooHG_Symbol_TForm = 0;
+static PHB_ITEM _OOHG_aFormhWnd, _OOHG_aFormObjects;
+
+HB_FUNC( _OOHG_INIT_C_VARS_C_SIDE )
+{
+   _ooHG_Symbol_TForm = hb_dynsymSymbol( hb_dynsymFind( "TFORM" ) );
+   _OOHG_aFormhWnd    = hb_itemNew( NULL );
+   _OOHG_aFormObjects = hb_itemNew( NULL );
+   hb_itemCopy( _OOHG_aFormhWnd,    hb_param( 1, HB_IT_ARRAY ) );
+   hb_itemCopy( _OOHG_aFormObjects, hb_param( 2, HB_IT_ARRAY ) );
+}
+
+int _OOHG_SearchFormHandleInArray( HWND hWnd )
+{
+   ULONG ulCount, ulPos = 0;
+
+   if( ! _ooHG_Symbol_TForm )
+   {
+      hb_vmPushSymbol( hb_dynsymSymbol( hb_dynsymFind( "_OOHG_INIT_C_VARS" ) ) );
+      hb_vmPushNil();
+      hb_vmDo( 0 );
+   }
+
+   for( ulCount = 1; ulCount <= hb_arrayLen( _OOHG_aFormhWnd ); ulCount++ )
+   {
+      #ifdef OOHG_HWND_POINTER
+         if( hWnd == ( HWND ) hb_arrayGetPtr( _OOHG_aFormhWnd, ulCount ) )
+      #else
+         if( ( LONG ) hWnd == hb_arrayGetNL( _OOHG_aFormhWnd, ulCount ) )
+      #endif
+      {
+         ulPos = ulCount;
+         ulCount = hb_arrayLen( _OOHG_aFormhWnd );
+      }
+   }
+
+   return ulPos;
+}
+
+PHB_ITEM GetFormObjectByHandle( HWND hWnd )
+{
+   PHB_ITEM pForm;
+   ULONG ulPos;
+
+   ulPos = _OOHG_SearchFormHandleInArray( hWnd );
+   if( ulPos )
+   {
+      pForm = hb_arrayGetItemPtr( _OOHG_aFormObjects, ulPos );
+   }
+   else
+   {
+      hb_vmPushSymbol( _ooHG_Symbol_TForm );
+      hb_vmPushNil();
+      hb_vmDo( 0 );
+      pForm = hb_param( -1, HB_IT_ANY );
+   }
+
+   return pForm;
+}
+
+HB_FUNC( GETFORMOBJECTBYHANDLE )
+{
+   PHB_ITEM pReturn;
+
+   pReturn = hb_itemNew( NULL );
+   hb_itemCopy( pReturn, GetFormObjectByHandle( HWNDparam( 1 ) ) );
+
+   hb_itemReturn( pReturn );
+   hb_itemRelease( pReturn );
+}
+
+HB_FUNC( UNREGISTERWINDOW )
+{
+   UnregisterClass( hb_parc(1), GetModuleHandle( NULL ) );
+}
+
+HB_FUNC( INITWINDOW )
+{
+   HWND hwnd;
+   int Style   = hb_parni( 8 );
+   int ExStyle = hb_parni( 9 );
+
+   ExStyle |= _OOHG_RTL_Status( hb_parl( 10 ) );
+
+/*
+MDICLIENT:
+   + Establecer el menú con los nombres de las ventanas
+    icount = GetMenuItemCount(GetMenu(hwndparent));
+    ccs.hWindowMenu  = GetSubMenu(GetMenu(hwndparent), icount-2);
+    ccs.idFirstChild = 0;
+    hwndMDIClient = CreateWindow("mdiclient", NULL, style, 0, 0, 0, 0, hwndparent, (HMENU)0xCAC, GetModuleHandle(NULL), (LPSTR) &ccs);
+
+MDICHILD:
+   + "Título" automático de la ventana... rgch[]
+	mcs.szClass = "MdiChildWndClass";      // window class name
+	mcs.szTitle = rgch;                    // window title
+	mcs.hOwner  = GetModuleHandle(NULL);   // owner
+	mcs.x       = hb_parni (3);            // x position
+	mcs.y       = hb_parni (4);            // y position
+	mcs.cx      = hb_parni (5);            // width
+	mcs.cy      = hb_parni (6);            // height
+	mcs.style   = Style;                   // window style
+	mcs.lParam  = 0;                       // lparam
+    hwndChild = ( HWND ) SendMessage( HWNDparam( 1 ), WM_MDICREATE, 0, (LPARAM)(LPMDICREATESTRUCT) &mcs);
+*/
+   hwnd = CreateWindowEx( ExStyle, hb_parc( 7 ), hb_parc( 1 ), Style,
+                          hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ),
+                          HWNDparam( 6 ), ( HMENU ) NULL, GetModuleHandle( NULL ), NULL );
+
+   if( ! hwnd )
+   {
+      char cBuffError[ 1000 ];
+      sprintf( cBuffError, "Window %s Creation Failed! Error %i", hb_parc( 7 ), ( int ) GetLastError() );
+      MessageBox( 0, cBuffError, "Error!",
+                  MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
+      return;
+   }
+
+   HWNDret( hwnd );
+}
+
+HB_FUNC( INITWINDOWMDICLIENT )
+{
+   HWND hwnd;
+   int Style   = hb_parni( 8 );
+   int ExStyle = hb_parni( 9 );
+   CLIENTCREATESTRUCT ccs;
+
+   ccs.hWindowMenu = NULL;
+   ccs.idFirstChild = 0;
+
+   ExStyle |= _OOHG_RTL_Status( hb_parl( 10 ) );
+
+/*
+MDICLIENT:
+   + Establecer el menú con los nombres de las ventanas
+    icount = GetMenuItemCount(GetMenu(hwndparent));
+    ccs.hWindowMenu  = GetSubMenu(GetMenu(hwndparent), icount-2);
+    ccs.idFirstChild = 0;
+    hwndMDIClient = CreateWindow("mdiclient", NULL, style, 0, 0, 0, 0, hwndparent, (HMENU)0xCAC, GetModuleHandle(NULL), (LPSTR) &ccs);
+
+MDICHILD:
+   + "Título" automático de la ventana... rgch[]
+	mcs.szClass = "MdiChildWndClass";      // window class name
+	mcs.szTitle = rgch;                    // window title
+	mcs.hOwner  = GetModuleHandle(NULL);   // owner
+	mcs.x       = hb_parni (3);            // x position
+	mcs.y       = hb_parni (4);            // y position
+	mcs.cx      = hb_parni (5);            // width
+	mcs.cy      = hb_parni (6);            // height
+	mcs.style   = Style;                   // window style
+	mcs.lParam  = 0;                       // lparam
+    hwndChild = ( HWND ) SendMessage( HWNDparam( 1 ), WM_MDICREATE, 0, (LPARAM)(LPMDICREATESTRUCT) &mcs);
+*/
+   hwnd = CreateWindowEx( ExStyle, "MDICLIENT", hb_parc( 1 ), Style,
+                          hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ),
+                          HWNDparam( 6 ), ( HMENU ) NULL, GetModuleHandle( NULL ), ( LPSTR ) &ccs );
+
+   if( ! hwnd )
+   {
+      char cBuffError[ 1000 ];
+      sprintf( cBuffError, "Window %s Creation Failed! Error %i", hb_parc( 7 ), ( int ) GetLastError() );
+      MessageBox( 0, cBuffError, "Error!",
+                  MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
+      return;
+   }
+
+   HWNDret( hwnd );
+}
+
+
+
+
+#pragma ENDDUMP
 
 
 

@@ -1,5 +1,5 @@
 /*
- * $Id: i_window.ch,v 1.34 2008-09-10 03:59:02 guerra000 Exp $
+ * $Id: i_window.ch,v 1.35 2008-10-24 02:37:19 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -222,7 +222,7 @@
                       <{NotifyLeftClick}>, <{GotFocusProcedure}>, <{LostFocusProcedure}>, <vHeight>, ;
                       <vWidth>, <{scrollleft}>, <{scrollright}>, <{scrollup}>, <{scrolldown}>, ;
                       <{hScrollBox}>, <{vScrollBox}>, <.helpbutton.>, <{MaximizeProcedure}>, ;
-                      <{MinimizeProcedure}>, <cursor>, <.noautorelease.>, <parent>, ;
+                      <{MinimizeProcedure}>, <cursor>, <.noautorelease.>, <(parent)>, ;
                       <{interactivecloseprocedure}>, <.focused.>, <.break.>, <grippertext>, <.rtl.>, ;
                       <.main.>, <.splitchild.>, <.child.>, <.modal.>, <.modalsize.>, <.mdi.>, <.internal.>, ;
                       <.mdichild.>, <.mdiclient.>, [ <subclass>() ], <.clientarea.>, <{RestoreProcedure}>, ;
@@ -384,7 +384,7 @@ SetProperty ( <(Arg1)> , <(Arg2)> , <Arg3> )
                       <{NotifyLeftClick}>, <{GotFocusProcedure}>, <{LostFocusProcedure}>, <vHeight>, ;
                       <vWidth>, <{scrollleft}>, <{scrollright}>, <{scrollup}>, <{scrolldown}>, ;
                       <{hScrollBox}>, <{vScrollBox}>, <.helpbutton.>, <{MaximizeProcedure}>, ;
-                      <{MinimizeProcedure}>, <cursor>, <.noautorelease.>, <parent>, ;
+                      <{MinimizeProcedure}>, <cursor>, <.noautorelease.>, <(parent)>, ;
                       <{interactivecloseprocedure}>, <.focused.>, <.break.>, <grippertext>, <.rtl.>, ;
                       <.main.>, <.splitchild.>, <.child.>, <.modal.>, <.modalsize.>, <.mdi.>, <.internal.>, ;
                       <.mdichild.>, <.mdiclient.>, [ <subclass>() ], <.clientarea.>, <{RestoreProcedure}>, ;
