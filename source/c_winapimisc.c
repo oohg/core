@@ -1,5 +1,5 @@
 /*
- * $Id: c_winapimisc.c,v 1.8 2008-02-15 05:50:26 guerra000 Exp $
+ * $Id: c_winapimisc.c,v 1.9 2008-10-27 02:27:45 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -129,7 +129,7 @@ HB_FUNC(WAITRUNPIPE )
       HANDLE WritePipeHandle;       // not used here
       char Data[1024];
       BYTE *szFile=(BYTE*)hb_parc(3);
-      FHANDLE nHandle;
+      HB_FHANDLE nHandle;
       SECURITY_ATTRIBUTES sa;
       ZeroMemory(&sa,sizeof(SECURITY_ATTRIBUTES));
       sa.nLength=sizeof(SECURITY_ATTRIBUTES);
