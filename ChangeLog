@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.549 2008-10-27 02:27:45 declan2005 Exp $
+ * $Id: ChangeLog,v 1.550 2008-10-27 13:49:09 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,6 +7,9 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2008-10-27 07:47 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_radio.prg
+    * Added ::OnDblClick and ::OnRClick funcionality.
 
 2008-10-26 21:26 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/c_winapimisc.c

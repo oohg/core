@@ -1,5 +1,5 @@
 /*
- * $Id: h_radio.prg,v 1.21 2008-10-22 06:50:52 guerra000 Exp $
+ * $Id: h_radio.prg,v 1.22 2008-10-27 13:49:09 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -102,6 +102,7 @@ CLASS TRadioGroup FROM TLabel
    DATA IconWidth     INIT 19
    DATA nWidth        INIT 120
    DATA nHeight       INIT 25
+   DATA aOptions      INIT {}
 
    METHOD RowMargin   BLOCK { |Self| - ::Row }
    METHOD ColMargin   BLOCK { |Self| - ::Col }
@@ -117,6 +118,7 @@ CLASS TRadioGroup FROM TLabel
 
    METHOD Caption
 
+   METHOD Events
    METHOD Events_Command
 
    EMPTY( _OOHG_AllVars )
@@ -168,11 +170,12 @@ Local ControlHandle, i, oItem, nStyle
    oItem:SizePos( ::Row, ::Col, ::Width, ::Height )
    oItem:AutoSize := autosize
    oItem:Caption := aOptions[ 1 ]
+   ::aOptions := { oItem }
 
    x := ::Col
    y := ::Row
 
-   for i = 2 to len( aOptions )
+   For i = 2 to len( aOptions )
 
       If horizontal
          x += Spacing
@@ -188,17 +191,18 @@ Local ControlHandle, i, oItem, nStyle
       oItem:SizePos( y, x, ::Width, ::Height )
       oItem:AutoSize := autosize
       oItem:Caption := aOptions[ i ]
-   next
+      AADD( ::aOptions, oItem )
+   Next
 
-   if HB_IsNumeric( Value ) .AND. Value >= 1 .AND. Value <= Len( ::aControls )
-      SendMessage( ::aControls[ value ]:hWnd, BM_SETCHECK , BST_CHECKED , 0 )
-      if ! notabstop
-         ::aControls[ Value ]:TabStop := .T.
-		endif
+   If HB_IsNumeric( Value ) .AND. Value >= 1 .AND. Value <= Len( ::aOptions )
+      SendMessage( ::aOptions[ value ]:hWnd, BM_SETCHECK , BST_CHECKED , 0 )
+      If ! notabstop
+         ::aOptions[ Value ]:TabStop := .T.
+      EndIf
    Else
-      if ! notabstop
-         ::aControls[ 1 ]:TabStop := .T.
-		endif
+      If ! notabstop
+         ::aOptions[ 1 ]:TabStop := .T.
+      EndIf
 	EndIf
 
    ASSIGN ::OnChange    VALUE Change    TYPE "B"
@@ -208,7 +212,7 @@ Return Self
 *-----------------------------------------------------------------------------*
 METHOD SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout ) CLASS TRadioGroup
 *-----------------------------------------------------------------------------*
-   AEVAL( ::aControls, { |o| o:SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout ) } )
+   AEVAL( ::aOptions, { |o| o:SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout ) } )
 RETURN ::Super:SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout )
 
 *-----------------------------------------------------------------------------*
@@ -227,42 +231,42 @@ Return uRet
 METHOD Value( nValue ) CLASS TRadioGroup
 *-----------------------------------------------------------------------------*
 LOCAL nOldValue, aNewValue, I, oItem, nLen
-   IF HB_IsNumeric( nValue )
+   If HB_IsNumeric( nValue )
       nValue := INT( nValue )
-      nLen := LEN( ::aControls )
+      nLen := LEN( ::aOptions )
       aNewValue := AFILL( ARRAY( nLen ), BST_UNCHECKED )
-      IF nValue >= 1 .AND. nValue <= nLen
+      If nValue >= 1 .AND. nValue <= nLen
          nOldValue := nValue
          aNewValue[ nValue ] := BST_CHECKED
-         If ::TabStop .and. ::aControls[ nValue ]:TabStop
-            ::aControls[ nValue ]:TabStop := .F.
+         If ::TabStop .and. ::aOptions[ nValue ]:TabStop
+            ::aOptions[ nValue ]:TabStop := .F.
          EndIf
-      ELSE
+      Else
          nOldValue := 0
-      ENDIF
-      FOR I := 1 TO nLen
-         oItem := ::aControls[ I ]
+      EndIf
+      For I := 1 TO nLen
+         oItem := ::aOptions[ I ]
          If SendMessage( oItem:hWnd, BM_GETCHECK, 0, 0 ) != aNewValue[ I ]
             SendMessage( oItem:hWnd, BM_SETCHECK, aNewValue[ I ], 0 )
             //////// ojo aqui en esta linea de abajo
             ::DoEvent(::OnChange, "CHANGE" )
          EndIf
-         If ! ( ::TabStop .AND. MAX( nValue, 1 ) == I ) == ::aControls[ I ]:TabStop
-            ::aControls[ I ]:TabStop := ( MAX( nValue, 1 ) == I )
+         If ! ( ::TabStop .AND. MAX( nValue, 1 ) == I ) == ::aOptions[ I ]:TabStop
+            ::aOptions[ I ]:TabStop := ( MAX( nValue, 1 ) == I )
          EndIf
-      NEXT
+      Next
    Else
-      nOldValue := ASCAN( ::aControls, { |o| SendMessage( o:hWnd, BM_GETCHECK, 0, 0 ) == BST_CHECKED } )
-   ENDIF
+      nOldValue := ASCAN( ::aOptions, { |o| SendMessage( o:hWnd, BM_GETCHECK, 0, 0 ) == BST_CHECKED } )
+   EndIf
 RETURN nOldValue
 
 *-----------------------------------------------------------------------------*
 METHOD Enabled( lEnabled ) CLASS TRadioGroup
 *-----------------------------------------------------------------------------*
-   IF HB_IsLogical( lEnabled )
+   If HB_IsLogical( lEnabled )
       ::Super:Enabled := lEnabled
       AEVAL( ::aControls, { |o| o:Enabled := o:Enabled } )
-   ENDIF
+   EndIf
 RETURN ::Super:Enabled
 
 *-----------------------------------------------------------------------------*
@@ -270,30 +274,50 @@ METHOD SetFocus() CLASS TRadioGroup
 *-----------------------------------------------------------------------------*
 Local nValue
    nValue := ::Value
-   If nValue >= 1 .AND. nValue <= Len( ::aControls )
-      ::aControls[ nValue ]:SetFocus()
+   If nValue >= 1 .AND. nValue <= Len( ::aOptions )
+      ::aOptions[ nValue ]:SetFocus()
    Else
-      ::aControls[ 1 ]:SetFocus()
+      ::aOptions[ 1 ]:SetFocus()
    EndIf
 Return Self
 
 *-----------------------------------------------------------------------------*
 METHOD Visible( lVisible ) CLASS TRadioGroup
 *-----------------------------------------------------------------------------*
-   IF HB_IsLogical( lVisible )
+   If HB_IsLogical( lVisible )
       ::Super:Visible := lVisible
-      IF lVisible
+      If lVisible
          AEVAL( ::aControls, { |o| o:Visible := o:Visible } )
-      ELSE
+      Else
          AEVAL( ::aControls, { |o| o:ForceHide() } )
-      ENDIF
-   ENDIF
+      EndIf
+   EndIf
 RETURN ::lVisible
 
 *-----------------------------------------------------------------------------*
 METHOD Caption( nItem, uValue ) CLASS TRadioGroup
 *-----------------------------------------------------------------------------*
-Return ( ::aControls[ nItem ]:Caption := uValue )
+Return ( ::aOptions[ nItem ]:Caption := uValue )
+
+*-----------------------------------------------------------------------------*
+METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TRadioGroup
+*-----------------------------------------------------------------------------*
+   If nMsg == WM_LBUTTONDBLCLK
+      If HB_IsBlock( ::aControls[ 1 ]:OnDblClick )
+         ::aControls[ 1 ]:DoEvent( ::aControls[ 1 ]:OnDblClick, "DBLCLICK" )
+      Else
+         ::DoEvent( ::OnDblClick, "DBLCLICK" )
+      EndIf
+      Return nil
+   ElseIf nMsg == WM_RBUTTONUP
+      If HB_IsBlock( ::aControls[ 1 ]:OnRClick )
+         ::aControls[ 1 ]:DoEvent( ::aControls[ 1 ]:OnRClick, "RCLICK" )
+      Else
+         ::DoEvent( ::OnRClick, "RCLICK" )
+      EndIf
+      Return nil
+   EndIf
+RETURN ::Super:Events( hWnd, nMsg, wParam, lParam )
 
 *-----------------------------------------------------------------------------*
 METHOD Events_Command( wParam ) CLASS TRadioGroup
@@ -302,8 +326,8 @@ Local Hi_wParam := HIWORD( wParam )
 Local lTab
    If Hi_wParam == BN_CLICKED
       lTab := ::TabStop .AND. ::Value <= 1
-      If ! lTab == ::aControls[ 1 ]:TabStop
-         ::aControls[ 1 ]:TabStop := lTab
+      If ! lTab == ::aOptions[ 1 ]:TabStop
+         ::aOptions[ 1 ]:TabStop := lTab
       EndIf
       ::DoEvent( ::OnChange, "CHANGE" )
       Return nil
@@ -311,12 +335,36 @@ Local lTab
 Return ::Super:Events_Command( wParam )
 
 
+
+
+
 CLASS TRadioItem FROM TLabel
    DATA Type          INIT "RADIOITEM" READONLY
    DATA IconWidth     INIT 19
 
+   METHOD Events
    METHOD Events_Command
 ENDCLASS
+
+*-----------------------------------------------------------------------------*
+METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TRadioItem
+*-----------------------------------------------------------------------------*
+   If nMsg == WM_LBUTTONDBLCLK
+      If HB_IsBlock( ::OnDblClick )
+         ::DoEvent( ::OnDblClick, "DBLCLICK" )
+      Else
+         ::Container:DoEvent( ::Container:OnDblClick, "DBLCLICK" )
+      EndIf
+      Return nil
+   ElseIf nMsg == WM_RBUTTONUP
+      If HB_IsBlock( ::OnRClick )
+         ::DoEvent( ::OnRClick, "RCLICK" )
+      Else
+         ::Container:DoEvent( ::Container:OnRClick, "RCLICK" )
+      EndIf
+      Return nil
+   EndIf
+RETURN ::Super:Events( hWnd, nMsg, wParam, lParam )
 
 *-----------------------------------------------------------------------------*
 METHOD Events_Command( wParam ) CLASS TRadioItem
