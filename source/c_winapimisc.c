@@ -1,12 +1,12 @@
 /*
- * $Id: c_winapimisc.c,v 1.9 2008-10-27 02:27:45 declan2005 Exp $
+ * $Id: c_winapimisc.c,v 1.10 2008-10-29 15:29:01 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Windows API calls
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -109,9 +109,12 @@
 #include "hbapiitm.h"
 #include "winreg.h"
 #include "tchar.h"
-#include "../include/oohg.h"
-
 #include "hbapifs.h"
+#include "oohg.h"
+
+#ifdef __XHARBOUR__
+   #define HB_FHANDLE FHANDLE
+#endif
 
 BOOL SysRefresh( void );
 
