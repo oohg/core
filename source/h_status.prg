@@ -1,12 +1,12 @@
 /*
- * $Id: h_status.prg,v 1.29 2008-01-21 00:16:47 guerra000 Exp $
+ * $Id: h_status.prg,v 1.30 2008-10-31 06:29:50 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG statusbar functions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -113,6 +113,7 @@ CLASS TMessageBar FROM TControl
    METHOD Caption(nItem,cCaption)        BLOCK { |Self,nItem,cCaption| ::Item( nItem, cCaption ) }
    METHOD ItemWidth
    METHOD ItemCount        BLOCK { |Self| GetItemCount( ::hWnd ) }
+   METHOD ItemToolTip
 
    METHOD BackColor        SETGET
 
@@ -122,6 +123,8 @@ CLASS TMessageBar FROM TControl
    METHOD Events_Notify
    METHOD Events_Size
    METHOD RefreshData
+
+   EMPTY( _OOHG_AllVars )
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -241,6 +244,14 @@ METHOD ItemWidth( nItem, nWidth ) CLASS TMessageBar
 Return GetItemWidth( ::hWnd, nItem )
 
 *-----------------------------------------------------------------------------*
+METHOD ItemToolTip( nItem, cValue ) CLASS TMessageBar
+*-----------------------------------------------------------------------------*
+   IF VALTYPE( cValue ) $ "CM"
+      SetItemToolTip( ::hWnd, cValue, nItem - 1 )
+   ENDIF
+RETURN GetItemToolTip( ::hWnd, nItem - 1 )
+
+*-----------------------------------------------------------------------------*
 METHOD SetClock( Width, ToolTip, action, lAmPm ) CLASS TMessageBar
 *-----------------------------------------------------------------------------*
 local nrItem
@@ -250,10 +261,10 @@ local nrItem
    EndIf
    If ValType( Width ) != 'N'
       Width := If( lAmPm, 95, 70 )
-	EndIf
+   EndIf
    If ! ValType( ToolTip ) $ "CM"
-		ToolTip := 'Clock'
-	EndIf
+      ToolTip := 'Clock'
+   EndIf
 
    If ! lAmPm
       nrItem := ::AddItem( Time(), Width, action, ToolTip )
@@ -285,15 +296,15 @@ METHOD SetKeybrd( Width , ToolTip , action ) CLASS TMessageBar
 *-----------------------------------------------------------------------------*
 local nrItem1 , nrItem2 , nrItem3
 
-	If ValType (Width) == 'U'
+   If ValType (Width) == 'U'
       Width := 45
-	EndIf
-	If ValType (ToolTip) == 'U'
-		ToolTip := ''
-	EndIf
-	If ValType (Action) == 'U'
-		Action := ''
-	EndIf
+   EndIf
+   If ValType (ToolTip) == 'U'
+      ToolTip := ''
+   EndIf
+   If ValType (Action) == 'U'
+      Action := ''
+   EndIf
 
    nrItem1 := ::AddItem( "Num",  GetTextWidth( NIL, "Num",  ::FontHandle ) + 36, action, ToolTip, if( IsNumLockActive(),  "zzz_led_on", "zzz_led_off" ) )
    nrItem2 := ::AddItem( "Caps", GetTextWidth( NIL, "Caps", ::FontHandle ) + 36, action, ToolTip, if( IsCapsLockActive(), "zzz_led_on", "zzz_led_off" ) )
@@ -443,16 +454,16 @@ HB_FUNC( GETITEMBAR )
 HB_FUNC( INITITEMBAR )
 {
    HWND  hWndSB;
-	int   cSpaceInBetween = 8;
+   int   cSpaceInBetween = 8;
    int   ptArray[ NUM_OF_PARTS ];   // Array defining the number of parts/sections
-	int   nrOfParts = 0;
+   int   nrOfParts = 0;
    int   n ;
-	RECT  rect;
-	HDC   hDC;
-	WORD  displayFlags;
+   RECT  rect;
+   HDC   hDC;
+   WORD  displayFlags;
    HICON hIcon;
-	int   cx;
-	int   cy;
+   int   cx;
+   int   cy;
 
    hWndSB = HWNDparam( 1 );
    switch( hb_parni( 8 ) )
@@ -463,13 +474,12 @@ HB_FUNC( INITITEMBAR )
       default : displayFlags = 0;
    }
 
-
    if ( hb_parnl( 5 ) )
    {
       nrOfParts = SendMessage( hWndSB, SB_GETPARTS, 0, 0 );
       SendMessage( hWndSB, SB_GETPARTS, NUM_OF_PARTS, ( LPARAM )( LPINT ) ptArray );
-	}
-   nrOfParts ++ ;
+   }
+   nrOfParts++;
 
    hDC = GetDC( hWndSB );
    GetClientRect( hWndSB, &rect );
@@ -503,24 +513,24 @@ HB_FUNC( INITITEMBAR )
    SendMessage( hWndSB, SB_SETPARTS, nrOfParts, ( LPARAM ) ( LPINT ) ptArray );
 
    cy = rect.bottom - rect.top - 4;
-	cx = cy;
+   cx = cy;
 
-	hIcon = (HICON)LoadImage(0, hb_parc(6),IMAGE_ICON ,cx,cy , LR_LOADFROMFILE );
+   hIcon = ( HICON ) LoadImage( 0, hb_parc( 6 ), IMAGE_ICON, cx, cy, LR_LOADFROMFILE );
 
-	if (hIcon==NULL)
-	{
-		hIcon = (HICON)LoadImage(GetModuleHandle(NULL),hb_parc(6),IMAGE_ICON ,cx,cy, 0 );
-	}
+   if( ! hIcon )
+   {
+      hIcon = (HICON)LoadImage(GetModuleHandle(NULL),hb_parc(6),IMAGE_ICON ,cx,cy, 0 );
+   }
 
-	if (!(hIcon ==NULL))
-	{
-		SendMessage(hWndSB,SB_SETICON,(WPARAM)nrOfParts-1, (LPARAM)hIcon );
-	}
+   if( hIcon == NULL )
+   {
+      SendMessage( hWndSB, SB_SETICON, ( WPARAM ) nrOfParts - 1, ( LPARAM ) hIcon );
+   }
 
    SendMessage( hWndSB, SB_SETTEXT, ( nrOfParts - 1 ) | displayFlags, ( LPARAM ) hb_parc( 2 ) );
    SendMessage( hWndSB, SB_SETTIPTEXT, ( WPARAM ) nrOfParts - 1, ( LPARAM ) hb_parc( 7 ) );
 
-	hb_retni( nrOfParts );
+   hb_retni( nrOfParts );
 }
 
 //////////// to check...
@@ -549,6 +559,23 @@ HB_FUNC( GETITEMWIDTH )
       hb_xfree( piItems );
    }
    hb_retni( iSize );
+}
+
+HB_FUNC( SETITEMTOOLTIP )
+{
+   SendMessage( HWNDparam( 1 ), SB_SETTIPTEXT, hb_parni( 3 ), ( LPARAM ) hb_parc( 2 ) );
+}
+
+HB_FUNC( GETITEMTOOLTIP )
+{
+   char cBuffer[ 1024 ];
+
+   cBuffer[ 0 ] = 0;
+   SendMessage( HWNDparam( 1 ), SB_GETTIPTEXT,
+                MAKEWPARAM( hb_parni( 2 ), 1023 ),
+                ( LPARAM ) cBuffer );
+
+   hb_retc( cBuffer );
 }
 
 //////////// to check...
@@ -598,35 +625,30 @@ HB_FUNC( REFRESHITEMBAR )   // ( hWnd, aWidths, lAutoAdjust )
 //////////// to check...
 HB_FUNC_EXTERN( SETSTATUSITEMICON )
 {
+   HWND  hwnd;
+   RECT  rect;
+   HICON hIcon ;
+   int   cx;
+   int   cy;
 
-	HWND  hwnd;
-	RECT  rect;
-	HICON hIcon ;
-	int   cx;
-	int   cy;
+   hwnd = HWNDparam( 1 );
 
-    hwnd = HWNDparam( 1 );
+   // Unloads from memory current icon
+   DestroyIcon( ( HICON ) SendMessage( hwnd, SB_GETICON, ( WPARAM ) hb_parni( 2 ) - 1, ( LPARAM ) 0 ) );
 
-	// Unloads from memory current icon
+   //
+   GetClientRect( hwnd, &rect );
+   cy = rect.bottom - rect.top-4;
+   cx = cy;
 
-	DestroyIcon ( (HICON) SendMessage(hwnd,SB_GETICON,(WPARAM) hb_parni(2)-1, (LPARAM) 0 ) ) ;
+   hIcon = ( HICON ) LoadImage( GetModuleHandle( NULL ), hb_parc( 3 ), IMAGE_ICON, cx, cy, 0 );
 
-	//
+   if( ! hIcon )
+   {
+      hIcon = ( HICON ) LoadImage( 0, hb_parc( 3 ), IMAGE_ICON, cx, cy, LR_LOADFROMFILE );
+   }
 
-	GetClientRect(hwnd, &rect);
-
-	cy = rect.bottom - rect.top-4;
-	cx = cy;
-
-	hIcon = (HICON)LoadImage(GetModuleHandle(NULL),hb_parc(3),IMAGE_ICON ,cx,cy, 0 );
-
-	if (hIcon==NULL)
-	{
-		hIcon = (HICON)LoadImage(0, hb_parc(3),IMAGE_ICON ,cx,cy, LR_LOADFROMFILE );
-	}
-
-	SendMessage(hwnd,SB_SETICON,(WPARAM) hb_parni(2)-1, (LPARAM)hIcon );
-
+   SendMessage( hwnd, SB_SETICON, ( WPARAM ) hb_parni( 2 ) - 1, ( LPARAM ) hIcon );
 }
 
 HB_FUNC( KEYTOGGLE )

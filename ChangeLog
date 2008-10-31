@@ -1,11 +1,17 @@
 /*
- * $Id: ChangeLog,v 1.551 2008-10-29 15:29:01 guerra000 Exp $
+ * $Id: ChangeLog,v 1.552 2008-10-31 06:29:49 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-10-31 00:29 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_status.prg
+    + ::SetToolTip and ::GetToolTip methods added.
+  * source/h_controlmisc.prg
+    + Added ROW and COL parameters to CLICK event.
 
 2008-10-27 09:11 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source/c_winapimisc.c

@@ -1,12 +1,12 @@
 /*
- * $Id: h_controlmisc.prg,v 1.100 2008-10-05 15:37:27 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.101 2008-10-31 06:29:49 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Miscelaneous PRG controls functions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -91,10 +91,10 @@
 	Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-#include 'oohg.ch'
+#include "oohg.ch"
 #include "hbclass.ch"
-#include 'common.ch'
-#include 'i_windefs.ch'
+#include "common.ch"
+#include "i_windefs.ch"
 
 STATIC _OOHG_aControlhWnd := {}, _OOHG_aControlObjects := {}
 STATIC _OOHG_aControlIds := {},  _OOHG_aControlNames := {}
@@ -1807,11 +1807,15 @@ HB_FUNC_STATIC( TCONTROL_EVENTS_COLOR )   // METHOD Events_Color( wParam, nDefCo
 METHOD Events_Command( wParam ) CLASS TControl
 *-----------------------------------------------------------------------------*
 Local Hi_wParam := HIWORD( wParam )
+Local aPos
 
    If Hi_wParam == BN_CLICKED .OR. Hi_wParam == STN_CLICKED  // Same value.....
       If ! ::NestedClick
          ::NestedClick := ! _OOHG_NestedSameEvent()
-         ::DoEvent( ::OnClick, "CLICK" )
+         aPos := GetCursorPos()
+         aPos[ 1 ] -= GetWindowRow( ::hWnd )
+         aPos[ 2 ] -= GetWindowCol( ::hWnd )
+         ::DoEvent( ::OnClick, "CLICK", aPos )
          ::NestedClick := .F.
       EndIf
 
