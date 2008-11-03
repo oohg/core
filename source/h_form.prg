@@ -1,11 +1,11 @@
 /*
- * $Id: h_form.prg,v 1.6 2008-10-24 23:21:31 guerra000 Exp $
+ * $Id: h_form.prg,v 1.7 2008-11-03 00:22:28 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Forms handling functions
  *
- * Copyright 2008 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -331,7 +331,7 @@ Local Formhandle
    ASSIGN ::MaxHeight      VALUE maxheight     TYPE "N"
 
    If ! Valtype( aRGB ) $ 'AN'
-      aRGB := GetSysColor( COLOR_3DFACE )
+      aRGB := -1
    Endif
 
    If HB_IsLogical( helpbutton ) .AND. helpbutton
@@ -836,11 +836,6 @@ HB_FUNC_STATIC( TFORM_BACKCOLOR )
          if( oSelf->lBackColor != -1 )
          {
             oSelf->BrushHandle = CreateSolidBrush( oSelf->lBackColor );
-            SetClassLong( oSelf->hWnd, GCL_HBRBACKGROUND, ( long ) oSelf->BrushHandle );
-         }
-         else
-         {
-            SetClassLong( oSelf->hWnd, GCL_HBRBACKGROUND, ( long )( COLOR_BTNFACE + 1 ) );
          }
          RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
       }
@@ -1059,6 +1054,18 @@ HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
 
    switch( message )
    {
+      case WM_ERASEBKGND:
+         {
+            POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+            HBRUSH hBrush;
+            RECT rect;
+            GetClientRect( hWnd, &rect );
+            hBrush = oSelf->BrushHandle ? oSelf->BrushHandle : ( HBRUSH ) ( COLOR_BTNFACE + 1 );
+            FillRect( ( HDC ) wParam, &rect, hBrush );
+            hb_retni( 1 );
+         }
+         break;
+
       case WM_LBUTTONUP:
          _OOHG_SetMouseCoords( pSelf, LOWORD( lParam ), HIWORD( lParam ) );
          _OOHG_DoEvent( pSelf, s_OnClick, "CLICK", NULL );
@@ -2009,7 +2016,6 @@ CLASS TFormMDIClient FROM TFormInternal
    METHOD Define
    METHOD DefWindowProc(nMsg,wParam,lParam)       BLOCK { |Self,nMsg,wParam,lParam| DefMDIChildProc( ::hWnd, nMsg, wParam, lParam ) }
    METHOD Events_Size
-   METHOD BackColor           SETGET
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -2065,43 +2071,6 @@ LOCAL aClientRect
    GetClientRect( ::Parent:hWnd, aClientRect )
    ::SizePos( aClientRect[ 2 ], aClientRect[ 1 ], aClientRect[ 3 ] - aClientRect[ 1 ], aClientRect[ 4 ] - aClientRect[ 2 ] )
 RETURN nil
-
-#pragma BEGINDUMP
-
-static long   TFormMdiClient_BackColor   = -1;
-static HBRUSH TFormMdiClient_BrushHandle = NULL;
-
-HB_FUNC_STATIC( TFORMMDICLIENT_BACKCOLOR )
-{
-   PHB_ITEM pSelf = hb_stackSelfItem();
-   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
-
-   if( _OOHG_DetermineColorReturn( hb_param( 1, HB_IT_ANY ), &TFormMdiClient_BackColor, ( hb_pcount() >= 1 ) ) )
-   {
-      if( TFormMdiClient_BrushHandle )
-      {
-         DeleteObject( TFormMdiClient_BrushHandle );
-         TFormMdiClient_BrushHandle = 0;
-      }
-      if( ValidHandler( oSelf->hWnd ) )
-      {
-         if( TFormMdiClient_BackColor != -1 )
-         {
-            TFormMdiClient_BrushHandle = CreateSolidBrush( TFormMdiClient_BackColor );
-            SetClassLong( oSelf->hWnd, GCL_HBRBACKGROUND, ( long ) TFormMdiClient_BrushHandle );
-         }
-         else
-         {
-            SetClassLong( oSelf->hWnd, GCL_HBRBACKGROUND, ( long )( COLOR_BTNFACE + 1 ) );
-         }
-         RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
-      }
-   }
-
-   // Return value was set in _OOHG_DetermineColorReturn()
-}
-
-#pragma ENDDUMP
 
 
 
