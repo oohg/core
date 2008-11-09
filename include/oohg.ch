@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.ch,v 1.10 2007-07-01 19:37:04 guerra000 Exp $
+ * $Id: oohg.ch,v 1.11 2008-11-09 12:36:48 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -157,4 +157,8 @@
 #include "i_scroll.ch"
 #include "common.ch"
 
+#endif
+
+#ifndef __XHARBOUR__
+REQUEST DBFNTX,DBFDBT
 #endif
