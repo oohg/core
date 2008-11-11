@@ -1,12 +1,12 @@
 /*
- * $Id: i_checkbox.ch,v 1.6 2007-09-06 04:59:51 guerra000 Exp $
+ * $Id: i_checkbox.ch,v 1.7 2008-11-11 06:04:48 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Checkbox definitions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -116,6 +116,7 @@
 		[ <invisible: INVISIBLE> ] ;
 		[ <notabstop: NOTABSTOP> ] ;
                 [ <autosize: AUTOSIZE > ] ;
+                [ <disabled: DISABLED > ] ;
                 [ SUBCLASS <subclass> ]           ;
                 [ <rtl: RTL> ]                    ;
 	=>;
@@ -123,4 +124,5 @@
                 Define( <(name)>, <(parent)>, <col>, <row>, <caption>, <value>, <f>, <n>, ;
                 <tooltip>, <{change}>, [<w>], [<h>], <{lostfocus}>, <{gotfocus}>, <helpid>, ;
                 <.invisible.>, <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, ;
-                <(field)>, <backcolor>, <fontcolor>, <.transparent.>, <.autosize.>, <.rtl.> )
+                <(field)>, <backcolor>, <fontcolor>, <.transparent.>, <.autosize.>, <.rtl.>, ;
+                <.disabled.> )

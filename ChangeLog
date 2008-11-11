@@ -1,11 +1,20 @@
 /*
- * $Id: ChangeLog,v 1.553 2008-11-03 00:22:28 guerra000 Exp $
+ * $Id: ChangeLog,v 1.554 2008-11-11 06:04:47 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2008-11-11 00:04 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_label.ch
+    + ONCLICK and ON CLICK clauses added to label (same as ACTION).
+  * include/i_checkbox.ch
+  * source/h_checkbox.prg
+    + DISABLED clause added to checkbox.
+  * source/h_textarray.prg
+    ! Fixed BACKCOLOR initialization.
 
 2008-11-02 18:22 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_form.prg

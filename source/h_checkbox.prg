@@ -1,12 +1,12 @@
 /*
- * $Id: h_checkbox.prg,v 1.23 2008-02-19 15:03:25 guerra000 Exp $
+ * $Id: h_checkbox.prg,v 1.24 2008-11-11 06:04:48 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG checkbox functions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -107,6 +107,8 @@ CLASS TCheckBox FROM TLabel
    METHOD Define
    METHOD Value       SETGET
    METHOD Events_Command
+
+   EMPTY( _OOHG_AllVars )
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -114,7 +116,7 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
                fontsize, tooltip, changeprocedure, w, h, lostfocus, gotfocus, ;
                HelpId, invisible, notabstop, bold, italic, underline, ;
                strikeout, field, backcolor, fontcolor, transparent, autosize, ;
-               lRtl ) CLASS TCheckBox
+               lRtl, lDisabled ) CLASS TCheckBox
 *-----------------------------------------------------------------------------*
 Local ControlHandle, nStyle := 0, nStyleEx := 0
 
@@ -135,7 +137,7 @@ Local ControlHandle, nStyle := 0, nStyleEx := 0
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor,, lRtl )
 
-   nStyle := ::InitStyle( ,, Invisible, NoTabStop ) + BS_AUTOCHECKBOX
+   nStyle := ::InitStyle( ,, Invisible, NoTabStop, lDisabled ) + BS_AUTOCHECKBOX
    If ::Transparent
       nStyleEx += WS_EX_TRANSPARENT
    EndIf

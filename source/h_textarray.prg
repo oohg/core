@@ -1,12 +1,12 @@
 /*
- * $Id: h_textarray.prg,v 1.14 2008-01-14 00:58:35 guerra000 Exp $
+ * $Id: h_textarray.prg,v 1.15 2008-11-11 06:04:48 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * TTextArray control source code
  *
- * Copyright 2006 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2006-2008 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -75,6 +75,8 @@ CLASS TTextArray FROM TControl
    METHOD QQOut(t)             BLOCK { |Self,t| ::Write( t ) }
    METHOD QOut(t)              BLOCK { |Self,t| ::Write( CHR( 13 ) + CHR( 10 ) ) , ::Write( t ) }
    METHOD DevPos
+
+   EMPTY( _OOHG_AllVars )
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -89,6 +91,10 @@ Local ControlHandle, nStyle, nStyleEx
    ASSIGN ::nRow        VALUE y TYPE "N"
    ASSIGN ::nWidth      VALUE w TYPE "N"
    ASSIGN ::nHeight     VALUE h TYPE "N"
+
+   IF BackColor == NIL
+      BackColor := GetSysColor( COLOR_3DFACE )
+   ENDIF
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, , lRtl )
 

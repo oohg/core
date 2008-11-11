@@ -1,5 +1,5 @@
 /*
- * $Id: i_label.ch,v 1.8 2006-11-16 14:09:27 guerra000 Exp $
+ * $Id: i_label.ch,v 1.9 2008-11-11 06:04:48 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -95,7 +95,7 @@
         [ OBJ <obj> ] ;
 	[ <dummy1: OF, PARENT> <parent> ] ;
 	[ VALUE <value> ]   ;
-	[ ACTION <action> ] ;
+        [ <dummy: ACTION, ON CLICK, ONCLICK> <action> ] ;
 	[ WIDTH <width> ]   ;
 	[ HEIGHT <height> ]   ;
 	[ <autosize : AUTOSIZE> ] ;
