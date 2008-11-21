@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.85 2008-09-07 23:12:56 guerra000 Exp $
+* $Id: h_print.prg,v 1.86 2008-11-21 21:53:25 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -1315,6 +1315,10 @@ CREATE CLASS TDOSPRINT FROM TPRINTBASE
 DATA cString INIT ""
 DATA cbusca INIT ""
 DATA nOccur INIT 0
+DATA cimpname INIT ""
+DATA cportname INIT ""
+DATA ctipoimp INIT ""
+DATA liswin   INIT .F.
 
 *-------------------------
 METHOD initx()
@@ -1508,7 +1512,7 @@ RETURN self
 *-------------------------
 METHOD selprinterx( lselect , lpreview /* , llandscape , npapersize ,cprinterx */ ) CLASS TDOSPRINT
 *-------------------------
-Empty( lSelect )
+/////Empty( lSelect )
 DO WHILE file(::tempfile)
    ::tempfile:=gettempdir()+"T"+alltrim(str(int(hb_random(999999)),8))+".prn"
 ENDDO
@@ -1516,8 +1520,9 @@ IF lpreview
    ::impreview:=.T.
 ENDIF
 //////////////////////////
+if lselect
 
-
+endif
 /////////////////////////
 RETURN self
 
@@ -2452,27 +2457,32 @@ aadd(::aPaper,{DMPAPER_ENV_B5      , "B5"       })
 aadd(::aPaper,{DMPAPER_ENV_MONARCH , "MONARCH"  })
 
 ::cprintlibrary:="PDFPRINT"
-
 RETURN self
 
 
 *-------------------------
-METHOD BEGINDOCx () CLASS TPDFPRINT
+METHOD BEGINDOCx (docname) CLASS TPDFPRINT
 *-------------------------
-local cpdfname:= Getmydocumentsfolder()+"\pdfprint.pdf"
-::oPdf := TPDF():init(cpdfname)
+if hb_isstring( docname)
+  ::cDocument:= docname
+else
+  ::cDocument := Getmydocumentsfolder()+"\pdfprint.pdf"
+endif
+
+::oPdf := TPDF():init(::cDocument)
 RETURN self
 
 
 *-------------------------
 METHOD ENDDOCx() CLASS TPDFPRINT
 *-------------------------
-local cMydoc := getmydocumentsfolder()
 ::oPdf:Close()
-IF ShellExecute(0, "open", "rundll32.exe", "url.dll,FileProtocolHandler "+ cMydoc+ "\Pdfprint.pdf", ,1) <=32
-     MSGINFO("html Extension not asociated"+CHR(13)+CHR(13)+ ;
-     "File saved in:"+CHR(13)+cMydoc+"\pdfprint.pdf")
+IF ::lPreview
+IF ShellExecute(0, "open", "rundll32.exe", "url.dll,FileProtocolHandler "+ ::cDocument , ,1) <=32
+     MSGINFO("PDF Extension not asociated"+CHR(13)+CHR(13)+ ;
+     "File saved in:"+CHR(13)+::cDocument)
 ENDIF
+endif
 RETURN self
 
 
@@ -2539,7 +2549,7 @@ ELSE
       cFont:="HELVETICA"
    ELSE
       cFont:="COURIER"
-   ENDIF 
+   ENDIF
 ENDIF 
 
 
@@ -2910,5 +2920,3 @@ IF ::cunits="MM"
 ENDIF
 AADD(::alincelda,{nlin,ncol,ctext,nsize,calign,cfont,lbold,acolor})
 return self
-
-
