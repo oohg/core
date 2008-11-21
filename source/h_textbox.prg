@@ -1,11 +1,11 @@
 /*
- * $Id: h_textbox.prg,v 1.54 2008-08-25 02:16:52 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.55 2008-11-21 06:48:06 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG textbox functions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -121,6 +121,8 @@ CLASS TText FROM TLabel
    METHOD MaxLength   SETGET
    METHOD DoAutoSkip
    METHOD Events_Command
+
+   EMPTY( _OOHG_AllVars )
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -180,7 +182,7 @@ local break
 
    nStyleEx += IF( !HB_IsLogical( lNoBorder ) .OR. ! lNoBorder, WS_EX_CLIENTEDGE, 0 )
 
-	// Creates the control window.
+   // Creates the control window.
    ::SetSplitBoxInfo( Break, )
    nControlHandle := InitTextBox( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, ::nMaxLength, ::lRtl, nStyleEx )
 
@@ -253,7 +255,7 @@ Return IsWindowStyle( ::hWnd, ES_READONLY )
 METHOD MaxLength( nLen ) CLASS TText
 *------------------------------------------------------------------------------*
    IF HB_IsNumeric( nLen )
-      ::nMaxLength := IF( nLen > 1, nLen, 0 )
+      ::nMaxLength := IF( nLen >= 1, nLen, 0 )
       SendMessage( ::hWnd, EM_LIMITTEXT, ::nMaxLength, 0 )
    ENDIF
 Return SendMessage( ::hWnd, EM_GETLIMITTEXT, 0, 0 )
