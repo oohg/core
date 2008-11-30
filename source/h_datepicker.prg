@@ -1,11 +1,11 @@
 /*
- * $Id: h_datepicker.prg,v 1.14 2008-08-31 20:40:53 guerra000 Exp $
+ * $Id: h_datepicker.prg,v 1.15 2008-11-30 16:33:27 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG date picker functions
  *
- * Copyright 2008 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -104,6 +104,8 @@ CLASS TDatePick FROM TControl
    METHOD Define
    METHOD Value            SETGET
    METHOD Events_Notify
+
+   EMPTY( _OOHG_AllVars )
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -252,6 +254,21 @@ Return ::Super:Events_Notify( wParam, lParam )
 
 
 #pragma BEGINDUMP
+
+#ifdef _WIN32_IE
+   #undef _WIN32_IE
+#endif
+#define _WIN32_IE      0x0500
+
+#ifdef HB_OS_WIN_32_USED
+   #undef HB_OS_WIN_32_USED
+#endif
+#define HB_OS_WIN_32_USED
+
+#ifdef _WIN32_WINNT
+   #undef _WIN32_WINNT
+#endif
+#define _WIN32_WINNT   0x0400
 
 #include <shlobj.h>
 #include <windows.h>
