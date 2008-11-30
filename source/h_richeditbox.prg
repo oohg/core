@@ -1,11 +1,11 @@
 /*
- * $Id: h_richeditbox.prg,v 1.18 2008-03-23 22:13:00 guerra000 Exp $
+ * $Id: h_richeditbox.prg,v 1.19 2008-11-30 16:23:36 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG rich edit functions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -104,6 +104,8 @@ CLASS TEditRich FROM TEdit
    METHOD Define
    METHOD BackColor   SETGET
    METHOD RichValue   SETGET
+
+   EMPTY( _OOHG_AllVars )
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -287,14 +289,14 @@ EDITSTREAMCALLBACK CALLBACK EditStreamCallbackOut( DWORD_PTR dwCookie, LPBYTE pb
          }
          else
          {
-            si->pNext = hb_xgrab( sizeof( struct StreamInfo ) );
+            si->pNext = (struct StreamInfo *) hb_xgrab( sizeof( struct StreamInfo ) );
             si = si->pNext;
             si->lSize = 0;
             si->pNext = NULL;
          }
       }
 
-      si->cBuffer = hb_xgrab( cb );
+      si->cBuffer = (char *) hb_xgrab( cb );
       memcpy( si->cBuffer, pbBuff, cb );
       si->lSize = cb;
       *pcb = cb;
@@ -310,7 +312,7 @@ HB_FUNC( RICHSTREAMOUT )   // hWnd
    LONG lSize, lRead;
    char *cBuffer;
 
-   si = hb_xgrab( sizeof( struct StreamInfo ) );
+   si = (struct StreamInfo *) hb_xgrab( sizeof( struct StreamInfo ) );
    si->lSize = 0;
    si->pNext = NULL;
 
@@ -335,7 +337,7 @@ HB_FUNC( RICHSTREAMOUT )   // hWnd
    }
    else
    {
-      cBuffer = hb_xgrab( lSize );
+      cBuffer = (char *) hb_xgrab( lSize );
       lRead = 0;
       while( si )
       {

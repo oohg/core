@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.22 2008-07-16 18:36:01 declan2005 Exp $
+ * $Id: winprint.prg,v 1.23 2008-11-30 16:23:36 guerra000 Exp $
  */
 // -----------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -155,6 +155,8 @@ CLASS HBPrinter
 // new method
    METHOD PrintOption()
 
+   EMPTY( _OOHG_AllVars )
+   EMPTY( HBPRN )
 ENDCLASS
 
 
@@ -2084,9 +2086,9 @@ void rr_getdevmode()
         pi2->pDevMode=pDevMode2 ;
       }
     }
-    hfont  = GetCurrentObject(hDC,OBJ_FONT);
-    hbrush = GetCurrentObject(hDC,OBJ_BRUSH);
-    hpen   = GetCurrentObject(hDC,OBJ_PEN);
+    hfont  = (HFONT) GetCurrentObject(hDC,OBJ_FONT);
+    hbrush = (HBRUSH) GetCurrentObject(hDC,OBJ_BRUSH);
+    hpen   = (HPEN) GetCurrentObject(hDC,OBJ_PEN);
 }
 
 
@@ -2232,7 +2234,7 @@ HB_FUNC (RR_GETPRINTERS)
 
   EnumPrinters(flags, NULL,level, NULL, 0, &dwSize, &dwPrinters);
 
-  pBuffer = GlobalAlloc(GPTR, dwSize);
+  pBuffer = (char *) GlobalAlloc(GPTR, dwSize);
   if (pBuffer == NULL)
      {
             hb_retc(",,");
@@ -2245,7 +2247,7 @@ HB_FUNC (RR_GETPRINTERS)
              hb_retc(",,");
              return;
      }
-  cBuffer = GlobalAlloc(GPTR, dwPrinters*256);
+  cBuffer = (char *) GlobalAlloc(GPTR, dwPrinters*256);
 
   if (osvi.dwPlatformId == VER_PLATFORM_WIN32_NT)
      pInfo4 = (PRINTER_INFO_4*)pBuffer;
@@ -2318,10 +2320,10 @@ HB_FUNC (RR_DEVICECAPABILITIES)
   numpapers=DeviceCapabilities(pi2->pPrinterName,pi2->pPortName,DC_PAPERNAMES,NULL,NULL);
   if (numpapers>0)
   {
-     pBuffer = GlobalAlloc(GPTR,numpapers*64);
-     nBuffer = GlobalAlloc(GPTR,numpapers*sizeof(WORD));
-     sBuffer = GlobalAlloc(GPTR,numpapers*sizeof(POINT));
-     cBuffer = GlobalAlloc(GPTR,numpapers*128);
+     pBuffer = (char *) GlobalAlloc(GPTR,numpapers*64);
+     nBuffer = (char *) GlobalAlloc(GPTR,numpapers*sizeof(WORD));
+     sBuffer = (char *) GlobalAlloc(GPTR,numpapers*sizeof(POINT));
+     cBuffer = (char *) GlobalAlloc(GPTR,numpapers*128);
      DeviceCapabilities(pi2->pPrinterName,pi2->pPortName,DC_PAPERNAMES,pBuffer,pi2->pDevMode);
      DeviceCapabilities(pi2->pPrinterName,pi2->pPortName,DC_PAPERS,nBuffer,pi2->pDevMode);
      DeviceCapabilities(pi2->pPrinterName,pi2->pPortName,DC_PAPERSIZE,sBuffer,pi2->pDevMode);
@@ -2346,9 +2348,9 @@ HB_FUNC (RR_DEVICECAPABILITIES)
   }
   if (numbins>0)
   {
-     bnBuffer = GlobalAlloc(GPTR,numbins*24);
-     bwBuffer = GlobalAlloc(GPTR,numbins*sizeof(WORD));
-     bcBuffer = GlobalAlloc(GPTR,numbins*64);
+     bnBuffer = (char *) GlobalAlloc(GPTR,numbins*24);
+     bwBuffer = (char *) GlobalAlloc(GPTR,numbins*sizeof(WORD));
+     bcBuffer = (char *) GlobalAlloc(GPTR,numbins*64);
      DeviceCapabilities(pi2->pPrinterName,pi2->pPortName,DC_BINNAMES,bnBuffer,pi2->pDevMode);
      DeviceCapabilities(pi2->pPrinterName,pi2->pPortName,DC_BINS,bwBuffer,pi2->pDevMode);
      for ( i = 0; i < numbins; i++)
@@ -2562,7 +2564,7 @@ HB_FUNC (RR_CREATEFONT)
                                 DEFAULT_QUALITY, FF_DONTCARE, FontName) ;
         if (FontWidth<0)
                 {
-                 oldfont=SelectObject(hDC,hxfont);
+                 oldfont = (HFONT) SelectObject(hDC,hxfont);
                  GetTextMetrics(hDC,&tm);
                  SelectObject(hDC,oldfont);
                  DeleteObject(hxfont);
@@ -2637,7 +2639,7 @@ HB_FUNC (RR_TEXTOUT)
    SIZE szMetric;
    int lspace = hb_parni(4);
 
-   if (xfont!=0)  prevfont=SelectObject(hDC ,(HFONT) xfont);
+   if (xfont!=0)  prevfont = (HFONT) SelectObject(hDC ,(HFONT) xfont);
    if (textjust>0)
        {
          GetTextExtentPoint32(hDC, hb_parc(1), hb_parclen(1), &szMetric);
@@ -2659,7 +2661,7 @@ HB_FUNC (RR_DRAWTEXT)
    RECT rect;
    int iAlign;
    SetRect(&rect,hb_parnl(1,2),hb_parnl(1,1),hb_parnl(2,2),hb_parnl(2,1));
-   if (xfont!=0)  prevfont=SelectObject(hDC ,(HFONT) xfont);
+   if (xfont!=0)  prevfont = (HFONT) SelectObject(hDC ,(HFONT) xfont);
    iAlign = GetTextAlign( hDC );
    SetTextAlign( hDC, 0 );
    hb_retni(DrawText( hDC ,hb_parc(3),-1,&rect,hb_parni(4)));
@@ -2685,7 +2687,7 @@ HB_FUNC (RR_CLOSEMFILE)
  LPENHMETAHEADER eHeader;
  hh=CloseEnhMetaFile(hDC);
  size=GetEnhMetaFileBits(hh,0,NULL);
- eBuffer = GlobalAlloc(GPTR, (DWORD) size);
+ eBuffer = (char *) GlobalAlloc(GPTR, (DWORD) size);
  GetEnhMetaFileBits(hh,size, ( BYTE * ) eBuffer);
  eHeader=(LPENHMETAHEADER) eBuffer;
       eHeader->szlDevice.cx=devcaps[4];
@@ -2887,7 +2889,7 @@ LPVOID rr_loadpicturefromresource(char * resname,LONG *lwidth,LONG *lheight)
  LPVOID lpVoid ;
  HINSTANCE hinstance=GetModuleHandle(NULL);
  int nSize ;
-    hbmpx = LoadImage(GetModuleHandle(NULL),resname,IMAGE_BITMAP,0,0,LR_CREATEDIBSECTION);
+    hbmpx = (HBITMAP) LoadImage(GetModuleHandle(NULL),resname,IMAGE_BITMAP,0,0,LR_CREATEDIBSECTION);
     if (hbmpx!=NULL)
      {
         picd.cbSizeofstruct=sizeof(PICTDESC);
@@ -2967,7 +2969,7 @@ LPVOID  rr_loadpicture(char * filename,LONG * lwidth,LONG * lheight)
     return iPicture;
 }
 
-HB_FUNC (RR_DRAWPICTURE)
+HB_FUNC( RR_DRAWPICTURE )
 {
     IPicture *ipic;
     int x,y,xe,ye;
@@ -2985,11 +2987,18 @@ HB_FUNC (RR_DRAWPICTURE)
     int lw,lh;
     BOOL bImageSize = hb_parl( 5 );
 
-    ipic=rr_loadpicture(hb_parc(1),&lwidth,&lheight);
-    if (ipic==NULL)
-         ipic=rr_loadpicturefromresource(hb_parc(1),&lwidth,&lheight);
-    if (ipic==NULL)
-             return ;
+   if( hb_parclen( 1 ) )
+   {
+      ipic = (IPicture *) rr_loadpicture( hb_parc( 1 ), &lwidth, &lheight );
+      if( ! ipic )
+      {
+         ipic = (IPicture *) rr_loadpicturefromresource( hb_parc( 1 ), &lwidth, &lheight );
+      }
+      if( ! ipic )
+      {
+         return ;
+      }
+   }
   lw=MulDiv(lwidth,devcaps[6],2540);
   lh=MulDiv(lheight,devcaps[5],2540);
   if (dc==0)  { dc=(int) ((float) dr*lw/lh); }
@@ -3387,7 +3396,7 @@ HB_FUNC (RR_LALABYE)
 HB_FUNC( RR_LOADSTRING )
 {
   char *cBuffer;
-  cBuffer = GlobalAlloc(GPTR,255);
+  cBuffer = (char *) GlobalAlloc(GPTR,255);
   LoadString(GetModuleHandle(NULL),hb_parni(1),(LPSTR) cBuffer,254);
   hb_retc(cBuffer);
   GlobalFree(cBuffer);

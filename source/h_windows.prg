@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.198 2008-10-22 06:50:52 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.199 2008-11-30 16:23:36 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -852,7 +852,7 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )
                }
             }
             iLen++;
-            pBuffer = hb_xgrab( iLen + 1 );
+            pBuffer = (BYTE *) hb_xgrab( iLen + 1 );
             pArray = hb_itemNew( NULL );
             hb_arrayNew( pArray, 3 );
             hb_itemPutNI( hb_arrayGetItemPtr( pArray, 2 ), mouse.x );

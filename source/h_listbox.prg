@@ -1,12 +1,12 @@
 /*
- * $Id: h_listbox.prg,v 1.14 2008-01-12 20:19:38 guerra000 Exp $
+ * $Id: h_listbox.prg,v 1.15 2008-11-30 16:23:36 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG listbox functions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -350,7 +350,7 @@ HB_FUNC( LISTBOXGETMULTISEL )
    if( n > 0 )
 	{
       hb_reta( n );
-      buffer = hb_xgrab( ( n + 1 ) * sizeof( int ) );
+      buffer = (int *) hb_xgrab( ( n + 1 ) * sizeof( int ) );
 
       SendMessage( hwnd, LB_GETSELITEMS, ( WPARAM ) n, ( LPARAM ) buffer );
 

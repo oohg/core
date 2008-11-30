@@ -1,5 +1,5 @@
 /*
- * $Id: c_image.c,v 1.18 2008-09-02 04:48:51 guerra000 Exp $
+ * $Id: c_image.c,v 1.19 2008-11-30 16:23:36 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -456,7 +456,7 @@ HB_FUNC( _OOHG_BITMAPFROMFILE )   // ( oSelf, cFile, iAttributes, lAutoSize )
    {
       lWidth = lHeight = 0;
    }
-   hBitmap = _OOHG_LoadImage( hb_parc( 2 ), iAttributes, lWidth, lHeight, oSelf->hWnd, oSelf->lBackColor );
+   hBitmap = (HBITMAP) _OOHG_LoadImage( hb_parc( 2 ), iAttributes, lWidth, lHeight, oSelf->hWnd, oSelf->lBackColor );
 
    HWNDret( hBitmap );
 }
@@ -485,7 +485,7 @@ HB_FUNC( _OOHG_BITMAPFROMBUFFER )   // ( oSelf, cBuffer, lAutoSize )
             lWidth = lHeight = 0;
          }
          memcpy( hGlobal, hb_parc( 2 ), hb_parclen( 2 ) );
-         hBitmap = _OOHG_OleLoadPicture( hGlobal, oSelf->hWnd, oSelf->lBackColor, lWidth, lHeight );
+         hBitmap = (HBITMAP) _OOHG_OleLoadPicture( hGlobal, oSelf->hWnd, oSelf->lBackColor, lWidth, lHeight );
          GlobalFree( hGlobal );
       }
    }

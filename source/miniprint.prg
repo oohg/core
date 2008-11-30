@@ -1,5 +1,5 @@
 /*
- * $Id: miniprint.prg,v 1.25 2008-09-19 20:40:25 declan2005 Exp $
+ * $Id: miniprint.prg,v 1.26 2008-11-30 16:23:36 guerra000 Exp $
  */
 /*----------------------------------------------------------------------------
  MINIGUI - Harbour Win32 GUI library source code
@@ -584,7 +584,7 @@ Return
 
 static procedure ejecuta()
 _HMG_printer_CurrentPageNumber:=1
-_HMG_PRINTER_PreviewRefresh() 
+_HMG_PRINTER_PreviewRefresh()
 return
 
 *---a---------------------------------------------------------------------------*
@@ -762,11 +762,11 @@ Procedure _HMG_PRINTER_PreviewClose()
 
 
 
-        
 
- 
+
+
         _HMG_PRINTER_PPNAV.Release
-                                                
+
         _HMG_PRINTER_WAIT.Release
         _oohg_auxil.release
 
@@ -1244,12 +1244,12 @@ Function GetPrinter()
             endif
         next i
 
-        
+
 
         _HMG_printer_InitUserMessages()
 
         DEFINE WINDOW _HMG_PRINTER_GETPRINTER   ;
-		AT 0,0			; 
+		AT 0,0			;
 		WIDTH 345		;
 		HEIGHT GetTitleHeight() + 100 ;
                 TITLE _HMG_printer_usermessages [13] ;
@@ -1388,23 +1388,23 @@ Return
 *------------------------------------------------------------------------------*
 Procedure _HMG_printer_InitUserMessages
 *------------------------------------------------------------------------------*
-Local	cLang	:= ""   
+Local	cLang	:= ""
 Public  _HMG_printer_usermessages [29]
 Public _OOHG_printer_docname:="OOHG printing system"
 
 
 	cLang := Set ( _SET_LANGUAGE )
 
-	// LANGUAGES NOT SUPPORTED BY hb_langSelect() FUNCTION.	
+	// LANGUAGES NOT SUPPORTED BY hb_langSelect() FUNCTION.
 
 ///         SET LANGUAGE TO FINNISH
 //          SET LANGUAGE TO DUTCH
 
 
 //        IF _HMG_LANG_ID == 'FI'         // FINNISH
-//                cLang := 'FI'    
+//                cLang := 'FI'
 //        ELSEIF _HMG_LANG_ID == 'NL'     // DUTCH
-//                cLang := 'NL'    
+//                cLang := 'NL'
 ///        ENDIF
 
 	do case
@@ -1518,7 +1518,7 @@ Public _OOHG_printer_docname:="OOHG printing system"
 	/////////////////////////////////////////////////////////////
 	// FRENCH
 	////////////////////////////////////////////////////////////
-	                                          
+
                 _HMG_printer_usermessages [01] := 'Page'
                 _HMG_printer_usermessages [02] := "Prévision D'Impression"
                 _HMG_printer_usermessages [03] := 'Première Page [HOME]'
@@ -1619,7 +1619,7 @@ Public _OOHG_printer_docname:="OOHG printing system"
                 _HMG_printer_usermessages [28] := 'Miniatura'
                 _HMG_printer_usermessages [29] := 'Generando Miniatura...  Prego Attesa...'
 
-        case cLang == "PLWIN"  .OR. cLang == "PL852"  .OR. cLang == "PLISO"  .OR. cLang == ""  .OR. cLang == "PLMAZ"   // Polish 
+        case cLang == "PLWIN"  .OR. cLang == "PL852"  .OR. cLang == "PLISO"  .OR. cLang == ""  .OR. cLang == "PLMAZ"   // Polish
 	/////////////////////////////////////////////////////////////
 	// POLISH
 	////////////////////////////////////////////////////////////
@@ -1689,7 +1689,7 @@ Public _OOHG_printer_docname:="OOHG printing system"
                 _HMG_printer_usermessages [28] := 'Miniaturas'
                 _HMG_printer_usermessages [29] := 'Gerando Miniaturas...  Por favor Espera...'
 
-        case cLang == "RUWIN"  .OR. cLang == "RU866" .OR. cLang == "RUKOI8" // Russian 
+        case cLang == "RUWIN"  .OR. cLang == "RU866" .OR. cLang == "RUKOI8" // Russian
 	/////////////////////////////////////////////////////////////
 	// RUSSIAN
 	////////////////////////////////////////////////////////////
@@ -1793,7 +1793,7 @@ Public _OOHG_printer_docname:="OOHG printing system"
                 _HMG_printer_usermessages [27] := 'Save'
                 _HMG_printer_usermessages [28] := 'Thumbnails'
                 _HMG_printer_usermessages [29] := 'Generating Thumbnails... Please Wait...'
-	
+
         case cLang == "NL"        // Dutch
 	/////////////////////////////////////////////////////////////
 	// DUTCH
@@ -1950,9 +1950,9 @@ function _hmg_printer_setjobname( cName )
         else
 			_oohg_printer_docname := cName
         endif
-		
+
 return nil
-							
+
 
 
 *------------------------------------------------------------------------------*
@@ -2151,34 +2151,34 @@ HB_FUNC ( _HMG_PRINTER_C_PRINT )
 
 		FontHeight = -MulDiv ( FontSize , GetDeviceCaps ( hdcPrint , LOGPIXELSY ) , 72 ) ;
 
-		hfont = CreateFont 
-			( 
-			FontHeight, 
-			0, 
-			0, 
-			0, 
-			fnWeight , 
-			fdwItalic , 
-			fdwUnderline , 
-			fdwStrikeOut , 
-			DEFAULT_CHARSET, 
-			OUT_TT_PRECIS, 
-			CLIP_DEFAULT_PRECIS, 
-			DEFAULT_QUALITY, 
-			FF_DONTCARE, 
-			FontName 
+		hfont = CreateFont
+			(
+			FontHeight,
+			0,
+			0,
+			0,
+			fnWeight ,
+			fdwItalic ,
+			fdwUnderline ,
+			fdwStrikeOut ,
+			DEFAULT_CHARSET,
+			OUT_TT_PRECIS,
+			CLIP_DEFAULT_PRECIS,
+			DEFAULT_QUALITY,
+			FF_DONTCARE,
+			FontName
 			);
 
 		hgdiobj = SelectObject ( hdcPrint , hfont ) ;
 
 		SetTextColor( hdcPrint , RGB ( r , g , b ) ) ;
 		SetBkMode( hdcPrint , TRANSPARENT );
- 
-		TextOut( hdcPrint , 
+
+		TextOut( hdcPrint ,
 			( x * GetDeviceCaps ( hdcPrint , LOGPIXELSX ) / 1000 ) - GetDeviceCaps ( hdcPrint , PHYSICALOFFSETX ) ,
 			( y * GetDeviceCaps ( hdcPrint , LOGPIXELSY ) / 1000 ) - GetDeviceCaps ( hdcPrint , PHYSICALOFFSETY ) ,
 			hb_parc(9),
-			strlen(hb_parc(9)) ) ; 
+			strlen(hb_parc(9)) ) ;
 
                 SelectObject ( hdcPrint , hgdiobj ) ;
 
@@ -2251,7 +2251,7 @@ HB_FUNC ( _HMG_PRINTER_C_MULTILINE_PRINT )
 			fnWeight = FW_NORMAL ;
 		}
 
-		// Italic 
+		// Italic
 
 		if ( hb_parl(11) )
 		{
@@ -2323,22 +2323,22 @@ HB_FUNC ( _HMG_PRINTER_C_MULTILINE_PRINT )
 
 		FontHeight = -MulDiv ( FontSize , GetDeviceCaps ( hdcPrint , LOGPIXELSY ) , 72 ) ;
 
-		hfont = CreateFont 
-			( 
-			FontHeight, 
-			0, 
-			0, 
-			0, 
-			fnWeight , 
-			fdwItalic , 
-			fdwUnderline , 
-			fdwStrikeOut , 
-			DEFAULT_CHARSET, 
-			OUT_TT_PRECIS, 
-			CLIP_DEFAULT_PRECIS, 
-			DEFAULT_QUALITY, 
-			FF_DONTCARE, 
-			FontName 
+		hfont = CreateFont
+			(
+			FontHeight,
+			0,
+			0,
+			0,
+			fnWeight ,
+			fdwItalic ,
+			fdwUnderline ,
+			fdwStrikeOut ,
+			DEFAULT_CHARSET,
+			OUT_TT_PRECIS,
+			CLIP_DEFAULT_PRECIS,
+			DEFAULT_QUALITY,
+			FF_DONTCARE,
+			FontName
 			);
 
 		hgdiobj = SelectObject ( hdcPrint , hfont ) ;
@@ -2350,16 +2350,16 @@ HB_FUNC ( _HMG_PRINTER_C_MULTILINE_PRINT )
 		rect.top	= ( y * GetDeviceCaps ( hdcPrint , LOGPIXELSY ) / 1000 ) - GetDeviceCaps ( hdcPrint , PHYSICALOFFSETY )  ;
 		rect.right	= ( tox * GetDeviceCaps ( hdcPrint , LOGPIXELSX ) / 1000 ) - GetDeviceCaps ( hdcPrint , PHYSICALOFFSETX ) ;
 		rect.bottom	= ( toy * GetDeviceCaps ( hdcPrint , LOGPIXELSY ) / 1000 ) - GetDeviceCaps ( hdcPrint , PHYSICALOFFSETY ) ;
- 
-		DrawText ( hdcPrint , 
+
+		DrawText ( hdcPrint ,
 			hb_parc(9),
-			strlen(hb_parc(9)), 
+			strlen(hb_parc(9)),
 			&rect ,
-			DT_NOPREFIX | DT_MODIFYSTRING | DT_WORDBREAK | DT_END_ELLIPSIS 
-			) ; 
+			DT_NOPREFIX | DT_MODIFYSTRING | DT_WORDBREAK | DT_END_ELLIPSIS
+			) ;
 
                 SelectObject ( hdcPrint , hgdiobj ) ;
-                
+
 		DeleteObject ( hfont ) ;
 
 	}
@@ -2381,7 +2381,7 @@ HB_FUNC ( _HMG_PRINTER_ENDDOC )
 {
 	HDC hdcPrint = (HDC) hb_parnl(1) ;
 
-	if ( hdcPrint != 0 )	
+	if ( hdcPrint != 0 )
 	{
 		EndDoc(hdcPrint);
 	}
@@ -2398,48 +2398,46 @@ HB_FUNC ( _HMG_PRINTER_DELETEDC )
 
 HB_FUNC ( _HMG_PRINTER_PRINTDIALOG )
 {
-
 	PRINTDLG pd ;
-
 	LPDEVMODE   pDevMode;
 
-	pd.lStructSize = sizeof(PRINTDLG); 
-	pd.hDevMode = (HANDLE) NULL; 
-	pd.hDevNames = (HANDLE) NULL; 
-	pd.Flags = PD_RETURNDC | PD_PRINTSETUP ; 
-        pd.hwndOwner = GetActiveWindow() ; 
-	pd.hDC = (HDC) NULL; 
-	pd.nFromPage = 1; 
-	pd.nToPage = 1; 
-	pd.nMinPage = 0; 
-	pd.nMaxPage = 0; 
-	pd.nCopies = 1; 
-	pd.hInstance = (HANDLE) NULL; 
-	pd.lCustData = 0L; 
-	pd.lpfnPrintHook = (LPPRINTHOOKPROC) NULL; 
-	pd.lpfnSetupHook = (LPSETUPHOOKPROC) NULL; 
-	pd.lpPrintTemplateName = (LPSTR) NULL; 
-	pd.lpSetupTemplateName = (LPSTR)  NULL; 
-	pd.hPrintTemplate = (HANDLE) NULL; 
-	pd.hSetupTemplate = (HANDLE) NULL; 
- 
-	if ( PrintDlg(&pd) ) 
+	pd.lStructSize = sizeof(PRINTDLG);
+	pd.hDevMode = (HANDLE) NULL;
+	pd.hDevNames = (HANDLE) NULL;
+	pd.Flags = PD_RETURNDC | PD_PRINTSETUP ;
+        pd.hwndOwner = GetActiveWindow() ;
+	pd.hDC = (HDC) NULL;
+	pd.nFromPage = 1;
+	pd.nToPage = 1;
+	pd.nMinPage = 0;
+	pd.nMaxPage = 0;
+	pd.nCopies = 1;
+   pd.hInstance = (HINSTANCE) NULL;
+	pd.lCustData = 0L;
+	pd.lpfnPrintHook = (LPPRINTHOOKPROC) NULL;
+	pd.lpfnSetupHook = (LPSETUPHOOKPROC) NULL;
+	pd.lpPrintTemplateName = (LPSTR) NULL;
+	pd.lpSetupTemplateName = (LPSTR)  NULL;
+	pd.hPrintTemplate = (HANDLE) NULL;
+	pd.hSetupTemplate = (HANDLE) NULL;
+
+	if ( PrintDlg(&pd) )
 	{
 		pDevMode = (LPDEVMODE) GlobalLock(pd.hDevMode);
 
 		hb_reta( 4 );
-		hb_stornl	( (LONG) pd.hDC		, -1, 1 ); 
-                hb_storc        ( ( char * ) pDevMode->dmDeviceName, -1, 2 ); 
-		hb_storni	( pDevMode->dmCopies	, -1, 3 ); 
-		hb_storni	( pDevMode->dmCollate	, -1, 4 ); 
+		hb_stornl	( (LONG) pd.hDC		, -1, 1 );
+                hb_storc        ( ( char * ) pDevMode->dmDeviceName, -1, 2 );
+		hb_storni	( pDevMode->dmCopies	, -1, 3 );
+		hb_storni	( pDevMode->dmCollate	, -1, 4 );
 
 		GlobalUnlock(pd.hDevMode);
 	}
 	else
 	{
 		hb_reta( 4 );
-		hb_stornl	( 0	, -1, 1 ); 
-		hb_storc	( ""	, -1, 2 ); 
+		hb_stornl	( 0	, -1, 1 );
+		hb_storc	( ""	, -1, 2 );
 		hb_storni	( 0	, -1, 3 );
 		hb_storni	( 0	, -1, 4 );
 	}
@@ -2474,7 +2472,7 @@ HB_FUNC (APRINTERS)   //Pier Release
             break;
          }
          EnumPrinters(flags, NULL, level, NULL, 0, &dwSize, &dwPrinters);
-         pBuffer = GlobalAlloc(GPTR, dwSize);
+         pBuffer = (char *) GlobalAlloc(GPTR, dwSize);
          if (pBuffer == NULL)
          {
             hb_reta(0);
@@ -2495,7 +2493,7 @@ HB_FUNC (APRINTERS)   //Pier Release
                hb_reta( dwPrinters );
                for ( i = 0; i < dwPrinters; i++, pInfo_4++)
                {
-                  cBuffer = GlobalAlloc(GPTR, 256);
+                  cBuffer = (char *) GlobalAlloc(GPTR, 256);
                   strcat(cBuffer,pInfo_4->pPrinterName);
                   hb_storc( cBuffer , -1 , i+1 );
                   GlobalFree(cBuffer);
@@ -2508,7 +2506,7 @@ HB_FUNC (APRINTERS)   //Pier Release
                hb_reta( dwPrinters );
                for ( i = 0; i < dwPrinters; i++, pInfo_5++)
                {
-                  cBuffer = GlobalAlloc(GPTR, 256);
+                  cBuffer = (char *) GlobalAlloc(GPTR, 256);
                   strcat(cBuffer,pInfo_5->pPrinterName);
                   hb_storc( cBuffer , -1 , i+1 );
                   GlobalFree(cBuffer);
@@ -2539,7 +2537,7 @@ HB_FUNC ( _HMG_PRINTER_C_RECTANGLE )
 	// 8: G Color
 	// 9: B Color
 	// 10: lWindth
-	// 11: lColor 
+	// 11: lColor
 
 	int r ;
 	int g ;
@@ -2592,9 +2590,9 @@ HB_FUNC ( _HMG_PRINTER_C_RECTANGLE )
 
 		Rectangle( (HDC) hdcPrint ,
 			( x * GetDeviceCaps ( hdcPrint , LOGPIXELSX ) / 1000 ) - GetDeviceCaps ( hdcPrint , PHYSICALOFFSETX ) ,
-			( y * GetDeviceCaps ( hdcPrint , LOGPIXELSY ) / 1000 ) - GetDeviceCaps ( hdcPrint , PHYSICALOFFSETY ) ,	 
+			( y * GetDeviceCaps ( hdcPrint , LOGPIXELSY ) / 1000 ) - GetDeviceCaps ( hdcPrint , PHYSICALOFFSETY ) ,
 			( tox * GetDeviceCaps ( hdcPrint , LOGPIXELSX ) / 1000 ) - GetDeviceCaps ( hdcPrint , PHYSICALOFFSETX ) ,
-			( toy * GetDeviceCaps ( hdcPrint , LOGPIXELSY ) / 1000 ) - GetDeviceCaps ( hdcPrint , PHYSICALOFFSETY ) 
+			( toy * GetDeviceCaps ( hdcPrint , LOGPIXELSY ) / 1000 ) - GetDeviceCaps ( hdcPrint , PHYSICALOFFSETY )
 			);
 
 		SelectObject( (HDC) hdcPrint , (HGDIOBJ) hgdiobj );
@@ -2618,7 +2616,7 @@ HB_FUNC ( _HMG_PRINTER_C_ROUNDRECTANGLE )
 	// 8: G Color
 	// 9: B Color
 	// 10: lWindth
-	// 11: lColor 
+	// 11: lColor
 
 	int r ;
 	int g ;
@@ -2676,13 +2674,13 @@ HB_FUNC ( _HMG_PRINTER_C_ROUNDRECTANGLE )
 		p = ( w + h ) / 2 ;
 		p = p / 10 ;
 
-		RoundRect( (HDC) hdcPrint , 
+		RoundRect( (HDC) hdcPrint ,
 			( x * GetDeviceCaps ( hdcPrint , LOGPIXELSX ) / 1000 ) - GetDeviceCaps ( hdcPrint , PHYSICALOFFSETX ) ,
-			( y * GetDeviceCaps ( hdcPrint , LOGPIXELSY ) / 1000 ) - GetDeviceCaps ( hdcPrint , PHYSICALOFFSETY ) ,	 
+			( y * GetDeviceCaps ( hdcPrint , LOGPIXELSY ) / 1000 ) - GetDeviceCaps ( hdcPrint , PHYSICALOFFSETY ) ,
 			( tox * GetDeviceCaps ( hdcPrint , LOGPIXELSX ) / 1000 ) - GetDeviceCaps ( hdcPrint , PHYSICALOFFSETX ) ,
-			( toy * GetDeviceCaps ( hdcPrint , LOGPIXELSY ) / 1000 ) - GetDeviceCaps ( hdcPrint , PHYSICALOFFSETY ) , 
+			( toy * GetDeviceCaps ( hdcPrint , LOGPIXELSY ) / 1000 ) - GetDeviceCaps ( hdcPrint , PHYSICALOFFSETY ) ,
 			p ,
-			p 
+			p
 			) ;
 
 		SelectObject( (HDC) hdcPrint , (HGDIOBJ) hgdiobj );
@@ -2706,7 +2704,7 @@ HB_FUNC ( _HMG_PRINTER_C_LINE )
 	// 8: G Color
 	// 9: B Color
 	// 10: lWindth
-	// 11: lColor 
+	// 11: lColor
 
 	int r ;
 	int g ;
@@ -2757,15 +2755,15 @@ HB_FUNC ( _HMG_PRINTER_C_LINE )
 
 		hgdiobj = SelectObject( (HDC) hdcPrint , hpen );
 
-		MoveToEx( (HDC) hdcPrint , 
+		MoveToEx( (HDC) hdcPrint ,
 			( x * GetDeviceCaps ( hdcPrint , LOGPIXELSX ) / 1000 ) - GetDeviceCaps ( hdcPrint , PHYSICALOFFSETX ) ,
-			( y * GetDeviceCaps ( hdcPrint , LOGPIXELSY ) / 1000 ) - GetDeviceCaps ( hdcPrint , PHYSICALOFFSETY ) ,	 
+			( y * GetDeviceCaps ( hdcPrint , LOGPIXELSY ) / 1000 ) - GetDeviceCaps ( hdcPrint , PHYSICALOFFSETY ) ,
 			NULL
 			);
 
-		LineTo ( (HDC) hdcPrint , 
+		LineTo ( (HDC) hdcPrint ,
 			( tox * GetDeviceCaps ( hdcPrint , LOGPIXELSX ) / 1000 ) - GetDeviceCaps ( hdcPrint , PHYSICALOFFSETX ) ,
-			( toy * GetDeviceCaps ( hdcPrint , LOGPIXELSY ) / 1000 ) - GetDeviceCaps ( hdcPrint , PHYSICALOFFSETY ) 
+			( toy * GetDeviceCaps ( hdcPrint , LOGPIXELSY ) / 1000 ) - GetDeviceCaps ( hdcPrint , PHYSICALOFFSETY )
 			);
 
 		SelectObject( (HDC) hdcPrint , (HGDIOBJ) hgdiobj );
@@ -2786,7 +2784,7 @@ HB_FUNC ( _HMG_PRINTER_SETPRINTERPROPERTIES )
 	LONG lFlag;
 
 	HDC hdcPrint ;
-	
+
 	int fields = 0 ;
 
 	bFlag = OpenPrinter( hb_parc(1) , &hPrinter, NULL);
@@ -2796,10 +2794,10 @@ HB_FUNC ( _HMG_PRINTER_SETPRINTERPROPERTIES )
 		MessageBox(0, "Printer Configuration Failed! (001)", "Error!",MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
 
 		hb_reta( 4 );
-		hb_stornl	( 0 	, -1, 1 ); 
-		hb_storc	( ""	, -1, 2 ); 
-		hb_storni	( 0	, -1, 3 ); 
-		hb_storni	( 0	, -1, 4 ); 
+		hb_stornl	( 0 	, -1, 1 );
+		hb_storc	( ""	, -1, 2 );
+		hb_storni	( 0	, -1, 3 );
+		hb_storni	( 0	, -1, 4 );
 
 		return;
 	}
@@ -2814,10 +2812,10 @@ HB_FUNC ( _HMG_PRINTER_SETPRINTERPROPERTIES )
 		MessageBox(0, "Printer Configuration Failed! (002)", "Error!",MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
 
 		hb_reta( 4 );
-		hb_stornl	( 0 	, -1, 1 ); 
-		hb_storc	( ""	, -1, 2 ); 
-		hb_storni	( 0	, -1, 3 ); 
-		hb_storni	( 0	, -1, 4 ); 
+		hb_stornl	( 0 	, -1, 1 );
+		hb_storc	( ""	, -1, 2 );
+		hb_storni	( 0	, -1, 3 );
+		hb_storni	( 0	, -1, 4 );
 
 		return;
 	}
@@ -2830,10 +2828,10 @@ HB_FUNC ( _HMG_PRINTER_SETPRINTERPROPERTIES )
 		MessageBox(0, "Printer Configuration Failed! (003)", "Error!",MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
 
 		hb_reta( 4 );
-		hb_stornl	( 0 	, -1, 1 ); 
-		hb_storc	( ""	, -1, 2 ); 
-		hb_storni	( 0	, -1, 3 ); 
-		hb_storni	( 0	, -1, 4 ); 
+		hb_stornl	( 0 	, -1, 1 );
+		hb_storc	( ""	, -1, 2 );
+		hb_storni	( 0	, -1, 3 );
+		hb_storni	( 0	, -1, 4 );
 
 		return;
 	}
@@ -2847,10 +2845,10 @@ HB_FUNC ( _HMG_PRINTER_SETPRINTERPROPERTIES )
 		MessageBox(0, "Printer Configuration Failed! (004)", "Error!",MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
 
 		hb_reta( 4 );
-		hb_stornl	( 0 	, -1, 1 ); 
-		hb_storc	( ""	, -1, 2 ); 
-		hb_storni	( 0	, -1, 3 ); 
-		hb_storni	( 0	, -1, 4 ); 
+		hb_stornl	( 0 	, -1, 1 );
+		hb_storc	( ""	, -1, 2 );
+		hb_storni	( 0	, -1, 3 );
+		hb_storni	( 0	, -1, 4 );
 
 		return;
 	}
@@ -2865,10 +2863,10 @@ HB_FUNC ( _HMG_PRINTER_SETPRINTERPROPERTIES )
 			MessageBox(0, "Printer Configuration Failed! (005)", "Error!",MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
 
 			hb_reta( 4 );
-			hb_stornl	( 0 	, -1, 1 ); 
-			hb_storc	( ""	, -1, 2 ); 
-			hb_storni	( 0	, -1, 3 ); 
-			hb_storni	( 0	, -1, 4 ); 
+			hb_stornl	( 0 	, -1, 1 );
+			hb_storc	( ""	, -1, 2 );
+			hb_storni	( 0	, -1, 3 );
+			hb_storni	( 0	, -1, 4 );
 
 			return;
 		}
@@ -2881,10 +2879,10 @@ HB_FUNC ( _HMG_PRINTER_SETPRINTERPROPERTIES )
 			MessageBox(0, "Printer Configuration Failed! (006)", "Error! (006)",MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
 
 			hb_reta( 4 );
-			hb_stornl	( 0 	, -1, 1 ); 
-			hb_storc	( ""	, -1, 2 ); 
-			hb_storni	( 0	, -1, 3 ); 
-			hb_storni	( 0	, -1, 4 ); 
+			hb_stornl	( 0 	, -1, 1 );
+			hb_storc	( ""	, -1, 2 );
+			hb_storni	( 0	, -1, 3 );
+			hb_storni	( 0	, -1, 4 );
 
 			return;
 		}
@@ -2898,10 +2896,10 @@ HB_FUNC ( _HMG_PRINTER_SETPRINTERPROPERTIES )
 			MessageBox(0, "Printer Configuration Failed! (007)", "Error!",MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
 
 			hb_reta( 4 );
-			hb_stornl	( 0 	, -1, 1 ); 
-			hb_storc	( ""	, -1, 2 ); 
-			hb_storni	( 0	, -1, 3 ); 
-			hb_storni	( 0	, -1, 4 ); 
+			hb_stornl	( 0 	, -1, 1 );
+			hb_storc	( ""	, -1, 2 );
+			hb_storni	( 0	, -1, 3 );
+			hb_storni	( 0	, -1, 4 );
 
 			return;
 		}
@@ -2985,10 +2983,10 @@ HB_FUNC ( _HMG_PRINTER_SETPRINTERPROPERTIES )
 			MessageBox(0, "Printer Configuration Failed: ORIENTATION Property Not Supported By Selected Printer", "Error!",MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
 
 			hb_reta( 4 );
-			hb_stornl	( 0 	, -1, 1 ); 
-			hb_storc	( ""	, -1, 2 ); 
-			hb_storni	( 0	, -1, 3 ); 
-			hb_storni	( 0	, -1, 4 ); 
+			hb_stornl	( 0 	, -1, 1 );
+			hb_storc	( ""	, -1, 2 );
+			hb_storni	( 0	, -1, 3 );
+			hb_storni	( 0	, -1, 4 );
 
 			return;
 		}
@@ -3004,10 +3002,10 @@ HB_FUNC ( _HMG_PRINTER_SETPRINTERPROPERTIES )
 			MessageBox(0, "Printer Configuration Failed: PAPERSIZE Property Not Supported By Selected Printer", "Error!",MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
 
 			hb_reta( 4 );
-			hb_stornl	( 0 	, -1, 1 ); 
-			hb_storc	( ""	, -1, 2 ); 
-			hb_storni	( 0	, -1, 3 ); 
-			hb_storni	( 0	, -1, 4 ); 
+			hb_stornl	( 0 	, -1, 1 );
+			hb_storc	( ""	, -1, 2 );
+			hb_storni	( 0	, -1, 3 );
+			hb_storni	( 0	, -1, 4 );
 
 			return;
 		}
@@ -3023,10 +3021,10 @@ HB_FUNC ( _HMG_PRINTER_SETPRINTERPROPERTIES )
 			MessageBox(0, "Printer Configuration Failed: PAPERLENGTH Property Not Supported By Selected Printer", "Error!",MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
 
 			hb_reta( 4 );
-			hb_stornl	( 0 	, -1, 1 ); 
-			hb_storc	( ""	, -1, 2 ); 
-			hb_storni	( 0	, -1, 3 ); 
-			hb_storni	( 0	, -1, 4 ); 
+			hb_stornl	( 0 	, -1, 1 );
+			hb_storc	( ""	, -1, 2 );
+			hb_storni	( 0	, -1, 3 );
+			hb_storni	( 0	, -1, 4 );
 
 			return;
 		}
@@ -3042,10 +3040,10 @@ HB_FUNC ( _HMG_PRINTER_SETPRINTERPROPERTIES )
 			MessageBox(0, "Printer Configuration Failed: PAPERWIDTH Property Not Supported By Selected Printer", "Error!",MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
 
 			hb_reta( 4 );
-			hb_stornl	( 0 	, -1, 1 ); 
-			hb_storc	( ""	, -1, 2 ); 
-			hb_storni	( 0	, -1, 3 ); 
-			hb_storni	( 0	, -1, 4 ); 
+			hb_stornl	( 0 	, -1, 1 );
+			hb_storc	( ""	, -1, 2 );
+			hb_storni	( 0	, -1, 3 );
+			hb_storni	( 0	, -1, 4 );
 
 			return;
 		}
@@ -3061,10 +3059,10 @@ HB_FUNC ( _HMG_PRINTER_SETPRINTERPROPERTIES )
 			MessageBox(0, "Printer Configuration Failed: COPIES Property Not Supported By Selected Printer", "Error!",MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
 
 			hb_reta( 4 );
-			hb_stornl	( 0 	, -1, 1 ); 
-			hb_storc	( ""	, -1, 2 ); 
-			hb_storni	( 0	, -1, 3 ); 
-			hb_storni	( 0	, -1, 4 ); 
+			hb_stornl	( 0 	, -1, 1 );
+			hb_storc	( ""	, -1, 2 );
+			hb_storni	( 0	, -1, 3 );
+			hb_storni	( 0	, -1, 4 );
 
 			return;
 		}
@@ -3080,10 +3078,10 @@ HB_FUNC ( _HMG_PRINTER_SETPRINTERPROPERTIES )
 			MessageBox(0, "Printer Configuration Failed: DEFAULTSOURCE Property Not Supported By Selected Printer", "Error!",MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
 
 			hb_reta( 4 );
-			hb_stornl	( 0 	, -1, 1 ); 
-			hb_storc	( ""	, -1, 2 ); 
-			hb_storni	( 0	, -1, 3 ); 
-			hb_storni	( 0	, -1, 4 ); 
+			hb_stornl	( 0 	, -1, 1 );
+			hb_storc	( ""	, -1, 2 );
+			hb_storni	( 0	, -1, 3 );
+			hb_storni	( 0	, -1, 4 );
 
 			return;
 		}
@@ -3099,10 +3097,10 @@ HB_FUNC ( _HMG_PRINTER_SETPRINTERPROPERTIES )
 			MessageBox(0, "Printer Configuration Failed: QUALITY Property Not Supported By Selected Printer", "Error!",MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
 
 			hb_reta( 4 );
-			hb_stornl	( 0 	, -1, 1 ); 
-			hb_storc	( ""	, -1, 2 ); 
-			hb_storni	( 0	, -1, 3 ); 
-			hb_storni	( 0	, -1, 4 ); 
+			hb_stornl	( 0 	, -1, 1 );
+			hb_storc	( ""	, -1, 2 );
+			hb_storni	( 0	, -1, 3 );
+			hb_storni	( 0	, -1, 4 );
 
 			return;
 		}
@@ -3118,10 +3116,10 @@ HB_FUNC ( _HMG_PRINTER_SETPRINTERPROPERTIES )
 			MessageBox(0, "Printer Configuration Failed: COLOR Property Not Supported By Selected Printer", "Error!",MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
 
 			hb_reta( 4 );
-			hb_stornl	( 0 	, -1, 1 ); 
-			hb_storc	( ""	, -1, 2 ); 
-			hb_storni	( 0	, -1, 3 ); 
-			hb_storni	( 0	, -1, 4 ); 
+			hb_stornl	( 0 	, -1, 1 );
+			hb_storc	( ""	, -1, 2 );
+			hb_storni	( 0	, -1, 3 );
+			hb_storni	( 0	, -1, 4 );
 
 			return;
 		}
@@ -3137,10 +3135,10 @@ HB_FUNC ( _HMG_PRINTER_SETPRINTERPROPERTIES )
 			MessageBox(0, "Printer Configuration Failed: DUPLEX Property Not Supported By Selected Printer", "Error!",MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
 
 			hb_reta( 4 );
-			hb_stornl	( 0 	, -1, 1 ); 
-			hb_storc	( ""	, -1, 2 ); 
-			hb_storni	( 0	, -1, 3 ); 
-			hb_storni	( 0	, -1, 4 ); 
+			hb_stornl	( 0 	, -1, 1 );
+			hb_storc	( ""	, -1, 2 );
+			hb_storni	( 0	, -1, 3 );
+			hb_storni	( 0	, -1, 4 );
 
 			return;
 		}
@@ -3156,10 +3154,10 @@ HB_FUNC ( _HMG_PRINTER_SETPRINTERPROPERTIES )
 			MessageBox(0, "Printer Configuration Failed: COLLATE Property Not Supported By Selected Printer", "Error!",MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
 
 			hb_reta( 4 );
-			hb_stornl	( 0 	, -1, 1 ); 
-			hb_storc	( ""	, -1, 2 ); 
-			hb_storni	( 0	, -1, 3 ); 
-			hb_storni	( 0	, -1, 4 ); 
+			hb_stornl	( 0 	, -1, 1 );
+			hb_storc	( ""	, -1, 2 );
+			hb_storni	( 0	, -1, 3 );
+			hb_storni	( 0	, -1, 4 );
 
 			return;
 		}
@@ -3184,10 +3182,10 @@ HB_FUNC ( _HMG_PRINTER_SETPRINTERPROPERTIES )
 		MessageBox(0, "Printer Configuration Failed! (008)", "Error!",MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
 
 		hb_reta( 4 );
-		hb_stornl	( 0 	, -1, 1 ); 
-		hb_storc	( ""	, -1, 2 ); 
-		hb_storni	( 0	, -1, 3 ); 
-		hb_storni	( 0	, -1, 4 ); 
+		hb_stornl	( 0 	, -1, 1 );
+		hb_storc	( ""	, -1, 2 );
+		hb_storni	( 0	, -1, 3 );
+		hb_storni	( 0	, -1, 4 );
 
 		return;
 	}
@@ -3197,18 +3195,18 @@ HB_FUNC ( _HMG_PRINTER_SETPRINTERPROPERTIES )
 	if ( hdcPrint != NULL )
 	{
 		hb_reta( 4 );
-		hb_stornl	( (LONG) hdcPrint		, -1, 1 ); 
-		hb_storc	( hb_parc(1)			, -1, 2 ); 
-		hb_storni	( (INT) pi2->pDevMode->dmCopies	, -1, 3 ); 
-		hb_storni	( (INT) pi2->pDevMode->dmCollate	, -1, 4 ); 
+		hb_stornl	( (LONG) hdcPrint		, -1, 1 );
+		hb_storc	( hb_parc(1)			, -1, 2 );
+		hb_storni	( (INT) pi2->pDevMode->dmCopies	, -1, 3 );
+		hb_storni	( (INT) pi2->pDevMode->dmCollate	, -1, 4 );
 	}
 	else
 	{
 		hb_reta( 4 );
-		hb_stornl	( 0 	, -1, 1 ); 
-		hb_storc	( ""	, -1, 2 ); 
-		hb_storni	( 0	, -1, 3 ); 
-		hb_storni	( 0	, -1, 4 ); 
+		hb_stornl	( 0 	, -1, 1 );
+		hb_storc	( ""	, -1, 2 );
+		hb_storni	( 0	, -1, 3 );
+		hb_storni	( 0	, -1, 4 );
 	}
 
 	if (pi2)
@@ -3238,9 +3236,9 @@ HB_FUNC ( _HMG_PRINTER_STARTPAGE_PREVIEW )
 
 	SetRect(&emfrect,0,0,GetDeviceCaps( (HDC) hb_parnl(1) , HORZSIZE)*100 , GetDeviceCaps( (HDC) hb_parnl(1) , VERTSIZE)*100 ) ;
 
-	tmpDC = CreateEnhMetaFile ( (HDC) hb_parnl(1) , hb_parc(2) , &emfrect , "" ) ; 
+	tmpDC = CreateEnhMetaFile ( (HDC) hb_parnl(1) , hb_parc(2) , &emfrect , "" ) ;
 
-	hb_retnl ( (LONG) tmpDC ) ; 
+	hb_retnl ( (LONG) tmpDC ) ;
 
 }
 
@@ -3264,9 +3262,9 @@ HB_FUNC ( _HMG_PRINTER_SHOWPAGE )
 	int xOffset ;
 	int yOffset ;
 
-	hemf = GetEnhMetaFile( hb_parc(1) ) ; 
+	hemf = GetEnhMetaFile( hb_parc(1) ) ;
 
-	hDC = GetDC(hWnd); 
+	hDC = GetDC(hWnd);
 
 	GetClientRect(hWnd,&rct);
 
@@ -3277,75 +3275,75 @@ HB_FUNC ( _HMG_PRINTER_SHOWPAGE )
 	zh = hb_parni(5) * GetDeviceCaps( (HDC) hb_parnl(3) , VERTSIZE) / 750 ;
 
 	xOffset = ( ClientWidth - ( GetDeviceCaps( (HDC) hb_parnl(3) , HORZSIZE)  * hb_parni(4) / 10000 ) ) / 2 ;
-	yOffset = ( ClientHeight - ( GetDeviceCaps( (HDC) hb_parnl(3) , VERTSIZE)  * hb_parni(4) / 10000 ) ) / 2 ;	
+	yOffset = ( ClientHeight - ( GetDeviceCaps( (HDC) hb_parnl(3) , VERTSIZE)  * hb_parni(4) / 10000 ) ) / 2 ;
 
 	SetRect(&rct,
 	xOffset + hb_parni(6) - zw ,
 	yOffset + hb_parni(7) - zh ,
-	xOffset + ( GetDeviceCaps( (HDC) hb_parnl(3) , HORZSIZE) * hb_parni(4) / 10000 ) + hb_parni(6) + zw , 
-	yOffset + ( GetDeviceCaps( (HDC) hb_parnl(3) , VERTSIZE) * hb_parni(4) / 10000 ) + hb_parni(7) + zh  
+	xOffset + ( GetDeviceCaps( (HDC) hb_parnl(3) , HORZSIZE) * hb_parni(4) / 10000 ) + hb_parni(6) + zw ,
+	yOffset + ( GetDeviceCaps( (HDC) hb_parnl(3) , VERTSIZE) * hb_parni(4) / 10000 ) + hb_parni(7) + zh
 	) ;
 
 	FillRect( (HDC) hDC , &rct , (HBRUSH) ( RGB(255,255,255) ) ) ;
 
-	PlayEnhMetaFile(hDC, hemf, &rct); 
+	PlayEnhMetaFile(hDC, hemf, &rct);
 
 	// Remove prints outside printable area
 
 	// Right
 	aux.top = 0 ;
-	aux.left = rct.right ;	
+	aux.left = rct.right ;
 	aux.right =  ClientWidth ;
 	aux.bottom = ClientHeight ;
 	FillRect( (HDC) hDC , &aux , (HBRUSH) GetStockObject(GRAY_BRUSH	) ) ;
 
 	// Bottom
 	aux.top = rct.bottom ;
-	aux.left = 0 ;	
+	aux.left = 0 ;
 	aux.right =  ClientWidth ;
 	aux.bottom = ClientHeight ;
 	FillRect( (HDC) hDC , &aux , (HBRUSH) GetStockObject(GRAY_BRUSH	) ) ;
 
 	// Top
 	aux.top = 0 ;
-	aux.left = 0 ;	
+	aux.left = 0 ;
 	aux.right =  ClientWidth ;
 	aux.bottom = yOffset + hb_parni(7) - zh ;
 	FillRect( (HDC) hDC , &aux , (HBRUSH) GetStockObject(GRAY_BRUSH	) ) ;
 
 	// Left
 	aux.top = 0 ;
-	aux.left = 0 ;	
+	aux.left = 0 ;
 	aux.right = xOffset + hb_parni(6) - zw ;
 	aux.bottom = ClientHeight ;
 	FillRect( (HDC) hDC , &aux , (HBRUSH) GetStockObject(GRAY_BRUSH	) ) ;
 
 	//
- 
-	DeleteEnhMetaFile(hemf); 
 
-	ReleaseDC(hWnd, hDC); 
+	DeleteEnhMetaFile(hemf);
 
-} 
+	ReleaseDC(hWnd, hDC);
+
+}
 
 HB_FUNC ( _HMG_PRINTER_GETPAGEWIDTH )
 {
 	hb_retni ( GetDeviceCaps( (HDC) hb_parnl(1) , HORZSIZE ) ) ;
-} 
+}
 
 HB_FUNC ( _HMG_PRINTER_GETPAGEHEIGHT )
 {
 	hb_retni ( GetDeviceCaps( (HDC) hb_parnl(1) , VERTSIZE ) ) ;
-} 
+}
 
 HB_FUNC ( _HMG_PRINTER_PRINTPAGE )
 {
-	
+
 	HENHMETAFILE hemf ;
 
 	RECT rect ;
 
-	hemf = GetEnhMetaFile( hb_parc(2) ) ; 
+	hemf = GetEnhMetaFile( hb_parc(2) ) ;
 
 	SetRect(&rect,0,0,GetDeviceCaps((HDC) hb_parnl(1), HORZRES),GetDeviceCaps((HDC) hb_parnl(1), VERTRES));
 
@@ -3355,7 +3353,7 @@ HB_FUNC ( _HMG_PRINTER_PRINTPAGE )
 
 	EndPage((HDC) hb_parnl(1));
 
-	DeleteEnhMetaFile(hemf); 
+	DeleteEnhMetaFile(hemf);
 
 }
 
@@ -3449,8 +3447,8 @@ HB_FUNC ( _HMG_PRINTER_C_IMAGE )
 	HBITMAP hbmp ;
 	PICTDESC picd;
 
-	int r = hb_parni(3) ; 
-	int c = hb_parni(4) ; 
+	int r = hb_parni(3) ;
+	int c = hb_parni(4) ;
 	int odr = hb_parni(5) ; // Height
 	int odc = hb_parni(6) ; // Width
 	int dr ;
@@ -3461,15 +3459,15 @@ HB_FUNC ( _HMG_PRINTER_C_IMAGE )
 
 		c = ( c * GetDeviceCaps ( hdcPrint , LOGPIXELSX ) / 1000 ) - GetDeviceCaps ( hdcPrint , PHYSICALOFFSETX ) ;
 		r = ( r * GetDeviceCaps ( hdcPrint , LOGPIXELSY ) / 1000 ) - GetDeviceCaps ( hdcPrint , PHYSICALOFFSETY ) ;
-		dc = ( odc * GetDeviceCaps ( hdcPrint , LOGPIXELSX ) / 1000 ) ; 
-		dr = ( odr * GetDeviceCaps ( hdcPrint , LOGPIXELSY ) / 1000 ) ; 
+		dc = ( odc * GetDeviceCaps ( hdcPrint , LOGPIXELSX ) / 1000 ) ;
+		dr = ( odr * GetDeviceCaps ( hdcPrint , LOGPIXELSY ) / 1000 ) ;
 
 		hFile = CreateFile(hb_parc(2), GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
 		if (hFile == INVALID_HANDLE_VALUE)
 		{
 
-			hbmp = LoadImage(GetModuleHandle(NULL),hb_parc(2),IMAGE_BITMAP,0,0,LR_CREATEDIBSECTION);
+         hbmp = (HBITMAP) LoadImage(GetModuleHandle(NULL),hb_parc(2),IMAGE_BITMAP,0,0,LR_CREATEDIBSECTION);
 			if (hbmp!=NULL)
 			{
 				picd.cbSizeofstruct=sizeof(PICTDESC);
@@ -3484,21 +3482,21 @@ HB_FUNC ( _HMG_PRINTER_C_IMAGE )
 				{
 					hSource = FindResource( hinstance , hb_parc(2) , "JPG" ) ;
 				}
-				if ( hSource == 0 ) 
+				if ( hSource == 0 )
 				{
 					return ;
 				}
-        
+
 				hGlobalres = LoadResource(hinstance, hSource);
 
-				if ( hGlobalres == 0 ) 
+				if ( hGlobalres == 0 )
 				{
 					return ;
 				}
 
 				lpVoid = LockResource ( hGlobalres ) ;
 
-				if ( lpVoid == 0 ) 
+				if ( lpVoid == 0 )
 				{
 					return ;
 				}
@@ -3507,7 +3505,7 @@ HB_FUNC ( _HMG_PRINTER_C_IMAGE )
 
 				hGlobal = GlobalAlloc ( GPTR, nSize ) ;
 
-				if ( hGlobal == 0 ) 
+				if ( hGlobal == 0 )
 				{
 					return ;
 				}
@@ -3564,24 +3562,24 @@ HB_FUNC ( _HMG_PRINTER_C_IMAGE )
 
 		GetViewportOrgEx ( hdcPrint , &lpp ) ;
 
-		hrgn = CreateRectRgn(	c + lpp.x , 
+		hrgn = CreateRectRgn(	c + lpp.x ,
 					r + lpp.y ,
-					c + dc + lpp.x - 1 , 
-					r + dr + lpp.y - 1 
+					c + dc + lpp.x - 1 ,
+					r + dr + lpp.y - 1
 					) ;
 
 		SelectClipRgn( hdcPrint , hrgn ) ;
 
-		iPicture->lpVtbl->Render( 	iPicture , 
-						hdcPrint , 
-						c , 
-						r , 
-						dc , 
-						dr , 
-						0 , 
-						lHeight , 
-						lWidth , 
-						-lHeight , 
+		iPicture->lpVtbl->Render( 	iPicture ,
+						hdcPrint ,
+						c ,
+						r ,
+						dc ,
+						dr ,
+						0 ,
+						lHeight ,
+						lWidth ,
+						-lHeight ,
 						NULL ) ;
 
 		SelectClipRgn(hdcPrint,NULL);

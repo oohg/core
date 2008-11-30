@@ -1,11 +1,11 @@
 /*
- * $Id: c_windows.c,v 1.61 2008-10-24 02:37:19 guerra000 Exp $
+ * $Id: c_windows.c,v 1.62 2008-11-30 16:23:36 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Windows handling functions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -632,14 +632,18 @@ HB_FUNC( REGISTERWINDOW )
    WndClass.cbWndExtra    = 0;
 //    WndClass.cbWndExtra    = 20;   MDICHILD!
    WndClass.hInstance     = GetModuleHandle( NULL );
-   WndClass.hIcon         = LoadIcon( GetModuleHandle(NULL), hb_parc( 1 ) );
-   if( ! WndClass.hIcon )
+   WndClass.hIcon         = 0;
+   if( hb_parclen( 1 ) )
    {
-      WndClass.hIcon= ( HICON ) LoadImage( GetModuleHandle(NULL),  hb_parc(1) , IMAGE_ICON, 0, 0, LR_LOADFROMFILE + LR_DEFAULTSIZE ) ;
+      WndClass.hIcon      = LoadIcon( GetModuleHandle( NULL ), hb_parc( 1 ) );
+      if( ! WndClass.hIcon )
+      {
+         WndClass.hIcon   = ( HICON ) LoadImage( GetModuleHandle( NULL ), hb_parc( 1 ) , IMAGE_ICON, 0, 0, LR_LOADFROMFILE + LR_DEFAULTSIZE );
+      }
    }
    if( ! WndClass.hIcon )
    {
-       WndClass.hIcon= LoadIcon(NULL, IDI_APPLICATION);
+       WndClass.hIcon     = LoadIcon( NULL, IDI_APPLICATION );
    }
    WndClass.hCursor       = LoadCursor( NULL, IDC_ARROW );
 
@@ -1217,10 +1221,12 @@ HANDLE DDBToDIB(HBITMAP hBitmap, HPALETTE hPal)
     if (!GetObject(hBitmap, sizeof(bm), (LPSTR)&bm))
         return NULL;
 
-    // if no palette is specified, use default palette
+   // if no palette is specified, use default palette
 
-    if (hPal == NULL)
-        hPal = GetStockObject(DEFAULT_PALETTE);
+   if( hPal == NULL )
+   {
+      hPal = ( HPALETTE ) GetStockObject(DEFAULT_PALETTE);
+   }
 
     // calculate bits per pixel
 

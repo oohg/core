@@ -1,12 +1,12 @@
 /*
- * $Id: h_toolbar.prg,v 1.23 2008-01-14 00:58:35 guerra000 Exp $
+ * $Id: h_toolbar.prg,v 1.24 2008-11-30 16:23:36 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG toolbar functions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -107,6 +107,8 @@ CLASS TToolBar FROM TControl
    METHOD Events_Size
    METHOD Events_Notify
    METHOD Events
+
+   EMPTY( _OOHG_AllVars )
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -450,7 +452,7 @@ HB_FUNC( INITTOOLBUTTON )
 
    hwndTB = HWNDparam( 1 );
 
-   himage = _OOHG_LoadImage( hb_parc( 8 ), LR_LOADMAP3DCOLORS | LR_LOADTRANSPARENT, 0, 0, hwndTB, -1 );
+   himage = (HWND) _OOHG_LoadImage( hb_parc( 8 ), LR_LOADMAP3DCOLORS | LR_LOADTRANSPARENT, 0, 0, hwndTB, -1 );
 
 	// Add the bitmap containing button images to the toolbar.
 

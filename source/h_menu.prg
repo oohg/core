@@ -1,11 +1,11 @@
 /*
- * $Id: h_menu.prg,v 1.24 2008-02-21 05:09:49 guerra000 Exp $
+ * $Id: h_menu.prg,v 1.25 2008-11-30 16:23:36 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG menu functions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -108,6 +108,8 @@ CLASS TMenu FROM TControl
    METHOD Release     BLOCK { |Self| DestroyMenu( ::hWnd ), ::Super:Release() }
    METHOD EndMenu     BLOCK { || _EndMenu() }
    METHOD Separator   BLOCK { |Self| TMenuItem():DefineSeparator( , Self ) }
+
+   EMPTY( _OOHG_AllVars )
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -474,7 +476,7 @@ HB_FUNC( MENUCAPTION )
    }
 
    iLen = GetMenuString( hMenu, iItem, NULL, 0, MF_BYCOMMAND );
-   cBuffer = hb_xgrab( iLen + 2 );
+   cBuffer = (char *) hb_xgrab( iLen + 2 );
    iLen = GetMenuString( hMenu, iItem, cBuffer, iLen + 1, MF_BYCOMMAND );
    hb_retclen( cBuffer, iLen );
    hb_xfree( cBuffer );
@@ -486,8 +488,8 @@ HB_FUNC( MENUITEM_SETBITMAPS )
    HBITMAP himage1, himage2;
    int iAttributes = LR_LOADMAP3DCOLORS | LR_LOADTRANSPARENT;
 
-   himage1 = _OOHG_LoadImage( hb_parc( 3 ), iAttributes, 0, 0, ( HWND ) hMenu, -1 );
-   himage2 = _OOHG_LoadImage( hb_parc( 4 ), iAttributes, 0, 0, ( HWND ) hMenu, -1 );
+   himage1 = (HBITMAP) _OOHG_LoadImage( hb_parc( 3 ), iAttributes, 0, 0, ( HWND ) hMenu, -1 );
+   himage2 = (HBITMAP) _OOHG_LoadImage( hb_parc( 4 ), iAttributes, 0, 0, ( HWND ) hMenu, -1 );
 
    SetMenuItemBitmaps( hMenu, hb_parni( 2 ), MF_BYCOMMAND, himage1, himage2 );
 }

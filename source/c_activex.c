@@ -1,5 +1,5 @@
 /*
- * $Id: c_activex.c,v 1.6 2007-11-13 19:25:17 declan2005 Exp $
+ * $Id: c_activex.c,v 1.7 2008-11-30 16:23:36 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -22,6 +22,10 @@
  *
  *
  */
+
+#ifndef CINTERFACE
+   #define CINTERFACE 1
+#endif
 
 #ifndef NONAMELESSUNION
    #define NONAMELESSUNION
@@ -188,7 +192,7 @@ HB_FUNC( ATLAXGETDISP ) // hWnd -> pDisp
    }
 
    //------------------------------------------------------------------------------
-   //this is a macro which defines our IEventHandler struct as so:
+   //self is a macro which defines our IEventHandler struct as so:
    //
    // typedef struct {
    //    IEventHandlerVtbl  *lpVtbl;
@@ -222,7 +226,7 @@ HB_FUNC( ATLAXGETDISP ) // hWnd -> pDisp
    // lie and tell it we're giving a plain old IEventHandler. That's ok
    // because a MyRealIEventHandler starts with the same VTable pointer.
    //
-   // We add a DWORD reference count so that this IEventHandler
+   // We add a DWORD reference count so that self IEventHandler
    // can be allocated (which we do in our IClassFactory object's
    // CreateInstance()) and later freed. And, we have an extra
    // BSTR (pointer) string, which is used by some of the functions we'll
@@ -250,7 +254,7 @@ HB_FUNC( ATLAXGETDISP ) // hWnd -> pDisp
    // AddRef(), and Release().
 
    // IEventHandler's QueryInterface()
-   static HRESULT STDMETHODCALLTYPE QueryInterface( IEventHandler *this, REFIID vTableGuid, void **ppv )
+   static HRESULT STDMETHODCALLTYPE QueryInterface( IEventHandler *self, REFIID vTableGuid, void **ppv )
    {
       // Check if the GUID matches IEvenetHandler VTable's GUID. We gave the C variable name
       // IID_IEventHandler to our VTable GUID. We can use an OLE function called
@@ -262,27 +266,27 @@ HB_FUNC( ATLAXGETDISP ) // hWnd -> pDisp
 
       if ( IsEqualIID( vTableGuid, &IID_IUnknown ) )
       {
-         *ppv = (IUnknown*) this;
-         // Increment the count of callers who have an outstanding pointer to this object
-         this->lpVtbl->AddRef( this );
+         *ppv = (IUnknown*) self;
+         // Increment the count of callers who have an outstanding pointer to self object
+         self->lpVtbl->AddRef( self );
          return S_OK;
       }
 
       if ( IsEqualIID( vTableGuid, &IID_IDispatch ) )
       {
-         *ppv = (IDispatch*) this;
-         this->lpVtbl->AddRef( this );
+         *ppv = (IDispatch*) self;
+         self->lpVtbl->AddRef( self );
          return S_OK;
       }
 
-      if ( IsEqualIID( vTableGuid, &(((MyRealIEventHandler*) this)->device_event_interface_iid ) ) )
+      if ( IsEqualIID( vTableGuid, &(((MyRealIEventHandler*) self)->device_event_interface_iid ) ) )
       {
-         *ppv = (IDispatch*) this;
-         this->lpVtbl->AddRef( this );
+         *ppv = (IDispatch*) self;
+         self->lpVtbl->AddRef( self );
          return S_OK;
       }
 
-      // We don't recognize the GUID passed to us. Let the caller know this,
+      // We don't recognize the GUID passed to us. Let the caller know self,
       // by clearing his handle, and returning E_NOINTERFACE.
       *ppv = 0;
       return(E_NOINTERFACE);
@@ -290,42 +294,42 @@ HB_FUNC( ATLAXGETDISP ) // hWnd -> pDisp
 
    //------------------------------------------------------------------------------
    // IEventHandler's AddRef()
-   static ULONG STDMETHODCALLTYPE AddRef(IEventHandler *this)
+   static ULONG STDMETHODCALLTYPE AddRef(IEventHandler *self)
    {
       // Increment IEventHandler's reference count, and return the updated value.
       // NOTE: We have to typecast to gain access to any data members. These
       // members are not defined  (so that an app can't directly access them).
       // Rather they are defined only above in our MyRealIEventHandler
       // struct. So typecast to that in order to access those data members
-      return(++((MyRealIEventHandler *) this)->count);
+      return(++((MyRealIEventHandler *) self)->count);
    }
 
    //------------------------------------------------------------------------------
    // IEventHandler's Release()
-   static ULONG STDMETHODCALLTYPE Release(IEventHandler *this)
+   static ULONG STDMETHODCALLTYPE Release(IEventHandler *self)
    {
-      if (--((MyRealIEventHandler *) this)->count == 0)
+      if (--((MyRealIEventHandler *) self)->count == 0)
       {
-         GlobalFree(this);
+         GlobalFree(self);
          return(0);
       }
-      return(((MyRealIEventHandler *) this)->count);
+      return(((MyRealIEventHandler *) self)->count);
    }
 
    //------------------------------------------------------------------------------
    // IEventHandler's GetTypeInfoCount()
-   static ULONG STDMETHODCALLTYPE GetTypeInfoCount(IEventHandler *this, UINT *pCount)
+   static ULONG STDMETHODCALLTYPE GetTypeInfoCount(IEventHandler *self, UINT *pCount)
    {
-      HB_SYMBOL_UNUSED(this);
+      HB_SYMBOL_UNUSED(self);
       HB_SYMBOL_UNUSED(pCount);
       return E_NOTIMPL;
    }
 
    //------------------------------------------------------------------------------
    // IEventHandler's GetTypeInfo()
-   static ULONG STDMETHODCALLTYPE GetTypeInfo(IEventHandler *this, UINT itinfo, LCID lcid, ITypeInfo **pTypeInfo)
+   static ULONG STDMETHODCALLTYPE GetTypeInfo(IEventHandler *self, UINT itinfo, LCID lcid, ITypeInfo **pTypeInfo)
    {
-      HB_SYMBOL_UNUSED(this);
+      HB_SYMBOL_UNUSED(self);
       HB_SYMBOL_UNUSED(itinfo);
       HB_SYMBOL_UNUSED(lcid);
       HB_SYMBOL_UNUSED(pTypeInfo);
@@ -334,9 +338,9 @@ HB_FUNC( ATLAXGETDISP ) // hWnd -> pDisp
 
    //------------------------------------------------------------------------------
    // IEventHandler's GetIDsOfNames()
-   static ULONG STDMETHODCALLTYPE GetIDsOfNames(IEventHandler *this, REFIID riid, LPOLESTR *rgszNames, UINT cNames, LCID lcid, DISPID *rgdispid)
+   static ULONG STDMETHODCALLTYPE GetIDsOfNames(IEventHandler *self, REFIID riid, LPOLESTR *rgszNames, UINT cNames, LCID lcid, DISPID *rgdispid)
    {
-      HB_SYMBOL_UNUSED(this);
+      HB_SYMBOL_UNUSED(self);
       HB_SYMBOL_UNUSED(riid);
       HB_SYMBOL_UNUSED(rgszNames);
       HB_SYMBOL_UNUSED(cNames);
@@ -347,10 +351,10 @@ HB_FUNC( ATLAXGETDISP ) // hWnd -> pDisp
 
    //------------------------------------------------------------------------------
    // IEventHandler's Invoke()
-   // this is where the action happens
-   // this function receives events (by their ID number) and distributes the processing
+   // self is where the action happens
+   // self function receives events (by their ID number) and distributes the processing
    // or them or ignores them
-   static ULONG STDMETHODCALLTYPE Invoke( IEventHandler *this, DISPID dispid, REFIID riid,
+   static ULONG STDMETHODCALLTYPE Invoke( IEventHandler *self, DISPID dispid, REFIID riid,
       LCID lcid, WORD wFlags, DISPPARAMS *params, VARIANT *result, EXCEPINFO *pexcepinfo,
       UINT *puArgErr )
    {
@@ -379,14 +383,14 @@ HB_FUNC( ATLAXGETDISP ) // hWnd -> pDisp
 
 #ifdef __USEHASHEVENTS
 
-      if ( hb_hashScan( ((MyRealIEventHandler* ) this)->pEvents, hb_itemPutNL( Key, dispid ),
+      if ( hb_hashScan( ((MyRealIEventHandler* ) self)->pEvents, hb_itemPutNL( Key, dispid ),
          &ulPos ) )
       {
-         PHB_ITEM pArray = hb_hashGetValueAt( ((MyRealIEventHandler* ) this)->pEvents, ulPos );
+         PHB_ITEM pArray = hb_hashGetValueAt( ((MyRealIEventHandler* ) self)->pEvents, ulPos );
 
 #else
 
-      ulPos = hb_arrayScan( ((MyRealIEventHandler* ) this)->pEvents, hb_itemPutNL( Key, dispid ),
+      ulPos = hb_arrayScan( ((MyRealIEventHandler* ) self)->pEvents, hb_itemPutNL( Key, dispid ),
          NULL, NULL, 0
             #ifdef __XHARBOUR__
                , 0
@@ -395,7 +399,7 @@ HB_FUNC( ATLAXGETDISP ) // hWnd -> pDisp
 
       if ( ulPos )
       {
-         PHB_ITEM pArray = hb_arrayGetItemPtr( ((MyRealIEventHandler* ) this)->pEventsExec, ulPos );
+         PHB_ITEM pArray = hb_arrayGetItemPtr( ((MyRealIEventHandler* ) self)->pEventsExec, ulPos );
 
 #endif
 
@@ -539,7 +543,7 @@ HB_FUNC( ATLAXGETDISP ) // hWnd -> pDisp
    // device_interface        - refers to the interface type of the COM object (whose event we are trying to receive).
    // device_event_interface  - indicates the interface type of the outgoing interface supported by the COM object.
    //                           This will be the interface that must be implemented by the Sink object.
-   //                           is essentially derived from IDispatch, our Sink object (this IEventHandler)
+   //                           is essentially derived from IDispatch, our Sink object (self IEventHandler)
    //                           is also derived from IDispatch.
 
    typedef IEventHandler device_interface;
@@ -555,7 +559,7 @@ HB_FUNC( ATLAXGETDISP ) // hWnd -> pDisp
       IEnumConnectionPoints*      m_pIEnumConnectionPoints;
       HRESULT                     hr; //,r;
       IID                         rriid;
-      register IEventHandler *    thisobj;
+      register IEventHandler *    selfobj;
       DWORD                       dwCookie = 0;
 
       device_interface*           pdevice_interface = (device_interface*) hb_parnl( 1 );
@@ -564,27 +568,27 @@ HB_FUNC( ATLAXGETDISP ) // hWnd -> pDisp
       // Allocate our IEventHandler object (actually a MyRealIEventHandler)
       // intentional misrepresentation of size
 
-      thisobj = ( IEventHandler *) GlobalAlloc( GMEM_FIXED, sizeof( MyRealIEventHandler ) );
+      selfobj = ( IEventHandler *) GlobalAlloc( GMEM_FIXED, sizeof( MyRealIEventHandler ) );
 
-      if ( ! thisobj )
+      if ( ! selfobj )
       {
          hr = E_OUTOFMEMORY;
       }
       else
       {
          // Store IEventHandler's VTable in the object
-         thisobj->lpVtbl = (IEventHandlerVtbl *) &IEventHandler_Vtbl;
+         selfobj->lpVtbl = (IEventHandlerVtbl *) &IEventHandler_Vtbl;
 
          // Increment the reference count so we can call Release() below and
          // it will deallocate only if there is an error with QueryInterface()
-         ((MyRealIEventHandler *) thisobj)->count = 0;
+         ((MyRealIEventHandler *) selfobj)->count = 0;
 
-         //((MyRealIEventHandler *) thisobj)->device_event_interface_iid = &riid;
-         ((MyRealIEventHandler *) thisobj)->device_event_interface_iid = IID_IDispatch;
+         //((MyRealIEventHandler *) selfobj)->device_event_interface_iid = &riid;
+         ((MyRealIEventHandler *) selfobj)->device_event_interface_iid = IID_IDispatch;
 
-         // Query this object itself for its IUnknown pointer which will be used
+         // Query self object itself for its IUnknown pointer which will be used
          // later to connect to the Connection Point of the device_interface object.
-         hr = thisobj->lpVtbl->QueryInterface( thisobj, &IID_IUnknown, (void**) &pIUnknown );
+         hr = selfobj->lpVtbl->QueryInterface( selfobj, &IID_IUnknown, (void**) &pIUnknown );
          if ( hr == S_OK && pIUnknown )
          {
 
@@ -623,21 +627,21 @@ HB_FUNC( ATLAXGETDISP ) // hWnd -> pDisp
             if ( hr == S_OK && m_pIConnectionPoint )
             {
                //OutputDebugString("getting iid");
-               //Returns the IID of the outgoing interface managed by this connection point.
+               //Returns the IID of the outgoing interface managed by self connection point.
                //hr = m_pIConnectionPoint->lpVtbl->GetConnectionInterface(m_pIConnectionPoint, &rriid );
                //OutputDebugString("called");
 
                if( hr == S_OK )
                {
-                  ((MyRealIEventHandler *) thisobj)->device_event_interface_iid = rriid;
+                  ((MyRealIEventHandler *) selfobj)->device_event_interface_iid = rriid;
                }
                else
                   OutputDebugString("error getting iid");
 
                //OutputDebugString("calling advise");
                hr = m_pIConnectionPoint->lpVtbl->Advise( m_pIConnectionPoint, pIUnknown, &dwCookie );
-               ((MyRealIEventHandler *) thisobj)->pIConnectionPoint = m_pIConnectionPoint;
-               ((MyRealIEventHandler *) thisobj)->dwEventCookie = dwCookie;
+               ((MyRealIEventHandler *) selfobj)->pIConnectionPoint = m_pIConnectionPoint;
+               ((MyRealIEventHandler *) selfobj)->dwEventCookie = dwCookie;
 
             }
 
@@ -647,9 +651,9 @@ HB_FUNC( ATLAXGETDISP ) // hWnd -> pDisp
          }
       }
 
-      if( thisobj )
+      if( selfobj )
       {
-         pThis = (void*) thisobj;
+         pThis = (MyRealIEventHandler *) selfobj;
 
 #ifndef __USEHASHEVENTS
          pThis->pEventsExec = hb_itemNew( hb_param( 4, HB_IT_ANY ) );
@@ -667,13 +671,13 @@ HB_FUNC( ATLAXGETDISP ) // hWnd -> pDisp
 //------------------------------------------------------------------------------
 HB_FUNC( SHUTDOWNCONNECTIONPOINT )
 {
-   MyRealIEventHandler *this = ( MyRealIEventHandler * ) hb_parnl( 1 );
-   if( this->pIConnectionPoint )
+   MyRealIEventHandler *self = ( MyRealIEventHandler * ) hb_parnl( 1 );
+   if( self->pIConnectionPoint )
    {
-      this->pIConnectionPoint->lpVtbl->Unadvise( this->pIConnectionPoint, this->dwEventCookie );
-      this->dwEventCookie = 0;
-      this->pIConnectionPoint->lpVtbl->Release( this->pIConnectionPoint );
-      this->pIConnectionPoint = NULL;
+      self->pIConnectionPoint->lpVtbl->Unadvise( self->pIConnectionPoint, self->dwEventCookie );
+      self->dwEventCookie = 0;
+      self->pIConnectionPoint->lpVtbl->Release( self->pIConnectionPoint );
+      self->pIConnectionPoint = NULL;
    }
 }
 

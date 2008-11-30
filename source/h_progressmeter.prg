@@ -1,5 +1,5 @@
 /*
- * $Id: h_progressmeter.prg,v 1.14 2008-09-28 18:36:57 guerra000 Exp $
+ * $Id: h_progressmeter.prg,v 1.15 2008-11-30 16:23:36 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -72,6 +72,8 @@ CLASS TProgressMeter FROM TLabel
    METHOD Events
    METHOD SetPercent          SETGET
    METHOD Align               SETGET
+
+   EMPTY( _OOHG_AllVars )
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -335,7 +337,7 @@ HB_FUNC_STATIC( TPROGRESSMETER_EVENTS )
                   {
                      hb_xfree( oSelf->AuxBuffer );
                   }
-                  oSelf->AuxBuffer = hb_xgrab( iLen + 1 );
+                  oSelf->AuxBuffer = (BYTE *) hb_xgrab( iLen + 1 );
                   oSelf->AuxBufferLen = iLen;
                }
                memcpy( oSelf->AuxBuffer, ( char * ) lParam, iLen + 1 );

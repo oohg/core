@@ -1,5 +1,5 @@
 /*
- * $Id: h_status.prg,v 1.30 2008-10-31 06:29:50 guerra000 Exp $
+ * $Id: h_status.prg,v 1.31 2008-11-30 16:23:36 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -444,7 +444,7 @@ HB_FUNC( GETITEMBAR )
 
    hWnd = HWNDparam( 1 );
    iPos = hb_parni( 2 );
-   cString = hb_xgrab( LOWORD( SendMessage( hWnd, SB_GETTEXTLENGTH, iPos, 0 ) ) + 1 );
+   cString = (char *) hb_xgrab( LOWORD( SendMessage( hWnd, SB_GETTEXTLENGTH, iPos, 0 ) ) + 1 );
    SendMessage( hWnd, SB_GETTEXT, ( WPARAM ) iPos, ( LPARAM ) cString );
    hb_retc( cString );
    hb_xfree( cString );
@@ -546,7 +546,7 @@ HB_FUNC( GETITEMWIDTH )
    iSize = 0;
    if( iItems != 0 && iPos <= iItems )
    {
-      piItems = hb_xgrab( sizeof( int ) * iItems );
+      piItems = (int *) hb_xgrab( sizeof( int ) * iItems );
       SendMessage( hWnd, SB_GETPARTS, iItems, ( LPARAM ) piItems );
       if( iPos == 1 )
       {
@@ -594,7 +594,7 @@ HB_FUNC( REFRESHITEMBAR )   // ( hWnd, aWidths, lAutoAdjust )
       GetClientRect( GetParent( hWnd ), &rect );
       iWidth = rect.right - rect.left;
 
-      piItems = hb_xgrab( sizeof( int ) * iItems );
+      piItems = (int *) hb_xgrab( sizeof( int ) * iItems );
       SendMessage( hWnd, SB_GETPARTS, iItems, ( WPARAM ) piItems );
       if( hb_parl( 3 ) )
       {

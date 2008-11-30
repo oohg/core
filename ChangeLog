@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.556 2008-11-21 21:53:25 declan2005 Exp $
+ * $Id: ChangeLog,v 1.557 2008-11-30 16:23:35 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,6 +7,26 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2008-11-30 10:21 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/c_activex.c
+  * source/c_controlmisc.c
+  * source/c_graph.c
+  * source/c_image.c
+  * source/c_windows.c
+  * source/h_combo.prg
+  * source/h_controlmisc.prg
+  * source/h_crypt.prg
+  * source/h_listbox.prg
+  * source/h_menu.prg
+  * source/h_progressmeter.prg
+  * source/h_richeditbox.prg
+  * source/h_status.prg
+  * source/h_textarray.prg
+  * source/h_toolbar.prg
+  * source/h_windows.prg
+  * source/miniprint.prg
+  * source/winprint.prg
+    ! Fixed compilation for MSVC. Thanks to Ron Pinkas.
 
 2008-11-21 16:43 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_print.prg

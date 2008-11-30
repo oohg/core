@@ -1,5 +1,5 @@
 /*
- * $Id: c_controlmisc.c,v 1.52 2008-10-05 15:37:27 guerra000 Exp $
+ * $Id: c_controlmisc.c,v 1.53 2008-11-30 16:23:36 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -187,7 +187,7 @@ void _OOHG_Send( PHB_ITEM pSelf, int iSymbol )
 {
    if( ! s_Symbols )
    {
-      s_Symbols = hb_xgrab( sizeof( PHB_SYMB ) * s_LastSymbol );
+      s_Symbols = (PHB_SYMB *) hb_xgrab( sizeof( PHB_SYMB ) * s_LastSymbol );
       memset( s_Symbols, 0, sizeof( PHB_SYMB ) * s_LastSymbol );
    }
 
@@ -226,7 +226,7 @@ POCTRL _OOHG_GetControlInfo( PHB_ITEM pSelf )
 
    if( ! HB_IS_STRING( hb_arrayGetItemPtr( pArray, 1 ) ) || hb_arrayGetCLen( pArray, 1 ) < _OOHG_Struct_Size )
    {
-      pString = hb_xgrab( _OOHG_Struct_Size );
+      pString = (char *) hb_xgrab( _OOHG_Struct_Size );
 
       // Initializes...
       memset( pString, 0, _OOHG_Struct_Size );
@@ -920,7 +920,7 @@ HB_FUNC( GETCLIPBOARDTEXT )
       hClip = GetClipboardData( CF_TEXT );
       if( hClip )
       {
-         cString = GlobalLock( hClip );
+         cString = (LPSTR) GlobalLock( hClip );
          if( cString )
          {
             hb_retc( cString );

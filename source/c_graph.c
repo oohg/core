@@ -1,12 +1,12 @@
 /*
- * $Id: c_graph.c,v 1.3 2006-12-06 05:22:27 guerra000 Exp $
+ * $Id: c_graph.c,v 1.4 2008-11-30 16:23:36 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * C graphic functions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -97,7 +97,7 @@
 #include "hbapiitm.h"
 #include <wingdi.h>
 #include <winuser.h>
-#include "../include/oohg.h"
+#include "oohg.h"
 
 HB_FUNC ( LINEDRAW )
 {
@@ -624,7 +624,7 @@ HB_FUNC( _OOHG_NEWGRAPHCOMMAND ) // ( hWnd, nType, top, left, bottom, right, pen
    {
       lItems = hb_parinfa( 3, 0 );
       lSize = sizeof( pStruct ) + ( lItems * sizeof( POINT ) );
-      pData = hb_xgrab( lSize );
+      pData = (struct _OOHG_GraphData *) hb_xgrab( lSize );
       bBuffer = 1;
       pPoint = ( POINT * ) &pData->points;
       pData->pointcount = lItems;
@@ -686,7 +686,7 @@ HB_FUNC( _OOHG_NEWGRAPHCOMMAND_TEXT )
    char *cBuffer;
 
    lSize = sizeof( struct _OOHG_GraphData ) + hb_parclen( 8 ) + hb_parclen( 15 ) + 5;
-   pData = hb_xgrab( lSize );
+   pData = (struct _OOHG_GraphData *) hb_xgrab( lSize );
 
    pData->type     = 10;
    pData->top      = hb_parni(  3 );

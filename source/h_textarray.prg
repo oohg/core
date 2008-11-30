@@ -1,5 +1,5 @@
 /*
- * $Id: h_textarray.prg,v 1.15 2008-11-11 06:04:48 guerra000 Exp $
+ * $Id: h_textarray.prg,v 1.16 2008-11-30 16:23:36 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -246,7 +246,7 @@ static void RePaint( POCTRL oSelf, HDC hdc2, RECT *updateRect )
    }
    else
    {
-      char *cText = hb_xgrab( SELF_COLCOUNT( oSelf ) + 2 );
+      char *cText = (char *) hb_xgrab( SELF_COLCOUNT( oSelf ) + 2 );
       int iTextIndex, iLeft;
 
       GetClientRect( oSelf->hWnd, &ClientRect );
@@ -483,7 +483,7 @@ static void DrawCursor( POCTRL oSelf, BOOL bStatus )
          RANGEMINMAX( rect.left, rect3.left,  rect.right )
          RANGEMINMAX( rect.left, rect3.right, rect.right )
          hDC = GetDC( oSelf->hWnd );
-         hFont = SelectObject( hDC, oSelf->hFontHandle );
+         hFont = (HFONT) SelectObject( hDC, oSelf->hFontHandle );
          pCell = &( ( ( PCHARCELL ) oSelf->AuxBuffer )[ ( oSelf->lAux[ 3 ] * SELF_COLCOUNT( oSelf ) ) + SELF_COL( oSelf ) ] );
          if( bStatus )
          {
@@ -709,7 +709,7 @@ HB_FUNC_STATIC( TTEXTARRAY_SETFONTSIZE )   // ( Self )   !!! NOT A CLASS METHOD 
       oSelf = _OOHG_GetControlInfo( pSelf );
 
       hDC = GetDC( oSelf->hWnd );
-      hFont = SelectObject( hDC, oSelf->hFontHandle );
+      hFont = (HFONT) SelectObject( hDC, oSelf->hFontHandle );
       GetTextExtentPoint32( hDC, "W", 1, &sz );
       if( hFont )
       {
@@ -889,7 +889,7 @@ static void TTextArray_ReSize( POCTRL oSelf, int iRow, int iCol )
    }
    else
    {
-      pBuffer = hb_xgrab( sizeof( CHARCELL ) * iCol * iRow );
+      pBuffer = (BYTE *) hb_xgrab( sizeof( CHARCELL ) * iCol * iRow );
    }
 
    if( iCol > iOldCol )

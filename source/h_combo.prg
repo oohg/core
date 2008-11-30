@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.43 2008-09-07 23:12:56 guerra000 Exp $
+ * $Id: h_combo.prg,v 1.44 2008-11-30 16:23:36 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -126,6 +126,8 @@ CLASS TCombo FROM TLabel
    METHOD ItemCount
    METHOD ShowDropDown
    METHOD SelectFirstItem     BLOCK { |Self| ComboSetCursel( ::hWnd, 1 ) }
+
+   EMPTY( _OOHG_AllVars )
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -432,7 +434,7 @@ void TCombo_SetImageBuffer( POCTRL oSelf, struct IMAGE_PARAMETER pStruct, int nI
       if( nItem >= ( int ) oSelf->AuxBufferLen )
       {
          ulSize = sizeof( int ) * 2 * ( nItem + 100 );
-         cBuffer = hb_xgrab( ulSize );
+         cBuffer = (BYTE *) hb_xgrab( ulSize );
          memset( cBuffer, -1, ulSize );
          if( oSelf->AuxBuffer )
          {
@@ -448,7 +450,7 @@ void TCombo_SetImageBuffer( POCTRL oSelf, struct IMAGE_PARAMETER pStruct, int nI
       {
          ulSize  = sizeof( int ) * 2 * ComboBox_GetCount( oSelf->hWnd );
          ulSize2 = sizeof( int ) * 2 * nItem;
-         cBuffer = hb_xgrab( ulSize );
+         cBuffer = (BYTE *) hb_xgrab( ulSize );
          memcpy( cBuffer, pImage, ulSize - ulSize2 );
          memcpy( &pImage[ 2 ], cBuffer, ulSize - ulSize2 );
          hb_xfree( cBuffer );
@@ -614,7 +616,7 @@ HB_FUNC_STATIC( TCOMBO_ITEM )   // METHOD Item( nItem, uValue )
       SendMessage( oSelf->hWnd, CB_INSERTSTRING, ( WPARAM ) nItem, ( LPARAM ) pStruct.cString );
    }
 
-   cBuffer = hb_xgrab( 2000 );
+   cBuffer = (char *) hb_xgrab( 2000 );
    SendMessage( oSelf->hWnd, CB_GETLBTEXT, ( WPARAM ) nItem, ( LPARAM ) cBuffer );
    hb_retc( cBuffer );
    hb_xfree( cBuffer );
