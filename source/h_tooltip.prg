@@ -1,5 +1,5 @@
 /*
- * $Id: h_tooltip.prg,v 1.1 2008-10-05 15:37:27 guerra000 Exp $
+ * $Id: h_tooltip.prg,v 1.2 2008-12-01 13:10:03 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -141,6 +141,21 @@ return lOldBalloon
 EXTERN _SetToolTipBackColor, _SetToolTipForeColor
 
 #pragma BEGINDUMP
+
+#ifdef _WIN32_IE
+   #undef _WIN32_IE
+#endif
+#define _WIN32_IE      0x0500
+
+#ifdef HB_OS_WIN_32_USED
+      #undef HB_OS_WIN_32_USED
+#endif
+#define HB_OS_WIN_32_USED
+
+#ifdef _WIN32_WINNT
+    #undef _WIN32_WINNT
+#endif
+#define _WIN32_WINNT   0x0400
 
 #include <windows.h>
 #include <commctrl.h>
