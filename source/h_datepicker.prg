@@ -1,5 +1,5 @@
 /*
- * $Id: h_datepicker.prg,v 1.15 2008-11-30 16:33:27 guerra000 Exp $
+ * $Id: h_datepicker.prg,v 1.16 2008-12-11 02:06:00 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -149,7 +149,11 @@ Return Self
 METHOD Value( uValue ) CLASS TDatePick
 *-----------------------------------------------------------------------------*
    IF HB_IsDate( uValue )
-      SetDatePick( ::hWnd, year( uValue ), month( uValue ), day( uValue ) )
+      IF EMPTY( uValue )
+         SetDatePickNull( ::hWnd )
+      ELSE
+         SetDatePick( ::hWnd, year( uValue ), month( uValue ), day( uValue ) )
+      ENDIF
       ::DoEvent( ::OnChange, "CHANGE" )
    ELSEIF PCOUNT() > 0
       SetDatePickNull( ::hWnd )
@@ -223,15 +227,14 @@ Local ControlHandle, nStyle, nStyleEx
 
 Return Self
 
-
 *-----------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TTimePick
 *-----------------------------------------------------------------------------*
    IF VALTYPE( uValue ) == "C"
-      SetTimePick( ::hWnd ,VAL(left(uValue,2)),VAL(SUBSTR(uValue,4,2)),VAL( SUBSTR(uValue,7,2 )) )
+      SetTimePick( ::hWnd, VAL(left(uValue,2)),VAL(SUBSTR(uValue,4,2)),VAL( SUBSTR(uValue,7,2 )) )
        ::DoEvent( ::OnChange, "CHANGE" )
    ELSEIF PCOUNT() > 0
-      SettimePick (::hWnd,,VAL(left(TIME(),2)),VAL(SUBSTR(TIME(),4,2)),VAL( SUBSTR(TIME(),7,2) ))
+      SetTimePick( ::hWnd, VAL(left(TIME(),2)),VAL(SUBSTR(TIME(),4,2)),VAL( SUBSTR(TIME(),7,2) ))
        ::DoEvent( ::OnChange, "CHANGE" )
    ENDIF
 Return StrZero( GetDatePickHour( ::hWnd ), 2 ) + ":" + StrZero( GetDatePickMinute( ::hWnd ), 2 ) + ":" + StrZero( GetDatePickSecond( ::hWnd ), 2 )
@@ -303,25 +306,25 @@ HB_FUNC( INITDATEPICK )
 
    INITCOMMONCONTROLSEX i;
    i.dwSize = sizeof( INITCOMMONCONTROLSEX );
-	i.dwICC = ICC_DATE_CLASSES;
+   i.dwICC = ICC_DATE_CLASSES;
    InitCommonControlsEx( &i );
 
    hwnd = HWNDparam( 1 );
 
    if( hb_parl( 10 ) )
-	{
+   {
       Style = Style | DTS_SHOWNONE;
-	}
+   }
 
    if( hb_parl( 11 ) )
-	{
+   {
       Style = Style | DTS_UPDOWN;
-	}
+   }
 
    if( hb_parl( 12 ) )
-	{
+   {
       Style = Style | DTS_RIGHTALIGN;
-	}
+   }
 
    hbutton = CreateWindowEx( StyleEx, "SysDateTimePick32", 0, Style,
              hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
@@ -334,24 +337,24 @@ HB_FUNC( INITDATEPICK )
 
 HB_FUNC( SETDATEPICK )
 {
-	SYSTEMTIME sysTime;
+   SYSTEMTIME sysTime;
 
    sysTime.wYear  = hb_parni( 2 );
    sysTime.wMonth = hb_parni( 3 );
    sysTime.wDay   = hb_parni( 4 );
-	sysTime.wDayOfWeek = 0;
+   sysTime.wDayOfWeek = 0;
 
-	sysTime.wHour = 0;
-	sysTime.wMinute = 0;
-	sysTime.wSecond = 0;
-	sysTime.wMilliseconds = 0;
+   sysTime.wHour = 0;
+   sysTime.wMinute = 0;
+   sysTime.wSecond = 0;
+   sysTime.wMilliseconds = 0;
 
    SendMessage( HWNDparam( 1 ), DTM_SETSYSTEMTIME, GDT_VALID, ( LPARAM ) &sysTime );
 }
 
 HB_FUNC( GETDATEPICKYEAR )
 {
-	SYSTEMTIME st;
+   SYSTEMTIME st;
 
    SendMessage( HWNDparam( 1 ), DTM_GETSYSTEMTIME, 0, ( LPARAM ) &st );
    hb_retni( st.wYear );
@@ -359,7 +362,7 @@ HB_FUNC( GETDATEPICKYEAR )
 
 HB_FUNC( GETDATEPICKMONTH )
 {
-	SYSTEMTIME st;
+   SYSTEMTIME st;
 
    SendMessage( HWNDparam( 1 ), DTM_GETSYSTEMTIME, 0, ( LPARAM ) &st );
    hb_retni( st.wMonth );
@@ -367,7 +370,7 @@ HB_FUNC( GETDATEPICKMONTH )
 
 HB_FUNC( GETDATEPICKDAY )
 {
-	SYSTEMTIME st;
+   SYSTEMTIME st;
 
    SendMessage( HWNDparam( 1 ), DTM_GETSYSTEMTIME, 0, ( LPARAM ) &st );
    hb_retni( st.wDay );

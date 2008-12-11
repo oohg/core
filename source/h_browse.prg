@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.68 2008-10-04 19:58:24 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.69 2008-12-11 02:06:00 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -597,14 +597,13 @@ Return nil
 *-----------------------------------------------------------------------------*
 METHOD DbSkip( nRows ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
-LOCAL nCount
    ASSIGN nRows VALUE nRows TYPE "N" DEFAULT 1
    IF ! ::lDescending
-      nCount :=   ( ::WorkArea )->( DbSkip(   nRows ) )
+      ( ::WorkArea )->( DbSkip(   nRows ) )
       ::Bof := ( ::WorkArea )->( Bof() )
       ::Eof := ( ::WorkArea )->( Eof() )
    ELSE
-      nCount := - ( ::WorkArea )->( DbSkip( - nRows ) )
+      ( ::WorkArea )->( DbSkip( - nRows ) )
       If ( ::WorkArea )->( Eof() )
          ::Bof := .T.
          ( ::WorkArea )->( DbGoTop() )
@@ -614,7 +613,7 @@ LOCAL nCount
          ( ::WorkArea )->( DbGoTo( 0 ) )
       EndIf
    ENDIF
-RETURN nCount
+RETURN NIL
 
 *-----------------------------------------------------------------------------*
 METHOD SetValue( Value, mp ) CLASS TOBrowse
@@ -946,26 +945,26 @@ Local cWorkArea, hWnd
          If ( cWorkArea )->( ORDKEYVAL() ) == Nil
             ::TopBottom( -1 )
          EndIf
-		EndIf
+      EndIf
 
       If Set( _SET_DELETED )
          If ( cWorkArea )->( Deleted() )
             ::TopBottom( -1 )
          EndIf
-		EndIf
+      EndIf
    Endif
 
    If ::Eof()
       ::DeleteAllItems()
       ( cWorkArea )->( DbGoTo( _RecNo ) )
       Return nil
-	EndIf
+   EndIf
 
    ::scrollUpdate()
 
-	if s != 0
+   If s != 0
       ::DbSkip( - s + 1 )
-	EndIf
+   EndIf
 
    ::Update()
 
