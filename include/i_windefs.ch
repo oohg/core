@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.30 2008-10-04 19:58:24 guerra000 Exp $
+ * $Id: i_windefs.ch,v 1.31 2008-12-31 23:05:23 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -145,6 +145,10 @@
 #define WM_LBUTTONDBLCLK 515 // 0x0203
 #define WM_RBUTTONDOWN  516 // 0x0204
 #define WM_RBUTTONUP    517 // 0x0205
+#define WM_RBUTTONDBLCLK 518 // 0x0206
+#define WM_MBUTTONDOWN  519 // 0x0207
+#define WM_MBUTTONUP    520 // 0x0208
+#define WM_MBUTTONDBLCLK 521 // 0x0209
 #define WM_MOUSEWHEEL   522 // 0x020a
 #define WM_MOUSEHOVER	0x2a1
 #define WM_SIZING	532

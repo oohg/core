@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.7 2008-11-03 00:22:28 guerra000 Exp $
+ * $Id: h_form.prg,v 1.8 2008-12-31 23:05:24 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -196,6 +196,11 @@ CLASS TForm FROM TWindow
    DATA SplitChildList INIT {}    // INTERNAL windows.
 
    DATA NotifyIconLeftClick   INIT nil
+   DATA NotifyIconDblClick    INIT nil
+   DATA NotifyIconRightClick  INIT nil
+   DATA NotifyIconRDblClick   INIT nil
+   DATA NotifyIconMidClick    INIT nil
+   DATA NotifyIconMDblClick   INIT nil
    DATA NotifyMenu            INIT nil
    DATA cNotifyIconName       INIT ""
    DATA cNotifyIconToolTip    INIT ""
@@ -1252,15 +1257,27 @@ Local oCtrl, lMinim := .F.
 		If wParam == ID_TASKBAR .and. lParam # WM_MOUSEMOVE
 
 			do case
-				case lParam == WM_LBUTTONDOWN
+            case lParam == WM_LBUTTONDOWN
                ::DoEvent( ::NotifyIconLeftClick, "WINDOW_NOTIFYLEFTCLICK" )
 
-				case lParam == WM_RBUTTONDOWN
+            case lParam == WM_RBUTTONDOWN .OR. lParam == WM_CONTEXTMENU
                If _OOHG_ShowContextMenus()
                   If ::NotifyMenu != nil
                      ::NotifyMenu:Activate()
                   Endif
 					EndIf
+
+            case lParam == WM_LBUTTONDBLCLK
+               ::DoEvent( ::NotifyIconDblClick, "WINDOW_NOTIFYDBLCLICK" )
+
+            case lParam == WM_RBUTTONDBLCLK
+               ::DoEvent( ::NotifyIconRDblClick, "WINDOW_NOTIFYRDBLCLICK" )
+
+            case lParam == WM_MBUTTONDOWN
+               ::DoEvent( ::NotifyIconMidClick, "WINDOW_NOTIFYMIDCLICK" )
+
+            case lParam == WM_MBUTTONDBLCLK
+               ::DoEvent( ::NotifyIconMDblClick, "WINDOW_NOTIFYMDBLCLICK" )
 
 			endcase
 		EndIf

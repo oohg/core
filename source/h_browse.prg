@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.69 2008-12-11 02:06:00 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.70 2008-12-31 23:05:24 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -695,7 +695,7 @@ Local Value, nRecNo
 
    Value := ::Value
 
-	If Value == 0
+   If Value == 0
 		Return Nil
 	EndIf
 
@@ -704,11 +704,9 @@ Local Value, nRecNo
    ( ::WorkArea )->( DbGoTo( Value ) )
 
    If ::Lock .AND. ! ( ::WorkArea )->( Rlock() )
-
       MsgStop( _OOHG_Messages( 3, 9 ), _OOHG_Messages( 4, 2 ) )
 
    Else
-
       ( ::WorkArea )->( DbDelete() )
       ::DbSkip()
       If ::Eof()
@@ -718,10 +716,17 @@ Local Value, nRecNo
       If Set( _SET_DELETED )
          ::SetValue( ( ::WorkArea )->( RecNo() ) , LISTVIEW_GETFIRSTITEM( ::hWnd ) )
 		EndIf
-
 	EndIf
 
-   ( ::WorkArea )->( DbGoTo( nRecNo ) )
+   If _OOHG_BrowseSyncStatus
+      If ( ::cWorkArea )->( RecNo() ) != ::Value
+         ( ::cWorkArea )->( DbGoTo( ::Value ) )
+		EndIf
+
+   Else
+      ( ::WorkArea )->( DbGoTo( nRecNo ) )
+
+	EndIf
 
 Return Nil
 
