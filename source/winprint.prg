@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.23 2008-11-30 16:23:36 guerra000 Exp $
+ * $Id: winprint.prg,v 1.24 2009-01-02 01:55:58 guerra000 Exp $
  */
 // -----------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -2310,72 +2310,88 @@ HB_FUNC (RR_ABORTDOC)
   DeleteDC(hDC);
 }
 
-HB_FUNC (RR_DEVICECAPABILITIES)
+HB_FUNC( RR_DEVICECAPABILITIES )
 {
-  char *cBuffer, *pBuffer, *nBuffer, *sBuffer, *bnBuffer, *bwBuffer, *bcBuffer;
-  DWORD  numpapers,numbins,i;
-  LPPOINT lp;
-  char buffer [sizeof(long)*8+1] ;
-  numbins=DeviceCapabilities(pi2->pPrinterName,pi2->pPortName,DC_BINNAMES,NULL,NULL);
-  numpapers=DeviceCapabilities(pi2->pPrinterName,pi2->pPortName,DC_PAPERNAMES,NULL,NULL);
-  if (numpapers>0)
-  {
-     pBuffer = (char *) GlobalAlloc(GPTR,numpapers*64);
-     nBuffer = (char *) GlobalAlloc(GPTR,numpapers*sizeof(WORD));
-     sBuffer = (char *) GlobalAlloc(GPTR,numpapers*sizeof(POINT));
-     cBuffer = (char *) GlobalAlloc(GPTR,numpapers*128);
-     DeviceCapabilities(pi2->pPrinterName,pi2->pPortName,DC_PAPERNAMES,pBuffer,pi2->pDevMode);
-     DeviceCapabilities(pi2->pPrinterName,pi2->pPortName,DC_PAPERS,nBuffer,pi2->pDevMode);
-     DeviceCapabilities(pi2->pPrinterName,pi2->pPortName,DC_PAPERSIZE,sBuffer,pi2->pDevMode);
-     for ( i = 0; i < numpapers; i++)
-        {
-         strcat(cBuffer,pBuffer);
-         strcat(cBuffer,",");
+   char *cBuffer, *pBuffer, *nBuffer, *sBuffer, *bnBuffer, *bwBuffer, *bcBuffer;
+   DWORD  numpapers,numbins,i;
+   LPPOINT lp;
+   char buffer [sizeof(long)*8+1] ;
+   numbins=DeviceCapabilities(pi2->pPrinterName,pi2->pPortName,DC_BINNAMES,NULL,NULL);
+   numpapers=DeviceCapabilities(pi2->pPrinterName,pi2->pPortName,DC_PAPERNAMES,NULL,NULL);
+   if( numpapers != 0 && numpapers != ~0 )
+   {
+      pBuffer = (char *) GlobalAlloc( GPTR, numpapers * 64 );
+      nBuffer = (char *) GlobalAlloc( GPTR, numpapers * sizeof( WORD ) );
+      sBuffer = (char *) GlobalAlloc( GPTR, numpapers * sizeof( POINT ) );
+      cBuffer = (char *) GlobalAlloc( GPTR, numpapers * 128 );
+      DeviceCapabilities( pi2->pPrinterName, pi2->pPortName, DC_PAPERNAMES, pBuffer, pi2->pDevMode );
+      DeviceCapabilities( pi2->pPrinterName, pi2->pPortName, DC_PAPERS, nBuffer, pi2->pDevMode );
+      DeviceCapabilities( pi2->pPrinterName, pi2->pPortName, DC_PAPERSIZE, sBuffer, pi2->pDevMode );
+      cBuffer[ 0 ] = 0;
+      for( i = 0; i < numpapers; i++ )
+      {
+         strcat( cBuffer, pBuffer );
+         strcat( cBuffer, "," );
+         strcat( cBuffer, itoa( *nBuffer, buffer, 10 ) );
+         strcat( cBuffer, "," );
 
-         strcat(cBuffer,itoa(*nBuffer,buffer,10));
-         strcat(cBuffer,",");
+         lp = ( LPPOINT ) sBuffer;
+         strcat( cBuffer, ltoa( lp->x, buffer, 10 ) );
+         strcat( cBuffer, "," );
+         strcat( cBuffer, ltoa( lp->y, buffer, 10 ) );
+         if( i < numpapers - 1 )
+         {
+            strcat(cBuffer,",,");
+         }
+         pBuffer += 64;
+         nBuffer += sizeof( WORD );
+         sBuffer += sizeof( POINT );
+      }
 
-         lp=(LPPOINT)sBuffer;
-         strcat(cBuffer,ltoa(lp->x,buffer,10));
-         strcat(cBuffer,",");
-         strcat(cBuffer,ltoa(lp->y,buffer,10));
-         if (i < numpapers-1)
-              strcat(cBuffer,",,");
-         pBuffer+=64;
-         nBuffer+=sizeof(WORD);
-         sBuffer+=sizeof(POINT);
-        }
-  }
-  if (numbins>0)
-  {
-     bnBuffer = (char *) GlobalAlloc(GPTR,numbins*24);
-     bwBuffer = (char *) GlobalAlloc(GPTR,numbins*sizeof(WORD));
-     bcBuffer = (char *) GlobalAlloc(GPTR,numbins*64);
-     DeviceCapabilities(pi2->pPrinterName,pi2->pPortName,DC_BINNAMES,bnBuffer,pi2->pDevMode);
-     DeviceCapabilities(pi2->pPrinterName,pi2->pPortName,DC_BINS,bwBuffer,pi2->pDevMode);
-     for ( i = 0; i < numbins; i++)
-        {
-         strcat(bcBuffer,bnBuffer);
-         strcat(bcBuffer,",");
+      hb_storc( cBuffer, 1 );
 
-         strcat(bcBuffer,itoa(*bwBuffer,buffer,10));
+      GlobalFree( cBuffer );
+      GlobalFree( pBuffer );
+      GlobalFree( nBuffer );
+      GlobalFree( sBuffer );
+   }
+   else
+   {
+      hb_storc( "", 1 );
+   }
 
-         if (i < numbins-1)
-              strcat(bcBuffer,",,");
-         bnBuffer+=24;
-         bwBuffer+=sizeof(WORD);
-        }
-     }
-     GlobalFree(pBuffer);
-     GlobalFree(nBuffer);
-     GlobalFree(sBuffer);
-     GlobalFree(bnBuffer);
-     GlobalFree(bwBuffer);
+   if( numbins != 0 && numbins != ~0 )
+   {
+      bnBuffer = (char *) GlobalAlloc(GPTR,numbins*24);
+      bwBuffer = (char *) GlobalAlloc(GPTR,numbins*sizeof(WORD));
+      bcBuffer = (char *) GlobalAlloc(GPTR,numbins*64);
+      DeviceCapabilities( pi2->pPrinterName, pi2->pPortName, DC_BINNAMES, bnBuffer, pi2->pDevMode );
+      DeviceCapabilities( pi2->pPrinterName, pi2->pPortName, DC_BINS, bwBuffer, pi2->pDevMode );
+      bcBuffer[ 0 ] = 0;
+      for( i = 0; i < numbins; i++ )
+      {
+         strcat( bcBuffer, bnBuffer );
+         strcat( bcBuffer, "," );
+         strcat( bcBuffer, itoa( *bwBuffer, buffer, 10 ) );
 
-     hb_storc(cBuffer,1);
-     hb_storc(bcBuffer,2);
-     GlobalFree(cBuffer);
-     GlobalFree(bcBuffer);
+         if( i < numbins - 1 )
+         {
+            strcat( bcBuffer, ",," );
+         }
+         bnBuffer += 24;
+         bwBuffer += sizeof( WORD );
+      }
+
+      hb_storc( bcBuffer, 2 );
+
+      GlobalFree( bnBuffer );
+      GlobalFree( bwBuffer );
+      GlobalFree( bcBuffer );
+   }
+   else
+   {
+      hb_storc( "", 2 );
+   }
 }
 
 HB_FUNC (RR_SETPOLYFILLMODE)
