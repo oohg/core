@@ -1,12 +1,12 @@
 /*
- * $Id: i_media.ch,v 1.3 2007-06-25 04:35:57 guerra000 Exp $
+ * $Id: i_media.ch,v 1.4 2009-01-07 04:30:39 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Multimedia definitions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -138,27 +138,27 @@ GetControlObject( <(ControlName)> , <(ParentForm)> ):Close()
 => ;
 GetControlObject( <(ControlName)> , <(ParentForm)> ):Release()
 
-#translate  OpenAnimateBox ( <ControlName> , <ParentForm> , <FileName> );
+#xtranslate  OpenAnimateBox( <ControlName> , <ParentForm> , <FileName> );
 => ;
 GetControlObject( <(ControlName)> , <(ParentForm)> ):Open( <FileName> )
 
-#translate  PlayAnimateBox ( <ControlName> , <ParentForm> );
+#xtranslate  PlayAnimateBox( <ControlName> , <ParentForm> );
 => ;
 GetControlObject( <(ControlName)> , <(ParentForm)> ):Play()
 
-#translate  SeekAnimateBox ( <ControlName> , <ParentForm> , <frame> );
+#xtranslate  SeekAnimateBox( <ControlName> , <ParentForm> , <frame> );
 => ;
 GetControlObject( <(ControlName)> , <(ParentForm)> ):Seek( <frame> )
 
-#translate StopAnimateBox ( <ControlName> , <ParentForm> );
+#xtranslate StopAnimateBox( <ControlName> , <ParentForm> );
 => ;
 GetControlObject( <(ControlName)> , <(ParentForm)> ):Stop()
 
-#translate CloseAnimateBox ( <ControlName> , <ParentForm> ) ;
+#xtranslate CloseAnimateBox( <ControlName> , <ParentForm> ) ;
 => ;
 GetControlObject( <(ControlName)> , <(ParentForm)> ):Close()
 
-#translate DestroyAnimateBox ( <ControlName> , <ParentForm> );
+#xtranslate DestroyAnimateBox( <ControlName> , <ParentForm> );
 => ;
 GetControlObject( <(ControlName)> , <(ParentForm)> ):Release()
 

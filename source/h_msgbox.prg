@@ -1,12 +1,12 @@
 /*
- * $Id: h_msgbox.prg,v 1.5 2007-04-16 19:20:53 declan2005 Exp $
+ * $Id: h_msgbox.prg,v 1.6 2009-01-07 04:30:39 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG message boxes functions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -92,72 +92,61 @@
 ---------------------------------------------------------------------------*/
 
 #include 'common.ch'
+
 *-----------------------------------------------------------------------------*
-Function MsgYesNo ( Message , Title , RevertDefault )
+Function MsgYesNo( Message, Title, lRevertDefault )
 *-----------------------------------------------------------------------------*
-Local Retval, t
+Local t
 
 	DEFAULT Message TO ''
 	DEFAULT Title TO ''
 
-	If ValType ( RevertDefault ) == 'L'
+   IF HB_IsLogical( lRevertDefault ) .AND. lRevertDefault
+      t := c_msgyesno_id( message, title )
+   ELSE
+      t := c_msgyesno( message, title )
+   ENDIF
 
-		If RevertDefault == .t.
-			t := c_msgyesno_id(message,title)
-		Else
-			t := c_msgyesno(message,title)
-		EndIf
+Return ( t == 6 )
 
-	Else
-
-		t := c_msgyesno(message,title)
-
-	EndIf
-
-	if t = 6
-		RetVal := .t.
-	Else
-		RetVal := .f.
-	Endif
-
-Return (RetVal)
 *-----------------------------------------------------------------------------*
-Function MsgRetryCancel ( Message , Title )
+Function MsgYesNoCancel( Message, Title )
 *-----------------------------------------------------------------------------*
-Local Retval, t
+Local t
 
 	DEFAULT Message TO ''
 	DEFAULT Title TO ''
 
-	t := c_msgretrycancel ( message , title )
+   t := c_msgyesnocancel( message, title )
 
-	if t = 4
-		RetVal := .t.
-	Else
-		RetVal := .f.
-	Endif
+Return iif( t == 6, 1, iif( t == 7, 2, 0 ) )
 
-Return (RetVal)
+*-----------------------------------------------------------------------------*
+Function MsgRetryCancel( Message , Title )
+*-----------------------------------------------------------------------------*
+Local t
+
+	DEFAULT Message TO ''
+	DEFAULT Title TO ''
+
+   t := c_msgretrycancel( message , title )
+
+Return ( t == 4 )
+
 *-----------------------------------------------------------------------------*
 Function MsgOkCancel ( Message , Title )
 *-----------------------------------------------------------------------------*
-Local Retval, t
+Local t
 
 	DEFAULT Message TO ''
 	DEFAULT Title TO ''
 
 	t := c_msgokcancel(message,title)
 
-	if t = 1
-		RetVal := .t.
-	Else
-		RetVal := .f.
-	Endif
-
-Return (RetVal)
+Return ( t == 1 )
 
 *-----------------------------------------------------------------------------*
-Function MsgInfo ( Message , Title )
+Function MsgInfo( Message , Title )
 *-----------------------------------------------------------------------------*
 
 	DEFAULT Message TO ''
@@ -168,7 +157,7 @@ Function MsgInfo ( Message , Title )
 Return Nil
 
 *-----------------------------------------------------------------------------*
-Function MsgStop ( Message , Title )
+Function MsgStop( Message , Title )
 *-----------------------------------------------------------------------------*
 
 	DEFAULT Message TO ''
@@ -200,8 +189,6 @@ Function MsgBox ( Message , Title )
 
 Return Nil
 
-
-
 *-----------------------------------------------------------------------------*
 Function autoMsgBox ( Message , Title )
 *-----------------------------------------------------------------------------*
@@ -213,8 +200,6 @@ Function autoMsgBox ( Message , Title )
 	c_msgbox(message,title)
 
 Return Nil
-
-
 
 *-----------------------------------------------------------------------------*
 Function autoMsgExclamation ( Message , Title )
@@ -238,7 +223,6 @@ Function autoMsgStop ( Message , Title )
 
 Return Nil
 
-
 *-----------------------------------------------------------------------------*
 Function autoMsgInfo ( Message , Title )
 *-----------------------------------------------------------------------------*
@@ -250,31 +234,33 @@ Function autoMsgInfo ( Message , Title )
 
 Return Nil
 
-
-
 *-----------------------------------------------------------------------------*
 Static function autotype( Message)
 *-----------------------------------------------------------------------------*
 Local cMessage, ctype
-ctype:=valtype(Message)
-do case
-   case ctype="C"
-        cMessage:=Message
-   case ctype="N"
-        cMessage:=str(Message)
-   case ctype="L"
-        cMessage:=iif(Message,".T.",".F.")
-   case cType="D"
-        cMessage:=Dtos(Message)
-   case cType="O"
-        cMessage:=":Object:"
-   case ctype="M"
-        cMessage:=Message
-   case ctype="A"
-        cMessage:="{ Array }"
-   case ctype="B"
-        cMessage:="{|| Codeblock }"
-   otherwise
-        cMessage:="<NIL>"
-endcase
+   ctype := valtype( Message )
+   do case
+      case ctype = "C"
+         cMessage := Message
+      case ctype = "N"
+         cMessage := str( Message )
+      case ctype = "L"
+         cMessage := iif( Message, ".T.", ".F." )
+      case cType = "D"
+         cMessage := Dtos( Message )
+      case cType = "O"
+         cMessage := ":Object:"
+      case ctype = "M"
+         cMessage := Message
+      case ctype = "A"
+         cMessage := "{ Array }"
+      case ctype = "B"
+         cMessage := "{|| Codeblock }"
+      case cType = "H"
+         cMessage := ":Hash:"
+      case cType = "P"
+         cMessage := ":Pointer:"
+      otherwise
+         cMessage := "<NIL>"
+   endcase
 return cMessage

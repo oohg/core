@@ -1,12 +1,12 @@
 /*
- * $Id: c_msgbox.c,v 1.2 2007-01-01 20:52:13 guerra000 Exp $
+ * $Id: c_msgbox.c,v 1.3 2009-01-07 04:30:39 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * C message boxes functions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -128,50 +128,35 @@ HB_FUNC( C_MSGOKCANCEL )
 
 HB_FUNC( C_MSGYESNO )
 {
+   hb_retni( MessageBox( GetActiveWindow(), hb_parc( 1 ), hb_parc( 2 ), MB_YESNO | MB_ICONQUESTION | MB_SYSTEMMODAL ) );
+}
 
-	int r ;
-
-	r = MessageBox( GetActiveWindow(), hb_parc(1),hb_parc(2) , MB_YESNO | MB_ICONQUESTION | MB_SYSTEMMODAL ) ;
-
-	hb_retni ( r ) ;
-
+HB_FUNC( C_MSGYESNOCANCEL )
+{
+   hb_retni( MessageBox( GetActiveWindow(), hb_parc( 1 ), hb_parc( 2 ), MB_YESNOCANCEL | MB_ICONQUESTION | MB_SYSTEMMODAL ) );
 }
 
 HB_FUNC( C_MSGYESNO_ID )
 {
-
-	int r ;
-
-	r = MessageBox( GetActiveWindow(), hb_parc(1),hb_parc(2) , MB_YESNO | MB_ICONQUESTION | MB_SYSTEMMODAL | MB_DEFBUTTON2	) ;
-
-	hb_retni ( r ) ;
-
+   hb_retni( MessageBox( GetActiveWindow(), hb_parc( 1 ), hb_parc( 2 ), MB_YESNO | MB_ICONQUESTION | MB_SYSTEMMODAL | MB_DEFBUTTON2 ) );
 }
 
 HB_FUNC( C_MSGBOX )
 {
-
-	MessageBox( GetActiveWindow(), hb_parc( 1 ), hb_parc( 2 ), MB_SYSTEMMODAL  );
-
+   MessageBox( GetActiveWindow(), hb_parc( 1 ), hb_parc( 2 ), MB_SYSTEMMODAL );
 }
 
 HB_FUNC( C_MSGINFO )
 {
-
-	MessageBox( GetActiveWindow(), hb_parc(1) , hb_parc(2) , MB_OK | MB_ICONINFORMATION | MB_SYSTEMMODAL );
-
+   MessageBox( GetActiveWindow(), hb_parc( 1 ), hb_parc( 2 ), MB_OK | MB_ICONINFORMATION | MB_SYSTEMMODAL );
 }
 
 HB_FUNC( C_MSGSTOP )
 {
-
-	MessageBox( GetActiveWindow() , hb_parc(1) , hb_parc(2) , MB_OK | MB_ICONSTOP | MB_SYSTEMMODAL );
-
+   MessageBox( GetActiveWindow(), hb_parc( 1 ), hb_parc( 2 ), MB_OK | MB_ICONSTOP | MB_SYSTEMMODAL );
 }
 
 HB_FUNC( C_MSGEXCLAMATION )
 {
-
-	MessageBox(GetActiveWindow(), hb_parc(1), hb_parc(2), MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
-
+   MessageBox( GetActiveWindow(), hb_parc( 1 ), hb_parc( 2 ), MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
 }

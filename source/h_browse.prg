@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.70 2008-12-31 23:05:24 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.71 2009-01-07 04:30:39 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -719,8 +719,8 @@ Local Value, nRecNo
 	EndIf
 
    If _OOHG_BrowseSyncStatus
-      If ( ::cWorkArea )->( RecNo() ) != ::Value
-         ( ::cWorkArea )->( DbGoTo( ::Value ) )
+      If ( ::WorkArea )->( RecNo() ) != ::Value
+         ( ::WorkArea )->( DbGoTo( ::Value ) )
 		EndIf
 
    Else
