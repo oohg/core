@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.100 2008-03-18 00:33:10 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.101 2009-01-19 04:48:41 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -336,27 +336,11 @@ LOCAL bRet
 RETURN bRet
 
 METHOD appenditem() CLASS TGrid
-Local aNew,i
-         ::lappendmode:=.T.
-         anew:={}
-         for i:=1 to len(::aheaders)
-             aadd(anew,::cell(::itemcount(),i))
-             if HB_IsNumeric(anew[i])
-                anew[i]:=0
-             endif
-             if Valtype(anew[i]) $ "CM"
-                anew[i]:=""
-             endif
-             if HB_IsDate(anew[i])
-                anew[i]:=stod("        ")
-             endif
-             if HB_IsLogical(anew[i])
-                anew[i]:=.F.
-             endif
-         next i
-         ::additem( anew, NIL, NIL )
-         ::nrowpos++
-         KEYBD_EVENT(VK_RETURN)
+   ::lAppendMode := .T.
+   ::InsertBlank( ::ItemCount + 1 )
+   ::nRowPos := ::ItemCount
+   ::Value := ::ItemCount
+   ::Events_Enter()
 RETURN NIL
 
 METHOD EDITGRID(nrow,ncol) CLASS TGrid
