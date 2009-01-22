@@ -1,11 +1,11 @@
 /*
- * $Id: c_windows.c,v 1.62 2008-11-30 16:23:36 guerra000 Exp $
+ * $Id: c_windows.c,v 1.63 2009-01-22 05:37:52 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Windows handling functions
  *
- * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -1517,11 +1517,15 @@ HB_FUNC( WINDOWSTYLEFLAG )
 
 HB_FUNC( ANIMATEWINDOW )                // hWnd, nTime, nFlags, lHide
 {
+#ifdef __MINGW__
+   ShowWindow( HWNDparam( 1 ), ( hb_parl( 4 ) ? SW_HIDE : SW_SHOW ) );
+#else
    int iType;
 
    iType = ( hb_parl( 4 ) ? AW_HIDE : AW_ACTIVATE ) | hb_parl( 3 );
 
    AnimateWindow( HWNDparam( 1 ), hb_parni( 2 ), iType );
+#endif
 }
 
 HB_FUNC( SHOWWINDOWNA )
