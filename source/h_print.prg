@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.86 2008-11-21 21:53:25 declan2005 Exp $
+* $Id: h_print.prg,v 1.87 2009-01-25 14:23:01 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -386,10 +386,10 @@ RETURN self
 
 
 *-------------------------
-METHOD BEGINDOC(cdoc) CLASS TPRINTBASE
+METHOD BEGINDOC(cdocm) CLASS TPRINTBASE
 *-------------------------
-local olabel,oimage
-DEFAULT cDoc to "ooHG printing"
+local olabel,oimage,cdoc
+cDoc:="ooHG printing"
 
 
 DEFINE WINDOW _modalhide ;
@@ -423,14 +423,14 @@ ACTION action_timer(olabel,oimage)
 
 IF .not. ::lwinhide
    _oohg_winreport.hide()
-ENDIF 
+ENDIF
 
 end window
 center window _oohg_winreport
 activate window _modalhide NOWAIT
 activate window _oohg_winreport NOWAIT
 
-::begindocx(cdoc)
+::begindocx(cdocm)
 RETURN self
 
 
@@ -2468,7 +2468,9 @@ if hb_isstring( docname)
 else
   ::cDocument := Getmydocumentsfolder()+"\pdfprint.pdf"
 endif
-
+if lower(right(::cDocument,4))#".pdf"
+   ::cDocument:=::cDocument+".pdf"
+endif
 ::oPdf := TPDF():init(::cDocument)
 RETURN self
 
@@ -2478,10 +2480,12 @@ METHOD ENDDOCx() CLASS TPDFPRINT
 *-------------------------
 ::oPdf:Close()
 IF ::lPreview
-IF ShellExecute(0, "open", "rundll32.exe", "url.dll,FileProtocolHandler "+ ::cDocument , ,1) <=32
-     MSGINFO("PDF Extension not asociated"+CHR(13)+CHR(13)+ ;
-     "File saved in:"+CHR(13)+::cDocument)
-ENDIF
+   IF ShellExecute(0, "open", "rundll32.exe", "url.dll,FileProtocolHandler "+ ::cDocument , ,1) <=32
+       MSGINFO("PDF Extension not asociated"+CHR(13)+CHR(13)+ ;
+       "File saved in: "+CHR(13)+::cDocument)
+   ENDIF
+else
+   MSGINFO("File saved in: "+::cDocument)
 endif
 RETURN self
 
@@ -2920,3 +2924,4 @@ IF ::cunits="MM"
 ENDIF
 AADD(::alincelda,{nlin,ncol,ctext,nsize,calign,cfont,lbold,acolor})
 return self
+
