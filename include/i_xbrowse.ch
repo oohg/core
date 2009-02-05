@@ -1,12 +1,12 @@
 /*
- * $Id: i_xbrowse.ch,v 1.7 2008-02-10 02:39:30 guerra000 Exp $
+ * $Id: i_xbrowse.ch,v 1.8 2009-02-05 05:19:21 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * eXtended Browse definitions
  *
- * Copyright 2006 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2006-2009 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -99,7 +99,7 @@
 #translate MemVar . <AreaName> . <FieldName> =>  MemVar<AreaName><FieldName>
 
 #command @ <row>,<col> XBROWSE <name>      ;
-                [ OF <parent> ]      ;
+                [ <dummy1: OF, PARENT> <parent> ] ;
                 [ OBJ <oObj> ]                  ;
                 [ WIDTH <w> ]        ;
                 [ HEIGHT <h> ]          ;

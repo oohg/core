@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.569 2009-01-25 14:23:01 declan2005 Exp $
+ * $Id: ChangeLog,v 1.570 2009-02-05 05:19:21 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,6 +7,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2009-02-04 23:17 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_browse.ch
+  * include/i_xbrowse.ch
+    * Added PARENT clause like OF.
 
 2009-01-25 9:21 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_print.prg

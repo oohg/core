@@ -1,12 +1,12 @@
 /*
- * $Id: i_browse.ch,v 1.20 2008-07-25 01:38:57 declan2005 Exp $
+ * $Id: i_browse.ch,v 1.21 2009-02-05 05:19:21 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Browse definitions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -102,7 +102,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #command @ <row>,<col> BROWSE <name> 		;
-		[ OF <parent> ] 		;
+                [ <dummy1: OF, PARENT> <parent> ] ;
                 [ OBJ <oObj> ]                  ;
 		[ WIDTH <w> ] 			;
 		[ HEIGHT <h> ] 			;
