@@ -1,12 +1,12 @@
 /*
- * $Id: h_internal.prg,v 1.8 2008-01-21 00:16:47 guerra000 Exp $
+ * $Id: h_internal.prg,v 1.9 2009-02-09 00:23:53 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Internal window functions
  *
- * Copyright 2006 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2006-2009 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,6 +77,10 @@ CLASS TInternal FROM TControl
    METHOD SizePos
    METHOD ScrollControls
    METHOD Events
+   METHOD BackColor           SETGET
+   METHOD BackColorCode       SETGET
+
+   EMPTY( _OOHG_AllVars )
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -329,6 +333,18 @@ HB_FUNC_STATIC( TINTERNAL_EVENTS )
          hb_retni( 1 );
          break;
 
+      case WM_ERASEBKGND:
+         {
+            POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+            HBRUSH hBrush;
+            RECT rect;
+            GetClientRect( hWnd, &rect );
+            hBrush = oSelf->BrushHandle ? oSelf->BrushHandle : ( HBRUSH ) ( COLOR_BTNFACE + 1 );
+            FillRect( ( HDC ) wParam, &rect, hBrush );
+            hb_retni( 1 );
+         }
+         break;
+
       default:
          _OOHG_Send( pSelf, s_Super );
          hb_vmSend( 0 );
@@ -340,6 +356,52 @@ HB_FUNC_STATIC( TINTERNAL_EVENTS )
          hb_vmSend( 4 );
          break;
    }
+}
+
+HB_FUNC_STATIC( TINTERNAL_BACKCOLOR )
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+
+   if( _OOHG_DetermineColorReturn( hb_param( 1, HB_IT_ANY ), &oSelf->lBackColor, ( hb_pcount() >= 1 ) ) )
+   {
+      if( oSelf->BrushHandle )
+      {
+         DeleteObject( oSelf->BrushHandle );
+      }
+      oSelf->BrushHandle = ( oSelf->lBackColor == -1 ) ? 0 : CreateSolidBrush( oSelf->lBackColor );
+      if( ValidHandler( oSelf->hWnd ) )
+      {
+         RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+      }
+   }
+
+   // Return value was set in _OOHG_DetermineColorReturn()
+}
+
+HB_FUNC_STATIC( TINTERNAL_BACKCOLORCODE )
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+
+   if( hb_pcount() >= 1 )
+   {
+      if( ! _OOHG_DetermineColor( hb_param( 1, HB_IT_ANY ), &oSelf->lBackColor ) )
+      {
+         oSelf->lBackColor = -1;
+      }
+      if( oSelf->BrushHandle )
+      {
+         DeleteObject( oSelf->BrushHandle );
+      }
+      oSelf->BrushHandle = ( oSelf->lBackColor == -1 ) ? 0 : CreateSolidBrush( oSelf->lBackColor );
+      if( ValidHandler( oSelf->hWnd ) )
+      {
+         RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+      }
+   }
+
+   hb_retnl( oSelf->lBackColor );
 }
 
 #pragma ENDDUMP
