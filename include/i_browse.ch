@@ -1,5 +1,5 @@
 /*
- * $Id: i_browse.ch,v 1.21 2009-02-05 05:19:21 guerra000 Exp $
+ * $Id: i_browse.ch,v 1.22 2009-02-14 02:14:52 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -136,7 +136,7 @@
 		[ VALIDMESSAGES <aValidMessages> ] ;
 		[ READONLY <aReadOnly> ] 	;
 		[ <lock: LOCK> ] 		;
-		[ <Delete: DELETE> ]		;
+                [ <delete: DELETE> ]            ;
                 [ <style: NOLINES> ]            ;
                 [ IMAGE <aImage> ]              ;
                 [ JUSTIFY <aJust> ]             ;
@@ -156,19 +156,20 @@
                 [ <disabled: DISABLED> ]        ;
                 [ <notabstop: NOTABSTOP> ]      ;
                 [ <invisible: INVISIBLE> ]      ;
+                [ <descending: DESCENDING> ]    ;
 	=>;
              [ <oObj> := ] _OOHG_SelectSubClass( TOBrowse(), [ <subclass>() ] ): ;
                 Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, <widths>, ;
                 <Fields>, <value>, <fontname>, <fontsize>, <tooltip>, <{change}>, ;
                 <{dblclick}>, <aHeadClick>, <{gotfocus}>, <{lostfocus}>, <(workarea)> ,  ;
-                <.Delete.>, <.style.>, <aImage>, <aJust>, <helpid>, <.bold.>, ;
+                <.delete.>, <.style.>, <aImage>, <aJust>, <helpid>, <.bold.>, ;
                 <.italic.>, <.underline.>, <.strikeout.>, <.break.>, <backcolor>, ;
                 <fontcolor>, <.lock.>, <.inplace.>, <.novscroll.>, <.append.>, ;
                 <aReadOnly>, <aValidFields>, <aValidMessages>, <.edit.>, ;
                 <dynamicbackcolor>, <aWhenFields>, <dynamicforecolor>, <Picture>, <.rtl.>, ;
                 <{onappend}>, <{editcell}>, <editcontrols>, <replacefields>, <.reccount.>, ;
                 <columninfo>, ! <.noshowheaders.>, <{enter}>, <.disabled.>, <.notabstop.>, ;
-                <.invisible.> )
+                <.invisible.>, <.descending.> )
 
 
 #command SET BROWSESYNC ON  => SetBrowseSync( .T. )

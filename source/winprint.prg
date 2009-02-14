@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.24 2009-01-02 01:55:58 guerra000 Exp $
+ * $Id: winprint.prg,v 1.25 2009-02-14 02:14:52 guerra000 Exp $
  */
 // -----------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -155,8 +155,10 @@ CLASS HBPrinter
 // new method
    METHOD PrintOption()
 
-   EMPTY( _OOHG_AllVars )
-   EMPTY( HBPRN )
+   IF TIME() == "Z"
+      EMPTY( _OOHG_AllVars )
+      EMPTY( HBPRN )
+   ENDIF
 ENDCLASS
 
 

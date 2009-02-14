@@ -1,11 +1,11 @@
 /*
- * $Id: h_browse.prg,v 1.71 2009-01-07 04:30:39 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.72 2009-02-14 02:14:52 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG browse functions
  *
- * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -606,7 +606,7 @@ METHOD DbSkip( nRows ) CLASS TOBrowse
       ( ::WorkArea )->( DbSkip( - nRows ) )
       If ( ::WorkArea )->( Eof() )
          ::Bof := .T.
-         ( ::WorkArea )->( DbGoTop() )
+         ( ::WorkArea )->( DbGoBottom() )
          ::Eof := ( ::WorkArea )->( Eof() )
       ElseIf ( ::WorkArea )->( Bof() )
          ::Eof := .T.
