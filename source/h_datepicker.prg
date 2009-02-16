@@ -1,11 +1,11 @@
 /*
- * $Id: h_datepicker.prg,v 1.16 2008-12-11 02:06:00 guerra000 Exp $
+ * $Id: h_datepicker.prg,v 1.17 2009-02-16 01:45:43 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG date picker functions
  *
- * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -154,10 +154,10 @@ METHOD Value( uValue ) CLASS TDatePick
       ELSE
          SetDatePick( ::hWnd, year( uValue ), month( uValue ), day( uValue ) )
       ENDIF
-      ::DoEvent( ::OnChange, "CHANGE" )
+      ::DoChange()
    ELSEIF PCOUNT() > 0
       SetDatePickNull( ::hWnd )
-      ::DoEvent( ::OnChange, "CHANGE" )
+      ::DoChange()
    ENDIF
 Return SToD( StrZero( GetDatePickYear( ::hWnd ), 4 ) + StrZero( GetDatePickMonth( ::hWnd ), 2 ) + StrZero( GetDatePickDay( ::hWnd ), 2 ) )
 
@@ -167,7 +167,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TDatePick
 Local nNotify := GetNotifyCode( lParam )
 
    If nNotify == DTN_DATETIMECHANGE
-      ::DoEvent( ::OnChange, "CHANGE" )
+      ::DoChange()
       Return nil
 
    EndIf
@@ -232,10 +232,10 @@ METHOD Value( uValue ) CLASS TTimePick
 *-----------------------------------------------------------------------------*
    IF VALTYPE( uValue ) == "C"
       SetTimePick( ::hWnd, VAL(left(uValue,2)),VAL(SUBSTR(uValue,4,2)),VAL( SUBSTR(uValue,7,2 )) )
-       ::DoEvent( ::OnChange, "CHANGE" )
+       ::DoChange()
    ELSEIF PCOUNT() > 0
       SetTimePick( ::hWnd, VAL(left(TIME(),2)),VAL(SUBSTR(TIME(),4,2)),VAL( SUBSTR(TIME(),7,2) ))
-       ::DoEvent( ::OnChange, "CHANGE" )
+       ::DoChange()
    ENDIF
 Return StrZero( GetDatePickHour( ::hWnd ), 2 ) + ":" + StrZero( GetDatePickMinute( ::hWnd ), 2 ) + ":" + StrZero( GetDatePickSecond( ::hWnd ), 2 )
 
@@ -245,7 +245,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TTimePick
 Local nNotify := GetNotifyCode( lParam )
 
    If nNotify == DTN_DATETIMECHANGE
-      ::DoEvent( ::OnChange, "CHANGE" )
+      ::DoChange()
       Return nil
 
    EndIf

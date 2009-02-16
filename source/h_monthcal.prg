@@ -1,11 +1,11 @@
 /*
- * $Id: h_monthcal.prg,v 1.9 2008-10-04 19:58:24 guerra000 Exp $
+ * $Id: h_monthcal.prg,v 1.10 2009-02-16 01:45:43 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG monthcal functions
  *
- * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -165,7 +165,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TMonthCal
 Local nNotify := GetNotifyCode( lParam )
 
    If nNotify == MCN_SELECT
-      ::DoEvent( ::OnChange, "CHANGE" )
+      ::DoChange()
       Return nil
 
    EndIf

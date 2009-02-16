@@ -1,11 +1,11 @@
 /*
- * $Id: h_textbox.prg,v 1.55 2008-11-21 06:48:06 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.56 2009-02-16 01:45:43 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG textbox functions
  *
- * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -282,7 +282,7 @@ Local Hi_wParam := HIWORD( wParam )
       IF ::lSetting
          ::lSetting := .F.
       Else
-         ::DoEvent( ::OnChange, "CHANGE" )
+         ::DoChange()
          If ::lAutoSkip .AND. ::nMaxLength > 0 .AND. ::CaretPos >= ::nMaxLength
             ::DoAutoSkip()
          EndIf

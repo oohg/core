@@ -1,12 +1,12 @@
 /*
- * $Id: h_slider.prg,v 1.18 2008-01-14 00:58:35 guerra000 Exp $
+ * $Id: h_slider.prg,v 1.19 2009-02-16 01:45:43 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG slider functions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -110,6 +110,8 @@ CLASS TSlider FROM TControl
    METHOD BackColor           SETGET
    METHOD Events_Hscroll
    METHOD Events_Vscroll
+
+   EMPTY( _OOHG_AllVars )
 ENDCLASS
 
 
@@ -167,7 +169,7 @@ METHOD Value( uValue ) CLASS TSlider
    IF HB_IsNumeric ( uValue )
       SendMessage( ::hWnd, TBM_SETPOS, 1, uValue )
       //// SendMessage( ::hwnd, WM_HSCROLL, TB_ENDTRACK,0)
-      ::DoEvent( ::OnChange, "CHANGE" )
+      ::DoChange()
    ENDIF
 RETURN SendMessage( ::hWnd, TBM_GETPOS, 0, 0 )
 
@@ -209,21 +211,21 @@ RETURN ::Super:BackColor
 *------------------------------------------------*
 METHOD Events_Hscroll ( wParam )   CLASS TSlider
 *------------------------------------------------*
-IF loword( wParam ) == TB_ENDTRACK
-   ::DoEvent( ::OnChange, "CHANGE" )
-ELSE
-  Return ::Super:Events_HScroll( wParam )
-ENDIF
+   IF loword( wParam ) == TB_ENDTRACK
+      ::DoChange()
+   ELSE
+      Return ::Super:Events_HScroll( wParam )
+   ENDIF
 Return NIL
 
 *-------------------------------------------------*
 METHOD Events_Vscroll ( wParam )   CLASS TSlider
 *-------------------------------------------------*
-IF loword( wParam ) == TB_ENDTRACK
-   ::DoEvent( ::OnChange, "CHANGE" )
-ELSE
-   Return ::Super:Events_VScroll( wParam )
-ENDIF
+   IF loword( wParam ) == TB_ENDTRACK
+      ::DoChange()
+   ELSE
+      Return ::Super:Events_VScroll( wParam )
+   ENDIF
 Return NIL
 
 #pragma BEGINDUMP

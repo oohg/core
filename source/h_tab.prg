@@ -1,11 +1,11 @@
 /*
- * $Id: h_tab.prg,v 1.40 2008-09-07 23:12:56 guerra000 Exp $
+ * $Id: h_tab.prg,v 1.41 2009-02-16 01:45:43 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Tab functions
  *
- * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -253,7 +253,7 @@ LOCAL nPos, nCount
       IF nPos != 0
          TabCtrl_SetCurSel( ::hWnd, nPos )
          ::Refresh()
-         ::DoEvent( ::OnChange, "CHANGE" )
+         ::DoChange()
       ENDIF
    ENDIF
    nPos := TABCTRL_GETCURSEL( ::hWnd )
@@ -317,7 +317,7 @@ Local nNotify := GetNotifyCode( lParam ), oControl
       Else
          ::Refresh()
       EndIf
-      ::DoEvent( ::OnChange, "CHANGE" )
+      ::DoChange()
       Return nil
 
    EndIf

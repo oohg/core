@@ -1,11 +1,11 @@
 /*
- * $Id: h_controlmisc.prg,v 1.102 2008-11-30 16:23:36 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.103 2009-02-16 01:45:43 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Miscelaneous PRG controls functions
  *
- * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -1207,6 +1207,7 @@ CLASS TControl FROM TWindow
    DATA postBlock   INIT nil
    DATA lCancel     INIT .F.
    DATA OnEnter     INIT nil
+   DATA xOldValue   INIT nil
 
    METHOD Row       SETGET
    METHOD Col       SETGET
@@ -1236,6 +1237,7 @@ CLASS TControl FROM TWindow
 
    METHOD DoEvent
    METHOD DoLostFocus
+   METHOD DoChange
 
    METHOD Events
    METHOD Events_Color
@@ -1685,6 +1687,21 @@ Local uRet := nil, nFocus, oFocus
    EndIf
 Return uRet
 
+*-----------------------------------------------------------------------------*
+METHOD DoChange() CLASS TControl
+*-----------------------------------------------------------------------------*
+Local xValue, cType, cOldType
+   xValue   := ::Value
+   cType    := VALTYPE( xValue )
+   cOldType := VALTYPE( ::xOldValue )
+   cType    := IF( cType    == "M", "C", cType )
+   cOldType := IF( cOldType == "M", "C", cOldType )
+   IF cOldType == "U" .OR. ! cType == cOldType .OR. ! xValue == ::xOldValue
+      ::xOldValue := xValue
+      ::DoEvent( ::OnChange, "CHANGE" )
+   ENDIF
+Return nil
+
 #pragma BEGINDUMP
 #define s_Super s_TWindow
 
@@ -1820,7 +1837,7 @@ Local aPos
       EndIf
 
    elseif Hi_wParam == EN_CHANGE
-      ::DoEvent( ::OnChange, "CHANGE" )
+      ::DoChange()
 
    elseif Hi_wParam == EN_KILLFOCUS
       Return ::DoLostFocus()
@@ -1866,7 +1883,7 @@ Local nNotify := GetNotifyCode( lParam )
       ::DoEvent( ::OnGotFocus, "GOTFOCUS" )
 
    elseif nNotify == TVN_SELCHANGED
-      ::DoEvent( ::OnChange, "CHANGE" )
+      ::DoChange()
 
    EndIf
 

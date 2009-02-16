@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.72 2009-02-14 02:14:52 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.73 2009-02-16 01:45:43 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -824,7 +824,7 @@ LOCAL cWorkArea
 
 	EndIf
 
-   ::DoEvent( ::OnChange, "CHANGE" )
+   ::DoChange()
 
 Return nil
 

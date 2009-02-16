@@ -1,11 +1,11 @@
 /*
- * $Id: h_combo.prg,v 1.44 2008-11-30 16:23:36 guerra000 Exp $
+ * $Id: h_combo.prg,v 1.45 2009-02-16 01:45:43 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG combobox functions
  *
- * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -248,14 +248,14 @@ LOCAL uRet
    IF LEN( ::aValues ) == 0
       IF HB_IsNumeric( uValue )
          ComboSetCursel( ::hWnd , uValue )
-         ::DoEvent( ::OnChange, "CHANGE" )
+         ::DoChange()
       ENDIF
       uRet := ComboGetCursel( ::hWnd )
    ELSE
       IF VALTYPE( ::aValues[ 1 ] ) == VALTYPE( uValue ) .OR. ;
          ( VALTYPE( uValue ) $ "CM" .AND. VALTYPE( ::aValues[ 1 ] ) $ "CM" )
          ComboSetCursel( ::hWnd, ASCAN( ::aValues, uValue ) )
-          ::DoEvent( ::OnChange, "CHANGE" )
+          ::DoChange()
       ENDIF
       uRet := ComboGetCursel( ::hWnd )
       IF uRet >= 1 .AND. uRet <= LEN( ::aValues )
@@ -308,7 +308,7 @@ METHOD Events_Command( wParam ) CLASS TCombo
 Local Hi_wParam := HIWORD( wParam )
 
    if Hi_wParam == CBN_SELCHANGE
-      ::DoEvent( ::OnChange, "CHANGE" )
+      ::DoChange()
       Return nil
 
    elseif Hi_wParam == CBN_KILLFOCUS

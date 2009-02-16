@@ -1,11 +1,11 @@
 /*
- * $Id: h_listbox.prg,v 1.15 2008-11-30 16:23:36 guerra000 Exp $
+ * $Id: h_listbox.prg,v 1.16 2009-02-16 01:45:43 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG listbox functions
  *
- * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -206,7 +206,7 @@ METHOD Events_Command( wParam ) CLASS TList
 Local Hi_wParam := HIWORD( wParam )
 
    if Hi_wParam == LBN_SELCHANGE
-      ::DoEvent( ::OnChange, "CHANGE" )
+      ::DoChange()
       Return nil
 
    elseif Hi_wParam == LBN_KILLFOCUS

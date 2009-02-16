@@ -1,12 +1,12 @@
 /*
- * $Id: h_spinner.prg,v 1.14 2008-01-14 00:58:35 guerra000 Exp $
+ * $Id: h_spinner.prg,v 1.15 2009-02-16 01:45:43 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG spinner functions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -100,6 +100,8 @@ CLASS TSpinner FROM TControl
    DATA Type      INIT "SPINNER" READONLY
    DATA nRangeMin   INIT 0
    DATA nRangeMax   INIT 0
+   DATA nWidth      INIT 120
+   DATA nHeight     INIT 24
 
    METHOD Define
    METHOD SizePos
@@ -110,6 +112,8 @@ CLASS TSpinner FROM TControl
 
    METHOD RangeMin            SETGET
    METHOD RangeMax            SETGET
+
+   EMPTY( _OOHG_AllVars )
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -122,10 +126,10 @@ METHOD Define( ControlName, ParentForm, x, y, w, value, fontname, fontsize, ;
 Local nStyle := ES_NUMBER + ES_AUTOHSCROLL, nStyleEx := 0
 Local ControlHandle
 
-   DEFAULT x         TO 0
-   DEFAULT y         TO 0
-   DEFAULT w         TO 120
-   DEFAULT h         TO 24
+   ASSIGN ::nWidth  VALUE w TYPE "N"
+   ASSIGN ::nHeight VALUE h TYPE "N"
+   ASSIGN ::nRow    VALUE y TYPE "N"
+   ASSIGN ::nCol    VALUE x TYPE "N"
    DEFAULT rl        TO 1
    DEFAULT rh        TO 100
    DEFAULT value     TO rl
@@ -140,27 +144,27 @@ Local ControlHandle
 
    nStyleEx += IF( !HB_IsLogical( lNoBorder ) .OR. ! lNoBorder, WS_EX_CLIENTEDGE, 0 )
 
-   ControlHandle := InitTextBox( ::ContainerhWnd, 0, x, y, w, h, nStyle, 0, ::lRtl, nStyleEx )
+   ControlHandle := InitTextBox( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight, nStyle, 0, ::lRtl, nStyleEx )
 
-   ::AuxHandle := InitSpinner( ::ContainerhWnd, 0, x + w, y, 15, h, rl, rh , invisible, wrap, ControlHandle, ::lRtl )
+   ::AuxHandle := InitSpinner( ::ContainerhWnd, 0, ::ContainerCol + ::nWidth, ::ContainerRow, 15, ::nHeight, rl, rh , invisible, wrap, ControlHandle, ::lRtl )
 
    ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
-   ::SizePos( y, x, w, h )
+
+   ::RangeMin   :=   Rl
+   ::RangeMax   :=   Rh
+
+   If HB_IsNumeric( value )
+      SetSpinnerValue( ::AuxHandle, Value )
+   EndIf
+
+   If increment <> 1
+      SetSpinnerIncrement( ::AuxHandle, increment )
+   EndIf
 
    ASSIGN ::OnLostFocus VALUE lostfocus TYPE "B"
    ASSIGN ::OnGotFocus  VALUE gotfocus  TYPE "B"
    ASSIGN ::OnChange    VALUE Change    TYPE "B"
-   ::RangeMin   :=   Rl
-   ::RangeMax   :=   Rh
-
-	if HB_IsNumeric(value)
-           SetSpinnerValue ( ::AuxHandle, Value )
-	endif
-
-	if increment <> 1
-      SetSpinnerIncrement( ::AuxHandle, increment )
-	endif
 
 Return Self
 
@@ -191,7 +195,7 @@ METHOD Value( uValue ) CLASS TSpinner
 *-----------------------------------------------------------------------------*
    IF HB_IsNumeric ( uValue )
       SetSpinnerValue( ::AuxHandle, uValue )
-      ::DoEvent( ::OnChange, "CHANGE" )
+      ::DoChange()
    ENDIF
 Return GetSpinnerValue( ::AuxHandle )
 

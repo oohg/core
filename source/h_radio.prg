@@ -1,11 +1,11 @@
 /*
- * $Id: h_radio.prg,v 1.22 2008-10-27 13:49:09 guerra000 Exp $
+ * $Id: h_radio.prg,v 1.23 2009-02-16 01:45:43 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Radio button functions
  *
- * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -249,7 +249,7 @@ LOCAL nOldValue, aNewValue, I, oItem, nLen
          If SendMessage( oItem:hWnd, BM_GETCHECK, 0, 0 ) != aNewValue[ I ]
             SendMessage( oItem:hWnd, BM_SETCHECK, aNewValue[ I ], 0 )
             //////// ojo aqui en esta linea de abajo
-            ::DoEvent(::OnChange, "CHANGE" )
+            ::DoChange()
          EndIf
          If ! ( ::TabStop .AND. MAX( nValue, 1 ) == I ) == ::aOptions[ I ]:TabStop
             ::aOptions[ I ]:TabStop := ( MAX( nValue, 1 ) == I )
@@ -329,7 +329,7 @@ Local lTab
       If ! lTab == ::aOptions[ 1 ]:TabStop
          ::aOptions[ 1 ]:TabStop := lTab
       EndIf
-      ::DoEvent( ::OnChange, "CHANGE" )
+      ::DoChange()
       Return nil
    EndIf
 Return ::Super:Events_Command( wParam )
@@ -376,7 +376,7 @@ Local lTab
       If ! lTab == ::TabStop
          ::TabStop := lTab
       EndIf
-      ::Container:DoEvent( ::Container:OnChange, "CHANGE" )
+      ::Container:DoChange()
       Return nil
    EndIf
 Return ::Super:Events_Command( wParam )

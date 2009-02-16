@@ -1,12 +1,12 @@
 /*
- * $Id: h_grid.prg,v 1.102 2009-01-20 21:07:23 declan2005 Exp $
+ * $Id: h_grid.prg,v 1.103 2009-02-16 01:45:43 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG grid functions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -1470,7 +1470,7 @@ Local lvc, _ThisQueryTemp, nvkey
    elseif nNotify == LVN_ITEMCHANGED
 
       If GetGridOldState(lParam) == 0 .and. GetGridNewState(lParam) != 0
-         ::DoEvent( ::OnChange, "CHANGE" )
+         ::DoChange()
          Return nil
       EndIf
 

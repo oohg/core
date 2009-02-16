@@ -1,12 +1,12 @@
 /*
- * $Id: h_button.prg,v 1.37 2008-01-14 00:58:34 guerra000 Exp $
+ * $Id: h_button.prg,v 1.38 2009-02-16 01:45:43 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Button controls
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -112,6 +112,8 @@ CLASS TButton FROM TImage
    METHOD Value       SETGET
 
    METHOD RePaint
+
+   EMPTY( _OOHG_AllVars )
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -468,7 +470,7 @@ METHOD Events_Command( wParam ) CLASS TButtonCheck
 *------------------------------------------------------------------------------*
 Local Hi_wParam := HIWORD( wParam )
    If Hi_wParam == BN_CLICKED
-      ::DoEvent( ::OnChange, "CHANGE" )
+      ::DoChange()
       Return nil
    EndIf
 Return ::Super:Events_Command( wParam )

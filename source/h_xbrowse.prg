@@ -1,11 +1,11 @@
 /*
- * $Id: h_xbrowse.prg,v 1.38 2008-09-28 18:36:57 guerra000 Exp $
+ * $Id: h_xbrowse.prg,v 1.39 2009-02-16 01:45:43 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * eXtended Browse code
  *
- * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * This program is free software; you can redistribute it and/or modify
@@ -138,6 +138,8 @@ CLASS TXBROWSE FROM TGrid
    METHOD GetColumn( nColumn )            // Gets a specific TBColumn object
    METHOD SetColumn( nColumn, oCol )      // Replaces one TBColumn object with another
 */
+
+   EMPTY( _OOHG_AllVars )
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -493,7 +495,7 @@ METHOD MoveTo( nTo, nFrom ) CLASS TXBrowse
          EndIf
       EndDo
       ::CurrentRow := nFrom
-      ::DoEvent( ::OnChange, "CHANGE" )
+      ::DoChange()
    EndIf
 Return Self
 

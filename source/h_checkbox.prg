@@ -1,11 +1,11 @@
 /*
- * $Id: h_checkbox.prg,v 1.24 2008-11-11 06:04:48 guerra000 Exp $
+ * $Id: h_checkbox.prg,v 1.25 2009-02-16 01:45:43 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG checkbox functions
  *
- * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -163,7 +163,7 @@ METHOD Value( uValue ) CLASS TCheckBox
 *------------------------------------------------------------------------------*
    IF HB_IsLogical( uValue )
       SendMessage( ::hWnd, BM_SETCHECK, if( uValue, BST_CHECKED, BST_UNCHECKED ), 0 )
-      ::DoEvent( ::OnChange, "CHANGE" )
+      ::DoChange()
    ELSE
       uValue := ( SendMessage( ::hWnd, BM_GETCHECK , 0 , 0 ) == BST_CHECKED )
    ENDIF
@@ -174,7 +174,7 @@ METHOD Events_Command( wParam ) CLASS TCheckBox
 *------------------------------------------------------------------------------*
 Local Hi_wParam := HIWORD( wParam )
    If Hi_wParam == BN_CLICKED
-      ::DoEvent( ::OnChange, "CHANGE" )
+      ::DoChange()
       Return nil
    EndIf
 Return ::Super:Events_Command( wParam )

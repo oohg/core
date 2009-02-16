@@ -1,12 +1,12 @@
 /*
- * $Id: h_scroll.prg,v 1.16 2008-06-02 05:35:30 guerra000 Exp $
+ * $Id: h_scroll.prg,v 1.17 2009-02-16 01:45:43 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Scrollbar functions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -109,6 +109,8 @@ CLASS TScrollBar FROM TControl
 
    METHOD Events_VScroll
    MESSAGE Events_HScroll METHOD Events_VScroll
+
+   EMPTY( _OOHG_AllVars )
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -270,7 +272,7 @@ METHOD LineUp() CLASS TScrollBar
       ::Value := ::Value - ::nLineSkip
    EndIf
    _OOHG_EVAL( ::OnLineUp, Self )
-   ::DoEvent( ::OnChange, "CHANGE" )
+   ::DoChange()
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -280,7 +282,7 @@ METHOD LineDown() CLASS TScrollBar
       ::Value := ::Value + ::nLineSkip
    EndIf
    _OOHG_EVAL( ::OnLineDown, Self )
-   ::DoEvent( ::OnChange, "CHANGE" )
+   ::DoChange()
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -290,7 +292,7 @@ METHOD PageUp() CLASS TScrollBar
       ::Value := ::Value - ::nPageSkip
    EndIf
    _OOHG_EVAL( ::OnPageUp, Self )
-   ::DoEvent( ::OnChange, "CHANGE" )
+   ::DoChange()
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -300,7 +302,7 @@ METHOD PageDown() CLASS TScrollBar
       ::Value := ::Value + ::nPageSkip
    EndIf
    _OOHG_EVAL( ::OnPageDown, Self )
-   ::DoEvent( ::OnChange, "CHANGE" )
+   ::DoChange()
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -310,7 +312,7 @@ METHOD Top() CLASS TScrollBar
       ::Value := ::nRangeMin
    EndIf
    _OOHG_EVAL( ::OnTop, Self )
-   ::DoEvent( ::OnChange, "CHANGE" )
+   ::DoChange()
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -320,7 +322,7 @@ METHOD Bottom() CLASS TScrollBar
       ::Value := ::nRangeMax
    EndIf
    _OOHG_EVAL( ::OnBottom, Self )
-   ::DoEvent( ::OnChange, "CHANGE" )
+   ::DoChange()
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -330,7 +332,7 @@ METHOD Thumb( nPos ) CLASS TScrollBar
       ::Value := nPos
    EndIf
    _OOHG_EVAL( ::OnThumb, Self, nPos )
-   ::DoEvent( ::OnChange, "CHANGE" )
+   ::DoChange()
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -340,7 +342,7 @@ METHOD Track( nPos ) CLASS TScrollBar
       ::Value := nPos
    EndIf
    _OOHG_EVAL( ::OnTrack, Self, nPos )
-   ::DoEvent( ::OnChange, "CHANGE" )
+   ::DoChange()
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -374,7 +376,7 @@ Local Lo_wParam := LoWord( wParam )
 
    elseif Lo_wParam == TB_ENDTRACK
       _OOHG_EVAL( ::OnEndTrack, Self, HiWord( wParam ) )
-      ::DoEvent( ::OnChange, "CHANGE" )
+      ::DoChange()
 
    else
       Return ::Super:Events_VScroll( wParam )
@@ -398,7 +400,7 @@ EXTERN InitScrollbar, SetScrollInfo, GetScrollRangeMin, GetScrollRangeMax
 #include <hbapi.h>
 #include <windows.h>
 #include <commctrl.h>
-#include "../include/oohg.h"
+#include "oohg.h"
 
 static WNDPROC lpfnOldWndProc = 0;
 
