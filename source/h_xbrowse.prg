@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.39 2009-02-16 01:45:43 guerra000 Exp $
+ * $Id: h_xbrowse.prg,v 1.40 2009-02-19 02:17:11 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -511,6 +511,9 @@ Local oVScroll, aPosition
             aPosition := { ::oWorkArea:OrdKeyNo(), ::oWorkArea:RecCount() }
          Else
             aPosition := { ::oWorkArea:OrdKeyNo(), ::oWorkArea:OrdKeyCount() }
+         EndIf
+         If ::lDescending
+            aPosition[ 1 ] := aPosition[ 2 ] - aPosition[ 1 ] + 1
          EndIf
          If aPosition[ 2 ] == 0
             oVScroll:RangeMax := oVScroll:RangeMin

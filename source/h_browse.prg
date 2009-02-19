@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.73 2009-02-16 01:45:43 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.74 2009-02-19 02:17:11 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -391,11 +391,11 @@ Local _RecNo , _DeltaScroll, s
       ListView_SetCursel ( ::hWnd, Len( ::aRecMap ) )
       ( ::WorkArea )->( DbGoTo( _RecNo ) )
 
-	Else
+   Else
 
       ::FastUpdate( ::CountPerPage - s, Len( ::aRecMap ) )
 
-	EndIf
+   EndIf
 
    ::BrowseOnChange()
 
@@ -412,7 +412,7 @@ Local _RecNo , _DeltaScroll
       If Select( ::WorkArea ) == 0
          ::RecCount := 0
          Return nil
-		EndIf
+      EndIf
       _RecNo := ( ::WorkArea )->( RecNo() )
       If Len( ::aRecMap ) == 0
          ::TopBottom( -1 )
@@ -426,11 +426,11 @@ Local _RecNo , _DeltaScroll
       ( ::WorkArea )->( DbGoTo( _RecNo ) )
       ListView_SetCursel ( ::hWnd, 1 )
 
-	Else
+   Else
 
       ::FastUpdate( 1 - LISTVIEW_GETFIRSTITEM ( ::hWnd ), 1 )
 
-	EndIf
+   EndIf
 
    ::BrowseOnChange()
 
@@ -446,7 +446,7 @@ Local _RecNo , _DeltaScroll
    If Select( ::WorkArea ) == 0
       ::RecCount := 0
       Return nil
-	EndIf
+   EndIf
    _RecNo := ( ::WorkArea )->( RecNo() )
    ::TopBottom( -1 )
    ::scrollUpdate()
@@ -454,7 +454,7 @@ Local _RecNo , _DeltaScroll
    ListView_Scroll( ::hWnd, _DeltaScroll[2] * (-1) , 0 )
    ( ::WorkArea )->( DbGoTo( _RecNo ) )
 
-   ListView_SetCursel ( ::hWnd, 1 )
+   ListView_SetCursel( ::hWnd, 1 )
 
    ::BrowseOnChange()
 
@@ -471,7 +471,7 @@ Local _RecNo , _DeltaScroll , _BottomRec
    If Select( ::WorkArea ) == 0
       ::RecCount := 0
       Return nil
-	EndIf
+   EndIf
    _RecNo := ( ::WorkArea )->( RecNo() )
    ::TopBottom( 1 )
    _BottomRec := ( ::WorkArea )->( RecNo() )
@@ -518,11 +518,11 @@ Local s  , _RecNo , _DeltaScroll := { Nil , Nil , Nil , Nil }
          ListView_SetCursel( ::hWnd, 1 )
       EndIf
 
-	Else
+   Else
 
       ::FastUpdate( -1, s - 1 )
 
-	EndIf
+   EndIf
 
    ::BrowseOnChange()
 
@@ -569,11 +569,11 @@ Local s , _RecNo , _DeltaScroll
 
       ListView_SetCursel( ::hWnd, Len( ::aRecMap ) )
 
-	Else
+   Else
 
       ::FastUpdate( 1, s + 1 )
 
-	EndIf
+   EndIf
 
    ::BrowseOnChange()
 
@@ -625,32 +625,32 @@ Local _RecNo , NewPos := 50, _DeltaScroll , m , hWnd, cWorkArea
    If Select( cWorkArea ) == 0
       ::RecCount := 0
       Return nil
-	EndIf
+   EndIf
 
-	If Value <= 0
+   If Value <= 0
       Return nil
-	EndIf
+   EndIf
 
    hWnd := ::hWnd
 
    If _OOHG_ThisEventType == 'BROWSE_ONCHANGE'
       If hWnd == _OOHG_ThisControl:hWnd
          MsgOOHGError( "BROWSE: Value property can't be changed inside ONCHANGE event. Program Terminated" )
-		EndIf
-	EndIf
+      EndIf
+   EndIf
 
    If Value > ( cWorkArea )->( RecCount() )
       ::nValue := 0
       ::DeleteAllItems()
       ::BrowseOnChange()
       Return nil
-	EndIf
+   EndIf
 
    If valtype ( mp ) != "N"
       m := int( ::CountPerPage / 2 )
-	else
-		m := mp
-	endif
+   else
+      m := mp
+   endif
 
    _DeltaScroll := ListView_GetSubItemRect( hWnd, 0 , 0 )
 
@@ -660,9 +660,9 @@ Local _RecNo , NewPos := 50, _DeltaScroll , m , hWnd, cWorkArea
    If ( cWorkArea )->( Eof() )
       ( cWorkArea )->( DbGoTo( _RecNo ) )
       Return nil
-	EndIf
+   EndIf
 
-// Sin usar DBFILTER()
+// Avoid to use DBFILTER()
    ::DbSkip()
    ::DbSkip( -1 )
    IF ( cWorkArea )->( RecNo() ) != Value
@@ -696,8 +696,8 @@ Local Value, nRecNo
    Value := ::Value
 
    If Value == 0
-		Return Nil
-	EndIf
+      Return Nil
+   EndIf
 
    nRecNo := ( ::WorkArea )->( RecNo() )
 
@@ -715,18 +715,18 @@ Local Value, nRecNo
 
       If Set( _SET_DELETED )
          ::SetValue( ( ::WorkArea )->( RecNo() ) , LISTVIEW_GETFIRSTITEM( ::hWnd ) )
-		EndIf
-	EndIf
+      EndIf
+   EndIf
 
    If _OOHG_BrowseSyncStatus
       If ( ::WorkArea )->( RecNo() ) != ::Value
          ( ::WorkArea )->( DbGoTo( ::Value ) )
-		EndIf
+      EndIf
 
    Else
       ( ::WorkArea )->( DbGoTo( nRecNo ) )
 
-	EndIf
+   EndIf
 
 Return Nil
 
@@ -820,9 +820,9 @@ LOCAL cWorkArea
 
          ( cWorkArea )->( DbGoTo( ::Value ) )
 
-		EndIf
+      EndIf
 
-	EndIf
+   EndIf
 
    ::DoChange()
 
@@ -838,17 +838,17 @@ Local ActualRecord , RecordCount
 
       RecordCount := ::RecCount
 
-		If RecordCount == 0
+      If RecordCount == 0
          Return nil
-		EndIf
+      EndIf
 
-		If RecordCount < 100
+      If RecordCount < 100
          ActualRecord := ::VScroll:Value + d
          * ::VScroll:RangeMax := RecordCount
          ::VScroll:Value := ActualRecord
-		EndIf
+      EndIf
 
-	EndIf
+   EndIf
 
    If Len( ::aRecMap ) < nRow .OR. nRow == 0
       ::nValue := 0
@@ -868,7 +868,7 @@ Local oVScroll, cWorkArea
 
    oVScroll := ::VScroll
 
-	// If vertical scrollbar is used it must be updated
+   // If vertical scrollbar is used it must be updated
    If oVScroll != nil
 
       cWorkArea := ::WorkArea
@@ -879,10 +879,10 @@ Local oVScroll, cWorkArea
       RecordCount := ( cWorkArea )->( OrdKeyCount() )
       If RecordCount > 0
          ActualRecord := ( cWorkArea )->( OrdKeyNo() )
-		Else
+      Else
          ActualRecord := ( cWorkArea )->( RecNo() )
          RecordCount := ( cWorkArea )->( RecCount() )
-		EndIf
+      EndIf
       If ::lRecCount
          RecordCount := ( cWorkArea )->( RecCount() )
       EndIf
@@ -890,15 +890,19 @@ Local oVScroll, cWorkArea
       ::nValue := ( cWorkArea )->( RecNo() )
       ::RecCount := RecordCount
 
-		If RecordCount < 100
+      If ::lDescending
+         ActualRecord := RecordCount - ActualRecord + 1
+      EndIf
+
+      If RecordCount < 100
          oVScroll:RangeMax := RecordCount
          oVScroll:Value := ActualRecord
-		Else
+      Else
          oVScroll:RangeMax := 100
          oVScroll:Value := Int ( ActualRecord * 100 / RecordCount )
-		EndIf
+      EndIf
 
-	EndIf
+   EndIf
 
 Return NIL
 
@@ -914,7 +918,7 @@ Local cWorkArea, hWnd
    If Select( cWorkArea ) == 0
       ::DeleteAllItems()
       Return nil
-	EndIf
+   EndIf
 
    v := ::Value
 
@@ -925,8 +929,8 @@ Local cWorkArea, hWnd
    _RecNo := ( cWorkArea )->( RecNo() )
 
    if v <= 0
-		v := _RecNo
-	EndIf
+      v := _RecNo
+   EndIf
 
    ( cWorkArea )->( DbGoTo( v ) )
 
@@ -935,7 +939,7 @@ Local cWorkArea, hWnd
 
 ***************************
 
-	if s == 1 .or. s == 0
+   if s == 1 .or. s == 0
       ::DbSkip()
       ::DbSkip( -1 )
       IF ( cWorkArea )->( RecNo() ) != v
@@ -1165,44 +1169,44 @@ Return nil
 EXTERN INSERTUP, INSERTDOWN, INSERTPRIOR, INSERTNEXT
 
 #pragma BEGINDUMP
-HB_FUNC (INSERTUP)
+HB_FUNC( INSERTUP )
 {
-			keybd_event(
-			VK_UP	,	// virtual-key code
-			0,		// hardware scan code
-			0,		// flags specifying various function options
-			0		// additional data associated with keystroke
-			);
+   keybd_event(
+                VK_UP   ,       // virtual-key code
+                0,              // hardware scan code
+                0,              // flags specifying various function options
+                0               // additional data associated with keystroke
+              );
 }
 
-HB_FUNC (INSERTDOWN)
+HB_FUNC( INSERTDOWN )
 {
-			keybd_event(
-			VK_DOWN	,	// virtual-key code
-			0,		// hardware scan code
-			0,		// flags specifying various function options
-			0		// additional data associated with keystroke
-			);
+   keybd_event(
+                VK_DOWN ,       // virtual-key code
+                0,              // hardware scan code
+                0,              // flags specifying various function options
+                0               // additional data associated with keystroke
+              );
 }
 
-HB_FUNC (INSERTPRIOR)
+HB_FUNC( INSERTPRIOR )
 {
-			keybd_event(
-			VK_PRIOR	,	// virtual-key code
-			0,		// hardware scan code
-			0,		// flags specifying various function options
-			0		// additional data associated with keystroke
-			);
+   keybd_event(
+                VK_PRIOR        ,       // virtual-key code
+                0,              // hardware scan code
+                0,              // flags specifying various function options
+                0               // additional data associated with keystroke
+              );
 }
 
-HB_FUNC (INSERTNEXT)
+HB_FUNC( INSERTNEXT )
 {
-			keybd_event(
-			VK_NEXT	,	// virtual-key code
-			0,		// hardware scan code
-			0,		// flags specifying various function options
-			0		// additional data associated with keystroke
-			);
+   keybd_event(
+                VK_NEXT ,       // virtual-key code
+                0,              // hardware scan code
+                0,              // flags specifying various function options
+                0               // additional data associated with keystroke
+              );
 }
 
 #pragma ENDDUMP
