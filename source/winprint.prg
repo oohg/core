@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.25 2009-02-14 02:14:52 guerra000 Exp $
+ * $Id: winprint.prg,v 1.26 2009-02-21 05:24:06 guerra000 Exp $
  */
 // -----------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -2320,7 +2320,7 @@ HB_FUNC( RR_DEVICECAPABILITIES )
    char buffer [sizeof(long)*8+1] ;
    numbins=DeviceCapabilities(pi2->pPrinterName,pi2->pPortName,DC_BINNAMES,NULL,NULL);
    numpapers=DeviceCapabilities(pi2->pPrinterName,pi2->pPortName,DC_PAPERNAMES,NULL,NULL);
-   if( numpapers != 0 && numpapers != ~0 )
+   if( numpapers != ( DWORD ) 0 && numpapers != ( DWORD ) ( ~0 ) )
    {
       pBuffer = (char *) GlobalAlloc( GPTR, numpapers * 64 );
       nBuffer = (char *) GlobalAlloc( GPTR, numpapers * sizeof( WORD ) );
@@ -2362,7 +2362,7 @@ HB_FUNC( RR_DEVICECAPABILITIES )
       hb_storc( "", 1 );
    }
 
-   if( numbins != 0 && numbins != ~0 )
+   if( numbins != ( DWORD ) 0 && numbins != ( DWORD ) ( ~0 ) )
    {
       bnBuffer = (char *) GlobalAlloc(GPTR,numbins*24);
       bwBuffer = (char *) GlobalAlloc(GPTR,numbins*sizeof(WORD));
