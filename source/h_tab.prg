@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.41 2009-02-16 01:45:43 guerra000 Exp $
+ * $Id: h_tab.prg,v 1.42 2009-02-22 22:05:36 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -96,9 +96,9 @@
 #include "i_windefs.ch"
 
 CLASS TTab FROM TControl
-   DATA Type       INIT "TAB" READONLY
-   DATA aPages     INIT {}
-   DATA lInternals INIT .F.
+   DATA Type                INIT "TAB" READONLY
+   DATA aPages              INIT {}
+   DATA lInternals          INIT .F.
    DATA ImageListColor      INIT CLR_DEFAULT
    DATA ImageListFlags      INIT LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
    DATA SetImageListCommand INIT TCM_SETIMAGELIST
@@ -151,15 +151,15 @@ Local ControlHandle
       ::BackColor := -1
    ENDIF
 
-   IF !HB_IsArray( aCaptions )
+   If ! HB_IsArray( aCaptions )
        aCaptions := {}
-   ENDIF
-   IF !HB_IsArray( aPageMap )
+   EndIf
+   If ! HB_IsArray( aPageMap )
       aPageMap := {}
-   ENDIF
-   IF !HB_IsArray( Images )
+   EndIf
+   If ! HB_IsArray( Images )
       Images := {}
-   ENDIF
+   EndIf
 
    ASSIGN ::nWidth  VALUE w TYPE "N"
    ASSIGN ::nHeight VALUE h TYPE "N"
@@ -174,9 +174,9 @@ Local ControlHandle
              if( ValType( multiline ) == "L" .AND. multiline,  TCS_MULTILINE, 0 )
 
    ControlHandle = InitTabControl( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, {}, value, nStyle, ::lRtl )
-   IF ! ::lInternals
+   If ! ::lInternals .AND. ! EMPTY( ::Container )
       SetWindowPos( ControlHandle, 0, 0, 0, 0, 0, 3 )
-   ENDIF
+   EndIf
 
    ::Register( ControlHandle, ControlName, , , ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
