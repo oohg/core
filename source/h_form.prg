@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.8 2008-12-31 23:05:24 guerra000 Exp $
+ * $Id: h_form.prg,v 1.9 2009-03-01 16:07:11 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -836,12 +836,12 @@ HB_FUNC_STATIC( TFORM_BACKCOLOR )
          DeleteObject( oSelf->BrushHandle );
          oSelf->BrushHandle = 0;
       }
+      if( oSelf->lBackColor != -1 )
+      {
+         oSelf->BrushHandle = CreateSolidBrush( oSelf->lBackColor );
+      }
       if( ValidHandler( oSelf->hWnd ) )
       {
-         if( oSelf->lBackColor != -1 )
-         {
-            oSelf->BrushHandle = CreateSolidBrush( oSelf->lBackColor );
-         }
          RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
       }
    }

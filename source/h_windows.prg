@@ -1,11 +1,11 @@
 /*
- * $Id: h_windows.prg,v 1.199 2008-11-30 16:23:36 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.200 2009-03-01 16:07:11 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG Windows handling functions
  *
- * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -166,24 +166,24 @@ void _OOHG_SetMouseCoords( PHB_ITEM pSelf, int iCol, int iRow )
 *------------------------------------------------------------------------------*
 CLASS TWindow
 *------------------------------------------------------------------------------*
-   DATA hWnd       INIT 0
-   DATA aControlInfo INIT { CHR( 0 ) }
-   DATA Name       INIT ""
-   DATA Type       INIT ""
-   DATA Parent     INIT nil
-   DATA nRow       INIT 0
-   DATA nCol       INIT 0
-   DATA nWidth     INIT 0
-   DATA nHeight    INIT 0
-   DATA Active     INIT .F.
-   DATA cFontName  INIT ""
-   DATA nFontSize  INIT 0
-   DATA Bold       INIT .F.
-   DATA Italic     INIT .F.
-   DATA Underline  INIT .F.
-   DATA Strikeout  INIT .F.
-   DATA RowMargin  INIT 0
-   DATA ColMargin  INIT 0
+   DATA hWnd                INIT 0
+   DATA aControlInfo        INIT { CHR( 0 ) }
+   DATA Name                INIT ""
+   DATA Type                INIT ""
+   DATA Parent              INIT nil
+   DATA nRow                INIT 0
+   DATA nCol                INIT 0
+   DATA nWidth              INIT 0
+   DATA nHeight             INIT 0
+   DATA Active              INIT .F.
+   DATA cFontName           INIT ""
+   DATA nFontSize           INIT 0
+   DATA Bold                INIT .F.
+   DATA Italic              INIT .F.
+   DATA Underline           INIT .F.
+   DATA Strikeout           INIT .F.
+   DATA RowMargin           INIT 0
+   DATA ColMargin           INIT 0
    DATA Container           INIT nil
    DATA ContainerhWndValue  INIT nil
    DATA lRtl                INIT .F.
@@ -226,9 +226,9 @@ CLASS TWindow
    DATA VScrollBar          INIT nil
 
     //////// all redimension Vars
-   DATA nOldw          INIT NIL
-   DATA nOLdh          INIT NIL
-   DATA nWindowState   INIT  0   /// 2 Maximizada 1 minimizada  0 Normal
+   DATA nOldw               INIT NIL
+   DATA nOLdh               INIT NIL
+   DATA nWindowState        INIT  0   /// 2 Maximizada 1 minimizada  0 Normal
 
    ///////
 
@@ -243,11 +243,12 @@ CLASS TWindow
    METHOD BrushHandle         SETGET
    METHOD FontHandle          SETGET
    METHOD FontColor           SETGET
+   METHOD FontColorCode       SETGET
    METHOD BackColor           SETGET
+   METHOD BackColorCode       SETGET
    METHOD FontColorSelected   SETGET
    METHOD BackColorSelected   SETGET
-   METHOD FontColorCode       SETGET
-   METHOD BackColorCode       SETGET
+   METHOD BackBitMap          SETGET
    METHOD Caption             SETGET
    METHOD Events
 
@@ -429,10 +430,16 @@ HB_FUNC_STATIC( TWINDOW_BRUSHHANDLE )
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   HBRUSH hBrush;
 
-   if( hb_pcount() >= 1 && ISNUM( 1 ) )
+   hBrush = ( HBRUSH ) HWNDparam( 1 );
+   if( hb_pcount() >= 1 )
    {
-      oSelf->BrushHandle = ( HBRUSH ) HWNDparam( 1 );
+      if( oSelf->BrushHandle )
+      {
+         DeleteObject( oSelf->BrushHandle );
+      }
+      oSelf->BrushHandle = ValidHandler( hBrush ) ? hBrush : 0;
    }
 
    HWNDret( oSelf->BrushHandle );
@@ -555,7 +562,26 @@ HB_FUNC_STATIC( TWINDOW_BACKCOLORSELECTED )
    // Return value was set in _OOHG_DetermineColorReturn()
 }
 
-HB_FUNC( TWINDOW_CAPTION )
+HB_FUNC_STATIC( TWINDOW_BACKBITMAP )
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   HBITMAP hBitMap;
+
+   hBitMap = ( HBITMAP ) HWNDparam( 1 );
+   if( ValidHandler( hBitMap ) )
+   {
+      if( oSelf->BrushHandle )
+      {
+         DeleteObject( oSelf->BrushHandle );
+      }
+      oSelf->BrushHandle = CreatePatternBrush( hBitMap );
+   }
+
+   HWNDret( oSelf->BrushHandle );
+}
+
+HB_FUNC_STATIC( TWINDOW_CAPTION )
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
