@@ -1,11 +1,11 @@
 /*
- * $Id: c_image.c,v 1.19 2008-11-30 16:23:36 guerra000 Exp $
+ * $Id: c_image.c,v 1.20 2009-03-02 07:13:08 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * C image functions
  *
- * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -555,6 +555,16 @@ HB_FUNC( _OOHG_ROTATEIMAGE )            // ( oSelf, hBitMap, nDegree )
    HBITMAP hBitmap;
 
    hBitmap = _OOHG_RotateImage( oSelf->hWnd, ( HBITMAP ) HWNDparam( 2 ), oSelf->lBackColor, hb_parni( 3 ) );
+
+   HWNDret( hBitmap );
+}
+
+HB_FUNC( _OOHG_SCALEIMAGE )            // ( oSelf, hBitMap, nWidth, nHeight )
+{
+   POCTRL oSelf = _OOHG_GetControlInfo( hb_param( 1, HB_IT_OBJECT ) );
+   HBITMAP hBitmap;
+
+   hBitmap = _OOHG_ScaleImage( oSelf->hWnd, ( HBITMAP ) HWNDparam( 2 ), hb_parni( 3 ), hb_parni( 4 ), FALSE, oSelf->lBackColor );
 
    HWNDret( hBitmap );
 }

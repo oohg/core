@@ -1,5 +1,5 @@
 /*
- * $Id: h_picture.prg,v 1.1 2009-03-02 05:06:56 guerra000 Exp $
+ * $Id: h_picture.prg,v 1.2 2009-03-02 07:13:08 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -62,6 +62,7 @@ CLASS TPicture FROM TControl
    DATA AutoFit         INIT .F.
    DATA hImage          INIT nil
    DATA ImageSize       INIT .F.
+   DATA nZoom           INIT 1
 
    METHOD Define
    METHOD RePaint
@@ -71,6 +72,7 @@ CLASS TPicture FROM TControl
    METHOD Picture       SETGET
    METHOD Buffer        SETGET
    METHOD HBitMap       SETGET
+   METHOD Zoom          SETGET
 
    METHOD Events
 
@@ -169,13 +171,26 @@ METHOD Buffer( cBuffer ) CLASS TPicture
 Return nil
 
 *-----------------------------------------------------------------------------*
+METHOD Zoom( nZoom ) CLASS TPicture
+*-----------------------------------------------------------------------------*
+   If HB_IsNumeric( nZoom )
+      ::nZoom := nZoom
+      ::RePaint()
+   EndIf
+Return ::nZoom
+
+*-----------------------------------------------------------------------------*
 METHOD RePaint() CLASS TPicture
 *-----------------------------------------------------------------------------*
    IF ValidHandler( ::AuxHandle )
       DeleteObject( ::AuxHandle )
    ENDIF
    ::Super:SizePos( ,, ::nWidth, ::nHeight )
-   ::AuxHandle := _OOHG_SetBitmap( Self, ::hImage, 0, ::Stretch, ::AutoFit )
+   IF ::Stretch .OR. ::AutoFit
+      ::AuxHandle := _OOHG_SetBitmap( Self, ::hImage, 0, ::Stretch, ::AutoFit )
+   ELSE
+      ::AuxHandle := _OOHG_ScaleImage( Self, ::hImage, ( _BitmapWidth( ::hImage ) * ::nZoom ) + 0.999, ( _BitmapHeight( ::hImage ) * ::nZoom ) + 0.999 )
+   ENDIF
    IF SCROLLS( ::hWnd, _BitmapWidth( ::AuxHandle ), _BitmapHeight( ::AuxHandle ) )
 *      ::ReDraw()
    ENDIF
@@ -188,7 +203,6 @@ LOCAL uRet
    uRet := ::Super:SizePos( Row, Col, Width, Height )
    ::RePaint()
 RETURN uRet
-
 
 *-----------------------------------------------------------------------------*
 METHOD Release() CLASS TPicture
@@ -406,7 +420,11 @@ HB_FUNC_STATIC( TPICTURE_EVENTS )
 
             ScrollInfo.cbSize = sizeof( SCROLLINFO );
             ScrollInfo.fMask = SIF_PAGE | SIF_POS | SIF_RANGE | SIF_TRACKPOS;
-            GetScrollInfo( oSelf->hWnd, SB_HORZ, &ScrollInfo );
+            if( ! ( GetWindowLong( hWnd, GWL_STYLE ) & WS_HSCROLL ) || ! GetScrollInfo( oSelf->hWnd, SB_HORZ, &ScrollInfo ) )
+            {
+               memset( &ScrollInfo, 0, sizeof( ScrollInfo ) );
+               wParam = 0;
+            }
             iOldPos = ScrollInfo.nPos;
             iNewPos = ScrollInfo.nPos;
             switch( LOWORD( wParam ) )
@@ -467,7 +485,11 @@ HB_FUNC_STATIC( TPICTURE_EVENTS )
 
             ScrollInfo.cbSize = sizeof( SCROLLINFO );
             ScrollInfo.fMask = SIF_PAGE | SIF_POS | SIF_RANGE | SIF_TRACKPOS;
-            GetScrollInfo( oSelf->hWnd, SB_VERT, &ScrollInfo );
+            if( ! ( GetWindowLong( hWnd, GWL_STYLE ) & WS_VSCROLL ) || ! GetScrollInfo( oSelf->hWnd, SB_VERT, &ScrollInfo ) )
+            {
+               memset( &ScrollInfo, 0, sizeof( ScrollInfo ) );
+               wParam = 0;
+            }
             iOldPos = ScrollInfo.nPos;
             iNewPos = ScrollInfo.nPos;
             switch( LOWORD( wParam ) )
@@ -551,8 +573,8 @@ HB_FUNC( SCROLLS )   // ( hWnd, nWidth, nHeight )
    long lStyle;
    int iWidth, iHeight, iClientWidth, iClientHeight;
    int iScrollWidth, iScrollHeight;
-   int iRangeHorz, iRangeVert, iPosHorz, iPosVert;
-   int bChanged, iRange, iPos;
+   int iRangeHorz, iRangeVert, iPosHorz, iPosVert, iPageHorz, iPageVert;
+   int bChanged, iRange, iPos, iPage;
    RECT rect;
    SCROLLINFO ScrollInfo;
 
@@ -589,13 +611,14 @@ HB_FUNC( SCROLLS )   // ( hWnd, nWidth, nHeight )
       iClientHeight -= iScrollHeight;
    }
 
-   iRangeHorz = iRangeVert = iPosHorz = iPosVert = 0;
+   iRangeHorz = iRangeVert = iPosHorz = iPosVert = iPageHorz = iPageVert = 0;
    ScrollInfo.cbSize = sizeof( SCROLLINFO );
    ScrollInfo.fMask = SIF_PAGE | SIF_POS | SIF_RANGE | SIF_TRACKPOS;
    if( GetScrollInfo( hWnd, SB_HORZ, &ScrollInfo ) )
    {
       iPosHorz   = ScrollInfo.nPos;
       iRangeHorz = ScrollInfo.nMax;
+      iPageHorz  = ScrollInfo.nPage;
    }
    ScrollInfo.cbSize = sizeof( SCROLLINFO );
    ScrollInfo.fMask = SIF_PAGE | SIF_POS | SIF_RANGE | SIF_TRACKPOS;
@@ -603,12 +626,13 @@ HB_FUNC( SCROLLS )   // ( hWnd, nWidth, nHeight )
    {
       iPosVert   = ScrollInfo.nPos;
       iRangeVert = ScrollInfo.nMax;
+      iPageVert  = ScrollInfo.nPage;
    }
 
    bChanged = 0;
    lStyle = lStyle & ( ~ ( WS_HSCROLL | WS_VSCROLL ) );
 
-   iRange = iPos = 0;
+   iRange = iPos = iPage = 0;
    if( iWidth > iClientWidth )
    {
       iRange = iWidth - iClientWidth;
@@ -616,7 +640,7 @@ HB_FUNC( SCROLLS )   // ( hWnd, nWidth, nHeight )
       lStyle = lStyle | WS_HSCROLL;
       iRange = iWidth - 1;
    }
-   if( iRange != iRangeHorz || iPos != iPosHorz )
+   if( iRange != iRangeHorz || iPos != iPosHorz || iClientWidth != iPageHorz )
    {
       bChanged = 1;
    }
@@ -631,7 +655,7 @@ HB_FUNC( SCROLLS )   // ( hWnd, nWidth, nHeight )
       lStyle = lStyle | WS_VSCROLL;
       iRange = iHeight - 1;
    }
-   if( iRange != iRangeVert || iPos != iPosVert )
+   if( iRange != iRangeVert || iPos != iPosVert || iClientHeight != iPageVert )
    {
       bChanged = 1;
    }
@@ -644,6 +668,7 @@ HB_FUNC( SCROLLS )   // ( hWnd, nWidth, nHeight )
       if( iRangeHorz )
       {
          ScrollInfo.cbSize = sizeof( SCROLLINFO );
+         memset( &ScrollInfo, 0, sizeof( SCROLLINFO ) );
          ScrollInfo.fMask = SIF_PAGE | SIF_POS | SIF_RANGE;
          ScrollInfo.nMin = 0;
          ScrollInfo.nMax = iRangeHorz;
@@ -654,6 +679,7 @@ HB_FUNC( SCROLLS )   // ( hWnd, nWidth, nHeight )
       if( iRangeVert )
       {
          ScrollInfo.cbSize = sizeof( SCROLLINFO );
+         memset( &ScrollInfo, 0, sizeof( SCROLLINFO ) );
          ScrollInfo.fMask = SIF_PAGE | SIF_POS | SIF_RANGE;
          ScrollInfo.nMin = 0;
          ScrollInfo.nMax = iRangeVert;
