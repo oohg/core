@@ -1,5 +1,5 @@
 /*
- * $Id: h_picture.prg,v 1.2 2009-03-02 07:13:08 guerra000 Exp $
+ * $Id: h_picture.prg,v 1.3 2009-03-03 01:53:51 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -549,6 +549,10 @@ HB_FUNC_STATIC( TPICTURE_EVENTS )
          hb_ret();
          break;
 */
+
+      case WM_LBUTTONUP:
+         SendMessage( GetParent( hWnd ), WM_COMMAND, MAKEWORD( STN_CLICKED, 0 ), ( LPARAM ) hWnd );
+         break;
 
       default:
          _OOHG_Send( pSelf, s_Super );

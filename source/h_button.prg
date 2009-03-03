@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.38 2009-02-16 01:45:43 guerra000 Exp $
+ * $Id: h_button.prg,v 1.39 2009-03-03 01:53:51 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -95,23 +95,29 @@
 #include "hbclass.ch"
 #include "i_windefs.ch"
 
-
-CLASS TButton FROM TImage
-   DATA Type      INIT "BUTTON" READONLY
-   DATA lNoTransparent INIT .F.
-   DATA nWidth    INIT 100
-   DATA nHeight   INIT 28
-   DATA AutoFit   INIT .F.
-   DATA nAlign    INIT 2
-   DATA OnClick   INIT nil
+CLASS TButton FROM TControl
+   DATA Type            INIT "BUTTON" READONLY
+   DATA lNoTransparent  INIT .F.
+   DATA nWidth          INIT 100
+   DATA nHeight         INIT 28
+   DATA AutoFit         INIT .F.
+   DATA nAlign          INIT 2
+   DATA cPicture        INIT ""
+   DATA Stretch         INIT .F.
+   DATA hImage          INIT nil
+   DATA ImageSize       INIT .F.
 
    METHOD Define
    METHOD DefineImage
    METHOD SetFocus
-   METHOD Picture     SETGET
-   METHOD Value       SETGET
+   METHOD Picture       SETGET
+   METHOD HBitMap       SETGET
+   METHOD Buffer        SETGET
+   METHOD Value         SETGET
 
    METHOD RePaint
+   METHOD SizePos
+   METHOD Release
 
    EMPTY( _OOHG_AllVars )
 ENDCLASS
@@ -179,9 +185,9 @@ Local ControlHandle, nStyle, lBitMap
    ENDIF
 
    ::Picture := cImage
-   If ! ValidHandler( ::AuxHandle )
+   If ! ValidHandler( ::hImage )
       ::Buffer := cBuffer
-      If ! ValidHandler( ::AuxHandle )
+      If ! ValidHandler( ::hImage )
          ::HBitMap := hBitMap
       EndIf
    EndIf
@@ -219,7 +225,7 @@ METHOD Picture( cPicture ) CLASS TButton
 *-----------------------------------------------------------------------------*
 LOCAL nAttrib
    IF VALTYPE( cPicture ) $ "CM"
-      DeleteObject( ::AuxHandle )
+      DeleteObject( ::hImage )
       ::cPicture := cPicture
 
       nAttrib := LR_LOADMAP3DCOLORS
@@ -233,14 +239,42 @@ LOCAL nAttrib
 //         nAttrib := LR_LOADTRANSPARENT
 //      ENDIF
 
-      ::AuxHandle := _OOHG_BitmapFromFile( Self, cPicture, nAttrib, ::AutoFit .AND. ! ::ImageSize )
+      ::hImage := _OOHG_BitmapFromFile( Self, cPicture, nAttrib, ::AutoFit .AND. ! ::ImageSize )
       IF ::ImageSize
-         ::nWidth  := _BitMapWidth( ::AuxHandle )
-         ::nHeight := _BitMapHeight( ::AuxHandle )
+         ::nWidth  := _BitMapWidth( ::hImage )
+         ::nHeight := _BitMapHeight( ::hImage )
       ENDIF
       ::RePaint()
    ENDIF
 Return ::cPicture
+
+*-----------------------------------------------------------------------------*
+METHOD HBitMap( hBitMap ) CLASS TButton
+*-----------------------------------------------------------------------------*
+   If ValType( hBitMap ) $ "NP"
+      DeleteObject( ::hImage )
+      ::hImage := hBitMap
+      IF ::ImageSize
+         ::nWidth  := _BitMapWidth( ::hImage )
+         ::nHeight := _BitMapHeight( ::hImage )
+      ENDIF
+      ::RePaint()
+   EndIf
+Return ::hImage
+
+*-----------------------------------------------------------------------------*
+METHOD Buffer( cBuffer ) CLASS TButton
+*-----------------------------------------------------------------------------*
+   If VALTYPE( cBuffer ) $ "CM"
+      DeleteObject( ::hImage )
+      ::hImage := _OOHG_BitmapFromBuffer( Self, cBuffer, ::AutoFit .AND. ! ::ImageSize )
+      IF ::ImageSize
+         ::nWidth  := _BitMapWidth( ::hImage )
+         ::nHeight := _BitMapHeight( ::hImage )
+      ENDIF
+      ::RePaint()
+   EndIf
+Return nil
 
 *------------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TButton
@@ -250,21 +284,38 @@ Return ( ::Caption := uValue )
 *-----------------------------------------------------------------------------*
 METHOD RePaint() CLASS TButton
 *-----------------------------------------------------------------------------*
+   IF ! EMPTY( ::hImage )
+      IF ValidHandler( ::AuxHandle )
+         DeleteObject( ::AuxHandle )
+      ENDIF
+      ::AuxHandle := NIL
+      ::TControl:SizePos()
+      IF ( "XP" $ OS() .OR. "Vista" $ OS() ) .AND. ValidHandler( ::hImage ) .AND. LEN( ::Caption ) > 0
+         SetImageXP( ::hWnd, ::hImage, ::nAlign, ::BackColorCode )
+         ::ReDraw()
+      ELSEIF ::Stretch .OR. ::AutoFit
+         ::AuxHandle := _OOHG_SetBitmap( Self, ::hImage, BM_SETIMAGE, ::Stretch, ::AutoFit )
+      ELSE
+         SendMessage( ::hWnd, BM_SETIMAGE, IMAGE_BITMAP, ::hImage )
+      ENDIF
+   ENDIF
+RETURN Self
+
+*-----------------------------------------------------------------------------*
+METHOD SizePos( Row, Col, Width, Height ) CLASS TButton
+*-----------------------------------------------------------------------------*
+LOCAL uRet
+   uRet := ::Super:SizePos( Row, Col, Width, Height )
+   ::RePaint()
+RETURN uRet
+
+*-----------------------------------------------------------------------------*
+METHOD Release() CLASS TButton
+*-----------------------------------------------------------------------------*
    IF ValidHandler( ::hImage )
       DeleteObject( ::hImage )
    ENDIF
-   ::TControl:SizePos()
-   IF ( "XP" $ OS() .OR. "Vista" $ OS() ) .AND. ValidHandler( ::AuxHandle ) .AND. LEN( ::Caption ) > 0
-      SetImageXP( ::hWnd, ::AuxHandle, ::nAlign, ::BackColorCode )
-      ::redraw()
-      ::hImage := NIL
-   ELSEIF ::Stretch .OR. ::AutoFit
-      ::hImage := _OOHG_SetBitmap( Self, ::AuxHandle, BM_SETIMAGE, ::Stretch, ::AutoFit )
-   ELSE
-      SendMessage( ::hWnd, BM_SETIMAGE, IMAGE_BITMAP, ::AuxHandle )
-      ::hImage := NIL
-   ENDIF
-RETURN Self
+RETURN ::Super:Release()
 
 #pragma BEGINDUMP
 #include <hbapi.h>
@@ -288,17 +339,9 @@ HB_FUNC( INITBUTTON )
 
    StyleEx = hb_parni( 10 ) | _OOHG_RTL_Status( hb_parl( 8 ) );
 
-   hbutton = CreateWindowEx( StyleEx, "button" ,
-                           hb_parc(2) ,
-                           Style ,
-                           hb_parni(4) ,
-                           hb_parni(5) ,
-                           hb_parni(6) ,
-                           hb_parni(7) ,
-                           HWNDparam( 1 ),
-                           (HMENU)hb_parni(3) ,
-                           GetModuleHandle(NULL) ,
-                           NULL ) ;
+   hbutton = CreateWindowEx( StyleEx, "button", hb_parc( 2 ), Style,
+                             hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ), hb_parni( 7 ),
+                             HWNDparam( 1 ), ( HMENU ) hb_parni( 3 ), GetModuleHandle( NULL ), NULL );
 
    lpfnOldWndProc = ( WNDPROC ) SetWindowLong( hbutton, GWL_WNDPROC, ( LONG ) SubClassFunc );
 
@@ -424,9 +467,9 @@ Local ControlHandle, nStyle := 0
    ASSIGN ::lNoTransparent VALUE lNoTransparent TYPE "L"
    ASSIGN ::AutoFit        VALUE lScale         TYPE "L"
    ::Picture := BitMap
-   If ! ValidHandler( ::AuxHandle )
+   If ! ValidHandler( ::hImage )
       ::Buffer := cBuffer
-      If ! ValidHandler( ::AuxHandle )
+      If ! ValidHandler( ::hImage )
          ::HBitMap := hBitMap
       EndIf
    EndIf

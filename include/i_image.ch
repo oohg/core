@@ -1,12 +1,12 @@
 /*
- * $Id: i_image.ch,v 1.7 2007-12-25 18:44:37 guerra000 Exp $
+ * $Id: i_image.ch,v 1.8 2009-03-03 01:53:51 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Image definitions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -91,6 +91,7 @@
         Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
+/*
 #command @ <row>,<col> IMAGE <name> ;
         [ OBJ <obj> ] ;
 	[ <dummy1: OF, PARENT> <parent> ] ;
@@ -115,3 +116,35 @@
         <{action}>, <helpid>, <.invisible.>, <.stretch.>, ;
         <.whitebackground.>, <.rtl.>, <backcolor>, <buffer>, <hbitmap>, ;
         ! <.noresize.>, <.imagesize.> )
+*/
+
+#command @ <row>,<col> IMAGE <name> ;
+        [ OBJ <obj> ] ;
+	[ <dummy1: OF, PARENT> <parent> ] ;
+	[ <dummy2: ACTION,ON CLICK,ONCLICK> <action> ];
+	[ WIDTH <w> ] ;
+	[ HEIGHT <h> ] ;
+	[ <stretch: STRETCH> ] ;
+	[ HELPID <helpid> ] 		;
+	[ <invisible: INVISIBLE> ] ;
+        [ <rtl: RTL> ] ;
+        [ SUBCLASS <subclass> ] ;
+        [ BACKCOLOR <backcolor> ] ;
+        [ PICTURE <filename> ] ;
+        [ BUFFER <buffer> ] ;
+        [ HBITMAP <hbitmap> ] ;
+        [ <imagesize: IMAGESIZE> ] ;
+        [ <whitebackground: WHITEBACKGROUND> ] ;
+        [ <noresize: NORESIZE> ] ;
+        ;
+	[ <border: BORDER> ] ;
+	[ <clientedge: CLIENTEDGE> ] ;
+	[ TOOLTIP <tooltip> ] ;
+ =>;
+        [ <obj> := ] _OOHG_SelectSubClass( TPicture(), [ <subclass>() ] ): ;
+        Define( <(name)>, <(parent)>, <col>, <row>, <filename>, <w>, <h>, ;
+        <buffer>, <hbitmap>, <.stretch.>, ! <.noresize.>, <.imagesize.>, ;
+        <.border.>, <.clientedge.>, ;
+        IF( <.whitebackground.>, 0xFFFFFF, <backcolor> ), ;
+        <{action}>, <tooltip>, ;
+        <helpid>, <.rtl.>, <.invisible.> )
