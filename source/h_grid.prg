@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.103 2009-02-16 01:45:43 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.104 2009-03-14 06:55:49 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -163,7 +163,7 @@ CLASS TGrid FROM TControl
    METHOD InsertItem
    METHOD InsertBlank
    METHOD DeleteItem
-   METHOD DeleteAllItems      BLOCK { | Self | ListViewReset( ::hWnd ), ::GridForeColor := nil, ::GridBackColor := nil }
+   METHOD DeleteAllItems      BLOCK { | Self | ListViewReset( ::hWnd ), ::GridForeColor := nil, ::GridBackColor := nil, ::DoChange() }
    METHOD Item
    METHOD SetItemColor
    METHOD ItemCount           BLOCK { | Self | ListViewGetItemCount( ::hWnd ) }
@@ -2287,6 +2287,10 @@ HB_FUNC( CELLRAWVALUE )   // hWnd, nRow, nCol, nType, uValue
       ListView_SetItem( hWnd, &LI );
    }
 
+   LI.cchTextMax = 1022;
+   LI.pszText = buffer;
+   buffer[ 0 ] = 0;
+   buffer[ 1023 ] = 0;
    ListView_GetItem( hWnd, &LI );
 
    if( iType == 1 )

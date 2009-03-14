@@ -1,5 +1,5 @@
 /*
- * $Id: h_picture.prg,v 1.3 2009-03-03 01:53:51 guerra000 Exp $
+ * $Id: h_picture.prg,v 1.4 2009-03-14 06:55:49 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -574,7 +574,7 @@ HB_FUNC_STATIC( TPICTURE_EVENTS )
 HB_FUNC( SCROLLS )   // ( hWnd, nWidth, nHeight )
 {
    HWND hWnd;
-   long lStyle;
+   long lStyle, lOldStyle;
    int iWidth, iHeight, iClientWidth, iClientHeight;
    int iScrollWidth, iScrollHeight;
    int iRangeHorz, iRangeVert, iPosHorz, iPosVert, iPageHorz, iPageVert;
@@ -595,7 +595,7 @@ HB_FUNC( SCROLLS )   // ( hWnd, nWidth, nHeight )
    iScrollWidth  = GetSystemMetrics( SM_CXVSCROLL );
    iScrollHeight = GetSystemMetrics( SM_CXHSCROLL );
 
-   lStyle = GetWindowLong( hWnd, GWL_STYLE );
+   lOldStyle = lStyle = GetWindowLong( hWnd, GWL_STYLE );
    GetClientRect( hWnd, &rect );
    iClientWidth  = rect.right  - rect.left + ( ( lStyle & WS_VSCROLL ) ? iScrollWidth  : 0 );
    iClientHeight = rect.bottom - rect.top  + ( ( lStyle & WS_HSCROLL ) ? iScrollHeight : 0 );
@@ -669,7 +669,7 @@ HB_FUNC( SCROLLS )   // ( hWnd, nWidth, nHeight )
    if( bChanged )
    {
       SetWindowLong( hWnd, GWL_STYLE, lStyle );
-      if( iRangeHorz )
+      if( iRangeHorz || ( lOldStyle & WS_HSCROLL ) )
       {
          ScrollInfo.cbSize = sizeof( SCROLLINFO );
          memset( &ScrollInfo, 0, sizeof( SCROLLINFO ) );
@@ -680,7 +680,7 @@ HB_FUNC( SCROLLS )   // ( hWnd, nWidth, nHeight )
          ScrollInfo.nPage = iClientWidth;
          SetScrollInfo( hWnd, SB_HORZ, ( LPSCROLLINFO ) &ScrollInfo, 1 );
       }
-      if( iRangeVert )
+      if( iRangeVert || ( lOldStyle & WS_VSCROLL ) )
       {
          ScrollInfo.cbSize = sizeof( SCROLLINFO );
          memset( &ScrollInfo, 0, sizeof( SCROLLINFO ) );

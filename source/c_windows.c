@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.63 2009-01-22 05:37:52 guerra000 Exp $
+ * $Id: c_windows.c,v 1.64 2009-03-14 06:55:49 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1517,7 +1517,7 @@ HB_FUNC( WINDOWSTYLEFLAG )
 
 HB_FUNC( ANIMATEWINDOW )                // hWnd, nTime, nFlags, lHide
 {
-#ifdef __MINGW__
+#ifdef __MINGW32__
    ShowWindow( HWNDparam( 1 ), ( hb_parl( 4 ) ? SW_HIDE : SW_SHOW ) );
 #else
    int iType;
