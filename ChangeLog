@@ -1,11 +1,21 @@
 /*
- * $Id: ChangeLog,v 1.581 2009-03-14 06:55:48 guerra000 Exp $
+ * $Id: ChangeLog,v 1.582 2009-03-16 00:48:34 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-03-15 18:46 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/c_image.c
+  * source/h_button.prg
+  * source/h_image.prg
+    ! Fixed STRETCH functionality.
+  * source/h_label.prg
+    ! Part to fix (not fixed yed) RADIOGROUP bug with internal windows.
+  * source/h_picture.prg
+    ! Fixed for image with controls overlapped.
 
 2009-03-10 22:41 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source/c_windows.c

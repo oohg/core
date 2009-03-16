@@ -1,5 +1,5 @@
 /*
- * $Id: h_image.prg,v 1.23 2009-03-03 01:53:51 guerra000 Exp $
+ * $Id: h_image.prg,v 1.24 2009-03-16 00:48:34 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -169,7 +169,7 @@ LOCAL nAttrib
       // IF ::Transparent
       //    nAttrib += LR_LOADMAP3DCOLORS + LR_LOADTRANSPARENT
       // ENDIF
-      ::hImage := _OOHG_BitmapFromFile( Self, cPicture, nAttrib, ::AutoFit .AND. ! ::ImageSize )
+      ::hImage := _OOHG_BitmapFromFile( Self, cPicture, nAttrib, ::AutoFit .AND. ! ::ImageSize .AND. ! ::Stretch )
       IF ::ImageSize
          ::nWidth  := _BitMapWidth( ::hImage )
          ::nHeight := _BitMapHeight( ::hImage )
@@ -197,7 +197,7 @@ METHOD Buffer( cBuffer ) CLASS TImage
 *-----------------------------------------------------------------------------*
    If VALTYPE( cBuffer ) $ "CM"
       DeleteObject( ::hImage )
-      ::hImage := _OOHG_BitmapFromBuffer( Self, cBuffer, ::AutoFit .AND. ! ::ImageSize )
+      ::hImage := _OOHG_BitmapFromBuffer( Self, cBuffer, ::AutoFit .AND. ! ::ImageSize .AND. ! ::Stretch )
       IF ::ImageSize
          ::nWidth  := _BitMapWidth( ::hImage )
          ::nHeight := _BitMapHeight( ::hImage )
@@ -231,10 +231,7 @@ METHOD RePaint() CLASS TImage
    ENDIF
    ::AuxHandle := nil
    ::Super:SizePos()
-   IF ::Stretch
-      SendMessage( ::hWnd, STM_SETIMAGE, IMAGE_BITMAP, ::hImage )
-      ::Super:SizePos()
-   ELSEIF ::AutoFit
+   IF ::Stretch .OR. ::AutoFit
       ::AuxHandle := _OOHG_SetBitmap( Self, ::hImage, STM_SETIMAGE, ::Stretch, ::AutoFit )
    ELSE
       SendMessage( ::hWnd, STM_SETIMAGE, IMAGE_BITMAP, ::hImage )

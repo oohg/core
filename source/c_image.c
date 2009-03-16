@@ -1,5 +1,5 @@
 /*
- * $Id: c_image.c,v 1.20 2009-03-02 07:13:08 guerra000 Exp $
+ * $Id: c_image.c,v 1.21 2009-03-16 00:48:34 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -211,22 +211,20 @@ HBITMAP _OOHG_ScaleImage( HWND hWnd, HBITMAP hImage, int iWidth, int iHeight, in
 
       // TO parameters
       GetClientRect( hWnd, &toRECT );
-      if( scalestrech )
+      if( iWidth == 0 && iHeight == 0 )
       {
          iWidth  = toRECT.right - toRECT.left;
          iHeight = toRECT.bottom - toRECT.top;
-      }
-      else if( iWidth == 0 && iHeight == 0 )
-      {
-         iWidth  = toRECT.right - toRECT.left;
-         iHeight = toRECT.bottom - toRECT.top;
-         if( (int)lWidth*iHeight/lHeight <= iWidth )
+         if( scalestrech )
          {
-            iWidth  = ( int ) lWidth  * iHeight / lHeight;
-         }
-         else
-         {
-            iHeight = ( int ) lHeight * iWidth  / lWidth;
+            if( (int)lWidth*iHeight/lHeight <= iWidth )
+            {
+               iWidth  = ( int ) lWidth  * iHeight / lHeight;
+            }
+            else
+            {
+               iHeight = ( int ) lHeight * iWidth  / lWidth;
+            }
          }
       }
       SetRect( &toRECT, 0, 0, iWidth, iHeight );

@@ -1,5 +1,5 @@
 /*
- * $Id: h_picture.prg,v 1.4 2009-03-14 06:55:49 guerra000 Exp $
+ * $Id: h_picture.prg,v 1.5 2009-03-16 00:48:34 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -63,6 +63,7 @@ CLASS TPicture FROM TControl
    DATA hImage          INIT nil
    DATA ImageSize       INIT .F.
    DATA nZoom           INIT 1
+   DATA bOnClick        INIT nil
 
    METHOD Define
    METHOD RePaint
@@ -73,6 +74,7 @@ CLASS TPicture FROM TControl
    METHOD Buffer        SETGET
    METHOD HBitMap       SETGET
    METHOD Zoom          SETGET
+   METHOD OnClick       SETGET
 
    METHOD Events
 
@@ -180,6 +182,15 @@ METHOD Zoom( nZoom ) CLASS TPicture
 Return ::nZoom
 
 *-----------------------------------------------------------------------------*
+METHOD OnClick( bOnClick ) CLASS TPicture
+*-----------------------------------------------------------------------------*
+   If PCOUNT() > 0
+      ::bOnClick := bOnClick
+      TPicture_SetNotify( Self, HB_IsBlock( bOnClick ) )
+   EndIf
+Return ::bOnClick
+
+*-----------------------------------------------------------------------------*
 METHOD RePaint() CLASS TPicture
 *-----------------------------------------------------------------------------*
    IF ValidHandler( ::AuxHandle )
@@ -215,6 +226,14 @@ RETURN ::Super:Release()
 #pragma BEGINDUMP
 
 #define s_Super s_TControl
+
+#ifndef _WIN32_WINNT
+   #define _WIN32_WINNT 0x0500
+#endif
+#if ( _WIN32_WINNT < 0x0500 )
+   #undef _WIN32_WINNT
+   #define _WIN32_WINNT 0x0500
+#endif
 
 #include "hbapi.h"
 #include "hbapiitm.h"
@@ -541,17 +560,26 @@ HB_FUNC_STATIC( TPICTURE_EVENTS )
          }
          break;
 
-/*
       case WM_MOUSEWHEEL:
-               _OOHG_Send( pSelf, s_Events_VScroll );
-               hb_vmPushLong( ( HIWORD( wParam ) == WHEEL_DELTA ) ? SB_LINEUP : SB_LINEDOWN );
-               hb_vmSend( 1 );
+         _OOHG_Send( pSelf, s_Events_VScroll );
+         hb_vmPushLong( ( HIWORD( wParam ) == WHEEL_DELTA ) ? SB_LINEUP : SB_LINEDOWN );
+         hb_vmSend( 1 );
          hb_ret();
          break;
-*/
 
       case WM_LBUTTONUP:
          SendMessage( GetParent( hWnd ), WM_COMMAND, MAKEWORD( STN_CLICKED, 0 ), ( LPARAM ) hWnd );
+         break;
+
+      case WM_NCHITTEST:
+         if( oSelf->lAux[ 0 ] )
+         {
+            hb_retni( DefWindowProc( hWnd, message, wParam, lParam ) );
+         }
+         else
+         {
+            hb_retni( -1 );
+         }
          break;
 
       default:
@@ -567,9 +595,14 @@ HB_FUNC_STATIC( TPICTURE_EVENTS )
    }
 }
 
-#pragma ENDDUMP
+HB_FUNC( TPICTURE_SETNOTIFY )   // ( oSelf, lHit )
+{
+   PHB_ITEM pSelf = hb_param( 1, HB_IT_ANY );
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
 
-#pragma BEGINDUMP
+   oSelf->lAux[ 0 ] = hb_parnl( 2 );
+   hb_ret();
+}
 
 HB_FUNC( SCROLLS )   // ( hWnd, nWidth, nHeight )
 {

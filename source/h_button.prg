@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.39 2009-03-03 01:53:51 guerra000 Exp $
+ * $Id: h_button.prg,v 1.40 2009-03-16 00:48:34 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -162,7 +162,7 @@ Local ControlHandle, nStyle, lBitMap
    ::Caption := Caption
 
    ASSIGN ::lNoTransparent VALUE lNoTransparent TYPE "L"
-   ASSIGN ::AutoFit        VALUE lScale         TYPE "L"
+   ASSIGN ::Stretch        VALUE lScale         TYPE "L"
    ASSIGN ::lCancel        VALUE lCancel        TYPE "L"
 
    IF VALTYPE( cAlign ) $ "CM"
@@ -239,7 +239,7 @@ LOCAL nAttrib
 //         nAttrib := LR_LOADTRANSPARENT
 //      ENDIF
 
-      ::hImage := _OOHG_BitmapFromFile( Self, cPicture, nAttrib, ::AutoFit .AND. ! ::ImageSize )
+      ::hImage := _OOHG_BitmapFromFile( Self, cPicture, nAttrib, ::AutoFit .AND. ! ::ImageSize .AND. ! ::Stretch )
       IF ::ImageSize
          ::nWidth  := _BitMapWidth( ::hImage )
          ::nHeight := _BitMapHeight( ::hImage )
@@ -267,7 +267,7 @@ METHOD Buffer( cBuffer ) CLASS TButton
 *-----------------------------------------------------------------------------*
    If VALTYPE( cBuffer ) $ "CM"
       DeleteObject( ::hImage )
-      ::hImage := _OOHG_BitmapFromBuffer( Self, cBuffer, ::AutoFit .AND. ! ::ImageSize )
+      ::hImage := _OOHG_BitmapFromBuffer( Self, cBuffer, ::AutoFit .AND. ! ::ImageSize .AND. ! ::Stretch )
       IF ::ImageSize
          ::nWidth  := _BitMapWidth( ::hImage )
          ::nHeight := _BitMapHeight( ::hImage )
@@ -465,7 +465,7 @@ Local ControlHandle, nStyle := 0
    ::Caption     := Caption
 
    ASSIGN ::lNoTransparent VALUE lNoTransparent TYPE "L"
-   ASSIGN ::AutoFit        VALUE lScale         TYPE "L"
+   ASSIGN ::Stretch        VALUE lScale         TYPE "L"
    ::Picture := BitMap
    If ! ValidHandler( ::hImage )
       ::Buffer := cBuffer

@@ -1,12 +1,12 @@
 /*
- * $Id: h_label.prg,v 1.24 2008-01-14 00:58:35 guerra000 Exp $
+ * $Id: h_label.prg,v 1.25 2009-03-16 00:48:34 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG label functions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -112,6 +112,8 @@ CLASS TLabel FROM TControl
    METHOD Caption    SETGET
    METHOD AutoSize   SETGET
    METHOD Align      SETGET
+
+   EMPTY( _OOHG_AllVars )
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -150,7 +152,7 @@ Local ControlHandle, nStyle, nStyleEx
    nStyleEx := if( HB_IsLogical( CLIENTEDGE )  .AND. CLIENTEDGE,   WS_EX_CLIENTEDGE,  0 ) + ;
                if( ::Transparent, WS_EX_TRANSPARENT, 0 )
 
-   Controlhandle := InitLabel( ::ContainerhWnd, "", 0, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight, '', 0, Nil , nStyle, nStyleEx, ::lRtl )
+   Controlhandle := InitLabel( ::ContainerhWnd, "", 0, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight, nStyle, nStyleEx, ::lRtl )
 
    ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
@@ -212,8 +214,6 @@ METHOD Align( nAlign ) CLASS TLabel
 *-----------------------------------------------------------------------------*
 Return WindowStyleFlag( ::hWnd, 0x3F, nAlign )
 
-*EXTERN InitLabel
-
 #pragma BEGINDUMP
 
 #include <hbapi.h>
@@ -230,19 +230,16 @@ static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 
 HB_FUNC( INITLABEL )
 {
-   HWND hwnd;
    HWND hbutton;
 
    int Style, ExStyle;
 
-   hwnd = HWNDparam( 1 );
-   Style = hb_parni( 11 ) | WS_CHILD | SS_NOTIFY;
-   ExStyle = hb_parni( 12 ) | _OOHG_RTL_Status( hb_parl( 13 ) );
+   Style = hb_parni( 8 ) | WS_CHILD | SS_NOTIFY | WS_GROUP;
+   ExStyle = hb_parni( 9 ) | _OOHG_RTL_Status( hb_parl( 10 ) );
 
-   hbutton = CreateWindowEx( ExStyle , "static" , hb_parc(2) ,
-   Style,
-   hb_parni(4), hb_parni(5) , hb_parni(6), hb_parni(7),
-   hwnd, (HMENU)hb_parni(3) , GetModuleHandle(NULL) , NULL ) ;
+   hbutton = CreateWindowEx( ExStyle, "static", hb_parc( 2 ), Style,
+                             hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ), hb_parni( 7 ),
+                             HWNDparam( 1 ), ( HMENU ) hb_parni( 3 ), GetModuleHandle( NULL ), NULL );
 
    lpfnOldWndProc = ( WNDPROC ) SetWindowLong( hbutton, GWL_WNDPROC, ( LONG ) SubClassFunc );
 
