@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.201 2009-03-16 02:08:32 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.202 2009-03-16 02:52:03 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1539,34 +1539,42 @@ RETURN _OOHG_HEX( nCommand, 4 )
 METHOD DebugMessageNameNotify( nNotify ) CLASS TWindow
 *------------------------------------------------------------------------------*
 LOCAL cName
-STATIC hNames := NIL
-   IF hNames == NIL
-      hNames := {   -1 => "NM_OUTOFMEMORY",            -2 => "NM_CLICK",                 -3 => "NM_DBLCLK", ;
-                    -4 => "NM_RETURN",                 -5 => "NM_RCLICK",                -6 => "NM_RDBLCLK", ;
-                    -7 => "NM_SETFOCUS",               -8 => "NM_KILLFOCUS",            -12 => "NM_CUSTOMDRAW", ;
-                   -13 => "NM_HOVER",                 -14 => "NM_NCHITTEST",            -15 => "NM_KEYDOWN", ;
-                   -16 => "NM_RELEASEDCAPTURE",       -17 => "NM_SETCURSOR",            -18 => "NM_CHAR", ;
-                   -19 => "NM_TOOLTIPSCREATED",       -20 => "NM_LDOWN",                -21 => "NM_RDOWN", ;
-                ;
-                  -100 => "LVN_ITEMCHANGING",        -101 => "LVN_ITEMCHANGED",        -102 => "LVN_INSERTITEM", ;
-                  -103 => "LVN_DELETEITEM",          -104 => "LVN_DELETEALLITEMS",     -105 => "LVN_BEGINLABELEDITA", ;
-                  -106 => "LVN_ENDLABELEDITA",       -108 => "LVN_COLUMNCLICK",        -109 => "LVN_BEGINDRAG", ;
-                  -111 => "LVN_BEGINRDRAG",          -113 => "LVN_ODCACHEHINT",        -114 => "LVN_ITEMACTIVATE", ;
-                  -115 => "LVN_ODSTATECHANGED",      -121 => "LVN_HOTTRACK",           -150 => "LVN_GETDISPINFOA", ;
-                  -151 => "LVN_SETDISPINFOA",        -152 => "LVN_ODFINDITEMA",        -155 => "LVN_KEYDOWN", ;
-                  -156 => "LVN_MARQUEEBEGIN",        -157 => "LVN_GETINFOTIPA",        -158 => "LVN_GETINFOTIPW", ;
-                  -175 => "LVN_BEGINLABELEDITW",     -176 => "LVN_ENDLABELEDITW",      -177 => "LVN_GETDISPINFOW", ;
-                  -178 => "LVN_SETDISPINFOW",        -179 => "LVN_ODFINDITEMW", ;
-                ;
-                     0 => "0000" }
+STATIC aNames := NIL
+   IF aNames == NIL
+      aNames := { "NM_OUTOFMEMORY", "NM_CLICK", "NM_DBLCLK", "NM_RETURN", "NM_RCLICK", ;
+                  "NM_RDBLCLK", "NM_SETFOCUS", "NM_KILLFOCUS", NIL, NIL, ;
+                  NIL, "NM_CUSTOMDRAW", "NM_HOVER", "NM_NCHITTEST", "NM_KEYDOWN", ;
+                  "NM_RELEASEDCAPTURE", "NM_SETCURSOR", "NM_CHAR", "NM_TOOLTIPSCREATED", "NM_LDOWN", ;
+                  "NM_RDOWN" }
+      ASIZE( aNames, 200 )
+
+      // Scroll bar messages
+      AEVAL( { "LVN_ITEMCHANGING", ;
+               "LVN_ITEMCHANGED", "LVN_INSERTITEM", "LVN_DELETEITEM", "LVN_DELETEALLITEMS", "LVN_BEGINLABELEDITA", ;
+               "LVN_ENDLABELEDITA", NIL, "LVN_COLUMNCLICK", "LVN_BEGINDRAG", NIL, ;
+               "LVN_BEGINRDRAG", NIL, "LVN_ODCACHEHINT", "LVN_ITEMACTIVATE", "LVN_ODSTATECHANGED", ;
+               NIL, NIL, NIL, NIL, NIL, ;
+               "LVN_HOTTRACK", NIL, NIL, NIL, NIL, ;
+               NIL, NIL, NIL, NIL, NIL, ;
+               NIL, NIL, NIL, NIL, NIL, ;
+               NIL, NIL, NIL, NIL, NIL, ;
+               NIL, NIL, NIL, NIL, NIL, ;
+               NIL, NIL, NIL, NIL, "LVN_GETDISPINFOA", ;
+               "LVN_SETDISPINFOA", "LVN_ODFINDITEMA", NIL, NIL, "LVN_KEYDOWN", ;
+               "LVN_MARQUEEBEGIN", "LVN_GETINFOTIPA", "LVN_GETINFOTIPW", NIL, NIL, ;
+               NIL, NIL, NIL, NIL, NIL, ;
+               NIL, NIL, NIL, NIL, NIL, ;
+               NIL, NIL, NIL, NIL, "LVN_BEGINLABELEDITW", ;
+               "LVN_ENDLABELEDITW", "LVN_GETDISPINFOW", "LVN_SETDISPINFOW", "LVN_ODFINDITEMW" }, ;
+             { |c,i| aNames[ i + 99 ] := c } )
    ENDIF
-   IF nNotify > 32767
-      nNotify := nNotify - 65536
+   IF nNotify < 0
+      nNotify := - nNotify
    ENDIF
-   IF nNotify $ hNames
-      cName := hNames[ nNotify ]
+   IF nNotify > 0 .AND. LEN( aNames ) >= nNotify .AND. aNames[ nNotify ] != NIL
+      cName := aNames[ nNotify ]
    ELSE
-      cName := _OOHG_HEX( nNotify, 4 )
+      cName := _OOHG_HEX( 65536 - nNotify, 4 )
    ENDIF
 RETURN cName
 
