@@ -1,11 +1,11 @@
 /*
- * $Id: h_progressmeter.prg,v 1.15 2008-11-30 16:23:36 guerra000 Exp $
+ * $Id: h_progressmeter.prg,v 1.16 2009-03-16 05:02:18 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG progress meter functions
  *
- * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * This program is free software; you can redistribute it and/or modify
@@ -88,14 +88,14 @@ Local ControlHandle, nStyle, nStyleEx
       ::FontColor := FontColor
    ENDIF
    IF ::FontColor == NIL
-      ::FontColor := { 255, 255, 255 }
+      ::FontColor := 0xFFFFFF
    ENDIF
 
    IF BackColor != NIL
       ::BackColor := BackColor
    ENDIF
    IF ::BackColor == NIL
-      ::BackColor := { 0, 0, 255 }
+      ::BackColor := 0xFF0000
    ENDIF
 
    ASSIGN ::nCol        VALUE x TYPE "N"
@@ -111,7 +111,7 @@ Local ControlHandle, nStyle, nStyleEx
 
    nStyleEx := if( ValType( CLIENTEDGE ) == "L"   .AND. CLIENTEDGE,   WS_EX_CLIENTEDGE,  0 )
 
-   Controlhandle := InitLabel( ::ContainerhWnd, "", 0, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight, '', 0, Nil , nStyle, nStyleEx, ::lRtl )
+   Controlhandle := InitLabel( ::ContainerhWnd, "", 0, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight, nStyle, nStyleEx, ::lRtl )
 
    ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
@@ -247,7 +247,7 @@ void ProgressMeter_Paint( POCTRL oSelf, HDC hdc )
 
 HB_FUNC_STATIC( TPROGRESSMETER_EVENTS )
 {
-   HWND hWnd      = ( HWND )   hb_parnl( 1 );
+   HWND hWnd      = HWNDparam( 1 );
    UINT message   = ( UINT )   hb_parni( 2 );
    WPARAM wParam  = ( WPARAM ) hb_parni( 3 );
    LPARAM lParam  = ( LPARAM ) hb_parnl( 4 );

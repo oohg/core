@@ -1,5 +1,5 @@
 /*
- * $Id: h_label.prg,v 1.25 2009-03-16 00:48:34 guerra000 Exp $
+ * $Id: h_label.prg,v 1.26 2009-03-16 05:02:18 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -213,6 +213,8 @@ Return ::lAutoSize
 METHOD Align( nAlign ) CLASS TLabel
 *-----------------------------------------------------------------------------*
 Return WindowStyleFlag( ::hWnd, 0x3F, nAlign )
+
+EXTERN InitLabel
 
 #pragma BEGINDUMP
 
