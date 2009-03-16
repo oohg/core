@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.104 2009-03-14 06:55:49 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.105 2009-03-16 02:08:32 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -359,7 +359,6 @@ METHOD EDITGRID(nrow,ncol) CLASS TGrid
       Return .F.
    EndIf
 
-
    lRet := .T.
 
    Do While ::ncolpos <= Len( ::aHeaders ) .and. ::nrowpos <= ::itemcount() .AND. lRet
@@ -382,7 +381,6 @@ METHOD EDITGRID(nrow,ncol) CLASS TGrid
          ::leditmode:=.T.
          lRet := ::EditCell( ::nrowpos, ::ncolpos )
          ::leditmode:=.F.
-
 
          if ::lappendmode .and. .not. lret
             if ::ncolpos = 1
@@ -419,29 +417,26 @@ METHOD EDITGRID(nrow,ncol) CLASS TGrid
       ListView_Scroll( ::hWnd, - _OOHG_GridArrayWidths( ::hWnd, ::aWidths ), 0)
    Endif
    ::lnested:=.F.
-   Return lRet
+Return lRet
 
-
-   METHOD RIGHT() CLASS TGrid
+METHOD RIGHT() CLASS TGrid
    if ::leditmode .and. ::fullmove
       if ::ncolpos<len(::aheaders)
          ::ncolpos++
       endif
    endif
-   return self
+return self
 
-   METHOD LEFT() CLASS TGrid
+METHOD LEFT() CLASS TGrid
    if ::leditmode .and. ::fullmove
       if ::ncolpos>1
          ::ncolpos--
          ::ncolpos--
       endif
    endif
-   return self
+return self
 
-
-
-   METHOD DOWN() CLASS TGrid
+METHOD DOWN() CLASS TGrid
    if ::leditmode
       if ::nrowpos<::itemcount()
          ::nrowpos++
@@ -451,9 +446,9 @@ METHOD EDITGRID(nrow,ncol) CLASS TGrid
          ::value++
       ENDIF
    endif
-   return self
+return self
 
-   METHOD UP() CLASS TGrid
+METHOD UP() CLASS TGrid
    if ::leditmode
       if ::nrowpos>1
          ::nrowpos--
@@ -463,7 +458,7 @@ METHOD EDITGRID(nrow,ncol) CLASS TGrid
          ::value--
       ENDIF
    endif
-   return self
+return self
 
 *--------------------------------------------------------------------------*
 METHOD PageUp() CLASS TGrid
@@ -587,7 +582,6 @@ Local nItem, aItems, aEditControls, nColumn
       _ClearThisCellInfo()
    EndIf
 Return NIL
-
 
 *-----------------------------------------------------------------------------*
 METHOD EditItem2( nItem, aItems, aEditControls, aMemVars, cTitle ) CLASS TGrid
@@ -1486,10 +1480,17 @@ Local lvc, _ThisQueryTemp, nvkey
          EndIf
       EndIf
 
-* ¨Qu‚ es -181?
+* ¿Qué es -181?
    elseif nNotify == -181  // ???????
 
       redrawwindow( ::hWnd )
+
+   ElseIf nNotify == NM_CLICK .AND. HB_IsBlock( ::OnClick )
+      If ! ::NestedClick
+         ::NestedClick := ! _OOHG_NestedSameEvent()
+         ::DoEvent( ::OnClick, "CLICK" )
+         ::NestedClick := .F.
+      EndIf
 
    EndIf
 

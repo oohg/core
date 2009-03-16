@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.200 2009-03-01 16:07:11 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.201 2009-03-16 02:08:32 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -302,6 +302,7 @@ CLASS TWindow
    METHOD DebugMessageName
    METHOD DebugMessageQuery
    METHOD DebugMessageNameCommand
+   METHOD DebugMessageNameNotify
    METHOD DebugMessageQueryNotify
 
    METHOD ContainerVisible    BLOCK { |Self| ::lVisible .AND. IF( ::Container != NIL, ::Container:ContainerVisible, .T. ) }
@@ -1535,13 +1536,48 @@ METHOD DebugMessageNameCommand( nCommand ) CLASS TWindow
 RETURN _OOHG_HEX( nCommand, 4 )
 
 *------------------------------------------------------------------------------*
+METHOD DebugMessageNameNotify( nNotify ) CLASS TWindow
+*------------------------------------------------------------------------------*
+LOCAL cName
+STATIC hNames := NIL
+   IF hNames == NIL
+      hNames := {   -1 => "NM_OUTOFMEMORY",            -2 => "NM_CLICK",                 -3 => "NM_DBLCLK", ;
+                    -4 => "NM_RETURN",                 -5 => "NM_RCLICK",                -6 => "NM_RDBLCLK", ;
+                    -7 => "NM_SETFOCUS",               -8 => "NM_KILLFOCUS",            -12 => "NM_CUSTOMDRAW", ;
+                   -13 => "NM_HOVER",                 -14 => "NM_NCHITTEST",            -15 => "NM_KEYDOWN", ;
+                   -16 => "NM_RELEASEDCAPTURE",       -17 => "NM_SETCURSOR",            -18 => "NM_CHAR", ;
+                   -19 => "NM_TOOLTIPSCREATED",       -20 => "NM_LDOWN",                -21 => "NM_RDOWN", ;
+                ;
+                  -100 => "LVN_ITEMCHANGING",        -101 => "LVN_ITEMCHANGED",        -102 => "LVN_INSERTITEM", ;
+                  -103 => "LVN_DELETEITEM",          -104 => "LVN_DELETEALLITEMS",     -105 => "LVN_BEGINLABELEDITA", ;
+                  -106 => "LVN_ENDLABELEDITA",       -108 => "LVN_COLUMNCLICK",        -109 => "LVN_BEGINDRAG", ;
+                  -111 => "LVN_BEGINRDRAG",          -113 => "LVN_ODCACHEHINT",        -114 => "LVN_ITEMACTIVATE", ;
+                  -115 => "LVN_ODSTATECHANGED",      -121 => "LVN_HOTTRACK",           -150 => "LVN_GETDISPINFOA", ;
+                  -151 => "LVN_SETDISPINFOA",        -152 => "LVN_ODFINDITEMA",        -155 => "LVN_KEYDOWN", ;
+                  -156 => "LVN_MARQUEEBEGIN",        -157 => "LVN_GETINFOTIPA",        -158 => "LVN_GETINFOTIPW", ;
+                  -175 => "LVN_BEGINLABELEDITW",     -176 => "LVN_ENDLABELEDITW",      -177 => "LVN_GETDISPINFOW", ;
+                  -178 => "LVN_SETDISPINFOW",        -179 => "LVN_ODFINDITEMW", ;
+                ;
+                     0 => "0000" }
+   ENDIF
+   IF nNotify > 32767
+      nNotify := nNotify - 65536
+   ENDIF
+   IF nNotify $ hNames
+      cName := hNames[ nNotify ]
+   ELSE
+      cName := _OOHG_HEX( nNotify, 4 )
+   ENDIF
+RETURN cName
+
+*------------------------------------------------------------------------------*
 METHOD DebugMessageQueryNotify( cParentName, wParam, lParam ) CLASS TWindow
 *------------------------------------------------------------------------------*
 LOCAL cValue
    EMPTY( wParam )
    cValue := cParentName + "." + ;
              IF( EMPTY( ::Name ), _OOHG_HEX( GethWndFrom( lParam ), 8 ), ::Name ) + ;
-             ": WM_NOTIFY." + _OOHG_HEX( GetNotifyCode( lParam ), 6 )
+             ": WM_NOTIFY." + ::DebugMessageNameNotify( GetNotifyCode( lParam ) )
 RETURN cValue
 
 #pragma BEGINDUMP
