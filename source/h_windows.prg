@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.202 2009-03-16 02:52:03 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.203 2009-03-22 22:39:59 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -205,6 +205,7 @@ CLASS TWindow
    DATA lAdjust             INIT .T.
    DATA lFixFont            INIT .F.
    DATA lfixwidth           INIT .F.
+   DATA ClientHeightUsed    INIT 0
 
    DATA OnClick             INIT nil
    DATA OnDblClick          INIT nil

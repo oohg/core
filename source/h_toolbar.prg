@@ -1,11 +1,11 @@
 /*
- * $Id: h_toolbar.prg,v 1.24 2008-11-30 16:23:36 guerra000 Exp $
+ * $Id: h_toolbar.prg,v 1.25 2009-03-22 22:39:59 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG toolbar functions
  *
- * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -107,6 +107,7 @@ CLASS TToolBar FROM TControl
    METHOD Events_Size
    METHOD Events_Notify
    METHOD Events
+   METHOD ClientHeightUsed     BLOCK { |Self| GetWindowHeight( ::hWnd ) }
 
    EMPTY( _OOHG_AllVars )
 ENDCLASS
@@ -118,7 +119,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, caption, ProcedureName, ;
 *-----------------------------------------------------------------------------*
 Local ControlHandle, id, lSplitActive
 
-	if valtype (caption) == 'U'
+   If valtype( caption ) == 'U'
 		caption := ""
 	EndIf
 
@@ -162,7 +163,7 @@ Local Self
 
       w := GetWindowWidth( ::hWnd )
 
-      SetSplitBoxItem ( ::hWnd, ::Container:hWnd, w,,, MinWidth, MinHeight, ::Container:lInverted )
+      SetSplitBoxItem( ::hWnd, ::Container:hWnd, w,,, MinWidth, MinHeight, ::Container:lInverted )
 
       ::SetSplitBoxInfo( .T. )  // Force break for next control...
 	EndIf
@@ -174,9 +175,7 @@ Return Nil
 *-----------------------------------------------------------------------------*
 METHOD Events_Size() CLASS TToolBar
 *-----------------------------------------------------------------------------*
-
    SendMessage( ::hWnd, TB_AUTOSIZE , 0 , 0 )
-
 RETURN ::Super:Events_Size()
 
 *-----------------------------------------------------------------------------*
@@ -241,7 +240,6 @@ Local ws, x, aPos
    EndIf
 
 Return ::Super:Events_Notify( wParam, lParam )
-
 
 *-----------------------------------------------------------------------------*
 METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TToolBar

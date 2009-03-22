@@ -1,11 +1,11 @@
 /*
- * $Id: h_splitbox.prg,v 1.9 2008-02-18 02:45:34 guerra000 Exp $
+ * $Id: h_splitbox.prg,v 1.10 2009-03-22 22:39:59 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Splitbox control
  *
- * Copyright 2006 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2006-2009 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -110,6 +110,9 @@ CLASS TSplitBox FROM TControl
    METHOD RefreshData    BLOCK { |Self| SizeRebar( ::hWnd ) , RedrawWindow( ::hWnd ) , ::Super:RefreshData() }
    METHOD AddControl
    METHOD SetSplitBox
+   METHOD ClientHeightUsed     BLOCK { |Self| GetWindowHeight( ::hWnd ) * IF( ::lTop, 1, -1 ) }
+
+   EMPTY( _OOHG_AllVars )
 ENDCLASS
 
 *-----------------------------------------------------------------------------*

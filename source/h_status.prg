@@ -1,11 +1,11 @@
 /*
- * $Id: h_status.prg,v 1.31 2008-11-30 16:23:36 guerra000 Exp $
+ * $Id: h_status.prg,v 1.32 2009-03-22 22:39:59 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG statusbar functions
  *
- * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -102,6 +102,7 @@ CLASS TMessageBar FROM TControl
    DATA aClicks   INIT nil
    DATA aWidths   INIT nil
    DATA lAutoAdjust   INIT .T.
+   DATA lTop          INIT .F.
 
    DATA ladjust  INIT .F.  /// redimensionar
 
@@ -114,6 +115,7 @@ CLASS TMessageBar FROM TControl
    METHOD ItemWidth
    METHOD ItemCount        BLOCK { |Self| GetItemCount( ::hWnd ) }
    METHOD ItemToolTip
+   METHOD ClientHeightUsed     BLOCK { |Self| GetWindowHeight( ::hWnd ) * IF( ::lTop, 1, -1 ) }
 
    METHOD BackColor        SETGET
 
@@ -141,6 +143,7 @@ Local ControlHandle
    EMPTY( y )
    EMPTY( w )
    EMPTY( h )
+   ASSIGN ::lTop        VALUE lTop TYPE "L"
 
    ::aClicks := {}
    ::aWidths := {}
@@ -150,7 +153,7 @@ Local ControlHandle
 
    _OOHG_ActiveMessageBar := Self
 
-   ControlHandle := InitMessageBar( ::Parent:hWnd, Caption, 0, lTop  )
+   ControlHandle := InitMessageBar( ::Parent:hWnd, Caption, 0, ::lTop  )
 
    ::Register( ControlHandle, ControlName, , , ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )

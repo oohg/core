@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.10 2009-03-14 06:55:49 guerra000 Exp $
+ * $Id: h_form.prg,v 1.11 2009-03-22 22:39:59 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -154,7 +154,8 @@ CLASS TForm FROM TWindow
    DATA AutoRelease    INIT .F.
    DATA ActivateCount  INIT { 0, NIL, .T. }
    DATA oMenu          INIT nil
-   DATA hWndClient     INIT 0
+   DATA hWndClient     INIT NIL
+   DATA oWndClient     INIT NIL
    DATA lInternal      INIT .F.
    DATA lForm          INIT .T.
    DATA nWidth         INIT 300
@@ -581,6 +582,10 @@ METHOD Activate( lNoStop, oWndLoop ) CLASS TForm
    ::ActivateCount := oWndLoop:ActivateCount
    ::ActivateCount[ 1 ]++
    ::Active := .T.
+
+   If ! ::oWndClient == NIL
+      ::oWndClient:Events_Size()
+   EndIf
 
    // Show window
    If ::lVisible
@@ -1367,6 +1372,12 @@ Local oCtrl, lMinim := .F.
          EndIf
       Endif
 
+      If ::oWndClient != NIL
+         // It was already done
+         // ::oWndClient:Events_Size()
+         Return 0
+      EndIf
+
         ***********************************************************************
    case nMsg == WM_EXITSIZEMOVE    //// cuando se cambia el tamaño por reajuste con el mouse
         ***********************************************************************
@@ -2081,16 +2092,30 @@ Local nStyle := 0, nStyleEx := 0, aClientRect
               RDblClickProcedure, MDblClickProcedure, minwidth, maxwidth, minheight, maxheight )
 
    ::Parent:hWndClient := ::hWnd
-   ::hWndClient := ::hWnd
+   ::Parent:oWndClient := Self
 
 Return Self
 
 METHOD Events_Size() CLASS TFormMDIClient
-LOCAL aClientRect
+LOCAL aClientRect, nRow, nHeight, I, nTall
    aClientRect := { 0, 0, 0, 0 }
    GetClientRect( ::Parent:hWnd, aClientRect )
-   ::SizePos( aClientRect[ 2 ], aClientRect[ 1 ], aClientRect[ 3 ] - aClientRect[ 1 ], aClientRect[ 4 ] - aClientRect[ 2 ] )
-RETURN nil
+   nRow := aClientRect[ 2 ]
+   nHeight := aClientRect[ 4 ] - aClientRect[ 2 ]
+   FOR I := 1 TO LEN( ::Parent:aControls )
+      nTall := ::Parent:aControls[ I ]:ClientHeightUsed
+      IF nTall == 0
+         //
+      ELSEIF nTall > 0
+         nRow    += nTall
+         nHeight -= nTall
+      ELSE
+         nHeight += nTall
+      ENDIF
+   NEXT
+   ::SizePos( nRow, aClientRect[ 1 ], aClientRect[ 3 ] - aClientRect[ 1 ], nHeight )
+   ::DoEvent( ::OnSize, "WINDOW_SIZE" )
+RETURN NIL
 
 
 
@@ -2128,11 +2153,11 @@ Local nStyle := 0, nStyleEx := 0
    nStyleEx += WS_EX_MDICHILD
 
    // If MDIclient window doesn't exists, create it.
-   If ValidHandler( ::Parent:hWndClient )
-      oParent := GetFormObjectByHandle( ::Parent:hWndClient )
-   Else
+   If ::Parent:oWndClient == NIL
       oParent := TFormMDIClient():Define( ,,,,,,,,,,,,,,,,,,,,,,,,, ::Parent )
       oParent:EndWindow()
+   Else
+      oParent := ::Parent:oWndClient
    EndIf
    ::SearchParent( oParent )
 
