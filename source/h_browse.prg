@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.74 2009-02-19 02:17:11 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.75 2009-04-10 02:51:56 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -106,6 +106,7 @@ CLASS TOBrowse FROM TXBrowse
    METHOD Refresh
    METHOD Value               SETGET
    METHOD RefreshData
+   METHOD DoChange            BLOCK { |Self| ::TGrid:DoChange() }
 
    METHOD Events_Enter
    METHOD Events_Notify
@@ -833,7 +834,7 @@ METHOD FastUpdate( d, nRow ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local ActualRecord , RecordCount
 
-	// If vertical scrollbar is used it must be updated
+   // If vertical scrollbar is used it must be updated
    If ::VScroll != nil
 
       RecordCount := ::RecCount
@@ -1039,6 +1040,7 @@ HB_FUNC_STATIC( TOBROWSE_EVENTS_NOTIFY )
       case NM_CLICK:
       case LVN_BEGINDRAG:
       case LVN_KEYDOWN:
+      case LVN_ITEMCHANGED:
          HB_FUNCNAME( TOBROWSE_EVENTS_NOTIFY2 )();
          break;
 
@@ -1069,28 +1071,23 @@ Local nNotify := GetNotifyCode( lParam )
 Local nvKey, r, DeltaSelect
 
    If nNotify == NM_CLICK  .or. nNotify == LVN_BEGINDRAG
-
       r := LISTVIEW_GETFIRSTITEM( ::hWnd )
       If r > 0
          DeltaSelect := r - ascan ( ::aRecMap, ::nValue )
          ::FastUpdate( DeltaSelect, r )
          ::BrowseOnChange()
       EndIf
-
       Return nil
 
    elseIf nNotify == LVN_KEYDOWN
-
       nvKey := GetGridvKey( lParam )
 
       Do Case
 
       Case Select( ::WorkArea ) == 0
-
          // No database open
 
       Case nvKey == 65 // A
-
          if GetAltState() == -127 ;
             .or.;
             GetAltState() == -128   // ALT
@@ -1102,7 +1099,6 @@ Local nvKey, r, DeltaSelect
          EndIf
 
       Case nvKey == 46 // DEL
-
          If ::AllowDelete
             If MsgYesNo( _OOHG_Messages( 4, 1 ), _OOHG_Messages( 4, 2 ) )
                ::Delete()
@@ -1110,38 +1106,37 @@ Local nvKey, r, DeltaSelect
          EndIf
 
       Case nvKey == 36 // HOME
-
          ::Home()
          Return 1
 
       Case nvKey == 35 // END
-
          ::End()
          Return 1
 
       Case nvKey == 33 // PGUP
-
          ::PageUp()
          Return 1
 
       Case nvKey == 34 // PGDN
-
          ::PageDown()
          Return 1
 
       Case nvKey == 38 // UP
-
          ::Up()
          Return 1
 
       Case nvKey == 40 // DOWN
-
          ::Down()
          Return 1
 
       EndCase
 
       Return nil
+
+   ElseIf nNotify == LVN_ITEMCHANGED
+      If GetGridOldState( lParam ) == 0 .and. GetGridNewState( lParam ) != 0
+         Return nil
+      EndIf
 
    EndIf
 

@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.40 2009-02-19 02:17:11 guerra000 Exp $
+ * $Id: h_xbrowse.prg,v 1.41 2009-04-10 02:51:56 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -82,6 +82,7 @@ CLASS TXBROWSE FROM TGrid
    METHOD ColumnBlock
    METHOD MoveTo
    METHOD CurrentRow       SETGET
+   METHOD DoChange         BLOCK { |Self| ::DoEvent( ::OnChange, "CHANGE" ) }
 
    METHOD SizePos
    METHOD Enabled          SETGET
@@ -674,16 +675,15 @@ HB_FUNC_STATIC( TXBROWSE_EVENTS_NOTIFY )
       case NM_CLICK:
       case LVN_BEGINDRAG:
       case LVN_KEYDOWN:
+      case LVN_ITEMCHANGED:
          HB_FUNCNAME( TXBROWSE_EVENTS_NOTIFY2 )();
          break;
 
       case NM_CUSTOMDRAW:
       {
          pSelf = hb_stackSelfItem();
-
          _OOHG_Send( pSelf, s_AdjustRightScroll );
          hb_vmSend( 0 );
-
          hb_retni( TGrid_Notify_CustomDraw( pSelf, lParam ) );
          break;
       }
@@ -713,7 +713,7 @@ Local nvKey
       EndIf
       Return nil
 
-   elseIf nNotify == LVN_KEYDOWN
+   ElseIf nNotify == LVN_KEYDOWN
       nvKey := GetGridvKey( lParam )
       Do Case
          Case GetKeyFlagState() == MOD_ALT .AND. nvKey == 65 // A
@@ -754,6 +754,11 @@ Local nvKey
 
       EndCase
       Return nil
+
+   ElseIf nNotify == LVN_ITEMCHANGED
+      If GetGridOldState( lParam ) == 0 .and. GetGridNewState( lParam ) != 0
+         Return nil
+      EndIf
 
    EndIf
 Return ::Super:Events_Notify( wParam, lParam )
@@ -796,6 +801,7 @@ Local nValue
       EndIf
       ::RefreshRow( nValue )
       ::CurrentRow := nValue
+      ::DoChange()
    EndIf
 Return Self
 
@@ -814,6 +820,7 @@ Local nValue
       EndIf
       ::RefreshRow( nValue )
       ::CurrentRow := nValue
+      ::DoChange()
    ElseIf ::AllowAppend
       ::EditItem( .T. )
    EndIf
@@ -824,6 +831,7 @@ METHOD PageUp() CLASS TXBrowse
 *-----------------------------------------------------------------------------*
    If ! ::lLocked .AND. ::DbSkip( -::CountPerPage ) != 0
       ::Refresh()
+      ::DoChange()
    EndIf
 Return Self
 
@@ -838,11 +846,13 @@ Local nSkip, nCountPerPage
       nSkip := ::DbSkip( nCountPerPage )
       If nSkip != nCountPerPage
          ::Refresh( nCountPerPage )
+         ::DoChange()
          If ::AllowAppend
             ::EditItem( .T. )
          EndIf
       ElseIf nSkip != 0
          ::Refresh( , .T. )
+         ::DoChange()
       EndIf
    EndIf
 Return Self
@@ -876,6 +886,7 @@ METHOD GoTop() CLASS TXBrowse
    If ! ::lLocked
       ::TopBottom( -1 )
       ::Refresh( 1 )
+      ::DoChange()
    EndIf
 Return Self
 
@@ -887,6 +898,7 @@ METHOD GoBottom( lAppend ) CLASS TXBrowse
       ::TopBottom( 1 )
       // If it's for APPEND, leaves a blank line ;)
       ::Refresh( ::CountPerPage - IF( lAppend, 1, 0 ) )
+      ::DoChange()
    EndIf
 Return Self
 
@@ -923,6 +935,7 @@ Local aPosition
          EndIf
       #endif
       ::Refresh( , .T. )
+      ::DoChange()
    EndIf
 Return Self
 
@@ -932,9 +945,9 @@ METHOD Delete() CLASS TXBrowse
 Local Value
 
    Value := ::CurrentRow
-	If Value == 0
+   If Value == 0
       Return .F.
-	EndIf
+   EndIf
 
    If ::Lock
       If ! ::oWorkArea:Lock()
@@ -954,6 +967,7 @@ Local Value
    Else
       ::Refresh()
    EndIf
+   ::DoChange()
 Return .T.
 
 *-----------------------------------------------------------------------------*
@@ -983,7 +997,7 @@ Local aItems, aEditControls, aMemVars, aReplaceFields
    ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
 
    oWorkArea := ::oWorkArea
-   If oWorkArea:EOF()
+   If oWorkArea:Eof()
       If ! lAppend .AND. ! ::AllowAppend
          Return .F.
       Else
