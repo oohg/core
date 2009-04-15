@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.589 2009-04-15 19:07:20 declan2005 Exp $
+ * $Id: ChangeLog,v 1.590 2009-04-15 19:22:11 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -12,7 +12,9 @@
   * source/h_error.prg
      ! fixed date version.
   * source/h_textbox.prg
+    source/h_form.prg
     include/i_textbox.ch   
+   
      added optional action button inside textbox.
 
 
