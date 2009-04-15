@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.11 2009-03-22 22:39:59 guerra000 Exp $
+ * $Id: h_form.prg,v 1.12 2009-04-15 19:07:20 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -807,7 +807,14 @@ FOR i:=1 TO l
 /////      tamaño nuevo opcional (width) solo si esta activado autoajuste
       IF  _OOHG_adjustWidth
          IF .not. oControl:lfixwidth  //// solo si el control tiene activado ajuste de ancho
+
             ocontrol:sizepos( , ,  oControl:width * nDivw ,oControl:height * nDivh )
+            if ocontrol:type="TEXT"
+               if hb_isblock( ocontrol:bButtauxaction )
+         ////         redefbtntextbox(oCOntrol:hwnd, ocontrol:abitmapaux[ 1 ], ocontrol:nButtonwidth*nDivw,ocontrol:abitmapaux[2] ,.f.  )
+                      ///// debo redimensionar el boton hijo aun no lo logro.
+               endif
+            endif
             IF  _OOHG_adjustFont
                 IF ! oControl:lfixfont /// solo si el control tiene activado ajuste de font y ajuste de ancho
                    oControl:fontsize:=oControl:fontsize * nDivw

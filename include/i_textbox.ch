@@ -1,5 +1,5 @@
 /*
- * $Id: i_textbox.ch,v 1.13 2006-12-17 04:09:23 guerra000 Exp $
+ * $Id: i_textbox.ch,v 1.14 2009-04-15 19:07:20 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -369,6 +369,9 @@
                         [ <dummy2: INPUTMASK, PICTURE> <inputmask> ] ;
                         [ FORMAT <format> ]             ;
                         [ SUBCLASS <subclass> ]         ;
+  [ <dummy3: ACTION,ON CLICK,ONCLICK> <action> ]        ;
+                        [ PICTURE <abitmap> ]           ;
+                        [ BUTTONWIDTH <btnwidth> ]      ;
          =>;
         [ <obj> := ] DefineTextBox( <(name)>, <(parent)>, <col>, <row>, <width>, <height>, ;
                         <value>, <fontname>, <fontsize>, <tooltip>, <maxlenght>, ;
@@ -379,4 +382,4 @@
                         <backcolor> , <fontcolor> , <.invisible.> , <.notabstop.> , ;
                         <.rtl.>, <.autoskip.>, <.noborder.>, <focusedpos>, <.disabled.>, ;
                         <{valid}>, <.date.>, <.numeric.>, <inputmask>, <format>, ;
-                        [ <subclass>() ] )
+                        [ <subclass>() ] ,<{action}>,<abitmap>,<btnwidth>)
