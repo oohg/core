@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.40 2009-03-16 00:48:34 guerra000 Exp $
+ * $Id: h_button.prg,v 1.41 2009-04-24 16:01:19 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -429,6 +429,7 @@ CLASS TButtonCheck FROM TButton
    METHOD DefineImage
    METHOD Value       SETGET
    METHOD Events_Command
+   METHOD DoChange
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -503,11 +504,26 @@ METHOD Value( uValue ) CLASS TButtonCheck
 *------------------------------------------------------------------------------*
    IF VALTYPE( uValue ) == "L"
       SendMessage( ::hWnd, BM_SETCHECK, if( uValue, BST_CHECKED, BST_UNCHECKED ), 0 )
+
    ELSE
       uValue := ( SendMessage( ::hWnd, BM_GETCHECK , 0 , 0 ) == BST_CHECKED )
    ENDIF
-RETURN uValue
 
+RETURN uValue
+ *-----------------------------------------------------------------------------*
+METHOD DoChange() CLASS TBUttoncheck
+*-----------------------------------------------------------------------------*
+Local xValue, cType, cOldType
+   xValue   := ::Value
+   cType    := VALTYPE( xValue )
+   cOldType := VALTYPE( ::xOldValue )
+   cType    := IF( cType    == "M", "C", cType )
+   cOldType := IF( cOldType == "M", "C", cOldType )
+   ////IF cOldType == "U" .OR. ! cType == cOldType .OR. ! xValue == ::xOldValue
+   ////   ::xOldValue := xValue
+      ::DoEvent( ::OnChange, "CHANGE" )
+  //// ENDIF
+Return nil
 *------------------------------------------------------------------------------*
 METHOD Events_Command( wParam ) CLASS TButtonCheck
 *------------------------------------------------------------------------------*
