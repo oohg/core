@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.57 2009-04-15 19:07:20 declan2005 Exp $
+ * $Id: h_textbox.prg,v 1.58 2009-04-25 14:09:46 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -9,7 +9,9 @@
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
- * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
+ * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar> and Minigui
+   extended library (C)2006 Janusz Pora <januszpora@onet.eu> (btntextbox)
+
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
