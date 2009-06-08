@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.105 2009-03-16 02:08:32 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.106 2009-06-08 03:57:47 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -2748,7 +2748,8 @@ ENDCLASS
 
 METHOD New( aItems, oGrid ) CLASS TGridControlComboBoxText
    If HB_IsArray( aItems )
-      ::aItems := aItems
+      ::aItems := ARRAY( LEN( aItems ) )
+      AEVAL( aItems, { |x,i| ::aItems[ i ] := TRIM( x ) } )
    EndIf
    ::oGrid := oGrid
 Return Self
@@ -2767,7 +2768,7 @@ Return ::oControl
 
 METHOD Str2Val( uValue ) CLASS TGridControlComboBoxText
 Local nPos
-   nPos := ASCAN( ::aItems, { |c| c == uValue } )
+   nPos := ASCAN( ::aItems, { |c| c == TRIM( uValue ) } )
 Return IF( nPos == 0, "", ::aItems[ nPos ] )
 
 METHOD ControlValue( uValue ) CLASS TGridControlComboBoxText

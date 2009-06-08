@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.591 2009-04-24 16:01:18 declan2005 Exp $
+ * $Id: ChangeLog,v 1.592 2009-06-08 03:57:47 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,6 +7,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2009-06-07 22:02 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_grid.prg
+    ! Fixed COMBOBOXTEXT value assignment.
+      Reported and fixed by Fernando Yurisich.
 
 2009-04-24 11:56 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_button.prg
