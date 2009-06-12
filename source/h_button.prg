@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.41 2009-04-24 16:01:19 declan2005 Exp $
+ * $Id: h_button.prg,v 1.42 2009-06-12 02:45:05 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -510,7 +510,8 @@ METHOD Value( uValue ) CLASS TButtonCheck
    ENDIF
 
 RETURN uValue
- *-----------------------------------------------------------------------------*
+
+*-----------------------------------------------------------------------------*
 METHOD DoChange() CLASS TBUttoncheck
 *-----------------------------------------------------------------------------*
 Local xValue, cType, cOldType
@@ -519,11 +520,13 @@ Local xValue, cType, cOldType
    cOldType := VALTYPE( ::xOldValue )
    cType    := IF( cType    == "M", "C", cType )
    cOldType := IF( cOldType == "M", "C", cOldType )
-   ////IF cOldType == "U" .OR. ! cType == cOldType .OR. ! xValue == ::xOldValue
-   ////   ::xOldValue := xValue
+   IF cOldType == "U" .OR. ! cType == cOldType .OR. ! xValue == ::xOldValue
+      ::xOldValue := xValue
       ::DoEvent( ::OnChange, "CHANGE" )
-  //// ENDIF
+   ENDIF
 Return nil
+
+
 *------------------------------------------------------------------------------*
 METHOD Events_Command( wParam ) CLASS TButtonCheck
 *------------------------------------------------------------------------------*

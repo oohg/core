@@ -1,5 +1,5 @@
 /*
- * $Id: h_dialogs.prg,v 1.6 2008-01-04 14:33:44 declan2005 Exp $
+ * $Id: h_dialogs.prg,v 1.7 2009-06-12 02:45:05 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -122,10 +122,10 @@ Function GetFolder( cTitle, cInitPath )
 Return C_Browseforfolder( NIL, cTitle, NIL, NIL, cInitPath )
 
 *-----------------------------------------------------------------------------*
-Function browseforfolder( nfolder,nflag) // Contributed By Ryszard Rylko
+Function browseforfolder(nFolder, nFlag, cTitle, cInitPath) // Contributed By Ryszard Rylko       
 *-----------------------------------------------------------------------------*
-Local RetVal:=""
-	RetVal := C_browseforfolder( nfolder,nflag)
+Local RetVal:=""                                                               
+RetVal := C_BrowseForFolder( NIL, cTitle, nFlag, nFolder, cInitPath )
 return RetVal
 
 *-----------------------------------------------------------------------------*
