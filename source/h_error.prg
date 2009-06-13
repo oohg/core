@@ -1,5 +1,5 @@
 /*
- * $Id: h_error.prg,v 1.41 2009-04-15 19:07:20 declan2005 Exp $
+ * $Id: h_error.prg,v 1.42 2009-06-13 01:50:32 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -119,7 +119,7 @@ Return Nil
 *------------------------------------------------------------------------------*
 PROCEDURE ErrorSys
 *------------------------------------------------------------------------------*
-	ErrorBlock( { | oError | DefError( oError ) } )
+   ErrorBlock( { | oError | DefError( oError ) } )
 RETURN
 
 STATIC FUNCTION DefError( oError )
@@ -226,6 +226,8 @@ CLASS OOHG_TErrorHtml
 
    METHOD ErrorMessage
    METHOD CreateLog
+
+   EMPTY( _OOHG_AllVars )
 ENDCLASS
 
 METHOD Write( cTxt ) CLASS OOHG_TErrorHtml

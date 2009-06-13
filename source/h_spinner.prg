@@ -1,5 +1,5 @@
 /*
- * $Id: h_spinner.prg,v 1.15 2009-02-16 01:45:43 guerra000 Exp $
+ * $Id: h_spinner.prg,v 1.16 2009-06-13 01:50:32 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -98,10 +98,11 @@
 
 CLASS TSpinner FROM TControl
    DATA Type      INIT "SPINNER" READONLY
-   DATA nRangeMin   INIT 0
-   DATA nRangeMax   INIT 0
+   DATA nRangeMin   INIT 1
+   DATA nRangeMax   INIT 100
    DATA nWidth      INIT 120
    DATA nHeight     INIT 24
+   DATA nIncrement  INIT 1
 
    METHOD Define
    METHOD SizePos
@@ -112,6 +113,7 @@ CLASS TSpinner FROM TControl
 
    METHOD RangeMin            SETGET
    METHOD RangeMax            SETGET
+   METHOD Increment           SETGET
 
    EMPTY( _OOHG_AllVars )
 ENDCLASS
@@ -126,16 +128,16 @@ METHOD Define( ControlName, ParentForm, x, y, w, value, fontname, fontsize, ;
 Local nStyle := ES_NUMBER + ES_AUTOHSCROLL, nStyleEx := 0
 Local ControlHandle
 
-   ASSIGN ::nWidth  VALUE w TYPE "N"
-   ASSIGN ::nHeight VALUE h TYPE "N"
-   ASSIGN ::nRow    VALUE y TYPE "N"
-   ASSIGN ::nCol    VALUE x TYPE "N"
-   DEFAULT rl        TO 1
-   DEFAULT rh        TO 100
+   ASSIGN ::nWidth       VALUE w TYPE "N"
+   ASSIGN ::nHeight      VALUE h TYPE "N"
+   ASSIGN ::nRow         VALUE y TYPE "N"
+   ASSIGN ::nCol         VALUE x TYPE "N"
+   ASSIGN ::nRangeMin    VALUE rl TYPE "N"
+   ASSIGN ::nRangeMax    VALUE rh TYPE "N"
+   ASSIGN ::nIncrement   VALUE increment TYPE "N"
    DEFAULT value     TO rl
    DEFAULT wrap      TO FALSE
    DEFAULT readonly  TO FALSE
-   DEFAULT increment TO 1
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, .T., lRtl )
 
@@ -146,20 +148,15 @@ Local ControlHandle
 
    ControlHandle := InitTextBox( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight, nStyle, 0, ::lRtl, nStyleEx )
 
-   ::AuxHandle := InitSpinner( ::ContainerhWnd, 0, ::ContainerCol + ::nWidth, ::ContainerRow, 15, ::nHeight, rl, rh , invisible, wrap, ControlHandle, ::lRtl )
+   ::AuxHandle := InitSpinner( ::ContainerhWnd, 0, ::ContainerCol + ::nWidth, ::ContainerRow, 15, ::nHeight, ::nRangeMin, ::nRangeMax, invisible, wrap, ControlHandle, ::lRtl )
 
    ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
 
-   ::RangeMin   :=   Rl
-   ::RangeMax   :=   Rh
+   ::Value := value
 
-   If HB_IsNumeric( value )
-      SetSpinnerValue( ::AuxHandle, Value )
-   EndIf
-
-   If increment <> 1
-      SetSpinnerIncrement( ::AuxHandle, increment )
+   If ::nIncrement <> 1
+      ::Increment := ::nIncrement
    EndIf
 
    ASSIGN ::OnLostFocus VALUE lostfocus TYPE "B"
@@ -217,7 +214,7 @@ METHOD RangeMin( nValue ) CLASS TSpinner
 *-----------------------------------------------------------------------------*
    IF HB_IsNumeric( nValue )
       ::nRangeMin := nValue
-      SetSpinnerRange( ::hWnd, ::nRangeMin, ::nRangeMax )
+      SetSpinnerRange( ::AuxHandle, ::nRangeMin, ::nRangeMax )
    ENDIF
 Return ::nRangeMin
 
@@ -226,6 +223,91 @@ METHOD RangeMax( nValue ) CLASS TSpinner
 *-----------------------------------------------------------------------------*
    IF HB_IsNumeric( nValue )
       ::nRangeMax := nValue
-      SetSpinnerRange( ::hWnd, ::nRangeMin, ::nRangeMax )
+      SetSpinnerRange( ::AuxHandle, ::nRangeMin, ::nRangeMax )
    ENDIF
 Return ::nRangeMax
+
+*-----------------------------------------------------------------------------*
+METHOD Increment( nValue ) CLASS TSpinner
+*-----------------------------------------------------------------------------*
+   IF HB_IsNumeric( nValue )
+      ::nIncrement := nValue
+      SetSpinnerIncrement( ::AuxHandle, nValue )
+   ENDIF
+Return ::nIncrement
+
+#pragma BEGINDUMP
+
+#define _WIN32_IE      0x0500
+#define HB_OS_WIN_32_USED
+#define _WIN32_WINNT   0x0400
+#include <shlobj.h>
+
+#include <windows.h>
+#include <commctrl.h>
+#include "hbapi.h"
+#include "hbvm.h"
+#include "hbstack.h"
+#include "hbapiitm.h"
+#include "winreg.h"
+#include "tchar.h"
+#include "oohg.h"
+
+static WNDPROC lpfnOldWndProc = 0;
+
+static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+{
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
+}
+
+HB_FUNC( INITSPINNER )
+{
+   HWND hwnd;
+   HWND hupdown;
+   int Style2 = WS_CHILD | WS_BORDER | UDS_ARROWKEYS | UDS_ALIGNRIGHT | UDS_SETBUDDYINT | UDS_NOTHOUSANDS;
+   INITCOMMONCONTROLSEX  i;
+   int StyleEx;
+
+   StyleEx = WS_EX_CLIENTEDGE | _OOHG_RTL_Status( hb_parl( 12 ) );
+
+   i.dwSize = sizeof(INITCOMMONCONTROLSEX);
+   InitCommonControlsEx(&i);
+
+   hwnd = HWNDparam( 1 );
+
+   if( ! hb_parl( 9 ) )
+   {
+      Style2 = Style2 | WS_VISIBLE;
+   }
+
+   if( hb_parl( 10 ) )
+   {
+      Style2 = Style2 | UDS_WRAP;
+   }
+
+   hupdown = CreateWindowEx( StyleEx, UPDOWN_CLASS, "", Style2,
+                             hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
+                             hwnd, ( HMENU ) 0, GetModuleHandle( NULL ), NULL );
+
+   SendMessage ( hupdown, UDM_SETBUDDY, ( WPARAM ) hb_parnl( 11 ), ( LPARAM ) NULL );
+   SendMessage ( hupdown, UDM_SETRANGE32, (WPARAM) hb_parni( 7 ), ( LPARAM ) hb_parni( 8 ) );
+
+   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hupdown, GWL_WNDPROC, ( LONG ) SubClassFunc );
+
+   HWNDret( hupdown );
+}
+
+HB_FUNC( SETSPINNERRANGE )
+{
+   SendMessage( HWNDparam( 1 ), UDM_SETRANGE32, ( WPARAM ) hb_parni( 2 ), ( LPARAM ) hb_parni( 3 ) ) ;
+}
+
+HB_FUNC( SETSPINNERINCREMENT )
+{
+   UDACCEL inc ;
+   inc.nSec = 0;
+   inc.nInc = hb_parnl(2);
+   SendMessage ( HWNDparam( 1 ), UDM_SETACCEL, (WPARAM) 1 , (LPARAM) &inc ) ;
+}
+
+#pragma ENDDUMP
