@@ -1,5 +1,5 @@
 /*
- * $Id: miniprint.prg,v 1.26 2008-11-30 16:23:36 guerra000 Exp $
+ * $Id: miniprint.prg,v 1.27 2009-06-18 21:28:16 declan2005 Exp $
  */
 /*----------------------------------------------------------------------------
  MINIGUI - Harbour Win32 GUI library source code
@@ -159,7 +159,7 @@ Public _HMG_printer_PrevPageNumber := 0
 			CURSOR "HP_GLASS" ;
                         ON PAINT _HMG_PRINTER_PreviewRefresh() ;
 			BACKCOLOR GRAY ;
-                        ON MOUSECLICK   ( If ( _HMG_PRINTER_PPNAV.b5.value == .T. , _HMG_PRINTER_PPNAV.b5.value := .F. , _HMG_PRINTER_PPNAV.b5.value := .T. ) , _HMG_PRINTER_MouseZoom() ) ;
+                        ON MOUSECLICK   ( If ( _HMG_PRINTER_PPNAV.b5.value == .T. , _HMG_PRINTER_PPNAV.b5.value := .F. , _HMG_PRINTER_PPNAV.b5.value := .T. )  ) ;
                         ON SCROLLUP     _HMG_PRINTER_ScrolluP() ;
                         ON SCROLLDOWN   _HMG_PRINTER_ScrollDown() ;
                         ON SCROLLLEFT   _HMG_PRINTER_ScrollLeft() ;
@@ -179,6 +179,9 @@ Public _HMG_printer_PrevPageNumber := 0
                         ON KEY ALT+F4           ACTION _HMG_PRINTER_PreviewClose()
                         ON KEY CONTROL+S        ACTION _HMG_printer_savepages()
                         ON KEY CONTROL+T        ACTION _HMG_printer_ThumbnailToggle()
+
+
+///////////////   ON MOUSECLICK   ( If ( _HMG_PRINTER_PPNAV.b5.value == .T. , _HMG_PRINTER_PPNAV.b5.value := .F. , _HMG_PRINTER_PPNAV.b5.value := .T. ) , _HMG_PRINTER_MouseZoom() ) ;
 
 	END WINDOW
 
@@ -511,7 +514,7 @@ Public _HMG_printer_PrevPageNumber := 0
                                 HEIGHT 30 ;
                                 PICTURE "HP_ZOOM" ;
                                 TOOLTIP _HMG_printer_usermessages[08] + ' [*]' ;
-                                ON CHANGE _HMG_PRINTER_Zoom()
+                                ON CHANGE _HMG_PRINTER_mouseZoom()     ///// _HMG_PRINTER_zoom()
 
 
                         @ 2,216 BUTTON b12 ;
