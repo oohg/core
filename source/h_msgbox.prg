@@ -1,5 +1,5 @@
 /*
- * $Id: h_msgbox.prg,v 1.6 2009-01-07 04:30:39 guerra000 Exp $
+ * $Id: h_msgbox.prg,v 1.7 2009-06-19 14:55:44 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -235,7 +235,7 @@ Function autoMsgInfo ( Message , Title )
 Return Nil
 
 *-----------------------------------------------------------------------------*
-Static function autotype( Message)
+function autotype( Message)
 *-----------------------------------------------------------------------------*
 Local cMessage, ctype
    ctype := valtype( Message )
