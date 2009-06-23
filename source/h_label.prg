@@ -1,5 +1,5 @@
 /*
- * $Id: h_label.prg,v 1.26 2009-03-16 05:02:18 guerra000 Exp $
+ * $Id: h_label.prg,v 1.27 2009-06-23 15:38:54 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -82,13 +82,13 @@
 
  Parts of this project are based upon:
 
-	"Harbour GUI framework for Win32"
- 	Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- 	Copyright 2001 Antonio Linares <alinares@fivetech.com>
-	www - http://www.harbour-project.org
+ "Harbour GUI framework for Win32"
+  Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
+  Copyright 2001 Antonio Linares <alinares@fivetech.com>
+ www - http://www.harbour-project.org
 
-	"Harbour Project"
-	Copyright 1999-2003, http://www.harbour-project.org/
+ "Harbour Project"
+ Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
 #include "oohg.ch"
@@ -112,6 +112,7 @@ CLASS TLabel FROM TControl
    METHOD Caption    SETGET
    METHOD AutoSize   SETGET
    METHOD Align      SETGET
+   METHOD SetFont
 
    EMPTY( _OOHG_AllVars )
 ENDCLASS
@@ -195,6 +196,18 @@ METHOD Caption( cValue ) CLASS TLabel
       cValue := GetWindowText( ::hWnd )
    EndIf
 RETURN cValue
+
+*-----------------------------------------------------------------------------*
+METHOD SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout ) CLASS Tlabel
+*-----------------------------------------------------------------------------*
+   ///local cCaption
+   ::SUPER:setfont(FontName, FontSize, Bold, Italic, Underline, Strikeout )
+   IF ::lAutosize
+      ::Autosize(.T.)   ///  esta es una forma de hacerlo...  mas abajo la otra forma
+      ////cCaption := GetWindowText( ::hWnd )
+     /// ::SizePos( , , GetTextWidth( NIL, cCaption, ::FontHandle ) + ::IconWidth, GetTextHeight( NIL, cCaption, ::FontHandle ) )
+   ENDIF
+Return Nil
 
 *-----------------------------------------------------------------------------*
 METHOD AutoSize( lValue ) CLASS TLabel
