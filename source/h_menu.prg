@@ -1,11 +1,11 @@
 /*
- * $Id: h_menu.prg,v 1.25 2008-11-30 16:23:36 guerra000 Exp $
+ * $Id: h_menu.prg,v 1.26 2009-07-18 17:51:24 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG menu functions
  *
- * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -101,12 +101,13 @@ CLASS TMenu FROM TControl
    DATA Type      INIT "MENU" READONLY
    DATA lMain     INIT .F.
 
-   DATA ladjust  INIT .F.
+   DATA lAdjust   INIT .F.
 
    METHOD Define
    METHOD Activate
+   METHOD EndMenu
+   METHOD Refresh
    METHOD Release     BLOCK { |Self| DestroyMenu( ::hWnd ), ::Super:Release() }
-   METHOD EndMenu     BLOCK { || _EndMenu() }
    METHOD Separator   BLOCK { |Self| TMenuItem():DefineSeparator( , Self ) }
 
    EMPTY( _OOHG_AllVars )
@@ -131,6 +132,26 @@ Local aPos
    TrackPopupMenu( ::hWnd, aPos[ 2 ], aPos[ 1 ], ::Parent:hWnd )
 Return nil
 
+*------------------------------------------------------------------------------*
+METHOD EndMenu() CLASS TMenu
+*------------------------------------------------------------------------------*
+Local nPos
+   nPos := ASCAN( _OOHG_xMenuActive, { |o| o:hWnd == ::hWnd } )
+   IF nPos > 0
+      ADEL( _OOHG_xMenuActive, nPos )
+      ASIZE( _OOHG_xMenuActive, LEN( _OOHG_xMenuActive ) - 1 )
+   ENDIF
+   ::Refresh()
+Return Nil
+
+*------------------------------------------------------------------------------*
+METHOD Refresh() CLASS TMenu
+*------------------------------------------------------------------------------*
+   IF ::lMain
+      DrawMenuBar( ::Parent:hWnd )
+   ENDIF
+Return Nil
+
 
 
 
@@ -150,11 +171,11 @@ METHOD Define( Parent ) CLASS TMenuMain
    ::Container := NIL
    ::Register( CreateMenu() )
    AADD( _OOHG_xMenuActive, Self )
-   SetMenu( ::Parent:hWnd, ::hWnd )
    If ::Parent:oMenu != nil
       // Error: MAIN MENU already defined for this window
       ::Parent:oMenu:Release()
    EndIf
+   SetMenu( ::Parent:hWnd, ::hWnd )
    ::Parent:oMenu := Self
 Return Self
 
@@ -232,14 +253,8 @@ Return ::Super:Release()
 *------------------------------------------------------------------------------*
 Function _EndMenu()
 *------------------------------------------------------------------------------*
-Local oMenu
    IF LEN( _OOHG_xMenuActive ) > 0
-      oMenu := ATAIL( _OOHG_xMenuActive )
-      IF oMenu:lMain
-         // SetMenu( oMenu:Parent:hWnd, oMenu:hWnd )
-         DrawMenuBar( oMenu:Parent:hWnd )
-      ENDIF
-      ASIZE( _OOHG_xMenuActive, LEN( _OOHG_xMenuActive ) - 1 )
+      ATAIL( _OOHG_xMenuActive ):EndMenu()
    ENDIF
 Return Nil
 
@@ -253,7 +268,7 @@ CLASS TMenuItem FROM TControl
    DATA lMain     INIT .F.
    DATA cPicture  INIT ""
 
-   DATA ladjust  INIT .F.
+   DATA lAdjust   INIT .F.
 
    METHOD DefinePopUp
    METHOD DefineItem
@@ -264,7 +279,7 @@ CLASS TMenuItem FROM TControl
    METHOD Hilited      SETGET
    METHOD Caption      SETGET
    METHOD Release
-   METHOD EndPopUp     BLOCK { || _EndMenuPopup() }
+   METHOD EndPopUp
    METHOD Separator    BLOCK { |Self| TMenuItem():DefineSeparator( , Self ) }
    METHOD Picture      SETGET
 
@@ -291,14 +306,7 @@ LOCAL nStyle
    if HB_IsLogical( disabled ) .AND. disabled
       ::Enabled := .F.
    EndIf
-   ::lMain := ::Container:lMain
 Return Self
-
-*------------------------------------------------------------------------------*
-Function _EndMenuPopup()
-*------------------------------------------------------------------------------*
-   ASIZE( _OOHG_xMenuActive, LEN( _OOHG_xMenuActive ) - 1 )
-Return Nil
 
 *------------------------------------------------------------------------------*
 METHOD DefineItem( caption, action, name, Image, checked, disabled, Parent, ;
@@ -321,7 +329,6 @@ Local nStyle, id
    if HB_IsLogical( disabled )  .AND. disabled
       ::Enabled := .F.
    EndIf
-   ::lMain := ::Container:lMain
 Return Self
 
 *------------------------------------------------------------------------------*
@@ -337,28 +344,39 @@ Local nStyle, id
    AppendMenu( ::Container:hWnd, Id, nStyle )
    ::Register( 0, Name, , , , Id )
    ::xId := ::Id
-   ::lMain := ::Container:lMain
 Return Self
 
 *------------------------------------------------------------------------------*
 METHOD Enabled( lEnabled ) CLASS TMenuItem
 *------------------------------------------------------------------------------*
-Return MenuEnabled( ::Container:hWnd, ::xId, lEnabled )
+Local lRet
+   lRet := MenuEnabled( ::Container:hWnd, ::xId, lEnabled )
+   ::Container:Refresh()
+Return lRet
 
 *------------------------------------------------------------------------------*
 METHOD Checked( lChecked ) CLASS TMenuItem
 *------------------------------------------------------------------------------*
-Return MenuChecked( ::Container:hWnd, ::xId, lChecked )
+Local lRet
+   lRet := MenuChecked( ::Container:hWnd, ::xId, lChecked )
+   ::Container:Refresh()
+Return lRet
 
 *------------------------------------------------------------------------------*
 METHOD Hilited( lHilited ) CLASS TMenuItem
 *------------------------------------------------------------------------------*
-Return MenuHilited( ::Container:hWnd, ::xId, lHilited, ::Parent:hWnd )
+Local lRet
+   lRet := MenuHilited( ::Container:hWnd, ::xId, lHilited, ::Parent:hWnd )
+   ::Container:Refresh()
+Return lRet
 
 *------------------------------------------------------------------------------*
 METHOD Caption( cCaption ) CLASS TMenuItem
 *------------------------------------------------------------------------------*
-Return MenuCaption( ::Container:hWnd, ::xId, cCaption )
+Local cRet
+   cRet := MenuCaption( ::Container:hWnd, ::xId, cCaption )
+   ::Container:Refresh()
+Return cRet
 
 *------------------------------------------------------------------------------*
 METHOD Picture( cPicture ) CLASS TMenuItem
@@ -375,10 +393,27 @@ Return ::cPicture
 METHOD Release() CLASS TMenuItem
 *------------------------------------------------------------------------------*
    DeleteMenu( ::Container:hWnd, ::xId )
-   If ::lMain
-      DrawMenuBar( ::Parent:hWnd )
-   EndIf
+   ::Container:Refresh()
 Return ::Super:Release()
+
+*------------------------------------------------------------------------------*
+METHOD EndPopUp() CLASS TMenuItem
+*------------------------------------------------------------------------------*
+Local nPos
+   nPos := ASCAN( _OOHG_xMenuActive, { |o| o:hWnd == ::hWnd } )
+   IF nPos > 0
+      ADEL( _OOHG_xMenuActive, nPos )
+      ASIZE( _OOHG_xMenuActive, LEN( _OOHG_xMenuActive ) - 1 )
+   ENDIF
+Return Nil
+
+*------------------------------------------------------------------------------*
+Function _EndMenuPopup()
+*------------------------------------------------------------------------------*
+   IF LEN( _OOHG_xMenuActive ) > 0
+      ATAIL( _OOHG_xMenuActive ):EndPopUp()
+   ENDIF
+Return Nil
 
 EXTERN TrackPopUpMenu, SetMenuDefaultItem, GetMenuBarHeight
 
