@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.13 2009-04-24 16:01:19 declan2005 Exp $
+ * $Id: h_form.prg,v 1.14 2009-07-19 02:55:13 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -809,7 +809,7 @@ FOR i:=1 TO l
          IF .not. oControl:lfixwidth  //// solo si el control tiene activado ajuste de ancho
 
             ocontrol:sizepos( , ,  oControl:width * nDivw ,oControl:height * nDivh )
-           
+
             IF  _OOHG_adjustFont
                 IF ! oControl:lfixfont /// solo si el control tiene activado ajuste de font y ajuste de ancho
                    oControl:fontsize:=oControl:fontsize * nDivw
@@ -1317,12 +1317,12 @@ Local oCtrl, lMinim := .F.
 	case nMsg == WM_PAINT
         ***********************************************************************
 
+         ::DefWindowProc( nMsg, wParam, lParam )
+
          AEVAL( ::SplitChildList, { |o| AEVAL( o:GraphTasks, { |b| _OOHG_EVAL( b ) } ), _OOHG_EVAL( o:GraphCommand, o:hWnd, o:GraphData ) } )
 
          AEVAL( ::GraphTasks, { |b| _OOHG_EVAL( b ) } )
          _OOHG_EVAL( ::GraphCommand, ::hWnd, ::GraphData )
-
-         ::DefWindowProc( nMsg, wParam, lParam )
 
          ::DoEvent( ::OnPaint, "WINDOW_PAINT" )
 
