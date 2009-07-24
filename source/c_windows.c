@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.64 2009-03-14 06:55:49 guerra000 Exp $
+ * $Id: c_windows.c,v 1.65 2009-07-24 23:59:23 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -398,20 +398,29 @@ HB_FUNC( _EXITPROCESS )
 
 HB_FUNC( _EXITPROCESS2 )
 {
+
+   /*  NOTE: This duplicated/useless OLE initialization/release is
+    *  used to patch a strange system lock under Windows Vista.
+    *  Please don't remove.
+    */
+   OleInitialize( NULL );
+   OleUninitialize();
+
+   //
    OleUninitialize();
    ExitProcess( hb_parni( 1 ) );
 }
 
 HB_FUNC( INITSTATUS )
 {
-	HWND hs;
+   HWND hs;
 
-	hs = CreateStatusWindow ( WS_CHILD | WS_BORDER | WS_VISIBLE
-        , "" , HWNDparam( 1 ), hb_parni(3) );
+   hs = CreateStatusWindow( WS_CHILD | WS_BORDER | WS_VISIBLE,
+                            "", HWNDparam( 1 ), hb_parni( 3 ) );
 
-	SendMessage(hs,SB_SIMPLE, TRUE , 0 );
-	SendMessage(hs,SB_SETTEXT,255 , (LPARAM) (LPSTR) hb_parc(2) );
-    HWNDret( hs );
+   SendMessage( hs, SB_SIMPLE, TRUE, 0 );
+   SendMessage( hs, SB_SETTEXT, 255, ( LPARAM ) ( LPSTR ) hb_parc( 2 ) );
+   HWNDret( hs );
 }
 
 HB_FUNC( SETSTATUS )
@@ -420,8 +429,8 @@ HB_FUNC( SETSTATUS )
 
    hwnd = HWNDparam( 1 );
 
-   SendMessage(hwnd,SB_SIMPLE, TRUE , 0 );
-   SendMessage(hwnd,SB_SETTEXT,255 , (LPARAM) (LPSTR) hb_parc(2) );
+   SendMessage( hwnd, SB_SIMPLE, TRUE, 0 );
+   SendMessage( hwnd, SB_SETTEXT, 255, ( LPARAM ) ( LPSTR ) hb_parc( 2 ) );
 }
 
 HB_FUNC( MAXIMIZE )
@@ -451,7 +460,7 @@ HB_FUNC( SETACTIVEWINDOW )
 
 HB_FUNC( POSTQUITMESSAGE )
 {
-	PostQuitMessage( hb_parnl( 1 ) );
+   PostQuitMessage( hb_parnl( 1 ) );
 }
 
 HB_FUNC ( DESTROYWINDOW )
@@ -478,6 +487,7 @@ HB_FUNC( SETFOREGROUNDWINDOW )
 {
    SetForegroundWindow( HWNDparam( 1 ) );
 }
+
 HB_FUNC( BRINGWINDOWTOTOP )
 {
    BringWindowToTop( HWNDparam( 1 ) );
@@ -518,7 +528,7 @@ HB_FUNC( C_CENTER )
                  ( y - h ) / 2, 0, 0, SWP_NOSIZE | SWP_NOACTIVATE );
 }
 
-HB_FUNC ( GETWINDOWTEXT )
+HB_FUNC( GETWINDOWTEXT )
 {
    int iLen = GetWindowTextLength( HWNDparam( 1 ) ) + 1;
    char *cText = ( char * ) hb_xgrab( iLen );
@@ -529,14 +539,14 @@ HB_FUNC ( GETWINDOWTEXT )
    hb_xfree( cText );
 }
 
-HB_FUNC ( SENDMESSAGE )
+HB_FUNC( SENDMESSAGE )
 {
     hb_retnl( (LONG) SendMessage( HWNDparam( 1 ), (UINT) hb_parni( 2 ), (WPARAM) hb_parnl( 3 ), (LPARAM) hb_parnl( 4 ) ) );
 }
 
 HB_FUNC ( UPDATEWINDOW )
 {
-    hb_retnl( (LONG) UpdateWindow( HWNDparam( 1 ) ) );
+   hb_retnl( ( LONG ) UpdateWindow( HWNDparam( 1 ) ) );
 }
 
 HB_FUNC ( GETNOTIFYCODE )
@@ -566,12 +576,12 @@ HB_FUNC( GETGRIDCOLUMN )
 
 HB_FUNC ( MOVEWINDOW )
 {
-  hb_retl( MoveWindow( HWNDparam( 1 ),
-                       hb_parni(2),
-                       hb_parni(3),
-                       hb_parni(4),
-                       hb_parni(5),
-                       (ISNIL(6) ? TRUE : hb_parl(6))
+   hb_retl( MoveWindow( HWNDparam( 1 ),
+                        hb_parni(2),
+                        hb_parni(3),
+                        hb_parni(4),
+                        hb_parni(5),
+                        ( ISNIL( 6 ) ? TRUE : hb_parl( 6 ) )
                       ));
 }
 
@@ -798,7 +808,7 @@ HB_FUNC( GETINSTANCE )
    HWNDret( GetModuleHandle( NULL ) );
 }
 
-HB_FUNC ( GETCURSORPOS )
+HB_FUNC( GETCURSORPOS )
 {
    POINT pt;
 
@@ -810,106 +820,101 @@ HB_FUNC ( GETCURSORPOS )
    hb_storni( pt.x, -1, 2 );
 }
 
-HB_FUNC (LOADTRAYICON)
+HB_FUNC( LOADTRAYICON )
 {
+   HICON himage;
+   HINSTANCE hInstance  = (HINSTANCE) hb_parnl(1);  // handle to application instance
+   LPCTSTR   lpIconName = (LPCTSTR)   hb_parc(2);   // name string or resource identifier
 
-	HICON himage;
-	HINSTANCE hInstance  = (HINSTANCE) hb_parnl(1);  // handle to application instance
-	LPCTSTR   lpIconName = (LPCTSTR)   hb_parc(2);   // name string or resource identifier
+   himage = LoadIcon( hInstance ,  lpIconName );
 
-        himage = LoadIcon( hInstance ,  lpIconName );
+   if( himage == NULL )
+   {
+      himage = ( HICON ) LoadImage( hInstance ,  lpIconName , IMAGE_ICON, 0, 0, LR_LOADFROMFILE + LR_DEFAULTSIZE ) ;
+   }
 
-	if (himage==NULL)
-	{
-		himage = (HICON) LoadImage( hInstance ,  lpIconName , IMAGE_ICON, 0, 0, LR_LOADFROMFILE + LR_DEFAULTSIZE ) ;
-	}
-
-	hb_retnl ( (LONG) himage );
-
+   hb_retnl ( (LONG) himage );
 }
 
-HB_FUNC ( CHANGENOTIFYICON )
+HB_FUNC( CHANGENOTIFYICON )
 {
    ChangeNotifyIcon( HWNDparam( 1 ), (HICON) hb_parnl(2), (LPSTR) hb_parc(3) );
 }
 
 static void ChangeNotifyIcon(HWND hWnd, HICON hIcon, LPSTR szText)
-
 {
-  NOTIFYICONDATA nid;
-  ZeroMemory(&nid,sizeof(nid));
-  nid.cbSize=sizeof(NOTIFYICONDATA);
-  nid.hWnd=hWnd;
-  nid.uID=0;
-  nid.uFlags=NIF_ICON | NIF_MESSAGE | NIF_TIP;
-  nid.uCallbackMessage=WM_TASKBAR;
-  nid.hIcon=hIcon;
-  lstrcpy(nid.szTip,TEXT(szText));
+   NOTIFYICONDATA nid;
+   ZeroMemory( &nid, sizeof( nid ) );
+   nid.cbSize = sizeof( NOTIFYICONDATA );
+   nid.hWnd = hWnd;
+   nid.uID = 0;
+   nid.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP;
+   nid.uCallbackMessage = WM_TASKBAR;
+   nid.hIcon = hIcon;
+   lstrcpy( nid.szTip, TEXT( szText ) );
 
-  Shell_NotifyIcon(NIM_MODIFY,&nid);
+   Shell_NotifyIcon( NIM_MODIFY, &nid );
 }
 
-HB_FUNC ( GETITEMPOS )
+HB_FUNC( GETITEMPOS )
 {
    hb_retnl( (LONG) (((NMMOUSE FAR *) hb_parnl(1))->dwItemSpec) );
 }
 
-
 HB_FUNC( GETWINDOWSTATE )
 {
-	WINDOWPLACEMENT wp ;
+   WINDOWPLACEMENT wp;
 
-	wp.length = sizeof(WINDOWPLACEMENT) ;
+   wp.length = sizeof( WINDOWPLACEMENT );
 
-    GetWindowPlacement( HWNDparam( 1 ) , &wp );
+   GetWindowPlacement( HWNDparam( 1 ) , &wp );
 
-	hb_retni ( wp.showCmd ) ;
-
+   hb_retni( wp.showCmd );
 }
 
 HB_FUNC ( REDRAWWINDOW )
 {
-   RedrawWindow(
-    HWNDparam( 1 ),
-    NULL,
-    NULL,
-    RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW	 | RDW_UPDATENOW
+   RedrawWindow( HWNDparam( 1 ), NULL, NULL,
+      RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW
    );
 }
 
-HB_FUNC ( REDRAWWINDOWCONTROLRECT )
+HB_FUNC( REDRAWWINDOWCONTROLRECT )
 {
+   RECT r;
 
-	RECT r;
+   r.top   = hb_parni( 2 );
+   r.left  = hb_parni( 3 );
+   r.bottom= hb_parni( 4 );
+   r.right = hb_parni( 5 );
 
-	r.top 	= hb_parni(2) ;
-	r.left 	= hb_parni(3) ;
-	r.bottom= hb_parni(4) ;
-	r.right	= hb_parni(5) ;
-
-	RedrawWindow(
-        HWNDparam( 1 ),
-		&r,
-		NULL,
-		RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW	 | RDW_UPDATENOW
-	);
+   RedrawWindow( HWNDparam( 1 ), &r, NULL,
+      RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW
+   );
 
 }
 
 HB_FUNC( C_SETWINDOWRGN )
 {
    HRGN hrgn;
-   if ( hb_parni(6)==0)
-          SetWindowRgn(GetActiveWindow(),NULL,TRUE);
+
+   if( hb_parni( 6 ) == 0 )
+   {
+      SetWindowRgn( GetActiveWindow(), NULL, TRUE );
+   }
    else
-     {
-     if ( hb_parni(6)==1 )
-        hrgn=CreateRectRgn(hb_parni(2),hb_parni(3),hb_parni(4),hb_parni(5));
-     else
-        hrgn=CreateEllipticRgn(hb_parni(2),hb_parni(3),hb_parni(4),hb_parni(5));
-     SetWindowRgn(GetActiveWindow(),hrgn,TRUE);
-     // Should be hb_parnl(1) instead of GetActiveWindow()
-     }
+   {
+      if( hb_parni( 6 ) == 1 )
+      {
+         hrgn = CreateRectRgn( hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ) );
+      }
+      else
+      {
+         hrgn = CreateEllipticRgn( hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ) );
+      }
+      SetWindowRgn( GetActiveWindow(), hrgn, TRUE );
+      // Should be HWNDparam( 1 ) instead of GetActiveWindow()
+   }
 }
 
 HB_FUNC( C_SETPOLYWINDOWRGN )
@@ -958,22 +963,20 @@ HB_FUNC( GETWINDOW )
 
 HB_FUNC( GETGRIDOLDSTATE )
 {
-	#define pnm ((NM_LISTVIEW *) hb_parnl(1) )
+   #define pnm ((NM_LISTVIEW *) hb_parnl(1) )
 
-	hb_retnl ( (LPARAM) (pnm->uOldState) ) ;
+   hb_retnl( ( LPARAM ) ( pnm->uOldState ) );
 
-	#undef pnm
-
+   #undef pnm
 }
 
 HB_FUNC( GETGRIDNEWSTATE )
 {
-	#define pnm ((NM_LISTVIEW *) hb_parnl(1) )
+   #define pnm ((NM_LISTVIEW *) hb_parnl(1) )
 
-	hb_retnl ( (LPARAM) (pnm->uNewState) ) ;
+   hb_retnl ( (LPARAM) (pnm->uNewState) ) ;
 
-	#undef pnm
-
+   #undef pnm
 }
 
 HB_FUNC( GETGRIDDISPINFOINDEX )
@@ -1059,12 +1062,8 @@ HB_FUNC( FINDWINDOWEX )
 
 HB_FUNC( INITDUMMY )
 {
-
-	CreateWindowEx( 0 , "static" , "" ,
-	WS_CHILD ,
-	0, 0 , 0, 0,
-    HWNDparam( 1 ),(HMENU)0 , GetModuleHandle(NULL) , NULL ) ;
-
+   CreateWindowEx( 0, "static", "", WS_CHILD, 0, 0, 0, 0,
+                   HWNDparam( 1 ), ( HMENU ) 0, GetModuleHandle( NULL ), NULL );
 }
 
 WORD DIBNumColors(LPSTR);
@@ -1153,7 +1152,6 @@ WORD PaletteSize(LPSTR lpDIB)
     else
         return (WORD) (DIBNumColors(lpDIB) * sizeof(RGBTRIPLE));
 }
-
 
 WORD DIBNumColors(LPSTR lpDIB)
 {
