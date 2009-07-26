@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.59 2009-07-26 04:11:33 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.60 2009-07-26 19:13:21 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -112,13 +112,14 @@ CLASS TText FROM TLabel
    METHOD Define2
 
    METHOD RefreshData
-   METHOD Refresh     BLOCK { |Self| ::RefreshData() }
+   METHOD Refresh             BLOCK { |Self| ::RefreshData() }
    METHOD SizePos
    METHOD Enabled             SETGET
    METHOD Visible             SETGET
    METHOD ForceHide
    METHOD AddControl
    METHOD DeleteControl
+   METHOD AdjustResize( nDivh, nDivw ) BLOCK { |Self,nDivh,nDivw| ::Super:AdjustResize( nDivh, nDivw, .T. ) }
 
    METHOD Value               SETGET
    METHOD SetFocus

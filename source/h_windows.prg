@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.203 2009-03-22 22:39:59 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.204 2009-07-26 19:13:21 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -299,6 +299,7 @@ CLASS TWindow
    METHOD GetMaxCharsInWidth
    METHOD ClientWidth
    METHOD ClientHeight
+   METHOD AdjustResize
 
    METHOD DebugMessageName
    METHOD DebugMessageQuery
@@ -1331,6 +1332,35 @@ LOCAL aClientRect
    aClientRect := { 0, 0, 0, 0 }
    GetClientRect( ::hWnd, aClientRect )
 Return aClientRect[ 4 ] - aClientRect[ 2 ]
+
+*------------------------------------------------------------------------------*
+METHOD AdjustResize( nDivh, nDivw, lSelfOnly ) CLASS TWindow
+*------------------------------------------------------------------------------*
+   IF ::lAdjust
+      //// Posicion nueva siempre que este activado autoajuste
+      ::Sizepos( ::Row * nDivh, ::Col * nDivw )
+
+      ///// Tamaño nuevo opcional (width) solo si esta activado autoajuste
+      IF _OOHG_adjustWidth
+         IF ! ::lFixWidth
+            //// solo si el control tiene activado ajuste de ancho
+            ::Sizepos( , , ::width *nDivw, ::height * nDivh )
+
+            IF  _OOHG_adjustFont
+                IF ! ::lFixFont
+                   /// Solo si el control tiene activado ajuste de font y ajuste de ancho
+                   ::fontsize := ::fontsize * nDivw
+                ENDIF
+            ENDIF
+         ENDIF
+      ENDIF
+
+      IF ! HB_IsLogical( lSelfOnly ) .OR. ! lSelfOnly
+         AEVAL( ::aControls, { |o| o:AdjustResize( nDivh, nDivw ) } )
+      ENDIF
+
+   ENDIF
+Return nil
 
 *------------------------------------------------------------------------------*
 METHOD GetMaxCharsInWidth( cString, nWidth ) CLASS TWindow

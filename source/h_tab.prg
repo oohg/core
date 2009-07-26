@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.42 2009-02-22 22:05:36 guerra000 Exp $
+ * $Id: h_tab.prg,v 1.43 2009-07-26 19:13:21 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -116,6 +116,7 @@ CLASS TTab FROM TControl
    METHOD Enabled             SETGET
    METHOD Visible             SETGET
    METHOD ForceHide
+   METHOD AdjustResize
 
    METHOD Events_Notify
 
@@ -301,6 +302,13 @@ LOCAL nPos
       ::aPages[ nPos ]:ForceHide()
    ENDIF
 RETURN ::Super:ForceHide()
+
+*-----------------------------------------------------------------------------*
+METHOD AdjustResize( nDivh, nDivw, lSelfOnly ) CLASS TTab
+*-----------------------------------------------------------------------------*
+   ::Super:AdjustResize( nDivh, nDivw, lSelfOnly )
+   AEVAL( ::aPages, { |o| o:AdjustResize( nDivh, nDivw, lSelfOnly ) } )
+RETURN nil
 
 *-----------------------------------------------------------------------------*
 METHOD Events_Notify( wParam, lParam ) CLASS TTab

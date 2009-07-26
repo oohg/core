@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.14 2009-07-19 02:55:13 guerra000 Exp $
+ * $Id: h_form.prg,v 1.15 2009-07-26 19:13:21 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -763,70 +763,37 @@ METHOD Cursor( uValue ) CLASS TForm
    ENDIF
 Return nil
 
-*-------------------------------------------------
+*------------------------------------------------------------------------------*
 METHOD AutoAdjust() CLASS TFORM
-*-----------------------------------
-LOCAL i,l,nWidth,nHeight,oControl,lSwvisible,nDivw,nDivh
+*------------------------------------------------------------------------------*
+LOCAL nWidth, nHeight, lSwvisible, nDivw, nDivh
 
-IF GetDesktopWidth() < ::nWidth
-   nWidth:= GetDesktopWidth()
-ELSE
-   nWidth:= ::width
-ENDIF
+   nWidth  := IF( GetDesktopWidth()  < ::nWidth,  GetDesktopWidth(),  ::width )
+   nHeight := IF( GetDesktopHeight() < ::nHeight, GetdeskTopHeight(), ::height )
 
-IF GetDesktopHeight() < ::nHeight
-   nHeight:= GetdeskTopHeight()
-ELSE
-   nHeight:= ::height
-ENDIF
-
-lSwvisible:=.T.
-IF !::visible
-    lSwvisible := .F.
-ELSE
-  ::hide()
-ENDIF
-
-l:=len(::aControls)
-
-FOR i:=1 TO l
-
-   oControl:=::aControls[i]
-
-   if HB_IsNumeric(::nOldw) .and.   HB_IsNumeric(::nOldh)
-      nDivw:=nWidth/::nOldw
-      nDivh:=nHeight/::nOldh
-   else
-      nDivw:=1
-      nDivh:=1
-   endif
-
-   IF oControl:lAdjust
-////  posicion nueva siempre que este activado autoajuste
-      ocontrol:sizepos( oControl:row * nDivh , oControl:col * nDivw ,  , )
-/////      tamaño nuevo opcional (width) solo si esta activado autoajuste
-      IF  _OOHG_adjustWidth
-         IF .not. oControl:lfixwidth  //// solo si el control tiene activado ajuste de ancho
-
-            ocontrol:sizepos( , ,  oControl:width * nDivw ,oControl:height * nDivh )
-
-            IF  _OOHG_adjustFont
-                IF ! oControl:lfixfont /// solo si el control tiene activado ajuste de font y ajuste de ancho
-                   oControl:fontsize:=oControl:fontsize * nDivw
-                ENDIF
-            ENDIF
-         ENDIF
-      ENDIF
-
+   lSwvisible := .T.
+   IF ! ::Visible
+      lSwvisible := .F.
+   ELSE
+      ::Hide()
    ENDIF
-NEXT i
 
-::nOLdw := nWidth
-::nOldh := nHeight
+   If HB_IsNumeric( ::nOldw ) .AND. HB_IsNumeric( ::nOldh )
+      nDivw := nWidth  / ::nOldw
+      nDivh := nHeight / ::nOldh
+   Else
+      nDivw := 1
+      nDivh := 1
+   EndIf
 
-IF lSwvisible
-   ::show()
-ENDIF
+   AEVAL( ::aControls, { |o| If( o:Container == nil, o:AdjustResize( nDivh, nDivw ), ) } )
+
+   ::nOldw := nWidth
+   ::nOldh := nHeight
+
+   IF lSwvisible
+      ::Show()
+   ENDIF
 
 RETURN nil
 
