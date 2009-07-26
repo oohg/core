@@ -1,12 +1,12 @@
 /*
- * $Id: i_textbox.ch,v 1.14 2009-04-15 19:07:20 declan2005 Exp $
+ * $Id: i_textbox.ch,v 1.15 2009-07-26 04:11:33 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Textbox definitions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -91,244 +91,6 @@
 	Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-/*
-// TEXTBOX
-
-#command @ <row>, <col> TEXTBOX <name>               	;
-                        [ OBJ <obj> ]                   ;
-			[ <dummy1: OF, PARENT> <parent> ] ;
-                        [ HEIGHT <height> ]          	;
-                        [ WIDTH <width> ]            	;
-			[ FIELD <field> ]		;
-                        [ VALUE <value> ]            	;
-			[ < readonly: READONLY > ] 	;
-                        [ FONT <fontname> ]          	;
-                        [ SIZE <fontsize> ]          	;
-			[ <bold : BOLD> ] ;
-			[ <italic : ITALIC> ] ;
-			[ <underline : UNDERLINE> ] ;
-			[ <strikeout : STRIKEOUT> ] ;
-                        [ TOOLTIP <tooltip> ]        	;
-			[ BACKCOLOR <backcolor> ] ;
-			[ FONTCOLOR <fontcolor> ] ;
-                        [ MAXLENGTH <maxlenght> ]    	;
-                        [ <upper: UPPERCASE> ]       	;
-                        [ <lower: LOWERCASE> ]       	;
-                        [ <numeric: NUMERIC> ]       	;
-                        [ <password: PASSWORD> ]     	;
-                        [ ON CHANGE <change> ]       	;
-                        [ ON GOTFOCUS <gotfocus> ]   	;
-                        [ ON LOSTFOCUS <lostfocus> ] 	;
-                        [ ON ENTER <enter> ]		;
-                        [ <RightAlign: RIGHTALIGN> ]	;
-			[ <invisible: INVISIBLE> ]	;
-			[ <notabstop: NOTABSTOP> ]	;
-                        [ <rtl: RTL> ]                  ;
-                        [ HELPID <helpid> ] 		;
-                        [ <autoskip: AUTOSKIP> ]        ;
-                        [ <noborder: NOBORDER> ]        ;
-                        [ FOCUSEDPOS <focusedpos> ]     ;
-                        [ SUBCLASS <subclass> ]         ;
-                        [ <disabled: DISABLED> ]        ;
-                        [ VALID <valid> ]               ;
-         =>;
-        [ <obj> := ] _OOHG_SelectSubClass( iif( <.numeric.>, TTextNum(), TText() ), [ <subclass>() ] ): ;
-                        Define( <(name)>, <(parent)>, <col>, <row>, <width>, <height>, <value>, ;
-                        <fontname>, <fontsize>, <tooltip>, <maxlenght>, ;
-                        <.upper.>, <.lower.>, <.password.>, ;
-                        <{lostfocus}>, <{gotfocus}>, <{change}>, <{enter}>, ;
-                        <.RightAlign.>, <helpid>, <.readonly.> ,<.bold.>, ;
-                        <.italic.>, <.underline.>, <.strikeout.> , <(field)> , ;
-                        <backcolor> , <fontcolor> , <.invisible.> , <.notabstop.> , ;
-                        <.rtl.>, <.autoskip.>, <.noborder.>, <focusedpos>, <.disabled.>, ;
-                        <{valid}> )
-
-
-// TEXTBOX ( NUMERIC INPUTMASK )
-
-#command @ <row>,<col> TEXTBOX <name>		;
-                [ OBJ <obj> ]                   ;
-		[ <dummy1: OF, PARENT> <parent> ] ;
-                [ HEIGHT <height> ]		;
-		[ WIDTH <w> ]			;
-		[ FIELD <field> ]		;
-		[ VALUE <value> ]		;
-		[ < readonly: READONLY > ] 	;
-		[ FONT <fontname> ]		;
-		[ SIZE <fontsize> ]		;
-		[ <bold : BOLD> ] ;
-		[ <italic : ITALIC> ] ;
-		[ <underline : UNDERLINE> ] ;
-		[ <strikeout : STRIKEOUT> ] ;
-		[ TOOLTIP <tooltip> ]		;
-		[ BACKCOLOR <backcolor> ] ;
-		[ FONTCOLOR <fontcolor> ] ;
-		NUMERIC				;
-		INPUTMASK <inputmask>		;
-                [ FORMAT <format> ]		;
-                [ ON CHANGE <change> ]		;
-		[ ON GOTFOCUS <gotfocus> ]	;
-		[ ON LOSTFOCUS <lostfocus> ]	;
-                [ ON ENTER <enter> ]		;
-                [ <RightAlign: RIGHTALIGN> ]    ;
-		[ <invisible: INVISIBLE> ]	;
-		[ <notabstop: NOTABSTOP> ]	;
-		[ HELPID <helpid> ] 		;
-                [ <rtl: RTL> ]                  ;
-                [ <autoskip: AUTOSKIP> ]        ;
-                [ <noborder: NOBORDER> ]        ;
-                [ FOCUSEDPOS <focusedpos> ]     ;
-                [ SUBCLASS <subclass> ]         ;
-                [ <disabled: DISABLED> ]        ;
-                [ VALID <valid> ]               ;
-	=>;
-        [ <obj> := ] _OOHG_SelectSubClass( TTextMasked(), [ <subclass>() ] ): ;
-                        Define( <(name)>, <(parent)>, <col>, <row>, <inputmask> , ;
-                        <w> , <value> , <fontname> , <fontsize> , <tooltip> , ;
-                        <{lostfocus}>  , <{gotfocus}> , <{change}> , <height> , ;
-                        <{enter}> , <.RightAlign.>  , <helpid> , <format> , <.bold.>, ;
-                        <.italic.>, <.underline.>, <.strikeout.>  , <(field)>  , ;
-                        <backcolor> , <fontcolor> , <.readonly.> , <.invisible.> , ;
-                        <.notabstop.> , <.rtl.> , <.autoskip.>, <.noborder.> , ;
-                        <focusedpos>, <.disabled.>, <{valid}> )
-
-// TEXTBOX ( CHARACTER INPUTMASK )
-
-#command @ <row>,<col> TEXTBOX <name>		;
-                [ OBJ <obj> ]                   ;
-		[ <dummy1: OF, PARENT> <parent> ] ;
-                [ HEIGHT <height> ]		;
-		[ WIDTH <w> ]			;
-		[ FIELD <field> ]		;
-		[ VALUE <value> ]		;
-		[ < readonly: READONLY > ] 	;
-		[ FONT <fontname> ]		;
-		[ SIZE <fontsize> ]		;
-		[ <bold : BOLD> ] ;
-		[ <italic : ITALIC> ] ;
-		[ <underline : UNDERLINE> ] ;
-		[ <strikeout : STRIKEOUT> ] ;
-		[ TOOLTIP <tooltip> ]		;
-		[ BACKCOLOR <backcolor> ] ;
-		[ FONTCOLOR <fontcolor> ] ;
-		INPUTMASK <inputmask>		;
-                [ ON CHANGE <change> ]		;
-		[ ON GOTFOCUS <gotfocus> ]	;
-		[ ON LOSTFOCUS <lostfocus> ]	;
-                [ ON ENTER <enter> ]		;
-                [ <RightAlign: RIGHTALIGN> ]    ;
-		[ <invisible: INVISIBLE> ]	;
-		[ <notabstop: NOTABSTOP> ]	;
-		[ HELPID <helpid> ] 		;
-                [ <rtl: RTL> ]                  ;
-                [ <autoskip: AUTOSKIP> ]        ;
-                [ <noborder: NOBORDER> ]        ;
-                [ FOCUSEDPOS <focusedpos> ]     ;
-                [ SUBCLASS <subclass> ]         ;
-                [ <disabled: DISABLED> ]        ;
-                [ VALID <valid> ]               ;
-	=>;
-        [ <obj> := ] _OOHG_SelectSubClass( TTextCharMask(), [ <subclass>() ] ): ;
-                        Define( <(name)>, <(parent)>, <col>, <row>, <inputmask> , ;
-                        <w> , <value> , <fontname> , <fontsize> , <tooltip> , ;
-                        <{lostfocus}>  , <{gotfocus}> , <{change}> , <height> , ;
-                        <{enter}> , <.RightAlign.>  , <helpid> ,<.bold.>, <.italic.>, ;
-                        <.underline.>, <.strikeout.> , <(field)> , <backcolor> , ;
-                        <fontcolor> , .f. , <.readonly.> , <.invisible.> , ;
-                        <.notabstop.> , <.rtl.> , <.autoskip.>, <.noborder.> , ;
-                        <focusedpos>, <.disabled.>, <{valid}> )
-
-// TEXTBOX ( DATE TYPE )
-
-#xcommand @ <row>,<col> TEXTBOX <name>		;
-                [ OBJ <obj> ]                   ;
-		[ <dummy1: OF, PARENT> <parent> ] ;
-                [ HEIGHT <height> ]		;
-		[ WIDTH <w> ]			;
-		[ FIELD <field> ]		;
-		[ VALUE <value> ]		;
-		[ < readonly: READONLY > ] 	;
-		[ FONT <fontname> ]		;
-		[ SIZE <fontsize> ]		;
-		[ <bold : BOLD> ] ;
-		[ <italic : ITALIC> ] ;
-		[ <underline : UNDERLINE> ] ;
-		[ <strikeout : STRIKEOUT> ] ;
-		[ TOOLTIP <tooltip> ]		;
-		[ BACKCOLOR <backcolor> ] ;
-		[ FONTCOLOR <fontcolor> ] ;
-		< date : DATE > 		;
-                [ ON CHANGE <change> ]		;
-		[ ON GOTFOCUS <gotfocus> ]	;
-		[ ON LOSTFOCUS <lostfocus> ]	;
-                [ ON ENTER <enter> ]		;
-                [ <RightAlign: RIGHTALIGN> ]    ;
-		[ <invisible: INVISIBLE> ]	;
-		[ <notabstop: NOTABSTOP> ]	;
-		[ HELPID <helpid> ] 		;
-                [ <rtl: RTL> ]                  ;
-                [ <autoskip: AUTOSKIP> ]        ;
-                [ <noborder: NOBORDER> ]        ;
-                [ FOCUSEDPOS <focusedpos> ]     ;
-                [ SUBCLASS <subclass> ]         ;
-                [ <disabled: DISABLED> ]        ;
-                [ VALID <valid> ]               ;
-	=>;
-        [ <obj> := ] _OOHG_SelectSubClass( TTextCharMask(), [ <subclass>() ] ): ;
-                        Define( <(name)>, <(parent)>, <col>, <row>, "" , <w> , ;
-                        <value> , <fontname> , <fontsize> , <tooltip> , <{lostfocus}> , ;
-                        <{gotfocus}> , <{change}> , <height> , <{enter}> , <.RightAlign.> , ;
-                        <helpid> , <.bold.>, <.italic.>, <.underline.>, <.strikeout.> , ;
-                        <(field)> , <backcolor> , <fontcolor> , <.date.> , <.readonly.> , ;
-                        <.invisible.> , <.notabstop.> , <.rtl.> , <.autoskip.>, <.noborder.> , ;
-                        <focusedpos>, <.disabled.>, <{valid}> )
-
-// TEXTBOX ( PICTURE MASK )
-
-#command @ <row>,<col> TEXTBOX <name>		;
-                [ OBJ <obj> ]                   ;
-		[ <dummy1: OF, PARENT> <parent> ] ;
-                [ HEIGHT <height> ]		;
-		[ WIDTH <w> ]			;
-		[ FIELD <field> ]		;
-		[ VALUE <value> ]		;
-		[ < readonly: READONLY > ] 	;
-		[ FONT <fontname> ]		;
-		[ SIZE <fontsize> ]		;
-                [ <bold : BOLD> ]               ;
-                [ <italic : ITALIC> ]           ;
-                [ <underline : UNDERLINE> ]     ;
-                [ <strikeout : STRIKEOUT> ]     ;
-		[ TOOLTIP <tooltip> ]		;
-                [ BACKCOLOR <backcolor> ]       ;
-                [ FONTCOLOR <fontcolor> ]       ;
-                PICTURE <inputmask>             ;
-                [ ON CHANGE <change> ]		;
-		[ ON GOTFOCUS <gotfocus> ]	;
-		[ ON LOSTFOCUS <lostfocus> ]	;
-                [ ON ENTER <enter> ]		;
-                [ <RightAlign: RIGHTALIGN> ]    ;
-		[ <invisible: INVISIBLE> ]	;
-		[ <notabstop: NOTABSTOP> ]	;
-		[ HELPID <helpid> ] 		;
-                [ <rtl: RTL> ]                  ;
-                [ <autoskip: AUTOSKIP> ]        ;
-                [ <noborder: NOBORDER> ]        ;
-                [ FOCUSEDPOS <focusedpos> ]     ;
-                [ SUBCLASS <subclass> ]         ;
-                [ <disabled: DISABLED> ]        ;
-                [ VALID <valid> ]               ;
-	=>;
-        [ <obj> := ] _OOHG_SelectSubClass( TTextPicture(), [ <subclass>() ] ): ;
-                        Define( <(name)>, <(parent)>, <col>, <row>, <w> , <height> , ;
-                        <value> , <inputmask> , <fontname> , <fontsize> , <tooltip> , ;
-                        <{lostfocus}> , <{gotfocus}> , <{change}> , <{enter}> , ;
-                        <.RightAlign.> , <helpid> , <.readonly.> , <.bold.> , <.italic.> , ;
-                        <.underline.> , <.strikeout.> , <(field)> , <backcolor> , ;
-                        <fontcolor> , <.invisible.> , <.notabstop.> , <.rtl.> , <.autoskip.>, ;
-                        <.noborder.> , <focusedpos>, <.disabled.>, <{valid}> )
-*/
-
 #command @ <row>, <col> TEXTBOX <name>               	;
                         [ OBJ <obj> ]                   ;
 			[ <dummy1: OF, PARENT> <parent> ] ;
@@ -369,8 +131,9 @@
                         [ <dummy2: INPUTMASK, PICTURE> <inputmask> ] ;
                         [ FORMAT <format> ]             ;
                         [ SUBCLASS <subclass> ]         ;
-  [ <dummy3: ACTION,ON CLICK,ONCLICK> <action> ]        ;
-                        [ PICTURE <abitmap> ]           ;
+                        [ ACTION <action> ]             ;
+                        [ ACTION2 <action2> ]           ;
+                        [ IMAGE <abitmap> ]             ;
                         [ BUTTONWIDTH <btnwidth> ]      ;
          =>;
         [ <obj> := ] DefineTextBox( <(name)>, <(parent)>, <col>, <row>, <width>, <height>, ;
@@ -382,4 +145,4 @@
                         <backcolor> , <fontcolor> , <.invisible.> , <.notabstop.> , ;
                         <.rtl.>, <.autoskip.>, <.noborder.>, <focusedpos>, <.disabled.>, ;
                         <{valid}>, <.date.>, <.numeric.>, <inputmask>, <format>, ;
-                        [ <subclass>() ] ,<{action}>,<abitmap>,<btnwidth>)
+                        [ <subclass>() ] , <{action}>, <abitmap>, <btnwidth>, <{action2}> )

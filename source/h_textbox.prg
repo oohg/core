@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.58 2009-04-25 14:09:46 declan2005 Exp $
+ * $Id: h_textbox.prg,v 1.59 2009-07-26 04:11:33 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -9,9 +9,7 @@
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
- * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar> and Minigui
-   extended library (C)2006 Janusz Pora <januszpora@onet.eu> (btntextbox)
-
+ * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -109,23 +107,28 @@ CLASS TText FROM TLabel
    DATA nWidth          INIT 120
    DATA nHeight         INIT 24
    DATA OnTextFilled    INIT nil
-   DATA nButtonWidth    INIT 20
-   DATA bButtauxAction  INIT NIL
-   DATA aBitmapAux      INIT NIL
 
    METHOD Define
    METHOD Define2
 
    METHOD RefreshData
    METHOD Refresh     BLOCK { |Self| ::RefreshData() }
+   METHOD SizePos
+   METHOD Enabled             SETGET
+   METHOD Visible             SETGET
+   METHOD ForceHide
+   METHOD AddControl
+   METHOD DeleteControl
 
-   METHOD Value       SETGET
+   METHOD Value               SETGET
    METHOD SetFocus
-   METHOD CaretPos    SETGET
-   METHOD ReadOnly    SETGET
-   METHOD MaxLength   SETGET
+   METHOD CaretPos            SETGET
+   METHOD ReadOnly            SETGET
+   METHOD MaxLength           SETGET
    METHOD DoAutoSkip
    METHOD Events_Command
+   METHOD Events
+   METHOD ControlArea         SETGET
 
    EMPTY( _OOHG_AllVars )
 ENDCLASS
@@ -136,7 +139,8 @@ METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, cValue, ;
                lPassword, uLostFocus, uGotFocus, uChange, uEnter, right, ;
                HelpId, readonly, bold, italic, underline, strikeout, field, ;
                backcolor, fontcolor, invisible, notabstop, lRtl, lAutoSkip, ;
-               lNoBorder, OnFocusPos, lDisabled, bValid, bAction, aBitmap, nBtnwidth ) CLASS TText
+               lNoBorder, OnFocusPos, lDisabled, bValid, bAction, aBitmap, ;
+               nBtnwidth, bAction2 ) CLASS TText
 *-----------------------------------------------------------------------------*
 Local nStyle := ES_AUTOHSCROLL, nStyleEx := 0
 
@@ -148,7 +152,8 @@ Local nStyle := ES_AUTOHSCROLL, nStyleEx := 0
               uLostFocus, uGotFocus, uChange, uEnter, right, HelpId, ;
               readonly, bold, italic, underline, strikeout, field, ;
               backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, ;
-              lAutoSkip, nStyleEx, lNoBorder, OnFocusPos, lDisabled, bValid , bAction,  aBitmap, nBtnwidth)
+              lAutoSkip, nStyleEx, lNoBorder, OnFocusPos, lDisabled, bValid, ;
+              bAction, aBitmap, nBtnwidth, bAction2 )
 
 Return Self
 
@@ -159,10 +164,10 @@ METHOD Define2( cControlName, cParentForm, x, y, w, h, cValue, ;
                 readonly, bold, italic, underline, strikeout, field, ;
                 backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, ;
                 lAutoSkip, nStyleEx, lNoBorder, OnFocusPos, lDisabled, ;
-                bValid, bAction,  aBitmap, nBtnwidth ) CLASS TText
+                bValid, bAction, aBitmap, nBtnwidth, bAction2 ) CLASS TText
 *-----------------------------------------------------------------------------*
 Local nControlHandle
-local break,cBmp,lBtn2
+local break
 
    // Assign STANDARD values to optional params.
    ASSIGN ::nCol    VALUE x TYPE "N"
@@ -187,32 +192,11 @@ local break,cBmp,lBtn2
 
    nStyleEx += IF( !HB_IsLogical( lNoBorder ) .OR. ! lNoBorder, WS_EX_CLIENTEDGE, 0 )
 
-   if !hb_isarray(aBitmap)
-       cBmp:=aBitmap
-       aBitmap:=array(2)
-       aBitmap[1]:=cBmp
-       ::aBitmapAux:=aBitmap
-   else
-       ::aBitmapAux:=aBitmap
-   endif
-   lbtn2:=.F.
-   if hb_isblock( bAction )
-      ::bButtauxaction:= bAction
-   endif
-   if hb_isnumeric( nBtnwidth )
-      ::nButtonwidth:=nBtnwidth
-   endif
-
    // Creates the control window.
    ::SetSplitBoxInfo( Break, )
 
-   if !hb_isblock(bAction)
-       nControlHandle := InitTextBox( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, ::nMaxLength, ::lRtl, nStyleEx )
-   else
+   nControlHandle := InitTextBox( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, ::nMaxLength, ::lRtl, nStyleEx )
 
-       nControlHandle := Initbtntextbox( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, '', 0, ::nMaxLength, , , .f.,lpassword ,right, , ,abitmap[1],nBtnwidth,abitmap[2],lbtn2 )
-///       setwindowstyle(nControlhandle,nstyle)
-   endif
    ::Register( nControlHandle, cControlName, HelpId,, cToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
 
@@ -221,13 +205,28 @@ local break,cBmp,lBtn2
    ASSIGN ::OnLostFocus VALUE uLostFocus TYPE "B"
    ASSIGN ::OnGotFocus  VALUE uGotFocus  TYPE "B"
    ASSIGN ::OnChange    VALUE uChange    TYPE "B"
-   ASSIGN ::OnEnter     value uEnter     TYPE "B"
-   ::postBlock   := bValid
+   ASSIGN ::OnEnter     VALUE uEnter     TYPE "B"
+   ASSIGN ::postBlock   VALUE bValid     TYPE "B"
    ASSIGN ::lAutoSkip   VALUE lAutoSkip  TYPE "L"
    ASSIGN ::nOnFocusPos VALUE OnFocusPos TYPE "N"
-   ASSIGN ::OnClick     VALUE bAction   TYPE "B"
 
-return Self
+   ASSIGN nBtnwidth     VALUE nBtnwidth  TYPE "N" DEFAULT 20
+   IF ! HB_IsArray( aBitmap )
+      aBitmap := { aBitmap, nil }
+   ENDIF
+   IF LEN( aBitmap ) < 2
+      ASIZE( aBitmap, 2 )
+   ENDIF
+
+   IF HB_IsBlock( bAction )
+      @ 2,::ClientWidth + 2 - nBtnwidth BUTTON 0 WIDTH nBtnwidth HEIGHT 100 ACTION EVAL( bAction )  OF ( Self ) PICTURE aBitmap[ 1 ]
+   ENDIF
+
+   IF HB_IsBlock( bAction2 )
+      @ 2,::ClientWidth + 2 - nBtnwidth BUTTON 0 WIDTH nBtnwidth HEIGHT 100 ACTION EVAL( bAction2 ) OF ( Self ) PICTURE aBitmap[ 2 ]
+   ENDIF
+
+RETURN Self
 
 *-----------------------------------------------------------------------------*
 METHOD RefreshData() CLASS TText
@@ -242,6 +241,71 @@ Local uValue
    ENDIF
    AEVAL( ::aControls, { |o| If( o:Container == nil, o:RefreshData(), ) } )
 Return NIL
+
+*------------------------------------------------------------------------------*
+METHOD SizePos( Row, Col, Width, Height ) CLASS TText
+*------------------------------------------------------------------------------*
+LOCAL nOldWidth, nOldHeight
+   nOldWidth  := ::Width
+   nOldHeight := ::Height
+   ::Super:SizePos( Row, Col, Width, Height )
+   nOldWidth  := ::Width  - nOldWidth
+   nOldHeight := ::Height - nOldHeight
+   AEVAL( ::aControls, { |o| o:SizePos( , o:Col + nOldWidth,, o:Height + nOldHeight ) } )
+Return Nil
+
+*------------------------------------------------------------------------------*
+METHOD Enabled( lEnabled ) CLASS TText
+*------------------------------------------------------------------------------*
+   IF HB_IsLogical( lEnabled )
+      ::Super:Enabled := lEnabled
+      AEVAL( ::aControls, { |o| o:Enabled := o:Enabled } )
+   ENDIF
+RETURN ::Super:Enabled
+
+*------------------------------------------------------------------------------*
+METHOD Visible( lVisible ) CLASS TText
+*------------------------------------------------------------------------------*
+   IF HB_IsLogical( lVisible )
+      ::Super:Visible := lVisible
+      IF lVisible
+         AEVAL( ::aControls, { |o| o:Visible := o:Visible } )
+      ELSE
+         AEVAL( ::aControls, { |o| o:ForceHide() } )
+      ENDIF
+   ENDIF
+RETURN ::Super:Visible
+
+*------------------------------------------------------------------------------*
+METHOD ForceHide() CLASS TText
+*------------------------------------------------------------------------------*
+   AEVAL( ::aControls, { |o| o:ForceHide() } )
+RETURN ::Super:ForceHide()
+
+*------------------------------------------------------------------------------*
+METHOD AddControl( oCtrl ) CLASS TText
+*------------------------------------------------------------------------------*
+LOCAL aRect
+   ::Super:AddControl( oCtrl )
+   oCtrl:Container := Self
+   ::ControlArea := ::ControlArea + oCtrl:Width
+   aRect := { 0, 0, 0, 0 }
+   GetClientRect( ::hWnd, @aRect )
+   oCtrl:Visible := oCtrl:Visible
+   oCtrl:SizePos( 2, ::ClientWidth + 2,, ::ClientHeight )
+Return Nil
+
+*------------------------------------------------------------------------------*
+METHOD DeleteControl( oCtrl ) CLASS TText
+*------------------------------------------------------------------------------*
+LOCAL nCount
+   nCount := LEN( ::aControls )
+   ::Super:DeleteControl( oCtrl )
+   IF LEN( ::aControls ) < nCount
+      ::ControlArea := ::ControlArea - oCtrl:Width
+      AEVAL( ::aControls, { |o| IF( o:Col < oCtrl:Col + oCtrl:Width, o:Col += oCtrl:Width, ) } )
+   ENDIF
+Return Nil
 
 *------------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TText
@@ -381,6 +445,88 @@ HB_FUNC( INITTEXTBOX )
    HWNDret( hedit );
 
 }
+
+#define s_Super s_TLabel
+
+// oSelf->lAux[ 0 ] -> Client's area (width used by attached controls)
+
+// -----------------------------------------------------------------------------
+HB_FUNC_STATIC( TTEXT_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TText
+// -----------------------------------------------------------------------------
+{
+   HWND hWnd      = HWNDparam( 1 );
+   UINT message   = ( UINT )   hb_parni( 2 );
+   WPARAM wParam  = ( WPARAM ) hb_parni( 3 );
+   LPARAM lParam  = ( LPARAM ) hb_parnl( 4 );
+   PHB_ITEM pSelf = hb_stackSelfItem();
+
+   switch( message )
+   {
+      case WM_NCCALCSIZE:
+      {
+         int iRet;
+         RECT *rect2;
+         POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+
+         iRet = DefWindowProc( hWnd, message, wParam, lParam );
+
+         if( oSelf->lAux[ 0 ] )
+         {
+
+            rect2 = ( RECT * ) lParam;
+            rect2->right = rect2->right - oSelf->lAux[ 0 ];
+         }
+
+         hb_retni( iRet );
+         break;
+      }
+
+      case WM_NCHITTEST:
+      {
+         int iRet;
+
+         iRet = DefWindowProc( hWnd, message, wParam, lParam );
+
+         if( iRet == 0 )
+         {
+            iRet = -1;
+         }
+
+         hb_retni( iRet );
+         break;
+      }
+
+      default:
+         _OOHG_Send( pSelf, s_Super );
+         hb_vmSend( 0 );
+         _OOHG_Send( hb_param( -1, HB_IT_OBJECT ), s_Events );
+         hb_vmPushLong( ( LONG ) hWnd );
+         hb_vmPushLong( message );
+         hb_vmPushLong( wParam );
+         hb_vmPushLong( lParam );
+         hb_vmSend( 4 );
+         break;
+	}
+}
+
+// -----------------------------------------------------------------------------
+HB_FUNC_STATIC( TTEXT_CONTROLAREA )   // METHOD ControlArea( nWidth ) CLASS TText
+// -----------------------------------------------------------------------------
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   RECT rect;
+
+   if( ISNUM( 1 ) )
+   {
+      oSelf->lAux[ 0 ] = hb_parni( 1 );
+      GetWindowRect( oSelf->hWnd, &rect );
+      SetWindowPos( oSelf->hWnd, NULL, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_NOREDRAW | SWP_NOSIZE );
+   }
+
+   hb_retni( oSelf->lAux[ 0 ] );
+}
+
 #pragma ENDDUMP
 
 
@@ -424,7 +570,8 @@ METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, uValue, ;
                uGotFocus, uChange, uEnter, right, HelpId, readonly, bold, ;
                italic, underline, strikeout, field, backcolor, fontcolor, ;
                invisible, notabstop, lRtl, lAutoSkip, lNoBorder, OnFocusPos, ;
-               lDisabled, bValid, lUpper, lLower ) CLASS TTextPicture
+               lDisabled, bValid, lUpper, lLower, bAction, aBitmap, ;
+               nBtnwidth, bAction2 ) CLASS TTextPicture
 *-----------------------------------------------------------------------------*
 Local nStyle := ES_AUTOHSCROLL, nStyleEx := 0
 
@@ -451,7 +598,8 @@ Local nStyle := ES_AUTOHSCROLL, nStyleEx := 0
               uLostFocus, uGotFocus, uChange, uEnter, right, HelpId, ;
               readonly, bold, italic, underline, strikeout, field, ;
               backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, ;
-              lAutoSkip, nStyleEx, lNoBorder, OnFocusPos, lDisabled, bValid )
+              lAutoSkip, nStyleEx, lNoBorder, OnFocusPos, lDisabled, bValid, ;
+              bAction, aBitmap, nBtnwidth, bAction2 )
 
 Return Self
 
@@ -731,6 +879,7 @@ Local cRet
 Return cRet
 
 #pragma BEGINDUMP
+#undef s_Super
 #define s_Super s_TText
 
 // -----------------------------------------------------------------------------
@@ -1059,7 +1208,8 @@ METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, cValue, ;
                lPassword, uLostFocus, uGotFocus, uChange , uEnter , right  , ;
                HelpId, readonly, bold, italic, underline, strikeout, field , ;
                backcolor , fontcolor , invisible , notabstop, lRtl, lAutoSkip, ;
-               lNoBorder, OnFocusPos, lDisabled, bValid ) CLASS TTextNum
+               lNoBorder, OnFocusPos, lDisabled, bValid, bAction, aBitmap, ;
+               nBtnwidth, bAction2 ) CLASS TTextNum
 *-----------------------------------------------------------------------------*
 Local nStyle := ES_NUMBER + ES_AUTOHSCROLL, nStyleEx := 0
 
@@ -1071,7 +1221,8 @@ Local nStyle := ES_NUMBER + ES_AUTOHSCROLL, nStyleEx := 0
               uLostFocus, uGotFocus, uChange, uEnter, right, HelpId, ;
               readonly, bold, italic, underline, strikeout, field, ;
               backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, ;
-              lAutoSkip, nStyleEx, lNoBorder, OnFocusPos, lDisabled, bValid )
+              lAutoSkip, nStyleEx, lNoBorder, OnFocusPos, lDisabled, bValid, ;
+              bAction, aBitmap, nBtnwidth, bAction2 )
 
 Return Self
 
@@ -1118,6 +1269,9 @@ Local cText, nPos, nCursorPos, lChange
 Return ::Super:Events_Command( wParam )
 
 
+
+
+
 *-----------------------------------------------------------------------------*
 FUNCTION DefineTextBox( cControlName, cParentForm, x, y, Width, Height, ;
                         Value, cFontName, nFontSize, cToolTip, nMaxLength, ;
@@ -1126,7 +1280,8 @@ FUNCTION DefineTextBox( cControlName, cParentForm, x, y, Width, Height, ;
                         italic, underline, strikeout, field, backcolor, ;
                         fontcolor, invisible, notabstop, lRtl, lAutoSkip, ;
                         lNoBorder, OnFocusPos, lDisabled, bValid, ;
-                        date, numeric, inputmask, format, subclass, baction,abitmap,nbtnwidth )
+                        date, numeric, inputmask, format, subclass, bAction, ;
+                        aBitmap, nBtnwidth, bAction2 )
 *-----------------------------------------------------------------------------*
 Local Self, lInsert
 
@@ -1176,7 +1331,8 @@ Local Self, lInsert
                 uGotfocus, uChange, uEnter, right, HelpId, readonly, bold, ;
                 italic, underline, strikeout, field, backcolor, fontcolor, ;
                 invisible, notabstop, lRtl, lAutoSkip, lNoBorder, OnFocusPos, ;
-                lDisabled, bValid, lUpper, lLower, bAction, aBitmap, nBtnwidth  )
+                lDisabled, bValid, lUpper, lLower, bAction, aBitmap, ;
+                nBtnwidth, bAction2 )
    Else
       Self := _OOHG_SelectSubClass( iif( numeric, TTextNum(), TText() ), subclass )
       ::Define( cControlName, cParentForm, x, y, Width, Height, Value, ;
@@ -1184,734 +1340,7 @@ Local Self, lInsert
                 lPassword, uLostFocus, uGotFocus, uChange, uEnter, right, ;
                 HelpId, readonly, bold, italic, underline, strikeout, field, ;
                 backcolor, fontcolor, invisible, notabstop, lRtl, lAutoSkip, ;
-                lNoBorder, OnFocusPos, lDisabled, bValid, bAction,  aBitmap, nBtnwidth )
+                lNoBorder, OnFocusPos, lDisabled, bValid, bAction, aBitmap, ;
+                nBtnwidth, bAction2 )
    EndIf
 Return Self
-
-
-
-
-EXTERN INITBTNTEXTBOX
-
-#pragma BEGINDUMP
-
-
-#ifdef MAKELONG
-#undef MAKELONG
-#endif
-#define MAKELONG( a, b )   ( (LONG) (((WORD) ((DWORD_PTR) (a) & 0xffff)) | (((DWORD) ((WORD) ((DWORD_PTR) (b) & 0xffff))) << 16)) )
-
-
-LRESULT CALLBACK  OwnBtnTextProc( HWND hbutton, UINT msg, WPARAM wParam, LPARAM lParam );
-
-typedef struct
-{
-   UINT     uCmdId;                    // sent in a WM_COMMAND message
-   UINT     uCmdId2;                   // sent in a WM_COMMAND message
-   UINT     fButtonDown;               // is the button2 up/down?
-   UINT     fButtonDown2;              // is the button up/down?
-   BOOL     fButton2;                  // is the button2 ?
-   BOOL     fMouseDown;                // is the mouse activating the button?
-   BOOL     fMouseDown2;               // is the mouse activating the button2?
-   WNDPROC  oldproc;                   // need to remember the old window procedure
-   int      cxLeftEdge, cxRightEdge;   // size of the current window borders.
-   int      cyTopEdge, cyBottomEdge;   // given these, we know where to insert our button
-   int      cxLeftEdge2, cxRightEdge2; // size of the current window borders.
-   int      cyTopEdge2, cyBottomEdge2; // given these, we know where to insert our button2
-   int      uState;
-   int      uState2;
-   int      cxButton;
-   int      cxButton2;
-   int      nButton;
-   BOOL     fMouseActive;
-   HWND     himage;
-   HWND     himage2;
-} INSBTN, *PINSBTN;
-
-BOOL InsertButton( HWND hwnd, HWND image, int BtnWidth, HWND image2, int BtnWidth2, BOOL fBtn2 )
-{
-   INSBTN   *pbtn;
-
-   pbtn = (INSBTN*) HeapAlloc( GetProcessHeap(), 0, sizeof(INSBTN) );
-
-   if( !pbtn )
-   {
-      return FALSE;
-   }
-
-   pbtn->uCmdId = 0;
-   pbtn->uCmdId2 = 1;
-   pbtn->fButtonDown = FALSE;
-   pbtn->fButtonDown2 = FALSE;
-   pbtn->fButton2 = fBtn2;
-   pbtn->himage = image;
-   pbtn->himage2 = image2;
-   pbtn->cxButton = ( BtnWidth >= GetSystemMetrics(SM_CXVSCROLL) ? BtnWidth : GetSystemMetrics(SM_CXVSCROLL) );
-   pbtn->cxButton2 = ( BtnWidth2 >= GetSystemMetrics(SM_CXVSCROLL) ? BtnWidth2 : GetSystemMetrics(SM_CXVSCROLL) );
-
-   // replace the old window procedure with our new one
-
-   pbtn->oldproc = ( WNDPROC ) SetWindowLong( hwnd, GWL_WNDPROC, (LONG) OwnBtnTextProc );
-
-   // associate our button state structure with the window
-
-   SetWindowLong( hwnd, GWL_USERDATA, (LONG) pbtn );
-
-   // force the edit control to update its non-client area
-
-   SetWindowPos( hwnd, 0, 0, 0, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOZORDER );
-
-   return TRUE;
-}
-
-// retrieve the coordinates of an inserted button, given the
-// specified window rectangle.
-
-void GetButtonRect( INSBTN *pbtn, RECT *rect, INT nBtn )
-{
-   rect->right -= ( nBtn == 1 ? pbtn->cxRightEdge : pbtn->cxRightEdge2 );
-   rect->top += ( nBtn == 1 ? pbtn->cyTopEdge : pbtn->cyTopEdge2 );
-   rect->bottom -= ( nBtn == 1 ? pbtn->cyBottomEdge : pbtn->cyBottomEdge2 );
-   rect->left = rect->right - ( nBtn == 1 ? pbtn->cxButton : pbtn->cxButton2 );
-
-   // take into account any scrollbars in the edit control
-
-   if( nBtn == 1 )
-   {
-      if( pbtn->cxRightEdge > pbtn->cxLeftEdge )
-      {
-         OffsetRect( rect, pbtn->cxRightEdge - pbtn->cxLeftEdge, 0 );
-      }
-   }
-   else
-   {
-      if( pbtn->cxRightEdge2 > pbtn->cxLeftEdge2 )
-      {
-         OffsetRect( rect, pbtn->cxRightEdge2 - pbtn->cxLeftEdge2, 0 );
-      }
-   }
-}
-
-HB_FUNC( INITBTNTEXTBOX )
-{
-   HWND  hwnd;          // Handle of the parent window/form.
-   HWND  hedit;         // Handle of the child window/control.
-   int   iStyle;        // TEXTBOX window base style.
-   HWND  himage, himage2;
-   BOOL  fBtn2;
-   int   BtnWidth = ( ISNIL(18) ? 0 : ( int ) hb_parni(18) );
-
-   // Get the handle of the parent window/form.
-
-   hwnd = ( HWND ) hb_parnl( 1 );
-
-   iStyle = WS_CHILD | ES_AUTOHSCROLL | BS_FLAT;
-
-   if( hb_parl(12) )    // if <lNumeric> is TRUE, then ES_NUMBER style is added.
-   {
-      iStyle = iStyle | ES_NUMBER;
-
-      // Set to a numeric TEXTBOX, so don't worry about other "textual" styles.
-
-   }
-   else
-   {
-      if( hb_parl(10) ) // if <lUpper> is TRUE, then ES_UPPERCASE style is added.
-      {
-         iStyle = iStyle | ES_UPPERCASE;
-      }
-
-      if( hb_parl(11) ) // if <lLower> is TRUE, then ES_LOWERCASE style is added.
-      {
-         iStyle = iStyle | ES_LOWERCASE;
-      }
-   }
-
-   if( hb_parl(13) )    // if <lPassword> is TRUE, then ES_PASSWORD style is added.
-   {
-      iStyle = iStyle | ES_PASSWORD;
-   }
-
-   if( hb_parl(14) )
-   {
-      iStyle = iStyle | ES_RIGHT;
-   }
-
-   if( !hb_parl(15) )
-   {
-      iStyle = iStyle | WS_VISIBLE;
-   }
-
-   if( !hb_parl(16) )
-   {
-      iStyle = iStyle | WS_TABSTOP;
-   }
-
-   // Creates the child control.
-
-   hedit = CreateWindowEx
-      (
-         WS_EX_CLIENTEDGE,
-         "EDIT",
-         "",
-         iStyle,
-         hb_parni(3),
-         hb_parni(4),
-         hb_parni(5),
-         hb_parni(6),
-         hwnd,
-         (HMENU) hb_parni(2),
-         GetModuleHandle(NULL),
-         NULL
-      );
-
-   SendMessage( hedit, (UINT) EM_LIMITTEXT, (WPARAM) hb_parni(9), (LPARAM) 0 );
-   if( !(hb_parc(17) == NULL) )
-   {
-      himage = ( HWND ) LoadImage( GetModuleHandle(0), hb_parc(17), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_LOADMAP3DCOLORS | LR_LOADTRANSPARENT );
-
-      if( himage == NULL )
-      {
-         himage = ( HWND ) LoadImage( GetModuleHandle(NULL), hb_parc(17), IMAGE_BITMAP, 0, 0, LR_LOADMAP3DCOLORS | LR_LOADTRANSPARENT );
-      }
-   }
-   else
-   {
-      himage = NULL;
-   }
-
-   if( !(hb_parc(19) == NULL) )
-   {
-      himage2 = ( HWND ) LoadImage( GetModuleHandle(0), hb_parc(19), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_LOADMAP3DCOLORS | LR_LOADTRANSPARENT );
-
-      if( himage2 == NULL )
-      {
-         himage2 = ( HWND ) LoadImage( GetModuleHandle(NULL), hb_parc(19), IMAGE_BITMAP, 0, 0, LR_LOADMAP3DCOLORS | LR_LOADTRANSPARENT );
-      }
-   }
-   else
-   {
-      himage2 = NULL;
-   }
-
-   fBtn2 = hb_parl( 20 );
-
-   InsertButton( hedit, himage, BtnWidth, himage2, BtnWidth, fBtn2 );
-
-   hb_retnl( (LONG) hedit );
-}
-
-HB_FUNC( REDEFBTNTEXTBOX )
-{
-   HWND  himage, himage2;
-   int   BtnWidth = ( ISNIL(3) ? 0 : ( int ) hb_parni(3) );
-
-   if( !(hb_parc(2) == NULL) )
-   {
-      himage = ( HWND ) LoadImage( GetModuleHandle(0), hb_parc(2), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_LOADMAP3DCOLORS | LR_LOADTRANSPARENT );
-
-      if( himage == NULL )
-      {
-         himage = ( HWND ) LoadImage( GetModuleHandle(NULL), hb_parc(2), IMAGE_BITMAP, 0, 0, LR_LOADMAP3DCOLORS | LR_LOADTRANSPARENT );
-      }
-   }
-   else
-   {
-      himage = NULL;
-   }
-
-   if( !(hb_parc(4) == NULL) )
-   {
-      himage2 = ( HWND ) LoadImage( GetModuleHandle(0), hb_parc(4), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_LOADMAP3DCOLORS | LR_LOADTRANSPARENT );
-
-      if( himage2 == NULL )
-      {
-         himage2 = ( HWND ) LoadImage( GetModuleHandle(NULL), hb_parc(4), IMAGE_BITMAP, 0, 0, LR_LOADMAP3DCOLORS | LR_LOADTRANSPARENT );
-      }
-   }
-   else
-   {
-      himage2 = NULL;
-   }
-
-   InsertButton( (HWND) hb_parnl(1), himage, BtnWidth, himage2, BtnWidth, hb_parl(5) );
-}
-
-
-
-void DrawInsertedButton( HWND hwnd, INSBTN *pbtn, RECT *prect, INT nBtn )
-{
-   HDC   hdc;
-   HWND  hBitmap = ( nBtn == 1 ? pbtn->himage : pbtn->himage2 );
-   BOOL  fBtnDown = ( nBtn == 1 ? pbtn->fButtonDown : pbtn->fButtonDown2 );
-   hdc = GetWindowDC( hwnd );
-
-   // now draw our inserted button:
-
-   if( fBtnDown == TRUE )
-   {
-      // draw a 3d-edge around the button.
-
-      DrawEdge( hdc, prect, EDGE_RAISED, BF_RECT | BF_FLAT | BF_ADJUST );
-
-      // fill the inside of the button
-
-      FillRect( hdc, prect, GetSysColorBrush(COLOR_BTNFACE) );
-
-      OffsetRect( prect, 1, 1 );
-   }
-   else
-   {
-      DrawEdge( hdc, prect, EDGE_RAISED, BF_RECT | BF_ADJUST );
-
-      // fill the inside of the button
-
-      FillRect( hdc, prect, GetSysColorBrush(COLOR_BTNFACE) );
-   }
-
-   if( hBitmap == NULL )
-   {
-      SetBkMode( hdc, TRANSPARENT );
-      DrawText( hdc, "...", 3, prect, DT_CENTER | DT_VCENTER | DT_SINGLELINE );
-   }
-   else
-   {
-      LONG     wRow = prect->top;
-      LONG     wCol = prect->left;
-      LONG     wWidth = prect->right - prect->left;
-      LONG     wHeight = prect->bottom - prect->top;
-
-      HDC      hDCmem = CreateCompatibleDC( hdc );
-      BITMAP   bitmap;
-      DWORD    dwRaster = SRCCOPY;
-
-      SelectObject( hDCmem, hBitmap );
-      GetObject( hBitmap, sizeof(BITMAP), (LPVOID) & bitmap );
-      if( wWidth && (wWidth != bitmap.bmWidth || wHeight != bitmap.bmHeight) )
-      {
-         StretchBlt( hdc, wCol, wRow, wWidth, wHeight, hDCmem, 0, 0, bitmap.bmWidth, bitmap.bmHeight, dwRaster );
-      }
-      else
-      {
-         BitBlt( hdc, wCol, wRow, bitmap.bmWidth, bitmap.bmHeight, hDCmem, 0, 0, dwRaster );
-      }
-
-      DeleteDC( hDCmem );
-   }
-
-   ReleaseDC( hwnd, hdc );
-}
-
-void DrawInsertedButton2( HWND hwnd, INSBTN *pbtn, RECT *prect )
-{
-   HDC   hdc;
-   HWND  hBitmap = pbtn->himage2;
-
-   hdc = GetWindowDC( hwnd );
-
-   // now draw our inserted button:
-
-   if( pbtn->fButtonDown2 == TRUE )
-   {
-      // draw a 3d-edge around the button.
-
-      DrawEdge( hdc, prect, EDGE_RAISED, BF_RECT | BF_FLAT | BF_ADJUST );
-
-      // fill the inside of the button
-
-      FillRect( hdc, prect, GetSysColorBrush(COLOR_BTNFACE) );
-
-      OffsetRect( prect, 1, 1 );
-   }
-   else
-   {
-      DrawEdge( hdc, prect, EDGE_RAISED, BF_RECT | BF_ADJUST );
-
-      // fill the inside of the button
-
-      FillRect( hdc, prect, GetSysColorBrush(COLOR_BTNFACE) );
-   }
-
-   if( hBitmap == NULL )
-   {
-      SetBkMode( hdc, TRANSPARENT );
-      DrawText( hdc, "...", 3, prect, DT_CENTER | DT_VCENTER | DT_SINGLELINE );
-   }
-   else
-   {
-      LONG     wRow = prect->top;
-      LONG     wCol = prect->left;
-      LONG     wWidth = prect->right - prect->left;
-      LONG     wHeight = prect->bottom - prect->top;
-
-      HDC      hDCmem = CreateCompatibleDC( hdc );
-      BITMAP   bitmap;
-      DWORD    dwRaster = SRCCOPY;
-
-      SelectObject( hDCmem, hBitmap );
-      GetObject( hBitmap, sizeof(BITMAP), (LPVOID) & bitmap );
-      if( wWidth && (wWidth != bitmap.bmWidth || wHeight != bitmap.bmHeight) )
-      {
-         StretchBlt( hdc, wCol, wRow, wWidth, wHeight, hDCmem, 0, 0, bitmap.bmWidth, bitmap.bmHeight, dwRaster );
-      }
-      else
-      {
-         BitBlt( hdc, wCol, wRow, bitmap.bmWidth, bitmap.bmHeight, hDCmem, 0, 0, dwRaster );
-      }
-
-      DeleteDC( hDCmem );
-   }
-
-   ReleaseDC( hwnd, hdc );
-}
-
-LRESULT CALLBACK OwnBtnTextProc( HWND hwnd, UINT Msg, WPARAM wParam, LPARAM lParam )
-{
-   WNDPROC  OldWndProc;
-   RECT     *prect;
-   RECT     oldrect;
-   RECT     rect;
-   POINT    pt;
-   UINT     oldstate, oldstate2;
-
-   // get the button state structure
-
-   INSBTN   *pbtn = ( INSBTN * ) GetWindowLong( hwnd, GWL_USERDATA );
-   OldWndProc = pbtn->oldproc;
-
-   switch( Msg )
-   {
-      case WM_NCDESTROY:
-         OldWndProc = pbtn->oldproc;
-         HeapFree( GetProcessHeap(), 0, pbtn );
-         return CallWindowProc( OldWndProc, hwnd, Msg, wParam, lParam );
-
-      case WM_NCCALCSIZE:
-         prect = ( RECT * ) lParam;
-         oldrect = *prect;
-
-         // let the old wndproc allocate space for the borders,
-         // or any other non-client space.
-
-         CallWindowProc( pbtn->oldproc, hwnd, Msg, wParam, lParam );
-
-         // calculate what the size of each window border is,
-         // we need to know where the button is going to live.
-
-         pbtn->cxLeftEdge = prect->left - oldrect.left;
-         pbtn->cxRightEdge = oldrect.right - prect->right;
-         pbtn->cyTopEdge = prect->top - oldrect.top;
-         pbtn->cyBottomEdge = oldrect.bottom - prect->bottom;
-
-         pbtn->cxLeftEdge2 = pbtn->cxLeftEdge + pbtn->cxButton2;
-         pbtn->cxRightEdge2 = pbtn->cxRightEdge + pbtn->cxButton2;
-         pbtn->cyTopEdge2 = pbtn->cyTopEdge;
-         pbtn->cyBottomEdge2 = pbtn->cyBottomEdge;
-
-         // now we can allocate additional space by deflating the
-         // rectangle even further. Our button will go on the right-hand side,
-         // and will be the same width as a scrollbar button
-
-         prect->right -= pbtn->cxButton;
-         if( pbtn->fButton2 )
-         {
-            prect->right -= pbtn->cxButton2;
-         }
-
-         return 0;
-
-      case WM_NCPAINT:
-         // let the old window procedure draw the borders / other non-client
-         // bits-and-pieces for us.
-
-         CallWindowProc( pbtn->oldproc, hwnd, Msg, wParam, lParam );
-
-         // get the screen coordinates of the window.
-         // adjust the coordinates so they start from 0,0
-
-         GetWindowRect( hwnd, &rect );
-         OffsetRect( &rect, -rect.left, -rect.top );
-
-         // work out where to draw the button
-
-         GetButtonRect( pbtn, &rect, 1 );
-
-         DrawInsertedButton( hwnd, pbtn, &rect, 1 );
-
-         if( pbtn->fButton2 )
-         {
-            GetWindowRect( hwnd, &rect );
-            OffsetRect( &rect, -rect.left, -rect.top );
-
-            GetButtonRect( pbtn, &rect, 2 );
-            DrawInsertedButton( hwnd, pbtn, &rect, 2 );
-         }
-
-         // that's it! This is too easy!
-
-         return 0;
-
-      case WM_NCHITTEST:
-         // get the screen coordinates of the mouse
-
-         pt.x = LOWORD( lParam );
-         pt.y = HIWORD( lParam );
-
-         // get the position of the inserted button
-
-         GetWindowRect( hwnd, &rect );
-         GetButtonRect( pbtn, &rect, 1 );
-
-         // check that the mouse is within the inserted button
-
-         if( PtInRect(&rect, pt) )
-         {
-            return HTBORDER;
-         }
-         else
-         {
-            if( pbtn->fButton2 )
-            {
-               GetButtonRect( pbtn, &rect, 2 );
-
-               // check that the mouse is within the inserted button
-
-               if( PtInRect(&rect, pt) )
-               {
-                  return HTBORDER;
-               }
-               else
-               {
-                  break;
-               }
-            }
-            else
-            {
-               break;
-            }
-         }
-
-      case WM_NCLBUTTONDBLCLK:
-      case WM_NCLBUTTONDOWN:
-         // get the screen coordinates of the mouse
-
-         pt.x = LOWORD( lParam );
-         pt.y = HIWORD( lParam );
-
-         // get the position of the inserted button
-
-         GetWindowRect( hwnd, &rect );
-         pt.x -= rect.left;
-         pt.y -= rect.top;
-         OffsetRect( &rect, -rect.left, -rect.top );
-         GetButtonRect( pbtn, &rect, 1 );
-
-         // check that the mouse is within the inserted button
-
-         if( PtInRect(&rect, pt) )
-         {
-            SetCapture( hwnd );
-
-            pbtn->fButtonDown = TRUE;
-            pbtn->fMouseDown = TRUE;
-
-            //redraw the non-client area to reflect the change
-
-            DrawInsertedButton( hwnd, pbtn, &rect, 1 );
-         }
-
-         if( pbtn->fButton2 )
-         {
-            pt.x = LOWORD( lParam );
-            pt.y = HIWORD( lParam );
-
-            GetWindowRect( hwnd, &rect );
-            pt.x -= rect.left;
-            pt.y -= rect.top;
-            OffsetRect( &rect, -rect.left, -rect.top );
-            GetButtonRect( pbtn, &rect, 2 );
-
-            // check that the mouse is within the inserted button
-
-            if( PtInRect(&rect, pt) )
-            {
-               SetCapture( hwnd );
-
-               pbtn->fButtonDown2 = TRUE;
-               pbtn->fMouseDown2 = TRUE;
-
-               //redraw the non-client area to reflect the change
-
-               DrawInsertedButton( hwnd, pbtn, &rect, 2 );
-            }
-         }
-         break;
-
-      case WM_MOUSEMOVE:
-         if( pbtn->fMouseDown == TRUE )
-         {
-            // get the SCREEN coordinates of the mouse
-
-            pt.x = LOWORD( lParam );
-            pt.y = HIWORD( lParam );
-            ClientToScreen( hwnd, &pt );
-
-            // get the position of the inserted button
-
-            GetWindowRect( hwnd, &rect );
-
-            pt.x -= rect.left;
-            pt.y -= rect.top;
-            OffsetRect( &rect, -rect.left, -rect.top );
-
-            GetButtonRect( pbtn, &rect, 1 );
-
-            oldstate = pbtn->fButtonDown;
-
-            // check that the mouse is within the inserted button
-
-            if( PtInRect(&rect, pt) )
-            {
-               pbtn->fButtonDown = 1;
-            }
-            else
-            {
-               pbtn->fButtonDown = 0;
-            }
-
-            // redraw the non-client area to reflect the change.
-            // to prevent flicker, we only redraw the button if its state
-            // has changed
-
-            if( oldstate != pbtn->fButtonDown )
-            {
-               DrawInsertedButton( hwnd, pbtn, &rect, 1 );
-            }
-         }
-
-         if( pbtn->fButton2 )
-         {
-            // get the SCREEN coordinates of the mouse
-
-            pt.x = LOWORD( lParam );
-            pt.y = HIWORD( lParam );
-            ClientToScreen( hwnd, &pt );
-
-            // get the position of the inserted button
-
-            GetWindowRect( hwnd, &rect );
-
-            pt.x -= rect.left;
-            pt.y -= rect.top;
-            OffsetRect( &rect, -rect.left, -rect.top );
-            if( pbtn->fMouseDown2 == TRUE )
-            {
-               GetButtonRect( pbtn, &rect, 2 );
-
-               oldstate2 = pbtn->fButtonDown2;
-
-               // check that the mouse is within the inserted button
-
-               if( PtInRect(&rect, pt) )
-               {
-                  pbtn->fButtonDown2 = 1;
-               }
-               else
-               {
-                  pbtn->fButtonDown2 = 0;
-               }
-
-               // redraw the non-client area to reflect the change.
-               // to prevent flicker, we only redraw the button if its state
-               // has changed
-
-               if( oldstate2 != pbtn->fButtonDown2 )
-               {
-                  DrawInsertedButton( hwnd, pbtn, &rect, 2 );
-               }
-            }
-         }
-         break;
-
-      case WM_LBUTTONUP:
-         if( pbtn->fMouseDown == TRUE )
-         {
-            // get the SCREEN coordinates of the mouse
-
-            pt.x = LOWORD( lParam );
-            pt.y = HIWORD( lParam );
-            ClientToScreen( hwnd, &pt );
-
-            // get the position of the inserted button
-
-            GetWindowRect( hwnd, &rect );
-
-            pt.x -= rect.left;
-            pt.y -= rect.top;
-            OffsetRect( &rect, -rect.left, -rect.top );
-
-            GetButtonRect( pbtn, &rect, 1 );
-
-            // check that the mouse is within the inserted button
-
-            if( PtInRect(&rect, pt) )
-            {
-               PostMessage( GetParent(hwnd), WM_COMMAND, MAKEWPARAM(pbtn->uCmdId, BN_CLICKED), (LPARAM) hwnd );
-               SetFocus( hwnd );
-            }
-
-            ReleaseCapture();
-            pbtn->fButtonDown = FALSE;
-            pbtn->fMouseDown = FALSE;
-
-            // redraw the non-client area to reflect the change.
-
-            DrawInsertedButton( hwnd, pbtn, &rect, 1 );
-         }
-
-         if( pbtn->fButton2 )
-         {
-            if( pbtn->fMouseDown2 == TRUE )
-            {
-               // get the SCREEN coordinates of the mouse
-
-               pt.x = LOWORD( lParam );
-               pt.y = HIWORD( lParam );
-               ClientToScreen( hwnd, &pt );
-               GetWindowRect( hwnd, &rect );
-
-               pt.x -= rect.left;
-               pt.y -= rect.top;
-               OffsetRect( &rect, -rect.left, -rect.top );
-
-               GetButtonRect( pbtn, &rect, 2 );
-
-               // check that the mouse is within the inserted button
-
-               if( PtInRect(&rect, pt) )
-               {
-                  PostMessage( GetParent(hwnd), WM_COMMAND, MAKEWPARAM(pbtn->uCmdId2, BN_CLICKED), (LPARAM) hwnd );
-                  SetFocus( hwnd );
-               }
-
-               ReleaseCapture();
-               pbtn->fButtonDown2 = FALSE;
-               pbtn->fMouseDown2 = FALSE;
-
-               // redraw the non-client area to reflect the change.
-
-               DrawInsertedButton( hwnd, pbtn, &rect, 2 );
-            }
-         }
-         break;
-   }
-
-   return( CallWindowProc(OldWndProc, hwnd, Msg, wParam, lParam) );
-}
-
-
-
-#PRAGMA ENDDUMP
-
-
-
