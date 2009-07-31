@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.87 2009-01-25 14:23:01 declan2005 Exp $
+* $Id: h_print.prg,v 1.88 2009-07-31 03:11:20 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -360,28 +360,31 @@ IF iswindowactive(_oohg_winreport)
    msgstop("Print preview pending, close first")
    ::exit:=.T.
    RETURN nil
-ENDIF 
+ENDIF
 // public _oohg_printer_docname
 ::initx()
 RETURN self
 
 *-------------------------
-METHOD selprinter( lselect , lpreview, llandscape , npapersize ,cprinterx, lhide,nres ) CLASS TPRINTBASE
+METHOD selprinter( lselect , lpreview, llandscape , npapersize ,cprinterx, lhide,nres, nbin ) CLASS TPRINTBASE
 *-------------------------
 local lsucess := .T.
+
+default nbin to 1
+
 IF ::exit
    ::lprerror:=.T.
    RETURN nil
-ENDIF 
+ENDIF
 
 IF lhide#NIL
    ::lwinhide:=lhide
-ENDIF 
+ENDIF
 
 SETPRC(0,0)
 DEFAULT llandscape to .F.
 
-::selprinterx( lselect , lpreview, llandscape , npapersize ,cprinterx, nres)
+::selprinterx( lselect , lpreview, llandscape , npapersize ,cprinterx, nres, nbin )
 RETURN self
 
 
@@ -588,7 +591,7 @@ ELSE
 
    ::nvfij  := (12/1.65)
    ::nhfij  := (12/3.70)
-ENDIF 
+ENDIF
 ::printimagex(::ntmargin+nlin,::nlmargin+ncol,::ntmargin+nlinf,::nlmargin+ncolf,cimage)
 RETURN self
 
@@ -864,7 +867,7 @@ ELSE
    ELSE
       @ nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 PRINT (ctext) font cfont size nsize  BOLD COLOR acolor
    ENDIF 
-ENDIF 
+ENDIF
 endcase
 RETURN self
 
@@ -891,13 +894,13 @@ RETURN self
 
 
 *-------------------------
-METHOD selprinterx( lselect , lpreview, llandscape , npapersize ,cprinterx,nres) CLASS TMINIPRINT
+METHOD selprinterx( lselect , lpreview, llandscape , npapersize ,cprinterx,nres,nbin) CLASS TMINIPRINT
 *-------------------------
 local worientation,lsucess
 
 IF nres=NIL
    nres:=PRINTER_RES_MEDIUM
-ENDIF 
+ENDIF
 IF llandscape
    Worientation:= PRINTER_ORIENT_LANDSCAPE
 ELSE
@@ -916,14 +919,16 @@ IF lselect .and. lpreview .and. cprinterx = NIL
       ORIENTATION worientation ;
       PAPERSIZE npapersize       ;
       QUALITY nres ;
+      DEFAULTSOURCE nbin ;
       PREVIEW
    ELSE
       SELECT PRINTER ::cprinter to lsucess ;
       ORIENTATION worientation ;
       QUALITY nres ;
+      DEFAULTSOURCE nbin ;
       PREVIEW
-   ENDIF 
-ENDIF 
+   ENDIF
+ENDIF
 
 IF (.not. lselect) .and. lpreview .and. cprinterx = NIL
 
@@ -932,14 +937,16 @@ IF (.not. lselect) .and. lpreview .and. cprinterx = NIL
       ORIENTATION worientation  ;
       PAPERSIZE npapersize       ;
       QUALITY nres ;
+      DEFAULTSOURCE nbin ;
       PREVIEW
    ELSE
      SELECT PRINTER DEFAULT TO lsucess ;
      ORIENTATION worientation  ;
      QUALITY nres ;
+     DEFAULTSOURCE nbin ;
      PREVIEW
-   ENDIF 
-ENDIF 
+   ENDIF
+ENDIF
 
 IF (.not. lselect) .and. (.not. lpreview) .and. cprinterx = NIL
 
@@ -947,13 +954,15 @@ IF (.not. lselect) .and. (.not. lpreview) .and. cprinterx = NIL
       SELECT PRINTER DEFAULT TO lsucess  ;
       ORIENTATION worientation  ;
       QUALITY nres ;
+      DEFAULTSOURCE nbin ;
       PAPERSIZE npapersize
    ELSE
       SELECT PRINTER DEFAULT TO lsucess  ;
       QUALITY nres ;
+      DEFAULTSOURCE nbin ;
       ORIENTATION worientation
-   ENDIF 
-ENDIF 
+   ENDIF
+ENDIF
 
 IF lselect .and. .not. lpreview .and. cprinterx = NIL
    ::cPrinter := GetPrinter()
@@ -966,13 +975,15 @@ IF lselect .and. .not. lpreview .and. cprinterx = NIL
       SELECT PRINTER ::cprinter to lsucess ;
       ORIENTATION worientation ;
       QUALITY nres ;
+      DEFAULTSOURCE nbin ;
       PAPERSIZE npapersize
    ELSE
       SELECT PRINTER ::cprinter to lsucess ;
       QUALITY nres ;
+      DEFAULTSOURCE nbin ;
       ORIENTATION worientation
-   ENDIF 
-ENDIF 
+   ENDIF
+ENDIF
 
 IF cprinterx # NIL .AND. lpreview
    If Empty (cprinterx)
@@ -985,14 +996,16 @@ IF cprinterx # NIL .AND. lpreview
       ORIENTATION worientation ;
       QUALITY nres ;
       PAPERSIZE npapersize ;
+      DEFAULTSOURCE nbin ;
       PREVIEW
    ELSE
       SELECT PRINTER cprinterx to lsucess ;
       ORIENTATION worientation ;
       QUALITY nres ;
+      DEFAULTSOURCE nbin ;
       PREVIEW
-   ENDIF 
-ENDIF 
+   ENDIF
+ENDIF
 
 IF cprinterx # NIL .AND. .not. lpreview
    If Empty (cprinterx)
@@ -1004,13 +1017,15 @@ IF cprinterx # NIL .AND. .not. lpreview
       SELECT PRINTER cprinterx to lsucess ;
       ORIENTATION worientation ;
       QUALITY nres ;
+      DEFAULTSOURCE nbin ;
       PAPERSIZE npapersize
    ELSE
       SELECT PRINTER cprinterx to lsucess ;
       QUALITY nres ;
+      DEFAULTSOURCE nbin ;
       ORIENTATION worientation
-   ENDIF 
-ENDIF 
+   ENDIF
+ENDIF
 
 IF .NOT. lsucess
    ::lprerror:=.T.
@@ -1227,21 +1242,22 @@ SELECT PEN "C0"
 RETURN self
 
 *-------------------------
-METHOD selprinterx( lselect , lpreview, llandscape , npapersize ,cprinterx,nres ) CLASS THBPRINTER
+METHOD selprinterx( lselect , lpreview, llandscape , npapersize ,cprinterx,nres, nbin ) CLASS THBPRINTER
 *-------------------------
+
 
 IF lselect .and. lpreview .and. cprinterx=NIL
    SELECT BY DIALOG PREVIEW
-ENDIF 
+ENDIF
 IF lselect .and. (.not. lpreview) .and. cprinterx=NIL
    SELECT BY DIALOG
-ENDIF 
+ENDIF
 IF (.not. lselect) .and. lpreview .and. cprinterx=NIL
    SELECT DEFAULT PREVIEW
-ENDIF 
+ENDIF
 IF (.not. lselect) .and. (.not. lpreview) .and. cprinterx=NIL
    SELECT DEFAULT
-ENDIF 
+ENDIF
 
 IF cprinterx # NIL
    IF lpreview
@@ -1249,7 +1265,7 @@ IF cprinterx # NIL
    ELSE
       SELECT PRINTER cprinterx
    ENDIF
-ENDIF 
+ENDIF
 
 IF HBPRNERROR != 0
    ::lprerror:=.T.
@@ -1261,18 +1277,21 @@ define font "f1" name ::cfontname size ::nfontsize BOLD
 
 define pen "C0" WIDTH ::nwpen COLOR ::acolor
 select pen "C0"
+
 IF llandscape
    set page orientation DMORIENT_LANDSCAPE font "f0"
 ELSE
    set page orientation DMORIENT_PORTRAIT  font "f0"
-ENDIF 
+ENDIF
 IF npapersize#NIL
    set page papersize npapersize
-ENDIF 
+ENDIF
 
 IF nres#NIL
    SET QUALITY nres   ////:=PRINTER_RES_MEDIUM
-ENDIF 
+ENDIF
+
+SET BIN nbin
 
 RETURN self
 
@@ -1742,9 +1761,9 @@ RETURN self
 METHOD enddocx() CLASS TEXCELPRINT
 *-------------------------
 local nCol
-///     ::oHoja:Cells(nlin,alinceldax):Select() 			//------Select row-------//
-//     Copyclipboard(space(ncol)+ctext)				//----copy the data at the clipboard-----//
-///     ::oHoja:Paste()					//----paste in the excel page-----//
+///     ::oHoja:Cells(nlin,alinceldax):Select()    //------Select row-------//
+//     Copyclipboard(space(ncol)+ctext)    //----copy the data at the clipboard-----//
+///     ::oHoja:Paste()     //----paste in the excel page-----//
 ///     ClearClipboard()     si no copio y pego toda una hoja entera esto no tiene sentido......
 
 FOR nCol:=1 TO ::oHoja:UsedRange:Columns:Count()
