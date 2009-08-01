@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog,v 1.603 2009-07-31 03:11:17 declan2005 Exp $
+ * $Id: ChangeLog,v 1.604 2009-08-01 13:51:55 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-08-01 08:38 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/c_windows.c
+  * source/h_form.prg
+    ! Fixed MDI client area at MDI client creation.
 
 2009-07-30 23:03 UTC-0400 Ciro Vargas C. <cvc@oohg.org>
   * source/h_print.prg
