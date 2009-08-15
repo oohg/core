@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.75 2009-04-10 02:51:56 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.76 2009-08-15 00:39:02 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -236,7 +236,7 @@ Local nWidth2, nCol2, oScroll, z
 
       oScroll := TScrollBar()
       oScroll:nWidth := GETVSCROLLBARWIDTH()
-      oScroll:SetRange( 1, 100 )
+      oScroll:SetRange( 1, 1000 )
 
       IF ::lRtl .AND. ! ::Parent:lRtl
          ::nCol := ::nCol + GETVSCROLLBARWIDTH()
@@ -302,8 +302,6 @@ Local lColor, aFields, cWorkArea, hWnd, nWidth
    AEVAL( ::aFields, { |c,i| aFields[ i ] := ::ColumnBlock( i ), c } )
    hWnd := ::hWnd
 
-   ::Eof := .F.
-
    PageLength := ::CountPerPage
 
    If lColor
@@ -353,9 +351,9 @@ Return nil
 *-----------------------------------------------------------------------------*
 METHOD PageDown() CLASS TOBrowse
 *-----------------------------------------------------------------------------*
-Local _RecNo , _DeltaScroll, s
+Local _RecNo, s // , _DeltaScroll
 
-   _DeltaScroll := ListView_GetSubItemRect( ::hWnd, 0 , 0 )
+   // _DeltaScroll := ListView_GetSubItemRect( ::hWnd, 0 , 0 )
 
    s := LISTVIEW_GETFIRSTITEM( ::hWnd )
 
@@ -364,9 +362,9 @@ Local _RecNo , _DeltaScroll, s
       If Select( ::WorkArea ) == 0
          ::RecCount := 0
          Return nil
-		EndIf
+      EndIf
 
-      if ::Eof()
+      If ::Eof()
          If ::AllowAppend
             ::EditItem( .t. )
          Endif
@@ -388,7 +386,7 @@ Local _RecNo , _DeltaScroll, s
          ( ::WorkArea )->( DbGoTo( ::aRecMap[ Len( ::aRecMap ) ] ) )
       EndIf
       ::scrollUpdate()
-      ListView_Scroll( ::hWnd, _DeltaScroll[2] * (-1) , 0 )
+      // ListView_Scroll( ::hWnd, _DeltaScroll[2] * (-1) , 0 )
       ListView_SetCursel ( ::hWnd, Len( ::aRecMap ) )
       ( ::WorkArea )->( DbGoTo( _RecNo ) )
 
@@ -405,9 +403,9 @@ Return nil
 *-----------------------------------------------------------------------------*
 METHOD PageUp() CLASS TOBrowse
 *-----------------------------------------------------------------------------*
-Local _RecNo , _DeltaScroll
+Local _RecNo // , _DeltaScroll
 
-   _DeltaScroll := ListView_GetSubItemRect( ::hWnd, 0 , 0 )
+   // _DeltaScroll := ListView_GetSubItemRect( ::hWnd, 0 , 0 )
 
    If LISTVIEW_GETFIRSTITEM( ::hWnd ) == 1
       If Select( ::WorkArea ) == 0
@@ -423,7 +421,7 @@ Local _RecNo , _DeltaScroll
       ::DbSkip( - ::CountPerPage + 1 )
       ::scrollUpdate()
       ::Update()
-      ListView_Scroll( ::hWnd, _DeltaScroll[2] * (-1) , 0 )
+      // ListView_Scroll( ::hWnd, _DeltaScroll[2] * (-1) , 0 )
       ( ::WorkArea )->( DbGoTo( _RecNo ) )
       ListView_SetCursel ( ::hWnd, 1 )
 
@@ -440,9 +438,9 @@ Return nil
 *-----------------------------------------------------------------------------*
 METHOD Home() CLASS TOBrowse
 *-----------------------------------------------------------------------------*
-Local _RecNo , _DeltaScroll
+Local _RecNo // , _DeltaScroll
 
-   _DeltaScroll := ListView_GetSubItemRect ( ::hWnd, 0 , 0 )
+   // _DeltaScroll := ListView_GetSubItemRect ( ::hWnd, 0 , 0 )
 
    If Select( ::WorkArea ) == 0
       ::RecCount := 0
@@ -452,7 +450,7 @@ Local _RecNo , _DeltaScroll
    ::TopBottom( -1 )
    ::scrollUpdate()
    ::Update()
-   ListView_Scroll( ::hWnd, _DeltaScroll[2] * (-1) , 0 )
+   // ListView_Scroll( ::hWnd, _DeltaScroll[2] * (-1) , 0 )
    ( ::WorkArea )->( DbGoTo( _RecNo ) )
 
    ListView_SetCursel( ::hWnd, 1 )
@@ -464,10 +462,10 @@ Return nil
 *-----------------------------------------------------------------------------*
 METHOD End( lAppend ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
-Local _RecNo , _DeltaScroll , _BottomRec
+Local _RecNo , _BottomRec // , _DeltaScroll
    ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
 
-   _DeltaScroll := ListView_GetSubItemRect ( ::hWnd, 0 , 0 )
+   // _DeltaScroll := ListView_GetSubItemRect ( ::hWnd, 0 , 0 )
 
    If Select( ::WorkArea ) == 0
       ::RecCount := 0
@@ -481,7 +479,7 @@ Local _RecNo , _DeltaScroll , _BottomRec
    // If it's for APPEND, leaves a blank line ;)
    ::DbSkip( - ::CountPerPage + IF( lAppend, 2, 1 ) )
    ::Update()
-   ListView_Scroll( ::hWnd, _DeltaScroll[2] * (-1) , 0 )
+   // ListView_Scroll( ::hWnd, _DeltaScroll[2] * (-1) , 0 )
    ( ::WorkArea )->( DbGoTo( _RecNo ) )
 
    ListView_SetCursel( ::hWnd, ascan ( ::aRecMap, _BottomRec ) )
@@ -493,9 +491,9 @@ Return nil
 *-----------------------------------------------------------------------------*
 METHOD Up() CLASS TOBrowse
 *-----------------------------------------------------------------------------*
-Local s  , _RecNo , _DeltaScroll := { Nil , Nil , Nil , Nil }
+Local s  , _RecNo // , _DeltaScroll := { Nil , Nil , Nil , Nil }
 
-   _DeltaScroll := ListView_GetSubItemRect ( ::hWnd, 0 , 0 )
+   // _DeltaScroll := ListView_GetSubItemRect ( ::hWnd, 0 , 0 )
 
    s := LISTVIEW_GETFIRSTITEM ( ::hWnd )
 
@@ -513,7 +511,7 @@ Local s  , _RecNo , _DeltaScroll := { Nil , Nil , Nil , Nil }
       ::DbSkip( -1 )
       ::scrollUpdate()
       ::Update()
-      ListView_Scroll( ::hWnd, _DeltaScroll[2] * (-1) , 0 )
+      // ListView_Scroll( ::hWnd, _DeltaScroll[2] * (-1) , 0 )
       ( ::WorkArea )->( DbGoTo( _RecNo ) )
       If Len( ::aRecMap ) != 0
          ListView_SetCursel( ::hWnd, 1 )
@@ -532,13 +530,13 @@ Return nil
 *-----------------------------------------------------------------------------*
 METHOD Down() CLASS TOBrowse
 *-----------------------------------------------------------------------------*
-Local s , _RecNo , _DeltaScroll
+Local s , _RecNo // , _DeltaScroll
 
    s := LISTVIEW_GETFIRSTITEM( ::hWnd )
 
    If s >= Len( ::aRecMap )
 
-      _DeltaScroll := ListView_GetSubItemRect( ::hWnd, 0 , 0 )
+      // _DeltaScroll := ListView_GetSubItemRect( ::hWnd, 0 , 0 )
 
       If Select( ::WorkArea ) == 0
          ::RecCount := 0
@@ -563,7 +561,7 @@ Local s , _RecNo , _DeltaScroll
       ::Update()
       If Len( ::aRecMap ) != 0
          ( ::WorkArea )->( DbGoTo( ATail( ::aRecMap ) ) )
-         ListView_Scroll( ::hWnd, _DeltaScroll[2] * (-1) , 0 )
+         // ListView_Scroll( ::hWnd, _DeltaScroll[2] * (-1) , 0 )
       EndIf
       ::scrollUpdate()
       ( ::WorkArea )->( DbGoTo( _RecNo ) )
@@ -602,12 +600,12 @@ METHOD DbSkip( nRows ) CLASS TOBrowse
    IF ! ::lDescending
       ( ::WorkArea )->( DbSkip(   nRows ) )
       ::Bof := ( ::WorkArea )->( Bof() )
-      ::Eof := ( ::WorkArea )->( Eof() )
+      ::Eof := ( ::WorkArea )->( Eof() ) .OR. ( ( ::WorkArea )->( Recno() ) > ( ::WorkArea )->( RecCount() ) )
    ELSE
       ( ::WorkArea )->( DbSkip( - nRows ) )
       If ( ::WorkArea )->( Eof() )
-         ::Bof := .T.
          ( ::WorkArea )->( DbGoBottom() )
+         ::Bof := .T.
          ::Eof := ( ::WorkArea )->( Eof() )
       ElseIf ( ::WorkArea )->( Bof() )
          ::Eof := .T.
@@ -619,7 +617,7 @@ RETURN NIL
 *-----------------------------------------------------------------------------*
 METHOD SetValue( Value, mp ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
-Local _RecNo , NewPos := 50, _DeltaScroll , m , hWnd, cWorkArea
+Local _RecNo , m , hWnd, cWorkArea // , _DeltaScroll
 
    cWorkArea := ::WorkArea
 
@@ -653,7 +651,7 @@ Local _RecNo , NewPos := 50, _DeltaScroll , m , hWnd, cWorkArea
       m := mp
    endif
 
-   _DeltaScroll := ListView_GetSubItemRect( hWnd, 0 , 0 )
+   // _DeltaScroll := ListView_GetSubItemRect( hWnd, 0 , 0 )
 
    _RecNo := ( cWorkArea )->( RecNo() )
 
@@ -680,7 +678,7 @@ Local _RecNo , NewPos := 50, _DeltaScroll , m , hWnd, cWorkArea
    ::Update()
    ( cWorkArea )->( DbGoTo( _RecNo ) )
 
-   ListView_Scroll( hWnd, _DeltaScroll[ 2 ] * ( -1 ) , 0 )
+   // ListView_Scroll( hWnd, _DeltaScroll[ 2 ] * ( -1 ) , 0 )
    ListView_SetCursel ( hWnd, ascan( ::aRecMap, Value ) )
 
    _OOHG_ThisEventType := 'BROWSE_ONCHANGE'
@@ -843,7 +841,7 @@ Local ActualRecord , RecordCount
          Return nil
       EndIf
 
-      If RecordCount < 100
+      If RecordCount < 1000
          ActualRecord := ::VScroll:Value + d
          * ::VScroll:RangeMax := RecordCount
          ::VScroll:Value := ActualRecord
@@ -895,12 +893,12 @@ Local oVScroll, cWorkArea
          ActualRecord := RecordCount - ActualRecord + 1
       EndIf
 
-      If RecordCount < 100
+      If RecordCount < 1000
          oVScroll:RangeMax := RecordCount
          oVScroll:Value := ActualRecord
       Else
-         oVScroll:RangeMax := 100
-         oVScroll:Value := Int ( ActualRecord * 100 / RecordCount )
+         oVScroll:RangeMax := 1000
+         oVScroll:Value := INT( ActualRecord * 1000 / RecordCount )
       EndIf
 
    EndIf
@@ -910,7 +908,7 @@ Return NIL
 *-----------------------------------------------------------------------------*
 METHOD Refresh() CLASS TOBrowse
 *-----------------------------------------------------------------------------*
-Local s , _RecNo , _DeltaScroll, v
+Local s , _RecNo, v // , _DeltaScroll
 Local cWorkArea, hWnd
 
    cWorkArea := ::WorkArea
@@ -923,9 +921,9 @@ Local cWorkArea, hWnd
 
    v := ::Value
 
-   _DeltaScroll := ListView_GetSubItemRect ( hWnd, 0 , 0 )
+   // _DeltaScroll := ListView_GetSubItemRect ( hWnd, 0 , 0 )
 
-   s := LISTVIEW_GETFIRSTITEM ( hWnd )
+   s := LISTVIEW_GETFIRSTITEM( hWnd )
 
    _RecNo := ( cWorkArea )->( RecNo() )
 
@@ -940,13 +938,13 @@ Local cWorkArea, hWnd
 
 ***************************
 
-   if s == 1 .or. s == 0
+   if s <= 1
       ::DbSkip()
       ::DbSkip( -1 )
       IF ( cWorkArea )->( RecNo() ) != v
          ::DbSkip()
       ENDIF
-	EndIf
+   EndIf
 
 ***************************
 
@@ -978,8 +976,8 @@ Local cWorkArea, hWnd
 
    ::Update()
 
-   ListView_Scroll( hWnd, _DeltaScroll[2] * (-1) , 0 )
-   ListView_SetCursel ( hWnd, ascan ( ::aRecMap, v ) )
+   // ListView_Scroll( hWnd, _DeltaScroll[2] * (-1) , 0 )
+   ListView_SetCursel( hWnd, ascan( ::aRecMap, v ) )
 
    ( cWorkArea )->( DbGoTo( _RecNo ) )
 

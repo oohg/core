@@ -1,11 +1,22 @@
 /*
- * $Id: ChangeLog,v 1.604 2009-08-01 13:51:55 guerra000 Exp $
+ * $Id: ChangeLog,v 1.605 2009-08-15 00:39:01 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-08-14 19:44 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_browse.prg
+    - Removed horizontal scroll when record changes.
+    * Changed SCROLL resolution from 100 to 1000.
+    ! Fixed ::EOF value when DBSKIP at empty tables (fixed "blank
+      row" painting).
+  * include/i_radiogroup.ch
+    ! Defined OPTIONS clause as optional, for a more flexible
+      declaration in source code.
+      NOTE: This clause is NOT optional!
 
 2009-08-01 08:38 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/c_windows.c

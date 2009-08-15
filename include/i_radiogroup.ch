@@ -1,12 +1,12 @@
 /*
- * $Id: i_radiogroup.ch,v 1.5 2008-04-27 23:16:57 guerra000 Exp $
+ * $Id: i_radiogroup.ch,v 1.6 2009-08-15 00:39:01 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Radiogroup definitions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.oohg.com.mx
+ * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -94,7 +94,7 @@
 #command @ <row>,<col> RADIOGROUP <name>        ;
                         [ OBJ <obj> ]           ;
 			[ <dummy1: OF, PARENT> <parent> ] ;
-			OPTIONS <aOptions>	;
+                        [ OPTIONS <aOptions> ]  ;
 			[ VALUE <value> ]	;
 			[ WIDTH <width> ] 	;
 			[ SPACING <spacing> ] 	;
