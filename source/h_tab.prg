@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.43 2009-07-26 19:13:21 guerra000 Exp $
+ * $Id: h_tab.prg,v 1.44 2009-08-23 17:07:47 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -535,15 +535,19 @@ METHOD HidePage( nPage ) CLASS TTab
 *-----------------------------------------------------------------------------*
 LOCAL nPos
    IF nPage >= 1 .AND. nPage <= LEN( ::aPages ) .AND. ! ::aPages[ nPage ]:lHidden
+      nPos := ::Value
       // Disable hotkey!
       TabCtrl_DeleteItem( ::hWnd, ::RealPosition( nPage ) - 1 )
       ::aPages[ nPage ]:lHidden := .T.
-      nPos := ::Value
-      IF nPos == 0
-         ::Value := 1
-      ELSE
+      IF nPos > 0
          ::aPages[ nPos ]:ForceHide()
-         ::aPages[ nPos ]:Show()
+      ENDIF
+      nPos := ASCAN( ::aPages, { |o| ! o:lHidden }, MAX( nPos, 1 ) )
+      IF nPos == 0
+         nPos := ASCAN( ::aPages, { |o| ! o:lHidden }, 1 )
+      ENDIF
+      IF nPos > 0
+         ::Value := nPos
       ENDIF
    ENDIF
 RETURN nil
