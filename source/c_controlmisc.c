@@ -1,5 +1,5 @@
 /*
- * $Id: c_controlmisc.c,v 1.53 2008-11-30 16:23:36 guerra000 Exp $
+ * $Id: c_controlmisc.c,v 1.54 2009-08-24 01:47:19 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -107,6 +107,14 @@
 
 #ifdef HB_ITEM_NIL
    #define hb_dynsymSymbol( pDynSym )        ( ( pDynSym )->pSymbol )
+#endif
+
+#ifdef __XHARBOUR__
+#define HB_STORNI( n, x, y ) hb_storni( n, x, y )
+#define HB_STORNL( n, x, y ) hb_stornl( n, x, y )
+#else
+#define HB_STORNI( n, x, y ) hb_storvni( n, x, y )
+#define HB_STORNL( n, x, y ) hb_storvnl( n, x, y )
 #endif
 
 PHB_SYMB *s_Symbols = NULL;
@@ -321,9 +329,9 @@ BOOL _OOHG_DetermineColorReturn( PHB_ITEM pColor, LONG *lColor, BOOL fUpdate )
    if( *lColor != -1 )
    {
       hb_reta( 3 );
-      hb_stornl( GetRValue( *lColor ), -1, 1 );
-      hb_stornl( GetGValue( *lColor ), -1, 2 );
-      hb_stornl( GetBValue( *lColor ), -1, 3 );
+      HB_STORNL( GetRValue( *lColor ), -1, 1 );
+      HB_STORNL( GetGValue( *lColor ), -1, 2 );
+      HB_STORNL( GetBValue( *lColor ), -1, 3 );     
    }
    else
    {
@@ -672,9 +680,9 @@ HB_FUNC( IMAGELIST_INIT )
    }
 
    hb_reta( 3 );
-   hb_stornl( ( LONG ) himl, -1, 1 );
-   hb_storni( ( int )  cx,   -1, 2 );
-   hb_storni( ( int )  cy,   -1, 3 );
+   HB_STORNL( ( LONG ) himl, -1, 1 );
+   HB_STORNI( ( int )  cx,   -1, 2 );
+   HB_STORNI( ( int )  cy,   -1, 3 );
 }
 
 HB_FUNC( IMAGELIST_DESTROY )

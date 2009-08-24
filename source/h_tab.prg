@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.44 2009-08-23 17:07:47 guerra000 Exp $
+ * $Id: h_tab.prg,v 1.45 2009-08-24 01:47:20 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -712,6 +712,13 @@ EXTERN TabCtrl_SetCurSel, TabCtrl_GetCurSel, TabCtrl_InsertItem, TabCtrl_DeleteI
 #include "hbapi.h"
 #include "oohg.h"
 
+    #ifdef __XHARBOUR__
+#define HB_STORNI( n, x, y ) hb_storni( n, x, y )
+#else
+#define HB_STORNI( n, x, y ) hb_storvni( n, x, y )
+#endif
+
+
 static WNDPROC lpfnOldWndProc = 0;
 
 static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
@@ -818,9 +825,9 @@ HB_FUNC( TABCTRL_GETITEMRECT )
 
    TabCtrl_GetItemRect( HWNDparam( 1 ), hb_parni( 2 ), &rect );
    hb_reta( 4 );
-   hb_storni( rect.left,   -1, 1 );
-   hb_storni( rect.top,    -1, 2 );
-   hb_storni( rect.right,  -1, 3 );
-   hb_storni( rect.bottom, -1, 4 );
+   HB_STORNI( rect.left,   -1, 1 );
+   HB_STORNI( rect.top,    -1, 2 );
+   HB_STORNI( rect.right,  -1, 3 );
+   HB_STORNI( rect.bottom, -1, 4 );
 }
 #pragma ENDDUMP

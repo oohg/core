@@ -1,5 +1,5 @@
 /*
- * $Id: c_dialogs.c,v 1.3 2008-01-04 14:33:44 declan2005 Exp $
+ * $Id: c_dialogs.c,v 1.4 2009-08-24 01:47:19 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -105,6 +105,21 @@
 #include "winreg.h"
 #include "tchar.h"
 
+#ifdef __XHARBOUR__
+#define HB_STORNI( n, x, y ) hb_storni( n, x, y )
+#define HB_STORNL( n, x, y ) hb_stornl( n, x, y )
+#define HB_STORL( n, x, y )  hb_storl( n, x, y )
+#define HB_STORC( n, x, y )  hb_storc( n, x, y )
+#define HB_PARNL( n, x )  hb_parnl( n, x )
+#else
+#define HB_STORNI( n, x, y ) hb_storvni( n, x, y )
+#define HB_STORNL( n, x, y ) hb_storvnl( n, x, y )
+#define HB_STORL( n, x, y )  hb_storvl( n, x, y )
+#define HB_STORC( n, x, y )  hb_storvc( n, x, y )
+#define HB_PARNL( n, x )  hb_parvnl( n, x )
+#endif
+
+
 HB_FUNC ( CHOOSEFONT )
 {
 
@@ -178,14 +193,14 @@ HB_FUNC ( CHOOSEFONT )
 	if ( ! ChooseFont(&cf) )
 	{
 		hb_reta( 8 );
-		hb_storc( "" , -1, 1 );
-		hb_stornl( (LONG) 0 , -1, 2 );
-		hb_storl( 0 , -1, 3 );
-		hb_storl( 0 , -1, 4 );
-		hb_stornl( 0 , -1, 5 );
-		hb_storl( 0 , -1, 6 );
-		hb_storl( 0 , -1, 7 );
-		hb_storni( 0 , -1, 8 );
+		HB_STORC( "" , -1, 1 );
+		HB_STORNL( (LONG) 0 , -1, 2 );
+		HB_STORL( 0 , -1, 3 );
+		HB_STORL( 0 , -1, 4 );
+		HB_STORNL( 0 , -1, 5 );
+		HB_STORL( 0 , -1, 6 );
+		HB_STORL( 0 , -1, 7 );
+		HB_STORNI( 0 , -1, 8 );
 		return;
 	}
 
@@ -201,14 +216,14 @@ HB_FUNC ( CHOOSEFONT )
 	}
 
 	hb_reta( 8 );
-	hb_storc( lf.lfFaceName , -1, 1 );
-	hb_stornl( (LONG) PointSize , -1, 2 );
-	hb_storl( bold , -1, 3 );
-	hb_storl( lf.lfItalic , -1, 4 );
-	hb_stornl( cf.rgbColors , -1, 5 );
-	hb_storl( lf.lfUnderline , -1, 6 );
-	hb_storl( lf.lfStrikeOut , -1, 7 );
-	hb_storni( lf.lfCharSet , -1, 8 );
+	HB_STORC( lf.lfFaceName , -1, 1 );
+	HB_STORNL( (LONG) PointSize , -1, 2 );
+	HB_STORL( bold , -1, 3 );
+	HB_STORL( lf.lfItalic , -1, 4 );
+	HB_STORNL( cf.rgbColors , -1, 5 );
+	HB_STORL( lf.lfUnderline , -1, 6 );
+	HB_STORL( lf.lfStrikeOut , -1, 7 );
+	HB_STORNI( lf.lfCharSet , -1, 8 );
 
 	ReleaseDC (hwnd,hdc) ;
 
@@ -276,7 +291,7 @@ HB_FUNC ( C_GETFILE )
 
 				for (n = 1; n < iNumSelected; n++)
 				{
-					hb_storc( cFullName[n], -1, n );
+					HB_STORC( cFullName[n], -1, n );
 				}
 			}
 			else
@@ -376,8 +391,8 @@ HB_FUNC ( CHOOSECOLOR )
    int i ;
 
    for( i = 0 ; i <16 ; i++ )
-     crCustClr[i] = (ISARRAY(3) ? hb_parnl(3,i+1) : GetSysColor(COLOR_BTNFACE)) ;
-
+     crCustClr[i] = (ISARRAY(3) ? HB_PARNL(3,i+1) : GetSysColor(COLOR_BTNFACE)) ;
+    
    cc.lStructSize    = sizeof( CHOOSECOLOR ) ;
    cc.hwndOwner      = ISNIL(1) ? GetActiveWindow():(HWND) hb_parnl(1) ;
    cc.rgbResult      = (COLORREF)ISNIL(2) ?  0 : hb_parnl(2) ;

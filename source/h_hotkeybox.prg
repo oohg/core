@@ -1,5 +1,5 @@
 /*
- * $Id: h_hotkeybox.prg,v 1.4 2008-01-14 00:58:34 guerra000 Exp $
+ * $Id: h_hotkeybox.prg,v 1.5 2009-08-24 01:47:20 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -183,8 +183,8 @@ HB_FUNC( HOTKEYBOXVALUE )
           ( ( iMod & HOTKEYF_ALT     ) ? MOD_ALT     : 0 ) ;
 
    hb_reta( 2 );
-   hb_storni( iKey, -1, 1 );
-   hb_storni( iMod, -1, 2 );
+   HB_STORNI( iKey, -1, 1 );
+   HB_STORNI( iMod, -1, 2 );
 }
 
 #pragma ENDDUMP

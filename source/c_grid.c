@@ -1,5 +1,5 @@
 /*
- * $Id: c_grid.c,v 1.20 2007-10-11 14:20:07 declan2005 Exp $
+ * $Id: c_grid.c,v 1.21 2009-08-24 01:47:19 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -106,6 +106,12 @@
 #include "tchar.h"
 #include "../include/oohg.h"
 
+#ifdef __XHARBOUR__
+#define HB_STORNI( n, x, y ) hb_storni( n, x, y )
+#else
+#define HB_STORNI( n, x, y ) hb_storvni( n, x, y )
+#endif
+
 HB_FUNC( LISTVIEW_SETITEMCOUNT )
 {
    ListView_SetItemCount ( HWNDparam( 1 ), hb_parni( 2 ) ) ;
@@ -159,7 +165,7 @@ HB_FUNC ( LISTVIEWGETMULTISEL )
          j++;
       }
 
-      hb_storni( i + 1, -1, j );
+      HB_STORNI( i + 1, -1, j );
    }
 }
 
@@ -239,14 +245,14 @@ HB_FUNC( LISTVIEW_HITTEST )
    if( lvhti.flags & LVHT_ONITEM )
    {
       hb_reta( 2 );
-      hb_storni( lvhti.iItem + 1, -1, 1 );
-      hb_storni( lvhti.iSubItem + 1, -1, 2 );
+      HB_STORNI( lvhti.iItem + 1, -1, 1 );
+      HB_STORNI( lvhti.iSubItem + 1, -1, 2 );
    }
    else
    {
       hb_reta( 2 );
-      hb_storni( 0 , -1, 1 );
-      hb_storni( 0 , -1, 2 );
+      HB_STORNI( 0 , -1, 1 );
+      HB_STORNI( 0 , -1, 2 );
    }
 }
 
@@ -257,10 +263,10 @@ HB_FUNC( LISTVIEW_GETSUBITEMRECT )
    ListView_GetSubItemRect( HWNDparam( 1 ), hb_parni( 2 ), hb_parni( 3 ), LVIR_BOUNDS, &Rect );
 
    hb_reta( 4 );
-   hb_storni( Rect.top,  -1, 1 );
-   hb_storni( Rect.left, -1, 2 );
-   hb_storni( Rect.right  - Rect.left, -1, 3 );
-   hb_storni( Rect.bottom - Rect.top,  -1, 4 );
+   HB_STORNI( Rect.top,  -1, 1 );
+   HB_STORNI( Rect.left, -1, 2 );
+   HB_STORNI( Rect.right  - Rect.left, -1, 3 );
+   HB_STORNI( Rect.bottom - Rect.top,  -1, 4 );
 }
 
 
@@ -271,10 +277,10 @@ HB_FUNC( LISTVIEW_GETITEMRECT )
    ListView_GetItemRect( HWNDparam( 1 ), hb_parni( 2 ), &Rect, LVIR_LABEL );
 
    hb_reta( 4 );
-   hb_storni( Rect.top,  -1, 1 );
-   hb_storni( Rect.left, -1, 2 );
-   hb_storni( Rect.right  - Rect.left, -1, 3 );
-   hb_storni( Rect.bottom - Rect.top,  -1, 4 );
+   HB_STORNI( Rect.top,  -1, 1 );
+   HB_STORNI( Rect.left, -1, 2 );
+   HB_STORNI( Rect.right  - Rect.left, -1, 3 );
+   HB_STORNI( Rect.bottom - Rect.top,  -1, 4 );
 }
 
 HB_FUNC( LISTVIEW_UPDATE )
@@ -338,7 +344,7 @@ HB_FUNC( _OOHG_GRIDARRAYWIDTHS )
       {
          iSize = ListView_GetColumnWidth( hWnd, iCount );
          iSum += iSize;
-         hb_storni( iSize, 2, iCount + 1 );
+         HB_STORNI( iSize, 2, iCount + 1 );
       }
    }
 

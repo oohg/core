@@ -1,5 +1,5 @@
 /*
- * $Id: c_winapimisc.c,v 1.10 2008-10-29 15:29:01 guerra000 Exp $
+ * $Id: c_winapimisc.c,v 1.11 2009-08-24 01:47:19 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -114,7 +114,13 @@
 
 #ifdef __XHARBOUR__
    #define HB_FHANDLE FHANDLE
+#define HB_STORC( n, x, y )  hb_storc( n, x, y )
+#define HB_PARNI( n, x )  hb_parni( n, x )
+#else
+#define HB_STORC( n, x, y )  hb_storvc( n, x, y )
+#define HB_PARNI( n, x )  hb_parvni( n, x )
 #endif
+
 
 BOOL SysRefresh( void );
 
@@ -304,9 +310,9 @@ HB_FUNC( PAINTBKGND )
     GetClientRect(hwnd, &recClie);
 
     if ((hb_pcount() > 1) && (!ISNIL(2)))
-    { brush = CreateSolidBrush( RGB(hb_parni(2, 1),
-                                    hb_parni(2, 2),
-                                    hb_parni(2, 3)) );
+    { brush = CreateSolidBrush( RGB(HB_PARNI(2, 1),
+                                    HB_PARNI(2, 2),
+                                    HB_PARNI(2, 3)) );
       FillRect(hdc, &recClie, brush);
       DeleteObject(brush);
     }
@@ -736,10 +742,10 @@ HB_FUNC( WINVERSION )
    }
 
    hb_reta( 4 );
-   hb_storc( szVersion , -1, 1 );
-   hb_storc( szServicePack, -1, 2 );
-   hb_storc( szBuild, -1, 3 );
-   hb_storc( szVersionEx, -1, 4 );
+   HB_STORC( szVersion , -1, 1 );
+   HB_STORC( szServicePack, -1, 2 );
+   HB_STORC( szBuild, -1, 3 );
+   HB_STORC( szVersionEx, -1, 4 );
 
 }
 

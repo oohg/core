@@ -1,5 +1,5 @@
 /*
- * $Id: h_ipaddress.prg,v 1.7 2008-09-29 00:36:45 guerra000 Exp $
+ * $Id: h_ipaddress.prg,v 1.8 2009-08-24 01:47:20 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -82,13 +82,13 @@
 
  Parts of this project are based upon:
 
-	"Harbour GUI framework for Win32"
- 	Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- 	Copyright 2001 Antonio Linares <alinares@fivetech.com>
-	www - http://www.harbour-project.org
+ "Harbour GUI framework for Win32"
+  Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
+  Copyright 2001 Antonio Linares <alinares@fivetech.com>
+ www - http://www.harbour-project.org
 
-	"Harbour Project"
-	Copyright 1999-2003, http://www.harbour-project.org/
+ "Harbour Project"
+ Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
 #include "oohg.ch"
@@ -127,9 +127,9 @@ Local ControlHandle, nStyle
 
    ControlHandle := InitIPAddress( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, ::lRtl )
 
-	If aValue <> Nil
+ If aValue <> Nil
       SetIPAddress( ControlHandle, aValue[ 1 ], aValue[ 2 ], aValue[ 3 ], aValue[ 4 ] )
-	EndIf
+ EndIf
 
    ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
@@ -179,6 +179,13 @@ RETURN GetIPAddressString( ::hWnd )
 #include "tchar.h"
 #include "oohg.h"
 
+#ifdef __XHARBOUR__
+#define HB_STORNI( n, x, y ) hb_storni( n, x, y )
+#else
+#define HB_STORNI( n, x, y ) hb_storvni( n, x, y )
+#endif
+
+
 static WNDPROC lpfnOldWndProc = 0;
 
 static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
@@ -188,14 +195,14 @@ static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 
 HB_FUNC( INITIPADDRESS )
 {
-	HWND hWnd;
-	HWND hIpAddress;
+ HWND hWnd;
+ HWND hIpAddress;
    int Style;
    int StyleEx;
 
    INITCOMMONCONTROLSEX i;
    i.dwSize = sizeof( INITCOMMONCONTROLSEX );
-	i.dwICC = ICC_INTERNET_CLASSES;
+ i.dwICC = ICC_INTERNET_CLASSES;
    InitCommonControlsEx( &i );
 
    hWnd = HWNDparam( 1 );
@@ -249,10 +256,10 @@ HB_FUNC( GETIPADDRESS )
    v4 = FOURTH_IPADDRESS( pdwAddr );
 
    hb_reta( 4 );
-   hb_storni( ( INT ) v1, -1, 1 );
-   hb_storni( ( INT ) v2, -1, 2 );
-   hb_storni( ( INT ) v3, -1, 3 );
-   hb_storni( ( INT ) v4, -1, 4 );
+    HB_STORNI( ( INT ) v1, -1, 1 );
+   HB_STORNI( ( INT ) v2, -1, 2 );
+   HB_STORNI( ( INT ) v3, -1, 3 );
+   HB_STORNI( ( INT ) v4, -1, 4 );
 }
 
 HB_FUNC( GETIPADDRESSSTRING )

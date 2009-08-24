@@ -1,5 +1,5 @@
 /*
- * $Id: h_listbox.prg,v 1.16 2009-02-16 01:45:43 guerra000 Exp $
+ * $Id: h_listbox.prg,v 1.17 2009-08-24 01:47:20 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -82,13 +82,13 @@
 
  Parts of this project are based upon:
 
-	"Harbour GUI framework for Win32"
- 	Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- 	Copyright 2001 Antonio Linares <alinares@fivetech.com>
-	www - http://www.harbour-project.org
+ "Harbour GUI framework for Win32"
+  Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
+  Copyright 2001 Antonio Linares <alinares@fivetech.com>
+ www - http://www.harbour-project.org
 
-	"Harbour Project"
-	Copyright 1999-2003, http://www.harbour-project.org/
+ "Harbour Project"
+ Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
 #include "oohg.ch"
@@ -272,6 +272,13 @@ RETURN ListBoxGetMultiSel( ::hWnd )
 #include "hbapi.h"
 #include "oohg.h"
 
+#ifdef __XHARBOUR__
+#define HB_STORNI( n, x, y ) hb_storni( n, x, y )
+#else
+#define HB_STORNI( n, x, y ) hb_storvni( n, x, y )
+#endif
+
+
 static WNDPROC lpfnOldWndProc = 0;
 
 static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
@@ -281,8 +288,8 @@ static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 
 HB_FUNC( INITLISTBOX )
 {
-	HWND hwnd;
-	HWND hbutton;
+ HWND hwnd;
+ HWND hbutton;
    int Style = WS_CHILD | WS_VSCROLL | LBS_DISABLENOSCROLL | LBS_NOTIFY | LBS_NOINTEGRALHEIGHT | hb_parni( 7 );
    int StyleEx;
 
@@ -307,7 +314,7 @@ HB_FUNC( LISTBOXADDSTRING )
 
 HB_FUNC( LISTBOXGETSTRING )
 {
-	char cString [1024] = "" ;
+ char cString [1024] = "" ;
    SendMessage( HWNDparam( 1 ), LB_GETTEXT, (WPARAM) hb_parni(2) - 1, (LPARAM) cString );
    hb_retc(cString);
 }
@@ -345,10 +352,10 @@ HB_FUNC( LISTBOXGETMULTISEL )
    int *buffer;
    int n;
 
-	n = SendMessage( hwnd, LB_GETSELCOUNT, 0, 0);
+ n = SendMessage( hwnd, LB_GETSELCOUNT, 0, 0);
 
    if( n > 0 )
-	{
+ {
       hb_reta( n );
       buffer = (int *) hb_xgrab( ( n + 1 ) * sizeof( int ) );
 
@@ -356,11 +363,11 @@ HB_FUNC( LISTBOXGETMULTISEL )
 
       for( i = 0; i < n; i++ )
       {
-         hb_storni( buffer[ i ] + 1, -1, i + 1 );
+       HB_STORNI( (buffer[ i ] + 1), -1, (i + 1));
       }
 
       hb_xfree( buffer );
-	}
+ }
    else
    {
       hb_reta( 0 );
@@ -369,24 +376,24 @@ HB_FUNC( LISTBOXGETMULTISEL )
 
 HB_FUNC( LISTBOXSETMULTISEL )
 {
-	PHB_ITEM wArray;
+ PHB_ITEM wArray;
    HWND hwnd = HWNDparam( 1 );
    int i;
    int n;
    int l;
 
-	wArray = hb_param( 2, HB_IT_ARRAY );
+ wArray = hb_param( 2, HB_IT_ARRAY );
 
    l = hb_parinfa( 2, 0 );
 
-	n = SendMessage( hwnd , LB_GETCOUNT , 0 , 0 );
+ n = SendMessage( hwnd , LB_GETCOUNT , 0 , 0 );
 
-	// CLEAR CURRENT SELECTIONS
+ // CLEAR CURRENT SELECTIONS
 
-	for( i=0 ; i<n ; i++ )
-	{
-		SendMessage(hwnd, LB_SETSEL, (WPARAM)(0), (LPARAM) i );
-	}
+ for( i=0 ; i<n ; i++ )
+ {
+  SendMessage(hwnd, LB_SETSEL, (WPARAM)(0), (LPARAM) i );
+ }
 
    // SET NEW SELECTIONS
 

@@ -1,5 +1,5 @@
 /*
- * $Id: h_status.prg,v 1.32 2009-03-22 22:39:59 guerra000 Exp $
+ * $Id: h_status.prg,v 1.33 2009-08-24 01:47:20 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -82,13 +82,13 @@
 
  Parts of this project are based upon:
 
-	"Harbour GUI framework for Win32"
- 	Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- 	Copyright 2001 Antonio Linares <alinares@fivetech.com>
-	www - http://www.harbour-project.org
+ "Harbour GUI framework for Win32"
+  Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
+  Copyright 2001 Antonio Linares <alinares@fivetech.com>
+ www - http://www.harbour-project.org
 
-	"Harbour Project"
-	Copyright 1999-2003, http://www.harbour-project.org/
+ "Harbour Project"
+ Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
 #include "oohg.ch"
@@ -221,7 +221,7 @@ Local styl, nItem, i
    i := At( "&", Caption )
    If i > 0 .AND. i < LEN( Caption )
       DEFINE HOTKEY 0 PARENT ( Self ) KEY "ALT+" + SubStr( Caption, i + 1, 1 ) ACTION ::DoEvent( ::aClicks[ nItem ], "CLICK" )
-	EndIf
+ EndIf
 
 Return nItem
 
@@ -401,6 +401,13 @@ Return _OOHG_ActiveMessageBar:AddItem( Caption, Width, action, ToolTip, icon, cs
 #include "hbapi.h"
 #include "hbstack.h"
 #include "oohg.h"
+
+#ifdef __XHARBOUR__
+#define HB_PARNI( n, x ) hb_parni( n, x )
+#else
+#define HB_PARNI( n, x ) hb_parvni( n, x )
+#endif
+
 
 static WNDPROC lpfnOldWndProc = 0;
 
@@ -599,14 +606,14 @@ HB_FUNC( REFRESHITEMBAR )   // ( hWnd, aWidths, lAutoAdjust )
 
       piItems = (int *) hb_xgrab( sizeof( int ) * iItems );
       SendMessage( hWnd, SB_GETPARTS, iItems, ( WPARAM ) piItems );
-      if( hb_parl( 3 ) )
+        if( hb_parl( 3 ) )
       {
          iCount = iItems;
          while( iCount )
          {
             iCount--;
             piItems[ iCount ] = iWidth;
-            iWidth -= hb_parni( 2, iCount + 1 );
+            iWidth -= HB_PARNI( 2, (iCount + 1 ));
          }
       }
       else
@@ -614,7 +621,7 @@ HB_FUNC( REFRESHITEMBAR )   // ( hWnd, aWidths, lAutoAdjust )
          iWidth = 0;
          for( iCount = 0; iCount < iItems; iCount++ )
          {
-            iWidth += hb_parni( 2, iCount + 1 );
+            iWidth += HB_PARNI( 2, (iCount + 1) );
             piItems[ iCount ] = iWidth;
          }
       }
