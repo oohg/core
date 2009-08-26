@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.67 2009-08-24 01:47:19 declan2005 Exp $
+ * $Id: c_windows.c,v 1.68 2009-08-26 00:50:41 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -141,137 +141,6 @@
 
 
 BOOL Array2Rect(PHB_ITEM aRect, RECT *rc ) ;
-
-static void ChangeNotifyIcon( HWND hWnd, HICON hIcon, LPSTR szText );
-static void ShowNotifyIcon( HWND hWnd, BOOL bAdd, HICON hIcon, LPSTR szText );
-
-LRESULT APIENTRY _OOHG_WndProc( PHB_ITEM pSelf, HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM lParam, WNDPROC lpfnOldWndProc )
-{
-   PHB_ITEM pResult;
-   LRESULT iReturn;
-   static int iCall = 0;
-   static int iNest = 0;
-
-   iNest++;
-   iCall++;
-
-   _OOHG_Send( pSelf, s_OverWndProc );
-   hb_vmSend( 0 );
-   pResult = hb_param( -1, HB_IT_BLOCK );
-   // ::OverWndProc is a codeblock... execute it
-   if( pResult )
-   {
-      hb_vmPushSymbol( &hb_symEval );
-      hb_vmPush( pResult );
-      HWNDpush( hWnd );
-      hb_vmPushLong( uiMsg );
-      hb_vmPushLong( wParam );
-      hb_vmPushLong( lParam );
-      hb_vmPush( pSelf );
-      hb_vmPushLong( iNest );
-      hb_vmPushLong( iCall );
-      hb_vmDo( 7 );
-      pResult = hb_param( -1, HB_IT_NUMERIC );
-   }
-
-   // ::OverWndProc is NOT a codeblock, or it returns a non-numeric value... execute ::Events()
-   if( ! pResult )
-   {
-      _OOHG_Send( pSelf, s_Events );
-      HWNDpush( hWnd );
-      hb_vmPushLong( uiMsg );
-      hb_vmPushLong( wParam );
-      hb_vmPushLong( lParam );
-      hb_vmSend( 4 );
-      pResult = hb_param( -1, HB_IT_NUMERIC );
-   }
-
-   if( pResult )
-   {
-      // Return value is numeric... return it to Windows
-      iReturn = hb_itemGetNL( pResult );
-   }
-   else
-   {
-      // Return value is NOT numeric... execute default WindowProc
-      iReturn = CallWindowProc( lpfnOldWndProc, hWnd, uiMsg, wParam, lParam );
-   }
-
-   iNest--;
-   return iReturn;
-}
-
-LRESULT APIENTRY _OOHG_WndProcCtrl( HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM lParam, WNDPROC lpfnOldWndProc )
-{
-   PHB_ITEM pSave, pSelf;
-   LRESULT iReturn;
-
-   pSave = hb_itemNew( NULL );
-   pSelf = hb_itemNew( NULL );
-   hb_itemCopy( pSave, hb_param( -1, HB_IT_ANY ) );
-   hb_itemCopy( pSelf, GetControlObjectByHandle( hWnd ) );
-
-   iReturn = _OOHG_WndProc( pSelf, hWnd, uiMsg, wParam, lParam, lpfnOldWndProc );
-
-   hb_itemReturn( pSave );
-   hb_itemRelease( pSave );
-   hb_itemRelease( pSelf );
-
-   return iReturn;
-}
-
-LRESULT APIENTRY _OOHG_WndProcForm( HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM lParam, WNDPROC lpfnOldWndProc )
-{
-   PHB_ITEM pSave, pSelf;
-   LRESULT iReturn;
-
-   pSave = hb_itemNew( NULL );
-   pSelf = hb_itemNew( NULL );
-   hb_itemCopy( pSave, hb_param( -1, HB_IT_ANY ) );
-   hb_itemCopy( pSelf, GetFormObjectByHandle( hWnd ) );
-
-   iReturn = _OOHG_WndProc( pSelf, hWnd, uiMsg, wParam, lParam, lpfnOldWndProc );
-
-   if( uiMsg == WM_NCDESTROY )
-   {
-      _OOHG_Send( pSelf, s_Name );
-      hb_vmSend( 0 );
-      UnregisterClass( hb_parc( -1 ), GetModuleHandle( NULL ) );
-   }
-
-   hb_itemReturn( pSave );
-   hb_itemRelease( pSave );
-   hb_itemRelease( pSelf );
-
-   return iReturn;
-}
-
-LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
-{
-   return _OOHG_WndProcForm( hWnd, message, wParam, lParam, DefWindowProc );
-}
-
-LRESULT CALLBACK WndProcMdiChild( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
-{
-   return _OOHG_WndProcForm( hWnd, message, wParam, lParam, DefMDIChildProc );
-}
-
-LRESULT CALLBACK _OOHG_DefFrameProc( HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM lParam )
-{
-   _OOHG_Send( GetFormObjectByHandle( hWnd ), s_hWndClient );
-   hb_vmSend( 0 );
-   return DefFrameProc( hWnd, HWNDparam( -1 ), uiMsg, wParam, lParam );
-}
-
-LRESULT CALLBACK WndProcMdi( HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM lParam )
-{
-   return _OOHG_WndProcForm( hWnd, uiMsg, wParam, lParam, _OOHG_DefFrameProc );
-}
-
-LRESULT CALLBACK WndProcMdiClient( HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM lParam )
-{
-   return _OOHG_WndProcCtrl( hWnd, uiMsg, wParam, lParam, _OOHG_DefFrameProc );
-}
 
 PHB_ITEM _OOHG_GetExistingObject( HWND hWnd, BOOL bForm, BOOL bForceAny )
 {
@@ -621,83 +490,6 @@ HB_FUNC( GETCLIENTRECT )
    HB_STORNL( rect.bottom, 2, 4 );
 }
 
-HB_FUNC( REGISTERWINDOW )
-{
-   WNDCLASS WndClass;
-   HBRUSH hbrush = 0;
-   int iWindowType = hb_parni( 4 );
-   LONG lColor;
-
-   WndClass.style         = CS_HREDRAW | CS_VREDRAW | CS_OWNDC | CS_DBLCLKS;
-   WndClass.lpfnWndProc   = WndProc;
-   WndClass.lpszClassName = hb_parc( 2 );
-
-   switch( iWindowType )
-   {
-      case 1:                           // Splitchild
-         WndClass.style         = CS_OWNDC | CS_DBLCLKS;
-         break;
-
-      case 2:                           // MDI client
-         WndClass.style         = CS_HREDRAW | CS_VREDRAW /* | CS_OWNDC */ | CS_DBLCLKS;
-         WndClass.lpfnWndProc   = WndProcMdiChild;
-         // WndClass.lpszClassName = "MDICLIENT";
-         break;
-
-      case 3:                           // MDI child
-         WndClass.style         = CS_DBLCLKS;
-         WndClass.lpfnWndProc   = WndProcMdiChild;
-         break;
-
-      case 4:                           // MDI frame
-         WndClass.style         = CS_HREDRAW | CS_VREDRAW /* | CS_OWNDC */ | CS_DBLCLKS;
-         WndClass.lpfnWndProc   = WndProcMdi;
-         break;
-   }
-   WndClass.cbClsExtra    = 0;
-   WndClass.cbWndExtra    = 0;
-//    WndClass.cbWndExtra    = 20;   MDICHILD!
-   WndClass.hInstance     = GetModuleHandle( NULL );
-   WndClass.hIcon         = 0;
-   if( hb_parclen( 1 ) )
-   {
-      WndClass.hIcon      = LoadIcon( GetModuleHandle( NULL ), hb_parc( 1 ) );
-      if( ! WndClass.hIcon )
-      {
-         WndClass.hIcon   = ( HICON ) LoadImage( GetModuleHandle( NULL ), hb_parc( 1 ) , IMAGE_ICON, 0, 0, LR_LOADFROMFILE + LR_DEFAULTSIZE );
-      }
-   }
-   if( ! WndClass.hIcon )
-   {
-       WndClass.hIcon     = LoadIcon( NULL, IDI_APPLICATION );
-   }
-   WndClass.hCursor       = LoadCursor( NULL, IDC_ARROW );
-
-   lColor = -1;
-   _OOHG_DetermineColor( hb_param( 3, HB_IT_ANY ), &lColor );
-   if( lColor == -1 )
-   {
-      WndClass.hbrBackground = ( HBRUSH )( COLOR_BTNFACE + 1 );
-   }
-   else
-   {
-      hbrush = CreateSolidBrush( lColor );
-      WndClass.hbrBackground = hbrush;
-   }
-
-   WndClass.lpszMenuName  = NULL;
-   if( ! RegisterClass( &WndClass ) )
-   {
-      char cBuffError[ 1000 ];
-      sprintf( cBuffError, "Window %s Registration Failed! Error %i", hb_parc( 2 ), ( int ) GetLastError() );
-      MessageBox( 0, cBuffError, "Error!",
-                  MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
-      ExitProcess( 0 );
-   }
-
-   hb_retnl ( (LONG) hbrush ) ;
-}
-
 HB_FUNC( SETWINDOWBACKCOLOR )
 {
    HWND hWnd = HWNDparam( 1 );
@@ -789,18 +581,11 @@ HB_FUNC ( ISWINDOWMAXIMIZED )
    hb_retl( IsZoomed( HWNDparam( 1 ) ) ) ;
   }
 
-HB_FUNC ( ISWINDOWMINIMIZED )
+HB_FUNC( ISWINDOWMINIMIZED )
 {
-   hb_retl( IsIconic( HWNDparam( 1 ) ) ) ;
-  }
-
-
-//----------------------------------------------------------------------------//
-HB_FUNC ( SHOWNOTIFYICON )
-{
-   ShowNotifyIcon( HWNDparam( 1 ), (BOOL) hb_parl(2), (HICON) hb_parnl(3), (LPSTR) hb_parc(4) );
+   hb_retl( IsIconic( HWNDparam( 1 ) ) );
 }
-//----------------------------------------------------------------------------//
+
 static void ShowNotifyIcon(HWND hWnd, BOOL bAdd, HICON hIcon, LPSTR szText)
 {
   NOTIFYICONDATA nid;
@@ -817,6 +602,11 @@ static void ShowNotifyIcon(HWND hWnd, BOOL bAdd, HICON hIcon, LPSTR szText)
     Shell_NotifyIcon(NIM_ADD,&nid);
   else
     Shell_NotifyIcon(NIM_DELETE,&nid);
+}
+
+HB_FUNC( SHOWNOTIFYICON )
+{
+   ShowNotifyIcon( HWNDparam( 1 ), (BOOL) hb_parl(2), (HICON) hb_parnl(3), (LPSTR) hb_parc(4) );
 }
 
 HB_FUNC( GETINSTANCE )
@@ -852,11 +642,6 @@ HB_FUNC( LOADTRAYICON )
    hb_retnl ( (LONG) himage );
 }
 
-HB_FUNC( CHANGENOTIFYICON )
-{
-   ChangeNotifyIcon( HWNDparam( 1 ), (HICON) hb_parnl(2), (LPSTR) hb_parc(3) );
-}
-
 static void ChangeNotifyIcon(HWND hWnd, HICON hIcon, LPSTR szText)
 {
    NOTIFYICONDATA nid;
@@ -870,6 +655,11 @@ static void ChangeNotifyIcon(HWND hWnd, HICON hIcon, LPSTR szText)
    lstrcpy( nid.szTip, TEXT( szText ) );
 
    Shell_NotifyIcon( NIM_MODIFY, &nid );
+}
+
+HB_FUNC( CHANGENOTIFYICON )
+{
+   ChangeNotifyIcon( HWNDparam( 1 ), (HICON) hb_parnl(2), (LPSTR) hb_parc(3) );
 }
 
 HB_FUNC( GETITEMPOS )
@@ -1074,12 +864,6 @@ HB_FUNC( FINDWINDOWEX )
                           ( LPCSTR ) hb_parc( 3 ),
                           ( LPCSTR ) hb_parc( 4 )
                                 ) ) ;
-}
-
-HB_FUNC( INITDUMMY )
-{
-   CreateWindowEx( 0, "static", "", WS_CHILD, 0, 0, 0, 0,
-                   HWNDparam( 1 ), ( HMENU ) 0, GetModuleHandle( NULL ), NULL );
 }
 
 WORD DIBNumColors(LPSTR);

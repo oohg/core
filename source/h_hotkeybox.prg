@@ -1,5 +1,5 @@
 /*
- * $Id: h_hotkeybox.prg,v 1.5 2009-08-24 01:47:20 declan2005 Exp $
+ * $Id: h_hotkeybox.prg,v 1.6 2009-08-26 00:50:41 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -111,6 +111,18 @@ Return HotKeyBoxValue( ::hWnd, uValue, ::lForceAlt )
 #include <commctrl.h>
 #include <hbapiitm.h>
 #include "oohg.h"
+
+#ifdef __XHARBOUR__
+#define HB_STORNI( n, x, y ) hb_storni( n, x, y )
+#define HB_STORNL( n, x, y ) hb_stornl( n, x, y )
+#define HB_PARNI( n, x )  hb_parni( n, x )
+#define HB_STORPTR( n, x, y ) hb_storptr( n, x, y )
+#else
+#define HB_STORNI( n, x, y ) hb_storvni( n, x, y )
+#define HB_STORNL( n, x, y ) hb_storvnl( n, x, y )
+#define HB_PARNI( n, x )  hb_parvni( n, x )
+#define HB_STORPTR( n, x, y ) hb_storvptr( n, x, y )
+#endif
 
 static WNDPROC lpfnOldWndProc = 0;
 

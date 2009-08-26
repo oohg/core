@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.607 2009-08-24 01:47:19 declan2005 Exp $
+ * $Id: ChangeLog,v 1.608 2009-08-26 00:50:41 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,9 +7,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2009-08-25 19:56 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/c_windows.c
+    ! Fixed duplicated functions.
+  * source/h_hotkeybox.prg
+    ! Added missing definitions.
+
 2009-08-23 21:33 UTC-0400 Ciro Vargas C. <cvc@oohg.org>
   * source/h_ipaddress.prg
-  * source/cgrid.c
+  * source/c_grid.c
   * source/h_listbox.prg
   * source/h_tab.prg
   * source/h_status.prg
