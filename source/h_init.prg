@@ -1,5 +1,5 @@
 /*
- * $Id: h_init.prg,v 1.23 2008-08-21 19:58:08 declan2005 Exp $
+ * $Id: h_init.prg,v 1.24 2009-09-09 19:30:55 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -82,13 +82,13 @@
 
  Parts of this project are based upon:
 
-	"Harbour GUI framework for Win32"
- 	Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- 	Copyright 2001 Antonio Linares <alinares@fivetech.com>
-	www - http://www.harbour-project.org
+ "Harbour GUI framework for Win32"
+  Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
+  Copyright 2001 Antonio Linares <alinares@fivetech.com>
+ www - http://www.harbour-project.org
 
-	"Harbour Project"
-	Copyright 1999-2003, http://www.harbour-project.org/
+ "Harbour Project"
+ Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
 #include "oohg.ch"
@@ -138,13 +138,20 @@ INIT PROCEDURE _OOHG_INIT()
    _OOHG_AdjustFont :=  .T.
 
    _OOHG_SameEnterDblClick :=  .F.
-   
-#ifndef __XHARBOUR__
-    REQUEST DBFNTX,DBFDBT
-    REQUEST HB_GT_GUI_DEFAULT
 
+#ifndef __XHARBOUR__
+  REQUEST DBFNTX,DBFDBT
+  ANNOUNCE HB_GTSYS
+  REQUEST HB_GT_GUI_DEFAULT
 #endif
-	InitMessages()
+
+   
+///#ifndef __XHARBOUR__
+///    REQUEST DBFNTX,DBFDBT
+///    REQUEST HB_GT_GUI_DEFAULT
+///
+////#endif
+ InitMessages()
 
 Return
 

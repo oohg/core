@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.ch,v 1.12 2009-03-02 05:06:56 guerra000 Exp $
+ * $Id: oohg.ch,v 1.13 2009-09-09 19:30:55 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -160,6 +160,3 @@
 
 #endif
 
-#ifndef __XHARBOUR__
-REQUEST DBFNTX,DBFDBT
-#endif

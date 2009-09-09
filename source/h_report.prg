@@ -1,5 +1,5 @@
 /*
- * $Id: h_report.prg,v 1.44 2008-09-07 23:12:56 guerra000 Exp $
+ * $Id: h_report.prg,v 1.45 2009-09-09 19:30:55 declan2005 Exp $
  */
 /*
  * DO REPORT Command support procedures FOR MiniGUI Library.
@@ -30,9 +30,9 @@
 
 */
 
+#include 'oohg.ch'
 #include 'hbclass.ch'
 #include 'common.ch'
-#include 'oohg.ch'
 
 MEMVAR NPOS
 MEMVAR LIN
@@ -449,14 +449,14 @@ IF swmemo
           nlin:=1
           oprint:endpage()
           oprint:beginpage()
-	  IF cgraphic<>NIL .and. lmul
+   IF cgraphic<>NIL .and. lmul
              IF .not. File(cgraphic)
-	         msgstop('graphic file not found','error')
+          msgstop('graphic file not found','error')
              ELSE
                  oprint:printimage(nfi,nci+repobject:nlmargin,nff,ncf,cgraphic )
              ENDIF
-	 ENDIF
-	 nlin:=repobject:headers(aheaders1,aheaders2,awidths,nlin,ctitle,lmode,grpby,chdrgrp,cheader)
+  ENDIF
+  nlin:=repobject:headers(aheaders1,aheaders2,awidths,nlin,ctitle,lmode,grpby,chdrgrp,cheader)
        ENDIF
     NEXT k
 ////    nlin--
@@ -981,7 +981,7 @@ RETURN ncol
 #define  F_ERROR                   -1   && Error desconocido
 #define  F_NOEXIST                  2   && Archivo inexistente
 
-#include "oohg.ch"
+////#include "oohg.ch"
 
 *****************************************************************************
 PROCEDURE __ReportFormwin( cFRMName, lPrinter, cAltFile, lNoConsole, bFor, ;
@@ -1837,9 +1837,9 @@ IF nFileError = F_OK
    * Elimino los cabezales vacíos...
    DO WHILE ( nHeaderIndex > 0 )
       IF ! EMPTY( aHeader[ nHeaderIndex ] )
-			EXIT
-	  ENDIF
-	  nHeaderIndex--
+   EXIT
+   ENDIF
+   nHeaderIndex--
    ENDDO
 
    aReport[ RP_HEADER ] := IIF( EMPTY( nHeaderIndex ) , {}, ASIZE( aHeader, nHeaderIndex ) )
@@ -1904,20 +1904,20 @@ LOCAL nHeaderLen := 254
 LOCAL nPos
 
 DO WHILE ( ++nItemCount <= nFields )
-	cItem := SUBSTR( cHeaderString, 1, nHeaderLen )
-	* Busco delimitador....
-	nPos := AT( ";", cItem )
-	IF ! EMPTY( nPos )
-		AADD( aPageHeader, SUBSTR( cItem, 1, nPos - 1 ) )
-	ELSE
-		IF EMPTY( cItem )
-			AADD( aPageHeader, "" )
-		ELSE
-			AADD( aPageHeader, cItem )
-		ENDIF
-		nPos := nHeaderLen
-	ENDIF
-	cHeaderString := SUBSTR( cHeaderString, nPos + 1 )
+ cItem := SUBSTR( cHeaderString, 1, nHeaderLen )
+ * Busco delimitador....
+ nPos := AT( ";", cItem )
+ IF ! EMPTY( nPos )
+  AADD( aPageHeader, SUBSTR( cItem, 1, nPos - 1 ) )
+ ELSE
+  IF EMPTY( cItem )
+   AADD( aPageHeader, "" )
+  ELSE
+   AADD( aPageHeader, cItem )
+  ENDIF
+  nPos := nHeaderLen
+ ENDIF
+ cHeaderString := SUBSTR( cHeaderString, nPos + 1 )
 ENDDO
 
 RETURN( aPageHeader )
