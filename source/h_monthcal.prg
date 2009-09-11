@@ -1,5 +1,5 @@
 /*
- * $Id: h_monthcal.prg,v 1.10 2009-02-16 01:45:43 guerra000 Exp $
+ * $Id: h_monthcal.prg,v 1.11 2009-09-11 02:41:25 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -239,7 +239,7 @@ HB_FUNC( SETMONTHCAL )
 
    if( ISDATE( 2 ) )
    {
-      cDate = hb_pards( 2 );
+      cDate = ( char * ) hb_pards( 2 );
       if( cDate[ 0 ] == ' ' )
       {
          cDate = 0;

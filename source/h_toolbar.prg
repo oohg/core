@@ -1,5 +1,5 @@
 /*
- * $Id: h_toolbar.prg,v 1.25 2009-03-22 22:39:59 guerra000 Exp $
+ * $Id: h_toolbar.prg,v 1.26 2009-09-11 02:41:25 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -437,20 +437,20 @@ HB_FUNC( INITTOOLBAR )
 
 HB_FUNC( INITTOOLBUTTON )
 {
-	HWND hwndTB;
-	HWND himage;
-	TBADDBITMAP tbab;
-	TBBUTTON tbb[NUM_TOOLBAR_BUTTONS];
-	int index;
-	int nPoz;
-	int nBtn;
-	int Style ;
+   HWND hwndTB;
+   HWND himage;
+   TBADDBITMAP tbab;
+   TBBUTTON tbb[NUM_TOOLBAR_BUTTONS];
+   int index;
+   int nPoz;
+   int nBtn;
+   int Style ;
 
    memset( tbb, 0, sizeof( tbb ) );
 
    hwndTB = HWNDparam( 1 );
 
-   himage = (HWND) _OOHG_LoadImage( hb_parc( 8 ), LR_LOADMAP3DCOLORS | LR_LOADTRANSPARENT, 0, 0, hwndTB, -1 );
+   himage = (HWND) _OOHG_LoadImage( ( HGLOBAL ) hb_parc( 8 ), LR_LOADMAP3DCOLORS | LR_LOADTRANSPARENT, 0, 0, hwndTB, -1 );
 
 	// Add the bitmap containing button images to the toolbar.
 
@@ -665,10 +665,10 @@ HB_FUNC( SETBUTTONID )
 
 HB_FUNC( SHOWTOOLBUTTONTIP )
 {
-	LPTOOLTIPTEXT lpttt;
-   lpttt = (LPTOOLTIPTEXT) hb_parnl( 1 );
+   LPTOOLTIPTEXT lpttt;
+   lpttt = ( LPTOOLTIPTEXT ) hb_parnl( 1 );
    lpttt->hinst = GetModuleHandle( NULL );
-   lpttt->lpszText = hb_parc( 2 );
+   lpttt->lpszText = ( LPSTR ) hb_parc( 2 );
 }
 
 HB_FUNC ( GETTOOLBUTTONID )

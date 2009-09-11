@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.103 2009-02-16 01:45:43 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.104 2009-09-11 02:41:25 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1987,9 +1987,9 @@ HB_FUNC( _OOHG_UNTRANSFORM )
    iMax = ( iText > iPicture ) ? iText : iPicture ;
    if( iText && iPicture )
    {
-      cText = hb_parc( 1 );
-      cPicture = hb_parc( 2 );
-      cReturn = (char *) hb_xgrab( iMax );
+      cText = ( char * ) hb_parc( 1 );
+      cPicture = ( char * ) hb_parc( 2 );
+      cReturn = ( char * ) hb_xgrab( iMax );
       iReturn = 0;
 
       if( hb_parclen( 3 ) > 0 )

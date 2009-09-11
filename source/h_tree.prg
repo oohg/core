@@ -1,5 +1,5 @@
 /*
- * $Id: h_tree.prg,v 1.17 2008-01-12 20:19:38 guerra000 Exp $
+ * $Id: h_tree.prg,v 1.18 2009-09-11 02:41:25 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -722,12 +722,12 @@ HB_FUNC( ADDTREEITEM )
 {
    HWND hWndTV = HWNDparam( 1 );
    HTREEITEM hPrev = HTREEparam( 2 );
-	TV_ITEM tvi;
+   TV_ITEM tvi;
    TV_INSERTSTRUCT is;
 
    tvi.mask       = TVIF_TEXT | TVIF_IMAGE | TVIF_SELECTEDIMAGE | TVIF_PARAM;
 
-   tvi.pszText        = hb_parc( 3 );
+   tvi.pszText        = ( LPSTR ) hb_parc( 3 );
    tvi.cchTextMax     = 1024;
    tvi.iImage         = hb_parni( 4 );
    tvi.iSelectedImage = hb_parni( 5 );
