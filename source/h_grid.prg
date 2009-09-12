@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.106 2009-06-08 03:57:47 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.107 2009-09-12 00:28:04 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -125,6 +125,7 @@ CLASS TGrid FROM TControl
    DATA lNested          INIT .F.
    DATA AllowMoveColumn  INIT .T.
    DATA AllowChangeSize  INIT .T.
+   DATA lNestedEdit      INIT .F.
 
    DATA Nrowpos      INIT 1
    DATA Ncolpos      INIT 1
@@ -1398,11 +1399,19 @@ METHOD Events_Enter() CLASS TGrid
    If ::fullmove
       ::EditGRID()
       return nil
-   Endif
+   EndIf
    If ::InPlace
-      ::EditAllCells()
+      If ! ::lNestedEdit
+         ::lNestedEdit := .T.
+         ::EditAllCells()
+         ::lNestedEdit := .F.
+      EndIf
    ElseIf ::AllowEdit
-      ::EditItem()
+      If ! ::lNestedEdit
+         ::lNestedEdit := .T.
+         ::EditItem()
+         ::lNestedEdit := .F.
+      EndIf
    Else
       ::DoEvent( ::OnEnter, "ENTER" )
    EndIf

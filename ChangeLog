@@ -1,11 +1,15 @@
 /*
- * $Id: ChangeLog,v 1.610 2009-09-11 02:41:25 guerra000 Exp $
+ * $Id: ChangeLog,v 1.611 2009-09-12 00:27:59 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-09-11 19:31 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_grid.prg
+    ! Prevents nested edition activated by ENTER key.
 
 2009-09-10 21:47 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_controlmisc.prg
