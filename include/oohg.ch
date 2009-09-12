@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.ch,v 1.13 2009-09-09 19:30:55 declan2005 Exp $
+ * $Id: oohg.ch,v 1.14 2009-09-12 18:22:13 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -160,3 +160,6 @@
 
 #endif
 
+#ifndef __XHARBOUR__
+REQUEST HB_GT_GUI_DEFAULT
+#endif

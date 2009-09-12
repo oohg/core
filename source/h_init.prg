@@ -1,5 +1,5 @@
 /*
- * $Id: h_init.prg,v 1.24 2009-09-09 19:30:55 declan2005 Exp $
+ * $Id: h_init.prg,v 1.25 2009-09-12 18:22:13 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -142,15 +142,8 @@ INIT PROCEDURE _OOHG_INIT()
 #ifndef __XHARBOUR__
   REQUEST DBFNTX,DBFDBT
   ANNOUNCE HB_GTSYS
-  REQUEST HB_GT_GUI_DEFAULT
 #endif
 
-   
-///#ifndef __XHARBOUR__
-///    REQUEST DBFNTX,DBFDBT
-///    REQUEST HB_GT_GUI_DEFAULT
-///
-////#endif
  InitMessages()
 
 Return
