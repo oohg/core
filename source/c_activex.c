@@ -1,5 +1,5 @@
 /*
- * $Id: c_activex.c,v 1.7 2008-11-30 16:23:36 guerra000 Exp $
+ * $Id: c_activex.c,v 1.8 2009-09-14 03:17:26 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -40,7 +40,9 @@
 #include <commctrl.h>
 #include <hbapi.h>
 #include <hbvm.h>
-#include <hbstack.h>
+#ifdef __XHARBOUR__
+  #include <hbstack.h>
+#endif
 #include "oohg.h"
 #include <ocidl.h>
 #include <hbapiitm.h>
@@ -51,6 +53,7 @@
 
 PHB_SYMB s___GetMessage = NULL;
 
+#ifdef __XHARBOUR__
 // -----------------------------------------------------------------------------
 HB_FUNC( TACTIVEX___ERROR )
 // -----------------------------------------------------------------------------
@@ -80,6 +83,7 @@ HB_FUNC( TACTIVEX___ERROR )
    }
    hb_vmSend( hb_pcount() );
 }
+#endif
 
 typedef HRESULT ( WINAPI *LPAtlAxWinInit )       ( void );
 typedef HRESULT ( WINAPI *LPAtlAxGetControl )    ( HWND, IUnknown** );

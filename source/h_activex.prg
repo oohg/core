@@ -1,5 +1,5 @@
 /*
- * $Id: h_activex.prg,v 1.5 2007-11-11 17:42:05 guerra000 Exp $
+ * $Id: h_activex.prg,v 1.6 2009-09-14 03:17:26 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -147,3 +147,16 @@ METHOD EventMap( nMsg, xExec, oSelf )
    ::aAxExec[ nAt ] := { xExec, oSelf }
 RETURN NIL
 
+#ifndef __XHARBOUR__
+*-----------------------------------------------------------------------------*
+METHOD __Error( ... )
+*-----------------------------------------------------------------------------*
+Local cMessage, uRet
+cMessage := __GetMessage()
+
+   IF SubStr( cMessage, 1, 1 ) == "_"
+      cMessage := SubStr( cMessage, 2 )
+   ENDIF
+
+   RETURN HB_ExecFromArray( ::oOle, cMessage, HB_aParams() )
+#endif
