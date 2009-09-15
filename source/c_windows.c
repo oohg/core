@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.68 2009-08-26 00:50:41 guerra000 Exp $
+ * $Id: c_windows.c,v 1.69 2009-09-15 03:23:38 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -170,10 +170,48 @@ PHB_ITEM _OOHG_GetExistingObject( HWND hWnd, BOOL bForm, BOOL bForceAny )
    return pItem;
 }
 
+#define _MDI_Limit 64
+
+int _MDI_Count = 0;
+HWND _MDI_Items[ _MDI_Limit ][ 2 ];
+
+HB_FUNC( _OOHG_ADDMDI )
+{
+   if( _MDI_Count < _MDI_Limit )
+   {
+      _MDI_Items[ _MDI_Count ][ 0 ] = HWNDparam( 1 );   // MDI Client (work area)
+      _MDI_Items[ _MDI_Count ][ 1 ] = HWNDparam( 2 );   // MDI Frame (main window)
+      _MDI_Count++;
+   }
+}
+
+HB_FUNC( _OOHG_REMOVEMDI )
+{
+   int iPos;
+   HWND hWndClient;
+
+   hWndClient = HWNDparam( 1 );
+   iPos = _MDI_Count;
+   while( iPos )
+   {
+      iPos--;
+      if( _MDI_Items[ iPos ][ 0 ] == hWndClient )
+      {
+         _MDI_Count--;
+         if( iPos != _MDI_Count )
+         {
+            _MDI_Items[ iPos ][ 0 ] = _MDI_Items[ _MDI_Count ][ 0 ];
+            _MDI_Items[ iPos ][ 1 ] = _MDI_Items[ _MDI_Count ][ 1 ];
+         }
+      }
+   }
+}
+
 void _OOHG_ProcessMessage( PMSG Msg )
 {
    PHB_ITEM pSelf, pSave;
    HWND hWnd;
+   int bCheck = 1;
 
    // Saves current result
    pSave = hb_itemNew( NULL );
@@ -198,7 +236,37 @@ void _OOHG_ProcessMessage( PMSG Msg )
          }
 
       default:
-         if( ! IsWindow( GetActiveWindow() ) || ! IsDialogMessage( GetActiveWindow(), Msg ) )
+         if( _MDI_Count )
+         {
+            int iPos;
+            int bLoop = 1;
+            HWND hWnd;
+            hWnd = Msg->hwnd;
+            while( bLoop )
+            {
+               iPos = _MDI_Count;
+               while( iPos )
+               {
+                  iPos--;
+                  if( _MDI_Items[ iPos ][ 0 ] == hWnd || _MDI_Items[ iPos ][ 1 ] == hWnd )
+                  {
+                     bLoop = 0;
+                     bCheck = ! TranslateMDISysAccel( _MDI_Items[ iPos ][ 0 ], Msg );
+                              // && ! TranslateAccelerator( _MDI_Items[ iPos ][ 1 ], NULL, Msg );
+                     iPos = 0;
+                  }
+               }
+               if( bLoop )
+               {
+                  hWnd = GetParent( hWnd );
+                  if( ! hWnd )
+                  {
+                     bLoop = 0;
+                  }
+               }
+            }
+         }
+         if( bCheck && ( ! IsWindow( GetActiveWindow() ) || ! IsDialogMessage( GetActiveWindow(), Msg ) ) )
          {
             TranslateMessage( Msg );
             DispatchMessage( Msg );

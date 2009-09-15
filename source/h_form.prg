@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.16 2009-08-01 13:51:56 guerra000 Exp $
+ * $Id: h_form.prg,v 1.17 2009-09-15 03:23:38 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -2016,6 +2016,7 @@ CLASS TFormMDIClient FROM TFormInternal
    METHOD Define
    METHOD DefWindowProc(nMsg,wParam,lParam)       BLOCK { |Self,nMsg,wParam,lParam| DefMDIChildProc( ::hWnd, nMsg, wParam, lParam ) }
    METHOD Events_Size
+   METHOD Release      BLOCK { |Self| _OOHG_RemoveMdi( ::hWnd ) , ::Super:Release() }
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -2062,6 +2063,8 @@ Local nStyle := 0, nStyleEx := 0, aClientRect
 
    ::Parent:hWndClient := ::hWnd
    ::Parent:oWndClient := Self
+
+   _OOHG_AddMdi( ::hWnd, ::Parent:hWnd )
 
    ::Events_Size()
 Return Self
