@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: makelib.bat,v 1.35 2007-01-01 22:30:14 guerra000 Exp $
+rem $Id: makelib.bat,v 1.36 2009-09-23 18:51:10 declan2005 Exp $
 rem
 
-call makelib_bcc
+call makelib_mingw
