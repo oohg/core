@@ -1,5 +1,5 @@
 /*
- * $Id: miniprint.prg,v 1.27 2009-06-18 21:28:16 declan2005 Exp $
+ * $Id: miniprint.prg,v 1.28 2009-09-28 19:51:21 declan2005 Exp $
  */
 /*----------------------------------------------------------------------------
  MINIGUI - Harbour Win32 GUI library source code
@@ -1983,6 +1983,21 @@ RETURN NIL
 #include "commctrl.h"
 #include "olectl.h"
 
+#ifdef __XHARBOUR__
+#define HB_STORNI( n, x, y ) hb_storni( n, x, y )
+#define HB_STORNL( n, x, y ) hb_stornl( n, x, y )
+#define HB_STORL( n, x, y )  hb_storl( n, x, y )
+#define HB_STORC( n, x, y )  hb_storc( n, x, y )
+#define HB_PARNL( n, x, y )  hb_parnl( n, x, y )
+#else
+#define HB_STORNI( n, x, y ) hb_storvni( n, x, y )
+#define HB_STORNL( n, x, y ) hb_storvnl( n, x, y )
+#define HB_STORL( n, x, y )  hb_storvl( n, x, y )
+#define HB_STORC( n, x, y )  hb_storvc( n, x, y )
+#define HB_PARNL( n, x, y )  hb_parvnl( n, x, y )
+#endif
+
+
 HB_FUNC ( CVCSETTEXTALIGN )
 {
   hb_retni(SetTextAlign( (HDC) hb_parnl (1) ,  hb_parni(2)));
@@ -2429,20 +2444,20 @@ HB_FUNC ( _HMG_PRINTER_PRINTDIALOG )
 		pDevMode = (LPDEVMODE) GlobalLock(pd.hDevMode);
 
 		hb_reta( 4 );
-		hb_stornl	( (LONG) pd.hDC		, -1, 1 );
-                hb_storc        ( ( char * ) pDevMode->dmDeviceName, -1, 2 );
-		hb_storni	( pDevMode->dmCopies	, -1, 3 );
-		hb_storni	( pDevMode->dmCollate	, -1, 4 );
+		HB_STORNL	( (LONG) pd.hDC		, -1, 1 );
+                HB_STORC        ( ( char * ) pDevMode->dmDeviceName, -1, 2 );
+		HB_STORNI	( pDevMode->dmCopies	, -1, 3 );
+		HB_STORNI	( pDevMode->dmCollate	, -1, 4 );
 
 		GlobalUnlock(pd.hDevMode);
 	}
 	else
 	{
 		hb_reta( 4 );
-		hb_stornl	( 0	, -1, 1 );
-		hb_storc	( ""	, -1, 2 );
-		hb_storni	( 0	, -1, 3 );
-		hb_storni	( 0	, -1, 4 );
+		HB_STORNL	( 0	, -1, 1 );
+		HB_STORC	( ""	, -1, 2 );
+		HB_STORNI	( 0	, -1, 3 );
+		HB_STORNI	( 0	, -1, 4 );
 	}
 
 }
@@ -2498,7 +2513,7 @@ HB_FUNC (APRINTERS)   //Pier Release
                {
                   cBuffer = (char *) GlobalAlloc(GPTR, 256);
                   strcat(cBuffer,pInfo_4->pPrinterName);
-                  hb_storc( cBuffer , -1 , i+1 );
+                  HB_STORC( cBuffer , -1 , i+1 );
                   GlobalFree(cBuffer);
                }
 
@@ -2511,7 +2526,7 @@ HB_FUNC (APRINTERS)   //Pier Release
                {
                   cBuffer = (char *) GlobalAlloc(GPTR, 256);
                   strcat(cBuffer,pInfo_5->pPrinterName);
-                  hb_storc( cBuffer , -1 , i+1 );
+                  HB_STORC( cBuffer , -1 , i+1 );
                   GlobalFree(cBuffer);
                }
                GlobalFree(pBuffer);
@@ -2797,10 +2812,10 @@ HB_FUNC ( _HMG_PRINTER_SETPRINTERPROPERTIES )
 		MessageBox(0, "Printer Configuration Failed! (001)", "Error!",MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
 
 		hb_reta( 4 );
-		hb_stornl	( 0 	, -1, 1 );
-		hb_storc	( ""	, -1, 2 );
-		hb_storni	( 0	, -1, 3 );
-		hb_storni	( 0	, -1, 4 );
+		HB_STORNL	( 0 	, -1, 1 );
+		HB_STORC	( ""	, -1, 2 );
+		HB_STORNI	( 0	, -1, 3 );
+		HB_STORNI	( 0	, -1, 4 );
 
 		return;
 	}
@@ -2815,10 +2830,10 @@ HB_FUNC ( _HMG_PRINTER_SETPRINTERPROPERTIES )
 		MessageBox(0, "Printer Configuration Failed! (002)", "Error!",MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
 
 		hb_reta( 4 );
-		hb_stornl	( 0 	, -1, 1 );
-		hb_storc	( ""	, -1, 2 );
-		hb_storni	( 0	, -1, 3 );
-		hb_storni	( 0	, -1, 4 );
+		HB_STORNL	( 0 	, -1, 1 );
+		HB_STORC	( ""	, -1, 2 );
+		HB_STORNI	( 0	, -1, 3 );
+		HB_STORNI	( 0	, -1, 4 );
 
 		return;
 	}
@@ -2831,10 +2846,10 @@ HB_FUNC ( _HMG_PRINTER_SETPRINTERPROPERTIES )
 		MessageBox(0, "Printer Configuration Failed! (003)", "Error!",MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
 
 		hb_reta( 4 );
-		hb_stornl	( 0 	, -1, 1 );
-		hb_storc	( ""	, -1, 2 );
-		hb_storni	( 0	, -1, 3 );
-		hb_storni	( 0	, -1, 4 );
+		HB_STORNL	( 0 	, -1, 1 );
+		HB_STORC	( ""	, -1, 2 );
+		HB_STORNI	( 0	, -1, 3 );
+		HB_STORNI	( 0	, -1, 4 );
 
 		return;
 	}
@@ -2848,10 +2863,10 @@ HB_FUNC ( _HMG_PRINTER_SETPRINTERPROPERTIES )
 		MessageBox(0, "Printer Configuration Failed! (004)", "Error!",MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
 
 		hb_reta( 4 );
-		hb_stornl	( 0 	, -1, 1 );
-		hb_storc	( ""	, -1, 2 );
-		hb_storni	( 0	, -1, 3 );
-		hb_storni	( 0	, -1, 4 );
+		HB_STORNL	( 0 	, -1, 1 );
+		HB_STORC	( ""	, -1, 2 );
+		HB_STORNI	( 0	, -1, 3 );
+		HB_STORNI	( 0	, -1, 4 );
 
 		return;
 	}
@@ -2866,10 +2881,10 @@ HB_FUNC ( _HMG_PRINTER_SETPRINTERPROPERTIES )
 			MessageBox(0, "Printer Configuration Failed! (005)", "Error!",MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
 
 			hb_reta( 4 );
-			hb_stornl	( 0 	, -1, 1 );
-			hb_storc	( ""	, -1, 2 );
-			hb_storni	( 0	, -1, 3 );
-			hb_storni	( 0	, -1, 4 );
+			HB_STORNL	( 0 	, -1, 1 );
+			HB_STORC	( ""	, -1, 2 );
+			HB_STORNI	( 0	, -1, 3 );
+			HB_STORNI	( 0	, -1, 4 );
 
 			return;
 		}
@@ -2882,10 +2897,10 @@ HB_FUNC ( _HMG_PRINTER_SETPRINTERPROPERTIES )
 			MessageBox(0, "Printer Configuration Failed! (006)", "Error! (006)",MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
 
 			hb_reta( 4 );
-			hb_stornl	( 0 	, -1, 1 );
-			hb_storc	( ""	, -1, 2 );
-			hb_storni	( 0	, -1, 3 );
-			hb_storni	( 0	, -1, 4 );
+			HB_STORNL	( 0 	, -1, 1 );
+			HB_STORC	( ""	, -1, 2 );
+			HB_STORNI	( 0	, -1, 3 );
+			HB_STORNI	( 0	, -1, 4 );
 
 			return;
 		}
@@ -2899,10 +2914,10 @@ HB_FUNC ( _HMG_PRINTER_SETPRINTERPROPERTIES )
 			MessageBox(0, "Printer Configuration Failed! (007)", "Error!",MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
 
 			hb_reta( 4 );
-			hb_stornl	( 0 	, -1, 1 );
-			hb_storc	( ""	, -1, 2 );
-			hb_storni	( 0	, -1, 3 );
-			hb_storni	( 0	, -1, 4 );
+			HB_STORNL	( 0 	, -1, 1 );
+			HB_STORC	( ""	, -1, 2 );
+			HB_STORNI	( 0	, -1, 3 );
+			HB_STORNI	( 0	, -1, 4 );
 
 			return;
 		}
@@ -2986,10 +3001,10 @@ HB_FUNC ( _HMG_PRINTER_SETPRINTERPROPERTIES )
 			MessageBox(0, "Printer Configuration Failed: ORIENTATION Property Not Supported By Selected Printer", "Error!",MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
 
 			hb_reta( 4 );
-			hb_stornl	( 0 	, -1, 1 );
-			hb_storc	( ""	, -1, 2 );
-			hb_storni	( 0	, -1, 3 );
-			hb_storni	( 0	, -1, 4 );
+			HB_STORNL	( 0 	, -1, 1 );
+			HB_STORC	( ""	, -1, 2 );
+			HB_STORNI	( 0	, -1, 3 );
+			HB_STORNI	( 0	, -1, 4 );
 
 			return;
 		}
@@ -3005,10 +3020,10 @@ HB_FUNC ( _HMG_PRINTER_SETPRINTERPROPERTIES )
 			MessageBox(0, "Printer Configuration Failed: PAPERSIZE Property Not Supported By Selected Printer", "Error!",MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
 
 			hb_reta( 4 );
-			hb_stornl	( 0 	, -1, 1 );
-			hb_storc	( ""	, -1, 2 );
-			hb_storni	( 0	, -1, 3 );
-			hb_storni	( 0	, -1, 4 );
+			HB_STORNL	( 0 	, -1, 1 );
+			HB_STORC	( ""	, -1, 2 );
+			HB_STORNI	( 0	, -1, 3 );
+			HB_STORNI	( 0	, -1, 4 );
 
 			return;
 		}
@@ -3024,10 +3039,10 @@ HB_FUNC ( _HMG_PRINTER_SETPRINTERPROPERTIES )
 			MessageBox(0, "Printer Configuration Failed: PAPERLENGTH Property Not Supported By Selected Printer", "Error!",MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
 
 			hb_reta( 4 );
-			hb_stornl	( 0 	, -1, 1 );
-			hb_storc	( ""	, -1, 2 );
-			hb_storni	( 0	, -1, 3 );
-			hb_storni	( 0	, -1, 4 );
+			HB_STORNL	( 0 	, -1, 1 );
+			HB_STORC	( ""	, -1, 2 );
+			HB_STORNI	( 0	, -1, 3 );
+			HB_STORNI	( 0	, -1, 4 );
 
 			return;
 		}
@@ -3043,10 +3058,10 @@ HB_FUNC ( _HMG_PRINTER_SETPRINTERPROPERTIES )
 			MessageBox(0, "Printer Configuration Failed: PAPERWIDTH Property Not Supported By Selected Printer", "Error!",MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
 
 			hb_reta( 4 );
-			hb_stornl	( 0 	, -1, 1 );
-			hb_storc	( ""	, -1, 2 );
-			hb_storni	( 0	, -1, 3 );
-			hb_storni	( 0	, -1, 4 );
+			HB_STORNL	( 0 	, -1, 1 );
+			HB_STORC	( ""	, -1, 2 );
+			HB_STORNI	( 0	, -1, 3 );
+			HB_STORNI	( 0	, -1, 4 );
 
 			return;
 		}
@@ -3062,10 +3077,10 @@ HB_FUNC ( _HMG_PRINTER_SETPRINTERPROPERTIES )
 			MessageBox(0, "Printer Configuration Failed: COPIES Property Not Supported By Selected Printer", "Error!",MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
 
 			hb_reta( 4 );
-			hb_stornl	( 0 	, -1, 1 );
-			hb_storc	( ""	, -1, 2 );
-			hb_storni	( 0	, -1, 3 );
-			hb_storni	( 0	, -1, 4 );
+			HB_STORNL	( 0 	, -1, 1 );
+			HB_STORC	( ""	, -1, 2 );
+			HB_STORNI	( 0	, -1, 3 );
+			HB_STORNI	( 0	, -1, 4 );
 
 			return;
 		}
@@ -3081,10 +3096,10 @@ HB_FUNC ( _HMG_PRINTER_SETPRINTERPROPERTIES )
 			MessageBox(0, "Printer Configuration Failed: DEFAULTSOURCE Property Not Supported By Selected Printer", "Error!",MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
 
 			hb_reta( 4 );
-			hb_stornl	( 0 	, -1, 1 );
-			hb_storc	( ""	, -1, 2 );
-			hb_storni	( 0	, -1, 3 );
-			hb_storni	( 0	, -1, 4 );
+			HB_STORNL	( 0 	, -1, 1 );
+			HB_STORC	( ""	, -1, 2 );
+			HB_STORNI	( 0	, -1, 3 );
+			HB_STORNI	( 0	, -1, 4 );
 
 			return;
 		}
@@ -3100,10 +3115,10 @@ HB_FUNC ( _HMG_PRINTER_SETPRINTERPROPERTIES )
 			MessageBox(0, "Printer Configuration Failed: QUALITY Property Not Supported By Selected Printer", "Error!",MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
 
 			hb_reta( 4 );
-			hb_stornl	( 0 	, -1, 1 );
-			hb_storc	( ""	, -1, 2 );
-			hb_storni	( 0	, -1, 3 );
-			hb_storni	( 0	, -1, 4 );
+			HB_STORNL	( 0 	, -1, 1 );
+			HB_STORC	( ""	, -1, 2 );
+			HB_STORNI	( 0	, -1, 3 );
+			HB_STORNI	( 0	, -1, 4 );
 
 			return;
 		}
@@ -3119,10 +3134,10 @@ HB_FUNC ( _HMG_PRINTER_SETPRINTERPROPERTIES )
 			MessageBox(0, "Printer Configuration Failed: COLOR Property Not Supported By Selected Printer", "Error!",MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
 
 			hb_reta( 4 );
-			hb_stornl	( 0 	, -1, 1 );
-			hb_storc	( ""	, -1, 2 );
-			hb_storni	( 0	, -1, 3 );
-			hb_storni	( 0	, -1, 4 );
+			HB_STORNL	( 0 	, -1, 1 );
+			HB_STORC	( ""	, -1, 2 );
+			HB_STORNI	( 0	, -1, 3 );
+			HB_STORNI	( 0	, -1, 4 );
 
 			return;
 		}
@@ -3138,10 +3153,10 @@ HB_FUNC ( _HMG_PRINTER_SETPRINTERPROPERTIES )
 			MessageBox(0, "Printer Configuration Failed: DUPLEX Property Not Supported By Selected Printer", "Error!",MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
 
 			hb_reta( 4 );
-			hb_stornl	( 0 	, -1, 1 );
-			hb_storc	( ""	, -1, 2 );
-			hb_storni	( 0	, -1, 3 );
-			hb_storni	( 0	, -1, 4 );
+			HB_STORNL	( 0 	, -1, 1 );
+			HB_STORC	( ""	, -1, 2 );
+			HB_STORNI	( 0	, -1, 3 );
+			HB_STORNI	( 0	, -1, 4 );
 
 			return;
 		}
@@ -3157,10 +3172,10 @@ HB_FUNC ( _HMG_PRINTER_SETPRINTERPROPERTIES )
 			MessageBox(0, "Printer Configuration Failed: COLLATE Property Not Supported By Selected Printer", "Error!",MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
 
 			hb_reta( 4 );
-			hb_stornl	( 0 	, -1, 1 );
-			hb_storc	( ""	, -1, 2 );
-			hb_storni	( 0	, -1, 3 );
-			hb_storni	( 0	, -1, 4 );
+			HB_STORNL	( 0 	, -1, 1 );
+			HB_STORC	( ""	, -1, 2 );
+			HB_STORNI	( 0	, -1, 3 );
+			HB_STORNI	( 0	, -1, 4 );
 
 			return;
 		}
@@ -3185,10 +3200,10 @@ HB_FUNC ( _HMG_PRINTER_SETPRINTERPROPERTIES )
 		MessageBox(0, "Printer Configuration Failed! (008)", "Error!",MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
 
 		hb_reta( 4 );
-		hb_stornl	( 0 	, -1, 1 );
-		hb_storc	( ""	, -1, 2 );
-		hb_storni	( 0	, -1, 3 );
-		hb_storni	( 0	, -1, 4 );
+		HB_STORNL	( 0 	, -1, 1 );
+		HB_STORC	( ""	, -1, 2 );
+		HB_STORNI	( 0	, -1, 3 );
+		HB_STORNI	( 0	, -1, 4 );
 
 		return;
 	}
@@ -3198,18 +3213,18 @@ HB_FUNC ( _HMG_PRINTER_SETPRINTERPROPERTIES )
 	if ( hdcPrint != NULL )
 	{
 		hb_reta( 4 );
-		hb_stornl	( (LONG) hdcPrint		, -1, 1 );
-		hb_storc	( hb_parc(1)			, -1, 2 );
-		hb_storni	( (INT) pi2->pDevMode->dmCopies	, -1, 3 );
-		hb_storni	( (INT) pi2->pDevMode->dmCollate	, -1, 4 );
+		HB_STORNL	( (LONG) hdcPrint		, -1, 1 );
+		HB_STORC	( hb_parc(1)			, -1, 2 );
+		HB_STORNI	( (INT) pi2->pDevMode->dmCopies	, -1, 3 );
+		HB_STORNI	( (INT) pi2->pDevMode->dmCollate	, -1, 4 );
 	}
 	else
 	{
 		hb_reta( 4 );
-		hb_stornl	( 0 	, -1, 1 );
-		hb_storc	( ""	, -1, 2 );
-		hb_storni	( 0	, -1, 3 );
-		hb_storni	( 0	, -1, 4 );
+		HB_STORNL	( 0 	, -1, 1 );
+		HB_STORC	( ""	, -1, 2 );
+		HB_STORNI	( 0	, -1, 3 );
+		HB_STORNI	( 0	, -1, 4 );
 	}
 
 	if (pi2)
