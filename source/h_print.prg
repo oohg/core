@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.88 2009-07-31 03:11:20 declan2005 Exp $
+* $Id: h_print.prg,v 1.89 2009-09-29 20:32:55 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -1737,8 +1737,13 @@ empty(npapersize)
 empty(cprinterx)
 
 ///::oExcel := CreateObject( "Excel.Application" )
+
+#ifndef __XHARBOUR__
+IF ( ::oExcel := win_oleCreateObject( "Excel.Application" ) ) = NIL
+#else
 ::oExcel := TOleAuto():New( "Excel.Application" )
 IF Ole2TxtError() != 'S_OK'
+#endif
    MsgStop('Excel not found','error')
    ::lprerror:=.T.
    ::exit:=.T.
