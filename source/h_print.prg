@@ -1,5 +1,5 @@
-/*                                                                                                                                        
-* $Id: h_print.prg,v 1.90 2009-10-06 12:16:02 declan2005 Exp $
+/*
+* $Id: h_print.prg,v 1.91 2009-10-07 03:26:16 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -274,7 +274,7 @@ METHOD setunits()   ////// mm o rowcol
 *-------------------------
 
 *-------------------------
-METHOD setunitsx() BLOCK { || nil }
+METHOD setunitsx()   BLOCK { || nil }
 *-------------------------
 
 *-------------------------
@@ -488,12 +488,17 @@ METHOD getdefprinter() CLASS TPRINTBASE
 RETURN ::getdefprinterx()
 
 *-------------------------
-METHOD setunits(cunitsx) CLASS TPRINTBASE
+METHOD setunits(cunitsx,nunitslinx) CLASS TPRINTBASE
 *-------------------------
 IF cunitsx="MM"
    ::cunits:="MM"
 ELSE
    ::cunits:="ROWCOL"
+ENDIF
+IF nunitslinx=NIL
+   ::nunitslin:=1
+ELSE
+   ::nunitslin:=nunitslinx
 ENDIF
 RETURN nil
 
@@ -557,10 +562,10 @@ ELSE
       ::nmver  := (::nfontsize)/2.35
    ELSE
       ::nmver  :=  10/2.35
-   ENDIF 
+   ENDIF
    ::nvfij  := (12/1.65)
    ::nhfij  := (12/3.70)
-ENDIF 
+ENDIF
 
 ctext:= cspace + ctext
 
@@ -1573,7 +1578,7 @@ static function zoom(cOp)
 *-------------------------
 IF cOp="+" .and. print_preview.edit_p.fontsize <= 24
    print_preview.edit_p.fontsize:=  print_preview.edit_p.fontsize + 2
-ENDIF 
+ENDIF
 
 IF cOp="-" .and. print_preview.edit_p.fontsize > 7
    print_preview.edit_p.fontsize:=  print_preview.edit_p.fontsize - 2
@@ -1592,7 +1597,7 @@ print_preview.edit_p.caretpos:=1
 ::cString  := inputbox('Text: ','Search String')
 IF empty(::cString)
    RETURN(NIL)
-ENDIF 
+ENDIF
 print_preview.but_6.enabled:=.t.
 ::nextsearch()
 RETURN(nil)
@@ -1613,7 +1618,7 @@ IF nCaretpos>0
 ELSE
    print_preview.but_6.enabled:=.F.
    msginfo("End search","Information")
-ENDIF 
+ENDIF
 RETURN nil
 
 *-------------------------
@@ -1624,7 +1629,7 @@ cbusca:=alltrim(cbusca)
 for i:=1 to n
     IF upper(substr(cencuentra,i,len(cbusca)))=upper(cbusca)
        nc++
-    ENDIF 
+    ENDIF
 next i
 RETURN nc
 
@@ -1641,7 +1646,7 @@ for i:= ninicio to lenctodo
     IF upper(substr(ctodo,i,lencbusca))=uppercbusca
        nposluna:=i
        exit
-    ENDIF 
+    ENDIF
 next i
 RETURN nposluna
 
@@ -1722,7 +1727,7 @@ method normaldosx() BLOCK {|| NIL }
 *-------------------------
 
 *-------------------------
-METHOD setunitsx()    // mm o rowcol , mm por renglon
+////METHOD setunitsx(cunitsx,nunitslinx)  // mm o rowcol , mm por renglon
 *-------------------------
 
 ENDCLASS
@@ -1802,15 +1807,7 @@ METHOD beginpagex() CLASS TEXCELPRINT
 *-------------------------
 RETURN self
 
-
-*-------------------------
-METHOD endpagex() CLASS TEXCELPRINT
-*-------------------------
-::nlinpag:=LEN(::alincelda)+1
-::alincelda:={}
-RETURN self
-
-
+/*
 *-------------------------
 METHOD setunitsx(cunitsx,nunitslinx) CLASS TEXCELPRINT
 *-------------------------
@@ -1818,30 +1815,38 @@ IF cunitsx="MM"
    ::cunits:="MM"
 ELSE
    ::cunits:="ROWCOL"
-ENDIF 
+ENDIF
 IF nunitslinx=NIL
    ::nunitslin:=1
 ELSE
    ::nunitslin:=nunitslinx
-ENDIF 
+ENDIF
 RETURN self
+*/
+
 
 
 *-------------------------
 METHOD printimagex(nlin,ncol,nlinf,ncolf,cimage) CLASS TEXCELPRINT
 *-------------------------
 local cfolder :=  getcurrentfolder()+"\"
-local ccol :=alltrim(str(ncol))
-local crango := "A"+ccol+":"+"A"+ccol
-empty(nlin)
-empty(nlinf)
-empty(ncolf)
+local ccol,clin
+local crango
+IF ::nunitslin>1
+   nlin:=round(nlin/::nunitslin,0)
+   ncol:=round(ncol/::nunitslin,0)
+ENDIF
+clin :=alltrim(str(nlin))
+ccol :=alltrim(str(ncolf))
 
+crango := "A"+clin+":"+"A"+ccol
+empty(nlinf)
 ::oHoja:range( crango ):Select()
 cimage:=cfolder+cimage
 ::oHoja:Pictures:Insert(cimage)
 
 RETURN self
+
 
 *-------------------------
 METHOD printdatax(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext,litalic) CLASS TEXCELPRINT
@@ -1854,7 +1859,7 @@ empty(nlen)
 nlin++
 IF ::nunitslin>1
    nlin:=round(nlin/::nunitslin,0)
-ENDIF 
+ENDIF
 nlin:=nlin+::nlinpag
 IF LEN(::alincelda)<nlin
    DO WHILE LEN(::alincelda)<nlin
@@ -1868,7 +1873,7 @@ alinceldax:=::alincelda[nlin]
 ::oHoja:Cells(nlin,alinceldax):Value := "'"+space(ncol)+ctext
 IF cfont#::cfontname
    ::oHoja:Cells(nlin,alinceldax):Font:Name := cfont
-ENDIF 
+ENDIF
 IF nsize#::nfontsize
    ::oHoja:Cells(nlin,alinceldax):Font:Size := nsize
 ENDIF
@@ -1887,6 +1892,16 @@ case calign="C"
    ::oHoja:Cells(nlin,alinceldax):HorizontalAlignment:= -4108  //Centrar
 endcase
 RETURN self
+
+
+
+*-------------------------
+METHOD endpagex() CLASS TEXCELPRINT
+*-------------------------
+::nlinpag:=LEN(::alincelda)+1
+::alincelda:={}
+RETURN self
+
 
 ////////////////////////
 
@@ -2551,8 +2566,16 @@ local I
 
 Default cFont to ::cFontName
 Default nSize to ::nFontSize
-////Default lBold to .f.
+
 DEFAULT aColor to ::acolor
+
+if .not. hb_islogical(lBold)
+   lbold:=.f.
+endif
+
+if .not. hb_islogical(lItalic)
+   lItalic:=.f.
+endif
 
 
 empty( data )
