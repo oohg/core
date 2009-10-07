@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.60 2009-07-26 19:13:21 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.61 2009-10-07 19:51:35 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1018,7 +1018,7 @@ Local lChange := .F., nPos1, cMask
          Do While nPos1 > 1 .AND. aValidMask[ nPos1 - 1 ] .AND. ! SubStr( cText, nPos1, 1 ) == " "
             nPos1--
          EndDo
-         If SubStr( cText, nPos1, 1 ) == " "
+         If aValidMask[ nPos1 ] .AND. SubStr( cText, nPos1, 1 ) == " "
             cText := Left( cText, nPos1 - 1 ) + SubStr( cText, nPos1 + 1, nPos - nPos1 - 1 ) + " " + SubStr( cText, nPos )
             nPos--
          EndIf
