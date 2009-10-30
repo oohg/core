@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog,v 1.622 2009-10-07 19:51:34 guerra000 Exp $
+ * $Id: ChangeLog,v 1.623 2009-10-30 18:00:26 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-10-30 13:58 UTC-0400 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_radio.prg
+    ! 2 problems fixed when use radiogroup in oop mode.
+
 
 2009-10-07 14:57 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_textbox.prg

@@ -1,5 +1,5 @@
 /*
- * $Id: h_radio.prg,v 1.23 2009-02-16 01:45:43 guerra000 Exp $
+ * $Id: h_radio.prg,v 1.24 2009-10-30 18:00:36 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -82,13 +82,13 @@
 
  Parts of this project are based upon:
 
-	"Harbour GUI framework for Win32"
- 	Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- 	Copyright 2001 Antonio Linares <alinares@fivetech.com>
-	www - http://www.harbour-project.org
+ "Harbour GUI framework for Win32"
+  Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
+  Copyright 2001 Antonio Linares <alinares@fivetech.com>
+ www - http://www.harbour-project.org
 
-	"Harbour Project"
-	Copyright 1999-2003, http://www.harbour-project.org/
+ "Harbour Project"
+ Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
 #include "oohg.ch"
@@ -141,6 +141,9 @@ Local ControlHandle, i, oItem, nStyle
    ASSIGN ::lAutoSize VALUE autosize   TYPE "L"
    ASSIGN horizontal  VALUE horizontal TYPE "L" DEFAULT .F.
 
+   default invisible to .F.
+   default notabstop to .F.
+
    IF horizontal
       ASSIGN Spacing     VALUE Spacing    TYPE "N" DEFAULT ::nWidth
    ELSE
@@ -165,7 +168,7 @@ Local ControlHandle, i, oItem, nStyle
 
    // First item
    oItem := TRadioItem():SetForm( , Self )
-   oItem:Register( ControlHandle, , HelpId, ! Invisible, ToolTip )
+   oItem:Register( ControlHandle, , HelpId, !Invisible, ToolTip )
    oItem:SetFont( , , bold, italic, underline, strikeout )
    oItem:SizePos( ::Row, ::Col, ::Width, ::Height )
    oItem:AutoSize := autosize
@@ -203,7 +206,7 @@ Local ControlHandle, i, oItem, nStyle
       If ! notabstop
          ::aOptions[ 1 ]:TabStop := .T.
       EndIf
-	EndIf
+ EndIf
 
    ASSIGN ::OnChange    VALUE Change    TYPE "B"
 
@@ -408,7 +411,7 @@ static LRESULT APIENTRY SubClassFuncB( HWND hWnd, UINT msg, WPARAM wParam, LPARA
 
 HB_FUNC( INITRADIOGROUP )
 {
-	HWND hbutton;
+ HWND hbutton;
    int Style   = hb_parni( 4 ) | BS_NOTIFY | WS_CHILD | BS_AUTORADIOBUTTON | WS_GROUP;
    int StyleEx = _OOHG_RTL_Status( hb_parl( 5 ) );
 
@@ -423,7 +426,7 @@ HB_FUNC( INITRADIOGROUP )
 
 HB_FUNC( INITRADIOBUTTON )
 {
-	HWND hbutton;
+ HWND hbutton;
    int Style   = hb_parni( 4 ) | BS_NOTIFY | WS_CHILD | BS_AUTORADIOBUTTON;
    int StyleEx = _OOHG_RTL_Status( hb_parl( 5 ) );
 
