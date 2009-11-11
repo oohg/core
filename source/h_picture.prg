@@ -1,5 +1,5 @@
 /*
- * $Id: h_picture.prg,v 1.5 2009-03-16 00:48:34 guerra000 Exp $
+ * $Id: h_picture.prg,v 1.6 2009-11-11 07:23:57 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -74,9 +74,11 @@ CLASS TPicture FROM TControl
    METHOD Buffer        SETGET
    METHOD HBitMap       SETGET
    METHOD Zoom          SETGET
+   METHOD Rotate        SETGET
    METHOD OnClick       SETGET
 
    METHOD Events
+   METHOD nDegree       SETGET
 
    EMPTY( _OOHG_AllVars )
 ENDCLASS
@@ -136,10 +138,6 @@ LOCAL nAttrib
       //    nAttrib += LR_LOADMAP3DCOLORS + LR_LOADTRANSPARENT
       // ENDIF
       ::hImage := _OOHG_BitmapFromFile( Self, cPicture, nAttrib, .F. )
-      IF ::ImageSize
-         ::nWidth  := _BitMapWidth( ::hImage )
-         ::nHeight := _BitMapHeight( ::hImage )
-      ENDIF
       ::RePaint()
    ENDIF
 Return ::cPicture
@@ -150,10 +148,6 @@ METHOD HBitMap( hBitMap ) CLASS TPicture
    If ValType( hBitMap ) $ "NP"
       DeleteObject( ::hImage )
       ::hImage := hBitMap
-      IF ::ImageSize
-         ::nWidth  := _BitMapWidth( ::hImage )
-         ::nHeight := _BitMapHeight( ::hImage )
-      ENDIF
       ::RePaint()
    EndIf
 Return ::hImage
@@ -164,10 +158,6 @@ METHOD Buffer( cBuffer ) CLASS TPicture
    If VALTYPE( cBuffer ) $ "CM"
       DeleteObject( ::hImage )
       ::hImage := _OOHG_BitmapFromBuffer( Self, cBuffer, .F. )
-      IF ::ImageSize
-         ::nWidth  := _BitMapWidth( ::hImage )
-         ::nHeight := _BitMapHeight( ::hImage )
-      ENDIF
       ::RePaint()
    EndIf
 Return nil
@@ -182,29 +172,57 @@ METHOD Zoom( nZoom ) CLASS TPicture
 Return ::nZoom
 
 *-----------------------------------------------------------------------------*
+METHOD Rotate( nDegree ) CLASS TPicture
+*-----------------------------------------------------------------------------*
+   If HB_IsNumeric( nDegree )
+      ::nDegree := nDegree
+      ::RePaint()
+   EndIf
+Return ::nDegree
+
+*-----------------------------------------------------------------------------*
 METHOD OnClick( bOnClick ) CLASS TPicture
 *-----------------------------------------------------------------------------*
    If PCOUNT() > 0
       ::bOnClick := bOnClick
+* TO DO: NOTIFY WHEN SCROLLBARS OR ONCLICK
       TPicture_SetNotify( Self, HB_IsBlock( bOnClick ) )
    EndIf
 Return ::bOnClick
 
 *-----------------------------------------------------------------------------*
-METHOD RePaint() CLASS TPicture
+METHOD RePaint( lMoving ) CLASS TPicture
 *-----------------------------------------------------------------------------*
-   IF ValidHandler( ::AuxHandle )
+LOCAL nWidth, nHeight, nAux
+   IF ValidHandler( ::AuxHandle ) .AND. ! ::AuxHandle == ::hImage
       DeleteObject( ::AuxHandle )
    ENDIF
-   ::Super:SizePos( ,, ::nWidth, ::nHeight )
-   IF ::Stretch .OR. ::AutoFit
+   IF ( ::Stretch .OR. ::AutoFit ) .AND. ! ::ImageSize
+* TO DO: ROTATE
       ::AuxHandle := _OOHG_SetBitmap( Self, ::hImage, 0, ::Stretch, ::AutoFit )
-   ELSE
+   ELSEIF ! ::nZoom == 1
       ::AuxHandle := _OOHG_ScaleImage( Self, ::hImage, ( _BitmapWidth( ::hImage ) * ::nZoom ) + 0.999, ( _BitmapHeight( ::hImage ) * ::nZoom ) + 0.999 )
+   ELSE
+      ::AuxHandle := ::hImage
    ENDIF
-   IF SCROLLS( ::hWnd, _BitmapWidth( ::AuxHandle ), _BitmapHeight( ::AuxHandle ) )
+
+   // Rotate size
+   nWidth  := _BitMapWidth( ::AuxHandle )
+   nHeight := _BitMapHeight( ::AuxHandle )
+   IF ::nDegree == 90 .OR. ::nDegree == 270
+      nAux := nWidth
+      nWidth := nHeight
+      nHeight := nAux
+   ENDIF
+
+   IF ::ImageSize .AND. ( ! HB_IsLogical( lMoving ) .OR. ! lMoving )
+      ::Super:SizePos( ,, nWidth, nHeight )
+   ENDIF
+* TO DO: NOTIFY WHEN SCROLLBARS OR ONCLICK
+   IF SCROLLS( ::hWnd, nWidth, nHeight )
 *      ::ReDraw()
    ENDIF
+   ::ReDraw()
 RETURN Self
 
 *-----------------------------------------------------------------------------*
@@ -212,7 +230,7 @@ METHOD SizePos( Row, Col, Width, Height ) CLASS TPicture
 *-----------------------------------------------------------------------------*
 LOCAL uRet
    uRet := ::Super:SizePos( Row, Col, Width, Height )
-   ::RePaint()
+   ::RePaint( .T. )
 RETURN uRet
 
 *-----------------------------------------------------------------------------*
@@ -255,6 +273,9 @@ static LRESULT CALLBACK _OOHG_PictureControl_WndProc( HWND hWnd, UINT message, W
 {
    return DefWindowProc( hWnd, message, wParam, lParam );
 }
+
+// lAux[ 0 ] = lSetNotify
+// lAux[ 1 ] = nDegree
 
 void _OOHG_PictureControl_Register( void )
 {
@@ -313,6 +334,8 @@ void _OOHG_PictureControl_RePaint( HWND hWnd, PHB_ITEM pSelf, RECT *rect, HDC hd
    HDC hDCAux;
    HBRUSH hBrush;
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   POINT point[ 3 ];
+   int row, col, width, height;
 
    if( ! hWnd )
    {
@@ -360,7 +383,71 @@ void _OOHG_PictureControl_RePaint( HWND hWnd, PHB_ITEM pSelf, RECT *rect, HDC hd
    }
 
    SetStretchBltMode( hdc, COLORONCOLOR );
+/*
    BitBlt( hdc, rect->left, rect->top, rect->right - rect->left, rect->bottom - rect->top, hDCAux, rect->left + iScrollHorz, rect->top + iScrollVert, SRCCOPY );
+*/
+   if( oSelf->lAux[ 1 ] == 90 )
+   {
+      point[ 0 ].x = rect->right;
+      point[ 0 ].y = rect->top;
+      point[ 1 ].x = rect->right;
+      point[ 1 ].y = rect->bottom;
+      point[ 2 ].x = rect->left;
+      point[ 2 ].y = rect->top;
+      col = rect->top + iScrollVert;
+      row = iHeight - rect->right - iScrollHorz;
+      height = rect->right - rect->left;
+      width = rect->bottom - rect->top;
+   }
+   else if( oSelf->lAux[ 1 ] == 180 )
+   {
+      point[ 0 ].x = rect->right - 1;
+      point[ 0 ].y = rect->bottom - 1;
+      point[ 1 ].x = rect->left - 1;
+      point[ 1 ].y = rect->bottom - 1;
+      point[ 2 ].x = rect->right - 1;
+      point[ 2 ].y = rect->top - 1;
+      row = iHeight - rect->bottom - iScrollVert;
+      col = iWidth - rect->right - iScrollHorz;
+      width = rect->right - rect->left;
+      height = rect->bottom - rect->top;
+   }
+   else if( oSelf->lAux[ 1 ] == 270 )
+   {
+      point[ 0 ].x = rect->left;
+      point[ 0 ].y = rect->bottom;
+      point[ 1 ].x = rect->left;
+      point[ 1 ].y = rect->top;
+      point[ 2 ].x = rect->right;
+      point[ 2 ].y = rect->bottom;
+      row = rect->left + iScrollHorz;
+      col = iWidth - rect->bottom - iScrollVert;
+      height = rect->right - rect->left;
+      width = rect->bottom - rect->top;
+   }
+   else
+   {
+      point[ 0 ].x = rect->left;
+      point[ 0 ].y = rect->top;
+      point[ 1 ].x = rect->right;
+      point[ 1 ].y = rect->top;
+      point[ 2 ].x = rect->left;
+      point[ 2 ].y = rect->bottom;
+      col = rect->left + iScrollHorz;
+      row = rect->top + iScrollVert;
+      width = rect->right - rect->left;
+      height = rect->bottom - rect->top;
+   }
+
+   PlgBlt( hdc, ( POINT * ) &point, hDCAux, col, row, width, height, NULL, 0, 0 );
+
+   if( oSelf->lAux[ 1 ] == 90 || oSelf->lAux[ 1 ] == 270 )
+   {
+      int iAux;
+      iAux = iWidth;
+      iWidth = iHeight;
+      iHeight = iAux;
+   }
    iWidth  -= iScrollHorz;
    iHeight -= iScrollVert;
    if( rect->right > iWidth )
@@ -595,12 +682,25 @@ HB_FUNC_STATIC( TPICTURE_EVENTS )
    }
 }
 
+HB_FUNC_STATIC( TPICTURE_NDEGREE )   // ( nDegree )
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+
+   if( ISNUM( 1 ) )
+   {
+      oSelf->lAux[ 1 ] = hb_parnl( 1 ) % 360;
+   }
+
+   hb_retnl( oSelf->lAux[ 1 ] );
+}
+
 HB_FUNC( TPICTURE_SETNOTIFY )   // ( oSelf, lHit )
 {
    PHB_ITEM pSelf = hb_param( 1, HB_IT_ANY );
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
 
-   oSelf->lAux[ 0 ] = hb_parnl( 2 );
+   oSelf->lAux[ 0 ] = hb_parl( 2 );
    hb_ret();
 }
 

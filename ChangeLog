@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.625 2009-10-31 16:19:29 declan2005 Exp $
+ * $Id: ChangeLog,v 1.626 2009-11-11 07:23:55 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,10 +7,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2009-11-11 01:17 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_picture.prg
+    + ::Rotate() method added.
+
 2009-10-31 12:18 UTC-0400 Ciro Vargas C. <cvc@oohg.org>
   * source/h_error.prg
     *  changed version
-
 
 2009-10-31 09:50 UTC-0400 Ciro Vargas C. <cvc@oohg.org>
   * include/oohg.ch
@@ -19,7 +22,6 @@
 2009-10-30 13:58 UTC-0400 Ciro Vargas C. <cvc@oohg.org>
   * source/h_radio.prg
     ! 2 problems fixed when use radiogroup in oop mode.
-
 
 2009-10-07 14:57 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_textbox.prg
@@ -37,7 +39,6 @@
   * source/h_print.prg
     ! fixed to run excelprint with new harbour.
 
-
 2009-09-28 15:49 UTC-0400 Ciro Vargas C. <cvc@oohg.org>
   * source/winprint.prg
   * source/miniprint.prg
@@ -52,7 +53,7 @@
   * source/makelib_mingw.bat
   * compile.bat
   * compile_mingw.bat
-    * updated in order to use mingw by default.  
+    * updated in order to use mingw by default.
 
 2009-09-19 14:18 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * include/i_splitbox.ch
@@ -91,7 +92,7 @@
   * source/h_init.prg
     * testing gui mode init
   * source/h_error.prg
-    * updated version    
+    * updated version
   * include/oohg.ch
     * testing gui mode init
 
