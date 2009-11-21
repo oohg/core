@@ -1,5 +1,5 @@
 /*
- * $Id: c_winapimisc.c,v 1.11 2009-08-24 01:47:19 declan2005 Exp $
+ * $Id: c_winapimisc.c,v 1.12 2009-11-21 23:48:46 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -137,7 +137,7 @@ HB_FUNC(WAITRUNPIPE )
       HANDLE ReadPipeHandle;
       HANDLE WritePipeHandle;       // not used here
       char Data[1024];
-      BYTE *szFile=(BYTE*)hb_parc(3);
+      char *szFile = ( char * ) hb_parc( 3 );
       HB_FHANDLE nHandle;
       SECURITY_ATTRIBUTES sa;
       ZeroMemory(&sa,sizeof(SECURITY_ATTRIBUTES));

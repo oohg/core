@@ -1,12 +1,12 @@
 /*
- * $Id: h_dialogs.prg,v 1.7 2009-06-12 02:45:05 declan2005 Exp $
+ * $Id: h_dialogs.prg,v 1.8 2009-11-21 23:48:46 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG dialogs functions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -96,24 +96,21 @@
 *-----------------------------------------------------------------------------*
 Function GetColor( aInitColor )
 *-----------------------------------------------------------------------------*
-Local aRetVal [3] , nColor , nInitColor
+Local aRetVal, nColor, nInitColor
 
-	if HB_IsArray ( aInitColor )
-           nInitColor := RGB ( aInitColor [1] , aInitColor [2] , aInitColor [3] )
+   If HB_IsArray( aInitColor )
+      nInitColor := RGB( aInitColor[ 1 ], aInitColor[ 2 ], aInitColor[ 3 ] )
 	EndIf
 
 	nColor := ChooseColor( NIL, nInitColor )
 
 	If nColor == -1
-		aRetVal [1] := Nil
-		aRetVal [2] := Nil
-		aRetVal [3] := Nil
+      aRetVal := { Nil, Nil, Nil }
 	Else
-		aRetVal [1] := GetRed (nColor)
-		aRetVal [2] := GetGreen (nColor)
-		aRetVal [3] := GetBlue (nColor)
+      aRetVal := { GetRed( nColor ), GetGreen( nColor ), GetBlue( nColor ) }
 	EndIf
 
+   EMPTY( _OOHG_AllVars )
 Return aRetVal
 
 *-----------------------------------------------------------------------------*
@@ -122,52 +119,50 @@ Function GetFolder( cTitle, cInitPath )
 Return C_Browseforfolder( NIL, cTitle, NIL, NIL, cInitPath )
 
 *-----------------------------------------------------------------------------*
-Function browseforfolder(nFolder, nFlag, cTitle, cInitPath) // Contributed By Ryszard Rylko       
+Function browseforfolder(nFolder, nFlag, cTitle, cInitPath) // Contributed By Ryszard Rylko
 *-----------------------------------------------------------------------------*
-Local RetVal:=""                                                               
-RetVal := C_BrowseForFolder( NIL, cTitle, nFlag, nFolder, cInitPath )
-return RetVal
+Return C_BrowseForFolder( NIL, cTitle, nFlag, nFolder, cInitPath )
 
 *-----------------------------------------------------------------------------*
 Function GetFile( aFilter, title, cIniFolder, multiselect, nochangedir )
 *-----------------------------------------------------------------------------*
 local c := ''
-local cfiles := ''
+local cfiles
 local fileslist := {}
 local n
 
-	IF HB_IsNil (aFilter )   //// == Nil
-           aFilter := {}
+   If HB_IsNil( aFilter )   //// == Nil
+      aFilter := {}
 	EndIf
 
-	FOR n:=1 TO LEN(aFilter)
-	    c += aFilter[n][1] + chr(0) + aFilter[n][2] + chr(0)
+   FOR n := 1 TO LEN( aFilter )
+       c += aFilter[ n ][ 1 ] + chr( 0 ) + aFilter[ n ][ 2 ] + chr( 0 )
 	NEXT
 
-	if !HB_IsLogical(multiselect)
-           multiselect := .f.
-	endif
+   If ! HB_IsLogical( multiselect )
+      multiselect := .f.
+   EndIf
 
-	if .not. multiselect
-		Return ( C_GetFile ( c , title, cIniFolder, multiselect ,nochangedir ) )
-	else
-		cfiles := C_GetFile ( c , title, cIniFolder, multiselect ,nochangedir )
+   If ! multiselect
+      Return C_GetFile( c, title, cIniFolder, multiselect, nochangedir )
+   Else
+      cfiles := C_GetFile( c, title, cIniFolder, multiselect, nochangedir )
 
-		if len( cfiles ) > 0
-			if HB_IsArray( cfiles )
-                        FOR n := 1 TO LEN( cfiles )
-                            if at( "\\", cfiles[n] ) > 0
-                                 cfiles[n] := strtran( cfiles[n] , "\\", "\" )
-                            endif
-                        NEXT
-                            fileslist := aclone( cfiles )
-			else
-                            aadd( fileslist, cfiles )
-			endif
-		endif
+      If len( cfiles ) > 0
+         If HB_IsArray( cfiles )
+            FOR n := 1 TO LEN( cfiles )
+               If At( "\\", cfiles[n] ) > 0
+                  cfiles[ n ] := strtran( cfiles[ n ] , "\\", "\" )
+               EndIf
+            NEXT
+            fileslist := aclone( cfiles )
+         Else
+            aadd( fileslist, cfiles )
+         Endif
+      Endif
 
-		return ( fileslist )
-	endif
+      Return ( fileslist )
+   Endif
 
 Return Nil
 
@@ -177,14 +172,14 @@ Function Putfile ( aFilter, title, cIniFolder, nochangedir )
 local c:='' , n
 
 	IF HB_IsNil( aFilter )     ////////////aFilter == Nil
-           aFilter:={}
+      aFilter:={}
 	EndIf
 
 	FOR n := 1 TO Len ( aFilter )
-            c += aFilter [n] [1] + chr(0) + aFilter [n] [2] + chr(0)
+      c += aFilter[ n ][ 1 ] + chr( 0 ) + aFilter[ n ][ 2 ] + chr( 0 )
 	NEXT
 
-Return C_PutFile ( c, title, cIniFolder, nochangedir )
+Return C_PutFile( c, title, cIniFolder, nochangedir )
 
 *------------------------------------------------------------------------------*
 Function GetFont( cInitFontName , nInitFontSize , lBold , lItalic , anInitColor , lUnderLine , lStrikeOut , nCharset )

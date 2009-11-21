@@ -1,5 +1,5 @@
 /*
- * $Id: h_picture.prg,v 1.6 2009-11-11 07:23:57 guerra000 Exp $
+ * $Id: h_picture.prg,v 1.7 2009-11-21 23:48:46 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -185,7 +185,6 @@ METHOD OnClick( bOnClick ) CLASS TPicture
 *-----------------------------------------------------------------------------*
    If PCOUNT() > 0
       ::bOnClick := bOnClick
-* TO DO: NOTIFY WHEN SCROLLBARS OR ONCLICK
       TPicture_SetNotify( Self, HB_IsBlock( bOnClick ) )
    EndIf
 Return ::bOnClick
@@ -218,11 +217,13 @@ LOCAL nWidth, nHeight, nAux
    IF ::ImageSize .AND. ( ! HB_IsLogical( lMoving ) .OR. ! lMoving )
       ::Super:SizePos( ,, nWidth, nHeight )
    ENDIF
-* TO DO: NOTIFY WHEN SCROLLBARS OR ONCLICK
    IF SCROLLS( ::hWnd, nWidth, nHeight )
 *      ::ReDraw()
    ENDIF
-   ::ReDraw()
+   TPicture_SetNotify( Self, HB_IsBlock( ::bOnClick ) )
+   IF ( ! HB_IsLogical( lMoving ) .OR. ! lMoving )
+      ::ReDraw()
+   ENDIF
 RETURN Self
 
 *-----------------------------------------------------------------------------*
@@ -700,7 +701,7 @@ HB_FUNC( TPICTURE_SETNOTIFY )   // ( oSelf, lHit )
    PHB_ITEM pSelf = hb_param( 1, HB_IT_ANY );
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
 
-   oSelf->lAux[ 0 ] = hb_parl( 2 );
+   oSelf->lAux[ 0 ] = ( hb_parl( 2 ) || ( GetWindowLong( oSelf->hWnd, GWL_STYLE ) & ( WS_HSCROLL | WS_VSCROLL ) ) );
    hb_ret();
 }
 
