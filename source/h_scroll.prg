@@ -1,5 +1,5 @@
 /*
- * $Id: h_scroll.prg,v 1.17 2009-02-16 01:45:43 guerra000 Exp $
+ * $Id: h_scroll.prg,v 1.18 2009-11-22 16:47:12 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -177,6 +177,9 @@ METHOD Value( nValue ) CLASS TScrollBar
 *-----------------------------------------------------------------------------*
    if HB_IsNumeric( nValue )
       SetScrollPos( ::FromhWnd, ::ScrollType, nValue / ::nFactor, 1 )
+      ///#ifdef __HARBOUR__
+      /// ::Redraw()
+      ////#endif
    endif
 Return GetScrollPos( ::FromhWnd, ::ScrollType ) * ::nFactor
 
@@ -351,12 +354,14 @@ METHOD Events_VScroll( wParam ) CLASS TScrollBar
 Local Lo_wParam := LoWord( wParam )
 
    If Lo_wParam == SB_LINEDOWN         // .OR. Lo_wParam == SB_LINERIGHT
+
       ::LineDown()
 
    elseif Lo_wParam == SB_LINEUP       // .OR. Lo_wParam == SB_LINELEFT
       ::LineUp()
 
    elseif Lo_wParam == SB_PAGEUP       // .OR. Lo_wParam == SB_PAGELEFT
+
       ::PageUp()
 
    elseif Lo_wParam == SB_PAGEDOWN     // .OR. Lo_wParam == SB_PAGERIGHT
@@ -412,8 +417,8 @@ static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 // this MUST be a INITSCROLLBAR instead only a VERTICAL scroll bar!!!
 HB_FUNC( INITSCROLLBAR )  // ( hWnd, nCol, nRow, nWidth, nHeight, lRtl, nType )
 {
-	HWND hwnd;
-	HWND hscrollbar;
+ HWND hwnd;
+ HWND hscrollbar;
    int nType = hb_parni( 7 );
    int iStyle, iStyleEx;
 
@@ -434,15 +439,15 @@ HB_FUNC( INITSCROLLBAR )  // ( hWnd, nCol, nRow, nWidth, nHeight, lRtl, nType )
    }
 
    hscrollbar = CreateWindowEx( iStyleEx, "SCROLLBAR", "", iStyle,
-	hb_parni(2) , hb_parni(3) , hb_parni(4) , hb_parni(5),
-	hwnd,(HMENU) 0 , GetModuleHandle(NULL) , NULL ) ;
+ hb_parni(2) , hb_parni(3) , hb_parni(4) , hb_parni(5),
+ hwnd,(HMENU) 0 , GetModuleHandle(NULL) , NULL ) ;
 
    SetScrollRange( hscrollbar, // handle of window with scroll bar
                    SB_CTL,     // scroll bar flag
                    1,    // minimum scrolling position
                    100,     // maximum scrolling position
                    1     // redraw flag
-	);
+ );
 
    lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hscrollbar, GWL_WNDPROC, ( LONG ) SubClassFunc );
 
@@ -461,7 +466,14 @@ HB_FUNC( GETHSCROLLBARHEIGHT )
 
 HB_FUNC( SETSCROLLPOS ) // ( hWnd, fnBar, nPos, lRedraw )
 {
-   hb_retni( SetScrollPos( HWNDparam( 1 ), hb_parni( 2 ), hb_parni( 3 ), hb_parl( 4 ) ) );
+   hb_retni( SetScrollPos( HWNDparam( 1 ), hb_parni( 2 ), hb_parni( 3 ),
+             hb_parl( 4 ) ) );
+   #ifdef __MINGW32__                  // Macro correspondiente a MinGW... agregar con un or el de 64
+      RedrawWindow( HWNDparam( 1 ), NULL, NULL,
+         RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN |
+         RDW_ERASENOW | RDW_UPDATENOW
+      );
+   #endif
 }
 
 HB_FUNC( SETSCROLLRANGE ) // ( hWnd, fnBar, nRangeMin, nRangeMax, lRedraw )
@@ -579,7 +591,7 @@ HB_FUNC( GETSCROLLRANGEMAX ) // ( hWnd, fnBar )
 
 HB_FUNC( SETSCROLLINFO ) // ( hWnd, nMax, nPos, nPage, nMin )
 {
-	SCROLLINFO lpsi;
+ SCROLLINFO lpsi;
    lpsi.cbSize = sizeof( SCROLLINFO );
    lpsi.fMask = 0;
    if( ISNUM( 2 ) )
