@@ -1,5 +1,5 @@
 /*
- * $Id: miniprint.prg,v 1.28 2009-09-28 19:51:21 declan2005 Exp $
+ * $Id: miniprint.prg,v 1.29 2009-11-24 02:55:18 guerra000 Exp $
  */
 /*----------------------------------------------------------------------------
  MINIGUI - Harbour Win32 GUI library source code
@@ -2471,7 +2471,7 @@ HB_FUNC (APRINTERS)   //Pier Release
       DWORD dwPrinters = 0;
       DWORD i;
       char *pBuffer;
-      char *cBuffer ;
+      char *cBuffer;
       PRINTER_INFO_4* pInfo_4;
       PRINTER_INFO_5* pInfo_5;
       osVer.dwOSVersionInfoSize = sizeof( osVer );
@@ -2535,8 +2535,6 @@ HB_FUNC (APRINTERS)   //Pier Release
       }
       else
       {
-         GlobalFree(cBuffer);
-         GlobalFree(pBuffer);
          hb_reta(0);
       }
    }

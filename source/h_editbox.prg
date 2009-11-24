@@ -1,5 +1,5 @@
 /*
- * $Id: h_editbox.prg,v 1.14 2008-02-17 05:47:50 guerra000 Exp $
+ * $Id: h_editbox.prg,v 1.15 2009-11-24 02:55:18 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -103,6 +103,8 @@ CLASS TEdit FROM TText
    METHOD Define
    METHOD LookForKey
    METHOD Events_Enter      BLOCK { || nil }
+
+   EMPTY( _OOHG_AllVars )
 ENDCLASS
 
 *-----------------------------------------------------------------------------*

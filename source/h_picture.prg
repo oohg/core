@@ -1,5 +1,5 @@
 /*
- * $Id: h_picture.prg,v 1.7 2009-11-21 23:48:46 guerra000 Exp $
+ * $Id: h_picture.prg,v 1.8 2009-11-24 02:55:18 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -712,7 +712,7 @@ HB_FUNC( SCROLLS )   // ( hWnd, nWidth, nHeight )
    int iWidth, iHeight, iClientWidth, iClientHeight;
    int iScrollWidth, iScrollHeight;
    int iRangeHorz, iRangeVert, iPosHorz, iPosVert, iPageHorz, iPageVert;
-   int bChanged, iRange, iPos, iPage;
+   int bChanged, iRange, iPos;
    RECT rect;
    SCROLLINFO ScrollInfo;
 
@@ -770,7 +770,7 @@ HB_FUNC( SCROLLS )   // ( hWnd, nWidth, nHeight )
    bChanged = 0;
    lStyle = lStyle & ( ~ ( WS_HSCROLL | WS_VSCROLL ) );
 
-   iRange = iPos = iPage = 0;
+   iRange = iPos = 0;
    if( iWidth > iClientWidth )
    {
       iRange = iWidth - iClientWidth;

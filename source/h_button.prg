@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.43 2009-06-13 01:50:32 guerra000 Exp $
+ * $Id: h_button.prg,v 1.44 2009-11-24 02:55:18 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -348,30 +348,25 @@ HB_FUNC( INITBUTTON )
    HWNDret( hbutton );
 }
 
-#ifndef BUTTON_IMAGELIST
-   typedef struct {
-       HIMAGELIST himl;
-       RECT margin;
-       UINT uAlign;
-   } BUTTON_IMAGELIST, *PBUTTON_IMAGELIST;
-#endif
-
 #ifndef BCM_FIRST
    #define BCM_FIRST     0x1600
 #endif
 
 #ifndef BCM_SETIMAGELIST
-   #define BCM_SETIMAGELIST     ( BCM_FIRST + 2 )
-#endif
+   typedef struct {
+       HIMAGELIST himl;
+       RECT margin;
+       UINT uAlign;
+   } BUTTON_IMAGELIST, *PBUTTON_IMAGELIST;
 
-#ifndef BCM_GETIMAGELIST
+   #define BCM_SETIMAGELIST     ( BCM_FIRST + 2 )
    #define BCM_GETIMAGELIST     ( BCM_FIRST + 3 )
 #endif
 
 HB_FUNC( SETIMAGEXP )
 {
-	HIMAGELIST himl;
-	BUTTON_IMAGELIST bi ;
+   HIMAGELIST himl;
+   BUTTON_IMAGELIST bi ;
    HBITMAP hBmp;
    HBITMAP hBmp2;
    BITMAP bm;

@@ -1,11 +1,26 @@
 /*
- * $Id: ChangeLog,v 1.628 2009-11-22 16:47:11 declan2005 Exp $
+ * $Id: ChangeLog,v 1.629 2009-11-24 02:55:18 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2009-11-23 20:47 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  + ./compile_vc.bat
+  + source/makelib_vc.bat
+    + MSVC 9 compilation added.
+  * ./compile_bcc.bat
+    ! Fixed environment variables checkup.
+  * source/h_button.prg
+    ! Fixed BUTTON_IMAGELIST structure definition.
+  * source/miniprint.prg
+    ! Fixed uninitialized variables.
+  * source/h_picture.prg
+    * Removed unused iPage variable.
+  * source/h_editbox.prg
+    ! Fixed unused _OOHG_AllVars warning.
 
 2009-11-22 11:45 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_scroll.prg
