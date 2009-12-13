@@ -1,5 +1,5 @@
 /*
- * $Id: i_dll.ch,v 1.1 2005-08-06 23:50:17 guerra000 Exp $
+ * $Id: i_dll.ch,v 1.2 2009-12-13 23:05:06 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -146,29 +146,28 @@
 #define DLL_TYPE_HDC           -4  
 #define DLL_TYPE_HIMAGELIST    -4
 
+
+
+
 #xcommand DECLARE <return> [<static:STATIC>] <FuncName>( [ <type1> <uParam1>  ] ;
                                                      [, <typeN> <uParamN> ] ) ;
              IN <*DllName*> [FLAGS <flags>]  ;
        => ;
-          [<static>] function <FuncName>( [<uParam1>] [,<uParamN>] ) ;;
-             local uResult ;;
-             Local hInstDLL  :=LoadLibrary(<(DllName)>);;
-             Local nProcAddr :=GetProcAddress(hInstDLL,<(FuncName)>);;
-             uResult = CallDLL(hInstDLL, nProcAddr, [<flags>], <return> [, <type1>, <uParam1> ] [, <typeN>, <uParamN> ] ) ;;
-             FreeLibrary(hInstDLL);;
-             return uResult
+	[<static>] function <FuncName> ( [<uParam1>] [,<uParamN>] ) ;;
+	local uResult ;;
+	uResult = CallDLL32( <(FuncName)> , <(DllName)> [, <uParam1> ] [, <uParamN> ] ) ;;
+	return uResult
 
-#xcommand DECLARE <return> [<static:STATIC>] <FuncName>( [ <type1> <uParam1> ] ;
+#xcommand DECLARE <return> [<static:STATIC>] <FuncName>( [ <type1> <uParam1>  ] ;
                                                      [, <typeN> <uParamN> ] ) ;
-             IN <DllName> ALIAS <alias> [FLAGS <flags>];
+             IN <DllName> ALIAS <alias> [FLAGS <flags>]  ;
        => ;
-          [<static>] function <alias>( [<uParam1>] [,<uParamN>] ) ;;
-             local uResult ;;
-             Local hInstDLL  :=LoadLibrary(<(DllName)>);;
-             Local nProcAddr :=GetProcAddress(hInstDLL,<(FuncName)>);;
-             uResult = CallDLL(hInstDLL, nProcAddr, [<flags>], <return> [, <type1>, <uParam1> ] [, <typeN>, <uParamN> ] ) ;;
-             FreeLibrary(hInstDLL);;
-             return uResult
+	[<static>] function <alias> ( [<uParam1>] [,<uParamN>] ) ;;
+	local uResult ;;
+	uResult = CallDLL32( <(FuncName)> , <(DllName)> [, <uParam1> ] [, <uParamN> ] ) ;;
+	return uResult
+
+
 
 
 
