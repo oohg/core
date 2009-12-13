@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.76 2009-08-15 00:39:02 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.77 2009-12-13 21:34:31 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -530,13 +530,13 @@ Return nil
 *-----------------------------------------------------------------------------*
 METHOD Down() CLASS TOBrowse
 *-----------------------------------------------------------------------------*
-Local s , _RecNo // , _DeltaScroll
+Local s , _RecNo  //, _DeltaScroll
 
    s := LISTVIEW_GETFIRSTITEM( ::hWnd )
 
    If s >= Len( ::aRecMap )
 
-      // _DeltaScroll := ListView_GetSubItemRect( ::hWnd, 0 , 0 )
+   ///    _DeltaScroll := ListView_GetSubItemRect( ::hWnd, 0 , 0 )
 
       If Select( ::WorkArea ) == 0
          ::RecCount := 0
@@ -561,7 +561,7 @@ Local s , _RecNo // , _DeltaScroll
       ::Update()
       If Len( ::aRecMap ) != 0
          ( ::WorkArea )->( DbGoTo( ATail( ::aRecMap ) ) )
-         // ListView_Scroll( ::hWnd, _DeltaScroll[2] * (-1) , 0 )
+    ///      ListView_Scroll( ::hWnd, _DeltaScroll[2] * (-1) , 0 )
       EndIf
       ::scrollUpdate()
       ( ::WorkArea )->( DbGoTo( _RecNo ) )
@@ -845,6 +845,7 @@ Local ActualRecord , RecordCount
          ActualRecord := ::VScroll:Value + d
          * ::VScroll:RangeMax := RecordCount
          ::VScroll:Value := ActualRecord
+
       EndIf
 
    EndIf
@@ -865,7 +866,7 @@ METHOD ScrollUpdate() CLASS TOBrowse
 Local ActualRecord , RecordCount
 Local oVScroll, cWorkArea
 
-   oVScroll := ::VScroll
+          oVScroll := ::VScroll
 
    // If vertical scrollbar is used it must be updated
    If oVScroll != nil
@@ -908,7 +909,7 @@ Return NIL
 *-----------------------------------------------------------------------------*
 METHOD Refresh() CLASS TOBrowse
 *-----------------------------------------------------------------------------*
-Local s , _RecNo, v // , _DeltaScroll
+Local s , _RecNo, v /// , _DeltaScroll
 Local cWorkArea, hWnd
 
    cWorkArea := ::WorkArea
@@ -921,7 +922,7 @@ Local cWorkArea, hWnd
 
    v := ::Value
 
-   // _DeltaScroll := ListView_GetSubItemRect ( hWnd, 0 , 0 )
+ ///   _DeltaScroll := ListView_GetSubItemRect ( hWnd, 0 , 0 )
 
    s := LISTVIEW_GETFIRSTITEM( hWnd )
 
@@ -1001,6 +1002,7 @@ Local nItem
          uValue := 0 // ::nValue
       Endif
    EndIf
+   
 RETURN uValue
 
 *-----------------------------------------------------------------------------*

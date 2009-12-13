@@ -1,5 +1,5 @@
 /*
- * $Id: c_activex.c,v 1.8 2009-09-14 03:17:26 declan2005 Exp $
+ * $Id: c_activex.c,v 1.9 2009-12-13 21:34:31 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -42,6 +42,10 @@
 #include <hbvm.h>
 #ifdef __XHARBOUR__
   #include <hbstack.h>
+#else                      //// si es harbour
+#ifdef __BORLANDC__        //// y es borland C
+  #include <hbstack.h>
+#endif
 #endif
 #include "oohg.h"
 #include <ocidl.h>
@@ -53,7 +57,7 @@
 
 PHB_SYMB s___GetMessage = NULL;
 
-#ifdef __XHARBOUR__
+#ifdef __XHARBOUR__     /// si es xharbour
 // -----------------------------------------------------------------------------
 HB_FUNC( TACTIVEX___ERROR )
 // -----------------------------------------------------------------------------
@@ -83,6 +87,39 @@ HB_FUNC( TACTIVEX___ERROR )
    }
    hb_vmSend( hb_pcount() );
 }
+#else                      
+#ifdef __BORLANDC__
+
+HB_FUNC( TACTIVEX___ERROR )
+
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   PHB_SYMB sMessage;
+   int iPCount;
+
+   if( ! s___GetMessage )
+   {
+      s___GetMessage = hb_dynsymSymbol( hb_dynsymFind( "__GETMESSAGE" ) );
+   }
+
+   hb_vmPushSymbol( s___GetMessage );
+   hb_vmPushNil();
+   hb_vmDo( 0 );
+   sMessage = hb_dynsymSymbol( hb_dynsymFind( hb_parc( -1 ) ) );
+
+   _OOHG_Send( pSelf, s_oOle );
+   hb_vmSend( 0 );
+
+   hb_vmPushSymbol( sMessage );
+   hb_vmPush( hb_param( -1, HB_IT_ANY ) );
+   for( iPCount = 1; iPCount <= hb_pcount() ; iPCount++ )
+   {
+      hb_vmPush( hb_param( iPCount, HB_IT_ANY ) );
+   }
+   hb_vmSend( hb_pcount() );
+}
+
+#endif
 #endif
 
 typedef HRESULT ( WINAPI *LPAtlAxWinInit )       ( void );
