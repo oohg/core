@@ -1,4 +1,7 @@
 /*
+ * $Id: h_dll.prg,v 1.2 2009-12-14 03:25:13 guerra000 Exp $
+ */
+/*
  * Harbour Project source code:
  * DLL access functions
  *
@@ -49,48 +52,52 @@
 
 #define MAX_PARAMS   8
 
-function CALLDLL32(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10)
-local aPass := array(11)
+function CALLDLL32( /* p1,p2,p3,p4,p5,p6,p7,p8,p9,p10 */ )
+local aPass := array( 11 )
 local aParms := HB_aParams()
-local nParmCnt := LEN(aParms)
+local nParmCnt := LEN( aParms )
 local i
 
-	IF nParmCnt > MAX_PARAMS + 2
-		return 0
-	ENDIF
+   IF nParmCnt > MAX_PARAMS + 2
+      return 0
+   ENDIF
 
-	aPass[1] := aParms[1]
-	aPass[2] := aParms[2]
-	aPass[3] := nParmCnt-2
-	FOR i := 3 TO nParmCnt
-		aPass[i+1] := IIF(valtype(aParms[i]) == "C", STRPTR(aParms[i]), aParms[i])
-	NEXT
+   aPass[ 1 ] := aParms[ 1 ]
+   aPass[ 2 ] := aParms[ 2 ]
+   aPass[ 3 ] := nParmCnt - 2
+   FOR i := 3 TO nParmCnt
+      aPass[i+1] := IIF(valtype(aParms[i]) == "C", STRPTR(aParms[i]), aParms[i])
+   NEXT
 
 return HB_DynaCall1( aPass[1],aPass[2],aPass[3],aPass[4],aPass[5],aPass[6],aPass[7],aPass[8],aPass[9],aPass[10],aPass[11])
 
-#PRAGMA BEGINDUMP
+EXTERN PtrStr
 
+#PRAGMA BEGINDUMP
 
 #include "windows.h"
 #include "hbapi.h"
 
 #define MAX_PARAMS   8
 
-HINSTANCE HB_DllStore[256];
+HINSTANCE HB_DllStore[ 256 ];
 
 HINSTANCE HB_LoadDll(char *);
 void      HB_UnloadDll(void);
 typedef   int (CALLBACK *DYNACALL1)(void);
 int       HB_DynaCall(char *, char *, int, ...);
 
-HINSTANCE HB_LoadDll (char *DllName)
+HINSTANCE HB_LoadDll( char *DllName )
 {
   static int DllCnt;
-  static int RegUnload;
-  if (!RegUnload) RegUnload=!atexit(HB_UnloadDll);
-  DllCnt=(DllCnt+1) & 255;
-  FreeLibrary(HB_DllStore[DllCnt]);
-  return HB_DllStore[DllCnt]=LoadLibrary(DllName);
+  static int RegUnload = 0;
+  if ( ! RegUnload )
+  {
+     RegUnload = ! atexit( HB_UnloadDll );
+  }
+  DllCnt = ( DllCnt + 1 ) & 255;
+  FreeLibrary( HB_DllStore[ DllCnt ] );
+  return HB_DllStore[ DllCnt ] = LoadLibrary( DllName );
 }
 
 HB_FUNC( UNLOADALLDLL )
@@ -98,13 +105,13 @@ HB_FUNC( UNLOADALLDLL )
    HB_UnloadDll();
 }
 
-void HB_UnloadDll (void)
+void HB_UnloadDll( void )
 {
-  register int i;
-  for(i=255;i>=0;i--)
-    {
-      FreeLibrary(HB_DllStore[i]);
-    }
+   register int i;
+   for( i = 255; i >= 0; i-- )
+   {
+      FreeLibrary( HB_DllStore[ i ] );
+   }
 }
 
 HB_FUNC( HB_DYNACALL1 )
@@ -126,70 +133,70 @@ HB_FUNC( HB_DYNACALL1 )
              );
 }
 
-int HB_DynaCall (char *FuncName, char *DllName, int nArgs, ...)
+int HB_DynaCall( char *FuncName, char *DllName, int nArgs, ... )
 {
-    register int i;
-    HINSTANCE  hInst;
-    DYNACALL1 lpAddr;
-    int arg;
-    int result = -2000;
-    //int *argtable = (int*)malloc(nArgs * sizeof *argtable);
-    int argtable[MAX_PARAMS];
-    char buff[256];
-    va_list ap;
+   register int i;
+   HINSTANCE  hInst;
+   DYNACALL1 lpAddr;
+   int arg;
+   int result = -2000;
+   //int *argtable = ( int * ) malloc( nArgs * sizeof *argtable );
+   int argtable[ MAX_PARAMS ];
+   char buff[ 256 ];
+   va_list ap;
 
-    hInst=GetModuleHandle(DllName);
-    if(hInst==NULL)
-    {
-        hInst=HB_LoadDll(DllName);
-    }
-    lpAddr=(DYNACALL1)GetProcAddress(hInst,FuncName);
-    if(lpAddr==NULL)
-    {
-        sprintf(buff,"%s%s",FuncName,"A");
-        lpAddr=(DYNACALL1)GetProcAddress(hInst,buff);
-    }
-    if(lpAddr==NULL)
-    {
-        sprintf(buff,"%s%s","_",FuncName);
-        lpAddr=(DYNACALL1)GetProcAddress(hInst,buff);
-    }
-    if (lpAddr)
-    {
-        va_start(ap,nArgs);
-        for (i=0; i<nArgs;i++)
-        {
-            arg = va_arg(ap,int);
-            argtable[i] = arg;
-        }
-        for (i=nArgs-1;i >=0; i--)
-        {
-            arg = argtable[i];
-            #if defined( __LCC__ )
-            _asm("pushl %arg")
-            #elif defined( __MINGW32__ )
-            __asm__("pushl %0" : : "r" (arg));
-            #elif defined( __BCPLUSPLUS__ )
-              asm push arg
-            #else
-            __asm{push arg}
-            #endif
-        }
-        result = (int)(lpAddr)();
-        va_end(ap);
-    }
-    return result;
+   hInst = GetModuleHandle( DllName );
+   if( hInst == NULL )
+   {
+      hInst = HB_LoadDll( DllName );
+   }
+   lpAddr = ( DYNACALL1 ) GetProcAddress( hInst, FuncName );
+   if( lpAddr == NULL )
+   {
+      sprintf( buff, "%s%s", FuncName, "A" );
+      lpAddr = ( DYNACALL1 ) GetProcAddress( hInst, buff );
+   }
+   if( lpAddr == NULL )
+   {
+      sprintf(buff,"%s%s","_",FuncName);
+      lpAddr=(DYNACALL1)GetProcAddress(hInst,buff);
+   }
+   if( lpAddr )
+   {
+      va_start( ap, nArgs );
+      for ( i = 0; i < nArgs; i++ )
+      {
+          arg = va_arg( ap, int );
+          argtable[ i ] = arg;
+      }
+      for( i = nArgs - 1; i >= 0; i-- )
+      {
+         arg = argtable[i];
+         #if defined( __LCC__ )
+         _asm("pushl %arg")
+         #elif defined( __MINGW32__ )
+         __asm__("pushl %0" : : "r" (arg));
+         #elif defined( __BCPLUSPLUS__ )
+           asm push arg
+         #else
+         __asm{push arg}
+         #endif
+      }
+      result = ( int )( lpAddr )();
+      va_end( ap );
+   }
+   return result;
 }
 
 HB_FUNC( STRPTR )
 {
-	char *cString = hb_parc( 1 );
-	hb_retnl( ( LONG_PTR) cString );
+   char *cString = hb_parc( 1 );
+   hb_retnl( ( LONG_PTR ) cString );
 }
 
 HB_FUNC( PTRSTR )
 {
-   hb_retc( (LPSTR) hb_parnl(1) );
+   hb_retc( ( LPSTR ) hb_parnl( 1 ) );
 }
 
 #PRAGMA ENDDUMP
