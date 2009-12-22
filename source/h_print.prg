@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.91 2009-10-07 03:26:16 declan2005 Exp $
+* $Id: h_print.prg,v 1.92 2009-12-22 19:07:30 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -704,7 +704,7 @@ method printdos() CLASS TPRINTBASE
 local cbat, nHdl
 cbat:='b'+alltrim(str(random(999999),6))+'.bat'
 nHdl := FCREATE( cBat )
-FWRITE( nHdl, "copy " + ::tempfile + " prn" + CHR( 13 ) + CHR( 10 ) )
+FWRITE( nHdl, "copy " + ::tempfile + " "+::cport + CHR( 13 ) + CHR( 10 ) )
 FWRITE( nHdl, "rem comando auxiliar de impresion" + CHR( 13 ) + CHR( 10 ) )
 FCLOSE( nHdl )
 waitrun( cBat, 0 )
@@ -1351,6 +1351,7 @@ DATA cimpname INIT ""
 DATA cportname INIT ""
 DATA ctipoimp INIT ""
 DATA liswin   INIT .F.
+DATA cport    INIT "prn"
 
 *-------------------------
 METHOD initx()
@@ -1542,9 +1543,14 @@ RETURN self
 
 
 *-------------------------
-METHOD selprinterx( lselect , lpreview /* , llandscape , npapersize ,cprinterx */ ) CLASS TDOSPRINT
+METHOD selprinterx( lselect , lpreview  , llandscape , npapersize ,cprinterx  ) CLASS TDOSPRINT
 *-------------------------
 /////Empty( lSelect )
+empty(llandscape)
+empty(npapersize)
+default cprinterx to "prn"
+::cport:= cprinterx
+
 DO WHILE file(::tempfile)
    ::tempfile:=gettempdir()+"T"+alltrim(str(int(hb_random(999999)),8))+".prn"
 ENDDO
@@ -1582,7 +1588,7 @@ ENDIF
 
 IF cOp="-" .and. print_preview.edit_p.fontsize > 7
    print_preview.edit_p.fontsize:=  print_preview.edit_p.fontsize - 2
-ENDIF 
+ENDIF
 RETURN nil
 
 
