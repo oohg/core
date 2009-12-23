@@ -1,5 +1,5 @@
 /*
- * $Id: h_dll.prg,v 1.3 2009-12-22 15:42:05 declan2005 Exp $ 
+ * $Id: h_dll.prg,v 1.4 2009-12-23 23:55:21 guerra000 Exp $ 
  */ 
 /* 
  * Harbour Project source code: 
@@ -110,48 +110,49 @@ void HB_UnloadDll( void )
  
 HB_FUNC( CALLDLL32 ) 
 { 
-   register int i; 
-   HINSTANCE  hInst; 
-   DYNACALL1 lpAddr; 
-   int arg; 
-   int result = -2000; 
-   char buff[ 256 ]; 
-   char *FuncName = hb_parc(1); 
-   char *DllName = hb_parc(2); 
-   int nArgs; 
-   int dd[ MAX_PARAMS ]; 
+   register int i;
+   HINSTANCE  hInst;
+   DYNACALL1 lpAddr;
+   int result = -2000;
+   char buff[ 256 ];
+   char *FuncName = hb_parc( 1 );
+   char *DllName = hb_parc( 2 );
+   int nArgs;
+   int dd[ MAX_PARAMS ];
  
-   nArgs = hb_pcount(); 
-   if( nArgs < 2 || nArgs > MAX_PARAMS + 2 ) 
-   { 
-      hb_retnl( 0 ); 
-   } 
-   nArgs -= 2; 
+   nArgs = hb_pcount();
+   if( nArgs < 2 || nArgs > MAX_PARAMS + 2 )
+   {
+      hb_retnl( 0 );
+      return;
+   }
+   nArgs -= 2;
  
-   hInst = GetModuleHandle( DllName ); 
-   if( hInst == NULL ) 
-   { 
-      hInst = HB_LoadDll( DllName ); 
-   } 
-   if( ! hInst ) 
-   { 
-      return; 
-   } 
-   lpAddr = ( DYNACALL1 ) GetProcAddress( hInst, FuncName ); 
-   if( lpAddr == NULL ) 
-   { 
-      sprintf( buff, "%s%s", FuncName, "A" ); 
-      lpAddr = ( DYNACALL1 ) GetProcAddress( hInst, buff ); 
-   } 
-   if( lpAddr == NULL ) 
-   { 
-      sprintf(buff,"%s%s","_",FuncName); 
-      lpAddr=(DYNACALL1)GetProcAddress(hInst,buff); 
-   } 
-   if( lpAddr ) 
-   { 
-      for( i = 0; i < nArgs; i++ ) 
-      { 
+   hInst = GetModuleHandle( DllName );
+   if( hInst == NULL )
+   {
+      hInst = HB_LoadDll( DllName );
+   }
+   if( ! hInst )
+   {
+      hb_retnl( 0 );
+      return;
+   }
+   lpAddr = ( DYNACALL1 ) GetProcAddress( hInst, FuncName );
+   if( lpAddr == NULL )
+   {
+      sprintf( buff, "%s%s", FuncName, "A" );
+      lpAddr = ( DYNACALL1 ) GetProcAddress( hInst, buff );
+   }
+   if( lpAddr == NULL )
+   {
+      sprintf(buff,"%s%s","_",FuncName);
+      lpAddr=(DYNACALL1)GetProcAddress(hInst,buff);
+   }
+   if( lpAddr )
+   {
+      for( i = 0; i < nArgs; i++ )
+      {
          if( ISCHAR( i + 3 ) ) 
          { 
             dd[ i ] = ( int ) hb_parc( i + 3 ); 

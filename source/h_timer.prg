@@ -1,12 +1,12 @@
 /*
- * $Id: h_timer.prg,v 1.6 2008-01-14 02:12:54 guerra000 Exp $
+ * $Id: h_timer.prg,v 1.7 2009-12-23 23:55:21 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG timer functions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -102,6 +102,8 @@ CLASS TTimer FROM TControl
    METHOD Value        SETGET
    METHOD Enabled      SETGET
    METHOD Release
+
+   EMPTY( _OOHG_AllVars )
 ENDCLASS
 
 *-----------------------------------------------------------------------------*

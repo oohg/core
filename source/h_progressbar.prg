@@ -1,12 +1,12 @@
 /*
- * $Id: h_progressbar.prg,v 1.8 2007-10-05 22:17:31 declan2005 Exp $
+ * $Id: h_progressbar.prg,v 1.9 2009-12-23 23:55:21 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG progress bar functions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -97,7 +97,7 @@
 #include "i_windefs.ch"
 
 CLASS TProgressBar FROM TControl
-   DATA Type      INIT "PROGRESSBAR" READONLY
+   DATA Type        INIT "PROGRESSBAR" READONLY
    DATA nRangeMin   INIT 0
    DATA nRangeMax   INIT 0
 
@@ -108,6 +108,8 @@ CLASS TProgressBar FROM TControl
    METHOD RangeMax            SETGET
    METHOD FontColor           SETGET
    METHOD BackColor           SETGET
+
+   EMPTY( _OOHG_AllVars )
 ENDCLASS
 
 *-----------------------------------------------------------------------------*

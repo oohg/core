@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.633 2009-12-22 19:07:16 declan2005 Exp $
+ * $Id: ChangeLog,v 1.634 2009-12-23 23:55:20 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,10 +7,22 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2009-12-23 18:05 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  + samples/incremental.prg
+    + Incremental search sample.
+  * source/h_media.prg
+  * source/h_progressbar.prg
+  * source/h_timer.prg
+    ! Fixed unused _OOHG_AllVars warning.
+  * source/h_dll.prg
+    ! Fixed arg unused variable.
+  * source/h_toolbar.prg
+  * source/makelib_vc.bat
+    ! Fixed warnings.
+
 2009-12-22 14:05 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_print
     * added the option to select another port. (by default prn)
-
 
 2009-12-22 10:35 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_dll.prg

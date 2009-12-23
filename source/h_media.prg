@@ -1,12 +1,12 @@
 /*
- * $Id: h_media.prg,v 1.6 2007-10-06 22:16:44 declan2005 Exp $
+ * $Id: h_media.prg,v 1.7 2009-12-23 23:55:21 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG multimedia functions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -120,6 +120,8 @@ CLASS TPlayer FROM TControl
    METHOD Length()           BLOCK { |Self| mcifunc( ::hWnd, 17 ) }
    METHOD Volume             SETGET
    METHOD Position           SETGET
+
+   EMPTY( _OOHG_AllVars )
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -183,15 +185,15 @@ Return mcifunc( ::hWnd, 18 )
 *-----------------------------------------------------------------------------*
 Function PlayWave(wave,r,s,ns,l,nd)
 *-----------------------------------------------------------------------------*
-	if PCount() == 1
-		r := .F.
-		s := .F.
-		ns := .F.
-		l := .F.
-		nd := .F.
-	endif
+   if PCount() == 1
+      r := .F.
+      s := .F.
+      ns := .F.
+      l := .F.
+      nd := .F.
+   endif
 
-	c_PlayWave(wave,r,s,ns,l,nd)
+   c_PlayWave(wave,r,s,ns,l,nd)
 Return Nil
 
 *-----------------------------------------------------------------------------*
@@ -241,9 +243,9 @@ Local hh, nStyle
 
    ::Register( hh, ControlName, HelpId )
 
-	if valtype(file) <> 'U'
+   if valtype(file) <> 'U'
       ::Open( File )
-	EndIf
+   EndIf
 
 Return Self
 
@@ -254,7 +256,7 @@ EXTERN MCIFUNC
 #include <windows.h>
 #include <vfw.h>
 #include <commctrl.h>
-#include "../include/oohg.h"
+#include "oohg.h"
 
 /*
 static WNDPROC lpfnOldWndProcA = 0;
@@ -271,18 +273,18 @@ static LRESULT APIENTRY SubClassFuncB( HWND hWnd, UINT msg, WPARAM wParam, LPARA
 }
 */
 
-HB_FUNC ( INITANIMATE )
+HB_FUNC( INITANIMATE )
 {
 	HWND hwnd;
 
    hwnd = Animate_Create( HWNDparam( 1 ), NULL, hb_parni( 6 ), GetModuleHandle( NULL ) );
 
    if( ! hwnd )
-	{
+   {
       MessageBox(0, "AnimateBox Creation Failed!", "Error!",
       MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
       return;
-	}
+   }
 
 //   lpfnOldWndProcA = ( WNDPROC ) SetWindowLong( ( HWND ) hwnd, GWL_WNDPROC, ( LONG ) SubClassFuncA );
 
@@ -322,16 +324,16 @@ HB_FUNC( DESTROYANIMATE )
 
 HB_FUNC( INITPLAYER )
 {
-	HWND hwnd;
+   HWND hwnd;
 
    hwnd = MCIWndCreate( HWNDparam( 1 ), NULL, hb_parni( 7 ), hb_parc( 2 ) );
 
    if( ! hwnd )
-	{
+   {
       MessageBox(0, "Player Creation Failed!", "Error!",
       MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
       return;
-	}
+   }
 
 //   lpfnOldWndProcB = ( WNDPROC ) SetWindowLong( ( HWND ) hwnd, GWL_WNDPROC, ( LONG ) SubClassFuncB );
 
