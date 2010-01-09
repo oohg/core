@@ -1,11 +1,11 @@
 /*
- * $Id: h_windows.prg,v 1.204 2009-07-26 19:13:21 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.205 2010-01-09 03:25:55 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG Windows handling functions
  *
- * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -1811,22 +1811,37 @@ Function _SetPolyWindowRgn(name,apoints,lx)
 *-----------------------------------------------------------------------------*
 local apx:={},apy:={}
 
-      aeval(apoints,{|x| aadd(apx,x[1]), aadd(apy,x[2])})
+   aeval(apoints,{|x| aadd(apx,x[1]), aadd(apy,x[2])})
 
 Return c_SetPolyWindowRgn( GetFormHandle( name ), apx, apy, lx )
 
 *-----------------------------------------------------------------------------*
 Procedure _SetNextFocus()
 *-----------------------------------------------------------------------------*
-Local oCtrl , NextControlHandle
+Local oCtrl, hControl
 
-	NextControlHandle := GetNextDlgTabITem ( GetActiveWindow() , GetFocus() , 0 )
-   oCtrl := GetControlObjectByHandle( NextControlHandle )
-   if oCtrl:hWnd == NextControlHandle
+   hControl := GetNextDlgTabITem( GetActiveWindow(), GetFocus(), 0 )
+   oCtrl := GetControlObjectByHandle( hControl )
+   If oCtrl:hWnd == hControl
       oCtrl:SetFocus()
-   else
-		InsertTab()
-   endif
+   Else
+      InsertTab()
+   EndIf
+
+Return
+
+*-----------------------------------------------------------------------------*
+Procedure _SetPrevFocus()
+*-----------------------------------------------------------------------------*
+Local oCtrl, hControl
+
+   hControl := GetNextDlgTabITem( GetActiveWindow(), GetFocus(), 1 )
+   oCtrl := GetControlObjectByHandle( hControl )
+   If oCtrl:hWnd == hControl
+      oCtrl:SetFocus()
+   Else
+      InsertShiftTab()
+   EndIf
 
 Return
 
@@ -1848,13 +1863,13 @@ Local l
       _OOHG_ThisControl   := _OOHG_aEventInfo[ l ][ 4 ]
       _OOHG_ThisObject    := _OOHG_aEventInfo[ l ][ 5 ]
       aSize( _OOHG_aEventInfo, l - 1 )
-	Else
+   Else
       _OOHG_ThisForm      := nil
       _OOHG_ThisType      := ''
       _OOHG_ThisEventType := ''
       _OOHG_ThisControl   := nil
       _OOHG_ThisObject    := nil
-	EndIf
+   EndIf
 Return
 
 *------------------------------------------------------------------------------*

@@ -1,11 +1,11 @@
 /*
- * $Id: c_controlmisc.c,v 1.54 2009-08-24 01:47:19 declan2005 Exp $
+ * $Id: c_controlmisc.c,v 1.55 2010-01-09 03:25:55 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Miscelaneus C controls functions
  *
- * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -407,86 +407,75 @@ HB_FUNC( SETSPINNERVALUE )
 }
 HB_FUNC( GETSPINNERVALUE )
 {
-	hb_retnl (
-    SendMessage( HWNDparam( 1 ),
-		(UINT)UDM_GETPOS32 ,
-		(WPARAM) 0 ,
-		(LPARAM) 0 )
-	) ;
+   hb_retnl(
+             SendMessage( HWNDparam( 1 ),
+                          ( UINT ) UDM_GETPOS32,
+                          ( WPARAM ) 0,
+                          ( LPARAM ) 0 )
+           );
 }
 
-HB_FUNC ( INSERTTAB )
+HB_FUNC( INSERTTAB )
 {
-
-	keybd_event(
-		VK_TAB	,	// virtual-key code
+   keybd_event(
+                VK_TAB,         // virtual-key code
 		0,		// hardware scan code
 		0,		// flags specifying various function options
 		0		// additional data associated with keystroke
-	);
-
+              );
 }
 
 HB_FUNC ( INSERTSHIFTTAB )
 {
-
-	keybd_event(
+   keybd_event(
 		VK_SHIFT,	// virtual-key code
 		0,		// hardware scan code
 		0,		// flags specifying various function options
 		0		// additional data associated with keystroke
-	);
+              );
 
-	keybd_event(
-		VK_TAB	,	// virtual-key code
+   keybd_event(
+                VK_TAB,         // virtual-key code
 		0,		// hardware scan code
 		0,		// flags specifying various function options
 		0		// additional data associated with keystroke
-	);
+              );
 
-	keybd_event(
+   keybd_event(
 		VK_SHIFT,	// virtual-key code
 		0,		// hardware scan code
 		KEYEVENTF_KEYUP,// flags specifying various function options
 		0		// additional data associated with keystroke
 	);
+}
 
+HB_FUNC( RELEASECONTROL )
+{
+   SendMessage( HWNDparam( 1 ), WM_SYSCOMMAND, SC_CLOSE, 0 );
 }
 
 
-
-HB_FUNC ( RELEASECONTROL )
+HB_FUNC( INSERTBACKSPACE )
 {
-   SendMessage( HWNDparam( 1 ), WM_SYSCOMMAND , SC_CLOSE , 0 );
-}
-
-
-HB_FUNC ( INSERTBACKSPACE )
-{
-
-	keybd_event(
+   keybd_event(
 		VK_BACK	,	// virtual-key code
 		0,		// hardware scan code
 		0,		// flags specifying various function options
 		0		// additional data associated with keystroke
-	);
-
+              );
 }
 
-HB_FUNC ( INSERTPOINT )
+HB_FUNC( INSERTPOINT )
 {
-
-	keybd_event(
+   keybd_event(
 		VK_DECIMAL		,	// virtual-key code
 		0,		// hardware scan code
 		0,		// flags specifying various function options
 		0		// additional data associated with keystroke
-	);
-
+              );
 }
 
-HB_FUNC ( GETMODULEFILENAME )
-
+HB_FUNC( GETMODULEFILENAME )
 {
    BYTE bBuffer[ MAX_PATH + 1 ] = { 0 } ;
 
@@ -494,12 +483,12 @@ HB_FUNC ( GETMODULEFILENAME )
    hb_retc( ( char * ) bBuffer );
 }
 
-HB_FUNC (SETCURSORPOS)
+HB_FUNC( SETCURSORPOS )
 {
    SetCursorPos( hb_parni( 1 ), hb_parni( 2 ) );
 }
 
-HB_FUNC (SHOWCURSOR)
+HB_FUNC( SHOWCURSOR )
 {
    hb_retni( ShowCursor( hb_parl( 1 ) ) );
 }
@@ -507,9 +496,9 @@ HB_FUNC (SHOWCURSOR)
 HB_FUNC( SYSTEMPARAMETERSINFO )
 {
    if( SystemParametersInfoA( (UINT) hb_parni( 1 ),
-                             (UINT) hb_parni( 2 ),
-                             (VOID *) hb_parc( 3 ),
-                             (UINT) hb_parni( 4 ) ) )
+                              (UINT) hb_parni( 2 ),
+                              (VOID *) hb_parc( 3 ),
+                              (UINT) hb_parni( 4 ) ) )
    {
       hb_retl( TRUE );
    }
