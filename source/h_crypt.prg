@@ -1,11 +1,11 @@
 /*
- * $Id: h_crypt.prg,v 1.3 2008-11-30 16:23:36 guerra000 Exp $
+ * $Id: h_crypt.prg,v 1.4 2010-01-21 09:13:05 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG crypt functions
  *
- * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -597,8 +597,8 @@ HB_FUNC( CHARXOR )
 
    ulData = hb_parclen( 1 );
    ulMask = hb_parclen( 2 );
-   cData = hb_parc( 1 );
-   cMask = hb_parc( 2 );
+   cData = ( char * ) hb_parc( 1 );
+   cMask = ( char * ) hb_parc( 2 );
    if( ulData == 0 || ulMask == 0 )
    {
       hb_retclen( cData, ulData );

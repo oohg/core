@@ -1,11 +1,11 @@
 /*
- * $Id: c_winapimisc.c,v 1.12 2009-11-21 23:48:46 guerra000 Exp $
+ * $Id: c_winapimisc.c,v 1.13 2010-01-21 09:13:05 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Windows API calls
  *
- * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -162,7 +162,7 @@ HB_FUNC(WAITRUNPIPE )
       StartupInfo.hStdOutput=WritePipeHandle;
       StartupInfo.hStdError=WritePipeHandle;
 
-      if( ! CreateProcess( 0, hb_parc( 1 ), 0, 0, FALSE,
+      if( ! CreateProcess( 0, ( char * ) hb_parc( 1 ), 0, 0, FALSE,
                            CREATE_NEW_CONSOLE | NORMAL_PRIORITY_CLASS,
                            0, 0, &StartupInfo, &ProcessInfo ) )
                 hb_retnl( -1 );
@@ -249,7 +249,7 @@ HB_FUNC( C_GETFOLDER ) // Based Upon Code Contributed By Ryszard Ryüko
     bi.hwndOwner = hwnd;
     bi.pidlRoot = NULL;
     bi.pszDisplayName = lpBuffer;
-    bi.lpszTitle = hb_parc(1);
+    bi.lpszTitle = ( char * ) hb_parc(1);
     bi.ulFlags = 0;
     bi.lpfn = NULL;
     bi.lParam = 0;
@@ -423,7 +423,7 @@ HB_FUNC( WAITRUN )
     stInfo.wShowWindow= ( SHORT ) hb_parni(2);
 
 	bResult = CreateProcess(NULL,
-		hb_parc(1) ,
+                ( char * ) hb_parc(1) ,
 		NULL,
 		NULL,
 		TRUE,

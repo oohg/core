@@ -1,12 +1,12 @@
 /*
- * $Id: h_hyperlink.prg,v 1.7 2008-01-21 00:16:47 guerra000 Exp $
+ * $Id: h_hyperlink.prg,v 1.8 2010-01-21 09:13:07 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG hyperlink functions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -101,6 +101,8 @@ CLASS THyperLink FROM TLabel
 
    METHOD Define
    METHOD Address   SETGET
+
+   EMPTY( _OOHG_AllVars )
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -147,6 +149,6 @@ METHOD Address( cUrl ) CLASS THyperLink
          ::URL := cUrl
       Else
          MsgOOHGError( "Control: " + ::Name + " must have valid email or url defined. Program Terminated." )
-		EndIf
+      EndIf
    EndIf
 Return ::URL

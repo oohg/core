@@ -1,5 +1,5 @@
 /*
- * $Id: miniprint.prg,v 1.29 2009-11-24 02:55:18 guerra000 Exp $
+ * $Id: miniprint.prg,v 1.30 2010-01-21 09:13:09 guerra000 Exp $
  */
 /*----------------------------------------------------------------------------
  MINIGUI - Harbour Win32 GUI library source code
@@ -2803,7 +2803,7 @@ HB_FUNC ( _HMG_PRINTER_SETPRINTERPROPERTIES )
 
 	int fields = 0 ;
 
-	bFlag = OpenPrinter( hb_parc(1) , &hPrinter, NULL);
+        bFlag = OpenPrinter( ( char * ) hb_parc(1) , &hPrinter, NULL);
 
 	if (!bFlag || (hPrinter == NULL))
 	{
@@ -2871,7 +2871,7 @@ HB_FUNC ( _HMG_PRINTER_SETPRINTERPROPERTIES )
 
 	if (pi2->pDevMode == NULL)
 	{
-		dwNeeded = DocumentProperties(NULL, hPrinter, hb_parc(1), NULL, NULL, 0);
+                dwNeeded = DocumentProperties(NULL, hPrinter, ( char * ) hb_parc(1), NULL, NULL, 0);
 		if (dwNeeded <= 0)
 		{
 			GlobalFree(pi2);
@@ -2903,7 +2903,7 @@ HB_FUNC ( _HMG_PRINTER_SETPRINTERPROPERTIES )
 			return;
 		}
 
-		lFlag = DocumentProperties(NULL, hPrinter, hb_parc(1), pDevMode, NULL,DM_OUT_BUFFER);
+                lFlag = DocumentProperties(NULL, hPrinter, ( char * ) hb_parc(1), pDevMode, NULL,DM_OUT_BUFFER);
 		if (lFlag != IDOK || pDevMode == NULL)
 		{
 			GlobalFree(pDevMode);
@@ -3185,7 +3185,7 @@ HB_FUNC ( _HMG_PRINTER_SETPRINTERPROPERTIES )
 
 	pi2->pSecurityDescriptor = NULL;
 
-	lFlag = DocumentProperties(NULL, hPrinter, hb_parc(1), pi2->pDevMode, pi2->pDevMode,DM_IN_BUFFER | DM_OUT_BUFFER);
+        lFlag = DocumentProperties(NULL, hPrinter, ( char * ) hb_parc(1), pi2->pDevMode, pi2->pDevMode,DM_IN_BUFFER | DM_OUT_BUFFER);
 
 	if (lFlag != IDOK)
 	{

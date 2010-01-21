@@ -1,12 +1,12 @@
 /*
- * $Id: h_scrsaver.prg,v 1.3 2006-11-18 13:45:46 declan2005 Exp $
+ * $Id: h_scrsaver.prg,v 1.4 2010-01-21 09:13:08 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG screen saver functions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -118,6 +118,7 @@ Function _BeginScrSaver( cSSaver, lNoShow, cInit, cRelease, cPaint, nTimer, aBac
    Public _ScrSaverConfig := NIL
 
    DEFAULT nTimer TO 1
+   EMPTY( _OOHG_AllVars )
 
    Set InterActiveClose Off
 

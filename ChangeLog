@@ -1,11 +1,42 @@
 /*
- * $Id: ChangeLog,v 1.635 2010-01-09 03:25:50 guerra000 Exp $
+ * $Id: ChangeLog,v 1.636 2010-01-21 09:13:02 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2010-01-21 03:10 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/c_font.c
+  * source/c_grid.c
+  * source/c_image.c
+  * source/c_winapimisc.c
+  * source/c_windows.c
+  * source/h_activex.prg
+  * source/h_comm.prg
+  * source/h_crypt.prg
+  * source/h_dll.prg
+  * source/h_edit.prg
+  * source/h_grid.prg
+  * source/h_hotkey.prg
+  * source/h_hotkeybox.prg
+  * source/h_hyperlink.prg
+  * source/h_ini.prg
+  * source/h_listbox.prg
+  * source/h_menu.prg
+  * source/h_pdf.prg
+  * source/h_report.prg
+  * source/h_richeditbox.prg
+  * source/h_scrollbutton.prg
+  * source/h_scrsaver.prg
+  * source/h_splitbox.prg
+  * source/h_tab.prg
+  * source/h_tooltip.prg
+  * source/miniprint.prg
+  * source/winprint.prg
+    ! Casting const char * parameters.
+    ! Fixed unused _OOHG_AllVars warning.
 
 2010-01-08 21:24 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_windows.prg

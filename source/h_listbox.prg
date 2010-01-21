@@ -1,11 +1,11 @@
 /*
- * $Id: h_listbox.prg,v 1.17 2009-08-24 01:47:20 declan2005 Exp $
+ * $Id: h_listbox.prg,v 1.18 2010-01-21 09:13:07 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG listbox functions
  *
- * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -308,7 +308,7 @@ HB_FUNC( INITLISTBOX )
 
 HB_FUNC( LISTBOXADDSTRING )
 {
-   char *cString = hb_parc( 2 );
+   char *cString = ( char * ) hb_parc( 2 );
    SendMessage( HWNDparam( 1 ), LB_ADDSTRING, 0, (LPARAM) cString );
 }
 
@@ -321,7 +321,7 @@ HB_FUNC( LISTBOXGETSTRING )
 
 HB_FUNC( LISTBOXINSERTSTRING )
 {
-   char *cString = hb_parc( 2 );
+   char *cString = ( char * ) hb_parc( 2 );
    SendMessage( HWNDparam( 1 ), LB_INSERTSTRING, (WPARAM) hb_parni(3) - 1 , (LPARAM) cString );
 }
 

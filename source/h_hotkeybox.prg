@@ -1,12 +1,12 @@
 /*
- * $Id: h_hotkeybox.prg,v 1.6 2009-08-26 00:50:41 guerra000 Exp $
+ * $Id: h_hotkeybox.prg,v 1.7 2010-01-21 09:13:07 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * HotKeyBox functions
  *
- * Copyright 2006 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2006-2010 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,6 +62,8 @@ CLASS THotKeyBox FROM TLabel
    METHOD Define
 
    METHOD Value       SETGET
+
+   EMPTY( _OOHG_AllVars )
 ENDCLASS
 
 *-----------------------------------------------------------------------------*

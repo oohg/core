@@ -1,5 +1,5 @@
 /*
- * $Id: h_dll.prg,v 1.4 2009-12-23 23:55:21 guerra000 Exp $ 
+ * $Id: h_dll.prg,v 1.5 2010-01-21 09:13:06 guerra000 Exp $ 
  */ 
 /* 
  * Harbour Project source code: 
@@ -115,8 +115,8 @@ HB_FUNC( CALLDLL32 )
    DYNACALL1 lpAddr;
    int result = -2000;
    char buff[ 256 ];
-   char *FuncName = hb_parc( 1 );
-   char *DllName = hb_parc( 2 );
+   char *FuncName = ( char * ) hb_parc( 1 );
+   char *DllName = ( char * ) hb_parc( 2 );
    int nArgs;
    int dd[ MAX_PARAMS ];
  
@@ -155,7 +155,7 @@ HB_FUNC( CALLDLL32 )
       {
          if( ISCHAR( i + 3 ) ) 
          { 
-            dd[ i ] = ( int ) hb_parc( i + 3 ); 
+            dd[ i ] = ( int ) ( char * ) hb_parc( i + 3 ); 
          } 
          else if( ISPTR( i + 3 ) ) 
          { 
@@ -217,7 +217,7 @@ HB_FUNC( CALLDLL32 )
  
 HB_FUNC( STRPTR ) 
 { 
-   char *cString = hb_parc( 1 ); 
+   char *cString = ( char * ) hb_parc( 1 ); 
    hb_retnl( ( LONG_PTR ) cString ); 
 } 
  

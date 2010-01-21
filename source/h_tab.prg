@@ -1,11 +1,11 @@
 /*
- * $Id: h_tab.prg,v 1.45 2009-08-24 01:47:20 declan2005 Exp $
+ * $Id: h_tab.prg,v 1.46 2010-01-21 09:13:08 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Tab functions
  *
- * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -788,7 +788,7 @@ HB_FUNC (TABCTRL_INSERTITEM)
 
    tie.mask = TCIF_TEXT;
    tie.iImage = -1;
-   tie.pszText = hb_parc( 3 );
+   tie.pszText = ( char * ) hb_parc( 3 );
 
    TabCtrl_InsertItem( HWNDparam( 1 ), i, &tie );
 }
@@ -801,11 +801,10 @@ HB_FUNC( TABCTRL_DELETEITEM )
 HB_FUNC( SETTABCAPTION )
 {
 
-	TC_ITEM tie;
+   TC_ITEM tie;
 
-	tie.mask = TCIF_TEXT ;
-
-	tie.pszText = hb_parc(3) ;
+   tie.mask = TCIF_TEXT ;
+   tie.pszText = ( char * ) hb_parc(3) ;
 
    TabCtrl_SetItem( HWNDparam( 1 ), hb_parni( 2 ) - 1, &tie );
 }

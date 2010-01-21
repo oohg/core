@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.27 2009-09-28 19:51:21 declan2005 Exp $
+ * $Id: winprint.prg,v 1.28 2010-01-21 09:13:09 guerra000 Exp $
  */
 // -----------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -2571,7 +2571,7 @@ HB_FUNC (RR_SELECTBRUSH)
 
 HB_FUNC (RR_CREATEFONT)
 {
-     char *FontName=hb_parc(1);
+     char *FontName= ( char * ) hb_parc(1);
      int FontSize=hb_parni(2);
      LONG FontWidth=hb_parnl(3);
      LONG Orient=hb_parnl(4);
@@ -3029,10 +3029,10 @@ HB_FUNC( RR_DRAWPICTURE )
 
    if( hb_parclen( 1 ) )
    {
-      ipic = (IPicture *) rr_loadpicture( hb_parc( 1 ), &lwidth, &lheight );
+      ipic = (IPicture *) rr_loadpicture( ( char * ) hb_parc( 1 ), &lwidth, &lheight );
       if( ! ipic )
       {
-         ipic = (IPicture *) rr_loadpicturefromresource( hb_parc( 1 ), &lwidth, &lheight );
+         ipic = (IPicture *) rr_loadpicturefromresource( ( char * ) hb_parc( 1 ), &lwidth, &lheight );
       }
       if( ! ipic )
       {

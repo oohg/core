@@ -1,11 +1,11 @@
 /*
- * $Id: h_richeditbox.prg,v 1.19 2008-11-30 16:23:36 guerra000 Exp $
+ * $Id: h_richeditbox.prg,v 1.20 2010-01-21 09:13:08 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG rich edit functions
  *
- * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -259,7 +259,7 @@ HB_FUNC( RICHSTREAMIN )   // hWnd, cValue
 
    si.lSize = hb_parclen( 2 );
    si.lRead = 0;
-   si.cBuffer = hb_parc( 2 );
+   si.cBuffer = ( char * ) hb_parc( 2 );
 
    es.dwCookie = ( DWORD_PTR ) &si;
    es.dwError = 0;

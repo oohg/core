@@ -1,11 +1,11 @@
 /*
- * $Id: h_menu.prg,v 1.26 2009-07-18 17:51:24 guerra000 Exp $
+ * $Id: h_menu.prg,v 1.27 2010-01-21 09:13:07 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG menu functions
  *
- * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -505,7 +505,7 @@ HB_FUNC( MENUCAPTION )
       memset( &MenuItem, 0, sizeof( MenuItem ) );
       MenuItem.cbSize = sizeof( MenuItem );
       MenuItem.fMask = MIIM_STRING;
-      MenuItem.dwTypeData = hb_parc( 3 );
+      MenuItem.dwTypeData = ( char * ) hb_parc( 3 );
       MenuItem.cch = hb_parclen( 3 );
       SetMenuItemInfo( hMenu, iItem, MF_BYCOMMAND, &MenuItem );
    }
@@ -523,8 +523,8 @@ HB_FUNC( MENUITEM_SETBITMAPS )
    HBITMAP himage1, himage2;
    int iAttributes = LR_LOADMAP3DCOLORS | LR_LOADTRANSPARENT;
 
-   himage1 = (HBITMAP) _OOHG_LoadImage( hb_parc( 3 ), iAttributes, 0, 0, ( HWND ) hMenu, -1 );
-   himage2 = (HBITMAP) _OOHG_LoadImage( hb_parc( 4 ), iAttributes, 0, 0, ( HWND ) hMenu, -1 );
+   himage1 = (HBITMAP) _OOHG_LoadImage( ( char * ) hb_parc( 3 ), iAttributes, 0, 0, ( HWND ) hMenu, -1 );
+   himage2 = (HBITMAP) _OOHG_LoadImage( ( char * ) hb_parc( 4 ), iAttributes, 0, 0, ( HWND ) hMenu, -1 );
 
    SetMenuItemBitmaps( hMenu, hb_parni( 2 ), MF_BYCOMMAND, himage1, himage2 );
 }

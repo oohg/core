@@ -1,12 +1,12 @@
 /*
- * $Id: h_hotkey.prg,v 1.10 2007-10-08 21:19:04 declan2005 Exp $
+ * $Id: h_hotkey.prg,v 1.11 2010-01-21 09:13:07 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Hot keys functions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -226,7 +226,7 @@ EXTERN InitHotKey, ReleaseHotKey
 #include <hbapi.h>
 #include <windows.h>
 #include <commctrl.h>
-#include "../include/oohg.h"
+#include "oohg.h"
 
 HB_FUNC( INITHOTKEY )   // InitHotKey( hWnd, nMod, nKey, nHotKeyID )
 {
@@ -252,6 +252,8 @@ CLASS THotKey FROM TControl
    METHOD Define
    METHOD Enabled      SETGET
    METHOD Release
+
+   EMPTY( _OOHG_AllVars )
 ENDCLASS
 
 *-----------------------------------------------------------------------------*

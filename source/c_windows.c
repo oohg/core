@@ -1,11 +1,11 @@
 /*
- * $Id: c_windows.c,v 1.69 2009-09-15 03:23:38 guerra000 Exp $
+ * $Id: c_windows.c,v 1.70 2010-01-21 09:13:05 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Windows handling functions
  *
- * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -871,7 +871,7 @@ HB_FUNC( GETGRIDDISPINFOINDEX )
 HB_FUNC( SETGRIDQUERYDATA )
 {
 //	LV_DISPINFO* pDispInfo = (LV_DISPINFO*)hb_parnl(1);
-//	pDispInfo->item.pszText = hb_parc(2) ;
+//      pDispInfo->item.pszText = (char * ) hb_parc(2) ;
 
 	PHB_ITEM pValue = hb_itemNew( NULL );
 	LV_DISPINFO* pDispInfo = (LV_DISPINFO*)hb_parnl(1);
@@ -986,7 +986,7 @@ HB_FUNC( WNDCOPY  )  //  hWnd, bAll, cFile        Copies any Window to the Clipb
    RECT rct;
    HBITMAP hBitmap, hOldBmp;
    HPALETTE  hPal = NULL;
-   LPSTR myFile =  hb_parc( 3 ) ;
+   LPSTR myFile = (char * )  hb_parc( 3 ) ;
    HANDLE hDIB;
    if( bAll )
       GetWindowRect( hWnd, &rct );

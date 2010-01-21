@@ -1,11 +1,11 @@
 /*
- * $Id: h_tooltip.prg,v 1.2 2008-12-01 13:10:03 declan2005 Exp $
+ * $Id: h_tooltip.prg,v 1.3 2010-01-21 09:13:08 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Tooltip functions
  *
- * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -215,7 +215,7 @@ HB_FUNC( SETTOOLTIP )   // ( hWnd, cToolTip, hWndToolTip )
    HWND hWnd_ToolTip;
 
    hWnd = HWNDparam( 1 );
-   Text = hb_parc( 2 );
+   Text = ( char * ) hb_parc( 2 );
    hWnd_ToolTip = HWNDparam( 3 );
 
    memset( &ti, 0, sizeof( ti ) );

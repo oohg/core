@@ -1,5 +1,5 @@
 /*
- * $Id: h_activex.prg,v 1.7 2009-12-13 21:34:31 declan2005 Exp $
+ * $Id: h_activex.prg,v 1.8 2010-01-21 09:13:05 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -47,6 +47,7 @@ CLASS TActiveX FROM TControl
    DATA aAxExec      INIT {}              // oSkAr 20070829
    METHOD EventMap( nMsg, xExec, oSelf )  // oSkAr 20070829
 
+   EMPTY( _OOHG_AllVars )
 ENDCLASS
 
 *-----------------------------------------------------------------------------*

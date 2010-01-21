@@ -1,12 +1,12 @@
 /*
- * $Id: c_grid.c,v 1.21 2009-08-24 01:47:19 declan2005 Exp $
+ * $Id: c_grid.c,v 1.22 2010-01-21 09:13:05 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * C grid functions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -104,7 +104,7 @@
 #include "hbapiitm.h"
 #include "winreg.h"
 #include "tchar.h"
-#include "../include/oohg.h"
+#include "oohg.h"
 
 #ifdef __XHARBOUR__
 #define HB_STORNI( n, x, y ) hb_storni( n, x, y )
@@ -364,7 +364,7 @@ HB_FUNC( LISTVIEW_ADDCOLUMN )
 
    COL.mask = LVCF_WIDTH | LVCF_TEXT | LVCF_FMT | LVCF_SUBITEM; // | LVCF_IMAGE;
    COL.cx = hb_parni( 3 );
-   COL.pszText = hb_parc( 4 );
+   COL.pszText = ( char * ) hb_parc( 4 );
    COL.iSubItem = iColumn;
    COL.fmt = hb_parni( 5 ); // | LVCFMT_IMAGE;
 

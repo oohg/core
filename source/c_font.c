@@ -1,12 +1,12 @@
 /*
- * $Id: c_font.c,v 1.2 2006-07-05 02:39:54 guerra000 Exp $
+ * $Id: c_font.c,v 1.3 2010-01-21 09:13:04 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * C font functions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -104,9 +104,9 @@
 #include "hbapiitm.h"
 #include "winreg.h"
 #include "tchar.h"
-#include "../include/oohg.h"
+#include "oohg.h"
 
-HFONT PrepareFont (char *Fontname, int FontSize, int Weight, int Italic, int Underline, int StrikeOut )
+HFONT PrepareFont( char *Fontname, int FontSize, int Weight, int Italic, int Underline, int StrikeOut )
 {
 	HDC  hDC;
 	int cyp;
@@ -155,7 +155,7 @@ HB_FUNC ( _SETFONT )
 		strikeout = 1;
 	}
 
-	font = PrepareFont ( hb_parc(2) ,
+        font = PrepareFont ( ( char * ) hb_parc(2) ,
                         (LPARAM) hb_parni(3) ,
                         bold , italic, underline, strikeout ) ;
     SendMessage( HWNDparam( 1 ) , (UINT)WM_SETFONT,(WPARAM) font , 1 ) ;
@@ -189,5 +189,5 @@ HB_FUNC ( SETFONTNAMESIZE )
 		strikeout = 1;
 	}
 
-    SendMessage( HWNDparam( 1 ) , (UINT)WM_SETFONT , (WPARAM) PrepareFont ( hb_parc(2) , (LPARAM) hb_parni(3),bold,italic,underline,strikeout) , 1 ) ;
+    SendMessage( HWNDparam( 1 ) , (UINT)WM_SETFONT , (WPARAM) PrepareFont ( ( char * ) hb_parc(2) , (LPARAM) hb_parni(3),bold,italic,underline,strikeout) , 1 ) ;
 }

@@ -1,12 +1,12 @@
 /*
- * $Id: h_comm.prg,v 1.1 2005-11-02 17:32:20 guerra000 Exp $
+ * $Id: h_comm.prg,v 1.2 2010-01-21 09:13:05 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * HMG Intercommunications PRG functions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -372,4 +372,5 @@ Function SetCommPath( cph )
    If ValType( cph ) $ "CM"
       _OOHG_CommPath := cph
    EndIf
+   EMPTY( _OOHG_AllVars )
 Return _OOHG_CommPath

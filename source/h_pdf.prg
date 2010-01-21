@@ -1,5 +1,5 @@
 /*
-* $Id: h_pdf.prg,v 1.5 2007-05-27 22:43:39 guerra000 Exp $
+* $Id: h_pdf.prg,v 1.6 2010-01-21 09:13:07 guerra000 Exp $
 */
 //컴컴컴컴컴컴컴컴컴컴컴컴�\\
 //
@@ -3016,6 +3016,8 @@ METHOD X2M
 METHOD TextPrint
 METHOD TextNextPara
 METHOD Execute
+
+EMPTY( _OOHG_AllVars )
 
 ENDCLASS
 

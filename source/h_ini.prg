@@ -1,12 +1,12 @@
 /*
- * $Id: h_ini.prg,v 1.3 2008-01-14 02:12:54 guerra000 Exp $
+ * $Id: h_ini.prg,v 1.4 2010-01-21 09:13:07 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG INI files functions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -100,87 +100,88 @@ STATIC _OOHG_ActiveIniFile := ''
 *-------------------------------------------------------------
 FUNCTION BeginIni(name, cIniFile )
 *-------------------------------------------------------------
-	LOCAL hFile
+LOCAL hFile
 
-	* Unused Parameter
-	name := Nil
-	*
+   * Unused Parameter
+   EMPTY( name )
+   EMPTY( _OOHG_AllVars )
+   *
 
-	if AT("\",cIniFile)==0
-	    cIniFile := ".\"+cIniFile
-	endif
+   if AT("\",cIniFile)==0
+      cIniFile := ".\"+cIniFile
+   endif
 
-	 If ! File( cIniFile )
-	    hFile := FCreate( cIniFile )
-	 Else
-	    hFile := FOpen( cIniFile, FO_READ + FO_SHARED )
-	 EndIf
+   If ! File( cIniFile )
+      hFile := FCreate( cIniFile )
+   Else
+      hFile := FOpen( cIniFile, FO_READ + FO_SHARED )
+   EndIf
 
-	 If FError() != 0
-	    MsgInfo( "Error opening a file INI. DOS ERROR: " + Str( FError(), 2, 0 ) )
-	    Return ""
-	 else
-       _OOHG_ActiveIniFile := cIniFile
-	 EndIf
+   If FError() != 0
+      MsgInfo( "Error opening a file INI. DOS ERROR: " + Str( FError(), 2, 0 ) )
+      Return ""
+   else
+      _OOHG_ActiveIniFile := cIniFile
+   EndIf
 
-	 FClose( hFile )
+   FClose( hFile )
 Return Nil
 
 
 // Code GetIni and SetIni based on sorce of Grigory Filatov
 
 Function _GetIni( cSection, cEntry, cDefault, uVar )
-    Local cFile, cVar :=''
+Local cFile, cVar :=''
 
-    If !empty(_OOHG_ActiveIniFile)
+   If !empty(_OOHG_ActiveIniFile)
       if valtype(cDefault) == 'U'
-        cDefault:=cVar
+         cDefault:=cVar
       endif
-      cFile:=_OOHG_ActiveIniFile
+      cFile:= _OOHG_ActiveIniFile
       cVar := GetPrivateProfileString(cSection, cEntry, xChar( cDefault ), cFile )
-    else
+   else
       if cDefault != NIL
-          cVar := xChar( cDefault )
+         cVar := xChar( cDefault )
       endif
-    endif
-    uVar :=xValue(cVar,ValType( uVar))
+   endif
+   uVar := xValue(cVar,ValType( uVar))
 Return uVar
 
 Function _SetIni( cSection, cEntry, cValue )
-    Local ret:=.f., cFile
-    If !empty(_OOHG_ActiveIniFile)
-        cFile:= _OOHG_ActiveIniFile
-        ret :=WritePrivateProfileString( cSection, cEntry, xChar(cValue), cFile )
-    endif
+Local ret:=.f., cFile
+   If ! empty(_OOHG_ActiveIniFile)
+      cFile := _OOHG_ActiveIniFile
+      ret := WritePrivateProfileString( cSection, cEntry, xChar(cValue), cFile )
+   endif
 Return ret
 
 Function  _DelIniEntry( cSection, cEntry )
-    Local ret:=.f., cFile
-    If !empty(_OOHG_ActiveIniFile)
-        cFile:= _OOHG_ActiveIniFile
-        ret := DelIniEntry( cSection, cEntry, cFile )
-    endif
+Local ret:=.f., cFile
+   If !empty(_OOHG_ActiveIniFile)
+      cFile := _OOHG_ActiveIniFile
+      ret := DelIniEntry( cSection, cEntry, cFile )
+   endif
 Return ret
 
 Function  _DelIniSection( cSection )
-    Local ret:=.f., cFile
-    If !empty(_OOHG_ActiveIniFile)
-        cFile:= _OOHG_ActiveIniFile
-        ret := DelIniSection( cSection, cFile )
-    endif
+Local ret:=.f., cFile
+   If !empty(_OOHG_ActiveIniFile)
+      cFile := _OOHG_ActiveIniFile
+      ret := DelIniSection( cSection, cFile )
+   endif
 Return ret
 
 *-------------------------------------------------------------
 Function _EndIni()
 *-------------------------------------------------------------
-   _OOHG_ActiveIniFile :=''
+   _OOHG_ActiveIniFile := ''
 Return Nil
 
 
 
 FUNCTION xChar( xValue )
-   LOCAL cType := ValType( xValue )
-   LOCAL cValue := "", nDecimals := Set( _SET_DECIMALS)
+LOCAL cType := ValType( xValue )
+LOCAL cValue := "", nDecimals := Set( _SET_DECIMALS)
    DO CASE
       CASE cType $  "CM";  cValue := xValue
       CASE cType == "N" ;  cValue := LTrim( Str( xValue, 20, nDecimals ) )
@@ -194,7 +195,7 @@ FUNCTION xChar( xValue )
 RETURN cValue
 
 FUNCTION xValue( cValue, cType )
-   LOCAL xValue
+LOCAL xValue
    DO CASE
       CASE cType $  "CM";  xValue := cValue
       CASE cType == "D" ;  xValue := SToD( cValue )
@@ -207,8 +208,8 @@ RETURN xValue
 
 
 FUNCTION AToC( aArray )
-   LOCAL i, nLen := Len( aArray )
-   LOCAL cType, cElement, cArray := ""
+LOCAL i, nLen := Len( aArray )
+LOCAL cType, cElement, cArray := ""
    FOR i := 1 TO nLen
       cElement := xChar( aArray[ i ] )
       IF ( cType := ValType( aArray[ i ] ) ) == "A"
@@ -220,7 +221,7 @@ FUNCTION AToC( aArray )
 RETURN "A" + str( Len( cArray ),4 ) + cArray
 
 FUNCTION CToA( cArray )
-   LOCAL cType, nLen, aArray := {}
+LOCAL cType, nLen, aArray := {}
    cArray := SubStr( cArray, 6 )    // strip off array and length
    WHILE Len( cArray ) > 0
       nLen := Val( SubStr( cArray, 2, 4 ) )
@@ -248,23 +249,23 @@ HB_FUNC (GETPRIVATEPROFILESTRING )
 {
    TCHAR bBuffer[ 1024 ] = { 0 };
    DWORD dwLen ;
-   char * lpSection = hb_parc( 1 );
-   char * lpEntry = ISCHAR(2) ? hb_parc( 2 ) : NULL ;
-   char * lpDefault = hb_parc( 3 );
-   char * lpFileName = hb_parc( 4 );
+   char * lpSection = ( char * ) hb_parc( 1 );
+   char * lpEntry = ISCHAR(2) ? ( char * ) hb_parc( 2 ) : NULL ;
+   char * lpDefault = ( char * ) hb_parc( 3 );
+   char * lpFileName = ( char * ) hb_parc( 4 );
    dwLen = GetPrivateProfileString( lpSection , lpEntry ,lpDefault , bBuffer, sizeof( bBuffer ) , lpFileName);
    if( dwLen )
-     hb_retclen( ( char * ) bBuffer, dwLen );
+      hb_retclen( ( char * ) bBuffer, dwLen );
    else
       hb_retc( lpDefault );
 }
 
 HB_FUNC( WRITEPRIVATEPROFILESTRING )
 {
-   char * lpSection = hb_parc( 1 );
-   char * lpEntry = ISCHAR(2) ? hb_parc( 2 ) : NULL ;
-   char * lpData = ISCHAR(3) ? hb_parc( 3 ) : NULL ;
-   char * lpFileName= hb_parc( 4 );
+   char * lpSection = ( char * ) hb_parc( 1 );
+   char * lpEntry = ISCHAR( 2 ) ? ( char * ) hb_parc( 2 ) : NULL ;
+   char * lpData = ISCHAR( 3 ) ? ( char * ) hb_parc( 3 ) : NULL ;
+   char * lpFileName= ( char * ) hb_parc( 4 );
 
    if ( WritePrivateProfileString( lpSection , lpEntry , lpData , lpFileName ) )
       hb_retl( TRUE ) ;

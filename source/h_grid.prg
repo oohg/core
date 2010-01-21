@@ -1,11 +1,11 @@
 /*
- * $Id: h_grid.prg,v 1.107 2009-09-12 00:28:04 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.108 2010-01-21 09:13:06 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG grid functions
  *
- * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -2114,13 +2114,13 @@ static void _OOHG_ListView_FillItem( HWND hWnd, int nItem, PHB_ITEM pItems )
 
 HB_FUNC( SETGRIDCOLUMNHEADER )
 {
-        LV_COLUMN COL;
+   LV_COLUMN COL;
 
-        COL.mask = LVCF_FMT | LVCF_TEXT ;
-        COL.pszText = hb_parc(3) ;
-        COL.fmt = hb_parni(4) ;
+   COL.mask = LVCF_FMT | LVCF_TEXT ;
+   COL.pszText = ( char * ) hb_parc( 3 ) ;
+   COL.fmt = hb_parni( 4 ) ;
 
-        ListView_SetColumn ( HWNDparam( 1 ) , hb_parni (2)-1 , &COL ) ;
+   ListView_SetColumn ( HWNDparam( 1 ) , hb_parni (2)-1 , &COL ) ;
 }
 
 HB_FUNC( ADDLISTVIEWITEMS )
@@ -2288,7 +2288,7 @@ HB_FUNC( CELLRAWVALUE )   // hWnd, nRow, nCol, nType, uValue
    if( iType == 1 && ISCHAR( 5 ) )
    {
       LI.cchTextMax = 1022;
-      LI.pszText = hb_parc( 5 );
+      LI.pszText = ( char * ) hb_parc( 5 );
       ListView_SetItem( hWnd, &LI );
    }
    else if( iType == 2 && ISNUM( 5 ) )

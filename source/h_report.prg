@@ -1,5 +1,5 @@
 /*
- * $Id: h_report.prg,v 1.45 2009-09-09 19:30:55 declan2005 Exp $
+ * $Id: h_report.prg,v 1.46 2010-01-21 09:13:07 guerra000 Exp $
  */
 /*
  * DO REPORT Command support procedures FOR MiniGUI Library.
@@ -140,6 +140,8 @@ METHOD leadatologic(cName,cPropmet,cDefault)
 METHOD clean(cfvalue)
 METHOD learowi(cname,npar)
 METHOD leacoli(cname,npar)
+
+   EMPTY( _OOHG_AllVars )
 
 ENDCLASS
 

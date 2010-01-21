@@ -1,12 +1,12 @@
 /*
- * $Id: h_scrollbutton.prg,v 1.2 2007-11-04 15:43:34 declan2005 Exp $
+ * $Id: h_scrollbutton.prg,v 1.3 2010-01-21 09:13:08 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Browse's ScrollButton functions
  *
- * Copyright 2006 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2006-2010 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -101,6 +101,8 @@ CLASS TScrollButton FROM TControl
    DATA ladjust  INIT .F.
 
    METHOD Define
+
+   EMPTY( _OOHG_AllVars )
 ENDCLASS
 
 *-----------------------------------------------------------------------------*

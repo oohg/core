@@ -1,11 +1,11 @@
 /*
- * $Id: h_splitbox.prg,v 1.10 2009-03-22 22:39:59 guerra000 Exp $
+ * $Id: h_splitbox.prg,v 1.11 2010-01-21 09:13:08 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Splitbox control
  *
- * Copyright 2006-2009 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2006-2010 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -290,9 +290,8 @@ HB_FUNC ( ADDSPLITBOXITEM )
   rbBand.fStyle = Style ;
   rbBand.hbmBack= 0;
 
-  rbBand.lpText     = hb_parc(5);
+  rbBand.lpText     = ( char * ) hb_parc(5);
   rbBand.hwndChild  = HWNDparam( 1 );
-
 
   if ( !hb_parl (8) )
   {
@@ -352,7 +351,7 @@ HB_FUNC( SETSPLITBOXITEM )
    if( ISCHAR( 5 ) )
    {
       rbBand.fMask |= RBBIM_TEXT;
-      rbBand.lpText = hb_parc( 5 );
+      rbBand.lpText = ( char * ) hb_parc( 5 );
    }
 
    GetWindowRect( HWNDparam( 1 ), &rc );

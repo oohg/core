@@ -1,11 +1,11 @@
 /*
- * $Id: c_image.c,v 1.21 2009-03-16 00:48:34 guerra000 Exp $
+ * $Id: c_image.c,v 1.22 2010-01-21 09:13:05 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * C image functions
  *
- * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -454,7 +454,7 @@ HB_FUNC( _OOHG_BITMAPFROMFILE )   // ( oSelf, cFile, iAttributes, lAutoSize )
    {
       lWidth = lHeight = 0;
    }
-   hBitmap = (HBITMAP) _OOHG_LoadImage( hb_parc( 2 ), iAttributes, lWidth, lHeight, oSelf->hWnd, oSelf->lBackColor );
+   hBitmap = (HBITMAP) _OOHG_LoadImage( ( char * ) hb_parc( 2 ), iAttributes, lWidth, lHeight, oSelf->hWnd, oSelf->lBackColor );
 
    HWNDret( hBitmap );
 }
