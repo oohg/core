@@ -1,5 +1,5 @@
 /*
- * $Id: h_activex.prg,v 1.8 2010-01-21 09:13:05 guerra000 Exp $
+ * $Id: h_activex.prg,v 1.9 2010-02-20 03:55:18 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -156,9 +156,9 @@ METHOD __Error( ... )
 Local cMessage, uRet
 cMessage := __GetMessage()
 
-   IF SubStr( cMessage, 1, 1 ) == "_"
-      cMessage := SubStr( cMessage, 2 )
-   ENDIF
+//   IF SubStr( cMessage, 1, 1 ) == "_"
+//      cMessage := SubStr( cMessage, 2 )
+//   ENDIF
 
    RETURN HB_ExecFromArray( ::oOle, cMessage, HB_aParams() )
 
