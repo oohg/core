@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.28 2010-01-21 09:13:09 guerra000 Exp $
+ * $Id: winprint.prg,v 1.29 2010-02-22 05:05:48 guerra000 Exp $
  */
 // -----------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -1760,6 +1760,8 @@ next pi
                       NOSYSMENU NOCAPTION ;
                       ON MOUSECLICK  ( ::oHBPreview1:setfocus() )
 
+                      ::oHBPreview1:VScrollbar:nLineSkip := 20
+                      ::oHBPreview1:HScrollbar:nLineSkip := 20
 
                       aadd(::ahs,{0,0,0,0,0,0, ::oHBPreview1:hWnd})
                       rr_getclientrect(::ahs[5])

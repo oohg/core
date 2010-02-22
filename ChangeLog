@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.637 2010-02-20 03:55:18 declan2005 Exp $
+ * $Id: ChangeLog,v 1.638 2010-02-22 05:05:48 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,10 +7,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2010-02-19 22:05 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
-  * source/h_activex
-    * finally fixed problem with activex  (thanks again ti Oskar Lira)
+2010-02-21 23:10 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/winprint.prg
+    * Changed LINESKIP factor.
+  * source/h_form.prg
+    * Prevents a double ::Release() call to MODAL windows.
 
+2010-02-19 22:05 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_activex.prg
+    * finally fixed problem with activex  (thanks again ti Oskar Lira)
 
 2010-01-21 03:10 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source/c_font.c
@@ -86,7 +91,7 @@
    * resources/oohg.rc
    * resources/makeres_mingw.bat
    * compile_mingw.bat
-       to manage resources in a better way.  
+       to manage resources in a better way.
 
 2009-11-23 20:47 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   + ./compile_vc.bat

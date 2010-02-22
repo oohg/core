@@ -1,11 +1,11 @@
 /*
- * $Id: h_form.prg,v 1.17 2009-09-15 03:23:38 guerra000 Exp $
+ * $Id: h_form.prg,v 1.18 2010-02-22 05:05:48 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Forms handling functions
  *
- * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -633,9 +633,6 @@ METHOD Release() CLASS TForm
       EndIf
 
       ::Events_Destroy()
-
-//   Else
-//      MsgOOHGError( "Release a window in its own 'on release' procedure or release the main window in any 'on release' procedure is not allowed. Program terminated." )
    Endif
 Return Nil
 
@@ -1693,8 +1690,6 @@ METHOD Release() CLASS TFormMain
       ::DoEvent( ::OnRelease, "WINDOW_RELEASE" )
       ::lDestroyed := .T.
       ReleaseAllWindows()
-//   Else
-//      MsgOOHGError("Release a window in its own 'on release' procedure or release the main window in any 'on release' procedure is not allowed. Program terminated" )
    EndIf
 Return ::Super:Release()
 
@@ -1813,8 +1808,10 @@ Return ::Super:Activate( lNoStop, oWndLoop )
 *-----------------------------------------------------------------------------*
 METHOD Release() CLASS TFormModal
 *-----------------------------------------------------------------------------*
-   If ( Len( _OOHG_ActiveModal ) == 0 .OR. ATAIL( _OOHG_ActiveModal ):hWnd <> ::hWnd ) .AND. IsWindowVisible( ::hWnd )
-      MsgOOHGError( "Non top modal windows can't be released. Program terminated *" + ::Name + "*" )
+   If ! ::lReleasing
+      If ( Len( _OOHG_ActiveModal ) == 0 .OR. ATAIL( _OOHG_ActiveModal ):hWnd <> ::hWnd ) .AND. IsWindowVisible( ::hWnd )
+         MsgOOHGError( "Non top modal windows can't be released. Program terminated *" + ::Name + "*" )
+      EndIf
 	EndIf
 Return ::Super:Release()
 
