@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.108 2010-01-21 09:13:06 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.109 2010-03-05 03:39:29 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -341,7 +341,7 @@ METHOD appenditem() CLASS TGrid
    ::InsertBlank( ::ItemCount + 1 )
    ::nRowPos := ::ItemCount
    ::Value := ::ItemCount
-   KEYBD_EVENT(VK_RETURN)
+   ::Events_Enter()
 RETURN NIL
 
 METHOD EDITGRID(nrow,ncol) CLASS TGrid
@@ -393,19 +393,16 @@ METHOD EDITGRID(nrow,ncol) CLASS TGrid
          endif
 
       EndIf
-      if (::nrowpos=::itemcount() .and. lret) .and. ::ncolpos = nlast   /////////.and. ::ncolpos=len(::aheaders) .and. lret
-
-         if ::Append
-            ::appenditem()
+      if ::ncolpos == nlast
+         if ::nrowpos=::itemcount() .and. lret .and. ::Append
+            // ::appenditem()
+            ::lAppendMode := .T.
+            ::InsertBlank( ::ItemCount + 1 )
          endif
 
-      else
-         if ::ncolpos = nlast
-            ::nrowpos++
-            ::ncolpos:=0
-         endif
+         ::nrowpos++
+         ::ncolpos:=0
       endif
-
 
       ::value := ::nrowpos
       ::ncolpos++
