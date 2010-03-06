@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.77 2009-12-13 21:34:31 declan2005 Exp $
+ * $Id: h_browse.prg,v 1.78 2010-03-06 02:55:10 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -129,6 +129,7 @@ CLASS TOBrowse FROM TXBrowse
    METHOD Down
    METHOD TopBottom
    METHOD DbSkip
+   METHOD DbGoTo
    MESSAGE GoTop    METHOD Home
    MESSAGE GoBottom METHOD End
    METHOD SetScrollPos
@@ -364,31 +365,34 @@ Local _RecNo, s // , _DeltaScroll
          Return nil
       EndIf
 
-      If ::Eof()
-         If ::AllowAppend
-            ::EditItem( .t. )
-         Endif
-         Return nil
-      EndIf
-
       _RecNo := ( ::WorkArea )->( RecNo() )
 
       If Len( ::aRecMap ) == 0
          ::TopBottom( 1 )
          ::DbSkip( - ::CountPerPage + 1 )
       Else
-         ( ::WorkArea )->( DbGoTo( ::aRecMap[ Len( ::aRecMap ) ] ) )
+         ::DbGoTo( ::aRecMap[ Len( ::aRecMap ) ] )
+         // Checks for more records
+         ::DbSkip()
+         If ::Eof()
+            ::DbGoTo( _RecNo )
+            If ::AllowAppend
+               ::EditItem( .t. )
+            Endif
+            Return nil
+         EndIf
+         ::DbSkip( -1 )
       EndIf
       ::Update()
       If Len( ::aRecMap ) == 0
-         ( ::WorkArea )->( DbGoTo( 0 ) )
+         ::DbGoTo( 0 )
       Else
-         ( ::WorkArea )->( DbGoTo( ::aRecMap[ Len( ::aRecMap ) ] ) )
+         ::DbGoTo( ::aRecMap[ Len( ::aRecMap ) ] )
       EndIf
       ::scrollUpdate()
       // ListView_Scroll( ::hWnd, _DeltaScroll[2] * (-1) , 0 )
       ListView_SetCursel ( ::hWnd, Len( ::aRecMap ) )
-      ( ::WorkArea )->( DbGoTo( _RecNo ) )
+      ::DbGoTo( _RecNo )
 
    Else
 
@@ -416,13 +420,13 @@ Local _RecNo // , _DeltaScroll
       If Len( ::aRecMap ) == 0
          ::TopBottom( -1 )
       Else
-         ( ::WorkArea )->( DbGoTo( ::aRecMap[ 1 ] ) )
+         ::DbGoTo( ::aRecMap[ 1 ] )
       EndIf
       ::DbSkip( - ::CountPerPage + 1 )
       ::scrollUpdate()
       ::Update()
       // ListView_Scroll( ::hWnd, _DeltaScroll[2] * (-1) , 0 )
-      ( ::WorkArea )->( DbGoTo( _RecNo ) )
+      ::DbGoTo( _RecNo )
       ListView_SetCursel ( ::hWnd, 1 )
 
    Else
@@ -451,7 +455,7 @@ Local _RecNo // , _DeltaScroll
    ::scrollUpdate()
    ::Update()
    // ListView_Scroll( ::hWnd, _DeltaScroll[2] * (-1) , 0 )
-   ( ::WorkArea )->( DbGoTo( _RecNo ) )
+   ::DbGoTo( _RecNo )
 
    ListView_SetCursel( ::hWnd, 1 )
 
@@ -480,7 +484,7 @@ Local _RecNo , _BottomRec // , _DeltaScroll
    ::DbSkip( - ::CountPerPage + IF( lAppend, 2, 1 ) )
    ::Update()
    // ListView_Scroll( ::hWnd, _DeltaScroll[2] * (-1) , 0 )
-   ( ::WorkArea )->( DbGoTo( _RecNo ) )
+   ::DbGoTo( _RecNo )
 
    ListView_SetCursel( ::hWnd, ascan ( ::aRecMap, _BottomRec ) )
 
@@ -506,13 +510,13 @@ Local s  , _RecNo // , _DeltaScroll := { Nil , Nil , Nil , Nil }
       If Len( ::aRecMap ) == 0
          ::TopBottom( -1 )
       Else
-         ( ::WorkArea )->( DbGoTo( ::aRecMap[ 1 ] ) )
+         ::DbGoTo( ::aRecMap[ 1 ] )
       EndIf
       ::DbSkip( -1 )
       ::scrollUpdate()
       ::Update()
       // ListView_Scroll( ::hWnd, _DeltaScroll[2] * (-1) , 0 )
-      ( ::WorkArea )->( DbGoTo( _RecNo ) )
+      ::DbGoTo( _RecNo )
       If Len( ::aRecMap ) != 0
          ListView_SetCursel( ::hWnd, 1 )
       EndIf
@@ -543,28 +547,33 @@ Local s , _RecNo  //, _DeltaScroll
          Return nil
       EndIf
 
-      If ::Eof()
-         If ::AllowAppend
-            ::EditItem( .t. )
-         Endif
-         Return nil
-      EndIf
-
       _RecNo := ( ::WorkArea )->( RecNo() )
 
       If Len( ::aRecMap ) == 0
          ::TopBottom( -1 )
       Else
-         ( ::WorkArea )->( DbGoTo( ::aRecMap[ 1 ] ) )
+         // Checks for more records
+         ::DbGoTo( ::aRecMap[ Len( ::aRecMap ) ] )
+         ::DbSkip()
+         If ::Eof()
+            ::DbGoTo( _RecNo )
+            If ::AllowAppend
+               ::EditItem( .t. )
+            Endif
+            Return nil
+         EndIf
+         ::DbSkip( -1 )
+         //
+         ::DbGoTo( ::aRecMap[ 1 ] )
       EndIf
       ::DbSkip()
       ::Update()
       If Len( ::aRecMap ) != 0
-         ( ::WorkArea )->( DbGoTo( ATail( ::aRecMap ) ) )
+         ::DbGoTo( ATail( ::aRecMap ) )
     ///      ListView_Scroll( ::hWnd, _DeltaScroll[2] * (-1) , 0 )
       EndIf
       ::scrollUpdate()
-      ( ::WorkArea )->( DbGoTo( _RecNo ) )
+      ::DbGoTo( _RecNo )
 
       ListView_SetCursel( ::hWnd, Len( ::aRecMap ) )
 
@@ -609,9 +618,17 @@ METHOD DbSkip( nRows ) CLASS TOBrowse
          ::Eof := ( ::WorkArea )->( Eof() )
       ElseIf ( ::WorkArea )->( Bof() )
          ::Eof := .T.
-         ( ::WorkArea )->( DbGoTo( 0 ) )
+         ::DbGoTo( 0 )
       EndIf
    ENDIF
+RETURN NIL
+
+*-----------------------------------------------------------------------------*
+METHOD DbGoTo( nRecNo ) CLASS TOBrowse
+*-----------------------------------------------------------------------------*
+   ( ::WorkArea )->( DbGoTo( nRecNo ) )
+   ::Bof := .F.
+   ::Eof := ( ::WorkArea )->( Eof() )
 RETURN NIL
 
 *-----------------------------------------------------------------------------*
@@ -655,9 +672,9 @@ Local _RecNo , m , hWnd, cWorkArea // , _DeltaScroll
 
    _RecNo := ( cWorkArea )->( RecNo() )
 
-   ( cWorkArea )->( DbGoTo( Value ) )
-   If ( cWorkArea )->( Eof() )
-      ( cWorkArea )->( DbGoTo( _RecNo ) )
+   ::DbGoTo( Value )
+   If ::Eof()
+      ::DbGoTo( _RecNo )
       Return nil
    EndIf
 
@@ -665,7 +682,7 @@ Local _RecNo , m , hWnd, cWorkArea // , _DeltaScroll
    ::DbSkip()
    ::DbSkip( -1 )
    IF ( cWorkArea )->( RecNo() ) != Value
-      ( cWorkArea )->( DbGoTo( _RecNo ) )
+      ::DbGoTo( _RecNo )
       Return nil
    ENDIF
 
@@ -676,7 +693,7 @@ Local _RecNo , m , hWnd, cWorkArea // , _DeltaScroll
 
    ::nValue := Value
    ::Update()
-   ( cWorkArea )->( DbGoTo( _RecNo ) )
+   ::DbGoTo( _RecNo )
 
    // ListView_Scroll( hWnd, _DeltaScroll[ 2 ] * ( -1 ) , 0 )
    ListView_SetCursel ( hWnd, ascan( ::aRecMap, Value ) )
@@ -700,7 +717,7 @@ Local Value, nRecNo
 
    nRecNo := ( ::WorkArea )->( RecNo() )
 
-   ( ::WorkArea )->( DbGoTo( Value ) )
+   ::DbGoTo( Value )
 
    If ::Lock .AND. ! ( ::WorkArea )->( Rlock() )
       MsgStop( _OOHG_Messages( 3, 9 ), _OOHG_Messages( 4, 2 ) )
@@ -719,11 +736,11 @@ Local Value, nRecNo
 
    If _OOHG_BrowseSyncStatus
       If ( ::WorkArea )->( RecNo() ) != ::Value
-         ( ::WorkArea )->( DbGoTo( ::Value ) )
+         ::DbGoTo( ::Value )
       EndIf
 
    Else
-      ( ::WorkArea )->( DbGoTo( nRecNo ) )
+      ::DbGoTo( nRecNo )
 
    EndIf
 
@@ -751,7 +768,7 @@ Local nOldRecNo, nItem, cWorkArea, lRet
    nOldRecNo := ( cWorkArea )->( RecNo() )
 
    If ! append
-      ( cWorkArea )->( DbGoTo( ::aRecMap[ nItem ] ) )
+      ::DbGoTo( ::aRecMap[ nItem ] )
    EndIf
 
    lRet := ::Super:EditItem_B( append )
@@ -761,7 +778,7 @@ Local nOldRecNo, nItem, cWorkArea, lRet
       ::Value := nOldRecNo
    EndIf
 
-   ( cWorkArea )->( DbGoTo( nOldRecNo ) )
+   ::DbGoTo( nOldRecNo )
 
 Return lRet
 
@@ -781,15 +798,15 @@ Local lRet, BackRec
    Else
       BackRec := ( ::WorkArea )->( RecNo() )
       IF lAppend
-         ( ::WorkArea )->( DbGoTo( 0 ) )
+         ::DbGoTo( 0 )
       Else
-         ( ::WorkArea )->( DbGoTo( ::aRecMap[ nRow ] ) )
+         ::DbGoTo( ::aRecMap[ nRow ] )
       EndIf
       lRet := ::Super:EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend )
       If lRet .AND. lAppend
          AADD( ::aRecMap, ( ::WorkArea )->( RecNo() ) )
       EndIf
-      ( ::WorkArea )->( DbGoTo( BackRec ) )
+      ::DbGoTo( BackRec )
    Endif
 Return lRet
 
@@ -817,7 +834,7 @@ LOCAL cWorkArea
 
       If Select( cWorkArea ) != 0 .AND. ( cWorkArea )->( RecNo() ) != ::Value
 
-         ( cWorkArea )->( DbGoTo( ::Value ) )
+         ::DbGoTo( ::Value )
 
       EndIf
 
@@ -932,10 +949,7 @@ Local cWorkArea, hWnd
       v := _RecNo
    EndIf
 
-   ( cWorkArea )->( DbGoTo( v ) )
-
-   ::Bof := .F.
-   ::Eof := ( cWorkArea )->( Eof() )
+   ::DbGoTo( v )
 
 ***************************
 
@@ -965,7 +979,7 @@ Local cWorkArea, hWnd
 
    If ::Eof()
       ::DeleteAllItems()
-      ( cWorkArea )->( DbGoTo( _RecNo ) )
+      ::DbGoTo( _RecNo )
       Return nil
    EndIf
 
@@ -980,7 +994,7 @@ Local cWorkArea, hWnd
    // ListView_Scroll( hWnd, _DeltaScroll[2] * (-1) , 0 )
    ListView_SetCursel( hWnd, ascan( ::aRecMap, v ) )
 
-   ( cWorkArea )->( DbGoTo( _RecNo ) )
+   ::DbGoTo( _RecNo )
 
 Return nil
 
@@ -1156,7 +1170,7 @@ Local BackRec
       BackRec := ( ::WorkArea )->( RecNo() )
       ::Super:SetScrollPos( nPos, VScroll )
       ::Value := ( ::WorkArea )->( RecNo() )
-      ( ::WorkArea )->( DbGoTo( BackRec ) )
+      ::DbGoTo( BackRec )
       ::BrowseOnChange()
    EndIf
 Return nil
