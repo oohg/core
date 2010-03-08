@@ -1,5 +1,5 @@
 /*
- * $Id: c_image.c,v 1.22 2010-01-21 09:13:05 guerra000 Exp $
+ * $Id: c_image.c,v 1.23 2010-03-08 03:39:41 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -340,13 +340,62 @@ HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, 
 {
    HANDLE hImage;
 
-   // Searchs image form RESOURCE
+   if( ! cImage || ! *cImage )
+   {
+      return NULL;
+   }
+
+   // Searchs image BITMAP form RESOURCE
    hImage = LoadImage( GetModuleHandle( NULL ), cImage, IMAGE_BITMAP, nWidth, nHeight, iAttributes );
-   // Don't search for ICON file... (for a while) it will be processed by OLE handler
-   // if( ! hImage )
-   // {
-   //    hImage = LoadImage( GetModuleHandle( NULL ), cImage, IMAGE_ICON, nWidth, nHeight, iAttributes );
-   // }
+
+   // Searchs image ICON form RESOURCE
+   if( ! hImage )
+   {
+      HICON hIcon;
+
+      hIcon = LoadImage( GetModuleHandle( NULL ), cImage, IMAGE_ICON, nWidth, nHeight, iAttributes );
+      if( ! hIcon )
+      {
+         hIcon = LoadImage( 0, cImage, IMAGE_ICON, nWidth, nHeight, iAttributes | LR_LOADFROMFILE );
+      }
+      if( hIcon )
+      {
+         RECT rect;
+         HDC imgDC, toDC;
+         HBRUSH hBrush;
+         ICONINFO IconInfo;
+         BITMAP bm;
+         int iWidth, iHeight;
+
+         imgDC = GetDC( hWnd );
+         toDC = CreateCompatibleDC( imgDC );
+
+         if( lBackColor == -1 )
+         {
+            lBackColor = GetSysColor( COLOR_BTNFACE );
+         }
+         hBrush = CreateSolidBrush( lBackColor );
+
+         GetIconInfo( hIcon, &IconInfo );
+         GetObject( IconInfo.hbmColor, sizeof( BITMAP ), &bm );
+         iWidth  = bm.bmWidth * 2;
+         iHeight = bm.bmHeight * 2;
+
+         SetRect( &rect, 0, 0, iWidth, iHeight );
+
+         SetBkColor( toDC, ( COLORREF ) lBackColor );
+         FillRect( toDC, &rect, hBrush );
+         hImage = CreateCompatibleBitmap( imgDC, iWidth, iHeight );
+         SelectObject( toDC, hImage );
+
+         DrawIcon( toDC, 0, 0, hIcon );
+
+         DeleteDC( imgDC );
+         DeleteDC( toDC );
+         DeleteObject( hBrush );
+         DeleteObject( hIcon );
+      }
+   }
    if( ! hImage )
    {
       HRSRC hSource;
@@ -406,11 +455,6 @@ HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, 
    {
       hImage = LoadImage( 0, cImage, IMAGE_BITMAP, nWidth, nHeight, iAttributes | LR_LOADFROMFILE );
    }
-   // Don't search for ICON file... (for a while) it will be processed by OLE handler
-   // if( ! hImage )
-   // {
-   //    hImage = LoadImage( 0, cImage, IMAGE_ICON, nWidth, nHeight, iAttributes | LR_LOADFROMFILE );
-   // }
    if( ! hImage )
    {
       HANDLE hFile;
