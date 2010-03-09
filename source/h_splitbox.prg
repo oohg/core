@@ -1,5 +1,5 @@
 /*
- * $Id: h_splitbox.prg,v 1.12 2010-03-09 04:01:25 guerra000 Exp $
+ * $Id: h_splitbox.prg,v 1.13 2010-03-09 18:30:00 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -201,21 +201,15 @@ EXTERN SetSplitBoxItem
 
 #pragma BEGINDUMP
 
-#ifndef _WIN32_IE
-   #define _WIN32_IE 0x0400
-#endif
-#if ( _WIN32_IE < 0x0400 )
+#ifdef _WIN32_IE
    #undef _WIN32_IE
-   #define _WIN32_IE 0x0400
 #endif
+#define _WIN32_IE 0x0400
 
-#ifndef _WIN32_WINNT
-   #define _WIN32_WINNT 0x0400
-#endif
-#if ( _WIN32_WINNT < 0x0400 )
+#ifdef _WIN32_WINNT
    #undef _WIN32_WINNT
-   #define _WIN32_WINNT 0x0400
 #endif
+#define _WIN32_WINNT 0x0400
 
 #include <hbapi.h>
 #include <windows.h>
@@ -399,13 +393,6 @@ HB_FUNC( SETSPLITBOXITEM )
    }
 
    SendMessage( HWNDparam( 2 ), RB_SETBANDINFO, iCount, (LPARAM) &rbBand );
-}
-
-HB_FUNC( DATAS )
-{
-   char dd[1000];
-   sprintf( dd, "%i %x", sizeof(REBARBANDINFO), _WIN32_WINNT );
-   hb_retc( dd );
 }
 
 #pragma ENDDUMP
