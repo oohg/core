@@ -1,5 +1,5 @@
 /*
- * $Id: h_splitbox.prg,v 1.11 2010-01-21 09:13:08 guerra000 Exp $
+ * $Id: h_splitbox.prg,v 1.12 2010-03-09 04:01:25 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -124,7 +124,7 @@ Local ControlHandle, nStyle
 
    If ::Container != nil .AND. ! ValidHandler( ::ContainerhWndValue )
       MsgOOHGError( "SPLITBOX can't be defined inside Tab control. Program terminated." )
-	EndIf
+   EndIf
 
    ASSIGN ::lInverted VALUE inverted   TYPE "L"
    ASSIGN bottom      VALUE bottom     TYPE "L"
@@ -209,6 +209,14 @@ EXTERN SetSplitBoxItem
    #define _WIN32_IE 0x0400
 #endif
 
+#ifndef _WIN32_WINNT
+   #define _WIN32_WINNT 0x0400
+#endif
+#if ( _WIN32_WINNT < 0x0400 )
+   #undef _WIN32_WINNT
+   #define _WIN32_WINNT 0x0400
+#endif
+
 #include <hbapi.h>
 #include <windows.h>
 #include <commctrl.h>
@@ -271,67 +279,71 @@ HB_FUNC( SIZEREBAR )
    SendMessage( HWNDparam( 1 ), RB_SHOWBAND, ( WPARAM )( INT ) 0, ( LPARAM )( BOOL ) 1 );
 }
 
-HB_FUNC ( ADDSPLITBOXITEM )
+HB_FUNC( ADDSPLITBOXITEM )
 {
+   REBARBANDINFO rbBand;
+   RECT          rc;
+   int Style = RBBS_CHILDEDGE | RBBS_GRIPPERALWAYS ;
 
-  REBARBANDINFO rbBand;
-  RECT          rc;
-  int Style = RBBS_CHILDEDGE | RBBS_GRIPPERALWAYS ;
+   if( hb_parl( 4 ) )
+   {
+      Style = Style | RBBS_BREAK ;
+   }
 
-  if ( hb_parl (4) )
-  {
-     Style = Style | RBBS_BREAK ;
-  }
+   /* NOTE: (Taken from note by "phvu" in MSDN)
+      rbBand.cbSize / sizeof(REBARBANDINFO) must be 80 for WinXP ( _WIN32_WINNT == 0x0501 ) .
+      Pelles C 6.00 assumes _WIN32_WINNT to 0x0600 . Then, WinXP
+      refuses to work ( sizeof(REBARBANDINFO) becomes 100 ).
+   */
 
-  GetWindowRect( HWNDparam( 1 ) , &rc );
+   GetWindowRect( HWNDparam( 1 ) , &rc );
 
-  rbBand.cbSize = sizeof(REBARBANDINFO);
-  rbBand.fMask  = RBBIM_TEXT | RBBIM_STYLE | RBBIM_CHILD | RBBIM_CHILDSIZE | RBBIM_SIZE ;
-  rbBand.fStyle = Style ;
-  rbBand.hbmBack= 0;
+   memset( &rbBand, 0, sizeof( REBARBANDINFO ) );
+   rbBand.cbSize = sizeof(REBARBANDINFO);
+   rbBand.fMask  = RBBIM_TEXT | RBBIM_STYLE | RBBIM_CHILD | RBBIM_CHILDSIZE | RBBIM_SIZE ;
+   rbBand.fStyle = Style ;
+   rbBand.hbmBack= 0;
 
-  rbBand.lpText     = ( char * ) hb_parc(5);
-  rbBand.hwndChild  = HWNDparam( 1 );
+   rbBand.lpText     = ( char * ) hb_parc( 5 );
+   rbBand.hwndChild  = HWNDparam( 1 );
 
-  if ( !hb_parl (8) )
-  {
-     // Not Horizontal
-     rbBand.cxMinChild = hb_parni(6) ? hb_parni(6) : 0 ;       //0 ; JP 61
-     rbBand.cyMinChild = hb_parni(7) ? hb_parni(7) : rc.bottom - rc.top ; // JP 61
-     rbBand.cx         = hb_parni(3) ;
-  }
-  else
-  {
-     // Horizontal
-     if ( hb_parni(6) == 0 && hb_parni(7) == 0 )
-     {
-        // Not ToolBar
-        rbBand.cxMinChild = 0 ;
-        rbBand.cyMinChild = rc.right - rc.left ;
-        rbBand.cx         = rc.bottom - rc.top ;
-     }
-     else
-     {
-        // ToolBar
-        rbBand.cxMinChild = hb_parni(7) ? hb_parni(7) : rc.bottom - rc.top ; // JP 61
-        rbBand.cyMinChild = hb_parni(6) ? hb_parni(6) : 0 ;
-        rbBand.cx         = hb_parni(7) ? hb_parni(7) : rc.bottom - rc.top ;
+   if ( !hb_parl( 8 ) )
+   {
+      // Not Horizontal
+      rbBand.cxMinChild = hb_parni( 6 ) ? hb_parni( 6 ) : 0 ;       //0 ; JP 61
+      rbBand.cyMinChild = hb_parni( 7 ) ? hb_parni( 7 ) : rc.bottom - rc.top ; // JP 61
+      rbBand.cx         = hb_parni( 3 ) ;
+   }
+   else
+   {
+      // Horizontal
+      if( hb_parni( 6 ) == 0 && hb_parni( 7 ) == 0 )
+      {
+         // Not ToolBar
+         rbBand.cxMinChild = 0 ;
+         rbBand.cyMinChild = rc.right - rc.left ;
+         rbBand.cx         = rc.bottom - rc.top ;
+      }
+      else
+      {
+         // ToolBar
+         rbBand.cxMinChild = hb_parni(7) ? hb_parni(7) : rc.bottom - rc.top ; // JP 61
+         rbBand.cyMinChild = hb_parni(6) ? hb_parni(6) : 0 ;
+         rbBand.cx         = hb_parni(7) ? hb_parni(7) : rc.bottom - rc.top ;
+      }
+   }
 
-     }
-  }
-
-  SendMessage( HWNDparam( 2 ) , RB_INSERTBAND , (WPARAM)-1 , (LPARAM) &rbBand );
-
+   SendMessage( HWNDparam( 2 ), RB_INSERTBAND, ( WPARAM ) -1, ( LPARAM ) &rbBand );
 }
 
 HB_FUNC( SETSPLITBOXITEM )
 {
-	REBARBANDINFO rbBand;
-	RECT          rc;
+   REBARBANDINFO rbBand;
+   RECT          rc;
    int iCount;
 
    memset( &rbBand, 0, sizeof( REBARBANDINFO ) );
-	rbBand.cbSize = sizeof(REBARBANDINFO);
+           rbBand.cbSize = sizeof(REBARBANDINFO);
    iCount = SendMessage( HWNDparam( 2 ) , RB_GETBANDCOUNT, 0 , 0 ) - 1;
    SendMessage( HWNDparam( 2 ) , RB_GETBANDINFO, iCount, (LPARAM) &rbBand );
 
@@ -360,33 +372,40 @@ HB_FUNC( SETSPLITBOXITEM )
 
    // rbBand.hwndChild  = HWNDparam( 1 );
 
-	if ( !hb_parl (8) )
-	{
-		// Not Horizontal
-		rbBand.cxMinChild = hb_parni(6) ? hb_parni(6) : 0 ;       //0 ; JP 61
-		rbBand.cyMinChild = hb_parni(7) ? hb_parni(7) : rc.bottom - rc.top ; // JP 61
-		rbBand.cx         = hb_parni(3) ;
-	}
-	else
-	{
-		// Horizontal
-		if ( hb_parni(6) == 0 && hb_parni(7) == 0 )
-		{
-			// Not ToolBar
-			rbBand.cxMinChild = 0 ;
-			rbBand.cyMinChild = rc.right - rc.left ;
-			rbBand.cx         = rc.bottom - rc.top ;
-		}
-		else
-		{
-			// ToolBar
-			rbBand.cxMinChild = hb_parni(7) ? hb_parni(7) : rc.bottom - rc.top ; // JP 61
-			rbBand.cyMinChild = hb_parni(6) ? hb_parni(6) : 0 ;
-			rbBand.cx         = hb_parni(7) ? hb_parni(7) : rc.bottom - rc.top ;
-		}
-	}
+   if( ! hb_parl( 8 ) )
+   {
+      // Not Horizontal
+      rbBand.cxMinChild = hb_parni(6) ? hb_parni(6) : 0 ;       //0 ; JP 61
+      rbBand.cyMinChild = hb_parni(7) ? hb_parni(7) : rc.bottom - rc.top ; // JP 61
+      rbBand.cx         = hb_parni(3) ;
+   }
+   else
+   {
+      // Horizontal
+      if( hb_parni( 6 ) == 0 && hb_parni( 7 ) == 0 )
+      {
+         // Not ToolBar
+         rbBand.cxMinChild = 0 ;
+         rbBand.cyMinChild = rc.right - rc.left ;
+         rbBand.cx         = rc.bottom - rc.top ;
+      }
+      else
+      {
+         // ToolBar
+         rbBand.cxMinChild = hb_parni(7) ? hb_parni(7) : rc.bottom - rc.top ; // JP 61
+         rbBand.cyMinChild = hb_parni(6) ? hb_parni(6) : 0 ;
+         rbBand.cx         = hb_parni(7) ? hb_parni(7) : rc.bottom - rc.top ;
+      }
+   }
 
    SendMessage( HWNDparam( 2 ), RB_SETBANDINFO, iCount, (LPARAM) &rbBand );
+}
+
+HB_FUNC( DATAS )
+{
+   char dd[1000];
+   sprintf( dd, "%i %x", sizeof(REBARBANDINFO), _WIN32_WINNT );
+   hb_retc( dd );
 }
 
 #pragma ENDDUMP

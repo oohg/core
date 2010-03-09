@@ -1,11 +1,17 @@
 /*
- * $Id: ChangeLog,v 1.641 2010-03-08 03:39:40 guerra000 Exp $
+ * $Id: ChangeLog,v 1.642 2010-03-09 04:01:23 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2010-03-08 22:06 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_splitbox.prg
+    ! Forces to compile with _WIN32_WINNT == 0x0400
+      (prevents REBARBANDINFO structure size to be higher than
+      expected).
 
 2010-03-07 21:38 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source/c_image.c
