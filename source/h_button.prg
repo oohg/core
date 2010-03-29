@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.44 2009-11-24 02:55:18 guerra000 Exp $
+ * $Id: h_button.prg,v 1.45 2010-03-29 05:03:03 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -135,6 +135,10 @@ Local ControlHandle, nStyle, lBitMap
    ASSIGN ::nRow    VALUE y TYPE "N"
    ASSIGN ::nWidth  VALUE w TYPE "N"
    ASSIGN ::nHeight VALUE h TYPE "N"
+
+   if !empty(cImage) .and. !empty(Caption)
+      DEFAULT  cAlign to "LEFT"
+   endif
 
    lBitMap := ! ValType( caption ) $ "CM" .AND. ;
               ( ValType( cImage ) $ "CM" .OR. ;
