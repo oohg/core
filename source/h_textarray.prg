@@ -1,5 +1,5 @@
 /*
- * $Id: h_textarray.prg,v 1.16 2008-11-30 16:23:36 guerra000 Exp $
+ * $Id: h_textarray.prg,v 1.17 2010-05-03 01:34:57 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -75,6 +75,8 @@ CLASS TTextArray FROM TControl
    METHOD QQOut(t)             BLOCK { |Self,t| ::Write( t ) }
    METHOD QOut(t)              BLOCK { |Self,t| ::Write( CHR( 13 ) + CHR( 10 ) ) , ::Write( t ) }
    METHOD DevPos
+
+   METHOD Cls                  BLOCK { |Self| ::Clear() , ::DevPos( 0, 0 ) }
 
    EMPTY( _OOHG_AllVars )
 ENDCLASS

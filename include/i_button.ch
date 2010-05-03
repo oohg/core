@@ -1,12 +1,12 @@
 /*
- * $Id: i_button.ch,v 1.13 2007-11-26 04:25:40 guerra000 Exp $
+ * $Id: i_button.ch,v 1.14 2010-05-03 01:34:57 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Button definitions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -115,7 +115,7 @@
                 [ SUBCLASS <subclass> ] ;
                 [ <disabled: DISABLED> ] ;
                 [ CAPTION <caption> ] ;
-                [ PICTURE <bitmap> ] ;
+		[ <dummy3: PICTURE, ICON> <bitmap> ] ;
                 [ BUFFER <buffer> ] ;
                 [ HBITMAP <hbitmap> ] ;
 		[ <notrans: NOTRANSPARENT> ] ;
@@ -152,7 +152,7 @@
 		[ <notabstop: NOTABSTOP> ] ;
                 [ SUBCLASS <subclass> ]           ;
                 [ <rtl: RTL> ]                    ;
-                [ PICTURE <bitmap> ]              ;
+		[ <dummy3: PICTURE, ICON> <bitmap> ] ;
                 [ BUFFER <buffer> ] ;
                 [ HBITMAP <hbitmap> ] ;
 		[ <notrans: NOTRANSPARENT> ] ;

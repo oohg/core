@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.646 2010-04-21 13:31:07 declan2005 Exp $
+ * $Id: ChangeLog,v 1.647 2010-05-03 01:34:57 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,10 +7,18 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2010-05-01 20:33 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_textarray.prg
+    + ::CLS() method added.
+  * include/i_button.ch
+  * include/i_picture.ch
+    + ICON clause added (same to PICTURE).
+  * include/i_windefs.ch
+    + GW_* constants added.
+
 2010-04-21 09:29 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_error.prg
     * change version
-
 
 2010-03-29 09:54 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * include/i_hmg_compat.ch

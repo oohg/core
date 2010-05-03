@@ -1,11 +1,11 @@
 /*
- * $Id: i_picture.ch,v 1.1 2009-03-02 05:06:56 guerra000 Exp $
+ * $Id: i_picture.ch,v 1.2 2010-05-03 01:34:57 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Picture control definitions
  *
- * Copyright 2009 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -103,7 +103,7 @@
         [ <rtl: RTL> ] ;
         [ SUBCLASS <subclass> ] ;
         [ BACKCOLOR <backcolor> ] ;
-        [ PICTURE <filename> ] ;
+        [ <dummy3: PICTURE, ICON> <filename> ] ;
         [ BUFFER <buffer> ] ;
         [ HBITMAP <hbitmap> ] ;
         [ <scale: FORCESCALE> ] ;

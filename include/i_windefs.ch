@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.31 2008-12-31 23:05:23 guerra000 Exp $
+ * $Id: i_windefs.ch,v 1.32 2010-05-03 01:34:57 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -664,8 +664,16 @@
 #define ACS_AUTOPLAY                4
 #define ACS_TIMER                   8
 
-// Combobox
+// GetWindow
+#define GW_HWNDFIRST           0
+#define GW_HWNDLAST            1
+#define GW_HWNDNEXT            2
+#define GW_HWNDPREV            3
+#define GW_OWNER               4 
 #define GW_CHILD               5
+#define GW_ENABLEDPOPUP        6
+
+// Combobox
 #define CBS_SORT               0x0100
 #define CBS_DROPDOWN           0x0002
 #define CBS_DROPDOWNLIST       0x0003
