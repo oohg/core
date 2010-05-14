@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.18 2010-02-22 05:05:48 guerra000 Exp $
+ * $Id: h_form.prg,v 1.19 2010-05-14 17:06:00 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -195,6 +195,7 @@ CLASS TForm FROM TWindow
    DATA GraphCommand   INIT nil
    DATA GraphData      INIT {}
    DATA SplitChildList INIT {}    // INTERNAL windows.
+   DATA aChildPopUp    INIT {}    // POP UP windows.
 
    DATA NotifyIconLeftClick   INIT nil
    DATA NotifyIconDblClick    INIT nil
@@ -456,6 +457,10 @@ Local Formhandle
    ::BackColor := aRGB
    ::AutoRelease := ! ( HB_IsLogical( NoAutoRelease ) .AND. NoAutoRelease )
 
+   If ! ::lInternal .AND. ValidHandler( Parent )
+      AADD( GetFormObjectByHandle( Parent ):aChildPopUp , Self )
+   EndIf
+
    // Assigns ThisForm the currently defined window
    _PushEventInfo()
    _OOHG_ThisForm := Self
@@ -553,6 +558,10 @@ RETURN .T.
 METHOD Activate( lNoStop, oWndLoop ) CLASS TForm
 *-----------------------------------------------------------------------------*
 
+   If ::Active
+      MsgOOHGError( "Window: " + ::Name + " already active. Program terminated" )
+   Endif
+
    ASSIGN lNoStop VALUE lNoStop TYPE "L" DEFAULT .F.
 
    If _OOHG_ThisEventType == 'WINDOW_RELEASE' .AND. ! lNoStop
@@ -569,10 +578,6 @@ METHOD Activate( lNoStop, oWndLoop ) CLASS TForm
 
    If _OOHG_ThisEventType == 'WINDOW_LOSTFOCUS'
       MsgOOHGError("ACTIVATE WINDOW / Activate(): Not allowed in window's LOSTFOCUS event procedure. Program terminated" )
-   Endif
-
-   If ::Active
-      MsgOOHGError( "Window: " + ::Name + " already active. Program terminated" )
    Endif
 
    // Checks for non-stop window
@@ -615,15 +620,11 @@ Return nil
 METHOD Release() CLASS TForm
 *-----------------------------------------------------------------------------*
    If ! ::lReleasing
-      ::lReleasing := .T.
-      ::DoEvent( ::OnRelease, "WINDOW_RELEASE" )
-      ::lDestroyed := .T.
-
       If ! ::Active
          MsgOOHGError( "Window: " + ::Name + " is not active. Program terminated." )
       Endif
 
-      ::PreRelease()
+      _ReleaseWindowList( { Self } )
 
       * Release Window
 
@@ -881,10 +882,15 @@ METHOD DeleteControl( oControl ) CLASS TForm
 *-----------------------------------------------------------------------------*
 Local nPos
    // Removes INTERNAL window from ::SplitChildList
-   // If oControl:lForm .....
    nPos := aScan( ::SplitChildList, { |o| o:hWnd == oControl:hWnd } )
    If nPos > 0
       _OOHG_DeleteArrayItem( ::SplitChildList, nPos )
+   EndIf
+
+   // Removes POPUP window from ::aChildPopUp
+   nPos := aScan( ::aChildPopUp, { |o| o:hWnd == oControl:hWnd } )
+   If nPos > 0
+      _OOHG_DeleteArrayItem( ::aChildPopUp, nPos )
    EndIf
 Return ::Super:DeleteControl( oControl )
 
@@ -931,7 +937,9 @@ Local mVar, i
 
    ::ReleaseAttached()
 
-   IF ::Active
+   // If ::Active
+   // Any data must be destroyed... regardless FORM is active or not.
+
       // Delete Notify icon
       ShowNotifyIcon( ::hWnd, .F. , 0, "" )
       If ::NotifyMenu != nil
@@ -962,11 +970,13 @@ Local mVar, i
       EndIf
 
       // Verify if window was multi-activated
-      ::ActivateCount[ 1 ]--
-      If ::ActivateCount[ 1 ] < 1
-         _MessageLoopEnd( ::ActivateCount[ 2 ] )
-         ::ActivateCount[ 2 ] := NIL
-         ::ActivateCount[ 3 ] := .F.
+      If ::Active
+         ::ActivateCount[ 1 ]--
+         If ::ActivateCount[ 1 ] < 1
+            _MessageLoopEnd( ::ActivateCount[ 2 ] )
+            ::ActivateCount[ 2 ] := NIL
+            ::ActivateCount[ 3 ] := .F.
+         Endif
       Endif
 
       // Removes WINDOW from the array
@@ -985,7 +995,8 @@ Local mVar, i
       ::Active := .F.
       ::Super:Release()
 
-   EndIf
+   // EndIf
+   // Any data must be destroyed... regardless FORM is active or not.
 
 Return nil
 
@@ -1159,9 +1170,9 @@ Local oCtrl, lMinim := .F.
 
    Do Case
 
-        ***********************************************************************
-	case nMsg == WM_HOTKEY
-        ***********************************************************************
+   ***********************************************************************
+   case nMsg == WM_HOTKEY
+   ***********************************************************************
 
       // Process HotKeys
       i := ASCAN( ::aHotKeys, { |a| a[ HOTKEY_ID ] == wParam } )
@@ -1175,11 +1186,11 @@ Local oCtrl, lMinim := .F.
          ::DoEvent( ::aAcceleratorKeys[ i ][ HOTKEY_ACTION ], "ACCELERATOR" )
       EndIf
 
-        ***********************************************************************
-	case nMsg == WM_ACTIVATE
-        ***********************************************************************
+   ***********************************************************************
+   case nMsg == WM_ACTIVATE
+   ***********************************************************************
 
-		if LoWord(wparam) == 0
+      If LoWord(wparam) == 0
 
          aeval( ::aHotKeys, { |a| ReleaseHotKey( ::hWnd, a[ HOTKEY_ID ] ) } )
 
@@ -1189,45 +1200,45 @@ Local oCtrl, lMinim := .F.
             ::DoEvent( ::OnLostFocus, "WINDOW_LOSTFOCUS" )
          EndIf
 
-		Else
+      Else
 
          If ValidHandler( ::hWnd )
             UpdateWindow( ::hWnd )
-			EndIf
+         EndIf
 
-		EndIf
+      EndIf
 
-        ***********************************************************************
-	case nMsg == WM_SETFOCUS
-        ***********************************************************************
+   ***********************************************************************
+   case nMsg == WM_SETFOCUS
+   ***********************************************************************
 
-         If ::Active .AND. ! ::lInternal
-            _OOHG_UserWindow := Self
-			EndIf
+      If ::Active .AND. ! ::lInternal
+         _OOHG_UserWindow := Self
+      EndIf
 
-         aeval( ::aHotKeys, { |a| ReleaseHotKey( ::hWnd, a[ HOTKEY_ID ] ) } )
+      aeval( ::aHotKeys, { |a| ReleaseHotKey( ::hWnd, a[ HOTKEY_ID ] ) } )
 
-         aeval( ::aHotKeys, { |a| InitHotKey( ::hWnd, a[ HOTKEY_MOD ], a[ HOTKEY_KEY ], a[ HOTKEY_ID ] ) } )
+      aeval( ::aHotKeys, { |a| InitHotKey( ::hWnd, a[ HOTKEY_MOD ], a[ HOTKEY_KEY ], a[ HOTKEY_ID ] ) } )
 
-         ::DoEvent( ::OnGotFocus, "WINDOW_GOTFOCUS" )
+      ::DoEvent( ::OnGotFocus, "WINDOW_GOTFOCUS" )
 
-         if ! empty( ::LastFocusedControl )
-            SetFocus( ::LastFocusedControl )
-         endif
+      If ! empty( ::LastFocusedControl )
+         SetFocus( ::LastFocusedControl )
+      EndIf
 
-        ***********************************************************************
-	case nMsg == WM_HELP
-        ***********************************************************************
+   ***********************************************************************
+   case nMsg == WM_HELP
+   ***********************************************************************
 
-      RETURN ::HelpTopic( lParam )
+      Return ::HelpTopic( lParam )
 
-        ***********************************************************************
-	case nMsg == WM_TASKBAR
-        ***********************************************************************
+   ***********************************************************************
+   case nMsg == WM_TASKBAR
+   ***********************************************************************
 
-		If wParam == ID_TASKBAR .and. lParam # WM_MOUSEMOVE
+      If wParam == ID_TASKBAR .and. lParam # WM_MOUSEMOVE
 
-			do case
+         do case
             case lParam == WM_LBUTTONDOWN
                ::DoEvent( ::NotifyIconLeftClick, "WINDOW_NOTIFYLEFTCLICK" )
 
@@ -1236,7 +1247,7 @@ Local oCtrl, lMinim := .F.
                   If ::NotifyMenu != nil
                      ::NotifyMenu:Activate()
                   Endif
-					EndIf
+               EndIf
 
             case lParam == WM_LBUTTONDBLCLK
                ::DoEvent( ::NotifyIconDblClick, "WINDOW_NOTIFYDBLCLICK" )
@@ -1250,59 +1261,59 @@ Local oCtrl, lMinim := .F.
             case lParam == WM_MBUTTONDBLCLK
                ::DoEvent( ::NotifyIconMDblClick, "WINDOW_NOTIFYMDBLCLICK" )
 
-			endcase
-		EndIf
+         endcase
+      EndIf
 
-        ***********************************************************************
-	case nMsg == WM_NEXTDLGCTL
-        ***********************************************************************
+   ***********************************************************************
+   case nMsg == WM_NEXTDLGCTL
+   ***********************************************************************
 
-         If LoWord( lParam ) != 0
-            // wParam contains next control's handler
-            NextControlHandle := wParam
-         Else
-            // wParam indicates next control's direction
-            NextControlHandle := GetNextDlgTabItem( hWnd, GetFocus(), wParam )
-         EndIf
+      If LoWord( lParam ) != 0
+         // wParam contains next control's handler
+         NextControlHandle := wParam
+      Else
+         // wParam indicates next control's direction
+         NextControlHandle := GetNextDlgTabItem( hWnd, GetFocus(), wParam )
+      EndIf
 
-         oCtrl := GetControlObjectByHandle( NextControlHandle )
+      oCtrl := GetControlObjectByHandle( NextControlHandle )
 
-         if oCtrl:hWnd == NextControlHandle
-            oCtrl:SetFocus()
-         else
-				setfocus( NextControlHandle )
-         endif
+      If oCtrl:hWnd == NextControlHandle
+         oCtrl:SetFocus()
+      Else
+         SetFocus( NextControlHandle )
+      Endif
 
-         * To update the default pushbutton border!
-         * To set the default control identifier!
-         * Return 0
+      * To update the default pushbutton border!
+      * To set the default control identifier!
+      * Return 0
 
-        ***********************************************************************
-	case nMsg == WM_PAINT
-        ***********************************************************************
+   ***********************************************************************
+   case nMsg == WM_PAINT
+   ***********************************************************************
 
-         ::DefWindowProc( nMsg, wParam, lParam )
+      ::DefWindowProc( nMsg, wParam, lParam )
 
-         AEVAL( ::SplitChildList, { |o| AEVAL( o:GraphTasks, { |b| _OOHG_EVAL( b ) } ), _OOHG_EVAL( o:GraphCommand, o:hWnd, o:GraphData ) } )
+      AEVAL( ::SplitChildList, { |o| AEVAL( o:GraphTasks, { |b| _OOHG_EVAL( b ) } ), _OOHG_EVAL( o:GraphCommand, o:hWnd, o:GraphData ) } )
 
-         AEVAL( ::GraphTasks, { |b| _OOHG_EVAL( b ) } )
-         _OOHG_EVAL( ::GraphCommand, ::hWnd, ::GraphData )
+      AEVAL( ::GraphTasks, { |b| _OOHG_EVAL( b ) } )
+      _OOHG_EVAL( ::GraphCommand, ::hWnd, ::GraphData )
 
-         ::DoEvent( ::OnPaint, "WINDOW_PAINT" )
+      ::DoEvent( ::OnPaint, "WINDOW_PAINT" )
 
-         return 1
+      Return 1
 
-        ***********************************************************************
+   ***********************************************************************
    case nMsg == WM_ENTERSIZEMOVE
-        ***********************************************************************
+   ***********************************************************************
 
-         IF ! ! _OOHG_AutoAdjust .OR. ! ::lAdjust
-            ::lEnterSizeMove := .T.
-         ENDIF
+      If ! ! _OOHG_AutoAdjust .OR. ! ::lAdjust
+         ::lEnterSizeMove := .T.
+      EndIf
 
-        ***********************************************************************
-  	case nMsg == WM_SIZE
-        ***********************************************************************
+   ***********************************************************************
+   case nMsg == WM_SIZE
+   ***********************************************************************
 
       IF ! ::lEnterSizeMove
          ValidateScrolls( Self, .T. )
@@ -1344,9 +1355,9 @@ Local oCtrl, lMinim := .F.
          Return 0
       EndIf
 
-        ***********************************************************************
+   ***********************************************************************
    case nMsg == WM_EXITSIZEMOVE    //// cuando se cambia el tamaño por reajuste con el mouse
-        ***********************************************************************
+   ***********************************************************************
 
       If ::Active .AND. ( ! _OOHG_AutoAdjust .OR. ! ::lAdjust .OR. ( ::noldw # NIL .OR. ::noldh # NIL ) .AND. ( ::nOLdw # ::Width .OR. ::nOldh # ::Height ) )
          ::DoEvent( ::OnSize, "WINDOW_SIZE" )
@@ -1357,27 +1368,27 @@ Local oCtrl, lMinim := .F.
       Endif
       ::lEnterSizeMove := .F.
 
-        ***********************************************************************
+   ***********************************************************************
    case nMsg == WM_SIZING
-        ***********************************************************************
+   ***********************************************************************
 
       If _TForm_Sizing( wParam, lParam, ::MinWidth, ::MaxWidth, ::MinHeight, ::MaxHeight )
          ::DefWindowProc( nMsg, wParam, lParam )
          Return 1
       EndIf
 
-        ***********************************************************************
+   ***********************************************************************
    case nMsg == WM_MOVING
-        ***********************************************************************
+   ***********************************************************************
 
       If _TForm_Moving( lParam, ::ForceRow, ::ForceCol )
          ::DefWindowProc( nMsg, wParam, lParam )
          Return 1
       EndIf
 
-        ***********************************************************************
-	case nMsg == WM_CLOSE
-        ***********************************************************************
+   ***********************************************************************
+   case nMsg == WM_CLOSE
+   ***********************************************************************
 
       NOTE : Since ::lReleasing could be changed on each process, it must be validated any time
 
@@ -1394,34 +1405,31 @@ Local oCtrl, lMinim := .F.
       EndIf
 
       // Process AutoRelease Property
-      if ! ::lReleasing .AND. ! ::AutoRelease
+      If ! ::lReleasing .AND. ! ::AutoRelease
          ::Hide()
          Return 1
       EndIf
 
       // If Not AutoRelease Destroy Window
 
-      IF ! ::lReleasing
-         ::lReleasing := .T.
-         ::DoEvent( ::OnRelease, "WINDOW_RELEASE" )
-         ::lDestroyed := .T.
-      ENDIF
+      _ReleaseWindowList( { Self } )
 
-      if ::Type == "A"
+      If ::Type == "A"
+         // Main window
          ReleaseAllWindows()
       Else
          ::OnHideFocusManagement()
       EndIf
 
-        ***********************************************************************
-	case nMsg == WM_DESTROY
-        ***********************************************************************
+   ***********************************************************************
+   case nMsg == WM_DESTROY
+   ***********************************************************************
 
       ::Events_Destroy()
 
-        ***********************************************************************
+   ***********************************************************************
    otherwise
-        ***********************************************************************
+   ***********************************************************************
 
       return ::Super:Events( hWnd, nMsg, wParam, lParam )
 
@@ -1685,12 +1693,8 @@ Return ::Super:Activate( lNoStop, oWndLoop )
 *-----------------------------------------------------------------------------*
 METHOD Release() CLASS TFormMain
 *-----------------------------------------------------------------------------*
-   If ! ::lReleasing
-      ::lReleasing := .T.
-      ::DoEvent( ::OnRelease, "WINDOW_RELEASE" )
-      ::lDestroyed := .T.
-      ReleaseAllWindows()
-   EndIf
+   _ReleaseWindowList( { Self } )
+   ReleaseAllWindows()
 Return ::Super:Release()
 
 *-----------------------------------------------------------------------------*
@@ -2354,15 +2358,15 @@ Local mVar
 Return &mVar
 
 *-----------------------------------------------------------------------------*
-Function _IsWindowActive ( FormName )
+Function _IsWindowActive( FormName )
 *-----------------------------------------------------------------------------*
 Return GetFormObject( FormName ):Active
 
 *-----------------------------------------------------------------------------*
-Function _IsWindowDefined ( FormName )
+Function _IsWindowDefined( FormName )
 *-----------------------------------------------------------------------------*
 Local mVar
-mVar := '_' + FormName
+   mVar := '_' + FormName
 Return ( Type( mVar ) == "O" )
 
 
@@ -2478,39 +2482,42 @@ Return Nil
 *-----------------------------------------------------------------------------*
 Function ReleaseAllWindows()
 *-----------------------------------------------------------------------------*
+   _ReleaseWindowList( _OOHG_aFormObjects )
+   dbcloseall()
+   ExitProcess( 0 )
+Return Nil
+
+*-----------------------------------------------------------------------------*
+Function _ReleaseWindowList( aWindows )
+*-----------------------------------------------------------------------------*
 Local i, oWnd
 
-//   If _OOHG_ThisEventType == 'WINDOW_RELEASE'
-//      MsgOOHGError( "Release a window in its own 'on release' procedure or release the main window in any 'on release' procedure is not allowed. Program terminated." )
-//   EndIf
-
-   For i = 1 to len ( _OOHG_aFormhWnd )
-      oWnd := _OOHG_aFormObjects[ i ]
-      if oWnd:Active
-
-         If ! oWnd:lReleasing
-            oWnd:lReleasing := .T.
+   For i = 1 to len( aWindows )
+      oWnd := aWindows[ i ]
+      If ! oWnd:lReleasing
+         oWnd:lReleasing := .T.
+         If oWnd:Active
             oWnd:DoEvent( oWnd:OnRelease, "WINDOW_RELEASE" )
-            oWnd:lDestroyed := .T.
          EndIf
+         oWnd:lDestroyed := .T.
+         oWnd:PreRelease()
 
-         if .Not. Empty ( oWnd:NotifyIcon )
-            oWnd:NotifyIcon := ''
-            ShowNotifyIcon( oWnd:hWnd, .F., NIL, NIL )
-			EndIf
+         // ON RELEASE for child windows
+         _ReleaseWindowList( oWnd:aChildPopUp )
+         oWnd:aChildPopUp := {}
+      Endif
 
-		Endif
+      If ! Empty( oWnd:NotifyIcon )
+         oWnd:NotifyIcon := ""
+         ShowNotifyIcon( oWnd:hWnd, .F., NIL, NIL )
+      EndIf
 
       aeval( oWnd:aHotKeys, { |a| ReleaseHotKey( oWnd:hWnd, a[ HOTKEY_ID ] ) } )
       oWnd:aHotKeys := {}
       aeval( oWnd:aAcceleratorKeys, { |a| ReleaseHotKey( oWnd:hWnd, a[ HOTKEY_ID ] ) } )
       oWnd:aAcceleratorKeys := {}
 
-	Next i
-
-	dbcloseall()
-
-   ExitProcess(0)
+   Next i
 
 Return Nil
 
