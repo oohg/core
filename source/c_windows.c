@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.70 2010-01-21 09:13:05 guerra000 Exp $
+ * $Id: c_windows.c,v 1.71 2010-05-15 21:05:05 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -126,19 +126,6 @@
 #include "tchar.h"
 #include <commctrl.h>
 #include "oohg.h"
-
-#ifdef __XHARBOUR__
-#define HB_STORNI( n, x, y ) hb_storni( n, x, y )
-#define HB_STORNL( n, x, y ) hb_stornl( n, x, y )
-#define HB_PARNI( n, x )  hb_parni( n, x )
-#define HB_STORPTR( n, x, y ) hb_storptr( n, x, y )
-#else
-#define HB_STORNI( n, x, y ) hb_storvni( n, x, y )
-#define HB_STORNL( n, x, y ) hb_storvnl( n, x, y )
-#define HB_PARNI( n, x )  hb_parvni( n, x )
-#define HB_STORPTR( n, x, y ) hb_storvptr( n, x, y )
-#endif
-
 
 BOOL Array2Rect(PHB_ITEM aRect, RECT *rc ) ;
 

@@ -1,11 +1,11 @@
 /*
- * $Id: h_status.prg,v 1.33 2009-08-24 01:47:20 declan2005 Exp $
+ * $Id: h_status.prg,v 1.34 2010-05-15 21:05:05 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG statusbar functions
  *
- * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -401,13 +401,6 @@ Return _OOHG_ActiveMessageBar:AddItem( Caption, Width, action, ToolTip, icon, cs
 #include "hbapi.h"
 #include "hbstack.h"
 #include "oohg.h"
-
-#ifdef __XHARBOUR__
-#define HB_PARNI( n, x ) hb_parni( n, x )
-#else
-#define HB_PARNI( n, x ) hb_parvni( n, x )
-#endif
-
 
 static WNDPROC lpfnOldWndProc = 0;
 

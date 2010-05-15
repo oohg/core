@@ -1,11 +1,11 @@
 /*
- * $Id: i_monthcal.ch,v 1.4 2008-10-04 19:58:24 guerra000 Exp $
+ * $Id: i_monthcal.ch,v 1.5 2010-05-15 21:05:04 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Monthcal definitions
  *
- * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -112,9 +112,17 @@
                 [ <rtl: RTL> ] ;
                 [ SUBCLASS <subclass> ] ;
                 [ <disabled: DISABLED> ]        ;
+                [ FONTCOLOR <fontcolor> ] ;
+                [ BACKCOLOR <backcolor> ] ;
+                [ TITLEFONTCOLOR <titlefontcolor> ] ;
+                [ TITLEBACKCOLOR <titlebackcolor> ] ;
+                [ TRAILINGFONTCOLOR <trailingfontcolor> ] ;
+                [ BACKGROUNDCOLOR <backgroundcolor> ] ;
 	=>;
         [ <obj> := ] _OOHG_SelectSubClass( TMonthCal(), [ <subclass>() ] ):Define( ;
                      <(name)>, <(parent)>, <col>, <row>, 0, 0, <v>, <fontname>, <fontsize>, ;
                      <tooltip>, <.notoday.>, <.notodaycircle.>, <.weeknumbers.>, <{change}>, ;
                      <helpid>, <.invisible.>, <.notabstop.>, <.bold.>, <.italic.>, ;
-                     <.underline.>, <.strikeout.>, <.rtl.>, <.disabled.> )
+                     <.underline.>, <.strikeout.>, <.rtl.>, <.disabled.>, <fontcolor>, ;
+                     <backcolor>, <titlefontcolor>, <titlebackcolor>, <trailingfontcolor>, ;
+                     <backgroundcolor> )

@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.29 2010-02-22 05:05:48 guerra000 Exp $
+ * $Id: winprint.prg,v 1.30 2010-05-15 21:05:06 guerra000 Exp $
  */
 // -----------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -1918,28 +1918,7 @@ return self
 #include <olectl.h>
 #include <ocidl.h>
 #include <commctrl.h>
-
-#ifdef __XHARBOUR__
-#define HB_PARC( n, x ) hb_parc( n, x )
-#define HB_PARCLEN( n, x ) hb_parclen( n, x )
-#define HB_PARNI( n, x ) hb_parni( n, x )
-#define HB_PARNL( n, x ) hb_parnl( n, x )
-#define HB_PARNL3( n, x, y ) hb_parnl( n, x, y )
-#define HB_STORC( n, x, y ) hb_storc( n, x, y )
-#define HB_STORNI( n, x ) hb_storni( n, x )
-#define HB_STORNI3( n, x, y ) hb_storni( n, x, y )
-#define HB_STORNL( n, x, y ) hb_stornl( n, x, y )
-#else
-#define HB_PARC( n, x ) hb_parvc( n, x )
-#define HB_PARCLEN( n, x ) hb_parvclen( n, x )
-#define HB_PARNI( n, x ) hb_parvni( n, x )
-#define HB_PARNL( n, x ) hb_parvnl( n, x )
-#define HB_PARNL3( n, x, y ) hb_parvnl( n, x, y )
-#define HB_STORC( n, x, y ) hb_storvc( n, x, y )
-#define HB_STORNI( n, x ) hb_storvni( n, x )
-#define HB_STORNI3( n, x, y ) hb_storvni( n, x, y )
-#define HB_STORNL( n, x, y ) hb_storvnl( n, x, y )
-#endif
+#include "oohg.h"
 
 static HDC hDC=NULL;
 static HDC hDCRef=NULL;
@@ -2172,7 +2151,7 @@ HB_FUNC (RR_GETDEVICECAPS)
  devcaps[16]=(int) tm.tmAscent;
  devcaps[17]=(int) pi2->pDevMode->dmPaperSize;
  for(i = 1; i <= hb_parinfa(1,0); i++)
-     HB_STORNI3(devcaps[i],1,i);
+     HB_STORNI(devcaps[i],1,i);
  if (xfont!=0)
     SelectObject(hDCRef,hfont);
 }
@@ -3106,8 +3085,8 @@ HB_FUNC (RR_CREATEIMAGELIST)
       dx = (int) bm.bmWidth/number;
  himl = ImageList_Create(dx,bm.bmHeight,ILC_COLOR24|ILC_MASK,number,0);
  ImageList_AddMasked(himl,hbmpx,CLR_DEFAULT);
- HB_STORNI(dx,3);
- HB_STORNI(bm.bmHeight,4);
+ HB_STORNI2(dx,3);
+ HB_STORNI2(bm.bmHeight,4);
  DeleteObject(hbmpx);
  hb_retnl((LONG) himl);
 }
@@ -3213,8 +3192,8 @@ HB_FUNC (RR_GETTEXTEXTENT)
 
   if (xfont!=0) SelectObject(hDC ,(HPEN) xfont);
   hb_retni(GetTextExtentPoint32(hDC, hb_parc(1), hb_parclen(1), &szMetric));
-  HB_STORNI3(szMetric.cy,2,1);
-  HB_STORNI3(szMetric.cx,2,2);
+  HB_STORNI(szMetric.cy,2,1);
+  HB_STORNI(szMetric.cx,2,2);
   if (xfont!=0) SelectObject(hDC , hfont);
 
 }
@@ -3346,24 +3325,24 @@ HB_FUNC (RR_GETWINDOWRECT)
   if (hwnd==0)
       hwnd= GetDesktopWindow();
   GetWindowRect(hwnd,&rect);
-  HB_STORNI3(rect.top,1,1);
-  HB_STORNI3(rect.left,1,2);
-  HB_STORNI3(rect.bottom,1,3);
-  HB_STORNI3(rect.right,1,4);
-  HB_STORNI3(rect.bottom-rect.top+1,1,5);
-  HB_STORNI3(rect.right-rect.left+1,1,6);
+  HB_STORNI(rect.top,1,1);
+  HB_STORNI(rect.left,1,2);
+  HB_STORNI(rect.bottom,1,3);
+  HB_STORNI(rect.right,1,4);
+  HB_STORNI(rect.bottom-rect.top+1,1,5);
+  HB_STORNI(rect.right-rect.left+1,1,6);
 }
 
 HB_FUNC (RR_GETCLIENTRECT)
 {
   RECT rect;
   GetClientRect((HWND) HB_PARNL(1,7),&rect);
-  HB_STORNI3(rect.top,1,1);
-  HB_STORNI3(rect.left,1,2);
-  HB_STORNI3(rect.bottom,1,3);
-  HB_STORNI3(rect.right,1,4);
-  HB_STORNI3(rect.bottom-rect.top+1,1,5);
-  HB_STORNI3(rect.right-rect.left+1,1,6);
+  HB_STORNI(rect.top,1,1);
+  HB_STORNI(rect.left,1,2);
+  HB_STORNI(rect.bottom,1,3);
+  HB_STORNI(rect.right,1,4);
+  HB_STORNI(rect.bottom-rect.top+1,1,5);
+  HB_STORNI(rect.right-rect.left+1,1,6);
 }
 
 HB_FUNC (RR_SCROLLWINDOW)

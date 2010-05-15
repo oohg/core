@@ -1,5 +1,5 @@
 /*
- * $Id: c_winapimisc.c,v 1.13 2010-01-21 09:13:05 guerra000 Exp $
+ * $Id: c_winapimisc.c,v 1.14 2010-05-15 21:05:05 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -114,13 +114,7 @@
 
 #ifdef __XHARBOUR__
    #define HB_FHANDLE FHANDLE
-#define HB_STORC( n, x, y )  hb_storc( n, x, y )
-#define HB_PARNI( n, x )  hb_parni( n, x )
-#else
-#define HB_STORC( n, x, y )  hb_storvc( n, x, y )
-#define HB_PARNI( n, x )  hb_parvni( n, x )
 #endif
-
 
 BOOL SysRefresh( void );
 

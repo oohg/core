@@ -1,12 +1,12 @@
 /*
- * $Id: c_dialogs.c,v 1.4 2009-08-24 01:47:19 declan2005 Exp $
+ * $Id: c_dialogs.c,v 1.5 2010-05-15 21:05:05 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * C dialogs functions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -104,25 +104,10 @@
 #include "hbapiitm.h"
 #include "winreg.h"
 #include "tchar.h"
+#include "oohg.h"
 
-#ifdef __XHARBOUR__
-#define HB_STORNI( n, x, y ) hb_storni( n, x, y )
-#define HB_STORNL( n, x, y ) hb_stornl( n, x, y )
-#define HB_STORL( n, x, y )  hb_storl( n, x, y )
-#define HB_STORC( n, x, y )  hb_storc( n, x, y )
-#define HB_PARNL( n, x )  hb_parnl( n, x )
-#else
-#define HB_STORNI( n, x, y ) hb_storvni( n, x, y )
-#define HB_STORNL( n, x, y ) hb_storvnl( n, x, y )
-#define HB_STORL( n, x, y )  hb_storvl( n, x, y )
-#define HB_STORC( n, x, y )  hb_storvc( n, x, y )
-#define HB_PARNL( n, x )  hb_parvnl( n, x )
-#endif
-
-
-HB_FUNC ( CHOOSEFONT )
+HB_FUNC( CHOOSEFONT )
 {
-
 	CHOOSEFONT cf;
 	LOGFONT lf;
 	long PointSize ;
@@ -226,10 +211,9 @@ HB_FUNC ( CHOOSEFONT )
 	HB_STORNI( lf.lfCharSet , -1, 8 );
 
 	ReleaseDC (hwnd,hdc) ;
-
 }
 
-HB_FUNC ( C_GETFILE )
+HB_FUNC( C_GETFILE )
 {
 	OPENFILENAME ofn;
 	char buffer[32768];
@@ -306,13 +290,12 @@ HB_FUNC ( C_GETFILE )
 	}
 }
 
-HB_FUNC ( C_PUTFILE )
+HB_FUNC( C_PUTFILE )
 {
+   OPENFILENAME ofn;
+   char buffer[512];
 
- OPENFILENAME ofn;
- char buffer[512];
-
- int flags = OFN_FILEMUSTEXIST | OFN_EXPLORER ;
+   int flags = OFN_FILEMUSTEXIST | OFN_EXPLORER ;
 
  if ( hb_parl(4) )
  {
@@ -383,8 +366,7 @@ HB_FUNC( C_BROWSEFORFOLDER ) // Syntax: C_BROWSEFORFOLDER([<hWnd>],[<cTitle>],<n
    hb_xfree( lpBuffer);
 }
 
-
-HB_FUNC ( CHOOSECOLOR )
+HB_FUNC( CHOOSECOLOR )
 {
    CHOOSECOLOR cc ;
    COLORREF crCustClr[16] ;
@@ -392,7 +374,7 @@ HB_FUNC ( CHOOSECOLOR )
 
    for( i = 0 ; i <16 ; i++ )
      crCustClr[i] = (ISARRAY(3) ? HB_PARNL(3,i+1) : GetSysColor(COLOR_BTNFACE)) ;
-    
+
    cc.lStructSize    = sizeof( CHOOSECOLOR ) ;
    cc.hwndOwner      = ISNIL(1) ? GetActiveWindow():(HWND) hb_parnl(1) ;
    cc.rgbResult      = (COLORREF)ISNIL(2) ?  0 : hb_parnl(2) ;

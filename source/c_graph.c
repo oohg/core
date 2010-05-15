@@ -1,11 +1,11 @@
 /*
- * $Id: c_graph.c,v 1.5 2009-09-28 17:58:57 declan2005 Exp $
+ * $Id: c_graph.c,v 1.6 2010-05-15 21:05:05 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * C graphic functions
  *
- * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -99,14 +99,7 @@
 #include <winuser.h>
 #include "oohg.h"
 
-#ifdef __XHARBOUR__
-#define HB_PARNI( n, x )  hb_parni( n, x )
-#else
-#define HB_PARNI( n, x )  hb_parvni( n, x )
-#endif
-
-
-HB_FUNC ( LINEDRAW )
+HB_FUNC( LINEDRAW )
 {
    HWND hWnd1;
    HDC hdc1;

@@ -1,5 +1,5 @@
 /*
- * $Id: h_listbox.prg,v 1.18 2010-01-21 09:13:07 guerra000 Exp $
+ * $Id: h_listbox.prg,v 1.19 2010-05-15 21:05:05 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -271,13 +271,6 @@ RETURN ListBoxGetMultiSel( ::hWnd )
 #include <commctrl.h>
 #include "hbapi.h"
 #include "oohg.h"
-
-#ifdef __XHARBOUR__
-#define HB_STORNI( n, x, y ) hb_storni( n, x, y )
-#else
-#define HB_STORNI( n, x, y ) hb_storvni( n, x, y )
-#endif
-
 
 static WNDPROC lpfnOldWndProc = 0;
 

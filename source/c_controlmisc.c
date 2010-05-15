@@ -1,5 +1,5 @@
 /*
- * $Id: c_controlmisc.c,v 1.55 2010-01-09 03:25:55 guerra000 Exp $
+ * $Id: c_controlmisc.c,v 1.56 2010-05-15 21:05:05 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -107,14 +107,6 @@
 
 #ifdef HB_ITEM_NIL
    #define hb_dynsymSymbol( pDynSym )        ( ( pDynSym )->pSymbol )
-#endif
-
-#ifdef __XHARBOUR__
-#define HB_STORNI( n, x, y ) hb_storni( n, x, y )
-#define HB_STORNL( n, x, y ) hb_stornl( n, x, y )
-#else
-#define HB_STORNI( n, x, y ) hb_storvni( n, x, y )
-#define HB_STORNL( n, x, y ) hb_storvnl( n, x, y )
 #endif
 
 PHB_SYMB *s_Symbols = NULL;
@@ -331,7 +323,7 @@ BOOL _OOHG_DetermineColorReturn( PHB_ITEM pColor, LONG *lColor, BOOL fUpdate )
       hb_reta( 3 );
       HB_STORNL( GetRValue( *lColor ), -1, 1 );
       HB_STORNL( GetGValue( *lColor ), -1, 2 );
-      HB_STORNL( GetBValue( *lColor ), -1, 3 );     
+      HB_STORNL( GetBValue( *lColor ), -1, 3 );
    }
    else
    {
@@ -341,7 +333,7 @@ BOOL _OOHG_DetermineColorReturn( PHB_ITEM pColor, LONG *lColor, BOOL fUpdate )
    return fUpdate;
 }
 
-HB_FUNC ( DELETEOBJECT )
+HB_FUNC( DELETEOBJECT )
 {
    hb_retl( DeleteObject( (HGDIOBJ) HWNDparam( 1 ) ) );
 }

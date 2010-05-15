@@ -1,11 +1,11 @@
 /*
- * $Id: h_monthcal.prg,v 1.11 2009-09-11 02:41:25 guerra000 Exp $
+ * $Id: h_monthcal.prg,v 1.12 2010-05-15 21:05:05 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG monthcal functions
  *
- * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -100,9 +100,16 @@ CLASS TMonthCal FROM TControl
    DATA Type      INIT "MONTHCAL" READONLY
 
    METHOD Define
-   METHOD Value            SETGET
+   METHOD Value                   SETGET
    METHOD SetFont
    METHOD Events_Notify
+
+   METHOD FontColor               SETGET
+   METHOD BackColor               SETGET
+   METHOD TitleFontColor          SETGET
+   METHOD TitleBackColor          SETGET
+   METHOD TrailingFontColor       SETGET
+   METHOD BackgroundColor         SETGET
 
    EMPTY( _OOHG_AllVars )
 ENDCLASS
@@ -111,7 +118,9 @@ ENDCLASS
 METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
                fontsize, tooltip, notoday, notodaycircle, weeknumbers, ;
                change, HelpId, invisible, notabstop, bold, italic, ;
-               underline, strikeout, lRtl, lDisabled ) CLASS TMonthCal
+               underline, strikeout, lRtl, lDisabled, fontcolor, backcolor, ;
+               titlefontcolor, titlebackcolor, trailingfontcolor, ;
+               backgroundcolor ) CLASS TMonthCal
 *-----------------------------------------------------------------------------*
 Local ControlHandle, nStyle
 
@@ -135,6 +144,12 @@ Local ControlHandle, nStyle
 
    ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
+   ::FontColor         := fontcolor
+   ::BackColor         := backcolor
+   ::TitleFontColor    := titlefontcolor
+   ::TitleBackColor    := titlebackcolor
+   ::TrailingFontColor := trailingfontcolor
+   ::BackgroundColor   := backgroundcolor
 
    ASSIGN ::OnChange    VALUE Change    TYPE "B"
    ::Value := value
@@ -323,7 +338,6 @@ HB_FUNC( GETMONTHCALDATE )
    hb_retds( cDate );
 }
 
-
 HB_FUNC( GETMONTHCALFIRSTDAYOFWEEK )
 {
    hb_retni( LOWORD( SendMessage( HWNDparam( 1 ), MCM_GETFIRSTDAYOFWEEK, 0, 0 ) ) );
@@ -332,6 +346,180 @@ HB_FUNC( GETMONTHCALFIRSTDAYOFWEEK )
 HB_FUNC( SETMONTHCALFIRSTDAYOFWEEK )
 {
    SendMessage( HWNDparam( 1 ), MCM_SETFIRSTDAYOFWEEK, 0, hb_parni( 2 ) );
+}
+
+HB_FUNC_STATIC( TMONTHCAL_FONTCOLOR )
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   LONG lColor;
+
+   if( _OOHG_DetermineColorReturn( hb_param( 1, HB_IT_ANY ), &oSelf->lFontColor, ( hb_pcount() >= 1 ) ) )
+   {
+      if( ValidHandler( oSelf->hWnd ) )
+      {
+         if( oSelf->lFontColor != -1 )
+         {
+            MonthCal_SetColor( oSelf->hWnd, MCSC_TEXT, ( COLORREF ) oSelf->lFontColor );
+         }
+         // else
+         // {
+         //    ListView_SetTextColor( oSelf->hWnd, GetSysColor( COLOR_WINDOWTEXT ) );
+         // }
+         // RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+      }
+   }
+
+   lColor = ( LONG ) MonthCal_GetColor( oSelf->hWnd, MCSC_TEXT );
+   hb_reta( 3 );
+   HB_STORNL( GetRValue( lColor ), -1, 1 );
+   HB_STORNL( GetGValue( lColor ), -1, 2 );
+   HB_STORNL( GetBValue( lColor ), -1, 3 );
+}
+
+HB_FUNC_STATIC( TMONTHCAL_BACKCOLOR )
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   LONG lColor;
+
+   if( _OOHG_DetermineColorReturn( hb_param( 1, HB_IT_ANY ), &oSelf->lBackColor, ( hb_pcount() >= 1 ) ) )
+   {
+      if( ValidHandler( oSelf->hWnd ) )
+      {
+         if( oSelf->lBackColor != -1 )
+         {
+            MonthCal_SetColor( oSelf->hWnd, MCSC_MONTHBK, ( COLORREF ) oSelf->lBackColor );
+         }
+         // else
+         // {
+         //    ListView_SetTextColor( oSelf->hWnd, GetSysColor( COLOR_WINDOWTEXT ) );
+         // }
+         // RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+      }
+   }
+
+   lColor = ( LONG ) MonthCal_GetColor( oSelf->hWnd, MCSC_MONTHBK );
+   hb_reta( 3 );
+   HB_STORNL( GetRValue( lColor ), -1, 1 );
+   HB_STORNL( GetGValue( lColor ), -1, 2 );
+   HB_STORNL( GetBValue( lColor ), -1, 3 );
+}
+
+HB_FUNC_STATIC( TMONTHCAL_TITLEFONTCOLOR )
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   LONG lColor;
+
+   if( _OOHG_DetermineColorReturn( hb_param( 1, HB_IT_ANY ), &lColor, ( hb_pcount() >= 1 ) ) )
+   {
+      if( ValidHandler( oSelf->hWnd ) )
+      {
+         if( lColor != -1 )
+         {
+            MonthCal_SetColor( oSelf->hWnd, MCSC_TITLETEXT, ( COLORREF ) lColor );
+         }
+         // else
+         // {
+         //    ListView_SetTextColor( oSelf->hWnd, GetSysColor( COLOR_WINDOWTEXT ) );
+         // }
+         // RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+      }
+   }
+
+   lColor = ( LONG ) MonthCal_GetColor( oSelf->hWnd, MCSC_TITLETEXT );
+   hb_reta( 3 );
+   HB_STORNL( GetRValue( lColor ), -1, 1 );
+   HB_STORNL( GetGValue( lColor ), -1, 2 );
+   HB_STORNL( GetBValue( lColor ), -1, 3 );
+}
+
+HB_FUNC_STATIC( TMONTHCAL_TITLEBACKCOLOR )
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   LONG lColor;
+
+   if( _OOHG_DetermineColorReturn( hb_param( 1, HB_IT_ANY ), &lColor, ( hb_pcount() >= 1 ) ) )
+   {
+      if( ValidHandler( oSelf->hWnd ) )
+      {
+         if( lColor != -1 )
+         {
+            MonthCal_SetColor( oSelf->hWnd, MCSC_TITLEBK, ( COLORREF ) lColor );
+         }
+         // else
+         // {
+         //    ListView_SetTextColor( oSelf->hWnd, GetSysColor( COLOR_WINDOWTEXT ) );
+         // }
+         // RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+      }
+   }
+
+   lColor = ( LONG ) MonthCal_GetColor( oSelf->hWnd, MCSC_TITLEBK );
+   hb_reta( 3 );
+   HB_STORNL( GetRValue( lColor ), -1, 1 );
+   HB_STORNL( GetGValue( lColor ), -1, 2 );
+   HB_STORNL( GetBValue( lColor ), -1, 3 );
+}
+
+HB_FUNC_STATIC( TMONTHCAL_TRAILINGFONTCOLOR )
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   LONG lColor;
+
+   if( _OOHG_DetermineColorReturn( hb_param( 1, HB_IT_ANY ), &lColor, ( hb_pcount() >= 1 ) ) )
+   {
+      if( ValidHandler( oSelf->hWnd ) )
+      {
+         if( lColor != -1 )
+         {
+            MonthCal_SetColor( oSelf->hWnd, MCSC_TRAILINGTEXT, ( COLORREF ) lColor );
+         }
+         // else
+         // {
+         //    ListView_SetTextColor( oSelf->hWnd, GetSysColor( COLOR_WINDOWTEXT ) );
+         // }
+         // RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+      }
+   }
+
+   lColor = ( LONG ) MonthCal_GetColor( oSelf->hWnd, MCSC_TRAILINGTEXT );
+   hb_reta( 3 );
+   HB_STORNL( GetRValue( lColor ), -1, 1 );
+   HB_STORNL( GetGValue( lColor ), -1, 2 );
+   HB_STORNL( GetBValue( lColor ), -1, 3 );
+}
+
+HB_FUNC_STATIC( TMONTHCAL_BACKGROUNDCOLOR )
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   LONG lColor;
+
+   if( _OOHG_DetermineColorReturn( hb_param( 1, HB_IT_ANY ), &lColor, ( hb_pcount() >= 1 ) ) )
+   {
+      if( ValidHandler( oSelf->hWnd ) )
+      {
+         if( lColor != -1 )
+         {
+            MonthCal_SetColor( oSelf->hWnd, MCSC_BACKGROUND, ( COLORREF ) lColor );
+         }
+         // else
+         // {
+         //    ListView_SetTextColor( oSelf->hWnd, GetSysColor( COLOR_WINDOWTEXT ) );
+         // }
+         // RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+      }
+   }
+
+   lColor = ( LONG ) MonthCal_GetColor( oSelf->hWnd, MCSC_BACKGROUND );
+   hb_reta( 3 );
+   HB_STORNL( GetRValue( lColor ), -1, 1 );
+   HB_STORNL( GetGValue( lColor ), -1, 2 );
+   HB_STORNL( GetBValue( lColor ), -1, 3 );
 }
 
 #pragma ENDDUMP

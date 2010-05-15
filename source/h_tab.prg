@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.46 2010-01-21 09:13:08 guerra000 Exp $
+ * $Id: h_tab.prg,v 1.47 2010-05-15 21:05:05 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -711,13 +711,6 @@ EXTERN TabCtrl_SetCurSel, TabCtrl_GetCurSel, TabCtrl_InsertItem, TabCtrl_DeleteI
 #include <commctrl.h>
 #include "hbapi.h"
 #include "oohg.h"
-
-    #ifdef __XHARBOUR__
-#define HB_STORNI( n, x, y ) hb_storni( n, x, y )
-#else
-#define HB_STORNI( n, x, y ) hb_storvni( n, x, y )
-#endif
-
 
 static WNDPROC lpfnOldWndProc = 0;
 

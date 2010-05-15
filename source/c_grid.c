@@ -1,5 +1,5 @@
 /*
- * $Id: c_grid.c,v 1.22 2010-01-21 09:13:05 guerra000 Exp $
+ * $Id: c_grid.c,v 1.23 2010-05-15 21:05:05 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -105,12 +105,6 @@
 #include "winreg.h"
 #include "tchar.h"
 #include "oohg.h"
-
-#ifdef __XHARBOUR__
-#define HB_STORNI( n, x, y ) hb_storni( n, x, y )
-#else
-#define HB_STORNI( n, x, y ) hb_storvni( n, x, y )
-#endif
 
 HB_FUNC( LISTVIEW_SETITEMCOUNT )
 {

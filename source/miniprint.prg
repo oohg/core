@@ -1,5 +1,5 @@
 /*
- * $Id: miniprint.prg,v 1.30 2010-01-21 09:13:09 guerra000 Exp $
+ * $Id: miniprint.prg,v 1.31 2010-05-15 21:05:05 guerra000 Exp $
  */
 /*----------------------------------------------------------------------------
  MINIGUI - Harbour Win32 GUI library source code
@@ -1982,23 +1982,9 @@ RETURN NIL
 #include <wingdi.h>
 #include "commctrl.h"
 #include "olectl.h"
+#include "oohg.h"
 
-#ifdef __XHARBOUR__
-#define HB_STORNI( n, x, y ) hb_storni( n, x, y )
-#define HB_STORNL( n, x, y ) hb_stornl( n, x, y )
-#define HB_STORL( n, x, y )  hb_storl( n, x, y )
-#define HB_STORC( n, x, y )  hb_storc( n, x, y )
-#define HB_PARNL( n, x, y )  hb_parnl( n, x, y )
-#else
-#define HB_STORNI( n, x, y ) hb_storvni( n, x, y )
-#define HB_STORNL( n, x, y ) hb_storvnl( n, x, y )
-#define HB_STORL( n, x, y )  hb_storvl( n, x, y )
-#define HB_STORC( n, x, y )  hb_storvc( n, x, y )
-#define HB_PARNL( n, x, y )  hb_parvnl( n, x, y )
-#endif
-
-
-HB_FUNC ( CVCSETTEXTALIGN )
+HB_FUNC( CVCSETTEXTALIGN )
 {
   hb_retni(SetTextAlign( (HDC) hb_parnl (1) ,  hb_parni(2)));
 }

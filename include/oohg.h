@@ -1,11 +1,11 @@
 /*
- * $Id: oohg.h,v 1.43 2008-10-24 02:37:19 guerra000 Exp $
+ * $Id: oohg.h,v 1.44 2010-05-15 21:05:04 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * C level definitions
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * This program is free software; you can redistribute it and/or modify
@@ -199,6 +199,32 @@ PHB_ITEM _OOHG_GetExistingObject( HWND hWnd, BOOL bForm, BOOL bForceAny );
 #define s_OnMDblClick          68
 #define s_OnDropFiles          69
 #define s_LastSymbol           70
+
+#ifdef __XHARBOUR__
+   #define HB_STORNI( n, x, y )   hb_storni( n, x, y )
+   #define HB_STORNL( n, x, y )   hb_stornl( n, x, y )
+   #define HB_STORL( n, x, y )    hb_storl( n, x, y )
+   #define HB_STORC( n, x, y )    hb_storc( n, x, y )
+   #define HB_PARNI( n, x )       hb_parni( n, x )
+   #define HB_PARNL( n, x )       hb_parnl( n, x )
+   #define HB_STORPTR( n, x, y )  hb_storptr( n, x, y )
+   #define HB_PARC( n, x )        hb_parc( n, x )
+   #define HB_PARCLEN( n, x )     hb_parclen( n, x )
+   #define HB_PARNL3( n, x, y )   hb_parnl( n, x, y )
+   #define HB_STORNI2( n, x )     hb_storni( n, x )
+#else
+   #define HB_STORNI( n, x, y )   hb_storvni( n, x, y )
+   #define HB_STORNL( n, x, y )   hb_storvnl( n, x, y )
+   #define HB_STORL( n, x, y )    hb_storvl( n, x, y )
+   #define HB_STORC( n, x, y )    hb_storvc( n, x, y )
+   #define HB_PARNI( n, x )       hb_parvni( n, x )
+   #define HB_PARNL( n, x )       hb_parvnl( n, x )
+   #define HB_STORPTR( n, x, y )  hb_storvptr( n, x, y )
+   #define HB_PARC( n, x )        hb_parvc( n, x )
+   #define HB_PARCLEN( n, x )     hb_parvclen( n, x )
+   #define HB_PARNL3( n, x, y )   hb_parvnl( n, x, y )
+   #define HB_STORNI2( n, x )     hb_storvni( n, x )
+#endif
 
 // Hack for MinGW and static functions (object's methods)
 #ifdef __MINGW32__

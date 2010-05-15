@@ -1,11 +1,11 @@
 /*
- * $Id: i_altsyntax.ch,v 1.44 2008-09-07 23:12:56 guerra000 Exp $
+ * $Id: i_altsyntax.ch,v 1.45 2010-05-15 21:05:04 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Alternate syntax definitions
  *
- * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -117,6 +117,10 @@ Memvariables
 #xtranslate _OOHG_ActiveControlHelpId                 => _OOHG_ActiveControlInfo \[  20 \]
 #xtranslate _OOHG_ActiveControlDisabled               => _OOHG_ActiveControlInfo \[  21 \]
 #xtranslate _OOHG_ActiveControlShowHeaders            => _OOHG_ActiveControlInfo \[  22 \]
+#xtranslate _OOHG_ActiveControlTitleFontColor         => _OOHG_ActiveControlInfo \[  23 \]
+#xtranslate _OOHG_ActiveControlTitleBackColor         => _OOHG_ActiveControlInfo \[  24 \]
+#xtranslate _OOHG_ActiveControlTrailingFontColor      => _OOHG_ActiveControlInfo \[  25 \]
+#xtranslate _OOHG_ActiveControlBackgroundColor        => _OOHG_ActiveControlInfo \[  26 \]
 
 #xtranslate _OOHG_ActiveControlEditControls           => _OOHG_ActiveControlInfo \[ 201 \]
 #xtranslate _OOHG_ActiveControlWhen                   => _OOHG_ActiveControlInfo \[ 202 \]
@@ -1012,8 +1016,12 @@ Month Calendar
 	=>;
         _OOHG_ClearActiveControlInfo( <(name)> ) ;;
         _OOHG_ActiveControlNoToday               := .f.          ;;
-        _OOHG_ActiveControlNoTodayCircle := .f.          ;;
-        _OOHG_ActiveControlWeekNumbers   := .f.
+        _OOHG_ActiveControlNoTodayCircle         := .f.          ;;
+        _OOHG_ActiveControlWeekNumbers           := .f.          ;;
+        _OOHG_ActiveControlTitleFontColor        := nil          ;;
+        _OOHG_ActiveControlTitleBackColor        := nil          ;;
+        _OOHG_ActiveControlTrailingFontColor     := nil          ;;
+        _OOHG_ActiveControlBackgroundColor       := nil
 
 #xcommand NOTODAY	<notoday>;
 	=>;
@@ -1027,6 +1035,22 @@ Month Calendar
 	=>;
         _OOHG_ActiveControlWeekNumbers   := <weeknumbers>
 
+#xcommand TITLEFONTCOLOR     <color>;
+	=>;
+        _OOHG_ActiveControlTitleFontColor        := <color>
+
+#xcommand TITLEBACKCOLOR     <color>;
+	=>;
+        _OOHG_ActiveControlTitleBackColor        := <color>
+
+#xcommand TRAILINGFONTCOLOR  <color>;
+	=>;
+        _OOHG_ActiveControlTrailingFontColor     := <color>
+
+#xcommand BACKGROUNDCOLOR    <color>;
+	=>;
+        _OOHG_ActiveControlBackgroundColor       := <color>
+
 #xcommand END MONTHCALENDAR;
 	=>;
         TMonthCal():Define(;
@@ -1034,8 +1058,8 @@ Month Calendar
                 _OOHG_ActiveControlOf,;
                 _OOHG_ActiveControlCol,;
                 _OOHG_ActiveControlRow,;
-		0,;
-		0,;
+                _OOHG_ActiveControlWidth,;
+                _OOHG_ActiveControlHeight,;
                 _OOHG_ActiveControlValue,;
                 _OOHG_ActiveControlFont,;
                 _OOHG_ActiveControlSize,;
@@ -1051,7 +1075,14 @@ Month Calendar
                 _OOHG_ActiveControlFontItalic,;
                 _OOHG_ActiveControlFontUnderLine,;
                 _OOHG_ActiveControlFontStrikeOut, ;
-                _OOHG_ActiveControlRtl )
+                _OOHG_ActiveControlRtl, ;
+                _OOHG_ActiveControlDisabled, ;
+                _OOHG_ActiveControlFontColor, ;
+                _OOHG_ActiveControlBackColor, ;
+                _OOHG_ActiveControlTitleFontColor, ;
+                _OOHG_ActiveControlTitleBackColor, ;
+                _OOHG_ActiveControlTrailingFontColor, ;
+                _OOHG_ActiveControlBackgroundColor )
 
 /*----------------------------------------------------------------------------
 Button

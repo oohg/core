@@ -1,11 +1,11 @@
 /*
- * $Id: h_ipaddress.prg,v 1.8 2009-08-24 01:47:20 declan2005 Exp $
+ * $Id: h_ipaddress.prg,v 1.9 2010-05-15 21:05:05 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG IP address functions
  *
- * Copyright 2005-2008 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -178,13 +178,6 @@ RETURN GetIPAddressString( ::hWnd )
 #include "winreg.h"
 #include "tchar.h"
 #include "oohg.h"
-
-#ifdef __XHARBOUR__
-#define HB_STORNI( n, x, y ) hb_storni( n, x, y )
-#else
-#define HB_STORNI( n, x, y ) hb_storvni( n, x, y )
-#endif
-
 
 static WNDPROC lpfnOldWndProc = 0;
 
