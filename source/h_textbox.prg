@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.61 2009-10-07 19:51:35 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.62 2010-05-22 01:36:42 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1008,7 +1008,13 @@ RETURN TTextPicture_Events2_String( Self, ::Caption, nPos, cString, ::ValidMask,
 STATIC FUNCTION TTextPicture_Events2_Key( Self, cText, nPos, cChar, aValidMask, cPictureMask, lInsert )
 Local lChange := .F., nPos1, cMask
    If ::nDecimal != 0 .AND. cChar $ if( ::lBritish, ",.", "." )
-      cText := Transform( VAL( StrTran( xUnTransform( Self, cText ), " ", "" ) ), if( ::lBritish, "@E ", "" ) + cPictureMask )
+      cText := xUnTransform( Self, cText )
+      nPos1 := IF( LEFT( LTRIM( cText ), 1 ) == "-", 1, 0 )
+      cText := Transform( VAL( StrTran( cText, " ", "" ) ), if( ::lBritish, "@E ", "" ) + cPictureMask )
+      If nPos1 == 1 .AND. LEFT( cText, 1 ) == " " .AND. ! "-" $ cText
+         nPos1 := LEN( cText ) - LEN( LTRIM( cText ) )
+         cText := LEFT( cText, nPos1 - 1 ) + "-" + SUBSTR( cText, nPos1 + 1 )
+      EndIf
       nPos := ::nDecimal
       Return .T.
    Endif
