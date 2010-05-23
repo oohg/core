@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.19 2010-05-14 17:06:00 guerra000 Exp $
+ * $Id: h_form.prg,v 1.20 2010-05-23 22:13:59 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -477,15 +477,15 @@ METHOD EndWindow() CLASS TForm
 LOCAL nPos
    nPos := ASCAN( _OOHG_ActiveForm, { |o| o:Name == ::Name .AND. o:hWnd == ::hWnd } )
    If nPos > 0
-      ::nOldw := ::width
-      ::nOldh := :: height
+      ::nOldw := ::Width
+      ::nOldh := ::Height
       ::nWindowState := ::GetWindowState()   ///obtiene el estado inicial de la ventana
       _OOHG_DeleteArrayItem( _OOHG_ActiveForm, nPos )
    Else
       // TODO: Window structure already closed
    EndIf
   _PopEventInfo()
-  ::ldefined:=.T.
+  ::lDefined := .T.
 Return Nil
 
 *------------------------------------------------------------------------------*
@@ -559,25 +559,26 @@ METHOD Activate( lNoStop, oWndLoop ) CLASS TForm
 *-----------------------------------------------------------------------------*
 
    If ::Active
-      MsgOOHGError( "Window: " + ::Name + " already active. Program terminated" )
+      MsgOOHGError( "Window: " + ::Name + " already active. Program terminated." )
    Endif
 
    ASSIGN lNoStop VALUE lNoStop TYPE "L" DEFAULT .F.
 
    If _OOHG_ThisEventType == 'WINDOW_RELEASE' .AND. ! lNoStop
-      MsgOOHGError("ACTIVATE WINDOW: activate windows within an 'on release' window procedure is not allowed. Program terminated" )
+      MsgOOHGError( "ACTIVATE WINDOW: activate windows within an 'on release' window procedure is not allowed. Program terminated." )
    Endif
 
-   If Len( _OOHG_ActiveForm ) > 0
-      MsgOOHGError("ACTIVATE WINDOW: DEFINE WINDOW Structure is not closed. Program terminated" )
-   Endif
+   TForm_WindowStructureClosed( Self )
+   // If Len( _OOHG_ActiveForm ) > 0
+   //    MsgOOHGError( "ACTIVATE WINDOW: DEFINE WINDOW structure is not closed. Program terminated" )
+   // Endif
 
    If _OOHG_ThisEventType == 'WINDOW_GOTFOCUS'
-      MsgOOHGError("ACTIVATE WINDOW / Activate(): Not allowed in window's GOTFOCUS event procedure. Program terminated" )
+      MsgOOHGError( "ACTIVATE WINDOW / Activate(): Not allowed in window's GOTFOCUS event procedure. Program terminated." )
    Endif
 
    If _OOHG_ThisEventType == 'WINDOW_LOSTFOCUS'
-      MsgOOHGError("ACTIVATE WINDOW / Activate(): Not allowed in window's LOSTFOCUS event procedure. Program terminated" )
+      MsgOOHGError( "ACTIVATE WINDOW / Activate(): Not allowed in window's LOSTFOCUS event procedure. Program terminated." )
    Endif
 
    // Checks for non-stop window
@@ -607,6 +608,21 @@ METHOD Activate( lNoStop, oWndLoop ) CLASS TForm
    EndIf
 
 Return Nil
+
+STATIC FUNCTION TForm_WindowStructureClosed( Self )
+   If ASCAN( _OOHG_ActiveForm, { |o| o:Name == ::Name .AND. o:hWnd == ::hWnd } ) > 0
+      MsgOOHGError( "ACTIVATE WINDOW: DEFINE WINDOW structure for window " + ::Name + " is not closed. Program terminated." )
+   EndIf
+   AEVAL( ::SplitChildList, { |o| TForm_WindowStructureClosed( o ) } )
+Return nil
+// Local lClosed, I
+//    lClosed := ( ASCAN( _OOHG_ActiveForm, { |o| o:Name == ::Name .AND. o:hWnd == ::hWnd } ) == 0 )
+//    I := LEN( ::SplitChildList )
+//    DO WHILE I > 0 .AND. lClosed
+//       lClosed := TForm_WindowStructureClosed( ::SplitChildList[ I ] )
+//       I--
+//    ENDDO
+// Return lClosed
 
 *-----------------------------------------------------------------------------*
 METHOD MessageLoop() CLASS TForm
@@ -762,7 +778,7 @@ METHOD Cursor( uValue ) CLASS TForm
 Return nil
 
 *------------------------------------------------------------------------------*
-METHOD AutoAdjust() CLASS TFORM
+METHOD AutoAdjust() CLASS TForm
 *------------------------------------------------------------------------------*
 LOCAL nWidth, nHeight, lSwvisible, nDivw, nDivh
 
@@ -2377,15 +2393,6 @@ Return ( Type( mVar ) == "O" )
 Function _ActivateWindow( aForm, lNoWait )
 *-----------------------------------------------------------------------------*
 Local z, aForm2, oWndActive, oWnd, lModal
-
-* Testing... it allows to create non-modal windows when modal windows are active.
-* The problem is, what should do when modal window is ... disabled? hidden? WM_CLOSE? WM_DESTROY?
-/*
-   // Multiple activation can't be used when modal window is active
-   If len( aForm ) > 1 .AND. Len( _OOHG_ActiveModal ) != 0
-      MsgOOHGError( "Multiple Activation can't be used when a modal window is active. Program Terminated" )
-   Endif
-*/
 
    aForm2 := ACLONE( aForm )
 
