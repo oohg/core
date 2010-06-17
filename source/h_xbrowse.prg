@@ -1,11 +1,11 @@
 /*
- * $Id: h_xbrowse.prg,v 1.41 2009-04-10 02:51:56 guerra000 Exp $
+ * $Id: h_xbrowse.prg,v 1.42 2010-06-17 02:24:03 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * eXtended Browse code
  *
- * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * This program is free software; you can redistribute it and/or modify
@@ -64,7 +64,6 @@ CLASS TXBROWSE FROM TGrid
    DATA AllowAppend       INIT .F.
    DATA AllowDelete       INIT .F.
    DATA aReplaceField     INIT nil
-   DATA OnAppend          INIT nil
    DATA Lock              INIT .F.
    DATA lEditing          INIT .F.
    DATA skipBlock         INIT nil
@@ -1077,9 +1076,9 @@ Local aItems, aEditControls, aMemVars, aReplaceFields
 
       If lAppend
          If ! EMPTY( oWorkArea:cAlias__ )
-            ( oWorkArea:cAlias__ )->( _OOHG_Eval( ::OnAppend ) )
+            ( oWorkArea:cAlias__ )->( ::DoEvent( ::OnAppend, "APPEND" ) )
          Else
-            _OOHG_Eval( ::OnAppend )
+            ::DoEvent( ::OnAppend, "APPEND" )
          EndIf
       EndIf
 
@@ -1144,9 +1143,9 @@ Local lRet, bReplaceField, oWorkArea
          _OOHG_EVAL( bReplaceField, uValue, oWorkArea )
          If lAppend
             If ! EMPTY( oWorkArea:cAlias__ )
-               ( oWorkArea:cAlias__ )->( _OOHG_Eval( ::OnAppend ) )
+               ( oWorkArea:cAlias__ )->( ::DoEvent( ::OnAppend, "APPEND" ) )
             Else
-               _OOHG_Eval( ::OnAppend )
+               ::DoEvent( ::OnAppend, "APPEND" )
             EndIf
          EndIf
          ::RefreshRow( nRow )

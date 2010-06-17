@@ -1,12 +1,12 @@
 /*
- * $Id: h_error.prg,v 1.45 2010-04-21 13:31:08 declan2005 Exp $
+ * $Id: h_error.prg,v 1.46 2010-06-17 02:24:03 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Error handling system
  *
- * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -123,7 +123,7 @@ PROCEDURE ErrorSys
 RETURN
 
 STATIC FUNCTION DefError( oError )
-LOCAL cMessage, cDOSError
+LOCAL cMessage
 
    // By default, division by zero results in zero
    IF oError:genCode == EG_ZERODIV
@@ -145,10 +145,7 @@ LOCAL cMessage, cDOSError
       RETURN .F.
    ENDIF
 
-   cMessage := ErrorMessage( oError )
-   IF ! Empty( oError:osCode )
-      cDOSError := "(DOS Error " + LTrim( Str( oError:osCode ) ) + ")"
-   ENDIF
+   cMessage := _OOHG_ErrorMessage( oError )
 
    // Kill timers and hot keys
    _KillAllTimers()
@@ -156,17 +153,13 @@ LOCAL cMessage, cDOSError
 
    // "Quit" selected
 
-   IF ! Empty( oError:osCode )
-      cMessage += " " + cDOSError
-   ENDIF
-
    OwnErrorHandler():ErrorMessage( cMessage, 2 )
 RETURN .F.
 
 // [vszakats]
 
-STATIC FUNCTION ErrorMessage( oError )
-   LOCAL cMessage
+FUNCTION _OOHG_ErrorMessage( oError )
+LOCAL cMessage
 
    // start error message
    cMessage := iif( oError:severity > ES_WARNING, "Error", "Warning" ) + " "
@@ -198,6 +191,9 @@ STATIC FUNCTION ErrorMessage( oError )
       cMessage += ": " + oError:operation
    ENDCASE
 
+   IF ! Empty( oError:osCode )
+      cMessage += " (DOS Error " + LTrim( Str( oError:osCode ) ) + ")"
+   ENDIF
 RETURN cMessage
 
 STATIC FUNCTION OwnErrorHandler()

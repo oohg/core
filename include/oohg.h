@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.h,v 1.44 2010-05-15 21:05:04 guerra000 Exp $
+ * $Id: oohg.h,v 1.45 2010-06-17 02:24:03 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -230,4 +230,9 @@ PHB_ITEM _OOHG_GetExistingObject( HWND hWnd, BOOL bForm, BOOL bForceAny );
 #ifdef __MINGW32__
    #undef  HB_FUNC_STATIC
    #define HB_FUNC_STATIC( x )     HB_FUNC( x )
+#endif
+
+#ifdef _MSC_VER
+   #define ultoa _ultoa
+   #define itoa  _itoa
 #endif

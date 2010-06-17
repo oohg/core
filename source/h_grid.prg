@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.109 2010-03-05 03:39:29 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.110 2010-06-17 02:24:03 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -113,13 +113,14 @@ CLASS TGrid FROM TControl
    DATA SetImageListCommand INIT LVM_SETIMAGELIST
    DATA SetImageListWParam  INIT LVSIL_SMALL
    DATA InPlace          INIT .F.
-   DATA fullmove          INIT .F.
+   DATA fullmove         INIT .F.
    DATA Append           INIT .F.
    DATA EditControls     INIT nil
    DATA ReadOnly         INIT nil
    DATA Valid            INIT nil
    DATA ValidMessages    INIT nil
    DATA OnEditCell       INIT nil
+   DATA OnAppend         INIT nil
    DATA aWhen            INIT {}
    DATA cRowEditTitle    INIT nil
    DATA lNested          INIT .F.
@@ -127,10 +128,10 @@ CLASS TGrid FROM TControl
    DATA AllowChangeSize  INIT .T.
    DATA lNestedEdit      INIT .F.
 
-   DATA Nrowpos      INIT 1
-   DATA Ncolpos      INIT 1
-   DATA Leditmode    INIT .F.
-   DATA Lappendmode INIT .F.
+   DATA nRowPos          INIT 1
+   DATA nColPos          INIT 1
+   DATA lEditMode        INIT .F.
+   DATA lAppendMode      INIT .F.
 
    METHOD Define
    METHOD Define2
@@ -160,7 +161,7 @@ CLASS TGrid FROM TControl
    METHOD toexcel
 
    METHOD AddItem
-   METHOD Appenditem
+   METHOD AppendItem
    METHOD InsertItem
    METHOD InsertBlank
    METHOD DeleteItem
@@ -237,14 +238,14 @@ Local ControlHandle, aImageList
 
    If Len( ::aHeaders ) != Len( ::aWidths )
       MsgOOHGError( "Grid: HEADERS/WIDTHS array size mismatch. Program Terminated." )
-	EndIf
+   EndIf
    If HB_IsArray( aRows )
       If ASCAN( aRows, { |a| !( HB_IsArray( a ) .OR. Len( a ) != Len( aHeaders ) ) } ) > 0
          MsgOOHGError( "Grid: ITEMS length mismatch. Program Terminated." )
-		EndIf
+      EndIf
    Else
-		aRows := {}
-	EndIf
+      aRows := {}
+   EndIf
 
    ASSIGN ::nWidth  VALUE w TYPE "N"
    ASSIGN ::nHeight VALUE h TYPE "N"
@@ -262,16 +263,16 @@ Local ControlHandle, aImageList
 
    If !HB_IsArray( ::aJust )
       ::aJust := aFill( Array( len( ::aHeaders ) ), 0 )
-	else
+   Else
       aSize( ::aJust, len( ::aHeaders ) )
       aEval( ::aJust, { |x,i| ::aJust[ i ] := iif( ! HB_IsNumeric( x ) , 0, x ) } )
-	endif
+   EndIf
 
-   if !HB_IsArray( ::Picture )
+   If !HB_IsArray( ::Picture )
       ::Picture := Array( len( ::aHeaders ) )
-	else
+   Else
       aSize( ::Picture, len( ::aHeaders ) )
-	endif
+   EndIf
    aEval( ::Picture, { |x,i| ::Picture[ i ] := iif( ( ValType( x ) $ "CM" .AND. ! Empty( x ) ) .OR. HB_IsLogical( x ) , x, nil ) } )
 
    ::SetSplitBoxInfo( Break )
@@ -324,19 +325,19 @@ Return Self
 METHOD OnEnter( bEnter ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 LOCAL bRet
-   IF HB_IsBlock( bEnter )
-      IF _OOHG_SameEnterDblClick
+   If HB_IsBlock( bEnter )
+      If _OOHG_SameEnterDblClick
          ::OnDblClick := bEnter
-      ELSE
+      Else
          ::bOnEnter := bEnter
-      ENDIF
+      EndIf
       bRet := bEnter
-   ELSE
+   Else
       bRet := IF( _OOHG_SameEnterDblClick, ::OnDblClick, ::bOnEnter )
-   ENDIF
+   EndIf
 RETURN bRet
 
-METHOD appenditem() CLASS TGrid
+METHOD AppendItem() CLASS TGrid
    ::lAppendMode := .T.
    ::InsertBlank( ::ItemCount + 1 )
    ::nRowPos := ::ItemCount
@@ -345,8 +346,7 @@ METHOD appenditem() CLASS TGrid
 RETURN NIL
 
 METHOD EDITGRID(nrow,ncol) CLASS TGrid
-
-   Local lRet, i, nLast
+Local lRet, I, nLast
    IF !HB_IsNumeric( nRow )
       nRow := ::FirstSelectedItem
    ENDIF
@@ -363,13 +363,12 @@ METHOD EDITGRID(nrow,ncol) CLASS TGrid
    lRet := .T.
 
    Do While ::ncolpos <= Len( ::aHeaders ) .and. ::nrowpos <= ::itemcount() .AND. lRet
-
-      nlast:=len(::aheaders)
-      for i:= len(::aheaders) to 1 step -1
-          if (.not. ::iscolumnreadonly(i)) .or. ( ::iscolumnwhen(i))
-             nlast:=i
-             exit
-          endif
+      nlast := len( ::aheaders )
+      for i:= len( ::aheaders ) to 1 step -1
+         if ( ! ::iscolumnreadonly( i ) ) .OR. ( ::iscolumnwhen( i ) )
+            nlast := i
+            exit
+         endif
       next i
 
       _OOHG_ThisItemCellValue := ::Cell( ::nrowpos, ::ncolpos )
@@ -383,14 +382,16 @@ METHOD EDITGRID(nrow,ncol) CLASS TGrid
          lRet := ::EditCell( ::nrowpos, ::ncolpos )
          ::leditmode:=.F.
 
-         if ::lappendmode .and. .not. lret
-            if ::ncolpos = 1
-               ::deleteitem(::itemcount())
-               ::lappendmode:=.F.
-               ::value := ::itemcount()
+         If ::lAppendMode
+            ::lAppendMode:=.F.
+            If lRet
+               ::DoEvent( ::OnAppend, "APPEND" )
+            Else
+               ::DeleteItem( ::ItemCount() )
+               ::Value := ::ItemCount()
                ::nrowpos := ::FirstSelectedItem
-            endif
-         endif
+            EndIf
+         EndIf
 
       EndIf
       if ::ncolpos == nlast
@@ -659,7 +660,7 @@ Local aReturn
             WIDTH nWidth ;
             HEIGHT nControlsMaxHeight ;
             VIRTUAL HEIGHT nRow + 20 ;
-				SPLITCHILD NOCAPTION FONT 'Arial' SIZE 10 BREAK FOCUSED
+            SPLITCHILD NOCAPTION FONT 'Arial' SIZE 10 BREAK FOCUSED
    Else
       oWnd := oMain
    EndIf
@@ -750,7 +751,7 @@ Local nItem, lEnabled, aValues
    // WHEN clause
    For nItem := 1 To Len( aEditControls )
       _OOHG_ThisItemCellValue := aValues[ nItem ]
-      lEnabled := _OOHG_EVAL( aEditControls[ nItem ]:bWhen )
+      lEnabled := _OOHG_EVAL( aEditControls[ nItem ]:bWhen, nItem, aValues )
       If _CheckCellNewValue( aEditControls[ nItem ], aValues[ nItem ] )
          aValues[ nItem ] := _OOHG_ThisItemCellValue
       EndIf
@@ -771,7 +772,7 @@ Local lRet, nItem, aValues, lValid
    lRet := .T.
    For nItem := 1 To Len( aEditControls )
       _OOHG_ThisItemCellValue := aValues[ nItem ]
-      lValid := _OOHG_Eval( aEditControls[ nItem ]:bValid, aValues[ nItem ] )
+      lValid := _OOHG_Eval( aEditControls[ nItem ]:bValid, aValues[ nItem ], nItem, aValues )
       If _CheckCellNewValue( aEditControls[ nItem ], aValues[ nItem ] )
          aValues[ nItem ] := _OOHG_ThisItemCellValue
       EndIf
@@ -805,7 +806,14 @@ RETURN ( HB_IsLogical( uReadOnly )  .AND. uReadOnly )
 METHOD IsColumnWhen( nCol ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 LOCAL uWhen
-   uWhen := _OOHG_GetArrayItem( ::aWhen, nCol )
+   If nCol >= 1 .AND. HB_IsArray( ::aWhen ) .AND. LEN( ::aWhen ) >= nCol
+      uWhen := ::aWhen[ nCol ]
+      If HB_IsBlock( uWhen )
+         uWhen := EVAL( uWhen, nCol, ::Item( ::Value ) )
+      EndIf
+   Else
+      uWhen := .F.
+   EndIf
 RETURN ( !HB_IsLogical( uWhen ) .OR. uWhen )
 
 *-----------------------------------------------------------------------------*
@@ -1169,14 +1177,16 @@ Local lRet
          // Not a valid WHEN
       Else
          lRet := ::EditCell( nRow, nCol )
+         If ::lAppendMode
+            ::lAppendMode := .F.
+            If lRet
+               ::DoEvent( ::OnAppend, "APPEND" )
+            Else
+               ::DeleteItem( ::ItemCount() )
+               ::Value := ::ItemCount()
+            EndIf
+         EndIf
       EndIf
-      if ::lappendmode .and. .not. lret
-         if nCol = 1
-               ::deleteitem(::itemcount())
-               ::lappendmode:=.F.
-               ::value := ::itemcount()
-         endif
-      endif
       nCol++
    EndDo
    If lRet // .OR. nCol > Len( ::aHeaders )
@@ -1434,7 +1444,7 @@ Local lvc, _ThisQueryTemp, nvkey
 
        if ::FirstSelectedItem == ::itemcount() .and. .not. ::leditmode
            if ::Append
-              ::appenditem()
+              ::AppendItem()
            endif
         endif
      endif
@@ -2477,7 +2487,7 @@ ENDCLASS
 
 METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize ) CLASS TGridControl
 Local lRet := .F.
-   if .not. iswindowdefined(_oohg_gridwn)
+   If ! iswindowdefined(_oohg_gridwn)
        DEFINE WINDOW _oohg_gridwn OBJ ::oWindow ;
           AT nRow, nCol WIDTH nWidth HEIGHT nHeight ;
           MODAL NOSIZE NOCAPTION ;
@@ -2490,15 +2500,15 @@ Local lRet := .F.
           ::Value := ::ControlValue
 
       END WINDOW
-   endif
-   if iswindowdefined(_oohg_gridwn) .and. .not. iswindowactive(_oohg_gridwn)
+   EndIf
+   If iswindowdefined(_oohg_gridwn) .and. .not. iswindowactive(_oohg_gridwn)
       if HB_IsObject(::oControl)
          ::oControl:SetFocus()
       endif
       if HB_IsObject(::oWindow)
          ::oWindow:Activate()
       endif
-   endif
+   Endif
 Return lRet
 
 METHOD Valid() CLASS TGridControl

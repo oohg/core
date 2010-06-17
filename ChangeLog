@@ -1,11 +1,32 @@
 /*
- * $Id: ChangeLog,v 1.651 2010-05-23 22:13:59 guerra000 Exp $
+ * $Id: ChangeLog,v 1.652 2010-06-17 02:24:03 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2010-06-16 21:00 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_grid.prg
+    ! Deletes new row when edition is cancelled and it's
+      the first editable column (first grid column can
+      be readonly).
+    + Added ( nColumn, aItems ) parameters to evaluate
+      WHEN column.
+    + Added ( xValue, nColumn, aItems ) parameters to
+      evaluate VALID column.
+    + Added ::OnAppend event.
+    ! ::OnAppend calls are now using ::DoEvent().
+  * source/h_xbrowse.prg
+    - ::OnAppend property is now defined at TGrid.
+    ! ::OnAppend calls are now using ::DoEvent().
+  * source/c_controlmisc.c
+    ! Fixed type cast warning.
+  * include/oohg.h
+    ! Patched MSVC warnings for deprecated functions.
+  * source/h_error.prg
+    * _OOHG_ErrorMessage() function is now public.
 
 2010-05-23 17:06 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_form.prg

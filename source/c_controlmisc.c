@@ -1,5 +1,5 @@
 /*
- * $Id: c_controlmisc.c,v 1.56 2010-05-15 21:05:05 guerra000 Exp $
+ * $Id: c_controlmisc.c,v 1.57 2010-06-17 02:24:03 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -564,8 +564,8 @@ HB_FUNC ( KEYBD_EVENT )
 {
 
 	keybd_event(
-        (WORD) hb_parni(1),                // virtual-key code
-        (WORD) MapVirtualKey( hb_parni(1), 0 ),    // hardware scan code
+        (BYTE) hb_parni(1),                // virtual-key code
+        (BYTE) MapVirtualKey( hb_parni(1), 0 ),    // hardware scan code
 		hb_parl(2) ? KEYEVENTF_KEYUP: 0,	// flags specifying various function options
 		0					// additional data associated with keystroke
 	);
