@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.92 2009-12-22 19:07:30 declan2005 Exp $
+* $Id: h_print.prg,v 1.93 2010-06-19 22:51:16 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -1174,7 +1174,7 @@ RETURN self
 METHOD RELEASEx() CLASS THBPRINTER
 *-------------------------
 RELEASE PRINTSYS
-RELEASE HBPRN
+////RELEASE HBPRN  //// por si se tienen dos dialogos abiertos no se vaya el valor de la variable
 RETURN self
 
 

@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.30 2010-05-15 21:05:06 guerra000 Exp $
+ * $Id: winprint.prg,v 1.31 2010-06-19 22:51:16 declan2005 Exp $
  */
 // -----------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -15,6 +15,7 @@
 #include "HBClass.ch"
 #include "minigui.ch"
 #include "winprint.ch"
+
 
 /* Background Modes */
 
@@ -2675,20 +2676,63 @@ HB_FUNC (RR_TEXTOUT)
    if (textjust>0)  SetTextJustification (hDC, 0, 0) ;
 }
 
-HB_FUNC (RR_DRAWTEXT)
+HB_FUNC( RR_DRAWTEXT )
 {
-   LONG xfont=hb_parnl(5);
+   LONG  xfont = hb_parnl( 5 );
    HFONT prevfont;
-   RECT rect;
-   int iAlign;
-   SetRect(&rect,HB_PARNL(1,2),HB_PARNL(1,1),HB_PARNL(2,2),HB_PARNL(2,1));
-   if (xfont!=0)  prevfont = (HFONT) SelectObject(hDC ,(HFONT) xfont);
-   iAlign = GetTextAlign( hDC );
-   SetTextAlign( hDC, 0 );
-   hb_retni(DrawText( hDC ,hb_parc(3),-1,&rect,hb_parni(4)));
-   SetTextAlign( hDC, iAlign );
-   if (xfont!=0)  SelectObject(hDC,prevfont);
+   RECT  rect;
+   UINT  uFormat;
+
+   SIZE  sSize;
+   const char  *pszData = hb_parc(3);
+   int   iLen = strlen(pszData);
+   int   iStyle = hb_parni(4);
+   LONG  w, h;
+
+   SetRect( &rect, HB_PARNL(1, 2), HB_PARNL(1, 1), HB_PARNL(2, 2), HB_PARNL(2, 1) );
+
+   if( xfont != 0 )
+   {
+      prevfont = ( HFONT ) SelectObject( hDC, (HFONT) xfont );
+   }
+
+   GetTextExtentPoint32( hDC, pszData, iLen , &sSize );
+   w = (LONG) sSize.cx; // text width
+   h = (LONG) sSize.cy; // text height
+
+   // Center text vertically within rectangle
+   if( w < rect.right - rect.left )
+   {
+      rect.top = rect.top + ( rect.bottom - rect.top + h / 2 ) / 2 ;
+   }
+   else
+   {
+      rect.top = rect.top + ( rect.bottom - rect.top - h / 2 ) / 2 ;
+   }
+
+   uFormat = DT_NOCLIP | DT_NOPREFIX | DT_WORDBREAK | DT_END_ELLIPSIS ;
+
+   if( iStyle == 0 )
+   {
+      uFormat = uFormat | DT_LEFT ;
+   }
+   else if ( iStyle == 2 )
+   {
+      uFormat = uFormat | DT_RIGHT ;
+   }
+   else if ( iStyle == 1 )
+   {
+      uFormat = uFormat | DT_CENTER ;
+   }
+
+   hb_retni( DrawText( hDC, pszData, -1, &rect, uFormat ) );
+   if( xfont != 0 )
+   {
+      SelectObject( hDC, prevfont );
+   }
 }
+
+
 HB_FUNC (RR_RECTANGLE)
 {
  LONG xpen  = hb_parnl(3);
