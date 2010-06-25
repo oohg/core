@@ -1,11 +1,23 @@
 /*
- * $Id: ChangeLog,v 1.653 2010-06-19 22:51:16 declan2005 Exp $
+ * $Id: ChangeLog,v 1.654 2010-06-25 00:44:10 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2010-06-24 19:46 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_grid.prg
+    * Added optional second array to COMBOBOX COLUMNCONTROL type.
+      It can contain a referenced value corresponding to each
+      item.
+  * source/h_combo.prg
+    * Formatting.
+  * source/h_progressmeter.prg
+    ! Type cast.
+  * source/c_activex.c
+    ! Operator priority check.
 
 2010-06-19 18:49 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_print.prg

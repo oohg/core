@@ -1,5 +1,5 @@
 /*
- * $Id: c_activex.c,v 1.9 2009-12-13 21:34:31 declan2005 Exp $
+ * $Id: c_activex.c,v 1.10 2010-06-25 00:44:11 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -505,7 +505,7 @@ HB_FUNC( ATLAXGETDISP ) // hWnd -> pDisp
             // En caso de que los parametros sean pasados por referencia
             for( i=iArg; i > 0; i-- )
             {
-               if( (&(params->rgvarg[iArg-i]))->n1.n2.vt & VT_BYREF == VT_BYREF )
+               if( ( (&(params->rgvarg[iArg-i]))->n1.n2.vt & VT_BYREF ) == VT_BYREF )
                {
 
                   switch( (&(params->rgvarg[iArg-i]))->n1.n2.vt )

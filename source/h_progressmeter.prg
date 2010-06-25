@@ -1,11 +1,11 @@
 /*
- * $Id: h_progressmeter.prg,v 1.16 2009-03-16 05:02:18 guerra000 Exp $
+ * $Id: h_progressmeter.prg,v 1.17 2010-06-25 00:44:11 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG progress meter functions
  *
- * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * This program is free software; you can redistribute it and/or modify
@@ -389,7 +389,7 @@ HB_FUNC_STATIC( TPROGRESSMETER_SETPERCENT )
       }
       else
       {
-         lNum = dNum;
+         lNum = ( LONG ) dNum;
       }
       if( lNum != oSelf->lAux[ 0 ] || ( ISLOG( 2 ) && hb_parl( 2 ) ) )
       {

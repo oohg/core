@@ -1,11 +1,11 @@
 /*
- * $Id: h_combo.prg,v 1.45 2009-02-16 01:45:43 guerra000 Exp $
+ * $Id: h_combo.prg,v 1.46 2010-06-25 00:44:11 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG combobox functions
  *
- * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -112,7 +112,7 @@ CLASS TCombo FROM TLabel
    METHOD Visible             SETGET
    METHOD ForceHide           BLOCK { |Self| SendMessage( ::hWnd, 335, 0, 0 ) , ::Super:ForceHide() }
    METHOD RefreshData
-   METHOD Displayvalue        SETGET    /// Caption Alias
+   METHOD DisplayValue        SETGET    /// Caption Alias
    METHOD PreRelease
 
    METHOD Events_Command
@@ -153,22 +153,22 @@ Local ControlHandle , rcount := 0 , cset := 0 , WorkArea , cField, nStyle
    ::SetForm( ControlName, ParentForm, FontName, FontSize, , , .t. , lRtl )
    ::SetFont( , , bold, italic, underline, strikeout )
 
-	if ValType ( ItemSource ) != 'U' .And. Sort == .T.
-      MsgOOHGError ("Sort and ItemSource clauses can't be used simultaneusly. Program Terminated" )
-	EndIf
+   If ValType( ItemSource ) != 'U' .And. Sort == .T.
+      MsgOOHGError( "Sort and ItemSource clauses can't be used simultaneusly. Program Terminated" )
+   EndIf
 
-	if ValType ( ValueSource ) != 'U' .And. Sort == .T.
-      MsgOOHGError ("Sort and ValueSource clauses can't be used simultaneusly. Program Terminated" )
-	EndIf
+   If ValType( ValueSource ) != 'U' .And. Sort == .T.
+      MsgOOHGError( "Sort and ValueSource clauses can't be used simultaneusly. Program Terminated" )
+   EndIf
 
-	if valtype ( itemsource ) != 'U'
-		if  at ( '>',ItemSource ) == 0
-         MsgOOHGError ("Control: " + ControlName + " Of " + ParentForm + " : You must specify a fully qualified field name. Program Terminated" )
-		Else
-			WorkArea := Left ( ItemSource , at ( '>', ItemSource ) - 2 )
-			cField := Right ( ItemSource , Len (ItemSource) - at ( '>', ItemSource ) )
-		EndIf
-	EndIf
+   If ValType( ItemSource ) != 'U'
+      If ! '->' $ ItemSource
+         MsgOOHGError( "Control: " + ControlName + " Of " + ParentForm + " : You must specify a fully qualified field name. Program Terminated" )
+      Else
+         WorkArea := Left( ItemSource, At( '->', ItemSource ) - 1 )
+         cField := Right( ItemSource, Len( ItemSource ) - At( '->', ItemSource ) - 1 )
+      EndIf
+   EndIf
 
    nStyle := ::InitStyle( ,, Invisible, notabstop, lDisabled ) + ;
              if( HB_IsLogical( SORT )           .AND. SORT,          CBS_SORT,    0 ) + ;
@@ -186,7 +186,7 @@ Local ControlHandle , rcount := 0 , cset := 0 , WorkArea , cField, nStyle
    ::WorkArea := WorkArea
    ::ValueSource := valuesource
 
-   if HB_IsArray( aImage )
+   If HB_IsArray( aImage )
       ::AddBitMap( aImage )
    EndIf
 
@@ -194,9 +194,9 @@ Local ControlHandle , rcount := 0 , cset := 0 , WorkArea , cField, nStyle
 *      _OOHG_acontrolrangemin [k] := FindWindowEx( Controlhandle , 0, "Edit", Nil )
    EndIf
 
-   If  VALTYPE( WorkArea ) $ "CM"
+   If VALTYPE( WorkArea ) $ "CM"
       ::Refresh()
-	Else
+   Else
       AEval( rows, { |x| ::AddItem( x ) } )
    EndIf
 
@@ -237,7 +237,7 @@ Local BackRec , WorkArea , cField , aValues , uValue
 Return nil
 
 *------------------------------------------------------------------------------*
-METHOD Displayvalue( cValue ) CLASS TCombo
+METHOD DisplayValue( cValue ) CLASS TCombo
 *------------------------------------------------------------------------------*
 Return ( ::Caption := cValue )
 
@@ -247,7 +247,7 @@ METHOD Value( uValue ) CLASS TCombo
 LOCAL uRet
    IF LEN( ::aValues ) == 0
       IF HB_IsNumeric( uValue )
-         ComboSetCursel( ::hWnd , uValue )
+         ComboSetCursel( ::hWnd, uValue )
          ::DoChange()
       ENDIF
       uRet := ComboGetCursel( ::hWnd )
@@ -401,24 +401,24 @@ HB_FUNC( COMBOGETCURSEL )
    hb_retni( SendMessage( HWNDparam( 1 ), CB_GETCURSEL , 0 , 0 ) + 1 );
 }
 
-HB_FUNC (COMBOBOXDELETESTRING )
+HB_FUNC(COMBOBOXDELETESTRING )
 {
    SendMessage( HWNDparam( 1 ), CB_DELETESTRING, (WPARAM) hb_parni( 2 ) - 1, 0 );
 }
 
-HB_FUNC ( COMBOBOXRESET )
+HB_FUNC( COMBOBOXRESET )
 {
    SendMessage( HWNDparam( 1 ), CB_RESETCONTENT, 0, 0 );
 }
 
-HB_FUNC ( COMBOGETSTRING )
+HB_FUNC( COMBOGETSTRING )
 {
    char cString [1024] = "" ;
    SendMessage( HWNDparam( 1 ), CB_GETLBTEXT, ( WPARAM ) hb_parni( 2 ) - 1, ( LPARAM ) cString );
    hb_retc( cString );
 }
 
-HB_FUNC ( COMBOBOXGETITEMCOUNT )
+HB_FUNC( COMBOBOXGETITEMCOUNT )
 {
    hb_retnl( SendMessage( HWNDparam( 1 ), CB_GETCOUNT, 0, 0 ) );
 }

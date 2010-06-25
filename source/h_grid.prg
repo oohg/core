@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.110 2010-06-17 02:24:03 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.111 2010-06-25 00:44:11 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -2399,7 +2399,7 @@ Local oGridControl, aEdit2, cControl
          Case cControl == "DATEPICKER"
             oGridControl := TGridControlDatePicker():New( aEdit2[ 2 ] )
          Case cControl == "COMBOBOX"
-            oGridControl := TGridControlComboBox():New( aEdit2[ 2 ], oGrid )
+            oGridControl := TGridControlComboBox():New( aEdit2[ 2 ], oGrid, aEdit2[ 3 ] )
          Case cControl == "COMBOBOXTEXT"
             oGridControl := TGridControlComboBoxText():New( aEdit2[ 2 ], oGrid )
          Case cControl == "SPINNER"
@@ -2714,21 +2714,25 @@ Return ::oControl
 *-----------------------------------------------------------------------------*
 CLASS TGridControlComboBox FROM TGridControl
 *-----------------------------------------------------------------------------*
-   DATA aItems INIT {}
-   DATA oGrid  INIT nil
+   DATA aItems  INIT {}
+   DATA oGrid   INIT nil
+   DATA aValues INIT nil
 
    METHOD New
    METHOD CreateWindow
    METHOD CreateControl
    METHOD Str2Val
-   METHOD GridValue(uValue) BLOCK { |Self,uValue| if( ( uValue >= 1 .AND. uValue <= Len( ::aItems ) ), ::aItems[ uValue ], "" ) }
+   METHOD GridValue
 ENDCLASS
 
-METHOD New( aItems, oGrid ) CLASS TGridControlComboBox
+METHOD New( aItems, oGrid, aValues ) CLASS TGridControlComboBox
    If HB_IsArray( aItems )
       ::aItems := aItems
    EndIf
    ::oGrid := oGrid
+   If HB_IsArray( aValues )
+      ::aValues := aValues
+   EndIf
 Return Self
 
 METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize ) CLASS TGridControlComboBox
@@ -2736,17 +2740,32 @@ Return ::Super:CreateWindow( uValue, nRow - 3, nCol - 3, nWidth + 6, nHeight + 6
 
 METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGridControlComboBox
    Empty( nHeight )
-   If ValType( uValue ) == "C"
-      uValue := aScan( ::aItems, { |c| c == uValue } )
+   // If ValType( uValue ) == "C"
+   //    uValue := aScan( ::aItems, { |c| c == uValue } )
+   // EndIf
+   @ nRow,nCol COMBOBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth ITEMS ::aItems
+   If HB_IsArray( ::aValues )
+      ::oControl:aValues := ::aValues
    EndIf
-   @ nRow,nCol COMBOBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth VALUE uValue ITEMS ::aItems
+   ::oControl:Value := uValue
    If ! Empty( ::oGrid ) .AND. ::oGrid:ImageList != 0
       ::oControl:ImageList := ImageList_Duplicate( ::oGrid:ImageList )
    EndIf
 Return ::oControl
 
 METHOD Str2Val( uValue ) CLASS TGridControlComboBox
-Return ASCAN( ::aItems, { |c| c == uValue } )
+Local xValue
+   xValue := ASCAN( ::aItems, { |c| c == uValue } )
+   If HB_IsArray( ::aValues ) .AND. xValue >= 1 .AND. xValue <= LEN( ::aValues )
+      xValue := ::aValues[ xValue ]
+   EndIf
+Return xValue
+
+METHOD GridValue( uValue ) CLASS TGridControlComboBox
+   If HB_IsArray( ::aValues )
+      uValue := ASCAN( ::aValues, { |c| c == uValue } )
+   EndIf
+Return if( ( uValue >= 1 .AND. uValue <= Len( ::aItems ) ), ::aItems[ uValue ], "" )
 
 *-----------------------------------------------------------------------------*
 CLASS TGridControlComboBoxText FROM TGridControl
