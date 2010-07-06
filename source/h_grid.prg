@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.111 2010-06-25 00:44:11 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.112 2010-07-06 21:24:50 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -2743,11 +2743,7 @@ METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGrid
    // If ValType( uValue ) == "C"
    //    uValue := aScan( ::aItems, { |c| c == uValue } )
    // EndIf
-   @ nRow,nCol COMBOBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth ITEMS ::aItems
-   If HB_IsArray( ::aValues )
-      ::oControl:aValues := ::aValues
-   EndIf
-   ::oControl:Value := uValue
+   @ nRow,nCol COMBOBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth VALUE uValue ITEMS ::aItems VALUESOURCE ( ::aValues )
    If ! Empty( ::oGrid ) .AND. ::oGrid:ImageList != 0
       ::oControl:ImageList := ImageList_Duplicate( ::oGrid:ImageList )
    EndIf

@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.46 2010-06-25 00:44:11 guerra000 Exp $
+ * $Id: h_combo.prg,v 1.47 2010-07-06 21:24:50 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -150,6 +150,11 @@ Local ControlHandle , rcount := 0 , cset := 0 , WorkArea , cField, nStyle
    ASSIGN ::nTextHeight VALUE TextHeight TYPE "N"
    ASSIGN displaychange VALUE displaychange TYPE "L" DEFAULT .F.
 
+   If HB_IsArray( ValueSource )
+      ::aValues := ValueSource
+      ValueSource := NIL
+   EndIf
+
    ::SetForm( ControlName, ParentForm, FontName, FontSize, , , .t. , lRtl )
    ::SetFont( , , bold, italic, underline, strikeout )
 
@@ -191,7 +196,7 @@ Local ControlHandle , rcount := 0 , cset := 0 , WorkArea , cField, nStyle
    EndIf
 
    If DisplayChange
-*      _OOHG_acontrolrangemin [k] := FindWindowEx( Controlhandle , 0, "Edit", Nil )
+*      _OOHG_acontrolrangemin[ k ] := FindWindowEx( Controlhandle , 0, "Edit", Nil )
    EndIf
 
    If VALTYPE( WorkArea ) $ "CM"

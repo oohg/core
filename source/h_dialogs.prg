@@ -1,11 +1,11 @@
 /*
- * $Id: h_dialogs.prg,v 1.8 2009-11-21 23:48:46 guerra000 Exp $
+ * $Id: h_dialogs.prg,v 1.9 2010-07-06 21:24:50 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG dialogs functions
  *
- * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -100,15 +100,15 @@ Local aRetVal, nColor, nInitColor
 
    If HB_IsArray( aInitColor )
       nInitColor := RGB( aInitColor[ 1 ], aInitColor[ 2 ], aInitColor[ 3 ] )
-	EndIf
+   EndIf
 
-	nColor := ChooseColor( NIL, nInitColor )
+   nColor := ChooseColor( NIL, nInitColor )
 
-	If nColor == -1
+   If nColor == -1
       aRetVal := { Nil, Nil, Nil }
-	Else
+   Else
       aRetVal := { GetRed( nColor ), GetGreen( nColor ), GetBlue( nColor ) }
-	EndIf
+   EndIf
 
    EMPTY( _OOHG_AllVars )
 Return aRetVal
@@ -131,13 +131,9 @@ local cfiles
 local fileslist := {}
 local n
 
-   If HB_IsNil( aFilter )   //// == Nil
-      aFilter := {}
-	EndIf
-
-   FOR n := 1 TO LEN( aFilter )
-       c += aFilter[ n ][ 1 ] + chr( 0 ) + aFilter[ n ][ 2 ] + chr( 0 )
-	NEXT
+   If HB_IsArray( aFilter )
+      AEVAL( aFilter, { |a| c += a[ 1 ] + CHR( 0 ) + a[ 2 ] + CHR( 0 ) } )
+   EndIf
 
    If ! HB_IsLogical( multiselect )
       multiselect := .f.
@@ -167,66 +163,62 @@ local n
 Return Nil
 
 *-----------------------------------------------------------------------------*
-Function Putfile ( aFilter, title, cIniFolder, nochangedir )
+Function Putfile( aFilter, title, cIniFolder, nochangedir, cDefaultFileName )
 *-----------------------------------------------------------------------------*
-local c:='' , n
+local c := ''
 
-	IF HB_IsNil( aFilter )     ////////////aFilter == Nil
-      aFilter:={}
-	EndIf
+   If HB_IsArray( aFilter )
+      AEVAL( aFilter, { |a| c += a[ 1 ] + CHR( 0 ) + a[ 2 ] + CHR( 0 ) } )
+   EndIf
 
-	FOR n := 1 TO Len ( aFilter )
-      c += aFilter[ n ][ 1 ] + chr( 0 ) + aFilter[ n ][ 2 ] + chr( 0 )
-	NEXT
-
-Return C_PutFile( c, title, cIniFolder, nochangedir )
+Return C_PutFile( c, title, cIniFolder, nochangedir, cDefaultFileName )
 
 *------------------------------------------------------------------------------*
 Function GetFont( cInitFontName , nInitFontSize , lBold , lItalic , anInitColor , lUnderLine , lStrikeOut , nCharset )
 *------------------------------------------------------------------------------*
 Local RetArray [8] , Tmp , rgbcolor
 
-	If !HB_IsString ( cInitFontName )
-           cInitFontName := ""
-	EndIf
+   If !HB_IsString ( cInitFontName )
+      cInitFontName := ""
+   EndIf
 
-	If !HB_Isnumeric ( nInitFontSize )
-           nInitFontSize := 0
-	EndIf
+   If !HB_Isnumeric ( nInitFontSize )
+      nInitFontSize := 0
+   EndIf
 
-	If !HB_IsLogical( lBold )
-           lBold := .F.
-	EndIf
+   If !HB_IsLogical( lBold )
+      lBold := .F.
+   EndIf
 
-	If !HB_IsLogical ( lItalic )
-           lItalic := .F.
-	EndIf
+   If !HB_IsLogical ( lItalic )
+      lItalic := .F.
+   EndIf
 
-	If !HB_Isarray ( anInitColor )
-           rgbcolor := 0
-	Else
-           rgbcolor := RGB( anInitColor[1] , anInitColor[2] , anInitColor[3] )
-	EndIf
+   If !HB_Isarray ( anInitColor )
+      rgbcolor := 0
+   Else
+      rgbcolor := RGB( anInitColor[1] , anInitColor[2] , anInitColor[3] )
+   EndIf
 
-	If !HB_IsLogical ( lUnderLine )
-           lUnderLine := .F.
-	EndIf
+   If !HB_IsLogical ( lUnderLine )
+      lUnderLine := .F.
+   EndIf
 
-	If !HB_IsLogical ( lStrikeOut )
-           lStrikeOut := .F.
-	EndIf
+   If !HB_IsLogical ( lStrikeOut )
+      lStrikeOut := .F.
+   EndIf
 
-	If !HB_IsNumeric ( nCharSet )
-           nCharSet := 0
-	EndIf
+   If !HB_IsNumeric ( nCharSet )
+      nCharSet := 0
+   EndIf
 
-	RetArray := ChooseFont( cInitFontName , nInitFontSize , lBold , lItalic , rgbcolor , lUnderLine , lStrikeOut , nCharSet )
+   RetArray := ChooseFont( cInitFontName , nInitFontSize , lBold , lItalic , rgbcolor , lUnderLine , lStrikeOut , nCharSet )
 
-	If ! Empty ( RetArray [1] )
-           Tmp := RetArray [5]
-           RetArray [5] := { GetRed(Tmp) , GetGreen(Tmp) , GetBlue(Tmp) }
-	Else
-           RetArray [5] := { Nil , Nil , Nil }
-	EndIf
+   If ! Empty( RetArray[ 1 ] )
+      Tmp := RetArray[ 5 ]
+      RetArray[ 5 ] := { GetRed( Tmp ), GetGreen( Tmp ), GetBlue( Tmp ) }
+   Else
+      RetArray[ 5 ] := { Nil , Nil , Nil }
+   EndIf
 
 Return RetArray
