@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.20 2010-05-23 22:13:59 guerra000 Exp $
+ * $Id: h_form.prg,v 1.21 2010-07-07 03:19:01 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -232,6 +232,7 @@ CLASS TForm FROM TWindow
    METHOD Hide
    METHOD Activate
    METHOD Release
+   METHOD RefreshData
    METHOD Center()      BLOCK { | Self | C_Center( ::hWnd ) }
    METHOD Restore()     BLOCK { | Self | Restore( ::hWnd ) }
    METHOD Minimize()    BLOCK { | Self | Minimize( ::hWnd ) }
@@ -652,6 +653,15 @@ METHOD Release() CLASS TForm
       ::Events_Destroy()
    Endif
 Return Nil
+
+*-----------------------------------------------------------------------------*
+METHOD RefreshData() CLASS TForm
+*-----------------------------------------------------------------------------*
+   If HB_IsBlock( ::Block )
+      ::Value := _OOHG_EVAL( ::Block )
+   EndIf
+   AEVAL( ::aControls, { |o| If( o:Container == nil, o:RefreshData(), ) } )
+Return nil
 
 *-----------------------------------------------------------------------------*
 METHOD SetActivationFocus() CLASS TForm

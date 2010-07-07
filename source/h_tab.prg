@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.47 2010-05-15 21:05:05 guerra000 Exp $
+ * $Id: h_tab.prg,v 1.48 2010-07-07 03:19:01 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -110,6 +110,7 @@ CLASS TTab FROM TControl
    METHOD ItemCount           BLOCK { |Self| LEN( ::aPages ) }
 
    METHOD Refresh
+   METHOD RefreshData
    METHOD Release
    METHOD SizePos
    METHOD Value               SETGET
@@ -231,6 +232,13 @@ Local nPage
       ::aPages[ nPage ]:Show()
    ENDIF
 Return Nil
+
+*-----------------------------------------------------------------------------*
+METHOD RefreshData() CLASS TTab
+*-----------------------------------------------------------------------------*
+   ::Super:RefreshData()
+   AEVAL( ::aPages, { |o| o:RefreshData() } )
+Return nil
 
 *-----------------------------------------------------------------------------*
 METHOD Release() CLASS TTab

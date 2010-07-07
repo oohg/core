@@ -1,11 +1,20 @@
 /*
- * $Id: ChangeLog,v 1.655 2010-07-06 21:24:50 guerra000 Exp $
+ * $Id: ChangeLog,v 1.656 2010-07-07 03:19:01 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2010-07-06 22:28 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_form.prg
+  * source/h_tab.prg
+  * source/h_windows.prg
+    ! Fixed ::RefreshData() execution for controls inside any
+      container.
+  * source/h_grid.prg
+    ! Fixed COLUMNWHEN default value.
 
 2010-07-06 16:32 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_combo.prg

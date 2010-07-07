@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.205 2010-01-09 03:25:55 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.206 2010-07-07 03:19:01 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -988,7 +988,7 @@ METHOD RefreshData() CLASS TWindow
    If HB_IsBlock( ::Block )
       ::Value := _OOHG_EVAL( ::Block )
    EndIf
-   AEVAL( ::aControls, { |o| If( o:Container == nil, o:RefreshData(), ) } )
+   AEVAL( ::aControls, { |o| o:RefreshData() } )
 Return nil
 
 *-----------------------------------------------------------------------------*

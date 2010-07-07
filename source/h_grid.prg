@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.112 2010-07-06 21:24:50 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.113 2010-07-07 03:19:01 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -812,7 +812,7 @@ LOCAL uWhen
          uWhen := EVAL( uWhen, nCol, ::Item( ::Value ) )
       EndIf
    Else
-      uWhen := .F.
+      uWhen := NIL
    EndIf
 RETURN ( !HB_IsLogical( uWhen ) .OR. uWhen )
 
