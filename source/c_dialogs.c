@@ -1,5 +1,5 @@
 /*
- * $Id: c_dialogs.c,v 1.6 2010-07-06 21:24:50 guerra000 Exp $
+ * $Id: c_dialogs.c,v 1.7 2010-07-20 00:28:25 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -215,79 +215,86 @@ HB_FUNC( CHOOSEFONT )
 
 HB_FUNC( C_GETFILE )
 {
-	OPENFILENAME ofn;
-	char buffer[32768];
-	char cFullName[64][1024];
-	char cCurDir[512];
-	char cFileName[512];
-	int iPosition = 0;
-	int iNumSelected = 0;
-	int n;
+   OPENFILENAME ofn;
+   char buffer[32768];
+   char cFullName[64][1024];
+   char cCurDir[512];
+   char cFileName[512];
+   int iPosition = 0;
+   int iNumSelected = 0;
+   int n;
 
-	int flags = OFN_FILEMUSTEXIST ;
+   int flags = OFN_FILEMUSTEXIST ;
 
-	buffer[0] = 0 ;
+   if( ISCHAR( 6 ) )
+   {
+      strcpy( buffer, hb_parc( 6 ) );
+   }
+   else
+   {
+      *buffer = 0;
+   }
 
-	if ( hb_parl(4) )
-	{
-		flags = flags | OFN_ALLOWMULTISELECT | OFN_EXPLORER ;
-	}
-	if ( hb_parl(5) )
-	{
-		flags = flags | OFN_NOCHANGEDIR ;
-	}
+   if( hb_parl( 4 ) )
+   {
+      flags = flags | OFN_ALLOWMULTISELECT | OFN_EXPLORER;
+   }
+   if( hb_parl( 5 ) )
+   {
+      flags = flags | OFN_NOCHANGEDIR;
+   }
 
-	memset( (void*) &ofn, 0, sizeof( OPENFILENAME ) );
-	ofn.lStructSize = sizeof(ofn);
-	ofn.hwndOwner = GetActiveWindow();
-	ofn.lpstrFilter = hb_parc(1);
-	ofn.nFilterIndex = 1;
-	ofn.lpstrFile = buffer;
-	ofn.nMaxFile = sizeof(buffer);
-	ofn.lpstrInitialDir = hb_parc(3);
-	ofn.lpstrTitle = hb_parc(2);
-	ofn.nMaxFileTitle = 512;
-	ofn.Flags = flags;
+   memset( ( void * ) &ofn, 0, sizeof( OPENFILENAME ) );
+   ofn.lStructSize = sizeof( ofn );
+   ofn.hwndOwner = GetActiveWindow();
+   ofn.lpstrFilter = hb_parc( 1 );
+   ofn.nFilterIndex = 1;
+   ofn.lpstrFile = buffer;
+   ofn.nMaxFile = sizeof( buffer );
+   ofn.lpstrInitialDir = hb_parc( 3 );
+   ofn.lpstrTitle = hb_parc( 2 );
+   ofn.nMaxFileTitle = 512;
+   ofn.Flags = flags;
 
-	if( GetOpenFileName( &ofn ) )
-	{
-		if(ofn.nFileExtension!=0)
-		{
-			hb_retc( ofn.lpstrFile );
-		}
-		else
-		{
-			wsprintf(cCurDir,"%s",&buffer[iPosition]);
-			iPosition=iPosition+strlen(cCurDir)+1;
+   if( GetOpenFileName( &ofn ) )
+   {
+      if( ofn.nFileExtension != 0 )
+      {
+         hb_retc( ofn.lpstrFile );
+      }
+      else
+      {
+         wsprintf( cCurDir, "%s", &buffer[ iPosition ] );
+         iPosition = iPosition + strlen( cCurDir ) + 1;
 
-			do
-			{
-				iNumSelected++;
-				wsprintf(cFileName,"%s",&buffer[iPosition]);
-				iPosition=iPosition+strlen(cFileName)+1;
-				wsprintf(cFullName[iNumSelected],"%s\\%s",cCurDir,cFileName);
-			}
-			while(  (strlen(cFileName)!=0) && ( iNumSelected <= 63 ) );
+         do
+         {
+            iNumSelected++;
+            wsprintf( cFileName, "%s", &buffer[ iPosition ] );
+            iPosition = iPosition + strlen( cFileName ) + 1;
+            wsprintf( cFullName[ iNumSelected ], "%s\\%s", cCurDir, cFileName );
+         }
+         while( ( strlen( cFileName ) != 0) && ( iNumSelected <= 63 ) );
 
-			if(iNumSelected > 1)
-			{
-				hb_reta( iNumSelected - 1 );
+         if( iNumSelected > 1 )
+         {
+            hb_reta( iNumSelected - 1 );
 
-				for (n = 1; n < iNumSelected; n++)
-				{
-					HB_STORC( cFullName[n], -1, n );
-				}
-			}
-			else
-			{
-				hb_retc( &buffer[0] );
-			}
-		}
-	}
-	else
-	{
-		hb_retc( "" );
-	}
+            for( n = 1; n < iNumSelected; n++ )
+            {
+               HB_STORC( cFullName[ n ], -1, n );
+            }
+         }
+         else
+         {
+            hb_retc( &buffer[ 0 ] );
+         }
+      }
+   }
+   else
+   {
+      hb_retc( "" );
+   }
 }
 
 HB_FUNC( C_PUTFILE )
