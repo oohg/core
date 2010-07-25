@@ -1,11 +1,11 @@
 /*
- * $Id: h_scroll.prg,v 1.18 2009-11-22 16:47:12 declan2005 Exp $
+ * $Id: h_scroll.prg,v 1.19 2010-07-25 21:38:01 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Scrollbar functions
  *
- * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * This program is free software; you can redistribute it and/or modify
@@ -471,7 +471,7 @@ HB_FUNC( SETSCROLLPOS ) // ( hWnd, fnBar, nPos, lRedraw )
    #ifdef __MINGW32__                  // Macro correspondiente a MinGW... agregar con un or el de 64
       RedrawWindow( HWNDparam( 1 ), NULL, NULL,
          RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN |
-         RDW_ERASENOW | RDW_UPDATENOW
+         RDW_ERASENOW | RDW_UPDATENOW | RDW_FRAME
       );
    #endif
 }
