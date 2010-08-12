@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.113 2010-07-07 03:19:01 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.114 2010-08-12 23:07:55 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -2210,6 +2210,8 @@ HB_FUNC( LISTVIEWGETITEM )
 
    for( s = 0; s < l; s++ )
    {
+      memset( &LI, 0, sizeof( LI ) );
+      LI.iImage = -1;
       LI.mask = LVIF_TEXT | LVIF_IMAGE;
       LI.state = 0;
       LI.stateMask = 0;

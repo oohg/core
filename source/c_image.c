@@ -1,5 +1,5 @@
 /*
- * $Id: c_image.c,v 1.23 2010-03-08 03:39:41 guerra000 Exp $
+ * $Id: c_image.c,v 1.24 2010-08-12 23:07:55 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -142,10 +142,10 @@ HANDLE _OOHG_OleLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG lBackColor, long l
 
          iPicture->lpVtbl->get_CurDC( iPicture, &hdc1 );
          hdc1 = CreateCompatibleDC( hdc1 );
-         fAux = ( ( lWidth * GetDeviceCaps( hdc1, LOGPIXELSX ) ) / 2540 ) + 0.9999;
-         lWidth2 = fAux;
-         fAux = ( ( lHeight * GetDeviceCaps( hdc1, LOGPIXELSY ) ) / 2540 ) + 0.9999;
-         lHeight2 = fAux;
+         fAux = ( ( lWidth * GetDeviceCaps( hdc1, LOGPIXELSX ) ) / 2540 ) + ( float ) 0.9999;
+         lWidth2 = ( long ) fAux;
+         fAux = ( ( lHeight * GetDeviceCaps( hdc1, LOGPIXELSY ) ) / 2540 ) + ( float ) 0.9999;
+         lHeight2 = ( long ) fAux;
          DeleteDC( hdc1 );
       }
 

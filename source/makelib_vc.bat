@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: makelib_vc.bat,v 1.2 2009-12-23 23:55:21 guerra000 Exp $
+rem $Id: makelib_vc.bat,v 1.3 2010-08-12 23:07:55 guerra000 Exp $
 rem
 cls
 
@@ -23,7 +23,7 @@ IF EXIST %hg_root%\lib\miniprint.lib del %hg_root%\lib\miniprint.lib
 call common_make "%hg_hrb%\lib\tip.lib"
 if errorlevel 1 goto EXIT1
 
-SET OOHG_X_FLAGS= /O2 /c /I"%hg_vc%\include" /I"%hg_vc%\include\Win" /I%hg_hrb%\include /I%hg_root%\include /D__WIN32__ /D_CRT_SECURE_NO_WARNINGS
+SET OOHG_X_FLAGS= /O2 /c /W3 /nologo /I"%hg_vc%\include" /I"%hg_vc%\include\Win" /I%hg_hrb%\include /I%hg_root%\include /D__WIN32__ /D_CRT_SECURE_NO_WARNINGS
 
 for %%a in (%HG_FILES1_PRG%) do if not errorlevel 1 cl %OOHG_X_FLAGS% %%a.c
 if errorlevel 1 goto EXIT2
