@@ -1,11 +1,11 @@
 /*
- * $Id: h_controlmisc.prg,v 1.104 2009-09-11 02:41:25 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.105 2010-08-13 23:37:23 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Miscelaneous PRG controls functions
  *
- * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -1284,7 +1284,7 @@ RETURN ::nHeight
 METHOD ToolTip( cToolTip ) CLASS TControl
 *------------------------------------------------------------------------------*
    IF PCOUNT() > 0
-      IF valtype( cToolTip ) $ "CM"
+      IF valtype( cToolTip ) $ "CM" .OR. HB_IsBlock( cToolTip )
          ::cToolTip := cToolTip
       ELSE
          ::cToolTip := ""
@@ -1873,17 +1873,26 @@ Return nil
 METHOD Events_Notify( wParam, lParam ) CLASS TControl
 *-----------------------------------------------------------------------------*
 Local nNotify := GetNotifyCode( lParam )
+Local oControl
 
    Empty( wParam ) // DUMMY...
 
-   If nNotify == NM_KILLFOCUS
+   If     nNotify == NM_KILLFOCUS
       Return ::DoLostFocus()
 
-   elseif nNotify == NM_SETFOCUS
+   ElseIf nNotify == NM_SETFOCUS
       ::DoEvent( ::OnGotFocus, "GOTFOCUS" )
 
-   elseif nNotify == TVN_SELCHANGED
+   ElseIf nNotify == TVN_SELCHANGED
       ::DoChange()
+
+   ElseIf nNotify == TTN_GETDISPINFO
+      oControl := GetControlObjectByHandle( _GetToolTipGetDispInfoHWnd( lParam ) )
+      IF HB_IsBlock( oControl:cToolTip )
+         _SetToolTipGetDispInfo( lParam, EVAL( oControl:cToolTip, oControl ) )
+      Else
+         _SetToolTipGetDispInfo( lParam, oControl:cToolTip )
+      EndIf
 
    EndIf
 

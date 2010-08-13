@@ -1,5 +1,5 @@
 /*
- * $Id: h_tooltip.prg,v 1.3 2010-01-21 09:13:08 guerra000 Exp $
+ * $Id: h_tooltip.prg,v 1.4 2010-08-13 23:37:23 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -115,7 +115,7 @@ Return Self
 *-----------------------------------------------------------------------------*
 METHOD Item( hWnd, cToolTip ) CLASS TToolTip
 *-----------------------------------------------------------------------------*
-   If VALTYPE( cToolTip ) $ "CM"
+   If VALTYPE( cToolTip ) $ "CM" .OR. HB_IsBlock( cToolTip )
       SetToolTip( hWnd, cToolTip, ::hWnd )
    EndIf
 RETURN GetToolTip( hWnd, ::hWnd )
@@ -138,7 +138,7 @@ Local lYesNo
 
 return lOldBalloon
 
-EXTERN _SetToolTipBackColor, _SetToolTipForeColor
+EXTERN _SetToolTipBackColor, _SetToolTipForeColor, _SetToolTipGetDispInfo
 
 #pragma BEGINDUMP
 
@@ -198,7 +198,7 @@ HB_FUNC( INITTOOLTIP )
       SendMessage( htooltip, TTM_SETTIPTEXTCOLOR, _OOHG_TooltipForecolor, 0 );
    }
 
-   if( ! htooltip )
+   if( htooltip )
    {
       lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) htooltip, GWL_WNDPROC, ( LONG ) SubClassFunc );
    }
@@ -211,11 +211,9 @@ HB_FUNC( SETTOOLTIP )   // ( hWnd, cToolTip, hWndToolTip )
    TOOLINFO  ti;
 
    HWND hWnd;
-   char *Text;
    HWND hWnd_ToolTip;
 
    hWnd = HWNDparam( 1 );
-   Text = ( char * ) hb_parc( 2 );
    hWnd_ToolTip = HWNDparam( 3 );
 
    memset( &ti, 0, sizeof( ti ) );
@@ -226,15 +224,23 @@ HB_FUNC( SETTOOLTIP )   // ( hWnd, cToolTip, hWndToolTip )
    ti.uId = ( UINT ) hWnd;
 
    if( SendMessage( hWnd_ToolTip, ( UINT ) TTM_GETTOOLINFO, ( WPARAM ) 0, ( LPARAM ) &ti ) )
-	{
+   {
       SendMessage( hWnd_ToolTip, ( UINT ) TTM_DELTOOL, ( WPARAM ) 0, ( LPARAM ) &ti );
-	}
+   }
 
    ti.cbSize = sizeof( ti );
    ti.uFlags = TTF_SUBCLASS | TTF_IDISHWND;
    ti.hwnd = GetParent( hWnd );
    ti.uId = ( UINT ) hWnd;
-   ti.lpszText = Text;
+   if( ISBLOCK( 2 ) )
+   {
+      ti.lpszText = LPSTR_TEXTCALLBACK;
+   }
+   else
+   {
+      ti.lpszText = ( LPSTR ) hb_parc( 2 );
+   }
+
    SendMessage( hWnd_ToolTip, ( UINT ) TTM_ADDTOOL, ( WPARAM ) 0, ( LPARAM ) &ti );
 
    hb_retni( 0 );
@@ -271,6 +277,22 @@ HB_FUNC( _SETTOOLTIPBACKCOLOR )
 HB_FUNC( _SETTOOLTIPFORECOLOR )
 {
    _OOHG_DetermineColorReturn( hb_param( 1, HB_IT_ANY ), &_OOHG_TooltipForecolor, ( hb_pcount() >= 1 ) );
+}
+
+HB_FUNC( _GETTOOLTIPGETDISPINFOHWND )     // ( lParam )
+{
+   NMTTDISPINFO *notify;
+   notify = ( NMTTDISPINFO * ) hb_parnl( 1 );
+   HWNDret( notify->hdr.idFrom );
+}
+
+HB_FUNC( _SETTOOLTIPGETDISPINFO )     // ( lParam, cToolTip )
+{
+   NMTTDISPINFO *notify;
+   notify = ( NMTTDISPINFO * ) hb_parnl( 1 );
+   notify->lpszText = ( LPSTR ) hb_parc( 2 );
+   notify->szText[ 0 ] = 0;
+   notify->hinst = NULL;
 }
 
 #pragma ENDDUMP

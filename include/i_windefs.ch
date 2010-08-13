@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.32 2010-05-03 01:34:57 guerra000 Exp $
+ * $Id: i_windefs.ch,v 1.33 2010-08-13 23:37:23 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -549,25 +549,26 @@
 #define EM_GETLIMITTEXT         213
 #define EM_SETBKGNDCOLOR	1091
 
-#define MK_LBUTTON	1
-#define PBM_SETPOS	1026
-#define PBM_GETPOS   1032
-#define SC_CLOSE	61536
-#define TTN_NEEDTEXT    (-520)
+#define MK_LBUTTON              1
+#define PBM_SETPOS              1026
+#define PBM_GETPOS              1032
+#define SC_CLOSE                61536
 
 // System metrics
 #define SM_CXFULLSCREEN         16
 #define SM_CYFULLSCREEN         17
 
 // Tootips' definitions
-#define TTM_SETTIPBKCOLOR   (WM_USER + 19)
-#define TTM_SETTIPTEXTCOLOR (WM_USER + 20)
-#define TTM_SETMAXTIPWIDTH  (WM_USER + 24)
-#define TTM_SETTITLE        (WM_USER + 32)
+#define TTM_SETTIPBKCOLOR       ( WM_USER + 19 )
+#define TTM_SETTIPTEXTCOLOR     ( WM_USER + 20 )
+#define TTM_SETMAXTIPWIDTH      ( WM_USER + 24 )
+#define TTM_SETTITLE            ( WM_USER + 32 )
 #define TTI_NONE                0
 #define TTI_INFO                1
 #define TTI_WARNING             2
 #define TTI_ERROR               3
+#define TTN_NEEDTEXT            ( -520 )
+#define TTN_GETDISPINFO         ( -520 )
 
 // Static Control Constants
 #define SS_LEFT             0
