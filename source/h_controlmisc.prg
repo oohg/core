@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.105 2010-08-13 23:37:23 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.106 2010-08-15 23:50:27 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1873,7 +1873,6 @@ Return nil
 METHOD Events_Notify( wParam, lParam ) CLASS TControl
 *-----------------------------------------------------------------------------*
 Local nNotify := GetNotifyCode( lParam )
-Local oControl
 
    Empty( wParam ) // DUMMY...
 
@@ -1885,14 +1884,6 @@ Local oControl
 
    ElseIf nNotify == TVN_SELCHANGED
       ::DoChange()
-
-   ElseIf nNotify == TTN_GETDISPINFO
-      oControl := GetControlObjectByHandle( _GetToolTipGetDispInfoHWnd( lParam ) )
-      IF HB_IsBlock( oControl:cToolTip )
-         _SetToolTipGetDispInfo( lParam, EVAL( oControl:cToolTip, oControl ) )
-      Else
-         _SetToolTipGetDispInfo( lParam, oControl:cToolTip )
-      EndIf
 
    EndIf
 

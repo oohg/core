@@ -1,5 +1,5 @@
 /*
- * $Id: h_tooltip.prg,v 1.4 2010-08-13 23:37:23 guerra000 Exp $
+ * $Id: h_tooltip.prg,v 1.5 2010-08-15 23:50:27 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -92,6 +92,7 @@
 ---------------------------------------------------------------------------*/
 
 #include "oohg.ch"
+#include "i_windefs.ch"
 #include "hbclass.ch"
 
 CLASS TToolTip FROM TControl
@@ -99,6 +100,7 @@ CLASS TToolTip FROM TControl
 
    METHOD Define
    METHOD Item
+   METHOD Events_Notify
 
    EMPTY( _OOHG_AllVars )
 ENDCLASS
@@ -120,6 +122,26 @@ METHOD Item( hWnd, cToolTip ) CLASS TToolTip
    EndIf
 RETURN GetToolTip( hWnd, ::hWnd )
 
+*-----------------------------------------------------------------------------*
+METHOD Events_Notify( wParam, lParam ) CLASS TToolTip
+*-----------------------------------------------------------------------------*
+Local nNotify := GetNotifyCode( lParam )
+Local oControl, cToolTip
+
+   Empty( wParam ) // DUMMY...
+
+   If     nNotify == TTN_GETDISPINFO
+      oControl := GetControlObjectByHandle( _GetToolTipGetDispInfoHWnd( lParam ) )
+      cToolTip := oControl:cToolTip
+      IF HB_IsBlock( cToolTip )
+         oControl:DoEvent( { || cToolTip := EVAL( cToolTip, oControl ) }, "TOOLTIP" )
+      EndIf
+      _SetToolTipGetDispInfo( lParam, cToolTip )
+
+   EndIf
+
+Return ::Super:Events_Notify( wParam, lParam )
+
 *--------------------------------------------------
 Function _SetToolTipBalloon( lNewBalloon )
 *--------------------------------------------------
@@ -138,7 +160,7 @@ Local lYesNo
 
 return lOldBalloon
 
-EXTERN _SetToolTipBackColor, _SetToolTipForeColor, _SetToolTipGetDispInfo
+EXTERN _SetToolTipBackColor, _SetToolTipForeColor
 
 #pragma BEGINDUMP
 
@@ -286,11 +308,26 @@ HB_FUNC( _GETTOOLTIPGETDISPINFOHWND )     // ( lParam )
    HWNDret( notify->hdr.idFrom );
 }
 
+static char _OOHG_ToolTipBuffer[ 10001 ];
+
 HB_FUNC( _SETTOOLTIPGETDISPINFO )     // ( lParam, cToolTip )
 {
    NMTTDISPINFO *notify;
+   int iLen;
+
+   iLen = hb_parclen( 2 );
+   if( iLen > 10000 )
+   {
+      iLen = 10000;
+   }
+   if( iLen )
+   {
+      memcpy( _OOHG_ToolTipBuffer, hb_parc( 2 ), iLen );
+   }
+   _OOHG_ToolTipBuffer[ iLen ] = 0;
+
    notify = ( NMTTDISPINFO * ) hb_parnl( 1 );
-   notify->lpszText = ( LPSTR ) hb_parc( 2 );
+   notify->lpszText = ( LPSTR ) _OOHG_ToolTipBuffer;
    notify->szText[ 0 ] = 0;
    notify->hinst = NULL;
 }
