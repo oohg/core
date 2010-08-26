@@ -1,11 +1,31 @@
 /*
- * $Id: ChangeLog,v 1.661 2010-08-15 23:50:27 guerra000 Exp $
+ * $Id: ChangeLog,v 1.662 2010-08-26 20:00:55 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2010-08-26 15:03 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_controlmisc.prg
+  * source/h_form.prg
+  * source/h_radio.prg
+  * source/h_tab.prg
+  * source/h_textbox.prg
+  * source/h_windows.prg
+  * source/h_xbrowse.prg
+    + ::ADJUST functionality added. By Cayetano Gomez.
+    + ::ANCHOR functionality added
+    * Attached controls adjusted by ANCHOR functionality.
+    * ::ForceHide() moved to TControl level.
+  * source/h_combo.prg
+    ! ::nHeight value can't be changed after control was created
+      (it's used for dropdown list instead of the visible textbox).
+  * source/h_picture.prg
+    ! ::Redraw() paints image instead of invalidate area (when
+      IMAGE is inside a TAB, TAB is repainted too, so TAB covers
+      IMAGE).
 
 2010-08-15 18:47 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_controlmisc.prg

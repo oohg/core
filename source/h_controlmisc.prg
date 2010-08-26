@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.106 2010-08-15 23:50:27 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.107 2010-08-26 20:00:55 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -325,11 +325,11 @@ Function InputWindow( Title, aLabels, aValues, aFormats, row, col )
 Local i , l , ControlRow , e := 0 ,LN , CN ,r , c , wHeight , diff
 Local oInputWindow, aResult
 
-	l := Len ( aLabels )
+   l := Len ( aLabels )
 
    aResult := ARRAY( l )
 
-	For i := 1 to l
+   For i := 1 to l
 
 		if ValType ( aValues[i] ) == 'C'
 
@@ -347,13 +347,13 @@ Local oInputWindow, aResult
 			e++
 		EndIf
 
-	Next i
+   Next i
 
 
-	if pcount() == 4
+   If pcount() == 4
 		r := 0
 		c := 0
-	Else
+   Else
 		r := row
 		c := col
 		wHeight :=  (l*30) + 90 + (e*60)
@@ -365,7 +365,7 @@ Local oInputWindow, aResult
 
 		EndIf
 
-	EndIf
+   EndIf
 
    DEFINE WINDOW _InputWindow OBJ oInputWindow ;
 		AT r,c ;
@@ -538,9 +538,9 @@ Local oWnd, oCtrl
       ElseIf Arg2 == "CURSOR"
          oWnd:Cursor := Arg3
 
-		EndIf
+      EndIf
 
-	ElseIf Pcount() == 4 // CONTROL
+   ElseIf Pcount() == 4 // CONTROL
 
       oCtrl := GetExistingControlObject( Arg2, Arg1 )
       Arg3 := Upper( Arg3 )
@@ -615,11 +615,11 @@ Local oWnd, oCtrl
          oCtrl:RangeMax := Arg4
 
       ElseIf Arg3 == "REPEAT"
-			If Arg4 == .t.
+         If Arg4 == .t.
             oCtrl:RepeatOn()
-			Else
+         Else
             oCtrl:RepeatOff()
-			EndIf
+         EndIf
 
       ElseIf Arg3 == "SPEED"
          oCtrl:Speed( Arg4 )
@@ -631,11 +631,11 @@ Local oWnd, oCtrl
          oCtrl:Zoom( Arg4 )
 
       ElseIf Arg3 == "POSITION"
-			If Arg4 == 0
+         If Arg4 == 0
             oCtrl:PositionHome()
-			ElseIf Arg4 == 1
+         ElseIf Arg4 == 1
             oCtrl:PositionEnd()
-			EndIf
+         EndIf
 
       ElseIf Arg3 == "CARETPOS"
          oCtrl:CaretPos := Arg4
@@ -658,9 +658,9 @@ Local oWnd, oCtrl
       ElseIf Arg3 == "ITEMCOUNT"
          ListView_SetItemCount( oCtrl:hWnd, Arg4 )
 
-		EndIf
+      EndIf
 
-	ElseIf Pcount() == 5 // CONTROL (WITH ARGUMENT OR TOOLBAR BUTTON)
+   ElseIf Pcount() == 5 // CONTROL (WITH ARGUMENT OR TOOLBAR BUTTON)
 
       oCtrl := GetExistingControlObject( Arg2, Arg1 )
       Arg3 := Upper( Arg3 )
@@ -686,19 +686,19 @@ Local oWnd, oCtrl
       ElseIf Arg3 == "IMAGE"
          oCtrl:Picture( Arg4, Arg5 )
 
-		Else
+      Else
 			// If Property Not Matched Look For ToolBar Button
 
          If oCtrl:Type == "TOOLBAR"
 
             If oCtrl:hWnd != GetControlObject( Arg3 , Arg1 ):Container:hWnd
                MsgOOHGError('Control Does Not Belong To Container')
-				EndIf
+            EndIf
 
             SetProperty( Arg1, Arg3, Arg4, Arg5 )
-			EndIf
+         EndIf
 
-		EndIf
+      EndIf
 
    ElseIf Pcount() == 6 // CONTROL (WITH 2 ARGUMENTS)
 
@@ -713,7 +713,7 @@ Local oWnd, oCtrl
 
       EndIf
 
-	EndIf
+   EndIf
 
 Return Nil
 
@@ -722,30 +722,30 @@ Function GetProperty( Arg1, Arg2, Arg3, Arg4, Arg5 )
 *------------------------------------------------------------------------------*
 Local RetVal, oWnd, oCtrl
 
-	if Pcount() == 2 // WINDOW
+   If Pcount() == 2 // WINDOW
 
       oWnd := GetExistingFormObject( Arg1 )
       Arg2 := Upper( Arg2 )
 
-		if Arg2 == 'TITLE'
+      If Arg2 == 'TITLE'
          RetVal := oWnd:Title
 
-		ELseIf Arg2 == 'FOCUSEDCONTROL'
+      ElseIf Arg2 == 'FOCUSEDCONTROL'
          RetVal := oWnd:FocusedControl()
 
-		ELseIf Arg2 == 'NAME'
+      ElseIf Arg2 == 'NAME'
          RetVal := oWnd:Name
 
-		ELseIf Arg2 == 'HEIGHT'
+      ElseIf Arg2 == 'HEIGHT'
          RetVal := oWnd:Height
 
-		ElseIf Arg2 == 'WIDTH'
+      ElseIf Arg2 == 'WIDTH'
          RetVal := oWnd:Width
 
-		ElseIf Arg2 == 'COL'
+      ElseIf Arg2 == 'COL'
          RetVal := oWnd:Col
 
-		ElseIf Arg2 == 'ROW'
+      ElseIf Arg2 == 'ROW'
          RetVal := oWnd:Row
 
       ElseIf Arg2 == "NOTIFYICON"
@@ -763,107 +763,107 @@ Local RetVal, oWnd, oCtrl
       ElseIf Arg2 == "OBJECT"
          RetVal := oWnd
 
-		EndIf
+      EndIf
 
-	ElseIf Pcount() == 3 // CONTROL
+   ElseIf Pcount() == 3 // CONTROL
 
       oCtrl := GetExistingControlObject( Arg2, Arg1 )
       Arg3 := Upper( Arg3 )
 
-		If     Arg3 == 'VALUE'
+      If     Arg3 == 'VALUE'
          RetVal := oCtrl:Value
 
-		ElseIf Arg3 == 'NAME'
+      ElseIf Arg3 == 'NAME'
          RetVal := oCtrl:Name
 
       ElseIf Arg3 == 'ALLOWEDIT'
          RetVal := oCtrl:AllowEdit
 
-		ElseIf Arg3 == 'ALLOWAPPEND'
+      ElseIf Arg3 == 'ALLOWAPPEND'
          RetVal := oCtrl:AllowAppend
 
-		ElseIf Arg3 == 'ALLOWDELETE'
+      ElseIf Arg3 == 'ALLOWDELETE'
          RetVal := oCtrl:AllowDelete
 
-		ElseIf Arg3 == 'PICTURE'
+      ElseIf Arg3 == 'PICTURE'
          RetVal := oCtrl:Picture
 
-		ElseIf Arg3 == 'TOOLTIP'
+      ElseIf Arg3 == 'TOOLTIP'
          RetVal := oCtrl:Tooltip
 
-		ElseIf Arg3 == 'FONTNAME'
+      ElseIf Arg3 == 'FONTNAME'
          RetVal := oCtrl:cFontName
 
-		ElseIf Arg3 == 'FONTSIZE'
+      ElseIf Arg3 == 'FONTSIZE'
          RetVal := oCtrl:nFontSize
 
-		ElseIf Arg3 == 'FONTBOLD'
+      ElseIf Arg3 == 'FONTBOLD'
          RetVal := oCtrl:Bold
 
-		ElseIf Arg3 == 'FONTITALIC'
+      ElseIf Arg3 == 'FONTITALIC'
          RetVal := oCtrl:Italic
 
-		ElseIf Arg3 == 'FONTUNDERLINE'
+      ElseIf Arg3 == 'FONTUNDERLINE'
          RetVal := oCtrl:Underline
 
-		ElseIf Arg3 == 'FONTSTRIKEOUT'
+      ElseIf Arg3 == 'FONTSTRIKEOUT'
          RetVal := oCtrl:Strikeout
 
-		ElseIf Arg3 == 'CAPTION'
+      ElseIf Arg3 == 'CAPTION'
          RetVal := oCtrl:Caption
 
-		ElseIf Arg3 == 'DISPLAYVALUE'
+      ElseIf Arg3 == 'DISPLAYVALUE'
          RetVal := GetWindowText( oCtrl:hWnd )
 
-		ElseIf Arg3 == 'ROW'
+      ElseIf Arg3 == 'ROW'
          RetVal := oCtrl:Row
 
-		ElseIf Arg3 == 'COL'
+      ElseIf Arg3 == 'COL'
          RetVal := oCtrl:Col
 
-		ElseIf Arg3 == 'WIDTH'
+      ElseIf Arg3 == 'WIDTH'
          RetVal := oCtrl:Width
 
-		ElseIf Arg3 == 'HEIGHT'
+      ElseIf Arg3 == 'HEIGHT'
          RetVal := oCtrl:Height
 
-		ElseIf Arg3 == 'VISIBLE'
+      ElseIf Arg3 == 'VISIBLE'
          RetVal := oCtrl:Visible
 
-		ElseIf Arg3 == 'ENABLED'
+      ElseIf Arg3 == 'ENABLED'
          RetVal := oCtrl:Enabled
 
-		ElseIf Arg3 == 'CHECKED'
+      ElseIf Arg3 == 'CHECKED'
          RetVal := oCtrl:Checked
 
-		ElseIf Arg3 == 'ITEMCOUNT'
+      ElseIf Arg3 == 'ITEMCOUNT'
          RetVal := oCtrl:ItemCount()
 
-		ElseIf Arg3 == 'RANGEMIN'
+      ElseIf Arg3 == 'RANGEMIN'
          RetVal := oCtrl:RangeMin
 
-		ElseIf Arg3 == 'RANGEMAX'
+      ElseIf Arg3 == 'RANGEMAX'
          RetVal := oCtrl:RangeMax
 
-		ElseIf Arg3 == 'LENGTH'
+      ElseIf Arg3 == 'LENGTH'
          RetVal := oCtrl:Length
 
-		ElseIf Arg3 == 'POSITION'
+      ElseIf Arg3 == 'POSITION'
          RetVal := oCtrl:Position
 
-		ElseIf Arg3 == 'CARETPOS'
+      ElseIf Arg3 == 'CARETPOS'
          RetVal := oCtrl:CaretPos
 
-		ElseIf Arg3 == 'BACKCOLOR'
+      ElseIf Arg3 == 'BACKCOLOR'
          RetVal := oCtrl:BackColor
 
-		ElseIf Arg3 == 'FONTCOLOR'
+      ElseIf Arg3 == 'FONTCOLOR'
          RetVal := oCtrl:FontColor
 
-		ElseIf Arg3 == 'FORECOLOR'
+      ElseIf Arg3 == 'FORECOLOR'
          RetVal := oCtrl:BackColor
 
-		ElseIf Arg3 == 'ADDRESS'
+      ElseIf Arg3 == 'ADDRESS'
          RetVal := oCtrl:Address
 
       ElseIf Arg3 == "HWND"
@@ -872,9 +872,9 @@ Local RetVal, oWnd, oCtrl
       ElseIf Arg3 == "OBJECT"
          RetVal := oCtrl
 
-		EndIf
+      EndIf
 
-	ElseIf Pcount() == 4 // CONTROL (WITH ARGUMENT OR TOOLBAR BUTTON)
+   ElseIf Pcount() == 4 // CONTROL (WITH ARGUMENT OR TOOLBAR BUTTON)
 
       oCtrl := GetExistingControlObject( Arg2, Arg1 )
       Arg3 := Upper( Arg3 )
@@ -897,22 +897,22 @@ Local RetVal, oWnd, oCtrl
       ElseIf Arg3 == "IMAGE"
          oCtrl:Picture( Arg4 )
 
-		Else
+      Else
 
-			// If Property Not Matched Look For Contained Control
-			// With No Arguments (ToolBar Button)
+         // If Property Not Matched Look For Contained Control
+         // With No Arguments (ToolBar Button)
 
          If oCtrl:Type == "TOOLBAR"
 
             If oCtrl:hWnd != GetControlObject( Arg3 , Arg1 ):Container:hWnd
                MsgOOHGError('Control Does Not Belong To Container')
-				EndIf
+            EndIf
 
             RetVal := GetProperty( Arg1 , Arg3 , Arg4 )
 
-			EndIf
+         EndIf
 
-		EndIf
+      EndIf
 
    ElseIf Pcount() == 5 // CONTROL (WITH 2 ARGUMENTS)
 
@@ -924,7 +924,7 @@ Local RetVal, oWnd, oCtrl
 
       EndIf
 
-	EndIf
+   EndIf
 
 Return RetVal
 
@@ -933,67 +933,67 @@ Function DoMethod( Arg1 , Arg2 , Arg3 , Arg4 , Arg5 , Arg6 , Arg7 )
 *------------------------------------------------------------------------------*
 Local oWnd, oCtrl
 
-	if Pcount() == 2 // Window
+   If Pcount() == 2 // Window
 
       oWnd := GetExistingFormObject( Arg1 )
       Arg2 := Upper( Arg2 )
 
-		if Arg2 == 'ACTIVATE'
-         if HB_IsArray( Arg1 )
+      If Arg2 == 'ACTIVATE'
+         If HB_IsArray( Arg1 )
             _ActivateWindow( Arg1 )
-			Else
+         Else
             oWnd:Activate()
-			EndIf
+         EndIf
 
-		ELseIf Arg2 == 'CENTER'
+      ElseIf Arg2 == 'CENTER'
          oWnd:Center()
 
-		ElseIf Arg2 == 'RELEASE'
+      ElseIf Arg2 == 'RELEASE'
          oWnd:Release()
 
-		ElseIf Arg2 == 'MAXIMIZE'
+      ElseIf Arg2 == 'MAXIMIZE'
          oWnd:Maximize()
 
-		ElseIf Arg2 == 'MINIMIZE'
+      ElseIf Arg2 == 'MINIMIZE'
          oWnd:Minimize()
 
-		ElseIf Arg2 == 'RESTORE'
+      ElseIf Arg2 == 'RESTORE'
          oWnd:Restore()
 
-		ElseIf Arg2 == 'SHOW'
+      ElseIf Arg2 == 'SHOW'
          oWnd:Show()
 
-		ElseIf Arg2 == 'PRINT'
+      ElseIf Arg2 == 'PRINT'
          oWnd:Print()
 
-		ElseIf Arg2 == 'HIDE'
+      ElseIf Arg2 == 'HIDE'
          oWnd:Hide()
 
-		ElseIf Arg2 == 'SETFOCUS'
+      ElseIf Arg2 == 'SETFOCUS'
          If oWnd:Active
             oWnd:SetFocus()
          EndIf
 
-		EndIf
+      EndIf
 
-	ElseIf Pcount() == 3 // CONTROL
+   ElseIf Pcount() == 3 // CONTROL
 
       oCtrl := GetExistingControlObject( Arg2, Arg1 )
       Arg3 := Upper( Arg3 )
 
-		If     Arg3 == 'REFRESH'
+      If     Arg3 == 'REFRESH'
          oCtrl:Refresh()
 
-		ElseIf Arg3 == 'SAVE'
+      ElseIf Arg3 == 'SAVE'
          oCtrl:SaveData()
 
-		ElseIf Arg3 == 'SETFOCUS'
+      ElseIf Arg3 == 'SETFOCUS'
          oCtrl:SetFocus()
 
-		ElseIf Arg3 == 'ACTION'
+      ElseIf Arg3 == 'ACTION'
          oCtrl:DoEvent( oCtrl:OnClick, "CLICK" )
 
-		ElseIf Arg3 == 'ONCLICK'
+      ElseIf Arg3 == 'ONCLICK'
          oCtrl:DoEvent( oCtrl:OnClick, "CLICK" )
 
       ElseIf Arg3 == 'COLUMNSAUTOFIT'
@@ -1002,71 +1002,71 @@ Local oWnd, oCtrl
       ElseIf Arg3 == 'COLUMNSAUTOFITH'
          oCtrl:ColumnsAutoFitH()
 
-		ElseIf Arg3 == 'DELETEALLITEMS'
+      ElseIf Arg3 == 'DELETEALLITEMS'
          oCtrl:DeleteAllItems()
 
-		ElseIf Arg3 == 'RELEASE'
+      ElseIf Arg3 == 'RELEASE'
          oCtrl:Release()
 
-		ElseIf Arg3 == 'SHOW'
+      ElseIf Arg3 == 'SHOW'
          oCtrl:Show()
 
-		ElseIf Arg3 == 'HIDE'
+      ElseIf Arg3 == 'HIDE'
          oCtrl:Hide()
 
-		ElseIf Arg3 == 'PLAY'
+      ElseIf Arg3 == 'PLAY'
          oCtrl:Play()
 
-		ElseIf Arg3 == 'STOP'
+      ElseIf Arg3 == 'STOP'
          oCtrl:Stop()
 
-		ElseIf Arg3 == 'CLOSE'
+      ElseIf Arg3 == 'CLOSE'
          oCtrl:Close()
 
-		ElseIf Arg3 == 'PLAYREVERSE'
+      ElseIf Arg3 == 'PLAYREVERSE'
          oCtrl:PlayReverse()
 
-		ElseIf Arg3 == 'PAUSE'
+      ElseIf Arg3 == 'PAUSE'
          oCtrl:Pause()
 
-		ElseIf Arg3 == 'EJECT'
+      ElseIf Arg3 == 'EJECT'
          oCtrl:Eject()
 
-		ElseIf Arg3 == 'OPENDIALOG'
+      ElseIf Arg3 == 'OPENDIALOG'
          oCtrl:OpenDialog()
 
-		ElseIf Arg3 == 'RESUME'
+      ElseIf Arg3 == 'RESUME'
          oCtrl:Resume()
 
-		EndIf
+      EndIf
 
-	ElseIf Pcount() == 4 // CONTROL (WITH 1 ARGUMENT)
+   ElseIf Pcount() == 4 // CONTROL (WITH 1 ARGUMENT)
 
       oCtrl := GetExistingControlObject( Arg2, Arg1 )
       Arg3 := Upper( Arg3 )
 
-		If     Arg3 == 'DELETEITEM'
+      If     Arg3 == 'DELETEITEM'
          oCtrl:DeleteItem( Arg4 )
 
-		ElseIf Arg3 == 'DELETEPAGE'
+      ElseIf Arg3 == 'DELETEPAGE'
          oCtrl:DeletePage( Arg4 )
 
-		ElseIf Arg3 == 'OPEN'
+      ElseIf Arg3 == 'OPEN'
          oCtrl:Open( Arg4 )
 
-		ElseIf Arg3 == 'SEEK'
+      ElseIf Arg3 == 'SEEK'
          oCtrl:Seek( Arg4 )
 
-		ElseIf Arg3 == 'ADDITEM'
+      ElseIf Arg3 == 'ADDITEM'
          oCtrl:AddItem( Arg4 )
 
-		ElseIf Arg3 == 'EXPAND'
+      ElseIf Arg3 == 'EXPAND'
          oCtrl:Expand( Arg4 )
 
-		ElseIf Arg3 == 'COLLAPSE'
+      ElseIf Arg3 == 'COLLAPSE'
          oCtrl:Collapse( Arg4 )
 
-		ElseIf Arg3 == 'DELETECOLUMN'
+      ElseIf Arg3 == 'DELETECOLUMN'
          oCtrl:DeleteColumn( Arg4 )
 
       ElseIf Arg3 == 'COLUMNAUTOFIT'
@@ -1075,51 +1075,51 @@ Local oWnd, oCtrl
       ElseIf Arg3 == 'COLUMNAUTOFITH'
          oCtrl:ColumnAutoFitH( Arg4 )
 
-		EndIf
+      EndIf
 
    ElseIf Pcount() == 5 // CONTROL (WITH 2 ARGUMENTS)
 
       oCtrl := GetExistingControlObject( Arg2, Arg1 )
       Arg3 := Upper( Arg3 )
 
-		If     Arg3 == 'ADDITEM'
+      If     Arg3 == 'ADDITEM'
          oCtrl:AddItem( Arg4 , Arg5 )
 
-		ElseIf Arg3 == 'ADDPAGE'
+      ElseIf Arg3 == 'ADDPAGE'
          oCtrl:AddPage( Arg4 , Arg5 )
 
-		EndIf
+      EndIf
 
    ElseIf Pcount() == 6 // CONTROL (WITH 3 ARGUMENTS)
 
       oCtrl := GetExistingControlObject( Arg2, Arg1 )
       Arg3 := Upper( Arg3 )
 
-		If     Arg3 == 'ADDITEM'
+      If     Arg3 == 'ADDITEM'
          oCtrl:AddItem( Arg4 , Arg5 , Arg6 )
 
-		ElseIf Arg3 == 'ADDPAGE'
+      ElseIf Arg3 == 'ADDPAGE'
          oCtrl:AddPage( Arg4 , Arg5 , Arg6 )
 
-		EndIf
+      EndIf
 
    ElseIf Pcount() == 7 // CONTROL (WITH 4 ARGUMENTS)
 
       oCtrl := GetExistingControlObject( Arg2, Arg1 )
       Arg3 := Upper( Arg3 )
 
-		If     Arg3 == 'ADDCONTROL'
+      If     Arg3 == 'ADDCONTROL'
          oCtrl:AddControl( GetControlObject( Arg4, Arg1 ), Arg5 , Arg6 , Arg7 )
 
-		ElseIf     Arg3 == 'ADDCOLUMN'
+      ElseIf     Arg3 == 'ADDCOLUMN'
          oCtrl:AddColumn( Arg4 , Arg5 , Arg6 , Arg7 )
 
-		ElseIf     Arg3 == 'ADDITEM'
+      ElseIf     Arg3 == 'ADDITEM'
          oCtrl:AddItem( Arg4 , Arg5 , Arg6 , Arg7 )
 
-		EndIf
+      EndIf
 
-	EndIf
+   EndIf
 
 Return Nil
 
@@ -1131,9 +1131,9 @@ Function cFileNoPath( cPathMask )
 *--------------------------------------------------------*
 local n := RAt( "\", cPathMask )
 Return If( n > 0 .and. n < Len( cPathMask ), ;
-	Right( cPathMask, Len( cPathMask ) - n ), ;
-	If( ( n := At( ":", cPathMask ) ) > 0, ;
-	Right( cPathMask, Len( cPathMask ) - n ), cPathMask ) )
+       Right( cPathMask, Len( cPathMask ) - n ), ;
+       If( ( n := At( ":", cPathMask ) ) > 0, ;
+       Right( cPathMask, Len( cPathMask ) - n ), cPathMask ) )
 
 *--------------------------------------------------------*
 Function cFileNoExt( cPathMask )
@@ -1148,21 +1148,21 @@ Function NoArray (OldArray)
 Local NewArray := {}
 Local i
 
-	If ValType ( OldArray ) == 'U'
-		Return Nil
-	ELse
-		Asize ( NewArray , Len (OldArray) )
-	EndIf
+   If ValType ( OldArray ) == 'U'
+      Return Nil
+   Else
+      Asize( NewArray , Len (OldArray) )
+   EndIf
 
-	For i := 1 To Len ( OldArray )
+   For i := 1 To Len ( OldArray )
 
-		If OldArray [i] == .t.
-			NewArray [i] := .f.
-		Else
-			NewArray [i] := .t.
-		EndIf
+      If OldArray [i] == .t.
+         NewArray [i] := .f.
+      Else
+         NewArray [i] := .t.
+      EndIf
 
-	Next i
+   Next i
 
 Return NewArray
 
@@ -1231,6 +1231,7 @@ CLASS TControl FROM TWindow
    METHOD FontStrikeout       SETGET
    METHOD SizePos
    METHOD Move
+   METHOD ForceHide
    METHOD SetFocus            BLOCK { |Self| _OOHG_lSettingFocus := .T., GetFormObjectByHandle( ::ContainerhWnd ):LastFocusedControl := ::hWnd, ::Super:SetFocus() }
    METHOD SetVarBlock
    METHOD AddBitMap
@@ -1309,7 +1310,8 @@ STATIC nCtrl := 0
 RETURN cName
 
 *------------------------------------------------------------------------------*
-METHOD SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BkColor, lEditBox, lRtl ) CLASS TControl
+METHOD SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, ;
+                BkColor, lEditBox, lRtl, xAnchor ) CLASS TControl
 *------------------------------------------------------------------------------*
 
    ::StartInfo( -1 )
@@ -1317,45 +1319,45 @@ METHOD SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BkColor,
 
    ::ParentDefaults( FontName, FontSize, FontColor )
 
-   IF HB_IsLogical( lEditBox ) .AND. lEditBox
+   If HB_IsLogical( lEditBox ) .AND. lEditBox
       // Background Color (edit or listbox):
-      if ValType( BkColor ) $ "ANCM"
+      If ValType( BkColor ) $ "ANCM"
          // Specified color
          ::BackColor := BkColor
       ElseIf ValType( ::BackColor ) $ "ANCM"
          // Pre-registered
-      elseif ::Container != nil
+      ElseIf ::Container != nil
          // Active frame
          ::BackColor := ::Container:DefBkColorEdit
-      elseif ValType( ::Parent:DefBkColorEdit ) $ "ANCM"
+      ElseIf ValType( ::Parent:DefBkColorEdit ) $ "ANCM"
          // Active form
          ::BackColor := ::Parent:DefBkColorEdit
-      else
+      Else
           // Default
-      endif
-   ELSE
+      EndIf
+   Else
       // Background Color (static):
-      if ValType( BkColor ) $ "ANCM"
+      If ValType( BkColor ) $ "ANCM"
          // Specified color
          ::BackColor := BkColor
       ElseIf ValType( ::BackColor ) $ "ANCM"
          // Pre-registered
-      elseif ::Container != nil
+      ElseIf ::Container != nil
          // Active frame
          ::BackColor := ::Container:BackColor
-      elseif ValType( ::Parent:BackColor ) $ "ANCM"
+      ElseIf ValType( ::Parent:BackColor ) $ "ANCM"
          // Active form
          ::BackColor := ::Parent:BackColor
-      else
+      Else
           // Default
-      endif
-   ENDIF
+      EndIf
+   EndIf
 
    ::Name := _OOHG_GetNullName( ControlName )
 
    If _IsControlDefined( ::Name, ::Parent:Name )
       MsgOOHGError( _OOHG_Messages( 3, 4 ) + ::Name + _OOHG_Messages( 3, 5 ) + ::Parent:Name + _OOHG_Messages( 3, 6 ) )
-	endif
+   EndIf
 
    // Right-to-left
    If _OOHG_GlobalRTL()
@@ -1368,6 +1370,17 @@ METHOD SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BkColor,
       ::lRtl := ::Parent:lRtl
    Else
       ::lRtl := .F.
+   EndIf
+
+   // Anchor
+   If ValType( xAnchor ) $ "NCM"
+      ::Anchor := xAnchor
+   ElseIf ::Container != nil
+      // Active frame
+      ::Anchor := ::Container:nDefAnchor
+   Else
+      // Active form
+      ::Anchor := ::Parent:nDefAnchor
    EndIf
 
 RETURN Self
@@ -1577,6 +1590,9 @@ Return ::Strikeout
 *-----------------------------------------------------------------------------*
 METHOD SizePos( Row, Col, Width, Height ) CLASS TControl
 *-----------------------------------------------------------------------------*
+LOCAL xRet, nOldWidth, nOldHeight
+   nOldWidth := ::nWidth
+   nOldHeight := ::nHeight
    IF HB_IsNumeric( Row )
       ::nRow := Row
    ENDIF
@@ -1589,12 +1605,29 @@ METHOD SizePos( Row, Col, Width, Height ) CLASS TControl
    IF HB_IsNumeric( Height )
       ::nHeight := Height
    ENDIF
-Return MoveWindow( ::hWnd, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight , .T. )
+   xRet := MoveWindow( ::hWnd, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight , .T. )
+   //CGR
+   ::CheckClientsPos()
+
+   // Anchor
+   If nOldWidth != ::nWidth .OR. nOldHeight != ::nHeight
+      AEVAL( ::aControls, { |o| o:AdjustAnchor( ::nHeight - nOldHeight, ::nWidth - nOldWidth ) } )
+   EndIf
+   AEVAL( ::aControls, { |o| o:SizePos() } )
+   AEVAL( ::aControls, { |o| o:Events_Size() } )
+Return xRet
 
 *-----------------------------------------------------------------------------*
 METHOD Move( Row, Col, Width, Height ) CLASS TControl
 *-----------------------------------------------------------------------------*
 Return ::SizePos( Row, Col, Width, Height )
+
+*-----------------------------------------------------------------------------*
+METHOD ForceHide() CLASS TControl
+*-----------------------------------------------------------------------------*
+   ::Super:ForceHide()
+   AEVAL( ::aControls, { |o| o:ForceHide() } )
+Return nil
 
 *-----------------------------------------------------------------------------*
 METHOD SetVarBlock( cField, uValue ) CLASS TControl

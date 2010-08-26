@@ -1,11 +1,11 @@
 /*
- * $Id: h_picture.prg,v 1.8 2009-11-24 02:55:18 guerra000 Exp $
+ * $Id: h_picture.prg,v 1.9 2010-08-26 20:00:55 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * TPicture control source code
  *
- * Copyright 2009 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2009-2010 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * This program is free software; you can redistribute it and/or modify
@@ -79,6 +79,7 @@ CLASS TPicture FROM TControl
 
    METHOD Events
    METHOD nDegree       SETGET
+   METHOD Redraw
 
    EMPTY( _OOHG_AllVars )
 ENDCLASS
@@ -325,7 +326,7 @@ HB_FUNC( INITPICTURECONTROL )
    HWNDret( hbutton );
 }
 
-void _OOHG_PictureControl_RePaint( HWND hWnd, PHB_ITEM pSelf, RECT *rect, HDC hdc )
+void _OOHG_PictureControl_RePaint( PHB_ITEM pSelf, RECT *rect, HDC hdc )
 {
    BITMAP bm;
    HBITMAP hBmp;
@@ -337,8 +338,10 @@ void _OOHG_PictureControl_RePaint( HWND hWnd, PHB_ITEM pSelf, RECT *rect, HDC hd
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
    POINT point[ 3 ];
    int row, col, width, height;
+   HWND hWnd;
 
-   if( ! hWnd )
+   hWnd = oSelf->hWnd;
+   if( ! ValidHandler( hWnd ) )
    {
       return;
    }
@@ -493,7 +496,7 @@ HB_FUNC_STATIC( TPICTURE_EVENTS )
          {
             RECT rect;
             GetClientRect( hWnd, &rect );
-            _OOHG_PictureControl_RePaint( hWnd, pSelf, &rect, ( HDC ) wParam );
+            _OOHG_PictureControl_RePaint( pSelf, &rect, ( HDC ) wParam );
             hb_retni( 1 );
          }
          break;
@@ -511,7 +514,7 @@ HB_FUNC_STATIC( TPICTURE_EVENTS )
             else
             {
                hdc = BeginPaint( hWnd, &ps );
-               _OOHG_PictureControl_RePaint( hWnd, pSelf, &rect, hdc );
+               _OOHG_PictureControl_RePaint( pSelf, &rect, hdc );
                EndPaint( hWnd, &ps );
                hb_retni( 1 );
             }
@@ -576,7 +579,7 @@ HB_FUNC_STATIC( TPICTURE_EVENTS )
                SetScrollPos( oSelf->hWnd, SB_HORZ, iNewPos, 1 );
                GetClientRect( hWnd, &rect );
                hdc = GetDC( hWnd );
-               _OOHG_PictureControl_RePaint( hWnd, pSelf, &rect, hdc );
+               _OOHG_PictureControl_RePaint( pSelf, &rect, hdc );
                DeleteDC( hdc );
                hb_ret();
             }
@@ -641,7 +644,7 @@ HB_FUNC_STATIC( TPICTURE_EVENTS )
                SetScrollPos( oSelf->hWnd, SB_VERT, iNewPos, 1 );
                GetClientRect( hWnd, &rect );
                hdc = GetDC( hWnd );
-               _OOHG_PictureControl_RePaint( hWnd, pSelf, &rect, hdc );
+               _OOHG_PictureControl_RePaint( pSelf, &rect, hdc );
                DeleteDC( hdc );
                hb_ret();
             }
@@ -694,6 +697,26 @@ HB_FUNC_STATIC( TPICTURE_NDEGREE )   // ( nDegree )
    }
 
    hb_retnl( oSelf->lAux[ 1 ] );
+}
+
+HB_FUNC_STATIC( TPICTURE_REDRAW )   // ()
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   HWND hWnd;
+   HDC hdc;
+   RECT rect;
+
+   hWnd = oSelf->hWnd;
+   if( ValidHandler( hWnd ) )
+   {
+      GetClientRect( hWnd, &rect );
+      hdc = GetDC( hWnd );
+      _OOHG_PictureControl_RePaint( pSelf, &rect, hdc );
+      DeleteDC( hdc );
+   }
+
+   hb_ret();
 }
 
 HB_FUNC( TPICTURE_SETNOTIFY )   // ( oSelf, lHit )

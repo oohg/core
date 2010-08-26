@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.21 2010-07-07 03:19:01 guerra000 Exp $
+ * $Id: h_form.prg,v 1.22 2010-08-26 20:00:55 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -220,6 +220,8 @@ CLASS TForm FROM TWindow
    METHOD VirtualHeight       SETGET
 
    METHOD AutoAdjust
+   METHOD AdjustWindowSize
+   METHOD ClientsPos
 
    METHOD FocusedControl
    METHOD SizePos
@@ -478,8 +480,8 @@ METHOD EndWindow() CLASS TForm
 LOCAL nPos
    nPos := ASCAN( _OOHG_ActiveForm, { |o| o:Name == ::Name .AND. o:hWnd == ::hWnd } )
    If nPos > 0
-      ::nOldw := ::Width
-      ::nOldh := ::Height
+      ::nOldw := ::ClientWidth
+      ::nOldh := ::ClientHeight
       ::nWindowState := ::GetWindowState()   ///obtiene el estado inicial de la ventana
       _OOHG_DeleteArrayItem( _OOHG_ActiveForm, nPos )
    Else
@@ -532,6 +534,10 @@ METHOD Visible( lVisible, nFlags, nTime ) CLASS TForm
          ENDIF
          ProcessMessages()    //// ojo con esto
       ENDIF
+
+      //CGR
+      ::CheckClientsPos()
+
    ENDIF
 Return ::lVisible
 
@@ -601,6 +607,9 @@ METHOD Activate( lNoStop, oWndLoop ) CLASS TForm
    EndIf
 
    ::ProcessInitProcedure()
+   // CGR
+   ::ClientsPos()
+   //
    ::RefreshData()
 
    // Starts the Message Loop
@@ -788,12 +797,9 @@ METHOD Cursor( uValue ) CLASS TForm
 Return nil
 
 *------------------------------------------------------------------------------*
-METHOD AutoAdjust() CLASS TForm
+METHOD AutoAdjust( nDivH, nDivW ) CLASS TForm
 *------------------------------------------------------------------------------*
-LOCAL nWidth, nHeight, lSwvisible, nDivw, nDivh
-
-   nWidth  := IF( GetDesktopWidth()  < ::nWidth,  GetDesktopWidth(),  ::width )
-   nHeight := IF( GetDesktopHeight() < ::nHeight, GetdeskTopHeight(), ::height )
+LOCAL lSwvisible
 
    lSwvisible := .T.
    IF ! ::Visible
@@ -802,24 +808,61 @@ LOCAL nWidth, nHeight, lSwvisible, nDivw, nDivh
       ::Hide()
    ENDIF
 
-   If HB_IsNumeric( ::nOldw ) .AND. HB_IsNumeric( ::nOldh )
-      nDivw := nWidth  / ::nOldw
-      nDivh := nHeight / ::nOldh
-   Else
-      nDivw := 1
-      nDivh := 1
-   EndIf
-
-   AEVAL( ::aControls, { |o| If( o:Container == nil, o:AdjustResize( nDivh, nDivw ), ) } )
-
-   ::nOldw := nWidth
-   ::nOldh := nHeight
+   AEVAL( ::aControls, { |o| If( o:Container == nil, o:AdjustResize( nDivH, nDivW ), ) } )
 
    IF lSwvisible
       ::Show()
    ENDIF
 
 RETURN nil
+
+*------------------------------------------------------------------------------*
+METHOD AdjustWindowSize( lSkip ) CLASS TForm
+*------------------------------------------------------------------------------*
+LOCAL nWidth, nHeight, nOldWidth, nOldHeight
+
+//    nWidth  := IF( GetDesktopWidth()  < ::nWidth,  GetDesktopWidth(),  ::width )
+//    nHeight := IF( GetDesktopHeight() < ::nHeight, GetdeskTopHeight(), ::height )
+   nWidth  := ::ClientWidth
+   nHeight := ::ClientHeight
+
+   If HB_IsNumeric( ::nOldW ) .AND. HB_IsNumeric( ::nOldH )
+      nOldWidth  := ::nOldW
+      nOldHeight := ::nOldH
+   Else
+      nOldWidth  := nWidth
+      nOldHeight := nHeight
+   EndIf
+
+   If _OOHG_AutoAdjust .AND. ::lAdjust .AND. ( ! HB_IsLogical( lSkip ) .OR. ! lSkip )
+      ::AutoAdjust( nHeight / nOldHeight, nWidth / nOldWidth )       //// cambio de tamaño activada y cualquier cambio q no sea maximizar o restaurar
+   EndIf
+
+   // Anchor
+   AEVAL( ::aControls, { |o| If( o:Container == nil, o:AdjustAnchor( nHeight - nOldHeight, nWidth - nOldWidth ), ) } )
+
+   //CGR
+   ::ClientsPos()
+
+   ::nOldW := nWidth
+   ::nOldH := nHeight
+
+   AEVAL( ::aControls, { |o| If( o:Container == nil, o:Events_Size(), ) } )
+
+RETURN nil
+
+//CGR - metodo insertado
+*------------------------------------------------------------------------------*
+METHOD ClientsPos() CLASS TForm
+*------------------------------------------------------------------------------*
+Local aControls, nWidth, nHeight
+   aControls := {}
+   AEVAL( ::aControls, { |o| IF( o:Container == nil, AADD( aControls, o ), ) } )
+//   nWidth  := IF( GetDesktopWidth()  < ::nWidth,  GetDesktopWidth(),  ::Width )
+//   nHeight := IF( GetDesktopHeight() < ::nHeight, GetdeskTopHeight(), ::Height ) - If ( ::oMenu==nil,0,50)
+   nWidth  := ::ClientWidth
+   nHeight := ::ClientHeight
+Return ::ClientsPos2( aControls, nWidth, nHeight )
 
 #pragma BEGINDUMP
 HB_FUNC_STATIC( TFORM_BACKCOLOR )
@@ -883,25 +926,27 @@ Method GetWindowstate( ) CLASS Tform
   EndIf
 Return nil
 
-
 *------------------------------------------------------------------------------*
 METHOD SizePos( nRow, nCol, nWidth, nHeight ) CLASS TForm
 *------------------------------------------------------------------------------*
-local actpos:={0,0,0,0}
+local xRet, actpos:= { 0, 0, 0, 0 }
    GetWindowRect( ::hWnd, actpos )
-   if !HB_IsNumeric( nCol )
+   If ! HB_IsNumeric( nCol )
       nCol := actpos[ 1 ]
-   endif
-   if !HB_IsNumeric( nRow )
+   EndIf
+   If ! HB_IsNumeric( nRow )
       nRow := actpos[ 2 ]
-   endif
-   if !HB_IsNumeric( nWidth )
+   EndIf
+   If ! HB_IsNumeric( nWidth )
       nWidth := actpos[ 3 ] - actpos[ 1 ]
-   endif
-   if !HB_IsNumeric( nHeight )
+   EndIf
+   If ! HB_IsNumeric( nHeight )
       nHeight := actpos[ 4 ] - actpos[ 2 ]
-   endif
-Return MoveWindow( ::hWnd , nCol , nRow , nWidth , nHeight , .t. )
+   EndIf
+   xRet := MoveWindow( ::hWnd , nCol , nRow , nWidth , nHeight , .t. )
+   //CGR
+   ::CheckClientsPos()
+Return xRet
 
 *-----------------------------------------------------------------------------*
 METHOD DeleteControl( oControl ) CLASS TForm
@@ -1358,18 +1403,11 @@ Local oCtrl, lMinim := .F.
 
             ENDCASE
 
+            ::AdjustWindowSize( lMinim )
             ::DoEvent( ::OnSize, "WINDOW_SIZE" )
-            If _OOHG_AutoAdjust .and. ! lMinim
-               ::AutoAdjust()       //// cambio de tamaño activada y cualquier cambio q no sea maximizar o restaurar
-            EndIf
-
-            AEVAL( ::aControls, { |o| If( o:Container == nil, o:Events_Size(), ) } )
          Else
             If ::lDefined
-               If _OOHG_AutoAdjust
-                  ::AutoAdjust()       ////// cambio de tamaño antes de activarla si ya esta definida
-               EndIf
-               AEVAL( ::aControls, { |o| If( o:Container == nil, o:Events_Size(), ) } )
+               ::AdjustWindowSize()
             Endif
 
          EndIf
@@ -1385,12 +1423,9 @@ Local oCtrl, lMinim := .F.
    case nMsg == WM_EXITSIZEMOVE    //// cuando se cambia el tamaño por reajuste con el mouse
    ***********************************************************************
 
-      If ::Active .AND. ( ! _OOHG_AutoAdjust .OR. ! ::lAdjust .OR. ( ::noldw # NIL .OR. ::noldh # NIL ) .AND. ( ::nOLdw # ::Width .OR. ::nOldh # ::Height ) )
+      If ::Active .AND. ( ! _OOHG_AutoAdjust .OR. ! ::lAdjust .OR. ( ::nOldW # NIL .OR. ::nOldH # NIL ) .AND. ( ::nOldW # ::Width .OR. ::nOldH # ::Height ) )
+         ::AdjustWindowSize()
          ::DoEvent( ::OnSize, "WINDOW_SIZE" )
-         If _OOHG_AutoAdjust
-            ::AutoAdjust()
-         Endif
-         AEVAL( ::aControls, { |o| If( o:Container == nil, o:Events_Size(), ) } )
       Endif
       ::lEnterSizeMove := .F.
 
@@ -1960,8 +1995,9 @@ Local uRet
    else
       ::nHeight := nHeight
    endif
-
    uRet := MoveWindow( ::hWnd, ::ContainerCol, ::ContainerRow, nWidth, nHeight, .t. )
+   //CGR
+   ::CheckClientsPos()
    ValidateScrolls( Self, .T. )
 Return uRet
 

@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.48 2010-07-07 03:19:01 guerra000 Exp $
+ * $Id: h_tab.prg,v 1.49 2010-08-26 20:00:55 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -600,8 +600,7 @@ CLASS TTabPage FROM TControl
 
    METHOD AddControl
    METHOD SetFocus            BLOCK { |Self| ::Container:SetFocus() , ::Container:Value := ::Position , Self }
-   METHOD ForceHide           BLOCK { |Self| AEVAL( ::aControls, { |o| o:ForceHide() } ) }
-   METHOD Events_Size         BLOCK { |Self| AEVAL( ::aControls, { |o| o:SizePos() } ) }
+   METHOD Events_Size
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -645,6 +644,15 @@ METHOD AddControl( oCtrl , Row , Col ) CLASS TTabPage
    oCtrl:Container := Self
    oCtrl:SizePos( Row, Col )
    oCtrl:Visible := oCtrl:Visible
+Return Nil
+
+*-----------------------------------------------------------------------------*
+METHOD Events_Size() CLASS TTabPage
+*-----------------------------------------------------------------------------*
+LOCAL oTab
+   oTab := ::Container
+   DO EVENTS
+   ::SizePos( , , oTab:Width, oTab:Height )
 Return Nil
 
 

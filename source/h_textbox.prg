@@ -1,11 +1,11 @@
 /*
- * $Id: h_textbox.prg,v 1.62 2010-05-22 01:36:42 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.63 2010-08-26 20:00:55 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG textbox functions
  *
- * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -107,6 +107,7 @@ CLASS TText FROM TLabel
    DATA nWidth          INIT 120
    DATA nHeight         INIT 24
    DATA OnTextFilled    INIT nil
+   DATA nDefAnchor      INIT 13   // TopBottomRight
 
    METHOD Define
    METHOD Define2
@@ -116,7 +117,6 @@ CLASS TText FROM TLabel
    METHOD SizePos
    METHOD Enabled             SETGET
    METHOD Visible             SETGET
-   METHOD ForceHide
    METHOD AddControl
    METHOD DeleteControl
    METHOD AdjustResize( nDivh, nDivw ) BLOCK { |Self,nDivh,nDivw| ::Super:AdjustResize( nDivh, nDivw, .T. ) }
@@ -246,14 +246,10 @@ Return NIL
 *------------------------------------------------------------------------------*
 METHOD SizePos( Row, Col, Width, Height ) CLASS TText
 *------------------------------------------------------------------------------*
-LOCAL nOldWidth, nOldHeight
-   nOldWidth  := ::Width
-   nOldHeight := ::Height
-   ::Super:SizePos( Row, Col, Width, Height )
-   nOldWidth  := ::Width  - nOldWidth
-   nOldHeight := ::Height - nOldHeight
-   AEVAL( ::aControls, { |o| o:SizePos( , o:Col + nOldWidth,, o:Height + nOldHeight ) } )
-Return Nil
+LOCAL xRet
+   xRet := ::Super:SizePos( Row, Col, Width, Height )
+   AEVAL( ::aControls, { |o| o:Redraw() } )
+Return xRet
 
 *------------------------------------------------------------------------------*
 METHOD Enabled( lEnabled ) CLASS TText
@@ -278,12 +274,6 @@ METHOD Visible( lVisible ) CLASS TText
 RETURN ::Super:Visible
 
 *------------------------------------------------------------------------------*
-METHOD ForceHide() CLASS TText
-*------------------------------------------------------------------------------*
-   AEVAL( ::aControls, { |o| o:ForceHide() } )
-RETURN ::Super:ForceHide()
-
-*------------------------------------------------------------------------------*
 METHOD AddControl( oCtrl ) CLASS TText
 *------------------------------------------------------------------------------*
 LOCAL aRect
@@ -294,6 +284,7 @@ LOCAL aRect
    GetClientRect( ::hWnd, @aRect )
    oCtrl:Visible := oCtrl:Visible
    oCtrl:SizePos( 2, ::ClientWidth + 2,, ::ClientHeight )
+   oCtrl:Anchor := ::nDefAnchor
 Return Nil
 
 *------------------------------------------------------------------------------*

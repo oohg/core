@@ -1,11 +1,11 @@
 /*
- * $Id: h_radio.prg,v 1.24 2009-10-30 18:00:36 declan2005 Exp $
+ * $Id: h_radio.prg,v 1.25 2010-08-26 20:00:55 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Radio button functions
  *
- * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -112,7 +112,6 @@ CLASS TRadioGroup FROM TLabel
    METHOD SizePos
    METHOD Value               SETGET
    METHOD Enabled             SETGET
-   METHOD ForceHide           BLOCK { |Self| AEVAL( ::aControls, { |o| o:ForceHide() } ) }
    METHOD SetFocus
    METHOD Visible             SETGET
 

@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.206 2010-07-07 03:19:01 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.207 2010-08-26 20:00:55 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -229,11 +229,19 @@ CLASS TWindow
     //////// all redimension Vars
    DATA nOldw               INIT NIL
    DATA nOLdh               INIT NIL
-   DATA nWindowState        INIT  0   /// 2 Maximizada 1 minimizada  0 Normal
+   DATA nWindowState        INIT 0   /// 2 Maximizada 1 minimizada  0 Normal
+   // Anchor
+   DATA nAnchor             INIT nil
+   DATA nDefAnchor          INIT 3
 
    ///////
 
    DATA DefBkColorEdit      INIT nil
+
+   //CGR
+   // Client adjust
+   DATA ClientAdjust        INIT 0 // 0=none, 1=top, 2=bottom, 3=left, 4=right, 5=Client
+   DATA IsAdjust            INIT .F.
 
    METHOD SethWnd
    METHOD Release
@@ -291,7 +299,7 @@ CLASS TWindow
    METHOD Visible             SETGET
    METHOD Show                BLOCK { |Self| ::Visible := .T. }
    METHOD Hide                BLOCK { |Self| ::Visible := .F. }
-   METHOD ForceHide           BLOCK { |Self| HideWindow( ::hWnd ) }
+   METHOD ForceHide           BLOCK { |Self| HideWindow( ::hWnd ) , ::CheckClientsPos() }
    METHOD ReDraw              BLOCK { |Self| RedrawWindow( ::hWnd ) }
    METHOD DefWindowProc(nMsg,wParam,lParam)       BLOCK { |Self,nMsg,wParam,lParam| DefWindowProc( ::hWnd, nMsg, wParam, lParam ) }
    METHOD GetTextWidth
@@ -300,6 +308,15 @@ CLASS TWindow
    METHOD ClientWidth
    METHOD ClientHeight
    METHOD AdjustResize
+   //
+   METHOD Anchor              SETGET
+   METHOD AdjustAnchor
+
+   //CGR
+   METHOD CheckClientsPos
+   METHOD ClientsPos
+   METHOD ClientsPos2
+   METHOD Adjust              SETGET
 
    METHOD DebugMessageName
    METHOD DebugMessageQuery
@@ -1304,6 +1321,9 @@ METHOD Visible( lVisible ) CLASS TWindow
 
       ProcessMessages()    //// ojo con esto
 
+      //CGR
+      ::CheckClientsPos()
+
    EndIf
 Return ::lVisible
 
@@ -1344,7 +1364,7 @@ METHOD AdjustResize( nDivh, nDivw, lSelfOnly ) CLASS TWindow
       IF _OOHG_adjustWidth
          IF ! ::lFixWidth
             //// solo si el control tiene activado ajuste de ancho
-            ::Sizepos( , , ::width *nDivw, ::height * nDivh )
+            ::Sizepos( , , ::width * nDivw, ::height * nDivh )
 
             IF  _OOHG_adjustFont
                 IF ! ::lFixFont
@@ -1361,6 +1381,194 @@ METHOD AdjustResize( nDivh, nDivw, lSelfOnly ) CLASS TWindow
 
    ENDIF
 Return nil
+
+*------------------------------------------------------------------------------*
+METHOD Anchor( xAnchor ) CLASS TWindow
+*------------------------------------------------------------------------------*
+LOCAL nTop, nLeft, nBottom, nRight
+   If HB_IsNumeric( xAnchor )
+      ::nAnchor := INT( xAnchor ) % 16
+   ElseIf HB_IsString( xAnchor )
+      xAnchor := UPPER( ALLTRIM( xAnchor ) )
+      If xAnchor == "NONE"
+         ::nAnchor := 0
+      ElseIf xAnchor == "ALL"
+         ::nAnchor := 16
+      Else
+         nTop := nLeft := nBottom := nRight := 0
+         DO WHILE ! EMPTY( xAnchor )
+            If     LEFT( xAnchor, 3 ) == "TOP"
+               nTop := 1
+               xAnchor := SUBSTR( xAnchor, 4 )
+            ElseIf LEFT( xAnchor, 4 ) == "LEFT"
+               nLeft := 2
+               xAnchor := SUBSTR( xAnchor, 5 )
+            ElseIf LEFT( xAnchor, 6 ) == "BOTTOM"
+               nBottom := 4
+               xAnchor := SUBSTR( xAnchor, 7 )
+            ElseIf LEFT( xAnchor, 5 ) == "RIGHT"
+               nRight := 8
+               xAnchor := SUBSTR( xAnchor, 6 )
+            Else
+               nTop := ::nAnchor
+               nLeft := nBottom := nRight := 0
+               EXIT
+            EndIf
+         ENDDO
+         ::nAnchor := nTop + nLeft + nBottom + nRight
+      EndIf
+   EndIf
+Return ::nAnchor
+
+*------------------------------------------------------------------------------*
+METHOD AdjustAnchor( nDeltaH, nDeltaW ) CLASS TWindow
+*------------------------------------------------------------------------------*
+LOCAL nAnchor, lTop, lLeft, lBottom, lRight, nRow, nCol, nWidth, nHeight, lChange
+   If ::nAnchor == NIL
+      Return nil
+   EndIf
+   nAnchor := INT( ::nAnchor ) % 16
+   If nAnchor != 3 .AND. ( nDeltaH != 0 .OR. nDeltaW != 0 )
+      lTop    := ( ( nAnchor %  2 ) >= 1 )
+      lLeft   := ( ( nAnchor %  4 ) >= 2 )
+      lBottom := ( ( nAnchor %  8 ) >= 4 )
+      lRight  := ( ( nAnchor % 16 ) >= 8 )
+      nRow    := ::Row
+      nCol    := ::Col
+      nWidth  := ::Width
+      nHeight := ::Height
+      lChange := .F.
+      // Height checking
+      If nDeltaH == 0
+         //
+      ElseIf lTop .AND. lBottom
+         nHeight += nDeltaH
+         lChange := .T.
+      ElseIf lBottom
+         nRow += nDeltaH
+         lChange := .T.
+      ElseIf ! lTop
+         nRow += ( nDeltaH / 2 )
+         lChange := .T.
+      EndIf
+      // Width checking
+      If nDeltaW == 0
+         //
+      ElseIf lLeft .AND. lRight
+         nWidth += nDeltaW
+         lChange := .T.
+      ElseIf lRight
+         nCol += nDeltaW
+         lChange := .T.
+      ElseIf ! lLeft
+         nCol += ( nDeltaW / 2 )
+         lChange := .T.
+      EndIf
+      // Any change?
+      If lChange
+         ::SizePos( nRow, nCol, nWidth, nHeight )
+      EndIf
+   EndIf
+Return nil
+
+//CGR - metodo insertado
+*------------------------------------------------------------------------------*
+METHOD CheckClientsPos() CLASS TWindow
+*------------------------------------------------------------------------------*
+   If ::ClientAdjust > 0
+      If ::Container != NIL
+         ::Container:ClientsPos()
+      ElseIf ::Parent != NIL
+         ::Parent:ClientsPos()
+      EndIf
+   EndIf
+Return nil
+
+*------------------------------------------------------------------------------*
+METHOD ClientsPos() CLASS TWindow
+*------------------------------------------------------------------------------*
+Return ::ClientsPos2( ::aControls, ::Width, ::Height )
+
+*------------------------------------------------------------------------------*
+METHOD ClientsPos2( aControls, nWidth, nHeight ) CLASS TWindow
+*------------------------------------------------------------------------------*
+// ajusta los controles dentro de la ventana por ClientAdjust
+local n, nAdjust, oControl, nRow := 0, nCol := 0
+
+   If ::IsAdjust
+      Return self
+   EndIf
+   ::IsAdjust := .T.
+   // nCol := ::Height - GetStatusbarHeight( ::name ) - GetTitleHeight() - 2 * GetBorderHeight()
+   For n := 1 to len( aControls )
+      oControl := aControls[ n ]
+      nAdjust := oControl:ClientAdjust
+      If nAdjust > 0 .and. nAdjust < 5 .and. aControls[ n ]:ContainerVisible
+         If nAdjust == 1 // top
+            oControl:nCol := nCol
+            oControl:nRow := nRow
+            oControl:nWidth := nWidth
+            nRow := nRow + oControl:nHeight
+            nHeight := nHeight - oControl:nHeight
+         ElseIf nAdjust == 2 // bottom
+            oControl:nCol := nCol
+            oControl:nRow := nHeight - oControl:nHeight + nRow
+            oControl:nWidth:=nWidth
+            nHeight := nHeight - oControl:nHeight
+         ElseIf nAdjust == 3 //left
+            oControl:nCol := nCol
+            oControl:nRow := nRow
+            oControl:nHeight := nHeight
+            nCol := nCol + oControl:nWidth
+            nWidth := nWidth - oControl:nWidth
+         ElseIf nAdjust == 4 //right
+            oControl:nCol := nWidth - oControl:nWidth + nCol
+            oControl:nRow := nRow
+            oControl:nHeight := nHeight
+            nWidth := nWidth - oControl:nWidth
+         EndIf
+         oControl:Hide()
+         oControl:SizePos()
+         oControl:Show()
+      EndIf
+   Next
+   For n := 1 to len( aControls )
+      If aControls[ n ]:ClientAdjust == 5 .and. aControls[ n ]:Visible
+         aControls[ n ]:Hide()
+         aControls[ n ]:SizePos( nRow, nCol, nWidth - 2, nHeight - 2 )
+         aControls[ n ]:Show()
+      EndIf
+   Next
+   ::IsAdjust := .F.
+Return nil
+
+*------------------------------------------------------------------------------*
+METHOD Adjust( nAdjust ) CLASS TWindow
+*------------------------------------------------------------------------------*
+Local Adjustpos
+   If PCOUNT() > 0
+      If HB_IsString( nAdjust )
+         AdjustPos := upper( alltrim( nAdjust ) )
+         If AdjustPos == 'TOP'
+            ::ClientAdjust := 1
+         Elseif AdjustPos == 'BOTTOM'
+            ::ClientAdjust := 2
+         Elseif AdjustPos == 'LEFT'
+            ::ClientAdjust := 3
+         Elseif AdjustPos == 'RIGHT'
+            ::ClientAdjust := 4
+         Elseif AdjustPos == 'CLIENT'
+            ::ClientAdjust := 5
+         EndIf
+         * ::nHeight := ::nWidth  // ???
+      ElseIf hb_IsNumeric( nAdjust )
+         If nAdjust <> ::ClientAdjust
+            ::ClientAdjust := nAdjust
+            ::CheckClientsPos()
+         EndIf
+      EndIf
+   EndIf
+Return ::ClientAdjust
 
 *------------------------------------------------------------------------------*
 METHOD GetMaxCharsInWidth( cString, nWidth ) CLASS TWindow

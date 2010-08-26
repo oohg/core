@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.47 2010-07-06 21:24:50 guerra000 Exp $
+ * $Id: h_combo.prg,v 1.48 2010-08-26 20:00:55 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -104,9 +104,10 @@ CLASS TCombo FROM TLabel
    DATA nTextHeight   INIT 0
    DATA aValues       INIT {}
    DATA nWidth        INIT 120
-   DATA nHeight       INIT 150
+   DATA nHeight2      INIT 150
 
    METHOD Define
+   METHOD nHeight             SETGET
    METHOD Refresh
    METHOD Value               SETGET
    METHOD Visible             SETGET
@@ -217,6 +218,14 @@ Local ControlHandle , rcount := 0 , cset := 0 , WorkArea , cField, nStyle
    ASSIGN ::OnEnter     VALUE uEnter                   TYPE "B"
 
 Return Self
+
+*-----------------------------------------------------------------------------*
+METHOD nHeight( nHeight ) CLASS TCombo
+*-----------------------------------------------------------------------------*
+   If HB_IsNumeric( nHeight ) .AND. ! ValidHandler( ::hWnd )
+      ::nHeight2 := nHeight
+   EndIf
+RETURN ::nHeight2
 
 *-----------------------------------------------------------------------------*
 METHOD Refresh() CLASS TCombo
