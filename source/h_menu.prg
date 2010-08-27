@@ -1,5 +1,5 @@
 /*
- * $Id: h_menu.prg,v 1.27 2010-01-21 09:13:07 guerra000 Exp $
+ * $Id: h_menu.prg,v 1.28 2010-08-27 21:25:22 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -114,9 +114,9 @@ CLASS TMenu FROM TControl
 ENDCLASS
 
 *------------------------------------------------------------------------------*
-METHOD Define( Parent ) CLASS TMenu
+METHOD Define( Parent, Name ) CLASS TMenu
 *------------------------------------------------------------------------------*
-   ::SetForm( , Parent )
+   ::SetForm( Name, Parent )
    ::Container := NIL
    ::Register( CreatePopUpMenu() )
    AADD( _OOHG_xMenuActive, Self )
@@ -165,9 +165,9 @@ CLASS TMenuMain FROM TMenu
 ENDCLASS
 
 *------------------------------------------------------------------------------*
-METHOD Define( Parent ) CLASS TMenuMain
+METHOD Define( Parent, Name ) CLASS TMenuMain
 *------------------------------------------------------------------------------*
-   ::SetForm( , Parent )
+   ::SetForm( Name, Parent )
    ::Container := NIL
    ::Register( CreateMenu() )
    AADD( _OOHG_xMenuActive, Self )
@@ -189,9 +189,9 @@ CLASS TMenuContext FROM TMenu
 ENDCLASS
 
 *------------------------------------------------------------------------------*
-METHOD Define( Parent ) CLASS TMenuContext
+METHOD Define( Parent, Name ) CLASS TMenuContext
 *------------------------------------------------------------------------------*
-   ::Super:Define( Parent )
+   ::Super:Define( Parent, Name )
    If ::Parent:ContextMenu != nil
       ::Parent:ContextMenu:Release()
    EndIf
@@ -208,9 +208,9 @@ CLASS TMenuNotify FROM TMenu
 ENDCLASS
 
 *------------------------------------------------------------------------------*
-METHOD Define( Parent ) CLASS TMenuNotify
+METHOD Define( Parent, Name ) CLASS TMenuNotify
 *------------------------------------------------------------------------------*
-   ::Super:Define( Parent )
+   ::Super:Define( Parent, Name )
    IF ::Parent:NotifyMenu != nil
       ::Parent:NotifyMenu:Release()
    ENDIF
@@ -227,14 +227,14 @@ CLASS TMenuDropDown FROM TMenu
 ENDCLASS
 
 *------------------------------------------------------------------------------*
-METHOD Define( Button, Parent ) CLASS TMenuDropDown
+METHOD Define( Button, Parent, Name ) CLASS TMenuDropDown
 *------------------------------------------------------------------------------*
 LOCAL oContainer
    If HB_IsObject( Button )
       Parent := Button:Parent
       Button := Button:Name
    EndIf
-   ::Super:Define( Parent )
+   ::Super:Define( Parent, Name )
    oContainer := GetControlObject( Button, ::Parent:Name )
    If oContainer:ContextMenu != nil
       oContainer:ContextMenu:Release()
