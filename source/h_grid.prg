@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.114 2010-08-12 23:07:55 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.115 2010-09-02 22:10:39 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -2123,11 +2123,11 @@ HB_FUNC( SETGRIDCOLUMNHEADER )
 {
    LV_COLUMN COL;
 
-   COL.mask = LVCF_FMT | LVCF_TEXT ;
+   COL.mask = LVCF_TEXT;
    COL.pszText = ( char * ) hb_parc( 3 ) ;
    COL.fmt = hb_parni( 4 ) ;
 
-   ListView_SetColumn ( HWNDparam( 1 ) , hb_parni (2)-1 , &COL ) ;
+   ListView_SetColumn( HWNDparam( 1 ) , hb_parni( 2 ) - 1, &COL );
 }
 
 HB_FUNC( ADDLISTVIEWITEMS )
