@@ -1,5 +1,5 @@
 /*
- * $Id: xbrowsearray.prg,v 1.1 2008-01-12 20:19:38 guerra000 Exp $
+ * $Id: xbrowsearray.prg,v 1.1 2010-10-03 01:28:09 guerra000 Exp $
  */
 /*
  * ooHG XBrowse array-as-database demo. (c) 2008 Vic

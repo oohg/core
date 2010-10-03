@@ -1,5 +1,5 @@
 /*
- * $Id: recordmerge.prg,v 1.1 2008-12-11 04:50:15 guerra000 Exp $
+ * $Id: recordmerge.prg,v 1.1 2010-10-03 01:28:09 guerra000 Exp $
  */
 /*
  * ooHG XBrowse multiple database in one browse. (c) 2008 Vic
