@@ -1,5 +1,5 @@
 /*
- * $Id: h_report.prg,v 1.46 2010-01-21 09:13:07 guerra000 Exp $
+ * $Id: h_report.prg,v 1.47 2010-10-18 15:46:39 declan2005 Exp $
  */
 /*
  * DO REPORT Command support procedures FOR MiniGUI Library.
@@ -246,6 +246,15 @@ ELSE
        ELSE
          oprint:condendos()
        ENDIF
+  ELSEIF _OOHG_printlibrary="RAWPRINT"
+       oprint:=tprint("RAWPRINT")
+       oprint:init()
+       IF ncpl<=80
+         oprint:normaldos()
+       ELSE
+         oprint:condendos()
+       ENDIF
+
   ELSE
        oprint:=tprint("MINIPRINT")
        oprint:init()

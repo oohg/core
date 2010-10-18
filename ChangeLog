@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.665 2010-10-03 01:28:09 guerra000 Exp $
+ * $Id: ChangeLog,v 1.666 2010-10-18 15:46:39 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,16 +7,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2010-10-02 20:18 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
-  + samples/oohg/oohgrecord/brw_odbc.prg
-  + samples/oohg/oohgrecord/oosql.prg
-  + samples/oohg/oohgrecord/px.prg
-    + New ooHGRecord samples added.
-  + samples/oohg/oohgrecord/recordmerge.prg
-  + samples/oohg/oohgrecord/xbrowsearray.prg
-  - samples/oohg/recordmerge.prg
-  - samples/oohg/xbrowsearray.prg
-    * ooHGRecord samples moved to new/specific directory.
+
+2010-10-18 11:41 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_print.prg
+    * added Raw print.
+  * source/h_report.prg
+    * added raw print mode to report
+
 
 2010-09-02 17:14 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_grid.prg

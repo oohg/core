@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.93 2010-06-19 22:51:16 declan2005 Exp $
+* $Id: h_print.prg,v 1.94 2010-10-18 15:46:39 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -57,6 +57,9 @@ IF clibx=NIL
          o_print_:=thtmlprint()
       ELSEIF _OOHG_printlibrary="PDFPRINT"
          o_print_:=tpdfprint()
+      ELSEIF _OOHG_printlibrary="RAWPRINT"
+         o_print_:=tRAWprint()
+
       ELSE
          o_print_:=thbprinter()
       ENDIF
@@ -84,6 +87,9 @@ ELSE
          o_print_:=thtmlprint()
       ELSEIF clibx="PDFPRINT"
          o_print_:=tpdfprint()
+      ELSEIF clibx="RAWPRINT"
+         o_print_:=trawprint()
+
       ELSE
          o_print_:=tminiprint()
       ENDIF
@@ -166,6 +172,17 @@ METHOD printdos()
 *-------------------------
 METHOD printdosx() BLOCK { || nil }
 *-------------------------
+
+*-------------------------
+METHOD printraw()
+*-------------------------
+
+*-------------------------
+METHOD printrawx() BLOCK { || nil }
+*-------------------------
+
+
+
 *-------------------------
 METHOD beginpage()
 *-------------------------
@@ -654,7 +671,7 @@ ELSE
       ::nmver  := (::nfontsize)/2.35
    ELSE
       ::nmver  :=  10/2.35
-   ENDIF 
+   ENDIF
 
 
    ::nvfij  := (12/1.65)
@@ -688,7 +705,7 @@ ELSE
       ::nmver  := (::nfontsize)/2.35
    ELSE
       ::nmver  :=  10/2.35
-   ENDIF 
+   ENDIF
 
    ::nvfij  := (12/1.65)
    ::nhfij  := (12/3.70)
@@ -710,6 +727,35 @@ FCLOSE( nHdl )
 waitrun( cBat, 0 )
 erase &cbat
 RETURN nil
+
+*----------------------------
+method printraw()  CLASS TPRINTBASE   /////  Based upon an example of Lucho Miranda
+*----------------------------
+LOCAL cPrinter :=GETDEFAULTPRINTER()
+LOCAL nResult  :=NIL
+LOCAL cMsg     :=""
+LOCAL aDatos :=                              {;
+{ 1 , ::tempfile + " PRINTED OK!!!"              },;
+{-1 ,"Invalid PARAMETERS passed TO function"},;
+{-2 ,"WinAPI OpenPrinter() CALL failed"     },;
+{-3 ,"WinAPI StartDocPrinter() CALL failed" },;
+{-4 ,"WinAPI StartPagePrinter() CALL failed"},;
+{-5 ,"WinAPI malloc() OF MEMORY failed"     },;
+{-6 ,"File " + ::tempfile + " not found"         } }
+
+
+IF ! EMPTY( cPrinter )
+   nResult :=PRINTFILERAW( cPrinter, ::tempfile, "raw print" )
+   if nResult#1
+      cMsg +=aDatos[ASCAN(aDatos,{|x| x[1] ==nResult}),2]
+  ///    MSGINFO( cMsg )
+   endif
+ELSE
+   MSGSTOP("No Default Printer found","Error...")
+ENDIF
+
+RETURN(NIL)
+
 
 CREATE CLASS TMINIPRINT FROM TPRINTBASE
 
@@ -1655,6 +1701,68 @@ for i:= ninicio to lenctodo
     ENDIF
 next i
 RETURN nposluna
+
+CREATE CLASS TRAWPRINT FROM TDOSPRINT
+
+
+METHOD EndDocx()
+
+ENDCLASS
+
+*-------------------------
+METHOD enddocx() CLASS TRAWPRINT
+*-------------------------
+local _nhandle,wr,nx,ny
+
+nx:=getdesktopwidth()
+ny:=getdesktopheight()
+
+SET DEVICE TO SCREEN
+SET PRINTER TO
+_nhandle:=FOPEN(::tempfile,0+64)
+IF ::impreview
+   wr:=memoread((::tempfile))
+   DEFINE WINDOW PRINT_PREVIEW  ;
+   AT 0,0 ;
+   WIDTH nx HEIGHT ny-70 ;
+   TITLE 'Preview -----> ' + ::tempfile ;
+   MODAL
+
+   @ 0,0 RICHEDITBOX EDIT_P ;
+   OF PRINT_PREVIEW ;
+   WIDTH nx-50 ;
+   HEIGHT ny-40-70 ;
+   VALUE WR ;
+   READONLY ;
+   FONT 'Courier New' ;
+   SIZE 10 ;
+   BACKCOLOR WHITE
+
+   @ 010,nx-40 button but_4 caption "X" width 30 action ( print_preview.release() ) tooltip "close"
+   @ 090,nx-40 button but_1 caption "+ +" width 30 action zoom("+") tooltip "zoom +"
+   @ 170,nx-40 button but_2 caption "- -" width 30 action zoom("-") tooltip "zoom -"
+   @ 250,nx-40 button but_3 caption "P" width 30 action (::printraw()) tooltip "Print RAW mode"
+   @ 330,nx-40 button but_5 caption "S" width 30 action  (::searchstring(print_preview.edit_p.value)) tooltip "Search"
+   @ 410,nx-40 button but_6 caption "N" width 30 action  ::nextsearch() tooltip "Next Search"
+
+   END WINDOW
+
+   CENTER WINDOW PRINT_PREVIEW
+   ACTIVATE WINDOW PRINT_PREVIEW
+
+ELSE
+
+  ::PRINTRAW()
+
+ENDIF
+
+IF FILE(::tempfile)
+   fclose(_nhandle)
+   ERASE &(::tempfile)
+ENDIF
+
+RETURN self
+
 
 /// excelprint based upon contribution of Jose Miguel josemisu@yahoo.com.ar
 
