@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.666 2010-10-18 15:46:39 declan2005 Exp $
+ * $Id: ChangeLog,v 1.667 2010-11-06 07:06:08 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,13 +7,21 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2010-11-06 00:47 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  - source/c_grid.c
+  * source/h_grid.prg
+  * source/common_make.bat
+  * source/makelib_mingw.bat
+    * Moved C code from c_grid.c to h_grid.prg file.
+    - c_grid.c removed.
+  * source/h_grid.prg
+    ! VALID messages can be codeblocks. As suggested by Johan.
 
 2010-10-18 11:41 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_print.prg
     * added Raw print.
   * source/h_report.prg
     * added raw print mode to report
-
 
 2010-09-02 17:14 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_grid.prg
