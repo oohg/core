@@ -1,11 +1,66 @@
 /*
- * $Id: px.prg,v 1.1 2010-10-03 01:28:09 guerra000 Exp $
+ * $Id: px.prg,v 1.2 2010-11-30 02:18:12 guerra000 Exp $
  */
 /*
  * This is a ooHGRecord's subclasses (database class used
  * by ooHG's XBrowse) for direct Paradox file access.
  * NOTE: It's a READ ONLY access!!
  */
+
+#ifndef NO_SAMPLE
+
+#include "oohg.ch"
+
+PROCEDURE Main
+LOCAL cFile
+
+   SET CENTURY ON
+   SET DATE BRITISH
+
+   DO WHILE .T.
+      cFile := GetFile( { { "Paradox files", "*.db" } }, "Select file", "D:\virtual\x", .F., .T. )
+      IF EMPTY( cFile )
+         EXIT
+      ENDIF
+      BrowsePx( cFile )
+   ENDDO
+
+RETURN
+
+PROCEDURE BrowsePx( cFile )
+Local oPx, aHeaders, aWidths, aFields, oWnd
+
+   oPx := XBrowse_Paradox():New( cFile )
+
+   aWidths := AFILL( ARRAY( oPx:nFields ), 100 )
+   aFields := ARRAY( oPx:nFields + 1 )
+   aFields[ 1 ] := { || oPx:Recno }
+   AEVAL( aWidths, { |x,i| aFields[ i + 1 ] := NewFieldGet( oPx, i ) } )
+   aHeaders := ARRAY( oPx:nFields + 1 )
+   aHeaders[ 1 ] := "recno()"
+   AEVAL( aWidths, { |x,i| aHeaders[ i + 1 ] := oPx:aFields[ i ] + "/" + oPx:aTypes[ i ] } )
+   AADD( aWidths, 100 )
+
+   DEFINE WINDOW Main WIDTH 500 HEIGHT 400 CLIENTAREA ;
+                 TITLE "Paradox Browse Sample" OBJ oWnd
+       @ 10,10 XBROWSE Brw WIDTH 480 HEIGHT 380 ;
+               WORKAREA ( oPx ) ;
+               HEADERS aHeaders ;
+               WIDTHS aWidths ;
+               FIELDS aFields
+       oWnd:Brw:Anchor := "TOPLEFTBOTTOMRIGHT"
+
+   END WINDOW
+   ACTIVATE WINDOW Main
+
+   oPx:Close()
+
+RETURN
+
+FUNCTION NewFieldGet( oBase, nPos )
+RETURN { || oBase:FieldGet( nPos ) }
+
+#endif   // #ifndef NO_SAMPLE
 
 /*
  *  Pseudo-file class.

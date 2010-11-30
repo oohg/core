@@ -1,5 +1,5 @@
 /*
- * $Id: h_error.prg,v 1.46 2010-06-17 02:24:03 guerra000 Exp $
+ * $Id: h_error.prg,v 1.47 2010-11-30 02:18:12 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -221,6 +221,7 @@ CLASS OOHG_TErrorHtml
    METHOD FileHeader
 
    METHOD ErrorMessage
+   METHOD ErrorHeader
    METHOD CreateLog
 
    EMPTY( _OOHG_AllVars )
@@ -299,10 +300,15 @@ METHOD ErrorMessage( cError, nPosition ) CLASS OOHG_TErrorHtml
    // Header
    ::cBufferScreen += ooHGVersion() + CHR( 13 ) + CHR( 10 ) + cError + CHR( 13 ) + CHR( 10 )
    //
-   ::cBufferFile   += ::Write2( ::PreHeader() + "Date: " + Dtoc( Date() ) + "  " + "Time: " + Time() )
+   ::cBufferFile   += ::PreHeader()
+   ::cBufferFile   += ::Write2( "Date: " + Dtoc( Date() ) + "  " + "Time: " + Time() )
    ::cBufferFile   += ::Write2( "Version: " + ooHGVersion() )
-   ::cBufferFile   += ::Write2( "Alias in use: "+ alias() )
-   ::cBufferFile   += ::Write2( "Error: " + cError + ::PostHeader() )
+   ::cBufferFile   += ::Write2( "Alias in use: " + Alias() )
+   ::cBufferFile   += ::Write2( "Computer Name: " + NetName() )
+   ::cBufferFile   += ::Write2( "User Name: " + NetName( 1 ) )
+   ::cBufferFile   += ::Write2( "Error: " + cError )
+   ::ErrorHeader()
+   ::cBufferFile   += ::PostHeader()
 
    // Called functions
    nPosition++
@@ -321,6 +327,10 @@ METHOD ErrorMessage( cError, nPosition ) CLASS OOHG_TErrorHtml
    ::CreateLog()
    C_MSGSTOP( ::cBufferScreen, "Program Error" )
    ExitProcess( 0 )
+RETURN nil
+
+METHOD ErrorHeader() CLASS OOHG_TErrorHtml
+   // Insert own header's data here
 RETURN nil
 
 CLASS OOHG_TErrorTxt FROM OOHG_TErrorHtml

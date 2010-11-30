@@ -1,11 +1,28 @@
 /*
- * $Id: ChangeLog,v 1.667 2010-11-06 07:06:08 guerra000 Exp $
+ * $Id: ChangeLog,v 1.668 2010-11-30 02:18:12 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2010-11-29 20:21 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_error.prg
+    * Added user name and computer name in ErrorLog.htm header.
+  * samples/oohg/oohgrecord/px.prg
+  * samples/oohg/oohgrecord/recordmerge.prg
+  * samples/oohg/oohgrecord/xbrowsearray.prg
+    * Prevents "sample PRG code" compilation when NO_SAMPLE
+      macro is defined. Useful for #include .PRG file without
+      sample code.
+  + samples/oohg/oohgrecord/textfile.prg
+    + Textfile-as-database class.
+      NOTE: This class can't be used on XBROWSE control.
+      This allows to read a sequentual text file (delimited or
+      fixed width) as a ooHGRecord class. Since it doesn't have
+      random access, it only supports forward SKIPs (and
+      ::GoTop(), too), but it's an easy way to read these files.
 
 2010-11-06 00:47 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   - source/c_grid.c

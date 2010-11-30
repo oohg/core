@@ -1,5 +1,5 @@
 /*
- * $Id: xbrowsearray.prg,v 1.1 2010-10-03 01:28:09 guerra000 Exp $
+ * $Id: xbrowsearray.prg,v 1.2 2010-11-30 02:18:12 guerra000 Exp $
  */
 /*
  * ooHG XBrowse array-as-database demo. (c) 2008 Vic
@@ -7,8 +7,9 @@
  * It includes an "array-as-database" object.
  */
 
+#ifndef NO_SAMPLE
+
 #include "oohg.ch"
-#include "hbclass.ch"
 
 PROCEDURE Main
 Local aArray, oArray, I
@@ -42,6 +43,10 @@ Local aArray, oArray, I
    ACTIVATE WINDOW Main
 
 RETURN
+
+#endif    // #ifndef NO_SAMPLE
+
+#include "hbclass.ch"
 
 /*
  *  This is a template for ooHGRecord's subclasses (database class used

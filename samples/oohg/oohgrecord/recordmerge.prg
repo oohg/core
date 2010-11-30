@@ -1,5 +1,5 @@
 /*
- * $Id: recordmerge.prg,v 1.1 2010-10-03 01:28:09 guerra000 Exp $
+ * $Id: recordmerge.prg,v 1.2 2010-11-30 02:18:12 guerra000 Exp $
  */
 /*
  * ooHG XBrowse multiple database in one browse. (c) 2008 Vic
@@ -9,8 +9,9 @@
  *        However, you can create your own edit procedure.
  */
 
+#ifndef NO_SAMPLE
+
 #include "oohg.ch"
-#include "hbclass.ch"
 
 PROCEDURE MAIN
 LOCAL oBase1, oBase2, I, J, K, nCount, oMix
@@ -71,6 +72,10 @@ LOCAL oBase1, oBase2, I, J, K, nCount, oMix
    ACTIVATE WINDOW MAIN
 
 RETURN
+
+#endif   // NO_SAMPLE
+
+#include "hbclass.ch"
 
 CLASS TRecordMerge
 
