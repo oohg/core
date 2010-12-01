@@ -1,11 +1,21 @@
 /*
- * $Id: ChangeLog,v 1.668 2010-11-30 02:18:12 guerra000 Exp $
+ * $Id: ChangeLog,v 1.669 2010-12-01 18:49:59 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2010-12-01 12:57 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * samples/oohg/oohgrecord/brw_odbc.prg
+    * Prevents "sample PRG code" compilation when NO_SAMPLE
+      macro is defined. Useful for #include .PRG file without
+      sample code.
+  * samples/oohg/oohgrecord/textfile.prg
+    ! Fixed field reading for fixed-width columns.
+  * samples/oohg/oohgrecord/xbrowsearray.prg
+    * Added ::EOF() functionality.
 
 2010-11-29 20:21 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_error.prg

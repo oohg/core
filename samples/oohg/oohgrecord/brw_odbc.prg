@@ -1,5 +1,5 @@
 /*
- * $Id: brw_odbc.prg,v 1.1 2010-10-03 01:28:09 guerra000 Exp $
+ * $Id: brw_odbc.prg,v 1.2 2010-12-01 18:49:59 guerra000 Exp $
  */
 /*
  * ooHG XBrowse ODBC demo. (c) 2008 Vic
@@ -7,8 +7,9 @@
  * It includes an "ODBC-as-ooHGRecord" object.
  */
 
+#ifndef NO_SAMPLE
+
 #include "oohg.ch"
-#include "hbclass.ch"
 
 PROCEDURE Main
 Local oODBC, oBrw, I
@@ -44,6 +45,10 @@ Local oODBC, oBrw, I
    oODBC:Destroy()
 
 RETURN
+
+#endif   // #ifndef NO_SAMPLE
+
+#include "hbclass.ch"
 
 /*
  *  This is a template for ooHGRecord's subclasses (database class used

@@ -1,5 +1,5 @@
 /*
- * $Id: textfile.prg,v 1.1 2010-11-30 02:18:12 guerra000 Exp $
+ * $Id: textfile.prg,v 1.2 2010-12-01 18:49:59 guerra000 Exp $
  */
 /*
  * ooHGRecord textfile-as-database demo. (c) 2010 Vic
@@ -323,11 +323,11 @@ LOCAL nPos, nLastPos, xItem, nField
       nLen := LEN( cBuffer )
    ENDIF
    nLen := MIN( nLen, LEN( cBuffer ) )
+   nPos := 1
    IF ! EMPTY( ::cDelimiter )
       // Delimited text
       ASIZE( aData, 0 )
       nField := 0
-      nPos := 1
       DO WHILE nPos <= nLen
          nField++
          nLastPos := nPos
@@ -354,14 +354,14 @@ LOCAL nPos, nLastPos, xItem, nField
       ELSEIF LEN( ::aStructure ) == 1 .AND. LEN( ::aStructure[ 1 ] ) <= 2
          aData[ 1 ] := ::Text2Data( LEFT( cBuffer, nLen ), ::aStructure[ 1 ] )
       ELSE
-         FOR nItem := 1 TO LEN( ::aStructure )
+         FOR nField := 1 TO LEN( ::aStructure )
             IF nPos <= nLen
-               xData := SUBSTR( cBuffer, nPos, MIN( nLen + 1 - nPos, ::aStructure[ nItem ][ 3 ] ) )
-               nPos += ::aStructure[ nItem ][ 3 ]
+               xData := SUBSTR( cBuffer, nPos, MIN( nLen + 1 - nPos, ::aStructure[ nField ][ 3 ] ) )
+               nPos += ::aStructure[ nField ][ 3 ]
             ELSE
                xData := ""
             ENDIF
-            aData[ nItem ] := ::Text2Data( xData, ::aStructure[ nItem ] )
+            aData[ nField ] := ::Text2Data( xData, ::aStructure[ nField ] )
          NEXT
          IF nPos <= nLen
             AADD( aData, SUBSTR( cBuffer, nPos, nLen + 1 - nPos ) )

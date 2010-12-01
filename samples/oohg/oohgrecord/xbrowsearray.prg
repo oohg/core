@@ -1,5 +1,5 @@
 /*
- * $Id: xbrowsearray.prg,v 1.2 2010-11-30 02:18:12 guerra000 Exp $
+ * $Id: xbrowsearray.prg,v 1.3 2010-12-01 18:49:59 guerra000 Exp $
  */
 /*
  * ooHG XBrowse array-as-database demo. (c) 2008 Vic
@@ -61,32 +61,33 @@ CLASS XBrowse_Array
 *-----------------------------------------------------------------------------*
    // Methods always used by XBrowse
    METHOD Skipper
-   METHOD GoTop              BLOCK { | Self | ::nRecNo := 1 }
-   METHOD GoBottom           BLOCK { | Self | ::nRecNo := LEN( ::aArray ) }
+   METHOD GoTop              BLOCK { | Self | ::GoTo( 1 ) }
+   METHOD GoBottom           BLOCK { | Self | ::GoTo( ::RecCount ) }
 
    // Methods used by XBrowse if you'll have a scrollbar
    METHOD RecNo              BLOCK { | Self | ::nRecNo }
    METHOD RecCount           BLOCK { | Self | LEN( ::aArray ) }
-   METHOD GoTo( n )          BLOCK { | Self, n | ::nRecNo := MAX( MIN( n, LEN( ::aArray ) ), 1 ) }
+   METHOD GoTo
    METHOD OrdKeyNo           BLOCK { | Self | ::nRecNo }
    METHOD OrdKeyCount        BLOCK { | Self | LEN( ::aArray ) }
-   METHOD OrdKeyGoTo( n )    BLOCK { | Self, n | ::nRecNo := MAX( MIN( n, LEN( ::aArray ) ), 1 ) }
+   METHOD OrdKeyGoTo( n )    BLOCK { | Self, n | ::GoTo( n ) }
 
    // Methods used by XBrowse if you'll allow edition
    DATA cAlias__             INIT nil
-   METHOD Eof                INLINE .F.
+   METHOD Eof                BLOCK { | Self | ( ::RecNo > ::RecCount ) }
 
    // Used by "own" (XBrowse_Array) class (not used by XBrowse itself)
    DATA aArray
    DATA nRecNo               INIT 1
+   DATA lBof                 INIT .F.
    METHOD New( aArray )      BLOCK { | Self, aArray | ::aArray := aArray , Self }
    METHOD FieldGet( nPos )   BLOCK { | Self, nPos | ::aArray[ ::nRecNo ][ nPos ] }
    METHOD FieldPut( p, u )   BLOCK { | Self, p, u | ::aArray[ ::nRecNo ][ p ] := u }
 
    // Implemented but not used for this sample (not used by XBrowse itself)
    METHOD Use( aArray )      BLOCK { | Self, aArray | ::aArray := aArray , Self }
-   METHOD Skip( n )          BLOCK { | Self, n | ::Skipper( n ) }
-   METHOD Bof                INLINE .F.
+   METHOD Skip
+   METHOD Bof                BLOCK { | Self | ::lBof }
    METHOD FieldBlock
 ENDCLASS
 
@@ -99,9 +100,36 @@ LOCAL nRecNo
 RETURN ( ::nRecNo - nRecNo )
 
 *-----------------------------------------------------------------------------*
+METHOD GoTo( nRecno ) CLASS XBrowse_Array
+*-----------------------------------------------------------------------------*
+   IF nRecno < 1 .OR. nRecno > LEN( ::aArray )
+      ::nRecno := LEN( ::aArray ) + 1
+   ELSE
+      ::nRecno := INT( nRecno )
+   ENDIF
+   ::lBof := ( ::RecCount == 0 )
+RETURN ::nRecno
+
+*-----------------------------------------------------------------------------*
 METHOD FieldBlock( nPos ) CLASS XBrowse_Array
 *-----------------------------------------------------------------------------*
 RETURN { | uValue | IF( PCOUNT() > 0, ::aArray[ ::nRecNo ][ nPos ] := uValue, ::aArray[ ::nRecNo ][ nPos ] ) }
+
+*-----------------------------------------------------------------------------*
+METHOD Skip( nRecno ) CLASS XBrowse_Array
+*-----------------------------------------------------------------------------*
+   IF ! HB_IsNumeric( nRecno )
+      nRecno := 1
+   ENDIF
+   nRecno := ::Recno + INT( nRecno )
+   ::lBof := .F.
+   IF nRecno < 1
+      nRecno := 1
+      ::lBof := .T.
+   ELSEIF nRecno > ::RecCount
+      nRecno := ::RecCount + 1
+   ENDIF
+RETURN nil
 
 // Database methods not implemented (not used by XBrowse)
 *   METHOD OrdScope
