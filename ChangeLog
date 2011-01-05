@@ -1,11 +1,17 @@
 /*
- * $Id: ChangeLog,v 1.669 2010-12-01 18:49:59 guerra000 Exp $
+ * $Id: ChangeLog,v 1.670 2011-01-05 04:19:17 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2011-01-04 11:16 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_controlmisc.prg
+    -supressed random() function
+  * include/i_hmg_compat.ch
+    + added random()  redirected to hb_random().
 
 2010-12-01 12:57 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * samples/oohg/oohgrecord/brw_odbc.prg

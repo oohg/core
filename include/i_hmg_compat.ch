@@ -1,5 +1,5 @@
 /*
- * $Id: i_hmg_compat.ch,v 1.6 2010-03-29 13:56:43 declan2005 Exp $
+ * $Id: i_hmg_compat.ch,v 1.7 2011-01-05 04:19:17 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -94,6 +94,8 @@
 #ifndef __OOHG_HMG_COMPAT__
 
 #define __OOHG_HMG_COMPAT__
+
+#xtranslate RANDOM( <arg1> )   =>   HB_RANDOM( <arg1> )
 
 #xcommand BREAK <break> ;
 	=>;

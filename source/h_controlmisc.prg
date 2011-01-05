@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.107 2010-08-26 20:00:55 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.108 2011-01-05 04:19:17 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -494,12 +494,6 @@ Return ( GetControlObject( ControlName, FormName ):CaretPos := Pos )
 Function _GetCaretPos( ControlName, FormName )
 *-----------------------------------------------------------------------------*
 Return GetControlObject( ControlName, FormName ):CaretPos
-
-*------------------------------------------------------------------------------*
-FUNCTION Random( nLimit )
-*------------------------------------------------------------------------------*
-  DEFAULT nLimit   TO 65535
-Return hb_random( nLimit )
 
 *------------------------------------------------------------------------------*
 Function SetProperty( Arg1, Arg2, Arg3, Arg4, Arg5, Arg6 )
@@ -1944,7 +1938,7 @@ Function _GetId()
 *-----------------------------------------------------------------------------*
 Local RetVal
    Do While .T.
-      RetVal := Int( random( 63000 ) ) + 2001
+      RetVal := Int( hb_random( 63000 ) ) + 2001
       If aScan( _OOHG_aControlIds , { |a| a[ 1 ] == RetVal } ) == 0
          Exit
 		EndIf
