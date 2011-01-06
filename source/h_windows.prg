@@ -1,11 +1,11 @@
 /*
- * $Id: h_windows.prg,v 1.207 2010-08-26 20:00:55 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.208 2011-01-06 23:07:18 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG Windows handling functions
  *
- * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2011 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -1012,9 +1012,9 @@ Return nil
 METHOD Print( y, x, y1, x1 ) CLASS TWindow
 *-----------------------------------------------------------------------------*
 Local myobject, cWork
-   cWork := '_oohg_t' + alltrim( str( int( random( 999999 ) ) ) ) + '.bmp'
+   cWork := '_oohg_t' + alltrim( str( int( hb_random( 999999 ) ) ) ) + '.bmp'
    do while file( cWork )
-      cWork := '_oohg_t' + alltrim( str( int( random( 999999 ) ) ) ) + '.bmp'
+      cWork := '_oohg_t' + alltrim( str( int( hb_random( 999999 ) ) ) ) + '.bmp'
    enddo
 
    DEFAULT y1    TO 44

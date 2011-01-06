@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.94 2010-10-18 15:46:39 declan2005 Exp $
+* $Id: h_print.prg,v 1.95 2011-01-06 23:07:18 guerra000 Exp $
 */
 
 #include 'hbclass.ch'
@@ -719,7 +719,7 @@ RETURN self
 method printdos() CLASS TPRINTBASE
 *-------------------------
 local cbat, nHdl
-cbat:='b'+alltrim(str(random(999999),6))+'.bat'
+cbat:='b'+alltrim(str(hb_random(999999),6))+'.bat'
 nHdl := FCREATE( cBat )
 FWRITE( nHdl, "copy " + ::tempfile + " "+::cport + CHR( 13 ) + CHR( 10 ) )
 FWRITE( nHdl, "rem comando auxiliar de impresion" + CHR( 13 ) + CHR( 10 ) )
