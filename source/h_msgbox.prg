@@ -1,5 +1,5 @@
 /*
- * $Id: h_msgbox.prg,v 1.7 2009-06-19 14:55:44 declan2005 Exp $
+ * $Id: h_msgbox.prg,v 1.8 2011-01-16 22:53:39 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -82,13 +82,13 @@
 
  Parts of this project are based upon:
 
-	"Harbour GUI framework for Win32"
- 	Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- 	Copyright 2001 Antonio Linares <alinares@fivetech.com>
-	www - http://www.harbour-project.org
+ "Harbour GUI framework for Win32"
+  Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
+  Copyright 2001 Antonio Linares <alinares@fivetech.com>
+ www - http://www.harbour-project.org
 
-	"Harbour Project"
-	Copyright 1999-2003, http://www.harbour-project.org/
+ "Harbour Project"
+ Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
 #include 'common.ch'
@@ -98,8 +98,8 @@ Function MsgYesNo( Message, Title, lRevertDefault )
 *-----------------------------------------------------------------------------*
 Local t
 
-	DEFAULT Message TO ''
-	DEFAULT Title TO ''
+ DEFAULT Message TO ''
+ DEFAULT Title TO ''
 
    IF HB_IsLogical( lRevertDefault ) .AND. lRevertDefault
       t := c_msgyesno_id( message, title )
@@ -114,8 +114,8 @@ Function MsgYesNoCancel( Message, Title )
 *-----------------------------------------------------------------------------*
 Local t
 
-	DEFAULT Message TO ''
-	DEFAULT Title TO ''
+ DEFAULT Message TO ''
+ DEFAULT Title TO ''
 
    t := c_msgyesnocancel( message, title )
 
@@ -126,8 +126,8 @@ Function MsgRetryCancel( Message , Title )
 *-----------------------------------------------------------------------------*
 Local t
 
-	DEFAULT Message TO ''
-	DEFAULT Title TO ''
+ DEFAULT Message TO ''
+ DEFAULT Title TO ''
 
    t := c_msgretrycancel( message , title )
 
@@ -138,10 +138,10 @@ Function MsgOkCancel ( Message , Title )
 *-----------------------------------------------------------------------------*
 Local t
 
-	DEFAULT Message TO ''
-	DEFAULT Title TO ''
+ DEFAULT Message TO ''
+ DEFAULT Title TO ''
 
-	t := c_msgokcancel(message,title)
+ t := c_msgokcancel(message,title)
 
 Return ( t == 1 )
 
@@ -149,10 +149,10 @@ Return ( t == 1 )
 Function MsgInfo( Message , Title )
 *-----------------------------------------------------------------------------*
 
-	DEFAULT Message TO ''
-	DEFAULT Title TO ''
+ DEFAULT Message TO ''
+ DEFAULT Title TO ''
 
-	c_msginfo(message,title)
+ c_msginfo(message,title)
 
 Return Nil
 
@@ -160,10 +160,10 @@ Return Nil
 Function MsgStop( Message , Title )
 *-----------------------------------------------------------------------------*
 
-	DEFAULT Message TO ''
-	DEFAULT Title TO ''
+ DEFAULT Message TO ''
+ DEFAULT Title TO ''
 
-	c_msgstop(message,title)
+ c_msgstop(message,title)
 
 Return Nil
 
@@ -171,10 +171,10 @@ Return Nil
 Function MsgExclamation ( Message , Title )
 *-----------------------------------------------------------------------------*
 
-	DEFAULT Message TO ''
-	DEFAULT Title TO ''
+ DEFAULT Message TO ''
+ DEFAULT Title TO ''
 
-	c_msgexclamation(message,title)
+ c_msgexclamation(message,title)
 
 Return Nil
 
@@ -182,10 +182,10 @@ Return Nil
 Function MsgBox ( Message , Title )
 *-----------------------------------------------------------------------------*
 
-	DEFAULT Message TO ''
-	DEFAULT Title TO ''
+ DEFAULT Message TO ''
+ DEFAULT Title TO ''
 
-	c_msgbox(message,title)
+ c_msgbox(message,title)
 
 Return Nil
 
@@ -193,11 +193,11 @@ Return Nil
 Function autoMsgBox ( Message , Title )
 *-----------------------------------------------------------------------------*
 
-	DEFAULT Message TO ''
-	DEFAULT Title TO ''
 
-        message :=  autotype(Message)
-	c_msgbox(message,title)
+ DEFAULT Title TO ''
+
+ message :=  autotype(Message)
+ c_msgbox(message,title)
 
 Return Nil
 
@@ -205,10 +205,9 @@ Return Nil
 Function autoMsgExclamation ( Message , Title )
 *-----------------------------------------------------------------------------*
 
-	DEFAULT Message TO ''
-	DEFAULT Title TO ''
-        message := autotype(Message)
-	c_msgexclamation(message,title)
+ DEFAULT Title TO ''
+ message := autotype(Message)
+ c_msgexclamation(message,title)
 
 Return Nil
 
@@ -216,10 +215,9 @@ Return Nil
 Function autoMsgStop ( Message , Title )
 *-----------------------------------------------------------------------------*
 
-	DEFAULT Message TO ''
-	DEFAULT Title TO ''
+ DEFAULT Title TO ''
         message := autotype(Message)
-	c_msgstop(message,title)
+ c_msgstop(message,title)
 
 Return Nil
 
@@ -227,40 +225,37 @@ Return Nil
 Function autoMsgInfo ( Message , Title )
 *-----------------------------------------------------------------------------*
 
-	DEFAULT Message TO ''
-	DEFAULT Title TO ''
+ DEFAULT Title TO ''
         message := autotype(Message)
-	c_msginfo(message,title)
+ c_msginfo(message,title)
 
 Return Nil
 
 *-----------------------------------------------------------------------------*
-function autotype( Message)
+static function autotype( Message)
 *-----------------------------------------------------------------------------*
-Local cMessage, ctype
+Local cMessage, ctype, l , i
+
    ctype := valtype( Message )
+
    do case
-      case ctype = "C"
-         cMessage := Message
-      case ctype = "N"
-         cMessage := str( Message )
-      case ctype = "L"
-         cMessage := iif( Message, ".T.", ".F." )
-      case cType = "D"
-         cMessage := Dtos( Message )
+      case ctype $ "CNLDM"
+         cMessage :=  transform( Message, "@" )+"   "
       case cType = "O"
-         cMessage := ":Object:"
-      case ctype = "M"
-         cMessage := Message
+         cMessage := ":Object:   "
       case ctype = "A"
-         cMessage := "{ Array }"
+         l:=len( Message )
+         cMessage:=""
+         for i:=1 to l
+             cMessage = cMessage +  if ( i=l  , autotype( Message [ i ] )+chr(13)+chr(10)  ,  autotype( Message[ i ] ) )
+         next i
       case ctype = "B"
-         cMessage := "{|| Codeblock }"
+         cMessage := "{|| Codeblock }   "
       case cType = "H"
-         cMessage := ":Hash:"
+         cMessage := ":Hash:   "
       case cType = "P"
-         cMessage := ":Pointer:"
+         cMessage :=":Pointer:   "
       otherwise
-         cMessage := "<NIL>"
+         cMessage :="<NIL>   "
    endcase
 return cMessage
