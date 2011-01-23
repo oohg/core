@@ -1,11 +1,11 @@
 /*
- * $Id: h_xbrowse.prg,v 1.43 2010-08-26 20:00:55 guerra000 Exp $
+ * $Id: h_xbrowse.prg,v 1.44 2011-01-23 23:48:38 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * eXtended Browse code
  *
- * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2011 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * This program is free software; you can redistribute it and/or modify
@@ -119,10 +119,9 @@ CLASS TXBROWSE FROM TGrid
 
    METHOD ToExcel
 
-/* from grid:
    METHOD AddColumn
    METHOD DeleteColumn
-
+/* from grid:
    METHOD AddItem
    METHOD InsertItem
    METHOD DeleteItem
@@ -131,10 +130,6 @@ CLASS TXBROWSE FROM TGrid
    METHOD ItemCount           BLOCK { | Self | ListViewGetItemCount( ::hWnd ) }
 */
 /* tbrowse:
-   METHOD AddColumn( oCol )
-   METHOD DelColumn( nPos )               // Delete a column object from a browse
-   METHOD InsColumn( nPos, oCol )         // Insert a column object in a browse
-   METHOD GetColumn( nColumn )            // Gets a specific TBColumn object
    METHOD SetColumn( nColumn, oCol )      // Replaces one TBColumn object with another
 */
 
@@ -1403,6 +1398,41 @@ METHOD WorkArea( uWorkArea ) CLASS TXBrowse
       ENDIF
    ENDIF
 RETURN ::uWorkArea
+
+*-----------------------------------------------------------------------------*
+METHOD AddColumn( nColIndex, xField, cHeader, nWidth, nJustify, uForeColor, uBackColor, lNoDelete, uPicture, uEditControl ) CLASS TXBrowse
+*-----------------------------------------------------------------------------*
+
+   // Set Default Values
+   If ! HB_IsNumeric( nColIndex ) .OR. nColIndex > Len( ::aHeaders ) + 1
+      nColIndex := Len( ::aHeaders ) + 1
+   ElseIf nColIndex < 1
+      nColIndex := 1
+   EndIf
+
+   ASIZE( ::aFields, LEN( ::aFields ) + 1 )
+   AINS( ::aFields, nColIndex )
+   ::aFields[ nColIndex ] := xField
+
+   If HB_IsArray( ::aReplaceField )
+      ASIZE( ::aReplaceField, LEN( ::aReplaceField ) + 1 )
+      AINS( ::aReplaceField, nColIndex )
+   EndIf
+
+   ::Super:AddColumn( nColIndex, cHeader, nWidth, nJustify, uForeColor, uBackColor, lNoDelete, uPicture, uEditControl )
+   ::Refresh()
+RETURN nil
+
+*-----------------------------------------------------------------------------*
+METHOD DeleteColumn( nColIndex ) CLASS TXBrowse
+*-----------------------------------------------------------------------------*
+   _OOHG_DeleteArrayItem( ::aFields,  nColIndex )
+   If HB_IsArray( ::aReplaceField )
+      _OOHG_DeleteArrayItem( ::aReplaceField,  nColIndex )
+   EndIf
+   ::Super:DeleteColumn( nColIndex )
+   ::Refresh()
+RETURN nil
 
 
 
