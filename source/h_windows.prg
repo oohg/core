@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.208 2011-01-06 23:07:18 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.209 2011-01-24 19:31:04 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -305,8 +305,8 @@ CLASS TWindow
    METHOD GetTextWidth
    METHOD GetTextHeight
    METHOD GetMaxCharsInWidth
-   METHOD ClientWidth
-   METHOD ClientHeight
+   METHOD ClientWidth         SETGET
+   METHOD ClientHeight        SETGET
    METHOD AdjustResize
    //
    METHOD Anchor              SETGET
@@ -1338,17 +1338,33 @@ METHOD GetTextHeight( cString ) CLASS TWindow
 Return GetTextHeight( nil, cString, ::FontHandle )
 
 *------------------------------------------------------------------------------*
-METHOD ClientWidth() CLASS TWindow
+METHOD ClientWidth( nWidth ) CLASS TWindow
 *------------------------------------------------------------------------------*
 LOCAL aClientRect
+
+   If HB_IsNumeric( nWidth )
+      aClientRect := { 0, 0, 0, 0 }
+      GetClientRect( ::hWnd, aClientRect )
+      ::Width := ::Width - ( aClientRect[ 3 ] - aClientRect[ 1 ] ) + nWidth
+   EndIf
+
+   // Window may be greater than requested width... verify it again
    aClientRect := { 0, 0, 0, 0 }
    GetClientRect( ::hWnd, aClientRect )
 Return aClientRect[ 3 ] - aClientRect[ 1 ]
 
 *------------------------------------------------------------------------------*
-METHOD ClientHeight() CLASS TWindow
+METHOD ClientHeight( nHeight ) CLASS TWindow
 *------------------------------------------------------------------------------*
 LOCAL aClientRect
+
+   If HB_IsNumeric( nHeight )
+      aClientRect := { 0, 0, 0, 0 }
+      GetClientRect( ::hWnd, aClientRect )
+      ::Height := ::Height - ( aClientRect[ 4 ] - aClientRect[ 2 ] ) + nHeight
+   EndIf
+
+   // Window may be greater than requested height... verify it again
    aClientRect := { 0, 0, 0, 0 }
    GetClientRect( ::hWnd, aClientRect )
 Return aClientRect[ 4 ] - aClientRect[ 2 ]

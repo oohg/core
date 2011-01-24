@@ -1,5 +1,5 @@
 /*
- * $Id: xbrowsearray.prg,v 1.3 2010-12-01 18:49:59 guerra000 Exp $
+ * $Id: xbrowsearray.prg,v 1.4 2011-01-24 19:31:04 guerra000 Exp $
  */
 /*
  * ooHG XBrowse array-as-database demo. (c) 2008 Vic
@@ -121,13 +121,13 @@ METHOD Skip( nRecno ) CLASS XBrowse_Array
    IF ! HB_IsNumeric( nRecno )
       nRecno := 1
    ENDIF
-   nRecno := ::Recno + INT( nRecno )
+   ::nRecNo := INT( ::RecNo + nRecno )
    ::lBof := .F.
-   IF nRecno < 1
-      nRecno := 1
+   IF ::nRecNo < 1
+      ::nRecNo := 1
       ::lBof := .T.
-   ELSEIF nRecno > ::RecCount
-      nRecno := ::RecCount + 1
+   ELSEIF ::nRecNo > ::RecCount()
+      ::nRecNo := ::RecCount() + 1
    ENDIF
 RETURN nil
 
