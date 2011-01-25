@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog,v 1.675 2011-01-24 19:31:03 guerra000 Exp $
+ * $Id: ChangeLog,v 1.676 2011-01-25 19:13:47 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2011-01-25 13:21 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_edit.prg
+    ! Fixed unused HBPRN variable (not used but declared at
+      winprint.ch ).
 
 2011-01-24 13:39 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * samples/oohg/oohgrecord/xbrowsearray.prg

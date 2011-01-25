@@ -1,11 +1,11 @@
 /*
- * $Id: h_edit.prg,v 1.20 2010-01-21 09:13:06 guerra000 Exp $
+ * $Id: h_edit.prg,v 1.21 2011-01-25 19:13:47 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG editor functions
  *
- * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2011 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -248,8 +248,10 @@ Local _BackDeleted
 
 // Inicializa el soporte multilenguaje.----------------------------------------
 InitMessages()
-EMPTY( _OOHG_AllVars )
-EMPTY( HBPRN )
+IF EMPTY( DATE() )
+   EMPTY( _OOHG_AllVars )
+   EMPTY( HBPRN )
+ENDIF
 
 ////////// Gusrdar estado actual de SET DELETED y activarlo
         _BackDeleted := set( _SET_DELETED )
