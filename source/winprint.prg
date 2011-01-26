@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.31 2010-06-19 22:51:16 declan2005 Exp $
+ * $Id: winprint.prg,v 1.32 2011-01-26 00:13:52 guerra000 Exp $
  */
 // -----------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -2944,60 +2944,89 @@ void rr_showerror(char * abc)
 
 LPVOID rr_loadpicturefromresource(char * resname,LONG *lwidth,LONG *lheight)
 {
- HBITMAP hbmpx;
- IPicture *iPicture = NULL ;
- IStream *iStream = NULL;
- PICTDESC picd;
- HGLOBAL hGlobalres ;
- HGLOBAL hGlobal;
- HRSRC hSource ;
- LPVOID lpVoid ;
- HINSTANCE hinstance=GetModuleHandle(NULL);
- int nSize ;
-    hbmpx = (HBITMAP) LoadImage(GetModuleHandle(NULL),resname,IMAGE_BITMAP,0,0,LR_CREATEDIBSECTION);
-    if (hbmpx!=NULL)
-     {
-        picd.cbSizeofstruct=sizeof(PICTDESC);
-        picd.picType=PICTYPE_BITMAP;
-        picd.bmp.hbitmap=hbmpx;
-        OleCreatePictureIndirect(&picd,&IID_IPicture,TRUE,(LPVOID *)&iPicture);
-     }
-    else
-     {
-      hSource = FindResource(hinstance,resname,"HMGPICTURE");
-      if (hSource==NULL)
+   HBITMAP hbmpx;
+   IPicture *iPicture = NULL ;
+   IStream *iStream = NULL;
+   PICTDESC picd;
+   HGLOBAL hGlobalres ;
+   HGLOBAL hGlobal;
+   HRSRC hSource ;
+   LPVOID lpVoid ;
+   HINSTANCE hinstance=GetModuleHandle(NULL);
+   int nSize ;
+
+   hbmpx = (HBITMAP) LoadImage(GetModuleHandle(NULL),resname,IMAGE_BITMAP,0,0,LR_CREATEDIBSECTION);
+   if( hbmpx != NULL )
+   {
+      picd.cbSizeofstruct=sizeof(PICTDESC);
+      picd.picType=PICTYPE_BITMAP;
+      picd.bmp.hbitmap=hbmpx;
+      OleCreatePictureIndirect(&picd,&IID_IPicture,TRUE,(LPVOID *)&iPicture);
+   }
+   else
+   {
+      hSource = FindResource( hinstance, resname, "HMGPICTURE" );
+      if( ! hSource )
+      {
+         hSource = FindResource( hinstance, resname, "JPG" );
+         if( ! hSource )
+         {
+            hSource = FindResource( hinstance, resname, "JPEG" );
+            if( ! hSource )
+            {
+               hSource = FindResource( hinstance, resname, "GIF" );
+               if( ! hSource )
+               {
+                  hSource = FindResource( hinstance, resname, "BMP" );
+                  if( ! hSource )
+                  {
+                     hSource = FindResource( hinstance, resname, "BITMAP" );
+                     if( ! hSource )
+                     {
+                        return NULL;
+                     }
+                  }
+               }
+            }
+         }
+      }
+      hGlobalres = LoadResource( hinstance, hSource );
+      if( hGlobalres == NULL )
+      {
          return NULL;
-      hGlobalres = LoadResource(hinstance, hSource);
-      if (hGlobalres==NULL)
+      }
+      lpVoid = LockResource( hGlobalres );
+      if( lpVoid == NULL )
+      {
          return NULL;
-      lpVoid = LockResource(hGlobalres);
-      if (lpVoid==NULL)
-          return NULL;
+      }
       nSize = SizeofResource(hinstance, hSource);
       hGlobal=GlobalAlloc(GPTR, nSize);
-      if (hGlobal==NULL)
+      if( hGlobal == NULL )
+      {
          return NULL;
+      }
       memcpy(hGlobal,lpVoid, nSize);
       FreeResource(hGlobalres);
       CreateStreamOnHGlobal(hGlobal, TRUE, &iStream);
-      if (iStream==NULL)
-         {
-           GlobalFree(hGlobal);
-           return NULL;
-         }
+      if( iStream == NULL )
+      {
+         GlobalFree( hGlobal );
+         return NULL;
+      }
       OleLoadPicture(iStream, nSize, TRUE, &IID_IPicture, (LPVOID *)&iPicture);
-      iStream->lpVtbl->Release(iStream);
+      iStream->lpVtbl->Release( iStream );
       GlobalFree(hGlobal);
-     }
-    if (iPicture!=NULL)
-       {
-          iPicture->lpVtbl->get_Width(iPicture ,lwidth);
-          iPicture->lpVtbl->get_Height(iPicture,lheight);
-       }
-    return iPicture;
+   }
+   if( iPicture != NULL )
+   {
+      iPicture->lpVtbl->get_Width( iPicture,  lwidth );
+      iPicture->lpVtbl->get_Height( iPicture, lheight );
+   }
+   return iPicture;
 }
 
-LPVOID  rr_loadpicture(char * filename,LONG * lwidth,LONG * lheight)
+LPVOID rr_loadpicture( char * filename, LONG * lwidth, LONG * lheight )
 {
     IStream *iStream=NULL ;
     IPicture *iPicture=NULL;

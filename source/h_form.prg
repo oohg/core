@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.22 2010-08-26 20:00:55 guerra000 Exp $
+ * $Id: h_form.prg,v 1.23 2011-01-26 00:13:52 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1126,12 +1126,12 @@ HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
 
       case WM_LBUTTONUP:
          _OOHG_SetMouseCoords( pSelf, LOWORD( lParam ), HIWORD( lParam ) );
-         _OOHG_DoEvent( pSelf, s_OnClick, "CLICK", NULL );
          hb_ret();
          break;
 
       case WM_LBUTTONDOWN:
          _OOHG_SetMouseCoords( pSelf, LOWORD( lParam ), HIWORD( lParam ) );
+         _OOHG_DoEvent( pSelf, s_OnClick, "CLICK", NULL );
          hb_ret();
          break;
 
