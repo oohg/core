@@ -1,5 +1,5 @@
 /*
- * $Id: h_msgbox.prg,v 1.8 2011-01-16 22:53:39 declan2005 Exp $
+ * $Id: h_msgbox.prg,v 1.9 2011-03-01 03:51:16 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -92,7 +92,7 @@
 ---------------------------------------------------------------------------*/
 
 #include 'common.ch'
-
+#include 'ooHG.ch'
 *-----------------------------------------------------------------------------*
 Function MsgYesNo( Message, Title, lRevertDefault )
 *-----------------------------------------------------------------------------*
@@ -189,45 +189,88 @@ Function MsgBox ( Message , Title )
 
 Return Nil
 
+
+FUNCTION MsgInfoExt(cInfo, cTitulo, nSecs)
+* -------------------------------
+* (c) LuchoMiranda@telefonica.Net
+* modified by Ciro Vargas Clemow for ooHG
+* -------------------------------
+LOCAL _x_____:= cInfo :=STRTRAN(cInfo,CHR(13),CHR(13) + CHR(10))
+LOCAL nWidth  :=MAX(MAXLINE(cInfo),LEN(cTitulo)) *12
+LOCAL nHeight :=MLCOUNT(cInfo) * 20
+
+DEFAULT nSecs TO 0
+
+
+DEFINE WINDOW _Win_1 AT 0,0 WIDTH nWidth HEIGHT 115 + nHeight BACKCOLOR {204,216,124} NOCAPTION TOPMOST /// ON MOUSECLICK ThisWindow.Release ;
+
+
+   ON KEY ESCAPE ACTION ThisWindow.release
+   ON KEY RETURN ACTION ThisWindow.release
+///   ON KEY DELETE ACTION ThisWindow.release
+///   ON KEY F1     ACTION ThisWindow.release
+
+   IF nSecs = 1 .or. nSecs > 1
+      DEFINE TIMER _timer__x interval nSecs*1000 Action  {|| ThisWindow.Release }
+   ENDIF
+
+   @ 12,000 LABEL Label_1 VALUE cTitulo WIDTH nWidth    HEIGHT 40           FONTCOLOR {0,0,0} FONT "Times NEW Roman" SIZE 18                             CENTERALIGN TRANSPARENT       //// ONCLICK ThisWindow.Release
+   @ 46,0-5 LABEL Label_2 VALUE ""      WIDTH nWidth+10 HEIGHT 20 + nHeight BACKCOLOR {248,244,199} FONT 'Arial'           SIZE 13 FONTCOLOR {250,50,100} BOLD CENTERALIGN BORDER CLIENTEDGE //// ONCLICK ThisWindow.Release
+   @ 56,000 LABEL Label_3 VALUE cInfo   WIDTH nWidth    HEIGHT 00 + nHeight BACKCOLOR {177,156,037} FONT "Times NEW Roman" SIZE 14 FONTCOLOR {000,00,000}      CENTERALIGN TRANSPARENT       //// ONCLICK ThisWindow.Release
+
+   @ _Win_1.Height-40,(nWidth/2)-40 BUTTON Button_1 PICTURE 'MINIGUI_EDIT_OK' WIDTH 60 HEIGHT 25    FONT "Arial"           SIZE 10 ACTION ThisWindow.Release
+
+   _Win_1.button_1.setfocus()
+
+END      WINDOW
+CENTER   WINDOW _Win_1
+ACTIVATE WINDOW _Win_1
+
+RETURN( NIL )
+
+Function  AutoMsgInfoExt(uInfo, cTitulo, nSecs)
+ MsgInfoExt (autotype(uInfo) , cTitulo, Nsecs)
+Return nil
+
 *-----------------------------------------------------------------------------*
-Function autoMsgBox ( Message , Title )
+Function autoMsgBox ( uMessage , cTitle )
 *-----------------------------------------------------------------------------*
 
 
- DEFAULT Title TO ''
+ DEFAULT cTitle TO ''
 
- message :=  autotype(Message)
- c_msgbox(message,title)
+ umessage :=  autotype(uMessage)
+ c_msgbox(umessage,ctitle)
 
 Return Nil
 
 *-----------------------------------------------------------------------------*
-Function autoMsgExclamation ( Message , Title )
+Function autoMsgExclamation ( uMessage , cTitle )
 *-----------------------------------------------------------------------------*
 
- DEFAULT Title TO ''
- message := autotype(Message)
- c_msgexclamation(message,title)
+ DEFAULT cTitle TO ''
+ umessage := autotype(uMessage)
+ c_msgexclamation(umessage,ctitle)
 
 Return Nil
 
 *-----------------------------------------------------------------------------*
-Function autoMsgStop ( Message , Title )
+Function autoMsgStop ( uMessage , cTitle )
 *-----------------------------------------------------------------------------*
 
- DEFAULT Title TO ''
-        message := autotype(Message)
- c_msgstop(message,title)
+ DEFAULT cTitle TO ''
+        umessage := autotype(uMessage)
+ c_msgstop(umessage,ctitle)
 
 Return Nil
 
 *-----------------------------------------------------------------------------*
-Function autoMsgInfo ( Message , Title )
+Function autoMsgInfo ( uMessage , cTitle )
 *-----------------------------------------------------------------------------*
 
- DEFAULT Title TO ''
-        message := autotype(Message)
- c_msginfo(message,title)
+ DEFAULT cTitle TO ''
+        umessage := autotype(uMessage)
+ c_msginfo(umessage,ctitle)
 
 Return Nil
 
@@ -240,7 +283,7 @@ Local cMessage, ctype, l , i
 
    do case
       case ctype $ "CNLDM"
-         cMessage :=  transform( Message, "@" )+"   "
+         cMessage :=  transform( Message, "@" )+"  "
       case cType = "O"
          cMessage := ":Object:   "
       case ctype = "A"
