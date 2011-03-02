@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.117 2011-03-02 19:36:26 declan2005 Exp $
+ * $Id: h_grid.prg,v 1.118 2011-03-02 20:17:50 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -950,24 +950,35 @@ Return NIL
 METHOD ColumnBetterAutoFit( nColIndex ) CLASS Tgrid
 *----------------------------------------------------------------------------*
 LOCAL n,nh
-nh:= ::ColumnAutoFith( nColIndex )
-n:= ::ColumnAutoFit( nColIndex )
-IF nh>n
-   n:= ::ColumnAutoFith( nColIndex )
+ IF HB_isnumeric( nColIndex )
+    IF nColindex > 0
+       nh:= ::ColumnAutoFith( nColIndex )
+       n:= ::ColumnAutoFit( nColIndex )
+       IF nh>n
+          n:= ::ColumnAutoFith( nColIndex )
+       ENDIF
+    ENDIF
 ENDIF
-
 RETURN Nil
 
 *-----------------------------------------------------------------------------*
 METHOD ColumnHide( nColIndex ) CLASS TGrid
 *-----------------------------------------------------------------------------*
- ::ColumnWidth( nColIndex, 0 )
+ IF HB_isnumeric( nColIndex )
+    IF nColindex > 0
+      ::ColumnWidth( nColIndex, 0 )
+    ENDIF
+ ENDIF
  Return Nil
 
 *-----------------------------------------------------------------------------*
 METHOD ColumnShow( nColIndex ) CLASS TGrid
 *-----------------------------------------------------------------------------*
-::ColumnBetterAutoFit ( nColIndex )
+IF HB_isnumeric( nColIndex )
+    IF nColindex > 0
+       ::ColumnBetterAutoFit ( nColIndex )
+    ENDIF
+ENDIF
 Return Nil
 
 
