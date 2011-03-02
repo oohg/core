@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.679 2011-03-02 12:11:50 declan2005 Exp $
+ * $Id: ChangeLog,v 1.680 2011-03-02 19:36:26 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -8,9 +8,17 @@
 */
 
 
+2011-03-02 13:42 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_grid
+    + ::ColumnHide( ncol ) , ::ColumnShow(  ncol ), ::Columnbetterautofit( ncol), ::ColumnsBetterautoFit() Methods added
+    ! updated toexcel() 
+  * source/h_print
+    ! updated excel printing.
+
+
 2011-02-28 17:45 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_msgbox.prg
-    * added function MsgBoxExt() based upon contribution of Lucho Miranda.
+    + added function MsgBoxExt() based upon contribution of Lucho Miranda.
 
 
 2011-01-25 18:15 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>

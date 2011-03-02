@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.116 2010-11-06 07:06:08 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.117 2011-03-02 19:36:26 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -181,6 +181,10 @@ CLASS TGrid FROM TControl
    METHOD ColumnAutoFitH
    METHOD ColumnsAutoFit
    METHOD ColumnsAutoFitH
+   METHOD ColumnBetterAutoFit
+   METHOD ColumnsBetterAutoFit
+   METHOD ColumnHide
+   METHOD ColumnShow
    METHOD SortColumn
 
    METHOD Up
@@ -502,12 +506,17 @@ METHOD toExcel( cTitle, nRow ) CLASS TGrid
  LOCAL oExcel, oHoja,i
 
    default ctitle to ""
-
-   oExcel := TOleAuto():New( "Excel.Application" )
-   IF Ole2TxtError() != 'S_OK'
-      MsgStop('Excel not found','error')
-      RETURN Nil
+   
+   IF ( oExcel := win_oleCreateObject( "Excel.Application" ) ) = NIL
+      msgstop( "Error: MS Excel not available. [" + win_oleErrorText()+ "]" )
+   RETURN Nil
    ENDIF
+
+   ///oExcel := TOleAuto():New( "Excel.Application" )
+   ///IF Ole2TxtError() != 'S_OK'
+   ///   MsgStop('Excel not found','error')
+   ///   RETURN Nil
+   ///ENDIF
    oExcel:WorkBooks:Add()
    oHoja := oExcel:ActiveSheet()
    oHoja:Cells:Font:Name := "Arial"
@@ -936,6 +945,31 @@ Local uTemp, x
       NEXT
    ENDIF
 Return NIL
+
+*----------------------------------------------------------------------------*
+METHOD ColumnBetterAutoFit( nColIndex ) CLASS Tgrid
+*----------------------------------------------------------------------------*
+LOCAL n,nh
+nh:= ::ColumnAutoFith( nColIndex )
+n:= ::ColumnAutoFit( nColIndex )
+IF nh>n
+   n:= ::ColumnAutoFith( nColIndex )
+ENDIF
+
+RETURN Nil
+
+*-----------------------------------------------------------------------------*
+METHOD ColumnHide( nColIndex ) CLASS TGrid
+*-----------------------------------------------------------------------------*
+ ::ColumnWidth( nColIndex, 0 )
+ Return Nil
+
+*-----------------------------------------------------------------------------*
+METHOD ColumnShow( nColIndex ) CLASS TGrid
+*-----------------------------------------------------------------------------*
+::ColumnBetterAutoFit ( nColIndex )
+Return Nil
+
 
 *-----------------------------------------------------------------------------*
 METHOD DeleteColumn( nColIndex, lNoDelete ) CLASS TGrid
@@ -1808,6 +1842,15 @@ Local nWidth
       nWidth := 0
    ENDIF
 Return nWidth
+
+*-----------------------------------------------------------------------------*
+METHOD ColumnsBetterAutoFit() CLASS TGrid
+*-----------------------------------------------------------------------------*
+ Local nColumn
+   FOR nColumn := 1 TO Len( ::aHeaders )
+       ::ColumnBetterAutoFit ( nColumn )
+   NEXT nColumn
+Return nil
 
 *-----------------------------------------------------------------------------*
 METHOD ColumnsAutoFit() CLASS TGrid

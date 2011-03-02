@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.95 2011-01-06 23:07:18 guerra000 Exp $
+* $Id: h_print.prg,v 1.96 2011-03-02 19:36:26 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -125,7 +125,7 @@ DATA nwpen              INIT 0.1   READONLY //// pen width
 DATA tempfile           INIT gettempdir()+"T"+alltrim(str(int(hb_random(999999)),8))+".prn" READONLY
 DATA impreview          INIT .F.  READONLY
 DATA lwinhide           INIT .T.   READONLY
-DATA cversion           INIT  "(oohg)V 2.6" READONLY
+DATA cversion           INIT  "(oohg)V 2.7" READONLY
 DATA cargo              INIT  .F.
 ////DATA cString            INIT  ""
 
@@ -532,7 +532,7 @@ do case
 case cTipo == 'C'
    ctext:=data
 case cTipo == 'N'
-   ctext:=alltrim(str(data))
+   ctext:=alltrim(str(data))     ////revisar esto sin el alltrim
 case cTipo == 'D'
    ctext:=dtoc(data)
 case Ctipo == 'L'
@@ -1865,14 +1865,10 @@ empty(cprinterx)
 
 ///::oExcel := CreateObject( "Excel.Application" )
 
-#ifndef __XHARBOUR__
+///#ifndef __XHARBOUR__
 IF ( ::oExcel := win_oleCreateObject( "Excel.Application" ) ) = NIL
-#else
-::oExcel := TOleAuto():New( "Excel.Application" )
-IF Ole2TxtError() != 'S_OK'
-#endif
-   MsgStop('Excel not found','error')
-   ::lprerror:=.T.
+   msgstop( "Error: MS Excel not available. [" + win_oleErrorText()+ "]" )
+    ::lprerror:=.T.
    ::exit:=.T.
    RETURN Nil
 ENDIF
