@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.678 2011-03-01 03:51:16 declan2005 Exp $
+ * $Id: ChangeLog,v 1.679 2011-03-02 12:11:50 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -10,7 +10,7 @@
 
 2011-02-28 17:45 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_msgbox.prg
-    * added function MsgBoxExt() based upon contribution Lucho Miranda.
+    * added function MsgBoxExt() based upon contribution of Lucho Miranda.
 
 
 2011-01-25 18:15 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
