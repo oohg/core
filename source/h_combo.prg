@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.48 2010-08-26 20:00:55 guerra000 Exp $
+ * $Id: h_combo.prg,v 1.49 2011-03-05 03:52:31 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -122,7 +122,7 @@ CLASS TCombo FROM TLabel
 
    METHOD AddItem
    METHOD DeleteItem
-   METHOD DeleteAllItems
+   METHOD DeleteAllItems      BLOCK { |Self| TCombo_DeleteAllItems2( ::hWnd ) , ::xOldValue := nil }
    METHOD Item
    METHOD ItemCount
    METHOD ShowDropDown
@@ -605,12 +605,9 @@ HB_FUNC_STATIC( TCOMBO_DELETEITEM )   // METHOD DeleteItem( nItem )
    hb_retnl( SendMessage( oSelf->hWnd, CB_DELETESTRING, ( WPARAM ) hb_parni( 1 ) - 1, 0 ) );
 }
 
-HB_FUNC_STATIC( TCOMBO_DELETEALLITEMS )   // METHOD DeleteAllItems()
+HB_FUNC_STATIC( TCOMBO_DELETEALLITEMS2 )   // TCombo_DeleteAllItems2( hWnd )
 {
-   PHB_ITEM pSelf = hb_stackSelfItem();
-   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
-
-   hb_retnl( SendMessage( oSelf->hWnd, CB_RESETCONTENT, 0, 0 ) );
+   hb_retnl( SendMessage( HWNDparam( 1 ), CB_RESETCONTENT, 0, 0 ) );
 }
 
 HB_FUNC_STATIC( TCOMBO_ITEM )   // METHOD Item( nItem, uValue )

@@ -1,11 +1,11 @@
 /*
- * $Id: h_grid.prg,v 1.118 2011-03-02 20:17:50 declan2005 Exp $
+ * $Id: h_grid.prg,v 1.119 2011-03-05 03:52:31 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG grid functions
  *
- * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2011 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -507,16 +507,19 @@ METHOD toExcel( cTitle, nRow ) CLASS TGrid
 
    default ctitle to ""
    
-   IF ( oExcel := win_oleCreateObject( "Excel.Application" ) ) = NIL
-      msgstop( "Error: MS Excel not available. [" + win_oleErrorText()+ "]" )
-   RETURN Nil
-   ENDIF
+   #ifndef __XHARBOUR__
+      IF ( oExcel := win_oleCreateObject( "Excel.Application" ) ) = NIL
+         MsgStop( "Error: MS Excel not available. [" + win_oleErrorText()+ "]" )
+         RETURN Nil
+      ENDIF
+   #else
+      oExcel := TOleAuto():New( "Excel.Application" )
+      IF Ole2TxtError() != 'S_OK'
+         MsgStop('Excel not found','error')
+         RETURN Nil
+      ENDIF
+   #endif
 
-   ///oExcel := TOleAuto():New( "Excel.Application" )
-   ///IF Ole2TxtError() != 'S_OK'
-   ///   MsgStop('Excel not found','error')
-   ///   RETURN Nil
-   ///ENDIF
    oExcel:WorkBooks:Add()
    oHoja := oExcel:ActiveSheet()
    oHoja:Cells:Font:Name := "Arial"
