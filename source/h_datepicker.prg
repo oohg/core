@@ -1,11 +1,11 @@
 /*
- * $Id: h_datepicker.prg,v 1.17 2009-02-16 01:45:43 guerra000 Exp $
+ * $Id: h_datepicker.prg,v 1.18 2011-03-08 17:30:57 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG date picker functions
  *
- * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2011 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -104,6 +104,7 @@ CLASS TDatePick FROM TControl
    METHOD Define
    METHOD Value            SETGET
    METHOD Events_Notify
+   METHOD SetRange
 
    EMPTY( _OOHG_AllVars )
 ENDCLASS
@@ -124,14 +125,14 @@ Local ControlHandle, nStyle, nStyleEx
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, , , .t. , lRtl )
 
-   nStyle := ::InitStyle( ,, Invisible, NoTabStop, lDisabled ) /* + ;
+   nStyle := ::InitStyle( ,, Invisible, NoTabStop, lDisabled ) + ;
              IF( HB_IsLogical( shownone   ) .AND. shownone,    DTS_SHOWNONE,   0 ) + ;
              IF( HB_IsLogical( updown     ) .AND. updown,      DTS_UPDOWN,     0 ) + ;
-             IF( HB_IsLogical( rightalign ) .AND. rightalign,  DTS_RIGHTALIGN, 0 ) */
+             IF( HB_IsLogical( rightalign ) .AND. rightalign,  DTS_RIGHTALIGN, 0 )
 
    nStyleEx := IF( ! HB_IsLogical( lNoBorder ) .OR. ! lNoBorder, WS_EX_CLIENTEDGE, 0 )
 
-   ControlHandle := InitDatePick( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, nStyleEx, ::lRtl, shownone, updown, rightalign )
+   ControlHandle := InitDatePick( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, nStyleEx, ::lRtl )
 
    ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
@@ -152,14 +153,14 @@ METHOD Value( uValue ) CLASS TDatePick
       IF EMPTY( uValue )
          SetDatePickNull( ::hWnd )
       ELSE
-         SetDatePick( ::hWnd, year( uValue ), month( uValue ), day( uValue ) )
+         SetDatePick( ::hWnd, uValue )
       ENDIF
       ::DoChange()
    ELSEIF PCOUNT() > 0
       SetDatePickNull( ::hWnd )
       ::DoChange()
    ENDIF
-Return SToD( StrZero( GetDatePickYear( ::hWnd ), 4 ) + StrZero( GetDatePickMonth( ::hWnd ), 2 ) + StrZero( GetDatePickDay( ::hWnd ), 2 ) )
+Return GetDatePick( ::hWnd )
 
 *-----------------------------------------------------------------------------*
 METHOD Events_Notify( wParam, lParam ) CLASS TDatePick
@@ -206,14 +207,16 @@ Local ControlHandle, nStyle, nStyleEx
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, , , .t. , lRtl )
 
-   nStyle := ::InitStyle( ,, Invisible, NoTabStop, lDisabled ) /* + ;
-             IF( HB_IsLogical( shownone   ) .AND. shownone,    DTS_SHOWNONE,   0 ) + ;
+   nStyle := ::InitStyle( ,, Invisible, NoTabStop, lDisabled ) + ;
+             IF( HB_IsLogical( shownone   ) .AND. shownone,    DTS_SHOWNONE,   0 ) /* + ;
              IF( HB_IsLogical( updown     ) .AND. updown,      DTS_UPDOWN,     0 ) + ;
              IF( HB_IsLogical( rightalign ) .AND. rightalign,  DTS_RIGHTALIGN, 0 ) */
+   EMPTY( updown )
+   EMPTY( rightalign )
 
    nStyleEx := IF( ! HB_IsLogical( lNoBorder ) .OR. ! lNoBorder, WS_EX_CLIENTEDGE, 0 )
 
-   ControlHandle := InitTimePick( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, nStyleEx, ::lRtl, shownone, updown, rightalign )
+   ControlHandle := InitTimePick( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, nStyleEx, ::lRtl )
 
    ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
@@ -311,21 +314,6 @@ HB_FUNC( INITDATEPICK )
 
    hwnd = HWNDparam( 1 );
 
-   if( hb_parl( 10 ) )
-   {
-      Style = Style | DTS_SHOWNONE;
-   }
-
-   if( hb_parl( 11 ) )
-   {
-      Style = Style | DTS_UPDOWN;
-   }
-
-   if( hb_parl( 12 ) )
-   {
-      Style = Style | DTS_RIGHTALIGN;
-   }
-
    hbutton = CreateWindowEx( StyleEx, "SysDateTimePick32", 0, Style,
              hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
              hwnd, HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
@@ -338,47 +326,73 @@ HB_FUNC( INITDATEPICK )
 HB_FUNC( SETDATEPICK )
 {
    SYSTEMTIME sysTime;
+   char *cDate;
 
-   sysTime.wYear  = hb_parni( 2 );
-   sysTime.wMonth = hb_parni( 3 );
-   sysTime.wDay   = hb_parni( 4 );
-   sysTime.wDayOfWeek = 0;
+   memset( &sysTime, 0, sizeof( sysTime ) );
 
-   sysTime.wHour = 0;
-   sysTime.wMinute = 0;
-   sysTime.wSecond = 0;
-   sysTime.wMilliseconds = 0;
+   cDate = ( char * ) hb_pards( 2 );
+   if( ! ( cDate[ 0 ] == ' ' ) )
+   {
+      sysTime.wYear  = ( ( cDate[ 0 ] - '0' ) * 1000 ) +
+                       ( ( cDate[ 1 ] - '0' ) * 100 )  +
+                       ( ( cDate[ 2 ] - '0' ) * 10 ) + ( cDate[ 3 ] - '0' );
+      sysTime.wMonth = ( ( cDate[ 4 ] - '0' ) * 10 ) + ( cDate[ 5 ] - '0' );
+      sysTime.wDay   = ( ( cDate[ 6 ] - '0' ) * 10 ) + ( cDate[ 7 ] - '0' );
 
-   SendMessage( HWNDparam( 1 ), DTM_SETSYSTEMTIME, GDT_VALID, ( LPARAM ) &sysTime );
+      SendMessage( HWNDparam( 1 ), DTM_SETSYSTEMTIME, GDT_VALID, ( LPARAM ) &sysTime );
+   }
 }
 
-HB_FUNC( GETDATEPICKYEAR )
+HB_FUNC( GETDATEPICK )
 {
    SYSTEMTIME st;
 
    SendMessage( HWNDparam( 1 ), DTM_GETSYSTEMTIME, 0, ( LPARAM ) &st );
+   hb_retd( st.wYear, st.wMonth, st.wDay );
    hb_retni( st.wYear );
-}
-
-HB_FUNC( GETDATEPICKMONTH )
-{
-   SYSTEMTIME st;
-
-   SendMessage( HWNDparam( 1 ), DTM_GETSYSTEMTIME, 0, ( LPARAM ) &st );
-   hb_retni( st.wMonth );
-}
-
-HB_FUNC( GETDATEPICKDAY )
-{
-   SYSTEMTIME st;
-
-   SendMessage( HWNDparam( 1 ), DTM_GETSYSTEMTIME, 0, ( LPARAM ) &st );
-   hb_retni( st.wDay );
 }
 
 HB_FUNC( SETDATEPICKNULL )
 {
    SendMessage( HWNDparam( 1 ), DTM_SETSYSTEMTIME, GDT_NONE, ( LPARAM ) 0 );
+}
+
+HB_FUNC_STATIC( TDATEPICK_SETRANGE )
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   SYSTEMTIME sysTime[ 2 ];
+   char *cDate;
+   WPARAM wLimit = 0;
+
+   if( ISDATE( 1 ) && ISDATE( 2 ) )
+   {
+      memset( &sysTime, 0, sizeof( sysTime ) );
+
+      cDate = ( char * ) hb_pards( 1 );
+      if( ! ( cDate[ 0 ] == ' ' ) )
+      {
+         sysTime[ 0 ].wYear  = ( ( cDate[ 0 ] - '0' ) * 1000 ) +
+                               ( ( cDate[ 1 ] - '0' ) * 100 )  +
+                               ( ( cDate[ 2 ] - '0' ) * 10 ) + ( cDate[ 3 ] - '0' );
+         sysTime[ 0 ].wMonth = ( ( cDate[ 4 ] - '0' ) * 10 ) + ( cDate[ 5 ] - '0' );
+         sysTime[ 0 ].wDay   = ( ( cDate[ 6 ] - '0' ) * 10 ) + ( cDate[ 7 ] - '0' );
+         wLimit |= GDTR_MIN;
+      }
+
+      cDate = ( char * ) hb_pards( 2 );
+      if( ! ( cDate[ 0 ] == ' ' ) )
+      {
+         sysTime[ 1 ].wYear  = ( ( cDate[ 0 ] - '0' ) * 1000 ) +
+                               ( ( cDate[ 1 ] - '0' ) * 100 )  +
+                               ( ( cDate[ 2 ] - '0' ) * 10 ) + ( cDate[ 3 ] - '0' );
+         sysTime[ 1 ].wMonth = ( ( cDate[ 4 ] - '0' ) * 10 ) + ( cDate[ 5 ] - '0' );
+         sysTime[ 1 ].wDay   = ( ( cDate[ 6 ] - '0' ) * 10 ) + ( cDate[ 7 ] - '0' );
+         wLimit |= GDTR_MAX;
+      }
+
+      SendMessage( oSelf->hWnd, DTM_SETRANGE, wLimit, ( LPARAM ) &sysTime );
+   }
 }
 
 HB_FUNC( INITTIMEPICK )
@@ -394,11 +408,6 @@ HB_FUNC( INITTIMEPICK )
    InitCommonControlsEx( &i );
 
    hwnd = HWNDparam( 1 );
-
-   if( hb_parl( 10 ) )
-   {
-      Style = Style | DTS_SHOWNONE;
-   }
 
    Style = Style | DTS_TIMEFORMAT | DTS_UPDOWN;
 

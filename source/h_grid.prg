@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.119 2011-03-05 03:52:31 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.120 2011-03-08 17:30:57 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -2139,7 +2139,7 @@ HB_FUNC( INITLISTVIEWCOLUMNS )
    {
       COL.fmt = hb_arrayGetNI( jArray, s + 1 );
       COL.cx = hb_arrayGetNI( wArray, s + 1 );
-      COL.pszText = hb_arrayGetCPtr( hArray, s + 1 );
+      COL.pszText = ( char * ) hb_arrayGetCPtr( hArray, s + 1 );
       COL.iSubItem = iColumn;
       ListView_InsertColumn( hc, iColumn, &COL );
       if( iColumn == 0 && COL.fmt != LVCFMT_LEFT )

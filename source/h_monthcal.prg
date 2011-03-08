@@ -1,11 +1,11 @@
 /*
- * $Id: h_monthcal.prg,v 1.12 2010-05-15 21:05:05 guerra000 Exp $
+ * $Id: h_monthcal.prg,v 1.13 2011-03-08 17:30:57 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG monthcal functions
  *
- * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2011 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -110,6 +110,7 @@ CLASS TMonthCal FROM TControl
    METHOD TitleBackColor          SETGET
    METHOD TrailingFontColor       SETGET
    METHOD BackgroundColor         SETGET
+   METHOD SetRange
 
    EMPTY( _OOHG_AllVars )
 ENDCLASS
@@ -151,8 +152,9 @@ Local ControlHandle, nStyle
    ::TrailingFontColor := trailingfontcolor
    ::BackgroundColor   := backgroundcolor
 
-   ASSIGN ::OnChange    VALUE Change    TYPE "B"
    ::Value := value
+
+   ASSIGN ::OnChange    VALUE Change    TYPE "B"
 
 Return Self
 
@@ -250,92 +252,32 @@ HB_FUNC( ADJUSTMONTHCALSIZE )
 HB_FUNC( SETMONTHCAL )
 {
    SYSTEMTIME sysTime;
-   char *cDate = 0;
+   char *cDate;
 
    if( ISDATE( 2 ) )
    {
       cDate = ( char * ) hb_pards( 2 );
-      if( cDate[ 0 ] == ' ' )
+      if( ! ( cDate[ 0 ] == ' ' ) )
       {
-         cDate = 0;
-      }
-      else
-      {
+         memset( &sysTime, 0, sizeof( sysTime ) );
          sysTime.wYear  = ( ( cDate[ 0 ] - '0' ) * 1000 ) +
                           ( ( cDate[ 1 ] - '0' ) * 100 )  +
                           ( ( cDate[ 2 ] - '0' ) * 10 ) + ( cDate[ 3 ] - '0' );
          sysTime.wMonth = ( ( cDate[ 4 ] - '0' ) * 10 ) + ( cDate[ 5 ] - '0' );
          sysTime.wDay   = ( ( cDate[ 6 ] - '0' ) * 10 ) + ( cDate[ 7 ] - '0' );
+
+         MonthCal_SetCurSel( HWNDparam( 1 ), &sysTime );
       }
    }
-
-   if( ! cDate )
-   {
-      sysTime.wYear  = hb_parni( 2 );
-      sysTime.wMonth = hb_parni( 3 );
-      sysTime.wDay   = hb_parni( 4 );
-   }
-
-   sysTime.wDayOfWeek = 0;
-   sysTime.wHour = 0;
-   sysTime.wMinute = 0;
-   sysTime.wSecond = 0;
-   sysTime.wMilliseconds = 0;
-
-   MonthCal_SetCurSel( HWNDparam( 1 ), &sysTime );
-}
-
-HB_FUNC( GETMONTHCALYEAR )
-{
-   SYSTEMTIME st;
-
-   SendMessage( HWNDparam( 1 ), MCM_GETCURSEL, 0, ( LPARAM ) &st );
-   hb_retni( st.wYear );
-}
-
-HB_FUNC( GETMONTHCALMONTH )
-{
-   SYSTEMTIME st;
-
-   SendMessage( HWNDparam( 1 ), MCM_GETCURSEL, 0, ( LPARAM ) &st );
-   hb_retni( st.wMonth );
-}
-
-HB_FUNC( GETMONTHCALDAY )
-{
-   SYSTEMTIME st;
-
-   SendMessage( HWNDparam( 1 ), MCM_GETCURSEL, 0, ( LPARAM ) &st );
-   hb_retni( st.wDay );
 }
 
 HB_FUNC( GETMONTHCALDATE )
 {
    SYSTEMTIME st;
-   int iNum;
-   char cDate[ 9 ];
 
    SendMessage( HWNDparam( 1 ), MCM_GETCURSEL, 0, ( LPARAM ) &st );
 
-   cDate[ 8 ] = 0;
-   iNum = st.wYear;
-   cDate[ 3 ] = ( iNum % 10 ) + '0';
-   iNum /= 10;
-   cDate[ 2 ] = ( iNum % 10 ) + '0';
-   iNum /= 10;
-   cDate[ 1 ] = ( iNum % 10 ) + '0';
-   iNum /= 10;
-   cDate[ 0 ] = ( iNum % 10 ) + '0';
-   iNum = st.wMonth;
-   cDate[ 5 ] = ( iNum % 10 ) + '0';
-   iNum /= 10;
-   cDate[ 4 ] = ( iNum % 10 ) + '0';
-   iNum = st.wDay;
-   cDate[ 7 ] = ( iNum % 10 ) + '0';
-   iNum /= 10;
-   cDate[ 6 ] = ( iNum % 10 ) + '0';
-
-   hb_retds( cDate );
+   hb_retd( st.wYear, st.wMonth, st.wDay );
 }
 
 HB_FUNC( GETMONTHCALFIRSTDAYOFWEEK )
@@ -520,6 +462,44 @@ HB_FUNC_STATIC( TMONTHCAL_BACKGROUNDCOLOR )
    HB_STORNL( GetRValue( lColor ), -1, 1 );
    HB_STORNL( GetGValue( lColor ), -1, 2 );
    HB_STORNL( GetBValue( lColor ), -1, 3 );
+}
+
+HB_FUNC_STATIC( TMONTHCAL_SETRANGE )
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   SYSTEMTIME sysTime[ 2 ];
+   char *cDate;
+   WPARAM wLimit = 0;
+
+   if( ISDATE( 1 ) && ISDATE( 2 ) )
+   {
+      memset( &sysTime, 0, sizeof( sysTime ) );
+
+      cDate = ( char * ) hb_pards( 1 );
+      if( ! ( cDate[ 0 ] == ' ' ) )
+      {
+         sysTime[ 0 ].wYear  = ( ( cDate[ 0 ] - '0' ) * 1000 ) +
+                               ( ( cDate[ 1 ] - '0' ) * 100 )  +
+                               ( ( cDate[ 2 ] - '0' ) * 10 ) + ( cDate[ 3 ] - '0' );
+         sysTime[ 0 ].wMonth = ( ( cDate[ 4 ] - '0' ) * 10 ) + ( cDate[ 5 ] - '0' );
+         sysTime[ 0 ].wDay   = ( ( cDate[ 6 ] - '0' ) * 10 ) + ( cDate[ 7 ] - '0' );
+         wLimit |= GDTR_MIN;
+      }
+
+      cDate = ( char * ) hb_pards( 2 );
+      if( ! ( cDate[ 0 ] == ' ' ) )
+      {
+         sysTime[ 1 ].wYear  = ( ( cDate[ 0 ] - '0' ) * 1000 ) +
+                               ( ( cDate[ 1 ] - '0' ) * 100 )  +
+                               ( ( cDate[ 2 ] - '0' ) * 10 ) + ( cDate[ 3 ] - '0' );
+         sysTime[ 1 ].wMonth = ( ( cDate[ 4 ] - '0' ) * 10 ) + ( cDate[ 5 ] - '0' );
+         sysTime[ 1 ].wDay   = ( ( cDate[ 6 ] - '0' ) * 10 ) + ( cDate[ 7 ] - '0' );
+         wLimit |= GDTR_MAX;
+      }
+
+      SendMessage( oSelf->hWnd, MCM_SETRANGE, wLimit, ( LPARAM ) &sysTime );
+   }
 }
 
 #pragma ENDDUMP

@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.97 2011-03-05 03:52:31 guerra000 Exp $
+* $Id: h_print.prg,v 1.98 2011-03-08 17:30:57 guerra000 Exp $
 */
 
 #include 'hbclass.ch'
@@ -1864,14 +1864,20 @@ empty(npapersize)
 empty(cprinterx)
 
 #ifndef __XHARBOUR__
-IF ( ::oExcel := win_oleCreateObject( "Excel.Application" ) ) = NIL
-   msgstop( "Error: MS Excel not available. [" + win_oleErrorText()+ "]" )
-   ::lprerror:=.T.
-   ::exit:=.T.
-   RETURN Nil
-ENDIF
+   IF ( ::oExcel := win_oleCreateObject( "Excel.Application" ) ) == NIL
+      msgstop( "Error: MS Excel not available. [" + win_oleErrorText()+ "]" )
+      ::lprerror:=.T.
+      ::exit:=.T.
+     RETURN Nil
+   ENDIF
 #else
    ::oExcel := CreateObject( "Excel.Application" )
+   IF Ole2TxtError() != 'S_OK'
+      MsgStop('Excel not found','error')
+      ::lprerror:=.T.
+      ::exit:=.T.
+      RETURN Nil
+   ENDIF
 #endif
 RETURN self
 

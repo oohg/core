@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.33 2010-08-13 23:37:23 guerra000 Exp $
+ * $Id: i_windefs.ch,v 1.34 2011-03-08 17:30:57 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -730,5 +730,10 @@
 #define MCS_WEEKNUMBERS         4
 #define MCS_NOTODAYCIRCLE       8
 #define MCS_NOTODAY             16
+
+// Datetime
+#define DTS_UPDOWN              1
+#define DTS_SHOWNONE            2
+#define DTS_RIGHTALIGN          32
 
 #endif
