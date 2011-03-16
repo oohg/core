@@ -1,5 +1,5 @@
 /*
- * $Id: h_toolbar.prg,v 1.28 2011-03-05 03:52:31 guerra000 Exp $
+ * $Id: h_toolbar.prg,v 1.29 2011-03-16 23:50:09 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -370,7 +370,7 @@ METHOD Picture( cPicture ) CLASS TToolButton
 LOCAL nAttrib
    If VALTYPE( cPicture ) $ "CM"
       nAttrib := LR_LOADMAP3DCOLORS + LR_LOADTRANSPARENT
-      ::HBitMap := _OOHG_BitmapFromFile( Self, cPicture, nAttrib, .F. )
+      ::HBitMap := _OOHG_BitmapFromFile( ::Container, cPicture, nAttrib, .F. )
       ::cPicture := cPicture
    EndIf
 Return ::cPicture
@@ -430,7 +430,7 @@ Return ::hImage
 METHOD Buffer( cBuffer ) CLASS TToolButton
 *-----------------------------------------------------------------------------*
    If VALTYPE( cBuffer ) $ "CM"
-      ::HBitMap := _OOHG_BitmapFromBuffer( Self, cBuffer, .F. )
+      ::HBitMap := _OOHG_BitmapFromBuffer( ::Container, cBuffer, .F. )
    EndIf
 Return nil
 
