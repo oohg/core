@@ -1,5 +1,5 @@
 /*
- * $Id: h_msgbox.prg,v 1.9 2011-03-01 03:51:16 declan2005 Exp $
+ * $Id: h_msgbox.prg,v 1.10 2011-03-21 04:47:54 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -92,7 +92,7 @@
 ---------------------------------------------------------------------------*/
 
 #include 'common.ch'
-#include 'ooHG.ch'
+#include 'i_var.ch'
 *-----------------------------------------------------------------------------*
 Function MsgYesNo( Message, Title, lRevertDefault )
 *-----------------------------------------------------------------------------*
@@ -201,30 +201,26 @@ LOCAL nHeight :=MLCOUNT(cInfo) * 20
 
 DEFAULT nSecs TO 0
 
+DefineWindow( "_Win_1",, 0, 0, nWidth, 115 + nHeight, .F., .F., .F., .F., .T.,,,,,,, {204,216,124},, .F., .T.,,,,,,,,,,,,,,,,, .F.,,,, .F.,,, .F., .F.,, .F., .F., .F., .F., .F., .F., .F., .F., .F., .F.,, .F.,,,,,,,,,, ) ;
 
-DEFINE WINDOW _Win_1 AT 0,0 WIDTH nWidth HEIGHT 115 + nHeight BACKCOLOR {204,216,124} NOCAPTION TOPMOST /// ON MOUSECLICK ThisWindow.Release ;
+   _DefineAnyKey(, "ESCAPE", {|| _OOHG_AllVars [ 13 ]:release()} )
+   _DefineAnyKey(, "RETURN", {|| _OOHG_AllVars [ 13 ]:release()} )
 
-
-   ON KEY ESCAPE ACTION ThisWindow.release
-   ON KEY RETURN ACTION ThisWindow.release
-///   ON KEY DELETE ACTION ThisWindow.release
-///   ON KEY F1     ACTION ThisWindow.release
-
-   IF nSecs = 1 .or. nSecs > 1
-      DEFINE TIMER _timer__x interval nSecs*1000 Action  {|| ThisWindow.Release }
+   IF nSecs = 1 .OR. nSecs > 1
+      _OOHG_SelectSubClass( TTimer(), ): Define( "_timer__x",, nSecs*1000, {|| _OOHG_AllVars [ 13 ]:Release() }, .F. )
    ENDIF
 
-   @ 12,000 LABEL Label_1 VALUE cTitulo WIDTH nWidth    HEIGHT 40           FONTCOLOR {0,0,0} FONT "Times NEW Roman" SIZE 18                             CENTERALIGN TRANSPARENT       //// ONCLICK ThisWindow.Release
-   @ 46,0-5 LABEL Label_2 VALUE ""      WIDTH nWidth+10 HEIGHT 20 + nHeight BACKCOLOR {248,244,199} FONT 'Arial'           SIZE 13 FONTCOLOR {250,50,100} BOLD CENTERALIGN BORDER CLIENTEDGE //// ONCLICK ThisWindow.Release
-   @ 56,000 LABEL Label_3 VALUE cInfo   WIDTH nWidth    HEIGHT 00 + nHeight BACKCOLOR {177,156,037} FONT "Times NEW Roman" SIZE 14 FONTCOLOR {000,00,000}      CENTERALIGN TRANSPARENT       //// ONCLICK ThisWindow.Release
+   _OOHG_SelectSubClass( TLabel(), ):Define( "Label_1",, 000, 12, cTitulo, nWidth, 40, "Times NEW Roman", 18, .F., .F. , .F. , .F. , .F. , .T. ,, {0,0,0},,,, .F., .F., .F., .F. , .F. , .F. , .T. , .F. , .F. , .F. , )
+   _OOHG_SelectSubClass( TLabel(), ):Define( "Label_2",, 0-5, 46, "", nWidth+10, 20 + nHeight, "Arial", 13, .T., .T. , .T. , .F. , .F. , .F. , {248,244,199}, {250,50,100},,,, .F., .F., .F., .F. , .F. , .F. , .T. , .F. , .F. , .F. , )
+   _OOHG_SelectSubClass( TLabel(), ):Define( "Label_3",, 000, 56, cInfo, nWidth, 00 + nHeight, "Times NEW Roman", 14, .F., .F. , .F. , .F. , .F. , .T. , {177,156,037}, {000,00,000},,,, .F., .F., .F., .F. , .F. , .F. , .T. , .F. , .F. , .F. , )
 
-   @ _Win_1.Height-40,(nWidth/2)-40 BUTTON Button_1 PICTURE 'MINIGUI_EDIT_OK' WIDTH 60 HEIGHT 25    FONT "Arial"           SIZE 10 ACTION ThisWindow.Release
+   _OOHG_SelectSubClass( TButton(), ): Define( "Button_1",, (nWidth/2)-40, GetExistingFormObject( "_Win_1" ):Height-40,, {|| _OOHG_AllVars [ 13 ]:Release()}, 60, 25, "Arial", 10,,,, .F., .F.,, .F. ,.F., .F., .F., .F., .F., .F., .F.,,, "MINIGUI_EDIT_OK", .F., .F., .F., )
 
-   _Win_1.button_1.setfocus()
+   GetExistingControlObject( "button_1", "_Win_1" ):setfocus ()
 
-END      WINDOW
-CENTER   WINDOW _Win_1
-ACTIVATE WINDOW _Win_1
+_EndWindow ()
+DoMethod ( "_Win_1" , "Center" )
+_ActivateWindow( {"_Win_1"}, .F. )
 
 RETURN( NIL )
 
