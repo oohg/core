@@ -1,5 +1,5 @@
 /*
- * $Id: h_datepicker.prg,v 1.18 2011-03-08 17:30:57 guerra000 Exp $
+ * $Id: h_datepicker.prg,v 1.19 2011-03-30 22:03:16 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -349,7 +349,6 @@ HB_FUNC( GETDATEPICK )
 
    SendMessage( HWNDparam( 1 ), DTM_GETSYSTEMTIME, 0, ( LPARAM ) &st );
    hb_retd( st.wYear, st.wMonth, st.wDay );
-   hb_retni( st.wYear );
 }
 
 HB_FUNC( SETDATEPICKNULL )
