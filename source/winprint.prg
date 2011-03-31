@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.32 2011-01-26 00:13:52 guerra000 Exp $
+ * $Id: winprint.prg,v 1.33 2011-03-31 00:18:51 guerra000 Exp $
  */
 // -----------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -77,6 +77,11 @@ CLASS HBPrinter
    DATA    npages INIT {}
    DATA    aopisy INIT {}
    DATA    oHBPreview1 INIT nil
+   DATA    NoButtonSave INIT .F.
+   DATA    NoButtonOptions INIT .F.   
+   DATA    BeforePrint INIT {|| .T.}
+   DATA    AfterPrint INIT {|| NIL}
+   DATA    BeforePrintCopy  INIT {|| .T.}
 
    METHOD New()
    METHOD SelectPrinter( cPrinter ,lPrev)
@@ -1346,6 +1351,11 @@ return self
 METHOD PrevPrint(n1) CLASS HBPrinter
 **************************************
 local i,ilkop,_stronki:="",toprint:=.t.
+
+IF .NOT. Eval(::BeforePrint)
+  RETURN self
+ENDIF
+
 ::Previewmode:=.f.
 ::Printingemf:=.t.
 rr_lalabye(1)
@@ -1358,6 +1368,12 @@ if n1<>NIL
        ::enddoc()
 else
        for ilkop = 1 to ::nCopies
+        if .NOT. Eval(::BeforePrintCopy, ilkop)
+          rr_lalabye(0)
+          ::printingemf:=.f.
+          ::Previewmode:=.t.
+          return self
+        endif
         ::startdoc()
           for i:=max(1,::nFromPage) to min(::iloscstron,::nToPage)
            do case
@@ -1398,6 +1414,7 @@ endif
 rr_lalabye(0)
 ::printingemf:=.f.
 ::Previewmode:=.t.
+Eval(::AfterPrint)
 return self
 
 **********************************
@@ -1733,7 +1750,9 @@ next pi
 ////                        BUTTON B1 CAPTION  ::aopisy[2]     PICTURE 'hbprint_close'   ACTION {||  ::oHBPreview1:Release(),if(::iloscstron>1 .and. ::thumbnails,_ReleaseWindow ("HBPREVIEW2" ),""), oHBPreview:Release()}
                         BUTTON B1 CAPTION  ::aopisy[2]     PICTURE 'hbprint_close'   ACTION MYCLOSEP(::iloscstron,::thumbnails ,oHBPreview,::oHBPreview1)
                         BUTTON B2 CAPTION  ::aopisy[3]    PICTURE 'hbprint_print'   ACTION {|| ::prevprint() }
-                        BUTTON B3 CAPTION  ::aopisy[4]     PICTURE 'hbprint_save'    ACTION {|| ::savemetafiles()}
+                        if .NOT. ::NoButtonSave
+                          BUTTON B3 CAPTION  ::aopisy[4]     PICTURE 'hbprint_save'    ACTION {|| ::savemetafiles()}
+                        endif
                         if ::iloscstron>1
                            BUTTON B4 CAPTION  ::aopisy[5]    PICTURE 'hbprint_top'     ACTION {|| ::page := ::CurPage:=1,HBPREVIEW.combo_1.value:=::page, ::PrevShow() }
                            BUTTON B5 CAPTION  ::aopisy[6] PICTURE 'hbprint_back'    ACTION {|| ::page :=::CurPage:=if(::page==1,1,::page-1),HBPREVIEW.combo_1.value:=::page, ::PrevShow() }
@@ -1742,7 +1761,9 @@ next pi
                         endif
                         BUTTON B8 CAPTION  ::aopisy[9]  PICTURE 'hbprint_zoomin'  ACTION {|| ::scale:=::scale*1.25,::PrevShow() }
                         BUTTON B9 CAPTION  ::aopisy[10] PICTURE 'hbprint_zoomout' ACTION {|| ::scale:=::scale/1.25,::PrevShow() }
-                        BUTTON B10 CAPTION ::aopisy[11] PICTURE 'hbprint_option' ACTION {|| ::PrintOption() }
+                        if .NOT. ::NoButtonOptions
+                          BUTTON B10 CAPTION ::aopisy[11] PICTURE 'hbprint_option' ACTION {|| ::PrintOption() }
+                        endif
                END TOOLBAR
 
                aadd(::ahs,{0,0,0,0,0,0,oHBPreview:hWnd})

@@ -1,11 +1,26 @@
 /*
- * $Id: ChangeLog,v 1.685 2011-03-30 22:03:16 guerra000 Exp $
+ * $Id: ChangeLog,v 1.686 2011-03-31 00:18:51 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2011-03-30 16:12 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/winprint.prg
+  + ::NoButtonSave property added. For not show SAVE button in
+    preview window.
+  + ::NoButtonOptions property added. For not show OPTIONS button
+    in preview window.
+  + ::BeforePrint property added. Executed when PRINT button is
+    pressed in preview window. It must returns .T. for allow print.
+  + ::AfterPrint property added. Executed after printing in preview
+    window.
+  + ::BeforePrintCopy property added. Executed previous each
+    document's copy is printed in preview window. It must returns
+    .T. for allow print. Otherwise, printing is stopped.
+  . Contributed by Johan.
 
 2011-03-30 16:12 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_datepicker.prg
