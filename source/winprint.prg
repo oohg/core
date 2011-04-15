@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.33 2011-03-31 00:18:51 guerra000 Exp $
+ * $Id: winprint.prg,v 1.34 2011-04-15 00:34:24 guerra000 Exp $
  */
 // -----------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -82,6 +82,9 @@ CLASS HBPrinter
    DATA    BeforePrint INIT {|| .T.}
    DATA    AfterPrint INIT {|| NIL}
    DATA    BeforePrintCopy  INIT {|| .T.}
+   DATA    InMemory INIT .F.
+   DATA    TimeStamp INIT ''
+   DATA    BaseDoc INIT ""
 
    METHOD New()
    METHOD SelectPrinter( cPrinter ,lPrev)
@@ -180,6 +183,7 @@ local aprnport
    ELSE
       ::error:=1
    ENDIF
+   ::TimeStamp := strzero( Seconds() * 100 , 8 )
 return self
 
 METHOD SelectPrinter( cPrinter ,lPrev) CLASS HBPrinter
@@ -265,7 +269,13 @@ return Self
 
 METHOD Startpage() CLASS HBPrinter
   if ::PreviewMode
-     ::hDC:=rr_createmfile()
+	if ::InMemory
+		::hDC:=rr_createmfile()
+	else
+		::BaseDoc := GetTempFolder() + "\" + ::TimeStamp + "_HMG_print_preview_"
+		::hDC:=rr_createfile( ::BaseDoc + alltrim(strzero(::CurPage,4))+'.emf')
+		::CurPage := ::CurPage + 1
+	end
   else
     rr_Startpage()
   endif
@@ -283,19 +293,35 @@ return self
 
 METHOD Endpage() CLASS HBPrinter
   if ::PreviewMode
-     aadd(::MetaFiles,{rr_closemfile(),::DEVCAPS[1],::DEVCAPS[2],::DEVCAPS[3],::DEVCAPS[4],::DEVCAPS[15],::DEVCAPS[17]})
+	if ::InMemory
+		aadd(::MetaFiles,{rr_closemfile(),::DEVCAPS[1],::DEVCAPS[2],::DEVCAPS[3],::DEVCAPS[4],::DEVCAPS[15],::DEVCAPS[17]})
+	else
+		rr_closefile()
+		aadd(::MetaFiles,{::BaseDoc + strzero(::CurPage-1,4)+'.emf',::DEVCAPS[1],::DEVCAPS[2],::DEVCAPS[3],::DEVCAPS[4],::DEVCAPS[15],::DEVCAPS[17]})
+	end
   else
      rr_endpage()
   endif
 return self
 
 METHOD SaveMetaFiles(number) CLASS HBPrinter
+Local n
  if ::PreviewMode
-    if number==NIL
-       aeval(::METAFILES,{|x,xi| str2file(x[1],"page"+alltrim(str(xi))+".emf") })
-    else
-       str2file(::METAFILES[number,1],"page"+alltrim(str(number))+".emf")
-    endif
+	if ::InMemory
+		if number==NIL
+		   aeval(::METAFILES,{|x,xi| str2file(x[1],"page"+alltrim(str(xi))+".emf") })
+		else
+		   str2file(::METAFILES[number,1],"page"+alltrim(str(number))+".emf")
+		endif
+	else
+		if number==NIL
+		   COPY FILE (::BaseDoc + alltrim(strzero(number,4))+'.emf') to ("page"+alltrim(strzero(number,4))+".emf")
+		else
+			for n := 1 to ::CurPage
+				COPY FILE (::BaseDoc + alltrim(strzero(n,4))+'.emf') to ("page"+alltrim(strzero(n,4))+".emf")
+			end
+		endif
+	end
  endif
 return self
 
@@ -1003,9 +1029,14 @@ METHOD GetViewPortOrg() CLASS HBPrinter
 return self
 
 METHOD End() CLASS HBPrinter
+local n
   if ::PreviewMode
-//     rr_deletemfiles(::MetaFiles)
-       ::Metafiles:={}
+    ::Metafiles:={}
+	if !::InMemory
+		for n := 1 to ::CurPage
+			ferase(::BaseDoc + alltrim(strzero(n,4))+'.emf')
+	   next
+	end
   endif
   if ::HDCRef!=0
       ef_resetprinter()
@@ -1298,7 +1329,11 @@ local i,spage
        ::ath[i,4]:=::dx-5
        ::ath[i,3]:=::dy*::Metafiles[i+spage,2]/::Metafiles[i+spage,3]-5
      endif
-     rr_playthumb(::ath[i],::Metafiles[i+spage],alltrim(str(i+spage)),i)
+	 if ::InMemory
+		rr_playthumb(::ath[i],::Metafiles[i+spage],alltrim(str(i+spage)),i)
+	 else
+		rr_playfthumb(::ath[i],::Metafiles[i+spage,1],alltrim(str(i+spage)),i)
+	 endif
      CShowControl(::ath[i,5])
   endif
  next
@@ -1335,7 +1370,11 @@ local spos, hImage
    ::oHBPreview1:VirtualHeight := ::azoom[3]+20
    ::oHBPreview1:VirtualWidth := ::azoom[4]+20
 
- hImage := rr_previewplay(::ahs[6,7],::METAFILES[::page],::azoom)
+ if ::InMemory
+	hImage := rr_previewplay(::ahs[6,7],::METAFILES[::page],::azoom)
+ else
+	hImage := rr_previewfplay(::ahs[6,7],::METAFILES[::page,1],::azoom)
+ endif
  if ! ValidHandler( hImage )
       ::scale:=::scale/1.25
       ::PrevShow()
@@ -1698,7 +1737,7 @@ case wl='FR'
 //    endif
 //  next
 
-  if !::PreviewMode .or. empty(::metafiles)
+  if !::PreviewMode // .or. empty(::metafiles)
     return self
   endif
   aadd(::ahs,{0,0,0,0,0,0,0})
@@ -2465,6 +2504,7 @@ HB_FUNC (RR_DELETEIMAGELISTS)
     ImageList_Destroy((HIMAGELIST) HB_PARNL3( 1, i, 1));
 }
 
+/*
 HB_FUNC (RR_DELETEMFILES)
 {
  UINT i;
@@ -2474,6 +2514,7 @@ HB_FUNC (RR_DELETEMFILES)
    if (hbmp[i]!=NULL)
       DeleteObject(hbmp[i]);
 }
+*/
 
 HB_FUNC (RR_SAVEMETAFILE)
 {
@@ -2786,6 +2827,12 @@ HB_FUNC (RR_CLOSEMFILE)
  GlobalFree(eBuffer);
 }
 
+HB_FUNC (RR_CLOSEFILE)
+{
+ 	DeleteEnhMetaFile(CloseEnhMetaFile( hDC ));
+}
+
+
 HB_FUNC (RR_CREATEMFILE)
 {
   RECT emfrect;
@@ -2795,6 +2842,17 @@ HB_FUNC (RR_CREATEMFILE)
     preview=1;
     hb_retnl((LONG) hDC);
 }
+
+HB_FUNC (RR_CREATEFILE)
+{
+  RECT emfrect;
+    SetRect(&emfrect,0,0,GetDeviceCaps(hDCRef, HORZSIZE)*100,GetDeviceCaps(hDCRef, VERTSIZE)*100);
+    hDC=CreateEnhMetaFile(hDCRef,hb_parc(1),&emfrect,"hbprinter\0emf file\0\0");
+    SetTextAlign(hDC,TA_BASELINE);
+    preview=1;
+    hb_retnl((LONG) hDC);
+}
+
 HB_FUNC (RR_DELETECLIPRGN)
 {
   SelectClipRgn(hDC,NULL);
@@ -3467,6 +3525,30 @@ HB_FUNC (RR_PREVIEWPLAY)
         hb_retnl( ( long ) himgbmp );
 }
 
+HB_FUNC (RR_PREVIEWFPLAY)
+{
+        RECT rect;
+        HDC imgDC = GetWindowDC((HWND) hb_parnl(1));
+        HDC tmpDC = CreateCompatibleDC(imgDC);
+        HENHMETAFILE hh= GetEnhMetaFile( hb_parc(2) ) ;
+		//SetEnhMetaFileBits((UINT) HB_PARCLEN(2,1), ( BYTE * ) HB_PARC(2,1));
+        HBITMAP himgbmp;
+        if (tmpDC==NULL)
+           {
+              ReleaseDC((HWND) hb_parnl(1),imgDC);
+              hb_retnl( 0 );
+           }
+        SetRect(&rect ,0,0,HB_PARNL(3,4),HB_PARNL(3,3));
+        himgbmp=CreateCompatibleBitmap(imgDC,rect.right,rect.bottom);
+        SelectObject(tmpDC,(HBITMAP) himgbmp);
+        FillRect(tmpDC,&rect,(HBRUSH) GetStockObject(WHITE_BRUSH));
+        PlayEnhMetaFile(tmpDC,hh,&rect);
+        DeleteEnhMetaFile(hh);
+        ReleaseDC((HWND) hb_parnl(1),imgDC);
+        DeleteDC(tmpDC);
+        hb_retnl( ( long ) himgbmp );
+}
+
 
 HB_FUNC (RR_PLAYTHUMB)
 {
@@ -3488,6 +3570,29 @@ HB_FUNC (RR_PLAYTHUMB)
    ReleaseDC((HWND) HB_PARNL(1,5),imgDC);
    DeleteDC(tmpDC);
 }
+
+HB_FUNC (RR_PLAYFTHUMB)
+{
+   RECT rect;
+   HDC tmpDC;
+   HDC imgDC=GetWindowDC((HWND) HB_PARNL(1,5));
+   HENHMETAFILE hh= GetEnhMetaFile( HB_PARC(2,1) ) ;
+   //SetEnhMetaFileBits((UINT) HB_PARCLEN(2,1), ( BYTE * ) HB_PARC(2,1));
+   int i;
+   i= hb_parni(4)-1;
+   tmpDC=CreateCompatibleDC(imgDC);
+   SetRect(&rect,0,0,HB_PARNI(1,4),HB_PARNI(1,3));
+   hbmp[i]=CreateCompatibleBitmap(imgDC,rect.right,rect.bottom);
+   DeleteObject(SelectObject(tmpDC,hbmp[i]));
+   FillRect(tmpDC,&rect,(HBRUSH) GetStockObject(WHITE_BRUSH));
+   PlayEnhMetaFile(tmpDC ,hh,&rect);
+   DeleteEnhMetaFile(hh);
+   TextOut(tmpDC,(int)rect.right/2-5,(int)rect.bottom/2-5,hb_parc(3),hb_parclen(3));
+   SendMessage((HWND) HB_PARNL (1,5),(UINT)STM_SETIMAGE,(WPARAM)IMAGE_BITMAP,(LPARAM) hbmp[i]);
+   ReleaseDC((HWND) HB_PARNL(1,5),imgDC);
+   DeleteDC(tmpDC);
+}
+
 
 HB_FUNC (RR_PLAYENHMETAFILE)
 {

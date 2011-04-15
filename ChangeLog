@@ -1,11 +1,18 @@
 /*
- * $Id: ChangeLog,v 1.686 2011-03-31 00:18:51 guerra000 Exp $
+ * $Id: ChangeLog,v 1.687 2011-04-15 00:34:24 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2011-04-14 19:41 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/winprint.prg
+    + Added ::InMemory property. It allows to determine if
+      preview images are stored on temporal files or into
+      memory buffers.
+    . Contributed by Cayetano Gomez.
 
 2011-03-30 16:12 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source/winprint.prg
