@@ -1,5 +1,5 @@
 /*
- * $Id: miniprint.prg,v 1.31 2010-05-15 21:05:05 guerra000 Exp $
+ * $Id: miniprint.prg,v 1.32 2011-04-20 23:04:58 declan2005 Exp $
  */
 /*----------------------------------------------------------------------------
  MINIGUI - Harbour Win32 GUI library source code
@@ -31,8 +31,8 @@
  Harbour-Minigui library code into it.
 
  Parts of this project are based upon:
-
-	"Harbour GUI framework for Win32"
+/
+	"Harbour GUI framework for Win32")
  	Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
  	Copyright 2001 Antonio Linares <alinares@fivetech.com>
 	www - http://www.harbour-project.org
@@ -50,6 +50,16 @@
 	Copyright 2002 Richard Rylko <rrylko@poczta.onet.pl>
 	http://rrylko.republika.pl
 
+Ampliación: ( 2011/03/11) Cayetano Gómez.
+		Añadido fillrect
+		Añadido angulo en fuentes
+		Añadido ancho relativo en fuentes
+		Modificado preview con adjust.
+Ampliación: ( 2011/03/31) Cayetano Gómez.
+		Añadidos estilos de brush y pen al trazado de lineas y cuadros.
+		Ahora los cuadros, si no se especifica el brush es traparente
+		Pequeñas mejoras en el preview.
+		(19/04/2011) Añadidos Ellipse, Arc y Pie
 ---------------------------------------------------------------------------*/
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -87,7 +97,9 @@ memvar _HMG_printer_thumbscroll
 memvar _HMG_printer_PrevPageNumber
 memvar _HMG_printer_usermessages
 memvar _OOHG_printer_docname
-
+memvar _ooHg_Auxil_Page
+memvar _ooHg_Auxil_Zoom
+memvar _ooHg_Auxil_dx
 *------------------------------------------------------------------------------*
 Procedure _HMG_PRINTER_SHOWPREVIEW
 *------------------------------------------------------------------------------*
@@ -98,6 +110,9 @@ Local tHeight
 Local tFactor
 Local tvHeight
 Local icb := 0
+
+Local _HMG_PRINTER_SHOWPREVIEW,_HMG_PRINTER_PPNAV,_HMG_PRINTER_SHOWTHUMBNAILS, oSep,oPageNo
+
 Public _HMG_printer_BasePageName := GetTempFolder() + "\" + _HMG_printer_timestamp + "_HMG_print_preview_"
 Public _HMG_printer_CurrentPageNumber := 1
 Public _HMG_printer_SizeFactor
@@ -109,92 +124,239 @@ Public _HMG_printer_zoomclick_xoffset := 0
 Public _HMG_printer_thumbupdate := .T.
 Public _HMG_printer_thumbscroll
 Public _HMG_printer_PrevPageNumber := 0
+Public _ooHg_Auxil_Page
+Public _ooHg_Auxil_Zoom
+Public _ooHg_Auxil_dx
 
-        if _HMG_printer_hdc_bak == 0
+    if _HMG_printer_hdc_bak == 0
 		Return
 	EndIf
 
-        if _IsWindowDefined ( "_HMG_PRINTER_SHOWPREVIEW" )
+    if _IsWindowDefined ( "_HMG_PRINTER_SHOWPREVIEW" )
 		Return
 	endif
 
-        icb := setinteractiveclose()
+    icb := setinteractiveclose()
 
 	set interactiveclose on
 
-        _HMG_printer_SizeFactor := GetDesktopHeight() / _HMG_PRINTER_GETPAGEHEIGHT(_HMG_printer_hdc_bak) * 0.63
+    _HMG_printer_SizeFactor := GetDesktopHeight() / _HMG_PRINTER_GETPAGEHEIGHT(_HMG_printer_hdc_bak) * 0.63
 
-        define window _oohg_auxil at 0,0 width 0 height 0 title " " noshow
 
-        end window
+    define window _oohg_auxil TITLE _HMG_printer_usermessages [02]+'. '+_HMG_printer_usermessages [01] + ' [' + alltrim(str(_HMG_printer_CurrentPageNumber)) + '/'+alltrim(str(_HMG_printer_PageCount)) + ']'; 
+		child ;
+		AT 0,0 ;
+		WIDTH GetDesktopWidth() - 123 ;
+		HEIGHT GetDesktopHeight() - 123  ;
+		ON MOUSECLICK   ( If ( _HMG_PRINTER_PPNAV.b5.value == .T. , _HMG_PRINTER_PPNAV.b5.value := .F. , _HMG_PRINTER_PPNAV.b5.value := .T. )  ) ;
+		ON SCROLLUP     _HMG_PRINTER_ScrolluP() ;
+		ON SCROLLDOWN   _HMG_PRINTER_ScrollDown() ;
+		ON SCROLLLEFT   _HMG_PRINTER_ScrollLeft() ;
+		ON SCROLLRIGHT  _HMG_PRINTER_ScrollRight() ;
+		ON HSCROLLBOX   _HMG_PRINTER_hScrollBoxProcess() ;
+		ON VSCROLLBOX   _HMG_PRINTER_vScrollBoxProcess() ;
+		ON RELEASE      _HMG_PRINTER_PreviewClose()
+	
+		DEFINE WINDOW _HMG_PRINTER_PPNAV OBJ _HMG_PRINTER_PPNAV HEIGHT 35 width 100 internal
 
-        activate window _oohg_auxil nowait
+			@ 2,2 BUTTON b1 ;
+				   WIDTH 30  ;
+					HEIGHT 30  ;
+					PICTURE "HP_TOP" ;
+					TOOLTIP _HMG_printer_usermessages[03] ;
+					ACTION (  ejecuta()  )
 
-        define window _HMG_PRINTER_Wait  at 0,0 width 310 height 85 title ' ' child noshow nocaption
 
-		define label label_1
+
+			@ 2,32 BUTTON b2 ;
+				   WIDTH 30  ;
+					HEIGHT 30  ;
+					PICTURE "HP_BACK" ;
+					TOOLTIP _HMG_printer_usermessages[04] ;
+					ACTION ( _HMG_printer_CurrentPageNumber-- , _HMG_PRINTER_PreviewRefresh()  )
+
+
+			@ 2,62  BUTTON b3 ;
+					WIDTH 30  ;
+					HEIGHT 30  ;
+					PICTURE "HP_NEXT" ;
+					TOOLTIP _HMG_printer_usermessages[05] ;
+					ACTION ( _HMG_printer_CurrentPageNumber++ , _HMG_PRINTER_PreviewRefresh()  )
+
+
+			@ 2,92 BUTTON b4 ;
+					WIDTH 30  ;
+					HEIGHT 30  ;
+					PICTURE "HP_END" ;
+					TOOLTIP _HMG_printer_usermessages[06] ;
+					ACTION ( _HMG_printer_CurrentPageNumber:= _HMG_printer_PageCount, _HMG_PRINTER_PreviewRefresh()  )
+
+
+			@ 2,126 CHECKBUTTON thumbswitch ;
+					WIDTH 30               ;
+					HEIGHT 30               ;
+					PICTURE "HP_THUMBNAIL"   ;
+					TOOLTIP _HMG_printer_usermessages[28] + ' [Ctrl+T]' ;
+					On Change _HMG_PRINTER_ProcessTHUMBNAILS()
+
+/*
+			@ 2,156 BUTTON GoToPage ;
+					WIDTH 30         ;
+					HEIGHT 30         ;
+					PICTURE "HP_GOPAGE" ;
+					TOOLTIP _HMG_printer_usermessages[07] + ' [Ctrl+G]' ;
+					ACTION _HMG_PRINTER_GO_TO_PAGE()
+*/
+
+			@ 2,156 CHECKBUTTON b5 ; 
+					WIDTH 30 ;
+					HEIGHT 30 ;
+					PICTURE "HP_ZOOM" ;
+					TOOLTIP _HMG_printer_usermessages[08] + ' [*]' ;
+					ON CHANGE _HMG_PRINTER_mouseZoom()     ///// _HMG_PRINTER_zoom()
+
+
+			@ 2,186 BUTTON b12 ;
+					WIDTH 30 ;
+					HEIGHT 30  ;
+					PICTURE "HP_PRINT" ;
+					TOOLTIP _HMG_printer_usermessages[09] + ' [Ctrl+P]' ;
+					ACTION _HMG_PRINTER_PrintPages()
+
+
+
+			@ 2,216 BUTTON b7 ;
+					WIDTH 30   ;
+					HEIGHT 30   ;
+					PICTURE "HP_SAVE" ;
+					TOOLTIP _HMG_printer_usermessages[27] + ' [Ctrl+S]' ;
+					ACTION _HMG_printer_savepages()
+
+
+			@ 2,246 BUTTON b6 ;
+					WIDTH 30   ;
+					HEIGHT 30   ;
+					PICTURE "HP_CLOSE" ;
+					TOOLTIP _HMG_printer_usermessages[26] + ' [Ctrl+C]' ;
+					ACTION _HMG_PRINTER_PreviewClose()
+
+			@ 15,291 label lbl_1 value _HMG_printer_usermessages [07] autosize
+			
+			@ 8, 400 TextBox pagina obj _ooHg_Auxil_Page picture '999' numeric width 75 value _HMG_printer_CurrentPageNumber image "HP_GOPAGE" ;
+			action (_ooHg_Auxil_Page:Value:=IF(_ooHg_Auxil_Page:Value<1,1,_ooHg_Auxil_Page:Value),_ooHg_Auxil_Page:Value:=IF(_ooHg_Auxil_Page:Value>_HMG_printer_PageCount,_HMG_printer_PageCount,_ooHg_Auxil_Page:Value), _HMG_printer_CurrentPageNumber := _ooHg_Auxil_Page:Value , _HMG_PRINTER_SHOWPREVIEW:show()  )			
+
+			@ 15,500 label lbl_2 value 'Zoom' autosize
+			
+			@ 8, 550 TextBox zoom obj _ooHg_Auxil_Zoom picture '99.99' numeric width 75 value _HMG_printer_dz image "HP_ZOOM" ;
+			action (_HMG_PRINTER_Dz:=_ooHg_Auxil_Zoom:value*200, _HMG_PRINTER_SHOWPREVIEW:show()  )			
+
+		//	@ 8, 700 TextBox dx obj _ooHg_Auxil_dx picture '99.99' numeric width 75 value _HMG_printer_dx image "HP_ZOOM" ;
+		//	action (_HMG_PRINTER_Dx:=_ooHg_Auxil_dx:value*100, _HMG_PRINTER_SHOWPREVIEW:show()  )			
+
+			
+		END WINDOW
+
+		_HMG_PRINTER_PPNAV:ClienTAdjust:=1
+		
+		DEFINE WINDOW _HMG_PRINTER_SHOWPREVIEW OBJ _HMG_PRINTER_SHOWPREVIEW;
+				AT 0,0 ;
+				WIDTH GetDesktopWidth() - 123 ;
+				HEIGHT GetDesktopHeight() - 123  ;
+				VIRTUAL WIDTH ( GetDesktopWidth() - 123 ) * 2 ;
+				VIRTUAL HEIGHT ( GetDesktopHeight() - 123 ) * 2 ;				
+				INTERNAL ;
+				CURSOR "HP_GLASS" ;
+				ON PAINT _HMG_PRINTER_PreviewRefresh() ;
+				BACKCOLOR GRAY ;
+				ON MOUSECLICK   ( If ( _HMG_PRINTER_PPNAV.b5.value == .T. , _HMG_PRINTER_PPNAV.b5.value := .F. , _HMG_PRINTER_PPNAV.b5.value := .T. )  ) ;
+				ON SCROLLUP     _HMG_PRINTER_ScrolluP() ;
+				ON SCROLLDOWN   _HMG_PRINTER_ScrollDown() ;
+				ON SCROLLLEFT   _HMG_PRINTER_ScrollLeft() ;
+				ON SCROLLRIGHT  _HMG_PRINTER_ScrollRight() ;
+				ON HSCROLLBOX   _HMG_PRINTER_hScrollBoxProcess() ;
+				ON VSCROLLBOX   _HMG_PRINTER_vScrollBoxProcess() 
+
+				ON KEY HOME             ACTION ( _HMG_printer_CurrentPageNumber:=1 , _HMG_PRINTER_PreviewRefresh()  )
+				ON KEY PRIOR            ACTION ( _HMG_printer_CurrentPageNumber-- , _HMG_PRINTER_PreviewRefresh()  )
+				ON KEY NEXT             ACTION ( _HMG_printer_CurrentPageNumber++ , _HMG_PRINTER_PreviewRefresh()  )
+				ON KEY END              ACTION ( _HMG_printer_CurrentPageNumber:= _HMG_printer_PageCount, _HMG_PRINTER_PreviewRefresh() )
+				ON KEY CONTROL+P        ACTION _HMG_PRINTER_PrintPages()
+				//ON KEY CONTROL+G        ACTION _HMG_PRINTER_GO_TO_PAGE()
+				ON KEY ESCAPE           ACTION _HMG_PRINTER_PreviewClose()
+				ON KEY MULTIPLY         ACTION ( If ( _HMG_PRINTER_PPNAV.b5.value == .T. , _HMG_PRINTER_PPNAV.b5.value := .F. , _HMG_PRINTER_PPNAV.b5.value := .T. ) , _HMG_PRINTER_Zoom() )
+				ON KEY CONTROL+C        ACTION _HMG_PRINTER_PreviewClose()
+				ON KEY ALT+F4           ACTION _HMG_PRINTER_PreviewClose()
+				ON KEY CONTROL+S        ACTION _HMG_printer_savepages()
+				ON KEY CONTROL+T        ACTION _HMG_printer_ThumbnailToggle()
+
+				_HMG_PRINTER_SHOWPREVIEW:Clientadjust:=5
+
+		END WINDOW
+
+		if _HMG_PRINTER_GETPAGEHEIGHT(_HMG_printer_hdc_bak) > _HMG_PRINTER_GETPAGEWIDTH(_HMG_printer_hdc_bak)
+			tFactor := 0.44
+		else
+			tFactor := 0.26
+		endif
+
+		tWidth  :=_HMG_PRINTER_GETPAGEWIDTH(_HMG_printer_hdc_bak) * tFactor
+		tHeight :=_HMG_PRINTER_GETPAGEHEIGHT(_HMG_printer_hdc_bak) * tFactor
+
+		tHeight := Int (tHeight)
+
+		tvHeight := ( _HMG_printer_PageCount * (tHeight + 10) ) + GetHScrollbarHeight() + GetTitleHeight() + ( GetBorderHeight() * 2 ) + 7
+
+		if tvHeight <= GetDesktopHeight() - 103
+			_HMG_printer_thumbscroll := .f.
+			tvHeight := GetDesktopHeight() - 102
+		else
+			_HMG_printer_thumbscroll := .t.
+		EndIf
+
+		DEFINE WINDOW _HMG_PRINTER_SHOWTHUMBNAILS obj _HMG_PRINTER_SHOWTHUMBNAILS internal;
+		width 130 ;
+		VIRTUAL WIDTH 130 ;
+		VIRTUAL HEIGHT tvHeight ;
+		TITLE _HMG_printer_usermessages [28] ;
+		BACKCOLOR {100,100,100}
+
+		END WINDOW
+		
+		_HMG_PRINTER_SHOWTHUMBNAILS:Clientadjust:=3
+		_HMG_PRINTER_SHOWTHUMBNAILS:hide()
+
+		@ 0,0  label _lsep obj oSep width 4	value '' border
+		
+		oSep:Clientadjust:=3
+		
+		
+    end window
+
+    define window _HMG_PRINTER_Wait  at 0,0 width 310 height 85 title ' ' child noshow nocaption
+
+		Define label label_1
 			row 30
 			col 5
 			width 300
 			height 30
-                        value _HMG_printer_usermessages [29]
+            value _HMG_printer_usermessages [29]
 			centeralign .t.
 		end label
 	end window
 
-        _HMG_PRINTER_Wait.Center
-
-        DEFINE WINDOW _HMG_PRINTER_SHOWPREVIEW ;
-			AT 0,0 ;
-                        WIDTH GetDesktopWidth() - 123 ;
-                        HEIGHT GetDesktopHeight() - 123  ;
-                        VIRTUAL WIDTH ( GetDesktopWidth() - 123 ) * 2 ;
-                        VIRTUAL HEIGHT ( GetDesktopHeight() - 123 ) * 2 ;
-                        TITLE _HMG_printer_usermessages [01] + ' [' + alltrim(str(_HMG_printer_CurrentPageNumber)) + '/'+alltrim(str(_HMG_printer_PageCount)) + ']';
-			CHILD ;
-			NOSIZE ;
-			NOMINIMIZE ;
-			NOMAXIMIZE ;
-			NOSYSMENU ;
-			CURSOR "HP_GLASS" ;
-                        ON PAINT _HMG_PRINTER_PreviewRefresh() ;
-			BACKCOLOR GRAY ;
-                        ON MOUSECLICK   ( If ( _HMG_PRINTER_PPNAV.b5.value == .T. , _HMG_PRINTER_PPNAV.b5.value := .F. , _HMG_PRINTER_PPNAV.b5.value := .T. )  ) ;
-                        ON SCROLLUP     _HMG_PRINTER_ScrolluP() ;
-                        ON SCROLLDOWN   _HMG_PRINTER_ScrollDown() ;
-                        ON SCROLLLEFT   _HMG_PRINTER_ScrollLeft() ;
-                        ON SCROLLRIGHT  _HMG_PRINTER_ScrollRight() ;
-                        ON HSCROLLBOX   _HMG_PRINTER_hScrollBoxProcess() ;
-                        ON VSCROLLBOX   _HMG_PRINTER_vScrollBoxProcess()
-
-                        ON KEY HOME             ACTION ( _HMG_printer_CurrentPageNumber:=1 , _HMG_PRINTER_PreviewRefresh()  )
-                        ON KEY PRIOR            ACTION ( _HMG_printer_CurrentPageNumber-- , _HMG_PRINTER_PreviewRefresh()  )
-                        ON KEY NEXT             ACTION ( _HMG_printer_CurrentPageNumber++ , _HMG_PRINTER_PreviewRefresh()  )
-                        ON KEY END              ACTION ( _HMG_printer_CurrentPageNumber:= _HMG_printer_PageCount, _HMG_PRINTER_PreviewRefresh() )
-                        ON KEY CONTROL+P        ACTION _HMG_PRINTER_PrintPages()
-                        ON KEY CONTROL+G        ACTION _HMG_PRINTER_GO_TO_PAGE()
-                        ON KEY ESCAPE           ACTION _HMG_PRINTER_PreviewClose()
-                        ON KEY MULTIPLY         ACTION ( If ( _HMG_PRINTER_PPNAV.b5.value == .T. , _HMG_PRINTER_PPNAV.b5.value := .F. , _HMG_PRINTER_PPNAV.b5.value := .T. ) , _HMG_PRINTER_Zoom() )
-                        ON KEY CONTROL+C        ACTION _HMG_PRINTER_PreviewClose()
-                        ON KEY ALT+F4           ACTION _HMG_PRINTER_PreviewClose()
-                        ON KEY CONTROL+S        ACTION _HMG_printer_savepages()
-                        ON KEY CONTROL+T        ACTION _HMG_printer_ThumbnailToggle()
+     _HMG_PRINTER_Wait.Center
 
 
-///////////////   ON MOUSECLICK   ( If ( _HMG_PRINTER_PPNAV.b5.value == .T. , _HMG_PRINTER_PPNAV.b5.value := .F. , _HMG_PRINTER_PPNAV.b5.value := .T. ) , _HMG_PRINTER_MouseZoom() ) ;
-
-	END WINDOW
-
-        Define Window _HMG_PRINTER_PRINTPAGES           ;
+    Define Window _HMG_PRINTER_PRINTPAGES           ;
 		At 0,0					;
 		Width 420				;
 		Height 168 + GetTitleHeight()		;
-                Title _HMG_printer_usermessages [9]     ;
+		Title _HMG_printer_usermessages [9]     ;
 		CHILD NOSHOW 				;
 		NOSIZE NOSYSMENU
 
-                ON KEY ESCAPE   ACTION ( HideWindow ( GetFormHandle ( "_HMG_PRINTER_PRINTPAGES" ) ) , EnableWindow ( GetformHandle ( "_HMG_PRINTER_SHOWPREVIEW" ) ) , EnableWindow ( GetformHandle ( "_HMG_PRINTER_SHOWTHUMBNAILS" ) ) , EnableWindow ( GetformHandle ( "_HMG_PRINTER_PPNAV" ) ) , _HMG_PRINTER_SHOWPREVIEW.setfocus )
-                ON KEY RETURN   ACTION _HMG_PRINTER_PrintPagesDo()
+		ON KEY ESCAPE   ACTION ( HideWindow ( GetFormHandle ( "_HMG_PRINTER_PRINTPAGES" ) ) , EnableWindow ( GetformHandle ( "_HMG_PRINTER_SHOWPREVIEW" ) ) , EnableWindow ( GetformHandle ( "_HMG_PRINTER_SHOWTHUMBNAILS" ) ) , EnableWindow ( GetformHandle ( "_HMG_PRINTER_PPNAV" ) ) , _HMG_PRINTER_SHOWPREVIEW.setfocus )
+		ON KEY RETURN   ACTION _HMG_PRINTER_PrintPagesDo()
 
 		Define Frame Frame_1
 			Row 5
@@ -203,7 +365,7 @@ Public _HMG_printer_PrevPageNumber := 0
 			Height 147
 			FontName 'Arial'
 			FontSize 9
-                        Caption _HMG_printer_usermessages [15]
+			Caption _HMG_printer_usermessages [15]
 		End Frame
 
 		Define RadioGroup Radio_1
@@ -212,8 +374,8 @@ Public _HMG_printer_PrevPageNumber := 0
 			FontName 'Arial'
 			FontSize 9
 			Value 1
-                        Options { _HMG_printer_usermessages [16] , _HMG_printer_usermessages [17] }
-                        OnChange if ( This.value == 1 , ( _HMG_PRINTER_PRINTPAGES.Label_1.Enabled := .F. , _HMG_PRINTER_PRINTPAGES.Label_2.Enabled := .F. , _HMG_PRINTER_PRINTPAGES.Spinner_1.Enabled := .F. , _HMG_PRINTER_PRINTPAGES.Spinner_2.Enabled := .F. , _HMG_PRINTER_PRINTPAGES.Combo_1.Enabled := .F.  , _HMG_PRINTER_PRINTPAGES.Label_4.Enabled := .F. ) , ( _HMG_PRINTER_PRINTPAGES.Label_1.Enabled := .T. , _HMG_PRINTER_PRINTPAGES.Label_2.Enabled := .T. , _HMG_PRINTER_PRINTPAGES.Spinner_1.Enabled := .T. , _HMG_PRINTER_PRINTPAGES.Spinner_2.Enabled := .T. , _HMG_PRINTER_PRINTPAGES.Combo_1.Enabled := .T.  , _HMG_PRINTER_PRINTPAGES.Label_4.Enabled := .T. , _HMG_PRINTER_PRINTPAGES.Spinner_1.SetFocus ) )
+			Options { _HMG_printer_usermessages [16] , _HMG_printer_usermessages [17] }
+			OnChange if ( This.value == 1 , ( _HMG_PRINTER_PRINTPAGES.Label_1.Enabled := .F. , _HMG_PRINTER_PRINTPAGES.Label_2.Enabled := .F. , _HMG_PRINTER_PRINTPAGES.Spinner_1.Enabled := .F. , _HMG_PRINTER_PRINTPAGES.Spinner_2.Enabled := .F. , _HMG_PRINTER_PRINTPAGES.Combo_1.Enabled := .F.  , _HMG_PRINTER_PRINTPAGES.Label_4.Enabled := .F. ) , ( _HMG_PRINTER_PRINTPAGES.Label_1.Enabled := .T. , _HMG_PRINTER_PRINTPAGES.Label_2.Enabled := .T. , _HMG_PRINTER_PRINTPAGES.Spinner_1.Enabled := .T. , _HMG_PRINTER_PRINTPAGES.Spinner_2.Enabled := .T. , _HMG_PRINTER_PRINTPAGES.Combo_1.Enabled := .T.  , _HMG_PRINTER_PRINTPAGES.Label_4.Enabled := .T. , _HMG_PRINTER_PRINTPAGES.Spinner_1.SetFocus ) )
 		End RadioGroup
 
 		Define Label Label_1
@@ -223,7 +385,7 @@ Public _HMG_printer_PrevPageNumber := 0
 			Height 25
 			FontName 'Arial'
 			FontSize 9
-                        Value _HMG_printer_usermessages [18] + ':'
+			Value _HMG_printer_usermessages [18] + ':'
 		End Label
 
 		Define Spinner Spinner_1
@@ -234,7 +396,7 @@ Public _HMG_printer_PrevPageNumber := 0
 			FontSize 9
 			Value 1
 			RangeMin 1
-                        RangeMax _HMG_printer_PageCount
+			RangeMax _HMG_printer_PageCount
 		End Spinner
 
 		Define Label Label_2
@@ -244,7 +406,7 @@ Public _HMG_printer_PrevPageNumber := 0
 			Height 25
 			FontName 'Arial'
 			FontSize 9
-                        Value _HMG_printer_usermessages [19] + ':'
+			Value _HMG_printer_usermessages [19] + ':'
 		End Label
 
 		Define Spinner Spinner_2
@@ -253,9 +415,9 @@ Public _HMG_printer_PrevPageNumber := 0
 			Width 50
 			FontName 'Arial'
 			FontSize 9
-                        Value _HMG_printer_PageCount
+			Value _HMG_printer_PageCount
 			RangeMin 1
-                        RangeMax _HMG_printer_PageCount
+			RangeMax _HMG_printer_PageCount
 		End Spinner
 
 		Define Label Label_4
@@ -265,7 +427,7 @@ Public _HMG_printer_PrevPageNumber := 0
 			Height 25
 			FontName 'Arial'
 			FontSize 9
-                        Value _HMG_printer_usermessages [09] + ':'
+			Value _HMG_printer_usermessages [09] + ':'
 		End Label
 
 		Define ComboBox Combo_1
@@ -275,7 +437,7 @@ Public _HMG_printer_PrevPageNumber := 0
 			FontName 'Arial'
 			FontSize 9
 			Value 1
-                        Items {_HMG_printer_usermessages [21] , _HMG_printer_usermessages [22] , _HMG_printer_usermessages [23] }
+			Items {_HMG_printer_usermessages [21] , _HMG_printer_usermessages [22] , _HMG_printer_usermessages [23] }
 		End ComboBox
 
 		Define Button Ok
@@ -285,8 +447,8 @@ Public _HMG_printer_PrevPageNumber := 0
 			Height 25
 			FontName 'Arial'
 			FontSize 9
-                        Caption _HMG_printer_usermessages [11]
-                        Action _HMG_PRINTER_PrintPagesDo()
+			Caption _HMG_printer_usermessages [11]
+			Action _HMG_PRINTER_PrintPagesDo()
 		End Button
 
 		Define Button Cancel
@@ -296,8 +458,8 @@ Public _HMG_printer_PrevPageNumber := 0
 			Height 25
 			FontName 'Arial'
 			FontSize 9
-                        Caption _HMG_printer_usermessages [12]
-                        Action ( EnableWindow ( GetformHandle ( "_HMG_PRINTER_SHOWPREVIEW" ) ) , EnableWindow ( GetformHandle ( "_HMG_PRINTER_SHOWTHUMBNAILS" ) ) , EnableWindow ( GetformHandle ( "_HMG_PRINTER_PPNAV" ) ) , HideWindow ( GetFormHandle ( "_HMG_PRINTER_PRINTPAGES" ) ) , _HMG_PRINTER_SHOWPREVIEW.setfocus )
+			Caption _HMG_printer_usermessages [12]
+			Action ( EnableWindow ( GetformHandle ( "_HMG_PRINTER_SHOWPREVIEW" ) ) , EnableWindow ( GetformHandle ( "_HMG_PRINTER_SHOWTHUMBNAILS" ) ) , EnableWindow ( GetformHandle ( "_HMG_PRINTER_PPNAV" ) ) , HideWindow ( GetFormHandle ( "_HMG_PRINTER_PRINTPAGES" ) ) , _HMG_PRINTER_SHOWPREVIEW.setfocus )
 		End Button
 
 		Define Label Label_3
@@ -307,7 +469,7 @@ Public _HMG_printer_PrevPageNumber := 0
 			Height 25
 			FontName 'Arial'
 			FontSize 9
-                        Value _HMG_printer_usermessages [20] + ':'
+			Value _HMG_printer_usermessages [20] + ':'
 		End Label
 
 		Define Spinner Spinner_3
@@ -316,281 +478,68 @@ Public _HMG_printer_PrevPageNumber := 0
 			Width 50
 			FontName 'Arial'
 			FontSize 9
-                        Value _HMG_printer_copies
+			Value _HMG_printer_copies
 			RangeMin 1
 			RangeMax 999
-                        OnChange ( if ( _IsControlDefined ("CheckBox_1","_HMG_PRINTER_PRINTPAGES") , If ( This.Value > 1 , SetProperty( '_HMG_PRINTER_PRINTPAGES' , 'CheckBox_1','Enabled',.T.) , SetProperty( '_HMG_PRINTER_PRINTPAGES','CheckBox_1','Enabled', .F. ) ) , Nil ) )
+			OnChange ( if ( _IsControlDefined ("CheckBox_1","_HMG_PRINTER_PRINTPAGES") , If ( This.Value > 1 , SetProperty( '_HMG_PRINTER_PRINTPAGES' , 'CheckBox_1','Enabled',.T.) , SetProperty( '_HMG_PRINTER_PRINTPAGES','CheckBox_1','Enabled', .F. ) ) , Nil ) )
 		End Spinner
 
 		Define CheckBox CheckBox_1
 			Row 132
-                        Col 300
+			Col 300
 			Width 110
 			FontName 'Arial'
 			FontSize 9
-                        Value if ( _HMG_printer_collate == 1 , .T. , .F. )
-                        Caption _HMG_printer_usermessages [14]
+			Value if ( _HMG_printer_collate == 1 , .T. , .F. )
+			Caption _HMG_printer_usermessages [14]
 		End CheckBox
 
 	End Window
 
-        Center Window _HMG_PRINTER_PRINTPAGES
+	Center Window _HMG_PRINTER_PRINTPAGES
 
-        Define Window _HMG_PRINTER_GO_TO_PAGE           ;
-		At 0,0					;
-		Width 195				;
-		Height 90 + GetTitleHeight()		;
-                Title _HMG_printer_usermessages [07]    ;
-		CHILD NOSHOW				;
-		NOSIZE NOSYSMENU
+  
 
-                ON KEY ESCAPE   ACTION ( HideWindow( GetFormHandle ( "_HMG_PRINTER_GO_TO_PAGE" ) ) , EnableWindow ( GetformHandle ( "_HMG_PRINTER_SHOWPREVIEW" ) )  , EnableWindow ( GetformHandle ( "_HMG_PRINTER_SHOWTHUMBNAILS" ) ) , EnableWindow ( GetformHandle ( "_HMG_PRINTER_PPNAV" ) ) , _HMG_PRINTER_SHOWPREVIEW.setfocus  )
-                ON KEY RETURN   ACTION ( _HMG_printer_CurrentPageNumber := _HMG_PRINTER_GO_TO_PAGE.Spinner_1.Value , HideWindow( GetFormHandle ( "_HMG_PRINTER_GO_TO_PAGE" ) ) , EnableWindow ( GetformHandle ( "_HMG_PRINTER_SHOWPREVIEW" ) )  , EnableWindow ( GetformHandle ( "_HMG_PRINTER_SHOWTHUMBNAILS" ) ) , EnableWindow ( GetformHandle ( "_HMG_PRINTER_PPNAV" ) ) , _HMG_PRINTER_SHOWPREVIEW.setfocus  )
 
-		Define Label Label_1
-			Row 13
-			Col 10
-			Width 94
-			Height 25
-			FontName 'Arial'
-			FontSize 9
-                        Value _HMG_printer_usermessages [10] + ':'
-		End Label
-
-		Define Spinner Spinner_1
-			Row 10
-			Col 105
-			Width 75
-			FontName 'Arial'
-			FontSize 9
-                        Value _HMG_printer_CurrentPageNumber
-			RangeMin 1
-                        RangeMax _HMG_printer_PageCount
-		End Spinner
-
-		Define Button Ok
-			Row 48
-			Col 10
-			Width 80
-			Height 25
-			FontName 'Arial'
-			FontSize 9
-                        Caption _HMG_printer_usermessages [11]
-                        Action ( _HMG_printer_CurrentPageNumber := _HMG_PRINTER_GO_TO_PAGE.Spinner_1.Value , HideWindow( GetFormHandle ( "_HMG_PRINTER_GO_TO_PAGE" ) ) , EnableWindow ( GetformHandle ( "_HMG_PRINTER_SHOWPREVIEW" ) ) , EnableWindow ( GetformHandle ( "_HMG_PRINTER_SHOWTHUMBNAILS" ) ) , EnableWindow ( GetformHandle ( "_HMG_PRINTER_PPNAV" ) ) , _HMG_PRINTER_SHOWPREVIEW.setfocus  )
-		End Button
-
-		Define Button Cancel
-			Row 48
-			Col 100
-			Width 80
-			Height 25
-			FontName 'Arial'
-			FontSize 9
-                        Caption _HMG_printer_usermessages [12]
-                        Action ( HideWindow( GetFormHandle ( "_HMG_PRINTER_GO_TO_PAGE" ) ) , EnableWindow ( GetformHandle ( "_HMG_PRINTER_SHOWPREVIEW" ) )  , EnableWindow ( GetformHandle ( "_HMG_PRINTER_SHOWTHUMBNAILS" ) ) , EnableWindow ( GetformHandle ( "_HMG_PRINTER_PPNAV" ) ) , _HMG_PRINTER_SHOWPREVIEW.setfocus  )
-		End Button
-
-	End Window
-
-        Center Window _HMG_PRINTER_GO_TO_PAGE
-
-        if _HMG_PRINTER_GETPAGEHEIGHT(_HMG_printer_hdc_bak) > _HMG_PRINTER_GETPAGEWIDTH(_HMG_printer_hdc_bak)
-		tFactor := 0.44
-	else
-		tFactor := 0.26
+	if _HMG_printer_thumbscroll == .f.
+		_HMG_PRINTER_PREVIEW_DISABLESCROLLBARS (GetFormHandle('_HMG_PRINTER_SHOWTHUMBNAILS'))
 	endif
 
-        tWidth  :=_HMG_PRINTER_GETPAGEWIDTH(_HMG_printer_hdc_bak) * tFactor
-        tHeight :=_HMG_PRINTER_GETPAGEHEIGHT(_HMG_printer_hdc_bak) * tFactor
+	
+	SetScrollRange ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_VERT , 0 , 100 , 1 )
+	SetScrollRange ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_HORZ , 0 , 100 , 1 )
 
-	tHeight := Int (tHeight)
+	SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_VERT , 50 , 1 )
+	SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_HORZ , 50 , 1 )
 
-        tvHeight := ( _HMG_printer_PageCount * (tHeight + 10) ) + GetHScrollbarHeight() + GetTitleHeight() + ( GetBorderHeight() * 2 ) + 7
+	_HMG_PRINTER_PREVIEW_DISABLESCROLLBARS (GetFormHandle('_HMG_PRINTER_SHOWPREVIEW'))
 
-	if tvHeight <= GetDesktopHeight() - 103
-                _HMG_printer_thumbscroll := .f.
-		tvHeight := GetDesktopHeight() - 102
-	else
-                _HMG_printer_thumbscroll := .t.
-	EndIf
+	_HMG_PRINTER_PREVIEW_DISABLEHSCROLLBAR (GetFormHandle('_HMG_PRINTER_SHOWTHUMBNAILS'))
 
-        DEFINE WINDOW _HMG_PRINTER_SHOWTHUMBNAILS ;
-		AT 0,5 ;
-		WIDTH 130 ;
-		HEIGHT GetDesktopHeight() - 103  ;
-		VIRTUAL WIDTH 131 ;
-		VIRTUAL HEIGHT tvHeight ;
-                TITLE _HMG_printer_usermessages [28] ;
-		CHILD ;
-		NOSIZE ;
-		NOMINIMIZE ;
-		NOMAXIMIZE ;
-		NOSYSMENU ;
-		NOSHOW ;
-		BACKCOLOR GRAY
+	CENTER WINDOW _HMG_PRINTER_SHOWPREVIEW
 
-                ON KEY HOME             ACTION ( _HMG_printer_CurrentPageNumber:=1 , _HMG_PRINTER_PreviewRefresh()  )
-                ON KEY PRIOR            ACTION ( _HMG_printer_CurrentPageNumber-- , _HMG_PRINTER_PreviewRefresh()  )
-                ON KEY NEXT             ACTION ( _HMG_printer_CurrentPageNumber++ , _HMG_PRINTER_PreviewRefresh()  )
-                ON KEY END              ACTION ( _HMG_printer_CurrentPageNumber:= _HMG_printer_PageCount, _HMG_PRINTER_PreviewRefresh() )
-                ON KEY CONTROL+P        ACTION _HMG_PRINTER_PrintPages()
-                ON KEY CONTROL+G        ACTION _HMG_PRINTER_GO_TO_PAGE()
-                ON KEY ESCAPE           ACTION _HMG_PRINTER_PreviewClose()
-                ON KEY MULTIPLY         ACTION ( If ( _HMG_PRINTER_PPNAV.b5.value == .T. , _HMG_PRINTER_PPNAV.b5.value := .F. , _HMG_PRINTER_PPNAV.b5.value := .T. ) , _HMG_PRINTER_Zoom() )
-                ON KEY CONTROL+C        ACTION _HMG_PRINTER_PreviewClose()
-                ON KEY ALT+F4           ACTION _HMG_PRINTER_PreviewClose()
-                ON KEY CONTROL+S        ACTION _HMG_printer_savepages()
-                ON KEY CONTROL+T        ACTION _HMG_printer_ThumbnailToggle()
-
-	END WINDOW
-
-        if _HMG_printer_thumbscroll == .f.
-                _HMG_PRINTER_PREVIEW_DISABLESCROLLBARS (GetFormHandle('_HMG_PRINTER_SHOWTHUMBNAILS'))
-	endif
-
-        DEFINE WINDOW _HMG_PRINTER_PPNAV ;
-			AT 1, GetDesktopWidth() - 320 ;
-			WIDTH 312 + GetBorderWidth() ;
-			HEIGHT 35 + GetTitleHeight() + GetBorderHeight() ;
-                        TITLE _HMG_printer_usermessages [02] ;
-			CHILD  ;
-			NOMAXIMIZE ;
-			NOMINIMIZE ;
-			NOSIZE ;
-			NOSYSMENU
-
-
-                        @ 2,2 BUTTON b1 ;
-                               WIDTH 30  ;
-                                HEIGHT 30  ;
-                                PICTURE "HP_TOP" ;
-                                TOOLTIP _HMG_printer_usermessages[03] ;
-                                ACTION (  ejecuta()  )
-
-
-
-                        @ 2,32 BUTTON b2 ;
-                               WIDTH 30  ;
-                                HEIGHT 30  ;
-                                PICTURE "HP_BACK" ;
-                                TOOLTIP _HMG_printer_usermessages[04] ;
-                                ACTION ( _HMG_printer_CurrentPageNumber-- , _HMG_PRINTER_PreviewRefresh()  )
-
-
-                        @ 2,62  BUTTON b3 ;
-                                WIDTH 30  ;
-                                HEIGHT 30  ;
-                                PICTURE "HP_NEXT" ;
-                                TOOLTIP _HMG_printer_usermessages[05] ;
-                                ACTION ( _HMG_printer_CurrentPageNumber++ , _HMG_PRINTER_PreviewRefresh()  )
-
-
-                        @ 2,92 BUTTON b4 ;
-                                WIDTH 30  ;
-                                HEIGHT 30  ;
-                                PICTURE "HP_END" ;
-                                TOOLTIP _HMG_printer_usermessages[06] ;
-                                ACTION ( _HMG_printer_CurrentPageNumber:= _HMG_printer_PageCount, _HMG_PRINTER_PreviewRefresh()  )
-
-
-                        @ 2,126 CHECKBUTTON thumbswitch ;
-                                WIDTH 30               ;
-                                HEIGHT 30               ;
-                                PICTURE "HP_THUMBNAIL"   ;
-                                TOOLTIP _HMG_printer_usermessages[28] + ' [Ctrl+T]' ;
-                                On Change _HMG_PRINTER_ProcessTHUMBNAILS()
-
-
-                        @ 2,156 BUTTON GoToPage ;
-                                WIDTH 30         ;
-                                HEIGHT 30         ;
-                                PICTURE "HP_GOPAGE" ;
-                                TOOLTIP _HMG_printer_usermessages[07] + ' [Ctrl+G]' ;
-                                ACTION _HMG_PRINTER_GO_TO_PAGE()
-
-
-                        @ 2,186 CHECKBUTTON b5 ;
-                                WIDTH 30 ;
-                                HEIGHT 30 ;
-                                PICTURE "HP_ZOOM" ;
-                                TOOLTIP _HMG_printer_usermessages[08] + ' [*]' ;
-                                ON CHANGE _HMG_PRINTER_mouseZoom()     ///// _HMG_PRINTER_zoom()
-
-
-                        @ 2,216 BUTTON b12 ;
-                                WIDTH 30 ;
-                                HEIGHT 30  ;
-                                PICTURE "HP_PRINT" ;
-                                TOOLTIP _HMG_printer_usermessages[09] + ' [Ctrl+P]' ;
-                                ACTION _HMG_PRINTER_PrintPages()
-
-
-
-                        @ 2,246 BUTTON b7 ;
-                                WIDTH 30   ;
-                                HEIGHT 30   ;
-                                PICTURE "HP_SAVE" ;
-                                TOOLTIP _HMG_printer_usermessages[27] + ' [Ctrl+S]' ;
-                                ACTION _HMG_printer_savepages()
-
-
-                        @ 2,280 BUTTON b6 ;
-                                WIDTH 30   ;
-                                HEIGHT 30   ;
-                                PICTURE "HP_CLOSE" ;
-                                TOOLTIP _HMG_printer_usermessages[26] + ' [Ctrl+C]' ;
-                                ACTION _HMG_PRINTER_PreviewClose()
-
-
-                        ON KEY HOME             ACTION ( _HMG_printer_CurrentPageNumber:=1 , _HMG_PRINTER_PreviewRefresh()  )
-                        ON KEY PRIOR            ACTION ( _HMG_printer_CurrentPageNumber-- , _HMG_PRINTER_PreviewRefresh()  )
-                        ON KEY NEXT             ACTION ( _HMG_printer_CurrentPageNumber++ , _HMG_PRINTER_PreviewRefresh()  )
-                        ON KEY END              ACTION ( _HMG_printer_CurrentPageNumber:= _HMG_printer_PageCount, _HMG_PRINTER_PreviewRefresh()  )
-                        ON KEY CONTROL+P        ACTION _HMG_PRINTER_Printpages()
-                        ON KEY CONTROL+G        ACTION _HMG_PRINTER_GO_TO_PAGE()
-                        ON KEY ESCAPE           ACTION _HMG_PRINTER_PreviewClose()
-                        ON KEY MULTIPLY         ACTION ( If ( _HMG_PRINTER_PPNAV.b5.value == .T. , _HMG_PRINTER_PPNAV.b5.value := .F. , _HMG_PRINTER_PPNAV.b5.value := .T. ) , _HMG_PRINTER_Zoom() )
-                        ON KEY CONTROL+C        ACTION _HMG_PRINTER_PreviewClose()
-                        ON KEY ALT+F4           ACTION _HMG_PRINTER_PreviewClose()
-                        ON KEY CONTROL+S        ACTION _HMG_printer_savepages()
-                        ON KEY CONTROL+T        ACTION _HMG_printer_ThumbnailToggle()
-
-	END WINDOW
-
-        SetScrollRange ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_VERT , 0 , 100 , 1 )
-        SetScrollRange ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_HORZ , 0 , 100 , 1 )
-
-        SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_VERT , 50 , 1 )
-        SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_HORZ , 50 , 1 )
-
-        _HMG_PRINTER_PREVIEW_DISABLESCROLLBARS (GetFormHandle('_HMG_PRINTER_SHOWPREVIEW'))
-
-        _HMG_PRINTER_PREVIEW_DISABLEHSCROLLBAR (GetFormHandle('_HMG_PRINTER_SHOWTHUMBNAILS'))
-
-        CENTER WINDOW _HMG_PRINTER_SHOWPREVIEW
-
-        Tmp := _HMG_PRINTER_SHOWPREVIEW.ROW
+	Tmp := _oohg_Auxil.ROW
 
 	Tmp := Tmp + GetTitleHeight() - 10
 
-        _HMG_PRINTER_SHOWPREVIEW.ROW := Tmp
+	_oohg_Auxil.ROW := Tmp
 
-        _HMG_PRINTER_SHOWTHUMBNAILS.ROW := Tmp
+    center window _oohg_Auxil
+	
+	ACTIVATE WINDOW  _oohg_auxil ,_HMG_PRINTER_PRINTPAGES ,  _HMG_PRINTER_Wait
 
-        ACTIVATE WINDOW _HMG_PRINTER_PRINTPAGES , _HMG_PRINTER_GO_TO_PAGE , _HMG_PRINTER_SHOWTHUMBNAILS , _HMG_PRINTER_SHOWPREVIEW , _HMG_PRINTER_Wait , _HMG_PRINTER_PPNAV
+	_HMG_printer_hdc := _HMG_printer_hdc_bak
 
-        _HMG_printer_hdc := _HMG_printer_hdc_bak
-
-        setinteractiveclose(icb)
+	setinteractiveclose(icb)
 
 Return
 
 static procedure ejecuta()
-_HMG_printer_CurrentPageNumber:=1
-_HMG_PRINTER_PreviewRefresh()
+	_HMG_printer_CurrentPageNumber:=1
+	_HMG_PRINTER_PreviewRefresh()
 return
 
-*---a---------------------------------------------------------------------------*
+*------------------------------------------------------------------------------*
 Procedure CreateThumbNails
 *------------------------------------------------------------------------------*
 Local tFactor
@@ -607,7 +556,7 @@ Local cAction
 
         ShowWindow ( GetFormHandle ( "_HMG_PRINTER_Wait" ) )
 
-        if _HMG_PRINTER_GETPAGEHEIGHT(_HMG_printer_hdc_bak) > _HMG_PRINTER_GETPAGEWIDTH(_HMG_printer_hdc_bak)
+    if _HMG_PRINTER_GETPAGEHEIGHT(_HMG_printer_hdc_bak) > _HMG_PRINTER_GETPAGEWIDTH(_HMG_printer_hdc_bak)
 		tFactor := 0.44
 	else
 		tFactor := 0.26
@@ -634,7 +583,7 @@ Local cAction
 
                 SetToolTip ( GetControlHandle ( cMacroTemp ,'_HMG_PRINTER_SHOWTHUMBNAILS'), _HMG_printer_usermessages [01] + ' ' + AllTrim(Str(i)) + ' [Click]' , ttHandle )
 
-	Next i
+		Next i
 
         HideWindow ( GetFormHandle ( "_HMG_PRINTER_Wait" ) )
 
@@ -660,33 +609,11 @@ Return .F.
 Procedure _HMG_PRINTER_ProcessTHUMBNAILS()
 *------------------------------------------------------------------------------*
 
-        If _HMG_PRINTER_PPNAV.thumbswitch.Value == .T.
-
+    If _HMG_PRINTER_PPNAV.thumbswitch.Value == .T.
 		CreateThumbNails()
-
-                _HMG_printer_zoomclick_xoffset := 90
-
-                _HMG_printer_SizeFactor := GetDesktopHeight() / _HMG_PRINTER_GETPAGEHEIGHT(_HMG_printer_hdc_bak) * 0.58
-
-                _HMG_PRINTER_SHOWPREVIEW.Width := GetDesktopWidth() - 148
-
-                _HMG_PRINTER_SHOWPREVIEW.Col := 138
-
-                ShowWindow ( GetFormHandle ( "_HMG_PRINTER_SHOWTHUMBNAILS" ) )
-
+		_HMG_PRINTER_SHOWTHUMBNAILS.show()
 	else
-
-                _HMG_printer_zoomclick_xoffset := 0
-
-                _HMG_printer_SizeFactor := GetDesktopHeight() / _HMG_PRINTER_GETPAGEHEIGHT(_HMG_printer_hdc_bak) * 0.63
-
-                _HMG_PRINTER_SHOWPREVIEW.Width := GetDesktopWidth() - 103
-                _HMG_PRINTER_SHOWPREVIEW.Col := 51
-
-                HideWindow ( GetFormHandle ( "_HMG_PRINTER_SHOWTHUMBNAILS" ) )
-
-                _HMG_PRINTER_PPNAV.SetFocus
-
+		_HMG_PRINTER_SHOWTHUMBNAILS.hide()
 	EndIf
 
 Return
@@ -720,19 +647,7 @@ Local c , i , f , t , d , x
 	Next i
 
 Return
-*------------------------------------------------------------------------------*
-Procedure _HMG_PRINTER_GO_TO_PAGE
-*------------------------------------------------------------------------------*
 
-        DIsableWindow ( GetformHandle ( "_HMG_PRINTER_PPNAV" ) )
-
-        DIsableWindow ( GetformHandle ( "_HMG_PRINTER_SHOWTHUMBNAILS" ) )
-
-        DIsableWindow ( GetformHandle ( "_HMG_PRINTER_SHOWPREVIEW" ) )
-
-        ShowWindow ( GetFormHandle ( "_HMG_PRINTER_GO_TO_PAGE" ) )
-
-Return
 *------------------------------------------------------------------------------*
 Procedure _HMG_PRINTER_hScrollBoxProcess()
 *------------------------------------------------------------------------------*
@@ -764,25 +679,15 @@ Procedure _HMG_PRINTER_PreviewClose()
         _HMG_PRINTER_CleanPreview()
 
 
+        
+        if iswindowdefined("_HMG_PRINTER_WAIT")
+           _HMG_PRINTER_WAIT.Release
+        Endif
 
-
-
-
-        _HMG_PRINTER_PPNAV.Release
-
-        _HMG_PRINTER_WAIT.Release
-        _oohg_auxil.release
-
-        if iswindowdefined("_HMG_PRINTER_SHOWPREVIEW")
-          _HMG_PRINTER_SHOWPREVIEW.Release
-        endif
-
-        if iswindowdefined("_HMG_PRINTER_SHOWTHUMBNAILS")
-          _HMG_PRINTER_SHOWTHUMBNAILS.Release
-        endif
-        if iswindowdefined("_HMG_PRINTER_GO_TO_PAGE")
-           _HMG_PRINTER_GO_TO_PAGE.Release
-        endif
+        if iswindowdefined("_oohg_auxil")
+           _oohg_auxil.release
+        Endif
+        
         if iswindowdefined("_HMG_PRINTER_PRINTPAGES")
            _HMG_PRINTER_PRINTPAGES.Release
         endif
@@ -796,6 +701,8 @@ Procedure _HMG_PRINTER_CleanPreview
 		{ |file| Ferase( GetTempFolder() + "\" + file[1] ) } )
 
 Return
+
+
 *------------------------------------------------------------------------------*
 Procedure _HMG_PRINTER_PreviewRefresh
 *------------------------------------------------------------------------------*
@@ -803,67 +710,66 @@ Local hwnd
 Local nRow
 Local nScrollMax
 
-        if ! __MVEXIST ( '_HMG_printer_CurrentPageNumber' )
-                __MVPUBLIC( '_HMG_printer_CurrentPageNumber' )
-                __MVPUT( '_HMG_printer_CurrentPageNumber' , 1 )
+    if ! __MVEXIST ( '_HMG_printer_CurrentPageNumber' )
+		__MVPUBLIC( '_HMG_printer_CurrentPageNumber' )
+		__MVPUT( '_HMG_printer_CurrentPageNumber' , 1 )
 	endif
 
 
-        If _IsControlDefined ( 'Image' + AllTrim(Str(_HMG_printer_CurrentPageNumber)) , '_HMG_PRINTER_SHOWTHUMBNAILS' ) .and. _HMG_PRINTER_THUMBUPDATE == .T. .and. _HMG_printer_thumbscroll == .T.
+	if _IsControlDefined ( 'Image' + AllTrim(Str(_HMG_printer_CurrentPageNumber)) , '_HMG_PRINTER_SHOWTHUMBNAILS' ) .and. _HMG_PRINTER_THUMBUPDATE == .T. .and. _HMG_printer_thumbscroll == .T.
 
-                if _HMG_printer_PrevPageNumber != _HMG_printer_CurrentPageNumber
-                        _HMG_printer_PrevPageNumber := _HMG_printer_CurrentPageNumber
+		if _HMG_printer_PrevPageNumber != _HMG_printer_CurrentPageNumber
+			_HMG_printer_PrevPageNumber := _HMG_printer_CurrentPageNumber
 
 
-                hwnd := GetFormHandle('_HMG_PRINTER_SHOWTHUMBNAILS')
-                nRow := GetProperty ( '_HMG_PRINTER_SHOWTHUMBNAILS' , 'Image' + AllTrim(Str(_HMG_printer_CurrentPageNumber)) , 'Row' )
-		nScrollMax := GetScrollRangeMax ( hwnd , SB_VERT )
+			hwnd := GetFormHandle('_HMG_PRINTER_SHOWTHUMBNAILS')
+			nRow := GetProperty ( '_HMG_PRINTER_SHOWTHUMBNAILS' , 'Image' + AllTrim(Str(_HMG_printer_CurrentPageNumber)) , 'Row' )
+			nScrollMax := GetScrollRangeMax ( hwnd , SB_VERT )
 
-                if _HMG_printer_PageCount == _HMG_printer_CurrentPageNumber
+            if _HMG_printer_PageCount == _HMG_printer_CurrentPageNumber
 
-			if GetScrollPos(hwnd,SB_VERT) != nScrollMax
-                                _HMG_PRINTER_SETVSCROLLVALUE ( hwnd , nScrollMax )
-			EndIf
-
-                ElseIf _HMG_printer_CurrentPageNumber == 1
-
-			if GetScrollPos(hwnd,SB_VERT) != 0
-                                _HMG_PRINTER_SETVSCROLLVALUE ( hwnd , 0 )
-			EndIf
-
-		Else
-
-			if ( nRow - 9 ) < nScrollMax
-                                _HMG_PRINTER_SETVSCROLLVALUE ( hwnd , nRow - 9 )
-			Else
 				if GetScrollPos(hwnd,SB_VERT) != nScrollMax
-                                        _HMG_PRINTER_SETVSCROLLVALUE ( hwnd , nScrollMax )
+                     _HMG_PRINTER_SETVSCROLLVALUE ( hwnd , nScrollMax )
+				EndIf
+
+			ElseIf _HMG_printer_CurrentPageNumber == 1
+
+				if GetScrollPos(hwnd,SB_VERT) != 0
+					_HMG_PRINTER_SETVSCROLLVALUE ( hwnd , 0 )
+				EndIf
+			Else
+
+				if ( nRow - 9 ) < nScrollMax
+					_HMG_PRINTER_SETVSCROLLVALUE ( hwnd , nRow - 9 )
+				Else
+					if GetScrollPos(hwnd,SB_VERT) != nScrollMax
+						_HMG_PRINTER_SETVSCROLLVALUE ( hwnd , nScrollMax )
+					EndIf
 				EndIf
 			EndIf
 
 		EndIf
 
-		EndIf
-
 	EndIf
 
-        if _HMG_printer_CurrentPageNumber < 1
-                _HMG_printer_CurrentPageNumber := 1
+    if _HMG_printer_CurrentPageNumber < 1
+        _HMG_printer_CurrentPageNumber := 1
 		PlayBeep()
 		Return
 	EndIf
 
-        if _HMG_printer_CurrentPageNumber > _HMG_printer_PageCount
-                _HMG_printer_CurrentPageNumber := _HMG_printer_PageCount
+	if _HMG_printer_CurrentPageNumber > _HMG_printer_PageCount
+		_HMG_printer_CurrentPageNumber := _HMG_printer_PageCount
 		PlayBeep()
 		Return
 	EndIf
 
-        _HMG_PRINTER_SHOWPAGE ( _HMG_printer_BasePageName + strzero(_HMG_printer_CurrentPageNumber,4) + ".emf" , GetFormhandle ('_HMG_PRINTER_SHOWPREVIEW') , _HMG_printer_hdc_bak , _HMG_printer_SizeFactor * 10000 , _HMG_printer_Dz , _HMG_printer_Dx , _HMG_printer_Dy )
-
-        _HMG_PRINTER_SHOWPREVIEW.TITLE := _HMG_printer_usermessages [01] + ' [' + alltrim(str(_HMG_printer_CurrentPageNumber)) + '/'+alltrim(str(_HMG_printer_PageCount)) + ']'
+	_HMG_PRINTER_SHOWPAGE ( _HMG_printer_BasePageName + strzero(_HMG_printer_CurrentPageNumber,4) + ".emf" , GetFormhandle ('_HMG_PRINTER_SHOWPREVIEW') , _HMG_printer_hdc_bak , _HMG_printer_SizeFactor * 10000 , _HMG_printer_Dz , _HMG_printer_Dx , _HMG_printer_Dy )
+	_oohg_Auxil.TITLE := _HMG_printer_usermessages [02]+'. '+_HMG_printer_usermessages [01] + ' [' + alltrim(str(_HMG_printer_CurrentPageNumber)) + '/'+alltrim(str(_HMG_printer_PageCount)) + ']'
+	_ooHg_Auxil_Page:Value:=_HMG_printer_CurrentPageNumber
 
 Return
+
 *------------------------------------------------------------------------------*
 Procedure _HMG_PRINTER_PrintPages
 *------------------------------------------------------------------------------*
@@ -1035,161 +941,136 @@ Local Height := GetDesktopHeight()
 Local Q := 0
 Local DeltaHeight := 35 + GetTitleHeight() + GetBorderHeight() + 10
 
-        If _HMG_printer_Dz == 1000
+    If _HMG_printer_Dz == 1000
 
-                _HMG_printer_Dz := 0
-                _HMG_printer_Dx := 0
-                _HMG_printer_Dy := 0
+		_HMG_printer_Dz := 0
+		_HMG_printer_Dx := 0
+		_HMG_printer_Dy := 0
 
-                SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_VERT , 50 , 1 )
-                SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_HORZ , 50 , 1 )
+		SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_VERT , 50 , 1 )
+		SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_HORZ , 50 , 1 )
 
-                _HMG_PRINTER_PREVIEW_DISABLESCROLLBARS (GetFormHandle('_HMG_PRINTER_SHOWPREVIEW'))
+		_HMG_PRINTER_PREVIEW_DISABLESCROLLBARS (GetFormHandle('_HMG_PRINTER_SHOWPREVIEW'))
 
 	Else
 
 		* Calculate Quadrant
 
-                if      _oohg_mouseCol <= ( Width / 2 ) - _HMG_printer_zoomclick_xoffset ;
-			.And. ;
-                        _oohg_MouseRow <= ( Height / 2 ) - DeltaHeight
-
+        if  _oohg_mouseCol <= ( Width / 2 ) - _HMG_printer_zoomclick_xoffset .And. ;
+                _oohg_MouseRow <= ( Height / 2 ) - DeltaHeight
 			Q := 1
-
-                Elseif  _oohg_mouseCol > ( Width / 2 ) - _HMG_printer_zoomclick_xoffset ;
-			.And. ;
-                        _oohg_MouseRow <= ( Height / 2 ) - DeltaHeight
-
+        Elseif  _oohg_mouseCol > ( Width / 2 ) - _HMG_printer_zoomclick_xoffset .And. ;
+                _oohg_MouseRow <= ( Height / 2 ) - DeltaHeight
 			Q := 2
-
-                Elseif  _oohg_mousecol <= ( Width / 2 ) - _HMG_printer_zoomclick_xoffset ;
-			.And. ;
-                        _oohg_MouseRow > ( Height / 2 ) - DeltaHeight
-
+        Elseif  _oohg_mousecol <= ( Width / 2 ) - _HMG_printer_zoomclick_xoffset .And. ;
+                _oohg_MouseRow > ( Height / 2 ) - DeltaHeight
 			Q := 3
-
-                Elseif  _oohg_mouseCol > ( Width / 2 ) - _HMG_printer_zoomclick_xoffset ;
-			.And. ;
-                        _oohg_MouseRow > ( Height / 2 ) - DeltaHeight
-
+        Elseif  _oohg_mouseCol > ( Width / 2 ) - _HMG_printer_zoomclick_xoffset .And. ;
+				_oohg_MouseRow > ( Height / 2 ) - DeltaHeight
 			Q := 4
-
 		EndIf
 
-                if      _HMG_PRINTER_GETPAGEHEIGHT(_HMG_printer_hdc_bak) ;
-			> ;
-                        _HMG_PRINTER_GETPAGEWIDTH(_HMG_printer_hdc_bak)
-
+		if  _HMG_PRINTER_GETPAGEHEIGHT(_HMG_printer_hdc_bak) > ;
+				_HMG_PRINTER_GETPAGEWIDTH(_HMG_printer_hdc_bak)
 			* Portrait
-
 			If Q == 1
-                                _HMG_printer_Dz := 1000
-                                _HMG_printer_Dx := 100
-                                _HMG_printer_Dy := 400
-                                SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_VERT , 10 , 1 )
-                                SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_HORZ , 40 , 1 )
+				_HMG_printer_Dz := 1000
+				_HMG_printer_Dx := 100
+				_HMG_printer_Dy := 400
+				SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_VERT , 10 , 1 )
+				SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_HORZ , 40 , 1 )
 			ElseIf Q == 2
-                                _HMG_printer_Dz := 1000
-                                _HMG_printer_Dx := -100
-                                _HMG_printer_Dy := 400
-                                SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_VERT , 10 , 1 )
-                                SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_HORZ , 60 , 1 )
+				_HMG_printer_Dz := 1000
+				_HMG_printer_Dx := -100
+				_HMG_printer_Dy := 400
+				SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_VERT , 10 , 1 )
+				SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_HORZ , 60 , 1 )
 			ElseIf Q == 3
-                                _HMG_printer_Dz := 1000
-                                _HMG_printer_Dx := 100
-                                _HMG_printer_Dy := -400
-                                SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_VERT , 90 , 1 )
-                                SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_HORZ , 40 , 1 )
+				_HMG_printer_Dz := 1000
+				_HMG_printer_Dx := 100
+				_HMG_printer_Dy := -400
+				SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_VERT , 90 , 1 )
+				SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_HORZ , 40 , 1 )
 			ElseIf Q == 4
-                                _HMG_printer_Dz := 1000
-                                _HMG_printer_Dx := -100
-                                _HMG_printer_Dy := -400
-                                SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_VERT , 90 , 1 )
-                                SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_HORZ , 60 , 1 )
+				_HMG_printer_Dz := 1000
+				_HMG_printer_Dx := -100
+				_HMG_printer_Dy := -400
+				SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_VERT , 90 , 1 )
+				SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_HORZ , 60 , 1 )
 			EndIf
-
 		Else
-
 			* Landscape
-
 			If Q == 1
-                                _HMG_printer_Dz := 1000
-                                _HMG_printer_Dx := 500
-                                _HMG_printer_Dy := 300
-                                SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_VERT , 20 , 1 )
-                                SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_HORZ , 1 , 1 )
+				_HMG_printer_Dz := 1000
+				_HMG_printer_Dx := 500
+				_HMG_printer_Dy := 300
+				SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_VERT , 20 , 1 )
+				SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_HORZ , 1 , 1 )
 			ElseIf Q == 2
-                                _HMG_printer_Dz := 1000
-                                _HMG_printer_Dx := -500
-                                _HMG_printer_Dy := 300
-                                SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_VERT , 20 , 1 )
-                                SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_HORZ , 99 , 1 )
+				_HMG_printer_Dz := 1000
+				_HMG_printer_Dx := -500
+				_HMG_printer_Dy := 300
+				SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_VERT , 20 , 1 )
+				SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_HORZ , 99 , 1 )
 			ElseIf Q == 3
-                                _HMG_printer_Dz := 1000
-                                _HMG_printer_Dx := 500
-                                _HMG_printer_Dy := -300
-                                SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_VERT , 80 , 1 )
-                                SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_HORZ , 1 , 1 )
+				_HMG_printer_Dz := 1000
+				_HMG_printer_Dx := 500
+				_HMG_printer_Dy := -300
+				SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_VERT , 80 , 1 )
+				SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_HORZ , 1 , 1 )
 			ElseIf Q == 4
-                                _HMG_printer_Dz := 1000
-                                _HMG_printer_Dx := -500
-                                _HMG_printer_Dy := -300
-                                SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_VERT , 80 , 1 )
-                                SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_HORZ , 99 , 1 )
+				_HMG_printer_Dz := 1000
+				_HMG_printer_Dx := -500
+				_HMG_printer_Dy := -300
+				SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_VERT , 80 , 1 )
+				SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_HORZ , 99 , 1 )
 			EndIf
 
 		EndIf
 
-                _HMG_PRINTER_PREVIEW_ENABLESCROLLBARS (GetFormHandle('_HMG_PRINTER_SHOWPREVIEW'))
+		_HMG_PRINTER_PREVIEW_ENABLESCROLLBARS (GetFormHandle('_HMG_PRINTER_SHOWPREVIEW'))
 
 	EndIf
-
-        _HMG_PRINTER_PreviewRefresh()
-
+    _HMG_PRINTER_PreviewRefresh()
 Return
 
 *------------------------------------------------------------------------------*
 Procedure _HMG_PRINTER_Zoom
 *------------------------------------------------------------------------------*
 
-        If _HMG_printer_Dz == 1000
+    If _HMG_printer_Dz == 1000
 
-                _HMG_printer_Dz := 0
-                _HMG_printer_Dx := 0
-                _HMG_printer_Dy := 0
-
-                SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_VERT , 50 , 1 )
-                SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_HORZ , 50 , 1 )
-
-                _HMG_PRINTER_PREVIEW_DISABLESCROLLBARS (GetFormHandle('_HMG_PRINTER_SHOWPREVIEW'))
+		_HMG_printer_Dz := 0
+		_HMG_printer_Dx := 0
+		_HMG_printer_Dy := 0
+		SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_VERT , 50 , 1 )
+		SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_HORZ , 50 , 1 )
+		_HMG_PRINTER_PREVIEW_DISABLESCROLLBARS (GetFormHandle('_HMG_PRINTER_SHOWPREVIEW'))
 
 	Else
 
-                if      _HMG_PRINTER_GETPAGEHEIGHT(_HMG_printer_hdc_bak) ;
-			> ;
-                        _HMG_PRINTER_GETPAGEWIDTH(_HMG_printer_hdc_bak)
-
-                        _HMG_printer_Dz := 1000
-                        _HMG_printer_Dx := 100
-                        _HMG_printer_Dy := 400
-                        SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_VERT , 10 , 1 )
-                        SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_HORZ , 40 , 1 )
-
+		if  _HMG_PRINTER_GETPAGEHEIGHT(_HMG_printer_hdc_bak) > ;
+				_HMG_PRINTER_GETPAGEWIDTH(_HMG_printer_hdc_bak)
+			_HMG_printer_Dz := 1000
+			_HMG_printer_Dx := 100
+			_HMG_printer_Dy := 400
+			SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_VERT , 10 , 1 )
+			SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_HORZ , 40 , 1 )
 		Else
 
-                        _HMG_printer_Dz := 1000
-                        _HMG_printer_Dx := 500
-                        _HMG_printer_Dy := 300
-                        SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_VERT , 20 , 1 )
-                        SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_HORZ , 1 , 1 )
+			_HMG_printer_Dz := 1000
+			_HMG_printer_Dx := 500
+			_HMG_printer_Dy := 300
+			SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_VERT , 20 , 1 )
+			SetScrollPos ( GetFormHandle('_HMG_PRINTER_SHOWPREVIEW') , SB_HORZ , 1 , 1 )
 
 		EndIf
 
-                _HMG_PRINTER_PREVIEW_ENABLESCROLLBARS (GetFormHandle('_HMG_PRINTER_SHOWPREVIEW'))
+		_HMG_PRINTER_PREVIEW_ENABLESCROLLBARS (GetFormHandle('_HMG_PRINTER_SHOWPREVIEW'))
 
 	EndIf
 
-        _HMG_PRINTER_PreviewRefresh()
+	_HMG_PRINTER_PreviewRefresh()
 
 Return
 *------------------------------------------------------------------------------*
@@ -1274,8 +1155,11 @@ Function GetPrinter()
 Return (RetVal)
 
 *------------------------------------------------------------------------------*
-Procedure _HMG_PRINTER_H_PRINT ( nHdc , nRow , nCol , cFontName , nFontSize , nColor1 , nColor2 , nColor3 , cText , lbold , litalic , lunderline , lstrikeout , lcolor , lfont , lsize )
+Procedure _HMG_PRINTER_H_PRINT ( nHdc , nRow , nCol , cFontName , nFontSize , nColor1 , nColor2 , nColor3 , cText , lbold , litalic , lunderline , lstrikeout , lcolor , lfont , lsize , lAngle , nAngle , lWidth , nWidth )
 *------------------------------------------------------------------------------*
+
+         default lAngle to .F.
+         default nAngle to 0
 
 	if ValType (cText) == "N"
 		cText := AllTrim(Str(cText))
@@ -1296,13 +1180,21 @@ Procedure _HMG_PRINTER_H_PRINT ( nHdc , nRow , nCol , cFontName , nFontSize , nC
 	nRow := Int ( nRow * 10000 / 254 )
 	nCol := Int ( nCol * 10000 / 254 )
 
-        _HMG_PRINTER_C_PRINT ( nHdc , nRow , nCol , cFontName , nFontSize , nColor1 , nColor2 , nColor3 , cText , lbold , litalic , lunderline , lstrikeout , lcolor , lfont , lsize )
+	if lAngle
+           nAngle:= nAngle*10
+	end
+
+        _HMG_PRINTER_C_PRINT ( nHdc , nRow , nCol , cFontName , nFontSize , nColor1 , nColor2 , nColor3 , cText , lbold , litalic , lunderline , lstrikeout , lcolor , lfont , lsize ,  lAngle , nAngle , lWidth , nWidth )
 
 Return
 
 *------------------------------------------------------------------------------*
-Procedure _HMG_PRINTER_H_MULTILINE_PRINT ( nHdc , nRow , nCol , nToRow , nToCol , cFontName , nFontSize , nColor1 , nColor2 , nColor3 , cText , lbold , litalic , lunderline , lstrikeout , lcolor , lfont , lsize )
+Procedure _HMG_PRINTER_H_MULTILINE_PRINT ( nHdc , nRow , nCol , nToRow , nToCol , cFontName , nFontSize , nColor1 , nColor2 , nColor3 , cText , lbold , litalic , lunderline , lstrikeout , lcolor , lfont , lsize , lAngle , nAngle , lWidth , nWidth )
 *------------------------------------------------------------------------------*
+
+         default lAngle to .F.
+         default nAngle to 0
+
 
 	if ValType (cText) == "N"
 		cText := AllTrim(Str(cText))
@@ -1325,7 +1217,11 @@ Procedure _HMG_PRINTER_H_MULTILINE_PRINT ( nHdc , nRow , nCol , nToRow , nToCol 
 	nToRow := Int ( nToRow * 10000 / 254 )
 	nToCol := Int ( nToCol * 10000 / 254 )
 
-        _HMG_PRINTER_C_MULTILINE_PRINT ( nHdc , nRow , nCol , cFontName , nFontSize , nColor1 , nColor2 , nColor3 , cText , lbold , litalic , lunderline , lstrikeout , lcolor , lfont , lsize , nToRow , nToCol )
+	if lAngle
+           nAngle:= nAngle*10
+	end
+
+        _HMG_PRINTER_C_MULTILINE_PRINT ( nHdc , nRow , nCol , cFontName , nFontSize , nColor1 , nColor2 , nColor3 , cText , lbold , litalic , lunderline , lstrikeout , lcolor , lfont , lsize , nToRow , nToCol , lAngle , nAngle , lWidth , nWidth )
 
 Return
 *------------------------------------------------------------------------------*
@@ -1341,7 +1237,7 @@ Procedure _HMG_PRINTER_H_IMAGE ( nHdc , cImage , nRow , nCol , nHeight , nWidth 
 
 Return
 *------------------------------------------------------------------------------*
-Procedure _HMG_PRINTER_H_LINE ( nHdc , nRow , nCol , nToRow , nToCol , nWidth , nColor1 , nColor2 , nColor3 , lwidth , lcolor )
+Procedure _HMG_PRINTER_H_LINE ( nHdc , nRow , nCol , nToRow , nToCol , nWidth , nColor1 , nColor2 , nColor3 , lwidth , lcolor, lStyle, nStyle )
 *------------------------------------------------------------------------------*
 
 	nRow	:= Int ( nRow * 10000 / 254 )
@@ -1353,11 +1249,11 @@ Procedure _HMG_PRINTER_H_LINE ( nHdc , nRow , nCol , nToRow , nToCol , nWidth , 
 		nWidth	:= Int ( nWidth * 10000 / 254 )
 	EndIf
 
-        _HMG_PRINTER_C_LINE ( nHdc , nRow , nCol , nToRow , nToCol , nWidth , nColor1 , nColor2 , nColor3 , lwidth , lcolor )
+        _HMG_PRINTER_C_LINE ( nHdc , nRow , nCol , nToRow , nToCol , nWidth , nColor1 , nColor2 , nColor3 , lwidth , lcolor, lStyle ,nStyle )
 
 Return
 *------------------------------------------------------------------------------*
-Procedure _HMG_PRINTER_H_RECTANGLE ( nHdc , nRow , nCol , nToRow , nToCol ,nWidth , nColor1 , nColor2 , nColor3 , lwidth , lcolor )
+Procedure _HMG_PRINTER_H_RECTANGLE ( nHdc , nRow , nCol , nToRow , nToCol ,nWidth , nColor1 , nColor2 , nColor3 , lwidth , lcolor, lStyle, nStyle, lBrushStyle, nBrStyle, lBrushColor, aBrColor)
 *------------------------------------------------------------------------------*
 
 	nRow	:= Int ( nRow * 10000 / 254 )
@@ -1365,15 +1261,19 @@ Procedure _HMG_PRINTER_H_RECTANGLE ( nHdc , nRow , nCol , nToRow , nToCol ,nWidt
 	nToRow	:= Int ( nToRow * 10000 / 254 )
 	nToCol	:= Int ( nToCol * 10000 / 254 )
 
+	if empty(aBrColor)
+		aBrColor:={0,0,0}
+	end
 	If ValType ( nWidth ) != 'U'
 		nWidth	:= Int ( nWidth * 10000 / 254 )
 	EndIf
 
-        _HMG_PRINTER_C_RECTANGLE ( nHdc , nRow , nCol , nToRow , nToCol , nWidth , nColor1 , nColor2 , nColor3 , lwidth , lcolor )
+     _HMG_PRINTER_C_RECTANGLE ( nHdc , nRow , nCol , nToRow , nToCol , nWidth , nColor1 , nColor2 , nColor3 , lwidth ,;
+		lcolor, lStyle ,nStyle , lBrushStyle, nBrStyle, lBrushColor, aBrColor[1],aBrColor[2],aBrColor[3] )
 
 Return
 *------------------------------------------------------------------------------*
-Procedure _HMG_PRINTER_H_ROUNDRECTANGLE ( nHdc , nRow , nCol , nToRow , nToCol ,nWidth , nColor1 , nColor2 , nColor3 , lwidth , lcolor )
+Procedure _HMG_PRINTER_H_ROUNDRECTANGLE ( nHdc , nRow , nCol , nToRow , nToCol ,nWidth , nColor1 , nColor2 , nColor3 , lwidth , lcolor, lStyle, nStyle, lBrushStyle, nBrStyle, lBrushColor, aBrColor )
 *------------------------------------------------------------------------------*
 
 	nRow	:= Int ( nRow * 10000 / 254 )
@@ -1381,13 +1281,98 @@ Procedure _HMG_PRINTER_H_ROUNDRECTANGLE ( nHdc , nRow , nCol , nToRow , nToCol ,
 	nToRow	:= Int ( nToRow * 10000 / 254 )
 	nToCol	:= Int ( nToCol * 10000 / 254 )
 
+	if empty(aBrColor)
+		aBrColor:={0,0,0}
+	end
+	
 	If ValType ( nWidth ) != 'U'
 		nWidth	:= Int ( nWidth * 10000 / 254 )
 	EndIf
 
-        _HMG_PRINTER_C_ROUNDRECTANGLE ( nHdc , nRow , nCol , nToRow , nToCol , nWidth , nColor1 , nColor2 , nColor3 , lwidth , lcolor )
+	 _HMG_PRINTER_C_ROUNDRECTANGLE ( nHdc , nRow , nCol , nToRow , nToCol , nWidth , nColor1 , nColor2 , nColor3 , lwidth ,;
+		lcolor, lStyle ,nStyle , lBrushStyle, nBrStyle, lBrushColor, aBrColor[1],aBrColor[2],aBrColor[3] )
+Return
+*------------------------------------------------------------------------------*
+Procedure _HMG_PRINTER_H_FILL ( nHdc , nRow , nCol , nToRow , nToCol , nColor1 , nColor2 , nColor3 , lcolor )
+*------------------------------------------------------------------------------*
+
+	nRow	:= Int ( nRow * 10000 / 254 )
+	nCol	:= Int ( nCol * 10000 / 254 )
+	nToRow	:= Int ( nToRow * 10000 / 254 )
+	nToCol	:= Int ( nToCol * 10000 / 254 )
+// (LONG)((GetDeviceCaps ( hdcPrint , LOGPIXELSX ) / 1000 ) - GetDeviceCaps ( hdcPrint , PHYSICALOFFSETX ));
+	
+        _HMG_PRINTER_C_FILL ( nHdc , nRow , nCol , nToRow , nToCol , nColor1 , nColor2 , nColor3 , lcolor )
 
 Return
+*------------------------------------------------------------------------------*
+Procedure _HMG_PRINTER_H_ELLIPSE ( nHdc , nRow , nCol , nToRow , nToCol, nWidth , nColor1 , nColor2 , nColor3 , lwidth , lcolor, lStyle, nStyle, lBrushStyle, nBrStyle, lBrushColor, aBrColor)
+*------------------------------------------------------------------------------*
+
+	nRow	:= Int ( nRow * 10000 / 254 )
+	nCol	:= Int ( nCol * 10000 / 254 )
+	nToRow	:= Int ( nToRow * 10000 / 254 )
+	nToCol	:= Int ( nToCol * 10000 / 254 )
+	
+	if empty(aBrColor)
+		aBrColor:={0,0,0}
+	end
+	If ValType ( nWidth ) != 'U'
+		nWidth	:= Int ( nWidth * 10000 / 254 )
+	EndIf
+
+     _HMG_PRINTER_C_RECTANGLE ( nHdc , nRow , nCol , nToRow , nToCol, nWidth , nColor1 , nColor2 , nColor3 , lwidth ,;
+		lcolor, lStyle ,nStyle , lBrushStyle, nBrStyle, lBrushColor, aBrColor[1],aBrColor[2],aBrColor[3] )
+
+Return
+*------------------------------------------------------------------------------*
+Procedure _HMG_PRINTER_H_ARC ( nHdc , nRow , nCol , nToRow , nToCol ,x1,y1,x2,y2, nWidth , nColor1 , nColor2 , nColor3 , lwidth , lcolor, lStyle, nStyle )
+*------------------------------------------------------------------------------*
+
+	nRow	:= Int ( nRow * 10000 / 254 )
+	nCol	:= Int ( nCol * 10000 / 254 )
+	nToRow	:= Int ( nToRow * 10000 / 254 )
+	nToCol	:= Int ( nToCol * 10000 / 254 )
+	x1 := Int ( x1 * 10000 / 254 )
+	y1 := Int ( y1 * 10000 / 254 )
+	x2 := Int ( x2 * 10000 / 254 )
+	y2 := Int ( y2 * 10000 / 254 )
+
+	If ValType ( nWidth ) != 'U'
+		nWidth	:= Int ( nWidth * 10000 / 254 )
+	EndIf
+
+        _HMG_PRINTER_C_ARC ( nHdc , nRow , nCol , nToRow , nToCol,x1,y1,x2,y2 , nWidth , nColor1 , nColor2 , nColor3 , lwidth , lcolor, lStyle ,nStyle )
+
+Return
+
+*------------------------------------------------------------------------------*
+Procedure _HMG_PRINTER_H_PIE ( nHdc , nRow , nCol , nToRow , nToCol,x1,y1,x2,y2 ,nWidth , nColor1 , nColor2 , nColor3 , lwidth , lcolor, lStyle, nStyle, lBrushStyle, nBrStyle, lBrushColor, aBrColor )
+*------------------------------------------------------------------------------*
+
+	nRow	:= Int ( nRow * 10000 / 254 )
+	nCol	:= Int ( nCol * 10000 / 254 )
+	nToRow	:= Int ( nToRow * 10000 / 254 )
+	nToCol	:= Int ( nToCol * 10000 / 254 )
+	x1 := Int ( x1 * 10000 / 254 )
+	y1 := Int ( y1 * 10000 / 254 )
+	x2 := Int ( x2 * 10000 / 254 )
+	y2 := Int ( y2 * 10000 / 254 )
+
+	if empty(aBrColor)
+		aBrColor:={0,0,0}
+	end
+	
+	If ValType ( nWidth ) != 'U'
+		nWidth	:= Int ( nWidth * 10000 / 254 )
+	EndIf
+
+	 _HMG_PRINTER_C_PIE ( nHdc , nRow , nCol , nToRow , nToCol,x1,y1,x2,y2, nWidth , nColor1 , nColor2 , nColor3 , lwidth ,;
+		lcolor, lStyle ,nStyle , lBrushStyle, nBrStyle, lBrushColor, aBrColor[1],aBrColor[2],aBrColor[3] )
+Return
+
+
+
 *------------------------------------------------------------------------------*
 Procedure _HMG_printer_InitUserMessages
 *------------------------------------------------------------------------------*
@@ -1964,7 +1949,6 @@ FUNCTION textALIGN(nAlign)
 CVCSETTEXTALIGN( _HMG_printer_hdc,nAlign )
 RETURN NIL
 
-
 #pragma BEGINDUMP
 
 
@@ -2045,6 +2029,10 @@ HB_FUNC ( _HMG_PRINTER_C_PRINT )
 	// 14: Color Flag
 	// 15: FontName Flag
 	// 16: FontSize Flag
+	// 17: lWidth
+	// 18: nWidth
+	// 19: lAngle
+	// 20: Angle
 
         HGDIOBJ hgdiobj ;
 
@@ -2062,7 +2050,10 @@ HB_FUNC ( _HMG_PRINTER_C_PRINT )
 
 	int x = hb_parni(3) ;
 	int y = hb_parni(2) ;
-
+	
+	long nWidth ;
+	long nAngle  ;
+	
 	HFONT hfont ;
 
 	HDC hdcPrint = (HDC) hb_parnl(1) ;
@@ -2130,7 +2121,28 @@ HB_FUNC ( _HMG_PRINTER_C_PRINT )
 			g = 0 ;
 			b = 0 ;
 		}
-
+		
+		// ancho
+		if ( hb_parl(17) )
+		{
+			nWidth = hb_parnl(18) ;
+		}
+		else
+		{
+			nWidth = 0 ;
+		}
+		
+		// angulo
+		if ( hb_parl(19) )
+		{
+			nAngle = hb_parnl(20) ;
+		}
+		else
+		{
+			nAngle = 0 ;
+		}
+		
+		
 		// Fontname
 
 		if ( hb_parl(15) )
@@ -2158,9 +2170,9 @@ HB_FUNC ( _HMG_PRINTER_C_PRINT )
 		hfont = CreateFont
 			(
 			FontHeight,
-			0,
-			0,
-			0,
+			nAngle,
+			nWidth,
+			nWidth,
 			fnWeight ,
 			fdwItalic ,
 			fdwUnderline ,
@@ -2540,7 +2552,15 @@ HB_FUNC ( _HMG_PRINTER_C_RECTANGLE )
 	// 9: B Color
 	// 10: lWindth
 	// 11: lColor
-
+	// 12: lStyle
+	// 13: nStyle
+	// 14: lBrusStyle
+	// 15: nBrushStyle
+	// 16: lBrushColor
+	// 17: nColorR
+	// 18: nColorG
+	// 19: nColorB
+	
 	int r ;
 	int g ;
 	int b ;
@@ -2552,10 +2572,19 @@ HB_FUNC ( _HMG_PRINTER_C_RECTANGLE )
 	int toy = hb_parni(4) ;
 
 	int width ;
-
+	int nStyle ;
+	
+	int br ;
+	int bg ;
+	int bb ;
+	int nBr ;
+	long nBh ;
+	
 	HDC hdcPrint = (HDC) hb_parnl(1) ;
-	HGDIOBJ hgdiobj;
+	HGDIOBJ hgdiobj,hgdiobj2;
 	HPEN hpen;
+	LOGBRUSH pbr;
+	HBRUSH hbr ;
 
 	if ( hdcPrint != 0 )
 	{
@@ -2586,10 +2615,54 @@ HB_FUNC ( _HMG_PRINTER_C_RECTANGLE )
 			b = 0 ;
 		}
 
-		hpen = CreatePen( (int) PS_SOLID, ( width * GetDeviceCaps ( hdcPrint , LOGPIXELSX ) / 1000 ), (COLORREF) RGB( r , g , b ) );
+		if ( hb_parl(12) )
+		{
+			nStyle = hb_parni(13) ;
+		}
+		else
+		{
+			nStyle = (int) PS_SOLID ;
+		}
 
+		if ( hb_parl(14) )
+		{
+			nBh = hb_parni(15);
+			nBr = 2 ;
+		}
+		else
+		{
+			if ( hb_parl(16) )
+			{
+			nBr = 0 ;
+			}
+			else
+			{
+			nBr = 1 ;
+			}
+			nBh = 0  ;
+		}
+		
+		if ( hb_parl(16) )
+		{
+			br = hb_parni(17) ;
+			bg = hb_parni(18) ;
+			bb = hb_parni(19) ;
+		}
+		else
+		{
+			br = 0 ;
+			bg = 0 ;
+			bb = 0 ;
+		}
+
+		pbr.lbStyle=nBr ;
+		pbr.lbColor=(COLORREF) RGB( br , bg , bb );
+		pbr.lbHatch=(LONG) nBh;
+
+		hpen = CreatePen( nStyle, ( width * GetDeviceCaps ( hdcPrint , LOGPIXELSX ) / 1000 ), (COLORREF) RGB( r , g , b ) );
+		hbr = CreateBrushIndirect(&pbr) ;
 		hgdiobj = SelectObject( (HDC) hdcPrint , hpen );
-
+		hgdiobj2 = SelectObject( (HDC) hdcPrint , hbr );
 		Rectangle( (HDC) hdcPrint ,
 			( x * GetDeviceCaps ( hdcPrint , LOGPIXELSX ) / 1000 ) - GetDeviceCaps ( hdcPrint , PHYSICALOFFSETX ) ,
 			( y * GetDeviceCaps ( hdcPrint , LOGPIXELSY ) / 1000 ) - GetDeviceCaps ( hdcPrint , PHYSICALOFFSETY ) ,
@@ -2598,9 +2671,10 @@ HB_FUNC ( _HMG_PRINTER_C_RECTANGLE )
 			);
 
 		SelectObject( (HDC) hdcPrint , (HGDIOBJ) hgdiobj );
+		SelectObject( (HDC) hdcPrint , (HGDIOBJ) hgdiobj2 );
 
 		DeleteObject( hpen );
-
+		DeleteObject( hbr );
 	}
 
 }
@@ -2619,6 +2693,14 @@ HB_FUNC ( _HMG_PRINTER_C_ROUNDRECTANGLE )
 	// 9: B Color
 	// 10: lWindth
 	// 11: lColor
+	// 12: lStyle
+	// 13: nStyle
+	// 14: lBrusStyle
+	// 15: nBrushStyle
+	// 16: lBrushColor
+	// 17: nColorR
+	// 18: nColorG
+	// 19: nColorB
 
 	int r ;
 	int g ;
@@ -2633,10 +2715,19 @@ HB_FUNC ( _HMG_PRINTER_C_ROUNDRECTANGLE )
 	int width ;
 
 	int w , h , p ;
-
+	int nStyle ;
+	
+	int br ;
+	int bg ;
+	int bb ;
+	int nBr ;
+	long nBh ;
+	
 	HDC hdcPrint = (HDC) hb_parnl(1) ;
-	HGDIOBJ hgdiobj;
+	HGDIOBJ hgdiobj,hgdiobj2;
 	HPEN hpen;
+	LOGBRUSH pbr;
+	HBRUSH hbr ;
 
 	if ( hdcPrint != 0 )
 	{
@@ -2667,9 +2758,54 @@ HB_FUNC ( _HMG_PRINTER_C_ROUNDRECTANGLE )
 			b = 0 ;
 		}
 
-		hpen = CreatePen( (int) PS_SOLID, ( width * GetDeviceCaps ( hdcPrint , LOGPIXELSX ) / 1000 ), (COLORREF) RGB( r , g , b ) );
+		if ( hb_parl(12) )
+		{
+			nStyle = hb_parni(13) ;
+		}
+		else
+		{
+			nStyle = (int) PS_SOLID ;
+		}
 
+		if ( hb_parl(14) )
+		{
+			nBh = hb_parni(15);
+			nBr = 2 ;
+		}
+		else
+		{
+			if ( hb_parl(16) )
+			{
+			nBr = 0 ;
+			}
+			else
+			{
+			nBr = 1 ;
+			}
+			nBh = 0  ;
+		}
+		
+		if ( hb_parl(16) )
+		{
+			br = hb_parni(17) ;
+			bg = hb_parni(18) ;
+			bb = hb_parni(19) ;
+		}
+		else
+		{
+			br = 0 ;
+			bg = 0 ;
+			bb = 0 ;
+		}
+
+		pbr.lbStyle=nBr ;
+		pbr.lbColor=(COLORREF) RGB( br , bg , bb );
+		pbr.lbHatch=(LONG) nBh;
+		
+		hpen = CreatePen( nStyle, ( width * GetDeviceCaps ( hdcPrint , LOGPIXELSX ) / 1000 ), (COLORREF) RGB( r , g , b ) );
+		hbr = CreateBrushIndirect(&pbr) ;
 		hgdiobj = SelectObject( (HDC) hdcPrint , hpen );
+		hgdiobj2 = SelectObject( (HDC) hdcPrint , hbr );
 
 		w = ( tox * GetDeviceCaps ( hdcPrint , LOGPIXELSX ) / 1000 ) - ( x * GetDeviceCaps ( hdcPrint , LOGPIXELSX ) / 1000 ) ;
 		h = ( toy * GetDeviceCaps ( hdcPrint , LOGPIXELSY ) / 1000 ) - ( y * GetDeviceCaps ( hdcPrint , LOGPIXELSY ) / 1000 ) ;
@@ -2686,12 +2822,80 @@ HB_FUNC ( _HMG_PRINTER_C_ROUNDRECTANGLE )
 			) ;
 
 		SelectObject( (HDC) hdcPrint , (HGDIOBJ) hgdiobj );
+		SelectObject( (HDC) hdcPrint , (HGDIOBJ) hgdiobj2 );
+
+
 
 		DeleteObject( hpen );
+		DeleteObject( hbr );
 
 	}
 
 }
+
+HB_FUNC ( _HMG_PRINTER_C_FILL )
+{
+
+	// 1: hDC
+	// 2: y
+	// 3: x
+	// 4: toy
+	// 5: tox
+	// 6: R Color
+	// 7: G Color
+	// 8: B Color
+	// 9: lColor
+
+	int r ;
+	int g ;
+	int b ;
+
+	int x = hb_parnl(3) ;
+	int y = hb_parnl(2) ;
+
+	int tox = hb_parnl(5) ;
+	int toy = hb_parnl(4) ;
+	
+	
+	RECT rect ;
+
+	HDC hdcPrint = (HDC) hb_parnl(1) ;
+	HGDIOBJ hgdiobj;
+	HBRUSH hBrush;
+
+	if ( hdcPrint != 0 )
+	{
+		// Color
+
+		if ( hb_parl(9) )
+		{
+			r = hb_parni(6) ;
+			g = hb_parni(7) ;
+			b = hb_parni(8) ;
+		}
+		else
+		{
+			r = 0 ;
+			g = 0 ;
+			b = 0 ;
+		}
+
+		rect.left=(LONG)((x*GetDeviceCaps ( hdcPrint , LOGPIXELSX ) / 1000 ) - GetDeviceCaps ( hdcPrint , PHYSICALOFFSETX ) );
+		rect.top=(LONG)((y * GetDeviceCaps ( hdcPrint , LOGPIXELSY ) / 1000 ) - GetDeviceCaps ( hdcPrint , PHYSICALOFFSETY ));
+		rect.right=(LONG)((tox *GetDeviceCaps ( hdcPrint , LOGPIXELSX ) / 1000 ) - GetDeviceCaps ( hdcPrint , PHYSICALOFFSETX ));
+		rect.bottom=(LONG)((toy *GetDeviceCaps ( hdcPrint , LOGPIXELSY ) / 1000 ) - GetDeviceCaps ( hdcPrint , PHYSICALOFFSETY ));
+		
+		hBrush = CreateSolidBrush( RGB(r,g,b) );
+		hgdiobj = SelectObject( (HDC) hdcPrint , hBrush );
+		FillRect( (HDC) hdcPrint , &rect , (HBRUSH) hBrush ) ;
+		SelectObject( (HDC) hdcPrint , (HGDIOBJ) hgdiobj );
+		DeleteObject( hBrush );
+
+
+	}
+
+}
+
 
 HB_FUNC ( _HMG_PRINTER_C_LINE )
 {
@@ -2707,6 +2911,8 @@ HB_FUNC ( _HMG_PRINTER_C_LINE )
 	// 9: B Color
 	// 10: lWindth
 	// 11: lColor
+	// 12: lStyle
+	// 13: nStyle
 
 	int r ;
 	int g ;
@@ -2719,6 +2925,7 @@ HB_FUNC ( _HMG_PRINTER_C_LINE )
 	int toy = hb_parni(4) ;
 
 	int width ;
+	int nStyle ;
 
 	HDC hdcPrint = (HDC) hb_parnl(1) ;
 	HGDIOBJ hgdiobj;
@@ -2752,8 +2959,17 @@ HB_FUNC ( _HMG_PRINTER_C_LINE )
 			g = 0 ;
 			b = 0 ;
 		}
+		
+		if ( hb_parl(12) )
+		{
+			nStyle = hb_parni(13) ;
+		}
+		else
+		{
+			nStyle = (int) PS_SOLID ;
+		}
 
-		hpen = CreatePen( (int) PS_SOLID, ( width * GetDeviceCaps ( hdcPrint , LOGPIXELSX ) / 1000 ), (COLORREF) RGB( r , g , b ) );
+		hpen = CreatePen( nStyle , ( width * GetDeviceCaps ( hdcPrint , LOGPIXELSX ) / 1000 ), (COLORREF) RGB( r , g , b ) );
 
 		hgdiobj = SelectObject( (HDC) hdcPrint , hpen );
 
@@ -3273,8 +3489,8 @@ HB_FUNC ( _HMG_PRINTER_SHOWPAGE )
 	ClientWidth = rct.right - rct.left ;
 	ClientHeight = rct.bottom - rct.left ;
 
-	zw = hb_parni(5) * GetDeviceCaps( (HDC) hb_parnl(3) , HORZSIZE) / 750 ;
-	zh = hb_parni(5) * GetDeviceCaps( (HDC) hb_parnl(3) , VERTSIZE) / 750 ;
+	zw = hb_parni(5) * GetDeviceCaps( (HDC) hb_parnl(3) , HORZSIZE) / 1000 ;
+	zh = hb_parni(5) * GetDeviceCaps( (HDC) hb_parnl(3) , VERTSIZE) / 1000 ;
 
 	xOffset = ( ClientWidth - ( GetDeviceCaps( (HDC) hb_parnl(3) , HORZSIZE)  * hb_parni(4) / 10000 ) ) / 2 ;
 	yOffset = ( ClientHeight - ( GetDeviceCaps( (HDC) hb_parnl(3) , VERTSIZE)  * hb_parni(4) / 10000 ) ) / 2 ;
@@ -3593,5 +3809,383 @@ HB_FUNC ( _HMG_PRINTER_C_IMAGE )
 	}
 }
 
+
+HB_FUNC ( _HMG_PRINTER_C_ELLIPSE )
+{
+
+	// 1: hDC
+	// 2: y
+	// 3: x
+	// 4: toy
+	// 5: tox
+	// 6: width
+	// 7: R Color
+	// 8: G Color
+	// 9: B Color
+	// 10: lWindth
+	// 11: lColor
+	// 12: lStyle
+	// 13: nStyle
+	// 14: lBrusStyle
+	// 15: nBrushStyle
+	// 16: lBrushColor
+	// 17: nColorR
+	// 18: nColorG
+	// 19: nColorB
+
+	int r ;
+	int g ;
+	int b ;
+
+	int x = hb_parni(3) ;
+	int y = hb_parni(2) ;
+
+	int tox = hb_parni(5) ;
+	int toy = hb_parni(4) ;
+
+	int width ;
+
+	int nStyle ;
+	
+	int br ;
+	int bg ;
+	int bb ;
+	int nBr ;
+	long nBh ;
+	
+	HDC hdc = (HDC) hb_parnl(1) ;
+	HGDIOBJ hgdiobj,hgdiobj2;
+	HPEN hpen;
+	LOGBRUSH pbr;
+	HBRUSH hbr ;
+
+	if ( hdc != 0 )
+	{
+
+		// Width
+
+		if ( hb_parl(10) )
+		{
+			width = hb_parni(6) ;
+		}
+		else
+		{
+			width = 1 * 10000 / 254 ;
+		}
+
+		// Color
+
+		if ( hb_parl(11) )
+		{
+			r = hb_parni(7) ;
+			g = hb_parni(8) ;
+			b = hb_parni(9) ;
+		}
+		else
+		{
+			r = 0 ;
+			g = 0 ;
+			b = 0 ;
+		}
+
+		if ( hb_parl(12) )
+		{
+			nStyle = hb_parni(13) ;
+		}
+		else
+		{
+			nStyle = (int) PS_SOLID ;
+		}
+
+		if ( hb_parl(14) )
+		{
+			nBh = hb_parni(15);
+			nBr = 2 ;
+		}
+		else
+		{
+			if ( hb_parl(16) )
+			{
+			nBr = 0 ;
+			}
+			else
+			{
+			nBr = 1 ;
+			}
+			nBh = 0  ;
+		}
+		
+		if ( hb_parl(16) )
+		{
+			br = hb_parni(17) ;
+			bg = hb_parni(18) ;
+			bb = hb_parni(19) ;
+		}
+		else
+		{
+			br = 0 ;
+			bg = 0 ;
+			bb = 0 ;
+		}
+
+		pbr.lbStyle=nBr ;
+		pbr.lbColor=(COLORREF) RGB( br , bg , bb );
+		pbr.lbHatch=(LONG) nBh;
+		
+		hpen = CreatePen( nStyle, width , (COLORREF) RGB( r , g , b ) );
+		hbr =CreateBrushIndirect(&pbr) ;
+		hgdiobj = SelectObject( (HDC) hdc , hpen );
+		hgdiobj2 = SelectObject( (HDC) hdc , hbr );
+
+		Ellipse( (HDC) hdc ,
+		    ( x * GetDeviceCaps ( hdc , LOGPIXELSX ) / 1000 ) - GetDeviceCaps ( hdc , PHYSICALOFFSETX ) ,
+			( y * GetDeviceCaps ( hdc , LOGPIXELSY ) / 1000 ) - GetDeviceCaps ( hdc , PHYSICALOFFSETY ) ,
+			( tox * GetDeviceCaps ( hdc , LOGPIXELSX ) / 1000 ) - GetDeviceCaps ( hdc , PHYSICALOFFSETX ) ,
+			( toy * GetDeviceCaps ( hdc , LOGPIXELSY ) / 1000 ) - GetDeviceCaps ( hdc , PHYSICALOFFSETY ) 
+			);
+
+		SelectObject( (HDC) hdc , (HGDIOBJ) hgdiobj );
+		SelectObject( (HDC) hdc , (HGDIOBJ) hgdiobj2 );
+
+
+
+		DeleteObject( hpen );
+		DeleteObject( hbr );
+
+	}
+
+}
+
+HB_FUNC ( _HMG_PRINTER_C_ARC )
+{
+
+	// 1: hDC
+	// 2: y
+	// 3: x
+	// 4: toy
+	// 5: tox
+	// 6-9,x1,y1,x2,y2
+	// 10: width
+	// 11: R Color
+	// 12: G Color
+	// 13: B Color
+	// 14: lWindth
+	// 15: lColor
+	// 16: lStyle
+	// 17: nStyle
+
+
+	int r ;
+	int g ;
+	int b ;
+
+	int x = hb_parni(3) ;
+	int y = hb_parni(2) ;
+
+	int tox = hb_parni(5) ;
+	int toy = hb_parni(4) ;
+
+	int x1 = hb_parni(7);
+	int y1 = hb_parni(6);
+	int x2 = hb_parni(9);
+	int y2 = hb_parni(8);
+
+	int width ;
+	int nStyle ;
+
+	HDC hdc = (HDC) hb_parnl( 1 );
+	HGDIOBJ hgdiobj;
+	HPEN hpen;
+
+	
+	if ( hdc != 0 )
+	{
+		// Width
+		if ( hb_parl(14) )
+		{
+			width = hb_parni(10) ;
+		}
+		// Color
+		if ( hb_parl(15) )
+		{
+			r = hb_parni(11) ;
+			g = hb_parni(12) ;
+			b = hb_parni(13) ;
+		}
+		else
+		{
+			r = 0 ;
+			g = 0 ;
+			b = 0 ;
+		}
+		if ( hb_parl(16) )
+		{
+			nStyle = hb_parni(17) ;
+		}
+		else
+		{
+			nStyle = (int) PS_SOLID ;
+		}
+		hpen = CreatePen( nStyle ,  width , (COLORREF) RGB( r , g , b ) );
+		hgdiobj = SelectObject( (HDC) hdc , hpen );		
+		Arc ( (HDC) hdc, 
+		( x * GetDeviceCaps ( hdc , LOGPIXELSX ) / 1000 ) - GetDeviceCaps ( hdc , PHYSICALOFFSETX ) ,
+		( y * GetDeviceCaps ( hdc , LOGPIXELSY ) / 1000 ) - GetDeviceCaps ( hdc , PHYSICALOFFSETY ) ,
+		( tox * GetDeviceCaps ( hdc , LOGPIXELSX ) / 1000 ) - GetDeviceCaps ( hdc , PHYSICALOFFSETX ) ,
+		( toy * GetDeviceCaps ( hdc , LOGPIXELSY ) / 1000 ) - GetDeviceCaps ( hdc , PHYSICALOFFSETY ) ,
+		( x1 * GetDeviceCaps ( hdc , LOGPIXELSX ) / 1000 ) - GetDeviceCaps ( hdc , PHYSICALOFFSETX ) ,
+		( y1 * GetDeviceCaps ( hdc , LOGPIXELSY ) / 1000 ) - GetDeviceCaps ( hdc , PHYSICALOFFSETY ) ,
+		( x2 * GetDeviceCaps ( hdc , LOGPIXELSX ) / 1000 ) - GetDeviceCaps ( hdc , PHYSICALOFFSETX ) ,
+		( y2 * GetDeviceCaps ( hdc , LOGPIXELSY ) / 1000 ) - GetDeviceCaps ( hdc , PHYSICALOFFSETY ) 	);
+		SelectObject( (HDC) hdc , (HGDIOBJ) hgdiobj );
+		DeleteObject( hpen );
+	}
+
+}
+
+
+HB_FUNC ( _HMG_PRINTER_C_PIE )
+{
+
+	// 1: hDC
+	// 2: y
+	// 3: x
+	// 4: toy
+	// 5: tox
+	// 6-9,x1,y1,x2,y2
+	// 10: width
+	// 11: R Color
+	// 12: G Color
+	// 13: B Color
+	// 14: lWindth
+	// 15: lColor
+	// 16: lStyle
+	// 17: nStyle
+	// 18: lBrusStyle
+	// 19: nBrushStyle
+	// 20: lBrushColor
+	// 21: nColorR
+	// 22: nColorG
+	// 23: nColorB
+	
+	int r ;
+	int g ;
+	int b ;
+
+	int x = hb_parni(3) ;
+	int y = hb_parni(2) ;
+
+	int tox = hb_parni(5) ;
+	int toy = hb_parni(4) ;
+
+	int x1 = hb_parni(7);
+	int y1 = hb_parni(6);
+	int x2 = hb_parni(9);
+	int y2 = hb_parni(8);
+
+	int width ;
+	int nStyle ;
+	
+	int br ;
+	int bg ;
+	int bb ;
+	int nBr ;
+	long nBh ;
+	
+	HDC hdc = (HDC) hb_parnl(1) ;
+	HGDIOBJ hgdiobj,hgdiobj2;
+	HPEN hpen;
+	LOGBRUSH pbr;
+	HBRUSH hbr ;
+	
+	if ( hdc != 0 )
+	{
+		// Width
+		if ( hb_parl(14) )
+		{
+			width = hb_parni(10) ;
+		}
+		// Color
+		if ( hb_parl(15) )
+		{
+			r = hb_parni(11) ;
+			g = hb_parni(12) ;
+			b = hb_parni(13) ;
+		}
+		else
+		{
+			r = 0 ;
+			g = 0 ;
+			b = 0 ;
+		}
+		if ( hb_parl(16) )
+		{
+			nStyle = hb_parni(17) ;
+		}
+		else
+		{
+			nStyle = (int) PS_SOLID ;
+		}
+
+		if ( hb_parl(18) )
+		{
+			nBh = hb_parni(19);
+			nBr = 2 ;
+		}
+		else
+		{
+			if ( hb_parl(20) )
+			{
+			nBr = 0 ;
+			}
+			else
+			{
+			nBr = 1 ;
+			}
+			nBh = 0  ;
+		}
+		
+		if ( hb_parl(20) )
+		{
+			br = hb_parni(21) ;
+			bg = hb_parni(22) ;
+			bb = hb_parni(23) ;
+		}
+		else
+		{
+			br = 0 ;
+			bg = 0 ;
+			bb = 0 ;
+		}
+
+		pbr.lbStyle=nBr ;
+		pbr.lbColor=(COLORREF) RGB( br , bg , bb );
+		pbr.lbHatch=(LONG) nBh;
+		
+		hpen = CreatePen( nStyle, width , (COLORREF) RGB( r , g , b ) );
+		hbr =CreateBrushIndirect(&pbr) ;
+		hgdiobj = SelectObject( (HDC) hdc , hpen );
+		hgdiobj2 = SelectObject( (HDC) hdc , hbr );
+	
+		Pie ( (HDC) hdc,
+		( x * GetDeviceCaps ( hdc , LOGPIXELSX ) / 1000 ) - GetDeviceCaps ( hdc , PHYSICALOFFSETX ) ,
+		( y * GetDeviceCaps ( hdc , LOGPIXELSY ) / 1000 ) - GetDeviceCaps ( hdc , PHYSICALOFFSETY ) ,
+		( tox * GetDeviceCaps ( hdc , LOGPIXELSX ) / 1000 ) - GetDeviceCaps ( hdc , PHYSICALOFFSETX ) ,
+		( toy * GetDeviceCaps ( hdc , LOGPIXELSY ) / 1000 ) - GetDeviceCaps ( hdc , PHYSICALOFFSETY ) ,
+		( x1 * GetDeviceCaps ( hdc , LOGPIXELSX ) / 1000 ) - GetDeviceCaps ( hdc , PHYSICALOFFSETX ) ,
+		( y1 * GetDeviceCaps ( hdc , LOGPIXELSY ) / 1000 ) - GetDeviceCaps ( hdc , PHYSICALOFFSETY ) ,
+		( x2 * GetDeviceCaps ( hdc , LOGPIXELSX ) / 1000 ) - GetDeviceCaps ( hdc , PHYSICALOFFSETX ) ,
+		( y2 * GetDeviceCaps ( hdc , LOGPIXELSY ) / 1000 ) - GetDeviceCaps ( hdc , PHYSICALOFFSETY ) );
+		SelectObject( (HDC) hdc , (HGDIOBJ) hgdiobj );
+		SelectObject( (HDC) hdc , (HGDIOBJ) hgdiobj2 );
+
+		DeleteObject( hpen );
+		DeleteObject( hbr );
+	}
+
+}
+
 #pragma ENDDUMP
+
+
 

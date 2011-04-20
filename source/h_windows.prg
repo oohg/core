@@ -1,5 +1,12 @@
 /*
- * $Id: h_windows.prg,v 1.209 2011-01-24 19:31:04 guerra000 Exp $
+	Cayetano Gómez ( 11/04/2011)
+	usar :
+	//CGR
+	Para encontrar ls modificaciones
+	añadidos los bordes, a todos los controles.
+*/	
+/*
+ * $Id: h_windows.prg,v 1.210 2011-04-20 23:04:58 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -242,6 +249,11 @@ CLASS TWindow
    // Client adjust
    DATA ClientAdjust        INIT 0 // 0=none, 1=top, 2=bottom, 3=left, 4=right, 5=Client
    DATA IsAdjust            INIT .F.
+   DATA nBorders			INIT {0,0,0} // ancho externo, estacio, ancho interno.
+   DATA aBECOLORS			INIT {{0,0,0},{0,0,0},{0,0,0},{0,0,0}} // color externo: arriba, derecha, abajo, izquierda
+   DATA aBICOLORS			INIT {{0,0,0},{0,0,0},{0,0,0},{0,0,0}} // color interno: arriba, derecha, abajo, izquierda
+   DATA nPaintCount			// contador para GetDc y ReleaseDc
+   DATA hDC					// puntero al contexto del canvas.
 
    METHOD SethWnd
    METHOD Release
@@ -317,6 +329,10 @@ CLASS TWindow
    METHOD ClientsPos
    METHOD ClientsPos2
    METHOD Adjust              SETGET
+   METHOD GetDC() INLINE If( ::hDC == nil, ::hDC := GetDC( ::hWnd ),),;
+       If( ::nPaintCount == nil, ::nPaintCount := 1, ::nPaintCount++ ), ::hDC
+   METHOD ReleaseDC() INLINE  If( --::nPaintCount == 0,;
+       If( ReleaseDC( ::hWnd, ::hDC ), ::hDC := nil,),)
 
    METHOD DebugMessageName
    METHOD DebugMessageQuery
@@ -331,6 +347,23 @@ CLASS TWindow
    // Specific HACKS :(
    METHOD SetSplitBox         BLOCK { || .F. }
    METHOD SetSplitBoxInfo     BLOCK { |Self,a,b,c,d| if( ::Container != nil, ::Container:SetSplitBox( a,b,c,d ), .F. ) }
+   
+   // Graphics Methods
+   //CGR
+   METHOD Line
+   METHOD Fill
+   Method Box
+   Method RoundBox   
+   METHOD Ellipse   
+   METHOD Arc
+   METHOD Pie
+   /*
+   METHOD ArcTo(row,col,torow,tocol,rowrad1,colrad1,rowrad2,colrad2,defpen)
+   METHOD Chord(row,col,torow,tocol,rowrad1,colrad1,rowrad2,colrad2,defpen,defbrush)
+   METHOD Polygon(apoints,defpen,defbrush,style)
+   METHOD PolyBezier(apoints,defpen)
+   METHOD PolyBezierTo(apoints,defpen)
+*/
 ENDCLASS
 
 #pragma BEGINDUMP
@@ -1323,7 +1356,7 @@ METHOD Visible( lVisible ) CLASS TWindow
 
       //CGR
       ::CheckClientsPos()
-
+  
    EndIf
 Return ::lVisible
 
@@ -1510,10 +1543,18 @@ METHOD ClientsPos2( aControls, nWidth, nHeight ) CLASS TWindow
 *------------------------------------------------------------------------------*
 // ajusta los controles dentro de la ventana por ClientAdjust
 local n, nAdjust, oControl, nRow := 0, nCol := 0
+local nOffset // desplazamientos por borde
+
 
    If ::IsAdjust
       Return self
    EndIf
+   nOffSet := ::nBorders[1]+::nBorders[2]+::nBorders[3]
+   nOffset  := if ( nOffset>0,nOffset+1,0)
+   nRow:=nOffset
+   nCol:=nOffset
+   nWidth:=nWidth-2*nOffset
+   nHeight:=nHeight-2*nOffset
    ::IsAdjust := .T.
    // nCol := ::Height - GetStatusbarHeight( ::name ) - GetTitleHeight() - 2 * GetBorderHeight()
    For n := 1 to len( aControls )
@@ -1538,8 +1579,8 @@ local n, nAdjust, oControl, nRow := 0, nCol := 0
             nCol := nCol + oControl:nWidth
             nWidth := nWidth - oControl:nWidth
          ElseIf nAdjust == 4 //right
-            oControl:nCol := nWidth - oControl:nWidth + nCol
-            oControl:nRow := nRow
+            oControl:nCol := nWidth - oControl:nWidth
+            oControl:nRow := nRow+nOffset
             oControl:nHeight := nHeight
             nWidth := nWidth - oControl:nWidth
          EndIf
@@ -1842,6 +1883,140 @@ LOCAL cValue
              IF( EMPTY( ::Name ), _OOHG_HEX( GethWndFrom( lParam ), 8 ), ::Name ) + ;
              ": WM_NOTIFY." + ::DebugMessageNameNotify( GetNotifyCode( lParam ) )
 RETURN cValue
+
+//CGR
+*-----------------------------------------------------------------------------*
+METHOD LINE(nRow ,nCol ,nToRow ,nToCol ,nWidth ,aColor, nStyle ) CLASS TWindow
+*-----------------------------------------------------------------------------*
+	default aColor to {0,0,0}
+	default nWidth to 1
+	::GetDc()
+	c_Line(::hdc,nRow ,nCol ,nToRow ,nToCol ,nWidth ,aColor[1] ;
+		,aColor[2] ,aColor[3] ,.t. ,.t., !empty(nStyle) ,nStyle )
+	::ReleaseDc()
+return nil	
+
+*------------------------------------------------------------------------------*
+METHOD FILL(nRow , nCol , nToRow , nToCol , aColor) Class TWindow
+*------------------------------------------------------------------------------*
+
+	default aColor to {0,0,0}
+	::GetDc()
+    C_FILL(::Hdc ,nRow ,nCol ,nToRow ,nToCol ,aColor[1] ,aColor[2] ,aColor[3] , .t. )
+	::ReleaseDc()
+Return nil
+
+*------------------------------------------------------------------------------*
+METHOD Box (nRow ,nCol ,nToRow ,nToCol ,nWidth , aColor, ;
+	nStyle, nBrStyle, aBrColor) CLASS TWindow
+*------------------------------------------------------------------------------*
+local lBrColor
+
+	default aColor to {0,0,0}
+	default nWidth to 1
+
+	if empty(aBrColor)
+		aBrColor:={0,0,0}
+		lBrColor:=.f.
+	else
+		lBrColor:=.t.
+	end
+	
+	::GetDc()
+    C_RECTANGLE(::Hdc ,nRow ,nCol ,nToRow ,nToCol ,nWidth ,;
+		aColor[1] ,aColor[2] ,aColor[3] ,.t. ,.t., !empty(nStyle) ,nStyle , !empty(nBrStyle),;
+		nBrStyle, lBrColor , aBrColor[1],aBrColor[2],aBrColor[3]  )
+	::ReleaseDc()
+Return nil
+
+*------------------------------------------------------------------------------*
+METHOD ROUNDbox (nRow ,nCol ,nToRow ,nToCol ,nWidth , aColor, lStyle, ;
+	nStyle, nBrStyle, aBrColor ) CLASS tWindow
+*------------------------------------------------------------------------------*
+local lBrushColor
+
+	default aColor to {0,0,0}
+	default nWidth to 1
+
+	if empty(aBrColor)
+		aBrColor:={0,0,0}
+		lBrushColor:=.f.
+	else
+		lBrushColor:=.t.
+	end
+	
+	::GetDc()
+    C_ROUNDRECTANGLE(::Hdc ,nRow ,nCol ,nToRow ,nToCol ,nWidth ,;
+		aColor[1] ,aColor[2] ,aColor[3] ,.t. ,.t., !empty(nStyle),nStyle ,!empty(nBrStyle),;
+		nBrStyle, lBrushColor, aBrColor[1],aBrColor[2],aBrColor[3] )
+	::ReleaseDc()
+	
+Return nil
+
+
+*------------------------------------------------------------------------------*
+METHOD Ellipse (nRow ,nCol ,nToRow ,nToCol ,nWidth , aColor, lStyle, ;
+	nStyle, nBrStyle, aBrColor ) CLASS tWindow
+*------------------------------------------------------------------------------*
+local lBrushColor
+
+	default aColor to {0,0,0}
+	default nWidth to 1
+
+	if empty(aBrColor)
+		aBrColor:={0,0,0}
+		lBrushColor:=.f.
+	else
+		lBrushColor:=.t.
+	end
+	
+	::GetDc()
+    C_ELLIPSE(::Hdc ,nRow ,nCol ,nToRow ,nToCol ,nWidth ,;
+		aColor[1] ,aColor[2] ,aColor[3] ,.t. ,.t., !empty(nStyle),nStyle ,!empty(nBrStyle),;
+		nBrStyle, lBrushColor, aBrColor[1],aBrColor[2],aBrColor[3] )
+	::ReleaseDc()
+	
+Return nil
+
+*-----------------------------------------------------------------------------*
+METHOD Arc(nRow ,nCol ,nToRow ,nToCol,X1,Y1,X2,Y2 ,nWidth ,aColor, nStyle ) CLASS TWindow
+*-----------------------------------------------------------------------------*
+	default aColor to {0,0,0}
+	default nWidth to 1
+	::GetDc()
+	c_arc(::hdc,nRow ,nCol ,nToRow ,nToCol,X1,Y1,X2,Y2,nWidth ,aColor[1] ;
+		,aColor[2] ,aColor[3] ,.t. ,.t., !empty(nStyle) ,nStyle )
+	::ReleaseDc()
+return nil	
+
+*------------------------------------------------------------------------------*
+METHOD Pie(nRow ,nCol ,nToRow ,nToCol,x1,y1,x2,y2,nWidth , aColor, lStyle, ;
+	nStyle, nBrStyle, aBrColor ) CLASS tWindow
+*------------------------------------------------------------------------------*
+local lBrushColor
+
+	default aColor to {0,0,0}
+	default nWidth to 1
+
+	if empty(aBrColor)
+		aBrColor:={0,0,0}
+		lBrushColor:=.f.
+	else
+		lBrushColor:=.t.
+	end
+	
+	::GetDc()
+    C_PIE(::Hdc ,nRow ,nCol ,nToRow ,nToCol ,x1 ,y1 ,x2 ,y2 ,nWidth ,;
+		aColor[1] ,aColor[2] ,aColor[3] ,.t. ,.t., !empty(nStyle),nStyle ,!empty(nBrStyle),;
+		nBrStyle, lBrushColor, aBrColor[1],aBrColor[2],aBrColor[3] )
+	::ReleaseDc()
+	
+Return nil
+
+
+
+
+
 
 #pragma BEGINDUMP
 HB_FUNC( _OOHG_HEX )   // nNum, nDigits
@@ -2375,3 +2550,792 @@ STATIC lState := .F.
       lState := lNewState
    EndIf
 RETURN lState
+
+
+#pragma BEGINDUMP
+
+// obtiene el contexto del canvas de la ventana.
+HB_FUNC ( GetDC )
+{	HWND hwnd = ( HWND ) hb_parnl( 1 ) ;
+	HDC hdc ;
+	hdc = GetDC( hwnd );
+	hb_retnl((LONG) hdc);;
+}
+
+// libera e contexto del canvas de la ventana.
+HB_FUNC ( ReleaseDC )
+{	HWND hwnd = ( HWND ) hb_parnl( 1 ) ;
+	HDC hdc = ( HDC ) hb_parnl( 2 )  ;
+
+	ReleaseDC( hwnd , hdc);
+}
+
+
+HB_FUNC ( C_LINE )
+{
+
+	// 1: hDC
+	// 2: y
+	// 3: x
+	// 4: toy
+	// 5: tox
+	// 6: width
+	// 7: R Color
+	// 8: G Color
+	// 9: B Color
+	// 10: lWindth
+	// 11: lColor
+	// 12: lStyle
+	// 13: nStyle
+
+	int r ;
+	int g ;
+	int b ;
+
+	int x = hb_parni(3) ;
+	int y = hb_parni(2) ;
+
+	int tox = hb_parni(5) ;
+	int toy = hb_parni(4) ;
+
+	int width ;
+	int nStyle ;
+
+	HDC hdc = (HDC) hb_parnl( 1 );
+	HGDIOBJ hgdiobj;
+	HPEN hpen;
+
+	
+	if ( hdc != 0 )
+	{
+		// Width
+		if ( hb_parl(10) )
+		{
+			width = hb_parni(6) ;
+		}
+		// Color
+		if ( hb_parl(11) )
+		{
+			r = hb_parni(7) ;
+			g = hb_parni(8) ;
+			b = hb_parni(9) ;
+		}
+		else
+		{
+			r = 0 ;
+			g = 0 ;
+			b = 0 ;
+		}
+		if ( hb_parl(12) )
+		{
+			nStyle = hb_parni(13) ;
+		}
+		else
+		{
+			nStyle = (int) PS_SOLID ;
+		}
+		hpen = CreatePen( nStyle ,  width , (COLORREF) RGB( r , g , b ) );
+		hgdiobj = SelectObject( (HDC) hdc , hpen );
+		MoveToEx( (HDC) hdc , x, y ,NULL	);
+		LineTo ( (HDC) hdc, tox ,toy 	);
+		SelectObject( (HDC) hdc , (HGDIOBJ) hgdiobj );
+		DeleteObject( hpen );
+		//InvalidateRect( (HDC) hdc ,NULL, TRUE );
+	}
+
+}
+
+HB_FUNC ( C_FILL )
+{
+
+	// 1: hDC
+	// 2: y
+	// 3: x
+	// 4: toy
+	// 5: tox
+	// 6: R Color
+	// 7: G Color
+	// 8: B Color
+	// 9: lColor
+
+	int r ;
+	int g ;
+	int b ;
+
+	int x = hb_parnl(3) ;
+	int y = hb_parnl(2) ;
+
+	int tox = hb_parnl(5) ;
+	int toy = hb_parnl(4) ;
+	
+	
+	RECT rect ;
+
+	HDC hdc = (HDC) hb_parnl(1) ;
+	HGDIOBJ hgdiobj;
+	HBRUSH hBrush;
+
+	if ( hdc != 0 )
+	{
+		// Color
+
+		if ( hb_parl(9) )
+		{
+			r = hb_parni(6) ;
+			g = hb_parni(7) ;
+			b = hb_parni(8) ;
+		}
+		else
+		{
+			r = 0 ;
+			g = 0 ;
+			b = 0 ;
+		}
+		rect.left=x;
+		rect.top=y;
+		rect.right=tox ;
+		rect.bottom=toy;
+
+		hBrush = CreateSolidBrush( RGB(r,g,b) );
+		hgdiobj = SelectObject( (HDC) hdc , hBrush );
+		FillRect( (HDC) hdc , &rect , (HBRUSH) hBrush ) ;
+		SelectObject( (HDC) hdc , (HGDIOBJ) hgdiobj );
+		DeleteObject( hBrush );
+	}
+}
+
+HB_FUNC ( C_RECTANGLE )
+{
+
+	// 1: hDC
+	// 2: y
+	// 3: x
+	// 4: toy
+	// 5: tox
+	// 6: width
+	// 7: R Color
+	// 8: G Color
+	// 9: B Color
+	// 10: lWindth
+	// 11: lColor
+	// 12: lStyle
+	// 13: nStyle
+	// 14: lBrusStyle
+	// 15: nBrushStyle
+	// 16: lBrushColor
+	// 17: nColorR
+	// 18: nColorG
+	// 19: nColorB
+	
+	int r ;
+	int g ;
+	int b ;
+
+	int x = hb_parni(3) ;
+	int y = hb_parni(2) ;
+
+	int tox = hb_parni(5) ;
+	int toy = hb_parni(4) ;
+
+	int width ;
+	int nStyle ;
+	
+	int br ;
+	int bg ;
+	int bb ;
+	int nBr ;
+	long nBh ;
+	
+	HDC hdc = (HDC) hb_parnl(1) ;
+	HGDIOBJ hgdiobj,hgdiobj2;
+	HPEN hpen;
+	LOGBRUSH pbr;
+	HBRUSH hbr ;
+
+	if ( hdc != 0 )
+	{
+		// Width
+		if ( hb_parl(10) )
+		{
+			width = hb_parni(6) ;
+		}
+		else
+		{
+			width = 1  ;
+		}
+		// Color
+		if ( hb_parl(11) )
+		{
+			r = hb_parni(7) ;
+			g = hb_parni(8) ;
+			b = hb_parni(9) ;
+		}
+		else
+		{
+			r = 0 ;
+			g = 0 ;
+			b = 0 ;
+		}
+		if ( hb_parl(12) )
+		{
+			nStyle = hb_parni(13) ;
+		}
+		else
+		{
+			nStyle = (int) PS_SOLID ;
+		}
+		if ( hb_parl(14) )
+		{
+			nBh = hb_parni(15);
+			nBr = 2 ;
+		}
+		else
+		{
+			if ( hb_parl(16) )
+			{
+			nBr = 0 ;
+			}
+			else
+			{
+			nBr = 1 ;
+			}
+			nBh = 0  ;
+		}
+		
+		if ( hb_parl(16) )
+		{
+			br = hb_parni(17) ;
+			bg = hb_parni(18) ;
+			bb = hb_parni(19) ;
+		}
+		else
+		{
+			br = 0 ;
+			bg = 0 ;
+			bb = 0 ;
+		}
+
+		pbr.lbStyle=nBr ;
+		pbr.lbColor=(COLORREF) RGB( br , bg , bb );
+		pbr.lbHatch=(LONG) nBh;
+
+		hpen = CreatePen( nStyle,  width , (COLORREF) RGB( r , g , b ) );
+		hbr =CreateBrushIndirect(&pbr) ;
+		hgdiobj = SelectObject( (HDC) hdc , hpen );
+		hgdiobj2 = SelectObject( (HDC) hdc , hbr );
+		Rectangle( (HDC) hdc ,x,y,tox,toy);
+
+		SelectObject( (HDC) hdc , (HGDIOBJ) hgdiobj );
+		SelectObject( (HDC) hdc , (HGDIOBJ) hgdiobj2 );
+
+		DeleteObject( hpen );
+		DeleteObject( hbr );
+	}
+
+}
+
+HB_FUNC ( C_ROUNDRECTANGLE )
+{
+
+	// 1: hDC
+	// 2: y
+	// 3: x
+	// 4: toy
+	// 5: tox
+	// 6: width
+	// 7: R Color
+	// 8: G Color
+	// 9: B Color
+	// 10: lWindth
+	// 11: lColor
+	// 12: lStyle
+	// 13: nStyle
+	// 14: lBrusStyle
+	// 15: nBrushStyle
+	// 16: lBrushColor
+	// 17: nColorR
+	// 18: nColorG
+	// 19: nColorB
+
+	int r ;
+	int g ;
+	int b ;
+
+	int x = hb_parni(3) ;
+	int y = hb_parni(2) ;
+
+	int tox = hb_parni(5) ;
+	int toy = hb_parni(4) ;
+
+	int width ;
+
+	int p ;
+	int nStyle ;
+	
+	int br ;
+	int bg ;
+	int bb ;
+	int nBr ;
+	long nBh ;
+	
+	HDC hdc = (HDC) hb_parnl(1) ;
+	HGDIOBJ hgdiobj,hgdiobj2;
+	HPEN hpen;
+	LOGBRUSH pbr;
+	HBRUSH hbr ;
+
+	if ( hdc != 0 )
+	{
+
+		// Width
+
+		if ( hb_parl(10) )
+		{
+			width = hb_parni(6) ;
+		}
+		else
+		{
+			width = 1  ;
+		}
+
+		// Color
+
+		if ( hb_parl(11) )
+		{
+			r = hb_parni(7) ;
+			g = hb_parni(8) ;
+			b = hb_parni(9) ;
+		}
+		else
+		{
+			r = 0 ;
+			g = 0 ;
+			b = 0 ;
+		}
+
+		if ( hb_parl(12) )
+		{
+			nStyle = hb_parni(13) ;
+		}
+		else
+		{
+			nStyle = (int) PS_SOLID ;
+		}
+
+		if ( hb_parl(14) )
+		{
+			nBh = hb_parni(15);
+			nBr = 2 ;
+		}
+		else
+		{
+			if ( hb_parl(16) )
+			{
+			nBr = 0 ;
+			}
+			else
+			{
+			nBr = 1 ;
+			}
+			nBh = 0  ;
+		}
+		
+		if ( hb_parl(16) )
+		{
+			br = hb_parni(17) ;
+			bg = hb_parni(18) ;
+			bb = hb_parni(19) ;
+		}
+		else
+		{
+			br = 0 ;
+			bg = 0 ;
+			bb = 0 ;
+		}
+
+		pbr.lbStyle=nBr ;
+		pbr.lbColor=(COLORREF) RGB( br , bg , bb );
+		pbr.lbHatch=(LONG) nBh;
+		
+		hpen = CreatePen( nStyle, width , (COLORREF) RGB( r , g , b ) );
+		hbr =CreateBrushIndirect(&pbr) ;
+		hgdiobj = SelectObject( (HDC) hdc , hpen );
+		hgdiobj2 = SelectObject( (HDC) hdc , hbr );
+
+		p = ( tox + toy ) / 2 ;
+		p = p / 10 ;
+
+		RoundRect( (HDC) hdc ,x,y,tox,toy,p,p);
+
+		SelectObject( (HDC) hdc , (HGDIOBJ) hgdiobj );
+		SelectObject( (HDC) hdc , (HGDIOBJ) hgdiobj2 );
+
+
+
+		DeleteObject( hpen );
+		DeleteObject( hbr );
+
+	}
+
+}
+
+HB_FUNC ( C_ELLIPSE )
+{
+
+	// 1: hDC
+	// 2: y
+	// 3: x
+	// 4: toy
+	// 5: tox
+	// 6: width
+	// 7: R Color
+	// 8: G Color
+	// 9: B Color
+	// 10: lWindth
+	// 11: lColor
+	// 12: lStyle
+	// 13: nStyle
+	// 14: lBrusStyle
+	// 15: nBrushStyle
+	// 16: lBrushColor
+	// 17: nColorR
+	// 18: nColorG
+	// 19: nColorB
+
+	int r ;
+	int g ;
+	int b ;
+
+	int x = hb_parni(3) ;
+	int y = hb_parni(2) ;
+
+	int tox = hb_parni(5) ;
+	int toy = hb_parni(4) ;
+
+	int width ;
+
+	int nStyle ;
+	
+	int br ;
+	int bg ;
+	int bb ;
+	int nBr ;
+	long nBh ;
+	
+	HDC hdc = (HDC) hb_parnl(1) ;
+	HGDIOBJ hgdiobj,hgdiobj2;
+	HPEN hpen;
+	LOGBRUSH pbr;
+	HBRUSH hbr ;
+
+	if ( hdc != 0 )
+	{
+
+		// Width
+
+		if ( hb_parl(10) )
+		{
+			width = hb_parni(6) ;
+		}
+		else
+		{
+			width = 1 * 10000 / 254 ;
+		}
+
+		// Color
+
+		if ( hb_parl(11) )
+		{
+			r = hb_parni(7) ;
+			g = hb_parni(8) ;
+			b = hb_parni(9) ;
+		}
+		else
+		{
+			r = 0 ;
+			g = 0 ;
+			b = 0 ;
+		}
+
+		if ( hb_parl(12) )
+		{
+			nStyle = hb_parni(13) ;
+		}
+		else
+		{
+			nStyle = (int) PS_SOLID ;
+		}
+
+		if ( hb_parl(14) )
+		{
+			nBh = hb_parni(15);
+			nBr = 2 ;
+		}
+		else
+		{
+			if ( hb_parl(16) )
+			{
+			nBr = 0 ;
+			}
+			else
+			{
+			nBr = 1 ;
+			}
+			nBh = 0  ;
+		}
+		
+		if ( hb_parl(16) )
+		{
+			br = hb_parni(17) ;
+			bg = hb_parni(18) ;
+			bb = hb_parni(19) ;
+		}
+		else
+		{
+			br = 0 ;
+			bg = 0 ;
+			bb = 0 ;
+		}
+
+		pbr.lbStyle=nBr ;
+		pbr.lbColor=(COLORREF) RGB( br , bg , bb );
+		pbr.lbHatch=(LONG) nBh;
+		
+		hpen = CreatePen( nStyle, width , (COLORREF) RGB( r , g , b ) );
+		hbr =CreateBrushIndirect(&pbr) ;
+		hgdiobj = SelectObject( (HDC) hdc , hpen );
+		hgdiobj2 = SelectObject( (HDC) hdc , hbr );
+
+		Ellipse( (HDC) hdc ,x,y,tox,toy);
+
+		SelectObject( (HDC) hdc , (HGDIOBJ) hgdiobj );
+		SelectObject( (HDC) hdc , (HGDIOBJ) hgdiobj2 );
+
+
+
+		DeleteObject( hpen );
+		DeleteObject( hbr );
+
+	}
+
+}
+
+HB_FUNC ( C_ARC )
+{
+
+	// 1: hDC
+	// 2: y
+	// 3: x
+	// 4: toy
+	// 5: tox
+	// 6-9,x1,y1,x2,y2
+	// 10: width
+	// 11: R Color
+	// 12: G Color
+	// 13: B Color
+	// 14: lWindth
+	// 15: lColor
+	// 16: lStyle
+	// 17: nStyle
+
+
+	int r ;
+	int g ;
+	int b ;
+
+	int x = hb_parni(3) ;
+	int y = hb_parni(2) ;
+
+	int tox = hb_parni(5) ;
+	int toy = hb_parni(4) ;
+
+	int x1 = hb_parni(7);
+	int y1 = hb_parni(6);
+	int x2 = hb_parni(9);
+	int y2 = hb_parni(8);
+
+	int width ;
+	int nStyle ;
+
+	HDC hdc = (HDC) hb_parnl( 1 );
+	HGDIOBJ hgdiobj;
+	HPEN hpen;
+
+	
+	if ( hdc != 0 )
+	{
+		// Width
+		if ( hb_parl(14) )
+		{
+			width = hb_parni(10) ;
+		}
+		// Color
+		if ( hb_parl(15) )
+		{
+			r = hb_parni(11) ;
+			g = hb_parni(12) ;
+			b = hb_parni(13) ;
+		}
+		else
+		{
+			r = 0 ;
+			g = 0 ;
+			b = 0 ;
+		}
+		if ( hb_parl(16) )
+		{
+			nStyle = hb_parni(17) ;
+		}
+		else
+		{
+			nStyle = (int) PS_SOLID ;
+		}
+		hpen = CreatePen( nStyle ,  width , (COLORREF) RGB( r , g , b ) );
+		hgdiobj = SelectObject( (HDC) hdc , hpen );		
+		Arc ( (HDC) hdc, x,y,tox ,toy,x1,y1,x2,y2 	);
+		SelectObject( (HDC) hdc , (HGDIOBJ) hgdiobj );
+		DeleteObject( hpen );
+		//InvalidateRect( (HDC) hdc ,NULL, TRUE );
+	}
+
+}
+
+
+HB_FUNC ( C_PIE )
+{
+
+	// 1: hDC
+	// 2: y
+	// 3: x
+	// 4: toy
+	// 5: tox
+	// 6-9,x1,y1,x2,y2
+	// 10: width
+	// 11: R Color
+	// 12: G Color
+	// 13: B Color
+	// 14: lWindth
+	// 15: lColor
+	// 16: lStyle
+	// 17: nStyle
+	// 18: lBrusStyle
+	// 19: nBrushStyle
+	// 20: lBrushColor
+	// 21: nColorR
+	// 22: nColorG
+	// 23: nColorB
+	
+	int r ;
+	int g ;
+	int b ;
+
+	int x = hb_parni(3) ;
+	int y = hb_parni(2) ;
+
+	int tox = hb_parni(5) ;
+	int toy = hb_parni(4) ;
+
+	int x1 = hb_parni(7);
+	int y1 = hb_parni(6);
+	int x2 = hb_parni(9);
+	int y2 = hb_parni(8);
+
+	int width ;
+	int nStyle ;
+	
+	int br ;
+	int bg ;
+	int bb ;
+	int nBr ;
+	long nBh ;
+	
+	HDC hdc = (HDC) hb_parnl(1) ;
+	HGDIOBJ hgdiobj,hgdiobj2;
+	HPEN hpen;
+	LOGBRUSH pbr;
+	HBRUSH hbr ;
+	
+	if ( hdc != 0 )
+	{
+		// Width
+		if ( hb_parl(14) )
+		{
+			width = hb_parni(10) ;
+		}
+		// Color
+		if ( hb_parl(15) )
+		{
+			r = hb_parni(11) ;
+			g = hb_parni(12) ;
+			b = hb_parni(13) ;
+		}
+		else
+		{
+			r = 0 ;
+			g = 0 ;
+			b = 0 ;
+		}
+		if ( hb_parl(16) )
+		{
+			nStyle = hb_parni(17) ;
+		}
+		else
+		{
+			nStyle = (int) PS_SOLID ;
+		}
+
+		if ( hb_parl(18) )
+		{
+			nBh = hb_parni(19);
+			nBr = 2 ;
+		}
+		else
+		{
+			if ( hb_parl(20) )
+			{
+			nBr = 0 ;
+			}
+			else
+			{
+			nBr = 1 ;
+			}
+			nBh = 0  ;
+		}
+		
+		if ( hb_parl(20) )
+		{
+			br = hb_parni(21) ;
+			bg = hb_parni(22) ;
+			bb = hb_parni(23) ;
+		}
+		else
+		{
+			br = 0 ;
+			bg = 0 ;
+			bb = 0 ;
+		}
+
+		pbr.lbStyle=nBr ;
+		pbr.lbColor=(COLORREF) RGB( br , bg , bb );
+		pbr.lbHatch=(LONG) nBh;
+		
+		hpen = CreatePen( nStyle, width , (COLORREF) RGB( r , g , b ) );
+		hbr =CreateBrushIndirect(&pbr) ;
+		hgdiobj = SelectObject( (HDC) hdc , hpen );
+		hgdiobj2 = SelectObject( (HDC) hdc , hbr );
+	
+		Pie ( (HDC) hdc, x,y,tox ,toy,x1,y1,x2,y2 	);
+		SelectObject( (HDC) hdc , (HGDIOBJ) hgdiobj );
+		SelectObject( (HDC) hdc , (HGDIOBJ) hgdiobj2 );
+
+		DeleteObject( hpen );
+		DeleteObject( hbr );
+		//InvalidateRect( (HDC) hdc ,NULL, TRUE );
+	}
+
+}
+
+
+
+#pragma ENDDUMP
+

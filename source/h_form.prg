@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.23 2011-01-26 00:13:52 guerra000 Exp $
+ * $Id: h_form.prg,v 1.24 2011-04-20 23:04:58 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -1237,7 +1237,7 @@ HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
 FUNCTION _OOHG_TForm_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TForm
 *-----------------------------------------------------------------------------*
 Local i, NextControlHandle, xRetVal
-Local oCtrl, lMinim := .F.
+Local oCtrl, lMinim := .F., nOffset,nDesp
 
    Do Case
 
@@ -1371,6 +1371,26 @@ Local oCtrl, lMinim := .F.
       _OOHG_EVAL( ::GraphCommand, ::hWnd, ::GraphData )
 
       ::DoEvent( ::OnPaint, "WINDOW_PAINT" )
+	  //CGR
+	  if ::nBorders[1]+::nBorders[2]+::nBorders[3] > 0
+		//msginfo('borde')
+		//dibujo el borde externo
+		::GetDc() // Captura el canvas
+		nOffset := int((::nBorders[1]+1)/2)
+		::Fill(0,0,::nBorders[1],::ClientWidth,::abecolors[1])
+		::Fill(0,::ClientWidth,::Clientheight-::nBorders[1],::Clientwidth-::nBorders[1],::abecolors[2])
+		::Fill(::ClientHeight,::clientwidth,::clientheight-::nBorders[1],0,::abecolors[3])
+		::Fill(0,0,::ClientHeight,::nBorders[1],::abecolors[4])
+		//dibujo el borde interno
+		nOffSet:=::nBorders[1]+::nBorders[2]
+		nDesp:=::nBorders[1]+::nBorders[2]+::nBorders[3]
+		::Fill(nOffset,nOffset,nDesp,::ClientWidth-nOffset,::abicolors[1])
+		::Fill(nOffSet,::ClientWidth-nOffSet,::Clientheight-nOffset,::Clientwidth-nDesp,::abicolors[2])
+		::Fill(::ClientHeight-nOffSet,::clientwidth-nOffSet,::clientheight-nDesp,noffset,::abicolors[3])
+		::Fill(nOffSet,nOffSet,::ClientHeight-nDesp,nDesp,::abicolors[4])
+		::ReleaseDc() // libera el canvas 
+	  EndIf
+
 
       Return 1
 

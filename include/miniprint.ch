@@ -231,8 +231,10 @@ _HMG_PRINTER_ABORTDOC ( _HMG_printer_hdc )
 	[ <underline : UNDERLINE> ] ;
 	[ <strikeout : STRIKEOUT> ] ;
 	[ <lcolor : COLOR> <aColor> ] ;
+	[ <lAngle : ANGLE> <nAngle> ] ;
+	[ <lWidth : WIDTH> <nWidth> ] ;
 	=> ;
-        _HMG_PRINTER_H_PRINT ( _HMG_printer_hdc , <Row> , <Col> , <cFontName> , <nFontSize> , <aColor>\[1\] , <aColor>\[2\] , <aColor>\[3\] , <cText> , <.bold.> , <.italic.> , <.underline.> , <.strikeout.> , <.lcolor.> , <.lfont.> , <.lsize.> )
+	_HMG_PRINTER_H_PRINT ( _HMG_printer_hdc , <Row> , <Col> , <cFontName> , <nFontSize> , <aColor>\[1\] , <aColor>\[2\] , <aColor>\[3\] , <cText> , <.bold.> , <.italic.> , <.underline.> , <.strikeout.> , <.lcolor.> , <.lfont.> , <.lsize.> , <.lAngle.> , <nAngle> , <.lWidth.> , <nWidth> )
 
 #xcommand @ <Row> , <Col> PRINT [ DATA ] <cText> ;
 	TO <ToRow> , <ToCol> ;
@@ -243,8 +245,10 @@ _HMG_PRINTER_ABORTDOC ( _HMG_printer_hdc )
 	[ <underline : UNDERLINE> ] ;
 	[ <strikeout : STRIKEOUT> ] ;
 	[ <lcolor : COLOR> <aColor> ] ;
+	[ <lAngle : ANGLE> <nAngle> ] ;
+	[ <lWidth : WIDTH> <nWidth> ] ;
 	=> ;
-        _HMG_PRINTER_H_MULTILINE_PRINT ( _HMG_printer_hdc , <Row> , <Col> , <ToRow> , <ToCol> , <cFontName> , <nFontSize> , <aColor>\[1\] , <aColor>\[2\] , <aColor>\[3\] , <cText> , <.bold.> , <.italic.> , <.underline.> , <.strikeout.> , <.lcolor.> , <.lfont.> , <.lsize.> ) 
+        _HMG_PRINTER_H_MULTILINE_PRINT ( _HMG_printer_hdc , <Row> , <Col> , <ToRow> , <ToCol> , <cFontName> , <nFontSize> , <aColor>\[1\] , <aColor>\[2\] , <aColor>\[3\] , <cText> , <.bold.> , <.italic.> , <.underline.> , <.strikeout.> , <.lcolor.> , <.lfont.> , <.lsize.> , <.lAngle.> , <nAngle> , <.lWidth.> , <nWidth> ) 
 
 #xcommand @ <nRow> , <nCol> PRINT IMAGE <cImage> ;
 	WIDTH <nWidth> ;
@@ -256,22 +260,69 @@ _HMG_PRINTER_ABORTDOC ( _HMG_printer_hdc )
 #xcommand @ <Row> , <Col> PRINT LINE TO <ToRow> , <ToCol> ;
 	[ <lwidth : PENWIDTH> <Width> ] ;
 	[ <lcolor : COLOR> <aColor> ] ;
+	[ <lStyle : STYLE> <nStyle> ] ;
 	=> ;
-        _HMG_PRINTER_H_LINE ( _HMG_printer_hdc , <Row> , <Col> , <ToRow> , <ToCol> , <Width> , <aColor>\[1\] , <aColor>\[2\] , <aColor>\[3\]  , <.lwidth.> , <.lcolor.> ) 
+        _HMG_PRINTER_H_LINE ( _HMG_printer_hdc , <Row> , <Col> , <ToRow> , <ToCol> , <Width> , <aColor>\[1\] , <aColor>\[2\] , <aColor>\[3\]  , <.lwidth.> , <.lcolor.>, <.lStyle.>, <nStyle> ) 
 
 #xcommand @ <Row> , <Col> PRINT RECTANGLE TO <ToRow> , <ToCol> ;
 	[ <lwidth : PENWIDTH> <Width> ] ;
 	[ <lcolor : COLOR> <aColor> ] ;
+	[ <lStyle : STYLE> <nStyle> ] ;
+	[ <lBrushStyle : BRUSHSTYLE> <nBrStyle> ];
+	[ <lBrushColor : BRUSHCOLOR> <aBrColor> ];
 	=> ;
-        _HMG_PRINTER_H_RECTANGLE ( _HMG_printer_hdc , <Row> , <Col> , <ToRow> , <ToCol> , <Width> , <aColor>\[1\] , <aColor>\[2\] , <aColor>\[3\] , <.lwidth.> , <.lcolor.> ) 
+        _HMG_PRINTER_H_RECTANGLE ( _HMG_printer_hdc , <Row> , <Col> , <ToRow> , <ToCol> , <Width> , <aColor>\[1\] , <aColor>\[2\] , <aColor>\[3\] , <.lwidth.> , <.lcolor.>, <.lStyle.>, <nStyle> , <.lBrushStyle.>, <nBrStyle>, <.lBrushColor.>, <aBrColor> ) 
 
 #xcommand @ <Row> , <Col> PRINT RECTANGLE TO <ToRow> , <ToCol> ;
 	[ <lwidth : PENWIDTH> <Width> ] ;
 	[ <lcolor : COLOR> <aColor> ] ;
+	[ <lStyle : STYLE> <nStyle> ] ;
+	[ <lBrushStyle : BRUSHSTYLE> <nBrStyle> ];
+	[ <lBrushColor : BRUSHCOLOR> <aBrColor> ];
 	ROUNDED ;
 	=> ;
-        _HMG_PRINTER_H_ROUNDRECTANGLE ( _HMG_printer_hdc , <Row> , <Col> , <ToRow> , <ToCol> , <Width> , <aColor>\[1\] , <aColor>\[2\] , <aColor>\[3\] , <.lwidth.> , <.lcolor.> ) 
+        _HMG_PRINTER_H_ROUNDRECTANGLE ( _HMG_printer_hdc , <Row> , <Col> , <ToRow> , <ToCol> , <Width> , <aColor>\[1\] , <aColor>\[2\] , <aColor>\[3\] , <.lwidth.> , <.lcolor.>, <.lStyle.>, <nStyle> , <.lBrushStyle.>, <nBrStyle>, <.lBrushColor.>, <aBrColor> ) 
 
+#xcommand @ <Row> , <Col> PRINT FILL TO <ToRow> , <ToCol> ;
+	[ <lcolor : COLOR> <aColor> ] ;
+	[ <lBrushStyle : BRUSHSTYLE> <nBrStyle> ];
+	[ <lBrushColor : BRUESHCOLOR> <aBrColor> ];
+	=> ;
+        _HMG_PRINTER_H_FILL ( _HMG_printer_hdc , <Row> , <Col> , <ToRow> , <ToCol> , <aColor>\[1\] , <aColor>\[2\] , <aColor>\[3\] , <.lcolor.>, <.lBrushStyle.>, <nBrStyle>, <.lBrushColor.>, <aBrColor> ) 
+
+		
+#xcommand @ <Row> , <Col> PRINT RECTANGLE TO <ToRow> , <ToCol> ;
+	[ <lwidth : PENWIDTH> <Width> ] ;
+	[ <lcolor : COLOR> <aColor> ] ;
+	[ <lStyle : STYLE> <nStyle> ] ;
+	[ <lBrushStyle : BRUSHSTYLE> <nBrStyle> ];
+	[ <lBrushColor : BRUSHCOLOR> <aBrColor> ];
+	ROUNDED ;
+	=> ;
+        _HMG_PRINTER_H_ROUNDRECTANGLE ( _HMG_printer_hdc , <Row> , <Col> , <ToRow> , <ToCol> , <Width> , <aColor>\[1\] , <aColor>\[2\] , <aColor>\[3\] , <.lwidth.> , <.lcolor.>, <.lStyle.>, <nStyle> , <.lBrushStyle.>, <nBrStyle>, <.lBrushColor.>, <aBrColor> ) 
+
+#xcommand @ <Row> , <Col> PRINT ELLIPSE TO <ToRow> , <ToCol> ;
+	[ <lcolor : COLOR> <aColor> ] ;
+	[ <lBrushStyle : BRUSHSTYLE> <nBrStyle> ];
+	[ <lBrushColor : BRUESHCOLOR> <aBrColor> ];
+	=> ;
+        _HMG_PRINTER_H_ELLIPSE ( _HMG_printer_hdc , <Row> , <Col> , <ToRow> , <ToCol> , <aColor>\[1\] , <aColor>\[2\] , <aColor>\[3\] , <.lcolor.>, <.lBrushStyle.>, <nBrStyle>, <.lBrushColor.>, <aBrColor> ) 
+
+#xcommand @ <Row> , <Col> PRINT ARC TO <ToRow> , <ToCol> LIMITS <x1>, <y1>, <x2>, <y2>;
+	[ <lcolor : COLOR> <aColor> ] ;
+	[ <lBrushStyle : BRUSHSTYLE> <nBrStyle> ];
+	[ <lBrushColor : BRUESHCOLOR> <aBrColor> ];
+	=> ;
+        _HMG_PRINTER_H_ARC ( _HMG_printer_hdc , <Row> , <Col> , <ToRow> , <ToCol>,<x1>,<y1>,<x2>,<y2>, <aColor>\[1\] , <aColor>\[2\] , <aColor>\[3\] , <.lcolor.>, <.lBrushStyle.>, <nBrStyle>, <.lBrushColor.>, <aBrColor> ) 
+
+#xcommand @ <Row> , <Col> PRINT PIE TO <ToRow> , <ToCol> LIMITS <x1>, <y1>, <x2>, <y2>;
+	[ <lcolor : COLOR> <aColor> ] ;
+	[ <lBrushStyle : BRUSHSTYLE> <nBrStyle> ];
+	[ <lBrushColor : BRUESHCOLOR> <aBrColor> ];
+	=> ;
+        _HMG_PRINTER_H_PIE ( _HMG_printer_hdc , <Row> , <Col> , <ToRow> , <ToCol>,<x1>,<y1>,<x2>,<y2>, <aColor>\[1\] , <aColor>\[2\] , <aColor>\[3\] , <.lcolor.>, <.lBrushStyle.>, <nBrStyle>, <.lBrushColor.>, <aBrColor> ) 
+
+		
 ///////////////////////////////////////////////////////////////////////////////
 // PRINTER CONFIGURATION CONSTANTS
 ///////////////////////////////////////////////////////////////////////////////
@@ -447,3 +498,24 @@ _HMG_PRINTER_ABORTDOC ( _HMG_printer_hdc )
 #define PRINTER_PAPER_PENV_10_ROTATED     118 /* PRC Envelope #10 Rotated 458 x 324 mm */
 
 #define PRINTER_PAPER_USER                256
+
+
+/* Pen Styles */
+#define PEN_SOLID            0
+#define PEN_DASH             1       /* -------  */
+#define PEN_DOT              2       /* .......  */
+#define PEN_DASHDOT          3       /* _._._._  */
+#define PEN_DASHDOTDOT       4       /* _.._.._  */
+#define PEN_NULL             5
+#define PEN_INSIDEFRAME      6
+#define PEN_USERSTYLE        7
+#define PEN_ALTERNATE        8
+#define PEN_STYLE_MASK       0x0000000F
+
+/* Hatch Styles for Brush */
+#define BR_HORIZONTAL       0       // ----- 
+#define BR_VERTICAL         1       // ||||| 
+#define BR_FDIAGONAL        2       // \\\\\ 
+#define BR_BDIAGONAL        3       // ///// 
+#define BR_CROSS            4       // +++++ 
+#define BR_DIAGCROSS        5       // xxxxx 

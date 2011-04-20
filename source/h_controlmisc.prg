@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.108 2011-01-05 04:19:17 declan2005 Exp $
+ * $Id: h_controlmisc.prg,v 1.109 2011-04-20 23:04:58 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -89,6 +89,16 @@
 
 	"Harbour Project"
 	Copyright 1999-2003, http://www.harbour-project.org/
+
+
+15/04/2011 Cayetano Gómez
+		Añadidas primitivas gráficas.
+		line
+		box
+		circle
+		roundbox
+		text
+		fill
 ---------------------------------------------------------------------------*/
 
 #include "oohg.ch"
@@ -1211,7 +1221,9 @@ CLASS TControl FROM TWindow
    METHOD SetForm
    METHOD InitStyle
    METHOD Register
+   //CGR
    METHOD Refresh             BLOCK { || nil }
+   //Method Refresh
    METHOD Release
    METHOD SetFont
    METHOD ContainerRow        BLOCK { |Self| IF( ::Container != NIL, IF( ValidHandler( ::Container:ContainerhWndValue ), 0, ::Container:ContainerRow ) + ::Container:RowMargin, ::Parent:RowMargin ) + ::Row }
@@ -1241,6 +1253,8 @@ CLASS TControl FROM TWindow
    METHOD Events_Notify
    METHOD Events_DrawItem     BLOCK { || nil }
    METHOD Events_MeasureItem  BLOCK { || nil }
+   
+
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -1915,6 +1929,8 @@ Local nNotify := GetNotifyCode( lParam )
    EndIf
 
 Return nil
+
+	
 
 *-----------------------------------------------------------------------------*
 Function GetControlObject( ControlName, FormName )
