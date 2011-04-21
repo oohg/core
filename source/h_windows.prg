@@ -1,12 +1,5 @@
 /*
-	Cayetano Gómez ( 11/04/2011)
-	usar :
-	//CGR
-	Para encontrar ls modificaciones
-	añadidos los bordes, a todos los controles.
-*/	
-/*
- * $Id: h_windows.prg,v 1.210 2011-04-20 23:04:58 declan2005 Exp $
+ * $Id: h_windows.prg,v 1.211 2011-04-21 16:00:10 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -97,6 +90,13 @@
 	"Harbour Project"
 	Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
+/*
+	Cayetano Gómez ( 11/04/2011)
+	usar :
+	//CGR
+	Para encontrar ls modificaciones
+	añadidos los bordes, a todos los controles.
+*/	
 
 #include "oohg.ch"
 #include "i_windefs.ch"
@@ -1935,6 +1935,8 @@ METHOD ROUNDbox (nRow ,nCol ,nToRow ,nToCol ,nWidth , aColor, lStyle, ;
 *------------------------------------------------------------------------------*
 local lBrushColor
 
+   EMPTY( lStyle )
+
 	default aColor to {0,0,0}
 	default nWidth to 1
 
@@ -1959,6 +1961,8 @@ METHOD Ellipse (nRow ,nCol ,nToRow ,nToCol ,nWidth , aColor, lStyle, ;
 	nStyle, nBrStyle, aBrColor ) CLASS tWindow
 *------------------------------------------------------------------------------*
 local lBrushColor
+
+   EMPTY( lStyle )
 
 	default aColor to {0,0,0}
 	default nWidth to 1
@@ -1994,6 +1998,8 @@ METHOD Pie(nRow ,nCol ,nToRow ,nToCol,x1,y1,x2,y2,nWidth , aColor, lStyle, ;
 	nStyle, nBrStyle, aBrColor ) CLASS tWindow
 *------------------------------------------------------------------------------*
 local lBrushColor
+
+   EMPTY( lStyle )
 
 	default aColor to {0,0,0}
 	default nWidth to 1

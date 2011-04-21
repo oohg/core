@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.24 2011-04-20 23:04:58 declan2005 Exp $
+ * $Id: h_form.prg,v 1.25 2011-04-21 16:00:10 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1423,7 +1423,9 @@ Local oCtrl, lMinim := .F., nOffset,nDesp
 
             ENDCASE
 
-            ::AdjustWindowSize( lMinim )
+            If ! lMinim
+               ::AdjustWindowSize( lMinim )
+            EndIf
             ::DoEvent( ::OnSize, "WINDOW_SIZE" )
          Else
             If ::lDefined

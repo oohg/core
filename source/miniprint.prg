@@ -1,5 +1,5 @@
 /*
- * $Id: miniprint.prg,v 1.32 2011-04-20 23:04:58 declan2005 Exp $
+ * $Id: miniprint.prg,v 1.33 2011-04-21 16:00:10 guerra000 Exp $
  */
 /*----------------------------------------------------------------------------
  MINIGUI - Harbour Win32 GUI library source code
@@ -99,7 +99,6 @@ memvar _HMG_printer_usermessages
 memvar _OOHG_printer_docname
 memvar _ooHg_Auxil_Page
 memvar _ooHg_Auxil_Zoom
-memvar _ooHg_Auxil_dx
 *------------------------------------------------------------------------------*
 Procedure _HMG_PRINTER_SHOWPREVIEW
 *------------------------------------------------------------------------------*
@@ -111,7 +110,7 @@ Local tFactor
 Local tvHeight
 Local icb := 0
 
-Local _HMG_PRINTER_SHOWPREVIEW,_HMG_PRINTER_PPNAV,_HMG_PRINTER_SHOWTHUMBNAILS, oSep,oPageNo
+Local _HMG_PRINTER_SHOWPREVIEW,_HMG_PRINTER_PPNAV,_HMG_PRINTER_SHOWTHUMBNAILS, oSep
 
 Public _HMG_printer_BasePageName := GetTempFolder() + "\" + _HMG_printer_timestamp + "_HMG_print_preview_"
 Public _HMG_printer_CurrentPageNumber := 1
@@ -126,7 +125,6 @@ Public _HMG_printer_thumbscroll
 Public _HMG_printer_PrevPageNumber := 0
 Public _ooHg_Auxil_Page
 Public _ooHg_Auxil_Zoom
-Public _ooHg_Auxil_dx
 
     if _HMG_printer_hdc_bak == 0
 		Return
@@ -250,8 +248,8 @@ Public _ooHg_Auxil_dx
 			@ 8, 550 TextBox zoom obj _ooHg_Auxil_Zoom picture '99.99' numeric width 75 value _HMG_printer_dz image "HP_ZOOM" ;
 			action (_HMG_PRINTER_Dz:=_ooHg_Auxil_Zoom:value*200, _HMG_PRINTER_SHOWPREVIEW:show()  )			
 
-		//	@ 8, 700 TextBox dx obj _ooHg_Auxil_dx picture '99.99' numeric width 75 value _HMG_printer_dx image "HP_ZOOM" ;
-		//	action (_HMG_PRINTER_Dx:=_ooHg_Auxil_dx:value*100, _HMG_PRINTER_SHOWPREVIEW:show()  )			
+                //      @ 8, 700 TextBox dx picture '99.99' numeric width 75 value _HMG_printer_dx image "HP_ZOOM" ;
+                //      action (_HMG_PRINTER_Dx := _HMG_PRINTER_PPNAV:dx:value*100, _HMG_PRINTER_SHOWPREVIEW:show()  )            
 
 			
 		END WINDOW

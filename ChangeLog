@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.688 2011-04-20 23:04:58 declan2005 Exp $
+ * $Id: ChangeLog,v 1.689 2011-04-21 16:00:10 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,6 +7,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2011-04-21 10:59 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_form.prg
+    ! Fixed AUTOADJUST when window is minimized.
+  * source/h_windows.prg
+  * source/miniprint.prg
+    * Fixed unused variables.
 
 2011-04-20 18:40 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/miniprint.prg
@@ -17,7 +23,6 @@
   * source/h_form.prg
   * source/h_controlmisc.prg
     + added drawing methods by Cayetano Gomez.
-
 
 2011-04-14 19:41 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source/winprint.prg
