@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.63 2010-08-26 20:00:55 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.64 2011-05-06 23:59:44 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -108,6 +108,9 @@ CLASS TText FROM TLabel
    DATA nHeight         INIT 24
    DATA OnTextFilled    INIT nil
    DATA nDefAnchor      INIT 13   // TopBottomRight
+   DATA bWhen
+   DATA When_Processed	INIT .f.	
+   DATA When_Procesing	INIT .f.	
 
    METHOD Define
    METHOD Define2
@@ -141,7 +144,7 @@ METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, cValue, ;
                HelpId, readonly, bold, italic, underline, strikeout, field, ;
                backcolor, fontcolor, invisible, notabstop, lRtl, lAutoSkip, ;
                lNoBorder, OnFocusPos, lDisabled, bValid, bAction, aBitmap, ;
-               nBtnwidth, bAction2 ) CLASS TText
+               nBtnwidth, bAction2,bWhen ) CLASS TText
 *-----------------------------------------------------------------------------*
 Local nStyle := ES_AUTOHSCROLL, nStyleEx := 0
 
@@ -154,7 +157,7 @@ Local nStyle := ES_AUTOHSCROLL, nStyleEx := 0
               readonly, bold, italic, underline, strikeout, field, ;
               backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, ;
               lAutoSkip, nStyleEx, lNoBorder, OnFocusPos, lDisabled, bValid, ;
-              bAction, aBitmap, nBtnwidth, bAction2 )
+              bAction, aBitmap, nBtnwidth, bAction2,bWhen )
 
 Return Self
 
@@ -165,7 +168,7 @@ METHOD Define2( cControlName, cParentForm, x, y, w, h, cValue, ;
                 readonly, bold, italic, underline, strikeout, field, ;
                 backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, ;
                 lAutoSkip, nStyleEx, lNoBorder, OnFocusPos, lDisabled, ;
-                bValid, bAction, aBitmap, nBtnwidth, bAction2 ) CLASS TText
+                bValid, bAction, aBitmap, nBtnwidth, bAction2,bWhen ) CLASS TText
 *-----------------------------------------------------------------------------*
 Local nControlHandle
 local break
@@ -175,6 +178,7 @@ local break
    ASSIGN ::nRow    VALUE y TYPE "N"
    ASSIGN ::nWidth  VALUE w TYPE "N"
    ASSIGN ::nHeight VALUE h TYPE "N"
+   ASSIGN ::bWhen 	VALUE bWhen TYPE "B"
 
    If HB_IsNumeric( nMaxLength ) .AND. nMaxLength >= 0
       ::nMaxLength := Int( nMaxLength )
@@ -358,6 +362,7 @@ Return nil
 METHOD Events_Command( wParam ) CLASS TText
 *------------------------------------------------------------------------------*
 Local Hi_wParam := HIWORD( wParam )
+Local lWhen:=.t.
 
    if Hi_wParam == EN_CHANGE
       If ::Transparent
@@ -374,13 +379,31 @@ Local Hi_wParam := HIWORD( wParam )
       Return nil
 
    elseif Hi_wParam == EN_KILLFOCUS
+      if !::When_Procesing
+		::When_Processed:=.f.
+	  end
       Return ::DoLostFocus()
 
    elseif Hi_wParam == EN_SETFOCUS
-      ::SetFocus()
-      ::DoEvent( ::OnGotFocus, "GOTFOCUS" )
-      Return nil
-
+	  if ::When_Processed=.f. 
+		::When_Processed:=.T.
+		::When_Procesing:=.t.
+		if !empty(::bWhen)
+			lWhen:= eval ( ::bWhen,::Value )
+		end
+		::When_Procesing:=.f.
+	  end
+	  
+	  if ::When_Processed=.T.
+		if lWhen
+			::SetFocus()
+			::DoEvent( ::OnGotFocus, "GOTFOCUS" )
+			Return nil
+		else
+			_SetNextFocus()
+			Return nil
+		end
+	  end
    Endif
 
 Return ::Super:Events_Command( wParam )

@@ -1,5 +1,5 @@
 /*
-* $Id: h_pdf.prg,v 1.6 2010-01-21 09:13:07 guerra000 Exp $
+* $Id: h_pdf.prg,v 1.7 2011-05-06 23:59:44 declan2005 Exp $
 */
 //컴컴컴컴컴컴컴컴컴컴컴컴�\\
 //
@@ -9,7 +9,7 @@
 //
 //    Class Code : Pritpal Bedi . http://www.vouchcac.com
 //
-//    Modified by Ciro Vargas Clemow to don't use "font.dat"
+//    Modified by Ciro Vargas Clemow now it's not necesary the file  "font.dat"
 //컴컴컴컴컴컴컴컴컴컴컴컴�\\
 
  /////////////////////////////////////
@@ -3033,7 +3033,7 @@ DEFAULT lOptimize TO .f.
 
 ::aReport := array( PARAMLEN )
 
-::aReport[ FONTNAME ] := 1
+::aReport[ FONTNAME ] := 9
 ::aReport[ FONTSIZE ] := 10
 ::aReport[ LPI  ] := 6
 ::aReport[ PAGESIZE ] := "LETTER"
@@ -3101,17 +3101,17 @@ DEFAULT cId TO  ""
 
    lReverse = .f.
    IF cUnits == "M"
-  nRow := ::M2Y( nRow )
-  nCol := ::M2X( nCol )
+      nRow := ::M2Y( nRow )
+      nCol := ::M2X( nCol )
    ELSEIF cUnits == "R"
-  IF .not. lExact
- ::CheckLine( nRow )
- nRow := nRow + ::aReport[ PDFTOP]
-  ENDIF
-  nRow := ::R2D( nRow )
-  nCol := ::M2X( ::aReport[ PDFLEFT ] ) + ;
-  nCol * 100.00 / ::aReport[ REPORTWIDTH ] * ;
-  ( ::aReport[ PAGEX ] - ::M2X( ::aReport[ PDFLEFT ] ) * 2 - 9.0 ) / 100.00
+      IF .not. lExact
+         ::CheckLine( nRow )
+         nRow := nRow + ::aReport[ PDFTOP]
+      ENDIF
+      nRow := ::R2D( nRow )
+      nCol := ::M2X( ::aReport[ PDFLEFT ] ) + ;
+      nCol * 100.00 / ::aReport[ REPORTWIDTH ] * ;
+      ( ::aReport[ PAGEX ] - ::M2X( ::aReport[ PDFLEFT ] ) * 2 - 9.0 ) / 100.00
    ENDIF
    IF !empty( cString )
   cString := ::StringB( cString )

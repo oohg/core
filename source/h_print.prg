@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.98 2011-03-08 17:30:57 guerra000 Exp $
+* $Id: h_print.prg,v 1.99 2011-05-06 23:59:44 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -125,7 +125,7 @@ DATA nwpen              INIT 0.1   READONLY //// pen width
 DATA tempfile           INIT gettempdir()+"T"+alltrim(str(int(hb_random(999999)),8))+".prn" READONLY
 DATA impreview          INIT .F.  READONLY
 DATA lwinhide           INIT .T.   READONLY
-DATA cversion           INIT  "(oohg)V 2.7" READONLY
+DATA cversion           INIT  "(oohg)V 2.6" READONLY
 DATA cargo              INIT  .F.
 ////DATA cString            INIT  ""
 
@@ -532,7 +532,7 @@ do case
 case cTipo == 'C'
    ctext:=data
 case cTipo == 'N'
-   ctext:=alltrim(str(data))     ////revisar esto sin el alltrim
+   ctext:=alltrim(str(data))
 case cTipo == 'D'
    ctext:=dtoc(data)
 case Ctipo == 'L'
@@ -580,9 +580,10 @@ ELSE
    ELSE
       ::nmver  :=  10/2.35
    ENDIF
-   ::nvfij  := (12/1.65)
-   ::nhfij  := (12/3.70)
-ENDIF
+
+      ::nvfij  := (12/1.65)
+      ::nhfij  := (12/3.70)
+ ENDIF
 
 ctext:= cspace + ctext
 
@@ -609,7 +610,7 @@ ELSE
       ::nmver  := (::nfontsize)/2.35
    ELSE
       ::nmver  :=  10/2.35
-   ENDIF 
+   ENDIF
 
    ::nvfij  := (12/1.65)
    ::nhfij  := (12/3.70)
@@ -932,7 +933,7 @@ RETURN self
 *-------------------------
 METHOD printlinex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen ) CLASS TMINIPRINT
 *-------------------------
-local vdespl:=1.0150
+local vdespl:=1   ////vdespl:=1.0150
 DEFAULT atColor to ::acolor
 ///@  (nlin+.2)*::nmver+::nvfij,ncol*::nmhor+::nhfij*2 PRINT LINE TO  (nlinf+.2)*::nmver+::nvfij,ncolf*::nmhor+::nhfij*2  COLOR atcolor PENWIDTH ntwpen  //// CPEN
  @ nlin*::nmver*vdespl+::nvfij,ncol*::nmhor+::nhfij*2 PRINT LINE TO  nlinf*::nmver*vdespl+::nvfij,ncolf*::nmhor+::nhfij*2  COLOR atcolor PENWIDTH ntwpen  //// CPEN
@@ -941,7 +942,7 @@ RETURN self
 *-------------------------
 METHOD printrectanglex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen ) CLASS TMINIPRINT
 *-------------------------
-local vdespl:=1.0150
+local vdespl:=1  /////vdespl:=1.0150
 DEFAULT atColor to ::acolor
 ///@  nlin*::nmver*vdespl+::nvfij,ncol*::nmhor+::nhfij*2 PRINT RECTANGLE TO  (nlinf+0.5)*::nmver*vdespl+::nvfij,ncolf*::nmhor+::nhfij*2 COLOR atcolor  PENWIDTH ntwpen  //// CPEN
 @  nlin*::nmver*vdespl+::nvfij,ncol*::nmhor+::nhfij*2 PRINT RECTANGLE TO  nlinf*::nmver*vdespl+::nvfij,ncolf*::nmhor+::nhfij*2 COLOR atcolor  PENWIDTH ntwpen  //// CPEN
@@ -1097,7 +1098,7 @@ RETURN getdefaultprinter()
 *-------------------------
 METHOD printroundrectanglex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen ) CLASS TMINIPRINT
 *-------------------------
-local vdespl:=1.009
+local vdespl:=1  ////vdespl:=1.009
 DEFAULT atColor to ::acolor
 @  nlin*::nmver*vdespl+::nvfij,ncol*::nmhor+::nhfij*2 PRINT RECTANGLE TO  nlinf*::nmver*vdespl+::nvfij,ncolf*::nmhor+::nhfij*2 COLOR atcolor  PENWIDTH ntwpen  ROUNDED //// CPEN
 RETURN self
@@ -1282,7 +1283,7 @@ RETURN self
 *-------------------------
 METHOD printlinex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen ) CLASS thbprinter
 *-------------------------
-local vdespl:=1.0150
+local vdespl:=1   ////vdespl:=1.0150
 DEFAULT atColor to ::acolor
 CHANGE PEN "C0" WIDTH ntwpen*10  COLOR atcolor
 SELECT PEN "C0"
@@ -1292,7 +1293,7 @@ RETURN self
 *-------------------------
 METHOD printrectanglex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen ) CLASS THBPRINTER
 *-------------------------
-local vdespl:=1.0150
+local vdespl:=1   ////vdespl:=1.0150
 DEFAULT atColor to ::acolor
 CHANGE PEN "C0" WIDTH ntwpen*10 COLOR atcolor
 SELECT PEN "C0"
@@ -1380,7 +1381,7 @@ RETURN self
 *-------------------------
 METHOD printroundrectanglex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen ) CLASS THBPRINTER
 *-------------------------
-local vdespl:=1.009
+local vdespl:=1  /////vdespl:=1.009
 DEFAULT atColor to ::acolor
 CHANGE PEN "C0" WIDTH ntwpen*10 COLOR atcolor
 SELECT PEN "C0"
@@ -1863,22 +1864,19 @@ empty(llandscape)
 empty(npapersize)
 empty(cprinterx)
 
+///::oExcel := CreateObject( "Excel.Application" )
+
 #ifndef __XHARBOUR__
-   IF ( ::oExcel := win_oleCreateObject( "Excel.Application" ) ) == NIL
-      msgstop( "Error: MS Excel not available. [" + win_oleErrorText()+ "]" )
-      ::lprerror:=.T.
-      ::exit:=.T.
-     RETURN Nil
-   ENDIF
+IF ( ::oExcel := win_oleCreateObject( "Excel.Application" ) ) = NIL
 #else
-   ::oExcel := CreateObject( "Excel.Application" )
-   IF Ole2TxtError() != 'S_OK'
-      MsgStop('Excel not found','error')
-      ::lprerror:=.T.
-      ::exit:=.T.
-      RETURN Nil
-   ENDIF
+::oExcel := TOleAuto():New( "Excel.Application" )
+IF Ole2TxtError() != 'S_OK'
 #endif
+   MsgStop('Excel not found','error')
+   ::lprerror:=.T.
+   ::exit:=.T.
+   RETURN Nil
+ENDIF
 RETURN self
 
 *-------------------------
@@ -2300,7 +2298,7 @@ Empty( lItalic )
 nlin++
 IF ::nunitslin>1
    nlin:=round(nlin/::nunitslin,0)
-ENDIF 
+ENDIF
 IF ::cunits="MM"
    ctext:=ALLTRIM(ctext)
 ENDIF
@@ -2649,7 +2647,7 @@ IF ::lPreview
        "File saved in: "+CHR(13)+::cDocument)
    ENDIF
 else
-   MSGINFO("File saved in: "+::cDocument)
+////   MSGINFO("File saved in: "+::cDocument)    /// quitado por multiples peticiones de usuarios
 endif
 RETURN self
 
@@ -2789,8 +2787,6 @@ METHOD printrectanglex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen ) CLASS TPDFPRINT
 *-------------------------
 local cColor  := ""
 local I
-local nvval
-local nhval
 DEFAULT atColor to ::acolor
 
 Default ntwpen to ::nwpen
@@ -2800,13 +2796,10 @@ For Each I in atColor
 Next
 
 IF ::cunits=="MM"
-      nhval:=2.800
-      nvval:=2.900
-      ::oPdf:Box1(nlin*nvVal,ncol*nhval,nlinf*nvval,ncolf*nhval,ntwpen*2,cColor)
+
+      ::oPdf:Box((nlin-0.9)+::nvfij,(ncol+1.3) + ::nhfij,  (nlinf-0.9)+::nvfij,(ncolf+1.3)+ ::nhfij, ntwpen*2.4 ,0,"M","B","t1")
 ELSE
-      nvval:=2.900
-      nhval:=3.200
-   ::oPdf:Box1(nlin*nvVal*::nmver+::nvfij,ncol*nhval*::nmhor+ ::nhfij*2,  nlinf*nvval*::nmver+::nvfij+0.85,ncolf*nhval*::nmhor+ ::nhfij*2,ntwpen*2,cColor)
+    ::oPdf:Box((nlin-0.9)*::nmver+::nvfij,(ncol+1.3)*::nmhor + ::nhfij,  (nlinf-0.9)*::nmver+::nvfij,(ncolf+1.3)*::nmhor+ ::nhfij, ntwpen*2.4 ,0,"M","B","t1")
 ENDIF
 
 RETURN self

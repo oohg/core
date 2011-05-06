@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.34 2011-04-15 00:34:24 guerra000 Exp $
+ * $Id: winprint.prg,v 1.35 2011-05-06 23:59:44 declan2005 Exp $
  */
 // -----------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -184,6 +184,7 @@ local aprnport
       ::error:=1
    ENDIF
    ::TimeStamp := strzero( Seconds() * 100 , 8 )
+   ::BaseDoc := GetTempFolder() + "\" + ::TimeStamp + "_HMG_print_preview_"
 return self
 
 METHOD SelectPrinter( cPrinter ,lPrev) CLASS HBPrinter
@@ -272,7 +273,6 @@ METHOD Startpage() CLASS HBPrinter
 	if ::InMemory
 		::hDC:=rr_createmfile()
 	else
-		::BaseDoc := GetTempFolder() + "\" + ::TimeStamp + "_HMG_print_preview_"
 		::hDC:=rr_createfile( ::BaseDoc + alltrim(strzero(::CurPage,4))+'.emf')
 		::CurPage := ::CurPage + 1
 	end
@@ -1402,7 +1402,11 @@ if n1<>NIL
        ::startdoc()
        ::setpage(::MetaFiles[n1,6],::MetaFiles[n1,7])
        ::startpage()
-       rr_PlayEnhMetaFile(::MetaFiles[n1],::hDCRef)
+	   if ::InMemory
+           rr_PlayEnhMetaFile(::MetaFiles[n1],::hDCRef)
+	   else
+		   rr_PlayFEnhMetaFile(::MetaFiles[n1],::hDCRef)
+		end
        ::endpage()
        ::enddoc()
 else
@@ -1424,7 +1428,13 @@ else
               toprint:=.f.
               ::setpage(::MetaFiles[i,6],::MetaFiles[i,7])
               ::startpage()
-              rr_PlayEnhMetaFile(::MetaFiles[i],::hDCRef)
+              //rr_PlayEnhMetaFile(::MetaFiles[i],::hDCRef)
+			  if ::InMemory
+                 rr_PlayEnhMetaFile(::MetaFiles[i],::hDCRef)
+	          else
+		         rr_PlayFEnhMetaFile(::MetaFiles[i],::hDCRef)
+	          end
+
               ::endpage()
            endif
           next i
@@ -1442,7 +1452,13 @@ else
                   toprint:=.f.
                   ::setpage(::MetaFiles[i,6],::MetaFiles[i,7])
                   ::startpage()
-                  rr_PlayEnhMetaFile(::MetaFiles[i],::hDCRef)
+                  //rr_PlayEnhMetaFile(::MetaFiles[i],::hDCRef)
+				  if ::InMemory
+					rr_PlayEnhMetaFile(::MetaFiles[i],::hDCRef)
+				  else
+					rr_PlayFEnhMetaFile(::MetaFiles[i],::hDCRef)
+				  end
+
                   ::endpage()
                endif
             next i
@@ -3602,6 +3618,18 @@ HB_FUNC (RR_PLAYENHMETAFILE)
    PlayEnhMetaFile((HDC) hb_parnl(2),hh,&rect);
    DeleteEnhMetaFile(hh);
 }
+
+HB_FUNC (RR_PLAYFENHMETAFILE)
+{
+   RECT rect;
+   HENHMETAFILE hh = GetEnhMetaFile( HB_PARC(1,1) ) ;
+   // hh=SetEnhMetaFileBits((UINT) HB_PARCLEN(1,1), ( BYTE * ) HB_PARC(1,1));
+   SetRect(&rect,0,0,HB_PARNL(1,5),HB_PARNL(1,4));
+   PlayEnhMetaFile((HDC) hb_parnl(2),hh,&rect);
+   DeleteEnhMetaFile(hh);
+}
+
+
 
 HB_FUNC (RR_LALABYE)
 {
