@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.120 2011-03-08 17:30:57 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.121 2011-05-07 03:29:03 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -506,7 +506,7 @@ METHOD toExcel( cTitle, nRow ) CLASS TGrid
  LOCAL oExcel, oHoja,i
 
    default ctitle to ""
-   
+
    #ifndef __XHARBOUR__
       IF ( oExcel := win_oleCreateObject( "Excel.Application" ) ) = NIL
          MsgStop( "Error: MS Excel not available. [" + win_oleErrorText()+ "]" )
@@ -1839,6 +1839,10 @@ METHOD ColumnAutoFit( nColumn ) CLASS TGrid
 Local nWidth
    IF HB_IsNumeric( nColumn ) .AND. nColumn >= 1 .AND. nColumn <= Len( ::aHeaders )
       nWidth := ListView_SetColumnWidth( ::hWnd, nColumn - 1, LVSCW_AUTOSIZE )
+         IF nColumn=1
+            nWidth:=nWidth+6
+            nWidth := ListView_SetColumnWidth( ::hWnd, nColumn - 1, nWidth )
+         ENDIF
       ::aWidths[ nColumn ] := nWidth
    Else
       nWidth := 0
@@ -1851,6 +1855,10 @@ METHOD ColumnAutoFitH( nColumn ) CLASS TGrid
 Local nWidth
    IF HB_IsNumeric( nColumn ) .AND. nColumn >= 1 .AND. nColumn <= Len( ::aHeaders )
       nWidth := ListView_SetColumnWidth( ::hWnd, nColumn - 1, LVSCW_AUTOSIZE_USEHEADER )
+      IF nColumn=1
+         nWidth:=nWidth+6
+         nWidth := ListView_SetColumnWidth( ::hWnd, nColumn - 1, nWidth )
+      ENDIF
       ::aWidths[ nColumn ] := nWidth
    Else
       nWidth := 0
