@@ -1,5 +1,5 @@
 /*
- * $Id: h_splitbox.prg,v 1.13 2010-03-09 18:30:00 guerra000 Exp $
+ * $Id: h_splitbox.prg,v 1.14 2011-05-08 05:10:43 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -102,6 +102,7 @@ CLASS TSplitBox FROM TControl
    DATA lInverted      INIT .F.
    DATA nMinWidth      INIT nil
    DATA nMinHeight     INIT nil
+   
 
    METHOD Define
    METHOD SizePos        BLOCK { |Self| SizeRebar( ::hWnd ) , RedrawWindow( ::hWnd ) }
@@ -110,7 +111,7 @@ CLASS TSplitBox FROM TControl
    METHOD RefreshData    BLOCK { |Self| SizeRebar( ::hWnd ) , RedrawWindow( ::hWnd ) , ::Super:RefreshData() }
    METHOD AddControl
    METHOD SetSplitBox
-   METHOD ClientHeightUsed     BLOCK { |Self| GetWindowHeight( ::hWnd ) * IF( ::lTop, 1, -1 ) }
+   METHOD ClientHeightUsed     BLOCK { |Self| GetWindowHeight( ::hWnd )  }
 
    EMPTY( _OOHG_AllVars )
 ENDCLASS
