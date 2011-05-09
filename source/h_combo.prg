@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.49 2011-03-05 03:52:31 guerra000 Exp $
+ * $Id: h_combo.prg,v 1.50 2011-05-09 16:36:52 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -111,7 +111,7 @@ CLASS TCombo FROM TLabel
    METHOD Refresh
    METHOD Value               SETGET
    METHOD Visible             SETGET
-   METHOD ForceHide           BLOCK { |Self| SendMessage( ::hWnd, 335, 0, 0 ) , ::Super:ForceHide() }
+   METHOD ForceHide           BLOCK { |Self| SendMessage( ::hWnd, CB_SHOWDROPDOWN, 0, 0 ) , ::Super:ForceHide() }
    METHOD RefreshData
    METHOD DisplayValue        SETGET    /// Caption Alias
    METHOD PreRelease
@@ -127,6 +127,11 @@ CLASS TCombo FROM TLabel
    METHOD ItemCount
    METHOD ShowDropDown
    METHOD SelectFirstItem     BLOCK { |Self| ComboSetCursel( ::hWnd, 1 ) }
+   
+   METHOD GetDropDownWidth
+   METHOD SetDropDownWidth
+   METHOD AutosizeDropDown
+   METHOD Autosize            SETGET
 
    EMPTY( _OOHG_AllVars )
 ENDCLASS
@@ -139,7 +144,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, rows, value, fontname, ;
                ondisplaychangeprocedure, break, GripperText, aImage, lRtl, ;
                TextHeight, lDisabled, lFirstItem ) CLASS TCombo
 *-----------------------------------------------------------------------------*
-Local ControlHandle , rcount := 0 , cset := 0 , WorkArea , cField, nStyle
+Local ControlHandle , WorkArea , cField, nStyle
 
    ASSIGN ::nCol        VALUE x TYPE "N"
    ASSIGN ::nRow        VALUE y TYPE "N"
@@ -286,7 +291,7 @@ METHOD Visible( lVisible ) CLASS TCombo
    IF HB_IsLogical( lVisible )
       ::Super:Visible := lVisible
       IF ! lVisible
-         SendMessage( ::hWnd, 335, 0, 0 )
+         SendMessage( ::hWnd, CB_SHOWDROPDOWN, 0, 0 )
       ENDIF
    ENDIF
 RETURN ::lVisible
@@ -317,11 +322,108 @@ METHOD ShowDropDown( lShow ) CLASS TCombo
 Return nil
 
 *-----------------------------------------------------------------------------*
+METHOD AutoSizeDropDown( lResizeBox, nMinWidth, nMaxWidth ) CLASS TCombo
+*-----------------------------------------------------------------------------*
+Local nCounter, nNewWidth, nScrollWidth := GetVScrollBarWidth()
+
+/*
+lResizeBox = Resize dropdown list and combobox (.t.) or dropdown list only (.f.)
+defaults to .f.
+*/
+   ASSIGN lResizeBox VALUE lResizeBox TYPE "L" DEFAULT .F.
+
+/*
+Compute the space needed to show the longest item in the dropdown list.
+The extra character "0" is added to provide room for the margin in the dropdown list.
+*/
+   nNewWidth := GetTextWidth( NIL, "0", ::FontHandle ) + ::IconWidth + nScrollWidth
+
+   For nCounter := 1 to ::ItemCount
+      nNewWidth := max( GetTextWidth( NIL, ::Item(nCounter) + "0", ::FontHandle ) + ::IconWidth + nScrollWidth, nNewWidth )
+   Next
+
+/*
+nMinWidth = minimum width of dropdown list.
+If ommited or is less than 0, defaults to 0 if lResizeBox == .T. or to combobox width otherwise.
+*/
+   If ! HB_IsNumeric( nMinWidth ) .or. nMinWidth < 0
+      nMinWidth := if( lResizeBox, 0, ::Width )
+   EndIf
+      
+/*
+If the computed value is less than the minimum, use the minimum.
+*/
+   nNewWidth := max( nNewWidth, nMinWidth )
+
+/*
+nMaxWidth = maximum width of dropdown list, if ommited defaults to longest item's width
+If no maximum specified or is less than minimun, use computed value as maximum.
+*/
+   If ! HB_IsNumeric( nMaxWidth ) .or. nMaxWidth < nMinWidth
+      nMaxWidth := nNewWidth
+   EndIf
+
+/*
+If the computed value is greater than the maximum, use the maximum.
+*/
+   nNewWidth := min( nNewWidth, nMaxWidth )
+
+/*
+Resize combobox.
+Must be done before resizing dropdown list, because dropdown list's width is,
+always, at least equal to combobox width.
+*/
+   If lResizeBox
+     ::width := nNewWidth
+   EndIf
+
+/*
+Resize dropdown list
+*/
+   ::SetDropDownWidth( nNewWidth )
+   
+Return nil
+
+*-----------------------------------------------------------------------------*
+METHOD GetDropDownWidth() CLASS TCombo
+*-----------------------------------------------------------------------------*
+Return ComboGetDroppedWidth( ::hWnd )
+
+*-----------------------------------------------------------------------------*
+METHOD SetDropDownWidth( nWidth ) CLASS TCombo
+*-----------------------------------------------------------------------------*
+Local nNew := ComboSetDroppedWidth( ::hWnd, nWidth )
+
+   If nNew == -1
+     nNew := ComboGetDroppedWidth( ::hWnd )
+   EndIf
+
+Return nNew
+
+*-----------------------------------------------------------------------------*
+METHOD AutoSize( lValue ) CLASS TCombo
+*-----------------------------------------------------------------------------*
+Local cCaption
+
+   If HB_IsLogical( lValue )
+      ::lAutoSize := lValue
+      If lValue
+         cCaption := GetWindowText( ::hWnd )
+         ::SizePos( , , GetTextWidth( NIL, cCaption + "0", ::FontHandle ) + ::IconWidth + GetVScrollBarWidth(), GetTextHeight( NIL, cCaption, ::FontHandle ) )
+      EndIf
+   EndIf
+Return ::lAutoSize
+
+*-----------------------------------------------------------------------------*
 METHOD Events_Command( wParam ) CLASS TCombo
 *-----------------------------------------------------------------------------*
 Local Hi_wParam := HIWORD( wParam )
 
    if Hi_wParam == CBN_SELCHANGE
+      IF ::lAutosize
+         ::Autosize(.T.)
+      EndIf
+      
       ::DoChange()
       Return nil
 
@@ -413,6 +515,16 @@ HB_FUNC( COMBOSETCURSEL )
 HB_FUNC( COMBOGETCURSEL )
 {
    hb_retni( SendMessage( HWNDparam( 1 ), CB_GETCURSEL , 0 , 0 ) + 1 );
+}
+
+HB_FUNC( COMBOGETDROPPEDWIDTH )
+{
+   hb_retni( SendMessage( HWNDparam( 1 ), CB_GETDROPPEDWIDTH , 0 , 0 ) );
+}
+
+HB_FUNC( COMBOSETDROPPEDWIDTH )
+{
+   hb_retni( SendMessage( HWNDparam( 1 ), CB_SETDROPPEDWIDTH , ( WPARAM ) hb_parni( 2 ) , 0 ) );
 }
 
 HB_FUNC(COMBOBOXDELETESTRING )

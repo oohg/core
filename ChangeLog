@@ -1,11 +1,17 @@
 /*
- * $Id: ChangeLog,v 1.694 2011-05-09 16:23:15 guerra000 Exp $
+ * $Id: ChangeLog,v 1.695 2011-05-09 16:36:52 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2011-05-09 11:44 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_combo.prg
+    + ::GetDropDownWidth(), ::SetDropDownWidth(),
+      ::AutosizeDropDown() and ::Autosize methods added.
+      Contributed by Fernando Yurisich.
 
 2011-05-09 11:31 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_browse.prg
