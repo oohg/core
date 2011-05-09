@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.693 2011-05-08 23:20:28 declan2005 Exp $
+ * $Id: ChangeLog,v 1.694 2011-05-09 16:23:15 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,16 +7,17 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2011-05-09 11:31 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_browse.prg
+    ! Fixed non-unlocking record when it's deleted()
 
 2011-05-08 19:17:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * include/i_textbox.ch
     + new syntax when clause.
- 
 
 2011-05-08 00:05:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_splitbox.prg
     ! fixed problem in clientheightused  method.
-
 
 2011-05-06 23:00:40 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_grid.prg
@@ -30,7 +31,6 @@
     ! fixed problem in line spacing and improvement of PDF print.
   * source/h_textbox.prg 
     +  added When clause.
-   
 
 2011-04-21 10:59 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_form.prg

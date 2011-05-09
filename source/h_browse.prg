@@ -1,11 +1,11 @@
 /*
- * $Id: h_browse.prg,v 1.78 2010-03-06 02:55:10 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.79 2011-05-09 16:23:15 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG browse functions
  *
- * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2011 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -724,6 +724,9 @@ Local Value, nRecNo
 
    Else
       ( ::WorkArea )->( DbDelete() )
+      If ::Lock
+         ( ::WorkArea )->( DbUnlock() )
+      EndIf
       ::DbSkip()
       If ::Eof()
          ::TopBottom( 1 )
