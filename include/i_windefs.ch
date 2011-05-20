@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.34 2011-03-08 17:30:57 guerra000 Exp $
+ * $Id: i_windefs.ch,v 1.35 2011-05-20 21:53:08 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -513,7 +513,7 @@
 #define ID_TASKBAR      0
 
 #define TB_AUTOSIZE	1057
-#define TRANSPARENT	1
+// #define TRANSPARENT     1
 #define GRAY_BRUSH	2
 #define NULL_BRUSH	  5
 #define BN_CLICKED	0

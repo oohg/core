@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.211 2011-04-21 16:00:10 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.212 2011-05-20 21:53:08 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -2559,23 +2559,6 @@ RETURN lState
 
 
 #pragma BEGINDUMP
-
-// obtiene el contexto del canvas de la ventana.
-HB_FUNC ( GetDC )
-{	HWND hwnd = ( HWND ) hb_parnl( 1 ) ;
-	HDC hdc ;
-	hdc = GetDC( hwnd );
-	hb_retnl((LONG) hdc);;
-}
-
-// libera e contexto del canvas de la ventana.
-HB_FUNC ( ReleaseDC )
-{	HWND hwnd = ( HWND ) hb_parnl( 1 ) ;
-	HDC hdc = ( HDC ) hb_parnl( 2 )  ;
-
-	ReleaseDC( hwnd , hdc);
-}
-
 
 HB_FUNC ( C_LINE )
 {

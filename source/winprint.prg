@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.35 2011-05-06 23:59:44 declan2005 Exp $
+ * $Id: winprint.prg,v 1.36 2011-05-20 21:53:08 guerra000 Exp $
  */
 // -----------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -348,7 +348,7 @@ local lret:=::Textcolor
         IF HB_IsNumeric (clr)
             ::TextColor:=rr_settextcolor(clr)
         ELSEIF HB_IsArray (clr)
-            ::TextColor:=rr_settextcolor( RGB ( clr [1] , clr [2] , clr [3] ) )
+            ::TextColor:=rr_settextcolor( RR_SETRGB ( clr [1] , clr [2] , clr [3] ) )
         ENDIF
 
         // END RL
@@ -369,7 +369,7 @@ local lret:=::BkColor
         IF HB_IsNumeric (clr)
           ::BkColor:=rr_setbkcolor(clr)
         ELSEIF HB_IsArray (clr)
-          ::BkColor:=rr_setbkcolor( RGB ( clr [1] , clr [2] , clr [3] ) )
+          ::BkColor:=rr_setbkcolor( RR_SETRGB ( clr [1] , clr [2] , clr [3] ) )
         ENDIF
 
         // END RL
@@ -391,7 +391,7 @@ local lhand:=::getobjbyname(defname,"B")
         // BEGIN RL 2003-08-03
 
         IF HB_IsArray (lcolor)
-            lcolor := RGB ( lcolor [1] , lcolor [2] , lcolor [3] )
+            lcolor := RR_SETRGB ( lcolor [1] , lcolor [2] , lcolor [3] )
         ENDIF
 
         // END RL
@@ -431,7 +431,7 @@ local lhand:=0,lpos:=0
         // BEGIN RL 2003-08-03
 
         IF HB_IsArray (lcolor)
-            lcolor := RGB ( lcolor [1] , lcolor [2] , lcolor [3] )
+            lcolor := RR_SETRGB ( lcolor [1] , lcolor [2] , lcolor [3] )
         ENDIF
 
         // END RL
@@ -455,7 +455,7 @@ local lhand:=::getobjbyname(defname,"P")
         // BEGIN RL 2003-08-03
 
         IF HB_IsArray (lcolor)
-            lcolor := RGB ( lcolor [1] , lcolor [2] , lcolor [3] )
+            lcolor := RR_SETRGB ( lcolor [1] , lcolor [2] , lcolor [3] )
         ENDIF
 
         // END RL
@@ -490,7 +490,7 @@ local lhand:=0,lpos:=0
         // BEGIN RL 2003-08-03
 
         IF HB_IsArray (lcolor)
-            lcolor := RGB ( lcolor [1] , lcolor [2] , lcolor [3] )
+            lcolor := RR_SETRGB ( lcolor [1] , lcolor [2] , lcolor [3] )
         ENDIF
 
         // END RL
@@ -699,7 +699,7 @@ local apos
         IF HB_IsNumeric (lcolor)
             rr_settextcolor(lcolor)
         ELSEIF HB_IsArray (lcolor)
-            rr_settextcolor( RGB ( lcolor [1] , lcolor [2] , lcolor [3] ) )
+            rr_settextcolor( RR_SETRGB ( lcolor [1] , lcolor [2] , lcolor [3] ) )
         ENDIF
 
         // END RL
@@ -2929,6 +2929,7 @@ HB_FUNC (RR_SETRGB)
 {
    hb_retnl(RGB(hb_parni(1),hb_parni(2),hb_parni(3)));
 }
+
 HB_FUNC (RR_SETTEXTCHAREXTRA)
 {
    hb_retni(SetTextCharacterExtra(hDC,hb_parni(1)));

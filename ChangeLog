@@ -1,11 +1,25 @@
 /*
- * $Id: ChangeLog,v 1.695 2011-05-09 16:36:52 guerra000 Exp $
+ * $Id: ChangeLog,v 1.696 2011-05-20 21:53:08 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2011-05-20 16:23 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_form.prg
+    ! Terminates last popup menu before activate a modal
+      window.
+  * source/h_windows.prg
+    * Removed duplicated GETDC() and RELEASEDC() C wrappers.
+  * source/winprint.prg
+    * Changed RGB() calls to RR_SETRGB().
+  * include/i_windefs.ch
+    * Removed (commented) TRANSPARENT definition.
+      It clashes with TRANSPARENT clause.
+  * source/h_controlmisc.prg
+    * Control's ID assignment will be smaller than 0xF000.
 
 2011-05-09 11:44 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_combo.prg

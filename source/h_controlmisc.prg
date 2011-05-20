@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.109 2011-04-20 23:04:58 declan2005 Exp $
+ * $Id: h_controlmisc.prg,v 1.110 2011-05-20 21:53:08 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1954,11 +1954,11 @@ Function _GetId()
 *-----------------------------------------------------------------------------*
 Local RetVal
    Do While .T.
-      RetVal := Int( hb_random( 63000 ) ) + 2001
+      RetVal := Int( hb_random( 59000 ) ) + 2001   // Lower than 0xF000
       If aScan( _OOHG_aControlIds , { |a| a[ 1 ] == RetVal } ) == 0
          Exit
-		EndIf
-	EndDo
+      EndIf
+   EndDo
 Return RetVal
 
 *------------------------------------------------------------------------------*
