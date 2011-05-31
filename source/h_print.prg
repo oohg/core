@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.99 2011-05-06 23:59:44 declan2005 Exp $
+* $Id: h_print.prg,v 1.100 2011-05-31 19:30:48 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -125,8 +125,8 @@ DATA nwpen              INIT 0.1   READONLY //// pen width
 DATA tempfile           INIT gettempdir()+"T"+alltrim(str(int(hb_random(999999)),8))+".prn" READONLY
 DATA impreview          INIT .F.  READONLY
 DATA lwinhide           INIT .T.   READONLY
-DATA cversion           INIT  "(oohg)V 2.6" READONLY
-DATA cargo              INIT  .F.
+DATA cversion           INIT  "(oohg)V 4.0" READONLY
+DATA cargo              INIT  "list"     //// document name
 ////DATA cString            INIT  ""
 
 DATA nlinpag            INIT 0            READONLY
@@ -378,7 +378,6 @@ IF iswindowactive(_oohg_winreport)
    ::exit:=.T.
    RETURN nil
 ENDIF
-// public _oohg_printer_docname
 ::initx()
 RETURN self
 
@@ -400,15 +399,24 @@ ENDIF
 
 DEFAULT llandscape to .F.
 
+IF lpreview
+ ::impreview:=.T.
+ENDIF
+
 ::selprinterx( lselect , lpreview, llandscape , npapersize ,cprinterx, nres, nbin )
 RETURN self
 
 
 *-------------------------
-METHOD BEGINDOC(cdocm) CLASS TPRINTBASE
+METHOD BEGINDOC(cDocm) CLASS TPRINTBASE
 *-------------------------
 local olabel,oimage,cdoc
 cDoc:="ooHG printing"
+IF hb_isstring(cDocm)
+
+   ::cargo:=cDocm
+
+ENDIF
 
 SETPRC(0,0)
 
@@ -450,7 +458,7 @@ center window _oohg_winreport
 activate window _modalhide NOWAIT
 activate window _oohg_winreport NOWAIT
 
-::begindocx(cdocm)
+::begindocx()
 RETURN self
 
 
@@ -833,13 +841,9 @@ RETURN self
 
 
 *-------------------------
-METHOD begindocx(  cDoc ) CLASS TMINIPRINT
+METHOD begindocx(   ) CLASS TMINIPRINT
 *-------------------------
-IF cDoc#Nil
-   START PRINTDOC NAME cDoc
-ELSE
-   START PRINTDOC
-ENDIF
+START PRINTDOC NAME ::cargo
 RETURN self
 
 *-------------------------
@@ -942,7 +946,7 @@ RETURN self
 *-------------------------
 METHOD printrectanglex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen ) CLASS TMINIPRINT
 *-------------------------
-local vdespl:=1  /////vdespl:=1.0150
+local vdespl:=1
 DEFAULT atColor to ::acolor
 ///@  nlin*::nmver*vdespl+::nvfij,ncol*::nmhor+::nhfij*2 PRINT RECTANGLE TO  (nlinf+0.5)*::nmver*vdespl+::nvfij,ncolf*::nmhor+::nhfij*2 COLOR atcolor  PENWIDTH ntwpen  //// CPEN
 @  nlin*::nmver*vdespl+::nvfij,ncol*::nmhor+::nhfij*2 PRINT RECTANGLE TO  nlinf*::nmver*vdespl+::nvfij,ncolf*::nmhor+::nhfij*2 COLOR atcolor  PENWIDTH ntwpen  //// CPEN
@@ -1183,10 +1187,10 @@ RETURN self
 
 
 *-------------------------
-METHOD BEGINDOCx (cdoc) CLASS THBPRINTER
+METHOD BEGINDOCx ( ) CLASS THBPRINTER
 *-------------------------
 ::setpreviewsize(2)
-START DOC NAME cDoc
+START DOC NAME ::cargo
  define font "F0" name "courier new" size 10
  define font "F1" name "courier new" size 10 BOLD
 
@@ -1479,7 +1483,7 @@ ENDCLASS
 *-------------------------
 METHOD initx() CLASS TDOSPRINT
 *-------------------------
-::impreview:=.F.
+////::impreview:=.F.
 ::cprintlibrary:="DOSPRINT"
 RETURN self
 
@@ -1592,7 +1596,8 @@ RETURN self
 *-------------------------
 METHOD selprinterx( lselect , lpreview  , llandscape , npapersize ,cprinterx  ) CLASS TDOSPRINT
 *-------------------------
-/////Empty( lSelect )
+/////Empty( lSelect 
+empty( lpreview )
 empty(llandscape)
 empty(npapersize)
 default cprinterx to "prn"
@@ -1601,9 +1606,6 @@ default cprinterx to "prn"
 DO WHILE file(::tempfile)
    ::tempfile:=gettempdir()+"T"+alltrim(str(int(hb_random(999999)),8))+".prn"
 ENDDO
-IF lpreview
-   ::impreview:=.T.
-ENDIF
 //////////////////////////
 if lselect
 
@@ -1660,7 +1662,6 @@ Method nextsearch( )
 *-----------------------------------------------------*
 local cString,ncaretpos
 cString := UPPER(::cstring)
-////ncount:=STRCOUNT( chr(13),cString, print_preview.edit_p.caretpos )
 nCaretpos := ATplus(ALLTRIM(cString),UPPER(::cBusca),::nOccur)
 ::nOccur:=nCaretpos+1
 
@@ -1673,18 +1674,6 @@ ELSE
    msginfo("End search","Information")
 ENDIF
 RETURN nil
-
-*-------------------------
-static function strcount(cbusca,cencuentra,n)
-*-------------------------
-local nc:=0,i
-cbusca:=alltrim(cbusca)
-for i:=1 to n
-    IF upper(substr(cencuentra,i,len(cbusca)))=upper(cbusca)
-       nc++
-    ENDIF
-next i
-RETURN nc
 
 
 *-------------------------
@@ -1851,7 +1840,6 @@ ENDCLASS
 *-------------------------
 METHOD initx() CLASS TEXCELPRINT
 *-------------------------
-::impreview:=.F.
 ::cprintlibrary:="EXCELPRINT"
 RETURN self
 
@@ -1863,8 +1851,6 @@ empty(lpreview)
 empty(llandscape)
 empty(npapersize)
 empty(cprinterx)
-
-///::oExcel := CreateObject( "Excel.Application" )
 
 #ifndef __XHARBOUR__
 IF ( ::oExcel := win_oleCreateObject( "Excel.Application" ) ) = NIL
@@ -1883,8 +1869,9 @@ RETURN self
 METHOD begindocx() CLASS TEXCELPRINT
 *-------------------------
 ::oExcel:WorkBooks:Add()
+::oExcel:visible:=.F.
 ::oHoja:=::oExcel:ActiveSheet()
-::oHoja:Name := "List"
+::oHoja:Name := ::cargo
 ::oHoja:Cells:Font:Name := ::cfontname
 ::oHoja:Cells:Font:Size := ::nfontsize
 RETURN self
@@ -1893,19 +1880,56 @@ RETURN self
 *-------------------------
 METHOD enddocx() CLASS TEXCELPRINT
 *-------------------------
-local nCol
+local nCol,cName,nNum,cExt
 ///     ::oHoja:Cells(nlin,alinceldax):Select()    //------Select row-------//
-//     Copyclipboard(space(ncol)+ctext)    //----copy the data at the clipboard-----//
+//     Copyclipboard(space(ncol)+ctext)    //----copy the data to the clipboard-----//
 ///     ::oHoja:Paste()     //----paste in the excel page-----//
 ///     ClearClipboard()     si no copio y pego toda una hoja entera esto no tiene sentido......
 
 FOR nCol:=1 TO ::oHoja:UsedRange:Columns:Count()
     ::oHoja:Columns( nCol ):AutoFit()
 NEXT
-::oHoja:Cells( 1, 1 ):Select()
-::oExcel:Visible := .T.
-::oHoja:= NIL
-::oExcel:= NIL
+
+ //    aVersion := {    ;
+ //           {"12.0","2007"}    ,;
+ //           {"11.0","2003"}    ,;
+ //           {"10.0","2002/XP"}    ,;
+ //           {"9.0","2000"}    ,;
+ //          {"8.0","97"}    ,;
+ //           {"7.0","95"}    ,;
+ //           {"6.0","6"}}
+
+
+ ::oExcel:DisplayAlerts :=.F.
+ ::oHoja:Cells( 1, 1 ):Select()
+ ::oExcel:visible:=.F.
+
+  if val(::oExcel:version) > 11.5
+     nNum:= 46    /// creoo
+     cext:="xlsx"
+  else
+     nNum:=39
+     cext:="xls"
+  endif
+
+ cName:=Parsename(::cargo,cext)
+
+  ::oHoja:Saveas(cName)
+ ///  ::oHoja:Saveas(cName, nNum ,"","", .f. , .f.)
+
+  inkey(1)
+  ::oExcel:Quit()
+  ::ohoja := nil
+  ::oExcel := nil
+
+IF ::impreview
+   IF ShellExecute(0, "open", "rundll32.exe", "url.dll,FileProtocolHandler "+ cName, ,1) <=32
+       MSGINFO("XLS Extension not asociated"+CHR(13)+CHR(13)+ ;
+       "File saved in:"+CHR(13)+cName)
+   ENDIF
+ENDIF
+
+//////////////////////////
 RETURN self
 
 
@@ -1947,6 +1971,12 @@ METHOD printimagex(nlin,ncol,nlinf,ncolf,cimage) CLASS TEXCELPRINT
 local cfolder :=  getcurrentfolder()+"\"
 local ccol,clin
 local crango
+if nlin<1
+   nlin:=1
+endif
+if ncol<1
+   ncol:=1
+endif
 IF ::nunitslin>1
    nlin:=round(nlin/::nunitslin,0)
    ncol:=round(ncol/::nunitslin,0)
@@ -2029,20 +2059,26 @@ METHOD enddocx()
 ENDCLASS
 
 METHOD enddocx() CLASS THTMLPRINT
-local nCol,cRuta
+local nCol,cName
 For nCol:= 1 to ::oHoja:UsedRange:Columns:Count()
     ::oHoja:Columns( nCol ):AutoFit()
 NEXT
 ::oHoja:Cells( 1, 1 ):Select()
-cRuta:=GetmydocumentsFolder()
+
+cName:=Parsename(::cargo,"html")
 ::oExcel:DisplayAlerts :=.F.
-::oHoja:SaveAs(cRuta+"\Printer.html", 44,"","", .f. , .f.)
+
+
+::oHoja:SaveAs(cName, 44,"","", .f. , .f.)
+
 ::oExcel:Quit()
 ::ohoja := nil
 ::oExcel := nil
-IF ShellExecute(0, "open", "rundll32.exe", "url.dll,FileProtocolHandler "+ cRuta+ "\Printer.html", ,1) <=32
-     MSGINFO("html Extension not asociated"+CHR(13)+CHR(13)+ ;
-     "File saved in:"+CHR(13)+cRuta+"\printer.html")
+IF ::impreview
+   IF ShellExecute(0, "open", "rundll32.exe", "url.dll,FileProtocolHandler "+ cName, ,1) <=32
+       MSGINFO("html Extension not asociated"+CHR(13)+CHR(13)+ ;
+       "File saved in:"+CHR(13)+cName)
+   ENDIF
 ENDIF
 RETURN self
 
@@ -2127,21 +2163,17 @@ ENDCLASS
 *-------------------------
 METHOD initx() CLASS TRTFPRINT
 *-------------------------
-::impreview:=.F.
+///// ::impreview:=.F.
 ::cprintlibrary:="RTFPRINT"
 RETURN self
 
 *-------------------------
-METHOD begindocx(cdoc) CLASS TRTFPRINT
+METHOD begindocx( ) CLASS TRTFPRINT
 *-------------------------
 local   MARGENSUP:=LTRIM(STR(ROUND(15*56.7,0)))
 local   MARGENINF:=LTRIM(STR(ROUND(15*56.7,0)))
 local   MARGENIZQ:=LTRIM(STR(ROUND(10*56.7,0)))
 local   MARGENDER:=LTRIM(STR(ROUND(10*56.7,0)))
-
-////Empty( cdoc )
-
-Default cDoc to "List"
 
 AADD(oPrintRTF1,"{\rtf1\ansi\ansicpg1252\uc1 \deff0\deflang3082\deflangfe3082{\fonttbl{\f0\froman\fcharset0\fprq2{\*\panose 02020603050405020304}Times New Roman;}{\f2\fmodern\fcharset0\fprq1{\*\panose 02070309020205020404}Courier New;}")
 AADD(oPrintRTF1,"{\f106\froman\fcharset238\fprq2 Times New Roman CE;}{\f107\froman\fcharset204\fprq2 Times New Roman Cyr;}{\f109\froman\fcharset161\fprq2 Times New Roman Greek;}{\f110\froman\fcharset162\fprq2 Times New Roman Tur;}")
@@ -2177,8 +2209,8 @@ IF RIGHT(oPrintRTF1[LEN(oPrintRTF1)],6)=" \page"
    oPrintRTF1[LEN(oPrintRTF1)]:=LEFT(oPrintRTF1[LEN(oPrintRTF1)] , LEN(oPrintRTF1[LEN(oPrintRTF1)])-6 )
 ENDIF
 AADD(oPrintRTF1,"\par }}")
-RUTAFICRTF1:=GetmydocumentsFolder()
-SET PRINTER TO &RUTAFICRTF1\printer.RTF
+RUTAFICRTF1:=Parsename(::cargo,"rtf")
+SET PRINTER TO &(RUTAFICRTF1)
 SET DEVICE TO PRINTER
 SETPRC(0,0)
 FOR nTRTFPRINT=1 TO LEN(oPrintRTF1)
@@ -2188,9 +2220,11 @@ NEXT
 SET DEVICE TO SCREEN
 SET PRINTER TO
 RELEASE oPrintRTF1,oPrintRTF2,oPrintRTF3
-IF ShellExecute(0, "open", "rundll32.exe", "url.dll,FileProtocolHandler "+ RUTAFICRTF1 + "\Printer.rtf", ,1) <=32
+IF ::impreview
+   IF ShellExecute(0, "open", "rundll32.exe", "url.dll,FileProtocolHandler "+ RUTAFICRTF1 , ,1) <=32
          MSGINFO("RTF Extension not asociated"+CHR(13)+CHR(13)+ ;
-         "File saved in:"+CHR(13)+rutaficrtf1+"\printer.rtf")
+         "File saved in:"+CHR(13)+rutaficrtf1)
+   ENDIF
 ENDIF
 RETURN self
 
@@ -2433,17 +2467,17 @@ RETURN self
 
 
 *-------------------------
-METHOD begindocx(cdoc) CLASS TCSVPRINT
+METHOD begindocx( ) CLASS TCSVPRINT
 *-------------------------
-Default cDoc to "List"
+////cDoc:= ::cargo
 RETURN self
 
 
 *-------------------------
 METHOD enddocx() CLASS TCSVPRINT
 *-------------------------
-RUTAFICRTF1:=GetmydocumentsFolder()
-SET PRINTER TO &RUTAFICRTF1\printer.CSV
+RUTAFICRTF1:=Parsename(::cargo,"csv")
+SET PRINTER TO &(RUTAFICRTF1)
 SET DEVICE TO PRINTER
 SETPRC(0,0)
 FOR nTCSVPRINT=1 TO LEN(oPrintCSV1)
@@ -2454,9 +2488,11 @@ SET DEVICE TO SCREEN
 SET PRINTER TO
 RELEASE oPrintCSV1,oPrintCSV2,oPrintCSV3
 
-IF ShellExecute(0, "open", "rundll32.exe", "url.dll,FileProtocolHandler "+ RUTAFICRTF1 + "\Printer.csv", ,1) <=32
+IF ::impreview
+   IF ShellExecute(0, "open", "rundll32.exe", "url.dll,FileProtocolHandler "+ RUTAFICRTF1 , ,1) <=32
          MSGINFO("CSV Extension not asociated"+CHR(13)+CHR(13)+ ;
-         "File saved in:"+CHR(13)+rutaficrtf1+"\printer.csv")
+         "File saved in:"+CHR(13)+rutaficrtf1)
+   ENDIF
 ENDIF
 RETURN self
 
@@ -2503,7 +2539,7 @@ IF cunitslinx=NIL
    ::nunitslin:=1
 ELSE
    ::nunitslin:=cunitslinx
-ENDIF 
+ENDIF
 RETURN self
 
 
@@ -2621,18 +2657,44 @@ aadd(::aPaper,{DMPAPER_ENV_MONARCH , "MONARCH"  })
 ::cprintlibrary:="PDFPRINT"
 RETURN self
 
+//// 1) nombre normal         prueba.xxx
+//// 2) nombre con ruta       c:\tmp\prueba.xxx
+//// 3) sin nombre            -------
+
+
+STATIC FUNCTION PARSENAME( cname, cext, invslash )
+local x,longname,lext,y
+
+default invslash to .F.
+cext:=lower(cext)
+
+//// quitar la extension si la hay
+ y:=at( ".",cname)
+ if y>0
+   cname:=substr(cname,1,y-1)
+ endif
+x:=rat( "\",cname)
+if x=0
+   longname :=  Getmydocumentsfolder()+"\"+cname
+else
+   longname := cname
+endif
+lext:=len(cext)   /// largo extension
+if right(longname,lext)<>"."+cext
+   longname:=longname+"."+cext
+endif
+///// automsginfo(longname)
+if invslash
+ longname:=strtran(longname,"\","/")
+endif
+return longname
+
 
 *-------------------------
-METHOD BEGINDOCx (docname) CLASS TPDFPRINT
+METHOD BEGINDOCx () CLASS TPDFPRINT
 *-------------------------
-if hb_isstring( docname)
-  ::cDocument:= docname
-else
-  ::cDocument := Getmydocumentsfolder()+"\pdfprint.pdf"
-endif
-if lower(right(::cDocument,4))#".pdf"
-   ::cDocument:=::cDocument+".pdf"
-endif
+
+::cDocument:=Parsename(::cargo,"pdf")
 ::oPdf := TPDF():init(::cDocument)
 RETURN self
 
@@ -2641,7 +2703,7 @@ RETURN self
 METHOD ENDDOCx() CLASS TPDFPRINT
 *-------------------------
 ::oPdf:Close()
-IF ::lPreview
+IF ::imPreview
    IF ShellExecute(0, "open", "rundll32.exe", "url.dll,FileProtocolHandler "+ ::cDocument , ,1) <=32
        MSGINFO("PDF Extension not asociated"+CHR(13)+CHR(13)+ ;
        "File saved in: "+CHR(13)+::cDocument)
@@ -2796,20 +2858,27 @@ For Each I in atColor
 Next
 
 IF ::cunits=="MM"
-
-      ::oPdf:Box((nlin-0.9)+::nvfij,(ncol+1.3) + ::nhfij,  (nlinf-0.9)+::nvfij,(ncolf+1.3)+ ::nhfij, ntwpen*2.4 ,0,"M","B","t1")
+      ::oPdf:Box((nlin-0.9)+::nvfij,(ncol+1.3) + ::nhfij,  (nlinf-0.9)+::nvfij,(ncolf+1.3)+ ::nhfij, ntwpen*1.2 ,0,"M","B","t1")
 ELSE
-    ::oPdf:Box((nlin-0.9)*::nmver+::nvfij,(ncol+1.3)*::nmhor + ::nhfij,  (nlinf-0.9)*::nmver+::nvfij,(ncolf+1.3)*::nmhor+ ::nhfij, ntwpen*2.4 ,0,"M","B","t1")
+    ::oPdf:Box((nlin-0.9)*::nmver+::nvfij,(ncol+1.3)*::nmhor + ::nhfij,  (nlinf-0.9)*::nmver+::nvfij,(ncolf+1.3)*::nmhor+ ::nhfij, ntwpen*1.2 ,0,"M","B","t1")
 ENDIF
 
 RETURN self
+
+*-------------------------
+METHOD printroundrectanglex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen ) CLASS TPDFPRINT
+*-------------------------
+/////*Que hace esto?  hace un rectangulo con bordes redondeados pero como aqui no se puede va sin redondeo
+   ::printrectanglex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen )
+RETURN self
+
 
 *-------------------------
 METHOD selprinterx( lselect , lpreview, llandscape , npapersize ) CLASS TPDFPRINT
 *-------------------------
 local nPos := 0
 
-Default lpreview to .f.
+////Default lpreview to .f.
 Default llandscape to .f.
 Default npapersize to 0
 
@@ -2818,7 +2887,7 @@ empty( lselect )
 /*lSelect no lo tomamos en cuenta aqui*/
 
 *----Si se va a necesitar abrir el pdf al finalizar la generacion------*
-::lPreview := lpreview
+::lPreview := ::impreview
 *----Establecemos la orientacion de la hoja-----*
 ::cPageOrient := IIF(lLandScape,"L","P")
 
@@ -2856,12 +2925,6 @@ METHOD setpreviewsizex( /* ntam */) CLASS TPDFPRINT
 RETURN self
 
 
-*-------------------------
-METHOD printroundrectanglex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen ) CLASS TPDFPRINT
-*-------------------------
-/////*Que hace esto?  hace un rectangulo con bordes redondeados pero como aqui no se puede va sin redondeo
-   ::printrectanglex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen )
-RETURN self
 
 
 //////////////////////// CALC Contribucion de Jose Miguel con ajustes CVC
@@ -2955,7 +3018,7 @@ ENDCLASS
 *-------------------------
 METHOD initx() CLASS TCALCPRINT
 *-------------------------
-::impreview:=.F.
+///::impreview:=.F.
 ::cprintlibrary:="CALCPRINT"
 return self
 
@@ -2971,7 +3034,7 @@ empty(cprinterx)
 ::oServiceManager := TOleAuto():New("com.sun.star.ServiceManager")
 ::oDesktop := ::oServiceManager:createInstance("com.sun.star.frame.Desktop")
 IF ::oDesktop = NIL
-   MsgStop('OpenOficce Calc no encontrado','error')
+   MsgStop('OpenOficce Calc not found','error')
    RETURN Nil
 ENDIF
 return self
@@ -2980,6 +3043,7 @@ return self
 METHOD begindocx() CLASS TCALCPRINT
 *-------------------------
 ::oDocument := ::oDesktop:loadComponentFromURL("private:factory/scalc","_blank", 0, {})
+///::oDocument:hide()
 ::oSchedule := ::oDocument:GetSheets()
 ::oSheet := ::oSchedule:GetByIndex(0)
 *::oSheet:CharFontName := ::cfontname
@@ -2990,21 +3054,42 @@ return self
 *-------------------------
 METHOD enddocx() CLASS TCALCPRINT
 *-------------------------
+local cname,cUrl
 ::oSheet:getColumns():setPropertyValue("OptimalWidth", .T.)
+cname:=parsename(::cargo,"odt",.T.)
+
+ ///aOneArg[1] = SetPropertyValue( "Overwrite", .T. )
+
+::oDocument:storeToURL("file:///"+cname, {})
+ inkey(0.5)
+
+///IF  !(::imPreview)
+    ::oDocument:close( 1 )
+///ENDIF
+::oServiceManager := nil
+::oDesktop := nil
+::oDocument := nil
+::oSchedule := nil
+::oSheet := nil
+::oCell := nil
+::oColums := nil
+::oColumn := nil
+
+IF ::imPreview
+   cname:=parsename(::cargo,"odt")
+   IF ShellExecute(0, "open", "rundll32.exe", "url.dll,FileProtocolHandler " + cname , ,1) <=32
+       MSGINFO("PDF Extension not asociated"+CHR(13)+CHR(13)+ ;
+       "File saved in: "+CHR(13)+ cname)
+   ENDIF
+ENDIF
+
 RETURN self
 
 
 *-------------------------
 METHOD releasex() CLASS TCALCPRINT
 *-------------------------
-   ::oServiceManager := nil
-   ::oDesktop := nil
-   ::oDocument := nil
-   ::oSchedule := nil
-   ::oSheet := nil
-   ::oCell := nil
-   ::oColums := nil
-   ::oColumn := nil
+
 RETURN self
 
 
