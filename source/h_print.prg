@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.100 2011-05-31 19:30:48 declan2005 Exp $
+* $Id: h_print.prg,v 1.101 2011-06-02 00:41:01 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -3042,8 +3042,13 @@ return self
 *-------------------------
 METHOD begindocx() CLASS TCALCPRINT
 *-------------------------
-::oDocument := ::oDesktop:loadComponentFromURL("private:factory/scalc","_blank", 0, {})
-///::oDocument:hide()
+local laPropertyValue:= array(10)
+
+laPropertyValue[1]= ::oServiceManager:Bridge_GetStruct( "com.sun.star.beans.PropertyValue" )
+laPropertyValue[1]:name = "Hidden"
+laPropertyValue[1]:value = .T.
+
+::oDocument := ::oDesktop:loadComponentFromURL("private:factory/scalc","_blank", 0, @laPropertyValue )
 ::oSchedule := ::oDocument:GetSheets()
 ::oSheet := ::oSchedule:GetByIndex(0)
 *::oSheet:CharFontName := ::cfontname
