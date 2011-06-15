@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.212 2011-05-20 21:53:08 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.213 2011-06-15 19:36:16 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -737,6 +737,9 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )
                      _OOHG_Send( pControl, s_DoEvent );
                      hb_vmPush( pOnClick );
                      hb_vmPushString( "CLICK", 5 );
+// aqui!
+//DefWindowProc( hWnd, message, wParam, lParam );
+EndMenu();
                      hb_vmSend( 2 );
                      hb_itemRelease( pOnClick );
                      bClicked = 1;

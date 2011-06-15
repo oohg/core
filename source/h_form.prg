@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.26 2011-05-20 21:53:08 guerra000 Exp $
+ * $Id: h_form.prg,v 1.27 2011-06-15 19:36:16 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1887,11 +1887,6 @@ METHOD Activate( lNoStop, oWndLoop ) CLASS TFormModal
    IF lNoStop .AND. !HB_IsObject( oWndLoop ) .AND. HB_IsObject( ::oPrevWindow )
       oWndLoop := ::oPrevWindow
    ENDIF
-
-   // Terminates last active popup menu (if any)
-   HB_INLINE(){
-      EndMenu();
-   }
 
    // Since this window disables all other windows, it must be visible!
    ::lVisible := .T.

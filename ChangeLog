@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.699 2011-06-02 00:41:01 declan2005 Exp $
+ * $Id: ChangeLog,v 1.700 2011-06-15 19:36:16 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,10 +7,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2011-06-15 14:38 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_form.prg
+  * source/h_windows.prg
+    ! Terminates last popup menu before execute it's action.
+
 2011-06-01 20:37:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_print.prg
     ! fixed open calc print mode, with or without preview.
-
 
 2011-05-31 11:05:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_print.prg
@@ -19,7 +23,6 @@
       If the preview is false, the document will be saved with a default name and nothing will be displayed.
     * if a name was added then... this documents will be named as is (with or without path)
     * the pdf format are better now more closer to a normal printing viewing.
-
 
 2011-05-20 16:23 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_form.prg
