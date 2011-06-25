@@ -1,5 +1,5 @@
-/*
- * $Id: winprint.prg,v 1.37 2011-06-25 01:27:08 declan2005 Exp $
+/*      
+ * $Id: winprint.prg,v 1.38 2011-06-25 01:48:21 declan2005 Exp $
  */
 // -----------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -1031,14 +1031,15 @@ METHOD GetViewPortOrg() CLASS HBPrinter
 return self
 
 METHOD End() CLASS HBPrinter
-local n
+local n,l
   if ::PreviewMode
     ::Metafiles:={}
 	if !::InMemory
-		for n := 1 to ::CurPage
-			ferase(::BaseDoc + alltrim(strzero(n,4))+'.emf')
-	   next
-	end
+	        l:=::curpage-1
+		for n := 1 to l
+		    ferase(::BaseDoc + alltrim(strzero(n,4))+'.emf')
+	        next
+	endif
   endif
   if ::HDCRef!=0
       ef_resetprinter()
