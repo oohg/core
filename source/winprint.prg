@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.36 2011-05-20 21:53:08 guerra000 Exp $
+ * $Id: winprint.prg,v 1.37 2011-06-25 01:27:08 declan2005 Exp $
  */
 // -----------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -305,23 +305,25 @@ METHOD Endpage() CLASS HBPrinter
 return self
 
 METHOD SaveMetaFiles(number) CLASS HBPrinter
-Local n
+Local n,l
+default number to NIL
  if ::PreviewMode
 	if ::InMemory
-		if number==NIL
+        	if number==NIL
 		   aeval(::METAFILES,{|x,xi| str2file(x[1],"page"+alltrim(str(xi))+".emf") })
 		else
 		   str2file(::METAFILES[number,1],"page"+alltrim(str(number))+".emf")
 		endif
 	else
-		if number==NIL
+		if number<>NIL
 		   COPY FILE (::BaseDoc + alltrim(strzero(number,4))+'.emf') to ("page"+alltrim(strzero(number,4))+".emf")
 		else
-			for n := 1 to ::CurPage
+                         l:=::curpage-1
+			for n := 1 to l
 				COPY FILE (::BaseDoc + alltrim(strzero(n,4))+'.emf') to ("page"+alltrim(strzero(n,4))+".emf")
 			end
 		endif
-	end
+	endif
  endif
 return self
 

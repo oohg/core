@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.101 2011-06-02 00:41:01 declan2005 Exp $
+* $Id: h_print.prg,v 1.102 2011-06-25 01:27:08 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -8,6 +8,15 @@
 #include 'winprint.ch'
 
 #include "fileio.ch"
+
+#ifndef _BARCODE_
+#define _BARCODE_
+
+
+#define  derecha "1110010110011011011001000010101110010011101010000100010010010001110100"
+#define  izda1    "0001101001100100100110111101010001101100010101111011101101101110001011"
+#define  izda2   "0100111011001100110110100001001110101110010000101001000100010010010111"
+#define  primero "ooooooooeoeeooeeoeooeeeooeooeeoeeooeoeeeoooeoeoeoeoeeooeeoeo"
 
 MEMVAR _OOHG_PRINTLIBRARY
 MEMVAR _OOHG_printer_docname
@@ -125,7 +134,7 @@ DATA nwpen              INIT 0.1   READONLY //// pen width
 DATA tempfile           INIT gettempdir()+"T"+alltrim(str(int(hb_random(999999)),8))+".prn" READONLY
 DATA impreview          INIT .F.  READONLY
 DATA lwinhide           INIT .T.   READONLY
-DATA cversion           INIT  "(oohg)V 4.0" READONLY
+DATA cversion           INIT  "(oohg-tprint)V 4.0" READONLY
 DATA cargo              INIT  "list"     //// document name
 ////DATA cString            INIT  ""
 
@@ -230,6 +239,34 @@ METHOD printdata()
 *-------------------------
 METHOD printdatax() BLOCK { || nil }
 *-------------------------
+
+METHOD printbarcode()
+
+METHOD printbarcodex() BLOCK {|| nil }
+
+method ean13()
+
+method code128()
+
+method code3_9()
+
+method int25()
+
+method ean8()
+
+method  upca()
+
+method sup5()
+
+method codabar()
+
+method ind25()
+
+method mat25()
+
+
+method go_code()
+
 *-------------------------
 METHOD printimage()
 *-------------------------
@@ -316,7 +353,8 @@ METHOD settmargin()
 
 ENDCLASS
 
-*-------------------------
+
+ *-------------------------
 
 *-------------------------
 METHOD setpreviewsize(ntam) CLASS TPRINTBASE
@@ -479,6 +517,7 @@ IF iswindowdefined(_oohg_winreport)
 ENDIF
 RETURN nil
 
+
 *-------------------------
 METHOD ENDDOC() CLASS TPRINTBASE
 *-------------------------
@@ -597,6 +636,207 @@ ctext:= cspace + ctext
 
 ::printdatax(::ntmargin+nlin,::nlmargin+ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext,litalic)
 RETURN self
+
+*-------------------------
+METHOD printbarcode(nlin,ncol,cbarcode,ctipo,nlen,lcheck,lori,acolor) CLASS TPRINTBASE
+*-------------------------
+local nsize:=10
+
+default cbarcode to ""
+cbarcode:=upper(cbarcode)
+default nlen to  20
+default lcheck to .T.
+DEFAULT lori to  .T.
+default  acolor to {1,1,1}
+default ctipo to ""
+
+DEFAULT nlin to 1
+DEFAULT ncol to 1
+////DEFAULT nsize to ::nfontsize
+DEFAULT acolor to ::acolor
+
+IF ::cunits="MM"
+   ::nmver:=1
+   ::nvfij:=0
+   ::nmhor:=1
+   ::nhfij:=0
+ELSE
+   ::nmhor  := nsize/4.75
+   IF ::lprop
+      ::nmver  := (::nfontsize)/2.35
+   ELSE
+      ::nmver  :=  10/2.35
+   ENDIF
+
+      ::nvfij  := (12/1.65)
+      ::nhfij  := (12/3.70)
+ ENDIF
+
+ do case
+   case ctipo="CODE128A"
+            ::Code128( nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 , cbarcode, "A" ,, .t. , , 10 )
+   case ctipo="CODE128B"
+             ::Code128( nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 , cbarcode, "B" ,, .t. , , 10 )
+   case ctipo="CODE128C"
+             ::Code128( nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 , cbarcode, "C" ,, .t. , , 10 )
+   CASE  ctipo="CODE39"
+             ::Code3_9( nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 , cbarcode , .t. , ,  .t. ,  , 10 )
+    case ctipo="EAN13"
+             ::EAN13( nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 , cbarcode ,, .t., , 10, ,  )
+    case ctipo="INTER25"
+             ::INT25( nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2  , cbarcode, .t. ,, .t. , , 10 )
+    case ctipo="UPCA"
+            ::UPCA( nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 , cbarcode , , .t., , 10, .f. ,  )
+     case ctipo="SUP5"
+           ::SUP5(nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2  , cbarcode , , .t. ,  , 10, .f. ,   )
+     case ctipo="CODABAR"
+           ::CODABAR( nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2, cbarcode ,, .t.,  , 10 )
+     case ctipo="IND25"
+        ::IND25( nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2  , cbarcode, .t. , , .t., , 10 )
+     case ctipo="MAT25"
+        ::MAT25( nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 , cbarcode, .t. ,, .t. , , 10 )
+
+endcase
+return self
+
+
+METHOD ean8(nRow,nCol,cCode,Color,lHorz,nWidth,nHeigth,lBanner,cFont)
+    local nLen:=0
+    // test de parametros
+    // por implementar
+    default nHeigth := 1.5
+    default lBanner:=.f.
+    if lHorz
+        ::go_code(_UPC(cCode,7),nRow,nCol,lHorz,Color,nWidth,nHeigth*0.90)
+    else
+        ::go_code(_UPC(cCode,7),nRow,nCol+nLen,lHorz,Color,nWidth,nHeigth*0.90)
+    endif
+    ::go_code(_ean13Bl(8),nRow,nCol,lHorz,Color,nWidth,nHeigth)
+    if lBanner
+       // barlen(cCode,7,nRow,nCol,Color,lHorz,nWidth,nHeigth,cFont)
+    end
+return self
+
+
+METHOD   ean13(nRow,nCol,cCode,Color,lHorz,nWidth,nHeigth,lbanner,cfont) CLASS TPRINTBASE
+    local nLen:=0
+    // test de parametros
+    // por implementar
+    default nHeigth := 1.5
+    default lBanner:=.f.
+    // desplazamiento...
+    if lHorz
+        ::go_code(_ean13(cCode),nRow,nCol,lHorz,Color,nWidth,nHeigth*0.90)
+    else
+        ::go_code(_ean13(cCode),nRow,nCol+nLen,lHorz,Color,nWidth,nHeigth*0.90)
+    endif
+    ::go_code(_ean13Bl(12),nRow,nCol,lHorz,Color,nWidth,nHeigth)
+    if lBanner
+       // barlen13(cCode,nRow,nCol,Color,lHorz,nWidth,nHeigth,cFont)
+    endif
+return SELF
+
+METHOD Code128(nRow,nCol,cCode,cMode,Color,lHorz,nWidth,nHeigth) CLASS TPRINTBASE
+    // test de parametros
+    // por implementar
+    ::go_code(_code128(cCode,cMode),nRow,nCol,lHorz,Color,nWidth,nHeigth)
+return self
+
+METHOD Code3_9(nRow,nCol,cCode,lCheck,Color,lHorz,nWidth,nHeigth)      CLASS TPRINTBASE
+    // test de parametros
+    // por implementar
+    ::go_code(_code3_9(cCode,lCheck),nRow,nCol,lHorz,Color,nWidth,nHeigth)
+return self
+
+METHOD int25(nRow,nCol,cCode,lCheck,Color,lHorz,nWidth,nHeigth)            CLASS TPRINTBASE
+    // test de parametros
+    // por implementar
+    ::go_code(_int25(cCode,lCheck),nRow,nCol,lHorz,Color,nWidth,nHeigth)
+return SELF
+
+
+
+method UPCA(nRow,nCol,cCode,Color,lHorz,nWidth,nHeigth,lBanner,cFont)
+    local nLen:=0
+    // test de parametros
+    // por implementar
+    default nHeigth := 1.5
+    default lBanner:=.f.
+    if lHorz
+       ::go_code(_UPC(cCode),nRow,nCol,lHorz,Color,nWidth,nHeigth*0.90)
+    else
+        ::go_code(_UPC(cCode),nRow,nCol+nLen,lHorz,Color,nWidth,nHeigth*0.90)
+    endif
+    ::go_code(_UPCABl(cCode),nRow,nCol,lHorz,Color,nWidth,nHeigth)
+    if lBanner
+        //UPCA_barlen(cCode,nRow,nCol,Color,lHorz,nWidth,nHeigth,cFont)
+    end
+return self
+
+
+
+
+method sup5(nRow,nCol,cCode,Color,lHorz,nWidth,nHeigth,lBanner,cFOnt)
+    ::go_code(_sup5(cCode),nRow,nCol,lHorz,Color,nWidth,nHeigth)
+    if lBANNER
+       // ban5(cCode,nRow,nCol,Color,lHorz,nWidth,nhEIGTH,cFont)
+    endif
+return self
+
+
+method Codabar(nRow,nCol,cCode,Color,lHorz,nWidth,nHeigth)
+    // test de parametros
+    // por implementar
+    ::go_code(_Codabar(cCode),nRow,nCol,lHorz,Color,nWidth,nHeigth)
+return self
+
+
+method ind25(nRow,nCol,cCode,lCheck,Color,lHorz,nWidth,nHeigth)
+    // test de parametros
+    // por implementar
+    ::go_code(_ind25(cCode,lCheck),nRow,nCol,lHorz,Color,nWidth,nHeigth)
+return self
+
+method mat25 (nRow,nCol,cCode,lCheck,Color,lHorz,nWidth,nHeigth)
+    // test de parametros
+    // por implementar
+    ::go_code(_mat25(cCode,lCheck),nRow,nCol,lHorz,Color,nWidth,nHeigth)
+return self
+
+
+
+method go_code( cBarra, ny,nx,lHoRz, aColor, nWidth, nLen) CLASS TPRINTBASE
+    local n, oBr
+
+    if empty(aColor)
+        aColor := {0,0,0}
+    endif
+    default lHorz := .t.
+
+    default nWidth := 0.50 // 1/3 M/mm      0.25
+
+    default nLen := 15 // mm
+    for n:=1 to len(cBarra)
+        if substr(cBarra,n,1) ='1'
+            if lHorz
+               ::printbarcodex(ny,nx,ny+nlen,nx+nwidth,acolor )
+               nx+=nwidth
+            else
+               ::printbarcodex(ny,nx, ny+nwidth,nx+nlen,acolor )
+               nx+=nwidth
+               ny+=nWidth
+            endif
+        else
+           if lHorz
+              nx+=nWidth
+           else
+              ny += nWidth
+           endif
+        endif
+    next n
+
+return nil
+
 
 *-------------------------
 METHOD printimage(nlin,ncol,nlinf,ncolf,cimage) CLASS TPRINTBASE
@@ -757,7 +997,7 @@ IF ! EMPTY( cPrinter )
    nResult :=PRINTFILERAW( cPrinter, ::tempfile, "raw print" )
    if nResult#1
       cMsg +=aDatos[ASCAN(aDatos,{|x| x[1] ==nResult}),2]
-  ///    MSGINFO( cMsg )
+        MSGINFO( cMsg )
    endif
 ELSE
    MSGSTOP("No Default Printer found","Error...")
@@ -820,7 +1060,17 @@ METHOD getdefprinterx()
 *-------------------------
 METHOD printroundrectanglex()
 *-------------------------
+
+METHOD printbarcodex()
+
 ENDCLASS
+
+
+*------------------------------------------------------------
+METHOD printbarcodex(y, x, y1, x1 ,acolor) CLASS TMINIPRINT
+*------------------------------------------------------------
+ @ y,x PRINT FILL TO y1, x1 COLOR aColor
+return self
 
 *-------------------------
 METHOD initx() CLASS TMINIPRINT
@@ -927,6 +1177,8 @@ ENDIF
 endcase
 RETURN self
 
+
+
 *-------------------------
 METHOD printimagex(nlin,ncol,nlinf,ncolf,cimage) CLASS TMINIPRINT
 *-------------------------
@@ -937,11 +1189,14 @@ RETURN self
 *-------------------------
 METHOD printlinex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen ) CLASS TMINIPRINT
 *-------------------------
-local vdespl:=1   ////vdespl:=1.0150
+local vdespl:=1
 DEFAULT atColor to ::acolor
-///@  (nlin+.2)*::nmver+::nvfij,ncol*::nmhor+::nhfij*2 PRINT LINE TO  (nlinf+.2)*::nmver+::nvfij,ncolf*::nmhor+::nhfij*2  COLOR atcolor PENWIDTH ntwpen  //// CPEN
+
  @ nlin*::nmver*vdespl+::nvfij,ncol*::nmhor+::nhfij*2 PRINT LINE TO  nlinf*::nmver*vdespl+::nvfij,ncolf*::nmhor+::nhfij*2  COLOR atcolor PENWIDTH ntwpen  //// CPEN
+
 RETURN self
+
+
 
 *-------------------------
 METHOD printrectanglex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen ) CLASS TMINIPRINT
@@ -1170,6 +1425,9 @@ METHOD setpreviewsizex()
 *-------------------------
 METHOD printroundrectanglex()
 *-------------------------
+
+method printbarcodex()
+
 ENDCLASS
 
 
@@ -1276,6 +1534,17 @@ ELSE
 ENDIF
 RETURN self
 
+*------------------------------------------------------------
+METHOD printbarcodex(y, x, y1, x1 ,acolor) CLASS THBPRINTER
+*------------------------------------------------------------
+/////MSGBOX("SI ENTRA")
+DEFAULT aColor to ::acolor
+CHANGE PEN "C0"  COLOR acolor
+SELECT PEN "C0"
+DEFINE BRUSH "obrush" COLOR aColor
+@  y,x,y1,x1 FILLRECT BRUSH "obrush"
+return self
+
 
 *-------------------------
 METHOD printimagex(nlin,ncol,nlinf,ncolf,cimage) CLASS thbprinter
@@ -1287,7 +1556,7 @@ RETURN self
 *-------------------------
 METHOD printlinex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen ) CLASS thbprinter
 *-------------------------
-local vdespl:=1   ////vdespl:=1.0150
+local vdespl:=1
 DEFAULT atColor to ::acolor
 CHANGE PEN "C0" WIDTH ntwpen*10  COLOR atcolor
 SELECT PEN "C0"
@@ -1297,7 +1566,7 @@ RETURN self
 *-------------------------
 METHOD printrectanglex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen ) CLASS THBPRINTER
 *-------------------------
-local vdespl:=1   ////vdespl:=1.0150
+local vdespl:=1
 DEFAULT atColor to ::acolor
 CHANGE PEN "C0" WIDTH ntwpen*10 COLOR atcolor
 SELECT PEN "C0"
@@ -1596,7 +1865,7 @@ RETURN self
 *-------------------------
 METHOD selprinterx( lselect , lpreview  , llandscape , npapersize ,cprinterx  ) CLASS TDOSPRINT
 *-------------------------
-/////Empty( lSelect 
+/////Empty( lSelect
 empty( lpreview )
 empty(llandscape)
 empty(npapersize)
@@ -3187,3 +3456,596 @@ ENDIF
 AADD(::alincelda,{nlin,ncol,ctext,nsize,calign,cfont,lbold,acolor})
 return self
 
+
+//////////////////////////// codigos de barra
+
+
+#define abar  {"101010001110",;
+              "101011100010",;
+              "101000101110",;
+              "111000101010",;
+              "101110100010",;
+              "111010100010",;
+              "100010101110",;
+              "100010111010",;
+              "100011101010",;
+              "111010001010",;
+              "101000111010",;
+              "101110001010",;
+              "11101011101110",;
+              "11101110101110",;
+              "11101110111010",;
+              "10111011101110",;
+              "10111000100010",;
+              "10001000101110",;
+              '10100011100010',;
+              '10111000100010',;
+              '10001000101110',;
+              '10100010001110',;
+              '10100011100010'}
+
+#define cChar  '0123456789-$:/.+ABCDTN*E'
+
+// importante, this system not test de start /end code.
+
+function _codabar( cCode )
+    local n, cBarra := '', nCar
+    cCode := upper( cCode )
+    for n:=1 to len( cCode )
+        if (nCar:=at(substr(cCode,n,1),cChar)) > 0
+            cBarra += abar[ nCar ]
+        endif
+    next
+return cBarra
+
+#define aCode  {"212222",;
+                   "222122",;
+                   "222221",;
+                   "121223",;
+                   "121322",;
+                   "131222",;
+                   "122213",;
+                   "122312",;
+                   "132212",;
+                   "221213",;
+                   "221312",;
+                   "231212",;
+                   "112232",;
+                   "122132",;
+                   "122231",;
+                   "113222",;
+                   "123122",;
+                   "123221",;
+                   "223211",;
+                   "221132",;
+                   "221231",;
+                   "213212",;
+                   "223112",;
+                   "312131",;
+                   "311222",;
+                   "321122",;
+                   "321221",;
+                   "312212",;
+                   "322112",;
+                   "322211",;
+                   "212123",;
+                   "212321",;
+                   "232121",;
+                   "111323",;
+                   "131123",;
+                   "131321",;
+                   "112313",;
+                   "132113",;
+                   "132311",;
+                   "211313",;
+                   "231113",;
+                   "231311",;
+                   "112133",;
+                   "112331",;
+                   "132131",;
+                   "113123",;
+                   "113321",;
+                   "133121",;
+                   "313121",;
+                   "211331",;
+                   "231131",;
+                   "213113",;
+                   "213311",;
+                   "213131",;
+                   "311123",;
+                   "311321",;
+                   "331121",;
+                   "312113",;
+                   "312311",;
+                   "332111",;
+                   "314111",;
+                   "221411",;
+                   "431111",;
+                   "111224",;
+                   "111422",;
+                   "121124",;
+                   "121421",;
+                   "141122",;
+                   "141221",;
+                   "112214",;
+                   "112412",;
+                   "122114",;
+                   "122411",;
+                   "142112",;
+                   "142211",;
+                   "241211",;
+                   "221114",;
+                   "213111",;
+                   "241112",;
+                   "134111",;
+                   "111242",;
+                   "121142",;
+                   "121241",;
+                   "114212",;
+                   "124112",;
+                   "124211",;
+                   "411212",;
+                   "421112",;
+                   "421211",;
+                   "212141",;
+                   "214121",;
+                   "412121",;
+                   "111143",;
+                   "111341",;
+                   "131141",;
+                   "114113",;
+                   "114311",;
+                   "411113",;
+                   "411311",;
+                   "113141",;
+                   "114131",;
+                   "311141",;
+                   "411131",;
+                   "211412",;
+                   "211214",;
+                   "211232",;
+                   "2331112"}
+
+
+function _code128(cCode,cMode)
+
+    local nSum:=0, cBarra, cCar
+    local cTemp, n, nCAr, nCount:=0
+    local lCodeC := .f. ,lCodeA:= .f.
+
+
+    // control de errores
+    if valtype(cCode) !='C'
+        alert('Barcode c128 required a Character value. ')
+        return nil
+    end
+    if !empty(cMode)
+        if valtype(cMode)='C' .and. Upper(cMode)$'ABC'
+            cMode := Upper(cMode)
+        else
+            alert('Code 128 Modes are A,B o C. Character values.')
+        end
+    end
+    if empty(cMode) // modo variable
+        // an lisis de tipo  de c¢digo...
+        if str(val(cCode),len(cCode))=cCode // s¢lo n£meros
+            lCodeC := .t.
+            cTemp:=aCode[106]
+            nSum := 105
+        else
+            for n:=1 to len(cCode)
+                nCount+=if(substr(cCode,n,1)>31,1,0) // no cars. de control
+            end
+            if nCount < len(cCode) /2
+                lCodeA := .t.
+                cTemp := aCode[104]
+                nSum := 103
+            else
+                cTemp := aCode[105]
+                nSum := 104
+            end
+        end
+    else
+        if cMode =='C'
+            lCodeC := .t.
+            cTemp:=aCode[106]
+            nSum := 105
+        elseif cMode =='A'
+            lCodeA := .t.
+            cTemp := aCode[104]
+            nSum := 103
+        else
+            cTemp := aCode[105]
+            nSum := 104
+        end
+    end
+
+    nCount := 0 // caracter registrado
+    for n:= 1 to len(cCode)
+        nCount ++
+        cCar := substr(cCode,n,1)
+        if lCodeC
+            if len(cCode)=n  // ultimo caracter
+                CTemp += aCode[101] // SHIFT Code B
+                nCar := asc(cCar)-31
+            else
+                nCar := Val(substr(cCode,n,2))+1
+                n++
+            end
+        elseif lCodeA
+            if cCar> '_' // Shift Code B
+                cTemp += aCode[101]
+                nCar := asc(cCar)-31
+            elseif cCar <= ' '
+                nCar := asc(cCar)+64
+            else
+                nCar := asc(cCar)-31
+            endif
+        else // code B standard
+            if cCar <= ' ' // shift code A
+                cTemp += aCode[102]
+                nCar := asc(cCar)+64
+            else
+                nCar := asc(cCar)-31
+            end
+        endif
+        nSum += (nCar-1)*nCount
+        cTemp := cTemp +aCode[nCar]
+    next
+    nSum := nSum%103 +1
+    cTemp := cTemp + aCode[ nSum ] +aCode[107]
+    cBarra := ''
+    for n:=1 to len(cTemp) step 2
+        cBarra+=replicate('1',val(substr(cTemp,n,1)))
+        cBarra+=replicate('0',val(substr(cTemp,n+1,1)))
+    next
+return cBarra
+
+
+
+function _Code3_9( cCode, lCheck )
+    static cCars := '1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ-. *$/+%'
+    STATIC aBarras:={'1110100010101110',;
+                     '1011100010101110',;
+                     '1110111000101010',;
+                     '1010001110101110',;
+                     '1110100011101010',;
+                     '1011100011101010',;
+                     '1010001011101110',;
+                     '1110100010111010',;
+                     '1011100010111010',;
+                     '1010001110111010',;
+                     '1110101000101110',;
+                     '1011101000101110',;
+                     '1110111010001010',;
+                     '1010111000101110',;
+                     '1110101110001010',;//E
+                     '1011101110001010',;
+                     '1010100011101110',;
+                     '1110101000111010',;
+                     '1011101000111010',;
+                     '1010111000111010',;
+                     '1110101010001110',; //K
+                     '1011101010001110',;
+                     '1110111010100010',;
+                     '1010111010001110',;
+                     '1110101110100010',;
+                     '1011101110100010',;//p
+                     '1010101110001110',;
+                     '1110101011100010',;
+                     '1011101011100010',;
+                     '1010111011100010',;
+                     '1110001010101110',;
+                     '1000111010101110',;
+                     '1110001110101010',;
+                     '1000101110101110',;
+                     '1110001011101010',;
+                     '1000111011101010',;//Z
+                     '1000101011101110',;
+                     '1110001010111010',;
+                     '1000111010111010',; // ' '
+                     '1000101110111010',;
+                     '1000100010100010',;
+                     '1000100010100010',;
+                     '1000101000100010',;
+                     '1010001000100010'}
+
+    local cCar,m, n, n1,n2, cBarra := '',  nCheck := 0
+
+    default lCheck := .f.
+    cCode := upper(cCode)
+    if len(cCode )>32
+        cCode := left(cCode,32)
+    end
+    cCode := '*'+cCode+'*'
+    for n:= 1 to len( cCode )
+        cCar := substr( cCode,n,1)
+        m:=at( cCar, cCars )
+        if n>0 // otros caracteres se ignoran :-))
+            cBarra := cBarra + aBarras[m]
+            nCheck += (m-1)
+        end
+    next
+
+   if lCheck
+    cBarra+= aBarras[nCheck%43 +1]
+   end
+return cBarra
+
+
+// genera codigo ean13
+
+
+
+
+
+function _ean13( cCode )
+   local l,s1,s2,controln,ac,cad,cadena,cadena2, n1, n2, NUmero
+   local Izda, Dcha, String, Mascara, k  ,n
+   k:=left(alltrim(cCode)+'000000000000',12)     // padding with '0'
+   // calculo del digito de control
+   k:=k+EAN13_CHECK(k)                           // Chaeck Digit en EAN13
+   // preparacion de la cadena de impresion
+   cadena:=[]
+   dcha:=SUBSTR(K,8,6)
+   izda:=substr(k,2,6)
+   mascara:=substr(primero,(val(substr(k,1,1))*6)+1,6)
+   *  ? mascara
+   // barra de delimitacion
+   cadena:=[101]
+   // parte izda
+   for n=1 to 6
+      numero:=val(substr(izda,n,1))
+      if substr(mascara,n,1)=[o]
+         string:=substr(izda1,numero*7+1,7)
+      else
+         string:=substr(izda2,numero*7+1,7)
+      end
+      *  ? strzero(numero,1)+[->]+string
+      cadena:=cadena+string
+
+   next
+   cadena:=cadena+[01010]
+   // LADO DERECHO
+   for n=1 to 6
+      numero:=val(substr(dcha,n,1))
+      string:=substr(derecha,numero*7+1,7)
+      *  ? strzero(numero,1)+[->]+string
+      cadena:=cadena+string
+   next
+   cadena:=cadena+[101]
+   *  ? cadena
+   *  cadena:=cadena+[101]
+return Cadena
+
+
+FUNCTION EAN13_CHECK(cCode)
+   local s1,s2,l,Control,n
+   s1:=0                                         // suma de impares
+   s2:=0                                         // suma de pares
+   for n=1 to 6
+      s1:=s1+val(substr(cCode,(n*2)-1,1))
+      s2:=s2+val(substr(cCode,(n*2),1))
+   next
+   control:=(s2*3)+s1
+   l:=10
+   do while control>l
+      l:=l+10
+   end
+   control:=l-control
+
+RETURN sTr(control,1,0)
+
+
+function _ean13BL(nLen)
+   nLen:=int(nLen/2)
+return '101'+replicate('0',nLen*7)+'01010'+replicate('0',nLen*7)+'101'
+
+
+function _UPC( cCode, nLen )
+   local l,s1,s2,control,n,ac,cad,cadena, n1, n2, NUmero
+   local Izda, Dcha, String, Mascara, k
+   default nLen to 11
+   default cCode to '0'
+   // valid values for nLen are 11,7
+   nLen:=if(nlen=11,11,7)
+   k:=left(alltrim(cCode)+'000000000000',nLen)   // padding with '0'
+   // calculo del digito de control
+   k=k+Upc_CHECK(cCode,nLen)                     // cCode,nLen
+   nLen++
+   // preparacion de la cadena de impresion
+   cadena:=[]
+   dcha:=Right(K,nLen/2)
+   izda:=Left(k,nLen/2)
+   // barra de delimitacion
+   cadena:=[101]
+   // parte izda
+   for n=1 to len(Izda)
+      numero:=val(substr(izda,n,1))
+      cadena+=substr(izda1,numero*7+1,7)
+   next
+   cadena:=cadena+[01010]
+   // LADO DERECHO
+   for n=1 to len(dcha)
+      numero:=val(substr(dcha,n,1))
+      cadena+=substr(derecha,numero*7+1,7)
+   next
+   cadena:=cadena+[101]
+return Cadena
+
+function _UPCABL()
+   local cadena
+   cadena:=[101]
+   // parte izda
+      //cadena+=substr(izda1,val(left(k,1))*7+1,7)
+      cadena+=replicate('0',42) // resto
+   cadena:=cadena+[01010] //centro
+   // LADO DERECHO
+      cadena+=replicate('0',42) // resto
+      //cadena+=substr(derecha,val(right(k,1))*7+1,7)
+   cadena:=cadena+[101]
+return Cadena
+
+Function Upc_CHECK(cCode,nLen)
+   local s1,s2,n,l,control
+   s1:=0                                         // suma de impares
+   s2:=0                                         // suma de pares
+   for n=1 to nLen step 2
+      s1:=s1+val(substr(cCode,n,1))
+      s2:=s2+val(substr(cCode,n+1,1))
+   next
+   control:=(s1*3)+s2
+   l:=10
+   do while control>l
+      l:=l+10
+   end
+   control:=l-control
+
+   return str(Control,1,0)
+
+// suplemento de 5 digitos
+
+function _Sup5(cCode)
+   local l, k, control, n, cBarras := '1011',nCar
+   static parity:=[eeoooeoeooeooeoeoooeoeeooooeeooooeeoeoeooeooeooeoe]
+   k:=left(alltrim(cCode)+'00000',5)             // padding with '0'
+   control := right( str( val(substr(k,1,1))*3 + val(substr(k,3,1))*3 ;
+      + val(substr(k,5,1))*3 + val(substr(k,2,1))*9+;
+      val(substr(k,4,1))*9,5,0 ),1)
+   control:=substr(primero,val(control)*6+2,5)
+   for n:=1 to 5
+      nCar:=val(substr(k,n,1))
+      if substr(control,n,1)='o'
+         cBarras+=substr(izda2,nCar*7+1,7)
+      else
+         cBarras+=substr(izda1,nCar*7+1,7)
+      end
+      if n<5
+         cBarras+='01'
+      end
+   next
+return cBarras
+// imprime un codigo
+
+
+
+function _int25(cCode,lMode)
+local aBar:={"00110","10001",'01001','11000','00101','10100','01100',;
+              '00011','10010','01010'}
+local cStart:='0000'
+local cStop:='100'
+local cMtSt:='10000' // matrix start/stop
+local cInStart := '110' // industrial 2 of 5 start
+local cInStop := '101' // industrial 2 of 5 stop
+
+    local n,cBar:='', cIz:='',cDer:='',nLen:=0,nCheck:=0,cBarra:=''
+    local m
+
+    default lMode to .f.
+    cCode:=trans(cCode,'@9') // elimina caracteres
+
+    if (nLen%2=1.and.!lMode)
+        nLen++
+        cCode+='0'
+    end
+    if lMode
+        for n:=1 to len(cCode) step 2
+            nCheck+=val(substr(cCode,n,1))*3+val(substr(cCode,n+1,1))
+        next
+        cCode += right(str(nCheck,10,0),1)
+    end
+
+    nLen:=len(cCode)
+    cBarra:= cStart
+    // preencoding .. interlaving
+
+    for n:=1 to nLen step 2
+        cIz:=aBar[val(substr(cCode,n,1))+1]
+        cDer:=aBar[val(substr(cCode,n+1,1))+1]
+        for m:=1 to 5
+            cBarra+=substr(cIz,m,1)+substr(cDer,m,1)
+        next
+    next
+    cBarra+=cStop
+    for n:=1 to len(cBarra) step 2
+        if substr(cBarra,n,1)='1'
+            cBar+='111'
+        else
+            cBar+='1'
+        end
+        if substr(cBarra,n+1,1)='1'
+            cBar+='000'
+        else
+            cBar+='0'
+        end
+    next
+return cBar
+
+function _MAT25(cCode,lCheck)
+local aBar:={"00110","10001",'01001','11000','00101','10100','01100',;
+              '00011','10010','01010'}
+local cStart:='0000'
+local cStop:='100'
+local cMtSt:='10000' // matrix start/stop
+local cInStart := '110' // industrial 2 of 5 start
+local cInStop := '101' // industrial 2 of 5 stop
+
+    local cBar:='',cBarra:='', nCheck,n
+    default lCheck to .f.
+    cCode:=trans(cCode,'@9') // only digits
+    if lCheck
+        for n:=1 to len(cCode) step 2
+            nCheck+=val(substr(cCode,n,1))*3+val(substr(cCode,n+1,1))
+        next
+        cCode += right(str(nCheck,10,0),1)
+    end
+    cBar:=cMtSt
+    for n:=1 to len(cCode)
+        cBar+=aBar[val(substr(cCode,n,1))+1]+'0'
+    next
+    cBar+=cMtSt
+    for n:=1 to len(cBar) step 2
+        if substr(cBar,n,1)='1'
+            cBarra+='111'
+        else
+            cBarra+='1'
+        end
+        if substr(cBar,n+1,1)='1'
+            cBarra+='000'
+        else
+            cBarra+='0'
+        end
+    next
+return cBarra
+
+function _Ind25(cCode,lCheck)
+local aBar:={"00110","10001",'01001','11000','00101','10100','01100',;
+              '00011','10010','01010'}
+local cStart:='0000'
+local cStop:='100'
+local cMtSt:='10000' // matrix start/stop
+local cInStart := '110' // industrial 2 of 5 start
+local cInStop := '101' // industrial 2 of 5 stop
+
+    local cBar:='',cBarra:='', nCheck,n
+    default lCheck to .f.
+    cCode:=trans(cCode,'@9') // only digits
+    if lCheck
+        for n:=1 to len(cCode) step 2
+            nCheck+=val(substr(cCode,n,1))*3+val(substr(cCode,n+1,1))
+        next
+        cCode += right(str(nCheck,10,0),1)
+    end
+    cBar:=cInStart
+    for n:=1 to len(cCode)
+        cBar+=aBar[val(substr(cCode,n,1))+1]+'0'
+    next
+    cBar+=cInStop
+    for n:=1 to len(cBar)
+        if substr(cBar,n,1)='1'
+            cBarra+='1110'
+        else
+            cBarra+='10'
+        end
+    next
+return cBarra
