@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.102 2011-06-25 01:27:08 declan2005 Exp $
+* $Id: h_print.prg,v 1.103 2011-06-28 00:45:59 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -1537,11 +1537,8 @@ RETURN self
 *------------------------------------------------------------
 METHOD printbarcodex(y, x, y1, x1 ,acolor) CLASS THBPRINTER
 *------------------------------------------------------------
-/////MSGBOX("SI ENTRA")
 DEFAULT aColor to ::acolor
-CHANGE PEN "C0"  COLOR acolor
-SELECT PEN "C0"
-DEFINE BRUSH "obrush" COLOR aColor
+DEFINE BRUSH "obrush" COLOR aColor style BS_SOLID
 @  y,x,y1,x1 FILLRECT BRUSH "obrush"
 return self
 
@@ -2891,6 +2888,7 @@ METHOD beginpagex()
 METHOD endpagex()
 METHOD releasex()
 METHOD printdatax()
+method printbarcodex()
 METHOD printimagex()
 METHOD printlinex()
 METHOD printrectanglex
@@ -3073,6 +3071,23 @@ ELSE
    ::oPdf:AtSay( ctext, nlin*::nmver+::nvfij , nCol*::nmhor+ ::nhfij*2, "M")
 ENDIF
 RETURN self
+
+METHOD printbarcodex(nlin, ncol, nlinf, ncolf ,atcolor) CLASS TPDFPRINT
+local cColor  := ""
+local I, ntwpen
+DEFAULT atColor to ::acolor
+
+///Default ntwpen to ::nwpen
+
+ntwpen:= ::nwpen
+
+For Each I in atColor
+    cColor += Chr(I)
+Next
+::oPdf:Box((nlin-0.9)+::nvfij,(ncol+1.3) + ::nhfij,  (nlinf-0.9)+::nvfij,(ncolf+1.3)+ ::nhfij, ntwpen/2 ,1,"M","B","t1")
+
+RETURN self
+
 
 
 *-------------------------

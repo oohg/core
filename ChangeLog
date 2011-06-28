@@ -1,11 +1,18 @@
 /*
- * $Id: ChangeLog,v 1.701 2011-06-25 01:27:08 declan2005 Exp $
+ * $Id: ChangeLog,v 1.702 2011-06-28 00:45:59 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2011-06-27 20:45:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_print.prg
+    * barcode printing without fonts (second approach)
+    +  added barcode printing to PDFPRINT   (I don't know if it's ok) 
+    ! fixed call to FILLRECT in order to print barcodes in hbprinter.  
+
 
 2011-06-24 20:30:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_print.prg

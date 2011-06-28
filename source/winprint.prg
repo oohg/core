@@ -1,5 +1,5 @@
 /*      
- * $Id: winprint.prg,v 1.38 2011-06-25 01:48:21 declan2005 Exp $
+ * $Id: winprint.prg,v 1.39 2011-06-28 00:45:59 declan2005 Exp $
  */
 // -----------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
