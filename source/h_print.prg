@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.103 2011-06-28 00:45:59 declan2005 Exp $
+* $Id: h_print.prg,v 1.104 2011-06-28 02:20:37 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -3084,8 +3084,8 @@ ntwpen:= ::nwpen
 For Each I in atColor
     cColor += Chr(I)
 Next
-::oPdf:Box((nlin-0.9)+::nvfij,(ncol+1.3) + ::nhfij,  (nlinf-0.9)+::nvfij,(ncolf+1.3)+ ::nhfij, ntwpen/2 ,1,"M","B","t1")
-
+::oPdf:Box(nlin,ncol , nlinf,ncolf, ntwpen/4 ,1,"M","B","t1")
+//// ::oPdf:Box((nlin-0.9)+::nvfij,(ncol+1.3) + ::nhfij,  (nlinf-0.9)+::nvfij,(ncolf+1.3)+ ::nhfij, ntwpen/2 ,1,"M","B","t1")
 RETURN self
 
 
