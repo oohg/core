@@ -1,11 +1,11 @@
 /*
- * $Id: h_tooltip.prg,v 1.5 2010-08-15 23:50:27 guerra000 Exp $
+ * $Id: h_tooltip.prg,v 1.6 2011-06-29 22:49:39 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Tooltip functions
  *
- * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2011 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -96,11 +96,15 @@
 #include "hbclass.ch"
 
 CLASS TToolTip FROM TControl
-   DATA Type      INIT "TOOLTIP" READONLY
+   DATA Type           INIT "TOOLTIP" READONLY
+   DATA nWindowWidth   INIT -1
+   DATA lMultiLine     INIT .F.
 
    METHOD Define
    METHOD Item
    METHOD Events_Notify
+   METHOD WindowWidth    SETGET
+   METHOD MultiLine      SETGET
 
    EMPTY( _OOHG_AllVars )
 ENDCLASS
@@ -142,9 +146,36 @@ Local oControl, cToolTip
 
 Return ::Super:Events_Notify( wParam, lParam )
 
-*--------------------------------------------------
+*-----------------------------------------------------------------------------*
+METHOD WindowWidth( nWidth ) CLASS TToolTip
+*-----------------------------------------------------------------------------*
+   If HB_IsNumeric( nWidth )
+      SendMessage( ::hWnd, TTM_SETMAXTIPWIDTH, 0, nWidth )
+      ::nWindowWidth := nWidth
+      ::lMultiLine := ( nWidth >= 0 )
+   EndIf
+Return ::nWindowWidth
+
+*-----------------------------------------------------------------------------*
+METHOD MultiLine( lMultiLine ) CLASS TToolTip
+*-----------------------------------------------------------------------------*
+   If HB_IsLogical( lMultiLine ) .AND. ! lMultiLine == ::lMultiLine
+      ::lMultiLine := lMultiLine
+      If lMultiLine
+         If ::nWindowWidth >= 0
+            SendMessage( ::hWnd, TTM_SETMAXTIPWIDTH, 0, ::nWindowWidth )
+         Else
+            SendMessage( ::hWnd, TTM_SETMAXTIPWIDTH, 0, 200 )   // Any "default" value
+         Endif
+      Else
+         SendMessage( ::hWnd, TTM_SETMAXTIPWIDTH, 0, -1 )
+      Endif
+   EndIf
+Return ::lMultiLine
+
+*-----------------------------------------------------------------------------*
 Function _SetToolTipBalloon( lNewBalloon )
-*--------------------------------------------------
+*-----------------------------------------------------------------------------*
 Static lBalloon := .F.
 Local oReg, lOldBalloon := lBalloon
 Local lYesNo

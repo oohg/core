@@ -1,5 +1,5 @@
 /*
- * $Id: h_toolbar.prg,v 1.29 2011-03-16 23:50:09 guerra000 Exp $
+ * $Id: h_toolbar.prg,v 1.30 2011-06-29 22:49:39 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -202,7 +202,7 @@ RETURN ::Super:Events_Size()
 METHOD Events_Notify( wParam, lParam ) CLASS TToolBar
 *-----------------------------------------------------------------------------*
 Local nNotify := GetNotifyCode( lParam )
-Local ws, x, aPos
+Local ws, x, aPos, cToolTip
 
    If nNotify == TBN_DROPDOWN
       ws := GetButtonPos( lParam )
@@ -219,8 +219,12 @@ Local ws, x, aPos
       ws := GetButtonPos( lParam )
       x  := Ascan( ::aControls, { |o| o:Id == ws } )
       If x > 0
-         If VALTYPE( ::aControls[ x ]:ToolTip ) $ "CM"
-            ShowToolButtonTip( lParam , ::aControls[ x ]:ToolTip )
+         cToolTip := ::aControls[ x ]:ToolTip
+         If HB_IsBlock( cToolTip )
+            ::aControls[ x ]:DoEvent( { || cToolTip := EVAL( cToolTip, ::aControls[ x ] ) }, "TOOLTIP" )
+         Endif
+         If HB_IsString( cToolTip )
+            ShowToolButtonTip( lParam, cToolTip )
          Endif
       EndIf
       Return nil
@@ -243,8 +247,12 @@ Local ws, x, aPos
       ws := _ToolBarGetInfoTip( lParam )
       x  := Ascan ( ::aControls, { |o| o:Id == ws } )
       If x > 0
-         If VALTYPE( ::aControls[ x ]:ToolTip ) $ "CM"
-            _ToolBarSetInfoTip( lParam, ::aControls[ x ]:ToolTip )
+         cToolTip := ::aControls[ x ]:ToolTip
+         If HB_IsBlock( cToolTip )
+            ::aControls[ x ]:DoEvent( { || cToolTip := EVAL( cToolTip, ::aControls[ x ] ) }, "TOOLTIP" )
+         Endif
+         If HB_IsString( cToolTip )
+            _ToolBarSetInfoTip( lParam, cToolTip )
          Endif
       EndIf
 
@@ -355,10 +363,14 @@ RETURN ::Super:Enabled
 *-----------------------------------------------------------------------------*
 METHOD Events_Notify( wParam, lParam ) CLASS TToolButton
 *-----------------------------------------------------------------------------*
-Local nNotify := GetNotifyCode( lParam )
+Local cToolTip, nNotify := GetNotifyCode( lParam )
    If nNotify == TTN_NEEDTEXT
-      If VALTYPE( ::ToolTip ) $ "CM"
-         ShowToolButtonTip( lParam , ::ToolTip )
+      cToolTip := ::ToolTip
+      If HB_IsBlock( cToolTip )
+         ::DoEvent( { || cToolTip := EVAL( cToolTip, Self ) }, "TOOLTIP" )
+      Endif
+      If HB_IsString( cToolTip )
+         ShowToolButtonTip( lParam, cToolTip )
       Endif
       Return nil
    EndIf

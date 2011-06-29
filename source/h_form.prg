@@ -1,11 +1,11 @@
 /*
- * $Id: h_form.prg,v 1.27 2011-06-15 19:36:16 guerra000 Exp $
+ * $Id: h_form.prg,v 1.28 2011-06-29 22:49:39 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Forms handling functions
  *
- * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2011 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -242,6 +242,8 @@ CLASS TForm FROM TWindow
    METHOD DefWindowProc(nMsg,wParam,lParam)       BLOCK { |Self,nMsg,wParam,lParam| IF( ValidHandler( ::hWndClient ), ;
                                                   DefFrameProc( ::hWnd, ::hWndClient, nMsg, wParam, lParam ) , ;
                                                   DefWindowProc( ::hWnd, nMsg, wParam, lParam ) ) }
+   METHOD ToolTipWidth       SETGET
+   METHOD ToolTipMultiLine   SETGET
 
    METHOD getWindowState()
 
@@ -671,6 +673,22 @@ METHOD RefreshData() CLASS TForm
    EndIf
    AEVAL( ::aControls, { |o| If( o:Container == nil, o:RefreshData(), ) } )
 Return nil
+
+*-----------------------------------------------------------------------------*
+METHOD ToolTipWidth( nWidth ) CLASS TForm
+*-----------------------------------------------------------------------------*
+   If HB_IsNumeric( nWidth )
+      ::oToolTip:WindowWidth := nWidth
+   EndIf
+Return ::oToolTip:WindowWidth
+
+*-----------------------------------------------------------------------------*
+METHOD ToolTipMultiLine( lMultiLine ) CLASS TForm
+*-----------------------------------------------------------------------------*
+   If HB_IsLogical( lMultiLine )
+      ::oToolTip:MultiLine := lMultiLine
+   EndIf
+Return ::oToolTip:MultiLine
 
 *-----------------------------------------------------------------------------*
 METHOD SetActivationFocus() CLASS TForm
