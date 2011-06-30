@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.104 2011-06-28 02:20:37 declan2005 Exp $
+* $Id: h_print.prg,v 1.105 2011-06-30 01:21:13 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -263,7 +263,6 @@ method codabar()
 method ind25()
 
 method mat25()
-
 
 method go_code()
 
@@ -638,21 +637,23 @@ ctext:= cspace + ctext
 RETURN self
 
 *-------------------------
-METHOD printbarcode(nlin,ncol,cbarcode,ctipo,nlen,lcheck,lori,acolor) CLASS TPRINTBASE
+METHOD printbarcode(nlin,ncol,cbarcode,ctipo,acolor,lhori,nwidth,nheight ) CLASS TPRINTBASE
 *-------------------------
 local nsize:=10
-
+////local lcheck:=.T.
+default nheight  to 10
+default nwidth to NIL
 default cbarcode to ""
 cbarcode:=upper(cbarcode)
-default nlen to  20
-default lcheck to .T.
-DEFAULT lori to  .T.
+////default nlen to  20
+/////default lcheck to .T.
+DEFAULT lhori to  .T.
 default  acolor to {1,1,1}
-default ctipo to ""
+default ctipo to "CODE128C"
 
 DEFAULT nlin to 1
 DEFAULT ncol to 1
-////DEFAULT nsize to ::nfontsize
+
 DEFAULT acolor to ::acolor
 
 IF ::cunits="MM"
@@ -674,56 +675,54 @@ ELSE
 
  do case
    case ctipo="CODE128A"
-            ::Code128( nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 , cbarcode, "A" ,, .t. , , 10 )
+            ::Code128( nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 , cbarcode, "A" , acolor , lhori, nwidth, nheight )
    case ctipo="CODE128B"
-             ::Code128( nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 , cbarcode, "B" ,, .t. , , 10 )
+             ::Code128( nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 , cbarcode, "B" , acolor , lhori, nwidth, nheight )
    case ctipo="CODE128C"
-             ::Code128( nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 , cbarcode, "C" ,, .t. , , 10 )
+             ::Code128( nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 , cbarcode, "C" , acolor , lhori, nwidth, nheight )
    CASE  ctipo="CODE39"
-             ::Code3_9( nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 , cbarcode , .t. , ,  .t. ,  , 10 )
+             ::Code3_9( nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 , cbarcode , acolor , lhori, nwidth, nheight )
+   case ctipo="EAN8"
+             ::EAN8( nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 , cbarcode , acolor , lhori, nwidth, nheight )
     case ctipo="EAN13"
-             ::EAN13( nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 , cbarcode ,, .t., , 10, ,  )
+             ::EAN13( nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 , cbarcode , acolor , lhori, nwidth, nheight )
     case ctipo="INTER25"
-             ::INT25( nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2  , cbarcode, .t. ,, .t. , , 10 )
+             ::INT25( nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2  , cbarcode , acolor , lhori, nwidth, nheight )
     case ctipo="UPCA"
-            ::UPCA( nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 , cbarcode , , .t., , 10, .f. ,  )
+            ::UPCA( nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 ,  cbarcode , acolor , lhori, nwidth, nheight )
      case ctipo="SUP5"
-           ::SUP5(nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2  , cbarcode , , .t. ,  , 10, .f. ,   )
+           ::SUP5(nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2  , cbarcode , acolor , lhori, nwidth, nheight )
      case ctipo="CODABAR"
-           ::CODABAR( nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2, cbarcode ,, .t.,  , 10 )
+           ::CODABAR( nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 , cbarcode , acolor , lhori, nwidth, nheight )
      case ctipo="IND25"
-        ::IND25( nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2  , cbarcode, .t. , , .t., , 10 )
+        ::IND25( nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2  , cbarcode , acolor , lhori, nwidth, nheight )
      case ctipo="MAT25"
-        ::MAT25( nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 , cbarcode, .t. ,, .t. , , 10 )
+        ::MAT25( nlin*::nmver+::nvfij, ncol*::nmhor+ ::nhfij*2 , cbarcode , acolor , lhori, nwidth, nheight )
 
 endcase
 return self
 
 
-METHOD ean8(nRow,nCol,cCode,Color,lHorz,nWidth,nHeigth,lBanner,cFont)
+METHOD ean8(nRow,nCol,cCode,Color,lHorz,nWidth,nHeigth)    CLASS TPRINTBASE
     local nLen:=0
     // test de parametros
     // por implementar
-    default nHeigth := 1.5
-    default lBanner:=.f.
+    default nHeigth to  1.5
     if lHorz
         ::go_code(_UPC(cCode,7),nRow,nCol,lHorz,Color,nWidth,nHeigth*0.90)
     else
         ::go_code(_UPC(cCode,7),nRow,nCol+nLen,lHorz,Color,nWidth,nHeigth*0.90)
     endif
     ::go_code(_ean13Bl(8),nRow,nCol,lHorz,Color,nWidth,nHeigth)
-    if lBanner
-       // barlen(cCode,7,nRow,nCol,Color,lHorz,nWidth,nHeigth,cFont)
-    end
+
 return self
 
 
-METHOD   ean13(nRow,nCol,cCode,Color,lHorz,nWidth,nHeigth,lbanner,cfont) CLASS TPRINTBASE
+METHOD   ean13(nRow,nCol,cCode,Color,lHorz,nWidth,nHeigth) CLASS TPRINTBASE
     local nLen:=0
     // test de parametros
     // por implementar
-    default nHeigth := 1.5
-    default lBanner:=.f.
+    default nHeigth to 1.5
     // desplazamiento...
     if lHorz
         ::go_code(_ean13(cCode),nRow,nCol,lHorz,Color,nWidth,nHeigth*0.90)
@@ -731,9 +730,6 @@ METHOD   ean13(nRow,nCol,cCode,Color,lHorz,nWidth,nHeigth,lbanner,cfont) CLASS T
         ::go_code(_ean13(cCode),nRow,nCol+nLen,lHorz,Color,nWidth,nHeigth*0.90)
     endif
     ::go_code(_ean13Bl(12),nRow,nCol,lHorz,Color,nWidth,nHeigth)
-    if lBanner
-       // barlen13(cCode,nRow,nCol,Color,lHorz,nWidth,nHeigth,cFont)
-    endif
 return SELF
 
 METHOD Code128(nRow,nCol,cCode,cMode,Color,lHorz,nWidth,nHeigth) CLASS TPRINTBASE
@@ -742,80 +738,70 @@ METHOD Code128(nRow,nCol,cCode,cMode,Color,lHorz,nWidth,nHeigth) CLASS TPRINTBAS
     ::go_code(_code128(cCode,cMode),nRow,nCol,lHorz,Color,nWidth,nHeigth)
 return self
 
-METHOD Code3_9(nRow,nCol,cCode,lCheck,Color,lHorz,nWidth,nHeigth)      CLASS TPRINTBASE
+METHOD Code3_9(nRow,nCol,cCode,Color,lHorz,nWidth,nHeigth)      CLASS TPRINTBASE
     // test de parametros
     // por implementar
+    local lcheck:=.T.
     ::go_code(_code3_9(cCode,lCheck),nRow,nCol,lHorz,Color,nWidth,nHeigth)
 return self
 
-METHOD int25(nRow,nCol,cCode,lCheck,Color,lHorz,nWidth,nHeigth)            CLASS TPRINTBASE
+METHOD int25(nRow,nCol,cCode,Color,lHorz,nWidth,nHeigth)            CLASS TPRINTBASE
     // test de parametros
     // por implementar
+    local lcheck:=.T.
     ::go_code(_int25(cCode,lCheck),nRow,nCol,lHorz,Color,nWidth,nHeigth)
 return SELF
 
 
 
-method UPCA(nRow,nCol,cCode,Color,lHorz,nWidth,nHeigth,lBanner,cFont)
+method UPCA(nRow,nCol,cCode,Color,lHorz,nWidth,nHeigth)           CLASS TPRINTBASE
     local nLen:=0
     // test de parametros
     // por implementar
-    default nHeigth := 1.5
-    default lBanner:=.f.
+    default nHeigth to 1.5
     if lHorz
        ::go_code(_UPC(cCode),nRow,nCol,lHorz,Color,nWidth,nHeigth*0.90)
     else
         ::go_code(_UPC(cCode),nRow,nCol+nLen,lHorz,Color,nWidth,nHeigth*0.90)
     endif
     ::go_code(_UPCABl(cCode),nRow,nCol,lHorz,Color,nWidth,nHeigth)
-    if lBanner
-        //UPCA_barlen(cCode,nRow,nCol,Color,lHorz,nWidth,nHeigth,cFont)
-    end
 return self
 
-
-
-
-method sup5(nRow,nCol,cCode,Color,lHorz,nWidth,nHeigth,lBanner,cFOnt)
+method sup5(nRow,nCol,cCode,Color,lHorz,nWidth,nHeigth)      CLASS TPRINTBASE
     ::go_code(_sup5(cCode),nRow,nCol,lHorz,Color,nWidth,nHeigth)
-    if lBANNER
-       // ban5(cCode,nRow,nCol,Color,lHorz,nWidth,nhEIGTH,cFont)
-    endif
 return self
 
-
-method Codabar(nRow,nCol,cCode,Color,lHorz,nWidth,nHeigth)
+method Codabar(nRow,nCol,cCode,Color,lHorz,nWidth,nHeigth)   CLASS TPRINTBASE
     // test de parametros
     // por implementar
     ::go_code(_Codabar(cCode),nRow,nCol,lHorz,Color,nWidth,nHeigth)
 return self
 
-
-method ind25(nRow,nCol,cCode,lCheck,Color,lHorz,nWidth,nHeigth)
+method ind25(nRow,nCol,cCode,Color,lHorz,nWidth,nHeigth)     CLASS TPRINTBASE
     // test de parametros
     // por implementar
+    local lcheck := .T.
     ::go_code(_ind25(cCode,lCheck),nRow,nCol,lHorz,Color,nWidth,nHeigth)
 return self
 
-method mat25 (nRow,nCol,cCode,lCheck,Color,lHorz,nWidth,nHeigth)
+method mat25 (nRow,nCol,cCode,Color,lHorz,nWidth,nHeigth)       CLASS TPRINTBASE
     // test de parametros
     // por implementar
-    ::go_code(_mat25(cCode,lCheck),nRow,nCol,lHorz,Color,nWidth,nHeigth)
+    local lcheck:=.T.
+    ::go_code(_mat25(cCode, lcheck),nRow,nCol,lHorz,  Color,   nWidth,  nHeigth)
 return self
 
-
-
-method go_code( cBarra, ny,nx,lHoRz, aColor, nWidth, nLen) CLASS TPRINTBASE
+method go_code(     cBarra,         ny,    nx,lHoRz,  aColor,  nWidth,   nLen) CLASS TPRINTBASE
     local n, oBr
 
-    if empty(aColor)
-        aColor := {0,0,0}
-    endif
-    default lHorz := .t.
+    default  aColor to  {0,0,0}
 
-    default nWidth := 0.50 // 1/3 M/mm      0.25
+    default lHorz to .t.
 
-    default nLen := 15 // mm
+    default nWidth to 0.50 // 1/3 M/mm      0.25    ancho
+
+    default nLen to  15 // mm    alto
+
     for n:=1 to len(cBarra)
         if substr(cBarra,n,1) ='1'
             if lHorz
@@ -836,7 +822,6 @@ method go_code( cBarra, ny,nx,lHoRz, aColor, nWidth, nLen) CLASS TPRINTBASE
     next n
 
 return nil
-
 
 *-------------------------
 METHOD printimage(nlin,ncol,nlinf,ncolf,cimage) CLASS TPRINTBASE
@@ -3074,18 +3059,14 @@ RETURN self
 
 METHOD printbarcodex(nlin, ncol, nlinf, ncolf ,atcolor) CLASS TPDFPRINT
 local cColor  := ""
-local I, ntwpen
+local i
 DEFAULT atColor to ::acolor
-
-///Default ntwpen to ::nwpen
-
-ntwpen:= ::nwpen
 
 For Each I in atColor
     cColor += Chr(I)
 Next
-::oPdf:Box(nlin,ncol , nlinf,ncolf, ntwpen/4 ,1,"M","B","t1")
-//// ::oPdf:Box((nlin-0.9)+::nvfij,(ncol+1.3) + ::nhfij,  (nlinf-0.9)+::nvfij,(ncolf+1.3)+ ::nhfij, ntwpen/2 ,1,"M","B","t1")
+::oPdf:Box(nlin,ncol , nlinf,ncolf, 0,1,"M",cColor,"t1")
+
 RETURN self
 
 
