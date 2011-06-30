@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.105 2011-06-30 01:21:13 declan2005 Exp $
+* $Id: h_print.prg,v 1.106 2011-06-30 01:29:11 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
