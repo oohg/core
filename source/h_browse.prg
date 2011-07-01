@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.79 2011-05-09 16:23:15 guerra000 Exp $
+ * $Id: h_browse.prg,v 1.80 2011-07-01 19:40:21 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -304,6 +304,10 @@ Local lColor, aFields, cWorkArea, hWnd, nWidth
    hWnd := ::hWnd
 
    PageLength := ::CountPerPage
+
+   If PageLength < 1
+     Return nil
+   Endif
 
    If lColor
       ::GridForeColor := ARRAY( PageLength )
