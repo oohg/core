@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.705 2011-06-30 01:21:13 declan2005 Exp $
+ * $Id: ChangeLog,v 1.706 2011-07-01 22:24:08 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,10 +7,18 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2011-07-01 19:20:00 UTC-0300 Fernando Yurisich <fernando.yurisich@gmail.com>
+  * source/makelib_mingw.bat
+    ! fixed check for already defined environment variables.
+
+2011-07-01 18:55:31 UTC-0300 Fernando Yurisich <fernando.yurisich@gmail.com>
+  * source/makelib_mingw.bat
+    + Added check for already defined environment variables.
+
 2011-06-29 21:12:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_print.prg
-    ! fixed barcode parameters  nlin , ncol,   cbarcode , ctipo,       , acolor , lhori          , nwidth, nheight 
-                                line  , column , barcode , barcode type , color  , .f. = vertical , bar width , bar heihgt  
+    ! fixed barcode parameters  nlin , ncol,   cbarcode , ctipo,       , acolor , lhori          , nwidth, nheight
+                                line  , column , barcode , barcode type , color  , .f. = vertical , bar width , bar heihgt
 
 2011-06-29 17:58 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
    * source/h_toolbar.prg
