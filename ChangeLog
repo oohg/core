@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.706 2011-07-01 22:24:08 fyurisich Exp $
+ * $Id: ChangeLog,v 1.707 2011-07-01 22:49:28 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -11,7 +11,11 @@
   * source/makelib_mingw.bat
     ! fixed check for already defined environment variables.
 
-2011-07-01 18:55:31 UTC-0300 Fernando Yurisich <fernando.yurisich@gmail.com>
+2011-07-01 16:41:00 UTC-0300 Fernando Yurisich <fernando.yurisich@gmail.com>
+  * source/h_browse.prg
+    ! Fixed crash when repainting a minimized browse.
+
+2011-07-01 15:56:00 UTC-0300 Fernando Yurisich <fernando.yurisich@gmail.com>
   * source/makelib_mingw.bat
     + Added check for already defined environment variables.
 
