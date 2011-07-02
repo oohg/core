@@ -376,6 +376,7 @@ ENDCLASS
 CLASS TGRIDCONTROLDATEPICKER FROM TGRIDCONTROL
 *-----------------------------------------------------------------------------*
    DATA LUPDOWN
+   DATA LSHOWNONE
 
    METHOD NEW
    METHOD CREATEWINDOW
