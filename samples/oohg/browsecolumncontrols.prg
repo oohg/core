@@ -1,5 +1,5 @@
 /*
- * $Id: browsecolumncontrols.prg,v 1.5 2005-12-01 03:53:02 declan2005 Exp $
+ * $Id: browsecolumncontrols.prg,v 1.6 2011-07-02 19:26:25 fyurisich Exp $
  */
 /*
  * ooHG Browse COLUMNCONTROLS demo. (c) 2005 Vic
@@ -14,6 +14,7 @@ PROCEDURE MAIN
 Local oMain
 Local aControls, aGroups, aReplaceField
 
+set date british
 set navigation extended
 
    aGroups := { "Computing", "Accounting", "Sales" }
@@ -22,7 +23,9 @@ set navigation extended
                   MyFullName():New(), ;
                   MyIpAddress():New(), ;
                   TGridControlLComboBox():New( "Yes", "No" ), ;
-                  MyRadioGroup():New( aGroups ) }
+                  MyRadioGroup():New( aGroups ), ;
+                  TGridControlDatePicker():New( .f., .f. ), ;
+                  TGridControlDatePicker():New( .f., .t. ) }
 
    USE browsecolumncontrols
 
@@ -30,15 +33,17 @@ set navigation extended
                       { |a| SaveFullName( a ) }, ;
                       { |a| SaveIPAddress( a ) }, ;
                       , ; // FieldBlock( "INETACCESS" )
-                        } // FieldBlock( "GROUP" )
+                      , ; // FieldBlock( "GROUP" )
+                      , ; // FieldBlock( "INSTALLED" )
+                        } // FieldBlock( "LASTACCESS" )
 
-   DEFINE WINDOW Main OBJ oMain AT 0,0 WIDTH 500 HEIGHT 250 ;
+   DEFINE WINDOW Main OBJ oMain AT 0,0 WIDTH 728 HEIGHT 250 ;
           TITLE "Browse COLUMNCONTROLS demo." MAIN
 
-      @  10, 10 BROWSE Browse WIDTH 475 HEIGHT 150 EDIT INPLACE NOVSCROLL ;
-                HEADERS { "Computer", "User", "IP Address", "INET Access", "Group" } ;
-                WIDTHS { 90, 110, 100, 80, 85 } ;
-                FIELDS { "COMPUTER", "{FIRST,LAST}", "{IP1,IP2,IP3,IP4}", "INETACCESS", "GROUP" } ;
+      @  10, 10 BROWSE Browse WIDTH 700 HEIGHT 150 EDIT INPLACE NOVSCROLL ;
+                HEADERS { "Computer", "User", "IP Address", "INET Access", "Group", "Installed", "Last Access" } ;
+                WIDTHS { 90, 110, 100, 80, 85, 100, 100 } ;
+                FIELDS { "COMPUTER", "{FIRST,LAST}", "{IP1,IP2,IP3,IP4}", "INETACCESS", "GROUP", "INSTALLED", "LASTACCESS" } ;
                 FONT "MS Sans Serif" SIZE 9 ;
                 COLUMNCONTROLS aControls ;
                 REPLACEFIELD aReplaceField
