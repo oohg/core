@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.121 2011-05-07 03:29:03 declan2005 Exp $
+ * $Id: h_grid.prg,v 1.122 2011-07-02 19:23:27 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -2830,7 +2830,7 @@ Local oGridControl, aEdit2, cControl
          Case cControl == "MEMO"
             oGridControl := TGridControlMemo():New()
          Case cControl == "DATEPICKER"
-            oGridControl := TGridControlDatePicker():New( aEdit2[ 2 ] )
+            oGridControl := TGridControlDatePicker():New( aEdit2[ 2 ], aEdit2[ 3 ] )
          Case cControl == "COMBOBOX"
             oGridControl := TGridControlComboBox():New( aEdit2[ 2 ], oGrid, aEdit2[ 3 ] )
          Case cControl == "COMBOBOXTEXT"
@@ -3119,6 +3119,7 @@ Return ::oControl
 CLASS TGridControlDatePicker FROM TGridControl
 *-----------------------------------------------------------------------------*
    DATA lUpDown
+   DATA lShowNone
 
    METHOD New
    METHOD CreateWindow
@@ -3127,11 +3128,16 @@ CLASS TGridControlDatePicker FROM TGridControl
    METHOD GridValue(uValue) BLOCK { |Self,uValue| Empty( Self ), DTOC( uValue ) }
 ENDCLASS
 
-METHOD New( lUpDown ) CLASS TGridControlDatePicker
+METHOD New( lUpDown, lShowNone ) CLASS TGridControlDatePicker
    If !HB_IsLogical( lUpDown )
       lUpDown := .F.
    Endif
    ::lUpDown := lUpDown
+
+   If !HB_IsLogical( lShowNone )
+      lShowNone := .F.
+   Endif
+   ::lShowNone := lShowNone
 Return Self
 
 METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize ) CLASS TGridControlDatePicker
@@ -3142,10 +3148,18 @@ METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGrid
       uValue := CTOD( uValue )
    EndIf
    If ::lUpDown
-      @ nRow,nCol DATEPICKER 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue UPDOWN
+      If ::lShowNone
+         @ nRow,nCol DATEPICKER 0 OBJ ::oControl PARENT (cWindow) WIDTH nWidth HEIGHT nHeight VALUE uValue UPDOWN SHOWNONE
+      Else
+         @ nRow,nCol DATEPICKER 0 OBJ ::oControl PARENT (cWindow) WIDTH nWidth HEIGHT nHeight VALUE uValue UPDOWN
+      Endif
    Else
-      @ nRow,nCol DATEPICKER 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue
-   EndIf
+      If ::lShowNone
+         @ nRow,nCol DATEPICKER 0 OBJ ::oControl PARENT (cWindow) WIDTH nWidth HEIGHT nHeight VALUE uValue SHOWNONE
+      Else
+         @ nRow,nCol DATEPICKER 0 OBJ ::oControl PARENT (cWindow) WIDTH nWidth HEIGHT nHeight VALUE uValue
+      Endif
+  Endif
 Return ::oControl
 
 *-----------------------------------------------------------------------------*
