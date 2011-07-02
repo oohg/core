@@ -1,11 +1,25 @@
 /*
- * $Id: ChangeLog,v 1.707 2011-07-01 22:49:28 fyurisich Exp $
+ * $Id: ChangeLog,v 1.708 2011-07-02 19:28:16 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2011-07-02 16:26:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * samples\oohg\browsecolumncontrols.dbf
+  * samples\oohg\browsecolumncontrols.prg
+    * Modified to show how to edit date fields in a browse using
+      TGridControlDatePicker class.
+
+2011-07-02 16:24:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * doc/classes.txt
+    + Added data LSHOWNONE to TGridControlDatePicker class.
+
+2011-07-02 16:23:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * source/h_grid.prg
+    + Added SHOWNONE style to TGridControlDatePicker class.
 
 2011-07-01 19:20:00 UTC-0300 Fernando Yurisich <fernando.yurisich@gmail.com>
   * source/makelib_mingw.bat
