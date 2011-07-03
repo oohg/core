@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog,v 1.708 2011-07-02 19:28:16 fyurisich Exp $
+ * $Id: ChangeLog,v 1.709 2011-07-03 00:10:10 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+
+2011-07-02 20:10:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_print.prg
+    ! fixed problem in vertical barcodes.
 
 2011-07-02 16:26:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * samples\oohg\browsecolumncontrols.dbf

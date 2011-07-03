@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.106 2011-06-30 01:29:11 declan2005 Exp $
+* $Id: h_print.prg,v 1.107 2011-07-03 00:10:11 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -640,13 +640,11 @@ RETURN self
 METHOD printbarcode(nlin,ncol,cbarcode,ctipo,acolor,lhori,nwidth,nheight ) CLASS TPRINTBASE
 *-------------------------
 local nsize:=10
-////local lcheck:=.T.
 default nheight  to 10
 default nwidth to NIL
 default cbarcode to ""
 cbarcode:=upper(cbarcode)
-////default nlen to  20
-/////default lcheck to .T.
+
 DEFAULT lhori to  .T.
 default  acolor to {1,1,1}
 default ctipo to "CODE128C"
@@ -809,7 +807,6 @@ method go_code(     cBarra,         ny,    nx,lHoRz,  aColor,  nWidth,   nLen) C
                nx+=nwidth
             else
                ::printbarcodex(ny,nx, ny+nwidth,nx+nlen,acolor )
-               nx+=nwidth
                ny+=nWidth
             endif
         else
@@ -1524,6 +1521,7 @@ METHOD printbarcodex(y, x, y1, x1 ,acolor) CLASS THBPRINTER
 *------------------------------------------------------------
 DEFAULT aColor to ::acolor
 DEFINE BRUSH "obrush" COLOR aColor style BS_SOLID
+SELECT BRUSH "obrush"
 @  y,x,y1,x1 FILLRECT BRUSH "obrush"
 return self
 
@@ -3612,14 +3610,14 @@ function _code128(cCode,cMode)
 
     // control de errores
     if valtype(cCode) !='C'
-        alert('Barcode c128 required a Character value. ')
+        msginfo('Barcode c128 required a Character value. ')
         return nil
     end
     if !empty(cMode)
         if valtype(cMode)='C' .and. Upper(cMode)$'ABC'
             cMode := Upper(cMode)
         else
-            alert('Code 128 Modes are A,B o C. Character values.')
+            msginfo('Code 128 Modes are A,B o C. Character values.')
         end
     end
     if empty(cMode) // modo variable
