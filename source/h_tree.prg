@@ -1,5 +1,5 @@
 /*
- * $Id: h_tree.prg,v 1.18 2009-09-11 02:41:25 guerra000 Exp $
+ * $Id: h_tree.prg,v 1.19 2011-07-04 23:48:29 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -147,6 +147,9 @@ Local Controlhandle, nStyle, ImgDefNode, ImgDefItem, aBitmaps := array(4)
    ::SetSplitBoxInfo( Break )
    ControlHandle := InitTree( ::ContainerhWnd, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, ::lRtl )
 
+   ::Register( ControlHandle, ControlName, HelpId, , ToolTip )
+   ::SetFont( , , bold, italic, underline, strikeout )
+
    ImgDefNode := iif( HB_IsArray( aImgNode )  , len( aImgNode ), 0 )  //Tree+
    ImgDefItem := iif( HB_IsArray( aImgItem )  , len( aImgItem ), 0 )  //Tree+
 
@@ -169,9 +172,6 @@ Local Controlhandle, nStyle, ImgDefNode, ImgDefItem, aBitmaps := array(4)
 
       ::AddBitMap( aBitmaps )
    EndIf
-
-   ::Register( ControlHandle, ControlName, HelpId, , ToolTip )
-   ::SetFont( , , bold, italic, underline, strikeout )
 
    ::ItemIds :=  itemids
    ::aTreeMap   :=  {}
