@@ -1,5 +1,5 @@
 /*
- * $Id: miniprint.prg,v 1.34 2011-07-06 02:30:33 guerra000 Exp $
+ * $Id: miniprint.prg,v 1.35 2011-07-06 13:49:11 fyurisich Exp $
  */
 /*----------------------------------------------------------------------------
  MINIGUI - Harbour Win32 GUI library source code
@@ -102,13 +102,13 @@ memvar _ooHg_Auxil_Zoom
 *------------------------------------------------------------------------------*
 Procedure _HMG_PRINTER_SHOWPREVIEW
 *------------------------------------------------------------------------------*
-Local ModalHandle := 0
+*Local ModalHandle := 0
 Local Tmp
-Local tWidth
+*Local tWidth
 Local tHeight
 Local tFactor
 Local tvHeight
-Local icb := 0
+Local icb
 
 Local _HMG_PRINTER_SHOWPREVIEW,_HMG_PRINTER_PPNAV,_HMG_PRINTER_SHOWTHUMBNAILS, oSep
 
@@ -153,7 +153,8 @@ Public _ooHg_Auxil_Zoom
 		ON SCROLLRIGHT  _HMG_PRINTER_ScrollRight() ;
 		ON HSCROLLBOX   _HMG_PRINTER_hScrollBoxProcess() ;
 		ON VSCROLLBOX   _HMG_PRINTER_vScrollBoxProcess() ;
-		ON RELEASE      _HMG_PRINTER_PreviewClose()
+		ON RELEASE      _HMG_PRINTER_PreviewClose() ;
+		ON PAINT _HMG_PRINTER_SHOWPREVIEW:setfocus()
 	
 		DEFINE WINDOW _HMG_PRINTER_PPNAV OBJ _HMG_PRINTER_PPNAV HEIGHT 35 width 100 internal
 
@@ -297,7 +298,7 @@ Public _ooHg_Auxil_Zoom
 			tFactor := 0.26
 		endif
 
-		tWidth  :=_HMG_PRINTER_GETPAGEWIDTH(_HMG_printer_hdc_bak) * tFactor
+*		tWidth  :=_HMG_PRINTER_GETPAGEWIDTH(_HMG_printer_hdc_bak) * tFactor
 		tHeight :=_HMG_PRINTER_GETPAGEHEIGHT(_HMG_printer_hdc_bak) * tFactor
 
 		tHeight := Int (tHeight)
@@ -620,7 +621,7 @@ Procedure _HMG_printer_savepages
 *------------------------------------------------------------------------------*
 Local c , i , f , t , d , x
 
-	x := GetFolder()
+	x := GetFolder( _HMG_printer_usermessages [101] )
 
 	if empty(x)
 		return
@@ -771,7 +772,7 @@ Return
 *------------------------------------------------------------------------------*
 Procedure _HMG_PRINTER_PrintPages
 *------------------------------------------------------------------------------*
-Local aProp := {}
+*Local aProp := {}
 
         DIsableWindow ( GetformHandle ( "_HMG_PRINTER_PPNAV" ) )
         DIsableWindow ( GetformHandle ( "_HMG_PRINTER_SHOWTHUMBNAILS" ) )
@@ -1120,29 +1121,29 @@ Local RetVal := '', nValue
 Local Printers := asort( aPrinters() )
 Local cDefault := getdefaultprinter()
 
-   If LEN( Printers ) == 0
-      MsgStop( "System doesn't have any printer.", _HMG_printer_usermessages [13] )
-      Return cDefault
-   EndIf
+        _HMG_printer_InitUserMessages()
 
-   nValue := MAX( ASCAN( Printers, cDefault ), 1 )
+        If LEN( Printers ) == 0
+           MsgExclamation( _HMG_printer_usermessages [102] )
+           Return cDefault
+        EndIf
 
-   _HMG_printer_InitUserMessages()
+        nValue := MAX( ASCAN( Printers, cDefault ), 1 )
 
         DEFINE WINDOW _HMG_PRINTER_GETPRINTER   ;
-		AT 0,0			;
-		WIDTH 345		;
-		HEIGHT GetTitleHeight() + 100 ;
+                AT 0,0			;
+                WIDTH 345		;
+                HEIGHT GetTitleHeight() + 100 ;
                 TITLE _HMG_printer_usermessages [13] ;
-		MODAL			;
-		NOSIZE
+                MODAL   ;
+                NOSIZE
 
                 @ 15,10 COMBOBOX Combo_1 ITEMS Printers VALUE nvalue WIDTH 320
 
                 @ 53,65  BUTTON Ok CAPTION _HMG_printer_usermessages [11] ACTION ( RetVal := Printers [ GetProperty ( '_HMG_PRINTER_GETPRINTER','Combo_1','Value') ] , DoMethod('_HMG_PRINTER_GETPRINTER','Release' ) )
                 @ 53,175 BUTTON Cancel CAPTION _HMG_printer_usermessages [12] ACTION ( RetVal := '' ,DoMethod('_HMG_PRINTER_GETPRINTER','Release' ) )
 
-	END WINDOW
+        END WINDOW
 
         CENTER WINDOW _HMG_PRINTER_GETPRINTER
         _HMG_printer_getprinter.ok.setfocus()
@@ -1373,8 +1374,8 @@ Return
 *------------------------------------------------------------------------------*
 Procedure _HMG_printer_InitUserMessages
 *------------------------------------------------------------------------------*
-Local	cLang	:= ""
-Public  _HMG_printer_usermessages [29]
+Local	cLang
+Public  _HMG_printer_usermessages [102]
 Public _OOHG_printer_docname:="OOHG printing system"
 
 
@@ -1428,6 +1429,8 @@ Public _OOHG_printer_docname:="OOHG printing system"
                 _HMG_printer_usermessages [27] := 'Save'
                 _HMG_printer_usermessages [28] := 'Thumbnails'
                 _HMG_printer_usermessages [29] := 'Generating Thumbnails... Please Wait...'
+                _HMG_printer_usermessages [101] := 'Select a Folder'
+                _HMG_printer_usermessages [102] := 'No printer is installed in this system.'
 
         case cLang == "EU"        // Basque.
 	/////////////////////////////////////////////////////////////
@@ -1463,6 +1466,8 @@ Public _OOHG_printer_docname:="OOHG printing system"
                 _HMG_printer_usermessages [27] := 'Save'
                 _HMG_printer_usermessages [28] := 'Thumbnails'
                 _HMG_printer_usermessages [29] := 'Generating Thumbnails... Please Wait...'
+                _HMG_printer_usermessages [101] := 'Select a Folder'
+                _HMG_printer_usermessages [102] := 'No printer is installed in this system.'
 
         case cLang == "EN"        // English
 	/////////////////////////////////////////////////////////////
@@ -1498,6 +1503,8 @@ Public _OOHG_printer_docname:="OOHG printing system"
                 _HMG_printer_usermessages [27] := 'Save'
                 _HMG_printer_usermessages [28] := 'Thumbnails'
                 _HMG_printer_usermessages [29] := 'Generating Thumbnails... Please Wait...'
+                _HMG_printer_usermessages [101] := 'Select a Folder'
+                _HMG_printer_usermessages [102] := 'No printer is installed in this system.'
 
         case cLang == "FR"        // French
 	/////////////////////////////////////////////////////////////
@@ -1533,6 +1540,8 @@ Public _OOHG_printer_docname:="OOHG printing system"
                 _HMG_printer_usermessages [27] := 'Sauver'
                 _HMG_printer_usermessages [28] := 'affichettes'
                 _HMG_printer_usermessages [29] := 'Produisant De affichettes...  Svp Attente...'
+                _HMG_printer_usermessages [101] := 'Sélectionner un dossier'
+                _HMG_printer_usermessages [102] := "Aucune imprimeur n'est installé dans ce système."
 
         case cLang == "DEWIN" .OR. cLang == "DE"       // German
 	/////////////////////////////////////////////////////////////
@@ -1568,6 +1577,8 @@ Public _OOHG_printer_docname:="OOHG printing system"
                 _HMG_printer_usermessages [27] := 'Speichern'
                 _HMG_printer_usermessages [28] := 'Überblick'
                 _HMG_printer_usermessages [29] := 'Überblick Erzeugen...  Bitte Wartezeit...'
+                _HMG_printer_usermessages [101] := 'Wählen Sie einen Ordner'
+                _HMG_printer_usermessages [102] := 'Kein Drucker ist in diesem System installiert.'
 
 	case cLang == "IT"        // Italian
 	/////////////////////////////////////////////////////////////
@@ -1603,6 +1614,8 @@ Public _OOHG_printer_docname:="OOHG printing system"
                 _HMG_printer_usermessages [27] := 'Salva'
                 _HMG_printer_usermessages [28] := 'Miniatura'
                 _HMG_printer_usermessages [29] := 'Generando Miniatura...  Prego Attesa...'
+                _HMG_printer_usermessages [101] := 'Selezionare una cartella'
+                _HMG_printer_usermessages [102] := 'Nessuna stampatore è installata in questo sistema.'
 
         case cLang == "PLWIN"  .OR. cLang == "PL852"  .OR. cLang == "PLISO"  .OR. cLang == ""  .OR. cLang == "PLMAZ"   // Polish
 	/////////////////////////////////////////////////////////////
@@ -1638,6 +1651,8 @@ Public _OOHG_printer_docname:="OOHG printing system"
                 _HMG_printer_usermessages [27] := 'Save'
                 _HMG_printer_usermessages [28] := 'Thumbnails'
                 _HMG_printer_usermessages [29] := 'Generating Thumbnails... Please Wait...'
+                _HMG_printer_usermessages [101] := 'Select a Folder'
+                _HMG_printer_usermessages [102] := 'No printer is installed in this system.'
 
         case cLang == "PT"        // Portuguese
 	/////////////////////////////////////////////////////////////
@@ -1673,6 +1688,8 @@ Public _OOHG_printer_docname:="OOHG printing system"
                 _HMG_printer_usermessages [27] := 'Salvar'
                 _HMG_printer_usermessages [28] := 'Miniaturas'
                 _HMG_printer_usermessages [29] := 'Gerando Miniaturas...  Por favor Espera...'
+                _HMG_printer_usermessages [101] := 'Selecione uma pasta'
+                _HMG_printer_usermessages [102] := 'Nenhuma impressora está instalado neste sistema.'
 
         case cLang == "RUWIN"  .OR. cLang == "RU866" .OR. cLang == "RUKOI8" // Russian
 	/////////////////////////////////////////////////////////////
@@ -1708,6 +1725,8 @@ Public _OOHG_printer_docname:="OOHG printing system"
                 _HMG_printer_usermessages [27] := 'Save'
                 _HMG_printer_usermessages [28] := 'Thumbnails'
                 _HMG_printer_usermessages [29] := 'Generating Thumbnails... Please Wait...'
+                _HMG_printer_usermessages [101] := 'Select a Folder'
+                _HMG_printer_usermessages [102] := 'No printer is installed in this system.'
 
         case cLang == "ES"  .OR. cLang == "ESWIN"       // Spanish
 	/////////////////////////////////////////////////////////////
@@ -1743,6 +1762,8 @@ Public _OOHG_printer_docname:="OOHG printing system"
                 _HMG_printer_usermessages [27] := 'Guardar'
                 _HMG_printer_usermessages [28] := 'Miniaturas'
                 _HMG_printer_usermessages [29] := 'Generando Miniaturas... Espere Por Favor...'
+                _HMG_printer_usermessages [101] := 'Seleccione Una Carpeta'
+                _HMG_printer_usermessages [102] := 'No hay impresora instalada en este sistema.'
 
         case cLang == "FI"        // Finnish
 	///////////////////////////////////////////////////////////////////////
@@ -1778,6 +1799,8 @@ Public _OOHG_printer_docname:="OOHG printing system"
                 _HMG_printer_usermessages [27] := 'Save'
                 _HMG_printer_usermessages [28] := 'Thumbnails'
                 _HMG_printer_usermessages [29] := 'Generating Thumbnails... Please Wait...'
+                _HMG_printer_usermessages [101] := 'Select a Folder'
+                _HMG_printer_usermessages [102] := 'No printer is installed in this system.'
 
         case cLang == "NL"        // Dutch
 	/////////////////////////////////////////////////////////////
@@ -1813,6 +1836,8 @@ Public _OOHG_printer_docname:="OOHG printing system"
                 _HMG_printer_usermessages [27] := 'Save'
                 _HMG_printer_usermessages [28] := 'Thumbnails'
                 _HMG_printer_usermessages [29] := 'Generating Thumbnails... Please Wait...'
+                _HMG_printer_usermessages [101] := 'Select a Folder'
+                _HMG_printer_usermessages [102] := 'No printer is installed in this system.'
 
         case cLang == "SLWIN" .OR. cLang == "SLISO" .OR. cLang == "SL852" .OR. cLang == "" .OR. cLang == "SL437" // Slovenian
   	/////////////////////////////////////////////////////////////
@@ -1848,6 +1873,8 @@ Public _OOHG_printer_docname:="OOHG printing system"
                 _HMG_printer_usermessages [27] := 'Save'
                 _HMG_printer_usermessages [28] := 'Thumbnails'
                 _HMG_printer_usermessages [29] := 'Generating Thumbnails... Please Wait...'
+                _HMG_printer_usermessages [101] := 'Select a Folder'
+                _HMG_printer_usermessages [102] := 'No printer is installed in this system.'
 
 	OtherWise
 	/////////////////////////////////////////////////////////////
@@ -1883,6 +1910,8 @@ Public _OOHG_printer_docname:="OOHG printing system"
                 _HMG_printer_usermessages [27] := 'Save'
                 _HMG_printer_usermessages [28] := 'Thumbnails'
                 _HMG_printer_usermessages [29] := 'Generating Thumbnails... Please Wait...'
+                _HMG_printer_usermessages [101] := 'Select a Folder'
+                _HMG_printer_usermessages [102] := 'No printer is installed in this system.'
 
 	endcase
 
@@ -3021,7 +3050,7 @@ HB_FUNC ( _HMG_PRINTER_SETPRINTERPROPERTIES )
 
 	bFlag = GetPrinter(hPrinter, 2, 0, 0, &dwNeeded);
 
-	if ((!bFlag) && (GetLastError() != ERROR_INSUFFICIENT_BUFFER) || (dwNeeded == 0))
+	if (((!bFlag) && (GetLastError() != ERROR_INSUFFICIENT_BUFFER)) || (dwNeeded == 0))
 	{
 		ClosePrinter(hPrinter);
 		MessageBox(0, "Printer Configuration Failed! (002)", "Error!",MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
@@ -3987,7 +4016,7 @@ HB_FUNC ( _HMG_PRINTER_C_ARC )
 	int x2 = hb_parni(9);
 	int y2 = hb_parni(8);
 
-	int width ;
+	int width = 0;
 	int nStyle ;
 
 	HDC hdc = (HDC) hb_parnl( 1 );
@@ -4080,7 +4109,7 @@ HB_FUNC ( _HMG_PRINTER_C_PIE )
 	int x2 = hb_parni(9);
 	int y2 = hb_parni(8);
 
-	int width ;
+	int width = 0;
 	int nStyle ;
 	
 	int br ;
@@ -4183,6 +4212,3 @@ HB_FUNC ( _HMG_PRINTER_C_PIE )
 }
 
 #pragma ENDDUMP
-
-
-
