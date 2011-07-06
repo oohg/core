@@ -1,5 +1,5 @@
 /*
- * $Id: miniprint.prg,v 1.33 2011-04-21 16:00:10 guerra000 Exp $
+ * $Id: miniprint.prg,v 1.34 2011-07-06 02:30:33 guerra000 Exp $
  */
 /*----------------------------------------------------------------------------
  MINIGUI - Harbour Win32 GUI library source code
@@ -1116,19 +1116,18 @@ Return
 *------------------------------------------------------------------------------*
 Function GetPrinter()
 *------------------------------------------------------------------------------*
-        Local RetVal := '',I,nvalue:=0
-        Local Printers := asort(aPrinters())
-        Local cdefault:= getdefaultprinter()
-        for i:=1 to len(printers)
-            if printers[i]==cdefault
-               nvalue:=i
-               exit
-            endif
-        next i
+Local RetVal := '', nValue
+Local Printers := asort( aPrinters() )
+Local cDefault := getdefaultprinter()
 
+   If LEN( Printers ) == 0
+      MsgStop( "System doesn't have any printer.", _HMG_printer_usermessages [13] )
+      Return cDefault
+   EndIf
 
+   nValue := MAX( ASCAN( Printers, cDefault ), 1 )
 
-        _HMG_printer_InitUserMessages()
+   _HMG_printer_InitUserMessages()
 
         DEFINE WINDOW _HMG_PRINTER_GETPRINTER   ;
 		AT 0,0			;

@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.711 2011-07-05 13:08:01 declan2005 Exp $
+ * $Id: ChangeLog,v 1.712 2011-07-06 02:30:32 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,10 +7,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2011-07-05 21:41 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/miniprint.prg
+    ! Fixed crash when system doesn't have any printer on
+      GetPrinter() function. Reported and fixed by
+      Fernando Yurisich.
+
 2011-07-05 08:10:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_error.prg
-   * updated version number
-
+    * updated version number
 
 2011-07-04 20:50:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * source/h_tree.prg
