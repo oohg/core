@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.107 2011-07-03 00:10:11 declan2005 Exp $
+* $Id: h_print.prg,v 1.108 2011-07-06 04:17:47 guerra000 Exp $
 */
 
 #include 'hbclass.ch'
@@ -790,7 +790,7 @@ method mat25 (nRow,nCol,cCode,Color,lHorz,nWidth,nHeigth)       CLASS TPRINTBASE
 return self
 
 method go_code(     cBarra,         ny,    nx,lHoRz,  aColor,  nWidth,   nLen) CLASS TPRINTBASE
-    local n, oBr
+    local n
 
     default  aColor to  {0,0,0}
 
@@ -3141,6 +3141,8 @@ METHOD selprinterx( lselect , lpreview, llandscape , npapersize ) CLASS TPDFPRIN
 *-------------------------
 local nPos := 0
 
+EMPTY( lpreview )
+
 ////Default lpreview to .f.
 Default llandscape to .f.
 Default npapersize to 0
@@ -3322,7 +3324,7 @@ return self
 *-------------------------
 METHOD enddocx() CLASS TCALCPRINT
 *-------------------------
-local cname,cUrl
+local cname
 ::oSheet:getColumns():setPropertyValue("OptimalWidth", .T.)
 cname:=parsename(::cargo,"odt",.T.)
 
@@ -3744,7 +3746,7 @@ function _Code3_9( cCode, lCheck )
                      '1000101000100010',;
                      '1010001000100010'}
 
-    local cCar,m, n, n1,n2, cBarra := '',  nCheck := 0
+    local cCar,m, n, cBarra := '',  nCheck := 0
 
     default lCheck := .f.
     cCode := upper(cCode)
@@ -3774,7 +3776,7 @@ return cBarra
 
 
 function _ean13( cCode )
-   local l,s1,s2,controln,ac,cad,cadena,cadena2, n1, n2, NUmero
+   local cadena, Numero
    local Izda, Dcha, String, Mascara, k  ,n
    k:=left(alltrim(cCode)+'000000000000',12)     // padding with '0'
    // calculo del digito de control
@@ -3837,8 +3839,8 @@ return '101'+replicate('0',nLen*7)+'01010'+replicate('0',nLen*7)+'101'
 
 
 function _UPC( cCode, nLen )
-   local l,s1,s2,control,n,ac,cad,cadena, n1, n2, NUmero
-   local Izda, Dcha, String, Mascara, k
+   local n,cadena, Numero
+   local Izda, Dcha, k
    default nLen to 11
    default cCode to '0'
    // valid values for nLen are 11,7
@@ -3900,7 +3902,7 @@ Function Upc_CHECK(cCode,nLen)
 // suplemento de 5 digitos
 
 function _Sup5(cCode)
-   local l, k, control, n, cBarras := '1011',nCar
+   local k, control, n, cBarras := '1011',nCar
    static parity:=[eeoooeoeooeooeoeoooeoeeooooeeooooeeoeoeooeooeooeoe]
    k:=left(alltrim(cCode)+'00000',5)             // padding with '0'
    control := right( str( val(substr(k,1,1))*3 + val(substr(k,3,1))*3 ;
