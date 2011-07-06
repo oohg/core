@@ -1,11 +1,20 @@
 /*
- * $Id: ChangeLog,v 1.714 2011-07-06 12:23:39 fyurisich Exp $
+ * $Id: ChangeLog,v 1.715 2011-07-06 13:49:58 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2011-07-06 10:49:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  source/miniprint.prg
+    + Added localized title to GetFolder window in procedure _HMG_printer_savepages.
+    * Replaced english message in GetPrinter function with localized message.
+    * Messages not found in original HBPRINTER module are placed above position
+      100 in array to avoid posible conflicts.
+    ! Fixed preview window does not get the focus when first displayed.
+    ! Fixed some compiler warnings.
 
 2011-07-06 09:21:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   source/h_msgbox.prg
