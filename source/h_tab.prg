@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.49 2010-08-26 20:00:55 guerra000 Exp $
+ * $Id: h_tab.prg,v 1.50 2011-07-07 01:38:50 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -583,7 +583,7 @@ RETURN nil
 
 
 
-CLASS TTabPage FROM TControl
+CLASS TTabPage FROM TControlGroup
    DATA Type      INIT "TABPAGE" READONLY
    DATA Picture   INIT ""
    DATA Position  INIT 0
@@ -591,41 +591,13 @@ CLASS TTabPage FROM TControl
    DATA lHidden   INIT .F.
    DATA Caption   INIT ""
 
-   METHOD Define
    METHOD EndPage             BLOCK { || _EndTabPage() }
-   METHOD Enabled
-   METHOD Visible             SETGET
 
    METHOD ContainerVisible
 
-   METHOD AddControl
    METHOD SetFocus            BLOCK { |Self| ::Container:SetFocus() , ::Container:Value := ::Position , Self }
    METHOD Events_Size
 ENDCLASS
-
-*-----------------------------------------------------------------------------*
-METHOD Define( ControlName, ParentForm ) CLASS TTabPage
-*-----------------------------------------------------------------------------*
-   ::SetForm( ControlName, ParentForm )
-Return Self
-
-*-----------------------------------------------------------------------------*
-METHOD Enabled( lEnabled ) CLASS TTabPage
-*-----------------------------------------------------------------------------*
-   IF HB_IsLogical( lEnabled )
-      ::Super:Enabled := lEnabled
-      AEVAL( ::aControls, { |o| o:Enabled := o:Enabled } )
-   ENDIF
-RETURN ::Super:Enabled
-
-*-----------------------------------------------------------------------------*
-METHOD Visible( lVisible ) CLASS TTabPage
-*-----------------------------------------------------------------------------*
-   IF HB_IsLogical( lVisible )
-      ::Super:Visible := lVisible
-      AEVAL( ::aControls, { |o| o:Visible := o:Visible } )
-   ENDIF
-RETURN ::lVisible
 
 *-----------------------------------------------------------------------------*
 METHOD ContainerVisible() CLASS TTabPage
@@ -635,16 +607,6 @@ Local lRet := .F.
       lRet := ( ::Container:Value == ::Position )
    ENDIF
 RETURN lRet
-
-*-----------------------------------------------------------------------------*
-METHOD AddControl( oCtrl , Row , Col ) CLASS TTabPage
-*-----------------------------------------------------------------------------*
-   oCtrl:Visible := oCtrl:Visible
-   ::Super:AddControl( oCtrl )
-   oCtrl:Container := Self
-   oCtrl:SizePos( Row, Col )
-   oCtrl:Visible := oCtrl:Visible
-Return Nil
 
 *-----------------------------------------------------------------------------*
 METHOD Events_Size() CLASS TTabPage

@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.111 2011-07-06 23:48:52 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.112 2011-07-07 01:38:50 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1436,9 +1436,7 @@ EMPTY(cName)
    ::SethWnd( hWnd )
    ::Active := .T.
 
-
    ::Parent:AddControl( Self )
-
 
    IF ::Container != nil
       ::Container:AddControl( Self )
@@ -2205,3 +2203,58 @@ HB_FUNC( _OOHG_UNTRANSFORM )
 }
 
 #pragma ENDDUMP
+
+
+
+
+
+CLASS TControlGroup FROM TControl
+   DATA Type      INIT "CONTROLGROUP" READONLY
+
+   METHOD Define
+   METHOD Enabled             SETGET
+   METHOD Visible             SETGET
+
+   METHOD AddControl
+ENDCLASS
+
+*-----------------------------------------------------------------------------*
+METHOD Define( ControlName, ParentForm, x, y, w, h, Invisible, lDisabled ) CLASS TControlGroup
+*-----------------------------------------------------------------------------*
+   ASSIGN ::nCol    VALUE x TYPE "N"
+   ASSIGN ::nRow    VALUE y TYPE "N"
+   ASSIGN ::nWidth  VALUE w TYPE "N"
+   ASSIGN ::nHeight VALUE h TYPE "N"
+
+   ::SetForm( ControlName, ParentForm )
+
+   ::InitStyle( ,, Invisible,, lDisabled )
+Return Self
+
+*-----------------------------------------------------------------------------*
+METHOD Enabled( lEnabled ) CLASS TControlGroup
+*-----------------------------------------------------------------------------*
+   IF HB_IsLogical( lEnabled )
+      ::Super:Enabled := lEnabled
+      AEVAL( ::aControls, { |o| o:Enabled := o:Enabled } )
+   ENDIF
+RETURN ::Super:Enabled
+
+*-----------------------------------------------------------------------------*
+METHOD Visible( lVisible ) CLASS TControlGroup
+*-----------------------------------------------------------------------------*
+   IF HB_IsLogical( lVisible )
+      ::Super:Visible := lVisible
+      AEVAL( ::aControls, { |o| o:Visible := o:Visible } )
+   ENDIF
+RETURN ::lVisible
+
+*-----------------------------------------------------------------------------*
+METHOD AddControl( oCtrl, Row, Col ) CLASS TControlGroup
+*-----------------------------------------------------------------------------*
+   oCtrl:Visible := oCtrl:Visible
+   ::Super:AddControl( oCtrl )
+   oCtrl:Container := Self
+   oCtrl:SizePos( Row, Col )
+   oCtrl:Visible := oCtrl:Visible
+Return Nil
