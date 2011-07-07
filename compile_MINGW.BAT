@@ -12,6 +12,8 @@ set MINGW=c:\oohg\mingw
 set HRB_DIR=c:\oohg\harbour
 set ooHG_INSTALL=c:\oohg
 
+echo #define oohgpath %oohg_INSTALL%\RESOURCES > _oohg_resconfig.h
+
 if exist %1.rc copy /b %ooHG_INSTALL%\resources\ooHG.rc+%1.rc+%ooHG_INSTALL%\resources\filler _temp.rc >NUL
 if exist %1.rc windres -i _temp.rc -o _temp.o
 

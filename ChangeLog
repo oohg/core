@@ -1,11 +1,15 @@
 /*
- * $Id: ChangeLog,v 1.717 2011-07-07 01:38:50 guerra000 Exp $
+ * $Id: ChangeLog,v 1.718 2011-07-07 02:24:15 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2011-07-06 23:24:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * compile_mingw.bat
+    ! Fixed ooHg.res not being compiled when application rc is present.
 
 2011-07-06 18:59 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_controlmisc.prg
@@ -18,7 +22,7 @@
     ! Fixed _OOHG_UnTransform() when there's no mask.
 
 2011-07-06 10:49:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-  source/miniprint.prg
+  * source/miniprint.prg
     + Added localized title to GetFolder window in procedure _HMG_printer_savepages.
     * Replaced english message in GetPrinter function with localized message.
     * Messages not found in original HBPRINTER module are placed above position
@@ -27,7 +31,7 @@
     ! Fixed some compiler warnings.
 
 2011-07-06 09:21:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-  source/h_msgbox.prg
+  * source/h_msgbox.prg
     + Added posibility of changing default message and title in message functions.
     ! Fixed MsgInfoExt to avoid translating chr(13)+chr(10) into chr(13)+chr(10)+chr(10).
     ! Fixed some compiler warnings.
