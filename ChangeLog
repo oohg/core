@@ -1,11 +1,15 @@
 /*
- * $Id: ChangeLog,v 1.718 2011-07-07 02:24:15 fyurisich Exp $
+ * $Id: ChangeLog,v 1.719 2011-07-08 13:34:33 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2011-07-08 10:34:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * compile_mingw.bat
+    ! Fixed _oohg_resconfig.h not being deleted after compiling.
 
 2011-07-06 23:24:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * compile_mingw.bat

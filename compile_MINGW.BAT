@@ -78,4 +78,4 @@ ECHO COMPILE ERROR: IS %1.EXE RUNNING ?
 rem ----------------------------------------------------------
 
 set path=%tpath%
-
+if exist _oohg_resconfig.h del _oohg_resconfig.h
