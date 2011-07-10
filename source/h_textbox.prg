@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.64 2011-05-06 23:59:44 declan2005 Exp $
+ * $Id: h_textbox.prg,v 1.65 2011-07-10 15:14:49 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -133,7 +133,8 @@ CLASS TText FROM TLabel
    METHOD Events_Command
    METHOD Events
    METHOD ControlArea         SETGET
-
+   METHOD ScrollCaret         BLOCK { |Self| SendMessage( ::hWnd, EM_SCROLLCARET, 0, 0 ) }
+   
    EMPTY( _OOHG_AllVars )
 ENDCLASS
 

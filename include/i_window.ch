@@ -1,5 +1,5 @@
 /*
- * $Id: i_window.ch,v 1.35 2008-10-24 02:37:19 guerra000 Exp $
+ * $Id: i_window.ch,v 1.36 2011-07-10 15:14:27 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -116,7 +116,7 @@
 	=>;
         #xtranslate <w> . \<p:Name,Title,Height,Width,Col,Row,BackColor,FocusedControl,hWnd,Object,Cursor,NotifyIcon,NotifyToolTip,SaveAs,MinWidth,MaxWidth,MinHeight,MaxHeight\> => GetExistingFormObject( <(w)> ):\<p\> ;;
         #xtranslate <w> . \<p:Activate,Center,Release,Maximize,Minimize,Restore,Show,Hide,Print,SetFocus\> \[()\] => GetExistingFormObject( <(w)> ):\<p\> () ;;
-        #xtranslate <w> . \<c\> . \<p:Value,Name,Address,BackColor,FontColor,Picture,ToolTip,FontName,FontSize,FontBold,FontUnderline,FontItalic,FontStrikeOut,Caption,Row,Col,Width,Height,Visible,Enabled,Checked,ItemCount,RangeMin,RangeMax,CaretPos,ForeColor\> => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ;;
+        #xtranslate <w> . \<c\> . \<p:Value,Name,Address,BackColor,FontColor,Picture,ToolTip,FontName,FontSize,FontBold,FontUnderline,FontItalic,FontStrikeOut,Caption,Row,Col,Width,Height,Visible,Enabled,Checked,ItemCount,RangeMin,RangeMax,CaretPos,ForeColor,ScrollCaret\> => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ;;
         #xtranslate <w> . \<c\> . \<p:DisplayValue,Position,ForeColor\> => GetProperty ( <(w)>, \<(c)\> , \<(p)\> ) ;;
         #xtranslate <w> . \<c\> . \<p:DisplayValue,Position,ForeColor\> := \<n\> => SetProperty ( <(w)>, \<(c)\> , \<(p)\> , \<n\> ) ;;
         #xtranslate <w> . \<c\> . \<p:AllowAppend,AllowDelete,AllowEdit\> => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ;;
@@ -135,7 +135,7 @@
         #xtranslate <w> . \<c\> . \<p:Speed,Volume,Zoom\> := \<n\> => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ( \<n\> ) ;;
         #xtranslate <w> . \<x\> . \<c\> . \<p:Caption,Enabled\> => GetProperty ( <(w)> , \<(x)> , \<(c)> , \<(p)> ) ;;
         #xtranslate <w> . \<x\> . \<c\> . \<p:Caption,Enabled\> := \<n\> => SetProperty ( <(w)> , \<(x)> , \<(c)> , \<(p)> , \<n\> ) ;;
-        #xtranslate <w> . \<x\> (\<k\>) . \<c\> . \<p:Value,Name,Address,BackColor,FontColor,Picture,ToolTip,FontName,FontSize,FontBold,FontItalic,FontUnderline,FontStrikeOut,Caption,Row,DisplayValue,Col,Width,Height,Visible,Enabled,Checked,ItemCount,RangeMin,RangeMax,Position,CaretPos,ForeColor\> => <w> . \<c\> . \<p\> ;;
+        #xtranslate <w> . \<x\> (\<k\>) . \<c\> . \<p:Value,Name,Address,BackColor,FontColor,Picture,ToolTip,FontName,FontSize,FontBold,FontItalic,FontUnderline,FontStrikeOut,Caption,Row,DisplayValue,Col,Width,Height,Visible,Enabled,Checked,ItemCount,RangeMin,RangeMax,Position,CaretPos,ForeColor,ScrollCaret\> => <w> . \<c\> . \<p\> ;;
         #xtranslate <w> . \<x\> (\<k\>) . \<c\> . \<p:Caption,Header,Item,Icon\> (\<arg\>) => <w> . \<c\> . \<p\> (\<arg\>) ;;
         #xtranslate <w> . \<x\> (\<k\>) . \<c\> . \<p:Refresh,SetFocus,DeleteAllItems,Release,Show,Save,Hide,Play,Stop,Close,Pause,Eject,OpenDialog,Resume,Action,OnClick\> \[()\] => <w> . \<c\> . \<p\> () ;;
         #xtranslate <w> . \<x\> (\<k\>) . \<c\> . \<p:AddItem,DeleteItem,Open,DeletePage,DeleteColumn,Expand,Collapse,Seek\> (\<a\>) => <w> . \<c\> . \<p\> ( \<a\> ) ;;

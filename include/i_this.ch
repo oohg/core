@@ -1,5 +1,5 @@
 /*
- * $Id: i_this.ch,v 1.7 2008-02-15 05:50:25 guerra000 Exp $
+ * $Id: i_this.ch,v 1.8 2011-07-10 15:14:27 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -110,8 +110,8 @@
 
 * Property without arguments
 
-#xtranslate This . <p:FontColor,ForeColor,Value,Address,Picture,Tooltip,FontName,FontSize,FontBold,FontItalic,FontUnderline,FontStrikeout,Displayvalue,Checked,ItemCount,RangeMin,RangeMax,Length,Position,CaretPos> => GetProperty ( _OOHG_THISFORM:NAME , _OOHG_THISCONTROL:NAME , <(p)> )
-#xtranslate This . <p:FontColor,ForeColor,Value,ReadOnly,Address,Picture,Tooltip,FontName,FontSize,FontBold,FontItalic,FontUnderline,FontStrikeout,DisplayValue,Checked,RangeMin,RangeMax,Repeat,Speed,Volume,Zoom,Position,CaretPos> := <arg> => SetProperty ( _OOHG_THISFORM:NAME , _OOHG_THISCONTROL:NAME , <(p)> , <arg> )
+#xtranslate This . <p:FontColor,ForeColor,Value,Address,Picture,Tooltip,FontName,FontSize,FontBold,FontItalic,FontUnderline,FontStrikeout,Displayvalue,Checked,ItemCount,RangeMin,RangeMax,Length,Position,CaretPos,ScrollCaret> => GetProperty ( _OOHG_THISFORM:NAME , _OOHG_THISCONTROL:NAME , <(p)> )
+#xtranslate This . <p:FontColor,ForeColor,Value,ReadOnly,Address,Picture,Tooltip,FontName,FontSize,FontBold,FontItalic,FontUnderline,FontStrikeout,DisplayValue,Checked,RangeMin,RangeMax,Repeat,Speed,Volume,Zoom,Position,CaretPos,ScrollCaret> := <arg> => SetProperty ( _OOHG_THISFORM:NAME , _OOHG_THISCONTROL:NAME , <(p)> , <arg> )
 
 * Property with 1 argument
 
