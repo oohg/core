@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog,v 1.720 2011-07-10 15:15:20 fyurisich Exp $
+ * $Id: ChangeLog,v 1.721 2011-07-10 21:11:53 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+
+2011-07-10 17:10:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_textbox.prg
+    * added a call to scrollcaret in caretpos method
 
 2011-07-10 12:15:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * doc/classes.txt

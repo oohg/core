@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.65 2011-07-10 15:14:49 fyurisich Exp $
+ * $Id: h_textbox.prg,v 1.66 2011-07-10 21:11:53 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -329,6 +329,7 @@ METHOD CaretPos( nPos ) CLASS TText
 *------------------------------------------------------------------------------*
    IF HB_IsNumeric( nPos )
       SendMessage( ::hWnd, EM_SETSEL, nPos, nPos )
+      ::scrollcaret()    
    ENDIF
 Return HiWord( SendMessage( ::hWnd, EM_GETSEL, 0, 0 ) )
 
