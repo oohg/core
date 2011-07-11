@@ -1,5 +1,5 @@
 /*
- * $Id: c_image.c,v 1.24 2010-08-12 23:07:55 guerra000 Exp $
+ * $Id: c_image.c,v 1.25 2011-07-11 02:37:12 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -378,8 +378,8 @@ HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, 
 
          GetIconInfo( hIcon, &IconInfo );
          GetObject( IconInfo.hbmColor, sizeof( BITMAP ), &bm );
-         iWidth  = bm.bmWidth * 2;
-         iHeight = bm.bmHeight * 2;
+         iWidth  = bm.bmWidth;
+         iHeight = bm.bmHeight;
 
          SetRect( &rect, 0, 0, iWidth, iHeight );
 

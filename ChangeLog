@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.721 2011-07-10 21:11:53 declan2005 Exp $
+ * $Id: ChangeLog,v 1.722 2011-07-11 02:37:31 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,6 +7,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+
+2011-07-10 23:37:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * source/c_image.c
+    ! Fixed loading ICON images.
 
 2011-07-10 17:10:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_textbox.prg
