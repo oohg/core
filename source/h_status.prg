@@ -1,5 +1,5 @@
 /*
- * $Id: h_status.prg,v 1.34 2010-05-15 21:05:05 guerra000 Exp $
+ * $Id: h_status.prg,v 1.35 2011-07-11 19:06:18 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -525,7 +525,7 @@ HB_FUNC( INITITEMBAR )
       hIcon = (HICON)LoadImage(GetModuleHandle(NULL),hb_parc(6),IMAGE_ICON ,cx,cy, 0 );
    }
 
-   if( hIcon == NULL )
+   if( hIcon != NULL )
    {
       SendMessage( hWndSB, SB_SETICON, ( WPARAM ) nrOfParts - 1, ( LPARAM ) hIcon );
    }
