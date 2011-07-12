@@ -1,5 +1,5 @@
 /*
- * $Id: c_image.c,v 1.25 2011-07-11 02:37:12 fyurisich Exp $
+ * $Id: c_image.c,v 1.26 2011-07-12 02:14:34 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -367,19 +367,35 @@ HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, 
          BITMAP bm;
          int iWidth, iHeight;
 
-         imgDC = GetDC( hWnd );
+         imgDC = GetDC( NULL );
          toDC = CreateCompatibleDC( imgDC );
 
          if( lBackColor == -1 )
          {
-            lBackColor = GetSysColor( COLOR_BTNFACE );
+            lBackColor = GetSysColor( COLOR_MENU );
          }
          hBrush = CreateSolidBrush( lBackColor );
 
          GetIconInfo( hIcon, &IconInfo );
-         GetObject( IconInfo.hbmColor, sizeof( BITMAP ), &bm );
-         iWidth  = bm.bmWidth;
-         iHeight = bm.bmHeight;
+         if (IconInfo.hbmColor)
+         {
+            GetObject( IconInfo.hbmColor, sizeof( BITMAP ), &bm );
+            iWidth  = bm.bmWidth;
+            iHeight = bm.bmHeight;
+         }
+         else
+         {
+            if (IconInfo.hbmMask)
+            {
+               GetObject( IconInfo.hbmMask, sizeof( BITMAP ), &bm );
+               iWidth  = bm.bmWidth * 2;
+               iHeight = bm.bmHeight * 2;
+            }
+            else
+            {
+               return NULL;
+            }
+         }
 
          SetRect( &rect, 0, 0, iWidth, iHeight );
 
@@ -388,7 +404,7 @@ HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, 
          hImage = CreateCompatibleBitmap( imgDC, iWidth, iHeight );
          SelectObject( toDC, hImage );
 
-         DrawIcon( toDC, 0, 0, hIcon );
+         DrawIconEx( toDC, 0, 0, hIcon, 0, 0, 0, NULL, DI_NORMAL );
 
          DeleteDC( imgDC );
          DeleteDC( toDC );
