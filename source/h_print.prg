@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.108 2011-07-06 04:17:47 guerra000 Exp $
+* $Id: h_print.prg,v 1.109 2011-07-13 03:21:26 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -1523,6 +1523,8 @@ DEFAULT aColor to ::acolor
 DEFINE BRUSH "obrush" COLOR aColor style BS_SOLID
 SELECT BRUSH "obrush"
 @  y,x,y1,x1 FILLRECT BRUSH "obrush"
+DEFINE BRUSH "obrush1" COLOR {255,255,255} style BS_SOLID
+SELECT BRUSH "obrush1"
 return self
 
 
