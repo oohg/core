@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.725 2011-07-13 03:21:25 declan2005 Exp $
+ * $Id: ChangeLog,v 1.726 2011-07-13 21:23:20 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,10 +7,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2011-07-13 18:25:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * source/c_image.c
+  * source/h_button.prg
+    ! Fixed ICON images not correctly displayed in menu items under Win7.
+
 2011-07-12 17:10:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_print.prg
     ! fixed problem in fillrect of hbprinter printer mode
-
 
 2011-07-11 23:15:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * source/c_image.c

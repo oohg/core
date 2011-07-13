@@ -1,5 +1,5 @@
 /*
- * $Id: c_image.c,v 1.26 2011-07-12 02:14:34 fyurisich Exp $
+ * $Id: c_image.c,v 1.27 2011-07-13 21:22:54 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -388,8 +388,8 @@ HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, 
             if (IconInfo.hbmMask)
             {
                GetObject( IconInfo.hbmMask, sizeof( BITMAP ), &bm );
-               iWidth  = bm.bmWidth * 2;
-               iHeight = bm.bmHeight * 2;
+               iWidth  = bm.bmWidth;
+               iHeight = bm.bmHeight / 2;
             }
             else
             {
@@ -397,14 +397,14 @@ HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, 
             }
          }
 
-         SetRect( &rect, 0, 0, iWidth, iHeight );
+//         SetRect( &rect, 0, 0, iWidth, iHeight );
 
          SetBkColor( toDC, ( COLORREF ) lBackColor );
-         FillRect( toDC, &rect, hBrush );
+//         FillRect( toDC, &rect, hBrush );
          hImage = CreateCompatibleBitmap( imgDC, iWidth, iHeight );
          SelectObject( toDC, hImage );
 
-         DrawIconEx( toDC, 0, 0, hIcon, 0, 0, 0, NULL, DI_NORMAL );
+         DrawIconEx( toDC, 0, 0, hIcon, 0, 0, 0, hBrush, DI_NORMAL );
 
          DeleteDC( imgDC );
          DeleteDC( toDC );

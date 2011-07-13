@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.45 2010-03-29 05:03:03 declan2005 Exp $
+ * $Id: h_button.prg,v 1.46 2011-07-13 21:22:54 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -294,7 +294,7 @@ METHOD RePaint() CLASS TButton
       ENDIF
       ::AuxHandle := NIL
       ::TControl:SizePos()
-      IF ( "XP" $ OS() .OR. "Vista" $ OS() ) .AND. ValidHandler( ::hImage ) .AND. LEN( ::Caption ) > 0
+      IF ( "XP" $ OS() .OR. "Vista" $ OS() .OR. "Windows 7" $ OS() ) .AND. ValidHandler( ::hImage ) .AND. LEN( ::Caption ) > 0
          SetImageXP( ::hWnd, ::hImage, ::nAlign, ::BackColorCode )
          ::ReDraw()
       ELSEIF ::Stretch .OR. ::AutoFit
