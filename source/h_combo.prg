@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.50 2011-05-09 16:36:52 guerra000 Exp $
+ * $Id: h_combo.prg,v 1.51 2011-07-15 14:35:33 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -132,6 +132,9 @@ CLASS TCombo FROM TLabel
    METHOD SetDropDownWidth
    METHOD AutosizeDropDown
    METHOD Autosize            SETGET
+   METHOD GetEditSel
+   METHOD SetEditSel
+   METHOD CaretPos            SETGET
 
    EMPTY( _OOHG_AllVars )
 ENDCLASS
@@ -446,6 +449,67 @@ Local Hi_wParam := HIWORD( wParam )
    EndIf
 
 Return ::Super:Events_Command( wParam )
+
+*-----------------------------------------------------------------------------*
+METHOD SetEditSel( nStart, nEnd ) CLASS TCombo
+*-----------------------------------------------------------------------------*
+/*
+   start:
+      -1 the selection, if any, is removed.
+       0 is first character.
+   end:
+       -1 all text from the start to the last character is selected.
+
+   The first character after the last selected character is in the ending
+   position. For example, to select the first four characters , use a
+   starting position of 0 and an ending position of 4.
+   
+   This method is meaningfull only when de combo is in edit state.
+   When combo looses focus, it gets out of edit state.
+   When combo gots focus, all the text is selected.
+*/
+Local lRet
+
+   IF HB_IsNumeric( nStart ) .and. nStart >= -1 .and. HB_IsNumeric( nEnd ) .and. nEnd >= -1
+      lRet := SendMessage( ::hWnd, CB_SETEDITSEL, 0, MakeLParam( nStart, nEnd ) )
+   ELSE
+      lRet := .F.
+   ENDIF
+
+Return lRet
+
+*-----------------------------------------------------------------------------*
+METHOD GetEditSel() CLASS TCombo
+*-----------------------------------------------------------------------------*
+/*
+   Returns an array with 2 items:
+   1st. the starting position of the selection (zero-based value).
+   2nd. the ending position of the selection (position of the first character
+   after the last selected character). This value is the caret position.
+
+   This method is meaningfull only when de combo is in edit state.
+   When combo looses focus, it gets out of edit state.
+   When combo gots focus, all the text is selected.
+*/
+Local rRange := SendMessage( ::hWnd, CB_GETEDITSEL, 0, 0 )
+
+Return { LoWord( rRange ), HiWord( rRange ) }
+
+*-----------------------------------------------------------------------------*
+METHOD CaretPos( nPos ) CLASS TCombo
+*-----------------------------------------------------------------------------*
+/*
+   Returns the ending position of the selection (position of the first character
+   after the last selected character). This value is the caret position.
+
+   This method is meaningfull only when de combo is in edit state.
+   When combo looses focus, it gets out of edit state, and this method returns 0.
+   When combo gots focus, all the text is selected.
+*/
+   IF HB_IsNumeric( nPos )
+      SendMessage( ::hWnd, CB_SETEDITSEL, 0, MakeLParam( nPos, nPos ) )
+   ENDIF
+Return HiWord( SendMessage( ::hWnd, CB_GETEDITSEL, nil, nil ) )
 
 #pragma BEGINDUMP
 #include <hbapi.h>

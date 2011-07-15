@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.36 2011-07-10 15:14:27 fyurisich Exp $
+ * $Id: i_windefs.ch,v 1.37 2011-07-15 14:36:51 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -684,6 +684,8 @@
 
 #define CB_GETDROPPEDSTATE     0x0157
 #define CB_SHOWDROPDOWN        0x014F
+#define CB_GETEDITSEL          0x0140
+#define CB_SETEDITSEL          0x0142
 
 #define CCS_TOP                 1
 #define CCS_NOMOVEY             2

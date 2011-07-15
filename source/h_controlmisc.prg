@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.112 2011-07-07 01:38:50 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.113 2011-07-15 14:35:33 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1091,6 +1091,9 @@ Local oWnd, oCtrl
 
       ElseIf Arg3 == 'ADDPAGE'
          oCtrl:AddPage( Arg4 , Arg5 )
+
+      ElseIf Arg3 == 'SETRANGE'
+         oCtrl:SetRange( Arg4 , Arg5 )
 
       EndIf
 

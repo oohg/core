@@ -1,5 +1,5 @@
 /*
- * $Id: i_datepicker.ch,v 1.5 2008-08-31 20:40:53 guerra000 Exp $
+ * $Id: i_datepicker.ch,v 1.6 2011-07-15 14:36:51 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -119,12 +119,13 @@
                 [ <noborder: NOBORDER> ] ;
                 [ <rtl: RTL> ] ;
                 [ SUBCLASS <subclass> ] ;
+                [ <dummy2: RANGE> <min> , <max> ] ;
 	=> ;
         [ <obj> := ] _OOHG_SelectSubClass( TDatePick(), [ <subclass>() ] ): ;
                      Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <v>, <fontname>, <fontsize>, ;
                      <tooltip>, <{change}>, <{lostfocus}>, <{gotfocus}>, <.shownone.>, <.updown.>, <.rightalign.>, ;
                      <helpid>, <.invisible.>, <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, ;
-                     <(field)>, <{enter}>, <.rtl.>, <.disabled.>, <.noborder.> )
+                     <(field)>, <{enter}>, <.rtl.>, <.disabled.>, <.noborder.>, <min>, <max> )
 
 
 #command @ <row>,<col> TIMEPICKER <name> ;

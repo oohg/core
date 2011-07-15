@@ -1,5 +1,5 @@
 /*
- * $Id: c_winapimisc.c,v 1.14 2010-05-15 21:05:05 guerra000 Exp $
+ * $Id: c_winapimisc.c,v 1.15 2011-07-15 14:35:33 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -231,6 +231,11 @@ HB_FUNC( HIWORD )
 HB_FUNC( LOWORD )
 {
 	hb_retnl( LOWORD( hb_parnl( 1 ) ) );
+}
+
+HB_FUNC( MAKELPARAM )
+{
+	hb_retnl( MAKELPARAM( hb_parni( 1 ), hb_parni( 2 ) ) );
 }
 
 HB_FUNC( C_GETFOLDER ) // Based Upon Code Contributed By Ryszard Ryüko

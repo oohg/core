@@ -1,5 +1,5 @@
 /*
- * $Id: c_image.c,v 1.27 2011-07-13 21:22:54 fyurisich Exp $
+ * $Id: c_image.c,v 1.28 2011-07-15 14:35:33 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -360,7 +360,7 @@ HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, 
       }
       if( hIcon )
       {
-         RECT rect;
+//         RECT rect;
          HDC imgDC, toDC;
          HBRUSH hBrush;
          ICONINFO IconInfo;

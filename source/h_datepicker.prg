@@ -1,5 +1,5 @@
 /*
- * $Id: h_datepicker.prg,v 1.19 2011-03-30 22:03:16 guerra000 Exp $
+ * $Id: h_datepicker.prg,v 1.20 2011-07-15 14:35:33 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -114,7 +114,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
                fontsize, tooltip, change, lostfocus, gotfocus, shownone, ;
                updown, rightalign, HelpId, invisible, notabstop, bold, ;
                italic, underline, strikeout, Field, Enter, lRtl, lDisabled, ;
-               lNoBorder ) CLASS TDatePick
+               lNoBorder, DateFrom, DateTo ) CLASS TDatePick
 *-----------------------------------------------------------------------------*
 Local ControlHandle, nStyle, nStyleEx
 
@@ -137,13 +137,15 @@ Local ControlHandle, nStyle, nStyleEx
    ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
 
+   ::SetRange(DateFrom, DateTo)
+
    ::SetVarBlock( Field, Value )
 
    ASSIGN ::OnLostFocus VALUE lostfocus TYPE "B"
    ASSIGN ::OnGotFocus  VALUE gotfocus  TYPE "B"
    ASSIGN ::OnChange    VALUE Change    TYPE "B"
    ASSIGN ::OnEnter     VALUE Enter     TYPE "B"
-
+   
 Return Self
 
 *-----------------------------------------------------------------------------*
