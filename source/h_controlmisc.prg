@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.113 2011-07-15 14:35:33 fyurisich Exp $
+ * $Id: h_controlmisc.prg,v 1.114 2011-07-16 19:19:52 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1006,6 +1006,9 @@ Local oWnd, oCtrl
       ElseIf Arg3 == 'COLUMNSAUTOFITH'
          oCtrl:ColumnsAutoFitH()
 
+      ElseIf Arg3 == 'COLUMNSBETTERAUTOFIT'
+         oCtrl:ColumnsBetterAutoFit()
+
       ElseIf Arg3 == 'DELETEALLITEMS'
          oCtrl:DeleteAllItems()
 
@@ -1078,6 +1081,9 @@ Local oWnd, oCtrl
 
       ElseIf Arg3 == 'COLUMNAUTOFITH'
          oCtrl:ColumnAutoFitH( Arg4 )
+
+      ElseIf Arg3 == 'COLUMNBETTERAUTOFIT'
+         oCtrl:ColumnBetterAutoFit( Arg4 )
 
       EndIf
 
