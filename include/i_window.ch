@@ -1,5 +1,5 @@
 /*
- * $Id: i_window.ch,v 1.37 2011-07-15 14:36:51 fyurisich Exp $
+ * $Id: i_window.ch,v 1.38 2011-07-16 19:17:23 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -125,9 +125,9 @@
         #xtranslate <w> . \<c\> . \<p:EnableUpdate,DisableUpdate\> => EMPTY( 0 ) ;;
         #xtranslate <w> . \<c\> . \<p:Cell\> (\<arg1\>,\<arg2\>) => GetProperty ( <(w)>, \<(c)> , \<(p)> , \<arg1\> , \<arg2\> ) ;;
         #xtranslate <w> . \<c\> . \<p:Cell\> (\<arg1\>,\<arg2\>) := \<n\> => SetProperty ( <(w)>, \<(c)> , \<(p)> , \<arg1\> , \<arg2\> , \<n\> ) ;;
-        #xtranslate <w> . \<c\> . \<p:Refresh,SetFocus,DeleteAllItems,Release,Show,Hide,Play,Stop,Close,Pause,Eject,OpenDialog,Resume,ColumnsAutoFit,ColumnsAutoFitH\> \[()\] => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> () ;;
+        #xtranslate <w> . \<c\> . \<p:Refresh,SetFocus,DeleteAllItems,Release,Show,Hide,Play,Stop,Close,Pause,Eject,OpenDialog,Resume,ColumnsAutoFit,ColumnsAutoFitH,ColumnsBetterAutoFit\> \[()\] => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> () ;;
         #xtranslate <w> . \<c\> . \<p:Save,Action,OnClick\> \[()\] => Domethod ( <(w)>, \<(c)\> , \<(p)> ) ;;
-        #xtranslate <w> . \<c\> . \<p:AddItem,DeleteItem,Open,DeletePage,DeleteColumn,Expand,Collapse,ColumnAutoFit,ColumnAutoFitH\> (\<a\>) => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ( \<a\> ) ;;
+        #xtranslate <w> . \<c\> . \<p:AddItem,DeleteItem,Open,DeletePage,DeleteColumn,Expand,Collapse,ColumnAutoFit,ColumnAutoFitH,ColumnBetterAutoFit\> (\<a\>) => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ( \<a\> ) ;;
         #xtranslate <w> . \<c\> . \<p:AddItem,AddPage,SetRange,SetEditSel\> (\<a1\> , \<a2\>) => Domethod ( <(w)>, \<(c)> , \<(p)> , \<a1\> , \<a2\> ) ;;
         #xtranslate <w> . \<c\> . \<p:AddItem,AddPage\> (\<a1\> , \<a2\> , \<a3\> ) => Domethod ( <(w)>, \<(c)> , \<(p)> , \<a1\> , \<a2\> , \<a3\> ) ;;
         #xtranslate <w> . \<c\> . \<p:AddItem,AddColumn,AddControl\> (\<a1\> , \<a2\> , \<a3\> , \<a4\> ) => Domethod ( <(w)>, \<(c)> , \<(p)> , \<a1\> , \<a2\> , \<a3\> , \<a4\> ) ;;
