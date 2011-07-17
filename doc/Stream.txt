@@ -1,0 +1,30 @@
+/*
+ * $Id: Stream.txt,v 1.1 2011-07-17 14:57:50 guerra000 Exp $
+ */
+
+TStream class
+=============
+
+TStream class is designed to simplify data stream management. It
+allows to receive (and send) raw data from "any" source, stores
+it on it's own buffer, and provide it on the required way. For
+example, you can store it until an EOL character is received, or
+it reaches an specific lenght.
+
+Approaching classes' flexibility, it's possible to use same code
+for process data from different sources with the same code (you
+can get data from a file, network socket, serial port, or memory
+data).
+
+It can be used for data conversion. TStreamUnZip receives
+compressed data FROM ANY TSTREAM CLASS, and returns uncompressed
+data.
+
+Some sample classes are:
+
+TStreamBase:   TStream's base class. It "reads" data from memory
+               (data is already in memory).
+TStreamFile:   Reads data from a file.
+TStreamSocket: Reads/writes data from a network socket.
+TStreamSerial: Reads/writes data from a serial port.
+TStreamUnZip:  Reads compressed data and returns it uncompressed.
