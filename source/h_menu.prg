@@ -1,5 +1,5 @@
 /*
- * $Id: h_menu.prg,v 1.28 2010-08-27 21:25:22 guerra000 Exp $
+ * $Id: h_menu.prg,v 1.29 2011-07-23 15:26:08 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -266,7 +266,9 @@ CLASS TMenuItem FROM TControl
    DATA Type      INIT "MENUITEM" READONLY
    DATA xId       INIT 0
    DATA lMain     INIT .F.
-   DATA cPicture  INIT ""
+   DATA aPicture  INIT {"", ""}
+   DATA hBitMaps  INIT {nil, nil}
+   DATA lStretch  INIT .F.
 
    DATA lAdjust   INIT .F.
 
@@ -282,13 +284,14 @@ CLASS TMenuItem FROM TControl
    METHOD EndPopUp
    METHOD Separator    BLOCK { |Self| TMenuItem():DefineSeparator( , Self ) }
    METHOD Picture      SETGET
+   METHOD Stretch      SETGET
 
    METHOD DefaultItem( nItem )    BLOCK { |Self,nItem| SetMenuDefaultItem( ::Container:hWnd, nItem ) }
 ENDCLASS
 
 *------------------------------------------------------------------------------*
 METHOD DefinePopUp( Caption, Name, checked, disabled, Parent, hilited, Image, ;
-                    lRight ) CLASS TMenuItem
+                    lRight, lStretch ) CLASS TMenuItem
 *------------------------------------------------------------------------------*
 LOCAL nStyle
    If Empty( Parent )
@@ -300,6 +303,9 @@ LOCAL nStyle
    AADD( _OOHG_xMenuActive, Self )
    nStyle := MF_POPUP + MF_STRING + IF( ValType( lRight ) == "L" .AND. lRight, MF_RIGHTJUSTIFY, 0 )
    AppendMenu( ::Container:hWnd, ::hWnd, Caption, nStyle )
+   if HB_IsLogical( lStretch ) .AND. lStretch
+      ::Stretch := .T.
+   EndIf
    ::Picture := image
    ::Checked := checked
    ::Hilited := hilited
@@ -310,7 +316,7 @@ Return Self
 
 *------------------------------------------------------------------------------*
 METHOD DefineItem( caption, action, name, Image, checked, disabled, Parent, ;
-                   hilited, lRight ) CLASS TMenuItem
+                   hilited, lRight, lStretch ) CLASS TMenuItem
 *------------------------------------------------------------------------------*
 Local nStyle, id
    If Empty( Parent )
@@ -323,6 +329,9 @@ Local nStyle, id
    ::Register( 0, Name, , , , Id )
    ::xId := ::Id
    ::OnClick := action
+   if HB_IsLogical( lStretch ) .AND. lStretch
+      ::Stretch := .T.
+   EndIf
    ::Picture := image
    ::Checked := checked
    ::Hilited := hilited
@@ -379,19 +388,80 @@ Local cRet
 Return cRet
 
 *------------------------------------------------------------------------------*
-METHOD Picture( cPicture ) CLASS TMenuItem
+METHOD Picture( Images ) CLASS TMenuItem
 *------------------------------------------------------------------------------*
-   If VALTYPE( cPicture ) $ "CM"
-      // TODO: Release old image
-      // TODO: Menu items supports two images!
-      MenuItem_SetBitMaps( ::Container:hWnd, ::xId, cPicture, '' )
-      ::cPicture := cPicture
+
+   If HB_IsArray( Images )
+      If LEN( Images ) > 1
+         // Change checked bitmap
+         If VALTYPE( Images[2] ) # "CM"
+            ::aPicture[2] := Images[2]
+         Else
+            ::aPicture[2] := ""
+         EndIf
+      EndIf
+      
+      If LEN( Images ) > 0
+         // Change unchecked bitmap
+         If VALTYPE( Images[1] ) # "CM"
+            ::aPicture[1] := Images[1]
+         Else
+            ::aPicture[1] := ""
+         Endif
+      EndIf
+   ElseIf VALTYPE( Images ) $ "CM"
+      // Change unchecked bitmap only
+      ::aPicture[1] := Images
+   Else
+      Return ::aPicture
+   Endif
+
+   // Release old images
+   If ::hBitMaps[1] != nil
+     DeleteObject( ::hBitMaps[1] )
+     ::hBitMaps[1] := nil
+   Endif
+   If ::hBitMaps[2] != nil
+     DeleteObject( ::hBitMaps[2] )
+     ::hBitMaps[2] := nil
+   Endif
+
+   ::hBitMaps := MenuItem_SetBitMaps( ::Container:hWnd, ::xId, ::aPicture[1], ::aPicture[2], ::lStretch, "Vista" $ OS() .OR. "Windows 7" $ OS() )
+
+Return ::aPicture
+
+*------------------------------------------------------------------------------*
+METHOD Stretch( lStretch ) CLASS TMenuItem
+*------------------------------------------------------------------------------*
+/*
+   When .F. (default behavior)
+      XP clips big images to expected size (defined by system metrics' parameters
+      SM_CXMENUCHECK and SM_CYMENUCHECK, usually 13x13 pixels).
+      Vista and Win7 show big images at their real size.
+   When .T.
+     XP, Vista and Win7 scale down big images to expected size.
+*/
+   If HB_IsLogical( lStretch )
+      If lStretch != ::lStretch
+         ::lStretch := lStretch
+         ::Picture(::aPicture)
+      Endif
    EndIf
-Return ::cPicture
+Return ::lStretch
 
 *------------------------------------------------------------------------------*
 METHOD Release() CLASS TMenuItem
 *------------------------------------------------------------------------------*
+   // Release bitmaps
+   If ::hBitMaps[1] != nil
+     DeleteObject( ::hBitMaps[1] )
+     ::hBitMaps[1] := nil
+   Endif
+   If ::hBitMaps[2] != nil
+     DeleteObject( ::hBitMaps[2] )
+     ::hBitMaps[2] := nil
+   Endif
+
    DeleteMenu( ::Container:hWnd, ::xId )
    ::Container:Refresh()
 Return ::Super:Release()
@@ -519,14 +589,41 @@ HB_FUNC( MENUCAPTION )
 
 HB_FUNC( MENUITEM_SETBITMAPS )
 {
+/*
+TODO: detect AERO and set background color accordingly
+*/
    HMENU hMenu = HMENUparam( 1 );
    HBITMAP himage1, himage2;
-   int iAttributes = LR_LOADMAP3DCOLORS | LR_LOADTRANSPARENT;
+   int iAttributes;
+   int nWidth = 0;
+   int nHeight = 0;
+   
+   if( hb_parl( 6 ) )
+   {
+      iAttributes = LR_LOADMAP3DCOLORS | LR_LOADTRANSPARENT;
+   }
+   else
+   {
+      iAttributes = LR_LOADMAP3DCOLORS;
+   }
 
-   himage1 = (HBITMAP) _OOHG_LoadImage( ( char * ) hb_parc( 3 ), iAttributes, 0, 0, ( HWND ) hMenu, -1 );
-   himage2 = (HBITMAP) _OOHG_LoadImage( ( char * ) hb_parc( 4 ), iAttributes, 0, 0, ( HWND ) hMenu, -1 );
+   if( ISLOG( 5 ) )
+   {
+      if( hb_parl( 5 ) )
+      {
+         nWidth = GetSystemMetrics(SM_CXMENUCHECK);
+         nHeight = GetSystemMetrics(SM_CYMENUCHECK);
+      }
+   }
+
+   himage1 = (HBITMAP) _OOHG_LoadImage( ( char * ) hb_parc( 3 ), iAttributes, nWidth, nHeight, NULL, GetSysColor( COLOR_MENU ) );
+   himage2 = (HBITMAP) _OOHG_LoadImage( ( char * ) hb_parc( 4 ), iAttributes, nWidth, nHeight, NULL, GetSysColor( COLOR_MENU ) );
 
    SetMenuItemBitmaps( hMenu, hb_parni( 2 ), MF_BYCOMMAND, himage1, himage2 );
+   
+   hb_reta( 2 );
+   HB_STORNL( ( LONG ) himage1, -1, 1 );
+   HB_STORNL( ( LONG ) himage2, -1, 2 );
 }
 
 HB_FUNC( SETMENUDEFAULTITEM )
