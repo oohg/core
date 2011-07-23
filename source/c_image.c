@@ -1,5 +1,5 @@
 /*
- * $Id: c_image.c,v 1.28 2011-07-15 14:35:33 fyurisich Exp $
+ * $Id: c_image.c,v 1.29 2011-07-23 15:24:10 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -340,78 +340,104 @@ HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, 
 {
    HANDLE hImage;
 
+   // Validate cImage parameter
    if( ! cImage || ! *cImage )
    {
       return NULL;
    }
 
-   // Searchs image BITMAP form RESOURCE
-   hImage = LoadImage( GetModuleHandle( NULL ), cImage, IMAGE_BITMAP, nWidth, nHeight, iAttributes );
+   // Background color, for MENUs use COLOR_MENU (see h_menu.prg)
+   if( lBackColor == -1 )
+   {
+      lBackColor = GetSysColor( COLOR_BTNFACE );
+   }
 
-   // Searchs image ICON form RESOURCE
+   // Try to load BITMAP from EXE
+   hImage = LoadImage( GetModuleHandle( NULL ), cImage, IMAGE_BITMAP, nWidth, nHeight, iAttributes );
+   if( ! hImage )
+   {
+      // Try to load BITMAP from FILE
+      hImage = LoadImage( NULL, cImage, IMAGE_BITMAP, nWidth, nHeight, iAttributes | LR_LOADFROMFILE );
+   }
    if( ! hImage )
    {
       HICON hIcon;
 
+      // Try to load ICON from EXE
       hIcon = LoadImage( GetModuleHandle( NULL ), cImage, IMAGE_ICON, nWidth, nHeight, iAttributes );
       if( ! hIcon )
       {
+         // Try to load ICON from FILE
          hIcon = LoadImage( 0, cImage, IMAGE_ICON, nWidth, nHeight, iAttributes | LR_LOADFROMFILE );
       }
       if( hIcon )
       {
-//         RECT rect;
          HDC imgDC, toDC;
          HBRUSH hBrush;
          ICONINFO IconInfo;
-         BITMAP bm;
+         BITMAP bm ;
+         HBITMAP hOldBmp;
          int iWidth, iHeight;
 
-         imgDC = GetDC( NULL );
-         toDC = CreateCompatibleDC( imgDC );
-
-         if( lBackColor == -1 )
-         {
-            lBackColor = GetSysColor( COLOR_MENU );
-         }
-         hBrush = CreateSolidBrush( lBackColor );
-
          GetIconInfo( hIcon, &IconInfo );
+
          if (IconInfo.hbmColor)
          {
+            // color ICON
             GetObject( IconInfo.hbmColor, sizeof( BITMAP ), &bm );
             iWidth  = bm.bmWidth;
             iHeight = bm.bmHeight;
+
+            imgDC = GetDC( hWnd );
+            toDC = CreateCompatibleDC( imgDC );
+
+            hBrush = CreateSolidBrush( lBackColor );
+
+            hImage = CreateCompatibleBitmap( imgDC, iWidth, iHeight );
+            hOldBmp = SelectObject( toDC, hImage );
+
+            DrawIconEx( toDC, 0, 0, hIcon, iWidth, iHeight, 0, hBrush, DI_NORMAL );
+
+            DeleteDC( imgDC );
+            hImage = SelectObject( toDC, hOldBmp );
+            DeleteDC( toDC );
+            DeleteObject( hBrush );
+            DeleteObject( hIcon );
          }
          else
          {
+            // black and white ICON
             if (IconInfo.hbmMask)
             {
                GetObject( IconInfo.hbmMask, sizeof( BITMAP ), &bm );
                iWidth  = bm.bmWidth;
                iHeight = bm.bmHeight / 2;
+
+               imgDC = GetDC( hWnd );
+               toDC = CreateCompatibleDC( imgDC );
+
+               hBrush = CreateSolidBrush( lBackColor );
+
+               hImage = CreateBitmap( iWidth, iHeight, 1, 1, NULL );
+               hOldBmp = SelectObject( toDC, hImage );
+               DrawIconEx( toDC, 0, 0, hIcon, iWidth, iHeight, 0, hBrush, DI_IMAGE );
+
+               DeleteDC( imgDC );
+               hImage = SelectObject( toDC, hOldBmp );
+               DeleteDC( toDC );
+               DeleteObject( hBrush );
+               DeleteObject( hIcon );
             }
             else
             {
+               DeleteObject( hIcon );
                return NULL;
             }
          }
-
-//         SetRect( &rect, 0, 0, iWidth, iHeight );
-
-         SetBkColor( toDC, ( COLORREF ) lBackColor );
-//         FillRect( toDC, &rect, hBrush );
-         hImage = CreateCompatibleBitmap( imgDC, iWidth, iHeight );
-         SelectObject( toDC, hImage );
-
-         DrawIconEx( toDC, 0, 0, hIcon, 0, 0, 0, hBrush, DI_NORMAL );
-
-         DeleteDC( imgDC );
-         DeleteDC( toDC );
-         DeleteObject( hBrush );
-         DeleteObject( hIcon );
       }
    }
+
+   // Try to create from EXE, using OleLoadPicture
    if( ! hImage )
    {
       HRSRC hSource;
@@ -466,11 +492,7 @@ HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, 
       }
    }
 
-   // Searchs image form FILE
-   if( ! hImage )
-   {
-      hImage = LoadImage( 0, cImage, IMAGE_BITMAP, nWidth, nHeight, iAttributes | LR_LOADFROMFILE );
-   }
+   // Try to create from FILE, using OleLoadPicture
    if( ! hImage )
    {
       HANDLE hFile;
