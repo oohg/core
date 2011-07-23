@@ -1,11 +1,30 @@
 /*
- * $Id: ChangeLog,v 1.729 2011-07-17 14:57:50 guerra000 Exp $
+ * $Id: ChangeLog,v 1.730 2011-07-23 15:49:55 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2011-07-23 12:20:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * include/i_menu.ch
+  * include/i_window.ch
+  * source/h_menu.prg
+  * source/c_image.c
+    + Added method Stretch to TMenuItem class: by default XP clips big images
+      while Vista and Win7 show them at their real size, use STRETCH to scale down.
+    + Added checked state bitmap to TMenuItem class.
+    * Changed parameter of Picture method in TMenuItem class: instead of just
+      receiving the unchecked state image's name, now can also receive a two
+      element array with the name of the unchecked state image in position 1
+      and the name of the checked state image in position 2.
+    * Changed return value of Picture method in TMenuItem class: instead of
+      returning the unchecked state image's name, now returns a two
+      element array with the name of the unchecked state image in position 1
+      and the name of the checked state image in position 2.
+    + Added releasing of old images whenever changed and on item release.
+    ! Fixed wrong images colors on Win7.
 
 2011-07-17 09:39 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   + doc/Stream.txt
