@@ -1,5 +1,5 @@
 /*
- * $Id: i_window.ch,v 1.38 2011-07-16 19:17:23 fyurisich Exp $
+ * $Id: i_window.ch,v 1.39 2011-07-23 15:22:01 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -116,12 +116,12 @@
 	=>;
         #xtranslate <w> . \<p:Name,Title,Height,Width,Col,Row,BackColor,FocusedControl,hWnd,Object,Cursor,NotifyIcon,NotifyToolTip,SaveAs,MinWidth,MaxWidth,MinHeight,MaxHeight\> => GetExistingFormObject( <(w)> ):\<p\> ;;
         #xtranslate <w> . \<p:Activate,Center,Release,Maximize,Minimize,Restore,Show,Hide,Print,SetFocus\> \[()\] => GetExistingFormObject( <(w)> ):\<p\> () ;;
-        #xtranslate <w> . \<c\> . \<p:Value,Name,Address,BackColor,FontColor,Picture,ToolTip,FontName,FontSize,FontBold,FontUnderline,FontItalic,FontStrikeOut,Caption,Row,Col,Width,Height,Visible,Enabled,Checked,ItemCount,RangeMin,RangeMax,CaretPos,ForeColor,ScrollCaret,GetEditSel\> => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ;;
+        #xtranslate <w> . \<c\> . \<p:Value,Name,Address,BackColor,FontColor,Picture,ToolTip,FontName,FontSize,FontBold,FontUnderline,FontItalic,FontStrikeOut,Caption,Row,Col,Width,Height,Visible,Enabled,Checked,ItemCount,RangeMin,RangeMax,CaretPos,ForeColor,ScrollCaret,GetEditSel,Stretch\> => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ;;
         #xtranslate <w> . \<c\> . \<p:DisplayValue,Position,ForeColor\> => GetProperty ( <(w)>, \<(c)\> , \<(p)\> ) ;;
         #xtranslate <w> . \<c\> . \<p:DisplayValue,Position,ForeColor,CaretPos\> := \<n\> => SetProperty ( <(w)>, \<(c)\> , \<(p)\> , \<n\> ) ;;
         #xtranslate <w> . \<c\> . \<p:AllowAppend,AllowDelete,AllowEdit\> => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ;;
-        #xtranslate <w> . \<c\> . \<p:Caption,Header,Item,Icon,ColumnWidth,Picture,Image\> (\<arg\>) => GetProperty ( <(w)>, \<(c)> , \<(p)> , \<arg\> ) ;;
-        #xtranslate <w> . \<c\> . \<p:Caption,Header,Item,Icon,ColumnWidth,Picture,Image\> (\<arg\>) := \<n\> => SetProperty ( <(w)>, \<(c)> , \<(p)> , \<arg\> , \<n\> ) ;;
+        #xtranslate <w> . \<c\> . \<p:Caption,Header,Item,Icon,ColumnWidth,Picture,Image,Stretch\> (\<arg\>) => GetProperty ( <(w)>, \<(c)> , \<(p)> , \<arg\> ) ;;
+        #xtranslate <w> . \<c\> . \<p:Caption,Header,Item,Icon,ColumnWidth,Picture,Image,Stretch\> (\<arg\>) := \<n\> => SetProperty ( <(w)>, \<(c)> , \<(p)> , \<arg\> , \<n\> ) ;;
         #xtranslate <w> . \<c\> . \<p:EnableUpdate,DisableUpdate\> => EMPTY( 0 ) ;;
         #xtranslate <w> . \<c\> . \<p:Cell\> (\<arg1\>,\<arg2\>) => GetProperty ( <(w)>, \<(c)> , \<(p)> , \<arg1\> , \<arg2\> ) ;;
         #xtranslate <w> . \<c\> . \<p:Cell\> (\<arg1\>,\<arg2\>) := \<n\> => SetProperty ( <(w)>, \<(c)> , \<(p)> , \<arg1\> , \<arg2\> , \<n\> ) ;;
