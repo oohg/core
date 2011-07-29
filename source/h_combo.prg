@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.51 2011-07-15 14:35:33 fyurisich Exp $
+ * $Id: h_combo.prg,v 1.52 2011-07-29 02:16:38 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -187,7 +187,7 @@ Local ControlHandle , WorkArea , cField, nStyle
    nStyle := ::InitStyle( ,, Invisible, notabstop, lDisabled ) + ;
              if( HB_IsLogical( SORT )           .AND. SORT,          CBS_SORT,    0 ) + ;
              if( ! displaychange, CBS_DROPDOWNLIST, CBS_DROPDOWN ) + ;
-             if ( displaychange,  CBS_OWNERDRAWFIXED, 0) + ;
+             if ( HB_IsArray( aImage ),  CBS_OWNERDRAWFIXED, 0) + ;
              if( ( "XP" $ OS() ), CBS_NOINTEGRALHEIGHT, 0 )
 
    ::SetSplitBoxInfo( Break, GripperText, ::nWidth )
