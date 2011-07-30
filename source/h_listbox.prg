@@ -1,5 +1,5 @@
 /*
- * $Id: h_listbox.prg,v 1.19 2010-05-15 21:05:05 guerra000 Exp $
+ * $Id: h_listbox.prg,v 1.20 2011-07-30 20:24:48 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -97,9 +97,10 @@
 #include "i_windefs.ch"
 
 CLASS TList FROM TControl
-   DATA Type      INIT "LIST" READONLY
-   DATA nWidth    INIT 120
-   DATA nHeight   INIT 120
+   DATA Type        INIT "LIST" READONLY
+   DATA nWidth      INIT 120
+   DATA nHeight     INIT 120
+   DATA nTextHeight INIT 0
 
    METHOD Define
    METHOD Define2
@@ -109,8 +110,10 @@ CLASS TList FROM TControl
    METHOD OnEnter          SETGET
 
    METHOD Events_Command
+   METHOD Events_DrawItem
+   METHOD Events_MeasureItem
 
-   METHOD AddItem(uValue)     BLOCK { |Self,uValue| ListBoxAddstring( ::hWnd, uValue ) }
+   METHOD AddItem(uValue)     BLOCK { |Self,uValue| ListBoxAddstring( Self, uValue ) }
    METHOD DeleteItem(nItem)   BLOCK { |Self,nItem| ListBoxDeleteString( ::hWnd, nItem ) }
    METHOD DeleteAllItems      BLOCK { | Self | ListBoxReset( ::hWnd ) }
    METHOD Item
@@ -127,14 +130,14 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, rows, value, fontname, ;
                fontsize, tooltip, changeprocedure, dblclick, gotfocus, ;
                lostfocus, break, HelpId, invisible, notabstop, sort, bold, ;
                italic, underline, strikeout, backcolor, fontcolor, lRtl, ;
-               lDisabled, onenter ) CLASS TList
+               lDisabled, onenter, aImage, TextHeight ) CLASS TList
 *-----------------------------------------------------------------------------*
 Local nStyle := 0
    ::Define2( ControlName, ParentForm, x, y, w, h, rows, value, fontname, ;
               fontsize, tooltip, changeprocedure, dblclick, gotfocus, ;
               lostfocus, break, HelpId, invisible, notabstop, sort, bold, ;
               italic, underline, strikeout, backcolor, fontcolor, nStyle, ;
-              lRtl, lDisabled, onenter )
+              lRtl, lDisabled, onenter, aImage, TextHeight )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -142,19 +145,21 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, rows, value, fontname, ;
                 fontsize, tooltip, changeprocedure, dblclick, gotfocus, ;
                 lostfocus, break, HelpId, invisible, notabstop, sort, bold, ;
                 italic, underline, strikeout, backcolor, fontcolor, nStyle, ;
-                lRtl, lDisabled, onenter ) CLASS TList
+                lRtl, lDisabled, onenter, aImage, TextHeight ) CLASS TList
 *-----------------------------------------------------------------------------*
 Local ControlHandle
 
-   ASSIGN ::nWidth  VALUE w TYPE "N"
-   ASSIGN ::nHeight VALUE h TYPE "N"
-   ASSIGN ::nRow    VALUE y TYPE "N"
-   ASSIGN ::nCol    VALUE x TYPE "N"
+   ASSIGN ::nWidth      VALUE w          TYPE "N"
+   ASSIGN ::nHeight     VALUE h          TYPE "N"
+   ASSIGN ::nRow        VALUE y          TYPE "N"
+   ASSIGN ::nCol        VALUE x          TYPE "N"
+   ASSIGN ::nTextHeight VALUE TextHeight TYPE "N"
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, .T., lRtl )
 
    nStyle := ::InitStyle( nStyle,, invisible, notabstop, lDisabled ) + ;
-             IF( HB_ISLOGICAL( sort ) .AND. sort, LBS_SORT, 0 )
+             IF( HB_ISLOGICAL( sort ) .AND. sort, LBS_SORT, 0 ) + ;
+             if ( HB_IsArray( aImage ),  LBS_OWNERDRAWFIXED, 0)
 
    ::SetSplitBoxInfo( Break )
    ControlHandle := InitListBox( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, ::lRtl )
@@ -162,8 +167,12 @@ Local ControlHandle
    ::Register( ControlHandle, ControlName, HelpId, , ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
 
+   If HB_IsArray( aImage )
+      ::AddBitMap( aImage )
+   EndIf
+
    If HB_IsArray( rows )
-      AEVAL( rows, { |c| ListboxAddString( ControlHandle, c ) } )
+      AEVAL( rows, { |c| ListboxAddString( Self, c ) } )
    EndIf
 
    ::Value := Value
@@ -225,7 +234,7 @@ METHOD Item( nItem, uValue ) CLASS TList
 *-----------------------------------------------------------------------------*
    IF VALTYPE( uValue ) $ "CM"
       ListBoxDeleteString( ::hWnd, nItem )
-      ListBoxInsertString( ::hWnd, uValue, nItem )
+      ListBoxInsertString( uValue, nItem )
    ENDIF
 Return ListBoxGetString( ::hWnd, nItem )
 
@@ -245,7 +254,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, rows, value, fontname, ;
                fontsize, tooltip, changeprocedure, dblclick, gotfocus, ;
                lostfocus, break, HelpId, invisible, notabstop, sort, bold, ;
                italic, underline, strikeout, backcolor, fontcolor, lRtl, ;
-               lDisabled, onenter ) CLASS TListMulti
+               lDisabled, onenter, aImage, TextHeight ) CLASS TListMulti
 *-----------------------------------------------------------------------------*
 Local nStyle := LBS_EXTENDEDSEL + LBS_MULTIPLESEL
 
@@ -253,7 +262,7 @@ Local nStyle := LBS_EXTENDEDSEL + LBS_MULTIPLESEL
               fontsize, tooltip, changeprocedure, dblclick, gotfocus, ;
               lostfocus, break, HelpId, invisible, notabstop, sort, bold, ;
               italic, underline, strikeout, backcolor, fontcolor, nStyle, ;
-              lRtl, lDisabled, onenter )
+              lRtl, lDisabled, onenter, aImage, TextHeight )
 Return Self
 
 *------------------------------------------------------------------------------*
@@ -269,7 +278,10 @@ RETURN ListBoxGetMultiSel( ::hWnd )
 #pragma BEGINDUMP
 #include <windows.h>
 #include <commctrl.h>
-#include "hbapi.h"
+#include <hbapi.h>
+#include <hbvm.h>
+#include <hbstack.h>
+#include <windowsx.h>
 #include "oohg.h"
 
 static WNDPROC lpfnOldWndProc = 0;
@@ -283,7 +295,7 @@ HB_FUNC( INITLISTBOX )
 {
  HWND hwnd;
  HWND hbutton;
-   int Style = WS_CHILD | WS_VSCROLL | LBS_DISABLENOSCROLL | LBS_NOTIFY | LBS_NOINTEGRALHEIGHT | hb_parni( 7 );
+   int Style = WS_CHILD | WS_VSCROLL | LBS_DISABLENOSCROLL | LBS_NOTIFY | LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | hb_parni( 7 );
    int StyleEx;
 
    hwnd = HWNDparam( 1 );
@@ -299,23 +311,73 @@ HB_FUNC( INITLISTBOX )
    HWNDret( hbutton );
 }
 
+void TList_SetImageBuffer( POCTRL oSelf, struct IMAGE_PARAMETER pStruct, int nItem )
+{
+   BYTE *cBuffer;
+   ULONG ulSize, ulSize2;
+   int *pImage;
+
+   if( oSelf->AuxBuffer || pStruct.iImage1 != -1 || pStruct.iImage2 != -1 )
+   {
+      if( nItem >= ( int ) oSelf->AuxBufferLen )
+      {
+         ulSize = sizeof( int ) * 2 * ( nItem + 100 );
+         cBuffer = (BYTE *) hb_xgrab( ulSize );
+         memset( cBuffer, -1, ulSize );
+         if( oSelf->AuxBuffer )
+         {
+            memcpy( cBuffer, oSelf->AuxBuffer, ( sizeof( int ) * 2 * oSelf->AuxBufferLen ) );
+            hb_xfree( oSelf->AuxBuffer );
+         }
+         oSelf->AuxBuffer = cBuffer;
+         oSelf->AuxBufferLen = nItem + 100;
+      }
+
+      pImage = &( ( int * ) oSelf->AuxBuffer )[ nItem * 2 ];
+      if( nItem < ListBox_GetCount( oSelf->hWnd ) )
+      {
+         ulSize  = sizeof( int ) * 2 * ListBox_GetCount( oSelf->hWnd );
+         ulSize2 = sizeof( int ) * 2 * nItem;
+         cBuffer = (BYTE *) hb_xgrab( ulSize );
+         memcpy( cBuffer, pImage, ulSize - ulSize2 );
+         memcpy( &pImage[ 2 ], cBuffer, ulSize - ulSize2 );
+         hb_xfree( cBuffer );
+      }
+      pImage[ 0 ] = pStruct.iImage1;
+      pImage[ 1 ] = pStruct.iImage2;
+   }
+}
+
 HB_FUNC( LISTBOXADDSTRING )
 {
-   char *cString = ( char * ) hb_parc( 2 );
-   SendMessage( HWNDparam( 1 ), LB_ADDSTRING, 0, (LPARAM) cString );
+   PHB_ITEM pSelf = (PHB_ITEM) hb_param( 1, HB_IT_ANY );
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   struct IMAGE_PARAMETER pStruct;
+   int nItem = ListBox_GetCount( oSelf->hWnd );
+
+   ImageFillParameter( &pStruct, hb_param( 2, HB_IT_ANY ) );
+   TList_SetImageBuffer( oSelf, pStruct, nItem );
+   SendMessage( oSelf->hWnd, LB_ADDSTRING, 0, ( LPARAM ) pStruct.cString );
 }
 
 HB_FUNC( LISTBOXGETSTRING )
 {
- char cString [1024] = "" ;
+   char cString [1024] = "" ;
    SendMessage( HWNDparam( 1 ), LB_GETTEXT, (WPARAM) hb_parni(2) - 1, (LPARAM) cString );
    hb_retc(cString);
 }
 
 HB_FUNC( LISTBOXINSERTSTRING )
 {
-   char *cString = ( char * ) hb_parc( 2 );
-   SendMessage( HWNDparam( 1 ), LB_INSERTSTRING, (WPARAM) hb_parni(3) - 1 , (LPARAM) cString );
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   PHB_ITEM pValue = hb_param( 1, HB_IT_ANY );
+   int nItem = hb_parni( 2 ) - 1;
+   struct IMAGE_PARAMETER pStruct;
+
+   ImageFillParameter( &pStruct, pValue );
+   TList_SetImageBuffer( oSelf, pStruct, nItem );
+   SendMessage( oSelf->hWnd, LB_INSERTSTRING, ( WPARAM ) nItem, ( LPARAM ) pStruct.cString );
 }
 
 HB_FUNC( LISTBOXSETCURSEL )
@@ -400,4 +462,114 @@ HB_FUNC( LISTBOXGETITEMCOUNT )
 {
    hb_retnl( SendMessage( HWNDparam( 1 ), LB_GETCOUNT, 0, 0 ) );
 }
+
+HB_FUNC_STATIC( TLIST_EVENTS_DRAWITEM )   // METHOD Events_DrawItem( lParam )
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   LPDRAWITEMSTRUCT lpdis = ( LPDRAWITEMSTRUCT ) hb_parnl( 1 );
+   COLORREF FontColor, BackColor;
+   TEXTMETRIC lptm;
+   char cBuffer[ 2048 ];
+   int x, y, cx, cy, iImage;
+
+   if( lpdis->itemID != -1 )
+   {
+      // Checks if image defined for current item
+      if( oSelf->ImageList && oSelf->AuxBuffer && ( lpdis->itemID + 1 ) <= oSelf->AuxBufferLen )
+      {
+         iImage = ( ( int * ) oSelf->AuxBuffer )[ ( lpdis->itemID * 2 ) + ( lpdis->itemState & ODS_SELECTED ? 1 : 0 ) ];
+         if( iImage >= 0 && iImage < ImageList_GetImageCount( oSelf->ImageList ) )
+         {
+            ImageList_GetIconSize( oSelf->ImageList, &cx, &cy );
+         }
+         else
+         {
+            cx = 0;
+            iImage = -1;
+         }
+      }
+      else
+      {
+         cx = 0;
+         iImage = -1;
+      }
+
+      // Text color
+      if( lpdis->itemState & ODS_SELECTED )
+      {
+         FontColor = SetTextColor( lpdis->hDC, ( ( oSelf->lFontColorSelected == -1 ) ? GetSysColor( COLOR_HIGHLIGHTTEXT ) : oSelf->lFontColorSelected ) );
+         BackColor = SetBkColor(   lpdis->hDC, ( ( oSelf->lBackColorSelected == -1 ) ? GetSysColor( COLOR_HIGHLIGHT )     : oSelf->lBackColorSelected ) );
+      }
+      else if( lpdis->itemState & ODS_DISABLED )
+      {
+         FontColor = SetTextColor( lpdis->hDC, GetSysColor( COLOR_GRAYTEXT ) );
+         BackColor = SetBkColor(   lpdis->hDC, GetSysColor( COLOR_BTNFACE ) );
+      }
+      else
+      {
+         FontColor = SetTextColor( lpdis->hDC, ( ( oSelf->lFontColor == -1 ) ? GetSysColor( COLOR_WINDOWTEXT ) : oSelf->lFontColor ) );
+         BackColor = SetBkColor(   lpdis->hDC, ( ( oSelf->lBackColor == -1 ) ? GetSysColor( COLOR_WINDOW )     : oSelf->lBackColor ) );
+      }
+
+      // Posición de la ventana...
+      GetTextMetrics( lpdis->hDC, &lptm );
+      y = ( lpdis->rcItem.bottom + lpdis->rcItem.top - lptm.tmHeight ) / 2;
+      x = LOWORD( GetDialogBaseUnits() ) / 2;
+
+      // Text
+      SendMessage( lpdis->hwndItem, LB_GETTEXT, lpdis->itemID, ( LPARAM ) cBuffer );
+      ExtTextOut( lpdis->hDC, cx + x, y, ETO_CLIPPED | ETO_OPAQUE, &lpdis->rcItem, ( LPCSTR ) cBuffer, strlen( cBuffer ), NULL );
+
+      SetTextColor( lpdis->hDC, FontColor );
+      SetBkColor( lpdis->hDC, BackColor );
+
+      // Draws image
+      if( iImage != -1 )
+      {
+         ImageList_Draw( oSelf->ImageList, iImage, lpdis->hDC, 0, y, 0 );
+      }
+
+      // Focused rectangle
+      if( lpdis->itemState & ODS_FOCUS )
+      {
+         DrawFocusRect( lpdis->hDC, &lpdis->rcItem );
+      }
+   }
+}
+
+HB_FUNC_STATIC( TLIST_EVENTS_MEASUREITEM )   // METHOD Events_MeasureItem( lParam )
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   LPMEASUREITEMSTRUCT lpmis = ( LPMEASUREITEMSTRUCT ) hb_parnl( 1 );
+
+   HWND hWnd = GetActiveWindow();
+   HDC hDC = GetDC( hWnd );
+   HFONT hFont, hOldFont;
+   SIZE sz;
+   int iSize;
+
+   // Checks for a pre-defined text size
+   _OOHG_Send( pSelf, s_nTextHeight );
+   hb_vmSend( 0 );
+   iSize = hb_parni( -1 );
+   if( ! iSize )
+   {
+      hFont = oSelf->hFontHandle;
+
+      hOldFont = ( HFONT ) SelectObject( hDC, hFont );
+      GetTextExtentPoint32( hDC, "_", 1, &sz );
+
+      SelectObject( hDC, hOldFont );
+      ReleaseDC( hWnd, hDC );
+
+      iSize = sz.cy;
+   }
+
+   lpmis->itemHeight = iSize + 2;
+
+   hb_retnl( 1 );
+}
+
 #pragma ENDDUMP

@@ -1,11 +1,17 @@
 /*
- * $Id: ChangeLog,v 1.731 2011-07-29 02:17:17 fyurisich Exp $
+ * $Id: ChangeLog,v 1.732 2011-07-30 20:26:14 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2011-07-30 17:30:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * h_listbox.prg
+   * i_listbox.ch
+     + Added IMAGE and TEXTHEIGHT clauses to LISTBOX control so
+       TList and TListMulti classes can display images.
 
 2011-07-28 23:16:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * h_combo.prg

@@ -1,5 +1,5 @@
 /*
- * $Id: i_listbox.ch,v 1.4 2008-01-06 02:19:11 guerra000 Exp $
+ * $Id: i_listbox.ch,v 1.5 2011-07-30 20:25:38 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -120,6 +120,8 @@
                 [ ON ENTER <enter> ]            ;
                 [ <disabled: DISABLED> ]        ;
                 [ SUBCLASS <subclass> ]         ;
+                [ IMAGE <aImage> ] ;
+                [ TEXTHEIGHT <textheight> ] ;
 	=>;
         [ <obj> := ] _OOHG_SelectSubClass( iif( <.multiselect.>, TListMulti(), TList() ), [ <subclass>() ] ): ;
                         Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <aRows>, ;
@@ -127,7 +129,7 @@
                         <{dblclick}>, <{gotfocus}>, <{lostfocus}>, .f., ;
                         <helpid>, <.invisible.>, <.notabstop.>, <.sort.> , ;
 			<.bold.>, <.italic.>, <.underline.>, <.strikeout.> ,;
-                        <backcolor> , <fontcolor> , <.rtl.>, <.disabled.>, <{enter}> )
+                        <backcolor> , <fontcolor> , <.rtl.>, <.disabled.>, <{enter}>, <aImage>, <textheight> )
 
 // SPLITBOX VERSION
 
@@ -161,6 +163,8 @@
                 [ ON ENTER <enter> ]            ;
                 [ <disabled: DISABLED> ]        ;
                 [ SUBCLASS <subclass> ]         ;
+                [ IMAGE <aImage> ] ;
+                [ TEXTHEIGHT <textheight> ] ;
 	=>;
         [ <obj> := ] _OOHG_SelectSubClass( iif( <.multiselect.>, TListMulti(), TList() ), [ <subclass>() ] ): ;
                 Define( <(name)>, <(parent)>, , , <w>, <h>, <aRows>, <value>, ;
@@ -168,5 +172,5 @@
 		<{gotfocus}>, <{lostfocus}>, <.break.>, <helpid>, ;
 		<.invisible.>, <.notabstop.>, <.sort.> ,<.bold.>, ;
 		<.italic.>, <.underline.>, <.strikeout.> , <backcolor> , ;
-                <fontcolor> , <.rtl.>, <.disabled.>, <{enter}> )
+                <fontcolor> , <.rtl.>, <.disabled.>, <{enter}>, <aImage>, <textheight> )
 
