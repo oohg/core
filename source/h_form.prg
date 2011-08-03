@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.28 2011-06-29 22:49:39 guerra000 Exp $
+ * $Id: h_form.prg,v 1.29 2011-08-03 23:33:34 nulcrc Exp $
  */
 /*
  * ooHG source code:
@@ -261,6 +261,8 @@ CLASS TForm FROM TWindow
    METHOD HelpTopic(lParam)   BLOCK { | Self, lParam | HelpTopic( GetControlObjectByHandle( GetHelpData( lParam ) ):HelpId , 2 ), Self, nil }
    METHOD ScrollControls
    METHOD MessageLoop
+   // CGR
+   METHOD Inspector BLOCK {|self|Inspector(Self)}
 
 ENDCLASS
 
@@ -3143,3 +3145,131 @@ Local nRet := _OOHG_InteractiveClose
       _OOHG_InteractiveClose := INT( nValue )
    EndIf
 Return nRet
+
+
+//------------------- inspection
+static function inspector( oWind )
+local oWnd, oGrd, oCombo,n
+local aControls,aControlsNames,aData,s,ooobj_data
+
+aControls := owind:aControls
+aControlsNames:=owind:aControlsNames
+
+DEFINE WINDOW __OOHG_OBJ_INSPECTOR OBJ oWnd ;
+   AT 0,0 ;
+   WIDTH 400 ;
+   HEIGHT 300 ;
+   TITLE 'Object Inspector' ;
+	MODAL NOSIZE nomaximize nominimize
+	
+	@ 24,0 grid __oohg_obj_Inspector_Grid obj oGrd ;
+		height 240 width 394 ;
+		headers {"DATA","Values"};
+		widths {150,180};
+		on dblclick (selecciona(aControls[oCombo:value],aControlsNames[oCombo:value],oooBj_Data[this.cellrowindex]),carga(aControls[oCombo:value],oGrd,@ooobj_data))
+	
+	aData := {}
+	n:=''
+	for each n in aControlsNames
+	    s:=alltrim(n)
+		s:=left(s,len(s)-1)
+		aadd (aData,aControls[n:__enumindex]:type+' >> '+s)
+		aControlsNames[n:__enumindex]:=S
+	next
+	
+	@ 0,0 combobox __OOHG_OBJ_INSPECTOR_combo obj oCombo;
+		items aData value 1 width 394;
+		on change carga(aControls[oCombo:value],oGrd,@ooobj_data)
+	carga(aControls[1],oGrd,@ooobj_data)
+	
+
+	end window
+	ownd:activate()
+return nil
+
+
+static function carga(oooBj,oGrd,oooBj_Data)
+local aData:={},n
+	oGrd:DeleteAllItems()
+	#ifdef __XHARBOUR__
+	try
+    aData  := __objGetValueList( oooBj, .T. )
+		if len(aData)>1
+			for n:=1 to len ( aData )
+				oGrd:additem({aData[n,1],valor(aData[n,2])})
+			next
+		end if
+	end
+	#else
+	begin sequence
+    aData  := __objGetValueList( oooBj)
+		if len(aData)>1
+			for n:=1 to len ( aData )
+				oGrd:additem({aData[n,1],valor(aData[n,2])})
+			next
+		end if
+	end sequence
+	#endif
+	oGrd:ColumnsBetterAutoFit()
+	oooBj_Data:=aData // retorna en variable por referencia
+return nil
+
+static function valor(xValue)
+local tipo,ret
+
+tipo := valtype(xValue)
+
+	do case
+		case tipo$'CSM'
+			ret:='String "'+xValue+'"'
+		case tipo='N'
+			ret:='Numeric '+str(xValue)
+		case tipo='A'
+			ret:='Array, len '+alltrim(str(len(xValue)))
+		case tipo='L'
+			ret:='Boolean : '+if(xValue,'True','False')
+		case tipo='B'
+			Ret:='Codeblock {|| ... }'
+		case tipo='D'
+			ret:='Date '+dtoc(xValue)
+		case tipo='O'
+			ret:='Object, class '+xValue:Classname()
+		otherwise
+			Ret:='Unknow type ...'
+	end case
+return ret
+
+static function selecciona(ooBj,name,Values)
+	local oWnd, tipo ,lOk:=.f., oget
+	
+	tipo=valtype(values[2])
+	if tipo$"CNDL"
+		Define window _oohg_change_value obj oWnd;
+			at 50,50 width 400 height 150;
+			title "Change value : "+name+'=>'+Values[1];
+			modal NOSIZE nomaximize nominimize
+			
+		@ 10,10 label _oohg_change_value_lbl value "New value for "+name+'=>'+Values[1] autosize
+		
+		if tipo='C'
+			@ 40,20 textbox _oohg_change_value_txt obj oGet value Values[2] 
+		elseif tipo='N'
+			@ 40,20 textbox _oohg_change_value_txt obj oGet  value Values[2] numeric
+		elseif tipo='D'
+			@ 40,20 textbox _oohg_change_value_txt obj oGet  value Values[2] date
+		elseif tipo='L'
+			@ 40,20 checkbox _oohg_change_value_txt obj oGet  value Values[2] caption "( Checked for true value )" autosize
+		end
+		@ 70,10 button _oohg_change_value_btnOK caption "Set value" action (Values[2]:=oGet:value , lOk:=.t., oWnd:release())
+		@ 70,150 button _oohg_change_value_btnno caption "Cancel" cancel action oWnd:release()
+		end window
+		oWnd:activate()
+		if lOk
+			__ObjSetValueList( ooBj , {Values} )
+			ooBj:refresh()
+		end
+	Else
+		msginfo('This value is not editable')
+	end
+	msginfo(name+' '+Values[1]+' '+valor(Values[2]))
+return nil
