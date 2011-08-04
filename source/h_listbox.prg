@@ -1,5 +1,5 @@
 /*
- * $Id: h_listbox.prg,v 1.20 2011-07-30 20:24:48 fyurisich Exp $
+ * $Id: h_listbox.prg,v 1.21 2011-08-04 01:13:12 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -97,22 +97,20 @@
 #include "i_windefs.ch"
 
 CLASS TList FROM TControl
-   DATA Type        INIT "LIST" READONLY
-   DATA nWidth      INIT 120
-   DATA nHeight     INIT 120
-   DATA nTextHeight INIT 0
+   DATA Type          INIT "LIST" READONLY
+   DATA nWidth        INIT 120
+   DATA nHeight       INIT 120
+   DATA nTextHeight   INIT 0
+   DATA bOnEnter      INIT nil
+   DATA lAdjustImages INIT .F.
 
    METHOD Define
    METHOD Define2
-   METHOD Value             SETGET
-
-   DATA bOnEnter           INIT nil
+   METHOD Value            SETGET
    METHOD OnEnter          SETGET
-
    METHOD Events_Command
    METHOD Events_DrawItem
    METHOD Events_MeasureItem
-
    METHOD AddItem(uValue)     BLOCK { |Self,uValue| ListBoxAddstring( Self, uValue ) }
    METHOD DeleteItem(nItem)   BLOCK { |Self,nItem| ListBoxDeleteString( ::hWnd, nItem ) }
    METHOD DeleteAllItems      BLOCK { | Self | ListBoxReset( ::hWnd ) }
@@ -130,14 +128,14 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, rows, value, fontname, ;
                fontsize, tooltip, changeprocedure, dblclick, gotfocus, ;
                lostfocus, break, HelpId, invisible, notabstop, sort, bold, ;
                italic, underline, strikeout, backcolor, fontcolor, lRtl, ;
-               lDisabled, onenter, aImage, TextHeight ) CLASS TList
+               lDisabled, onenter, aImage, TextHeight, lAdjustImages ) CLASS TList
 *-----------------------------------------------------------------------------*
 Local nStyle := 0
    ::Define2( ControlName, ParentForm, x, y, w, h, rows, value, fontname, ;
               fontsize, tooltip, changeprocedure, dblclick, gotfocus, ;
               lostfocus, break, HelpId, invisible, notabstop, sort, bold, ;
               italic, underline, strikeout, backcolor, fontcolor, nStyle, ;
-              lRtl, lDisabled, onenter, aImage, TextHeight )
+              lRtl, lDisabled, onenter, aImage, TextHeight, lAdjustImages )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -145,15 +143,16 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, rows, value, fontname, ;
                 fontsize, tooltip, changeprocedure, dblclick, gotfocus, ;
                 lostfocus, break, HelpId, invisible, notabstop, sort, bold, ;
                 italic, underline, strikeout, backcolor, fontcolor, nStyle, ;
-                lRtl, lDisabled, onenter, aImage, TextHeight ) CLASS TList
+                lRtl, lDisabled, onenter, aImage, TextHeight, lAdjustImages ) CLASS TList
 *-----------------------------------------------------------------------------*
 Local ControlHandle
 
-   ASSIGN ::nWidth      VALUE w          TYPE "N"
-   ASSIGN ::nHeight     VALUE h          TYPE "N"
-   ASSIGN ::nRow        VALUE y          TYPE "N"
-   ASSIGN ::nCol        VALUE x          TYPE "N"
-   ASSIGN ::nTextHeight VALUE TextHeight TYPE "N"
+   ASSIGN ::nWidth        VALUE w             TYPE "N"
+   ASSIGN ::nHeight       VALUE h             TYPE "N"
+   ASSIGN ::nRow          VALUE y             TYPE "N"
+   ASSIGN ::nCol          VALUE x             TYPE "N"
+   ASSIGN ::nTextHeight   VALUE TextHeight    TYPE "N"
+   ASSIGN ::lAdjustImages VALUE lAdjustImages TYPE "L"
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, .T., lRtl )
 
@@ -254,7 +253,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, rows, value, fontname, ;
                fontsize, tooltip, changeprocedure, dblclick, gotfocus, ;
                lostfocus, break, HelpId, invisible, notabstop, sort, bold, ;
                italic, underline, strikeout, backcolor, fontcolor, lRtl, ;
-               lDisabled, onenter, aImage, TextHeight ) CLASS TListMulti
+               lDisabled, onenter, aImage, TextHeight, lAdjustImages ) CLASS TListMulti
 *-----------------------------------------------------------------------------*
 Local nStyle := LBS_EXTENDEDSEL + LBS_MULTIPLESEL
 
@@ -262,7 +261,7 @@ Local nStyle := LBS_EXTENDEDSEL + LBS_MULTIPLESEL
               fontsize, tooltip, changeprocedure, dblclick, gotfocus, ;
               lostfocus, break, HelpId, invisible, notabstop, sort, bold, ;
               italic, underline, strikeout, backcolor, fontcolor, nStyle, ;
-              lRtl, lDisabled, onenter, aImage, TextHeight )
+              lRtl, lDisabled, onenter, aImage, TextHeight, lAdjustImages )
 Return Self
 
 *------------------------------------------------------------------------------*
@@ -471,7 +470,7 @@ HB_FUNC_STATIC( TLIST_EVENTS_DRAWITEM )   // METHOD Events_DrawItem( lParam )
    COLORREF FontColor, BackColor;
    TEXTMETRIC lptm;
    char cBuffer[ 2048 ];
-   int x, y, cx, cy, iImage;
+   int x, y, cx, cy, iImage, dy;
 
    if( lpdis->itemID != -1 )
    {
@@ -486,12 +485,14 @@ HB_FUNC_STATIC( TLIST_EVENTS_DRAWITEM )   // METHOD Events_DrawItem( lParam )
          else
          {
             cx = 0;
+            cy = 0;
             iImage = -1;
          }
       }
       else
       {
          cx = 0;
+         cy = 0;
          iImage = -1;
       }
 
@@ -512,7 +513,7 @@ HB_FUNC_STATIC( TLIST_EVENTS_DRAWITEM )   // METHOD Events_DrawItem( lParam )
          BackColor = SetBkColor(   lpdis->hDC, ( ( oSelf->lBackColor == -1 ) ? GetSysColor( COLOR_WINDOW )     : oSelf->lBackColor ) );
       }
 
-      // Posición de la ventana...
+      // Window position
       GetTextMetrics( lpdis->hDC, &lptm );
       y = ( lpdis->rcItem.bottom + lpdis->rcItem.top - lptm.tmHeight ) / 2;
       x = LOWORD( GetDialogBaseUnits() ) / 2;
@@ -524,10 +525,32 @@ HB_FUNC_STATIC( TLIST_EVENTS_DRAWITEM )   // METHOD Events_DrawItem( lParam )
       SetTextColor( lpdis->hDC, FontColor );
       SetBkColor( lpdis->hDC, BackColor );
 
-      // Draws image
+      // Draws image vertically centered
       if( iImage != -1 )
       {
-         ImageList_Draw( oSelf->ImageList, iImage, lpdis->hDC, 0, y, 0 );
+         if( cy < lpdis->rcItem.bottom - lpdis->rcItem.top )                   // there is spare space
+         {
+            y = ( lpdis->rcItem.bottom + lpdis->rcItem.top - cy ) / 2;         // center image
+            dy = cy;                                                           // use real size
+         }
+         else
+         {
+            y = lpdis->rcItem.top;                                             // place image at top
+
+            _OOHG_Send( pSelf, s_lAdjustImages );
+            hb_vmSend( 0 );
+
+            if( hb_parl( -1 ) )
+            {
+               dy = ( lpdis->rcItem.bottom - lpdis->rcItem.top );              // clip exceeding pixels or stretch image
+            }
+            else
+            {
+               dy = cy;                                                        // use real size
+            }
+         }
+
+         ImageList_DrawEx( oSelf->ImageList, iImage, lpdis->hDC, 0, y, cx, dy, CLR_DEFAULT, CLR_NONE, ILD_NORMAL );
       }
 
       // Focused rectangle
@@ -554,20 +577,21 @@ HB_FUNC_STATIC( TLIST_EVENTS_MEASUREITEM )   // METHOD Events_MeasureItem( lPara
    _OOHG_Send( pSelf, s_nTextHeight );
    hb_vmSend( 0 );
    iSize = hb_parni( -1 );
-   if( ! iSize )
+   
+   hFont = oSelf->hFontHandle;
+
+   hOldFont = ( HFONT ) SelectObject( hDC, hFont );
+   GetTextExtentPoint32( hDC, "_", 1, &sz );
+
+   SelectObject( hDC, hOldFont );
+   ReleaseDC( hWnd, hDC );
+
+   if( iSize < sz.cy + 2 )
    {
-      hFont = oSelf->hFontHandle;
-
-      hOldFont = ( HFONT ) SelectObject( hDC, hFont );
-      GetTextExtentPoint32( hDC, "_", 1, &sz );
-
-      SelectObject( hDC, hOldFont );
-      ReleaseDC( hWnd, hDC );
-
-      iSize = sz.cy;
+      iSize = sz.cy + 2;
    }
 
-   lpmis->itemHeight = iSize + 2;
+   lpmis->itemHeight = iSize;
 
    hb_retnl( 1 );
 }

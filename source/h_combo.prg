@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.52 2011-07-29 02:16:38 fyurisich Exp $
+ * $Id: h_combo.prg,v 1.53 2011-08-04 01:13:12 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -105,6 +105,7 @@ CLASS TCombo FROM TLabel
    DATA aValues       INIT {}
    DATA nWidth        INIT 120
    DATA nHeight2      INIT 150
+   DATA lAdjustImages INIT .F.
 
    METHOD Define
    METHOD nHeight             SETGET
@@ -145,7 +146,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, rows, value, fontname, ;
                uEnter, HelpId, invisible, notabstop, sort, bold, italic, ;
                underline, strikeout, itemsource, valuesource, displaychange, ;
                ondisplaychangeprocedure, break, GripperText, aImage, lRtl, ;
-               TextHeight, lDisabled, lFirstItem ) CLASS TCombo
+               TextHeight, lDisabled, lFirstItem, lAdjustImages ) CLASS TCombo
 *-----------------------------------------------------------------------------*
 Local ControlHandle , WorkArea , cField, nStyle
 
@@ -158,6 +159,7 @@ Local ControlHandle , WorkArea , cField, nStyle
    DEFAULT GripperText	TO ""
    ASSIGN ::nTextHeight VALUE TextHeight TYPE "N"
    ASSIGN displaychange VALUE displaychange TYPE "L" DEFAULT .F.
+   ASSIGN ::lAdjustImages VALUE lAdjustImages TYPE "L"
 
    If HB_IsArray( ValueSource )
       ::aValues := ValueSource
@@ -658,7 +660,7 @@ HB_FUNC_STATIC( TCOMBO_EVENTS_DRAWITEM )   // METHOD Events_DrawItem( lParam )
    COLORREF FontColor, BackColor;
    TEXTMETRIC lptm;
    char cBuffer[ 2048 ];
-   int x, y, cx, cy, iImage;
+   int x, y, cx, cy, iImage, dy;
 
    if( lpdis->itemID != -1 )
    {
@@ -673,12 +675,14 @@ HB_FUNC_STATIC( TCOMBO_EVENTS_DRAWITEM )   // METHOD Events_DrawItem( lParam )
          else
          {
             cx = 0;
+            cy = 0;
             iImage = -1;
          }
       }
       else
       {
          cx = 0;
+         cy = 0;
          iImage = -1;
       }
 
@@ -699,7 +703,7 @@ HB_FUNC_STATIC( TCOMBO_EVENTS_DRAWITEM )   // METHOD Events_DrawItem( lParam )
          BackColor = SetBkColor(   lpdis->hDC, ( ( oSelf->lBackColor == -1 ) ? GetSysColor( COLOR_WINDOW )     : oSelf->lBackColor ) );
       }
 
-      // Posición de la ventana...
+      // Window position
       GetTextMetrics( lpdis->hDC, &lptm );
       y = ( lpdis->rcItem.bottom + lpdis->rcItem.top - lptm.tmHeight ) / 2;
       x = LOWORD( GetDialogBaseUnits() ) / 2;
@@ -711,10 +715,32 @@ HB_FUNC_STATIC( TCOMBO_EVENTS_DRAWITEM )   // METHOD Events_DrawItem( lParam )
       SetTextColor( lpdis->hDC, FontColor );
       SetBkColor( lpdis->hDC, BackColor );
 
-      // Draws image
+      // Draws image vertically centered
       if( iImage != -1 )
       {
-         ImageList_Draw( oSelf->ImageList, iImage, lpdis->hDC, 0, y, 0 );
+         if( cy < lpdis->rcItem.bottom - lpdis->rcItem.top )                   // there is spare space
+         {
+            y = ( lpdis->rcItem.bottom + lpdis->rcItem.top - cy ) / 2;         // center image
+            dy = cy;                                                           
+         }
+         else
+         {
+            y = lpdis->rcItem.top;                                             // place image at top
+
+            _OOHG_Send( pSelf, s_lAdjustImages );
+            hb_vmSend( 0 );
+
+            if( hb_parl( -1 ) )
+            {
+               dy = ( lpdis->rcItem.bottom - lpdis->rcItem.top );              // clip exceeding pixels or stretch image
+            }
+            else
+            {
+               dy = cy;                                                        // use real size
+            }
+         }
+
+         ImageList_DrawEx( oSelf->ImageList, iImage, lpdis->hDC, 0, y, cx, dy, CLR_DEFAULT, CLR_NONE, ILD_NORMAL );
       }
 
       // Focused rectangle
@@ -741,20 +767,21 @@ HB_FUNC_STATIC( TCOMBO_EVENTS_MEASUREITEM )   // METHOD Events_MeasureItem( lPar
    _OOHG_Send( pSelf, s_nTextHeight );
    hb_vmSend( 0 );
    iSize = hb_parni( -1 );
-   if( ! iSize )
+
+   hFont = oSelf->hFontHandle;
+
+   hOldFont = ( HFONT ) SelectObject( hDC, hFont );
+   GetTextExtentPoint32( hDC, "_", 1, &sz );
+
+   SelectObject( hDC, hOldFont );
+   ReleaseDC( hWnd, hDC );
+
+   if( iSize < sz.cy + 2 )
    {
-      hFont = oSelf->hFontHandle;
-
-      hOldFont = ( HFONT ) SelectObject( hDC, hFont );
-      GetTextExtentPoint32( hDC, "_", 1, &sz );
-
-      SelectObject( hDC, hOldFont );
-      ReleaseDC( hWnd, hDC );
-
-      iSize = sz.cy;
+      iSize = sz.cy + 2;
    }
 
-   lpmis->itemHeight = iSize + 2;
+   lpmis->itemHeight = iSize;
 
    hb_retnl( 1 );
 }

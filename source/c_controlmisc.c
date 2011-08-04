@@ -1,5 +1,5 @@
 /*
- * $Id: c_controlmisc.c,v 1.57 2010-06-17 02:24:03 guerra000 Exp $
+ * $Id: c_controlmisc.c,v 1.58 2011-08-04 01:13:12 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -181,6 +181,7 @@ char *s_SymbolNames[] = { "EVENTS_NOTIFY",
                           "ONRDBLCLICK",
                           "ONMDBLCLICK",
                           "ONDROPFILES",
+                          "LADJUSTIMAGES",
                           "LastSymbol" };
 
 void _OOHG_Send( PHB_ITEM pSelf, int iSymbol )
