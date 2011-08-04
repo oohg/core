@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.53 2011-08-04 01:13:12 fyurisich Exp $
+ * $Id: h_combo.prg,v 1.54 2011-08-04 19:33:23 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -97,15 +97,17 @@
 #include "i_windefs.ch"
 
 CLASS TCombo FROM TLabel
-   DATA Type          INIT "COMBO" READONLY
-   DATA WorkArea      INIT ""
-   DATA Field         INIT ""
-   DATA ValueSource   INIT ""
-   DATA nTextHeight   INIT 0
-   DATA aValues       INIT {}
-   DATA nWidth        INIT 120
-   DATA nHeight2      INIT 150
-   DATA lAdjustImages INIT .F.
+   DATA Type                  INIT "COMBO" READONLY
+   DATA WorkArea              INIT ""
+   DATA Field                 INIT ""
+   DATA ValueSource           INIT ""
+   DATA nTextHeight           INIT 0
+   DATA aValues               INIT {}
+   DATA nWidth                INIT 120
+   DATA nHeight2              INIT 150
+   DATA lAdjustImages         INIT .F.
+   DATA ImageListColor        INIT CLR_DEFAULT
+   DATA ImageListFlags        INIT LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
 
    METHOD Define
    METHOD nHeight             SETGET
@@ -116,11 +118,9 @@ CLASS TCombo FROM TLabel
    METHOD RefreshData
    METHOD DisplayValue        SETGET    /// Caption Alias
    METHOD PreRelease
-
    METHOD Events_Command
    METHOD Events_DrawItem
    METHOD Events_MeasureItem
-
    METHOD AddItem
    METHOD DeleteItem
    METHOD DeleteAllItems      BLOCK { |Self| TCombo_DeleteAllItems2( ::hWnd ) , ::xOldValue := nil }
@@ -128,7 +128,6 @@ CLASS TCombo FROM TLabel
    METHOD ItemCount
    METHOD ShowDropDown
    METHOD SelectFirstItem     BLOCK { |Self| ComboSetCursel( ::hWnd, 1 ) }
-   
    METHOD GetDropDownWidth
    METHOD SetDropDownWidth
    METHOD AutosizeDropDown
@@ -146,7 +145,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, rows, value, fontname, ;
                uEnter, HelpId, invisible, notabstop, sort, bold, italic, ;
                underline, strikeout, itemsource, valuesource, displaychange, ;
                ondisplaychangeprocedure, break, GripperText, aImage, lRtl, ;
-               TextHeight, lDisabled, lFirstItem, lAdjustImages ) CLASS TCombo
+               TextHeight, lDisabled, lFirstItem, lAdjustImages, backcolor, ;
+               fontcolor ) CLASS TCombo
 *-----------------------------------------------------------------------------*
 Local ControlHandle , WorkArea , cField, nStyle
 
@@ -166,7 +166,7 @@ Local ControlHandle , WorkArea , cField, nStyle
       ValueSource := NIL
    EndIf
 
-   ::SetForm( ControlName, ParentForm, FontName, FontSize, , , .t. , lRtl )
+   ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, .t. , lRtl )
    ::SetFont( , , bold, italic, underline, strikeout )
 
    If ValType( ItemSource ) != 'U' .And. Sort == .T.
