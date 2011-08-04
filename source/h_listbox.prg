@@ -1,5 +1,5 @@
 /*
- * $Id: h_listbox.prg,v 1.21 2011-08-04 01:13:12 fyurisich Exp $
+ * $Id: h_listbox.prg,v 1.22 2011-08-04 18:55:11 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -97,17 +97,19 @@
 #include "i_windefs.ch"
 
 CLASS TList FROM TControl
-   DATA Type          INIT "LIST" READONLY
-   DATA nWidth        INIT 120
-   DATA nHeight       INIT 120
-   DATA nTextHeight   INIT 0
-   DATA bOnEnter      INIT nil
-   DATA lAdjustImages INIT .F.
+   DATA Type                  INIT "LIST" READONLY
+   DATA nWidth                INIT 120
+   DATA nHeight               INIT 120
+   DATA nTextHeight           INIT 0
+   DATA bOnEnter              INIT nil
+   DATA lAdjustImages         INIT .F.
+   DATA ImageListColor        INIT CLR_DEFAULT
+   DATA ImageListFlags        INIT LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
 
    METHOD Define
    METHOD Define2
-   METHOD Value            SETGET
-   METHOD OnEnter          SETGET
+   METHOD Value               SETGET
+   METHOD OnEnter             SETGET
    METHOD Events_Command
    METHOD Events_DrawItem
    METHOD Events_MeasureItem
@@ -116,11 +118,6 @@ CLASS TList FROM TControl
    METHOD DeleteAllItems      BLOCK { | Self | ListBoxReset( ::hWnd ) }
    METHOD Item
    METHOD ItemCount           BLOCK { | Self | ListBoxGetItemCount( ::hWnd ) }
-/*
-   METHOD FontColor      SETGET
-   METHOD BackColor      SETGET
-*/
-
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
