@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog,v 1.733 2011-08-04 01:27:09 fyurisich Exp $
+ * $Id: ChangeLog,v 1.734 2011-08-04 13:30:43 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2011-08-04 10:30:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_listbox.ch
+   * include/i_combobox.ch
+     * Changed ADJUST was substituted by FIT to avoid confusion with AUTOADJUST.
 
 2011-08-03 22:20:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_listbox.prg

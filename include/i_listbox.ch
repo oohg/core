@@ -1,5 +1,5 @@
 /*
- * $Id: i_listbox.ch,v 1.6 2011-08-04 01:15:53 fyurisich Exp $
+ * $Id: i_listbox.ch,v 1.7 2011-08-04 13:30:19 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -120,7 +120,7 @@
                 [ ON ENTER <enter> ]            ;
                 [ <disabled: DISABLED> ]        ;
                 [ SUBCLASS <subclass> ]         ;
-                [ IMAGE <aImage> [ <adjust: ADJUST> ] ] ;
+                [ IMAGE <aImage> [ <fit: FIT> ] ] ;
                 [ TEXTHEIGHT <textheight> ] ;
 	=>;
         [ <obj> := ] _OOHG_SelectSubClass( iif( <.multiselect.>, TListMulti(), TList() ), [ <subclass>() ] ): ;
@@ -130,7 +130,7 @@
                         <helpid>, <.invisible.>, <.notabstop.>, <.sort.> , ;
 			<.bold.>, <.italic.>, <.underline.>, <.strikeout.> ,;
                         <backcolor> , <fontcolor> , <.rtl.>, <.disabled.>, <{enter}>, ;
-                        <aImage>, <textheight>, <.adjust.> )
+                        <aImage>, <textheight>, <.fit.> )
 
 // SPLITBOX VERSION
 
@@ -164,7 +164,7 @@
                 [ ON ENTER <enter> ]            ;
                 [ <disabled: DISABLED> ]        ;
                 [ SUBCLASS <subclass> ]         ;
-                [ IMAGE <aImage> [ <adjust: ADJUST> ] ] ;
+                [ IMAGE <aImage> [ <fit: FIT> ] ] ;
                 [ TEXTHEIGHT <textheight> ] ;
 	=>;
         [ <obj> := ] _OOHG_SelectSubClass( iif( <.multiselect.>, TListMulti(), TList() ), [ <subclass>() ] ): ;
@@ -174,5 +174,5 @@
 		<.invisible.>, <.notabstop.>, <.sort.> ,<.bold.>, ;
 		<.italic.>, <.underline.>, <.strikeout.> , <backcolor> , ;
                 <fontcolor> , <.rtl.>, <.disabled.>, <{enter}>, ;
-                <aImage>, <textheight>, <.adjust.> )
+                <aImage>, <textheight>, <.fit.> )
 
