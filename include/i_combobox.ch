@@ -1,5 +1,5 @@
 /*
- * $Id: i_combobox.ch,v 1.7 2008-09-07 23:12:56 guerra000 Exp $
+ * $Id: i_combobox.ch,v 1.8 2011-08-04 01:15:53 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -116,7 +116,7 @@
 		[ <notabstop : NOTABSTOP> ] ;
 		[ HELPID <helpid> ] 		;
 		[ <invisible : INVISIBLE> ] ;
-                [ IMAGE <aImage> ] ;
+                [ IMAGE <aImage> [ <adjust: ADJUST> ] ];
 		[ <sort : SORT> ] ;
                 [ <rtl: RTL> ] ;
                 [ TEXTHEIGHT <textheight> ] ;
@@ -132,7 +132,7 @@
                 <.italic.>, <.underline.>, <.strikeout.> , <(itemsource)> , ;
                 <(valuesource)> , <.displaychange.> , ;
                 <{ondisplaychangeprocedure}> ,  .f. , "", <aImage>, <.rtl.>, ;
-                <textheight>, <.disabled.>, <.firstitem.> )
+                <textheight>, <.disabled.>, <.firstitem.>, <.adjust.> )
 
 // SPLITBOX VERSION
 
@@ -163,7 +163,7 @@
 		[ GRIPPERTEXT <grippertext> ] ;
 		[ <break: BREAK> ] ;
 		[ <invisible : INVISIBLE> ] ;
-                [ IMAGE <aImage> ] ;
+                [ IMAGE <aImage> [ <adjust: ADJUST> ] ] ;
 		[ <sort : SORT> ] ;
                 [ <rtl: RTL> ] ;
                 [ TEXTHEIGHT <textheight> ] ;
@@ -178,4 +178,4 @@
                   <.sort.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , ;
                   <(itemsource)> , <(valuesource)> , <.displaychange.> , ;
                   <{ondisplaychangeprocedure}> , <.break.> , <grippertext>, <aImage>, ;
-                  <.rtl.>, <textheight>, <.disabled.>, <.firstitem.> )
+                  <.rtl.>, <textheight>, <.disabled.>, <.firstitem.>, <.adjust.> )

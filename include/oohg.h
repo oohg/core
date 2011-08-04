@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.h,v 1.46 2010-07-06 21:24:50 guerra000 Exp $
+ * $Id: oohg.h,v 1.47 2011-08-04 01:15:53 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -198,7 +198,8 @@ PHB_ITEM _OOHG_GetExistingObject( HWND hWnd, BOOL bForm, BOOL bForceAny );
 #define s_OnRDblClick          67
 #define s_OnMDblClick          68
 #define s_OnDropFiles          69
-#define s_LastSymbol           70
+#define s_lAdjustImages        70
+#define s_LastSymbol           71
 
 #ifdef __XHARBOUR__
    #define HB_STORNI( n, x, y )   hb_storni( n, x, y )
