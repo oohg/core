@@ -1,5 +1,5 @@
 /*
- * $Id: i_combobox.ch,v 1.9 2011-08-04 13:30:19 fyurisich Exp $
+ * $Id: i_combobox.ch,v 1.10 2011-08-04 19:40:16 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -123,6 +123,8 @@
                 [ SUBCLASS <subclass> ]         ;
                 [ <disabled : DISABLED> ] ;
                 [ <firstitem : FIRSTITEM> ] ;
+		[ BACKCOLOR <backcolor> ] ;
+		[ FONTCOLOR <fontcolor> ] ;
 	=>;
         [ <obj> := ] _OOHG_SelectSubClass( TCombo(), [ <subclass>() ] ): ;
                 Define( <(name)>, <(parent)>, <col>, <row>, <w>, <aRows> , <value>, ;
@@ -132,7 +134,7 @@
                 <.italic.>, <.underline.>, <.strikeout.> , <(itemsource)> , ;
                 <(valuesource)> , <.displaychange.> , ;
                 <{ondisplaychangeprocedure}> ,  .f. , "", <aImage>, <.rtl.>, ;
-                <textheight>, <.disabled.>, <.firstitem.>, <.fit.> )
+                <textheight>, <.disabled.>, <.firstitem.>, <.fit.>, <backcolor>, <fontcolor> )
 
 // SPLITBOX VERSION
 
@@ -170,6 +172,8 @@
                 [ SUBCLASS <subclass> ]         ;
                 [ <disabled : DISABLED> ] ;
                 [ <firstitem : FIRSTITEM> ] ;
+		[ BACKCOLOR <backcolor> ] ;
+		[ FONTCOLOR <fontcolor> ] ;
 	=>;
         [ <obj> := ] _OOHG_SelectSubClass( TCombo(), [ <subclass>() ] ): ;
                   Define( <(name)>, <(parent)>, , , <w>, <aRows> , <value>, ;
@@ -178,4 +182,4 @@
                   <.sort.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , ;
                   <(itemsource)> , <(valuesource)> , <.displaychange.> , ;
                   <{ondisplaychangeprocedure}> , <.break.> , <grippertext>, <aImage>, ;
-                  <.rtl.>, <textheight>, <.disabled.>, <.firstitem.>, <.fit.> )
+                  <.rtl.>, <textheight>, <.disabled.>, <.firstitem.>, <.fit.>, <backcolor>, <fontcolor> )
