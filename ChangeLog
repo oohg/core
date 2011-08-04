@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.735 2011-08-04 18:55:43 fyurisich Exp $
+ * $Id: ChangeLog,v 1.736 2011-08-04 19:35:21 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,9 +7,20 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2011-08-04 16:35:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_combo.prg
+     ! Fixed images shown without transparency.
+     + Added support for BACKCOLOR and FONTCOLOR clauses at control definition.
+   * include/i_combobox.ch
+     + Added BACKCOLOR and FONTCOLOR clauses.
+   * doc/classes.txt
+     + Added DATA ImageListColor and DATA ImageListFlags in TCOMBO class.
+
 2011-08-04 15:55:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_listbox.prg
      ! Fixed images shown without transparency.
+   * doc/classes.txt
+     + Added DATA ImageListColor and DATA ImageListFlags in TLIST class.
 
 2011-08-04 10:30:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_listbox.ch
