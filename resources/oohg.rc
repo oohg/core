@@ -1,6 +1,8 @@
 //
-// $Id: oohg.rc,v 1.3 2009-12-13 21:34:31 declan2005 Exp $
+// $Id: oohg.rc,v 1.4 2011-08-05 18:25:43 fyurisich Exp $
 //
+// Use this file with MinGW Compiler
+
 #include "_oohg_resconfig.h"
 
 // MANIFEST FOR CREATE 'XP-STYLE' APPLICATIONS
@@ -23,6 +25,7 @@ MINIGUI_EDIT_PRINT      BITMAP          oohgpath\edit_print.bmp
 MINIGUI_EDIT_ADD        BITMAP          oohgpath\edit_add.bmp
 MINIGUI_EDIT_DEL        BITMAP          oohgpath\edit_del.bmp
 MINIGUI_EDIT_SET        BITMAP          oohgpath\edit_set.bmp
+MINIGUI_EDIT_UNDO       BITMAP          oohgpath\edit_undo.bmp
 
 ZZZ_AAAWINDOW           ICON            oohgpath\WINDOW.ICO
 ZZZ_LED_ON              ICON            oohgpath\LED_ON.ICO
