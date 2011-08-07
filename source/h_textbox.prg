@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.66 2011-07-10 21:11:53 declan2005 Exp $
+ * $Id: h_textbox.prg,v 1.67 2011-08-07 23:32:09 nulcrc Exp $
  */
 /*
  * ooHG source code:
@@ -378,12 +378,13 @@ Local lWhen:=.t.
             ::DoAutoSkip()
          EndIf
       EndIf
-      Return nil
+      Return ::Super:Events_Command( wParam )
 
    elseif Hi_wParam == EN_KILLFOCUS
       if !::When_Procesing
 		::When_Processed:=.f.
 	  end
+	  //::SetFont( ::cFontName, ::nFontSize, ::Bold, ::Italic, ::Underline, ::Strikeout )
       Return ::DoLostFocus()
 
    elseif Hi_wParam == EN_SETFOCUS
@@ -399,11 +400,13 @@ Local lWhen:=.t.
 	  if ::When_Processed=.T.
 		if lWhen
 			::SetFocus()
+			//::FontHandle := _SetFont( ::hWnd, ::cFocusFontName, ::nFocusFontSize, ::FocusBold, ::FocusItalic, ::FocusUnderline, ::FocusStrikeout )
+			//::SetFont( ::cFocusFontName, ::nFocusFontSize, ::FocusBold, ::FocusItalic, ::FocusUnderline, ::FocusStrikeout )
 			::DoEvent( ::OnGotFocus, "GOTFOCUS" )
-			Return nil
+			Return ::Super:Events_Command( wParam )
 		else
 			_SetNextFocus()
-			Return nil
+			Return ::Super:Events_Command( wParam )
 		end
 	  end
    Endif

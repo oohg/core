@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.214 2011-07-15 14:35:33 fyurisich Exp $
+ * $Id: h_windows.prg,v 1.215 2011-08-07 23:32:09 nulcrc Exp $
  */
 /*
  * ooHG source code:
@@ -189,6 +189,16 @@ CLASS TWindow
    DATA Italic              INIT .F.
    DATA Underline           INIT .F.
    DATA Strikeout           INIT .F.
+   //CGR
+   DATA cFocusFontName           INIT ""
+   DATA nFocusFontSize           INIT 0
+   DATA FocusBold                INIT .F.
+   DATA FocusItalic              INIT .F.
+   DATA FocusUnderline           INIT .F.
+   DATA FocusStrikeout           INIT .F.
+   DATA FocusColor
+   DATA FocusBackColor
+   
    DATA RowMargin           INIT 0
    DATA ColMargin           INIT 0
    DATA Container           INIT nil
