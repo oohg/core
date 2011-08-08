@@ -1,0 +1,2997 @@
+/*
+ * $Id: ChangeLog.002,v 1.1 2011-08-08 19:14:15 guerra000 Exp $
+ */
+/* Use this format for the entry headers:
+   YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
+   For example:
+   2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
+*/
+
+2011-08-09 01:26 UTC+000 Cayetano Gomez <cayetano@gomezgil.es>
+  * source/h_controlmisc.prg
+  * source/h_window.prg
+  * source/h_textbox.prg
+    + added suppor for font and control color changed on focus
+
+2011-08-05 16:43:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   + resources/*
+     + Added missing resources.
+   * resources/oohg.rc
+     + Added edit_undo.bmp
+   * resources/CompileRes.bat
+     * Changed to use an input file suitable for BCC (oohg_bcc.rc).
+     + Added resource file compilation with MinGW.
+   + resources/oohg_bcc.rc
+     + Added resource file suitable for BCC.
+   * resources/oohg.res
+     * Updated.
+   + resources/oohg.o
+     + Added missing file.
+
+2011-08-04 16:35:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_combo.prg
+     ! Fixed images shown without transparency.
+     + Added support for BACKCOLOR and FONTCOLOR clauses at control definition.
+   * include/i_combobox.ch
+     + Added BACKCOLOR and FONTCOLOR clauses.
+   * doc/classes.txt
+     + Added DATA ImageListColor and DATA ImageListFlags in TCOMBO class.
+
+2011-08-04 15:55:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_listbox.prg
+     ! Fixed images shown without transparency.
+   * doc/classes.txt
+     + Added DATA ImageListColor and DATA ImageListFlags in TLIST class.
+
+2011-08-04 10:30:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_listbox.ch
+   * include/i_combobox.ch
+     * Changed ADJUST was substituted by FIT to avoid confusion with AUTOADJUST.
+
+2011-08-03 22:20:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_listbox.prg
+   * source/h_combo.prg
+   * include/i_listbox.ch
+   * include/i_combobox.ch
+   * include/oohg.h
+   * source/c_controlmisc.c
+   * doc/classes.txt
+     ! Fixed images not being placed correctly.
+     + Added ADJUST clause to clip down images bigger than TEXTHEIGHT (by default
+       a bigger image overlaps the next item´s image).
+     * Changed if TEXTHEIGHT is not enough to display the text, the height
+       defaults to the text height plus 2 pixels.
+
+2011-07-30 17:30:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_listbox.prg
+   * include/i_listbox.ch
+     + Added IMAGE and TEXTHEIGHT clauses to LISTBOX control so
+       TList and TListMulti classes can display images.
+
+2011-07-28 23:16:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_combo.prg
+     ! Fixed not displaying images in combobox.
+
+2011-07-23 12:20:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * include/i_menu.ch
+  * include/i_window.ch
+  * source/h_menu.prg
+  * source/c_image.c
+    + Added method Stretch to TMenuItem class: by default XP clips big images
+      while Vista and Win7 show them at their real size, use STRETCH to scale down.
+    + Added checked state bitmap to TMenuItem class.
+    * Changed parameter of Picture method in TMenuItem class: instead of just
+      receiving the unchecked state image's name, now can also receive a two
+      element array with the name of the unchecked state image in position 1
+      and the name of the checked state image in position 2.
+    * Changed return value of Picture method in TMenuItem class: instead of
+      returning the unchecked state image's name, now returns a two
+      element array with the name of the unchecked state image in position 1
+      and the name of the checked state image in position 2.
+    + Added releasing of old images whenever changed and on item release.
+    ! Fixed wrong images colors on Win7.
+
+2011-07-17 09:39 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  + doc/Stream.txt
+  + samples/oohg/chat.prg
+  + samples/oohg/stream/TStream.prg
+  + samples/oohg/stream/TStreamSerial.prg
+  + samples/oohg/stream/TStreamSocket.prg
+  + samples/oohg/stream/TStreamSSL.prg
+  + samples/oohg/stream/TStreamZip.prg
+    + TStream class added.
+
+2011-07-16 16:20:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * source/h_controlmisc.prg
+  * include/i_window.ch
+    + Added support for ColumnBetterAutofit and ColumnsBetterAutofit
+      methods in non-oop syntax.
+
+2011-07-15 11:40:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * source/c_winapimisc.c
+    + Added MAKELPARAM function.
+  * source/c_image.c
+  * source/h_windows.prg
+    ! Fixed some compiler warnings.
+  * include/i_windefs.ch
+  * include/i_window.ch
+  * source/h_combo.prg
+    + Added CaretPos, SetEditSel and GetEditSel methods to TCombo class.
+  * include/i_windefs.ch
+  * include/i_window.ch
+  * include/i_datepicker.ch
+  * source/h_datepicker.prg
+  * source/h_controlmisc.prg
+    + Added support for SetRange method of TDatePick class in non-oop syntax.
+
+2011-07-13 18:25:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * source/c_image.c
+  * source/h_button.prg
+    ! Fixed ICON images not correctly displayed in menu items under Win7.
+
+2011-07-12 17:10:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_print.prg
+    ! fixed problem in fillrect of hbprinter printer mode
+
+2011-07-11 23:15:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * source/c_image.c
+    ! Fixed ICON images allways loaded as 32x32, now they are loaded
+      with their real size.
+    ! Fixed ICON images not being show in menu items.
+
+2011-07-11 16:06:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * source/h_status.prg
+    ! Fixed image not shown in statusbar.
+
+2011-07-10 23:37:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * source/c_image.c
+    ! Fixed loading ICON images.
+
+2011-07-10 17:10:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_textbox.prg
+    * added a call to scrollcaret in caretpos method
+
+2011-07-10 12:15:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * doc/classes.txt
+  * source/h_textbox.txt
+  * include/i_windefs.ch
+  * include/i_this.ch
+  * include/i_window.ch
+    + Added ScrollCaret method to TText class.
+      Contributed by Sergio Castellari.
+
+2011-07-08 10:34:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * compile_mingw.bat
+    ! Fixed _oohg_resconfig.h not being deleted after compiling.
+
+2011-07-06 23:24:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * compile_mingw.bat
+    ! Fixed ooHg.res not being compiled when application rc is present.
+
+2011-07-06 18:59 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_controlmisc.prg
+  * source/h_tab.prg
+    + TControlGroup class added. It allows to manage multiple
+      controls at once.
+
+2011-07-06 18:59 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_controlmisc.prg
+    ! Fixed _OOHG_UnTransform() when there's no mask.
+
+2011-07-06 10:49:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * source/miniprint.prg
+    + Added localized title to GetFolder window in procedure _HMG_printer_savepages.
+    * Replaced english message in GetPrinter function with localized message.
+    * Messages not found in original HBPRINTER module are placed above position
+      100 in array to avoid posible conflicts.
+    ! Fixed preview window does not get the focus when first displayed.
+    ! Fixed some compiler warnings.
+
+2011-07-06 09:21:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * source/h_msgbox.prg
+    + Added posibility of changing default message and title in message functions.
+    ! Fixed MsgInfoExt to avoid translating chr(13)+chr(10) into chr(13)+chr(10)+chr(10).
+    ! Fixed some compiler warnings.
+    * Changed static function autotype to public.
+
+2011-07-05 23:16 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_print.prg
+    ! Removed unused variables.
+
+2011-07-05 21:41 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/miniprint.prg
+    ! Fixed crash when system doesn't have any printer on
+      GetPrinter() function. Reported and fixed by
+      Fernando Yurisich.
+
+2011-07-05 08:10:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_error.prg
+    * updated version number
+
+2011-07-04 20:50:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * source/h_tree.prg
+    ! fixed nodeimages not shown.
+
+2011-07-02 20:10:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_print.prg
+    ! fixed problem in vertical barcodes.
+
+2011-07-02 16:26:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * samples\oohg\browsecolumncontrols.dbf
+  * samples\oohg\browsecolumncontrols.prg
+    * Modified to show how to edit date fields in a browse using
+      TGridControlDatePicker class.
+
+2011-07-02 16:24:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * doc/classes.txt
+    + Added data LSHOWNONE to TGridControlDatePicker class.
+
+2011-07-02 16:23:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * source/h_grid.prg
+    + Added SHOWNONE style to TGridControlDatePicker class.
+
+2011-07-01 19:20:00 UTC-0300 Fernando Yurisich <fernando.yurisich@gmail.com>
+  * source/makelib_mingw.bat
+    ! fixed check for already defined environment variables.
+
+2011-07-01 16:41:00 UTC-0300 Fernando Yurisich <fernando.yurisich@gmail.com>
+  * source/h_browse.prg
+    ! Fixed crash when repainting a minimized browse.
+
+2011-07-01 15:56:00 UTC-0300 Fernando Yurisich <fernando.yurisich@gmail.com>
+  * source/makelib_mingw.bat
+    + Added check for already defined environment variables.
+
+2011-06-29 21:12:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_print.prg
+    ! fixed barcode parameters  nlin , ncol,   cbarcode , ctipo,       , acolor , lhori          , nwidth, nheight
+                                line  , column , barcode , barcode type , color  , .f. = vertical , bar width , bar heihgt
+
+2011-06-29 17:58 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_toolbar.prg
+    ! Added missing dynamic tooltip functionality.
+  * source/h_form.prg
+  * source/h_tooltip.prg
+    + TForm:ToolTipWidth and TForm:ToolTipMultiline methods added.
+
+2011-06-27 22:15:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_print.prg
+    * improving PDFPRINT barcode
+
+2011-06-27 20:45:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_print.prg
+    * barcode printing without fonts (second approach)
+    +  added barcode printing to PDFPRINT   (I don't know if it's ok) 
+    ! fixed call to FILLRECT in order to print barcodes in hbprinter.  
+
+2011-06-24 20:30:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_print.prg
+    +  added barcode printing without fonts  (first approach)
+  * source/winprint.prg
+    ! fixed problm saving documents in hbprint preview 
+
+2011-06-15 14:38 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_form.prg
+  * source/h_windows.prg
+    ! Terminates last popup menu before execute it's action.
+
+2011-06-01 20:37:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_print.prg
+    ! fixed open calc print mode, with or without preview.
+
+2011-05-31 11:05:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_print.prg
+    * now the preview only will be showed if the preview option is true.
+      inluding excell, rtf, html, csv, open calc and pdf formats.
+      If the preview is false, the document will be saved with a default name and nothing will be displayed.
+    * if a name was added then... this documents will be named as is (with or without path)
+    * the pdf format are better now more closer to a normal printing viewing.
+
+2011-05-20 16:23 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_form.prg
+    ! Terminates last popup menu before activate a modal
+      window.
+  * source/h_windows.prg
+    * Removed duplicated GETDC() and RELEASEDC() C wrappers.
+  * source/winprint.prg
+    * Changed RGB() calls to RR_SETRGB().
+  * include/i_windefs.ch
+    * Removed (commented) TRANSPARENT definition.
+      It clashes with TRANSPARENT clause.
+  * source/h_controlmisc.prg
+    * Control's ID assignment will be smaller than 0xF000.
+
+2011-05-09 11:44 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_combo.prg
+    + ::GetDropDownWidth(), ::SetDropDownWidth(),
+      ::AutosizeDropDown() and ::Autosize methods added.
+      Contributed by Fernando Yurisich.
+
+2011-05-09 11:31 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_browse.prg
+    ! Fixed non-unlocking record when it's deleted()
+
+2011-05-08 19:17:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * include/i_textbox.ch
+    + new syntax when clause.
+
+2011-05-08 00:05:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_splitbox.prg
+    ! fixed problem in clientheightused  method.
+
+2011-05-06 23:00:40 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_grid.prg
+    ! fix problem autoadjusting first column.
+
+2011-05-06 18:40 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/winprint.prg   
+    ! fixed no printing problem reported by Bruno.
+  * source/h_print.prg
+  * source/h_pdf.prg
+    ! fixed problem in line spacing and improvement of PDF print.
+  * source/h_textbox.prg 
+    +  added When clause.
+
+2011-04-21 10:59 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_form.prg
+    ! Fixed AUTOADJUST when window is minimized.
+  * source/h_windows.prg
+  * source/miniprint.prg
+    * Fixed unused variables.
+
+2011-04-20 18:40 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/miniprint.prg
+  * include/miniprint.ch 
+    + changed preview (better look) added more drawing options.
+      contributed by Cayetano fixed little problems by ciro.
+  * source/h_windows.prg
+  * source/h_form.prg
+  * source/h_controlmisc.prg
+    + added drawing methods by Cayetano Gomez.
+
+2011-04-14 19:41 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/winprint.prg
+    + Added ::InMemory property. It allows to determine if
+      preview images are stored on temporal files or into
+      memory buffers.
+    . Contributed by Cayetano Gomez.
+
+2011-03-30 16:12 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/winprint.prg
+  + ::NoButtonSave property added. For not show SAVE button in
+    preview window.
+  + ::NoButtonOptions property added. For not show OPTIONS button
+    in preview window.
+  + ::BeforePrint property added. Executed when PRINT button is
+    pressed in preview window. It must returns .T. for allow print.
+  + ::AfterPrint property added. Executed after printing in preview
+    window.
+  + ::BeforePrintCopy property added. Executed previous each
+    document's copy is printed in preview window. It must returns
+    .T. for allow print. Otherwise, printing is stopped.
+  . Contributed by Johan.
+
+2011-03-30 16:12 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_datepicker.prg
+    * Fixed ::Value return value.
+
+2011-03-21 00:36 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_msgbox.prg
+    ! supressing required #include "oohg.ch" changing normal syntax to pure oop.
+
+2011-03-16 17:59 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_toolbar.prg
+    ! Fixed non-BMP image reading.
+
+2011-03-08 11:39 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_windefs.ch
+  * source/h_monthcal.prg
+  * source/h_datepicker.prg
+    + ::SetRange() property added. Borrowed from a
+      HMG Exp contribution.
+    * Minor optimization.
+  * source/h_grid.prg
+    * Casting.
+  * source/h_print.prg
+    * Added missing check for Excel is available on xHarbour.
+
+2011-03-04 22:00 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_grid.prg
+  * source/h_print.prg
+    ! Fixed xHarbour compilation (xHarbour doesn't have Win_Ole*()
+      functions).
+  * source/h_combo.prg
+    ! Fixed ON CHANGE after ::DeleteAllItems() call.
+  * source/h_toolbar.prg
+    + Added ::Picture functionality at runtime.
+
+2011-03-02 13:42 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_grid
+    + ::ColumnHide( ncol ) , ::ColumnShow(  ncol ), ::Columnbetterautofit( ncol), ::ColumnsBetterautoFit() Methods added
+    ! updated toexcel() 
+  * source/h_print
+    ! updated excel printing.
+
+2011-02-28 17:45 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_msgbox.prg
+    + added function MsgBoxExt() based upon contribution of Lucho Miranda.
+
+2011-01-25 18:15 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/winprint.prg
+    * Added JPG, JPEG and GIF types to images read from resource.
+  * source/h_form.prg
+    * Moved ON MOUSECLICK event to WM_LBUTTONDOWN instead of
+      WM_LBUTTONUP.
+
+2011-01-25 13:21 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_edit.prg
+    ! Fixed unused HBPRN variable (not used but declared at
+      winprint.ch ).
+
+2011-01-24 13:39 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * samples/oohg/oohgrecord/xbrowsearray.prg
+    ! Fixed wrong ::Skip() movement.
+  * source/h_windows.prg
+    * Now ::ClientWidth and ::ClientHeight can be assigned.
+
+2011-01-23 17:36 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_xbrowse.prg
+    + ::AddColumn() and ::DeleteColumn() methods added.
+
+2011-01-16 17:43 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_msgbox.prg
+    * make better the autotype function and auto message boxes. Now support display arrays
+
+2011-01-07 13:37 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_error.prg
+    * version updated
+
+2011-01-06 17:14 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_print.prg
+  * source/h_windows.prg
+    * Changed RANDOM() to HB_RANDOM() .
+
+2011-01-04 11:16 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_controlmisc.prg
+    -supressed random() function
+  * include/i_hmg_compat.ch
+    + added random()  redirected to hb_random().
+
+2010-12-01 12:57 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * samples/oohg/oohgrecord/brw_odbc.prg
+    * Prevents "sample PRG code" compilation when NO_SAMPLE
+      macro is defined. Useful for #include .PRG file without
+      sample code.
+  * samples/oohg/oohgrecord/textfile.prg
+    ! Fixed field reading for fixed-width columns.
+  * samples/oohg/oohgrecord/xbrowsearray.prg
+    * Added ::EOF() functionality.
+
+2010-11-29 20:21 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_error.prg
+    * Added user name and computer name in ErrorLog.htm header.
+  * samples/oohg/oohgrecord/px.prg
+  * samples/oohg/oohgrecord/recordmerge.prg
+  * samples/oohg/oohgrecord/xbrowsearray.prg
+    * Prevents "sample PRG code" compilation when NO_SAMPLE
+      macro is defined. Useful for #include .PRG file without
+      sample code.
+  + samples/oohg/oohgrecord/textfile.prg
+    + Textfile-as-database class.
+      NOTE: This class can't be used on XBROWSE control.
+      This allows to read a sequentual text file (delimited or
+      fixed width) as a ooHGRecord class. Since it doesn't have
+      random access, it only supports forward SKIPs (and
+      ::GoTop(), too), but it's an easy way to read these files.
+
+2010-11-06 00:47 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  - source/c_grid.c
+  * source/h_grid.prg
+  * source/common_make.bat
+  * source/makelib_mingw.bat
+    * Moved C code from c_grid.c to h_grid.prg file.
+    - c_grid.c removed.
+  * source/h_grid.prg
+    ! VALID messages can be codeblocks. As suggested by Johan.
+
+2010-10-18 11:41 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_print.prg
+    * added Raw print.
+  * source/h_report.prg
+    * added raw print mode to report
+
+2010-09-02 17:14 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_grid.prg
+    ! Fixed column alignment change when header is changed.
+
+2010-08-27 16:30 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_menu.ch
+  * source/h_menu.prg
+    + NAME clause added to MENU definitions.
+
+2010-08-26 15:03 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_controlmisc.prg
+  * source/h_form.prg
+  * source/h_radio.prg
+  * source/h_tab.prg
+  * source/h_textbox.prg
+  * source/h_windows.prg
+  * source/h_xbrowse.prg
+    + ::ADJUST functionality added. By Cayetano Gomez.
+    + ::ANCHOR functionality added
+    * Attached controls adjusted by ANCHOR functionality.
+    * ::ForceHide() moved to TControl level.
+  * source/h_combo.prg
+    ! ::nHeight value can't be changed after control was created
+      (it's used for dropdown list instead of the visible textbox).
+  * source/h_picture.prg
+    ! ::Redraw() paints image instead of invalidate area (when
+      IMAGE is inside a TAB, TAB is repainted too, so TAB covers
+      IMAGE).
+
+2010-08-15 18:47 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_controlmisc.prg
+  * source/h_tooltip.prg
+    * Moved TTN_GETDISPINFO processing from TControl to TToolTip.
+    ! Fixed dynamic tooltip's buffer.
+    * Added This.* support for tooltip's codeblock.
+
+2010-08-13 18:46 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_windefs.ch
+  * source/h_controlmisc.prg
+  * source/h_tooltip.prg
+    + Added dynamic tooltips.
+
+2010-08-12 18:10 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_grid.prg
+    ! Fixed ITEM value for items out of range.
+  * image/c_image.c
+    ! Some type casting.
+  * source/makelib_vc.bat
+    ! Sets warning 3 for C compilation.
+
+2010-07-25 16:37 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_scroll.prg
+    ! Fixed SCROLLBAR painting update for MinGW.
+      By Fernando Yurisich.
+
+2010-07-19 19:38 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/c_dialogs.c
+  * source/h_dialogs.h
+    + Added 6th parameter to GETFILE(), for select default file name.
+
+2010-07-06 22:28 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_form.prg
+  * source/h_tab.prg
+  * source/h_windows.prg
+    ! Fixed ::RefreshData() execution for controls inside any
+      container.
+  * source/h_grid.prg
+    ! Fixed COLUMNWHEN default value.
+
+2010-07-06 16:32 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_combo.prg
+    * If VALUESOURCE is array, it's used as "value source" for
+      each value.
+  * source/h_grid.prg
+    * Use VALUESOURCE clause.
+  * include/oohg.h
+    ! Added "ltoa" to patched MSVC warnings.
+  * source/c_dialogs.c
+  * source/h_dialogs.h
+    + Added 5th parameter to PUTFILE(), for select default file name.
+
+2010-06-24 19:46 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_grid.prg
+    * Added optional second array to COMBOBOX COLUMNCONTROL type.
+      It can contain a referenced value corresponding to each
+      item.
+  * source/h_combo.prg
+    * Formatting.
+  * source/h_progressmeter.prg
+    ! Type cast.
+  * source/c_activex.c
+    ! Operator priority check.
+
+2010-06-19 18:49 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_print.prg
+    ! trying to fix issue with 2 dialogs when print preview.
+  * source/winprint.prg
+    ! fixed problem in draw text borrowed from HMG extended.
+
+2010-06-16 21:00 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_grid.prg
+    ! Deletes new row when edition is cancelled and it's
+      the first editable column (first grid column can
+      be readonly).
+    + Added ( nColumn, aItems ) parameters to evaluate
+      WHEN column.
+    + Added ( xValue, nColumn, aItems ) parameters to
+      evaluate VALID column.
+    + Added ::OnAppend event.
+    ! ::OnAppend calls are now using ::DoEvent().
+  * source/h_xbrowse.prg
+    - ::OnAppend property is now defined at TGrid.
+    ! ::OnAppend calls are now using ::DoEvent().
+  * source/c_controlmisc.c
+    ! Fixed type cast warning.
+  * include/oohg.h
+    ! Patched MSVC warnings for deprecated functions.
+  * source/h_error.prg
+    * _OOHG_ErrorMessage() function is now public.
+
+2010-05-23 17:06 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_form.prg
+    ! Checks DEFINE WINDOW structure is closed when window
+      is activated, regardless other DEFINE WINDOW structure.
+
+2010-05-21 20:31 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_textbox.prg
+    ! Fixed sign lost when decimal character is pressed and
+      number is zero.
+
+2010-05-15 16:03 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * include/oohg.h
+  * source/c_controlmisc.c
+  * source/c_dialogs.c
+  * source/c_graph.c
+  * source/c_grid.c
+  * source/c_winapimisc.c
+  * source/c_windows.c
+  * source/h_hotkeybox.prg
+  * source/h_ipaddress.prg
+  * source/h_listbox.prg
+  * source/h_status.prg
+  * source/h_tab.prg
+  * source/miniprint.prg
+  * source/winprint.prg
+    * Moved HB_* compatibility commands to oohg.h .
+  * include/i_altsyntax.ch
+  * include/i_monthcal.ch
+  * source/h_monthcal.prg
+    + FONTCOLOR, BACKCOLOR, TITLEFONTCOLOR, TITLEBACKCOLOR,
+      TRAILINGFONTCOLOR and BACKGROUNDCOLOR properties added.
+
+2010-05-14 12:13 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_form.prg
+    ! Fixed to execute ON RELEASE event when a child window
+      is closed due parent window's release.
+
+2010-05-01 20:33 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_textarray.prg
+    + ::CLS() method added.
+  * include/i_button.ch
+  * include/i_picture.ch
+    + ICON clause added (same to PICTURE).
+  * include/i_windefs.ch
+    + GW_* constants added.
+
+2010-04-21 09:29 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_error.prg
+    * change version
+
+2010-03-29 09:54 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * include/i_hmg_compat.ch
+    ! remove duplicate header and optimazing definition
+
+2010-03-28 23:30 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_button.prg
+  * include/i_hmg_compat.ch
+    + add support for BUTTONEX syntax
+
+2010-03-09 12:36 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_splitbox.prg
+    ! Forces to compile with _WIN32_WINNT == 0x0400
+      (fixed previous implementation).
+    ! Removed unused function.
+
+2010-03-08 22:06 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_splitbox.prg
+    ! Forces to compile with _WIN32_WINNT == 0x0400
+      (prevents REBARBANDINFO structure size to be higher than
+      expected).
+
+2010-03-07 21:38 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/c_image.c
+    ! Fixed loading ICON images.
+
+2010-03-05 21:02 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_browse.prg
+    ! Fixed table cleanup when table reachs EOF in DESCENDING mode.
+
+2010-03-04 21:46 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_grid.prg
+    ! Fixed ::AppendItem() for prevent recursive calls.
+
+2010-02-21 23:10 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/winprint.prg
+    * Changed LINESKIP factor.
+  * source/h_form.prg
+    * Prevents a double ::Release() call to MODAL windows.
+
+2010-02-19 22:05 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_activex.prg
+    * finally fixed problem with activex  (thanks again to Oskar Lira)
+
+2010-01-21 03:10 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/c_font.c
+  * source/c_grid.c
+  * source/c_image.c
+  * source/c_winapimisc.c
+  * source/c_windows.c
+  * source/h_activex.prg
+  * source/h_comm.prg
+  * source/h_crypt.prg
+  * source/h_dll.prg
+  * source/h_edit.prg
+  * source/h_grid.prg
+  * source/h_hotkey.prg
+  * source/h_hotkeybox.prg
+  * source/h_hyperlink.prg
+  * source/h_ini.prg
+  * source/h_listbox.prg
+  * source/h_menu.prg
+  * source/h_pdf.prg
+  * source/h_report.prg
+  * source/h_richeditbox.prg
+  * source/h_scrollbutton.prg
+  * source/h_scrsaver.prg
+  * source/h_splitbox.prg
+  * source/h_tab.prg
+  * source/h_tooltip.prg
+  * source/miniprint.prg
+  * source/winprint.prg
+    ! Casting const char * parameters.
+    ! Fixed unused _OOHG_AllVars warning.
+
+2010-01-08 21:24 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_windows.prg
+    + _SetPrevFocus() function added.
+  * source/c_controlmisc.c
+    * Minor formatting.
+
+2009-12-23 18:05 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  + samples/incremental.prg
+    + Incremental search sample.
+  * source/h_media.prg
+  * source/h_progressbar.prg
+  * source/h_timer.prg
+    ! Fixed unused _OOHG_AllVars warning.
+  * source/h_dll.prg
+    ! Fixed arg unused variable.
+  * source/h_toolbar.prg
+  * source/makelib_vc.bat
+    ! Fixed warnings.
+
+2009-12-22 14:05 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_print
+    * added the option to select another port. (by default prn)
+
+2009-12-22 10:35 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_dll.prg
+    * new try for Dlls  made by VIC from scratch.
+
+2009-12-13 21:23 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_dll.prg
+    * Removed unused parameters.
+    * Minor formatting.
+    * Added $Id header.
+
+2009-12-13 15:54 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+   * source/c_activex.c
+   * source/h_activex.prg
+     ! optimizations in activex in order to compile with harbour 2.0
+   * source/h_browse.prg
+     * minor formatting
+   + h_dll.prg
+   * resources/oohg.rc
+   * resources/makeres_mingw.bat
+   * compile_mingw.bat
+       to manage resources in a better way.
+
+2009-11-23 20:47 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  + ./compile_vc.bat
+  + source/makelib_vc.bat
+    + MSVC 9 compilation added.
+  * ./compile_bcc.bat
+    ! Fixed environment variables checkup.
+  * source/h_button.prg
+    ! Fixed BUTTON_IMAGELIST structure definition.
+  * source/miniprint.prg
+    ! Fixed uninitialized variables.
+  * source/h_picture.prg
+    * Removed unused iPage variable.
+  * source/h_editbox.prg
+    ! Fixed unused _OOHG_AllVars warning.
+
+2009-11-22 11:45 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_scroll.prg
+    ! fixed problem in scroll only in harbour and mingw
+
+2009-11-21 17:48 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/c_winapimisc.c
+    * Changed ( BYTE * ) to ( char * ) for filename.
+  * source/h_picture.prg
+    ! Fixed to send WM_NOTIFY when image uses scrollbars.
+  * source/h_dialogs.prg
+    ! Fixed unused _OOHG_AllVars warning.
+
+2009-11-11 01:17 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_picture.prg
+    + ::Rotate() method added.
+
+2009-10-31 12:18 UTC-0400 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_error.prg
+    *  changed version
+
+2009-10-31 09:50 UTC-0400 Ciro Vargas C. <cvc@oohg.org>
+  * include/oohg.ch
+    ! fixed problem when no windows are defined and the program has an msgbox only.
+
+2009-10-30 13:58 UTC-0400 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_radio.prg
+    ! 2 problems fixed when use radiogroup in oop mode.
+
+2009-10-07 14:57 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_textbox.prg
+    ! Fixed blank space inside numeric picture.
+
+2009-10-06 23:21 UTC-0400 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_print.prg
+    ! fixed excel print with mm
+
+2009-10-06 08:11 UTC-0400 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_print.prg
+    * optimization of PDF print in mm and rowcol.
+
+2009-09-29 16:30 UTC-0400 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_print.prg
+    ! fixed to run excelprint with new harbour.
+
+2009-09-28 15:49 UTC-0400 Ciro Vargas C. <cvc@oohg.org>
+  * source/winprint.prg
+  * source/miniprint.prg
+    ! forgeted  upload to CVS
+
+2009-09-28 13:55 UTC-0400 Ciro Vargas C. <cvc@oohg.org>
+  * souce/c_graph.c
+    ! forgeted  upload to CVS
+
+2009-09-23 14:43 UTC-0400 Ciro Vargas C. <cvc@oohg.org>
+  * source/makelib.bat
+  * source/makelib_mingw.bat
+  * compile.bat
+  * compile_mingw.bat
+    * updated in order to use mingw by default.
+
+2009-09-19 14:18 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_splitbox.ch
+    ! Included HORIZONTAL like VERTICAL one.
+      Note: Both works in the same way.
+
+2009-09-14 22:29 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/c_windows.c
+  * source/h_form.prg
+    ! Fixed MDI accelerator keys.
+
+2009-09-13 22:59 UTC-0400 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_activex.prg
+  * source/c_activex.c
+    ! fixed problem to run in new harbour.
+
+2009-09-12 15:16 UTC-0400 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_init.prg
+  * include/oohg.ch
+    * more testing gui mode init
+
+2009-09-11 19:31 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_grid.prg
+    ! Prevents nested edition activated by ENTER key.
+
+2009-09-10 21:47 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_controlmisc.prg
+  * source/h_monthcal.prg
+  * source/h_toolbar.prg
+  * source/h_tree.prg
+    ! Few cast added.
+
+2009-09-09 15:16 UTC-0400 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_report.prg
+    ! removed double #include oohg.ch
+  * source/h_init.prg
+    * testing gui mode init
+  * source/h_error.prg
+    * updated version
+  * include/oohg.ch
+    * testing gui mode init
+
+
+2009-08-25 19:56 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/c_windows.c
+    ! Fixed duplicated functions.
+  * source/h_hotkeybox.prg
+    ! Added missing definitions.
+
+2009-08-23 21:33 UTC-0400 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_ipaddress.prg
+  * source/c_grid.c
+  * source/h_listbox.prg
+  * source/h_tab.prg
+  * source/h_status.prg
+  * source/c_winapimisc.c
+  * source/c_windows.c
+  * source/c_dialogs.c
+  * source/c_controlmisc.c
+  * source/h_hotkeybox.prg
+    !  in order to Run with Harbour 2.0.
+
+
+2009-08-23 12:06 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_tab.prg
+    ! Fixed shown page when current page is hidden.
+
+2009-08-14 19:44 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_browse.prg
+    - Removed horizontal scroll when record changes.
+    * Changed SCROLL resolution from 100 to 1000.
+    ! Fixed ::EOF value when DBSKIP at empty tables (fixed "blank
+      row" painting).
+  * include/i_radiogroup.ch
+    ! Defined OPTIONS clause as optional, for a more flexible
+      declaration in source code.
+      NOTE: This clause is NOT optional!
+
+2009-08-01 08:38 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/c_windows.c
+  * source/h_form.prg
+    ! Fixed MDI client area at MDI client creation.
+
+2009-07-30 23:03 UTC-0400 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_print.prg
+    + added bin selection.
+
+2009-07-26 14:09 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_form.prg
+  * source/h_tab.prg
+  * source/h_textbox.prg
+  * source/h_windows.prg
+    + Added ::AdjustResize() method for control-specific
+      behaviour.
+
+2009-07-25 23:09 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * image/i_textbox.ch
+  * source/h_textbox.prg
+    - Removed BTNTEXTBOX code from HMG Experimental.
+    + Implemented embedded buttons for textbox controls using
+      ooHG style.
+
+2009-07-24 19:04 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/c_windows.c
+    ! Workaround for system lock under Windows Vista.
+
+2009-07-18 21:53 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_form.prg
+    ! Fixed DRAW commands repainting.
+
+2009-07-18 20:50 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_menu.prg
+    ! Fixed main menu refresh when any item is changed.
+    * TMenu:EndMenu() and TMenuItem():EndPopUp() methods redefined.
+
+2009-06-23 11:35 UTC-0400 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_label.prg
+    ! fixed autosize little bug when are changed font, size or atributes in runtime.
+
+2009-06-19 10:51 UTC-0400 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_msgbox.prg
+    * changed static function autotype to public function because may be usefull
+
+2009-06-18 17:24 UTC-0400 Ciro Vargas C. <cvc@oohg.org>
+  * source/miniprint.prg
+    !fixed problem with zoom (exploted with new (on change) changes)
+
+2009-06-12 20:50 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * ./compile_bcc.bat
+    * Reverted path's change.
+  * source/h_button.prg
+    ! Fixed ON CHANGE processing when it's made programatically.
+  * source/common_make.bat
+  - source/c_spinner.c
+  * source/h_spinner.prg
+  * source/makelib_mingw.bat
+    ! Fixed ::RangeMin and ::RangeMax methods.
+    * Moved C code from c_spinner.c to h_spinner.prg file.
+    - c_spinner.c removed.
+  * source/h_error.prg
+    ! Fixed _OOHG_AllVars warning.
+
+2009-06-11 22:34 UTC-0400 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_button.prg
+    * return to previous version.
+  * source/h_dialogs.prg
+    ! fixed browse for folder borrowed from extended.
+
+2009-06-07 22:02 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_grid.prg
+    ! Fixed COMBOBOXTEXT value assignment.
+      Reported and fixed by Fernando Yurisich.
+
+2009-04-24 11:56 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_button.prg
+     ! fixed problem with changing state by program
+  * source/h_form.prg
+     ! return to previous version
+
+2009-04-15 15:02 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_error.prg
+     ! fixed date version.
+  * source/h_textbox.prg
+    source/h_form.prg
+    include/i_textbox.ch
+
+     added optional action button inside textbox.
+
+
+2009-04-09 21:50 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_browse.prg
+  * source/h_xbrowse.prg
+    ! Fixed ON CHANGE activation.
+
+2009-03-27 09:06 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_error.prg
+     changed version.
+
+2009-03-22 16:38 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_form.prg
+  * source/h_splitbox.prg
+  * source/h_status.prg
+  * source/h_toolbar.prg
+  * source/h_windows.prg
+    ! Fixed MDI client area resize.
+
+2009-03-15 23:01 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_label.prg
+  * source/h_progressmeter.prg
+    ! Fixed PROGRESSMETER styles from LABEL changes.
+
+2009-03-15 20:51 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_windows.prg
+    * ::DebugMessageNameNotify() changed to use an array instead
+      of a hash.
+
+2009-03-15 20:07 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_grid.prg
+    + CLICK event added.
+  * source/h_windows.prg
+    + NOTIFY message names.
+
+2009-03-15 18:46 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/c_image.c
+  * source/h_button.prg
+  * source/h_image.prg
+    ! Fixed STRETCH functionality.
+  * source/h_label.prg
+    ! Part to fix (not fixed yed) RADIOGROUP bug with internal windows.
+  * source/h_picture.prg
+    ! Fixed for image with controls overlapped.
+
+2009-03-10 22:41 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/c_windows.c
+    * Changed __MINGW__ to __MINGW32__ for preventing MinGW
+      compilation.
+      Reported by CarozoDeQuilmes.
+  * source/h_picture.prg
+    ! Fixed scrollbar position when scrollbar is hidden.
+  * source/h_grid.prg
+    ! Fixed ::CellCaption() method.
+    * Execute ::DoChange() when ::DeleteAllItems() is called.
+  * source/h_form.prg
+    * Execute ::OnSize during mouse resize when autoadjust is disabled.
+
+2009-03-02 19:51 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_image.ch
+  * source/h_button.prg
+  * source/h_image.prg
+  * source/h_picture.prg
+    * Using TPicture instead of TImage.
+
+2009-03-02 01:12 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/c_image.c
+    + _OOHG_ScaleImage() function added.
+  * source/h_picture.prg
+    + ::Zoom method added.
+    ! Fixed scrollbar issues.
+
+2009-03-01 23:05 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  + include/i_picture.ch
+  * include/oohg.ch
+  * source/common_make.bat
+  * source/makelib_mingw.bat
+  + source/h_picture.prg
+    + TPicture() control added.
+
+2009-03-01 10:05 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_windows.prg
+    + TWindow:BackBitmap method added.
+  * source/h_form.prg
+    ! Small order correction.
+
+2009-02-22 16:00 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_tab.prg
+    ! Only moves to TOP when it's inside any container.
+
+2009-02-20 23:23 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/winprint.prg
+    ! Few casting added.
+
+2009-02-18 20:20 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_browse.prg
+  * source/h_xbrowse.prg
+    ! Fixed scroll position when ::lDescending.
+
+2009-02-15 19:34 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * doc/classes.txt
+  * source/h_browse.prg
+  * source/h_button.prg
+  * source/h_checkbox.prg
+  * source/h_combo.prg
+  * source/h_controlmisc.prg
+  * source/h_datepicker.prg
+  * source/h_grid.prg
+  * source/h_listbox.prg
+  * source/h_monthcal.prg
+  * source/h_radio.prg
+  * source/h_scroll.prg
+  * source/h_slider.prg
+  * source/h_spinner.prg
+  * source/h_tab.prg
+  * source/h_textbox.prg
+  * source/h_xbrowse.prg
+    + ::DoChange() method added. It prevents a double OnChange call.
+
+2009-02-13 20:10 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_browse.prg
+    ! Fixed ::DbSkip() method when ::lDescending and record moves
+      to EOF().
+  * source/winprint.prg
+    ! Don't ask for HBPRN at class creation (but reference it
+      for compiler warning).
+  * include/i_browse.ch
+  * include/i_xbrowse.ch
+    + DESCENDING clause added.
+
+2009-02-08 18:20 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_internal.prg
+    ! Fixed BACKCOLOR assignment.
+
+2009-02-04 23:17 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_browse.ch
+  * include/i_xbrowse.ch
+    * Added PARENT clause like OF.
+
+2009-01-25 9:21 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_print.prg
+    ! fixed problem with document names in pdfprint.
+
+2009-01-21 23:36 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/c_windows.c
+    * Removed AnimateWindow() for MinGW compiler.
+
+2009-01-20 16:06 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_grid.prg
+    ! fixed little problem.
+
+2009-01-18 22:47 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_grid.prg
+    ! Simplified TGrid:AppendItem() method.
+
+2009-01-06 22:29 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_browse.prg
+    ! Fixed typos from previous commit.
+  * include/i_media.ch
+    ! Fixed preprocessor commands.
+  * source/c_msgbox.c
+  * source/h_msgbox.prg
+    + MsgYesNoCancel() function added.
+
+2009-01-01 19:55 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/winprint.prg
+    ! Prevents some GPF traps.
+
+2008-12-31 17:03 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_browse.prg
+    ! Fixed record update on ::Delete() method when BROWSESYNC is ON.
+  * include/i_windefs.ch
+  * source/h_form.prg
+    + ::NotifyIconDblClick, ::NotifyIconRDblClick, ::NotifyIconMidClick
+      and ::NotifyIconMDblClick properties added (left, right and middle
+      buttons' double click functionality).
+
+2008-12-10 22:51 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  + samples/oohg/recordmerge.prg
+    + Multiple databases on a single XBROWSE sample.
+
+2008-12-10 19:56 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_datepicker.prg
+    ! Assigns date to "empty" when CTOD("") is assigned to value.
+  * source/h_browse.prg
+    ! Fixed return value for ::DbSkip() method.
+
+2008-12-03 21:43 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_error.prg
+    * changed version.
+
+2008-12-01 16:43 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_tooltip.prg
+   ! Fixed compilation for MinGW.
+
+
+2008-11-30 10:33 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_datepicker.prg
+    ! Fixed compilation for MinGW.
+
+2008-11-30 10:21 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/c_activex.c
+  * source/c_controlmisc.c
+  * source/c_graph.c
+  * source/c_image.c
+  * source/c_windows.c
+  * source/h_combo.prg
+  * source/h_controlmisc.prg
+  * source/h_crypt.prg
+  * source/h_listbox.prg
+  * source/h_menu.prg
+  * source/h_progressmeter.prg
+  * source/h_richeditbox.prg
+  * source/h_status.prg
+  * source/h_textarray.prg
+  * source/h_toolbar.prg
+  * source/h_windows.prg
+  * source/miniprint.prg
+  * source/winprint.prg
+    ! Fixed compilation for MSVC. Thanks to Ron Pinkas.
+
+2008-11-21 16:43 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_print.prg
+    + added name document to PDF print in ::begindoc( cdoc )
+
+2008-11-21 00:37 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_textbox.prg
+    ! Fixed ::MaxLength method when it's valued to 1.
+      Thanks to Fernando Yurisich.
+
+2008-11-11 00:04 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_label.ch
+    + ONCLICK and ON CLICK clauses added to label (same as ACTION).
+  * include/i_checkbox.ch
+  * source/h_checkbox.prg
+    + DISABLED clause added to checkbox.
+  * source/h_textarray.prg
+    ! Fixed BACKCOLOR initialization.
+
+2008-11-02 18:22 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_form.prg
+    * Back color is now managed by ooHG, instead of Window class.
+
+2008-10-31 00:29 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_status.prg
+    + ::SetToolTip and ::GetToolTip methods added.
+  * source/h_controlmisc.prg
+    + Added ROW and COL parameters to CLICK event.
+
+2008-10-27 09:11 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/c_winapimisc.c
+    ! Fixed HB_FHANDLE for older xHarbour versions.
+
+2008-10-27 07:47 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_radio.prg
+    * Added ::OnDblClick and ::OnRClick funcionality.
+
+2008-10-26 21:26 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/c_winapimisc.c
+    ! fixed to run with newer harbour and xharbour versions
+
+2008-10-24 18:23 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_form.prg
+    * Fixed back color's brush destruction for MDICLIENT forms.
+
+2008-10-23 21:39 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_window.ch
+    ! Fixed PARENT definition on DECLARE WINDOW command.
+  * include/oohg.h
+  * source/c_windows.c
+  * source/h_form.prg
+    ! Fixed MDICLIENT assignment.
+    * Moved TForm specific code from c_windows.c to h_form.prg .
+    * Removed duplicated form unregistration at form release.
+    ! Fixed error report when trying to activate an inexistent window.
+
+2008-10-22 01:48 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_radio.prg
+    ! Fixed TABSTOP when value is zero.
+  * include/i_frame.ch
+  * source/h_frame.prg
+    - NOTABSTOP clause added (FRAME is always NOTABSTOP).
+  * source/c_windows.c
+    * Added call and nest count on WndProc processing.
+  * source/h_form.prg
+    * Unregister window when it's released.
+  * source/h_windows.prg
+    * Some message names description added.
+
+2008-10-05 10:32 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * doc/classes.txt
+  * source/c_controlmisc.c
+  * source/common_make.bat
+  * source/h_controlmisc.prg
+  * source/h_form.prg
+  + source/h_tooltip.prg
+  * source/h_windows.prg
+  * source/makelib_mingw.bat
+    + ToolTip control added (management control).
+
+2008-10-04 12:02 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_browse.prg
+    * Fixed message to multi-language when record is locked.
+      Thanks to Fernando Yurisich.
+  * include/i_monthcal.ch
+  * include/i_windefs.ch
+  - source/c_monthcal.c
+  * source/common_make.bat
+  * source/h_monthcal.prg
+  * source/makelib_mingw.bat
+    + DISABLED and SUBCLASS clauses added to MONTHCAL.
+    * Moved C code from c_monthcal.c to h_monthcal.prg file.
+    - c_monthcal.c removed.
+
+2008-09-30 20:07 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/makelib_bcc.bat
+    * TLIB.EXE takes file names from %HG_FILES1_PRG%, %HG_FILES2_PRG%
+      and %HG_FILES_C% .
+
+2008-09-28 19:34 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_ipaddress.ch
+  - source/c_ipaddress.c
+  * source/common_make.bat
+  * source/h_ipaddress.prg
+  * source/makelib_bcc.bat
+  * source/makelib_mingw.bat
+    + DISABLED and SUBCLASS clauses added to IPADDRESS.
+    * Moved C code from c_ipaddress.c to h_ipaddress.prg file.
+    - c_ipaddress.c removed.
+  * source/h_windows.prg
+    + ::DebugMessageQueryNotify() method added.
+
+2008-09-28 13:28 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_progressmeter.prg
+    * Progressmeter must be NOTABSTOP.
+  * source/h_browse.prg
+  * source/h_xbrowse.prg
+    * ::lDescending property added.
+
+2008-09-19 15:38 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/miniprint.prg
+    - removed getdefaultprinter() function from miniprint, now harbour contain this function.
+
+2008-09-09 22:57 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_window.ch
+    ! Fixed .EnableUpdate and .DisableUpdate semi-OOP methods.
+
+2008-09-07 18:06 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_frame.ch
+  - source/c_frame.c
+  * source/common_make.bat
+  * source/h_frame.prg
+  * source/makelib_bcc.bat
+  * source/makelib_mingw.bat
+    + DISABLED, INVISIBLE, NOTABSTOP and SUBCLASS clauses added.
+    * Moved C code from c_frame.c to h_frame.prg file.
+    - c_frame.c removed.
+  * include/i_combobox.ch
+  * source/h_combo.prg
+    + FIRSTITEM clause added.
+    + TCombo:SelectFirstItem() method added.
+  * source/h_tab.prg
+    + ::ItemCount property added. Returns how many pages have.
+  * include/i_altsyntax.ch
+  * include/i_var.ch
+    * _OOHG_ActiveControlInfo converted to an item on
+      _OOHG_AllVars.
+  * source/h_print.prg
+  * source/h_report.prg
+  * source/miniprint.prg
+    ! Warnings from unused variables removed.
+
+2008-09-01 23:47 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_form.prg
+  * source/h_windows.prg
+    * Moved RASCAN() function to h_from.prg
+  * source/c_image.c
+    + _OOHG_RotateImage() function added.
+
+2008-08-31 21:49 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/c_image.c
+    * Fixed scaled image.
+    * Fixed image size from IPicture.
+
+2008-08-31 15:37 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_datepicker.ch
+  * source/h_datepicker.prg
+    + DISABLED, NOBORDER and SUBCLASS clauses added to
+      DATEPICKER and TIMEPICKER controls.
+  - source/c_datepicker.c
+  * source/common_make.bat
+  * source/h_datepicker.prg
+  + source/h_form.prg
+  * source/h_windows.prg
+  * source/makelib_bcc.bat
+  * source/makelib_mingw.bat
+    * Moved C code from c_datepicker.c to h_datepicker.prg file.
+    - c_datepicker.c removed.
+    + Form-specific code moved from h_windows.prg to h_form.prg
+      (there's still some to code must be moved to).
+  * source/h_tab.prg
+    * TAB control is focused when focused control is on the
+      hidden page. Reported by RIT.
+
+2008-08-24 14:27 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_textbox.prg
+    ! Fixed value assignation for text longer than picture mask.
+    ! Fixed keystroke when cursor is at the end of string.
+  * source/h_windows.prg
+    ! Moved some hotkey processing to ::DoEvents().
+
+2008-08-21 14:57 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_init.prg
+     added gtgui default in order to hide console window. Another harbour compilation mode will be used
+
+2008-07-24 20:38 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * include/i_browse.ch
+     * removed @ nil,nil Browse  is not necesary
+
+2008-07-24 18:33 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_init.prg
+     added rdd default for harbour to avoid problems for final users.
+  * source/h_report.prg
+  * include/i_report.ch
+      changed REPORT FORM to REPORTFORMWINDOWS to avoid problems for mixed mode programs.
+  * include/i_browse.ch
+  * include/i_hmg_compat.ch
+      changed BROWSE command in splitbox to @ nil,nil BROWSE and moved to hmgcompat to avoid problems.
+      for mixed mode programs.
+
+2008-07-20 20:39 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_textbox.prg
+    * Fixed @S picture for "2" and "4".
+
+2008-07-19 12:49 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_error.prg
+   ! syntax error in html header
+
+2008-07-14 8:49 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/winprint.prg
+    * change text "cancelar" to "salir" in spanish definition language
+
+2008-07-13 20:40 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_textbox.prg
+    * Modified numeric mask behaviour.
+  * source/h_windows.prg
+    * A few commands added for debug info.
+
+2008-07-12 10:20 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_textbox.prg
+    * Fixed "@!" on TTextPicture().
+    * Fixed UPPERCASE / LOWERCASE clauses for @...TEXTBOX...PICTURE .
+
+2008-07-11 23:57 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * include/oohg.h
+  * source/c_controlmisc.c
+  * source/h_controlmisc.prg
+  * source/h_windows.prg
+    + DROPFILES event added.
+    + TWindow:AcceptFiles method added.
+    + TWindow:OnDropFiles property added.
+    + _OOHG_Eval_Array() function added.
+    + ::DoEvent() can send parameters to event functions.
+  + samples/oohg/DropFiles.prg
+    + Drag and drop files sample.
+  * source/h_windows.prg
+    + More message names added to TWindow:DebugMessageName().
+    * WM_COMMAND shows control-specific command.
+    + TWindow:DebugMessageNameCommand() method added.
+
+2008-06-30 12:05 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * include/i_hmg_compat.ch
+   ! removed TOP clause because conflict with GO TOP
+
+2008-06-27 18:06 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_altsyntax.prg
+    * Converted _OOHG_ActiveControl* memvars to items on
+      _OOHG_ActiveControlInfo[ * ] array.
+  * source/h_xbrowse.prg
+    * Added ON CHANGE processing (it process twice :[ ) when
+      grid's row changes using mouse.
+
+2008-06-24 10:05 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_edit.prg
+   ! fixed problem in edit when use FIELDS clause.
+
+2008-06-18 8:28 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_windows.prg
+    ! foxed problem in focus splitchild (edit extended)
+  * include/i_hmg_compat.ch
+    + added PICTALIGNMENT and TOP for HMG IDE compatiblity
+
+2008-06-02 7:19 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/c_monthcalendar.c
+    + added GETMONTHCALFIRSTDAYOFWEEK  and SETMONTHCALFIRSTDAYOFWEEK  funtcions.
+
+2008-06-02 00:34 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/c_windows.c
+    + ShowWindowNA() function added.
+  * source/h_scroll.prg
+    * Do not force window activation when scrollbar changes.
+  * source/h_windows.prg
+    - ::SetFocusedSplitChild() method integrated to
+      ::SetActivationFocus().
+    * If ::Focused is .F., do not force set focus to window
+      when it's shown.
+    * Animation added to TForm:Show(), TForm:Hide(), TForm:Visible().
+
+2008-05-18 09:34 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_combo.prg
+    + ::ShowDropDown() method added.
+
+2008-04-28 8:30 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_error.prg
+    * change version
+
+2008-04-27 18:15 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_radiogroup.ch
+  * source/h_radio.prg
+    ! Fixed SPACING for horizontal radio.
+    ! Fixed TABSTOP implementation.
+    + DISABLED, RTL, HEIGHT, SUBCLASS clauses added.
+  * source/h_controlmisc.prg
+    ! Fixed visible items inside TABs.
+  * source/h_windows.prg
+    + TWindow:ContainerEnabled property added.
+
+2008-04-26 18:33 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_menu.ch
+    + DEFINE MENU DYNAMIC added.
+
+2008-04-13 13:49 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_image.prg
+    * Removed SS_NOTIFY style from default.
+
+2008-04-04 23:39 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_tab.prg
+    ! Added ON CHANGE processing when tab page is changed via
+      ::Value property.
+
+2008-03-29 23:15 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/c_controlmisc.c
+    ! Fixed transparent color for grid.
+
+2008-03-23 16:10 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_richeditbox.prg
+    * Reverted forced repaint on ::Value and ::RichValue when control
+      is inside a container.
+  * source/h_windows.prg
+    ! Fixed autoadjust error for internal tab pages.
+  * include/i_tab.ch
+  * include/i_windefs.ch
+  * source/h_tab.prg
+    + INVISIBLE, DISABLED and MULTILINE clauses added.
+
+2008-03-17 18:30 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_windefs.ch
+  * source/h_grid.prg
+    + ::AllowChangeSize and ::AllowMoveColumn properties added.
+
+2008-03-16 21:31 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/c_windows.c
+    ! Fixed warning.
+  * source/h_windows.prg
+    ! Fixed some MDI window issues.
+
+2008-03-15 9:11 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_print.prg
+    ! fixed spaces between lines (now are DOS exactly)
+  * source/h_report.prg
+    ! fixed problem in option MULTIPLE graphics in second page or more.
+
+2008-03-10 15:13 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_combo.prg
+    ! Fixed incorrect LOSTFOCUS event processing via BN_KILLFOCUS.
+
+2008-02-24 11:47 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * include/oohg.h
+  * source/c_controlmisc.c
+  * source/c_windows.c
+  * source/h_windows.prg
+    * Locates parent control from "windows-hidden" subcontrols.
+  * source/h_combo.prg
+    * Removed ::oTextBox by above changes.
+
+2008-02-21 00:45 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_richeditbox.prg
+    ! Forces repaint on ::Value and ::RichValue when control is
+      inside a container.
+
+2008-02-20 23:08 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_menu.ch
+  * include/i_windefs.ch
+  * source/h_menu.prg
+    * Menu SEPARATOR is another control.
+    + SUBCLASS clause added.
+  * source/h_combo.prg
+    ! Fixed incorrect LOSTFOCUS event processing via EN_KILLFOCUS.
+
+2008-02-19 09:02 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_checkbox.prg
+    ! Fixed default TRANSPARENT value at ::Define() method.
+
+2008-02-17 20:43 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_windows.prg
+    ! Fixed BREAK warning.
+  - source/c_textbox.c
+  * source/common_make.bat
+  * source/h_textbox.prg
+  * source/makelib_bcc.bat
+  * source/makelib_mingw.bat
+    + Added "@2" and "@4" picture functions for DATE values.
+    + Added "custom" date picture mask. "mm,yyyy,dd" picture works.
+    + ::OnTextFilled property added. It's executed when user types
+      last character of textbox's max length.
+    * Moved C code from c_textbox.c to h_textbox.prg file.
+    - c_textbox.c removed.
+  * include/i_splitbox.ch
+  * include/i_windefs.ch
+  * source/h_splitbox.prg
+    + FORCEBREAK command added.
+    * Splitbox's container validation fixed.
+
+2008-02-16 23:44 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_windows.prg
+    + ::ForceRow and ::ForceCol properties added.
+    + ::TopMost property added.
+  * source/h_controlmisc.prg
+  * source/h_tab.prg
+  * source/h_windows.prg
+    * Fixed ::ContainerRow and ::ContainerCol values.
+  * include/i_altsyntax.ch
+  * include/i_hmg_compat.ch
+  * include/minigui.ch
+    + include/i_hmg_compat.ch file added.
+    + "SETBREAK <l>" command added.
+    * "BREAK <l>" command moved to compatibility file.
+  * source/h_editbox.prg
+    * Uncommented ::SetSplitBoxInfo() command.
+
+2008-02-14 23:50 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_this.ch
+  * include/i_window.ch
+  * source/h_windows.prg
+    + ::MinWidth, ::MaxWidth, ::MinHeight, ::MaxHeight properties added.
+    + MINWIDTH, MAXWIDTH, MINHEIGHT, MAXHEIGHT clauses added.
+  * source/c_winapimisc.prg
+  * source/h_windows.prg
+    * ::DefWindowProc() method added.
+
+2008-02-11 23:41 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_grid.prg
+    + ::SortColumn( nColumn, lDescending ) method added.
+  * source/h_richeditbox.prg
+    + ::RichValue SETGET method added.
+
+2008-02-09 20:37 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_grid.prg
+    * Updates This.Cell* information on HEADCLICK event.
+  * include/i_this.prg
+    * This.Object property added.
+  * include/i_browse.prg
+  * include/i_xbrowse.prg
+  * source/h_browse.prg
+  * source/h_xbrowse.prg
+    + DISABLED, NOTABSTOP and INVISIBLE properties added.
+
+2008-02-03 23:38 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_combo.prg
+  * source/h_windows.prg
+    + ::PreRelease() method added. Prepares control to be destroyed.
+  * source/h_controlmisc.prg
+    * _GetID() doesn't assigns numbers under 2000.
+
+2008-02-01 18:33 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_windows.prg
+    ! Hides window while it's releasing.
+    ! Fixed event processing while window is releasing.
+
+2008-01-30 20:29 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/winprint.prg
+    ! Fixed text alignment on ::DrawText() method.
+
+2008-01-28 11:04 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_prints.prg
+    removed READ ONLY from nfontsize.
+
+2008-01-27 00:45 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_textbox.prg
+    * Removed "*" and "$" mask for focused TTextboxPicture().
+  * source/h_controlmisc.prg
+    * Prevents events execution when form is releasing.
+  * include/oohg.h
+  * source/c_controlmisc.c
+  * source/h_controlmisc.prg
+  * source/h_windows.prg
+    * Added ::Parent:hWnd to _OOHG_aControlIds array, for full
+      hWnd/Id search.
+  * include/winprint.ch
+  * source/winprint.prg
+    + @ y,x PICTURE (cPicture) IMAGESIZE command added. Image assumes
+      original size.
+
+2008-01-20 18:56 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_windows.prg
+    * MODAL windows becomes resizeables by default. It's required
+      to use NOSIZE, NOMINIMIZE, and NOMAXIMIZE clauses.
+
+2008-01-20 18:14 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_hyperlink.prg
+    * Added file:// URL. Suggested by Manfred Güttler.
+  * doc/classes.txt
+  * source/h_controlmisc.prg
+  * source/h_browse.prg
+  * source/h_internal.prg
+  * source/h_splitbox.prg
+  * source/h_status.prg
+  * source/h_textbox.prg
+  * source/h_xbrowse.prg
+  * source/h_windows.prg
+    * ::SaveData() and ::RefreshData() moved to TWindow.
+    * ::SaveData() and ::RefreshData() calls themselves from it's
+      attached controls (TForm:SaveData() saves all controls).
+
+2008-01-14 22:52 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_windows.prg
+    * Fixed ON RELEASE event when ::Release() is called by code.
+
+2008-01-13 20:57 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/common_make.bat
+  * source/makelib_bcc.bat
+  * source/makelib_mingw.bat
+  * source/makelib_pc.bat
+    ! Fixed compilation for Windows 98 and long batch lines.
+
+2008-01-13 19:51 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_combo.prg
+  * source/h_controlmisc.prg
+    * Removed ::Refresh() from TControl():RefreshData().
+  - source/c_crypt.c
+  - source/c_help.c
+  - source/c_ini.c
+  - source/c_timer.c
+  * source/common_make.bat
+  * source/h_crypt.prg
+  * source/h_help.prg
+  * source/h_ini.prg
+  * source/h_timer.prg
+  * source/makelib_bcc.bat
+  * source/makelib_mingw.bat
+    * Moved C code from c_crypt.c to h_crypt.prg file.
+    * Moved C code from c_help.c to h_help.prg file.
+    * Moved C code from c_ini.c to h_ini.prg file.
+    * Moved C code from c_timer.c to h_timer.prg file.
+    - c_crypt.c removed.
+    - c_help.c removed.
+    - c_ini.c removed.
+    - c_timer.c removed.
+
+2008-01-13 18:52 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_button.prg
+  * source/h_checkbox.prg
+  * source/h_controlmisc.prg
+  * source/h_datepicker.prg
+  * source/h_richeditbox.prg
+  * source/h_textbox.prg
+    * ::SetVarBlock() assigns automatically new ::Value from ::Block.
+  * include/i_altsyntax.ch
+  * source/h_button.prg
+  * source/h_checkbox.prg
+  * source/h_datepicker.prg
+  * source/h_grid.prg
+  * source/h_hotkeybox.prg
+  * source/h_image.prg
+  * source/h_internal.prg
+  * source/h_ipaddress.prg
+  * source/h_label.prg
+  * source/h_monthcal.prg
+  * source/h_progressmeter.prg
+  * source/h_radio.prg
+  * source/h_richeditbox.prg
+  * source/h_slider.prg
+  * source/h_spinner.prg
+  * source/h_status.prg
+  * source/h_tab.prg
+  * source/h_textarray.prg
+  * source/h_textbox.prg
+  * source/h_toolbar.prg
+  * source/h_windows.prg
+    * ::OnGotFocus, ::OnLostFocus, ::OnChange, ::OnEnter, ::OnClick
+      initialization allows pre-assigned values.
+
+2008-01-13 16:49 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * doc/classes.txt
+  * source/h_browse.prg
+  * source/h_button.prg
+  * source/h_checkbox.prg
+  * source/h_combo.prg
+  * source/h_internal.prg
+  * source/h_richeditbox.prg
+  * source/h_splitbox.prg
+  * source/h_status.prg
+  * source/h_textbox.prg
+  * source/h_windows.prg
+  * source/h_xbrowse.prg
+    - TForm:BrowseList property removed. All controls will be
+      checked.
+  * source/h_button.prg
+  * source/h_checkbox.prg
+  * source/h_controlmisc.prg
+  * source/h_datepicker.prg
+  * source/h_richeditbox.prg
+  * source/h_textbox.prg
+    + ::SetVarBlock() method added. Assigns any variable/field to
+      ::Block .
+
+2008-01-13 11:00 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_windefs.ch
+  * source/h_combo.prg
+  * source/h_controlmisc.prg
+  * source/h_windows.prg
+    ! Fixed combobox release when dropdown list is shown.
+    * Reorganized forms/controls released.
+
+2008-01-12 14:16 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_xbrowse.prg
+    * Functionality of ooHGRecord:New() and ooHGRecord:Use()
+      inverted ( ooHGRecord:Use() opens a new file,
+      ooHGRecord:New() assigns an existing area).
+  * source/h_controlmisc.prg
+  * source/h_windows.prg
+    * Checks for event-type parameter is string on ::DoEvent().
+    ! Fixed SET APPLICATION KEY event launch.
+  * include/i_controlmisc.ch
+  * include/i_var.ch
+  * source/h_grid.prg
+  * source/h_init.prg
+  * source/h_listbox.prg
+  * source/h_tree.prg
+    * Added support for perform the same procedure for ENTER and
+      DBLCLICK events.
+  * source/h_error.prg
+    * User can select it's own error handler
+      (subclass from OOHG_TErrorHtml).
+  + samples/oohg/xbrowsearray.prg
+    + XBROWSE displays an array.
+
+2008-01-08 10:40 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_tree.prg
+    ! fixed problem when compiling in mingw.
+
+2008-01-05 21:47 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_windows.prg
+    ! fix problem with autoadjust and hbprinter and others.
+
+2008-01-05 20:15 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_altsyntax.ch
+  * include/i_browse.ch
+  * include/i_grid.ch
+  * include/i_listbox.ch
+  * include/i_tree.ch
+  * include/i_xbrowse.ch
+  * source/h_browse.prg
+  * source/h_grid.prg
+  * source/h_listbox.prg
+  * source/h_tree.prg
+  * source/h_xbrowse.prg
+    + Clause ON ENTER added.
+  * include/i_listbox.ch
+  * source/h_listbox.prg
+    + DISABLED and SUBCLASS clauses added.
+    * ::Define() optimizations.
+    * Moved C code from c_listbox.c to h_listbox.prg file.
+  * include/i_tree.ch
+  * include/i_windefs.ch
+  * source/h_tree.prg
+    + INVISIBLE, NOTABSTOP, DISABLED and SUBCLASS clauses added.
+    * ::Define() optimizations.
+    * Moved C code from c_tree.c to h_tree.prg file.
+  - source/c_listbox.c
+  - source/c_tree.c
+  * source/common_make.bat
+  * source/makelib_bcc.bat
+  * source/makelib_mingw.bat
+    - c_listbox.c file removed.
+    - c_tree.c file removed.
+
+2008-01-04 18:19 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_combo.prg
+    ! Fixed ::OnEnter/::OnDblClick assignment.
+    * Fixed ::Refresh() for keep current value.
+  * source/h_controlmisc.prg
+    ! Removed duplicate DBLCLICK processing.
+
+2008-01-04 09:12 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_tree.prg
+    * optimizing code in order to minimize user errors.
+  * source/h_dialogs.prg
+  * source/c_dialogs.c
+    * adding initial folder to getfolder() function.
+
+2008-01-03 20:58 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_altsyntax.ch
+  * include/i_window.ch
+  * include/oohg.h
+  * source/c_controlmisc.c
+  * source/c_windows.c
+  * source/h_controlmisc.prg
+  * source/h_windows.prg
+    + ON DBLCLICK, ON RCLICK, ON MCLICK, ON RDBLCLICK, ON MDBLCLICK
+      events added.
+  * doc/classes.txt
+  * source/h_grid.prg
+  * source/h_hotkeybox.prg
+  * source/h_listbox.prg
+  * source/h_textbox.prg
+  * source/h_tree.prg
+    * Modified operation for WM_LBUTTONDBLCLK message.
+
+2008-01-02 20:44 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_windows.prg
+    * try to solution a toolbar problem.
+
+2007-12-31 12:06 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_dialogs.prg
+    * optimizing code in order to minimize user errors.
+
+2007-12-28 18:33 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_radio.prg
+    ! fixed problem with ON CHange programatically
+
+2007-12-25 12:43 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_image.ch
+  * source/h_button.prg
+  * source/h_image.prg
+    * ::AutoSize changed to ::AutoFit
+    + IMAGESIZE clause for TImage (control takes image size).
+
+2007-12-25 11:47 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_window.ch
+  * source/c_windows.c
+  * source/h_windows.prg
+    + ::SaveAs() method added.
+    + _GetBitMap() and _SaveBitMap() functions added
+      (WNDCOPY splitted).
+
+2007-12-24 20:02 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * doc/classes.txt
+  * include/oohg.h
+  * source/c_controlmisc.c
+  * source/h_browse.prg
+  * source/h_button.prg
+  * source/h_checkbox.prg
+  * source/h_combo.prg
+  * source/h_controlmisc.prg
+  * source/h_datepicker.prg
+  * source/h_grid.prg
+  * source/h_listbox.prg
+  * source/h_monthcal.prg
+  * source/h_radio.prg
+  * source/h_scroll.prg
+  * source/h_slider.prg
+  * source/h_spinner.prg
+  * source/h_status.prg
+  * source/h_tab.prg
+  * source/h_textbox.prg
+  * source/h_windows.prg
+    * EVENT_TYPE parameter added to ::DoEvent() method.
+  * source/h_error.prg
+  * source/h_windows.prg
+    * Error display modified.
+    * Includes events called on error log.
+
+2007-12-19 13:31 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_checkbox.prg
+    ! fixed problem with TRANSPARENT in Xp or Vista
+
+2007-12-18 18:50 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_windows.prg
+    * optimizing all WM_SIZE routine
+
+2007-12-17 16:15 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_windows.prg
+    * optimizing On SIZE event.
+
+2007-12-17 11:03 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_windows.prg
+    ! fix problems in general wm_size event.
+
+2007-12-16 20:48 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_windows.prg
+    ! fixed problem in ON SIZE event.
+
+2007-12-13 14:39 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_windows.prg
+    ! little adjust in order to statusbar looks ok  if change window size
+      programatically before active window.
+
+2007-12-11 07:27 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_button.prg
+  ! fixed problem changing image
+
+2007-12-11 07:25 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_windows.prg
+    ! fixed problem with statusbar if maximize window before active window.
+
+2007-12-09 14:27 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_button.prg
+    * Fixed warnings.
+
+2007-12-06 06:13 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_error.prg
+    * Error messages are placed at top of ErrorLog file.
+
+2007-12-06 06:13 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/winprint.prg
+    * DM_COLLATE support added to ::SetDevMode().
+
+2007-11-25 22:22 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_button.ch
+  * source/h_button.prg
+    * Converted TMixButton() to part of TButton().
+  * source/h_windows.prg
+    + TWindow:FontColorCode and TWindow:BackColorCode methods added.
+
+2007-11-24 12:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_button.prg
+    + added ::picture()  method to Tmixbutton Class
+
+2007-11-24 7:07 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_button.prg
+  * include/i_button.ch
+    * first approach to mixed buttons text and picture at the same time
+
+2007-11-22 9:29 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_windows.prg
+  * source/h_controlmisc.prg
+    * Adjust Datas moved to sup class twindow
+    * little fixed added needed by internal windows in autoadjust method.
+
+2007-11-18 19:25 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_combo.prg
+    * Added CBS_OWNERDRAWFIXED only when DisplayEDIT clause, if not
+      the dropdown LIST is not viewed.
+
+2007-11-18 15:40 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_combo.prg
+    * Added management for internal textbox.
+
+2007-11-17 11:53 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_grid.prg
+    * fixed remains in first column when edit
+
+2007-11-17 7:14 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_combo.prg
+    ! finally fixed, set the combo (edit) height automatic
+      remove CBS_OWNERDRAWFIXED because if is SET the height don't change
+      when the font change size or type.
+
+2007-11-15 14:42 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_controlmisc.prg
+    ! fixed problem showing images in tree and maybe in others.
+
+2007-11-13 14:21 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/c_activex.c
+    * supressed  WS_CLIPSIBLINGS because don't refresh the activex component
+
+2007-11-11 11:42 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/c_activex.c
+  * source/h_activex.prg
+    * Updated recent changes from FreeWin.
+
+2007-11-08 14:10 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_help.prg
+    + added GetActiveHelpFile() function
+
+2007-11-08 02:53 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_keybd.ch
+    ! Fixed SET APPLICATION KEY command definition.
+  * source/c_image.c
+    ! Small fixes.
+  * include/i_altsyntax.ch
+  * include/i_browse.ch
+  * include/i_grid.ch
+  * include/i_xbrowse.ch
+  * source/h_browse.prg
+  * source/h_grid.prg
+  * source/h_xbrowse.prg
+    + NOHEADERS clause added.
+  * include/i_richeditbox.ch
+    + (Dummy?) BREAK clause added to non-splitbox RichEdit.
+
+2007-11-06 8:13 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  *source/h_error.prg
+   * update version
+
+2007-11-06 6:20 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  *source/h_windows.prg
+   * optimizing autoadjust params
+
+2007-11-05 21:12 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_windows.prg
+  * source/h_controlmisc.prg
+  * source/h_toolbar.prg
+  * source/h_init.prg
+  * source/c_windows.c
+  * include/i_windefs.ch
+  * include/i_window.ch
+  * include/i_ivar.ch
+    + Added SET ADJUSTFONT on/off
+    + Added SET ADJUSTWIDTH on/off
+       to setting globals autoadjust params
+    + added Twindow:getwindowstate() method to know if window is maximized/minimized/normal
+    + added iswindowmaximized() at C level
+    + added iswindowminimized()  at C level
+
+2007-11-04 22:34 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/c_activex.c
+    * Removed unused static variable.
+  * source/h_windows.prg
+    + TWindow:GetTextWidth and TWindow:GetTextHeight methods added.
+    + TWindow:GetMaxCharsInWidth() method added. Returns how many
+      characters fits on a specified width (according to control's
+      font).
+  * ./compile_bcc.bat
+  * ./compile_pc.bat
+  * source/makelib_bcc.bat
+  * source/makelib_mingw.bat
+  * source/makelib_pc.bat
+    + Include search to oohg\include at C level added.
+  * source/h_textbox.prg
+    + CTRL-Z functionality added as UNDO for TTextPicture.
+  * include/i_keybd.ch
+  * source/h_windows.prg
+    + SET APPLICATION KEY (application-wide hot key) command added.
+    ! Fixed STORE KEY command (it was disabling hot key).
+
+2007-11-04 08:17 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_windows.prg
+    * added monitoring WM_EXITSIZEMOVE windows message to control end resizewindows
+      with mouse in order to ::autoadjust()
+
+2007-11-04 08:17 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_windows.prg
+  * source/h_controlmisc.prg
+  * source/h_status.prg
+  * source/h_scrollbutton.prg
+  * source/h_hmenu.prg
+  * source/h_scroll.prg
+  * source/h_toolbar.prg
+    * optimizing ::autoadjust()
+
+2007-11-03 14:47 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * include/i_var.ch
+  * include/i_window.ch
+  * source/h_windows.prg
+  * source/h_init.prg
+   - removed switch setautoadjust
+   + added new setting SET AUTOADJUST ON/OFF
+
+2007-11-03 13:20 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_print.prg
+    * removed unused code.
+  * source/h_label.prg
+    - removed redrawwindow() from ::autosize() method
+  * source/h_windows.prg
+    + added setautoadjust switch (.T./.F.) and ::autoadjust()  method
+    the first set autoadjust automatic on resize forms
+    the second is the self method manual.
+    all this are the first approach.
+
+2007-11-02 05:35 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_print.prg
+    ! fixed warnings for xharbour.
+
+2007-11-01 17:55 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/c_activex.c
+    ! Finally fixed problem on TAB and others.
+       thanks Vic.
+
+2007-10-29 21:35 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/c_activex.c
+    * fixed to work with mingw.
+
+2007-10-29 16:38 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_print.prg
+  * source/h_report.prg
+    + added class TCalCprint for open office  thanks to Jose Miguel
+
+2007-10-19 13:30 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_combo.prg
+    * converted displayvalue to setget in order to assign displayvalue
+      on DISPLAYEDIT clause
+
+2007-10-19 9:12 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_combo.prg
+    + added ::displayvalue alias for ::caption.
+
+2007-10-18 23:19 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_grid.prg
+    * Fixed ::EditControls update on ::DeleteColumn() and ::AddColumn().
+
+2007-10-18 22:37 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * include/winprint.ch
+    * Verifies for ooHG's variables initialized on END PAGE.
+
+2007-10-15 23:02 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_windows.prg
+    * Reverted previous change for already visible windows.
+
+2007-10-14 20:22 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * include/winprint.ch
+    * Prevents END PAGE for an uninitialized graphical environment.
+  * source/h_textbox.prg
+    * TTextPicture:Picture can be changed after control's creation.
+  * source/h_windows.prg
+    * If modal window is already visible, doesn't lock other windows
+      again.
+    * WM_SIZE message optimized for inactive windows.
+
+2007-10-14 17:42 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * ./compile_pc.bat
+    + WSOCK32.LIB added.
+  * source/h_grid.prg
+    ! Fixed JUSTIFY array.
+
+2007-10-11 9:15 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_controlmisc.prg
+    ! fixed change header with setproperty.
+  * source/h_grid.prg
+  * source/c_grid.c
+    ! syntax correct and reformating.
+
+2007-10-10 9:54 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  *source/h_windows.prg
+  ! fixed onsize event only when windows is active
+
+2007-10-10 8:36 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  *source/h_tab.prg
+   ! Fixed ::caption() and ::picture() methods, they did not work until now
+
+2007-10-09 15:43 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  *source/h_tab.prg
+  ! optimizing code
+
+2007-10-08 16:31 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  *source/h_edit.prg
+
+   the HB_string function are removed from all prgs because this function
+   has diferent results in harbour and xharbour.
+
+2007-10-08 15:50 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  *Source/h_label.prg
+  *Source/h_grid.prg
+  *source/h_menu.prg
+  *source/h_textbox.prg
+  *source/h_checkbox.prg
+  *source/h_combo.prg
+  *source/h_datepicker.prg
+  *source/h_winddows.prg
+  *source/h_controlmisc.prg
+  *source/h_image.prg
+  *source/h_hotkey.prg
+  *source/winprint.prg
+  *include/I_var.ch
+
+   ! optimizing code and fixing harbour xharbour diferences
+     types "C" and "CM" are not changed.
+
+2007-10-07 13:18 UTC-0500 Miguel Angel Juarez A. <migsoft@oohg.org>
+  * source/h_edit.prg
+    ! optimized condition
+
+2007-10-07 17:53 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_keybd.ch
+  * source/h_hotkey.prg
+  * source/h_windows.prg
+    + ACCELERATOR hotkey added.
+
+2007-10-07 13:18 UTC-0500 Miguel Angel Juarez A. <migsoft@oohg.org>
+  * source/winprint.prg
+    ! fix on button size of toolbar
+  * source/h_edit.prg
+    * added condition when is EOF and action when double click in browse
+
+2007-10-07 08:56 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  *include/i_var.ch
+   added translate  HB_ISCHAR => ISCHARACTER for xharbour
+
+2007-10-06 17:11 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  *source/h_menu.prg
+  *source/h_media.prg
+  *source/h_edit.prg
+  *source/h_radio.prg
+  *source/h_textbox.prg
+  *source/h_checkbox.prg
+  *source/h_combo.prg
+  *source/h_datepicker.prg
+  *source/h_editbox.prg
+  *source/h_frame.prg
+  *source/h_help.prg
+  *source/h_hyperlink.prg
+  *source/h_image.prg
+  *source/h_ipaddress.prg
+   ! optimizing code
+   + added fired event when changed programatically  for
+    ( datepicker timepicker combo chechkbox )
+
+2007-10-05 17:12 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_progressbar.prg
+  * source/h_label.prg
+  * source/h_scroll.prg
+    ! optimizing code
+
+2007-10-05 6:38 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_slider.prg
+    !change fired way when change value programatically
+    ! optimazing code
+  * source/h_spinner.prg
+    ! optimazing code
+    + added fired event when changed programatically
+  /// usefull functions HB_IsNumeric(), HB_IsLogical(), HB_IsArray()
+
+2007-10-04 14:53 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_slider.prg
+    added sendmessage to ::value() method in order to fire event on change
+    if change programatically.
+
+2007-10-03 20:59 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_slider.prg
+    fix on change event.
+
+2007-09-27 17:19 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_print.prg
+    ! fix problem with hbprint defined repetitive font , (moved to start doc method)
+
+2007-09-21 15:20 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_hyperlink.prg
+    ! fix default url and caption values in oop syntax
+
+2007-09-21 13:40 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_spinner.prg
+    ! fix default lr and hr values in oop syntax
+
+2007-09-21 11:14 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_progressbar.prg
+    ! fix default vertical value in oop syntax
+
+2007-09-21 10:58 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_frame.prg
+    ! fix default caption value in oop syntax
+
+2007-09-20 21:47 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_menu.prg
+    * Added ::Separator() method to menu's class.
+
+2007-09-18 12:34 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_windows.prg
+    ! Prevents not to initiate message loop when window was released.
+
+2007-09-14 22:55 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_windows.prg
+    ! Prevents not to initiate message loop when window was closed.
+
+2007-09-12 22:41 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/common_make.bat
+  + source/c_activex.c
+  * source/h_activex.prg
+  * source/makelib_bcc.bat
+  * source/makelib_mingw.bat
+    * ActiveX splitted in h_* and c_* files for compilation warnings
+      when _HB_API_INTERNAL_ is defined.
+
+2007-09-10 23:14 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_button.ch
+    ! Fixed CHECKBUTTON declaration.
+  * include/h_button.prg
+    * Fixed StyleEx (for future use).
+
+2007-09-10 16:15 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+  * source/h_activex.prg
+  * source/makelib_bcc.bat
+    * added events support for activex (thanks to oscar Lira and Vicente guerra)
+
+2007-09-10 00:04 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/c_windows.c
+  * source/h_windows.prg
+    ! Fixed ThisWindow after window release.
+    * Changed the way each _DoMessageLoop() ends.
+
+2007-09-05 23:54 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_altsyntax.ch
+  * include/i_button.ch
+  * include/i_checkbox.ch
+  * source/h_button.prg
+  * source/h_checkbox.prg
+    * CHECKBUTTON is converted to a BUTTON's subclass.
+    * TButton is converted to a TImage's subclass.
+    ! Reverted image background when button is disabled.
+
+2007-09-02 19:35 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/winprint.prg
+    ! Fixed preview refreshing.
+
+2007-08-28 01:10 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/winprint.prg
+    ! Fixed (I hope) image display when preview uses scrollbars.
+
+2007-08-19 23:42 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_image.prg
+    ! Fixed image display.
+
+2007-08-13 10:44 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+  * source/h_print.prg
+    + added support for italic print, very hard to complete this feature in
+      hbprinter... it has a very strange problem changing font atributes.
+
+2007-08-10 22:11 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_windows.prg
+    ! Fixed WM_HELP message processing.
+  * source/h_menu.prg
+    + TMenu():EndMenu() and TMenuItem():EndPopUp() methods added.
+
+2007-08-10 8:52 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+  * source/h_error.prg
+    ! update control version.
+
+2007-08-09 16:31 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+  * source/h_print.prg
+    ! fix warnings because declared vars and not used.
+
+2007-08-08 9:49 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+  * source/h_print.prg
+    * optimize printdata method to excelprint (more speed)
+    + added printimage method to excelprint.
+  * source/h_windows.prg
+    * optimize object in print method with ( with object )
+
+2007-08-05 19:20 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_textarray.prg
+    * Fixed memory allocation.
+
+2007-08-05 18:27 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_image.prg
+    ! Fixed (patched) ZOOM scroll movement in HBPrinter.
+  * source/h_textarray.prg
+    * Optimized painting for fixed fonts.
+
+2007-08-05 12:35 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_button.prg
+    ! Fixed image display when button is disabled.
+
+2007-08-05 8:50 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+  * source/h_print.prg
+  * source/h_grid.prg
+  * source/h_xbrowse.prg
+    ! fix new hboleaut syntax (set and get methods are removed in new hboleaut)
+
+2007-07-31 22:52 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_status.prg
+  * source/h_tab.prg
+  * source/h_windows.prg
+    + Added ::End*() method.
+
+2007-07-29 00:15 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * include/oohg.h
+  * source/c_image.c
+  * source/h_button.prg
+  * source/h_checkbox.prg
+  * source/h_image.prg
+    * Only resizes image to all client rect if no AUTOSIZE is selected.
+    * ICON images added (button, image, checkbox).
+  * source/h_windows.prg
+    ! Fixed warning.
+
+2007-07-28 13:25 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/winprint.prg
+    ! Fixed default values for ROUNDC and ROUNDR in @...ROUNDRECT.
+
+2007-07-27 11:54 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+  * source/h_print.prg
+  * source/h_grid.prg
+  * source/h_xbrowse.prg
+  * compile_bcc.bat
+  * compile_pc.bat
+    * revert new ole syntax to old ole syntax but preserve new hboleaut library
+
+2007-07-26 09:02 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_combo.prg
+    + TGridControlComboBoxText() subclass added, for manage string
+      values from an array ("COMBOBOXTEXT" columncontrol).
+  * Fixed columncontrol name checking.
+
+2007-07-20 08:37 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_grid.prg
+    ! Fixed typos in ::AddColumn() method.
+
+2007-07-15 17:07 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+  * source/h_print.prg
+  * source/h_grid.prg
+  * source/h_xbrowse.prg
+  * compile_bcc.bat
+  * compile_pc.bat
+    * change old ole syntax to new oleaut syntax and new library
+
+2007-07-15 12:24 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_windows.prg
+    * Help topic moved to a form's message.
+
+2007-07-14 23:46 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_combo.ch
+  * source/common_make.bat
+  - source/c_combo.c
+  * source/h_combo.prg
+  * source/makelib_bcc.bat
+  * source/makelib_minwg.bat
+    ! Fixed / optimized value assignment when ITEMSOURCE is used.
+    * Moved C code to h_combo.prg file.
+    - c_combo.c file removed.
+    * Codification style fixes.
+  * source/c_image.c
+  * source/h_image.prg
+    ! OLE image takes same size than window.
+    ! Image doesn't protects size.
+  * source/h_splitbox.prg
+    ! Buffer initialized.
+  * source/winprint.prg
+    * Form "HBPreview1" moved to ::oHBPreview1 property.
+    * Fixed scroll movement.
+
+2007-07-09 11:59 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+  * source/h_monthcal.prg
+   ! fixed default invisible propertie for oop creation
+
+2007-07-02 20:20 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/c_image.c
+    ! Removed wrong brush creation.
+
+2007-07-02 19:47 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+  * source/h_internal.prg
+  * source/c_image.c
+   ! harbour warnings removed.
+
+2007-07-01 22:36 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * include/oohg.h
+  * source/c_controlmisc.prg
+  * source/h_internal.prg
+  * source/h_textarray.prg
+  * source/h_window.prg
+    * More internal window's virtual size fixes.
+
+2007-07-01 14:33 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  + include/i_scroll.ch
+  * include/oohg.ch
+    + @...SCROLL command added.
+  * include/i_window.ch
+  * source/h_internal.prg
+  * source/h_window.prg
+    ! Fixed virtual width for "internal window" controls.
+    + TForm's ON RESTORE clause added.
+  * source/h_scroll.prg
+    * Moves window's controls while scrollbar is tracked.
+
+2007-06-30 23:38 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_image.ch
+    + NORESIZE clause added.
+  * source/c_image.c
+  * source/h_button.prg
+  * source/h_checkbox.prg
+  * source/h_image.prg
+    * Unified image methods.
+    * TImage can contain an image with a different size from control.
+    * TImage contains a copy of original HBITMAP image (for further
+      resize).
+
+2007-06-28 18:49 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/c_image.c
+    ! OLE image is not mandatory resized.
+  * source/c_controlmisc.c
+    ! Only creates ImageList (IMGELIST_INIT) if any image file is valid.
+  * source/h_controlmisc.prg
+    ! Checks for valid ::ImageList creation.
+
+  * source/h_print.prg
+    ! Warning removed.
+
+2007-06-24 23:36 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_altsyntax.ch
+  * include/i_media.ch
+  * include/i_windefs.ch
+  * source/c_media.c
+  * source/h_media.prg
+    * Some ooHG-style implementations for TPlayer and TAnimateBox controls.
+
+2007-06-09 17:54 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_toolbar.prg
+    ! Fixed for not allow ALT-x accelerator on disabled buttons.
+  * source/h_windows.prg
+    + TWindow:Style SETGET method added.
+  * source/h_textarray.prg
+  * include/i_textarray.ch
+    + NOTABSTOP and DISABLED clauses added.
+
+2007-06-09 14:03 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+   * source/h_print.prg
+     ! fixing prblems with ::lmargin() and ::tmargin() in Excel, RTF, HTML and CSV
+
+2007-06-07 8:37 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+  * source/h_print.prg
+    ! adjunsting fonts in PDF, it's posible print with arial, helvetica, times new roman and courier new
+      fonts, with other fonts, courier new is selected by default.
+
+2007-06-05 19:34 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_windows.prg
+    ! Fixed for set focus to any control on first's window ::Show()
+
+2007-05-30 13:02 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+   * source/h_print.prg
+    ! moved process to another method because extrange results.
+
+2007-05-29 14:43 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+  * source/c_winapimisc.c
+  * source/miniprint.prg
+    ! fixed dup functions with xharbour and Mingw
+
+2007-05-27 17:28 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_pdf.prg
+    * Fixed PDF creation when trying to draw an inexistent image file.
+
+2007-05-22 23:13 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_controlmisc.prg
+    ! Removed warnings.
+
+2007-05-22 11:35 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+  * source/h_print.prg
+  * source/miniprint.prg
+     ! fixed to avoid Dup fuction getdefaultprinter in xharbour mingw.
+
+2007-05-14 21:30 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_windows.prg
+    ! Fixed (wrong) ::NotifyMenuHandle usage.
+  * source/h_controlmisc.prg
+    ! Removed unused code for "control inside TAB page" semi-OOP
+      notation in GetProperty/SetProperty/DoMethod.
+
+2007-05-13 23:24 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_combo.prg
+    * Fixed ::Value assignment when ::ValueSource is defined.
+      Reported/fixed by jose. Thanks!
+
+2007-05-13 21:22 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/common_make.bat
+  - source/c_toolbar.c
+  * source/h_toolbar.prg
+  * source/makelib_bcc.bat
+  * source/makelib_minwg.bat
+    * Moved C code to h_toolbar.prg file.
+    - c_toolbar.c file removed.
+    * Codification style fixes.
+  * include/i_window.ch
+    * Fixed for allow "control inside TAB page" semi-OOP notation
+      (TAB control name ignored).
+  * source/h_pdf.prg
+    * ::AFO array splitted to 3 arrays.
+
+2007-05-10 23:40 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_this.ch
+  * include/i_var.ch
+  * source/h_controlmisc.prg
+  * source/h_init.prg
+  * source/h_windows.prg
+    + This:* and ThisWindow:* "virtual" objects included.
+
+2007-05-09 22:21 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_window.ch
+    ! Removed blank space for #include in LOAD WINDOW (newer xHarbour's
+      preprocessor doesn't requires it).
+  * source/h_windows.prg
+    ! Prevents to not focus a NOSHOW window in multiple activation.
+
+2007-05-09 17:58 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+  * source/h_print.prg
+  * source/h_pdf.prg
+     * Optimizing routines and fixing litles color problems
+  * samples/oohg/hello.prg
+  * samples/oohg/printtest.prg
+
+2007-05-08 22:21 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_pdf.prg
+  * source/h_print.prg
+    * Removed some blank spaces for avoid compiler crash.
+    * Fixed warnings.
+
+2007-05-08 15:32 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+  * source/h_print.prg
+  * source/h_report.prg
+  + source/h_pdf.prg
+    + added "PDFPRINT" support to TPRINT, thanks to Marcelo Torres by contributed code
+  * source/makelib_bcc.bat
+  * source/common_make.bat
+  * source/makelib_mingw.bat
+    + added new sources to makelib
+
+2007-04-24 17:10 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+  * source/h_windows.prg
+    ! fixed problems in inputbox function on slow Pcs or charged CPU.
+
+2007-04-18 10:18 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+  * source/winprint.prg
+    ! fixed ambiguos code in hbprinter in order to compile with new harbour
+
+2007-04-17 14:42 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+  * source/h_print.prg
+   + added ::setlmargin() and ::settmargin()  methods   ( left and top )
+
+2007-04-17 6:57 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+  * source/h_report.prg
+   ! fixed unused variables in xharbour.
+
+2007-04-15 9:44 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+  * source/h_print.prg
+   ! fixed print at row 0 in excel. (Thanks Sergio for report )
+
+2007-04-11 09:38 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * ./compile_pc.bat
+    ! Fixed compilation when resurce file exists.
+
+2007-04-07 19:13 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+  * source/h_report.prg
+  * source/h_print.prg
+    + added support for Report form (.frm files "clipper,fox,dabase" )
+      based upon contribution of Daniel Piperno.
+
+2007-04-07 12:09 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_xbrowse.prg
+    ! Fixed ::cAlias typos in ::OrdScope method.
+
+2007-04-06 20:34 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+  * source/h_report.prg
+    ! fixed problem on group total
+
+2007-04-06 8:52 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+  * source/winprint.prg
+    ! fixed correct word preview in portugues.
+
+2007-04-03 17:58 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * ./compile_pc.bat
+    ! Fixed resource compilation. Reported by MigSoft.
+  * source/h_grid.prg
+    ! Added EDIT CONTROL specification for ::AddColumn() method.
+  * source/h_windows.prg
+    ! Fixed ::FocusedControl for controls with more than one handler.
+
+2007-03-30 20:16 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_grid.prg
+    ! Fixed parameter for dynamic color.
+  * source/h_tree.prg
+    * Swapped third and fourth parameters (now it's
+      ::AddItem( Value, Parent, Id, aImage ) )
+  * source/common_make.bat
+    * Splitted PRGs file list for compilation under Win9X.
+
+2007-03-30 16:52 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+  * source/h_print.prg
+      * roll back changes in order to quit excel from memory, because
+        ole problems.
+
+2007-03-29 21:29 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * include/oohg.h
+  * source/c_controlmisc.c
+  * source/h_activex.prg
+    * Modified ::__Error handler method.
+
+2007-03-29 20:03 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_textbox.prg
+    ! Fixed TTextPicture() default value initialization.
+
+2007-03-25 16:37 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  + include/i_activex.ch
+  * include/oohg.ch
+  + samples/oohg/activexdemo.prg
+  * source/common_make.bat
+  * source/makelib_bcc.bat
+  * source/makelib_mingw.bat
+  + source/h_activex.prg
+    + ActiveX control added.
+
+2007-03-24 23:05 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * doc/classes.txt
+  * include/i_this.ch
+  * include/i_window.ch
+  * source/h_controlmisc.prg
+  * source/h_windows.prg
+    * Fixed some This.* issues.
+
+2007-03-24 22:13 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * doc/classes.txt
+  * include/oohg.h
+  * source/c_controlmisc.c
+  * source/h_menu.prg
+  * source/h_toolbar.prg
+  * source/h_windows.prg
+    + ::Activate() method added.
+
+2007-03-20 20:42 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_xbrowse.prg
+    * Fixed default workarea when it's not defined.
+
+2007-03-20 15:53 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+  * source/h_print.prg
+    * fixed colum count in excel and htmlprint
+
+2007-03-19 14:38 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/c_controlmisc.c
+  * source/h_controlmisc.prg
+  * source/h_menu.prg
+  * source/h_tab.prg
+    * Fixed some bmp-related display issues.
+
+2007-03-14 08:16 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_print.prg
+    * ::End() OLE method calls must be invoked only for Harbour.
+    * Moved oPrintExcel and oPrintHoja to class' properties.
+
+2007-03-10 15:32 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_window.ch
+    * Blank space added on LOAD WINDOW definition.
+  * source/h_button.prg
+    ! Fixed text/image button type detection.
+  * source/h_grid.prg
+    ! Fixed some ::Value issues for TMultiGrid.
+    * Modified ::ToExcel() implementation.
+  * source/h_tree.prg
+    * Fixed ItemId usage for ::AddItem().
+
+2007-03-08 13:32 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_grid.prg
+    ! Fixed bug pressing DOWN key on MULTIGRID.
+    + ::FirstSelectedItem() method added.
+  * source/h_button.prg
+    ! Fixed not caption shown (button is defined for IMAGE) when
+      control is created with TButton():Define() without parameters.
+    + ::DefineImage() method added. It creates control for IMAGE for
+      TButton():DefineImage() syntax.
+
+2007-03-04 13:32 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_xbrowse.prg
+    ! Included missing ThisCell* info when ON EDITCELL is called.
+  * doc/classes.txt
+  * include/i_altsyntax.ch
+  * include/i_browse.ch
+  * source/h_browse.prg
+    * TBROWSE class name moved to TOBROWSE (for avoid conflicts with
+      Clipper's TBROWSE).
+  * source/h_print.prg
+    * Added OleUninitialize() function as a static funcion.
+
+2007-02-22 20:44 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_browse.prg
+    ! Fixed ::Value result when no one row is selected.
+  * source/h_print.prg
+    * Changed "#ifdef __HARBOUR__" to "#ifndef __XHARBOUR__".
+
+2007-02-08 10:10 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+  * source/h_error.prg
+    * version update.
+
+2007-02-05 18:10 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_status.ch
+  * source/h_status.prg
+    + NOAUTOADJUST clause added.
+  * source/h_editbox.prg
+    ! Prevents EDITBOX's window closes pressing ESCAPE key.
+
+2007-01-28 10:57 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+  * source/h_print.prg
+    * optimizing HTMLprint method.
+
+2007-01-13 9:10 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+  * source/c_cursor.c
+    * uncomented cursorwait()  function.
+
+2007-01-11 08:52 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/c_grid.c
+    ! Fixed AddColumn() method.
+    * Minor formatting.
+
+2007-01-04 08:52 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * include/i_altsyntax.ch
+    ! Added missing variable initialization.
+
+2007-01-03 08:29 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_editbox.prg
+    * Modified for not hilite all text when got focus.
+  * include/i_window.ch
+  * source/h_tab.prg
+  * source/h_controlmisc.prg
+    + Form.Tab.Image( n ) syntax added.
+
+2007-01-02 10:57 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+  * source/h_print.prg
+    * optimizing RTF, CSV and HTML view results.
+
+2007-01-01 22:30 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/common_make.bat
+  * source/h_button.prg
+  * source/h_progressmeter.prg
+  * source/h_slider.prg
+  * source/h_windows.prg
+  * source/makelib_mingw.bat
+    ! Fixed MinGW compilation.
+
+2007-01-01 21:21 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+  * source/h_print.prg
+  * source/h_report.prg
+    * added THTML Class print mode (excel based) "in future posible independent"
+
+2007-01-01 16:30 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * ./compile.bat
+  * source/makelib.bat
+    * Default C compiler must be Borland C.
+  * source/c_grid.c
+    ! Fixed warning.
+  * source/makelib_mingw.bat
+    * Sets PATH environment variable to MinGW.
+
+2007-01-01 14:46 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  + source/common_make.bat
+  * source/makelib.bat
+  + source/makelib_bcc.bat
+  + source/makelib_mingw.bat
+  + source/makelib_pc.bat
+    + Added MAKELIB file for Pelles C and MinGW (experimental!).
+    * Unified PRG sources compilation.
+  * ./compile.bat
+  + ./compile_bcc.bat
+  + ./compile_pc.bat
+    + Added COMPILE file for Pelles C.
+  * source/h_grid.prg
+    * Added missing declaration for Pelles C.
+  * source/c_combo.c
+  * source/c_crypt.c
+  * source/c_cursor.c
+  * source/c_datepicker.c
+  * source/c_frame.c
+  * source/c_grid.c
+  * source/c_ini.c
+  * source/c_ipaddress.c
+  * source/c_listbox.c
+  * source/c_media.c
+  * source/c_monthcal.c
+  * source/c_msgbox.c
+  * source/c_progressbar.c
+  * source/c_scrsaver.c
+  * source/c_spinner.c
+  * source/c_textbox.c
+  * source/winprint.c
+  * source/miniprint.c
+    * Added missing EOL at EOF.
+    * Added missing casts.
+    * Minor formatting.
+
+  + ./ChangeLog.001
+  * ./ChangeLog
+    ! Renamed to ChangeLog.001 and start a new one.

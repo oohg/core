@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.215 2011-08-07 23:32:09 nulcrc Exp $
+ * $Id: h_windows.prg,v 1.216 2011-08-08 19:14:15 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -2601,7 +2601,7 @@ HB_FUNC ( C_LINE )
 	int toy = hb_parni(4) ;
 
 	int width = 0;
-	int nStyle = 0;
+        int nStyle;
 
 	HDC hdc = (HDC) hb_parnl( 1 );
 	HGDIOBJ hgdiobj;
@@ -3157,7 +3157,7 @@ HB_FUNC ( C_ARC )
 	int y2 = hb_parni(8);
 
 	int width = 0;
-	int nStyle = 0;
+        int nStyle;
 
 	HDC hdc = (HDC) hb_parnl( 1 );
 	HGDIOBJ hgdiobj;
@@ -3243,7 +3243,7 @@ HB_FUNC ( C_PIE )
 	int y2 = hb_parni(8);
 
 	int width = 0;
-	int nStyle = 0;
+        int nStyle;
 	
 	int br ;
 	int bg ;

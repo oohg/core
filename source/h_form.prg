@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.29 2011-08-03 23:33:34 nulcrc Exp $
+ * $Id: h_form.prg,v 1.30 2011-08-08 19:14:15 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -3170,11 +3170,18 @@ DEFINE WINDOW __OOHG_OBJ_INSPECTOR OBJ oWnd ;
 	
 	aData := {}
 	n:=''
+
+#ifdef __XHARBOUR__
+   #define ENUMINDEX hb_enumindex()
+#else
+   #define ENUMINDEX n:__enumindex
+#endif
+
 	for each n in aControlsNames
 	    s:=alltrim(n)
 		s:=left(s,len(s)-1)
-		aadd (aData,aControls[n:__enumindex]:type+' >> '+s)
-		aControlsNames[n:__enumindex]:=S
+                aadd (aData,aControls[ ENUMINDEX ]:type+' >> '+s)
+                aControlsNames[ ENUMINDEX ]:=S
 	next
 	
 	@ 0,0 combobox __OOHG_OBJ_INSPECTOR_combo obj oCombo;
@@ -3199,6 +3206,7 @@ local aData:={},n
 				oGrd:additem({aData[n,1],valor(aData[n,2])})
 			next
 		end if
+        catch
 	end
 	#else
 	begin sequence

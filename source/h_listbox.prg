@@ -1,5 +1,5 @@
 /*
- * $Id: h_listbox.prg,v 1.22 2011-08-04 18:55:11 fyurisich Exp $
+ * $Id: h_listbox.prg,v 1.23 2011-08-08 19:14:15 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -113,7 +113,7 @@ CLASS TList FROM TControl
    METHOD Events_Command
    METHOD Events_DrawItem
    METHOD Events_MeasureItem
-   METHOD AddItem(uValue)     BLOCK { |Self,uValue| ListBoxAddstring( Self, uValue ) }
+   METHOD AddItem(uValue)     BLOCK { |Self,uValue| ListBoxAddstring2( Self, uValue ) }
    METHOD DeleteItem(nItem)   BLOCK { |Self,nItem| ListBoxDeleteString( ::hWnd, nItem ) }
    METHOD DeleteAllItems      BLOCK { | Self | ListBoxReset( ::hWnd ) }
    METHOD Item
@@ -168,7 +168,7 @@ Local ControlHandle
    EndIf
 
    If HB_IsArray( rows )
-      AEVAL( rows, { |c| ListboxAddString( Self, c ) } )
+      AEVAL( rows, { |c| ListboxAddString2( Self, c ) } )
    EndIf
 
    ::Value := Value
@@ -230,7 +230,7 @@ METHOD Item( nItem, uValue ) CLASS TList
 *-----------------------------------------------------------------------------*
    IF VALTYPE( uValue ) $ "CM"
       ListBoxDeleteString( ::hWnd, nItem )
-      ListBoxInsertString( uValue, nItem )
+      ListBoxInsertString2( Self, uValue, nItem )
    ENDIF
 Return ListBoxGetString( ::hWnd, nItem )
 
@@ -346,6 +346,12 @@ void TList_SetImageBuffer( POCTRL oSelf, struct IMAGE_PARAMETER pStruct, int nIt
 
 HB_FUNC( LISTBOXADDSTRING )
 {
+   char *cString = ( char * ) hb_parc( 2 );
+   SendMessage( HWNDparam( 1 ), LB_ADDSTRING, 0, (LPARAM) cString );
+}
+
+HB_FUNC( LISTBOXADDSTRING2 )
+{
    PHB_ITEM pSelf = (PHB_ITEM) hb_param( 1, HB_IT_ANY );
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
    struct IMAGE_PARAMETER pStruct;
@@ -365,10 +371,16 @@ HB_FUNC( LISTBOXGETSTRING )
 
 HB_FUNC( LISTBOXINSERTSTRING )
 {
-   PHB_ITEM pSelf = hb_stackSelfItem();
+   char *cString = ( char * ) hb_parc( 2 );
+   SendMessage( HWNDparam( 1 ), LB_INSERTSTRING, (WPARAM) hb_parni(3) - 1 , (LPARAM) cString );
+}
+
+HB_FUNC( LISTBOXINSERTSTRING2 )
+{
+   PHB_ITEM pSelf = (PHB_ITEM) hb_param( 1, HB_IT_ANY );
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
-   PHB_ITEM pValue = hb_param( 1, HB_IT_ANY );
-   int nItem = hb_parni( 2 ) - 1;
+   PHB_ITEM pValue = hb_param( 2, HB_IT_ANY );
+   int nItem = hb_parni( 3 ) - 1;
    struct IMAGE_PARAMETER pStruct;
 
    ImageFillParameter( &pStruct, pValue );
