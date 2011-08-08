@@ -6,7 +6,7 @@ if exist %1.exe del %1.exe
 
 if exist %1.exe GOTO ERREXIT
 
-set tpath=%path%
+set TPATH=%PATH%
 set PATH=c:\oohg\mingw\bin
 set MINGW=c:\oohg\mingw
 set HRB_DIR=c:\oohg\harbour
@@ -75,7 +75,4 @@ ECHO COMPILE ERROR: IS %1.EXE RUNNING ?
 
 :ENDBATCH
 
-rem ----------------------------------------------------------
-
-set path=%tpath%
-if exist _oohg_resconfig.h del _oohg_resconfig.h
+SET PATH=%TPATH%

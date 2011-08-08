@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: CompileRes.bat,v 1.5 2011-08-05 19:36:31 fyurisich Exp $
+rem $Id: CompileRes.bat,v 1.6 2011-08-08 19:33:50 fyurisich Exp $
 rem
 
 cls
@@ -34,7 +34,7 @@ if not exist _oohg_resconfig.h goto ERROR3
 if exist oohg.o del oohg.o
 if exist oohg.o goto ERROR4
 %MINGW%\bin\windres -i ooHG.rc -o ooHG.o
-if exist _oohg_resconfig.h del _oohg_resconfig.h
+rem Do not delete _oohg_resconfig.h, QAC needs it
 if exist oohg.o echo Done.
 if not exist oohg.o echo Not done.
 goto EXIT
