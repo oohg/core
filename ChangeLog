@@ -1,17 +1,21 @@
 /*
- * $Id: ChangeLog,v 1.742 2011-08-08 22:21:59 declan2005 Exp $
+ * $Id: ChangeLog,v 1.743 2011-08-12 17:16:53 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2011-08-12 14:15:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * ./compile_mingw.bat
+    ! Fixed compiler warning "oohg.h" not found.
+
 2011-08-08 18:12:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source/h_print.prg
     + added method :setfont()
     ! fixed problems in MM pinting mode.
     * added angle parameter to print lines in angle.
-
 
 2011-08-08 16:43:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * resources/CompileRes.bat
