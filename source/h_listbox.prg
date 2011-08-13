@@ -1,5 +1,5 @@
 /*
- * $Id: h_listbox.prg,v 1.23 2011-08-08 19:14:15 guerra000 Exp $
+ * $Id: h_listbox.prg,v 1.24 2011-08-13 19:34:19 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -125,14 +125,16 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, rows, value, fontname, ;
                fontsize, tooltip, changeprocedure, dblclick, gotfocus, ;
                lostfocus, break, HelpId, invisible, notabstop, sort, bold, ;
                italic, underline, strikeout, backcolor, fontcolor, lRtl, ;
-               lDisabled, onenter, aImage, TextHeight, lAdjustImages ) CLASS TList
+               lDisabled, onenter, aImage, TextHeight, lAdjustImages, ;
+               novscroll ) CLASS TList
 *-----------------------------------------------------------------------------*
 Local nStyle := 0
    ::Define2( ControlName, ParentForm, x, y, w, h, rows, value, fontname, ;
               fontsize, tooltip, changeprocedure, dblclick, gotfocus, ;
               lostfocus, break, HelpId, invisible, notabstop, sort, bold, ;
               italic, underline, strikeout, backcolor, fontcolor, nStyle, ;
-              lRtl, lDisabled, onenter, aImage, TextHeight, lAdjustImages )
+              lRtl, lDisabled, onenter, aImage, TextHeight, lAdjustImages, ;
+              novscroll )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -140,7 +142,8 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, rows, value, fontname, ;
                 fontsize, tooltip, changeprocedure, dblclick, gotfocus, ;
                 lostfocus, break, HelpId, invisible, notabstop, sort, bold, ;
                 italic, underline, strikeout, backcolor, fontcolor, nStyle, ;
-                lRtl, lDisabled, onenter, aImage, TextHeight, lAdjustImages ) CLASS TList
+                lRtl, lDisabled, onenter, aImage, TextHeight, lAdjustImages, ;
+                novscroll ) CLASS TList
 *-----------------------------------------------------------------------------*
 Local ControlHandle
 
@@ -154,8 +157,9 @@ Local ControlHandle
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, .T., lRtl )
 
    nStyle := ::InitStyle( nStyle,, invisible, notabstop, lDisabled ) + ;
-             IF( HB_ISLOGICAL( sort ) .AND. sort, LBS_SORT, 0 ) + ;
-             if ( HB_IsArray( aImage ),  LBS_OWNERDRAWFIXED, 0)
+             If( HB_ISLOGICAL( novscroll ) .AND. novscroll, 0, WS_VSCROLL + LBS_DISABLENOSCROLL ) + ;
+             If( HB_ISLOGICAL( sort ) .AND. sort, LBS_SORT, 0 ) + ;
+             If( HB_IsArray( aImage ),  LBS_OWNERDRAWFIXED, 0)
 
    ::SetSplitBoxInfo( Break )
    ControlHandle := InitListBox( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, ::lRtl )
@@ -291,7 +295,7 @@ HB_FUNC( INITLISTBOX )
 {
  HWND hwnd;
  HWND hbutton;
-   int Style = WS_CHILD | WS_VSCROLL | LBS_DISABLENOSCROLL | LBS_NOTIFY | LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | hb_parni( 7 );
+   int Style = WS_CHILD | LBS_NOTIFY | LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | hb_parni( 7 );
    int StyleEx;
 
    hwnd = HWNDparam( 1 );

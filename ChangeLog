@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog,v 1.743 2011-08-12 17:16:53 fyurisich Exp $
+ * $Id: ChangeLog,v 1.744 2011-08-13 19:34:52 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2011-08-13 16:31:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * source/h_listbox.prg
+  * include/i_listbox.prg
+    + Added NOVSCROLL clause to LISTBOX control.
 
 2011-08-12 14:15:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * ./compile_mingw.bat
