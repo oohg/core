@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.115 2011-08-07 23:32:09 nulcrc Exp $
+ * $Id: h_controlmisc.prg,v 1.116 2011-08-14 00:08:54 nulcrc Exp $
  */
 /*
  * ooHG source code:
@@ -1223,6 +1223,7 @@ CLASS TControl FROM TWindow
    DATA xOldValue   INIT nil
    //CGR
    DATA OldColor, OldBackColor
+   DATA Tag			INIT ""
 
    METHOD Row       SETGET
    METHOD Col       SETGET
@@ -1236,6 +1237,7 @@ CLASS TControl FROM TWindow
    METHOD Refresh             BLOCK { |self| ::ReDraw() }
    METHOD Release
    METHOD SetFont
+   METHOD FocusEffect
    METHOD ContainerRow        BLOCK { |Self| IF( ::Container != NIL, IF( ValidHandler( ::Container:ContainerhWndValue ), 0, ::Container:ContainerRow ) + ::Container:RowMargin, ::Parent:RowMargin ) + ::Row }
    METHOD ContainerCol        BLOCK { |Self| IF( ::Container != NIL, IF( ValidHandler( ::Container:ContainerhWndValue ), 0, ::Container:ContainerCol ) + ::Container:ColMargin, ::Parent:ColMargin ) + ::Col }
    METHOD ContainerhWnd       BLOCK { |Self| IF( ::Container == NIL, ::Parent:hWnd, if( ValidHandler( ::Container:ContainerhWndValue ), ::Container:ContainerhWndValue, ::Container:ContainerhWnd ) ) }
@@ -1245,6 +1247,8 @@ CLASS TControl FROM TWindow
    METHOD FontItalic          SETGET
    METHOD FontUnderline       SETGET
    METHOD FontStrikeout       SETGET
+   METHOD FontAngle			  SetGet
+   METHOD FontWidth           SetGet
    METHOD SizePos
    METHOD Move
    METHOD ForceHide
@@ -1400,34 +1404,7 @@ METHOD SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, ;
       // Active form
       ::Anchor := ::Parent:nDefAnchor
    EndIf
-   //CGR
-   // load focus colors from parent
-   if  empty(::cFocusFontName)
-	::cFocusFontName:=::Parent:cFocusFontName
-   end
-   if  empty(::nFocusFontsize)
-	::nFocusFontSize:=::Parent:nFocusFontSize
-   end
-   if  empty(::FocusBold)
-	::FocusBold:=::Parent:FocusBold
-   end
-   if  empty(::FocusItalic)
-	::FocusItalic:=::Parent:FocusItalic
-   end
-   if  empty(::FocusUnderline)
-	::FocusUnderline:=::Parent:FocusUnderline
-   end
-   if  empty(::FocusStrikeout)
-	::FocusStrikeout:=::Parent:FocusStrikeout
-   end
-   if  empty(::FocusColor)
-	::FocusColor:=::Parent:FocusColor
-   end
-   if  empty(::FocusBackColor)
-	::FocusBackColor:=::Parent:FocusBackColor
-   end
-
-   RETURN Self
+RETURN Self
 
 *------------------------------------------------------------------------------*
 METHOD InitStyle( nStyle, nStyleEx, lInvisible, lNoTabStop, lDisabled ) CLASS TControl
@@ -1555,7 +1532,7 @@ Local mVar
 Return ::Super:Release()
 
 *-----------------------------------------------------------------------------*
-METHOD SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout ) CLASS TControl
+METHOD SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout, Angle, Fntwidth ) CLASS TControl
 *-----------------------------------------------------------------------------*
    IF ::FontHandle > 0
       DeleteObject( ::FontHandle )
@@ -1578,13 +1555,20 @@ METHOD SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout ) CLASS T
    IF HB_IsLogical( Strikeout )
       ::Strikeout := Strikeout
    ENDIF
-   ::FontHandle := _SetFont( ::hWnd, ::cFontName, ::nFontSize, ::Bold, ::Italic, ::Underline, ::Strikeout )
+   IF ! EMPTY( Angle ) .AND. HB_IsNumeric( Angle )
+      ::FntAngle := Angle
+   ENDIF
+   IF ! EMPTY( FntWidth ) .AND. HB_IsNumeric( FntWidth )
+      ::Fntwidth := FntWidth
+   ENDIF
+   ::FontHandle := _SetFont( ::hWnd, ::cFontName, ::nFontSize, ::Bold, ::Italic, ::Underline, ::Strikeout, ::FntAngle, ::FntWidth )
 Return Nil
 
 *-----------------------------------------------------------------------------*
 METHOD FontName( cFontName ) CLASS TControl
 *-----------------------------------------------------------------------------*
    If ValType( cFontName ) $ "CM"
+      ::cFontName:=cFontName
       ::SetFont( cFontName )
    EndIf
 Return ::cFontName
@@ -1593,6 +1577,7 @@ Return ::cFontName
 METHOD FontSize( nFontSize ) CLASS TControl
 *-----------------------------------------------------------------------------*
    If HB_IsNumeric( nFontSize )
+      ::nFontSize:=nFontSize
       ::SetFont( , nFontSize )
    EndIf
 Return ::nFontSize
@@ -1601,6 +1586,7 @@ Return ::nFontSize
 METHOD FontBold( lBold ) CLASS TControl
 *-----------------------------------------------------------------------------*
    If HB_IsLogical( lBold )
+      ::Bold:=lBold
       ::SetFont( ,, lBold )
    EndIf
 Return ::Bold
@@ -1609,6 +1595,7 @@ Return ::Bold
 METHOD FontItalic( lItalic ) CLASS TControl
 *-----------------------------------------------------------------------------*
    If HB_IsLogical( lItalic )
+      ::Italic:=lItalic
       ::SetFont( ,,, lItalic )
    EndIf
 Return ::Italic
@@ -1617,6 +1604,7 @@ Return ::Italic
 METHOD FontUnderline( lUnderline ) CLASS TControl
 *-----------------------------------------------------------------------------*
    If HB_IsLogical( lUnderline )
+      ::Underline:=lUnderline
       ::SetFont( ,,,, lUnderline )
    EndIf
 Return ::Underline
@@ -1625,12 +1613,28 @@ Return ::Underline
 METHOD FontStrikeout( lStrikeout ) CLASS TControl
 *-----------------------------------------------------------------------------*
    If HB_Islogical( lStrikeout )
+      ::StrikeOut:=lStrikeout
       ::SetFont( ,,,,, lStrikeout )
    EndIf
 Return ::Strikeout
 
+*-----------------------------------------------------------------------------*
+METHOD FontAngle( nAngle ) CLASS TControl
+*-----------------------------------------------------------------------------*
+   If HB_IsNumeric( nAngle )
+	  ::FntAngle:=nAngle
+      ::SetFont( ,,,,,, nAngle )
+   EndIf
+Return ::FntAngle
 
-
+*-----------------------------------------------------------------------------*
+METHOD FontWidth( nWidth ) CLASS TControl
+*-----------------------------------------------------------------------------*
+   If HB_IsNumeric( nWidth )
+	  ::FntWidth:=nWidth
+      ::SetFont( ,,,,,,, nWidth )
+   EndIf
+Return ::FntWidth
 
 *-----------------------------------------------------------------------------*
 METHOD SizePos( Row, Col, Width, Height ) CLASS TControl
@@ -1934,24 +1938,7 @@ Local aPos
 
    elseif Hi_wParam == EN_SETFOCUS
 		//CGR
-	  //::SetFont( ::cFocusFontName, ::nFocusFontSize, ::FocusBold, ::FocusItalic, ::FocusUnderline, ::FocusStrikeout )
-	  if .not.( empty(::cFocusFontName).and.empty( ::nFocusFontSize).and.empty(::FocusBold).and.;
-				empty(::FocusItalic).and.empty(::FocusUnderline).and.empty(::FocusStrikeout))
-    	  ::FontHandle := _SetFont( ::hWnd, if(empty(::cFocusFontName),::cFontName,::cFocusFontName),;
-			if(empty( ::nFocusFontSize),::nFontSize,::nFocusFontSize),;
-			if(empty(::FocusBold),::Bold,::FocusBold),;
-			if(empty(::FocusItalic),::Italic,::FocusItalic),;
-			if(empty(::FocusUnderline),::Underline,::FocusUnderline),;
-			if(empty(::FocusStrikeout),::Strikeout,::FocusStrikeout))
-	  end
-	  if .not.( empty(::FocusColor) )
-		::OldColor:=::FontColor
-		::FontColor:=::FocusColor
-	  end
-	  if .not.( empty(::FocusBackColor) )
-		::OldBackColor:=::BackColor
-		::BackColor:=::FocusBackColor
-	  end
+	  ::FocusEffect()
       ::DoEvent( ::OnGotFocus, "GOTFOCUS" )
 
    elseif Hi_wParam == BN_KILLFOCUS
@@ -1959,30 +1946,59 @@ Local aPos
 
    elseif Hi_wParam == BN_SETFOCUS
 		//cgr
-      //::SetFont( ::cFocusFontName, ::nFocusFontSize, ::FocusBold, ::FocusItalic, ::FocusUnderline, ::FocusStrikeout )
-	  if .not.( empty(::cFocusFontName).and.empty( ::nFocusFontSize).and.empty(::FocusBold).and.;
-				empty(::FocusItalic).and.empty(::FocusUnderline).and.empty(::FocusStrikeout))
-    	  ::FontHandle := _SetFont( ::hWnd, if(empty(::cFocusFontName),::cFontName,::cFocusFontName),;
-			if(empty( ::nFocusFontSize),::nFontSize,::nFocusFontSize),;
-			if(empty(::FocusBold),::Bold,::FocusBold),;
-			if(empty(::FocusItalic),::Italic,::FocusItalic),;
-			if(empty(::FocusUnderline),::Underline,::FocusUnderline),;
-			if(empty(::FocusStrikeout),::Strikeout,::FocusStrikeout))
-	  end
-	  if .not.( empty(::FocusColor) )
-		::OldColor:=::FontColor
-		::FontColor:=::FocusColor
-	  end
-	  if .not.( empty(::FocusBackColor) )
-		::OldBackColor:=::BackColor
-		::BackColor:=::FocusBackColor
-	  end
-
+	  ::FocusEffect()
       ::DoEvent( ::OnGotFocus, "GOTFOCUS" )
 
    EndIf
 
 Return nil
+
+*-----------------------------------------------------------------------------*
+METHOD FocusEffect CLASS tControl
+*-----------------------------------------------------------------------------*
+local lMod:=.f.
+
+	  if (.not.( empty(::cFocusFontName).and.empty( ::nFocusFontSize).and.empty(::FocusBold).and.;
+				empty(::FocusItalic).and.empty(::FocusUnderline).and.empty(::FocusStrikeout))).or.;
+				(.not.( empty(::Parent:cFocusFontName).and.empty( ::Parent:nFocusFontSize).and.empty(::Parent:FocusBold).and.;
+				empty(::Parent:FocusItalic).and.empty(::Parent:FocusUnderline).and.empty(::Parent:FocusStrikeout)))
+    	 
+		::cFocusFontName:=if(empty(::cFocusFontName),::Parent:cFocusFontName,::cFocusFontName)
+		::nFocusFontSize:=if(empty( ::nFocusFontSize),::Parent:nFocusFontSize,::nFocusFontSize)
+		::FocusBold:=if(empty(::FocusBold),::Parent:FocusBold,::FocusBold)
+		::FocusItalic:=if(empty(::FocusItalic),::Parent:FocusItalic,::FocusItalic)
+		::FocusUnderline:=if(empty(::FocusUnderline),::Parent:FocusUnderline,::FocusUnderline)
+		::FocusStrikeout:=if(empty(::FocusStrikeout),::Parent:FocusStrikeout,::FocusStrikeout)
+		 
+		::cFocusFontName:=if(empty(::cFocusFontName),::cFontName,::cFocusFontName)
+		::nFocusFontSize:=if(empty( ::nFocusFontSize),::nFontSize,::nFocusFontSize)
+		::FocusBold:=if(empty(::FocusBold),::Bold,::FocusBold)
+		::FocusItalic:=if(empty(::FocusItalic),::Italic,::FocusItalic)
+		::FocusUnderline:=if(empty(::FocusUnderline),::Underline,::FocusUnderline)
+		::FocusStrikeout:=if(empty(::FocusStrikeout),::Strikeout,::FocusStrikeout)
+		
+		::FontHandle := _SetFont( ::hWnd,::cFocusFontName,::nFocusFontSize,::FocusBold,;
+			::FocusItalic,::FocusUnderline, ::FocusStrikeout,::FntAngle,::FntWidth)
+		lMod:=.t.
+	  end
+	  if (.not.( empty(::FocusColor) )).or.(.not.( empty(::Parent:FocusColor)))
+		::OldColor:=::FontColor
+		::FocusColor:=if(empty(::FocusColor),::Parent:FocusColor,::FocusColor)
+		::FontColor:=::FocusColor
+		lMod:=.t.
+	  end
+	  if (.not.( empty(::FocusBackColor) )).or.(.not.( empty(::Parent:FocusBackColor) ))
+		::OldBackColor:=::BackColor
+		::FocusBackColor:=if(empty(::FocusBackColor),::Parent:FocusBackColor,::FocusBackColor)
+		::BackColor:=::FocusBackColor
+		lMod:=.t.
+	  end
+	if lMod
+		::ReDraw()
+	end
+RETURN nil
+
+
 
 *-----------------------------------------------------------------------------*
 METHOD Events_Enter() CLASS TControl

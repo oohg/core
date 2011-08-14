@@ -1,11 +1,22 @@
+
 /*
- * $Id: ChangeLog,v 1.744 2011-08-13 19:34:52 fyurisich Exp $
+ * $Id: ChangeLog,v 1.745 2011-08-14 00:08:54 nulcrc Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2011-08-14  Cayetano Gómez  <cayetano@gomezgil.es>
+
+	* source/h_Label.prg
+	* source/h_form.prg
+	* source/h_controlmisc.prg
+	* source/c-font.c
+	+ angle,fontwidth to fonts
+	! resolved:focus effect in 'load windows'
+	+ added tcontrol:focuseffect to make code more simple
 
 2011-08-13 16:31:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * source/h_listbox.prg

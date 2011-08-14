@@ -1,5 +1,5 @@
 /*
- * $Id: c_font.c,v 1.3 2010-01-21 09:13:04 guerra000 Exp $
+ * $Id: c_font.c,v 1.4 2011-08-14 00:08:54 nulcrc Exp $
  */
 /*
  * ooHG source code:
@@ -106,7 +106,7 @@
 #include "tchar.h"
 #include "oohg.h"
 
-HFONT PrepareFont( char *Fontname, int FontSize, int Weight, int Italic, int Underline, int StrikeOut )
+HFONT PrepareFont( char *Fontname, int FontSize, int Weight, int Italic, int Underline, int StrikeOut, int Angle, int Width )
 {
 	HDC  hDC;
 	int cyp;
@@ -122,7 +122,7 @@ HFONT PrepareFont( char *Fontname, int FontSize, int Weight, int Italic, int Und
 
 	FontSize = ( FontSize * cyp ) / 72 ;
 
-	return CreateFont ( 0-FontSize, 0, 0, 0, Weight, Italic, Underline, StrikeOut,
+	return CreateFont ( 0-FontSize, 0, Angle, Width, Weight, Italic, Underline, StrikeOut,
 		DEFAULT_CHARSET, OUT_TT_PRECIS, CLIP_DEFAULT_PRECIS,
 		DEFAULT_QUALITY, FF_DONTCARE, Fontname ) ;
 }
@@ -157,7 +157,7 @@ HB_FUNC ( _SETFONT )
 
         font = PrepareFont ( ( char * ) hb_parc(2) ,
                         (LPARAM) hb_parni(3) ,
-                        bold , italic, underline, strikeout ) ;
+                        bold , italic, underline, strikeout, hb_parnl(8), hb_parnl(9) ) ;
     SendMessage( HWNDparam( 1 ) , (UINT)WM_SETFONT,(WPARAM) font , 1 ) ;
 	hb_retnl ( (LONG) font );
 }
@@ -189,5 +189,5 @@ HB_FUNC ( SETFONTNAMESIZE )
 		strikeout = 1;
 	}
 
-    SendMessage( HWNDparam( 1 ) , (UINT)WM_SETFONT , (WPARAM) PrepareFont ( ( char * ) hb_parc(2) , (LPARAM) hb_parni(3),bold,italic,underline,strikeout) , 1 ) ;
+    SendMessage( HWNDparam( 1 ) , (UINT)WM_SETFONT , (WPARAM) PrepareFont ( ( char * ) hb_parc(2) , (LPARAM) hb_parni(3),bold,italic,underline,strikeout,hb_parnl(8),hb_parnl(9)) , 1 ) ;
 }

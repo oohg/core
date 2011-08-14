@@ -1,5 +1,9 @@
 /*
- * $Id: h_form.prg,v 1.30 2011-08-08 19:14:15 guerra000 Exp $
+<<<<<<< h_form.prg
+ * $Id: h_form.prg,v 1.31 2011-08-14 00:08:54 nulcrc Exp $
+=======
+ * $Id: h_form.prg,v 1.31 2011-08-14 00:08:54 nulcrc Exp $
+>>>>>>> 1.30
  */
 /*
  * ooHG source code:
@@ -206,6 +210,10 @@ CLASS TForm FROM TWindow
    DATA NotifyMenu            INIT nil
    DATA cNotifyIconName       INIT ""
    DATA cNotifyIconToolTip    INIT ""
+   //CGR
+   DATA TagControl
+   DATA Tag	INIT ""
+   
    METHOD NotifyIcon          SETGET
    METHOD NotifyToolTip       SETGET
    METHOD Title               SETGET
@@ -3148,7 +3156,7 @@ Return nRet
 
 
 //------------------- inspection
-static function inspector( oWind )
+function inspector( oWind )
 local oWnd, oGrd, oCombo,n
 local aControls,aControlsNames,aData,s,ooobj_data
 
@@ -3210,7 +3218,7 @@ local aData:={},n
 	end
 	#else
 	begin sequence
-    aData  := __objGetValueList( oooBj)
+    aData  := __objGetValueList( oooBj,.T.)
 		if len(aData)>1
 			for n:=1 to len ( aData )
 				oGrd:additem({aData[n,1],valor(aData[n,2])})

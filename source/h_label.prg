@@ -1,5 +1,5 @@
 /*
- * $Id: h_label.prg,v 1.27 2009-06-23 15:38:54 declan2005 Exp $
+ * $Id: h_label.prg,v 1.28 2011-08-14 00:08:54 nulcrc Exp $
  */
 /*
  * ooHG source code:
@@ -198,10 +198,10 @@ METHOD Caption( cValue ) CLASS TLabel
 RETURN cValue
 
 *-----------------------------------------------------------------------------*
-METHOD SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout ) CLASS Tlabel
+METHOD SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout, Angle, Width ) CLASS Tlabel
 *-----------------------------------------------------------------------------*
    ///local cCaption
-   ::SUPER:setfont(FontName, FontSize, Bold, Italic, Underline, Strikeout )
+   ::SUPER:setfont(FontName, FontSize, Bold, Italic, Underline, Strikeout, Angle,Width )
    IF ::lAutosize
       ::Autosize(.T.)   ///  esta es una forma de hacerlo...  mas abajo la otra forma
       ////cCaption := GetWindowText( ::hWnd )
