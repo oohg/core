@@ -1,6 +1,6 @@
 
 /*
- * $Id: ChangeLog,v 1.745 2011-08-14 00:08:54 nulcrc Exp $
+ * $Id: ChangeLog,v 1.746 2011-08-16 01:30:42 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -8,8 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2011-08-14  Cayetano Gómez  <cayetano@gomezgil.es>
+2011-08-15 22:30:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   + resources/edit_undo.bmp
+     + Added missing resource.
 
+2011-08-14  Cayetano Gómez  <cayetano@gomezgil.es>
 	* source/h_Label.prg
 	* source/h_form.prg
 	* source/h_controlmisc.prg
