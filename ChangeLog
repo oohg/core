@@ -1,12 +1,18 @@
 
 /*
- * $Id: ChangeLog,v 1.746 2011-08-16 01:30:42 fyurisich Exp $
+ * $Id: ChangeLog,v 1.747 2011-08-16 13:05:24 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2011-08-16 10:00:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_msgbox.prg
+     * Replaced _OOHG_AllVars [ 13 ] with _OOHG_ThisForm in MsgInfoExt
+       function to increase readability and prevent errors if implementation
+       is changed.
 
 2011-08-15 22:30:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    + resources/edit_undo.bmp

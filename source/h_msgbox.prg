@@ -1,5 +1,5 @@
 /*
- * $Id: h_msgbox.prg,v 1.11 2011-07-06 12:20:59 fyurisich Exp $
+ * $Id: h_msgbox.prg,v 1.12 2011-08-16 13:05:02 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -228,18 +228,18 @@ Local nWidth, nHeight
 
    DefineWindow( "_Win_1",, 0, 0, nWidth, 115 + nHeight, .F., .F., .F., .F., .T.,,,,,,, {204,216,124},, .F., .T.,,,,,,,,,,,,,,,,, .F.,,,, .F.,,, .F., .F.,, .F., .F., .F., .F., .F., .F., .F., .F., .F., .F.,, .F.,,,,,,,,,, ) ;
 
-   _DefineAnyKey(, "ESCAPE", {|| _OOHG_AllVars [ 13 ]:release()} )
-   _DefineAnyKey(, "RETURN", {|| _OOHG_AllVars [ 13 ]:release()} )
+   _DefineAnyKey(, "ESCAPE", {|| _OOHG_ThisForm:release()} )
+   _DefineAnyKey(, "RETURN", {|| _OOHG_ThisForm:release()} )
 
    IF nSecs = 1 .OR. nSecs > 1
-      _OOHG_SelectSubClass( TTimer(), ): Define( "_timer__x",, nSecs*1000, {|| _OOHG_AllVars [ 13 ]:Release() }, .F. )
+      _OOHG_SelectSubClass( TTimer(), ): Define( "_timer__x",, nSecs*1000, {|| _OOHG_ThisForm:Release() }, .F. )
    ENDIF
 
    _OOHG_SelectSubClass( TLabel(), ):Define( "Label_1",, 000, 12, cTitulo, nWidth, 40, "Times NEW Roman", 18, .F., .F. , .F. , .F. , .F. , .T. ,, {0,0,0},,,, .F., .F., .F., .F. , .F. , .F. , .T. , .F. , .F. , .F. , )
    _OOHG_SelectSubClass( TLabel(), ):Define( "Label_2",, 0-5, 46, "", nWidth+10, 20 + nHeight, "Arial", 13, .T., .T. , .T. , .F. , .F. , .F. , {248,244,199}, {250,50,100},,,, .F., .F., .F., .F. , .F. , .F. , .T. , .F. , .F. , .F. , )
    _OOHG_SelectSubClass( TLabel(), ):Define( "Label_3",, 000, 56, cInfo, nWidth, 00 + nHeight, "Times NEW Roman", 14, .F., .F. , .F. , .F. , .F. , .T. , {177,156,037}, {000,00,000},,,, .F., .F., .F., .F. , .F. , .F. , .T. , .F. , .F. , .F. , )
 
-   _OOHG_SelectSubClass( TButton(), ): Define( "Button_1",, (nWidth/2)-40, GetExistingFormObject( "_Win_1" ):Height-40,, {|| _OOHG_AllVars [ 13 ]:Release()}, 60, 25, "Arial", 10,,,, .F., .F.,, .F. ,.F., .F., .F., .F., .F., .F., .F.,,, "MINIGUI_EDIT_OK", .F., .F., .F., )
+   _OOHG_SelectSubClass( TButton(), ): Define( "Button_1",, (nWidth/2)-40, GetExistingFormObject( "_Win_1" ):Height-40,, {|| _OOHG_ThisForm:Release()}, 60, 25, "Arial", 10,,,, .F., .F.,, .F. ,.F., .F., .F., .F., .F., .F., .F.,,, "MINIGUI_EDIT_OK", .F., .F., .F., )
 
    GetExistingControlObject( "button_1", "_Win_1" ):setfocus ()
 
