@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.116 2011-08-14 00:08:54 nulcrc Exp $
+ * $Id: h_controlmisc.prg,v 1.117 2011-08-17 23:04:48 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -896,10 +896,10 @@ Local RetVal, oWnd, oCtrl
          RetVal := oCtrl:ColumnWidth( Arg4 )
 
       ElseIf Arg3 == "PICTURE"
-         oCtrl:Picture( Arg4 )
+         RetVal := oCtrl:Picture( Arg4 )
 
       ElseIf Arg3 == "IMAGE"
-         oCtrl:Picture( Arg4 )
+         RetVal := oCtrl:Picture( Arg4 )
 
       Else
 
