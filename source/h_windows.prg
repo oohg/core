@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.216 2011-08-08 19:14:15 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.217 2011-08-17 14:48:35 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -96,6 +96,8 @@
 	//CGR
 	Para encontrar ls modificaciones
 	añadidos los bordes, a todos los controles.
+	08082011 - Colores en el foco
+	13082011 - angle y width en la fuente.
 */	
 
 #include "oohg.ch"
@@ -189,6 +191,8 @@ CLASS TWindow
    DATA Italic              INIT .F.
    DATA Underline           INIT .F.
    DATA Strikeout           INIT .F.
+   DATA FntWidth			INIT 0
+   DATA FntAngle				INIT 0
    //CGR
    DATA cFocusFontName           INIT ""
    DATA nFocusFontSize           INIT 0
@@ -2601,7 +2605,7 @@ HB_FUNC ( C_LINE )
 	int toy = hb_parni(4) ;
 
 	int width = 0;
-        int nStyle;
+	int nStyle = 0;
 
 	HDC hdc = (HDC) hb_parnl( 1 );
 	HGDIOBJ hgdiobj;
@@ -3157,7 +3161,7 @@ HB_FUNC ( C_ARC )
 	int y2 = hb_parni(8);
 
 	int width = 0;
-        int nStyle;
+	int nStyle = 0;
 
 	HDC hdc = (HDC) hb_parnl( 1 );
 	HGDIOBJ hgdiobj;
@@ -3243,7 +3247,7 @@ HB_FUNC ( C_PIE )
 	int y2 = hb_parni(8);
 
 	int width = 0;
-        int nStyle;
+	int nStyle = 0;
 	
 	int br ;
 	int bg ;
