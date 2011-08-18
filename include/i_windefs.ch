@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.37 2011-07-15 14:36:51 fyurisich Exp $
+ * $Id: i_windefs.ch,v 1.38 2011-08-18 19:28:44 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -164,6 +164,7 @@
 #define WM_USER         0x0400
 #define CBEM_SETIMAGELIST  (WM_USER + 2)
 #define WM_TASKBAR      WM_USER+1043
+#define WM_APP          0x8000
 
 // Generic WM_NOTIFY calls
 #define NM_FIRST        0
@@ -381,6 +382,7 @@
 #define TVM_SETIMAGELIST   ( TV_FIRST + 9 )
 #define TVM_GETNEXTITEM    ( TV_FIRST + 10 )
 #define TVM_SELECTITEM     ( TV_FIRST + 11 )
+#define TVM_GETEDITCONTROL ( TV_FIRST + 15 )
 #define TVSIL_NORMAL       0
 #define TVSIL_STATE        2
 #define TVE_COLLAPSE       1
@@ -508,6 +510,14 @@
 #define TVN_SELCHANGEDW	(-451)
 #define TVN_SELCHANGED TVN_SELCHANGEDA
 #define TVN_SELCHANGEDA	(-402)
+
+#define TVN_BEGINLABELEDITW	(-459)
+#define TVN_BEGINLABELEDIT	TVN_BEGINLABELEDITA
+#define TVN_BEGINLABELEDITA	(-410)
+#define TVN_ENDLABELEDITW	(-460)
+#define TVN_ENDLABELEDIT	TVN_ENDLABELEDITA
+#define TVN_ENDLABELEDITA	(-411)
+#define TVN_KEYDOWN	(-412)
 
 //New define for TaskBar
 #define ID_TASKBAR      0

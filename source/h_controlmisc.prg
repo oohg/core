@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.117 2011-08-17 23:04:48 fyurisich Exp $
+ * $Id: h_controlmisc.prg,v 1.118 2011-08-18 19:30:25 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -662,6 +662,18 @@ Local oWnd, oCtrl
       ElseIf Arg3 == "ITEMCOUNT"
          ListView_SetItemCount( oCtrl:hWnd, Arg4 )
 
+      ElseIf Arg3 == "GETPARENT"
+         oCtrl:GetParent( Arg4 )
+
+      ElseIf Arg3 == "GETCHILDREN"
+         oCtrl:GetChildren( Arg4 )
+
+      ElseIf Arg3 == "INDENT"
+         oCtrl:Indent( Arg4 )
+
+      ElseIf Arg3 == "SELCOLOR"
+         oCtrl:SelColor( Arg4 )
+
       EndIf
 
    ElseIf Pcount() == 5 // CONTROL (WITH ARGUMENT OR TOOLBAR BUTTON)
@@ -677,6 +689,12 @@ Local oWnd, oCtrl
 
       ElseIf Arg3 == "ITEM"
          oCtrl:Item( Arg4, Arg5 )
+
+      ElseIf Arg3 == "CHECKITEM"
+         oCtrl:CheckItem( Arg4, Arg5 )
+
+      ElseIf Arg3 == "ITEMREADONLY"
+         oCtrl:ItemReadonly( Arg4, Arg5 )
 
       ElseIf Arg3 == "ICON"
          _SetStatusIcon( Arg2, Arg1, Arg4, Arg5 )
@@ -876,6 +894,12 @@ Local RetVal, oWnd, oCtrl
       ElseIf Arg3 == "OBJECT"
          RetVal := oCtrl
 
+      ElseIf Arg3 == "INDENT"
+         RetVal := oCtrl:Indent()
+
+      ElseIf Arg3 == "SELCOLOR"
+         RetVal := oCtrl:SelColor()
+
       EndIf
 
    ElseIf Pcount() == 4 // CONTROL (WITH ARGUMENT OR TOOLBAR BUTTON)
@@ -900,6 +924,18 @@ Local RetVal, oWnd, oCtrl
 
       ElseIf Arg3 == "IMAGE"
          RetVal := oCtrl:Picture( Arg4 )
+
+      ElseIf Arg3 == "GETPARENT"
+         RetVal := oCtrl:GetParent( Arg4 )
+
+      ElseIf Arg3 == "GETCHILDREN"
+         RetVal := oCtrl:GetChildren( Arg4 )
+
+      ElseIf Arg3 == "CHECKITEM"
+         RetVal := oCtrl:CheckItem( Arg4 )
+
+      ElseIf Arg3 == "ITEMREADONLY"
+         RetVal := oCtrl:ItemReadonly( Arg4 )
 
       Else
 
@@ -1247,8 +1283,8 @@ CLASS TControl FROM TWindow
    METHOD FontItalic          SETGET
    METHOD FontUnderline       SETGET
    METHOD FontStrikeout       SETGET
-   METHOD FontAngle			  SetGet
-   METHOD FontWidth           SetGet
+   METHOD FontAngle			      SETGET
+   METHOD FontWidth           SETGET
    METHOD SizePos
    METHOD Move
    METHOD ForceHide
@@ -1937,16 +1973,16 @@ Local aPos
       Return ::DoLostFocus()
 
    elseif Hi_wParam == EN_SETFOCUS
-		//CGR
-	  ::FocusEffect()
+		  //CGR
+	    ::FocusEffect()
       ::DoEvent( ::OnGotFocus, "GOTFOCUS" )
 
    elseif Hi_wParam == BN_KILLFOCUS
       Return ::DoLostFocus()
 
    elseif Hi_wParam == BN_SETFOCUS
-		//cgr
-	  ::FocusEffect()
+      //cgr
+      ::FocusEffect()
       ::DoEvent( ::OnGotFocus, "GOTFOCUS" )
 
    EndIf
@@ -1962,21 +1998,21 @@ local lMod:=.f.
 				empty(::FocusItalic).and.empty(::FocusUnderline).and.empty(::FocusStrikeout))).or.;
 				(.not.( empty(::Parent:cFocusFontName).and.empty( ::Parent:nFocusFontSize).and.empty(::Parent:FocusBold).and.;
 				empty(::Parent:FocusItalic).and.empty(::Parent:FocusUnderline).and.empty(::Parent:FocusStrikeout)))
-    	 
+
 		::cFocusFontName:=if(empty(::cFocusFontName),::Parent:cFocusFontName,::cFocusFontName)
 		::nFocusFontSize:=if(empty( ::nFocusFontSize),::Parent:nFocusFontSize,::nFocusFontSize)
 		::FocusBold:=if(empty(::FocusBold),::Parent:FocusBold,::FocusBold)
 		::FocusItalic:=if(empty(::FocusItalic),::Parent:FocusItalic,::FocusItalic)
 		::FocusUnderline:=if(empty(::FocusUnderline),::Parent:FocusUnderline,::FocusUnderline)
 		::FocusStrikeout:=if(empty(::FocusStrikeout),::Parent:FocusStrikeout,::FocusStrikeout)
-		 
+
 		::cFocusFontName:=if(empty(::cFocusFontName),::cFontName,::cFocusFontName)
 		::nFocusFontSize:=if(empty( ::nFocusFontSize),::nFontSize,::nFocusFontSize)
 		::FocusBold:=if(empty(::FocusBold),::Bold,::FocusBold)
 		::FocusItalic:=if(empty(::FocusItalic),::Italic,::FocusItalic)
 		::FocusUnderline:=if(empty(::FocusUnderline),::Underline,::FocusUnderline)
 		::FocusStrikeout:=if(empty(::FocusStrikeout),::Strikeout,::FocusStrikeout)
-		
+
 		::FontHandle := _SetFont( ::hWnd,::cFocusFontName,::nFocusFontSize,::FocusBold,;
 			::FocusItalic,::FocusUnderline, ::FocusStrikeout,::FntAngle,::FntWidth)
 		lMod:=.t.
@@ -1997,8 +2033,6 @@ local lMod:=.f.
 		::ReDraw()
 	end
 RETURN nil
-
-
 
 *-----------------------------------------------------------------------------*
 METHOD Events_Enter() CLASS TControl

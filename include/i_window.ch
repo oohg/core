@@ -1,5 +1,5 @@
 /*
- * $Id: i_window.ch,v 1.39 2011-07-23 15:22:01 fyurisich Exp $
+ * $Id: i_window.ch,v 1.40 2011-08-18 19:28:44 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -111,23 +111,23 @@
 // 16. ToolBar Button Full Name Property Set
 // 17-27. Tab Child Controls (same sequence of standard controls from 4 to 14)
 
-
 	#xcommand DECLARE WINDOW <w> ;
 	=>;
         #xtranslate <w> . \<p:Name,Title,Height,Width,Col,Row,BackColor,FocusedControl,hWnd,Object,Cursor,NotifyIcon,NotifyToolTip,SaveAs,MinWidth,MaxWidth,MinHeight,MaxHeight\> => GetExistingFormObject( <(w)> ):\<p\> ;;
         #xtranslate <w> . \<p:Activate,Center,Release,Maximize,Minimize,Restore,Show,Hide,Print,SetFocus\> \[()\] => GetExistingFormObject( <(w)> ):\<p\> () ;;
-        #xtranslate <w> . \<c\> . \<p:Value,Name,Address,BackColor,FontColor,Picture,ToolTip,FontName,FontSize,FontBold,FontUnderline,FontItalic,FontStrikeOut,Caption,Row,Col,Width,Height,Visible,Enabled,Checked,ItemCount,RangeMin,RangeMax,CaretPos,ForeColor,ScrollCaret,GetEditSel,Stretch\> => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ;;
+        #xtranslate <w> . \<c\> . \<p:Value,Name,Address,BackColor,FontColor,Picture,ToolTip,FontName,FontSize,FontBold,FontUnderline,FontItalic,FontStrikeOut,Caption,Row,Col,Width,Height,Visible,Enabled,Checked,ItemCount,RangeMin,RangeMax,CaretPos,ForeColor,ScrollCaret,GetEditSel,Stretch,Indent,SelColor\> => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ;;
         #xtranslate <w> . \<c\> . \<p:DisplayValue,Position,ForeColor\> => GetProperty ( <(w)>, \<(c)\> , \<(p)\> ) ;;
         #xtranslate <w> . \<c\> . \<p:DisplayValue,Position,ForeColor,CaretPos\> := \<n\> => SetProperty ( <(w)>, \<(c)\> , \<(p)\> , \<n\> ) ;;
         #xtranslate <w> . \<c\> . \<p:AllowAppend,AllowDelete,AllowEdit\> => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ;;
-        #xtranslate <w> . \<c\> . \<p:Caption,Header,Item,Icon,ColumnWidth,Picture,Image,Stretch\> (\<arg\>) => GetProperty ( <(w)>, \<(c)> , \<(p)> , \<arg\> ) ;;
-        #xtranslate <w> . \<c\> . \<p:Caption,Header,Item,Icon,ColumnWidth,Picture,Image,Stretch\> (\<arg\>) := \<n\> => SetProperty ( <(w)>, \<(c)> , \<(p)> , \<arg\> , \<n\> ) ;;
+        #xtranslate <w> . \<c\> . \<p:Caption,Header,Item,Icon,ColumnWidth,Picture,Image,Stretch,ItemReadonly,CheckItem\> (\<arg\>) => GetProperty ( <(w)>, \<(c)> , \<(p)> , \<arg\> ) ;;
+        #xtranslate <w> . \<c\> . \<p:Caption,Header,Item,Icon,ColumnWidth,Picture,Image,Stretch,ItemReadonly,CheckItem\> (\<arg\>) := \<n\> => SetProperty ( <(w)>, \<(c)> , \<(p)> , \<arg\> , \<n\> ) ;;
         #xtranslate <w> . \<c\> . \<p:EnableUpdate,DisableUpdate\> => EMPTY( 0 ) ;;
         #xtranslate <w> . \<c\> . \<p:Cell\> (\<arg1\>,\<arg2\>) => GetProperty ( <(w)>, \<(c)> , \<(p)> , \<arg1\> , \<arg2\> ) ;;
         #xtranslate <w> . \<c\> . \<p:Cell\> (\<arg1\>,\<arg2\>) := \<n\> => SetProperty ( <(w)>, \<(c)> , \<(p)> , \<arg1\> , \<arg2\> , \<n\> ) ;;
-        #xtranslate <w> . \<c\> . \<p:Refresh,SetFocus,DeleteAllItems,Release,Show,Hide,Play,Stop,Close,Pause,Eject,OpenDialog,Resume,ColumnsAutoFit,ColumnsAutoFitH,ColumnsBetterAutoFit\> \[()\] => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> () ;;
+        #xtranslate <w> . \<c\> . \<p:Refresh,SetFocus,DeleteAllItems,Release,Show,Hide,Play,Stop,Close,Pause,Eject,OpenDialog,Resume,ColumnsAutoFit,ColumnsAutoFitH,ColumnsBetterAutoFit,EditLabel\> \[()\] => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> () ;;
         #xtranslate <w> . \<c\> . \<p:Save,Action,OnClick\> \[()\] => Domethod ( <(w)>, \<(c)\> , \<(p)> ) ;;
-        #xtranslate <w> . \<c\> . \<p:AddItem,DeleteItem,Open,DeletePage,DeleteColumn,Expand,Collapse,ColumnAutoFit,ColumnAutoFitH,ColumnBetterAutoFit\> (\<a\>) => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ( \<a\> ) ;;
+        #xtranslate <w> . \<c\> . \<p:AddItem,DeleteItem,Open,DeletePage,DeleteColumn,Expand,Collapse,ColumnAutoFit,ColumnAutoFitH,ColumnBetterAutoFit,GetParent,GetChildren\> (\<a\>) => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ( \<a\> ) ;;
+        #xtranslate <w> . \<c\> . \<p:Item,ItemReadonly,CheckItem\> (\<arg1\>,\<arg2\>) => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ( \<arg1\> , \<arg2\> ) ;;
         #xtranslate <w> . \<c\> . \<p:AddItem,AddPage,SetRange,SetEditSel\> (\<a1\> , \<a2\>) => Domethod ( <(w)>, \<(c)> , \<(p)> , \<a1\> , \<a2\> ) ;;
         #xtranslate <w> . \<c\> . \<p:AddItem,AddPage\> (\<a1\> , \<a2\> , \<a3\> ) => Domethod ( <(w)>, \<(c)> , \<(p)> , \<a1\> , \<a2\> , \<a3\> ) ;;
         #xtranslate <w> . \<c\> . \<p:AddItem,AddColumn,AddControl\> (\<a1\> , \<a2\> , \<a3\> , \<a4\> ) => Domethod ( <(w)>, \<(c)> , \<(p)> , \<a1\> , \<a2\> , \<a3\> , \<a4\> ) ;;

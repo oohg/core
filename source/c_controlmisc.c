@@ -1,5 +1,5 @@
 /*
- * $Id: c_controlmisc.c,v 1.58 2011-08-04 01:13:12 fyurisich Exp $
+ * $Id: c_controlmisc.c,v 1.59 2011-08-18 19:30:25 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -182,6 +182,7 @@ char *s_SymbolNames[] = { "EVENTS_NOTIFY",
                           "ONMDBLCLICK",
                           "ONDROPFILES",
                           "LADJUSTIMAGES",
+                          "ASELCOLOR",
                           "LastSymbol" };
 
 void _OOHG_Send( PHB_ITEM pSelf, int iSymbol )
@@ -244,7 +245,7 @@ POCTRL _OOHG_GetControlInfo( PHB_ITEM pSelf )
       hb_xfree( pString );
    }
 
-   pString = hb_arrayGetCPtr( pArray, 1 );
+   pString = ( char * ) hb_arrayGetCPtr( pArray, 1 );
 
    if( bRelease )
    {
@@ -630,7 +631,7 @@ HB_FUNC( IMAGELIST_INIT )
 
       for( s = 1; s <= iLen; s++ )
       {
-         caption = hb_arrayGetCPtr( hArray, s );
+         caption = ( char * ) hb_arrayGetCPtr( hArray, s );
 
          hbmp = ( HBITMAP ) LoadImage( GetModuleHandle( NULL ), caption, IMAGE_BITMAP, 0, 0, iStyle );
          if( hbmp == NULL )

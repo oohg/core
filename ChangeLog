@@ -1,12 +1,35 @@
 
 /*
- * $Id: ChangeLog,v 1.750 2011-08-18 00:49:27 fyurisich Exp $
+ * $Id: ChangeLog,v 1.751 2011-08-18 19:31:12 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2011-08-18 18:30:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   + doc/classes.txt
+   + include/i_tree.ch
+   + include/i_windefs.ch
+   + include/i_window.ch
+   + include/oohg.h
+   + source/c_controlmisc.c
+   + source/h_controlmisc.prg
+   + source/h_tree.prg
+     + Added styles: FULLROWSELECT, CHECKBOXES, EDITLABELS, NOHSCROLL,
+       NOSCROLL, HOTTRACKING, NOBUTTONS, BORDERLESS, CHECKBOXES,
+       SINGLEEXPAND, DISABLEDRAGDROP.
+     + Added properties: SelColor, Indent, ReadOnly.
+     + Added methods: Valid, Events, Events_Notify, EditLabel,
+       ItemReadOnly, CheckItem, GetParent, GetChildren, Release.
+     + Added new events: ON LABELEDIT, ON CHECKCHANGE.
+     + Added node's and item's states: CHECKED and READONLY.
+     + Added transparency to images.
+     + Added lChecked and lReadOnly parameters to AddItem method.
+     * Method Value returns 0 instead of raising error when ItemIds are in
+       use and the Id received does not exist, to be consistent with the
+       case when no ItemIds are in use.
 
 2011-08-17 21:50:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    - doc/tprint.doc
