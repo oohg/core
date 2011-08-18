@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.18 2011-08-18 00:33:03 fyurisich Exp $
+ * $Id: classes.txt,v 1.19 2011-08-18 19:29:33 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -2055,27 +2055,43 @@ ENDCLASS
 
 *------------------------------------------------------------------------------*
 CLASS TTREE FROM TCONTROL
+   DATA ASELCOLOR                 INIT BLUE             /* BACKGROUND COLOR OF THE SELECT NODE */
    DATA ATREEIDMAP                INIT {}
    DATA ATREEMAP                  INIT {}
    DATA ATREENODE                 INIT {}
+   DATA ATREERO                   INIT {}
    DATA BONENTER                  INIT NIL
    DATA INITVALUE                 INIT 0
    DATA ITEMIDS                   INIT .F.
    DATA NHEIGHT                   INIT 120
    DATA NWIDTH                    INIT 120
+   DATA ONCHECKCHANGE             INIT NIL
+   DATA ONLABELEDIT               INIT NIL
+   DATA READONLY                  INIT .T.
    DATA SETIMAGELISTCOMMAND       INIT TVM_SETIMAGELIST
    DATA TYPE                      INIT "TREE" READONLY
+   DATA VALID                     INIT NIL
 
    METHOD ADDITEM
+   METHOD CHECKITEM               SETGET
    METHOD COLLAPSE
    METHOD DEFINE
    METHOD DELETEALLITEMS
    METHOD DELETEITEM
+   METHOD EDITLABEL
    METHOD ENDTREE
+   METHOD EVENTS
+   METHOD EVENTS_NOTIFY
    METHOD EXPAND
+   METHOD GETCHILDREN
+   METHOD GETPARENT
+   METHOD INDENT                  SETGET
    METHOD ITEM
    METHOD ITEMCOUNT
+   METHOD ITEMREADONLY            SETGET
    METHOD ONENTER                 SETGET
+   METHOD RELEASE
+   METHOD SELCOLOR                SETGET
    METHOD VALUE                   SETGET
 ENDCLASS
 
