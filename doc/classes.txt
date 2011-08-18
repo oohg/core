@@ -1,3 +1,7 @@
+/*
+ * $Id: classes.txt,v 1.18 2011-08-18 00:33:03 fyurisich Exp $
+ */
+
 *------------------------------------------------------------------------------*
 CLASS HBPRINTER
    DATA AFTERPRINT                INIT {|| NIL}
@@ -210,8 +214,8 @@ ENDCLASS
 
 *------------------------------------------------------------------------------*
 CLASS TACTIVEX FROM TCONTROL
-   DATA AAXEV                     INIT {}           // OSKAR 20070829
-   DATA AAXEXEC                   INIT {}           // OSKAR 20070829
+   DATA AAXEV                     INIT {}
+   DATA AAXEXEC                   INIT {}
    DATA CPROGID                   INIT ""
    DATA HATL                      INIT NIL
    DATA HSINK                     INIT NIL
@@ -279,6 +283,37 @@ CLASS TBUTTONCHECK FROM TBUTTON
 ENDCLASS
 
 *------------------------------------------------------------------------------*
+CLASS TCALCPRINT FROM TPRINTBASE
+   DATA OCELL                     INIT NIL
+   DATA OCOLUMN                   INIT NIL
+   DATA OCOLUMS                   INIT NIL
+   DATA ODESKTOP                  INIT NIL
+   DATA ODOCUMENT                 INIT NIL
+   DATA OSCHEDULE                 INIT NIL
+   DATA OSERVICEMANAGER           INIT NIL
+   DATA OSHEET                    INIT NIL
+
+   METHOD BEGINDOCX
+   METHOD BEGINPAGEX
+   METHOD CONDENDOSX
+   METHOD ENDDOCX
+   METHOD ENDPAGEX
+   METHOD GETDEFPRINTERX
+   METHOD INITX
+   METHOD NORMALDOSX
+   METHOD PRINTDATAX
+   METHOD PRINTIMAGE
+   METHOD PRINTLINEX
+   METHOD PRINTRECTANGLEX
+   METHOD PRINTROUNDRECTANGLEX
+   METHOD RELEASEX
+   METHOD SELPRINTERX
+   METHOD SETCOLORX
+   METHOD SETPREVIEWSIZEX
+   METHOD SETUNITS
+ENDCLASS
+
+*------------------------------------------------------------------------------*
 CLASS TCHECKBOX FROM TLABEL
    DATA CPICTURE                  INIT ""
    DATA ICONWIDTH                 INIT 19
@@ -343,11 +378,14 @@ CLASS TCONTROL FROM TWINDOW
    DATA IMAGELISTCOLOR            INIT CLR_NONE
    DATA IMAGELISTFLAGS            INIT LR_LOADTRANSPARENT
    DATA LCANCEL                   INIT .F.
+   DATA OLDBACKCOLOR
+   DATA OLDCOLOR
    DATA ONCHANGE                  INIT NIL
    DATA ONENTER                   INIT NIL
    DATA POSTBLOCK                 INIT NIL
    DATA SETIMAGELISTCOMMAND       INIT 0
    DATA SETIMAGELISTWPARAM        INIT TVSIL_NORMAL
+   DATA TAG			                INIT ""
    DATA TRANSPARENT               INIT .F.
    DATA XOLDVALUE                 INIT NIL
 
@@ -366,12 +404,15 @@ CLASS TCONTROL FROM TWINDOW
    METHOD EVENTS_ENTER
    METHOD EVENTS_MEASUREITEM
    METHOD EVENTS_NOTIFY
+   METHOD FOCUSEFFECT
+   METHOD FONTANGLE			       SETGET
    METHOD FONTBOLD                SETGET
    METHOD FONTITALIC              SETGET
    METHOD FONTNAME                SETGET
    METHOD FONTSIZE                SETGET
    METHOD FONTSTRIKEOUT           SETGET
    METHOD FONTUNDERLINE           SETGET
+   METHOD FONTWIDTH               SETGET
    METHOD FORCEHIDE
    METHOD HEIGHT                  SETGET
    METHOD INITSTYLE
@@ -400,6 +441,28 @@ CLASS TCONTROLGROUP FROM TCONTROL
 ENDCLASS
 
 *------------------------------------------------------------------------------*
+CREATE CLASS TCSVPRINT FROM TPRINTBASE
+   METHOD BEGINDOCX
+   METHOD BEGINPAGEX
+   METHOD CONDENDOSX
+   METHOD ENDDOCX
+   METHOD ENDPAGEX
+   METHOD GETDEFPRINTERX
+   METHOD INITX
+   METHOD NORMALDOSX
+   METHOD PRINTDATAX
+   METHOD PRINTIMAGE
+   METHOD PRINTLINEX
+   METHOD PRINTRECTANGLEX
+   METHOD PRINTROUNDRECTANGLEX
+   METHOD RELEASEX
+   METHOD SELPRINTERX
+   METHOD SETCOLORX
+   METHOD SETPREVIEWSIZEX
+   METHOD SETUNITS
+ENDCLASS
+
+*------------------------------------------------------------------------------*
 CLASS TDATEPICK FROM TCONTROL
    DATA NHEIGHT                   INIT 24
    DATA NWIDTH                    INIT 120
@@ -409,6 +472,38 @@ CLASS TDATEPICK FROM TCONTROL
    METHOD EVENTS_NOTIFY
    METHOD SETRANGE
    METHOD VALUE                   SETGET
+ENDCLASS
+
+*------------------------------------------------------------------------------*
+CLASS TDOSPRINT FROM TPRINTBASE
+   DATA CBUSCA                    INIT ""
+   DATA CIMPNAME                  INIT ""
+   DATA CPORT                     INIT "PRN"
+   DATA CPORTNAME                 INIT ""
+   DATA CSTRING                   INIT ""
+   DATA CTIPOIMP                  INIT ""
+   DATA LISWIN                    INIT .F.
+   DATA NOCCUR                    INIT 0
+
+   METHOD BEGINDOCX
+   METHOD BEGINPAGEX
+   METHOD CONDENDOSX
+   METHOD ENDDOCX
+   METHOD ENDPAGEX
+   METHOD GETDEFPRINTERX
+   METHOD INITX
+   METHOD NEXTSEARCH
+   METHOD NORMALDOSX
+   METHOD PRINTDATAX
+   METHOD PRINTIMAGE
+   METHOD PRINTLINEX
+   METHOD PRINTRECTANGLEX
+   METHOD PRINTROUNDRECTANGLEX
+   METHOD RELEASEX
+   METHOD SEARCHSTRING
+   METHOD SELPRINTERX
+   METHOD SETCOLORX
+   METHOD SETPREVIEWSIZEX
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -433,110 +528,137 @@ CLASS TEDITRICH FROM TEDIT
 ENDCLASS
 
 *------------------------------------------------------------------------------*
+CLASS TEXCELPRINT FROM TPRINTBASE
+   DATA CTLINEA               INIT ""
+   DATA OEXCEL                INIT NIL
+   DATA OHOJA                 INIT NIL
+
+   METHOD BEGINDOCX
+   METHOD BEGINPAGEX
+   METHOD CONDENDOSX
+   METHOD ENDDOCX
+   METHOD ENDPAGEX
+   METHOD GETDEFPRINTERX
+   METHOD INITX
+   METHOD NORMALDOSX
+   METHOD PRINTDATAX
+   METHOD PRINTIMAGEX
+   METHOD PRINTLINEX
+   METHOD PRINTRECTANGLEX
+   METHOD PRINTROUNDRECTANGLEX
+   METHOD RELEASEX
+   METHOD SELPRINTERX
+   METHOD SETCOLORX
+   METHOD SETPREVIEWSIZEX
+ENDCLASS
+
+*------------------------------------------------------------------------------*
 CLASS TFORM FROM TWINDOW
-   DATA aChildPopUp               INIT {}
-   DATA ActivateCount             INIT { 0, NIL, .T. }
-   DATA AutoRelease               INIT .F.
-   DATA cNotifyIconName           INIT ""
-   DATA cNotifyIconToolTip        INIT ""
-   DATA Focused                   INIT .T.
-   DATA ForceCol                  INIT nil
-   DATA ForceRow                  INIT nil
-   DATA GraphCommand              INIT nil
-   DATA GraphData                 INIT {}
-   DATA GraphTasks                INIT {}
-   DATA hWndClient                INIT NIL
-   DATA LastFocusedControl        INIT 0
-   DATA ldefined                  INIT .F.
-   DATA lentersizemove            INIT .F.
-   DATA lForm                     INIT .T.
-   DATA lInternal                 INIT .F.
-   DATA lShowed                   INIT .F.
-   DATA MaxHeight                 INIT 0
-   DATA MaxWidth                  INIT 0
-   DATA MinHeight                 INIT 0
-   DATA MinWidth                  INIT 0
-   DATA nHeight                   INIT 300
-   DATA NotifyIconDblClick        INIT nil
-   DATA NotifyIconLeftClick       INIT nil
-   DATA NotifyIconMDblClick       INIT nil
-   DATA NotifyIconMidClick        INIT nil
-   DATA NotifyIconRDblClick       INIT nil
-   DATA NotifyIconRightClick      INIT nil
-   DATA NotifyMenu                INIT nil
-   DATA nVirtualHeight            INIT 0
-   DATA nVirtualWidth             INIT 0
-   DATA nWidth                    INIT 300
-   DATA oMenu                     INIT nil
-   DATA OnHScrollBox              INIT nil
-   DATA OnInit                    INIT nil
-   DATA OnInteractiveClose        INIT nil
-   DATA OnMaximize                INIT nil
-   DATA OnMinimize                INIT nil
-   DATA OnPaint                   INIT nil
-   DATA OnRelease                 INIT nil
-   DATA OnRestore                 INIT nil
-   DATA OnScrollDown              INIT nil
-   DATA OnScrollLeft              INIT nil
-   DATA OnScrollRight             INIT nil
-   DATA OnScrollUp                INIT nil
-   DATA OnSize                    INIT nil
-   DATA OnVScrollBox              INIT nil
-   DATA oToolTip                  INIT nil
-   DATA oWndClient                INIT NIL
-   DATA RangeHeight               INIT 0
-   DATA RangeWidth                INIT 0
-   DATA SplitChildList            INIT {}
-   
-   METHOD Activate
-   METHOD AdjustWindowSize
-   METHOD AutoAdjust
-   METHOD BackColor               SETGET
-   METHOD Center
-   METHOD CheckInteractiveClose
-   METHOD ClientsPos
-   METHOD Col                     SETGET
-   METHOD Cursor                  SETGET
-   METHOD Define
-   METHOD Define2
-   METHOD DefWindowProc
-   METHOD DeleteControl
-   METHOD DoEvent
-   METHOD EndWindow
-   METHOD Events
-   METHOD Events_Destroy
-   METHOD Events_HScroll
-   METHOD Events_VScroll
-   METHOD FocusedControl
-   METHOD getWindowState
-   METHOD Height                  SETGET
-   METHOD HelpTopic
-   METHOD Hide
-   METHOD Inspector
-   METHOD Maximize
-   METHOD MessageLoop
-   METHOD Minimize
-   METHOD NotifyIcon              SETGET
-   METHOD NotifyToolTip           SETGET
-   METHOD OnHideFocusManagement
-   METHOD ProcessInitProcedure
-   METHOD RefreshData
-   METHOD Register
-   METHOD Release
-   METHOD Restore
-   METHOD Row                     SETGET
-   METHOD ScrollControls
-   METHOD SetActivationFocus
-   METHOD Show
-   METHOD SizePos
-   METHOD Title                   SETGET
-   METHOD ToolTipMultiLine        SETGET
-   METHOD ToolTipWidth            SETGET
-   METHOD TopMost                 SETGET
-   METHOD VirtualHeight           SETGET
-   METHOD VirtualWidth            SETGET
-   METHOD Visible                 SETGET
-   METHOD Width                   SETGET
+   DATA ACHILDPOPUP               INIT {}
+   DATA ACTIVATECOUNT             INIT { 0, NIL, .T. }
+   DATA AUTORELEASE               INIT .F.
+   DATA CNOTIFYICONNAME           INIT ""
+   DATA CNOTIFYICONTOOLTIP        INIT ""
+   DATA FOCUSED                   INIT .T.
+   DATA FORCECOL                  INIT NIL
+   DATA FORCEROW                  INIT NIL
+   DATA GRAPHCOMMAND              INIT NIL
+   DATA GRAPHDATA                 INIT {}
+   DATA GRAPHTASKS                INIT {}
+   DATA HWNDCLIENT                INIT NIL
+   DATA LASTFOCUSEDCONTROL        INIT 0
+   DATA LDEFINED                  INIT .F.
+   DATA LENTERSIZEMOVE            INIT .F.
+   DATA LFORM                     INIT .T.
+   DATA LINTERNAL                 INIT .F.
+   DATA LSHOWED                   INIT .F.
+   DATA MAXHEIGHT                 INIT 0
+   DATA MAXWIDTH                  INIT 0
+   DATA MINHEIGHT                 INIT 0
+   DATA MINWIDTH                  INIT 0
+   DATA NHEIGHT                   INIT 300
+   DATA NOTIFYICONDBLCLICK        INIT NIL
+   DATA NOTIFYICONLEFTCLICK       INIT NIL
+   DATA NOTIFYICONMDBLCLICK       INIT NIL
+   DATA NOTIFYICONMIDCLICK        INIT NIL
+   DATA NOTIFYICONRDBLCLICK       INIT NIL
+   DATA NOTIFYICONRIGHTCLICK      INIT NIL
+   DATA NOTIFYMENU                INIT NIL
+   DATA NVIRTUALHEIGHT            INIT 0
+   DATA NVIRTUALWIDTH             INIT 0
+   DATA NWIDTH                    INIT 300
+   DATA OMENU                     INIT NIL
+   DATA ONHSCROLLBOX              INIT NIL
+   DATA ONINIT                    INIT NIL
+   DATA ONINTERACTIVECLOSE        INIT NIL
+   DATA ONMAXIMIZE                INIT NIL
+   DATA ONMINIMIZE                INIT NIL
+   DATA ONPAINT                   INIT NIL
+   DATA ONRELEASE                 INIT NIL
+   DATA ONRESTORE                 INIT NIL
+   DATA ONSCROLLDOWN              INIT NIL
+   DATA ONSCROLLLEFT              INIT NIL
+   DATA ONSCROLLRIGHT             INIT NIL
+   DATA ONSCROLLUP                INIT NIL
+   DATA ONSIZE                    INIT NIL
+   DATA ONVSCROLLBOX              INIT NIL
+   DATA OTOOLTIP                  INIT NIL
+   DATA OWNDCLIENT                INIT NIL
+   DATA RANGEHEIGHT               INIT 0
+   DATA RANGEWIDTH                INIT 0
+   DATA SPLITCHILDLIST            INIT {}
+   DATA TAG	                      INIT ""
+   DATA TAGCONTROL
+
+   METHOD ACTIVATE
+   METHOD ADJUSTWINDOWSIZE
+   METHOD AUTOADJUST
+   METHOD BACKCOLOR               SETGET
+   METHOD CENTER
+   METHOD CHECKINTERACTIVECLOSE
+   METHOD CLIENTSPOS
+   METHOD COL                     SETGET
+   METHOD CURSOR                  SETGET
+   METHOD DEFINE
+   METHOD DEFINE2
+   METHOD DEFWINDOWPROC
+   METHOD DELETECONTROL
+   METHOD DOEVENT
+   METHOD ENDWINDOW
+   METHOD EVENTS
+   METHOD EVENTS_DESTROY
+   METHOD EVENTS_HSCROLL
+   METHOD EVENTS_VSCROLL
+   METHOD FOCUSEDCONTROL
+   METHOD GETWINDOWSTATE
+   METHOD HEIGHT                  SETGET
+   METHOD HELPTOPIC
+   METHOD HIDE
+   METHOD INSPECTOR
+   METHOD MAXIMIZE
+   METHOD MESSAGELOOP
+   METHOD MINIMIZE
+   METHOD NOTIFYICON              SETGET
+   METHOD NOTIFYTOOLTIP           SETGET
+   METHOD ONHIDEFOCUSMANAGEMENT
+   METHOD PROCESSINITPROCEDURE
+   METHOD REFRESHDATA
+   METHOD REGISTER
+   METHOD RELEASE
+   METHOD RESTORE
+   METHOD ROW                     SETGET
+   METHOD SCROLLCONTROLS
+   METHOD SETACTIVATIONFOCUS
+   METHOD SHOW
+   METHOD SIZEPOS
+   METHOD TITLE                   SETGET
+   METHOD TOOLTIPMULTILINE        SETGET
+   METHOD TOOLTIPWIDTH            SETGET
+   METHOD TOPMOST                 SETGET
+   METHOD VIRTUALHEIGHT           SETGET
+   METHOD VIRTUALWIDTH            SETGET
+   METHOD VISIBLE                 SETGET
+   METHOD WIDTH                   SETGET
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -873,6 +995,31 @@ CLASS THOTKEYBOX FROM TLABEL
 ENDCLASS
 
 *------------------------------------------------------------------------------*
+CLASS THBPRINTER FROM TPRINTBASE
+   METHOD BEGINDOCX
+   METHOD BEGINPAGEX
+   METHOD ENDDOCX
+   METHOD ENDPAGEX
+   METHOD GETDEFPRINTERX
+   METHOD INITX
+   METHOD PRINTBARCODEX
+   METHOD PRINTDATAX
+   METHOD PRINTIMAGEX
+   METHOD PRINTLINEX
+   METHOD PRINTRECTANGLEX
+   METHOD PRINTROUNDRECTANGLEX
+   METHOD RELEASEX
+   METHOD SELPRINTERX
+   METHOD SETCOLORX
+   METHOD SETPREVIEWSIZEX
+ENDCLASS
+
+*------------------------------------------------------------------------------*
+CLASS THTMLPRINT FROM TEXCELPRINT
+   METHOD ENDDOCX
+ENDCLASS
+
+*------------------------------------------------------------------------------*
 CLASS THYPERLINK FROM TLABEL
    DATA TYPE                      INIT "HYPERLINK" READONLY
    DATA URL                       INIT ""
@@ -1085,6 +1232,24 @@ CLASS TMESSAGEBAR FROM TCONTROL
 ENDCLASS
 
 *------------------------------------------------------------------------------*
+CLASS TMINIPRINT FROM TPRINTBASE
+   METHOD BEGINDOCX
+   METHOD BEGINPAGEX
+   METHOD ENDDOCX
+   METHOD ENDPAGEX
+   METHOD GETDEFPRINTERX
+   METHOD INITX
+   METHOD PRINTBARCODEX
+   METHOD PRINTDATAX
+   METHOD PRINTIMAGEX
+   METHOD PRINTLINEX
+   METHOD PRINTRECTANGLEX
+   METHOD PRINTROUNDRECTANGLEX
+   METHOD RELEASEX
+   METHOD SELPRINTERX
+ENDCLASS
+
+*------------------------------------------------------------------------------*
 CLASS TMONTHCAL FROM TCONTROL
    DATA TYPE                      INIT "MONTHCAL" READONLY
 
@@ -1234,6 +1399,34 @@ CLASS TPDF
    METHOD X2M
 ENDCLASS
 
+*---------------------------------------
+CLASS TPDFPRINT FROM TPRINTBASE
+   DATA APAPER      AS ARRAY      INIT {} HIDDEN   // ARRAY CON LOS TIPOS DE PAPEL SOPORTADOS POR LA CLASE
+   DATA CDOCUMENT   AS CHARACTER  INIT ""          // NOMBRE DEL DOCUMENTO
+   DATA CPAGEORIENT AS CHARACTER  INIT ""          // P = PORTRAIT, L = LANDSCAPE
+   DATA CPAGESIZE   AS CHARACTER  INIT ""          // TAMAÑO DE PAGINA
+   DATA LPREVIEW    AS LOGICAL    INIT .F.         // INDICA SI ABRIMOS EL PDF AL FINALIZAR
+   DATA NFONTTYPE   AS NUMERIC    INIT 1           // TIPO DE FUENTE(NORMAL=0 O NEGRITA=1)
+   DATA OPDF        AS OBJECT                      // EL OBJETO PDF
+
+   METHOD BEGINDOCX
+   METHOD BEGINPAGEX
+   METHOD ENDDOCX
+   METHOD ENDPAGEX
+   METHOD GETDEFPRINTERX
+   METHOD INITX
+   METHOD PRINTBARCODEX
+   METHOD PRINTDATAX
+   METHOD PRINTIMAGEX
+   METHOD PRINTLINEX
+   METHOD PRINTRECTANGLEX
+   METHOD PRINTROUNDRECTANGLEX
+   METHOD RELEASEX
+   METHOD SELPRINTERX
+   METHOD SETCOLORX
+   METHOD SETPREVIEWSIZEX
+ENDCLASS
+
 *------------------------------------------------------------------------------*
 CLASS TPICTURE FROM TCONTROL
    DATA AUTOFIT                   INIT .F.
@@ -1287,6 +1480,100 @@ CLASS TPLAYER FROM TCONTROL
    METHOD STOP
    METHOD VOLUME                  SETGET
    METHOD ZOOM
+ENDCLASS
+
+*------------------------------------------------------------------------------*
+CLASS TPRINTBASE
+   DATA ACOLOR                    INIT {1,1,1}                READONLY
+   DATA AFONTCOLOR                INIT {0,0,0}                READONLY
+   DATA ALINCELDA                 INIT {}                     READONLY
+   DATA APORTS                    INIT {}                     READONLY
+   DATA APRINTERS                 INIT {}                     READONLY
+   DATA CARGO                     INIT  "list"                           // DOCUMENT NAME
+   DATA CFONTNAME                 INIT "Courier New"          READONLY
+   DATA CPRINTER                  INIT ""                     READONLY
+   DATA CPRINTLIBRARY             INIT "HBPRINTER"            READONLY
+   DATA CUNITS                    INIT "ROWCOL"               READONLY
+   DATA CVERSION                  INIT "(oohg-tprint)V 4.0"   READONLY
+   DATA EXIT                      INIT .F.                    READONLY
+   DATA IMPREVIEW                 INIT .F.                    READONLY
+   DATA LFONTBOLD                 INIT .F.                    READONLY
+   DATA LFONTITALIC               INIT .F.                    READONLY
+   DATA LPRERROR                  INIT .F.                    READONLY
+   DATA LPROP                     INIT .F.                    READONLY
+   DATA LWINHIDE                  INIT .T.                    READONLY
+   DATA NFONTSIZE                 INIT 12
+   DATA NHFIJ                     INIT (12/3.70)              READONLY
+   DATA NLINPAG                   INIT 0                      READONLY
+   DATA NLMARGIN                  INIT 0
+   DATA NMHOR                     INIT (10)/4.75              READONLY
+   DATA NMVER                     INIT (10)/2.35              READONLY
+   DATA NTMARGIN                  INIT 0
+   DATA NUNITSLIN                 INIT 1                      READONLY
+   DATA NVFIJ                     INIT (12/1.65)              READONLY
+   DATA NWPEN                     INIT 0.1                    READONLY   // PEN WIDTH
+   DATA TEMPFILE                  INIT ...                    READONLY
+
+   METHOD UPCA
+   METHOD BEGINDOC
+   METHOD BEGINDOCX
+   METHOD BEGINPAGE
+   METHOD BEGINPAGEX
+   METHOD CODABAR
+   METHOD CODE128
+   METHOD CODE3_9
+   METHOD CONDENDOS
+   METHOD CONDENDOSX
+   METHOD EAN13
+   METHOD EAN8
+   METHOD ENDDOC
+   METHOD ENDDOCX
+   METHOD ENDPAGE
+   METHOD ENDPAGEX
+   METHOD GETDEFPRINTER
+   METHOD GETDEFPRINTERX
+   METHOD GO_CODE
+   METHOD IND25
+   METHOD INIT
+   METHOD INITX
+   METHOD INT25
+   METHOD MAT25
+   METHOD NORMALDOS
+   METHOD NORMALDOSX
+   METHOD PRINTBARCODE
+   METHOD PRINTBARCODEX
+   METHOD PRINTDATA
+   METHOD PRINTDATAX
+   METHOD PRINTDOS
+   METHOD PRINTDOSX
+   METHOD PRINTIMAGE
+   METHOD PRINTIMAGEX
+   METHOD PRINTLINE
+   METHOD PRINTLINEX
+   METHOD PRINTRAW
+   METHOD PRINTRAWX
+   METHOD PRINTRECTANGLE
+   METHOD PRINTRECTANGLEX
+   METHOD PRINTROUNDRECTANGLE
+   METHOD PRINTROUNDRECTANGLEX
+   METHOD RELEASE
+   METHOD RELEASEX
+   METHOD SELPRINTER
+   METHOD SELPRINTERX
+   METHOD SETCOLOR
+   METHOD SETCOLORX
+   METHOD SETCPL
+   METHOD SETFONT
+   METHOD SETFONTX
+   METHOD SETLMARGIN
+   METHOD SETPREVIEWSIZE
+   METHOD SETPREVIEWSIZEX
+   METHOD SETPROP
+   METHOD SETTMARGIN
+   METHOD SETUNITS
+   METHOD SETUNITSX
+   METHOD SUP5
+   METHOD VERSION
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -1356,6 +1643,11 @@ CLASS TRADIOITEM FROM TLABEL
 ENDCLASS
 
 *------------------------------------------------------------------------------*
+CLASS TRAWPRINT FROM TDOSPRINT
+   METHOD ENDDOCX
+ENDCLASS
+
+*------------------------------------------------------------------------------*
 CLASS TREG32
    DATA CREGKEY
    DATA LERROR
@@ -1395,6 +1687,28 @@ CLASS TREPORT FROM TPRINTBASE
    METHOD LEADATOLOGIC
    METHOD LEAIMAGE
    METHOD LEAROWI
+ENDCLASS
+
+*------------------------------------------------------------------------------*
+CLASS TRTFPRINT FROM TPRINTBASE
+   METHOD BEGINDOCX
+   METHOD BEGINPAGEX
+   METHOD CONDENDOSX
+   METHOD ENDDOCX
+   METHOD ENDPAGEX
+   METHOD GETDEFPRINTERX
+   METHOD INITX
+   METHOD NORMALDOSX
+   METHOD PRINTDATAX
+   METHOD PRINTIMAGE
+   METHOD PRINTLINEX
+   METHOD PRINTRECTANGLEX
+   METHOD PRINTROUNDRECTANGLEX
+   METHOD RELEASEX
+   METHOD SELPRINTERX
+   METHOD SETCOLORX
+   METHOD SETPREVIEWSIZEX
+   METHOD SETUNITS
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -1837,6 +2151,7 @@ CLASS TWINDOW
    DATA BLOCK                     INIT NIL
    DATA BOLD                      INIT .F.
    DATA CARGO                     INIT NIL
+   DATA CFOCUSFONTNAME            INIT ""
    DATA CFONTNAME                 INIT ""
    DATA CLIENTADJUST              INIT 0
    DATA CLIENTHEIGHTUSED          INIT 0
@@ -1845,6 +2160,14 @@ CLASS TWINDOW
    DATA CONTAINERHWNDVALUE        INIT NIL
    DATA CONTEXTMENU               INIT NIL
    DATA DEFBKCOLOREDIT            INIT NIL
+   DATA FNTANGLE				       INIT 0
+   DATA FNTWIDTH			          INIT 0
+   DATA FOCUSBACKCOLOR
+   DATA FOCUSBOLD                 INIT .F.
+   DATA FOCUSCOLOR
+   DATA FOCUSITALIC               INIT .F.
+   DATA FOCUSSTRIKEOUT            INIT .F.
+   DATA FOCUSUNDERLINE            INIT .F.
    DATA HDC
    DATA HSCROLLBAR                INIT NIL
    DATA HWND                      INIT 0
@@ -1866,6 +2189,7 @@ CLASS TWINDOW
    DATA NCOL                      INIT 0
    DATA NDEFANCHOR                INIT 3
    DATA NESTEDCLICK               INIT .F.
+   DATA NFOCUSFONTSIZE            INIT 0
    DATA NFONTSIZE                 INIT 0
    DATA NHEIGHT                   INIT 0
    DATA NOLDH                     INIT NIL
@@ -1895,7 +2219,7 @@ CLASS TWINDOW
    DATA VSCROLLBAR                INIT NIL
    DATA WNDPROC                   INIT NIL
 
-   ERROR HANDLER ERROR
+   ERROR HANDLER Error
    METHOD ACCELERATORKEY
    METHOD ACCEPTFILES             SETGET
    METHOD ACTION                  SETGET
