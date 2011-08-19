@@ -1,12 +1,19 @@
 
 /*
- * $Id: ChangeLog,v 1.751 2011-08-18 19:31:12 fyurisich Exp $
+ * $Id: ChangeLog,v 1.752 2011-08-19 02:15:59 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2011-08-18 23:20:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * docs/classes.txt
+   * source/h_tree.prg
+     + Added LookForKey method and hWndEditCtrl data.
+     ! Fixed Esc key in label editing closes tree's parent form if
+       ON KEY ESCAPE is setted.
 
 2011-08-18 18:30:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    + doc/classes.txt

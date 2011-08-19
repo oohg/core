@@ -1,5 +1,5 @@
 /*
- * $Id: h_tree.prg,v 1.20 2011-08-18 19:30:25 fyurisich Exp $
+ * $Id: h_tree.prg,v 1.21 2011-08-19 02:15:23 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -114,6 +114,7 @@ CLASS TTree FROM TControl
    DATA aTreeRO              INIT {}
    DATA ReadOnly             INIT .T.
    DATA OnCheckChange        INIT Nil
+   DATA hWndEditCtrl         INIT Nil
 
    METHOD Define
    METHOD AddItem
@@ -135,6 +136,7 @@ CLASS TTree FROM TControl
    METHOD CheckItem          SETGET
    METHOD GetParent
    METHOD GetChildren
+   METHOD LookForKey
    METHOD Release
 ENDCLASS
 
@@ -746,7 +748,7 @@ Return nPixels
 METHOD Events_Notify( wParam, lParam ) CLASS TTree
 *-----------------------------------------------------------------------------*
 Local nNotify := GetNotifyCode( lParam )
-Local hWndEditCtrl, cNewValue, lValid
+Local cNewValue, lValid
 
    If nNotify == NM_CUSTOMDRAW
       Return Treeview_Notify_CustomDraw( Self, lParam )
@@ -760,15 +762,17 @@ Local hWndEditCtrl, cNewValue, lValid
         Return 1
       EndIf
 
-      hWndEditCtrl := SendMessage( ::hWnd, TVM_GETEDITCONTROL, 0, 0 )
-      if hWndEditCtrl == Nil
+      ::hWndEditCtrl := SendMessage( ::hWnd, TVM_GETEDITCONTROL, 0, 0 )
+      if ::hWndEditCtrl == Nil
         Return 1
       endif
 
-      SubClassEditCtrl( hWndEditCtrl, ::hWnd )
+      SubClassEditCtrl( ::hWndEditCtrl, ::hWnd )
       Return 0
 
    ElseIf nNotify == TVN_ENDLABELEDIT
+      ::hWndEditCtrl := Nil
+
       cNewValue := Treeview_LabelValue( lParam )
 
       /* editing was aborted */
@@ -991,6 +995,16 @@ Local Pos, ItemHandle, ChildHandle, ChildItem, ChildrenItems
    enddo
 
 Return ChildrenItems
+
+*-----------------------------------------------------------------------------*
+METHOD LookForKey( nKey, nFlags ) CLASS TTree
+*-----------------------------------------------------------------------------*
+
+   If nKey == VK_ESCAPE .and. ::hWndEditCtrl != Nil
+     Return Nil
+   Endif
+   
+Return ::Super:LookForKey( nKey, nFlags )
 
 *------------------------------------------------------------------------------*
 METHOD Release() CLASS TTree
@@ -1237,7 +1251,7 @@ static LRESULT APIENTRY SubClassFuncEditCtrl( HWND hWnd, UINT msg, WPARAM wParam
    {
       m = (LPMSG) lParam ;
 
-      if( m )
+      if( m && m->message == WM_KEYDOWN )
       {
          if( m->wParam == VK_ESCAPE )
          {
