@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.19 2011-08-18 19:29:33 fyurisich Exp $
+ * $Id: classes.txt,v 1.20 2011-08-19 02:15:43 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -2061,6 +2061,7 @@ CLASS TTREE FROM TCONTROL
    DATA ATREENODE                 INIT {}
    DATA ATREERO                   INIT {}
    DATA BONENTER                  INIT NIL
+   DATA HWNDEDITCTRL              INIT NIL
    DATA INITVALUE                 INIT 0
    DATA ITEMIDS                   INIT .F.
    DATA NHEIGHT                   INIT 120
@@ -2089,6 +2090,7 @@ CLASS TTREE FROM TCONTROL
    METHOD ITEM
    METHOD ITEMCOUNT
    METHOD ITEMREADONLY            SETGET
+   METHOD LOOKFORKEY
    METHOD ONENTER                 SETGET
    METHOD RELEASE
    METHOD SELCOLOR                SETGET
