@@ -1,5 +1,5 @@
 /*
- * $Id: h_report.prg,v 1.47 2010-10-18 15:46:39 declan2005 Exp $
+ * $Id: h_report.prg,v 1.48 2011-08-19 20:27:22 declan2005 Exp $
  */
 /*
  * DO REPORT Command support procedures FOR MiniGUI Library.
@@ -233,6 +233,11 @@ ELSE
        oprint:=tprint("CSVPRINT")
        oprint:init()
        lexcel:=.T.
+  ELSEIF _OOHG_printlibrary="SPREADSHEETPRINT"
+       oprint:=tprint("SPREADSHEETPRINT")
+       oprint:init()
+       lexcel:=.T.
+
   ELSEIF _OOHG_printlibrary="HTMLPRINT"
        oprint:=tprint("HTMLPRINT")
        oprint:init()

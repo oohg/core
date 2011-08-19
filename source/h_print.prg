@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.110 2011-08-08 22:21:59 declan2005 Exp $
+* $Id: h_print.prg,v 1.111 2011-08-19 20:27:22 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -68,6 +68,8 @@ IF clibx=NIL
          o_print_:=tpdfprint()
       ELSEIF _OOHG_printlibrary="RAWPRINT"
          o_print_:=tRAWprint()
+      ELSEIF _OOHG_printlibrary="SPREADSHEETPRINT"
+         o_print_:=tspreadsheetprint()
 
       ELSE
          o_print_:=thbprinter()
@@ -98,6 +100,8 @@ ELSE
          o_print_:=tpdfprint()
       ELSEIF clibx="RAWPRINT"
          o_print_:=trawprint()
+      ELSEIF clibx="SPREADSHEETPRINT"
+         o_print_:=tspreadsheetprint()
 
       ELSE
          o_print_:=tminiprint()
@@ -335,10 +339,6 @@ METHOD setpreviewsizex() BLOCK { || nil }
 
 *-------------------------
 METHOD setunits()   ////// mm o rowcol
-*-------------------------
-
-*-------------------------
-METHOD setunitsx()   BLOCK { || nil }
 *-------------------------
 
 *-------------------------
@@ -589,7 +589,7 @@ IF nunitslinx=NIL
 ELSE
    ::nunitslin:=nunitslinx
 ENDIF
-RETURN nil
+RETURN self
 
 *-------------------------
 METHOD printdata(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen,litalic,nangle) CLASS TPRINTBASE
@@ -2220,10 +2220,6 @@ method condendosx() BLOCK {|| NIL }
 method normaldosx() BLOCK {|| NIL }
 *-------------------------
 
-*-------------------------
-////METHOD setunitsx(cunitsx,nunitslinx)  // mm o rowcol , mm por renglon
-*-------------------------
-
 ENDCLASS
 
 
@@ -2336,46 +2332,37 @@ METHOD beginpagex() CLASS TEXCELPRINT
 *-------------------------
 RETURN self
 
-/*
-*-------------------------
-METHOD setunitsx(cunitsx,nunitslinx) CLASS TEXCELPRINT
-*-------------------------
-IF cunitsx="MM"
-   ::cunits:="MM"
-ELSE
-   ::cunits:="ROWCOL"
-ENDIF
-IF nunitslinx=NIL
-   ::nunitslin:=1
-ELSE
-   ::nunitslin:=nunitslinx
-ENDIF
-RETURN self
-*/
-
-
-
 *-------------------------
 METHOD printimagex(nlin,ncol,nlinf,ncolf,cimage) CLASS TEXCELPRINT
 *-------------------------
 local cfolder :=  getcurrentfolder()+"\"
 local ccol,clin
 local crango
+empty(nlinf)
+
 if nlin<1
    nlin:=1
 endif
 if ncol<1
    ncol:=1
 endif
+nlin++
 IF ::nunitslin>1
    nlin:=round(nlin/::nunitslin,0)
    ncol:=round(ncol/::nunitslin,0)
 ENDIF
+
+ncolf:=nlin
+
 clin :=alltrim(str(nlin))
+
 ccol :=alltrim(str(ncolf))
 
-crango := "A"+clin+":"+"A"+ccol
-empty(nlinf)
+
+///crango := "A"+clin+":"+"A"+ccol
+crango := "A"+clin
+
+///::oHoja:Cells(nlin,1):value:= " "
 ::oHoja:range( crango ):Select()
 cimage:=cfolder+cimage
 ::oHoja:Pictures:Insert(cimage)
@@ -2403,7 +2390,6 @@ IF LEN(::alincelda)<nlin
 ENDIF
 ::alincelda[nlin]:=::alincelda[nlin]+1
 alinceldax:=::alincelda[nlin]
-///::cTlinea:=::cTlinea+ ctext+chr(13)+chr(10)   //// mirando como hacrlo con el portapapeles, pero no es nada facil...
 
 ::oHoja:Cells(nlin,alinceldax):Value := "'"+space(ncol)+ctext
 IF cfont#::cfontname
@@ -2435,6 +2421,153 @@ METHOD endpagex() CLASS TEXCELPRINT
 *-------------------------
 ::nlinpag:=LEN(::alincelda)+1
 ::alincelda:={}
+RETURN self
+
+
+///////////////////////
+CREATE CLASS TSPREADSHEETPRINT FROM TPRINTBASE     //// Ciro 2010/8/19
+
+    DATA aDoc  INIT {}
+    DATA nXls  INIT 0
+    DATA nlinrel INIT 0
+    DATA nlpp  INIT 60          /// lines per page
+*-------------------------
+METHOD initx()
+*-------------------------
+
+*-------------------------
+METHOD begindocx()
+*-------------------------
+
+*-------------------------
+METHOD enddocx()
+*-------------------------
+
+*-------------------------
+METHOD beginpagex() BLOCK {|| NIL }
+*-------------------------
+
+*-------------------------
+METHOD endpagex()
+*-------------------------
+
+*-------------------------
+METHOD releasex()
+*-------------------------
+
+*-------------------------
+METHOD printdatax()
+*-------------------------
+
+*-------------------------
+METHOD printimagex() BLOCK {|| NIL }
+*-------------------------
+
+*-------------------------
+METHOD printlinex() BLOCK {|| NIL }
+*-------------------------
+
+*-------------------------
+METHOD printrectanglex BLOCK {|| NIL }
+*-------------------------
+
+*-------------------------
+METHOD selprinterx()    BLOCK {|| NIL }
+*-------------------------
+
+*-------------------------
+METHOD getdefprinterx() BLOCK {|| NIL }
+*-------------------------
+
+*-------------------------
+METHOD setcolorx() BLOCK {|| NIL }
+*-------------------------
+
+*-------------------------
+METHOD setpreviewsizex() BLOCK {|| NIL }
+*-------------------------
+
+*-------------------------
+METHOD printroundrectanglex() BLOCK {|| NIL }
+*-------------------------
+
+*-------------------------
+method condendosx() BLOCK {|| NIL }
+*-------------------------
+
+*-------------------------
+method normaldosx() BLOCK {|| NIL }
+*-------------------------
+
+ENDCLASS
+
+
+*-------------------------
+METHOD initx() CLASS TSPREADSHEETPRINT
+*-------------------------
+::cprintlibrary:="SPREADSHEETPRINT"
+RETURN self
+
+*-------------------------
+METHOD begindocx() CLASS TSPREADSHEETPRINT
+*-------------------------
+local i,cName
+cName:=Parsename(::cargo,"XLS")
+::nXls := xlsOpen( cName )
+for i:=1 to ::nlpp
+   aadd(::Adoc,space(300))
+next i
+RETURN self
+
+
+*-------------------------
+METHOD enddocx() CLASS TSPREADSHEETPRINT
+*-------------------------
+local cname:=::cargo,i
+for i:=1 to len(::aDoc)
+    xlsWrite( ::nxls, i , 1, rtrim(::aDoc[i])  )
+next i
+xlsClose( ::nXls )
+
+cName:=Parsename(::cargo,"XLS")
+
+IF ::impreview
+   IF ShellExecute(0, "open", "rundll32.exe", "url.dll,FileProtocolHandler "+ cName, ,1) <=32
+       MSGINFO("XLS Extension not asociated"+CHR(13)+CHR(13)+ ;
+       "File saved in:"+CHR(13)+cName)
+   ENDIF
+ENDIF
+
+RETURN self
+
+
+*-------------------------
+METHOD releasex() CLASS TSPREADSHEETPRINT
+*-------------------------
+release( ::nXls )
+RETURN self
+
+
+*-------------------------
+METHOD printdatax(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext,litalic) CLASS TSPREADSHEETPRINT
+*-------------------------
+local clineai,clineaf
+nlin++
+data:=autotype(data)
+clineai:=::aDoc[nlin+::nlinrel]
+clineaf:=STUFF(clineai, ncol, len(data), data)
+::aDoc[nlin+::nlinrel]:= clineaf
+RETURN self
+
+
+*-------------------------
+METHOD endpagex() CLASS TSPREADSHEETPRINT
+*-------------------------
+local i
+::nlinrel:=::nlinrel+::nlpp
+for i:=1 to ::nlpp
+   aadd(::aDoc,space(300))
+next i
 RETURN self
 
 
@@ -2543,9 +2676,6 @@ method condendosx()
 method normaldosx()
 *-------------------------
 
-*-------------------------
-METHOD setunits()   // mm o rowcol , mm por renglon
-*-------------------------
 
 ENDCLASS
 
@@ -2694,20 +2824,6 @@ oPrintRTF1[LEN(oPrintRTF1)]:=oPrintRTF1[LEN(oPrintRTF1)]+" \page"
 RETURN self
 
 
-*-------------------------
-METHOD setunits(cunitsx,cunitslinx) CLASS TRTFPRINT
-*-------------------------
-IF cunitsx="MM"
-   ::cunits:="MM"
-ELSE
-   ::cunits:="ROWCOL"
-ENDIF
-IF cunitslinx=NIL
-   ::nunitslin:=1
-ELSE
-   ::nunitslin:=cunitslinx
-ENDIF
-RETURN self
 
 
 *-------------------------
@@ -2841,10 +2957,6 @@ method condendosx()
 method normaldosx()
 *-------------------------
 
-*-------------------------
-METHOD setunits()   // mm o rowcol , mm por renglon
-*-------------------------
-
 ENDCLASS
 
 
@@ -2915,21 +3027,6 @@ ENDIF
 
 NEXT
 ::alincelda:={}
-RETURN self
-
-*-------------------------
-METHOD setunits(cunitsx,cunitslinx) CLASS TCSVPRINT
-*-------------------------
-IF cunitsx="MM"
-   ::cunits:="MM"
-ELSE
-   ::cunits:="ROWCOL"
-ENDIF
-IF cunitslinx=NIL
-   ::nunitslin:=1
-ELSE
-   ::nunitslin:=cunitslinx
-ENDIF
 RETURN self
 
 
@@ -3414,17 +3511,12 @@ method condendosx() BLOCK {|| NIL }
 method normaldosx() BLOCK {|| NIL }
 *-------------------------
 
-*-------------------------
-METHOD setunits()   // mm o rowcol , mm por renglon
-*-------------------------
-
 ENDCLASS
 
 
 *-------------------------
 METHOD initx() CLASS TCALCPRINT
 *-------------------------
-///::impreview:=.F.
 ::cprintlibrary:="CALCPRINT"
 return self
 
@@ -3469,14 +3561,10 @@ local cname
 ::oSheet:getColumns():setPropertyValue("OptimalWidth", .T.)
 cname:=parsename(::cargo,"odt",.T.)
 
- ///aOneArg[1] = SetPropertyValue( "Overwrite", .T. )
-
 ::oDocument:storeToURL("file:///"+cname, {})
  inkey(0.5)
 
-///IF  !(::imPreview)
-    ::oDocument:close( 1 )
-///ENDIF
+::oDocument:close( 1 )
 ::oServiceManager := nil
 ::oDesktop := nil
 ::oDocument := nil
@@ -3561,22 +3649,6 @@ return self
 
 
 *-------------------------
-METHOD setunits(cunitsx,cunitslinx) CLASS TCALCPRINT
-*-------------------------
-if cunitsx="MM"
-   ::cunits:="MM"
-else
-   ::cunits:="ROWCOL"
-endif
-if cunitslinx=NIL
-   ::nunitslin:=1
-else
-   ::nunitslin:=cunitslinx
-endif
-RETURN self
-
-
-*-------------------------
 METHOD printdatax(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext,nangle) CLASS TCALCPRINT
 *-------------------------
 empty(nangle)
@@ -3592,6 +3664,9 @@ IF ::cunits="MM"
 ENDIF
 AADD(::alincelda,{nlin,ncol,ctext,nsize,calign,cfont,lbold,acolor})
 return self
+
+
+
 
 
 //////////////////////////// codigos de barra
@@ -4186,3 +4261,133 @@ local cInStop := '101' // industrial 2 of 5 stop
         end
     next
 return cBarra
+
+//----------------------------------------------------------
+// XLS.PRG
+//
+// Rutinas para escribir un archivo Excel 2.0 de
+// forma nativa
+//
+// Basada en la implementacion de Mark O'Brien
+// Microsoft Corporation
+//
+// Version Clipper :
+// Yamil Bracho  (brachoy@pdvsa.com)
+// Nov,1999
+// Caracas, Venezuela
+//----------------------------------------------------------
+
+// Label Header
+#define TXT_ELEMS   12
+#define TXT_OPCO1    1
+#define TXT_OPCO2    2
+#define TXT_LEN1     3
+#define TXT_LEN2     4
+#define TXT_ROW1     5
+#define TXT_ROW2     6
+#define TXT_COL1     7
+#define TXT_COL2     8
+#define TXT_RGBAT1   9
+#define TXT_RGBAT2  10
+#define TXT_RGBAT3  11
+#define TXT_LEN     12
+
+//----------------------------------------------------------
+// Proposito :
+//   Abre el archivo xls y escribe marcador inicial
+// Parametros:
+//    cFile     - Nombre del Archivo
+// Retorna   :
+//   nHandle    - Handle del archivo Excel
+//----------------------------------------------------------
+function xlsOpen( cFile )
+  local nHandle
+  local cBof := Chr(  9 ) + Chr(  0 ) + Chr(  4 ) + Chr(  0 ) + ;
+	        Chr(  2 ) + Chr(  0 ) + Chr( 10 ) + Chr(  0 )
+
+  nHandle := fCreate( cFile )
+  fWrite( nHandle, cBof, Len( cBof ))
+return nHandle
+
+//----------------------------------------------------------
+// Proposito :
+//   Cierra el archivo xls y escribe marcador final
+// Parametros:
+//    Nada
+// Retorna   :
+//   nil
+//----------------------------------------------------------
+function xlsClose( nHandle )
+  local cEof := Chr( 10 ) + Chr( 0 ) + Chr( 0 ) + Chr( 0 )
+
+  fWrite( nHandle, cEof, Len( cEof ))
+  fClose( nHandle )
+return nil
+
+//----------------------------------------------------------
+// Proposito :
+//   Escribe un string en la celda (nRow, nCol)
+//   nRow, nCol Comienzan en 1
+// Parametros:
+//   nHandle - Handle del archivo xls
+//   nRow    - Fila
+//   nCol    - Columna
+//   cString - String a escribir
+// Retorna   :
+//   nil
+//----------------------------------------------------------
+function xlsWrite( nHandle, nRow, nCol, cString )
+  local anHeader
+  local nLen
+  local nI
+
+  //---------------------------------------------------
+  // Arreglo para almacenar el marcador de registro
+  // etiqueta
+  //---------------------------------------------------
+  anHeader               := Array( TXT_ELEMS )
+  anHeader[ TXT_OPCO1  ] :=  4
+  anHeader[ TXT_OPCO2  ] :=  0
+  anHeader[ TXT_LEN1   ] := 10
+  anHeader[ TXT_LEN2   ] :=  0
+  anHeader[ TXT_ROW2   ] :=  0
+  anHeader[ TXT_COL2   ] :=  0
+  anHeader[ TXT_RGBAT1 ] :=  0
+  anHeader[ TXT_RGBAT2 ] :=  0
+  anHeader[ TXT_RGBAT3 ] :=  0
+  anHeader[ TXT_LEN    ] :=  2
+
+  nLen 		       := Len( cString )
+
+  //------------------------------
+  // Longitud del texto a escribir
+  //------------------------------
+  anHeader[ TXT_LEN ]    := nLen
+
+  //----------------------
+  // Longitud del registro
+  //----------------------
+  anHeader[ TXT_LEN1 ]   := 8 + nLen
+
+  //---------------------------------------------
+  // En le formato BIFF se comienza desde cero y
+  // no desde 1 como estamos pasando los datos
+  //---------------------------------------------
+  nI                     := nRow - 1
+  anHeader[ TXT_ROW1 ]   := nI   - (Int( nI / 256 ) * 256 )
+  anHeader[ TXT_ROW2 ]   := Int( nI / 256 )
+  anHeader[ TXT_COL1 ]   := nCol - 1
+
+  //-------------------
+  // Escribe encabezado
+  //-------------------
+  Aeval( anHeader, { | v | fWrite( nHandle, Chr( v ), 1 )})
+
+  //-----------------------------------------------------
+  // Escribe la data
+  //-----------------------------------------------------
+  for nI:=1 to nLen
+    fWrite( nHandle, SubStr( cString, nI, 1 ), 1 )
+  next nI
+return nil
+
