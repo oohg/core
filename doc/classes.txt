@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.21 2011-08-19 22:20:58 fyurisich Exp $
+ * $Id: classes.txt,v 1.22 2011-08-20 21:09:31 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -1584,6 +1584,7 @@ CLASS TPROGRESSBAR FROM TCONTROL
    METHOD FONTCOLOR               SETGET
    METHOD RANGEMAX                SETGET
    METHOD RANGEMIN                SETGET
+   METHOD SETSTYLEMARQUEE
    METHOD VALUE                   SETGET
 ENDCLASS
 
