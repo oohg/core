@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.22 2011-08-20 21:09:31 fyurisich Exp $
+ * $Id: classes.txt,v 1.23 2011-08-20 21:26:15 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -1492,7 +1492,7 @@ CLASS TPRINTBASE
    DATA CPRINTER                  INIT ""                     READONLY
    DATA CPRINTLIBRARY             INIT "HBPRINTER"            READONLY
    DATA CUNITS                    INIT "ROWCOL"               READONLY
-   DATA CVERSION                  INIT "(oohg-tprint)V 4.0"   READONLY
+   DATA CVERSION                  INIT "(oohg-tprint)V 4.3"   READONLY
    DATA EXIT                      INIT .F.                    READONLY
    DATA IMPREVIEW                 INIT .F.                    READONLY
    DATA LFONTBOLD                 INIT .F.                    READONLY
@@ -1830,6 +1830,7 @@ CLASS TSPREADSHEETPRINT FROM TPRINTBASE
    DATA NLINREL                   INIT 0
    DATA NLPP                      INIT 60         // LINES PER PAGE
 
+   METHOD ADDPAGE
    METHOD BEGINDOCX
    METHOD BEGINPAGEX              BLOCK {|| NIL}
    METHOD CONDENDOSX              BLOCK {|| NIL}
