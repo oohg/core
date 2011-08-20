@@ -1,5 +1,5 @@
 /*
- * $Id: h_progressbar.prg,v 1.9 2009-12-23 23:55:21 guerra000 Exp $
+ * $Id: h_progressbar.prg,v 1.10 2011-08-20 20:47:47 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -108,14 +108,15 @@ CLASS TProgressBar FROM TControl
    METHOD RangeMax            SETGET
    METHOD FontColor           SETGET
    METHOD BackColor           SETGET
-
+   METHOD SetStyleMarquee
+   
    EMPTY( _OOHG_AllVars )
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, x, y, w, h, lo, hi, tooltip, ;
                vertical, smooth, HelpId, invisible, value, BackColor, ;
-               BarColor, lRtl ) CLASS TProgressBar
+               BarColor, lRtl, nVelocity ) CLASS TProgressBar
 *-----------------------------------------------------------------------------*
 Local ControlHandle
 
@@ -139,13 +140,25 @@ Local ControlHandle
 
    if ::BackColor <> Nil
       SetProgressBarBkColor( ControlHandle, ::BackColor[1], ::BackColor[2], ::BackColor[3] )
-	endif
+   endif
 
    if ::FontColor <> Nil
       SetProgressBarBarColor( ControlHandle, ::FontColor[1], ::FontColor[2], ::FontColor[3] )
-	endif
+   endif
+	
+	 if HB_IsNumeric( nVelocity )
+     ::SetStyleMarquee( nVelocity )
+	 endif
 
 Return Self
+
+*------------------------------------------------------------------------------*
+METHOD SetStyleMarquee( nVelocity ) CLASS TProgressBar
+*------------------------------------------------------------------------------*
+
+	::Style( ::Style() + 0x08 )                              // PBS_MARQUEE
+
+Return SendMessage( ::hWnd, WM_USER+10, 1, nVelocity )     // PBM_SETMARQUEE
 
 *------------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TProgressBar

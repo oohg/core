@@ -1,5 +1,5 @@
 /*
- * $Id: i_progressbar.ch,v 1.3 2005-10-22 06:04:31 guerra000 Exp $
+ * $Id: i_progressbar.ch,v 1.4 2011-08-20 20:46:39 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -91,22 +91,25 @@
         Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-#command @ <row>,<col> PROGRESSBAR <name>	;
-                [ OBJ <obj> ]                   ;
-		[ <dummy1: OF, PARENT> <parent> ] ;
-		[ RANGE <lo> , <hi> ] 		;
-		[ VALUE <v> ]			;
-		[ WIDTH <w> ] 			;
-		[ HEIGHT <h> ] 			;
-		[ TOOLTIP <tooltip> ] 		;
-		[ <vertical : VERTICAL> ]	;
-		[ <smooth : SMOOTH> ]		;
-		[ HELPID <helpid> ] 		;
-		[ <invisible : INVISIBLE> ]	;
-		[ BACKCOLOR <backcolor> ]	;
-		[ FORECOLOR <barcolor> ]	;
-                [ <rtl: RTL> ]                  ;
-	=>;
+#command @ <row>,<col> PROGRESSBAR <name>   ;
+      [ OBJ <obj> ]                   ;
+      [ <dummy1: OF, PARENT> <parent> ] ;
+      [ RANGE <lo> , <hi> ]       ;
+      [ VALUE <v> ]         ;
+      [ WIDTH <w> ]          ;
+      [ HEIGHT <h> ]          ;
+      [ TOOLTIP <tooltip> ]       ;
+      [ <vertical : VERTICAL> ]   ;
+      [ <smooth : SMOOTH> ]      ;
+      [ HELPID <helpid> ]       ;
+      [ <invisible : INVISIBLE> ]   ;
+      [ BACKCOLOR <backcolor> ]   ;
+      [ FORECOLOR <barcolor> ]   ;
+      [ <rtl: RTL> ]                  ;
+      [ MARQUEE <nVelocity> ] ;
+   =>;
         [ <obj> := ] TProgressBar():Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, ;
                         <lo>, <hi>, <tooltip>, <.vertical.>, <.smooth.>, ;
-                        <helpid>, <.invisible.>, <v>, [ <backcolor> ], [ <barcolor> ], <.rtl.>)
+                        <helpid>, <.invisible.>, <v>, [ <backcolor> ], [ <barcolor> ], <.rtl.>, ;
+                        <nVelocity> )
+                        

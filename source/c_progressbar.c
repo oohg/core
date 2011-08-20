@@ -1,5 +1,5 @@
 /*
- * $Id: c_progressbar.c,v 1.5 2007-01-01 20:52:13 guerra000 Exp $
+ * $Id: c_progressbar.c,v 1.6 2011-08-20 20:49:07 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -117,8 +117,8 @@ HB_FUNC( INITPROGRESSBAR )
 {
 	HWND hwnd;
 	HWND hbutton;
-    int StyleEx;
-	int Style = WS_CHILD ;
+   int StyleEx;
+	int Style = WS_CHILD  | hb_parni( 2 );
 
 	INITCOMMONCONTROLSEX  i;
 	i.dwSize = sizeof(INITCOMMONCONTROLSEX);
