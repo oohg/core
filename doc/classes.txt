@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.24 2011-08-23 14:22:08 fyurisich Exp $
+ * $Id: classes.txt,v 1.25 2011-08-23 14:44:25 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -1266,64 +1266,39 @@ ENDCLASS
 
 *------------------------------------------------------------------------------*
 CLASS TOBROWSE FROM TXBROWSE
-   DATA AFIELDS                   INIT NIL
-   DATA ALLOWAPPEND               INIT .F.
-   DATA ALLOWDELETE               INIT .F.
-   DATA AREPLACEFIELD             INIT NIL
-   DATA BOF                       INIT .F.
-   DATA EOF                       INIT .F.
-   DATA GOBOTTOMBLOCK             INIT NIL
-   DATA GOTOPBLOCK                INIT NIL
-   DATA LDESCENDING               INIT .F.
-   DATA LEDITING                  INIT .F.
-   DATA LLOCKED                   INIT .F.
-   DATA LOCK                      INIT .F.
-   DATA LRECCOUNT                 INIT .F.
-   DATA NVALUE                    INIT 0
-   DATA OWORKAREA                 INIT NIL
-   DATA SCROLLBUTTON              INIT NIL
-   DATA SKIPBLOCK                 INIT NIL
-   DATA TYPE                      INIT "XBROWSE" READONLY
-   DATA UWORKAREA                 INIT NIL
-   DATA VSCROLL                   INIT NIL
+   DATA ARECMAP                   INIT {}
+   DATA RECCOUNT                  INIT 0
+   DATA TYPE                      INIT "BROWSE" READONLY
 
-   METHOD ADDCOLUMN
-   METHOD ADJUSTRIGHTSCROLL
-   METHOD COLUMNAUTOFIT
-   METHOD COLUMNAUTOFITH
-   METHOD COLUMNBLOCK
-   METHOD COLUMNSAUTOFIT
-   METHOD COLUMNSAUTOFITH
-   METHOD COLUMNWIDTH
-   METHOD CURRENTROW              SETGET
+   MESSAGE GOBOTTOM               METHOD END
+   MESSAGE GOTOP                  METHOD HOME
+
+   METHOD BROWSEONCHANGE
+   METHOD DBGOTO
    METHOD DBSKIP
    METHOD DEFINE
    METHOD DELETE
-   METHOD DELETECOLUMN
    METHOD DOCHANGE
    METHOD DOWN
-   METHOD EDITALLCELLS
    METHOD EDITCELL
-   METHOD EDITITEM
    METHOD EDITITEM_B
-   METHOD ENABLED                 SETGET
+   METHOD END
+   METHOD EVENTS_ENTER
    METHOD EVENTS_NOTIFY
-   METHOD GETCELLTYPE
-   METHOD GOBOTTOM
-   METHOD GOTOP
-   METHOD MOVETO
+   METHOD FASTUPDATE
+   METHOD HOME
    METHOD PAGEDOWN
    METHOD PAGEUP
    METHOD REFRESH
    METHOD REFRESHDATA
-   METHOD REFRESHROW
+   METHOD SCROLLUPDATE
    METHOD SETSCROLLPOS
-   METHOD SIZEPOS
-   METHOD TOEXCEL
+   METHOD SETVALUE
    METHOD TOPBOTTOM
    METHOD UP
-   METHOD VISIBLE                 SETGET
-   METHOD WORKAREA                SETGET
+   METHOD UPDATE
+   METHOD VALUE                   SETGET
+
 ENDCLASS
 
 *------------------------------------------------------------------------------*
