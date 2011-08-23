@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.44 2011-01-23 23:48:38 guerra000 Exp $
+ * $Id: h_xbrowse.prg,v 1.45 2011-08-23 14:20:18 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -74,6 +74,9 @@ CLASS TXBROWSE FROM TGrid
    DATA lDescending       INIT .F.
    DATA Eof               INIT .F.
    DATA Bof               INIT .F.
+   DATA bDelWhen          INIT nil
+   DATA DelMsg            INIT nil
+   DATA onDelete          INIT nil
 
    METHOD Define
    METHOD Refresh
@@ -146,7 +149,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                dynamicforecolor, aPicture, lRtl, inplace, editcontrols, ;
                readonly, valid, validmessages, editcell, aWhenFields, ;
                lRecCount, columninfo, lNoHeaders, onenter, lDisabled, ;
-               lNoTabStop, lInvisible, lDescending ) CLASS TXBrowse
+               lNoTabStop, lInvisible, lDescending, bDelWhen, DelMsg, ;
+               onDelete ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
 Local nWidth2, nCol2, lLocked, oScroll, z
 
@@ -263,12 +267,15 @@ Local nWidth2, nCol2, lLocked, oScroll, z
    ::lLocked := lLocked
 
    // Must be set after control is initialized
-   ASSIGN ::OnLostFocus VALUE lostfocus TYPE "B"
-   ASSIGN ::OnGotFocus  VALUE gotfocus  TYPE "B"
-   ASSIGN ::OnChange    VALUE change    TYPE "B"
-   ASSIGN ::OnDblClick  VALUE dblclick  TYPE "B"
-   ASSIGN ::OnAppend    VALUE onappend  TYPE "B"
-   ASSIGN ::OnEnter     value onenter   TYPE "B"
+   ASSIGN ::OnLostFocus VALUE lostfocus  TYPE "B"
+   ASSIGN ::OnGotFocus  VALUE gotfocus   TYPE "B"
+   ASSIGN ::OnChange    VALUE change     TYPE "B"
+   ASSIGN ::OnDblClick  VALUE dblclick   TYPE "B"
+   ASSIGN ::OnAppend    VALUE onappend   TYPE "B"
+   ASSIGN ::OnEnter     value onenter    TYPE "B"
+   ASSIGN ::bDelWhen    VALUE bDelWhen   TYPE "B"
+   ASSIGN ::DelMsg      VALUE DelMsg     TYPE "C"
+   ASSIGN ::OnDelete    VALUE onDelete   TYPE "B"
 
 Return Self
 
@@ -690,7 +697,7 @@ HB_FUNC_STATIC( TXBROWSE_EVENTS_NOTIFY )
 FUNCTION TXBrowse_Events_Notify2( wParam, lParam )
 Local Self := QSelf()
 Local nNotify := GetNotifyCode( lParam )
-Local nvKey
+Local nvKey, lGo
 
    If nNotify == NM_CLICK  .or. nNotify == LVN_BEGINDRAG
       If ! ::lLocked
@@ -709,9 +716,19 @@ Local nvKey
             EndIf
 
          Case nvKey == 46 // DEL
-            If ::AllowDelete .AND. ! ::lLocked
-               If MsgYesNo( _OOHG_Messages( 4, 1 ), _OOHG_Messages( 4, 2 ) )
-                  ::Delete()
+            If ::AllowDelete .and. ! ::Eof() .AND. ! ::lLocked
+               If valtype(::bDelWhen) == "B"
+                  lGo := _OOHG_EVAL(::bDelWhen)
+               Else
+                  lGo := .t.
+               EndIf
+
+               If lGo
+                  If MsgYesNo(_OOHG_Messages(4, 1), _OOHG_Messages(4, 2))
+                     ::Delete()
+                  EndIf
+               Else
+                  MsgStop(::DelMsg, _OOHG_Messages(4, 2))
                EndIf
             EndIf
 
@@ -938,12 +955,16 @@ Local Value
 
    If ::Lock
       If ! ::oWorkArea:Lock()
-         MsgStop( "Record is being editied by another user. Retry later.", "Delete Record" )
+         MsgStop( "Record is being edited by another user. Retry later.", "Delete Record" )
          Return .F.
       Endif
    EndIf
 
    ::oWorkArea:Delete()
+
+   // Do before unlocking record or moving record pointer
+   // so block can operate on deleted record (e.g. to copy to a log).
+   _OOHG_Eval(::OnDelete)
 
    If ::Lock
       ::oWorkArea:UnLock()
@@ -1151,33 +1172,45 @@ Return lRet
 *-----------------------------------------------------------------------------*
 METHOD EditAllCells( nRow, nCol, lAppend ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
-Local lRet
+Local lRet, lRowEdited
+
    ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
    ASSIGN nRow    VALUE nRow    TYPE "N" DEFAULT ::CurrentRow
    ASSIGN nCol    VALUE nCol    TYPE "N" DEFAULT 1
+   
    If nRow < 1 .OR. nRow > ::ItemCount() .OR. nCol < 1 .OR. nCol > Len( ::aHeaders )
       // Cell out of range
       Return .F.
    EndIf
 
-*   DO EVENTS
    lRet := .T.
+   lRowEdited := .F.
+
    Do While nCol <= Len( ::aHeaders ) .AND. lRet
       If ::IsColumnReadOnly( nCol )
-         // Read only column
+        // Read only column, skip
+      ElseIf ! ::IsColumnWhen( nCol )
+        // Not a valid WHEN, skip column and continue editing
       Else
          lRet := ::EditCell( nRow, nCol,,,,, lAppend )
-         IF ! lRet .AND. lAppend
+
+         If lRet
+            lRowEdited := .T.
+         ElseIf lAppend
             ::GoBottom()
          ENDIF
+         
          lAppend := .F.
       EndIf
+      
       nCol++
    EndDo
-   If lRet // .OR. nCol > Len( ::aHeaders )
+   
+   If lRowEdited
       ListView_Scroll( ::hWnd, - _OOHG_GridArrayWidths( ::hWnd, ::aWidths ), 0 )
    Endif
-Return lRet
+   
+Return lRowEdited
 
 *-----------------------------------------------------------------------------*
 METHOD GetCellType( nCol, EditControl, uOldValue, cMemVar, bReplaceField ) CLASS TXBrowse

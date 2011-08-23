@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.80 2011-07-01 19:40:21 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.81 2011-08-23 14:20:18 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -146,7 +146,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                dynamicforecolor, aPicture, lRtl, onappend, editcell, ;
                editcontrols, replacefields, lRecCount, columninfo, ;
                lNoHeaders, onenter, lDisabled, lNoTabStop, lInvisible, ;
-               lDescending ) CLASS TOBrowse
+               lDescending, bDelWhen, DelMsg, onDelete ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local nWidth2, nCol2, oScroll, z
 
@@ -280,6 +280,9 @@ Local nWidth2, nCol2, oScroll, z
    ASSIGN ::OnDblClick  VALUE dblclick  TYPE "B"
    ASSIGN ::OnAppend    VALUE onappend  TYPE "B"
    ASSIGN ::OnEnter     value onenter   TYPE "B"
+   ASSIGN ::bDelWhen    VALUE bDelWhen   TYPE "B"
+   ASSIGN ::DelMsg      VALUE DelMsg     TYPE "C"
+   ASSIGN ::OnDelete    VALUE onDelete   TYPE "B"
 
 Return Self
 
@@ -567,7 +570,7 @@ Local s , _RecNo  //, _DeltaScroll
             Return nil
          EndIf
          ::DbSkip( -1 )
-         //
+
          ::DbGoTo( ::aRecMap[ 1 ] )
       EndIf
       ::DbSkip()
@@ -728,6 +731,11 @@ Local Value, nRecNo
 
    Else
       ( ::WorkArea )->( DbDelete() )
+
+      // Do before unlocking record or moving record pointer
+      // so block can operate on deleted record (e.g. to copy to a log).
+      _OOHG_Eval(::OnDelete)
+
       If ::Lock
          ( ::WorkArea )->( DbUnlock() )
       EndIf
@@ -1089,7 +1097,7 @@ HB_FUNC_STATIC( TOBROWSE_EVENTS_NOTIFY )
 FUNCTION TOBrowse_Events_Notify2( wParam, lParam )
 Local Self := QSelf()
 Local nNotify := GetNotifyCode( lParam )
-Local nvKey, r, DeltaSelect
+Local nvKey, r, DeltaSelect, lGo
 
    If nNotify == NM_CLICK  .or. nNotify == LVN_BEGINDRAG
       r := LISTVIEW_GETFIRSTITEM( ::hWnd )
@@ -1120,9 +1128,19 @@ Local nvKey, r, DeltaSelect
          EndIf
 
       Case nvKey == 46 // DEL
-         If ::AllowDelete
-            If MsgYesNo( _OOHG_Messages( 4, 1 ), _OOHG_Messages( 4, 2 ) )
-               ::Delete()
+         If ::AllowDelete .and. ! ::Eof()
+            If valtype(::bDelWhen) == "B"
+               lGo := _OOHG_EVAL(::bDelWhen)
+            Else
+               lGo := .t.
+            EndIf
+
+            If lGo
+               If MsgYesNo(_OOHG_Messages(4, 1), _OOHG_Messages(4, 2))
+                  ::Delete()
+               EndIf
+            Else
+               MsgStop(::DelMsg, _OOHG_Messages(4, 2))
             EndIf
          EndIf
 

@@ -1,5 +1,5 @@
 /*
- * $Id: i_xbrowse.ch,v 1.9 2009-02-14 02:14:52 guerra000 Exp $
+ * $Id: i_xbrowse.ch,v 1.10 2011-08-23 14:21:28 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -154,6 +154,9 @@
                 [ <notabstop: NOTABSTOP> ]      ;
                 [ <invisible: INVISIBLE> ]      ;
                 [ <descending: DESCENDING> ]    ;
+                [ DELETEWHEN <bWhenDel> ] ;
+                [ DELETEMSG <DelMsg> ] ;
+                [ ON DELETE <onDelete> ] ;
 	=>;
        [ <oObj> := ] _OOHG_SelectSubClass( TXBrowse(), [ <subclass>() ] ):Define( ;
                <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, <widths>, ;
@@ -166,4 +169,5 @@
                <dynamicbackcolor>, <dynamicforecolor>, <Picture>, <.rtl.>, <.inplace.>, ;
                <editcontrols>, <aReadOnly>, <{aValidFields}>, <aValidMessages>, <{editcell}>, ;
                <aWhenFields>, <.reccount.>, <columninfo>, ! <.noshowheaders.>, <{enter}>, ;
-               <.disabled.>, <.notabstop.>, <.invisible.>, <.descending.> )
+               <.disabled.>, <.notabstop.>, <.invisible.>, <.descending.>, <{bWhenDel}>, ;
+               <DelMsg>, <{onDelete}> )

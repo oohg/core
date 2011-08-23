@@ -1,12 +1,28 @@
 
 /*
- * $Id: ChangeLog,v 1.755 2011-08-20 20:59:44 fyurisich Exp $
+ * $Id: ChangeLog,v 1.756 2011-08-23 14:22:27 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2011-08-23 11:00:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * docs/classes.txt
+   * include/i_browse.ch
+   * include/i_xbrowse.ch
+   * include/i_altsyntax.ch
+     + Added missing clauses in DEFINE BROWSE.
+   * source/h_browse.prg
+   * source/h_xbrowse.prg
+     ! Fixed: record pointer not updated after appending a new row, when
+       editing was interrupted with Esc in second or later column and when
+       SET BROWSESYNC ON (see EditAllCells method in TXBrowse class).
+     + Added DELETEWHEN clause to prevalidate row delete.
+     + Added DELETEMSG clause to show a message when row delete is not allowed.
+     + Added ON DELETE event. It fires after deleting the record but before
+       moving the record pointer or unlocking the record.
 
 2011-08-20 17:46:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * docs/classes.txt

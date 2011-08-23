@@ -1,5 +1,5 @@
 /*
- * $Id: i_browse.ch,v 1.22 2009-02-14 02:14:52 guerra000 Exp $
+ * $Id: i_browse.ch,v 1.23 2011-08-23 14:21:28 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -92,72 +92,75 @@
 ---------------------------------------------------------------------------*/
 
 #define BROWSE_JTFY_LEFT                0
-#define BROWSE_JTFY_RIGHT       	1
-#define BROWSE_JTFY_CENTER      	2
-#define BROWSE_JTFY_JUSTIFYMASK 	3
+#define BROWSE_JTFY_RIGHT          1
+#define BROWSE_JTFY_CENTER         2
+#define BROWSE_JTFY_JUSTIFYMASK    3
 
 #translate MemVar . <AreaName> . <FieldName> =>  MemVar<AreaName><FieldName>
 ///////////////////////////////////////////////////////////////////////////////
 // STANDARD BROWSE
 ///////////////////////////////////////////////////////////////////////////////
 
-#command @ <row>,<col> BROWSE <name> 		;
-                [ <dummy1: OF, PARENT> <parent> ] ;
-                [ OBJ <oObj> ]                  ;
-		[ WIDTH <w> ] 			;
-		[ HEIGHT <h> ] 			;
-		[ HEADERS <headers> ] 		;
-		[ WIDTHS <widths> ] 		;
-                [ WORKAREA <workarea> ]         ;
-		[ FIELDS <Fields> ] 		;
-                [ INPUTMASK <Picture> ]         ;
-		[ VALUE <value> ] 		;
-		[ FONT <fontname> ] 		;
-		[ SIZE <fontsize> ] 		;
-                [ <bold : BOLD> ]               ;
-                [ <italic : ITALIC> ]           ;
-                [ <underline : UNDERLINE> ]     ;
-                [ <strikeout : STRIKEOUT> ]     ;
-		[ TOOLTIP <tooltip> ]  		;
-                [ BACKCOLOR <backcolor> ]       ;
-                [ DYNAMICBACKCOLOR <dynamicbackcolor> ] ;
-		[ DYNAMICFORECOLOR <dynamicforecolor> ] ;
-                [ FONTCOLOR <fontcolor> ]       ;
-		[ ON GOTFOCUS <gotfocus> ] 	;
-		[ ON CHANGE <change> ]  	;
-		[ ON LOSTFOCUS <lostfocus> ] 	;
-		[ ON DBLCLICK <dblclick> ]  	;
-		[ <edit : EDIT> ] 		;
-		[ <inplace : INPLACE> ]		;
-		[ <append : APPEND> ] 		;
-		[ ON HEADCLICK <aHeadClick> ] 	;
-                [ <dummy2: WHEN, COLUMNWHEN> <aWhenFields> ] ;
-                [ VALID <aValidFields> ]        ;
-		[ VALIDMESSAGES <aValidMessages> ] ;
-		[ READONLY <aReadOnly> ] 	;
-		[ <lock: LOCK> ] 		;
-                [ <delete: DELETE> ]            ;
-                [ <style: NOLINES> ]            ;
-                [ IMAGE <aImage> ]              ;
-                [ JUSTIFY <aJust> ]             ;
-		[ <novscroll: NOVSCROLL> ] 	;
-		[ HELPID <helpid> ] 		;
-		[ <break: BREAK> ] 		;
-                [ <rtl: RTL> ]                  ;
-                [ ON APPEND <onappend> ]        ;
-                [ ON EDITCELL <editcell> ]      ;
-                [ COLUMNCONTROLS <editcontrols> ] ;
-                [ REPLACEFIELD <replacefields> ] ;
-                [ SUBCLASS <subclass> ]         ;
-                [ <reccount: RECCOUNT> ]        ;
-                [ COLUMNINFO <columninfo> ]     ;
-                [ <noshowheaders: NOHEADERS> ]  ;
-                [ ON ENTER <enter> ]            ;
-                [ <disabled: DISABLED> ]        ;
-                [ <notabstop: NOTABSTOP> ]      ;
-                [ <invisible: INVISIBLE> ]      ;
-                [ <descending: DESCENDING> ]    ;
-	=>;
+#command @ <row>,<col> BROWSE <name>       ;
+      [ <dummy1: OF, PARENT> <parent> ] ;
+      [ OBJ <oObj> ]                  ;
+      [ WIDTH <w> ]          ;
+      [ HEIGHT <h> ]          ;
+      [ HEADERS <headers> ]       ;
+      [ WIDTHS <widths> ]       ;
+      [ WORKAREA <workarea> ]         ;
+      [ FIELDS <Fields> ]       ;
+      [ INPUTMASK <Picture> ]         ;
+      [ VALUE <value> ]       ;
+      [ FONT <fontname> ]       ;
+      [ SIZE <fontsize> ]       ;
+      [ <bold : BOLD> ]               ;
+      [ <italic : ITALIC> ]           ;
+      [ <underline : UNDERLINE> ]     ;
+      [ <strikeout : STRIKEOUT> ]     ;
+      [ TOOLTIP <tooltip> ]        ;
+      [ BACKCOLOR <backcolor> ]       ;
+      [ DYNAMICBACKCOLOR <dynamicbackcolor> ] ;
+      [ DYNAMICFORECOLOR <dynamicforecolor> ] ;
+      [ FONTCOLOR <fontcolor> ]       ;
+      [ ON GOTFOCUS <gotfocus> ]    ;
+      [ ON CHANGE <change> ]     ;
+      [ ON LOSTFOCUS <lostfocus> ]    ;
+      [ ON DBLCLICK <dblclick> ]     ;
+      [ <edit : EDIT> ]       ;
+      [ <inplace : INPLACE> ]      ;
+      [ <append : APPEND> ]       ;
+      [ ON HEADCLICK <aHeadClick> ]    ;
+      [ <dummy2: WHEN, COLUMNWHEN> <aWhenFields> ] ;
+      [ VALID <aValidFields> ]        ;
+      [ VALIDMESSAGES <aValidMessages> ] ;
+      [ READONLY <aReadOnly> ]    ;
+      [ <lock: LOCK> ]       ;
+      [ <delete: DELETE> ]            ;
+      [ <style: NOLINES> ]            ;
+      [ IMAGE <aImage> ]              ;
+      [ JUSTIFY <aJust> ]             ;
+      [ <novscroll: NOVSCROLL> ]    ;
+      [ HELPID <helpid> ]       ;
+      [ <break: BREAK> ]       ;
+      [ <rtl: RTL> ]                  ;
+      [ ON APPEND <onappend> ]        ;
+      [ ON EDITCELL <editcell> ]      ;
+      [ COLUMNCONTROLS <editcontrols> ] ;
+      [ REPLACEFIELD <replacefields> ] ;
+      [ SUBCLASS <subclass> ]         ;
+      [ <reccount: RECCOUNT> ]        ;
+      [ COLUMNINFO <columninfo> ]     ;
+      [ <noshowheaders: NOHEADERS> ]  ;
+      [ ON ENTER <enter> ]            ;
+      [ <disabled: DISABLED> ]        ;
+      [ <notabstop: NOTABSTOP> ]      ;
+      [ <invisible: INVISIBLE> ]      ;
+      [ <descending: DESCENDING> ]    ;
+      [ DELETEWHEN <bWhenDel> ] ;
+      [ DELETEMSG <DelMsg> ] ;
+      [ ON DELETE <onDelete> ] ;
+   =>;
              [ <oObj> := ] _OOHG_SelectSubClass( TOBrowse(), [ <subclass>() ] ): ;
                 Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, <widths>, ;
                 <Fields>, <value>, <fontname>, <fontsize>, <tooltip>, <{change}>, ;
@@ -169,8 +172,7 @@
                 <dynamicbackcolor>, <aWhenFields>, <dynamicforecolor>, <Picture>, <.rtl.>, ;
                 <{onappend}>, <{editcell}>, <editcontrols>, <replacefields>, <.reccount.>, ;
                 <columninfo>, ! <.noshowheaders.>, <{enter}>, <.disabled.>, <.notabstop.>, ;
-                <.invisible.>, <.descending.> )
-
+                <.invisible.>, <.descending.>, <{bWhenDel}>, <DelMsg>, <{onDelete}> )
 
 #command SET BROWSESYNC ON  => SetBrowseSync( .T. )
 #command SET BROWSESYNC OFF => SetBrowseSync( .F. )
