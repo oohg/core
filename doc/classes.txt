@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.23 2011-08-20 21:26:15 fyurisich Exp $
+ * $Id: classes.txt,v 1.24 2011-08-23 14:22:08 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -2127,6 +2127,8 @@ CLASS TXBROWSE FROM TGRID
    DATA ALLOWAPPEND               INIT .F.
    DATA ALLOWDELETE               INIT .F.
    DATA AREPLACEFIELD             INIT NIL
+   DATA BDELWHEN                  INIT NIL
+   DATA DELMSG                    INIT NIL
    DATA GOBOTTOMBLOCK             INIT NIL
    DATA GOTOPBLOCK                INIT NIL
    DATA LEDITING                  INIT .F.
@@ -2135,6 +2137,7 @@ CLASS TXBROWSE FROM TGRID
    DATA LRECCOUNT                 INIT .F.
    DATA NVALUE                    INIT 0
    DATA ONAPPEND                  INIT NIL
+   DATA ONDELETE                  INIT NIL
    DATA OWORKAREA                 INIT NIL
    DATA SCROLLBUTTON              INIT NIL
    DATA SKIPBLOCK                 INIT NIL
