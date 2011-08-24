@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.122 2011-07-02 19:23:27 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.123 2011-08-24 15:34:01 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -2842,7 +2842,7 @@ Local oGridControl, aEdit2, cControl
          Case cControl == "TEXTBOX"
             oGridControl := TGridControlTextBox():New( aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 2 ] )
          Case cControl == "IMAGELIST"
-            oGridControl := TGridControlDatePicker():New( oGrid )
+            oGridControl := TGridControlImageList():New( oGrid )
          Case cControl == "LCOMBOBOX"
             oGridControl := TGridControlLComboBox():New( aEdit2[ 2 ], aEdit2[ 3 ] )
       EndCase

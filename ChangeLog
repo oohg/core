@@ -1,12 +1,16 @@
 
 /*
- * $Id: ChangeLog,v 1.756 2011-08-23 14:22:27 fyurisich Exp $
+ * $Id: ChangeLog,v 1.757 2011-08-24 15:34:53 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2011-08-24 12:30:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   ! source/h_grid.prg
+     ! Fixed: incorrect function call in GridControlObject function.
 
 2011-08-23 11:00:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * docs/classes.txt
