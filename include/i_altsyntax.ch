@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.47 2011-08-27 00:31:53 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.48 2011-08-27 14:09:05 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -152,7 +152,7 @@ Memvariables
 #xtranslate _OOHG_ActiveControlCancel                 => _OOHG_ActiveControlInfo \[ 184 \]
 #xtranslate _OOHG_ActiveControlAlignment              => _OOHG_ActiveControlInfo \[ 185 \]
 #xtranslate _OOHG_ActiveControlHeaderImages           => _OOHG_ActiveControlInfo \[ 186 \]
-#xtranslate _OOHG_ActiveControlImagesPlace            => _OOHG_ActiveControlInfo \[ 187 \]
+#xtranslate _OOHG_ActiveControlImagesAlign            => _OOHG_ActiveControlInfo \[ 187 \]
 #xtranslate _OOHG_ActiveControlColumnInfo             => _OOHG_ActiveControlInfo \[ 188 \]
 #xtranslate _OOHG_ActiveControlDescending             => _OOHG_ActiveControlInfo \[ 189 \]
 #xtranslate _OOHG_ActiveControlShowAll                => _OOHG_ActiveControlInfo \[ 190 \]
@@ -1316,7 +1316,6 @@ CHECK BOX/BUTTON
         _OOHG_ActiveControlAutoSize    := .F.    ;;
         _OOHG_ActiveControlField       := Nil
 
-
 #xcommand DEFINE CHECKBUTTON <name> ;
         => ;
         _OOHG_ClearActiveControlInfo( <(name)> ) ;;
@@ -1373,7 +1372,7 @@ CHECK BOX/BUTTON
                 _OOHG_ActiveControlFontColor, ;
                 _OOHG_ActiveControlTransparent, ;
                 _OOHG_ActiveControlAutoSize, ;
-                _OOHG_ActiveControlRtl ;
+                _OOHG_ActiveControlRtl, ;
                 _OOHG_ActiveControlDisabled )
 
 #xcommand END CHECKBUTTON ;
@@ -1868,7 +1867,7 @@ GRID
         _OOHG_ActiveControlWhen             := Nil ;;
         _OOHG_ActiveControlShowHeaders      := Nil ;;
         _OOHG_ActiveControlHeaderImages     := Nil ;;
-        _OOHG_ActiveControlImagesPlace      := Nil
+        _OOHG_ActiveControlImagesAlign      := Nil
 
 #xcommand ONAPPEND <onappend> ;
         => ;
@@ -1878,9 +1877,9 @@ GRID
         => ;
         _OOHG_ActiveControlHeaderImages := <aHeaderImages>
 
-#xcommand IMAGESPLACE <aImgPlace> ;
+#xcommand IMAGESALIGN <aImgAlign> ;
         => ;
-        _OOHG_ActiveControlImagesPlace := <aImgPlace>
+        _OOHG_ActiveControlImagesAlign := <aImgAlign>
 
 #xcommand END GRID ;
         => ;
@@ -1935,7 +1934,7 @@ GRID
                 _OOHG_ActiveControlShowHeaders, ;
                 _OOHG_ActiveControlOnEnter, ;
                 _OOHG_ActiveControlHeaderImages, ;
-                _OOHG_ActiveControlImagesPlace )
+                _OOHG_ActiveControlImagesAlign )
 
 /*----------------------------------------------------------------------------
 BROWSE
@@ -1978,7 +1977,7 @@ BROWSE
         _OOHG_ActiveControlDescending       := .F. ;;
         _OOHG_ActiveControlRecCount         := .F. ;;
         _OOHG_ActiveControlHeaderImages     := Nil ;;
-        _OOHG_ActiveControlImagesPlace      := Nil
+        _OOHG_ActiveControlImagesAlign      := Nil
         
 #xcommand DELETEWHEN <delwhen> ;
         => ;
@@ -2070,7 +2069,7 @@ BROWSE
                 _OOHG_ActiveControlDeleteMsg, ;
                 _OOHG_ActiveControlOnDelete, ;
                 _OOHG_ActiveControlHeaderImages, ;
-                _OOHG_ActiveControlImagesPlace )
+                _OOHG_ActiveControlImagesAlign )
 
 /*----------------------------------------------------------------------------
 XBROWSE
@@ -2113,7 +2112,7 @@ XBROWSE
         _OOHG_ActiveControlDescending       := .F. ;;
         _OOHG_ActiveControlRecCount         := .F. ;;
         _OOHG_ActiveControlHeaderImages     := Nil ;;
-        _OOHG_ActiveControlImagesPlace      := Nil
+        _OOHG_ActiveControlImagesAlign      := Nil
 
 #xcommand END XBROWSE ;
         => ;
@@ -2177,7 +2176,7 @@ XBROWSE
                 _OOHG_ActiveControlDeleteMsg, ;
                 _OOHG_ActiveControlOnDelete, ;
                 _OOHG_ActiveControlHeaderImages, ;
-                _OOHG_ActiveControlImagesPlace )
+                _OOHG_ActiveControlImagesAlign )
 
 /*----------------------------------------------------------------------------
 HYPERLINK
