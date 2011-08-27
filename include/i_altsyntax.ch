@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.46 2011-08-23 14:21:28 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.47 2011-08-27 00:31:53 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -122,6 +122,37 @@ Memvariables
 #xtranslate _OOHG_ActiveControlTrailingFontColor      => _OOHG_ActiveControlInfo \[  25 \]
 #xtranslate _OOHG_ActiveControlBackgroundColor        => _OOHG_ActiveControlInfo \[  26 \]
 
+#xtranslate _OOHG_ActiveControlRowCount               => _OOHG_ActiveControlInfo \[ 157 \]
+#xtranslate _OOHG_ActiveControlColCount               => _OOHG_ActiveControlInfo \[ 158 \]
+#xtranslate _OOHG_ActiveControlOnLineUp               => _OOHG_ActiveControlInfo \[ 159 \]
+#xtranslate _OOHG_ActiveControlOnLineDown             => _OOHG_ActiveControlInfo \[ 160 \]
+#xtranslate _OOHG_ActiveControlOnPageUp               => _OOHG_ActiveControlInfo \[ 161 \]
+#xtranslate _OOHG_ActiveControlOnPageDown             => _OOHG_ActiveControlInfo \[ 162 \]
+#xtranslate _OOHG_ActiveControlOnTop                  => _OOHG_ActiveControlInfo \[ 163 \]
+#xtranslate _OOHG_ActiveControlOnBottom               => _OOHG_ActiveControlInfo \[ 164 \]
+#xtranslate _OOHG_ActiveControlOnThumb                => _OOHG_ActiveControlInfo \[ 165 \]
+#xtranslate _OOHG_ActiveControlOnTrack                => _OOHG_ActiveControlInfo \[ 166 \]
+#xtranslate _OOHG_ActiveControlOnEndTrack             => _OOHG_ActiveControlInfo \[ 167 \]
+#xtranslate _OOHG_ActiveControlAttached               => _OOHG_ActiveControlInfo \[ 168 \]
+#xtranslate _OOHG_ActiveControlLineSkip               => _OOHG_ActiveControlInfo \[ 169 \]
+#xtranslate _OOHG_ActiveControlPageSkip               => _OOHG_ActiveControlInfo \[ 170 \]
+#xtranslate _OOHG_ActiveControlAutoMove               => _OOHG_ActiveControlInfo \[ 171 \]
+#xtranslate _OOHG_ActiveControlForceAlt               => _OOHG_ActiveControlInfo \[ 172 \]
+#xtranslate _OOHG_ActiveControlFirstItem              => _OOHG_ActiveControlInfo \[ 173 \]
+#xtranslate _OOHG_ActiveControlButtonWidth            => _OOHG_ActiveControlInfo \[ 174 \]
+#xtranslate _OOHG_ActiveControlAction2                => _OOHG_ActiveControlInfo \[ 175 \]
+#xtranslate _OOHG_ActiveControlSpeed                  => _OOHG_ActiveControlInfo \[ 176 \]
+#xtranslate _OOHG_ActiveControlTextHeight             => _OOHG_ActiveControlInfo \[ 177 \]
+#xtranslate _OOHG_ActiveControlImagesize              => _OOHG_ActiveControlInfo \[ 178 \]
+#xtranslate _OOHG_ActiveControlWhiteBackground        => _OOHG_ActiveControlInfo \[ 179 \]
+#xtranslate _OOHG_ActiveControlNoResize               => _OOHG_ActiveControlInfo \[ 180 \]
+#xtranslate _OOHG_ActiveControlBuffer                 => _OOHG_ActiveControlInfo \[ 181 \]
+#xtranslate _OOHG_ActiveControlHBitmap                => _OOHG_ActiveControlInfo \[ 182 \]
+#xtranslate _OOHG_ActiveControlScale                  => _OOHG_ActiveControlInfo \[ 183 \]
+#xtranslate _OOHG_ActiveControlCancel                 => _OOHG_ActiveControlInfo \[ 184 \]
+#xtranslate _OOHG_ActiveControlAlignment              => _OOHG_ActiveControlInfo \[ 185 \]
+#xtranslate _OOHG_ActiveControlHeaderImages           => _OOHG_ActiveControlInfo \[ 186 \]
+#xtranslate _OOHG_ActiveControlImagesPlace            => _OOHG_ActiveControlInfo \[ 187 \]
 #xtranslate _OOHG_ActiveControlColumnInfo             => _OOHG_ActiveControlInfo \[ 188 \]
 #xtranslate _OOHG_ActiveControlDescending             => _OOHG_ActiveControlInfo \[ 189 \]
 #xtranslate _OOHG_ActiveControlShowAll                => _OOHG_ActiveControlInfo \[ 190 \]
@@ -245,811 +276,844 @@ Memvariables
         _OOHG_ActiveControlHeight        := Nil          ;;
         _OOHG_ActiveControlFont          := Nil          ;;
         _OOHG_ActiveControlSize          := Nil          ;;
-        _OOHG_ActiveControlFontBold      := .f.          ;;
-        _OOHG_ActiveControlFontItalic    := .f.          ;;
-        _OOHG_ActiveControlFontStrikeOut := .f.          ;;
-        _OOHG_ActiveControlFontUnderLine := .f.          ;;
+        _OOHG_ActiveControlFontBold      := .F.          ;;
+        _OOHG_ActiveControlFontItalic    := .F.          ;;
+        _OOHG_ActiveControlFontStrikeOut := .F.          ;;
+        _OOHG_ActiveControlFontUnderLine := .F.          ;;
         _OOHG_ActiveControlFontColor     := Nil          ;;
         _OOHG_ActiveControlBackColor     := Nil          ;;
-        _OOHG_ActiveControlRtl           := .f.          ;;
+        _OOHG_ActiveControlRtl           := .F.          ;;
         _OOHG_ActiveControlValue         := Nil          ;;
         _OOHG_ActiveControlTooltip       := Nil          ;;
-        _OOHG_ActiveControlNoTabStop     := .f.          ;;
-        _OOHG_ActiveControlInvisible     := .f.          ;;
+        _OOHG_ActiveControlNoTabStop     := .F.          ;;
+        _OOHG_ActiveControlInvisible     := .F.          ;;
         _OOHG_ActiveControlHelpId        := Nil          ;;
-        _OOHG_ActiveControlDisabled      := .f.          ;;
+        _OOHG_ActiveControlDisabled      := .F.          ;;
         _OOHG_ActiveControlOnDblClick    := Nil          ;;
         _OOHG_ActiveControlOnRDblClick   := Nil          ;;
         _OOHG_ActiveControlOnMDblClick   := Nil          ;;
         _OOHG_ActiveControlOnLostFocus   := Nil          ;;
         _OOHG_ActiveControlOnGotFocus    := Nil          ;;
         _OOHG_ActiveControlOnChange      := Nil          ;;
-        _OOHG_ActiveControlOnEnter       := nil
+        _OOHG_ActiveControlOnEnter       := Nil
 
 #xcommand PARENT <of> ;
-        =>;
+        => ;
         _OOHG_ActiveControlOf := <(of)>
 
 #xcommand ROW <row> ;
-        =>;
+        => ;
         _OOHG_ActiveControlRow := <row>
 
-#xcommand COL  <col> ;
-        =>;
+#xcommand COL <col> ;
+        => ;
         _OOHG_ActiveControlCol := <col>
 
 #xcommand WIDTH <width> ;
-        =>;
+        => ;
         _OOHG_ActiveControlWidth := <width>
 
 #xcommand HEIGHT <height> ;
-        =>;
+        => ;
         _OOHG_ActiveControlHeight := <height>
 
 #xcommand FONTNAME <font> ;
-        =>;
+        => ;
         _OOHG_ActiveControlFont := <font>
 
 #xcommand FONTSIZE <size> ;
-        =>;
+        => ;
         _OOHG_ActiveControlSize := <size>
 
-#xcommand FONTBOLD   <bold>;
-   =>;
-        _OOHG_ActiveControlFontBold              := <bold>
+#xcommand FONTBOLD <bold> ;
+   => ;
+        _OOHG_ActiveControlFontBold := <bold>
 
-#xcommand FONTITALIC   <i>;
-   =>;
-        _OOHG_ActiveControlFontItalic    := <i>
+#xcommand FONTITALIC <i> ;
+   => ;
+        _OOHG_ActiveControlFontItalic := <i>
 
-#xcommand FONTSTRIKEOUT   <s>;
-   =>;
+#xcommand FONTSTRIKEOUT <s> ;
+   => ;
         _OOHG_ActiveControlFontStrikeOut := <s>
 
-#xcommand FONTUNDERLINE   <u>;
-   =>;
-        _OOHG_ActiveControlFontUnderline         := <u>
+#xcommand FONTUNDERLINE <u> ;
+   => ;
+        _OOHG_ActiveControlFontUnderline := <u>
 
-#xcommand FONTCOLOR   <color>;
-   =>;
-        _OOHG_ActiveControlFontColor             := <color>
+#xcommand FONTCOLOR   <color> ;
+   => ;
+        _OOHG_ActiveControlFontColor := <color>
 
-#xcommand BACKCOLOR   <color>;
-   =>;
-        _OOHG_ActiveControlBackColor             := <color>
+#xcommand BACKCOLOR <color> ;
+   => ;
+        _OOHG_ActiveControlBackColor := <color>
 
-#xcommand RTL              <l>;
-   =>;
-        _OOHG_ActiveControlRtl              := <l>
+#xcommand RTL <l> ;
+   => ;
+        _OOHG_ActiveControlRtl := <l>
 
 #xcommand VALUE <value> ;
-   =>;
+   => ;
         _OOHG_ActiveControlValue := <value>
 
 #xcommand TOOLTIP <tooltip> ;
-        =>;
+        => ;
         _OOHG_ActiveControlTooltip := <tooltip>
 
 #xcommand TABSTOP <notabstop> ;
-        =>;
+        => ;
         _OOHG_ActiveControlNoTabStop := .NOT. <notabstop>
 
 #xcommand VISIBLE <visible> ;
-        =>;
+        => ;
         _OOHG_ActiveControlInvisible := .NOT. <visible>
 
 #xcommand HELPID <helpid> ;
-        =>;
+        => ;
         _OOHG_ActiveControlHelpId := <helpid>
 
 #xcommand DISABLED <disabled> ;
-        =>;
+        => ;
         _OOHG_ActiveControlDisabled := <disabled>
 
+#xcommand ITEMSOURCE <itemsource> ;
+        => ;
+        _OOHG_ActiveControlItemSource := <(itemsource)>
 
+#xcommand VALUESOURCE <valuesource> ;
+        => ;
+        _OOHG_ActiveControlValueSource := <(valuesource)>
 
-
-
-
-#xcommand ITEMSOURCE <itemsource>;
-   =>;
-   _OOHG_ActiveControlItemSource := <(itemsource)>
-
-#xcommand VALUESOURCE <valuesource>;
-   =>;
-   _OOHG_ActiveControlValueSource := <(valuesource)>
-
-#xcommand COLUMNCONTROLS <editcontrols>;
-   =>;
+#xcommand COLUMNCONTROLS <editcontrols> ;
+        => ;
         _OOHG_ActiveControlEditControls := <editcontrols>
 
-#xcommand EDITCELL <editcell>;
-   =>;
+#xcommand EDITCELL <editcell> ;
+        => ;
         _OOHG_ActiveControlEditCell := <editcell>
 
-#xcommand WORKAREA <workarea>;
-   =>;
-        _OOHG_ActiveControlWorkArea              := <(workarea)>
+#xcommand WORKAREA <workarea> ;
+        => ;
+        _OOHG_ActiveControlWorkArea := <(workarea)>
 
-#xcommand FIELD        <field>;
-   =>;
-        _OOHG_ActiveControlField            := <(field)>
+#xcommand FIELD <field> ;
+        => ;
+        _OOHG_ActiveControlField := <(field)>
 
-#xcommand FIELDS   <fields>;
-   =>;
-        _OOHG_ActiveControlFields                := <fields>
+#xcommand FIELDS <fields> ;
+        => ;
+        _OOHG_ActiveControlFields := <fields>
 
-#xcommand ALLOWDELETE   <deletable>;
-   =>;
-        _OOHG_ActiveControlDelete                := <deletable>
+#xcommand ALLOWDELETE <deletable> ;
+        => ;
+        _OOHG_ActiveControlDelete := <deletable>
 
-#xcommand NOVSCROLLBAR   <nvs>;
-   =>;
-        _OOHG_ActiveControlNoVScroll             := <nvs>
+#xcommand NOVSCROLLBAR <nvs> ;
+        => ;
+        _OOHG_ActiveControlNoVScroll := <nvs>
 
-#xcommand VSCROLLBAR   <vs>;
-   =>;
-        _OOHG_ActiveControlNoVScroll             := .not. <vs>
+#xcommand VSCROLLBAR <vs> ;
+        => ;
+        _OOHG_ActiveControlNoVScroll := .NOT. <vs>
 
-#xcommand NOHSCROLLBAR   <nvs>;
-   =>;
-        _OOHG_ActiveControlNoHScroll             := <nvs>
+#xcommand NOHSCROLLBAR <nvs> ;
+        => ;
+        _OOHG_ActiveControlNoHScroll := <nvs>
 
-#xcommand HSCROLLBAR   <vs>;
-   =>;
-        _OOHG_ActiveControlNoHScroll             := .not. <vs>
+#xcommand HSCROLLBAR <vs> ;
+        => ;
+        _OOHG_ActiveControlNoHScroll := .NOT. <vs>
 
-#xcommand INPLACEEDIT   <inplaceedit>;
-   =>;
-        _OOHG_ActiveControlInPlaceEdit   := <inplaceedit>
+#xcommand INPLACEEDIT <inplaceedit> ;
+        => ;
+        _OOHG_ActiveControlInPlaceEdit := <inplaceedit>
 
-#xcommand DATE   <datetype>;
-   =>;
-        _OOHG_ActiveControlDateType      := <datetype>
+#xcommand DATE <datetype> ;
+        => ;
+        _OOHG_ActiveControlDateType := <datetype>
 
-#xcommand VALID      <valid>;
-   =>;
-        _OOHG_ActiveControlValid         := <{valid}>
+#xcommand VALID <valid> ;
+        => ;
+        _OOHG_ActiveControlValid := <{valid}>
 
-#xcommand VALIDMESSAGES <validmessages>;
-   =>;
+#xcommand VALIDMESSAGES <validmessages> ;
+        => ;
         _OOHG_ActiveControlValidMessages := <validmessages>
 
-#xcommand READONLY      <readonly>;
-   =>;
-        _OOHG_ActiveControlReadOnly              := <readonly>
+#xcommand READONLY <readonly> ;
+        => ;
+        _OOHG_ActiveControlReadOnly := <readonly>
 
-#xcommand VIRTUAL      <virtual>;
-   =>;
-        _OOHG_ActiveControlVirtual               := <virtual>
+#xcommand VIRTUAL <virtual> ;
+        => ;
+        _OOHG_ActiveControlVirtual := <virtual>
 
-#xcommand LOCK      <lock>;
-   =>;
-        _OOHG_ActiveControlLock          := <lock>
+#xcommand LOCK <lock> ;
+        => ;
+        _OOHG_ActiveControlLock := <lock>
 
-#xcommand ALLOWAPPEND   <appendable>;
-   =>;
-        _OOHG_ActiveControlAppendable    := <appendable>
+#xcommand ALLOWAPPEND <appendable> ;
+        => ;
+        _OOHG_ActiveControlAppendable := <appendable>
 
-#xcommand AUTOSIZE      <a>;
-   =>;
-        _OOHG_ActiveControlAutoSize              := <a>
+#xcommand AUTOSIZE <a> ;
+        => ;
+        _OOHG_ActiveControlAutoSize := <a>
 
-#xcommand SHOWHEADERS           <a>;
-   =>;
-        _OOHG_ActiveControlShowHeaders            := <a>
-
+#xcommand SHOWHEADERS <a> ;
+        => ;
+        _OOHG_ActiveControlShowHeaders := <a>
 
 /*----------------------------------------------------------------------------
-Frame
+FRAME
 ---------------------------------------------------------------------------*/
 
-
 #xcommand DEFINE FRAME <name> ;
-   =>;
+        => ;
         _OOHG_ClearActiveControlInfo( <(name)> ) ;;
-        _OOHG_ActiveControlCaption               := Nil          ;;
-        _OOHG_ActiveControlTransparent   := .f.          ;;
-        _OOHG_ActiveControlOpaque                := .f.
-
+        _OOHG_ActiveControlCaption     := Nil    ;;
+        _OOHG_ActiveControlTransparent := .F.    ;;
+        _OOHG_ActiveControlOpaque      := .F.
 
 #xcommand OPAQUE <opaque> ;
-   =>;
-        _OOHG_ActiveControlOpaque        := <opaque>
+        => ;
+        _OOHG_ActiveControlOpaque := <opaque>
 
 #xcommand END FRAME ;
-   =>;
-        TFrame():Define(;
-                _OOHG_ActiveControlName,;
-                _OOHG_ActiveControlOf,;
-                _OOHG_ActiveControlRow,;
-                _OOHG_ActiveControlCol,;
-                _OOHG_ActiveControlWidth,;
-                _OOHG_ActiveControlHeight,;
-                _OOHG_ActiveControlCaption,;
-                _OOHG_ActiveControlFont,;
-                _OOHG_ActiveControlSize,;
-                _OOHG_ActiveControlOpaque,;
-                _OOHG_ActiveControlFontBold,;
-                _OOHG_ActiveControlFontItalic,;
-                _OOHG_ActiveControlFontUnderLine,;
-                _OOHG_ActiveControlFontStrikeOut,;
-                _OOHG_ActiveControlBackColor,;
-                _OOHG_ActiveControlFontColor,;
-                _OOHG_ActiveControlTransparent,;
-                _OOHG_ActiveControlRtl )
+        => ;
+        TFrame():Define( ;
+                _OOHG_ActiveControlName, ;
+                _OOHG_ActiveControlOf, ;
+                _OOHG_ActiveControlRow, ;
+                _OOHG_ActiveControlCol, ;
+                _OOHG_ActiveControlWidth, ;
+                _OOHG_ActiveControlHeight, ;
+                _OOHG_ActiveControlCaption, ;
+                _OOHG_ActiveControlFont, ;
+                _OOHG_ActiveControlSize, ;
+                _OOHG_ActiveControlOpaque, ;
+                _OOHG_ActiveControlFontBold, ;
+                _OOHG_ActiveControlFontItalic, ;
+                _OOHG_ActiveControlFontUnderLine, ;
+                _OOHG_ActiveControlFontStrikeOut, ;
+                _OOHG_ActiveControlBackColor, ;
+                _OOHG_ActiveControlFontColor, ;
+                _OOHG_ActiveControlTransparent, ;
+                _OOHG_ActiveControlRtl, ;
+                _OOHG_ActiveControlInvisible, ;
+                _OOHG_ActiveControlDisabled )
 
 
 #xcommand HEADERS <headers> ;
-   =>;
-        _OOHG_ActiveControlHeaders               := <headers>
+        => ;
+        _OOHG_ActiveControlHeaders := <headers>
 
 #xcommand HEADER <headers> ;
-   =>;
-        _OOHG_ActiveControlHeaders               := <headers>
+        => ;
+        _OOHG_ActiveControlHeaders := <headers>
 
 #xcommand WIDTHS <widths> ;
-   =>;
-        _OOHG_ActiveControlWidths                := <widths>
+        => ;
+        _OOHG_ActiveControlWidths := <widths>
 
 #xcommand ONDBLCLICK <dblclick> ;
-   =>;
-        _OOHG_ActiveControlOnDblClick    := <{dblclick}>
+        => ;
+        _OOHG_ActiveControlOnDblClick := <{dblclick}>
 
 #xcommand ON DBLCLICK <dblclick> ;
-   =>;
-        _OOHG_ActiveControlOnDblClick    := <{dblclick}>
+        => ;
+        _OOHG_ActiveControlOnDblClick := <{dblclick}>
 
 #xcommand ONHEADCLICK <aHeadClick> ;
-   =>;
-        _OOHG_ActiveControlOnHeadClick   := <aHeadClick>
+        => ;
+        _OOHG_ActiveControlOnHeadClick := <aHeadClick>
 
 #xcommand ON HEADCLICK <aHeadClick> ;
-   =>;
-        _OOHG_ActiveControlOnHeadClick   := <aHeadClick>
+        => ;
+        _OOHG_ActiveControlOnHeadClick := <aHeadClick>
 
 #xcommand DYNAMICBACKCOLOR <aDynamicBackColor> ;
-        =>;
+        => ;
         _OOHG_ActiveControlDynamicBackColor := <aDynamicBackColor>
 
 #xcommand DYNAMICFORECOLOR <aDynamicForeColor> ;
-        =>;
+        => ;
         _OOHG_ActiveControlDynamicForeColor := <aDynamicForeColor>
 
 #xcommand WHEN <aWhenFields> ;
-        =>;
-        _OOHG_ActiveControlWhen   := <aWhenFields>
+        => ;
+        _OOHG_ActiveControlWhen := <aWhenFields>
 
 #xcommand REPLACEFIELD <aReplaceFields> ;
-        =>;
+        => ;
         _OOHG_ActiveControlReplaceFields := <aReplaceFields>
 
 #xcommand NOLINES <nolines> ;
-   =>;
-        _OOHG_ActiveControlNoLines               := <nolines>
+        => ;
+        _OOHG_ActiveControlNoLines := <nolines>
 
 #xcommand IMAGE <aImage> ;
-   =>;
-        _OOHG_ActiveControlImage         := <aImage>
+        => ;
+        _OOHG_ActiveControlImage := <aImage>
 
 #xcommand JUSTIFY <aJustify> ;
-   =>;
-        _OOHG_ActiveControlJustify               := <aJustify>
+        => ;
+        _OOHG_ActiveControlJustify := <aJustify>
 
 #xcommand MULTISELECT <multiselect> ;
-   =>;
-        _OOHG_ActiveControlMultiSelect   := <multiselect>
+        => ;
+        _OOHG_ActiveControlMultiSelect := <multiselect>
 
 #xcommand ALLOWEDIT <edit> ;
-   =>;
-        _OOHG_ActiveControlEdit          := <edit>
+        => ;
+        _OOHG_ActiveControlEdit := <edit>
 
 /*----------------------------------------------------------------------------
-List Box
+LIST BOX
 ---------------------------------------------------------------------------*/
-#xcommand DEFINE LISTBOX <name>;
-   =>;
+
+#xcommand DEFINE LISTBOX <name> ;
+        => ;
         _OOHG_ClearActiveControlInfo( <(name)> ) ;;
-        _OOHG_ActiveControlItems         := Nil          ;;
-        _OOHG_ActiveControlMultiSelect   := .f.          ;;
-        _OOHG_ActiveControlBreak         := .f.          ;;
-        _OOHG_ActiveControlSort          := .f.
+        _OOHG_ActiveControlItems       := Nil    ;;
+        _OOHG_ActiveControlMultiSelect := .F.    ;;
+        _OOHG_ActiveControlBreak       := .F.    ;;
+        _OOHG_ActiveControlSort        := .F.    ;;
+        _OOHG_ActiveControlImage       := Nil    ;;
+        _OOHG_ActiveControlTextHeight  := Nil    ;;
+        _OOHG_ActiveControlStretch     := .F.    ;;
+        _OOHG_ActiveControlNoVScroll   := .F.
 
-#xcommand SORT   <sort>   ;
-   =>;
-        _OOHG_ActiveControlSort          := <sort>
+#xcommand SORT <sort> ;
+        => ;
+        _OOHG_ActiveControlSort := <sort>
 
-#xcommand END LISTBOX   ;
-   =>;
+#xcommand FIT <fit> ;
+        => ;
+        _OOHG_ActiveControlStretch := <fit>
+
+#xcommand TEXTHEIGHT <textheight> ;
+        => ;
+        _OOHG_ActiveControlTextHeight := <textheight>
+
+#xcommand END LISTBOX ;
+        => ;
         iif( _OOHG_ActiveControlMultiSelect, TListMulti(), TList() ):Define( ;
-                _OOHG_ActiveControlName,;
-                _OOHG_ActiveControlOf,;
-                _OOHG_ActiveControlCol,;
-                _OOHG_ActiveControlRow,;
-                _OOHG_ActiveControlWidth,;
-                _OOHG_ActiveControlHeight,;
-                _OOHG_ActiveControlItems,;
-                _OOHG_ActiveControlValue,;
-                _OOHG_ActiveControlFont,;
-                _OOHG_ActiveControlSize,;
-                _OOHG_ActiveControlTooltip,;
-                _OOHG_ActiveControlOnChange,;
-                _OOHG_ActiveControlOnDblClick,;
-                _OOHG_ActiveControlOnGotFocus,;
-                _OOHG_ActiveControlOnLostFocus,;
-                _OOHG_ActiveControlBreak,;
-                _OOHG_ActiveControlHelpId,;
-                _OOHG_ActiveControlInvisible,;
-                _OOHG_ActiveControlNoTabStop,;
-                _OOHG_ActiveControlSort , ;
-                _OOHG_ActiveControlFontBold , ;
-                _OOHG_ActiveControlFontItalic , ;
-                _OOHG_ActiveControlFontUnderLine , ;
-                _OOHG_ActiveControlFontStrikeOut , ;
-                _OOHG_ActiveControlBackColor , ;
-                _OOHG_ActiveControlFontColor , ;
+                _OOHG_ActiveControlName, ;
+                _OOHG_ActiveControlOf, ;
+                _OOHG_ActiveControlCol, ;
+                _OOHG_ActiveControlRow, ;
+                _OOHG_ActiveControlWidth, ;
+                _OOHG_ActiveControlHeight, ;
+                _OOHG_ActiveControlItems, ;
+                _OOHG_ActiveControlValue, ;
+                _OOHG_ActiveControlFont, ;
+                _OOHG_ActiveControlSize, ;
+                _OOHG_ActiveControlTooltip, ;
+                _OOHG_ActiveControlOnChange, ;
+                _OOHG_ActiveControlOnDblClick, ;
+                _OOHG_ActiveControlOnGotFocus, ;
+                _OOHG_ActiveControlOnLostFocus, ;
+                _OOHG_ActiveControlBreak, ;
+                _OOHG_ActiveControlHelpId, ;
+                _OOHG_ActiveControlInvisible, ;
+                _OOHG_ActiveControlNoTabStop, ;
+                _OOHG_ActiveControlSort, ;
+                _OOHG_ActiveControlFontBold, ;
+                _OOHG_ActiveControlFontItalic, ;
+                _OOHG_ActiveControlFontUnderLine, ;
+                _OOHG_ActiveControlFontStrikeOut, ;
+                _OOHG_ActiveControlBackColor, ;
+                _OOHG_ActiveControlFontColor, ;
                 _OOHG_ActiveControlRtl, ;
                 _OOHG_ActiveControlDisabled, ;
-                _OOHG_ActiveControlOnEnter )
+                _OOHG_ActiveControlOnEnter, ;
+                _OOHG_ActiveControlImage, ;
+                _OOHG_ActiveControlTextHeight, ;
+                _OOHG_ActiveControlStretch, ;
+                _OOHG_ActiveControlNoVScroll )
 
-///////////////////////////////////////////////////////////////////////////////
-// ANIMATEBOX COMMANDS
-///////////////////////////////////////////////////////////////////////////////
+/*----------------------------------------------------------------------------
+ANIMATEBOX COMMANDS
+---------------------------------------------------------------------------*/
 
-#xcommand DEFINE ANIMATEBOX <name>;
-   =>;
+#xcommand DEFINE ANIMATEBOX <name> ;
+        => ;
         _OOHG_ClearActiveControlInfo( <(name)> ) ;;
-        _OOHG_ActiveControlAutoPlay              := .f.          ;;
-        _OOHG_ActiveControlCenter                := .f.          ;;
-        _OOHG_ActiveControlTransparent   := .f.          ;;
-        _OOHG_ActiveControlFile          := Nil
+        _OOHG_ActiveControlAutoPlay    := .F.    ;;
+        _OOHG_ActiveControlCenter      := .F.    ;;
+        _OOHG_ActiveControlTransparent := .F.    ;;
+        _OOHG_ActiveControlFile        := Nil
 
-#xcommand AUTOPLAY <autoplay>;
-   =>;
-        _OOHG_ActiveControlAutoPlay              := <autoplay>
+#xcommand AUTOPLAY <autoplay> ;
+        => ;
+        _OOHG_ActiveControlAutoPlay := <autoplay>
 
-#xcommand CENTER   <center>;
-   =>;
-        _OOHG_ActiveControlCenter                := <center>
+#xcommand CENTER <center> ;
+        => ;
+        _OOHG_ActiveControlCenter := <center>
 
-#xcommand FILE      <file>;
-   =>;
-        _OOHG_ActiveControlFile          := <file>
+#xcommand FILE <file> ;
+        => ;
+        _OOHG_ActiveControlFile := <file>
 
 #xcommand END ANIMATEBOX;
-   =>;
-        TAnimateBox():Define(;
-                _OOHG_ActiveControlName,;
-                _OOHG_ActiveControlOf,;
-                _OOHG_ActiveControlCol,;
-                _OOHG_ActiveControlRow,;
-                _OOHG_ActiveControlWidth,;
-                _OOHG_ActiveControlHeight,;
-                _OOHG_ActiveControlAutoPlay,;
-                _OOHG_ActiveControlCenter,;
-                _OOHG_ActiveControlTransparent,;
-                _OOHG_ActiveControlFile,;
-                _OOHG_ActiveControlHelpId,;
-                _OOHG_ActiveControlInvisible,;
-                _OOHG_ActiveControlNoTabStop,;
-                _OOHG_ActiveControlDisabled,;
+        => ;
+        TAnimateBox():Define( ;
+                _OOHG_ActiveControlName, ;
+                _OOHG_ActiveControlOf, ;
+                _OOHG_ActiveControlCol, ;
+                _OOHG_ActiveControlRow, ;
+                _OOHG_ActiveControlWidth, ;
+                _OOHG_ActiveControlHeight, ;
+                _OOHG_ActiveControlAutoPlay, ;
+                _OOHG_ActiveControlCenter, ;
+                _OOHG_ActiveControlTransparent, ;
+                _OOHG_ActiveControlFile, ;
+                _OOHG_ActiveControlHelpId, ;
+                _OOHG_ActiveControlInvisible, ;
+                _OOHG_ActiveControlNoTabStop, ;
+                _OOHG_ActiveControlDisabled, ;
                 _OOHG_ActiveControlRtl)
 
 #xcommand DEFINE PLAYER <name> ;
-   =>;
-        _OOHG_ClearActiveControlInfo( <(name)> ) ;;
-        _OOHG_ActiveControlFile          := Nil          ;;
-        _OOHG_ActiveControlNoAutoSizeWindow      := .f.          ;;
-        _OOHG_ActiveControlNoAutoSizeMovie       := .f.          ;;
-        _OOHG_ActiveControlNoErrorDlg    := .f.          ;;
-        _OOHG_ActiveControlNoMenu                := .f.          ;;
-        _OOHG_ActiveControlNoOpen                := .f.          ;;
-        _OOHG_ActiveControlNoPlayBar             := .f.          ;;
-        _OOHG_ActiveControlShowAll               := .f.          ;;
-        _OOHG_ActiveControlShowMode              := .f.          ;;
-        _OOHG_ActiveControlShowName              := .f.          ;;
-        _OOHG_ActiveControlShowPosition  := .f.
+        => ;
+        _OOHG_ClearActiveControlInfo( <(name)> )   ;;
+        _OOHG_ActiveControlFile             := Nil ;;
+        _OOHG_ActiveControlNoAutoSizeWindow := .F. ;;
+        _OOHG_ActiveControlNoAutoSizeMovie  := .F. ;;
+        _OOHG_ActiveControlNoErrorDlg       := .F. ;;
+        _OOHG_ActiveControlNoMenu           := .F. ;;
+        _OOHG_ActiveControlNoOpen           := .F. ;;
+        _OOHG_ActiveControlNoPlayBar        := .F. ;;
+        _OOHG_ActiveControlShowAll          := .F. ;;
+        _OOHG_ActiveControlShowMode         := .F. ;;
+        _OOHG_ActiveControlShowName         := .F. ;;
+        _OOHG_ActiveControlShowPosition     := .F.
 
-#xcommand NOAUTOSIZEWINDOW   <noautosizewindow>;
-   =>;
-        _OOHG_ActiveControlNoAutoSizeWindow      := <noautosizewindow>
+#xcommand NOAUTOSIZEWINDOW <noautosizewindow> ;
+        => ;
+        _OOHG_ActiveControlNoAutoSizeWindow := <noautosizewindow>
 
-#xcommand NOAUTOSIZEMOVIE   <noautosizemovie>;
-   =>;
-        _OOHG_ActiveControlNoAutoSizeMovie       := <noautosizemovie>
+#xcommand NOAUTOSIZEMOVIE <noautosizemovie> ;
+        => ;
+        _OOHG_ActiveControlNoAutoSizeMovie := <noautosizemovie>
 
-#xcommand NOERRORDLG   <noerrordlg>;
-   =>;
-        _OOHG_ActiveControlNoErrorDlg    := <noerrordlg>
+#xcommand NOERRORDLG <noerrordlg> ;
+        => ;
+        _OOHG_ActiveControlNoErrorDlg := <noerrordlg>
 
-#xcommand NOMENU   <nomenu>;
-   =>;
-        _OOHG_ActiveControlNoMenu        := <nomenu>
+#xcommand NOMENU <nomenu> ;
+        => ;
+        _OOHG_ActiveControlNoMenu := <nomenu>
 
-#xcommand NOOPEN   <noopen>;
-   =>;
-        _OOHG_ActiveControlNoOpen        := <noopen>
+#xcommand NOOPEN <noopen> ;
+        => ;
+        _OOHG_ActiveControlNoOpen := <noopen>
 
-#xcommand NOPLAYBAR   <noplaybar>;
-   =>;
-        _OOHG_ActiveControlNoPlayBar     := <noplaybar>
+#xcommand NOPLAYBAR <noplaybar> ;
+        => ;
+        _OOHG_ActiveControlNoPlayBar := <noplaybar>
 
-#xcommand SHOWALL   <showall>;
-   =>;
-        _OOHG_ActiveControlShowAll       := <showall>
+#xcommand SHOWALL <showall> ;
+        => ;
+        _OOHG_ActiveControlShowAll := <showall>
 
-#xcommand SHOWMODE   <showmode>;
-   =>;
-        _OOHG_ActiveControlShowMode      := <showmode>
+#xcommand SHOWMODE <showmode> ;
+        => ;
+        _OOHG_ActiveControlShowMode := <showmode>
 
-#xcommand SHOWNAME   <showname>;
-   =>;
-        _OOHG_ActiveControlShowName      := <showname>
+#xcommand SHOWNAME <showname> ;
+        => ;
+        _OOHG_ActiveControlShowName := <showname>
 
-#xcommand SHOWPOSITION   <showposition>;
-   =>;
-        _OOHG_ActiveControlShowPosition  := <showposition>
+#xcommand SHOWPOSITION <showposition> ;
+        => ;
+        _OOHG_ActiveControlShowPosition := <showposition>
 
 #xcommand END PLAYER;
-   =>;
-        TPlayer():Define(;
-                _OOHG_ActiveControlName,;
-                _OOHG_ActiveControlOf,;
-                _OOHG_ActiveControlFile,;
-                _OOHG_ActiveControlCol,;
-                _OOHG_ActiveControlRow,;
-                _OOHG_ActiveControlWidth,;
-                _OOHG_ActiveControlHeight,;
-                _OOHG_ActiveControlNoAutoSizeWindow,;
-                _OOHG_ActiveControlNoAutoSizeMovie,;
-                _OOHG_ActiveControlNoErrorDlg,;
-                _OOHG_ActiveControlNoMenu,;
-                _OOHG_ActiveControlNoOpen,;
-                _OOHG_ActiveControlNoPlayBar,;
-                _OOHG_ActiveControlShowAll,;
-                _OOHG_ActiveControlShowMode,;
-                _OOHG_ActiveControlShowName,;
-                _OOHG_ActiveControlShowPosition,;
-                _OOHG_ActiveControlHelpId,;
-                _OOHG_ActiveControlInvisible,;
-                _OOHG_ActiveControlNoTabStop,;
-                _OOHG_ActiveControlDisabled,;
+        => ;
+        TPlayer():Define( ;
+                _OOHG_ActiveControlName, ;
+                _OOHG_ActiveControlOf, ;
+                _OOHG_ActiveControlFile, ;
+                _OOHG_ActiveControlCol, ;
+                _OOHG_ActiveControlRow, ;
+                _OOHG_ActiveControlWidth, ;
+                _OOHG_ActiveControlHeight, ;
+                _OOHG_ActiveControlNoAutoSizeWindow, ;
+                _OOHG_ActiveControlNoAutoSizeMovie, ;
+                _OOHG_ActiveControlNoErrorDlg, ;
+                _OOHG_ActiveControlNoMenu, ;
+                _OOHG_ActiveControlNoOpen, ;
+                _OOHG_ActiveControlNoPlayBar, ;
+                _OOHG_ActiveControlShowAll, ;
+                _OOHG_ActiveControlShowMode, ;
+                _OOHG_ActiveControlShowName, ;
+                _OOHG_ActiveControlShowPosition, ;
+                _OOHG_ActiveControlHelpId, ;
+                _OOHG_ActiveControlInvisible, ;
+                _OOHG_ActiveControlNoTabStop, ;
+                _OOHG_ActiveControlDisabled, ;
                 _OOHG_ActiveControlRtl)
 
 /*----------------------------------------------------------------------------
-Progress Bar
+PROGRESS BAR
 ---------------------------------------------------------------------------*/
 
-
-#xcommand DEFINE PROGRESSBAR <name>;
-   =>;
+#xcommand DEFINE PROGRESSBAR <name> ;
+        => ;
         _OOHG_ClearActiveControlInfo( <(name)> ) ;;
-        _OOHG_ActiveControlRangeLow              := Nil          ;;
-        _OOHG_ActiveControlRangeHigh             := Nil          ;;
-        _OOHG_ActiveControlVertical              := .f.          ;;
-        _OOHG_ActiveControlSmooth                := .f.          ;;
-        _OOHG_ActiveControlForeColor             := Nil
+        _OOHG_ActiveControlRangeLow  := Nil      ;;
+        _OOHG_ActiveControlRangeHigh := Nil      ;;
+        _OOHG_ActiveControlVertical  := .F.      ;;
+        _OOHG_ActiveControlSmooth    := .F.      ;;
+        _OOHG_ActiveControlForeColor := Nil
 
-#xcommand RANGEMIN   <lo>;
-   =>;
-        _OOHG_ActiveControlRangeLow      := <lo>
+#xcommand RANGEMIN <lo> ;
+        => ;
+        _OOHG_ActiveControlRangeLow := <lo>
 
-#xcommand RANGEMAX   <hi>;
-   =>;
-        _OOHG_ActiveControlRangeHigh     := <hi>
+#xcommand RANGEMAX <hi> ;
+        => ;
+        _OOHG_ActiveControlRangeHigh := <hi>
 
-#xcommand VERTICAL   <vertical>;
-   =>;
-        _OOHG_ActiveControlVertical      := <vertical>
+#xcommand VERTICAL <vertical> ;
+        => ;
+        _OOHG_ActiveControlVertical := <vertical>
 
-#xcommand SMOOTH   <smooth>;
-   =>;
-        _OOHG_ActiveControlSmooth        := <smooth>
+#xcommand SMOOTH <smooth> ;
+        => ;
+        _OOHG_ActiveControlSmooth := <smooth>
+
+#xcommand MARQUEE <speed> ;
+        => ;
+        _OOHG_ActiveControlSpeed := <speed>
 
 #xcommand END PROGRESSBAR;
-   =>;
-        TProgressBar():Define(;
-                _OOHG_ActiveControlName,;
-                _OOHG_ActiveControlOf,;
-                _OOHG_ActiveControlCol,;
-                _OOHG_ActiveControlRow,;
-                _OOHG_ActiveControlWidth,;
-                _OOHG_ActiveControlHeight,;
-                _OOHG_ActiveControlRangeLow,;
-                _OOHG_ActiveControlRangeHigh,;
-                _OOHG_ActiveControlTooltip,;
-                _OOHG_ActiveControlVertical,;
-                _OOHG_ActiveControlSmooth,;
-                _OOHG_ActiveControlHelpId,;
-                _OOHG_ActiveControlInvisible,;
-                _OOHG_ActiveControlValue,;
-                _OOHG_ActiveControlBackColor,;
-                _OOHG_ActiveControlForeColor,;
-                _OOHG_ActiveControlRtl )
-
+        => ;
+        TProgressBar():Define( ;
+                _OOHG_ActiveControlName, ;
+                _OOHG_ActiveControlOf, ;
+                _OOHG_ActiveControlCol, ;
+                _OOHG_ActiveControlRow, ;
+                _OOHG_ActiveControlWidth, ;
+                _OOHG_ActiveControlHeight, ;
+                _OOHG_ActiveControlRangeLow, ;
+                _OOHG_ActiveControlRangeHigh, ;
+                _OOHG_ActiveControlTooltip, ;
+                _OOHG_ActiveControlVertical, ;
+                _OOHG_ActiveControlSmooth, ;
+                _OOHG_ActiveControlHelpId, ;
+                _OOHG_ActiveControlInvisible, ;
+                _OOHG_ActiveControlValue, ;
+                _OOHG_ActiveControlBackColor, ;
+                _OOHG_ActiveControlForeColor, ;
+                _OOHG_ActiveControlRtl, ;
+                _OOHG_ActiveControlSpeed )
 
 /*----------------------------------------------------------------------------
-Radio Group
+RADIO GROUP
 ---------------------------------------------------------------------------*/
 
-#xcommand DEFINE RADIOGROUP <name>;
-   =>;
+#xcommand DEFINE RADIOGROUP <name> ;
+        => ;
         _OOHG_ClearActiveControlInfo( <(name)> ) ;;
-        _OOHG_ActiveControlOptions               := Nil          ;;
-        _OOHG_ActiveControlSpacing               := Nil          ;;
-        _OOHG_ActiveControlTransparent           := .f.          ;;
-        _OOHG_ActiveControlAutoSize              := .f.          ;;
-        _OOHG_ActiveControlHorizontal            := .f.
+        _OOHG_ActiveControlOptions     := Nil    ;;
+        _OOHG_ActiveControlSpacing     := Nil    ;;
+        _OOHG_ActiveControlTransparent := .F.    ;;
+        _OOHG_ActiveControlAutoSize    := .F.    ;;
+        _OOHG_ActiveControlHorizontal  := .F.
 
-#xcommand OPTIONS   <aOptions>;
-   =>;
-        _OOHG_ActiveControlOptions               := <aOptions>
+#xcommand OPTIONS <aOptions> ;
+        => ;
+        _OOHG_ActiveControlOptions := <aOptions>
 
-#xcommand SPACING   <spacing>;
-   =>;
-        _OOHG_ActiveControlSpacing               := <spacing>
+#xcommand SPACING <spacing> ;
+        => ;
+        _OOHG_ActiveControlSpacing := <spacing>
 
-#xcommand HORIZONTAL    <horizontal>;
-   =>;
-        _OOHG_ActiveControlHorizontal            := <horizontal>
+#xcommand HORIZONTAL <horizontal> ;
+        => ;
+        _OOHG_ActiveControlHorizontal := <horizontal>
 
-#xcommand END RADIOGROUP;
-   =>;
+#xcommand END RADIOGROUP ;
+        => ;
         TRadioGroup():Define( ;
-                _OOHG_ActiveControlName,;
-                _OOHG_ActiveControlOf,;
-                _OOHG_ActiveControlCol,;
-                _OOHG_ActiveControlRow,;
-                _OOHG_ActiveControlOptions,;
-                _OOHG_ActiveControlValue,;
-                _OOHG_ActiveControlFont,;
-                _OOHG_ActiveControlSize,;
-                _OOHG_ActiveControlTooltip,;
-                _OOHG_ActiveControlOnChange,;
-                _OOHG_ActiveControlWidth,;
-                _OOHG_ActiveControlSpacing,;
-                _OOHG_ActiveControlHelpId , ;
-                _OOHG_ActiveControlInvisible ,;
-                _OOHG_ActiveControlNoTabStop , ;
-                _OOHG_ActiveControlFontBold , ;
-                _OOHG_ActiveControlFontItalic , ;
-                _OOHG_ActiveControlFontUnderLine , ;
-                _OOHG_ActiveControlFontStrikeOut ,;
-                _OOHG_ActiveControlBackColor,;
-                _OOHG_ActiveControlFontColor  , ;
+                _OOHG_ActiveControlName, ;
+                _OOHG_ActiveControlOf, ;
+                _OOHG_ActiveControlCol, ;
+                _OOHG_ActiveControlRow, ;
+                _OOHG_ActiveControlOptions, ;
+                _OOHG_ActiveControlValue, ;
+                _OOHG_ActiveControlFont, ;
+                _OOHG_ActiveControlSize, ;
+                _OOHG_ActiveControlTooltip, ;
+                _OOHG_ActiveControlOnChange, ;
+                _OOHG_ActiveControlWidth, ;
+                _OOHG_ActiveControlSpacing, ;
+                _OOHG_ActiveControlHelpId, ;
+                _OOHG_ActiveControlInvisible, ;
+                _OOHG_ActiveControlNoTabStop, ;
+                _OOHG_ActiveControlFontBold, ;
+                _OOHG_ActiveControlFontItalic, ;
+                _OOHG_ActiveControlFontUnderLine, ;
+                _OOHG_ActiveControlFontStrikeOut, ;
+                _OOHG_ActiveControlBackColor, ;
+                _OOHG_ActiveControlFontColor, ;
                 _OOHG_ActiveControlTransparent, ;
                 _OOHG_ActiveControlAutoSize, ;
-                _OOHG_ActiveControlHorizontal  ;
-      )
-
+                _OOHG_ActiveControlHorizontal, ;
+                _OOHG_ActiveControlDisabled, ;
+                _OOHG_ActiveControlRtl, ;
+                _OOHG_ActiveControlHeight )
 
 /*----------------------------------------------------------------------------
-Slider
+SLIDER
 ---------------------------------------------------------------------------*/
 
-#xcommand DEFINE SLIDER <name>;
-   =>;
+#xcommand DEFINE SLIDER <name> ;
+        => ;
         _OOHG_ClearActiveControlInfo( <(name)> ) ;;
-        _OOHG_ActiveControlRangeLow              := Nil          ;;
-        _OOHG_ActiveControlRangeHigh             := Nil          ;;
-        _OOHG_ActiveControlVertical              := .f.          ;;
-        _OOHG_ActiveControlNoTicks               := .f.          ;;
-        _OOHG_ActiveControlBoth          := .f.          ;;
-        _OOHG_ActiveControlTop           := .f.          ;;
-        _OOHG_ActiveControlLeft          := .f.
+        _OOHG_ActiveControlRangeLow  := Nil      ;;
+        _OOHG_ActiveControlRangeHigh := Nil      ;;
+        _OOHG_ActiveControlVertical  := .F.      ;;
+        _OOHG_ActiveControlNoTicks   := .F.      ;;
+        _OOHG_ActiveControlBoth      := .F.      ;;
+        _OOHG_ActiveControlTop       := .F.      ;;
+        _OOHG_ActiveControlLeft      := .F.
 
-#xcommand NOTICKS   <noticks>;
-   =>;
-        _OOHG_ActiveControlNoTicks       := <noticks>
+#xcommand NOTICKS <noticks> ;
+        => ;
+        _OOHG_ActiveControlNoTicks := <noticks>
 
-#xcommand BOTH      <both>;
-   =>;
-        _OOHG_ActiveControlBoth  := <both>
+#xcommand BOTH <both> ;
+        => ;
+        _OOHG_ActiveControlBoth := <both>
 
-#xcommand TOP      <top>;
-   =>;
-        _OOHG_ActiveControlTop   := <top>
+#xcommand TOP <top> ;
+        => ;
+        _OOHG_ActiveControlTop := <top>
 
-#xcommand LEFT      <left>;
-   =>;
-        _OOHG_ActiveControlLeft  := <left>
+#xcommand LEFT <left> ;
+        => ;
+        _OOHG_ActiveControlLeft := <left>
 
-#xcommand END SLIDER;
-   =>;
+#xcommand END SLIDER ;
+        => ;
         TSlider():Define( ;
-                _OOHG_ActiveControlName,;
-                _OOHG_ActiveControlOf,;
-                _OOHG_ActiveControlCol,;
-                _OOHG_ActiveControlRow,;
-                _OOHG_ActiveControlWidth,;
-                _OOHG_ActiveControlHeight,;
-                _OOHG_ActiveControlRangeLow,;
-                _OOHG_ActiveControlRangeHigh,;
-                _OOHG_ActiveControlValue,;
-                _OOHG_ActiveControlTooltip,;
-                _OOHG_ActiveControlOnChange,;
-                _OOHG_ActiveControlVertical,;
-                _OOHG_ActiveControlNoTicks,;
-                _OOHG_ActiveControlBoth,;
-                _OOHG_ActiveControlTop,;
-                _OOHG_ActiveControlLeft,;
-                _OOHG_ActiveControlHelpId,;
-                _OOHG_ActiveControlInvisible ,;
-                _OOHG_ActiveControlNoTabStop , ;
-                _OOHG_ActiveControlBackColor , ;
-                _OOHG_ActiveControlRtl , ;
+                _OOHG_ActiveControlName, ;
+                _OOHG_ActiveControlOf, ;
+                _OOHG_ActiveControlCol, ;
+                _OOHG_ActiveControlRow, ;
+                _OOHG_ActiveControlWidth, ;
+                _OOHG_ActiveControlHeight, ;
+                _OOHG_ActiveControlRangeLow, ;
+                _OOHG_ActiveControlRangeHigh, ;
+                _OOHG_ActiveControlValue, ;
+                _OOHG_ActiveControlTooltip, ;
+                _OOHG_ActiveControlOnChange, ;
+                _OOHG_ActiveControlVertical, ;
+                _OOHG_ActiveControlNoTicks, ;
+                _OOHG_ActiveControlBoth, ;
+                _OOHG_ActiveControlTop, ;
+                _OOHG_ActiveControlLeft, ;
+                _OOHG_ActiveControlHelpId, ;
+                _OOHG_ActiveControlInvisible, ;
+                _OOHG_ActiveControlNoTabStop, ;
+                _OOHG_ActiveControlBackColor, ;
+                _OOHG_ActiveControlRtl, ;
                 _OOHG_ActiveControlDisabled )
 
 /*----------------------------------------------------------------------------
-Text Box
+TEXT BOX
 ---------------------------------------------------------------------------*/
 
-#xcommand DEFINE TEXTBOX <name>;
-   =>;
+#xcommand DEFINE TEXTBOX <name> ;
+        => ;
         _OOHG_ClearActiveControlInfo( <(name)> ) ;;
-        _OOHG_ActiveControlField         := Nil          ;;
-        _OOHG_ActiveControlMaxLength     := Nil          ;;
-        _OOHG_ActiveControlUpperCase     := .f.          ;;
-        _OOHG_ActiveControlLowerCase     := .f.          ;;
-        _OOHG_ActiveControlNumeric       := .f.          ;;
-        _OOHG_ActiveControlPassword      := .f.          ;;
-        _OOHG_ActiveControlRightAlign    := .f.          ;;
-        _OOHG_ActiveControlReadonly      := .f.          ;;
-        _OOHG_ActiveControlDateType      := .f.          ;;
-        _OOHG_ActiveControlInputMask     := Nil          ;;
-        _OOHG_ActiveControlPicture       := Nil          ;;
-        _OOHG_ActiveControlFormat        := Nil          ;;
-        _OOHG_ActiveControlNoBorder      := .f.          ;;
-        _OOHG_ActiveControlAutoSkip      := .f.          ;;
-        _OOHG_ActiveControlFocusedPos    := Nil          ;;
-        _OOHG_ActiveControlValid         := Nil
+        _OOHG_ActiveControlField      := Nil     ;;
+        _OOHG_ActiveControlMaxLength  := Nil     ;;
+        _OOHG_ActiveControlUpperCase  := .F.     ;;
+        _OOHG_ActiveControlLowerCase  := .F.     ;;
+        _OOHG_ActiveControlNumeric    := .F.     ;;
+        _OOHG_ActiveControlPassword   := .F.     ;;
+        _OOHG_ActiveControlRightAlign := .F.     ;;
+        _OOHG_ActiveControlReadonly   := .F.     ;;
+        _OOHG_ActiveControlDateType   := .F.     ;;
+        _OOHG_ActiveControlInputMask  := Nil     ;;
+        _OOHG_ActiveControlPicture    := Nil     ;;
+        _OOHG_ActiveControlFormat     := Nil     ;;
+        _OOHG_ActiveControlNoBorder   := .F.     ;;
+        _OOHG_ActiveControlAutoSkip   := .F.     ;;
+        _OOHG_ActiveControlFocusedPos := Nil     ;;
+        _OOHG_ActiveControlValid      := Nil     ;;
+        _OOHG_ActiveControlImage      := Nil     ;;
+        _OOHG_ActiveControlWhen       := Nil     ;;
+        _OOHG_ActiveControlAction     := Nil     ;;
+        _OOHG_ActiveControlAction2    := Nil
 
-#xcommand UPPERCASE <uppercase>;
-   =>;
-        _OOHG_ActiveControlUpperCase             := <uppercase>
+#xcommand UPPERCASE <uppercase> ;
+        => ;
+        _OOHG_ActiveControlUpperCase := <uppercase>
 
-#xcommand LOWERCASE <lowercase>;
-   =>;
-        _OOHG_ActiveControlLowerCase             := <lowercase>
+#xcommand LOWERCASE <lowercase> ;
+        => ;
+        _OOHG_ActiveControlLowerCase := <lowercase>
 
-#xcommand NUMERIC <numeric>;
-   =>;
-        _OOHG_ActiveControlNumeric               := <numeric>
+#xcommand NUMERIC <numeric> ;
+        => ;
+        _OOHG_ActiveControlNumeric := <numeric>
 
-#xcommand PASSWORD <password>;
-   =>;
-        _OOHG_ActiveControlPassword              := <password>
+#xcommand PASSWORD <password> ;
+        => ;
+        _OOHG_ActiveControlPassword := <password>
 
-#xcommand INPUTMASK <inputmask>;
-   =>;
-        _OOHG_ActiveControlInputMask             := <inputmask>
+#xcommand INPUTMASK <inputmask> ;
+        => ;
+        _OOHG_ActiveControlInputMask := <inputmask>
 
-#xcommand FORMAT <format>;
-   =>;
-        _OOHG_ActiveControlFormat                := <format>
+#xcommand FORMAT <format> ;
+        => ;
+        _OOHG_ActiveControlFormat := <format>
 
 #xcommand AUTOSKIP <autoskip> ;
-   =>;
-        _OOHG_ActiveControlAutoSkip              := <autoskip>
+        => ;
+        _OOHG_ActiveControlAutoSkip := <autoskip>
 
-#xcommand NOBORDER        <noborder>;
-   =>;
-        _OOHG_ActiveControlNoBorder              := <noborder>
+#xcommand NOBORDER <noborder> ;
+        => ;
+        _OOHG_ActiveControlNoBorder := <noborder>
 
-#xcommand FOCUSEDPOS      <focusedpos> ;
-   =>;
-        _OOHG_ActiveControlFocusedPos            := <focusedpos>
+#xcommand FOCUSEDPOS <focusedpos> ;
+        => ;
+        _OOHG_ActiveControlFocusedPos := <focusedpos>
+
+#xcommand BUTTONWIDTH <buttonwidth> ;
+        => ;
+        _OOHG_ActiveControlButtonWidth := <buttonwidth>
+
+#xcommand ACTION2 <action> ;
+        => ;
+        _OOHG_ActiveControlAction2 := <{action}>
 
 #xcommand END TEXTBOX;
-   =>;
+        => ;
         DefineTextBox( ;
-                        _OOHG_ActiveControlName,;
-                        _OOHG_ActiveControlOf,;
-                        _OOHG_ActiveControlCol,;
-                        _OOHG_ActiveControlRow,;
-                        _OOHG_ActiveControlWidth,;
-                        _OOHG_ActiveControlHeight,;
-                        _OOHG_ActiveControlValue,;
-                        _OOHG_ActiveControlFont,;
-                        _OOHG_ActiveControlSize,;
-                        _OOHG_ActiveControlTooltip,;
-                        _OOHG_ActiveControlMaxLength,;
-                        _OOHG_ActiveControlUpperCase,;
-                        _OOHG_ActiveControlLowerCase,;
-                        _OOHG_ActiveControlPassword,;
-                        _OOHG_ActiveControlOnLostFocus,;
-                        _OOHG_ActiveControlOnGotFocus,;
-                        _OOHG_ActiveControlOnChange,;
-                        _OOHG_ActiveControlOnEnter,;
-                        _OOHG_ActiveControlRightAlign,;
-                        _OOHG_ActiveControlHelpId , ;
-                        _OOHG_ActiveControlReadonly,;
-                        _OOHG_ActiveControlFontBold , ;
-                        _OOHG_ActiveControlFontItalic , ;
-                        _OOHG_ActiveControlFontUnderLine , ;
-                        _OOHG_ActiveControlFontStrikeOut , ;
-                        _OOHG_ActiveControlField , ;
-                        _OOHG_ActiveControlBackColor , ;
-                        _OOHG_ActiveControlFontColor , ;
-                        _OOHG_ActiveControlInvisible , ;
-                        _OOHG_ActiveControlNoTabStop , ;
-                        _OOHG_ActiveControlRtl , ;
-                        _OOHG_ActiveControlAutoSkip , ;
-                        _OOHG_ActiveControlNoBorder , ;
-                        _OOHG_ActiveControlFocusedPos , ;
-                        _OOHG_ActiveControlDisabled , ;
-                        _OOHG_ActiveControlValid , ;
-                        _OOHG_ActiveControlDateType , ;
-                        _OOHG_ActiveControlNumeric , ;
-                        _OOHG_ActiveControlInputMask , ;
-                        _OOHG_ActiveControlFormat )
+                _OOHG_ActiveControlName, ;
+                _OOHG_ActiveControlOf, ;
+                _OOHG_ActiveControlCol, ;
+                _OOHG_ActiveControlRow, ;
+                _OOHG_ActiveControlWidth, ;
+                _OOHG_ActiveControlHeight, ;
+                _OOHG_ActiveControlValue, ;
+                _OOHG_ActiveControlFont, ;
+                _OOHG_ActiveControlSize, ;
+                _OOHG_ActiveControlTooltip, ;
+                _OOHG_ActiveControlMaxLength, ;
+                _OOHG_ActiveControlUpperCase, ;
+                _OOHG_ActiveControlLowerCase, ;
+                _OOHG_ActiveControlPassword, ;
+                _OOHG_ActiveControlOnLostFocus, ;
+                _OOHG_ActiveControlOnGotFocus, ;
+                _OOHG_ActiveControlOnChange, ;
+                _OOHG_ActiveControlOnEnter, ;
+                _OOHG_ActiveControlRightAlign, ;
+                _OOHG_ActiveControlHelpId, ;
+                _OOHG_ActiveControlReadonly, ;
+                _OOHG_ActiveControlFontBold, ;
+                _OOHG_ActiveControlFontItalic, ;
+                _OOHG_ActiveControlFontUnderLine, ;
+                _OOHG_ActiveControlFontStrikeOut, ;
+                _OOHG_ActiveControlField, ;
+                _OOHG_ActiveControlBackColor, ;
+                _OOHG_ActiveControlFontColor, ;
+                _OOHG_ActiveControlInvisible, ;
+                _OOHG_ActiveControlNoTabStop, ;
+                _OOHG_ActiveControlRtl, ;
+                _OOHG_ActiveControlAutoSkip, ;
+                _OOHG_ActiveControlNoBorder, ;
+                _OOHG_ActiveControlFocusedPos, ;
+                _OOHG_ActiveControlDisabled, ;
+                _OOHG_ActiveControlValid, ;
+                _OOHG_ActiveControlDateType, ;
+                _OOHG_ActiveControlNumeric, ;
+                _OOHG_ActiveControlInputMask, ;
+                _OOHG_ActiveControlFormat, ;
+                Nil, ;
+                _OOHG_ActiveControlAction, ;
+                _OOHG_ActiveControlImage, ;
+                _OOHG_ActiveControlButtonWidth, ;
+                _OOHG_ActiveControlAction2, ;
+                _OOHG_ActiveControlWhen )
 
 /*----------------------------------------------------------------------------
-Month Calendar
+MONTH CALENDAR
 ---------------------------------------------------------------------------*/
 
 #xcommand DEFINE MONTHCALENDAR <name> ;
-   =>;
-        _OOHG_ClearActiveControlInfo( <(name)> ) ;;
-        _OOHG_ActiveControlNoToday               := .f.          ;;
-        _OOHG_ActiveControlNoTodayCircle         := .f.          ;;
-        _OOHG_ActiveControlWeekNumbers           := .f.          ;;
-        _OOHG_ActiveControlTitleFontColor        := nil          ;;
-        _OOHG_ActiveControlTitleBackColor        := nil          ;;
-        _OOHG_ActiveControlTrailingFontColor     := nil          ;;
-        _OOHG_ActiveControlBackgroundColor       := nil
+        => ;
+        _OOHG_ClearActiveControlInfo( <(name)> )    ;;
+        _OOHG_ActiveControlNoToday           := .F. ;;
+        _OOHG_ActiveControlNoTodayCircle     := .F. ;;
+        _OOHG_ActiveControlWeekNumbers       := .F. ;;
+        _OOHG_ActiveControlTitleFontColor    := Nil ;;
+        _OOHG_ActiveControlTitleBackColor    := Nil ;;
+        _OOHG_ActiveControlTrailingFontColor := Nil ;;
+        _OOHG_ActiveControlBackgroundColor   := Nil
 
-#xcommand NOTODAY   <notoday>;
-   =>;
-        _OOHG_ActiveControlNoToday               := <notoday>
+#xcommand NOTODAY <notoday> ;
+        => ;
+        _OOHG_ActiveControlNoToday := <notoday>
 
-#xcommand NOTODAYCIRCLE   <notodaycircle>;
-   =>;
+#xcommand NOTODAYCIRCLE <notodaycircle> ;
+        => ;
         _OOHG_ActiveControlNoTodayCircle := <notodaycircle>
 
-#xcommand WEEKNUMBERS   <weeknumbers>;
-   =>;
-        _OOHG_ActiveControlWeekNumbers   := <weeknumbers>
+#xcommand WEEKNUMBERS <weeknumbers> ;
+        => ;
+        _OOHG_ActiveControlWeekNumbers := <weeknumbers>
 
-#xcommand TITLEFONTCOLOR     <color>;
-   =>;
-        _OOHG_ActiveControlTitleFontColor        := <color>
+#xcommand TITLEFONTCOLOR <color> ;
+        => ;
+        _OOHG_ActiveControlTitleFontColor := <color>
 
-#xcommand TITLEBACKCOLOR     <color>;
-   =>;
-        _OOHG_ActiveControlTitleBackColor        := <color>
+#xcommand TITLEBACKCOLOR <color> ;
+        => ;
+        _OOHG_ActiveControlTitleBackColor := <color>
 
-#xcommand TRAILINGFONTCOLOR  <color>;
-   =>;
-        _OOHG_ActiveControlTrailingFontColor     := <color>
+#xcommand TRAILINGFONTCOLOR <color> ;
+        => ;
+        _OOHG_ActiveControlTrailingFontColor := <color>
 
-#xcommand BACKGROUNDCOLOR    <color>;
-   =>;
-        _OOHG_ActiveControlBackgroundColor       := <color>
+#xcommand BACKGROUNDCOLOR <color> ;
+        => ;
+        _OOHG_ActiveControlBackgroundColor := <color>
 
-#xcommand END MONTHCALENDAR;
-   =>;
-        TMonthCal():Define(;
-                _OOHG_ActiveControlName,;
-                _OOHG_ActiveControlOf,;
-                _OOHG_ActiveControlCol,;
-                _OOHG_ActiveControlRow,;
-                _OOHG_ActiveControlWidth,;
-                _OOHG_ActiveControlHeight,;
-                _OOHG_ActiveControlValue,;
-                _OOHG_ActiveControlFont,;
-                _OOHG_ActiveControlSize,;
-                _OOHG_ActiveControlTooltip,;
-                _OOHG_ActiveControlNoToday,;
-                _OOHG_ActiveControlNoTodayCircle,;
-                _OOHG_ActiveControlWeekNumbers,;
-                _OOHG_ActiveControlOnChange,;
-                _OOHG_ActiveControlHelpId,;
-                _OOHG_ActiveControlInvisible,;
-                _OOHG_ActiveControlNoTabStop,;
-                _OOHG_ActiveControlFontBold,;
-                _OOHG_ActiveControlFontItalic,;
-                _OOHG_ActiveControlFontUnderLine,;
+#xcommand END MONTHCALENDAR ;
+        => ;
+        TMonthCal():Define( ;
+                _OOHG_ActiveControlName, ;
+                _OOHG_ActiveControlOf, ;
+                _OOHG_ActiveControlCol, ;
+                _OOHG_ActiveControlRow, ;
+                _OOHG_ActiveControlWidth, ;
+                _OOHG_ActiveControlHeight, ;
+                _OOHG_ActiveControlValue, ;
+                _OOHG_ActiveControlFont, ;
+                _OOHG_ActiveControlSize, ;
+                _OOHG_ActiveControlTooltip, ;
+                _OOHG_ActiveControlNoToday, ;
+                _OOHG_ActiveControlNoTodayCircle, ;
+                _OOHG_ActiveControlWeekNumbers, ;
+                _OOHG_ActiveControlOnChange, ;
+                _OOHG_ActiveControlHelpId, ;
+                _OOHG_ActiveControlInvisible, ;
+                _OOHG_ActiveControlNoTabStop, ;
+                _OOHG_ActiveControlFontBold, ;
+                _OOHG_ActiveControlFontItalic, ;
+                _OOHG_ActiveControlFontUnderLine, ;
                 _OOHG_ActiveControlFontStrikeOut, ;
                 _OOHG_ActiveControlRtl, ;
                 _OOHG_ActiveControlDisabled, ;
@@ -1061,966 +1125,1507 @@ Month Calendar
                 _OOHG_ActiveControlBackgroundColor )
 
 /*----------------------------------------------------------------------------
-Button
+BUTTON
 ---------------------------------------------------------------------------*/
 
 #xcommand DEFINE BUTTON <name> ;
-        =>;
+        => ;
         _OOHG_ClearActiveControlInfo( <(name)> ) ;;
-        _OOHG_ActiveControlCaption           := Nil      ;;
-        _OOHG_ActiveControlAction            := Nil      ;;
-        _OOHG_ActiveControlFlat              := .f.      ;;
-        _OOHG_ActiveControlPicture           := Nil      ;;
-        _OOHG_ActiveControlTransparent       := .t.      ;;
-        _OOHG_ActiveControlNoPrefix          := .F.
+        _OOHG_ActiveControlCaption     := Nil    ;;
+        _OOHG_ActiveControlAction      := Nil    ;;
+        _OOHG_ActiveControlFlat        := .F.    ;;
+        _OOHG_ActiveControlPicture     := Nil    ;;
+        _OOHG_ActiveControlTransparent := .T.    ;;
+        _OOHG_ActiveControlNoPrefix    := .F.    ;;
+        _OOHG_ActiveControlBuffer      := Nil    ;;
+        _OOHG_ActiveControlHBitmap     := Nil    ;;
+        _OOHG_ActiveControlScale       := .F.    ;;
+        _OOHG_ActiveControlCancel      := .F.    ;;
+        _OOHG_ActiveControlAlignment   := Nil
 
-#xcommand CAPTION  <caption> ;
-        =>;
+#xcommand CAPTION <caption> ;
+        => ;
         _OOHG_ActiveControlCaption := <caption>
 
 #xcommand ACTION <action> ;
-        =>;
+        => ;
         _OOHG_ActiveControlAction := <{action}>
 
 #xcommand ONCLICK <action> ;
-        =>;
+        => ;
         _OOHG_ActiveControlAction := <{action}>
 
 #xcommand ON CLICK <action> ;
-        =>;
+        => ;
         _OOHG_ActiveControlAction := <{action}>
 
 #xcommand ITEMCOUNT <itemcount> ;
-        =>;
+        => ;
         _OOHG_ActiveControlItemCount := <itemcount>
 
 #xcommand FLAT <flat> ;
-        =>;
+        => ;
         _OOHG_ActiveControlFlat := <flat>
 
 #xcommand ONGOTFOCUS <ongotfocus> ;
-        =>;
+        => ;
         _OOHG_ActiveControlOnGotFocus := <{ongotfocus}>
 
 #xcommand ON GOTFOCUS <ongotfocus> ;
-        =>;
+        => ;
         _OOHG_ActiveControlOnGotFocus := <{ongotfocus}>
 
 #xcommand ONLOSTFOCUS <onlostfocus> ;
-        =>;
+        => ;
         _OOHG_ActiveControlOnLostFocus := <{onlostfocus}>
 
 #xcommand ON LOSTFOCUS <onlostfocus> ;
-        =>;
+        => ;
         _OOHG_ActiveControlOnLostFocus := <{onlostfocus}>
 
 #xcommand PICTURE <picture> ;
-        =>;
+        => ;
         _OOHG_ActiveControlPicture := <picture>
 
 #xcommand TRANSPARENT <transparent> ;
-        =>;
+        => ;
         _OOHG_ActiveControlTransparent := <transparent>
 
+#xcommand BUFFER <buffer> ;
+        => ;
+        _OOHG_ActiveControlBuffer := <buffer>
+
+#xcommand HBITMAP <hbitmap> ;
+        => ;
+        _OOHG_ActiveControlHBitmap := <hbitmap>
+
+#xcommand SCALE <scale> ;
+        => ;
+        _OOHG_ActiveControlScale := <scale>
+
+#xcommand CANCEL <cancel> ;
+        => ;
+        _OOHG_ActiveControlCancel := <cancel>
+
+#xcommand ALIGNMENT <alignment:LEFT,RIGHT,TOP,BOTTOM> ;
+        => ;
+        _OOHG_ActiveControlAlignment := <"alignment">
+
 #xcommand END BUTTON ;
-        =>;
+        => ;
         TButton():Define( ;
-                    _OOHG_ActiveControlName,;
-                    _OOHG_ActiveControlOf ,;
-                    _OOHG_ActiveControlCol ,;
-                    _OOHG_ActiveControlRow ,;
-                    _OOHG_ActiveControlCaption ,;
-                    _OOHG_ActiveControlAction ,;
-                    _OOHG_ActiveControlWidth ,;
-                    _OOHG_ActiveControlHeight ,;
-                    _OOHG_ActiveControlFont ,;
-                    _OOHG_ActiveControlSize ,;
-                    _OOHG_ActiveControlTooltip ,;
-                    _OOHG_ActiveControlOnGotFocus  ,;
-                    _OOHG_ActiveControlOnLostFocus ,;
-                    _OOHG_ActiveControlFlat ,;
-                    _OOHG_ActiveControlNoTabStop  ,;
-                    _OOHG_ActiveControlHelpId ,;
-                    _OOHG_ActiveControlInvisible ,;
-                    _OOHG_ActiveControlFontBold ,;
-                    _OOHG_ActiveControlFontItalic ,;
-                    _OOHG_ActiveControlFontUnderLine, ;
-                    _OOHG_ActiveControlFontStrikeOut, ;
-                    _OOHG_ActiveControlRtl, ;
-                    _OOHG_ActiveControlNoPrefix, ;
-                    _OOHG_ActiveControlDisabled, ;
-                    nil, ;
-                    nil, ;
-                    _OOHG_ActiveControlPicture, ;
-                    .not. _OOHG_ActiveControlTransparent, ;
-                    nil )
+                _OOHG_ActiveControlName, ;
+                _OOHG_ActiveControlOf, ;
+                _OOHG_ActiveControlCol, ;
+                _OOHG_ActiveControlRow, ;
+                _OOHG_ActiveControlCaption, ;
+                _OOHG_ActiveControlAction, ;
+                _OOHG_ActiveControlWidth, ;
+                _OOHG_ActiveControlHeight, ;
+                _OOHG_ActiveControlFont, ;
+                _OOHG_ActiveControlSize, ;
+                _OOHG_ActiveControlTooltip, ;
+                _OOHG_ActiveControlOnGotFocus, ;
+                _OOHG_ActiveControlOnLostFocus, ;
+                _OOHG_ActiveControlFlat, ;
+                _OOHG_ActiveControlNoTabStop, ;
+                _OOHG_ActiveControlHelpId, ;
+                _OOHG_ActiveControlInvisible, ;
+                _OOHG_ActiveControlFontBold, ;
+                _OOHG_ActiveControlFontItalic, ;
+                _OOHG_ActiveControlFontUnderLine, ;
+                _OOHG_ActiveControlFontStrikeOut, ;
+                _OOHG_ActiveControlRtl, ;
+                _OOHG_ActiveControlNoPrefix, ;
+                _OOHG_ActiveControlDisabled, ;
+                _OOHG_ActiveControlBuffer, ;
+                _OOHG_ActiveControlHBitmap, ;
+                _OOHG_ActiveControlPicture, ;
+                .NOT. _OOHG_ActiveControlTransparent, ;
+                _OOHG_ActiveControlScale, ;
+                _OOHG_ActiveControlCancel, ;
+                _OOHG_ActiveControlAlignment )
 
 /*----------------------------------------------------------------------------
-Image
+IMAGE
 ---------------------------------------------------------------------------*/
 
 #xcommand DEFINE IMAGE <name> ;
-   =>;
-        _OOHG_ClearActiveControlInfo( <(name)> ) ;;
-        _OOHG_ActiveControlPicture               := Nil          ;;
-        _OOHG_ActiveControlAction                := Nil          ;;
-        _OOHG_ActiveControlStretch               := .F.
+        => ;
+        _OOHG_ClearActiveControlInfo( <(name)> )  ;;
+        _OOHG_ActiveControlPicture         := Nil ;;
+        _OOHG_ActiveControlAction          := Nil ;;
+        _OOHG_ActiveControlStretch         := .F. ;;
+        _OOHG_ActiveControlNoResize        := .F. ;;
+        _OOHG_ActiveControlBorder          := .F. ;;
+        _OOHG_ActiveControlClientEdge      := .F. ;;
+        _OOHG_ActiveControlImagesize       := .F. ;;
+        _OOHG_ActiveControlBuffer          := Nil ;;
+        _OOHG_ActiveControlHBitmap         := Nil ;;
+        _OOHG_ActiveControlWhiteBackground := Nil
+
+#xcommand STRETCH <stretch> ;
+        => ;
+        _OOHG_ActiveControlStretch := <stretch>
+
+#xcommand IMAGESIZE <imagesize> ;
+        => ;
+        _OOHG_ActiveControlImagesize := <imagesize>
+
+#xcommand WHITEBACKGROUND <whitebackground> ;
+        => ;
+        _OOHG_ActiveControlWhiteBackground := iif( <whitebackground>, 0xFFFFFF, _OOHG_ActiveControlBackColor )
+
+#xcommand NORESIZE <noresize> ;
+        => ;
+        _OOHG_ActiveControlNoResize := <noresize>
 
 #xcommand END IMAGE ;
-   =>;
-        TImage():Define(;
-                _OOHG_ActiveControlName,;
-                _OOHG_ActiveControlOf,;
-                _OOHG_ActiveControlCol,;
-                _OOHG_ActiveControlRow,;
-                _OOHG_ActiveControlPicture,;
-                _OOHG_ActiveControlWidth,;
-                _OOHG_ActiveControlHeight,;
-                _OOHG_ActiveControlAction,;
-                _OOHG_ActiveControlHelpId,;
-                _OOHG_ActiveControlInvisible,;
-                _OOHG_ActiveControlStretch,;
-                .F.,;
+        => ;
+        TPicture():Define( ;
+                _OOHG_ActiveControlName, ;
+                _OOHG_ActiveControlOf, ;
+                _OOHG_ActiveControlCol, ;
+                _OOHG_ActiveControlRow, ;
+                _OOHG_ActiveControlPicture, ;
+                _OOHG_ActiveControlWidth, ;
+                _OOHG_ActiveControlHeight, ;
+                _OOHG_ActiveControlBuffer, ;
+                _OOHG_ActiveControlHBitmap, ;
+                _OOHG_ActiveControlStretch, ;
+                .NOT. _OOHG_ActiveControlNoResize, ;
+                _OOHG_ActiveControlImagesize, ;
+                _OOHG_ActiveControlBorder, ;
+                _OOHG_ActiveControlClientEdge, ;
+                _OOHG_ActiveControlWhiteBackground, ;
+                _OOHG_ActiveControlAction, ;
+                _OOHG_ActiveControlTooltip, ;
+                _OOHG_ActiveControlHelpId, ;
                 _OOHG_ActiveControlRtl ;
-      )
-
-#xcommand STRETCH      <stretch>;
-   =>;
-        _OOHG_ActiveControlStretch       := <stretch>
-
+                _OOHG_ActiveControlInvisible )
 
 /*----------------------------------------------------------------------------
-Check Box/Button
+CHECK BOX/BUTTON
 ---------------------------------------------------------------------------*/
 
 #xcommand DEFINE CHECKBOX <name> ;
-   =>;
+        => ;
         _OOHG_ClearActiveControlInfo( <(name)> ) ;;
-        _OOHG_ActiveControlCaption               := Nil          ;;
-        _OOHG_ActiveControlTransparent   := .f.          ;;
-        _OOHG_ActiveControlAutoSize   := .f.          ;;
-        _OOHG_ActiveControlField             := Nil
+        _OOHG_ActiveControlCaption     := Nil    ;;
+        _OOHG_ActiveControlTransparent := .F.    ;;
+        _OOHG_ActiveControlAutoSize    := .F.    ;;
+        _OOHG_ActiveControlField       := Nil
 
 
 #xcommand DEFINE CHECKBUTTON <name> ;
-   =>;
+        => ;
         _OOHG_ClearActiveControlInfo( <(name)> ) ;;
-        _OOHG_ActiveControlCaption               := Nil          ;;
-        _OOHG_ActiveControlPicture           := Nil      ;;
-        _OOHG_ActiveControlField             := Nil
+        _OOHG_ActiveControlCaption     := Nil    ;;
+        _OOHG_ActiveControlPicture     := Nil    ;;
+        _OOHG_ActiveControlField       := Nil    ;;
+        _OOHG_ActiveControlBuffer      := Nil    ;;
+        _OOHG_ActiveControlHBitmap     := Nil    ;;
+        _OOHG_ActiveControlTransparent := .T.    ;;
+        _OOHG_ActiveControlScale       := .F.
 
 #xcommand ONCHANGE <onchange> ;
-   =>;
-        _OOHG_ActiveControlOnChange      := <{onchange}>
+        => ;
+        _OOHG_ActiveControlOnChange := <{onchange}>
 
 #xcommand ON CHANGE <onchange> ;
-   =>;
-        _OOHG_ActiveControlOnChange      := <{onchange}>
+        => ;
+        _OOHG_ActiveControlOnChange := <{onchange}>
 
 #xcommand ON QUERYDATA <onquerydata> ;
-   =>;
-        _OOHG_ActiveControlOnQueryData   := <{onquerydata}>
+        => ;
+        _OOHG_ActiveControlOnQueryData := <{onquerydata}>
 
 #xcommand ONQUERYDATA <onquerydata> ;
-   =>;
-        _OOHG_ActiveControlOnQueryData   := <{onquerydata}>
+        => ;
+        _OOHG_ActiveControlOnQueryData := <{onquerydata}>
 
 #xcommand END CHECKBOX ;
-   =>;
-        TCheckBox():Define(;
-                _OOHG_ActiveControlName,;
-                _OOHG_ActiveControlOf,;
-                _OOHG_ActiveControlCol,;
-                _OOHG_ActiveControlRow,;
-                _OOHG_ActiveControlCaption,;
-                _OOHG_ActiveControlValue,;
-                _OOHG_ActiveControlFont,;
-                _OOHG_ActiveControlSize,;
-                _OOHG_ActiveControlTooltip,;
-                _OOHG_ActiveControlOnChange,;
-                _OOHG_ActiveControlWidth,;
-                _OOHG_ActiveControlHeight,;
-                _OOHG_ActiveControlOnLostFocus,;
-                _OOHG_ActiveControlOnGotFocus,;
-                _OOHG_ActiveControlHelpId,;
-                _OOHG_ActiveControlInvisible,;
-                _OOHG_ActiveControlNoTabStop,;
-                _OOHG_ActiveControlFontBold ,;
-                _OOHG_ActiveControlFontItalic , ;
-                _OOHG_ActiveControlFontUnderLine , ;
-                _OOHG_ActiveControlFontStrikeOut,;
-                _OOHG_ActiveControlField,;
-                _OOHG_ActiveControlBackColor,;
-                _OOHG_ActiveControlFontColor,;
-                _OOHG_ActiveControlTransparent,;
-                _OOHG_ActiveControlAutoSize )
-
-#xcommand END CHECKBUTTON ;
-   =>;
-        TButtonCheck():Define( ;
-                _OOHG_ActiveControlName,;
-                _OOHG_ActiveControlOf,;
-                _OOHG_ActiveControlCol,;
-                _OOHG_ActiveControlRow,;
-                _OOHG_ActiveControlCaption,;
-                _OOHG_ActiveControlValue,;
-                _OOHG_ActiveControlFont,;
-                _OOHG_ActiveControlSize,;
-                _OOHG_ActiveControlTooltip,;
-                _OOHG_ActiveControlOnChange,;
-                _OOHG_ActiveControlWidth,;
-                _OOHG_ActiveControlHeight,;
-                _OOHG_ActiveControlOnLostFocus,;
-                _OOHG_ActiveControlOnGotFocus,;
-                _OOHG_ActiveControlHelpId,;
-                _OOHG_ActiveControlInvisible  , ;
-                _OOHG_ActiveControlNoTabStop ,;
-                _OOHG_ActiveControlFontBold , ;
-                _OOHG_ActiveControlFontItalic , ;
-                _OOHG_ActiveControlFontUnderLine , ;
+        => ;
+        TCheckBox():Define( ;
+                _OOHG_ActiveControlName, ;
+                _OOHG_ActiveControlOf, ;
+                _OOHG_ActiveControlCol, ;
+                _OOHG_ActiveControlRow, ;
+                _OOHG_ActiveControlCaption, ;
+                _OOHG_ActiveControlValue, ;
+                _OOHG_ActiveControlFont, ;
+                _OOHG_ActiveControlSize, ;
+                _OOHG_ActiveControlTooltip, ;
+                _OOHG_ActiveControlOnChange, ;
+                _OOHG_ActiveControlWidth, ;
+                _OOHG_ActiveControlHeight, ;
+                _OOHG_ActiveControlOnLostFocus, ;
+                _OOHG_ActiveControlOnGotFocus, ;
+                _OOHG_ActiveControlHelpId, ;
+                _OOHG_ActiveControlInvisible, ;
+                _OOHG_ActiveControlNoTabStop, ;
+                _OOHG_ActiveControlFontBold, ;
+                _OOHG_ActiveControlFontItalic, ;
+                _OOHG_ActiveControlFontUnderLine, ;
                 _OOHG_ActiveControlFontStrikeOut, ;
                 _OOHG_ActiveControlField, ;
-                , .T., ;
-                _OOHG_ActiveControlPicture )
+                _OOHG_ActiveControlBackColor, ;
+                _OOHG_ActiveControlFontColor, ;
+                _OOHG_ActiveControlTransparent, ;
+                _OOHG_ActiveControlAutoSize, ;
+                _OOHG_ActiveControlRtl ;
+                _OOHG_ActiveControlDisabled )
+
+#xcommand END CHECKBUTTON ;
+        => ;
+        TButtonCheck():Define( ;
+                _OOHG_ActiveControlName, ;
+                _OOHG_ActiveControlOf, ;
+                _OOHG_ActiveControlCol, ;
+                _OOHG_ActiveControlRow, ;
+                _OOHG_ActiveControlCaption, ;
+                _OOHG_ActiveControlValue, ;
+                _OOHG_ActiveControlFont, ;
+                _OOHG_ActiveControlSize, ;
+                _OOHG_ActiveControlTooltip, ;
+                _OOHG_ActiveControlOnChange, ;
+                _OOHG_ActiveControlWidth, ;
+                _OOHG_ActiveControlHeight, ;
+                _OOHG_ActiveControlOnLostFocus, ;
+                _OOHG_ActiveControlOnGotFocus, ;
+                _OOHG_ActiveControlHelpId, ;
+                _OOHG_ActiveControlInvisible, ;
+                _OOHG_ActiveControlNoTabStop, ;
+                _OOHG_ActiveControlFontBold, ;
+                _OOHG_ActiveControlFontItalic, ;
+                _OOHG_ActiveControlFontUnderLine, ;
+                _OOHG_ActiveControlFontStrikeOut, ;
+                _OOHG_ActiveControlField, ;
+                _OOHG_ActiveControlRtl, ;
+                _OOHG_ActiveControlPicture, ;
+                _OOHG_ActiveControlBuffer, ;
+                _OOHG_ActiveControlHBitmap, ;
+                .NOT. _OOHG_ActiveControlTransparent, ;
+                _OOHG_ActiveControlScale )
 
 /*----------------------------------------------------------------------------
-Combo Box
+COMBO BOX
 ---------------------------------------------------------------------------*/
 
-#xcommand DEFINE COMBOBOX <name>;
-   =>;
+#xcommand DEFINE COMBOBOX <name> ;
+        => ;
         _OOHG_ClearActiveControlInfo( <(name)> ) ;;
-        _OOHG_ActiveControlItems         := Nil          ;;
-        _OOHG_ActiveControlSort          := .f.          ;;
-        _OOHG_ActiveControlItemSource   := Nil           ;;
-        _OOHG_ActiveControlValueSource  := Nil           ;;
-        _OOHG_ActiveControlBreak         := .f.          ;;
-        _OOHG_ActiveControlGripperText   := ""           ;;
-        _OOHG_ActiveControlDisplayEdit   := .f.          ;;
-        _OOHG_ActiveControlDisplayChange := Nil          ;;
-        _OOHG_ActiveControlImage         := Nil
+        _OOHG_ActiveControlItems         := Nil  ;;
+        _OOHG_ActiveControlSort          := .F.  ;;
+        _OOHG_ActiveControlItemSource    := Nil  ;;
+        _OOHG_ActiveControlValueSource   := Nil  ;;
+        _OOHG_ActiveControlBreak         := .F.  ;;
+        _OOHG_ActiveControlGripperText   := ""   ;;
+        _OOHG_ActiveControlDisplayEdit   := .F.  ;;
+        _OOHG_ActiveControlDisplayChange := Nil  ;;
+        _OOHG_ActiveControlImage         := Nil  ;;
+        _OOHG_ActiveControlTextHeight    := Nil  ;;
+        _OOHG_ActiveControlStretch       := .F.  ;;
+        _OOHG_ActiveControlFirstItem     := Nil
 
 #xcommand DISPLAYEDIT <displayedit> ;
-   =>;
+        => ;
         _OOHG_ActiveControlDisplayEdit := <displayedit>
 
 #xcommand GRIPPERTEXT <grippertext> ;
-   =>;
+        => ;
         _OOHG_ActiveControlGripperText := <grippertext>
 
 #xcommand ON DISPLAYCHANGE <displaychange> ;
-   =>;
+        => ;
         _OOHG_ActiveControlDisplayChange := <{displaychange}>
 
 #xcommand ONDISPLAYCHANGE <displaychange> ;
-   =>;
+        => ;
         _OOHG_ActiveControlDisplayChange := <{displaychange}>
 
 #xcommand ITEM <aRows> ;
-   =>;
+        => ;
         _OOHG_ActiveControlItems := <aRows>
 
 #xcommand ITEMS <aRows> ;
-   =>;
+        => ;
         _OOHG_ActiveControlItems := <aRows>
 
 #xcommand ONENTER <enter> ;
-   =>;
-        _OOHG_ActiveControlOnEnter       := <{enter}>
+        => ;
+        _OOHG_ActiveControlOnEnter := <{enter}>
 
 #xcommand ON ENTER <enter> ;
-   =>;
-        _OOHG_ActiveControlOnEnter       := <{enter}>
+        => ;
+        _OOHG_ActiveControlOnEnter := <{enter}>
+
+#xcommand FIRSTITEM <firstitem> ;
+        => ;
+        _OOHG_ActiveControlFirstItem := <firstitem>
 
 #xcommand END COMBOBOX ;
-   =>;
-        TCombo():Define(;
-                _OOHG_ActiveControlName,;
-                _OOHG_ActiveControlOf,;
-                _OOHG_ActiveControlCol,;
-                _OOHG_ActiveControlRow,;
-                _OOHG_ActiveControlWidth,;
-                _OOHG_ActiveControlItems,;
-                _OOHG_ActiveControlValue,;
-                _OOHG_ActiveControlFont,;
-                _OOHG_ActiveControlSize,;
-                _OOHG_ActiveControlTooltip,;
-                _OOHG_ActiveControlOnChange,;
-                _OOHG_ActiveControlHeight,;
-                _OOHG_ActiveControlOnGotFocus,;
-                _OOHG_ActiveControlOnLostFocus,;
-                _OOHG_ActiveControlOnEnter,;
-                _OOHG_ActiveControlHelpId,;
-                _OOHG_ActiveControlInvisible ,;
-                _OOHG_ActiveControlNoTabStop,;
-                _OOHG_ActiveControlSort,;
-                _OOHG_ActiveControlFontBold,;
-                _OOHG_ActiveControlFontItalic,;
-                _OOHG_ActiveControlFontUnderLine,;
-                _OOHG_ActiveControlFontStrikeOut,;
-                _OOHG_ActiveControlItemSource,;
-                _OOHG_ActiveControlValueSource , ;
-                _OOHG_ActiveControlDisplayEdit , ;
-                _OOHG_ActiveControlDisplayChange , ;
-                _OOHG_ActiveControlBreak , ;
+        => ;
+        TCombo():Define( ;
+                _OOHG_ActiveControlName, ;
+                _OOHG_ActiveControlOf, ;
+                _OOHG_ActiveControlCol, ;
+                _OOHG_ActiveControlRow, ;
+                _OOHG_ActiveControlWidth, ;
+                _OOHG_ActiveControlItems, ;
+                _OOHG_ActiveControlValue, ;
+                _OOHG_ActiveControlFont, ;
+                _OOHG_ActiveControlSize, ;
+                _OOHG_ActiveControlTooltip, ;
+                _OOHG_ActiveControlOnChange, ;
+                _OOHG_ActiveControlHeight, ;
+                _OOHG_ActiveControlOnGotFocus, ;
+                _OOHG_ActiveControlOnLostFocus, ;
+                _OOHG_ActiveControlOnEnter, ;
+                _OOHG_ActiveControlHelpId, ;
+                _OOHG_ActiveControlInvisible, ;
+                _OOHG_ActiveControlNoTabStop, ;
+                _OOHG_ActiveControlSort, ;
+                _OOHG_ActiveControlFontBold, ;
+                _OOHG_ActiveControlFontItalic, ;
+                _OOHG_ActiveControlFontUnderLine, ;
+                _OOHG_ActiveControlFontStrikeOut, ;
+                _OOHG_ActiveControlItemSource, ;
+                _OOHG_ActiveControlValueSource, ;
+                _OOHG_ActiveControlDisplayEdit, ;
+                _OOHG_ActiveControlDisplayChange, ;
+                _OOHG_ActiveControlBreak, ;
                 _OOHG_ActiveControlGripperText, ;
                 _OOHG_ActiveControlImage, ;
-                _OOHG_ActiveControlRtl ;
-      )
+                _OOHG_ActiveControlRtl, ;
+                _OOHG_ActiveControlTextHeight, ;
+                _OOHG_ActiveControlDisabled, ;
+                _OOHG_ActiveControlFirstItem, ;
+                _OOHG_ActiveControlStretch, ;
+                _OOHG_ActiveControlBackColor, ;
+                _OOHG_ActiveControlFontColor )
 
 /*----------------------------------------------------------------------------
-Datepicker
+DATEPICKER
 ---------------------------------------------------------------------------*/
 
-
 #xcommand DEFINE DATEPICKER <name> ;
-   => ;
+        => ;
         _OOHG_ClearActiveControlInfo( <(name)> ) ;;
-        _OOHG_ActiveControlShowNone              := .f.          ;;
-        _OOHG_ActiveControlUpDown                := .f.          ;;
-        _OOHG_ActiveControlRightAlign    := .f.          ;;
-        _OOHG_ActiveControlField             := Nil
+        _OOHG_ActiveControlShowNone   := .F.     ;;
+        _OOHG_ActiveControlUpDown     := .F.     ;;
+        _OOHG_ActiveControlRightAlign := .F.     ;;
+        _OOHG_ActiveControlField      := Nil     ;;
+        _OOHG_ActiveControlNoBorder   := .F.     ;;
+        _OOHG_ActiveControlRangeLow  := Nil      ;;
+        _OOHG_ActiveControlRangeHigh := Nil
 
+#xcommand SHOWNONE <shownone> ;
+        => ;
+        _OOHG_ActiveControlShowNone := <shownone>
 
-#xcommand SHOWNONE  <shownone> ;
-   => ;
-        _OOHG_ActiveControlShowNone              := <shownone>
+#xcommand UPDOWN <updown> ;
+        => ;
+        _OOHG_ActiveControlUpDown := <updown>
 
-#xcommand UPDOWN  <updown> ;
-   => ;
-        _OOHG_ActiveControlUpDown                := <updown>
-
-#xcommand RIGHTALIGN  <rightalign> ;
-   => ;
-        _OOHG_ActiveControlRightAlign    := <rightalign>
-
+#xcommand RIGHTALIGN <rightalign> ;
+        => ;
+        _OOHG_ActiveControlRightAlign := <rightalign>
 
 #xcommand END DATEPICKER ;
-   => ;
-        TDatePick():Define(;
-                _OOHG_ActiveControlName,;
-                _OOHG_ActiveControlOf,;
-                _OOHG_ActiveControlCol,;
-                _OOHG_ActiveControlRow,;
-                _OOHG_ActiveControlWidth,;
-                _OOHG_ActiveControlHeight,;
-                _OOHG_ActiveControlValue,;
-                _OOHG_ActiveControlFont,;
-                _OOHG_ActiveControlSize,;
-                _OOHG_ActiveControlTooltip,;
-                _OOHG_ActiveControlOnChange,;
-                _OOHG_ActiveControlOnLostFocus,;
-                _OOHG_ActiveControlOnGotFocus,;
-                _OOHG_ActiveControlShowNone,;
-                _OOHG_ActiveControlUpDown,;
-                _OOHG_ActiveControlRightAlign,;
-                _OOHG_ActiveControlHelpId,;
-                _OOHG_ActiveControlInvisible , ;
-                _OOHG_ActiveControlNoTabStop,;
-                _OOHG_ActiveControlFontBold , ;
-                _OOHG_ActiveControlFontItalic , ;
-                _OOHG_ActiveControlFontUnderLine , ;
-                _OOHG_ActiveControlFontStrikeOut,;
-                _OOHG_ActiveControlField , ;
-                _OOHG_ActiveControlOnEnter , ;
-                _OOHG_ActiveControlRtl )
-
+        => ;
+        TDatePick():Define( ;
+                _OOHG_ActiveControlName, ;
+                _OOHG_ActiveControlOf, ;
+                _OOHG_ActiveControlCol, ;
+                _OOHG_ActiveControlRow, ;
+                _OOHG_ActiveControlWidth, ;
+                _OOHG_ActiveControlHeight, ;
+                _OOHG_ActiveControlValue, ;
+                _OOHG_ActiveControlFont, ;
+                _OOHG_ActiveControlSize, ;
+                _OOHG_ActiveControlTooltip, ;
+                _OOHG_ActiveControlOnChange, ;
+                _OOHG_ActiveControlOnLostFocus, ;
+                _OOHG_ActiveControlOnGotFocus, ;
+                _OOHG_ActiveControlShowNone, ;
+                _OOHG_ActiveControlUpDown, ;
+                _OOHG_ActiveControlRightAlign, ;
+                _OOHG_ActiveControlHelpId, ;
+                _OOHG_ActiveControlInvisible, ;
+                _OOHG_ActiveControlNoTabStop, ;
+                _OOHG_ActiveControlFontBold, ;
+                _OOHG_ActiveControlFontItalic, ;
+                _OOHG_ActiveControlFontUnderLine, ;
+                _OOHG_ActiveControlFontStrikeOut, ;
+                _OOHG_ActiveControlField, ;
+                _OOHG_ActiveControlOnEnter, ;
+                _OOHG_ActiveControlRtl, ;
+                _OOHG_ActiveControlDisabled, ;
+                _OOHG_ActiveControlNoBorder, ;
+                _OOHG_ActiveControlRangeLow, ;
+                _OOHG_ActiveControlRangeHigh )
 
 #xcommand DEFINE TIMEPICKER <name> ;
-   => ;
+        => ;
         _OOHG_ClearActiveControlInfo( <(name)> ) ;;
-        _OOHG_ActiveControlShowNone              := .f.          ;;
-        _OOHG_ActiveControlUpDown                := .f.          ;;
-        _OOHG_ActiveControlRightAlign            := .f.          ;;
-        _OOHG_ActiveControlField                 := Nil
-
+        _OOHG_ActiveControlShowNone   := .F.     ;;
+        _OOHG_ActiveControlUpDown     := .F.     ;;
+        _OOHG_ActiveControlRightAlign := .F.     ;;
+        _OOHG_ActiveControlField      := Nil     ;;
+        _OOHG_ActiveControlNoBorder   := .F.
 
 #xcommand END TIMEPICKER ;
-   => ;
-        TTimePick():Define(;
-                _OOHG_ActiveControlName,;
-                _OOHG_ActiveControlOf,;
-                _OOHG_ActiveControlCol,;
-                _OOHG_ActiveControlRow,;
-                _OOHG_ActiveControlWidth,;
-                _OOHG_ActiveControlHeight,;
-                _OOHG_ActiveControlValue,;
-                _OOHG_ActiveControlFont,;
-                _OOHG_ActiveControlSize,;
-                _OOHG_ActiveControlTooltip,;
-                _OOHG_ActiveControlOnChange,;
-                _OOHG_ActiveControlOnLostFocus,;
-                _OOHG_ActiveControlOnGotFocus,;
-                _OOHG_ActiveControlShowNone,;
-                _OOHG_ActiveControlUpDown,;
-                _OOHG_ActiveControlRightAlign,;
-                _OOHG_ActiveControlHelpId,;
-                _OOHG_ActiveControlInvisible , ;
-                _OOHG_ActiveControlNoTabStop,;
-                _OOHG_ActiveControlFontBold , ;
-                _OOHG_ActiveControlFontItalic , ;
-                _OOHG_ActiveControlFontUnderLine , ;
-                _OOHG_ActiveControlFontStrikeOut,;
-                _OOHG_ActiveControlField , ;
-                _OOHG_ActiveControlOnEnter , ;
-                _OOHG_ActiveControlRtl )
-
+        => ;
+        TTimePick():Define( ;
+                _OOHG_ActiveControlName, ;
+                _OOHG_ActiveControlOf, ;
+                _OOHG_ActiveControlCol, ;
+                _OOHG_ActiveControlRow, ;
+                _OOHG_ActiveControlWidth, ;
+                _OOHG_ActiveControlHeight, ;
+                _OOHG_ActiveControlValue, ;
+                _OOHG_ActiveControlFont, ;
+                _OOHG_ActiveControlSize, ;
+                _OOHG_ActiveControlTooltip, ;
+                _OOHG_ActiveControlOnChange, ;
+                _OOHG_ActiveControlOnLostFocus, ;
+                _OOHG_ActiveControlOnGotFocus, ;
+                _OOHG_ActiveControlShowNone, ;
+                _OOHG_ActiveControlUpDown, ;
+                _OOHG_ActiveControlRightAlign, ;
+                _OOHG_ActiveControlHelpId, ;
+                _OOHG_ActiveControlInvisible, ;
+                _OOHG_ActiveControlNoTabStop, ;
+                _OOHG_ActiveControlFontBold, ;
+                _OOHG_ActiveControlFontItalic, ;
+                _OOHG_ActiveControlFontUnderLine, ;
+                _OOHG_ActiveControlFontStrikeOut, ;
+                _OOHG_ActiveControlField, ;
+                _OOHG_ActiveControlOnEnter, ;
+                _OOHG_ActiveControlRtl, ;
+                _OOHG_ActiveControlDisabled, ;
+                _OOHG_ActiveControlNoBorder )
 
 /*----------------------------------------------------------------------------
-Edit Box
+EDIT BOX
 ---------------------------------------------------------------------------*/
 
 #xcommand DEFINE EDITBOX <name> ;
-   =>;
+        => ;
         _OOHG_ClearActiveControlInfo( <(name)> ) ;;
-        _OOHG_ActiveControlReadonly      := .f.          ;;
-        _OOHG_ActiveControlMaxLength     := Nil          ;;
-        _OOHG_ActiveControlBreak         := .f.          ;;
-        _OOHG_ActiveControlField         := Nil          ;;
-        _OOHG_ActiveControlNoVScroll     := .f.          ;;
-        _OOHG_ActiveControlNoHScroll     := .f.          ;;
-        _OOHG_ActiveControlNoBorder      := .f.          ;;
-        _OOHG_ActiveControlFocusedPos    := Nil
+        _OOHG_ActiveControlReadonly   := .F.     ;;
+        _OOHG_ActiveControlMaxLength  := Nil     ;;
+        _OOHG_ActiveControlBreak      := .F.     ;;
+        _OOHG_ActiveControlField      := Nil     ;;
+        _OOHG_ActiveControlNoVScroll  := .F.     ;;
+        _OOHG_ActiveControlNoHScroll  := .F.     ;;
+        _OOHG_ActiveControlNoBorder   := .F.     ;;
+        _OOHG_ActiveControlFocusedPos := Nil
 
 #xcommand READONLYFIELDS <readonly> ;
-   =>;
-        _OOHG_ActiveControlReadOnly              := <readonly>
+        => ;
+        _OOHG_ActiveControlReadOnly := <readonly>
 
 #xcommand MAXLENGTH <maxlength> ;
-   =>;
-        _OOHG_ActiveControlMaxLength             := <maxlength>
+        => ;
+        _OOHG_ActiveControlMaxLength := <maxlength>
 
 #xcommand SETBREAK <break> ;
-   =>;
-        _OOHG_ActiveControlBreak         := <break>
+        => ;
+        _OOHG_ActiveControlBreak := <break>
 
 #xcommand END EDITBOX ;
-   =>;
-                TEdit():Define(;
-                        _OOHG_ActiveControlName,;
-                        _OOHG_ActiveControlOf,;
-                        _OOHG_ActiveControlCol,;
-                        _OOHG_ActiveControlRow,;
-                        _OOHG_ActiveControlWidth,;
-                        _OOHG_ActiveControlHeight,;
-                        _OOHG_ActiveControlValue,;
-                        _OOHG_ActiveControlFont,;
-                        _OOHG_ActiveControlSize,;
-                        _OOHG_ActiveControlTooltip,;
-                        _OOHG_ActiveControlMaxLength,;
-                        _OOHG_ActiveControlOnGotFocus,;
-                        _OOHG_ActiveControlOnChange,;
-                        _OOHG_ActiveControlOnLostFocus,;
-                        _OOHG_ActiveControlReadOnly,;
-                        _OOHG_ActiveControlBreak,;
-                        _OOHG_ActiveControlHelpId,;
-                        _OOHG_ActiveControlInvisible , ;
-                        _OOHG_ActiveControlNoTabStop ,;
-                        _OOHG_ActiveControlFontBold , ;
-                        _OOHG_ActiveControlFontItalic , ;
-                        _OOHG_ActiveControlFontUnderLine , ;
-                        _OOHG_ActiveControlFontStrikeOut ,;
-                        _OOHG_ActiveControlField, ;
-                        _OOHG_ActiveControlBackColor, ;
-                        _OOHG_ActiveControlFontColor, ;
-                        _OOHG_ActiveControlNoVScroll, ;
-                        _OOHG_ActiveControlNoHScroll, ;
-                        _OOHG_ActiveControlRtl, ;
-                        _OOHG_ActiveControlNoBorder, ;
-                        _OOHG_ActiveControlFocusedPos )
-
+        => ;
+        TEdit():Define( ;
+                _OOHG_ActiveControlName, ;
+                _OOHG_ActiveControlOf, ;
+                _OOHG_ActiveControlCol, ;
+                _OOHG_ActiveControlRow, ;
+                _OOHG_ActiveControlWidth, ;
+                _OOHG_ActiveControlHeight, ;
+                _OOHG_ActiveControlValue, ;
+                _OOHG_ActiveControlFont, ;
+                _OOHG_ActiveControlSize, ;
+                _OOHG_ActiveControlTooltip, ;
+                _OOHG_ActiveControlMaxLength, ;
+                _OOHG_ActiveControlOnGotFocus, ;
+                _OOHG_ActiveControlOnChange, ;
+                _OOHG_ActiveControlOnLostFocus, ;
+                _OOHG_ActiveControlReadOnly, ;
+                _OOHG_ActiveControlBreak, ;
+                _OOHG_ActiveControlHelpId, ;
+                _OOHG_ActiveControlInvisible, ;
+                _OOHG_ActiveControlNoTabStop, ;
+                _OOHG_ActiveControlFontBold, ;
+                _OOHG_ActiveControlFontItalic, ;
+                _OOHG_ActiveControlFontUnderLine, ;
+                _OOHG_ActiveControlFontStrikeOut, ;
+                _OOHG_ActiveControlField, ;
+                _OOHG_ActiveControlBackColor, ;
+                _OOHG_ActiveControlFontColor, ;
+                _OOHG_ActiveControlNoVScroll, ;
+                _OOHG_ActiveControlNoHScroll, ;
+                _OOHG_ActiveControlRtl, ;
+                _OOHG_ActiveControlNoBorder, ;
+                _OOHG_ActiveControlFocusedPos )
 
 /*----------------------------------------------------------------------------
-Rich Edit Box
+RICH EDIT BOX
 ---------------------------------------------------------------------------*/
 
 #xcommand DEFINE RICHEDITBOX <name> ;
-   =>;
+        => ;
         _OOHG_ClearActiveControlInfo( <(name)> ) ;;
-        _OOHG_ActiveControlReadonly              := .f.          ;;
-        _OOHG_ActiveControlMaxLength             := Nil          ;;
-        _OOHG_ActiveControlBreak                 := .f.          ;;
-        _OOHG_ActiveControlField                 := Nil
+        _OOHG_ActiveControlReadonly  := .F.      ;;
+        _OOHG_ActiveControlMaxLength := Nil      ;;
+        _OOHG_ActiveControlBreak     := .F.      ;;
+        _OOHG_ActiveControlField     := Nil
 
 #xcommand END RICHEDITBOX ;
-   =>;
-                TEditRich():Define(;
-                        _OOHG_ActiveControlName,;
-                        _OOHG_ActiveControlOf,;
-                        _OOHG_ActiveControlCol,;
-                        _OOHG_ActiveControlRow,;
-                        _OOHG_ActiveControlWidth,;
-                        _OOHG_ActiveControlHeight,;
-                        _OOHG_ActiveControlValue,;
-                        _OOHG_ActiveControlFont,;
-                        _OOHG_ActiveControlSize,;
-                        _OOHG_ActiveControlTooltip,;
-                        _OOHG_ActiveControlMaxLength,;
-                        _OOHG_ActiveControlOnGotFocus,;
-                        _OOHG_ActiveControlOnChange,;
-                        _OOHG_ActiveControlOnLostFocus,;
-                        _OOHG_ActiveControlReadOnly,;
-                        _OOHG_ActiveControlBreak,;
-                        _OOHG_ActiveControlHelpId,;
-                        _OOHG_ActiveControlInvisible , ;
-                        _OOHG_ActiveControlNoTabStop ,;
-                        _OOHG_ActiveControlFontBold , ;
-                        _OOHG_ActiveControlFontItalic , ;
-                        _OOHG_ActiveControlFontUnderLine , ;
-                        _OOHG_ActiveControlFontStrikeOut ,;
-                        _OOHG_ActiveControlField,;
-                        _OOHG_ActiveControlBackColor,;
-                        _OOHG_ActiveControlRtl )
+        => ;
+        TEditRich():Define( ;
+                _OOHG_ActiveControlName, ;
+                _OOHG_ActiveControlOf, ;
+                _OOHG_ActiveControlCol, ;
+                _OOHG_ActiveControlRow, ;
+                _OOHG_ActiveControlWidth, ;
+                _OOHG_ActiveControlHeight, ;
+                _OOHG_ActiveControlValue, ;
+                _OOHG_ActiveControlFont, ;
+                _OOHG_ActiveControlSize, ;
+                _OOHG_ActiveControlTooltip, ;
+                _OOHG_ActiveControlMaxLength, ;
+                _OOHG_ActiveControlOnGotFocus, ;
+                _OOHG_ActiveControlOnChange, ;
+                _OOHG_ActiveControlOnLostFocus, ;
+                _OOHG_ActiveControlReadOnly, ;
+                _OOHG_ActiveControlBreak, ;
+                _OOHG_ActiveControlHelpId, ;
+                _OOHG_ActiveControlInvisible, ;
+                _OOHG_ActiveControlNoTabStop, ;
+                _OOHG_ActiveControlFontBold, ;
+                _OOHG_ActiveControlFontItalic, ;
+                _OOHG_ActiveControlFontUnderLine, ;
+                _OOHG_ActiveControlFontStrikeOut, ;
+                _OOHG_ActiveControlField, ;
+                _OOHG_ActiveControlBackColor, ;
+                _OOHG_ActiveControlRtl, ;
+                _OOHG_ActiveControlDisabled )
 
 /*----------------------------------------------------------------------------
-Label
+LABEL
 ---------------------------------------------------------------------------*/
 
 #xcommand DEFINE LABEL <name> ;
-   =>;
+        => ;
         _OOHG_ClearActiveControlInfo( <(name)> ) ;;
-        _OOHG_ActiveControlBorder        := .f.          ;;
-        _OOHG_ActiveControlClientEdge    := .f.          ;;
-        _OOHG_ActiveControlHScroll       := .f.          ;;
-        _OOHG_ActiveControlVScroll       := .f.          ;;
-        _OOHG_ActiveControlTransparent   := .f.          ;;
-        _OOHG_ActiveControlAction        := Nil          ;;
-        _OOHG_ActiveControlRightAlign    := .F.          ;;
-        _OOHG_ActiveControlAutoSize      := .f.          ;;
-        _OOHG_ActiveControlCenterAlign   := .F.          ;;
-        _OOHG_ActiveControlNoWordWrap    := .F.          ;;
-        _OOHG_ActiveControlNoPrefix      := .F.          ;;
-        _OOHG_ActiveControlInputMask     := Nil
+        _OOHG_ActiveControlBorder      := .F.    ;;
+        _OOHG_ActiveControlClientEdge  := .F.    ;;
+        _OOHG_ActiveControlHScroll     := .F.    ;;
+        _OOHG_ActiveControlVScroll     := .F.    ;;
+        _OOHG_ActiveControlTransparent := .F.    ;;
+        _OOHG_ActiveControlAction      := Nil    ;;
+        _OOHG_ActiveControlRightAlign  := .F.    ;;
+        _OOHG_ActiveControlAutoSize    := .F.    ;;
+        _OOHG_ActiveControlCenterAlign := .F.    ;;
+        _OOHG_ActiveControlNoWordWrap  := .F.    ;;
+        _OOHG_ActiveControlNoPrefix    := .F.    ;;
+        _OOHG_ActiveControlInputMask   := Nil
 
-#xcommand CENTERALIGN   <centeralign> ;
-   => ;
-        _OOHG_ActiveControlCenterAlign           := <centeralign>
+#xcommand CENTERALIGN <centeralign> ;
+        => ;
+        _OOHG_ActiveControlCenterAlign := <centeralign>
 
-#xcommand FORECOLOR   <color>;
-   =>;
-        _OOHG_ActiveControlForeColor             := <color>
+#xcommand FORECOLOR <color> ;
+        => ;
+        _OOHG_ActiveControlForeColor := <color>
 
-#xcommand BORDER   <border>;
-   =>;
-        _OOHG_ActiveControlBorder                := <border>
+#xcommand BORDER <border> ;
+        => ;
+        _OOHG_ActiveControlBorder := <border>
 
-#xcommand CLIENTEDGE   <clientedge>;
-   =>;
-        _OOHG_ActiveControlClientEdge    := <clientedge>
+#xcommand CLIENTEDGE <clientedge> ;
+        => ;
+        _OOHG_ActiveControlClientEdge := <clientedge>
 
-#xcommand HSCROLL   <hscroll>;
-   =>;
-        _OOHG_ActiveControlHScroll               := <hscroll>
+#xcommand HSCROLL <hscroll> ;
+        => ;
+        _OOHG_ActiveControlHScroll := <hscroll>
 
-#xcommand VSCROLL   <vscroll>;
-   =>;
-        _OOHG_ActiveControlVScroll               := <vscroll>
+#xcommand VSCROLL <vscroll> ;
+        => ;
+        _OOHG_ActiveControlVScroll := <vscroll>
 
-#xcommand TRANSPARENT   <transparent>;
-   =>;
-        _OOHG_ActiveControlTransparent   := <transparent>
+#xcommand TRANSPARENT <transparent> ;
+        => ;
+        _OOHG_ActiveControlTransparent := <transparent>
 
-#xcommand NOWORDWRAP   <nowordwrap>;
-   =>;
-        _OOHG_ActiveControlNoWordWrap   := <nowordwrap>
+#xcommand NOWORDWRAP <nowordwrap> ;
+        => ;
+        _OOHG_ActiveControlNoWordWrap := <nowordwrap>
 
-#xcommand NOPREFIX   <noprefix>;
-   =>;
-        _OOHG_ActiveControlNoPrefix     := <noprefix>
+#xcommand NOPREFIX <noprefix> ;
+        => ;
+        _OOHG_ActiveControlNoPrefix := <noprefix>
 
 #xcommand END LABEL ;
-   =>;
+        => ;
         TLabel():Define( ;
-                _OOHG_ActiveControlName,;
-                _OOHG_ActiveControlOf,;
-                _OOHG_ActiveControlCol,;
-                _OOHG_ActiveControlRow,;
-                _OOHG_ActiveControlValue,;
-                _OOHG_ActiveControlWidth,;
-                _OOHG_ActiveControlHeight,;
-                _OOHG_ActiveControlFont,;
-                _OOHG_ActiveControlSize,;
-                _OOHG_ActiveControlFontBold,;
-                _OOHG_ActiveControlBorder,;
-                _OOHG_ActiveControlClientEdge,;
-                _OOHG_ActiveControlHScroll,;
-                _OOHG_ActiveControlVScroll,;
-                _OOHG_ActiveControlTransparent,;
-                _OOHG_ActiveControlBackColor,;
-                _OOHG_ActiveControlFontColor,;
-                _OOHG_ActiveControlAction,;
-                _OOHG_ActiveControlTooltip,;
-                _OOHG_ActiveControlHelpId,;
-                _OOHG_ActiveControlInvisible , ;
-                _OOHG_ActiveControlFontItalic , ;
-                _OOHG_ActiveControlFontUnderLine , ;
-                _OOHG_ActiveControlFontStrikeOut , ;
-                _OOHG_ActiveControlAutoSize , ;
-                _OOHG_ActiveControlRightAlign , ;
-                _OOHG_ActiveControlCenterAlign , ;
-                _OOHG_ActiveControlRtl , ;
-                _OOHG_ActiveControlNoWordWrap , ;
-                _OOHG_ActiveControlNoPrefix , ;
+                _OOHG_ActiveControlName, ;
+                _OOHG_ActiveControlOf, ;
+                _OOHG_ActiveControlCol, ;
+                _OOHG_ActiveControlRow, ;
+                _OOHG_ActiveControlValue, ;
+                _OOHG_ActiveControlWidth, ;
+                _OOHG_ActiveControlHeight, ;
+                _OOHG_ActiveControlFont, ;
+                _OOHG_ActiveControlSize, ;
+                _OOHG_ActiveControlFontBold, ;
+                _OOHG_ActiveControlBorder, ;
+                _OOHG_ActiveControlClientEdge, ;
+                _OOHG_ActiveControlHScroll, ;
+                _OOHG_ActiveControlVScroll, ;
+                _OOHG_ActiveControlTransparent, ;
+                _OOHG_ActiveControlBackColor, ;
+                _OOHG_ActiveControlFontColor, ;
+                _OOHG_ActiveControlAction, ;
+                _OOHG_ActiveControlTooltip, ;
+                _OOHG_ActiveControlHelpId, ;
+                _OOHG_ActiveControlInvisible, ;
+                _OOHG_ActiveControlFontItalic, ;
+                _OOHG_ActiveControlFontUnderLine, ;
+                _OOHG_ActiveControlFontStrikeOut, ;
+                _OOHG_ActiveControlAutoSize, ;
+                _OOHG_ActiveControlRightAlign, ;
+                _OOHG_ActiveControlCenterAlign, ;
+                _OOHG_ActiveControlRtl, ;
+                _OOHG_ActiveControlNoWordWrap, ;
+                _OOHG_ActiveControlNoPrefix, ;
                 _OOHG_ActiveControlInputMask )
 
-
 #xcommand DEFINE IPADDRESS <name> ;
-   =>;
+        => ;
         _OOHG_ClearActiveControlInfo( <(name)> )
 
 #xcommand END IPADDRESS ;
-=>;
-   TIPAddress():Define( ;
-      _OOHG_ActiveControlName , ;
-      _OOHG_ActiveControlOf , ;
-      _OOHG_ActiveControlCol , ;
-      _OOHG_ActiveControlRow , ;
-      _OOHG_ActiveControlWidth , ;
-      _OOHG_ActiveControlHeight , ;
-      _OOHG_ActiveControlValue , ;
-      _OOHG_ActiveControlFont , ;
-      _OOHG_ActiveControlSize , ;
-      _OOHG_ActiveControlTooltip, ;
-      _OOHG_ActiveControlOnLostFocus , ;
-      _OOHG_ActiveControlOnGotFocus , ;
-      _OOHG_ActiveControlOnChange , ;
-      _OOHG_ActiveControlHelpId  , ;
-        _OOHG_ActiveControlInvisible , ;
-        _OOHG_ActiveControlNoTabStop ,;
-        _OOHG_ActiveControlFontBold , ;
-        _OOHG_ActiveControlFontItalic , ;
-        _OOHG_ActiveControlFontUnderLine , ;
-        _OOHG_ActiveControlFontStrikeOut , ;
-        _OOHG_ActiveControlRtl )
-
+        => ;
+        TIPAddress():Define( ;
+                _OOHG_ActiveControlName, ;
+                _OOHG_ActiveControlOf, ;
+                _OOHG_ActiveControlCol, ;
+                _OOHG_ActiveControlRow, ;
+                _OOHG_ActiveControlWidth, ;
+                _OOHG_ActiveControlHeight, ;
+                _OOHG_ActiveControlValue, ;
+                _OOHG_ActiveControlFont, ;
+                _OOHG_ActiveControlSize, ;
+                _OOHG_ActiveControlTooltip, ;
+                _OOHG_ActiveControlOnLostFocus, ;
+                _OOHG_ActiveControlOnGotFocus, ;
+                _OOHG_ActiveControlOnChange, ;
+                _OOHG_ActiveControlHelpId, ;
+                _OOHG_ActiveControlInvisible, ;
+                _OOHG_ActiveControlNoTabStop, ;
+                _OOHG_ActiveControlFontBold, ;
+                _OOHG_ActiveControlFontItalic, ;
+                _OOHG_ActiveControlFontUnderLine, ;
+                _OOHG_ActiveControlFontStrikeOut, ;
+                _OOHG_ActiveControlRtl, ;
+                _OOHG_ActiveControlDisabled )
 
 /*----------------------------------------------------------------------------
-Grid
+GRID
 ---------------------------------------------------------------------------*/
 
 #xcommand DEFINE GRID <name> ;
-   =>;
-        _OOHG_ClearActiveControlInfo( <(name)> ) ;;
-        _OOHG_ActiveControlHeaders               := Nil          ;;
-        _OOHG_ActiveControlWidths                := Nil          ;;
-        _OOHG_ActiveControlItems         := Nil          ;;
-        _OOHG_ActiveControlOnHeadClick   := Nil          ;;
-        _OOHG_ActiveControlNoLines               := .f.          ;;
-        _OOHG_ActiveControlImage         := Nil          ;;
-        _OOHG_ActiveControlJustify               := Nil          ;;
-        _OOHG_ActiveControlMultiSelect   := .f.          ;;
-        _OOHG_ActiveControlEdit              := .f.          ;;
-        _OOHG_ActiveControlBreak             := .f.              ;;
-        _OOHG_ActiveControlOnQueryData   := Nil          ;;
-        _OOHG_ActiveControlItemCount             := Nil          ;;
-        _OOHG_ActiveControlReadOnly              := Nil          ;;
-        _OOHG_ActiveControlVirtual               := .f.          ;;
-        _OOHG_ActiveControlInputMask             := nil          ;;
-        _OOHG_ActiveControlOnAppend              := nil          ;;
-        _OOHG_ActiveControlInPlaceEdit           := .f.          ;;
-        _OOHG_ActiveControlDynamicBackColor      := Nil          ;;
-        _OOHG_ActiveControlDynamicForeColor      := Nil          ;;
-        _OOHG_ActiveControlEditControls          := Nil          ;;
-        _OOHG_ActiveControlReadOnly              := Nil          ;;
-        _OOHG_ActiveControlValid                 := Nil          ;;
-        _OOHG_ActiveControlValidMessages         := Nil          ;;
-        _OOHG_ActiveControlEditCell              := Nil          ;;
-        _OOHG_ActiveControlWhen                  := nil          ;;
-        _OOHG_ActiveControlShowHeaders           := nil
+        => ;
+        _OOHG_ClearActiveControlInfo( <(name)> )   ;;
+        _OOHG_ActiveControlHeaders          := Nil ;;
+        _OOHG_ActiveControlWidths           := Nil ;;
+        _OOHG_ActiveControlItems            := Nil ;;
+        _OOHG_ActiveControlOnHeadClick      := Nil ;;
+        _OOHG_ActiveControlNoLines          := .F. ;;
+        _OOHG_ActiveControlImage            := Nil ;;
+        _OOHG_ActiveControlJustify          := Nil ;;
+        _OOHG_ActiveControlMultiSelect      := .F. ;;
+        _OOHG_ActiveControlEdit             := .F. ;;
+        _OOHG_ActiveControlBreak            := .F. ;;
+        _OOHG_ActiveControlOnQueryData      := Nil ;;
+        _OOHG_ActiveControlItemCount        := Nil ;;
+        _OOHG_ActiveControlReadOnly         := Nil ;;
+        _OOHG_ActiveControlVirtual          := .F. ;;
+        _OOHG_ActiveControlInputMask        := Nil ;;
+        _OOHG_ActiveControlOnAppend         := Nil ;;
+        _OOHG_ActiveControlInPlaceEdit      := .F. ;;
+        _OOHG_ActiveControlDynamicBackColor := Nil ;;
+        _OOHG_ActiveControlDynamicForeColor := Nil ;;
+        _OOHG_ActiveControlEditControls     := Nil ;;
+        _OOHG_ActiveControlReadOnly         := Nil ;;
+        _OOHG_ActiveControlValid            := Nil ;;
+        _OOHG_ActiveControlValidMessages    := Nil ;;
+        _OOHG_ActiveControlEditCell         := Nil ;;
+        _OOHG_ActiveControlWhen             := Nil ;;
+        _OOHG_ActiveControlShowHeaders      := Nil ;;
+        _OOHG_ActiveControlHeaderImages     := Nil ;;
+        _OOHG_ActiveControlImagesPlace      := Nil
 
-#xcommand ONAPPEND    <onappend>;
-   =>;
-        _OOHG_ActiveControlOnAppend    := <onappend>
+#xcommand ONAPPEND <onappend> ;
+        => ;
+        _OOHG_ActiveControlOnAppend := <onappend>
+
+#xcommand HEADERIMAGES <aHeaderImages> ;
+        => ;
+        _OOHG_ActiveControlHeaderImages := <aHeaderImages>
+
+#xcommand IMAGESPLACE <aImgPlace> ;
+        => ;
+        _OOHG_ActiveControlImagesPlace := <aImgPlace>
 
 #xcommand END GRID ;
-   =>;
-iif( _OOHG_ActiveControlMultiSelect, TGridMulti(), TGrid() ):Define( ;
-                _OOHG_ActiveControlName ,  ;
-                _OOHG_ActiveControlOf ,  ;
-                _OOHG_ActiveControlCol ,         ;
-                _OOHG_ActiveControlRow ,         ;
-                _OOHG_ActiveControlWidth ,               ;
-                _OOHG_ActiveControlHeight ,              ;
-                _OOHG_ActiveControlHeaders ,     ;
-                _OOHG_ActiveControlWidths ,      ;
-                _OOHG_ActiveControlItems ,       ;
-                _OOHG_ActiveControlValue ,       ;
-                _OOHG_ActiveControlFont ,        ;
-                _OOHG_ActiveControlSize ,        ;
-                _OOHG_ActiveControlTooltip ,     ;
-                _OOHG_ActiveControlOnChange ,    ;
-                _OOHG_ActiveControlOnDblClick ,  ;
-                _OOHG_ActiveControlOnHeadClick , ;
-                _OOHG_ActiveControlOnGotFocus ,  ;
-                _OOHG_ActiveControlOnLostFocus,  ;
-                _OOHG_ActiveControlNoLines,      ;
-                _OOHG_ActiveControlImage,        ;
-                _OOHG_ActiveControlJustify  ,    ;
-                _OOHG_ActiveControlBreak ,       ;
-                _OOHG_ActiveControlHelpId ,      ;
-                _OOHG_ActiveControlFontBold,     ;
-                _OOHG_ActiveControlFontItalic,   ;
-                _OOHG_ActiveControlFontUnderLine,        ;
-                _OOHG_ActiveControlFontStrikeOut , ;
-                _OOHG_ActiveControlVirtual , ;
-                _OOHG_ActiveControlOnQueryData ,  ;
-                _OOHG_ActiveControlItemCount ,   ;
-                _OOHG_ActiveControlEdit ,  ;
+        => ;
+        iif( _OOHG_ActiveControlMultiSelect, TGridMulti(), TGrid() ):Define( ;
+                _OOHG_ActiveControlName, ;
+                _OOHG_ActiveControlOf, ;
+                _OOHG_ActiveControlCol, ;
+                _OOHG_ActiveControlRow, ;
+                _OOHG_ActiveControlWidth, ;
+                _OOHG_ActiveControlHeight, ;
+                _OOHG_ActiveControlHeaders, ;
+                _OOHG_ActiveControlWidths, ;
+                _OOHG_ActiveControlItems, ;
+                _OOHG_ActiveControlValue, ;
+                _OOHG_ActiveControlFont, ;
+                _OOHG_ActiveControlSize, ;
+                _OOHG_ActiveControlTooltip, ;
+                _OOHG_ActiveControlOnChange, ;
+                _OOHG_ActiveControlOnDblClick, ;
+                _OOHG_ActiveControlOnHeadClick, ;
+                _OOHG_ActiveControlOnGotFocus, ;
+                _OOHG_ActiveControlOnLostFocus, ;
+                _OOHG_ActiveControlNoLines, ;
+                _OOHG_ActiveControlImage, ;
+                _OOHG_ActiveControlJustify, ;
+                _OOHG_ActiveControlBreak, ;
+                _OOHG_ActiveControlHelpId, ;
+                _OOHG_ActiveControlFontBold, ;
+                _OOHG_ActiveControlFontItalic, ;
+                _OOHG_ActiveControlFontUnderLine, ;
+                _OOHG_ActiveControlFontStrikeOut, ;
+                _OOHG_ActiveControlVirtual, ;
+                _OOHG_ActiveControlOnQueryData, ;
+                _OOHG_ActiveControlItemCount, ;
+                _OOHG_ActiveControlEdit, ;
                 _OOHG_ActiveControlBackColor, ;
                 _OOHG_ActiveControlFontColor, ;
                 _OOHG_ActiveControlDynamicBackColor, ;
                 _OOHG_ActiveControlDynamicForeColor, ;
                 _OOHG_ActiveControlInputMask, ;
                 _OOHG_ActiveControlRtl, ;
-                _OOHG_ActiveControlInPlaceEdit , ;
+                _OOHG_ActiveControlInPlaceEdit, ;
                 _OOHG_ActiveControlEditControls, ;
-                _OOHG_ActiveControlReadOnly , ;
-                _OOHG_ActiveControlValid , ;
+                _OOHG_ActiveControlReadOnly, ;
+                _OOHG_ActiveControlValid, ;
                 _OOHG_ActiveControlValidMessages, ;
                 _OOHG_ActiveControlEditCell, ;
                 _OOHG_ActiveControlWhen, ;
                 _OOHG_ActiveControlDisabled, ;
                 _OOHG_ActiveControlNoTabStop, ;
                 _OOHG_ActiveControlInvisible, ;
-                _OOHG_ActiveControlShowHeaders,  ;
-                _OOHG_ActiveControlOnEnter )
+                _OOHG_ActiveControlShowHeaders, ;
+                _OOHG_ActiveControlOnEnter, ;
+                _OOHG_ActiveControlHeaderImages, ;
+                _OOHG_ActiveControlImagesPlace )
 
 /*----------------------------------------------------------------------------
 BROWSE
 ---------------------------------------------------------------------------*/
 
 #xcommand DEFINE BROWSE <name> ;
-   =>;
-        _OOHG_ClearActiveControlInfo( <(name)> ) ;;
-        _OOHG_ActiveControlHeaders               := Nil          ;;
-        _OOHG_ActiveControlWidths                := Nil          ;;
-        _OOHG_ActiveControlOnHeadClick           := Nil          ;;
-        _OOHG_ActiveControlNoLines               := .f.          ;;
-        _OOHG_ActiveControlImage                 := Nil          ;;
-        _OOHG_ActiveControlJustify               := Nil          ;;
-        _OOHG_ActiveControlEdit                  := .f.          ;;
-        _OOHG_ActiveControlBreak                 := .f.          ;;
-        _OOHG_ActiveControlWorkArea              := Nil          ;;
-        _OOHG_ActiveControlFields                := Nil          ;;
-        _OOHG_ActiveControlDelete                := .f.          ;;
-        _OOHG_ActiveControlAppendable            := .f.          ;;
-        _OOHG_ActiveControlValid                 := Nil          ;;
-        _OOHG_ActiveControlReadOnly              := Nil          ;;
-        _OOHG_ActiveControlLock                  := .f.          ;;
-        _OOHG_ActiveControlValidMessages         := Nil          ;;
-        _OOHG_ActiveControlNoVScroll             := .f.          ;;
-        _OOHG_ActiveControlInputMask             := Nil          ;;
-        _OOHG_ActiveControlInPlaceEdit           := .f.          ;;
-        _OOHG_ActiveControlDynamicBackColor      := Nil          ;;
-        _OOHG_ActiveControlDynamicForeColor      := Nil          ;;
-        _OOHG_ActiveControlWhen                  := Nil          ;;
-        _OOHG_ActiveControlOnAppend              := Nil          ;;
-        _OOHG_ActiveControlEditCell              := Nil          ;;
-        _OOHG_ActiveControlEditControls          := Nil          ;;
-        _OOHG_ActiveControlReplaceFields         := Nil          ;;
-        _OOHG_ActiveControlShowHeaders           := Nil          ;;
-        _OOHG_ActiveControlDeleteWhen            := Nil          ;;
-        _OOHG_ActiveControlDeleteMsg             := Nil          ;;
-        _OOHG_ActiveControlOnDelete              := Nil          ;;
-        _OOHG_ActiveControlColumnInfo            := Nil          ;;
-        _OOHG_ActiveControlDescending            := .f.          ;;
-        _OOHG_ActiveControlRecCount              := .f.
+        => ;
+        _OOHG_ClearActiveControlInfo( <(name)> )   ;;
+        _OOHG_ActiveControlHeaders          := Nil ;;
+        _OOHG_ActiveControlWidths           := Nil ;;
+        _OOHG_ActiveControlOnHeadClick      := Nil ;;
+        _OOHG_ActiveControlNoLines          := .F. ;;
+        _OOHG_ActiveControlImage            := Nil ;;
+        _OOHG_ActiveControlJustify          := Nil ;;
+        _OOHG_ActiveControlEdit             := .F. ;;
+        _OOHG_ActiveControlBreak            := .F. ;;
+        _OOHG_ActiveControlWorkArea         := Nil ;;
+        _OOHG_ActiveControlFields           := Nil ;;
+        _OOHG_ActiveControlDelete           := .F. ;;
+        _OOHG_ActiveControlAppendable       := .F. ;;
+        _OOHG_ActiveControlValid            := Nil ;;
+        _OOHG_ActiveControlReadOnly         := Nil ;;
+        _OOHG_ActiveControlLock             := .F. ;;
+        _OOHG_ActiveControlValidMessages    := Nil ;;
+        _OOHG_ActiveControlNoVScroll        := .F. ;;
+        _OOHG_ActiveControlInputMask        := Nil ;;
+        _OOHG_ActiveControlInPlaceEdit      := .F. ;;
+        _OOHG_ActiveControlDynamicBackColor := Nil ;;
+        _OOHG_ActiveControlDynamicForeColor := Nil ;;
+        _OOHG_ActiveControlWhen             := Nil ;;
+        _OOHG_ActiveControlOnAppend         := Nil ;;
+        _OOHG_ActiveControlEditCell         := Nil ;;
+        _OOHG_ActiveControlEditControls     := Nil ;;
+        _OOHG_ActiveControlReplaceFields    := Nil ;;
+        _OOHG_ActiveControlShowHeaders      := Nil ;;
+        _OOHG_ActiveControlDeleteWhen       := Nil ;;
+        _OOHG_ActiveControlDeleteMsg        := Nil ;;
+        _OOHG_ActiveControlOnDelete         := Nil ;;
+        _OOHG_ActiveControlColumnInfo       := Nil ;;
+        _OOHG_ActiveControlDescending       := .F. ;;
+        _OOHG_ActiveControlRecCount         := .F. ;;
+        _OOHG_ActiveControlHeaderImages     := Nil ;;
+        _OOHG_ActiveControlImagesPlace      := Nil
         
-#xcommand DELETEWHEN <delwhen>;
-   =>;
-        _OOHG_ActiveControlDeleteWhen := <delwhen>
+#xcommand DELETEWHEN <delwhen> ;
+        => ;
+        _OOHG_ActiveControlDeleteWhen := <{delwhen}>
 
-#xcommand DELETEMSG <delmsg>;
-   =>;
+#xcommand DELETEMSG <delmsg> ;
+        => ;
         _OOHG_ActiveControlDeleteMsg := <delmsg>
 
-#xcommand ONDELETE <ondelete>;
-   =>;
-        _OOHG_ActiveControlOnDelete := <ondelete>
+#xcommand ONDELETE <ondelete> ;
+        => ;
+        _OOHG_ActiveControlOnDelete := <{ondelete}>
 
-#xcommand ON DELETE <ondelete>;
-   =>;
-        _OOHG_ActiveControlOnDelete := <ondelete>
+#xcommand ON DELETE <ondelete> ;
+        => ;
+        _OOHG_ActiveControlOnDelete := <{ondelete}>
 
-#xcommand COLUMNINFO <columninfo>;
-   =>;
+#xcommand COLUMNINFO <columninfo> ;
+        => ;
         _OOHG_ActiveControlColumnInfo := <columninfo>
 
-#xcommand DESCENDING <descending>;
-   =>;
+#xcommand DESCENDING <descending> ;
+        => ;
         _OOHG_ActiveControlDescending := <descending>
 
-#xcommand RECCOUNT <reccount>;
-   =>;
+#xcommand RECCOUNT <reccount> ;
+        => ;
         _OOHG_ActiveControlRecCount := <reccount>
 
 #xcommand END BROWSE ;
-   =>;
-TOBrowse():Define( _OOHG_ActiveControlName,             ;
-                   _OOHG_ActiveControlOf,               ;
-                   _OOHG_ActiveControlCol,              ;
-                   _OOHG_ActiveControlRow,              ;
-                   _OOHG_ActiveControlWidth,            ;
-                   _OOHG_ActiveControlHeight,           ;
-                   _OOHG_ActiveControlHeaders,          ;
-                   _OOHG_ActiveControlWidths,           ;
-                   _OOHG_ActiveControlFields,           ;
-                   _OOHG_ActiveControlValue,            ;
-                   _OOHG_ActiveControlFont,             ;
-                   _OOHG_ActiveControlSize,             ;
-                   _OOHG_ActiveControlTooltip,          ;
-                   _OOHG_ActiveControlOnChange,         ;
-                   _OOHG_ActiveControlOnDblClick,       ;
-                   _OOHG_ActiveControlOnHeadClick,      ;
-                   _OOHG_ActiveControlOnGotFocus,       ;
-                   _OOHG_ActiveControlOnLostFocus,      ;
-                   _OOHG_ActiveControlWorkArea,         ;
-                   _OOHG_ActiveControlDelete,           ;
-                   _OOHG_ActiveControlNoLines,          ;
-                   _OOHG_ActiveControlImage,            ;
-                   _OOHG_ActiveControlJustify,          ;
-                   _OOHG_ActiveControlHelpId,           ;
-                   _OOHG_ActiveControlFontBold,         ;
-                   _OOHG_ActiveControlFontItalic,       ;
-                   _OOHG_ActiveControlFontUnderLine,    ;
-                   _OOHG_ActiveControlFontStrikeOut,    ;
-                   _OOHG_ActiveControlBreak,            ;
-                   _OOHG_ActiveControlBackColor,        ;
-                   _OOHG_ActiveControlFontColor,        ;
-                   _OOHG_ActiveControlLock,             ;
-                   _OOHG_ActiveControlInPlaceEdit,      ;
-                   _OOHG_ActiveControlNoVScroll,        ;
-                   _OOHG_ActiveControlAppendable,       ;
-                   _OOHG_ActiveControlReadOnly,         ;
-                   _OOHG_ActiveControlValid,            ;
-                   _OOHG_ActiveControlValidMessages,    ;
-                   _OOHG_ActiveControlEdit,             ;
-                   _OOHG_ActiveControlDynamicBackColor, ;
-                   _OOHG_ActiveControlWhen,             ;
-                   _OOHG_ActiveControlDynamicForeColor, ;
-                   _OOHG_ActiveControlInputMask,        ;
-                   _OOHG_ActiveControlRtl,              ;
-                   _OOHG_ActiveControlOnAppend,         ;
-                   _OOHG_ActiveControlEditCell,         ;
-                   _OOHG_ActiveControlEditControls,     ;
-                   _OOHG_ActiveControlReplaceFields,    ;
-                   _OOHG_ActiveControlRecCount,         ;
-                   _OOHG_ActiveControlColumnInfo,       ;
-                   _OOHG_ActiveControlShowHeaders,      ;
-                   _OOHG_ActiveControlOnEnter,          ;
-                   _OOHG_ActiveControlDisabled,         ;
-                   _OOHG_ActiveControlNoTabStop,        ;
-                   _OOHG_ActiveControlInvisible,        ;
-                   _OOHG_ActiveControlDescending,       ;
-                   _OOHG_ActiveControlDeleteWhen,       ;
-                   _OOHG_ActiveControlDeleteMsg,        ;
-                   _OOHG_ActiveControlOnDelete )
+        => ;
+        TOBrowse():Define( _OOHG_ActiveControlName, ;
+                _OOHG_ActiveControlOf, ;
+                _OOHG_ActiveControlCol, ;
+                _OOHG_ActiveControlRow, ;
+                _OOHG_ActiveControlWidth, ;
+                _OOHG_ActiveControlHeight, ;
+                _OOHG_ActiveControlHeaders, ;
+                _OOHG_ActiveControlWidths, ;
+                _OOHG_ActiveControlFields, ;
+                _OOHG_ActiveControlValue, ;
+                _OOHG_ActiveControlFont, ;
+                _OOHG_ActiveControlSize, ;
+                _OOHG_ActiveControlTooltip, ;
+                _OOHG_ActiveControlOnChange, ;
+                _OOHG_ActiveControlOnDblClick, ;
+                _OOHG_ActiveControlOnHeadClick, ;
+                _OOHG_ActiveControlOnGotFocus, ;
+                _OOHG_ActiveControlOnLostFocus, ;
+                _OOHG_ActiveControlWorkArea, ;
+                _OOHG_ActiveControlDelete, ;
+                _OOHG_ActiveControlNoLines, ;
+                _OOHG_ActiveControlImage, ;
+                _OOHG_ActiveControlJustify, ;
+                _OOHG_ActiveControlHelpId, ;
+                _OOHG_ActiveControlFontBold, ;
+                _OOHG_ActiveControlFontItalic, ;
+                _OOHG_ActiveControlFontUnderLine, ;
+                _OOHG_ActiveControlFontStrikeOut, ;
+                _OOHG_ActiveControlBreak, ;
+                _OOHG_ActiveControlBackColor, ;
+                _OOHG_ActiveControlFontColor, ;
+                _OOHG_ActiveControlLock, ;
+                _OOHG_ActiveControlInPlaceEdit, ;
+                _OOHG_ActiveControlNoVScroll, ;
+                _OOHG_ActiveControlAppendable, ;
+                _OOHG_ActiveControlReadOnly, ;
+                _OOHG_ActiveControlValid, ;
+                _OOHG_ActiveControlValidMessages, ;
+                _OOHG_ActiveControlEdit, ;
+                _OOHG_ActiveControlDynamicBackColor, ;
+                _OOHG_ActiveControlWhen, ;
+                _OOHG_ActiveControlDynamicForeColor, ;
+                _OOHG_ActiveControlInputMask, ;
+                _OOHG_ActiveControlRtl, ;
+                _OOHG_ActiveControlOnAppend, ;
+                _OOHG_ActiveControlEditCell, ;
+                _OOHG_ActiveControlEditControls, ;
+                _OOHG_ActiveControlReplaceFields, ;
+                _OOHG_ActiveControlRecCount, ;
+                _OOHG_ActiveControlColumnInfo, ;
+                _OOHG_ActiveControlShowHeaders, ;
+                _OOHG_ActiveControlOnEnter, ;
+                _OOHG_ActiveControlDisabled, ;
+                _OOHG_ActiveControlNoTabStop, ;
+                _OOHG_ActiveControlInvisible, ;
+                _OOHG_ActiveControlDescending, ;
+                _OOHG_ActiveControlDeleteWhen, ;
+                _OOHG_ActiveControlDeleteMsg, ;
+                _OOHG_ActiveControlOnDelete, ;
+                _OOHG_ActiveControlHeaderImages, ;
+                _OOHG_ActiveControlImagesPlace )
 
 /*----------------------------------------------------------------------------
-Hyperlink
+XBROWSE
+---------------------------------------------------------------------------*/
+
+#xcommand DEFINE XBROWSE <name> ;
+        => ;
+        _OOHG_ClearActiveControlInfo( <(name)> )   ;;
+        _OOHG_ActiveControlHeaders          := Nil ;;
+        _OOHG_ActiveControlWidths           := Nil ;;
+        _OOHG_ActiveControlOnHeadClick      := Nil ;;
+        _OOHG_ActiveControlNoLines          := .F. ;;
+        _OOHG_ActiveControlImage            := Nil ;;
+        _OOHG_ActiveControlJustify          := Nil ;;
+        _OOHG_ActiveControlEdit             := .F. ;;
+        _OOHG_ActiveControlBreak            := .F. ;;
+        _OOHG_ActiveControlWorkArea         := Nil ;;
+        _OOHG_ActiveControlFields           := Nil ;;
+        _OOHG_ActiveControlDelete           := .F. ;;
+        _OOHG_ActiveControlAppendable       := .F. ;;
+        _OOHG_ActiveControlValid            := Nil ;;
+        _OOHG_ActiveControlReadOnly         := Nil ;;
+        _OOHG_ActiveControlLock             := .F. ;;
+        _OOHG_ActiveControlValidMessages    := Nil ;;
+        _OOHG_ActiveControlNoVScroll        := .F. ;;
+        _OOHG_ActiveControlInputMask        := Nil ;;
+        _OOHG_ActiveControlInPlaceEdit      := .F. ;;
+        _OOHG_ActiveControlDynamicBackColor := Nil ;;
+        _OOHG_ActiveControlDynamicForeColor := Nil ;;
+        _OOHG_ActiveControlWhen             := Nil ;;
+        _OOHG_ActiveControlOnAppend         := Nil ;;
+        _OOHG_ActiveControlEditCell         := Nil ;;
+        _OOHG_ActiveControlEditControls     := Nil ;;
+        _OOHG_ActiveControlReplaceFields    := Nil ;;
+        _OOHG_ActiveControlShowHeaders      := Nil ;;
+        _OOHG_ActiveControlDeleteWhen       := Nil ;;
+        _OOHG_ActiveControlDeleteMsg        := Nil ;;
+        _OOHG_ActiveControlOnDelete         := Nil ;;
+        _OOHG_ActiveControlColumnInfo       := Nil ;;
+        _OOHG_ActiveControlDescending       := .F. ;;
+        _OOHG_ActiveControlRecCount         := .F. ;;
+        _OOHG_ActiveControlHeaderImages     := Nil ;;
+        _OOHG_ActiveControlImagesPlace      := Nil
+
+#xcommand END XBROWSE ;
+        => ;
+        TXBrowse():Define( _OOHG_ActiveControlName, ;
+                _OOHG_ActiveControlOf, ;
+                _OOHG_ActiveControlCol, ;
+                _OOHG_ActiveControlRow, ;
+                _OOHG_ActiveControlWidth, ;
+                _OOHG_ActiveControlHeight, ;
+                _OOHG_ActiveControlHeaders, ;
+                _OOHG_ActiveControlWidths, ;
+                _OOHG_ActiveControlFields, ;
+                _OOHG_ActiveControlWorkArea, ;
+                _OOHG_ActiveControlValue, ;
+                _OOHG_ActiveControlDelete, ;
+                _OOHG_ActiveControlLock, ;
+                _OOHG_ActiveControlNoVScroll, ;
+                _OOHG_ActiveControlAppendable, ;
+                _OOHG_ActiveControlOnAppend, ;
+                _OOHG_ActiveControlReplaceFields, ;
+                _OOHG_ActiveControlFont, ;
+                _OOHG_ActiveControlSize, ;
+                _OOHG_ActiveControlTooltip, ;
+                _OOHG_ActiveControlOnChange, ;
+                _OOHG_ActiveControlOnDblClick, ;
+                _OOHG_ActiveControlOnHeadClick, ;
+                _OOHG_ActiveControlOnGotFocus, ;
+                _OOHG_ActiveControlOnLostFocus, ;
+                _OOHG_ActiveControlNoLines, ;
+                _OOHG_ActiveControlImage, ;
+                _OOHG_ActiveControlJustify, ;
+                _OOHG_ActiveControlBreak, ;
+                _OOHG_ActiveControlHelpId, ;
+                _OOHG_ActiveControlFontBold, ;
+                _OOHG_ActiveControlFontItalic, ;
+                _OOHG_ActiveControlFontUnderLine, ;
+                _OOHG_ActiveControlFontStrikeOut, ;
+                _OOHG_ActiveControlEdit, ;
+                _OOHG_ActiveControlBackColor, ;
+                _OOHG_ActiveControlFontColor, ;
+                _OOHG_ActiveControlDynamicBackColor, ;
+                _OOHG_ActiveControlDynamicForeColor, ;
+                _OOHG_ActiveControlInputMask, ;
+                _OOHG_ActiveControlRtl, ;
+                _OOHG_ActiveControlInPlaceEdit, ;
+                _OOHG_ActiveControlEditControls, ;
+                _OOHG_ActiveControlReadOnly, ;
+                _OOHG_ActiveControlValid, ;
+                _OOHG_ActiveControlValidMessages, ;
+                _OOHG_ActiveControlEditCell, ;
+                _OOHG_ActiveControlWhen, ;
+                _OOHG_ActiveControlRecCount, ;
+                _OOHG_ActiveControlColumnInfo, ;
+                _OOHG_ActiveControlShowHeaders, ;
+                _OOHG_ActiveControlOnEnter, ;
+                _OOHG_ActiveControlDisabled, ;
+                _OOHG_ActiveControlNoTabStop, ;
+                _OOHG_ActiveControlInvisible, ;
+                _OOHG_ActiveControlDescending, ;
+                _OOHG_ActiveControlDeleteWhen, ;
+                _OOHG_ActiveControlDeleteMsg, ;
+                _OOHG_ActiveControlOnDelete, ;
+                _OOHG_ActiveControlHeaderImages, ;
+                _OOHG_ActiveControlImagesPlace )
+
+/*----------------------------------------------------------------------------
+HYPERLINK
 ---------------------------------------------------------------------------*/
 
 #xcommand DEFINE HYPERLINK <name> ;
-   =>;
+        => ;
         _OOHG_ClearActiveControlInfo( <(name)> ) ;;
-        _OOHG_ActiveControlAddress           := Nil          ;;
-        _OOHG_ActiveControlAutoSize          := .f.          ;;
-        _OOHG_ActiveControlBorder            := .f.          ;;
-        _OOHG_ActiveControlClientEdge        := .f.          ;;
-        _OOHG_ActiveControlHScroll           := .f.          ;;
-        _OOHG_ActiveControlVScroll           := .f.          ;;
-        _OOHG_ActiveControlTransparent       := .f.          ;;
-        _OOHG_ActiveControlHandCursor        := .F.
+        _OOHG_ActiveControlAddress     := Nil    ;;
+        _OOHG_ActiveControlAutoSize    := .F.    ;;
+        _OOHG_ActiveControlBorder      := .F.    ;;
+        _OOHG_ActiveControlClientEdge  := .F.    ;;
+        _OOHG_ActiveControlHScroll     := .F.    ;;
+        _OOHG_ActiveControlVScroll     := .F.    ;;
+        _OOHG_ActiveControlTransparent := .F.    ;;
+        _OOHG_ActiveControlHandCursor  := .F.
 
-#xcommand ADDRESS   <address>;
-   =>;
-        _OOHG_ActiveControlAddress       := <address>
+#xcommand ADDRESS <address> ;
+        => ;
+        _OOHG_ActiveControlAddress := <address>
 
-#xcommand HANDCURSOR   <handcursor>;
-   =>;
-        _OOHG_ActiveControlHandCursor       := <handcursor>
+#xcommand HANDCURSOR <handcursor> ;
+        => ;
+        _OOHG_ActiveControlHandCursor := <handcursor>
 
 #xcommand END HYPERLINK ;
-   =>;
+        => ;
         THyperLink():Define(     ;
-        _OOHG_ActiveControlName ,;
-        _OOHG_ActiveControlOf,;
-        _OOHG_ActiveControlCol,;
-        _OOHG_ActiveControlRow,;
-        _OOHG_ActiveControlValue,;
-        _OOHG_ActiveControlAddress,;
-        _OOHG_ActiveControlWidth,;
-        _OOHG_ActiveControlHeight,;
-        _OOHG_ActiveControlFont ,    ;
-        _OOHG_ActiveControlSize ,    ;
-        _OOHG_ActiveControlFontBold,;
-        _OOHG_ActiveControlBorder,;
-        _OOHG_ActiveControlClientEdge,;
-        _OOHG_ActiveControlHScroll,;
-        _OOHG_ActiveControlVScroll,;
-        _OOHG_ActiveControlTransparent,;
-        _OOHG_ActiveControlBackColor,;
-        _OOHG_ActiveControlFontColor,;
-        _OOHG_ActiveControlTooltip,;
-        _OOHG_ActiveControlHelpId,;
-        _OOHG_ActiveControlInvisible,;
-        _OOHG_ActiveControlFontItalic,;
-        _OOHG_ActiveControlAutosize , ;
-        _OOHG_ActiveControlHandCursor,;
-        _OOHG_ActiveControlRtl  )
-
+                _OOHG_ActiveControlName, ;
+                _OOHG_ActiveControlOf, ;
+                _OOHG_ActiveControlCol, ;
+                _OOHG_ActiveControlRow, ;
+                _OOHG_ActiveControlValue, ;
+                _OOHG_ActiveControlAddress, ;
+                _OOHG_ActiveControlWidth, ;
+                _OOHG_ActiveControlHeight, ;
+                _OOHG_ActiveControlFont, ;
+                _OOHG_ActiveControlSize, ;
+                _OOHG_ActiveControlFontBold, ;
+                _OOHG_ActiveControlBorder, ;
+                _OOHG_ActiveControlClientEdge, ;
+                _OOHG_ActiveControlHScroll, ;
+                _OOHG_ActiveControlVScroll, ;
+                _OOHG_ActiveControlTransparent, ;
+                _OOHG_ActiveControlBackColor, ;
+                _OOHG_ActiveControlFontColor, ;
+                _OOHG_ActiveControlTooltip, ;
+                _OOHG_ActiveControlHelpId, ;
+                _OOHG_ActiveControlInvisible, ;
+                _OOHG_ActiveControlFontItalic, ;
+                _OOHG_ActiveControlAutosize, ;
+                _OOHG_ActiveControlHandCursor, ;
+                _OOHG_ActiveControlRtl )
 
 /*----------------------------------------------------------------------------
-Spinner
+SPINNER
 ---------------------------------------------------------------------------*/
 
-#xcommand WRAP      <wrap>;
-   =>;
-        _OOHG_ActiveControlWrap  := <wrap>
+#xcommand WRAP <wrap> ;
+        => ;
+        _OOHG_ActiveControlWrap := <wrap>
 
-#xcommand INCREMENT      <increment>;
-   =>;
-        _OOHG_ActiveControlIncrement     := <increment>
+#xcommand INCREMENT <increment> ;
+        => ;
+        _OOHG_ActiveControlIncrement := <increment>
 
-#xcommand DEFINE SPINNER <name>;
-   =>;
+#xcommand DEFINE SPINNER <name> ;
+        => ;
         _OOHG_ClearActiveControlInfo( <(name)> ) ;;
-        _OOHG_ActiveControlRangeLow      := Nil          ;;
-        _OOHG_ActiveControlRangeHigh     := Nil          ;;
-        _OOHG_ActiveControlWrap          := .F.          ;;
-        _OOHG_ActiveControlReadOnly      := .F.          ;;
-        _OOHG_ActiveControlIncrement     := Nil          ;;
-        _OOHG_ActiveControlNoBorder      := .f.
+        _OOHG_ActiveControlRangeLow  := Nil      ;;
+        _OOHG_ActiveControlRangeHigh := Nil      ;;
+        _OOHG_ActiveControlWrap      := .F.      ;;
+        _OOHG_ActiveControlReadOnly  := .F.      ;;
+        _OOHG_ActiveControlIncrement := Nil      ;;
+        _OOHG_ActiveControlNoBorder  := .F.
 
 #xcommand END SPINNER;
-   =>;
-        TSpinner():Define(;
-                _OOHG_ActiveControlName,;
-                _OOHG_ActiveControlOf,;
-                _OOHG_ActiveControlCol,;
-                _OOHG_ActiveControlRow,;
-                _OOHG_ActiveControlWidth,;
-                _OOHG_ActiveControlValue,;
-                _OOHG_ActiveControlFont,;
-                _OOHG_ActiveControlSize,;
-                _OOHG_ActiveControlRangeLow,;
-                _OOHG_ActiveControlRangeHigh,;
-                _OOHG_ActiveControlTooltip,;
-                _OOHG_ActiveControlOnChange,;
-                _OOHG_ActiveControlOnLostFocus,;
-                _OOHG_ActiveControlOnGotFocus,;
-                _OOHG_ActiveControlHeight,;
-                _OOHG_ActiveControlHelpId , ;
-                _OOHG_ActiveControlinvisible , ;
-                _OOHG_ActiveControlNoTabStop , ;
-                _OOHG_ActiveControlFontBold , ;
-                _OOHG_ActiveControlFontItalic , ;
-                _OOHG_ActiveControlFontUnderLine , ;
-                _OOHG_ActiveControlFontStrikeOut , ;
-                _OOHG_ActiveControlWrap , ;
-                _OOHG_ActiveControlReadOnly , ;
-                _OOHG_ActiveControlIncrement ,;
+        => ;
+        TSpinner():Define( ;
+                _OOHG_ActiveControlName, ;
+                _OOHG_ActiveControlOf, ;
+                _OOHG_ActiveControlCol, ;
+                _OOHG_ActiveControlRow, ;
+                _OOHG_ActiveControlWidth, ;
+                _OOHG_ActiveControlValue, ;
+                _OOHG_ActiveControlFont, ;
+                _OOHG_ActiveControlSize, ;
+                _OOHG_ActiveControlRangeLow, ;
+                _OOHG_ActiveControlRangeHigh, ;
+                _OOHG_ActiveControlTooltip, ;
+                _OOHG_ActiveControlOnChange, ;
+                _OOHG_ActiveControlOnLostFocus, ;
+                _OOHG_ActiveControlOnGotFocus, ;
+                _OOHG_ActiveControlHeight, ;
+                _OOHG_ActiveControlHelpId, ;
+                _OOHG_ActiveControlInvisible, ;
+                _OOHG_ActiveControlNoTabStop, ;
+                _OOHG_ActiveControlFontBold, ;
+                _OOHG_ActiveControlFontItalic, ;
+                _OOHG_ActiveControlFontUnderLine, ;
+                _OOHG_ActiveControlFontStrikeOut, ;
+                _OOHG_ActiveControlWrap, ;
+                _OOHG_ActiveControlReadOnly, ;
+                _OOHG_ActiveControlIncrement, ;
                 _OOHG_ActiveControlBackColor, ;
                 _OOHG_ActiveControlFontColor, ;
                 _OOHG_ActiveControlRtl, ;
                 _OOHG_ActiveControlNoBorder )
+
+/*----------------------------------------------------------------------------
+ACTIVEX
+---------------------------------------------------------------------------*/
+
+#xcommand DEFINE ACTIVEX <name> ;
+        => ;
+        _OOHG_ClearActiveControlInfo( <(name)> )
+
+#xcommand PROGID <progid> ;
+        => ;
+        _OOHG_ActiveControlValue := <progid>
+
+#xcommand END ACTIVEX;
+        => ;
+        TActiveX():Define( ;
+                _OOHG_ActiveControlName, ;
+                _OOHG_ActiveControlOf, ;
+                _OOHG_ActiveControlCol, ;
+                _OOHG_ActiveControlRow, ;
+                _OOHG_ActiveControlWidth, ;
+                _OOHG_ActiveControlHeight, ;
+                _OOHG_ActiveControlValue, ;
+                _OOHG_ActiveControlNoTabStop, ;
+                _OOHG_ActiveControlDisabled )
+
+/*----------------------------------------------------------------------------
+HOTKEYBOX
+---------------------------------------------------------------------------*/
+
+#xcommand DEFINE HOTKEYBOX <name> ;
+        => ;
+        _OOHG_ClearActiveControlInfo( <(name)> ) ;;
+        _OOHG_ActiveControlForceAlt := .T.
+
+#xcommand FORCEALT <forcealt> ;
+        => ;
+        _OOHG_ActiveControlForceAlt := <forcealt>
+
+#xcommand END HOTKEYBOX;
+        => ;
+        THotKeyBox():Define( ;
+                _OOHG_ActiveControlName, ;
+                _OOHG_ActiveControlOf, ;
+                _OOHG_ActiveControlCol, ;
+                _OOHG_ActiveControlRow, ;
+                _OOHG_ActiveControlWidth, ;
+                _OOHG_ActiveControlHeight, ;
+                _OOHG_ActiveControlValue, ;
+                _OOHG_ActiveControlFont, ;
+                _OOHG_ActiveControlSize, ;
+                _OOHG_ActiveControlTooltip, ;
+                _OOHG_ActiveControlOnLostFocus, ;
+                _OOHG_ActiveControlOnGotFocus, ;
+                _OOHG_ActiveControlOnChange, ;
+                _OOHG_ActiveControlOnEnter, ;
+                _OOHG_ActiveControlHelpId, ;
+                _OOHG_ActiveControlFontBold, ;
+                _OOHG_ActiveControlFontItalic, ;
+                _OOHG_ActiveControlFontUnderLine, ;
+                _OOHG_ActiveControlFontStrikeOut, ;
+                _OOHG_ActiveControlBackColor, ;
+                _OOHG_ActiveControlFontColor, ;
+                _OOHG_ActiveControlInvisible, ;
+                _OOHG_ActiveControlNoTabStop, ;
+                _OOHG_ActiveControlRtl, ;
+                _OOHG_ActiveControlDisabled, ;
+                .NOT. _OOHG_ActiveControlForceAlt )
+
+/*----------------------------------------------------------------------------
+PICTURE
+---------------------------------------------------------------------------*/
+
+#xcommand DEFINE PICTURE <name> ;
+        => ;
+        _OOHG_ClearActiveControlInfo( <(name)> ) ;;
+        _OOHG_ActiveControlPicture    := Nil     ;;
+        _OOHG_ActiveControlImagesize  := .F.     ;;
+        _OOHG_ActiveControlBuffer     := Nil     ;;
+        _OOHG_ActiveControlHBitmap    := Nil     ;;
+        _OOHG_ActiveControlAction     := Nil     ;;
+        _OOHG_ActiveControlClientEdge := .F.     ;;
+        _OOHG_ActiveControlImagesize  := .F.     ;;
+        _OOHG_ActiveControlBorder     := .F.     ;;
+        _OOHG_ActiveControlScale      := .F.     ;;
+        _OOHG_ActiveControlStretch    := .F.
+
+#xcommand ICON <icon> ;
+        => ;
+        _OOHG_ActiveControlPicture := <icon>
+
+#xcommand FORCESCALE <scale> ;
+        => ;
+        _OOHG_ActiveControlScale := <scale>
+
+#xcommand END PICTURE;
+        => ;
+        THotKeyBox():Define( ;
+                _OOHG_ActiveControlName, ;
+                _OOHG_ActiveControlOf, ;
+                _OOHG_ActiveControlCol, ;
+                _OOHG_ActiveControlRow, ;
+                _OOHG_ActiveControlPicture, ;
+                _OOHG_ActiveControlWidth, ;
+                _OOHG_ActiveControlHeight, ;
+                _OOHG_ActiveControlBuffer, ;
+                _OOHG_ActiveControlHBitmap, ;
+                _OOHG_ActiveControlStretch, ;
+                _OOHG_ActiveControlScale, ;
+                _OOHG_ActiveControlImagesize, ;
+                _OOHG_ActiveControlBorder, ;
+                _OOHG_ActiveControlClientEdge, ;
+                _OOHG_ActiveControlBackColor, ;
+                _OOHG_ActiveControlAction, ;
+                _OOHG_ActiveControlTooltip, ;
+                _OOHG_ActiveControlHelpId, ;
+                _OOHG_ActiveControlRtl, ;
+                _OOHG_ActiveControlInvisible )
+
+/*----------------------------------------------------------------------------
+PROGRESSMETER
+---------------------------------------------------------------------------*/
+
+#xcommand DEFINE PROGRESSMETER <name> ;
+        => ;
+        _OOHG_ClearActiveControlInfo( <(name)> ) ;;
+        _OOHG_ActiveControlRangeLow   := Nil     ;;
+        _OOHG_ActiveControlRangeHigh  := Nil     ;;
+        _OOHG_ActiveControlForeColor  := Nil     ;;
+        _OOHG_ActiveControlAction     := Nil     ;;
+        _OOHG_ActiveControlClientEdge := .F.
+
+#xcommand END PROGRESSMETER;
+        => ;
+        TProgressMeter():Define( ;
+                _OOHG_ActiveControlName, ;
+                _OOHG_ActiveControlOf, ;
+                _OOHG_ActiveControlCol, ;
+                _OOHG_ActiveControlRow, ;
+                _OOHG_ActiveControlWidth, ;
+                _OOHG_ActiveControlHeight, ;
+                _OOHG_ActiveControlRangeLow, ;
+                _OOHG_ActiveControlRangeHigh, ;
+                _OOHG_ActiveControlValue, ;
+                _OOHG_ActiveControlTooltip, ;
+                _OOHG_ActiveControlFont, ;
+                _OOHG_ActiveControlSize, ;
+                _OOHG_ActiveControlFontBold, ;
+                _OOHG_ActiveControlFontItalic, ;
+                _OOHG_ActiveControlFontUnderLine, ;
+                _OOHG_ActiveControlFontStrikeOut, ;
+                _OOHG_ActiveControlForeColor, ;
+                _OOHG_ActiveControlBackColor, ;
+                _OOHG_ActiveControlAction, ;
+                _OOHG_ActiveControlHelpId, ;
+                _OOHG_ActiveControlInvisible, ;
+                _OOHG_ActiveControlRtl, ;
+                _OOHG_ActiveControlClientEdge )
+
+/*----------------------------------------------------------------------------
+SCROLLBAR
+---------------------------------------------------------------------------*/
+
+#xcommand DEFINE SCROLLBAR <name> ;
+        => ;
+        _OOHG_ClearActiveControlInfo( <(name)> ) ;;
+        _OOHG_ActiveControlRangeLow   := Nil     ;;
+        _OOHG_ActiveControlRangeHigh  := Nil     ;;
+        _OOHG_ActiveControlOnLineUp   := Nil     ;;
+        _OOHG_ActiveControlOnLineDown := Nil     ;;
+        _OOHG_ActiveControlOnPageUp   := Nil     ;;
+        _OOHG_ActiveControlOnPageDown := Nil     ;;
+        _OOHG_ActiveControlOnTop      := Nil     ;;
+        _OOHG_ActiveControlOnBottom   := Nil     ;;
+        _OOHG_ActiveControlOnThumb    := Nil     ;;
+        _OOHG_ActiveControlOnTrack    := Nil     ;;
+        _OOHG_ActiveControlOnEndTrack := Nil     ;;
+        _OOHG_ActiveControlAttached   := Nil     ;;
+        _OOHG_ActiveControlLineSkip   := Nil     ;;
+        _OOHG_ActiveControlPageSkip   := Nil     ;;
+        _OOHG_ActiveControlAutoMove   := Nil     ;;
+        _OOHG_ActiveControlVertical   := .F.     ;;
+        _OOHG_ActiveControlHorizontal := .F.
+
+#xcommand ON LINEUP <lineup> ;
+        => ;
+        _OOHG_ActiveControlOnLineUp := <{lineup}>
+
+#xcommand ON LINELEFT <lineup> ;
+        => ;
+        _OOHG_ActiveControlOnLineUp := <{lineup}>
+
+#xcommand ON LINEDOWN <linedown> ;
+        => ;
+        _OOHG_ActiveControlOnLineDown := <{linedown}>
+
+#xcommand ON LINERIGHT <linedown> ;
+        => ;
+        _OOHG_ActiveControlOnLineDown := <{linedown}>
+
+#xcommand ON PAGEUP <pageup> ;
+        => ;
+        _OOHG_ActiveControlOnPageUp := <{pageup}>
+
+#xcommand ON PAGELEFT <pageup> ;
+        => ;
+        _OOHG_ActiveControlOnPageUp := <{pageup}>
+
+#xcommand ON PAGEDOWN <pagedown> ;
+        => ;
+        _OOHG_ActiveControlOnPageDown := <{pagedown}>
+
+#xcommand ON PAGERIGHT <pagedown> ;
+        => ;
+        _OOHG_ActiveControlOnPageDown := <{pagedown}>
+
+#xcommand ON TOP <top> ;
+        => ;
+        _OOHG_ActiveControlOnTop := <{top}>
+
+#xcommand ON LEFT <top> ;
+        => ;
+        _OOHG_ActiveControlOnTop := <{top}>
+
+#xcommand ON BOTTOM <bottom> ;
+        => ;
+        _OOHG_ActiveControlOnBottom := <{bottom}>
+
+#xcommand ON BOTTOM <bottom> ;
+        => ;
+        _OOHG_ActiveControlOnBottom := <{bottom}>
+
+#xcommand ON THUMB <thumb> ;
+        => ;
+        _OOHG_ActiveControlOnThumb := <{thumb}>
+
+#xcommand ON TRACK <track> ;
+        => ;
+        _OOHG_ActiveControlOnTrack := <{track}>
+
+#xcommand ON ENDTRACK <endtrack> ;
+        => ;
+        _OOHG_ActiveControlOnEndTrack := <{endtrack}>
+
+#xcommand ATTACHED <attached> ;
+        => ;
+        _OOHG_ActiveControlAttached := <attached>
+
+#xcommand LINESKIP <lineskip> ;
+        => ;
+        _OOHG_ActiveControlLineSkip := <lineskip>
+
+#xcommand PAGESKIP <pageskip> ;
+        => ;
+        _OOHG_ActiveControlPageSkip := <pageskip>
+
+#xcommand AUTOMOVE <auto> ;
+        => ;
+        _OOHG_ActiveControlAutoMove := <auto>
+
+#xcommand END SCROLLBAR;
+        => ;
+        TScrollBar():Define( ;
+                _OOHG_ActiveControlName, ;
+                _OOHG_ActiveControlOf, ;
+                _OOHG_ActiveControlCol, ;
+                _OOHG_ActiveControlRow, ;
+                _OOHG_ActiveControlWidth, ;
+                _OOHG_ActiveControlHeight, ;
+                _OOHG_ActiveControlRangeLow, ;
+                _OOHG_ActiveControlRangeHigh, ;
+                _OOHG_ActiveControlOnChange, ;
+                _OOHG_ActiveControlOnLineUp, ;
+                _OOHG_ActiveControlOnLineDown, ;
+                _OOHG_ActiveControlOnPageUp, ;
+                _OOHG_ActiveControlOnPageDown, ;
+                _OOHG_ActiveControlOnTop, ;
+                _OOHG_ActiveControlOnBottom, ;
+                _OOHG_ActiveControlOnThumb, ;
+                _OOHG_ActiveControlOnTrack, ;
+                _OOHG_ActiveControlOnEndTrack, ;
+                _OOHG_ActiveControlHelpId, ;
+                _OOHG_ActiveControlInvisible, ;
+                _OOHG_ActiveControlTooltip, ;
+                _OOHG_ActiveControlRtl, ;
+                iif( _OOHG_ActiveControlHorizontal, 0, iif( _OOHG_ActiveControlVertical, 1, nil ) ), ;
+                _OOHG_ActiveControlAttached, ;
+                _OOHG_ActiveControlValue, ;
+                _OOHG_ActiveControlDisabled, ;
+                _OOHG_ActiveControlLineSkip, ;
+                _OOHG_ActiveControlPageSkip, ;
+                _OOHG_ActiveControlAutoMove )
+
+/*----------------------------------------------------------------------------
+TEXTARRAY
+---------------------------------------------------------------------------*/
+
+#xcommand DEFINE TEXTARRAY <name> ;
+        => ;
+        _OOHG_ClearActiveControlInfo( <(name)> ) ;;
+        _OOHG_ActiveControlRowCount   := Nil     ;;
+        _OOHG_ActiveControlColCount   := Nil     ;;
+        _OOHG_ActiveControlBorder     := .F.     ;;
+        _OOHG_ActiveControlClientEdge := .F.     ;;
+        _OOHG_ActiveControlAction     := Nil
+
+#xcommand ROWCOUNT <rowcount> ;
+        => ;
+        _OOHG_ActiveControlRowCount := <rowcount>
+
+#xcommand COLCOUNT <colcount> ;
+        => ;
+        _OOHG_ActiveControlColCount := <colcount>
+
+#xcommand END SCROLLBAR;
+        => ;
+        TTextArray():Define( ;
+                _OOHG_ActiveControlName, ;
+                _OOHG_ActiveControlOf, ;
+                _OOHG_ActiveControlCol, ;
+                _OOHG_ActiveControlRow, ;
+                _OOHG_ActiveControlWidth, ;
+                _OOHG_ActiveControlHeight, ;
+                _OOHG_ActiveControlRowCount, ;
+                _OOHG_ActiveControlColCount, ;
+                _OOHG_ActiveControlBorder, ;
+                _OOHG_ActiveControlClientEdge, ;
+                _OOHG_ActiveControlFontColor, ;
+                _OOHG_ActiveControlBackColor, ;
+                _OOHG_ActiveControlAction, ;
+                _OOHG_ActiveControlFont, ;
+                _OOHG_ActiveControlSize, ;
+                _OOHG_ActiveControlFontBold, ;
+                _OOHG_ActiveControlFontItalic, ;
+                _OOHG_ActiveControlFontUnderLine, ;
+                _OOHG_ActiveControlFontStrikeOut, ;
+                _OOHG_ActiveControlTooltip, ;
+                _OOHG_ActiveControlHelpId, ;
+                _OOHG_ActiveControlInvisible, ;
+                _OOHG_ActiveControlRtl, ;
+                _OOHG_ActiveControlValue, ;
+                _OOHG_ActiveControlNoTabStop, ;
+                _OOHG_ActiveControlDisabled )

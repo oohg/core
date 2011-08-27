@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.123 2011-08-24 15:34:01 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.124 2011-08-27 00:31:32 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -96,57 +96,55 @@
 #include "i_windefs.ch"
 
 CLASS TGrid FROM TControl
-   DATA Type             INIT "GRID" READONLY
-   DATA nWidth           INIT 240
-   DATA nHeight          INIT 120
-   DATA aWidths          INIT {}
-   DATA aHeaders         INIT {}
-   DATA aHeadClick       INIT nil
-   DATA aJust            INIT nil
-   DATA AllowEdit        INIT .F.
-   DATA GridForeColor    INIT {}
-   DATA GridBackColor    INIT {}
-   DATA DynamicForeColor INIT {}
-   DATA DynamicBackColor INIT {}
-   DATA Picture          INIT nil
-   DATA OnDispInfo       INIT nil
+   DATA Type                INIT "GRID" READONLY
+   DATA nWidth              INIT 240
+   DATA nHeight             INIT 120
+   DATA aWidths             INIT {}
+   DATA aHeaders            INIT {}
+   DATA aHeadClick          INIT nil
+   DATA aJust               INIT nil
+   DATA AllowEdit           INIT .F.
+   DATA GridForeColor       INIT {}
+   DATA GridBackColor       INIT {}
+   DATA DynamicForeColor    INIT {}
+   DATA DynamicBackColor    INIT {}
+   DATA Picture             INIT nil
+   DATA OnDispInfo          INIT nil
    DATA SetImageListCommand INIT LVM_SETIMAGELIST
    DATA SetImageListWParam  INIT LVSIL_SMALL
-   DATA InPlace          INIT .F.
-   DATA fullmove         INIT .F.
-   DATA Append           INIT .F.
-   DATA EditControls     INIT nil
-   DATA ReadOnly         INIT nil
-   DATA Valid            INIT nil
-   DATA ValidMessages    INIT nil
-   DATA OnEditCell       INIT nil
-   DATA OnAppend         INIT nil
-   DATA aWhen            INIT {}
-   DATA cRowEditTitle    INIT nil
-   DATA lNested          INIT .F.
-   DATA AllowMoveColumn  INIT .T.
-   DATA AllowChangeSize  INIT .T.
-   DATA lNestedEdit      INIT .F.
-
-   DATA nRowPos          INIT 1
-   DATA nColPos          INIT 1
-   DATA lEditMode        INIT .F.
-   DATA lAppendMode      INIT .F.
+   DATA InPlace             INIT .F.
+   DATA fullmove            INIT .F.
+   DATA Append              INIT .F.
+   DATA EditControls        INIT nil
+   DATA ReadOnly            INIT nil
+   DATA Valid               INIT nil
+   DATA ValidMessages       INIT nil
+   DATA OnEditCell          INIT nil
+   DATA OnAppend            INIT nil
+   DATA aWhen               INIT {}
+   DATA cRowEditTitle       INIT nil
+   DATA lNested             INIT .F.
+   DATA AllowMoveColumn     INIT .T.
+   DATA AllowChangeSize     INIT .T.
+   DATA lNestedEdit         INIT .F.
+   DATA nRowPos             INIT 1
+   DATA nColPos             INIT 1
+   DATA lEditMode           INIT .F.
+   DATA lAppendMode         INIT .F.
+   DATA bOnEnter            INIT nil
+   DATA HeaderImageList     INIT Nil
+   DATA aHeaderImage        INIT {}
+   DATA aHeaderImagePlace   INIT {}
 
    METHOD Define
    METHOD Define2
    METHOD Value            SETGET
-
-   DATA bOnEnter           INIT nil
    METHOD OnEnter          SETGET
-
    METHOD Events
    METHOD Events_Enter
    METHOD Events_Notify
-
    METHOD AddColumn
    METHOD DeleteColumn
-
    METHOD Cell
    METHOD CellCaption( nRow, nCol, uValue )         BLOCK { | Self, nRow, nCol, uValue | CellRawValue( ::hWnd, nRow, nCol, 1, uValue ) }
    METHOD CellImage( nRow, nCol, uValue )           BLOCK { | Self, nRow, nCol, uValue | CellRawValue( ::hWnd, nRow, nCol, 2, uValue ) }
@@ -158,8 +156,7 @@ CLASS TGrid FROM TControl
    METHOD EditGrid
    METHOD IsColumnReadOnly
    METHOD IsColumnWhen
-   METHOD toexcel
-
+   METHOD ToExcel
    METHOD AddItem
    METHOD AppendItem
    METHOD InsertItem
@@ -186,7 +183,6 @@ CLASS TGrid FROM TControl
    METHOD ColumnHide
    METHOD ColumnShow
    METHOD SortColumn
-
    METHOD Up
    METHOD Down
    METHOD left
@@ -195,6 +191,9 @@ CLASS TGrid FROM TControl
    METHOD PageUP
    METHOD GoTop
    METHOD GoBottom
+   METHOD HeaderImage
+   METHOD HeaderImagePlace
+   METHOD Release
 
 ENDCLASS
 
@@ -207,7 +206,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                dynamicbackcolor, dynamicforecolor, aPicture, lRtl, inplace, ;
                editcontrols, readonly, valid, validmessages, editcell, ;
                aWhenFields, lDisabled, lNoTabStop, lInvisible, lNoHeaders, ;
-               onenter ) CLASS TGrid
+               onenter, aHeaderImage, aHeaderImagePlace ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local nStyle := LVS_SINGLESEL
 
@@ -219,7 +218,7 @@ Local nStyle := LVS_SINGLESEL
               dynamicbackcolor, dynamicforecolor, aPicture, lRtl, nStyle, ;
               inplace, editcontrols, readonly, valid, validmessages, ;
               editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
-              lNoHeaders, onenter )
+              lNoHeaders, onenter, aHeaderImage, aHeaderImagePlace )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -231,14 +230,14 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                 dynamicbackcolor, dynamicforecolor, aPicture, lRtl, nStyle, ;
                 inplace, editcontrols, readonly, valid, validmessages, ;
                 editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
-                lNoHeaders, onenter ) CLASS TGrid
+                lNoHeaders, onenter, aHeaderImage, aHeaderImagePlace ) CLASS TGrid
 *-----------------------------------------------------------------------------*
-Local ControlHandle, aImageList
+Local ControlHandle, aImageList, i, nCount, nPos, nImagesWidth, hcHandle
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, .t., lRtl )
 
-   ASSIGN ::aWidths    VALUE aWidths    TYPE "A"
-   ASSIGN ::aHeaders   VALUE aHeaders   TYPE "A"
+   ASSIGN ::aWidths       VALUE aWidths       TYPE "A"
+   ASSIGN ::aHeaders      VALUE aHeaders      TYPE "A"
 
    If Len( ::aHeaders ) != Len( ::aWidths )
       MsgOOHGError( "Grid: HEADERS/WIDTHS array size mismatch. Program Terminated." )
@@ -263,13 +262,13 @@ Local ControlHandle, aImageList
    ASSIGN nogrid       VALUE nogrid     TYPE "L" DEFAULT .F.
 
    nStyle := ::InitStyle( nStyle,, lInvisible, lNoTabStop, lDisabled ) + ;
-             IF( HB_ISLOGICAL( lNoHeaders ) .AND. ! lNoHeaders, LVS_NOCOLUMNHEADER , 0 )
+             IF( HB_ISLOGICAL( lNoHeaders ) .AND. ! lNoHeaders, LVS_NOCOLUMNHEADER, 0 )
 
    If !HB_IsArray( ::aJust )
       ::aJust := aFill( Array( len( ::aHeaders ) ), 0 )
    Else
       aSize( ::aJust, len( ::aHeaders ) )
-      aEval( ::aJust, { |x,i| ::aJust[ i ] := iif( ! HB_IsNumeric( x ) , 0, x ) } )
+      aEval( ::aJust, { |x,i| ::aJust[ i ] := iif( ! HB_IsNumeric( x ), 0, x ) } )
    EndIf
 
    If !HB_IsArray( ::Picture )
@@ -277,10 +276,10 @@ Local ControlHandle, aImageList
    Else
       aSize( ::Picture, len( ::aHeaders ) )
    EndIf
-   aEval( ::Picture, { |x,i| ::Picture[ i ] := iif( ( ValType( x ) $ "CM" .AND. ! Empty( x ) ) .OR. HB_IsLogical( x ) , x, nil ) } )
+   aEval( ::Picture, { |x,i| ::Picture[ i ] := iif( ( ValType( x ) $ "CM" .AND. ! Empty( x ) ) .OR. HB_IsLogical( x ), x, nil ) } )
 
    ::SetSplitBoxInfo( Break )
-   ControlHandle := InitListView( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, '', 0, iif( nogrid, 0, 1 ) , ownerdata  , itemcount  , nStyle, ::lRtl )
+   ControlHandle := InitListView( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, '', 0, iif( nogrid, 0, 1 ), ownerdata, itemcount, nStyle, ::lRtl )
 
    if HB_IsArray( aImage )
       aImageList := ImageList_Init( aImage, CLR_NONE, LR_LOADTRANSPARENT )
@@ -311,6 +310,69 @@ Local ControlHandle, aImageList
    ASSIGN ::InPlace   VALUE inplace  TYPE "L"
    ASSIGN ::AllowEdit VALUE Editable TYPE "L"
 
+   // Load header's images
+   ::aHeaderImage := aFill( Array( len( ::aHeaders ) ), 0 )
+
+   If HB_IsArray( aHeaderImage )
+      For i := 1 to Len( aHeaderImage )
+         If ValType( aHeaderImage[ i ] ) $ "CM" .AND. ! Empty( aHeaderImage[ i ] )
+            If ValidHandler( ::HeaderImageList )
+               nPos := aScan( aHeaderImage, aHeaderImage[ i ], 1, i - 1 )
+               If nPos > 0                                                 // Image already loaded, reuse it
+                  ::aHeaderImage[ i ] := nPos
+               Else
+                  nCount := ImageList_GetImageCount( ::HeaderImageList )
+                  nPos := ImageList_Add( ::HeaderImageList, aHeaderImage[ i ], LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS, CLR_DEFAULT )
+                  If ImageList_GetImageCount( ::HeaderImageList ) == nCount
+                     nPos := 0
+                  EndIf
+
+                  If nPos == 0                       // Image not added
+                     aHeaderImage[ i ] := Nil
+                  Else
+                     ::aHeaderImage[ i ] := nPos
+                     ::aWidths[ i ] := max( ::aWidths[ i ], nImagesWidth )
+                  EndIf
+               EndIf
+            Else
+               aImageList := ImageList_Init( { aHeaderImage[ i ] }, CLR_DEFAULT, LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS )
+
+               If ValidHandler( aImageList[ 1 ] )
+                  ::HeaderImageList := aImageList[ 1 ]
+                  ::aHeaderImage[ i ] := 1
+                  nImagesWidth := aImageList[ 2 ] + 2
+                  ::aWidths[ i ] := max( ::aWidths[ i ], nImagesWidth )
+               Else
+                  aHeaderImage[ i ] := Nil
+               EndIf
+            EndIf
+         Else
+            aHeaderImage[ i ] := Nil                 // Header has no image
+         EndIf
+      Next i
+   Endif
+   
+   // Load images' placement
+   ::aHeaderImagePlace := aFill( Array( len( ::aHeaders ) ), GRID_IMG_AT_LEFT )
+
+   If HB_IsArray( aHeaderImagePlace )
+      For i := 1 to Len( aHeaderImagePlace )
+         If HB_IsNumeric( aHeaderImagePlace[ i ] ) .AND. aHeaderImagePlace[ i ] == GRID_IMG_AT_RIGHT
+           ::aHeaderImagePlace[ i ] := GRID_IMG_AT_RIGHT
+         EndIf
+      Next i
+   EndIf
+
+   // Associate the imagelist with the header control of the listview
+   SETHEADERIMAGELIST( ControlHandle, ::HeaderImageList )
+
+   // Set each header's image
+   For i := 1 to Len( ::aHeaders )
+     ::HeaderImage( i, ::aHeaderImage[ i ] )
+     ::HeaderImagePlace( i, ::aHeaderImagePlace[ i ] )
+   Next i
+
+   // Load rows
    AEVAL( aRows, { |u| ::AddItem( u ) } )
 
    ::Value := value
@@ -866,7 +928,7 @@ Local nColumns, uGridColor, uDynamicColor
    // Update Pictures
    ASIZE( ::Picture, nColumns )
    AINS( ::Picture, nColIndex )
-   ::Picture[ nColIndex ] := iif( ( ValType( uPicture ) $ "CM" .AND. ! Empty( uPicture ) ) .OR. HB_IsLogical( uPicture ) , uPicture, nil )
+   ::Picture[ nColIndex ] := iif( ( ValType( uPicture ) $ "CM" .AND. ! Empty( uPicture ) ) .OR. HB_IsLogical( uPicture ), uPicture, nil )
 
    // Update Widths
    ASIZE( ::aWidths, nColumns )
@@ -1292,7 +1354,7 @@ HB_FUNC_STATIC( TGRID_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
          if ( ( short ) HIWORD ( wParam ) > 0 )
          {
             keybd_event(
-            VK_UP ,  // virtual-key code
+            VK_UP,  // virtual-key code
             0,    // hardware scan code
             0,    // flags specifying various function options
             0     // additional data associated with keystroke
@@ -1301,7 +1363,7 @@ HB_FUNC_STATIC( TGRID_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
          else
          {
             keybd_event(
-            VK_DOWN  ,  // virtual-key code
+            VK_DOWN,  // virtual-key code
             0,    // hardware scan code
             0,    // flags specifying various function options
             0     // additional data associated with keystroke
@@ -1424,7 +1486,7 @@ RETURN nil
 *-----------------------------------------------------------------------------*
 FUNCTION _OOHG_TGrid_Notify2( Self, wParam, lParam ) // CLASS TGrid
 *-----------------------------------------------------------------------------*
-Local nNotify := GetNotifyCode( lParam ), nColumn := NMHeader_iItem( lParam )
+Local nNotify := GetNotifyCode( lParam )      //, nColumn := NMHeader_iItem( lParam )
 
    Empty( wParam ) // DUMMY...
 
@@ -1513,9 +1575,9 @@ Local lvc, _ThisQueryTemp, nvkey
          _OOHG_ThisQueryColIndex  := _ThisQueryTemp [2]
          ::DoEvent( ::OnDispInfo, "DISPINFO" )
          IF HB_IsNumeric( _OOHG_ThisQueryData )
-            SetGridQueryImage ( lParam , _OOHG_ThisQueryData )
+            SetGridQueryImage ( lParam, _OOHG_ThisQueryData )
          ElseIf ValType( _OOHG_ThisQueryData ) $ "CM"
-            SetGridQueryData ( lParam , _OOHG_ThisQueryData )
+            SetGridQueryData ( lParam, _OOHG_ThisQueryData )
          EndIf
          _OOHG_ThisQueryRowIndex  := 0
          _OOHG_ThisQueryColIndex  := 0
@@ -1565,7 +1627,7 @@ Local aText
 
    aText := TGrid_SetArray( Self, aRow )
    ::SetItemColor( ::ItemCount() + 1, uForeColor, uBackColor, aRow )
-   AddListViewItems( ::hWnd , aText )
+   AddListViewItems( ::hWnd, aText )
 Return Nil
 
 *-----------------------------------------------------------------------------*
@@ -1615,7 +1677,7 @@ Local nColumn, aTemp, oEditControl
       ::SetItemColor( nItem, uForeColor, uBackColor, uValue )
       ListViewSetItem( ::hWnd, aTemp, nItem )
    ENDIF
-   uValue := ListViewGetItem( ::hWnd, nItem , Len( ::aHeaders ) )
+   uValue := ListViewGetItem( ::hWnd, nItem, Len( ::aHeaders ) )
    If HB_IsArray( ::EditControls )
       For nColumn := 1 To Len( uValue )
          oEditControl := GetEditControlFromArray( nil, ::EditControls, nColumn, Self )
@@ -1631,10 +1693,8 @@ Local aTemp, nColumn, xValue, oEditControl
    aTemp := Array( Len( uValue ) )
    For nColumn := 1 To Len( uValue )
       xValue := uValue[ nColumn ]
-///      automsgbox(xvalue)
       oEditControl := GetEditControlFromArray( nil, ::EditControls, nColumn, Self )
       If HB_IsObject( oEditControl )
-/////      automsgbox(xvalue)
          aTemp[ nColumn ] := oEditControl:GridValue( xValue )
       ElseIf ValType( ::Picture[ nColumn ] ) $ "CM"
          aTemp[ nColumn ] := Trim( Transform( xValue, ::Picture[ nColumn ] ) )
@@ -1697,6 +1757,46 @@ METHOD Header( nColumn, uValue ) CLASS TGrid
       SETGRIDCOLUMNHEADER( ::hWnd, nColumn, uValue )
    ENDIF
 Return ::aHeaders[ nColumn ]
+
+*-----------------------------------------------------------------------------*
+METHOD HeaderImage( nColumn, nImg ) CLASS TGrid
+*-----------------------------------------------------------------------------*
+   IF HB_IsNumeric( nImg )
+      ::aHeaderImage[ nColumn ] := nImg
+      
+      IF nImg == 0
+        REMOVEGRIDCOLUMNIMAGE( ::hWnd, nColumn )
+      ELSE
+        SETGRIDCOLUMNIMAGE( ::hWnd, nColumn, nImg, .F. )
+      ENDIF
+   ENDIF
+Return ::aHeaderImage[ nColumn ]
+
+*-----------------------------------------------------------------------------*
+METHOD HeaderImagePlace( nColumn, nPlace ) CLASS TGrid
+*-----------------------------------------------------------------------------*
+   IF ::aHeaderImage[ nColumn ] != 0
+      IF HB_IsNumeric( nPlace )
+         IF nPlace == GRID_IMG_AT_RIGHT
+            ::aHeaderImagePlace[ nColumn ] := GRID_IMG_AT_RIGHT
+            SETGRIDCOLUMNIMAGE( ::hWnd, nColumn, ::aHeaderImage[ nColumn ], .T. )
+         ELSE
+            ::aHeaderImagePlace[ nColumn ] := GRID_IMG_AT_LEFT
+            SETGRIDCOLUMNIMAGE( ::hWnd, nColumn, ::aHeaderImage[ nColumn ], .F. )
+         ENDIF
+      ENDIF
+   ENDIF
+Return ::aHeaderImagePlace[ nColumn ]
+
+*------------------------------------------------------------------------------*
+METHOD Release() CLASS TGrid
+*------------------------------------------------------------------------------*
+
+   IF ::HeaderImageList != Nil
+      ImageList_Destroy( ::HeaderImageList )
+   ENDIF
+
+Return ::Super:Release()
 
 #pragma BEGINDUMP
 HB_FUNC_STATIC( TGRID_FONTCOLOR )
@@ -1921,7 +2021,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                dynamicbackcolor, dynamicforecolor, aPicture, lRtl, inplace, ;
                editcontrols, readonly, valid, validmessages, editcell, ;
                aWhenFields, lDisabled, lNoTabStop, lInvisible, lNoHeaders, ;
-               onenter ) CLASS TGridMulti
+               onenter, aHeaderImage, aHeaderImagePlace ) CLASS TGridMulti
 *-----------------------------------------------------------------------------*
 Local nStyle := 0
    ::Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
@@ -1932,7 +2032,7 @@ Local nStyle := 0
               dynamicbackcolor, dynamicforecolor, aPicture, lRtl, nStyle, ;
               inplace, editcontrols, readonly, valid, validmessages, ;
               editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
-              lNoHeaders, onenter )
+              lNoHeaders, onenter, aHeaderImage, aHeaderImagePlace )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -1960,12 +2060,12 @@ Local xs
 Local xd
 Local aCellData
 
-   r := ListView_HitTest ( ::hWnd, GetCursorRow() - GetWindowRow ( ::hWnd )  , GetCursorCol() - GetWindowCol ( ::hWnd ) )
+   r := ListView_HitTest ( ::hWnd, GetCursorRow() - GetWindowRow ( ::hWnd ), GetCursorCol() - GetWindowCol ( ::hWnd ) )
 	If r [2] == 1
-      ListView_Scroll( ::hWnd,  -10000  , 0 )
-      r := ListView_HitTest ( ::hWnd, GetCursorRow() - GetWindowRow ( ::hWnd )  , GetCursorCol() - GetWindowCol ( ::hWnd ) )
+      ListView_Scroll( ::hWnd,  -10000, 0 )
+      r := ListView_HitTest ( ::hWnd, GetCursorRow() - GetWindowRow ( ::hWnd ), GetCursorCol() - GetWindowCol ( ::hWnd ) )
 	Else
-      r := LISTVIEW_GETSUBITEMRECT ( ::hWnd, r[1] - 1 , r[2] - 1 )
+      r := LISTVIEW_GETSUBITEMRECT ( ::hWnd, r[1] - 1, r[2] - 1 )
 
                	*	CellCol				CellWidth
       xs := ( ( ::ContainerCol + r [2] ) +( r[3] ))  -  ( ::ContainerCol + ::Width )
@@ -1977,14 +2077,14 @@ Local aCellData
 		EndIf
 
 		If xs > -xd
-         ListView_Scroll( ::hWnd,  xs + xd , 0 )
+         ListView_Scroll( ::hWnd,  xs + xd, 0 )
 		Else
 			If r [2] < 0
-            ListView_Scroll( ::hWnd, r[2]   , 0 )
+            ListView_Scroll( ::hWnd, r[2], 0 )
 			EndIf
 		EndIf
 
-      r := ListView_HitTest ( ::hWnd, GetCursorRow() - GetWindowRow ( ::hWnd )  , GetCursorCol() - GetWindowCol ( ::hWnd ) )
+      r := ListView_HitTest ( ::hWnd, GetCursorRow() - GetWindowRow ( ::hWnd ), GetCursorCol() - GetWindowCol ( ::hWnd ) )
 
 	EndIf
 
@@ -1994,7 +2094,7 @@ Local aCellData
 	If r [2] == 1
       r := LISTVIEW_GETITEMRECT ( ::hWnd, r[1] - 1 )
 	Else
-      r := LISTVIEW_GETSUBITEMRECT ( ::hWnd, r[1] - 1 , r[2] - 1 )
+      r := LISTVIEW_GETSUBITEMRECT ( ::hWnd, r[1] - 1, r[2] - 1 )
 	EndIf
 
    ThisItemCellRow := ::ContainerRow + r [1]
@@ -2002,7 +2102,7 @@ Local aCellData
 	ThisItemCellWidth := r[3]
 	ThisItemCellHeight := r[4]
 
-	aCellData := { ThisItemRowIndex , ThisItemColIndex , ThisItemCellRow , ThisItemCellCol , ThisItemCellWidth , ThisItemCellHeight }
+	aCellData := { ThisItemRowIndex, ThisItemColIndex, ThisItemCellRow, ThisItemCellCol, ThisItemCellWidth, ThisItemCellHeight }
 
 Return aCellData
 
@@ -2106,14 +2206,14 @@ HB_FUNC( INITLISTVIEW )
 
    hbutton = CreateWindowEx(StyleEx,"SysListView32","",
    ( style | hb_parni( 12 ) ),
-   hb_parni(3), hb_parni(4) , hb_parni(5), hb_parni(6) ,
-   hwnd, ( HMENU ) HWNDparam( 2 ) , GetModuleHandle(NULL) , NULL ) ;
+   hb_parni(3), hb_parni(4), hb_parni(5), hb_parni(6),
+   hwnd, ( HMENU ) HWNDparam( 2 ), GetModuleHandle(NULL), NULL ) ;
 
    SendMessage(hbutton,LVM_SETEXTENDEDLISTVIEWSTYLE, 0, hb_parni(9) | LVS_EX_FULLROWSELECT | LVS_EX_HEADERDRAGDROP | LVS_EX_SUBITEMIMAGES );
 
    if ( hb_parl( 10 ) )
    {
-      ListView_SetItemCount( hbutton , hb_parni( 11 ) ) ;
+      ListView_SetItemCount( hbutton, hb_parni( 11 ) ) ;
    }
 
    lpfnOldWndProc = ( WNDPROC ) SetWindowLong( hbutton, GWL_WNDPROC, ( LONG ) SubClassFunc );
@@ -2195,7 +2295,44 @@ HB_FUNC( SETGRIDCOLUMNHEADER )
    COL.pszText = ( char * ) hb_parc( 3 ) ;
    COL.fmt = hb_parni( 4 ) ;
 
-   ListView_SetColumn( HWNDparam( 1 ) , hb_parni( 2 ) - 1, &COL );
+   ListView_SetColumn( HWNDparam( 1 ), hb_parni( 2 ) - 1, &COL );
+}
+
+HB_FUNC( SETHEADERIMAGELIST )
+{
+   SendMessage( ListView_GetHeader( HWNDparam( 1 ) ), HDM_SETIMAGELIST, 0, (LPARAM) hb_parnl( 2 ) );
+}
+
+HB_FUNC( SETGRIDCOLUMNIMAGE )
+{
+   LV_COLUMN COL;
+
+   COL.mask = LVCF_FMT | LVCF_IMAGE;
+   
+   COL.fmt = LVCFMT_IMAGE;
+
+   if ( hb_parl( 4 ) )
+   {
+      COL.fmt |= LVCFMT_BITMAP_ON_RIGHT;
+   }
+
+   COL.iImage = hb_parni( 3 ) - 1;
+
+   ListView_SetColumn( HWNDparam( 1 ), hb_parni( 2 ) - 1, &COL );
+}
+
+HB_FUNC( REMOVEGRIDCOLUMNIMAGE )
+{
+   LV_COLUMN COL;
+
+   COL.mask = LVCF_FMT | LVCF_IMAGE;
+
+   ListView_GetColumn( HWNDparam( 1 ), hb_parni( 2 ) - 1, &COL );
+
+   COL.fmt &= ~LVCFMT_IMAGE;
+   COL.iImage = -1;
+
+   ListView_SetColumn( HWNDparam( 1 ), hb_parni( 2 ) - 1, &COL );
 }
 
 HB_FUNC( ADDLISTVIEWITEMS )
@@ -2481,7 +2618,7 @@ HB_FUNC( LISTVIEWGETMULTISEL )
    int n;
    int j;
 
-   n = SendMessage( hwnd, LVM_GETSELECTEDCOUNT , 0, 0 );
+   n = SendMessage( hwnd, LVM_GETSELECTEDCOUNT, 0, 0 );
 
    hb_reta( n );
 
@@ -2586,8 +2723,8 @@ HB_FUNC( LISTVIEW_HITTEST )
    else
    {
       hb_reta( 2 );
-      HB_STORNI( 0 , -1, 1 );
-      HB_STORNI( 0 , -1, 2 );
+      HB_STORNI( 0, -1, 1 );
+      HB_STORNI( 0, -1, 2 );
    }
 }
 
@@ -2712,7 +2849,7 @@ HB_FUNC( LISTVIEW_ADDCOLUMN )
 
    if( ! hb_parl( 6 ) )
    {
-      SendMessage( hwnd, LVM_DELETEALLITEMS , 0 , 0 );
+      SendMessage( hwnd, LVM_DELETEALLITEMS, 0, 0 );
       RedrawWindow( hwnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
    }
 }
@@ -2731,7 +2868,7 @@ HB_FUNC( LISTVIEW_DELETECOLUMN )
 
    if( ! hb_parl( 3 ) )
    {
-      SendMessage( hwnd, LVM_DELETEALLITEMS , 0 , 0 );
+      SendMessage( hwnd, LVM_DELETEALLITEMS, 0, 0 );
       RedrawWindow( hwnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
    }
 }
@@ -2871,7 +3008,7 @@ Local oGridControl := NIL, cMask, nPos
       Case ValType( uValue ) == "M"
          oGridControl := TGridControlMemo():New()
       Case ValType( uValue ) == "C"
-         oGridControl := TGridControlTextBox():New( ,, "C" )
+         oGridControl := TGridControlTextBox():New( , , "C" )
       OtherWise
          // Non-implemented data type!!!
    EndCase

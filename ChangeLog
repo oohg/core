@@ -1,12 +1,39 @@
 
 /*
- * $Id: ChangeLog,v 1.757 2011-08-24 15:34:53 fyurisich Exp $
+ * $Id: ChangeLog,v 1.758 2011-08-27 00:33:15 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2011-08-26 21:30:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   + i_grid.ch
+     + Added HEADER_IMG_AT_LEFT and HEADER_IMG_AT_RIGHT constants.
+     + Added HEADERIMAGES and IMAGESPLACE clauses.
+   + i_xbrowse.ch
+     + Added HEADERIMAGES and IMAGESPLACE clauses.
+   + i_browse.ch
+     + Added HEADERIMAGES and IMAGESPLACE clauses.
+   * i_altsyntax.ch
+     + Added HEADERIMAGES and IMAGESPLACE clauses to GRID and BROWSE.
+     + Added ACTIVEX, HOTKEYBOX, PICTURE, PROGRESSMETER, SCROLLBAR,
+       TEXTARRAY and XBROWSE.
+     ! Fixed: missing clauses from several controls.
+     * Changed: IMAGE from TImage class to TPicture class.
+   + source/h_grid.prg
+     + Added HeaderImage, HeaderImagePlace and Release methods.
+     + Added HeaderImageList, aHeaderImage and aHeaderImagePlace datas.
+     + Added SetHeaderImageList, SetGridColumnImage and
+       RemoveGridColumnImage functions.
+     * Added aHeaderImage and aHeaderImagePlace parameters to Define and
+       Define2 methods of TGrid and TGridMulti classes.
+     + Grids, xBrowses and Browse can have images in the headers, at left or
+       right of the text. Use HEADERIMAGES {Array} to specify images' names.
+       Use IMAGESPLACE {Array} to specify aligment (use HEADER_IMG_AT_LEFT and
+       HEADER_IMG_AT_RIGHT constants). The length of both arrays must equal
+       the number of columns in the control.
 
 2011-08-24 12:30:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    ! source/h_grid.prg

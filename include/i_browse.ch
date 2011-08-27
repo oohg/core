@@ -1,5 +1,5 @@
 /*
- * $Id: i_browse.ch,v 1.23 2011-08-23 14:21:28 fyurisich Exp $
+ * $Id: i_browse.ch,v 1.24 2011-08-27 00:31:54 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -91,7 +91,7 @@
         Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-#define BROWSE_JTFY_LEFT                0
+#define BROWSE_JTFY_LEFT           0
 #define BROWSE_JTFY_RIGHT          1
 #define BROWSE_JTFY_CENTER         2
 #define BROWSE_JTFY_JUSTIFYMASK    3
@@ -160,6 +160,8 @@
       [ DELETEWHEN <bWhenDel> ] ;
       [ DELETEMSG <DelMsg> ] ;
       [ ON DELETE <onDelete> ] ;
+      [ HEADERIMAGES <aHeaderImages> ] ;
+      [ IMAGESPLACE <aImgPlace> ] ;
    =>;
              [ <oObj> := ] _OOHG_SelectSubClass( TOBrowse(), [ <subclass>() ] ): ;
                 Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, <widths>, ;
@@ -172,7 +174,8 @@
                 <dynamicbackcolor>, <aWhenFields>, <dynamicforecolor>, <Picture>, <.rtl.>, ;
                 <{onappend}>, <{editcell}>, <editcontrols>, <replacefields>, <.reccount.>, ;
                 <columninfo>, ! <.noshowheaders.>, <{enter}>, <.disabled.>, <.notabstop.>, ;
-                <.invisible.>, <.descending.>, <{bWhenDel}>, <DelMsg>, <{onDelete}> )
+                <.invisible.>, <.descending.>, <{bWhenDel}>, <DelMsg>, <{onDelete}>, ;
+                <aHeaderImages>, <aImgPlace> )
 
 #command SET BROWSESYNC ON  => SetBrowseSync( .T. )
 #command SET BROWSESYNC OFF => SetBrowseSync( .F. )

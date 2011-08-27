@@ -1,5 +1,5 @@
 /*
- * $Id: i_grid.ch,v 1.13 2008-01-06 02:19:11 guerra000 Exp $
+ * $Id: i_grid.ch,v 1.14 2011-08-27 00:31:56 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -91,66 +91,70 @@
         Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-#define GRID_JTFY_LEFT          0
-#define GRID_JTFY_RIGHT       	1
-#define GRID_JTFY_CENTER      	2
-#define GRID_JTFY_JUSTIFYMASK 	3
+#define GRID_JTFY_LEFT           0
+#define GRID_JTFY_RIGHT          1
+#define GRID_JTFY_CENTER         2
+#define GRID_JTFY_JUSTIFYMASK    3
 
+#define HEADER_IMG_AT_LEFT       0
+#define HEADER_IMG_AT_RIGHT      1
 
 ///////////////////////////////////////////////////////////////////////////////
 // GRID (STANDARD VERSION)
 ///////////////////////////////////////////////////////////////////////////////
-#command @ <row>,<col> GRID <name> 		;
-                [ OBJ <obj> ]                   ;
-		[ <dummy1: OF, PARENT> <parent> ] ;
-		[ WIDTH <w> ] 			;
-		[ HEIGHT <h> ] 			;
-		[ HEADERS <headers> ] 		;
-		[ WIDTHS <widths> ] 		;
-                [ INPUTMASK <Picture> ]         ;
-		[ ITEMS <rows> ] 		;
-		[ VALUE <value> ] 		;
-		[ FONT <fontname> ] 		;
-		[ SIZE <fontsize> ] 		;
-		[ <bold : BOLD> ] ;
-		[ <italic : ITALIC> ] ;
-		[ <underline : UNDERLINE> ] ;
-		[ <strikeout : STRIKEOUT> ] ;
-		[ TOOLTIP <tooltip> ]  		;
-		[ BACKCOLOR <backcolor> ] ;
-		[ FONTCOLOR <fontcolor> ] ;
-                [ DYNAMICBACKCOLOR <dynamicbackcolor> ] ;
-		[ DYNAMICFORECOLOR <dynamicforecolor> ] ;
-		[ ON GOTFOCUS <gotfocus> ] 	;
-		[ ON CHANGE <change> ]  	;
-		[ ON LOSTFOCUS <lostfocus> ] 	;
-		[ ON DBLCLICK <dblclick> ]  	;
-		[ ON HEADCLICK <aHeadClick> ] 	;
-		[ <edit : EDIT> ] 		;
-		[ <ownerdata: VIRTUAL> ] 	;
-		[ ITEMCOUNT <itemcount> ]	;
-		[ ON QUERYDATA <dispinfo> ] 	;
-		[ <multiselect: MULTISELECT> ]	;
-                [ <style: NOLINES> ]            ;
-                [ IMAGE <aImage> ]              ;
-                [ JUSTIFY <aJust> ]             ;
-		[ HELPID <helpid> ] 		;
-		[ <break: BREAK> ] 		;
-                [ <rtl: RTL> ]                  ;
-                [ <inplace: INPLACE> ]          ;
-                [ COLUMNCONTROLS <editcontrols> ] ;
-		[ READONLY <aReadOnly> ] 	;
-		[ VALID <aValidFields> ]	;
-		[ VALIDMESSAGES <aValidMessages> ] ;
-                [ ON EDITCELL <editcell> ]      ;
-                [ <noshowheaders: NOHEADERS> ]  ;
-                [ <dummy2: WHEN, COLUMNWHEN> <aWhenFields> ] ;
-                [ SUBCLASS <subclass> ]         ;
-                [ <disabled: DISABLED> ]        ;
-                [ <notabstop: NOTABSTOP> ]      ;
-                [ <invisible: INVISIBLE> ]      ;
-                [ ON ENTER <enter> ]            ;
-	=>;
+#command @ <row>,<col> GRID <name>       ;
+      [ OBJ <obj> ]                   ;
+      [ <dummy1: OF, PARENT> <parent> ] ;
+      [ WIDTH <w> ]          ;
+      [ HEIGHT <h> ]          ;
+      [ HEADERS <headers> ]       ;
+      [ WIDTHS <widths> ]       ;
+      [ INPUTMASK <Picture> ]         ;
+      [ ITEMS <rows> ]       ;
+      [ VALUE <value> ]       ;
+      [ FONT <fontname> ]       ;
+      [ SIZE <fontsize> ]       ;
+      [ <bold : BOLD> ] ;
+      [ <italic : ITALIC> ] ;
+      [ <underline : UNDERLINE> ] ;
+      [ <strikeout : STRIKEOUT> ] ;
+      [ TOOLTIP <tooltip> ]        ;
+      [ BACKCOLOR <backcolor> ] ;
+      [ FONTCOLOR <fontcolor> ] ;
+      [ DYNAMICBACKCOLOR <dynamicbackcolor> ] ;
+      [ DYNAMICFORECOLOR <dynamicforecolor> ] ;
+      [ ON GOTFOCUS <gotfocus> ]    ;
+      [ ON CHANGE <change> ]     ;
+      [ ON LOSTFOCUS <lostfocus> ]    ;
+      [ ON DBLCLICK <dblclick> ]     ;
+      [ ON HEADCLICK <aHeadClick> ]    ;
+      [ <edit : EDIT> ]       ;
+      [ <ownerdata: VIRTUAL> ]    ;
+      [ ITEMCOUNT <itemcount> ]   ;
+      [ ON QUERYDATA <dispinfo> ]    ;
+      [ <multiselect: MULTISELECT> ]   ;
+      [ <style: NOLINES> ]            ;
+      [ IMAGE <aImage> ]              ;
+      [ JUSTIFY <aJust> ]             ;
+      [ HELPID <helpid> ]       ;
+      [ <break: BREAK> ]       ;
+      [ <rtl: RTL> ]                  ;
+      [ <inplace: INPLACE> ]          ;
+      [ COLUMNCONTROLS <editcontrols> ] ;
+      [ READONLY <aReadOnly> ]    ;
+      [ VALID <aValidFields> ]   ;
+      [ VALIDMESSAGES <aValidMessages> ] ;
+      [ ON EDITCELL <editcell> ]      ;
+      [ <noshowheaders: NOHEADERS> ]  ;
+      [ <dummy2: WHEN, COLUMNWHEN> <aWhenFields> ] ;
+      [ SUBCLASS <subclass> ]         ;
+      [ <disabled: DISABLED> ]        ;
+      [ <notabstop: NOTABSTOP> ]      ;
+      [ <invisible: INVISIBLE> ]      ;
+      [ ON ENTER <enter> ]            ;
+      [ HEADERIMAGES <aHeaderImages> ] ;
+      [ IMAGESPLACE <aImgPlace> ] ;
+   =>;
         [ <obj> := ] _OOHG_SelectSubClass( iif( <.multiselect.>, TGridMulti(), TGrid() ), [ <subclass>() ] ): ;
                      Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, ;
                      <widths>, <rows>, <value>, <fontname>, <fontsize>, <tooltip>, ;
@@ -161,62 +165,64 @@
                      <dynamicforecolor>, <Picture>, <.rtl.>, <.inplace.>, <editcontrols>, ;
                      <aReadOnly>, <aValidFields>, <aValidMessages>, <{editcell}>, ;
                      <aWhenFields>, <.disabled.>, <.notabstop.>, <.invisible.>, ;
-                     ! <.noshowheaders.>, <{enter}> )
+                     ! <.noshowheaders.>, <{enter}>, <aHeaderImages>, <aImgPlace> )
 
 ///////////////////////////////////////////////////////////////////////////////
 // GRID (SPLITBOX VERSION)
 ///////////////////////////////////////////////////////////////////////////////
-#command GRID <name> 		;
-                [ OBJ <obj> ]                   ;
-		[ <dummy1: OF, PARENT> <parent> ] ;
-		[ WIDTH <w> ] 			;
-		[ HEIGHT <h> ] 			;
-		[ HEADERS <headers> ] 		;
-		[ WIDTHS <widths> ] 		;
-                [ INPUTMASK <Picture> ]         ;
-		[ ITEMS <rows> ] 		;
-		[ VALUE <value> ] 		;
-		[ FONT <fontname> ] 		;
-		[ SIZE <fontsize> ] 		;
-		[ <bold : BOLD> ] ;
-		[ <italic : ITALIC> ] ;
-		[ <underline : UNDERLINE> ] ;
-		[ <strikeout : STRIKEOUT> ] ;
-		[ TOOLTIP <tooltip> ]  		;
-		[ BACKCOLOR <backcolor> ] ;
-		[ FONTCOLOR <fontcolor> ] ;
-                [ DYNAMICBACKCOLOR <dynamicbackcolor> ] ;
-		[ DYNAMICFORECOLOR <dynamicforecolor> ] ;
-		[ ON GOTFOCUS <gotfocus> ] 	;
-		[ ON CHANGE <change> ]  	;
-		[ ON LOSTFOCUS <lostfocus> ] 	;
-		[ ON DBLCLICK <dblclick> ]  	;
-		[ ON HEADCLICK <aHeadClick> ] 	;
-		[ <edit : EDIT> ] 		;
-		[ <ownerdata: VIRTUAL> ] 	;
-		[ ITEMCOUNT <itemcount> ]	;
-		[ ON QUERYDATA <dispinfo> ] 	;
-		[ <multiselect: MULTISELECT> ]	;
-                [ <style: NOLINES> ]            ;
-                [ IMAGE <aImage> ]              ;
-                [ JUSTIFY <aJust> ]             ;
-		[ HELPID <helpid> ] 		;
-		[ <break: BREAK> ] 		;
-                [ <rtl: RTL> ]                  ;
-                [ <inplace: INPLACE> ]          ;
-                [ COLUMNCONTROLS <editcontrols> ] ;
-		[ READONLY <aReadOnly> ] 	;
-		[ VALID <aValidFields> ]	;
-		[ VALIDMESSAGES <aValidMessages> ] ;
-                [ ON EDITCELL <editcell> ]      ;
-                [ <noshowheaders: NOHEADERS> ]  ;
-                [ <dummy2: WHEN, COLUMNWHEN> <aWhenFields> ] ;
-                [ SUBCLASS <subclass> ]         ;
-                [ <disabled: DISABLED> ]        ;
-                [ <notabstop: NOTABSTOP> ]      ;
-                [ <invisible: INVISIBLE> ]      ;
-                [ ON ENTER <enter> ]            ;
-	=>;
+#command GRID <name>       ;
+      [ OBJ <obj> ]                   ;
+      [ <dummy1: OF, PARENT> <parent> ] ;
+      [ WIDTH <w> ]          ;
+      [ HEIGHT <h> ]          ;
+      [ HEADERS <headers> ]       ;
+      [ WIDTHS <widths> ]       ;
+      [ INPUTMASK <Picture> ]         ;
+      [ ITEMS <rows> ]       ;
+      [ VALUE <value> ]       ;
+      [ FONT <fontname> ]       ;
+      [ SIZE <fontsize> ]       ;
+      [ <bold : BOLD> ] ;
+      [ <italic : ITALIC> ] ;
+      [ <underline : UNDERLINE> ] ;
+      [ <strikeout : STRIKEOUT> ] ;
+      [ TOOLTIP <tooltip> ]        ;
+      [ BACKCOLOR <backcolor> ] ;
+      [ FONTCOLOR <fontcolor> ] ;
+      [ DYNAMICBACKCOLOR <dynamicbackcolor> ] ;
+      [ DYNAMICFORECOLOR <dynamicforecolor> ] ;
+      [ ON GOTFOCUS <gotfocus> ]    ;
+      [ ON CHANGE <change> ]     ;
+      [ ON LOSTFOCUS <lostfocus> ]    ;
+      [ ON DBLCLICK <dblclick> ]     ;
+      [ ON HEADCLICK <aHeadClick> ]    ;
+      [ <edit : EDIT> ]       ;
+      [ <ownerdata: VIRTUAL> ]    ;
+      [ ITEMCOUNT <itemcount> ]   ;
+      [ ON QUERYDATA <dispinfo> ]    ;
+      [ <multiselect: MULTISELECT> ]   ;
+      [ <style: NOLINES> ]            ;
+      [ IMAGE <aImage> ]              ;
+      [ JUSTIFY <aJust> ]             ;
+      [ HELPID <helpid> ]       ;
+      [ <break: BREAK> ]       ;
+      [ <rtl: RTL> ]                  ;
+      [ <inplace: INPLACE> ]          ;
+      [ COLUMNCONTROLS <editcontrols> ] ;
+      [ READONLY <aReadOnly> ]    ;
+      [ VALID <aValidFields> ]   ;
+      [ VALIDMESSAGES <aValidMessages> ] ;
+      [ ON EDITCELL <editcell> ]      ;
+      [ <noshowheaders: NOHEADERS> ]  ;
+      [ <dummy2: WHEN, COLUMNWHEN> <aWhenFields> ] ;
+      [ SUBCLASS <subclass> ]         ;
+      [ <disabled: DISABLED> ]        ;
+      [ <notabstop: NOTABSTOP> ]      ;
+      [ <invisible: INVISIBLE> ]      ;
+      [ ON ENTER <enter> ]            ;
+      [ HEADERIMAGES <aHeaderImages> ] ;
+      [ IMAGESPLACE <aImgPlace> ] ;
+   =>;
         [ <obj> := ] _OOHG_SelectSubClass( iif( <.multiselect.>, TGridMulti(), TGrid() ), [ <subclass>() ] ): ;
                      Define( <(name)>, <(parent)>, , , <w>, <h>, <headers>, ;
                      <widths>, <rows>, <value>, <fontname>, <fontsize>, <tooltip>, ;
@@ -227,6 +233,6 @@
                      <dynamicforecolor>, <Picture>, <.rtl.>, <.inplace.>, <editcontrols>, ;
                      <aReadOnly>, <aValidFields>, <aValidMessages>, <{editcell}>, ;
                      <aWhenFields>, <.disabled.>, <.notabstop.>, <.invisible.>, ;
-                     ! <.noshowheaders.>, <{enter}> )
+                     ! <.noshowheaders.>, <{enter}>, <aHeaderImages>, <aImgPlace> )
 
 ///////////////////////////////////////////////////////////////////////////////
