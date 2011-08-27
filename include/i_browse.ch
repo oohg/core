@@ -1,5 +1,5 @@
 /*
- * $Id: i_browse.ch,v 1.24 2011-08-27 00:31:54 fyurisich Exp $
+ * $Id: i_browse.ch,v 1.25 2011-08-27 14:00:13 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -161,7 +161,7 @@
       [ DELETEMSG <DelMsg> ] ;
       [ ON DELETE <onDelete> ] ;
       [ HEADERIMAGES <aHeaderImages> ] ;
-      [ IMAGESPLACE <aImgPlace> ] ;
+      [ IMAGESALIGN <aImgAlign> ] ;
    =>;
              [ <oObj> := ] _OOHG_SelectSubClass( TOBrowse(), [ <subclass>() ] ): ;
                 Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, <widths>, ;
@@ -175,7 +175,7 @@
                 <{onappend}>, <{editcell}>, <editcontrols>, <replacefields>, <.reccount.>, ;
                 <columninfo>, ! <.noshowheaders.>, <{enter}>, <.disabled.>, <.notabstop.>, ;
                 <.invisible.>, <.descending.>, <{bWhenDel}>, <DelMsg>, <{onDelete}>, ;
-                <aHeaderImages>, <aImgPlace> )
+                <aHeaderImages>, <aImgAlign> )
 
 #command SET BROWSESYNC ON  => SetBrowseSync( .T. )
 #command SET BROWSESYNC OFF => SetBrowseSync( .F. )

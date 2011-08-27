@@ -1,5 +1,5 @@
 /*
- * $Id: i_grid.ch,v 1.14 2011-08-27 00:31:56 fyurisich Exp $
+ * $Id: i_grid.ch,v 1.15 2011-08-27 14:00:13 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -153,7 +153,7 @@
       [ <invisible: INVISIBLE> ]      ;
       [ ON ENTER <enter> ]            ;
       [ HEADERIMAGES <aHeaderImages> ] ;
-      [ IMAGESPLACE <aImgPlace> ] ;
+      [ IMAGESALIGN <aImgAlign> ] ;
    =>;
         [ <obj> := ] _OOHG_SelectSubClass( iif( <.multiselect.>, TGridMulti(), TGrid() ), [ <subclass>() ] ): ;
                      Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, ;
@@ -165,7 +165,7 @@
                      <dynamicforecolor>, <Picture>, <.rtl.>, <.inplace.>, <editcontrols>, ;
                      <aReadOnly>, <aValidFields>, <aValidMessages>, <{editcell}>, ;
                      <aWhenFields>, <.disabled.>, <.notabstop.>, <.invisible.>, ;
-                     ! <.noshowheaders.>, <{enter}>, <aHeaderImages>, <aImgPlace> )
+                     ! <.noshowheaders.>, <{enter}>, <aHeaderImages>, <aImgAlign> )
 
 ///////////////////////////////////////////////////////////////////////////////
 // GRID (SPLITBOX VERSION)
@@ -221,7 +221,7 @@
       [ <invisible: INVISIBLE> ]      ;
       [ ON ENTER <enter> ]            ;
       [ HEADERIMAGES <aHeaderImages> ] ;
-      [ IMAGESPLACE <aImgPlace> ] ;
+      [ IMAGESALIGN <aImgAlign> ] ;
    =>;
         [ <obj> := ] _OOHG_SelectSubClass( iif( <.multiselect.>, TGridMulti(), TGrid() ), [ <subclass>() ] ): ;
                      Define( <(name)>, <(parent)>, , , <w>, <h>, <headers>, ;
@@ -233,6 +233,6 @@
                      <dynamicforecolor>, <Picture>, <.rtl.>, <.inplace.>, <editcontrols>, ;
                      <aReadOnly>, <aValidFields>, <aValidMessages>, <{editcell}>, ;
                      <aWhenFields>, <.disabled.>, <.notabstop.>, <.invisible.>, ;
-                     ! <.noshowheaders.>, <{enter}>, <aHeaderImages>, <aImgPlace> )
+                     ! <.noshowheaders.>, <{enter}>, <aHeaderImages>, <aImgAlign> )
 
 ///////////////////////////////////////////////////////////////////////////////
