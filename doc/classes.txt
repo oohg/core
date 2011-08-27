@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.25 2011-08-23 14:44:25 fyurisich Exp $
+ * $Id: classes.txt,v 1.26 2011-08-27 00:32:40 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -738,6 +738,8 @@ ENDCLASS
 *------------------------------------------------------------------------------*
 CLASS TGRID FROM TCONTROL
    DATA AHEADCLICK                INIT NIL
+   DATA AHEADERIMAGE              INIT {}
+   DATA AHEADERIMAGEPLACE         INIT {}
    DATA AHEADERS                  INIT {}
    DATA AJUST                     INIT NIL
    DATA ALLOWCHANGESIZE           INIT .T.
@@ -754,6 +756,7 @@ CLASS TGRID FROM TCONTROL
    DATA FULLMOVE                  INIT .F.
    DATA GRIDBACKCOLOR             INIT {}
    DATA GRIDFORECOLOR             INIT {}
+   DATA HEADERIMAGELIST           INIT NIL
    DATA INPLACE                   INIT .F.
    DATA LAPPENDMODE               INIT .F.
    DATA LEDITMODE                 INIT .F.
@@ -812,6 +815,8 @@ CLASS TGRID FROM TCONTROL
    METHOD GOBOTTOM
    METHOD GOTOP
    METHOD HEADER
+   METHOD HEADERIMAGE
+   METHOD HEADERIMAGEPLACE
    METHOD INSERTBLANK
    METHOD INSERTITEM
    METHOD ISCOLUMNREADONLY
@@ -822,6 +827,7 @@ CLASS TGRID FROM TCONTROL
    METHOD ONENTER                 SETGET
    METHOD PAGEDOWN
    METHOD PAGEUP
+   METHOD RELEASE
    METHOD RIGHT
    METHOD SETITEMCOLOR
    METHOD SETRANGECOLOR
