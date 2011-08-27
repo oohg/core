@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.124 2011-08-27 00:31:32 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.125 2011-08-27 13:58:02 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -134,7 +134,7 @@ CLASS TGrid FROM TControl
    DATA bOnEnter            INIT nil
    DATA HeaderImageList     INIT Nil
    DATA aHeaderImage        INIT {}
-   DATA aHeaderImagePlace   INIT {}
+   DATA aHeaderImageAlign   INIT {}
 
    METHOD Define
    METHOD Define2
@@ -192,7 +192,7 @@ CLASS TGrid FROM TControl
    METHOD GoTop
    METHOD GoBottom
    METHOD HeaderImage
-   METHOD HeaderImagePlace
+   METHOD HeaderImageAlign
    METHOD Release
 
 ENDCLASS
@@ -206,7 +206,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                dynamicbackcolor, dynamicforecolor, aPicture, lRtl, inplace, ;
                editcontrols, readonly, valid, validmessages, editcell, ;
                aWhenFields, lDisabled, lNoTabStop, lInvisible, lNoHeaders, ;
-               onenter, aHeaderImage, aHeaderImagePlace ) CLASS TGrid
+               onenter, aHeaderImage, aHeaderImageAlign ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local nStyle := LVS_SINGLESEL
 
@@ -218,7 +218,7 @@ Local nStyle := LVS_SINGLESEL
               dynamicbackcolor, dynamicforecolor, aPicture, lRtl, nStyle, ;
               inplace, editcontrols, readonly, valid, validmessages, ;
               editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
-              lNoHeaders, onenter, aHeaderImage, aHeaderImagePlace )
+              lNoHeaders, onenter, aHeaderImage, aHeaderImageAlign )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -230,7 +230,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                 dynamicbackcolor, dynamicforecolor, aPicture, lRtl, nStyle, ;
                 inplace, editcontrols, readonly, valid, validmessages, ;
                 editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
-                lNoHeaders, onenter, aHeaderImage, aHeaderImagePlace ) CLASS TGrid
+                lNoHeaders, onenter, aHeaderImage, aHeaderImageAlign ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local ControlHandle, aImageList, i, nCount, nPos, nImagesWidth, hcHandle
 
@@ -353,12 +353,12 @@ Local ControlHandle, aImageList, i, nCount, nPos, nImagesWidth, hcHandle
    Endif
    
    // Load images' placement
-   ::aHeaderImagePlace := aFill( Array( len( ::aHeaders ) ), GRID_IMG_AT_LEFT )
+   ::aHeaderImageAlign := aFill( Array( len( ::aHeaders ) ), HEADER_IMG_AT_LEFT )
 
-   If HB_IsArray( aHeaderImagePlace )
-      For i := 1 to Len( aHeaderImagePlace )
-         If HB_IsNumeric( aHeaderImagePlace[ i ] ) .AND. aHeaderImagePlace[ i ] == GRID_IMG_AT_RIGHT
-           ::aHeaderImagePlace[ i ] := GRID_IMG_AT_RIGHT
+   If HB_IsArray( aHeaderImageAlign )
+      For i := 1 to Len( aHeaderImageAlign )
+         If HB_IsNumeric( aHeaderImageAlign[ i ] ) .AND. aHeaderImageAlign[ i ] == HEADER_IMG_AT_RIGHT
+           ::aHeaderImageAlign[ i ] := HEADER_IMG_AT_RIGHT
          EndIf
       Next i
    EndIf
@@ -369,7 +369,7 @@ Local ControlHandle, aImageList, i, nCount, nPos, nImagesWidth, hcHandle
    // Set each header's image
    For i := 1 to Len( ::aHeaders )
      ::HeaderImage( i, ::aHeaderImage[ i ] )
-     ::HeaderImagePlace( i, ::aHeaderImagePlace[ i ] )
+     ::HeaderImageAlign( i, ::aHeaderImageAlign[ i ] )
    Next i
 
    // Load rows
@@ -1773,20 +1773,20 @@ METHOD HeaderImage( nColumn, nImg ) CLASS TGrid
 Return ::aHeaderImage[ nColumn ]
 
 *-----------------------------------------------------------------------------*
-METHOD HeaderImagePlace( nColumn, nPlace ) CLASS TGrid
+METHOD HeaderImageAlign( nColumn, nPlace ) CLASS TGrid
 *-----------------------------------------------------------------------------*
    IF ::aHeaderImage[ nColumn ] != 0
       IF HB_IsNumeric( nPlace )
-         IF nPlace == GRID_IMG_AT_RIGHT
-            ::aHeaderImagePlace[ nColumn ] := GRID_IMG_AT_RIGHT
+         IF nPlace == HEADER_IMG_AT_RIGHT
+            ::aHeaderImageAlign[ nColumn ] := HEADER_IMG_AT_RIGHT
             SETGRIDCOLUMNIMAGE( ::hWnd, nColumn, ::aHeaderImage[ nColumn ], .T. )
          ELSE
-            ::aHeaderImagePlace[ nColumn ] := GRID_IMG_AT_LEFT
+            ::aHeaderImageAlign[ nColumn ] := HEADER_IMG_AT_LEFT
             SETGRIDCOLUMNIMAGE( ::hWnd, nColumn, ::aHeaderImage[ nColumn ], .F. )
          ENDIF
       ENDIF
    ENDIF
-Return ::aHeaderImagePlace[ nColumn ]
+Return ::aHeaderImageAlign[ nColumn ]
 
 *------------------------------------------------------------------------------*
 METHOD Release() CLASS TGrid
@@ -2021,7 +2021,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                dynamicbackcolor, dynamicforecolor, aPicture, lRtl, inplace, ;
                editcontrols, readonly, valid, validmessages, editcell, ;
                aWhenFields, lDisabled, lNoTabStop, lInvisible, lNoHeaders, ;
-               onenter, aHeaderImage, aHeaderImagePlace ) CLASS TGridMulti
+               onenter, aHeaderImage, aHeaderImageAlign ) CLASS TGridMulti
 *-----------------------------------------------------------------------------*
 Local nStyle := 0
    ::Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
@@ -2032,7 +2032,7 @@ Local nStyle := 0
               dynamicbackcolor, dynamicforecolor, aPicture, lRtl, nStyle, ;
               inplace, editcontrols, readonly, valid, validmessages, ;
               editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
-              lNoHeaders, onenter, aHeaderImage, aHeaderImagePlace )
+              lNoHeaders, onenter, aHeaderImage, aHeaderImageAlign )
 Return Self
 
 *-----------------------------------------------------------------------------*
