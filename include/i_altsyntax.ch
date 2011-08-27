@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.48 2011-08-27 14:09:05 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.49 2011-08-27 17:16:17 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -675,7 +675,7 @@ ANIMATEBOX COMMANDS
                 _OOHG_ActiveControlInvisible, ;
                 _OOHG_ActiveControlNoTabStop, ;
                 _OOHG_ActiveControlDisabled, ;
-                _OOHG_ActiveControlRtl)
+                _OOHG_ActiveControlRtl )
 
 #xcommand DEFINE PLAYER <name> ;
         => ;
@@ -756,7 +756,7 @@ ANIMATEBOX COMMANDS
                 _OOHG_ActiveControlInvisible, ;
                 _OOHG_ActiveControlNoTabStop, ;
                 _OOHG_ActiveControlDisabled, ;
-                _OOHG_ActiveControlRtl)
+                _OOHG_ActiveControlRtl )
 
 /*----------------------------------------------------------------------------
 PROGRESS BAR
@@ -1301,7 +1301,7 @@ IMAGE
                 _OOHG_ActiveControlAction, ;
                 _OOHG_ActiveControlTooltip, ;
                 _OOHG_ActiveControlHelpId, ;
-                _OOHG_ActiveControlRtl ;
+                _OOHG_ActiveControlRtl, ;
                 _OOHG_ActiveControlInvisible )
 
 /*----------------------------------------------------------------------------
