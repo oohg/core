@@ -1,6 +1,6 @@
 
 /*
- * $Id: ChangeLog,v 1.758 2011-08-27 00:33:15 fyurisich Exp $
+ * $Id: ChangeLog,v 1.759 2011-08-27 14:11:35 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -8,20 +8,37 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2011-08-27 11:10:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   ! include/i_altsyntax.ch
+     ! Fixed missing comma.
+
+2011-08-27 11:00:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_grid.ch
+   * include/i_xbrowse.ch
+   * include/i_browse.ch
+   * include/i_altsyntax.ch
+     * IMAGESPLACE clause changed to IMAGESALIGN.
+   * docs/classes.txt
+   * source/h_grid.prg
+     * METHOD HeaderImagePlace changed to HeaderImageAlign.
+     * DATA aHeaderImagePlace changed to aHeaderImageAlign.
+     ! Fixed identifier not found.
+
 2011-08-26 21:30:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   + i_grid.ch
+   + include/i_grid.ch
      + Added HEADER_IMG_AT_LEFT and HEADER_IMG_AT_RIGHT constants.
      + Added HEADERIMAGES and IMAGESPLACE clauses.
-   + i_xbrowse.ch
+   + include/i_xbrowse.ch
      + Added HEADERIMAGES and IMAGESPLACE clauses.
-   + i_browse.ch
+   + include/i_browse.ch
      + Added HEADERIMAGES and IMAGESPLACE clauses.
-   * i_altsyntax.ch
+   * include/i_altsyntax.ch
      + Added HEADERIMAGES and IMAGESPLACE clauses to GRID and BROWSE.
      + Added ACTIVEX, HOTKEYBOX, PICTURE, PROGRESSMETER, SCROLLBAR,
        TEXTARRAY and XBROWSE.
      ! Fixed: missing clauses from several controls.
      * Changed: IMAGE from TImage class to TPicture class.
+   + docs/classes.txt
    + source/h_grid.prg
      + Added HeaderImage, HeaderImagePlace and Release methods.
      + Added HeaderImageList, aHeaderImage and aHeaderImagePlace datas.
@@ -29,7 +46,7 @@
        RemoveGridColumnImage functions.
      * Added aHeaderImage and aHeaderImagePlace parameters to Define and
        Define2 methods of TGrid and TGridMulti classes.
-     + Grids, xBrowses and Browse can have images in the headers, at left or
+     + Grids, xBrowses and Browses can have images in the headers, at left or
        right of the text. Use HEADERIMAGES {Array} to specify images' names.
        Use IMAGESPLACE {Array} to specify aligment (use HEADER_IMG_AT_LEFT and
        HEADER_IMG_AT_RIGHT constants). The length of both arrays must equal
