@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.26 2011-08-27 00:32:40 fyurisich Exp $
+ * $Id: classes.txt,v 1.27 2011-08-27 13:58:51 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -739,7 +739,7 @@ ENDCLASS
 CLASS TGRID FROM TCONTROL
    DATA AHEADCLICK                INIT NIL
    DATA AHEADERIMAGE              INIT {}
-   DATA AHEADERIMAGEPLACE         INIT {}
+   DATA AHEADERIMAGEALIGN         INIT {}
    DATA AHEADERS                  INIT {}
    DATA AJUST                     INIT NIL
    DATA ALLOWCHANGESIZE           INIT .T.
@@ -816,7 +816,7 @@ CLASS TGRID FROM TCONTROL
    METHOD GOTOP
    METHOD HEADER
    METHOD HEADERIMAGE
-   METHOD HEADERIMAGEPLACE
+   METHOD HEADERIMAGEALIGN
    METHOD INSERTBLANK
    METHOD INSERTITEM
    METHOD ISCOLUMNREADONLY
