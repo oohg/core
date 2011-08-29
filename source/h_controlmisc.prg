@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.118 2011-08-18 19:30:25 fyurisich Exp $
+ * $Id: h_controlmisc.prg,v 1.119 2011-08-29 13:12:10 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -330,10 +330,18 @@ Function _GetMultiCaption( ControlName, ParentForm, Item )
 Return GetControlObject( ControlName, ParentForm ):Caption( Item )
 
 *-----------------------------------------------------------------------------*
-Function InputWindow( Title, aLabels, aValues, aFormats, row, col )
+Function InputWindow( Title, aLabels, aValues, aFormats, row, col, aButOKCancelCaptions, nLabelWidth, nControlWidth )
 *-----------------------------------------------------------------------------*
 Local i , l , ControlRow , e := 0 ,LN , CN ,r , c , wHeight , diff
-Local oInputWindow, aResult
+Local oInputWindow, aResult, nWidth, ControlCol
+
+   DEFAULT aButOKCancelCaptions TO {}
+   DEFAULT nLabelWidth TO 110, nControlWidth TO 140
+
+   if Len( aButOKCancelCaptions ) == 0
+      AADD( aButOKCancelCaptions, _OOHG_Messages( 1, 6 ) )
+      AADD( aButOKCancelCaptions, _OOHG_Messages( 1, 7 ) )
+   endif
 
    l := Len ( aLabels )
 
@@ -360,7 +368,7 @@ Local oInputWindow, aResult
    Next i
 
 
-   If pcount() == 4
+   If ! HB_IsNumeric( row ) .or. ! HB_IsNumeric( col )
 		r := 0
 		c := 0
    Else
@@ -377,9 +385,13 @@ Local oInputWindow, aResult
 
    EndIf
 
+   nWidth := nLabelWidth + nControlWidth + 30
+
+   ControlCol := nLabelWidth + 10
+
    DEFINE WINDOW _InputWindow OBJ oInputWindow ;
 		AT r,c ;
-		WIDTH 280 ;
+		WIDTH nWidth ;
 		HEIGHT (l*30) + 90 + (e*60) ;
 		TITLE Title ;
 		MODAL ;
@@ -393,32 +405,32 @@ Local oInputWindow, aResult
 			LN := 'Label_' + Alltrim(Str(i,2,0))
 			CN := 'Control_' + Alltrim(Str(i,2,0))
 
-         @ ControlRow , 10 LABEL &LN OF _InputWindow VALUE aLabels [i] WIDTH 110 NOWORDWRAP
+         @ ControlRow , 10 LABEL &LN OF _InputWindow VALUE aLabels [i] WIDTH nLabelWidth NOWORDWRAP
 
 			do case
 			case HB_IsLogical ( aValues [i] )
 
-				@ ControlRow , 120 CHECKBOX &CN OF _InputWindow CAPTION '' VALUE aValues[i]
+				@ ControlRow , ControlCol CHECKBOX &CN OF _InputWindow CAPTION '' VALUE aValues[i]
 				ControlRow := ControlRow + 30
 
 			case HB_IsDate ( aValues [i] )
 
-				@ ControlRow , 120 DATEPICKER &CN  OF _InputWindow VALUE aValues[i] WIDTH 140
+				@ ControlRow , ControlCol DATEPICKER &CN  OF _InputWindow VALUE aValues[i] WIDTH nControlWidth
 				ControlRow := ControlRow + 30
 
 			case HB_IsNumeric ( aValues [i] )
 
 				If HB_Isarray ( aFormats [i] )
 
-					@ ControlRow , 120 COMBOBOX &CN  OF _InputWindow ITEMS aFormats[i] VALUE aValues[i] WIDTH 140  FONT 'Arial' SIZE 10
+					@ ControlRow , ControlCol COMBOBOX &CN  OF _InputWindow ITEMS aFormats[i] VALUE aValues[i] WIDTH nControlWidth  FONT 'Arial' SIZE 10
 					ControlRow := ControlRow + 30
 
             ElseIf  ValType ( aFormats [i] ) $ 'CM'
 
 					If AT ( '.' , aFormats [i] ) > 0
-						@ ControlRow , 120 TEXTBOX &CN  OF _InputWindow VALUE aValues[i] WIDTH 140 FONT 'Arial' SIZE 10 NUMERIC INPUTMASK aFormats [i]
+						@ ControlRow , ControlCol TEXTBOX &CN  OF _InputWindow VALUE aValues[i] WIDTH nControlWidth FONT 'Arial' SIZE 10 NUMERIC INPUTMASK aFormats [i]
 					Else
-						@ ControlRow , 120 TEXTBOX &CN  OF _InputWindow VALUE aValues[i] WIDTH 140 FONT 'Arial' SIZE 10 MAXLENGTH Len(aFormats [i]) NUMERIC
+						@ ControlRow , ControlCol TEXTBOX &CN  OF _InputWindow VALUE aValues[i] WIDTH nControlWidth FONT 'Arial' SIZE 10 MAXLENGTH Len(aFormats [i]) NUMERIC
 					EndIf
 
 					ControlRow := ControlRow + 30
@@ -428,17 +440,17 @@ Local oInputWindow, aResult
 
 				If HB_IsNumeric ( aFormats [i] )
 					If  aFormats [i] <= 32
-						@ ControlRow , 120 TEXTBOX &CN  OF _InputWindow VALUE aValues[i] WIDTH 140 FONT 'Arial' SIZE 10 MAXLENGTH aFormats [i]
+						@ ControlRow , ControlCol TEXTBOX &CN  OF _InputWindow VALUE aValues[i] WIDTH nControlWidth FONT 'Arial' SIZE 10 MAXLENGTH aFormats [i]
 						ControlRow := ControlRow + 30
 					Else
-						@ ControlRow , 120 EDITBOX &CN  OF _InputWindow WIDTH 140 HEIGHT 90 VALUE aValues[i] FONT 'Arial' SIZE 10 MAXLENGTH aFormats[i]
+						@ ControlRow , ControlCol EDITBOX &CN  OF _InputWindow WIDTH nControlWidth HEIGHT 90 VALUE aValues[i] FONT 'Arial' SIZE 10 MAXLENGTH aFormats[i]
 						ControlRow := ControlRow + 94
 					EndIf
 				EndIf
 
 			case HB_IsMemo ( aValues [i] )
 
-				@ ControlRow , 120 EDITBOX &CN  OF _InputWindow WIDTH 140 HEIGHT 90 VALUE aValues[i] FONT 'Arial' SIZE 10
+				@ ControlRow , ControlCol EDITBOX &CN  OF _InputWindow WIDTH nControlWidth HEIGHT 90 VALUE aValues[i] FONT 'Arial' SIZE 10
 				ControlRow := ControlRow + 94
 
 			endcase
@@ -447,19 +459,19 @@ Local oInputWindow, aResult
 
 		@ ControlRow + 10 , 30 BUTTON BUTTON_1 ;
 		OF _InputWindow ;
-      CAPTION _OOHG_Messages( 1, 6 ) ;
+      CAPTION aButOKCancelCaptions [1] ;
       ACTION _InputWindowOk( oInputWindow, aResult )
 
 		@ ControlRow + 10 , 140 BUTTON BUTTON_2 ;
 		OF _InputWindow ;
-      CAPTION _OOHG_Messages( 1, 7 ) ;
+      CAPTION aButOKCancelCaptions [2] ;
       ACTION _InputWindowCancel( oInputWindow, aResult )
 
       oInputWindow:Control_1:SetFocus()
 
 	END WINDOW
 
-	if pcount() == 4
+  If ! HB_IsNumeric( row ) .or. ! HB_IsNumeric( col )
       oInputWindow:Center()
 	EndIf
 
