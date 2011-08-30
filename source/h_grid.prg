@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.125 2011-08-27 13:58:02 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.126 2011-08-30 02:20:54 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -2307,9 +2307,13 @@ HB_FUNC( SETGRIDCOLUMNIMAGE )
 {
    LV_COLUMN COL;
 
-   COL.mask = LVCF_FMT | LVCF_IMAGE;
-   
-   COL.fmt = LVCFMT_IMAGE;
+   COL.mask = LVCF_FMT;
+
+   ListView_GetColumn( HWNDparam( 1 ), hb_parni( 2 ) - 1, &COL );
+
+   COL.mask |= LVCF_IMAGE;
+
+   COL.fmt |= LVCFMT_IMAGE;
 
    if ( hb_parl( 4 ) )
    {
