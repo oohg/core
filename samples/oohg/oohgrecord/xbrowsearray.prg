@@ -1,5 +1,5 @@
 /*
- * $Id: xbrowsearray.prg,v 1.4 2011-01-24 19:31:04 guerra000 Exp $
+ * $Id: xbrowsearray.prg,v 1.5 2011-08-31 01:34:37 fyurisich Exp $
  */
 /*
  * ooHG XBrowse array-as-database demo. (c) 2008 Vic
@@ -35,6 +35,7 @@ Local aArray, oArray, I
                JUSTIFY ;
                { GRID_JTFY_CENTER , GRID_JTFY_RIGHT , GRID_JTFY_LEFT } ;
                ; // Edition
+               APPEND ;
                EDIT INPLACE ;
                REPLACEFIELD { { |x,o| o:FieldPut( 1, x ) } , ;
                               { |x,o| o:FieldPut( 2, x ) } , ;
@@ -75,6 +76,20 @@ CLASS XBrowse_Array
    // Methods used by XBrowse if you'll allow edition
    DATA cAlias__             INIT nil
    METHOD Eof                BLOCK { | Self | ( ::RecNo > ::RecCount ) }
+
+   // Method used by XBrowse if you'll allow appends
+   METHOD Append             BLOCK { | Self | aAdd( ::aArray, {"", "", ""} ), ::GoTo( len( ::aArray ) ) }
+
+   // Method used by XBrowse if you'll allow deletes
+*   METHOD Delete     BLOCK { | Self |                         ( ::cAlias__ )->( DbDelete() ) }
+
+   // Methods used by XBrowse if you use locking scheme
+*   METHOD Commit     BLOCK { | Self |                         ( ::cAlias__ )->( DbCommit() ) }
+*   METHOD Unlock     BLOCK { | Self |                         ( ::cAlias__ )->( DbUnlock() ) }
+*   METHOD Lock       BLOCK { | Self |                         ( ::cAlias__ )->( RLock() ) }
+
+   // Method used by XBrowse if you don´t use FIELDS clause or if values in array are not fields
+*   METHOD DbStruct   BLOCK { | Self |                         ( ::cAlias__ )->( DbStruct() ) }
 
    // Used by "own" (XBrowse_Array) class (not used by XBrowse itself)
    DATA aArray
@@ -141,15 +156,9 @@ RETURN nil
 
 *   METHOD Locate     BLOCK { | Self, bFor, bWhile, nNext, nRec, lRest | ( ::cAlias__ )->( __dbLocate( bFor, bWhile, nNext, nRec, lRest ) ) }
 *   METHOD Seek       BLOCK { | Self, uKey, lSoftSeek, lLast | ( ::cAlias__ )->( DbSeek( uKey, lSoftSeek, lLast ) ) }
-*   METHOD Commit     BLOCK { | Self |                         ( ::cAlias__ )->( DbCommit() ) }
-*   METHOD Unlock     BLOCK { | Self |                         ( ::cAlias__ )->( DbUnlock() ) }
-*   METHOD Delete     BLOCK { | Self |                         ( ::cAlias__ )->( DbDelete() ) }
 *   METHOD Close      BLOCK { | Self |                         ( ::cAlias__ )->( DbCloseArea() ) }
 *   METHOD Found      BLOCK { | Self |                         ( ::cAlias__ )->( Found() ) }
 *   METHOD SetOrder   BLOCK { | Self, uOrder |                 ( ::cAlias__ )->( ORDSETFOCUS( uOrder ) ) }
 *   METHOD SetIndex   BLOCK { | Self, cFile, lAdditive |       IF( EMPTY( lAdditive ), ( ::cAlias__ )->( ordListClear() ), ) , ( ::cAlias__ )->( ordListAdd( cFile ) ) }
-*   METHOD Append     BLOCK { | Self |                         ( ::cAlias__ )->( DbAppend() ) }
-*   METHOD Lock       BLOCK { | Self |                         ( ::cAlias__ )->( RLock() ) }
-*   METHOD DbStruct   BLOCK { | Self |                         ( ::cAlias__ )->( DbStruct() ) }
 
 *   ERROR HANDLER FieldAssign
