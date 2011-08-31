@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.49 2011-08-27 17:16:17 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.50 2011-08-31 01:11:05 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -122,6 +122,8 @@ Memvariables
 #xtranslate _OOHG_ActiveControlTrailingFontColor      => _OOHG_ActiveControlInfo \[  25 \]
 #xtranslate _OOHG_ActiveControlBackgroundColor        => _OOHG_ActiveControlInfo \[  26 \]
 
+
+#xtranslate _OOHG_ActiveControlFullMove               => _OOHG_ActiveControlInfo \[ 156 \]
 #xtranslate _OOHG_ActiveControlRowCount               => _OOHG_ActiveControlInfo \[ 157 \]
 #xtranslate _OOHG_ActiveControlColCount               => _OOHG_ActiveControlInfo \[ 158 \]
 #xtranslate _OOHG_ActiveControlOnLineUp               => _OOHG_ActiveControlInfo \[ 159 \]
@@ -1867,7 +1869,8 @@ GRID
         _OOHG_ActiveControlWhen             := Nil ;;
         _OOHG_ActiveControlShowHeaders      := Nil ;;
         _OOHG_ActiveControlHeaderImages     := Nil ;;
-        _OOHG_ActiveControlImagesAlign      := Nil
+        _OOHG_ActiveControlImagesAlign      := Nil ;;
+        _OOHG_ActiveControlFullMove         := .F.
 
 #xcommand ONAPPEND <onappend> ;
         => ;
@@ -1880,6 +1883,10 @@ GRID
 #xcommand IMAGESALIGN <aImgAlign> ;
         => ;
         _OOHG_ActiveControlImagesAlign := <aImgAlign>
+
+#xcommand FULLMOVE <fullmove> ;
+        => ;
+        _OOHG_ActiveControlFullMove := <fullmove>
 
 #xcommand END GRID ;
         => ;
@@ -1934,7 +1941,8 @@ GRID
                 _OOHG_ActiveControlShowHeaders, ;
                 _OOHG_ActiveControlOnEnter, ;
                 _OOHG_ActiveControlHeaderImages, ;
-                _OOHG_ActiveControlImagesAlign )
+                _OOHG_ActiveControlImagesAlign, ;
+                _OOHG_ActiveControlFullMove )
 
 /*----------------------------------------------------------------------------
 BROWSE
@@ -1977,7 +1985,8 @@ BROWSE
         _OOHG_ActiveControlDescending       := .F. ;;
         _OOHG_ActiveControlRecCount         := .F. ;;
         _OOHG_ActiveControlHeaderImages     := Nil ;;
-        _OOHG_ActiveControlImagesAlign      := Nil
+        _OOHG_ActiveControlImagesAlign      := Nil ;;
+        _OOHG_ActiveControlFullMove         := .F.
         
 #xcommand DELETEWHEN <delwhen> ;
         => ;
@@ -2069,7 +2078,8 @@ BROWSE
                 _OOHG_ActiveControlDeleteMsg, ;
                 _OOHG_ActiveControlOnDelete, ;
                 _OOHG_ActiveControlHeaderImages, ;
-                _OOHG_ActiveControlImagesAlign )
+                _OOHG_ActiveControlImagesAlign, ;
+                _OOHG_ActiveControlFullMove )
 
 /*----------------------------------------------------------------------------
 XBROWSE
@@ -2112,7 +2122,8 @@ XBROWSE
         _OOHG_ActiveControlDescending       := .F. ;;
         _OOHG_ActiveControlRecCount         := .F. ;;
         _OOHG_ActiveControlHeaderImages     := Nil ;;
-        _OOHG_ActiveControlImagesAlign      := Nil
+        _OOHG_ActiveControlImagesAlign      := Nil ;;
+        _OOHG_ActiveControlFullMove         := .F.
 
 #xcommand END XBROWSE ;
         => ;
@@ -2176,7 +2187,8 @@ XBROWSE
                 _OOHG_ActiveControlDeleteMsg, ;
                 _OOHG_ActiveControlOnDelete, ;
                 _OOHG_ActiveControlHeaderImages, ;
-                _OOHG_ActiveControlImagesAlign )
+                _OOHG_ActiveControlImagesAlign, ;
+                _OOHG_ActiveControlFullMove )
 
 /*----------------------------------------------------------------------------
 HYPERLINK

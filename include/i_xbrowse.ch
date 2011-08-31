@@ -1,5 +1,5 @@
 /*
- * $Id: i_xbrowse.ch,v 1.12 2011-08-27 14:00:13 fyurisich Exp $
+ * $Id: i_xbrowse.ch,v 1.13 2011-08-31 01:11:05 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -159,6 +159,7 @@
                 [ ON DELETE <onDelete> ] ;
                 [ HEADERIMAGES <aHeaderImages> ] ;
                 [ IMAGESALIGN <aImgAlign> ] ;
+                [ <fullmove: FULLMOVE> ] ;
 	=>;
        [ <oObj> := ] _OOHG_SelectSubClass( TXBrowse(), [ <subclass>() ] ):Define( ;
                <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, <widths>, ;
@@ -172,4 +173,4 @@
                <editcontrols>, <aReadOnly>, <{aValidFields}>, <aValidMessages>, <{editcell}>, ;
                <aWhenFields>, <.reccount.>, <columninfo>, ! <.noshowheaders.>, <{enter}>, ;
                <.disabled.>, <.notabstop.>, <.invisible.>, <.descending.>, <{bWhenDel}>, ;
-               <DelMsg>, <{onDelete}>, <aHeaderImages>, <aImgAlign> )
+               <DelMsg>, <{onDelete}>, <aHeaderImages>, <aImgAlign>, <.fullmove.> )

@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.82 2011-08-27 14:42:59 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.83 2011-08-31 01:09:40 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -147,7 +147,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                editcontrols, replacefields, lRecCount, columninfo, ;
                lNoHeaders, onenter, lDisabled, lNoTabStop, lInvisible, ;
                lDescending, bDelWhen, DelMsg, onDelete, aHeaderImage, ;
-               aHeaderImageAlign ) CLASS TOBrowse
+               aHeaderImageAlign, FullMove ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local nWidth2, nCol2, oScroll, z
 
@@ -216,7 +216,7 @@ Local nWidth2, nCol2, oScroll, z
                    nil, nil, edit, backcolor, fontcolor, dynamicbackcolor, dynamicforecolor, aPicture, ;
                    lRtl, InPlace, editcontrols, readonly, valid, validmessages, editcell, ;
                    aWhenFields, lDisabled, lNoTabStop, lInvisible, lNoHeaders,, aHeaderImage, ;
-                   aHeaderImageAlign )
+                   aHeaderImageAlign, FullMove )
 
    ::nWidth := w
 
@@ -276,16 +276,16 @@ Local nWidth2, nCol2, oScroll, z
    ::SizePos()
 
    // Must be set after control is initialized
-   ASSIGN ::OnLostFocus VALUE lostfocus TYPE "B"
-   ASSIGN ::OnGotFocus  VALUE gotfocus  TYPE "B"
-   ASSIGN ::OnChange    VALUE change    TYPE "B"
-   ASSIGN ::OnDblClick  VALUE dblclick  TYPE "B"
-   ASSIGN ::OnAppend    VALUE onappend  TYPE "B"
-   ASSIGN ::OnEnter     value onenter   TYPE "B"
-   ASSIGN ::bDelWhen    VALUE bDelWhen   TYPE "B"
-   ASSIGN ::DelMsg      VALUE DelMsg     TYPE "C"
-   ASSIGN ::OnDelete    VALUE onDelete   TYPE "B"
-
+   ASSIGN ::OnLostFocus VALUE lostfocus   TYPE "B"
+   ASSIGN ::OnGotFocus  VALUE gotfocus    TYPE "B"
+   ASSIGN ::OnChange    VALUE change      TYPE "B"
+   ASSIGN ::OnDblClick  VALUE dblclick    TYPE "B"
+   ASSIGN ::OnAppend    VALUE onappend    TYPE "B"
+   ASSIGN ::OnEnter     value onenter     TYPE "B"
+   ASSIGN ::bDelWhen    VALUE bDelWhen    TYPE "B"
+   ASSIGN ::DelMsg      VALUE DelMsg      TYPE "C"
+   ASSIGN ::OnDelete    VALUE onDelete    TYPE "B"
+   
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -1052,7 +1052,25 @@ RETURN ::Super:RefreshData()
 METHOD Events_Enter() CLASS TOBrowse
 *-----------------------------------------------------------------------------*
    If Select( ::WorkArea ) != 0
-      ::Super:Events_Enter()
+      If ::FullMove .OR. ::InPlace
+         If ! ::lNestedEdit
+            ::lNestedEdit := .T.
+
+            If ::EditAllCells()
+              ::Value := ( ::WorkArea )->( RecNo() )
+            EndIf
+
+            ::lNestedEdit := .F.
+         EndIf
+      ElseIf ::AllowEdit
+         If ! ::lNestedEdit
+            ::lNestedEdit := .T.
+            ::EditItem()
+            ::lNestedEdit := .F.
+         EndIf
+      Else
+         ::DoEvent( ::OnEnter, "ENTER" )
+      EndIf
    Endif
 Return nil
 

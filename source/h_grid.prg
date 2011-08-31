@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.126 2011-08-30 02:20:54 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.127 2011-08-31 01:09:40 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -206,7 +206,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                dynamicbackcolor, dynamicforecolor, aPicture, lRtl, inplace, ;
                editcontrols, readonly, valid, validmessages, editcell, ;
                aWhenFields, lDisabled, lNoTabStop, lInvisible, lNoHeaders, ;
-               onenter, aHeaderImage, aHeaderImageAlign ) CLASS TGrid
+               onenter, aHeaderImage, aHeaderImageAlign, FullMove ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local nStyle := LVS_SINGLESEL
 
@@ -218,7 +218,7 @@ Local nStyle := LVS_SINGLESEL
               dynamicbackcolor, dynamicforecolor, aPicture, lRtl, nStyle, ;
               inplace, editcontrols, readonly, valid, validmessages, ;
               editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
-              lNoHeaders, onenter, aHeaderImage, aHeaderImageAlign )
+              lNoHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -230,7 +230,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                 dynamicbackcolor, dynamicforecolor, aPicture, lRtl, nStyle, ;
                 inplace, editcontrols, readonly, valid, validmessages, ;
                 editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
-                lNoHeaders, onenter, aHeaderImage, aHeaderImageAlign ) CLASS TGrid
+                lNoHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local ControlHandle, aImageList, i, nCount, nPos, nImagesWidth, hcHandle
 
@@ -308,6 +308,7 @@ Local ControlHandle, aImageList, i, nCount, nPos, nImagesWidth, hcHandle
    ::OnEditCell := editcell
    ::aWhen := aWhenFields
    ASSIGN ::InPlace   VALUE inplace  TYPE "L"
+   ASSIGN ::FullMove  VALUE FullMove TYPE "L"
    ASSIGN ::AllowEdit VALUE Editable TYPE "L"
 
    // Load header's images
@@ -2021,7 +2022,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                dynamicbackcolor, dynamicforecolor, aPicture, lRtl, inplace, ;
                editcontrols, readonly, valid, validmessages, editcell, ;
                aWhenFields, lDisabled, lNoTabStop, lInvisible, lNoHeaders, ;
-               onenter, aHeaderImage, aHeaderImageAlign ) CLASS TGridMulti
+               onenter, aHeaderImage, aHeaderImageAlign, FullMove ) CLASS TGridMulti
 *-----------------------------------------------------------------------------*
 Local nStyle := 0
    ::Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
@@ -2032,7 +2033,7 @@ Local nStyle := 0
               dynamicbackcolor, dynamicforecolor, aPicture, lRtl, nStyle, ;
               inplace, editcontrols, readonly, valid, validmessages, ;
               editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
-              lNoHeaders, onenter, aHeaderImage, aHeaderImageAlign )
+              lNoHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove )
 Return Self
 
 *-----------------------------------------------------------------------------*

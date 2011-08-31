@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.46 2011-08-27 14:42:59 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.47 2011-08-31 01:09:40 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -135,6 +135,7 @@ CLASS TXBROWSE FROM TGrid
 /* tbrowse:
    METHOD SetColumn( nColumn, oCol )      // Replaces one TBColumn object with another
 */
+   MESSAGE EditGrid METHOD EditAllCells
 
    EMPTY( _OOHG_AllVars )
 ENDCLASS
@@ -150,7 +151,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                readonly, valid, validmessages, editcell, aWhenFields, ;
                lRecCount, columninfo, lNoHeaders, onenter, lDisabled, ;
                lNoTabStop, lInvisible, lDescending, bDelWhen, DelMsg, ;
-               onDelete, aHeaderImage, aHeaderImageAlign ) CLASS TXBrowse
+               onDelete, aHeaderImage, aHeaderImageAlign, FullMove ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
 Local nWidth2, nCol2, lLocked, oScroll, z
 
@@ -212,7 +213,7 @@ Local nWidth2, nCol2, lLocked, oScroll, z
               dynamicforecolor, aPicture, lRtl, LVS_SINGLESEL, ;
               inplace, editcontrols, readonly, valid, validmessages, ;
               editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
-              lNoHeaders,, aHeaderImage, aHeaderImageAlign )
+              lNoHeaders,, aHeaderImage, aHeaderImageAlign, FullMove )
 
    ::nWidth := w
 
@@ -268,15 +269,15 @@ Local nWidth2, nCol2, lLocked, oScroll, z
    ::lLocked := lLocked
 
    // Must be set after control is initialized
-   ASSIGN ::OnLostFocus VALUE lostfocus  TYPE "B"
-   ASSIGN ::OnGotFocus  VALUE gotfocus   TYPE "B"
-   ASSIGN ::OnChange    VALUE change     TYPE "B"
-   ASSIGN ::OnDblClick  VALUE dblclick   TYPE "B"
-   ASSIGN ::OnAppend    VALUE onappend   TYPE "B"
-   ASSIGN ::OnEnter     value onenter    TYPE "B"
-   ASSIGN ::bDelWhen    VALUE bDelWhen   TYPE "B"
-   ASSIGN ::DelMsg      VALUE DelMsg     TYPE "C"
-   ASSIGN ::OnDelete    VALUE onDelete   TYPE "B"
+   ASSIGN ::OnLostFocus VALUE lostfocus   TYPE "B"
+   ASSIGN ::OnGotFocus  VALUE gotfocus    TYPE "B"
+   ASSIGN ::OnChange    VALUE change      TYPE "B"
+   ASSIGN ::OnDblClick  VALUE dblclick    TYPE "B"
+   ASSIGN ::OnAppend    VALUE onappend    TYPE "B"
+   ASSIGN ::OnEnter     value onenter     TYPE "B"
+   ASSIGN ::bDelWhen    VALUE bDelWhen    TYPE "B"
+   ASSIGN ::DelMsg      VALUE DelMsg      TYPE "C"
+   ASSIGN ::OnDelete    VALUE onDelete    TYPE "B"
 
 Return Self
 
@@ -643,57 +644,6 @@ METHOD RefreshData() CLASS TXBrowse
 *-----------------------------------------------------------------------------*
    ::Refresh()
 RETURN ::Super:RefreshData()
-
-#pragma BEGINDUMP
-#define s_Super s_TGrid
-
-#include "hbapi.h"
-#include "hbapiitm.h"
-#include "hbvm.h"
-#include "hbstack.h"
-#include <windows.h>
-#include <commctrl.h>
-#include "oohg.h"
-extern int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam );
-
-// -----------------------------------------------------------------------------
-// METHOD Events_Notify( wParam, lParam ) CLASS TXBrowse
-HB_FUNC_STATIC( TXBROWSE_EVENTS_NOTIFY )
-// -----------------------------------------------------------------------------
-{
-   LONG wParam = hb_parnl( 1 );
-   LONG lParam = hb_parnl( 2 );
-   PHB_ITEM pSelf;
-
-   switch( ( ( NMHDR FAR * ) lParam )->code )
-   {
-      case NM_CLICK:
-      case LVN_BEGINDRAG:
-      case LVN_KEYDOWN:
-      case LVN_ITEMCHANGED:
-         HB_FUNCNAME( TXBROWSE_EVENTS_NOTIFY2 )();
-         break;
-
-      case NM_CUSTOMDRAW:
-      {
-         pSelf = hb_stackSelfItem();
-         _OOHG_Send( pSelf, s_AdjustRightScroll );
-         hb_vmSend( 0 );
-         hb_retni( TGrid_Notify_CustomDraw( pSelf, lParam ) );
-         break;
-      }
-
-      default:
-         _OOHG_Send( hb_stackSelfItem(), s_Super );
-         hb_vmSend( 0 );
-         _OOHG_Send( hb_param( -1, HB_IT_OBJECT ), s_Events_Notify );
-         hb_vmPushLong( wParam );
-         hb_vmPushLong( lParam );
-         hb_vmSend( 2 );
-         break;
-   }
-}
-#pragma ENDDUMP
 
 FUNCTION TXBrowse_Events_Notify2( wParam, lParam )
 Local Self := QSelf()
@@ -1173,45 +1123,73 @@ Return lRet
 *-----------------------------------------------------------------------------*
 METHOD EditAllCells( nRow, nCol, lAppend ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
-Local lRet, lRowEdited
+Local lRet, lRowEdited, lSomethingEdited
 
    ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
    ASSIGN nRow    VALUE nRow    TYPE "N" DEFAULT ::CurrentRow
    ASSIGN nCol    VALUE nCol    TYPE "N" DEFAULT 1
    
-   If nRow < 1 .OR. nRow > ::ItemCount() .OR. nCol < 1 .OR. nCol > Len( ::aHeaders )
+   If nRow < 1 .or. nRow > ::ItemCount() .or. nCol < 1 .or. nCol > Len( ::aHeaders )
       // Cell out of range
       Return .F.
    EndIf
 
-   lRet := .T.
-   lRowEdited := .F.
+   lSomethingEdited := .F.
+   
+   Do While .t.
+      lRet := .T.
+      lRowEdited := .F.
 
-   Do While nCol <= Len( ::aHeaders ) .AND. lRet
-      If ::IsColumnReadOnly( nCol )
-        // Read only column, skip
-      ElseIf ! ::IsColumnWhen( nCol )
-        // Not a valid WHEN, skip column and continue editing
-      Else
-         lRet := ::EditCell( nRow, nCol,,,,, lAppend )
+      Do While nCol <= Len( ::aHeaders ) .AND. lRet
+         If ::IsColumnReadOnly( nCol )
+           // Read only column, skip
+         ElseIf ! ::IsColumnWhen( nCol )
+           // Not a valid WHEN, skip column and continue editing
+         Else
+            lRet := ::EditCell( nRow, nCol,,,,, lAppend )
 
-         If lRet
-            lRowEdited := .T.
-         ElseIf lAppend
-            ::GoBottom()
-         ENDIF
-         
-         lAppend := .F.
+            If lRet
+               lRowEdited := .T.
+               lSomethingEdited := .T.
+            ElseIf lAppend
+               ::GoBottom()
+            EndIf
+
+            lAppend := .F.
+         EndIf
+
+         nCol++
+      EndDo
+
+      // If a column was edited, refresh
+      If lRowEdited
+         ListView_Scroll( ::hWnd, - _OOHG_GridArrayWidths( ::hWnd, ::aWidths ), 0 )
       EndIf
-      
-      nCol++
+
+      If ! lRet .or. ! ::FullMove
+         // Stop if the last column was not edited
+         // or it's not fullmove editing
+         Exit
+      ElseIf nRow < ::ItemCount()
+         // Edit next row
+         ::Down()
+
+         nRow ++
+         nCol := 1
+      ElseIf ::AllowAppend
+         // Insert new row
+         ::GoBottom( .T. )
+         ::InsertBlank( ::ItemCount + 1 )
+         nRow := ::CurrentRow := ::ItemCount
+         nCol := 1
+         lAppend := .T.
+         ::oWorkArea:GoTo( 0 )
+      Else
+         Exit
+      EndIf
    EndDo
-   
-   If lRowEdited
-      ListView_Scroll( ::hWnd, - _OOHG_GridArrayWidths( ::hWnd, ::aWidths ), 0 )
-   Endif
-   
-Return lRowEdited
+
+Return lSomethingEdited
 
 *-----------------------------------------------------------------------------*
 METHOD GetCellType( nCol, EditControl, uOldValue, cMemVar, bReplaceField ) CLASS TXBrowse
@@ -1252,7 +1230,7 @@ Local cField, cArea, nPos, aStruct
          nPos := ::oWorkArea:FieldPos( cField )
       EndIf
       If nPos == 0
-         cArea := cField := ""
+//         cArea := cField := ""
       Else
          If ! ValType( cMemVar ) $ "CM" .OR. Empty( cMemVar )
             cMemVar := "MemVar" + cArea + cField
@@ -1262,7 +1240,7 @@ Local cField, cArea, nPos, aStruct
          EndIf
       EndIf
    Else
-      cArea := cField := ""
+//      cArea := cField := ""
       nPos := 0
    EndIf
 
@@ -1304,76 +1282,6 @@ Local cField, cArea, nPos, aStruct
       EndIf
    EndIf
 Return .T.
-
-#pragma BEGINDUMP
-HB_FUNC_STATIC( TXBROWSE_ADJUSTRIGHTSCROLL )
-{
-   PHB_ITEM pSelf = hb_stackSelfItem();
-   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
-   LONG lStyle;
-   BOOL bChanged = 0;
-   PHB_ITEM pVScroll, pRet;
-
-   lStyle = GetWindowLong( oSelf->hWnd, GWL_STYLE );
-   if( lStyle & WS_VSCROLL )
-   {
-      bChanged = 1;
-   }
-   else
-   {
-      lStyle = ( lStyle & WS_HSCROLL ) ? 1 : 0;
-      if( lStyle != oSelf->lAux[ 0 ] )
-      {
-         oSelf->lAux[ 0 ] = lStyle;
-
-         _OOHG_Send( pSelf, s_VScroll );
-         hb_vmSend( 0 );
-         pRet = hb_param( -1, HB_IT_OBJECT );
-         if( pRet )
-         {
-            int iHeight;
-
-            pVScroll = hb_itemNew( NULL );
-            hb_itemCopy( pVScroll, pRet );
-
-            _OOHG_Send( pSelf, s_Height );
-            hb_vmSend( 0 );
-            iHeight = hb_parni( -1 );
-
-            if( lStyle )
-            {
-               _OOHG_Send( pVScroll, s_Height );
-               hb_vmPushInteger( iHeight - GetSystemMetrics( SM_CYHSCROLL ) );
-               hb_vmSend( 1 );
-            }
-            else
-            {
-               _OOHG_Send( pVScroll, s_Height );
-               hb_vmPushInteger( iHeight );
-               hb_vmSend( 1 );
-            }
-
-            _OOHG_Send( pSelf, s_ScrollButton );
-            hb_vmSend( 0 );
-            _OOHG_Send( hb_param( -1, HB_IT_OBJECT ), s_Visible );
-            hb_vmPushLogical( lStyle );
-            hb_vmSend( 1 );
-
-            hb_itemRelease( pVScroll );
-         }
-
-         bChanged = 1;
-      }
-   }
-
-   if( bChanged )
-   {
-      _OOHG_Send( pSelf, s_Refresh );
-      hb_vmSend( 0 );
-   }
-   hb_retl( bChanged );
-}
-#pragma ENDDUMP
 
 *-----------------------------------------------------------------------------*
 METHOD ColumnWidth( nColumn, nWidth ) CLASS TXBrowse
@@ -1617,3 +1525,146 @@ METHOD Filter( cFilter ) CLASS ooHGRecord
       ( ::cAlias__ )->( DbSetFilter( { || &( cFilter ) } , cFilter ) )
    EndIf
 RETURN nil
+
+#pragma BEGINDUMP
+#define s_Super s_TGrid
+
+#include "hbapi.h"
+#include "hbapiitm.h"
+#include "hbvm.h"
+#include "hbstack.h"
+#include <windows.h>
+#include <commctrl.h>
+#include "oohg.h"
+extern int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam );
+
+// -----------------------------------------------------------------------------
+// METHOD Events_Notify( wParam, lParam ) CLASS TXBrowse
+HB_FUNC_STATIC( TXBROWSE_EVENTS_NOTIFY )
+// -----------------------------------------------------------------------------
+{
+   LONG wParam = hb_parnl( 1 );
+   LONG lParam = hb_parnl( 2 );
+   PHB_ITEM pSelf;
+
+   switch( ( ( NMHDR FAR * ) lParam )->code )
+   {
+      case NM_CLICK:
+      case LVN_BEGINDRAG:
+      case LVN_KEYDOWN:
+      case LVN_ITEMCHANGED:
+         HB_FUNCNAME( TXBROWSE_EVENTS_NOTIFY2 )();
+         break;
+
+      case NM_CUSTOMDRAW:
+      {
+         pSelf = hb_stackSelfItem();
+         _OOHG_Send( pSelf, s_AdjustRightScroll );
+         hb_vmSend( 0 );
+         hb_retni( TGrid_Notify_CustomDraw( pSelf, lParam ) );
+         break;
+      }
+
+      default:
+         _OOHG_Send( hb_stackSelfItem(), s_Super );
+         hb_vmSend( 0 );
+         _OOHG_Send( hb_param( -1, HB_IT_OBJECT ), s_Events_Notify );
+         hb_vmPushLong( wParam );
+         hb_vmPushLong( lParam );
+         hb_vmSend( 2 );
+         break;
+   }
+}
+
+HB_FUNC_STATIC( TXBROWSE_ADJUSTRIGHTSCROLL )
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   LONG lStyle;
+   BOOL bChanged = 0;
+   PHB_ITEM pVScroll, pRet;
+
+   lStyle = GetWindowLong( oSelf->hWnd, GWL_STYLE );
+   if( lStyle & WS_VSCROLL )
+   {
+      bChanged = 1;
+   }
+   else
+   {
+      lStyle = ( lStyle & WS_HSCROLL ) ? 1 : 0;
+      if( lStyle != oSelf->lAux[ 0 ] )
+      {
+         oSelf->lAux[ 0 ] = lStyle;
+
+         _OOHG_Send( pSelf, s_VScroll );
+         hb_vmSend( 0 );
+         pRet = hb_param( -1, HB_IT_OBJECT );
+         if( pRet )
+         {
+            int iHeight;
+
+            pVScroll = hb_itemNew( NULL );
+            hb_itemCopy( pVScroll, pRet );
+
+            _OOHG_Send( pSelf, s_Height );
+            hb_vmSend( 0 );
+            iHeight = hb_parni( -1 );
+
+            if( lStyle )
+            {
+               _OOHG_Send( pVScroll, s_Height );
+               hb_vmPushInteger( iHeight - GetSystemMetrics( SM_CYHSCROLL ) );
+               hb_vmSend( 1 );
+            }
+            else
+            {
+               _OOHG_Send( pVScroll, s_Height );
+               hb_vmPushInteger( iHeight );
+               hb_vmSend( 1 );
+            }
+
+            _OOHG_Send( pSelf, s_ScrollButton );
+            hb_vmSend( 0 );
+            _OOHG_Send( hb_param( -1, HB_IT_OBJECT ), s_Visible );
+            hb_vmPushLogical( lStyle );
+            hb_vmSend( 1 );
+
+            hb_itemRelease( pVScroll );
+         }
+
+         bChanged = 1;
+      }
+   }
+
+   if( bChanged )
+   {
+      _OOHG_Send( pSelf, s_Refresh );
+      hb_vmSend( 0 );
+   }
+   hb_retl( bChanged );
+}
+
+#define   VK_A   65
+
+HB_FUNC( INSERT_ALT_A )
+{
+	keybd_event(VK_MENU,	       // virtual-key code
+              0,    		       // hardware scan code
+		          0,		           // flags specifying various function options
+		          0		             // additional data associated with keystroke
+	           ) ;
+
+	keybd_event(VK_A,	           // virtual-key code
+		          0,		           // hardware scan code
+		          0,		           // flags specifying various function options
+		          0		             // additional data associated with keystroke
+	           ) ;
+
+	keybd_event(VK_MENU,	       // virtual-key code
+		          0,		           // hardware scan code
+		          KEYEVENTF_KEYUP, // flags specifying various function options
+		          0		             // additional data associated with keystroke
+	           );
+}
+
+#pragma ENDDUMP
