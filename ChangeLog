@@ -1,12 +1,30 @@
 
 /*
- * $Id: ChangeLog,v 1.763 2011-08-30 02:21:35 fyurisich Exp $
+ * $Id: ChangeLog,v 1.764 2011-08-31 01:35:37 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2011-08-30 22:25:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   + samples/oohg/oohgrecord/xbrowsearray.prg
+     + Added APPEND method to XBrowse_Array class.
+     * Changed comments about methods used and not used by TXBROWSE class.
+     
+2011-08-30 22:10:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * doc/classes.txt
+     * Added EDITGRID message of TXBROWSE class.
+   + source/h_grid.prg
+   + include/i_grid.ch
+   + include/i_altsyntax.ch
+     + Added support for FULLMOVE clause at GRID's creation.
+   + source/h_xbrowse.prg
+   + source/h_browse.prg
+   + include/i_xbrowse.ch
+   + include/i_browse.ch
+     + Added FULLMOVE clause.
 
 2011-08-29 23:20:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    ! source/h_grid.prg
