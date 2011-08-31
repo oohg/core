@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.27 2011-08-27 13:58:51 fyurisich Exp $
+ * $Id: classes.txt,v 1.28 2011-08-31 01:11:56 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -1719,6 +1719,7 @@ CLASS TSCROLLBAR FROM TCONTROL
    MESSAGE PAGELEFT
    MESSAGE PAGERIGHT
    MESSAGE RIGHT
+   
    METHOD BOTTOM
    METHOD DEFINE
    METHOD EVENTS_VSCROLL
@@ -2126,6 +2127,8 @@ CLASS TXBROWSE FROM TGRID
    DATA UWORKAREA                 INIT NIL
    DATA VSCROLL                   INIT NIL
 
+   MESSAGE EDITGRID               METHOD EDITALLCELLS
+   
    METHOD ADJUSTRIGHTSCROLL
    METHOD COLUMNAUTOFIT
    METHOD COLUMNAUTOFITH
