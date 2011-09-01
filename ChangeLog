@@ -1,12 +1,16 @@
 
 /*
- * $Id: ChangeLog,v 1.764 2011-08-31 01:35:37 fyurisich Exp $
+ * $Id: ChangeLog,v 1.765 2011-09-01 18:15:16 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2011-09-01 15:15:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   ! source/h_grid.prg
+     ! Fixed crash in Win7 and 2008 when control has no header images.
 
 2011-08-30 22:25:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    + samples/oohg/oohgrecord/xbrowsearray.prg

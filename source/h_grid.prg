@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.127 2011-08-31 01:09:40 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.128 2011-09-01 18:13:51 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -364,14 +364,16 @@ Local ControlHandle, aImageList, i, nCount, nPos, nImagesWidth, hcHandle
       Next i
    EndIf
 
-   // Associate the imagelist with the header control of the listview
-   SETHEADERIMAGELIST( ControlHandle, ::HeaderImageList )
+   If ValidHandler( ::HeaderImageList )
+      // Associate the imagelist with the header control of the listview
+      SETHEADERIMAGELIST( ControlHandle, ::HeaderImageList )
 
-   // Set each header's image
-   For i := 1 to Len( ::aHeaders )
-     ::HeaderImage( i, ::aHeaderImage[ i ] )
-     ::HeaderImageAlign( i, ::aHeaderImageAlign[ i ] )
-   Next i
+      // Set each header's image
+      For i := 1 to Len( ::aHeaders )
+        ::HeaderImage( i, ::aHeaderImage[ i ] )
+        ::HeaderImageAlign( i, ::aHeaderImageAlign[ i ] )
+      Next i
+   EndIf
 
    // Load rows
    AEVAL( aRows, { |u| ::AddItem( u ) } )
@@ -1767,7 +1769,7 @@ METHOD HeaderImage( nColumn, nImg ) CLASS TGrid
       
       IF nImg == 0
         REMOVEGRIDCOLUMNIMAGE( ::hWnd, nColumn )
-      ELSE
+      ELSEIF ValidHandler( ::HeaderImageList )
         SETGRIDCOLUMNIMAGE( ::hWnd, nColumn, nImg, .F. )
       ENDIF
    ENDIF
@@ -1780,10 +1782,16 @@ METHOD HeaderImageAlign( nColumn, nPlace ) CLASS TGrid
       IF HB_IsNumeric( nPlace )
          IF nPlace == HEADER_IMG_AT_RIGHT
             ::aHeaderImageAlign[ nColumn ] := HEADER_IMG_AT_RIGHT
-            SETGRIDCOLUMNIMAGE( ::hWnd, nColumn, ::aHeaderImage[ nColumn ], .T. )
+
+            IF ValidHandler( ::HeaderImageList )
+               SETGRIDCOLUMNIMAGE( ::hWnd, nColumn, ::aHeaderImage[ nColumn ], .T. )
+            ENDIF
          ELSE
             ::aHeaderImageAlign[ nColumn ] := HEADER_IMG_AT_LEFT
-            SETGRIDCOLUMNIMAGE( ::hWnd, nColumn, ::aHeaderImage[ nColumn ], .F. )
+
+            IF ValidHandler( ::HeaderImageList )
+               SETGRIDCOLUMNIMAGE( ::hWnd, nColumn, ::aHeaderImage[ nColumn ], .F. )
+            ENDIF
          ENDIF
       ENDIF
    ENDIF
@@ -1793,7 +1801,7 @@ Return ::aHeaderImageAlign[ nColumn ]
 METHOD Release() CLASS TGrid
 *------------------------------------------------------------------------------*
 
-   IF ::HeaderImageList != Nil
+   IF ValidHandler( ::HeaderImageList )
       ImageList_Destroy( ::HeaderImageList )
    ENDIF
 
