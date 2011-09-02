@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.112 2011-08-20 20:32:50 declan2005 Exp $
+* $Id: h_print.prg,v 1.113 2011-09-02 23:08:54 guerra000 Exp $
 */
 
 #include 'hbclass.ch'
@@ -1130,7 +1130,7 @@ METHOD printdatax(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext,lita
 Empty( Data )
 DEFAULT aColor to ::acolor
 Empty( nLen )
-
+Empty( nangle )
 
 if ::cunits="MM"
 do case
@@ -2597,6 +2597,14 @@ RETURN self
 METHOD printdatax(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext,litalic) CLASS TSPREADSHEETPRINT
 *-------------------------
 local clineai,clineaf
+Empty( cfont )
+Empty( nsize )
+Empty( lbold )
+Empty( acolor )
+Empty( calign )
+Empty( nlen )
+Empty( ctext )
+Empty( litalic )
 nlin++
 data:=autotype(data)
 clineai:=::aDoc[nlin+::nlinrel]

@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.130 2011-09-02 03:13:43 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.131 2011-09-02 23:08:54 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -232,7 +232,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                 editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
                 lNoHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove ) CLASS TGrid
 *-----------------------------------------------------------------------------*
-Local ControlHandle, aImageList, i, nCount, nPos, nImagesWidth, hcHandle
+Local ControlHandle, aImageList, i
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, .t., lRtl )
 

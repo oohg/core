@@ -1,12 +1,12 @@
 /*
- * $Id: h_tree.prg,v 1.21 2011-08-19 02:15:23 fyurisich Exp $
+ * $Id: h_tree.prg,v 1.22 2011-09-02 23:08:54 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG tree functions
  *
  * Copyright 2005 Vicente Guerra <vicente@guerra.com.mx>
- * www - http://www.guerra.com.mx
+ * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -1237,7 +1237,7 @@ HB_FUNC( TREEVIEW_GETINDENT )
 
 HB_FUNC( TREEVIEW_SETINDENT )
 {
-   (UINT)( TreeView_SetIndent( HWNDparam( 1 ), hb_parni( 2 ) ) );
+   TreeView_SetIndent( HWNDparam( 1 ), hb_parni( 2 ) );
 }
 
 static WNDPROC lpfnOldWndProcEditCtrl = 0;
