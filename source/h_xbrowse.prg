@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.47 2011-08-31 01:09:40 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.48 2011-09-02 02:01:05 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1342,7 +1342,9 @@ METHOD WorkArea( uWorkArea ) CLASS TXBrowse
 RETURN ::uWorkArea
 
 *-----------------------------------------------------------------------------*
-METHOD AddColumn( nColIndex, xField, cHeader, nWidth, nJustify, uForeColor, uBackColor, lNoDelete, uPicture, uEditControl ) CLASS TXBrowse
+METHOD AddColumn( nColIndex, xField, cHeader, nWidth, nJustify, uForeColor, ;
+                  uBackColor, lNoDelete, uPicture, uEditControl, uHeadClick, ;
+                  uValid, uValidMessage, uWhen, cHeaderImage, nHeaderImageAlign ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
 
    // Set Default Values
@@ -1361,7 +1363,9 @@ METHOD AddColumn( nColIndex, xField, cHeader, nWidth, nJustify, uForeColor, uBac
       AINS( ::aReplaceField, nColIndex )
    EndIf
 
-   ::Super:AddColumn( nColIndex, cHeader, nWidth, nJustify, uForeColor, uBackColor, lNoDelete, uPicture, uEditControl )
+   ::Super:AddColumn( nColIndex, cHeader, nWidth, nJustify, uForeColor, ;
+                      uBackColor, lNoDelete, uPicture, uEditControl, uHeadClick, ;
+                      uValid, uValidMessage, uWhen, cHeaderImage, nHeaderImageAlign )
    ::Refresh()
 RETURN nil
 

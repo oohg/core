@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.128 2011-09-01 18:13:51 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.129 2011-09-02 02:01:04 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -82,13 +82,13 @@
 
  Parts of this project are based upon:
 
-	"Harbour GUI framework for Win32"
- 	Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- 	Copyright 2001 Antonio Linares <alinares@fivetech.com>
-	www - http://www.harbour-project.org
+ "Harbour GUI framework for Win32"
+ Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
+ Copyright 2001 Antonio Linares <alinares@fivetech.com>
+ www - http://www.harbour-project.org
 
-	"Harbour Project"
-	Copyright 1999-2003, http://www.harbour-project.org/
+ "Harbour Project"
+ Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
 #include "oohg.ch"
@@ -185,8 +185,8 @@ CLASS TGrid FROM TControl
    METHOD SortColumn
    METHOD Up
    METHOD Down
-   METHOD left
-   METHOD right
+   METHOD Left
+   METHOD Right
    METHOD PageDown
    METHOD PageUP
    METHOD GoTop
@@ -194,7 +194,7 @@ CLASS TGrid FROM TControl
    METHOD HeaderImage
    METHOD HeaderImageAlign
    METHOD Release
-
+   METHOD LoadHeaderImages
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -311,7 +311,60 @@ Local ControlHandle, aImageList, i, nCount, nPos, nImagesWidth, hcHandle
    ASSIGN ::FullMove  VALUE FullMove TYPE "L"
    ASSIGN ::AllowEdit VALUE Editable TYPE "L"
 
-   // Load header's images
+   // Load images alignments
+   // This should come before than 'Load header images'
+   ::aHeaderImageAlign := aFill( Array( len( ::aHeaders ) ), HEADER_IMG_AT_LEFT )
+
+   If HB_IsArray( aHeaderImageAlign )
+      For i := 1 to Len( aHeaderImageAlign )
+         If HB_IsNumeric( aHeaderImageAlign[ i ] ) .AND. aHeaderImageAlign[ i ] == HEADER_IMG_AT_RIGHT
+           ::aHeaderImageAlign[ i ] := HEADER_IMG_AT_RIGHT
+         EndIf
+      Next i
+   EndIf
+
+   // Load header images
+   // This should come after 'Load images alignments'
+   ::LoadHeaderImages( aHeaderImage )
+
+   If ValidHandler( ::HeaderImageList )
+      // Associate the imagelist with the listview's header control
+      SETHEADERIMAGELIST( ControlHandle, ::HeaderImageList )
+
+      // Set images aligments
+      For i := 1 to Len( ::aHeaders )
+        ::HeaderImage( i, ::aHeaderImage[ i ] )
+        ::HeaderImageAlign( i, ::aHeaderImageAlign[ i ] )
+      Next i
+   EndIf
+
+   // Load rows
+   AEVAL( aRows, { |u| ::AddItem( u ) } )
+
+   ::Value := value
+
+   // Must be set after control is initialized
+   ASSIGN ::OnLostFocus VALUE lostfocus  TYPE "B"
+   ASSIGN ::OnGotFocus  VALUE gotfocus   TYPE "B"
+   ASSIGN ::OnChange    VALUE Change     TYPE "B"
+   ASSIGN ::OnDblClick  VALUE dblclick   TYPE "B"
+   ASSIGN ::OnDispInfo  VALUE ondispinfo TYPE "B"
+   ASSIGN ::OnEnter     value onenter    TYPE "B"
+
+Return Self
+
+*-----------------------------------------------------------------------------*
+METHOD LoadHeaderImages( aHeaderImage ) CLASS TGrid
+*-----------------------------------------------------------------------------*
+LOCAL i, nPos, nCount, aImageList, nImagesWidth
+
+   // Destroy previous imagelist
+   If ValidHandler( ::HeaderImageList )
+      ImageList_Destroy( ::HeaderImageList )
+   EndIf
+   ::HeaderImageList := Nil
+
+   // Load images into imagelist
    ::aHeaderImage := aFill( Array( len( ::aHeaders ) ), 0 )
 
    If HB_IsArray( aHeaderImage )
@@ -352,43 +405,22 @@ Local ControlHandle, aImageList, i, nCount, nPos, nImagesWidth, hcHandle
          EndIf
       Next i
    Endif
-   
-   // Load images' placement
-   ::aHeaderImageAlign := aFill( Array( len( ::aHeaders ) ), HEADER_IMG_AT_LEFT )
-
-   If HB_IsArray( aHeaderImageAlign )
-      For i := 1 to Len( aHeaderImageAlign )
-         If HB_IsNumeric( aHeaderImageAlign[ i ] ) .AND. aHeaderImageAlign[ i ] == HEADER_IMG_AT_RIGHT
-           ::aHeaderImageAlign[ i ] := HEADER_IMG_AT_RIGHT
-         EndIf
-      Next i
-   EndIf
 
    If ValidHandler( ::HeaderImageList )
       // Associate the imagelist with the header control of the listview
-      SETHEADERIMAGELIST( ControlHandle, ::HeaderImageList )
+      SETHEADERIMAGELIST( ::hWnd, ::HeaderImageList )
 
-      // Set each header's image
+      // Set images aligments
       For i := 1 to Len( ::aHeaders )
         ::HeaderImage( i, ::aHeaderImage[ i ] )
         ::HeaderImageAlign( i, ::aHeaderImageAlign[ i ] )
       Next i
+   Else
+      // Deassociate the imagelist
+      SETHEADERIMAGELIST( ::hWnd, 0 )
    EndIf
-
-   // Load rows
-   AEVAL( aRows, { |u| ::AddItem( u ) } )
-
-   ::Value := value
-
-   // Must be set after control is initialized
-   ASSIGN ::OnLostFocus VALUE lostfocus  TYPE "B"
-   ASSIGN ::OnGotFocus  VALUE gotfocus   TYPE "B"
-   ASSIGN ::OnChange    VALUE Change     TYPE "B"
-   ASSIGN ::OnDblClick  VALUE dblclick   TYPE "B"
-   ASSIGN ::OnDispInfo  VALUE ondispinfo TYPE "B"
-   ASSIGN ::OnEnter     value onenter    TYPE "B"
-
-Return Self
+   
+Return Nil
 
 *-----------------------------------------------------------------------------*
 METHOD OnEnter( bEnter ) CLASS TGrid
@@ -404,17 +436,21 @@ LOCAL bRet
    Else
       bRet := IF( _OOHG_SameEnterDblClick, ::OnDblClick, ::bOnEnter )
    EndIf
-RETURN bRet
+Return bRet
 
+*--------------------------------------------------------------------------*
 METHOD AppendItem() CLASS TGrid
+*--------------------------------------------------------------------------*
    ::lAppendMode := .T.
    ::InsertBlank( ::ItemCount + 1 )
    ::nRowPos := ::ItemCount
    ::Value := ::ItemCount
    ::Events_Enter()
-RETURN NIL
+Return Nil
 
+*--------------------------------------------------------------------------*
 METHOD EDITGRID(nrow,ncol) CLASS TGrid
+*--------------------------------------------------------------------------*
 Local lRet, I, nLast
    IF !HB_IsNumeric( nRow )
       nRow := ::FirstSelectedItem
@@ -487,24 +523,30 @@ Local lRet, I, nLast
    ::lnested:=.F.
 Return lRet
 
+*--------------------------------------------------------------------------*
 METHOD RIGHT() CLASS TGrid
+*--------------------------------------------------------------------------*
    if ::leditmode .and. ::fullmove
       if ::ncolpos<len(::aheaders)
          ::ncolpos++
       endif
    endif
-return self
+Return self
 
+*--------------------------------------------------------------------------*
 METHOD LEFT() CLASS TGrid
+*--------------------------------------------------------------------------*
    if ::leditmode .and. ::fullmove
       if ::ncolpos>1
          ::ncolpos--
          ::ncolpos--
       endif
    endif
-return self
+Return self
 
+*--------------------------------------------------------------------------*
 METHOD DOWN() CLASS TGrid
+*--------------------------------------------------------------------------*
    if ::leditmode
       if ::nrowpos<::itemcount()
          ::nrowpos++
@@ -514,9 +556,11 @@ METHOD DOWN() CLASS TGrid
          ::value++
       ENDIF
    endif
-return self
+Return self
 
+*--------------------------------------------------------------------------*
 METHOD UP() CLASS TGrid
+*--------------------------------------------------------------------------*
    if ::leditmode
       if ::nrowpos>1
          ::nrowpos--
@@ -526,7 +570,7 @@ METHOD UP() CLASS TGrid
          ::value--
       ENDIF
    endif
-return self
+Return self
 
 *--------------------------------------------------------------------------*
 METHOD PageUp() CLASS TGrid
@@ -536,7 +580,7 @@ METHOD PageUp() CLASS TGrid
    else
       ::GoTop()
    endif
-return self
+Return self
 
 *-------------------------------------------------------------------------*
 METHOD PageDown() CLASS TGrid
@@ -546,7 +590,7 @@ METHOD PageDown() CLASS TGrid
    else
      ::GoBottom()
    endif
-return self
+Return self
 
 *---------------------------------------------------------------------------*
 METHOD GoTop() CLASS TGrid
@@ -621,8 +665,7 @@ METHOD toExcel( cTitle, nRow ) CLASS TGrid
    oHoja := NIL
    oExcel:= NIL
 
-  RETURN nil
-
+Return nil
 
 *-----------------------------------------------------------------------------*
 METHOD EditItem() CLASS TGrid
@@ -791,7 +834,7 @@ Local aReturn
    @ nRow, 145 BUTTON 0 PARENT ( oWnd ) CAPTION _OOHG_Messages( 1, 7 ) ;
          ACTION oMain:Release()
 
-	END WINDOW
+   END WINDOW
 
    If lSplitWindow
       END SPLITBOX
@@ -881,7 +924,7 @@ METHOD IsColumnReadOnly( nCol ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 LOCAL uReadOnly
    uReadOnly := _OOHG_GetArrayItem( ::ReadOnly, nCol )
-RETURN ( HB_IsLogical( uReadOnly )  .AND. uReadOnly )
+Return ( HB_IsLogical( uReadOnly )  .AND. uReadOnly )
 
 *-----------------------------------------------------------------------------*
 METHOD IsColumnWhen( nCol ) CLASS TGrid
@@ -895,10 +938,12 @@ LOCAL uWhen
    Else
       uWhen := NIL
    EndIf
-RETURN ( !HB_IsLogical( uWhen ) .OR. uWhen )
+Return ( !HB_IsLogical( uWhen ) .OR. uWhen )
 
 *-----------------------------------------------------------------------------*
-METHOD AddColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor, lNoDelete, uPicture, uEditControl ) CLASS TGrid
+METHOD AddColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor, ;
+                  lNoDelete, uPicture, uEditControl, uHeadClick, uValid, ;
+                  uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign  ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local nColumns, uGridColor, uDynamicColor
 
@@ -967,8 +1012,64 @@ Local nColumns, uGridColor, uDynamicColor
       ::EditControls[ nColIndex ] := uEditControl
    ENDIF
 
+   // Update justification
+   ASIZE( ::aJust, nColumns )
+   AINS( ::aJust, nColIndex )
+   ::aJust[ nColIndex ] := nJustify
+
+   // Update on head click codeblock
+   ASIZE( ::aHeadClick, nColumns )
+   AINS( ::aHeadClick, nColIndex )
+   ::aHeadClick[ nColIndex ] := uHeadClick
+
+   // Update valid
+   IF HB_IsArray( ::valid )
+      ASIZE( ::valid, nColumns )
+      AINS( ::valid, nColIndex )
+      ::valid[ nColIndex ] := uValid
+   ELSEIF uValid != NIL
+      ::valid := ARRAY( nColumns )
+      ::valid[ nColIndex ] := uValid
+   ENDIF
+
+   // Update validmessages
+   IF HB_IsArray( ::validmessages )
+      ASIZE( ::validmessages, nColumns )
+      AINS( ::validmessages, nColIndex )
+      ::validmessages[ nColIndex ] := uValidMessage
+   ELSEIF uValidMessage != NIL
+      ::validmessages := ARRAY( nColumns )
+      ::validmessages[ nColIndex ] := uValidMessage
+   ENDIF
+
+   // Update when
+   IF HB_IsArray( ::aWhen )
+      ASIZE( ::aWhen, nColumns )
+      AINS( ::aWhen, nColIndex )
+      ::aWhen[ nColIndex ] := uWhen
+   ELSEIF uWhen != NIL
+      ::aWhen := ARRAY( nColumns )
+      ::aWhen[ nColIndex ] := uWhen
+   ENDIF
+
    // Call C-Level Routine
    ListView_AddColumn( ::hWnd, nColIndex, nWidth, cCaption, nJustify, lNoDelete )
+
+   // Update header image
+   ASIZE( ::aHeaderImage, nColumns )
+   AINS( ::aHeaderImage, nColIndex )
+   IF !HB_IsNumeric( nHeaderImage ) .OR. nHeaderImage < 0
+      nHeaderImage := 0
+   ENDIF
+   ::HeaderImage( nColIndex, nHeaderImage )
+
+   // Update header image alignment
+   ASIZE( ::aHeaderImageAlign, nColumns )
+   AINS( ::aHeaderImageAlign, nColIndex )
+   IF !HB_IsNumeric( nHeaderImageAlign ) .OR. nHeaderImageAlign != HEADER_IMG_AT_RIGHT
+      nHeaderImageAlign := HEADER_IMG_AT_LEFT
+   ENDIF
+   ::HeaderImageAlign( nColIndex, nHeaderImageAlign )
 
 Return nil
 
@@ -1018,37 +1119,36 @@ Return NIL
 METHOD ColumnBetterAutoFit( nColIndex ) CLASS Tgrid
 *----------------------------------------------------------------------------*
 LOCAL n,nh
- IF HB_isnumeric( nColIndex )
-    IF nColindex > 0
-       nh:= ::ColumnAutoFith( nColIndex )
-       n:= ::ColumnAutoFit( nColIndex )
-       IF nh>n
-          n:= ::ColumnAutoFith( nColIndex )
-       ENDIF
-    ENDIF
-ENDIF
-RETURN Nil
+   IF HB_isnumeric( nColIndex )
+      IF nColindex > 0
+         nh:= ::ColumnAutoFith( nColIndex )
+         n:= ::ColumnAutoFit( nColIndex )
+         IF nh>n
+            n:= ::ColumnAutoFith( nColIndex )
+         ENDIF
+      ENDIF
+   ENDIF
+Return Nil
 
 *-----------------------------------------------------------------------------*
 METHOD ColumnHide( nColIndex ) CLASS TGrid
 *-----------------------------------------------------------------------------*
- IF HB_isnumeric( nColIndex )
-    IF nColindex > 0
-      ::ColumnWidth( nColIndex, 0 )
-    ENDIF
- ENDIF
- Return Nil
+   IF HB_isnumeric( nColIndex )
+      IF nColindex > 0
+         ::ColumnWidth( nColIndex, 0 )
+      ENDIF
+   ENDIF
+Return Nil
 
 *-----------------------------------------------------------------------------*
 METHOD ColumnShow( nColIndex ) CLASS TGrid
 *-----------------------------------------------------------------------------*
-IF HB_isnumeric( nColIndex )
-    IF nColindex > 0
-       ::ColumnBetterAutoFit ( nColIndex )
-    ENDIF
-ENDIF
+   IF HB_isnumeric( nColIndex )
+      IF nColindex > 0
+         ::ColumnBetterAutoFit ( nColIndex )
+      ENDIF
+   ENDIF
 Return Nil
-
 
 *-----------------------------------------------------------------------------*
 METHOD DeleteColumn( nColIndex, lNoDelete ) CLASS TGrid
@@ -1065,12 +1165,18 @@ Local nColumns
       nColIndex := nColumns
    ElseIf nColIndex < 1
       nColIndex := 1
-	EndIf
+   EndIf
 
    _OOHG_DeleteArrayItem( ::aHeaders, nColIndex )
-   _OOHG_DeleteArrayItem( ::aWidths,  nColIndex )
-   _OOHG_DeleteArrayItem( ::Picture,  nColIndex )
-
+   _OOHG_DeleteArrayItem( ::aWidths, nColIndex )
+   _OOHG_DeleteArrayItem( ::Picture, nColIndex )
+   _OOHG_DeleteArrayItem( ::aHeadClick, nColIndex )
+   _OOHG_DeleteArrayItem( ::aJust, nColIndex )
+   _OOHG_DeleteArrayItem( ::valid, nColIndex )
+   _OOHG_DeleteArrayItem( ::validmessages, nColIndex )
+   _OOHG_DeleteArrayItem( ::aWhen, nColIndex )
+   _OOHG_DeleteArrayItem( ::aHeaderImage, nColIndex )
+   _OOHG_DeleteArrayItem( ::aHeaderImageAlign, nColIndex )
    _OOHG_DeleteArrayItem( ::DynamicForeColor, nColIndex )
    _OOHG_DeleteArrayItem( ::DynamicBackColor, nColIndex )
 
@@ -1093,7 +1199,7 @@ Local nColumns
       ENDIF
    ENDIF
 
-	// Call C-Level Routine
+   // Call C-Level Routine
    ListView_DeleteColumn( ::hWnd, nColIndex, lNoDelete )
 
 Return nil
@@ -1107,7 +1213,7 @@ METHOD Value( uValue ) CLASS TGrid
    ELSE
       uValue := ::FirstSelectedItem
    ENDIF
-RETURN uValue
+Return uValue
 
 *-----------------------------------------------------------------------------*
 METHOD Cell( nRow, nCol, uValue ) CLASS TGrid
@@ -1411,7 +1517,7 @@ HB_FUNC_STATIC( TGRID_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
             }
          }
          break;
-	}
+   }
 
    if( bDefault )
    {
@@ -1484,7 +1590,7 @@ Local aCellData
 
    EndIf
 
-RETURN nil
+Return nil
 
 *-----------------------------------------------------------------------------*
 FUNCTION _OOHG_TGrid_Notify2( Self, wParam, lParam ) // CLASS TGrid
@@ -1514,7 +1620,7 @@ Local nNotify := GetNotifyCode( lParam )      //, nColumn := NMHeader_iItem( lPa
       EndIf
    EndIf
 
-RETURN nil
+Return nil
 
 *-----------------------------------------------------------------------------*
 METHOD Events_Enter() CLASS TGrid
@@ -1705,7 +1811,7 @@ Local aTemp, nColumn, xValue, oEditControl
          aTemp[ nColumn ] := xValue
       EndIf
    Next
-RETURN aTemp
+Return aTemp
 
 *-----------------------------------------------------------------------------*
 METHOD SetItemColor( nItem, uForeColor, uBackColor, uExtra ) CLASS TGrid
@@ -1764,7 +1870,7 @@ Return ::aHeaders[ nColumn ]
 *-----------------------------------------------------------------------------*
 METHOD HeaderImage( nColumn, nImg ) CLASS TGrid
 *-----------------------------------------------------------------------------*
-   IF HB_IsNumeric( nImg )
+   IF HB_IsNumeric( nImg ) .AND. nImg >= 0
       ::aHeaderImage[ nColumn ] := nImg
       
       IF nImg == 0
@@ -1803,6 +1909,7 @@ METHOD Release() CLASS TGrid
 
    IF ValidHandler( ::HeaderImageList )
       ImageList_Destroy( ::HeaderImageList )
+      ::HeaderImageList := Nil
    ENDIF
 
 Return ::Super:Release()
@@ -2051,7 +2158,7 @@ METHOD Value( uValue ) CLASS TGridMulti
       LISTVIEWSETMULTISEL( ::hWnd, uValue )
       If Len( uValue ) > 0
          ListView_EnsureVisible( ::hWnd, uValue[ 1 ] )
-		EndIf
+      EndIf
    ENDIF
 RETURN ListViewGetMultiSel( ::hWnd )
 
@@ -2070,48 +2177,48 @@ Local xd
 Local aCellData
 
    r := ListView_HitTest ( ::hWnd, GetCursorRow() - GetWindowRow ( ::hWnd ), GetCursorCol() - GetWindowCol ( ::hWnd ) )
-	If r [2] == 1
+   If r [2] == 1
       ListView_Scroll( ::hWnd,  -10000, 0 )
       r := ListView_HitTest ( ::hWnd, GetCursorRow() - GetWindowRow ( ::hWnd ), GetCursorCol() - GetWindowCol ( ::hWnd ) )
-	Else
+   Else
       r := LISTVIEW_GETSUBITEMRECT ( ::hWnd, r[1] - 1, r[2] - 1 )
 
-               	*	CellCol				CellWidth
+                  *   CellCol            CellWidth
       xs := ( ( ::ContainerCol + r [2] ) +( r[3] ))  -  ( ::ContainerCol + ::Width )
 
       If ListViewGetItemCount( ::hWnd ) >  ListViewGetCountPerPage( ::hWnd )
-			xd := 20
-		Else
-			xd := 0
-		EndIf
+         xd := 20
+      Else
+         xd := 0
+      EndIf
 
-		If xs > -xd
+      If xs > -xd
          ListView_Scroll( ::hWnd,  xs + xd, 0 )
-		Else
-			If r [2] < 0
+      Else
+         If r [2] < 0
             ListView_Scroll( ::hWnd, r[2], 0 )
-			EndIf
-		EndIf
+         EndIf
+      EndIf
 
       r := ListView_HitTest ( ::hWnd, GetCursorRow() - GetWindowRow ( ::hWnd ), GetCursorCol() - GetWindowCol ( ::hWnd ) )
 
-	EndIf
+   EndIf
 
-	ThisItemRowIndex := r[1]
-	ThisItemColIndex := r[2]
+   ThisItemRowIndex := r[1]
+   ThisItemColIndex := r[2]
 
-	If r [2] == 1
+   If r [2] == 1
       r := LISTVIEW_GETITEMRECT ( ::hWnd, r[1] - 1 )
-	Else
+   Else
       r := LISTVIEW_GETSUBITEMRECT ( ::hWnd, r[1] - 1, r[2] - 1 )
-	EndIf
+   EndIf
 
    ThisItemCellRow := ::ContainerRow + r [1]
    ThisItemCellCol := ::ContainerCol + r [2]
-	ThisItemCellWidth := r[3]
-	ThisItemCellHeight := r[4]
+   ThisItemCellWidth := r[3]
+   ThisItemCellHeight := r[4]
 
-	aCellData := { ThisItemRowIndex, ThisItemColIndex, ThisItemCellRow, ThisItemCellCol, ThisItemCellWidth, ThisItemCellHeight }
+   aCellData := { ThisItemRowIndex, ThisItemColIndex, ThisItemCellRow, ThisItemCellCol, ThisItemCellWidth, ThisItemCellHeight }
 
 Return aCellData
 
