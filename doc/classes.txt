@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.28 2011-08-31 01:11:56 fyurisich Exp $
+ * $Id: classes.txt,v 1.29 2011-09-02 02:03:14 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -824,6 +824,7 @@ CLASS TGRID FROM TCONTROL
    METHOD ITEM
    METHOD ITEMCOUNT
    METHOD LEFT
+   METHOD LOADHEADERIMAGES
    METHOD ONENTER                 SETGET
    METHOD PAGEDOWN
    METHOD PAGEUP
