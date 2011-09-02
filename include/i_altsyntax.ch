@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.50 2011-08-31 01:11:05 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.51 2011-09-02 02:25:12 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -437,7 +437,7 @@ Memvariables
 
 #xcommand VALID <valid> ;
         => ;
-        _OOHG_ActiveControlValid := <{valid}>
+        _OOHG_ActiveControlValid := <valid>
 
 #xcommand VALIDMESSAGES <validmessages> ;
         => ;
