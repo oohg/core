@@ -1,1 +1,1 @@
-#define oohgpath \RESOURCES 
+#define oohgpath c:\oohg\resources 
