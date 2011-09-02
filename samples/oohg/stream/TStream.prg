@@ -1,5 +1,5 @@
 /*
- * $Id: TStream.prg,v 1.1 2011-07-17 14:57:50 guerra000 Exp $
+ * $Id: TStream.prg,v 1.2 2011-09-02 22:31:23 guerra000 Exp $
  */
 /*
  * Data stream management class.
@@ -584,6 +584,10 @@ RETURN nil
 #pragma BEGINDUMP
 
 #include <hbapifs.h>
+
+#ifndef __XHARBOUR__
+   #define FHANDLE HB_FHANDLE
+#endif
 
 HB_FUNC( STREAMFILE_READ )   // ( pBuffer, nHdl, nStart, nCount )
 {
