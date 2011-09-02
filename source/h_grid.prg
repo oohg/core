@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.129 2011-09-02 02:01:04 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.130 2011-09-02 03:13:43 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -2434,6 +2434,10 @@ HB_FUNC( SETGRIDCOLUMNIMAGE )
    if ( hb_parl( 4 ) )
    {
       COL.fmt |= LVCFMT_BITMAP_ON_RIGHT;
+   }
+   else
+   {
+      COL.fmt &= ~LVCFMT_BITMAP_ON_RIGHT;
    }
 
    COL.iImage = hb_parni( 3 ) - 1;
