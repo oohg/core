@@ -1,12 +1,27 @@
 
 /*
- * $Id: ChangeLog,v 1.765 2011-09-01 18:15:16 fyurisich Exp $
+ * $Id: ChangeLog,v 1.766 2011-09-02 02:03:35 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2011-09-01 23:00:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   + doc/classes.txt
+     + Added LoadHeaderImages method in TGRID class.
+   + source/h_grid.prg
+     + Added resizing of ::aHeadClick, ::aJust, ::valid, ::validmessages,
+       ::aWhen, ::aHeaderImage and ::aHeaderImageAlign arrays in
+       AddColumn and DeleteColumn methods.
+     + Added uHeadClick, uValid, uValidMessage, uWhen, cHeaderImage and
+       nHeaderImageAlign parameters to AddColumn method.
+     + Added LoadHeaderImages method to allow changing headers' images
+       after control's creation.
+   + source/h_xbrowse.prg
+     + Added uHeadClick, uValid, uValidMessage, uWhen, cHeaderImage and
+       nHeaderImageAlign parameters to AddColumn method.
 
 2011-09-01 15:15:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    ! source/h_grid.prg
