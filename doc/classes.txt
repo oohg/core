@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.29 2011-09-02 02:03:14 fyurisich Exp $
+ * $Id: classes.txt,v 1.30 2011-09-04 20:10:36 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -2071,6 +2071,7 @@ CLASS TTREE FROM TCONTROL
    DATA HWNDEDITCTRL              INIT NIL
    DATA INITVALUE                 INIT 0
    DATA ITEMIDS                   INIT .F.
+   DATA LSELBOLD                  INIT .F.
    DATA NHEIGHT                   INIT 120
    DATA NWIDTH                    INIT 120
    DATA ONCHECKCHANGE             INIT NIL
@@ -2081,6 +2082,7 @@ CLASS TTREE FROM TCONTROL
    DATA VALID                     INIT NIL
 
    METHOD ADDITEM
+   METHOD BOLDITEM                SETGET
    METHOD CHECKITEM               SETGET
    METHOD COLLAPSE
    METHOD DEFINE

@@ -1,5 +1,5 @@
 /*
- * $Id: i_tree.ch,v 1.5 2011-08-18 19:28:44 fyurisich Exp $
+ * $Id: i_tree.ch,v 1.6 2011-09-04 20:09:51 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -123,6 +123,7 @@
           [ FONTCOLOR <fontcolor> ] ;
           [ BACKCOLOR <backcolor> ] ;
           [ SELCOLOR <selcolor> ] ;
+          [ <selbold: SELBOLD> ] ;
           [ <checkboxes: CHECKBOXES> ] ;
           [ <editlabels: EDITLABELS> ] ;
           [ <noHScr: NOHSCROLL> ] ;
@@ -145,7 +146,7 @@
                        <{enter}>, <{disabled}>, <.invisible.>, <.notabstop.>, <fontcolor>, ;
                        <backcolor>, .T., <.checkboxes.>, <.editlabels.>, <.noHScr.>, <.noScr.>, ;
                        <.hott.>, .F., <.nobuts.>, <.nodd.>, <.single.>, <.noborder.>, <selcolor>, ;
-                       <{labeledit}>, <{valid}>, <{checkchange}>, <pixels> )
+                       <{labeledit}>, <{valid}>, <{checkchange}>, <pixels>, <.selbold.> )
 
 #xcommand DEFINE TREE <name> ;
           [ OBJ <obj> ] ;
@@ -178,6 +179,7 @@
           [ FONTCOLOR <fontcolor> ] ;
           [ BACKCOLOR <backcolor> ] ;
           [ SELCOLOR <selcolor> ] ;
+          [ <selbold: SELBOLD> ] ;
           [ <checkboxes: CHECKBOXES> ] ;
           [ <editlabels: EDITLABELS> ] ;
           [ <noHScr: NOHSCROLL> ] ;
@@ -201,23 +203,23 @@
                        <{enter}>, <{disabled}>, <.invisible.>, <.notabstop.>, <fontcolor>, ;
                        <backcolor>, .F., <.checkboxes.>, <.editlabels.>, <.noHScr.>, <.noScr.>, ;
                        <.hott.>, <.nolines.>, <.nobuts.>, <.nodd.>, <.single.>, <.noborder.>, ;
-                       <selcolor>, <{labeledit}>, <{valid}>, <{checkchange}>, <pixels> )
+                       <selcolor>, <{labeledit}>, <{valid}>, <{checkchange}>, <pixels>, <.selbold.> )
 
-#xcommand NODE <text> [ IMAGES <aImage> ] [ ID <id> ] [ <checked: CHECKED> ] [ <readonly: READONLY> ] ;
+#xcommand NODE <text> [ IMAGES <aImage> ] [ ID <id> ] [ <checked: CHECKED> ] [ <readonly: READONLY> ] [ <bold: BOLD> ] ;
 =>;
-_DefineTreeNode (<text>, <aImage> , <id>, <.checked.>, <.readonly.> )
+_DefineTreeNode (<text>, <aImage> , <id>, <.checked.>, <.readonly.>, <.bold.> )
 
-#xcommand DEFINE NODE <text> [ IMAGES <aImage> ] [ ID <id> ] [ <checked: CHECKED> ] [ <readonly: READONLY> ] ;
+#xcommand DEFINE NODE <text> [ IMAGES <aImage> ] [ ID <id> ] [ <checked: CHECKED> ] [ <readonly: READONLY> ] [ <bold: BOLD> ] ;
 =>;
-_DefineTreeNode (<text>, <aImage> , <id>, <.checked.>, <.readonly.> )
+_DefineTreeNode (<text>, <aImage> , <id>, <.checked.>, <.readonly.>, <.bold.> )
 
 #xcommand END NODE ;
 =>;
 _EndTreeNode()
 
-#xcommand TREEITEM <text> [ IMAGES <aImage> ]  [ ID <id> ] [ <checked: CHECKED> ] [ <readonly: READONLY> ] ;
+#xcommand TREEITEM <text> [ IMAGES <aImage> ]  [ ID <id> ] [ <checked: CHECKED> ] [ <readonly: READONLY> ] [ <bold: BOLD> ] ;
 => ;
-_DefineTreeItem (<text>, <aImage> , <id>, <.checked.>, <.readonly.> )
+_DefineTreeItem (<text>, <aImage> , <id>, <.checked.>, <.readonly.>, <.bold.> )
 
 #xcommand END TREE ;
 => ;

@@ -1,5 +1,5 @@
 /*
- * $Id: h_tree.prg,v 1.22 2011-09-02 23:08:54 guerra000 Exp $
+ * $Id: h_tree.prg,v 1.23 2011-09-04 20:09:24 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -115,6 +115,7 @@ CLASS TTree FROM TControl
    DATA ReadOnly             INIT .T.
    DATA OnCheckChange        INIT Nil
    DATA hWndEditCtrl         INIT Nil
+   DATA lSelBold             INIT .F.
 
    METHOD Define
    METHOD AddItem
@@ -138,6 +139,7 @@ CLASS TTree FROM TControl
    METHOD GetChildren
    METHOD LookForKey
    METHOD Release
+   METHOD BoldItem           SETGET
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -148,15 +150,16 @@ METHOD Define( ControlName, ParentForm, row, col, width, height, change, ;
                invisible, notabstop, fontcolor, BackColor, lFullRowSel, ;
                lChkBox, lEdtLbl, lNoHScr, lNoScroll, lHotTrak, lNoLines, ;
                lNoBut, lNoDD, lSingle, lNoBor, aSelCol, labeledit, valid, ;
-               checkchange, indent ) CLASS TTree
+               checkchange, indent, lSelBold ) CLASS TTree
 *------------------------------------------------------------------------------*
 Local Controlhandle, nStyle, ImgDefNode, ImgDefItem, aBitmaps := array(4)
 
-   ASSIGN ::nWidth    VALUE Width  TYPE "N"
-   ASSIGN ::nHeight   VALUE Height TYPE "N"
-   ASSIGN ::nRow      VALUE row    TYPE "N"
-   ASSIGN ::nCol      VALUE col    TYPE "N"
-   ASSIGN ::InitValue VALUE Value  TYPE "N"
+   ASSIGN ::nWidth    VALUE Width    TYPE "N"
+   ASSIGN ::nHeight   VALUE Height   TYPE "N"
+   ASSIGN ::nRow      VALUE row      TYPE "N"
+   ASSIGN ::nCol      VALUE col      TYPE "N"
+   ASSIGN ::InitValue VALUE Value    TYPE "N"
+   ASSIGN ::lSelBold  VALUE lSelBold TYPE "L"
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, , BackColor, .t., lRtl )
 
@@ -248,14 +251,15 @@ Local Controlhandle, nStyle, ImgDefNode, ImgDefItem, aBitmaps := array(4)
 Return Self
 
 *------------------------------------------------------------------------------*
-METHOD AddItem( Value, Parent, Id, aImage, lChecked, lReadOnly ) CLASS TTree
+METHOD AddItem( Value, Parent, Id, aImage, lChecked, lReadOnly, lBold ) CLASS TTree
 *------------------------------------------------------------------------------*
 Local TreeItemHandle
 Local ImgDef, iUnSel, iSel
 Local NewHandle, TempHandle, i, Pos, ChildHandle, BackHandle, ParentHandle, iPos
 
-   ASSIGN lChecked    VALUE lChecked    TYPE "L" DEFAULT .F.
-   ASSIGN lReadOnly   VALUE lReadOnly   TYPE "L" DEFAULT .F.
+   ASSIGN lChecked  VALUE lChecked  TYPE "L" DEFAULT .F.
+   ASSIGN lReadOnly VALUE lReadOnly TYPE "L" DEFAULT .F.
+   ASSIGN lBold     VALUE lBold     TYPE "L" DEFAULT .F.
 
    ImgDef := iif( HB_IsArray( aImage ), len( aImage ), 0 )
 
@@ -394,6 +398,7 @@ Local NewHandle, TempHandle, i, Pos, ChildHandle, BackHandle, ParentHandle, iPos
    EndIf
 
    ::CheckItem( iPos, lChecked )
+   ::BoldItem( iPos, lBold )
 
 Return Nil
 
@@ -630,13 +635,14 @@ LOCAL bRet
 Return bRet
 
 *------------------------------------------------------------------------------*
-Function _DefineTreeNode( text, aImage, Id, lChecked, lReadOnly )
+Function _DefineTreeNode( text, aImage, Id, lChecked, lReadOnly, lBold )
 *------------------------------------------------------------------------------*
 Local ImgDef, iUnSel, iSel
 Local Item
 
-   ASSIGN lChecked    VALUE lChecked    TYPE "L" DEFAULT .F.
-   ASSIGN lReadOnly   VALUE lReadOnly   TYPE "L" DEFAULT .F.
+   ASSIGN lChecked  VALUE lChecked  TYPE "L" DEFAULT .F.
+   ASSIGN lReadOnly VALUE lReadOnly TYPE "L" DEFAULT .F.
+   ASSIGN lBold     VALUE lBold     TYPE "L" DEFAULT .F.
 
    If ValType( Id ) == 'U'
       Id := 0
@@ -669,6 +675,7 @@ Local Item
    aAdd( _OOHG_ActiveTree:aTreeRO, lReadOnly )
 
    _OOHG_ActiveTree:CheckItem( Len( _OOHG_ActiveTree:aTreeMap ), lChecked )
+   _OOHG_ActiveTree:BoldItem( Len( _OOHG_ActiveTree:aTreeMap ), lBold )
 
 Return Nil
 
@@ -681,12 +688,13 @@ Function _EndTreeNode()
 Return Nil
 
 *------------------------------------------------------------------------------*
-Function _DefineTreeItem( text, aImage, Id, lChecked, lReadOnly )
+Function _DefineTreeItem( text, aImage, Id, lChecked, lReadOnly, lBold )
 *------------------------------------------------------------------------------*
 Local handle, ImgDef, iUnSel, iSel
 
-   ASSIGN lChecked    VALUE lChecked    TYPE "L" DEFAULT .F.
-   ASSIGN lReadOnly   VALUE lReadOnly   TYPE "L" DEFAULT .F.
+   ASSIGN lChecked  VALUE lChecked  TYPE "L" DEFAULT .F.
+   ASSIGN lReadOnly VALUE lReadOnly TYPE "L" DEFAULT .F.
+   ASSIGN lBold     VALUE lBold     TYPE "L" DEFAULT .F.
 
    If ValType( Id ) == 'U'
       Id := 0
@@ -718,7 +726,8 @@ Local handle, ImgDef, iUnSel, iSel
    aAdd( _OOHG_ActiveTree:aTreeRO, lReadOnly )
 
    _OOHG_ActiveTree:CheckItem( Len( _OOHG_ActiveTree:aTreeMap ), lChecked )
-   
+   _OOHG_ActiveTree:BoldItem( Len( _OOHG_ActiveTree:aTreeMap ), lBold )
+
 Return Nil
 
 *------------------------------------------------------------------------------*
@@ -754,6 +763,11 @@ Local cNewValue, lValid
       Return Treeview_Notify_CustomDraw( Self, lParam )
 
    ElseIf nNotify == TVN_SELCHANGED
+      If ::lSelBold
+        TreeView_SetBoldState( ::hWnd, TreeView_PreviousSelectedItem( lParam ), .F. )
+        TreeView_SetBoldState( ::hWnd, TreeView_ActualSelectedItem( lParam ), .T. )
+      EndIf
+   
       ::DoChange()
 
    ElseIf nNotify == TVN_BEGINLABELEDIT
@@ -885,6 +899,51 @@ Local ItemHandle, Pos
    EndIf
    
 Return TreeView_GetCheckState( ::hWnd, ItemHandle ) == 1
+
+*------------------------------------------------------------------------------*
+METHOD BoldItem( Item, lBold ) CLASS TTree
+*------------------------------------------------------------------------------*
+Local ItemHandle, Pos
+
+   If HB_IsLogical( lBold )
+      /*  set */
+      If ! ::ItemIds
+         If Item < 1 .OR. Item > Len( ::aTreeMap )
+            MsgOOHGError( "BoldItem Method: Invalid Item Reference. Program Terminated" )
+         EndIf
+
+         ItemHandle := ::aTreeMap[ Item ]
+      Else
+         Pos := aScan( ::aTreeIdMap, Item )
+
+         If Pos == 0
+            MsgOOHGError( "BoldItem Method: Invalid Item Id. Program Terminated" )
+         EndIf
+
+         ItemHandle := ::aTreeMap[ Pos ]
+      EndIf
+
+      TreeView_SetBoldState( ::hWnd, ItemHandle, lBold )
+   Else
+      /* get */
+      If ! ::ItemIds
+         If Item < 1 .OR. Item > Len( ::aTreeMap )
+            MsgOOHGError( "BoldItem Method: Invalid Item Reference. Program Terminated" )
+         EndIf
+
+         ItemHandle := ::aTreeMap[ Item ]
+      Else
+         Pos := aScan( ::aTreeIdMap, Item )
+
+         If Pos == 0
+            MsgOOHGError( "BoldItem Method: Invalid Item Id. Program Terminated" )
+         EndIf
+
+         ItemHandle := ::aTreeMap[ Pos ]
+      EndIf
+   EndIf
+
+Return TreeView_GetBoldState( ::hWnd, ItemHandle )
 
 *------------------------------------------------------------------------------*
 METHOD ItemReadonly( Item, lReadOnly ) CLASS TTree
@@ -1197,8 +1256,7 @@ HB_FUNC( TREEVIEW_GETSELECTIONID )
 {
    HWND TreeHandle ;
    HTREEITEM ItemHandle;
-
-   TV_ITEM      TreeItem ;
+   TV_ITEM TreeItem ;
 
    TreeHandle = HWNDparam( 1 );
    ItemHandle = TreeView_GetSelection( TreeHandle );
@@ -1475,6 +1533,63 @@ HB_FUNC_STATIC( TTREE_FONTCOLOR )
    }
 
    /* Return value was set in _OOHG_DetermineColorReturn() */
+}
+
+HB_FUNC( TREEVIEW_GETBOLDSTATE )
+{
+   HTREEITEM TreeItemHandle;
+   TV_ITEM   TreeItem;
+
+   memset( &TreeItem, 0, sizeof( TV_ITEM ) );
+
+   TreeItemHandle = HTREEparam( 2 );
+
+   TreeItem.mask = TVIF_HANDLE | TVIF_STATE;
+   TreeItem.hItem = TreeItemHandle;
+   TreeItem.stateMask = TVIS_BOLD;
+
+   TreeView_GetItem( HWNDparam( 1 ), &TreeItem );
+
+   hb_retl( ( TreeItem.state & TVIS_BOLD ) == TVIS_BOLD );
+}
+
+HB_FUNC( TREEVIEW_SETBOLDSTATE )
+{
+   HTREEITEM TreeItemHandle;
+   TV_ITEM   TreeItem;
+
+   memset( &TreeItem, 0, sizeof( TV_ITEM ) );
+
+   TreeItemHandle = HTREEparam( 2 );
+
+   TreeItem.mask = TVIF_HANDLE | TVIF_STATE;
+   TreeItem.hItem = TreeItemHandle;
+   TreeItem.stateMask = TVIS_BOLD;
+
+   if( hb_parl( 3 ) )
+   {
+      TreeItem.state |= TVIS_BOLD;
+   }
+   else
+   {
+      TreeItem.state &= ~TVIS_BOLD;
+   }
+
+   TreeView_SetItem( HWNDparam( 1 ), &TreeItem );
+}
+
+HB_FUNC( TREEVIEW_PREVIOUSSELECTEDITEM )
+{
+   LPNMTREEVIEW lpnmtv = (LPNMTREEVIEW) (LPARAM) hb_parnl( 1 );
+   
+   HTREEret( lpnmtv->itemOld.hItem );
+}
+
+HB_FUNC( TREEVIEW_ACTUALSELECTEDITEM )
+{
+   LPNMTREEVIEW lpnmtv = (LPNMTREEVIEW) (LPARAM) hb_parnl( 1 );
+
+   HTREEret( lpnmtv->itemNew.hItem );
 }
 
 #pragma ENDDUMP

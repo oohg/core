@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.119 2011-08-29 13:12:10 fyurisich Exp $
+ * $Id: h_controlmisc.prg,v 1.120 2011-09-04 20:09:24 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -705,6 +705,9 @@ Local oWnd, oCtrl
       ElseIf Arg3 == "CHECKITEM"
          oCtrl:CheckItem( Arg4, Arg5 )
 
+      ElseIf Arg3 == "BOLDITEM"
+         oCtrl:BoldItem( Arg4, Arg5 )
+
       ElseIf Arg3 == "ITEMREADONLY"
          oCtrl:ItemReadonly( Arg4, Arg5 )
 
@@ -945,6 +948,9 @@ Local RetVal, oWnd, oCtrl
 
       ElseIf Arg3 == "CHECKITEM"
          RetVal := oCtrl:CheckItem( Arg4 )
+
+      ElseIf Arg3 == "BOLDITEM"
+         RetVal := oCtrl:BoldItem( Arg4 )
 
       ElseIf Arg3 == "ITEMREADONLY"
          RetVal := oCtrl:ItemReadonly( Arg4 )

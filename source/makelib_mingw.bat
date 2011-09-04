@@ -1,13 +1,13 @@
 @echo off
 rem
-rem $Id: makelib_mingw.bat,v 1.25 2011-07-01 22:27:54 fyurisich Exp $
+rem $Id: makelib_mingw.bat,v 1.26 2011-09-04 20:09:24 fyurisich Exp $
 rem
 cls
 
 Rem Set Paths
 
 IF "%HG_MGW%"==""  SET HG_MGW=c:\oohg\mingw
-IF "%HG_ROOT%"=="" SET HG_ROOT=c:\minioop
+IF "%HG_ROOT%"=="" SET HG_ROOT=c:\oohg
 IF "%HG_HRB%"==""  SET HG_HRB=c:\oohg\harbour
 
 IF NOT EXIST %hg_root%\lib\liboohg.a MD %hg_root%\lib >nul
