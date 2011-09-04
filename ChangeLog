@@ -1,5 +1,5 @@
-﻿/*
- * $Id: ChangeLog,v 1.772 2011-09-03 00:22:32 declan2005 Exp $
+/*
+ * $Id: ChangeLog,v 1.773 2011-09-04 20:11:48 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,37 +7,50 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2011-09-04 17:10:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * doc/classes.txt
+   * include/i_tree.ch
+   * include/i_window.ch
+   * source/h_controlmisc.prg
+   * source/h_tree.prg
+     + Added BOLDITEM method to set/clear bold attribute from items.
+     + Added BOLD clause in DEFINE NODE and DEFINE TREEITEM.
+     + Added SELBOLD clause in DEFINE TREE to set bold attribute when
+       an item is selected and to clear it when selection is changed.
+   * source/makelib_mingw.bat
+     ! Fixed missing % in variable expansion.
+     
 2011-09-02 20:19:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
-  * source/h_error.prg
-   * version updated.
+   * source/h_error.prg
+    * version updated.
 
 2011-09-02 18:05 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
-  * source/h_grid.prg
-  * source/h_print.prg
-  * source/h_tree.prg
-  * source/h_windows.prg
-    ! Fixed warnings.
+   * source/h_grid.prg
+   * source/h_print.prg
+   * source/h_tree.prg
+   * source/h_windows.prg
+     ! Fixed warnings.
 
 2011-09-02 17:42 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
-  * samples/oohg/stream/TStream.prg
-    ! Fixed Harbour compilation.
+   * samples/oohg/stream/TStream.prg
+     ! Fixed Harbour compilation.
 
 2011-09-02 19:15:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   ! resources/_oohg_resconfig.h
+   * resources/_oohg_resconfig.h
      ! Fixed missing path.
 
 2011-09-02 00:15:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   ! source/h_grid.prg
+   * source/h_grid.prg
      ! Fixed image alignment no changing from right to left.
 
 2011-09-01 23:30:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   ! include/i_altsyntax.ch
+   * include/i_altsyntax.ch
      ! Fixed VALID clause.
 
 2011-09-01 23:00:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   + doc/classes.txt
+   * doc/classes.txt
      + Added LoadHeaderImages method in TGRID class.
-   + source/h_grid.prg
+   * source/h_grid.prg
      + Added resizing of ::aHeadClick, ::aJust, ::valid, ::validmessages,
        ::aWhen, ::aHeaderImage and ::aHeaderImageAlign arrays in
        AddColumn and DeleteColumn methods.
@@ -45,34 +58,34 @@
        nHeaderImageAlign parameters to AddColumn method.
      + Added LoadHeaderImages method to allow changing headers' images
        after control's creation.
-   + source/h_xbrowse.prg
+   * source/h_xbrowse.prg
      + Added uHeadClick, uValid, uValidMessage, uWhen, cHeaderImage and
        nHeaderImageAlign parameters to AddColumn method.
 
 2011-09-01 15:15:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   ! source/h_grid.prg
+   * source/h_grid.prg
      ! Fixed crash in Win7 and 2008 when control has no header images.
 
 2011-08-30 22:25:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   + samples/oohg/oohgrecord/xbrowsearray.prg
+   * samples/oohg/oohgrecord/xbrowsearray.prg
      + Added APPEND method to XBrowse_Array class.
      * Changed comments about methods used and not used by TXBROWSE class.
      
 2011-08-30 22:10:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * doc/classes.txt
      * Added EDITGRID message of TXBROWSE class.
-   + source/h_grid.prg
-   + include/i_grid.ch
-   + include/i_altsyntax.ch
+   * source/h_grid.prg
+   * include/i_grid.ch
+   * include/i_altsyntax.ch
      + Added support for FULLMOVE clause at GRID's creation.
-   + source/h_xbrowse.prg
-   + source/h_browse.prg
-   + include/i_xbrowse.ch
-   + include/i_browse.ch
+   * source/h_xbrowse.prg
+   * source/h_browse.prg
+   * include/i_xbrowse.ch
+   * include/i_browse.ch
      + Added FULLMOVE clause.
 
 2011-08-29 23:20:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   ! source/h_grid.prg
+   * source/h_grid.prg
      ! Fixed incorrect alignment of column data when header has image.
 
 2011-08-29 10:00:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
@@ -81,16 +94,16 @@
        Thanks to José Miguel <josemisu@yahoo.com.ar>
 
 2011-08-27 14:16:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   ! include/i_altsyntax.ch
+   * include/i_altsyntax.ch
      ! Fixed missing comma.
 
 2011-08-27 11:43:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   ! source/h_browse.prg
-   ! source/h_xbrowse.prg
+   * source/h_browse.prg
+   * source/h_xbrowse.prg
      ! Fixed missing parameters in define call.
 
 2011-08-27 11:10:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   ! include/i_altsyntax.ch
+   * include/i_altsyntax.ch
      ! Fixed missing comma.
 
 2011-08-27 11:00:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
@@ -106,12 +119,12 @@
      ! Fixed identifier not found.
 
 2011-08-26 21:30:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   + include/i_grid.ch
+   * include/i_grid.ch
      + Added HEADER_IMG_AT_LEFT and HEADER_IMG_AT_RIGHT constants.
      + Added HEADERIMAGES and IMAGESPLACE clauses.
-   + include/i_xbrowse.ch
+   * include/i_xbrowse.ch
      + Added HEADERIMAGES and IMAGESPLACE clauses.
-   + include/i_browse.ch
+   * include/i_browse.ch
      + Added HEADERIMAGES and IMAGESPLACE clauses.
    * include/i_altsyntax.ch
      + Added HEADERIMAGES and IMAGESPLACE clauses to GRID and BROWSE.
@@ -119,8 +132,8 @@
        TEXTARRAY and XBROWSE.
      ! Fixed: missing clauses from several controls.
      * Changed: IMAGE from TImage class to TPicture class.
-   + docs/classes.txt
-   + source/h_grid.prg
+   * docs/classes.txt
+   * source/h_grid.prg
      + Added HeaderImage, HeaderImagePlace and Release methods.
      + Added HeaderImageList, aHeaderImage and aHeaderImagePlace datas.
      + Added SetHeaderImageList, SetGridColumnImage and
@@ -134,7 +147,7 @@
        the number of columns in the control.
 
 2011-08-24 12:30:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   ! source/h_grid.prg
+   * source/h_grid.prg
      ! Fixed: incorrect function call in GridControlObject function.
 
 2011-08-23 11:00:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
@@ -161,19 +174,19 @@
      * Added MARQUEE style (clause and method).
 
 2011-08-20 16:24:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
-  * source/h_print.prg
-    * erased redundant and unused code - reformat
+   * source/h_print.prg
+     * Erased redundant and unused code - reformat
 
 2011-08-19 19:25:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * docs/classes.txt
      * Updated with TSPREADSHEET class.
 
 2011-08-19 12:32:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
-  * source/h_print.prg
-  * source/h_report/prg 
-    + added TSPREADSHEET Class in  order to create basic xls files
-      without  Excel or OpenOffice
-    + added report form support to this printing mode.
+   * source/h_print.prg
+   * source/h_report/prg
+     + added TSPREADSHEET Class in  order to create basic xls files
+       without  Excel or OpenOffice
+     + added report form support to this printing mode.
 
 2011-08-18 23:20:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * docs/classes.txt
@@ -183,14 +196,14 @@
        ON KEY ESCAPE is setted.
 
 2011-08-18 18:30:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   + doc/classes.txt
-   + include/i_tree.ch
-   + include/i_windefs.ch
-   + include/i_window.ch
-   + include/oohg.h
-   + source/c_controlmisc.c
-   + source/h_controlmisc.prg
-   + source/h_tree.prg
+   * doc/classes.txt
+   * include/i_tree.ch
+   * include/i_windefs.ch
+   * include/i_window.ch
+   * include/oohg.h
+   * source/c_controlmisc.c
+   * source/h_controlmisc.prg
+   * source/h_tree.prg
      + Added styles: FULLROWSELECT, CHECKBOXES, EDITLABELS, NOHSCROLL,
        NOSCROLL, HOTTRACKING, NOBUTTONS, BORDERLESS, SINGLEEXPAND, ;
        DISABLEDRAGDROP.
@@ -233,43 +246,43 @@
 	* source/h_form.prg
 	* source/h_controlmisc.prg
 	* source/c-font.c
-	+ angle,fontwidth to fonts
-	! resolved:focus effect in 'load windows'
-	+ added tcontrol:focuseffect to make code more simple
+	  + angle,fontwidth to fonts
+	  ! resolved:focus effect in 'load windows'
+	  + added tcontrol:focuseffect to make code more simple
 
 2011-08-13 16:31:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-  * source/h_listbox.prg
-  * include/i_listbox.prg
-    + Added NOVSCROLL clause to LISTBOX control.
+   * source/h_listbox.prg
+   * include/i_listbox.prg
+     + Added NOVSCROLL clause to LISTBOX control.
 
 2011-08-12 14:15:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-  * ./compile_mingw.bat
-    ! Fixed compiler warning "oohg.h" not found.
+   * ./compile_mingw.bat
+     ! Fixed compiler warning "oohg.h" not found.
 
 2011-08-08 18:12:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
-  * source/h_print.prg
-    + added method :setfont()
-    ! fixed problems in MM pinting mode.
-    * added angle parameter to print lines in angle.
+   * source/h_print.prg
+     + added method :setfont()
+     ! fixed problems in MM pinting mode.
+     * added angle parameter to print lines in angle.
 
 2011-08-08 16:43:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-  * resources/CompileRes.bat
-  * ./compile_mingw.bat
-    ! Fixed deleting _oohg_resconfig.h generates QAC warning.
-  + resources/_oohg_resconfig.h
+   * resources/CompileRes.bat
+   * ./compile_mingw.bat
+     ! Fixed deleting _oohg_resconfig.h generates QAC warning.
+   + resources/_oohg_resconfig.h
     
 2011-08-08 14:23 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
-  * source/h_form.prg
-    ! Fixed xHarbour compilation.
-  * source/h_listbox.prg
-    + LISTBOXADDSTRING2() and LISTBOXINSERTSTRING2() added
-      for not to alter LISTBOXADDSTRING() and LISTBOXINSERTSTRING()
-      parameter's usage.
-    ! Fixed LISTBOXINSERTSTRING2() calls for xHarbour.
-  * source/h_windows.prg
-    ! Fixed warnings.
+   * source/h_form.prg
+     ! Fixed xHarbour compilation.
+   * source/h_listbox.prg
+     + LISTBOXADDSTRING2() and LISTBOXINSERTSTRING2() added
+       for not to alter LISTBOXADDSTRING() and LISTBOXINSERTSTRING()
+       parameter's usage.
+     ! Fixed LISTBOXINSERTSTRING2() calls for xHarbour.
+   * source/h_windows.prg
+     ! Fixed warnings.
 
 2011-08-08 14:23 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
-  + ./ChangeLog.002
-  * ./ChangeLog
-    ! Renamed to ChangeLog.002 and start a new one.
+   + ./ChangeLog.002
+   * ./ChangeLog
+     ! Renamed to ChangeLog.002 and start a new one.
