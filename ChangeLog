@@ -1,11 +1,24 @@
 /*
- * $Id: ChangeLog,v 1.775 2011-09-05 17:20:16 guerra000 Exp $
+ * $Id: ChangeLog,v 1.776 2011-09-05 23:01:07 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2011-09-05 20:00:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * source/h_button.ch
+    * Changed WIN_OSISWINXPORUPPER() by OS_ISWINXP_OR_LATER() to
+      restore xHarbour compatibility.
+  * ./compile_mingw.bat
+    + Added libxhb.a to gcc compilation commands.
+
+2011-09-05 15:05:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * include/i_button.ch
+  * include/i_altsyntax.ch
+  * source/h_button.ch
+    + Added MULTILINE clause to display long caption in multiple lines.
 
 2011-09-05 12:29 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * samples/oohg/stream/TStreamSocket.prg
