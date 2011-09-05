@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.54 2011-08-04 19:33:23 fyurisich Exp $
+ * $Id: h_combo.prg,v 1.55 2011-09-05 16:11:55 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -190,7 +190,7 @@ Local ControlHandle , WorkArea , cField, nStyle
              if( HB_IsLogical( SORT )           .AND. SORT,          CBS_SORT,    0 ) + ;
              if( ! displaychange, CBS_DROPDOWNLIST, CBS_DROPDOWN ) + ;
              if ( HB_IsArray( aImage ),  CBS_OWNERDRAWFIXED, 0) + ;
-             if( ( "XP" $ OS() ), CBS_NOINTEGRALHEIGHT, 0 )
+             if( WIN_OSISWINXPORUPPER() .AND. _OOHG_LastFrame() != "SPLITBOX" , CBS_NOINTEGRALHEIGHT, 0 )
 
    ::SetSplitBoxInfo( Break, GripperText, ::nWidth )
    ControlHandle := InitComboBox( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight, nStyle, ::lRtl )
