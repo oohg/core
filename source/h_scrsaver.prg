@@ -1,5 +1,5 @@
 /*
- * $Id: h_scrsaver.prg,v 1.4 2010-01-21 09:13:08 guerra000 Exp $
+ * $Id: h_scrsaver.prg,v 1.5 2011-09-05 23:37:33 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -254,7 +254,7 @@ Return Nil
 *--------------------------------------------------------*
 function _lValidScrSaver()
 *--------------------------------------------------------*
-   Local oReg, nValue := 1, lRet := .F.
+   Local oReg, nValue := 1, lRet
 	OPEN REGISTRY oReg KEY HKEY_CURRENT_USER ;
 		SECTION "Control Panel\Desktop"
 

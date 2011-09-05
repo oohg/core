@@ -1,5 +1,5 @@
 /*
- * $Id: h_edit.prg,v 1.21 2011-01-25 19:13:47 guerra000 Exp $
+ * $Id: h_edit.prg,v 1.22 2011-09-05 23:37:33 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -229,21 +229,21 @@ static _aNumeroCampo   := {}                            // Numero de campo del l
 function ABM( cArea, cTitulo, aCampos, aEditables, bGuardar, bBuscar )
 
 // Declaración de variables locales.-------------------------------------------
-local nArea             := 0                            // Area anterior.
-local nRegistro         := 0                            // Numero de registro anterior.
-local cMensaje          := ""                           // Mensajes al usuario.
-local nCampos           := 0                            // Numero de campos de la base.
-local nItem             := 1                            // Indice de iteración.
-local nFila             := 20                           // Fila de creación del control.
-local nColumna          := 20                           // Columna de creación de control.
-local aEtiquetas        := {}                           // Array con los controles LABEL.
-local aBrwCampos        := {}                           // Títulos de columna del BROWSE.
-local aBrwAnchos        := {}                           // Anchos de columna del BROWSE.
-local nBrwAnchoCampo    := 0                            // Ancho del campo para el browse.
-local nBrwAnchoRegistro := 0                            // Ancho del registro para el browse.
-local cMascara          := ""                           // Mascara de datos para el TEXTBOX.
-local nMascaraTotal     := 0                            // Tamaño de la máscara de edición.
-local nMascaraDecimales := 0                            // Tamaño de los decimales.
+local nArea             // := 0                         // Area anterior.
+local nRegistro         // := 0                         // Numero de registro anterior.
+// local cMensaje          := ""                        // Mensajes al usuario.
+local nCampos              := 0                         // Numero de campos de la base.
+local nItem             // := 1                         // Indice de iteración.
+local nFila             // := 20                        // Fila de creación del control.
+local nColumna          // := 20                        // Columna de creación de control.
+local aEtiquetas        // := {}                        // Array con los controles LABEL.
+local aBrwCampos        // := {}                        // Títulos de columna del BROWSE.
+local aBrwAnchos        // := {}                        // Anchos de columna del BROWSE.
+local nBrwAnchoCampo    // := 0                         // Ancho del campo para el browse.
+local nBrwAnchoRegistro // := 0                         // Ancho del registro para el browse.
+local cMascara             := ""                        // Mascara de datos para el TEXTBOX.
+local nMascaraTotal     // := 0                         // Tamaño de la máscara de edición.
+local nMascaraDecimales // := 0                         // Tamaño de los decimales.
 Local _BackDeleted
 
 // Inicializa el soporte multilenguaje.----------------------------------------
@@ -691,8 +691,8 @@ return ( nil )
 static function ABMRefresh( nEstado )
 
 // Declaración de variables locales.-------------------------------------------
-local nItem    := 1                                     // Indice de iteración.
-local cMensaje := ""                                    // Mensajes al usuario.
+local nItem    // := 1                                  // Indice de iteración.
+// local cMensaje := ""                                 // Mensajes al usuario.
 
 // Refresco del cuadro de dialogo.
 do case
@@ -782,14 +782,14 @@ return ( nil )
 static function ABMEventos( nEvento )
 
 // Declaración de variables locales.-------------------------------------------
-local nItem      := 1                                   // Indice de iteración.
-local cMensaje   := ""                                  // Mensaje al usuario.
-local aValores   := {}                                  // Valores de los campos de edición.
-local nRegistro  := 0                                   // Numero de registro.
-local lGuardar   := .t.                                 // Salida del bloque _bGuardar.
-local cModo      := ""                                  // Texto del modo.
-local cRegistro  := ""                                  // Numero de registro.
-Local wndABM     := GetFormObject( "wndABM" )
+local nItem      // := 1                                // Indice de iteración.
+// local cMensaje   := ""                               // Mensaje al usuario.
+local aValores      := {}                               // Valores de los campos de edición.
+local nRegistro  // := 0                                // Numero de registro.
+local lGuardar   // := .t.                              // Salida del bloque _bGuardar.
+local cModo      // := ""                               // Texto del modo.
+local cRegistro  // := ""                               // Numero de registro.
+Local wndABM        := GetFormObject( "wndABM" )
 
 // Gestión de eventos.
 do case
@@ -999,14 +999,14 @@ return ( nil )
 static function ABMBuscar()
 
 // Declaración de variables locales.-------------------------------------------
-local nItem      := 0                                   // Indice de iteración.
-local aCampo     := {}                                  // Nombre de los campos.
-local aTipoCampo := {}                                  // Matriz con los tipos de campo.
-local cCampo     := ""                                  // Nombre del campo.
-local cMensaje   := ""                                  // Mensaje al usuario.
-local nTipoCampo := 0                                   // Indice el tipo de campo.
-local cTipoCampo := ""                                  // Tipo de campo.
-local cModo      := ""                                  // Texto del modo de busqueda.
+local nItem      // := 0                                // Indice de iteración.
+local aCampo        := {}                               // Nombre de los campos.
+local aTipoCampo    := {}                               // Matriz con los tipos de campo.
+local cCampo     // := ""                               // Nombre del campo.
+// local cMensaje   := ""                               // Mensaje al usuario.
+local nTipoCampo // := 0                                // Indice el tipo de campo.
+local cTipoCampo // := ""                               // Tipo de campo.
+local cModo      // := ""                               // Texto del modo de busqueda.
 
 // Obtiene el nombre y el tipo de campo.---------------------------------------
 for nItem := 1 to Len( _aEstructura )
@@ -1140,12 +1140,12 @@ return ( nil )
 function ABMListado()
 
 // Declaración de variables locales.-------------------------------------------
-local nItem          := 1                               // Indice de iteración.
-local aCamposListado := {}                              // Matriz con los campos del listado.
-local aCamposTotales := {}                              // Matriz con los campos totales.
-local nPrimero       := 0                               // Registro inicial.
-local nUltimo        := 0                               // Registro final.
-local nRegistro      := (_cArea)->( RecNo() )           // Registro anterior.
+local nItem          // := 1                            // Indice de iteración.
+local aCamposListado    := {}                           // Matriz con los campos del listado.
+local aCamposTotales    := {}                           // Matriz con los campos totales.
+local nPrimero       // := 0                            // Registro inicial.
+local nUltimo        // := 0                            // Registro final.
+local nRegistro         := (_cArea)->( RecNo() )        // Registro anterior.
 
 // Inicialización de variables.------------------------------------------------
 // Campos imprimibles.
@@ -1304,16 +1304,16 @@ return ( nil )
 function ABMListadoEvento( nEvento )
 
 // Declaración de variables locales.-------------------------------------------
-local cItem        := ""                                // Nombre del item.
-local nItem        := 0                                 // Numero del item.
-local aCampo       := {}                                // Nombres de los campos.
-local nIndice      := 0                                 // Numero del campo.
-local nAnchoCampo  := 0                                 // Ancho del campo.
-local nAnchoTitulo := 0                                 // Ancho del título.
-local nTotal       := 0                                 // Ancho total.
-local cMensaje     := ""                                // Mensaje al usuario.
-local nPrimero     := wndABMListado.spnPrimero.Value    // Registro inicial.
-local nUltimo      := wndABMListado.spnUltimo.Value     // Registro final.
+local cItem        // := ""                             // Nombre del item.
+local nItem        // := 0                              // Numero del item.
+local aCampo          := {}                             // Nombres de los campos.
+local nIndice      // := 0                              // Numero del campo.
+local nAnchoCampo  // := 0                              // Ancho del campo.
+local nAnchoTitulo // := 0                              // Ancho del título.
+local nTotal          := 0                              // Ancho total.
+// local cMensaje     := ""                             // Mensaje al usuario.
+local nPrimero        := wndABMListado.spnPrimero.Value // Registro inicial.
+local nUltimo         := wndABMListado.spnUltimo.Value  // Registro final.
 
 // Control de eventos.
 do case
@@ -1418,24 +1418,24 @@ return ( nil )
 function ABMListadoImprimir( lOrientacion, nPrimero, nUltimo )
 
 // Declaración de variables locales.-------------------------------------------
-local nLineas   := 0                                    // Numero de linea.
-local nPaginas  := 0                                    // Numero de páginas.
-local nFila     := 13                                   // Numero de fila.
-local nColumna  := 10                                   // Numero de columna.
-local nItem     := 1                                    // Indice de iteracion.
-local nIndice   := 1                                    // Indice de campo.
-local lCabecera := .t.                                  // ¿Imprimir cabecera?.
-local lPie      := .f.                                  // ¿Imprimir pie?.
-local nPagina   := 1                                    // Numero de pagina.
-local lSalida   := .t.                                  // ¿Salir del listado?.
-local nRegistro := (_cArea)->( RecNo() )                // Registro anterior.
-local cTexto    := ""                                   // Texto para lógicos.
+local nLineas      := 0                                 // Numero de linea.
+local nPaginas  // := 0                                 // Numero de páginas.
+local nFila        := 13                                // Numero de fila.
+local nColumna     := 10                                // Numero de columna.
+local nItem     // := 1                                 // Indice de iteracion.
+local nIndice   // := 1                                 // Indice de campo.
+local lCabecera // := .t.                               // ¿Imprimir cabecera?.
+// local lPie      := .f.                               // ¿Imprimir pie?.
+local nPagina      := 1                                 // Numero de pagina.
+local lSalida   // := .t.                               // ¿Salir del listado?.
+local nRegistro    := (_cArea)->( RecNo() )             // Registro anterior.
+local cTexto    // := ""                                // Texto para lógicos.
 local oprint
 
 // Definición del rango del listado.-------------------------------------------
 (_cArea)->( dbGoTo( nPrimero ) )
 do while .not. ( (_cArea)->( RecNo() ) ) == nUltimo .or. ( (_cArea)->( Eof() ) )
-         nLineas++
+        nLineas++
         (_cArea)->( dbSkip( 1 ) )
 enddo
 (_cArea)->( dbGoTo( nPrimero ) )
@@ -1549,6 +1549,7 @@ oprint:printdata(9,30, ordname(),"times new roman",10,.F.) ///
                         oprint:endpage()
                 endif
         endif
+        Empty( nPaginas )
 
         // Comprobación del rango de registro.---------------------------------
         if ( (_cArea)->( RecNo() ) == nUltimo )
@@ -1586,8 +1587,8 @@ if lOrientacion
                 if .not. Mod( nLineas, 32 ) == 0
                         nPaginas++
                 endif
-                   oprint:printline(45,1,45,140)
-                   oprint:printdata(46,70,_OOHG_messages(6,22) + AllTrim( Str( nPagina ) )   ,"times new roman" ,10,.F.)
+                oprint:printline(45,1,45,140)
+                oprint:printdata(46,70,_OOHG_messages(6,22) + AllTrim( Str( nPagina ) )   ,"times new roman" ,10,.F.)
         endif
 else
         // Vertical
@@ -1600,6 +1601,7 @@ else
                 oprint:printdata(56,70,_OOHG_messages(6,22) + AllTrim( Str( nPagina ) )   ,"times new roman" ,10,.F.)
         endif
 endif
+Empty( nPaginas )
 oprint:endpage()
 oprint:enddoc()
 oprint:release()

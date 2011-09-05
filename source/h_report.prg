@@ -1,5 +1,5 @@
 /*
- * $Id: h_report.prg,v 1.48 2011-08-19 20:27:22 declan2005 Exp $
+ * $Id: h_report.prg,v 1.49 2011-09-05 23:37:33 fyurisich Exp $
  */
 /*
  * DO REPORT Command support procedures FOR MiniGUI Library.
@@ -147,7 +147,7 @@ ENDCLASS
 
 
 METHOD easyreport1(ctitle,aheaders1,aheaders2,afields,awidths,atotals,nlpp,ldos,lpreview,cgraphic,nfi,nci,nff,ncf,lmul,cgrpby,chdrgrp,llandscape,ncpl,lselect,calias,nllmargin,aformats,npapersize,cheader,lnoprop,lgroupeject) CLASS TREPORT
-local nlin,i,aresul,lmode,swt:=0,grpby,k,ncvcopt,swmemo,clinea,ti,nmemo,nspace,wtipo
+local nlin,i,aresul,lmode,swt:=0,grpby,k,swmemo,clinea,ti,nmemo,nspace,wtipo
 private  wfield,wfielda,wfieldt,lexcel:=.F.
 
 
@@ -270,37 +270,37 @@ ENDIF
 
 do case
         case ncpl= 80
-            ncvcopt:=1
+//            ncvcopt:=1
             repobject:nfsize:=12
             IF lnoprop
                oprint:setcpl(80)
             ENDIF
          case ncpl= 96
-            ncvcopt:=2
+//            ncvcopt:=2
             repobject:nfsize=10
             IF lnoprop
                oprint:setcpl(96)
             ENDIF
          case ncpl= 120
-            ncvcopt:=3
+//            ncvcopt:=3
             repobject:nfsize:=8
             IF lnoprop
                oprint:setcpl(120)
             ENDIF
          case ncpl= 140
-            ncvcopt:=4
+//            ncvcopt:=4
            repobject:nfsize:=7
            IF lnoprop
               oprint:setcpl(140)
            ENDIF
          case ncpl= 160
-            ncvcopt:=5
+//            ncvcopt:=5
             repobject:nfsize:=6
             IF lnoprop
                 oprint:setcpl(160)
             ENDIF
          otherwise
-            ncvcopt:=1
+//            ncvcopt:=1
             repobject:nfsize:=12
             IF lnoprop
                 oprint:setcpl(80)
@@ -452,29 +452,29 @@ ENDIF
 **************resto de memo
 IF swmemo
    IF nmemo > 1
-   clinea:=""
-   nspace:=0
-   FOR k:=1 to ti-1
-       nspace:=nspace+awidths[k]+1
-   NEXT k
-   FOR k:=2 to nmemo
-       clinea:=space(nspace)+justificalinea(memoline(rtrim(wfieldt),awidths[ti] ,k),awidths[ti] )
-       oprint:printdata(nlin,0+repobject:nlmargin,clinea , , repobject:nfsize ,  )
-       nlin++
-       IF nlin>nlpp
-          nlin:=1
-          oprint:endpage()
-          oprint:beginpage()
-   IF cgraphic<>NIL .and. lmul
-             IF .not. File(cgraphic)
-          msgstop('graphic file not found','error')
-             ELSE
-                 oprint:printimage(nfi,nci+repobject:nlmargin,nff,ncf,cgraphic )
-             ENDIF
-  ENDIF
-  nlin:=repobject:headers(aheaders1,aheaders2,awidths,nlin,ctitle,lmode,grpby,chdrgrp,cheader)
-       ENDIF
-    NEXT k
+      // clinea:=""
+      nspace:=0
+      FOR k:=1 to ti-1
+         nspace:=nspace+awidths[k]+1
+      NEXT k
+      FOR k:=2 to nmemo
+         clinea:=space(nspace)+justificalinea(memoline(rtrim(wfieldt),awidths[ti] ,k),awidths[ti] )
+         oprint:printdata(nlin,0+repobject:nlmargin,clinea , , repobject:nfsize ,  )
+         nlin++
+         IF nlin>nlpp
+            nlin:=1
+            oprint:endpage()
+            oprint:beginpage()
+            IF cgraphic<>NIL .and. lmul
+               IF .not. File(cgraphic)
+                  msgstop('graphic file not found','error')
+               ELSE
+                  oprint:printimage(nfi,nci+repobject:nlmargin,nff,ncf,cgraphic )
+               ENDIF
+            ENDIF
+            nlin:=repobject:headers(aheaders1,aheaders2,awidths,nlin,ctitle,lmode,grpby,chdrgrp,cheader)
+         ENDIF
+      NEXT k
 ////    nlin--
    ENDIF
 ENDIF
@@ -551,12 +551,12 @@ FOR i:=1 to len(awidths)
     nsum:=nsum+awidths[i]
 NEXT i
 npostitle:=at('|',ctitle)
-ctitle1:=ctitle2:=''
 IF npostitle>0
    ctitle1:=left(ctitle,npostitle-1)
    ctitle2:=trim(substr(ctitle,npostitle+1,len(ctitle)))
 ELSE
    ctitle1:=ctitle
+   ctitle2:=''
 ENDIF
 ctitle1:=trim(ctitle1)+cheader
 ncenter:=((nsum-len(ctitle1))/2)-1
@@ -742,12 +742,12 @@ ELSE
    IF sw==1
       npos:=at(upper(cPropmet)+' ',upper(repobject:aline[i]))
       IF len(trim(repobject:aline[i]))==0
-         i=len(repobject:aline)+1
+         // i=len(repobject:aline)+1
          RETURN cDefault
       ENDIF
       IF npos>0
          cfvalue:=substr(repobject:aline[i],npos+len(Cpropmet),len(repobject:aline[i]))
-         i:=len(repobject:aline)+1
+         // i:=len(repobject:aline)+1
          cfvalue:=trim(cfvalue)
          IF right(cfvalue,1)=';'
             cfvalue:=substr(cfvalue,1,len(cfvalue)-1)
@@ -818,7 +818,7 @@ ELSE
          RETURN .T.
       ENDIF
       IF len(trim(repobject:aline[i]))==0
-         i=len(repobject:aline)+1
+         // i=len(repobject:aline)+1
          RETURN cDefault
       ENDIF
    ENDIF
@@ -1236,7 +1236,7 @@ LOCAL aRecordHeader  := {}
 LOCAL aRecordToPrint := {}
 LOCAL nCol
 LOCAL nGroup
-LOCAL lGroupChanged  := .F.
+//LOCAL lGroupChanged  := .F.
 LOCAL lEjectGrp := .F.
 LOCAL nMaxLines
 LOCAL nLine
@@ -1491,7 +1491,7 @@ RETURN
 ********************************
 STATIC PROCEDURE CabezalReporte
 ********************************
-LOCAL nLinesInHeader := 0
+LOCAL nLinesInHeader // := 0
 LOCAL aPageHeader    := {}
 LOCAL nHeadingLength := aReportData[RP_WIDTH] - aReportData[RP_LMARGIN] - 30
 LOCAL nCol, nLine, nMaxColLength,  cHeader
@@ -1716,13 +1716,13 @@ LOCAL cFieldsBuff
 LOCAL cParamsBuff
 LOCAL nFieldOffset   := 0
 LOCAL cFileBuff      := SPACE(SIZE_FILE_BUFF)
-LOCAL cGroupExp      := SPACE(200)
-LOCAL cSubGroupExp   := SPACE(200)
-LOCAL nColCount      := 0
+LOCAL cGroupExp      // := SPACE(200)
+LOCAL cSubGroupExp   // := SPACE(200)
+LOCAL nColCount
 LOCAL nCount
 LOCAL nFrmHandle
 LOCAL nBytesRead
-LOCAL nPointer       := 0
+LOCAL nPointer       // := 0
 LOCAL nFileError
 LOCAL cOptionByte
 
@@ -1731,7 +1731,7 @@ LOCAL err
 
 LOCAL cDefPath
 LOCAL aPaths
-LOCAL nPathIndex := 0
+LOCAL nPathIndex // := 0
 
 LOCAL aHeader
 LOCAL nHeaderIndex
@@ -1845,7 +1845,7 @@ IF nFileError = F_OK
    * Eject antes?
    IF INT(cOptionByte / 2) = 1
       aReport[ RP_AEJECT ] := .T.
-      cOptionByte -= 2
+//      cOptionByte -= 2
    ENDIF
    nPointer = BIN2W(SUBSTR(cParamsBuff, PAGE_HDR_OFFSET, 2))
    nHeaderIndex := 4
@@ -1853,9 +1853,9 @@ IF nFileError = F_OK
    * Elimino los cabezales vacíos...
    DO WHILE ( nHeaderIndex > 0 )
       IF ! EMPTY( aHeader[ nHeaderIndex ] )
-   EXIT
-   ENDIF
-   nHeaderIndex--
+         EXIT
+      ENDIF
+      nHeaderIndex--
    ENDDO
 
    aReport[ RP_HEADER ] := IIF( EMPTY( nHeaderIndex ) , {}, ASIZE( aHeader, nHeaderIndex ) )
@@ -1941,8 +1941,8 @@ RETURN( aPageHeader )
 ***********************************
 STATIC FUNCTION GetExpr( nPointer )
 ***********************************
-   LOCAL nExprOffset   := 0
-   LOCAL nExprLength   := 0
+   LOCAL nExprOffset   // := 0
+   LOCAL nExprLength   // := 0
    LOCAL nOffsetOffset := 0
    LOCAL cString := ""
 
@@ -1972,7 +1972,7 @@ STATIC FUNCTION GetExpr( nPointer )
 ***************************************************
 STATIC FUNCTION GetColumn( cFieldsBuffer, nOffset )
 ***************************************************
-LOCAL nPointer := 0, nNumber := 0, aColumn[ RC_COUNT ], cType
+LOCAL nPointer, aColumn[ RC_COUNT ], cType
 
 ** Ancho de la columna
 aColumn[ RC_WIDTH ] := BIN2W(SUBSTR(cFieldsBuffer, nOffset + FIELD_WIDTH_OFFSET, 2))
@@ -1984,7 +1984,7 @@ aColumn[ RC_TOTAL ] := IF(SUBSTR(cFieldsBuffer, nOffset + FIELD_TOTALS_OFFSET, 1
 aColumn[ RC_DECIMALS ] := BIN2W(SUBSTR(cFieldsBuffer, nOffset + FIELD_DECIMALS_OFFSET, 2))
 
 ** Expresión con Contenido de la columna
-nPointer = BIN2W(SUBSTR(cFieldsBuffer, nOffset + FIELD_CONTENT_EXPR_OFFSET, 2))
+nPointer := BIN2W(SUBSTR(cFieldsBuffer, nOffset + FIELD_CONTENT_EXPR_OFFSET, 2))
 aColumn[ RC_TEXT ] := GetExpr( nPointer )
 aColumn[ RC_EXP ] := &( "{ || " + GetExpr( nPointer ) + "}" )
 

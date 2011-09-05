@@ -1,5 +1,5 @@
 /*
- * $Id: h_edit_ex.prg,v 1.14 2006-03-26 21:32:25 guerra000 Exp $
+ * $Id: h_edit_ex.prg,v 1.15 2011-09-05 23:37:33 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -933,6 +933,7 @@ static function ABM2CambiarOrden()
 ////////// Inicializa las variables.-------------------------------------------
         nIndice := wndABM2Edit.cbIndices.Value
         cIndice := wndABM2Edit.cbIndices.Item( nIndice )
+        Empty( cIndice )
 
 ////////// Cambia el orden del area de trabajo.--------------------------------
         nIndice--
@@ -2435,7 +2436,7 @@ static function ABM2DefinirRegistro( nAccion )
 
 ////////// Inicializa las variables.-------------------------------------------
         nRegistro := (_cArea)->( RecNo() )
-        cValor    := ""
+//        cValor    := ""
 
 ////////// Selecciona el registro.---------------------------------------------
         nReg := ABM2Seleccionar()
@@ -2516,7 +2517,11 @@ static function ABM2DefinirColumnas( nAccion )
                                                 wndABM2Listado.lbxCampoBase.AddItem( aCampoBase[i] )
                                         endif
                                 next
-                                nItem := iif( nItem > 1, nItem--, 1 )
+                                if  nItem > 1
+                                    nItem--
+                                else
+                                    nItem := 1
+                                endif
                                 wndABM2Listado.lbxCampoBase.Value := nItem
                         endif
 
@@ -2558,7 +2563,13 @@ static function ABM2DefinirColumnas( nAccion )
                                                 wndABM2Listado.lbxCampoListado.AddItem( aCampoListado[i] )
                                         endif
                                 next
-                                nItem := iif( nItem > 1, nItem--, 1 )
+                                if nItem > 1
+                                   nItem--
+                                else
+                                   nItem := 1
+                                endif
+                                Empty( nItem )
+                                
                                 wndABM2Listado.lbxCampoListado.Value := ;
                                         wndABM2Listado.lbxCampoListado.ItemCount
                         endif
@@ -2634,7 +2645,9 @@ static function ABM2Listado( aImpresoras )
 ////////// Inicialización de variables.----------------------------------------
         // Previsualizar.
         lPrevio := wndABM2Listado.chkPrevio.Value
+        Empty( lPrevio )
         lVistas := wndABM2Listado.chkVistas.Value
+        Empty( lVistas )
 
         // Nombre de la impresora.
         nImpresora := wndABM2Listado.cbxImpresoras.Value
@@ -2642,6 +2655,7 @@ static function ABM2Listado( aImpresoras )
                 msgExclamation( _oohg_messages(6,32), '' )
         else
                 cImpresora := aImpresoras[nImpresora]
+                Empty( cImpresora )
         endif
 
         // Nombre del campo.
@@ -2751,6 +2765,7 @@ static function ABM2Listado( aImpresoras )
                         nPaginas := Int( nTotales / 42 ) + 1
                 endif
         endif
+        Empty( nPaginas )
         (_cArea)->( dbGoTo( nPrimero ) )
 
 ////////// Inicializa el listado.----------------------------------------------

@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.218 2011-09-02 23:08:54 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.219 2011-09-05 23:37:33 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1074,7 +1074,9 @@ Local myobject, cWork
 
    ::SaveAs( cWork ) //// save as BMP
 
-   With Object myobject:=Tprint()
+   myobject := Tprint()
+   
+   With Object myobject
       :init()
       :selprinter( .T., .T., .T. )  /// select,preview,landscape
       If ! :lprerror

@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.47 2011-09-05 18:05:52 fyurisich Exp $
+ * $Id: h_button.prg,v 1.48 2011-09-05 23:37:33 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -438,7 +438,7 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
                strikeout, field, lRtl, BitMap, cBuffer, hBitMap, ;
                lNoTransparent, lScale ) CLASS TButtonCheck
 *-----------------------------------------------------------------------------*
-Local ControlHandle, nStyle := 0
+Local ControlHandle, nStyle
 
    ASSIGN ::nCol        VALUE x TYPE "N"
    ASSIGN ::nRow        VALUE y TYPE "N"

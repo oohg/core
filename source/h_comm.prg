@@ -1,5 +1,5 @@
 /*
- * $Id: h_comm.prg,v 1.2 2010-01-21 09:13:05 guerra000 Exp $
+ * $Id: h_comm.prg,v 1.3 2011-09-05 23:37:33 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -232,7 +232,7 @@ Return ( RetVal )
 *-----------------------------------------------------------------------------*
 Function SendData ( cDest , Data )
 *-----------------------------------------------------------------------------*
-Local cData := '' , i , j
+Local cData, i, j
 LOCAL pData, cLen, cType, FileName, Rows, Cols
 
    _OOHG_SendDataCount++

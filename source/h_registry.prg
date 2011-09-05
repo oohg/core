@@ -1,5 +1,5 @@
 /*
- * $Id: h_registry.prg,v 1.2 2006-02-27 04:11:18 guerra000 Exp $
+ * $Id: h_registry.prg,v 1.3 2011-09-05 23:37:33 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -102,7 +102,7 @@ CLASS TReg32
    METHOD New( nKey, cRegKey, lShowError )
    METHOD Create( nKey, cRegKey, lShowError )
    METHOD Get( cSubKey, uVar )
-   METHOD Set( cSubKey, uVar )
+   METHOD Set( cSubKey, uVar, nType )
    METHOD Delete( cSubKey )
    METHOD KeyDelete( cSubKey )
    METHOD Close()    BLOCK {| Self | If( ::lError, , RegCloseKey( ::nHandle ) ) }

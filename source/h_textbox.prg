@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.67 2011-08-07 23:32:09 nulcrc Exp $
+ * $Id: h_textbox.prg,v 1.68 2011-09-05 23:37:33 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -172,7 +172,7 @@ METHOD Define2( cControlName, cParentForm, x, y, w, h, cValue, ;
                 bValid, bAction, aBitmap, nBtnwidth, bAction2,bWhen ) CLASS TText
 *-----------------------------------------------------------------------------*
 Local nControlHandle
-local break
+local break := Nil
 
    // Assign STANDARD values to optional params.
    ASSIGN ::nCol    VALUE x TYPE "N"

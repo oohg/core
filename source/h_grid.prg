@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.131 2011-09-02 23:08:54 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.132 2011-09-05 23:37:33 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1118,13 +1118,13 @@ Return NIL
 *----------------------------------------------------------------------------*
 METHOD ColumnBetterAutoFit( nColIndex ) CLASS Tgrid
 *----------------------------------------------------------------------------*
-LOCAL n,nh
+LOCAL n, nh
    IF HB_isnumeric( nColIndex )
       IF nColindex > 0
-         nh:= ::ColumnAutoFith( nColIndex )
-         n:= ::ColumnAutoFit( nColIndex )
-         IF nh>n
-            n:= ::ColumnAutoFith( nColIndex )
+         nh := ::ColumnAutoFith( nColIndex )
+         n := ::ColumnAutoFit( nColIndex )
+         IF nh > n
+            ::ColumnAutoFith( nColIndex )
          ENDIF
       ENDIF
    ENDIF
@@ -1667,8 +1667,6 @@ Local lvc, _ThisQueryTemp, nvkey
         endif
      endif
 
-     nvkey :=0
-
    ElseIf nNotify == LVN_GETDISPINFO
 
       * Grid OnQueryData ............................
@@ -2093,22 +2091,22 @@ Return nil
 *-----------------------------------------------------------------------------*
 METHOD ColumnsAutoFit() CLASS TGrid
 *-----------------------------------------------------------------------------*
-Local nColumn, nWidth, nSum := 0
+Local nColumn, nWidth //, nSum := 0
    FOR nColumn := 1 TO Len( ::aHeaders )
       nWidth := ListView_SetColumnWidth( ::hWnd, nColumn - 1, LVSCW_AUTOSIZE )
       ::aWidths[ nColumn ] := nWidth
-      nSum += nWidth
+      // nSum += nWidth
    NEXT
 Return nWidth
 
 *-----------------------------------------------------------------------------*
 METHOD ColumnsAutoFitH() CLASS TGrid
 *-----------------------------------------------------------------------------*
-Local nColumn, nWidth, nSum := 0
+Local nColumn, nWidth //, nSum := 0
    FOR nColumn := 1 TO Len( ::aHeaders )
       nWidth := ListView_SetColumnWidth( ::hWnd, nColumn - 1, LVSCW_AUTOSIZE_USEHEADER )
       ::aWidths[ nColumn ] := nWidth
-      nSum += nWidth
+      // nSum += nWidth
    NEXT
 Return nWidth
 

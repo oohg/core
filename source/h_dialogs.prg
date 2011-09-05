@@ -1,5 +1,5 @@
 /*
- * $Id: h_dialogs.prg,v 1.10 2010-07-20 00:28:25 guerra000 Exp $
+ * $Id: h_dialogs.prg,v 1.11 2011-09-05 23:37:33 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -176,7 +176,7 @@ Return C_PutFile( c, title, cIniFolder, nochangedir, cDefaultFileName )
 *------------------------------------------------------------------------------*
 Function GetFont( cInitFontName , nInitFontSize , lBold , lItalic , anInitColor , lUnderLine , lStrikeOut , nCharset )
 *------------------------------------------------------------------------------*
-Local RetArray [8] , Tmp , rgbcolor
+Local RetArray, Tmp, rgbcolor
 
    If !HB_IsString ( cInitFontName )
       cInitFontName := ""

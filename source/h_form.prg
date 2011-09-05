@@ -1,8 +1,8 @@
 /*
 <<<<<<< h_form.prg
- * $Id: h_form.prg,v 1.31 2011-08-14 00:08:54 nulcrc Exp $
+ * $Id: h_form.prg,v 1.32 2011-09-05 23:37:33 fyurisich Exp $
 =======
- * $Id: h_form.prg,v 1.31 2011-08-14 00:08:54 nulcrc Exp $
+ * $Id: h_form.prg,v 1.32 2011-09-05 23:37:33 fyurisich Exp $
 >>>>>>> 1.30
  */
 /*
@@ -1265,7 +1265,7 @@ HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
 FUNCTION _OOHG_TForm_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TForm
 *-----------------------------------------------------------------------------*
 Local i, NextControlHandle, xRetVal
-Local oCtrl, lMinim := .F., nOffset,nDesp
+Local oCtrl, lMinim, nOffset,nDesp
 
    Do Case
 
@@ -1404,7 +1404,7 @@ Local oCtrl, lMinim := .F., nOffset,nDesp
 		//msginfo('borde')
 		//dibujo el borde externo
 		::GetDc() // Captura el canvas
-		nOffset := int((::nBorders[1]+1)/2)
+		// nOffset := int((::nBorders[1]+1)/2)
 		::Fill(0,0,::nBorders[1],::ClientWidth,::abecolors[1])
 		::Fill(0,::ClientWidth,::Clientheight-::nBorders[1],::Clientwidth-::nBorders[1],::abecolors[2])
 		::Fill(::ClientHeight,::clientwidth,::clientheight-::nBorders[1],0,::abecolors[3])
@@ -1811,7 +1811,7 @@ Return ::Super:Release()
 *-----------------------------------------------------------------------------*
 METHOD CheckInteractiveClose() CLASS TFormMain
 *-----------------------------------------------------------------------------*
-Local lRet := .T.
+Local lRet
    If _OOHG_InteractiveClose == 3
       lRet := MsgYesNo( _OOHG_Messages( 1, 1 ), _OOHG_Messages( 1, 2 ) )
    Else
@@ -2276,7 +2276,7 @@ FUNCTION DefineWindow( FormName, Caption, x, y, w, h, nominimize, nomaximize, no
                        RDblClickProcedure, MDblClickProcedure, minwidth, maxwidth, ;
                        minheight, maxheight )
 *------------------------------------------------------------------------------*
-Local nStyle := 0, nStyleEx := 0
+//Local nStyle := 0, nStyleEx := 0
 Local Self
 Local aError := {}
 

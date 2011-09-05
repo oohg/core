@@ -1,5 +1,5 @@
 /*
- * $Id: h_graph.prg,v 1.5 2006-12-06 05:22:27 guerra000 Exp $
+ * $Id: h_graph.prg,v 1.6 2011-09-05 23:37:33 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -617,7 +617,7 @@ Procedure GraphShow(parent,nTop,nLeft,nBottom,nRight,nHeight,nWidth,aData,cTitle
 
    nMin := nMax / nMaxBar
    nPos := nLeft + ( ( nWide + nSep ) / 2 )            // first point graph
-   nRange := ( ( nWide + nSep ) * Len(aSeries) ) / 2
+//   nRange := ( ( nWide + nSep ) * Len(aSeries) ) / 2
 
    IF lyVal .AND. Len(aYVals) > 0                // Show yLabels
       nWideB  := ( nRight - nLeft ) / ( nMax(aData) + 1 )
@@ -958,31 +958,31 @@ return nil
 
 
 function drawpiegraph(windowname,fromrow,fromcol,torow,tocol,series,aname,colors,ctitle,depth,l3d,lxval,lsleg,lnoborder)
-local topleftrow := fromrow
-local topleftcol := fromcol
-local toprightrow := fromrow
-local toprightcol := tocol
-local bottomrightrow := torow
-local bottomrightcol := tocol
-local bottomleftrow := torow
-local bottomleftcol := fromcol
-local middletoprow := fromrow
-local middletopcol := fromcol + int(tocol - fromcol) / 2
-local middleleftrow := fromrow + int(torow - fromrow) / 2
-local middleleftcol := fromcol
-local middlebottomrow := torow
-local middlebottomcol := fromcol + int(tocol - fromcol) / 2
-local middlerightrow := fromrow + int(torow - fromrow) / 2
-local middlerightcol := tocol
-local fromradialrow := 0
-local fromradialcol := 0
-local toradialrow := 0
-local toradialcol := 0
+local topleftrow // := fromrow
+local topleftcol // := fromcol
+local toprightrow // := fromrow
+local toprightcol // := tocol
+local bottomrightrow // := torow
+local bottomrightcol // := tocol
+local bottomleftrow // := torow
+local bottomleftcol // := fromcol
+// local middletoprow := fromrow
+local middletopcol // := fromcol + int(tocol - fromcol) / 2
+local middleleftrow // := fromrow + int(torow - fromrow) / 2
+local middleleftcol // := fromcol
+// local middlebottomrow := torow
+local middlebottomcol // := fromcol + int(tocol - fromcol) / 2
+local middlerightrow // := fromrow + int(torow - fromrow) / 2
+local middlerightcol // := tocol
+local fromradialrow // := 0
+local fromradialcol // := 0
+local toradialrow // := 0
+local toradialcol // := 0
 local degrees := {}
 local cumulative := {}
 local j,i,sum := 0
-local cname := ""
-local shadowcolor := {}
+local cname // := ""
+local shadowcolor // := {}
 
    If ! lNoBorder
 
@@ -1045,11 +1045,11 @@ bottomrightrow := torow
 bottomrightcol := tocol
 bottomleftrow := torow
 bottomleftcol := fromcol
-middletoprow := fromrow
+// middletoprow := fromrow
 middletopcol := fromcol + int(tocol - fromcol) / 2
 middleleftrow := fromrow + int(torow - fromrow) / 2
 middleleftcol := fromcol
-middlebottomrow := torow
+// middlebottomrow := torow
 middlebottomcol := fromcol + int(tocol - fromcol) / 2
 middlerightrow := fromrow + int(torow - fromrow) / 2
 middlerightcol := tocol

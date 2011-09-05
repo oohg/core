@@ -1,11 +1,28 @@
 /*
- * $Id: ChangeLog,v 1.776 2011-09-05 23:01:07 fyurisich Exp $
+ * $Id: ChangeLog,v 1.777 2011-09-05 23:39:37 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2011-09-05 20:40:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * source/h_windows.prg
+  * source/h_button.ch
+  * source/h_form.ch
+  * source/h_checkbox.ch
+  * source/h_dialogs.ch
+  * source/h_grid.ch
+  * source/h_textbox.ch
+  * source/h_report.ch
+  * source/h_registry.ch
+  * source/h_graph.ch
+  * source/h_edit.ch
+  * source/h_edit_ex.ch
+  * source/h_scrsaver.ch
+  * source/h_comm.ch
+    ! Fixed some harbour compiler warnings when using -w3 switch.
 
 2011-09-05 20:00:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * source/h_button.ch

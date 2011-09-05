@@ -1,5 +1,5 @@
 /*
- * $Id: h_checkbox.prg,v 1.25 2009-02-16 01:45:43 guerra000 Exp $
+ * $Id: h_checkbox.prg,v 1.26 2011-09-05 23:37:33 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -118,7 +118,7 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
                strikeout, field, backcolor, fontcolor, transparent, autosize, ;
                lRtl, lDisabled ) CLASS TCheckBox
 *-----------------------------------------------------------------------------*
-Local ControlHandle, nStyle := 0, nStyleEx := 0
+Local ControlHandle, nStyle, nStyleEx := 0
 
    ASSIGN ::nCol        VALUE x TYPE "N"
    ASSIGN ::nRow        VALUE y TYPE "N"
