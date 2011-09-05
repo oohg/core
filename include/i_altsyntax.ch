@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.51 2011-09-02 02:25:12 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.52 2011-09-05 18:06:01 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -123,6 +123,7 @@ Memvariables
 #xtranslate _OOHG_ActiveControlBackgroundColor        => _OOHG_ActiveControlInfo \[  26 \]
 
 
+#xtranslate _OOHG_ActiveControlMultiLine              => _OOHG_ActiveControlInfo \[ 155 \]
 #xtranslate _OOHG_ActiveControlFullMove               => _OOHG_ActiveControlInfo \[ 156 \]
 #xtranslate _OOHG_ActiveControlRowCount               => _OOHG_ActiveControlInfo \[ 157 \]
 #xtranslate _OOHG_ActiveControlColCount               => _OOHG_ActiveControlInfo \[ 158 \]
@@ -1143,7 +1144,8 @@ BUTTON
         _OOHG_ActiveControlHBitmap     := Nil    ;;
         _OOHG_ActiveControlScale       := .F.    ;;
         _OOHG_ActiveControlCancel      := .F.    ;;
-        _OOHG_ActiveControlAlignment   := Nil
+        _OOHG_ActiveControlAlignment   := Nil    ;;
+        _OOHG_ActiveControlMultiLine   := .F.
 
 #xcommand CAPTION <caption> ;
         => ;
@@ -1213,6 +1215,10 @@ BUTTON
         => ;
         _OOHG_ActiveControlAlignment := <"alignment">
 
+#xcommand MULTILINE <multiline> ;
+        => ;
+        _OOHG_ActiveControlMultiLine := <multiline>
+
 #xcommand END BUTTON ;
         => ;
         TButton():Define( ;
@@ -1246,7 +1252,8 @@ BUTTON
                 .NOT. _OOHG_ActiveControlTransparent, ;
                 _OOHG_ActiveControlScale, ;
                 _OOHG_ActiveControlCancel, ;
-                _OOHG_ActiveControlAlignment )
+                _OOHG_ActiveControlAlignment, ;
+                _OOHG_ActiveControlMultiLine )
 
 /*----------------------------------------------------------------------------
 IMAGE

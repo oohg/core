@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.46 2011-07-13 21:22:54 fyurisich Exp $
+ * $Id: h_button.prg,v 1.47 2011-09-05 18:05:52 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -127,7 +127,7 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, ProcedureName, w, h, ;
                fontname, fontsize, tooltip, gotfocus, lostfocus, flat, ;
                NoTabStop, HelpId, invisible, bold, italic, underline, ;
                strikeout, lRtl, lNoPrefix, lDisabled, cBuffer, hBitMap, ;
-               cImage, lNoTransparent, lScale, lCancel, cAlign ) CLASS TButton
+               cImage, lNoTransparent, lScale, lCancel, cAlign, lMultiLine ) CLASS TButton
 *-----------------------------------------------------------------------------*
 Local ControlHandle, nStyle, lBitMap
 
@@ -154,9 +154,10 @@ Local ControlHandle, nStyle, lBitMap
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize,,,, lRtl )
    nStyle := ::InitStyle( ,, Invisible, NoTabStop, lDisabled ) + BS_PUSHBUTTON + ;
-             if( ValType( flat ) == "L"      .AND. flat,       BS_FLAT, 0 )     + ;
-             if( ValType( lNoPrefix ) == "L" .AND. lNoPrefix,  SS_NOPREFIX, 0 ) + ;
-             if( lBitMap,                                      BS_BITMAP, 0 )
+             if( ValType( flat ) == "L"      .AND. flat,         BS_FLAT, 0 )     + ;
+             if( ValType( lNoPrefix ) == "L" .AND. lNoPrefix,    SS_NOPREFIX, 0 ) + ;
+             if( lBitMap,                                        BS_BITMAP, 0 ) + ;
+             if( lMultiLine,                                     BS_MULTILINE, 0 )
 
    ControlHandle := InitButton( ::ContainerhWnd, Caption, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, ::lRtl, nStyle )
 
