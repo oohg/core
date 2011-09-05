@@ -1,5 +1,5 @@
 /*
- * $Id: TStreamSocket.prg,v 1.1 2011-07-17 14:57:50 guerra000 Exp $
+ * $Id: TStreamSocket.prg,v 1.2 2011-09-05 17:20:16 guerra000 Exp $
  */
 /*
  * Data stream from network socket management class.
@@ -307,7 +307,19 @@ PROCEDURE FINSOCKET()
    }
 RETURN
 
-#ifdef __PLATFORM__Windows
+#ifndef __STREAM_WIN__
+   #ifdef __PLATFORM__Windows
+      #define __STREAM_WIN__
+   #endif
+#endif
+
+#ifndef __STREAM_WIN__
+   #ifdef __PLATFORM__WINDOWS
+      #define __STREAM_WIN__
+   #endif
+#endif
+
+#ifdef __STREAM_WIN__
 
 ////////////////////////////////////////////////////////////// WINDOWS ///////
 

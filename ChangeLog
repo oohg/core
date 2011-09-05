@@ -1,11 +1,15 @@
 /*
- * $Id: ChangeLog,v 1.774 2011-09-05 16:12:10 fyurisich Exp $
+ * $Id: ChangeLog,v 1.775 2011-09-05 17:20:16 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2011-09-05 12:29 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * samples/oohg/stream/TStreamSocket.prg
+    ! Fixed Harbour compilation.
 
 2011-09-05 13:10:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_combo.prg
