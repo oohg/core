@@ -1,5 +1,5 @@
 /*
- * $Id: h_checkbox.prg,v 1.27 2011-09-06 00:27:23 fyurisich Exp $
+ * $Id: h_checkbox.prg,v 1.28 2011-09-06 02:33:23 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -131,7 +131,7 @@ Local ControlHandle, nStyle, nStyleEx := 0
    ENDIF
    ASSIGN autosize      VALUE autosize TYPE "L" DEFAULT .F.
 
-   IF ::Transparent .AND. OS_ISWINXP_OR_LATER()
+   IF ::Transparent .AND. OSisWinXPorLater()
       ::Transparent := .F.
    ENDIF
 

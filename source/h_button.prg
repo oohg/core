@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.49 2011-09-06 00:27:23 fyurisich Exp $
+ * $Id: h_button.prg,v 1.50 2011-09-06 02:33:23 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -295,7 +295,7 @@ METHOD RePaint() CLASS TButton
       ENDIF
       ::AuxHandle := NIL
       ::TControl:SizePos()
-      IF OS_ISWINXP_OR_LATER() .AND. ValidHandler( ::hImage ) .AND. LEN( ::Caption ) > 0
+      IF OSisWinXPorLater() .AND. ValidHandler( ::hImage ) .AND. LEN( ::Caption ) > 0
          SetImageXP( ::hWnd, ::hImage, ::nAlign, ::BackColorCode )
          ::ReDraw()
       ELSEIF ::Stretch .OR. ::AutoFit

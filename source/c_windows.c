@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.72 2011-09-06 00:27:23 fyurisich Exp $
+ * $Id: c_windows.c,v 1.73 2011-09-06 02:33:23 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1392,14 +1392,14 @@ static void getwinver( OSVERSIONINFO * pOSvi )
    GetVersionEx( pOSvi );
 }
 
-HB_FUNC( OS_ISWINXP_OR_LATER )
+HB_FUNC( OSISWINXPORLATER )
 {
    OSVERSIONINFO osvi;
    getwinver( &osvi );
    hb_retl( osvi.dwMajorVersion > 5 || (osvi.dwMajorVersion==5 && osvi.dwMinorVersion >= 1) );
 }
 
-HB_FUNC( OS_ISWINVISTA_OR_LATER )
+HB_FUNC( OSISWINVISTAORLATER )
 {
    OSVERSIONINFO osvi;
    getwinver( &osvi );
