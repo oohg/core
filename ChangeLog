@@ -1,11 +1,26 @@
 /*
- * $Id: ChangeLog,v 1.777 2011-09-05 23:39:37 fyurisich Exp $
+ * $Id: ChangeLog,v 1.778 2011-09-06 00:28:08 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2011-09-05 21:30:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * source/c_windows.c
+    * Added OS_ISWINXP_OR_LATER() to obtain backward compatibility
+      with Harbour 2.x
+    * Added OS_ISWINVISTA_OR_LATER().
+  * ./compile_mingw.bat
+    - Removed libxhb.a from gcc compilation commands.
+  * source/h_checkbox.prg
+  * source/h_button.prg
+    * Use OS_ISWINXP_OR_LATER() instead of using OS() to check
+      for more Windows versions.
+  * source/h_menu.prg
+    * Use OS_ISWINVISTA_OR_LATER() instead of using OS() to check
+      for more Windows versions.
 
 2011-09-05 20:40:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * source/h_windows.prg

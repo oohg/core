@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.71 2010-05-15 21:05:05 guerra000 Exp $
+ * $Id: c_windows.c,v 1.72 2011-09-06 00:27:23 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1384,4 +1384,24 @@ HB_FUNC( ANIMATEWINDOW )                // hWnd, nTime, nFlags, lHide
 HB_FUNC( SHOWWINDOWNA )
 {
    ShowWindow( HWNDparam( 1 ), SW_SHOWNA );
+}
+
+static void getwinver( OSVERSIONINFO * pOSvi )
+{
+   pOSvi->dwOSVersionInfoSize = sizeof( OSVERSIONINFO );
+   GetVersionEx( pOSvi );
+}
+
+HB_FUNC( OS_ISWINXP_OR_LATER )
+{
+   OSVERSIONINFO osvi;
+   getwinver( &osvi );
+   hb_retl( osvi.dwMajorVersion > 5 || (osvi.dwMajorVersion==5 && osvi.dwMinorVersion >= 1) );
+}
+
+HB_FUNC( OS_ISWINVISTA_OR_LATER )
+{
+   OSVERSIONINFO osvi;
+   getwinver( &osvi );
+   hb_retl( osvi.dwMajorVersion >= 6 );
 }

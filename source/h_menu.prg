@@ -1,5 +1,5 @@
 /*
- * $Id: h_menu.prg,v 1.29 2011-07-23 15:26:08 fyurisich Exp $
+ * $Id: h_menu.prg,v 1.30 2011-09-06 00:27:23 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -426,7 +426,7 @@ METHOD Picture( Images ) CLASS TMenuItem
      ::hBitMaps[2] := nil
    Endif
 
-   ::hBitMaps := MenuItem_SetBitMaps( ::Container:hWnd, ::xId, ::aPicture[1], ::aPicture[2], ::lStretch, "Vista" $ OS() .OR. "Windows 7" $ OS() )
+   ::hBitMaps := MenuItem_SetBitMaps( ::Container:hWnd, ::xId, ::aPicture[1], ::aPicture[2], ::lStretch, OS_ISWINVISTA_OR_LATER() )
 
 Return ::aPicture
 
