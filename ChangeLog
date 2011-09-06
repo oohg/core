@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.778 2011-09-06 00:28:08 fyurisich Exp $
+ * $Id: ChangeLog,v 1.779 2011-09-06 01:08:55 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -10,8 +10,8 @@
 2011-09-05 21:30:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * source/c_windows.c
     * Added OS_ISWINXP_OR_LATER() to obtain backward compatibility
-      with Harbour 2.x
-    * Added OS_ISWINVISTA_OR_LATER().
+      with Harbour 2.x (function borrowed from Harbour sources)
+    * Added OS_ISWINVISTA_OR_LATER() borrowed from Harbour sources.
   * ./compile_mingw.bat
     - Removed libxhb.a from gcc compilation commands.
   * source/h_checkbox.prg
