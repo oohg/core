@@ -1,5 +1,5 @@
 /*      
- * $Id: winprint.prg,v 1.39 2011-06-28 00:45:59 declan2005 Exp $
+ * $Id: winprint.prg,v 1.40 2011-09-07 21:53:35 fyurisich Exp $
  */
 // -----------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -150,17 +150,17 @@ CLASS HBPrinter
    METHOD GetTextJustification()
    METHOD SetTextAlign(style)
    METHOD GetTextAlign()
-   METHOD Picture(row,col,torow,tocol,cpicture,extrow,extcol)
+   METHOD Picture(row,col,torow,tocol,cpicture,extrow,extcol,lImageSize)
    METHOD Line(row,col,torow,tocol,defpen)
    METHOD LineTo(row,col,defpen)
-   METHOD SaveMetaFiles(nr)
+   METHOD SaveMetaFiles(number)
    METHOD GetTextExtent(ctext,apoint,deffont)
    METHOD End()
    METHOD ReportData(l_x1,l_x2,l_x3,l_x4,l_x5,l_x6)
-   METHOD Preview(x,y,width,height)
-   METHOD PrevPrint()
+   METHOD Preview()
+   METHOD PrevPrint(n1)
    METHOD PrevShow()
-   METHOD PrevThumb()
+   METHOD PrevThumb(nclick)
 // new method
    METHOD PrintOption()
 
@@ -414,7 +414,7 @@ local lhand:=::getobjbyname(defname,"B")
 return self
 
 METHOD ModifyBrush(defname,lstyle,lcolor,lhatch) CLASS HBPrinter
-local lhand:=0,lpos:=0
+local lhand:=0,lpos
  if defname=="*"
     lpos:=ascan(::Brushes[1],::Brushes[1,1],2)
     if lpos>1
@@ -472,7 +472,7 @@ return self
 ***************************************************************
 METHOD ModifyPen(defname,lstyle,lwidth,lcolor) CLASS HBPrinter
 ***************************************************************
-local lhand:=0,lpos:=0
+local lhand:=0,lpos
  if defname=="*"
     lpos:=ascan(::Pens[1],::Pens[1,1],2)
     if lpos>1
@@ -545,7 +545,7 @@ return self
 *********************************************************
 METHOD ModifyFont(defname,lfontname,lfontsize,lfontwidth,langle,lweight,lnweight,litalic,lnitalic,lunderline,lnunderline,lstrikeout,lnstrikeout) CLASS HBPrinter
 *********************************************************
-local lhand:=0,lpos:=0
+local lhand:=0,lpos
  if defname=="*"
     lpos:=ascan(::Fonts[1],::Fonts[1,1],2)
     if lpos>1
@@ -682,7 +682,7 @@ local lhf:=::getobjbyname(defname,"F")
 return self
 
 METHOD Say(row,col,txt,defname,lcolor,lalign)    CLASS HBPrinter
-local atxt:={},i,lhf:=::getobjbyname(defname,"F"),font:=0,oldalign
+local atxt:={},i,lhf:=::getobjbyname(defname,"F"),oldalign
 local apos
   do case
      case HB_IsNumeric(txt)    ;  aadd(atxt,str(txt))
@@ -917,7 +917,7 @@ return self
 
 
 METHOD GetObjByName(defname,what,retpos) CLASS HBPrinter
-local lfound:=0,lret:=0,aref,ahref
+local lfound,lret:=0,aref,ahref
  if valtype(defname)=="C"
     do case
        case what=="F" ; aref:=::Fonts[2]      ; ahref:=::Fonts[1]
@@ -1392,7 +1392,7 @@ return self
 **************************************
 METHOD PrevPrint(n1) CLASS HBPrinter
 **************************************
-local i,ilkop,_stronki:="",toprint:=.t.
+local i,ilkop,toprint:=.t.
 
 IF .NOT. Eval(::BeforePrint)
   RETURN self
@@ -1478,7 +1478,7 @@ return self
 **********************************
 METHOD Preview() CLASS HBPrinter
 **********************************
-local i:=1,pi:=1,wl, oHBPreview
+local i, pi, wl, oHBPreview
 
  ::aopisy:=;
 {"Preview",;
@@ -1913,7 +1913,7 @@ return nil
 *******************************************
 METHOD PrintOption() CLASS HBPrinter
 *******************************************
-Local OKprint:=.f.,aro:={::aopisy[24],::aopisy[25],::aopisy[26],::aopisy[27],::aopisy[28]}
+Local OKprint:=.f. // ,aro:={::aopisy[24],::aopisy[25],::aopisy[26],::aopisy[27],::aopisy[28]}
 
 If IsWIndowDefined(PrOpt)==.f.
 
@@ -2294,78 +2294,86 @@ HB_FUNC (RR_GETDEFAULTPRINTER)
 
 HB_FUNC (RR_GETPRINTERS)
 {
-  DWORD dwSize = 0;
-  DWORD dwPrinters = 0;
-  DWORD i;
-  char * pBuffer ;
-  char * cBuffer ;
-  PRINTER_INFO_4* pInfo4;
-  PRINTER_INFO_5* pInfo5;
-  DWORD level;
-  DWORD flags;
+   DWORD dwSize = 0;
+   DWORD dwPrinters = 0;
+   DWORD i;
+   char * pBuffer ;
+   char * cBuffer ;
+   PRINTER_INFO_4* pInfo4;
+   PRINTER_INFO_5* pInfo5;
+   DWORD level;
+   DWORD flags;
 
-  osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-  GetVersionEx(&osvi);
-  if (osvi.dwPlatformId == VER_PLATFORM_WIN32_NT)
-    {
-     level = 4;
-     flags = PRINTER_ENUM_CONNECTIONS|PRINTER_ENUM_LOCAL;
-    }
-  else
-    {
-     level = 5;
-     flags = PRINTER_ENUM_LOCAL;
-    }
+   osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+   GetVersionEx(&osvi);
+   if (osvi.dwPlatformId == VER_PLATFORM_WIN32_NT)
+   {
+      level = 4;
+      flags = PRINTER_ENUM_CONNECTIONS|PRINTER_ENUM_LOCAL;
+   }
+   else
+   {
+      level = 5;
+      flags = PRINTER_ENUM_LOCAL;
+   }
 
-  EnumPrinters(flags, NULL,level, NULL, 0, &dwSize, &dwPrinters);
+   EnumPrinters(flags, NULL,level, NULL, 0, &dwSize, &dwPrinters);
 
-  pBuffer = (char *) GlobalAlloc(GPTR, dwSize);
-  if (pBuffer == NULL)
-     {
-            hb_retc(",,");
-            return;
-     }
-  EnumPrinters(flags, NULL,level, ( BYTE * ) pBuffer, dwSize, &dwSize, &dwPrinters);
+   pBuffer = (char *) GlobalAlloc(GPTR, dwSize);
+   if (pBuffer == NULL)
+   {
+      hb_retc(",,");
+      return;
+   }
+   EnumPrinters(flags, NULL,level, ( BYTE * ) pBuffer, dwSize, &dwSize, &dwPrinters);
 
-  if (dwPrinters == 0)
-     {
-             hb_retc(",,");
-             return;
-     }
-  cBuffer = (char *) GlobalAlloc(GPTR, dwPrinters*256);
+   if (dwPrinters == 0)
+   {
+      hb_retc(",,");
+      return;
+   }
+   cBuffer = (char *) GlobalAlloc(GPTR, dwPrinters*256);
 
-  if (osvi.dwPlatformId == VER_PLATFORM_WIN32_NT)
-     pInfo4 = (PRINTER_INFO_4*)pBuffer;
-  else
-     pInfo5 = (PRINTER_INFO_5*)pBuffer;
+   if (osvi.dwPlatformId == VER_PLATFORM_WIN32_NT)
+   {
+      pInfo4 = (PRINTER_INFO_4*)pBuffer;
 
-  for ( i = 0; i < dwPrinters; i++)
+      for (i = 0; i < dwPrinters; i++)
       {
-       if (osvi.dwPlatformId == VER_PLATFORM_WIN32_NT)
-          {
-           strcat(cBuffer,pInfo4->pPrinterName);
-           strcat(cBuffer,",");
-           if (pInfo4->Attributes==PRINTER_ATTRIBUTE_LOCAL)
-               strcat(cBuffer,"local printer");
-           else
-               strcat(cBuffer,"network printer");
-           pInfo4++;
-          }
-       else
-          {
-           strcat(cBuffer,pInfo5->pPrinterName);
-           strcat(cBuffer,",");
-           strcat(cBuffer,pInfo5->pPortName);
-           pInfo5++;
-          }
-       if (i < dwPrinters-1)
-           strcat(cBuffer,",,");
+         strcat(cBuffer,pInfo4->pPrinterName);
+         strcat(cBuffer,",");
+         if (pInfo4->Attributes==PRINTER_ATTRIBUTE_LOCAL)
+            strcat(cBuffer,"local printer");
+         else
+            strcat(cBuffer,"network printer");
 
+         pInfo4++;
+
+         if (i < dwPrinters-1)
+            strcat(cBuffer,",,");
       }
-  hb_retc(cBuffer);
-  GlobalFree(pBuffer);
-  GlobalFree(cBuffer);
-  return;
+   }
+   else
+   {
+      pInfo5 = (PRINTER_INFO_5*)pBuffer;
+
+      for (i = 0; i < dwPrinters; i++)
+      {
+         strcat(cBuffer,pInfo5->pPrinterName);
+         strcat(cBuffer,",");
+         strcat(cBuffer,pInfo5->pPortName);
+         
+         pInfo5++;
+
+         if (i < dwPrinters-1)
+            strcat(cBuffer,",,");
+      }
+   }
+
+   hb_retc(cBuffer);
+   GlobalFree(pBuffer);
+   GlobalFree(cBuffer);
+   return;
 }
 
 HB_FUNC (RR_STARTDOC)

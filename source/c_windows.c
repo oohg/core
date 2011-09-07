@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.73 2011-09-06 02:33:23 fyurisich Exp $
+ * $Id: c_windows.c,v 1.74 2011-09-07 21:53:35 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -857,13 +857,10 @@ HB_FUNC( GETGRIDDISPINFOINDEX )
 
 HB_FUNC( SETGRIDQUERYDATA )
 {
-//	LV_DISPINFO* pDispInfo = (LV_DISPINFO*)hb_parnl(1);
-//      pDispInfo->item.pszText = (char * ) hb_parc(2) ;
-
 	PHB_ITEM pValue = hb_itemNew( NULL );
 	LV_DISPINFO* pDispInfo = (LV_DISPINFO*)hb_parnl(1);
 	hb_itemCopy( pValue, hb_param( 2, HB_IT_STRING ));
-    pDispInfo->item.pszText = hb_itemGetCPtr( pValue );
+   pDispInfo->item.pszText = (LPTSTR) hb_itemGetCPtr( pValue );
 
 }
 

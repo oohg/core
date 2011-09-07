@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.50 2011-07-07 01:38:50 guerra000 Exp $
+ * $Id: h_tab.prg,v 1.51 2011-09-07 21:53:35 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -718,7 +718,7 @@ HB_FUNC( INITTABCONTROL )
 
    for( i = hb_parinfa( 7, 0 ); i > 0; i-- )
    {
-      tie.pszText = hb_arrayGetCPtr( hArray, i );
+      tie.pszText = (LPTSTR) hb_arrayGetCPtr( hArray, i );
       TabCtrl_InsertItem( hbutton, 0, &tie );
    }
 

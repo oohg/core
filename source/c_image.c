@@ -1,5 +1,5 @@
 /*
- * $Id: c_image.c,v 1.29 2011-07-23 15:24:10 fyurisich Exp $
+ * $Id: c_image.c,v 1.30 2011-09-07 21:53:35 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -115,15 +115,16 @@
 HANDLE _OOHG_OleLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG lBackColor, long lWidth2, long lHeight2 )
 {
    HANDLE hImage = 0;
-   IStream *iStream;
-   IPicture *iPicture;
+   IStream * iStream;
+   IPicture * iPicture;
+   IPicture ** iPictureRef = &iPicture;
    long lWidth, lHeight;
    HDC hdc1, hdc2;
    RECT rect;
    HBRUSH hBrush;
 
    CreateStreamOnHGlobal( hGlobal, FALSE, &iStream );
-   OleLoadPicture( iStream, 0, TRUE, &IID_IPicture, ( LPVOID * ) &iPicture );
+   OleLoadPicture( iStream, 0, TRUE, &IID_IPicture, ( LPVOID * ) iPictureRef );
    if( iPicture )
    {
       iPicture->lpVtbl->get_Width( iPicture, &lWidth );
