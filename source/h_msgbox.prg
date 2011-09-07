@@ -1,5 +1,5 @@
 /*
- * $Id: h_msgbox.prg,v 1.12 2011-08-16 13:05:02 fyurisich Exp $
+ * $Id: h_msgbox.prg,v 1.13 2011-09-07 04:41:50 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -310,23 +310,27 @@ Local cMessage, ctype, l , i
 
    do case
       case ctype $ "CNLDM"
-         cMessage :=  transform( Message, "@" )+"  "
+         cMessage :=  transform( Message, "@" )+"  "         //// cvc
       case cType = "O"
-         cMessage := ":Object:   "
+         cMessage :=  Message:ClassName()+ " :Object: "       //// cvc
       case ctype = "A"
          l:=len( Message )
          cMessage:=""
          for i:=1 to l
-             cMessage = cMessage +  if ( i=l  , autotype( Message [ i ] )+chr(13)+chr(10)  ,  autotype( Message[ i ] ) )
+             cMessage = cMessage +  if ( i=l  , autotype( Message [ i ] )+chr(13)+chr(10)  ,  autotype( Message[ i ] ) )    /// cvc
          next i
       case ctype = "B"
          cMessage := "{|| Codeblock }   "
       case cType = "H"
          cMessage := ":Hash:   "
       case cType = "P"
-         cMessage :=":Pointer:   "
+   #IFDEF __XHARBOUR__
+        cMessage :=  Ltrim( Hb_ValToStr( Message )) + " HexToNum()=> " + LTrim( Str( HexToNum( SubStr( Hb_ValToStr( Message ), 3 ) ) ) )  /// cvc
+   #ELSE
+        cMessage :=  Ltrim( Hb_ValToStr( Message )) + " Hb_HexToNum()=> " + LTrim( Str( Hb_HexToNum( SubStr( Hb_ValToStr( Message ), 3 ) ) ) )    ///cvc
+   #ENDIF
       otherwise
          cMessage :="<NIL>   "
    endcase
-   
+
 Return cMessage
