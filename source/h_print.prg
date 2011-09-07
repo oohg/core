@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.114 2011-09-07 04:41:50 declan2005 Exp $
+* $Id: h_print.prg,v 1.115 2011-09-07 15:45:31 nulcrc Exp $
 */
 
 #include 'hbclass.ch'
@@ -4200,18 +4200,24 @@ local cInStop := '101' // industrial 2 of 5 stop
 
     cCode:=trans(cCode,'@9') // elimina caracteres
 
-    ///if (nLen%2=1 .and. !lMode)
-    ///    nLen++
-    ///    cCode+='0'
-    ///end
+	nLen:=len(cCode)
+    if (nLen%2=1 .and. !lMode)
+        nLen++
+        cCode+='0'
+    end
+	
     if lMode
-        for n:=1 to len(cCode) step 2
+		if nLen%2=0 
+			nLen++
+			cCode='0'+cCode
+		end
+		for n:=1 to len(cCode) step 2
             nCheck+=val(substr(cCode,n,1))*3+val(substr(cCode,n+1,1))
         next
         cCode += right(str(nCheck,10,0),1)
     end
 
-    nLen:=len(cCode)
+ 
     cBarra:= cStart
     // preencoding .. interleaving
 
