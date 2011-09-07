@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.115 2011-09-07 15:45:31 nulcrc Exp $
+* $Id: h_print.prg,v 1.116 2011-09-07 19:06:17 fyurisich Exp $
 */
 
 #include 'hbclass.ch'
@@ -151,210 +151,210 @@ DATA nunitslin          INIT 1            READONLY
 DATA lprop              INIT .F.          READONLY
 
 *-------------------------
-METHOD init()
+METHOD init
 *-------------------------
 
 *-------------------------
-METHOD initx() BLOCK { || nil }
+METHOD initx BLOCK { || nil }
 *-------------------------
 
 *-------------------------
-METHOD setprop()
+METHOD setprop
 *-------------------------
 
 *-------------------------
-METHOD setcpl()
+METHOD setcpl
 *-------------------------
 
 *-------------------------
-METHOD begindoc()
+METHOD begindoc
 *-------------------------
 
 *-------------------------
-METHOD begindocx() BLOCK { || nil }
+METHOD begindocx BLOCK { || nil }
 *-------------------------
 *-------------------------
-METHOD enddoc()
-*-------------------------
-
-*-------------------------
-METHOD enddocx() BLOCK { || nil }
+METHOD enddoc
 *-------------------------
 
 *-------------------------
-METHOD printdos()
+METHOD enddocx BLOCK { || nil }
 *-------------------------
 
 *-------------------------
-METHOD printdosx() BLOCK { || nil }
+METHOD printdos
 *-------------------------
 
 *-------------------------
-METHOD printraw()
+METHOD printdosx BLOCK { || nil }
 *-------------------------
 
 *-------------------------
-METHOD printrawx() BLOCK { || nil }
+METHOD printraw
 *-------------------------
 
 *-------------------------
-METHOD beginpage()
+METHOD printrawx BLOCK { || nil }
 *-------------------------
 
 *-------------------------
-METHOD beginpagex() BLOCK { || nil }
+METHOD beginpage
 *-------------------------
 
 *-------------------------
-METHOD condendos() BLOCK { || nil }
+METHOD beginpagex BLOCK { || nil }
 *-------------------------
 
 *-------------------------
-METHOD condendosx() BLOCK { || nil }
+METHOD condendos BLOCK { || nil }
 *-------------------------
 
 *-------------------------
-METHOD NORMALDOS() BLOCK { || nil }
+METHOD condendosx BLOCK { || nil }
 *-------------------------
 
 *-------------------------
-METHOD normaldosx() BLOCK { || nil }
+METHOD NORMALDOS BLOCK { || nil }
 *-------------------------
 
 *-------------------------
-METHOD endpage()
+METHOD normaldosx BLOCK { || nil }
 *-------------------------
 
 *-------------------------
-METHOD endpagex() BLOCK { || nil }
-*-------------------------
-*-------------------------
-METHOD release()
+METHOD endpage
 *-------------------------
 
 *-------------------------
-METHOD releasex() BLOCK { || nil }
+METHOD endpagex BLOCK { || nil }
 *-------------------------
 *-------------------------
-METHOD printdata()
-*-------------------------
-
-*-------------------------
-METHOD printdatax() BLOCK { || nil }
-*-------------------------
-
-METHOD printbarcode()
-
-METHOD printbarcodex() BLOCK {|| nil }
-
-method ean13()
-
-method code128()
-
-method code3_9()
-
-method int25()
-
-method ean8()
-
-method  upca()
-
-method sup5()
-
-method codabar()
-
-method ind25()
-
-method mat25()
-
-method go_code()
-
-*-------------------------
-METHOD printimage()
+METHOD release
 *-------------------------
 
 *-------------------------
-METHOD printimagex() BLOCK { || nil }
+METHOD releasex BLOCK { || nil }
 *-------------------------
 *-------------------------
-METHOD printline()
-*-------------------------
-
-*-------------------------
-METHOD printlinex() BLOCK { || nil }
-*-------------------------
-
-
-*-------------------------
-METHOD printrectangle()
+METHOD printdata
 *-------------------------
 
 *-------------------------
-METHOD printrectanglex() BLOCK { || nil }
+METHOD printdatax BLOCK { || nil }
+*-------------------------
+
+METHOD printbarcode
+
+METHOD printbarcodex BLOCK {|| nil }
+
+method ean13
+
+method code128
+
+method code3_9
+
+method int25
+
+method ean8
+
+method  upca
+
+method sup5
+
+method codabar
+
+method ind25
+
+method mat25
+
+method go_code
+
+*-------------------------
+METHOD printimage
 *-------------------------
 
 *-------------------------
-METHOD selprinter()
+METHOD printimagex BLOCK { || nil }
+*-------------------------
+*-------------------------
+METHOD printline
 *-------------------------
 
 *-------------------------
-METHOD selprinterx() BLOCK { || nil }
+METHOD printlinex BLOCK { || nil }
+*-------------------------
+
+
+*-------------------------
+METHOD printrectangle
 *-------------------------
 
 *-------------------------
-METHOD getdefprinter()
+METHOD printrectanglex BLOCK { || nil }
 *-------------------------
 
 *-------------------------
-METHOD getdefprinterx() BLOCK { || nil }
+METHOD selprinter
 *-------------------------
 
 *-------------------------
-METHOD setcolor()
+METHOD selprinterx BLOCK { || nil }
 *-------------------------
 
 *-------------------------
-METHOD setcolorx() BLOCK { || nil }
+METHOD getdefprinter
 *-------------------------
 
 *-------------------------
-METHOD setfont()
+METHOD getdefprinterx BLOCK { || nil }
 *-------------------------
 
 *-------------------------
-METHOD setfontx() BLOCK { || nil }
+METHOD setcolor
 *-------------------------
 
 *-------------------------
-METHOD setpreviewsize()
+METHOD setcolorx BLOCK { || nil }
 *-------------------------
 
 *-------------------------
-METHOD setpreviewsizex() BLOCK { || nil }
+METHOD setfont
 *-------------------------
 
 *-------------------------
-METHOD setunits()   ////// mm o rowcol
+METHOD setfontx BLOCK { || nil }
 *-------------------------
 
 *-------------------------
-METHOD printroundrectangle()
+METHOD setpreviewsize
 *-------------------------
 
 *-------------------------
-METHOD printroundrectanglex()  BLOCK { || nil }
+METHOD setpreviewsizex BLOCK { || nil }
 *-------------------------
 
 *-------------------------
-METHOD version() INLINE ::cversion
+METHOD setunits   ////// mm o rowcol
 *-------------------------
 
 *-------------------------
-METHOD setlmargin()
+METHOD printroundrectangle
 *-------------------------
 
 *-------------------------
-METHOD settmargin()
+METHOD printroundrectanglex  BLOCK { || nil }
+*-------------------------
+
+*-------------------------
+METHOD version INLINE ::cversion
+*-------------------------
+
+*-------------------------
+METHOD setlmargin
+*-------------------------
+
+*-------------------------
+METHOD settmargin
 *-------------------------
 
 ENDCLASS
@@ -424,7 +424,6 @@ RETURN self
 *-------------------------
 METHOD selprinter( lselect , lpreview, llandscape , npapersize ,cprinterx, lhide,nres, nbin ) CLASS TPRINTBASE
 *-------------------------
-local lsucess := .T.
 
 default nbin to 1
 
@@ -1008,39 +1007,39 @@ RETURN(NIL)
 CREATE CLASS TMINIPRINT FROM TPRINTBASE
 
 *-------------------------
-METHOD initx()
+METHOD initx
 *-------------------------
 
 *-------------------------
-METHOD begindocx()
+METHOD begindocx
 *-------------------------
 
 *-------------------------
-METHOD enddocx()
+METHOD enddocx
 *-------------------------
 
 *-------------------------
-METHOD beginpagex()
+METHOD beginpagex
 *-------------------------
 
 *-------------------------
-METHOD endpagex()
+METHOD endpagex
 *-------------------------
 
 *-------------------------
-METHOD releasex()
+METHOD releasex
 *-------------------------
 
 *-------------------------
-METHOD printdatax()
+METHOD printdatax
 *-------------------------
 
 *-------------------------
-METHOD printimagex()
+METHOD printimagex
 *-------------------------
 
 *-------------------------
-METHOD printlinex()
+METHOD printlinex
 *-------------------------
 
 *-------------------------
@@ -1048,18 +1047,18 @@ METHOD printrectanglex
 *-------------------------
 
 *-------------------------
-METHOD selprinterx()
+METHOD selprinterx
 *-------------------------
 
 *-------------------------
-METHOD getdefprinterx()
+METHOD getdefprinterx
 *-------------------------
 
 *-------------------------
-METHOD printroundrectanglex()
+METHOD printroundrectanglex
 *-------------------------
 
-METHOD printbarcodex()
+METHOD printbarcodex
 
 ENDCLASS
 
@@ -1426,39 +1425,39 @@ RETURN self
 CREATE CLASS THBPRINTER FROM TPRINTBASE
 
 *-------------------------
-METHOD initx()
+METHOD initx
 *-------------------------
 
 *-------------------------
-METHOD begindocx()
+METHOD begindocx
 *-------------------------
 
 *-------------------------
-METHOD enddocx()
+METHOD enddocx
 *-------------------------
 
 *-------------------------
-METHOD beginpagex()
+METHOD beginpagex
 *-------------------------
 
 *-------------------------
-METHOD endpagex()
+METHOD endpagex
 *-------------------------
 
 *-------------------------
-METHOD releasex()
+METHOD releasex
 *-------------------------
 
 *-------------------------
-METHOD printdatax()
+METHOD printdatax
 *-------------------------
 
 *-------------------------
-METHOD printimagex()
+METHOD printimagex
 *-------------------------
 
 *-------------------------
-METHOD printlinex()
+METHOD printlinex
 *-------------------------
 
 *-------------------------
@@ -1466,26 +1465,26 @@ METHOD printrectanglex
 *-------------------------
 
 *-------------------------
-METHOD selprinterx()
+METHOD selprinterx
 *-------------------------
 
 *-------------------------
-METHOD getdefprinterx()
+METHOD getdefprinterx
 *-------------------------
 
 *-------------------------
-METHOD setcolorx()
+METHOD setcolorx
 *-------------------------
 
 *-------------------------
-METHOD setpreviewsizex()
+METHOD setpreviewsizex
 *-------------------------
 
 *-------------------------
-METHOD printroundrectanglex()
+METHOD printroundrectanglex
 *-------------------------
 
-method printbarcodex()
+method printbarcodex
 
 ENDCLASS
 
@@ -1761,39 +1760,39 @@ DATA liswin   INIT .F.
 DATA cport    INIT "prn"
 
 *-------------------------
-METHOD initx()
+METHOD initx
 *-------------------------
 
 *-------------------------
-METHOD begindocx()
+METHOD begindocx
 *-------------------------
 
 *-------------------------
-METHOD enddocx()
+METHOD enddocx
 *-------------------------
 
 *-------------------------
-METHOD beginpagex()
+METHOD beginpagex
 *-------------------------
 
 *-------------------------
-METHOD endpagex()
+METHOD endpagex
 *-------------------------
 
 *-------------------------
-METHOD releasex() BLOCK { || nil }
+METHOD releasex BLOCK { || nil }
 *-------------------------
 
 *-------------------------
-METHOD printdatax()
+METHOD printdatax
 *-------------------------
 
 *-------------------------
-METHOD printimage() BLOCK { || nil }
+METHOD printimage BLOCK { || nil }
 *-------------------------
 
 *-------------------------
-METHOD printlinex()
+METHOD printlinex
 *-------------------------
 
 *-------------------------
@@ -1801,36 +1800,36 @@ METHOD printrectanglex BLOCK { || nil }
 *-------------------------
 
 *-------------------------
-METHOD selprinterx()
+METHOD selprinterx
 *-------------------------
 
 *-------------------------
-METHOD getdefprinterx() BLOCK { || nil }
+METHOD getdefprinterx BLOCK { || nil }
 *-------------------------
 
 *-------------------------
-METHOD setcolorx() BLOCK { || nil }
+METHOD setcolorx BLOCK { || nil }
 *-------------------------
 
 *-------------------------
-METHOD setpreviewsizex() BLOCK { || nil }
+METHOD setpreviewsizex BLOCK { || nil }
 *-------------------------
 
 *-------------------------
-METHOD printroundrectanglex() BLOCK { || nil }
+METHOD printroundrectanglex BLOCK { || nil }
 *-------------------------
 
 *-------------------------
-method condendosx()
+method condendosx
 *-------------------------
 
 *-------------------------
-method normaldosx()
+method normaldosx
 *-------------------------
 
-method searchstring()
+method searchstring
 
-method nextsearch()
+method nextsearch
 
 ENDCLASS
 
@@ -2050,7 +2049,7 @@ RETURN nposluna
 CREATE CLASS TRAWPRINT FROM TDOSPRINT
 
 
-METHOD EndDocx()
+METHOD EndDocx
 
 ENDCLASS
 
@@ -2118,39 +2117,39 @@ CREATE CLASS TEXCELPRINT FROM TPRINTBASE
     DATA cTlinea INIT ""
 
 *-------------------------
-METHOD initx()
+METHOD initx
 *-------------------------
 
 *-------------------------
-METHOD begindocx()
+METHOD begindocx
 *-------------------------
 
 *-------------------------
-METHOD enddocx()
+METHOD enddocx
 *-------------------------
 
 *-------------------------
-METHOD beginpagex()
+METHOD beginpagex
 *-------------------------
 
 *-------------------------
-METHOD endpagex()
+METHOD endpagex
 *-------------------------
 
 *-------------------------
-METHOD releasex()
+METHOD releasex
 *-------------------------
 
 *-------------------------
-METHOD printdatax()
+METHOD printdatax
 *-------------------------
 
 *-------------------------
-METHOD printimagex()
+METHOD printimagex
 *-------------------------
 
 *-------------------------
-METHOD printlinex() BLOCK {|| NIL }
+METHOD printlinex BLOCK {|| NIL }
 *-------------------------
 
 *-------------------------
@@ -2158,31 +2157,31 @@ METHOD printrectanglex BLOCK {|| NIL }
 *-------------------------
 
 *-------------------------
-METHOD selprinterx()
+METHOD selprinterx
 *-------------------------
 
 *-------------------------
-METHOD getdefprinterx() BLOCK {|| NIL }
+METHOD getdefprinterx BLOCK {|| NIL }
 *-------------------------
 
 *-------------------------
-METHOD setcolorx() BLOCK {|| NIL }
+METHOD setcolorx BLOCK {|| NIL }
 *-------------------------
 
 *-------------------------
-METHOD setpreviewsizex() BLOCK {|| NIL }
+METHOD setpreviewsizex BLOCK {|| NIL }
 *-------------------------
 
 *-------------------------
-METHOD printroundrectanglex() BLOCK {|| NIL }
+METHOD printroundrectanglex BLOCK {|| NIL }
 *-------------------------
 
 *-------------------------
-method condendosx() BLOCK {|| NIL }
+method condendosx BLOCK {|| NIL }
 *-------------------------
 
 *-------------------------
-method normaldosx() BLOCK {|| NIL }
+method normaldosx BLOCK {|| NIL }
 *-------------------------
 
 ENDCLASS
@@ -2230,7 +2229,7 @@ RETURN self
 *-------------------------
 METHOD enddocx() CLASS TEXCELPRINT
 *-------------------------
-local nCol,cName,nNum,cExt
+local nCol,cName,cExt        //, nNum
 FOR nCol:=1 TO ::oHoja:UsedRange:Columns:Count()
     ::oHoja:Columns( nCol ):AutoFit()
 NEXT
@@ -2250,10 +2249,10 @@ NEXT
  ::oExcel:visible:=.F.
 
   if val(::oExcel:version) > 11.5
-     nNum:= 46    /// creoo
+//     nNum:= 46    /// creoo
      cext:="xlsx"
   else
-     nNum:=39
+//     nNum:=39
      cext:="xls"
   endif
 
@@ -2292,7 +2291,7 @@ RETURN self
 METHOD printimagex(nlin,ncol,nlinf,ncolf,cimage) CLASS TEXCELPRINT
 *-------------------------
 local cfolder :=  getcurrentfolder()+"\"
-local ccol,clin
+local clin         //, ccol
 local crango
 empty(nlinf)
 
@@ -2312,7 +2311,7 @@ ncolf:=nlin
 
 clin :=alltrim(str(nlin))
 
-ccol :=alltrim(str(ncolf))
+// ccol :=alltrim(str(ncolf))
 
 
 crango := "A"+clin
@@ -2398,39 +2397,39 @@ CREATE CLASS TSPREADSHEETPRINT FROM TPRINTBASE     //// Ciro 2011/8/19
     DATA nlpp  INIT 60          /// lines per page
 
 *-------------------------
-METHOD initx()
+METHOD initx
 *-------------------------
 
 *-------------------------
-METHOD begindocx()
+METHOD begindocx
 *-------------------------
 
 *-------------------------
-METHOD enddocx()
+METHOD enddocx
 *-------------------------
 
 *-------------------------
-METHOD beginpagex() BLOCK {|| NIL }
+METHOD beginpagex BLOCK {|| NIL }
 *-------------------------
 
 *-------------------------
-METHOD endpagex()
+METHOD endpagex
 *-------------------------
 
 *-------------------------
-METHOD releasex()
+METHOD releasex
 *-------------------------
 
 *-------------------------
-METHOD printdatax()
+METHOD printdatax
 *-------------------------
 
 *-------------------------
-METHOD printimagex() BLOCK {|| NIL }
+METHOD printimagex BLOCK {|| NIL }
 *-------------------------
 
 *-------------------------
-METHOD printlinex() BLOCK {|| NIL }
+METHOD printlinex BLOCK {|| NIL }
 *-------------------------
 
 *-------------------------
@@ -2438,35 +2437,35 @@ METHOD printrectanglex BLOCK {|| NIL }
 *-------------------------
 
 *-------------------------
-METHOD selprinterx()    BLOCK {|| NIL }
+METHOD selprinterx    BLOCK {|| NIL }
 *-------------------------
 
 *-------------------------
-METHOD getdefprinterx() BLOCK {|| NIL }
+METHOD getdefprinterx BLOCK {|| NIL }
 *-------------------------
 
 *-------------------------
-METHOD setcolorx() BLOCK {|| NIL }
+METHOD setcolorx BLOCK {|| NIL }
 *-------------------------
 
 *-------------------------
-METHOD setpreviewsizex() BLOCK {|| NIL }
+METHOD setpreviewsizex BLOCK {|| NIL }
 *-------------------------
 
 *-------------------------
-METHOD printroundrectanglex() BLOCK {|| NIL }
+METHOD printroundrectanglex BLOCK {|| NIL }
 *-------------------------
 
 *-------------------------
-method condendosx() BLOCK {|| NIL }
+method condendosx BLOCK {|| NIL }
 *-------------------------
 
 *-------------------------
-method normaldosx() BLOCK {|| NIL }
+method normaldosx BLOCK {|| NIL }
 *-------------------------
 
 *--------------------
-method addpage()
+method addpage
 *--------------------
 
 ENDCLASS
@@ -2658,39 +2657,39 @@ RETURN self
 CREATE CLASS TRTFPRINT FROM TPRINTBASE
 
 *-------------------------
-METHOD initx()
+METHOD initx
 *-------------------------
 
 *-------------------------
-METHOD begindocx()
+METHOD begindocx
 *-------------------------
 
 *-------------------------
-METHOD enddocx()
+METHOD enddocx
 *-------------------------
 
 *-------------------------
-METHOD beginpagex()
+METHOD beginpagex
 *-------------------------
 
 *-------------------------
-METHOD endpagex()
+METHOD endpagex
 *-------------------------
 
 *-------------------------
-METHOD releasex() BLOCK {|| NIL }
+METHOD releasex BLOCK {|| NIL }
 *-------------------------
 
 *-------------------------
-METHOD printdatax()
+METHOD printdatax
 *-------------------------
 
 *-------------------------
-METHOD printimage() BLOCK {|| NIL }
+METHOD printimage BLOCK {|| NIL }
 *-------------------------
 
 *-------------------------
-METHOD printlinex()
+METHOD printlinex
 *-------------------------
 
 *-------------------------
@@ -2698,31 +2697,31 @@ METHOD printrectanglex BLOCK {|| NIL }
 *-------------------------
 
 *-------------------------
-METHOD selprinterx()
+METHOD selprinterx
 *-------------------------
 
 *-------------------------
-METHOD getdefprinterx() BLOCK {|| NIL }
+METHOD getdefprinterx BLOCK {|| NIL }
 *-------------------------
 
 *-------------------------
-METHOD setcolorx() BLOCK {|| NIL }
+METHOD setcolorx BLOCK {|| NIL }
 *-------------------------
 
 *-------------------------
-METHOD setpreviewsizex() BLOCK {|| NIL }
+METHOD setpreviewsizex BLOCK {|| NIL }
 *-------------------------
 
 *-------------------------
-METHOD printroundrectanglex() BLOCK {|| NIL }
+METHOD printroundrectanglex BLOCK {|| NIL }
 *-------------------------
 
 *-------------------------
-method condendosx()
+method condendosx
 *-------------------------
 
 *-------------------------
-method normaldosx()
+method normaldosx
 *-------------------------
 
 
@@ -2938,39 +2937,39 @@ CREATE CLASS TCSVPRINT FROM TPRINTBASE
 
 
 *-------------------------
-METHOD initx()
+METHOD initx
 *-------------------------
 
 *-------------------------
-METHOD begindocx()
+METHOD begindocx
 *-------------------------
 
 *-------------------------
-METHOD enddocx()
+METHOD enddocx
 *-------------------------
 
 *-------------------------
-METHOD beginpagex()
+METHOD beginpagex
 *-------------------------
 
 *-------------------------
-METHOD endpagex()
+METHOD endpagex
 *-------------------------
 
 *-------------------------
-METHOD releasex() BLOCK { || NIL }
+METHOD releasex BLOCK { || NIL }
 *-------------------------
 
 *-------------------------
-METHOD printdatax()
+METHOD printdatax
 *-------------------------
 
 *-------------------------
-METHOD printimage() BLOCK { || NIL }
+METHOD printimage BLOCK { || NIL }
 *-------------------------
 
 *-------------------------
-METHOD printlinex()
+METHOD printlinex
 *-------------------------
 
 *-------------------------
@@ -2978,31 +2977,31 @@ METHOD printrectanglex BLOCK { || NIL }
 *-------------------------
 
 *-------------------------
-METHOD selprinterx()
+METHOD selprinterx
 *-------------------------
 
 *-------------------------
-METHOD getdefprinterx() BLOCK { || NIL }
+METHOD getdefprinterx BLOCK { || NIL }
 *-------------------------
 
 *-------------------------
-METHOD setcolorx() BLOCK { || NIL }
+METHOD setcolorx BLOCK { || NIL }
 *-------------------------
 
 *-------------------------
-METHOD setpreviewsizex() BLOCK { || NIL }
+METHOD setpreviewsizex BLOCK { || NIL }
 *-------------------------
 
 *-------------------------
-METHOD printroundrectanglex() BLOCK { || NIL }
+METHOD printroundrectanglex BLOCK { || NIL }
 *-------------------------
 
 *-------------------------
-method condendosx()
+method condendosx
 *-------------------------
 
 *-------------------------
-method normaldosx()
+method normaldosx
 *-------------------------
 
 ENDCLASS
@@ -3150,22 +3149,22 @@ DATA lPreview    as logical   init .f.         //indica si abrimos el pdf al fin
 DATA aPaper      as array     init {} hidden   //array con los tipos de papel soportados por la clase pdf.
 
 
-METHOD initx()
-METHOD begindocx()
-METHOD enddocx()
-METHOD beginpagex()
-METHOD endpagex()
-METHOD releasex()
-METHOD printdatax()
-method printbarcodex()
-METHOD printimagex()
-METHOD printlinex()
+METHOD initx
+METHOD begindocx
+METHOD enddocx
+METHOD beginpagex
+METHOD endpagex
+METHOD releasex
+METHOD printdatax
+method printbarcodex
+METHOD printimagex
+METHOD printlinex
 METHOD printrectanglex
-METHOD selprinterx()
-METHOD getdefprinterx()
-METHOD setcolorx()
-METHOD setpreviewsizex()
-METHOD printroundrectanglex()
+METHOD selprinterx
+METHOD getdefprinterx
+METHOD setcolorx
+METHOD setpreviewsizex
+METHOD printroundrectanglex
 
 ENDCLASS
 *---------------------------------------
@@ -3268,8 +3267,7 @@ RETURN self
 *-------------------------
 METHOD PRINTDATAx(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext,lItalic ) CLASS TPDFPRINT
 *-------------------------
-local nType   := 0
-local nlength := 0
+local nType
 local cColor  := Chr(253)
 local I
 
@@ -3372,7 +3370,7 @@ nlinf := nlinf - nlin
 ncolf := nColf - nCol
 
 IF ::cunits == "MM"
-   hdespl:=1
+//   hdespl:=1
    ::oPdf:Image( cImage, nlin,ncol,"M",nlinf,ncolf)
 ELSE
    ::oPdf:Image( cImage,   nlin*::nmver*vdespl +::nvfij   ,ncol*::nmhor+ ::nhfij*hdespl,"M"   ,nlinf*::nmver*vdespl+::nvfij   ,ncolf*::nmhor+ ::nhfij*hdespl)
@@ -3421,7 +3419,7 @@ RETURN self
 *-------------------------
 METHOD selprinterx( lselect , lpreview, llandscape , npapersize ) CLASS TPDFPRINT
 *-------------------------
-local nPos := 0
+local nPos
 
 EMPTY( lpreview )
 
@@ -3455,7 +3453,7 @@ RETURN self
 *-------------------------
 METHOD getdefprinterx() CLASS TPDFPRINT
 *-------------------------
-local cdefprinter
+local cdefprinter := Nil
 RETURN cdefprinter
 
 
@@ -3487,39 +3485,39 @@ CREATE CLASS TCALCPRINT FROM TPRINTBASE
     DATA oColumn INIT nil
 
 *-------------------------
-METHOD initx()
+METHOD initx
 *-------------------------
 
 *-------------------------
-METHOD begindocx()
+METHOD begindocx
 *-------------------------
 
 *-------------------------
-METHOD enddocx()
+METHOD enddocx
 *-------------------------
 
 *-------------------------
-METHOD beginpagex()
+METHOD beginpagex
 *-------------------------
 
 *-------------------------
-METHOD endpagex()
+METHOD endpagex
 *-------------------------
 
 *-------------------------
-METHOD releasex()
+METHOD releasex
 *-------------------------
 
 *-------------------------
-METHOD printdatax()
+METHOD printdatax
 *-------------------------
 
 *-------------------------
-METHOD printimage() BLOCK { || nil }
+METHOD printimage BLOCK { || nil }
 *-------------------------
 
 *-------------------------
-METHOD printlinex() BLOCK {|| NIL }
+METHOD printlinex BLOCK {|| NIL }
 *-------------------------
 
 *-------------------------
@@ -3527,31 +3525,31 @@ METHOD printrectanglex BLOCK { || nil }
 *-------------------------
 
 *-------------------------
-METHOD selprinterx()
+METHOD selprinterx
 *-------------------------
 
 *-------------------------
-METHOD getdefprinterx() BLOCK { || nil }
+METHOD getdefprinterx BLOCK { || nil }
 *-------------------------
 
 *-------------------------
-METHOD setcolorx() BLOCK { || nil }
+METHOD setcolorx BLOCK { || nil }
 *-------------------------
 
 *-------------------------
-METHOD setpreviewsizex() BLOCK { || nil }
+METHOD setpreviewsizex BLOCK { || nil }
 *-------------------------
 
 *-------------------------
-METHOD printroundrectanglex() BLOCK { || nil }
+METHOD printroundrectanglex BLOCK { || nil }
 *-------------------------
 
 *-------------------------
-method condendosx() BLOCK {|| NIL }
+method condendosx BLOCK {|| NIL }
 *-------------------------
 
 *-------------------------
-method normaldosx() BLOCK {|| NIL }
+method normaldosx BLOCK {|| NIL }
 *-------------------------
 
 ENDCLASS
@@ -4041,7 +4039,7 @@ function _ean13( cCode )
    // calculo del digito de control
    k:=k+EAN13_CHECK(k)                           // Chaeck Digit en EAN13
    // preparacion de la cadena de impresion
-   cadena:=[]
+//   cadena:=[]
    dcha:=SUBSTR(K,8,6)
    izda:=substr(k,2,6)
    mascara:=substr(primero,(val(substr(k,1,1))*6)+1,6)
@@ -4189,18 +4187,18 @@ local aBar:={"00110","10001",'01001','11000','00101','10100','01100',;
               '00011','10010','01010'}
 local cStart:='0000'
 local cStop:='100'
-local cMtSt:='10000' // matrix start/stop
-local cInStart := '110' // industrial 2 of 5 start
-local cInStop := '101' // industrial 2 of 5 stop
+// local cMtSt:='10000' // matrix start/stop
+// local cInStart := '110' // industrial 2 of 5 start
+// local cInStop := '101' // industrial 2 of 5 stop
 
-    local n,cBar:='', cIz:='',cDer:='',nLen:=0,nCheck:=0,cBarra:=''
+    local n,cBar:='', cIz,cDer,nLen,nCheck:=0,cBarra:=''
     local m
 
     default lMode to .t.
 
     cCode:=trans(cCode,'@9') // elimina caracteres
 
-	nLen:=len(cCode)
+    nLen:=len(cCode)
     if (nLen%2=1 .and. !lMode)
         nLen++
         cCode+='0'
@@ -4246,11 +4244,11 @@ return cBar
 function _MAT25(cCode,lCheck)
 local aBar:={"00110","10001",'01001','11000','00101','10100','01100',;
               '00011','10010','01010'}
-local cStart:='0000'
-local cStop:='100'
+// local cStart:='0000'
+// local cStop:='100'
 local cMtSt:='10000' // matrix start/stop
-local cInStart := '110' // industrial 2 of 5 start
-local cInStop := '101' // industrial 2 of 5 stop
+// local cInStart := '110' // industrial 2 of 5 start
+// local cInStop := '101' // industrial 2 of 5 stop
 
     local cBar:='',cBarra:='', nCheck,n
     default lCheck to .f.
@@ -4283,9 +4281,9 @@ return cBarra
 function _Ind25(cCode,lCheck)
 local aBar:={"00110","10001",'01001','11000','00101','10100','01100',;
               '00011','10010','01010'}
-local cStart:='0000'
-local cStop:='100'
-local cMtSt:='10000' // matrix start/stop
+// local cStart:='0000'
+// local cStop:='100'
+// local cMtSt:='10000' // matrix start/stop
 local cInStart := '110' // industrial 2 of 5 start
 local cInStop := '101' // industrial 2 of 5 stop
 
@@ -4311,5 +4309,3 @@ local cInStop := '101' // industrial 2 of 5 stop
         end
     next
 return cBarra
-
-

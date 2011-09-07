@@ -1,5 +1,5 @@
 /*
- * $Id: h_tooltip.prg,v 1.6 2011-06-29 22:49:39 guerra000 Exp $
+ * $Id: h_tooltip.prg,v 1.7 2011-09-07 19:06:17 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -178,7 +178,7 @@ Function _SetToolTipBalloon( lNewBalloon )
 *-----------------------------------------------------------------------------*
 Static lBalloon := .F.
 Local oReg, lOldBalloon := lBalloon
-Local lYesNo
+Local lYesNo := Nil
 
    If HB_IsLogical( lNewBalloon )
       If lNewBalloon

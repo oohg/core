@@ -1,5 +1,5 @@
 /*
- * $Id: h_textarray.prg,v 1.17 2010-05-03 01:34:57 guerra000 Exp $
+ * $Id: h_textarray.prg,v 1.18 2011-09-07 19:06:17 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -128,8 +128,7 @@ Return Self
 *-----------------------------------------------------------------------------*
 METHOD SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout ) CLASS TTextArray
 *-----------------------------------------------------------------------------*
-LOCAL uRet
-   uRet := ::Super:SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout )
+   ::Super:SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout )
    TTextArray_SetFontSize( Self )
 Return Nil
 

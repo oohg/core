@@ -1,6 +1,5 @@
-
 /*
- * $Id: ChangeLog,v 1.782 2011-09-07 15:45:31 nulcrc Exp $
+ * $Id: ChangeLog,v 1.783 2011-09-07 19:08:03 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -8,10 +7,19 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+
+2011-09-07 16:05:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * source/h_print.prg
+  * source/h_scroll.prg
+  * source/h_textarray.prg
+  * source/h_activex.prg
+  * source/h_pdf.prg
+  * source/h_tooltip.prg
+    ! Fixed some harbour compiler warnings when using -w3 switch.
+
 2011-09-07  Cayetano Gómez  <cayetano@gomezgil.es>
    * source/h_print.prg
      ! fixed function _int25
-
 
 2011-09-07 00:19:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
    * source/h_print.prg

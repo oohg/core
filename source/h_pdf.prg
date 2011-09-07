@@ -1,5 +1,5 @@
 /*
-* $Id: h_pdf.prg,v 1.7 2011-05-06 23:59:44 declan2005 Exp $
+* $Id: h_pdf.prg,v 1.8 2011-09-07 19:06:17 fyurisich Exp $
 */
 //컴컴컴컴컴컴컴컴컴컴컴컴�\\
 //
@@ -3160,8 +3160,8 @@ local cName := ::GetFontInfo( "NAME" )
 
    IF cName = "Times"
   ::aReport[ FONTNAME ] := 1
-	ELSEIF cName = "Helvetica"
-		::aReport[ FONTNAME ] := 5
+   ELSEIF cName = "Helvetica"
+      ::aReport[ FONTNAME ] := 5
    ELSE
   ::aReport[ FONTNAME ] := 9
    ENDIF
@@ -3182,7 +3182,7 @@ local cName := ::GetFontInfo( "NAME" )
    ELSEIF cName = "Helvetica"
   ::aReport[ FONTNAME ] := 7
    ELSE
-   	::aReport[ FONTNAME ] := 11
+      ::aReport[ FONTNAME ] := 11
    ENDIF
    aadd( ::aReport[ PAGEFONTS ], ::aReport[ FONTNAME ] )
    IF ascan( ::aReport[ FONTS ], { |arr| arr[1] == ::aReport[ FONTNAME ] } ) == 0
@@ -3566,7 +3566,7 @@ local nWidth := 0.00, nI, nLen, nArr, nAdd := ( ::aReport[ FONTNAME ] - 1 ) % 4
    IF ::GetFontInfo("NAME") = "Times"
   nArr := 1
    ELSEIF ::GetFontInfo("NAME") = "Helvetica"
-   	nArr := 2
+      nArr := 2
    ELSE
   nArr := 3
    ENDIF
@@ -3593,8 +3593,6 @@ RETURN ::aReport[ REPORTLINE ]
 //컴컴컴컴컴컴컴컴컴컴컴컴�\\
 
 METHOD NewPage( _cPageSize, _cPageOrient, _nLpi, _cFontName, _nFontType, _nFontSize )
-
-local nAdd := 76.2
 
 DEFAULT _cPageSize   TO ::aReport[ PAGESIZE ]
 DEFAULT _cPageOrient TO ::aReport[ PAGEORIENT ]
@@ -3796,11 +3794,11 @@ DEFAULT lPrint   TO .t.
 DEFAULT cColor   TO ""
 
    IF cUnits == "M"
-  nTop := ::M2R( nTop )
+      nTop := ::M2R( nTop )
    ELSEIF cUnits == "R"
-  nLeft := ::X2M( ::M2X( ::aReport[ PDFLEFT ] ) + ;
-  nLeft * 100.00 / ::aReport[ REPORTWIDTH ] * ;
-  ( ::aReport[ PAGEX ] - ::M2X( ::aReport[ PDFLEFT ] ) * 2 - 9.0 ) / 100.00 )
+      nLeft := ::X2M( ::M2X( ::aReport[ PDFLEFT ] ) + ;
+               nLeft * 100.00 / ::aReport[ REPORTWIDTH ] * ;
+               ( ::aReport[ PAGEX ] - ::M2X( ::aReport[ PDFLEFT ] ) * 2 - 9.0 ) / 100.00 )
    ENDIF
 
    ::aReport[ REPORTLINE ] := nTop - 1
@@ -3811,15 +3809,14 @@ DEFAULT cColor   TO ""
    nNew  := nTab
    cString   := alltrim( cString )
    nTokens   := numtoken( cString, cDelim )
-   nTokenLen := 0.00
    nStart:= 1
 
    IF nJustify == 1 .or. nJustify == 4
-  nLeft := nLeft
+      nLeft := nLeft
    ELSEIF nJustify == 2
-  nLeft := nLeft - nLength / 2
+      nLeft := nLeft - nLength / 2
    ELSEIF nJustify == 3
-  nLeft := nLeft - nLength
+      nLeft := nLeft - nLength
    ENDIF
 
    nL := nLeft
@@ -3830,68 +3827,68 @@ DEFAULT cColor   TO ""
    nI := 1
 
    while nI <= nTokens
-  cToken := token( cString, cDelim, nI )
-  nTokenLen := ::length( cToken )
-  nLen := len( cToken )
+      cToken := token( cString, cDelim, nI )
+      nTokenLen := ::length( cToken )
+      nLen := len( cToken )
 
-  IF nLineLen + nSpace + nTokenLen > nLength
- IF nStart == nI // single word > nLength
-k := 1
-while k <= nLen
-   cTemp := ""
-   nLineLen := 0.00
-   nL := nLeft
-   IF lParagraph
-  nLineLen += nSpace * nNew
-  IF nJustify <> 2
- nL += nSpace * nNew
-  ENDIF
-  lParagraph := .f.
-   ENDIF
-   IF nJustify == 2
-  nL := nLeft + ( nLength - ::length( cTemp ) ) / 2
-   ELSEIF nJustify == 3
-  nL := nLeft + nLength - ::length( cTemp )
-   ENDIF
-   while k <= nLen .and. ( ( nLineLen += ::length( substr( cToken, k, 1 ))) <= nLength )
-  nLineLen += ::length( substr( cToken, k, 1 ))
-  cTemp += substr( cToken, k, 1 )
-  ++k
-   enddo
-   IF empty( cTemp ) // single character > nlength
-  cTemp := substr( cToken, k, 1 )
-  ++k
-   ENDIF
-   ++nLines
-   IF lPrint
-  nRow := ::NewLine( 1 )
-  ::AtSay( cColor + cTemp, ::R2M( nRow + ::aReport[ PDFTOP] ), nL, "M" )
-   ENDIF
-enddo
-++nI
-nStart := nI
- ELSE
-::TextPrint( nI - 1, nLeft, @lParagraph, nJustify, nSpace, nNew, nLength, @nLineLen, @nLines, @nStart, cString, cDelim, cColor, lPrint )
- ENDIF
+      IF nLineLen + nSpace + nTokenLen > nLength
+         IF nStart == nI // single word > nLength
+            k := 1
+            while k <= nLen
+               cTemp := ""
+               nLineLen := 0.00
+               nL := nLeft
+               IF lParagraph
+                  nLineLen += nSpace * nNew
+                  IF nJustify <> 2
+                     nL += nSpace * nNew
+                  ENDIF
+                  lParagraph := .f.
+               ENDIF
+               IF nJustify == 2
+                  nL := nLeft + ( nLength - ::length( cTemp ) ) / 2
+               ELSEIF nJustify == 3
+                  nL := nLeft + nLength - ::length( cTemp )
+               ENDIF
+               while k <= nLen .and. ( ( nLineLen += ::length( substr( cToken, k, 1 ))) <= nLength )
+                  nLineLen += ::length( substr( cToken, k, 1 ))
+                  cTemp += substr( cToken, k, 1 )
+                  ++k
+               enddo
+               IF empty( cTemp ) // single character > nlength
+                  cTemp := substr( cToken, k, 1 )
+                  ++k
+               ENDIF
+               ++nLines
+               IF lPrint
+                  nRow := ::NewLine( 1 )
+                  ::AtSay( cColor + cTemp, ::R2M( nRow + ::aReport[ PDFTOP] ), nL, "M" )
+               ENDIF
+            enddo
+            ++nI
+            nStart := nI
+         ELSE
+            ::TextPrint( nI - 1, nLeft, @lParagraph, nJustify, nSpace, nNew, nLength, @nLineLen, @nLines, @nStart, cString, cDelim, cColor, lPrint )
+         ENDIF
 
-  ELSEIF ( nI == nTokens ) .or. ( nI < nTokens .and. ( nCRLF := ::TextNextPara( cString, cDelim, nI ) ) > 0 )
- IF nI == nTokens
-nLineLen += nSpace + nTokenLen
- ENDIF
- ::TextPrint( nI, nLeft, @lParagraph, nJustify, nSpace, nNew, nLength, @nLineLen, @nLines, @nStart, cString, cDelim, cColor, lPrint )
- ++nI
+      ELSEIF ( nI == nTokens ) .or. ( nI < nTokens .and. ( nCRLF := ::TextNextPara( cString, cDelim, nI ) ) > 0 )
+         IF nI == nTokens
+            nLineLen += nSpace + nTokenLen
+         ENDIF
+         ::TextPrint( nI, nLeft, @lParagraph, nJustify, nSpace, nNew, nLength, @nLineLen, @nLines, @nStart, cString, cDelim, cColor, lPrint )
+         ++nI
 
- IF nCRLF > 1
-nLines += nCRLF - 1
- ENDIF
- IF lPrint
-nRow := ::NewLine( nCRLF - 1 )
- ENDIF
+         IF nCRLF > 1
+            nLines += nCRLF - 1
+         ENDIF
+         IF lPrint
+            ::NewLine( nCRLF - 1 )
+         ENDIF
 
-  ELSE
- nLineLen += nSpace + nTokenLen
- ++nI
-  ENDIF
+      ELSE
+         nLineLen += nSpace + nTokenLen
+         ++nI
+      ENDIF
    enddo
 
 RETURN nLines
@@ -3906,7 +3903,7 @@ RETURN cString + chr(254)
 
 METHOD OpenHeader( cFile )
 
-local nErrorCode := 0, nAt, cCmd
+local nAt, cCmd
 
 DEFAULT cFile TO ''
 
@@ -4002,7 +3999,7 @@ RETURN self
 
 METHOD SaveHeader( cFile )
 
-local nErrorCode := 0, cCmd
+local cCmd
 
 Array2File( 'temp.tmp', ::aReport[ HEADER ] )
 
@@ -4400,10 +4397,10 @@ RETURN aTemp
 METHOD TIFFInfo( cFile )
 
 local c40:= chr(0)+chr(0)+chr(0)+chr(0)
-local aType  := {"BYTE","ASCII","SHORT","LONG","RATIONAL","SBYTE","UNDEFINED","SSHORT","SLONG","SRATIONAL","FLOAT","DOUBLE"}
+// local aType  := {"BYTE","ASCII","SHORT","LONG","RATIONAL","SBYTE","UNDEFINED","SSHORT","SLONG","SRATIONAL","FLOAT","DOUBLE"}
 local aCount := { 1, 1, 2, 4, 8, 1, 1, 2, 4, 8, 4, 8 }
 local nTemp, nHandle, cValues, c2, nFieldType, nCount, nPos, nTag, nValues
-local nOffset, cTemp, cIFDNext, nIFD, nFields, cTag, nPages, nn
+local nOffset, cTemp, cIFDNext, nIFD, nFields, nn
 
 local nWidth := 0, nHeight := 0, nBits := 0, nFrom := 0, nLength := 0, xRes := 0, yRes := 0, aTemp := {}
 
@@ -4417,141 +4414,140 @@ local nWidth := 0, nHeight := 0, nBits := 0, nFrom := 0, nLength := 0, xRes := 0
    fread( nHandle, @cIFDNext, 4 )
 
    cTemp  := space(12)
-   nPages := 0
 
    while cIFDNext <> c40 //read IFD's
 
-  nIFD := bin2l( cIFDNext )
+      nIFD := bin2l( cIFDNext )
 
-  fseek( nHandle, nIFD )
+      fseek( nHandle, nIFD )
 
-  fread( nHandle, @c2, 2 )
-  nFields := bin2i( c2 )
+      fread( nHandle, @c2, 2 )
+      nFields := bin2i( c2 )
 
-  for nn := 1 to nFields
- fread( nHandle, @cTemp, 12 )
+      for nn := 1 to nFields
+         fread( nHandle, @cTemp, 12 )
 
- nTag   := bin2w( substr( cTemp, 1, 2 ) )
- nFieldType := bin2w( substr( cTemp, 3, 2 ) )
- nCount := bin2l( substr( cTemp, 5, 4 ) )
- nOffset:= bin2l( substr( cTemp, 9, 4 ) )
+         nTag   := bin2w( substr( cTemp, 1, 2 ) )
+         nFieldType := bin2w( substr( cTemp, 3, 2 ) )
+         nCount := bin2l( substr( cTemp, 5, 4 ) )
+         nOffset:= bin2l( substr( cTemp, 9, 4 ) )
 
- IF nCount > 1 .or. nFieldType == RATIONAL .or. nFieldType == SRATIONAL
-nPos := filepos( nHandle )
-fseek( nHandle, nOffset)
+         IF nCount > 1 .or. nFieldType == RATIONAL .or. nFieldType == SRATIONAL
+            nPos := filepos( nHandle )
+            fseek( nHandle, nOffset)
 
-nValues := nCount * aCount[ nFieldType ]
-cValues := space( nValues )
-fread( nHandle, @cValues, nValues )
-fseek( nHandle, nPos )
- ELSE
-cValues := substr( cTemp, 9, 4 )
- ENDIF
+            nValues := nCount * aCount[ nFieldType ]
+            cValues := space( nValues )
+            fread( nHandle, @cValues, nValues )
+            fseek( nHandle, nPos )
+         ELSE
+            cValues := substr( cTemp, 9, 4 )
+         ENDIF
 
- IF nFieldType ==  ASCII
---nCount
- ENDIF
- cTag := ''
- do case
- case nTag == 256
-cTag := 'ImageWidth'
+         IF nFieldType ==  ASCII
+            --nCount
+         ENDIF
+         // cTag := ''
+         do case
+         case nTag == 256
+            // cTag := 'ImageWidth'
 
-IF nFieldType ==  SHORT
-   nWidth := bin2w( substr( cValues, 1, 2 ))
-ELSEIF nFieldType ==  LONG
-   nWidth := bin2l( substr( cValues, 1, 4 ))
-ENDIF
+            IF nFieldType ==  SHORT
+               nWidth := bin2w( substr( cValues, 1, 2 ))
+            ELSEIF nFieldType ==  LONG
+               nWidth := bin2l( substr( cValues, 1, 4 ))
+            ENDIF
 
- case nTag == 257
-cTag := 'ImageLength'
-IF nFieldType ==  SHORT
-   nHeight := bin2w(substr( cValues, 1, 2 ))
-ELSEIF nFieldType ==  LONG
-   nHeight := bin2l(substr( cValues, 1, 4 ))
-ENDIF
+         case nTag == 257
+            // cTag := 'ImageLength'
+            IF nFieldType ==  SHORT
+               nHeight := bin2w(substr( cValues, 1, 2 ))
+            ELSEIF nFieldType ==  LONG
+               nHeight := bin2l(substr( cValues, 1, 4 ))
+            ENDIF
 
- case nTag == 258
-cTag := 'BitsPerSample'
-nTemp := 0
-IF nFieldType == SHORT
-   nTemp := bin2w( cValues )
-ENDIF
-nBits := nTemp
- case nTag == 259
-cTag := 'Compression'
-nTemp := 0
-IF nFieldType == SHORT
-   nTemp := bin2w( cValues )
-ENDIF
- case nTag == 262
-cTag := 'PhotometricInterpretation'
-nTemp := -1
-IF nFieldType == SHORT
-   nTemp := bin2w( cValues )
-ENDIF
- case nTag == 264
-cTag := 'CellWidth'
- case nTag == 265
-cTag := 'CellLength'
- case nTag == 266
-cTag := 'FillOrder'
- case nTag == 273
-cTag := 'StripOffsets'
-IF nFieldType ==  SHORT
-   nFrom := bin2w(substr( cValues, 1, 2 ))
-ELSEIF nFieldType ==  LONG
-   nFrom := bin2l(substr( cValues, 1, 4 ))
-ENDIF
+         case nTag == 258
+            // cTag := 'BitsPerSample'
+            nTemp := 0
+            IF nFieldType == SHORT
+               nTemp := bin2w( cValues )
+            ENDIF
+            nBits := nTemp
+         case nTag == 259
+            // cTag := 'Compression'
+            // nTemp := 0
+            // IF nFieldType == SHORT
+            //    nTemp := bin2w( cValues )
+            // ENDIF
+         case nTag == 262
+            // cTag := 'PhotometricInterpretation'
+            // nTemp := -1
+            // IF nFieldType == SHORT
+            //    nTemp := bin2w( cValues )
+            // ENDIF
+         case nTag == 264
+            // cTag := 'CellWidth'
+         case nTag == 265
+            // cTag := 'CellLength'
+         case nTag == 266
+            // cTag := 'FillOrder'
+         case nTag == 273
+            // cTag := 'StripOffsets'
+            IF nFieldType ==  SHORT
+               nFrom := bin2w(substr( cValues, 1, 2 ))
+            ELSEIF nFieldType ==  LONG
+               nFrom := bin2l(substr( cValues, 1, 4 ))
+            ENDIF
 
- case nTag == 277
-cTag := 'SamplesPerPixel'
- case nTag == 278
-cTag := 'RowsPerStrip'
- case nTag == 279
-cTag := 'StripByteCounts'
-IF nFieldType ==  SHORT
-   nLength := bin2w(substr( cValues, 1, 2 ))
-ELSEIF nFieldType ==  LONG
-   nLength := bin2l(substr( cValues, 1, 4 ))
-ENDIF
+         case nTag == 277
+            // cTag := 'SamplesPerPixel'
+         case nTag == 278
+            // cTag := 'RowsPerStrip'
+         case nTag == 279
+            // cTag := 'StripByteCounts'
+            IF nFieldType ==  SHORT
+               nLength := bin2w(substr( cValues, 1, 2 ))
+            ELSEIF nFieldType ==  LONG
+               nLength := bin2l(substr( cValues, 1, 4 ))
+            ENDIF
 
-nLength *= nCount // Count all strips !!!
+            nLength *= nCount // Count all strips !!!
 
- case nTag == 282
-cTag := 'XResolution'
-xRes := bin2l(substr( cValues, 1, 4 ))
- case nTag == 283
-cTag := 'YResolution'
-yRes := bin2l(substr( cValues, 1, 4 ))
- case nTag == 284
-cTag := 'PlanarConfiguration'
- case nTag == 288
-cTag := 'FreeOffsets'
- case nTag == 289
-cTag := 'FreeByteCounts'
- case nTag == 296
-cTag := 'ResolutionUnit'
-nTemp := 0
-IF nFieldType == SHORT
-   nTemp := bin2w( cValues )
-ENDIF
- case nTag == 305
-cTag := 'Software'
- case nTag == 306
-cTag := 'DateTime'
- case nTag == 315
-cTag := 'Artist'
- case nTag == 320
-cTag := 'ColorMap'
- case nTag == 338
-cTag := 'ExtraSamples'
- case nTag == 33432
-cTag := 'Copyright'
- otherwise
-cTag := 'Unknown'
- endcase
-  next
-  fread( nHandle, @cIFDNext, 4 )
+         case nTag == 282
+            // cTag := 'XResolution'
+            xRes := bin2l(substr( cValues, 1, 4 ))
+         case nTag == 283
+            // cTag := 'YResolution'
+            yRes := bin2l(substr( cValues, 1, 4 ))
+         case nTag == 284
+            // cTag := 'PlanarConfiguration'
+         case nTag == 288
+            // cTag := 'FreeOffsets'
+         case nTag == 289
+            // cTag := 'FreeByteCounts'
+         case nTag == 296
+            // cTag := 'ResolutionUnit'
+            // nTemp := 0
+            // IF nFieldType == SHORT
+            //   nTemp := bin2w( cValues )
+            // ENDIF
+         case nTag == 305
+            // cTag := 'Software'
+         case nTag == 306
+            // cTag := 'DateTime'
+         case nTag == 315
+            // cTag := 'Artist'
+         case nTag == 320
+            // cTag := 'ColorMap'
+         case nTag == 338
+            // cTag := 'ExtraSamples'
+         case nTag == 33432
+            // cTag := 'Copyright'
+         otherwise
+            // cTag := 'Unknown'
+         endcase
+      next
+      fread( nHandle, @cIFDNext, 4 )
    enddo
 
    fclose( nHandle )
@@ -4571,8 +4567,8 @@ return aTemp
 METHOD JPEGInfo( cFile )
 
 local c255, nAt, nHandle
-local nWidth := 0, nHeight := 0, nBits := 8, nFrom := 0
-local nLength := 0, xRes := 0, yRes := 0, aTemp := {}
+local nWidth, nHeight, nBits := 8, nFrom := 0
+local nLength, xRes, yRes, aTemp := {}
 
    nHandle := fopen( cFile )
 
@@ -4604,7 +4600,7 @@ return aTemp
 
 METHOD BookCount( nRecno, nCurLevel )
 
-local nTempLevel := 0, nCount := 0, nLen := len( ::aReport[ BOOKMARK ] )
+local nTempLevel, nCount := 0, nLen := len( ::aReport[ BOOKMARK ] )
    ++nRecno
    while nRecno <= nLen
   nTempLevel := ::aReport[ BOOKMARK ][ nRecno ][ BOOKLEVEL ]
@@ -4654,7 +4650,7 @@ return IIF( nLast == 0, nLast, nObj + nLast )
 
 METHOD BookNext( nRecno, nCurLevel, nObj )
 
-local nTempLevel := 0, nNext := 0, nLen := len( ::aReport[ BOOKMARK ] )
+local nTempLevel, nNext := 0, nLen := len( ::aReport[ BOOKMARK ] )
    ++nRecno
    while nRecno <= nLen
   nTempLevel := ::aReport[ BOOKMARK ][ nRecno ][ BOOKLEVEL ]
@@ -4674,7 +4670,7 @@ return IIF( nNext == 0, nNext, nObj + nNext )
 
 METHOD BookParent( nRecno, nCurLevel, nObj )
 
-local nTempLevel := 0
+local nTempLevel
 local nParent := 0
    --nRecno
    while nRecno > 0
@@ -4691,7 +4687,7 @@ return IIF( nParent == 0, nObj - 1, nObj + nParent )
 
 METHOD BookPrev( nRecno, nCurLevel, nObj )
 
-local nTempLevel := 0
+local nTempLevel
 local nPrev := 0
    --nRecno
    while nRecno > 0
@@ -4848,15 +4844,15 @@ local cTemp, cBuffer, nBuffer, nRead, nI, k, nImage, nFont, nImageHandle, aImage
    aadd( ::aReport[ PAGES ], ::aReport[ REPORTOBJ ] + 1 )
 
    cTemp := ;
-	   ltrim(str( ++::aReport[ REPORTOBJ ] )) + " 0 obj" + CRLF + ;
-   	"<<" + CRLF + ;
-	   "/Type /Page /Parent 1 0 R" + CRLF + ;
-   	"/Resources " + ltrim(str( ++::aReport[ REPORTOBJ ] )) + " 0 R" + CRLF + ;
-	   "/MediaBox [ 0 0 " + ltrim(transform( ::aReport[ PAGEX ], "9999.99")) + " " + ;
-   	ltrim(transform(::aReport[ PAGEY ], "9999.99")) + " ]" + CRLF + ;
-	   "/Contents " + ltrim(str( ++::aReport[ REPORTOBJ ] )) + " 0 R" + CRLF + ;
-   	">>" + CRLF + ;
-	   "endobj" + CRLF
+      ltrim(str( ++::aReport[ REPORTOBJ ] )) + " 0 obj" + CRLF + ;
+      "<<" + CRLF + ;
+      "/Type /Page /Parent 1 0 R" + CRLF + ;
+      "/Resources " + ltrim(str( ++::aReport[ REPORTOBJ ] )) + " 0 R" + CRLF + ;
+      "/MediaBox [ 0 0 " + ltrim(transform( ::aReport[ PAGEX ], "9999.99")) + " " + ;
+      ltrim(transform(::aReport[ PAGEY ], "9999.99")) + " ]" + CRLF + ;
+      "/Contents " + ltrim(str( ++::aReport[ REPORTOBJ ] )) + " 0 R" + CRLF + ;
+      ">>" + CRLF + ;
+      "endobj" + CRLF
 
 
    ::aReport[ DOCLEN ] += len( cTemp )
@@ -4976,19 +4972,19 @@ local cTemp, cBuffer, nBuffer, nRead, nI, k, nImage, nFont, nImageHandle, aImage
  aadd( ::aReport[ REFS ], ::aReport[ DOCLEN ] )
 
  cTemp :=  ;
-	 ltrim(str( ::aReport[ IMAGES ][ nI ][ 2 ] )) + " 0 obj" + CRLF + ;
-   	  "<<" + CRLF + ;
-  	   "/Type /XObject" + CRLF + ;
- 	"/Subtype /Image" + CRLF + ;
-	 "/Name /Image" + ltrim(str(nI)) + CRLF + ;
-   	  "/Filter [" + IIF( at( ".JPG", upper( ::aReport[ IMAGES ][ nI ][ 1 ]) ) > 0, " /DCTDecode", "" ) + " ]" + CRLF + ;
-  	   "/Width " + ltrim(str( ::aReport[ IMAGES ][ nI ][ 3 ][ IMAGE_WIDTH ] )) + CRLF + ;
- 	"/Height " + ltrim(str( ::aReport[ IMAGES ][ nI ][ 3 ][ IMAGE_HEIGHT ] )) + CRLF + ;
-	 "/BitsPerComponent " + ltrim(str( ::aReport[ IMAGES ][ nI ][ 3 ][ IMAGE_BITS ] )) + CRLF + ;
-   	  "/ColorSpace /" + IIF( ::aReport[ IMAGES ][ nI ][ 3 ][ IMAGE_BITS ] == 1, "DeviceGray", "DeviceRGB") + CRLF + ;
-  	   "/Length " + ltrim(str( ::aReport[ IMAGES ][ nI ][ 3 ][ IMAGE_LENGTH ])) + CRLF + ;
- 	">>" + CRLF + ;
-	 "stream" + CRLF
+    ltrim(str( ::aReport[ IMAGES ][ nI ][ 2 ] )) + " 0 obj" + CRLF + ;
+        "<<" + CRLF + ;
+        "/Type /XObject" + CRLF + ;
+    "/Subtype /Image" + CRLF + ;
+    "/Name /Image" + ltrim(str(nI)) + CRLF + ;
+        "/Filter [" + IIF( at( ".JPG", upper( ::aReport[ IMAGES ][ nI ][ 1 ]) ) > 0, " /DCTDecode", "" ) + " ]" + CRLF + ;
+        "/Width " + ltrim(str( ::aReport[ IMAGES ][ nI ][ 3 ][ IMAGE_WIDTH ] )) + CRLF + ;
+    "/Height " + ltrim(str( ::aReport[ IMAGES ][ nI ][ 3 ][ IMAGE_HEIGHT ] )) + CRLF + ;
+    "/BitsPerComponent " + ltrim(str( ::aReport[ IMAGES ][ nI ][ 3 ][ IMAGE_BITS ] )) + CRLF + ;
+        "/ColorSpace /" + IIF( ::aReport[ IMAGES ][ nI ][ 3 ][ IMAGE_BITS ] == 1, "DeviceGray", "DeviceRGB") + CRLF + ;
+        "/Length " + ltrim(str( ::aReport[ IMAGES ][ nI ][ 3 ][ IMAGE_LENGTH ])) + CRLF + ;
+    ">>" + CRLF + ;
+    "stream" + CRLF
 
  ::aReport[ DOCLEN ] += len( cTemp )
  fwrite( ::aReport[ HANDLE ], cTemp )
@@ -5017,7 +5013,7 @@ k += nRead
  ::aReport[ DOCLEN ] += len( cTemp )
  fwrite( ::aReport[ HANDLE ], cTemp )
 
-			fClose( nImageHandle )
+         fClose( nImageHandle )
   ENDIF
    next
 
@@ -5128,8 +5124,7 @@ static function AllToken( cString, cDelimiter, nPointer, nAction )
 local nTokens := 0
 local nPos:= 1
 local nLen:= len( cString )
-local nStart  := 0
-local cToken  := ""
+local nStart
 local cRet:= 0
 
 DEFAULT cDelimiter TO chr(0)+chr(9)+chr(10)+chr(13)+chr(26)+chr(32)+chr(138)+chr(141)
@@ -5139,31 +5134,31 @@ DEFAULT nAction to 0
 // nAction == 1 - token
 // nAction == 2 - attoken
 
-while nPos <= nLen
-   if .not. substr( cString, nPos, 1 ) $ cDelimiter
-  nStart := nPos
-  while nPos <= nLen .and. .not. substr( cString, nPos, 1 ) $ cDelimiter
-  ++nPos
-  enddo
-  ++nTokens
-  IF nAction > 0
- IF nPointer == nTokens
-IF nAction == 1
-   cRet := substr( cString, nStart, nPos - nStart )
-ELSE
-   cRet := nStart
-ENDIF
-exit
-  ENDIF
-   ENDIF
-endif
-if substr( cString, nPos, 1 ) $ cDelimiter
-   while nPos <= nLen .and. substr( cString, nPos, 1 ) $ cDelimiter
-  ++nPos
+   while nPos <= nLen
+      if .not. substr( cString, nPos, 1 ) $ cDelimiter
+         nStart := nPos
+         while nPos <= nLen .and. .not. substr( cString, nPos, 1 ) $ cDelimiter
+            ++nPos
+         enddo
+         ++nTokens
+         IF nAction > 0
+            IF nPointer == nTokens
+               IF nAction == 1
+                  cRet := substr( cString, nStart, nPos - nStart )
+               ELSE
+                  cRet := nStart
+               ENDIF
+               exit
+            ENDIF
+         ENDIF
+      endif
+      if substr( cString, nPos, 1 ) $ cDelimiter
+         while nPos <= nLen .and. substr( cString, nPos, 1 ) $ cDelimiter
+            ++nPos
+         enddo
+      endif
+      cRet := nTokens
    enddo
-endif
-cRet := nTokens
-ENDDO
 
 RETURN cRet
 
@@ -5236,7 +5231,7 @@ if hFile == NIL// First Timer
    cData := space( 3 )
    fRead( hFile, @cData, 3 )
    if left( cData,1 ) != 'A' //  If format of file <> array
-		fClose( hFile )//////////
+      fClose( hFile )//////////
   return( aRay )
    endif
    nLen := bin2i( right( cData,2 ) )
@@ -5282,7 +5277,7 @@ return ( aRay )
 
 static FUNCTION NumAt( cSearch, cString )
 
-   LOCAL n := 0, nAt := 0, nPos := 0
+   LOCAL n := 0, nAt, nPos := 0
    WHILE ( nAt := at( cSearch, substr( cString, nPos + 1 ) )) > 0
    nPos += nAt
    ++n
@@ -5301,7 +5296,7 @@ local lRet := .t.
 #endif
 */
 if cVerb <> nil  //GetDeskTopWindow()
-	ShellExecute( , cVerb, cFile, , , 1 )
+   ShellExecute( , cVerb, cFile, , , 1 )
 else
 __Run( cCmd )
 endif

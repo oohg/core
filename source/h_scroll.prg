@@ -1,5 +1,5 @@
 /*
- * $Id: h_scroll.prg,v 1.19 2010-07-25 21:38:01 guerra000 Exp $
+ * $Id: h_scroll.prg,v 1.20 2011-09-07 19:06:17 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -198,11 +198,11 @@ Return ::nRangeMax
 *-----------------------------------------------------------------------------*
 METHOD SetRange( nRangeMin, nRangeMax ) CLASS TScrollBar
 *-----------------------------------------------------------------------------*
-LOCAL nMax
+*LOCAL nMax
    If HB_IsNumeric( nRangeMin ) .OR. HB_IsNumeric( nRangeMax )
       ASSIGN ::nRangeMin VALUE nRangeMin TYPE "N"
       ASSIGN ::nRangeMax VALUE nRangeMax TYPE "N"
-      nMax := MAX( ABS( ::nRangeMin ), ABS( ::nRangeMax ) )
+*      nMax := MAX( ABS( ::nRangeMin ), ABS( ::nRangeMax ) )
 *      If nMax > 32000
 *         ::nFactor := INT( nMax / 32000 )
 *      Else

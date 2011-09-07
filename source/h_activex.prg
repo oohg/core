@@ -1,5 +1,5 @@
 /*
- * $Id: h_activex.prg,v 1.9 2010-02-20 03:55:18 declan2005 Exp $
+ * $Id: h_activex.prg,v 1.10 2011-09-07 19:06:17 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -153,7 +153,7 @@ RETURN NIL
 *-----------------------------------------------------------------------------*
 METHOD __Error( ... )
 *-----------------------------------------------------------------------------*
-Local cMessage, uRet
+Local cMessage
 cMessage := __GetMessage()
 
 //   IF SubStr( cMessage, 1, 1 ) == "_"
