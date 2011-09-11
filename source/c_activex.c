@@ -1,5 +1,5 @@
 /*
- * $Id: c_activex.c,v 1.10 2010-06-25 00:44:11 guerra000 Exp $
+ * $Id: c_activex.c,v 1.11 2011-09-11 02:30:44 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -40,13 +40,7 @@
 #include <commctrl.h>
 #include <hbapi.h>
 #include <hbvm.h>
-#ifdef __XHARBOUR__
-  #include <hbstack.h>
-#else                      //// si es harbour
-#ifdef __BORLANDC__        //// y es borland C
-  #include <hbstack.h>
-#endif
-#endif
+#include <hbstack.h>
 #include "oohg.h"
 #include <ocidl.h>
 #include <hbapiitm.h>
@@ -179,7 +173,7 @@ HB_FUNC( ATLAXGETDISP ) // hWnd -> pDisp
    IDispatch *pDisp;
    _Ax_Init();
    AtlAxGetControl( HWNDparam( 1 ), &pUnk );
-   pUnk->lpVtbl->QueryInterface( pUnk, &IID_IDispatch, ( void ** ) &pDisp );
+   pUnk->lpVtbl->QueryInterface( pUnk, &IID_IDispatch, ( void ** ) ( void * ) &pDisp );
    pUnk->lpVtbl->Release( pUnk );
    HWNDret( pDisp );
 }
@@ -629,13 +623,13 @@ HB_FUNC( ATLAXGETDISP ) // hWnd -> pDisp
 
          // Query self object itself for its IUnknown pointer which will be used
          // later to connect to the Connection Point of the device_interface object.
-         hr = selfobj->lpVtbl->QueryInterface( selfobj, &IID_IUnknown, (void**) &pIUnknown );
+         hr = selfobj->lpVtbl->QueryInterface( selfobj, &IID_IUnknown, (void**) (void *) &pIUnknown );
          if ( hr == S_OK && pIUnknown )
          {
 
             // Query the pdevice_interface for its connection point.
             hr = pdevice_interface->lpVtbl->QueryInterface( pdevice_interface,
-               &IID_IConnectionPointContainer, (void**) &pIConnectionPointContainerTemp );
+               &IID_IConnectionPointContainer, (void**) (void *) &pIConnectionPointContainerTemp );
 
             if ( hr == S_OK && pIConnectionPointContainerTemp )
             {
