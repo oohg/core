@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.786 2011-09-11 02:30:55 fyurisich Exp $
+ * $Id: ChangeLog,v 1.787 2011-09-11 03:09:07 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -8,8 +8,14 @@
 */
 
 
+2011-09-11 00:10:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./compile_mingw.bat
+     + Added /P parameter to generate .ppo file.
+       Use: compile.bat file.prg /p
+       or:  compile.bat file.prg /c /p
+
 2011-09-10 23:30:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * c_activex.c
+   * source/c_activex.c
      ! Fixed some C Compiler warnings.
 
 2011-09-07 19:00:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
