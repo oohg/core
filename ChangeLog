@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.789 2011-09-11 03:29:39 fyurisich Exp $
+ * $Id: ChangeLog,v 1.790 2011-09-11 23:23:08 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -8,9 +8,34 @@
 */
 
 
+2011-09-11 20:20:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * docs/classes.txt
+     * Updated.
+   * include/oohg.h
+     + Added GetTabBrush prototype.
+   * source/winprint.prg
+   * source/miniprint.prg
+     ! Fixed some C compiler warnings.
+   * source/c_activex.c
+     - Deleted unneeded ifdef/endif structure.
+   * source/c_windows.c
+     + Added GetTabBrush function.
+   * source/h_checkbox.prg
+     - Deleted GetTabBrush function.
+     ! Changed method Events_Color.
+   * source/h_controlmisc.prg
+     + Added EVENTS_COLOR_INTAB function.
+   * source/h_radio.prg
+     + Added method Events_color and data TabHandle to
+       TRadioGroup and TRadioItem classes.
+     ! Fixed: RADIOGROUP control shows wrong backcolor when
+       placed inside tab control. Borrowed from HMG Extended.
+
 2011-09-11 00:30:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/oohg.h
    * source/h_checkbox.prg
+     + Added method Events_color and data TabHandle to
+       TRadioGroup and TRadioItem classes.
    * source/c_controlmisc.c
      ! Fixed: checkbox control shows wrong backcolor when placed
        inside tab control. Borrowed from HMG Extended.
