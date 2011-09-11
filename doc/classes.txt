@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.30 2011-09-04 20:10:36 fyurisich Exp $
+ * $Id: classes.txt,v 1.31 2011-09-11 23:19:45 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -318,9 +318,11 @@ CLASS TCHECKBOX FROM TLABEL
    DATA ICONWIDTH                 INIT 19
    DATA NHEIGHT                   INIT 28
    DATA NWIDTH                    INIT 100
+   DATA TABHANDLE                 INIT 0
    DATA TYPE                      INIT "CHECKBOX" READONLY
 
    METHOD DEFINE
+   METHOD EVENTS_COLOR
    METHOD EVENTS_COMMAND
    METHOD VALUE                   SETGET
 ENDCLASS
@@ -1596,6 +1598,7 @@ CLASS TRADIOGROUP FROM TLABEL
    DATA ICONWIDTH                 INIT 19
    DATA NHEIGHT                   INIT 25
    DATA NWIDTH                    INIT 120
+   DATA TABHANDLE                 INIT 0
    DATA TABSTOP                   INIT .T.
    DATA TYPE                      INIT "RADIOGROUP" READONLY
 
@@ -1604,6 +1607,7 @@ CLASS TRADIOGROUP FROM TLABEL
    METHOD DEFINE
    METHOD ENABLED                 SETGET
    METHOD EVENTS
+   METHOD EVENTS_COLOR
    METHOD EVENTS_COMMAND
    METHOD ROWMARGIN
    METHOD SETFOCUS
@@ -1616,9 +1620,11 @@ ENDCLASS
 *------------------------------------------------------------------------------*
 CLASS TRADIOITEM FROM TLABEL
    DATA ICONWIDTH                 INIT 19
+   DATA TABHANDLE                 INIT 0
    DATA TYPE                      INIT "RADIOITEM" READONLY
 
    METHOD EVENTS
+   METHOD EVENTS_COLOR
    METHOD EVENTS_COMMAND
 ENDCLASS
 
