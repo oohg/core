@@ -1,5 +1,5 @@
 /*
- * $Id: i_window.ch,v 1.41 2011-09-04 20:09:51 fyurisich Exp $
+ * $Id: i_window.ch,v 1.42 2011-09-11 03:18:55 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -115,9 +115,9 @@
    =>;
          #xtranslate <w> . \<p:Name,Title,Height,Width,Col,Row,BackColor,FocusedControl,hWnd,Object,Cursor,NotifyIcon,NotifyToolTip,SaveAs,MinWidth,MaxWidth,MinHeight,MaxHeight\> => GetExistingFormObject( <(w)> ):\<p\> ;;
          #xtranslate <w> . \<p:Activate,Center,Release,Maximize,Minimize,Restore,Show,Hide,Print,SetFocus\> \[()\] => GetExistingFormObject( <(w)> ):\<p\> () ;;
-         #xtranslate <w> . \<c\> . \<p:Value,Name,Address,BackColor,FontColor,Picture,ToolTip,FontName,FontSize,FontBold,FontUnderline,FontItalic,FontStrikeOut,Caption,Row,Col,Width,Height,Visible,Enabled,Checked,ItemCount,RangeMin,RangeMax,CaretPos,ForeColor,ScrollCaret,GetEditSel,Stretch,Indent,SelColor\> => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ;;
+         #xtranslate <w> . \<c\> . \<p:Value,Name,Address,BackColor,FontColor,Picture,ToolTip,FontName,FontSize,FontBold,FontUnderline,FontItalic,FontStrikeOut,Caption,Row,Col,Width,Height,Visible,Enabled,Checked,ItemCount,RangeMin,RangeMax,CaretPos,ForeColor,ScrollCaret,GetEditSel,Stretch,Indent,SelColor,OnChange\> => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ;;
          #xtranslate <w> . \<c\> . \<p:DisplayValue,Position,ForeColor\> => GetProperty ( <(w)>, \<(c)\> , \<(p)\> ) ;;
-         #xtranslate <w> . \<c\> . \<p:DisplayValue,Position,ForeColor,CaretPos\> := \<n\> => SetProperty ( <(w)>, \<(c)\> , \<(p)\> , \<n\> ) ;;
+         #xtranslate <w> . \<c\> . \<p:DisplayValue,Position,ForeColor,CaretPos,OnChange\> := \<n\> => SetProperty ( <(w)>, \<(c)\> , \<(p)\> , \<n\> ) ;;
          #xtranslate <w> . \<c\> . \<p:AllowAppend,AllowDelete,AllowEdit\> => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ;;
          #xtranslate <w> . \<c\> . \<p:Caption,Header,Item,Icon,ColumnWidth,Picture,Image,Stretch,ItemReadonly,CheckItem,BoldItem\> (\<arg\>) => GetProperty ( <(w)>, \<(c)> , \<(p)> , \<arg\> ) ;;
          #xtranslate <w> . \<c\> . \<p:Caption,Header,Item,Icon,ColumnWidth,Picture,Image,Stretch,ItemReadonly,CheckItem,BoldItem\> (\<arg\>) := \<n\> => SetProperty ( <(w)>, \<(c)> , \<(p)> , \<arg\> , \<n\> ) ;;

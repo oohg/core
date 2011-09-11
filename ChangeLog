@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.787 2011-09-11 03:09:07 fyurisich Exp $
+ * $Id: ChangeLog,v 1.788 2011-09-11 03:19:14 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,6 +7,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+
+2011-09-11 00:20:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * i_window_ch
+   * h_controlmisc.prg
+     + Added ONCHANGE to alternate syntax.
 
 2011-09-11 00:10:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./compile_mingw.bat

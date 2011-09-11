@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.120 2011-09-04 20:09:24 fyurisich Exp $
+ * $Id: h_controlmisc.prg,v 1.121 2011-09-11 03:18:43 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -685,6 +685,9 @@ Local oWnd, oCtrl
 
       ElseIf Arg3 == "SELCOLOR"
          oCtrl:SelColor( Arg4 )
+
+      ElseIf Arg3 == "ONCHANGE"
+         oCtrl:OnChange := Arg4
 
       EndIf
 
