@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.121 2011-09-11 03:18:43 fyurisich Exp $
+ * $Id: h_controlmisc.prg,v 1.122 2011-09-11 23:22:34 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1932,7 +1932,10 @@ HB_FUNC_STATIC( TCONTROL_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam
    }
 }
 
-HB_FUNC_STATIC( TCONTROL_EVENTS_COLOR )   // METHOD Events_Color( wParam, nDefColor ) CLASS TControl
+/*
+ * METHOD Events_Color( wParam, nDefColor ) CLASS TControl
+ */
+HB_FUNC_STATIC( TCONTROL_EVENTS_COLOR )
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
@@ -1967,6 +1970,72 @@ HB_FUNC_STATIC( TCONTROL_EVENTS_COLOR )   // METHOD Events_Color( wParam, nDefCo
    }
    hb_retnl( ( LONG ) oSelf->BrushHandle );
 
+}
+
+/*
+ * METHOD Events_Color( wParam, nDefColor ) CLASS TCHECKBOX
+ * METHOD Events_Color( wParam, nDefColor ) CLASS TRADIOGROUP
+ * METHOD Events_Color( wParam, nDefColor ) CLASS TRADIOITEM
+ */
+HB_FUNC( EVENTS_COLOR_INTAB )
+{
+   PHB_ITEM pSelf = hb_param( 1, HB_IT_ANY );
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   HDC hdc = ( HDC ) hb_parnl( 2 );
+   LONG lBackColor;
+   RECT rc;
+   LPRECT lprc;
+
+   if( oSelf->lFontColor != -1 )
+   {
+      SetTextColor( hdc, ( COLORREF ) oSelf->lFontColor );
+   }
+
+   _OOHG_Send( pSelf, s_Transparent );
+   hb_vmSend( 0 );
+   if( hb_parl( -1 ) )
+   {
+      SetBkMode( hdc, ( COLORREF ) TRANSPARENT );
+      hb_retnl( ( LONG ) GetStockObject( NULL_BRUSH ) );
+      return;
+   }
+
+   lBackColor = ( oSelf->lUseBackColor != -1 ) ? oSelf->lUseBackColor : oSelf->lBackColor;
+   if( lBackColor == -1 )
+   {
+      lBackColor = hb_parnl( 3 );           // If it's not inside a TAB
+
+      _OOHG_Send( pSelf, s_TabHandle );
+      hb_vmSend( 0 );
+
+      if( ValidHandler( HWNDparam( -1 ) ) )
+      {
+         DeleteObject( oSelf->BrushHandle );
+
+         oSelf->BrushHandle = GetTabBrush( HWNDparam( -1 ) );
+
+         SetBkMode( hdc, TRANSPARENT );
+
+         GetWindowRect( oSelf->hWnd, &rc );
+         lprc = &rc;
+         MapWindowPoints( NULL, HWNDparam( -1 ), (LPPOINT) lprc, 2 );
+
+         SetBrushOrgEx( hdc, -rc.left, -rc.top, NULL );
+
+         hb_retnl( ( LONG ) oSelf->BrushHandle );
+         return;
+      }
+   }
+
+   SetBkColor( hdc, ( COLORREF ) lBackColor );
+   if( lBackColor != oSelf->lOldBackColor )
+   {
+      oSelf->lOldBackColor = lBackColor;
+      DeleteObject( oSelf->BrushHandle );
+      oSelf->BrushHandle = CreateSolidBrush( lBackColor );
+   }
+
+   hb_retnl( ( LONG ) oSelf->BrushHandle );
 }
 
 #pragma ENDDUMP

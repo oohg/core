@@ -1,5 +1,5 @@
 /*
- * $Id: c_activex.c,v 1.11 2011-09-11 02:30:44 fyurisich Exp $
+ * $Id: c_activex.c,v 1.12 2011-09-11 23:22:34 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -35,15 +35,15 @@
    #define _HB_API_INTERNAL_
 #endif
 
-#include <hbvmopt.h>
-#include <windows.h>
-#include <commctrl.h>
 #include <hbapi.h>
 #include <hbvm.h>
 #include <hbstack.h>
-#include "oohg.h"
-#include <ocidl.h>
 #include <hbapiitm.h>
+#include <windows.h>
+#include <commctrl.h>
+#include "oohg.h"
+#include <hbvmopt.h>
+#include <ocidl.h>
 
 #ifdef HB_ITEM_NIL
    #define hb_dynsymSymbol( pDynSym )        ( ( pDynSym )->pSymbol )
@@ -51,10 +51,7 @@
 
 PHB_SYMB s___GetMessage = NULL;
 
-#ifdef __XHARBOUR__     /// si es xharbour
-// -----------------------------------------------------------------------------
 HB_FUNC( TACTIVEX___ERROR )
-// -----------------------------------------------------------------------------
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    PHB_SYMB sMessage;
@@ -81,40 +78,6 @@ HB_FUNC( TACTIVEX___ERROR )
    }
    hb_vmSend( hb_pcount() );
 }
-#else                      
-#ifdef __BORLANDC__
-
-HB_FUNC( TACTIVEX___ERROR )
-
-{
-   PHB_ITEM pSelf = hb_stackSelfItem();
-   PHB_SYMB sMessage;
-   int iPCount;
-
-   if( ! s___GetMessage )
-   {
-      s___GetMessage = hb_dynsymSymbol( hb_dynsymFind( "__GETMESSAGE" ) );
-   }
-
-   hb_vmPushSymbol( s___GetMessage );
-   hb_vmPushNil();
-   hb_vmDo( 0 );
-   sMessage = hb_dynsymSymbol( hb_dynsymFind( hb_parc( -1 ) ) );
-
-   _OOHG_Send( pSelf, s_oOle );
-   hb_vmSend( 0 );
-
-   hb_vmPushSymbol( sMessage );
-   hb_vmPush( hb_param( -1, HB_IT_ANY ) );
-   for( iPCount = 1; iPCount <= hb_pcount() ; iPCount++ )
-   {
-      hb_vmPush( hb_param( iPCount, HB_IT_ANY ) );
-   }
-   hb_vmSend( hb_pcount() );
-}
-
-#endif
-#endif
 
 typedef HRESULT ( WINAPI *LPAtlAxWinInit )       ( void );
 typedef HRESULT ( WINAPI *LPAtlAxGetControl )    ( HWND, IUnknown** );

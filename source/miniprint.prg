@@ -1,5 +1,5 @@
 /*
- * $Id: miniprint.prg,v 1.35 2011-07-06 13:49:11 fyurisich Exp $
+ * $Id: miniprint.prg,v 1.36 2011-09-11 23:22:34 fyurisich Exp $
  */
 /*----------------------------------------------------------------------------
  MINIGUI - Harbour Win32 GUI library source code
@@ -3673,9 +3673,10 @@ HB_FUNC ( _HMG_PRINTER_C_IMAGE )
 
 	HRGN hrgn ;
 
-	HDC hdcPrint = (HDC) hb_parnl(1) ;
+	HDC hdcPrint = (HDC) hb_parnl( 1 ) ;
 	IStream *iStream ;
 	IPicture *iPicture ;
+  IPicture ** iPictureRef = &iPicture;
 	HGLOBAL hGlobal ;
 	HANDLE hFile ;
 	DWORD nFileSize ;
@@ -3687,41 +3688,41 @@ HB_FUNC ( _HMG_PRINTER_C_IMAGE )
 	HGLOBAL hGlobalres ;
 	LPVOID lpVoid ;
 	int nSize ;
-	HINSTANCE hinstance = GetModuleHandle ( NULL ) ;
+	HINSTANCE hinstance = GetModuleHandle( NULL ) ;
 	HBITMAP hbmp ;
 	PICTDESC picd;
 
-	int r = hb_parni(3) ;
-	int c = hb_parni(4) ;
-	int odr = hb_parni(5) ; // Height
-	int odc = hb_parni(6) ; // Width
+	int r = hb_parni( 3 ) ;
+	int c = hb_parni( 4 ) ;
+	int odr = hb_parni( 5 ) ; // Height
+	int odc = hb_parni( 6 ) ; // Width
 	int dr ;
 	int dc ;
 
 	if ( hdcPrint != 0 )
 	{
 
-		c = ( c * GetDeviceCaps ( hdcPrint , LOGPIXELSX ) / 1000 ) - GetDeviceCaps ( hdcPrint , PHYSICALOFFSETX ) ;
-		r = ( r * GetDeviceCaps ( hdcPrint , LOGPIXELSY ) / 1000 ) - GetDeviceCaps ( hdcPrint , PHYSICALOFFSETY ) ;
-		dc = ( odc * GetDeviceCaps ( hdcPrint , LOGPIXELSX ) / 1000 ) ;
-		dr = ( odr * GetDeviceCaps ( hdcPrint , LOGPIXELSY ) / 1000 ) ;
+		c = ( c * GetDeviceCaps( hdcPrint , LOGPIXELSX ) / 1000 ) - GetDeviceCaps( hdcPrint , PHYSICALOFFSETX ) ;
+		r = ( r * GetDeviceCaps( hdcPrint , LOGPIXELSY ) / 1000 ) - GetDeviceCaps( hdcPrint , PHYSICALOFFSETY ) ;
+		dc = ( odc * GetDeviceCaps( hdcPrint , LOGPIXELSX ) / 1000 ) ;
+		dr = ( odr * GetDeviceCaps( hdcPrint , LOGPIXELSY ) / 1000 ) ;
 
-		hFile = CreateFile(hb_parc(2), GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+		hFile = CreateFile( hb_parc( 2 ), GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL );
 
-		if (hFile == INVALID_HANDLE_VALUE)
+		if ( hFile == INVALID_HANDLE_VALUE )
 		{
 
-         hbmp = (HBITMAP) LoadImage(GetModuleHandle(NULL),hb_parc(2),IMAGE_BITMAP,0,0,LR_CREATEDIBSECTION);
+         hbmp = (HBITMAP) LoadImage( GetModuleHandle(NULL), hb_parc( 2 ), IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION );
 			if (hbmp!=NULL)
 			{
-				picd.cbSizeofstruct=sizeof(PICTDESC);
-				picd.picType=PICTYPE_BITMAP;
-				picd.bmp.hbitmap=hbmp;
-				OleCreatePictureIndirect(&picd,&IID_IPicture,TRUE,(LPVOID *)&iPicture);
+				picd.cbSizeofstruct = sizeof( PICTDESC );
+				picd.picType = PICTYPE_BITMAP;
+				picd.bmp.hbitmap = hbmp;
+				OleCreatePictureIndirect( &picd, &IID_IPicture, TRUE, (LPVOID *) iPictureRef );
 			}
 			else
 			{
-				hSource = FindResource(hinstance,hb_parc(2),"GIF");
+				hSource = FindResource( hinstance, hb_parc(2), "GIF" );
 				if ( hSource == 0 )
 				{
 					hSource = FindResource( hinstance , hb_parc(2) , "JPG" ) ;
@@ -3731,55 +3732,56 @@ HB_FUNC ( _HMG_PRINTER_C_IMAGE )
 					return ;
 				}
 
-				hGlobalres = LoadResource(hinstance, hSource);
+				hGlobalres = LoadResource( hinstance, hSource );
 
 				if ( hGlobalres == 0 )
 				{
 					return ;
 				}
 
-				lpVoid = LockResource ( hGlobalres ) ;
+				lpVoid = LockResource( hGlobalres ) ;
 
 				if ( lpVoid == 0 )
 				{
 					return ;
 				}
 
-				nSize = SizeofResource ( hinstance , hSource ) ;
+				nSize = SizeofResource( hinstance , hSource ) ;
 
-				hGlobal = GlobalAlloc ( GPTR, nSize ) ;
+				hGlobal = GlobalAlloc( GPTR, nSize ) ;
 
 				if ( hGlobal == 0 )
 				{
 					return ;
 				}
 
-				memcpy ( hGlobal , lpVoid , nSize ) ;
+				memcpy( hGlobal , lpVoid , nSize ) ;
 
-				FreeResource ( hGlobalres ) ;
+				FreeResource( hGlobalres ) ;
 
-				CreateStreamOnHGlobal ( hGlobal , TRUE, &iStream ) ;
+				CreateStreamOnHGlobal( hGlobal , TRUE, &iStream ) ;
 
 				if ( iStream == 0 )
 				{
-					GlobalFree ( hGlobal ) ;
+					GlobalFree( hGlobal ) ;
 					return ;
 				}
 
-				OleLoadPicture ( iStream , nSize , TRUE , &IID_IPicture , (LPVOID *)&iPicture ) ;
+				OleLoadPicture( iStream , nSize , TRUE , &IID_IPicture , (LPVOID *) iPictureRef ) ;
 
-				iStream->lpVtbl->Release(iStream);
+				iStream->lpVtbl->Release( iStream );
 
 			}
 		}
 		else
 		{
-			nFileSize = GetFileSize ( hFile , NULL ) ;
-			hGlobal = GlobalAlloc ( GPTR , nFileSize ) ;
-			ReadFile ( hFile , hGlobal , nFileSize , &nReadByte, NULL ) ;
-			CloseHandle ( hFile ) ;
-			CreateStreamOnHGlobal ( hGlobal , TRUE , &iStream ) ;
-			OleLoadPicture ( iStream , nFileSize , TRUE , &IID_IPicture , (LPVOID*)&iPicture ) ;
+			nFileSize = GetFileSize( hFile , NULL ) ;
+			hGlobal = GlobalAlloc( GPTR , nFileSize ) ;
+			ReadFile( hFile , hGlobal , nFileSize , &nReadByte, NULL ) ;
+			CloseHandle( hFile ) ;
+			CreateStreamOnHGlobal( hGlobal , TRUE , &iStream ) ;
+			OleLoadPicture( iStream , nFileSize , TRUE , &IID_IPicture , (LPVOID*) iPictureRef ) ;
+			GlobalFree( hGlobal ) ;
 
 			if ( iPicture == 0 )
 			{
@@ -3787,51 +3789,47 @@ HB_FUNC ( _HMG_PRINTER_C_IMAGE )
 			}
 		}
 
-		iPicture->lpVtbl->get_Width(iPicture,&lWidth);
-		iPicture->lpVtbl->get_Height(iPicture,&lHeight);
+		iPicture->lpVtbl->get_Width( iPicture, &lWidth );
+		iPicture->lpVtbl->get_Height( iPicture, &lHeight );
 
-		if ( ! hb_parl(7) ) // Scale
+		if ( ! hb_parl( 7 ) )             // Scale
 		{
 
 			if ( odr * lHeight / lWidth <= odr )
 			{
-				dr = odc * GetDeviceCaps ( hdcPrint , LOGPIXELSY ) / 1000 * lHeight / lWidth ;
+				dr = odc * GetDeviceCaps( hdcPrint , LOGPIXELSY ) / 1000 * lHeight / lWidth ;
 			}
 			else
 			{
-				dc = odr * GetDeviceCaps ( hdcPrint , LOGPIXELSX ) / 1000 * lWidth / lHeight ;
+				dc = odr * GetDeviceCaps( hdcPrint , LOGPIXELSX ) / 1000 * lWidth / lHeight ;
 			}
 
 		}
 
-		GetViewportOrgEx ( hdcPrint , &lpp ) ;
+		GetViewportOrgEx( hdcPrint , &lpp ) ;
 
-		hrgn = CreateRectRgn(	c + lpp.x ,
-					r + lpp.y ,
-					c + dc + lpp.x - 1 ,
-					r + dr + lpp.y - 1
-					) ;
+		hrgn = CreateRectRgn( c + lpp.x,
+                          r + lpp.y ,
+					                c + dc + lpp.x - 1 ,
+					                r + dr + lpp.y - 1 );
 
-		SelectClipRgn( hdcPrint , hrgn ) ;
+		SelectClipRgn( hdcPrint , hrgn );
 
-		iPicture->lpVtbl->Render( 	iPicture ,
-						hdcPrint ,
-						c ,
-						r ,
-						dc ,
-						dr ,
-						0 ,
-						lHeight ,
-						lWidth ,
-						-lHeight ,
-						NULL ) ;
+		iPicture->lpVtbl->Render( iPicture,
+						                  hdcPrint,
+						                  c,
+						                  r,
+						                  dc,
+						                  dr,
+						                  0,
+						                  lHeight,
+						                  lWidth,
+						                  -lHeight,
+						                  NULL ) ;
 
-		SelectClipRgn(hdcPrint,NULL);
+		SelectClipRgn( hdcPrint, NULL );
 
-		iPicture->lpVtbl->Release(iPicture);
-
-		GlobalFree(hGlobal);
-
+		iPicture->lpVtbl->Release( iPicture );
 	}
 }
 

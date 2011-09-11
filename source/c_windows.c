@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.74 2011-09-07 21:53:35 fyurisich Exp $
+ * $Id: c_windows.c,v 1.75 2011-09-11 23:22:34 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1401,4 +1401,34 @@ HB_FUNC( OSISWINVISTAORLATER )
    OSVERSIONINFO osvi;
    getwinver( &osvi );
    hb_retl( osvi.dwMajorVersion >= 6 );
+}
+
+HBRUSH GetTabBrush( HWND hWnd )
+{
+   HBRUSH hBrush;
+   RECT rc;
+   HDC hDC;
+   HDC hDCMem;
+   HBITMAP hBmp;
+   HBITMAP hOldBmp;
+
+   GetWindowRect( hWnd, &rc );
+   hDC = GetDC( hWnd );
+   hDCMem = CreateCompatibleDC( hDC );
+
+   hBmp = CreateCompatibleBitmap( hDC, rc.right - rc.left, rc.bottom - rc.top );
+
+   hOldBmp = (HBITMAP) SelectObject( hDCMem, hBmp );
+
+   SendMessage( hWnd, WM_PRINTCLIENT, (WPARAM) hDCMem,  (LPARAM) PRF_ERASEBKGND | PRF_CLIENT | PRF_NONCLIENT );
+
+   hBrush = CreatePatternBrush( hBmp );
+
+   SelectObject( hDCMem, hOldBmp );
+
+   DeleteObject( hBmp );
+   DeleteDC( hDCMem );
+   ReleaseDC( hWnd, hDC );
+
+   return hBrush;
 }

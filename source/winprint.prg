@@ -1,5 +1,5 @@
 /*      
- * $Id: winprint.prg,v 1.40 2011-09-07 21:53:35 fyurisich Exp $
+ * $Id: winprint.prg,v 1.41 2011-09-11 23:22:34 fyurisich Exp $
  */
 // -----------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -2746,7 +2746,7 @@ HB_FUNC (RR_SETCHARSET)
 HB_FUNC (RR_TEXTOUT)
 {
    LONG xfont=hb_parnl(3);
-   HFONT prevfont;
+   HFONT prevfont = NULL;
    SIZE szMetric;
    int lspace = hb_parni(4);
 
@@ -2768,7 +2768,7 @@ HB_FUNC (RR_TEXTOUT)
 HB_FUNC( RR_DRAWTEXT )
 {
    LONG  xfont = hb_parnl( 5 );
-   HFONT prevfont;
+   HFONT prevfont = NULL;
    RECT  rect;
    UINT  uFormat;
 
@@ -2974,6 +2974,7 @@ HB_FUNC (RR_PICTURE)
 {
     IStream *iStream;
     IPicture *iPicture;
+    IPicture **iPictureRef = &iPicture;
     HGLOBAL hGlobal;
     void *pGlobal;
     HANDLE hFile;
@@ -3001,7 +3002,7 @@ HB_FUNC (RR_PICTURE)
     CloseHandle(hFile);
     GlobalUnlock(hGlobal);
     CreateStreamOnHGlobal(hGlobal, TRUE, &iStream);
-    OleLoadPicture(iStream, nFileSize, TRUE, &IID_IPicture, (LPVOID*)&iPicture);
+    OleLoadPicture(iStream, nFileSize, TRUE, &IID_IPicture, (LPVOID*) iPictureRef);
     GlobalFree(hGlobal);
     iStream->lpVtbl->Release(iStream);
     if (iPicture==NULL)
@@ -3053,6 +3054,7 @@ LPVOID rr_loadpicturefromresource(char * resname,LONG *lwidth,LONG *lheight)
 {
    HBITMAP hbmpx;
    IPicture *iPicture = NULL ;
+   IPicture **iPictureRef = &iPicture;
    IStream *iStream = NULL;
    PICTDESC picd;
    HGLOBAL hGlobalres ;
@@ -3068,7 +3070,7 @@ LPVOID rr_loadpicturefromresource(char * resname,LONG *lwidth,LONG *lheight)
       picd.cbSizeofstruct=sizeof(PICTDESC);
       picd.picType=PICTYPE_BITMAP;
       picd.bmp.hbitmap=hbmpx;
-      OleCreatePictureIndirect(&picd,&IID_IPicture,TRUE,(LPVOID *)&iPicture);
+      OleCreatePictureIndirect(&picd,&IID_IPicture,TRUE,(LPVOID *) iPictureRef);
    }
    else
    {
@@ -3121,7 +3123,7 @@ LPVOID rr_loadpicturefromresource(char * resname,LONG *lwidth,LONG *lheight)
          GlobalFree( hGlobal );
          return NULL;
       }
-      OleLoadPicture(iStream, nSize, TRUE, &IID_IPicture, (LPVOID *)&iPicture);
+      OleLoadPicture(iStream, nSize, TRUE, &IID_IPicture, (LPVOID *) iPictureRef);
       iStream->lpVtbl->Release( iStream );
       GlobalFree(hGlobal);
    }
@@ -3137,6 +3139,7 @@ LPVOID rr_loadpicture( char * filename, LONG * lwidth, LONG * lheight )
 {
     IStream *iStream=NULL ;
     IPicture *iPicture=NULL;
+    IPicture **iPictureRef = &iPicture;
     HGLOBAL hGlobal;
     void *pGlobal;
     HANDLE hFile;
@@ -3157,7 +3160,7 @@ LPVOID rr_loadpicture( char * filename, LONG * lwidth, LONG * lheight )
           GlobalFree(hGlobal);
           return NULL;
        }
-    OleLoadPicture(iStream, nFileSize, TRUE, &IID_IPicture, (LPVOID*)&iPicture);
+    OleLoadPicture(iStream, nFileSize, TRUE, &IID_IPicture, (LPVOID*) iPictureRef);
     GlobalUnlock(hGlobal);
     GlobalFree(hGlobal);
     iStream->lpVtbl->Release(iStream);
@@ -3188,18 +3191,19 @@ HB_FUNC( RR_DRAWPICTURE )
     int lw,lh;
     BOOL bImageSize = hb_parl( 5 );
 
-   if( hb_parclen( 1 ) )
+   if( ! hb_parclen( 1 ) )
+     return ;
+     
+   ipic = (IPicture *) rr_loadpicture( ( char * ) hb_parc( 1 ), &lwidth, &lheight );
+   if( ! ipic )
    {
-      ipic = (IPicture *) rr_loadpicture( ( char * ) hb_parc( 1 ), &lwidth, &lheight );
-      if( ! ipic )
-      {
-         ipic = (IPicture *) rr_loadpicturefromresource( ( char * ) hb_parc( 1 ), &lwidth, &lheight );
-      }
-      if( ! ipic )
-      {
-         return ;
-      }
+      ipic = (IPicture *) rr_loadpicturefromresource( ( char * ) hb_parc( 1 ), &lwidth, &lheight );
    }
+   if( ! ipic )
+   {
+      return ;
+   }
+
   lw=MulDiv(lwidth,devcaps[6],2540);
   lh=MulDiv(lheight,devcaps[5],2540);
   if (dc==0)  { dc=(int) ((float) dr*lw/lh); }

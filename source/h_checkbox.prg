@@ -1,5 +1,5 @@
 /*
- * $Id: h_checkbox.prg,v 1.29 2011-09-11 03:27:55 fyurisich Exp $
+ * $Id: h_checkbox.prg,v 1.30 2011-09-11 23:22:34 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -185,6 +185,12 @@ Local Hi_wParam := HIWORD( wParam )
    EndIf
 Return ::Super:Events_Command( wParam )
 
+*------------------------------------------------------------------------------*
+METHOD Events_Color( wParam, nDefColor ) CLASS TCheckBox
+*------------------------------------------------------------------------------*
+
+Return Events_Color_InTab( Self, wParam, nDefColor )    // see h_controlmisc.prg
+
 
 
 
@@ -226,97 +232,6 @@ HB_FUNC( INITCHECKBOX )
    lpfnOldWndProc = ( WNDPROC ) SetWindowLong( hbutton, GWL_WNDPROC, ( LONG ) SubClassFunc );
 
    HWNDret( hbutton );
-}
-
-HBRUSH GetTabBrush( HWND hWnd )
-{
-   HBRUSH hBrush;
-   RECT rc;
-   HDC hDC;
-   HDC hDCMem;
-   HBITMAP hBmp;
-   HBITMAP hOldBmp;
-
-   GetWindowRect( hWnd, &rc );
-   hDC = GetDC( hWnd );
-   hDCMem = CreateCompatibleDC( hDC );
-
-   hBmp = CreateCompatibleBitmap( hDC, rc.right - rc.left, rc.bottom - rc.top );
-
-   hOldBmp = (HBITMAP) SelectObject( hDCMem, hBmp );
-
-   SendMessage( hWnd, WM_PRINTCLIENT, (WPARAM) hDCMem,  (LPARAM) PRF_ERASEBKGND | PRF_CLIENT | PRF_NONCLIENT );
-
-   hBrush = CreatePatternBrush( hBmp );
-
-   SelectObject( hDCMem, hOldBmp );
-
-   DeleteObject( hBmp );
-   DeleteDC( hDCMem );
-   ReleaseDC( hWnd, hDC );
-   
-   return hBrush;
-}
-
-HB_FUNC_STATIC( TCHECKBOX_EVENTS_COLOR )   // METHOD Events_Color( wParam, nDefColor ) CLASS TControl
-{
-   PHB_ITEM pSelf = hb_stackSelfItem();
-   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
-   HDC hdc = ( HDC ) hb_parnl( 1 );
-   LONG lBackColor;
-   RECT rc;
-   LPRECT lprc;
-
-   if( oSelf->lFontColor != -1 )
-   {
-      SetTextColor( hdc, ( COLORREF ) oSelf->lFontColor );
-   }
-
-   _OOHG_Send( pSelf, s_Transparent );
-   hb_vmSend( 0 );
-   if( hb_parl( -1 ) )
-   {
-      SetBkMode( hdc, ( COLORREF ) TRANSPARENT );
-      hb_retnl( ( LONG ) GetStockObject( NULL_BRUSH ) );
-      return;
-   }
-
-   lBackColor = ( oSelf->lUseBackColor != -1 ) ? oSelf->lUseBackColor : oSelf->lBackColor;
-   if( lBackColor == -1 )
-   {
-      lBackColor = hb_parnl( 2 );           // If is not into a TAB
-
-      _OOHG_Send( pSelf, s_TabHandle );
-      hb_vmSend( 0 );
-      
-      if( ValidHandler( HWNDparam( -1 ) ) )
-      {
-         DeleteObject( oSelf->BrushHandle );
-
-         oSelf->BrushHandle = GetTabBrush( HWNDparam( -1 ) );
-
-         SetBkMode( hdc, TRANSPARENT );
-
-         GetWindowRect( oSelf->hWnd, &rc );
-         lprc = &rc;
-         MapWindowPoints( NULL, HWNDparam( -1 ), (LPPOINT) lprc, 2 );
-
-         SetBrushOrgEx( hdc, -rc.left, -rc.top, NULL );
-
-         hb_retnl( ( LONG ) oSelf->BrushHandle );
-         return;
-      }
-   }
-
-   SetBkColor( hdc, ( COLORREF ) lBackColor );
-   if( lBackColor != oSelf->lOldBackColor )
-   {
-      oSelf->lOldBackColor = lBackColor;
-      DeleteObject( oSelf->BrushHandle );
-      oSelf->BrushHandle = CreateSolidBrush( lBackColor );
-   }
-
-   hb_retnl( ( LONG ) oSelf->BrushHandle );
 }
 
 #pragma ENDDUMP

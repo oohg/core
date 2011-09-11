@@ -1,5 +1,5 @@
 /*
- * $Id: h_radio.prg,v 1.25 2010-08-26 20:00:55 guerra000 Exp $
+ * $Id: h_radio.prg,v 1.26 2011-09-11 23:22:34 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -103,6 +103,7 @@ CLASS TRadioGroup FROM TLabel
    DATA nWidth        INIT 120
    DATA nHeight       INIT 25
    DATA aOptions      INIT {}
+   DATA TabHandle     INIT 0
 
    METHOD RowMargin   BLOCK { |Self| - ::Row }
    METHOD ColMargin   BLOCK { |Self| - ::Col }
@@ -119,6 +120,7 @@ CLASS TRadioGroup FROM TLabel
 
    METHOD Events
    METHOD Events_Command
+   METHOD Events_Color
 
    EMPTY( _OOHG_AllVars )
 ENDCLASS
@@ -162,18 +164,27 @@ Local ControlHandle, i, oItem, nStyle
    ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
 
+   IF _OOHG_LastFrame() == "TABPAGE"
+     ::TabHandle := ::Container:Container:hWnd
+   ENDIF
+
    ::Transparent := transparent
    ::AutoSize    := autosize
 
    // First item
    oItem := TRadioItem():SetForm( , Self )
    oItem:Register( ControlHandle, , HelpId, !Invisible, ToolTip )
+
+   IF _OOHG_LastFrame() == "TABPAGE"
+     oItem:TabHandle := ::Container:Container:hWnd
+   ENDIF
+
    oItem:SetFont( , , bold, italic, underline, strikeout )
    oItem:SizePos( ::Row, ::Col, ::Width, ::Height )
    oItem:AutoSize := autosize
    oItem:Caption := aOptions[ 1 ]
    ::aOptions := { oItem }
-
+   
    x := ::Col
    y := ::Row
 
@@ -189,10 +200,16 @@ Local ControlHandle, i, oItem, nStyle
 
       oItem := TRadioItem():SetForm( , Self )
       oItem:Register( ControlHandle, , HelpId,, ToolTip )
+
+      IF _OOHG_LastFrame() == "TABPAGE"
+        oItem:TabHandle := ::Container:Container:hWnd
+      ENDIF
+
       oItem:SetFont( , , bold, italic, underline, strikeout )
       oItem:SizePos( y, x, ::Width, ::Height )
       oItem:AutoSize := autosize
       oItem:Caption := aOptions[ i ]
+      
       AADD( ::aOptions, oItem )
    Next
 
@@ -336,6 +353,12 @@ Local lTab
    EndIf
 Return ::Super:Events_Command( wParam )
 
+*------------------------------------------------------------------------------*
+METHOD Events_Color( wParam, nDefColor ) CLASS TRadioGroup
+*------------------------------------------------------------------------------*
+
+Return Events_Color_InTab( Self, wParam, nDefColor )    // see h_controlmisc.prg
+
 
 
 
@@ -343,9 +366,11 @@ Return ::Super:Events_Command( wParam )
 CLASS TRadioItem FROM TLabel
    DATA Type          INIT "RADIOITEM" READONLY
    DATA IconWidth     INIT 19
+   DATA TabHandle     INIT 0
 
    METHOD Events
    METHOD Events_Command
+   METHOD Events_Color
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -383,6 +408,12 @@ Local lTab
    EndIf
 Return ::Super:Events_Command( wParam )
 
+*------------------------------------------------------------------------------*
+METHOD Events_Color( wParam, nDefColor ) CLASS TRadioItem
+*------------------------------------------------------------------------------*
+
+Return Events_Color_InTab( Self, wParam, nDefColor )    // see h_controlmisc.prg
+
 
 
 
@@ -392,6 +423,8 @@ EXTERN InitRadioGroup, InitRadioButton
 #pragma BEGINDUMP
 // #define s_Super s_TLabel
 #include "hbapi.h"
+#include "hbvm.h"
+#include "hbstack.h"
 #include <windows.h>
 #include <commctrl.h>
 #include "oohg.h"
