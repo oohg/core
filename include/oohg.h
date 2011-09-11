@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.h,v 1.49 2011-09-11 03:29:18 fyurisich Exp $
+ * $Id: oohg.h,v 1.50 2011-09-11 23:20:34 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -126,6 +126,7 @@ DWORD _OOHG_RTL_Status( BOOL bRtl );
 int _OOHG_SearchFormHandleInArray( HWND hWnd );
 int _OOHG_SearchControlHandleInArray( HWND hWnd );
 PHB_ITEM _OOHG_GetExistingObject( HWND hWnd, BOOL bForm, BOOL bForceAny );
+HBRUSH GetTabBrush( HWND hWnd );
 
 // Symbol tables
 #define s_Events_Notify        0
