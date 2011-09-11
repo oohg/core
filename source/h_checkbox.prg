@@ -1,5 +1,5 @@
 /*
- * $Id: h_checkbox.prg,v 1.28 2011-09-06 02:33:23 fyurisich Exp $
+ * $Id: h_checkbox.prg,v 1.29 2011-09-11 03:27:55 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -103,10 +103,12 @@ CLASS TCheckBox FROM TLabel
    DATA IconWidth INIT 19
    DATA nWidth    INIT 100
    DATA nHeight   INIT 28
+   DATA TabHandle INIT 0
 
    METHOD Define
    METHOD Value       SETGET
    METHOD Events_Command
+   METHOD Events_Color
 
    EMPTY( _OOHG_AllVars )
 ENDCLASS
@@ -146,6 +148,10 @@ Local ControlHandle, nStyle, nStyleEx := 0
 
    ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
+
+   IF _OOHG_LastFrame() == "TABPAGE"
+     ::TabHandle := ::Container:Container:hWnd
+   ENDIF
 
    ::Autosize    := autosize
    ::Caption     := Caption
@@ -220,6 +226,97 @@ HB_FUNC( INITCHECKBOX )
    lpfnOldWndProc = ( WNDPROC ) SetWindowLong( hbutton, GWL_WNDPROC, ( LONG ) SubClassFunc );
 
    HWNDret( hbutton );
+}
+
+HBRUSH GetTabBrush( HWND hWnd )
+{
+   HBRUSH hBrush;
+   RECT rc;
+   HDC hDC;
+   HDC hDCMem;
+   HBITMAP hBmp;
+   HBITMAP hOldBmp;
+
+   GetWindowRect( hWnd, &rc );
+   hDC = GetDC( hWnd );
+   hDCMem = CreateCompatibleDC( hDC );
+
+   hBmp = CreateCompatibleBitmap( hDC, rc.right - rc.left, rc.bottom - rc.top );
+
+   hOldBmp = (HBITMAP) SelectObject( hDCMem, hBmp );
+
+   SendMessage( hWnd, WM_PRINTCLIENT, (WPARAM) hDCMem,  (LPARAM) PRF_ERASEBKGND | PRF_CLIENT | PRF_NONCLIENT );
+
+   hBrush = CreatePatternBrush( hBmp );
+
+   SelectObject( hDCMem, hOldBmp );
+
+   DeleteObject( hBmp );
+   DeleteDC( hDCMem );
+   ReleaseDC( hWnd, hDC );
+   
+   return hBrush;
+}
+
+HB_FUNC_STATIC( TCHECKBOX_EVENTS_COLOR )   // METHOD Events_Color( wParam, nDefColor ) CLASS TControl
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   HDC hdc = ( HDC ) hb_parnl( 1 );
+   LONG lBackColor;
+   RECT rc;
+   LPRECT lprc;
+
+   if( oSelf->lFontColor != -1 )
+   {
+      SetTextColor( hdc, ( COLORREF ) oSelf->lFontColor );
+   }
+
+   _OOHG_Send( pSelf, s_Transparent );
+   hb_vmSend( 0 );
+   if( hb_parl( -1 ) )
+   {
+      SetBkMode( hdc, ( COLORREF ) TRANSPARENT );
+      hb_retnl( ( LONG ) GetStockObject( NULL_BRUSH ) );
+      return;
+   }
+
+   lBackColor = ( oSelf->lUseBackColor != -1 ) ? oSelf->lUseBackColor : oSelf->lBackColor;
+   if( lBackColor == -1 )
+   {
+      lBackColor = hb_parnl( 2 );           // If is not into a TAB
+
+      _OOHG_Send( pSelf, s_TabHandle );
+      hb_vmSend( 0 );
+      
+      if( ValidHandler( HWNDparam( -1 ) ) )
+      {
+         DeleteObject( oSelf->BrushHandle );
+
+         oSelf->BrushHandle = GetTabBrush( HWNDparam( -1 ) );
+
+         SetBkMode( hdc, TRANSPARENT );
+
+         GetWindowRect( oSelf->hWnd, &rc );
+         lprc = &rc;
+         MapWindowPoints( NULL, HWNDparam( -1 ), (LPPOINT) lprc, 2 );
+
+         SetBrushOrgEx( hdc, -rc.left, -rc.top, NULL );
+
+         hb_retnl( ( LONG ) oSelf->BrushHandle );
+         return;
+      }
+   }
+
+   SetBkColor( hdc, ( COLORREF ) lBackColor );
+   if( lBackColor != oSelf->lOldBackColor )
+   {
+      oSelf->lOldBackColor = lBackColor;
+      DeleteObject( oSelf->BrushHandle );
+      oSelf->BrushHandle = CreateSolidBrush( lBackColor );
+   }
+
+   hb_retnl( ( LONG ) oSelf->BrushHandle );
 }
 
 #pragma ENDDUMP
