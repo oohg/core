@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.792 2011-09-12 14:06:33 fyurisich Exp $
+ * $Id: ChangeLog,v 1.793 2011-09-12 22:07:52 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,6 +7,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+
+2011-09-12 19:05:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * docs/classes.txt
+     * Added ThreeState and LeftAlign DATAs.
+   * include/i_altsyntax.ch
+   * include/i_checkbox.ch
+   * source/h_checkbox.prg
+     ! Added LEFTALIGN and THREESTATE clauses to CHECKBOX control.
 
 2011-09-12 11:05:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./compile_mingw.bat

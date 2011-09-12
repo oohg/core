@@ -1,5 +1,5 @@
 /*
- * $Id: h_checkbox.prg,v 1.30 2011-09-11 23:22:34 fyurisich Exp $
+ * $Id: h_checkbox.prg,v 1.31 2011-09-12 22:04:05 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -98,12 +98,14 @@
 
 
 CLASS TCheckBox FROM TLabel
-   DATA Type      INIT "CHECKBOX" READONLY
-   DATA cPicture  INIT ""
-   DATA IconWidth INIT 19
-   DATA nWidth    INIT 100
-   DATA nHeight   INIT 28
-   DATA TabHandle INIT 0
+   DATA Type       INIT "CHECKBOX" READONLY
+   DATA cPicture   INIT ""
+   DATA IconWidth  INIT 19
+   DATA nWidth     INIT 100
+   DATA nHeight    INIT 28
+   DATA TabHandle  INIT 0
+   DATA Threestate INIT .F.
+   DATA LeftAlign  INIT .F.
 
    METHOD Define
    METHOD Value       SETGET
@@ -118,17 +120,19 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
                fontsize, tooltip, changeprocedure, w, h, lostfocus, gotfocus, ;
                HelpId, invisible, notabstop, bold, italic, underline, ;
                strikeout, field, backcolor, fontcolor, transparent, autosize, ;
-               lRtl, lDisabled ) CLASS TCheckBox
+               lRtl, lDisabled, threestate, leftalign ) CLASS TCheckBox
 *-----------------------------------------------------------------------------*
 Local ControlHandle, nStyle, nStyleEx := 0
 
-   ASSIGN ::nCol        VALUE x TYPE "N"
-   ASSIGN ::nRow        VALUE y TYPE "N"
-   ASSIGN ::nWidth      VALUE w TYPE "N"
-   ASSIGN ::nHeight     VALUE h TYPE "N"
-   ASSIGN ::Transparent VALUE transparent  TYPE "L"
+   ASSIGN ::nCol        VALUE x           TYPE "N"
+   ASSIGN ::nRow        VALUE y           TYPE "N"
+   ASSIGN ::nWidth      VALUE w           TYPE "N"
+   ASSIGN ::nHeight     VALUE h           TYPE "N"
+   ASSIGN ::Transparent VALUE transparent TYPE "L"
+   ASSIGN ::Threestate  VALUE threestate  TYPE "L"
+   ASSIGN ::LeftAlign   VALUE leftalign   TYPE "L"
 
-   IF !HB_IsLogical( value )
+   IF ! ::Threestate .and. ! HB_IsLogical( value )
       value := .F.
    ENDIF
    ASSIGN autosize      VALUE autosize TYPE "L" DEFAULT .F.
@@ -139,7 +143,15 @@ Local ControlHandle, nStyle, nStyleEx := 0
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor,, lRtl )
 
-   nStyle := ::InitStyle( ,, Invisible, NoTabStop, lDisabled ) + BS_AUTOCHECKBOX
+   nStyle := ::InitStyle( ,, Invisible, NoTabStop, lDisabled )
+   If ::Threestate
+      nStyle += BS_AUTO3STATE
+   Else
+      nStyle += BS_AUTOCHECKBOX
+   Endif
+   If ::LeftAlign
+      nStyle += BS_LEFTTEXT
+   Endif
    If ::Transparent
       nStyleEx += WS_EX_TRANSPARENT
    EndIf
@@ -167,11 +179,24 @@ Return Self
 *------------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TCheckBox
 *------------------------------------------------------------------------------*
+Local uState
+
    IF HB_IsLogical( uValue )
       SendMessage( ::hWnd, BM_SETCHECK, if( uValue, BST_CHECKED, BST_UNCHECKED ), 0 )
       ::DoChange()
+   ELSEIF ::ThreeState .AND. pcount() > 0 .AND. uValue == NIL
+      SendMessage( ::hWnd, BM_SETCHECK, BST_INDETERMINATE, 0 )
+      ::DoChange()
    ELSE
-      uValue := ( SendMessage( ::hWnd, BM_GETCHECK , 0 , 0 ) == BST_CHECKED )
+      uState := SendMessage( ::hWnd, BM_GETCHECK , 0 , 0 )
+      
+      IF uState == BST_CHECKED
+         uValue := .T.
+      ELSEIF uState == BST_UNCHECKED
+         uValue := .F.
+      ELSE
+         uValue := Nil
+      ENDIF
    ENDIF
 RETURN uValue
 

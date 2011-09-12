@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.52 2011-09-05 18:06:01 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.53 2011-09-12 22:05:05 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -122,7 +122,7 @@ Memvariables
 #xtranslate _OOHG_ActiveControlTrailingFontColor      => _OOHG_ActiveControlInfo \[  25 \]
 #xtranslate _OOHG_ActiveControlBackgroundColor        => _OOHG_ActiveControlInfo \[  26 \]
 
-
+#xtranslate _OOHG_ActiveControl3State                 => _OOHG_ActiveControlInfo \[ 154 \]
 #xtranslate _OOHG_ActiveControlMultiLine              => _OOHG_ActiveControlInfo \[ 155 \]
 #xtranslate _OOHG_ActiveControlFullMove               => _OOHG_ActiveControlInfo \[ 156 \]
 #xtranslate _OOHG_ActiveControlRowCount               => _OOHG_ActiveControlInfo \[ 157 \]
@@ -1323,7 +1323,17 @@ CHECK BOX/BUTTON
         _OOHG_ActiveControlCaption     := Nil    ;;
         _OOHG_ActiveControlTransparent := .F.    ;;
         _OOHG_ActiveControlAutoSize    := .F.    ;;
-        _OOHG_ActiveControlField       := Nil
+        _OOHG_ActiveControlField       := Nil    ;;
+        _OOHG_ActiveControl3State      := .F.    ;;
+        _OOHG_ActiveControlRightAlign  := .T.
+
+#xcommand THREESTATE <threestate> ;
+        => ;
+        _OOHG_ActiveControl3State := <threestate>
+
+#xcommand LEFTALIGN <leftalign> ;
+        => ;
+        _OOHG_ActiveControlRightAlign := .NOT. <leftalign>
 
 #xcommand DEFINE CHECKBUTTON <name> ;
         => ;
@@ -1382,7 +1392,9 @@ CHECK BOX/BUTTON
                 _OOHG_ActiveControlTransparent, ;
                 _OOHG_ActiveControlAutoSize, ;
                 _OOHG_ActiveControlRtl, ;
-                _OOHG_ActiveControlDisabled )
+                _OOHG_ActiveControlDisabled, ;
+                _OOHG_ActiveControl3State, ;
+                .NOT. _OOHG_ActiveControlRightAlign )
 
 #xcommand END CHECKBUTTON ;
         => ;
