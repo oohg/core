@@ -1,5 +1,5 @@
 /*
- * $Id: h_progressmeter.prg,v 1.17 2010-06-25 00:44:11 guerra000 Exp $
+ * $Id: h_progressmeter.prg,v 1.18 2011-09-12 01:40:01 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -222,8 +222,8 @@ void ProgressMeter_Paint( POCTRL oSelf, HDC hdc )
    }
    len = strlen( txt );
 
-   xFont = ( ( oSelf->lFontColor == -1 ) ? GetSysColor( COLOR_WINDOWTEXT ) : oSelf->lFontColor );
-   xBack = ( ( oSelf->lBackColor == -1 ) ? GetSysColor( COLOR_WINDOW     ) : oSelf->lBackColor );
+   xFont = ( ( oSelf->lFontColor == -1 ) ? GetSysColor( COLOR_WINDOWTEXT ) : (COLORREF) oSelf->lFontColor );
+   xBack = ( ( oSelf->lBackColor == -1 ) ? GetSysColor( COLOR_WINDOW     ) : (COLORREF) oSelf->lBackColor );
    FontColor = SetTextColor( hdc2, xFont );
    BackColor = SetBkColor(   hdc2, xBack );
    SetTextAlign( hdc2, oSelf->lAux[ 1 ] );

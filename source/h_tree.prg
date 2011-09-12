@@ -1,5 +1,5 @@
 /*
- * $Id: h_tree.prg,v 1.23 2011-09-04 20:09:24 fyurisich Exp $
+ * $Id: h_tree.prg,v 1.24 2011-09-12 01:40:01 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1370,7 +1370,7 @@ int Treeview_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam )
          _OOHG_Send( pSelf, s_aSelColor );
          hb_vmSend( 0 );
 
-         lptvcd->clrText = (COLORREF) ( ( oSelf->lFontColor == -1 ) ? GetSysColor( COLOR_WINDOW ) : oSelf->lFontColor );
+         lptvcd->clrText = ( ( oSelf->lFontColor == -1 ) ? GetSysColor( COLOR_WINDOW ) : (COLORREF) oSelf->lFontColor );
          
          if( _OOHG_DetermineColor( hb_param( -1, HB_IT_ANY ), &lSelColor ) )
          {
@@ -1378,13 +1378,13 @@ int Treeview_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam )
          }
          else
          {
-            lptvcd->clrTextBk = (COLORREF) ( ( oSelf->lFontColor == -1 ) ? GetSysColor( COLOR_WINDOWTEXT ) : oSelf->lFontColor );
+            lptvcd->clrTextBk = ( ( oSelf->lFontColor == -1 ) ? GetSysColor( COLOR_WINDOWTEXT ) : (COLORREF) oSelf->lFontColor );
          }
       }
       else
       {
-         lptvcd->clrText = (COLORREF) ( ( oSelf->lFontColor == -1 ) ? GetSysColor( COLOR_WINDOWTEXT ) : oSelf->lFontColor );
-         lptvcd->clrTextBk = (COLORREF) ( ( oSelf->lBackColor == -1 ) ? GetSysColor( COLOR_WINDOW ) : oSelf->lBackColor ) ;
+         lptvcd->clrText = ( ( oSelf->lFontColor == -1 ) ? GetSysColor( COLOR_WINDOWTEXT ) : (COLORREF) oSelf->lFontColor );
+         lptvcd->clrTextBk = ( ( oSelf->lBackColor == -1 ) ? GetSysColor( COLOR_WINDOW ) : (COLORREF) oSelf->lBackColor ) ;
       }
       return CDRF_NEWFONT;
    }

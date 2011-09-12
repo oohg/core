@@ -1,5 +1,5 @@
 /*
- * $Id: h_textarray.prg,v 1.18 2011-09-07 19:06:17 fyurisich Exp $
+ * $Id: h_textarray.prg,v 1.19 2011-09-12 01:40:01 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -203,8 +203,8 @@ static void RePaint_Out( HDC hdc, PCHARCELL pCell, RECT *rect2, char *cText, int
    if( iTextIndex )
    {
       cText[ iTextIndex ] = 0;
-      SetTextColor( hdc, ( ( pCell->FontColor == -1 ) ? GetSysColor( COLOR_WINDOWTEXT ) : pCell->FontColor ) );
-      SetBkColor(   hdc, ( ( pCell->BackColor == -1 ) ? GetSysColor( COLOR_WINDOW )     : pCell->BackColor ) );
+      SetTextColor( hdc, ( ( pCell->FontColor == -1 ) ? GetSysColor( COLOR_WINDOWTEXT ) : (COLORREF) pCell->FontColor ) );
+      SetBkColor(   hdc, ( ( pCell->BackColor == -1 ) ? GetSysColor( COLOR_WINDOW )     : (COLORREF) pCell->BackColor ) );
 // transparent??
 // any different font??
       ExtTextOut( hdc, rect2->left, rect2->top, ETO_CLIPPED | ETO_OPAQUE, rect2, cText, iTextIndex, NULL );
@@ -234,8 +234,8 @@ static void RePaint( POCTRL oSelf, HDC hdc2, RECT *updateRect )
    }
 
    TTextArray_Empty( &sNull, oSelf );
-   sNull.FontColor = ( ( sNull.FontColor == -1 ) ? GetSysColor( COLOR_WINDOWTEXT ) : sNull.FontColor );
-   sNull.BackColor = ( ( sNull.BackColor == -1 ) ? GetSysColor( COLOR_WINDOW )     : sNull.BackColor );
+   sNull.FontColor = ( ( sNull.FontColor == -1 ) ? GetSysColor( COLOR_WINDOWTEXT ) : (COLORREF) sNull.FontColor );
+   sNull.BackColor = ( ( sNull.BackColor == -1 ) ? GetSysColor( COLOR_WINDOW )     : (COLORREF) sNull.BackColor );
 
    FontColor = SetTextColor( hdc, sNull.FontColor );
    BackColor = SetBkColor(   hdc, sNull.BackColor );
@@ -571,14 +571,14 @@ HB_FUNC_STATIC( TTEXTARRAY_EVENTS )
                case SB_PAGELEFT:
                   if( iNewPos > ScrollInfo.nMin )
                   {
-                     iNewPos -= ( ( ( iNewPos - ScrollInfo.nMin ) < ( int ) ScrollInfo.nPage ) ? ( iNewPos - ScrollInfo.nMin ) : ScrollInfo.nPage );
+                     iNewPos -= ( ( ( iNewPos - ScrollInfo.nMin ) < ( int ) ScrollInfo.nPage ) ? ( iNewPos - ScrollInfo.nMin ) : (int) ScrollInfo.nPage );
                   }
                   break;
 
                case SB_PAGERIGHT:
                   if( iNewPos < ScrollInfo.nMax )
                   {
-                     iNewPos += ( ( ( ScrollInfo.nMax - iNewPos ) < ( int ) ScrollInfo.nPage ) ? ( ScrollInfo.nMax - iNewPos ) : ScrollInfo.nPage );
+                     iNewPos += ( ( ( ScrollInfo.nMax - iNewPos ) < ( int ) ScrollInfo.nPage ) ? ( ScrollInfo.nMax - iNewPos ) : (int) ScrollInfo.nPage );
                   }
                   break;
 
@@ -637,14 +637,14 @@ HB_FUNC_STATIC( TTEXTARRAY_EVENTS )
                case SB_PAGEUP:
                   if( iNewPos > ScrollInfo.nMin )
                   {
-                     iNewPos -= ( ( ( iNewPos - ScrollInfo.nMin ) < ( int ) ScrollInfo.nPage ) ? ( iNewPos - ScrollInfo.nMin ) : ScrollInfo.nPage );
+                     iNewPos -= ( ( ( iNewPos - ScrollInfo.nMin ) < ( int ) ScrollInfo.nPage ) ? ( iNewPos - ScrollInfo.nMin ) : (int) ScrollInfo.nPage );
                   }
                   break;
 
                case SB_PAGEDOWN:
                   if( iNewPos < ScrollInfo.nMax )
                   {
-                     iNewPos += ( ( ( ScrollInfo.nMax - iNewPos ) < ( int ) ScrollInfo.nPage ) ? ( ScrollInfo.nMax - iNewPos ) : ScrollInfo.nPage );
+                     iNewPos += ( ( ( ScrollInfo.nMax - iNewPos ) < ( int ) ScrollInfo.nPage ) ? ( ScrollInfo.nMax - iNewPos ) : (int) ScrollInfo.nPage );
                   }
                   break;
 

@@ -1,5 +1,5 @@
 /*
- * $Id: h_status.prg,v 1.35 2011-07-11 19:06:18 fyurisich Exp $
+ * $Id: h_status.prg,v 1.36 2011-09-12 01:40:01 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -673,13 +673,13 @@ HB_FUNC_STATIC( TMESSAGEBAR_BACKCOLOR )
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
-   COLORREF  Color;
+   COLORREF Color;
 
    if( _OOHG_DetermineColorReturn( hb_param( 1, HB_IT_ANY ), &oSelf->lBackColor, ( hb_pcount() >= 1 ) ) )
    {
       if( ValidHandler( oSelf->hWnd ) )
       {
-         Color = ( oSelf->lBackColor == -1 ) ? CLR_DEFAULT : oSelf->lBackColor;
+         Color = ( oSelf->lBackColor == -1 ) ? CLR_DEFAULT : (COLORREF) oSelf->lBackColor;
          SendMessage( oSelf->hWnd, SB_SETBKCOLOR, 0, Color );
          RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
       }

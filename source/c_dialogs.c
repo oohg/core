@@ -1,5 +1,5 @@
 /*
- * $Id: c_dialogs.c,v 1.7 2010-07-20 00:28:25 guerra000 Exp $
+ * $Id: c_dialogs.c,v 1.8 2011-09-12 01:40:01 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -392,7 +392,7 @@ HB_FUNC( CHOOSECOLOR )
 
    for( i = 0 ; i < 16 ; i++ )
    {
-      crCustClr[ i ] = ( ISARRAY( 3 ) ? HB_PARNL( 3, i + 1 ) : GetSysColor( COLOR_BTNFACE ) );
+      crCustClr[ i ] = ( ISARRAY( 3 ) ? (COLORREF) HB_PARNL( 3, i + 1 ) : GetSysColor( COLOR_BTNFACE ) );
    }
 
    cc.lStructSize    = sizeof( CHOOSECOLOR ) ;

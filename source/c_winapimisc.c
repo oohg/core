@@ -1,5 +1,5 @@
 /*
- * $Id: c_winapimisc.c,v 1.15 2011-07-15 14:35:33 fyurisich Exp $
+ * $Id: c_winapimisc.c,v 1.16 2011-09-12 01:40:01 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -126,8 +126,8 @@ Parameters WaitRunPipe(cCommand,nShowWindow,cFile)
 HB_FUNC(WAITRUNPIPE )
 {
 
-      STARTUPINFO StartupInfo = {0};
-      PROCESS_INFORMATION ProcessInfo = {0};
+      STARTUPINFO StartupInfo;
+      PROCESS_INFORMATION ProcessInfo;
       HANDLE ReadPipeHandle;
       HANDLE WritePipeHandle;       // not used here
       char Data[1024];
@@ -149,8 +149,11 @@ HB_FUNC(WAITRUNPIPE )
       if(!CreatePipe(&ReadPipeHandle,&WritePipeHandle,&sa,0))
         hb_retnl(-1);
 
+      memset( &ProcessInfo, 0, sizeof( ProcessInfo ) );
       ProcessInfo.hProcess=INVALID_HANDLE_VALUE;
       ProcessInfo.hThread=INVALID_HANDLE_VALUE;
+      
+      memset( &StartupInfo, 0, sizeof( StartupInfo ) );
       StartupInfo.dwFlags = STARTF_USESHOWWINDOW |STARTF_USESTDHANDLES;
       StartupInfo.wShowWindow = ( SHORT ) hb_parni( 2 );
       StartupInfo.hStdOutput=WritePipeHandle;
