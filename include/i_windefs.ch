@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.38 2011-08-18 19:28:44 fyurisich Exp $
+ * $Id: i_windefs.ch,v 1.39 2011-09-14 00:38:39 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -542,6 +542,8 @@
 #define DTN_DATETIMECHANGE (DTN_FIRST+1)
 #define TB_ENDTRACK	8
 #define CBN_SELCHANGE	1
+#define CBN_DROPDOWN 7
+#define CBN_CLOSEUP 8
 #define LVN_ITEMCHANGED	(-101)
 #define LBN_SELCHANGE	1
 #define EN_SETFOCUS	256

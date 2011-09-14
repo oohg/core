@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.58 2011-09-12 01:40:01 fyurisich Exp $
+ * $Id: h_combo.prg,v 1.59 2011-09-14 00:37:41 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -108,6 +108,8 @@ CLASS TCombo FROM TLabel
    DATA lAdjustImages         INIT .F.
    DATA ImageListColor        INIT CLR_DEFAULT
    DATA ImageListFlags        INIT LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
+   DATA OnListDisplay         INIT NIL
+   DATA OnListClose           INIT NIL
 
    METHOD Define
    METHOD nHeight             SETGET
@@ -146,7 +148,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, rows, value, fontname, ;
                underline, strikeout, itemsource, valuesource, displaychange, ;
                ondisplaychangeprocedure, break, GripperText, aImage, lRtl, ;
                TextHeight, lDisabled, lFirstItem, lAdjustImages, backcolor, ;
-               fontcolor ) CLASS TCombo
+               fontcolor, listwidth, onListDisplay, onListClose ) CLASS TCombo
 *-----------------------------------------------------------------------------*
 Local ControlHandle , WorkArea , cField, nStyle
 
@@ -206,8 +208,8 @@ Local ControlHandle , WorkArea , cField, nStyle
       ::AddBitMap( aImage )
    EndIf
 
-   If DisplayChange
-*      _OOHG_acontrolrangemin[ k ] := FindWindowEx( Controlhandle , 0, "Edit", Nil )
+   If HB_IsNumeric( ListWidth )
+      ::SetDropDownWidth( ListWidth )
    EndIf
 
    If VALTYPE( WorkArea ) $ "CM"
@@ -221,11 +223,13 @@ Local ControlHandle , WorkArea , cField, nStyle
    EndIf
    ::Value := Value
 
-   ASSIGN ::OnClick     VALUE ondisplaychangeprocedure TYPE "B"
-   ASSIGN ::OnLostFocus VALUE LostFocus                TYPE "B"
-   ASSIGN ::OnGotFocus  VALUE GotFocus                 TYPE "B"
-   ASSIGN ::OnChange    VALUE ChangeProcedure          TYPE "B"
-   ASSIGN ::OnEnter     VALUE uEnter                   TYPE "B"
+   ASSIGN ::OnClick       VALUE ondisplaychangeprocedure TYPE "B"
+   ASSIGN ::OnLostFocus   VALUE LostFocus                TYPE "B"
+   ASSIGN ::OnGotFocus    VALUE GotFocus                 TYPE "B"
+   ASSIGN ::OnChange      VALUE ChangeProcedure          TYPE "B"
+   ASSIGN ::OnEnter       VALUE uEnter                   TYPE "B"
+   ASSIGN ::onListDisplay VALUE onListDisplay            TYPE "B"
+   ASSIGN ::onListClose   VALUE onListClose              TYPE "B"
 
 Return Self
 
@@ -430,6 +434,14 @@ Local Hi_wParam := HIWORD( wParam )
       EndIf
       
       ::DoChange()
+      Return nil
+
+   elseif Hi_wParam == CBN_DROPDOWN
+      ::DoEvent( ::OnListDisplay, "LISTDISPLAY" )
+      Return nil
+
+   elseif Hi_wParam == CBN_CLOSEUP
+      ::DoEvent( ::OnListClose, "LISTCLOSE" )
       Return nil
 
    elseif Hi_wParam == CBN_KILLFOCUS

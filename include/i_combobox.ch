@@ -1,5 +1,5 @@
 /*
- * $Id: i_combobox.ch,v 1.10 2011-08-04 19:40:16 fyurisich Exp $
+ * $Id: i_combobox.ch,v 1.11 2011-09-14 00:38:39 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -82,50 +82,53 @@
 
  Parts of this project are based upon:
 
-        "Harbour GUI framework for Win32"
-        Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
-        Copyright 2001 Antonio Linares <alinares@fivetech.com>
-        www - http://www.harbour-project.org
+ "Harbour GUI framework for Win32"
+ Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
+ Copyright 2001 Antonio Linares <alinares@fivetech.com>
+ www - http://www.harbour-project.org
 
-        "Harbour Project"
-        Copyright 1999-2003, http://www.harbour-project.org/
+ "Harbour Project"
+ Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
 #xcommand @ <row>,<col> COMBOBOX <name> ;
-                [ OBJ <obj> ] ;
-		[ <dummy1: OF, PARENT> <parent> ] ;
-		[ WIDTH <w> ] ;
-		[ HEIGHT <h> ] ;
-		[ ITEMS <aRows> ] ;
-		[ ITEMSOURCE <itemsource> ] ;
-		[ VALUE <value> ] ;
-		[ VALUESOURCE <valuesource> ] ;
-		[ <displaychange : DISPLAYEDIT> ] ;
-		[ FONT <f> ] ;
-		[ SIZE <n> ] ;
-		[ <bold : BOLD> ] ;
-		[ <italic : ITALIC> ] ;
-		[ <underline : UNDERLINE> ] ;
-		[ <strikeout : STRIKEOUT> ] ;
-		[ TOOLTIP <tooltip> ] ;
-		[ ON GOTFOCUS <gotfocus> ] ;
-		[ ON CHANGE <changeprocedure> ] ;
-		[ ON LOSTFOCUS <lostfocus> ] ;
-		[ ON ENTER <enter> ] ;
-		[ ON DISPLAYCHANGE <ondisplaychangeprocedure> ] ;
-		[ <notabstop : NOTABSTOP> ] ;
-		[ HELPID <helpid> ] 		;
-		[ <invisible : INVISIBLE> ] ;
-                [ IMAGE <aImage> [ <fit: FIT> ] ];
-		[ <sort : SORT> ] ;
-                [ <rtl: RTL> ] ;
-                [ TEXTHEIGHT <textheight> ] ;
-                [ SUBCLASS <subclass> ]         ;
-                [ <disabled : DISABLED> ] ;
-                [ <firstitem : FIRSTITEM> ] ;
-		[ BACKCOLOR <backcolor> ] ;
-		[ FONTCOLOR <fontcolor> ] ;
-	=>;
+         [ OBJ <obj> ] ;
+         [ <dummy1: OF, PARENT> <parent> ] ;
+         [ WIDTH <w> ] ;
+         [ HEIGHT <h> ] ;
+         [ ITEMS <aRows> ] ;
+         [ ITEMSOURCE <itemsource> ] ;
+         [ VALUE <value> ] ;
+         [ VALUESOURCE <valuesource> ] ;
+         [ <displaychange : DISPLAYEDIT> ] ;
+         [ FONT <f> ] ;
+         [ SIZE <n> ] ;
+         [ <bold : BOLD> ] ;
+         [ <italic : ITALIC> ] ;
+         [ <underline : UNDERLINE> ] ;
+         [ <strikeout : STRIKEOUT> ] ;
+         [ TOOLTIP <tooltip> ] ;
+         [ ON GOTFOCUS <gotfocus> ] ;
+         [ ON CHANGE <changeprocedure> ] ;
+         [ ON LOSTFOCUS <lostfocus> ] ;
+         [ ON ENTER <enter> ] ;
+         [ ON DISPLAYCHANGE <ondisplaychangeprocedure> ] ;
+         [ <notabstop : NOTABSTOP> ] ;
+         [ HELPID <helpid> ]       ;
+         [ <invisible : INVISIBLE> ] ;
+         [ IMAGE <aImage> [ <fit: FIT> ] ];
+         [ <sort : SORT> ] ;
+         [ <rtl: RTL> ] ;
+         [ TEXTHEIGHT <textheight> ] ;
+         [ SUBCLASS <subclass> ]         ;
+         [ <disabled : DISABLED> ] ;
+         [ <firstitem : FIRSTITEM> ] ;
+         [ BACKCOLOR <backcolor> ] ;
+         [ FONTCOLOR <fontcolor> ] ;
+         [ LISTWIDTH <listwidth> ];
+         [ ON LISTDISPLAY <onListDisplay> ] ;
+         [ ON LISTCLOSE <onListClose> ] ;
+   =>;
         [ <obj> := ] _OOHG_SelectSubClass( TCombo(), [ <subclass>() ] ): ;
                 Define( <(name)>, <(parent)>, <col>, <row>, <w>, <aRows> , <value>, ;
                 <f>, <n>, <tooltip>, <{changeprocedure}>, <h>, ;
@@ -134,47 +137,51 @@
                 <.italic.>, <.underline.>, <.strikeout.> , <(itemsource)> , ;
                 <(valuesource)> , <.displaychange.> , ;
                 <{ondisplaychangeprocedure}> ,  .f. , "", <aImage>, <.rtl.>, ;
-                <textheight>, <.disabled.>, <.firstitem.>, <.fit.>, <backcolor>, <fontcolor> )
+                <textheight>, <.disabled.>, <.firstitem.>, <.fit.>, <backcolor>, ;
+                <fontcolor>, <listwidth>, <{onListDisplay}>, <{onListClose}> )
 
 // SPLITBOX VERSION
 
 #xcommand COMBOBOX <name> ;
-                [ OBJ <obj> ] ;
-		[ <dummy1: OF, PARENT> <parent> ] ;
-		[ WIDTH <w> ] ;
-		[ HEIGHT <h> ] ;
-		[ ITEMS <aRows> ] ;
-		[ ITEMSOURCE <itemsource> ] ;
-		[ VALUE <value> ] ;
-		[ VALUESOURCE <valuesource> ] ;
-		[ <displaychange : DISPLAYEDIT> ] ;
-		[ FONT <f> ] ;
-		[ SIZE <n> ] ;
-		[ <bold : BOLD> ] ;
-		[ <italic : ITALIC> ] ;
-		[ <underline : UNDERLINE> ] ;
-		[ <strikeout : STRIKEOUT> ] ;
-		[ TOOLTIP <tooltip> ] ;
-		[ ON GOTFOCUS <gotfocus> ] ;
-		[ ON CHANGE <changeprocedure> ] ;
-		[ ON LOSTFOCUS <lostfocus> ] ;
-		[ ON ENTER <enter> ] ;
-		[ ON DISPLAYCHANGE <ondisplaychangeprocedure> ] ;
-		[ <notabstop : NOTABSTOP> ] ;
-		[ HELPID <helpid> ] 		;
-		[ GRIPPERTEXT <grippertext> ] ;
-		[ <break: BREAK> ] ;
-		[ <invisible : INVISIBLE> ] ;
-                [ IMAGE <aImage> [ <fit: FIT> ] ] ;
-		[ <sort : SORT> ] ;
-                [ <rtl: RTL> ] ;
-                [ TEXTHEIGHT <textheight> ] ;
-                [ SUBCLASS <subclass> ]         ;
-                [ <disabled : DISABLED> ] ;
-                [ <firstitem : FIRSTITEM> ] ;
-		[ BACKCOLOR <backcolor> ] ;
-		[ FONTCOLOR <fontcolor> ] ;
-	=>;
+         [ OBJ <obj> ] ;
+         [ <dummy1: OF, PARENT> <parent> ] ;
+         [ WIDTH <w> ] ;
+         [ HEIGHT <h> ] ;
+         [ ITEMS <aRows> ] ;
+         [ ITEMSOURCE <itemsource> ] ;
+         [ VALUE <value> ] ;
+         [ VALUESOURCE <valuesource> ] ;
+         [ <displaychange : DISPLAYEDIT> ] ;
+         [ FONT <f> ] ;
+         [ SIZE <n> ] ;
+         [ <bold : BOLD> ] ;
+         [ <italic : ITALIC> ] ;
+         [ <underline : UNDERLINE> ] ;
+         [ <strikeout : STRIKEOUT> ] ;
+         [ TOOLTIP <tooltip> ] ;
+         [ ON GOTFOCUS <gotfocus> ] ;
+         [ ON CHANGE <changeprocedure> ] ;
+         [ ON LOSTFOCUS <lostfocus> ] ;
+         [ ON ENTER <enter> ] ;
+         [ ON DISPLAYCHANGE <ondisplaychangeprocedure> ] ;
+         [ <notabstop : NOTABSTOP> ] ;
+         [ HELPID <helpid> ]       ;
+         [ GRIPPERTEXT <grippertext> ] ;
+         [ <break: BREAK> ] ;
+         [ <invisible : INVISIBLE> ] ;
+         [ IMAGE <aImage> [ <fit: FIT> ] ] ;
+         [ <sort : SORT> ] ;
+         [ <rtl: RTL> ] ;
+         [ TEXTHEIGHT <textheight> ] ;
+         [ SUBCLASS <subclass> ]         ;
+         [ <disabled : DISABLED> ] ;
+         [ <firstitem : FIRSTITEM> ] ;
+         [ BACKCOLOR <backcolor> ] ;
+         [ FONTCOLOR <fontcolor> ] ;
+         [ LISTWIDTH <listwidth> ];
+         [ ON LISTDISPLAY <onListDisplay> ] ;
+         [ ON LISTCLOSE <onListClose> ] ;
+   =>;
         [ <obj> := ] _OOHG_SelectSubClass( TCombo(), [ <subclass>() ] ): ;
                   Define( <(name)>, <(parent)>, , , <w>, <aRows> , <value>, ;
                   <f>, <n>, <tooltip>, <{changeprocedure}>, <h>, <{gotfocus}>, ;
@@ -182,4 +189,5 @@
                   <.sort.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , ;
                   <(itemsource)> , <(valuesource)> , <.displaychange.> , ;
                   <{ondisplaychangeprocedure}> , <.break.> , <grippertext>, <aImage>, ;
-                  <.rtl.>, <textheight>, <.disabled.>, <.firstitem.>, <.fit.>, <backcolor>, <fontcolor> )
+                  <.rtl.>, <textheight>, <.disabled.>, <.firstitem.>, <.fit.>, <backcolor>, ;
+                  <fontcolor>, <listwidth>, <{onListDisplay}>, <{onListClose}> )

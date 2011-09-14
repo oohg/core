@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.53 2011-09-12 22:05:05 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.54 2011-09-14 00:38:39 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -122,6 +122,7 @@ Memvariables
 #xtranslate _OOHG_ActiveControlTrailingFontColor      => _OOHG_ActiveControlInfo \[  25 \]
 #xtranslate _OOHG_ActiveControlBackgroundColor        => _OOHG_ActiveControlInfo \[  26 \]
 
+#xtranslate _OOHG_ActiveControlListWidth              => _OOHG_ActiveControlInfo \[ 153 \]
 #xtranslate _OOHG_ActiveControl3State                 => _OOHG_ActiveControlInfo \[ 154 \]
 #xtranslate _OOHG_ActiveControlMultiLine              => _OOHG_ActiveControlInfo \[ 155 \]
 #xtranslate _OOHG_ActiveControlFullMove               => _OOHG_ActiveControlInfo \[ 156 \]
@@ -1446,7 +1447,12 @@ COMBO BOX
         _OOHG_ActiveControlImage         := Nil  ;;
         _OOHG_ActiveControlTextHeight    := Nil  ;;
         _OOHG_ActiveControlStretch       := .F.  ;;
-        _OOHG_ActiveControlFirstItem     := Nil
+        _OOHG_ActiveControlFirstItem     := Nil  ;;
+        _OOHG_ActiveControlListWidth     := Nil
+
+#xcommand LISTWIDTH <listwidth> ;
+        => ;
+        _OOHG_ActiveControlListWidth := <listwidth>
 
 #xcommand DISPLAYEDIT <displayedit> ;
         => ;
@@ -1523,7 +1529,8 @@ COMBO BOX
                 _OOHG_ActiveControlFirstItem, ;
                 _OOHG_ActiveControlStretch, ;
                 _OOHG_ActiveControlBackColor, ;
-                _OOHG_ActiveControlFontColor )
+                _OOHG_ActiveControlFontColor, ;
+                _OOHG_ActiveControlListWidth )
 
 /*----------------------------------------------------------------------------
 DATEPICKER
