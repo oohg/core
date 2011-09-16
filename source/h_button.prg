@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.50 2011-09-06 02:33:23 fyurisich Exp $
+ * $Id: h_button.prg,v 1.51 2011-09-16 15:14:43 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -157,7 +157,7 @@ Local ControlHandle, nStyle, lBitMap
              if( ValType( flat ) == "L"      .AND. flat,         BS_FLAT, 0 )     + ;
              if( ValType( lNoPrefix ) == "L" .AND. lNoPrefix,    SS_NOPREFIX, 0 ) + ;
              if( lBitMap,                                        BS_BITMAP, 0 ) + ;
-             if( lMultiLine,                                     BS_MULTILINE, 0 )
+             if( ValType( lMultiLine ) == "L" .AND. lMultiLine,  BS_MULTILINE, 0 )
 
    ControlHandle := InitButton( ::ContainerhWnd, Caption, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, ::lRtl, nStyle )
 

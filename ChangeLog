@@ -1,11 +1,15 @@
 /*
- * $Id: ChangeLog,v 1.794 2011-09-14 00:43:05 fyurisich Exp $
+ * $Id: ChangeLog,v 1.795 2011-09-16 15:15:19 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2011-09-16 12:15:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_button.prg
+     ! Define cancels when multiline parameter is not logical.
 
 2011-09-13 21:40:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * docs/classes.txt
