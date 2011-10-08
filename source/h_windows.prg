@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.219 2011-09-05 23:37:33 fyurisich Exp $
+ * $Id: h_windows.prg,v 1.220 2011-10-08 04:13:00 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -2358,13 +2358,14 @@ FUNCTION ExitProcess( nExit )
    DBCloseAll()
 RETURN _ExitProcess2( nExit )
 
-EXTERN IsXPThemeActive, _OOHG_Eval, EVAL
+EXTERN IsXPThemeActive, IsAppThemed, _OOHG_Eval, EVAL
 EXTERN _OOHG_ShowContextMenus, _OOHG_GlobalRTL, _OOHG_NestedSameEvent
 EXTERN ValidHandler
 
 #pragma BEGINDUMP
 
 typedef LONG ( * CALL_ISTHEMEACTIVE )( void );
+typedef LONG ( * CALL_ISAPPTHEMED )( void );
 
 HB_FUNC( ISXPTHEMEACTIVE )
 {
@@ -2383,6 +2384,39 @@ HB_FUNC( ISXPTHEMEACTIVE )
       if( hInstDLL )
       {
          dwProcAddr = ( CALL_ISTHEMEACTIVE ) GetProcAddress( hInstDLL, "IsThemeActive" );
+         if( dwProcAddr )
+         {
+            lResult = ( dwProcAddr )();
+            if( lResult )
+            {
+               bResult = TRUE;
+            }
+         }
+
+         FreeLibrary( hInstDLL );
+      }
+   }
+
+   hb_retl( bResult );
+}
+
+HB_FUNC( ISAPPTHEMED )
+{
+   BOOL bResult = FALSE;
+   HMODULE hInstDLL;
+   CALL_ISAPPTHEMED dwProcAddr;
+   LONG lResult;
+
+   OSVERSIONINFO os;
+
+   os.dwOSVersionInfoSize = sizeof( os );
+
+   if( GetVersionEx( &os ) && ( os.dwMajorVersion > 5 || ( os.dwMajorVersion == 5 && os.dwMinorVersion >= 1 ) ) )
+   {
+      hInstDLL = LoadLibrary( "UXTHEME.DLL" );
+      if( hInstDLL )
+      {
+         dwProcAddr = ( CALL_ISAPPTHEMED ) GetProcAddress( hInstDLL, "IsAppThemed" );
          if( dwProcAddr )
          {
             lResult = ( dwProcAddr )();

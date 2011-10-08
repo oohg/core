@@ -1,5 +1,5 @@
 /*
- * $Id: h_checkbox.prg,v 1.31 2011-09-12 22:04:05 fyurisich Exp $
+ * $Id: h_checkbox.prg,v 1.32 2011-10-08 04:13:00 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -137,7 +137,7 @@ Local ControlHandle, nStyle, nStyleEx := 0
    ENDIF
    ASSIGN autosize      VALUE autosize TYPE "L" DEFAULT .F.
 
-   IF ::Transparent .AND. OSisWinXPorLater()
+   IF ::Transparent .AND. IsAppThemed()
       ::Transparent := .F.
    ENDIF
 
@@ -161,7 +161,7 @@ Local ControlHandle, nStyle, nStyleEx := 0
    ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
 
-   IF _OOHG_LastFrame() == "TABPAGE"
+   IF _OOHG_LastFrame() == "TABPAGE" .AND. IsAppThemed()
      ::TabHandle := ::Container:Container:hWnd
    ENDIF
 

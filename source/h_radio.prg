@@ -1,5 +1,5 @@
 /*
- * $Id: h_radio.prg,v 1.26 2011-09-11 23:22:34 fyurisich Exp $
+ * $Id: h_radio.prg,v 1.27 2011-10-08 04:13:00 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -164,7 +164,7 @@ Local ControlHandle, i, oItem, nStyle
    ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
 
-   IF _OOHG_LastFrame() == "TABPAGE"
+   IF _OOHG_LastFrame() == "TABPAGE" .AND. IsAppThemed()
      ::TabHandle := ::Container:Container:hWnd
    ENDIF
 
@@ -175,7 +175,7 @@ Local ControlHandle, i, oItem, nStyle
    oItem := TRadioItem():SetForm( , Self )
    oItem:Register( ControlHandle, , HelpId, !Invisible, ToolTip )
 
-   IF _OOHG_LastFrame() == "TABPAGE"
+   IF _OOHG_LastFrame() == "TABPAGE" .AND. IsAppThemed()
      oItem:TabHandle := ::Container:Container:hWnd
    ENDIF
 
@@ -201,7 +201,7 @@ Local ControlHandle, i, oItem, nStyle
       oItem := TRadioItem():SetForm( , Self )
       oItem:Register( ControlHandle, , HelpId,, ToolTip )
 
-      IF _OOHG_LastFrame() == "TABPAGE"
+      IF _OOHG_LastFrame() == "TABPAGE" .AND. IsAppThemed()
         oItem:TabHandle := ::Container:Container:hWnd
       ENDIF
 
