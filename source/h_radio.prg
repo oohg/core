@@ -1,11 +1,11 @@
 /*
- * $Id: h_radio.prg,v 1.27 2011-10-08 04:13:00 guerra000 Exp $
+ * $Id: h_radio.prg,v 1.28 2011-10-15 03:53:35 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * Radio button functions
  *
- * Copyright 2005-2010 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2011 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -164,7 +164,7 @@ Local ControlHandle, i, oItem, nStyle
    ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
 
-   IF _OOHG_LastFrame() == "TABPAGE" .AND. IsAppThemed()
+   IF _OOHG_LastFrame() == "TABPAGE" .AND. _OOHG_UsesVisualStyle()
      ::TabHandle := ::Container:Container:hWnd
    ENDIF
 
@@ -175,7 +175,7 @@ Local ControlHandle, i, oItem, nStyle
    oItem := TRadioItem():SetForm( , Self )
    oItem:Register( ControlHandle, , HelpId, !Invisible, ToolTip )
 
-   IF _OOHG_LastFrame() == "TABPAGE" .AND. IsAppThemed()
+   IF _OOHG_LastFrame() == "TABPAGE" .AND. _OOHG_UsesVisualStyle()
      oItem:TabHandle := ::Container:Container:hWnd
    ENDIF
 
@@ -201,7 +201,7 @@ Local ControlHandle, i, oItem, nStyle
       oItem := TRadioItem():SetForm( , Self )
       oItem:Register( ControlHandle, , HelpId,, ToolTip )
 
-      IF _OOHG_LastFrame() == "TABPAGE" .AND. IsAppThemed()
+      IF _OOHG_LastFrame() == "TABPAGE" .AND. _OOHG_UsesVisualStyle()
         oItem:TabHandle := ::Container:Container:hWnd
       ENDIF
 

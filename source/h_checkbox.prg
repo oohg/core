@@ -1,11 +1,11 @@
 /*
- * $Id: h_checkbox.prg,v 1.32 2011-10-08 04:13:00 guerra000 Exp $
+ * $Id: h_checkbox.prg,v 1.33 2011-10-15 03:53:35 guerra000 Exp $
  */
 /*
  * ooHG source code:
  * PRG checkbox functions
  *
- * Copyright 2005-2009 Vicente Guerra <vicente@guerra.com.mx>
+ * Copyright 2005-2011 Vicente Guerra <vicente@guerra.com.mx>
  * www - http://www.oohg.org
  *
  * Portions of this code are copyrighted by the Harbour MiniGUI library.
@@ -137,7 +137,7 @@ Local ControlHandle, nStyle, nStyleEx := 0
    ENDIF
    ASSIGN autosize      VALUE autosize TYPE "L" DEFAULT .F.
 
-   IF ::Transparent .AND. IsAppThemed()
+   IF ::Transparent .AND. _OOHG_UsesVisualStyle()
       ::Transparent := .F.
    ENDIF
 
@@ -161,7 +161,7 @@ Local ControlHandle, nStyle, nStyleEx := 0
    ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
 
-   IF _OOHG_LastFrame() == "TABPAGE" .AND. IsAppThemed()
+   IF _OOHG_LastFrame() == "TABPAGE" .AND. _OOHG_UsesVisualStyle()
      ::TabHandle := ::Container:Container:hWnd
    ENDIF
 

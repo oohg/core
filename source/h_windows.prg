@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.220 2011-10-08 04:13:00 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.221 2011-10-15 03:53:35 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -2358,14 +2358,21 @@ FUNCTION ExitProcess( nExit )
    DBCloseAll()
 RETURN _ExitProcess2( nExit )
 
-EXTERN IsXPThemeActive, IsAppThemed, _OOHG_Eval, EVAL
+FUNCTION _OOHG_UsesVisualStyle()
+RETURN ( GetComCtl32Version() >= 6 .AND. IsAppThemed() )
+
+EXTERN IsXPThemeActive, IsAppThemed, GetComCtl32Version
+EXTERN _OOHG_Eval, EVAL
 EXTERN _OOHG_ShowContextMenus, _OOHG_GlobalRTL, _OOHG_NestedSameEvent
 EXTERN ValidHandler
 
 #pragma BEGINDUMP
 
+#include <shlwapi.h>
+
 typedef LONG ( * CALL_ISTHEMEACTIVE )( void );
 typedef LONG ( * CALL_ISAPPTHEMED )( void );
+typedef HRESULT CALLBACK ( * CALL_DLLGETVERSION )( DLLVERSIONINFO * );
 
 HB_FUNC( ISXPTHEMEACTIVE )
 {
@@ -2431,6 +2438,33 @@ HB_FUNC( ISAPPTHEMED )
    }
 
    hb_retl( bResult );
+}
+
+HB_FUNC( GETCOMCTL32VERSION )
+{
+   int iResult = 0;
+   HMODULE hInstDLL;
+   CALL_DLLGETVERSION dwProcAddr;
+   DLLVERSIONINFO dll;
+
+   hInstDLL = LoadLibrary( "Comctl32.dll" );
+   if( hInstDLL )
+   {
+      dwProcAddr = ( CALL_DLLGETVERSION ) GetProcAddress( hInstDLL, "DllGetVersion" );
+      if( dwProcAddr )
+      {
+         memset( &dll, 0, sizeof( dll ) );
+         dll.cbSize = sizeof( dll );
+         if( ( dwProcAddr )( &dll ) == S_OK )
+         {
+            iResult = dll.dwMajorVersion;
+         }
+      }
+
+      FreeLibrary( hInstDLL );
+   }
+
+   hb_retni( iResult );
 }
 
 HB_FUNC( _OOHG_EVAL )
@@ -2525,7 +2559,6 @@ HB_FUNC( _OOHG_GETMOUSEROW )
 {
    hb_retni( _OOHG_MouseRow );
 }
-
 
 #pragma ENDDUMP
 
@@ -3377,7 +3410,4 @@ HB_FUNC ( C_PIE )
 
 }
 
-
-
 #pragma ENDDUMP
-
