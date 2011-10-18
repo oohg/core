@@ -1,5 +1,5 @@
 /*
- * $Id: h_error.prg,v 1.50 2011-09-03 00:22:32 declan2005 Exp $
+ * $Id: h_error.prg,v 1.51 2011-10-18 01:22:31 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -126,8 +126,15 @@ STATIC FUNCTION DefError( oError )
 LOCAL cMessage
 
    // By default, division by zero results in zero
-   IF oError:genCode == EG_ZERODIV
+   IF oError:genCode == EG_ZERODIV .AND. ;
+      oError:canSubstitute
       RETURN 0
+   ENDIF
+
+   // By default, retry on RDD lock error failure */
+   IF oError:genCode == EG_LOCK .AND. ;
+      oError:canRetry
+      RETURN .T.
    ENDIF
 
    // Set NetErr() of there was a database open error
