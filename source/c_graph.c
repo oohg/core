@@ -1,5 +1,5 @@
 /*
- * $Id: c_graph.c,v 1.6 2010-05-15 21:05:05 guerra000 Exp $
+ * $Id: c_graph.c,v 1.7 2011-10-18 01:08:04 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -400,7 +400,7 @@ struct _OOHG_GraphData {
    char points;
 };
 
-HFONT PrepareFont( char *Fontname, int FontSize, int Weight, int Italic, int Underline, int StrikeOut );
+HFONT PrepareFont( char *Fontname, int FontSize, int Weight, int Italic, int Underline, int StrikeOut, int Angle, int Width );
 
 void _OOHG_GraphCommand( HDC hDC, struct _OOHG_GraphData *pData )
 {
@@ -558,7 +558,7 @@ void _OOHG_GraphCommand( HDC hDC, struct _OOHG_GraphData *pData )
             rct.left   = pData->left;
             rct.bottom = pData->bottom;
             rct.right  = pData->right;
-            hFont = PrepareFont( &pData->points, pData->width, pData->top2, pData->left2, pData->bottom2, pData->right2 );
+            hFont = PrepareFont( &pData->points, pData->width, pData->top2, pData->left2, pData->bottom2, pData->right2, 0, 0 );
             hOldFont = ( HFONT ) SelectObject( hDC, hFont );
             cBuffer = &pData->points;
             cBuffer += pData->penwidth + 1;

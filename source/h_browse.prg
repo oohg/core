@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.83 2011-08-31 01:09:40 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.84 2011-10-18 01:08:04 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -736,7 +736,9 @@ Local Value, nRecNo
 
       // Do before unlocking record or moving record pointer
       // so block can operate on deleted record (e.g. to copy to a log).
-      _OOHG_Eval(::OnDelete)
+      If HB_IsBlock( ::OnDelete )
+         Eval( ::OnDelete )
+      EndIf
 
       If ::Lock
          ( ::WorkArea )->( DbUnlock() )
@@ -1149,8 +1151,8 @@ Local nvKey, r, DeltaSelect, lGo
 
       Case nvKey == 46 // DEL
          If ::AllowDelete .and. ! ::Eof()
-            If valtype(::bDelWhen) == "B"
-               lGo := _OOHG_EVAL(::bDelWhen)
+            If HB_IsBlock( ::bDelWhen )
+               lGo := EVAL( ::bDelWhen )
             Else
                lGo := .t.
             EndIf

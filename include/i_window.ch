@@ -1,5 +1,5 @@
 /*
- * $Id: i_window.ch,v 1.42 2011-09-11 03:18:55 fyurisich Exp $
+ * $Id: i_window.ch,v 1.43 2011-10-18 01:08:04 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -119,18 +119,25 @@
          #xtranslate <w> . \<c\> . \<p:DisplayValue,Position,ForeColor\> => GetProperty ( <(w)>, \<(c)\> , \<(p)\> ) ;;
          #xtranslate <w> . \<c\> . \<p:DisplayValue,Position,ForeColor,CaretPos,OnChange\> := \<n\> => SetProperty ( <(w)>, \<(c)\> , \<(p)\> , \<n\> ) ;;
          #xtranslate <w> . \<c\> . \<p:AllowAppend,AllowDelete,AllowEdit\> => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ;;
-         #xtranslate <w> . \<c\> . \<p:Caption,Header,Item,Icon,ColumnWidth,Picture,Image,Stretch,ItemReadonly,CheckItem,BoldItem\> (\<arg\>) => GetProperty ( <(w)>, \<(c)> , \<(p)> , \<arg\> ) ;;
-         #xtranslate <w> . \<c\> . \<p:Caption,Header,Item,Icon,ColumnWidth,Picture,Image,Stretch,ItemReadonly,CheckItem,BoldItem\> (\<arg\>) := \<n\> => SetProperty ( <(w)>, \<(c)> , \<(p)> , \<arg\> , \<n\> ) ;;
+         #xtranslate <w> . \<c\> . \<p:Caption,Header,Item,Icon,ColumnWidth,Picture,Image,Stretch,ItemReadonly,ItemEnabled,ItemDraggable,CheckItem,BoldItem\> (\<arg\>) => GetProperty ( <(w)>, \<(c)> , \<(p)> , \<arg\> ) ;;
+         #xtranslate <w> . \<c\> . \<p:Caption,Header,Item,Icon,ColumnWidth,Picture,Image,Stretch,ItemReadonly,ItemEnabled,ItemDraggable,CheckItem,BoldItem\> (\<arg\>) := \<n\> => SetProperty ( <(w)>, \<(c)> , \<(p)> , \<arg\> , \<n\> ) ;;
          #xtranslate <w> . \<c\> . \<p:EnableUpdate,DisableUpdate\> => EMPTY( 0 ) ;;
          #xtranslate <w> . \<c\> . \<p:Cell\> (\<arg1\>,\<arg2\>) => GetProperty ( <(w)>, \<(c)> , \<(p)> , \<arg1\> , \<arg2\> ) ;;
          #xtranslate <w> . \<c\> . \<p:Cell\> (\<arg1\>,\<arg2\>) := \<n\> => SetProperty ( <(w)>, \<(c)> , \<(p)> , \<arg1\> , \<arg2\> , \<n\> ) ;;
          #xtranslate <w> . \<c\> . \<p:Refresh,SetFocus,DeleteAllItems,Release,Show,Hide,Play,Stop,Close,Pause,Eject,OpenDialog,Resume,ColumnsAutoFit,ColumnsAutoFitH,ColumnsBetterAutoFit,EditLabel\> \[()\] => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> () ;;
          #xtranslate <w> . \<c\> . \<p:Save,Action,OnClick\> \[()\] => Domethod ( <(w)>, \<(c)\> , \<(p)> ) ;;
-         #xtranslate <w> . \<c\> . \<p:AddItem,DeleteItem,Open,DeletePage,DeleteColumn,Expand,Collapse,ColumnAutoFit,ColumnAutoFitH,ColumnBetterAutoFit,GetParent,GetChildren\> (\<a\>) => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ( \<a\> ) ;;
-         #xtranslate <w> . \<c\> . \<p:Item,ItemReadonly,CheckItem,BoldItem\> (\<arg1\>,\<arg2\>) => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ( \<arg1\> , \<arg2\> ) ;;
-         #xtranslate <w> . \<c\> . \<p:AddItem,AddPage,SetRange,SetEditSel\> (\<a1\> , \<a2\>) => Domethod ( <(w)>, \<(c)> , \<(p)> , \<a1\> , \<a2\> ) ;;
-         #xtranslate <w> . \<c\> . \<p:AddItem,AddPage\> (\<a1\> , \<a2\> , \<a3\> ) => Domethod ( <(w)>, \<(c)> , \<(p)> , \<a1\> , \<a2\> , \<a3\> ) ;;
-         #xtranslate <w> . \<c\> . \<p:AddItem,AddColumn,AddControl\> (\<a1\> , \<a2\> , \<a3\> , \<a4\> ) => Domethod ( <(w)>, \<(c)> , \<(p)> , \<a1\> , \<a2\> , \<a3\> , \<a4\> ) ;;
+         #xtranslate <w> . \<c\> . \<p:AddItem,DeleteItem,Open,DeletePage,DeleteColumn,Expand,Collapse,ColumnAutoFit,ColumnAutoFitH,ColumnBetterAutoFit,GetParent,GetChildren,HandleToItem\> (\<a\>) => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ( \<a\> ) ;;
+         #xtranslate <w> . \<c\> . \<p:Item,ItemReadonly,ItemEnabled,ItemDraggable,CheckItem,BoldItem\> (\<arg1\>,\<arg2\>) => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ( \<arg1\> , \<arg2\> ) ;;
+         #xtranslate <w> . \<c\> . \<p:AddPage,SetRange,SetEditSel\> (\<a1\> , \<a2\>) => Domethod ( <(w)>, \<(c)> , \<(p)> , \<a1\> , \<a2\> ) ;;
+         #xtranslate <w> . \<c\> . \<p:AddItem\> (\<a1\> , \<a2\>) => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ( \<a1\> , \<a2\> ) ;;
+         #xtranslate <w> . \<c\> . \<p:AddPage\> (\<a1\> , \<a2\> , \<a3\> ) => Domethod ( <(w)>, \<(c)> , \<(p)> , \<a1\> , \<a2\> , \<a3\> ) ;;
+         #xtranslate <w> . \<c\> . \<p:AddItem\> (\<a1\> , \<a2\> , \<a3\> ) => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ( \<a1\> , \<a2\> , \<a3\> ) ;;
+         #xtranslate <w> . \<c\> . \<p:AddColumn,AddControl\> (\<a1\> , \<a2\> , \<a3\> , \<a4\> ) => Domethod ( <(w)>, \<(c)> , \<(p)> , \<a1\> , \<a2\> , \<a3\> , \<a4\> ) ;;
+         #xtranslate <w> . \<c\> . \<p:AddItem\> (\<a1\> , \<a2\> , \<a3\> , \<a4\> ) => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ( \<a1\> , \<a2\> , \<a3\> , \<a4\> ) ;;
+         #xtranslate <w> . \<c\> . \<p:AddItem\> (\<a1\> , \<a2\> , \<a3\> , \<a4\> , \<a5\> ) => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ( \<a1\> , \<a2\> , \<a3\> , \<a4\> , \<a5\> ) ;;
+         #xtranslate <w> . \<c\> . \<p:AddItem\> (\<a1\> , \<a2\> , \<a3\> , \<a4\> , \<a5\> , \<a6\> ) => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ( \<a1\> , \<a2\> , \<a3\> , \<a4\> , \<a5\> , \<a6\> ) ;;
+         #xtranslate <w> . \<c\> . \<p:AddItem\> (\<a1\> , \<a2\> , \<a3\> , \<a4\> , \<a5\> , \<a6\> , \<a7\> ) => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ( \<a1\> , \<a2\> , \<a3\> , \<a4\> , \<a5\> , \<a6\> , \<a7\> ) ;;
+         #xtranslate <w> . \<c\> . \<p:AddItem\> (\<a1\> , \<a2\> , \<a3\> , \<a4\> , \<a5\> , \<a6\> , \<a7\> , \<a8\> ) => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ( \<a1\> , \<a2\> , \<a3\> , \<a4\> , \<a5\> , \<a6\> , \<a7\> , \<a8\> ) ;;
          #xtranslate <w> . \<c\> . \<p:Name,Length,hWnd,Object,ReadOnly\> => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ;;
          #xtranslate <w> . \<c\> . \<p:Speed,Volume,Zoom\> := \<n\> => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ( \<n\> ) ;;
          #xtranslate <w> . \<x\> . \<c\> . \<p:Caption,Enabled\> => GetProperty ( <(w)> , \<(x)> , \<(c)> , \<(p)> ) ;;

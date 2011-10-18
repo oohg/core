@@ -1,11 +1,126 @@
 /*
- * $Id: ChangeLog,v 1.797 2011-10-15 03:53:35 guerra000 Exp $
+ * $Id: ChangeLog,v 1.798 2011-10-18 01:08:04 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2011-10-17 23:00:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * docs/classes.txt
+     + Updated with TTREE class new events.
+   * include/i_tree.ch
+     - Deleted DISABLEDRAGDROP clause.
+     + Added ENABLEDRAG and ENABLEDROP clauses to enabled drag and drop
+       operations for the tree control.
+     + Added TARGET clause to specify and array of objects wich can be
+       drop targets. If ommited {Self} is assumed.
+     + Added DISABLED clause to node and item defines.
+       Nodes and items can be enabled or disabled at control creation.
+       Any user action on a disabled node/item is ignored.
+     + Added NODRAG clause to node and item defines.
+       When specified, nodes and items can´t be dragged.
+   * include/i_windefs.ch
+     + Added WM_CANCELMODE, WM_CAPTURECHANGED, TVN_SELCHANGING,
+       MK_CONTROL and TVN_BEGINDRAG defines.
+   * include/oohg.h
+     + Added HandleToItem and ItemEnabled defines.
+   * include/i_window.ch
+     + Added HandleToItem, ItemEnabled and ItemDraggable to alternate
+       syntax.
+   * resources/oohg.rc
+     + Added cursors for drag and drop operations.
+   * source/c_controlmisc.c
+     + Added HandleToItem and ItemEnabled symbols to s_SymbolNames.
+   * source/c_graph.c
+     + Added GetControlState function to see if VK_CONTROL is pressed.
+   * source/c_windows.c
+     ! Added missing parameters in PrepareFont call in _OOHG_GraphCommand
+       function.
+   * source/h_windows.prg
+     + Added _OOHG_SETMOUSECOORDS function.
+     + Added DATA OnMouseDrop (block to execute when the window is the
+       target of a drag and drop operation) and DATA DropEnabled (logical
+       value indicating if the window can be the target of a drag and
+       drop operation) to TWindow Class.
+   * source/h_form.prg
+     ! Fixed wrong formating in file Id.
+   * source/h_error.prg
+     + Syncronized with harbour 3.0.0 errorsys function.
+   * source/h_controlmisc.prg
+     + Added HandleToItem, ItemEnabled and ItemDraggable to alternate
+       syntax.
+   * source/h_browse.prg
+     * Changed _OOHG_Eval by it's harbour equivalent.
+   * source/h_tree.ch
+     + Added drag and drop capabilities to Tree control.
+     + Added DATA aTreeEnabled to hold enable/disable status of each
+       item in the tree.
+     + Added DATA AutoScrollTimer to hold a timer responsible of firing
+       the autoscroll function when a drag and drop operation is ongoing.
+     + Added DATA AutoExpandTimer to hold a timer responsible of firing
+       the autoexpand function when a drag and drop operation is ongoing.
+     + Added DATA aTreeNoDrag to hold draggable/nodraggable status of
+       each item in the tree.
+     + Added DATA DragImageList to hold a handle to an imagelist
+       containing the drag image used in a drag and drop operation.
+     + Added DATA DragActive to signal that a drag and drop operation is
+       ongoing.
+     + Added DATA ItemOnDrag to hold a handle to the item being dragged.
+     + Added DATA aTarget to hold an array of possible targets for the
+       drag and drop operation.
+     + Added DATA LastTarget to hold a reference to the last target
+       hovered in a drag and drop operation.
+     + Added METHOD ItemEnabled to enable/disable a node or item.
+     + Added METHOD CopyItem to copy an item (and it's subitems) from
+       one tree object to another (or the same).
+     + Added METHOD MoveItem to move an item (and it´s subitems) from
+       one tree object to another (or the same).
+     + Added STATIC FUNCTION AddChildren, used by METHODS CopyItem
+       and MoveItem.
+     + Added METHOD ItemImages to set/get the images of an item.
+     + Added METHOD ItemDraggable to set/get the draggable/nodraggable
+       status of an item.
+     + Added METHOD IsItemCollapsed to inquiry if an item is collapsed.
+     + Added METHOD HandleToItem to get the item reference corresponding
+       to an item handle.
+     + Added METHOD ItemToHandle to get the item handle corresponding
+       to an item reference.
+     + Added METHOD ItemVisible to inquiry if an item is visible in the
+       tree window.
+     + Added: OnMouseDrag defaults to TTree_OnMouseDrag function.
+     + Added: TTree_OnMouseDrag function.
+       This function can be customized to fit the programmer's needs.
+     + Added: OnMouseDrop defaults to TTree_OnMouseDrop functions.
+     + Added: TTree_OnMouseDrop function.
+       This function can be customized to fit the programmer's needs.
+     + Added new parameters (lDisable and lNoDrag) to AddItem method,
+       _DefineTreeNode function and _DefineTreeItem function.
+     * Changed: function AddItem's aImage parameter can be empty or an
+       array of length 1 or 2 containing a reference to unsel and sel
+       images, or containg the unsel and sel images.
+     * Changed: AddItem function returns a reference to the item added.
+     * Changed: METHODS Item, Collapse, Expand, EndTree, Value and
+       Events modified to use METHOD ItemToHandle.
+     * Added support for notify events TVN_SELCHANGING, TVN_BEGINDRAG
+       and NM_DBLCLK.
+     * Added validations in notify event TVN_SELCHANGED.
+     * Added check for item disebled in TVN_BEGINLABELEDIT notify event.
+     - Deleted PreProcess_StateChange c level function.
+     + Added TreeView_GetItemHit function to identify the
+       item clicked.
+     + Added TreeView_HitIsOnStateIcon function to check if the
+       click was done on the item's state icon.
+     + Added support for WM_MOUSEMOVE, WM_LBUTTONUP, WM_CANCELMODE and
+       WM_CAPTURECHANGED events.
+     + Added support for drag and drop operations to METHODS LookForKey
+       and Release, and to c function Treeview_Notify_CustomDraw.
+     + Added functions TREEVIEW_BEGINDRAG, IsTargetChild,
+       SetDragCursorARROW, TREEVIEW_ONMOUSEDRAG, GETWINDOWUNDERCURSOR,
+       TREEVIEW_AUTOSCROLL, TreeView_IsItemCollapsed, IMAGELIST_ENDDRAG,
+       TREEVIEW_ISITEMCOLLAPSED, TREEVIEW_AUTOEXPAND, RELEASECAPTURE,
+       TREEVIEW_ONMOUSEDROP and TREEVIEW_ENSUREVISIBLE.
 
 2011-10-14 23:03 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
   * source/h_checkbox.prg

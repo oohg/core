@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.122 2011-09-11 23:22:34 fyurisich Exp $
+ * $Id: h_controlmisc.prg,v 1.123 2011-10-18 01:08:04 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -714,6 +714,12 @@ Local oWnd, oCtrl
       ElseIf Arg3 == "ITEMREADONLY"
          oCtrl:ItemReadonly( Arg4, Arg5 )
 
+      ElseIf Arg3 == "ITEMENABLED"
+         oCtrl:ItemEnabled( Arg4, Arg5 )
+
+      ElseIf Arg3 == "ITEMDRAGGABLE"
+         oCtrl:ItemDraggable( Arg4, Arg5 )
+
       ElseIf Arg3 == "ICON"
          _SetStatusIcon( Arg2, Arg1, Arg4, Arg5 )
 
@@ -957,6 +963,15 @@ Local RetVal, oWnd, oCtrl
 
       ElseIf Arg3 == "ITEMREADONLY"
          RetVal := oCtrl:ItemReadonly( Arg4 )
+
+      ElseIf Arg3 == "ITEMENABLED"
+         RetVal := oCtrl:ItemEnabled( Arg4 )
+
+      ElseIf Arg3 == "ITEMDRAGGABLE"
+         RetVal := oCtrl:ItemDraggable( Arg4 )
+
+      ElseIf Arg3 == "HANDLETOITEM"
+         RetVal := oCtrl:HandleToItem( Arg4 )
 
       Else
 

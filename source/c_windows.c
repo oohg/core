@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.75 2011-09-11 23:22:34 fyurisich Exp $
+ * $Id: c_windows.c,v 1.76 2011-10-18 01:08:04 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -873,6 +873,11 @@ HB_FUNC( SETGRIDQUERYIMAGE )
 HB_FUNC( GETESCAPESTATE )
 {
      hb_retni ( GetKeyState( VK_ESCAPE ) );
+}
+
+HB_FUNC( GETCONTROLSTATE )
+{
+     hb_retni ( GetKeyState( VK_CONTROL ) );
 }
 
 HB_FUNC( GETALTSTATE )

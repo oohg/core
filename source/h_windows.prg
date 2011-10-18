@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.221 2011-10-15 03:53:35 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.222 2011-10-18 01:08:04 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -169,6 +169,11 @@ void _OOHG_SetMouseCoords( PHB_ITEM pSelf, int iCol, int iRow )
    hb_itemRelease( pSelf2 );
 }
 
+HB_FUNC( _OOHG_SETMOUSECOORDS )
+{
+   _OOHG_SetMouseCoords( (PHB_ITEM) hb_param( 1, HB_IT_ARRAY ), hb_parni( 2 ), hb_parni( 3 ) );
+}
+
 #pragma ENDDUMP
 
 
@@ -237,6 +242,8 @@ CLASS TWindow
    DATA OnGotFocus          INIT nil
    DATA OnLostFocus         INIT nil
    DATA OnMouseDrag         INIT nil
+   DATA OnMouseDrop         INIT nil
+   DATA DropEnabled         INIT .F.              // .T. if control accepts drops
    DATA OnMouseMove         INIT nil
    DATA OnDropFiles         INIT nil
    DATA aKeys               INIT {}  // { Id, Mod, Key, Action }   Application-controlled hotkeys
@@ -263,11 +270,11 @@ CLASS TWindow
    // Client adjust
    DATA ClientAdjust        INIT 0 // 0=none, 1=top, 2=bottom, 3=left, 4=right, 5=Client
    DATA IsAdjust            INIT .F.
-   DATA nBorders			INIT {0,0,0} // ancho externo, estacio, ancho interno.
-   DATA aBECOLORS			INIT {{0,0,0},{0,0,0},{0,0,0},{0,0,0}} // color externo: arriba, derecha, abajo, izquierda
-   DATA aBICOLORS			INIT {{0,0,0},{0,0,0},{0,0,0},{0,0,0}} // color interno: arriba, derecha, abajo, izquierda
-   DATA nPaintCount			// contador para GetDc y ReleaseDc
-   DATA hDC					// puntero al contexto del canvas.
+   DATA nBorders			      INIT {0,0,0} // ancho externo, estacio, ancho interno.
+   DATA aBECOLORS			      INIT {{0,0,0},{0,0,0},{0,0,0},{0,0,0}} // color externo: arriba, derecha, abajo, izquierda
+   DATA aBICOLORS			      INIT {{0,0,0},{0,0,0},{0,0,0},{0,0,0}} // color interno: arriba, derecha, abajo, izquierda
+   DATA nPaintCount			                                           // contador para GetDc y ReleaseDc
+   DATA hDC					                                               // puntero al contexto del canvas.
 
    METHOD SethWnd
    METHOD Release

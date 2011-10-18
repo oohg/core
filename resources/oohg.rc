@@ -1,5 +1,5 @@
 //
-// $Id: oohg.rc,v 1.4 2011-08-05 18:25:43 fyurisich Exp $
+// $Id: oohg.rc,v 1.5 2011-10-18 01:08:04 fyurisich Exp $
 //
 // Use this file with MinGW Compiler
 
@@ -10,6 +10,9 @@
 1 24 oohgpath\WindowsXP.Manifest
 
 MINIGUI_FINGER          CURSOR          oohgpath\FINGER.CUR
+DRAG_NO                 CURSOR          oohgpath\dragno.cur
+DRAG_ARROW_COPY         CURSOR          oohgpath\dragcopy.cur
+DRAG_ARROW_MOVE         CURSOR          oohgpath\dragmove.cur
 
 // EDIT COMMAND IMAGE BUTTONS
 

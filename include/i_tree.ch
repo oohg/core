@@ -1,5 +1,5 @@
 /*
- * $Id: i_tree.ch,v 1.6 2011-09-04 20:09:51 fyurisich Exp $
+ * $Id: i_tree.ch,v 1.7 2011-10-18 01:08:04 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -130,7 +130,9 @@
           [ <noScr: NOSCROLL> ] ;
           [ <hott: HOTTRACKING> ] ;
           [ <nobuts: NOBUTTONS> ] ;
-          [ <nodd: DISABLEDRAGDROP> ] ;
+          [ <drag: ENABLEDRAG> ] ;
+          [ <drop: ENABLEDROP> ] ;
+          [ TARGET <aTarget> ] ;
           [ <single: SINGLEEXPAND> ] ;
           [ <noborder: BORDERLESS> ] ;
           [ ON LABELEDIT <labeledit> ] ;
@@ -145,8 +147,9 @@
                        <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, <.itemids.>, <.rtl.>, ;
                        <{enter}>, <{disabled}>, <.invisible.>, <.notabstop.>, <fontcolor>, ;
                        <backcolor>, .T., <.checkboxes.>, <.editlabels.>, <.noHScr.>, <.noScr.>, ;
-                       <.hott.>, .F., <.nobuts.>, <.nodd.>, <.single.>, <.noborder.>, <selcolor>, ;
-                       <{labeledit}>, <{valid}>, <{checkchange}>, <pixels>, <.selbold.> )
+                       <.hott.>, .F., <.nobuts.>, <.drag.>, <.single.>, <.noborder.>, <selcolor>, ;
+                       <{labeledit}>, <{valid}>, <{checkchange}>, <pixels>, <.selbold.>, ;
+                       <.drop.>, <aTarget> )
 
 #xcommand DEFINE TREE <name> ;
           [ OBJ <obj> ] ;
@@ -187,7 +190,9 @@
           [ <hott: HOTTRACKING> ] ;
           [ <nobuts: NOBUTTONS> ] ;
           [ <nolines: NOLINES> ] ;
-          [ <nodd: DISABLEDRAGDROP> ] ;
+          [ <drag: ENABLEDRAG> ] ;
+          [ <drop: ENABLEDROP> ] ;
+          [ TARGET <aTarget> ] ;
           [ <single: SINGLEEXPAND> ] ;
           [ <noborder: BORDERLESS> ] ;
           [ ON LABELEDIT <labeledit> ] ;
@@ -202,24 +207,46 @@
                        <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, <.itemids.>, <.rtl.>, ;
                        <{enter}>, <{disabled}>, <.invisible.>, <.notabstop.>, <fontcolor>, ;
                        <backcolor>, .F., <.checkboxes.>, <.editlabels.>, <.noHScr.>, <.noScr.>, ;
-                       <.hott.>, <.nolines.>, <.nobuts.>, <.nodd.>, <.single.>, <.noborder.>, ;
-                       <selcolor>, <{labeledit}>, <{valid}>, <{checkchange}>, <pixels>, <.selbold.> )
+                       <.hott.>, <.nolines.>, <.nobuts.>, <.drag.>, <.single.>, <.noborder.>, ;
+                       <selcolor>, <{labeledit}>, <{valid}>, <{checkchange}>, <pixels>, <.selbold.>, ;
+                       <.drop.>, <aTarget> )
 
-#xcommand NODE <text> [ IMAGES <aImage> ] [ ID <id> ] [ <checked: CHECKED> ] [ <readonly: READONLY> ] [ <bold: BOLD> ] ;
+#xcommand NODE <text> ;
+          [ IMAGES <aImage> ] ;
+          [ ID <id> ] ;
+          [ <checked: CHECKED> ] ;
+          [ <readonly: READONLY> ] ;
+          [ <bold: BOLD> ] ;
+          [ <disabled: DISABLED> ] ;
+          [ <nodrag: NODRAG> ] ;
 =>;
-_DefineTreeNode (<text>, <aImage> , <id>, <.checked.>, <.readonly.>, <.bold.> )
+_DefineTreeNode (<text>, <aImage> , <id>, <.checked.>, <.readonly.>, <.bold.>, <.disabled.>, <.nodrag.> )
 
-#xcommand DEFINE NODE <text> [ IMAGES <aImage> ] [ ID <id> ] [ <checked: CHECKED> ] [ <readonly: READONLY> ] [ <bold: BOLD> ] ;
+#xcommand DEFINE NODE <text> ;
+          [ IMAGES <aImage> ] ;
+          [ ID <id> ] ;
+          [ <checked: CHECKED> ] ;
+          [ <readonly: READONLY> ] ;
+          [ <bold: BOLD> ] ;
+          [ <disabled: DISABLED> ] ;
+          [ <nodrag: NODRAG> ] ;
 =>;
-_DefineTreeNode (<text>, <aImage> , <id>, <.checked.>, <.readonly.>, <.bold.> )
+_DefineTreeNode (<text>, <aImage> , <id>, <.checked.>, <.readonly.>, <.bold.>, <.disabled.>, <.nodrag.> )
 
 #xcommand END NODE ;
 =>;
 _EndTreeNode()
 
-#xcommand TREEITEM <text> [ IMAGES <aImage> ]  [ ID <id> ] [ <checked: CHECKED> ] [ <readonly: READONLY> ] [ <bold: BOLD> ] ;
+#xcommand TREEITEM <text> ;
+          [ IMAGES <aImage> ] ;
+          [ ID <id> ] ;
+          [ <checked: CHECKED> ] ;
+          [ <readonly: READONLY> ] ;
+          [ <bold: BOLD> ] ;
+          [ <disabled: DISABLED> ] ;
+          [ <nodrag: NODRAG> ] ;
 => ;
-_DefineTreeItem (<text>, <aImage> , <id>, <.checked.>, <.readonly.>, <.bold.> )
+_DefineTreeItem (<text>, <aImage> , <id>, <.checked.>, <.readonly.>, <.bold.>, <.disabled.>, <.nodrag.> )
 
 #xcommand END TREE ;
 => ;

@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.33 2011-09-14 00:39:27 fyurisich Exp $
+ * $Id: classes.txt,v 1.34 2011-10-18 01:08:04 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -2072,15 +2072,24 @@ ENDCLASS
 
 *------------------------------------------------------------------------------*
 CLASS TTREE FROM TCONTROL
-   DATA ASELCOLOR                 INIT BLUE             /* BACKGROUND COLOR OF THE SELECT NODE */
+   DATA ASELCOLOR                 INIT BLUE             // background color of the select node
+   DATA ATARGET                   INIT {}               // posible targets for the drop
+   DATA ATREEENABLED              INIT {}
    DATA ATREEIDMAP                INIT {}
    DATA ATREEMAP                  INIT {}
    DATA ATREENODE                 INIT {}
+   DATA ATREENODRAG               INIT {}
    DATA ATREERO                   INIT {}
+   DATA AUTOEXPANDTIMER           INIT NIL
+   DATA AUTOSCROLLTIMER           INIT NIL
    DATA BONENTER                  INIT NIL
+   DATA DRAGACTIVE                INIT .F.              // .T. if a drag and drop operation is going on
+   DATA DRAGIMAGELIST             INIT 0                // contains drag image
    DATA HWNDEDITCTRL              INIT NIL
    DATA INITVALUE                 INIT 0
    DATA ITEMIDS                   INIT .F.
+   DATA ITEMONDRAG                INIT 0                // handle of the item being dragged
+   DATA LASTTARGET                INIT Nil              // last target hovered
    DATA LSELBOLD                  INIT .F.
    DATA NHEIGHT                   INIT 120
    DATA NWIDTH                    INIT 120
@@ -2095,6 +2104,7 @@ CLASS TTREE FROM TCONTROL
    METHOD BOLDITEM                SETGET
    METHOD CHECKITEM               SETGET
    METHOD COLLAPSE
+   METHOD COPYITEM
    METHOD DEFINE
    METHOD DELETEALLITEMS
    METHOD DELETEITEM
@@ -2105,11 +2115,19 @@ CLASS TTREE FROM TCONTROL
    METHOD EXPAND
    METHOD GETCHILDREN
    METHOD GETPARENT
+   METHOD HANDLETOITEM
    METHOD INDENT                  SETGET
+   METHOD ISITEMCOLLAPSED
    METHOD ITEM
    METHOD ITEMCOUNT
+   METHOD ITEMDRAGGABLE           SETGET
+   METHOD ITEMENABLED             SETGET
+   METHOD ITEMIMAGES
    METHOD ITEMREADONLY            SETGET
+   METHOD ITEMTOHANDLE
+   METHOD ITEMVISIBLE
    METHOD LOOKFORKEY
+   METHOD MOVEITEM
    METHOD ONENTER                 SETGET
    METHOD RELEASE
    METHOD SELCOLOR                SETGET

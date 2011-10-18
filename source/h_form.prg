@@ -1,9 +1,5 @@
 /*
-<<<<<<< h_form.prg
- * $Id: h_form.prg,v 1.32 2011-09-05 23:37:33 fyurisich Exp $
-=======
- * $Id: h_form.prg,v 1.32 2011-09-05 23:37:33 fyurisich Exp $
->>>>>>> 1.30
+ * $Id: h_form.prg,v 1.33 2011-10-18 01:08:04 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -664,7 +660,7 @@ METHOD Release() CLASS TForm
 
       _ReleaseWindowList( { Self } )
 
-      * Release Window
+      // Release Window
 
       If ValidHandler( ::hWnd )
          EnableWindow( ::hWnd )
