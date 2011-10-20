@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.59 2011-09-14 00:37:41 fyurisich Exp $
+ * $Id: h_combo.prg,v 1.60 2011-10-20 21:13:13 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -116,7 +116,7 @@ CLASS TCombo FROM TLabel
    METHOD Refresh
    METHOD Value               SETGET
    METHOD Visible             SETGET
-   METHOD ForceHide           BLOCK { |Self| SendMessage( ::hWnd, CB_SHOWDROPDOWN, 0, 0 ) , ::Super:ForceHide() }
+   METHOD ForceHide           BLOCK { |Self| SendMessage( ::hWnd, CB_SHOWDROPDOWN, 0, 0 ), ::Super:ForceHide() }
    METHOD RefreshData
    METHOD DisplayValue        SETGET    /// Caption Alias
    METHOD PreRelease
@@ -125,7 +125,7 @@ CLASS TCombo FROM TLabel
    METHOD Events_MeasureItem
    METHOD AddItem
    METHOD DeleteItem
-   METHOD DeleteAllItems      BLOCK { |Self| TCombo_DeleteAllItems2( ::hWnd ) , ::xOldValue := nil }
+   METHOD DeleteAllItems      BLOCK { |Self| TCombo_DeleteAllItems2( ::hWnd ), ::xOldValue := nil }
    METHOD Item
    METHOD ItemCount
    METHOD ShowDropDown
@@ -150,7 +150,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, rows, value, fontname, ;
                TextHeight, lDisabled, lFirstItem, lAdjustImages, backcolor, ;
                fontcolor, listwidth, onListDisplay, onListClose ) CLASS TCombo
 *-----------------------------------------------------------------------------*
-Local ControlHandle , WorkArea , cField, nStyle
+Local ControlHandle, WorkArea, cField, nStyle
 
    ASSIGN ::nCol        VALUE x TYPE "N"
    ASSIGN ::nRow        VALUE y TYPE "N"
@@ -168,8 +168,8 @@ Local ControlHandle , WorkArea , cField, nStyle
       ValueSource := NIL
    EndIf
 
-   ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, .t. , lRtl )
-   ::SetFont( , , bold, italic, underline, strikeout )
+   ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, .t., lRtl )
+   ::SetFont(, , bold, italic, underline, strikeout )
 
    If ValType( ItemSource ) != 'U' .And. Sort == .T.
       MsgOOHGError( "Sort and ItemSource clauses can't be used simultaneusly. Program Terminated" )
@@ -188,16 +188,16 @@ Local ControlHandle , WorkArea , cField, nStyle
       EndIf
    EndIf
 
-   nStyle := ::InitStyle( ,, Invisible, notabstop, lDisabled ) + ;
+   nStyle := ::InitStyle(, , Invisible, notabstop, lDisabled ) + ;
              if( HB_IsLogical( SORT )           .AND. SORT,          CBS_SORT,    0 ) + ;
              if( ! displaychange, CBS_DROPDOWNLIST, CBS_DROPDOWN ) + ;
              if ( HB_IsArray( aImage ),  CBS_OWNERDRAWFIXED, 0) + ;
-             if( OSisWinXPorLater() .AND. _OOHG_LastFrame() != "SPLITBOX" , CBS_NOINTEGRALHEIGHT, 0 )
+             if( OSisWinXPorLater() .AND. _OOHG_LastFrame() != "SPLITBOX", CBS_NOINTEGRALHEIGHT, 0 )
 
    ::SetSplitBoxInfo( Break, GripperText, ::nWidth )
    ControlHandle := InitComboBox( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight, nStyle, ::lRtl )
 
-   ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
+   ::Register( ControlHandle, ControlName, HelpId, , ToolTip )
    ::SetFont()
 
    ::Field := cField
@@ -244,7 +244,7 @@ RETURN ::nHeight2
 *-----------------------------------------------------------------------------*
 METHOD Refresh() CLASS TCombo
 *-----------------------------------------------------------------------------*
-Local BackRec , WorkArea , cField , aValues , uValue
+Local BackRec, WorkArea, cField, aValues, uValue
    WorkArea := ::WorkArea
    If Select( WorkArea ) != 0
       uValue := ::Value
@@ -418,7 +418,7 @@ Local cCaption
       ::lAutoSize := lValue
       If lValue
          cCaption := GetWindowText( ::hWnd )
-         ::SizePos( , , GetTextWidth( NIL, cCaption + "0", ::FontHandle ) + ::IconWidth + GetVScrollBarWidth(), GetTextHeight( NIL, cCaption, ::FontHandle ) )
+         ::SizePos(, , GetTextWidth( NIL, cCaption + "0", ::FontHandle ) + ::IconWidth + GetVScrollBarWidth(), GetTextHeight( NIL, cCaption, ::FontHandle ) )
       EndIf
    EndIf
 Return ::lAutoSize
@@ -475,7 +475,7 @@ METHOD SetEditSel( nStart, nEnd ) CLASS TCombo
        -1 all text from the start to the last character is selected.
 
    The first character after the last selected character is in the ending
-   position. For example, to select the first four characters , use a
+   position. For example, to select the first four characters, use a
    starting position of 0 and an ending position of 4.
    
    This method is meaningfull only when de combo is in edit state.
@@ -557,15 +557,15 @@ HB_FUNC( INITCOMBOBOX )
    ///// | CBS_OWNERDRAWFIXED; // CBS_OWNERDRAWVARIABLE;  si se coloca ownerdrawfixed el alto del combo no cambia cuando se cambia el font
 
    hbutton = CreateWindowEx( StyleEx, "COMBOBOX",
-                           "" ,
-                           Style ,
-                           hb_parni(3) ,
-                           hb_parni(4) ,
-                           hb_parni(5) ,
-                           hb_parni(6) ,
-                           hwnd ,
-                           (HMENU)hb_parni(2) ,
-                           GetModuleHandle(NULL) ,
+                           "",
+                           Style,
+                           hb_parni(3),
+                           hb_parni(4),
+                           hb_parni(5),
+                           hb_parni(6),
+                           hwnd,
+                           (HMENU)hb_parni(2),
+                           GetModuleHandle(NULL),
                            NULL ) ;
 
    lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hbutton, GWL_WNDPROC, ( LONG ) SubClassFunc );
@@ -577,7 +577,7 @@ HB_FUNC( COMBOADDSTRING )
 {
    HWND hWnd = HWNDparam( 1 );
 
-   SendMessage( hWnd, CB_INSERTSTRING, ( WPARAM ) ComboBox_GetCount( hWnd ), ( LPARAM ) hb_parc( 2 ) );
+   SendMessage( hWnd, CB_ADDSTRING, 0, ( LPARAM ) hb_parc( 2 ) );
 }
 
 HB_FUNC( COMBOINSERTSTRING )
@@ -592,17 +592,17 @@ HB_FUNC( COMBOSETCURSEL )
 
 HB_FUNC( COMBOGETCURSEL )
 {
-   hb_retni( SendMessage( HWNDparam( 1 ), CB_GETCURSEL , 0 , 0 ) + 1 );
+   hb_retni( SendMessage( HWNDparam( 1 ), CB_GETCURSEL, 0, 0 ) + 1 );
 }
 
 HB_FUNC( COMBOGETDROPPEDWIDTH )
 {
-   hb_retni( SendMessage( HWNDparam( 1 ), CB_GETDROPPEDWIDTH , 0 , 0 ) );
+   hb_retni( SendMessage( HWNDparam( 1 ), CB_GETDROPPEDWIDTH, 0, 0 ) );
 }
 
 HB_FUNC( COMBOSETDROPPEDWIDTH )
 {
-   hb_retni( SendMessage( HWNDparam( 1 ), CB_SETDROPPEDWIDTH , ( WPARAM ) hb_parni( 2 ) , 0 ) );
+   hb_retni( SendMessage( HWNDparam( 1 ), CB_SETDROPPEDWIDTH, ( WPARAM ) hb_parni( 2 ), 0 ) );
 }
 
 HB_FUNC(COMBOBOXDELETESTRING )
@@ -807,7 +807,7 @@ HB_FUNC_STATIC( TCOMBO_ADDITEM )   // METHOD AddItem( uValue )
 
    ImageFillParameter( &pStruct, hb_param( 1, HB_IT_ANY ) );
    TCombo_SetImageBuffer( oSelf, pStruct, nItem );
-   SendMessage( oSelf->hWnd, CB_INSERTSTRING, ( WPARAM ) nItem, ( LPARAM ) pStruct.cString );
+   SendMessage( oSelf->hWnd, CB_ADDSTRING, 0, ( LPARAM ) pStruct.cString );
 
    hb_retnl( ComboBox_GetCount( oSelf->hWnd ) );
 }
@@ -833,13 +833,31 @@ HB_FUNC_STATIC( TCOMBO_ITEM )   // METHOD Item( nItem, uValue )
    int nItem = hb_parni( 1 ) - 1;
    char *cBuffer;
    struct IMAGE_PARAMETER pStruct;
+   int nItemSel, nItemNew;
 
    if( pValue && ( HB_IS_STRING( pValue ) || HB_IS_NUMERIC( pValue ) || HB_IS_ARRAY( pValue ) ) )
    {
-      SendMessage( oSelf->hWnd, CB_DELETESTRING, ( WPARAM ) nItem, 0 );
-      ImageFillParameter( &pStruct, pValue );
-      TCombo_SetImageBuffer( oSelf, pStruct, nItem );
-      SendMessage( oSelf->hWnd, CB_INSERTSTRING, ( WPARAM ) nItem, ( LPARAM ) pStruct.cString );
+      nItemSel = SendMessage( oSelf->hWnd, CB_GETCURSEL, 0, 0 );
+
+      if( ( GetWindowLong( oSelf->hWnd, GWL_STYLE ) & CBS_SORT ) == CBS_SORT )
+      {
+         SendMessage( oSelf->hWnd, CB_DELETESTRING, ( WPARAM ) nItem, 0 );
+         ImageFillParameter( &pStruct, pValue );
+         TCombo_SetImageBuffer( oSelf, pStruct, nItem );
+         nItemNew = SendMessage( oSelf->hWnd, CB_ADDSTRING, 0, ( LPARAM ) pStruct.cString );
+      }
+      else
+      {
+        SendMessage( oSelf->hWnd, CB_DELETESTRING, ( WPARAM ) nItem, 0 );
+        ImageFillParameter( &pStruct, pValue );
+        TCombo_SetImageBuffer( oSelf, pStruct, nItem );
+        nItemNew = SendMessage( oSelf->hWnd, CB_INSERTSTRING, ( WPARAM ) nItem, ( LPARAM ) pStruct.cString );
+      }
+
+      if( nItem == nItemSel )
+      {
+        SendMessage( oSelf->hWnd, CB_SETCURSEL, ( WPARAM ) nItemNew, 0 );
+      }
    }
 
    cBuffer = (char *) hb_xgrab( 2000 );
