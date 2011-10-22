@@ -1,11 +1,26 @@
 /*
- * $Id: ChangeLog,v 1.800 2011-10-22 16:46:02 fyurisich Exp $
+ * $Id: ChangeLog,v 1.801 2011-10-22 22:43:48 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2011-10-22 20:45:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_error.prg
+     * Formated.
+     + Added localized messages.
+       TODO: Translate messages in Croatian, Basque, French,
+       German, Italian, Polish, Portuguese, Russian, Finnish,
+       Dutch and Slovenian.
+     + Added DATA Path to enable relocation of log file.
+     + Added EXE filename to error's reported information.
+   * source/h_init.prg
+     + Added two new entries to miscelaneous messages array.
+       TODO: Revise messages in Croatian, Basque, French,
+       German, Italian, Polish, Portuguese, Russian, Finnish,
+       Dutch and Slovenian.
 
 2011-10-22 14:45:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_altsyntax.ch

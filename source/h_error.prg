@@ -1,5 +1,5 @@
 /*
- * $Id: h_error.prg,v 1.51 2011-10-18 01:22:31 fyurisich Exp $
+ * $Id: h_error.prg,v 1.52 2011-10-22 22:43:49 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -91,38 +91,42 @@
  Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-*------------------------------------------------------------------------------
+*------------------------------------------------------------------------------*
 *-Module: h_error.prg
 *-Target: Colect MiniGui Errors
 *-Date Created: 01-01-2003
 *-Author: Antonio Novo  novoantonio@hotmail.com
 *-Compile with: -w -n
-*------------------------------------------------------------------------------
+*------------------------------------------------------------------------------*
 
-*------------------------------------------------------------------------------
-*-Function: MsgOOHGError
-*-Recieve: Message (String)
-*-Return: Nil
-*------------------------------------------------------------------------------
 #include "oohg.ch"
 #include "error.ch"
 #include "common.ch"
+#include "hbclass.ch"
 
-Function MsgOOHGError( cMessage )
+*------------------------------------------------------------------------------*
+FUNCTION MsgOOHGError( cMessage )
+*------------------------------------------------------------------------------*
+
    // Kill timers and hot keys
    _KillAllTimers()
    _KillAllKeys()
 
    OwnErrorHandler():ErrorMessage( cMessage, 1 )
-Return Nil
+
+RETURN Nil
 
 *------------------------------------------------------------------------------*
 PROCEDURE ErrorSys
 *------------------------------------------------------------------------------*
+
    ErrorBlock( { | oError | DefError( oError ) } )
+
 RETURN
 
+*------------------------------------------------------------------------------*
 STATIC FUNCTION DefError( oError )
+*------------------------------------------------------------------------------*
 LOCAL cMessage
 
    // By default, division by zero results in zero
@@ -161,15 +165,17 @@ LOCAL cMessage
    // "Quit" selected
 
    OwnErrorHandler():ErrorMessage( cMessage, 2 )
+
 RETURN .F.
 
 // [vszakats]
-
+*------------------------------------------------------------------------------*
 FUNCTION _OOHG_ErrorMessage( oError )
+*------------------------------------------------------------------------------*
 LOCAL cMessage
 
    // start error message
-   cMessage := iif( oError:severity > ES_WARNING, "Error", "Warning" ) + " "
+   cMessage := iif( oError:severity > ES_WARNING, _OOHG_Messages( 1, 9 ), _OOHG_Messages( 1, 10 ) ) + " "
 
    // add subsystem name if available
    IF ISCHARACTER( oError:subsystem )
@@ -199,34 +205,42 @@ LOCAL cMessage
    ENDCASE
 
    IF ! Empty( oError:osCode )
-      cMessage += " (DOS Error " + LTrim( Str( oError:osCode ) ) + ")"
+      cMessage += " (DOS " + _OOHG_Messages( 1, 9 ) + " " + LTrim( Str( oError:osCode ) ) + ")"
    ENDIF
+   
 RETURN cMessage
 
+*------------------------------------------------------------------------------*
 STATIC FUNCTION OwnErrorHandler()
+*------------------------------------------------------------------------------*
 Local oErrorLog
 MemVar _OOHG_TxtError
-   If Type( "_OOHG_TXTERROR" ) == "L" .AND. _OOHG_TxtError
-      oErrorLog := OOHG_TErrorTxt()
-   ElseIf Type( "_OOHG_TXTERROR" ) == "O"
+
+   IF TYPE( "_OOHG_TXTERROR" ) == "L" .AND. _OOHG_TxtError
+      oErrorLog := OOHG_TErrorTxt():New()
+   ELSEIF TYPE( "_OOHG_TXTERROR" ) == "O"
       oErrorLog := _OOHG_TxtError
    ELSE
-      oErrorLog := OOHG_TErrorHtml()
-   EndIf
+      oErrorLog := OOHG_TErrorHtml():New()
+   ENDIF
+   
 RETURN oErrorLog
 
-#include "hbclass.ch"
+
 
 CLASS OOHG_TErrorHtml
    DATA cBufferFile   INIT ""
    DATA cBufferScreen INIT ""
    DATA PreHeader     INIT '<HR>' + CHR( 13 ) + CHR( 10 ) + '<p class="updated">'
    DATA PostHeader    INIT '</p>'
-   DATA FileName      INIT "ErrorLog.Htm"
+   DATA Path          INIT ""
+   DATA FileName      INIT "ErrorLog.htm"
+   DATA aMessages     INIT Nil
+   
+   METHOD New
    METHOD Write
    METHOD Write2
    METHOD FileHeader
-
    METHOD ErrorMessage
    METHOD ErrorHeader
    METHOD CreateLog
@@ -234,21 +248,234 @@ CLASS OOHG_TErrorHtml
    EMPTY( _OOHG_AllVars )
 ENDCLASS
 
+*------------------------------------------------------------------------------*
+METHOD New CLASS OOHG_TErrorHtml
+*------------------------------------------------------------------------------*
+LOCAL cLang
+
+   cLang := SET( _SET_LANGUAGE )
+
+   DO CASE
+   CASE cLang == "HR852"                            // Croatian
+      ::aMessages := { "ooHG Errors Log", ;
+                       "Application: ", ;
+                       "Date: ", ;
+                       "Time: ", ;
+                       "Version: ", ;
+                       "Alias in use: ", ;
+                       "Computer Name: ", ;
+                       "User Name: ", ;
+                       "Error: ", ;
+                       "Called from ", ;
+                       "Events:", ;
+                       "Program Error" }
+
+   CASE cLang == "EU"                               // Basque
+      ::aMessages := { "ooHG Errors Log", ;
+                       "Application: ", ;
+                       "Date: ", ;
+                       "Time: ", ;
+                       "Version: ", ;
+                       "Alias in use: ", ;
+                       "Computer Name: ", ;
+                       "User Name: ", ;
+                       "Error: ", ;
+                       "Called from ", ;
+                       "Events:", ;
+                       "Program Error" }
+
+   CASE cLang == "FR"                               // French
+      ::aMessages := { "ooHG Errors Log", ;
+                       "Application: ", ;
+                       "Date: ", ;
+                       "Time: ", ;
+                       "Version: ", ;
+                       "Alias in use: ", ;
+                       "Computer Name: ", ;
+                       "User Name: ", ;
+                       "Error: ", ;
+                       "Called from ", ;
+                       "Events:", ;
+                       "Program Error" }
+
+   CASE cLang == "DEWIN" .OR. ;
+        cLang == "DE"                               // German
+      ::aMessages := { "ooHG Errors Log", ;
+                       "Application: ", ;
+                       "Date: ", ;
+                       "Time: ", ;
+                       "Version: ", ;
+                       "Alias in use: ", ;
+                       "Computer Name: ", ;
+                       "User Name: ", ;
+                       "Error: ", ;
+                       "Called from ", ;
+                       "Events:", ;
+                       "Program Error" }
+
+   CASE cLang == "IT"                               // Italian
+      ::aMessages := { "ooHG Errors Log", ;
+                       "Application: ", ;
+                       "Date: ", ;
+                       "Time: ", ;
+                       "Version: ", ;
+                       "Alias in use: ", ;
+                       "Computer Name: ", ;
+                       "User Name: ", ;
+                       "Error: ", ;
+                       "Called from ", ;
+                       "Events:", ;
+                       "Program Error" }
+
+   CASE cLang == "PLWIN" .OR. ;
+        cLang == "PL852" .OR. ;
+        cLang == "PLISO" .OR. ;
+        cLang == ""      .OR. ;
+        cLang == "PLMAZ"                            // Polish
+      ::aMessages := { "ooHG Errors Log", ;
+                       "Application: ", ;
+                       "Date: ", ;
+                       "Time: ", ;
+                       "Version: ", ;
+                       "Alias in use: ", ;
+                       "Computer Name: ", ;
+                       "User Name: ", ;
+                       "Error: ", ;
+                       "Called from ", ;
+                       "Events:", ;
+                       "Program Error" }
+
+   CASE cLang == "PT"                               // Portuguese
+      ::aMessages := { "ooHG Errors Log", ;
+                       "Application: ", ;
+                       "Date: ", ;
+                       "Time: ", ;
+                       "Version: ", ;
+                       "Alias in use: ", ;
+                       "Computer Name: ", ;
+                       "User Name: ", ;
+                       "Error: ", ;
+                       "Called from ", ;
+                       "Events:", ;
+                       "Program Error" }
+
+   CASE cLang == "RUWIN" .OR. ;
+        cLang == "RU866" .OR. ;
+        cLang == "RUKOI8"                           // Russian
+      ::aMessages := { "ooHG Errors Log", ;
+                       "Application: ", ;
+                       "Date: ", ;
+                       "Time: ", ;
+                       "Version: ", ;
+                       "Alias in use: ", ;
+                       "Computer Name: ", ;
+                       "User Name: ", ;
+                       "Error: ", ;
+                       "Called from ", ;
+                       "Events:", ;
+                       "Program Error" }
+
+   CASE cLang == "ES"    .OR. ;
+        cLang == "ESWIN"                            // Spanish
+      ::aMessages := { "Registro de Errores de ooHG", ;
+                       "Aplicación: ", ;
+                       "Fecha: ", ;
+                       "Hora: ", ;
+                       "Versión: ", ;
+                       "Alias en uso: ", ;
+                       "Nombre de Equipo: ", ;
+                       "Nombre de Usuario: ", ;
+                       "Error: ", ;
+                       "Llamada desde ", ;
+                       "Eventos:", ;
+                       "Error de Programa" }
+
+   CASE cLang == "FI"                               // Finnish
+      ::aMessages := { "ooHG Errors Log", ;
+                       "Application: ", ;
+                       "Date: ", ;
+                       "Time: ", ;
+                       "Version: ", ;
+                       "Alias in use: ", ;
+                       "Computer Name: ", ;
+                       "User Name: ", ;
+                       "Error: ", ;
+                       "Called from ", ;
+                       "Events:", ;
+                       "Program Error" }
+
+   CASE cLang == "NL"                               // Dutch
+      ::aMessages := { "ooHG Errors Log", ;
+                       "Application: ", ;
+                       "Date: ", ;
+                       "Time: ", ;
+                       "Version: ", ;
+                       "Alias in use: ", ;
+                       "Computer Name: ", ;
+                       "User Name: ", ;
+                       "Error: ", ;
+                       "Called from ", ;
+                       "Events:", ;
+                       "Program Error" }
+
+   CASE cLang == "SLWIN" .OR. ;
+        cLang == "SLISO" .OR. ;
+        cLang == "SL852" .OR. ;
+        cLang == "SL437"                            // Slovenian
+      ::aMessages := { "ooHG Errors Log", ;
+                       "Application: ", ;
+                       "Date: ", ;
+                       "Time: ", ;
+                       "Version: ", ;
+                       "Alias in use: ", ;
+                       "Computer Name: ", ;
+                       "User Name: ", ;
+                       "Error: ", ;
+                       "Called from ", ;
+                       "Events:", ;
+                       "Program Error" }
+
+   OTHERWISE                                        // Default to English
+      ::aMessages := { "ooHG Errors Log", ;
+                       "Application: ", ;
+                       "Date: ", ;
+                       "Time: ", ;
+                       "Version: ", ;
+                       "Alias in use: ", ;
+                       "Computer Name: ", ;
+                       "User Name: ", ;
+                       "Error: ", ;
+                       "Called from ", ;
+                       "Events:", ;
+                       "Program Error" }
+   ENDCASE
+
+RETURN Self
+
+*------------------------------------------------------------------------------*
 METHOD Write( cTxt ) CLASS OOHG_TErrorHtml
+*------------------------------------------------------------------------------*
+
    ::cBufferFile   += ::Write2( cTxt )
    ::cBufferScreen += cTxt + CHR( 13 ) + CHR( 10 )
-RETURN nil
 
+RETURN Nil
+
+*------------------------------------------------------------------------------*
 METHOD Write2( cTxt ) CLASS OOHG_TErrorHtml
+*------------------------------------------------------------------------------*
+
 RETURN RTRIM( cTxt ) + "<br>" + CHR( 13 ) + CHR( 10 )
 
-*------------------------------------------------------------------------------
-*-30-12-2002
-*-AUTHOR: Antonio Novo
-*-HTML Page Head
-*------------------------------------------------------------------------------
 
+/*-30-12-2002
+ *-AUTHOR: Antonio Novo
+ *-HTML Page Head
+ */
+*------------------------------------------------------------------------------*
 METHOD FileHeader( cTitle ) CLASS OOHG_TErrorHtml
+*------------------------------------------------------------------------------*
+*
 RETURN "<HTML><HEAD><TITLE>" + cTitle + "</TITLE></HEAD>" + CHR( 13 ) + CHR( 10 ) + ;
        "<style> "                       + ;
          "body{ "                       + ;
@@ -281,13 +508,16 @@ RETURN "<HTML><HEAD><TITLE>" + cTitle + "</TITLE></HEAD>" + CHR( 13 ) + CHR( 10 
        "<BODY>" + CHR( 13 ) + CHR( 10 ) + ;
        "<H1 Align=Center>" + cTitle + "</H1><br>" + CHR( 13 ) + CHR( 10 )
 
+*------------------------------------------------------------------------------*
 METHOD CreateLog() CLASS OOHG_TErrorHtml
+*------------------------------------------------------------------------------*
 LOCAL nHdl, cFile, cTop, cBottom, nPos
-   cFile := "\" + CurDir() + "\" + ::FileName
+
+   cFile := IF( EMPTY( ::Path ), "\" + CurDir() + "\", ::Path ) + ::FileName
    cBottom := MEMOREAD( cFile )
    nPos := AT( ::PreHeader(), cBottom )
    IF nPos == 0
-      cTop := ::FileHeader( "ooHG Errorlog File" )
+      cTop := ::FileHeader( ::aMessages[1] )
    ELSE
       cTop := LEFT( cBottom, nPos - 1 )
       cBottom := SUBSTR( cBottom, nPos )
@@ -297,66 +527,83 @@ LOCAL nHdl, cFile, cTop, cBottom, nPos
    FWRITE( nHdl, ::cBufferFile )
    FWRITE( nHdl, cBottom )
    FCLOSE( nHdl )
-RETURN nil
 
+RETURN Nil
+
+*------------------------------------------------------------------------------*
 METHOD ErrorMessage( cError, nPosition ) CLASS OOHG_TErrorHtml
+*------------------------------------------------------------------------------*
+
    #ifdef __ERROR_EVENTS__
       Local aEvents
    #endif
 
    // Header
    ::cBufferScreen += ooHGVersion() + CHR( 13 ) + CHR( 10 ) + cError + CHR( 13 ) + CHR( 10 )
-   //
+
    ::cBufferFile   += ::PreHeader()
-   ::cBufferFile   += ::Write2( "Date: " + Dtoc( Date() ) + "  " + "Time: " + Time() )
-   ::cBufferFile   += ::Write2( "Version: " + ooHGVersion() )
-   ::cBufferFile   += ::Write2( "Alias in use: " + Alias() )
-   ::cBufferFile   += ::Write2( "Computer Name: " + NetName() )
-   ::cBufferFile   += ::Write2( "User Name: " + NetName( 1 ) )
-   ::cBufferFile   += ::Write2( "Error: " + cError )
+   ::cBufferFile   += ::Write2( ::aMessages[2] + GetProgramFileName() )
+   ::cBufferFile   += ::Write2( ::aMessages[3] + Dtoc( Date() ) + "  " + ::aMessages[4] + Time() )
+   ::cBufferFile   += ::Write2( ::aMessages[5] + ooHGVersion() )
+   ::cBufferFile   += ::Write2( ::aMessages[6] + Alias() )
+   ::cBufferFile   += ::Write2( ::aMessages[7] + NetName() )
+   ::cBufferFile   += ::Write2( ::aMessages[8] + NetName( 1 ) )
+   ::cBufferFile   += ::Write2( ::aMessages[9] + cError )
    ::ErrorHeader()
    ::cBufferFile   += ::PostHeader()
 
    // Called functions
    nPosition++
    DO WHILE ! Empty( ProcName( nPosition ) )
-      ::Write( "Called from " + ProcName( nPosition ) + "(" + AllTrim( Str( ProcLine( nPosition++ ) ) ) + ")" )
+      ::Write( ::aMessages[10] + ProcName( nPosition ) + "(" + AllTrim( Str( ProcLine( nPosition++ ) ) ) + ")" )
    ENDDO
 
    // Event list
    #ifdef __ERROR_EVENTS__
       aEvents := _ListEventInfo()
-      ::Write( "Events:" )
+      ::Write( ::aMessages[11] )
       AEVAL( aEvents, { | c | ::Write( c ) } )
    #endif
 
- dbcloseall()
+   dbcloseall()
    ::CreateLog()
-   C_MSGSTOP( ::cBufferScreen, "Program Error" )
+   C_MSGSTOP( ::cBufferScreen, ::aMessages[12] )
    ExitProcess( 0 )
-RETURN nil
+RETURN Nil
 
+*------------------------------------------------------------------------------*
 METHOD ErrorHeader() CLASS OOHG_TErrorHtml
+*------------------------------------------------------------------------------*
+
    // Insert own header's data here
-RETURN nil
+
+RETURN Nil
+
+
 
 CLASS OOHG_TErrorTxt FROM OOHG_TErrorHtml
-   DATA cBufferFile   INIT ""
-   DATA cBufferScreen INIT ""
    DATA PreHeader     INIT " " + CHR( 13 ) + CHR( 10 ) + replicate( "-", 80 ) + CHR( 13 ) + CHR( 10 ) + " " + CHR( 13 ) + CHR( 10 )
    DATA PostHeader    INIT CHR( 13 ) + CHR( 10 ) + CHR( 13 ) + CHR( 10 )
    DATA FileName      INIT "ErrorLog.txt"
-   METHOD Write2
    DATA FileHeader    INIT ""
+
+   METHOD Write2
 ENDCLASS
 
+*------------------------------------------------------------------------------*
 METHOD Write2( cTxt ) CLASS OOHG_TErrorTxt
+*------------------------------------------------------------------------------*
+
 RETURN RTRIM( cTxt ) + CHR( 13 ) + CHR( 10 )
 
-*------------------------------------------------------------------------------
+*------------------------------------------------------------------------------*
 Function ooHGVersion()
-*------------------------------------------------------------------------------
+*------------------------------------------------------------------------------*
+
 Return "ooHG V4.3 - 2011.09.02"
 
+*------------------------------------------------------------------------------*
 Function MiniGuiVersion()
+*------------------------------------------------------------------------------*
+
 Return ooHGVersion()
