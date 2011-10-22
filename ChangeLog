@@ -1,11 +1,17 @@
 /*
- * $Id: ChangeLog,v 1.801 2011-10-22 22:43:48 fyurisich Exp $
+ * $Id: ChangeLog,v 1.802 2011-10-22 23:01:18 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2011-10-22 21:00:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_error.prg
+     * When no language is specified defaults to ENGLISH.
+       To change language insert in your Main function:
+          PUBLIC _OOHG_TxtError := OOHG_TErrorHtml():New( SET( _SET_LANGUAGE ) )
 
 2011-10-22 20:45:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_error.prg
@@ -15,6 +21,11 @@
        German, Italian, Polish, Portuguese, Russian, Finnish,
        Dutch and Slovenian.
      + Added DATA Path to enable relocation of log file.
+       To change the path, insert in your Main function:
+          PUBLIC _OOHG_TxtError := OOHG_TErrorHtml():New()
+          _OOHG_TxtError:Path := "C:\"
+       To change de log's name, insert also:
+          _OOHG_TxtError:FileName := "MyErrorLog.htm"
      + Added EXE filename to error's reported information.
    * source/h_init.prg
      + Added two new entries to miscelaneous messages array.
