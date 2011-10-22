@@ -1,5 +1,5 @@
 /*
- * $Id: i_button.ch,v 1.15 2011-09-05 18:06:01 fyurisich Exp $
+ * $Id: i_button.ch,v 1.16 2011-10-22 16:46:03 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -121,15 +121,17 @@
             [ <notrans: NOTRANSPARENT> ] ;
             [ <scale: FORCESCALE> ] ;
             [ <cancel: CANCEL> ] ;
-            [ <alignment:LEFT,RIGHT,TOP,BOTTOM> ] ;
+            [ <alignment:LEFT,RIGHT,TOP,BOTTOM,CENTER> ] ;
             [ <multiline: MULTILINE> ] ;
+            [ <themed : THEMED> ] ;
+            [ IMAGEMARGIN <aImageMargin> ] ;
    =>;
             [ <obj> := ] _OOHG_SelectSubClass( TButton(), [ <subclass>() ] ): ;
                   Define( <(name)>, <(parent)>, <col>, <row>, <caption>, <{action}>, ;
                   <w>, <h>, <font>, <size>, <tooltip>, <{gotfocus}>,<{lostfocus}>, <.flat.>, <.notabstop.>, ;
                   <helpid>, <.invisible.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.>, <.rtl.>, ;
                   <.noprefix.>, <.disabled.>, <buffer>, <hbitmap>, <bitmap>, <.notrans.>, <.scale.>, ;
-                  <.cancel.>, <"alignment">, <.multiline.> )
+                  <.cancel.>, <"alignment">, <.multiline.>, <.themed.>, <aImageMargin> )
 
 #command @ <row>,<col> CHECKBUTTON <name> ;
             [ OBJ <obj> ] ;

@@ -1,11 +1,22 @@
 /*
- * $Id: ChangeLog,v 1.799 2011-10-20 21:13:12 fyurisich Exp $
+ * $Id: ChangeLog,v 1.800 2011-10-22 16:46:02 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2011-10-22 14:45:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_altsyntax.ch
+   * include/i_button.ch
+   * source/h_button.prg
+     + Added THEMED clause to image buttons (so they look themed).
+     + Added IMAGEMARGIN clause to image buttons (to set the margins
+       around the image).
+     + Added CENTER option to ALIGNMENT clause.
+     + Added DATAs lThemed and aImageMargin to TButton clause.
+     + Added METHODs Events_Notify and ImageMargin to TButton clause.
 
 2011-10-20 19:15:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_combo.prg

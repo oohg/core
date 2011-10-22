@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.51 2011-09-16 15:14:43 fyurisich Exp $
+ * $Id: h_button.prg,v 1.52 2011-10-22 16:46:03 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -82,13 +82,13 @@
 
  Parts of this project are based upon:
 
-	"Harbour GUI framework for Win32"
- 	Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- 	Copyright 2001 Antonio Linares <alinares@fivetech.com>
-	www - http://www.harbour-project.org
+   "Harbour GUI framework for Win32"
+    Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
+    Copyright 2001 Antonio Linares <alinares@fivetech.com>
+   www - http://www.harbour-project.org
 
-	"Harbour Project"
-	Copyright 1999-2003, http://www.harbour-project.org/
+   "Harbour Project"
+   Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
 #include "oohg.ch"
@@ -106,6 +106,8 @@ CLASS TButton FROM TControl
    DATA Stretch         INIT .F.
    DATA hImage          INIT nil
    DATA ImageSize       INIT .F.
+   DATA lThemed         INIT .F.
+   DATA aImageMargin    INIT {10, 10, 10, 10}
 
    METHOD Define
    METHOD DefineImage
@@ -114,10 +116,11 @@ CLASS TButton FROM TControl
    METHOD HBitMap       SETGET
    METHOD Buffer        SETGET
    METHOD Value         SETGET
-
+   METHOD Events_Notify
    METHOD RePaint
    METHOD SizePos
    METHOD Release
+   METHOD ImageMargin   SETGET
 
    EMPTY( _OOHG_AllVars )
 ENDCLASS
@@ -127,15 +130,16 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, ProcedureName, w, h, ;
                fontname, fontsize, tooltip, gotfocus, lostfocus, flat, ;
                NoTabStop, HelpId, invisible, bold, italic, underline, ;
                strikeout, lRtl, lNoPrefix, lDisabled, cBuffer, hBitMap, ;
-               cImage, lNoTransparent, lScale, lCancel, cAlign, lMultiLine ) CLASS TButton
+               cImage, lNoTransparent, lScale, lCancel, cAlign, lMultiLine, ;
+               themed, aImageMargin ) CLASS TButton
 *-----------------------------------------------------------------------------*
-Local ControlHandle, nStyle, lBitMap
+Local ControlHandle, nStyle, lBitMap, i
 
    ASSIGN ::nCol    VALUE x TYPE "N"
    ASSIGN ::nRow    VALUE y TYPE "N"
    ASSIGN ::nWidth  VALUE w TYPE "N"
    ASSIGN ::nHeight VALUE h TYPE "N"
-
+   
    if !empty(cImage) .and. !empty(Caption)
       DEFAULT  cAlign to "LEFT"
    endif
@@ -150,6 +154,16 @@ Local ControlHandle, nStyle, lBitMap
          ValidHandler( hBitMap )
          lBitMap := .T.
       EndIf
+   EndIf
+
+   If HB_IsArray( aImageMargin )
+      For i := 1 to MIN( 4, LEN( aImageMargin ) )
+         If HB_IsNumeric( aImageMargin[i] )
+            ::aImageMargin[i] := aImageMargin[i]
+         EndIf
+      Next
+   ElseIf HB_IsNumeric( aImageMargin )
+      ::aImageMargin := {aImageMargin, aImageMargin, aImageMargin, aImageMargin}
    EndIf
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize,,,, lRtl )
@@ -169,6 +183,7 @@ Local ControlHandle, nStyle, lBitMap
    ASSIGN ::lNoTransparent VALUE lNoTransparent TYPE "L"
    ASSIGN ::Stretch        VALUE lScale         TYPE "L"
    ASSIGN ::lCancel        VALUE lCancel        TYPE "L"
+   ASSIGN ::lThemed        VALUE themed         TYPE "L"
 
    IF VALTYPE( cAlign ) $ "CM"
       cAlign := ALLTRIM( UPPER( cAlign ) )
@@ -181,7 +196,9 @@ Local ControlHandle, nStyle, lBitMap
             cAlign := 1
          CASE "BOTTOM" = cAlign
             cAlign := 3
-         OTHERWISE
+         CASE "CENTER" = cAlign
+            cAlign := 4
+         OTHERWISE                         // TOP
             cAlign := 2
       ENDCASE
    ENDIF
@@ -295,8 +312,8 @@ METHOD RePaint() CLASS TButton
       ENDIF
       ::AuxHandle := NIL
       ::TControl:SizePos()
-      IF OSisWinXPorLater() .AND. ValidHandler( ::hImage ) .AND. LEN( ::Caption ) > 0
-         SetImageXP( ::hWnd, ::hImage, ::nAlign, ::BackColorCode )
+      IF OSisWinXPorLater() .AND. ValidHandler( ::hImage ) .AND. ( LEN( ::Caption ) > 0 .OR. ::lThemed )
+         SetImageXP( ::hWnd, ::hImage, ::nAlign, ::BackColorCode, ::aImageMargin[1], ::aImageMargin[2], ::aImageMargin[3], ::aImageMargin[4] )
          ::ReDraw()
       ELSEIF ::Stretch .OR. ::AutoFit
          ::AuxHandle := _OOHG_SetBitmap( Self, ::hImage, BM_SETIMAGE, ::Stretch, ::AutoFit )
@@ -322,10 +339,60 @@ METHOD Release() CLASS TButton
    ENDIF
 RETURN ::Super:Release()
 
+*-----------------------------------------------------------------------------*
+METHOD Events_Notify( wParam, lParam ) CLASS TButton
+*-----------------------------------------------------------------------------*
+Local nNotify := GetNotifyCode( lParam )
+
+   If nNotify == NM_CUSTOMDRAW
+      If IsWindowStyle( ::hWnd, BS_BITMAP ) .AND. ;
+         ::lThemed .AND. ;
+         IsAppThemed() .AND. ;
+         IsXPThemeActive() .AND. ;
+         ValidHandler( ::hImage )
+
+         Return TButton_Notify_CustomDraw( lParam )
+      EndIf
+   EndIf
+
+Return ::Super:Events_Notify( wParam, lParam )
+
+*-----------------------------------------------------------------------------*
+METHOD ImageMargin( aMargins ) CLASS TButton
+*-----------------------------------------------------------------------------*
+LOCAL i
+
+   If HB_IsArray( aMargins )
+      For i := 1 to MIN( 4, LEN( aMargins ) )
+         If HB_IsNumeric( aMargins[i] )
+            ::aImageMargin[i] := aMargins[i]
+         EndIf
+      Next
+      
+      ::RePaint()
+   ElseIf HB_IsNumeric( aMargins )
+      ::aImageMargin := {aMargins, aMargins, aMargins, aMargins}
+      
+      ::RePaint()
+   EndIf
+   
+Return ::aImageMargin
+
 #pragma BEGINDUMP
+
+#define _WIN32_IE      0x0500
+
+#ifndef HB_OS_WIN_32_USED
+   #define HB_OS_WIN_32_USED
+#endif
+
+#define _WIN32_WINNT   0x0501
+
 #include <hbapi.h>
 #include <windows.h>
 #include <commctrl.h>
+#include <uxtheme.h>
+#include <tmschema.h>
 #include <oohg.h>
 
 static WNDPROC lpfnOldWndProc = 0;
@@ -404,14 +471,133 @@ HB_FUNC( SETIMAGEXP )
       ImageList_AddMasked( himl, hBmp2, clrColor );
       memset( &bm, 0, sizeof( bm ) );
       bi.himl = himl;
-      bi.margin.left = 10;
-      bi.margin.top = 10;
-      bi.margin.bottom = 10;
-      bi.margin.right = 10;
+      bi.margin.top = hb_parni( 5 );
+      bi.margin.left = hb_parni( 6 );
+      bi.margin.bottom = hb_parni( 7 );
+      bi.margin.right = hb_parni( 8 );
       bi.uAlign = hb_parni( 3 );
       SendMessage( hWnd, BCM_SETIMAGELIST, 0, ( LPARAM ) &bi );
       DeleteObject( hBmp2 );
    }
+}
+
+/*
+The following function was derived from CImageButtonWithStyle Class by Stephen C. Steel
+http://www.codeproject.com/KB/buttons/imagebuttonwithstyle.aspx
+*/
+
+typedef int (CALLBACK *CALL_OPENTHEMEDATA )( HWND, LPCWSTR );
+typedef int (CALLBACK *CALL_DRAWTHEMEBACKGROUND )( HTHEME, HDC, int, int, const RECT*, const RECT* );
+typedef int (CALLBACK *CALL_GETTHEMEBACKGROUNDCONTENTRECT )( HTHEME, HDC, int, int, const RECT*, RECT* );
+typedef int (CALLBACK *CALL_CLOSETHEMEDATA )( HTHEME );
+typedef int (CALLBACK *CALL_DRAWTHEMEPARENTBACKGROUND )( HWND, HDC, RECT* );
+
+int TButton_Notify_CustomDraw( LPARAM lParam )
+{
+   HMODULE hInstDLL;
+   LPNMCUSTOMDRAW pCustomDraw = (LPNMCUSTOMDRAW) lParam;
+   CALL_DRAWTHEMEPARENTBACKGROUND dwProcDrawThemeParentBackground;
+   CALL_OPENTHEMEDATA dwProcOpenThemeData;
+   HTHEME hTheme;
+   LONG style;
+   int state_id;
+   CALL_DRAWTHEMEBACKGROUND dwProcDrawThemeBackground;
+   CALL_GETTHEMEBACKGROUNDCONTENTRECT dwProcGetThemeBackgroundContentRect;
+   RECT content_rect;
+   CALL_CLOSETHEMEDATA dwProcCloseThemeData;
+
+   hInstDLL = LoadLibrary( "UXTHEME.DLL" );
+   if( ! hInstDLL )
+   {
+      return CDRF_DODEFAULT;
+   }
+
+   if( pCustomDraw->dwDrawStage == CDDS_PREERASE )
+   {
+      /* erase background (according to parent window's themed background) */
+      dwProcDrawThemeParentBackground = ( CALL_DRAWTHEMEPARENTBACKGROUND ) GetProcAddress( hInstDLL, "DrawThemeParentBackground" );
+      if( ! dwProcDrawThemeParentBackground )
+      {
+         FreeLibrary( hInstDLL );
+         return CDRF_DODEFAULT;
+      }
+      ( dwProcDrawThemeParentBackground )( pCustomDraw->hdr.hwndFrom, pCustomDraw->hdc, &pCustomDraw->rc );
+   }
+
+   if (pCustomDraw->dwDrawStage == CDDS_PREERASE || pCustomDraw->dwDrawStage == CDDS_PREPAINT)
+   {
+      /* get theme handle */
+      dwProcOpenThemeData = ( CALL_OPENTHEMEDATA ) GetProcAddress( hInstDLL, "OpenThemeData" );
+      if( ! dwProcOpenThemeData )
+      {
+         FreeLibrary( hInstDLL );
+         return CDRF_DODEFAULT;
+      }
+
+      hTheme = (HTHEME) ( dwProcOpenThemeData )( pCustomDraw->hdr.hwndFrom, L"BUTTON" );
+      if( ! hTheme )
+      {
+         FreeLibrary( hInstDLL );
+         return CDRF_DODEFAULT;
+      }
+
+      /* determine state for DrawThemeBackground()
+         note: order of these tests is significant */
+      style = GetWindowLong( pCustomDraw->hdr.hwndFrom, GWL_STYLE );
+
+      state_id = PBS_NORMAL;
+      
+      if( style & WS_DISABLED )
+      {
+         state_id = PBS_DISABLED;
+      }
+      else if( pCustomDraw->uItemState & CDIS_SELECTED )
+      {
+         state_id = PBS_PRESSED;
+      }
+      else if( pCustomDraw->uItemState & CDIS_HOT )
+      {
+         state_id = PBS_HOT;
+      }
+      else if( style & BS_DEFPUSHBUTTON )
+      {
+         state_id = PBS_DEFAULTED;
+      }
+
+      /* draw themed button background appropriate to button state */
+      dwProcDrawThemeBackground = ( CALL_DRAWTHEMEBACKGROUND ) GetProcAddress( hInstDLL, "DrawThemeBackground" );
+      if( ! dwProcDrawThemeBackground )
+      {
+         FreeLibrary( hInstDLL );
+         return CDRF_DODEFAULT;
+      }
+      ( dwProcDrawThemeBackground )( hTheme, pCustomDraw->hdc, BP_PUSHBUTTON, state_id, &pCustomDraw->rc, NULL );
+
+      /* get content rectangle (space inside button for image) */
+      dwProcGetThemeBackgroundContentRect = ( CALL_GETTHEMEBACKGROUNDCONTENTRECT ) GetProcAddress( hInstDLL, "GetThemeBackgroundContentRect" );
+      if( ! dwProcGetThemeBackgroundContentRect )
+      {
+         FreeLibrary( hInstDLL );
+         return CDRF_DODEFAULT;
+      }
+      ( dwProcGetThemeBackgroundContentRect )( hTheme, pCustomDraw->hdc, BP_PUSHBUTTON, state_id, &pCustomDraw->rc, &content_rect );
+
+      /* close theme */
+      dwProcCloseThemeData = ( CALL_CLOSETHEMEDATA ) GetProcAddress( hInstDLL, "CloseThemeData" );
+      if( dwProcCloseThemeData )
+      {
+         ( dwProcCloseThemeData )( hTheme );
+      }
+
+      FreeLibrary( hInstDLL );
+   }
+
+   return CDRF_DODEFAULT;
+}
+
+HB_FUNC( TBUTTON_NOTIFY_CUSTOMDRAW )
+{
+   hb_retni( TButton_Notify_CustomDraw( (LPARAM) hb_parnl( 1 ) ) );
 }
 
 #pragma ENDDUMP

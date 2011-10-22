@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.54 2011-09-14 00:38:39 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.55 2011-10-22 16:46:03 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -122,6 +122,8 @@ Memvariables
 #xtranslate _OOHG_ActiveControlTrailingFontColor      => _OOHG_ActiveControlInfo \[  25 \]
 #xtranslate _OOHG_ActiveControlBackgroundColor        => _OOHG_ActiveControlInfo \[  26 \]
 
+#xtranslate _OOHG_ActiveControlImageMargin            => _OOHG_ActiveControlInfo \[ 151 \]
+#xtranslate _OOHG_ActiveControlThemed                 => _OOHG_ActiveControlInfo \[ 152 \]
 #xtranslate _OOHG_ActiveControlListWidth              => _OOHG_ActiveControlInfo \[ 153 \]
 #xtranslate _OOHG_ActiveControl3State                 => _OOHG_ActiveControlInfo \[ 154 \]
 #xtranslate _OOHG_ActiveControlMultiLine              => _OOHG_ActiveControlInfo \[ 155 \]
@@ -1146,7 +1148,9 @@ BUTTON
         _OOHG_ActiveControlScale       := .F.    ;;
         _OOHG_ActiveControlCancel      := .F.    ;;
         _OOHG_ActiveControlAlignment   := Nil    ;;
-        _OOHG_ActiveControlMultiLine   := .F.
+        _OOHG_ActiveControlMultiLine   := .F.    ;;
+        _OOHG_ActiveControlThemed      := .F.    ;;
+        _OOHG_ActiveControlImageMargin := Nil
 
 #xcommand CAPTION <caption> ;
         => ;
@@ -1212,13 +1216,21 @@ BUTTON
         => ;
         _OOHG_ActiveControlCancel := <cancel>
 
-#xcommand ALIGNMENT <alignment:LEFT,RIGHT,TOP,BOTTOM> ;
+#xcommand ALIGNMENT <alignment:LEFT,RIGHT,TOP,BOTTOM,CENTER> ;
         => ;
         _OOHG_ActiveControlAlignment := <"alignment">
 
 #xcommand MULTILINE <multiline> ;
         => ;
         _OOHG_ActiveControlMultiLine := <multiline>
+
+#xcommand THEMED <themed> ;
+        => ;
+        _OOHG_ActiveControlThemed := <themed>
+
+#xcommand IMAGEMARGIN <margin> ;
+        => ;
+        _OOHG_ActiveControlImageMargin := <margin>
 
 #xcommand END BUTTON ;
         => ;
@@ -1254,7 +1266,9 @@ BUTTON
                 _OOHG_ActiveControlScale, ;
                 _OOHG_ActiveControlCancel, ;
                 _OOHG_ActiveControlAlignment, ;
-                _OOHG_ActiveControlMultiLine )
+                _OOHG_ActiveControlMultiLine, ;
+                _OOHG_ActiveControlThemed, ;
+                _OOHG_ActiveControlImageMargin )
 
 /*----------------------------------------------------------------------------
 IMAGE
@@ -2546,10 +2560,6 @@ SCROLLBAR
 #xcommand ON LEFT <top> ;
         => ;
         _OOHG_ActiveControlOnTop := <{top}>
-
-#xcommand ON BOTTOM <bottom> ;
-        => ;
-        _OOHG_ActiveControlOnBottom := <{bottom}>
 
 #xcommand ON BOTTOM <bottom> ;
         => ;
