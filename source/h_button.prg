@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.52 2011-10-22 16:46:03 fyurisich Exp $
+ * $Id: h_button.prg,v 1.53 2011-10-23 22:28:28 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -391,9 +391,48 @@ Return ::aImageMargin
 #include <hbapi.h>
 #include <windows.h>
 #include <commctrl.h>
-#include <uxtheme.h>
-#include <tmschema.h>
+//#include <uxtheme.h>
+//#include <tmschema.h>
 #include <oohg.h>
+
+#ifndef BCM_FIRST
+   #define BCM_FIRST     0x1600
+#endif
+
+#ifndef BCM_SETIMAGELIST
+   typedef struct {
+       HIMAGELIST himl;
+       RECT margin;
+       UINT uAlign;
+   } BUTTON_IMAGELIST, *PBUTTON_IMAGELIST;
+
+   #define BCM_SETIMAGELIST     ( BCM_FIRST + 2 )
+   #define BCM_GETIMAGELIST     ( BCM_FIRST + 3 )
+#endif
+
+typedef struct _MARGINS {
+	int cxLeftWidth;
+	int cxRightWidth;
+	int cyTopHeight;
+	int cyBottomHeight;
+} MARGINS, *PMARGINS;
+typedef HANDLE HTHEME;
+
+enum {
+	BP_PUSHBUTTON = 1,
+	BP_RADIOBUTTON = 2,
+	BP_CHECKBOX = 3,
+	BP_GROUPBOX = 4,
+	BP_USERBUTTON = 5
+};
+
+enum {
+	PBS_NORMAL = 1,
+	PBS_HOT = 2,
+	PBS_PRESSED = 3,
+	PBS_DISABLED = 4,
+	PBS_DEFAULTED = 5
+};
 
 static WNDPROC lpfnOldWndProc = 0;
 
@@ -419,21 +458,6 @@ HB_FUNC( INITBUTTON )
 
    HWNDret( hbutton );
 }
-
-#ifndef BCM_FIRST
-   #define BCM_FIRST     0x1600
-#endif
-
-#ifndef BCM_SETIMAGELIST
-   typedef struct {
-       HIMAGELIST himl;
-       RECT margin;
-       UINT uAlign;
-   } BUTTON_IMAGELIST, *PBUTTON_IMAGELIST;
-
-   #define BCM_SETIMAGELIST     ( BCM_FIRST + 2 )
-   #define BCM_GETIMAGELIST     ( BCM_FIRST + 3 )
-#endif
 
 HB_FUNC( SETIMAGEXP )
 {

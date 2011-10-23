@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.803 2011-10-23 05:25:41 fyurisich Exp $
+ * $Id: ChangeLog,v 1.804 2011-10-23 22:28:28 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,6 +7,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2011-10-23 20:25:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_button.prg
+     + Added C definitions needed to compile with BCC.
+     - Commented out includes of uxtheme.h and tmschema.h
+     
 2011-10-23 03:25:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * docs/classes.txt
      * Updated.
