@@ -1,5 +1,5 @@
 /*
- * $Id: h_tree.prg,v 1.25 2011-10-18 01:08:04 fyurisich Exp $
+ * $Id: h_tree.prg,v 1.26 2011-10-24 23:13:21 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -158,6 +158,14 @@ CLASS TTree FROM TControl
    METHOD HandleToItem
    METHOD ItemToHandle
    METHOD ItemVisible
+   METHOD IsItemExpanded
+   METHOD IsItemVisible
+   METHOD FirstVisible
+   METHOD PrevVisible
+   METHOD NextVisible
+   METHOD LastVisible
+   METHOD VisibleCount
+   METHOD ItemHeight         SETGET
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -813,7 +821,7 @@ Local nNotify := GetNotifyCode( lParam )
 Local cNewValue, lValid, TreeItemHandle, Item
 
    If nNotify == NM_CUSTOMDRAW
-      Return TreeView_Notify_CustomDraw( Self, lParam, ::DragActive )
+      Return TreeView_Notify_CustomDraw( Self, lParam, ::HasDragFocus )
 
    ElseIf nNotify == TVN_SELCHANGING
       TreeItemHandle := TreeView_ActualSelectedItem( lParam )
@@ -960,6 +968,10 @@ Local nItem, lChecked, TargetHandle, i, oAux
 
    ElseIf nMsg == WM_MOUSEMOVE
       If ::DragActive
+         If HB_IsObject( ::LastTarget )
+            ::LastTarget:HasDragFocus := .F.
+         EndIf
+
          _OOHG_SetMouseCoords( Self, LOWORD( lParam ), HIWORD( lParam ) )
 
          TargetHandle := GetWindowUnderCursor()
@@ -982,7 +994,7 @@ Local nItem, lChecked, TargetHandle, i, oAux
                   Exit
                EndIf
             Next i
-
+            
             If i <= len( ::aTarget ) .AND. oAux:DropEnabled
                If HB_IsObject( ::LastTarget )
                   If ::LastTarget:hWnd # oAux:hWnd
@@ -998,7 +1010,8 @@ Local nItem, lChecked, TargetHandle, i, oAux
                EndIf
 
                ::LastTarget := oAux
-               
+               oAux:HasDragFocus := .T.
+
                Eval( oAux:OnMouseDrag, Self, oAux, wParam )
                
                Return Nil
@@ -1014,6 +1027,8 @@ Local nItem, lChecked, TargetHandle, i, oAux
    ElseIf nMsg == WM_LBUTTONUP
       If ::DragActive
          If HB_IsObject( ::LastTarget )
+            ::LastTarget:HasDragFocus := .F.
+            
             If HB_IsObject( ::LastTarget:AutoScrollTimer )
                ::LastTarget:AutoScrollTimer:Enabled := .F.
             EndIf
@@ -1057,6 +1072,8 @@ Local nItem, lChecked, TargetHandle, i, oAux
    ElseIf nMsg == WM_CANCELMODE .OR. nMsg == WM_CAPTURECHANGED
       If ::DragActive
          If HB_IsObject( ::LastTarget )
+            ::LastTarget:HasDragFocus := .F.
+
             If HB_IsObject( ::LastTarget:AutoScrollTimer )
                ::LastTarget:AutoScrollTimer:Release()
                ::LastTarget:AutoScrollTimer := Nil
@@ -1839,23 +1856,121 @@ Return ::aTreeMap[ Pos ]
 *------------------------------------------------------------------------------*
 METHOD ItemVisible( Item ) CLASS TTree
 *------------------------------------------------------------------------------*
-Local Pos
+// does not select item just shows it in the tree's window
+Return TreeView_EnsureVisible( ::hWnd, ::ItemToHandle( Item ) )
 
-   If ::ItemIds
-      Pos := aScan( ::aTreeIdMap, Item )
+*------------------------------------------------------------------------------*
+METHOD IsItemExpanded( Item ) CLASS TTree
+*------------------------------------------------------------------------------*
+// .T. when has children and the list is expanded
+Return TreeView_GetExpandedState( ::hWnd, ::ItemToHandle( Item ) )
 
-      If Pos == 0
-         MsgOOHGError( "ItemVisible Method: Invalid Id Reference. Program Terminated" )
-      EndIf
+*------------------------------------------------------------------------------*
+METHOD IsItemVisible( Item, lWhole ) CLASS TTree
+*------------------------------------------------------------------------------*
+
+   ASSIGN lWhole VALUE lWhole TYPE "L" DEFAULT .F.
+   // FALSE and item partially shown => item is visible
+   // TRUE and item partially shown => item is NOT visible
+
+Return TREEVIEW_ISITEMVISIBLE( ::hWnd, ::ItemToHandle( Item ), lWhole )
+
+*------------------------------------------------------------------------------*
+METHOD FirstVisible() CLASS TTree
+*------------------------------------------------------------------------------*
+LOCAL Handle, Item
+
+   // first item shown in the control's window
+   Handle := TreeView_GetFirstVisible( ::hWnd )
+   
+   If ValidHandler( Handle )
+      Item := ::HandleToItem( Handle )
    Else
-      If Item < 1 .OR. Item > len( ::aTreeMap )
-         MsgOOHGError( "ItemVisible Method: Invalid Item Reference. Program Terminated" )
-      EndIf
-
-      Pos := Item
+      Item := 0
    EndIf
 
-Return TreeView_EnsureVisible( ::hWnd, ::aTreeMap[ Pos ] )
+Return Item
+
+*------------------------------------------------------------------------------*
+METHOD PrevVisible( Item ) CLASS TTree
+*------------------------------------------------------------------------------*
+LOCAL Handle, Prev
+
+   // next item that could be shown
+   // it may be outside the control's windows
+   // but it will be shown if the control is scrolled down
+   // To know if the item is actually shown use
+   // IsItemVisible method
+   Handle := TreeView_GetPrevVisible( ::hWnd, ::ItemToHandle( Item ) )
+
+   If ValidHandler( Handle )
+      Prev := ::HandleToItem( Handle )
+   Else
+      Prev := 0
+   EndIf
+
+Return Prev
+
+*------------------------------------------------------------------------------*
+METHOD NextVisible( Item ) CLASS TTree
+*------------------------------------------------------------------------------*
+LOCAL Handle, Next
+
+   // previous item that could be shown
+   // it may be outside the control's windows
+   // but it will be shown if the control is scrolled up
+   // To know if the item is actually shown use
+   // IsItemVisible method
+   Handle := TreeView_GetNextVisible( ::hWnd, ::ItemToHandle( Item ) )
+
+   If ValidHandler( Handle )
+      Next := ::HandleToItem( Handle )
+   Else
+      Next := 0
+   EndIf
+
+Return Next
+
+*------------------------------------------------------------------------------*
+METHOD LastVisible( ) CLASS TTree
+*------------------------------------------------------------------------------*
+LOCAL Handle, Item
+
+   // last item that could be shown
+   // it may be outside the control's windows
+   // but it will be shown if the control is scrolled down
+   // To know if the item is actually shown use
+   // IsItemVisible method
+   Handle := TreeView_GetLastVisible( ::hWnd )
+
+   If ValidHandler( Handle )
+      Item := ::HandleToItem( Handle )
+   Else
+      Item := 0
+   EndIf
+
+Return Item
+
+*------------------------------------------------------------------------------*
+METHOD VisibleCount() CLASS TTree
+*------------------------------------------------------------------------------*
+// number of items that can be fully visible in the control's window
+Return TreeView_GetVisibleCount( ::hWnd )
+
+*------------------------------------------------------------------------------*
+METHOD ItemHeight( nHeight ) CLASS TTree
+*------------------------------------------------------------------------------*
+/* New height of every item in the tree view, in pixels.
+ * Heights less than 1 will be set to 1.
+ * If this argument is not even, it will be rounded down to the nearest even value.
+ * If this argument is -1, the control will revert to using its default item height.
+ */
+ 
+ If HB_IsNumeric( nHeight ) .and. nHeight # 0
+    TreeView_SetItemHeight( ::hWnd, nHeight )
+ EndIf
+ 
+Return TreeView_GetItemHeight( ::hWnd )
 
 *------------------------------------------------------------------------------*
 METHOD Release() CLASS TTree
@@ -2464,6 +2579,24 @@ HB_FUNC( TREEVIEW_SETBOLDSTATE )
    TreeView_SetItem( HWNDparam( 1 ), &TreeItem );
 }
 
+HB_FUNC( TREEVIEW_GETEXPANDEDSTATE )
+{
+   HTREEITEM TreeItemHandle;
+   TV_ITEM   TreeItem;
+
+   memset( &TreeItem, 0, sizeof( TV_ITEM ) );
+
+   TreeItemHandle = HTREEparam( 2 );
+
+   TreeItem.mask = TVIF_HANDLE | TVIF_STATE;
+   TreeItem.hItem = TreeItemHandle;
+   TreeItem.stateMask = TVIS_EXPANDED;
+
+   TreeView_GetItem( HWNDparam( 1 ), &TreeItem );
+
+   hb_retl( ( TreeItem.state & TVIS_EXPANDED ) == TVIS_EXPANDED );
+}
+
 HB_FUNC( TREEVIEW_PREVIOUSSELECTEDITEM )
 {
    LPNMTREEVIEW lpnmtv = (LPNMTREEVIEW) (LPARAM) hb_parnl( 1 );
@@ -2914,5 +3047,69 @@ HB_FUNC( TREEVIEW_ENSUREVISIBLE )
 {
    hb_retl( TreeView_EnsureVisible( HWNDparam( 1 ), HTREEparam( 2 ) ) );
 }
-         
+
+HB_FUNC( TREEVIEW_GETFIRSTVISIBLE )
+{
+   HTREEret( TreeView_GetFirstVisible( HWNDparam( 1 ) ) );
+}
+
+HB_FUNC( TREEVIEW_GETPREVVISIBLE )
+{
+   HTREEret( TreeView_GetPrevVisible( HWNDparam( 1 ), HTREEparam( 2 ) ) );
+}
+
+HB_FUNC( TREEVIEW_GETNEXTVISIBLE )
+{
+   HTREEret( TreeView_GetNextVisible( HWNDparam( 1 ), HTREEparam( 2 ) ) );
+}
+
+HB_FUNC( TREEVIEW_GETLASTVISIBLE )
+{
+   HTREEret( TreeView_GetLastVisible( HWNDparam( 1 ) ) );
+}
+
+HB_FUNC( TREEVIEW_GETVISIBLECOUNT )
+{
+   hb_retni( TreeView_GetVisibleCount( HWNDparam( 1 ) ) );
+}
+
+HB_FUNC( TREEVIEW_GETITEMHEIGHT )
+{
+   hb_retni( TreeView_GetItemHeight( HWNDparam( 1 ) ) );
+}
+
+HB_FUNC( TREEVIEW_SETITEMHEIGHT )
+{
+   hb_retni( TreeView_SetItemHeight( HWNDparam( 1 ), hb_parni( 2 ) ) );
+}
+
+HB_FUNC( TREEVIEW_ISITEMVISIBLE )
+{
+   BOOL bVisible = FALSE;
+   RECT iRect, wRect;
+
+   if( TreeView_GetItemRect( HWNDparam( 1 ), HTREEparam( 2 ), (LPRECT) &iRect, FALSE ) )
+   {
+      GetClientRect( HWNDparam( 1 ), (LPRECT) &wRect );
+
+      if( hb_parl( 3 ) )
+      {
+         /* whole item shown */
+         if( iRect.bottom <= wRect.bottom )
+         {
+            bVisible = TRUE;
+         }
+      }
+      else
+      {
+         /* partially shown */
+         if( iRect.top < wRect.bottom )
+         {
+            bVisible = TRUE;
+         }
+      }
+   }
+
+   hb_retl( bVisible );
+}
 #pragma ENDDUMP

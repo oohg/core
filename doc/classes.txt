@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.35 2011-10-23 05:25:42 fyurisich Exp $
+ * $Id: classes.txt,v 1.36 2011-10-24 23:13:21 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -2119,25 +2119,33 @@ CLASS TTREE FROM TCONTROL
    METHOD EVENTS
    METHOD EVENTS_NOTIFY
    METHOD EXPAND
+   METHOD FIRSTVISIBLE
    METHOD GETCHILDREN
    METHOD GETPARENT
    METHOD HANDLETOITEM
    METHOD INDENT                  SETGET
    METHOD ISITEMCOLLAPSED
+   METHOD ISITEMEXPANDED
+   METHOD ISITEMVISIBLE
    METHOD ITEM
    METHOD ITEMCOUNT
    METHOD ITEMDRAGGABLE           SETGET
    METHOD ITEMENABLED             SETGET
+   METHOD ITEMHEIGHT              SETGET
    METHOD ITEMIMAGES
    METHOD ITEMREADONLY            SETGET
    METHOD ITEMTOHANDLE
    METHOD ITEMVISIBLE
+   METHOD LASTVISIBLE
    METHOD LOOKFORKEY
    METHOD MOVEITEM
+   METHOD NEXTVISIBLE
    METHOD ONENTER                 SETGET
+   METHOD PREVVISIBLE
    METHOD RELEASE
    METHOD SELCOLOR                SETGET
    METHOD VALUE                   SETGET
+   METHOD VISIBLECOUNT
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -2235,6 +2243,7 @@ CLASS TWINDOW
    DATA FOCUSITALIC               INIT .F.
    DATA FOCUSSTRIKEOUT            INIT .F.
    DATA FOCUSUNDERLINE            INIT .F.
+   DATA HASDRAGFOCUS              INIT .F.              // .T. when drag image is upon the control and the control is drop enabled
    DATA HDC
    DATA HSCROLLBAR                INIT NIL
    DATA HWND                      INIT 0
