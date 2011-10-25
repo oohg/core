@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.36 2011-10-24 23:13:21 fyurisich Exp $
+ * $Id: classes.txt,v 1.37 2011-10-25 22:24:45 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -146,6 +146,7 @@ CLASS OOHGRECORD
    DATA CALIAS__
 
    ERROR HANDLER FIELDASSIGN
+   
    METHOD APPEND
    METHOD BOF
    METHOD CLOSE
@@ -168,9 +169,7 @@ CLASS OOHGRECORD
    METHOD LOCK
    METHOD NEW
    METHOD ORDKEYCOUNT
-   #IFDEF __XHARBOUR__
-   METHOD ORDKEYGOTO
-   #ENDIF
+   METHOD ORDKEYGOTO                    // only for xHarbour compiler
    METHOD ORDKEYNO
    METHOD ORDSCOPE
    METHOD RECCOUNT
@@ -228,7 +227,9 @@ CLASS TACTIVEX FROM TCONTROL
 
    DELEGATE GET TO OOLE
    DELEGATE SET TO OOLE
+   
    ERROR HANDLER __ERROR
+   
    METHOD DEFINE
    METHOD EVENTMAP
    METHOD RELEASE
@@ -396,7 +397,7 @@ CLASS TCONTROL FROM TWINDOW
    DATA POSTBLOCK                 INIT NIL
    DATA SETIMAGELISTCOMMAND       INIT 0
    DATA SETIMAGELISTWPARAM        INIT TVSIL_NORMAL
-   DATA TAG			                INIT ""
+   DATA TAG                       INIT ""
    DATA TRANSPARENT               INIT .F.
    DATA XOLDVALUE                 INIT NIL
 
@@ -416,7 +417,7 @@ CLASS TCONTROL FROM TWINDOW
    METHOD EVENTS_MEASUREITEM
    METHOD EVENTS_NOTIFY
    METHOD FOCUSEFFECT
-   METHOD FONTANGLE			       SETGET
+   METHOD FONTANGLE               SETGET
    METHOD FONTBOLD                SETGET
    METHOD FONTITALIC              SETGET
    METHOD FONTNAME                SETGET
@@ -617,7 +618,7 @@ CLASS TFORM FROM TWINDOW
    DATA RANGEHEIGHT               INIT 0
    DATA RANGEWIDTH                INIT 0
    DATA SPLITCHILDLIST            INIT {}
-   DATA TAG	                      INIT ""
+   DATA TAG                       INIT ""
    DATA TAGCONTROL
 
    METHOD ACTIVATE
@@ -1926,8 +1927,8 @@ CLASS TTEXT FROM TLABEL
    DATA NWIDTH                    INIT 120
    DATA ONTEXTFILLED              INIT NIL
    DATA TYPE                      INIT "TEXT" READONLY
-   DATA WHEN_PROCESING	          INIT .F.
-   DATA WHEN_PROCESSED	          INIT .F.
+   DATA WHEN_PROCESING            INIT .F.
+   DATA WHEN_PROCESSED            INIT .F.
 
    METHOD ADDCONTROL
    METHOD ADJUSTRESIZE
@@ -2213,8 +2214,8 @@ ENDCLASS
 *------------------------------------------------------------------------------*
 CLASS TWINDOW
    DATA AACCELERATORKEYS          INIT {}
-   DATA ABECOLORS			          INIT {{0,0,0},{0,0,0},{0,0,0},{0,0,0}}
-   DATA ABICOLORS			          INIT {{0,0,0},{0,0,0},{0,0,0},{0,0,0}}
+   DATA ABECOLORS                 INIT {{0,0,0},{0,0,0},{0,0,0},{0,0,0}}
+   DATA ABICOLORS                 INIT {{0,0,0},{0,0,0},{0,0,0},{0,0,0}}
    DATA ACONTROLINFO              INIT { CHR( 0 ) }
    DATA ACONTROLS                 INIT {}
    DATA ACONTROLSNAMES            INIT {}
@@ -2235,8 +2236,8 @@ CLASS TWINDOW
    DATA CONTEXTMENU               INIT NIL
    DATA DEFBKCOLOREDIT            INIT NIL
    DATA DROPENABLED               INIT .F.              // .T. IF CONTROL ACCEPTS DROPS
-   DATA FNTANGLE				       INIT 0
-   DATA FNTWIDTH			          INIT 0
+   DATA FNTANGLE                  INIT 0
+   DATA FNTWIDTH                  INIT 0
    DATA FOCUSBACKCOLOR
    DATA FOCUSBOLD                 INIT .F.
    DATA FOCUSCOLOR
@@ -2261,7 +2262,7 @@ CLASS TWINDOW
    DATA LVISIBLE                  INIT .T.
    DATA NAME                      INIT ""
    DATA NANCHOR                   INIT NIL
-   DATA NBORDERS			          INIT {0,0,0}
+   DATA NBORDERS                  INIT {0,0,0}
    DATA NCOL                      INIT 0
    DATA NDEFANCHOR                INIT 3
    DATA NESTEDCLICK               INIT .F.
@@ -2297,6 +2298,7 @@ CLASS TWINDOW
    DATA WNDPROC                   INIT NIL
 
    ERROR HANDLER Error
+   
    METHOD ACCELERATORKEY
    METHOD ACCEPTFILES             SETGET
    METHOD ACTION                  SETGET
