@@ -1,5 +1,5 @@
 /*
- * $Id: h_splitbox.prg,v 1.14 2011-05-08 05:10:43 declan2005 Exp $
+ * $Id: h_splitbox.prg,v 1.15 2011-10-26 21:20:07 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -82,13 +82,13 @@
 
  Parts of this project are based upon:
 
-	"Harbour GUI framework for Win32"
- 	Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- 	Copyright 2001 Antonio Linares <alinares@fivetech.com>
-	www - http://www.harbour-project.org
+ "Harbour GUI framework for Win32"
+ Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
+ Copyright 2001 Antonio Linares <alinares@fivetech.com>
+ www - http://www.harbour-project.org
 
-	"Harbour Project"
-	Copyright 1999-2003, http://www.harbour-project.org/
+ "Harbour Project"
+ Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
 #include "oohg.ch"
@@ -96,24 +96,27 @@
 #include "i_windefs.ch"
 
 CLASS TSplitBox FROM TControl
-   DATA Type           INIT "SPLITBOX" READONLY
-   DATA lForceBreak    INIT .T.
-   DATA cGripperText   INIT ""
-   DATA lInverted      INIT .F.
-   DATA nMinWidth      INIT nil
-   DATA nMinHeight     INIT nil
+   DATA Type                   INIT "SPLITBOX" READONLY
+   DATA lForceBreak            INIT .T.
+   DATA cGripperText           INIT ""
+   DATA lInverted              INIT .F.
+   DATA nMinWidth              INIT nil
+   DATA nMinHeight             INIT nil
    
-
    METHOD Define
-   METHOD SizePos        BLOCK { |Self| SizeRebar( ::hWnd ) , RedrawWindow( ::hWnd ) }
-   METHOD Refresh        BLOCK { |Self| SizeRebar( ::hWnd ) , RedrawWindow( ::hWnd ) }
-   METHOD Events_Size    BLOCK { |Self| SizeRebar( ::hWnd ) , RedrawWindow( ::hWnd ) }
-   METHOD RefreshData    BLOCK { |Self| SizeRebar( ::hWnd ) , RedrawWindow( ::hWnd ) , ::Super:RefreshData() }
+   METHOD SizePos              BLOCK { |Self| SizeRebar( ::hWnd ) , RedrawWindow( ::hWnd ) }
+   METHOD Refresh              BLOCK { |Self| SizeRebar( ::hWnd ) , RedrawWindow( ::hWnd ) }
+   METHOD Events_Size          BLOCK { |Self| SizeRebar( ::hWnd ) , RedrawWindow( ::hWnd ) }
+   METHOD RefreshData          BLOCK { |Self| SizeRebar( ::hWnd ) , RedrawWindow( ::hWnd ) , ::Super:RefreshData() }
    METHOD AddControl
    METHOD SetSplitBox
    METHOD ClientHeightUsed     BLOCK { |Self| GetWindowHeight( ::hWnd )  }
-
-   EMPTY( _OOHG_AllVars )
+   METHOD BandGripperOFF
+   METHOD BandGripperON
+   METHOD BandHasGripper
+   METHOD HideBand
+   METHOD ShowBand
+   METHOD IsBandVisible
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -183,6 +186,52 @@ METHOD SetSplitBox( Break, GripperText, nMinWidth, nMinHeight ) CLASS TSplitBox
       ::nMinHeight := nMinHeight
    EndIf
 Return .T.
+
+*-----------------------------------------------------------------------------*
+METHOD BandGripperOFF( nBandId ) CLASS TSplitBox
+*-----------------------------------------------------------------------------*
+
+   SetBandStyle( ::hWnd, nBandId, RBBS_GRIPPERALWAYS, .F. )
+   SetBandStyle( ::hWnd, nBandId, RBBS_NOGRIPPER, .T. )
+
+Return Nil
+
+*-----------------------------------------------------------------------------*
+METHOD BandGripperON( nBandId ) CLASS TSplitBox
+*-----------------------------------------------------------------------------*
+
+   SetBandStyle( ::hWnd, nBandId, RBBS_NOGRIPPER, .F. )
+   SetBandStyle( ::hWnd, nBandId, RBBS_GRIPPERALWAYS, .T. )
+
+Return Nil
+
+*-----------------------------------------------------------------------------*
+METHOD BandHasGripper( nBandId ) CLASS TSplitBox
+*-----------------------------------------------------------------------------*
+
+Return ! BandHasStyleSet( ::hWnd, nBandId, RBBS_NOGRIPPER )
+
+*-----------------------------------------------------------------------------*
+METHOD HideBand( nBandId ) CLASS TSplitBox
+*-----------------------------------------------------------------------------*
+
+   SetBandStyle( ::hWnd, nBandId, RBBS_HIDDEN, .T. )
+   
+Return ( BandHasStyleSet( ::hWnd, nBandId, RBBS_HIDDEN ) == .T. )
+
+*-----------------------------------------------------------------------------*
+METHOD ShowBand( nBandId ) CLASS TSplitBox
+*-----------------------------------------------------------------------------*
+
+   SetBandStyle( ::hWnd, nBandId, RBBS_HIDDEN, .F. )
+   
+Return ( BandHasStyleSet( ::hWnd, nBandId, RBBS_HIDDEN ) == .F. )
+
+*-----------------------------------------------------------------------------*
+METHOD IsBandVisible( nBandId ) CLASS TSplitBox
+*-----------------------------------------------------------------------------*
+
+Return ! BandHasStyleSet( ::hWnd, nBandId, RBBS_HIDDEN )
 
 *-----------------------------------------------------------------------------*
 Function _EndSplitBox()
@@ -268,17 +317,12 @@ HB_FUNC( INITSPLITBOX )
    HWNDret( hwndRB );
 }
 
-HB_FUNC( SIZEREBAR )
-{
-   SendMessage( HWNDparam( 1 ), RB_SHOWBAND, ( WPARAM )( INT ) 0, ( LPARAM )( BOOL ) 0 );
-   SendMessage( HWNDparam( 1 ), RB_SHOWBAND, ( WPARAM )( INT ) 0, ( LPARAM )( BOOL ) 1 );
-}
-
 HB_FUNC( ADDSPLITBOXITEM )
 {
    REBARBANDINFO rbBand;
    RECT          rc;
    int Style = RBBS_CHILDEDGE | RBBS_GRIPPERALWAYS ;
+   int iID = SendMessage( HWNDparam( 2 ), RB_GETBANDCOUNT, 0 , 0 ) + 1;
 
    if( hb_parl( 4 ) )
    {
@@ -294,11 +338,11 @@ HB_FUNC( ADDSPLITBOXITEM )
    GetWindowRect( HWNDparam( 1 ) , &rc );
 
    memset( &rbBand, 0, sizeof( REBARBANDINFO ) );
-   rbBand.cbSize = sizeof(REBARBANDINFO);
-   rbBand.fMask  = RBBIM_TEXT | RBBIM_STYLE | RBBIM_CHILD | RBBIM_CHILDSIZE | RBBIM_SIZE ;
-   rbBand.fStyle = Style ;
-   rbBand.hbmBack= 0;
-
+   rbBand.cbSize     = sizeof(REBARBANDINFO);
+   rbBand.fMask      = RBBIM_TEXT | RBBIM_STYLE | RBBIM_CHILD | RBBIM_CHILDSIZE | RBBIM_SIZE | RBBIM_ID;
+   rbBand.fStyle     = Style ;
+   rbBand.hbmBack    = 0;
+   rbBand.wID        = iID;
    rbBand.lpText     = ( char * ) hb_parc( 5 );
    rbBand.hwndChild  = HWNDparam( 1 );
 
@@ -345,6 +389,7 @@ HB_FUNC( SETSPLITBOXITEM )
    if( ISLOG( 4 ) )
    {
       rbBand.fMask |= RBBIM_STYLE;
+      
       if( hb_parl( 4 ) )
       {
          rbBand.fStyle |=  RBBS_BREAK;
@@ -394,6 +439,95 @@ HB_FUNC( SETSPLITBOXITEM )
    }
 
    SendMessage( HWNDparam( 2 ), RB_SETBANDINFO, iCount, (LPARAM) &rbBand );
+}
+
+BOOL GetBandStyle( HWND hWnd, int nBandIndex, int nStyle )
+{
+   REBARBANDINFO rbBand;
+
+   memset( &rbBand, 0, sizeof( REBARBANDINFO ) );
+   rbBand.cbSize = sizeof(REBARBANDINFO);
+   rbBand.fMask = RBBIM_STYLE;
+
+   SendMessage( hWnd, RB_GETBANDINFO, nBandIndex, (LPARAM) &rbBand );
+
+   return( rbBand.fStyle & nStyle );
+}
+
+void SetBandStyle( HWND hWnd, int nBandId, int nStyle, BOOL nSet )
+{
+   REBARBANDINFO rbBand;
+   int nBandIndex = SendMessage( hWnd, RB_IDTOINDEX, nBandId, 0 );
+
+   if( nBandIndex == -1 )
+   {
+      return;
+   }
+
+   memset( &rbBand, 0, sizeof( REBARBANDINFO ) );
+   rbBand.cbSize = sizeof(REBARBANDINFO);
+   rbBand.fMask = RBBIM_STYLE;
+
+   SendMessage( hWnd, RB_GETBANDINFO, nBandIndex, (LPARAM) &rbBand );
+
+   if( nSet )
+   {
+      rbBand.fStyle |= nStyle;
+   }
+   else
+   {
+      rbBand.fStyle &= ~nStyle;
+   }
+
+   SendMessage( hWnd, RB_SETBANDINFO, nBandIndex, (LPARAM) &rbBand );
+
+   if( GetBandStyle( hWnd, nBandIndex, RBBS_HIDDEN ) == FALSE )
+   {
+      SendMessage( hWnd, RB_SHOWBAND, ( WPARAM ) nBandIndex, ( LPARAM )( BOOL ) 0 );
+      SendMessage( hWnd, RB_SHOWBAND, ( WPARAM ) nBandIndex, ( LPARAM )( BOOL ) 1 );
+   }
+}
+
+HB_FUNC( SETBANDSTYLE )
+{
+   /*
+    * Second received parameter is the position of the
+    * band at splibox's creation time.
+    *
+    */
+   SetBandStyle( HWNDparam( 1 ), hb_parni( 2 ), hb_parni( 3 ), hb_parl( 4 ) );
+}
+
+HB_FUNC( BANDHASSTYLESET )
+{
+   /*
+    * Second received parameter is the position of the
+    * band at splibox's creation time.
+    *
+    */
+   int nBandIndex = SendMessage( HWNDparam( 1 ), RB_IDTOINDEX, hb_parni( 2 ), 0 );
+
+   if( nBandIndex == -1 )
+   {
+      hb_retl( FALSE );
+   }
+
+   hb_retl( GetBandStyle( HWNDparam( 1 ), nBandIndex, hb_parni( 3 ) ) );
+}
+
+HB_FUNC( SIZEREBAR )
+{
+   int nCount = SendMessage( HWNDparam( 1 ), RB_GETBANDCOUNT, 0, 0 );
+   int i;
+
+   for( i = 0; i < nCount; i++ )
+   {
+      if( GetBandStyle( HWNDparam( 1 ), i, RBBS_HIDDEN ) == FALSE )
+      {
+         SendMessage( HWNDparam( 1 ), RB_SHOWBAND, ( WPARAM ) i, ( LPARAM )( BOOL ) 0 );
+         SendMessage( HWNDparam( 1 ), RB_SHOWBAND, ( WPARAM ) i, ( LPARAM )( BOOL ) 1 );
+      }
+   }
 }
 
 #pragma ENDDUMP

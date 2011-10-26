@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.40 2011-10-18 01:08:04 fyurisich Exp $
+ * $Id: i_windefs.ch,v 1.41 2011-10-26 21:20:06 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -82,13 +82,13 @@
 
  Parts of this project are based upon:
 
-        "Harbour GUI framework for Win32"
-        Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
-        Copyright 2001 Antonio Linares <alinares@fivetech.com>
-        www - http://www.harbour-project.org
+ "Harbour GUI framework for Win32"
+ Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
+ Copyright 2001 Antonio Linares <alinares@fivetech.com>
+ www - http://www.harbour-project.org
 
-        "Harbour Project"
-        Copyright 1999-2003, http://www.harbour-project.org/
+ "Harbour Project"
+ Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
 #ifndef __I_WINDEFS__
@@ -163,30 +163,30 @@
 #define WM_HOTKEY                     786
 // User-defined WM_*
 #define WM_USER                       0x0400
-#define CBEM_SETIMAGELIST             (WM_USER + 2)
-#define WM_TASKBAR                    WM_USER+1043
+#define CBEM_SETIMAGELIST             ( WM_USER + 2 )
+#define WM_TASKBAR                    ( WM_USER + 1043 )
 #define WM_APP                        0x8000
 
 // Generic WM_NOTIFY calls
 #define NM_FIRST                      0
-#define NM_OUTOFMEMORY                (NM_FIRST-1)
-#define NM_CLICK                      (NM_FIRST-2)    // uses NMCLICK struct
-#define NM_DBLCLK                     (NM_FIRST-3)                                              // Working in TControl
-#define NM_RETURN                     (NM_FIRST-4)
-#define NM_RCLICK                     (NM_FIRST-5)    // uses NMCLICK struct
-#define NM_RDBLCLK                    (NM_FIRST-6)
-#define NM_SETFOCUS                   (NM_FIRST-7)                                              // Working in TControl
-#define NM_KILLFOCUS                  (NM_FIRST-8)                                              // Working in TControl
-#define NM_CUSTOMDRAW                 (NM_FIRST-12)
-#define NM_HOVER                      (NM_FIRST-13)
-#define NM_NCHITTEST                  (NM_FIRST-14)   // uses NMMOUSE struct
-#define NM_KEYDOWN                    (NM_FIRST-15)   // uses NMKEY struct
-#define NM_RELEASEDCAPTURE            (NM_FIRST-16)
-#define NM_SETCURSOR                  (NM_FIRST-17)   // uses NMMOUSE struct
-#define NM_CHAR                       (NM_FIRST-18)   // uses NMCHAR struct
-#define NM_TOOLTIPSCREATED            (NM_FIRST-19)   // notify of when the tooltips window is create
-#define NM_LDOWN                      (NM_FIRST-20)
-#define NM_RDOWN                      (NM_FIRST-21)
+#define NM_OUTOFMEMORY                ( NM_FIRST - 1 )
+#define NM_CLICK                      ( NM_FIRST - 2 )    // uses NMCLICK struct
+#define NM_DBLCLK                     ( NM_FIRST - 3 )    // Working in TControl
+#define NM_RETURN                     ( NM_FIRST - 4 )
+#define NM_RCLICK                     ( NM_FIRST - 5 )    // uses NMCLICK struct
+#define NM_RDBLCLK                    ( NM_FIRST - 6 )
+#define NM_SETFOCUS                   ( NM_FIRST - 7 )    // Working in TControl
+#define NM_KILLFOCUS                  ( NM_FIRST - 8 )    // Working in TControl
+#define NM_CUSTOMDRAW                 ( NM_FIRST - 12 )
+#define NM_HOVER                      ( NM_FIRST - 13 )
+#define NM_NCHITTEST                  ( NM_FIRST - 14 )   // uses NMMOUSE struct
+#define NM_KEYDOWN                    ( NM_FIRST - 15 )   // uses NMKEY struct
+#define NM_RELEASEDCAPTURE            ( NM_FIRST - 16 )
+#define NM_SETCURSOR                  ( NM_FIRST - 17 )   // uses NMMOUSE struct
+#define NM_CHAR                       ( NM_FIRST - 18 )   // uses NMCHAR struct
+#define NM_TOOLTIPSCREATED            ( NM_FIRST - 19 )   // notify of when the tooltips window is create
+#define NM_LDOWN                      ( NM_FIRST - 20 )
+#define NM_RDOWN                      ( NM_FIRST - 21 )
 
 // System Colors
 #define COLOR_SCROLLBAR               0
@@ -325,8 +325,8 @@
 #define LVSIL_NORMAL                  0
 #define LVSIL_SMALL                   1
 #define LVSIL_STATE                   2
-#define LVSCW_AUTOSIZE                -1
-#define LVSCW_AUTOSIZE_USEHEADER      -2
+#define LVSCW_AUTOSIZE                ( -1 )
+#define LVSCW_AUTOSIZE_USEHEADER      ( -2 )
 
 // ListView styles
 #define LVS_ICON                      0
@@ -461,8 +461,8 @@
 #define BS_RIGHTBUTTON                BS_LEFTTEXT
 
 #DEFINE DC_BRUSH                      18
-#define LVN_BEGINDRAG                 (-109)
-#define GWL_STYLE                     (-16)
+#define LVN_BEGINDRAG                 ( -109 )
+#define GWL_STYLE                     ( -16 )
 #define CBN_EDITCHANGE                5
 #define SIZE_MAXHIDE                  4
 #define SIZE_MAXIMIZED                2
@@ -475,14 +475,14 @@
 
 #define OPAQUE                        2
 #define DKGRAY_BRUSH                  3
-#define LVN_GETDISPINFO               (-150)
+#define LVN_GETDISPINFO               ( -150 )
 #define EN_MSGFILTER                  1792
 #define DLGC_WANTCHARS                128
 #define DLGC_WANTMESSAGE              4
-#define MCN_FIRST                     -750
-#define MCN_LAST                      -759
-#define MCN_SELCHANGE                 (MCN_FIRST + 1)
-#define MCN_SELECT                    (MCN_FIRST + 4)
+#define MCN_FIRST                     ( -750 )
+#define MCN_LAST                      ( -759 )
+#define MCN_SELCHANGE                 ( MCN_FIRST + 1 )
+#define MCN_SELECT                    ( MCN_FIRST + 4 )
 
 #define STN_CLICKED                   0
 #define STN_DBLCLK                    1
@@ -508,22 +508,22 @@
 #define SB_BOTTOM                     7
 #define SB_TOP                        6
 
-#define TVN_SELCHANGINGA	           (-401)
-#define TVN_SELCHANGINGW	           (-450)
+#define TVN_SELCHANGINGA              ( -401 )
+#define TVN_SELCHANGINGW              ( -450 )
 #define TVN_SELCHANGING               TVN_SELCHANGINGA
-#define TVN_SELCHANGEDW	              (-451)
+#define TVN_SELCHANGEDW               ( -451 )
 #define TVN_SELCHANGED                TVN_SELCHANGEDA
-#define TVN_SELCHANGEDA	              (-402)
-#define TVN_BEGINLABELEDITW           (-459)
+#define TVN_SELCHANGEDA               ( -402 )
+#define TVN_BEGINLABELEDITW           ( -459 )
 #define TVN_BEGINLABELEDIT            TVN_BEGINLABELEDITA
-#define TVN_BEGINLABELEDITA           (-410)
-#define TVN_ENDLABELEDITW             (-460)
+#define TVN_BEGINLABELEDITA           ( -410 )
+#define TVN_ENDLABELEDITW             ( -460 )
 #define TVN_ENDLABELEDIT              TVN_ENDLABELEDITA
-#define TVN_ENDLABELEDITA             (-411)
-#define TVN_KEYDOWN                   (-412)
-#define TVN_BEGINDRAGA	              (-407)
-#define TVN_BEGINDRAGW	              (-456)
-#define TVN_BEGINDRAG 	              TVN_BEGINDRAGA
+#define TVN_ENDLABELEDITA             ( -411 )
+#define TVN_KEYDOWN                   ( -412 )
+#define TVN_BEGINDRAGA                ( -407 )
+#define TVN_BEGINDRAGW                ( -456 )
+#define TVN_BEGINDRAG                 TVN_BEGINDRAGA
 
 //New define for TaskBar
 #define ID_TASKBAR                    0
@@ -538,18 +538,18 @@
 #define CBN_SETFOCUS                  3
 #define BN_KILLFOCUS                  7
 #define BN_SETFOCUS                   6
-#define LVN_KEYDOWN                   (-155)
-#define LVN_COLUMNCLICK               (-108)
+#define LVN_KEYDOWN                   ( -155 )
+#define LVN_COLUMNCLICK               ( -108 )
 #define LBN_DBLCLK                    2
-#define TCN_SELCHANGE                 (-551)
-#define TCN_SELCHANGING               (-552)
-#define DTN_FIRST                     (-760)
-#define DTN_DATETIMECHANGE            (DTN_FIRST+1)
+#define TCN_SELCHANGE                 ( -551 )
+#define TCN_SELCHANGING               ( -552 )
+#define DTN_FIRST                     ( -760 )
+#define DTN_DATETIMECHANGE            ( DTN_FIRST + 1 )
 #define TB_ENDTRACK                   8
 #define CBN_SELCHANGE                 1
 #define CBN_DROPDOWN                  7
 #define CBN_CLOSEUP                   8
-#define LVN_ITEMCHANGED               (-101)
+#define LVN_ITEMCHANGED               ( -101 )
 #define LBN_SELCHANGE                 1
 #define EN_SETFOCUS                   256
 #define EN_KILLFOCUS                  512
@@ -640,10 +640,10 @@
 #define TBS_REVERSED                  512
 
 // Toolbutton notifications
-#define   TBN_FIRST                   (-700)
-#define TBN_DROPDOWN                  (TBN_FIRST-10)
-#define TBN_GETINFOTIPA               (TBN_FIRST-18)
-#define TBN_GETINFOTIPW               (TBN_FIRST-19)
+#define   TBN_FIRST                   ( -700 )
+#define TBN_DROPDOWN                  ( TBN_FIRST - 10 )
+#define TBN_GETINFOTIPA               ( TBN_FIRST - 18 )
+#define TBN_GETINFOTIPW               ( TBN_FIRST - 19 )
 
 #define TBN_GETINFOTIP                TBN_GETINFOTIPA
 
@@ -717,7 +717,7 @@
 #define CCS_RIGHT                     ( CCS_VERT + CCS_BOTTOM )
 #define CCS_NOMOVEX                   ( CCS_VERT + CCS_NOMOVEY )
 
-#define HDN_FIRST                     -300
+#define HDN_FIRST                     ( -300 )
 #define HDN_BEGINDRAG                 ( HDN_FIRST - 10 )
 #define HDN_ENDDRAG                   ( HDN_FIRST - 11 )
 #define HDN_BEGINTRACK                ( HDN_FIRST - 26 )
@@ -756,5 +756,10 @@
 #define DTS_UPDOWN                    1
 #define DTS_SHOWNONE                  2
 #define DTS_RIGHTALIGN                32
+
+// SplitBox
+#define RBBS_GRIPPERALWAYS            0x0080
+#define RBBS_NOGRIPPER                0x0100
+#define RBBS_HIDDEN                   0x0008
 
 #endif
