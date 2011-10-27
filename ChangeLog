@@ -1,11 +1,18 @@
 /*
- * $Id: ChangeLog,v 1.807 2011-10-26 21:20:03 fyurisich Exp $
+ * $Id: ChangeLog,v 1.808 2011-10-27 19:58:03 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2011-10-27 18:00:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * h_toolbar.prg
+     + Added lBreak parameter to function _EndToolBar, it controls
+       the inclusion of a BREAK after an END TOOLBAR.
+   * i_toolbar.ch
+     + Added NOBREAK clause to END TOOLBAR.
 
 2011-10-26 19:25:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_windefs.ch

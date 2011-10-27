@@ -1,5 +1,5 @@
 /*
- * $Id: h_toolbar.prg,v 1.30 2011-06-29 22:49:39 guerra000 Exp $
+ * $Id: h_toolbar.prg,v 1.31 2011-10-27 19:58:03 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -167,7 +167,7 @@ Local ControlHandle, id, lSplitActive
 Return Self
 
 *-----------------------------------------------------------------------------*
-Function _EndToolBar()
+Function _EndToolBar( lBreak )
 *-----------------------------------------------------------------------------*
 Local w, MinWidth, MinHeight
 Local Self
@@ -185,7 +185,9 @@ Local Self
 
       SetSplitBoxItem( ::hWnd, ::Container:hWnd, w,,, MinWidth, MinHeight, ::Container:lInverted )
 
-      ::SetSplitBoxInfo( .T. )  // Force break for next control...
+      ASSIGN lBreak VALUE lBreak TYPE "L" DEFAULT .T.
+      
+      ::SetSplitBoxInfo( lBreak )  // .T. forces break for next control...
    EndIf
 
    _OOHG_ActiveToolBar := nil

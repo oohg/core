@@ -1,5 +1,5 @@
 /*
- * $Id: i_toolbar.ch,v 1.5 2006-07-27 04:17:44 guerra000 Exp $
+ * $Id: i_toolbar.ch,v 1.6 2011-10-27 19:58:03 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -116,9 +116,9 @@
         [ <obj> := ] _OOHG_SelectSubClass( TToolBar(), [ <subclass>() ] ): ;
                      Define( <(name)>, <(parent)>, 0, 0, <w>, <h>, <caption>, <{action}>,<f>,<s> ,<tooltip> , <.flat.> , <.bottom.> , <.righttext.> , <.break.> , <.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <.border.> , <.rtl.> )
 
-#xcommand  END TOOLBAR ;
+#xcommand  END TOOLBAR [ <nobreak: NOBREAK> ];
       => ;
-	_EndToolBar ()
+	_EndToolBar (! <.nobreak.>)
 
 
 #xcommand BUTTON <name> ;
