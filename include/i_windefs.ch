@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.41 2011-10-26 21:20:06 fyurisich Exp $
+ * $Id: i_windefs.ch,v 1.42 2011-10-28 01:18:18 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -761,5 +761,9 @@
 #define RBBS_GRIPPERALWAYS            0x0080
 #define RBBS_NOGRIPPER                0x0100
 #define RBBS_HIDDEN                   0x0008
+
+// Progressbar
+#define PBS_MARQUEE                   0x08
+#define PBM_SETMARQUEE                ( WM_USER + 10 )
 
 #endif

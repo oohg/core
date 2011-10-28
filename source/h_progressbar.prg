@@ -1,5 +1,5 @@
 /*
- * $Id: h_progressbar.prg,v 1.10 2011-08-20 20:47:47 fyurisich Exp $
+ * $Id: h_progressbar.prg,v 1.11 2011-10-28 01:18:18 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -82,13 +82,13 @@
 
  Parts of this project are based upon:
 
-	"Harbour GUI framework for Win32"
- 	Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- 	Copyright 2001 Antonio Linares <alinares@fivetech.com>
-	www - http://www.harbour-project.org
+   "Harbour GUI framework for Win32"
+   Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
+   Copyright 2001 Antonio Linares <alinares@fivetech.com>
+   www - http://www.harbour-project.org
 
-	"Harbour Project"
-	Copyright 1999-2003, http://www.harbour-project.org/
+   "Harbour Project"
+   Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
 #include "oohg.ch"
@@ -100,6 +100,8 @@ CLASS TProgressBar FROM TControl
    DATA Type        INIT "PROGRESSBAR" READONLY
    DATA nRangeMin   INIT 0
    DATA nRangeMax   INIT 0
+   DATA nVelocity   INIT 30
+   DATA lRunning    INIT .F.
 
    METHOD Define
    METHOD Value               SETGET
@@ -109,28 +111,33 @@ CLASS TProgressBar FROM TControl
    METHOD FontColor           SETGET
    METHOD BackColor           SETGET
    METHOD SetStyleMarquee
+   METHOD SetStyleNormal
+   METHOD IsStyleMarquee
+   METHOD IsStyleNormal
+   METHOD StartMarquee
+   METHOD StopMarquee
+   METHOD IsMarqueeRunning
    
-   EMPTY( _OOHG_AllVars )
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, x, y, w, h, lo, hi, tooltip, ;
-               vertical, smooth, HelpId, invisible, value, BackColor, ;
+               vertical, smooth, HelpId, invisible, nValue, BackColor, ;
                BarColor, lRtl, nVelocity ) CLASS TProgressBar
 *-----------------------------------------------------------------------------*
 Local ControlHandle
 
-   DEFAULT vertical to .F.
-   DEFAULT h         TO if( vertical, 120, 25 )
-   DEFAULT w         TO if( vertical, 25, 120 )
-   DEFAULT lo        TO 0
-   DEFAULT hi        TO 100
-   DEFAULT value     TO 0
-   DEFAULT invisible TO FALSE
+   ASSIGN vertical  VALUE vertical  TYPE "L" DEFAULT .F.
+   ASSIGN h         VALUE h         TYPE "N" DEFAULT if( vertical, 120, 25 )
+   ASSIGN w         VALUE w         TYPE "N" DEFAULT if( vertical, 25, 120 )
+   ASSIGN lo        VALUE lo        TYPE "N" DEFAULT 0
+   ASSIGN hi        VALUE hi        TYPE "N" DEFAULT 100
+   ASSIGN nValue    VALUE nValue    TYPE "N" DEFAULT 0
+   ASSIGN invisible VALUE invisible TYPE "L" DEFAULT .F.
 
    ::SetForm( ControlName, ParentForm,,, BarColor, BackColor,, lRtl  )
 
-   ControlHandle := InitProgressBar ( ::ContainerhWnd, 0, x, y, w, h ,lo ,hi, vertical, smooth, invisible, value, ::lRtl )
+   ControlHandle := InitProgressBar ( ::ContainerhWnd, 0, x, y, w, h ,lo ,hi, vertical, smooth, invisible, nValue, ::lRtl )
 
    ::Register( ControlHandle, ControlName, HelpId, ! Invisible, ToolTip )
    ::SizePos( y, x, w, h )
@@ -145,10 +152,12 @@ Local ControlHandle
    if ::FontColor <> Nil
       SetProgressBarBarColor( ControlHandle, ::FontColor[1], ::FontColor[2], ::FontColor[3] )
    endif
-	
-	 if HB_IsNumeric( nVelocity )
-     ::SetStyleMarquee( nVelocity )
-	 endif
+
+   if HB_IsNumeric( nVelocity )
+      ::nVelocity := nVelocity
+       
+      ::SetStyleMarquee( nVelocity )
+   endif
 
 Return Self
 
@@ -156,9 +165,93 @@ Return Self
 METHOD SetStyleMarquee( nVelocity ) CLASS TProgressBar
 *------------------------------------------------------------------------------*
 
-	::Style( ::Style() + 0x08 )                              // PBS_MARQUEE
+   if ! IsWindowStyle( ::hWnd, PBS_MARQUEE )
+     ::Style( ::Style() + PBS_MARQUEE )
+   endif
 
-Return SendMessage( ::hWnd, WM_USER+10, 1, nVelocity )     // PBM_SETMARQUEE
+   if HB_IsNumeric( nVelocity ) .and. nVelocity > 0
+      ::nVelocity := nVelocity
+
+      ::StartMarquee()
+   else
+      ::StopMarquee()
+   endif
+
+Return Nil
+
+*------------------------------------------------------------------------------*
+METHOD SetStyleNormal( uValue ) CLASS TProgressBar
+*------------------------------------------------------------------------------*
+
+   if IsWindowStyle( ::hWnd, PBS_MARQUEE )
+      ::StopMarquee()
+
+      ::Style( ::Style() - PBS_MARQUEE )
+      
+      if ! HB_IsNumeric( uValue ) .or. uValue < 0
+        uValue := 0
+      endif
+      
+      ::value := uValue
+   endif
+
+Return Nil
+
+*------------------------------------------------------------------------------*
+METHOD IsStyleMarquee() CLASS TProgressBar
+*------------------------------------------------------------------------------*
+
+Return IsWindowStyle( ::hWnd, PBS_MARQUEE )
+
+*------------------------------------------------------------------------------*
+METHOD IsStyleNormal() CLASS TProgressBar
+*------------------------------------------------------------------------------*
+
+Return ! IsWindowStyle( ::hWnd, PBS_MARQUEE )
+
+*------------------------------------------------------------------------------*
+METHOD StartMarquee() CLASS TProgressBar
+*------------------------------------------------------------------------------*
+
+   if IsWindowStyle( ::hWnd, PBS_MARQUEE )
+      if ! ::lRunning
+         ::lRunning := .T.
+         
+         if ::nVelocity <= 0
+            ::nVelocity := 30
+         endif
+
+         // 1 => start
+         SendMessage( ::hWnd, PBM_SETMARQUEE, 1, ::nVelocity )
+      endif
+   endif
+
+Return Nil
+
+*------------------------------------------------------------------------------*
+METHOD StopMarquee() CLASS TProgressBar
+*------------------------------------------------------------------------------*
+
+   if IsWindowStyle( ::hWnd, PBS_MARQUEE )
+      if ::lRunning
+        ::lRunning := .F.
+        
+         if ::nVelocity <= 0
+            ::nVelocity := 30
+         endif
+
+         // 0 => stop
+         SendMessage( ::hWnd, PBM_SETMARQUEE, 0, ::nVelocity )
+      endif
+   endif
+
+Return Nil
+
+*------------------------------------------------------------------------------*
+METHOD IsMarqueeRunning() CLASS TProgressBar
+*------------------------------------------------------------------------------*
+
+Return ::lRunning
 
 *------------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TProgressBar
