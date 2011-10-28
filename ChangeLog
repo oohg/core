@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.809 2011-10-28 01:18:18 fyurisich Exp $
+ * $Id: ChangeLog,v 1.810 2011-10-28 01:36:53 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,7 +7,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2011-10-27 20:00:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-10-27 23:40:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * doc/classes.txt
+     * Updated.
+
+2011-10-27 23:20:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * h_progressbar.prg
      ! Fixed: method SetStyleMarquee makes control unresponsive.
      + Added: method SetStyleNormal to reset control to normal style.
@@ -27,7 +31,7 @@
 2011-10-26 19:25:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_windefs.ch
      + Added defines for splitbox styles.
-   * docs/classes.txt
+   * doc/classes.txt
      * Updated.
    * source/h_splitbox.prg
      + Added METHODs BandGripperOFF, BandGripperON, BandHasGripper,
@@ -35,9 +39,9 @@
      * Function SIZEREBAR now process all bands not just the first.
 
 2011-10-25 20:25:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * docs/classes.txt
+   * doc/classes.txt
      * Updated.
-   + docs/treeofclasses.prg
+   + doc/treeofclasses.prg
      + Added DATAs and METHODs of each class. Thanks to
      Roberto Iturriaga (robertoiturriaga@yahoo.com.ar) and
      Miguel Juarez (migsoft@oohg.org) for their contribution.
@@ -62,9 +66,9 @@
      - Commented out includes of uxtheme.h and tmschema.h
      
 2011-10-23 03:25:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * docs/classes.txt
+   * doc/classes.txt
      * Updated.
-   + docs/treeofclasses.prg
+   + doc/treeofclasses.prg
      + Shows all ooHG's classes in a Tree control.
 
 2011-10-22 21:00:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
@@ -111,7 +115,7 @@
        return a reference to the item selected before text change).
      
 2011-10-17 23:00:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * docs/classes.txt
+   * doc/classes.txt
      + Updated with TTREE class new events.
    * include/i_tree.ch
      - Deleted DISABLEDRAGDROP clause.
@@ -249,7 +253,7 @@
      ! Define cancels when multiline parameter is not logical.
 
 2011-09-13 21:40:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * docs/classes.txt
+   * doc/classes.txt
      + Added OnListDisplay and OnListClose DATAs.
    * include/i_altsyntax.ch
    * include/i_combobox.ch
@@ -262,7 +266,7 @@
        or closed.
 
 2011-09-12 19:05:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * docs/classes.txt
+   * doc/classes.txt
      + Added ThreeState and LeftAlign DATAs.
    * include/i_altsyntax.ch
    * include/i_checkbox.ch
@@ -287,7 +291,7 @@
      ! Fixed some C compiler warnings.
 
 2011-09-11 20:20:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * docs/classes.txt
+   * doc/classes.txt
      * Updated.
    * include/oohg.h
      + Added GetTabBrush prototype.
@@ -535,7 +539,7 @@
    * include/i_browse.ch
    * include/i_altsyntax.ch
      * IMAGESPLACE clause changed to IMAGESALIGN.
-   * docs/classes.txt
+   * doc/classes.txt
    * source/h_grid.prg
      * METHOD HeaderImagePlace changed to HeaderImageAlign.
      * DATA aHeaderImagePlace changed to aHeaderImageAlign.
@@ -555,7 +559,7 @@
        TEXTARRAY and XBROWSE.
      ! Fixed: missing clauses from several controls.
      * Changed: IMAGE from TImage class to TPicture class.
-   * docs/classes.txt
+   * doc/classes.txt
    * source/h_grid.prg
      + Added HeaderImage, HeaderImagePlace and Release methods.
      + Added HeaderImageList, aHeaderImage and aHeaderImagePlace datas.
@@ -574,7 +578,7 @@
      ! Fixed: incorrect function call in GridControlObject function.
 
 2011-08-23 11:00:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * docs/classes.txt
+   * doc/classes.txt
    * include/i_browse.ch
    * include/i_xbrowse.ch
    * include/i_altsyntax.ch
@@ -590,7 +594,7 @@
        moving the record pointer or unlocking the record.
 
 2011-08-20 17:46:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * docs/classes.txt
+   * doc/classes.txt
    * include/i_progressbar.ch
    * source/c_progressbar.c
    * source/h_progressbar.prg
@@ -601,7 +605,7 @@
      * Erased redundant and unused code - reformat
 
 2011-08-19 19:25:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * docs/classes.txt
+   * doc/classes.txt
      * Updated with TSPREADSHEET class.
 
 2011-08-19 12:32:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
@@ -612,7 +616,7 @@
      + added report form support to this printing mode.
 
 2011-08-18 23:20:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * docs/classes.txt
+   * doc/classes.txt
    * source/h_tree.prg
      + Added LookForKey method and hWndEditCtrl data.
      ! Fixed Esc key in label editing closes tree's parent form if
