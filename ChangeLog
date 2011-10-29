@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.811 2011-10-29 12:10:01 fyurisich Exp $
+ * $Id: ChangeLog,v 1.812 2011-10-29 16:10:17 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,8 +7,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2011-10-29 14:10:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   + resources/dragno.cur
+   + resources/dragcopy.cur
+   + resources/dragmove.cur
+
 2011-10-29 10:10:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * c_controlmisc.c
+   * source/c_controlmisc.c
      + Added function SetClipboardText to copy text to the clipboard.
 
 2011-10-27 23:40:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
@@ -16,20 +21,20 @@
      * Updated.
 
 2011-10-27 23:20:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * h_progressbar.prg
+   * source/h_progressbar.prg
      ! Fixed: method SetStyleMarquee makes control unresponsive.
      + Added: method SetStyleNormal to reset control to normal style.
      + Added: methods IsStyleMarquee, IsStyleNormal, StartMarquee,
        StopMarquee and IsMarqueeRunning.
      * Changed: 'DEFAULT <var> To <value>' by 'ASSIGN'.
-   + i_windefs.ch
+   + include/i_windefs.ch
      + Added PBS_MARQUEE and PBM_SETMARQUEE.
 
 2011-10-27 18:00:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * h_toolbar.prg
+   * source/h_toolbar.prg
      + Added lBreak parameter to function _EndToolBar, it controls
        the inclusion of a BREAK after an END TOOLBAR.
-   * i_toolbar.ch
+   * include/i_toolbar.ch
      + Added NOBREAK clause to END TOOLBAR.
 
 2011-10-26 19:25:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
@@ -61,7 +66,7 @@
      + Added DATA HasDragFocus, set to .T. when drag image is upon
        the control and the control is target of a drag and drop
        operation and has DropEnabled set to .T.
-   * Classes.txt
+   * doc/Classes.txt
      * Updated.
 
 2011-10-23 20:25:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
