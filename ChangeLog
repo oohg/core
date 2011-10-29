@@ -1,11 +1,15 @@
 /*
- * $Id: ChangeLog,v 1.810 2011-10-28 01:36:53 fyurisich Exp $
+ * $Id: ChangeLog,v 1.811 2011-10-29 12:10:01 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2011-10-29 10:10:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * c_controlmisc.c
+     + Added function SetClipboardText to copy text to the clipboard.
 
 2011-10-27 23:40:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * doc/classes.txt

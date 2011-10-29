@@ -1,5 +1,5 @@
 /*
- * $Id: c_controlmisc.c,v 1.61 2011-10-18 01:08:04 fyurisich Exp $
+ * $Id: c_controlmisc.c,v 1.62 2011-10-29 12:10:04 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -902,6 +902,31 @@ HB_FUNC( GETCONTROLOBJECTBYID )
 
    hb_itemReturn( pReturn );
    hb_itemRelease( pReturn );
+}
+
+HB_FUNC( SETCLIPBOARDTEXT )
+{
+   HGLOBAL hglbCopy;
+   LPTSTR lptstrCopy;
+   int nLen = hb_parclen( 1 );
+
+   if( OpenClipboard( NULL ) )
+   {
+      EmptyClipboard();
+
+      hglbCopy = GlobalAlloc( GMEM_DDESHARE, (nLen+1) * sizeof(TCHAR) );
+      if (hglbCopy != NULL)
+      {
+         lptstrCopy = (LPTSTR) GlobalLock( hglbCopy );
+         memcpy( lptstrCopy, hb_parc( 1 ), nLen * sizeof(TCHAR));
+         lptstrCopy[nLen] = (TCHAR) 0;
+         GlobalUnlock(hglbCopy);
+
+         SetClipboardData( CF_TEXT, hglbCopy );
+      }
+
+      CloseClipboard();
+   }
 }
 
 HB_FUNC( GETCLIPBOARDTEXT )
