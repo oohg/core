@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.55 2011-10-22 16:46:03 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.56 2011-11-02 23:00:30 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -775,7 +775,8 @@ PROGRESS BAR
         _OOHG_ActiveControlRangeHigh := Nil      ;;
         _OOHG_ActiveControlVertical  := .F.      ;;
         _OOHG_ActiveControlSmooth    := .F.      ;;
-        _OOHG_ActiveControlForeColor := Nil
+        _OOHG_ActiveControlForeColor := Nil      ;;
+        _OOHG_ActiveControlSpeed     := Nil
 
 #xcommand RANGEMIN <lo> ;
         => ;

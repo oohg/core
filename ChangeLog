@@ -1,11 +1,22 @@
 /*
- * $Id: ChangeLog,v 1.813 2011-10-31 16:29:31 fyurisich Exp $
+ * $Id: ChangeLog,v 1.814 2011-11-02 23:00:29 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2011-11-02 21:00:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_windefs.ch
+     ! Comment out OPAQUE define because causes error when compiling
+       DEFINE FRAME with OPAQUE clause. The commented define is only
+       used in source/winprint.prg and there is duplicated.
+   * include/i_altsyntax.ch
+     ! Added missing initialization of _OOHG_ActiveControlSpeed
+       variable in DEFINE PROGRESSBAR xcommand.
+   * source/c_dialogs.c
+     * Changed two function calls by equivalent variable.
 
 2011-10-31 14:30:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * resources/ooHG.o

@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.42 2011-10-28 01:18:18 fyurisich Exp $
+ * $Id: i_windefs.ch,v 1.43 2011-11-02 23:00:30 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -473,7 +473,7 @@
 #define SIZE_RESTORED                 0
 #define SIZENORMAL                    0
 
-#define OPAQUE                        2
+//#define OPAQUE                        2
 #define DKGRAY_BRUSH                  3
 #define LVN_GETDISPINFO               ( -150 )
 #define EN_MSGFILTER                  1792

@@ -1,5 +1,5 @@
 /*
- * $Id: c_dialogs.c,v 1.8 2011-09-12 01:40:01 fyurisich Exp $
+ * $Id: c_dialogs.c,v 1.9 2011-11-02 23:00:30 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -189,7 +189,7 @@ HB_FUNC( CHOOSEFONT )
 		return;
 	}
 
-	PointSize = -MulDiv ( lf.lfHeight , 72 , GetDeviceCaps(GetDC(GetActiveWindow()), LOGPIXELSY) ) ;
+	PointSize = -MulDiv ( lf.lfHeight , 72 , GetDeviceCaps( hdc, LOGPIXELSY) ) ;
 
 	if (lf.lfWeight == 700)
 	{
