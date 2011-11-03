@@ -1,11 +1,32 @@
 /*
- * $Id: ChangeLog,v 1.814 2011-11-02 23:00:29 fyurisich Exp $
+ * $Id: ChangeLog,v 1.815 2011-11-03 23:07:03 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2011-11-03 20:10:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_altsyntax.ch
+     + Added ON MOUSEMOVE and ONMOUSEMOVE clauses to DEFINE BUTTON.
+       TODO: Add this clause to other controls.
+     * DEFINE IMAGE now translates to TImage class.
+       WARNING: the clauses BORDER and CLIENTEDGE are lost, this
+       may generate compiler errors.
+     ! Fixed DEFINE PICTURE was translated into THotKeyBox class.
+   * include/i_button.ch
+     + Added ON MOUSEMOVE clause to @ BUTTON syntax.
+   * include/i_image.ch
+     * @ IMAGE now translates to TImage class.
+       WARNING: the clauses BORDER and CLIENTEDGE are lost, this
+       may generate compiler errors.
+   * source/h_button.prg
+     + Added support for ONMOUSEMOVE procedure.
+   * source/h_image.prg
+     + Added support for tooltip.
+   * source/h_picture.prg
+     ! Fixed: tooltip was not shown.
 
 2011-11-02 21:00:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_windefs.ch

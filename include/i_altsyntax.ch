@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.56 2011-11-02 23:00:30 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.57 2011-11-03 23:07:04 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -122,6 +122,7 @@ Memvariables
 #xtranslate _OOHG_ActiveControlTrailingFontColor      => _OOHG_ActiveControlInfo \[  25 \]
 #xtranslate _OOHG_ActiveControlBackgroundColor        => _OOHG_ActiveControlInfo \[  26 \]
 
+#xtranslate _OOHG_ActiveControlOnMouseMove            => _OOHG_ActiveControlInfo \[ 150 \]
 #xtranslate _OOHG_ActiveControlImageMargin            => _OOHG_ActiveControlInfo \[ 151 \]
 #xtranslate _OOHG_ActiveControlThemed                 => _OOHG_ActiveControlInfo \[ 152 \]
 #xtranslate _OOHG_ActiveControlListWidth              => _OOHG_ActiveControlInfo \[ 153 \]
@@ -301,7 +302,8 @@ Memvariables
         _OOHG_ActiveControlOnLostFocus   := Nil          ;;
         _OOHG_ActiveControlOnGotFocus    := Nil          ;;
         _OOHG_ActiveControlOnChange      := Nil          ;;
-        _OOHG_ActiveControlOnEnter       := Nil
+        _OOHG_ActiveControlOnEnter       := Nil          ;;
+        _OOHG_ActiveControlOnMouseMove   := Nil
 
 #xcommand PARENT <of> ;
         => ;
@@ -1177,6 +1179,14 @@ BUTTON
         => ;
         _OOHG_ActiveControlFlat := <flat>
 
+#xcommand ONMOUSEMOVE <onmousemove> ;
+        => ;
+        _OOHG_ActiveControlOnMouseMove := <{onmousemove}>
+
+#xcommand ON MOUSEMOVE <onmousemove> ;
+        => ;
+        _OOHG_ActiveControlOnMouseMove := <{onmousemove}>
+
 #xcommand ONGOTFOCUS <ongotfocus> ;
         => ;
         _OOHG_ActiveControlOnGotFocus := <{ongotfocus}>
@@ -1269,7 +1279,8 @@ BUTTON
                 _OOHG_ActiveControlAlignment, ;
                 _OOHG_ActiveControlMultiLine, ;
                 _OOHG_ActiveControlThemed, ;
-                _OOHG_ActiveControlImageMargin )
+                _OOHG_ActiveControlImageMargin, ;
+                _OOHG_ActiveControlOnMouseMove )
 
 /*----------------------------------------------------------------------------
 IMAGE
@@ -1307,7 +1318,7 @@ IMAGE
 
 #xcommand END IMAGE ;
         => ;
-        TPicture():Define( ;
+        TImage():Define( ;
                 _OOHG_ActiveControlName, ;
                 _OOHG_ActiveControlOf, ;
                 _OOHG_ActiveControlCol, ;
@@ -1315,19 +1326,18 @@ IMAGE
                 _OOHG_ActiveControlPicture, ;
                 _OOHG_ActiveControlWidth, ;
                 _OOHG_ActiveControlHeight, ;
+                _OOHG_ActiveControlAction, ;
+                _OOHG_ActiveControlHelpId, ;
+                _OOHG_ActiveControlInvisible, ;
+                _OOHG_ActiveControlStretch, ;
+                _OOHG_ActiveControlWhiteBackground, ;
+                _OOHG_ActiveControlRtl, ;
+                _OOHG_ActiveControlBackColor, ;
                 _OOHG_ActiveControlBuffer, ;
                 _OOHG_ActiveControlHBitmap, ;
-                _OOHG_ActiveControlStretch, ;
                 .NOT. _OOHG_ActiveControlNoResize, ;
                 _OOHG_ActiveControlImagesize, ;
-                _OOHG_ActiveControlBorder, ;
-                _OOHG_ActiveControlClientEdge, ;
-                _OOHG_ActiveControlWhiteBackground, ;
-                _OOHG_ActiveControlAction, ;
-                _OOHG_ActiveControlTooltip, ;
-                _OOHG_ActiveControlHelpId, ;
-                _OOHG_ActiveControlRtl, ;
-                _OOHG_ActiveControlInvisible )
+                _OOHG_ActiveControlTooltip)
 
 /*----------------------------------------------------------------------------
 CHECK BOX/BUTTON
@@ -2435,7 +2445,7 @@ PICTURE
 
 #xcommand END PICTURE;
         => ;
-        THotKeyBox():Define( ;
+        TPicture():Define( ;
                 _OOHG_ActiveControlName, ;
                 _OOHG_ActiveControlOf, ;
                 _OOHG_ActiveControlCol, ;

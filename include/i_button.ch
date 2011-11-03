@@ -1,5 +1,5 @@
 /*
- * $Id: i_button.ch,v 1.16 2011-10-22 16:46:03 fyurisich Exp $
+ * $Id: i_button.ch,v 1.17 2011-11-03 23:07:04 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -107,6 +107,7 @@
             [ <flat: FLAT> ] ;
             [ ON GOTFOCUS <gotfocus> ] ;
             [ ON LOSTFOCUS <lostfocus> ] ;
+            [ ON MOUSEMOVE <onmousemove> ] ;
             [ <notabstop: NOTABSTOP> ] ;
             [ HELPID <helpid> ]       ;
             [ <invisible: INVISIBLE> ] ;
@@ -131,7 +132,7 @@
                   <w>, <h>, <font>, <size>, <tooltip>, <{gotfocus}>,<{lostfocus}>, <.flat.>, <.notabstop.>, ;
                   <helpid>, <.invisible.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.>, <.rtl.>, ;
                   <.noprefix.>, <.disabled.>, <buffer>, <hbitmap>, <bitmap>, <.notrans.>, <.scale.>, ;
-                  <.cancel.>, <"alignment">, <.multiline.>, <.themed.>, <aImageMargin> )
+                  <.cancel.>, <"alignment">, <.multiline.>, <.themed.>, <aImageMargin>, <{onmousemove}> )
 
 #command @ <row>,<col> CHECKBUTTON <name> ;
             [ OBJ <obj> ] ;

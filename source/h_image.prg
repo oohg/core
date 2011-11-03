@@ -1,5 +1,5 @@
 /*
- * $Id: h_image.prg,v 1.24 2009-03-16 00:48:34 guerra000 Exp $
+ * $Id: h_image.prg,v 1.25 2011-11-03 23:07:05 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -111,6 +111,7 @@ CLASS TImage FROM TControl
    METHOD HBitMap       SETGET
    METHOD Buffer        SETGET
    METHOD OnClick       SETGET
+   METHOD Events
 
    METHOD SizePos
    METHOD RePaint
@@ -122,7 +123,7 @@ ENDCLASS
 *-----------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, x, y, FileName, w, h, ProcedureName, ;
                HelpId, invisible, stretch, lWhiteBackground, lRtl, backcolor, ;
-               cBuffer, hBitMap, autofit, imagesize ) CLASS TImage
+               cBuffer, hBitMap, autofit, imagesize, ToolTip ) CLASS TImage
 *-----------------------------------------------------------------------------*
 Local ControlHandle, nStyle
 
@@ -144,7 +145,7 @@ Local ControlHandle, nStyle
 
    ControlHandle := InitImage( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, ::lRtl )
 
-   ::Register( ControlHandle, ControlName, HelpId )
+   ::Register( ControlHandle, ControlName, HelpId, , ToolTip )
 
    ::Picture := FileName
    If ! ValidHandler( ::hImage )
@@ -248,7 +249,12 @@ RETURN ::Super:Release()
 
 #pragma BEGINDUMP
 
+#define s_Super s_TControl
+
 #include "hbapi.h"
+#include "hbapiitm.h"
+#include "hbvm.h"
+#include "hbstack.h"
 #include <windows.h>
 #include <commctrl.h>
 #include "oohg.h"
@@ -267,7 +273,7 @@ HB_FUNC( INITIMAGE )   // ( hWnd, hMenu, nCol, nRow, nWidth, nHeight, nStyle, lR
 
    StyleEx = _OOHG_RTL_Status( hb_parl( 8 ) );
 
-   Style = hb_parni( 7 ) | WS_CHILD | SS_BITMAP;
+   Style = hb_parni( 7 ) | WS_CHILD | SS_BITMAP | SS_NOTIFY;
 
    h = CreateWindowEx( StyleEx, "static", NULL, Style,
                        hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
@@ -276,6 +282,41 @@ HB_FUNC( INITIMAGE )   // ( hWnd, hMenu, nCol, nRow, nWidth, nHeight, nStyle, lR
    lpfnOldWndProc = ( WNDPROC ) SetWindowLong( h, GWL_WNDPROC, ( LONG ) SubClassFunc );
 
    HWNDret( h );
+}
+
+HB_FUNC_STATIC( TIMAGE_EVENTS )
+{
+   HWND hWnd      = ( HWND )   hb_parnl( 1 );
+   UINT message   = ( UINT )   hb_parni( 2 );
+   WPARAM wParam  = ( WPARAM ) hb_parni( 3 );
+   LPARAM lParam  = ( LPARAM ) hb_parnl( 4 );
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+
+   switch( message )
+   {
+      case WM_NCHITTEST:
+         if( oSelf->lAux[ 0 ] )
+         {
+            hb_retni( DefWindowProc( hWnd, message, wParam, lParam ) );
+         }
+         else
+         {
+            hb_retni( HTCLIENT );
+         }
+         break;
+
+      default:
+         _OOHG_Send( pSelf, s_Super );
+         hb_vmSend( 0 );
+         _OOHG_Send( hb_param( -1, HB_IT_OBJECT ), s_Events );
+         HWNDpush( hWnd );
+         hb_vmPushLong( message );
+         hb_vmPushLong( wParam );
+         hb_vmPushLong( lParam );
+         hb_vmSend( 4 );
+         break;
+   }
 }
 
 #pragma ENDDUMP

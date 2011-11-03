@@ -1,5 +1,5 @@
 /*
- * $Id: h_picture.prg,v 1.9 2010-08-26 20:00:55 guerra000 Exp $
+ * $Id: h_picture.prg,v 1.10 2011-11-03 23:07:05 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -314,7 +314,7 @@ HB_FUNC( INITPICTURECONTROL )
    }
 
    hwnd = HWNDparam( 1 );
-   Style = hb_parni( 6 ) | WS_CHILD;
+   Style = hb_parni( 6 ) | WS_CHILD | SS_NOTIFY;
    ExStyle = hb_parni( 7 ) | _OOHG_RTL_Status( hb_parl( 8 ) );
 
    hbutton = CreateWindowEx( ExStyle, "_OOHG_PICTURECONTROL", "", Style,
@@ -669,7 +669,7 @@ HB_FUNC_STATIC( TPICTURE_EVENTS )
          }
          else
          {
-            hb_retni( -1 );
+            hb_retni( HTCLIENT );
          }
          break;
 

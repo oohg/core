@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.53 2011-10-23 22:28:28 fyurisich Exp $
+ * $Id: h_button.prg,v 1.54 2011-11-03 23:07:04 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -127,11 +127,11 @@ ENDCLASS
 
 *-----------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, x, y, Caption, ProcedureName, w, h, ;
-               fontname, fontsize, tooltip, gotfocus, lostfocus, flat, ;
+               fontname, fontsize, tooltip, GotFocus, LostFocus, flat, ;
                NoTabStop, HelpId, invisible, bold, italic, underline, ;
                strikeout, lRtl, lNoPrefix, lDisabled, cBuffer, hBitMap, ;
                cImage, lNoTransparent, lScale, lCancel, cAlign, lMultiLine, ;
-               themed, aImageMargin ) CLASS TButton
+               themed, aImageMargin, OnMouseMove ) CLASS TButton
 *-----------------------------------------------------------------------------*
 Local ControlHandle, nStyle, lBitMap, i
 
@@ -217,6 +217,7 @@ Local ControlHandle, nStyle, lBitMap, i
    ASSIGN ::OnClick     VALUE ProcedureName TYPE "B"
    ASSIGN ::OnLostFocus VALUE LostFocus     TYPE "B"
    ASSIGN ::OnGotFocus  VALUE GotFocus      TYPE "B"
+   ASSIGN ::OnMouseMove VALUE OnMouseMove   TYPE "B"
 
 Return Self
 
