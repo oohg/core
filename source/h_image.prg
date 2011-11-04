@@ -1,5 +1,5 @@
 /*
- * $Id: h_image.prg,v 1.25 2011-11-03 23:07:05 fyurisich Exp $
+ * $Id: h_image.prg,v 1.26 2011-11-04 00:51:19 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -123,9 +123,10 @@ ENDCLASS
 *-----------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, x, y, FileName, w, h, ProcedureName, ;
                HelpId, invisible, stretch, lWhiteBackground, lRtl, backcolor, ;
-               cBuffer, hBitMap, autofit, imagesize, ToolTip ) CLASS TImage
+               cBuffer, hBitMap, autofit, imagesize, ToolTip, ;
+               Border, ClientEdge ) CLASS TImage
 *-----------------------------------------------------------------------------*
-Local ControlHandle, nStyle
+Local ControlHandle, nStyle, nStyleEx
 
    ASSIGN ::nCol    VALUE x TYPE "N"
    ASSIGN ::nRow    VALUE y TYPE "N"
@@ -141,9 +142,12 @@ Local ControlHandle, nStyle
       ::BackColor := WHITE
    EndIf
 
-   nStyle := ::InitStyle( ,, Invisible, .T. )
+   nStyle := ::InitStyle( ,, Invisible, .T. ) + ;
+             if( ValType( Border ) == "L" .AND. Border, WS_BORDER, 0 )
 
-   ControlHandle := InitImage( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, ::lRtl )
+   nStyleEx := if( ValType( ClientEdge ) == "L" .AND. ClientEdge, WS_EX_CLIENTEDGE, 0 )
+
+   ControlHandle := InitImage( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, ::lRtl, nStyleEx )
 
    ::Register( ControlHandle, ControlName, HelpId, , ToolTip )
 
@@ -266,12 +270,12 @@ static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM
    return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
 }
 
-HB_FUNC( INITIMAGE )   // ( hWnd, hMenu, nCol, nRow, nWidth, nHeight, nStyle, lRtl )
+HB_FUNC( INITIMAGE )   // ( hWnd, hMenu, nCol, nRow, nWidth, nHeight, nStyle, lRtl, nStyleEx )
 {
    HWND h;
    int Style, StyleEx;
 
-   StyleEx = _OOHG_RTL_Status( hb_parl( 8 ) );
+   StyleEx = hb_parni( 9 ) | _OOHG_RTL_Status( hb_parl( 8 ) );
 
    Style = hb_parni( 7 ) | WS_CHILD | SS_BITMAP | SS_NOTIFY;
 

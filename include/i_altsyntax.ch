@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.57 2011-11-03 23:07:04 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.58 2011-11-04 00:51:19 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1337,7 +1337,9 @@ IMAGE
                 _OOHG_ActiveControlHBitmap, ;
                 .NOT. _OOHG_ActiveControlNoResize, ;
                 _OOHG_ActiveControlImagesize, ;
-                _OOHG_ActiveControlTooltip)
+                _OOHG_ActiveControlTooltip, ;
+                _OOHG_ActiveControlBorder, ;
+                _OOHG_ActiveControlClientEdge )
 
 /*----------------------------------------------------------------------------
 CHECK BOX/BUTTON

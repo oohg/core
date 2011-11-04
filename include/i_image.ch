@@ -1,5 +1,5 @@
 /*
- * $Id: i_image.ch,v 1.9 2011-11-03 23:07:04 fyurisich Exp $
+ * $Id: i_image.ch,v 1.10 2011-11-04 00:51:19 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -110,12 +110,14 @@
          [ <noresize: NORESIZE> ] ;
          [ <imagesize: IMAGESIZE> ] ;
          [ TOOLTIP <tooltip> ] ;
+         [ <border: BORDER> ] ;
+         [ <clientedge: CLIENTEDGE> ] ;
  =>;
          [ <obj> := ] _OOHG_SelectSubClass( TImage(), [ <subclass>() ] ): ;
                         Define( <(name)>, <(parent)>, <col>, <row>, <filename>, <w>, <h>, ;
                         <{action}>, <helpid>, <.invisible.>, <.stretch.>, ;
                         <.whitebackground.>, <.rtl.>, <backcolor>, <buffer>, <hbitmap>, ;
-                        ! <.noresize.>, <.imagesize.>, <tooltip> )
+                        ! <.noresize.>, <.imagesize.>, <tooltip>, <.border.>, <.clientedge.> )
 
 /*
 #command @ <row>,<col> IMAGE <name> ;
