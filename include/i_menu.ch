@@ -1,5 +1,5 @@
 /*
- * $Id: i_menu.ch,v 1.9 2011-07-23 15:22:01 fyurisich Exp $
+ * $Id: i_menu.ch,v 1.10 2011-11-07 22:56:04 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -165,30 +165,30 @@
           [ <oObj> := ] _OOHG_SelectSubClass( TMenu(), [ <subclass>() ] ): ;
                         Define( <(parent)>, <(name)> )
 
-#xcommand POPUP <caption> [ NAME <name> ] [ OBJ <oObj> ] [ <checked:CHECKED> ] [ <disabled:DISABLED> ] [ FROM [ POPUP ] <parent> ] [ <hilited:HILITED> ] [ IMAGE <image> [ <stretch:STRETCH> ] ] [ <right:RIGHT> ] [ SUBCLASS <subclass> ] ;
+#xcommand POPUP <caption> [ NAME <name> ] [ OBJ <oObj> ] [ <checked:CHECKED> ] [ <disabled:DISABLED> ] [ FROM [ POPUP ] <parent> ] [ <hilited:HILITED> ] [ IMAGE <image> [ <stretch:STRETCH> ] ] [ <right:RIGHT> ] [ SUBCLASS <subclass> ] [ <breakmenu :BREAKMENU> ] ;
           => ;
           [ <oObj> := ] _OOHG_SelectSubClass( TMenuItem(), [ <subclass>() ] ): ;
-                        DefinePopUp( <caption> , <(name)> , <.checked.> , <.disabled.>, <parent>, <.hilited.>, <image>, <.right.>, <.stretch.> )
+                        DefinePopUp( <caption> , <(name)> , <.checked.> , <.disabled.>, <parent>, <.hilited.>, <image>, <.right.>, <.stretch.>, IF( <.breakmenu.>, 1, NIL ) )
 
-#xcommand DEFINE POPUP <caption> [ NAME <name> ] [ OBJ <oObj> ] [ <checked:CHECKED> ] [ <disabled:DISABLED> ] [ FROM [ POPUP ] <parent> ] [ <hilited:HILITED> ] [ IMAGE <image> [ <stretch:STRETCH> ] ] [ <right:RIGHT> ] [ SUBCLASS <subclass> ] ;
+#xcommand DEFINE POPUP <caption> [ NAME <name> ] [ OBJ <oObj> ] [ <checked:CHECKED> ] [ <disabled:DISABLED> ] [ FROM [ POPUP ] <parent> ] [ <hilited:HILITED> ] [ IMAGE <image> [ <stretch:STRETCH> ] ] [ <right:RIGHT> ] [ SUBCLASS <subclass> ] [ <breakmenu :BREAKMENU> ] ;
           => ;
           [ <oObj> := ] _OOHG_SelectSubClass( TMenuItem(), [ <subclass>() ] ): ;
-                        DefinePopUp( <caption> , <(name)> , <.checked.> , <.disabled.>, <parent>, <.hilited.>, <image>, <.right.>, <.stretch.> )
+                        DefinePopUp( <caption> , <(name)> , <.checked.> , <.disabled.>, <parent>, <.hilited.>, <image>, <.right.>, <.stretch.>, IF( <.breakmenu.>, 1, NIL ) )
 
-#xcommand DEFINE MENU POPUP <caption> [ NAME <name> ] [ OBJ <oObj> ] [ <checked:CHECKED> ] [ <disabled:DISABLED> ] [ FROM [ POPUP ] <parent> ] [ <hilited:HILITED> ] [ IMAGE <image> [ <stretch:STRETCH> ] ] [ <right:RIGHT> ] [ SUBCLASS <subclass> ] ;
+#xcommand DEFINE MENU POPUP <caption> [ NAME <name> ] [ OBJ <oObj> ] [ <checked:CHECKED> ] [ <disabled:DISABLED> ] [ FROM [ POPUP ] <parent> ] [ <hilited:HILITED> ] [ IMAGE <image> [ <stretch:STRETCH> ] ] [ <right:RIGHT> ] [ SUBCLASS <subclass> ] [ <breakmenu :BREAKMENU> ] ;
           => ;
           [ <oObj> := ] _OOHG_SelectSubClass( TMenuItem(), [ <subclass>() ] ): ;
-                        DefinePopUp( <caption> , <(name)> , <.checked.> , <.disabled.>, <parent>, <.hilited.>, <image>, <.right.>, <.stretch.> )
+                        DefinePopUp( <caption> , <(name)> , <.checked.> , <.disabled.>, <parent>, <.hilited.>, <image>, <.right.>, <.stretch.>, IF( <.breakmenu.>, 1, NIL ) )
 
-#xcommand ITEM <caption> [ ACTION <action> ] [ NAME <name> ] [ IMAGE <image> [ <stretch:STRETCH> ] ] [ <checked:CHECKED> ] [ OBJ <oObj> ] [ <disabled:DISABLED> ] [ FROM [ POPUP ] <parent> ] [ <hilited:HILITED> ] [ <right:RIGHT> ] [ SUBCLASS <subclass> ] ;
+#xcommand ITEM <caption> [ ACTION <action> ] [ NAME <name> ] [ IMAGE <image> [ <stretch:STRETCH> ] ] [ <checked:CHECKED> ] [ OBJ <oObj> ] [ <disabled:DISABLED> ] [ FROM [ POPUP ] <parent> ] [ <hilited:HILITED> ] [ <right:RIGHT> ] [ SUBCLASS <subclass> ] [ <breakmenu :BREAKMENU> [ <separator :SEPARATOR> ] ] ;
           => ;
           [ <oObj> := ] _OOHG_SelectSubClass( TMenuItem(), [ <subclass>() ] ): ;
-                        DefineItem( <caption> , <{action}> , <(name)> , <image> , <.checked.> , <.disabled.>, <parent>, <.hilited.>, <.right.>, <.stretch.> )
+                        DefineItem( <caption> , <{action}> , <(name)> , <image> , <.checked.> , <.disabled.>, <parent>, <.hilited.>, <.right.>, <.stretch.>, IF( <.breakmenu.>, IF( <.separator.>, 2, 1 ), NIL ) )
 
-#xcommand MENUITEM <caption> [ ACTION <action> ] [ NAME <name> ] [ IMAGE <image> [ <stretch:STRETCH> ] ] [ <checked:CHECKED> ] [ OBJ <oObj> ] [ <disabled:DISABLED> ] [ FROM [ POPUP ] <parent> ] [ <hilited:HILITED> ] [ <right:RIGHT> ] [ SUBCLASS <subclass> ] ;
+#xcommand MENUITEM <caption> [ ACTION <action> ] [ NAME <name> ] [ IMAGE <image> [ <stretch:STRETCH> ] ] [ <checked:CHECKED> ] [ OBJ <oObj> ] [ <disabled:DISABLED> ] [ FROM [ POPUP ] <parent> ] [ <hilited:HILITED> ] [ <right:RIGHT> ] [ SUBCLASS <subclass> ] [ <breakmenu :BREAKMENU> [ <separator :SEPARATOR> ] ] ;
           => ;
           [ <oObj> := ] _OOHG_SelectSubClass( TMenuItem(), [ <subclass>() ] ): ;
-                        DefineItem( <caption> , <{action}> , <(name)> , <image> , <.checked.> , <.disabled.>, <parent>, <.hilited.>, <.right.>, <.stretch.> )
+                        DefineItem( <caption> , <{action}> , <(name)> , <image> , <.checked.> , <.disabled.>, <parent>, <.hilited.>, <.right.>, <.stretch.>, IF( <.breakmenu.>, IF( <.separator.>, 2, 1 ), NIL ) )
 
 #xcommand SEPARATOR [ NAME <name> ] [ OBJ <oObj> ] [ FROM [ POPUP ] <parent> ] [ <right:RIGHT> ] [ SUBCLASS <subclass> ] ;
           => ;

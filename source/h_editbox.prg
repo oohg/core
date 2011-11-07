@@ -1,5 +1,5 @@
 /*
- * $Id: h_editbox.prg,v 1.15 2009-11-24 02:55:18 guerra000 Exp $
+ * $Id: h_editbox.prg,v 1.16 2011-11-07 22:56:04 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -137,7 +137,7 @@ METHOD LookForKey( nKey, nFlags ) CLASS TEdit
 *-----------------------------------------------------------------------------*
 Local lDone
    lDone := ::Super:LookForKey( nKey, nFlags )
-   If nKey == VK_ESCAPE
+   If nKey == VK_ESCAPE .and. nFlags == 0
       lDone := .T.
    EndIf
 Return lDone

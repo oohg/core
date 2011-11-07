@@ -1,5 +1,5 @@
 /*
- * $Id: h_tree.prg,v 1.26 2011-10-24 23:13:21 fyurisich Exp $
+ * $Id: h_tree.prg,v 1.27 2011-11-07 22:56:04 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1778,7 +1778,7 @@ Return ChildrenItems
 METHOD LookForKey( nKey, nFlags ) CLASS TTree
 *-----------------------------------------------------------------------------*
 
-   If nKey == VK_ESCAPE
+   If nKey == VK_ESCAPE .and. nFlags == 0
       If ::hWndEditCtrl != Nil
          Return Nil
         

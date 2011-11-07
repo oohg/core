@@ -1,5 +1,5 @@
 /*
- * $Id: h_menu.prg,v 1.31 2011-09-06 02:33:23 fyurisich Exp $
+ * $Id: h_menu.prg,v 1.32 2011-11-07 22:56:04 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -291,7 +291,7 @@ ENDCLASS
 
 *------------------------------------------------------------------------------*
 METHOD DefinePopUp( Caption, Name, checked, disabled, Parent, hilited, Image, ;
-                    lRight, lStretch ) CLASS TMenuItem
+                    lRight, lStretch, nBreak ) CLASS TMenuItem
 *------------------------------------------------------------------------------*
 LOCAL nStyle
    If Empty( Parent )
@@ -301,7 +301,8 @@ LOCAL nStyle
    ::Register( CreatePopupMenu(), Name )
    ::xId := ::hWnd
    AADD( _OOHG_xMenuActive, Self )
-   nStyle := MF_POPUP + MF_STRING + IF( ValType( lRight ) == "L" .AND. lRight, MF_RIGHTJUSTIFY, 0 )
+   nStyle := MF_POPUP + MF_STRING + IF( ValType( lRight ) == "L" .AND. lRight, MF_RIGHTJUSTIFY, 0 ) + ;
+             IF( ValType( nBreak ) != "N", 0, IF( nBreak == 1, MF_MENUBREAK, MF_MENUBARBREAK ) )
    AppendMenu( ::Container:hWnd, ::hWnd, Caption, nStyle )
    if HB_IsLogical( lStretch ) .AND. lStretch
       ::Stretch := .T.
@@ -316,7 +317,7 @@ Return Self
 
 *------------------------------------------------------------------------------*
 METHOD DefineItem( caption, action, name, Image, checked, disabled, Parent, ;
-                   hilited, lRight, lStretch ) CLASS TMenuItem
+                   hilited, lRight, lStretch, nBreak ) CLASS TMenuItem
 *------------------------------------------------------------------------------*
 Local nStyle, id
    If Empty( Parent )
@@ -324,7 +325,8 @@ Local nStyle, id
    EndIf
    ::SetForm( Name, Parent )
    Id := _GetId()
-   nStyle := MF_STRING + IF( HB_IsLogical( lRight ) .AND. lRight, MF_RIGHTJUSTIFY, 0 )
+   nStyle := MF_STRING + IF( HB_IsLogical( lRight ) .AND. lRight, MF_RIGHTJUSTIFY, 0 ) + ;
+             IF( ValType( nBreak ) != "N", 0, IF( nBreak == 1, MF_MENUBREAK, MF_MENUBARBREAK ) )
    AppendMenu( ::Container:hWnd, id, caption, nStyle )
    ::Register( 0, Name, , , , Id )
    ::xId := ::Id

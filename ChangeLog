@@ -1,11 +1,47 @@
 /*
- * $Id: ChangeLog,v 1.816 2011-11-04 00:51:19 fyurisich Exp $
+ * $Id: ChangeLog,v 1.817 2011-11-07 22:56:03 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2011-11-07 23:00:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_menu.prg
+   * include/i_menu.prg
+     + Added BREAKMENU clause to POPUP menu.
+     + Added BREAKMENU [SEPARATOR] clause to ITEM menu.
+     The idea was borrowed from HMG Extended.
+   * source/h_editbox.prg
+   * source/h_tree.prg
+     ! Function LookForKey was considering ALT+INS, CTRL+INS and
+       SHIFT+INS the same as INS.
+   * source/h_textbox.prg
+     + Added initalization to DATA bWhen.
+     * Moved DATAs lInsert and xUndo from TTextPicture
+       class to TText class.
+     * Moved WM_LBUTTONDOWN, WM_UNDO and CTRL+Z events from
+       TTextPicture class to TText class.
+     * Moved UNDO support from TTextPicture class to TText class.
+     + Added METHODs GetSelection and SetSelection to TText class.
+       GetSelection returns array with first character in the
+       selection in item 1 and first unselected character after
+       the end of the selection in item 2. If there's no selection
+       it return the position of the insertion point (start == end).
+       SetSelection receives 2 parametes: first character to select
+       and last character to select.
+       Both methods use zero based indexes.
+     + Added DATA nInsertType:
+       value 0 -> Default behaviour: each time the control gots focus,
+                  it's set to overwrite for TTextPicture and to insert
+                  for the other classes.
+       value 1 -> Same as default for the first time the control gots
+                  focus, the following times the control remembers the
+                  previous state.
+       value 2 -> The control uses the state of the INSERT key.
+     + Added overwrite state to TText class.
+       TODO: Change caret shape on overwrite mode.
 
 2011-11-03 23:00:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_image.prg
