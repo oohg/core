@@ -1,5 +1,5 @@
 /*
- * $Id: h_tree.prg,v 1.27 2011-11-07 22:56:04 fyurisich Exp $
+ * $Id: h_tree.prg,v 1.28 2011-11-08 22:35:14 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -2398,7 +2398,7 @@ HB_FUNC( TREEVIEW_GETITEMHIT )
 
    MapWindowPoints( HWND_DESKTOP, lpnmh->hwndFrom, &ht.pt, 1 );
 
-   TreeView_HitTest( lpnmh->hwndFrom, &ht );
+   (void) TreeView_HitTest( lpnmh->hwndFrom, &ht );
 
    HTREEret( ht.hItem );
 }
@@ -2416,7 +2416,7 @@ HB_FUNC( TREEVIEW_HITISONSTATEICON )
 
    MapWindowPoints( HWND_DESKTOP, lpnmh->hwndFrom, &ht.pt, 1 );
 
-   TreeView_HitTest( lpnmh->hwndFrom, &ht );
+   (void) TreeView_HitTest( lpnmh->hwndFrom, &ht );
 
    if( ht.hItem )
    {
@@ -2523,11 +2523,11 @@ HB_FUNC_STATIC( TTREE_FONTCOLOR )
       {
          if( oSelf->lFontColor != -1 )
          {
-            TreeView_SetTextColor( oSelf->hWnd, oSelf->lFontColor );
+            (void) TreeView_SetTextColor( oSelf->hWnd, oSelf->lFontColor );
          }
          else
          {
-            TreeView_SetTextColor( oSelf->hWnd, GetSysColor( COLOR_WINDOWTEXT ) );
+            (void) TreeView_SetTextColor( oSelf->hWnd, GetSysColor( COLOR_WINDOWTEXT ) );
          }
          RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
       }
@@ -3032,6 +3032,8 @@ HB_FUNC( TREEVIEW_ONMOUSEDROP)
    
    HTREEret( htiTarget );
 }
+
+VOID WINAPI ImageList_EndDrag(VOID);
 
 HB_FUNC( IMAGELIST_ENDDRAG )
 {
