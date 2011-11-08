@@ -1,11 +1,19 @@
 /*
- * $Id: ChangeLog,v 1.817 2011-11-07 22:56:03 fyurisich Exp $
+ * $Id: ChangeLog,v 1.818 2011-11-08 12:17:36 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2011-11-08 10:20:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * docs/classes.txt
+     * Updated
+   * source/h_textbox.prg
+     * UNDO support now works in the same way for all classes.
+     * Behaviour reverted to previous when control is clicked (all
+       text selected).
 
 2011-11-07 23:00:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_menu.prg
@@ -40,6 +48,8 @@
                   focus, the following times the control remembers the
                   previous state.
        value 2 -> The control uses the state of the INSERT key.
+     + Added METHOD InsertStatus: sets/gets the insertion status
+       according to nInsertType.
      + Added overwrite state to TText class.
        TODO: Change caret shape on overwrite mode.
 

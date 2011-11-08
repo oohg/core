@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.69 2011-11-07 22:56:04 fyurisich Exp $
+ * $Id: h_textbox.prg,v 1.70 2011-11-08 12:17:36 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -112,7 +112,8 @@ CLASS TText FROM TLabel
    DATA When_Processed  INIT .F.
    DATA When_Procesing  INIT .F.
    DATA lInsert         INIT .T.
-   DATA xUndo           INIT Nil
+   DATA lFocused        INIT .F.
+   DATA xUndo           INIT ""
    DATA nInsertType     INIT 0
 /*
  * 0 = Default: each time the control gots focus, it's set to
@@ -218,6 +219,7 @@ Local break := Nil
    ::SetFont( , , bold, italic, underline, strikeout )
 
    ::SetVarBlock( Field, cValue )
+   ::xUndo := ::Value
 
    ASSIGN ::OnLostFocus VALUE uLostFocus TYPE "B"
    ASSIGN ::OnGotFocus  VALUE uGotFocus  TYPE "B"
@@ -412,6 +414,7 @@ Local lWhen
          ::When_Processed := .F.
       EndIf
       //::SetFont( ::cFontName, ::nFontSize, ::Bold, ::Italic, ::Underline, ::Strikeout )
+      ::lFocused := .F.
       Return ::DoLostFocus()
 
    ElseIf Hi_wParam == EN_SETFOCUS
@@ -430,7 +433,7 @@ Local lWhen
 
       If ::When_Processed
          If lWhen
-            ::xUndo := ::Value
+            ::lFocused := .T.
             
             If ::nInsertType == 0
                ::InsertStatus := ( ::Type != "TEXTPICTURE" )
@@ -570,6 +573,7 @@ HB_FUNC_STATIC( TTEXT_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
       case WM_CHAR:
       case WM_PASTE:
       case WM_KEYDOWN:
+      case WM_LBUTTONDOWN:
       case WM_UNDO:
          if( ( GetWindowLong( hWnd, GWL_STYLE ) & ES_READONLY ) == 0 )
          {
@@ -637,7 +641,7 @@ Local nPos, nStart, nEnd, cText, nNewPos, nNewLen
             SendMessage( ::hWnd, EM_SETSEL, nNewPos, nNewPos)
          EndIf
       EndIf
-      Return 0
+      Return 1
 
    ElseIf nMsg == WM_PASTE
       cText := GetClipboardText()
@@ -657,13 +661,19 @@ Local nPos, nStart, nEnd, cText, nNewPos, nNewLen
          nNewPos := nStart + nNewLen
          SendMessage( ::hWnd, EM_SETSEL, nNewPos, nNewPos )
       EndIf
-      Return 0
+      Return 1
 
    ElseIf nMsg == WM_UNDO .OR. ;
           ( nMsg == WM_KEYDOWN .AND. wParam == VK_Z .AND. GetKeyFlagState() == MOD_CONTROL )
       cText := ::Value
       ::Value := ::xUndo
       ::xUndo := cText
+
+   ElseIf nMsg == WM_LBUTTONDOWN
+      If ! ::lFocused
+         ::SetFocus()
+         Return 1
+      EndIf
 
    ElseIf nMsg == WM_KEYDOWN .AND. wParam == VK_INSERT .AND. GetKeyFlagState() == 0
       // Toggle insertion
@@ -690,7 +700,6 @@ CLASS TTextPicture FROM TText
    DATA nDecimal       INIT 0
    DATA nDecimalShow   INIT 0
    DATA DataType       INIT "."
-   DATA lFocused       INIT .F.
    DATA cDateFormat    INIT Nil
    DATA lToUpper       INIT .F.
    DATA lNumericScroll INIT .F.
@@ -1325,13 +1334,11 @@ Local cPictureMask, aValidMask
       
    ElseIf Hi_wParam == EN_KILLFOCUS
       cText := ::Value
-      ::lFocused := .F.
       ::lSetting := .T.
       ::Value := cText
 
    ElseIf Hi_wParam == EN_SETFOCUS
       cText := ::Value
-      ::lFocused := .T.
       ::lSetting := .T.
       ::Value := cText
 

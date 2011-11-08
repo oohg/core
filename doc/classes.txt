@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.39 2011-10-28 01:36:53 fyurisich Exp $
+ * $Id: classes.txt,v 1.40 2011-11-08 12:17:36 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -1933,9 +1933,13 @@ ENDCLASS
 CLASS TTEXT FROM TLABEL
    DATA BWHEN
    DATA LAUTOSKIP                 INIT .F.
+   DATA LFOCUSED                  INIT .F.
+   DATA LINSERT                   INIT .T.
+   DATA LSETTING                  INIT .F.
    DATA LSETTING                  INIT .F.
    DATA NDEFANCHOR                INIT 13
    DATA NHEIGHT                   INIT 24
+   DATA NINSERTTYPE               INIT 0
    DATA NMAXLENGTH                INIT 0
    DATA NONFOCUSPOS               INIT -2
    DATA NWIDTH                    INIT 120
@@ -1943,6 +1947,7 @@ CLASS TTEXT FROM TLABEL
    DATA TYPE                      INIT "TEXT" READONLY
    DATA WHEN_PROCESING            INIT .F.
    DATA WHEN_PROCESSED            INIT .F.
+   DATA XUNDO                     INIT NIL
 
    METHOD ADDCONTROL
    METHOD ADJUSTRESIZE
@@ -1955,12 +1960,15 @@ CLASS TTEXT FROM TLABEL
    METHOD ENABLED                 SETGET
    METHOD EVENTS
    METHOD EVENTS_COMMAND
+   METHOD GETSELECTION
+   METHOD INSERTSTATUS            SETGET
    METHOD MAXLENGTH               SETGET
    METHOD READONLY                SETGET
    METHOD REFRESH
    METHOD REFRESHDATA
    METHOD SCROLLCARET
    METHOD SETFOCUS
+   METHOD SETSELECTION
    METHOD SIZEPOS
    METHOD VALUE                   SETGET
    METHOD VISIBLE                 SETGET
@@ -2005,8 +2013,6 @@ CLASS TTEXTPICTURE FROM TTEXT
    DATA CPICTURE                  INIT ""
    DATA DATATYPE                  INIT "."
    DATA LBRITISH                  INIT .F.
-   DATA LFOCUSED                  INIT .F.
-   DATA LINSERT                   INIT .T.
    DATA LNUMERICSCROLL            INIT .F.
    DATA LTOUPPER                  INIT .F.
    DATA NDECIMAL                  INIT 0
@@ -2018,7 +2024,6 @@ CLASS TTEXTPICTURE FROM TTEXT
    DATA TYPE                      INIT "TEXTPICTURE" READONLY
    DATA VALIDMASK                 INIT {}
    DATA VALIDMASKSHOW             INIT {}
-   DATA XUNDO                     INIT NIL
 
    METHOD DEFINE
    METHOD EVENTS
