@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog,v 1.821 2011-11-09 02:21:05 fyurisich Exp $
+ * $Id: ChangeLog,v 1.822 2011-11-09 16:51:00 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2011-11-09 14:50:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_textbox.prg
+     ! Fixed: NUMERIC textbox cancels when new data was inserted.
+     ! Fixed: UNDO was reseting value to original instead of previous.
 
 2011-11-09 00:20:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_textbox.prg
