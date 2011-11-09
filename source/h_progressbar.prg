@@ -1,5 +1,5 @@
 /*
- * $Id: h_progressbar.prg,v 1.11 2011-10-28 01:18:18 fyurisich Exp $
+ * $Id: h_progressbar.prg,v 1.12 2011-11-09 02:03:31 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -117,7 +117,8 @@ CLASS TProgressBar FROM TControl
    METHOD StartMarquee
    METHOD StopMarquee
    METHOD IsMarqueeRunning
-   
+
+   EMPTY( _OOHG_AllVars )
 ENDCLASS
 
 *-----------------------------------------------------------------------------*

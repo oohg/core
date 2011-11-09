@@ -1,5 +1,5 @@
 /*
- * $Id: h_editbox.prg,v 1.16 2011-11-07 22:56:04 fyurisich Exp $
+ * $Id: h_editbox.prg,v 1.17 2011-11-09 02:03:31 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -102,7 +102,8 @@ CLASS TEdit FROM TText
 
    METHOD Define
    METHOD LookForKey
-   METHOD Events_Enter      BLOCK { || nil }
+   METHOD Events_Enter  BLOCK { || nil }
+   METHOD Events
 
    EMPTY( _OOHG_AllVars )
 ENDCLASS
@@ -117,7 +118,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
 Local nStyle := ES_MULTILINE + ES_WANTRETURN, nStyleEx := 0
 
    DEFAULT h   TO 240
-*   DEFAULT Maxlenght TO 64738
+//   DEFAULT Maxlenght TO 64738
 
    nStyle += IF( HB_IsLogical( novscroll ) .AND. novscroll, ES_AUTOVSCROLL, WS_VSCROLL ) + ;
              IF( HB_IsLogical( nohscroll ) .AND. nohscroll, 0,              WS_HSCROLL )
@@ -141,3 +142,107 @@ Local lDone
       lDone := .T.
    EndIf
 Return lDone
+
+#pragma BEGINDUMP
+
+#include "hbapi.h"
+#include "hbvm.h"
+#include "hbstack.h"
+#include <windows.h>
+#include <commctrl.h>
+#include "oohg.h"
+
+#define s_Super s_TText
+
+// oSelf->lAux[ 0 ] -> Client's area (width used by attached controls)
+
+// -----------------------------------------------------------------------------
+HB_FUNC_STATIC( TEDIT_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TEdit
+// -----------------------------------------------------------------------------
+{
+   HWND hWnd      = HWNDparam( 1 );
+   UINT message   = ( UINT )   hb_parni( 2 );
+   WPARAM wParam  = ( WPARAM ) hb_parni( 3 );
+   LPARAM lParam  = ( LPARAM ) hb_parnl( 4 );
+   PHB_ITEM pSelf = hb_stackSelfItem();
+
+   switch( message )
+   {
+      case WM_NCCALCSIZE:
+      {
+         int iRet;
+         RECT *rect2;
+         POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+
+         iRet = DefWindowProc( hWnd, message, wParam, lParam );
+
+         if( oSelf->lAux[ 0 ] )
+         {
+
+            rect2 = ( RECT * ) lParam;
+            rect2->right = rect2->right - oSelf->lAux[ 0 ];
+         }
+
+         hb_retni( iRet );
+         break;
+      }
+
+      case WM_NCHITTEST:
+      {
+         int iRet;
+
+         iRet = DefWindowProc( hWnd, message, wParam, lParam );
+
+         if( iRet == 0 )
+         {
+            iRet = -1;
+         }
+
+         hb_retni( iRet );
+         break;
+      }
+
+      case WM_KEYDOWN:
+      case WM_UNDO:
+         if( ( GetWindowLong( hWnd, GWL_STYLE ) & ES_READONLY ) == 0 )
+         {
+            HB_FUNCNAME( TEDIT_EVENTS2 )();
+            break;
+         }
+
+      default:
+         _OOHG_Send( pSelf, s_Super );
+         hb_vmSend( 0 );
+         _OOHG_Send( hb_param( -1, HB_IT_OBJECT ), s_Events );
+         hb_vmPushLong( ( LONG ) hWnd );
+         hb_vmPushLong( message );
+         hb_vmPushLong( wParam );
+         hb_vmPushLong( lParam );
+         hb_vmSend( 4 );
+         break;
+   }
+}
+
+#pragma ENDDUMP
+
+*------------------------------------------------------------------------------*
+FUNCTION TEdit_Events2( hWnd, nMsg, wParam, lParam )
+*------------------------------------------------------------------------------*
+Local Self := QSelf()
+Local cText
+
+   // For multiline edit controls, CTRL+Z fires a WM_UNDO message,
+   // but not for single line edit controls.
+
+   If nMsg == WM_UNDO
+      cText := ::Value
+      ::Value := ::xUndo
+      ::xUndo := cText
+      Return 1
+      
+   ElseIf nMsg == WM_KEYDOWN .AND. wParam == VK_Z .AND. ;
+          ( GetKeyFlagState() == MOD_CONTROL .OR. GetKeyFlagState() == MOD_CONTROL + MOD_SHIFT )
+      Return 1
+   Endif
+
+Return ::Super:Events( hWnd, nMsg, wParam, lParam )

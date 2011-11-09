@@ -1,5 +1,5 @@
 /*
- * $Id: h_splitbox.prg,v 1.15 2011-10-26 21:20:07 fyurisich Exp $
+ * $Id: h_splitbox.prg,v 1.16 2011-11-09 02:03:31 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -117,6 +117,8 @@ CLASS TSplitBox FROM TControl
    METHOD HideBand
    METHOD ShowBand
    METHOD IsBandVisible
+
+   EMPTY( _OOHG_AllVars )
 ENDCLASS
 
 *-----------------------------------------------------------------------------*

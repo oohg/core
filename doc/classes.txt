@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.40 2011-11-08 12:17:36 fyurisich Exp $
+ * $Id: classes.txt,v 1.41 2011-11-09 02:03:31 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -519,10 +519,11 @@ ENDCLASS
 
 *------------------------------------------------------------------------------*
 CLASS TEDIT FROM TTEXT
-   DATA NONFOCUSPOS               INIT -3
    DATA TYPE                      INIT "EDIT" READONLY
+   DATA NONFOCUSPOS               INIT -3
 
    METHOD DEFINE
+   METHOD EVENTS
    METHOD EVENTS_ENTER
    METHOD LOOKFORKEY
 ENDCLASS
@@ -536,6 +537,7 @@ CLASS TEDITRICH FROM TEDIT
    METHOD BACKCOLOR               SETGET
    METHOD DEFINE
    METHOD RICHVALUE               SETGET
+   METHOD EVENTS                  BLOCK { || NIL }
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -1935,7 +1937,6 @@ CLASS TTEXT FROM TLABEL
    DATA LAUTOSKIP                 INIT .F.
    DATA LFOCUSED                  INIT .F.
    DATA LINSERT                   INIT .T.
-   DATA LSETTING                  INIT .F.
    DATA LSETTING                  INIT .F.
    DATA NDEFANCHOR                INIT 13
    DATA NHEIGHT                   INIT 24

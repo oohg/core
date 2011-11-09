@@ -1,5 +1,5 @@
 /*
- * $Id: h_tree.prg,v 1.28 2011-11-08 22:35:14 fyurisich Exp $
+ * $Id: h_tree.prg,v 1.29 2011-11-09 02:03:31 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -2424,7 +2424,7 @@ HB_FUNC( TREEVIEW_HITISONSTATEICON )
    }
    else
    {
-      bRet = HB_FALSE;
+      bRet = FALSE;
    }
 
    hb_retl( bRet );

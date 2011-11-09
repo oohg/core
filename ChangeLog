@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.819 2011-11-08 22:35:14 fyurisich Exp $
+ * $Id: ChangeLog,v 1.820 2011-11-09 02:03:31 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,12 +7,36 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2011-11-09 00:05:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * doc/classes.txt
+     * Updated
+   * source/h_textbox.prg
+     * Behaviour reverted to previous when control without focus
+       is clicked (all text selected in NUMERIC textbox, none
+       selected in the others).
+     ! Initialization of DATA xUndo reverted to Nil.
+   * source/h_editbox.prg
+     + Added METHOD Events to fix UNDO support (in multiline edit
+       controls, CTRL+Z sends a WM_UNDO message).
+     - Deleted DATA nOnFocusPos (parent already has it).
+     ! Fixed numeric textbox cancels when entering a number.
+   * source/h_richeditbox.prg
+     + Added METHOD Events to fix UNDO support (richeditbox
+       control has built in support).
+   * source/h_progressbar.prg
+   * source/h_splitbox.prg
+   * source/h_editbox.prg
+     * Revert deletion of EMPTY(_OOHG_AllVars) to pacify
+       xHarbour warnings.
+   * source/h_tree.prg
+     ! Changed HB_FALSE by FALSE to fix xHarbour error.
+
 2011-11-08 20:35:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_tree.prg
      ! Fixed BCC compiler warnings.
      
 2011-11-08 10:20:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * docs/classes.txt
+   * doc/classes.txt
      * Updated
    * source/h_textbox.prg
      * UNDO support now works in the same way for all classes.
