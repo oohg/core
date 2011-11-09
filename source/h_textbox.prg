@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.71 2011-11-09 02:03:31 fyurisich Exp $
+ * $Id: h_textbox.prg,v 1.72 2011-11-09 02:21:05 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -620,7 +620,7 @@ HB_FUNC_STATIC( TTEXT_CONTROLAREA )   // METHOD ControlArea( nWidth ) CLASS TTex
 FUNCTION TText_Events2( hWnd, nMsg, wParam, lParam )
 *------------------------------------------------------------------------------*
 Local Self := QSelf()
-Local nPos, nStart, nEnd, cText, nNewPos, nNewLen
+Local nPos, nStart, nEnd, cText, nNewPos, nNewLen, i
 
    If nMsg == WM_CHAR .AND. wParam >= 32
       nPos := SendMessage( ::hWnd, EM_GETSEL, 0, 0 )
@@ -647,6 +647,13 @@ Local nPos, nStart, nEnd, cText, nNewPos, nNewLen
 
    ElseIf nMsg == WM_PASTE
       cText := GetClipboardText()
+      For i := 1 to Len( cText )
+          If Asc( SubStr( cText, i ) ) < 32
+             Exit
+          EndIf
+      Next
+      cText := SubStr( cText, 1, i - 1)
+      
       If ! Empty( cText )
          nPos := SendMessage( ::hWnd, EM_GETSEL, 0, 0 )
          nStart := LoWord( nPos )

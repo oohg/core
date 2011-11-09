@@ -1,5 +1,5 @@
 /*
- * $Id: h_editbox.prg,v 1.17 2011-11-09 02:03:31 fyurisich Exp $
+ * $Id: h_editbox.prg,v 1.18 2011-11-09 02:21:05 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -203,6 +203,7 @@ HB_FUNC_STATIC( TEDIT_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
       }
 
       case WM_KEYDOWN:
+      case WM_PASTE:
       case WM_UNDO:
          if( ( GetWindowLong( hWnd, GWL_STYLE ) & ES_READONLY ) == 0 )
          {
@@ -229,7 +230,7 @@ HB_FUNC_STATIC( TEDIT_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
 FUNCTION TEdit_Events2( hWnd, nMsg, wParam, lParam )
 *------------------------------------------------------------------------------*
 Local Self := QSelf()
-Local cText
+Local cText, nPos, nStart, nEnd, nNewLen, nNewPos
 
    // For multiline edit controls, CTRL+Z fires a WM_UNDO message,
    // but not for single line edit controls.
@@ -243,6 +244,28 @@ Local cText
    ElseIf nMsg == WM_KEYDOWN .AND. wParam == VK_Z .AND. ;
           ( GetKeyFlagState() == MOD_CONTROL .OR. GetKeyFlagState() == MOD_CONTROL + MOD_SHIFT )
       Return 1
+
+   ElseIf nMsg == WM_PASTE
+      cText := GetClipboardText()
+
+      If ! Empty( cText )
+         nPos := SendMessage( ::hWnd, EM_GETSEL, 0, 0 )
+         nStart := LoWord( nPos )
+         nEnd := HiWord( nPos )
+
+         If ::nMaxLength <= 0
+            nNewLen := Len( cText )
+         Else
+            nNewLen := Min( ::nMaxLength - Len( ::Caption ) + nEnd - nStart, Len( cText ) )
+         EndIf
+
+         ::Caption := Stuff( ::Caption, nStart + 1, nEnd - nStart, SubStr( cText, 1, nNewLen ) )
+
+         nNewPos := nStart + nNewLen
+         SendMessage( ::hWnd, EM_SETSEL, nNewPos, nNewPos )
+      EndIf
+      Return 1
+
    Endif
 
 Return ::Super:Events( hWnd, nMsg, wParam, lParam )
