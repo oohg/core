@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.73 2011-11-09 16:51:00 fyurisich Exp $
+ * $Id: h_textbox.prg,v 1.74 2011-11-09 21:08:03 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -634,7 +634,7 @@ Local nPos, nStart, nEnd, cText, nNewPos, nNewLen, i
       nStart := LoWord( nPos )
       nEnd := HiWord( nPos )
       If ::InsertStatus
-         If ::nMaxLength <= 0 .OR. Len( ::Caption ) < ::nMaxLength
+         If ::nMaxLength <= 0 .OR. Len( ::Caption ) + 1 - nEnd + nStart <= ::nMaxLength
             nNewPos := nStart + 1
 
             ::Caption := Stuff( ::Caption, nNewPos, nEnd - nStart, Chr( wParam ) )
