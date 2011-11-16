@@ -1,5 +1,5 @@
 /*
- * $Id: h_msgbox.prg,v 1.13 2011-09-07 04:41:50 declan2005 Exp $
+ * $Id: h_msgbox.prg,v 1.14 2011-11-16 22:59:57 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -91,11 +91,14 @@
  Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-#include 'common.ch'
-#include 'i_var.ch'
+#include 'oohg.ch'
+#include 'i_windefs.ch'
 
 static _OOHG_MsgDefaultMessage := ''
 static _OOHG_MsgDefaultTitle := ''
+static _OOHG_MsgDefaultMode := Nil
+// Nil = MB_SYSTEMMODAL, other values MB_APPLMODAL and MB_TASKMODAL
+
 
 *-----------------------------------------------------------------------------*
 Function SetMsgDefaultMessage( cMessage )
@@ -105,6 +108,7 @@ Function SetMsgDefaultMessage( cMessage )
    ENDIF
 Return _OOHG_MsgDefaultMessage
 
+
 *-----------------------------------------------------------------------------*
 Function SetMsgDefaultTitle( cTitle )
 *-----------------------------------------------------------------------------*
@@ -113,99 +117,124 @@ Function SetMsgDefaultTitle( cTitle )
    ENDIF
 Return _OOHG_MsgDefaultTitle
 
+
 *-----------------------------------------------------------------------------*
-Function MsgYesNo( Message, Title, lRevertDefault )
+Function SetMsgDefaultMode( nMode )
+*-----------------------------------------------------------------------------*
+   IF valtype( nMode ) == "N"
+      _OOHG_MsgDefaultMode := nMode
+   ENDIF
+Return _OOHG_MsgDefaultMode
+
+
+*-----------------------------------------------------------------------------*
+Function MsgYesNo( Message, Title, lRevertDefault, Mode )
 *-----------------------------------------------------------------------------*
 Local t
 
- DEFAULT Message TO _OOHG_MsgDefaultMessage
- DEFAULT Title TO _OOHG_MsgDefaultTitle
+   DEFAULT Message TO _OOHG_MsgDefaultMessage
+   DEFAULT Title TO _OOHG_MsgDefaultTitle
+   DEFAULT Mode TO _OOHG_MsgDefaultMode
 
    IF HB_IsLogical( lRevertDefault ) .AND. lRevertDefault
-      t := c_msgyesno_id( message, title )
+      t := c_msgyesno_id( Message, Title, Mode )
    ELSE
-      t := c_msgyesno( message, title )
+      t := c_msgyesno( Message, Title, Mode )
    ENDIF
 
 Return ( t == 6 )
 
+
 *-----------------------------------------------------------------------------*
-Function MsgYesNoCancel( Message, Title )
+Function MsgYesNoCancel( Message, Title, Mode )
 *-----------------------------------------------------------------------------*
 Local t
 
- DEFAULT Message TO _OOHG_MsgDefaultMessage
- DEFAULT Title TO _OOHG_MsgDefaultTitle
+   DEFAULT Message TO _OOHG_MsgDefaultMessage
+   DEFAULT Title TO _OOHG_MsgDefaultTitle
+   DEFAULT Mode TO _OOHG_MsgDefaultMode
 
-   t := c_msgyesnocancel( message, title )
+   t := c_msgyesnocancel( Message, Title, Mode )
 
 Return iif( t == 6, 1, iif( t == 7, 2, 0 ) )
 
+
 *-----------------------------------------------------------------------------*
-Function MsgRetryCancel( Message , Title )
+Function MsgRetryCancel( Message, Title, Mode )
 *-----------------------------------------------------------------------------*
 Local t
 
- DEFAULT Message TO _OOHG_MsgDefaultMessage
- DEFAULT Title TO _OOHG_MsgDefaultTitle
+   DEFAULT Message TO _OOHG_MsgDefaultMessage
+   DEFAULT Title TO _OOHG_MsgDefaultTitle
+   DEFAULT Mode TO _OOHG_MsgDefaultMode
 
-   t := c_msgretrycancel( message , title )
+   t := c_msgretrycancel( Message, Title, Mode )
 
 Return ( t == 4 )
 
+
 *-----------------------------------------------------------------------------*
-Function MsgOkCancel( Message , Title )
+Function MsgOkCancel( Message, Title, Mode )
 *-----------------------------------------------------------------------------*
 Local t
 
- DEFAULT Message TO _OOHG_MsgDefaultMessage
- DEFAULT Title TO _OOHG_MsgDefaultTitle
+   DEFAULT Message TO _OOHG_MsgDefaultMessage
+   DEFAULT Title TO _OOHG_MsgDefaultTitle
+   DEFAULT Mode TO _OOHG_MsgDefaultMode
 
-   t := c_msgokcancel(message,title)
+   t := c_msgokcancel( Message, Title, Mode )
 
 Return ( t == 1 )
 
+
 *-----------------------------------------------------------------------------*
-Function MsgInfo( Message , Title )
+Function MsgInfo( Message, Title, Mode )
 *-----------------------------------------------------------------------------*
 
- DEFAULT Message TO _OOHG_MsgDefaultMessage
- DEFAULT Title TO _OOHG_MsgDefaultTitle
+   DEFAULT Message TO _OOHG_MsgDefaultMessage
+   DEFAULT Title TO _OOHG_MsgDefaultTitle
+   DEFAULT Mode TO _OOHG_MsgDefaultMode
 
-   c_msginfo(message,title)
+   c_msginfo( Message, Title, Mode )
 
 Return Nil
 
+
 *-----------------------------------------------------------------------------*
-Function MsgStop( Message , Title )
+Function MsgStop( Message, Title, Mode )
 *-----------------------------------------------------------------------------*
 
- DEFAULT Message TO _OOHG_MsgDefaultMessage
- DEFAULT Title TO _OOHG_MsgDefaultTitle
+   DEFAULT Message TO _OOHG_MsgDefaultMessage
+   DEFAULT Title TO _OOHG_MsgDefaultTitle
+   DEFAULT Mode TO _OOHG_MsgDefaultMode
 
-   c_msgstop(message,title)
+   c_msgstop( Message, Title, Mode )
 
 Return Nil
 
+
 *-----------------------------------------------------------------------------*
-Function MsgExclamation( Message , Title )
+Function MsgExclamation( Message, Title, Mode )
 *-----------------------------------------------------------------------------*
 
- DEFAULT Message TO _OOHG_MsgDefaultMessage
- DEFAULT Title TO _OOHG_MsgDefaultTitle
+   DEFAULT Message TO _OOHG_MsgDefaultMessage
+   DEFAULT Title TO _OOHG_MsgDefaultTitle
+   DEFAULT Mode to _OOHG_MsgDefaultMode
 
-   c_msgexclamation(message,title)
+   c_msgexclamation( Message, Title, Mode )
 
 Return Nil
 
+
 *-----------------------------------------------------------------------------*
-Function MsgBox( Message , Title )
+Function MsgBox( Message, Title, Mode )
 *-----------------------------------------------------------------------------*
 
- DEFAULT Message TO _OOHG_MsgDefaultMessage
- DEFAULT Title TO _OOHG_MsgDefaultTitle
+   DEFAULT Message TO _OOHG_MsgDefaultMessage
+   DEFAULT Title TO _OOHG_MsgDefaultTitle
+   DEFAULT Mode TO _OOHG_MsgDefaultMode
 
-   c_msgbox(message,title)
+   c_msgbox( Message, Title, Mode )
 
 Return Nil
 
@@ -218,93 +247,103 @@ Function MsgInfoExt( cInfo, cTitulo, nSecs )
 *-----------------------------------------------------------------------------*
 Local nWidth, nHeight
 
- DEFAULT cInfo TO _OOHG_MsgDefaultMessage
- DEFAULT cTitulo TO _OOHG_MsgDefaultTitle
- DEFAULT nSecs TO 0
+   DEFAULT cInfo TO _OOHG_MsgDefaultMessage
+   DEFAULT cTitulo TO _OOHG_MsgDefaultTitle
+   DEFAULT nSecs TO 0
 
    cInfo   := STRTRAN(STRTRAN(cInfo, CHR(13), CHR(13)+CHR(10)), CHR(13)+CHR(10)+CHR(10), CHR(13)+CHR(10))
    nWidth  := MAX(MAXLINE(cInfo), LEN(cTitulo)) * 12
    nHeight := MLCOUNT(cInfo) * 20
 
-   DefineWindow( "_Win_1",, 0, 0, nWidth, 115 + nHeight, .F., .F., .F., .F., .T.,,,,,,, {204,216,124},, .F., .T.,,,,,,,,,,,,,,,,, .F.,,,, .F.,,, .F., .F.,, .F., .F., .F., .F., .F., .F., .F., .F., .F., .F.,, .F.,,,,,,,,,, ) ;
+   DefineWindow( "_Win_1", , 0, 0, nWidth, 115 + nHeight, .F., .F., .F., .F., .T., , , , , , , {204, 216, 124}, , .F., .T., , , , , , , , , , , , , , , , , .F., , , , .F., , , .F., .F., , .F., .F., .F., .F., .F., .F., .F., .F., .F., .F., , .F., , , , , , , , , , ) ;
 
    _DefineAnyKey(, "ESCAPE", {|| _OOHG_ThisForm:release()} )
    _DefineAnyKey(, "RETURN", {|| _OOHG_ThisForm:release()} )
 
    IF nSecs = 1 .OR. nSecs > 1
-      _OOHG_SelectSubClass( TTimer(), ): Define( "_timer__x",, nSecs*1000, {|| _OOHG_ThisForm:Release() }, .F. )
+      _OOHG_SelectSubClass( TTimer(), ): Define( "_timer__x", , nSecs*1000, {|| _OOHG_ThisForm:Release() }, .F. )
    ENDIF
 
-   _OOHG_SelectSubClass( TLabel(), ):Define( "Label_1",, 000, 12, cTitulo, nWidth, 40, "Times NEW Roman", 18, .F., .F. , .F. , .F. , .F. , .T. ,, {0,0,0},,,, .F., .F., .F., .F. , .F. , .F. , .T. , .F. , .F. , .F. , )
-   _OOHG_SelectSubClass( TLabel(), ):Define( "Label_2",, 0-5, 46, "", nWidth+10, 20 + nHeight, "Arial", 13, .T., .T. , .T. , .F. , .F. , .F. , {248,244,199}, {250,50,100},,,, .F., .F., .F., .F. , .F. , .F. , .T. , .F. , .F. , .F. , )
-   _OOHG_SelectSubClass( TLabel(), ):Define( "Label_3",, 000, 56, cInfo, nWidth, 00 + nHeight, "Times NEW Roman", 14, .F., .F. , .F. , .F. , .F. , .T. , {177,156,037}, {000,00,000},,,, .F., .F., .F., .F. , .F. , .F. , .T. , .F. , .F. , .F. , )
+   _OOHG_SelectSubClass( TLabel(), ):Define( "Label_1", , 000, 12, cTitulo, nWidth, 40, "Times NEW Roman", 18, .F., .F., .F., .F., .F., .T., , {0, 0, 0}, , , , .F., .F., .F., .F., .F., .F., .T., .F., .F., .F., )
+   _OOHG_SelectSubClass( TLabel(), ):Define( "Label_2", , 0-5, 46, "", nWidth+10, 20 + nHeight, "Arial", 13, .T., .T., .T., .F., .F., .F., {248, 244, 199}, {250, 50, 100}, , , , .F., .F., .F., .F., .F., .F., .T., .F., .F., .F., )
+   _OOHG_SelectSubClass( TLabel(), ):Define( "Label_3", , 000, 56, cInfo, nWidth, 00 + nHeight, "Times NEW Roman", 14, .F., .F., .F., .F., .F., .T., {177, 156, 037}, {000, 00, 000}, , , , .F., .F., .F., .F., .F., .F., .T., .F., .F., .F., )
 
-   _OOHG_SelectSubClass( TButton(), ): Define( "Button_1",, (nWidth/2)-40, GetExistingFormObject( "_Win_1" ):Height-40,, {|| _OOHG_ThisForm:Release()}, 60, 25, "Arial", 10,,,, .F., .F.,, .F. ,.F., .F., .F., .F., .F., .F., .F.,,, "MINIGUI_EDIT_OK", .F., .F., .F., )
+   _OOHG_SelectSubClass( TButton(), ): Define( "Button_1", , (nWidth/2)-40, GetExistingFormObject( "_Win_1" ):Height-40, , {|| _OOHG_ThisForm:Release()}, 60, 25, "Arial", 10, , , , .F., .F., , .F., .F., .F., .F., .F., .F., .F., .F., , , "MINIGUI_EDIT_OK", .F., .F., .F., )
 
    GetExistingControlObject( "button_1", "_Win_1" ):setfocus ()
 
    _EndWindow ()
-   DoMethod ( "_Win_1" , "Center" )
+   DoMethod ( "_Win_1", "Center" )
    _ActivateWindow( {"_Win_1"}, .F. )
 
 Return Nil
+
 
 *-----------------------------------------------------------------------------*
 Function AutoMsgInfoExt( uInfo, cTitulo, nSecs )
 *-----------------------------------------------------------------------------*
 
-   MsgInfoExt( autotype( uInfo ) , cTitulo, Nsecs )
+   MsgInfoExt( autoType( uInfo ), cTitulo, Nsecs )
 
 Return nil
 
+
 *-----------------------------------------------------------------------------*
-Function autoMsgBox( uMessage , cTitle )
+Function autoMsgBox( uMessage, cTitle, nMode )
 *-----------------------------------------------------------------------------*
 
- DEFAULT cTitle TO _OOHG_MsgDefaultTitle
+   DEFAULT cTitle TO _OOHG_MsgDefaultTitle
+   DEFAULT nMode TO _OOHG_MsgDefaultMode
 
-   umessage :=  autotype(uMessage)
-   c_msgbox(umessage,ctitle)
+   uMessage :=  autoType( uMessage )
+   c_msgbox( uMessage, cTitle, nMode )
 
 Return Nil
 
+
 *-----------------------------------------------------------------------------*
-Function autoMsgExclamation( uMessage , cTitle )
+Function autoMsgExclamation( uMessage, cTitle, nMode )
 *-----------------------------------------------------------------------------*
 
- DEFAULT cTitle TO _OOHG_MsgDefaultTitle
+   DEFAULT cTitle TO _OOHG_MsgDefaultTitle
+   DEFAULT nMode TO _OOHG_MsgDefaultMode
  
-   umessage := autotype(uMessage)
-   c_msgexclamation(umessage,ctitle)
+   uMessage := autoType( uMessage )
+   c_msgexclamation( uMessage, cTitle, nMode )
 
 Return Nil
 
+
 *-----------------------------------------------------------------------------*
-Function autoMsgStop( uMessage , cTitle )
+Function autoMsgStop( uMessage, cTitle, nMode )
 *-----------------------------------------------------------------------------*
 
- DEFAULT cTitle TO _OOHG_MsgDefaultTitle
+   DEFAULT cTitle TO _OOHG_MsgDefaultTitle
+   DEFAULT nMode TO _OOHG_MsgDefaultMode
 
-   umessage := autotype(uMessage)
-   c_msgstop(umessage,ctitle)
+   uMessage := autoType( uMessage )
+   c_msgstop( uMessage, cTitle, nMode )
 
 Return Nil
 
+
 *-----------------------------------------------------------------------------*
-Function autoMsgInfo( uMessage , cTitle )
+Function autoMsgInfo( uMessage, cTitle, nMode )
 *-----------------------------------------------------------------------------*
 
- DEFAULT cTitle TO _OOHG_MsgDefaultTitle
+   DEFAULT cTitle TO _OOHG_MsgDefaultTitle
+   DEFAULT nMode TO _OOHG_MsgDefaultMode
 
-   umessage := autotype(uMessage)
-   c_msginfo(umessage,ctitle)
+   uMessage := autoType( uMessage )
+   c_msginfo( uMessage, cTitle, nMode )
 
 Return Nil
 
+
 *-----------------------------------------------------------------------------*
-Function autotype( Message )
+Function autoType( Message )
 *-----------------------------------------------------------------------------*
-Local cMessage, ctype, l , i
+Local cMessage, ctype, l, i
 
    ctype := valtype( Message )
 
@@ -317,7 +356,7 @@ Local cMessage, ctype, l , i
          l:=len( Message )
          cMessage:=""
          for i:=1 to l
-             cMessage = cMessage +  if ( i=l  , autotype( Message [ i ] )+chr(13)+chr(10)  ,  autotype( Message[ i ] ) )    /// cvc
+             cMessage = cMessage +  if ( i=l, autoType( Message [ i ] )+chr(13)+chr(10), autoType( Message[ i ] ) )    /// cvc
          next i
       case ctype = "B"
          cMessage := "{|| Codeblock }   "

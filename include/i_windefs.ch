@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.43 2011-11-02 23:00:30 fyurisich Exp $
+ * $Id: i_windefs.ch,v 1.44 2011-11-16 22:59:57 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -765,5 +765,10 @@
 // Progressbar
 #define PBS_MARQUEE                   0x08
 #define PBM_SETMARQUEE                ( WM_USER + 10 )
+
+// MessageBox
+#define MB_APPLMODAL                  0
+#define MB_SYSTEMMODAL                4096
+#define MB_TASKMODAL                  8192
 
 #endif

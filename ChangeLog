@@ -1,11 +1,49 @@
 /*
- * $Id: ChangeLog,v 1.824 2011-11-14 23:28:59 fyurisich Exp $
+ * $Id: ChangeLog,v 1.825 2011-11-16 22:59:57 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2011-11-16 21:00:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/c_msgbox.c
+     * Added 3rd parameter to functions:
+          C_MSGRETRYCANCEL
+          C_MSGOKCANCEL
+          C_MSGYESNO
+          C_MSGYESNOCANCEL
+          C_MSGYESNO_ID
+          C_MSGBOX
+          C_MSGINFO
+          C_MSGSTOP
+          C_MSGEXCLAMATION
+       It allows changing the default MB_SYSTEMMODAL mode to
+       MB_APPLMODAL or MB_TASKMODAL.
+   * source/h_msgbox.prg
+     + Added posibility of changing default MB_SYSTEMMODAL mode
+       in message functions via function SetMsgDefaultMode().
+     * Added 3rd parameter to functions:
+           MsgYesNoCancel
+           MsgRetryCancel
+           MsgOkCancel
+           MsgInfo
+           MsgStop
+           MsgExclamation
+           MsgBox
+           AutoMsgBox
+           AutoMsgExclamation
+           AutoMsgStop
+           AutoMsgInfo
+     * Added 4th parameter to function:
+           MsgYesNo
+       It allows changing the default MB_SYSTEMMODAL mode to
+       MB_APPLMODAL or MB_TASKMODAL.
+       When not used, this parameter defaults to the value setted
+       via SetMsgDefaultMode().
+   * include/i_windefs.ch
+     + Added defines for MB_APPLMODAL, MB_SYSTEMMODAL and MB_TASKMODAL.
 
 2011-11-14 21:30:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_combo.prg

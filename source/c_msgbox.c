@@ -1,5 +1,5 @@
 /*
- * $Id: c_msgbox.c,v 1.3 2009-01-07 04:30:39 guerra000 Exp $
+ * $Id: c_msgbox.c,v 1.4 2011-11-16 22:59:57 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -107,56 +107,144 @@
 
 HB_FUNC( C_MSGRETRYCANCEL )
 {
-   int r ;
+   int uType;
+   
+   if( ISNIL( 3 ) )
+   {
+      uType = MB_SYSTEMMODAL;
+   }
+   else
+   {
+      uType = hb_parni( 3 );
+   }
 
-   r = MessageBox( GetActiveWindow(), hb_parc( 1 ), hb_parc( 2 ), MB_RETRYCANCEL | MB_ICONQUESTION | MB_SYSTEMMODAL );
-
-   hb_retni( r ) ;
-
+   hb_retni( MessageBox( GetActiveWindow(), hb_parc( 1 ), hb_parc( 2 ), MB_RETRYCANCEL | MB_ICONQUESTION | uType ) ) ;
 }
 
 HB_FUNC( C_MSGOKCANCEL )
 {
+   int uType;
 
-	int r ;
+   if( ISNIL( 3 ) )
+   {
+      uType = MB_SYSTEMMODAL;
+   }
+   else
+   {
+      uType = hb_parni( 3 );
+   }
 
-	r = MessageBox( GetActiveWindow(), hb_parc(1),hb_parc(2) , MB_OKCANCEL | MB_ICONQUESTION | MB_SYSTEMMODAL ) ;
-
-	hb_retni ( r ) ;
-
+	hb_retni ( MessageBox( GetActiveWindow(), hb_parc(1), hb_parc(2) , MB_OKCANCEL | MB_ICONQUESTION | uType ) ) ;
 }
 
 HB_FUNC( C_MSGYESNO )
 {
-   hb_retni( MessageBox( GetActiveWindow(), hb_parc( 1 ), hb_parc( 2 ), MB_YESNO | MB_ICONQUESTION | MB_SYSTEMMODAL ) );
+   int uType;
+
+   if( ISNIL( 3 ) )
+   {
+      uType = MB_SYSTEMMODAL;
+   }
+   else
+   {
+      uType = hb_parni( 3 );
+   }
+
+   hb_retni( MessageBox( GetActiveWindow(), hb_parc( 1 ), hb_parc( 2 ), MB_YESNO | MB_ICONQUESTION | uType ) );
 }
 
 HB_FUNC( C_MSGYESNOCANCEL )
 {
-   hb_retni( MessageBox( GetActiveWindow(), hb_parc( 1 ), hb_parc( 2 ), MB_YESNOCANCEL | MB_ICONQUESTION | MB_SYSTEMMODAL ) );
+   int uType;
+
+   if( ISNIL( 3 ) )
+   {
+      uType = MB_SYSTEMMODAL;
+   }
+   else
+   {
+      uType = hb_parni( 3 );
+   }
+
+   hb_retni( MessageBox( GetActiveWindow(), hb_parc( 1 ), hb_parc( 2 ), MB_YESNOCANCEL | MB_ICONQUESTION | uType ) );
 }
 
 HB_FUNC( C_MSGYESNO_ID )
 {
-   hb_retni( MessageBox( GetActiveWindow(), hb_parc( 1 ), hb_parc( 2 ), MB_YESNO | MB_ICONQUESTION | MB_SYSTEMMODAL | MB_DEFBUTTON2 ) );
+   int uType;
+
+   if( ISNIL( 3 ) )
+   {
+      uType = MB_SYSTEMMODAL;
+   }
+   else
+   {
+      uType = hb_parni( 3 );
+   }
+
+   hb_retni( MessageBox( GetActiveWindow(), hb_parc( 1 ), hb_parc( 2 ), MB_YESNO | MB_ICONQUESTION | uType | MB_DEFBUTTON2 ) );
 }
 
 HB_FUNC( C_MSGBOX )
 {
-   MessageBox( GetActiveWindow(), hb_parc( 1 ), hb_parc( 2 ), MB_SYSTEMMODAL );
+   int uType;
+
+   if( ISNIL( 3 ) )
+   {
+      uType = MB_SYSTEMMODAL;
+   }
+   else
+   {
+      uType = hb_parni( 3 );
+   }
+
+   MessageBox( GetActiveWindow(), hb_parc( 1 ), hb_parc( 2 ), uType );
 }
 
 HB_FUNC( C_MSGINFO )
 {
-   MessageBox( GetActiveWindow(), hb_parc( 1 ), hb_parc( 2 ), MB_OK | MB_ICONINFORMATION | MB_SYSTEMMODAL );
+   int uType;
+
+   if( ISNIL( 3 ) )
+   {
+      uType = MB_SYSTEMMODAL;
+   }
+   else
+   {
+      uType = hb_parni( 3 );
+   }
+
+   MessageBox( GetActiveWindow(), hb_parc( 1 ), hb_parc( 2 ), MB_OK | MB_ICONINFORMATION | uType );
 }
 
 HB_FUNC( C_MSGSTOP )
 {
-   MessageBox( GetActiveWindow(), hb_parc( 1 ), hb_parc( 2 ), MB_OK | MB_ICONSTOP | MB_SYSTEMMODAL );
+   int uType;
+
+   if( ISNIL( 3 ) )
+   {
+      uType = MB_SYSTEMMODAL;
+   }
+   else
+   {
+      uType = hb_parni( 3 );
+   }
+
+   MessageBox( GetActiveWindow(), hb_parc( 1 ), hb_parc( 2 ), MB_OK | MB_ICONSTOP | uType );
 }
 
 HB_FUNC( C_MSGEXCLAMATION )
 {
-   MessageBox( GetActiveWindow(), hb_parc( 1 ), hb_parc( 2 ), MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
+   int uType;
+
+   if( ISNIL( 3 ) )
+   {
+      uType = MB_SYSTEMMODAL;
+   }
+   else
+   {
+      uType = hb_parni( 3 );
+   }
+
+   MessageBox( GetActiveWindow(), hb_parc( 1 ), hb_parc( 2 ), MB_ICONEXCLAMATION | MB_OK | uType );
 }
