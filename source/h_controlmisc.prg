@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.123 2011-10-18 01:08:04 fyurisich Exp $
+ * $Id: h_controlmisc.prg,v 1.124 2011-11-17 02:36:12 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -2266,7 +2266,7 @@ HB_FUNC( _OOHG_UNTRANSFORM )
 {
    char *cText, *cPicture, *cReturn, cType;
    ULONG iText, iPicture, iReturn, iMax;
-   BOOL lSign, bIgnoreMasks;
+   BOOL bSign, bIgnoreMasks, bPadLeft;
 
    iText = hb_parclen( 1 );
    iPicture = hb_parclen( 2 );
@@ -2295,12 +2295,14 @@ HB_FUNC( _OOHG_UNTRANSFORM )
          cType = 'C';
       }
 
-      lSign = 0;
+      bSign = 0;
       bIgnoreMasks = ( cType == 'N' || cType == 'L' );
+      bPadLeft = 0;
 
       // Picture function
       if( iPicture && *cPicture == '@' )
       {
+         iPicture--;
          cPicture++;
          while( iPicture && *cPicture != ' ' )
          {
@@ -2316,7 +2318,7 @@ HB_FUNC( _OOHG_UNTRANSFORM )
                case ')':
                   if( cType == 'N' && cText[ iText - 1 ] == ')' )
                   {
-                     lSign = 1;
+                     bSign = 1;
                      iText--;
                      cReturn[ iReturn++ ] = '-';
                   }
@@ -2326,9 +2328,17 @@ HB_FUNC( _OOHG_UNTRANSFORM )
                case 'x':
                   if( cType == 'N' && iText > 2 && cText[ iText - 3 ] == ' ' && cText[ iText - 2 ] == 'D' && cText[ iText - 1 ] == 'B' )
                   {
-                     lSign = 1;
+                     bSign = 1;
                      iText -= 3;
                      cReturn[ iReturn++ ] = '-';
+                  }
+                  break;
+
+               case 'B':
+               case 'b':
+                  if( cType == 'N' )
+                  {
+                     bPadLeft = 1;
                   }
                   break;
 
@@ -2338,6 +2348,18 @@ HB_FUNC( _OOHG_UNTRANSFORM )
          {
             iPicture--;
             cPicture++;
+         }
+      }
+
+      if( bPadLeft )
+      {
+         while( iPicture > iText )
+         {
+            iPicture--;
+            cPicture++;
+            // TODO:
+            // - Must fill cReturn[] left?
+            // - Must bIgnoreMasks ?
          }
       }
 
@@ -2396,7 +2418,7 @@ HB_FUNC( _OOHG_UNTRANSFORM )
             case ',':
                if( cType == 'N' && *cText == '-' )
                {
-                  lSign = 1;
+                  bSign = 1;
                }
                else if( ! bIgnoreMasks )
                {
@@ -2421,7 +2443,7 @@ HB_FUNC( _OOHG_UNTRANSFORM )
          iText--;
       }
 
-      if( cType == 'N' && lSign )
+      if( cType == 'N' && bSign )
       {
          iPicture = 0;
          for( iText = 0; iText < iReturn; iText++ )

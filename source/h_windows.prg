@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.223 2011-10-24 23:13:22 fyurisich Exp $
+ * $Id: h_windows.prg,v 1.224 2011-11-17 02:36:12 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -2380,7 +2380,7 @@ EXTERN ValidHandler
 
 typedef LONG ( * CALL_ISTHEMEACTIVE )( void );
 typedef LONG ( * CALL_ISAPPTHEMED )( void );
-typedef HRESULT CALLBACK ( * CALL_DLLGETVERSION )( DLLVERSIONINFO * );
+typedef HRESULT ( CALLBACK * CALL_DLLGETVERSION )( DLLVERSIONINFO * );
 
 HB_FUNC( ISXPTHEMEACTIVE )
 {
