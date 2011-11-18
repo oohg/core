@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.58 2011-11-04 00:51:19 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.59 2011-11-18 20:26:59 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -122,6 +122,8 @@ Memvariables
 #xtranslate _OOHG_ActiveControlTrailingFontColor      => _OOHG_ActiveControlInfo \[  25 \]
 #xtranslate _OOHG_ActiveControlBackgroundColor        => _OOHG_ActiveControlInfo \[  26 \]
 
+#xtranslate _OOHG_ActiveControlItemImageNumber        => _OOHG_ActiveControlInfo \[ 148 \]
+#xtranslate _OOHG_ActiveControlImageSource            => _OOHG_ActiveControlInfo \[ 149 \]
 #xtranslate _OOHG_ActiveControlOnMouseMove            => _OOHG_ActiveControlInfo \[ 150 \]
 #xtranslate _OOHG_ActiveControlImageMargin            => _OOHG_ActiveControlInfo \[ 151 \]
 #xtranslate _OOHG_ActiveControlThemed                 => _OOHG_ActiveControlInfo \[ 152 \]
@@ -1463,19 +1465,29 @@ COMBO BOX
 #xcommand DEFINE COMBOBOX <name> ;
         => ;
         _OOHG_ClearActiveControlInfo( <(name)> ) ;;
-        _OOHG_ActiveControlItems         := Nil  ;;
-        _OOHG_ActiveControlSort          := .F.  ;;
-        _OOHG_ActiveControlItemSource    := Nil  ;;
-        _OOHG_ActiveControlValueSource   := Nil  ;;
-        _OOHG_ActiveControlBreak         := .F.  ;;
-        _OOHG_ActiveControlGripperText   := ""   ;;
-        _OOHG_ActiveControlDisplayEdit   := .F.  ;;
-        _OOHG_ActiveControlDisplayChange := Nil  ;;
-        _OOHG_ActiveControlImage         := Nil  ;;
-        _OOHG_ActiveControlTextHeight    := Nil  ;;
-        _OOHG_ActiveControlStretch       := .F.  ;;
-        _OOHG_ActiveControlFirstItem     := Nil  ;;
-        _OOHG_ActiveControlListWidth     := Nil
+        _OOHG_ActiveControlItems           := Nil  ;;
+        _OOHG_ActiveControlSort            := .F.  ;;
+        _OOHG_ActiveControlItemSource      := Nil  ;;
+        _OOHG_ActiveControlValueSource     := Nil  ;;
+        _OOHG_ActiveControlBreak           := .F.  ;;
+        _OOHG_ActiveControlGripperText     := ""   ;;
+        _OOHG_ActiveControlDisplayEdit     := .F.  ;;
+        _OOHG_ActiveControlDisplayChange   := Nil  ;;
+        _OOHG_ActiveControlImage           := Nil  ;;
+        _OOHG_ActiveControlTextHeight      := Nil  ;;
+        _OOHG_ActiveControlStretch         := .F.  ;;
+        _OOHG_ActiveControlFirstItem       := Nil  ;;
+        _OOHG_ActiveControlListWidth       := Nil  ;;
+        _OOHG_ActiveControlItemImageNumber := Nil  ;;
+        _OOHG_ActiveControlImageSource     := Nil
+
+#xcommand IMAGESOURCE <imagesource> ;
+        => ;
+        _OOHG_ActiveControlImageSource := <{imagesource}>
+
+#xcommand ITEMIMAGENUMBER <itemimagenumber> ;
+        => ;
+        _OOHG_ActiveControlItemImageNumber := <{itemimagenumber}>
 
 #xcommand LISTWIDTH <listwidth> ;
         => ;
@@ -1557,7 +1569,9 @@ COMBO BOX
                 _OOHG_ActiveControlStretch, ;
                 _OOHG_ActiveControlBackColor, ;
                 _OOHG_ActiveControlFontColor, ;
-                _OOHG_ActiveControlListWidth )
+                _OOHG_ActiveControlListWidth, ;
+                _OOHG_ActiveControlImageSource, ;
+                _OOHG_ActiveControlItemImageNumber )
 
 /*----------------------------------------------------------------------------
 DATEPICKER

@@ -1,5 +1,5 @@
 /*
- * $Id: i_combobox.ch,v 1.11 2011-09-14 00:38:39 fyurisich Exp $
+ * $Id: i_combobox.ch,v 1.12 2011-11-18 20:26:59 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -98,6 +98,7 @@
          [ HEIGHT <h> ] ;
          [ ITEMS <aRows> ] ;
          [ ITEMSOURCE <itemsource> ] ;
+         [ ITEMIMAGENUMBER <itemimagenumber> ] ;
          [ VALUE <value> ] ;
          [ VALUESOURCE <valuesource> ] ;
          [ <displaychange : DISPLAYEDIT> ] ;
@@ -116,7 +117,9 @@
          [ <notabstop : NOTABSTOP> ] ;
          [ HELPID <helpid> ]       ;
          [ <invisible : INVISIBLE> ] ;
-         [ IMAGE <aImage> [ <fit: FIT> ] ];
+         [ IMAGE <aImage> ] ;
+         [ IMAGESOURCE <imagesource> ] ;
+         [ <fit: FIT> ] ;
          [ <sort : SORT> ] ;
          [ <rtl: RTL> ] ;
          [ TEXTHEIGHT <textheight> ] ;
@@ -138,7 +141,8 @@
                 <(valuesource)> , <.displaychange.> , ;
                 <{ondisplaychangeprocedure}> ,  .f. , "", <aImage>, <.rtl.>, ;
                 <textheight>, <.disabled.>, <.firstitem.>, <.fit.>, <backcolor>, ;
-                <fontcolor>, <listwidth>, <{onListDisplay}>, <{onListClose}> )
+                <fontcolor>, <listwidth>, <{onListDisplay}>, <{onListClose}>, ;
+                <{imagesource}>, <{itemimagenumber}> )
 
 // SPLITBOX VERSION
 
@@ -149,6 +153,7 @@
          [ HEIGHT <h> ] ;
          [ ITEMS <aRows> ] ;
          [ ITEMSOURCE <itemsource> ] ;
+         [ ITEMIMAGENUMBER <itemimagenumber> ] ;
          [ VALUE <value> ] ;
          [ VALUESOURCE <valuesource> ] ;
          [ <displaychange : DISPLAYEDIT> ] ;
@@ -169,7 +174,9 @@
          [ GRIPPERTEXT <grippertext> ] ;
          [ <break: BREAK> ] ;
          [ <invisible : INVISIBLE> ] ;
-         [ IMAGE <aImage> [ <fit: FIT> ] ] ;
+         [ IMAGE <aImage> ] ;
+         [ IMAGESOURCE <imagesource> ] ;
+         [ <fit: FIT> ] ;
          [ <sort : SORT> ] ;
          [ <rtl: RTL> ] ;
          [ TEXTHEIGHT <textheight> ] ;
@@ -190,4 +197,5 @@
                   <(itemsource)> , <(valuesource)> , <.displaychange.> , ;
                   <{ondisplaychangeprocedure}> , <.break.> , <grippertext>, <aImage>, ;
                   <.rtl.>, <textheight>, <.disabled.>, <.firstitem.>, <.fit.>, <backcolor>, ;
-                  <fontcolor>, <listwidth>, <{onListDisplay}>, <{onListClose}> )
+                  <fontcolor>, <listwidth>, <{onListDisplay}>, <{onListClose}>, ;
+                  <{imagesource}>, <{itemimagenumber}> )

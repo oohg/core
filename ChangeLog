@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.826 2011-11-17 02:36:12 guerra000 Exp $
+ * $Id: ChangeLog,v 1.827 2011-11-18 20:26:59 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,11 +7,21 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2011-11-16 20:48 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
-  * source/h_windows.prg
-    ! Fixed compilation for Visual C.
-  * source/h_controlmisc.prg
-    ! Fixed @B function mask in _OOHG_UnTransform().
+2011-11-18 21:00:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_altsyntax.prg
+   * include/i_combobox.prg
+   * source/h_combo.prg
+     + clause ITEMIMAGENUMBER <codeblock>, to assign image number
+       to items loaded using ITEMSOURCE clause.
+     + clause IMAGESOURCE <codeblock>, to load images when using
+       ITEMSOURCE clause.
+     * FIT clause can be used with IMAGESOURCE clause.
+
+2011-11-16 20:48:00 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+   * source/h_windows.prg
+     ! Fixed compilation for Visual C.
+   * source/h_controlmisc.prg
+     ! Fixed @B function mask in _OOHG_UnTransform().
 
 2011-11-16 21:00:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/c_msgbox.c
@@ -50,6 +60,7 @@
        via SetMsgDefaultMode().
    * include/i_windefs.ch
      + Added defines for MB_APPLMODAL, MB_SYSTEMMODAL and MB_TASKMODAL.
+   Thanks to Esteban Ojeda <jrestojeda@hotmail.com> for the idea.
 
 2011-11-14 21:30:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_combo.prg
@@ -59,7 +70,7 @@
    * source/h_textbox.prg
      ! Fixed: can't enter new character when the length of current
        text is equal maxlength, insert mode is on, and one or more
-       charactes are selected.
+       characters are selected.
 
 2011-11-09 14:50:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_textbox.prg

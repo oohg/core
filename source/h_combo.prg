@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.61 2011-11-14 23:28:59 fyurisich Exp $
+ * $Id: h_combo.prg,v 1.62 2011-11-18 20:26:59 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -82,13 +82,13 @@
 
  Parts of this project are based upon:
 
-	"Harbour GUI framework for Win32"
- 	Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- 	Copyright 2001 Antonio Linares <alinares@fivetech.com>
-	www - http://www.harbour-project.org
+    "Harbour GUI framework for Win32"
+    Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
+    Copyright 2001 Antonio Linares <alinares@fivetech.com>
+    www - http://www.harbour-project.org
 
-	"Harbour Project"
-	Copyright 1999-2003, http://www.harbour-project.org/
+    "Harbour Project"
+    Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
 #include "oohg.ch"
@@ -110,6 +110,8 @@ CLASS TCombo FROM TLabel
    DATA ImageListFlags        INIT LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
    DATA OnListDisplay         INIT NIL
    DATA OnListClose           INIT NIL
+   DATA ImageSource           INIT NIL
+   DATA ItemNumber            INIT NIL
 
    METHOD Define
    METHOD nHeight             SETGET
@@ -148,20 +150,23 @@ METHOD Define( ControlName, ParentForm, x, y, w, rows, value, fontname, ;
                underline, strikeout, itemsource, valuesource, displaychange, ;
                ondisplaychangeprocedure, break, GripperText, aImage, lRtl, ;
                TextHeight, lDisabled, lFirstItem, lAdjustImages, backcolor, ;
-               fontcolor, listwidth, onListDisplay, onListClose ) CLASS TCombo
+               fontcolor, listwidth, onListDisplay, onListClose, ImageSource, ;
+               ItemNumber ) CLASS TCombo
 *-----------------------------------------------------------------------------*
 Local ControlHandle, WorkArea, cField, nStyle
 
-   ASSIGN ::nCol        VALUE x TYPE "N"
-   ASSIGN ::nRow        VALUE y TYPE "N"
-   ASSIGN ::nWidth      VALUE w TYPE "N"
-   ASSIGN ::nHeight     VALUE h TYPE "N"
-   DEFAULT rows         TO {}
-   DEFAULT sort		TO FALSE
-   DEFAULT GripperText	TO ""
-   ASSIGN ::nTextHeight VALUE TextHeight TYPE "N"
-   ASSIGN displaychange VALUE displaychange TYPE "L" DEFAULT .F.
+   ASSIGN ::nCol          VALUE x TYPE "N"
+   ASSIGN ::nRow          VALUE y TYPE "N"
+   ASSIGN ::nWidth        VALUE w TYPE "N"
+   ASSIGN ::nHeight       VALUE h TYPE "N"
+   DEFAULT rows           TO {}
+   DEFAULT sort           TO FALSE
+   DEFAULT GripperText    TO ""
+   ASSIGN ::nTextHeight   VALUE TextHeight    TYPE "N"
+   ASSIGN displaychange   VALUE displaychange TYPE "L" DEFAULT .F.
    ASSIGN ::lAdjustImages VALUE lAdjustImages TYPE "L"
+   ASSIGN ::ImageSource   VALUE ImageSource   TYPE "B"
+   ASSIGN ::ItemNumber    VALUE ItemNumber    TYPE "B"
 
    If HB_IsArray( ValueSource )
       ::aValues := ValueSource
@@ -172,11 +177,11 @@ Local ControlHandle, WorkArea, cField, nStyle
    ::SetFont(, , bold, italic, underline, strikeout )
 
    If ValType( ItemSource ) != 'U' .And. Sort == .T.
-      MsgOOHGError( "Sort and ItemSource clauses can't be used simultaneusly. Program Terminated" )
+      MsgOOHGError( "Sort and ItemSource clauses can't be used simultaneously. Program Terminated" )
    EndIf
 
    If ValType( ValueSource ) != 'U' .And. Sort == .T.
-      MsgOOHGError( "Sort and ValueSource clauses can't be used simultaneusly. Program Terminated" )
+      MsgOOHGError( "Sort and ValueSource clauses can't be used simultaneously. Program Terminated" )
    EndIf
 
    If ValType( ItemSource ) != 'U'
@@ -187,11 +192,11 @@ Local ControlHandle, WorkArea, cField, nStyle
          cField := Right( ItemSource, Len( ItemSource ) - At( '->', ItemSource ) - 1 )
       EndIf
    EndIf
-
+   
    nStyle := ::InitStyle(, , Invisible, notabstop, lDisabled ) + ;
-             if( HB_IsLogical( SORT )           .AND. SORT,          CBS_SORT,    0 ) + ;
+             if( HB_IsLogical( SORT ) .AND. SORT, CBS_SORT, 0 ) + ;
              if( ! displaychange, CBS_DROPDOWNLIST, CBS_DROPDOWN ) + ;
-             if ( HB_IsArray( aImage ),  CBS_OWNERDRAWFIXED, 0) + ;
+             if ( HB_IsArray( aImage ) .OR. HB_IsBlock( ItemNumber ), CBS_OWNERDRAWFIXED, 0) + ;
              if( OSisWinXPorLater() .AND. _OOHG_LastFrame() != "SPLITBOX", CBS_NOINTEGRALHEIGHT, 0 )
 
    ::SetSplitBoxInfo( Break, GripperText, ::nWidth )
@@ -221,6 +226,7 @@ Local ControlHandle, WorkArea, cField, nStyle
    If HB_IsLogical( lFirstItem ) .AND. lFirstItem .AND. ::ItemCount > 0
       ::SelectFirstItem()
    EndIf
+   
    ::Value := Value
 
    ASSIGN ::OnClick       VALUE ondisplaychangeprocedure TYPE "B"
@@ -245,24 +251,51 @@ RETURN ::nHeight2
 METHOD Refresh() CLASS TCombo
 *-----------------------------------------------------------------------------*
 Local BackRec, WorkArea, cField, aValues, uValue
+Local lRefreshImages, aImages
+
    WorkArea := ::WorkArea
    If Select( WorkArea ) != 0
+      If HB_IsBlock( ::ImageSource )
+         lRefreshImages := .T.
+         aImages := {}
+      Else
+         lRefreshImages := .F.
+      EndIf
+
       uValue := ::Value
       cField := ::Field
       BackRec := ( WorkArea )->( RecNo() )
+
       ( WorkArea )->( DBGoTop() )
       ComboboxReset( ::hWnd )
       aValues := {}
+
       Do While ! ( WorkArea )->( Eof() )
-         ComboAddString( ::hWnd, ( WorkArea )-> &( cField ) )
-         AADD( aValues, IF( EMPTY( ::ValueSource ), ( WorkArea )->( RecNo() ), &( ::ValueSource ) ) )
+//         ComboAddString( ::hWnd, ( WorkArea )-> &( cField ) )
+         ::AddItem( { ( WorkArea )-> &( cField ), _OOHG_Eval( ::ItemNumber ) } )
+         AADD( aValues, If( Empty( ::ValueSource ), ( WorkArea )->( RecNo() ), &( ::ValueSource ) ) )
+         If lRefreshImages
+            AADD( aImages, Eval( ::ImageSource ) )
+         EndIf
+         
          ( WorkArea )->( DBSkip() )
       EndDo
       ( WorkArea )->( DBGoTo( BackRec ) )
+      
+      If lRefreshImages
+         If ValidHandler( ::ImageList )
+           ImageList_Destroy( ::ImageList )
+         EndIf
+         ::ImageList := 0
+
+         ::AddBitMap( aImages )
+      EndIf
+
       ::aValues := aValues
       ::Value := uValue
    EndIf
-Return nil
+
+RETURN nil
 
 *------------------------------------------------------------------------------*
 METHOD DisplayValue( cValue ) CLASS TCombo
@@ -328,7 +361,7 @@ METHOD ShowDropDown( lShow ) CLASS TCombo
    Else
       SendMessage( ::hWnd, CB_SHOWDROPDOWN, 0, 0 )
    EndIf
-Return nil
+RETURN nil
 
 *-----------------------------------------------------------------------------*
 METHOD AutoSizeDropDown( lResizeBox, nMinWidth, nMaxWidth ) CLASS TCombo
@@ -391,7 +424,7 @@ Resize dropdown list
 */
    ::SetDropDownWidth( nNewWidth )
    
-Return nil
+RETURN nil
 
 *-----------------------------------------------------------------------------*
 METHOD GetDropDownWidth() CLASS TCombo
@@ -407,7 +440,7 @@ Local nNew := ComboSetDroppedWidth( ::hWnd, nWidth )
      nNew := ComboGetDroppedWidth( ::hWnd )
    EndIf
 
-Return nNew
+RETURN nNew
 
 *-----------------------------------------------------------------------------*
 METHOD AutoSize( lValue ) CLASS TCombo
@@ -421,7 +454,7 @@ Local cCaption
          ::SizePos(, , GetTextWidth( NIL, cCaption + "0", ::FontHandle ) + ::IconWidth + GetVScrollBarWidth(), GetTextHeight( NIL, cCaption, ::FontHandle ) )
       EndIf
    EndIf
-Return ::lAutoSize
+RETURN ::lAutoSize
 
 *-----------------------------------------------------------------------------*
 METHOD Events_Command( wParam ) CLASS TCombo
@@ -462,7 +495,7 @@ Local Hi_wParam := HIWORD( wParam )
 
    EndIf
 
-Return ::Super:Events_Command( wParam )
+RETURN ::Super:Events_Command( wParam )
 
 *-----------------------------------------------------------------------------*
 METHOD SetEditSel( nStart, nEnd ) CLASS TCombo
@@ -490,7 +523,7 @@ Local lRet
       lRet := .F.
    ENDIF
 
-Return lRet
+RETURN lRet
 
 *-----------------------------------------------------------------------------*
 METHOD GetEditSel() CLASS TCombo
@@ -507,7 +540,7 @@ METHOD GetEditSel() CLASS TCombo
 */
 Local rRange := SendMessage( ::hWnd, CB_GETEDITSEL, 0, 0 )
 
-Return { LoWord( rRange ), HiWord( rRange ) }
+RETURN { LoWord( rRange ), HiWord( rRange ) }
 
 *-----------------------------------------------------------------------------*
 METHOD CaretPos( nPos ) CLASS TCombo
@@ -523,7 +556,7 @@ METHOD CaretPos( nPos ) CLASS TCombo
    IF HB_IsNumeric( nPos )
       SendMessage( ::hWnd, CB_SETEDITSEL, 0, MakeLParam( nPos, nPos ) )
    ENDIF
-Return HiWord( SendMessage( ::hWnd, CB_GETEDITSEL, nil, nil ) )
+RETURN HiWord( SendMessage( ::hWnd, CB_GETEDITSEL, nil, nil ) )
 
 #pragma BEGINDUMP
 #include <hbapi.h>
