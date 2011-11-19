@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.224 2011-11-17 02:36:12 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.225 2011-11-19 23:51:00 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1606,8 +1606,8 @@ local nOffset // desplazamientos por borde
             nCol := nCol + oControl:nWidth
             nWidth := nWidth - oControl:nWidth
          ElseIf nAdjust == 4 //right
-            oControl:nCol := nWidth - oControl:nWidth
-            oControl:nRow := nRow+nOffset
+            oControl:nCol := nWidth - oControl:nWidth + nCol
+            oControl:nRow := nRow
             oControl:nHeight := nHeight
             nWidth := nWidth - oControl:nWidth
          EndIf
