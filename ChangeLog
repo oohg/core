@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog,v 1.828 2011-11-19 23:51:00 fyurisich Exp $
+ * $Id: ChangeLog,v 1.829 2011-11-20 03:51:46 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2011-11-20 01:52:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_button.prg
+     ! Fixed: Image not drawn "transparently" when parent window
+       has a BACKCOLOR defined.
 
 2011-11-19 22:00:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_windows.prg

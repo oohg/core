@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.54 2011-11-03 23:07:04 fyurisich Exp $
+ * $Id: h_button.prg,v 1.55 2011-11-20 03:51:46 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -314,7 +314,7 @@ METHOD RePaint() CLASS TButton
       ::AuxHandle := NIL
       ::TControl:SizePos()
       IF OSisWinXPorLater() .AND. ValidHandler( ::hImage ) .AND. ( LEN( ::Caption ) > 0 .OR. ::lThemed )
-         SetImageXP( ::hWnd, ::hImage, ::nAlign, ::BackColorCode, ::aImageMargin[1], ::aImageMargin[2], ::aImageMargin[3], ::aImageMargin[4] )
+         SetImageXP( ::hWnd, ::hImage, ::nAlign, -1, ::aImageMargin[1], ::aImageMargin[2], ::aImageMargin[3], ::aImageMargin[4] )
          ::ReDraw()
       ELSEIF ::Stretch .OR. ::AutoFit
          ::AuxHandle := _OOHG_SetBitmap( Self, ::hImage, BM_SETIMAGE, ::Stretch, ::AutoFit )
