@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.84 2011-10-18 01:08:04 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.85 2011-11-22 22:05:09 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1089,6 +1089,7 @@ HB_FUNC_STATIC( TOBROWSE_EVENTS_NOTIFY )
    switch( ( ( NMHDR FAR * ) lParam )->code )
    {
       case NM_CLICK:
+      case NM_RCLICK:
       case LVN_BEGINDRAG:
       case LVN_KEYDOWN:
       case LVN_ITEMCHANGED:
@@ -1121,7 +1122,7 @@ Local Self := QSelf()
 Local nNotify := GetNotifyCode( lParam )
 Local nvKey, r, DeltaSelect, lGo
 
-   If nNotify == NM_CLICK  .or. nNotify == LVN_BEGINDRAG
+   If nNotify == NM_CLICK  .or. nNotify == LVN_BEGINDRAG .or. nNotify == NM_RCLICK
       r := LISTVIEW_GETFIRSTITEM( ::hWnd )
       If r > 0
          DeltaSelect := r - ascan ( ::aRecMap, ::nValue )
