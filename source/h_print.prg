@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.116 2011-09-07 19:06:17 fyurisich Exp $
+* $Id: h_print.prg,v 1.117 2011-11-25 17:01:54 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -426,6 +426,10 @@ METHOD selprinter( lselect , lpreview, llandscape , npapersize ,cprinterx, lhide
 *-------------------------
 
 default nbin to 1
+
+default cprinterx to getdefaultprinter()
+
+::cprinter:=cprinterx
 
 IF ::exit
    ::lprerror:=.T.
@@ -978,7 +982,6 @@ RETURN nil
 *----------------------------
 method printraw()  CLASS TPRINTBASE   /////  Based upon an example of Lucho Miranda
 *----------------------------
-LOCAL cPrinter :=GETDEFAULTPRINTER()
 LOCAL nResult  :=NIL
 LOCAL cMsg     :=""
 LOCAL aDatos :=                              {;
@@ -991,14 +994,17 @@ LOCAL aDatos :=                              {;
 {-6 ,"File " + ::tempfile + " not found"         } }
 
 
-IF ! EMPTY( cPrinter )
-   nResult :=PRINTFILERAW( cPrinter, ::tempfile, "raw print" )
+
+
+IF ! EMPTY( ::cPrinter )
+   inkey(2)
+   nResult :=PRINTFILERAW( ::cPrinter, ::tempfile, "raw print" )
    if nResult#1
       cMsg +=aDatos[ASCAN(aDatos,{|x| x[1] ==nResult}),2]
         MSGINFO( cMsg )
    endif
 ELSE
-   MSGSTOP("No Default Printer found","Error...")
+   MSGSTOP("No Printer found","Error...")
 ENDIF
 
 RETURN(NIL)
@@ -2048,10 +2054,47 @@ RETURN nposluna
 
 CREATE CLASS TRAWPRINT FROM TDOSPRINT
 
+METHOD initx()
+
+METHOD selprinterx()
+
+
 
 METHOD EndDocx
 
 ENDCLASS
+
+*-------------------------
+METHOD initx() CLASS TRAWPRINT
+*-------------------------
+::cprintlibrary:="RAWPRINT"
+RETURN self
+
+*-------------------------
+METHOD selprinterx() CLASS TRAWPRINT
+*-------------------------
+
+DEFINE WINDOW MYSELPRINTER  ;
+                AT 0,0			;
+                WIDTH 345		;
+                HEIGHT GetTitleHeight() + 100 ;
+                TITLE "Select printer" ;
+                MODAL   ;
+                NOSIZE
+
+                @ 15,10 COMBOBOX Combo_1 ITEMS aPrinters() VALUE ascan(aprinters(),getdefaultprinter()) WIDTH 320
+
+                @ 53,65  BUTTON Ok CAPTION "OK" ACTION (::cprinter:=myselprinter.Combo_1.Item(myselprinter.Combo_1.value), myselprinter.release() )
+                @ 53,175 BUTTON Cancel CAPTION "Cancel" ACTION (::lprerror:=.T., myselprinter.release())
+
+        END WINDOW
+
+        CENTER WINDOW myselprinter
+        myselprinter.ok.setfocus()
+
+        ACTIVATE WINDOW myselprinter
+
+RETURN self
 
 *-------------------------
 METHOD enddocx() CLASS TRAWPRINT
@@ -2060,6 +2103,8 @@ local _nhandle,wr,nx,ny
 
 nx:=getdesktopwidth()
 ny:=getdesktopheight()
+
+
 
 SET DEVICE TO SCREEN
 SET PRINTER TO
@@ -3564,18 +3609,38 @@ return self
 *-------------------------
 METHOD selprinterx( lselect , lpreview, llandscape , npapersize ,cprinterx) CLASS TCALCPRINT
 *-------------------------
+local bErrorBlock
+local oError
 empty(lselect)
 empty(lpreview)
 empty(llandscape)
 empty(npapersize)
 empty(cprinterx)
 
-::oServiceManager := TOleAuto():New("com.sun.star.ServiceManager")
-::oDesktop := ::oServiceManager:createInstance("com.sun.star.frame.Desktop")
-IF ::oDesktop = NIL
-   MsgStop('OpenOficce Calc not found','error')
-   RETURN Nil
-ENDIF
+ bErrorBlock := ErrorBlock( { |x| break( x ) } )
+   #ifdef __XHARBOUR__
+      TRY
+         ::oServiceManager := TOleAuto():New("com.sun.star.ServiceManager")
+         ::oDesktop := ::oServiceManager:createInstance("com.sun.star.frame.Desktop")
+      CATCH oError
+           oError:Description:="Open Calc not found"
+            MsgStop( oError:Description,"Error" )
+            ::lprerror:=.T.
+            RETURN Nil
+      END
+   #else
+      BEGIN SEQUENCE
+      ::oServiceManager := TOleAuto():New("com.sun.star.ServiceManager")
+      ::oDesktop := ::oServiceManager:createInstance("com.sun.star.frame.Desktop")
+      RECOVER USING oError
+         oError:Description:="Open Calc not found"
+         MsgStop( oError:Description,"Error" )
+         ::lprerror:=.T.
+         RETURN Nil
+      END
+   #endif
+   ErrorBlock( bErrorBlock )
+
 return self
 
 *-------------------------
