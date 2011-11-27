@@ -1,5 +1,5 @@
-/*      
- * $Id: winprint.prg,v 1.41 2011-09-11 23:22:34 fyurisich Exp $
+/*
+ * $Id: winprint.prg,v 1.42 2011-11-27 19:30:55 declan2005 Exp $
  */
 // -----------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -13,7 +13,7 @@
 // by Mitja Podgornik <yamamoto@rocketmail.com>
 
 #include "HBClass.ch"
-#include "minigui.ch"
+#include "oohg.ch"
 #include "winprint.ch"
 
 
@@ -78,7 +78,7 @@ CLASS HBPrinter
    DATA    aopisy INIT {}
    DATA    oHBPreview1 INIT nil
    DATA    NoButtonSave INIT .F.
-   DATA    NoButtonOptions INIT .F.   
+   DATA    NoButtonOptions INIT .F.
    DATA    BeforePrint INIT {|| .T.}
    DATA    AfterPrint INIT {|| NIL}
    DATA    BeforePrintCopy  INIT {|| .T.}
@@ -1269,7 +1269,7 @@ return ""
 
 
 
-static FUNCTION str2arr( cList, cDelimiter )
+FUNCTION str2arr( cList, cDelimiter )
 LOCAL nPos
 LOCAL aList := {}
 local nlencd:=0
@@ -2362,7 +2362,7 @@ HB_FUNC (RR_GETPRINTERS)
          strcat(cBuffer,pInfo5->pPrinterName);
          strcat(cBuffer,",");
          strcat(cBuffer,pInfo5->pPortName);
-         
+
          pInfo5++;
 
          if (i < dwPrinters-1)

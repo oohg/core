@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.117 2011-11-25 17:01:54 declan2005 Exp $
+* $Id: h_print.prg,v 1.118 2011-11-27 19:30:55 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -141,7 +141,7 @@ DATA nwpen              INIT 0.1   READONLY //// pen width
 DATA tempfile           INIT gettempdir()+"T"+alltrim(str(int(hb_random(999999)),8))+".prn" READONLY
 DATA impreview          INIT .F.  READONLY
 DATA lwinhide           INIT .T.   READONLY
-DATA cversion           INIT  "(oohg-tprint)V 4.3" READONLY
+DATA cversion           INIT  "(oohg-tprint)V 4.7" READONLY
 DATA cargo              INIT  "list"     //// document name
 ////DATA cString            INIT  ""
 
@@ -357,6 +357,8 @@ METHOD setlmargin
 METHOD settmargin
 *-------------------------
 
+method printmode
+
 ENDCLASS
 
 *-------------------------
@@ -426,10 +428,6 @@ METHOD selprinter( lselect , lpreview, llandscape , npapersize ,cprinterx, lhide
 *-------------------------
 
 default nbin to 1
-
-default cprinterx to getdefaultprinter()
-
-::cprinter:=cprinterx
 
 IF ::exit
    ::lprerror:=.T.
@@ -966,6 +964,18 @@ ENDIF
 
 RETURN self
 
+
+*-------------------------
+method printmode( ) CLASS TPRINTBASE
+*-------------------------
+do case
+   case ::cprintlibrary = "RAWPRINT"
+    ::printraw()
+   case ::cprintlibrary = "DOSPRINT"
+    ::printdos()
+endcase
+return self
+
 *-------------------------
 method printdos() CLASS TPRINTBASE
 *-------------------------
@@ -975,6 +985,7 @@ nHdl := FCREATE( cBat )
 FWRITE( nHdl, "copy " + ::tempfile + " "+::cport + CHR( 13 ) + CHR( 10 ) )
 FWRITE( nHdl, "rem comando auxiliar de impresion" + CHR( 13 ) + CHR( 10 ) )
 FCLOSE( nHdl )
+inkey(1)
 waitrun( cBat, 0 )
 erase &cbat
 RETURN nil
@@ -994,14 +1005,12 @@ LOCAL aDatos :=                              {;
 {-6 ,"File " + ::tempfile + " not found"         } }
 
 
-
-
 IF ! EMPTY( ::cPrinter )
-   inkey(2)
+   inkey(1)
    nResult :=PRINTFILERAW( ::cPrinter, ::tempfile, "raw print" )
    if nResult#1
       cMsg +=aDatos[ASCAN(aDatos,{|x| x[1] ==nResult}),2]
-        MSGINFO( cMsg )
+        autoMSGINFO( cMsg )
    endif
 ELSE
    MSGSTOP("No Printer found","Error...")
@@ -1275,14 +1284,16 @@ METHOD selprinterx( lselect , lpreview, llandscape , npapersize ,cprinterx,nres,
 *-------------------------
 local worientation,lsucess
 
-IF nres=NIL
-   nres:=PRINTER_RES_MEDIUM
-ENDIF
+
+   default nres to PRINTER_RES_MEDIUM
+
 IF llandscape
    Worientation:= PRINTER_ORIENT_LANDSCAPE
 ELSE
    Worientation:= PRINTER_ORIENT_PORTRAIT
 ENDIF
+
+
 
 IF lselect .and. lpreview .and. cprinterx = NIL
    ::cPrinter := GetPrinter()
@@ -1759,9 +1770,9 @@ CREATE CLASS TDOSPRINT FROM TPRINTBASE
 DATA cString INIT ""
 DATA cbusca INIT ""
 DATA nOccur INIT 0
-DATA cimpname INIT ""
-DATA cportname INIT ""
-DATA ctipoimp INIT ""
+///DATA cimpname INIT ""
+///DATA cportname INIT ""
+////DATA ctipoimp INIT ""
 DATA liswin   INIT .F.
 DATA cport    INIT "prn"
 
@@ -1849,6 +1860,65 @@ RETURN self
 
 
 *-------------------------
+METHOD selprinterx( lselect , lpreview  , llandscape , npapersize ,cprinterx  ) CLASS TDOSPRINT
+*-------------------------
+/////en este casi cprinterx debe ser un puerto lp1 o 2 o 3 o 4 o 5 o 6 o prn por default prn
+empty( lpreview )
+empty(llandscape)
+empty(npapersize)
+
+if hb_isstring(cprinterx)
+   cprinterx:=upper(cprinterx)
+   if .NOT. cprinterx$"PRN LPT1: LPT2: LPT3: LPT4: LPT5: LPT6:"
+       automsgstop("Puerto no valido")
+       ::lprerror:=.T.
+       return nil
+   endif
+endif
+
+
+DO WHILE file(::tempfile)
+   ::tempfile:=gettempdir()+"T"+alltrim(str(int(hb_random(999999)),8))+".prn"
+ENDDO
+
+if lselect
+
+::aports:= asort( alocalports() )
+
+DEFINE WINDOW MYSELPRINTER  ;
+                AT 0,0			;
+                WIDTH 345		;
+                HEIGHT GetTitleHeight() + 100 ;
+                TITLE "Select printer" ;
+                MODAL   ;
+                NOSIZE
+
+                @ 15,10 COMBOBOX Combo_1 ITEMS ::aPorts VALUE 1  WIDTH 320
+
+                @ 53,65  BUTTON Ok CAPTION "OK" ACTION (::cport:=substr(myselprinter.Combo_1.Item(myselprinter.Combo_1.value),1,6), myselprinter.release() )
+                @ 53,175 BUTTON Cancel CAPTION "Cancel" ACTION (::lprerror:=.T., myselprinter.release())
+
+        END WINDOW
+
+        CENTER WINDOW myselprinter
+        myselprinter.ok.setfocus()
+
+        ACTIVATE WINDOW myselprinter
+
+else
+   if .not. empty( cprinterx )
+      ::cport:=cprinterx
+   else
+      ::cport:="PRN"
+   endif
+
+endif
+
+RETURN self
+
+
+
+*-------------------------
 METHOD begindocx() CLASS TDOSPRINT
 *-------------------------
 SET PRINTER TO &(::tempfile)
@@ -1871,7 +1941,7 @@ IF ::impreview
    DEFINE WINDOW PRINT_PREVIEW  ;
    AT 0,0 ;
    WIDTH nx HEIGHT ny-70 ;
-   TITLE 'Preview -----> ' + ::tempfile ;
+   TITLE 'Preview -----> ' + ::tempfile+"   "+::cprintlibrary ;
    MODAL
 
    @ 0,0 RICHEDITBOX EDIT_P ;
@@ -1887,7 +1957,7 @@ IF ::impreview
    @ 010,nx-40 button but_4 caption "X" width 30 action ( print_preview.release() ) tooltip "close"
    @ 090,nx-40 button but_1 caption "+ +" width 30 action zoom("+") tooltip "zoom +"
    @ 170,nx-40 button but_2 caption "- -" width 30 action zoom("-") tooltip "zoom -"
-   @ 250,nx-40 button but_3 caption "P" width 30 action (::printdos()) tooltip "Print DOS mode"
+   @ 250,nx-40 button but_3 caption "P" width 30 action ::printmode() tooltip "Print "+::cprintlibrary+" mode"
    @ 330,nx-40 button but_5 caption "S" width 30 action  (::searchstring(print_preview.edit_p.value)) tooltip "Search"
    @ 410,nx-40 button but_6 caption "N" width 30 action  ::nextsearch() tooltip "Next Search"
 
@@ -1898,7 +1968,7 @@ IF ::impreview
 
 ELSE
 
-  ::PRINTDOS()
+  ::printmode()
 
 ENDIF
 
@@ -1954,27 +2024,6 @@ RETURN self
 
 
 *-------------------------
-METHOD selprinterx( lselect , lpreview  , llandscape , npapersize ,cprinterx  ) CLASS TDOSPRINT
-*-------------------------
-/////Empty( lSelect
-empty( lpreview )
-empty(llandscape)
-empty(npapersize)
-default cprinterx to "prn"
-::cport:= cprinterx
-
-DO WHILE file(::tempfile)
-   ::tempfile:=gettempdir()+"T"+alltrim(str(int(hb_random(999999)),8))+".prn"
-ENDDO
-//////////////////////////
-if lselect
-
-endif
-/////////////////////////
-RETURN self
-
-
-*-------------------------
 METHOD condendosx() CLASS TDOSPRINT
 *-------------------------
 @ prow(), pcol() say chr(15)
@@ -2018,7 +2067,7 @@ print_preview.but_6.enabled:=.t.
 RETURN(nil)
 
 *-----------------------------------------------------*
-Method nextsearch( )
+Method nextsearch( )   CLASS TDOSPRINT
 *-----------------------------------------------------*
 local cString,ncaretpos
 cString := UPPER(::cstring)
@@ -2056,11 +2105,7 @@ CREATE CLASS TRAWPRINT FROM TDOSPRINT
 
 METHOD initx()
 
-METHOD selprinterx()
-
-
-
-METHOD EndDocx
+METHOD selprinterx ( lselect , lpreview, llandscape , npapersize ,cprinterx )
 
 ENDCLASS
 
@@ -2071,8 +2116,20 @@ METHOD initx() CLASS TRAWPRINT
 RETURN self
 
 *-------------------------
-METHOD selprinterx() CLASS TRAWPRINT
+METHOD selprinterx ( lselect , lpreview, llandscape , npapersize ,cprinterx ) CLASS TRAWPRINT
 *-------------------------
+empty(lpreview)
+empty(llandscape)
+empty(npapersize)
+
+DO WHILE file(::tempfile)
+   ::tempfile:=gettempdir()+"T"+alltrim(str(int(hb_random(999999)),8))+".prn"
+ENDDO
+
+
+if lselect
+
+::aprinters:=asort(aprinters())
 
 DEFINE WINDOW MYSELPRINTER  ;
                 AT 0,0			;
@@ -2082,7 +2139,7 @@ DEFINE WINDOW MYSELPRINTER  ;
                 MODAL   ;
                 NOSIZE
 
-                @ 15,10 COMBOBOX Combo_1 ITEMS aPrinters() VALUE ascan(aprinters(),getdefaultprinter()) WIDTH 320
+                @ 15,10 COMBOBOX Combo_1 ITEMS ::aprinters VALUE ascan(::aprinters,getdefaultprinter()) WIDTH 320
 
                 @ 53,65  BUTTON Ok CAPTION "OK" ACTION (::cprinter:=myselprinter.Combo_1.Item(myselprinter.Combo_1.value), myselprinter.release() )
                 @ 53,175 BUTTON Cancel CAPTION "Cancel" ACTION (::lprerror:=.T., myselprinter.release())
@@ -2094,61 +2151,13 @@ DEFINE WINDOW MYSELPRINTER  ;
 
         ACTIVATE WINDOW myselprinter
 
-RETURN self
-
-*-------------------------
-METHOD enddocx() CLASS TRAWPRINT
-*-------------------------
-local _nhandle,wr,nx,ny
-
-nx:=getdesktopwidth()
-ny:=getdesktopheight()
-
-
-
-SET DEVICE TO SCREEN
-SET PRINTER TO
-_nhandle:=FOPEN(::tempfile,0+64)
-IF ::impreview
-   wr:=memoread((::tempfile))
-   DEFINE WINDOW PRINT_PREVIEW  ;
-   AT 0,0 ;
-   WIDTH nx HEIGHT ny-70 ;
-   TITLE 'Preview -----> ' + ::tempfile ;
-   MODAL
-
-   @ 0,0 RICHEDITBOX EDIT_P ;
-   OF PRINT_PREVIEW ;
-   WIDTH nx-50 ;
-   HEIGHT ny-40-70 ;
-   VALUE WR ;
-   READONLY ;
-   FONT 'Courier New' ;
-   SIZE 10 ;
-   BACKCOLOR WHITE
-
-   @ 010,nx-40 button but_4 caption "X" width 30 action ( print_preview.release() ) tooltip "close"
-   @ 090,nx-40 button but_1 caption "+ +" width 30 action zoom("+") tooltip "zoom +"
-   @ 170,nx-40 button but_2 caption "- -" width 30 action zoom("-") tooltip "zoom -"
-   @ 250,nx-40 button but_3 caption "P" width 30 action (::printraw()) tooltip "Print RAW mode"
-   @ 330,nx-40 button but_5 caption "S" width 30 action  (::searchstring(print_preview.edit_p.value)) tooltip "Search"
-   @ 410,nx-40 button but_6 caption "N" width 30 action  ::nextsearch() tooltip "Next Search"
-
-   END WINDOW
-
-   CENTER WINDOW PRINT_PREVIEW
-   ACTIVATE WINDOW PRINT_PREVIEW
-
-ELSE
-
-  ::PRINTRAW()
-
-ENDIF
-
-IF FILE(::tempfile)
-   fclose(_nhandle)
-   ERASE &(::tempfile)
-ENDIF
+else
+   if .not. empty( cprinterx )
+      ::cprinter:=cprinterx
+   else
+      ::cprinter:=getdefaultprinter()
+   endif
+endif
 
 RETURN self
 
@@ -4374,3 +4383,97 @@ local cInStop := '101' // industrial 2 of 5 stop
         end
     next
 return cBarra
+
+function alocalports()
+local aprnport,aresults:={}
+   aprnport:=getprintersinfo()
+   IF aprnport<>",,"
+      aprnport:=str2arr(aprnport,",,")
+      aeval(aprnport,{|x,xi| aprnport[xi]:=str2arr(x,',')})
+      aeval(aprnport,{|x| aadd(aresults,x[2]+" , "+x[1]) })
+   EnDif
+return aresults
+
+#PRAGMA BEGINDUMP
+
+
+#define _WIN32_IE      0x0500
+#define HB_OS_WIN_32_USED
+#define _WIN32_WINNT   0x0400
+#define WINVER   0x0400
+
+#include <windows.h>
+#include <winuser.h>
+#include <wingdi.h>
+#include "hbapi.h"
+#include "hbvm.h"
+#include "hbstack.h"
+#include "hbapiitm.h"
+#include <olectl.h>
+#include <ocidl.h>
+#include <commctrl.h>
+#include "oohg.h"
+
+static OSVERSIONINFO osvi;
+
+
+HB_FUNC (GETPRINTERSINFO)
+{
+   DWORD dwSize = 0;
+   DWORD dwPrinters = 0;
+   DWORD i;
+   char * pBuffer ;
+   char * cBuffer ;
+   PRINTER_INFO_5* pInfo5;
+   DWORD level;
+   DWORD flags;
+
+   osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+   GetVersionEx(&osvi);
+
+
+      level = 5;
+      flags = PRINTER_ENUM_LOCAL;
+
+
+   EnumPrinters(flags, NULL,level, NULL, 0, &dwSize, &dwPrinters);
+
+   pBuffer = (char *) GlobalAlloc(GPTR, dwSize);
+   if (pBuffer == NULL)
+   {
+      hb_retc(",,");
+      return;
+   }
+   EnumPrinters(flags, NULL,level, ( BYTE * ) pBuffer, dwSize, &dwSize, &dwPrinters);
+
+   if (dwPrinters == 0)
+   {
+      hb_retc(",,");
+      return;
+   }
+   cBuffer = (char *) GlobalAlloc(GPTR, dwPrinters*256);
+
+   if (osvi.dwPlatformId == VER_PLATFORM_WIN32_NT)
+
+   {
+      pInfo5 = (PRINTER_INFO_5*)pBuffer;
+
+      for (i = 0; i < dwPrinters; i++)
+      {
+         strcat(cBuffer,pInfo5->pPrinterName);
+         strcat(cBuffer,",");
+         strcat(cBuffer,pInfo5->pPortName);
+
+         pInfo5++;
+
+         if (i < dwPrinters-1)
+            strcat(cBuffer,",,");
+      }
+   }
+
+   hb_retc(cBuffer);
+   GlobalFree(pBuffer);
+   GlobalFree(cBuffer);
+   return;
+}
+#PRAGMA ENDDUMP
