@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.41 2011-11-09 02:03:31 fyurisich Exp $
+ * $Id: classes.txt,v 1.42 2011-11-29 20:50:01 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -2099,6 +2099,7 @@ ENDCLASS
 
 *------------------------------------------------------------------------------*
 CLASS TTREE FROM TCONTROL
+   DATA AITEMIDS                  INIT {}
    DATA ASELCOLOR                 INIT BLUE             // background color of the select node
    DATA ATARGET                   INIT {}               // posible targets for the drop
    DATA ATREEENABLED              INIT {}
@@ -2110,15 +2111,19 @@ CLASS TTREE FROM TCONTROL
    DATA AUTOEXPANDTIMER           INIT NIL
    DATA AUTOSCROLLTIMER           INIT NIL
    DATA BONENTER                  INIT NIL
+   DATA CTRLLASTDROP              INIT nil
    DATA DRAGACTIVE                INIT .F.              // .T. if a drag and drop operation is going on
+   DATA DRAGENDING                INIT .F.
    DATA DRAGIMAGELIST             INIT 0                // contains drag image
    DATA HWNDEDITCTRL              INIT NIL
    DATA INITVALUE                 INIT 0
    DATA ITEMIDS                   INIT .F.
+   DATA ITEMLASTDROP              INIT nil
    DATA ITEMONDRAG                INIT 0                // handle of the item being dragged
    DATA LASTTARGET                INIT Nil              // last target hovered
    DATA LSELBOLD                  INIT .F.
    DATA NHEIGHT                   INIT 120
+   DATA NLASTIDNUMBER             INIT 0
    DATA NWIDTH                    INIT 120
    DATA ONCHECKCHANGE             INIT NIL
    DATA ONLABELEDIT               INIT NIL
@@ -2165,6 +2170,7 @@ CLASS TTREE FROM TCONTROL
    METHOD PREVVISIBLE
    METHOD RELEASE
    METHOD SELCOLOR                SETGET
+   METHOD SELECTIONID             SETGET
    METHOD VALUE                   SETGET
    METHOD VISIBLECOUNT
 ENDCLASS
@@ -2297,6 +2303,7 @@ CLASS TWINDOW
    DATA NWINDOWSTATE              INIT 0
    DATA ONCLICK                   INIT NIL
    DATA ONDBLCLICK                INIT NIL
+   DATA ONDROP                    INIT {}
    DATA ONDROPFILES               INIT NIL
    DATA ONGOTFOCUS                INIT NIL
    DATA ONLOSTFOCUS               INIT NIL

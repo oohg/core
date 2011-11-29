@@ -1,5 +1,5 @@
 /*
- * $Id: i_tree.ch,v 1.7 2011-10-18 01:08:04 fyurisich Exp $
+ * $Id: i_tree.ch,v 1.8 2011-11-29 20:50:03 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -139,6 +139,7 @@
           [ VALID <valid> ] ;
           [ ON CHECKCHANGE <checkchange> ] ;
           [ INDENT <pixels> ] ;
+          [ ON DROP <ondrop> ] ;
           =>;
           [ <obj> := ] _OOHG_SelectSubClass( TTree(), [ <subclass>() ] ):Define( ;
                        <(name)>, <(parent)>, <row>, <col>, <width>, <height>, <{change}>, <tooltip>, ;
@@ -149,7 +150,7 @@
                        <backcolor>, .T., <.checkboxes.>, <.editlabels.>, <.noHScr.>, <.noScr.>, ;
                        <.hott.>, .F., <.nobuts.>, <.drag.>, <.single.>, <.noborder.>, <selcolor>, ;
                        <{labeledit}>, <{valid}>, <{checkchange}>, <pixels>, <.selbold.>, ;
-                       <.drop.>, <aTarget> )
+                       <.drop.>, <aTarget>, <{ondrop}> )
 
 #xcommand DEFINE TREE <name> ;
           [ OBJ <obj> ] ;
@@ -199,6 +200,7 @@
           [ VALID <valid> ] ;
           [ ON CHECKCHANGE <checkchange> ] ;
           [ INDENT <pixels> ] ;
+          [ ON DROP <ondrop> ] ;
           =>;
           [ <obj> := ] _OOHG_SelectSubClass( TTree(), [ <subclass>() ] ):Define( ;
                        <(name)>, <(parent)>, <row>, <col>, <width>, <height>, <{change}>, <tooltip>, ;
@@ -209,7 +211,7 @@
                        <backcolor>, .F., <.checkboxes.>, <.editlabels.>, <.noHScr.>, <.noScr.>, ;
                        <.hott.>, <.nolines.>, <.nobuts.>, <.drag.>, <.single.>, <.noborder.>, ;
                        <selcolor>, <{labeledit}>, <{valid}>, <{checkchange}>, <pixels>, <.selbold.>, ;
-                       <.drop.>, <aTarget> )
+                       <.drop.>, <aTarget>, <{ondrop}> )
 
 #xcommand NODE <text> ;
           [ IMAGES <aImage> ] ;
@@ -219,8 +221,9 @@
           [ <bold: BOLD> ] ;
           [ <disabled: DISABLED> ] ;
           [ <nodrag: NODRAG> ] ;
+          [ <autoid: AUTOID> ] ;
 =>;
-_DefineTreeNode (<text>, <aImage> , <id>, <.checked.>, <.readonly.>, <.bold.>, <.disabled.>, <.nodrag.> )
+_DefineTreeNode (<text>, <aImage> , <id>, <.checked.>, <.readonly.>, <.bold.>, <.disabled.>, <.nodrag.>, <.autoid.> )
 
 #xcommand DEFINE NODE <text> ;
           [ IMAGES <aImage> ] ;
@@ -230,8 +233,9 @@ _DefineTreeNode (<text>, <aImage> , <id>, <.checked.>, <.readonly.>, <.bold.>, <
           [ <bold: BOLD> ] ;
           [ <disabled: DISABLED> ] ;
           [ <nodrag: NODRAG> ] ;
+          [ <autoid: AUTOID> ] ;
 =>;
-_DefineTreeNode (<text>, <aImage> , <id>, <.checked.>, <.readonly.>, <.bold.>, <.disabled.>, <.nodrag.> )
+_DefineTreeNode (<text>, <aImage> , <id>, <.checked.>, <.readonly.>, <.bold.>, <.disabled.>, <.nodrag.>, <.autoid.> )
 
 #xcommand END NODE ;
 =>;
@@ -245,8 +249,9 @@ _EndTreeNode()
           [ <bold: BOLD> ] ;
           [ <disabled: DISABLED> ] ;
           [ <nodrag: NODRAG> ] ;
+          [ <autoid: AUTOID> ] ;
 => ;
-_DefineTreeItem (<text>, <aImage> , <id>, <.checked.>, <.readonly.>, <.bold.>, <.disabled.>, <.nodrag.> )
+_DefineTreeItem (<text>, <aImage> , <id>, <.checked.>, <.readonly.>, <.bold.>, <.disabled.>, <.nodrag.>, <.autoid.> )
 
 #xcommand END TREE ;
 => ;

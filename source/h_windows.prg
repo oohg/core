@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.225 2011-11-19 23:51:00 fyurisich Exp $
+ * $Id: h_windows.prg,v 1.226 2011-11-29 20:50:03 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -245,6 +245,7 @@ CLASS TWindow
    DATA OnMouseDrop         INIT nil
    DATA DropEnabled         INIT .F.              // .T. if control accepts drops
    DATA HasDragFocus        INIT .F.              // .T. when drag image is upon the control and the control is drop enabled
+   DATA OnDrop              INIT {}               // executed after drop is finished
    DATA OnMouseMove         INIT nil
    DATA OnDropFiles         INIT nil
    DATA aKeys               INIT {}  // { Id, Mod, Key, Action }   Application-controlled hotkeys

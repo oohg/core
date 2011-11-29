@@ -1,5 +1,5 @@
-﻿/*
- * $Id: ChangeLog,v 1.832 2011-11-27 19:30:55 declan2005 Exp $
+/*
+ * $Id: ChangeLog,v 1.833 2011-11-29 20:50:01 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,9 +7,69 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2011-11-29 19:00:00 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * ./compile_mingw.bat
+     + Added MEMIO library to linkedit commands.
+   * doc/classes.txt
+     * Updated.
+   * source/h_windows.prg
+     + Added OnDrop data to TWindow class.
+   * include/i_tree.ch
+   * source/h_tree.prg
+     ! Fixed: ITEMID accepts any type of data not only numeric.
+     + Added SelectionID method to set/get the ID of the
+       selected item.
+     + Added aItemIDs, DragEnding, CtrlLastDrop and ItemLastDrop
+       datas to TTree class.
+     + Added ON DROP clause. The associated codeblock will be
+       executed after the drop operation is completed, if and only
+       if OnMouseDrop block returns a non nil value. Receives
+       a reference to the item or node added.
+     + Not nil ID parameter is now mandatory in AddItem(),
+       _DefineTreeNode and _DefineTreeItem functions.
+     + Added AUTOID clause to NODE and TREEITEM definitions.
+       This clause will automatically assign a valid ID to the
+       item if ID was ommited or it's duplicated.
+     + Added lAssignID parameter to AddItem(), _DefineTreeNode
+       and _DefineTreeItem functions. When .T. they will assign
+       an ID to new items with missing or duplicate IDs instead
+       of aborting.
+     + Added AutoID function: return a unique, not in use, string
+       ID you can use to add an item (<tree name> + "_" + <number>).
+     + Added nLastIDNumber data to TTree class (use by AutoID).
+     * ID is no longer stored in lParam member of ITEM structure,
+       instead an index to aItemIDs is stored.
+     * _DefineTreeNode and _DefineTreeItem functions now return
+       a reference to the item added.
+     * Item method attempts to change the item's text only if the
+       "Value" parameter is a string or memo. In that case it takes
+       into account only the first 255 characters.
+     * Value method will abort if tree's selected item is not
+       registered in the control's structures.
+     * CopyItem and MoveItem methods use new parameter of AddItem
+       method to handle IDs of new or moved items.
+     * TTree_OnMouseDrop() function now returns a reference to the
+       item added or moved, or nil if there was no change in target.
+     * TreeView_SetItem() and TreeView_GetItem() functions were
+       renamed as TreeView_SetItemText() and TreeView_GetItemText().
+     * CopyItem method changed: when the fourth parameter (aId) is
+       not specified for a target which uses ITEMIDs, the missing
+       IDs default to "C_" + <origin tree name> + "_" + <number>.
+       Number will be automatically increased to avoid duplicates.
+     + Added TreeView_SetSelectionID() function to change the ID
+       of the tree's selected item.
+     ! Fixed cancelation in Events method when processing WM_MOUSEMOVE
+       message if hovered control in target list is not a Tree.
+     ! Fixed wrong index reference in GetParent() and GetChildren()
+       methods.
+     * Changed some EVAL calls to _OOHG_EVAL calls.
+     * C code cleaned up.
+     * Some comments were improved.
+
 2011-11-27 14:20:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
    * source/winprint.prg
-     ! minor optimization in header and convert str2arr static function to public.
+     ! minor optimization in header and convert str2arr static function
+       to public.
    * source/h_print.prg
      + upgrade dosprint. Now it's possible select the printer/port
      ! merge source code in enddoc method of dosprint and rawprint.
@@ -18,7 +78,8 @@
 2011-11-25 11:55:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
    * source/h_print.prg
      + upgrade rawprint. Now it's possible select the printer
-     ! fixed error control when open office it's not installed at printing time.
+     ! fixed error control when open office it's not installed at
+       printing time.
 
 2011-11-22 20:05:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_browse.prg
