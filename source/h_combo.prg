@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.62 2011-11-18 20:26:59 fyurisich Exp $
+ * $Id: h_combo.prg,v 1.63 2011-12-08 07:07:26 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -126,10 +126,11 @@ CLASS TCombo FROM TLabel
    METHOD Events_DrawItem
    METHOD Events_MeasureItem
    METHOD AddItem
-   METHOD DeleteItem
-   METHOD DeleteAllItems      BLOCK { |Self| TCombo_DeleteAllItems2( ::hWnd ), ::xOldValue := nil }
+   METHOD DeleteItem(nPos)    BLOCK { |Self,nPos| ComboboxDeleteString( ::hWnd, nPos ) }
+   METHOD DeleteAllItems      BLOCK { |Self| ComboboxReset( ::hWnd ), ::xOldValue := nil }
    METHOD Item
-   METHOD ItemCount
+   METHOD InsertItem
+   METHOD ItemCount           BLOCK { |Self| ComboboxGetItemCount( ::hWnd ) }
    METHOD ShowDropDown
    METHOD SelectFirstItem     BLOCK { |Self| ComboSetCursel( ::hWnd, 1 ) }
    METHOD GetDropDownWidth
@@ -608,9 +609,7 @@ HB_FUNC( INITCOMBOBOX )
 
 HB_FUNC( COMBOADDSTRING )
 {
-   HWND hWnd = HWNDparam( 1 );
-
-   SendMessage( hWnd, CB_ADDSTRING, 0, ( LPARAM ) hb_parc( 2 ) );
+   SendMessage( HWNDparam( 1 ), CB_ADDSTRING, 0, ( LPARAM ) hb_parc( 2 ) );
 }
 
 HB_FUNC( COMBOINSERTSTRING )
@@ -638,7 +637,7 @@ HB_FUNC( COMBOSETDROPPEDWIDTH )
    hb_retni( SendMessage( HWNDparam( 1 ), CB_SETDROPPEDWIDTH, ( WPARAM ) hb_parni( 2 ), 0 ) );
 }
 
-HB_FUNC(COMBOBOXDELETESTRING )
+HB_FUNC( COMBOBOXDELETESTRING )
 {
    SendMessage( HWNDparam( 1 ), CB_DELETESTRING, (WPARAM) hb_parni( 2 ) - 1, 0 );
 }
@@ -845,19 +844,6 @@ HB_FUNC_STATIC( TCOMBO_ADDITEM )   // METHOD AddItem( uValue )
    hb_retnl( ComboBox_GetCount( oSelf->hWnd ) );
 }
 
-HB_FUNC_STATIC( TCOMBO_DELETEITEM )   // METHOD DeleteItem( nItem )
-{
-   PHB_ITEM pSelf = hb_stackSelfItem();
-   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
-
-   hb_retnl( SendMessage( oSelf->hWnd, CB_DELETESTRING, ( WPARAM ) hb_parni( 1 ) - 1, 0 ) );
-}
-
-HB_FUNC_STATIC( TCOMBO_DELETEALLITEMS2 )   // TCombo_DeleteAllItems2( hWnd )
-{
-   hb_retnl( SendMessage( HWNDparam( 1 ), CB_RESETCONTENT, 0, 0 ) );
-}
-
 HB_FUNC_STATIC( TCOMBO_ITEM )   // METHOD Item( nItem, uValue )
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
@@ -899,12 +885,29 @@ HB_FUNC_STATIC( TCOMBO_ITEM )   // METHOD Item( nItem, uValue )
    hb_xfree( cBuffer );
 }
 
-HB_FUNC_STATIC( TCOMBO_ITEMCOUNT )   // METHOD ItemCount()
+HB_FUNC_STATIC( TCOMBO_INSERTITEM )   // METHOD InsertItem( nItem, uValue )
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   PHB_ITEM pValue = hb_param( 2, HB_IT_ANY );
+   int nItem = hb_parni( 1 ) - 1;
+   struct IMAGE_PARAMETER pStruct;
 
-   hb_retnl( SendMessage( oSelf->hWnd, CB_GETCOUNT, 0, 0 ) );
+   if( pValue && ( HB_IS_STRING( pValue ) || HB_IS_NUMERIC( pValue ) || HB_IS_ARRAY( pValue ) ) )
+   {
+      ImageFillParameter( &pStruct, pValue );
+      TCombo_SetImageBuffer( oSelf, pStruct, nItem );
+      if( ( GetWindowLong( oSelf->hWnd, GWL_STYLE ) & CBS_SORT ) == CBS_SORT )
+      {
+         SendMessage( oSelf->hWnd, CB_ADDSTRING, 0, ( LPARAM ) pStruct.cString );
+      }
+      else
+      {
+         SendMessage( oSelf->hWnd, CB_INSERTSTRING, ( WPARAM ) nItem, ( LPARAM ) pStruct.cString );
+      }
+   }
+
+   hb_ret();
 }
 
 #pragma ENDDUMP

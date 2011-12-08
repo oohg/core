@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.124 2011-11-17 02:36:12 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.125 2011-12-08 07:07:26 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -469,11 +469,11 @@ Local oInputWindow, aResult, nWidth, ControlCol
 
       oInputWindow:Control_1:SetFocus()
 
-	END WINDOW
+   END WINDOW
 
-  If ! HB_IsNumeric( row ) .or. ! HB_IsNumeric( col )
+   If ! HB_IsNumeric( row ) .or. ! HB_IsNumeric( col )
       oInputWindow:Center()
-	EndIf
+   EndIf
 
    oInputWindow:Activate()
 
@@ -486,7 +486,7 @@ Local i , l
    l := len( aResult )
    For i := 1 to l
       aResult[ i ] := oInputWindow:Control( 'Control_' + Alltrim( Str( i ) ) ):Value
-	Next i
+   Next i
    oInputWindow:Release()
 Return Nil
 
@@ -2078,8 +2078,8 @@ Local aPos
       Return ::DoLostFocus()
 
    elseif Hi_wParam == EN_SETFOCUS
-		  //CGR
-	    ::FocusEffect()
+      //CGR
+      ::FocusEffect()
       ::DoEvent( ::OnGotFocus, "GOTFOCUS" )
 
    elseif Hi_wParam == BN_KILLFOCUS
@@ -2477,6 +2477,7 @@ HB_FUNC( _OOHG_UNTRANSFORM )
 
 CLASS TControlGroup FROM TControl
    DATA Type      INIT "CONTROLGROUP" READONLY
+   DATA lHidden   INIT .F.
 
    METHOD Define
    METHOD Enabled             SETGET
@@ -2525,3 +2526,446 @@ METHOD AddControl( oCtrl, Row, Col ) CLASS TControlGroup
    oCtrl:SizePos( Row, Col )
    oCtrl:Visible := oCtrl:Visible
 Return Nil
+
+
+
+
+
+CLASS TControlMultiPage FROM TControl
+   DATA Type                INIT "MULTIPAGE" READONLY
+   DATA aPages              INIT {}
+   DATA oContainerBase      INIT nil
+   DATA oPageClass          INIT TTabPage()
+   DATA nFirstValue         INIT nil
+
+   METHOD Define
+   METHOD CreatePages
+   METHOD ItemCount         BLOCK { |Self| LEN( ::aPages ) }
+   METHOD Refresh
+   METHOD RefreshData
+   METHOD Release
+   METHOD SizePos
+   METHOD Value             SETGET
+   METHOD Enabled
+   METHOD Visible
+   METHOD ForceHide
+   METHOD SetFocus          BLOCK { |Self| ::oContainerBase:SetFocus() }
+   METHOD AdjustResize
+
+   METHOD AddPage
+   METHOD AddControl
+   METHOD DeleteControl
+   METHOD DeletePage
+
+   METHOD RealPosition
+   METHOD HidePage
+   METHOD ShowPage
+
+   METHOD Caption
+   METHOD Picture
+
+   METHOD EndPage           BLOCK { |Self| _OOHG_DeleteFrame( ::oPageClass:Type ) }
+   METHOD EndTab
+
+   // Control-specific methods
+   DELEGATE InsertItem      TO oContainerBase
+   DELEGATE DeleteItem      TO oContainerBase
+ENDCLASS
+
+*-----------------------------------------------------------------------------*
+METHOD Define( ControlName, ParentForm, x, y, w, h, FontColor, BackColor, ;
+               FontName, FontSize, bold, italic, underline, strikeout, ;
+               Invisible, lDisabled, lRtl, change, value ) CLASS TControlMultiPage
+*-----------------------------------------------------------------------------*
+
+   ASSIGN ::nWidth  VALUE w TYPE "N"
+   ASSIGN ::nHeight VALUE h TYPE "N"
+   ASSIGN ::nRow    VALUE y TYPE "N"
+   ASSIGN ::nCol    VALUE x TYPE "N"
+
+   ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor,, lRtl )
+   ::InitStyle( ,, Invisible, , lDisabled )
+   ::Register( 0 )
+   ::SetFont( ,, bold, italic, underline, strikeout )
+
+   If HB_IsNumeric( value )
+      ::nFirstValue := value
+   EndIf
+
+   _OOHG_AddFrame( Self )
+
+   ASSIGN ::OnChange    VALUE Change    TYPE "B"
+
+   // ::oContainerBase is not created yet!
+   // ::oContainerBase:OnChange := { || ::Refresh() , ::DoChange() }
+
+Return Self
+
+*-----------------------------------------------------------------------------*
+METHOD CreatePages( aCaptions, Images, aPageMap, aMnemonic ) CLASS TControlMultiPage
+*-----------------------------------------------------------------------------*
+LOCAL z, Caption, Image, aControls, Mnemonic
+
+   If ! HB_IsArray( aCaptions )
+      aCaptions := {}
+   EndIf
+   If ! HB_IsArray( Images )
+      Images := {}
+   EndIf
+   If ! HB_IsArray( aPageMap )
+      aPageMap := {}
+   EndIf
+   If ! HB_IsArray( aMnemonic )
+      aMnemonic := {}
+   EndIf
+
+   z := 1
+   DO WHILE z <= LEN( aCaptions ) .AND. z <= LEN( Images ) .AND. z <= LEN( aPageMap )
+      IF z <= LEN( aCaptions ) .AND. VALTYPE( aCaptions[ z ] ) $ "CM"
+         Caption := aCaptions[ z ]
+      ELSE
+         Caption := ""
+      ENDIF
+      IF z <= LEN( Images ) .AND. VALTYPE( Images[ z ] ) $ "CM"
+         Image := Images[ z ]
+      ELSE
+         Image := ""
+      ENDIF
+      IF z <= LEN( aPageMap ) .AND. HB_IsArray( aPageMap[ z ] )
+         aControls := aPageMap[ z ]
+      ELSE
+         aControls := nil
+      ENDIF
+      IF z <= LEN( aMnemonic ) .AND. HB_IsBlock( aMnemonic[ z ] )
+         Mnemonic := aMnemonic[ z ]
+      ELSE
+         Mnemonic := nil
+      ENDIF
+      ::AddPage( , Caption, Image, aControls, Mnemonic )
+      z++
+   ENDDO
+Return nil
+
+*-----------------------------------------------------------------------------*
+METHOD Refresh() CLASS TControlMultiPage
+*-----------------------------------------------------------------------------*
+Local nPage, nFocused
+   nFocused := GetFocus()
+   nPage := IF( ::Visible, ::Value, 0 )
+   AEVAL( ::aPages, { |p,i| p:Position := i , p:ForceHide() } )
+   IF nPage >= 1 .AND. nPage <= LEN( ::aPages )
+      ::aPages[ nPage ]:Show()
+   ENDIF
+   //
+   If ValidHandler( nFocused )
+      If IsWindowVisible( nFocused )
+         If ! GetFocus() == nFocused
+            SetFocus( nFocused )
+         EndIf
+      Else
+         ::SetFocus()
+      EndIf
+   EndIf
+Return Nil
+
+*-----------------------------------------------------------------------------*
+METHOD RefreshData() CLASS TControlMultiPage
+*-----------------------------------------------------------------------------*
+   ::Super:RefreshData()
+   AEVAL( ::aPages, { |o| o:RefreshData() } )
+Return nil
+
+*-----------------------------------------------------------------------------*
+METHOD Release() CLASS TControlMultiPage
+*-----------------------------------------------------------------------------*
+   AEVAL( ::aPages, { |o| o:Release() } )
+Return ::Super:Release()
+
+*-----------------------------------------------------------------------------*
+METHOD SizePos( Row, Col, Width, Height ) CLASS TControlMultiPage
+*-----------------------------------------------------------------------------*
+   ::Super:SizePos( Row, Col, Width, Height )
+   ::oContainerBase:SizePos( 0, 0, Width, Height )
+   AEVAL( ::aPages, { |o| o:Events_Size() } )
+Return Nil
+
+*-----------------------------------------------------------------------------*
+METHOD Value( nValue ) CLASS TControlMultiPage
+*-----------------------------------------------------------------------------*
+LOCAL nPos, nCount
+   IF HB_IsNumeric( nValue )
+      nPos := ::RealPosition( nValue )
+      IF nPos != 0
+         ::oContainerBase:Value := nPos
+      ENDIF
+   ENDIF
+   nPos := ::oContainerBase:Value
+   nCount := 0
+   nValue := ASCAN( ::aPages, { |o| IF( o:lHidden, , nCount++ ), ( nCount == nPos ) } )
+RETURN nValue
+
+*-----------------------------------------------------------------------------*
+METHOD Enabled( lEnabled ) CLASS TControlMultiPage
+*-----------------------------------------------------------------------------*
+LOCAL nPos
+   IF HB_IsLogical( lEnabled )
+      ::Super:Enabled := lEnabled
+      nPos := ::Value
+      IF nPos <= LEN( ::aPages ) .AND. nPos >= 1
+         ::aPages[ nPos ]:Enabled := ::aPages[ nPos ]:Enabled
+      ENDIF
+   ENDIF
+RETURN ::Super:Enabled
+
+*-----------------------------------------------------------------------------*
+METHOD Visible( lVisible ) CLASS TControlMultiPage
+*-----------------------------------------------------------------------------*
+LOCAL nPos, aPages
+   IF HB_IsLogical( lVisible )
+      ::Super:Visible := lVisible
+      nPos := ::Value
+      aPages := ::aPages
+      IF nPos <= LEN( aPages ) .AND. nPos >= 1
+         IF lVisible .AND. aPages[ nPos ]:Visible
+            aPages[ nPos ]:Visible := .T.
+         ELSE
+            aPages[ nPos ]:ForceHide()
+         ENDIF
+      ENDIF
+   ENDIF
+RETURN ::lVisible
+
+*-----------------------------------------------------------------------------*
+METHOD ForceHide() CLASS TControlMultiPage
+*-----------------------------------------------------------------------------*
+LOCAL nPos
+   nPos := ::Value
+   IF nPos <= LEN( ::aPages ) .AND. nPos >= 1
+      ::aPages[ nPos ]:ForceHide()
+   ENDIF
+RETURN ::Super:ForceHide()
+
+*-----------------------------------------------------------------------------*
+METHOD AdjustResize( nDivh, nDivw, lSelfOnly ) CLASS TControlMultiPage
+*-----------------------------------------------------------------------------*
+   ::Super:AdjustResize( nDivh, nDivw, lSelfOnly )
+   AEVAL( ::aPages, { |o| o:AdjustResize( nDivh, nDivw, lSelfOnly ) } )
+RETURN nil
+
+*-----------------------------------------------------------------------------*
+METHOD AddPage( Position, Caption, Image, aControls, Mnemonic, Name, oSubClass ) CLASS TControlMultiPage
+*-----------------------------------------------------------------------------*
+Local oPage, nPos
+
+   IF !HB_IsNumeric( Position ) .OR. Position < 1 .OR. Position > LEN( ::aPages )
+      Position := LEN( ::aPages ) + 1
+   ENDIF
+
+   If ! ValType( Image ) $ 'CM'
+      Image := ''
+   EndIf
+
+   If ! ValType( Caption ) $ 'CM'
+      Caption := ''
+   Else
+      If ! EMPTY( Image ) .AND. IsXPThemeActive() .AND. At( '&' , Caption ) != 0
+         Caption := Space( 3 ) + Caption
+      EndIf
+   EndIf
+
+   If HB_IsObject( oSubClass )
+      oPage := oSubClass
+   Else
+      oPage := __clsInst( ::oPageClass:ClassH )
+   EndIf
+   oPage:Define( Name, Self )
+
+   oPage:Caption   := Caption
+   oPage:Picture   := Image
+   oPage:Position  := Position
+
+   AADD( ::aPages, nil )
+   AINS( ::aPages, Position )
+   ::aPages[ Position ] := oPage
+
+   oPage:Events_Size()
+
+   IF ! Empty( Image )
+      oPage:nImage := ::oContainerBase:AddBitMap( Image ) - 1
+   ENDIF
+
+   ::InsertItem( ::RealPosition( Position ), Caption, oPage:nImage )
+
+   If HB_IsArray( aControls )
+      AEVAL( aControls, { |o| ::AddControl( o, Position ) } )
+   EndIf
+
+   nPos := At( '&', Caption )
+   IF nPos > 0 .AND. nPos < LEN( Caption )
+      IF !HB_IsBlock( Mnemonic )
+         Mnemonic := { || oPage:SetFocus() }
+      ENDIF
+      DEFINE HOTKEY 0 PARENT ( ::Parent ) KEY "ALT+" + SubStr( Caption, nPos + 1, 1 ) ACTION ::DoEvent( Mnemonic, "CHANGE" )
+   ENDIF
+
+   If ::Value == Position
+      ::Refresh()
+   Else
+      oPage:ForceHide()
+   EndIf
+
+Return oPage
+
+*-----------------------------------------------------------------------------*
+METHOD AddControl( oCtrl , PageNumber , Row , Col ) CLASS TControlMultiPage
+*-----------------------------------------------------------------------------*
+
+   If ValType( oCtrl ) $ "CM"
+      oCtrl := ::Parent:Control( oCtrl )
+   EndIf
+
+   If LEN( ::aPages ) == 0
+      Return ::Super:AddControl( oCtrl )
+   EndIf
+
+   IF !HB_IsNumeric( PageNumber ) .OR. PageNumber > LEN( ::aPages )
+      PageNumber := LEN( ::aPages )
+   ENDIF
+
+   IF PageNumber < 1
+      PageNumber := 1
+   ENDIF
+
+   IF !HB_IsNumeric( Row )
+      Row := oCtrl:ContainerRow - ::ContainerRow
+   ENDIF
+
+   IF !HB_IsNumeric( Col )
+      Col := oCtrl:ContainerCol - ::ContainerCol
+   ENDIF
+
+   ::aPages[ PageNumber ]:AddControl( oCtrl, Row, Col )
+
+Return Nil
+
+*-----------------------------------------------------------------------------*
+METHOD DeleteControl( oCtrl ) CLASS TControlMultiPage
+*-----------------------------------------------------------------------------*
+   AEVAL( ::aPages, { |o| o:DeleteControl( oCtrl ) } )
+Return ::Super:DeleteControl( oCtrl )
+
+*-----------------------------------------------------------------------------*
+METHOD DeletePage( Position ) CLASS TControlMultiPage
+*-----------------------------------------------------------------------------*
+Local nValue, nRealPosition
+
+   If !HB_IsNumeric( Position ) .OR. Position < 1 .OR. Position > LEN( ::aPages )
+      Position := LEN( ::aPages )
+   EndIf
+
+   nValue := ::Value
+   nRealPosition := ::RealPosition( Position )
+
+   ::aPages[ Position ]:Release()
+   _OOHG_DeleteArrayItem( ::aPages, Position )
+   If nRealPosition != 0
+      ::DeleteItem( nRealPosition )
+   EndIf
+
+   If nValue == Position
+      ::Refresh()
+   EndIf
+
+Return Nil
+
+*-----------------------------------------------------------------------------*
+METHOD RealPosition( nPage ) CLASS TControlMultiPage
+*-----------------------------------------------------------------------------*
+LOCAL nCount := 0
+   If nPage >= 1 .AND. nPage <= LEN( ::aPages ) .AND. ! ::aPages[ nPage ]:lHidden
+      AEVAL( ::aPages, { |o| IF( o:lHidden, , nCount++ ) }, 1, nPage )
+   EndIf
+RETURN nCount
+
+*-----------------------------------------------------------------------------*
+METHOD HidePage( nPage ) CLASS TControlMultiPage
+*-----------------------------------------------------------------------------*
+LOCAL nPos
+   IF nPage >= 1 .AND. nPage <= LEN( ::aPages ) .AND. ! ::aPages[ nPage ]:lHidden
+      nPos := ::Value
+      // Disable hotkey!
+      ::DeleteItem( ::RealPosition( nPage ) )
+      ::aPages[ nPage ]:lHidden := .T.
+      IF nPos > 0
+         ::aPages[ nPos ]:ForceHide()
+      ENDIF
+      nPos := ASCAN( ::aPages, { |o| ! o:lHidden }, MAX( nPos, 1 ) )
+      IF nPos == 0
+         nPos := ASCAN( ::aPages, { |o| ! o:lHidden }, 1 )
+      ENDIF
+      IF nPos > 0
+         ::Value := nPos
+      ENDIF
+   ENDIF
+RETURN nil
+
+*-----------------------------------------------------------------------------*
+METHOD ShowPage( nPage ) CLASS TControlMultiPage
+*-----------------------------------------------------------------------------*
+   If nPage >= 1 .AND. nPage <= LEN( ::aPages ) .AND. ::aPages[ nPage ]:lHidden
+      ::aPages[ nPage ]:lHidden := .F.
+      ::InsertItem( ::RealPosition( nPage ), ::aPages[ nPage ]:Caption, ::aPages[ nPage ]:nImage )
+      If ::Value == nPage
+         ::Refresh()
+      EndIf
+      // Enable hotkey!
+   EndIf
+RETURN nil
+
+*-----------------------------------------------------------------------------*
+METHOD Caption( nColumn, uValue ) CLASS TControlMultiPage
+*-----------------------------------------------------------------------------*
+LOCAL oPage, nRealPosition
+   oPage := ::aPages[ nColumn ]
+   nRealPosition := ::RealPosition( nColumn )
+   If nRealPosition > 0
+      If VALTYPE( uValue ) $ "CM"
+         ::oContainerBase:Caption( nRealPosition, uValue )
+      EndIf
+      oPage:Caption := ::oContainerBase:Caption( nRealPosition )
+   Else
+      If VALTYPE( uValue ) $ "CM"
+         oPage:Caption := uValue
+      EndIf
+   EndIf
+Return oPage:Caption
+
+*-----------------------------------------------------------------------------*
+METHOD Picture( nColumn, uValue ) CLASS TControlMultiPage
+*-----------------------------------------------------------------------------*
+LOCAL oPage, nRealPosition
+   oPage := ::aPages[ nColumn ]
+   nRealPosition := ::RealPosition( nColumn )
+   If VALTYPE( uValue ) $ "CM"
+      oPage:Picture := uValue
+      oPage:nImage := ::oContainerBase:AddBitMap( uValue ) - 1
+      If nRealPosition > 0
+         ::oContainerBase:Picture( nRealPosition, oPage:nImage )
+      EndIf
+   EndIf
+Return oPage:Picture
+
+*-----------------------------------------------------------------------------*
+METHOD EndTab() CLASS TControlMultiPage
+*-----------------------------------------------------------------------------*
+   IF _OOHG_LastFrame() == ::oPageClass:Type
+      // ERROR: Last page not finished
+      ::EndPage()
+   ENDIF
+   _OOHG_DeleteFrame( ::Type )
+   If HB_IsNumeric( ::nFirstValue ) .AND. ! ::Value == ::nFirstValue
+      ::Value := ::nFirstValue
+   ElseIf ::Value == 0
+      ::Value := 1
+   EndIf
+Return nil

@@ -1,11 +1,24 @@
 /*
- * $Id: ChangeLog,v 1.833 2011-11-29 20:50:01 fyurisich Exp $
+ * $Id: ChangeLog,v 1.834 2011-12-08 07:07:25 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2011-12-08 01:10 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+  * source/h_combo.prg
+    + ::InsertItem() method added.
+  * source/h_controlmisc.prg
+    + TControlMultiPage() class added. It manages an array of
+      pages, showing only one according to the value of a control.
+  * source/h_tab.prg
+    + TTabRaw() class added. It manages TAB control itself.
+    + TTabMulti() class added. It's a common TAB control, but
+      it's based on TControlMultiPage() class.
+    + TTabCombo() class added. A TAB-like control using COMBOBOX
+      for select page to be shown.
 
 2011-11-29 19:00:00 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * ./compile_mingw.bat
