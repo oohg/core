@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.74 2011-11-09 21:08:03 fyurisich Exp $
+ * $Id: h_textbox.prg,v 1.75 2011-12-09 21:24:19 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -644,8 +644,12 @@ Local nPos, nStart, nEnd, cText, nNewPos, nNewLen, i
       Else
          If ::nMaxLength <= 0 .OR. nStart < ::nMaxLength
             nNewPos := nStart + 1
-
-            ::Caption := Stuff( ::Caption, nNewPos, Max( nEnd - nStart, 1), Chr( wParam ) )
+            
+            If SubStr( ::Caption, nNewPos, 2) == Chr(13) + Chr(10)
+               ::Caption := Stuff( ::Caption, nNewPos, 0, Chr( wParam ) )
+            Else
+               ::Caption := Stuff( ::Caption, nNewPos, Max( nEnd - nStart, 1), Chr( wParam ) )
+            EndIf
 
             SendMessage( ::hWnd, EM_SETSEL, nNewPos, nNewPos)
          EndIf

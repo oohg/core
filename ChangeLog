@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.835 2011-12-09 00:53:04 guerra000 Exp $
+ * $Id: ChangeLog,v 1.836 2011-12-09 21:24:19 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,25 +7,32 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2011-12-09 19:25 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_textbox.prg
+     ! Editbox in OVERWRITE mode deletes CHR(13) leaving behing
+       CHR(10) when entering a new character at EOL.
+       Corrected to insert new characters before EOF instead of
+       overwriting (same behaviour as MS-Word).
+       
 2011-12-08 19:04 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
-  * source/h_tree.prg
-    ! Commented TTREE_FONTCOLOR() function. This code is not
-      used.
-  * source/h_xbrowse.prg
-    ! Prevents double VK_A definition.
+   * source/h_tree.prg
+     ! Commented TTREE_FONTCOLOR() function. This code is not
+       used.
+   * source/h_xbrowse.prg
+     ! Prevents double VK_A definition.
 
 2011-12-08 01:10 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
-  * source/h_combo.prg
-    + ::InsertItem() method added.
-  * source/h_controlmisc.prg
-    + TControlMultiPage() class added. It manages an array of
-      pages, showing only one according to the value of a control.
-  * source/h_tab.prg
-    + TTabRaw() class added. It manages TAB control itself.
-    + TTabMulti() class added. It's a common TAB control, but
-      it's based on TControlMultiPage() class.
-    + TTabCombo() class added. A TAB-like control using COMBOBOX
-      for select page to be shown.
+   * source/h_combo.prg
+     + ::InsertItem() method added.
+   * source/h_controlmisc.prg
+     + TControlMultiPage() class added. It manages an array of
+       pages, showing only one according to the value of a control.
+   * source/h_tab.prg
+     + TTabRaw() class added. It manages TAB control itself.
+     + TTabMulti() class added. It's a common TAB control, but
+       it's based on TControlMultiPage() class.
+     + TTabCombo() class added. A TAB-like control using COMBOBOX
+       for select page to be shown.
 
 2011-11-29 19:00:00 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * ./compile_mingw.bat
