@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.48 2011-09-02 02:01:05 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.49 2011-12-09 00:53:04 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1648,7 +1648,9 @@ HB_FUNC_STATIC( TXBROWSE_ADJUSTRIGHTSCROLL )
    hb_retl( bChanged );
 }
 
-#define   VK_A   65
+#ifndef VK_A
+   #define   VK_A   65
+#endif
 
 HB_FUNC( INSERT_ALT_A )
 {

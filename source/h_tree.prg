@@ -1,5 +1,5 @@
 /*
- * $Id: h_tree.prg,v 1.30 2011-11-29 20:50:03 fyurisich Exp $
+ * $Id: h_tree.prg,v 1.31 2011-12-09 00:53:04 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -2781,6 +2781,7 @@ HB_FUNC( TREEVIEW_ENDEDITLABELNOW )
    hb_retl( TreeView_EndEditLabelNow( HWNDparam( 1 ), (WPARAM) hb_parl( 2 ) ) );
 }
 
+#if 0
 HB_FUNC_STATIC( TTREE_FONTCOLOR )
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
@@ -2804,6 +2805,7 @@ HB_FUNC_STATIC( TTREE_FONTCOLOR )
 
    /* return value was set in _OOHG_DetermineColorReturn() */
 }
+#endif
 
 HB_FUNC( TREEVIEW_GETBOLDSTATE )
 {
