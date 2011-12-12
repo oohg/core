@@ -1,11 +1,37 @@
 /*
- * $Id: ChangeLog,v 1.837 2011-12-09 21:28:31 fyurisich Exp $
+ * $Id: ChangeLog,v 1.838 2011-12-12 23:51:01 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2011-12-12 18:03 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+   * source/h_form.prg
+   * source/h_tab.prg
+   * source/h_windows.prg
+     ! Prevents application lock when mix radiogroup and
+       internal windows.
+     * Internal windows are created as WS_EX_CONTROLPARENT by
+       default.
+   * source/h_controlmisc.prg
+     + TControlMultiPage():ContainerValue method added.
+       For convert value of container to a page number.
+     * TControlMultiPage():InsertItem prevents an empty
+       value.
+     * TControlMultiPage():hWnd is taken from container.
+     ! Multiple bug fixes.
+   * source/h_tab.prg
+     * Sets TTabMulti as default TAB class.
+     + TTabRadio() class added. A TAB-like control using RADIOGROUP
+       for select page to be shown.
+   * source/h_radio.prg
+     * Re-designed RADIO creation. Now it's possible to have
+       an empty radiogroup.
+     * TRadioItem() converted to an independent control.
+     + ::AddItem, ::InsertItem, ::DeleteItem and ::ItemCount
+       methods added.
 
 2011-12-09 19:27 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    + lib/.cvsignore

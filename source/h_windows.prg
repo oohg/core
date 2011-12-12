@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.226 2011-11-29 20:50:03 fyurisich Exp $
+ * $Id: h_windows.prg,v 1.227 2011-12-12 23:51:02 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -2646,7 +2646,7 @@ Return
 
 // PATCH :(
 FUNCTION _OOHG_SetControlParent( lNewState )
-STATIC lState := .F.
+STATIC lState := .T.
    If HB_IsLogical( lNewState )
       lState := lNewState
    EndIf

@@ -1,5 +1,5 @@
 /*
- * $Id: h_radio.prg,v 1.28 2011-10-15 03:53:35 guerra000 Exp $
+ * $Id: h_radio.prg,v 1.29 2011-12-12 23:51:02 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -104,9 +104,11 @@ CLASS TRadioGroup FROM TLabel
    DATA nHeight       INIT 25
    DATA aOptions      INIT {}
    DATA TabHandle     INIT 0
+   DATA lHorizontal   INIT .F.
+   DATA nSpacing      INIT nil
 
-   METHOD RowMargin   BLOCK { |Self| - ::Row }
-   METHOD ColMargin   BLOCK { |Self| - ::Col }
+   METHOD RowMargin           BLOCK { |Self| - ::Row }
+   METHOD ColMargin           BLOCK { |Self| - ::Col }
 
    METHOD Define
    METHOD SetFont
@@ -116,11 +118,12 @@ CLASS TRadioGroup FROM TLabel
    METHOD SetFocus
    METHOD Visible             SETGET
 
-   METHOD Caption
+   METHOD ItemCount           BLOCK { |Self| LEN( ::aOptions ) }
+   METHOD AddItem
+   METHOD InsertItem
+   METHOD DeleteItem
 
-   METHOD Events
-   METHOD Events_Command
-   METHOD Events_Color
+   METHOD Caption
 
    EMPTY( _OOHG_AllVars )
 ENDCLASS
@@ -132,97 +135,57 @@ METHOD Define( ControlName, ParentForm, x, y, aOptions, Value, fontname, ;
                fontcolor, transparent, autosize, horizontal, lDisabled, lRtl, ;
                height ) CLASS TRadioGroup
 *-----------------------------------------------------------------------------*
-Local ControlHandle, i, oItem, nStyle
+Local i, oItem
 
    ASSIGN ::nCol    VALUE x      TYPE "N"
    ASSIGN ::nRow    VALUE y      TYPE "N"
    ASSIGN ::nWidth  VALUE width  TYPE "N"
    ASSIGN ::nHeight VALUE height TYPE "N"
 
-   ASSIGN ::lAutoSize VALUE autosize   TYPE "L"
-   ASSIGN horizontal  VALUE horizontal TYPE "L" DEFAULT .F.
+   ASSIGN ::lAutoSize    VALUE autosize   TYPE "L"
+   ASSIGN ::lHorizontal  VALUE horizontal TYPE "L"
 
-   default invisible to .F.
-   default notabstop to .F.
+   ASSIGN ::nSpacing     VALUE Spacing    TYPE "N"
+   If HB_IsNumeric( ::nSpacing )
+      Spacing := ::nSpacing
+   Else
+      Spacing := IF( ::lHorizontal, ::nWidth, ::nHeight )
+   EndIf
 
-   IF horizontal
-      ASSIGN Spacing     VALUE Spacing    TYPE "N" DEFAULT ::nWidth
-   ELSE
-      ASSIGN Spacing     VALUE Spacing    TYPE "N" DEFAULT ::nHeight
-   ENDIF
-
-   IF VALTYPE( NoTabStop ) == "L"
+   If VALTYPE( NoTabStop ) == "L"
       ::TabStop := ! NoTabStop
-   ENDIF
+   EndIf
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor,, lRtl )
-
-   nStyle := ::InitStyle( ,, Invisible, .T., lDisabled )
-
-   ControlHandle := InitRadioGroup( ::ContainerhWnd, ::ContainerCol, ::ContainerRow, nStyle, ::lRtl )
-
-   ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
+   ::InitStyle( ,, Invisible, ! ::TabStop, lDisabled )
+   ::Register( 0, , HelpId,, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
-
-   IF _OOHG_LastFrame() == "TABPAGE" .AND. _OOHG_UsesVisualStyle()
-     ::TabHandle := ::Container:Container:hWnd
-   ENDIF
 
    ::Transparent := transparent
    ::AutoSize    := autosize
 
-   // First item
-   oItem := TRadioItem():SetForm( , Self )
-   oItem:Register( ControlHandle, , HelpId, !Invisible, ToolTip )
-
-   IF _OOHG_LastFrame() == "TABPAGE" .AND. _OOHG_UsesVisualStyle()
-     oItem:TabHandle := ::Container:Container:hWnd
-   ENDIF
-
-   oItem:SetFont( , , bold, italic, underline, strikeout )
-   oItem:SizePos( ::Row, ::Col, ::Width, ::Height )
-   oItem:AutoSize := autosize
-   oItem:Caption := aOptions[ 1 ]
-   ::aOptions := { oItem }
+   ::aOptions := {}
    
    x := ::Col
    y := ::Row
-
-   For i = 2 to len( aOptions )
-
-      If horizontal
+   For i = 1 to len( aOptions )
+      oItem := TRadioItem():Define( , Self, x, y, ::Width, ::Height, ;
+               aOptions[ i ], .F., ( i == 1 ), ;
+               ::AutoSize, ::Transparent, , , ;
+               , , , , , , ;
+               ::ToolTip, ::HelpId, , .T., ,  )
+      AADD( ::aOptions, oItem )
+      If ::lHorizontal
          x += Spacing
       Else
          y += Spacing
       EndIf
-
-      ControlHandle := InitRadioButton( ::ContainerhWnd, x, y, nStyle, ::lRtl )
-
-      oItem := TRadioItem():SetForm( , Self )
-      oItem:Register( ControlHandle, , HelpId,, ToolTip )
-
-      IF _OOHG_LastFrame() == "TABPAGE" .AND. _OOHG_UsesVisualStyle()
-        oItem:TabHandle := ::Container:Container:hWnd
-      ENDIF
-
-      oItem:SetFont( , , bold, italic, underline, strikeout )
-      oItem:SizePos( y, x, ::Width, ::Height )
-      oItem:AutoSize := autosize
-      oItem:Caption := aOptions[ i ]
-      
-      AADD( ::aOptions, oItem )
    Next
 
-   If HB_IsNumeric( Value ) .AND. Value >= 1 .AND. Value <= Len( ::aOptions )
-      SendMessage( ::aOptions[ value ]:hWnd, BM_SETCHECK , BST_CHECKED , 0 )
-      If ! notabstop
-         ::aOptions[ Value ]:TabStop := .T.
-      EndIf
-   Else
-      If ! notabstop
-         ::aOptions[ 1 ]:TabStop := .T.
-      EndIf
- EndIf
+   ::Value := Value
+   If ! HB_IsNumeric( Value ) .AND. LEN( ::aOptions ) > 0
+      ::aOptions[ 1 ]:TabStop := .T.
+   EndIf
 
    ASSIGN ::OnChange    VALUE Change    TYPE "B"
 
@@ -249,35 +212,25 @@ Return uRet
 *-----------------------------------------------------------------------------*
 METHOD Value( nValue ) CLASS TRadioGroup
 *-----------------------------------------------------------------------------*
-LOCAL nOldValue, aNewValue, I, oItem, nLen
+LOCAL I, lSetFocus
    If HB_IsNumeric( nValue )
       nValue := INT( nValue )
-      nLen := LEN( ::aOptions )
-      aNewValue := AFILL( ARRAY( nLen ), BST_UNCHECKED )
-      If nValue >= 1 .AND. nValue <= nLen
-         nOldValue := nValue
-         aNewValue[ nValue ] := BST_CHECKED
-         If ::TabStop .and. ::aOptions[ nValue ]:TabStop
-            ::aOptions[ nValue ]:TabStop := .F.
-         EndIf
-      Else
-         nOldValue := 0
-      EndIf
-      For I := 1 TO nLen
-         oItem := ::aOptions[ I ]
-         If SendMessage( oItem:hWnd, BM_GETCHECK, 0, 0 ) != aNewValue[ I ]
-            SendMessage( oItem:hWnd, BM_SETCHECK, aNewValue[ I ], 0 )
-            //////// ojo aqui en esta linea de abajo
-            ::DoChange()
-         EndIf
-         If ! ( ::TabStop .AND. MAX( nValue, 1 ) == I ) == ::aOptions[ I ]:TabStop
-            ::aOptions[ I ]:TabStop := ( MAX( nValue, 1 ) == I )
-         EndIf
+      lSetFocus := ( ASCAN( ::aOptions, { |o| o:hWnd == GetFocus() } ) > 0 )
+      For I := 1 TO LEN( ::aOptions )
+         ::aOptions[ I ]:Value := ( I == nValue )
       Next
-   Else
-      nOldValue := ASCAN( ::aOptions, { |o| SendMessage( o:hWnd, BM_GETCHECK, 0, 0 ) == BST_CHECKED } )
+      nValue := ::Value
+      For I := 1 TO LEN( ::aOptions )
+         ::aOptions[ I ]:TabStop := ( ::TabStop .AND. I == MAX( nValue, 1 ) )
+      Next
+      If lSetFocus
+         If nValue > 0
+            ::aOptions[ nValue ]:SetFocus()
+         EndIf
+      EndIf
+      ::DoChange()
    EndIf
-RETURN nOldValue
+RETURN ASCAN( ::aOptions, { |o| o:Value } )
 
 *-----------------------------------------------------------------------------*
 METHOD Enabled( lEnabled ) CLASS TRadioGroup
@@ -314,50 +267,99 @@ METHOD Visible( lVisible ) CLASS TRadioGroup
 RETURN ::lVisible
 
 *-----------------------------------------------------------------------------*
+METHOD AddItem( cCaption ) CLASS TRadioGroup
+*-----------------------------------------------------------------------------*
+Return ::InsertItem( ::ItemCount + 1, cCaption )
+
+*-----------------------------------------------------------------------------*
+METHOD InsertItem( nPosition, cCaption ) CLASS TRadioGroup
+*-----------------------------------------------------------------------------*
+Local nPos2, Spacing, oItem, x, y, nValue, hWnd
+   nValue := ::Value
+
+   If HB_IsNumeric( ::nSpacing )
+      Spacing := ::nSpacing
+   Else
+      Spacing := IF( ::lHorizontal, ::nWidth, ::nHeight )
+   EndIf
+
+   nPosition := INT( nPosition )
+   If nPosition < 1 .OR. nPosition > LEN( ::aOptions )
+      nPosition := LEN( ::aOptions ) + 1
+   EndIf
+
+   AADD( ::aOptions, nil )
+   AINS( ::aOptions, nPosition )
+   nPos2 := LEN( ::aOptions )
+   DO WHILE nPos2 > nPosition
+      If ::lHorizontal
+         ::aOptions[ nPos2 ]:Col += Spacing
+      Else
+         ::aOptions[ nPos2 ]:Row += Spacing
+      EndIf
+      nPos2--
+   ENDDO
+
+   If nPosition == 1
+      x := ::Col
+      y := ::Row
+      If LEN( ::aOptions ) > 1
+         WindowStyleFlag( ::aOptions[ 2 ]:hWnd, WS_GROUP, 0 )
+      EndIf
+   Else
+      x := ::aOptions[ nPosition - 1 ]:Col
+      y := ::aOptions[ nPosition - 1 ]:Row
+      If ::lHorizontal
+         x += Spacing
+      Else
+         y += Spacing
+      EndIf
+   EndIf
+   oItem := TRadioItem():Define( , Self, x, y, ::Width, ::Height, ;
+            cCaption, .F., ( nPosition == 1 ), ;
+            ::AutoSize, ::Transparent, , , ;
+            , , , , , , ;
+            ::ToolTip, ::HelpId, , .T., ,  )
+   ::aOptions[ nPosition ] := oItem
+
+   If nPosition > 1
+      SetWindowPos( oItem:hWnd, ::aOptions[ nPosition - 1 ]:hWnd, 0, 0, 0, 0, 3 )
+   ElseIf LEN( ::aOptions ) >= 2
+      hWnd:= GetWindow( ::aOptions[ 2 ]:hWnd, GW_HWNDPREV )
+      SetWindowPos( oItem:hWnd, hWnd, 0, 0, 0, 0, 3 )
+   Endif
+
+   If nValue >= nPosition
+      ::Value := ::Value
+   EndIf
+Return nil
+
+*-----------------------------------------------------------------------------*
+METHOD DeleteItem( nItem ) CLASS TRadioGroup
+*-----------------------------------------------------------------------------*
+Local nValue
+   nItem := INT( nItem )
+   If nItem >= 1 .AND. nItem <= LEN( ::aOptions )
+      nValue := ::Value
+      ::aOptions[ nItem ]:Release()
+      _OOHG_DeleteArrayItem( ::aOptions, nItem )
+      If nItem == 1 .AND. LEN( ::aOptions ) > 0
+         WindowStyleFlag( ::aOptions[ 1 ]:hWnd, WS_GROUP, WS_GROUP )
+      EndIf
+      If nValue >= nItem
+         ::Value := nValue
+      EndIf
+   EndIf
+
+   If nValue >= nItem
+      ::Value := ::Value
+   EndIf
+Return nil
+
+*-----------------------------------------------------------------------------*
 METHOD Caption( nItem, uValue ) CLASS TRadioGroup
 *-----------------------------------------------------------------------------*
 Return ( ::aOptions[ nItem ]:Caption := uValue )
-
-*-----------------------------------------------------------------------------*
-METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TRadioGroup
-*-----------------------------------------------------------------------------*
-   If nMsg == WM_LBUTTONDBLCLK
-      If HB_IsBlock( ::aControls[ 1 ]:OnDblClick )
-         ::aControls[ 1 ]:DoEvent( ::aControls[ 1 ]:OnDblClick, "DBLCLICK" )
-      Else
-         ::DoEvent( ::OnDblClick, "DBLCLICK" )
-      EndIf
-      Return nil
-   ElseIf nMsg == WM_RBUTTONUP
-      If HB_IsBlock( ::aControls[ 1 ]:OnRClick )
-         ::aControls[ 1 ]:DoEvent( ::aControls[ 1 ]:OnRClick, "RCLICK" )
-      Else
-         ::DoEvent( ::OnRClick, "RCLICK" )
-      EndIf
-      Return nil
-   EndIf
-RETURN ::Super:Events( hWnd, nMsg, wParam, lParam )
-
-*-----------------------------------------------------------------------------*
-METHOD Events_Command( wParam ) CLASS TRadioGroup
-*-----------------------------------------------------------------------------*
-Local Hi_wParam := HIWORD( wParam )
-Local lTab
-   If Hi_wParam == BN_CLICKED
-      lTab := ::TabStop .AND. ::Value <= 1
-      If ! lTab == ::aOptions[ 1 ]:TabStop
-         ::aOptions[ 1 ]:TabStop := lTab
-      EndIf
-      ::DoChange()
-      Return nil
-   EndIf
-Return ::Super:Events_Command( wParam )
-
-*------------------------------------------------------------------------------*
-METHOD Events_Color( wParam, nDefColor ) CLASS TRadioGroup
-*------------------------------------------------------------------------------*
-
-Return Events_Color_InTab( Self, wParam, nDefColor )    // see h_controlmisc.prg
 
 
 
@@ -365,13 +367,74 @@ Return Events_Color_InTab( Self, wParam, nDefColor )    // see h_controlmisc.prg
 
 CLASS TRadioItem FROM TLabel
    DATA Type          INIT "RADIOITEM" READONLY
+   DATA nWidth        INIT 120
+   DATA nHeight       INIT 25
    DATA IconWidth     INIT 19
    DATA TabHandle     INIT 0
 
+   METHOD Define
+   METHOD Value             SETGET
    METHOD Events
    METHOD Events_Command
    METHOD Events_Color
 ENDCLASS
+
+*-----------------------------------------------------------------------------*
+METHOD Define( ControlName, ParentForm, x, y, width, height, ;
+               caption, value, lFirst, ;
+               autosize, transparent, fontcolor, backcolor, ;
+               fontname, fontsize, bold, italic, underline, strikeout, ;
+               tooltip, HelpId, invisible, notabstop, lDisabled, lRtl ) CLASS TRadioItem
+*-----------------------------------------------------------------------------*
+Local ControlHandle, nStyle, oContainer
+
+   ASSIGN ::nCol    VALUE x      TYPE "N"
+   ASSIGN ::nRow    VALUE y      TYPE "N"
+   ASSIGN ::nWidth  VALUE width  TYPE "N"
+   ASSIGN ::nHeight VALUE height TYPE "N"
+
+   ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor,, lRtl )
+
+   nStyle := ::InitStyle( ,, Invisible, notabstop, lDisabled )
+
+   If HB_IsLogical( lFirst ) .AND. lFirst
+      ControlHandle := InitRadioGroup( ::ContainerhWnd, ::ContainerCol, ::ContainerRow, nStyle, ::lRtl, ::Width, ::Height )
+   Else
+      ControlHandle := InitRadioButton( ::ContainerhWnd, ::ContainerCol, ::ContainerRow, nStyle, ::lRtl, ::Width, ::Height )
+   EndIf
+
+   ::Register( ControlHandle,, HelpId,, ToolTip )
+   ::SetFont( , , bold, italic, underline, strikeout )
+
+   If _OOHG_UsesVisualStyle()
+      oContainer := ::Container
+      DO WHILE ! oContainer == NIL
+         If oContainer:Type == "TAB"
+            ::TabHandle := oContainer:hWnd
+            EXIT
+         EndIf
+         oContainer := oContainer:Container
+      ENDDO
+   EndIf
+
+   ::Transparent := transparent
+   ::AutoSize    := autosize
+   ::Caption := caption
+
+   ::Value := value
+Return Self
+
+*-----------------------------------------------------------------------------*
+METHOD Value( lValue ) CLASS TRadioItem
+*-----------------------------------------------------------------------------*
+LOCAL lOldValue
+   If HB_IsLogical( lValue )
+      lOldValue := ( SendMessage( ::hWnd, BM_GETCHECK, 0, 0 ) == BST_CHECKED )
+      If ! lValue == lOldValue
+         SendMessage( ::hWnd, BM_SETCHECK, IF( lValue, BST_CHECKED, BST_UNCHECKED ), 0 )
+      EndIf
+   EndIf
+Return ( SendMessage( ::hWnd, BM_GETCHECK, 0, 0 ) == BST_CHECKED )
 
 *-----------------------------------------------------------------------------*
 METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TRadioItem
@@ -379,14 +442,14 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TRadioItem
    If nMsg == WM_LBUTTONDBLCLK
       If HB_IsBlock( ::OnDblClick )
          ::DoEvent( ::OnDblClick, "DBLCLICK" )
-      Else
+      ElseIf ! ::Container == NIL
          ::Container:DoEvent( ::Container:OnDblClick, "DBLCLICK" )
       EndIf
       Return nil
    ElseIf nMsg == WM_RBUTTONUP
       If HB_IsBlock( ::OnRClick )
          ::DoEvent( ::OnRClick, "RCLICK" )
-      Else
+      ElseIf ! ::Container == NIL
          ::Container:DoEvent( ::Container:OnRClick, "RCLICK" )
       EndIf
       Return nil
@@ -397,13 +460,19 @@ RETURN ::Super:Events( hWnd, nMsg, wParam, lParam )
 METHOD Events_Command( wParam ) CLASS TRadioItem
 *-----------------------------------------------------------------------------*
 Local Hi_wParam := HIWORD( wParam )
+/*
 Local lTab
+*/
    If Hi_wParam == BN_CLICKED
-      lTab := ::Container:TabStop .AND. ( SendMessage( ::hWnd, BM_GETCHECK, 0, 0 ) == BST_CHECKED )
-      If ! lTab == ::TabStop
-         ::TabStop := lTab
+      If ! ::Container == NIL
+/*
+         lTab := ( ::Container:TabStop .AND. ::Value )
+         If ! lTab == ::TabStop
+            ::TabStop := lTab
+         EndIf
+*/
+         ::Container:DoChange()
       EndIf
-      ::Container:DoChange()
       Return nil
    EndIf
 Return ::Super:Events_Command( wParam )
@@ -411,7 +480,6 @@ Return ::Super:Events_Command( wParam )
 *------------------------------------------------------------------------------*
 METHOD Events_Color( wParam, nDefColor ) CLASS TRadioItem
 *------------------------------------------------------------------------------*
-
 Return Events_Color_InTab( Self, wParam, nDefColor )    // see h_controlmisc.prg
 
 
@@ -443,12 +511,12 @@ static LRESULT APIENTRY SubClassFuncB( HWND hWnd, UINT msg, WPARAM wParam, LPARA
 
 HB_FUNC( INITRADIOGROUP )
 {
- HWND hbutton;
+   HWND hbutton;
    int Style   = hb_parni( 4 ) | BS_NOTIFY | WS_CHILD | BS_AUTORADIOBUTTON | WS_GROUP;
    int StyleEx = _OOHG_RTL_Status( hb_parl( 5 ) );
 
    hbutton = CreateWindowEx( StyleEx, "button", "", Style,
-                             hb_parni( 2 ), hb_parni( 3 ), 0, 0,
+                             hb_parni( 2 ), hb_parni( 3 ), hb_parni( 6 ), hb_parni( 7 ),
                              HWNDparam( 1 ), ( HMENU ) NULL, GetModuleHandle( NULL ), NULL );
 
    lpfnOldWndProcA = ( WNDPROC ) SetWindowLong( ( HWND ) hbutton, GWL_WNDPROC, ( LONG ) SubClassFuncA );
@@ -458,12 +526,12 @@ HB_FUNC( INITRADIOGROUP )
 
 HB_FUNC( INITRADIOBUTTON )
 {
- HWND hbutton;
+   HWND hbutton;
    int Style   = hb_parni( 4 ) | BS_NOTIFY | WS_CHILD | BS_AUTORADIOBUTTON;
    int StyleEx = _OOHG_RTL_Status( hb_parl( 5 ) );
 
    hbutton = CreateWindowEx( StyleEx, "button", "", Style,
-                             hb_parni( 2 ), hb_parni( 3 ), 0, 0,
+                             hb_parni( 2 ), hb_parni( 3 ), hb_parni( 6 ), hb_parni( 7 ),
                              HWNDparam( 1 ), ( HMENU ) NULL, GetModuleHandle( NULL ), NULL );
 
    lpfnOldWndProcB = ( WNDPROC ) SetWindowLong( ( HWND ) hbutton, GWL_WNDPROC, ( LONG ) SubClassFuncB );

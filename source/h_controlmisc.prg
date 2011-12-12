@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.125 2011-12-08 07:07:26 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.126 2011-12-12 23:51:02 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1597,9 +1597,9 @@ Local mVar
    DeleteObject( ::AuxHandle )
 
    mVar := '_' + ::Parent:Name + '_' + ::Name
-	if type ( mVar ) != 'U'
+   If type ( mVar ) != 'U'
       __MVPUT( mVar , 0 )
-	EndIf
+   EndIf
 
 Return ::Super:Release()
 
@@ -2511,9 +2511,10 @@ RETURN ::Super:Enabled
 *-----------------------------------------------------------------------------*
 METHOD Visible( lVisible ) CLASS TControlGroup
 *-----------------------------------------------------------------------------*
+Local x
    IF HB_IsLogical( lVisible )
       ::Super:Visible := lVisible
-      AEVAL( ::aControls, { |o| o:Visible := o:Visible } )
+      AEVAL( ::aControls, { |o| x := o:Visible , o:Visible := x } )
    ENDIF
 RETURN ::lVisible
 
@@ -2546,8 +2547,8 @@ CLASS TControlMultiPage FROM TControl
    METHOD Release
    METHOD SizePos
    METHOD Value             SETGET
-   METHOD Enabled
-   METHOD Visible
+   METHOD Enabled           SETGET
+   METHOD Visible           SETGET
    METHOD ForceHide
    METHOD SetFocus          BLOCK { |Self| ::oContainerBase:SetFocus() }
    METHOD AdjustResize
@@ -2568,8 +2569,10 @@ CLASS TControlMultiPage FROM TControl
    METHOD EndTab
 
    // Control-specific methods
+   METHOD ContainerValue    SETGET
    DELEGATE InsertItem      TO oContainerBase
-   DELEGATE DeleteItem      TO oContainerBase
+   METHOD DeleteItem
+   METHOD hWnd              BLOCK { |Self| IF( ::oContainerBase == NIL, 0, ::oContainerBase:hWnd ) }
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -2685,7 +2688,9 @@ Return ::Super:Release()
 METHOD SizePos( Row, Col, Width, Height ) CLASS TControlMultiPage
 *-----------------------------------------------------------------------------*
    ::Super:SizePos( Row, Col, Width, Height )
-   ::oContainerBase:SizePos( 0, 0, Width, Height )
+   If ! ::oContainerBase == NIL
+      ::oContainerBase:SizePos( 0, 0, Width, Height )
+   EndIf
    AEVAL( ::aPages, { |o| o:Events_Size() } )
 Return Nil
 
@@ -2696,10 +2701,10 @@ LOCAL nPos, nCount
    IF HB_IsNumeric( nValue )
       nPos := ::RealPosition( nValue )
       IF nPos != 0
-         ::oContainerBase:Value := nPos
+         ::ContainerValue := nPos
       ENDIF
    ENDIF
-   nPos := ::oContainerBase:Value
+   nPos := ::ContainerValue
    nCount := 0
    nValue := ASCAN( ::aPages, { |o| IF( o:lHidden, , nCount++ ), ( nCount == nPos ) } )
 RETURN nValue
@@ -2967,5 +2972,24 @@ METHOD EndTab() CLASS TControlMultiPage
       ::Value := ::nFirstValue
    ElseIf ::Value == 0
       ::Value := 1
+   EndIf
+Return nil
+
+*-----------------------------------------------------------------------------*
+METHOD ContainerValue( nValue ) CLASS TControlMultiPage
+*-----------------------------------------------------------------------------*
+   If HB_IsNumeric( nValue )
+      ::oContainerBase:Value := nValue
+   EndIf
+Return IF( ::oContainerBase == NIL, 0, ::oContainerBase:Value )
+
+*-----------------------------------------------------------------------------*
+METHOD DeleteItem( nItem ) CLASS TControlMultiPage
+*-----------------------------------------------------------------------------*
+Local nValue
+   nValue := ::ContainerValue
+   ::oContainerBase:DeleteItem( nItem )
+   If ::ContainerValue == 0
+      ::ContainerValue := MIN( nValue, ::oContainerBase:ItemCount )
    EndIf
 Return nil

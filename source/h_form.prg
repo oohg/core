@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.33 2011-10-18 01:08:04 fyurisich Exp $
+ * $Id: h_form.prg,v 1.34 2011-12-12 23:51:02 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1973,6 +1973,7 @@ METHOD Define( FormName, Caption, x, y, w, h, oParent, aRGB, fontname, fontsize,
 *------------------------------------------------------------------------------*
 Local nStyle := 0, nStyleEx := 0
 
+   nStyle += WS_GROUP
    ::SearchParent( oParent )
    ::Focused := ( HB_IsLogical( Focused ) .AND. Focused )
    nStyle += WS_CHILD
@@ -2086,6 +2087,7 @@ METHOD Define( FormName, w, h, break, grippertext, nocaption, title, aRGB, ;
 *-----------------------------------------------------------------------------*
 Local nStyle := 0, nStyleEx := 0
 
+   nStyle += WS_GROUP
    ::SearchParent()
    ::Focused := ( HB_IsLogical( Focused ) .AND. Focused )
    nStyle += WS_CHILD
@@ -2140,6 +2142,7 @@ METHOD Define( FormName, Caption, x, y, w, h, MouseDragProcedure, ;
 *------------------------------------------------------------------------------*
 Local nStyle := 0, nStyleEx := 0, aClientRect
 
+   nStyle += WS_GROUP
    ::Focused := ( HB_IsLogical( Focused ) .AND. Focused )
    ::SearchParent( oParent )
 
@@ -2226,6 +2229,7 @@ METHOD Define( FormName, Caption, x, y, w, h, nominimize, nomaximize, nosize, ;
 *------------------------------------------------------------------------------*
 Local nStyle := 0, nStyleEx := 0
 
+   nStyle += WS_GROUP
    ::Focused := ( HB_IsLogical( Focused ) .AND. Focused )
    ::SearchParent( oParent )
 
