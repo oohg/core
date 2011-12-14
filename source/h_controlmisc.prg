@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.126 2011-12-12 23:51:02 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.127 2011-12-14 21:58:13 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -2570,7 +2570,7 @@ CLASS TControlMultiPage FROM TControl
 
    // Control-specific methods
    METHOD ContainerValue    SETGET
-   DELEGATE InsertItem      TO oContainerBase
+   METHOD InsertItem(x,y,z) BLOCK { |Self,x,y,z| ::oContainerBase:InsertItem(x,y,z) }
    METHOD DeleteItem
    METHOD hWnd              BLOCK { |Self| IF( ::oContainerBase == NIL, 0, ::oContainerBase:hWnd ) }
 ENDCLASS

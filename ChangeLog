@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog,v 1.838 2011-12-12 23:51:01 guerra000 Exp $
+ * $Id: ChangeLog,v 1.839 2011-12-14 21:58:13 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2011-12-14 16:08 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+   * source/h_controlmisc.prg
+     ! Changed DELEGATE command to METHOD...BLOCK .
+       It's a workaround for wrong Harbour behaviour.
 
 2011-12-12 18:03 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
    * source/h_form.prg
