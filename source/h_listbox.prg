@@ -1,5 +1,5 @@
 /*
- * $Id: h_listbox.prg,v 1.25 2011-09-12 01:40:01 fyurisich Exp $
+ * $Id: h_listbox.prg,v 1.26 2011-12-16 00:17:21 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -117,6 +117,7 @@ CLASS TList FROM TControl
    METHOD DeleteItem(nItem)   BLOCK { |Self,nItem| ListBoxDeleteString( ::hWnd, nItem ) }
    METHOD DeleteAllItems      BLOCK { | Self | ListBoxReset( ::hWnd ) }
    METHOD Item
+   METHOD InsertItem
    METHOD ItemCount           BLOCK { | Self | ListBoxGetItemCount( ::hWnd ) }
 ENDCLASS
 
@@ -234,6 +235,14 @@ METHOD Item( nItem, uValue ) CLASS TList
 *-----------------------------------------------------------------------------*
    IF VALTYPE( uValue ) $ "CM"
       ListBoxDeleteString( ::hWnd, nItem )
+      ListBoxInsertString2( Self, uValue, nItem )
+   ENDIF
+Return ListBoxGetString( ::hWnd, nItem )
+
+*-----------------------------------------------------------------------------*
+METHOD InsertItem( nItem, uValue ) CLASS TList
+*-----------------------------------------------------------------------------*
+   IF VALTYPE( uValue ) $ "CM"
       ListBoxInsertString2( Self, uValue, nItem )
    ENDIF
 Return ListBoxGetString( ::hWnd, nItem )

@@ -1,11 +1,23 @@
 /*
- * $Id: ChangeLog,v 1.839 2011-12-14 21:58:13 guerra000 Exp $
+ * $Id: ChangeLog,v 1.840 2011-12-16 00:17:20 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2011-12-15 18:28 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+   * source/h_listbox.prg
+     + ::InsertItem() method added.
+   * source/h_controlmisc.prg
+   * source/h_tab.prg
+     - TControlMultiPage() changed to TMultiPage() and moved from
+       h_controlmisc.prg to h_tab.prg .
+     ! Multiple bug fixes.
+   + samples/oohg/tabdemo.prg
+     + tabdemo.prg sample added.
+       Shows TMultiPage() capabilities.
 
 2011-12-14 16:08 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
    * source/h_controlmisc.prg
