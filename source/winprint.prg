@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.42 2011-11-27 19:30:55 declan2005 Exp $
+ * $Id: winprint.prg,v 1.43 2011-12-31 16:54:48 fyurisich Exp $
  */
 // -----------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -2049,7 +2049,7 @@ HB_FUNC (RR_FINISH)
  hbrush = NULL;
  textjust=0;
  memset(&devcaps,0,sizeof(devcaps));
- devcaps[15]=1;
+ devcaps[14]=1;
  preview=0;
  polyfillmode=1;
  hrgn = NULL;
@@ -2212,26 +2212,26 @@ HB_FUNC (RR_GETDEVICECAPS)
  if (xfont!=0)
     SelectObject(hDCRef,xfont);
  GetTextMetrics(hDCRef,&tm);
- devcaps[1 ]=GetDeviceCaps(hDCRef,VERTSIZE);
- devcaps[2 ]=GetDeviceCaps(hDCRef,HORZSIZE);
- devcaps[3 ]=GetDeviceCaps(hDCRef,VERTRES);
- devcaps[4 ]=GetDeviceCaps(hDCRef,HORZRES);
- devcaps[5 ]=GetDeviceCaps(hDCRef,LOGPIXELSY);
- devcaps[6 ]=GetDeviceCaps(hDCRef,LOGPIXELSX);
- devcaps[7 ]=GetDeviceCaps(hDCRef,PHYSICALHEIGHT);
- devcaps[8 ]=GetDeviceCaps(hDCRef,PHYSICALWIDTH);
- devcaps[9 ]=GetDeviceCaps(hDCRef,PHYSICALOFFSETY);
- devcaps[10]=GetDeviceCaps(hDCRef,PHYSICALOFFSETX);
+ devcaps[ 0]=GetDeviceCaps(hDCRef,VERTSIZE);
+ devcaps[ 1]=GetDeviceCaps(hDCRef,HORZSIZE);
+ devcaps[ 2]=GetDeviceCaps(hDCRef,VERTRES);
+ devcaps[ 3]=GetDeviceCaps(hDCRef,HORZRES);
+ devcaps[ 4]=GetDeviceCaps(hDCRef,LOGPIXELSY);
+ devcaps[ 5]=GetDeviceCaps(hDCRef,LOGPIXELSX);
+ devcaps[ 6]=GetDeviceCaps(hDCRef,PHYSICALHEIGHT);
+ devcaps[ 7]=GetDeviceCaps(hDCRef,PHYSICALWIDTH);
+ devcaps[ 8]=GetDeviceCaps(hDCRef,PHYSICALOFFSETY);
+ devcaps[ 9]=GetDeviceCaps(hDCRef,PHYSICALOFFSETX);
 
- devcaps[11]=tm.tmHeight;
- devcaps[12]=tm.tmAveCharWidth;
- devcaps[13]=(int) ((devcaps[3]-tm.tmAscent)/tm.tmHeight);
- devcaps[14]=(int) (devcaps[4]/tm.tmAveCharWidth);
- devcaps[15]=pi2->pDevMode->dmOrientation;
- devcaps[16]=(int) tm.tmAscent;
- devcaps[17]=(int) pi2->pDevMode->dmPaperSize;
+ devcaps[10]=tm.tmHeight;
+ devcaps[11]=tm.tmAveCharWidth;
+ devcaps[12]=(int) ((devcaps[3]-tm.tmAscent)/tm.tmHeight);
+ devcaps[13]=(int) (devcaps[4]/tm.tmAveCharWidth);
+ devcaps[14]=pi2->pDevMode->dmOrientation;
+ devcaps[15]=(int) tm.tmAscent;
+ devcaps[16]=(int) pi2->pDevMode->dmPaperSize;
  for(i = 1; i <= hb_parinfa(1,0); i++)
-     HB_STORNI(devcaps[i],1,i);
+     HB_STORNI(devcaps[i-1],1,i);
  if (xfont!=0)
     SelectObject(hDCRef,hfont);
 }
@@ -2760,7 +2760,7 @@ HB_FUNC (RR_TEXTOUT)
                   SetTextJustification(hDC,(int) textjust-szMetric.cx,lspace);
                  }
        }
-   hb_retl(TextOut( hDC , HB_PARNI( 2, 2 ), HB_PARNI( 2, 1 ) + devcaps[16], hb_parc(1),hb_parclen(1)));
+   hb_retl(TextOut( hDC , HB_PARNI( 2, 2 ), HB_PARNI( 2, 1 ) + devcaps[15], hb_parc(1),hb_parclen(1)));
    if (xfont!=0)     SelectObject(hDC,prevfont);
    if (textjust>0)  SetTextJustification (hDC, 0, 0) ;
 }
@@ -2844,10 +2844,10 @@ HB_FUNC (RR_CLOSEMFILE)
  eBuffer = (char *) GlobalAlloc(GPTR, (DWORD) size);
  GetEnhMetaFileBits(hh,size, ( BYTE * ) eBuffer);
  eHeader=(LPENHMETAHEADER) eBuffer;
-      eHeader->szlDevice.cx=devcaps[4];
-      eHeader->szlDevice.cy=devcaps[3];
-      eHeader->szlMillimeters.cx=devcaps[2];
-      eHeader->szlMillimeters.cy=devcaps[1];
+      eHeader->szlDevice.cx=devcaps[3];
+      eHeader->szlDevice.cy=devcaps[2];
+      eHeader->szlMillimeters.cx=devcaps[1];
+      eHeader->szlMillimeters.cy=devcaps[0];
 
  hb_retclen(eBuffer,(ULONG) size);
  DeleteEnhMetaFile(hh);
@@ -3204,8 +3204,8 @@ HB_FUNC( RR_DRAWPICTURE )
       return ;
    }
 
-  lw=MulDiv(lwidth,devcaps[6],2540);
-  lh=MulDiv(lheight,devcaps[5],2540);
+  lw=MulDiv(lwidth,devcaps[5],2540);
+  lh=MulDiv(lheight,devcaps[4],2540);
   if (dc==0)  { dc=(int) ((float) dr*lw/lh); }
   if (dr==0)  { dr=(int) ((float) dc*lh/lw); }
   if( bImageSize )

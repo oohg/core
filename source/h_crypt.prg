@@ -1,5 +1,5 @@
 /*
- * $Id: h_crypt.prg,v 1.4 2010-01-21 09:13:05 guerra000 Exp $
+ * $Id: h_crypt.prg,v 1.5 2011-12-31 16:54:48 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -589,6 +589,7 @@ EXTERN CHARXOR
 #pragma BEGINDUMP
 #include "hbapi.h"
 #include "hbapiitm.h"
+#include <windows.h>
 
 HB_FUNC( CHARXOR )
 {

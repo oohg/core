@@ -1,5 +1,5 @@
 /*
- * $Id: c_resource.c,v 1.1 2005-08-07 00:04:18 guerra000 Exp $
+ * $Id: c_resource.c,v 1.2 2011-12-31 16:54:48 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -95,6 +95,8 @@
 #include "hbapi.h"
 #include "windows.h"
 #include "shellapi.h"
+#include <commctrl.h>
+#include "oohg.h"
 HINSTANCE __hInstance = NULL;
 
 HINSTANCE GetInstance( void )

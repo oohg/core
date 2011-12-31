@@ -1,5 +1,5 @@
 /*
- * $Id: h_textarray.prg,v 1.19 2011-09-12 01:40:01 fyurisich Exp $
+ * $Id: h_textarray.prg,v 1.20 2011-12-31 16:54:48 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -213,7 +213,7 @@ static void RePaint_Out( HDC hdc, PCHARCELL pCell, RECT *rect2, char *cText, int
 
 static void RePaint( POCTRL oSelf, HDC hdc2, RECT *updateRect )
 {
-   CHARCELL    sNull, *pCell, xCell;
+   CHARCELL    sNull, *pCell, xCell = {0,0,0};
    COLORREF    FontColor, BackColor;
    LONG        x, y, lCell, lMaxCell, lStartX, lStartY;
    HFONT       hOldFont;

@@ -1,5 +1,5 @@
 /*
- * $Id: h_tree.prg,v 1.31 2011-12-09 00:53:04 guerra000 Exp $
+ * $Id: h_tree.prg,v 1.32 2011-12-31 16:54:48 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -3360,8 +3360,9 @@ HB_FUNC( TREEVIEW_ISITEMVISIBLE )
 {
    BOOL bVisible = FALSE;
    RECT iRect, wRect;
+   LPRECT lpwRect = (LPRECT) &iRect;
 
-   if( TreeView_GetItemRect( HWNDparam( 1 ), HTREEparam( 2 ), (LPRECT) &iRect, FALSE ) )
+   if( TreeView_GetItemRect( HWNDparam( 1 ), HTREEparam( 2 ), lpwRect, FALSE ) )
    {
       GetClientRect( HWNDparam( 1 ), (LPRECT) &wRect );
 

@@ -1,5 +1,5 @@
 /*
- * $Id: c_msgbox.c,v 1.4 2011-11-16 22:59:57 fyurisich Exp $
+ * $Id: c_msgbox.c,v 1.5 2011-12-31 16:54:48 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -104,6 +104,7 @@
 #include "hbapiitm.h"
 #include "winreg.h"
 #include "tchar.h"
+#include "oohg.h"
 
 HB_FUNC( C_MSGRETRYCANCEL )
 {

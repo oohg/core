@@ -1,5 +1,5 @@
 /*
- * $Id: h_dll.prg,v 1.5 2010-01-21 09:13:06 guerra000 Exp $ 
+ * $Id: h_dll.prg,v 1.6 2011-12-31 16:54:48 fyurisich Exp $ 
  */ 
 /* 
  * Harbour Project source code: 
@@ -56,6 +56,8 @@ EXTERN PtrStr
  
 #include "windows.h" 
 #include "hbapi.h" 
+#include <commctrl.h>
+#include "oohg.h"
  
 #define MAX_PARAMS   9 
  

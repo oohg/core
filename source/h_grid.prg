@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.132 2011-09-05 23:37:33 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.133 2011-12-31 16:54:48 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -2853,8 +2853,9 @@ HB_FUNC( LISTVIEW_HITTEST )
 HB_FUNC( LISTVIEW_GETSUBITEMRECT )
 {
    RECT Rect ;
+   LPRECT lpRect = (LPRECT) &Rect ;
 
-   ListView_GetSubItemRect( HWNDparam( 1 ), hb_parni( 2 ), hb_parni( 3 ), LVIR_BOUNDS, &Rect );
+   ListView_GetSubItemRect( HWNDparam( 1 ), hb_parni( 2 ), hb_parni( 3 ), LVIR_BOUNDS, lpRect );
 
    hb_reta( 4 );
    HB_STORNI( Rect.top,  -1, 1 );
@@ -2866,8 +2867,9 @@ HB_FUNC( LISTVIEW_GETSUBITEMRECT )
 HB_FUNC( LISTVIEW_GETITEMRECT )
 {
    RECT Rect ;
+   LPRECT lpRect = (LPRECT) &Rect ;
 
-   ListView_GetItemRect( HWNDparam( 1 ), hb_parni( 2 ), &Rect, LVIR_LABEL );
+   ListView_GetItemRect( HWNDparam( 1 ), hb_parni( 2 ), lpRect, LVIR_LABEL );
 
    hb_reta( 4 );
    HB_STORNI( Rect.top,  -1, 1 );

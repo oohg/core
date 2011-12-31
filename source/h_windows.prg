@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.227 2011-12-12 23:51:02 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.228 2011-12-31 16:54:48 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -980,7 +980,11 @@ EndMenu();
          hb_vmSend( 0 );
          if( hb_param( -1, HB_IT_BLOCK ) )
          {
-            hb_vmPushSymbol( &hb_symEval );
+#ifdef __XHARBOUR__
+      hb_vmPushSymbol( &hb_symEval );
+#else
+      hb_vmPushEvalSym();
+#endif
             hb_vmPush( hb_param( -1, HB_IT_BLOCK ) );
             HWNDpush( hWnd );
             hb_vmPushLong( message );

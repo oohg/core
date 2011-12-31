@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.34 2011-12-12 23:51:02 guerra000 Exp $
+ * $Id: h_form.prg,v 1.35 2011-12-31 16:54:48 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -2846,7 +2846,11 @@ LRESULT APIENTRY _OOHG_WndProc( PHB_ITEM pSelf, HWND hWnd, UINT uiMsg, WPARAM wP
    // ::OverWndProc is a codeblock... execute it
    if( pResult )
    {
+#ifdef __XHARBOUR__
       hb_vmPushSymbol( &hb_symEval );
+#else
+      hb_vmPushEvalSym();
+#endif
       hb_vmPush( pResult );
       HWNDpush( hWnd );
       hb_vmPushLong( uiMsg );

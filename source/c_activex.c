@@ -1,5 +1,5 @@
 /*
- * $Id: c_activex.c,v 1.12 2011-09-11 23:22:34 fyurisich Exp $
+ * $Id: c_activex.c,v 1.13 2011-12-31 16:54:48 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -406,7 +406,7 @@ HB_FUNC( ATLAXGETDISP ) // hWnd -> pDisp
          if ( pExec )
          {
 
-            hb_vmPushState();
+            hb_vmRequestReenter();
 
             switch ( hb_itemType( pExec ) )
             {
@@ -511,7 +511,7 @@ HB_FUNC( ATLAXGETDISP ) // hWnd -> pDisp
 
             } // EOF for( i=iArg; i > 0; i-- )
 
-            hb_vmPopState();
+            hb_vmRequestRestore();
 
          } // EOF if ( pExec )
 
