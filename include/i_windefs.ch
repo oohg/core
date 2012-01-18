@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.44 2011-11-16 22:59:57 fyurisich Exp $
+ * $Id: i_windefs.ch,v 1.45 2012-01-18 04:21:37 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -566,6 +566,8 @@
 #define EM_SETREADONLY                207
 #define EM_GETLIMITTEXT               213
 #define EM_SETBKGNDCOLOR              1091
+#define EM_GETFIRSTVISIBLELINE        206
+#define EM_LINESCROLL                 182
 
 #define MK_LBUTTON                    1
 #define MK_CONTROL                    8

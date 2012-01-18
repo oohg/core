@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.75 2011-12-09 21:24:19 fyurisich Exp $
+ * $Id: h_textbox.prg,v 1.76 2012-01-18 04:21:37 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -627,9 +627,10 @@ HB_FUNC_STATIC( TTEXT_CONTROLAREA )   // METHOD ControlArea( nWidth ) CLASS TTex
 FUNCTION TText_Events2( hWnd, nMsg, wParam, lParam )
 *------------------------------------------------------------------------------*
 Local Self := QSelf()
-Local nPos, nStart, nEnd, cText, nNewPos, nNewLen, i
+Local nPos, nStart, nEnd, cText, nNewPos, nNewLen, i, nFirst, nOldFirst
 
    If nMsg == WM_CHAR .AND. wParam >= 32
+      nOldFirst := SendMessage( ::hWnd, EM_GETFIRSTVISIBLELINE, 0, 0 )
       nPos := SendMessage( ::hWnd, EM_GETSEL, 0, 0 )
       nStart := LoWord( nPos )
       nEnd := HiWord( nPos )
@@ -640,6 +641,11 @@ Local nPos, nStart, nEnd, cText, nNewPos, nNewLen, i
             ::Caption := Stuff( ::Caption, nNewPos, nEnd - nStart, Chr( wParam ) )
 
             SendMessage( ::hWnd, EM_SETSEL, nNewPos, nNewPos)
+            ::ScrollCaret()
+            nFirst := SendMessage( ::hWnd, EM_GETFIRSTVISIBLELINE, 0, 0 )
+            If nFirst < nOldFirst
+               SendMessage( ::hWnd, EM_LINESCROLL, 0, nOldFirst - nFirst)
+            EndIf
          EndIf
       Else
          If ::nMaxLength <= 0 .OR. nStart < ::nMaxLength
@@ -652,6 +658,11 @@ Local nPos, nStart, nEnd, cText, nNewPos, nNewLen, i
             EndIf
 
             SendMessage( ::hWnd, EM_SETSEL, nNewPos, nNewPos)
+            ::ScrollCaret()
+            nFirst := SendMessage( ::hWnd, EM_GETFIRSTVISIBLELINE, 0, 0 )
+            If nFirst < nOldFirst
+               SendMessage( ::hWnd, EM_LINESCROLL, 0, nOldFirst - nFirst)
+            EndIf
          EndIf
       EndIf
       Return 1
