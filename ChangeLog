@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.842 2012-01-18 04:21:36 fyurisich Exp $
+ * $Id: ChangeLog,v 1.843 2012-01-19 18:31:17 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,6 +7,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2011-01-19 16:30 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_graph.prg
+     ! Fixed cancelation when number of series exceds 16.
+     
 2011-01-18 02:21 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_windefs.ch
      + Added defines for EM_GETFIRSTVISIBLELINE and EM_LINESCROLL

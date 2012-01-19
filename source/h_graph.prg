@@ -1,5 +1,5 @@
 /*
- * $Id: h_graph.prg,v 1.6 2011-09-05 23:37:33 fyurisich Exp $
+ * $Id: h_graph.prg,v 1.7 2012-01-19 18:31:18 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -382,28 +382,28 @@ Procedure GraphShow(parent,nTop,nLeft,nBottom,nRight,nHeight,nWidth,aData,cTitle
       DoMethod( Parent, "Graph_Title", "Release" )
 	EndIf
 
-	For ni := 1 To 16
+	For ni := 1 To Len(aSeries)
 		cName := "Ser_Name_"+ltrim(str(ni))
 		If _IsControlDefined ( cName, Parent )
          DoMethod( Parent, cName, "Release" )
 		EndIf
 	Next
 
-	For ni := 0 To 15
+	For ni := 0 To nXRanges
 		cName := "xPVal_Name_"+ltrim(str(ni))
 		If _IsControlDefined ( cName, Parent )
          DoMethod( Parent, cName, "Release" )
 		EndIf
 	Next
 
-	For ni := 0 To 15
+	For ni := 0 To nXRanges
 		cName := "xNVal_Name_"+ltrim(str(ni))
 		If _IsControlDefined ( cName, Parent )
          DoMethod( Parent, cName, "Release" )
 		EndIf
 	Next
 
-	For ni := 1 To 16
+	For ni := 1 To nMax(aData)
 		cName := "yVal_Name_"+ltrim(str(ni))
 		If _IsControlDefined ( cName, Parent )
          DoMethod( Parent, cName, "Release" )
