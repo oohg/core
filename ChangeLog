@@ -1,11 +1,21 @@
 /*
- * $Id: ChangeLog,v 1.843 2012-01-19 18:31:17 fyurisich Exp $
+ * $Id: ChangeLog,v 1.844 2012-01-20 19:35:49 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2011-01-20 17:35 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_frame.prg
+     + Added method Events_color and data TabHandle to
+       TFrame class.
+     ! Fixed frame title shows wrong background color when
+       frame is located inside a tab without BUTTONS sytle.
+   * source/h_controlmisc.prg
+     ! Fixed radiogroups and checkboxes show wrong background color
+       when placed inside a tab with BUTTONS style.
 
 2011-01-19 16:30 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_graph.prg

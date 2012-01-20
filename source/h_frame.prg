@@ -1,5 +1,5 @@
 /*
- * $Id: h_frame.prg,v 1.8 2008-10-22 06:50:52 guerra000 Exp $
+ * $Id: h_frame.prg,v 1.9 2012-01-20 19:35:49 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -98,8 +98,10 @@ CLASS TFrame FROM TControl
    DATA Type      INIT "FRAME" READONLY
    DATA nWidth    INIT 140
    DATA nHeight   INIT 140
+   DATA TabHandle  INIT 0
 
    METHOD Define
+   METHOD Events_Color
 
    EMPTY( _OOHG_AllVars )
 ENDCLASS
@@ -133,10 +135,21 @@ Local ControlHandle, nStyle
    ::Register( ControlHandle, ControlName )
    ::SetFont( , , bold, italic, underline, strikeout )
 
+   IF _OOHG_LastFrame() == "TABPAGE" .AND. _OOHG_UsesVisualStyle()
+     ::TabHandle := ::Container:Container:hWnd
+   ENDIF
+
    ::Transparent := transparent
    ::Caption := Caption
 
 Return Self
+
+*------------------------------------------------------------------------------*
+METHOD Events_Color( wParam, nDefColor ) CLASS TFrame
+*------------------------------------------------------------------------------*
+
+Return Events_Color_InTab( Self, wParam, nDefColor )    // see h_controlmisc.prg
+
 
 #pragma BEGINDUMP
 

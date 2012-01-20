@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.128 2011-12-16 00:17:21 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.129 2012-01-20 19:35:49 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -2000,45 +2000,84 @@ HB_FUNC( EVENTS_COLOR_INTAB )
    LONG lBackColor;
    RECT rc;
    LPRECT lprc;
+   BOOL bTransparent;
+   BOOL bDefault;
+   HWND hwnd;
+   LONG style;
 
    if( oSelf->lFontColor != -1 )
    {
       SetTextColor( hdc, ( COLORREF ) oSelf->lFontColor );
    }
 
-   _OOHG_Send( pSelf, s_Transparent );
+   _OOHG_Send( pSelf, s_TabHandle );
    hb_vmSend( 0 );
-   if( hb_parl( -1 ) )
-   {
-      SetBkMode( hdc, ( COLORREF ) TRANSPARENT );
-      hb_retnl( ( LONG ) GetStockObject( NULL_BRUSH ) );
-      return;
-   }
+   hwnd = HWNDparam( -1 );
 
-   lBackColor = ( oSelf->lUseBackColor != -1 ) ? oSelf->lUseBackColor : oSelf->lBackColor;
-   if( lBackColor == -1 )
+   if( ValidHandler( hwnd ) )
    {
-      lBackColor = hb_parnl( 3 );           // If it's not inside a TAB
-
-      _OOHG_Send( pSelf, s_TabHandle );
+      _OOHG_Send( pSelf, s_Transparent );
       hb_vmSend( 0 );
+      bTransparent = hb_parl( -1 );
 
-      if( ValidHandler( HWNDparam( -1 ) ) )
+      lBackColor = ( oSelf->lUseBackColor != -1 ) ? oSelf->lUseBackColor : oSelf->lBackColor;
+      bDefault = ( lBackColor == -1 );
+
+      if( bTransparent || bDefault )
       {
-         DeleteObject( oSelf->BrushHandle );
+         style = GetWindowLong( hwnd, GWL_STYLE );
 
-         oSelf->BrushHandle = GetTabBrush( HWNDparam( -1 ) );
+         if( style & TCS_BUTTONS )
+         {
+            _OOHG_Send( pSelf, s_Transparent );
+            hb_vmSend( 0 );
+            if( hb_parl( -1 ) )
+            {
+               SetBkMode( hdc, ( COLORREF ) TRANSPARENT );
+               hb_retnl( ( LONG ) GetStockObject( NULL_BRUSH ) );
+               return;
+            }
 
-         SetBkMode( hdc, TRANSPARENT );
+            lBackColor = ( oSelf->lUseBackColor != -1 ) ? oSelf->lUseBackColor : oSelf->lBackColor;
+            if( lBackColor == -1 )
+            {
+               lBackColor = hb_parnl( 3 );           // nDefColor
+            }
+         }
+         else
+         {
+            DeleteObject( oSelf->BrushHandle );
 
-         GetWindowRect( oSelf->hWnd, &rc );
-         lprc = &rc;
-         MapWindowPoints( NULL, HWNDparam( -1 ), (LPPOINT) lprc, 2 );
+            oSelf->BrushHandle = GetTabBrush( hwnd );
 
-         SetBrushOrgEx( hdc, -rc.left, -rc.top, NULL );
+            SetBkMode( hdc, TRANSPARENT );
 
-         hb_retnl( ( LONG ) oSelf->BrushHandle );
+            GetWindowRect( oSelf->hWnd, &rc );
+            lprc = &rc;
+            MapWindowPoints( NULL, hwnd, (LPPOINT) lprc, 2 );
+
+            SetBrushOrgEx( hdc, -rc.left, -rc.top, NULL );
+
+            hb_retnl( ( LONG ) oSelf->BrushHandle );
+            return;
+         }
+      }
+   }
+   else
+   {
+      _OOHG_Send( pSelf, s_Transparent );
+      hb_vmSend( 0 );
+      if( hb_parl( -1 ) )
+      {
+         SetBkMode( hdc, ( COLORREF ) TRANSPARENT );
+         hb_retnl( ( LONG ) GetStockObject( NULL_BRUSH ) );
          return;
+      }
+      
+      lBackColor = ( oSelf->lUseBackColor != -1 ) ? oSelf->lUseBackColor : oSelf->lBackColor;
+      if( lBackColor == -1 )
+      {
+         lBackColor = hb_parnl( 3 );           // nDefColor
       }
    }
 
