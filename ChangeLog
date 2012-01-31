@@ -1,11 +1,22 @@
 /*
- * $Id: ChangeLog,v 1.844 2012-01-20 19:35:49 fyurisich Exp $
+ * $Id: ChangeLog,v 1.845 2012-01-31 19:13:48 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2011-01-31 17:15 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_editbox.prg
+   * source/h_textbox.prg
+     ! Fixed: in OVERWRITE mode the ON CHANGE event is fired
+       before updating control's window.
+     * WM_PASTE message is processed by default function
+       instead of ooHG class.
+     * Changed WM_CHAR message processing so ooHG always ends
+       calling the default function with minimun or none
+       previous processing.
 
 2011-01-20 17:35 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_frame.prg
@@ -25,7 +36,7 @@
    * include/i_windefs.ch
      + Added defines for EM_GETFIRSTVISIBLELINE and EM_LINESCROLL
        messages.
-   ! source/h_textbox.prg
+   * source/h_textbox.prg
      ! Fixed: when editing a multiline editbox the changes are not
        visible because the text is scrolled to the first line.
      
@@ -762,7 +773,7 @@
   * source/h_tooltip.prg
     ! Fixed some harbour compiler warnings when using -w3 switch.
 
-2011-09-07  Cayetano Gómez  <cayetano@gomezgil.es>
+2011-09-07 15:45:31 Cayetano Gomez  <cayetano@gomezgil.es>
    * source/h_print.prg
      ! fixed function _int25
 
@@ -1072,7 +1083,7 @@
    + resources/edit_undo.bmp
      + Added missing resource.
 
-2011-08-14  Cayetano Gómez  <cayetano@gomezgil.es>
+2011-08-14 00:08:54 Cayetano Gomez  <cayetano@gomezgil.es>
 	* source/h_Label.prg
 	* source/h_form.prg
 	* source/h_controlmisc.prg

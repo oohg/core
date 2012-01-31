@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.76 2012-01-18 04:21:37 fyurisich Exp $
+ * $Id: h_textbox.prg,v 1.77 2012-01-31 19:13:48 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -409,12 +409,12 @@ Local lWhen
          If ::lAutoSkip .AND. ::nMaxLength > 0 .AND. ::CaretPos >= ::nMaxLength
             ::DoAutoSkip()
          EndIf
-      EndIf
+      Endif
       If ::lPrevUndo
          ::xUndo := ::xPrevUndo
          ::lPrevUndo := .F.
       EndIf
-      
+
    elseIf Hi_wParam == EN_KILLFOCUS
       If ! ::When_Procesing
          ::When_Processed := .F.
@@ -580,7 +580,6 @@ HB_FUNC_STATIC( TTEXT_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
       }
 
       case WM_CHAR:
-      case WM_PASTE:
       case WM_KEYDOWN:
       case WM_LBUTTONDOWN:
       case WM_UNDO:
@@ -627,72 +626,22 @@ HB_FUNC_STATIC( TTEXT_CONTROLAREA )   // METHOD ControlArea( nWidth ) CLASS TTex
 FUNCTION TText_Events2( hWnd, nMsg, wParam, lParam )
 *------------------------------------------------------------------------------*
 Local Self := QSelf()
-Local nPos, nStart, nEnd, cText, nNewPos, nNewLen, i, nFirst, nOldFirst
+Local nPos, nStart, nEnd, cText
 
-   If nMsg == WM_CHAR .AND. wParam >= 32
-      nOldFirst := SendMessage( ::hWnd, EM_GETFIRSTVISIBLELINE, 0, 0 )
+   If nMsg == WM_CHAR .AND. wParam >= 32 .AND. ! ::InsertStatus
       nPos := SendMessage( ::hWnd, EM_GETSEL, 0, 0 )
       nStart := LoWord( nPos )
       nEnd := HiWord( nPos )
-      If ::InsertStatus
-         If ::nMaxLength <= 0 .OR. Len( ::Caption ) + 1 - nEnd + nStart <= ::nMaxLength
-            nNewPos := nStart + 1
-
-            ::Caption := Stuff( ::Caption, nNewPos, nEnd - nStart, Chr( wParam ) )
-
-            SendMessage( ::hWnd, EM_SETSEL, nNewPos, nNewPos)
-            ::ScrollCaret()
-            nFirst := SendMessage( ::hWnd, EM_GETFIRSTVISIBLELINE, 0, 0 )
-            If nFirst < nOldFirst
-               SendMessage( ::hWnd, EM_LINESCROLL, 0, nOldFirst - nFirst)
-            EndIf
-         EndIf
-      Else
-         If ::nMaxLength <= 0 .OR. nStart < ::nMaxLength
-            nNewPos := nStart + 1
-            
-            If SubStr( ::Caption, nNewPos, 2) == Chr(13) + Chr(10)
-               ::Caption := Stuff( ::Caption, nNewPos, 0, Chr( wParam ) )
-            Else
-               ::Caption := Stuff( ::Caption, nNewPos, Max( nEnd - nStart, 1), Chr( wParam ) )
-            EndIf
-
-            SendMessage( ::hWnd, EM_SETSEL, nNewPos, nNewPos)
-            ::ScrollCaret()
-            nFirst := SendMessage( ::hWnd, EM_GETFIRSTVISIBLELINE, 0, 0 )
-            If nFirst < nOldFirst
-               SendMessage( ::hWnd, EM_LINESCROLL, 0, nOldFirst - nFirst)
-            EndIf
-         EndIf
-      EndIf
-      Return 1
-
-   ElseIf nMsg == WM_PASTE
-      cText := GetClipboardText()
-      For i := 1 To Len( cText )
-          If Asc( SubStr( cText, i ) ) < 32
-             Exit
-          EndIf
-      Next
-      cText := SubStr( cText, 1, i - 1)
       
-      If ! Empty( cText )
-         nPos := SendMessage( ::hWnd, EM_GETSEL, 0, 0 )
-         nStart := LoWord( nPos )
-         nEnd := HiWord( nPos )
-
-         If ::nMaxLength <= 0
-            nNewLen := Len( cText )
-         Else
-            nNewLen := Min( ::nMaxLength - Len( ::Caption ) + nEnd - nStart, Len( cText ) )
+      /* If some characters are selected or if the insertion point is
+       * at the end of line then use control's default behavior.
+       * Else, select the next character and invoke default behavior.
+       */
+      If nEnd == nStart
+         If SubStr( ::Caption, nStart + 1, 2) != Chr(13) + Chr(10)
+            SendMessage( ::hWnd, EM_SETSEL, nStart, nStart + 1)
          EndIf
-
-         ::Caption := Stuff( ::Caption, nStart + 1, nEnd - nStart, SubStr( cText, 1, nNewLen ) )
-
-         nNewPos := nStart + nNewLen
-         SendMessage( ::hWnd, EM_SETSEL, nNewPos, nNewPos )
       EndIf
-      Return 1
 
    ElseIf nMsg == WM_UNDO .OR. ;
           ( nMsg == WM_KEYDOWN .AND. wParam == VK_Z .AND. GetKeyFlagState() == MOD_CONTROL )
