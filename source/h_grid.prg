@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.133 2011-12-31 16:54:48 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.134 2012-02-02 12:06:55 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1052,9 +1052,6 @@ Local nColumns, uGridColor, uDynamicColor
       ::aWhen[ nColIndex ] := uWhen
    ENDIF
 
-   // Call C-Level Routine
-   ListView_AddColumn( ::hWnd, nColIndex, nWidth, cCaption, nJustify, lNoDelete )
-
    // Update header image
    ASIZE( ::aHeaderImage, nColumns )
    AINS( ::aHeaderImage, nColIndex )
@@ -1070,6 +1067,9 @@ Local nColumns, uGridColor, uDynamicColor
       nHeaderImageAlign := HEADER_IMG_AT_LEFT
    ENDIF
    ::HeaderImageAlign( nColIndex, nHeaderImageAlign )
+
+   // Call C-Level Routine
+   ListView_AddColumn( ::hWnd, nColIndex, nWidth, cCaption, nJustify, lNoDelete )
 
 Return nil
 

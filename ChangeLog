@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog,v 1.845 2012-01-31 19:13:48 fyurisich Exp $
+ * $Id: ChangeLog,v 1.846 2012-02-02 12:06:55 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2011-02-02 10:05 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_grid.prg
+     ! Program crashes after AddColumn in Windows 7.
+       Thanks to Vicente Guerra who spotted the solution.
 
 2011-01-31 17:15 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_editbox.prg
