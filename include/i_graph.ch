@@ -1,5 +1,5 @@
 /*
- * $Id: i_graph.ch,v 1.4 2006-12-06 05:22:27 guerra000 Exp $
+ * $Id: i_graph.ch,v 1.5 2012-02-03 12:27:27 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -214,10 +214,12 @@
 		<.lxVal.>,;
                 <.lSLeg.>,;
                 <.lNoBorder.>)
-
-#define BARS      1
-#define LINES     2
-#define POINTS    3
+/*
+ * <nType> indicates the graph type, use:
+ *   BARS or 1
+ *   LINES or 2
+ *   POINTS or 3
+ */
 
 #xcommand DRAW GRAPH				;
 		IN WINDOW <window>		;
@@ -263,7 +265,7 @@
 		<.lSLeg.>,			;
 		<aName>,			;
 		<aColor>,			;
-		<nType>,			;
+		<(nType)>,			;
 		.f.,			;
                 Nil,                    ;
                 <nLegendWindth>,        ;

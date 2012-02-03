@@ -1,5 +1,5 @@
 /*
- * $Id: h_graph.prg,v 1.7 2012-01-19 18:31:18 fyurisich Exp $
+ * $Id: h_graph.prg,v 1.8 2012-02-03 12:27:27 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -357,16 +357,47 @@ return nil
  * Grigory Filatov 26/02/2004 translation #2 for MiniGUI
 
 Procedure GraphShow(parent,nTop,nLeft,nBottom,nRight,nHeight,nWidth,aData,cTitle,aYVals,nBarD,nWideB,nSep,nXRanges,;
-   l3D,lGrid,lxGrid,lyGrid,lxVal,lyVal,lLegends,aSeries,aColors,nType,lViewVal,cPicture, nLegendWindth, lNoborder )
+   l3D,lGrid,lxGrid,lyGrid,lxVal,lyVal,lLegends,aSeries,aColors,uType,lViewVal,cPicture, nLegendWindth, lNoborder )
    LOCAL nI, nJ, nPos, nMax, nMin, nMaxBar, nDeep
    LOCAL nRange, nResH, nResV,  nWide, aPoint, cName
-   LOCAL nXMax, nXMin, nHigh, nRel, nZero, nRPos, nRNeg
+   LOCAL nXMax, nXMin, nHigh, nRel, nZero, nRPos, nRNeg, nType, lError
 
    DEFAULT cTitle   := ""
    DEFAULT nSep     := 0
    DEFAULT cPicture := "999,999.99"
    DEFAULT nLegendWindth := 50
    DEFAULT lNoborder := .F.
+
+   /*
+    * #define BARS   1
+    * #define LINES  2
+    * #define POINTS 3
+    */
+   lError := .F.
+   If ValType( uType ) == "N"
+      If uType == 1 .OR. uType == 2 .OR. uType == 3
+         nType := uType
+      Else
+         lError := .T.
+      EndIf
+   ElseIf ValType( uType ) $ "CM"
+      uType := Upper(uType)
+
+      If uType == "BARS"
+         nType := 1
+      ElseIf uType == "LINES"
+         nType := 2
+      ElseIf uType == "POINTS"
+         nType := 3
+      Else
+         lError := .T.
+      EndIf
+   Else
+      lError := .T.
+   EndIf
+   If lError
+      MsgOOHGError("DRAW GRAPH: Graph type is not valid. Program terminated", "MiniGUI Error")
+   EndIf
 
    If ! lLegends
       nLegendWindth := 0
@@ -375,7 +406,7 @@ Procedure GraphShow(parent,nTop,nLeft,nBottom,nRight,nHeight,nWidth,aData,cTitle
 	If 	( Len (aSeries) != Len (aData) ) .or. ;
 		( Len (aSeries) != Len (aColors) )
 
-      MsgOOHGError("DRAW GRAPH: 'Series' / 'SerieNames' / 'Colors' arrays size mismatch. Program terminated","MiniGUI Error")
+      MsgOOHGError("DRAW GRAPH: 'Series' / 'SerieNames' / 'Colors' arrays size mismatch. Program terminated", "MiniGUI Error")
 	EndIf
 
 	If _IsControlDefined ( 'Graph_Title', Parent )
@@ -433,7 +464,7 @@ Procedure GraphShow(parent,nTop,nLeft,nBottom,nRight,nHeight,nWidth,aData,cTitle
    DEFAULT nBottom := nHeight -2 - IF(lyVal, 40, 30)    // Bottom
    DEFAULT nRight  := nWidth - 2 - 30 - nLegendWindth   // Right
 
-   l3D     := IF( nType == POINTS, .F., l3D )
+   l3D     := IF( nType == 3, .F., l3D )                // POINTS
    nDeep   := IF( l3D, nBarD, 1 )
    nMaxBar := nBottom - nTop - nDeep - 5
    nResH   := nResV := 1
@@ -634,7 +665,7 @@ Procedure GraphShow(parent,nTop,nLeft,nBottom,nRight,nHeight,nWidth,aData,cTitle
 
    // Bars
    //
-   IF nType == BARS .AND. nMin <> 0
+   IF nType == 1 .AND. nMin <> 0                                 // BARS
       nPos := nLeft + ( ( nWide + nSep ) / 2 )
       FOR nI=1 TO Len(aData[1])
          FOR nJ=1 TO Len(aSeries)
@@ -647,7 +678,7 @@ Procedure GraphShow(parent,nTop,nLeft,nBottom,nRight,nHeight,nWidth,aData,cTitle
 
    // Lines
    //
-   IF nType == LINES .AND. nMin <> 0
+   IF nType == 2 .AND. nMin <> 0                                 // LINES
       nWideB  := ( nRight - nLeft ) / ( nMax(aData) + 1 )
       nPos := nLeft + nWideB
       FOR nI := 1 TO Len(aData[1])
@@ -677,7 +708,7 @@ Procedure GraphShow(parent,nTop,nLeft,nBottom,nRight,nHeight,nWidth,aData,cTitle
 
    // Points
    //
-   IF nType == POINTS .AND. nMin <> 0
+   IF nType == 3 .AND. nMin <> 0                                // POINTS
       nWideB := ( nRight - nLeft ) / ( nMax(aData) + 1 )
       nPos := nLeft + nWideB
       FOR nI := 1 TO Len(aData[1])
@@ -691,7 +722,7 @@ Procedure GraphShow(parent,nTop,nLeft,nBottom,nRight,nHeight,nWidth,aData,cTitle
    ENDIF
 
    IF lViewVal
-      IF nType == BARS
+      IF nType == 1                                         // BARS
          nPos := nLeft + nWide + ( (nWide+nSep) * ( Len(aSeries) / 2 ) )
       ELSE
          nWideB := ( nRight - nLeft ) / ( nMax(aData) + 1 )
@@ -700,13 +731,13 @@ Procedure GraphShow(parent,nTop,nLeft,nBottom,nRight,nHeight,nWidth,aData,cTitle
       FOR nI := 1 TO Len(aData[1])
          FOR nJ := 1 TO Len(aSeries)
             cName := "Data_Name_"+Ltrim(Str(nI))+Ltrim(Str(nJ))
-            @ nZero - ( aData[nJ,nI] / nMin + nDeep ), IF(nType == BARS, nPos - IF(l3D, 8, 10), nPos + 10) ;
+            @ nZero - ( aData[nJ,nI] / nMin + nDeep ), IF(nType == 1, nPos - IF(l3D, 8, 10), nPos + 10) ;       // BARS
 			LABEL &cName OF &parent ;
 			VALUE Transform(aData[nJ,nI], cPicture) AUTOSIZE ;
 			FONT "Arial" SIZE 8 BOLD TRANSPARENT
-            nPos+=IF( nType == BARS, nWide + nSep, 0)
+            nPos+=IF( nType == 1, nWide + nSep, 0)                  // BARS
          NEXT nJ
-         IF nType == BARS
+         IF nType == 1                                              // BARS
             nPos += nWide + nSep
          ELSE
             nPos += nWideB
@@ -779,11 +810,11 @@ RETURN
 
 STATIC PROC DrawPoint( parent, nType, nY, nX, nHigh, aColor )
 
-   IF nType == POINTS
+   IF nType == 3                      // POINTS
 
          Circle( parent, nX - nHigh - 3, nY - 3, 8, aColor )
 
-   ELSEIF nType == LINES
+   ELSEIF nType == 2                  // LINES
 
       Circle( parent, nX - nHigh - 2, nY - 2, 6, aColor )
 
