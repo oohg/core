@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.42 2011-11-29 20:50:01 fyurisich Exp $
+ * $Id: classes.txt,v 1.43 2012-02-08 16:44:31 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -342,6 +342,8 @@ CLASS TCOMBO FROM TLABEL
    DATA FIELD                     INIT ""
    DATA IMAGELISTCOLOR            INIT CLR_DEFAULT
    DATA IMAGELISTFLAGS            INIT LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
+   DATA IMAGESOURCE               INIT NIL
+   DATA ITEMNUMBER                INIT NIL
    DATA LADJUSTIMAGES             INIT .F.
    DATA NHEIGHT2                  INIT 150
    DATA NTEXTHEIGHT               INIT 0
@@ -358,14 +360,15 @@ CLASS TCOMBO FROM TLABEL
    METHOD CARETPOS                SETGET
    METHOD DEFINE
    METHOD DELETEALLITEMS
-   METHOD DELETEITEM
-   METHOD DISPLAYVALUE            SETGET   /// CAPTION ALIAS
+   METHOD DELETEITEM(NPOS)
+   METHOD DISPLAYVALUE            SETGET
    METHOD EVENTS_COMMAND
    METHOD EVENTS_DRAWITEM
    METHOD EVENTS_MEASUREITEM
    METHOD FORCEHIDE
    METHOD GETDROPDOWNWIDTH
    METHOD GETEDITSEL
+   METHOD INSERTITEM
    METHOD ITEM
    METHOD ITEMCOUNT
    METHOD NHEIGHT                 SETGET
@@ -397,27 +400,27 @@ CLASS TCONTROL FROM TWINDOW
    DATA POSTBLOCK                 INIT NIL
    DATA SETIMAGELISTCOMMAND       INIT 0
    DATA SETIMAGELISTWPARAM        INIT TVSIL_NORMAL
-   DATA TAG                       INIT ""
+   DATA TAG			                INIT ""
    DATA TRANSPARENT               INIT .F.
    DATA XOLDVALUE                 INIT NIL
 
    METHOD ADDBITMAP
    METHOD COL                     SETGET
-   METHOD CONTAINERCOL
-   METHOD CONTAINERHWND
-   METHOD CONTAINERROW
+   METHOD CONTAINERCOL        
+   METHOD CONTAINERHWND       
+   METHOD CONTAINERROW        
    METHOD DOCHANGE
    METHOD DOEVENT
    METHOD DOLOSTFOCUS
    METHOD EVENTS
    METHOD EVENTS_COLOR
    METHOD EVENTS_COMMAND
-   METHOD EVENTS_DRAWITEM
+   METHOD EVENTS_DRAWITEM         BLOCK { || NIL }
    METHOD EVENTS_ENTER
-   METHOD EVENTS_MEASUREITEM
+   METHOD EVENTS_MEASUREITEM      BLOCK { || NIL }
    METHOD EVENTS_NOTIFY
    METHOD FOCUSEFFECT
-   METHOD FONTANGLE               SETGET
+   METHOD FONTANGLE			       SETGET
    METHOD FONTBOLD                SETGET
    METHOD FONTITALIC              SETGET
    METHOD FONTNAME                SETGET
@@ -429,11 +432,11 @@ CLASS TCONTROL FROM TWINDOW
    METHOD HEIGHT                  SETGET
    METHOD INITSTYLE
    METHOD MOVE
-   METHOD REFRESH
+   METHOD REFRESH             
    METHOD REGISTER
    METHOD RELEASE
    METHOD ROW                     SETGET
-   METHOD SETFOCUS
+   METHOD SETFOCUS            
    METHOD SETFONT
    METHOD SETFORM
    METHOD SETVARBLOCK
@@ -745,9 +748,11 @@ ENDCLASS
 CLASS TFRAME FROM TCONTROL
    DATA NHEIGHT                   INIT 140
    DATA NWIDTH                    INIT 140
+   DATA TABHANDLE                 INIT 0
    DATA TYPE                      INIT "FRAME" READONLY
 
    METHOD DEFINE
+   METHOD EVENTS_COLOR
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -1145,6 +1150,7 @@ CLASS TLIST FROM TCONTROL
    METHOD EVENTS_COMMAND
    METHOD EVENTS_DRAWITEM
    METHOD EVENTS_MEASUREITEM
+   METHOD INSERTITEM
    METHOD ITEM
    METHOD ITEMCOUNT
    METHOD ONENTER                 SETGET
@@ -1284,6 +1290,46 @@ CLASS TMONTHCAL FROM TCONTROL
    METHOD TITLEFONTCOLOR          SETGET
    METHOD TRAILINGFONTCOLOR       SETGET
    METHOD VALUE                   SETGET
+ENDCLASS
+
+*------------------------------------------------------------------------------*
+CLASS TMULTIPAGE FROM TCONTROLGROUP
+   DATA APAGES                    INIT {}
+   DATA NFIRSTVALUE               INIT NIL
+   DATA OCONTAINERBASE            INIT NIL
+   DATA OPAGECLASS                INIT TTABPAGE()
+   DATA TYPE                      INIT "MULTIPAGE" READONLY
+
+   METHOD ADDCONTROL
+   METHOD ADDPAGE
+   METHOD ADJUSTRESIZE
+   METHOD CAPTION
+   METHOD CONTAINERCAPTION
+   METHOD CONTAINERITEMCOUNT
+   METHOD CONTAINERVALUE          SETGET
+   METHOD CREATEPAGES
+   METHOD DEFINE
+   METHOD DELETECONTROL
+   METHOD DELETEITEM
+   METHOD DELETEPAGE
+   METHOD ENABLED                 SETGET
+   METHOD ENDPAGE
+   METHOD ENDTAB
+   METHOD FORCEHIDE
+   METHOD HIDEPAGE
+   METHOD HWND
+   METHOD INSERTITEM
+   METHOD ITEMCOUNT
+   METHOD PICTURE
+   METHOD REALPOSITION
+   METHOD REFRESH
+   METHOD REFRESHDATA
+   METHOD RELEASE
+   METHOD SETFOCUS
+   METHOD SHOWPAGE
+   METHOD SIZEPOS
+   METHOD VALUE                   SETGET
+   METHOD VISIBLE                 SETGET
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -1617,36 +1663,43 @@ ENDCLASS
 CLASS TRADIOGROUP FROM TLABEL
    DATA AOPTIONS                  INIT {}
    DATA ICONWIDTH                 INIT 19
+   DATA LHORIZONTAL               INIT .F.
    DATA NHEIGHT                   INIT 25
+   DATA NSPACING                  INIT NIL
    DATA NWIDTH                    INIT 120
    DATA TABHANDLE                 INIT 0
    DATA TABSTOP                   INIT .T.
    DATA TYPE                      INIT "RADIOGROUP" READONLY
 
-   METHOD CAPTION
+   METHOD ROWMARGIN
    METHOD COLMARGIN
    METHOD DEFINE
-   METHOD ENABLED                 SETGET
-   METHOD EVENTS
-   METHOD EVENTS_COLOR
-   METHOD EVENTS_COMMAND
-   METHOD ROWMARGIN
-   METHOD SETFOCUS
    METHOD SETFONT
    METHOD SIZEPOS
    METHOD VALUE                   SETGET
+   METHOD ENABLED                 SETGET
+   METHOD SETFOCUS
    METHOD VISIBLE                 SETGET
+   METHOD ITEMCOUNT
+   METHOD ADDITEM
+   METHOD INSERTITEM
+   METHOD DELETEITEM
+   METHOD CAPTION
 ENDCLASS
 
 *------------------------------------------------------------------------------*
 CLASS TRADIOITEM FROM TLABEL
    DATA ICONWIDTH                 INIT 19
+   DATA NHEIGHT                   INIT 25
+   DATA NWIDTH                    INIT 120
    DATA TABHANDLE                 INIT 0
    DATA TYPE                      INIT "RADIOITEM" READONLY
 
+   METHOD DEFINE
    METHOD EVENTS
    METHOD EVENTS_COLOR
    METHOD EVENTS_COMMAND
+   METHOD VALUE                   SETGET
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -1867,14 +1920,22 @@ CLASS TSPREADSHEETPRINT FROM TPRINTBASE
 ENDCLASS
 
 *------------------------------------------------------------------------------*
-CLASS TTAB FROM TCONTROL
-   DATA APAGES                    INIT {}
-   DATA IMAGELISTCOLOR            INIT CLR_DEFAULT
-   DATA IMAGELISTFLAGS            INIT LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
+CLASS TTAB FROM TTABMULTI
+ENDCLASS
+
+*------------------------------------------------------------------------------*
+CLASS TTABCOMBO FROM TMULTIPAGE
    DATA LINTERNALS                INIT .F.
-   DATA SETIMAGELISTCOMMAND       INIT TCM_SETIMAGELIST
-   DATA SETIMAGELISTWPARAM        INIT 0
    DATA TYPE                      INIT "TAB" READONLY
+
+   METHOD DEFINE
+ENDCLASS
+
+*------------------------------------------------------------------------------*
+CLASS TTABDIRECT FROM TTABRAW
+   DATA APAGES                    INIT {}
+   DATA LINTERNALS                INIT .F.
+   DATA NFIRSTVALUE               INIT NIL
 
    METHOD ADDCONTROL
    METHOD ADDPAGE
@@ -1884,12 +1945,11 @@ CLASS TTAB FROM TCONTROL
    METHOD DELETECONTROL
    METHOD DELETEPAGE
    METHOD ENABLED                 SETGET
-   METHOD ENDPAGE
+   METHOD ENDPAGE             
    METHOD ENDTAB
-   METHOD EVENTS_NOTIFY
    METHOD FORCEHIDE
    METHOD HIDEPAGE
-   METHOD ITEMCOUNT
+   METHOD ITEMCOUNT           
    METHOD PICTURE
    METHOD REALPOSITION
    METHOD REFRESH
@@ -1902,18 +1962,25 @@ CLASS TTAB FROM TCONTROL
 ENDCLASS
 
 *------------------------------------------------------------------------------*
-CLASS TTABPAGE FROM TCONTROL
+CLASS TTABMULTI FROM TMULTIPAGE
+   DATA LINTERNALS                INIT .F.
+   DATA TYPE                      INIT "TAB" READONLY
+
+   METHOD DEFINE
+ENDCLASS
+
+*------------------------------------------------------------------------------*
+CLASS TTABPAGE FROM TCONTROLGROUP
    DATA CAPTION                   INIT ""
-   DATA LHIDDEN                   INIT .F.
    DATA NIMAGE                    INIT -1
    DATA PICTURE                   INIT ""
    DATA POSITION                  INIT 0
    DATA TYPE                      INIT "TABPAGE" READONLY
 
    METHOD CONTAINERVISIBLE
-   METHOD ENDPAGE
+   METHOD ENDPAGE             
    METHOD EVENTS_SIZE
-   METHOD SETFOCUS
+   METHOD SETFOCUS            
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -1932,11 +1999,38 @@ CLASS TTABPAGEINTERNAL FROM TFORMINTERNAL
 ENDCLASS
 
 *------------------------------------------------------------------------------*
+CLASS TTABRADIO FROM TMULTIPAGE
+   DATA LINTERNALS                INIT .F.
+   DATA TYPE                      INIT "TAB" READONLY
+
+   METHOD DEFINE
+ENDCLASS
+
+*------------------------------------------------------------------------------*
+CLASS TTABRAW FROM TCONTROL
+   DATA IMAGELISTCOLOR            INIT CLR_DEFAULT
+   DATA IMAGELISTFLAGS            INIT LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
+   DATA SETIMAGELISTCOMMAND       INIT TCM_SETIMAGELIST
+   DATA SETIMAGELISTWPARAM        INIT 0
+   DATA TYPE                      INIT "TAB" READONLY
+
+   METHOD CAPTION
+   METHOD DEFINE
+   METHOD DELETEITEM
+   METHOD EVENTS_NOTIFY
+   METHOD INSERTITEM
+   METHOD ITEMCOUNT               
+   METHOD PICTURE
+   METHOD VALUE                   SETGET
+ENDCLASS
+
+*------------------------------------------------------------------------------*
 CLASS TTEXT FROM TLABEL
-   DATA BWHEN
+   DATA BWHEN                     INIT NIL
    DATA LAUTOSKIP                 INIT .F.
    DATA LFOCUSED                  INIT .F.
    DATA LINSERT                   INIT .T.
+   DATA LPREVUNDO                 INIT .F.
    DATA LSETTING                  INIT .F.
    DATA NDEFANCHOR                INIT 13
    DATA NHEIGHT                   INIT 24
@@ -1948,6 +2042,7 @@ CLASS TTEXT FROM TLABEL
    DATA TYPE                      INIT "TEXT" READONLY
    DATA WHEN_PROCESING            INIT .F.
    DATA WHEN_PROCESSED            INIT .F.
+   DATA XPREVUNDO                 INIT NIL
    DATA XUNDO                     INIT NIL
 
    METHOD ADDCONTROL
@@ -2059,11 +2154,15 @@ ENDCLASS
 *------------------------------------------------------------------------------*
 CLASS TTOOLBAR FROM TCONTROL
    DATA TYPE                      INIT "TOOLBAR" READONLY
+   DATA LADJUST                   INIT .T.
+   DATA LFIXFONT                  INIT .T.
+   DATA LTOP	                   INIT .T.
 
    METHOD DEFINE
    METHOD EVENTS
    METHOD EVENTS_NOTIFY
    METHOD EVENTS_SIZE
+   METHOD CLIENTHEIGHTUSED
 ENDCLASS
 
 *------------------------------------------------------------------------------*

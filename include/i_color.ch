@@ -1,5 +1,5 @@
 /*
- * $Id: i_color.ch,v 1.1 2005-08-06 23:49:17 guerra000 Exp $
+ * $Id: i_color.ch,v 1.2 2012-02-08 16:44:31 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -91,17 +91,17 @@
         Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-#define YELLOW          { 255 , 255 , 0         }
-#define PINK		{ 255 , 128 , 192       }
-#define RED		{ 255 , 0 , 0           }
-#define FUCHSIA		{ 255 , 0 , 255         }
-#define BROWN		{ 128 , 64 , 64         }
-#define ORANGE		{ 255 , 128 , 64        }
-#define GREEN		{ 0 , 255 , 0           }
-#define PURPLE		{ 128 , 0 , 128         }
-#define BLACK		{ 0 , 0 , 0             }
-#define WHITE		{ 255 , 255 , 255	}
-#define GRAY		{ 128 , 128 , 128       }
-#define BLUE		{ 0 , 0 , 255           }
+#define YELLOW    { 255, 255,   0 }
+#define PINK      { 255, 128, 192 }
+#define RED       { 255,   0,   0 }
+#define FUCHSIA   { 255,   0, 255 }
+#define BROWN     { 128,  64,  64 }
+#define ORANGE    { 255, 128,  64 }
+#define GREEN     {   0, 255,   0 }
+#define PURPLE    { 128,   0, 128 }
+#define BLACK     {   0,   0,   0 }
+#define WHITE     { 255, 255, 255 }
+#define GRAY      { 128, 128, 128 }
+#define BLUE      {   0,   0, 255 }
 
 

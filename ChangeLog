@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.848 2012-02-08 15:36:14 nulcrc Exp $
+ * $Id: ChangeLog,v 1.849 2012-02-08 16:44:30 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,13 +7,19 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2012-02-03 16:28 UTC+0100 Cayetano Gómez <cayetano@gomezgil.es>
+2012-02-08 14:45 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_color.ch
+     * Minor formatting.
+   * doc/classes.txt
+     * Updated.
+
+2012-02-08 16:28 UTC+0100 Cayetano Gómez <cayetano@gomezgil.es>
 	* source/h_toolbar.prg
 		+ added ltop DATA
 	* source/h_windows.prg
 		! Fixed clientpos2 method
 		  Thanks to Vicente Guerra for indications.
-	* include/i_textedit.ch
+	* include/i_textbox.ch
 		! Fixed mistake, (bwhen) => {bWhen}
 	* Changelog 
 		! Fixed year in many annotations
