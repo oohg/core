@@ -1,5 +1,5 @@
 /*
- * $Id: h_frame.prg,v 1.9 2012-01-20 19:35:49 fyurisich Exp $
+ * $Id: h_frame.prg,v 1.10 2012-02-08 18:21:13 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -112,6 +112,7 @@ METHOD Define( ControlName, ParentForm, y, x, w, h, caption, fontname, ;
                backcolor, fontcolor, transparent, lRtl, invisible, lDisabled ) CLASS TFrame
 *-----------------------------------------------------------------------------*
 Local ControlHandle, nStyle
+Local oTab
 
    ASSIGN ::nCol        VALUE x TYPE "N"
    ASSIGN ::nRow        VALUE y TYPE "N"
@@ -136,7 +137,12 @@ Local ControlHandle, nStyle
    ::SetFont( , , bold, italic, underline, strikeout )
 
    IF _OOHG_LastFrame() == "TABPAGE" .AND. _OOHG_UsesVisualStyle()
-     ::TabHandle := ::Container:Container:hWnd
+      oTab := ATAIL( _OOHG_ActiveFrame )
+
+      IF oTab:Parent:hWnd == ::Parent:hWnd
+         ::TabHandle := ::Container:Container:hWnd
+         ::TabHandle := oTab:hWnd
+      ENDIF
    ENDIF
 
    ::Transparent := transparent

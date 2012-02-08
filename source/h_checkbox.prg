@@ -1,5 +1,5 @@
 /*
- * $Id: h_checkbox.prg,v 1.33 2011-10-15 03:53:35 guerra000 Exp $
+ * $Id: h_checkbox.prg,v 1.34 2012-02-08 18:21:13 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -123,6 +123,7 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
                lRtl, lDisabled, threestate, leftalign ) CLASS TCheckBox
 *-----------------------------------------------------------------------------*
 Local ControlHandle, nStyle, nStyleEx := 0
+Local oTab
 
    ASSIGN ::nCol        VALUE x           TYPE "N"
    ASSIGN ::nRow        VALUE y           TYPE "N"
@@ -162,7 +163,11 @@ Local ControlHandle, nStyle, nStyleEx := 0
    ::SetFont( , , bold, italic, underline, strikeout )
 
    IF _OOHG_LastFrame() == "TABPAGE" .AND. _OOHG_UsesVisualStyle()
-     ::TabHandle := ::Container:Container:hWnd
+      oTab := ATAIL( _OOHG_ActiveFrame )
+
+      IF oTab:Parent:hWnd == ::Parent:hWnd
+         ::TabHandle := ::Container:Container:hWnd
+      ENDIF
    ENDIF
 
    ::Autosize    := autosize
