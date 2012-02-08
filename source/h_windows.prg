@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.228 2011-12-31 16:54:48 fyurisich Exp $
+ * $Id: h_windows.prg,v 1.229 2012-02-08 15:27:12 nulcrc Exp $
  */
 /*
  * ooHG source code:
@@ -1588,6 +1588,18 @@ local nOffset // desplazamientos por borde
    nWidth:=nWidth-2*nOffset
    nHeight:=nHeight-2*nOffset
    ::IsAdjust := .T.
+   // remove toolbar .and. statusbar
+   for n:=1 to len(aControls)
+		if aControls[n]:type="TOOLBAR"
+			if aControls[n]:ltop
+				nRow+=aControls[n]:ClientHeightUsed()
+			else
+				nHeight-=aControls[n]:ClientHeightUsed()
+			end
+		elseif aControls[n]:type="MESSAGEBAR"
+		    nHeight+=aControls[n]:ClientHeightUsed()
+		end
+   next
    // nCol := ::Height - GetStatusbarHeight( ::name ) - GetTitleHeight() - 2 * GetBorderHeight()
    For n := 1 to len( aControls )
       oControl := aControls[ n ]

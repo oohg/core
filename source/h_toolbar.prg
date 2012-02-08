@@ -1,5 +1,5 @@
 /*
- * $Id: h_toolbar.prg,v 1.31 2011-10-27 19:58:03 fyurisich Exp $
+ * $Id: h_toolbar.prg,v 1.32 2012-02-08 15:27:12 nulcrc Exp $
  */
 /*
  * ooHG source code:
@@ -122,6 +122,7 @@ CLASS TToolBar FROM TControl
 
    DATA lAdjust   INIT .T.
    DATA lfixfont  INIT .T.
+   DATA lTop	  INIT .T.
 
    METHOD Define
    METHOD Events_Size
@@ -163,7 +164,7 @@ Local ControlHandle, id, lSplitActive
    ::ContainerhWndValue := ::hWnd
 
    ASSIGN ::OnClick     VALUE ProcedureName TYPE "B"
-
+   ::lTop:=.not.(bottom)
 Return Self
 
 *-----------------------------------------------------------------------------*
