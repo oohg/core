@@ -1,5 +1,5 @@
 /*
- * $Id: h_frame.prg,v 1.10 2012-02-08 18:21:13 fyurisich Exp $
+ * $Id: h_frame.prg,v 1.11 2012-02-08 18:24:33 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -141,7 +141,6 @@ Local oTab
 
       IF oTab:Parent:hWnd == ::Parent:hWnd
          ::TabHandle := ::Container:Container:hWnd
-         ::TabHandle := oTab:hWnd
       ENDIF
    ENDIF
 
