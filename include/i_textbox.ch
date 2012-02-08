@@ -1,5 +1,5 @@
 /*
- * $Id: i_textbox.ch,v 1.16 2011-05-08 23:20:28 declan2005 Exp $
+ * $Id: i_textbox.ch,v 1.17 2012-02-08 08:27:16 nulcrc Exp $
  */
 /*
  * ooHG source code:
@@ -146,4 +146,4 @@
                         <backcolor> , <fontcolor> , <.invisible.> , <.notabstop.> , ;
                         <.rtl.>, <.autoskip.>, <.noborder.>, <focusedpos>, <.disabled.>, ;
                         <{valid}>, <.date.>, <.numeric.>, <inputmask>, <format>, ;
-                        [ <subclass>() ] , <{action}>, <abitmap>, <btnwidth>, <{action2}>,<(bWhen)> )
+                        [ <subclass>() ] , <{action}>, <abitmap>, <btnwidth>, <{action2}>,<{bWhen}> )
