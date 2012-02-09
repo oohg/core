@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.229 2012-02-08 15:27:12 nulcrc Exp $
+ * $Id: h_windows.prg,v 1.230 2012-02-09 21:16:22 nulcrc Exp $
  */
 /*
  * ooHG source code:
@@ -1593,6 +1593,7 @@ local nOffset // desplazamientos por borde
 		if aControls[n]:type="TOOLBAR"
 			if aControls[n]:ltop
 				nRow+=aControls[n]:ClientHeightUsed()
+				nHeight-=aControls[n]:ClientHeightUsed()
 			else
 				nHeight-=aControls[n]:ClientHeightUsed()
 			end
