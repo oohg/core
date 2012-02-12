@@ -1,5 +1,5 @@
 /*
- * $Id: h_toolbar.prg,v 1.32 2012-02-08 15:27:12 nulcrc Exp $
+ * $Id: h_toolbar.prg,v 1.33 2012-02-12 03:20:19 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -118,17 +118,20 @@ STATIC _OOHG_ActiveToolBar := NIL    // Active toolbar
 #pragma ENDDUMP
 
 CLASS TToolBar FROM TControl
-   DATA Type      INIT "TOOLBAR" READONLY
-
-   DATA lAdjust   INIT .T.
-   DATA lfixfont  INIT .T.
-   DATA lTop	  INIT .T.
+   DATA Type               INIT "TOOLBAR" READONLY
+   DATA lAdjust            INIT .T.
+   DATA lfixfont           INIT .T.
+   DATA lTop	             INIT .T.
+   DATA nButtonHeight      INIT 0
+   DATA nButtonWidth       INIT 0
 
    METHOD Define
    METHOD Events_Size
    METHOD Events_Notify
    METHOD Events
-   METHOD ClientHeightUsed     BLOCK { |Self| GetWindowHeight( ::hWnd ) }
+   METHOD ClientHeightUsed BLOCK { |Self| GetWindowHeight( ::hWnd ) }
+   METHOD Height           SETGET
+   METHOD Width            SETGET
 
    EMPTY( _OOHG_AllVars )
 ENDCLASS
@@ -144,10 +147,10 @@ Local ControlHandle, id, lSplitActive
       caption := ""
    EndIf
 
-   ASSIGN ::nCol        VALUE x TYPE "N"
-   ASSIGN ::nRow        VALUE y TYPE "N"
-   ASSIGN ::nWidth      VALUE w TYPE "N"
-   ASSIGN ::nHeight     VALUE h TYPE "N"
+   ASSIGN ::nCol          VALUE x TYPE "N"
+   ASSIGN ::nRow          VALUE y TYPE "N"
+   ASSIGN ::nButtonWidth  VALUE w TYPE "N"
+   ASSIGN ::nButtonHeight VALUE h TYPE "N"
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize,,,, lRtl )
 
@@ -155,8 +158,8 @@ Local ControlHandle, id, lSplitActive
 
    Id := _GetId()
 
-   lSplitActive := ::SetSplitBoxInfo( Break, caption, ::nWidth,, .T. )
-   ControlHandle := InitToolBar( ::ContainerhWnd, Caption, id, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight, "", 0, flat, bottom, righttext, lSplitActive, border, ::lRtl )
+   lSplitActive := ::SetSplitBoxInfo( Break, caption, ::nButtonWidth,, .T. )
+   ControlHandle := InitToolBar( ::ContainerhWnd, Caption, id, ::ContainerCol, ::ContainerRow, ::nButtonWidth, ::nButtonHeight, "", 0, flat, bottom, righttext, lSplitActive, border, ::lRtl )
 
    ::Register( ControlHandle, ControlName, , , ToolTip, Id )
    ::SetFont( , , bold, italic, underline, strikeout )
@@ -175,7 +178,7 @@ Local Self
 
    Self := _OOHG_ActiveToolBar
 
-   MaxTextBtnToolBar( ::hWnd, ::Width, ::Height )
+   MaxTextBtnToolBar( ::hWnd, ::nButtonWidth, ::nButtonHeight )
 
    If ::SetSplitBoxInfo()
       w := GetSizeToolBar( ::hWnd )
@@ -194,6 +197,22 @@ Local Self
    _OOHG_ActiveToolBar := nil
 
 Return Nil
+
+*------------------------------------------------------------------------------*
+METHOD Height( nHeight ) CLASS TToolBar
+*------------------------------------------------------------------------------*
+   if HB_IsNumeric( nHeight )
+      ::SizePos( , , , nHeight )
+   endif
+Return GetWindowHeight( ::hWnd )
+
+*------------------------------------------------------------------------------*
+METHOD Width( nWidth ) CLASS TToolBar
+*------------------------------------------------------------------------------*
+   if HB_IsNumeric( nWidth )
+      ::SizePos( , , nWidth )
+   endif
+Return GetWindowWidth( ::hWnd )
 
 *-----------------------------------------------------------------------------*
 METHOD Events_Size() CLASS TToolBar

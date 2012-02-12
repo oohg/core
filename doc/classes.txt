@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.43 2012-02-08 16:44:31 fyurisich Exp $
+ * $Id: classes.txt,v 1.44 2012-02-12 03:20:19 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -1210,6 +1210,9 @@ CLASS TMENUITEM FROM TCONTROL
    METHOD ENABLED                 SETGET
    METHOD ENDPOPUP
    METHOD HILITED                 SETGET
+   METHOD INSERTITEM
+   METHOD INSERTPOPUP
+   METHOD INSERTSEPARATOR
    METHOD PICTURE                 SETGET
    METHOD RELEASE
    METHOD SEPARATOR
@@ -2153,16 +2156,20 @@ ENDCLASS
 
 *------------------------------------------------------------------------------*
 CLASS TTOOLBAR FROM TCONTROL
-   DATA TYPE                      INIT "TOOLBAR" READONLY
    DATA LADJUST                   INIT .T.
    DATA LFIXFONT                  INIT .T.
    DATA LTOP	                   INIT .T.
+   DATA NBUTTONHEIGHT             INIT 0
+   DATA NBUTTONWIDTH              INIT 0
+   DATA TYPE                      INIT "TOOLBAR" READONLY
 
+   METHOD CLIENTHEIGHTUSED
    METHOD DEFINE
    METHOD EVENTS
    METHOD EVENTS_NOTIFY
    METHOD EVENTS_SIZE
-   METHOD CLIENTHEIGHTUSED
+   METHOD HEIGHT                  SETGET
+   METHOD WIDTH                   SETGET
 ENDCLASS
 
 *------------------------------------------------------------------------------*
