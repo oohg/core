@@ -1,5 +1,5 @@
 /*
- * $Id: i_menu.ch,v 1.10 2011-11-07 22:56:04 fyurisich Exp $
+ * $Id: i_menu.ch,v 1.11 2012-02-12 02:17:48 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -202,3 +202,19 @@
 #xcommand END MENU ;
           => ;
           _EndMenu()
+
+#xcommand INSERT POPUP <caption> [ AT <nPos> ] [ NAME <name> ] [ OBJ <oObj> ] [ <checked:CHECKED> ] [ <disabled:DISABLED> ] [ FROM [ POPUP ] <parent> ] [ <hilited:HILITED> ] [ IMAGE <image> [ <stretch:STRETCH> ] ] [ <right:RIGHT> ] [ SUBCLASS <subclass> ] [ <breakmenu :BREAKMENU> ] ;
+          => ;
+          [ <oObj> := ] _OOHG_SelectSubClass( TMenuItem(), [ <subclass>() ] ): ;
+                        InsertPopUp( <caption> , <(name)> , <.checked.> , <.disabled.>, <parent>, <.hilited.>, <image>, <.right.>, <.stretch.>, IF( <.breakmenu.>, 1, NIL ), <nPos> )
+
+#xcommand INSERT ITEM <caption> [ AT <nPos> ] [ ACTION <action> ] [ NAME <name> ] [ IMAGE <image> [ <stretch:STRETCH> ] ] [ <checked:CHECKED> ] [ OBJ <oObj> ] [ <disabled:DISABLED> ] [ FROM [ POPUP ] <parent> ] [ <hilited:HILITED> ] [ <right:RIGHT> ] [ SUBCLASS <subclass> ] [ <breakmenu :BREAKMENU> [ <separator :SEPARATOR> ] ] ;
+          => ;
+          [ <oObj> := ] _OOHG_SelectSubClass( TMenuItem(), [ <subclass>() ] ): ;
+                        InsertItem( <caption> , <{action}> , <(name)> , <image> , <.checked.> , <.disabled.>, <parent>, <.hilited.>, <.right.>, <.stretch.>, IF( <.breakmenu.>, IF( <.separator.>, 2, 1 ), NIL ), <nPos> )
+
+#xcommand INSERT SEPARATOR [ AT <nPos> ] [ NAME <name> ] [ OBJ <oObj> ] [ FROM [ POPUP ] <parent> ] [ <right:RIGHT> ] [ SUBCLASS <subclass> ] ;
+          => ;
+          [ <oObj> := ] _OOHG_SelectSubClass( TMenuItem(), [ <subclass>() ] ): ;
+                        InsertSeparator( <(name)>, <parent>, <.right.>, <nPos> )
+

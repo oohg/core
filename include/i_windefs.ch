@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.45 2012-01-18 04:21:37 fyurisich Exp $
+ * $Id: i_windefs.ch,v 1.46 2012-02-12 02:17:48 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -669,6 +669,9 @@
 #define MF_SEPARATOR                  0x0800
 #define MF_SYSMENU                    0x2000
 #define MF_RIGHTJUSTIFY               0x4000
+#define MF_BYPOSITION                 0x0400
+#define MF_BYCOMMAND                  0x0000
+
 
 // Media
 #define MCIWNDF_NOAUTOSIZEWINDOW      1

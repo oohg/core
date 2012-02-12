@@ -1,5 +1,5 @@
 /*
- * $Id: h_menu.prg,v 1.32 2011-11-07 22:56:04 fyurisich Exp $
+ * $Id: h_menu.prg,v 1.33 2012-02-12 02:17:48 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -275,6 +275,9 @@ CLASS TMenuItem FROM TControl
    METHOD DefinePopUp
    METHOD DefineItem
    METHOD DefineSeparator
+   METHOD InsertPopUp
+   METHOD InsertItem
+   METHOD InsertSeparator
 
    METHOD Enabled      SETGET
    METHOD Checked      SETGET
@@ -316,6 +319,33 @@ LOCAL nStyle
 Return Self
 
 *------------------------------------------------------------------------------*
+METHOD InsertPopUp( Caption, Name, checked, disabled, Parent, hilited, Image, ;
+                    lRight, lStretch, nBreak, nPos ) CLASS TMenuItem
+*------------------------------------------------------------------------------*
+LOCAL nStyle
+   If Empty( Parent )
+      Parent := ATAIL( _OOHG_xMenuActive )
+   EndIf
+   ::SetForm( Name, Parent )
+   ::Register( CreatePopupMenu(), Name )
+   ::xId := ::hWnd
+   AADD( _OOHG_xMenuActive, Self )
+   nStyle := MF_BYPOSITION + MF_POPUP + MF_STRING + IF( ValType( lRight ) == "L" .AND. lRight, MF_RIGHTJUSTIFY, 0 ) + ;
+             IF( ValType( nBreak ) != "N", 0, IF( nBreak == 1, MF_MENUBREAK, MF_MENUBARBREAK ) )
+   ASSIGN nPos VALUE nPos TYPE "N" DEFAULT -1       // Append to the end
+   InsertMenu( ::Container:hWnd, ::hWnd, Caption, nStyle, nPos )
+   if HB_IsLogical( lStretch ) .AND. lStretch
+      ::Stretch := .T.
+   EndIf
+   ::Picture := image
+   ::Checked := checked
+   ::Hilited := hilited
+   if HB_IsLogical( disabled ) .AND. disabled
+      ::Enabled := .F.
+   EndIf
+Return Self
+
+*------------------------------------------------------------------------------*
 METHOD DefineItem( caption, action, name, Image, checked, disabled, Parent, ;
                    hilited, lRight, lStretch, nBreak ) CLASS TMenuItem
 *------------------------------------------------------------------------------*
@@ -343,6 +373,34 @@ Local nStyle, id
 Return Self
 
 *------------------------------------------------------------------------------*
+METHOD InsertItem( caption, action, name, Image, checked, disabled, Parent, ;
+                   hilited, lRight, lStretch, nBreak, nPos ) CLASS TMenuItem
+*------------------------------------------------------------------------------*
+Local nStyle, id
+   If Empty( Parent )
+      Parent := ATAIL( _OOHG_xMenuActive )
+   EndIf
+   ::SetForm( Name, Parent )
+   Id := _GetId()
+   nStyle := MF_BYPOSITION + MF_STRING + IF( HB_IsLogical( lRight ) .AND. lRight, MF_RIGHTJUSTIFY, 0 ) + ;
+             IF( ValType( nBreak ) != "N", 0, IF( nBreak == 1, MF_MENUBREAK, MF_MENUBARBREAK ) )
+   ASSIGN nPos VALUE nPos TYPE "N" DEFAULT -1       // Append to the end
+   InsertMenu( ::Container:hWnd, id, caption, nStyle, nPos )
+   ::Register( 0, Name, , , , Id )
+   ::xId := ::Id
+   ::OnClick := action
+   if HB_IsLogical( lStretch ) .AND. lStretch
+      ::Stretch := .T.
+   EndIf
+   ::Picture := image
+   ::Checked := checked
+   ::Hilited := hilited
+   if HB_IsLogical( disabled )  .AND. disabled
+      ::Enabled := .F.
+   EndIf
+Return Self
+
+*------------------------------------------------------------------------------*
 METHOD DefineSeparator( name, Parent, lRight ) CLASS TMenuItem
 *------------------------------------------------------------------------------*
 Local nStyle, id
@@ -352,7 +410,24 @@ Local nStyle, id
    ::SetForm( Name, Parent )
    Id := _GetId()
    nStyle := MF_SEPARATOR + IF( HB_IsLogical( lRight ) .AND. lRight, MF_RIGHTJUSTIFY, 0 )
-   AppendMenu( ::Container:hWnd, Id, nStyle )
+//   AppendMenu( ::Container:hWnd, id, nStyle )
+   AppendMenu( ::Container:hWnd, Id, Nil, nStyle )
+   ::Register( 0, Name, , , , Id )
+   ::xId := ::Id
+Return Self
+
+*------------------------------------------------------------------------------*
+METHOD InsertSeparator( name, Parent, lRight, nPos ) CLASS TMenuItem
+*------------------------------------------------------------------------------*
+Local nStyle, id
+   If Empty( Parent )
+      Parent := ATAIL( _OOHG_xMenuActive )
+   EndIf
+   ::SetForm( Name, Parent )
+   Id := _GetId()
+   nStyle := MF_BYPOSITION + MF_SEPARATOR + IF( HB_IsLogical( lRight ) .AND. lRight, MF_RIGHTJUSTIFY, 0 )
+   ASSIGN nPos VALUE nPos TYPE "N" DEFAULT -1       // Append to the end
+   InsertMenu( ::Container:hWnd, id, Nil, nStyle, nPos )
    ::Register( 0, Name, , , , Id )
    ::xId := ::Id
 Return Self
@@ -503,6 +578,11 @@ HB_FUNC( TRACKPOPUPMENU )
    SetForegroundWindow( hwnd );
    TrackPopupMenu( HMENUparam( 1 ), 0, hb_parni( 2 ), hb_parni( 3 ), 0, hwnd, 0 );
    PostMessage( hwnd, WM_NULL, 0, 0 );
+}
+
+HB_FUNC( INSERTMENU )
+{
+   hb_retnl( InsertMenu( HMENUparam( 1 ), hb_parni( 5 ), hb_parni( 4 ), hb_parni( 2 ), hb_parc( 3 ) ) );
 }
 
 HB_FUNC( APPENDMENU )

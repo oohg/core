@@ -1,11 +1,19 @@
 /*
- * $Id: ChangeLog,v 1.852 2012-02-09 21:16:21 nulcrc Exp $
+ * $Id: ChangeLog,v 1.853 2012-02-12 02:17:48 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-02-12 00:17 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_windefs.ch
+     + Added defines for MF_BYPOSITION and MF_BYCOMMAND.
+   * include/i_menu.ch
+     + Added INSERT POPUP, INSERT ITEM and INSERT SEPARATOR.
+   * source/h_menu.prg
+     + Added methods InsertPopup, InsertItem and InsertSeparator.
 
 2012-02-09 22:12 UTC+0100 Cayetano Gómez <cayetano@gomezgil.es>
 	* source/h_windows.prg
