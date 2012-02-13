@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.855 2012-02-13 15:05:45 nulcrc Exp $
+ * $Id: ChangeLog,v 1.856 2012-02-13 15:59:00 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,11 +7,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2012-02-13 16:03 UTC+0100 Cayetano Gómez <cayetano@gomezgil.es>
-	* source/h_windows.prg
-		! Fix clientpos2 method to work with TControlGroup 
-		  descendant
+2012-02-13 13:58 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_windows.prg
+     ! Fixed missing / throws compiler error.
 
+2012-02-13 16:03 UTC+0100 Cayetano Gómez <cayetano@gomezgil.es>
+   * source/h_windows.prg
+     ! Fix clientpos2 method to work with TControlGroup
+       descendant
 
 2012-02-12 01:20 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_toolbar.prg

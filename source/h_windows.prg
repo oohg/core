@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.231 2012-02-13 15:05:45 nulcrc Exp $
+ * $Id: h_windows.prg,v 1.232 2012-02-13 15:59:00 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1573,7 +1573,7 @@ Return ::ClientsPos2( ::aControls, ::Width, ::Height )
 *------------------------------------------------------------------------------*
 METHOD ClientsPos2( aControls, nWidth, nHeight ) CLASS TWindow
 *------------------------------------------------------------------------------*
-/ ajusta los controles dentro de la ventana por ClientAdjust
+// ajusta los controles dentro de la ventana por ClientAdjust
 local n, nAdjust, oControl, nRow := 0, nCol := 0
 local nOffset // desplazamientos por borde
 
