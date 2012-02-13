@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.230 2012-02-09 21:16:22 nulcrc Exp $
+ * $Id: h_windows.prg,v 1.231 2012-02-13 15:05:45 nulcrc Exp $
  */
 /*
  * ooHG source code:
@@ -1573,7 +1573,7 @@ Return ::ClientsPos2( ::aControls, ::Width, ::Height )
 *------------------------------------------------------------------------------*
 METHOD ClientsPos2( aControls, nWidth, nHeight ) CLASS TWindow
 *------------------------------------------------------------------------------*
-// ajusta los controles dentro de la ventana por ClientAdjust
+/ ajusta los controles dentro de la ventana por ClientAdjust
 local n, nAdjust, oControl, nRow := 0, nCol := 0
 local nOffset // desplazamientos por borde
 
@@ -1606,38 +1606,43 @@ local nOffset // desplazamientos por borde
       oControl := aControls[ n ]
       nAdjust := oControl:ClientAdjust
       If nAdjust > 0 .and. nAdjust < 5 .and. aControls[ n ]:ContainerVisible
+		oControl:Hide()
          If nAdjust == 1 // top
-            oControl:nCol := nCol
-            oControl:nRow := nRow
-            oControl:nWidth := nWidth
+            oControl:Col := nCol
+            oControl:Row := nRow
+            oControl:Width := nWidth
             nRow := nRow + oControl:nHeight
             nHeight := nHeight - oControl:nHeight
          ElseIf nAdjust == 2 // bottom
-            oControl:nCol := nCol
-            oControl:nRow := nHeight - oControl:nHeight + nRow
-            oControl:nWidth:=nWidth
+            oControl:Col := nCol
+            oControl:Row := nHeight - oControl:nHeight + nRow
+            oControl:Width:=nWidth
             nHeight := nHeight - oControl:nHeight
          ElseIf nAdjust == 3 //left
-            oControl:nCol := nCol
-            oControl:nRow := nRow
-            oControl:nHeight := nHeight
+            oControl:Col := nCol
+            oControl:Row := nRow
+            oControl:Height := nHeight
             nCol := nCol + oControl:nWidth
             nWidth := nWidth - oControl:nWidth
          ElseIf nAdjust == 4 //right
-            oControl:nCol := nWidth - oControl:nWidth + nCol
-            oControl:nRow := nRow
-            oControl:nHeight := nHeight
+            oControl:Col := nWidth - oControl:nWidth + nCol
+            oControl:Row := nRow
+            oControl:Height := nHeight
             nWidth := nWidth - oControl:nWidth
          EndIf
-         oControl:Hide()
-         oControl:SizePos()
+         
+         //oControl:SizePos()
          oControl:Show()
       EndIf
    Next
    For n := 1 to len( aControls )
       If aControls[ n ]:ClientAdjust == 5 .and. aControls[ n ]:Visible
          aControls[ n ]:Hide()
-         aControls[ n ]:SizePos( nRow, nCol, nWidth - 2, nHeight - 2 )
+         //aControls[ n ]:SizePos( nRow, nCol, nWidth - 2, nHeight - 2 )
+		 aControls[n]:width:=nWidth -2
+		 aControls[n]:height:=nHeight -2
+		 aControls[n]:col:=nCol
+		 aControls[n]:row:=nRow
          aControls[ n ]:Show()
       EndIf
    Next
