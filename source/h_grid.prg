@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.135 2012-02-16 22:49:28 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.136 2012-02-16 23:47:14 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -3572,14 +3572,12 @@ EXTERN GetGridVKey, TGrid_Notify_CustomDraw
 #endif
 
 #ifndef _WIN32_WINNT
-   #define _WIN32_WINNT 0x0400
+   #define _WIN32_WINNT 0x0500
 #endif
-#if ( _WIN32_WINNT < 0x0400 )
+#if ( _WIN32_WINNT < 0x0500 )
    #undef _WIN32_WINNT
-   #define _WIN32_WINNT 0x0400
+   #define _WIN32_WINNT 0x0500
 #endif
-
-#define s_Super s_TControl
 
 #include "hbapi.h"
 #include "hbapiitm.h"
@@ -3588,6 +3586,11 @@ EXTERN GetGridVKey, TGrid_Notify_CustomDraw
 #include <windows.h>
 #include <commctrl.h>
 #include "oohg.h"
+
+#define UIS_SET        1
+#define UISF_HIDEFOCUS 0x1
+
+#define s_Super s_TControl
 
 // -----------------------------------------------------------------------------
 HB_FUNC_STATIC( TGRID_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TGrid
@@ -3742,9 +3745,6 @@ HB_FUNC_STATIC( TGRID_COLUMNCOUNT )
 
    hb_retni( iCount );
 }
-
-#define UIS_SET        1
-#define UISF_HIDEFOCUS 0x1
 
 // -----------------------------------------------------------------------------
 HB_FUNC_STATIC( TGRIDBYCELL_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TGridByCell
@@ -4580,6 +4580,7 @@ static int TGrid_Notify_CustomDraw_GetSelColor( PHB_ITEM pSelf, unsigned int x )
 {
    PHB_ITEM pColor;
    LONG iColor = -1;
+   char cBuffError[ 1000 ];
 
    _OOHG_Send( pSelf, s_GridSelectedColors );
    hb_vmSend( 0 );
@@ -4596,10 +4597,10 @@ static int TGrid_Notify_CustomDraw_GetSelColor( PHB_ITEM pSelf, unsigned int x )
       }
    }
 
-   char cBuffError[ 1000 ];
    sprintf( cBuffError, "GridSelectedColors is not a valid array !!!" );
    MessageBox( 0, cBuffError, "Error", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
    ExitProcess( 0 );
+   return 0;
 }
 
 int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iRow, int iCol )
