@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.44 2012-02-12 03:20:19 fyurisich Exp $
+ * $Id: classes.txt,v 1.45 2012-02-16 22:49:28 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -757,6 +757,7 @@ ENDCLASS
 
 *------------------------------------------------------------------------------*
 CLASS TGRID FROM TCONTROL
+   DATA AEDITKEYS                 INIT NIL
    DATA AHEADCLICK                INIT NIL
    DATA AHEADERIMAGE              INIT {}
    DATA AHEADERIMAGEALIGN         INIT {}
@@ -776,15 +777,16 @@ CLASS TGRID FROM TCONTROL
    DATA FULLMOVE                  INIT .F.
    DATA GRIDBACKCOLOR             INIT {}
    DATA GRIDFORECOLOR             INIT {}
+   DATA GRIDSELECTEDCOLORS        INIT {}
    DATA HEADERIMAGELIST           INIT NIL
    DATA INPLACE                   INIT .F.
    DATA LAPPENDMODE               INIT .F.
    DATA LEDITMODE                 INIT .F.
    DATA LNESTED                   INIT .F.
    DATA LNESTEDEDIT               INIT .F.
-   DATA NCOLPOS                   INIT 1
+   DATA NCOLPOS                   INIT 0
    DATA NHEIGHT                   INIT 120
-   DATA NROWPOS                   INIT 1
+   DATA NROWPOS                   INIT 0
    DATA NWIDTH                    INIT 240
    DATA ONAPPEND                  INIT NIL
    DATA ONDISPINFO                INIT NIL
@@ -854,6 +856,39 @@ CLASS TGRID FROM TCONTROL
    METHOD SETRANGECOLOR
    METHOD SORTCOLUMN
    METHOD TOEXCEL
+   METHOD UP
+   METHOD VALUE                   SETGET
+ENDCLASS
+
+*------------------------------------------------------------------------------*
+CLASS TGRIDBYCELL FROM TGRID
+   DATA TYPE                      INIT "GRIDBYCELL" READONLY
+
+   MESSAGE EDITALLCELLS           METHOD EDITGRID
+   
+   METHOD ADDCOLUMN
+   METHOD APPENDITEM
+   METHOD COLUMNHIDE
+   METHOD DEFINE
+   METHOD DELETECOLUMN
+   METHOD DELETEITEM
+   METHOD DOCHANGE
+   METHOD DOWN
+   METHOD EDITCELL
+   METHOD EDITCELL2
+   METHOD EDITGRID
+   METHOD EDITITEM                BLOCK {|| NIL }
+   METHOD EDITITEM2               BLOCK {|| NIL }
+   METHOD EVENTS
+   METHOD EVENTS_ENTER
+   METHOD EVENTS_NOTIFY
+   METHOD GOBOTTOM
+   METHOD GOTOP
+   METHOD ISCOLUMNWHEN
+   METHOD LEFT
+   METHOD PAGEDOWN
+   METHOD PAGEUP
+   METHOD RIGHT
    METHOD UP
    METHOD VALUE                   SETGET
 ENDCLASS
@@ -992,8 +1027,16 @@ ENDCLASS
 CLASS TGRIDMULTI FROM TGRID
    DATA TYPE                      INIT "MULTIGRID" READONLY
 
+   METHOD APPENDITEM
    METHOD DEFINE
-   METHOD VALUE
+   METHOD DOWN
+   METHOD EDITGRID
+   METHOD GOBOTTOM
+   METHOD GOTOP
+   METHOD PAGEDOWN
+   METHOD PAGEUP
+   METHOD UP
+   METHOD VALUE                   SETGET
 ENDCLASS
 
 *------------------------------------------------------------------------------*

@@ -1,11 +1,65 @@
 /*
- * $Id: ChangeLog,v 1.856 2012-02-13 15:59:00 fyurisich Exp $
+ * $Id: ChangeLog,v 1.857 2012-02-16 22:49:28 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-02-16 20:50 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * doc/classes.txt
+     * Updated.
+   * source/c_winapimisc.c
+     + Added GET_WHEEL_DELTA_WPARAM function.
+   * source/c_controlmisc.c
+   * include/oohg.h
+     + Added GRIDSELECTEDCOLORS symbol.
+   * include/i_windefs.ch
+     + Added define for LVN_ENDSCROLL.
+   * include/i_altsyntax.ch
+   * include/i_browse.ch
+   * include/i_grid.ch
+   * include/i_xbrowse.ch
+     + Added support for EDITKEYS and SELECTEDCOLORS clauses.
+   * include/i_altsyntax.ch
+   * include/i_grid.ch
+     + Added support for NAVIGATEBYCELL clause.
+
+   * source/h_grid.prg
+     * AddColumn and DeleteColumn methods now return the number of the
+       column added or deleted.
+     + Added TGridByCell class.
+       This class enables navigation cell by cell using mouse and keyboard.
+       VALUE method returns and accepts a 2 item array (Row, Col).
+     ! Fixed: some TGridMulti methods, inherited from TGrid, crash when
+       using ::Value, because ::Value returns an array instead of a number.
+
+   * source/h_grid.prg
+   * source/h_browse.prg
+   * source/h_xbrowse.prg
+     + Added EDITKEYS clause to set Hot Keys during cell editing.
+     + Added SELECTEDCOLORS clause to set the colors for painting
+       the selected rows/cells. Colors are specified using an array.
+       All colors default to system's colors.
+       When using row navigation, selected rows are painted using
+       the following colors:
+         item 1: text's color when grid has focus
+         item 2: text's background color when grid has focus
+         item 3: text's color when grid doesn't has focus
+         item 4: text's background color when grid doesn't has focus
+       When using cell navigation, selected cells are painted using
+       the following colors:
+         item 1: text's color when grid has focus
+         item 2: text's background color when grid has focus
+         item 3: text's color when grid doesn't has focus
+         item 4: text's background color when grid doesn't has focus
+       When using cell navigation, the remaining cells of the selected
+       rows are painted using the following colors:
+         item 5: text's color when grid has focus
+         item 6: text's background color when grid has focus
+         item 7: text's color when grid doesn't has focus
+         item 8: text's background color when grid doesn't has focus
 
 2012-02-13 13:58 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_windows.prg

@@ -1,5 +1,5 @@
 /*
- * $Id: c_winapimisc.c,v 1.17 2011-12-31 16:54:48 fyurisich Exp $
+ * $Id: c_winapimisc.c,v 1.18 2012-02-16 22:49:28 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -239,6 +239,11 @@ HB_FUNC( LOWORD )
 HB_FUNC( MAKELPARAM )
 {
 	hb_retnl( MAKELPARAM( hb_parni( 1 ), hb_parni( 2 ) ) );
+}
+
+HB_FUNC( GET_WHEEL_DELTA_WPARAM )
+{
+	hb_retnl( GET_WHEEL_DELTA_WPARAM( hb_parnl( 1 ) ) );
 }
 
 HB_FUNC( C_GETFOLDER ) // Based Upon Code Contributed By Ryszard Ryüko

@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.85 2011-11-22 22:05:09 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.86 2012-02-16 22:49:28 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -147,7 +147,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                editcontrols, replacefields, lRecCount, columninfo, ;
                lNoHeaders, onenter, lDisabled, lNoTabStop, lInvisible, ;
                lDescending, bDelWhen, DelMsg, onDelete, aHeaderImage, ;
-               aHeaderImageAlign, FullMove ) CLASS TOBrowse
+               aHeaderImageAlign, FullMove, aSelectedColors, aEditKeys ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local nWidth2, nCol2, oScroll, z
 
@@ -216,7 +216,7 @@ Local nWidth2, nCol2, oScroll, z
                    nil, nil, edit, backcolor, fontcolor, dynamicbackcolor, dynamicforecolor, aPicture, ;
                    lRtl, InPlace, editcontrols, readonly, valid, validmessages, editcell, ;
                    aWhenFields, lDisabled, lNoTabStop, lInvisible, lNoHeaders,, aHeaderImage, ;
-                   aHeaderImageAlign, FullMove )
+                   aHeaderImageAlign, FullMove, aSelectedColors, aEditKeys )
 
    ::nWidth := w
 
@@ -1035,7 +1035,6 @@ Local nItem
          uValue := 0 // ::nValue
       Endif
    EndIf
-   
 RETURN uValue
 
 *-----------------------------------------------------------------------------*
@@ -1101,8 +1100,7 @@ HB_FUNC_STATIC( TOBROWSE_EVENTS_NOTIFY )
          pSelf = hb_stackSelfItem();
          _OOHG_Send( pSelf, s_AdjustRightScroll );
          hb_vmSend( 0 );
-         hb_retni( TGrid_Notify_CustomDraw( pSelf, lParam ) );
-         break;
+         // don't break, continue in TGrid class
       }
 
       default:
@@ -1131,7 +1129,7 @@ Local nvKey, r, DeltaSelect, lGo
       EndIf
       Return nil
 
-   elseIf nNotify == LVN_KEYDOWN
+   ElseIf nNotify == LVN_KEYDOWN
       nvKey := GetGridvKey( lParam )
 
       Do Case

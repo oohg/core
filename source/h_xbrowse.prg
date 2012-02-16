@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.49 2011-12-09 00:53:04 guerra000 Exp $
+ * $Id: h_xbrowse.prg,v 1.50 2012-02-16 22:49:28 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -151,7 +151,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                readonly, valid, validmessages, editcell, aWhenFields, ;
                lRecCount, columninfo, lNoHeaders, onenter, lDisabled, ;
                lNoTabStop, lInvisible, lDescending, bDelWhen, DelMsg, ;
-               onDelete, aHeaderImage, aHeaderImageAlign, FullMove ) CLASS TXBrowse
+               onDelete, aHeaderImage, aHeaderImageAlign, FullMove, ;
+               aSelectedColors, aEditKeys ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
 Local nWidth2, nCol2, lLocked, oScroll, z
 
@@ -213,7 +214,8 @@ Local nWidth2, nCol2, lLocked, oScroll, z
               dynamicforecolor, aPicture, lRtl, LVS_SINGLESEL, ;
               inplace, editcontrols, readonly, valid, validmessages, ;
               editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
-              lNoHeaders,, aHeaderImage, aHeaderImageAlign, FullMove )
+              lNoHeaders,, aHeaderImage, aHeaderImageAlign, FullMove, ;
+              aSelectedColors, aEditKeys )
 
    ::nWidth := w
 
@@ -645,7 +647,9 @@ METHOD RefreshData() CLASS TXBrowse
    ::Refresh()
 RETURN ::Super:RefreshData()
 
+*-----------------------------------------------------------------------------*
 FUNCTION TXBrowse_Events_Notify2( wParam, lParam )
+*-----------------------------------------------------------------------------*
 Local Self := QSelf()
 Local nNotify := GetNotifyCode( lParam )
 Local nvKey, lGo
@@ -1128,14 +1132,14 @@ Local lRet, lRowEdited, lSomethingEdited
    ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
    ASSIGN nRow    VALUE nRow    TYPE "N" DEFAULT ::CurrentRow
    ASSIGN nCol    VALUE nCol    TYPE "N" DEFAULT 1
-   
+
    If nRow < 1 .or. nRow > ::ItemCount() .or. nCol < 1 .or. nCol > Len( ::aHeaders )
       // Cell out of range
       Return .F.
    EndIf
 
    lSomethingEdited := .F.
-   
+
    Do While .t.
       lRet := .T.
       lRowEdited := .F.
@@ -1565,8 +1569,7 @@ HB_FUNC_STATIC( TXBROWSE_EVENTS_NOTIFY )
          pSelf = hb_stackSelfItem();
          _OOHG_Send( pSelf, s_AdjustRightScroll );
          hb_vmSend( 0 );
-         hb_retni( TGrid_Notify_CustomDraw( pSelf, lParam ) );
-         break;
+         // don't break, continue in TGrid class
       }
 
       default:

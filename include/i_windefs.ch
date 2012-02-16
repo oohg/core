@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.46 2012-02-12 02:17:48 fyurisich Exp $
+ * $Id: i_windefs.ch,v 1.47 2012-02-16 22:49:28 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -460,7 +460,8 @@
 #define BS_FLAT                       32768
 #define BS_RIGHTBUTTON                BS_LEFTTEXT
 
-#DEFINE DC_BRUSH                      18
+#define DC_BRUSH                      18
+#define LVN_ENDSCROLL                 ( -181 )
 #define LVN_BEGINDRAG                 ( -109 )
 #define GWL_STYLE                     ( -16 )
 #define CBN_EDITCHANGE                5

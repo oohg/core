@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.59 2011-11-18 20:26:59 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.60 2012-02-16 22:49:28 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -122,6 +122,9 @@ Memvariables
 #xtranslate _OOHG_ActiveControlTrailingFontColor      => _OOHG_ActiveControlInfo \[  25 \]
 #xtranslate _OOHG_ActiveControlBackgroundColor        => _OOHG_ActiveControlInfo \[  26 \]
 
+#xtranslate _OOHG_ActiveControlKeys                   => _OOHG_ActiveControlInfo \[ 145 \]
+#xtranslate _OOHG_ActiveControlSelectedColors         => _OOHG_ActiveControlInfo \[ 146 \]
+#xtranslate _OOHG_ActiveControlByCell                 => _OOHG_ActiveControlInfo \[ 147 \]
 #xtranslate _OOHG_ActiveControlItemImageNumber        => _OOHG_ActiveControlInfo \[ 148 \]
 #xtranslate _OOHG_ActiveControlImageSource            => _OOHG_ActiveControlInfo \[ 149 \]
 #xtranslate _OOHG_ActiveControlOnMouseMove            => _OOHG_ActiveControlInfo \[ 150 \]
@@ -1937,7 +1940,10 @@ GRID
         _OOHG_ActiveControlShowHeaders      := Nil ;;
         _OOHG_ActiveControlHeaderImages     := Nil ;;
         _OOHG_ActiveControlImagesAlign      := Nil ;;
-        _OOHG_ActiveControlFullMove         := .F.
+        _OOHG_ActiveControlFullMove         := .F. ;;
+        _OOHG_ActiveControlByCell           := .F. ;;
+        _OOHG_ActiveControlSelectedColors   := .F. ;;
+        _OOHG_ActiveControlKeys             := Nil
 
 #xcommand ONAPPEND <onappend> ;
         => ;
@@ -1955,9 +1961,21 @@ GRID
         => ;
         _OOHG_ActiveControlFullMove := <fullmove>
 
+#xcommand NAVIGATEBYCELL <bycell> ;
+        => ;
+        _OOHG_ActiveControlByCell := <bycell>
+
+#xcommand SELECTEDCOLORS <aSelectedColors> ;
+        => ;
+        _OOHG_ActiveControlSelectedColors := <aSelectedColors>
+
+#xcommand EDITKEYS <aKeys> ;
+        => ;
+        _OOHG_ActiveControlKeys := <aKeys>
+
 #xcommand END GRID ;
         => ;
-        iif( _OOHG_ActiveControlMultiSelect, TGridMulti(), TGrid() ):Define( ;
+        iif( _OOHG_ActiveControlByCell, TGridByCell(), iif( _OOHG_ActiveControlMultiSelect, TGridMulti(), TGrid() ) ):Define( ;
                 _OOHG_ActiveControlName, ;
                 _OOHG_ActiveControlOf, ;
                 _OOHG_ActiveControlCol, ;
@@ -2009,7 +2027,9 @@ GRID
                 _OOHG_ActiveControlOnEnter, ;
                 _OOHG_ActiveControlHeaderImages, ;
                 _OOHG_ActiveControlImagesAlign, ;
-                _OOHG_ActiveControlFullMove )
+                _OOHG_ActiveControlFullMove, ;
+                _OOHG_ActiveControlSelectedColors, ;
+                _OOHG_ActiveControlKeys )
 
 /*----------------------------------------------------------------------------
 BROWSE
@@ -2053,8 +2073,10 @@ BROWSE
         _OOHG_ActiveControlRecCount         := .F. ;;
         _OOHG_ActiveControlHeaderImages     := Nil ;;
         _OOHG_ActiveControlImagesAlign      := Nil ;;
-        _OOHG_ActiveControlFullMove         := .F.
-        
+        _OOHG_ActiveControlFullMove         := .F. ;;
+        _OOHG_ActiveControlSelectedColors   := .F. ;;
+        _OOHG_ActiveControlKeys             := Nil
+
 #xcommand DELETEWHEN <delwhen> ;
         => ;
         _OOHG_ActiveControlDeleteWhen := <{delwhen}>
@@ -2146,7 +2168,9 @@ BROWSE
                 _OOHG_ActiveControlOnDelete, ;
                 _OOHG_ActiveControlHeaderImages, ;
                 _OOHG_ActiveControlImagesAlign, ;
-                _OOHG_ActiveControlFullMove )
+                _OOHG_ActiveControlFullMove, ;
+                _OOHG_ActiveControlSelectedColors, ;
+                _OOHG_ActiveControlKeys )
 
 /*----------------------------------------------------------------------------
 XBROWSE
@@ -2190,7 +2214,9 @@ XBROWSE
         _OOHG_ActiveControlRecCount         := .F. ;;
         _OOHG_ActiveControlHeaderImages     := Nil ;;
         _OOHG_ActiveControlImagesAlign      := Nil ;;
-        _OOHG_ActiveControlFullMove         := .F.
+        _OOHG_ActiveControlFullMove         := .F. ;;
+        _OOHG_ActiveControlSelectedColors   := .F. ;;
+        _OOHG_ActiveControlKeys             := Nil
 
 #xcommand END XBROWSE ;
         => ;
@@ -2255,7 +2281,9 @@ XBROWSE
                 _OOHG_ActiveControlOnDelete, ;
                 _OOHG_ActiveControlHeaderImages, ;
                 _OOHG_ActiveControlImagesAlign, ;
-                _OOHG_ActiveControlFullMove )
+                _OOHG_ActiveControlFullMove, ;
+                _OOHG_ActiveControlSelectedColors, ;
+                _OOHG_ActiveControlKeys )
 
 /*----------------------------------------------------------------------------
 HYPERLINK

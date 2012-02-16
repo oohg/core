@@ -1,5 +1,5 @@
 /*
- * $Id: i_grid.ch,v 1.16 2011-08-31 01:11:05 fyurisich Exp $
+ * $Id: i_grid.ch,v 1.17 2012-02-16 22:49:28 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -155,8 +155,11 @@
       [ HEADERIMAGES <aHeaderImages> ] ;
       [ IMAGESALIGN <aImgAlign> ] ;
       [ <fullmove: FULLMOVE> ] ;
+      [ <bycell: NAVIGATEBYCELL> ] ;
+      [ SELECTEDCOLORS <aSelectedColors> ] ;
+      [ EDITKEYS <aEditKeys> ] ;
    =>;
-        [ <obj> := ] _OOHG_SelectSubClass( iif( <.multiselect.>, TGridMulti(), TGrid() ), [ <subclass>() ] ): ;
+        [ <obj> := ] _OOHG_SelectSubClass(iif( <.bycell.>, TGridByCell(), iif( <.multiselect.>, TGridMulti(), TGrid() ) ), [ <subclass>() ] ): ;
                      Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, ;
                      <widths>, <rows>, <value>, <fontname>, <fontsize>, <tooltip>, ;
                      <{change}>, <{dblclick}>, <aHeadClick>, <{gotfocus}>, <{lostfocus}>, ;
@@ -166,7 +169,8 @@
                      <dynamicforecolor>, <Picture>, <.rtl.>, <.inplace.>, <editcontrols>, ;
                      <aReadOnly>, <aValidFields>, <aValidMessages>, <{editcell}>, ;
                      <aWhenFields>, <.disabled.>, <.notabstop.>, <.invisible.>, ;
-                     ! <.noshowheaders.>, <{enter}>, <aHeaderImages>, <aImgAlign>, <.fullmove.> )
+                     ! <.noshowheaders.>, <{enter}>, <aHeaderImages>, <aImgAlign>, <.fullmove.>, ;
+                     <aSelectedColors>, <aEditKeys> )
 
 ///////////////////////////////////////////////////////////////////////////////
 // GRID (SPLITBOX VERSION)
@@ -224,8 +228,11 @@
       [ HEADERIMAGES <aHeaderImages> ] ;
       [ IMAGESALIGN <aImgAlign> ] ;
       [ <fullmove: FULLMOVE> ] ;
+      [ <bycell: NAVIGATEBYCELL> ] ;
+      [ SELECTEDCOLORS <aSelectedColors> ] ;
+      [ EDITKEYS <aEditKeys> ] ;
    =>;
-        [ <obj> := ] _OOHG_SelectSubClass( iif( <.multiselect.>, TGridMulti(), TGrid() ), [ <subclass>() ] ): ;
+        [ <obj> := ] _OOHG_SelectSubClass(iif( <.bycell.>, TGridByCell(), iif( <.multiselect.>, TGridMulti(), TGrid() ) ), [ <subclass>() ] ): ;
                      Define( <(name)>, <(parent)>, , , <w>, <h>, <headers>, ;
                      <widths>, <rows>, <value>, <fontname>, <fontsize>, <tooltip>, ;
                      <{change}>, <{dblclick}>, <aHeadClick>, <{gotfocus}>, <{lostfocus}>, ;
@@ -235,6 +242,5 @@
                      <dynamicforecolor>, <Picture>, <.rtl.>, <.inplace.>, <editcontrols>, ;
                      <aReadOnly>, <aValidFields>, <aValidMessages>, <{editcell}>, ;
                      <aWhenFields>, <.disabled.>, <.notabstop.>, <.invisible.>, ;
-                     ! <.noshowheaders.>, <{enter}>, <aHeaderImages>, <aImgAlign>, <.fullmove.> )
-
-///////////////////////////////////////////////////////////////////////////////
+                     ! <.noshowheaders.>, <{enter}>, <aHeaderImages>, <aImgAlign>, <.fullmove.>, ;
+                     <aSelectedColors>, <aEditKeys> )
