@@ -1,11 +1,17 @@
 /*
- * $Id: ChangeLog,v 1.858 2012-02-16 23:47:13 fyurisich Exp $
+ * $Id: ChangeLog,v 1.859 2012-02-17 11:34:09 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-02-16 09:34 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_grid.prg
+     + By default TGridByCell navigation is restricted to the
+       selected row. Adding FULLMOVE clause enables navigation
+       to change to previous/next row from first/last column.
 
 2012-02-16 21:47 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg

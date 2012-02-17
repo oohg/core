@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.136 2012-02-16 23:47:14 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.137 2012-02-17 11:34:09 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -2332,7 +2332,6 @@ Local nStyle := LVS_SINGLESEL
       aSelectedColors[ 8 ] := GetSysColor( COLOR_WINDOW )
    EndIf
    
-   FullMove := .T.
    InPlace  := .T.
 
    ::Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
@@ -2344,7 +2343,7 @@ Local nStyle := LVS_SINGLESEL
               InPlace, editcontrols, readonly, valid, validmessages, ;
               editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
               lNoHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
-               aSelectedColors, aEditKeys )
+              aSelectedColors, aEditKeys )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -2475,7 +2474,7 @@ METHOD Right() CLASS TGridByCell
    Else
       If ::nColPos < Len( ::aHeaders )
          ::Value := { ::nRowPos, ::nColPos + 1 }
-      ElseIf ::nRowPos < ::ItemCount
+      ElseIf ::FullMove .AND. ::nRowPos < ::ItemCount
          ::Value := { ::nRowPos + 1, 1 }
       EndIf
    EndIf
@@ -2495,7 +2494,7 @@ METHOD Left() CLASS TGridByCell
    Else
       If ::nColPos > 1
          ::Value := { ::nRowPos, ::nColPos - 1 }
-      ElseIf ::nRowPos > 1
+      ElseIf ::FullMove .AND. ::nRowPos > 1
          ::Value := { ::nRowPos - 1, Len( ::aHeaders ) }
       EndIf
    EndIf
