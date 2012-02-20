@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.137 2012-02-17 11:34:09 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.138 2012-02-20 20:52:15 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -213,28 +213,6 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
 *-----------------------------------------------------------------------------*
 Local nStyle := LVS_SINGLESEL
 
-   If HB_IsArray( aSelectedColors )
-      aSize( aSelectedColors, 4 )
-   Else
-      aSelectedColors := Array( 4 )
-   EndIf
-   // For text of selected row when grid has the focus
-   If ! ValType( aSelectedColors[ 1 ] ) $ "ANB"
-      aSelectedColors[ 1 ] := GetSysColor( COLOR_HIGHLIGHTTEXT )
-   EndIf
-   // For background of selected row when grid has the focus
-   If ! ValType( aSelectedColors[ 2 ] ) $ "ANB"
-      aSelectedColors[ 2 ] := GetSysColor( COLOR_HIGHLIGHT )
-   EndIf
-   // For text of selected row when grid doesn't has the focus
-   If ! ValType( aSelectedColors[ 3 ] ) $ "ANB"
-      aSelectedColors[ 3 ] := GetSysColor( COLOR_WINDOWTEXT )
-   EndIf
-   // For background of selected row when doesn't has the focus
-   If ! ValType( aSelectedColors[ 4 ] ) $ "ANB"
-      aSelectedColors[ 4 ] := GetSysColor( COLOR_3DFACE )
-   EndIf
-
    ::Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               aRows, value, fontname, fontsize, tooltip, change, dblclick, ;
               aHeadClick, gotfocus, lostfocus, nogrid, aImage, aJust, ;
@@ -262,6 +240,28 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
 Local ControlHandle, aImageList, i
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, .t., lRtl )
+
+   If HB_IsArray( aSelectedColors )
+      aSize( aSelectedColors, 4 )
+   Else
+      aSelectedColors := Array( 4 )
+   EndIf
+   // For text of selected row when grid has the focus
+   If ! ValType( aSelectedColors[ 1 ] ) $ "ANB"
+      aSelectedColors[ 1 ] := GetSysColor( COLOR_HIGHLIGHTTEXT )
+   EndIf
+   // For background of selected row when grid has the focus
+   If ! ValType( aSelectedColors[ 2 ] ) $ "ANB"
+      aSelectedColors[ 2 ] := GetSysColor( COLOR_HIGHLIGHT )
+   EndIf
+   // For text of selected row when grid doesn't has the focus
+   If ! ValType( aSelectedColors[ 3 ] ) $ "ANB"
+      aSelectedColors[ 3 ] := GetSysColor( COLOR_WINDOWTEXT )
+   EndIf
+   // For background of selected row when doesn't has the focus
+   If ! ValType( aSelectedColors[ 4 ] ) $ "ANB"
+      aSelectedColors[ 4 ] := GetSysColor( COLOR_3DFACE )
+   EndIf
 
    ASSIGN ::aWidths  VALUE aWidths  TYPE "A"
    ASSIGN ::aHeaders VALUE aHeaders TYPE "A"

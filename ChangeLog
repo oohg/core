@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog,v 1.859 2012-02-17 11:34:09 fyurisich Exp $
+ * $Id: ChangeLog,v 1.860 2012-02-20 20:52:14 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-02-20 15:06 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+   * source/h_grid.prg
+     ! Fixed ::GridSelectedColors default values assignment
+       (moved from ::Define() to ::Define2() method).
 
 2012-02-16 09:34 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
