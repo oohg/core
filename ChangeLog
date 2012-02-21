@@ -1,11 +1,18 @@
 /*
- * $Id: ChangeLog,v 1.860 2012-02-20 20:52:14 guerra000 Exp $
+ * $Id: ChangeLog,v 1.861 2012-02-21 00:21:37 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-02-20 18:32 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+   * samples/oohg/oohgrecord/px.prg
+     ! Fixed .PX's key count for numbers grather than 32,767.
+     + "Fast skip" functionality added (don't re-locate record
+       for small SKIPs).
+     ! Small optimization for ReadBigEndian() calls.
 
 2012-02-20 15:06 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
    * source/h_grid.prg
