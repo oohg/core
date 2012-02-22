@@ -1,11 +1,23 @@
 /*
- * $Id: ChangeLog,v 1.863 2012-02-22 05:01:41 fyurisich Exp $
+ * $Id: ChangeLog,v 1.864 2012-02-22 06:45:49 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-02-22 04:45 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_grid.prg
+     * nColPos and nRowPos DATAs changed to HIDDEN, the only method that
+       access them is VALUE.
+     * All navigation is done using VALUE.
+     * VALUE returns {0,0} is no valid cell is selected.
+     * Navigation when no cell is selected behaves like grid by row:
+       Home, Right and Down keys select cell {1,1}, Left and Up are
+       ignored, PgUp selects first cell in the first row, PgDn
+       selects leftmost cell of the last row of the first page and
+       End selects rightmost cell of the the last row.
 
 2012-02-22 03:00 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
