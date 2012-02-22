@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.45 2012-02-16 22:49:28 fyurisich Exp $
+ * $Id: classes.txt,v 1.46 2012-02-22 04:17:41 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -854,6 +854,7 @@ CLASS TGRID FROM TCONTROL
    METHOD RIGHT
    METHOD SETITEMCOLOR
    METHOD SETRANGECOLOR
+   METHOD SETSELECTEDCOLORS       SETGET
    METHOD SORTCOLUMN
    METHOD TOEXCEL
    METHOD UP
@@ -889,6 +890,7 @@ CLASS TGRIDBYCELL FROM TGRID
    METHOD PAGEDOWN
    METHOD PAGEUP
    METHOD RIGHT
+   METHOD SETSELECTEDCOLORS       SETGET
    METHOD UP
    METHOD VALUE                   SETGET
 ENDCLASS

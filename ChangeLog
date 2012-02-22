@@ -1,11 +1,20 @@
 /*
- * $Id: ChangeLog,v 1.861 2012-02-21 00:21:37 guerra000 Exp $
+ * $Id: ChangeLog,v 1.862 2012-02-22 04:17:40 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-02-12 02:17 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_grid.prg
+     + Added SetSelectedColors method to set/get the colors
+       for selected row and cell.
+     ! Fixed cancelation when colors in SELECTEDCOLORS clause
+       are specified using numbers or codeblocks.
+   * doc/classes.txt
+     * Updated.
 
 2012-02-20 18:32 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
    * samples/oohg/oohgrecord/px.prg

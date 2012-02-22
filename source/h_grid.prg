@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.138 2012-02-20 20:52:15 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.139 2012-02-22 04:17:41 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -136,6 +136,7 @@ CLASS TGrid FROM TControl
    DATA aHeaderImage          INIT {}
    DATA aHeaderImageAlign     INIT {}
    DATA GridSelectedColors    INIT {}
+   DATA aSelectedColors       INIT {}
    DATA aEditKeys             INIT Nil
 
    METHOD Define
@@ -197,6 +198,7 @@ CLASS TGrid FROM TControl
    METHOD HeaderImageAlign
    METHOD Release
    METHOD LoadHeaderImages
+   METHOD SetSelectedColors   SETGET
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -240,28 +242,6 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
 Local ControlHandle, aImageList, i
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, .t., lRtl )
-
-   If HB_IsArray( aSelectedColors )
-      aSize( aSelectedColors, 4 )
-   Else
-      aSelectedColors := Array( 4 )
-   EndIf
-   // For text of selected row when grid has the focus
-   If ! ValType( aSelectedColors[ 1 ] ) $ "ANB"
-      aSelectedColors[ 1 ] := GetSysColor( COLOR_HIGHLIGHTTEXT )
-   EndIf
-   // For background of selected row when grid has the focus
-   If ! ValType( aSelectedColors[ 2 ] ) $ "ANB"
-      aSelectedColors[ 2 ] := GetSysColor( COLOR_HIGHLIGHT )
-   EndIf
-   // For text of selected row when grid doesn't has the focus
-   If ! ValType( aSelectedColors[ 3 ] ) $ "ANB"
-      aSelectedColors[ 3 ] := GetSysColor( COLOR_WINDOWTEXT )
-   EndIf
-   // For background of selected row when doesn't has the focus
-   If ! ValType( aSelectedColors[ 4 ] ) $ "ANB"
-      aSelectedColors[ 4 ] := GetSysColor( COLOR_3DFACE )
-   EndIf
 
    ASSIGN ::aWidths  VALUE aWidths  TYPE "A"
    ASSIGN ::aHeaders VALUE aHeaders TYPE "A"
@@ -333,7 +313,6 @@ Local ControlHandle, aImageList, i
    ::ValidMessages := validmessages
    ::aEditKeys := aEditKeys
    ::EditControls := editcontrols
-   ::GridSelectedColors := aSelectedColors
    ::OnEditCell := editcell
    ::aWhen := aWhenFields
    ASSIGN ::InPlace   VALUE inplace  TYPE "L"
@@ -370,6 +349,7 @@ Local ControlHandle, aImageList, i
    // Load rows
    aEval( aRows, { |u| ::AddItem( u ) } )
 
+   ::SetSelectedColors( aSelectedColors, .F. )
    ::Value := value
 
    // Must be set after control is initialized
@@ -381,6 +361,49 @@ Local ControlHandle, aImageList, i
    ASSIGN ::OnEnter     value onenter    TYPE "B"
 
 Return Self
+
+*-----------------------------------------------------------------------------*
+METHOD SetSelectedColors( aSelectedColors, lRedraw ) CLASS TGrid
+*-----------------------------------------------------------------------------*
+Local i, aColors[ 4 ]
+
+   If HB_IsArray( aSelectedColors )
+      aSelectedColors := aClone( aSelectedColors )
+      aSize( aSelectedColors, 4 )
+
+      // For text of selected row when grid has the focus
+      If ! ValType( aSelectedColors[ 1 ] ) $ "ANB"
+         aSelectedColors[ 1 ] := GetSysColor( COLOR_HIGHLIGHTTEXT )
+      EndIf
+      // For background of selected row when grid has the focus
+      If ! ValType( aSelectedColors[ 2 ] ) $ "ANB"
+         aSelectedColors[ 2 ] := GetSysColor( COLOR_HIGHLIGHT )
+      EndIf
+      // For text of selected row when grid doesn't has the focus
+      If ! ValType( aSelectedColors[ 3 ] ) $ "ANB"
+         aSelectedColors[ 3 ] := GetSysColor( COLOR_WINDOWTEXT )
+      EndIf
+      // For background of selected row when doesn't has the focus
+      If ! ValType( aSelectedColors[ 4 ] ) $ "ANB"
+         aSelectedColors[ 4 ] := GetSysColor( COLOR_3DFACE )
+      EndIf
+
+      ::aSelectedColors := aSelectedColors
+
+      For i := 1 to 4
+         aColors[ i ] := _OOHG_GetArrayItem( aSelectedColors, i )
+      Next i
+
+      ::GridSelectedColors := aColors
+
+      If lRedraw
+         RedrawWindow( ::hWnd )
+      EndIf
+   Else
+      aSelectedColors := aClone( ::aSelectedColors )
+   EndIf
+
+Return aSelectedColors
 
 *-----------------------------------------------------------------------------*
 METHOD LoadHeaderImages( aHeaderImage ) CLASS TGrid
@@ -2272,6 +2295,7 @@ CLASS TGridByCell FROM TGrid
    METHOD Events_Notify
    METHOD DeleteItem
    METHOD DoChange
+   METHOD SetSelectedColors SETGET
 
    METHOD EditItem      BLOCK {|| Nil }
    METHOD EditItem2     BLOCK {|| Nil }
@@ -2293,45 +2317,6 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
 *-----------------------------------------------------------------------------*
 Local nStyle := LVS_SINGLESEL
 
-   If HB_IsArray( aSelectedColors )
-      aSize( aSelectedColors, 8 )
-   Else
-      aSelectedColors := Array( 8 )
-   EndIf
-   // For text of selected cell when grid has the focus
-   If ! ValType( aSelectedColors[ 1 ] ) $ "ANB"
-      aSelectedColors[ 1 ] := GetSysColor( COLOR_HIGHLIGHTTEXT )
-   EndIf
-   // For background of selected cell when grid has the focus
-   If ! ValType( aSelectedColors[ 2 ] ) $ "ANB"
-      aSelectedColors[ 2 ] := GetSysColor( COLOR_HIGHLIGHT )
-   EndIf
-   // For text of selected cell when grid doesn't has the focus
-   If ! ValType( aSelectedColors[ 3 ] ) $ "ANB"
-      aSelectedColors[ 3 ] := GetSysColor( COLOR_WINDOWTEXT )
-   EndIf
-   // For background of selected cell when grid doesn't has the focus
-   If ! ValType( aSelectedColors[ 4 ] ) $ "ANB"
-      aSelectedColors[ 4 ] := GetSysColor( COLOR_3DFACE )
-   EndIf
-
-   // For text of other cells in the selected row when grid has the focus
-   If ! ValType( aSelectedColors[ 5 ] ) $ "ANB"
-      aSelectedColors[ 5 ] := GetSysColor( COLOR_WINDOWTEXT )
-   EndIf
-   // For background of other cells in the selected row when grid has the focus
-   If ! ValType( aSelectedColors[ 6 ] ) $ "ANB"
-      aSelectedColors[ 6 ] := GetSysColor( COLOR_WINDOW )
-   EndIf
-   // For text of other cells in the selected row when grid doesn't has the focus
-   If ! ValType( aSelectedColors[ 7 ] ) $ "ANB"
-      aSelectedColors[ 7 ] := GetSysColor( COLOR_WINDOWTEXT )
-   EndIf
-   // For background of other cells in the selected row when grid doesn't has the focus
-   If ! ValType( aSelectedColors[ 8 ] ) $ "ANB"
-      aSelectedColors[ 8 ] := GetSysColor( COLOR_WINDOW )
-   EndIf
-   
    InPlace  := .T.
 
    ::Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
@@ -2345,6 +2330,66 @@ Local nStyle := LVS_SINGLESEL
               lNoHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
               aSelectedColors, aEditKeys )
 Return Self
+
+*-----------------------------------------------------------------------------*
+METHOD SetSelectedColors( aSelectedColors, lRedraw ) CLASS TGridByCell
+*-----------------------------------------------------------------------------*
+Local i, aColors[ 8 ]
+
+   If HB_IsArray( aSelectedColors )
+      aSelectedColors := aClone( aSelectedColors )
+      aSize( aSelectedColors, 8 )
+
+      // For text of selected cell when grid has the focus
+      If ! ValType( aSelectedColors[ 1 ] ) $ "ANB"
+         aSelectedColors[ 1 ] := GetSysColor( COLOR_HIGHLIGHTTEXT )
+      EndIf
+      // For background of selected cell when grid has the focus
+      If ! ValType( aSelectedColors[ 2 ] ) $ "ANB"
+         aSelectedColors[ 2 ] := GetSysColor( COLOR_HIGHLIGHT )
+      EndIf
+      // For text of selected cell when grid doesn't has the focus
+      If ! ValType( aSelectedColors[ 3 ] ) $ "ANB"
+         aSelectedColors[ 3 ] := GetSysColor( COLOR_WINDOWTEXT )
+      EndIf
+      // For background of selected cell when grid doesn't has the focus
+      If ! ValType( aSelectedColors[ 4 ] ) $ "ANB"
+         aSelectedColors[ 4 ] := GetSysColor( COLOR_3DFACE )
+      EndIf
+
+      // For text of other cells in the selected row when grid has the focus
+      If ! ValType( aSelectedColors[ 5 ] ) $ "ANB"
+         aSelectedColors[ 5 ] := GetSysColor( COLOR_WINDOWTEXT )
+      EndIf
+      // For background of other cells in the selected row when grid has the focus
+      If ! ValType( aSelectedColors[ 6 ] ) $ "ANB"
+         aSelectedColors[ 6 ] := GetSysColor( COLOR_WINDOW )
+      EndIf
+      // For text of other cells in the selected row when grid doesn't has the focus
+      If ! ValType( aSelectedColors[ 7 ] ) $ "ANB"
+         aSelectedColors[ 7 ] := GetSysColor( COLOR_WINDOWTEXT )
+      EndIf
+      // For background of other cells in the selected row when grid doesn't has the focus
+      If ! ValType( aSelectedColors[ 8 ] ) $ "ANB"
+         aSelectedColors[ 8 ] := GetSysColor( COLOR_WINDOW )
+      EndIf
+
+      ::aSelectedColors := aSelectedColors
+
+      For i := 1 to 8
+         aColors[ i ] := _OOHG_GetArrayItem( aSelectedColors, i )
+      Next i
+
+      ::GridSelectedColors := aColors
+
+      If lRedraw
+         RedrawWindow( ::hWnd )
+      EndIf
+   Else
+      aSelectedColors := aClone( ::aSelectedColors )
+   EndIf
+
+Return aSelectedColors
 
 *-----------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TGridByCell
