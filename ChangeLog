@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.862 2012-02-22 04:17:40 fyurisich Exp $
+ * $Id: ChangeLog,v 1.863 2012-02-22 05:01:41 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,7 +7,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2012-02-12 02:17 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+2012-02-22 03:00 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_grid.prg
+     ! Fixed cancelation when SELECTEDCOLORS clause is ommited
+       in DEFINE GRID.
+
+2012-02-22 02:17 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
      + Added SetSelectedColors method to set/get the colors
        for selected row and cell.

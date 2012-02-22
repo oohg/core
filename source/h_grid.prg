@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.139 2012-02-22 04:17:41 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.140 2012-02-22 05:01:42 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -349,7 +349,11 @@ Local ControlHandle, aImageList, i
    // Load rows
    aEval( aRows, { |u| ::AddItem( u ) } )
 
+   If ! HB_IsArray( aSelectedColors )
+      aSelectedColors := {}
+   EndIf
    ::SetSelectedColors( aSelectedColors, .F. )
+   
    ::Value := value
 
    // Must be set after control is initialized
