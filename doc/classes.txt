@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.46 2012-02-22 04:17:41 fyurisich Exp $
+ * $Id: classes.txt,v 1.47 2012-02-25 04:42:58 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -806,6 +806,7 @@ CLASS TGRID FROM TCONTROL
    METHOD CELL
    METHOD CELLCAPTION
    METHOD CELLIMAGE
+   METHOD CHECKITEM               SETGET
    METHOD COLUMNAUTOFIT
    METHOD COLUMNAUTOFITH
    METHOD COLUMNBETTERAUTOFIT
