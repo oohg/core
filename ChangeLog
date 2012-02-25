@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.864 2012-02-22 06:45:49 fyurisich Exp $
+ * $Id: ChangeLog,v 1.865 2012-02-25 03:37:12 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,6 +7,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-02-25 01:35 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_grid.ch
+   * source/h_grid.prg
+     + Added CHECKBOXES clause and CheckItem( nItem, lChecked ) method.
+     
 2012-02-22 04:45 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
      * nColPos and nRowPos DATAs changed to HIDDEN, the only method that

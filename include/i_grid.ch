@@ -1,5 +1,5 @@
 /*
- * $Id: i_grid.ch,v 1.17 2012-02-16 22:49:28 fyurisich Exp $
+ * $Id: i_grid.ch,v 1.18 2012-02-25 03:37:12 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -158,6 +158,7 @@
       [ <bycell: NAVIGATEBYCELL> ] ;
       [ SELECTEDCOLORS <aSelectedColors> ] ;
       [ EDITKEYS <aEditKeys> ] ;
+      [ <checkboxes: CHECKBOXES> ] ;
    =>;
         [ <obj> := ] _OOHG_SelectSubClass(iif( <.bycell.>, TGridByCell(), iif( <.multiselect.>, TGridMulti(), TGrid() ) ), [ <subclass>() ] ): ;
                      Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, ;
@@ -170,7 +171,7 @@
                      <aReadOnly>, <aValidFields>, <aValidMessages>, <{editcell}>, ;
                      <aWhenFields>, <.disabled.>, <.notabstop.>, <.invisible.>, ;
                      ! <.noshowheaders.>, <{enter}>, <aHeaderImages>, <aImgAlign>, <.fullmove.>, ;
-                     <aSelectedColors>, <aEditKeys> )
+                     <aSelectedColors>, <aEditKeys>, <.checkboxes.> )
 
 ///////////////////////////////////////////////////////////////////////////////
 // GRID (SPLITBOX VERSION)
@@ -231,6 +232,7 @@
       [ <bycell: NAVIGATEBYCELL> ] ;
       [ SELECTEDCOLORS <aSelectedColors> ] ;
       [ EDITKEYS <aEditKeys> ] ;
+      [ <checkboxes: CHECKBOXES> ] ;
    =>;
         [ <obj> := ] _OOHG_SelectSubClass(iif( <.bycell.>, TGridByCell(), iif( <.multiselect.>, TGridMulti(), TGrid() ) ), [ <subclass>() ] ): ;
                      Define( <(name)>, <(parent)>, , , <w>, <h>, <headers>, ;
@@ -243,4 +245,4 @@
                      <aReadOnly>, <aValidFields>, <aValidMessages>, <{editcell}>, ;
                      <aWhenFields>, <.disabled.>, <.notabstop.>, <.invisible.>, ;
                      ! <.noshowheaders.>, <{enter}>, <aHeaderImages>, <aImgAlign>, <.fullmove.>, ;
-                     <aSelectedColors>, <aEditKeys> )
+                     <aSelectedColors>, <aEditKeys>, <.checkboxes.> )

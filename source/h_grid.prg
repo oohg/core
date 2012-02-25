@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.141 2012-02-22 06:45:49 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.142 2012-02-25 03:37:12 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -138,6 +138,7 @@ CLASS TGrid FROM TControl
    DATA GridSelectedColors    INIT {}
    DATA aSelectedColors       INIT {}
    DATA aEditKeys             INIT Nil
+   DATA lCheckBoxes           INIT .F.
 
    METHOD Define
    METHOD Define2
@@ -199,6 +200,7 @@ CLASS TGrid FROM TControl
    METHOD Release
    METHOD LoadHeaderImages
    METHOD SetSelectedColors   SETGET
+   METHOD CheckItem           SETGET
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -211,7 +213,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                editcontrols, readonly, valid, validmessages, editcell, ;
                aWhenFields, lDisabled, lNoTabStop, lInvisible, lNoHeaders, ;
                onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
-               aSelectedColors, aEditKeys ) CLASS TGrid
+               aSelectedColors, aEditKeys, lCheckBoxes ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local nStyle := LVS_SINGLESEL
 
@@ -224,7 +226,7 @@ Local nStyle := LVS_SINGLESEL
               inplace, editcontrols, readonly, valid, validmessages, ;
               editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
               lNoHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
-              aSelectedColors, aEditKeys )
+              aSelectedColors, aEditKeys, lCheckBoxes )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -237,7 +239,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                 inplace, editcontrols, readonly, valid, validmessages, ;
                 editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
                 lNoHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
-               aSelectedColors, aEditKeys ) CLASS TGrid
+                aSelectedColors, aEditKeys, lCheckBoxes ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local ControlHandle, aImageList, i
 
@@ -257,16 +259,17 @@ Local ControlHandle, aImageList, i
       aRows := {}
    EndIf
 
-   ASSIGN ::nWidth  VALUE w TYPE "N"
-   ASSIGN ::nHeight VALUE h TYPE "N"
-   ASSIGN ::nRow    VALUE y TYPE "N"
-   ASSIGN ::nCol    VALUE x TYPE "N"
+   ASSIGN ::nWidth      VALUE w           TYPE "N"
+   ASSIGN ::nHeight     VALUE h           TYPE "N"
+   ASSIGN ::nRow        VALUE y           TYPE "N"
+   ASSIGN ::nCol        VALUE x           TYPE "N"
 
-   ASSIGN ::aHeadClick VALUE aHeadClick TYPE "A" DEFAULT {}
-   ASSIGN ::aJust      VALUE aJust      TYPE "A"
-   ASSIGN ::Picture    VALUE aPicture   TYPE "A"
+   ASSIGN ::aHeadClick  VALUE aHeadClick  TYPE "A" DEFAULT {}
+   ASSIGN ::aJust       VALUE aJust       TYPE "A"
+   ASSIGN ::Picture     VALUE aPicture    TYPE "A"
 
-   ASSIGN nogrid       VALUE nogrid     TYPE "L" DEFAULT .F.
+   ASSIGN nogrid        VALUE nogrid      TYPE "L" DEFAULT .F.
+   ASSIGN ::lCheckBoxes VALUE lCheckBoxes TYPE "L" DEFAULT .F.
 
    nStyle := ::InitStyle( nStyle,, lInvisible, lNoTabStop, lDisabled ) + ;
              If( HB_IsLogical( lNoHeaders ) .AND. ! lNoHeaders, LVS_NOCOLUMNHEADER, 0 )
@@ -286,7 +289,7 @@ Local ControlHandle, aImageList, i
    aEval( ::Picture, { |x,i| ::Picture[ i ] := If( ( ValType( x ) $ "CM" .AND. ! Empty( x ) ) .OR. HB_IsLogical( x ), x, Nil ) } )
 
    ::SetSplitBoxInfo( Break )
-   ControlHandle := InitListView( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, '', 0, If( nogrid, 0, 1 ), ownerdata, itemcount, nStyle, ::lRtl )
+   ControlHandle := InitListView( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, '', 0, If( nogrid, 0, 1 ), ownerdata, itemcount, nStyle, ::lRtl, ::lCheckBoxes )
 
    If HB_IsArray( aImage )
       aImageList := ImageList_Init( aImage, CLR_NONE, LR_LOADTRANSPARENT )
@@ -365,6 +368,23 @@ Local ControlHandle, aImageList, i
    ASSIGN ::OnEnter     value onenter    TYPE "B"
 
 Return Self
+
+*-----------------------------------------------------------------------------*
+METHOD CheckItem( nItem, lChecked ) CLASS TGrid
+*-----------------------------------------------------------------------------*
+Local lRet
+
+   If ::lCheckBoxes .AND. HB_IsNumeric( nItem )
+      If HB_IsLogical( lChecked )
+         ListView_SetCheckState( ::hwnd, nItem, lChecked )
+      EndIf
+
+      lRet := ListView_GetCheckState( ::hwnd, nItem )
+   Else
+      lRet := .F.
+   EndIf
+
+Return lRet
 
 *-----------------------------------------------------------------------------*
 METHOD SetSelectedColors( aSelectedColors, lRedraw ) CLASS TGrid
@@ -2069,7 +2089,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                editcontrols, readonly, valid, validmessages, editcell, ;
                aWhenFields, lDisabled, lNoTabStop, lInvisible, lNoHeaders, ;
                onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
-               aSelectedColors, aEditKeys ) CLASS TGridMulti
+               aSelectedColors, aEditKeys, lCheckBoxes ) CLASS TGridMulti
 *-----------------------------------------------------------------------------*
 Local nStyle := 0
 
@@ -2082,7 +2102,7 @@ Local nStyle := 0
               inplace, editcontrols, readonly, valid, validmessages, ;
               editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
               lNoHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
-               aSelectedColors, aEditKeys )
+               aSelectedColors, aEditKeys, lCheckBoxes )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -2319,11 +2339,11 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                editcontrols, readonly, valid, validmessages, editcell, ;
                aWhenFields, lDisabled, lNoTabStop, lInvisible, lNoHeaders, ;
                onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
-               aSelectedColors, aEditKeys ) CLASS TGridByCell
+               aSelectedColors, aEditKeys, lCheckBoxes ) CLASS TGridByCell
 *-----------------------------------------------------------------------------*
 Local nStyle := LVS_SINGLESEL
 
-   InPlace  := .T.
+   InPlace := .T.
 
    ::Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               aRows, value, fontname, fontsize, tooltip, change, dblclick, ;
@@ -2334,7 +2354,7 @@ Local nStyle := LVS_SINGLESEL
               InPlace, editcontrols, readonly, valid, validmessages, ;
               editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
               lNoHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
-              aSelectedColors, aEditKeys )
+              aSelectedColors, aEditKeys, lCheckBoxes )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -3915,7 +3935,7 @@ HB_FUNC( INITLISTVIEW )
 {
    HWND hwnd;
    HWND hbutton;
-   int style, StyleEx;
+   int style, StyleEx, extStyle;
 
    INITCOMMONCONTROLSEX i;
 
@@ -3938,7 +3958,12 @@ HB_FUNC( INITLISTVIEW )
    hb_parni(3), hb_parni(4), hb_parni(5), hb_parni(6),
    hwnd, ( HMENU ) HWNDparam( 2 ), GetModuleHandle(NULL), NULL ) ;
 
-   SendMessage(hbutton,LVM_SETEXTENDEDLISTVIEWSTYLE, 0, hb_parni(9) | LVS_EX_FULLROWSELECT | LVS_EX_HEADERDRAGDROP | LVS_EX_SUBITEMIMAGES );
+   extStyle = hb_parni(9) | LVS_EX_FULLROWSELECT | LVS_EX_HEADERDRAGDROP | LVS_EX_SUBITEMIMAGES;
+   if ( hb_parl( 14 ) )
+   {
+      extStyle = extStyle | LVS_EX_CHECKBOXES;
+   }
+   SendMessage(hbutton, LVM_SETEXTENDEDLISTVIEWSTYLE, 0, extStyle );
 
    if ( hb_parl( 10 ) )
    {
@@ -4784,6 +4809,16 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
 HB_FUNC( TGRID_NOTIFY_CUSTOMDRAW )
 {
    hb_retni( TGrid_Notify_CustomDraw( hb_param( 1, HB_IT_OBJECT ), ( LPARAM ) hb_parnl( 2 ), hb_parl( 3 ), hb_parni( 4 ), hb_parni( 5 ) ) );
+}
+
+HB_FUNC( LISTVIEW_GETCHECKSTATE )
+{
+   hb_retl( ListView_GetCheckState ( HWNDparam( 1 ), hb_parni( 2 ) - 1 ) ) ;
+}
+
+HB_FUNC( LISTVIEW_SETCHECKSTATE )
+{
+   ListView_SetCheckState ( HWNDparam( 1 ), hb_parni( 2 ) - 1, hb_parl( 3 ) ) ;
 }
 
 #pragma ENDDUMP
