@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.60 2012-02-16 22:49:28 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.61 2012-02-25 15:53:14 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -122,6 +122,7 @@ Memvariables
 #xtranslate _OOHG_ActiveControlTrailingFontColor      => _OOHG_ActiveControlInfo \[  25 \]
 #xtranslate _OOHG_ActiveControlBackgroundColor        => _OOHG_ActiveControlInfo \[  26 \]
 
+#xtranslate _OOHG_ActiveControlCheckBoxes             => _OOHG_ActiveControlInfo \[ 144 \]
 #xtranslate _OOHG_ActiveControlKeys                   => _OOHG_ActiveControlInfo \[ 145 \]
 #xtranslate _OOHG_ActiveControlSelectedColors         => _OOHG_ActiveControlInfo \[ 146 \]
 #xtranslate _OOHG_ActiveControlByCell                 => _OOHG_ActiveControlInfo \[ 147 \]
@@ -1943,7 +1944,8 @@ GRID
         _OOHG_ActiveControlFullMove         := .F. ;;
         _OOHG_ActiveControlByCell           := .F. ;;
         _OOHG_ActiveControlSelectedColors   := .F. ;;
-        _OOHG_ActiveControlKeys             := Nil
+        _OOHG_ActiveControlKeys             := Nil ;;
+        _OOHG_ActiveControlCheckBoxes       := .F.
 
 #xcommand ONAPPEND <onappend> ;
         => ;
@@ -1972,6 +1974,10 @@ GRID
 #xcommand EDITKEYS <aKeys> ;
         => ;
         _OOHG_ActiveControlKeys := <aKeys>
+
+#xcommand CHECKBOXES <checkboxes> ;
+        => ;
+        _OOHG_ActiveControlCheckBoxes := <checkboxes>
 
 #xcommand END GRID ;
         => ;
@@ -2029,7 +2035,8 @@ GRID
                 _OOHG_ActiveControlImagesAlign, ;
                 _OOHG_ActiveControlFullMove, ;
                 _OOHG_ActiveControlSelectedColors, ;
-                _OOHG_ActiveControlKeys )
+                _OOHG_ActiveControlKeys, ;
+                _OOHG_ActiveControlCheckBoxes )
 
 /*----------------------------------------------------------------------------
 BROWSE
