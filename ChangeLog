@@ -1,5 +1,5 @@
 ﻿/*
- * $Id: ChangeLog,v 1.867 2012-02-26 02:29:46 declan2005 Exp $
+ * $Id: ChangeLog,v 1.868 2012-02-26 04:01:11 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -9,7 +9,7 @@
 
 2012-02-25 20:20:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
      * source/h_print.prg
-       !  default bin changed form 1 to NIL in order to get it from printer dialog if is not especified
+       !  default bin changed from 1 to NIL in order to get it from printer dialog if is not especified
 
 2012-02-25 02:43 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * doc/classes.txt
