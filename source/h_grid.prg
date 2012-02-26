@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.142 2012-02-25 03:37:12 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.143 2012-02-26 05:25:58 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -3047,7 +3047,7 @@ Local oGridControl, aEdit2, cControl
       cControl := Upper( AllTrim( aEditControl[ 1 ] ) )
       Do Case
          Case cControl == "MEMO"
-            oGridControl := TGridControlMemo():New()
+            oGridControl := TGridControlMemo():New( aEdit2[ 2 ] )
          Case cControl == "DATEPICKER"
             oGridControl := TGridControlDatePicker():New( aEdit2[ 2 ], aEdit2[ 3 ] )
          Case cControl == "COMBOBOX"
@@ -3315,10 +3315,18 @@ Return uValue
 CLASS TGridControlMemo FROM TGridControl
 *-----------------------------------------------------------------------------*
    DATA nDefHeight INIT 84
+   DATA cTitle     INIT _OOHG_Messages( 1, 11 )
 
+   METHOD New
    METHOD CreateWindow
    METHOD CreateControl
 ENDCLASS
+
+METHOD New( cTitle ) CLASS TGridControlMemo
+   If ValType( cTitle ) $ "CM" .AND. ! Empty( cTitle )
+      ::cTitle := cTitle
+   EndIf
+Return Self
 
 METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aKeys ) CLASS TGridControlMemo
 Local lRet := .F., i
@@ -3328,7 +3336,7 @@ Local lRet := .F., i
    Empty( nFontSize )
 
    DEFINE WINDOW 0 OBJ ::oWindow ;
-      AT nRow, nCol WIDTH 350 HEIGHT GetTitleHeight() + 265 TITLE "Edit Memo" ;
+      AT nRow, nCol WIDTH 350 HEIGHT GetTitleHeight() + 265 TITLE ::cTitle ;
       MODAL NOSIZE
 
       ON KEY ESCAPE OF ( ::oWindow ) ACTION ( ::oWindow:Release() )

@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.869 2012-02-26 04:16:46 fyurisich Exp $
+ * $Id: ChangeLog,v 1.870 2012-02-26 05:25:58 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,9 +7,18 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-02-26 03:26:00 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+     * source/h_init.prg
+       + Added message 'Edit Memo' to language customization.
+     * source/h_grid.prg
+       * Title of editing window for memo fields is now customizable.
+         Use TGridControlMemo():New("My Title") in COLUMNCONTROLS clause.
+       * Title defaults to value establish in h_init.prg depending on
+         SET LANGUAGE TO clause.
+
 2012-02-25 20:20:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
      * source/h_print.prg
-       !  default bin changed from 1 to NIL in order to get it from printer dialog if is not especified
+       ! Default bin changed from 1 to NIL in order to get it from printer dialog if is not especified
 
 2012-02-25 13:53 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_altsyntax.ch

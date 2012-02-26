@@ -1,5 +1,5 @@
 /*
- * $Id: h_init.prg,v 1.26 2011-10-22 22:43:49 fyurisich Exp $
+ * $Id: h_init.prg,v 1.27 2012-02-26 05:25:58 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -212,7 +212,8 @@ Local acButton, acLabel, acUser
                'Cancel'                   ,;
                'Pag.'                     ,;
                'Error'                    ,;
-               'Warning'                   }
+               'Warning'                  ,;
+               'Edit Memo'                 }
 
    // BROWSE MESSAGES
    acBrowseButton := { "Append"   ,;
@@ -392,7 +393,8 @@ Local acButton, acLabel, acUser
                'Prekid'                      ,;
                'Pag.'                        ,;
                'Pogreška'                    ,;
-               'Upozorenje'                   }
+               'Upozorenje'                  ,;
+               'Uredi Memo'                   }
 
    // BROWSE MESSAGES
    acBrowseButton := {}
@@ -542,7 +544,8 @@ Local acButton, acLabel, acUser
                'Abandonner'             ,;
                'Pag.'                   ,;
                'Erreur'                 ,;
-               'Alerte'                  }
+               'Alerte'                 ,;
+               'Editer Memo'             }
 
    // BROWSE MESSAGES
    acBrowseButton := { "Ajout"         ,;
@@ -725,7 +728,8 @@ Local acButton, acLabel, acUser
                'Abbrechen'                ,;
                'Seite'                    ,;
                'Fehler'                   ,;
-               'Warnung'                   }
+               'Warnung'                  ,;
+               'Bearbeiten Memo'           }
 
    // BROWSE MESSAGES
    acBrowseButton := {}
@@ -892,7 +896,8 @@ Local acButton, acLabel, acUser
                'Annulla'                           ,;
                'Pag.'                              ,;
                'Errore'                            ,;
-               'Avvertimento'                       }
+               'Avvertimento'                      ,;
+               'Edita Memo'                         }
 
    // BROWSE MESSAGES
    acBrowseButton := { "Aggiungere"  ,;
@@ -1081,7 +1086,8 @@ Local acButton, acLabel, acUser
                'Porzuæ'                   ,;
                'Pag.'                     ,;
                'B³¹d'                     ,;
-               'Ostrze¿enie'               }
+               'Ostrze¿enie'              ,;
+               'Edycja Memo'               }
 
    // BROWSE MESSAGES
    acBrowseButton := { "Dodaj"    ,;
@@ -1261,7 +1267,8 @@ Local acButton, acLabel, acUser
                'Cancela'                       ,;
                'Pag.'                          ,;
                'Erro'                          ,;
-               'Advertência'                    }
+               'Advertência'                   ,;
+               'Edita Memo'                     }
 
    // BROWSE MESSAGES
    acBrowseButton := { "Incluir"  ,;
@@ -1447,7 +1454,8 @@ Local acButton, acLabel, acUser
                'Îòìåíà'                  ,;
                'Pag.'                    ,;
                'Îøèáêà'                  ,;
-               'Ïðåäóïðåæäåíèå'           }
+               'Ïðåäóïðåæäåíèå'          ,;
+               'Èçìåíèòü Memo'            }
 
    // BROWSE MESSAGES
    acBrowseButton := { "Äîáàâèòü"  ,;
@@ -1549,7 +1557,8 @@ Local acButton, acLabel, acUser
                'Cancelar'                          ,;
                'Pag.'                              ,;
                'Error'                             ,;
-               'Peligro'                            }
+               'Peligro'                           ,;
+               'Editar Memo'                        }
 
    // BROWSE MESSAGES
    acBrowseButton := { "Agregar"    ,;
@@ -1729,7 +1738,8 @@ Local acButton, acLabel, acUser
                'Keskeytä'                 ,;
                'Sivu.'                    ,;
                'Virhe'                    ,;
-               'Varoitus'                  }
+               'Varoitus'                 ,;
+               'Korjaa Memo'               }
 
    // BROWSE MESSAGES
    acBrowseButton := { "Lisää"      ,;
@@ -1909,7 +1919,8 @@ Local acButton, acLabel, acUser
                'Annuleren'                ,;
                'Pag.'                     ,;
                'Fout'                     ,;
-               'Waarschuwing'              }
+               'Waarschuwing'             ,;
+               'Bewerken Memo'             }
 
    // BROWSE MESSAGES
    acBrowseButton := { "Toevoegen"  ,;
@@ -2098,7 +2109,8 @@ Local acButton, acLabel, acUser
                'Prekini'                 ,;
                'Pag.'                    ,;
                'Napaka'                  ,;
-               'Opozorilo'}
+               'Opozorilo'               ,;
+               'Popravi Memo'             }
 
    // BROWSE MESSAGES
    acBrowseButton := { "Dodaj" ,;
