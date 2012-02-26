@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.118 2011-11-27 19:30:55 declan2005 Exp $
+* $Id: h_print.prg,v 1.119 2012-02-26 02:29:47 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -427,7 +427,7 @@ RETURN self
 METHOD selprinter( lselect , lpreview, llandscape , npapersize ,cprinterx, lhide,nres, nbin ) CLASS TPRINTBASE
 *-------------------------
 
-default nbin to 1
+default nbin to nil
 
 IF ::exit
    ::lprerror:=.T.
