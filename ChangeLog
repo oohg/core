@@ -1,5 +1,5 @@
-﻿/*
- * $Id: ChangeLog,v 1.868 2012-02-26 04:01:11 declan2005 Exp $
+/*
+ * $Id: ChangeLog,v 1.869 2012-02-26 04:16:46 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -11,10 +11,13 @@
      * source/h_print.prg
        !  default bin changed from 1 to NIL in order to get it from printer dialog if is not especified
 
+2012-02-25 13:53 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_altsyntax.ch
+     + Added CHECKBOXES clause to DEFINE GRID.
+
 2012-02-25 02:43 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * doc/classes.txt
      * Updated.
-
 
 2012-02-25 01:35 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_grid.ch
