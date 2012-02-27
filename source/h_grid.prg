@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.143 2012-02-26 05:25:58 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.144 2012-02-27 16:04:00 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -581,18 +581,22 @@ Local lRet, i, nLast
       // ::OnEditCell() may change ::nRowPos and/or ::nColPos using ::Up(),
       // ::Down(), ::Left() and/or ::Right()
       If ::nColPos == nLast
-         If ::nRowPos == ::ItemCount
-            If ::Append
-               // Add a new item
-               ::lAppendMode := .T.
-               ::InsertBlank( ::ItemCount + 1 )
-            Else
-               Exit
+         If ::FullMove
+            If ::nRowPos == ::ItemCount
+               If ::Append
+                  // Add a new item
+                  ::lAppendMode := .T.
+                  ::InsertBlank( ::ItemCount + 1 )
+               Else
+                  Exit
+               EndIf
             EndIf
-         EndIf
 
-         ::nRowPos ++
-         ::nColPos := 1
+            ::nRowPos ++
+            ::nColPos := 1
+         Else
+            Exit
+         EndIf
       Else
          ::nColPos ++
       EndIf
@@ -2183,18 +2187,22 @@ Local lRet, i, nLast
       // ::OnEditCell() may change ::nRowPos and/or ::nColPos using ::Up(),
       // ::Down(), ::Left() and/or ::Right()
       If ::nColPos == nLast
-         If ::nRowPos == ::ItemCount
-            If ::Append
-               // Add a new item
-               ::lAppendMode := .T.
-               ::InsertBlank( ::ItemCount + 1 )
-            Else
-               Exit
+         If ::FullMove
+            If ::nRowPos == ::ItemCount
+               If ::Append
+                  // Add a new item
+                  ::lAppendMode := .T.
+                  ::InsertBlank( ::ItemCount + 1 )
+               Else
+                  Exit
+               EndIf
             EndIf
-         EndIf
 
-         ::nRowPos ++
-         ::nColPos := 1
+            ::nRowPos ++
+            ::nColPos := 1
+         Else
+            Exit
+         EndIf
       Else
          ::nColPos ++
       EndIf
@@ -2513,23 +2521,21 @@ Local lRet, i, nLast, uValue
       // ::OnEditCell() may change ::Value using ::Up(), ::Down(), ::Left(),
       // ::Right(), ::PageUp(), ::PageDown(), ::GoTop() and/or ::GoBottom()
       uValue := ::Value
-      If uValue[ 2 ] >= nLast
+      If uValue[ 2 ] < nLast
+         ::Value := { uValue[ 1 ], uValue[ 2 ] + 1 }
+      ElseIf ::FullMove
          If uValue[ 1 ] < ::ItemCount
             ::Value := { uValue[ 1 ] + 1, 1 }
+         ElseIf ::Append
+            // Add a new item
+            ::lAppendMode := .T.
+            ::InsertBlank( ::ItemCount + 1 )
+            ::Value := { ::ItemCount, 1 }
          Else
-            If ::Append
-               // Add a new item
-               ::lAppendMode := .T.
-               ::InsertBlank( ::ItemCount + 1 )
-               ::Value := { ::ItemCount, 1 }
-            ElseIf ::FullMove
-               ::Value := { 1, 1 }
-            Else
-               Exit
-            EndIf
+            ::Value := { 1, 1 }
          EndIf
       Else
-         ::Value := { uValue[ 1 ], uValue[ 2 ] + 1 }
+         Exit
       EndIf
 
       uValue := ::Value

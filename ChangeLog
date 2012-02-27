@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.870 2012-02-26 05:25:58 fyurisich Exp $
+ * $Id: ChangeLog,v 1.871 2012-02-27 16:03:59 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,18 +7,26 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-02-27 14:00:00 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_grid.prg
+     * Navigation during grid edition is restricted to current row.
+       To enable edition of next row and append of new row after
+       editing last column of current row, add FULLMOVE clause at
+       define time or set ::FullMove to .T. at run time.
+
 2012-02-26 03:26:00 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
-     * source/h_init.prg
-       + Added message 'Edit Memo' to language customization.
-     * source/h_grid.prg
-       * Title of editing window for memo fields is now customizable.
-         Use TGridControlMemo():New("My Title") in COLUMNCONTROLS clause.
-       * Title defaults to value establish in h_init.prg depending on
-         SET LANGUAGE TO clause.
+   * source/h_init.prg
+     + Added message 'Edit Memo' to language customization.
+   * source/h_grid.prg
+     * Title of editing window for memo fields is now customizable.
+       Use TGridControlMemo():New("My Title") in COLUMNCONTROLS clause.
+     * Title defaults to value establish in h_init.prg depending on
+       SET LANGUAGE TO clause.
 
 2012-02-25 20:20:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
-     * source/h_print.prg
-       ! Default bin changed from 1 to NIL in order to get it from printer dialog if is not especified
+   * source/h_print.prg
+     ! Default bin changed from 1 to NIL in order to get it from printer
+     dialog if is not especified.
 
 2012-02-25 13:53 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_altsyntax.ch
@@ -689,7 +697,7 @@
    * source/h_error.prg
      * When no language is specified defaults to ENGLISH.
        To change language insert in your Main function:
-          PUBLIC _OOHG_TxtError := OOHG_TErrorHtml():New( SET( _SET_LANGUAGE ) )
+       PUBLIC _OOHG_TxtError := OOHG_TErrorHtml():New( SET( _SET_LANGUAGE ) )
 
 2011-10-22 20:45:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_error.prg
