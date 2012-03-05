@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.86 2012-02-16 22:49:28 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.87 2012-03-05 11:42:36 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1056,11 +1056,7 @@ METHOD Events_Enter() CLASS TOBrowse
       If ::FullMove .OR. ::InPlace
          If ! ::lNestedEdit
             ::lNestedEdit := .T.
-
-            If ::EditAllCells()
-              ::Value := ( ::WorkArea )->( RecNo() )
-            EndIf
-
+            ::EditAllCells()
             ::lNestedEdit := .F.
          EndIf
       ElseIf ::AllowEdit

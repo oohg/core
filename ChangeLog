@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog,v 1.871 2012-02-27 16:03:59 fyurisich Exp $
+ * $Id: ChangeLog,v 1.872 2012-03-05 11:42:35 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-03-05 09:42:00 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_browse.prg
+     ! Fixed: in browses with "set browsesync off", after editing a row
+       the selected row is allways changed to row 1.
 
 2012-02-27 14:00:00 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
