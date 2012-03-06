@@ -1,5 +1,5 @@
 /*
- * $Id: h_toolbar.prg,v 1.33 2012-02-12 03:20:19 fyurisich Exp $
+ * $Id: h_toolbar.prg,v 1.34 2012-03-06 13:28:53 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -310,6 +310,7 @@ CLASS TToolButton FROM TControl
    METHOD HBitMap       SETGET
    METHOD Buffer        SETGET
    METHOD Release
+   METHOD Caption       SETGET
 
    METHOD Events_Notify
 ENDCLASS
@@ -475,6 +476,15 @@ METHOD Release() CLASS TToolButton
       DeleteObject( ::hImage )
    ENDIF
 RETURN ::Super:Release()
+
+*-----------------------------------------------------------------------------*
+METHOD Caption( caption ) CLASS TToolButton
+*-----------------------------------------------------------------------------*
+   IF ValType( caption ) $ "CM"
+      SetToolButtonCaption( ::ContainerhWnd, ::Position - 1, caption )
+   ENDIF
+RETURN GetToolButtonCaption( ::ContainerhWnd, ::Position - 1 )
+
 
 #pragma BEGINDUMP
 
@@ -738,7 +748,6 @@ HB_FUNC( MAXTEXTBTNTOOLBAR )      //(HWND hwndTB, int cx, int cy)
    SendMessage( hWnd,TB_AUTOSIZE,0,0);  //JP62
 }
 
-
 HB_FUNC( ISBUTTONBARCHECKED )          // hb_parni(2) -> Position in ToolBar
 {
    TBBUTTON lpBtn;
@@ -813,6 +822,32 @@ HB_FUNC( _TOOLBARSETINFOTIP )
 
    hb_xmemcpy( lpInfo->pszText, hb_parc( 2 ), iLen );
    lpInfo->pszText[ iLen ] = 0;
+}
+
+HB_FUNC( GETTOOLBUTTONCAPTION )
+{
+   TBBUTTON lpBtn;
+   char cString[255] = "" ;
+
+   SendMessage( HWNDparam( 1 ), TB_GETBUTTON, hb_parni( 2 ), (LPARAM)  &lpBtn);
+   SendMessage( HWNDparam( 1 ), TB_GETBUTTONTEXT , lpBtn.idCommand, (LPARAM)(LPCTSTR) cString);
+
+   hb_retc( cString );
+}
+
+HB_FUNC( SETTOOLBUTTONCAPTION )
+{
+   TBBUTTON lpBtn;
+   TBBUTTONINFO tbbtn;
+
+   SendMessage( HWNDparam( 1 ), TB_GETBUTTON, hb_parni( 2 ), (LPARAM) &lpBtn);
+
+   memset( &tbbtn, 0, sizeof( tbbtn ) );
+   tbbtn.cbSize    = sizeof( TBBUTTONINFO );
+   tbbtn.dwMask    = TBIF_TEXT;
+   tbbtn.pszText   = (LPTSTR) hb_parc( 3 );
+
+   SendMessage( HWNDparam( 1 ), TB_SETBUTTONINFO, (WPARAM) lpBtn.idCommand, (LPARAM) &tbbtn );
 }
 
 #pragma ENDDUMP
