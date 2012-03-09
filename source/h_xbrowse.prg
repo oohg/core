@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.50 2012-02-16 22:49:28 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.51 2012-03-09 00:16:05 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -922,6 +922,7 @@ Local Value
    _OOHG_Eval(::OnDelete)
 
    If ::Lock
+      ::oWorkArea:Commit()
       ::oWorkArea:UnLock()
    EndIf
 
@@ -1058,8 +1059,8 @@ Local aItems, aEditControls, aMemVars, aReplaceFields
    EndIf
 
    If ::Lock
-      oWorkArea:Unlock()
       oWorkArea:Commit()
+      oWorkArea:Unlock()
    EndIf
 
    ::SetFocus()
@@ -1118,8 +1119,8 @@ Local lRet, bReplaceField, oWorkArea
          _ClearThisCellInfo()
       EndIf
       If ::Lock
-         oWorkArea:UnLock()
          oWorkArea:Commit()
+         oWorkArea:UnLock()
       EndIf
    Endif
 Return lRet

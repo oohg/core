@@ -1,11 +1,23 @@
 /*
- * $Id: ChangeLog,v 1.873 2012-03-06 13:28:53 fyurisich Exp $
+ * $Id: ChangeLog,v 1.874 2012-03-09 00:16:05 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-03-08 22:15:00 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_browse.prg
+     + Added DBCOMMIT after DBDELETE in DELETE method.
+     + Added EditAllCells method.
+     ! Fixed: in FullMove browse, the edition is ended (or enters append
+       mode if append is allowed) after the last record in the window is
+       edited even if there are more records.
+   * source/h_xbrowse.prg
+     + Added dbcommit after dbdelete in DELETE method.
+     * Changed order of DBCOMMIT and DBUNLOCK sentences in EDITITEM_B
+       and EDITCELL methods, to comply with Clipper standards.
 
 2012-03-06 11:30:00 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_toolbar.prg

@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.87 2012-03-05 11:42:36 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.88 2012-03-09 00:16:05 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -113,7 +113,7 @@ CLASS TOBrowse FROM TXBrowse
 
    METHOD EditCell
    METHOD EditItem_B
-
+   METHOD EditAllCells
    METHOD BrowseOnChange
    METHOD FastUpdate
    METHOD ScrollUpdate
@@ -133,6 +133,8 @@ CLASS TOBrowse FROM TXBrowse
    MESSAGE GoTop    METHOD Home
    MESSAGE GoBottom METHOD End
    METHOD SetScrollPos
+   
+   MESSAGE EditGrid METHOD EditAllCells
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -487,7 +489,7 @@ Local _RecNo , _BottomRec // , _DeltaScroll
    _RecNo := ( ::WorkArea )->( RecNo() )
    ::TopBottom( 1 )
    _BottomRec := ( ::WorkArea )->( RecNo() )
-   ::scrollUpdate()
+   ::ScrollUpdate()
 
    // If it's for APPEND, leaves a blank line ;)
    ::DbSkip( - ::CountPerPage + IF( lAppend, 2, 1 ) )
@@ -696,7 +698,7 @@ Local _RecNo , m , hWnd, cWorkArea // , _DeltaScroll
    ENDIF
 
    if pcount() < 2
-      ::scrollUpdate()
+      ::ScrollUpdate()
    EndIf
    ::DbSkip( -m + 1 )
 
@@ -741,6 +743,7 @@ Local Value, nRecNo
       EndIf
 
       If ::Lock
+         ( ::WorkArea )->( DbCommit() )
          ( ::WorkArea )->( DbUnlock() )
       EndIf
       ::DbSkip()
@@ -828,6 +831,127 @@ Local lRet, BackRec
       ::DbGoTo( BackRec )
    Endif
 Return lRet
+
+*-----------------------------------------------------------------------------*
+METHOD EditAllCells( nRow, nCol, lAppend ) CLASS TOBrowse
+*-----------------------------------------------------------------------------*
+Local lRet, lRowEdited, lSomethingEdited, _RecNo, lRowAppended
+
+   ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
+   ASSIGN nRow    VALUE nRow    TYPE "N" DEFAULT ::CurrentRow
+   ASSIGN nCol    VALUE nCol    TYPE "N" DEFAULT 1
+
+   If nRow < 1 .or. nRow > ::ItemCount() .or. nCol < 1 .or. nCol > Len( ::aHeaders )
+      // Cell out of range
+      Return .F.
+   EndIf
+
+   lSomethingEdited := .F.
+
+   Do While .t.
+      lRet := .T.
+      lRowEdited := .F.
+      lRowAppended := .F.
+
+      Do While nCol <= Len( ::aHeaders ) .AND. lRet
+         If ::IsColumnReadOnly( nCol )
+           // Read only column, skip
+         ElseIf ! ::IsColumnWhen( nCol )
+           // Not a valid WHEN, skip column and continue editing
+         Else
+            lRet := ::EditCell( nRow, nCol,,,,, lAppend )
+
+            If lRet
+               lRowEdited := .T.
+               lSomethingEdited := .T.
+               If lAppend
+                  lRowAppended := .T.
+               EndIf
+            ElseIf lAppend
+               ::GoBottom()
+            EndIf
+
+            lAppend := .F.
+         EndIf
+
+         nCol++
+      EndDo
+
+      If lRowEdited
+         // Scroll row to the left
+         ListView_Scroll( ::hWnd, - _OOHG_GridArrayWidths( ::hWnd, ::aWidths ), 0 )
+      EndIf
+
+      // See what to do next
+      If ! lRet .or. ! ::FullMove
+         If lRowAppended
+            // This is needed in case EditAllCells was called from EditItem_B
+            ::DbGoTo( aTail( ::aRecMap ) )
+         EndIf
+
+         // Stop if the last column was not edited or it's not fullmove editing
+         Exit
+      ElseIf lRowAppended
+         If ! ::AllowAppend
+            // Stop
+            Exit
+         EndIf
+
+         // Add new row
+         ::GoBottom( .T. )
+         ::InsertBlank( ::ItemCount + 1 )
+         nRow := ::CurrentRow := ::ItemCount
+         lAppend := .T.
+      ElseIf nRow < ::ItemCount()
+         // Edit next row
+         nRow ++
+         nCol := 1
+         ::FastUpdate( 1, nRow )
+         ::BrowseOnChange()
+      ElseIf Select( ::WorkArea ) == 0
+         // Stop if no database is selected
+         ::RecCount := 0
+         Exit
+      Else
+         // Check for more records
+         _RecNo := ( ::WorkArea )->( RecNo() )
+
+         ::DbGoTo( aTail( ::aRecMap ) )
+         ::DbSkip()
+         If ::Eof()
+            ::DbGoTo( _RecNo )
+            If ! ::AllowAppend
+               // Stop because last row was edited
+               Exit
+            EndIf
+
+            // Add new row
+            ::GoBottom( .T. )
+            ::InsertBlank( ::ItemCount + 1 )
+            nRow := ::CurrentRow := ::ItemCount
+            lAppend := .T.
+         Else
+           ::DbSkip( -1 )
+
+           // Scroll down 1 row
+           ::DbGoTo( ::aRecMap[ 1 ] )
+           ::DbSkip()
+           ::Update()
+           If Len( ::aRecMap ) != 0
+              ::DbGoTo( ATail( ::aRecMap ) )
+           EndIf
+           ::ScrollUpdate()
+           ::DbGoTo( _RecNo )
+
+           ListView_SetCursel( ::hWnd, Len( ::aRecMap ) )
+           ::BrowseOnChange()
+         EndIf
+
+         nCol := 1
+      EndIf
+   EndDo
+
+Return lSomethingEdited
 
 #pragma BEGINDUMP
 #define s_Super s_TGrid
@@ -1002,7 +1126,7 @@ Local cWorkArea, hWnd
       Return nil
    EndIf
 
-   ::scrollUpdate()
+   ::ScrollUpdate()
 
    If s != 0
       ::DbSkip( - s + 1 )
