@@ -1,5 +1,5 @@
 /*
- * $Id: i_browse.ch,v 1.27 2012-02-16 22:49:28 fyurisich Exp $
+ * $Id: i_browse.ch,v 1.28 2012-03-12 23:12:35 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -165,6 +165,8 @@
       [ <fullmove: FULLMOVE> ] ;
       [ SELECTEDCOLORS <aSelectedColors> ] ;
       [ EDITKEYS <aEditKeys> ] ;
+      [ <forcerefresh: FORCEREFRESH> ] ;
+      [ <norefresh: NOREFRESH> ] ;
    =>;
              [ <oObj> := ] _OOHG_SelectSubClass( TOBrowse(), [ <subclass>() ] ): ;
                 Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, <widths>, ;
@@ -178,7 +180,8 @@
                 <{onappend}>, <{editcell}>, <editcontrols>, <replacefields>, <.reccount.>, ;
                 <columninfo>, ! <.noshowheaders.>, <{enter}>, <.disabled.>, <.notabstop.>, ;
                 <.invisible.>, <.descending.>, <{bWhenDel}>, <DelMsg>, <{onDelete}>, ;
-                <aHeaderImages>, <aImgAlign>, <.fullmove.>, <aSelectedColors>, <aEditKeys> )
+                <aHeaderImages>, <aImgAlign>, <.fullmove.>, <aSelectedColors>, <aEditKeys>, ;
+                if( <.forcerefresh.>, 0, if( <.norefresh.>, 1, nil ) ) )
 
 #command SET BROWSESYNC ON  => SetBrowseSync( .T. )
 #command SET BROWSESYNC OFF => SetBrowseSync( .F. )

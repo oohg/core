@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.51 2012-03-09 00:16:05 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.52 2012-03-12 23:12:35 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -77,6 +77,7 @@ CLASS TXBROWSE FROM TGrid
    DATA bDelWhen          INIT nil
    DATA DelMsg            INIT nil
    DATA onDelete          INIT nil
+   DATA RefreshType       INIT nil
 
    METHOD Define
    METHOD Refresh
@@ -1047,7 +1048,11 @@ Local aItems, aEditControls, aMemVars, aReplaceFields
          EndIf
       EndIf
 
-      ::Refresh()
+      If ::RefreshType # 1
+         ::Refresh()
+      Else
+         ::RefreshRow( ::CurrentRow )
+      EndIf
       _SetThisCellInfo( ::hWnd, 0, 0, nil )
       _OOHG_Eval( ::OnEditCell, 0, 0 )
       _ClearThisCellInfo()
@@ -1166,7 +1171,7 @@ Local lRet, lRowEdited, lSomethingEdited
          nCol++
       EndDo
 
-      // If a column was edited, refresh
+      // If a column was edited, scroll to the left
       If lRowEdited
          ListView_Scroll( ::hWnd, - _OOHG_GridArrayWidths( ::hWnd, ::aWidths ), 0 )
       EndIf

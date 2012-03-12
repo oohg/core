@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.61 2012-02-25 15:53:14 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.62 2012-03-12 23:12:35 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -122,6 +122,8 @@ Memvariables
 #xtranslate _OOHG_ActiveControlTrailingFontColor      => _OOHG_ActiveControlInfo \[  25 \]
 #xtranslate _OOHG_ActiveControlBackgroundColor        => _OOHG_ActiveControlInfo \[  26 \]
 
+#xtranslate _OOHG_ActiveControlForceRefresh           => _OOHG_ActiveControlInfo \[ 142 \]
+#xtranslate _OOHG_ActiveControlNoRefresh              => _OOHG_ActiveControlInfo \[ 143 \]
 #xtranslate _OOHG_ActiveControlCheckBoxes             => _OOHG_ActiveControlInfo \[ 144 \]
 #xtranslate _OOHG_ActiveControlKeys                   => _OOHG_ActiveControlInfo \[ 145 \]
 #xtranslate _OOHG_ActiveControlSelectedColors         => _OOHG_ActiveControlInfo \[ 146 \]
@@ -2082,7 +2084,9 @@ BROWSE
         _OOHG_ActiveControlImagesAlign      := Nil ;;
         _OOHG_ActiveControlFullMove         := .F. ;;
         _OOHG_ActiveControlSelectedColors   := .F. ;;
-        _OOHG_ActiveControlKeys             := Nil
+        _OOHG_ActiveControlKeys             := Nil ;;
+        _OOHG_ActiveControlForceRefresh     := .F. ;;
+        _OOHG_ActiveControlNoForce          := .F.
 
 #xcommand DELETEWHEN <delwhen> ;
         => ;
@@ -2111,6 +2115,14 @@ BROWSE
 #xcommand RECCOUNT <reccount> ;
         => ;
         _OOHG_ActiveControlRecCount := <reccount>
+
+#xcommand FORCEREFRESH <forcerefresh> ;
+        => ;
+        _OOHG_ActiveControlForceRefresh := .T.
+
+#xcommand NOREFRESH <norefresh> ;
+        => ;
+        _OOHG_ActiveControlNoRefresh := .T.
 
 #xcommand END BROWSE ;
         => ;
@@ -2177,7 +2189,8 @@ BROWSE
                 _OOHG_ActiveControlImagesAlign, ;
                 _OOHG_ActiveControlFullMove, ;
                 _OOHG_ActiveControlSelectedColors, ;
-                _OOHG_ActiveControlKeys )
+                _OOHG_ActiveControlKeys, ;
+                if( _OOHG_ActiveControlForceRefresh, 0, if( _OOHG_ActiveControlNoForce, 1, nil ) ) )
 
 /*----------------------------------------------------------------------------
 XBROWSE

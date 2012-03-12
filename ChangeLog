@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.874 2012-03-09 00:16:05 fyurisich Exp $
+ * $Id: ChangeLog,v 1.875 2012-03-12 23:12:34 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,6 +7,51 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-03-12 20:15:00 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_tree.prg
+     * Now 0 is a valid ID. Note: "" (empty string) is NOT valid.
+     * Method GetParent returns NIL instead of 0 for root items.
+     ! Fixed: Method GetParent cancels when item has no parent in a
+       Tree with ITEMID clause.
+     ! Fixed: Method MoveItem doesn't update the images of the parent
+       of the "From" item when parent ends with no children.
+     ! Fixed: Method Value cancels when Tree has no items or no item
+       is selected. Now returns NIL for Tree with ITEMID clause or 0
+       for Tree with no ITEMID clause.
+     ! Fixed: Method SelectionID cancels when Tree has no items or no
+       item is selected. Now returns NIL.
+     ! Fixed: Method SelectionID can't clear the ID of the selected
+       item in a Tree without ITEMID clause. To do that use
+       oTree:SelectionID := Nil or oTree:SelectionID(Nil).
+       Doing this in a Tre with ITEMID clause will rise an error.
+       Note that oTree:SelectionID() retrives the ID of the selected
+       item instead of trying to clear it.
+     ! Fixed: Method SelectionID permits duplicated IDs for Tree
+       without ITEMID clause.
+     + Added method IsItemValid(ref), returns .T. when ref is a valid
+       item id or a valid reference number.
+   * doc/classes.txt
+     * Updated.
+   * include/i_altsyntax.prg
+   * include/i_browse.prg
+     + Added support for FORCEREFRESH and NOREFRESH new Browse clauses.
+   * source/h_browse.prg
+     + Added support for FORCEREFRESH and NOREFRESH new Browse clauses.
+       This clauses change the behaviour of a Browse control on an
+       indexed dbf.
+       FORCEREFRESH issues a ::Refresh after an edition ends, so all
+       items are shown in their proper places if the browse's dbf is
+       indexed and the key fields were changed.
+       NOREFRESH inhibits the relocation of such items.
+       Default behaviour is EditItem method refreshes such item and
+       EditAllCells method doesn´t.
+     * Modified EditAllCells method to suppor FORCEREFRESH clause.
+     ! Fixed: edition is finished after editing the last item of
+       the browse without entering append mode when using FULLMOVE.
+   * source/h_xbrowse.prg
+     + Added DATA RefreshType.
+     * Modified EditItem_B method to support NOFREFRESH clause.
+     
 2012-03-08 22:15:00 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_browse.prg
      + Added DBCOMMIT after DBDELETE in DELETE method.

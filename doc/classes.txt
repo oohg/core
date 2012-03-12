@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.47 2012-02-25 04:42:58 fyurisich Exp $
+ * $Id: classes.txt,v 1.48 2012-03-12 23:12:35 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -1397,6 +1397,7 @@ CLASS TOBROWSE FROM TXBROWSE
    METHOD DELETE
    METHOD DOCHANGE
    METHOD DOWN
+   METHOD EDITALLCELLS
    METHOD EDITCELL
    METHOD EDITITEM_B
    METHOD END
@@ -2304,6 +2305,7 @@ CLASS TTREE FROM TCONTROL
    METHOD INDENT                  SETGET
    METHOD ISITEMCOLLAPSED
    METHOD ISITEMEXPANDED
+   METHOD ISITEMVALID
    METHOD ISITEMVISIBLE
    METHOD ITEM
    METHOD ITEMCOUNT

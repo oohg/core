@@ -1,5 +1,5 @@
 /*
- * $Id: h_tree.prg,v 1.32 2011-12-31 16:54:48 fyurisich Exp $
+ * $Id: h_tree.prg,v 1.33 2012-03-12 23:12:35 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -172,6 +172,7 @@ CLASS TTree FROM TControl
    METHOD VisibleCount
    METHOD ItemHeight         SETGET
    METHOD SelectionID        SETGET
+   METHOD IsItemValid
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -336,7 +337,7 @@ Local NewHandle, TempHandle, i, Pos, ChildHandle, BackHandle, ParentHandle, iPos
 
    ImgDef := iif( HB_IsArray( aImage ), len( aImage ), 0 )
 
-   If Empty( Parent )
+   If ( ::ItemIds .and. Parent == Nil ) .OR. ( ! ::ItemIds .and. Parent == 0 )
       If ImgDef == 0
          // pointer to default node bitmaps, no bitmap loaded
          iUnsel := 0
@@ -587,61 +588,62 @@ Return iPos
 *------------------------------------------------------------------------------*
 METHOD SelectionID( Id ) CLASS TTree
 *------------------------------------------------------------------------------*
-Local Pos, OldID, iID
+Local Handle, Pos, OldID, iID
 
-   Pos := aScan( ::aTreeMap, TreeView_GetSelection( ::hWnd ) )
+   Handle := TreeView_GetSelection( ::hWnd )
+   If Handle == 0
+      Return Nil
+   EndIf
+
+   Pos := aScan( ::aTreeMap, Handle )
    If Pos == 0
-      MsgOOHGError( "SetSelectionID Method: Item Selected Is Invalid. Program Terminated" )
+      MsgOOHGError( "SelectionID Method: Item Selected Is Invalid. Program Terminated" )
    EndIf
    
-   If Id != Nil
+   If pcount() > 0
       // set
       OldID := ::aTreeIdMap[ Pos ]
 
-      If ::ItemIds
-         If Id == Nil
-            MsgOOHGError( "SetSelectionID Method: Item Id Is Nil. Program Terminated" )
+      If Id != OldID
+         If OldID != Nil
+            iID := aScan( ::aItemIDs, OldID )
+            If iID == 0
+               MsgOOHGError( "SelectionID Method: Invalid Item Id. Program Terminated" )
+            EndIf
+
+            aDel( ::aItemIDs, iID )
+            aSize( ::aItemIDs, len( ::aItemIDs ) - 1 )
          EndIf
 
-         If Id # OldID
+         If Id == Nil
+            If ::ItemIds
+               // items without ID are not allowed, goto get
+            Else
+               ::aTreeIdMap[ Pos ] := Nil
+
+               TreeView_SetSelectionID( ::hWnd, 0 )
+            EndIf
+         Else
             If aScan( ::aTreeIdMap, Id ) > 0
-               MsgOOHGError( "SetSelectionID Method: Item Id Already In Use. Program Terminated" )
+               MsgOOHGError( "SelectionID Method: Item Id Already In Use. Program Terminated" )
             EndIf
 
             ::aTreeIdMap[ Pos ] := Id
-         EndIf
-      Else
-         ::aTreeIdMap[ Pos ] := Id
-      EndIf
 
-      If OldID == Nil
-         If Id != Nil
             aAdd( ::aItemIDs, Id )
             iID := len( ::aItemIDs )
 
             TreeView_SetSelectionID( ::hWnd, iID )
-         EndIf
-      Else
-         iID := aScan( ::aItemIDs, OldID )
-         If iID == 0
-            MsgOOHGError( "SetSelectionID Method: Invalid Item Id. Program Terminated" )
-         EndIf
-
-         If Id == Nil
-            aDel( ::aItemIDs, iID )
-            aSize( ::aItemIDs, len( ::aItemIDs ) - 1 )
-
-            TreeView_SetSelectionID( ::hWnd, 0 )
-         Else
-            ::aItemIDs[ iID ] := Id
          EndIf
       EndIf
    EndIf
 
    // get
    iID := TreeView_GetSelectionID( ::hWnd )
-   If iID < 1 .OR. iID > len( ::aItemIDs )
-      MsgOOHGError( "SetSelectionID Method: Invalid Item Id. Program Terminated" )
+   If iID == 0
+      Return Nil
+   ElseIf iID < 0 .OR. iID > len( ::aItemIDs )
+      MsgOOHGError( "SelectionID Method: Invalid Item Id. Program Terminated" )
    EndIf
 
 Return ::aItemIDs[ iID ]
@@ -769,12 +771,18 @@ Local TreeItemHandle, Pos
       Endif
 
       // get
-      Pos := aScan( ::aTreeMap, TreeView_GetSelection( ::hWnd ) )
-      If Pos == 0
-         MsgOOHGError( "Value Method: Invalid Item Id. Program Terminated" )
-      EndIf
+      TreeItemHandle := TreeView_GetSelection( ::hWnd )
+      If TreeItemHandle == 0
+         // no item selected
+         uValue := Nil
+      Else
+         Pos := aScan( ::aTreeMap, TreeItemHandle )
+         If Pos == 0
+            MsgOOHGError( "Value Method: Invalid Item Id. Program Terminated" )
+         EndIf
 
-      uValue := ::aTreeIdMap[ Pos ]
+         uValue := ::aTreeIdMap[ Pos ]
+      EndIf
    Else
       // by item reference
       If HB_IsNumeric( uValue )
@@ -789,12 +797,18 @@ Local TreeItemHandle, Pos
       EndIf
 
       // get
-      Pos := aScan( ::aTreeMap, TreeView_GetSelection( ::hWnd ) )
-      If Pos == 0
-         MsgOOHGError( "Value Method: Invalid Item Reference. Program Terminated" )
-      EndIf
+      TreeItemHandle := TreeView_GetSelection( ::hWnd )
+      If TreeItemHandle == 0
+         // no item selected
+         uValue := 0
+      Else
+         Pos := aScan( ::aTreeMap, TreeItemHandle )
+         If Pos == 0
+            MsgOOHGError( "Value Method: Invalid Item Reference. Program Terminated" )
+         EndIf
 
-      uValue := Pos
+         uValue := Pos
+      EndIf
    EndIf
 
 Return uValue
@@ -1197,7 +1211,7 @@ Return ::Super:Events_Notify( wParam, lParam )
 *-----------------------------------------------------------------------------*
 METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TTree
 *-----------------------------------------------------------------------------*
-Local nItem, lChecked, TargetHandle, i, oAux
+Local nItem, lChecked, TargetHandle, i, oAux, Value
 
    If nMsg == WM_APP + 8
       If HB_IsBlock( ::OnCheckChange )
@@ -1351,7 +1365,8 @@ Local nItem, lChecked, TargetHandle, i, oAux
          EndIf
          ::LastTarget := Nil
 
-         If ::lSelBold
+         Value := ::Value
+         If ! Empty( Value ) .AND. ::lSelBold
             ::BoldItem( ::Value, .T. )
          EndIf
          ::Redraw()
@@ -1539,7 +1554,7 @@ Return oTarget:Value( aItems[ 1, 1 ] )
 METHOD MoveItem( ItemFrom, oTarget, ItemTo, aId ) CLASS TTree
 *-----------------------------------------------------------------------------*
 Local Pos, FromHandle, ParentHandle, ToHandle
-Local aItems, i, ItemOld, j, aImages
+Local aItems, i, ItemOld, j, aImages, ItemParent
 
    // get the From item's handle
    If ::ItemIds
@@ -1558,7 +1573,25 @@ Local aItems, i, ItemOld, j, aImages
    FromHandle := ::aTreeMap[ Pos ]
    
    // get the handle of the From item's parent
-   ParentHandle := aScan( ::aTreeMap, ::GetParent( ItemFrom ) )
+   ItemParent := ::GetParent( ItemFrom )
+   If ItemParent == Nil
+      ParentHandle := 0
+   Else
+      If ::ItemIds
+         Pos := aScan( ::aTreeIdMap, ItemParent )
+
+         If Pos == 0
+            MsgOOHGError( "MoveItem Method: Invalid Origin Parent Id. Program Terminated" )
+         EndIf
+      Else
+         If ItemParent < 1 .OR. ItemParent > len( ::aTreeMap )
+            MsgOOHGError( "MoveItem Method: Invalid Origin Parent Reference. Program Terminated" )
+         EndIf
+
+         Pos := ItemParent
+      EndIf
+      ParentHandle := ::aTreeMap[ Pos ]
+   EndIf
 
    // get the To item's handle
    If oTarget:ItemIds
@@ -1670,7 +1703,7 @@ Local aItems, i, ItemOld, j, aImages
       aImages := ::ItemImages( ItemTo )
       If aImages[ 1 ] == 0 .AND. aImages[ 2 ] == 1
          If len(::GetChildren( ItemTo ) ) == 0
-            If ::GetParent( ItemTo ) != 0
+            If ::GetParent( ItemTo ) != Nil
                ::ItemImages( ItemTo, { 2, 3 } )
             EndIf
          EndIf
@@ -1979,7 +2012,9 @@ Local Pos, ItemHandle, ParentHandle, ParentItem
    ItemHandle := ::aTreeMap[ Pos ]
    ParentHandle := TreeView_GetParent( ::hWnd, ItemHandle )
    
-   If ::ItemIds
+   If ParentHandle == 0
+      ParentItem := Nil
+   ElseIf ::ItemIds
       ParentItem := ::aTreeIdMap[ aScan( ::aTreeMap, ParentHandle ) ]
    Else
       ParentItem := aScan( ::aTreeMap, ParentHandle )
@@ -2066,6 +2101,19 @@ Local ItemHandle, Pos
    ItemHandle := ::aTreeMap[ Pos ]
 
 Return TreeView_IsItemCollapsed( ::hWnd, ItemHandle )
+
+*------------------------------------------------------------------------------*
+METHOD IsItemValid( Item ) CLASS TTree
+*------------------------------------------------------------------------------*
+Local lRet
+
+   If ::ItemIds
+      lRet := aScan( ::aTreeIdMap, Item ) # 0
+   Else
+      lRet := HB_IsNumeric( Item ) .AND. Item == INT( Item ) .AND. Item >= 1 .AND. Item <= len( ::aTreeMap )
+   EndIf
+
+Return lRet
 
 *------------------------------------------------------------------------------*
 METHOD HandleToItem( Handle) CLASS TTree
