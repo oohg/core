@@ -1,5 +1,5 @@
 /*
- * $Id: h_listbox.prg,v 1.26 2011-12-16 00:17:21 guerra000 Exp $
+ * $Id: h_listbox.prg,v 1.27 2012-03-13 15:49:27 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -110,6 +110,7 @@ CLASS TList FROM TControl
    METHOD Define2
    METHOD Value               SETGET
    METHOD OnEnter             SETGET
+   METHOD Events
    METHOD Events_Command
    METHOD Events_DrawItem
    METHOD Events_MeasureItem
@@ -211,6 +212,14 @@ LOCAL bRet
 RETURN bRet
 
 *-----------------------------------------------------------------------------*
+METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TList
+*-----------------------------------------------------------------------------*
+   If nMsg == WM_LBUTTONDBLCLK
+      Return nil
+   EndIf
+RETURN ::Super:Events( hWnd, nMsg, wParam, lParam )
+
+*-----------------------------------------------------------------------------*
 METHOD Events_Command( wParam ) CLASS TList
 *-----------------------------------------------------------------------------*
 Local Hi_wParam := HIWORD( wParam )
@@ -224,6 +233,10 @@ Local Hi_wParam := HIWORD( wParam )
 
    elseif Hi_wParam == LBN_SETFOCUS
       ::DoEvent( ::OnGotFocus, "GOTFOCUS" )
+      Return nil
+
+   elseif Hi_wParam == LBN_DBLCLK
+      ::DoEvent( ::OnDblClick, "DBLCLICK" )
       Return nil
 
    EndIf
