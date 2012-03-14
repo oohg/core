@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.876 2012-03-13 15:49:26 fyurisich Exp $
+ * $Id: ChangeLog,v 1.877 2012-03-14 15:34:32 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,7 +7,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2012-03-13 12:50:00 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+2012-03-14 12:35:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_grid.prg
+     * Parameter lNoHeaders renamed to lHasHeaders.
+
+2012-03-13 12:50:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_listbox.prg
      ! Fixed: Double click event doesn't allow changing the focus
        to a different window.
@@ -15,7 +19,7 @@
      + Added code in Events_Command method to fire OnDlbClick event
        when LBN_DBLCLK notification code is received.
 
-2012-03-12 20:15:00 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+2012-03-12 20:15:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_tree.prg
      * Now 0 is a valid ID. Note: "" (empty string) is NOT valid.
      * Method GetParent returns NIL instead of 0 for root items.

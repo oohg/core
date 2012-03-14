@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.144 2012-02-27 16:04:00 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.145 2012-03-14 15:34:32 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -211,7 +211,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                ondispinfo, itemcount, editable, backcolor, fontcolor, ;
                dynamicbackcolor, dynamicforecolor, aPicture, lRtl, inplace, ;
                editcontrols, readonly, valid, validmessages, editcell, ;
-               aWhenFields, lDisabled, lNoTabStop, lInvisible, lNoHeaders, ;
+               aWhenFields, lDisabled, lNoTabStop, lInvisible, lHasHeaders, ;
                onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
                aSelectedColors, aEditKeys, lCheckBoxes ) CLASS TGrid
 *-----------------------------------------------------------------------------*
@@ -225,7 +225,7 @@ Local nStyle := LVS_SINGLESEL
               dynamicbackcolor, dynamicforecolor, aPicture, lRtl, nStyle, ;
               inplace, editcontrols, readonly, valid, validmessages, ;
               editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
-              lNoHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
+              lHasHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
               aSelectedColors, aEditKeys, lCheckBoxes )
 Return Self
 
@@ -238,7 +238,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                 dynamicbackcolor, dynamicforecolor, aPicture, lRtl, nStyle, ;
                 inplace, editcontrols, readonly, valid, validmessages, ;
                 editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
-                lNoHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
+                lHasHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
                 aSelectedColors, aEditKeys, lCheckBoxes ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local ControlHandle, aImageList, i
@@ -272,7 +272,7 @@ Local ControlHandle, aImageList, i
    ASSIGN ::lCheckBoxes VALUE lCheckBoxes TYPE "L" DEFAULT .F.
 
    nStyle := ::InitStyle( nStyle,, lInvisible, lNoTabStop, lDisabled ) + ;
-             If( HB_IsLogical( lNoHeaders ) .AND. ! lNoHeaders, LVS_NOCOLUMNHEADER, 0 )
+             If( HB_IsLogical( lHasHeaders ) .AND. ! lHasHeaders, LVS_NOCOLUMNHEADER, 0 )
 
    If ! HB_IsArray( ::aJust )
       ::aJust := aFill( Array( Len( ::aHeaders ) ), 0 )
@@ -2091,7 +2091,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                ondispinfo, itemcount, editable, backcolor, fontcolor, ;
                dynamicbackcolor, dynamicforecolor, aPicture, lRtl, inplace, ;
                editcontrols, readonly, valid, validmessages, editcell, ;
-               aWhenFields, lDisabled, lNoTabStop, lInvisible, lNoHeaders, ;
+               aWhenFields, lDisabled, lNoTabStop, lInvisible, lHasHeaders, ;
                onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
                aSelectedColors, aEditKeys, lCheckBoxes ) CLASS TGridMulti
 *-----------------------------------------------------------------------------*
@@ -2105,7 +2105,7 @@ Local nStyle := 0
               dynamicbackcolor, dynamicforecolor, aPicture, lRtl, nStyle, ;
               inplace, editcontrols, readonly, valid, validmessages, ;
               editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
-              lNoHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
+              lHasHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
                aSelectedColors, aEditKeys, lCheckBoxes )
 Return Self
 
@@ -2345,7 +2345,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                ondispinfo, itemcount, editable, backcolor, fontcolor, ;
                dynamicbackcolor, dynamicforecolor, aPicture, lRtl, inplace, ;
                editcontrols, readonly, valid, validmessages, editcell, ;
-               aWhenFields, lDisabled, lNoTabStop, lInvisible, lNoHeaders, ;
+               aWhenFields, lDisabled, lNoTabStop, lInvisible, lHasHeaders, ;
                onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
                aSelectedColors, aEditKeys, lCheckBoxes ) CLASS TGridByCell
 *-----------------------------------------------------------------------------*
@@ -2361,7 +2361,7 @@ Local nStyle := LVS_SINGLESEL
               dynamicbackcolor, dynamicforecolor, aPicture, lRtl, nStyle, ;
               InPlace, editcontrols, readonly, valid, validmessages, ;
               editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
-              lNoHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
+              lHasHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
               aSelectedColors, aEditKeys, lCheckBoxes )
 Return Self
 
