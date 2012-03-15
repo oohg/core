@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.145 2012-03-14 15:34:32 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.146 2012-03-15 16:50:44 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -252,7 +252,7 @@ Local ControlHandle, aImageList, i
       MsgOOHGError( "Grid: HEADERS/WIDTHS array size mismatch. Program Terminated." )
    EndIf
    If HB_IsArray( aRows )
-      If aScan( aRows, { |a| !( HB_IsArray( a ) .OR. Len( a ) != Len( aHeaders ) ) } ) > 0
+      If aScan( aRows, { |a| ! HB_IsArray( a ) .OR. Len( a ) != Len( aHeaders ) } ) > 0
          MsgOOHGError( "Grid: ITEMS length mismatch. Program Terminated." )
       EndIf
    Else
