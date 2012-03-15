@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.129 2012-01-20 19:35:49 fyurisich Exp $
+ * $Id: h_controlmisc.prg,v 1.130 2012-03-15 02:36:37 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -700,7 +700,7 @@ Local oWnd, oCtrl
          oCtrl:Caption( Arg4, Arg5 )
 
       ElseIf Arg3 == "HEADER"
-         oCtrl:header( Arg4, Arg5 )   ////20071011 Ciro /////en vez de oCtrl:Caption()
+         oCtrl:Header( Arg4, Arg5 )
 
       ElseIf Arg3 == "ITEM"
          oCtrl:Item( Arg4, Arg5 )
@@ -938,7 +938,7 @@ Local RetVal, oWnd, oCtrl
          RetVal := oCtrl:Caption( Arg4 )
 
       ElseIf Arg3 == "HEADER"
-         RetVal := oCtrl:Caption( Arg4 )
+         RetVal := oCtrl:Header( Arg4 )
 
       ElseIf Arg3 == "COLUMNWIDTH"
          RetVal := oCtrl:ColumnWidth( Arg4 )
