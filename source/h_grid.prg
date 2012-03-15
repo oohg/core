@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.146 2012-03-15 16:50:44 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.147 2012-03-15 18:49:07 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -297,8 +297,10 @@ Local ControlHandle, aImageList, i
       ::ImageList := aImageList[ 1 ]
       If aScan( ::Picture, .T. ) == 0
          ::Picture[ 1 ] := .T.
-         ::aWidths[ 1 ] := Max( ::aWidths[ 1 ], aImageList[ 2 ] + 2 ) // Set Column 1 width to Bitmap width
+         ::aWidths[ 1 ] := Max( ::aWidths[ 1 ], aImageList[ 2 ] + If( ::lCheckBoxes, GetStateListWidth( ControlHandle ) + 3, 2 ) ) // Set Column 1 width to Bitmap width plus checkboxes
       EndIf
+   ElseIf ::lCheckBoxes
+      ::aWidths[ 1 ] := Max( ::aWidths[ 1 ], GetStateListWidth( ControlHandle ) + 2 ) // Set Column 1 width to checkboxes width
    EndIf
 
    InitListViewColumns( ControlHandle, ::aHeaders, ::aWidths, ::aJust )
@@ -471,7 +473,11 @@ Local i, nPos, nCount, aImageList, nImagesWidth
                   ::HeaderImageList := aImageList[ 1 ]
                   ::aHeaderImage[ i ] := 1
                   nImagesWidth := aImageList[ 2 ] + 2
-                  ::aWidths[ i ] := Max( ::aWidths[ i ], nImagesWidth )
+                  If i == 1
+                     ::aWidths[ i ] := Max( ::aWidths[ i ], nImagesWidth + If( ::lCheckBoxes, GetStateListWidth( ::hWnd ) + 1, 0 ) )
+                  Else
+                     ::aWidths[ i ] := Max( ::aWidths[ i ], nImagesWidth )
+                  EndIf
                Else
                   aHeaderImage[ i ] := Nil
                EndIf
@@ -1229,10 +1235,10 @@ METHOD ColumnBetterAutoFit( nColIndex ) CLASS Tgrid
 Local n, nh
    If HB_IsNumeric( nColIndex )
       If nColindex > 0
-         nh := ::ColumnAutoFith( nColIndex )
+         nh := ::ColumnAutoFitH( nColIndex )
          n := ::ColumnAutoFit( nColIndex )
          If nh > n
-            ::ColumnAutoFith( nColIndex )
+            ::ColumnAutoFitH( nColIndex )
          EndIf
       EndIf
    EndIf
@@ -2004,10 +2010,10 @@ METHOD ColumnAutoFit( nColumn ) CLASS TGrid
 Local nWidth
    If HB_IsNumeric( nColumn ) .AND. nColumn >= 1 .AND. nColumn <= Len( ::aHeaders )
       nWidth := ListView_SetColumnWidth( ::hWnd, nColumn - 1, LVSCW_AUTOSIZE )
-         If nColumn == 1
-            nWidth:=nWidth+6
-            nWidth := ListView_SetColumnWidth( ::hWnd, nColumn - 1, nWidth )
-         EndIf
+      If nColumn == 1
+         nWidth := nWidth + 6 - If( ::lCheckBoxes .AND. ( ! HB_IsLogical( ::Picture[ 1 ] ) .OR. ! ::Picture[ 1 ] ), GetStateListWidth( ::hWnd ) + 1, 0 )
+         nWidth := ListView_SetColumnWidth( ::hWnd, nColumn - 1, nWidth )
+      EndIf
       ::aWidths[ nColumn ] := nWidth
    Else
       nWidth := 0
@@ -2021,7 +2027,7 @@ Local nWidth
    If HB_IsNumeric( nColumn ) .AND. nColumn >= 1 .AND. nColumn <= Len( ::aHeaders )
       nWidth := ListView_SetColumnWidth( ::hWnd, nColumn - 1, LVSCW_AUTOSIZE_USEHEADER )
       If nColumn == 1
-         nWidth:=nWidth+6
+         nWidth := nWidth + 6 - If( ::lCheckBoxes .AND. ( ! HB_IsLogical( ::Picture[ 1 ] ) .OR. ! ::Picture[ 1 ] ), GetStateListWidth( ::hWnd ) + 1, 0 )
          nWidth := ListView_SetColumnWidth( ::hWnd, nColumn - 1, nWidth )
       EndIf
       ::aWidths[ nColumn ] := nWidth
@@ -4827,12 +4833,32 @@ HB_FUNC( TGRID_NOTIFY_CUSTOMDRAW )
 
 HB_FUNC( LISTVIEW_GETCHECKSTATE )
 {
-   hb_retl( ListView_GetCheckState ( HWNDparam( 1 ), hb_parni( 2 ) - 1 ) ) ;
+   hb_retl( ListView_GetCheckState( HWNDparam( 1 ), hb_parni( 2 ) - 1 ) ) ;
 }
 
 HB_FUNC( LISTVIEW_SETCHECKSTATE )
 {
-   ListView_SetCheckState ( HWNDparam( 1 ), hb_parni( 2 ) - 1, hb_parl( 3 ) ) ;
+   ListView_SetCheckState( HWNDparam( 1 ), hb_parni( 2 ) - 1, hb_parl( 3 ) ) ;
+}
+
+HB_FUNC( GETSTATELISTWIDTH )
+{
+   HIMAGELIST himl ;
+   int cx, cy ;
+
+   himl = ListView_GetImageList( HWNDparam( 1 ), LVSIL_STATE );
+
+   if( himl )
+   {
+      ImageList_GetIconSize( himl, &cx, &cy );
+   }
+   else
+   {
+      cx = 0 ;
+      cy = 0 ;
+   }
+
+   hb_retni( cx );
 }
 
 #pragma ENDDUMP
