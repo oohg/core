@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.147 2012-03-15 18:49:07 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.148 2012-03-16 19:10:51 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -297,7 +297,7 @@ Local ControlHandle, aImageList, i
       ::ImageList := aImageList[ 1 ]
       If aScan( ::Picture, .T. ) == 0
          ::Picture[ 1 ] := .T.
-         ::aWidths[ 1 ] := Max( ::aWidths[ 1 ], aImageList[ 2 ] + If( ::lCheckBoxes, GetStateListWidth( ControlHandle ) + 3, 2 ) ) // Set Column 1 width to Bitmap width plus checkboxes
+         ::aWidths[ 1 ] := Max( ::aWidths[ 1 ], aImageList[ 2 ] + If( ::lCheckBoxes, GetStateListWidth( ControlHandle ) + 2, 2 ) ) // Set Column 1 width to Bitmap width plus checkboxes
       EndIf
    ElseIf ::lCheckBoxes
       ::aWidths[ 1 ] := Max( ::aWidths[ 1 ], GetStateListWidth( ControlHandle ) + 2 ) // Set Column 1 width to checkboxes width
@@ -474,7 +474,7 @@ Local i, nPos, nCount, aImageList, nImagesWidth
                   ::aHeaderImage[ i ] := 1
                   nImagesWidth := aImageList[ 2 ] + 2
                   If i == 1
-                     ::aWidths[ i ] := Max( ::aWidths[ i ], nImagesWidth + If( ::lCheckBoxes, GetStateListWidth( ::hWnd ) + 1, 0 ) )
+                     ::aWidths[ 1 ] := Max( ::aWidths[ 1 ], nImagesWidth + If( ::lCheckBoxes, GetStateListWidth( ::hWnd ), 0 ) )
                   Else
                      ::aWidths[ i ] := Max( ::aWidths[ i ], nImagesWidth )
                   EndIf
@@ -2011,7 +2011,7 @@ Local nWidth
    If HB_IsNumeric( nColumn ) .AND. nColumn >= 1 .AND. nColumn <= Len( ::aHeaders )
       nWidth := ListView_SetColumnWidth( ::hWnd, nColumn - 1, LVSCW_AUTOSIZE )
       If nColumn == 1
-         nWidth := nWidth + 6 - If( ::lCheckBoxes .AND. ( ! HB_IsLogical( ::Picture[ 1 ] ) .OR. ! ::Picture[ 1 ] ), GetStateListWidth( ::hWnd ) + 1, 0 )
+         nWidth := nWidth + 6
          nWidth := ListView_SetColumnWidth( ::hWnd, nColumn - 1, nWidth )
       EndIf
       ::aWidths[ nColumn ] := nWidth
@@ -2027,7 +2027,7 @@ Local nWidth
    If HB_IsNumeric( nColumn ) .AND. nColumn >= 1 .AND. nColumn <= Len( ::aHeaders )
       nWidth := ListView_SetColumnWidth( ::hWnd, nColumn - 1, LVSCW_AUTOSIZE_USEHEADER )
       If nColumn == 1
-         nWidth := nWidth + 6 - If( ::lCheckBoxes .AND. ( ! HB_IsLogical( ::Picture[ 1 ] ) .OR. ! ::Picture[ 1 ] ), GetStateListWidth( ::hWnd ) + 1, 0 )
+         nWidth := nWidth + 6
          nWidth := ListView_SetColumnWidth( ::hWnd, nColumn - 1, nWidth )
       EndIf
       ::aWidths[ nColumn ] := nWidth
@@ -3125,6 +3125,12 @@ FUNCTION GetEditControlFromArray( oEditControl, aEditControls, nColumn, oGrid )
    EndIf
 Return oEditControl
 
+*------------------------------------------------------------------------------*
+FUNCTION GetStateListWidth( hwnd )
+*------------------------------------------------------------------------------*
+
+RETURN ImageList_Size( ListView_GetImageList( hwnd, LVSIL_STATE ) ) [ 1 ]
+
 
 
 
@@ -3614,9 +3620,11 @@ METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGrid
    If ValType( uValue ) == "C"
       uValue := Val( uValue )
    EndIf
-   @ nRow,nCol COMBOBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth VALUE 0 ITEMS {}
    If ! Empty( ::oGrid ) .AND. ::oGrid:ImageList != 0
+      @ nRow,nCol COMBOBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth VALUE 0 ITEMS {} IMAGE {} TEXTHEIGHT ImageList_Size( ::oGrid:ImageList ) [ 2 ]
       ::oControl:ImageList := ImageList_Duplicate( ::oGrid:ImageList )
+   Else
+      @ nRow,nCol COMBOBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth VALUE 0 ITEMS {}
    EndIf
    aEval( Array( ImageList_GetImageCount( ::oGrid:ImageList ) ), { |x,i| ::oControl:AddItem( i - 1 ), x } )
    ::oControl:Value := uValue + 1
@@ -4841,24 +4849,9 @@ HB_FUNC( LISTVIEW_SETCHECKSTATE )
    ListView_SetCheckState( HWNDparam( 1 ), hb_parni( 2 ) - 1, hb_parl( 3 ) ) ;
 }
 
-HB_FUNC( GETSTATELISTWIDTH )
+HB_FUNC( LISTVIEW_GETIMAGELIST )
 {
-   HIMAGELIST himl ;
-   int cx, cy ;
-
-   himl = ListView_GetImageList( HWNDparam( 1 ), LVSIL_STATE );
-
-   if( himl )
-   {
-      ImageList_GetIconSize( himl, &cx, &cy );
-   }
-   else
-   {
-      cx = 0 ;
-      cy = 0 ;
-   }
-
-   hb_retni( cx );
+   HWNDret( ListView_GetImageList( HWNDparam( 1 ), hb_parni( 2 ) ) ) ;
 }
 
 #pragma ENDDUMP

@@ -1,11 +1,21 @@
 /*
- * $Id: ChangeLog,v 1.881 2012-03-15 18:49:06 fyurisich Exp $
+ * $Id: ChangeLog,v 1.882 2012-03-16 19:10:51 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-03-15 16:10:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/c_controlmisc.c
+     + Added IMAGELIST_SIZE function.
+   * source/h_grid.prg
+     + Added LISTVIEW_GETIMAGELIST function.
+     ! Fixed: TGridControlImageList class was not showing the images
+       in the pickup combobox.
+     ! Fixed: width of first column is wrongly computed in methods
+       ColumnAutoFit and ColumnAutoFitH.
 
 2012-03-15 15:49:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg

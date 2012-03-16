@@ -1,5 +1,5 @@
 /*
- * $Id: c_controlmisc.c,v 1.63 2012-02-16 22:49:28 fyurisich Exp $
+ * $Id: c_controlmisc.c,v 1.64 2012-03-16 19:10:51 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -715,6 +715,26 @@ HB_FUNC( IMAGELIST_GETIMAGECOUNT )
 HB_FUNC( IMAGELIST_DUPLICATE )
 {
    HWNDret( ImageList_Duplicate( ( HIMAGELIST ) HWNDparam( 1 ) ) );
+}
+
+HB_FUNC( IMAGELIST_SIZE )
+{
+   HIMAGELIST himl = ( HIMAGELIST ) HWNDparam( 1 ) ;
+   int cx, cy ;
+
+   if( himl )
+   {
+      ImageList_GetIconSize( himl, &cx, &cy );
+   }
+   else
+   {
+      cx = 0 ;
+      cy = 0 ;
+   }
+
+   hb_reta( 2 );
+   HB_STORNI( ( int )  cx,   -1, 1 );
+   HB_STORNI( ( int )  cy,   -1, 2 );
 }
 
 void ImageFillParameter( struct IMAGE_PARAMETER *pResult, PHB_ITEM pString )
