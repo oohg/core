@@ -1,5 +1,5 @@
 /*
- * $Id: i_grid.ch,v 1.18 2012-02-25 03:37:12 fyurisich Exp $
+ * $Id: i_grid.ch,v 1.19 2012-03-18 02:06:14 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -159,19 +159,20 @@
       [ SELECTEDCOLORS <aSelectedColors> ] ;
       [ EDITKEYS <aEditKeys> ] ;
       [ <checkboxes: CHECKBOXES> ] ;
+      [ ON CHECKCHANGE <checkchange> ] ;
    =>;
-        [ <obj> := ] _OOHG_SelectSubClass(iif( <.bycell.>, TGridByCell(), iif( <.multiselect.>, TGridMulti(), TGrid() ) ), [ <subclass>() ] ): ;
-                     Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, ;
-                     <widths>, <rows>, <value>, <fontname>, <fontsize>, <tooltip>, ;
-                     <{change}>, <{dblclick}>, <aHeadClick>, <{gotfocus}>, <{lostfocus}>, ;
-                     <.style.>, <aImage>, <aJust>, <.break.>, <helpid>, <.bold.>, ;
-                     <.italic.>, <.underline.>, <.strikeout.>, <.ownerdata.>, <{dispinfo}>, ;
-                     <itemcount>, <.edit.>, <backcolor>, <fontcolor>, <dynamicbackcolor>, ;
-                     <dynamicforecolor>, <Picture>, <.rtl.>, <.inplace.>, <editcontrols>, ;
-                     <aReadOnly>, <aValidFields>, <aValidMessages>, <{editcell}>, ;
-                     <aWhenFields>, <.disabled.>, <.notabstop.>, <.invisible.>, ;
-                     ! <.noshowheaders.>, <{enter}>, <aHeaderImages>, <aImgAlign>, <.fullmove.>, ;
-                     <aSelectedColors>, <aEditKeys>, <.checkboxes.> )
+      [ <obj> := ] _OOHG_SelectSubClass(iif( <.bycell.>, TGridByCell(), iif( <.multiselect.>, TGridMulti(), TGrid() ) ), [ <subclass>() ] ): ;
+            Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, ;
+            <widths>, <rows>, <value>, <fontname>, <fontsize>, <tooltip>, ;
+            <{change}>, <{dblclick}>, <aHeadClick>, <{gotfocus}>, <{lostfocus}>, ;
+            <.style.>, <aImage>, <aJust>, <.break.>, <helpid>, <.bold.>, ;
+            <.italic.>, <.underline.>, <.strikeout.>, <.ownerdata.>, <{dispinfo}>, ;
+            <itemcount>, <.edit.>, <backcolor>, <fontcolor>, <dynamicbackcolor>, ;
+            <dynamicforecolor>, <Picture>, <.rtl.>, <.inplace.>, <editcontrols>, ;
+            <aReadOnly>, <aValidFields>, <aValidMessages>, <{editcell}>, ;
+            <aWhenFields>, <.disabled.>, <.notabstop.>, <.invisible.>, ;
+            ! <.noshowheaders.>, <{enter}>, <aHeaderImages>, <aImgAlign>, <.fullmove.>, ;
+            <aSelectedColors>, <aEditKeys>, <.checkboxes.>, <{checkchange}> )
 
 ///////////////////////////////////////////////////////////////////////////////
 // GRID (SPLITBOX VERSION)
@@ -233,16 +234,17 @@
       [ SELECTEDCOLORS <aSelectedColors> ] ;
       [ EDITKEYS <aEditKeys> ] ;
       [ <checkboxes: CHECKBOXES> ] ;
+      [ ON CHECKCHANGE <checkchange> ] ;
    =>;
-        [ <obj> := ] _OOHG_SelectSubClass(iif( <.bycell.>, TGridByCell(), iif( <.multiselect.>, TGridMulti(), TGrid() ) ), [ <subclass>() ] ): ;
-                     Define( <(name)>, <(parent)>, , , <w>, <h>, <headers>, ;
-                     <widths>, <rows>, <value>, <fontname>, <fontsize>, <tooltip>, ;
-                     <{change}>, <{dblclick}>, <aHeadClick>, <{gotfocus}>, <{lostfocus}>, ;
-                     <.style.>, <aImage>, <aJust>, <.break.>, <helpid>, <.bold.>, ;
-                     <.italic.>, <.underline.>, <.strikeout.>, <.ownerdata.>, <{dispinfo}>, ;
-                     <itemcount>, <.edit.>, <backcolor>, <fontcolor>, <dynamicbackcolor>, ;
-                     <dynamicforecolor>, <Picture>, <.rtl.>, <.inplace.>, <editcontrols>, ;
-                     <aReadOnly>, <aValidFields>, <aValidMessages>, <{editcell}>, ;
-                     <aWhenFields>, <.disabled.>, <.notabstop.>, <.invisible.>, ;
-                     ! <.noshowheaders.>, <{enter}>, <aHeaderImages>, <aImgAlign>, <.fullmove.>, ;
-                     <aSelectedColors>, <aEditKeys>, <.checkboxes.> )
+      [ <obj> := ] _OOHG_SelectSubClass(iif( <.bycell.>, TGridByCell(), iif( <.multiselect.>, TGridMulti(), TGrid() ) ), [ <subclass>() ] ): ;
+            Define( <(name)>, <(parent)>, , , <w>, <h>, <headers>, ;
+            <widths>, <rows>, <value>, <fontname>, <fontsize>, <tooltip>, ;
+            <{change}>, <{dblclick}>, <aHeadClick>, <{gotfocus}>, <{lostfocus}>, ;
+            <.style.>, <aImage>, <aJust>, <.break.>, <helpid>, <.bold.>, ;
+            <.italic.>, <.underline.>, <.strikeout.>, <.ownerdata.>, <{dispinfo}>, ;
+            <itemcount>, <.edit.>, <backcolor>, <fontcolor>, <dynamicbackcolor>, ;
+            <dynamicforecolor>, <Picture>, <.rtl.>, <.inplace.>, <editcontrols>, ;
+            <aReadOnly>, <aValidFields>, <aValidMessages>, <{editcell}>, ;
+            <aWhenFields>, <.disabled.>, <.notabstop.>, <.invisible.>, ;
+            ! <.noshowheaders.>, <{enter}>, <aHeaderImages>, <aImgAlign>, <.fullmove.>, ;
+            <aSelectedColors>, <aEditKeys>, <.checkboxes.>, <{checkchange}> )

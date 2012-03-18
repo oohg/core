@@ -1,11 +1,22 @@
 /*
- * $Id: ChangeLog,v 1.882 2012-03-16 19:10:51 fyurisich Exp $
+ * $Id: ChangeLog,v 1.883 2012-03-18 02:06:14 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-03-17 23:06:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_grid.ch
+   * include/i_altsyntax.ch
+    + Added support for TGrid ON CHECKCHANGE event.
+   * source/h_grid.prg
+     + Added ListView_HitOnCheckBox function.
+     + Added ON CHECKCHANGE event to TGrid class.
+     + Added OnCheckChange data.
+   * doc/classes.txt
+     * Updated.
 
 2012-03-15 16:10:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/c_controlmisc.c

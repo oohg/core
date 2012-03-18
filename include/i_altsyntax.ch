@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.62 2012-03-12 23:12:35 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.63 2012-03-18 02:06:14 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -122,6 +122,7 @@ Memvariables
 #xtranslate _OOHG_ActiveControlTrailingFontColor      => _OOHG_ActiveControlInfo \[  25 \]
 #xtranslate _OOHG_ActiveControlBackgroundColor        => _OOHG_ActiveControlInfo \[  26 \]
 
+#xtranslate _OOHG_ActiveControlOnCheckChange          => _OOHG_ActiveControlInfo \[ 141 \]
 #xtranslate _OOHG_ActiveControlForceRefresh           => _OOHG_ActiveControlInfo \[ 142 \]
 #xtranslate _OOHG_ActiveControlNoRefresh              => _OOHG_ActiveControlInfo \[ 143 \]
 #xtranslate _OOHG_ActiveControlCheckBoxes             => _OOHG_ActiveControlInfo \[ 144 \]
@@ -1947,7 +1948,8 @@ GRID
         _OOHG_ActiveControlByCell           := .F. ;;
         _OOHG_ActiveControlSelectedColors   := .F. ;;
         _OOHG_ActiveControlKeys             := Nil ;;
-        _OOHG_ActiveControlCheckBoxes       := .F.
+        _OOHG_ActiveControlCheckBoxes       := .F. ;;
+        _OOHG_ActiveControlOnCheckChange    := Nil
 
 #xcommand ONAPPEND <onappend> ;
         => ;
@@ -1980,6 +1982,14 @@ GRID
 #xcommand CHECKBOXES <checkboxes> ;
         => ;
         _OOHG_ActiveControlCheckBoxes := <checkboxes>
+
+#xcommand ONCHECKCHANGE <checkchange> ;
+        => ;
+        _OOHG_ActiveControlOnCheckChange := <{checkchange}>
+
+#xcommand ON CHECKCHANGE <checkchange> ;
+        => ;
+        _OOHG_ActiveControlOnCheckChange := <{checkchange}>
 
 #xcommand END GRID ;
         => ;
@@ -2038,7 +2048,8 @@ GRID
                 _OOHG_ActiveControlFullMove, ;
                 _OOHG_ActiveControlSelectedColors, ;
                 _OOHG_ActiveControlKeys, ;
-                _OOHG_ActiveControlCheckBoxes )
+                _OOHG_ActiveControlCheckBoxes, ;
+                _OOHG_ActiveControlOnCheckChange )
 
 /*----------------------------------------------------------------------------
 BROWSE

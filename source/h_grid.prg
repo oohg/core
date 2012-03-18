@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.148 2012-03-16 19:10:51 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.149 2012-03-18 02:06:15 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -139,6 +139,7 @@ CLASS TGrid FROM TControl
    DATA aSelectedColors       INIT {}
    DATA aEditKeys             INIT Nil
    DATA lCheckBoxes           INIT .F.
+   DATA OnCheckChange         INIT Nil
 
    METHOD Define
    METHOD Define2
@@ -213,7 +214,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                editcontrols, readonly, valid, validmessages, editcell, ;
                aWhenFields, lDisabled, lNoTabStop, lInvisible, lHasHeaders, ;
                onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
-               aSelectedColors, aEditKeys, lCheckBoxes ) CLASS TGrid
+               aSelectedColors, aEditKeys, lCheckBoxes, oncheck ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local nStyle := LVS_SINGLESEL
 
@@ -226,7 +227,7 @@ Local nStyle := LVS_SINGLESEL
               inplace, editcontrols, readonly, valid, validmessages, ;
               editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
               lHasHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
-              aSelectedColors, aEditKeys, lCheckBoxes )
+              aSelectedColors, aEditKeys, lCheckBoxes, oncheck )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -239,7 +240,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                 inplace, editcontrols, readonly, valid, validmessages, ;
                 editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
                 lHasHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
-                aSelectedColors, aEditKeys, lCheckBoxes ) CLASS TGrid
+                aSelectedColors, aEditKeys, lCheckBoxes, oncheck ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local ControlHandle, aImageList, i
 
@@ -362,12 +363,13 @@ Local ControlHandle, aImageList, i
    ::Value := value
 
    // Must be set after control is initialized
-   ASSIGN ::OnLostFocus VALUE lostfocus  TYPE "B"
-   ASSIGN ::OnGotFocus  VALUE gotfocus   TYPE "B"
-   ASSIGN ::OnChange    VALUE Change     TYPE "B"
-   ASSIGN ::OnDblClick  VALUE dblclick   TYPE "B"
-   ASSIGN ::OnDispInfo  VALUE ondispinfo TYPE "B"
-   ASSIGN ::OnEnter     value onenter    TYPE "B"
+   ASSIGN ::OnLostFocus   VALUE lostfocus  TYPE "B"
+   ASSIGN ::OnGotFocus    VALUE gotfocus   TYPE "B"
+   ASSIGN ::OnChange      VALUE Change     TYPE "B"
+   ASSIGN ::OnDblClick    VALUE dblclick   TYPE "B"
+   ASSIGN ::OnDispInfo    VALUE ondispinfo TYPE "B"
+   ASSIGN ::OnEnter       VALUE onenter    TYPE "B"
+   ASSIGN ::OnCheckChange VALUE oncheck    TYPE "B"
 
 Return Self
 
@@ -1670,16 +1672,30 @@ Local lvc, _ThisQueryTemp, nvkey, uValue, uRet
       Return uRet
 
    ElseIf nNotify == LVN_KEYDOWN
-     nvKey := GetGridvKey( lParam )
+      nvKey := GetGridvKey( lParam )
 
-     If nvkey == VK_DOWN
-       If ::FirstSelectedItem == ::ItemCount .AND. ! ::lEditMode
-           If ::Append
-              ::AppendItem()
-              Return Nil
-           EndIf
-        EndIf
-     EndIf
+      If nvkey == VK_DOWN
+         If ::FirstSelectedItem == ::ItemCount .AND. ! ::lEditMode
+            If ::Append
+               ::AppendItem()
+               Return Nil
+            EndIf
+         EndIf
+      ElseIf nvkey == VK_SPACE .AND. ::lCheckBoxes
+         // detect item
+         uValue := ::FirstSelectedItem
+
+         If uValue > 0
+            // change check mark
+            uRet := ::CheckItem( uValue )
+            If uRet # ::CheckItem( uValue, ! uRet )
+               ::DoEvent( ::OnCheckChange, "CHECKCHANGE", { uValue } )
+            EndIf
+            
+            // skip default action
+            Return 1
+         EndIf
+      EndIf
 
    ElseIf nNotify == LVN_GETDISPINFO
 
@@ -1729,11 +1745,79 @@ Local lvc, _ThisQueryTemp, nvkey, uValue, uRet
       // This is supposedly documented at KB 813791.
       RedrawWindow( ::hWnd )
 
-   ElseIf nNotify == NM_CLICK .AND. HB_IsBlock( ::OnClick )
-      If ! ::NestedClick
-         ::NestedClick := ! _OOHG_NestedSameEvent()
-         ::DoEvent( ::OnClick, "CLICK" )
-         ::NestedClick := .F.
+   ElseIf nNotify == NM_CLICK .AND. ::lCheckBoxes
+      If HB_IsBlock( ::OnCheckChange )
+         // detect item
+         uValue := ListView_HitOnCheckBox( ::hWnd, GetCursorRow() - GetWindowRow( ::hWnd ), GetCursorCol() - GetWindowCol( ::hWnd ) )
+      Else
+         uValue := 0
+      EndIf
+
+      If HB_IsBlock( ::OnClick )
+         If ! ::NestedClick
+            ::NestedClick := ! _OOHG_NestedSameEvent()
+            ::DoEvent( ::OnClick, "CLICK" )
+            ::NestedClick := .F.
+         EndIf
+      EndIf
+
+      If HB_IsBlock( ::OnCheckChange )
+         If uValue > 0
+            // change check mark
+            uRet := ::CheckItem( uValue )
+            If uRet # ::CheckItem( uValue, ! uRet )
+               ::DoEvent( ::OnCheckChange, "CHECKCHANGE", { uValue } )
+            EndIf
+
+            // skip default action
+            Return 1
+         EndIf
+      EndIf
+
+   ElseIf nNotify == NM_RCLICK .AND. ::lCheckBoxes
+      If HB_IsBlock( ::OnCheckChange )
+         // detect item
+         uValue := ListView_HitOnCheckBox( ::hWnd, GetCursorRow() - GetWindowRow( ::hWnd ), GetCursorCol() - GetWindowCol( ::hWnd ) )
+      Else
+         uValue := 0
+      EndIf
+
+      If HB_IsBlock( ::OnRClick )
+         ::DoEvent( ::OnRClick, "RCLICK" )
+      EndIf
+
+      If HB_IsBlock( ::OnCheckChange )
+         If uValue > 0
+            // change check mark
+            uRet := ::CheckItem( uValue )
+            If uRet # ::CheckItem( uValue, ! uRet )
+               ::DoEvent( ::OnCheckChange, "CHECKCHANGE", { uValue } )
+            EndIf
+
+            // skip default action
+            Return 1
+         EndIf
+      EndIf
+
+   ElseIf nNotify == NM_DBLCLK .AND. ::lCheckBoxes
+      If HB_IsBlock( ::OnCheckChange )
+         // detect item
+         uValue := ListView_HitOnCheckBox( ::hWnd, GetCursorRow() - GetWindowRow( ::hWnd ), GetCursorCol() - GetWindowCol( ::hWnd ) )
+      Else
+         uValue := 0
+      EndIf
+
+      If HB_IsBlock( ::OnCheckChange )
+         If uValue > 0
+            // change check mark
+            uRet := ::CheckItem( uValue )
+            If uRet # ::CheckItem( uValue, ! uRet )
+               ::DoEvent( ::OnCheckChange, "CHECKCHANGE", { uValue } )
+            EndIf
+
+            // skip default action
+            Return 1
+         EndIf
       EndIf
 
    ElseIf nNotify == NM_KILLFOCUS .OR. nNotify == NM_SETFOCUS
@@ -2099,7 +2183,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                editcontrols, readonly, valid, validmessages, editcell, ;
                aWhenFields, lDisabled, lNoTabStop, lInvisible, lHasHeaders, ;
                onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
-               aSelectedColors, aEditKeys, lCheckBoxes ) CLASS TGridMulti
+               aSelectedColors, aEditKeys, lCheckBoxes, oncheck ) CLASS TGridMulti
 *-----------------------------------------------------------------------------*
 Local nStyle := 0
 
@@ -2112,7 +2196,7 @@ Local nStyle := 0
               inplace, editcontrols, readonly, valid, validmessages, ;
               editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
               lHasHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
-               aSelectedColors, aEditKeys, lCheckBoxes )
+               aSelectedColors, aEditKeys, lCheckBoxes, oncheck )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -2353,7 +2437,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                editcontrols, readonly, valid, validmessages, editcell, ;
                aWhenFields, lDisabled, lNoTabStop, lInvisible, lHasHeaders, ;
                onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
-               aSelectedColors, aEditKeys, lCheckBoxes ) CLASS TGridByCell
+               aSelectedColors, aEditKeys, lCheckBoxes, oncheck ) CLASS TGridByCell
 *-----------------------------------------------------------------------------*
 Local nStyle := LVS_SINGLESEL
 
@@ -2368,7 +2452,7 @@ Local nStyle := LVS_SINGLESEL
               InPlace, editcontrols, readonly, valid, validmessages, ;
               editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
               lHasHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
-              aSelectedColors, aEditKeys, lCheckBoxes )
+              aSelectedColors, aEditKeys, lCheckBoxes, oncheck )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -2854,7 +2938,7 @@ Return Nil
 METHOD Events_Notify( wParam, lParam ) CLASS TGridByCell
 *-----------------------------------------------------------------------------*
 Local nNotify := GetNotifyCode( lParam )
-Local nvkey, uRet, aValue
+Local nvkey, uRet, aValue, nItem
 
    If nNotify == NM_CUSTOMDRAW
       aValue := ::Value
@@ -2881,11 +2965,100 @@ Local nvkey, uRet, aValue
          ::Left()
       ElseIf nvkey == VK_RIGHT
          ::Right()
+      ElseIf nvkey == VK_SPACE .AND. ::lCheckBoxes
+         // detect item
+         nItem := ::FirstSelectedItem
+
+         If nItem > 0
+            // change check mark
+            uRet := ::CheckItem( nItem )
+            If uRet # ::CheckItem( nItem, ! uRet )
+               ::DoEvent( ::OnCheckChange, "CHECKCHANGE", { nItem } )
+            EndIf
+
+            // skip default action
+            Return 1
+         EndIf
       EndIf
       Return Nil
 
    ElseIf nNotify == LVN_ITEMCHANGED
       Return Nil
+
+   ElseIf nNotify == NM_CLICK .AND. ::lCheckBoxes
+      If HB_IsBlock( ::OnCheckChange )
+         // detect item
+         nItem := ListView_HitOnCheckBox( ::hWnd, GetCursorRow() - GetWindowRow( ::hWnd ), GetCursorCol() - GetWindowCol( ::hWnd ) )
+      Else
+         nItem := 0
+      EndIf
+
+      If HB_IsBlock( ::OnClick )
+         If ! ::NestedClick
+            ::NestedClick := ! _OOHG_NestedSameEvent()
+            ::DoEvent( ::OnClick, "CLICK" )
+            ::NestedClick := .F.
+         EndIf
+      EndIf
+
+      If HB_IsBlock( ::OnCheckChange )
+         If nItem > 0
+            // change check mark
+            uRet := ::CheckItem( nItem )
+            If uRet # ::CheckItem( nItem, ! uRet )
+               ::DoEvent( ::OnCheckChange, "CHECKCHANGE", { nItem } )
+            EndIf
+
+            // skip default action
+            Return 1
+         EndIf
+      EndIf
+
+   ElseIf nNotify == NM_RCLICK .AND. ::lCheckBoxes
+      If HB_IsBlock( ::OnCheckChange )
+         // detect item
+         nItem := ListView_HitOnCheckBox( ::hWnd, GetCursorRow() - GetWindowRow( ::hWnd ), GetCursorCol() - GetWindowCol( ::hWnd ) )
+      Else
+         nItem := 0
+      EndIf
+
+      If HB_IsBlock( ::OnRClick )
+         ::DoEvent( ::OnRClick, "RCLICK" )
+      EndIf
+
+      If HB_IsBlock( ::OnCheckChange )
+         If nItem > 0
+            // change check mark
+            uRet := ::CheckItem( nItem )
+            If uRet # ::CheckItem( nItem, ! uRet )
+               ::DoEvent( ::OnCheckChange, "CHECKCHANGE", { nItem } )
+            EndIf
+
+            // skip default action
+            Return 1
+         EndIf
+      EndIf
+
+   ElseIf nNotify == NM_DBLCLK .AND. ::lCheckBoxes
+      If HB_IsBlock( ::OnCheckChange )
+         // detect item
+         nItem := ListView_HitOnCheckBox( ::hWnd, GetCursorRow() - GetWindowRow( ::hWnd ), GetCursorCol() - GetWindowCol( ::hWnd ) )
+      Else
+         nItem := 0
+      EndIf
+
+      If HB_IsBlock( ::OnCheckChange )
+         If nItem > 0
+            // change check mark
+            uRet := ::CheckItem( nItem )
+            If uRet # ::CheckItem( nItem, ! uRet )
+               ::DoEvent( ::OnCheckChange, "CHECKCHANGE", { nItem } )
+            EndIf
+
+            // skip default action
+            Return 1
+         EndIf
+      EndIf
 
    EndIf
 
@@ -4512,7 +4685,7 @@ HB_FUNC( LISTVIEW_HITTEST )
 
    lvhti.pt = point;
 
-   ListView_SubItemHitTest ( HWNDparam( 1 ), &lvhti );
+   ListView_SubItemHitTest( HWNDparam( 1 ), &lvhti );
 
    if( lvhti.flags & LVHT_ONITEM )
    {
@@ -4526,6 +4699,31 @@ HB_FUNC( LISTVIEW_HITTEST )
       HB_STORNI( 0, -1, 1 );
       HB_STORNI( 0, -1, 2 );
    }
+}
+
+HB_FUNC( LISTVIEW_HITONCHECKBOX )
+{
+   POINT point ;
+   LVHITTESTINFO lvhti;
+   int item = 0;
+
+   point.y = hb_parni( 2 );
+   point.x = hb_parni( 3 );
+
+   lvhti.pt = point;
+
+   ListView_SubItemHitTest( HWNDparam( 1 ), &lvhti );
+   
+   if( lvhti.flags == LVHT_ONITEMSTATEICON )
+   {
+      item = lvhti.iItem + 1;
+   }
+   else
+   {
+      item = 0;
+   }
+   
+   hb_retni( item );
 }
 
 HB_FUNC( LISTVIEW_GETSUBITEMRECT )
