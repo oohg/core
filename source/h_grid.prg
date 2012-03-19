@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.150 2012-03-19 00:46:14 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.151 2012-03-19 12:52:11 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -376,14 +376,22 @@ Return Self
 *-----------------------------------------------------------------------------*
 METHOD CheckItem( nItem, lChecked ) CLASS TGrid
 *-----------------------------------------------------------------------------*
-Local lRet
+Local lRet, lOld
 
    If ::lCheckBoxes .AND. HB_IsNumeric( nItem )
-      If HB_IsLogical( lChecked )
-         ListView_SetCheckState( ::hwnd, nItem, lChecked )
-      EndIf
+      lOld := ListView_GetCheckState( ::hwnd, nItem )
 
-      lRet := ListView_GetCheckState( ::hwnd, nItem )
+      If HB_IsLogical( lChecked ) .AND. lChecked # lOld
+         ListView_SetCheckState( ::hwnd, nItem, lChecked )
+
+         lRet := ListView_GetCheckState( ::hwnd, nItem )
+
+         If lRet # lOld
+            ::DoEvent( ::OnCheckChange, "CHECKCHANGE", { nItem } )
+         EndIf
+      Else
+         lRet := lOld
+      EndIf
    Else
       lRet := .F.
    EndIf
