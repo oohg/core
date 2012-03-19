@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.151 2012-03-19 12:52:11 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.152 2012-03-19 13:05:23 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1693,14 +1693,9 @@ Local lvc, _ThisQueryTemp, nvkey, uValue, uRet, lOld
       ElseIf nvkey == VK_SPACE .AND. ::lCheckBoxes
          // detect item
          uValue := ::FirstSelectedItem
-
          If uValue > 0
             // change check mark
-            lOld := ::CheckItem( uValue )
-            If lOld # ::CheckItem( uValue, ! lOld )
-               ::DoEvent( ::OnCheckChange, "CHECKCHANGE", { uValue } )
-            EndIf
-            
+            ::CheckItem( uValue )
             // skip default action
             Return 1
          EndIf
@@ -1772,11 +1767,7 @@ Local lvc, _ThisQueryTemp, nvkey, uValue, uRet, lOld
 
       If uValue > 0
          // change check mark
-         lOld := ::CheckItem( uValue )
-         If lOld # ::CheckItem( uValue, ! lOld )
-            ::DoEvent( ::OnCheckChange, "CHECKCHANGE", { uValue } )
-         EndIf
-
+         ::CheckItem( uValue )
          // skip default action
          Return 1
       EndIf
@@ -1795,15 +1786,11 @@ Local lvc, _ThisQueryTemp, nvkey, uValue, uRet, lOld
 
       If uValue > 0
          // change check mark
-         lOld := ::CheckItem( uValue )
-         If lOld # ::CheckItem( uValue, ! lOld )
-            ::DoEvent( ::OnCheckChange, "CHECKCHANGE", { uValue } )
-         EndIf
-         
+         ::CheckItem( uValue )
+         // fire context menu
          If ::ContextMenu != nil
             ::ContextMenu:Activate()
          EndIf
-
          // skip default action
          Return 1
       EndIf
@@ -2963,11 +2950,7 @@ Local nvkey, uRet, aValue, nItem, lOld
 
          If nItem > 0
             // change check mark
-            lOld := ::CheckItem( nItem )
-            If lOld # ::CheckItem( nItem, ! lOld )
-               ::DoEvent( ::OnCheckChange, "CHECKCHANGE", { nItem } )
-            EndIf
-
+            ::CheckItem( nItem )
             // skip default action
             Return 1
          EndIf
