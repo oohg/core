@@ -1,11 +1,19 @@
 /*
- * $Id: ChangeLog,v 1.886 2012-03-19 13:05:22 fyurisich Exp $
+ * $Id: ChangeLog,v 1.887 2012-03-19 21:18:39 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-03-19 18:18:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_grid.prg
+     ! Fixed: unused local variable warning.
+     ! Fixed: checkbox status not changed when clicked.
+     * ListView_EnsureVisible function now returns .T. for success
+       or .F. for failure.
+     ! Fixed: BCC compiler warning.
 
 2012-03-19 10:05:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg

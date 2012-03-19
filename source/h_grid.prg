@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.152 2012-03-19 13:05:23 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.153 2012-03-19 21:18:39 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1672,7 +1672,7 @@ Return Nil
 METHOD Events_Notify( wParam, lParam ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local nNotify := GetNotifyCode( lParam )
-Local lvc, _ThisQueryTemp, nvkey, uValue, uRet, lOld
+Local lvc, _ThisQueryTemp, nvkey, uValue, uRet
 
    If nNotify == NM_CUSTOMDRAW
       uValue := ::FirstSelectedItem
@@ -1695,7 +1695,7 @@ Local lvc, _ThisQueryTemp, nvkey, uValue, uRet, lOld
          uValue := ::FirstSelectedItem
          If uValue > 0
             // change check mark
-            ::CheckItem( uValue )
+            ::CheckItem( uValue, ! ::CheckItem( uValue ) )
             // skip default action
             Return 1
          EndIf
@@ -1767,7 +1767,7 @@ Local lvc, _ThisQueryTemp, nvkey, uValue, uRet, lOld
 
       If uValue > 0
          // change check mark
-         ::CheckItem( uValue )
+         ::CheckItem( uValue, ! ::CheckItem( uValue ) )
          // skip default action
          Return 1
       EndIf
@@ -1786,7 +1786,7 @@ Local lvc, _ThisQueryTemp, nvkey, uValue, uRet, lOld
 
       If uValue > 0
          // change check mark
-         ::CheckItem( uValue )
+         ::CheckItem( uValue, ! ::CheckItem( uValue ) )
          // fire context menu
          If ::ContextMenu != nil
             ::ContextMenu:Activate()
@@ -1807,7 +1807,7 @@ METHOD AddItem( aRow, uForeColor, uBackColor ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local aText
    If Len( ::aHeaders ) != Len( aRow )
-      MsgOOHGError( "Grid.AddItem: Item size mismatch. Program Terminated" )
+      MsgOOHGError( "Grid.AddItem: Item size mismatch. Program Terminated." )
    EndIf
 
    aText := TGrid_SetArray( Self, aRow )
@@ -1820,7 +1820,7 @@ METHOD InsertItem( nItem, aRow, uForeColor, uBackColor ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local aText
    If Len( ::aHeaders ) != Len( aRow )
-      MsgOOHGError( "Grid.InsertItem: Item size mismatch. Program Terminated" )
+      MsgOOHGError( "Grid.InsertItem: Item size mismatch. Program Terminated." )
    EndIf
 
    aText := TGrid_SetArray( Self, aRow )
@@ -2917,7 +2917,7 @@ Return Nil
 METHOD Events_Notify( wParam, lParam ) CLASS TGridByCell
 *-----------------------------------------------------------------------------*
 Local nNotify := GetNotifyCode( lParam )
-Local nvkey, uRet, aValue, nItem, lOld
+Local nvkey, uRet, aValue, nItem
 
    If nNotify == NM_CUSTOMDRAW
       aValue := ::Value
@@ -2950,7 +2950,7 @@ Local nvkey, uRet, aValue, nItem, lOld
 
          If nItem > 0
             // change check mark
-            ::CheckItem( nItem )
+            ::CheckItem( nItem, ! ::CheckItem( nItem ) )
             // skip default action
             Return 1
          EndIf
@@ -4562,7 +4562,7 @@ HB_FUNC( LISTVIEWGETCOUNTPERPAGE )
 
 HB_FUNC( LISTVIEW_ENSUREVISIBLE )
 {
-   ListView_EnsureVisible( HWNDparam( 1 ), hb_parni( 2 ) - 1, 1 );
+   hb_retl( ListView_EnsureVisible( HWNDparam( 1 ), hb_parni( 2 ) - 1, 1 ) );
 }
 
 HB_FUNC( LISTVIEW_GETTOPINDEX )
@@ -4605,7 +4605,7 @@ HB_FUNC( LISTVIEW_HITONCHECKBOX )
 {
    POINT point ;
    LVHITTESTINFO lvhti;
-   int item = 0;
+   int item;
 
    point.y = hb_parni( 2 );
    point.x = hb_parni( 3 );
