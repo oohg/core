@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.149 2012-03-18 02:06:15 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.150 2012-03-19 00:46:14 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -270,7 +270,7 @@ Local ControlHandle, aImageList, i
    ASSIGN ::Picture     VALUE aPicture    TYPE "A"
 
    ASSIGN nogrid        VALUE nogrid      TYPE "L" DEFAULT .F.
-   ASSIGN ::lCheckBoxes VALUE lCheckBoxes TYPE "L" DEFAULT .F.
+   ASSIGN ::lCheckBoxes VALUE lCheckBoxes TYPE "L"
 
    nStyle := ::InitStyle( nStyle,, lInvisible, lNoTabStop, lDisabled ) + ;
              If( HB_IsLogical( lHasHeaders ) .AND. ! lHasHeaders, LVS_NOCOLUMNHEADER, 0 )
@@ -1556,49 +1556,50 @@ Local aCellData
    Empty( lParam )
 
    If nMsg == WM_LBUTTONDBLCLK
+      If ! ::lCheckBoxes .OR. ListView_HitOnCheckBox( ::hWnd, GetCursorRow() - GetWindowRow( ::hWnd ), GetCursorCol() - GetWindowCol( ::hWnd ) ) == 0
+         _PushEventInfo()
+         _OOHG_ThisForm := ::Parent
+         _OOHG_ThisType := 'C'
+         _OOHG_ThisControl := Self
 
-      _PushEventInfo()
-      _OOHG_ThisForm := ::Parent
-      _OOHG_ThisType := 'C'
-      _OOHG_ThisControl := Self
+         aCellData := _GetGridCellData( Self )
+         _OOHG_ThisItemRowIndex   := aCellData[ 1 ]
+         _OOHG_ThisItemColIndex   := aCellData[ 2 ]
+         _OOHG_ThisItemCellRow    := aCellData[ 3 ]
+         _OOHG_ThisItemCellCol    := aCellData[ 4 ]
+         _OOHG_ThisItemCellWidth  := aCellData[ 5 ]
+         _OOHG_ThisItemCellHeight := aCellData[ 6 ]
+         _OOHG_ThisItemCellValue  := ::Cell( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
 
-      aCellData := _GetGridCellData( Self )
-      _OOHG_ThisItemRowIndex   := aCellData[ 1 ]
-      _OOHG_ThisItemColIndex   := aCellData[ 2 ]
-      _OOHG_ThisItemCellRow    := aCellData[ 3 ]
-      _OOHG_ThisItemCellCol    := aCellData[ 4 ]
-      _OOHG_ThisItemCellWidth  := aCellData[ 5 ]
-      _OOHG_ThisItemCellHeight := aCellData[ 6 ]
-      _OOHG_ThisItemCellValue  := ::Cell( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
+         If ::FullMove
+            If ::IsColumnReadOnly( _OOHG_ThisItemColIndex )
+               // Cell is readonly
+            ElseIf ! ::IsColumnWhen( _OOHG_ThisItemColIndex )
+               // Not a valid WHEN
+            Else
+               ::EditGrid( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
+            EndIf
 
-      If ::FullMove
-         If ::IsColumnReadOnly( _OOHG_ThisItemColIndex )
-            // Cell is readonly
-         ElseIf ! ::IsColumnWhen( _OOHG_ThisItemColIndex )
-            // Not a valid WHEN
-         Else
-            ::EditGrid( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
+         ElseIf ::InPlace
+            If ::IsColumnReadOnly( _OOHG_ThisItemColIndex )
+               // Cell is readonly
+            ElseIf ! ::IsColumnWhen( _OOHG_ThisItemColIndex )
+               // Not a valid WHEN
+            Else
+               ::EditCell( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
+            EndIf
+
+         ElseIf ::AllowEdit
+            ::EditItem()
+
+         ElseIf HB_IsBlock( ::OnDblClick )
+            ::DoEvent( ::OnDblClick, "DBLCLICK" )
+
          EndIf
 
-      ElseIf ::InPlace
-         If ::IsColumnReadOnly( _OOHG_ThisItemColIndex )
-            // Cell is readonly
-         ElseIf ! ::IsColumnWhen( _OOHG_ThisItemColIndex )
-            // Not a valid WHEN
-         Else
-            ::EditCell( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
-         EndIf
-
-      ElseIf ::AllowEdit
-         ::EditItem()
-
-      ElseIf HB_IsBlock( ::OnDblClick )
-         ::DoEvent( ::OnDblClick, "DBLCLICK" )
-
+         _ClearThisCellInfo()
+         _PopEventInfo()
       EndIf
-
-      _ClearThisCellInfo()
-      _PopEventInfo()
       Return 0
 
    EndIf
@@ -1663,7 +1664,7 @@ Return Nil
 METHOD Events_Notify( wParam, lParam ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local nNotify := GetNotifyCode( lParam )
-Local lvc, _ThisQueryTemp, nvkey, uValue, uRet
+Local lvc, _ThisQueryTemp, nvkey, uValue, uRet, lOld
 
    If nNotify == NM_CUSTOMDRAW
       uValue := ::FirstSelectedItem
@@ -1687,8 +1688,8 @@ Local lvc, _ThisQueryTemp, nvkey, uValue, uRet
 
          If uValue > 0
             // change check mark
-            uRet := ::CheckItem( uValue )
-            If uRet # ::CheckItem( uValue, ! uRet )
+            lOld := ::CheckItem( uValue )
+            If lOld # ::CheckItem( uValue, ! lOld )
                ::DoEvent( ::OnCheckChange, "CHECKCHANGE", { uValue } )
             EndIf
             
@@ -1745,8 +1746,8 @@ Local lvc, _ThisQueryTemp, nvkey, uValue, uRet
       // This is supposedly documented at KB 813791.
       RedrawWindow( ::hWnd )
 
-   ElseIf nNotify == NM_CLICK .AND. ::lCheckBoxes
-      If HB_IsBlock( ::OnCheckChange )
+   ElseIf nNotify == NM_CLICK
+      If ::lCheckBoxes .AND. HB_IsBlock( ::OnCheckChange )
          // detect item
          uValue := ListView_HitOnCheckBox( ::hWnd, GetCursorRow() - GetWindowRow( ::hWnd ), GetCursorCol() - GetWindowCol( ::hWnd ) )
       Else
@@ -1761,21 +1762,19 @@ Local lvc, _ThisQueryTemp, nvkey, uValue, uRet
          EndIf
       EndIf
 
-      If HB_IsBlock( ::OnCheckChange )
-         If uValue > 0
-            // change check mark
-            uRet := ::CheckItem( uValue )
-            If uRet # ::CheckItem( uValue, ! uRet )
-               ::DoEvent( ::OnCheckChange, "CHECKCHANGE", { uValue } )
-            EndIf
-
-            // skip default action
-            Return 1
+      If uValue > 0
+         // change check mark
+         lOld := ::CheckItem( uValue )
+         If lOld # ::CheckItem( uValue, ! lOld )
+            ::DoEvent( ::OnCheckChange, "CHECKCHANGE", { uValue } )
          EndIf
+
+         // skip default action
+         Return 1
       EndIf
 
-   ElseIf nNotify == NM_RCLICK .AND. ::lCheckBoxes
-      If HB_IsBlock( ::OnCheckChange )
+   ElseIf nNotify == NM_RCLICK
+      If ::lCheckBoxes .AND. HB_IsBlock( ::OnCheckChange )
          // detect item
          uValue := ListView_HitOnCheckBox( ::hWnd, GetCursorRow() - GetWindowRow( ::hWnd ), GetCursorCol() - GetWindowCol( ::hWnd ) )
       Else
@@ -1786,38 +1785,19 @@ Local lvc, _ThisQueryTemp, nvkey, uValue, uRet
          ::DoEvent( ::OnRClick, "RCLICK" )
       EndIf
 
-      If HB_IsBlock( ::OnCheckChange )
-         If uValue > 0
-            // change check mark
-            uRet := ::CheckItem( uValue )
-            If uRet # ::CheckItem( uValue, ! uRet )
-               ::DoEvent( ::OnCheckChange, "CHECKCHANGE", { uValue } )
-            EndIf
-
-            // skip default action
-            Return 1
+      If uValue > 0
+         // change check mark
+         lOld := ::CheckItem( uValue )
+         If lOld # ::CheckItem( uValue, ! lOld )
+            ::DoEvent( ::OnCheckChange, "CHECKCHANGE", { uValue } )
          EndIf
-      EndIf
-
-   ElseIf nNotify == NM_DBLCLK .AND. ::lCheckBoxes
-      If HB_IsBlock( ::OnCheckChange )
-         // detect item
-         uValue := ListView_HitOnCheckBox( ::hWnd, GetCursorRow() - GetWindowRow( ::hWnd ), GetCursorCol() - GetWindowCol( ::hWnd ) )
-      Else
-         uValue := 0
-      EndIf
-
-      If HB_IsBlock( ::OnCheckChange )
-         If uValue > 0
-            // change check mark
-            uRet := ::CheckItem( uValue )
-            If uRet # ::CheckItem( uValue, ! uRet )
-               ::DoEvent( ::OnCheckChange, "CHECKCHANGE", { uValue } )
-            EndIf
-
-            // skip default action
-            Return 1
+         
+         If ::ContextMenu != nil
+            ::ContextMenu:Activate()
          EndIf
+
+         // skip default action
+         Return 1
       EndIf
 
    ElseIf nNotify == NM_KILLFOCUS .OR. nNotify == NM_SETFOCUS
@@ -2870,43 +2850,47 @@ Local aCellData
    Empty( lParam )
 
    If nMsg == WM_LBUTTONDBLCLK
-      _PushEventInfo()
-      _OOHG_ThisForm := ::Parent
-      _OOHG_ThisType := 'C'
-      _OOHG_ThisControl := Self
+      If ! ::lCheckBoxes .OR. ListView_HitOnCheckBox( ::hWnd, GetCursorRow() - GetWindowRow( ::hWnd ), GetCursorCol() - GetWindowCol( ::hWnd ) ) == 0
+         _PushEventInfo()
+         _OOHG_ThisForm := ::Parent
+         _OOHG_ThisType := 'C'
+         _OOHG_ThisControl := Self
 
-      aCellData := _GetGridCellData( Self )
-      _OOHG_ThisItemRowIndex   := aCellData[ 1 ]
-      _OOHG_ThisItemColIndex   := aCellData[ 2 ]
-      _OOHG_ThisItemCellRow    := aCellData[ 3 ]
-      _OOHG_ThisItemCellCol    := aCellData[ 4 ]
-      _OOHG_ThisItemCellWidth  := aCellData[ 5 ]
-      _OOHG_ThisItemCellHeight := aCellData[ 6 ]
-      _OOHG_ThisItemCellValue  := ::Cell( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
+         aCellData := _GetGridCellData( Self )
+         _OOHG_ThisItemRowIndex   := aCellData[ 1 ]
+         _OOHG_ThisItemColIndex   := aCellData[ 2 ]
+         _OOHG_ThisItemCellRow    := aCellData[ 3 ]
+         _OOHG_ThisItemCellCol    := aCellData[ 4 ]
+         _OOHG_ThisItemCellWidth  := aCellData[ 5 ]
+         _OOHG_ThisItemCellHeight := aCellData[ 6 ]
+         _OOHG_ThisItemCellValue  := ::Cell( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
 
-      If ::AllowEdit
-         If ::IsColumnReadOnly( _OOHG_ThisItemColIndex )
-            // Cell is readonly
-         ElseIf ! ::IsColumnWhen( _OOHG_ThisItemColIndex )
-            // Not a valid WHEN
-         ElseIf ! ::lNestedEdit
-            ::lNestedEdit := .T.
-            ::EditGrid( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
-            ::lNestedEdit := .F.
+         If ::AllowEdit
+            If ::IsColumnReadOnly( _OOHG_ThisItemColIndex )
+               // Cell is readonly
+            ElseIf ! ::IsColumnWhen( _OOHG_ThisItemColIndex )
+               // Not a valid WHEN
+            ElseIf ! ::lNestedEdit
+               ::lNestedEdit := .T.
+               ::EditGrid( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
+               ::lNestedEdit := .F.
+            EndIf
+
+         ElseIf HB_IsBlock( ::OnDblClick )
+            ::DoEvent( ::OnDblClick, "DBLCLICK" )
+
          EndIf
 
-      ElseIf HB_IsBlock( ::OnDblClick )
-         ::DoEvent( ::OnDblClick, "DBLCLICK" )
-
+         _ClearThisCellInfo()
+         _PopEventInfo()
       EndIf
-
-      _ClearThisCellInfo()
-      _PopEventInfo()
       Return 0
 
    ElseIf nMsg == WM_LBUTTONDOWN .OR. nMsg == WM_RBUTTONDOWN
-      aCellData := _GetGridCellData( Self )
-      ::Value := { aCellData[ 1 ], aCellData[ 2 ] }
+      If ! ::lCheckBoxes .OR. ListView_HitOnCheckBox( ::hWnd, GetCursorRow() - GetWindowRow( ::hWnd ), GetCursorCol() - GetWindowCol( ::hWnd ) ) == 0
+         aCellData := _GetGridCellData( Self )
+         ::Value := { aCellData[ 1 ], aCellData[ 2 ] }
+      EndIf
 
    ElseIf nMsg == WM_MOUSEWHEEL
       If GET_WHEEL_DELTA_WPARAM( wParam ) > 0
@@ -2938,7 +2922,7 @@ Return Nil
 METHOD Events_Notify( wParam, lParam ) CLASS TGridByCell
 *-----------------------------------------------------------------------------*
 Local nNotify := GetNotifyCode( lParam )
-Local nvkey, uRet, aValue, nItem
+Local nvkey, uRet, aValue, nItem, lOld
 
    If nNotify == NM_CUSTOMDRAW
       aValue := ::Value
@@ -2971,8 +2955,8 @@ Local nvkey, uRet, aValue, nItem
 
          If nItem > 0
             // change check mark
-            uRet := ::CheckItem( nItem )
-            If uRet # ::CheckItem( nItem, ! uRet )
+            lOld := ::CheckItem( nItem )
+            If lOld # ::CheckItem( nItem, ! lOld )
                ::DoEvent( ::OnCheckChange, "CHECKCHANGE", { nItem } )
             EndIf
 
@@ -2984,81 +2968,6 @@ Local nvkey, uRet, aValue, nItem
 
    ElseIf nNotify == LVN_ITEMCHANGED
       Return Nil
-
-   ElseIf nNotify == NM_CLICK .AND. ::lCheckBoxes
-      If HB_IsBlock( ::OnCheckChange )
-         // detect item
-         nItem := ListView_HitOnCheckBox( ::hWnd, GetCursorRow() - GetWindowRow( ::hWnd ), GetCursorCol() - GetWindowCol( ::hWnd ) )
-      Else
-         nItem := 0
-      EndIf
-
-      If HB_IsBlock( ::OnClick )
-         If ! ::NestedClick
-            ::NestedClick := ! _OOHG_NestedSameEvent()
-            ::DoEvent( ::OnClick, "CLICK" )
-            ::NestedClick := .F.
-         EndIf
-      EndIf
-
-      If HB_IsBlock( ::OnCheckChange )
-         If nItem > 0
-            // change check mark
-            uRet := ::CheckItem( nItem )
-            If uRet # ::CheckItem( nItem, ! uRet )
-               ::DoEvent( ::OnCheckChange, "CHECKCHANGE", { nItem } )
-            EndIf
-
-            // skip default action
-            Return 1
-         EndIf
-      EndIf
-
-   ElseIf nNotify == NM_RCLICK .AND. ::lCheckBoxes
-      If HB_IsBlock( ::OnCheckChange )
-         // detect item
-         nItem := ListView_HitOnCheckBox( ::hWnd, GetCursorRow() - GetWindowRow( ::hWnd ), GetCursorCol() - GetWindowCol( ::hWnd ) )
-      Else
-         nItem := 0
-      EndIf
-
-      If HB_IsBlock( ::OnRClick )
-         ::DoEvent( ::OnRClick, "RCLICK" )
-      EndIf
-
-      If HB_IsBlock( ::OnCheckChange )
-         If nItem > 0
-            // change check mark
-            uRet := ::CheckItem( nItem )
-            If uRet # ::CheckItem( nItem, ! uRet )
-               ::DoEvent( ::OnCheckChange, "CHECKCHANGE", { nItem } )
-            EndIf
-
-            // skip default action
-            Return 1
-         EndIf
-      EndIf
-
-   ElseIf nNotify == NM_DBLCLK .AND. ::lCheckBoxes
-      If HB_IsBlock( ::OnCheckChange )
-         // detect item
-         nItem := ListView_HitOnCheckBox( ::hWnd, GetCursorRow() - GetWindowRow( ::hWnd ), GetCursorCol() - GetWindowCol( ::hWnd ) )
-      Else
-         nItem := 0
-      EndIf
-
-      If HB_IsBlock( ::OnCheckChange )
-         If nItem > 0
-            // change check mark
-            uRet := ::CheckItem( nItem )
-            If uRet # ::CheckItem( nItem, ! uRet )
-               ::DoEvent( ::OnCheckChange, "CHECKCHANGE", { nItem } )
-            EndIf
-
-            // skip default action
-            Return 1
-         EndIf
-      EndIf
 
    EndIf
 

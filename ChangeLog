@@ -1,11 +1,23 @@
 /*
- * $Id: ChangeLog,v 1.883 2012-03-18 02:06:14 fyurisich Exp $
+ * $Id: ChangeLog,v 1.884 2012-03-19 00:46:14 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-03-18 21:46:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_grid.prg
+     * Changed initialization of lCheckBoxes data (now defaults to
+       class initial value).
+     * Changed: doubleclick on checkbox now doesn't fires cell edition.
+     * NM_CLICK and NM_RCLICK in TGridByCell class are now handled by
+       TGrid class.
+     - Deleted: handler for NM_DBLCLK in Events_Notify.
+     ! Fixed: OnClick and ROnClick events not fired when grid has not
+       checkboxes.
+     ! Fixed: context menu was not shown when right clicking checkbox.
 
 2012-03-17 23:06:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_grid.ch
