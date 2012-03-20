@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.153 2012-03-19 21:18:39 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.154 2012-03-20 22:55:54 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1824,10 +1824,12 @@ Local aText
    EndIf
 
    aText := TGrid_SetArray( Self, aRow )
-   ::InsertBlank( nItem )
-   ::SetItemColor( nItem, uForeColor, uBackColor, aRow )
-   ListViewSetItem( ::hWnd, aText, nItem )
-Return Nil
+   nItem := ::InsertBlank( nItem )
+   If nItem > 0
+      ::SetItemColor( nItem, uForeColor, uBackColor, aRow )
+      ListViewSetItem( ::hWnd, aText, nItem )
+   EndIf
+Return nItem
 
 *-----------------------------------------------------------------------------*
 METHOD InsertBlank( nItem ) CLASS TGrid
@@ -1843,8 +1845,7 @@ Local aGrid
       aAdd( aGrid, Nil )
       aIns( aGrid, nItem )
    EndIf
-   InsertListViewItem( ::hWnd, Array( Len( ::aHeaders ) ), nItem )
-Return Nil
+Return InsertListViewItem( ::hWnd, Array( Len( ::aHeaders ) ), nItem )
 
 *-----------------------------------------------------------------------------*
 METHOD DeleteItem( nItem ) CLASS TGrid
@@ -4232,6 +4233,7 @@ HB_FUNC( INSERTLISTVIEWITEM )
    LV_ITEM LI;
    HWND h;
    int c;
+   int nItem;
 
    hArray = hb_param( 2, HB_IT_ARRAY );
    if( ! hArray || hb_arrayLen( hArray ) == 0 )
@@ -4249,9 +4251,14 @@ HB_FUNC( INSERTLISTVIEWITEM )
    LI.iSubItem = 0;
    LI.pszText = "";
    LI.iImage = -1;
-   ListView_InsertItem( h, &LI );
+   nItem = ListView_InsertItem( h, &LI ) + 1;
 
-   _OOHG_ListView_FillItem( h, c, hArray );
+   if( nItem > 0)
+   {
+      _OOHG_ListView_FillItem( h, c, hArray );
+   }
+
+   hb_retni( nItem );
 }
 
 HB_FUNC( LISTVIEWSETITEM )
