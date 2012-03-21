@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.154 2012-03-20 22:55:54 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.155 2012-03-21 22:06:00 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1868,6 +1868,10 @@ Local nColumn, aTemp, oEditControl
       For nColumn := 1 To Len( uValue )
          oEditControl := GetEditControlFromArray( Nil, ::EditControls, nColumn, Self )
          If HB_IsObject( oEditControl )
+            If oEditControl:Type == "TGRIDCONTROLIMAGEDATA"
+               // when the column has images, ListViewGetItem returns only the image's index number
+               uValue[ nColumn ] := { ::CellCaption( nItem, nColumn ), ::CellImage( nItem, nColumn ) }
+            EndIf
             uValue[ nColumn ] := oEditControl:Str2Val( uValue[ nColumn ] )
          EndIf
       Next
@@ -3148,6 +3152,8 @@ Local oGridControl, aEdit2, cControl
             oGridControl := TGridControlTextBox():New( aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 2 ] )
          Case cControl == "IMAGELIST"
             oGridControl := TGridControlImageList():New( oGrid )
+         Case cControl == "IMAGEDATA"
+            oGridControl := TGridControlImageData():New( oGrid, GridControlObject( aEdit2[ 2 ] ) )
          Case cControl == "LCOMBOBOX"
             oGridControl := TGridControlLComboBox():New( aEdit2[ 2 ], aEdit2[ 3 ] )
       EndCase
@@ -3212,6 +3218,7 @@ RETURN ImageList_Size( ListView_GetImageList( hwnd, LVSIL_STATE ) ) [ 1 ]
 *-----------------------------------------------------------------------------*
 CLASS TGridControl
 *-----------------------------------------------------------------------------*
+   DATA Type                  INIT "TGRIDCONTROL" READONLY
    DATA oControl              INIT Nil
    DATA oWindow               INIT Nil
    DATA Value                 INIT Nil
@@ -3709,6 +3716,60 @@ METHOD ControlValue( uValue ) CLASS TGridControlImageList
       ::oControl:Value := uValue + 1
    EndIf
 Return ::oControl:Value - 1
+
+*-----------------------------------------------------------------------------*
+CLASS TGridControlImageData FROM TGridControl
+*-----------------------------------------------------------------------------*
+   DATA Type INIT "TGRIDCONTROLIMAGEDATA" READONLY
+   DATA oGrid
+   DATA oData
+
+   METHOD New
+   METHOD CreateWindow
+   METHOD CreateControl
+   METHOD ControlValue SETGET
+ENDCLASS
+
+METHOD New( oGrid, oData ) CLASS TGridControlImageData
+   ::oGrid := oGrid
+   If oData == Nil
+      oData := TGridControlTextBox():New
+   EndIf
+   ::oData := oData
+Return Self
+
+METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aKeys ) CLASS TGridControlImageData
+Return ::Super:CreateWindow( uValue, nRow - 3, nCol - 3, nWidth + 6, nHeight + 6, cFontName, nFontSize, aKeys )
+
+METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGridControlImageData
+Local oCData, oCImage, nSize
+   Empty( nHeight )
+   If ValType( uValue[ 2 ] ) == "C"
+      uValue[ 2 ] := Val( uValue[ 2 ] )
+   EndIf
+   nSize := ImageList_Size( ::oGrid:ImageList )[ 1 ] + LoWord( GetDialogBaseUnits() ) + GetVScrollBarWidth()
+   If ! Empty( ::oGrid ) .AND. ::oGrid:ImageList != 0
+      @ nRow,nCol COMBOBOX 0 OBJ oCImage PARENT ( cWindow ) WIDTH nSize VALUE 0 ITEMS {} IMAGE {} TEXTHEIGHT ImageList_Size( ::oGrid:ImageList )[ 2 ]
+      oCImage:ImageList := ImageList_Duplicate( ::oGrid:ImageList )
+   Else
+      @ nRow,nCol COMBOBOX 0 OBJ oCImage PARENT ( cWindow ) WIDTH nSize VALUE 0 ITEMS {}
+   EndIf
+   oCData := ::oData:CreateControl( uValue[ 1 ], cWindow, nRow, nCol + nSize, nWidth - nSize, oCImage:Width )
+   ::oControl := { oCData, oCImage }
+
+   aEval( Array( ImageList_GetImageCount( ::oGrid:ImageList ) ), { |x,i| oCImage:AddItem( i - 1 ), x } )
+   oCImage:Value := uValue[ 2 ] + 1
+Return ::oControl
+
+METHOD ControlValue( uValue ) CLASS TGridControlImageData
+Local oCData, oCImage
+      oCData := ::oControl[1]
+      oCImage := ::oControl[2]
+   If PCount() >= 1
+      oCData:value := uValue[1]
+      oCImage:value := uValue[2] + 1
+   EndIf
+Return { oCData:Value, oCImage:value - 1 }
 
 *-----------------------------------------------------------------------------*
 CLASS TGridControlLComboBox FROM TGridControl
@@ -4957,6 +5018,11 @@ HB_FUNC( LISTVIEW_SETCHECKSTATE )
 HB_FUNC( LISTVIEW_GETIMAGELIST )
 {
    HWNDret( ListView_GetImageList( HWNDparam( 1 ), hb_parni( 2 ) ) ) ;
+}
+
+HB_FUNC( GETDIALOGBASEUNITS )
+{
+   hb_retnl( GetDialogBaseUnits() ) ;
 }
 
 #pragma ENDDUMP

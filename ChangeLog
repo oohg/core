@@ -1,11 +1,21 @@
 /*
- * $Id: ChangeLog,v 1.888 2012-03-20 22:55:54 fyurisich Exp $
+ * $Id: ChangeLog,v 1.889 2012-03-21 22:05:59 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-03-21 19:05:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_grid.prg
+     + Added DATA Type to TGridControl class.
+     + Added GETDIALOGBASEUNITS function.
+     + Added TGridControlImageData class to edit cells with text
+       and image.
+     * Changed Item method to add suport for IMAGEDATA editcontrols.
+     * Changed GridControlObject function to add suport for IMAGEDATA
+       editcontrols.
 
 2012-03-20 19:55:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
