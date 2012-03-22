@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.49 2012-03-18 02:06:14 fyurisich Exp $
+ * $Id: classes.txt,v 1.50 2012-03-22 16:26:15 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -334,6 +334,70 @@ CLASS TCHECKBOX FROM TLABEL
    METHOD EVENTS_COLOR
    METHOD EVENTS_COMMAND
    METHOD VALUE                   SETGET
+ENDCLASS
+
+*------------------------------------------------------------------------------*
+CLASS TCHECKLIST FROM TGRID
+   DATA ALLOWEDIT                 INIT .F. READONLY
+   DATA FULLMOVE                  INIT .F. READONLY
+   DATA INPLACE                   INIT .F. READONLY
+   DATA LASTCHANGEDITEM           INIT 0
+   DATA LCHECKBOXES               INIT .T. READONLY
+   DATA TYPE                      INIT "CHECKLIST" READONLY
+
+   METHOD ADDCOLUMN               BLOCK { || NIL }
+   METHOD ADDITEM
+   METHOD APPENDITEM              BLOCK { || NIL }
+   METHOD CELL                    BLOCK { || NIL }
+   METHOD CHECKITEM               SETGET
+   METHOD COLUMNAUTOFIT           BLOCK { || NIL }
+   METHOD COLUMNAUTOFITH          BLOCK { || NIL }
+   METHOD COLUMNBETTERAUTOFIT     BLOCK { || NIL }
+   METHOD COLUMNCOUNT             BLOCK { || NIL }
+   METHOD COLUMNHIDE              BLOCK { || NIL }
+   METHOD COLUMNSAUTOFIT          BLOCK { || NIL }
+   METHOD COLUMNSAUTOFITH         BLOCK { || NIL }
+   METHOD COLUMNSBETTERAUTOFIT    BLOCK { || NIL }
+   METHOD COLUMNSHOW              BLOCK { || NIL }
+   METHOD COLUMNWIDTH             BLOCK { || NIL }
+   METHOD DEFINE
+   METHOD DELETEALLITEMS
+   METHOD DELETECOLUMN            BLOCK { || NIL }
+   METHOD DELETEITEM
+   METHOD DOCHANGE
+   METHOD DOWN                    BLOCK { || NIL }
+   METHOD EDITALLCELLS            BLOCK { || NIL }
+   METHOD EDITCELL                BLOCK { || NIL }
+   METHOD EDITCELL2               BLOCK { || NIL }
+   METHOD EDITGRID                BLOCK { || NIL }
+   METHOD EDITITEM                BLOCK { || NIL }
+   METHOD EDITITEM2               BLOCK { || NIL }
+   METHOD EVENTS
+   METHOD EVENTS_NOTIFY
+   METHOD GOBOTTOM                BLOCK { || NIL }
+   METHOD GOTOP                   BLOCK { || NIL }
+   METHOD HEADER                  BLOCK { || NIL }
+   METHOD HEADERIMAGE             BLOCK { || NIL }
+   METHOD HEADERIMAGEALIGN        BLOCK { || NIL }
+   METHOD INSERTITEM
+   METHOD ISCOLUMNREADONLY        BLOCK { || NIL }
+   METHOD ISCOLUMNWHEN            BLOCK { || NIL }
+   METHOD ITEM
+   METHOD ITEMCAPTION             SETGET
+   METHOD ITEMIMAGE               SETGET
+   METHOD ITEMVISIBLE
+   METHOD LEFT                    BLOCK { || NIL }
+   METHOD LOADHEADERIMAGES        BLOCK { || NIL }
+   METHOD PAGEDOWN                BLOCK { || NIL }
+   METHOD PAGEUP                  BLOCK { || NIL }
+   METHOD RIGHT                   BLOCK { || NIL }
+   METHOD SETRANGECOLOR
+   METHOD SORT
+   METHOD SORTCOLUMN              BLOCK { || NIL }
+   METHOD TOEXCEL                 BLOCK { || NIL }
+   METHOD UP                      BLOCK { || NIL }
+   METHOD VALUE                   SETGET
+   METHOD WIDTH                   SETGET
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -907,6 +971,7 @@ CLASS TGRIDCONTROL
    DATA NDEFWIDTH                 INIT 140
    DATA OCONTROL                  INIT NIL
    DATA OWINDOW                   INIT NIL
+   DATA TYPE                      INIT "TGRIDCONTROL" READONLY
    DATA VALUE                     INIT NIL
 
    METHOD CONTROLVALUE            SETGET
@@ -969,6 +1034,18 @@ CLASS TGRIDCONTROLDATEPICKER FROM TGRIDCONTROL
    METHOD GRIDVALUE
    METHOD NEW
    METHOD STR2VAL
+ENDCLASS
+
+*------------------------------------------------------------------------------*
+CLASS TGRIDCONTROLIMAGEDATA FROM TGRIDCONTROL
+   DATA ODATA
+   DATA OGRID
+   DATA TYPE                      INIT "TGRIDCONTROLIMAGEDATA" READONLY
+
+   METHOD CONTROLVALUE SETGET
+   METHOD CREATECONTROL
+   METHOD CREATEWINDOW
+   METHOD NEW
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -1194,6 +1271,7 @@ CLASS TLIST FROM TCONTROL
    METHOD DEFINE2
    METHOD DELETEALLITEMS
    METHOD DELETEITEM
+   METHOD EVENTS
    METHOD EVENTS_COMMAND
    METHOD EVENTS_DRAWITEM
    METHOD EVENTS_MEASUREITEM
@@ -2337,17 +2415,20 @@ CLASS TXBROWSE FROM TGRID
    DATA ALLOWDELETE               INIT .F.
    DATA AREPLACEFIELD             INIT NIL
    DATA BDELWHEN                  INIT NIL
+   DATA BOF                       INIT .F.
    DATA DELMSG                    INIT NIL
+   DATA EOF                       INIT .F.
    DATA GOBOTTOMBLOCK             INIT NIL
    DATA GOTOPBLOCK                INIT NIL
+   DATA LDESCENDING               INIT .F.
    DATA LEDITING                  INIT .F.
    DATA LLOCKED                   INIT .F.
    DATA LOCK                      INIT .F.
    DATA LRECCOUNT                 INIT .F.
    DATA NVALUE                    INIT 0
-   DATA ONAPPEND                  INIT NIL
    DATA ONDELETE                  INIT NIL
    DATA OWORKAREA                 INIT NIL
+   DATA REFRESHTYPE               INIT NIL
    DATA SCROLLBUTTON              INIT NIL
    DATA SKIPBLOCK                 INIT NIL
    DATA TYPE                      INIT "XBROWSE" READONLY

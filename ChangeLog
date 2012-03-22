@@ -1,11 +1,26 @@
 /*
- * $Id: ChangeLog,v 1.889 2012-03-21 22:05:59 fyurisich Exp $
+ * $Id: ChangeLog,v 1.890 2012-03-22 16:26:15 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-03-22 13:25:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * doc/classes.txt
+     * Updated.
+   * include/oohg.ch
+     + Added i_checklist.ch to list of included files.
+   * include/i_altsyntax.ch
+     + Added support for DEFINE CHECKBOX command.
+   + include/i_checklist.ch
+     + Added support for @ ... CHECKBOX command.
+   * source/common_make.prg
+     + Added h_checklist to prg list.
+   + source/h_checklist.prg
+     + Added TCheckList class implementing a listbox like control
+       with text and checkbox and, optionaly, an image.
 
 2012-03-21 19:05:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
@@ -193,7 +208,7 @@
 2012-02-25 20:20:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
    * source/h_print.prg
      ! Default bin changed from 1 to NIL in order to get it from printer
-     dialog if is not especified.
+       dialog if is not especified.
 
 2012-02-25 13:53 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_altsyntax.ch

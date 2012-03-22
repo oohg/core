@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.63 2012-03-18 02:06:14 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.64 2012-03-22 16:26:15 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -650,6 +650,56 @@ LIST BOX
                 _OOHG_ActiveControlTextHeight, ;
                 _OOHG_ActiveControlStretch, ;
                 _OOHG_ActiveControlNoVScroll )
+
+/*----------------------------------------------------------------------------
+CHECKLIST
+---------------------------------------------------------------------------*/
+
+#xcommand DEFINE CHECKLIST <name> ;
+        => ;
+        _OOHG_ClearActiveControlInfo( <(name)> ) ;;
+        _OOHG_ActiveControlItems          := Nil ;;
+        _OOHG_ActiveControlImage          := Nil ;;
+        _OOHG_ActiveControlJustify        := Nil ;;
+        _OOHG_ActiveControlBreak          := .F. ;;
+        _OOHG_ActiveControlSort           := .F. ;;
+        _OOHG_ActiveControlDescending     := .F. ;;
+        _OOHG_ActiveControlSelectedColors := Nil
+
+#xcommand END CHECKLIST ;
+        => ;
+        TCheckList():Define( ;
+                _OOHG_ActiveControlName, ;
+                _OOHG_ActiveControlOf, ;
+                _OOHG_ActiveControlCol, ;
+                _OOHG_ActiveControlRow, ;
+                _OOHG_ActiveControlWidth, ;
+                _OOHG_ActiveControlHeight, ;
+                _OOHG_ActiveControlItems, ;
+                _OOHG_ActiveControlValue, ;
+                _OOHG_ActiveControlFont, ;
+                _OOHG_ActiveControlSize, ;
+                _OOHG_ActiveControlTooltip, ;
+                _OOHG_ActiveControlOnChange, ;
+                _OOHG_ActiveControlOnGotFocus, ;
+                _OOHG_ActiveControlOnLostFocus, ;
+                _OOHG_ActiveControlImage, ;
+                _OOHG_ActiveControlJustify, ;
+                _OOHG_ActiveControlBreak, ;
+                _OOHG_ActiveControlHelpId, ;
+                _OOHG_ActiveControlFontBold, ;
+                _OOHG_ActiveControlFontItalic, ;
+                _OOHG_ActiveControlFontUnderLine, ;
+                _OOHG_ActiveControlFontStrikeOut, ;
+                _OOHG_ActiveControlBackColor, ;
+                _OOHG_ActiveControlFontColor, ;
+                _OOHG_ActiveControlRtl, ;
+                _OOHG_ActiveControlDisabled, ;
+                _OOHG_ActiveControlNoTabStop, ;
+                _OOHG_ActiveControlInvisible, ;
+                _OOHG_ActiveControlSort, ;
+                _OOHG_ActiveControlDescending, ;
+                _OOHG_ActiveControlSelectedColors )
 
 /*----------------------------------------------------------------------------
 ANIMATEBOX COMMANDS

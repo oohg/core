@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.ch,v 1.15 2009-10-31 13:54:12 declan2005 Exp $
+ * $Id: oohg.ch,v 1.16 2012-03-22 16:26:15 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -156,6 +156,7 @@
 #include "i_activex.ch"
 #include "i_scroll.ch"
 #include "i_picture.ch"
+#include "i_checklist.ch"
 #include "common.ch"
 
 #endif
