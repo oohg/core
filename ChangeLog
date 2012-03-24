@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.892 2012-03-23 15:13:23 fyurisich Exp $
+ * $Id: ChangeLog,v 1.893 2012-03-24 02:37:35 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,7 +7,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2012-03-23 12:13 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+2012-03-23 23:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_dialogs.prg
+     + Added parameter to GetFile function to hide "Open as readonly"
+       checkbox.
+   * source/c_dialogs.c
+     + Added parameter to C_GetFile function to hide "Open as readonly"
+       checkbox.
+
+2012-03-23 12:13 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    + lib/.cvsignore
      * To prevent the upload of xHarbour/bcc libraries.
 

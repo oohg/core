@@ -1,5 +1,5 @@
 /*
- * $Id: h_dialogs.prg,v 1.11 2011-09-05 23:37:33 fyurisich Exp $
+ * $Id: h_dialogs.prg,v 1.12 2012-03-24 02:37:35 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -124,7 +124,7 @@ Function browseforfolder(nFolder, nFlag, cTitle, cInitPath) // Contributed By Ry
 Return C_BrowseForFolder( NIL, cTitle, nFlag, nFolder, cInitPath )
 
 *-----------------------------------------------------------------------------*
-Function GetFile( aFilter, title, cIniFolder, multiselect, nochangedir, cDefaultFileName )
+Function GetFile( aFilter, title, cIniFolder, multiselect, nochangedir, cDefaultFileName, hidereadonly )
 *-----------------------------------------------------------------------------*
 local c := ''
 local cfiles
@@ -140,9 +140,9 @@ local n
    EndIf
 
    If ! multiselect
-      Return C_GetFile( c, title, cIniFolder, multiselect, nochangedir, cDefaultFileName )
+      Return C_GetFile( c, title, cIniFolder, multiselect, nochangedir, cDefaultFileName, hidereadonly )
    Else
-      cfiles := C_GetFile( c, title, cIniFolder, multiselect, nochangedir, cDefaultFileName )
+      cfiles := C_GetFile( c, title, cIniFolder, multiselect, nochangedir, cDefaultFileName, hidereadonly )
 
       If len( cfiles ) > 0
          If HB_IsArray( cfiles )

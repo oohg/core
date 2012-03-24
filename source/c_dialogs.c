@@ -1,5 +1,5 @@
 /*
- * $Id: c_dialogs.c,v 1.9 2011-11-02 23:00:30 fyurisich Exp $
+ * $Id: c_dialogs.c,v 1.10 2012-03-24 02:37:35 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -242,6 +242,10 @@ HB_FUNC( C_GETFILE )
    if( hb_parl( 5 ) )
    {
       flags = flags | OFN_NOCHANGEDIR;
+   }
+   if( hb_parl( 7 ) )
+   {
+      flags = flags | OFN_HIDEREADONLY;
    }
 
    memset( ( void * ) &ofn, 0, sizeof( OPENFILENAME ) );
