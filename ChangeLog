@@ -1,11 +1,22 @@
 /*
- * $Id: ChangeLog,v 1.893 2012-03-24 02:37:35 fyurisich Exp $
+ * $Id: ChangeLog,v 1.894 2012-03-26 23:06:10 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-03-26 20:06 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_controlmisc.prg
+     ! Fixed: DoMethod function cancels when first argument is an
+       array of windows names and invoked method is Activate.
+     * Changed DoMethod function to invoke any method of any control
+       with any number of arguments.
+     + Added _OOHG_HasMethod function to tell if an object has
+       some method. See the function's comments.
+     + Added _OOHG_HasData function to tell if an object has
+       some data. See the function's comments.
 
 2012-03-23 23:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_dialogs.prg

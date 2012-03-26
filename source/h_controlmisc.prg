@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.130 2012-03-15 02:36:37 fyurisich Exp $
+ * $Id: h_controlmisc.prg,v 1.131 2012-03-26 23:06:10 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1005,211 +1005,163 @@ Local RetVal, oWnd, oCtrl
 Return RetVal
 
 *------------------------------------------------------------------------------*
-Function DoMethod( Arg1 , Arg2 , Arg3 , Arg4 , Arg5 , Arg6 , Arg7 )
+Function DoMethod( uPar1, uPar2, uPar3, ... )
 *------------------------------------------------------------------------------*
-Local oWnd, oCtrl
+Local RetVal := Nil
+Local oWnd, oCtrl, cMethod, cPars, i
 
-   If Pcount() == 2 // Window
+   If PCount() == 2 // WINDOW
+      cMethod := Upper( uPar2 )
 
-      oWnd := GetExistingFormObject( Arg1 )
-      Arg2 := Upper( Arg2 )
-
-      If Arg2 == 'ACTIVATE'
-         If HB_IsArray( Arg1 )
-            _ActivateWindow( Arg1 )
+      If cMethod == 'ACTIVATE'
+         If HB_IsArray( uPar1 )
+            RetVal := _ActivateWindow( uPar1 )
          Else
-            oWnd:Activate()
+            oWnd := GetExistingFormObject( uPar1 )
+            RetVal := oWnd:Activate()
          EndIf
-
-      ElseIf Arg2 == 'CENTER'
-         oWnd:Center()
-
-      ElseIf Arg2 == 'RELEASE'
-         oWnd:Release()
-
-      ElseIf Arg2 == 'MAXIMIZE'
-         oWnd:Maximize()
-
-      ElseIf Arg2 == 'MINIMIZE'
-         oWnd:Minimize()
-
-      ElseIf Arg2 == 'RESTORE'
-         oWnd:Restore()
-
-      ElseIf Arg2 == 'SHOW'
-         oWnd:Show()
-
-      ElseIf Arg2 == 'PRINT'
-         oWnd:Print()
-
-      ElseIf Arg2 == 'HIDE'
-         oWnd:Hide()
-
-      ElseIf Arg2 == 'SETFOCUS'
+      ElseIf cMethod == 'SETFOCUS'
          If oWnd:Active
-            oWnd:SetFocus()
+            oWnd := GetExistingFormObject( uPar1 )
+            RetVal := oWnd:SetFocus()
+         EndIf
+      Else
+         oWnd := GetExistingFormObject( uPar1 )
+         If _OOHG_HasMethod( oWnd, cMethod )
+            RetVal := oWnd:&( cMethod )()
+         EndIf
+      EndIf
+
+      Return RetVal
+
+   Else
+      oCtrl := GetExistingControlObject( uPar2, uPar1 )
+      cMethod := Upper( uPar3 )
+
+      If PCount() == 3 // CONTROL WITHOUT ARGUMENTS
+         If cMethod == 'SAVE'
+            RetVal := oCtrl:SaveData()
+         ElseIf cMethod == 'ACTION'
+            RetVal := oCtrl:DoEvent( oCtrl:OnClick, "CLICK" )
+         ElseIf cMethod == 'ONCLICK'
+            RetVal := oCtrl:DoEvent( oCtrl:OnClick, "CLICK" )
+         ElseIf _OOHG_HasMethod( oCtrl, cMethod )
+            RetVal := oCtrl:&( cMethod )()
          EndIf
 
+      Else // CONTROL WITH ARGUMENTS
+         // Handle exceptions
+         If PCount() == 7
+            If cMethod == 'ADDCONTROL'
+               RetVal := oCtrl:AddControl( GetControlObject( HB_PVALUE(4), uPar1 ), HB_PVALUE(5) , HB_PVALUE(6) , HB_PVALUE(7) )
+
+               Return RetVal
+            EndIf
+         EndIf
+
+         // Handle other methods
+         If _OOHG_HasMethod( oCtrl, cMethod )
+            cPars := ""
+            For i := 4 to PCount()
+               cPars += "HB_PVALUE(" + ltrim( str( i ) ) + "), "
+            Next i
+            cPars := Left( cPars, Len( cPars ) - 2 )
+
+            RetVal := oCtrl:&( cMethod )( &( cPars ) )
+         EndIf
       EndIf
-
-   ElseIf Pcount() == 3 // CONTROL
-
-      oCtrl := GetExistingControlObject( Arg2, Arg1 )
-      Arg3 := Upper( Arg3 )
-
-      If     Arg3 == 'REFRESH'
-         oCtrl:Refresh()
-
-      ElseIf Arg3 == 'SAVE'
-         oCtrl:SaveData()
-
-      ElseIf Arg3 == 'SETFOCUS'
-         oCtrl:SetFocus()
-
-      ElseIf Arg3 == 'ACTION'
-         oCtrl:DoEvent( oCtrl:OnClick, "CLICK" )
-
-      ElseIf Arg3 == 'ONCLICK'
-         oCtrl:DoEvent( oCtrl:OnClick, "CLICK" )
-
-      ElseIf Arg3 == 'COLUMNSAUTOFIT'
-         oCtrl:ColumnsAutoFit()
-
-      ElseIf Arg3 == 'COLUMNSAUTOFITH'
-         oCtrl:ColumnsAutoFitH()
-
-      ElseIf Arg3 == 'COLUMNSBETTERAUTOFIT'
-         oCtrl:ColumnsBetterAutoFit()
-
-      ElseIf Arg3 == 'DELETEALLITEMS'
-         oCtrl:DeleteAllItems()
-
-      ElseIf Arg3 == 'RELEASE'
-         oCtrl:Release()
-
-      ElseIf Arg3 == 'SHOW'
-         oCtrl:Show()
-
-      ElseIf Arg3 == 'HIDE'
-         oCtrl:Hide()
-
-      ElseIf Arg3 == 'PLAY'
-         oCtrl:Play()
-
-      ElseIf Arg3 == 'STOP'
-         oCtrl:Stop()
-
-      ElseIf Arg3 == 'CLOSE'
-         oCtrl:Close()
-
-      ElseIf Arg3 == 'PLAYREVERSE'
-         oCtrl:PlayReverse()
-
-      ElseIf Arg3 == 'PAUSE'
-         oCtrl:Pause()
-
-      ElseIf Arg3 == 'EJECT'
-         oCtrl:Eject()
-
-      ElseIf Arg3 == 'OPENDIALOG'
-         oCtrl:OpenDialog()
-
-      ElseIf Arg3 == 'RESUME'
-         oCtrl:Resume()
-
-      EndIf
-
-   ElseIf Pcount() == 4 // CONTROL (WITH 1 ARGUMENT)
-
-      oCtrl := GetExistingControlObject( Arg2, Arg1 )
-      Arg3 := Upper( Arg3 )
-
-      If     Arg3 == 'DELETEITEM'
-         oCtrl:DeleteItem( Arg4 )
-
-      ElseIf Arg3 == 'DELETEPAGE'
-         oCtrl:DeletePage( Arg4 )
-
-      ElseIf Arg3 == 'OPEN'
-         oCtrl:Open( Arg4 )
-
-      ElseIf Arg3 == 'SEEK'
-         oCtrl:Seek( Arg4 )
-
-      ElseIf Arg3 == 'ADDITEM'
-         oCtrl:AddItem( Arg4 )
-
-      ElseIf Arg3 == 'EXPAND'
-         oCtrl:Expand( Arg4 )
-
-      ElseIf Arg3 == 'COLLAPSE'
-         oCtrl:Collapse( Arg4 )
-
-      ElseIf Arg3 == 'DELETECOLUMN'
-         oCtrl:DeleteColumn( Arg4 )
-
-      ElseIf Arg3 == 'COLUMNAUTOFIT'
-         oCtrl:ColumnAutoFit( Arg4 )
-
-      ElseIf Arg3 == 'COLUMNAUTOFITH'
-         oCtrl:ColumnAutoFitH( Arg4 )
-
-      ElseIf Arg3 == 'COLUMNBETTERAUTOFIT'
-         oCtrl:ColumnBetterAutoFit( Arg4 )
-
-      EndIf
-
-   ElseIf Pcount() == 5 // CONTROL (WITH 2 ARGUMENTS)
-
-      oCtrl := GetExistingControlObject( Arg2, Arg1 )
-      Arg3 := Upper( Arg3 )
-
-      If     Arg3 == 'ADDITEM'
-         oCtrl:AddItem( Arg4 , Arg5 )
-
-      ElseIf Arg3 == 'ADDPAGE'
-         oCtrl:AddPage( Arg4 , Arg5 )
-
-      ElseIf Arg3 == 'SETRANGE'
-         oCtrl:SetRange( Arg4 , Arg5 )
-
-      EndIf
-
-   ElseIf Pcount() == 6 // CONTROL (WITH 3 ARGUMENTS)
-
-      oCtrl := GetExistingControlObject( Arg2, Arg1 )
-      Arg3 := Upper( Arg3 )
-
-      If     Arg3 == 'ADDITEM'
-         oCtrl:AddItem( Arg4 , Arg5 , Arg6 )
-
-      ElseIf Arg3 == 'ADDPAGE'
-         oCtrl:AddPage( Arg4 , Arg5 , Arg6 )
-
-      EndIf
-
-   ElseIf Pcount() == 7 // CONTROL (WITH 4 ARGUMENTS)
-
-      oCtrl := GetExistingControlObject( Arg2, Arg1 )
-      Arg3 := Upper( Arg3 )
-
-      If     Arg3 == 'ADDCONTROL'
-         oCtrl:AddControl( GetControlObject( Arg4, Arg1 ), Arg5 , Arg6 , Arg7 )
-
-      ElseIf     Arg3 == 'ADDCOLUMN'
-         oCtrl:AddColumn( Arg4 , Arg5 , Arg6 , Arg7 )
-
-      ElseIf     Arg3 == 'ADDITEM'
-         oCtrl:AddItem( Arg4 , Arg5 , Arg6 , Arg7 )
-
-      EndIf
-
    EndIf
 
-Return Nil
+Return RetVal
 
+/*
+ * How to distinguish DATAs from METHODs with or without SETGET.
+ *
+ * DATA:
+ * xyz is a DATA when the List of DATAs contains items xyz and _xyz.
+ *
+ * METHOD with SETGET:
+ * xyz is a METHOD with SETGET when the List of METHODs contains
+ * items xyz and _xyz.
+ *
+ * METHOD without SETGET:
+ * xyz is a METHOD without SETGET when the List of METHODs contains
+ * item xyz and not contains item _xyz.
+ *
+ * NOTES:
+ *
+ * When the List of DATAs contains item _xyz but not contains item xyz,
+ * in the parent class xyz is a DATA and in the class is a METHOD
+ * without SETGET.
+ *
+ * To obtain those lists use ClassSel() to obtain all the messages
+ * and select the items of type HB_OO_MSG_DATA or HB_OO_MSG_METHOD.
+ *
+ * The xyz item corresponds to the 'get' message.
+ * The _xyz item corresponds to the 'set' message.
+ *
+ * See a sample at http://oohg.wikia.com/wiki/Class_Datas_and_Methods
+ *
+ * Example: method Value (setget)
+ *   _OOHG_HasMethod returns .T.
+ *   _OOHG_HasData   returns .F.
+ *   __objHasMethod  returns .F.
+ *   __objHasData    returns .T.
+ *
+ * Example: method AddItem (no setget)
+ *   _OOHG_HasMethod returns .T.
+ *   _OOHG_HasData   returns .F.
+ *   __objHasMethod  returns .T.
+ *   __objHasData    returns .F.
+ *
+ * Example: data Type
+ *   _OOHG_HasMethod returns .F.
+ *   _OOHG_HasData   returns .T.
+ *   __objHasMethod  returns .F.
+ *   __objHasData    returns .T.
+ *
+ * To see if a class has a method (with or without setget), use _OOHG_HasMethod.
+ * To see if a class has a data, use _OOHG_HasData.
+ * To see if a class has a 'get' property (data or setget method), use __objHasData.
+ * To see if a class has a 'set' property (data or method), use __objHasData.
+ */
+
+*------------------------------------------------------------------------------*
+Function _OOHG_HasMethod( obj, msg )
+*------------------------------------------------------------------------------*
+   Local itm, aClsSel
+
+   aClsSel := obj:ClassSel( HB_MSGLISTPURE, HB_OO_CLSTP_EXPORTED, .T. )
+
+   For EACH itm in aClsSel
+      If itm[ HB_OO_DATA_TYPE ] == HB_OO_MSG_METHOD
+          If Upper( itm[ HB_OO_DATA_SYMBOL ] ) == Upper( msg )
+             Return .T.
+          EndIf
+      EndIf
+   Next
+Return .F.
+
+*------------------------------------------------------------------------------*
+Function _OOHG_HasData( obj, msg )
+*------------------------------------------------------------------------------*
+   Local itm, aClsSel
+
+   aClsSel := obj:ClassSel( HB_MSGLISTPURE, HB_OO_CLSTP_EXPORTED, .T. )
+
+   For EACH itm in aClsSel
+      If itm[ HB_OO_DATA_TYPE ] == HB_OO_MSG_DATA
+          If Upper( itm[ HB_OO_DATA_SYMBOL ] ) == Upper( msg )
+             Return .T.
+          EndIf
+      EndIf
+   Next
+Return .F.
+
+*--------------------------------------------------------*
 Function _dummy()
-return nil
+*--------------------------------------------------------*
+Return Nil
 
 *--------------------------------------------------------*
 Function cFileNoPath( cPathMask )
