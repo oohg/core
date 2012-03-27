@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.131 2012-03-26 23:06:10 fyurisich Exp $
+ * $Id: h_controlmisc.prg,v 1.132 2012-03-27 00:19:55 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1005,28 +1005,28 @@ Local RetVal, oWnd, oCtrl
 Return RetVal
 
 *------------------------------------------------------------------------------*
-Function DoMethod( uPar1, uPar2, uPar3, ... )
+Function DoMethod( ... )
 *------------------------------------------------------------------------------*
 Local RetVal := Nil
 Local oWnd, oCtrl, cMethod, cPars, i
 
    If PCount() == 2 // WINDOW
-      cMethod := Upper( uPar2 )
+      cMethod := Upper( HB_PVALUE(2) )
 
       If cMethod == 'ACTIVATE'
-         If HB_IsArray( uPar1 )
-            RetVal := _ActivateWindow( uPar1 )
+         If HB_IsArray( HB_PVALUE(1) )
+            RetVal := _ActivateWindow( HB_PVALUE(1) )
          Else
-            oWnd := GetExistingFormObject( uPar1 )
+            oWnd := GetExistingFormObject( HB_PVALUE(1) )
             RetVal := oWnd:Activate()
          EndIf
       ElseIf cMethod == 'SETFOCUS'
          If oWnd:Active
-            oWnd := GetExistingFormObject( uPar1 )
+            oWnd := GetExistingFormObject( HB_PVALUE(1) )
             RetVal := oWnd:SetFocus()
          EndIf
       Else
-         oWnd := GetExistingFormObject( uPar1 )
+         oWnd := GetExistingFormObject( HB_PVALUE(1) )
          If _OOHG_HasMethod( oWnd, cMethod )
             RetVal := oWnd:&( cMethod )()
          EndIf
@@ -1035,8 +1035,8 @@ Local oWnd, oCtrl, cMethod, cPars, i
       Return RetVal
 
    Else
-      oCtrl := GetExistingControlObject( uPar2, uPar1 )
-      cMethod := Upper( uPar3 )
+      oCtrl := GetExistingControlObject( HB_PVALUE(2), HB_PVALUE(1) )
+      cMethod := Upper( HB_PVALUE(3) )
 
       If PCount() == 3 // CONTROL WITHOUT ARGUMENTS
          If cMethod == 'SAVE'
@@ -1053,7 +1053,7 @@ Local oWnd, oCtrl, cMethod, cPars, i
          // Handle exceptions
          If PCount() == 7
             If cMethod == 'ADDCONTROL'
-               RetVal := oCtrl:AddControl( GetControlObject( HB_PVALUE(4), uPar1 ), HB_PVALUE(5) , HB_PVALUE(6) , HB_PVALUE(7) )
+               RetVal := oCtrl:AddControl( GetControlObject( HB_PVALUE(4), HB_PVALUE(1) ), HB_PVALUE(5) , HB_PVALUE(6) , HB_PVALUE(7) )
 
                Return RetVal
             EndIf
