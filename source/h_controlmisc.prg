@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.132 2012-03-27 00:19:55 fyurisich Exp $
+ * $Id: h_controlmisc.prg,v 1.133 2012-03-28 01:14:37 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1011,22 +1011,22 @@ Local RetVal := Nil
 Local oWnd, oCtrl, cMethod, cPars, i
 
    If PCount() == 2 // WINDOW
-      cMethod := Upper( HB_PVALUE(2) )
+      cMethod := Upper( PValue(2) )
 
       If cMethod == 'ACTIVATE'
-         If HB_IsArray( HB_PVALUE(1) )
-            RetVal := _ActivateWindow( HB_PVALUE(1) )
+         If HB_IsArray( PValue(1) )
+            RetVal := _ActivateWindow( PValue(1) )
          Else
-            oWnd := GetExistingFormObject( HB_PVALUE(1) )
+            oWnd := GetExistingFormObject( PValue(1) )
             RetVal := oWnd:Activate()
          EndIf
       ElseIf cMethod == 'SETFOCUS'
          If oWnd:Active
-            oWnd := GetExistingFormObject( HB_PVALUE(1) )
+            oWnd := GetExistingFormObject( PValue(1) )
             RetVal := oWnd:SetFocus()
          EndIf
       Else
-         oWnd := GetExistingFormObject( HB_PVALUE(1) )
+         oWnd := GetExistingFormObject( PValue(1) )
          If _OOHG_HasMethod( oWnd, cMethod )
             RetVal := oWnd:&( cMethod )()
          EndIf
@@ -1035,8 +1035,8 @@ Local oWnd, oCtrl, cMethod, cPars, i
       Return RetVal
 
    Else
-      oCtrl := GetExistingControlObject( HB_PVALUE(2), HB_PVALUE(1) )
-      cMethod := Upper( HB_PVALUE(3) )
+      oCtrl := GetExistingControlObject( PValue(2), PValue(1) )
+      cMethod := Upper( PValue(3) )
 
       If PCount() == 3 // CONTROL WITHOUT ARGUMENTS
          If cMethod == 'SAVE'
@@ -1053,7 +1053,7 @@ Local oWnd, oCtrl, cMethod, cPars, i
          // Handle exceptions
          If PCount() == 7
             If cMethod == 'ADDCONTROL'
-               RetVal := oCtrl:AddControl( GetControlObject( HB_PVALUE(4), HB_PVALUE(1) ), HB_PVALUE(5) , HB_PVALUE(6) , HB_PVALUE(7) )
+               RetVal := oCtrl:AddControl( GetControlObject( PValue(4), PValue(1) ), PValue(5) , PValue(6) , PValue(7) )
 
                Return RetVal
             EndIf
@@ -1063,7 +1063,7 @@ Local oWnd, oCtrl, cMethod, cPars, i
          If _OOHG_HasMethod( oCtrl, cMethod )
             cPars := ""
             For i := 4 to PCount()
-               cPars += "HB_PVALUE(" + ltrim( str( i ) ) + "), "
+               cPars += "PValue(" + ltrim( str( i ) ) + "), "
             Next i
             cPars := Left( cPars, Len( cPars ) - 2 )
 
@@ -1075,83 +1075,52 @@ Local oWnd, oCtrl, cMethod, cPars, i
 Return RetVal
 
 /*
- * How to distinguish DATAs from METHODs with or without SETGET.
+ * This function returns .T. if msg is a METHOD (with or without SETGET)
+ * or an INLINE (even if in the parent class msg is a DATA).
  *
- * DATA:
- * xyz is a DATA when the List of DATAs contains items xyz and _xyz.
- *
- * METHOD with SETGET:
- * xyz is a METHOD with SETGET when the List of METHODs contains
- * items xyz and _xyz.
- *
- * METHOD without SETGET:
- * xyz is a METHOD without SETGET when the List of METHODs contains
- * item xyz and not contains item _xyz.
- *
- * NOTES:
- *
- * When the List of DATAs contains item _xyz but not contains item xyz,
- * in the parent class xyz is a DATA and in the class is a METHOD
- * without SETGET.
- *
- * To obtain those lists use ClassSel() to obtain all the messages
- * and select the items of type HB_OO_MSG_DATA or HB_OO_MSG_METHOD.
- *
- * The xyz item corresponds to the 'get' message.
- * The _xyz item corresponds to the 'set' message.
- *
- * See a sample at http://oohg.wikia.com/wiki/Class_Datas_and_Methods
- *
- * Example: method Value (setget)
- *   _OOHG_HasMethod returns .T.
- *   _OOHG_HasData   returns .F.
- *   __objHasMethod  returns .F.
- *   __objHasData    returns .T.
- *
- * Example: method AddItem (no setget)
- *   _OOHG_HasMethod returns .T.
- *   _OOHG_HasData   returns .F.
- *   __objHasMethod  returns .T.
- *   __objHasData    returns .F.
- *
- * Example: data Type
- *   _OOHG_HasMethod returns .F.
- *   _OOHG_HasData   returns .T.
- *   __objHasMethod  returns .F.
- *   __objHasData    returns .T.
- *
- * To see if a class has a method (with or without setget), use _OOHG_HasMethod.
- * To see if a class has a data, use _OOHG_HasData.
- * To see if a class has a 'get' property (data or setget method), use __objHasData.
- * To see if a class has a 'set' property (data or method), use __objHasData.
+ * Note:
+ * __objHasMethod( obj, msg ) doesn't recognizes SETGET methods as METHOD.
  */
-
 *------------------------------------------------------------------------------*
 Function _OOHG_HasMethod( obj, msg )
 *------------------------------------------------------------------------------*
    Local itm, aClsSel
 
+   #ifndef __XHARBOUR__
    aClsSel := obj:ClassSel( HB_MSGLISTPURE, HB_OO_CLSTP_EXPORTED, .T. )
+   #else
+   aClsSel := obj:ClassFullSel( HB_MSGLISTPURE, HB_OO_CLSTP_EXPORTED )
+   #endif
 
    For EACH itm in aClsSel
-      If itm[ HB_OO_DATA_TYPE ] == HB_OO_MSG_METHOD
-          If Upper( itm[ HB_OO_DATA_SYMBOL ] ) == Upper( msg )
+      If itm[ HB_OO_DATA_TYPE ] == HB_OO_MSG_METHOD .or. itm[ HB_OO_DATA_TYPE ] == HB_OO_MSG_INLINE
+          If itm[ HB_OO_DATA_SYMBOL ] == msg
              Return .T.
           EndIf
       EndIf
    Next
 Return .F.
 
+/*
+ * This function returns .T. only if msg is a pure DATA.
+ *
+ * Note:
+ * __objHasData( obj, msg ) recognizes SETGET methods as DATA.
+ */
 *------------------------------------------------------------------------------*
 Function _OOHG_HasData( obj, msg )
 *------------------------------------------------------------------------------*
    Local itm, aClsSel
 
+   #ifndef __XHARBOUR__
    aClsSel := obj:ClassSel( HB_MSGLISTPURE, HB_OO_CLSTP_EXPORTED, .T. )
+   #else
+   aClsSel := obj:ClassFullSel( HB_MSGLISTPURE, HB_OO_CLSTP_EXPORTED )
+   #endif
 
    For EACH itm in aClsSel
       If itm[ HB_OO_DATA_TYPE ] == HB_OO_MSG_DATA
-          If Upper( itm[ HB_OO_DATA_SYMBOL ] ) == Upper( msg )
+          If itm[ HB_OO_DATA_SYMBOL ] ==  msg
              Return .T.
           EndIf
       EndIf
