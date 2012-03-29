@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.155 2012-03-21 22:06:00 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.156 2012-03-29 03:15:31 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1579,7 +1579,12 @@ Local aCellData
          _OOHG_ThisItemCellHeight := aCellData[ 6 ]
          _OOHG_ThisItemCellValue  := ::Cell( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
 
-         If ::FullMove
+         If ! ::AllowEdit
+            If HB_IsBlock( ::OnDblClick )
+               ::DoEvent( ::OnDblClick, "DBLCLICK" )
+            EndIf
+
+         ElseIf ::FullMove
             If ::IsColumnReadOnly( _OOHG_ThisItemColIndex )
                // Cell is readonly
             ElseIf ! ::IsColumnWhen( _OOHG_ThisItemColIndex )
@@ -1597,11 +1602,8 @@ Local aCellData
                ::EditCell( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
             EndIf
 
-         ElseIf ::AllowEdit
+         Else
             ::EditItem()
-
-         ElseIf HB_IsBlock( ::OnDblClick )
-            ::DoEvent( ::OnDblClick, "DBLCLICK" )
 
          EndIf
 
@@ -1647,24 +1649,20 @@ Return Nil
 *-----------------------------------------------------------------------------*
 METHOD Events_Enter() CLASS TGrid
 *-----------------------------------------------------------------------------*
-   If ::FullMove
+   If ! ::AllowEdit
+      ::DoEvent( ::OnEnter, "ENTER" )
+   ElseIf ::FullMove
       ::EditGrid()
-      Return Nil
-   EndIf
-   If ::InPlace
+   ElseIf ::InPlace
       If ! ::lNestedEdit
          ::lNestedEdit := .T.
          ::EditAllCells()
          ::lNestedEdit := .F.
       EndIf
-   ElseIf ::AllowEdit
-      If ! ::lNestedEdit
-         ::lNestedEdit := .T.
-         ::EditItem()
-         ::lNestedEdit := .F.
-      EndIf
-   Else
-      ::DoEvent( ::OnEnter, "ENTER" )
+   ElseIf ! ::lNestedEdit
+      ::lNestedEdit := .T.
+      ::EditItem()
+      ::lNestedEdit := .F.
    EndIf
 Return Nil
 

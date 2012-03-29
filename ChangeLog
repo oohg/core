@@ -1,11 +1,21 @@
 /*
- * $Id: ChangeLog,v 1.896 2012-03-28 01:14:37 fyurisich Exp $
+ * $Id: ChangeLog,v 1.897 2012-03-29 03:15:31 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-03-28 00:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_browse.prg
+     ! Fixed: controls with INPLACE and/or FULLMOVE were starting
+       edition even if AllowEdit == .T.
+     ! Fixed: EditAllCells cancels with "Index out of bounds" error.
+       See included NOTE.
+   * source/h_grid.prg
+     ! Fixed: controls with INPLACE and/or FULLMOVE were starting
+       edition even if AllowEdit == .F.
 
 2012-03-27 22:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_controlmisc.prg

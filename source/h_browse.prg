@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.89 2012-03-12 23:12:35 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.90 2012-03-29 03:15:31 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -862,10 +862,15 @@ Local lRet, lRowEdited, lSomethingEdited, _RecNo, lRowAppended, lMoreRecs
 
       // This is needed in case the database has an active index
       // and the record's key is changed during editing
-      If ! ::FullMove .OR. lAppend
+      If ! ::FullMove .OR. lAppend .OR. nRow > Len( ::aRecMap )
          lMoreRecs := .F.
       Else
          _RecNo := ( ::WorkArea )->( RecNo() )
+         //NOTE: in certain, not so clear, circumstances cancels here
+         //      with "Index out of bounds" error
+         //      Just happened once with a FULLMOVE INPLACE APPEND EDIT DELETE
+         //      browse of an indexed database.
+         //      I can´t undertand why and I can´t replicate the error.
          ::DbGoTo( ::aRecMap[ nRow ] )
          ::DbSkip()
          If ::Eof()
@@ -1194,20 +1199,18 @@ RETURN ::Super:RefreshData()
 METHOD Events_Enter() CLASS TOBrowse
 *-----------------------------------------------------------------------------*
    If Select( ::WorkArea ) != 0
-      If ::FullMove .OR. ::InPlace
+      If ! ::AllowEdit
+         ::DoEvent( ::OnEnter, "ENTER" )
+      ElseIf ::FullMove .OR. ::InPlace
          If ! ::lNestedEdit
             ::lNestedEdit := .T.
             ::EditAllCells()
             ::lNestedEdit := .F.
          EndIf
-      ElseIf ::AllowEdit
-         If ! ::lNestedEdit
+      ElseIf ! ::lNestedEdit
             ::lNestedEdit := .T.
             ::EditItem()
             ::lNestedEdit := .F.
-         EndIf
-      Else
-         ::DoEvent( ::OnEnter, "ENTER" )
       EndIf
    Endif
 Return nil
