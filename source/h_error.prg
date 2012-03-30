@@ -1,5 +1,5 @@
 /*
- * $Id: h_error.prg,v 1.53 2011-10-22 23:01:18 fyurisich Exp $
+ * $Id: h_error.prg,v 1.54 2012-03-30 03:13:26 declan2005 Exp $
  */
 /*
  * ooHG source code:
@@ -207,7 +207,7 @@ LOCAL cMessage
    IF ! Empty( oError:osCode )
       cMessage += " (DOS " + _OOHG_Messages( 1, 9 ) + " " + LTrim( Str( oError:osCode ) ) + ")"
    ENDIF
-   
+
 RETURN cMessage
 
 *------------------------------------------------------------------------------*
@@ -223,7 +223,7 @@ MemVar _OOHG_TxtError
    ELSE
       oErrorLog := OOHG_TErrorHtml():New()
    ENDIF
-   
+
 RETURN oErrorLog
 
 
@@ -237,7 +237,7 @@ CLASS OOHG_TErrorHtml
    DATA FileName      INIT "ErrorLog.htm"
    DATA aMessages     INIT Nil
    DATA cLang         INIT ""
-   
+
    METHOD New
    METHOD Write
    METHOD Write2
@@ -604,7 +604,7 @@ RETURN RTRIM( cTxt ) + CHR( 13 ) + CHR( 10 )
 Function ooHGVersion()
 *------------------------------------------------------------------------------*
 
-Return "ooHG V4.3 - 2011.09.02"
+Return "ooHG V4.6 - 2012.03.29"
 
 *------------------------------------------------------------------------------*
 Function MiniGuiVersion()
