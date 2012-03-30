@@ -1,5 +1,5 @@
-﻿/*
- * $Id: ChangeLog,v 1.898 2012-03-30 03:13:25 declan2005 Exp $
+/*
+ * $Id: ChangeLog,v 1.899 2012-03-30 18:30:50 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,8 +7,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2012-03-29 22:30:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
-   * source/h_errror.prg   version updated.
+2012-03-30 15:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./compile_MINGW.bat
+     + Added lhbziparc to compilation commands.
+
+2012-03-29 22:30 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+   * source/h_error.prg
+     * Version updated.
 
 2012-03-28 00:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_browse.prg
@@ -57,11 +62,11 @@
    + lib/.cvsignore
      * To prevent the upload of xHarbour/bcc libraries.
 
-2012-03-23 11:47:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2012-03-23 11:47 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_checklist.prg
      ! Fixed xHarbour warning.
 
-2012-03-22 13:25:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2012-03-22 13:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * doc/classes.txt
      * Updated.
    * include/oohg.ch
@@ -76,7 +81,7 @@
      + Added TCheckList class implementing a listbox like control
        with text and checkbox and, optionaly, an image.
 
-2012-03-21 19:05:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2012-03-21 19:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
      + Added DATA Type to TGridControl class.
      + Added GETDIALOGBASEUNITS function.
@@ -86,7 +91,7 @@
      * Changed GridControlObject function to add suport for IMAGEDATA
        editcontrols.
 
-2012-03-20 19:55:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2012-03-20 19:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
      * InsertListViewItem now returns the index assigned to the
        inserted item or 0 if the function failed, instead of NIL.
@@ -99,7 +104,7 @@
      ! Fixed: when inserting a new item into a blank grid, the
        item is added but the values of the item are not setted.
 
-2012-03-19 18:18:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2012-03-19 18:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
      ! Fixed: unused local variable warning.
      ! Fixed: checkbox status not changed when clicked.
@@ -107,15 +112,15 @@
        or .F. for failure.
      ! Fixed: BCC compiler warning.
 
-2012-03-19 10:05:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2012-03-19 10:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
      * Some unnecesary code deleted.
 
-2012-03-19 09:52:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2012-03-19 09:52 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
      ! Fixed: CheckItem method was not rising OnCheckChange event.
 
-2012-03-18 21:46:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2012-03-18 21:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
      * Changed initialization of lCheckBoxes data (now defaults to
        class initial value).
@@ -127,7 +132,7 @@
        checkboxes.
      ! Fixed: context menu was not shown when right clicking checkbox.
 
-2012-03-17 23:06:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2012-03-17 23:06 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_grid.ch
    * include/i_altsyntax.ch
     + Added support for TGrid ON CHECKCHANGE event.
@@ -138,7 +143,7 @@
    * doc/classes.txt
      * Updated.
 
-2012-03-15 16:10:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2012-03-15 16:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/c_controlmisc.c
      + Added IMAGELIST_SIZE function.
    * source/h_grid.prg
@@ -148,28 +153,28 @@
      ! Fixed: width of first column is wrongly computed in methods
        ColumnAutoFit and ColumnAutoFitH.
 
-2012-03-15 15:49:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2012-03-15 15:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
      ! Fixed: width of first column is wrongly computed when Grid
        has checkboxes.
 
-2012-03-15 13:50:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2012-03-15 13:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
      ! Fixed initial validation of items array.
 
-2012-03-14 23:35:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2012-03-14 23:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_controlmisc.prg
      ! Fixed: GetProperty for Header method in TGrid class wasn't working.
 
-2012-03-14 22:45:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2012-03-14 22:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./compile_mingw.bat
      ! Fixed compilation with /D swith (debug mode).
 
-2012-03-14 12:35:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2012-03-14 12:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
      * Parameter lNoHeaders renamed to lHasHeaders.
 
-2012-03-13 12:50:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2012-03-13 12:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_listbox.prg
      ! Fixed: Double click event doesn't allow changing the focus
        to a different window.
@@ -177,7 +182,7 @@
      + Added code in Events_Command method to fire OnDlbClick event
        when LBN_DBLCLK notification code is received.
 
-2012-03-12 20:15:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2012-03-12 20:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_tree.prg
      * Now 0 is a valid ID. Note: "" (empty string) is NOT valid.
      * Method GetParent returns NIL instead of 0 for root items.
@@ -222,7 +227,7 @@
      + Added DATA RefreshType.
      * Modified EditItem_B method to support NOFREFRESH clause.
      
-2012-03-08 22:15:00 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+2012-03-08 22:15 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_browse.prg
      + Added DBCOMMIT after DBDELETE in DELETE method.
      + Added EditAllCells method.
@@ -234,23 +239,23 @@
      * Changed order of DBCOMMIT and DBUNLOCK sentences in EDITITEM_B
        and EDITCELL methods, to comply with Clipper standards.
 
-2012-03-06 11:30:00 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+2012-03-06 11:30 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_toolbar.prg
      + Added CAPTION method to TToolButton class.
 
-2012-03-05 09:42:00 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+2012-03-05 09:42 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_browse.prg
      ! Fixed: in browses with "set browsesync off", after editing a row
        the selected row is allways changed to row 1.
 
-2012-02-27 14:00:00 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+2012-02-27 14:00 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
      * Navigation during grid edition is restricted to current row.
        To enable edition of next row and append of new row after
        editing last column of current row, add FULLMOVE clause at
        define time or set ::FullMove to .T. at run time.
 
-2012-02-26 03:26:00 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+2012-02-26 03:26 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_init.prg
      + Added message 'Edit Memo' to language customization.
    * source/h_grid.prg
@@ -259,7 +264,7 @@
      * Title defaults to value establish in h_init.prg depending on
        SET LANGUAGE TO clause.
 
-2012-02-25 20:20:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+2012-02-25 20:20 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
    * source/h_print.prg
      ! Default bin changed from 1 to NIL in order to get it from printer
        dialog if is not especified.
@@ -573,7 +578,7 @@
      + TTabCombo() class added. A TAB-like control using COMBOBOX
        for select page to be shown.
 
-2011-11-29 19:00:00 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+2011-11-29 19:00 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * ./compile_mingw.bat
      + Added MEMIO library to linkedit commands.
    * doc/classes.txt
@@ -632,7 +637,7 @@
      * C code cleaned up.
      * Some comments were improved.
 
-2011-11-27 14:20:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+2011-11-27 14:20 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
    * source/winprint.prg
      ! minor optimization in header and convert str2arr static function
        to public.
@@ -641,27 +646,27 @@
      ! merge source code in enddoc method of dosprint and rawprint.
      ! fixed problem selecting the printer in hbprint and miniprint
 
-2011-11-25 11:55:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+2011-11-25 11:55 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
    * source/h_print.prg
      + upgrade rawprint. Now it's possible select the printer
      ! fixed error control when open office it's not installed at
        printing time.
 
-2011-11-22 20:05:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-11-22 20:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_browse.prg
      ! Fixed: right click on browse changes selected record without
        firing "on change" event.
 
-2011-11-20 01:52:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-11-20 01:52 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_button.prg
      ! Fixed: Image not drawn "transparently" when parent window
        has a BACKCOLOR defined.
 
-2011-11-19 22:00:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-11-19 22:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_windows.prg
      ! Fixed: ClientAdjust not working properly when aligning right.
 
-2011-11-18 21:00:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-11-18 21:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_altsyntax.prg
    * include/i_combobox.prg
    * source/h_combo.prg
@@ -671,13 +676,13 @@
        ITEMSOURCE clause.
      * FIT clause can be used with IMAGESOURCE clause.
 
-2011-11-16 20:48:00 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+2011-11-16 20:48 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
    * source/h_windows.prg
      ! Fixed compilation for Visual C.
    * source/h_controlmisc.prg
      ! Fixed @B function mask in _OOHG_UnTransform().
 
-2011-11-16 21:00:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-11-16 21:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/c_msgbox.c
      * Added 3rd parameter to functions:
           C_MSGRETRYCANCEL
@@ -716,29 +721,29 @@
      + Added defines for MB_APPLMODAL, MB_SYSTEMMODAL and MB_TASKMODAL.
    Thanks to Esteban Ojeda <jrestojeda@hotmail.com> for the idea.
 
-2011-11-14 21:30:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-11-14 21:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_combo.prg
      ! Fixed: image truncated in displayedit area.
 
-2011-11-09 19:10:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-11-09 19:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_textbox.prg
      ! Fixed: can't enter new character when the length of current
        text is equal maxlength, insert mode is on, and one or more
        characters are selected.
 
-2011-11-09 14:50:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-11-09 14:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_textbox.prg
      ! Fixed: NUMERIC textbox cancels when new data was inserted.
      ! Fixed: UNDO was reseting value to original instead of previous.
 
-2011-11-09 00:20:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-11-09 00:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_textbox.prg
      ! Fixed PASTE was inserting control characters in text.
    * source/h_editbox.prg
      + Support for WM_PASTE message, so PASTE can insert control
        characters in text.
 
-2011-11-09 00:05:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-11-09 00:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * doc/classes.txt
      * Updated
    * source/h_textbox.prg
@@ -762,11 +767,11 @@
    * source/h_tree.prg
      ! Changed HB_FALSE by FALSE to fix xHarbour error.
 
-2011-11-08 20:35:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-11-08 20:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_tree.prg
      ! Fixed BCC compiler warnings.
      
-2011-11-08 10:20:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-11-08 10:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * doc/classes.txt
      * Updated
    * source/h_textbox.prg
@@ -774,7 +779,7 @@
      * Behaviour reverted to previous when control is clicked (all
        text selected).
 
-2011-11-07 23:00:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-11-07 23:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_menu.prg
    * include/i_menu.prg
      + Added BREAKMENU clause to POPUP menu.
@@ -812,13 +817,13 @@
      + Added overwrite state to TText class.
        TODO: Change caret shape on overwrite mode.
 
-2011-11-03 23:00:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-11-03 23:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_image.prg
    * include/i_altsyntax.ch
    * include/i_image.ch
      + Added BORDER and CLIENTEDGE clauses.
 
-2011-11-03 20:10:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-11-03 20:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_altsyntax.ch
      + Added ON MOUSEMOVE and ONMOUSEMOVE clauses to DEFINE BUTTON.
        TODO: Add this clause to other controls.
@@ -839,7 +844,7 @@
    * source/h_picture.prg
      ! Fixed: tooltip was not shown.
 
-2011-11-02 21:00:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-11-02 21:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_windefs.ch
      ! Comment out OPAQUE define because causes error when compiling
        DEFINE FRAME with OPAQUE clause. The commented define is only
@@ -850,26 +855,26 @@
    * source/c_dialogs.c
      * Changed two function calls by equivalent variable.
 
-2011-10-31 14:30:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-10-31 14:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * resources/ooHG.o
    * resources/oohg.res
    * resources/_oohg_resconfig.h
      * Updated to include new resources.
 
-2011-10-29 14:10:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-10-29 14:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    + resources/dragno.cur
    + resources/dragcopy.cur
    + resources/dragmove.cur
 
-2011-10-29 10:10:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-10-29 10:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/c_controlmisc.c
      + Added function SetClipboardText to copy text to the clipboard.
 
-2011-10-27 23:40:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-10-27 23:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * doc/classes.txt
      * Updated.
 
-2011-10-27 23:20:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-10-27 23:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_progressbar.prg
      ! Fixed: method SetStyleMarquee makes control unresponsive.
      + Added: method SetStyleNormal to reset control to normal style.
@@ -879,14 +884,14 @@
    + include/i_windefs.ch
      + Added PBS_MARQUEE and PBM_SETMARQUEE.
 
-2011-10-27 18:00:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-10-27 18:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_toolbar.prg
      + Added lBreak parameter to function _EndToolBar, it controls
        the inclusion of a BREAK after an END TOOLBAR.
    * include/i_toolbar.ch
      + Added NOBREAK clause to END TOOLBAR.
 
-2011-10-26 19:25:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-10-26 19:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_windefs.ch
      + Added defines for splitbox styles.
    * doc/classes.txt
@@ -896,7 +901,7 @@
        HideBand, ShowBand and IsBandVisible.
      * Function SIZEREBAR now process all bands not just the first.
 
-2011-10-25 20:25:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-10-25 20:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * doc/classes.txt
      * Updated.
    + doc/treeofclasses.prg
@@ -904,7 +909,7 @@
      Roberto Iturriaga (robertoiturriaga@yahoo.com.ar) and
      Miguel Juarez (migsoft@oohg.org) for their contribution.
 
-2011-10-24 21:15:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-10-24 21:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_tree.prg
      ! Items on target tree were not being hilighted.
      * METHOD ItemVisible modified to use METHOD ItemToHandle.
@@ -918,24 +923,24 @@
    * doc/Classes.txt
      * Updated.
 
-2011-10-23 20:25:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-10-23 20:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_button.prg
      + Added C definitions needed to compile with BCC.
      - Commented out includes of uxtheme.h and tmschema.h
      
-2011-10-23 03:25:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-10-23 03:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * doc/classes.txt
      * Updated.
    + doc/treeofclasses.prg
      + Shows all ooHG's classes in a Tree control.
 
-2011-10-22 21:00:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-10-22 21:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_error.prg
      * When no language is specified defaults to ENGLISH.
        To change language insert in your Main function:
        PUBLIC _OOHG_TxtError := OOHG_TErrorHtml():New( SET( _SET_LANGUAGE ) )
 
-2011-10-22 20:45:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-10-22 20:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_error.prg
      * Formated.
      + Added localized messages.
@@ -955,7 +960,7 @@
        German, Italian, Polish, Portuguese, Russian, Finnish,
        Dutch and Slovenian.
 
-2011-10-22 14:45:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-10-22 14:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_altsyntax.ch
    * include/i_button.ch
    * source/h_button.prg
@@ -966,13 +971,13 @@
      + Added DATAs lThemed and aImageMargin to TButton clause.
      + Added METHODs Events_Notify and ImageMargin to TButton clause.
 
-2011-10-20 19:15:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-10-20 19:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_combo.prg
      ! Fixed: SORT clause wasn't working.
      ! Fixed: value returns 0 after changing item text (now, value
        return a reference to the item selected before text change).
      
-2011-10-17 23:00:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-10-17 23:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * doc/classes.txt
      + Updated with TTREE class new events.
    * include/i_tree.ch
@@ -1106,11 +1111,11 @@
       they're inside a TAB control and there's no visual
       style.
 
-2011-09-16 12:15:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-09-16 12:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_button.prg
      ! Define cancels when multiline parameter is not logical.
 
-2011-09-13 21:40:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-09-13 21:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * doc/classes.txt
      + Added OnListDisplay and OnListClose DATAs.
    * include/i_altsyntax.ch
@@ -1123,7 +1128,7 @@
        codeblocks are executed when the options list is displayed
        or closed.
 
-2011-09-12 19:05:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-09-12 19:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * doc/classes.txt
      + Added ThreeState and LeftAlign DATAs.
    * include/i_altsyntax.ch
@@ -1131,11 +1136,11 @@
    * source/h_checkbox.prg
      + Added LEFTALIGN and THREESTATE clauses to CHECKBOX control.
 
-2011-09-12 11:05:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-09-12 11:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./compile_mingw.bat
      * Minor cleanup.
 
-2011-09-11 22:40:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-09-11 22:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/makelib_mingw.bat
      + Added -W switch to compiler.
    * source/c_winapimisc.c
@@ -1148,7 +1153,7 @@
    * source/h_combo.prg
      ! Fixed some C compiler warnings.
 
-2011-09-11 20:20:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-09-11 20:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * doc/classes.txt
      * Updated.
    * include/oohg.h
@@ -1171,7 +1176,7 @@
      ! Fixed: RADIOGROUP control shows wrong backcolor when
        placed inside tab control. Borrowed from HMG Extended.
 
-2011-09-11 00:30:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-09-11 00:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/oohg.h
    * source/h_checkbox.prg
      + Added method Events_color and data TabHandle to
@@ -1180,34 +1185,34 @@
      ! Fixed: checkbox control shows wrong backcolor when placed
        inside tab control. Borrowed from HMG Extended.
 
-2011-09-11 00:20:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-09-11 00:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/i_window_ch
    * source/h_controlmisc.prg
      + Added ONCHANGE to alternate syntax.
 
-2011-09-11 00:10:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-09-11 00:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./compile_mingw.bat
    * ./compile.bat
      + Added /P parameter to generate .ppo file.
        Use: compile.bat file.prg /p
        or:  compile.bat file.prg /c /p
 
-2011-09-10 23:30:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-09-10 23:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/c_activex.c
      ! Fixed some C Compiler warnings.
 
-2011-09-07 19:00:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-09-07 19:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * source/winprint.prg
   * source/h_tab.prg
   * source/c_windows.prg
   * source/c_image.prg
     ! Fixed some C compiler warnings.
 
-2011-09-07 16:05:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-09-07 16:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * source/common_make.bat
     ! Changed default harbour compiler option to -w3.
 
-2011-09-07 16:05:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-09-07 16:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * source/h_print.prg
   * source/h_scroll.prg
   * source/h_textarray.prg
@@ -1220,13 +1225,13 @@
    * source/h_print.prg
      ! fixed function _int25
 
-2011-09-07 00:19:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+2011-09-07 00:19 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
    * source/h_print.prg
      ! fixed warning
    * source/h_msgbox.prg
      * improving autotype(Function)
 
-2011-09-05 23:35:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-09-05 23:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * source/c_windows.c
   * source/h_button.prg
   * source/h_combo.prg
@@ -1237,7 +1242,7 @@
     * OS_ISWINVISTA_OR_LATER() renamed to OSISWINVISTAORLATER() to
       avoid compilation error in xHarbour.
 
-2011-09-05 21:30:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-09-05 21:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * source/c_windows.c
     * Added OS_ISWINXP_OR_LATER() to obtain backward compatibility
       with Harbour 2.x (function borrowed from Harbour sources)
@@ -1252,7 +1257,7 @@
     * Use OS_ISWINVISTA_OR_LATER() instead of using OS() to check
       for more Windows versions.
 
-2011-09-05 20:40:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-09-05 20:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * source/h_windows.prg
   * source/h_button.ch
   * source/h_form.ch
@@ -1269,14 +1274,14 @@
   * source/h_comm.ch
     ! Fixed some harbour compiler warnings when using -w3 switch.
 
-2011-09-05 20:00:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-09-05 20:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * source/h_button.ch
     * Changed WIN_OSISWINXPORUPPER() by OS_ISWINXP_OR_LATER() to
       restore xHarbour compatibility.
   * ./compile_mingw.bat
     + Added libxhb.a to gcc compilation commands.
 
-2011-09-05 15:05:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-09-05 15:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * include/i_button.ch
   * include/i_altsyntax.ch
   * source/h_button.ch
@@ -1286,13 +1291,13 @@
   * samples/oohg/stream/TStreamSocket.prg
     ! Fixed Harbour compilation.
 
-2011-09-05 13:10:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-09-05 13:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_combo.prg
      ! Fixed: combobox in splitbox does not show display list in XP due
        to CBS_NOINTEGRALHEIGHT style.
      + Added support for CBS_NOINTEGRALHEIGHT style in versions after XP.
 
-2011-09-04 17:10:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-09-04 17:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * doc/classes.txt
    * include/i_tree.ch
    * include/i_window.ch
@@ -1305,7 +1310,7 @@
    * source/makelib_mingw.bat
      ! Fixed missing % in variable expansion.
      
-2011-09-02 20:19:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+2011-09-02 20:19 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
    * source/h_error.prg
     * version updated.
 
@@ -1320,19 +1325,19 @@
    * samples/oohg/stream/TStream.prg
      ! Fixed Harbour compilation.
 
-2011-09-02 19:15:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-09-02 19:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * resources/_oohg_resconfig.h
      ! Fixed missing path.
 
-2011-09-02 00:15:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-09-02 00:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
      ! Fixed image alignment no changing from right to left.
 
-2011-09-01 23:30:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-09-01 23:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_altsyntax.ch
      ! Fixed VALID clause.
 
-2011-09-01 23:00:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-09-01 23:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * doc/classes.txt
      + Added LoadHeaderImages method in TGRID class.
    * source/h_grid.prg
@@ -1347,16 +1352,16 @@
      + Added uHeadClick, uValid, uValidMessage, uWhen, cHeaderImage and
        nHeaderImageAlign parameters to AddColumn method.
 
-2011-09-01 15:15:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-09-01 15:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
      ! Fixed crash in Win7 and 2008 when control has no header images.
 
-2011-08-30 22:25:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-08-30 22:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * samples/oohg/oohgrecord/xbrowsearray.prg
      + Added APPEND method to XBrowse_Array class.
      * Changed comments about methods used and not used by TXBROWSE class.
      
-2011-08-30 22:10:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-08-30 22:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * doc/classes.txt
      * Added EDITGRID message of TXBROWSE class.
    * source/h_grid.prg
@@ -1369,29 +1374,29 @@
    * include/i_browse.ch
      + Added FULLMOVE clause.
 
-2011-08-29 23:20:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-08-29 23:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
      ! Fixed incorrect alignment of column data when header has image.
 
-2011-08-29 10:00:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-08-29 10:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_controlmisc.prg
      * InputWindow function is now more customizable.
        Thanks to José Miguel <josemisu@yahoo.com.ar>
 
-2011-08-27 14:16:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-08-27 14:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_altsyntax.ch
      ! Fixed missing comma.
 
-2011-08-27 11:43:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-08-27 11:43 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_browse.prg
    * source/h_xbrowse.prg
      ! Fixed missing parameters in define call.
 
-2011-08-27 11:10:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-08-27 11:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_altsyntax.ch
      ! Fixed missing comma.
 
-2011-08-27 11:00:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-08-27 11:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_grid.ch
    * include/i_xbrowse.ch
    * include/i_browse.ch
@@ -1403,7 +1408,7 @@
      * DATA aHeaderImagePlace changed to aHeaderImageAlign.
      ! Fixed identifier not found.
 
-2011-08-26 21:30:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-08-26 21:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_grid.ch
      + Added HEADER_IMG_AT_LEFT and HEADER_IMG_AT_RIGHT constants.
      + Added HEADERIMAGES and IMAGESPLACE clauses.
@@ -1431,11 +1436,11 @@
        HEADER_IMG_AT_RIGHT constants). The length of both arrays must equal
        the number of columns in the control.
 
-2011-08-24 12:30:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-08-24 12:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
      ! Fixed: incorrect function call in GridControlObject function.
 
-2011-08-23 11:00:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-08-23 11:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * doc/classes.txt
    * include/i_browse.ch
    * include/i_xbrowse.ch
@@ -1451,36 +1456,36 @@
      + Added ON DELETE event. It fires after deleting the record but before
        moving the record pointer or unlocking the record.
 
-2011-08-20 17:46:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-08-20 17:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * doc/classes.txt
    * include/i_progressbar.ch
    * source/c_progressbar.c
    * source/h_progressbar.prg
      * Added MARQUEE style (clause and method).
 
-2011-08-20 16:24:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+2011-08-20 16:24 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
    * source/h_print.prg
      * Erased redundant and unused code - reformat
 
-2011-08-19 19:25:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-08-19 19:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * doc/classes.txt
      * Updated with TSPREADSHEET class.
 
-2011-08-19 12:32:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+2011-08-19 12:32 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
    * source/h_print.prg
    * source/h_report/prg
      + added TSPREADSHEET Class in  order to create basic xls files
        without  Excel or OpenOffice
      + added report form support to this printing mode.
 
-2011-08-18 23:20:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-08-18 23:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * doc/classes.txt
    * source/h_tree.prg
      + Added LookForKey method and hWndEditCtrl data.
      ! Fixed Esc key in label editing closes tree's parent form if
        ON KEY ESCAPE is setted.
 
-2011-08-18 18:30:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-08-18 18:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * doc/classes.txt
    * include/i_tree.ch
    * include/i_windefs.ch
@@ -1503,26 +1508,26 @@
        use and the Id received does not exist, to be consistent with the
        case when no ItemIds are in use.
 
-2011-08-17 21:50:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-08-17 21:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    - doc/tprint.doc
    + doc/tprint.txt
      + Added CVS Id.
 
-2011-08-17 21:35:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-08-17 21:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * doc/classes.txt
      * Updated.
 
-2011-08-17 20:05:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-08-17 20:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_controlmisc.prg
      ! Added missing return values in function GetProperty.
 
-2011-08-16 10:00:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-08-16 10:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_msgbox.prg
      * Replaced _OOHG_AllVars [ 13 ] with _OOHG_ThisForm in MsgInfoExt
        function to increase readability and prevent errors if implementation
        is changed.
 
-2011-08-15 22:30:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-08-15 22:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    + resources/edit_undo.bmp
      + Added missing resource.
 
@@ -1535,22 +1540,22 @@
 	  ! resolved:focus effect in 'load windows'
 	  + added tcontrol:focuseffect to make code more simple
 
-2011-08-13 16:31:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-08-13 16:31 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_listbox.prg
    * include/i_listbox.prg
      + Added NOVSCROLL clause to LISTBOX control.
 
-2011-08-12 14:15:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-08-12 14:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./compile_mingw.bat
      ! Fixed compiler warning "oohg.h" not found.
 
-2011-08-08 18:12:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+2011-08-08 18:12 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
    * source/h_print.prg
      + added method :setfont()
      ! fixed problems in MM pinting mode.
      * added angle parameter to print lines in angle.
 
-2011-08-08 16:43:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-08-08 16:43 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * resources/CompileRes.bat
    * ./compile_mingw.bat
      ! Fixed deleting _oohg_resconfig.h generates QAC warning.
