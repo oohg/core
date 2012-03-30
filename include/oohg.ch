@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.ch,v 1.16 2012-03-22 16:26:15 fyurisich Exp $
+ * $Id: oohg.ch,v 1.17 2012-03-30 18:49:12 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -165,4 +165,6 @@
 REQUEST HB_GT_GUI_DEFAULT
 REQUEST DBFNTX,DBFDBT
 REQUEST HB_GTSYS
+
+#xtranslate Curdrive([<x>]) => hb_Curdrive(<x>)
 #endif

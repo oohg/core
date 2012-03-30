@@ -1,11 +1,15 @@
 /*
- * $Id: ChangeLog,v 1.899 2012-03-30 18:30:50 fyurisich Exp $
+ * $Id: ChangeLog,v 1.900 2012-03-30 18:49:12 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-03-30 15:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/oohg.ch
+     + Added xtranslate for CurDrive when using Harbour.
 
 2012-03-30 15:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./compile_MINGW.bat
