@@ -1,5 +1,7 @@
 @echo off
-
+rem
+rem $Id: compile_MINGW.BAT,v 1.13 2012-04-01 06:13:07 fyurisich Exp $
+rem
 cls
 
 if exist %1.exe del %1.exe
