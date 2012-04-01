@@ -1,3 +1,6 @@
+/*
+ * $Id: miniprint.ch,v 1.7 2012-04-01 01:20:19 fyurisich Exp $
+ */
 /*----------------------------------------------------------------------------
  MINIGUI - Harbour Win32 GUI library source code
 
