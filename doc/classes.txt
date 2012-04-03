@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.50 2012-03-22 16:26:15 fyurisich Exp $
+ * $Id: classes.txt,v 1.51 2012-04-03 23:08:30 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -473,6 +473,7 @@ CLASS TCONTROL FROM TWINDOW
    METHOD CONTAINERCOL        
    METHOD CONTAINERHWND       
    METHOD CONTAINERROW        
+   METHOD CURSOR                  SETGET
    METHOD DOCHANGE
    METHOD DOEVENT
    METHOD DOLOSTFOCUS
