@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.119 2012-02-26 02:29:47 declan2005 Exp $
+* $Id: h_print.prg,v 1.120 2012-04-03 20:52:38 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -131,17 +131,17 @@ DATA aports             INIT {}   READONLY
 
 DATA lprerror           INIT .F.  READONLY
 DATA exit               INIT  .F. READONLY
-DATA acolor             INIT {1,1,1}  READONLY
+DATA acolor             INIT {0,0,0}  READONLY    //// color del pincel
 DATA cfontname          INIT "Courier New" READONLY
 DATA nfontsize          INIT 12            /////// nunca ponerle read only
-DATA afontcolor         INIT {0,0,0}      READONLY
+DATA afontcolor         INIT {0,0,0}      READONLY     ///// color de la fuente
 DATA lfontbold          INIT .F.          READONLY
 DATA lfontitalic        INIT .F.          READONLY
 DATA nwpen              INIT 0.1   READONLY //// pen width
 DATA tempfile           INIT gettempdir()+"T"+alltrim(str(int(hb_random(999999)),8))+".prn" READONLY
 DATA impreview          INIT .F.  READONLY
 DATA lwinhide           INIT .T.   READONLY
-DATA cversion           INIT  "(oohg-tprint)V 4.7" READONLY
+DATA cversion           INIT  "(oohg-tprint)V 4.9" READONLY
 DATA cargo              INIT  "list"     //// document name
 ////DATA cString            INIT  ""
 
@@ -627,7 +627,7 @@ DEFAULT ncol to 1
 DEFAULT ctext to ""
 DEFAULT cfont to ::cfontname
 DEFAULT nsize to ::nfontsize
-DEFAULT acolor to ::acolor
+DEFAULT acolor to ::afontcolor
 DEFAULT lbold   to ::lfontbold
 DEFAULT litalic to ::lfontitalic
 DEFAULT nangle to 0
@@ -1142,7 +1142,7 @@ RETURN nil
 METHOD printdatax(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext,litalic,nangle) CLASS TMINIPRINT
 *-------------------------
 Empty( Data )
-DEFAULT aColor to ::acolor
+DEFAULT aColor to ::afontcolor
 Empty( nLen )
 Empty( nangle )
 
@@ -1561,7 +1561,7 @@ METHOD PRINTDATAx(nlin,ncol,data,cfont,nsize,lbold,acolor,calign,nlen,ctext,lita
 *-------------------------
 Empty( Data )
 
-DEFAULT aColor to ::acolor
+DEFAULT aColor to ::afontcolor
 Empty( nLen )
 
 select font "F0"
@@ -1753,14 +1753,14 @@ RETURN self
 *-------------------------
 METHOD printroundrectanglex(nlin,ncol,nlinf,ncolf,atcolor,ntwpen ) CLASS THBPRINTER
 *-------------------------
-local vdespl:=1  /////vdespl:=1.009
+local vdespl:=1
 DEFAULT atColor to ::acolor
 CHANGE PEN "C0" WIDTH ntwpen*10 COLOR atcolor
 SELECT PEN "C0"
 if ::cunits="MM"
-hbprn:RoundRect( nlin,ncol ,nlinf,ncolf ,10, 10,"C0")
+   hbprn:RoundRect( nlin,ncol ,nlinf,ncolf ,10, 10,"C0")
 else
-hbprn:RoundRect( nlin*::nmver*vdespl+::nvfij  ,ncol*::nmhor+::nhfij*2 ,nlinf*::nmver*vdespl+::nvfij ,ncolf*::nmhor+::nhfij*2 ,10, 10,"C0")
+   hbprn:RoundRect( nlin*::nmver*vdespl+::nvfij  ,ncol*::nmhor+::nhfij*2 ,nlinf*::nmver*vdespl+::nvfij ,ncolf*::nmhor+::nhfij*2 ,10, 10,"C0")
 endif
 RETURN self
 
@@ -3328,7 +3328,7 @@ local I
 Default cFont to ::cFontName
 Default nSize to ::nFontSize
 
-DEFAULT aColor to ::acolor
+DEFAULT aColor to ::afontcolor
 
 if .not. hb_islogical(lBold)
    lbold:=.f.
