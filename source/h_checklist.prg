@@ -1,5 +1,5 @@
 /*
- * $Id: h_checklist.prg,v 1.2 2012-03-23 14:49:07 fyurisich Exp $
+ * $Id: h_checklist.prg,v 1.3 2012-04-03 22:51:14 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -285,7 +285,7 @@ Local nNext
       Return 1
    EndIf
    
-Return Nil
+Return ::Super:Events( hWnd, nMsg, wParam, lParam )
 
 *-----------------------------------------------------------------------------*
 METHOD Events_Notify( wParam, lParam ) CLASS TCheckList

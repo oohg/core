@@ -1,5 +1,5 @@
 /*
- * $Id: i_controlmisc.ch,v 1.5 2008-01-12 20:19:38 guerra000 Exp $
+ * $Id: i_controlmisc.ch,v 1.6 2012-04-03 22:51:14 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -82,118 +82,137 @@
 
  Parts of this project are based upon:
 
-        "Harbour GUI framework for Win32"
-        Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
-        Copyright 2001 Antonio Linares <alinares@fivetech.com>
-        www - http://www.harbour-project.org
+ "Harbour GUI framework for Win32"
+ Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
+ Copyright 2001 Antonio Linares <alinares@fivetech.com>
+ www - http://www.harbour-project.org
 
-        "Harbour Project"
-        Copyright 1999-2003, http://www.harbour-project.org/
+ "Harbour Project"
+ Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-#define IDC_ARROW	32512
-#define IDC_IBEAM	32513
-#define IDC_WAIT	32514
-#define IDC_CROSS	32515
-#define IDC_UPARROW	32516
-#define IDC_SIZENWSE	32642
-#define IDC_SIZENESW	32643
-#define IDC_SIZEWE	32644
-#define IDC_SIZENS	32645
-#define IDC_SIZEALL	32646
-#define IDC_NO	32648
-#define IDC_APPSTARTING	32650
-#define IDC_HELP	32651
+// standard cursors
+#define IDC_ARROW       32512
+#define IDC_IBEAM       32513
+#define IDC_WAIT        32514
+#define IDC_CROSS       32515
+#define IDC_UPARROW     32516
+#define IDC_SIZENWSE    32642
+#define IDC_SIZENESW    32643
+#define IDC_SIZEWE      32644
+#define IDC_SIZENS      32645
+#define IDC_SIZEALL     32646
+#define IDC_NO          32648
+#define IDC_HAND        32649
+#define IDC_APPSTARTING 32650
+#define IDC_HELP        32651
 
-#command SETFOCUS <n> OF <w>;
-	=>;
-        DoMethod ( <(w)> , <(n)> , 'SetFocus' )
+#command SETFOCUS <n> OF <w> ;
+   => ;
+         DoMethod ( <(w)>, <(n)>, 'SetFocus' )
 
 #command ADD ITEM <i> TO <n> OF <p> ;
-	=>;
-        DoMethod ( <(p)> , <(n)> , 'AddItem' , <i> )
+   => ;
+         DoMethod ( <(p)>, <(n)>, 'AddItem', <i> )
 
 #command ADD COLUMN [ INDEX <index> ] [ CAPTION <caption> ] [ WIDTH <width> ] [ JUSTIFY <justify> ] TO <control> OF <parent> ;
-	=>;
-        DoMethod ( <(parent)> , <(control)> , 'AddColumn' , <index> , <caption> , <width> , <justify> )
+   => ;
+         DoMethod ( <(parent)>, <(control)>, 'AddColumn', <index>, <caption>, <width>, <justify> )
 
 #command DELETE COLUMN [ INDEX ] <index> FROM <control> OF <parent> ;
-	=>;
-        DoMethod ( <(parent)> , <(control)> , 'DeleteColumn' , <index> )
+   => ;
+         DoMethod ( <(parent)>, <(control)>, 'DeleteColumn', <index> )
 
-#command DELETE ITEM <i> FROM <n> OF <p>;
-	=>;
-        DoMethod ( <(p)> , <(n)> , 'DeleteItem' , <i> )
+#command DELETE ITEM <i> FROM <n> OF <p> ;
+   => ;
+         DoMethod ( <(p)>, <(n)>, 'DeleteItem', <i> )
 
-#command DELETE ITEM ALL FROM <n> OF <p>;
-	=>;
-        DoMethod ( <(p)> , <(n)> , 'DeleteAllItems' )
+#command DELETE ITEM ALL FROM <n> OF <p> ;
+   => ;
+         DoMethod ( <(p)>, <(n)>, 'DeleteAllItems' )
 
-#command ENABLE CONTROL <control> OF <form>;
-	=>;
-        SetProperty ( <(form)> , <(control)> , 'Enabled' , .T. )
+#command ENABLE CONTROL <control> OF <form> ;
+   => ;
+         SetProperty ( <(form)>, <(control)>, 'Enabled', .T. )
 
-#command SHOW CONTROL <control> OF <form>;
-	=>;
-        DoMethod ( <(form)> , <(control)> , 'Show' )
+#command SHOW CONTROL <control> OF <form> ;
+   => ;
+         DoMethod ( <(form)>, <(control)>, 'Show' )
 
-#command HIDE CONTROL <control> OF <form>;
-	=>;
-        DoMethod ( <(form)> , <(control)> , 'Hide' )
+#command HIDE CONTROL <control> OF <form> ;
+   => ;
+         DoMethod ( <(form)>, <(control)>, 'Hide' )
 
-#command DISABLE CONTROL <control> OF <form>;
-	=>;
-        SetProperty ( <(form)> , <(control)> , 'Enabled' , .F. )
+#command DISABLE CONTROL <control> OF <form> ;
+   => ;
+         SetProperty ( <(form)>, <(control)>, 'Enabled', .F. )
 
-#command RELEASE CONTROL <control> OF <form>;
-	=>;
-        DoMethod ( <(form)> , <(control)> , 'Release' )
+#command RELEASE CONTROL <control> OF <form> ;
+   => ;
+         DoMethod ( <(form)>, <(control)>, 'Release' )
 
-#command SET FONT TO <fontname> , <fontsize>;
-	=>;
-        _OOHG_DefaultFontName := <fontname> ; _OOHG_DefaultFontSize := <fontsize>
+#command SET FONT TO <fontname>, <fontsize> ;
+   => ;
+         _OOHG_DefaultFontName := <fontname> ; _OOHG_DefaultFontSize := <fontsize>
 
 #translate MODIFY [ PROPERTY ] [ CONTROL ] <Arg2> OF <Arg1> <Arg3> <Arg4> ;
-=> ;
-SetProperty ( <(Arg1)> , <(Arg2)> , <(Arg3)> , <Arg4> )
+   => ;
+         SetProperty ( <(Arg1)>, <(Arg2)>, <(Arg3)>, <Arg4> )
 
 #xtranslate MODIFY [ PROPERTY ] [ CONTROL ] <Arg2> OF <Arg1> <Arg3> ( <Arg4> ) <Arg5> ;
-=> ;
-SetProperty ( <(Arg1)> , <(Arg2)> , <(Arg3)> , <Arg4> , <Arg5> )
+   => ;
+         SetProperty ( <(Arg1)>, <(Arg2)>, <(Arg3)>, <Arg4>, <Arg5> )
 
 #xtranslate FETCH [ PROPERTY ] [ CONTROL ] <Arg2> OF <Arg1> <Arg3> TO <Arg4> ;
-=> ;
-<Arg4> := GetProperty ( <(Arg1)> , <(Arg2)> , <(Arg3)> )
+   => ;
+         <Arg4> := GetProperty ( <(Arg1)>, <(Arg2)>, <(Arg3)> )
 
 #xtranslate FETCH [ PROPERTY ] [ CONTROL ] <Arg2> OF <Arg1> <Arg3> (<Arg4>) TO <Arg5> ;
-=> ;
-<Arg5> := GetProperty ( <(Arg1)> , <(Arg2)> , <(Arg3)> , <Arg4> )
+   => ;
+         <Arg5> := GetProperty ( <(Arg1)>, <(Arg2)>, <(Arg3)>, <Arg4> )
 
 #xtranslate MODIFY [ PROPERTY ] [ CONTROL ] <Arg2> OF <Arg1> <Arg3> .T. ;
-=> ;
-SetProperty ( <(Arg1)> , <(Arg2)> , <(Arg3)> , .T. )
+   => ;
+         SetProperty ( <(Arg1)>, <(Arg2)>, <(Arg3)>, .T. )
 
 #xtranslate MODIFY [ PROPERTY ] [ CONTROL ] <Arg2> OF <Arg1> <Arg3> .F. ;
-=> ;
-SetProperty ( <(Arg1)> , <(Arg2)> , <(Arg3)> , .F. )
+   => ;
+         SetProperty ( <(Arg1)>, <(Arg2)>, <(Arg3)>, .F. )
 
 #xtranslate MODIFY [ PROPERTY ] [ CONTROL ] <Arg2> OF <Arg1> <Arg3> { <Arg4, ...> } ;
-=> ;
-SetProperty ( <(Arg1)> , <(Arg2)> , <(Arg3)> , \{<Arg4>\} )
+   => ;
+         SetProperty ( <(Arg1)>, <(Arg2)>, <(Arg3)>, \{<Arg4>\} )
 
-#translate SET MULTIPLE <x:ON,OFF> [<warning: WARNING>] => _OOHG_SetMultiple( <(x)> , <.warning.> )
+#translate SET MULTIPLE <x:ON,OFF> [<warning: WARNING>] ;
+   => ;
+         _OOHG_SetMultiple( <(x)>, <.warning.> )
 
-#translate SET CONTEXTMENUS OFF => _OOHG_ShowContextMenus( .F. )
-#translate SET CONTEXTMENUS ON =>  _OOHG_ShowContextMenus( .T. )
+#translate SET CONTEXTMENUS OFF ;
+   => ;
+         _OOHG_ShowContextMenus( .F. )
 
-#translate SET CONTEXT MENU OFF => _OOHG_ShowContextMenus( .F. )
-#translate SET CONTEXT MENU ON =>  _OOHG_ShowContextMenus( .T. )
+#translate SET CONTEXTMENUS ON ;
+   => ;
+         _OOHG_ShowContextMenus( .T. )
+
+#translate SET CONTEXT MENU OFF ;
+   => ;
+         _OOHG_ShowContextMenus( .F. )
+
+#translate SET CONTEXT MENU ON ;
+   => ;
+         _OOHG_ShowContextMenus( .T. )
 
 #xcommand EXIT PROCEDURE <name> ;
-=> ;
-INIT PROCEDURE <name> ;;
-	MsgStop ('EXIT PROCEDURE Statement is not Supported in ooHG. Use Main Window ON RELEASE Event Procedure Instead. Program Terminated','ooHG Error') ;;
-        ExitProcess()
+   => ;
+         INIT PROCEDURE <name> ;;
+         MsgStop ('EXIT PROCEDURE Statement is not Supported in ooHG. Use Main Window ON RELEASE Event Procedure Instead. Program Terminated','ooHG Error') ;;
+         ExitProcess()
 
-#translate SET SAMEENTERDBLCLICK OFF => _OOHG_SameEnterDblClick := .F.
-#translate SET SAMEENTERDBLCLICK ON  => _OOHG_SameEnterDblClick := .T.
+#translate SET SAMEENTERDBLCLICK OFF ;
+   => ;
+         _OOHG_SameEnterDblClick := .F.
+
+#translate SET SAMEENTERDBLCLICK ON ;
+   => ;
+         _OOHG_SameEnterDblClick := .T.

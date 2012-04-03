@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.906 2012-04-03 21:38:49 fyurisich Exp $
+ * $Id: ChangeLog,v 1.907 2012-04-03 22:51:14 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,6 +7,30 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-04-03 19:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_controlmisc.ch
+     + Added IDC_HAND constant definition.
+     * Minor formatting.
+   * source/c_cursor.c
+     + Added SETWAITCURSOR function.
+     + Added CURSORHAND and SETHANDCURSOR. In case the library is
+       compiled under version 0x0500, MINIGUI_FINGER cursor is
+       used instead IDC_HAND. Borrowed from HMG Extended.
+   * source/h_checklist.prg
+     ! Method Events was not calling super class when message is
+       not processed.
+   * source/h_controlmisc.prg
+     + Added CURSOR method to set/get the cursor displayed when
+       the mouse is hovering the control. To set the cursor pass
+       a number to load one of the predefined cursors (see i_controlmisc)
+       or pass a string to load one from resource file or disk.
+       If the function fails trying to load IDC_HAND, it tries to load
+       MINIGUI_FINGER cursor from OOHG's resource file.
+     * Minor formatting.
+   * source/h_hyperlink.prg
+     * Changed: now uses ::Cursor(IDC_HAND) instead of direct assigning
+       MINIGUI_FINGER cursor to hCursor data. This also fixes the
+       hand cursor not being displayed for HANDCURSOR .T.
 
 2012-04-03 18:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * doc/tprint.txt

@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.133 2012-03-28 01:14:37 fyurisich Exp $
+ * $Id: h_controlmisc.prg,v 1.134 2012-04-03 22:51:14 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -82,23 +82,23 @@
 
  Parts of this project are based upon:
 
-	"Harbour GUI framework for Win32"
- 	Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- 	Copyright 2001 Antonio Linares <alinares@fivetech.com>
-	www - http://www.harbour-project.org
+   "Harbour GUI framework for Win32"
+    Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
+    Copyright 2001 Antonio Linares <alinares@fivetech.com>
+   www - http://www.harbour-project.org
 
-	"Harbour Project"
-	Copyright 1999-2003, http://www.harbour-project.org/
+   "Harbour Project"
+   Copyright 1999-2003, http://www.harbour-project.org/
 
 
 15/04/2011 Cayetano Gómez
-		Añadidas primitivas gráficas.
-		line
-		box
-		circle
-		roundbox
-		text
-		fill
+      Añadidas primitivas gráficas.
+      line
+      box
+      circle
+      roundbox
+      text
+      fill
 ---------------------------------------------------------------------------*/
 
 #include "oohg.ch"
@@ -349,39 +349,39 @@ Local oInputWindow, aResult, nWidth, ControlCol
 
    For i := 1 to l
 
-		if ValType ( aValues[i] ) == 'C'
+      if ValType ( aValues[i] ) == 'C'
 
-			if HB_IsNumeric ( aFormats[i] )
+         if HB_IsNumeric ( aFormats[i] )
 
-				If aFormats[i] > 32
-					e++
-				Endif
+            If aFormats[i] > 32
+               e++
+            Endif
 
-			EndIf
+         EndIf
 
-		EndIf
+      EndIf
 
-		if HB_IsMemo ( aValues[i] )
-			e++
-		EndIf
+      if HB_IsMemo ( aValues[i] )
+         e++
+      EndIf
 
    Next i
 
 
    If ! HB_IsNumeric( row ) .or. ! HB_IsNumeric( col )
-		r := 0
-		c := 0
+      r := 0
+      c := 0
    Else
-		r := row
-		c := col
-		wHeight :=  (l*30) + 90 + (e*60)
+      r := row
+      c := col
+      wHeight :=  (l*30) + 90 + (e*60)
 
-		if r + wHeight > GetDeskTopHeight()
+      if r + wHeight > GetDeskTopHeight()
 
-			diff :=  r + wHeight - GetDeskTopHeight()
-			r := r - diff
+         diff :=  r + wHeight - GetDeskTopHeight()
+         r := r - diff
 
-		EndIf
+      EndIf
 
    EndIf
 
@@ -390,80 +390,80 @@ Local oInputWindow, aResult, nWidth, ControlCol
    ControlCol := nLabelWidth + 10
 
    DEFINE WINDOW _InputWindow OBJ oInputWindow ;
-		AT r,c ;
-		WIDTH nWidth ;
-		HEIGHT (l*30) + 90 + (e*60) ;
-		TITLE Title ;
-		MODAL ;
-		NOSIZE ;
+      AT r,c ;
+      WIDTH nWidth ;
+      HEIGHT (l*30) + 90 + (e*60) ;
+      TITLE Title ;
+      MODAL ;
+      NOSIZE ;
       BACKCOLOR ( GetFormObjectByHandle( GetActiveWindow() ):BackColor )
 
-		ControlRow :=  10
+      ControlRow :=  10
 
-		For i := 1 to l
+      For i := 1 to l
 
-			LN := 'Label_' + Alltrim(Str(i,2,0))
-			CN := 'Control_' + Alltrim(Str(i,2,0))
+         LN := 'Label_' + Alltrim(Str(i,2,0))
+         CN := 'Control_' + Alltrim(Str(i,2,0))
 
          @ ControlRow , 10 LABEL &LN OF _InputWindow VALUE aLabels [i] WIDTH nLabelWidth NOWORDWRAP
 
-			do case
-			case HB_IsLogical ( aValues [i] )
+         do case
+         case HB_IsLogical ( aValues [i] )
 
-				@ ControlRow , ControlCol CHECKBOX &CN OF _InputWindow CAPTION '' VALUE aValues[i]
-				ControlRow := ControlRow + 30
+            @ ControlRow , ControlCol CHECKBOX &CN OF _InputWindow CAPTION '' VALUE aValues[i]
+            ControlRow := ControlRow + 30
 
-			case HB_IsDate ( aValues [i] )
+         case HB_IsDate ( aValues [i] )
 
-				@ ControlRow , ControlCol DATEPICKER &CN  OF _InputWindow VALUE aValues[i] WIDTH nControlWidth
-				ControlRow := ControlRow + 30
+            @ ControlRow , ControlCol DATEPICKER &CN  OF _InputWindow VALUE aValues[i] WIDTH nControlWidth
+            ControlRow := ControlRow + 30
 
-			case HB_IsNumeric ( aValues [i] )
+         case HB_IsNumeric ( aValues [i] )
 
-				If HB_Isarray ( aFormats [i] )
+            If HB_Isarray ( aFormats [i] )
 
-					@ ControlRow , ControlCol COMBOBOX &CN  OF _InputWindow ITEMS aFormats[i] VALUE aValues[i] WIDTH nControlWidth  FONT 'Arial' SIZE 10
-					ControlRow := ControlRow + 30
+               @ ControlRow , ControlCol COMBOBOX &CN  OF _InputWindow ITEMS aFormats[i] VALUE aValues[i] WIDTH nControlWidth  FONT 'Arial' SIZE 10
+               ControlRow := ControlRow + 30
 
             ElseIf  ValType ( aFormats [i] ) $ 'CM'
 
-					If AT ( '.' , aFormats [i] ) > 0
-						@ ControlRow , ControlCol TEXTBOX &CN  OF _InputWindow VALUE aValues[i] WIDTH nControlWidth FONT 'Arial' SIZE 10 NUMERIC INPUTMASK aFormats [i]
-					Else
-						@ ControlRow , ControlCol TEXTBOX &CN  OF _InputWindow VALUE aValues[i] WIDTH nControlWidth FONT 'Arial' SIZE 10 MAXLENGTH Len(aFormats [i]) NUMERIC
-					EndIf
+               If AT ( '.' , aFormats [i] ) > 0
+                  @ ControlRow , ControlCol TEXTBOX &CN  OF _InputWindow VALUE aValues[i] WIDTH nControlWidth FONT 'Arial' SIZE 10 NUMERIC INPUTMASK aFormats [i]
+               Else
+                  @ ControlRow , ControlCol TEXTBOX &CN  OF _InputWindow VALUE aValues[i] WIDTH nControlWidth FONT 'Arial' SIZE 10 MAXLENGTH Len(aFormats [i]) NUMERIC
+               EndIf
 
-					ControlRow := ControlRow + 30
-				Endif
+               ControlRow := ControlRow + 30
+            Endif
 
-			case ValType ( aValues [i] ) == 'C'
+         case ValType ( aValues [i] ) == 'C'
 
-				If HB_IsNumeric ( aFormats [i] )
-					If  aFormats [i] <= 32
-						@ ControlRow , ControlCol TEXTBOX &CN  OF _InputWindow VALUE aValues[i] WIDTH nControlWidth FONT 'Arial' SIZE 10 MAXLENGTH aFormats [i]
-						ControlRow := ControlRow + 30
-					Else
-						@ ControlRow , ControlCol EDITBOX &CN  OF _InputWindow WIDTH nControlWidth HEIGHT 90 VALUE aValues[i] FONT 'Arial' SIZE 10 MAXLENGTH aFormats[i]
-						ControlRow := ControlRow + 94
-					EndIf
-				EndIf
+            If HB_IsNumeric ( aFormats [i] )
+               If  aFormats [i] <= 32
+                  @ ControlRow , ControlCol TEXTBOX &CN  OF _InputWindow VALUE aValues[i] WIDTH nControlWidth FONT 'Arial' SIZE 10 MAXLENGTH aFormats [i]
+                  ControlRow := ControlRow + 30
+               Else
+                  @ ControlRow , ControlCol EDITBOX &CN  OF _InputWindow WIDTH nControlWidth HEIGHT 90 VALUE aValues[i] FONT 'Arial' SIZE 10 MAXLENGTH aFormats[i]
+                  ControlRow := ControlRow + 94
+               EndIf
+            EndIf
 
-			case HB_IsMemo ( aValues [i] )
+         case HB_IsMemo ( aValues [i] )
 
-				@ ControlRow , ControlCol EDITBOX &CN  OF _InputWindow WIDTH nControlWidth HEIGHT 90 VALUE aValues[i] FONT 'Arial' SIZE 10
-				ControlRow := ControlRow + 94
+            @ ControlRow , ControlCol EDITBOX &CN  OF _InputWindow WIDTH nControlWidth HEIGHT 90 VALUE aValues[i] FONT 'Arial' SIZE 10
+            ControlRow := ControlRow + 94
 
-			endcase
+         endcase
 
-		Next i
+      Next i
 
-		@ ControlRow + 10 , 30 BUTTON BUTTON_1 ;
-		OF _InputWindow ;
+      @ ControlRow + 10 , 30 BUTTON BUTTON_1 ;
+      OF _InputWindow ;
       CAPTION aButOKCancelCaptions [1] ;
       ACTION _InputWindowOk( oInputWindow, aResult )
 
-		@ ControlRow + 10 , 140 BUTTON BUTTON_2 ;
-		OF _InputWindow ;
+      @ ControlRow + 10 , 140 BUTTON BUTTON_2 ;
+      OF _InputWindow ;
       CAPTION aButOKCancelCaptions [2] ;
       ACTION _InputWindowCancel( oInputWindow, aResult )
 
@@ -522,7 +522,7 @@ Function SetProperty( Arg1, Arg2, Arg3, Arg4, Arg5, Arg6 )
 *------------------------------------------------------------------------------*
 Local oWnd, oCtrl
 
-	if Pcount() == 3 // Window
+   if Pcount() == 3 // Window
 
       oWnd := GetExistingFormObject( Arg1 )
       Arg2 := Upper( Arg2 )
@@ -733,7 +733,7 @@ Local oWnd, oCtrl
          oCtrl:Picture( Arg4, Arg5 )
 
       Else
-			// If Property Not Matched Look For ToolBar Button
+         // If Property Not Matched Look For ToolBar Button
 
          If oCtrl:Type == "TOOLBAR"
 
@@ -1199,53 +1199,54 @@ Return GetWindowText( GetControlObject( ControlName, ParentForm ):hWnd )
 *------------------------------------------------------------------------------*
 CLASS TControl FROM TWindow
 *------------------------------------------------------------------------------*
-   DATA cToolTip    INIT ""
-   DATA AuxHandle   INIT 0
-   DATA Transparent INIT .F.
-   DATA HelpId      INIT 0
-   DATA OnChange    INIT nil
-   DATA Id          INIT 0
-   DATA ImageListColor      INIT CLR_NONE
-   DATA ImageListFlags      INIT LR_LOADTRANSPARENT
-   DATA SetImageListCommand INIT 0   // Must be explicit for each control
-   DATA SetImageListWParam  INIT TVSIL_NORMAL
-   DATA hCursor     INIT 0
-   DATA postBlock   INIT nil
-   DATA lCancel     INIT .F.
-   DATA OnEnter     INIT nil
-   DATA xOldValue   INIT nil
+   DATA cToolTip             INIT ""
+   DATA AuxHandle            INIT 0
+   DATA Transparent          INIT .F.
+   DATA HelpId               INIT 0
+   DATA OnChange             INIT nil
+   DATA Id                   INIT 0
+   DATA ImageListColor       INIT CLR_NONE
+   DATA ImageListFlags       INIT LR_LOADTRANSPARENT
+   DATA SetImageListCommand  INIT 0   // Must be explicit for each control
+   DATA SetImageListWParam   INIT TVSIL_NORMAL
+   DATA hCursor              INIT 0
+   DATA postBlock            INIT nil
+   DATA lCancel              INIT .F.
+   DATA OnEnter              INIT nil
+   DATA xOldValue            INIT nil
    //CGR
-   DATA OldColor, OldBackColor
-   DATA Tag			INIT ""
+   DATA OldColor
+   DATA OldBackColor
+   DATA Tag                  INIT ""
 
-   METHOD Row       SETGET
-   METHOD Col       SETGET
-   METHOD Width     SETGET
-   METHOD Height    SETGET
-   METHOD ToolTip   SETGET
+   METHOD Row                SETGET
+   METHOD Col                SETGET
+   METHOD Width              SETGET
+   METHOD Height             SETGET
+   METHOD ToolTip            SETGET
    METHOD SetForm
-   METHOD InitStyle
+   METHOD  INITStyle
    METHOD Register
    //CGR
-   METHOD Refresh             BLOCK { |self| ::ReDraw() }
+   METHOD Refresh            BLOCK { |self| ::ReDraw() }
    METHOD Release
    METHOD SetFont
    METHOD FocusEffect
-   METHOD ContainerRow        BLOCK { |Self| IF( ::Container != NIL, IF( ValidHandler( ::Container:ContainerhWndValue ), 0, ::Container:ContainerRow ) + ::Container:RowMargin, ::Parent:RowMargin ) + ::Row }
-   METHOD ContainerCol        BLOCK { |Self| IF( ::Container != NIL, IF( ValidHandler( ::Container:ContainerhWndValue ), 0, ::Container:ContainerCol ) + ::Container:ColMargin, ::Parent:ColMargin ) + ::Col }
-   METHOD ContainerhWnd       BLOCK { |Self| IF( ::Container == NIL, ::Parent:hWnd, if( ValidHandler( ::Container:ContainerhWndValue ), ::Container:ContainerhWndValue, ::Container:ContainerhWnd ) ) }
-   METHOD FontName            SETGET
-   METHOD FontSize            SETGET
-   METHOD FontBold            SETGET
-   METHOD FontItalic          SETGET
-   METHOD FontUnderline       SETGET
-   METHOD FontStrikeout       SETGET
-   METHOD FontAngle			      SETGET
-   METHOD FontWidth           SETGET
+   METHOD ContainerRow       BLOCK { |Self| IF( ::Container != NIL, IF( ValidHandler( ::Container:ContainerhWndValue ), 0, ::Container:ContainerRow ) + ::Container:RowMargin, ::Parent:RowMargin ) + ::Row }
+   METHOD ContainerCol       BLOCK { |Self| IF( ::Container != NIL, IF( ValidHandler( ::Container:ContainerhWndValue ), 0, ::Container:ContainerCol ) + ::Container:ColMargin, ::Parent:ColMargin ) + ::Col }
+   METHOD ContainerhWnd      BLOCK { |Self| IF( ::Container == NIL, ::Parent:hWnd, if( ValidHandler( ::Container:ContainerhWndValue ), ::Container:ContainerhWndValue, ::Container:ContainerhWnd ) ) }
+   METHOD FontName           SETGET
+   METHOD FontSize           SETGET
+   METHOD FontBold           SETGET
+   METHOD FontItalic         SETGET
+   METHOD FontUnderline      SETGET
+   METHOD FontStrikeout      SETGET
+   METHOD FontAngle          SETGET
+   METHOD FontWidth          SETGET
    METHOD SizePos
    METHOD Move
    METHOD ForceHide
-   METHOD SetFocus            BLOCK { |Self| _OOHG_lSettingFocus := .T., GetFormObjectByHandle( ::ContainerhWnd ):LastFocusedControl := ::hWnd, ::Super:SetFocus() }
+   METHOD SetFocus           BLOCK { |Self| _OOHG_lSettingFocus := .T., GetFormObjectByHandle( ::ContainerhWnd ):LastFocusedControl := ::hWnd, ::Super:SetFocus() }
    METHOD SetVarBlock
    METHOD AddBitMap
 
@@ -1258,11 +1259,29 @@ CLASS TControl FROM TWindow
    METHOD Events_Enter
    METHOD Events_Command
    METHOD Events_Notify
-   METHOD Events_DrawItem     BLOCK { || nil }
-   METHOD Events_MeasureItem  BLOCK { || nil }
-   
+   METHOD Events_DrawItem    BLOCK { || nil }
+   METHOD Events_MeasureItem BLOCK { || nil }
+   METHOD Cursor             SETGET
 
 ENDCLASS
+
+*------------------------------------------------------------------------------*
+METHOD Cursor( hCursor ) CLASS TControl
+*------------------------------------------------------------------------------*
+   IF PCOUNT() > 0
+      IF VALTYPE( hCursor ) == "N"
+        ::hCursor := LoadCursor( NIL, hCursor )
+        IF ::hCursor == 0 .AND. hCursor == IDC_HAND
+           ::hCursor := LoadCursor( GetInstance(), 'MINIGUI_FINGER' )
+        ENDIF
+      ELSEIF VALTYPE( hCursor ) $ "CM"
+        ::hCursor := LoadCursor( GetInstance(), hCursor )
+        IF ::hCursor == 0
+           ::hCursor := LoadCursorFromFile( hCursor )
+        ENDIF
+      ENDIF
+   ENDIF
+RETURN ::hCursor
 
 *------------------------------------------------------------------------------*
 METHOD Row( nRow ) CLASS TControl
@@ -1615,7 +1634,7 @@ Return ::Strikeout
 METHOD FontAngle( nAngle ) CLASS TControl
 *-----------------------------------------------------------------------------*
    If HB_IsNumeric( nAngle )
-	  ::FntAngle:=nAngle
+     ::FntAngle:=nAngle
       ::SetFont( ,,,,,, nAngle )
    EndIf
 Return ::FntAngle
@@ -1624,7 +1643,7 @@ Return ::FntAngle
 METHOD FontWidth( nWidth ) CLASS TControl
 *-----------------------------------------------------------------------------*
    If HB_IsNumeric( nWidth )
-	  ::FntWidth:=nWidth
+     ::FntWidth:=nWidth
       ::SetFont( ,,,,,,, nWidth )
    EndIf
 Return ::FntWidth
@@ -1676,10 +1695,10 @@ METHOD SetVarBlock( cField, uValue ) CLASS TControl
 *-----------------------------------------------------------------------------*
    If ValType( cField ) $ "CM" .AND. ! Empty( cField )
       ::VarName := AllTrim( cField )
-	EndIf
+   EndIf
    If ValType( ::VarName ) $ "CM" .AND. ! Empty( ::VarName )
       ::Block := &( "{ | _x_ | if( PCount() == 0, ( " + ::VarName + " ), ( " + ::VarName + " := _x_ ) ) }" )
-	EndIf
+   EndIf
    If HB_IsBlock( ::Block )
       ::Value := EVAL( ::Block )
    ElseIf PCount() > 1
@@ -1757,18 +1776,18 @@ Local uRet := nil, nFocus, oFocus
             uRet := nil
          EndIf
       EndIf
-	  //CGR
-  	  if .not.( empty(::cFocusFontName).and.empty( ::nFocusFontSize).and.empty(::FocusBold).and.;
-			empty(::FocusItalic).and.empty(::FocusUnderline).and.empty(::FocusStrikeout))
-		::SetFont( ::cFontName, ::nFontSize, ::Bold, ::Italic, ::Underline, ::Strikeout )
-		::refresh()
-	  end
-  	  if .not.( empty(::FocusColor) )
-		::FontColor:=::OldColor
-	  end
-	  if .not.( empty(::FocusBackColor) )
-		::BackColor:=::OldBackColor
-	  end
+     //CGR
+       if .not.( empty(::cFocusFontName).and.empty( ::nFocusFontSize).and.empty(::FocusBold).and.;
+         empty(::FocusItalic).and.empty(::FocusUnderline).and.empty(::FocusStrikeout))
+      ::SetFont( ::cFontName, ::nFontSize, ::Bold, ::Italic, ::Underline, ::Strikeout )
+      ::refresh()
+     end
+       if .not.( empty(::FocusColor) )
+      ::FontColor:=::OldColor
+     end
+     if .not.( empty(::FocusBackColor) )
+      ::BackColor:=::OldBackColor
+     end
 
       ::DoEvent( ::OnLostFocus, "LOSTFOCUS" )
    EndIf
@@ -2059,44 +2078,44 @@ METHOD FocusEffect CLASS tControl
 *-----------------------------------------------------------------------------*
 local lMod:=.f.
 
-	  if (.not.( empty(::cFocusFontName).and.empty( ::nFocusFontSize).and.empty(::FocusBold).and.;
-				empty(::FocusItalic).and.empty(::FocusUnderline).and.empty(::FocusStrikeout))).or.;
-				(.not.( empty(::Parent:cFocusFontName).and.empty( ::Parent:nFocusFontSize).and.empty(::Parent:FocusBold).and.;
-				empty(::Parent:FocusItalic).and.empty(::Parent:FocusUnderline).and.empty(::Parent:FocusStrikeout)))
+     if (.not.( empty(::cFocusFontName).and.empty( ::nFocusFontSize).and.empty(::FocusBold).and.;
+            empty(::FocusItalic).and.empty(::FocusUnderline).and.empty(::FocusStrikeout))).or.;
+            (.not.( empty(::Parent:cFocusFontName).and.empty( ::Parent:nFocusFontSize).and.empty(::Parent:FocusBold).and.;
+            empty(::Parent:FocusItalic).and.empty(::Parent:FocusUnderline).and.empty(::Parent:FocusStrikeout)))
 
-		::cFocusFontName:=if(empty(::cFocusFontName),::Parent:cFocusFontName,::cFocusFontName)
-		::nFocusFontSize:=if(empty( ::nFocusFontSize),::Parent:nFocusFontSize,::nFocusFontSize)
-		::FocusBold:=if(empty(::FocusBold),::Parent:FocusBold,::FocusBold)
-		::FocusItalic:=if(empty(::FocusItalic),::Parent:FocusItalic,::FocusItalic)
-		::FocusUnderline:=if(empty(::FocusUnderline),::Parent:FocusUnderline,::FocusUnderline)
-		::FocusStrikeout:=if(empty(::FocusStrikeout),::Parent:FocusStrikeout,::FocusStrikeout)
+      ::cFocusFontName:=if(empty(::cFocusFontName),::Parent:cFocusFontName,::cFocusFontName)
+      ::nFocusFontSize:=if(empty( ::nFocusFontSize),::Parent:nFocusFontSize,::nFocusFontSize)
+      ::FocusBold:=if(empty(::FocusBold),::Parent:FocusBold,::FocusBold)
+      ::FocusItalic:=if(empty(::FocusItalic),::Parent:FocusItalic,::FocusItalic)
+      ::FocusUnderline:=if(empty(::FocusUnderline),::Parent:FocusUnderline,::FocusUnderline)
+      ::FocusStrikeout:=if(empty(::FocusStrikeout),::Parent:FocusStrikeout,::FocusStrikeout)
 
-		::cFocusFontName:=if(empty(::cFocusFontName),::cFontName,::cFocusFontName)
-		::nFocusFontSize:=if(empty( ::nFocusFontSize),::nFontSize,::nFocusFontSize)
-		::FocusBold:=if(empty(::FocusBold),::Bold,::FocusBold)
-		::FocusItalic:=if(empty(::FocusItalic),::Italic,::FocusItalic)
-		::FocusUnderline:=if(empty(::FocusUnderline),::Underline,::FocusUnderline)
-		::FocusStrikeout:=if(empty(::FocusStrikeout),::Strikeout,::FocusStrikeout)
+      ::cFocusFontName:=if(empty(::cFocusFontName),::cFontName,::cFocusFontName)
+      ::nFocusFontSize:=if(empty( ::nFocusFontSize),::nFontSize,::nFocusFontSize)
+      ::FocusBold:=if(empty(::FocusBold),::Bold,::FocusBold)
+      ::FocusItalic:=if(empty(::FocusItalic),::Italic,::FocusItalic)
+      ::FocusUnderline:=if(empty(::FocusUnderline),::Underline,::FocusUnderline)
+      ::FocusStrikeout:=if(empty(::FocusStrikeout),::Strikeout,::FocusStrikeout)
 
-		::FontHandle := _SetFont( ::hWnd,::cFocusFontName,::nFocusFontSize,::FocusBold,;
-			::FocusItalic,::FocusUnderline, ::FocusStrikeout,::FntAngle,::FntWidth)
-		lMod:=.t.
-	  end
-	  if (.not.( empty(::FocusColor) )).or.(.not.( empty(::Parent:FocusColor)))
-		::OldColor:=::FontColor
-		::FocusColor:=if(empty(::FocusColor),::Parent:FocusColor,::FocusColor)
-		::FontColor:=::FocusColor
-		lMod:=.t.
-	  end
-	  if (.not.( empty(::FocusBackColor) )).or.(.not.( empty(::Parent:FocusBackColor) ))
-		::OldBackColor:=::BackColor
-		::FocusBackColor:=if(empty(::FocusBackColor),::Parent:FocusBackColor,::FocusBackColor)
-		::BackColor:=::FocusBackColor
-		lMod:=.t.
-	  end
-	if lMod
-		::ReDraw()
-	end
+      ::FontHandle := _SetFont( ::hWnd,::cFocusFontName,::nFocusFontSize,::FocusBold,;
+         ::FocusItalic,::FocusUnderline, ::FocusStrikeout,::FntAngle,::FntWidth)
+      lMod:=.t.
+     end
+     if (.not.( empty(::FocusColor) )).or.(.not.( empty(::Parent:FocusColor)))
+      ::OldColor:=::FontColor
+      ::FocusColor:=if(empty(::FocusColor),::Parent:FocusColor,::FocusColor)
+      ::FontColor:=::FocusColor
+      lMod:=.t.
+     end
+     if (.not.( empty(::FocusBackColor) )).or.(.not.( empty(::Parent:FocusBackColor) ))
+      ::OldBackColor:=::BackColor
+      ::FocusBackColor:=if(empty(::FocusBackColor),::Parent:FocusBackColor,::FocusBackColor)
+      ::BackColor:=::FocusBackColor
+      lMod:=.t.
+     end
+   if lMod
+      ::ReDraw()
+   end
 RETURN nil
 
 *-----------------------------------------------------------------------------*
@@ -2133,7 +2152,7 @@ Local nNotify := GetNotifyCode( lParam )
 
 Return nil
 
-	
+
 
 *-----------------------------------------------------------------------------*
 Function GetControlObject( ControlName, FormName )

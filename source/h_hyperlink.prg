@@ -1,5 +1,5 @@
 /*
- * $Id: h_hyperlink.prg,v 1.8 2010-01-21 09:13:07 guerra000 Exp $
+ * $Id: h_hyperlink.prg,v 1.9 2012-04-03 22:51:14 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -126,7 +126,7 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, url, w, h, fontname, ;
    ::Address := url
 
    If handcursor
-      ::hCursor := LoadCursorFromFile( "MINIGUI_FINGER" )
+      ::Cursor := IDC_HAND
    EndIf
 
 Return Self
