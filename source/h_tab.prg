@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.54 2011-12-16 00:17:21 guerra000 Exp $
+ * $Id: h_tab.prg,v 1.55 2012-04-19 18:49:57 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1112,9 +1112,9 @@ LOCAL oPage, nRealPosition
    nRealPosition := ::RealPosition( nColumn )
    If nRealPosition > 0
       If VALTYPE( uValue ) $ "CM"
-         ::oContainerCaption( nRealPosition, uValue )
+         ::ContainerCaption( nRealPosition, uValue )
       EndIf
-      oPage:Caption := ::oContainerCaption( nRealPosition )
+      oPage:Caption := ::ContainerCaption( nRealPosition )
    Else
       If VALTYPE( uValue ) $ "CM"
          oPage:Caption := uValue

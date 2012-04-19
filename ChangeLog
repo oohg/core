@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.909 2012-04-19 13:31:50 fyurisich Exp $
+ * $Id: ChangeLog,v 1.910 2012-04-19 18:49:57 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,7 +7,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2012-04-19 20:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2012-04-19 15:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_tab.prg
+     ! Method CAPTION in TMultiPage class cancels with "Message
+       not found" error.
+
+2012-04-19 10:31 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_textbox.prg
      ! DELETE key is not working properly in TEXTBOX with
        INPUTMASK "!!!!!!" clause.
