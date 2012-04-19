@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.55 2012-04-19 18:49:57 fyurisich Exp $
+ * $Id: h_tab.prg,v 1.56 2012-04-19 22:18:48 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -510,6 +510,7 @@ LOCAL nPos
       ENDIF
       IF nPos > 0
          ::Value := nPos
+         ::aPages[ nPos ]:Show()
       ENDIF
    ENDIF
 RETURN nil
@@ -1087,6 +1088,7 @@ LOCAL nPos
       ENDIF
       IF nPos > 0
          ::Value := nPos
+         ::aPages[ nPos ]:Show()
       ENDIF
    ENDIF
 RETURN nil

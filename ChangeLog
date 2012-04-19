@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog,v 1.910 2012-04-19 18:49:57 fyurisich Exp $
+ * $Id: ChangeLog,v 1.911 2012-04-19 22:18:48 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-04-19 19:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_tab.prg
+     ! After method HidePage the previously selected page shows
+       no controls.
 
 2012-04-19 15:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_tab.prg
