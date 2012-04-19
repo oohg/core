@@ -1,11 +1,20 @@
 /*
- * $Id: ChangeLog,v 1.908 2012-04-03 23:08:30 fyurisich Exp $
+ * $Id: ChangeLog,v 1.909 2012-04-19 13:31:50 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-04-19 20:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_textbox.prg
+     ! DELETE key is not working properly in TEXTBOX with
+       INPUTMASK "!!!!!!" clause.
+   * source/miniprint.prg
+     + Added validation of the values returned by API calls in
+       function  _HMG_PRINTER_PRINTPAGE, to help debugging a
+       sporadic GPF when printing on a network.
 
 2012-04-03 20:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * doc/classes.txt

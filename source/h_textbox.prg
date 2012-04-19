@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.77 2012-01-31 19:13:48 fyurisich Exp $
+ * $Id: h_textbox.prg,v 1.78 2012-04-19 13:31:50 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -109,8 +109,8 @@ CLASS TText FROM TLabel
    DATA OnTextFilled    INIT Nil
    DATA nDefAnchor      INIT 13   // TopBottomRight
    DATA bWhen           INIT Nil
-   DATA When_Processed   INIT .F.
-   DATA When_Procesing   INIT .F.
+   DATA When_Processed  INIT .F.
+   DATA When_Procesing  INIT .F.
    DATA lInsert         INIT .T.
    DATA lFocused        INIT .F.
    DATA xUndo           INIT Nil
@@ -1079,6 +1079,16 @@ Local aValidMask := ::ValidMask
       EndIf
       Return 1
 
+   ElseIf nMsg == WM_KEYDOWN .AND. wParam == VK_DELETE .AND. GetKeyFlagState() == 0
+      nPos := SendMessage( ::hWnd, EM_GETSEL, 0, 0 )
+      nPos1 := LoWord( nPos )
+      nPos2 := HiWord( nPos )
+      cText := ::Caption
+      cText := TTextPicture_Delete( Self, cText, nPos1 + 1, Max( nPos2 - nPos1, 1 ) )
+      ::Caption := cText
+      SendMessage( ::hWnd, EM_SETSEL, nPos1, nPos1 )
+      Return 1
+
    ElseIf nMsg == WM_KEYDOWN .AND. wParam == VK_END .AND. GetKeyFlagState() == 0
       cText := ::Caption
       nPos := Len( aValidMask )
@@ -1275,6 +1285,49 @@ Local nClear, nBase
          nPos++
          nCount--
       EndDo
+   EndIf
+Return cText
+
+*------------------------------------------------------------------------------*
+STATIC FUNCTION TTextPicture_Delete( Self, cText, nPos, nCount )
+*------------------------------------------------------------------------------*
+Local nCant, i, cRest
+
+   nCount := Max( Min( nCount, ( Len( ::ValidMask ) - nPos + 1 ) ), 0 )
+
+   If nCount > 0
+      // Count non-template characters in deletion range
+      nCant := 0
+      For i := nPos to nPos + nCount - 1
+         If ! ::ValidMask[ i ]
+           nCant ++
+         EndIf
+      Next i
+
+      // Adjust number of characters to delete
+      nCount -= nCant
+
+      If nCount > 0
+         // Extract non-template character from the substring that starts at the deletion point
+         i := nPos
+         cRest := ""
+         Do While i <= Len( cText )
+            If ::ValidMask[ i ]
+               cRest += SubStr( cText, i, 1 )
+            EndIf
+            i ++
+         EndDo
+
+         // Delete characters
+         cRest := SubStr( cRest, nCount + 1 )
+
+         // Clear text from the deletion point to the end
+         cText := TTextPicture_Clear( cText, nPos, Len( cText ), ::ValidMask, ::InsertStatus )
+
+         // Paste remaining characters
+         nPos --
+         TTextPicture_Events2_String( Self, @cText, @nPos, cRest, ::ValidMask, ::PictureMask, ::InsertStatus )
+      EndIf
    EndIf
 Return cText
 
@@ -1493,3 +1546,5 @@ Local Self, lInsert
    EndIf
 
 Return Self
+
+
