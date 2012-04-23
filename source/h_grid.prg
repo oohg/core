@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.156 2012-03-29 03:15:31 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.157 2012-04-23 23:44:58 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -293,7 +293,8 @@ Local ControlHandle, aImageList, i
    ControlHandle := InitListView( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, '', 0, If( nogrid, 0, 1 ), ownerdata, itemcount, nStyle, ::lRtl, ::lCheckBoxes )
 
    If HB_IsArray( aImage )
-      aImageList := ImageList_Init( aImage, CLR_NONE, LR_LOADTRANSPARENT )
+//      aImageList := ImageList_Init( aImage, CLR_NONE, LR_LOADTRANSPARENT )
+      aImageList := ImageList_Init( aImage, CLR_DEFAULT, LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS )
       SendMessage( ControlHandle, ::SetImageListCommand, ::SetImageListWParam, aImageList[ 1 ] )
       ::ImageList := aImageList[ 1 ]
       If aScan( ::Picture, .T. ) == 0

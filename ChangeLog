@@ -1,11 +1,18 @@
 /*
- * $Id: ChangeLog,v 1.911 2012-04-19 22:18:48 fyurisich Exp $
+ * $Id: ChangeLog,v 1.912 2012-04-23 23:44:58 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-04-23 20:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_grid.prg
+     ! Images in grid items do not have transparent backgroung
+       when grid has backcolor.
+       TODO: when an item is selected the images shows the grid
+       backcolor instead on the selection color.
 
 2012-04-19 19:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_tab.prg
