@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.157 2012-04-23 23:44:58 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.158 2012-04-24 19:28:57 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1954,7 +1954,7 @@ Return ::aHeaders[ nColumn ]
 *-----------------------------------------------------------------------------*
 METHOD HeaderImage( nColumn, nImg ) CLASS TGrid
 *-----------------------------------------------------------------------------*
-   If HB_IsNumeric( nImg ) .AND. nImg >= 0
+   If HB_IsNumeric( nImg ) .AND. nImg >= 0 .AND. nImg # ::aHeaderImage[ nColumn ]
       ::aHeaderImage[ nColumn ] := nImg
       
       If nImg == 0
