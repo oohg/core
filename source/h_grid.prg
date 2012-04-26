@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.158 2012-04-24 19:28:57 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.159 2012-04-26 19:34:56 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -2462,19 +2462,19 @@ Local i, aColors[ 8 ]
 
       // For text of other cells in the selected row when grid has the focus
       If ! ValType( aSelectedColors[ 5 ] ) $ "ANB"
-         aSelectedColors[ 5 ] := GetSysColor( COLOR_WINDOWTEXT )
+         aSelectedColors[ 5 ] := -1                    // defaults to DYNAMICFORECOLOR, or FONTCOLOR or COLOR_WINDOWTEXT
       EndIf
       // For background of other cells in the selected row when grid has the focus
       If ! ValType( aSelectedColors[ 6 ] ) $ "ANB"
-         aSelectedColors[ 6 ] := GetSysColor( COLOR_WINDOW )
+         aSelectedColors[ 6 ] := -1                    // defaults to DYNAMICBACKCOLOR, or BACKCOLOR or COLOR_WINDOW
       EndIf
       // For text of other cells in the selected row when grid doesn't has the focus
       If ! ValType( aSelectedColors[ 7 ] ) $ "ANB"
-         aSelectedColors[ 7 ] := GetSysColor( COLOR_WINDOWTEXT )
+         aSelectedColors[ 7 ] := -1                    // defaults to DYNAMICFORECOLOR, or FONTCOLOR or COLOR_WINDOWTEXT
       EndIf
       // For background of other cells in the selected row when grid doesn't has the focus
       If ! ValType( aSelectedColors[ 8 ] ) $ "ANB"
-         aSelectedColors[ 8 ] := GetSysColor( COLOR_WINDOW )
+         aSelectedColors[ 8 ] := -1                    // defaults to DYNAMICBACKCOLOR, or BACKCOLOR or COLOR_WINDOW
       EndIf
 
       ::aSelectedColors := aSelectedColors
@@ -4912,6 +4912,11 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
 {
    LPNMLVCUSTOMDRAW lplvcd;
    int x, y;
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   RECT Rect;
+   LPRECT lpRect = (LPRECT) &Rect;
+   HBRUSH hBrush;
+   LV_ITEM LI;
 
    lplvcd = ( LPNMLVCUSTOMDRAW ) lParam;
 
@@ -4923,11 +4928,7 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
    {
       return CDRF_NOTIFYSUBITEMDRAW;
    }
-   else if( ! ( lplvcd->nmcd.dwDrawStage == ( CDDS_SUBITEM | CDDS_ITEMPREPAINT ) ) )
-   {
-      return CDRF_DODEFAULT;
-   }
-   else
+   else if( lplvcd->nmcd.dwDrawStage == ( CDDS_SUBITEM | CDDS_ITEMPREPAINT ) )
    {
       x = lplvcd->iSubItem + 1;
       y = lplvcd->nmcd.dwItemSpec + 1;
@@ -4973,6 +4974,14 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
                   lplvcd->clrText   = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 7 );
                   lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 8 );
                }
+               if( lplvcd->clrText == -1 )
+               {
+                  lplvcd->clrText   = TGrid_Notify_CustomDraw_GetColor( pSelf, x, y, s_GridForeColor, s_FontColor, COLOR_WINDOWTEXT );
+               }
+               if( lplvcd->clrTextBk == -1 )
+               {
+                  lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetColor( pSelf, x, y, s_GridBackColor, s_BackColor, COLOR_WINDOW );
+               }
             }
          }
          else
@@ -4995,7 +5004,103 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
          lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetColor( pSelf, x, y, s_GridBackColor, s_BackColor, COLOR_WINDOW );
       }
 
-      return CDRF_NEWFONT;
+      return CDRF_NEWFONT | CDRF_NOTIFYPOSTPAINT;
+   }
+   else if( lplvcd->nmcd.dwDrawStage == ( CDDS_SUBITEM | CDDS_ITEMPOSTPAINT ) )
+   {
+      memset( &LI, 0, sizeof( LI ) );
+      LI.mask = LVIF_IMAGE | LVIF_STATE;
+      LI.iImage = -1;
+      LI.state = 0;
+      LI.stateMask = LVIS_SELECTED | LVIS_FOCUSED;
+      LI.iItem = lplvcd->nmcd.dwItemSpec;
+      LI.iSubItem = lplvcd->iSubItem;
+      ListView_GetItem( lplvcd->nmcd.hdr.hwndFrom, &LI );
+
+      if( LI.iImage != -1 )
+      {
+         x = lplvcd->iSubItem + 1;
+         y = lplvcd->nmcd.dwItemSpec + 1;
+
+         /*
+          * Can't use (lplvcd->nmcd.uItemState | CDIS_SELECTED) to tell if the
+          * item is selected when ListView control has LVS_SHOWSELALWAYS style.
+          * See http://msdn.microsoft.com/en-us/library/bb775483(v=vs.85).aspx
+          */
+         if( ListView_GetItemState( lplvcd->nmcd.hdr.hwndFrom, lplvcd->nmcd.dwItemSpec, LVIS_SELECTED ) == LVIS_SELECTED )
+         {
+            if( bByCell )
+            {
+               if( ( y == iRow ) && ( x == iCol ) )
+               {
+                  if( GetFocus() == lplvcd->nmcd.hdr.hwndFrom )
+                  {
+                     lplvcd->clrText   = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 1 );
+                     lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 2 );
+                  }
+                  else
+                  {
+                     lplvcd->clrText   = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 3 );
+                     lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 4 );
+                  }
+               }
+               else
+               {
+                  if( GetFocus() == lplvcd->nmcd.hdr.hwndFrom )
+                  {
+                     lplvcd->clrText   = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 5 );
+                     lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 6 );
+                  }
+                  else
+                  {
+                     lplvcd->clrText   = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 7 );
+                     lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 8 );
+                  }
+                  if( lplvcd->clrText == -1 )
+                  {
+                     lplvcd->clrText   = TGrid_Notify_CustomDraw_GetColor( pSelf, x, y, s_GridForeColor, s_FontColor, COLOR_WINDOWTEXT );
+                  }
+                  if( lplvcd->clrTextBk == -1 )
+                  {
+                     lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetColor( pSelf, x, y, s_GridBackColor, s_BackColor, COLOR_WINDOW );
+                  }
+               }
+            }
+            else
+            {
+               if( GetFocus() == lplvcd->nmcd.hdr.hwndFrom )
+               {
+                  lplvcd->clrText   = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 1 );
+                  lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 2 );
+               }
+               else
+               {
+                  lplvcd->clrText   = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 3 );
+                  lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 4 );
+               }
+            }
+         }
+         else
+         {
+            lplvcd->clrText   = TGrid_Notify_CustomDraw_GetColor( pSelf, x, y, s_GridForeColor, s_FontColor, COLOR_WINDOWTEXT );
+            lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetColor( pSelf, x, y, s_GridBackColor, s_BackColor, COLOR_WINDOW );
+         }
+
+         ListView_GetSubItemRect( lplvcd->nmcd.hdr.hwndFrom, lplvcd->nmcd.dwItemSpec, lplvcd->iSubItem, LVIR_ICON, lpRect );
+         Rect.right = Rect.right + 2;
+
+         hBrush = CreateSolidBrush( lplvcd->clrTextBk );
+         FillRect( lplvcd->nmcd.hdc, lpRect, hBrush );
+         DeleteObject( hBrush );
+
+         ImageList_DrawEx( oSelf->ImageList, LI.iImage, lplvcd->nmcd.hdc, Rect.left, Rect.top, 0, 0, CLR_DEFAULT, CLR_NONE, ILD_TRANSPARENT );
+      }
+
+      return CDRF_SKIPDEFAULT;
+   }
+   else
+   {
+      return CDRF_DODEFAULT;
    }
 }
 

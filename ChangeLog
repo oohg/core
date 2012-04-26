@@ -1,11 +1,24 @@
 /*
- * $Id: ChangeLog,v 1.913 2012-04-24 19:28:57 fyurisich Exp $
+ * $Id: ChangeLog,v 1.914 2012-04-26 19:34:56 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-04-26 16:34 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_combobox.prg
+     ! TGridControlImageData shows images with white background
+       in editing combobox.
+   * source/h_grid.prg
+     ! When an item is selected the image shows the grid
+       backcolor instead on the selection color.
+     ! Colors of the remaining cells of the selected row (items 5 to 8
+       of SELECTEDCOLORS clause default to system's colors (not
+       respecting the DYNAMICFORECOLOR and the FONTCOLOR clauses).
+     TODO: remove extra space added by listview in the first column
+     when the grid has an imagelist but no images in the first column.
 
 2012-04-24 16:28 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
@@ -17,8 +30,6 @@
    * source/h_grid.prg
      ! Images in grid items do not have transparent backgroung
        when grid has backcolor.
-       TODO: when an item is selected the images shows the grid
-       backcolor instead on the selection color.
 
 2012-04-19 19:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_tab.prg
@@ -470,7 +481,7 @@
          item 3: text's color when grid doesn't has focus
          item 4: text's background color when grid doesn't has focus
        When using cell navigation, the remaining cells of the selected
-       rows are painted using the following colors:
+       row are painted using the following colors:
          item 5: text's color when grid has focus
          item 6: text's background color when grid has focus
          item 7: text's color when grid doesn't has focus

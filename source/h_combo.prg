@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.63 2011-12-08 07:07:26 guerra000 Exp $
+ * $Id: h_combo.prg,v 1.64 2012-04-26 19:34:56 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -784,7 +784,7 @@ HB_FUNC_STATIC( TCOMBO_EVENTS_DRAWITEM )   // METHOD Events_DrawItem( lParam )
             }
          }
          
-         ImageList_DrawEx( oSelf->ImageList, iImage, lpdis->hDC, x, y, cx, dy, CLR_DEFAULT, CLR_NONE, ILD_NORMAL );
+         ImageList_DrawEx( oSelf->ImageList, iImage, lpdis->hDC, x, y, cx, dy, CLR_DEFAULT, CLR_NONE, ILD_TRANSPARENT );
       }
 
       // Focused rectangle
