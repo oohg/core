@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.159 2012-04-26 19:34:56 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.160 2012-04-26 22:44:15 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -4974,11 +4974,11 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
                   lplvcd->clrText   = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 7 );
                   lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 8 );
                }
-               if( lplvcd->clrText == -1 )
+               if( lplvcd->clrText == (COLORREF) -1 )
                {
                   lplvcd->clrText   = TGrid_Notify_CustomDraw_GetColor( pSelf, x, y, s_GridForeColor, s_FontColor, COLOR_WINDOWTEXT );
                }
-               if( lplvcd->clrTextBk == -1 )
+               if( lplvcd->clrTextBk == (COLORREF) -1 )
                {
                   lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetColor( pSelf, x, y, s_GridBackColor, s_BackColor, COLOR_WINDOW );
                }
@@ -5056,11 +5056,11 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
                      lplvcd->clrText   = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 7 );
                      lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 8 );
                   }
-                  if( lplvcd->clrText == -1 )
+                  if( lplvcd->clrText == (COLORREF) -1 )
                   {
                      lplvcd->clrText   = TGrid_Notify_CustomDraw_GetColor( pSelf, x, y, s_GridForeColor, s_FontColor, COLOR_WINDOWTEXT );
                   }
-                  if( lplvcd->clrTextBk == -1 )
+                  if( lplvcd->clrTextBk == (COLORREF) -1 )
                   {
                      lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetColor( pSelf, x, y, s_GridBackColor, s_BackColor, COLOR_WINDOW );
                   }

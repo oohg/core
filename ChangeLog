@@ -1,11 +1,15 @@
 /*
- * $Id: ChangeLog,v 1.914 2012-04-26 19:34:56 fyurisich Exp $
+ * $Id: ChangeLog,v 1.915 2012-04-26 22:44:15 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-04-26 19:44 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_grid.prg
+     * Added casting to pacify C compiler.
 
 2012-04-26 16:34 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_combobox.prg
@@ -15,8 +19,9 @@
      ! When an item is selected the image shows the grid
        backcolor instead on the selection color.
      ! Colors of the remaining cells of the selected row (items 5 to 8
-       of SELECTEDCOLORS clause default to system's colors (not
-       respecting the DYNAMICFORECOLOR and the FONTCOLOR clauses).
+       of SELECTEDCOLORS clause) default to system's colors (not
+       respecting the DYNAMICFORECOLOR, DYNAMICBACKCOLOR, FONTCOLOR 
+       and the FONTCOLOR clauses).
      TODO: remove extra space added by listview in the first column
      when the grid has an imagelist but no images in the first column.
 
