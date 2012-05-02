@@ -1,11 +1,26 @@
 /*
- * $Id: ChangeLog,v 1.915 2012-04-26 22:44:15 fyurisich Exp $
+ * $Id: ChangeLog,v 1.916 2012-05-02 12:29:27 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-05-02 09:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_browse.prg
+   * source/h_xbrowse.prg
+     - Deleted declaration of TGrid_Notify_CustomDraw function.
+   * source/h_checklist.prg
+     + Added new parameter to TGrid_Notify_CustomDraw function call.
+   * source/h_grid.prg
+     + Added new parameter to TGrid_Notify_CustomDraw function call.
+     * First column is drawn manually to get rid of empty space
+       at left.
+   * include/i_grid.ch
+     - Deleted define for GRID_JTFY_JUSTIFYMASK constants because
+       it's not a valid alignment for text (it's just a mask to
+       extract alignment from column format).
 
 2012-04-26 19:44 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg

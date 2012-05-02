@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.90 2012-03-29 03:15:31 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.91 2012-05-02 12:29:27 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -985,7 +985,6 @@ Return lSomethingEdited
 #include <windows.h>
 #include <commctrl.h>
 #include "oohg.h"
-extern int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam );
 #pragma ENDDUMP
 
 *-----------------------------------------------------------------------------*

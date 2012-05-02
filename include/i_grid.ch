@@ -1,5 +1,5 @@
 /*
- * $Id: i_grid.ch,v 1.19 2012-03-18 02:06:14 fyurisich Exp $
+ * $Id: i_grid.ch,v 1.20 2012-05-02 12:29:27 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -94,7 +94,6 @@
 #define GRID_JTFY_LEFT           0
 #define GRID_JTFY_RIGHT          1
 #define GRID_JTFY_CENTER         2
-#define GRID_JTFY_JUSTIFYMASK    3
 
 #define HEADER_IMG_AT_LEFT       0
 #define HEADER_IMG_AT_RIGHT      1

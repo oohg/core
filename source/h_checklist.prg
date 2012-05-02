@@ -1,5 +1,5 @@
 /*
- * $Id: h_checklist.prg,v 1.3 2012-04-03 22:51:14 fyurisich Exp $
+ * $Id: h_checklist.prg,v 1.4 2012-05-02 12:29:27 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -303,7 +303,7 @@ Local uValue, uRet, nItem
 
       // this is the same as TGrid's
       uValue := ::FirstSelectedItem
-      uRet := TGrid_Notify_CustomDraw( Self, lParam, .F., uValue, 0 )
+      uRet := TGrid_Notify_CustomDraw( Self, lParam, .F., uValue, 0, ::lCheckBoxes )
       ListView_SetCursel( ::hWnd, uValue )
       Return uRet
 

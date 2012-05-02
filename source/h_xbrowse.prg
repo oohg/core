@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.52 2012-03-12 23:12:35 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.53 2012-05-02 12:29:27 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1550,7 +1550,6 @@ RETURN nil
 #include <windows.h>
 #include <commctrl.h>
 #include "oohg.h"
-extern int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam );
 
 // -----------------------------------------------------------------------------
 // METHOD Events_Notify( wParam, lParam ) CLASS TXBrowse
