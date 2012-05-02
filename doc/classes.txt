@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.51 2012-04-03 23:08:30 fyurisich Exp $
+ * $Id: classes.txt,v 1.52 2012-05-02 22:44:00 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -644,6 +644,7 @@ CLASS TFORM FROM TWINDOW
    DATA FORCECOL                  INIT NIL
    DATA FORCEROW                  INIT NIL
    DATA GRAPHCOMMAND              INIT NIL
+   DATA GRAPHCONTROLS             INIT {}
    DATA GRAPHDATA                 INIT {}
    DATA GRAPHTASKS                INIT {}
    DATA HWNDCLIENT                INIT NIL
