@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.35 2011-12-31 16:54:48 fyurisich Exp $
+ * $Id: h_form.prg,v 1.36 2012-05-02 21:53:16 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -191,6 +191,7 @@ CLASS TForm FROM TWindow
    DATA ForceRow       INIT nil     // Must be NIL instead of 0
    DATA ForceCol       INIT nil     // Must be NIL instead of 0
 
+   DATA GraphControls  INIT {}
    DATA GraphTasks     INIT {}
    DATA GraphCommand   INIT nil
    DATA GraphData      INIT {}
