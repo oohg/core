@@ -1,5 +1,5 @@
 /*
- * $Id: TStreamSerial.prg,v 1.1 2011-07-17 14:57:50 guerra000 Exp $
+ * $Id: TStreamSerial.prg,v 1.2 2012-05-06 20:01:39 guerra000 Exp $
  */
 /*
  * TStreamSerial
@@ -88,6 +88,7 @@ METHOD New( cPort, nSpeed, nDataBits, cParity, nStop ) CLASS TStreamSerial
             sTerm.c_cc[ VMIN ] = 0;
             tcflush( iPort, TCIFLUSH );
             tcsetattr( iPort, TCSANOW, &sTerm );
+            fcntl( iPort, F_SETFL, FNDELAY );
          }
       #endif
 //
