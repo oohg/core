@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.160 2012-04-26 22:44:15 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.161 2012-05-08 18:44:56 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -214,7 +214,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                editcontrols, readonly, valid, validmessages, editcell, ;
                aWhenFields, lDisabled, lNoTabStop, lInvisible, lHasHeaders, ;
                onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
-               aSelectedColors, aEditKeys, lCheckBoxes, oncheck ) CLASS TGrid
+               aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local nStyle := LVS_SINGLESEL
 
@@ -227,7 +227,7 @@ Local nStyle := LVS_SINGLESEL
               inplace, editcontrols, readonly, valid, validmessages, ;
               editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
               lHasHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
-              aSelectedColors, aEditKeys, lCheckBoxes, oncheck )
+              aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -240,7 +240,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                 inplace, editcontrols, readonly, valid, validmessages, ;
                 editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
                 lHasHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
-                aSelectedColors, aEditKeys, lCheckBoxes, oncheck ) CLASS TGrid
+                aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local ControlHandle, aImageList, i
 
@@ -290,7 +290,7 @@ Local ControlHandle, aImageList, i
    aEval( ::Picture, { |x,i| ::Picture[ i ] := If( ( ValType( x ) $ "CM" .AND. ! Empty( x ) ) .OR. HB_IsLogical( x ), x, Nil ) } )
 
    ::SetSplitBoxInfo( Break )
-   ControlHandle := InitListView( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, '', 0, If( nogrid, 0, 1 ), ownerdata, itemcount, nStyle, ::lRtl, ::lCheckBoxes )
+   ControlHandle := InitListView( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, '', 0, If( nogrid, 0, 1 ), ownerdata, itemcount, nStyle, ::lRtl, ::lCheckBoxes, lDblBffr )
 
    If HB_IsArray( aImage )
 //      aImageList := ImageList_Init( aImage, CLR_NONE, LR_LOADTRANSPARENT )
@@ -2162,7 +2162,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                editcontrols, readonly, valid, validmessages, editcell, ;
                aWhenFields, lDisabled, lNoTabStop, lInvisible, lHasHeaders, ;
                onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
-               aSelectedColors, aEditKeys, lCheckBoxes, oncheck ) CLASS TGridMulti
+               aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr ) CLASS TGridMulti
 *-----------------------------------------------------------------------------*
 Local nStyle := 0
 
@@ -2175,7 +2175,7 @@ Local nStyle := 0
               inplace, editcontrols, readonly, valid, validmessages, ;
               editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
               lHasHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
-               aSelectedColors, aEditKeys, lCheckBoxes, oncheck )
+              aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -2416,7 +2416,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                editcontrols, readonly, valid, validmessages, editcell, ;
                aWhenFields, lDisabled, lNoTabStop, lInvisible, lHasHeaders, ;
                onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
-               aSelectedColors, aEditKeys, lCheckBoxes, oncheck ) CLASS TGridByCell
+               aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr ) CLASS TGridByCell
 *-----------------------------------------------------------------------------*
 Local nStyle := LVS_SINGLESEL
 
@@ -2431,7 +2431,7 @@ Local nStyle := LVS_SINGLESEL
               InPlace, editcontrols, readonly, valid, validmessages, ;
               editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
               lHasHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
-              aSelectedColors, aEditKeys, lCheckBoxes, oncheck )
+              aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -3856,6 +3856,10 @@ EXTERN GetGridVKey, TGrid_Notify_CustomDraw
 #include <commctrl.h>
 #include "oohg.h"
 
+#ifndef LVS_EX_DOUBLEBUFFER
+   #define LVS_EX_DOUBLEBUFFER 0x00010000
+#endif
+
 #define UIS_SET        1
 #define UISF_HIDEFOCUS 0x1
 
@@ -4124,6 +4128,10 @@ HB_FUNC( INITLISTVIEW )
    if ( hb_parl( 14 ) )
    {
       extStyle = extStyle | LVS_EX_CHECKBOXES;
+   }
+   if ( hb_parl( 15 ) )
+   {
+      extStyle = extStyle | LVS_EX_DOUBLEBUFFER;
    }
    SendMessage(hbutton, LVM_SETEXTENDEDLISTVIEWSTYLE, 0, extStyle );
 

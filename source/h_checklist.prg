@@ -1,5 +1,5 @@
 /*
- * $Id: h_checklist.prg,v 1.4 2012-05-02 12:29:27 fyurisich Exp $
+ * $Id: h_checklist.prg,v 1.5 2012-05-08 18:44:56 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -140,7 +140,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aRows, v, fontname, ;
                fontsize, tooltip, change, gotfocus, lostfocus, aImage, just, ;
                break, HelpId, bold, italic, underline, strikeout, backcolor, ;
                fontcolor, lRtl, lDisabled, lNoTabStop, lInvisible, sort, ;
-               descending, aSelectedColors ) CLASS TCheckList
+               descending, aSelectedColors, dblbffr ) CLASS TCheckList
 *-----------------------------------------------------------------------------*
 LOCAL aHdr, aWidth, aJust, aPic, aEdC
 
@@ -190,7 +190,7 @@ LOCAL aHdr, aWidth, aJust, aPic, aEdC
                    .F., Nil, Nil, .F., backcolor, fontcolor, Nil, Nil, ;
                    aPic, lRtl, .F., aEdC, .T., Nil, Nil, Nil, Nil, ;
                    lDisabled, lNoTabStop, lInvisible, .F., Nil, Nil, ;
-                   Nil, .F., aSelectedColors, Nil, .T., Nil )
+                   Nil, .F., aSelectedColors, Nil, .T., Nil, dblbffr )
 
    aEval( aRows, { |u| ::AddItem( u ) } )
 

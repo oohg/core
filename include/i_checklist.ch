@@ -1,5 +1,5 @@
 /*
- * $Id: i_checklist.ch,v 1.1 2012-03-22 16:26:15 fyurisich Exp $
+ * $Id: i_checklist.ch,v 1.2 2012-05-08 18:44:56 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -82,6 +82,7 @@
             [ <invisible: INVISIBLE> ] ;
             [ <sort: SORT> ] ;
             [ <descending: DESCENDING> ] ;
+            [ <dblbffr: DOUBLEBUFFER> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TCheckList(), [ <subclass>() ] ): ;
          Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <aRows>, ;
@@ -90,7 +91,7 @@
                  <helpid>, <.bold.>, <.italic.>, <.underline.>, ;
                  <.strikeout.>, <backcolor>, <fontcolor>, <.rtl.>, ;
                  <.disabled.>, <.notabstop.>, <.invisible.>, <.sort.>, ;
-                 <.descending.>, <aSelectedColors> )
+                 <.descending.>, <aSelectedColors>, <.dblbffr.> )
 
 /*
  * EOF

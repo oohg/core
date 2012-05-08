@@ -1,5 +1,5 @@
 /*
- * $Id: i_xbrowse.ch,v 1.14 2012-02-16 22:49:28 fyurisich Exp $
+ * $Id: i_xbrowse.ch,v 1.15 2012-05-08 18:44:56 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -162,6 +162,7 @@
                 [ <fullmove: FULLMOVE> ] ;
                 [ SELECTEDCOLORS <aSelectedColors> ] ;
                 [ EDITKEYS <aEditKeys> ] ;
+                [ <dblbffr: DOUBLEBUFFER> ] ;
 	=>;
        [ <oObj> := ] _OOHG_SelectSubClass( TXBrowse(), [ <subclass>() ] ):Define( ;
                <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, <widths>, ;
@@ -176,4 +177,4 @@
                <aWhenFields>, <.reccount.>, <columninfo>, ! <.noshowheaders.>, <{enter}>, ;
                <.disabled.>, <.notabstop.>, <.invisible.>, <.descending.>, <{bWhenDel}>, ;
                <DelMsg>, <{onDelete}>, <aHeaderImages>, <aImgAlign>, <.fullmove.>, ;
-               <aSelectedColors>, <aEditKeys> )
+               <aSelectedColors>, <aEditKeys>, <.dblbffr.> )

@@ -1,5 +1,5 @@
 /*
- * $Id: i_grid.ch,v 1.20 2012-05-02 12:29:27 fyurisich Exp $
+ * $Id: i_grid.ch,v 1.21 2012-05-08 18:44:56 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -159,6 +159,7 @@
       [ EDITKEYS <aEditKeys> ] ;
       [ <checkboxes: CHECKBOXES> ] ;
       [ ON CHECKCHANGE <checkchange> ] ;
+      [ <dblbffr: DOUBLEBUFFER> ] ;
    =>;
       [ <obj> := ] _OOHG_SelectSubClass(iif( <.bycell.>, TGridByCell(), iif( <.multiselect.>, TGridMulti(), TGrid() ) ), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, ;
@@ -171,7 +172,7 @@
             <aReadOnly>, <aValidFields>, <aValidMessages>, <{editcell}>, ;
             <aWhenFields>, <.disabled.>, <.notabstop.>, <.invisible.>, ;
             ! <.noshowheaders.>, <{enter}>, <aHeaderImages>, <aImgAlign>, <.fullmove.>, ;
-            <aSelectedColors>, <aEditKeys>, <.checkboxes.>, <{checkchange}> )
+            <aSelectedColors>, <aEditKeys>, <.checkboxes.>, <{checkchange}>, <.dblbffr.> )
 
 ///////////////////////////////////////////////////////////////////////////////
 // GRID (SPLITBOX VERSION)
@@ -234,6 +235,7 @@
       [ EDITKEYS <aEditKeys> ] ;
       [ <checkboxes: CHECKBOXES> ] ;
       [ ON CHECKCHANGE <checkchange> ] ;
+      [ <dblbffr: DOUBLEBUFFER> ] ;
    =>;
       [ <obj> := ] _OOHG_SelectSubClass(iif( <.bycell.>, TGridByCell(), iif( <.multiselect.>, TGridMulti(), TGrid() ) ), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, , , <w>, <h>, <headers>, ;
@@ -246,4 +248,4 @@
             <aReadOnly>, <aValidFields>, <aValidMessages>, <{editcell}>, ;
             <aWhenFields>, <.disabled.>, <.notabstop.>, <.invisible.>, ;
             ! <.noshowheaders.>, <{enter}>, <aHeaderImages>, <aImgAlign>, <.fullmove.>, ;
-            <aSelectedColors>, <aEditKeys>, <.checkboxes.>, <{checkchange}> )
+            <aSelectedColors>, <aEditKeys>, <.checkboxes.>, <{checkchange}>, <.dblbffr.> )

@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.919 2012-05-06 20:01:37 guerra000 Exp $
+ * $Id: ChangeLog,v 1.920 2012-05-08 18:44:56 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,9 +7,24 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-05-02 15:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_altsyntax.ch
+   * include/i_browse.ch
+   * include/i_checklist.ch
+   * include/i_grid.ch
+   * include/i_xbrowse.ch
+     + Added DOUBLEBUFFER clause.
+   * source/h_browse.prg
+   * source/h_grid.prg
+   * source/h_checklist.prg
+   * source/h_xbrowse.prg
+     + Added support for double buffering to reduce flicker in listview.
+       It can be used in Windows XP or later.
+       By default double buffering is not enabled.
+
 2012-05-06 15:00 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
-  * samples/oohg/stream/TStreamSocket.prg
-    ! Added missing fcntl() call.
+   * samples/oohg/stream/TStreamSocket.prg
+     ! Added missing fcntl() call.
 
 2012-05-02 19:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * doc/classes.txt
@@ -52,8 +67,6 @@
        of SELECTEDCOLORS clause) default to system's colors (not
        respecting the DYNAMICFORECOLOR, DYNAMICBACKCOLOR, FONTCOLOR 
        and the FONTCOLOR clauses).
-     TODO: remove extra space added by listview in the first column
-     when the grid has an imagelist but no images in the first column.
 
 2012-04-24 16:28 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg

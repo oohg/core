@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.64 2012-03-22 16:26:15 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.65 2012-05-08 18:44:56 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -122,6 +122,7 @@ Memvariables
 #xtranslate _OOHG_ActiveControlTrailingFontColor      => _OOHG_ActiveControlInfo \[  25 \]
 #xtranslate _OOHG_ActiveControlBackgroundColor        => _OOHG_ActiveControlInfo \[  26 \]
 
+#xtranslate _OOHG_ActiveControlDblBffer               => _OOHG_ActiveControlInfo \[ 140 \]
 #xtranslate _OOHG_ActiveControlOnCheckChange          => _OOHG_ActiveControlInfo \[ 141 \]
 #xtranslate _OOHG_ActiveControlForceRefresh           => _OOHG_ActiveControlInfo \[ 142 \]
 #xtranslate _OOHG_ActiveControlNoRefresh              => _OOHG_ActiveControlInfo \[ 143 \]
@@ -664,7 +665,12 @@ CHECKLIST
         _OOHG_ActiveControlBreak          := .F. ;;
         _OOHG_ActiveControlSort           := .F. ;;
         _OOHG_ActiveControlDescending     := .F. ;;
-        _OOHG_ActiveControlSelectedColors := Nil
+        _OOHG_ActiveControlSelectedColors := Nil ;;
+        _OOHG_ActiveControlDblBffer       := .F.
+
+#xcommand DOUBLEBUFFER <dblbffr> ;
+        => ;
+        _OOHG_ActiveControlDblBffer := <dblbffr>
 
 #xcommand END CHECKLIST ;
         => ;
@@ -699,7 +705,8 @@ CHECKLIST
                 _OOHG_ActiveControlInvisible, ;
                 _OOHG_ActiveControlSort, ;
                 _OOHG_ActiveControlDescending, ;
-                _OOHG_ActiveControlSelectedColors )
+                _OOHG_ActiveControlSelectedColors, ;
+                _OOHG_ActiveControlDblBffer )
 
 /*----------------------------------------------------------------------------
 ANIMATEBOX COMMANDS
@@ -1999,7 +2006,8 @@ GRID
         _OOHG_ActiveControlSelectedColors   := .F. ;;
         _OOHG_ActiveControlKeys             := Nil ;;
         _OOHG_ActiveControlCheckBoxes       := .F. ;;
-        _OOHG_ActiveControlOnCheckChange    := Nil
+        _OOHG_ActiveControlOnCheckChange    := Nil ;;
+        _OOHG_ActiveControlDblBffer         := .F.
 
 #xcommand ONAPPEND <onappend> ;
         => ;
@@ -2099,7 +2107,8 @@ GRID
                 _OOHG_ActiveControlSelectedColors, ;
                 _OOHG_ActiveControlKeys, ;
                 _OOHG_ActiveControlCheckBoxes, ;
-                _OOHG_ActiveControlOnCheckChange )
+                _OOHG_ActiveControlOnCheckChange, ;
+                _OOHG_ActiveControlDblBffer )
 
 /*----------------------------------------------------------------------------
 BROWSE
@@ -2147,7 +2156,8 @@ BROWSE
         _OOHG_ActiveControlSelectedColors   := .F. ;;
         _OOHG_ActiveControlKeys             := Nil ;;
         _OOHG_ActiveControlForceRefresh     := .F. ;;
-        _OOHG_ActiveControlNoForce          := .F.
+        _OOHG_ActiveControlNoForce          := .F. ;;
+        _OOHG_ActiveControlDblBffer         := .F.
 
 #xcommand DELETEWHEN <delwhen> ;
         => ;
@@ -2251,7 +2261,8 @@ BROWSE
                 _OOHG_ActiveControlFullMove, ;
                 _OOHG_ActiveControlSelectedColors, ;
                 _OOHG_ActiveControlKeys, ;
-                if( _OOHG_ActiveControlForceRefresh, 0, if( _OOHG_ActiveControlNoForce, 1, nil ) ) )
+                if( _OOHG_ActiveControlForceRefresh, 0, if( _OOHG_ActiveControlNoForce, 1, nil ) ), ;
+                _OOHG_ActiveControlDblBffer )
 
 /*----------------------------------------------------------------------------
 XBROWSE
@@ -2297,7 +2308,8 @@ XBROWSE
         _OOHG_ActiveControlImagesAlign      := Nil ;;
         _OOHG_ActiveControlFullMove         := .F. ;;
         _OOHG_ActiveControlSelectedColors   := .F. ;;
-        _OOHG_ActiveControlKeys             := Nil
+        _OOHG_ActiveControlKeys             := Nil ;
+        _OOHG_ActiveControlDblBffer         := .F.
 
 #xcommand END XBROWSE ;
         => ;
@@ -2364,7 +2376,8 @@ XBROWSE
                 _OOHG_ActiveControlImagesAlign, ;
                 _OOHG_ActiveControlFullMove, ;
                 _OOHG_ActiveControlSelectedColors, ;
-                _OOHG_ActiveControlKeys )
+                _OOHG_ActiveControlKeys, ;
+                _OOHG_ActiveControlDblBffer )
 
 /*----------------------------------------------------------------------------
 HYPERLINK
