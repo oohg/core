@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.921 2012-05-14 22:13:20 fyurisich Exp $
+ * $Id: ChangeLog,v 1.922 2012-05-14 23:52:23 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,7 +7,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2012-05-14 10:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2012-05-14 20:52 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_grid.prg
+     + Added new parameter to TGrid_Notify_CustomDraw function call.
+     * First column is drawn manually to get rid of empty space at left.
+     TODO: Draw checkboxes manually with matching backcolor.
+
+   * source/h_checklist.prg
+     ! Unfocused controls shows unneeded Focus Rect.
+
+2012-05-14 19:13 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
      + Added support for items and values extracted from a dbf in
        COMBOBOX ColumnControl. Now you can use:
@@ -18,7 +27,7 @@
           {'COMBOBOX',{'Four','Five','Six'},{'4','5','6'}
           {'COMBOBOX','Test->Last'}
 
-2012-05-02 15:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2012-05-08 15:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_altsyntax.ch
    * include/i_browse.ch
    * include/i_checklist.ch
@@ -54,10 +63,6 @@
      - Deleted declaration of TGrid_Notify_CustomDraw function.
    * source/h_checklist.prg
      + Added new parameter to TGrid_Notify_CustomDraw function call.
-   * source/h_grid.prg
-     + Added new parameter to TGrid_Notify_CustomDraw function call.
-     * First column is drawn manually to get rid of empty space
-       at left.
    * include/i_grid.ch
      - Deleted define for GRID_JTFY_JUSTIFYMASK constants because
        it's not a valid alignment for text (it's just a mask to

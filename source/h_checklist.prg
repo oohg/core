@@ -1,5 +1,5 @@
 /*
- * $Id: h_checklist.prg,v 1.5 2012-05-08 18:44:56 fyurisich Exp $
+ * $Id: h_checklist.prg,v 1.6 2012-05-14 23:52:23 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -183,14 +183,28 @@ LOCAL aHdr, aWidth, aJust, aPic, aEdC
       EndIf
    EndIf
 
+/*
+METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
+               aRows, value, fontname, fontsize, tooltip, change, dblclick, ;
+               aHeadClick, gotfocus, lostfocus, nogrid, aImage, aJust, ;
+               break, HelpId, bold, italic, underline, strikeout, ownerdata, ;
+               ondispinfo, itemcount, editable, backcolor, fontcolor, ;
+               dynamicbackcolor, dynamicforecolor, aPicture, lRtl, inplace, ;
+               editcontrols, readonly, valid, validmessages, editcell, ;
+               aWhenFields, lDisabled, lNoTabStop, lInvisible, lHasHeaders, ;
+               onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
+               aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr ) CLASS TGrid
+*/
    ::Super:Define( ControlName, ParentForm, x, y, w, h, aHdr, aWidth, ;
-                   {}, Nil, fontname, fontsize, tooltip, change, ;
-                   Nil, Nil, gotfocus, lostfocus, .T., aImage, aJust, ;
-                   break, HelpId, bold, italic, underline, strikeout, ;
-                   .F., Nil, Nil, .F., backcolor, fontcolor, Nil, Nil, ;
-                   aPic, lRtl, .F., aEdC, .T., Nil, Nil, Nil, Nil, ;
-                   lDisabled, lNoTabStop, lInvisible, .F., Nil, Nil, ;
-                   Nil, .F., aSelectedColors, Nil, .T., Nil, dblbffr )
+                   {}, Nil, fontname, fontsize, tooltip, change, Nil, ;
+                   Nil, gotfocus, lostfocus, .T., aImage, aJust, ;
+                   break, HelpId, bold, italic, underline, strikeout, .F., ;
+                   Nil, Nil, .F., backcolor, fontcolor, ;
+                   Nil, Nil, aPic, lRtl, .F., ;
+                   aEdC, .T., Nil, Nil, Nil, ;
+                   Nil, lDisabled, lNoTabStop, lInvisible, .F., ;
+                   Nil, Nil, Nil, .F., ;
+                   aSelectedColors, Nil, .T., Nil, dblbffr )
 
    aEval( aRows, { |u| ::AddItem( u ) } )
 
@@ -356,6 +370,7 @@ Local uValue, uRet, nItem
       EndIf
 
    ElseIf nNotify == NM_KILLFOCUS
+      ListView_RemoveFocusRect( ::hWnd )
       Return ::DoLostFocus()
 
    ElseIf nNotify == NM_SETFOCUS
