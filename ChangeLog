@@ -1,11 +1,22 @@
 /*
- * $Id: ChangeLog,v 1.920 2012-05-08 18:44:56 fyurisich Exp $
+ * $Id: ChangeLog,v 1.921 2012-05-14 22:13:20 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-05-14 10:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_grid.prg
+     + Added support for items and values extracted from a dbf in
+       COMBOBOX ColumnControl. Now you can use:
+          {'COMBOBOX','Test->Last','Test->CodeLast','NUMERIC'}
+          {'COMBOBOX','Test->First','Test->CodeFirst','CHARACTER'}
+          {'COMBOBOX',{'One','Two','Three'}}
+          {'COMBOBOX',{'Four','Five','Six'},{4,5,6}}
+          {'COMBOBOX',{'Four','Five','Six'},{'4','5','6'}
+          {'COMBOBOX','Test->Last'}
 
 2012-05-02 15:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_altsyntax.ch

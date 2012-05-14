@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.161 2012-05-08 18:44:56 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.162 2012-05-14 22:13:20 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -3140,7 +3140,7 @@ Local oGridControl, aEdit2, cControl
          Case cControl == "DATEPICKER"
             oGridControl := TGridControlDatePicker():New( aEdit2[ 2 ], aEdit2[ 3 ] )
          Case cControl == "COMBOBOX"
-            oGridControl := TGridControlComboBox():New( aEdit2[ 2 ], oGrid, aEdit2[ 3 ] )
+            oGridControl := TGridControlComboBox():New( aEdit2[ 2 ], oGrid, aEdit2[ 3 ], aEdit2[ 4 ] )
          Case cControl == "COMBOBOXTEXT"
             oGridControl := TGridControlComboBoxText():New( aEdit2[ 2 ], oGrid )
          Case cControl == "SPINNER"
@@ -3515,52 +3515,120 @@ Return ::oControl
 *-----------------------------------------------------------------------------*
 CLASS TGridControlComboBox FROM TGridControl
 *-----------------------------------------------------------------------------*
-   DATA aItems  INIT {}
-   DATA oGrid   INIT Nil
-   DATA aValues INIT Nil
+   DATA aItems       INIT {}
+   DATA oGrid        INIT Nil
+   DATA aValues      INIT Nil
+   DATA cWorkArea    INIT ""
+   DATA cField       INIT ""
+   DATA cValueSource INIT ""
+   DATA cRetValType  INIT "N"   // Needed because cWorkArea can be not opened yet when ::New is first executed
 
    METHOD New
    METHOD CreateWindow
    METHOD CreateControl
    METHOD Str2Val
    METHOD GridValue
+   METHOD Refresh
 ENDCLASS
 
-METHOD New( aItems, oGrid, aValues ) CLASS TGridControlComboBox
+METHOD New( aItems, oGrid, aValues, cRetValType ) CLASS TGridControlComboBox
+   DEFAULT cRetValType TO "NUMERIC"
    If HB_IsArray( aItems )
       ::aItems := aItems
+      If HB_IsArray( aValues ) .AND. Len( aValues ) > 0
+         If ValType( aValues[1] ) $ "CM"
+            ::aValues := aValues
+            ::cRetValType := "C"
+         ElseIf ValType( aValues[1] ) == "N"
+            ::aValues := aValues
+         EndIf
+      EndIf
+   ElseIf ValType( aItems ) $ "CM" .AND. '->' $ aItems
+      ::cWorkArea := Left( aItems, At( '->', aItems ) - 1 )
+      ::cField := Right( aItems, Len( aItems ) - At( '->', aItems ) - 1 )
+      If ValType( aValues ) $ "CM"
+         If Upper( cRetValType ) == "CHARACTER"
+            ::cValueSource := aValues
+            ::cRetValType := "C"
+         ElseIf Upper( cRetValType ) == "NUMERIC"
+            ::cValueSource := aValues
+         EndIf
+      EndIf
+      ::Refresh()
    EndIf
    ::oGrid := oGrid
-   If HB_IsArray( aValues )
-      ::aValues := aValues
-   EndIf
 Return Self
+
+METHOD Refresh CLASS TGridControlComboBox
+Local cValueSource, cWorkArea, cField, nRecno, aIt, aVa, uValue
+   cWorkArea := ::cWorkArea
+   cField := ::cField
+   cValueSource := ::cValueSource
+   If Select( cWorkArea ) != 0
+      nRecno := ( cWorkArea )->( RecNo() )
+      ( cWorkArea )->( DBGoTop() )
+      aIt := {}
+      aVa := {}
+      Do While ! ( cWorkArea )->( Eof() )
+         AADD( aIt, ( cWorkArea )->&( cField ) )
+         If Empty( cValueSource )
+            uValue := ( cWorkArea )->( RecNo() )
+         Else
+            uValue := &( cValueSource )
+            If ! ValType( uValue ) == ::cRetValType
+               MsgOOHGError( "GridControl: ValueSource/RetVal type mismatch. Program Terminated." )
+            EndIf
+            If ValType( uValue ) $ "CM"
+               uValue := Trim( uValue )
+            EndIf
+         EndIf
+         AADD( aVa, uValue )
+         ( cWorkArea )->( DBSkip() )
+      EndDo
+      ( cWorkArea )->( DBGoTo( nRecno ) )
+      ::aItems := aIt
+      ::aValues := aVa
+      ::cField := cField
+      ::cWorkArea := cWorkArea
+      ::cValueSource := cValueSource
+   EndIf
+Return Nil
 
 METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aKeys ) CLASS TGridControlComboBox
 Return ::Super:CreateWindow( uValue, nRow - 3, nCol - 3, nWidth + 6, nHeight + 6, cFontName, nFontSize, aKeys )
 
 METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGridControlComboBox
    Empty( nHeight )
-   // If ValType( uValue ) == "C"
-   //    uValue := aScan( ::aItems, { |c| c == uValue } )
-   // EndIf
+   ::Refresh()
    @ nRow,nCol COMBOBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth VALUE uValue ITEMS ::aItems VALUESOURCE ( ::aValues )
    If ! Empty( ::oGrid ) .AND. ::oGrid:ImageList != 0
       ::oControl:ImageList := ImageList_Duplicate( ::oGrid:ImageList )
    EndIf
 Return ::oControl
 
+// Transforms the combo's display value (string) into the cell content
 METHOD Str2Val( uValue ) CLASS TGridControlComboBox
 Local xValue
    xValue := aScan( ::aItems, { |c| c == uValue } )
-   If HB_IsArray( ::aValues ) .AND. xValue >= 1 .AND. xValue <= Len( ::aValues )
-      xValue := ::aValues[ xValue ]
+   If HB_IsArray( ::aValues )
+      If xValue >= 1 .AND. xValue <= Len( ::aValues )
+         xValue := ::aValues[ xValue ]
+      ElseIf ::cRetValType == "C"
+         xValue := ""
+      Else
+         xValue := 0
+      EndIf
+   ElseIf ::cRetValType == "C"
+      xValue := ""
    EndIf
 Return xValue
 
+// Transforms the cell content into a string to show in the listview
 METHOD GridValue( uValue ) CLASS TGridControlComboBox
    If HB_IsArray( ::aValues )
       uValue := aScan( ::aValues, { |c| c == uValue } )
+   ElseIf ! ValType( uValue ) == "N"
+     uValue := 0
    EndIf
 Return If( ( uValue >= 1 .AND. uValue <= Len( ::aItems ) ), ::aItems[ uValue ], "" )
 
