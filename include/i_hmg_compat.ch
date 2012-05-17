@@ -1,5 +1,5 @@
 /*
- * $Id: i_hmg_compat.ch,v 1.7 2011-01-05 04:19:17 declan2005 Exp $
+ * $Id: i_hmg_compat.ch,v 1.8 2012-05-17 22:54:52 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -82,13 +82,13 @@
 
  Parts of this project are based upon:
 
-	"Harbour GUI framework for Win32"
- 	Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- 	Copyright 2001 Antonio Linares <alinares@fivetech.com>
-	www - http://www.harbour-project.org
+ "Harbour GUI framework for Win32"
+ Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
+ Copyright 2001 Antonio Linares <alinares@fivetech.com>
+ www - http://www.harbour-project.org
 
-	"Harbour Project"
-	Copyright 1999-2003, http://www.harbour-project.org/
+ "Harbour Project"
+ Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
 #ifndef __OOHG_HMG_COMPAT__
@@ -98,7 +98,7 @@
 #xtranslate RANDOM( <arg1> )   =>   HB_RANDOM( <arg1> )
 
 #xcommand BREAK <break> ;
-	=>;
+   =>;
         _OOHG_ActiveControlBreak         := <break>
 
 #define PICTALIGNMENT //
@@ -106,63 +106,63 @@
 ///////////////////////////////////////////////////////////////////////////////
 // SPLITBOX BROWSE
 ///////////////////////////////////////////////////////////////////////////////
-#command BROWSE <name> 		;
-		[ OF <parent> ] 		;
-                [ OBJ <oObj> ]                  ;
-		[ WIDTH <w> ] 			;
-		[ HEIGHT <h> ] 			;
-		[ HEADERS <headers> ] 		;
-		[ WIDTHS <widths> ] 		;
-		[ WORKAREA <WorkArea> ]		;
-		[ FIELDS <Fields> ] 		;
-                [ INPUTMASK <Picture> ]         ;
-		[ VALUE <value> ] 		;
-		[ FONT <fontname> ] 		;
-		[ SIZE <fontsize> ] 		;
-                [ <bold : BOLD> ]               ;
-                [ <italic : ITALIC> ]           ;
-                [ <underline : UNDERLINE> ]     ;
-                [ <strikeout : STRIKEOUT> ]     ;
-		[ TOOLTIP <tooltip> ]  		;
-                [ BACKCOLOR <backcolor> ]       ;
+#command BROWSE <name> ;
+                [ OF <parent> ] ;
+                [ OBJ <oObj> ] ;
+                [ WIDTH <w> ] ;
+                [ HEIGHT <h> ] ;
+                [ HEADERS <headers> ] ;
+                [ WIDTHS <widths> ] ;
+                [ WORKAREA <WorkArea> ] ;
+                [ FIELDS <Fields> ] ;
+                [ INPUTMASK <Picture> ] ;
+                [ VALUE <value> ] ;
+                [ FONT <fontname> ] ;
+                [ SIZE <fontsize> ] ;
+                [ <bold : BOLD> ] ;
+                [ <italic : ITALIC> ] ;
+                [ <underline : UNDERLINE> ] ;
+                [ <strikeout : STRIKEOUT> ] ;
+                [ TOOLTIP <tooltip> ] ;
+                [ BACKCOLOR <backcolor> ] ;
                 [ DYNAMICBACKCOLOR <dynamicbackcolor> ] ;
-		[ DYNAMICFORECOLOR <dynamicforecolor> ] ;
-                [ FONTCOLOR <fontcolor> ]       ;
-		[ ON GOTFOCUS <gotfocus> ] 	;
-		[ ON CHANGE <change> ]  	;
-		[ ON LOSTFOCUS <lostfocus> ] 	;
-		[ ON DBLCLICK <dblclick> ]  	;
-		[ <edit : EDIT> ] 		;
-		[ <inplace : INPLACE> ]		;
-		[ <append : APPEND> ] 		;
-		[ ON HEADCLICK <aHeadClick> ] 	;
+                [ DYNAMICFORECOLOR <dynamicforecolor> ] ;
+                [ FONTCOLOR <fontcolor> ] ;
+                [ ON GOTFOCUS <gotfocus> ] ;
+                [ ON CHANGE <change> ] ;
+                [ ON LOSTFOCUS <lostfocus> ] ;
+                [ ON DBLCLICK <dblclick> ] ;
+                [ <edit : EDIT> ] ;
+                [ <inplace : INPLACE> ] ;
+                [ <append : APPEND> ] ;
+                [ ON HEADCLICK <aHeadClick> ] ;
                 [ <dummy2: WHEN, COLUMNWHEN> <aWhenFields> ] ;
-		[ VALID <aValidFields> ]	;
-		[ VALIDMESSAGES <aValidMessages> ] ;
-		[ READONLY <aReadOnly> ] 	;
-		[ <lock: LOCK> ] 		;
-		[ <Delete: DELETE> ]		;
-                [ <style: NOLINES> ]            ;
-                [ IMAGE <aImage> ]              ;
-                [ JUSTIFY <aJust> ]             ;
-		[ <novscroll: NOVSCROLL> ] 	;
-		[ HELPID <helpid> ] 		;
-		[ <break: BREAK> ] 		;
-                [ <rtl: RTL> ]                  ;
-                [ ON APPEND <onappend> ]        ;
-                [ ON EDITCELL <editcell> ]      ;
+                [ VALID <aValidFields> ] ;
+                [ VALIDMESSAGES <aValidMessages> ] ;
+                [ READONLY <aReadOnly> ] ;
+                [ <lock: LOCK> ] ;
+                [ <Delete: DELETE> ] ;
+                [ <style: NOLINES> ] ;
+                [ IMAGE <aImage> ] ;
+                [ JUSTIFY <aJust> ] ;
+                [ <novscroll: NOVSCROLL> ] ;
+                [ HELPID <helpid> ] ;
+                [ <break: BREAK> ] ;
+                [ <rtl: RTL> ] ;
+                [ ON APPEND <onappend> ] ;
+                [ ON EDITCELL <editcell> ] ;
                 [ COLUMNCONTROLS <editcontrols> ] ;
                 [ REPLACEFIELD <replacefields> ] ;
-                [ SUBCLASS <subclass> ]         ;
-                [ <reccount: RECCOUNT> ]        ;
-                [ COLUMNINFO <columninfo> ]     ;
-                [ <noshowheaders: NOHEADERS> ]  ;
-                [ ON ENTER <enter> ]            ;
-                [ <disabled: DISABLED> ]        ;
-                [ <notabstop: NOTABSTOP> ]      ;
-                [ <invisible: INVISIBLE> ]      ;
-	=>;
-             [ <oObj> := ] _OOHG_SelectSubClass( TOBrowse(), [ <subclass>() ] ): ;
+                [ SUBCLASS <subclass> ] ;
+                [ <reccount: RECCOUNT> ] ;
+                [ COLUMNINFO <columninfo> ] ;
+                [ <noshowheaders: NOHEADERS> ] ;
+                [ ON ENTER <enter> ] ;
+                [ <disabled: DISABLED> ] ;
+                [ <notabstop: NOTABSTOP> ] ;
+                [ <invisible: INVISIBLE> ] ;
+   =>;
+         [ <oObj> := ] _OOHG_SelectSubClass( TOBrowse(), [ <subclass>() ] ): ;
                 Define( <(name)>, <(parent)>, , , <w>, <h>, <headers>, <widths>, <Fields>, ;
                 <value>, <fontname>, <fontsize>, <tooltip>, <{change}>, <{dblclick}>, ;
                 <aHeadClick>, <{gotfocus}>, <{lostfocus}>, <(WorkArea)>, <.Delete.>, ;
@@ -176,31 +176,31 @@
                 <.invisible.> )
 
 
-#xcommand @ <row>,<col> BUTTONEX <name> ;
+#xcommand @ <row>, <col> BUTTONEX <name> ;
                 [ OBJ <obj> ] ;
-		[ <dummy1: OF, PARENT> <parent> ] ;
-		[ <dummy2: ACTION,ON CLICK,ONCLICK> <action> ];
-		[ WIDTH <w> ] ;
-		[ HEIGHT <h> ] ;
-		[ FONT <font> ] ;
-		[ SIZE <size> ] ;
-		[ <bold : BOLD> ] ;
-		[ <italic : ITALIC> ] ;
-		[ <underline : UNDERLINE> ] ;
-		[ <strikeout : STRIKEOUT> ] ;
-		[ TOOLTIP <tooltip> ] ;
-		[ <flat: FLAT> ] ;
-		[ ON GOTFOCUS <gotfocus> ] ;
-		[ ON LOSTFOCUS <lostfocus> ] ;
-		[ <notabstop: NOTABSTOP> ] ;
-		[ HELPID <helpid> ] 		;
-		[ <invisible: INVISIBLE> ] ;
+                [ <dummy1: OF, PARENT> <parent> ] ;
+                [ <dummy2: ACTION, ON CLICK, ONCLICK> <action> ];
+                [ WIDTH <w> ] ;
+                [ HEIGHT <h> ] ;
+                [ FONT <font> ] ;
+                [ SIZE <size> ] ;
+                [ <bold : BOLD> ] ;
+                [ <italic : ITALIC> ] ;
+                [ <underline : UNDERLINE> ] ;
+                [ <strikeout : STRIKEOUT> ] ;
+                [ TOOLTIP <tooltip> ] ;
+                [ <flat: FLAT> ] ;
+                [ ON GOTFOCUS <gotfocus> ] ;
+                [ ON LOSTFOCUS <lostfocus> ] ;
+                [ <notabstop: NOTABSTOP> ] ;
+                [ HELPID <helpid> ] ;
+                [ <invisible: INVISIBLE> ] ;
                 [ <rtl: RTL> ] ;
                 [ <noprefix: NOPREFIX> ] ;
                 [ SUBCLASS <subclass> ] ;
                 [ <disabled: DISABLED> ] ;
                 [ CAPTION <caption> ] ;
-		[ <dummy3: PICTURE, ICON> <bitmap> ] ;
+                [ <dummy3: PICTURE, ICON> <bitmap> ] ;
                 [ BUFFER <buffer> ] ;
                 [ <lvertical : VERTICAL> ] ;
                 [ <nohotlight : NOHOTLIGHT> ];
@@ -210,20 +210,67 @@
                 [ <ladjust : ADJUST> ];
                 [ <default: DEFAULT> ] ;
                 [ HBITMAP <hbitmap> ] ;
-		[ <notrans: NOTRANSPARENT> ] ;
+                [ <notrans: NOTRANSPARENT> ] ;
                 [ <scale: FORCESCALE> ] ;
                 [ <cancel: CANCEL> ] ;
-		[ <alignment:LEFT,RIGHT,TOP,BOTTOM> ] ;
-	=>;
-        [ <obj> := ] _OOHG_SelectSubClass( TButton(), [ <subclass>() ] ): ;
-                   Define( <(name)>, <(parent)>, <col>, <row>, <caption>, <{action}>, ;
-                   <w>, <h>, <font>, <size>, <tooltip>, <{gotfocus}>,<{lostfocus}>, <.flat.>, <.notabstop.>, ;
-                   <helpid>, <.invisible.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.>, <.rtl.>, ;
-                   <.noprefix.>, <.disabled.>, <buffer>, <hbitmap>, <bitmap>, <.notrans.>, <.scale.>, ;
-                   <.cancel.>, <"alignment"> )
+                [ <alignment:LEFT, RIGHT, TOP, BOTTOM> ] ;
+   =>;
+         [ <obj> := ] _OOHG_SelectSubClass( TButton(), [ <subclass>() ] ): ;
+                Define( <(name)>, <(parent)>, <col>, <row>, <caption>, <{action}>, ;
+                <w>, <h>, <font>, <size>, <tooltip>, <{gotfocus}>, <{lostfocus}>, <.flat.>, <.notabstop.>, ;
+                <helpid>, <.invisible.>, <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, <.rtl.>, ;
+                <.noprefix.>, <.disabled.>, <buffer>, <hbitmap>, <bitmap>, <.notrans.>, <.scale.>, ;
+                <.cancel.>, <"alignment"> )
 
 
+#command @ <row>, <col> BTNTEXTBOX <name> ;
+                [ OBJ <obj> ] ;
+                [ ID <nId> ] ;                             
+                [ <dummy1: OF, PARENT, DIALOG> <parent> ] ;
+                [ HEIGHT <height> ] ;
+                [ WIDTH <width> ] ;
+                [ FIELD <field> ] ;
+                [ VALUE <value> ] ;
+                [ <dummy2: ACTION, ON CLICK, ONCLICK> <action> ] ;
+                [ ACTION2 <action2> ] ;
+                [ <dummy3: IMAGE, PICTURE> <abitmap> ] ;
+                [ BUTTONWIDTH <btnwidth> ] ;
+                [ FONT <fontname> ] ;
+                [ SIZE <fontsize> ] ;
+                [ <bold : BOLD> ] ;
+                [ <italic : ITALIC> ] ;
+                [ <underline : UNDERLINE> ] ;
+                [ <strikeout : STRIKEOUT> ] ;
+                [ TOOLTIP <tooltip> ] ;
+                [ BACKCOLOR <backcolor> ] ;
+                [ FONTCOLOR <fontcolor> ] ;
+                [ MAXLENGTH <maxlength> ] ;
+                [ <upper: UPPERCASE> ] ;
+                [ <lower: LOWERCASE> ] ;
+                [ <numeric: NUMERIC> ] ;
+                [ <password: PASSWORD> ] ;
+                [ ON CHANGE <change> ] ;
+                [ ON GOTFOCUS <gotfocus> ] ;
+                [ ON LOSTFOCUS <lostfocus> ] ;
+                [ ON ENTER <enter> ] ;
+                [ <RightAlign: RIGHTALIGN> ] ;
+                [ <invisible: INVISIBLE> ] ;
+                [ <notabstop: NOTABSTOP> ] ;
+                [ <disableedit: DISABLEEDIT> ] ;
+                [ HELPID <helpid> ] ;
+   =>;
+         [ <obj> := ] DefineTextBox( <(name)>, <(parent)>, <col>, <row>, <width>, <height>, ;
+                <value>, <fontname>, <fontsize>, <tooltip>, <maxlength>, ;
+                <.upper.>, <.lower.>, <.password.>, ;
+                <{lostfocus}>, <{gotfocus}>, <{change}>, <{enter}>, ;
+                <.RightAlign.>, <helpid>, <.disableedit.>, <.bold.>, ;
+                <.italic.>, <.underline.>, <.strikeout.>, <(field)>, ;
+                <backcolor>, <fontcolor>, <.invisible.>, <.notabstop.>, ;
+                .F., .F., .F., , .F., ;
+                , .F., <.numeric.>, , , ;
+                , <{action}>, <abitmap>, <btnwidth>, <{action2}>, )
 
 
+#translate <Form> . <Control> . DisableEdit =>  <Form>.<Control>.Readonly
 
 #endif

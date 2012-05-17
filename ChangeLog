@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.922 2012-05-14 23:52:23 fyurisich Exp $
+ * $Id: ChangeLog,v 1.923 2012-05-17 22:54:52 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,12 +7,19 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-05-17 19:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_hmg_compat.ch
+     + added support for BTNTEXTBOX.
+     * formatting.
+   * include/i_textbox.ch
+     ! typo fixed.
+     * formatting.
+
 2012-05-14 20:52 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
      + Added new parameter to TGrid_Notify_CustomDraw function call.
      * First column is drawn manually to get rid of empty space at left.
      TODO: Draw checkboxes manually with matching backcolor.
-
    * source/h_checklist.prg
      ! Unfocused controls shows unneeded Focus Rect.
 

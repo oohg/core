@@ -1,5 +1,5 @@
 /*
- * $Id: i_textbox.ch,v 1.17 2012-02-08 08:27:16 nulcrc Exp $
+ * $Id: i_textbox.ch,v 1.18 2012-05-17 22:54:52 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -82,52 +82,52 @@
 
  Parts of this project are based upon:
 
-	"Harbour GUI framework for Win32"
- 	Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- 	Copyright 2001 Antonio Linares <alinares@fivetech.com>
-	www - http://www.harbour-project.org
+ "Harbour GUI framework for Win32"
+ Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
+ Copyright 2001 Antonio Linares <alinares@fivetech.com>
+ www - http://www.harbour-project.org
 
-	"Harbour Project"
-	Copyright 1999-2003, http://www.harbour-project.org/
+ "Harbour Project"
+ Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-#command @ <row>, <col> TEXTBOX <name>               	;
+#command @ <row>, <col> TEXTBOX <name>                  ;
                         [ OBJ <obj> ]                   ;
-			[ <dummy1: OF, PARENT> <parent> ] ;
-                        [ HEIGHT <height> ]          	;
-                        [ WIDTH <width> ]            	;
-			[ FIELD <field> ]		;
-                        [ VALUE <value> ]            	;
-			[ < readonly: READONLY > ] 	;
-                        [ FONT <fontname> ]          	;
-                        [ SIZE <fontsize> ]          	;
+                        [ <dummy1: OF, PARENT> <parent> ] ;
+                        [ HEIGHT <height> ]             ;
+                        [ WIDTH <width> ]               ;
+                        [ FIELD <field> ]      ;
+                        [ VALUE <value> ]               ;
+                        [ < readonly: READONLY > ]    ;
+                        [ FONT <fontname> ]             ;
+                        [ SIZE <fontsize> ]             ;
                         [ <bold : BOLD> ]               ;
                         [ <italic : ITALIC> ]           ;
                         [ <underline : UNDERLINE> ]     ;
                         [ <strikeout : STRIKEOUT> ]     ;
-                        [ TOOLTIP <tooltip> ]        	;
+                        [ TOOLTIP <tooltip> ]           ;
                         [ BACKCOLOR <backcolor> ]       ;
                         [ FONTCOLOR <fontcolor> ]       ;
-                        [ MAXLENGTH <maxlenght> ]    	;
-                        [ <upper: UPPERCASE> ]       	;
-                        [ <lower: LOWERCASE> ]       	;
-                        [ <password: PASSWORD> ]     	;
-                        [ ON CHANGE <change> ]       	;
-                        [ ON GOTFOCUS <gotfocus> ]   	;
-                        [ ON LOSTFOCUS <lostfocus> ] 	;
-                        [ ON ENTER <enter> ]		;
-                        [ <RightAlign: RIGHTALIGN> ]	;
-			[ <invisible: INVISIBLE> ]	;
-			[ <notabstop: NOTABSTOP> ]	;
+                        [ MAXLENGTH <maxlength> ]       ;
+                        [ <upper: UPPERCASE> ]          ;
+                        [ <lower: LOWERCASE> ]          ;
+                        [ <password: PASSWORD> ]        ;
+                        [ ON CHANGE <change> ]          ;
+                        [ ON GOTFOCUS <gotfocus> ]      ;
+                        [ ON LOSTFOCUS <lostfocus> ]    ;
+                        [ ON ENTER <enter> ]      ;
+                        [ <RightAlign: RIGHTALIGN> ]   ;
+                        [ <invisible: INVISIBLE> ]   ;
+                        [ <notabstop: NOTABSTOP> ]   ;
                         [ <rtl: RTL> ]                  ;
-                        [ HELPID <helpid> ] 		;
+                        [ HELPID <helpid> ]       ;
                         [ <autoskip: AUTOSKIP> ]        ;
                         [ <noborder: NOBORDER> ]        ;
                         [ FOCUSEDPOS <focusedpos> ]     ;
                         [ <disabled: DISABLED> ]        ;
                         [ VALID <valid> ]               ;
                         [ < date : DATE > ]             ;
-                        [ <numeric: NUMERIC> ]       	;
+                        [ <numeric: NUMERIC> ]          ;
                         [ <dummy2: INPUTMASK, PICTURE> <inputmask> ] ;
                         [ FORMAT <format> ]             ;
                         [ SUBCLASS <subclass> ]         ;
@@ -135,10 +135,10 @@
                         [ ACTION2 <action2> ]           ;
                         [ IMAGE <abitmap> ]             ;
                         [ BUTTONWIDTH <btnwidth> ]      ;
-						[ WHEN <bWhen> ] ;
-         =>;
-        [ <obj> := ] DefineTextBox( <(name)>, <(parent)>, <col>, <row>, <width>, <height>, ;
-                        <value>, <fontname>, <fontsize>, <tooltip>, <maxlenght>, ;
+                        [ WHEN <bWhen> ] ;
+   =>;
+         [ <obj> := ] DefineTextBox( <(name)>, <(parent)>, <col>, <row>, <width>, <height>, ;
+                        <value>, <fontname>, <fontsize>, <tooltip>, <maxlength>, ;
                         <.upper.>, <.lower.>, <.password.>, ;
                         <{lostfocus}>, <{gotfocus}>, <{change}>, <{enter}>, ;
                         <.RightAlign.>, <helpid>, <.readonly.> ,<.bold.>, ;
