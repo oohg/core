@@ -1,5 +1,5 @@
 /*
- * $Id: i_hmg_compat.ch,v 1.8 2012-05-17 22:54:52 fyurisich Exp $
+ * $Id: i_hmg_compat.ch,v 1.9 2012-05-18 23:48:21 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -222,10 +222,8 @@
                 <.noprefix.>, <.disabled.>, <buffer>, <hbitmap>, <bitmap>, <.notrans.>, <.scale.>, ;
                 <.cancel.>, <"alignment"> )
 
-
-#command @ <row>, <col> BTNTEXTBOX <name> ;
-                [ OBJ <obj> ] ;
-                [ ID <nId> ] ;                             
+#xtranslate @ <row>, <col> BTNTEXTBOX <name> ;
+                [ ID <nId> ] ;
                 [ <dummy1: OF, PARENT, DIALOG> <parent> ] ;
                 [ HEIGHT <height> ] ;
                 [ WIDTH <width> ] ;
@@ -237,40 +235,89 @@
                 [ BUTTONWIDTH <btnwidth> ] ;
                 [ FONT <fontname> ] ;
                 [ SIZE <fontsize> ] ;
-                [ <bold : BOLD> ] ;
-                [ <italic : ITALIC> ] ;
-                [ <underline : UNDERLINE> ] ;
-                [ <strikeout : STRIKEOUT> ] ;
+                [ <bold: BOLD> ] ;
+                [ <italic: ITALIC> ] ;
+                [ <underline: UNDERLINE> ] ;
+                [ <strikeout: STRIKEOUT> ] ;
                 [ TOOLTIP <tooltip> ] ;
                 [ BACKCOLOR <backcolor> ] ;
                 [ FONTCOLOR <fontcolor> ] ;
                 [ MAXLENGTH <maxlength> ] ;
-                [ <upper: UPPERCASE> ] ;
-                [ <lower: LOWERCASE> ] ;
+                [ <uppercase: UPPERCASE> ] ;
+                [ <lowercase: LOWERCASE> ] ;
                 [ <numeric: NUMERIC> ] ;
                 [ <password: PASSWORD> ] ;
                 [ ON CHANGE <change> ] ;
                 [ ON GOTFOCUS <gotfocus> ] ;
                 [ ON LOSTFOCUS <lostfocus> ] ;
                 [ ON ENTER <enter> ] ;
-                [ <RightAlign: RIGHTALIGN> ] ;
+                [ <rightalign: RIGHTALIGN> ] ;
                 [ <invisible: INVISIBLE> ] ;
                 [ <notabstop: NOTABSTOP> ] ;
-                [ <disableedit: DISABLEEDIT> ] ;
+                [ <readonly: READONLY> ] ;
                 [ HELPID <helpid> ] ;
+                [ <rtl: RTL> ] ;
+                [ OBJ <obj> ] ;
+                [ <autoskip: AUTOSKIP> ] ;
+                [ <noborder: NOBORDER> ] ;
+                [ FOCUSEDPOS <focusedpos> ] ;
+                [ <disabled: DISABLED> ] ;
+                [ VALID <valid> ] ;
+                [ <date: DATE> ] ;
+                [ <numeric: NUMERIC> ] ;
+                [ INPUTMASK <inputmask> ] ;
+                [ FORMAT <format> ] ;
+                [ SUBCLASS <subclass> ] ;
+                [ WHEN <bWhen> ] ;
    =>;
-         [ <obj> := ] DefineTextBox( <(name)>, <(parent)>, <col>, <row>, <width>, <height>, ;
-                <value>, <fontname>, <fontsize>, <tooltip>, <maxlength>, ;
-                <.upper.>, <.lower.>, <.password.>, ;
-                <{lostfocus}>, <{gotfocus}>, <{change}>, <{enter}>, ;
-                <.RightAlign.>, <helpid>, <.disableedit.>, <.bold.>, ;
-                <.italic.>, <.underline.>, <.strikeout.>, <(field)>, ;
-                <backcolor>, <fontcolor>, <.invisible.>, <.notabstop.>, ;
-                .F., .F., .F., , .F., ;
-                , .F., <.numeric.>, , , ;
-                , <{action}>, <abitmap>, <btnwidth>, <{action2}>, )
+         @ <row>, <col> TEXTBOX <name> ;
+                [ OBJ <obj> ] ;
+                [ PARENT <parent> ] ;
+                [ HEIGHT <height> ] ;
+                [ WIDTH <width> ] ;
+                [ FIELD <field> ] ;
+                [ VALUE <value> ] ;
+                [ <readonly> ];
+                [ FONT <fontname> ] ;
+                [ SIZE <fontsize> ] ;
+                [ <bold> ] ;
+                [ <italic> ] ;
+                [ <underline> ] ;
+                [ <strikeout> ] ;
+                [ TOOLTIP <tooltip> ] ;
+                [ BACKCOLOR <backcolor> ] ;
+                [ FONTCOLOR <fontcolor> ] ;
+                [ MAXLENGTH <maxlength> ] ;
+                [ <uppercase> ] ;
+                [ <lowercase> ] ;
+                [ <password> ] ;
+                [ ON CHANGE <change> ] ;
+                [ ON GOTFOCUS <gotfocus> ] ;
+                [ ON LOSTFOCUS <lostfocus> ] ;
+                [ ON ENTER <enter> ] ;
+                [ <rightalign> ] ;
+                [ <invisible> ] ;
+                [ <notabstop> ] ;
+                [ <rtl> ] ;
+                [ HELPID <helpid> ] ;
+                [ <autoskip> ] ;
+                [ <noborder> ] ;
+                [ FOCUSEDPOS <focusedpos> ] ;
+                [ <disabled> ] ;
+                [ VALID <valid> ] ;
+                [ <date> ] ;
+                [ <numeric> ] ;
+                [ INPUTMASK <inputmask> ] ;
+                [ FORMAT <format> ] ;
+                [ SUBCLASS <subclass> ] ;
+                [ ACTION <action> ] ;
+                [ ACTION2 <action2> ] ;
+                [ IMAGE <abitmap> ] ;
+                [ BUTTONWIDTH <btnwidth> ] ;
+                [ WHEN <bWhen> ]
 
 
-#translate <Form> . <Control> . DisableEdit =>  <Form>.<Control>.Readonly
+#xtranslate DISABLEEDIT => READONLY
+
 
 #endif
