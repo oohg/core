@@ -1,5 +1,5 @@
 /*
- * $Id: px.prg,v 1.3 2012-02-21 00:21:39 guerra000 Exp $
+ * $Id: px.prg,v 1.4 2012-05-19 02:05:23 guerra000 Exp $
  */
 /*
  * This is a ooHGRecord's subclasses (database class used
@@ -497,7 +497,7 @@ RETURN HB_InLine( nNum, nCount ){
    int iCount, iPos;
    char *cBuffer;
 
-   llNum = hb_ranll( 1 );
+   llNum = hb_parnll( 1 );
    iCount = hb_parni( 2 );
    cBuffer = hb_xgrab( iCount + 1 );
    cBuffer[ iCount + 1 ] = 0;
@@ -552,7 +552,7 @@ LOCAL cBuffer, nLen, nBase, nPos, nBase2, nPos2, cKeyTypes
    ELSE
       cBuffer := SPACE( nLen )
       ::oFile:Seek( 0, FS_SET )
-      IF ::oFile:Read( @cBuffer, nLen ) == nLen
+      IF ! ::oFile:Read( @cBuffer, nLen ) == nLen
          ::oFile:Close()
          RETURN nil
       ENDIF
@@ -955,8 +955,24 @@ LOCAL uValue, nBufferPos
 uValue := STRZERO( INT( uValue / 3600 ), 2 ) + ":" + STRZERO( INT( ( uValue % 3600 ) / 60 ), 2 ) + ":" + STRZERO( INT( uValue % 60 ), 2 )
       ELSEIF ::aTypes[ nPos ] == "@"
          // Timestamp
-* TIMESTAMP
-         uValue := ReadBigEndian( ::cRecord, nBufferPos, 4 )
+         //
+         // 1. DATE bytes
+         uValue := ( ASC( ::cRecord[ nBufferPos + 2 ] ) * 256 ) + ;
+                     ASC( ::cRecord[ nBufferPos + 3 ] )
+         IF uValue == 0
+            uValue := STOD( "" )
+         ELSE
+            uValue := uValue - 32767
+            // 2. ***MAGIC NUMBER***
+            // I hadn't found it :'( ... It's a closer number
+            uValue := ROUND( ( uValue * 65536 ) / 168752, 0 )
+            // 3. Day 0 is January 1st, 1987
+            uValue := STOD( "19870101" ) + uValue
+
+            // TODO: Check for TIME bytes
+
+         ENDIF
+
       ELSEIF ::aTypes[ nPos ] == "+"
          // Autoincrement
          uValue := ReadBigEndian( ::cRecord, nBufferPos, 4 )
@@ -1083,9 +1099,14 @@ LOCAL aFields, I
          // Time
          aFields[ I ][ 2 ] := "C"
          aFields[ I ][ 3 ] := 8
-***      ELSEIF ::aTypes[ I ] == "@"
-***         // Timestamp
-***         uValue := ReadBigEndian( ::cRecord, nBufferPos, 4 )
+      ELSEIF ::aTypes[ I ] == "@"
+         // Timestamp
+         //
+         // *** Timestamp as DATE!
+         // *** TODO: Take care about TIME data
+         //
+         aFields[ I ][ 2 ] := "D"
+         aFields[ I ][ 3 ] := 8
       ELSEIF ::aTypes[ I ] == "+"
          // Autoincrement
          aFields[ I ][ 2 ] := "N"

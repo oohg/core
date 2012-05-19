@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog,v 1.924 2012-05-18 23:48:21 fyurisich Exp $
+ * $Id: ChangeLog,v 1.925 2012-05-19 02:05:22 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-05-18 21:10 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+   * samples/oohg/oohgrecord/px.prg
+     ! Fixed silly typo when header size is not 2048.
+     + Added partial TIMESTAMP (as DATE type) functionality.
 
 2012-05-18 20:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_hmg_compat.ch
