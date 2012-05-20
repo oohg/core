@@ -1,5 +1,5 @@
 /*
- * $Id: i_browse.ch,v 1.29 2012-05-08 18:44:56 fyurisich Exp $
+ * $Id: i_browse.ch,v 1.30 2012-05-20 20:32:53 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -101,62 +101,62 @@
 // STANDARD BROWSE
 ///////////////////////////////////////////////////////////////////////////////
 
-#command @ <row>,<col> BROWSE <name>       ;
+#command @ <row>,<col> BROWSE <name> ;
       [ <dummy1: OF, PARENT> <parent> ] ;
-      [ OBJ <oObj> ]                  ;
-      [ WIDTH <w> ]          ;
-      [ HEIGHT <h> ]          ;
-      [ HEADERS <headers> ]       ;
-      [ WIDTHS <widths> ]       ;
-      [ WORKAREA <workarea> ]         ;
-      [ FIELDS <Fields> ]       ;
-      [ INPUTMASK <Picture> ]         ;
-      [ VALUE <value> ]       ;
-      [ FONT <fontname> ]       ;
-      [ SIZE <fontsize> ]       ;
-      [ <bold : BOLD> ]               ;
-      [ <italic : ITALIC> ]           ;
-      [ <underline : UNDERLINE> ]     ;
-      [ <strikeout : STRIKEOUT> ]     ;
-      [ TOOLTIP <tooltip> ]        ;
-      [ BACKCOLOR <backcolor> ]       ;
+      [ OBJ <oObj> ] ;
+      [ WIDTH <w> ] ;
+      [ HEIGHT <h> ] ;
+      [ HEADERS <headers> ] ;
+      [ WIDTHS <widths> ] ;
+      [ WORKAREA <workarea> ] ;
+      [ FIELDS <Fields> ] ;
+      [ INPUTMASK <Picture> ] ;
+      [ VALUE <value> ] ;
+      [ FONT <fontname> ] ;
+      [ SIZE <fontsize> ] ;
+      [ <bold : BOLD> ] ;
+      [ <italic : ITALIC> ] ;
+      [ <underline : UNDERLINE> ] ;
+      [ <strikeout : STRIKEOUT> ] ;
+      [ TOOLTIP <tooltip> ] ;
+      [ BACKCOLOR <backcolor> ] ;
       [ DYNAMICBACKCOLOR <dynamicbackcolor> ] ;
       [ DYNAMICFORECOLOR <dynamicforecolor> ] ;
-      [ FONTCOLOR <fontcolor> ]       ;
-      [ ON GOTFOCUS <gotfocus> ]    ;
-      [ ON CHANGE <change> ]     ;
-      [ ON LOSTFOCUS <lostfocus> ]    ;
-      [ ON DBLCLICK <dblclick> ]     ;
-      [ <edit : EDIT> ]       ;
-      [ <inplace : INPLACE> ]      ;
-      [ <append : APPEND> ]       ;
-      [ ON HEADCLICK <aHeadClick> ]    ;
+      [ FONTCOLOR <fontcolor> ] ;
+      [ ON GOTFOCUS <gotfocus> ] ;
+      [ ON CHANGE <change> ] ;
+      [ ON LOSTFOCUS <lostfocus> ] ;
+      [ ON DBLCLICK <dblclick> ] ;
+      [ <edit : EDIT> ] ;
+      [ <inplace : INPLACE> ] ;
+      [ <append : APPEND> ] ;
+      [ ON HEADCLICK <aHeadClick> ] ;
       [ <dummy2: WHEN, COLUMNWHEN> <aWhenFields> ] ;
-      [ VALID <aValidFields> ]        ;
+      [ VALID <aValidFields> ] ;
       [ VALIDMESSAGES <aValidMessages> ] ;
-      [ READONLY <aReadOnly> ]    ;
-      [ <lock: LOCK> ]       ;
-      [ <delete: DELETE> ]            ;
-      [ <style: NOLINES> ]            ;
-      [ IMAGE <aImage> ]              ;
-      [ JUSTIFY <aJust> ]             ;
-      [ <novscroll: NOVSCROLL> ]    ;
-      [ HELPID <helpid> ]       ;
-      [ <break: BREAK> ]       ;
-      [ <rtl: RTL> ]                  ;
-      [ ON APPEND <onappend> ]        ;
-      [ ON EDITCELL <editcell> ]      ;
+      [ READONLY <aReadOnly> ] ;
+      [ <lock: LOCK> ] ;
+      [ <delete: DELETE> ] ;
+      [ <style: NOLINES> ] ;
+      [ IMAGE <aImage> ] ;
+      [ JUSTIFY <aJust> ] ;
+      [ <novscroll: NOVSCROLL> ] ;
+      [ HELPID <helpid> ] ;
+      [ <break: BREAK> ] ;
+      [ <rtl: RTL> ] ;
+      [ ON APPEND <onappend> ] ;
+      [ ON EDITCELL <editcell> ] ;
       [ COLUMNCONTROLS <editcontrols> ] ;
       [ REPLACEFIELD <replacefields> ] ;
-      [ SUBCLASS <subclass> ]         ;
-      [ <reccount: RECCOUNT> ]        ;
-      [ COLUMNINFO <columninfo> ]     ;
-      [ <noshowheaders: NOHEADERS> ]  ;
-      [ ON ENTER <enter> ]            ;
-      [ <disabled: DISABLED> ]        ;
-      [ <notabstop: NOTABSTOP> ]      ;
-      [ <invisible: INVISIBLE> ]      ;
-      [ <descending: DESCENDING> ]    ;
+      [ SUBCLASS <subclass> ] ;
+      [ <reccount: RECCOUNT> ] ;
+      [ COLUMNINFO <columninfo> ] ;
+      [ <noshowheaders: NOHEADERS> ] ;
+      [ ON ENTER <enter> ] ;
+      [ <disabled: DISABLED> ] ;
+      [ <notabstop: NOTABSTOP> ] ;
+      [ <invisible: INVISIBLE> ] ;
+      [ <descending: DESCENDING> ] ;
       [ DELETEWHEN <bWhenDel> ] ;
       [ DELETEMSG <DelMsg> ] ;
       [ ON DELETE <onDelete> ] ;
@@ -168,21 +168,24 @@
       [ <forcerefresh: FORCEREFRESH> ] ;
       [ <norefresh: NOREFRESH> ] ;
       [ <dblbffr: DOUBLEBUFFER> ] ;
+      [ <focus: NOFOCUSRECT, FOCUSRECT> ] ;
+      [ <plm: PAINTLEFTMARGIN> ] ;
    =>;
-             [ <oObj> := ] _OOHG_SelectSubClass( TOBrowse(), [ <subclass>() ] ): ;
-                Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, <widths>, ;
-                <Fields>, <value>, <fontname>, <fontsize>, <tooltip>, <{change}>, ;
-                <{dblclick}>, <aHeadClick>, <{gotfocus}>, <{lostfocus}>, <(workarea)> ,  ;
-                <.delete.>, <.style.>, <aImage>, <aJust>, <helpid>, <.bold.>, ;
-                <.italic.>, <.underline.>, <.strikeout.>, <.break.>, <backcolor>, ;
-                <fontcolor>, <.lock.>, <.inplace.>, <.novscroll.>, <.append.>, ;
-                <aReadOnly>, <aValidFields>, <aValidMessages>, <.edit.>, ;
-                <dynamicbackcolor>, <aWhenFields>, <dynamicforecolor>, <Picture>, <.rtl.>, ;
-                <{onappend}>, <{editcell}>, <editcontrols>, <replacefields>, <.reccount.>, ;
-                <columninfo>, ! <.noshowheaders.>, <{enter}>, <.disabled.>, <.notabstop.>, ;
-                <.invisible.>, <.descending.>, <{bWhenDel}>, <DelMsg>, <{onDelete}>, ;
-                <aHeaderImages>, <aImgAlign>, <.fullmove.>, <aSelectedColors>, <aEditKeys>, ;
-                if( <.forcerefresh.>, 0, if( <.norefresh.>, 1, nil ) ), <.dblbffr.> )
+      [ <oObj> := ] _OOHG_SelectSubClass( TOBrowse(), [ <subclass>() ] ): ;
+            Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, <widths>, ;
+            <Fields>, <value>, <fontname>, <fontsize>, <tooltip>, <{change}>, ;
+            <{dblclick}>, <aHeadClick>, <{gotfocus}>, <{lostfocus}>, <(workarea)> , ;
+            <.delete.>, <.style.>, <aImage>, <aJust>, <helpid>, <.bold.>, ;
+            <.italic.>, <.underline.>, <.strikeout.>, <.break.>, <backcolor>, ;
+            <fontcolor>, <.lock.>, <.inplace.>, <.novscroll.>, <.append.>, ;
+            <aReadOnly>, <aValidFields>, <aValidMessages>, <.edit.>, ;
+            <dynamicbackcolor>, <aWhenFields>, <dynamicforecolor>, <Picture>, <.rtl.>, ;
+            <{onappend}>, <{editcell}>, <editcontrols>, <replacefields>, <.reccount.>, ;
+            <columninfo>, ! <.noshowheaders.>, <{enter}>, <.disabled.>, <.notabstop.>, ;
+            <.invisible.>, <.descending.>, <{bWhenDel}>, <DelMsg>, <{onDelete}>, ;
+            <aHeaderImages>, <aImgAlign>, <.fullmove.>, <aSelectedColors>, <aEditKeys>, ;
+            if( <.forcerefresh.>, 0, if( <.norefresh.>, 1, nil ) ), <.dblbffr.>, ;
+            iif( #<focus> == "NOFOCUSRECT", .F., iif( #<focus> == "FOCUSRECT", .T., NIL ) ), <.plm.> )
 
 #command SET BROWSESYNC ON  => SetBrowseSync( .T. )
 #command SET BROWSESYNC OFF => SetBrowseSync( .F. )

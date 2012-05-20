@@ -1,5 +1,5 @@
 /*
- * $Id: h_comm.prg,v 1.3 2011-09-05 23:37:33 fyurisich Exp $
+ * $Id: h_comm.prg,v 1.4 2012-05-20 20:32:54 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -267,7 +267,7 @@ LOCAL pData, cLen, cType, FileName, Rows, Cols
 					pData := Data [i]
 					cLen := Alltrim(Str(Len(pData)))
 				Else
-               MsgOOHGError('SendData: Type Not Suported. Program terminated')
+               MsgOOHGError('SendData: Type Not Suported. Program Terminated.')
 				EndIf
 
 				cData := cData + '#DataBlock='	+ cType	+ ',' + cLen + chr(13) + chr(10)
@@ -308,7 +308,7 @@ LOCAL pData, cLen, cType, FileName, Rows, Cols
 					pData := Data [i] [j]
 					cLen := Alltrim(Str(Len(pData)))
 				Else
-               MsgOOHGError('SendData: Type Not Suported. Program terminated')
+               MsgOOHGError('SendData: Type Not Suported. Program Terminated.')
 				EndIf
 
 				cData := cData + '#DataBlock='	+ cType	+ ',' + cLen+ chr(13) + chr(10)
@@ -342,7 +342,7 @@ LOCAL pData, cLen, cType, FileName, Rows, Cols
 			pData := Data
 			cLen := Alltrim(Str(Len(pData)))
 		Else
-         MsgOOHGError( "SendData: Type Not Suported. Program terminated" )
+         MsgOOHGError( "SendData: Type Not Suported. Program Terminated." )
 		EndIf
 
 		cData := '#DataRows=0'		+ chr(13) + chr(10)

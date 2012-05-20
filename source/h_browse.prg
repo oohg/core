@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.92 2012-05-08 18:44:56 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.93 2012-05-20 20:32:54 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -150,7 +150,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lNoHeaders, onenter, lDisabled, lNoTabStop, lInvisible, ;
                lDescending, bDelWhen, DelMsg, onDelete, aHeaderImage, ;
                aHeaderImageAlign, FullMove, aSelectedColors, aEditKeys, ;
-               uRefresh, dblbffr ) CLASS TOBrowse
+               uRefresh, dblbffr, lFocusRect, lPLM ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local nWidth2, nCol2, oScroll, z
 
@@ -225,7 +225,7 @@ Local nWidth2, nCol2, oScroll, z
                    nil, nil, edit, backcolor, fontcolor, dynamicbackcolor, dynamicforecolor, aPicture, ;
                    lRtl, InPlace, editcontrols, readonly, valid, validmessages, editcell, ;
                    aWhenFields, lDisabled, lNoTabStop, lInvisible, lNoHeaders,, aHeaderImage, ;
-                   aHeaderImageAlign, FullMove, aSelectedColors, aEditKeys, , , dblbffr )
+                   aHeaderImageAlign, FullMove, aSelectedColors, aEditKeys, , , dblbffr, lFocusRect, lPLM )
 
    ::nWidth := w
 
@@ -669,7 +669,7 @@ Local _RecNo , m , hWnd, cWorkArea // , _DeltaScroll
 
    If _OOHG_ThisEventType == 'BROWSE_ONCHANGE'
       If hWnd == _OOHG_ThisControl:hWnd
-         MsgOOHGError( "BROWSE: Value property can't be changed inside ONCHANGE event. Program Terminated" )
+         MsgOOHGError( "BROWSE: Value property can't be changed inside ONCHANGE event. Program Terminated." )
       EndIf
    EndIf
 

@@ -1,5 +1,5 @@
 /*
- * $Id: i_grid.ch,v 1.21 2012-05-08 18:44:56 fyurisich Exp $
+ * $Id: i_grid.ch,v 1.22 2012-05-20 20:32:53 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -101,56 +101,56 @@
 ///////////////////////////////////////////////////////////////////////////////
 // GRID (STANDARD VERSION)
 ///////////////////////////////////////////////////////////////////////////////
-#command @ <row>,<col> GRID <name>       ;
-      [ OBJ <obj> ]                   ;
+#command @ <row>,<col> GRID <name> ;
+      [ OBJ <obj> ] ;
       [ <dummy1: OF, PARENT> <parent> ] ;
-      [ WIDTH <w> ]          ;
-      [ HEIGHT <h> ]          ;
-      [ HEADERS <headers> ]       ;
-      [ WIDTHS <widths> ]       ;
-      [ INPUTMASK <Picture> ]         ;
-      [ ITEMS <rows> ]       ;
-      [ VALUE <value> ]       ;
-      [ FONT <fontname> ]       ;
-      [ SIZE <fontsize> ]       ;
+      [ WIDTH <w> ] ;
+      [ HEIGHT <h> ] ;
+      [ HEADERS <headers> ] ;
+      [ WIDTHS <widths> ] ;
+      [ INPUTMASK <Picture> ] ;
+      [ ITEMS <rows> ] ;
+      [ VALUE <value> ] ;
+      [ FONT <fontname> ] ;
+      [ SIZE <fontsize> ] ;
       [ <bold : BOLD> ] ;
       [ <italic : ITALIC> ] ;
       [ <underline : UNDERLINE> ] ;
       [ <strikeout : STRIKEOUT> ] ;
-      [ TOOLTIP <tooltip> ]        ;
+      [ TOOLTIP <tooltip> ] ;
       [ BACKCOLOR <backcolor> ] ;
       [ FONTCOLOR <fontcolor> ] ;
       [ DYNAMICBACKCOLOR <dynamicbackcolor> ] ;
       [ DYNAMICFORECOLOR <dynamicforecolor> ] ;
-      [ ON GOTFOCUS <gotfocus> ]    ;
-      [ ON CHANGE <change> ]     ;
-      [ ON LOSTFOCUS <lostfocus> ]    ;
-      [ ON DBLCLICK <dblclick> ]     ;
-      [ ON HEADCLICK <aHeadClick> ]    ;
-      [ <edit : EDIT> ]       ;
-      [ <ownerdata: VIRTUAL> ]    ;
-      [ ITEMCOUNT <itemcount> ]   ;
-      [ ON QUERYDATA <dispinfo> ]    ;
-      [ <multiselect: MULTISELECT> ]   ;
-      [ <style: NOLINES> ]            ;
-      [ IMAGE <aImage> ]              ;
-      [ JUSTIFY <aJust> ]             ;
-      [ HELPID <helpid> ]       ;
-      [ <break: BREAK> ]       ;
-      [ <rtl: RTL> ]                  ;
-      [ <inplace: INPLACE> ]          ;
+      [ ON GOTFOCUS <gotfocus> ] ;
+      [ ON CHANGE <change> ] ;
+      [ ON LOSTFOCUS <lostfocus> ] ;
+      [ ON DBLCLICK <dblclick> ] ;
+      [ ON HEADCLICK <aHeadClick> ] ;
+      [ <edit : EDIT> ] ;
+      [ <ownerdata: VIRTUAL> ] ;
+      [ ITEMCOUNT <itemcount> ] ;
+      [ ON QUERYDATA <dispinfo> ] ;
+      [ <multiselect: MULTISELECT> ] ;
+      [ <style: NOLINES> ] ;
+      [ IMAGE <aImage> ] ;
+      [ JUSTIFY <aJust> ] ;
+      [ HELPID <helpid> ] ;
+      [ <break: BREAK> ] ;
+      [ <rtl: RTL> ] ;
+      [ <inplace: INPLACE> ] ;
       [ COLUMNCONTROLS <editcontrols> ] ;
-      [ READONLY <aReadOnly> ]    ;
-      [ VALID <aValidFields> ]   ;
+      [ READONLY <aReadOnly> ] ;
+      [ VALID <aValidFields> ] ;
       [ VALIDMESSAGES <aValidMessages> ] ;
-      [ ON EDITCELL <editcell> ]      ;
-      [ <noshowheaders: NOHEADERS> ]  ;
+      [ ON EDITCELL <editcell> ] ;
+      [ <noshowheaders: NOHEADERS> ] ;
       [ <dummy2: WHEN, COLUMNWHEN> <aWhenFields> ] ;
-      [ SUBCLASS <subclass> ]         ;
-      [ <disabled: DISABLED> ]        ;
-      [ <notabstop: NOTABSTOP> ]      ;
-      [ <invisible: INVISIBLE> ]      ;
-      [ ON ENTER <enter> ]            ;
+      [ SUBCLASS <subclass> ] ;
+      [ <disabled: DISABLED> ] ;
+      [ <notabstop: NOTABSTOP> ] ;
+      [ <invisible: INVISIBLE> ] ;
+      [ ON ENTER <enter> ] ;
       [ HEADERIMAGES <aHeaderImages> ] ;
       [ IMAGESALIGN <aImgAlign> ] ;
       [ <fullmove: FULLMOVE> ] ;
@@ -160,6 +160,8 @@
       [ <checkboxes: CHECKBOXES> ] ;
       [ ON CHECKCHANGE <checkchange> ] ;
       [ <dblbffr: DOUBLEBUFFER> ] ;
+      [ <focus: NOFOCUSRECT, FOCUSRECT> ] ;
+      [ <plm: PAINTLEFTMARGIN> ] ;
    =>;
       [ <obj> := ] _OOHG_SelectSubClass(iif( <.bycell.>, TGridByCell(), iif( <.multiselect.>, TGridMulti(), TGrid() ) ), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, ;
@@ -172,61 +174,62 @@
             <aReadOnly>, <aValidFields>, <aValidMessages>, <{editcell}>, ;
             <aWhenFields>, <.disabled.>, <.notabstop.>, <.invisible.>, ;
             ! <.noshowheaders.>, <{enter}>, <aHeaderImages>, <aImgAlign>, <.fullmove.>, ;
-            <aSelectedColors>, <aEditKeys>, <.checkboxes.>, <{checkchange}>, <.dblbffr.> )
+            <aSelectedColors>, <aEditKeys>, <.checkboxes.>, <{checkchange}>, <.dblbffr.>, ;
+            iif( #<focus> == "NOFOCUSRECT", .F., iif( #<focus> == "FOCUSRECT", .T., NIL ) ), <.plm.> )
 
 ///////////////////////////////////////////////////////////////////////////////
 // GRID (SPLITBOX VERSION)
 ///////////////////////////////////////////////////////////////////////////////
-#command GRID <name>       ;
-      [ OBJ <obj> ]                   ;
+#command GRID <name> ;
+      [ OBJ <obj> ] ;
       [ <dummy1: OF, PARENT> <parent> ] ;
-      [ WIDTH <w> ]          ;
-      [ HEIGHT <h> ]          ;
-      [ HEADERS <headers> ]       ;
-      [ WIDTHS <widths> ]       ;
-      [ INPUTMASK <Picture> ]         ;
-      [ ITEMS <rows> ]       ;
-      [ VALUE <value> ]       ;
-      [ FONT <fontname> ]       ;
-      [ SIZE <fontsize> ]       ;
+      [ WIDTH <w> ] ;
+      [ HEIGHT <h> ] ;
+      [ HEADERS <headers> ] ;
+      [ WIDTHS <widths> ] ;
+      [ INPUTMASK <Picture> ] ;
+      [ ITEMS <rows> ] ;
+      [ VALUE <value> ] ;
+      [ FONT <fontname> ] ;
+      [ SIZE <fontsize> ] ;
       [ <bold : BOLD> ] ;
       [ <italic : ITALIC> ] ;
       [ <underline : UNDERLINE> ] ;
       [ <strikeout : STRIKEOUT> ] ;
-      [ TOOLTIP <tooltip> ]        ;
+      [ TOOLTIP <tooltip> ] ;
       [ BACKCOLOR <backcolor> ] ;
       [ FONTCOLOR <fontcolor> ] ;
       [ DYNAMICBACKCOLOR <dynamicbackcolor> ] ;
       [ DYNAMICFORECOLOR <dynamicforecolor> ] ;
-      [ ON GOTFOCUS <gotfocus> ]    ;
-      [ ON CHANGE <change> ]     ;
-      [ ON LOSTFOCUS <lostfocus> ]    ;
-      [ ON DBLCLICK <dblclick> ]     ;
-      [ ON HEADCLICK <aHeadClick> ]    ;
-      [ <edit : EDIT> ]       ;
-      [ <ownerdata: VIRTUAL> ]    ;
-      [ ITEMCOUNT <itemcount> ]   ;
-      [ ON QUERYDATA <dispinfo> ]    ;
-      [ <multiselect: MULTISELECT> ]   ;
-      [ <style: NOLINES> ]            ;
-      [ IMAGE <aImage> ]              ;
-      [ JUSTIFY <aJust> ]             ;
-      [ HELPID <helpid> ]       ;
-      [ <break: BREAK> ]       ;
-      [ <rtl: RTL> ]                  ;
-      [ <inplace: INPLACE> ]          ;
+      [ ON GOTFOCUS <gotfocus> ] ;
+      [ ON CHANGE <change> ] ;
+      [ ON LOSTFOCUS <lostfocus> ] ;
+      [ ON DBLCLICK <dblclick> ] ;
+      [ ON HEADCLICK <aHeadClick> ] ;
+      [ <edit : EDIT> ] ;
+      [ <ownerdata: VIRTUAL> ] ;
+      [ ITEMCOUNT <itemcount> ] ;
+      [ ON QUERYDATA <dispinfo> ] ;
+      [ <multiselect: MULTISELECT> ] ;
+      [ <style: NOLINES> ] ;
+      [ IMAGE <aImage> ] ;
+      [ JUSTIFY <aJust> ] ;
+      [ HELPID <helpid> ] ;
+      [ <break: BREAK> ] ;
+      [ <rtl: RTL> ] ;
+      [ <inplace: INPLACE> ] ;
       [ COLUMNCONTROLS <editcontrols> ] ;
-      [ READONLY <aReadOnly> ]    ;
-      [ VALID <aValidFields> ]   ;
+      [ READONLY <aReadOnly> ] ;
+      [ VALID <aValidFields> ] ;
       [ VALIDMESSAGES <aValidMessages> ] ;
-      [ ON EDITCELL <editcell> ]      ;
-      [ <noshowheaders: NOHEADERS> ]  ;
+      [ ON EDITCELL <editcell> ] ;
+      [ <noshowheaders: NOHEADERS> ] ;
       [ <dummy2: WHEN, COLUMNWHEN> <aWhenFields> ] ;
-      [ SUBCLASS <subclass> ]         ;
-      [ <disabled: DISABLED> ]        ;
-      [ <notabstop: NOTABSTOP> ]      ;
-      [ <invisible: INVISIBLE> ]      ;
-      [ ON ENTER <enter> ]            ;
+      [ SUBCLASS <subclass> ] ;
+      [ <disabled: DISABLED> ] ;
+      [ <notabstop: NOTABSTOP> ] ;
+      [ <invisible: INVISIBLE> ] ;
+      [ ON ENTER <enter> ] ;
       [ HEADERIMAGES <aHeaderImages> ] ;
       [ IMAGESALIGN <aImgAlign> ] ;
       [ <fullmove: FULLMOVE> ] ;
@@ -236,6 +239,8 @@
       [ <checkboxes: CHECKBOXES> ] ;
       [ ON CHECKCHANGE <checkchange> ] ;
       [ <dblbffr: DOUBLEBUFFER> ] ;
+      [ <focus: NOFOCUSRECT, FOCUSRECT> ] ;
+      [ <plm: PAINTLEFTMARGIN> ] ;
    =>;
       [ <obj> := ] _OOHG_SelectSubClass(iif( <.bycell.>, TGridByCell(), iif( <.multiselect.>, TGridMulti(), TGrid() ) ), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, , , <w>, <h>, <headers>, ;
@@ -248,4 +253,5 @@
             <aReadOnly>, <aValidFields>, <aValidMessages>, <{editcell}>, ;
             <aWhenFields>, <.disabled.>, <.notabstop.>, <.invisible.>, ;
             ! <.noshowheaders.>, <{enter}>, <aHeaderImages>, <aImgAlign>, <.fullmove.>, ;
-            <aSelectedColors>, <aEditKeys>, <.checkboxes.>, <{checkchange}>, <.dblbffr.> )
+            <aSelectedColors>, <aEditKeys>, <.checkboxes.>, <{checkchange}>, <.dblbffr.>, ;
+            iif( #<focus> == "NOFOCUSRECT", .F., iif( #<focus> == "FOCUSRECT", .T., NIL ) ), <.plm.> )

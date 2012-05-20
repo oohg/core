@@ -1,11 +1,78 @@
 /*
- * $Id: ChangeLog,v 1.925 2012-05-19 02:05:22 guerra000 Exp $
+ * $Id: ChangeLog,v 1.926 2012-05-20 20:32:51 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-05-20 17:32 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * doc/classes.txt
+     * Updated.
+   * include/i_altsyntax.ch
+     + Added support for FOCUSRECT, NOFOCUSRECT and PAINTLEFTMARGIN clauses
+       in DEFINE GRID, DEFINE BROWSE and DEFINE XBROWSE.
+   * include/i_controlmisc.ch
+     * Error message formatting.
+   * include/i_hmg_compat.ch
+     + Added missing clauses to SPLITBOX BROWSE definition.
+     * Changed definition of BTNTEXTBOX.
+       TODO: analize some clauses.
+     * Formatting.
+   * include/i_checklist.ch
+     * Formatting.
+   * include/i_browse.ch
+   * include/i_grid.ch
+   * include/i_xbrowse.ch
+     + Added support for FOCUSRECT, NOFOCUSRECT and PAINTLEFTMARGIN clauses.
+     * Formatting.
+   * source/h_init.prg
+     * MINIGUI in messages was substituted by OOHG.
+     * Formatting.
+   * source/h_splitbox.prg
+   * source/h_toolbar.prg
+   * source/h_tree.prg
+   * source/h_windows.prg
+   * source/h_graph.prg
+   * source/h_form.prg
+   * source/h_comm.prg
+   * source/h_combo.prg
+     * Error message formatting.
+   * source/h_browse.prg
+     + Added support for FOCUSRECT, NOFOCUSRECT and PAINTLEFTMARGIN clauses.
+     + Added new parameters in calls to TGrid():Define().
+     * Error message formatting.
+   * source/h_checklist.prg
+     + Added new parameters in calls to TGrid():Define() and
+       TGrid_Notify_CustomDraw(). By definition, CheckList controls have
+       NOFOCUSRECT .T. and PAINTLEFTMARGIN .F.
+     - Deleted call to ListView_RemoveFocusRect() in NM_KILLFOCUS event.
+   * source/h_xbrowse.prg
+     + Added support for FOCUSRECT, NOFOCUSRECT and PAINTLEFTMARGIN clauses.
+     + Added new parameters in calls to TGrid():Define().
+   * source/h_grid.prg
+     + Added lFocusRect, lNoGrid and lPLM DATAs.
+     + Added support for FOCUSRECT, NOFOCUSRECT and PAINTLEFTMARGIN clauses.
+       FOCUSRECT defaults to .T. for TGrid and TGridMulti classes, and to
+       .F. for TGridByCell class.
+       FOCUSRECT .T. forces the grid to display a the FocusRect around the
+       selected item, and .F. forces to hide it.
+       PAINTLEFTMARGIN defaults to .F. if grid has CHECKBOXES clause.
+       PAINTLEFTMARGIN and CHECKBOXES clauses can't be used simultaneously.
+       PAINTLEFTMARGIN forces the grid to paint the little empty space left
+       by Windows when painting the first column.
+     + Added new parameters in calls to TGrid():Define2() and
+       TGrid_Notify_CustomDraw().
+     - Deleted call to ListView_RemoveFocusRect() in NM_KILLFOCUS and
+       NM_SETFOCUS events.
+     - Deleted ListView_RemoveFocusRect().
+     - Deleted UIS* #defines.
+     + Added new parameters TGrid_Notify_CustomDraw().
+     ! Fixed the partially erased FocusRect by deleting the routine to
+       manually drawing the text of the first column.
+     ! Changed the way of handling CUSTOMDRAW notifications to support
+       FOCUSRECT, NOFOCUSRECT and PAINTLEFTMARGIN clauses.
 
 2012-05-18 21:10 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
    * samples/oohg/oohgrecord/px.prg

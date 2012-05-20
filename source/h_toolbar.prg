@@ -1,5 +1,5 @@
 /*
- * $Id: h_toolbar.prg,v 1.34 2012-03-06 13:28:53 fyurisich Exp $
+ * $Id: h_toolbar.prg,v 1.35 2012-05-20 20:32:54 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -335,7 +335,7 @@ Empty( FLAT )
    ASSIGN Caption       VALUE Caption TYPE "CM" DEFAULT ""
 
    If valtype( ProcedureName ) == "B" .and. WHOLEDROPDOWN
-      MsgOOHGError( "Action and WholeDropDown clauses can't be used simultaneously. Program terminated" )
+      MsgOOHGError( "Action and WholeDropDown clauses can't be used simultaneously. Program Terminated." )
    EndIf
 
    id := _GetId()

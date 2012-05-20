@@ -1,5 +1,5 @@
 /*
- * $Id: h_checklist.prg,v 1.6 2012-05-14 23:52:23 fyurisich Exp $
+ * $Id: h_checklist.prg,v 1.7 2012-05-20 20:32:54 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -193,7 +193,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                editcontrols, readonly, valid, validmessages, editcell, ;
                aWhenFields, lDisabled, lNoTabStop, lInvisible, lHasHeaders, ;
                onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
-               aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr ) CLASS TGrid
+               aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
+               lFocusRect, lPLM ) CLASS TGrid
 */
    ::Super:Define( ControlName, ParentForm, x, y, w, h, aHdr, aWidth, ;
                    {}, Nil, fontname, fontsize, tooltip, change, Nil, ;
@@ -204,7 +205,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                    aEdC, .T., Nil, Nil, Nil, ;
                    Nil, lDisabled, lNoTabStop, lInvisible, .F., ;
                    Nil, Nil, Nil, .F., ;
-                   aSelectedColors, Nil, .T., Nil, dblbffr )
+                   aSelectedColors, Nil, .T., Nil, dblbffr, .F., .F. )
 
    aEval( aRows, { |u| ::AddItem( u ) } )
 
@@ -317,7 +318,7 @@ Local uValue, uRet, nItem
 
       // this is the same as TGrid's
       uValue := ::FirstSelectedItem
-      uRet := TGrid_Notify_CustomDraw( Self, lParam, .F., uValue, 0, ::lCheckBoxes )
+      uRet := TGrid_Notify_CustomDraw( Self, lParam, .F., uValue, 0, ::lCheckBoxes, ::lFocusRect, ::lNoGrid, ::lPLM )
       ListView_SetCursel( ::hWnd, uValue )
       Return uRet
 
@@ -370,7 +371,6 @@ Local uValue, uRet, nItem
       EndIf
 
    ElseIf nNotify == NM_KILLFOCUS
-      ListView_RemoveFocusRect( ::hWnd )
       Return ::DoLostFocus()
 
    ElseIf nNotify == NM_SETFOCUS

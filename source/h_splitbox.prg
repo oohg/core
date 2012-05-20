@@ -1,5 +1,5 @@
 /*
- * $Id: h_splitbox.prg,v 1.16 2011-11-09 02:03:31 fyurisich Exp $
+ * $Id: h_splitbox.prg,v 1.17 2012-05-20 20:32:54 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -129,7 +129,7 @@ Local ControlHandle, nStyle
    ::SetForm( , ParentForm,,,,,, lRtl )
 
    If ::Container != nil .AND. ! ValidHandler( ::ContainerhWndValue )
-      MsgOOHGError( "SPLITBOX can't be defined inside Tab control. Program terminated." )
+      MsgOOHGError( "SPLITBOX can't be defined inside Tab control. Program Terminated." )
    EndIf
 
    ASSIGN ::lInverted VALUE inverted   TYPE "L"

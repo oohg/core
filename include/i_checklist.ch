@@ -1,5 +1,5 @@
 /*
- * $Id: i_checklist.ch,v 1.2 2012-05-08 18:44:56 fyurisich Exp $
+ * $Id: i_checklist.ch,v 1.3 2012-05-20 20:32:53 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -52,46 +52,46 @@
 #define CHKL_JTFY_JUSTIFYMASK    3
 
 #command @ <row>,<col> CHECKLIST <name> ;
-            [ OBJ <obj> ] ;
-            [ SUBCLASS <subclass> ] ;
-            [ <dummy1: OF, PARENT> <parent> ] ;
-            [ WIDTH <w> ] ;
-            [ HEIGHT <h> ] ;
-            [ ITEMS <aRows> ] ;
-            [ IMAGE <aImage> ] ;
-            [ VALUE <value> ] ;
-            [ FONT <fontname> ] ;
-            [ SIZE <fontsize> ] ;
-            [ <bold: BOLD> ] ;
-            [ <italic: ITALIC> ] ;
-            [ <underline: UNDERLINE> ] ;
-            [ <strikeout: STRIKEOUT> ] ;
-            [ JUSTIFY <just> ] ;
-            [ <rtl: RTL> ] ;
-            [ BACKCOLOR <backcolor> ] ;
-            [ FONTCOLOR <fontcolor> ] ;
-            [ SELECTEDCOLORS <aSelectedColors> ] ;
-            [ TOOLTIP <tooltip> ] ;
-            [ ON CHANGE <change> ] ;
-            [ ON GOTFOCUS <gotfocus> ] ;
-            [ ON LOSTFOCUS <lostfocus> ] ;
-            [ <break: BREAK> ] ;
-            [ HELPID <helpid> ] ;
-            [ <disabled: DISABLED> ] ;
-            [ <notabstop: NOTABSTOP> ] ;
-            [ <invisible: INVISIBLE> ] ;
-            [ <sort: SORT> ] ;
-            [ <descending: DESCENDING> ] ;
-            [ <dblbffr: DOUBLEBUFFER> ] ;
+      [ OBJ <obj> ] ;
+      [ SUBCLASS <subclass> ] ;
+      [ <dummy1: OF, PARENT> <parent> ] ;
+      [ WIDTH <w> ] ;
+      [ HEIGHT <h> ] ;
+      [ ITEMS <aRows> ] ;
+      [ IMAGE <aImage> ] ;
+      [ VALUE <value> ] ;
+      [ FONT <fontname> ] ;
+      [ SIZE <fontsize> ] ;
+      [ <bold: BOLD> ] ;
+      [ <italic: ITALIC> ] ;
+      [ <underline: UNDERLINE> ] ;
+      [ <strikeout: STRIKEOUT> ] ;
+      [ JUSTIFY <just> ] ;
+      [ <rtl: RTL> ] ;
+      [ BACKCOLOR <backcolor> ] ;
+      [ FONTCOLOR <fontcolor> ] ;
+      [ SELECTEDCOLORS <aSelectedColors> ] ;
+      [ TOOLTIP <tooltip> ] ;
+      [ ON CHANGE <change> ] ;
+      [ ON GOTFOCUS <gotfocus> ] ;
+      [ ON LOSTFOCUS <lostfocus> ] ;
+      [ <break: BREAK> ] ;
+      [ HELPID <helpid> ] ;
+      [ <disabled: DISABLED> ] ;
+      [ <notabstop: NOTABSTOP> ] ;
+      [ <invisible: INVISIBLE> ] ;
+      [ <sort: SORT> ] ;
+      [ <descending: DESCENDING> ] ;
+      [ <dblbffr: DOUBLEBUFFER> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TCheckList(), [ <subclass>() ] ): ;
-         Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <aRows>, ;
-                 <value>, <fontname>, <fontsize>, <tooltip>, <{change}>, ;
-                 <{gotfocus}>, <{lostfocus}>, <aImage>, <just>, <.break.>, ;
-                 <helpid>, <.bold.>, <.italic.>, <.underline.>, ;
-                 <.strikeout.>, <backcolor>, <fontcolor>, <.rtl.>, ;
-                 <.disabled.>, <.notabstop.>, <.invisible.>, <.sort.>, ;
-                 <.descending.>, <aSelectedColors>, <.dblbffr.> )
+            Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <aRows>, ;
+            <value>, <fontname>, <fontsize>, <tooltip>, <{change}>, ;
+            <{gotfocus}>, <{lostfocus}>, <aImage>, <just>, <.break.>, ;
+            <helpid>, <.bold.>, <.italic.>, <.underline.>, ;
+            <.strikeout.>, <backcolor>, <fontcolor>, <.rtl.>, ;
+            <.disabled.>, <.notabstop.>, <.invisible.>, <.sort.>, ;
+            <.descending.>, <aSelectedColors>, <.dblbffr.> )
 
 /*
  * EOF

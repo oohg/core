@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.64 2012-04-26 19:34:56 fyurisich Exp $
+ * $Id: h_combo.prg,v 1.65 2012-05-20 20:32:54 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -178,16 +178,16 @@ Local ControlHandle, WorkArea, cField, nStyle
    ::SetFont(, , bold, italic, underline, strikeout )
 
    If ValType( ItemSource ) != 'U' .And. Sort == .T.
-      MsgOOHGError( "Sort and ItemSource clauses can't be used simultaneously. Program Terminated" )
+      MsgOOHGError( "Sort and ItemSource clauses can't be used simultaneously. Program Terminated." )
    EndIf
 
    If ValType( ValueSource ) != 'U' .And. Sort == .T.
-      MsgOOHGError( "Sort and ValueSource clauses can't be used simultaneously. Program Terminated" )
+      MsgOOHGError( "Sort and ValueSource clauses can't be used simultaneously. Program Terminated." )
    EndIf
 
    If ValType( ItemSource ) != 'U'
       If ! '->' $ ItemSource
-         MsgOOHGError( "Control: " + ControlName + " Of " + ParentForm + " : You must specify a fully qualified field name. Program Terminated" )
+         MsgOOHGError( "Control: " + ControlName + " Of " + ParentForm + " : You must specify a fully qualified field name. Program Terminated." )
       Else
          WorkArea := Left( ItemSource, At( '->', ItemSource ) - 1 )
          cField := Right( ItemSource, Len( ItemSource ) - At( '->', ItemSource ) - 1 )

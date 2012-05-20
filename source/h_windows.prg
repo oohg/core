@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.232 2012-02-13 15:59:00 fyurisich Exp $
+ * $Id: h_windows.prg,v 1.233 2012-05-20 20:32:54 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1139,7 +1139,7 @@ METHOD SearchParent( uParent ) CLASS TWindow
 Local nPos
    If ValType( uParent ) $ "CM" .AND. ! Empty( uParent )
       If ! _IsWindowDefined( uParent )
-         MsgOOHGError( "Window: "+ uParent + " is not defined. Program terminated." )
+         MsgOOHGError( "Window: "+ uParent + " is not defined. Program Terminated." )
       Else
          uParent := GetFormObject( uParent )
       Endif
@@ -1151,7 +1151,7 @@ Local nPos
 
    If ::lInternal
       If ! HB_IsObject( uParent )
-         MsgOOHGError( "Window: No window name specified. Program terminated." )
+         MsgOOHGError( "Window: No window name specified. Program Terminated." )
       EndIf
 
       // NOTE: For INTERNALs, sets ::Parent and ::Container

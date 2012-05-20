@@ -1,5 +1,5 @@
 /*
- * $Id: i_controlmisc.ch,v 1.6 2012-04-03 22:51:14 fyurisich Exp $
+ * $Id: i_controlmisc.ch,v 1.7 2012-05-20 20:32:53 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -206,7 +206,7 @@
 #xcommand EXIT PROCEDURE <name> ;
    => ;
          INIT PROCEDURE <name> ;;
-         MsgStop ('EXIT PROCEDURE Statement is not Supported in ooHG. Use Main Window ON RELEASE Event Procedure Instead. Program Terminated','ooHG Error') ;;
+         MsgStop ('EXIT PROCEDURE Statement is not Supported in ooHG. Use Main Window ON RELEASE Event Procedure Instead. Program Terminated.','ooHG Error') ;;
          ExitProcess()
 
 #translate SET SAMEENTERDBLCLICK OFF ;

@@ -1,5 +1,5 @@
 /*
- * $Id: h_graph.prg,v 1.9 2012-05-02 21:53:16 fyurisich Exp $
+ * $Id: h_graph.prg,v 1.10 2012-05-20 20:32:54 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -389,7 +389,7 @@ Local oWnd := GetFormObject( parent )
       lError := .T.
    EndIf
    If lError
-      MsgOOHGError( "DRAW GRAPH: Graph type is not valid. Program terminated", "MiniGUI Error" )
+      MsgOOHGError( "DRAW GRAPH: Graph type is not valid. Program Terminated." )
    EndIf
 
    If ! lLegends
@@ -398,7 +398,7 @@ Local oWnd := GetFormObject( parent )
 
    If ( Len( aSeries ) != Len( aData ) ) .or. ;
       ( Len( aSeries ) != Len( aColors ) )
-      MsgOOHGError( "DRAW GRAPH: 'Series' / 'SerieNames' / 'Colors' Arrays size mismatch. Program terminated", "MiniGUI Error" )
+      MsgOOHGError( "DRAW GRAPH: 'Series' / 'SerieNames' / 'Colors' Arrays size mismatch. Program Terminated." )
    EndIf
 
    If _IsControlDefined( 'Graph_Title', parent )

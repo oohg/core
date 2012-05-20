@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.163 2012-05-14 23:52:23 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.164 2012-05-20 20:32:54 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -140,6 +140,9 @@ CLASS TGrid FROM TControl
    DATA aEditKeys             INIT Nil
    DATA lCheckBoxes           INIT .F.
    DATA OnCheckChange         INIT Nil
+   DATA lFocusRect            INIT .T.
+   DATA lNoGrid               INIT .F.
+   DATA lPLM                  INIT .F.
 
    METHOD Define
    METHOD Define2
@@ -214,7 +217,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                editcontrols, readonly, valid, validmessages, editcell, ;
                aWhenFields, lDisabled, lNoTabStop, lInvisible, lHasHeaders, ;
                onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
-               aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr ) CLASS TGrid
+               aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
+               lFocusRect, lPLM ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local nStyle := LVS_SINGLESEL
 
@@ -227,7 +231,8 @@ Local nStyle := LVS_SINGLESEL
               inplace, editcontrols, readonly, valid, validmessages, ;
               editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
               lHasHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
-              aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr )
+              aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
+              lFocusRect, lPLM )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -240,7 +245,8 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                 inplace, editcontrols, readonly, valid, validmessages, ;
                 editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
                 lHasHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
-                aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr ) CLASS TGrid
+                aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
+                lFocusRect, lPLM ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local ControlHandle, aImageList, i
 
@@ -269,8 +275,14 @@ Local ControlHandle, aImageList, i
    ASSIGN ::aJust       VALUE aJust       TYPE "A"
    ASSIGN ::Picture     VALUE aPicture    TYPE "A"
 
-   ASSIGN nogrid        VALUE nogrid      TYPE "L" DEFAULT .F.
-   ASSIGN ::lCheckBoxes VALUE lCheckBoxes TYPE "L"
+   ASSIGN ::lNoGrid     VALUE nogrid      TYPE "L" DEFAULT .F.
+   ASSIGN ::lCheckBoxes VALUE lCheckBoxes TYPE "L" DEFAULT .F.
+   ASSIGN ::lFocusRect  VALUE lFocusRect  TYPE "L" DEFAULT .T.
+   ASSIGN ::lPLM        VALUE lPLM        TYPE "L" DEFAULT .F.
+
+   If ::lCheckBoxes .AND. ::lPLM
+      MsgOOHGError( "CHECKBOXES and PAINTLEFTMARGIN clauses can't be used simultaneously. Program Terminated." )
+   EndIf
 
    nStyle := ::InitStyle( nStyle,, lInvisible, lNoTabStop, lDisabled ) + ;
              If( HB_IsLogical( lHasHeaders ) .AND. ! lHasHeaders, LVS_NOCOLUMNHEADER, 0 )
@@ -290,7 +302,7 @@ Local ControlHandle, aImageList, i
    aEval( ::Picture, { |x,i| ::Picture[ i ] := If( ( ValType( x ) $ "CM" .AND. ! Empty( x ) ) .OR. HB_IsLogical( x ), x, Nil ) } )
 
    ::SetSplitBoxInfo( Break )
-   ControlHandle := InitListView( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, '', 0, If( nogrid, 0, 1 ), ownerdata, itemcount, nStyle, ::lRtl, ::lCheckBoxes, lDblBffr )
+   ControlHandle := InitListView( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, '', 0, If( ::lNoGrid, 0, 1 ), ownerdata, itemcount, nStyle, ::lRtl, ::lCheckBoxes, lDblBffr )
 
    If HB_IsArray( aImage )
 //      aImageList := ImageList_Init( aImage, CLR_NONE, LR_LOADTRANSPARENT )
@@ -1675,7 +1687,7 @@ Local lvc, _ThisQueryTemp, nvkey, uValue, uRet
 
    If nNotify == NM_CUSTOMDRAW
       uValue := ::FirstSelectedItem
-      uRet := TGrid_Notify_CustomDraw( Self, lParam, .F., uValue, 0, ::lCheckBoxes )
+      uRet := TGrid_Notify_CustomDraw( Self, lParam, .F., uValue, 0, ::lCheckBoxes, ::lFocusRect, ::lNoGrid, ::lPLM )
       ListView_SetCursel( ::hWnd, uValue )
       Return uRet
 
@@ -1793,9 +1805,6 @@ Local lvc, _ThisQueryTemp, nvkey, uValue, uRet
          // skip default action
          Return 1
       EndIf
-
-   ElseIf nNotify == NM_KILLFOCUS .OR. nNotify == NM_SETFOCUS
-      ListView_RemoveFocusRect( ::hWnd )
 
    EndIf
 
@@ -2162,7 +2171,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                editcontrols, readonly, valid, validmessages, editcell, ;
                aWhenFields, lDisabled, lNoTabStop, lInvisible, lHasHeaders, ;
                onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
-               aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr ) CLASS TGridMulti
+               aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
+               lFocusRect, lPLM ) CLASS TGridMulti
 *-----------------------------------------------------------------------------*
 Local nStyle := 0
 
@@ -2175,7 +2185,8 @@ Local nStyle := 0
               inplace, editcontrols, readonly, valid, validmessages, ;
               editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
               lHasHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
-               aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr )
+              aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
+              lFocusRect, lPLM )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -2416,11 +2427,13 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                editcontrols, readonly, valid, validmessages, editcell, ;
                aWhenFields, lDisabled, lNoTabStop, lInvisible, lHasHeaders, ;
                onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
-               aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr ) CLASS TGridByCell
+               aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
+               lFocusRect, lPLM ) CLASS TGridByCell
 *-----------------------------------------------------------------------------*
 Local nStyle := LVS_SINGLESEL
 
    InPlace := .T.
+   ASSIGN lFocusRect VALUE lFocusRect TYPE "L" DEFAULT .F.
 
    ::Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               aRows, value, fontname, fontsize, tooltip, change, dblclick, ;
@@ -2431,7 +2444,8 @@ Local nStyle := LVS_SINGLESEL
               InPlace, editcontrols, readonly, valid, validmessages, ;
               editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
               lHasHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
-              aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr )
+              aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
+              lFocusRect, lPLM )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -2925,7 +2939,7 @@ Local nvkey, uRet, aValue, nItem
 
    If nNotify == NM_CUSTOMDRAW
       aValue := ::Value
-      uRet := TGrid_Notify_CustomDraw( Self, lParam, .T., aValue[ 1 ], aValue[ 2 ], ::lCheckBoxes )
+      uRet := TGrid_Notify_CustomDraw( Self, lParam, .T., aValue[ 1 ], aValue[ 2 ], ::lCheckBoxes, ::lFocusRect, ::lNoGrid, ::lPLM )
       ListView_SetCursel( ::hWnd, aValue[ 1 ] )
       Return uRet
 
@@ -3928,9 +3942,6 @@ EXTERN GetGridVKey, TGrid_Notify_CustomDraw
    #define LVS_EX_DOUBLEBUFFER 0x00010000
 #endif
 
-#define UIS_SET        1
-#define UISF_HIDEFOCUS 0x1
-
 #define s_Super s_TControl
 
 // -----------------------------------------------------------------------------
@@ -4678,11 +4689,6 @@ HB_FUNC( LISTVIEWSETMULTISEL )
    }
 }
 
-HB_FUNC( LISTVIEW_REMOVEFOCUSRECT )
-{
-   SendMessage( HWNDparam( 1 ), WM_CHANGEUISTATE, UISF_HIDEFOCUS * 65536 + UIS_SET, 0 );
-}
-
 HB_FUNC( LISTVIEWGETITEMROW )
 {
    POINT point;
@@ -4984,17 +4990,15 @@ static int TGrid_Notify_CustomDraw_GetSelColor( PHB_ITEM pSelf, unsigned int x )
    return 0;
 }
 
-int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iRow, int iCol, BOOL bCheckBoxes )
+int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iRow, int iCol, BOOL bCheckBoxes, BOOL bFocusRect, BOOL bNoGrid, BOOL bPLM )
 {
    LPNMLVCUSTOMDRAW lplvcd;
-   int x, y, align;
+   int x, y;
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
    RECT rect, rcIcon, rcText, rcBack;
    HBRUSH hBrush;
    LV_ITEM LI;
-   COLORREF FontColor, BackColor;
    char buffer[ 1024 ];
-   LV_COLUMN COL;
 
    lplvcd = ( LPNMLVCUSTOMDRAW ) lParam;
 
@@ -5023,7 +5027,7 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
       ListView_GetItem( lplvcd->nmcd.hdr.hwndFrom, &LI );
       buffer[ 1023 ] = 0;
 
-      // Get text's color and background color
+      // Get subitem's row (y) and col (x)
       x = lplvcd->iSubItem + 1;
       y = lplvcd->nmcd.dwItemSpec + 1;
 
@@ -5032,17 +5036,12 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
        * subitem is selected when ListView control has LVS_SHOWSELALWAYS style.
        * See http://msdn.microsoft.com/en-us/library/bb775483(v=vs.85).aspx
        */
+
+      // Get text's color and background color
       if( LI.state & LVIS_SELECTED )
       {
-         lplvcd->nmcd.uItemState -= CDIS_SELECTED;
-
          if( bByCell )
          {
-            if( LI.state & LVIS_FOCUSED )
-            {
-               lplvcd->nmcd.uItemState -= CDIS_FOCUS;
-            }
-
             if( ( y == iRow ) && ( x == iCol ) )
             {
                if( GetFocus() == lplvcd->nmcd.hdr.hwndFrom )
@@ -5080,10 +5079,6 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
          }
          else
          {
-            if( LI.state & LVIS_FOCUSED )
-            {
-               lplvcd->nmcd.uItemState -= CDIS_FOCUS;
-            }
             if( GetFocus() == lplvcd->nmcd.hdr.hwndFrom )
             {
                lplvcd->clrText   = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 1 );
@@ -5102,61 +5097,23 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
          lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetColor( pSelf, x, y, s_GridBackColor, s_BackColor, COLOR_WINDOW );
       }
 
-      // Is first subitem and has no image nor checkbox?
-      if( ( x == 1 ) && ( LI.iImage == -1 ) && ( ! bCheckBoxes ) )
+      if( LI.state & LVIS_SELECTED )
       {
-         // Get icon's rect and save for later use
-         ListView_GetSubItemRect( lplvcd->nmcd.hdr.hwndFrom, lplvcd->nmcd.dwItemSpec, lplvcd->iSubItem, LVIR_ICON, &rect );
-         rcIcon = rect;
-
-         // Get label's rect and save for later use
-         ListView_GetSubItemRect( lplvcd->nmcd.hdr.hwndFrom, lplvcd->nmcd.dwItemSpec, lplvcd->iSubItem, LVIR_LABEL, &rect );
-         rcText = rect;
-
-         // Calculate area for background and paint it
-         rcBack.top = rcIcon.top;
-         rcBack.left = 0;
-         rcBack.bottom = rcIcon.bottom - 1;
-         rcBack.right = rcText.right;
-
-         hBrush = CreateSolidBrush( lplvcd->clrTextBk );
-         FillRect( lplvcd->nmcd.hdc, &rcBack, hBrush );
-         DeleteObject( hBrush );
-
-         // Adjust label's rect to get rid of empty space
-         rcText.left = rcIcon.left;
-
-         // Get text alignment
-         COL.mask = LVCF_FMT;
-         ListView_GetColumn( lplvcd->nmcd.hdr.hwndFrom, lplvcd->iSubItem, &COL );
-
-         switch( COL.fmt & LVCFMT_JUSTIFYMASK )
-         {
-            case LVCFMT_RIGHT:
-               align = DT_RIGHT;
-               rcText.right = rcText.right - 5;
-               break;
-            case LVCFMT_CENTER:
-               align = DT_CENTER;
-               break;
-            default:                 // LVCFMT_LEFT
-              align = DT_LEFT;
-              break;
-         }
-
-         // Draw text
-         FontColor = SetTextColor( lplvcd->nmcd.hdc, lplvcd->clrText );
-         BackColor = SetBkColor( lplvcd->nmcd.hdc, lplvcd->clrTextBk );
-
-         DrawText( lplvcd->nmcd.hdc, buffer, strlen( buffer ), &rcText, align | DT_VCENTER | DT_SINGLELINE | DT_END_ELLIPSIS );
-
-         SetTextColor( lplvcd->nmcd.hdc, FontColor );
-         SetBkColor( lplvcd->nmcd.hdc, BackColor );
-
-         return CDRF_SKIPDEFAULT;
+         lplvcd->nmcd.uItemState -= CDIS_SELECTED;
       }
 
-      return CDRF_NEWFONT | CDRF_NOTIFYPOSTPAINT;
+      if( GetFocus() == lplvcd->nmcd.hdr.hwndFrom )
+      {
+         if ( LI.state & LVIS_FOCUSED )
+         {
+            if( ! bFocusRect )
+            {
+               lplvcd->nmcd.uItemState -= CDIS_FOCUS;
+            }
+         }
+      }
+
+      return CDRF_DODEFAULT | CDRF_NOTIFYPOSTPAINT;
    }
    else if( lplvcd->nmcd.dwDrawStage == ( CDDS_SUBITEM | CDDS_ITEMPOSTPAINT ) )
    {
@@ -5170,50 +5127,16 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
       LI.iSubItem = lplvcd->iSubItem;
       ListView_GetItem( lplvcd->nmcd.hdr.hwndFrom, &LI );
 
-      // Subitem has image?
-      if( LI.iImage != -1 )
-      {
-         // Get background color
-         x = lplvcd->iSubItem + 1;
-         y = lplvcd->nmcd.dwItemSpec + 1;
+      // Get background color
+      x = lplvcd->iSubItem + 1;
+      y = lplvcd->nmcd.dwItemSpec + 1;
 
-         /*
-          * Can't use (lplvcd->nmcd.uItemState | CDIS_SELECTED) to tell if the
-          * item is selected when ListView control has LVS_SHOWSELALWAYS style.
-          * See http://msdn.microsoft.com/en-us/library/bb775483(v=vs.85).aspx
-          */
-         if( LI.state & LVIS_SELECTED )
+      // Get text's color and background color
+      if( LI.state & LVIS_SELECTED )
+      {
+         if( bByCell )
          {
-            if( bByCell )
-            {
-               if( ( y == iRow ) && ( x == iCol ) )
-               {
-                  if( GetFocus() == lplvcd->nmcd.hdr.hwndFrom )
-                  {
-                     lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 2 );
-                  }
-                  else
-                  {
-                     lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 4 );
-                  }
-               }
-               else
-               {
-                  if( GetFocus() == lplvcd->nmcd.hdr.hwndFrom )
-                  {
-                     lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 6 );
-                  }
-                  else
-                  {
-                     lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 8 );
-                  }
-                  if( lplvcd->clrTextBk == (COLORREF) -1 )
-                  {
-                     lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetColor( pSelf, x, y, s_GridBackColor, s_BackColor, COLOR_WINDOW );
-                  }
-               }
-            }
-            else
+            if( ( y == iRow ) && ( x == iCol ) )
             {
                if( GetFocus() == lplvcd->nmcd.hdr.hwndFrom )
                {
@@ -5224,20 +5147,50 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
                   lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 4 );
                }
             }
+            else
+            {
+               if( GetFocus() == lplvcd->nmcd.hdr.hwndFrom )
+               {
+                  lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 6 );
+               }
+               else
+               {
+                  lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 8 );
+               }
+               if( lplvcd->clrTextBk == (COLORREF) -1 )
+               {
+                  lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetColor( pSelf, x, y, s_GridBackColor, s_BackColor, COLOR_WINDOW );
+               }
+            }
          }
          else
          {
-            lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetColor( pSelf, x, y, s_GridBackColor, s_BackColor, COLOR_WINDOW );
+            if( GetFocus() == lplvcd->nmcd.hdr.hwndFrom )
+            {
+               lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 2 );
+            }
+            else
+            {
+               lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetSelColor( pSelf, 4 );
+            }
          }
+      }
+      else
+      {
+         lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetColor( pSelf, x, y, s_GridBackColor, s_BackColor, COLOR_WINDOW );
+      }
 
+      // Subitem has image?
+      if( LI.iImage != -1 )
+      {
          // Get icon's rect
          ListView_GetSubItemRect( lplvcd->nmcd.hdr.hwndFrom, lplvcd->nmcd.dwItemSpec, lplvcd->iSubItem, LVIR_ICON, &rcIcon );
 
          // Calculate area for background and paint it
          rcBack.top = rcIcon.top;
-         rcBack.left = ( ( x == 1 ) && ( ! bCheckBoxes ) ) ? 0 : rcIcon.left;
-         rcBack.bottom = rcIcon.bottom;
-         rcBack.right = rcIcon.right + 2;
+         rcBack.left = ( ( x == 1 ) && ( ! bCheckBoxes ) && bPLM ) ? 0 : rcIcon.left;
+         rcBack.bottom = bNoGrid ? rcIcon.bottom : ( rcIcon.bottom - 1 );
+         rcBack.right = rcIcon.right;
 
          hBrush = CreateSolidBrush( lplvcd->clrTextBk );
          FillRect( lplvcd->nmcd.hdc, &rcBack, hBrush );
@@ -5245,6 +5198,29 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
 
          // Draw image
          ImageList_DrawEx( oSelf->ImageList, LI.iImage, lplvcd->nmcd.hdc, rcIcon.left, rcIcon.top, 0, 0, CLR_DEFAULT, CLR_NONE, ILD_TRANSPARENT );
+
+         return CDRF_SKIPDEFAULT;
+      }
+      else if( ( x == 1 ) && ( ! bCheckBoxes ) && bPLM )    // Is first subitem and has no image nor checkbox?
+      {
+         // Get icon's rect and save for later use
+         ListView_GetSubItemRect( lplvcd->nmcd.hdr.hwndFrom, lplvcd->nmcd.dwItemSpec, lplvcd->iSubItem, LVIR_ICON, &rect );
+         rcIcon = rect;
+
+         // Get label's rect and save for later use
+         ListView_GetSubItemRect( lplvcd->nmcd.hdr.hwndFrom, lplvcd->nmcd.dwItemSpec, lplvcd->iSubItem, LVIR_LABEL, &rect );
+         rcText = rect;
+
+         // Calculate area for background
+         rcBack.top = rcIcon.top;
+         rcBack.left = 0;
+         rcBack.bottom = rcIcon.bottom - 1;
+         rcBack.right = rcIcon.right;
+
+         // Paint to get rid of empty space at left
+         hBrush = CreateSolidBrush( lplvcd->clrTextBk );
+         FillRect( lplvcd->nmcd.hdc, &rcBack, hBrush );
+         DeleteObject( hBrush );
 
          return CDRF_SKIPDEFAULT;
       }
@@ -5259,7 +5235,7 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
 
 HB_FUNC( TGRID_NOTIFY_CUSTOMDRAW )
 {
-   hb_retni( TGrid_Notify_CustomDraw( hb_param( 1, HB_IT_OBJECT ), ( LPARAM ) hb_parnl( 2 ), hb_parl( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parl( 6 ) ) );
+   hb_retni( TGrid_Notify_CustomDraw( hb_param( 1, HB_IT_OBJECT ), ( LPARAM ) hb_parnl( 2 ), hb_parl( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parl( 6 ), hb_parl( 7 ), hb_parl( 8 ), hb_parl( 9 ) ) );
 }
 
 HB_FUNC( LISTVIEW_GETCHECKSTATE )

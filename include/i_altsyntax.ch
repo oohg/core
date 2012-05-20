@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.65 2012-05-08 18:44:56 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.66 2012-05-20 20:32:53 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -122,6 +122,9 @@ Memvariables
 #xtranslate _OOHG_ActiveControlTrailingFontColor      => _OOHG_ActiveControlInfo \[  25 \]
 #xtranslate _OOHG_ActiveControlBackgroundColor        => _OOHG_ActiveControlInfo \[  26 \]
 
+#xtranslate _OOHG_ActiveControlPaintLeftMargin        => _OOHG_ActiveControlInfo \[ 137 \]
+#xtranslate _OOHG_ActiveControlNoFocusRect            => _OOHG_ActiveControlInfo \[ 138 \]
+#xtranslate _OOHG_ActiveControlFocusRect              => _OOHG_ActiveControlInfo \[ 139 \]
 #xtranslate _OOHG_ActiveControlDblBffer               => _OOHG_ActiveControlInfo \[ 140 \]
 #xtranslate _OOHG_ActiveControlOnCheckChange          => _OOHG_ActiveControlInfo \[ 141 \]
 #xtranslate _OOHG_ActiveControlForceRefresh           => _OOHG_ActiveControlInfo \[ 142 \]
@@ -2007,7 +2010,10 @@ GRID
         _OOHG_ActiveControlKeys             := Nil ;;
         _OOHG_ActiveControlCheckBoxes       := .F. ;;
         _OOHG_ActiveControlOnCheckChange    := Nil ;;
-        _OOHG_ActiveControlDblBffer         := .F.
+        _OOHG_ActiveControlDblBffer         := .F. ;;
+        _OOHG_ActiveControlPaintLeftMargin  := .F. ;;
+        _OOHG_ActiveControlFocusRect        := .F. ;;
+        _OOHG_ActiveControlNoFocusRect      := .F.
 
 #xcommand ONAPPEND <onappend> ;
         => ;
@@ -2048,6 +2054,18 @@ GRID
 #xcommand ON CHECKCHANGE <checkchange> ;
         => ;
         _OOHG_ActiveControlOnCheckChange := <{checkchange}>
+
+#xcommand PAINTLEFTMARGIN <paintleftmargin> ;
+        => ;
+        _OOHG_ActiveControlPaintLeftMargin := <paintleftmargin>
+
+#xcommand FOCUSRECT <focusrect> ;
+        => ;
+        _OOHG_ActiveControlFocusRect := <focusrect>
+
+#xcommand NOFOCUSRECT <nofocusrect> ;
+        => ;
+        _OOHG_ActiveControlNoFocusRect := <nofocusrect>
 
 #xcommand END GRID ;
         => ;
@@ -2108,7 +2126,9 @@ GRID
                 _OOHG_ActiveControlKeys, ;
                 _OOHG_ActiveControlCheckBoxes, ;
                 _OOHG_ActiveControlOnCheckChange, ;
-                _OOHG_ActiveControlDblBffer )
+                _OOHG_ActiveControlDblBffer, ;
+                iif( _OOHG_ActiveControlNoFocusRect, .F., iif( _OOHG_ActiveControlFocusRect, .T., NIL ) ), ;
+                _OOHG_ActiveControlPaintLeftMargin )
 
 /*----------------------------------------------------------------------------
 BROWSE
@@ -2157,7 +2177,11 @@ BROWSE
         _OOHG_ActiveControlKeys             := Nil ;;
         _OOHG_ActiveControlForceRefresh     := .F. ;;
         _OOHG_ActiveControlNoForce          := .F. ;;
-        _OOHG_ActiveControlDblBffer         := .F.
+        _OOHG_ActiveControlDblBffer         := .F. ;;
+        _OOHG_ActiveControlPaintLeftMargin  := .F. ;;
+        _OOHG_ActiveControlFocusRect        := .F. ;;
+        _OOHG_ActiveControlNoFocusRect      := .F.
+
 
 #xcommand DELETEWHEN <delwhen> ;
         => ;
@@ -2189,11 +2213,11 @@ BROWSE
 
 #xcommand FORCEREFRESH <forcerefresh> ;
         => ;
-        _OOHG_ActiveControlForceRefresh := .T.
+        _OOHG_ActiveControlForceRefresh := <forcerefresh>
 
 #xcommand NOREFRESH <norefresh> ;
         => ;
-        _OOHG_ActiveControlNoRefresh := .T.
+        _OOHG_ActiveControlNoRefresh := <norefresh>
 
 #xcommand END BROWSE ;
         => ;
@@ -2262,7 +2286,9 @@ BROWSE
                 _OOHG_ActiveControlSelectedColors, ;
                 _OOHG_ActiveControlKeys, ;
                 if( _OOHG_ActiveControlForceRefresh, 0, if( _OOHG_ActiveControlNoForce, 1, nil ) ), ;
-                _OOHG_ActiveControlDblBffer )
+                _OOHG_ActiveControlDblBffer, ;
+                iif( _OOHG_ActiveControlNoFocusRect, .F., iif( _OOHG_ActiveControlFocusRect, .T., NIL ) ), ;
+                _OOHG_ActiveControlPaintLeftMargin )
 
 /*----------------------------------------------------------------------------
 XBROWSE
@@ -2309,7 +2335,10 @@ XBROWSE
         _OOHG_ActiveControlFullMove         := .F. ;;
         _OOHG_ActiveControlSelectedColors   := .F. ;;
         _OOHG_ActiveControlKeys             := Nil ;
-        _OOHG_ActiveControlDblBffer         := .F.
+        _OOHG_ActiveControlDblBffer         := .F. ;;
+        _OOHG_ActiveControlPaintLeftMargin  := .F. ;;
+        _OOHG_ActiveControlFocusRect        := .F. ;;
+        _OOHG_ActiveControlNoFocusRect      := .F.
 
 #xcommand END XBROWSE ;
         => ;
@@ -2377,7 +2406,9 @@ XBROWSE
                 _OOHG_ActiveControlFullMove, ;
                 _OOHG_ActiveControlSelectedColors, ;
                 _OOHG_ActiveControlKeys, ;
-                _OOHG_ActiveControlDblBffer )
+                _OOHG_ActiveControlDblBffer, ;
+                iif( _OOHG_ActiveControlNoFocusRect, .F., iif( _OOHG_ActiveControlFocusRect, .T., NIL ) ), ;
+                _OOHG_ActiveControlPaintLeftMargin )
 
 /*----------------------------------------------------------------------------
 HYPERLINK
