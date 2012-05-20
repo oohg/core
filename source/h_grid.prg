@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.164 2012-05-20 20:32:54 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.165 2012-05-20 22:56:25 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -4995,7 +4995,7 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
    LPNMLVCUSTOMDRAW lplvcd;
    int x, y;
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
-   RECT rect, rcIcon, rcText, rcBack;
+   RECT rcIcon, rcBack;
    HBRUSH hBrush;
    LV_ITEM LI;
    char buffer[ 1024 ];
@@ -5203,13 +5203,8 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
       }
       else if( ( x == 1 ) && ( ! bCheckBoxes ) && bPLM )    // Is first subitem and has no image nor checkbox?
       {
-         // Get icon's rect and save for later use
-         ListView_GetSubItemRect( lplvcd->nmcd.hdr.hwndFrom, lplvcd->nmcd.dwItemSpec, lplvcd->iSubItem, LVIR_ICON, &rect );
-         rcIcon = rect;
-
-         // Get label's rect and save for later use
-         ListView_GetSubItemRect( lplvcd->nmcd.hdr.hwndFrom, lplvcd->nmcd.dwItemSpec, lplvcd->iSubItem, LVIR_LABEL, &rect );
-         rcText = rect;
+         // Get icon's rect
+         ListView_GetSubItemRect( lplvcd->nmcd.hdr.hwndFrom, lplvcd->nmcd.dwItemSpec, lplvcd->iSubItem, LVIR_ICON, &rcIcon );
 
          // Calculate area for background
          rcBack.top = rcIcon.top;
