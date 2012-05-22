@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.65 2012-05-20 20:32:54 fyurisich Exp $
+ * $Id: h_combo.prg,v 1.66 2012-05-22 21:10:39 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -466,7 +466,7 @@ Local Hi_wParam := HIWORD( wParam )
       IF ::lAutosize
          ::Autosize(.T.)
       EndIf
-      
+
       ::DoChange()
       Return nil
 
@@ -558,6 +558,20 @@ METHOD CaretPos( nPos ) CLASS TCombo
       SendMessage( ::hWnd, CB_SETEDITSEL, 0, MakeLParam( nPos, nPos ) )
    ENDIF
 RETURN HiWord( SendMessage( ::hWnd, CB_GETEDITSEL, nil, nil ) )
+
+*-----------------------------------------------------------------------------*
+METHOD Item( nItem, uValue ) CLASS TCombo
+*-----------------------------------------------------------------------------*
+LOCAL cRet
+   IF LEN( ::aValues ) == 0
+      cRet := ComboItem( Self, nItem, uValue )
+   ELSE
+      IF VALTYPE( ::aValues[ 1 ] ) == VALTYPE( nItem ) .OR. ;
+         ( VALTYPE( nItem ) $ "CM" .AND. VALTYPE( ::aValues[ 1 ] ) $ "CM" )
+         cRet := ComboItem( Self, ASCAN( ::aValues, nItem ), uValue )
+      ENDIF
+   ENDIF
+RETURN cRet
 
 #pragma BEGINDUMP
 #include <hbapi.h>
@@ -844,12 +858,12 @@ HB_FUNC_STATIC( TCOMBO_ADDITEM )   // METHOD AddItem( uValue )
    hb_retnl( ComboBox_GetCount( oSelf->hWnd ) );
 }
 
-HB_FUNC_STATIC( TCOMBO_ITEM )   // METHOD Item( nItem, uValue )
+HB_FUNC( COMBOITEM )   // Called from METHOD Item with ( Self, nItem, uValue )
 {
-   PHB_ITEM pSelf = hb_stackSelfItem();
+   PHB_ITEM pSelf = (PHB_ITEM) hb_param( 1, HB_IT_ANY );
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
-   PHB_ITEM pValue = hb_param( 2, HB_IT_ANY );
-   int nItem = hb_parni( 1 ) - 1;
+   PHB_ITEM pValue = hb_param( 3, HB_IT_ANY );
+   int nItem = hb_parni( 2 ) - 1;
    char *cBuffer;
    struct IMAGE_PARAMETER pStruct;
    int nItemSel, nItemNew;
