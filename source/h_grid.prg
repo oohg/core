@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.165 2012-05-20 22:56:25 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.166 2012-05-23 19:19:27 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -457,7 +457,7 @@ Return aSelectedColors
 *-----------------------------------------------------------------------------*
 METHOD LoadHeaderImages( aHeaderImage ) CLASS TGrid
 *-----------------------------------------------------------------------------*
-Local i, nPos, nCount, aImageList, nImagesWidth
+Local i, nPos, nCount, aImageList, nImagesWidth, aImageName := {}
 
    // Destroy previous imagelist
    If ValidHandler( ::HeaderImageList )
@@ -472,7 +472,7 @@ Local i, nPos, nCount, aImageList, nImagesWidth
       For i := 1 To Len( aHeaderImage )
          If ValType( aHeaderImage[ i ] ) $ "CM" .AND. ! Empty( aHeaderImage[ i ] )
             If ValidHandler( ::HeaderImageList )
-               nPos := aScan( aHeaderImage, aHeaderImage[ i ], 1, i - 1 )
+               nPos := aScan( aImageName, aHeaderImage[ i ] )
                If nPos > 0                                                 // Image already loaded, reuse it
                   ::aHeaderImage[ i ] := nPos
                Else
@@ -485,6 +485,7 @@ Local i, nPos, nCount, aImageList, nImagesWidth
                   If nPos == 0                       // Image not added
                      aHeaderImage[ i ] := Nil
                   Else
+                     aAdd( aImageName, aHeaderImage[ i ] )
                      ::aHeaderImage[ i ] := nPos
                      ::aWidths[ i ] := Max( ::aWidths[ i ], nImagesWidth )
                   EndIf
@@ -494,6 +495,7 @@ Local i, nPos, nCount, aImageList, nImagesWidth
 
                If ValidHandler( aImageList[ 1 ] )
                   ::HeaderImageList := aImageList[ 1 ]
+                  aAdd( aImageName, aHeaderImage[ i ] )
                   ::aHeaderImage[ i ] := 1
                   nImagesWidth := aImageList[ 2 ] + 2
                   If i == 1
