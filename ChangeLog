@@ -1,11 +1,19 @@
 /*
- * $Id: ChangeLog,v 1.928 2012-05-22 21:10:39 fyurisich Exp $
+ * $Id: ChangeLog,v 1.929 2012-05-23 12:52:00 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-05-23 09:51 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_combo.prg
+     ! Method ITEM was returning wrong value when receiving
+       an invalid nItem.
+     ! The combo's value was being changed on edit box EN_CHANGE event.
+   * include/i_window.ch
+     + Added VirtualWidth and VirtualHeight to semi-oop syntax.
 
 2012-05-22 18:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_combo.prg

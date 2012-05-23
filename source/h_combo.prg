@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.66 2012-05-22 21:10:39 fyurisich Exp $
+ * $Id: h_combo.prg,v 1.67 2012-05-23 12:52:00 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -485,6 +485,10 @@ Local Hi_wParam := HIWORD( wParam )
       ::DoEvent( ::OnGotFocus, "GOTFOCUS" )
       Return nil
 
+   elseif Hi_wParam == EN_CHANGE
+      // Avoids incorrect processing
+      Return nil
+
    elseif Hi_wParam == CBN_EDITCHANGE
       ::DoEvent( ::OnClick, "CLICK" )
       Return nil
@@ -562,13 +566,18 @@ RETURN HiWord( SendMessage( ::hWnd, CB_GETEDITSEL, nil, nil ) )
 *-----------------------------------------------------------------------------*
 METHOD Item( nItem, uValue ) CLASS TCombo
 *-----------------------------------------------------------------------------*
-LOCAL cRet
+LOCAL cRet, nPos
    IF LEN( ::aValues ) == 0
       cRet := ComboItem( Self, nItem, uValue )
    ELSE
       IF VALTYPE( ::aValues[ 1 ] ) == VALTYPE( nItem ) .OR. ;
          ( VALTYPE( nItem ) $ "CM" .AND. VALTYPE( ::aValues[ 1 ] ) $ "CM" )
-         cRet := ComboItem( Self, ASCAN( ::aValues, nItem ), uValue )
+         nPos := ASCAN( ::aValues, nItem )
+         IF nPos > 0
+            cRet := ComboItem( Self, nPos, uValue )
+         ELSE
+            cRet := ""
+         ENDIF
       ENDIF
    ENDIF
 RETURN cRet

@@ -1,5 +1,5 @@
 /*
- * $Id: i_window.ch,v 1.43 2011-10-18 01:08:04 fyurisich Exp $
+ * $Id: i_window.ch,v 1.44 2012-05-23 12:52:00 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -113,7 +113,7 @@
 
    #xcommand DECLARE WINDOW <w> ;
    =>;
-         #xtranslate <w> . \<p:Name,Title,Height,Width,Col,Row,BackColor,FocusedControl,hWnd,Object,Cursor,NotifyIcon,NotifyToolTip,SaveAs,MinWidth,MaxWidth,MinHeight,MaxHeight\> => GetExistingFormObject( <(w)> ):\<p\> ;;
+         #xtranslate <w> . \<p:Name,Title,Height,Width,VirtualHeight,VirtualWidth,Col,Row,BackColor,FocusedControl,hWnd,Object,Cursor,NotifyIcon,NotifyToolTip,SaveAs,MinWidth,MaxWidth,MinHeight,MaxHeight\> => GetExistingFormObject( <(w)> ):\<p\> ;;
          #xtranslate <w> . \<p:Activate,Center,Release,Maximize,Minimize,Restore,Show,Hide,Print,SetFocus\> \[()\] => GetExistingFormObject( <(w)> ):\<p\> () ;;
          #xtranslate <w> . \<c\> . \<p:Value,Name,Address,BackColor,FontColor,Picture,ToolTip,FontName,FontSize,FontBold,FontUnderline,FontItalic,FontStrikeOut,Caption,Row,Col,Width,Height,Visible,Enabled,Checked,ItemCount,RangeMin,RangeMax,CaretPos,ForeColor,ScrollCaret,GetEditSel,Stretch,Indent,SelColor,OnChange\> => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ;;
          #xtranslate <w> . \<c\> . \<p:DisplayValue,Position,ForeColor\> => GetProperty ( <(w)>, \<(c)\> , \<(p)\> ) ;;
