@@ -1,11 +1,15 @@
 /*
- * $Id: ChangeLog,v 1.932 2012-05-24 15:23:37 fyurisich Exp $
+ * $Id: ChangeLog,v 1.933 2012-05-24 19:32:30 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-05-24 16:32 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_internal.ch
+     ! Virtual Width and Virtual Height misplaced in Define.
 
 2012-05-24 12:23 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_textbox.prg

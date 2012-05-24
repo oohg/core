@@ -1,5 +1,5 @@
 /*
- * $Id: i_internal.ch,v 1.1 2006-07-26 01:20:57 guerra000 Exp $
+ * $Id: i_internal.ch,v 1.2 2012-05-24 19:32:30 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -120,7 +120,7 @@
                      Define( <(name)>, <(parent)>, <col>, <row>, <{action}>, ;
                      <width>, <height>, <backcolor>, <tooltip>, ;
                      <gotfocus>, <lostfocus>, <.transparent.>, <.border.>, ;
-                     <.clientedge.>, <cursor>, <vWidth>, <vHeight>, ;
+                     <.clientedge.>, <cursor>, <vHeight>, <vWidth>, ;
                      <MouseDragProcedure>, <MouseMoveProcedure>, <notabstop>, ;
                      <helpid>, <.invisible.>, <.rtl.> )
 
