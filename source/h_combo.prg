@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.67 2012-05-23 12:52:00 fyurisich Exp $
+ * $Id: h_combo.prg,v 1.68 2012-05-24 12:57:31 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -128,7 +128,8 @@ CLASS TCombo FROM TLabel
    METHOD AddItem
    METHOD DeleteItem(nPos)    BLOCK { |Self,nPos| ComboboxDeleteString( ::hWnd, nPos ) }
    METHOD DeleteAllItems      BLOCK { |Self| ComboboxReset( ::hWnd ), ::xOldValue := nil }
-   METHOD Item
+   METHOD Item                BLOCK { |Self, nItem, uValue| ComboItem( Self, nItem, uValue ) }
+   METHOD ItemBySource
    METHOD InsertItem
    METHOD ItemCount           BLOCK { |Self| ComboboxGetItemCount( ::hWnd ) }
    METHOD ShowDropDown
@@ -564,7 +565,7 @@ METHOD CaretPos( nPos ) CLASS TCombo
 RETURN HiWord( SendMessage( ::hWnd, CB_GETEDITSEL, nil, nil ) )
 
 *-----------------------------------------------------------------------------*
-METHOD Item( nItem, uValue ) CLASS TCombo
+METHOD ItemBySource( nItem, uValue ) CLASS TCombo
 *-----------------------------------------------------------------------------*
 LOCAL cRet, nPos
    IF LEN( ::aValues ) == 0

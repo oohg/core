@@ -1,11 +1,17 @@
 /*
- * $Id: ChangeLog,v 1.930 2012-05-23 19:19:27 fyurisich Exp $
+ * $Id: ChangeLog,v 1.931 2012-05-24 12:57:31 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-05-24 09:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_combo.prg
+     + Method ITEM renamed to ItemBySource.
+     ! Method ITEM restored to previous, so existing code is not
+       disrupted.
 
 2012-05-23 16:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
