@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.78 2012-04-19 13:31:50 fyurisich Exp $
+ * $Id: h_textbox.prg,v 1.79 2012-05-24 15:23:37 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1291,44 +1291,30 @@ Return cText
 *------------------------------------------------------------------------------*
 STATIC FUNCTION TTextPicture_Delete( Self, cText, nPos, nCount )
 *------------------------------------------------------------------------------*
-Local nCant, i, cRest
+Local i, j
 
+   // number of template characters to delete
    nCount := Max( Min( nCount, ( Len( ::ValidMask ) - nPos + 1 ) ), 0 )
 
-   If nCount > 0
-      // Count non-template characters in deletion range
-      nCant := 0
-      For i := nPos to nPos + nCount - 1
-         If ! ::ValidMask[ i ]
-           nCant ++
-         EndIf
-      Next i
+   // process from right to left
+   For i := nPos + nCount - 1 to nPos step -1
 
-      // Adjust number of characters to delete
-      nCount -= nCant
+      // process template characters only
+      If ::ValidMask[ i ]
 
-      If nCount > 0
-         // Extract non-template character from the substring that starts at the deletion point
-         i := nPos
-         cRest := ""
-         Do While i <= Len( cText )
-            If ::ValidMask[ i ]
-               cRest += SubStr( cText, i, 1 )
+         // Delete character, shifting to the left all remaining characters
+         // until end of line or until next non-template character (whatever
+         // occurs first).
+         For j := i + 1 to Len( cText )
+            If ! ::ValidMask[ j ]
+               Exit
             EndIf
-            i ++
-         EndDo
+         Next j
 
-         // Delete characters
-         cRest := SubStr( cRest, nCount + 1 )
-
-         // Clear text from the deletion point to the end
-         cText := TTextPicture_Clear( cText, nPos, Len( cText ), ::ValidMask, ::InsertStatus )
-
-         // Paste remaining characters
-         nPos --
-         TTextPicture_Events2_String( Self, @cText, @nPos, cRest, ::ValidMask, ::PictureMask, ::InsertStatus )
+         cText := Left( cText, i - 1 ) + SubStr( cText, i + 1, j - i - 1 ) + " " + SubStr( cText, j )
       EndIf
-   EndIf
+   Next i
+
 Return cText
 
 *------------------------------------------------------------------------------*

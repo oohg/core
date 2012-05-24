@@ -1,11 +1,18 @@
 /*
- * $Id: ChangeLog,v 1.931 2012-05-24 12:57:31 fyurisich Exp $
+ * $Id: ChangeLog,v 1.932 2012-05-24 15:23:37 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-05-24 12:23 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_textbox.prg
+     * In a textbox with inputmask, DELETE key is moving characters
+       from the other side of the mask.
+       f.e.: value is 123-456, caret is before 1, on DELETE the value
+       is changed to 234-56<space> instead of 23<space>-456.
 
 2012-05-24 09:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_combo.prg
