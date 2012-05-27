@@ -1,11 +1,24 @@
 /*
- * $Id: ChangeLog,v 1.933 2012-05-24 19:32:30 fyurisich Exp $
+ * $Id: ChangeLog,v 1.934 2012-05-27 14:39:53 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-05-27 11:39 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_miniprint.prg
+     ! Scrollbars are not working properly.
+     ! Zoom is not showing correct value.
+     * Commented out some unused code.
+     - Eliminated unneeded static procedure ejecuta().
+     - Eliminated unneeded public variable a.
+     ! Fixed ClientHeight miscalculated in _HMG_PRINTER_SHOWPAGE
+       function.
+     * Formatting.
+     TODO: For zoom values greater than 10 the page can't be
+     scrolled to the top and the bottom.
 
 2012-05-24 16:32 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_internal.ch
