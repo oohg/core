@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.166 2012-05-23 19:19:27 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.167 2012-05-30 23:11:50 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -336,7 +336,7 @@ Local ControlHandle, aImageList, i
    ::aWhen := aWhenFields
    ASSIGN ::InPlace   VALUE inplace  TYPE "L"
    ASSIGN ::FullMove  VALUE FullMove TYPE "L"
-   ASSIGN ::AllowEdit VALUE Editable TYPE "L"
+   ASSIGN ::AllowEdit VALUE editable .OR. inplace TYPE "L"
 
    // Load images alignments
    // This should come before than 'Load header images'
@@ -2434,7 +2434,6 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
 *-----------------------------------------------------------------------------*
 Local nStyle := LVS_SINGLESEL
 
-   InPlace := .T.
    ASSIGN lFocusRect VALUE lFocusRect TYPE "L" DEFAULT .F.
 
    ::Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
@@ -2448,6 +2447,10 @@ Local nStyle := LVS_SINGLESEL
               lHasHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
               aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
               lFocusRect, lPLM )
+
+   // This is not really needed because TGridByCell ignores it
+   ::InPlace := .T.
+
 Return Self
 
 *-----------------------------------------------------------------------------*
