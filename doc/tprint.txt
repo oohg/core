@@ -1,5 +1,5 @@
 /*
- * $Id: tprint.txt,v 1.3 2012-04-03 21:38:50 fyurisich Exp $
+ * $Id: tprint.txt,v 1.4 2012-06-03 15:39:04 fyurisich Exp $
  */
 
 CLASE TPRINT
@@ -43,19 +43,23 @@ Nota: Todos los parámetros de todos los métodos son opcionales.
 ::Init()
   Inicializa algunas variables necesarias para cada librería.
 
-::SelPrinter(lselect, lpreview, llandscape, npapersize, cprinterx)
+::SelPrinter(lselect, lpreview, llandscape, npapersize, cprinterx, lshow, nres, nbin)
   Inicializa la impresora.
-    lselect = .T.    muestra cuadro de diálogo para seleccionar impresora
-    lselect = .F.    utiliza la impresora por defecto
-    lpreview = .T.   muestra la vista previa antes de imprimir
-    lpreview = .F.   no muestra la vista previa
+    lselect    = .T. muestra cuadro de diálogo para seleccionar impresora
+    lselect    = .F. utiliza la impresora por defecto
+    lpreview   = .T. muestra la vista previa antes de imprimir
+    lpreview   = .F. no muestra la vista previa
     llandscape = .T. impresión horizontal
-    llanscape = .F.  impresión vertical
+    llanscape  = .F. impresión vertical
     npapersize =     tamaño del papel según estándares del HBPRINTER,
                      ver al final de este documento
     cprinterx  =     nombre de la impresora si se quiere hacer una impresión
                      directa sin usar la impresora por defecto y sin
                      seleccionarla por diálogo
+    lshow      = .T. muestra la ventana de espera mientras se prepara la impresión (valor por defecto)
+    lshow      = .F. oculta la ventana de espera mientras se prepara la impresión
+    nres       =     resolución, defaults to PRINTER_RES_MEDIUM
+    nbin       =     número de bandeja de la cual se toma el papel (defaults to NIL)
 
 ::BeginDoc(cname)
   Inicia el documento.
