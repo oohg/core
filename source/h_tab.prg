@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.56 2012-04-19 22:18:48 fyurisich Exp $
+ * $Id: h_tab.prg,v 1.57 2012-06-11 22:26:28 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -326,7 +326,11 @@ RETURN ::Super:ForceHide()
 *-----------------------------------------------------------------------------*
 METHOD AdjustResize( nDivh, nDivw, lSelfOnly ) CLASS TTabDirect
 *-----------------------------------------------------------------------------*
-   ::Super:AdjustResize( nDivh, nDivw, lSelfOnly )
+   // Next sentence forces the page's width and height to be the same as the
+   // container's, because it calls ::SizePos() who call ::Events_Size() for
+   // each page. So, for each page, we only need to adjust/resize the controls.
+   // .T. is needed to avoid calling ::AdjustResize() for the TTabRaw control.
+   ::Super:AdjustResize( nDivh, nDivw, .T. )
    AEVAL( ::aPages, { |o| o:AdjustResize( nDivh, nDivw, lSelfOnly ) } )
 RETURN nil
 
@@ -931,7 +935,11 @@ RETURN ::Super:ForceHide()
 *-----------------------------------------------------------------------------*
 METHOD AdjustResize( nDivh, nDivw, lSelfOnly ) CLASS TMultiPage
 *-----------------------------------------------------------------------------*
-   ::Super:AdjustResize( nDivh, nDivw, lSelfOnly )
+   // Next sentence forces the page's width and height to be the same as the
+   // container's, because it calls ::SizePos() who call ::Events_Size() for
+   // each page. So, for each age, we only need to adjust/resize the controls.
+   // .T. is needed to avoid calling ::AdjustResize() for the TTabRaw control.
+   ::Super:AdjustResize( nDivh, nDivw, .T. )
    AEVAL( ::aPages, { |o| o:AdjustResize( nDivh, nDivw, lSelfOnly ) } )
 RETURN nil
 
