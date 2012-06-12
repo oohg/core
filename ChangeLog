@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.937 2012-06-11 22:26:28 fyurisich Exp $
+ * $Id: ChangeLog,v 1.938 2012-06-12 01:37:09 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,9 +7,38 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-06-11 22:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_windows.prg
+     + Added DATA nFixedHeightUsed to hold the number of pixels
+       that AutoAdjust must not scale (f.e. splitbox or toolbar).
+     * METHOD AdjustResize modified to consider ::nFixedHeightUsed.
+   * source/h_form.prg
+     * METHOD AdjustWindowSize modified to consider ::nFixedHeightUsed
+       when calling METHOD AutoAdjust.
+   ! Previous changes fix: after AutoAdjust the controls may overlap
+     the splitbox and toolbar if they are present, because the height
+     of these two controls does not change.
+   * source/h_tab.prg
+     * Formatting.
+     + Added handling of nFixedHeightUsed in TTabDirect and TTabMulti
+       classes.
+     + Added METHOD TabsAreaHeight to retrieve the height of the area
+       used by tabs.
+     + Added METHOD AdjustResize to TTabPage and TTabPageInternal classes,
+       to avoid adjusting row, col, width and height of the page because
+       they are set by the container.
+     + Added TABCTRL_GETROWCOUNT function.
+   ! Previous changes fix: after AutoAdjust the controls inside a tab's
+     page may overlap the tab area.
+   TOFIX: After changing the ::Row of a tab the controls inside the
+   selected tab are not shown correctly until the form is repainted.
+
 2012-06-11 19:26 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_tab.prg
-     ! After AutoAdjust the tab's pages have wrong height.
+     * Changed METHOD AdjustResize of TTabDirect and TTabMulti so
+       TTabRaw control is not adjusted/resized.
+   ! Previous change fixes: after AutoAdjust the tab's pages have
+     wrong height.
 
 2012-06-03 12:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * doc/tprint.txt

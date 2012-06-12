@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.37 2012-05-20 20:32:54 fyurisich Exp $
+ * $Id: h_form.prg,v 1.38 2012-06-12 01:37:09 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -844,10 +844,8 @@ RETURN nil
 *------------------------------------------------------------------------------*
 METHOD AdjustWindowSize( lSkip ) CLASS TForm
 *------------------------------------------------------------------------------*
-LOCAL nWidth, nHeight, nOldWidth, nOldHeight
+LOCAL nWidth, nHeight, nOldWidth, nOldHeight, n, oControl
 
-//    nWidth  := IF( GetDesktopWidth()  < ::nWidth,  GetDesktopWidth(),  ::width )
-//    nHeight := IF( GetDesktopHeight() < ::nHeight, GetdeskTopHeight(), ::height )
    nWidth  := ::ClientWidth
    nHeight := ::ClientHeight
 
@@ -860,13 +858,20 @@ LOCAL nWidth, nHeight, nOldWidth, nOldHeight
    EndIf
 
    If _OOHG_AutoAdjust .AND. ::lAdjust .AND. ( ! HB_IsLogical( lSkip ) .OR. ! lSkip )
-      ::AutoAdjust( nHeight / nOldHeight, nWidth / nOldWidth )       //// cambio de tamaño activada y cualquier cambio q no sea maximizar o restaurar
+      For n := 1 to Len( ::aControls )
+         oControl := ::aControls[ n ]
+
+		   If ( oControl:type == "TOOLBAR" .AND. oControl:ltop ).OR. ( oControl:type == "SPLITBOX" .AND. IsWindowStyle( oControl:hWnd, CCS_TOP ) )
+            ::nFixedHeightUsed := Max( ::nFixedHeightUsed, oControl:ClientHeightUsed() )
+            Exit
+         EndIf
+      Next n
+
+      ::AutoAdjust( (nHeight - ::nFixedHeightUsed) / (nOldHeight - ::nFixedHeightUsed), nWidth / nOldWidth )
    EndIf
 
-   // Anchor
    AEVAL( ::aControls, { |o| If( o:Container == nil, o:AdjustAnchor( nHeight - nOldHeight, nWidth - nOldWidth ), ) } )
 
-   //CGR
    ::ClientsPos()
 
    ::nOldW := nWidth
@@ -876,15 +881,12 @@ LOCAL nWidth, nHeight, nOldWidth, nOldHeight
 
 RETURN nil
 
-//CGR - metodo insertado
 *------------------------------------------------------------------------------*
 METHOD ClientsPos() CLASS TForm
 *------------------------------------------------------------------------------*
 Local aControls, nWidth, nHeight
    aControls := {}
    AEVAL( ::aControls, { |o| IF( o:Container == nil, AADD( aControls, o ), ) } )
-//   nWidth  := IF( GetDesktopWidth()  < ::nWidth,  GetDesktopWidth(),  ::Width )
-//   nHeight := IF( GetDesktopHeight() < ::nHeight, GetdeskTopHeight(), ::Height ) - If ( ::oMenu==nil,0,50)
    nWidth  := ::ClientWidth
    nHeight := ::ClientHeight
 Return ::ClientsPos2( aControls, nWidth, nHeight )

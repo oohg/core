@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.233 2012-05-20 20:32:54 fyurisich Exp $
+ * $Id: h_windows.prg,v 1.234 2012-06-12 01:37:09 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -232,6 +232,7 @@ CLASS TWindow
    DATA lFixFont            INIT .F.
    DATA lfixwidth           INIT .F.
    DATA ClientHeightUsed    INIT 0
+   DATA nFixedHeightUsed    INIT 0
 
    DATA OnClick             INIT nil
    DATA OnDblClick          INIT nil
@@ -1437,19 +1438,23 @@ Return aClientRect[ 4 ] - aClientRect[ 2 ]
 *------------------------------------------------------------------------------*
 METHOD AdjustResize( nDivh, nDivw, lSelfOnly ) CLASS TWindow
 *------------------------------------------------------------------------------*
+LOCAL nFixedHeightUsed
    IF ::lAdjust
-      //// Posicion nueva siempre que este activado autoajuste
-      ::Sizepos( ::Row * nDivh, ::Col * nDivw )
+      //// nFixedHeightUsed = pixels used by non-scalable elements inside client area
+      IF ::container == nil
+         nFixedHeightUsed := ::parent:nFixedHeightUsed
+      ELSE
+         nFixedHeightUsed := ::container:nFixedHeightUsed
+      ENDIF
 
-      ///// Tamaño nuevo opcional (width) solo si esta activado autoajuste
+      ::Sizepos( ( ::Row - nFixedHeightUsed ) * nDivh + nFixedHeightUsed, ::Col * nDivw )
+
       IF _OOHG_adjustWidth
          IF ! ::lFixWidth
-            //// solo si el control tiene activado ajuste de ancho
             ::Sizepos( , , ::width * nDivw, ::height * nDivh )
 
             IF  _OOHG_adjustFont
                 IF ! ::lFixFont
-                   /// Solo si el control tiene activado ajuste de font y ajuste de ancho
                    ::fontsize := ::fontsize * nDivw
                 ENDIF
             ENDIF
@@ -1459,7 +1464,6 @@ METHOD AdjustResize( nDivh, nDivw, lSelfOnly ) CLASS TWindow
       IF ! HB_IsLogical( lSelfOnly ) .OR. ! lSelfOnly
          AEVAL( ::aControls, { |o| o:AdjustResize( nDivh, nDivw ) } )
       ENDIF
-
    ENDIF
 Return nil
 
