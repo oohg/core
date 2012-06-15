@@ -1,11 +1,19 @@
 /*
- * $Id: ChangeLog,v 1.938 2012-06-12 01:37:09 fyurisich Exp $
+ * $Id: ChangeLog,v 1.939 2012-06-15 14:05:48 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-06-15 11:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_grid.prg
+     + Event ON HEADCLICK passes the column's number to the invoked
+       codeblock.
+     + Support for only one codeblock in ON HEADCLICK clause.
+     Now, the following is supported:
+        ONHEADCLICK {|nCol| MsgInfo("Column " + ltrim(str(nCol)))}
 
 2012-06-11 22:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_windows.prg

@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.167 2012-05-30 23:11:50 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.168 2012-06-15 14:05:48 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -271,7 +271,15 @@ Local ControlHandle, aImageList, i
    ASSIGN ::nRow        VALUE y           TYPE "N"
    ASSIGN ::nCol        VALUE x           TYPE "N"
 
-   ASSIGN ::aHeadClick  VALUE aHeadClick  TYPE "A" DEFAULT {}
+   If HB_IsArray( aHeadClick )
+      ::aHeadClick := aHeadClick
+   ElseIf HB_IsBlock( aHeadClick )
+      ::aHeadClick := Array( Len(  ::aHeaders ) )
+      aFill( ::aHeadClick, aHeadClick )
+   Else
+      ::aHeadClick := {}
+   EndIf
+
    ASSIGN ::aJust       VALUE aJust       TYPE "A"
    ASSIGN ::Picture     VALUE aPicture    TYPE "A"
 
