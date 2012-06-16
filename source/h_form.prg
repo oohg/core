@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.38 2012-06-12 01:37:09 fyurisich Exp $
+ * $Id: h_form.prg,v 1.39 2012-06-16 15:37:23 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -844,7 +844,7 @@ RETURN nil
 *------------------------------------------------------------------------------*
 METHOD AdjustWindowSize( lSkip ) CLASS TForm
 *------------------------------------------------------------------------------*
-LOCAL nWidth, nHeight, nOldWidth, nOldHeight, n, oControl
+LOCAL nWidth, nHeight, nOldWidth, nOldHeight, n, oControl, nHeightUsed
 
    nWidth  := ::ClientWidth
    nHeight := ::ClientHeight
@@ -858,12 +858,14 @@ LOCAL nWidth, nHeight, nOldWidth, nOldHeight, n, oControl
    EndIf
 
    If _OOHG_AutoAdjust .AND. ::lAdjust .AND. ( ! HB_IsLogical( lSkip ) .OR. ! lSkip )
+      ::nFixedHeightUsed := 0
+
       For n := 1 to Len( ::aControls )
          oControl := ::aControls[ n ]
 
-		   If ( oControl:type == "TOOLBAR" .AND. oControl:ltop ).OR. ( oControl:type == "SPLITBOX" .AND. IsWindowStyle( oControl:hWnd, CCS_TOP ) )
-            ::nFixedHeightUsed := Max( ::nFixedHeightUsed, oControl:ClientHeightUsed() )
-            Exit
+         nHeightUsed := oControl:ClientHeightUsed
+         If nHeightUsed > 0 .and. oControl:Container == Nil
+            ::nFixedHeightUsed += nHeightUsed
          EndIf
       Next n
 
