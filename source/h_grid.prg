@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.168 2012-06-15 14:05:48 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.169 2012-06-18 20:15:31 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1480,24 +1480,24 @@ Local r, r2, lRet := .F., nWidth
       If ! HB_IsObject( EditControl )
          MsgExclamation( "ooHG can't determine cell type for INPLACE edit." )
       Else
-         r := { 0, 0, 0, 0 }
+         r := { 0, 0, 0, 0 }                                        // left, top, right, bottom
          GetClientRect( ::hWnd, r )
          nWidth := r[ 3 ] - r[ 1 ]
-         r2 := { 0, 0, 0, 0 }
+         r2 := { 0, 0, 0, 0 }                                       // left, top, right, bottom
          GetWindowRect( ::hWnd, r2 )
          ListView_EnsureVisible( ::hWnd, nRow - 1 )
-         r := ListView_GetSubitemRect( ::hWnd, nRow - 1, nCol - 1 )
+         r := ListView_GetSubitemRect( ::hWnd, nRow - 1, nCol - 1 ) // top, left, width, height
          r[ 3 ] := ListView_GetColumnWidth( ::hWnd, nCol - 1 )
          // Ensures cell is visible
          If r[ 2 ] + r[ 3 ] + GetVScrollBarWidth() > nWidth
             ListView_Scroll( ::hWnd, ( r[ 2 ] + r[ 3 ] + GetVScrollBarWidth() - nWidth ), 0 )
             r := ListView_GetSubitemRect( ::hWnd, nRow - 1, nCol - 1 )
-            r[ 3 ] := ListView_GetColumnWidth( ::hWnd, nCol - 1 )
+            r[ 3 ] := Min( ListView_GetColumnWidth( ::hWnd, nCol - 1 ), nWidth )
          EndIf
          If r[ 2 ] < 0
             ListView_Scroll( ::hWnd, r[ 2 ], 0 )
             r := ListView_GetSubitemRect( ::hWnd, nRow - 1, nCol - 1 )
-            r[ 3 ] := ListView_GetColumnWidth( ::hWnd, nCol - 1 )
+            r[ 3 ] := Min( ListView_GetColumnWidth( ::hWnd, nCol - 1 ), nWidth )
          EndIf
          r[ 1 ] += r2[ 2 ] + 2
          r[ 2 ] += r2[ 1 ] + 3
@@ -1758,7 +1758,7 @@ Local lvc, _ThisQueryTemp, nvkey, uValue, uRet
          lvc := GetGridColumn( lParam ) + 1
          If Len( ::aHeadClick ) >= lvc
             _SetThisCellInfo( ::hWnd, 0, lvc )
-            ::DoEvent( ::aHeadClick[ lvc ], "HEADCLICK" )
+            ::DoEvent( ::aHeadClick[ lvc ], "HEADCLICK", { lvc } )
             _ClearThisCellInfo()
             Return Nil
          EndIf

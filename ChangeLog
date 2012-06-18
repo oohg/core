@@ -1,11 +1,17 @@
 /*
- * $Id: ChangeLog,v 1.940 2012-06-16 15:37:23 fyurisich Exp $
+ * $Id: ChangeLog,v 1.941 2012-06-18 20:15:31 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-06-16 17:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_grid.prg
+     ! Column number was not being passed to ON HEADCLICK codeblock.
+     ! When inplace editing a very large column, the editing window
+       extends beyond control's client area.
 
 2012-06-16 12:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_form.prg
