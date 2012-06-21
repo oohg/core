@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.93 2012-05-20 20:32:54 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.94 2012-06-21 17:28:46 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -101,6 +101,12 @@ CLASS TOBrowse FROM TXBrowse
    DATA Type            INIT "BROWSE" READONLY
    DATA aRecMap         INIT {}
    DATA RecCount        INIT 0
+   DATA SyncStatus      INIT nil
+   /*
+    * When .T. the browse behaves as if SET BROWSESYNC is ON.
+    * When .F. the browse behaves as if SET BROWSESYNC if OFF.
+    * When NIL the browse behaves according to SET BROWESYNC value.
+    */
 
    METHOD Define
    METHOD Refresh
@@ -150,7 +156,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lNoHeaders, onenter, lDisabled, lNoTabStop, lInvisible, ;
                lDescending, bDelWhen, DelMsg, onDelete, aHeaderImage, ;
                aHeaderImageAlign, FullMove, aSelectedColors, aEditKeys, ;
-               uRefresh, dblbffr, lFocusRect, lPLM ) CLASS TOBrowse
+               uRefresh, dblbffr, lFocusRect, lPLM, sync ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local nWidth2, nCol2, oScroll, z
 
@@ -160,7 +166,8 @@ Local nWidth2, nCol2, oScroll, z
    ASSIGN ::aJust    VALUE aJust    TYPE "A" DEFAULT {}
 
    ASSIGN ::lDescending VALUE lDescending TYPE "L"
-   
+   ASSIGN ::SyncStatus  VALUE sync        TYPE "L" DEFAULT nil
+
    IF ValType( uRefresh ) == "N"
       IF uRefresh == 0 .OR. uRefresh == 1
          ::RefreshType := uRefresh
@@ -725,7 +732,7 @@ Return nil
 *-----------------------------------------------------------------------------*
 METHOD Delete() CLASS TOBrowse
 *-----------------------------------------------------------------------------*
-Local Value, nRecNo
+Local Value, nRecNo, lSync
 
    Value := ::Value
 
@@ -763,7 +770,13 @@ Local Value, nRecNo
       EndIf
    EndIf
 
-   If _OOHG_BrowseSyncStatus
+   If HB_IsLogical( ::SyncStatus )
+      lSync := ::SyncStatus
+   Else
+      lSync := _OOHG_BrowseSyncStatus
+   EndIf
+
+   If lSync
       If ( ::WorkArea )->( RecNo() ) != ::Value
          ::DbGoTo( ::Value )
       EndIf
@@ -990,9 +1003,15 @@ Return lSomethingEdited
 *-----------------------------------------------------------------------------*
 METHOD BrowseOnChange() CLASS TOBrowse
 *-----------------------------------------------------------------------------*
-LOCAL cWorkArea
+LOCAL cWorkArea, lSync
 
-   If _OOHG_BrowseSyncStatus
+   If HB_IsLogical( ::SyncStatus )
+      lSync := ::SyncStatus
+   Else
+      lSync := _OOHG_BrowseSyncStatus
+   EndIf
+
+   If lSync
 
       cWorkArea := ::WorkArea
 

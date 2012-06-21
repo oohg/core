@@ -1,11 +1,30 @@
 /*
- * $Id: ChangeLog,v 1.942 2012-06-21 15:26:22 fyurisich Exp $
+ * $Id: ChangeLog,v 1.943 2012-06-21 17:28:45 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-06-21 14:28 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_browse.prg
+     + Added DATA SyncStatus.
+       When .T. the browse behaves as if SET BROWSESYNC is ON.
+       When .F. the browse behaves as if SET BROWSESYNC if OFF.
+       When NIL (default value) the browse behaves according to
+       SET BROWESYNC value.
+       Now a program can have synchronized and unsynchronized browses
+       at the same time.
+   * include/i_altsyntax.ch
+   * include/i_browse.ch
+   * include/i_hmg_compat.ch
+     + Added SYNCHRONIZED and UNSYNCHRONIZED clauses.
+   * include/i_browse.ch
+   * include/i_hmg_compat.ch
+   * include/i_xbrowse.ch
+     ! FOCUSRECT and NOFOCUSRECT clauses not working when case was
+       not all uppercase.
 
 2012-06-21 12:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_form.prg

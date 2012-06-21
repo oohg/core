@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.66 2012-05-20 20:32:53 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.67 2012-06-21 17:28:45 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -122,6 +122,7 @@ Memvariables
 #xtranslate _OOHG_ActiveControlTrailingFontColor      => _OOHG_ActiveControlInfo \[  25 \]
 #xtranslate _OOHG_ActiveControlBackgroundColor        => _OOHG_ActiveControlInfo \[  26 \]
 
+#xtranslate _OOHG_ActiveControlSynchronized           => _OOHG_ActiveControlInfo \[ 136 \]
 #xtranslate _OOHG_ActiveControlPaintLeftMargin        => _OOHG_ActiveControlInfo \[ 137 \]
 #xtranslate _OOHG_ActiveControlNoFocusRect            => _OOHG_ActiveControlInfo \[ 138 \]
 #xtranslate _OOHG_ActiveControlFocusRect              => _OOHG_ActiveControlInfo \[ 139 \]
@@ -2180,8 +2181,8 @@ BROWSE
         _OOHG_ActiveControlDblBffer         := .F. ;;
         _OOHG_ActiveControlPaintLeftMargin  := .F. ;;
         _OOHG_ActiveControlFocusRect        := .F. ;;
-        _OOHG_ActiveControlNoFocusRect      := .F.
-
+        _OOHG_ActiveControlNoFocusRect      := .F. ;;
+        _OOHG_ActiveControlSynchronized     := Nil
 
 #xcommand DELETEWHEN <delwhen> ;
         => ;
@@ -2218,6 +2219,10 @@ BROWSE
 #xcommand NOREFRESH <norefresh> ;
         => ;
         _OOHG_ActiveControlNoRefresh := <norefresh>
+
+#xcommand SYNCHRONIZED <sync> ;
+        => ;
+        _OOHG_ActiveControlSynchronized := <sync>
 
 #xcommand END BROWSE ;
         => ;
@@ -2288,7 +2293,8 @@ BROWSE
                 if( _OOHG_ActiveControlForceRefresh, 0, if( _OOHG_ActiveControlNoForce, 1, nil ) ), ;
                 _OOHG_ActiveControlDblBffer, ;
                 iif( _OOHG_ActiveControlNoFocusRect, .F., iif( _OOHG_ActiveControlFocusRect, .T., NIL ) ), ;
-                _OOHG_ActiveControlPaintLeftMargin )
+                _OOHG_ActiveControlPaintLeftMargin, ;
+                _OOHG_ActiveControlSynchronized )
 
 /*----------------------------------------------------------------------------
 XBROWSE

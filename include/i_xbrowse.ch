@@ -1,5 +1,5 @@
 /*
- * $Id: i_xbrowse.ch,v 1.16 2012-05-20 20:32:53 fyurisich Exp $
+ * $Id: i_xbrowse.ch,v 1.17 2012-06-21 17:28:45 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -180,4 +180,4 @@
             <.disabled.>, <.notabstop.>, <.invisible.>, <.descending.>, <{bWhenDel}>, ;
             <DelMsg>, <{onDelete}>, <aHeaderImages>, <aImgAlign>, <.fullmove.>, ;
             <aSelectedColors>, <aEditKeys>, <.dblbffr.>, ;
-            iif( #<focus> == "NOFOCUSRECT", .F., iif( #<focus> == "FOCUSRECT", .T., NIL ) ), <.plm.> )
+            iif( upper( #<focus> ) == "NOFOCUSRECT", .F., iif( upper( #<focus> ) == "FOCUSRECT", .T., NIL ) ), <.plm.> )
