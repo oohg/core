@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.39 2012-06-16 15:37:23 fyurisich Exp $
+ * $Id: h_form.prg,v 1.40 2012-06-21 15:26:22 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -826,17 +826,12 @@ METHOD AutoAdjust( nDivH, nDivW ) CLASS TForm
 *------------------------------------------------------------------------------*
 LOCAL lSwvisible
 
-   lSwvisible := .T.
-   IF ! ::Visible
-      lSwvisible := .F.
-   ELSE
-      ::Hide()
-   ENDIF
+   lSwvisible := ::Visible
 
    AEVAL( ::aControls, { |o| If( o:Container == nil, o:AdjustResize( nDivH, nDivW ), ) } )
 
    IF lSwvisible
-      ::Show()
+      ReDrawWindow( ::hWnd )
    ENDIF
 
 RETURN nil
