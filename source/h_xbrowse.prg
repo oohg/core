@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.56 2012-06-22 21:15:24 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.57 2012-06-23 15:26:21 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -271,6 +271,8 @@ Local nWidth2, nCol2, lLocked, oScroll, z
    ::Refresh( value )
    ::lLocked := lLocked
 
+   ::SizePos()
+
    // Must be set after control is initialized
    ASSIGN ::OnLostFocus VALUE lostfocus   TYPE "B"
    ASSIGN ::OnGotFocus  VALUE gotfocus    TYPE "B"
@@ -329,6 +331,8 @@ Local nRow, nCount, nSkipped
          nCurrent := nRow
       EndIf
       ::CurrentRow := nCurrent
+
+//      RedrawWindow( ::hWnd )
    EndIf
 Return Self
 
