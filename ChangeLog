@@ -1,11 +1,18 @@
 /*
- * $Id: ChangeLog,v 1.947 2012-06-24 15:41:55 fyurisich Exp $
+ * $Id: ChangeLog,v 1.948 2012-06-24 16:35:16 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-06-24 13:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * samples/oohg/chat.prg
+     ! Fixed path to include files.
+   * samples/oohg/printtest.prg
+     + Added CVS Id.
+     * Updated with last changes made by Ciro Vargas for distro.
 
 2012-06-24 12:41 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * samples/oohg/oohgrecord/oohgrecord.prg

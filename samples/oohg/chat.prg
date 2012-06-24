@@ -1,5 +1,5 @@
 /*
- * $Id: chat.prg,v 1.1 2011-07-17 14:57:50 guerra000 Exp $
+ * $Id: chat.prg,v 1.2 2012-06-24 16:35:16 fyurisich Exp $
  */
 /*
  *  Simple chat program, using TStreamWSocket class.
@@ -195,5 +195,5 @@ PROCEDURE ReadFromClient( oSocket, aClients, oWnd )
    ENDDO
 RETURN
 
-#include "TStream.prg"
-#include "TStreamSocket.prg"
+#include "stream\TStream.prg"
+#include "stream\TStreamSocket.prg"
