@@ -1,5 +1,5 @@
 /*
- * $Id: px.prg,v 1.4 2012-05-19 02:05:23 guerra000 Exp $
+ * $Id: px.prg,v 1.5 2012-06-24 15:41:55 fyurisich Exp $
  */
 /*
  * This is a ooHGRecord's subclasses (database class used
@@ -934,7 +934,7 @@ LOCAL uValue, nBufferPos
                       char *cPos, cBuffer[ 8 ];
                       int iMove;
 
-                      cPos = hb_parc( 1 );
+                      cPos = ( char * ) hb_parc( 1 );
                       for( iMove = 0; iMove < 8; iMove++ )
                       {
                          cBuffer[ iMove ] = cPos[ 7 - iMove ];

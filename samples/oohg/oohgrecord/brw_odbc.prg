@@ -1,5 +1,5 @@
 /*
- * $Id: brw_odbc.prg,v 1.2 2010-12-01 18:49:59 guerra000 Exp $
+ * $Id: brw_odbc.prg,v 1.3 2012-06-24 15:41:55 fyurisich Exp $
  */
 /*
  * ooHG XBrowse ODBC demo. (c) 2008 Vic
@@ -19,7 +19,10 @@ Local oODBC, oBrw, I
             "Driver={Microsoft Access Driver (*.mdb)}" )
 
    oODBC:SetSQL( "SELECT * FROM table1" )
-   oODBC:Open()
+
+   IF ! oODBC:Open()
+      RETURN
+   ENDIF
 
    oBrw := XBrowse_ODBC():New( oODBC )
 

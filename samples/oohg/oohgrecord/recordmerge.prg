@@ -1,5 +1,5 @@
 /*
- * $Id: recordmerge.prg,v 1.2 2010-11-30 02:18:12 guerra000 Exp $
+ * $Id: recordmerge.prg,v 1.3 2012-06-24 15:41:56 fyurisich Exp $
  */
 /*
  * ooHG XBrowse multiple database in one browse. (c) 2008 Vic
@@ -12,6 +12,7 @@
 #ifndef NO_SAMPLE
 
 #include "oohg.ch"
+#include "hbcompat.ch"
 
 PROCEDURE MAIN
 LOCAL oBase1, oBase2, I, J, K, nCount, oMix
@@ -185,7 +186,7 @@ LOCAL nCount, aKeys, cKey, nArea, cKey2
    nCount := 0
    aKeys := ARRAY( LEN( ::aAreas ) )
    AEVAL( ::aKeys, { |c,i| aKeys[ i ] := ( c != NIL )  } )
-   IF ! ( .T. $ aKeys )
+   IF ASCAN( aKeys, .T. ) == 0
       RETURN 0
    ENDIF
    cKey := ::aKeys[ ::nCurrent ]
@@ -202,14 +203,14 @@ LOCAL nCount, aKeys, cKey, nArea, cKey2
          ENDDO
       NEXT
    ENDIF
-   DO WHILE nSkip != 0 .AND. ( .T. $ aKeys )
+   DO WHILE nSkip != 0 .AND. ASCAN( aKeys, .T. ) > 0
       IF nSkip > 0
          nSkip--
          aKeys[ ::nCurrent ] := ::SkipArea( ::nCurrent, 1 )
          cKey2 := ::aKeys[ ::nCurrent ]
          IF aKeys[ ::nCurrent ] .AND. cKey2 == cKey
             nCount++
-         ELSEIF ! ( .T. $ aKeys )
+         ELSEIF ASCAN( aKeys, .T. ) == 0
             // EOF
             EXIT
          ELSE
@@ -238,7 +239,7 @@ LOCAL nCount, aKeys, cKey, nArea, cKey2
          cKey2 := ::aKeys[ ::nCurrent ]
          IF aKeys[ ::nCurrent ] .AND. cKey2 == cKey
             nCount--
-         ELSEIF ! ( .T. $ aKeys )
+         ELSEIF ASCAN( aKeys, .T. ) == 0
             // EOF
             EXIT
          ELSE

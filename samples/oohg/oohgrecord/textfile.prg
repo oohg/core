@@ -1,5 +1,5 @@
 /*
- * $Id: textfile.prg,v 1.2 2010-12-01 18:49:59 guerra000 Exp $
+ * $Id: textfile.prg,v 1.3 2012-06-24 15:41:56 fyurisich Exp $
  */
 /*
  * ooHGRecord textfile-as-database demo. (c) 2010 Vic
@@ -10,6 +10,7 @@
 #ifndef NO_SAMPLE
 
 #include "oohg.ch"
+#include "hbcompat.ch"
 
 PROCEDURE Main
 Local oTable, aStructure
