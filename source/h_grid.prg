@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.169 2012-06-18 20:15:31 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.170 2012-06-25 20:14:48 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -218,7 +218,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                aWhenFields, lDisabled, lNoTabStop, lInvisible, lHasHeaders, ;
                onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
                aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
-               lFocusRect, lPLM ) CLASS TGrid
+               lFocusRect, lPLM, lFixedCols ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local nStyle := LVS_SINGLESEL
 
@@ -232,7 +232,7 @@ Local nStyle := LVS_SINGLESEL
               editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
               lHasHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
               aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
-              lFocusRect, lPLM )
+              lFocusRect, lPLM, lFixedCols )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -246,7 +246,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                 editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
                 lHasHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
                 aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
-                lFocusRect, lPLM ) CLASS TGrid
+                lFocusRect, lPLM, lFixedCols ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local ControlHandle, aImageList, i
 
@@ -278,6 +278,10 @@ Local ControlHandle, aImageList, i
       aFill( ::aHeadClick, aHeadClick )
    Else
       ::aHeadClick := {}
+   EndIf
+
+   If HB_IsLogical( lFixedCols )
+      ::AllowMoveColumn := ! lFixedCols
    EndIf
 
    ASSIGN ::aJust       VALUE aJust       TYPE "A"
@@ -2182,7 +2186,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                aWhenFields, lDisabled, lNoTabStop, lInvisible, lHasHeaders, ;
                onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
                aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
-               lFocusRect, lPLM ) CLASS TGridMulti
+               lFocusRect, lPLM, lFixedCols ) CLASS TGridMulti
 *-----------------------------------------------------------------------------*
 Local nStyle := 0
 
@@ -2196,7 +2200,7 @@ Local nStyle := 0
               editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
               lHasHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
               aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
-              lFocusRect, lPLM )
+              lFocusRect, lPLM, lFixedCols )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -2438,7 +2442,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                aWhenFields, lDisabled, lNoTabStop, lInvisible, lHasHeaders, ;
                onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
                aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
-               lFocusRect, lPLM ) CLASS TGridByCell
+               lFocusRect, lPLM, lFixedCols ) CLASS TGridByCell
 *-----------------------------------------------------------------------------*
 Local nStyle := LVS_SINGLESEL
 
@@ -2454,7 +2458,7 @@ Local nStyle := LVS_SINGLESEL
               editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
               lHasHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
               aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
-              lFocusRect, lPLM )
+              lFocusRect, lPLM, lFixedCols )
 
    // This is not really needed because TGridByCell ignores it
    ::InPlace := .T.

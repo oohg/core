@@ -1,5 +1,5 @@
 /*
- * $Id: i_hmg_compat.ch,v 1.11 2012-06-21 17:28:45 fyurisich Exp $
+ * $Id: i_hmg_compat.ch,v 1.12 2012-06-25 20:14:48 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -176,6 +176,7 @@
       [ <focus: NOFOCUSRECT, FOCUSRECT> ] ;
       [ <plm: PAINTLEFTMARGIN> ] ;
       [ <sync: SYNCHRONIZED, UNSYNCHRONIZED> ] ;
+      [ <fixedcols: FIXEDCOLS> ] ;
    => ;
       [ <oObj> := ] _OOHG_SelectSubClass( TOBrowse(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, , , <w>, <h>, <headers>, <widths>, <Fields>, ;
@@ -192,7 +193,8 @@
             <aHeaderImages>, <aImgAlign>, <.fullmove.>, <aSelectedColors>, <aEditKeys>, ;
             if( <.forcerefresh.>, 0, if( <.norefresh.>, 1, nil ) ), <.dblbffr.>, ;
             iif( upper( #<focus> ) == "NOFOCUSRECT", .F., iif( upper( #<focus> ) == "FOCUSRECT", .T., NIL ) ), ;
-            <.plm.>, iif( upper( #<sync> ) == "UNSYNCHRONIZED", .F., iif( upper( #<sync> ) == "SYNCHRONIZED", .T., NIL ) ) )
+            <.plm.>, iif( upper( #<sync> ) == "UNSYNCHRONIZED", .F., iif( upper( #<sync> ) == "SYNCHRONIZED", .T., NIL ) ), ;
+            <.fixedcols.> )
 
 
 #xcommand @ <row>, <col> BUTTONEX <name> ;

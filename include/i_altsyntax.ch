@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.67 2012-06-21 17:28:45 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.68 2012-06-25 20:14:48 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -122,6 +122,7 @@ Memvariables
 #xtranslate _OOHG_ActiveControlTrailingFontColor      => _OOHG_ActiveControlInfo \[  25 \]
 #xtranslate _OOHG_ActiveControlBackgroundColor        => _OOHG_ActiveControlInfo \[  26 \]
 
+#xtranslate _OOHG_ActiveControlFixedCols           => _OOHG_ActiveControlInfo \[ 135 \]
 #xtranslate _OOHG_ActiveControlSynchronized           => _OOHG_ActiveControlInfo \[ 136 \]
 #xtranslate _OOHG_ActiveControlPaintLeftMargin        => _OOHG_ActiveControlInfo \[ 137 \]
 #xtranslate _OOHG_ActiveControlNoFocusRect            => _OOHG_ActiveControlInfo \[ 138 \]
@@ -2014,7 +2015,8 @@ GRID
         _OOHG_ActiveControlDblBffer         := .F. ;;
         _OOHG_ActiveControlPaintLeftMargin  := .F. ;;
         _OOHG_ActiveControlFocusRect        := .F. ;;
-        _OOHG_ActiveControlNoFocusRect      := .F.
+        _OOHG_ActiveControlNoFocusRect      := .F. ;;
+        _OOHG_ActiveControlFixedCols        := .F.
 
 #xcommand ONAPPEND <onappend> ;
         => ;
@@ -2067,6 +2069,10 @@ GRID
 #xcommand NOFOCUSRECT <nofocusrect> ;
         => ;
         _OOHG_ActiveControlNoFocusRect := <nofocusrect>
+
+#xcommand FIXEDCOLS <fixedcols> ;
+        => ;
+        _OOHG_ActiveControlFixedCols := <fixedcols>
 
 #xcommand END GRID ;
         => ;
@@ -2129,7 +2135,8 @@ GRID
                 _OOHG_ActiveControlOnCheckChange, ;
                 _OOHG_ActiveControlDblBffer, ;
                 iif( _OOHG_ActiveControlNoFocusRect, .F., iif( _OOHG_ActiveControlFocusRect, .T., NIL ) ), ;
-                _OOHG_ActiveControlPaintLeftMargin )
+                _OOHG_ActiveControlPaintLeftMargin, ;
+                _OOHG_ActiveControlFixedCols )
 
 /*----------------------------------------------------------------------------
 BROWSE
@@ -2182,7 +2189,8 @@ BROWSE
         _OOHG_ActiveControlPaintLeftMargin  := .F. ;;
         _OOHG_ActiveControlFocusRect        := .F. ;;
         _OOHG_ActiveControlNoFocusRect      := .F. ;;
-        _OOHG_ActiveControlSynchronized     := Nil
+        _OOHG_ActiveControlSynchronized     := Nil ;;
+        _OOHG_ActiveControlFixedCols        := .F.
 
 #xcommand DELETEWHEN <delwhen> ;
         => ;
@@ -2294,7 +2302,8 @@ BROWSE
                 _OOHG_ActiveControlDblBffer, ;
                 iif( _OOHG_ActiveControlNoFocusRect, .F., iif( _OOHG_ActiveControlFocusRect, .T., NIL ) ), ;
                 _OOHG_ActiveControlPaintLeftMargin, ;
-                _OOHG_ActiveControlSynchronized )
+                _OOHG_ActiveControlSynchronized, ;
+                _OOHG_ActiveControlFixedCols )
 
 /*----------------------------------------------------------------------------
 XBROWSE
@@ -2344,7 +2353,8 @@ XBROWSE
         _OOHG_ActiveControlDblBffer         := .F. ;;
         _OOHG_ActiveControlPaintLeftMargin  := .F. ;;
         _OOHG_ActiveControlFocusRect        := .F. ;;
-        _OOHG_ActiveControlNoFocusRect      := .F.
+        _OOHG_ActiveControlNoFocusRect      := .F. ;;
+        _OOHG_ActiveControlFixedCols        := .F.
 
 #xcommand END XBROWSE ;
         => ;
@@ -2414,7 +2424,8 @@ XBROWSE
                 _OOHG_ActiveControlKeys, ;
                 _OOHG_ActiveControlDblBffer, ;
                 iif( _OOHG_ActiveControlNoFocusRect, .F., iif( _OOHG_ActiveControlFocusRect, .T., NIL ) ), ;
-                _OOHG_ActiveControlPaintLeftMargin )
+                _OOHG_ActiveControlPaintLeftMargin, ;
+                _OOHG_ActiveControlFixedCols )
 
 /*----------------------------------------------------------------------------
 HYPERLINK

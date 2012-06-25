@@ -1,11 +1,25 @@
 /*
- * $Id: ChangeLog,v 1.950 2012-06-25 19:20:38 fyurisich Exp $
+ * $Id: ChangeLog,v 1.951 2012-06-25 20:14:48 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-06-25 17:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_altsyntax.ch
+   * include/i_browse.ch
+   * include/i_grid.ch
+   * include/i_hmg_compat.ch
+   * include/i_x_browse.ch
+   * source/h_browse.prg
+   * source/h_grid.prg
+   * source/h_xbrowse.prg
+     + Added support for FIXEDCOLS clause. This clause is equivalent
+       to oCtrl:AllowMoveColumn := .F.
+   * source/h_checklist.prg
+     + Added new parameter in Define to prevent column moving.
 
 2012-06-25 16:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_browse.prg

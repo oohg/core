@@ -1,5 +1,5 @@
 /*
- * $Id: i_xbrowse.ch,v 1.17 2012-06-21 17:28:45 fyurisich Exp $
+ * $Id: i_xbrowse.ch,v 1.18 2012-06-25 20:14:48 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -165,6 +165,7 @@
       [ <dblbffr: DOUBLEBUFFER> ] ;
       [ <focus: NOFOCUSRECT, FOCUSRECT> ] ;
       [ <plm: PAINTLEFTMARGIN> ] ;
+      [ <fixedcols: FIXEDCOLS> ] ;
 	=>;
       [ <oObj> := ] _OOHG_SelectSubClass( TXBrowse(), [ <subclass>() ] ):Define( ;
             <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, <widths>, ;
@@ -180,4 +181,5 @@
             <.disabled.>, <.notabstop.>, <.invisible.>, <.descending.>, <{bWhenDel}>, ;
             <DelMsg>, <{onDelete}>, <aHeaderImages>, <aImgAlign>, <.fullmove.>, ;
             <aSelectedColors>, <aEditKeys>, <.dblbffr.>, ;
-            iif( upper( #<focus> ) == "NOFOCUSRECT", .F., iif( upper( #<focus> ) == "FOCUSRECT", .T., NIL ) ), <.plm.> )
+            iif( upper( #<focus> ) == "NOFOCUSRECT", .F., iif( upper( #<focus> ) == "FOCUSRECT", .T., NIL ) ), ;
+            <.plm.>, <.fixedcols.> )

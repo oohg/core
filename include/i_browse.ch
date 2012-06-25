@@ -1,5 +1,5 @@
 /*
- * $Id: i_browse.ch,v 1.31 2012-06-21 17:28:45 fyurisich Exp $
+ * $Id: i_browse.ch,v 1.32 2012-06-25 20:14:48 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -171,6 +171,7 @@
       [ <focus: NOFOCUSRECT, FOCUSRECT> ] ;
       [ <plm: PAINTLEFTMARGIN> ] ;
       [ <sync: SYNCHRONIZED, UNSYNCHRONIZED> ] ;
+      [ <fixedcols: FIXEDCOLS> ] ;
    =>;
       [ <oObj> := ] _OOHG_SelectSubClass( TOBrowse(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, <widths>, ;
@@ -187,7 +188,8 @@
             <aHeaderImages>, <aImgAlign>, <.fullmove.>, <aSelectedColors>, <aEditKeys>, ;
             if( <.forcerefresh.>, 0, if( <.norefresh.>, 1, nil ) ), <.dblbffr.>, ;
             iif( upper( #<focus> ) == "NOFOCUSRECT", .F., iif( upper( #<focus> ) == "FOCUSRECT", .T., NIL ) ), ;
-            <.plm.>, iif( upper( #<sync> ) == "UNSYNCHRONIZED", .F., iif( upper( #<sync> ) == "SYNCHRONIZED", .T., NIL ) ) )
+            <.plm.>, iif( upper( #<sync> ) == "UNSYNCHRONIZED", .F., iif( upper( #<sync> ) == "SYNCHRONIZED", .T., NIL ) ), ;
+            <.fixedcols.> )
 
 #command SET BROWSESYNC ON  => SetBrowseSync( .T. )
 #command SET BROWSESYNC OFF => SetBrowseSync( .F. )

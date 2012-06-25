@@ -1,5 +1,5 @@
 /*
- * $Id: i_grid.ch,v 1.22 2012-05-20 20:32:53 fyurisich Exp $
+ * $Id: i_grid.ch,v 1.23 2012-06-25 20:14:48 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -162,6 +162,7 @@
       [ <dblbffr: DOUBLEBUFFER> ] ;
       [ <focus: NOFOCUSRECT, FOCUSRECT> ] ;
       [ <plm: PAINTLEFTMARGIN> ] ;
+      [ <fixedcols: FIXEDCOLS> ] ;
    =>;
       [ <obj> := ] _OOHG_SelectSubClass(iif( <.bycell.>, TGridByCell(), iif( <.multiselect.>, TGridMulti(), TGrid() ) ), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, ;
@@ -175,7 +176,8 @@
             <aWhenFields>, <.disabled.>, <.notabstop.>, <.invisible.>, ;
             ! <.noshowheaders.>, <{enter}>, <aHeaderImages>, <aImgAlign>, <.fullmove.>, ;
             <aSelectedColors>, <aEditKeys>, <.checkboxes.>, <{checkchange}>, <.dblbffr.>, ;
-            iif( #<focus> == "NOFOCUSRECT", .F., iif( #<focus> == "FOCUSRECT", .T., NIL ) ), <.plm.> )
+            iif( #<focus> == "NOFOCUSRECT", .F., iif( #<focus> == "FOCUSRECT", .T., NIL ) ), ;
+            <.plm.>, <.fixedcols.> )
 
 ///////////////////////////////////////////////////////////////////////////////
 // GRID (SPLITBOX VERSION)
@@ -241,6 +243,7 @@
       [ <dblbffr: DOUBLEBUFFER> ] ;
       [ <focus: NOFOCUSRECT, FOCUSRECT> ] ;
       [ <plm: PAINTLEFTMARGIN> ] ;
+      [ <fixedcols: FIXEDCOLS> ] ;
    =>;
       [ <obj> := ] _OOHG_SelectSubClass(iif( <.bycell.>, TGridByCell(), iif( <.multiselect.>, TGridMulti(), TGrid() ) ), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, , , <w>, <h>, <headers>, ;
@@ -254,4 +257,5 @@
             <aWhenFields>, <.disabled.>, <.notabstop.>, <.invisible.>, ;
             ! <.noshowheaders.>, <{enter}>, <aHeaderImages>, <aImgAlign>, <.fullmove.>, ;
             <aSelectedColors>, <aEditKeys>, <.checkboxes.>, <{checkchange}>, <.dblbffr.>, ;
-            iif( #<focus> == "NOFOCUSRECT", .F., iif( #<focus> == "FOCUSRECT", .T., NIL ) ), <.plm.> )
+            iif( #<focus> == "NOFOCUSRECT", .F., iif( #<focus> == "FOCUSRECT", .T., NIL ) ), ;
+            <.plm.>, <.fixedcols.> )
