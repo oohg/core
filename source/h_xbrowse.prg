@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.57 2012-06-23 15:26:21 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.58 2012-06-25 19:20:38 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -271,8 +271,6 @@ Local nWidth2, nCol2, lLocked, oScroll, z
    ::Refresh( value )
    ::lLocked := lLocked
 
-   ::SizePos()
-
    // Must be set after control is initialized
    ASSIGN ::OnLostFocus VALUE lostfocus   TYPE "B"
    ASSIGN ::OnGotFocus  VALUE gotfocus    TYPE "B"
@@ -331,8 +329,6 @@ Local nRow, nCount, nSkipped
          nCurrent := nRow
       EndIf
       ::CurrentRow := nCurrent
-
-//      RedrawWindow( ::hWnd )
    EndIf
 Return Self
 
@@ -1547,30 +1543,6 @@ RETURN nil
 #pragma BEGINDUMP
 #define s_Super s_TGrid
 
-#ifndef WINVER
-   #define WINVER 0x0500
-#endif
-#if ( WINVER < 0x0500 )
-   #undef WINVER
-   #define WINVER 0x0500
-#endif
-
-#ifndef _WIN32_IE
-   #define _WIN32_IE 0x0400
-#endif
-#if ( _WIN32_IE < 0x0400 )
-   #undef _WIN32_IE
-   #define _WIN32_IE 0x0400
-#endif
-
-#ifndef _WIN32_WINNT
-   #define _WIN32_WINNT 0x0500
-#endif
-#if ( _WIN32_WINNT < 0x0500 )
-   #undef _WIN32_WINNT
-   #define _WIN32_WINNT 0x0500
-#endif
-
 #include "hbapi.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
@@ -1587,7 +1559,6 @@ HB_FUNC_STATIC( TXBROWSE_EVENTS_NOTIFY )
    LONG wParam = hb_parnl( 1 );
    LONG lParam = hb_parnl( 2 );
    PHB_ITEM pSelf;
-   BOOL bChanged = 0;
 
    switch( ( ( NMHDR FAR * ) lParam )->code )
    {
@@ -1603,13 +1574,7 @@ HB_FUNC_STATIC( TXBROWSE_EVENTS_NOTIFY )
          pSelf = hb_stackSelfItem();
          _OOHG_Send( pSelf, s_AdjustRightScroll );
          hb_vmSend( 0 );
-         bChanged = hb_parl( -1 );
-         if( bChanged )
-         {
-            hb_retni( CDRF_SKIPDEFAULT );
-            break;
-         }
-         // continue in TGrid class
+         // don't break, continue in TGrid class
       }
 
       default:
@@ -1633,10 +1598,6 @@ HB_FUNC_STATIC( TXBROWSE_ADJUSTRIGHTSCROLL )
 
    lStyle = GetWindowLong( oSelf->hWnd, GWL_STYLE );
    if( lStyle & WS_VSCROLL )
-   {
-      bChanged = 1;
-   }
-   else
    {
       lStyle = ( lStyle & WS_HSCROLL ) ? 1 : 0;
       if( lStyle != oSelf->lAux[ 0 ] )

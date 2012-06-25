@@ -1,11 +1,24 @@
 /*
- * $Id: ChangeLog,v 1.949 2012-06-24 16:48:31 fyurisich Exp $
+ * $Id: ChangeLog,v 1.950 2012-06-25 19:20:38 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-06-25 16:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_browse.prg
+   * source/h_xbrowse.prg
+     - Changes done on 2012-06-22 were removed.
+     - Changes done on 2012-06-23 were removed.
+   * source/h_xbrowse.prg
+     ! Fixed: grid lines missing when control is shown for the first
+       time and number of records is less than available rows and
+       there are totally or partially hidden columns.
+     ! Fixed: in Win7, when the resizing of control's columns
+       hides or shows the horizontal scroll bar, some or all
+       columns are not painted correctly.
 
 2012-06-24 13:47 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    + samples/oohg/maindemooop.prg

@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.95 2012-06-22 21:15:24 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.96 2012-06-25 19:20:38 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -991,30 +991,6 @@ Return lSomethingEdited
 #pragma BEGINDUMP
 #define s_Super s_TGrid
 
-#ifndef WINVER
-   #define WINVER 0x0500
-#endif
-#if ( WINVER < 0x0500 )
-   #undef WINVER
-   #define WINVER 0x0500
-#endif
-
-#ifndef _WIN32_IE
-   #define _WIN32_IE 0x0400
-#endif
-#if ( _WIN32_IE < 0x0400 )
-   #undef _WIN32_IE
-   #define _WIN32_IE 0x0400
-#endif
-
-#ifndef _WIN32_WINNT
-   #define _WIN32_WINNT 0x0500
-#endif
-#if ( _WIN32_WINNT < 0x0500 )
-   #undef _WIN32_WINNT
-   #define _WIN32_WINNT 0x0500
-#endif
-
 #include "hbapi.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
@@ -1266,7 +1242,6 @@ HB_FUNC_STATIC( TOBROWSE_EVENTS_NOTIFY )
    LONG wParam = hb_parnl( 1 );
    LONG lParam = hb_parnl( 2 );
    PHB_ITEM pSelf;
-   BOOL bChanged = 0;
 
    switch( ( ( NMHDR FAR * ) lParam )->code )
    {
@@ -1283,13 +1258,7 @@ HB_FUNC_STATIC( TOBROWSE_EVENTS_NOTIFY )
          pSelf = hb_stackSelfItem();
          _OOHG_Send( pSelf, s_AdjustRightScroll );
          hb_vmSend( 0 );
-         bChanged = hb_parl( -1 );
-         if( bChanged )
-         {
-            hb_retni( CDRF_SKIPDEFAULT );
-            break;
-         }
-         // continue in TGrid class
+         // don't break, continue in TGrid class
       }
 
       default:
