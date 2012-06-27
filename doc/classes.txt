@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.53 2012-05-20 20:32:52 fyurisich Exp $
+ * $Id: classes.txt,v 1.54 2012-06-27 00:49:27 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -434,6 +434,7 @@ CLASS TCOMBO FROM TLABEL
    METHOD GETEDITSEL
    METHOD INSERTITEM
    METHOD ITEM
+   METHOD ITEMBYSOURCE
    METHOD ITEMCOUNT
    METHOD NHEIGHT                 SETGET
    METHOD PRERELEASE
@@ -1468,8 +1469,10 @@ ENDCLASS
 *------------------------------------------------------------------------------*
 CLASS TOBROWSE FROM TXBROWSE
    DATA ARECMAP                   INIT {}
+   DATA LNODELMSG                 INIT .T.
    DATA RECCOUNT                  INIT 0
    DATA TYPE                      INIT "BROWSE" READONLY
+   DATA SYNCSTATUS                INIT NIL
 
    MESSAGE GOBOTTOM               METHOD END
    MESSAGE GOTOP                  METHOD HOME
@@ -2111,6 +2114,7 @@ CLASS TTABPAGE FROM TCONTROLGROUP
    DATA POSITION                  INIT 0
    DATA TYPE                      INIT "TABPAGE" READONLY
 
+   METHOD ADJUSTRESIZE
    METHOD CONTAINERVISIBLE
    METHOD ENDPAGE             
    METHOD EVENTS_SIZE
@@ -2126,6 +2130,7 @@ CLASS TTABPAGEINTERNAL FROM TFORMINTERNAL
    DATA POSITION                  INIT 0
    DATA TYPE                      INIT "TABPAGE" READONLY
 
+   METHOD ADJUSTRESIZE
    METHOD DEFINE
    METHOD ENDPAGE
    METHOD EVENTS_SIZE
@@ -2155,6 +2160,7 @@ CLASS TTABRAW FROM TCONTROL
    METHOD INSERTITEM
    METHOD ITEMCOUNT               
    METHOD PICTURE
+   METHOD TABSAREAHEIGHT
    METHOD VALUE                   SETGET
 ENDCLASS
 
@@ -2533,6 +2539,7 @@ CLASS TWINDOW
    DATA NCOL                      INIT 0
    DATA NDEFANCHOR                INIT 3
    DATA NESTEDCLICK               INIT .F.
+   DATA NFIXEDHEIGHTUSED          INIT 0
    DATA NFOCUSFONTSIZE            INIT 0
    DATA NFONTSIZE                 INIT 0
    DATA NHEIGHT                   INIT 0
