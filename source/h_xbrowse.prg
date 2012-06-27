@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.59 2012-06-25 20:14:48 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.60 2012-06-27 21:03:46 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -550,6 +550,9 @@ Local uRet, nWidth
    If ::VScroll != nil
       nWidth := ::VScroll:Width
 
+      // See below
+      ::ScrollButton:Visible := .F.
+
       If ::lRtl .AND. ! ::Parent:lRtl
          uRet := MoveWindow( ::hWnd, ::ContainerCol + nWidth, ::ContainerRow, ::nWidth - nWidth, ::nHeight, .T. )
          ::VScroll:Col      := - nWidth
@@ -567,6 +570,11 @@ Local uRet, nWidth
       EndIf
       ::ScrollButton:Row := ::Height - ::ScrollButton:Height
       AEVAL( ::aControls, { |o| o:SizePos() } )
+
+      /* This two instructions force the redrawn of the control's area
+       * that is been overwritten by the scrollbars.
+       */
+      ::ScrollButton:Visible := .T.
    else
       uRet := MoveWindow( ::hWnd, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight , .T. )
    EndIf

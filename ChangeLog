@@ -1,11 +1,25 @@
 /*
- * $Id: ChangeLog,v 1.954 2012-06-27 01:50:06 fyurisich Exp $
+ * $Id: ChangeLog,v 1.955 2012-06-27 21:03:46 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-06-27 18:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_window.ch
+     ! Fixed: Form.Control.OnClick := bCodeBlock does not compile.
+     % Minor optimization in some preprocessor rules (name, length,
+       hwnd, object, readonly, allowappend, allowdelete, allowedit,
+       and additem).
+     * Changed OnClick and Action preprocessor rules.
+   * ./compile_MINGW.bat
+     + Added xhb library.
+   * source/h_browse.prg
+     ! Fixed: the scrollbutton is not painted correctly when
+       the form is resized. Maybe there is a better solution.
+       Please revise.
 
 2012-06-26 22:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_radio.prg
