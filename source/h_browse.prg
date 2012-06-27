@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.97 2012-06-25 20:14:48 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.98 2012-06-27 00:27:27 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -102,6 +102,7 @@ CLASS TOBrowse FROM TXBrowse
    DATA aRecMap         INIT {}
    DATA RecCount        INIT 0
    DATA SyncStatus      INIT nil
+   DATA lNoDelMsg       INIT .T.
    /*
     * When .T. the browse behaves as if SET BROWSESYNC is ON.
     * When .F. the browse behaves as if SET BROWSESYNC if OFF.
@@ -156,7 +157,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lNoHeaders, onenter, lDisabled, lNoTabStop, lInvisible, ;
                lDescending, bDelWhen, DelMsg, onDelete, aHeaderImage, ;
                aHeaderImageAlign, FullMove, aSelectedColors, aEditKeys, ;
-               uRefresh, dblbffr, lFocusRect, lPLM, sync, lFixedCols ) CLASS TOBrowse
+               uRefresh, dblbffr, lFocusRect, lPLM, sync, lFixedCols, ;
+               lNoDelMsg ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local nWidth2, nCol2, oScroll, z
 
@@ -167,6 +169,7 @@ Local nWidth2, nCol2, oScroll, z
 
    ASSIGN ::lDescending VALUE lDescending TYPE "L"
    ASSIGN ::SyncStatus  VALUE sync        TYPE "L" DEFAULT nil
+   ASSIGN ::lNoDelMsg   VALUE lNoDelMsg   TYPE "L"
 
    IF ValType( uRefresh ) == "N"
       IF uRefresh == 0 .OR. uRefresh == 1
@@ -1316,7 +1319,9 @@ Local nvKey, r, DeltaSelect, lGo
             EndIf
 
             If lGo
-               If MsgYesNo(_OOHG_Messages(4, 1), _OOHG_Messages(4, 2))
+               If ::lNoDelMsg
+                  ::Delete()
+               ElseIf MsgYesNo(_OOHG_Messages(4, 1), _OOHG_Messages(4, 2))
                   ::Delete()
                EndIf
             Else

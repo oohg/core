@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.68 2012-06-25 20:14:48 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.69 2012-06-27 00:27:27 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -122,7 +122,8 @@ Memvariables
 #xtranslate _OOHG_ActiveControlTrailingFontColor      => _OOHG_ActiveControlInfo \[  25 \]
 #xtranslate _OOHG_ActiveControlBackgroundColor        => _OOHG_ActiveControlInfo \[  26 \]
 
-#xtranslate _OOHG_ActiveControlFixedCols           => _OOHG_ActiveControlInfo \[ 135 \]
+#xtranslate _OOHG_ActiveControlNoDeleteMsg            => _OOHG_ActiveControlInfo \[ 134 \]
+#xtranslate _OOHG_ActiveControlFixedCols              => _OOHG_ActiveControlInfo \[ 135 \]
 #xtranslate _OOHG_ActiveControlSynchronized           => _OOHG_ActiveControlInfo \[ 136 \]
 #xtranslate _OOHG_ActiveControlPaintLeftMargin        => _OOHG_ActiveControlInfo \[ 137 \]
 #xtranslate _OOHG_ActiveControlNoFocusRect            => _OOHG_ActiveControlInfo \[ 138 \]
@@ -2190,7 +2191,8 @@ BROWSE
         _OOHG_ActiveControlFocusRect        := .F. ;;
         _OOHG_ActiveControlNoFocusRect      := .F. ;;
         _OOHG_ActiveControlSynchronized     := Nil ;;
-        _OOHG_ActiveControlFixedCols        := .F.
+        _OOHG_ActiveControlFixedCols        := .F. ;;
+        _OOHG_ActiveControlNoDeleteMsg      := .F.
 
 #xcommand DELETEWHEN <delwhen> ;
         => ;
@@ -2231,6 +2233,10 @@ BROWSE
 #xcommand SYNCHRONIZED <sync> ;
         => ;
         _OOHG_ActiveControlSynchronized := <sync>
+
+#xcommand NODELETEMSG <nodeletemsg> ;
+        => ;
+        _OOHG_ActiveControlNoDeleteMsg := <nodeletemsg>
 
 #xcommand END BROWSE ;
         => ;
@@ -2303,7 +2309,8 @@ BROWSE
                 iif( _OOHG_ActiveControlNoFocusRect, .F., iif( _OOHG_ActiveControlFocusRect, .T., NIL ) ), ;
                 _OOHG_ActiveControlPaintLeftMargin, ;
                 _OOHG_ActiveControlSynchronized, ;
-                _OOHG_ActiveControlFixedCols )
+                _OOHG_ActiveControlFixedCols, ;
+                _OOHG_ActiveControlNoDeleteMsg )
 
 /*----------------------------------------------------------------------------
 XBROWSE

@@ -1,11 +1,22 @@
 /*
- * $Id: ChangeLog,v 1.951 2012-06-25 20:14:48 fyurisich Exp $
+ * $Id: ChangeLog,v 1.952 2012-06-27 00:27:26 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-06-26 21:26 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_altsyntax.ch
+   * include/i_hmg_compat.ch
+   * include/i_browse.ch
+   * source/h_browse.prg
+     + Added support for NODELETEMSG clause. This clause permits the
+       deletion of a record without first asking "Are you sure ?"
+   * include/i_window.ch
+     + Added support for Up, Down, PageUp, PageDown, Left, Right,
+       GoTop and GoBottom methods in semi-oop syntax.
 
 2012-06-25 17:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_altsyntax.ch

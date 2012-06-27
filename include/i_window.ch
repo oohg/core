@@ -1,5 +1,5 @@
 /*
- * $Id: i_window.ch,v 1.44 2012-05-23 12:52:00 fyurisich Exp $
+ * $Id: i_window.ch,v 1.45 2012-06-27 00:27:27 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -124,7 +124,7 @@
          #xtranslate <w> . \<c\> . \<p:EnableUpdate,DisableUpdate\> => EMPTY( 0 ) ;;
          #xtranslate <w> . \<c\> . \<p:Cell\> (\<arg1\>,\<arg2\>) => GetProperty ( <(w)>, \<(c)> , \<(p)> , \<arg1\> , \<arg2\> ) ;;
          #xtranslate <w> . \<c\> . \<p:Cell\> (\<arg1\>,\<arg2\>) := \<n\> => SetProperty ( <(w)>, \<(c)> , \<(p)> , \<arg1\> , \<arg2\> , \<n\> ) ;;
-         #xtranslate <w> . \<c\> . \<p:Refresh,SetFocus,DeleteAllItems,Release,Show,Hide,Play,Stop,Close,Pause,Eject,OpenDialog,Resume,ColumnsAutoFit,ColumnsAutoFitH,ColumnsBetterAutoFit,EditLabel\> \[()\] => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> () ;;
+         #xtranslate <w> . \<c\> . \<p:Refresh,SetFocus,DeleteAllItems,Release,Show,Hide,Play,Stop,Close,Pause,Eject,OpenDialog,Resume,ColumnsAutoFit,ColumnsAutoFitH,ColumnsBetterAutoFit,EditLabel,Up,Down,Left,Right,PageDown,PageUp,GoTop,GoBottom\> \[()\] => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> () ;;
          #xtranslate <w> . \<c\> . \<p:Save,Action,OnClick\> \[()\] => Domethod ( <(w)>, \<(c)\> , \<(p)> ) ;;
          #xtranslate <w> . \<c\> . \<p:AddItem,DeleteItem,Open,DeletePage,DeleteColumn,Expand,Collapse,ColumnAutoFit,ColumnAutoFitH,ColumnBetterAutoFit,GetParent,GetChildren,HandleToItem\> (\<a\>) => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ( \<a\> ) ;;
          #xtranslate <w> . \<c\> . \<p:Item,ItemReadonly,ItemEnabled,ItemDraggable,CheckItem,BoldItem\> (\<arg1\>,\<arg2\>) => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ( \<arg1\> , \<arg2\> ) ;;
