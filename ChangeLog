@@ -1,11 +1,20 @@
 /*
- * $Id: ChangeLog,v 1.953 2012-06-27 00:49:27 fyurisich Exp $
+ * $Id: ChangeLog,v 1.954 2012-06-27 01:50:06 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-06-26 22:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_radio.prg
+     - Deleted method SizePos. It was unnecessary repositiong the
+       radioitems using a non-scaled delta.
+     + Added method AdjustResize to resize the spacing.
+     This changes fix wrong adjust/resize of radiogroup controls.
+   * doc/classes.txt
+     * Updated.
 
 2012-06-26 21:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * doc/classes.txt

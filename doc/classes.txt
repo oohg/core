@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.54 2012-06-27 00:49:27 fyurisich Exp $
+ * $Id: classes.txt,v 1.55 2012-06-27 01:50:06 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -1808,11 +1808,11 @@ CLASS TRADIOGROUP FROM TLABEL
    DATA TABSTOP                   INIT .T.
    DATA TYPE                      INIT "RADIOGROUP" READONLY
 
+   METHOD ADJUSTRESIZE
    METHOD ROWMARGIN
    METHOD COLMARGIN
    METHOD DEFINE
    METHOD SETFONT
-   METHOD SIZEPOS
    METHOD VALUE                   SETGET
    METHOD ENABLED                 SETGET
    METHOD SETFOCUS

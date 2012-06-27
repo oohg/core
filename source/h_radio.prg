@@ -1,5 +1,5 @@
 /*
- * $Id: h_radio.prg,v 1.29 2011-12-12 23:51:02 guerra000 Exp $
+ * $Id: h_radio.prg,v 1.30 2012-06-27 01:50:06 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -112,7 +112,6 @@ CLASS TRadioGroup FROM TLabel
 
    METHOD Define
    METHOD SetFont
-   METHOD SizePos
    METHOD Value               SETGET
    METHOD Enabled             SETGET
    METHOD SetFocus
@@ -124,6 +123,7 @@ CLASS TRadioGroup FROM TLabel
    METHOD DeleteItem
 
    METHOD Caption
+   METHOD AdjustResize
 
    EMPTY( _OOHG_AllVars )
 ENDCLASS
@@ -196,18 +196,6 @@ METHOD SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout ) CLASS T
 *-----------------------------------------------------------------------------*
    AEVAL( ::aOptions, { |o| o:SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout ) } )
 RETURN ::Super:SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout )
-
-*-----------------------------------------------------------------------------*
-METHOD SizePos( Row, Col, Width, Height ) CLASS TRadioGroup
-*-----------------------------------------------------------------------------*
-Local nDeltaRow, nDeltaCol, uRet
-   nDeltaRow := ::Row
-   nDeltaCol := ::Col
-   uRet := ::Super:SizePos( Row, Col, Width, Height )
-   nDeltaRow := ::Row - nDeltaRow
-   nDeltaCol := ::Col - nDeltaCol
-   AEVAL( ::aControls, { |o| o:SizePos( o:Row + nDeltaRow, o:Col + nDeltaCol ) } )
-Return uRet
 
 *-----------------------------------------------------------------------------*
 METHOD Value( nValue ) CLASS TRadioGroup
@@ -360,6 +348,19 @@ Return nil
 METHOD Caption( nItem, uValue ) CLASS TRadioGroup
 *-----------------------------------------------------------------------------*
 Return ( ::aOptions[ nItem ]:Caption := uValue )
+
+*------------------------------------------------------------------------------*
+METHOD AdjustResize( nDivh, nDivw, lSelfOnly ) CLASS TRadioGroup
+*------------------------------------------------------------------------------*
+   If HB_IsNumeric( ::nSpacing )
+      If ::lHorizontal
+         ::nSpacing := ::nSpacing * nDivw
+      Else
+         ::nSpacing := ::nSpacing * nDivh
+      EndIf
+   EndIf
+
+Return ::Super:AdjustResize( nDivh, nDivw, lSelfOnly )
 
 
 
