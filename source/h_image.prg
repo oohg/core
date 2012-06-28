@@ -1,5 +1,5 @@
 /*
- * $Id: h_image.prg,v 1.26 2011-11-04 00:51:19 fyurisich Exp $
+ * $Id: h_image.prg,v 1.27 2012-06-28 03:36:03 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -217,6 +217,7 @@ METHOD OnClick( bOnClick ) CLASS TImage
    If PCOUNT() > 0
       ::bOnClick := bOnClick
       WindowStyleFlag( ::hWnd, SS_NOTIFY, IF( ValType( bOnClick ) == "B", SS_NOTIFY, 0 ) )
+      TImage_SetNotify( Self, HB_IsBlock( bOnClick ) )
    EndIf
 Return ::bOnClick
 
@@ -306,7 +307,7 @@ HB_FUNC_STATIC( TIMAGE_EVENTS )
          }
          else
          {
-            hb_retni( HTCLIENT );
+            hb_retni( HTTRANSPARENT );
          }
          break;
 
@@ -321,6 +322,15 @@ HB_FUNC_STATIC( TIMAGE_EVENTS )
          hb_vmSend( 4 );
          break;
    }
+}
+
+HB_FUNC( TIMAGE_SETNOTIFY )   // ( oSelf, lHit )
+{
+   PHB_ITEM pSelf = hb_param( 1, HB_IT_ANY );
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+
+   oSelf->lAux[ 0 ] = hb_parl( 2 );
+   hb_ret();
 }
 
 #pragma ENDDUMP
