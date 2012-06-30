@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.70 2012-06-30 00:15:21 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.71 2012-06-30 15:32:00 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -2194,7 +2194,7 @@ BROWSE
         _OOHG_ActiveControlSynchronized     := Nil ;;
         _OOHG_ActiveControlFixedCols        := .F. ;;
         _OOHG_ActiveControlNoDeleteMsg      := .F. ;;
-        _OOHG_ActiveControlUpdateAll
+        _OOHG_ActiveControlUpdateAll        := .F.
 
 #xcommand DELETEWHEN <delwhen> ;
         => ;
