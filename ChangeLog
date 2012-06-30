@@ -1,11 +1,48 @@
 /*
- * $Id: ChangeLog,v 1.956 2012-06-28 03:36:03 fyurisich Exp $
+ * $Id: ChangeLog,v 1.957 2012-06-30 00:15:21 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-06-29 21:13 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_splitbox.prg
+     ! Fixed: form with a toolbar (with one graphical button) inside
+       a splitbox and a numeric textbox, when a non-numeric character
+       is typed, Windows shows a tooltip with a message, after a few
+       seconds it's automatically erased and simultaneously the
+       the button's image dissapears. This only happens under WinXP.
+     * Changed INITSPLITBOX function so the control only has
+       WS_CLIPCHILDREN style under Vista or newer version.
+   * source/h_grid.prg
+     + Added method JUSTIFY( nColumn, uValue ) to change the
+       justification of a column.
+     ! Fixed: ::aHeaderImage content is lost before it can be used, if
+       method is called LOADHEADERIMAGES( ::aHeaderImage ).
+     + Added clonning of parameter in method LOADHEADERIMAGES.
+   * source/h_xbrowse.prg
+     ! Fixed: RTE in method DELETECOLUMN when nColIndex parameter
+       is not numeric.
+     + Added to method DELETECOLUMN the same validation and default
+       value of the parameter used in TGRID class: if it's not numeric
+       or it's greater than the number of columns then the last column
+       is deleted, if it's less than 1 then the first column is deleted.
+     + Method DELETECOLUMN now returns the number of the deleted column
+       or 0 if none was deleted.
+   * source/h_browse.prg
+     + Added data LUPADATEALL.
+     + Added support for UPDATEALL clause.
+     + Method UPDATE forces the update of the headers text and images,
+       columns widths and columns justifications. This new behaviour is
+       guarded under ::lUpdateAll.
+   * include/i_browse.ch
+   * include/i_altsyntax.ch
+   * include/i_hmg_compat.ch
+     + Added UPDATEALL clause: enables the update of the headers text
+       and images, columns widths and columns justifications in method
+       UPDATE of TOBROWSE class.
 
 2012-06-28 00:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_image.prg

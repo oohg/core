@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.69 2012-06-27 00:27:27 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.70 2012-06-30 00:15:21 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -122,6 +122,7 @@ Memvariables
 #xtranslate _OOHG_ActiveControlTrailingFontColor      => _OOHG_ActiveControlInfo \[  25 \]
 #xtranslate _OOHG_ActiveControlBackgroundColor        => _OOHG_ActiveControlInfo \[  26 \]
 
+#xtranslate _OOHG_ActiveControlUpdateAll              => _OOHG_ActiveControlInfo \[ 133 \]
 #xtranslate _OOHG_ActiveControlNoDeleteMsg            => _OOHG_ActiveControlInfo \[ 134 \]
 #xtranslate _OOHG_ActiveControlFixedCols              => _OOHG_ActiveControlInfo \[ 135 \]
 #xtranslate _OOHG_ActiveControlSynchronized           => _OOHG_ActiveControlInfo \[ 136 \]
@@ -2192,7 +2193,8 @@ BROWSE
         _OOHG_ActiveControlNoFocusRect      := .F. ;;
         _OOHG_ActiveControlSynchronized     := Nil ;;
         _OOHG_ActiveControlFixedCols        := .F. ;;
-        _OOHG_ActiveControlNoDeleteMsg      := .F.
+        _OOHG_ActiveControlNoDeleteMsg      := .F. ;;
+        _OOHG_ActiveControlUpdateAll
 
 #xcommand DELETEWHEN <delwhen> ;
         => ;
@@ -2237,6 +2239,10 @@ BROWSE
 #xcommand NODELETEMSG <nodeletemsg> ;
         => ;
         _OOHG_ActiveControlNoDeleteMsg := <nodeletemsg>
+
+#xcommand UPDATEALL <updall> ;
+        => ;
+        _OOHG_ActiveControlUpdateAll := <updall>
 
 #xcommand END BROWSE ;
         => ;
@@ -2310,7 +2316,8 @@ BROWSE
                 _OOHG_ActiveControlPaintLeftMargin, ;
                 _OOHG_ActiveControlSynchronized, ;
                 _OOHG_ActiveControlFixedCols, ;
-                _OOHG_ActiveControlNoDeleteMsg )
+                _OOHG_ActiveControlNoDeleteMsg, ;
+                _OOHG_ActiveControlUpdateAll )
 
 /*----------------------------------------------------------------------------
 XBROWSE

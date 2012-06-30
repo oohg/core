@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.170 2012-06-25 20:14:48 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.171 2012-06-30 00:15:21 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -205,6 +205,7 @@ CLASS TGrid FROM TControl
    METHOD LoadHeaderImages
    METHOD SetSelectedColors   SETGET
    METHOD CheckItem           SETGET
+   METHOD Justify
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -467,9 +468,16 @@ Local i, aColors[ 4 ]
 Return aSelectedColors
 
 *-----------------------------------------------------------------------------*
-METHOD LoadHeaderImages( aHeaderImage ) CLASS TGrid
+METHOD LoadHeaderImages( aNewHeaderImage ) CLASS TGrid
 *-----------------------------------------------------------------------------*
-Local i, nPos, nCount, aImageList, nImagesWidth, aImageName := {}
+Local i, nPos, nCount, aImageList, nImagesWidth, aHeaderImage, aImageName := {}
+
+   // Clone the array in case aNewHeaderImage is the same as ::aHeaderImage
+   If HB_IsArray( aNewHeaderImage )
+      aHeaderImage := aClone( aNewHeaderImage )
+   Else
+      aHeaderImage := Nil
+   EndIf
 
    // Destroy previous imagelist
    If ValidHandler( ::HeaderImageList )
@@ -1964,6 +1972,15 @@ Local aTemp, nLen
       aGrid[ nItem ] := aTemp
    EndIf
 Return aGrid
+
+*-----------------------------------------------------------------------------*
+METHOD Justify( nColumn, uValue ) CLASS TGrid
+*-----------------------------------------------------------------------------*
+   If HB_IsNumeric( uValue )
+      ::aJust[ nColumn ] := uValue
+      SetGridColumnJustify( ::hWnd, nColumn, uValue )
+   EndIf
+Return ::aJust[ nColumn ]
 
 *-----------------------------------------------------------------------------*
 METHOD Header( nColumn, uValue ) CLASS TGrid
@@ -4305,6 +4322,21 @@ static void _OOHG_ListView_FillItem( HWND hWnd, int nItem, PHB_ITEM pItems )
       LI.iImage = pStruct.iImage1;
       ListView_SetItem( hWnd, &LI );
    }
+}
+
+HB_FUNC( SETGRIDCOLUMNJUSTIFY )
+{
+   LV_COLUMN COL;
+
+   COL.mask = LVCF_FMT;
+
+   ListView_GetColumn( HWNDparam( 1 ), hb_parni( 2 ) - 1, &COL );
+
+   COL.fmt &= ~ ( COL.fmt & LVCFMT_JUSTIFYMASK );
+
+   COL.fmt |= hb_parni( 3 );
+
+   ListView_SetColumn( HWNDparam( 1 ), hb_parni( 2 ) - 1, &COL );
 }
 
 HB_FUNC( SETGRIDCOLUMNHEADER )

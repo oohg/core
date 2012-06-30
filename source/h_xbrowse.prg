@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.60 2012-06-27 21:03:46 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.61 2012-06-30 00:15:21 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1392,13 +1392,24 @@ RETURN nil
 *-----------------------------------------------------------------------------*
 METHOD DeleteColumn( nColIndex ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
+LOCAL nColumns, nRet
+   nColumns := Len( ::aHeaders )
+   If nColumns == 0
+      Return 0
+   EndIf
+   If ! HB_IsNumeric( nColIndex ) .OR. nColIndex > nColumns
+      nColIndex := nColumns
+   ElseIf nColIndex < 1
+      nColIndex := 1
+   EndIf
+
    _OOHG_DeleteArrayItem( ::aFields,  nColIndex )
    If HB_IsArray( ::aReplaceField )
       _OOHG_DeleteArrayItem( ::aReplaceField,  nColIndex )
    EndIf
-   ::Super:DeleteColumn( nColIndex )
+   nRet := ::Super:DeleteColumn( nColIndex )
    ::Refresh()
-RETURN nil
+RETURN nRet
 
 
 

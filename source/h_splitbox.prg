@@ -1,5 +1,5 @@
 /*
- * $Id: h_splitbox.prg,v 1.17 2012-05-20 20:32:54 fyurisich Exp $
+ * $Id: h_splitbox.prg,v 1.18 2012-06-30 00:15:21 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -283,16 +283,24 @@ HB_FUNC( INITSPLITBOX )
    INITCOMMONCONTROLSEX icex;
    int ExStyle;
    int Style;
+   OSVERSIONINFO osvi;
 
    ExStyle = _OOHG_RTL_Status( hb_parl( 3 ) );
 
    Style = hb_parni( 2 ) |
            WS_CHILD |
            WS_CLIPSIBLINGS |
-           WS_CLIPCHILDREN |
            RBS_BANDBORDERS |
            RBS_VARHEIGHT |
            RBS_FIXEDORDER;
+
+   osvi.dwOSVersionInfoSize = sizeof( OSVERSIONINFO );
+   GetVersionEx( &osvi );
+
+   if( osvi.dwMajorVersion >= 6 )
+   {
+      Style = Style | WS_CLIPCHILDREN;
+   }
 
    icex.dwSize = sizeof( INITCOMMONCONTROLSEX );
    icex.dwICC  = ICC_COOL_CLASSES | ICC_BAR_CLASSES;

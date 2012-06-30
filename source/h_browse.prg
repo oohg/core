@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.98 2012-06-27 00:27:27 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.99 2012-06-30 00:15:21 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -102,6 +102,7 @@ CLASS TOBrowse FROM TXBrowse
    DATA aRecMap         INIT {}
    DATA RecCount        INIT 0
    DATA SyncStatus      INIT nil
+   DATA lUpdateAll      INIT .F.
    DATA lNoDelMsg       INIT .T.
    /*
     * When .T. the browse behaves as if SET BROWSESYNC is ON.
@@ -158,7 +159,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lDescending, bDelWhen, DelMsg, onDelete, aHeaderImage, ;
                aHeaderImageAlign, FullMove, aSelectedColors, aEditKeys, ;
                uRefresh, dblbffr, lFocusRect, lPLM, sync, lFixedCols, ;
-               lNoDelMsg ) CLASS TOBrowse
+               lNoDelMsg, lUpdateAll ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local nWidth2, nCol2, oScroll, z
 
@@ -170,6 +171,7 @@ Local nWidth2, nCol2, oScroll, z
    ASSIGN ::lDescending VALUE lDescending TYPE "L"
    ASSIGN ::SyncStatus  VALUE sync        TYPE "L" DEFAULT nil
    ASSIGN ::lNoDelMsg   VALUE lNoDelMsg   TYPE "L"
+   ASSIGN ::lUpdateAll  VALUE lUpdateAll  TYPE "L"
 
    IF ValType( uRefresh ) == "N"
       IF uRefresh == 0 .OR. uRefresh == 1
@@ -311,7 +313,7 @@ Return Self
 *-----------------------------------------------------------------------------*
 METHOD UpDate() CLASS TOBrowse
 *-----------------------------------------------------------------------------*
-Local PageLength , aTemp, _BrowseRecMap := {} , x
+Local PageLength , aTemp, _BrowseRecMap := {}, x
 Local nCurrentLength
 Local lColor, aFields, cWorkArea, hWnd, nWidth
 
@@ -342,6 +344,7 @@ Local lColor, aFields, cWorkArea, hWnd, nWidth
       ::GridBackColor := nil
    EndIf
 
+   // update rows
    x := 0
    nCurrentLength := ::ItemCount()
 
@@ -375,6 +378,29 @@ Local lColor, aFields, cWorkArea, hWnd, nWidth
    EndDo
 
    ::aRecMap := _BrowseRecMap
+
+   // update headers text and images, columns widths and justifications
+   If ::lUpdateAll
+      If Len( ::aWidths ) != nWidth
+         ASIZE( ::aWidths, nWidth )
+         AEVAL( ::aWidths, { |x,i| ::aWidths[ i ] := If( ! HB_IsNumeric( x ), 0, x ) } )
+      EndIf
+      AEVAL( ::aWidths, { |x,i| ::ColumnWidth( i, x ) } )
+
+      If Len( ::aJust ) != nWidth
+         ASIZE( ::aJust, nWidth )
+         AEVAL( ::aJust, { |x,i| ::aJust[ i ] := If( ! HB_IsNumeric( x ), 0, x ) } )
+      EndIf
+      AEVAL( ::aJust, { |x,i| ::Justify( i, x ) } )
+
+      If Len( ::aHeaders ) != nWidth
+         ASIZE( ::aHeaders, nWidth )
+         AEVAL( ::aHeaders, { |x,i| ::aHeaders[ i ] := If( ! ValType( x ) $ "CM", "", x ) } )
+      EndIf
+      AEVAL( ::aHeaders, { |x,i| ::Header( i, x ) } )
+
+      ::LoadHeaderImages( ::aHeaderImage )
+   EndIf
 
 Return nil
 
