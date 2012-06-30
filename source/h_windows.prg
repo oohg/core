@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.234 2012-06-12 01:37:09 fyurisich Exp $
+ * $Id: h_windows.prg,v 1.235 2012-06-30 17:04:58 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -684,7 +684,7 @@ HB_FUNC_STATIC( TWINDOW_ACCEPTFILES )
 
    if( ISLOG( 1 ) )
    {
-      DragAcceptFiles( oSelf->hWnd, hb_parnl( 1 ) );
+      DragAcceptFiles( oSelf->hWnd, hb_parl( 1 ) );
    }
 
    hb_retl( ( GetWindowLong( oSelf->hWnd, GWL_EXSTYLE ) & WS_EX_ACCEPTFILES ) == WS_EX_ACCEPTFILES );
