@@ -1,5 +1,5 @@
 /*
- * $Id: h_splitbox.prg,v 1.18 2012-06-30 00:15:21 fyurisich Exp $
+ * $Id: h_splitbox.prg,v 1.19 2012-06-30 05:17:50 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -285,7 +285,7 @@ HB_FUNC( INITSPLITBOX )
    int Style;
    OSVERSIONINFO osvi;
 
-   ExStyle = _OOHG_RTL_Status( hb_parl( 3 ) );
+   ExStyle = _OOHG_RTL_Status( hb_parl( 3 ) ) | WS_EX_CONTROLPARENT;
 
    Style = hb_parni( 2 ) |
            WS_CHILD |

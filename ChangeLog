@@ -1,11 +1,18 @@
 /*
- * $Id: ChangeLog,v 1.957 2012-06-30 00:15:21 fyurisich Exp $
+ * $Id: ChangeLog,v 1.958 2012-06-30 05:17:50 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-06-30 02:17 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_splitbox.c
+     + Added WS_EX_CONTROLPARENT in INITSPLITBOX function.
+     ! Fixed: buttons inside a splitchild window inside a splitbox
+       produce a deadly loop.
+     Thanks to Vicente Guerra who pushed me in the right direction.
 
 2012-06-29 21:13 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_splitbox.prg
