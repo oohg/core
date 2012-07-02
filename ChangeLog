@@ -1,11 +1,18 @@
 /*
- * $Id: ChangeLog,v 1.960 2012-06-30 17:04:58 fyurisich Exp $
+ * $Id: ChangeLog,v 1.961 2012-07-02 18:13:21 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-07-02 15:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_richeditbox.prg
+     ! ONDBLCLICK event is not being fired.
+   * source/h_editbox.prg
+     - Deleted messages WM_NCCALCSIZE and WM_NCHITTEST from method
+       EVENTS and transfering it's handling to parent class.
 
 2012-06-30 14:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_windows.prg

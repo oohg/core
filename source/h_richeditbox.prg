@@ -1,5 +1,5 @@
 /*
- * $Id: h_richeditbox.prg,v 1.21 2011-11-09 02:03:31 fyurisich Exp $
+ * $Id: h_richeditbox.prg,v 1.22 2012-07-02 18:13:21 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -104,7 +104,6 @@ CLASS TEditRich FROM TEdit
    METHOD Define
    METHOD BackColor   SETGET
    METHOD RichValue   SETGET
-   METHOD Events      BLOCK { || nil }
 
    EMPTY( _OOHG_AllVars )
 ENDCLASS
@@ -353,4 +352,5 @@ HB_FUNC( RICHSTREAMOUT )   // hWnd
       hb_xfree( cBuffer );
    }
 }
+
 #pragma ENDDUMP

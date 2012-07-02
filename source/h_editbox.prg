@@ -1,5 +1,5 @@
 /*
- * $Id: h_editbox.prg,v 1.19 2012-01-31 19:13:48 fyurisich Exp $
+ * $Id: h_editbox.prg,v 1.20 2012-07-02 18:13:21 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -168,40 +168,6 @@ HB_FUNC_STATIC( TEDIT_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
 
    switch( message )
    {
-      case WM_NCCALCSIZE:
-      {
-         int iRet;
-         RECT *rect2;
-         POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
-
-         iRet = DefWindowProc( hWnd, message, wParam, lParam );
-
-         if( oSelf->lAux[ 0 ] )
-         {
-
-            rect2 = ( RECT * ) lParam;
-            rect2->right = rect2->right - oSelf->lAux[ 0 ];
-         }
-
-         hb_retni( iRet );
-         break;
-      }
-
-      case WM_NCHITTEST:
-      {
-         int iRet;
-
-         iRet = DefWindowProc( hWnd, message, wParam, lParam );
-
-         if( iRet == 0 )
-         {
-            iRet = -1;
-         }
-
-         hb_retni( iRet );
-         break;
-      }
-
       case WM_KEYDOWN:
       case WM_UNDO:
          if( ( GetWindowLong( hWnd, GWL_STYLE ) & ES_READONLY ) == 0 )
