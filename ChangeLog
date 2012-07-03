@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog,v 1.961 2012-07-02 18:13:21 fyurisich Exp $
+ * $Id: ChangeLog,v 1.962 2012-07-03 11:58:07 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-07-02 08:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_altsyntax.ch
+     ! Fixed: incorrect variable name in DEFINE BROWSE causes
+       compiler warning and incorrect refresh behavior.
 
 2012-07-02 15:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_richeditbox.prg

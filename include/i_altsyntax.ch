@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.71 2012-06-30 15:32:00 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.72 2012-07-03 11:58:07 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -2186,7 +2186,7 @@ BROWSE
         _OOHG_ActiveControlSelectedColors   := .F. ;;
         _OOHG_ActiveControlKeys             := Nil ;;
         _OOHG_ActiveControlForceRefresh     := .F. ;;
-        _OOHG_ActiveControlNoForce          := .F. ;;
+        _OOHG_ActiveControlNoRefresh        := .F. ;;
         _OOHG_ActiveControlDblBffer         := .F. ;;
         _OOHG_ActiveControlPaintLeftMargin  := .F. ;;
         _OOHG_ActiveControlFocusRect        := .F. ;;
@@ -2310,7 +2310,7 @@ BROWSE
                 _OOHG_ActiveControlFullMove, ;
                 _OOHG_ActiveControlSelectedColors, ;
                 _OOHG_ActiveControlKeys, ;
-                if( _OOHG_ActiveControlForceRefresh, 0, if( _OOHG_ActiveControlNoForce, 1, nil ) ), ;
+                if( _OOHG_ActiveControlForceRefresh, 0, if( _OOHG_ActiveControlNoRefresh, 1, nil ) ), ;
                 _OOHG_ActiveControlDblBffer, ;
                 iif( _OOHG_ActiveControlNoFocusRect, .F., iif( _OOHG_ActiveControlFocusRect, .T., NIL ) ), ;
                 _OOHG_ActiveControlPaintLeftMargin, ;
