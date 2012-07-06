@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.79 2012-05-24 15:23:37 fyurisich Exp $
+ * $Id: h_textbox.prg,v 1.80 2012-07-06 00:45:38 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -150,6 +150,12 @@ CLASS TText FROM TLabel
    METHOD GetSelection
    METHOD SetSelection
    METHOD InsertStatus                 SETGET
+   METHOD GetLine
+   METHOD GetLineIndex( nLine )        BLOCK { |Self,nLine| SendMessage( ::hWnd, EM_LINEINDEX, nLine, 0) }
+   METHOD GetFirstVisibleLine          BLOCK { |Self| SendMessage( ::hWnd, EM_GETFIRSTVISIBLELINE, 0, 0 ) }
+   METHOD GetLineCount                 BLOCK { |Self| SendMessage( ::hWnd, EM_GETLINECOUNT, 0, 0 ) }
+   METHOD GetLineFromChar( nChar )     BLOCK { |Self,nChar| SendMessage( ::hWnd, EM_LINEFROMCHAR, nChar, 0) }
+   METHOD GetCurrentLine               BLOCK { |Self| ::GetLineFromChar( -1 ) }
 
    Empty( _OOHG_AllVars )
 ENDCLASS
@@ -343,20 +349,20 @@ Return uRet
 *------------------------------------------------------------------------------*
 METHOD CaretPos( nPos ) CLASS TText
 *------------------------------------------------------------------------------*
+Local aPos
    If HB_IsNumeric( nPos )
       SendMessage( ::hWnd, EM_SETSEL, nPos, nPos )
       ::ScrollCaret()
    EndIf
-Return HiWord( SendMessage( ::hWnd, EM_GETSEL, 0, 0 ) )
+   aPos := ::GetSelection()
+Return aPos[ 2 ]                                // nEnd
 
 *------------------------------------------------------------------------------*
 METHOD GetSelection() CLASS TText
 *------------------------------------------------------------------------------*
-Local nPos, nStart, nEnd
-   nPos := SendMessage( ::hWnd, EM_GETSEL, 0, 0 )
-   nStart := LoWord( nPos )
-   nEnd := HiWord( nPos )
-Return { nStart, nEnd }
+Local aPos
+   aPos := TText_GetSelectionData( ::hWnd )
+Return aPos                                     // { nStart, nEnd }
 
 *------------------------------------------------------------------------------*
 METHOD SetSelection( nStart, nEnd ) CLASS TText
@@ -477,6 +483,9 @@ METHOD InsertStatus( lValue ) CLASS TText
       EndIf
    EndIf
 Return ::lInsert
+
+
+
 
 #pragma BEGINDUMP
 
@@ -620,18 +629,57 @@ HB_FUNC_STATIC( TTEXT_CONTROLAREA )   // METHOD ControlArea( nWidth ) CLASS TTex
    hb_retni( oSelf->lAux[ 0 ] );
 }
 
+// -----------------------------------------------------------------------------
+HB_FUNC( TTEXT_GETSELECTIONDATA )
+// -----------------------------------------------------------------------------
+{
+   DWORD wParam;
+   DWORD lParam;
+
+   SendMessage( HWNDparam( 1 ), EM_GETSEL, (WPARAM) &wParam, (LPARAM) &lParam );
+
+   hb_reta( 2 );
+   HB_STORNI( (int) wParam, -1, 1 );
+   HB_STORNI( (int) lParam, -1, 2 );
+}
+
+// -----------------------------------------------------------------------------
+HB_FUNC_STATIC( TTEXT_GETLINE )           // METHOD GetLine( nLine ) CLASS TText
+// -----------------------------------------------------------------------------
+// Return the text of a specified line. Line number starts at 0.
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   LRESULT lResult;
+   WORD LenBuff ;
+   LPCTSTR strBuffer[1024];
+
+   LenBuff = sizeof( strBuffer );
+   * ( LPWORD ) strBuffer = LenBuff;
+
+   lResult = SendMessage( oSelf->hWnd, EM_GETLINE, (WPARAM) hb_parnl( 1 ), (LPARAM) &strBuffer );
+   if( lResult )
+   {
+      hb_retc( (char *) strBuffer );
+   }
+   else
+   {
+      hb_retc( "" );
+   }
+}
+
 #pragma ENDDUMP
 
 *------------------------------------------------------------------------------*
 FUNCTION TText_Events2( hWnd, nMsg, wParam, lParam )
 *------------------------------------------------------------------------------*
 Local Self := QSelf()
-Local nPos, nStart, nEnd, cText
+Local aPos, nStart, nEnd, cText
 
    If nMsg == WM_CHAR .AND. wParam >= 32 .AND. ! ::InsertStatus
-      nPos := SendMessage( ::hWnd, EM_GETSEL, 0, 0 )
-      nStart := LoWord( nPos )
-      nEnd := HiWord( nPos )
+      aPos := ::GetSelection()
+      nStart := aPos[ 1 ]
+      nEnd := aPos[ 2 ]
       
       /* If some characters are selected or if the insertion point is
        * at the end of line then use control's default behavior.
@@ -643,8 +691,7 @@ Local nPos, nStart, nEnd, cText
          EndIf
       EndIf
 
-   ElseIf nMsg == WM_UNDO .OR. ;
-          ( nMsg == WM_KEYDOWN .AND. wParam == VK_Z .AND. GetKeyFlagState() == MOD_CONTROL )
+   ElseIf nMsg == WM_UNDO
       cText := ::Value
       ::Value := ::xUndo
       ::xUndo := cText
@@ -1055,13 +1102,13 @@ HB_FUNC_STATIC( TTEXTPICTURE_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lP
 FUNCTION TTextPicture_Events2( hWnd, nMsg, wParam, lParam )
 *------------------------------------------------------------------------------*
 Local Self := QSelf()
-Local nPos, nPos1, nPos2, cText
+Local nPos, nPos1, nPos2, cText, aPos
 Local aValidMask := ::ValidMask
 
    If nMsg == WM_CHAR .AND. wParam >= 32
-      nPos := SendMessage( ::hWnd, EM_GETSEL , 0 , 0 )
-      nPos1 := LoWord( nPos )
-      nPos2 := HiWord( nPos )
+      aPos := ::GetSelection()
+      nPos1 := aPos[ 1 ]
+      nPos2 := aPos[ 2 ]
       cText := ::Caption
       nPos := nPos1 + 1
       cText := TTextPicture_Clear( cText, nPos, nPos2 - nPos1, aValidMask, ::InsertStatus )
@@ -1080,9 +1127,9 @@ Local aValidMask := ::ValidMask
       Return 1
 
    ElseIf nMsg == WM_KEYDOWN .AND. wParam == VK_DELETE .AND. GetKeyFlagState() == 0
-      nPos := SendMessage( ::hWnd, EM_GETSEL, 0, 0 )
-      nPos1 := LoWord( nPos )
-      nPos2 := HiWord( nPos )
+      aPos := ::GetSelection()
+      nPos1 := aPos[ 1 ]
+      nPos2 := aPos[ 2 ]
       cText := ::Caption
       cText := TTextPicture_Delete( Self, cText, nPos1 + 1, Max( nPos2 - nPos1, 1 ) )
       ::Caption := cText
@@ -1099,9 +1146,9 @@ Local aValidMask := ::ValidMask
       Return 1
 
    ElseIf nMsg == WM_PASTE
-      nPos := SendMessage( ::hWnd, EM_GETSEL, 0, 0 )
-      nPos1 := LoWord( nPos )
-      nPos2 := HiWord( nPos )
+      aPos := ::GetSelection()
+      nPos1 := aPos[ 1 ]
+      nPos2 := aPos[ 2 ]
       cText := ::Caption
       nPos := nPos1
       cText := TTextPicture_Clear( cText, nPos + 1, nPos2 - nPos1, aValidMask, ::InsertStatus )
@@ -1321,7 +1368,7 @@ Return cText
 METHOD Events_Command( wParam ) CLASS TTextPicture
 *------------------------------------------------------------------------------*
 Local Hi_wParam := HIWORD( wParam )
-Local cText, nPos, nPos2, cAux
+Local cText, nPos, nPos2, cAux, aPos
 Local cPictureMask, aValidMask
 
    If Hi_wParam == EN_CHANGE
@@ -1329,7 +1376,8 @@ Local cPictureMask, aValidMask
       cPictureMask := ::PictureMask
       If Len( cText ) != Len( cPictureMask ) .AND. ! ::lSetting .AND. ::lFocused
          aValidMask := ::ValidMask
-         nPos := HiWord( SendMessage( ::hWnd, EM_GETSEL , 0 , 0 ) )
+         aPos := ::GetSelection()
+         nPos := aPos[ 2 ]
          If Len( cText ) > Len( cPictureMask )
             nPos2 := Len( cPictureMask ) - ( Len( cText ) - nPos )
             cAux := SubStr( cText, nPos2 + 1, nPos - nPos2 )
@@ -1428,10 +1476,11 @@ Return uValue
 METHOD Events_Command( wParam ) CLASS TTextNum
 *------------------------------------------------------------------------------*
 Local Hi_wParam := HIWORD( wParam )
-Local cText, nPos, nCursorPos, lChange
+Local cText, nPos, nCursorPos, lChange, aPos
 
    If Hi_wParam == EN_CHANGE
-      nCursorPos := HiWord( SendMessage( ::hWnd, EM_GETSEL , 0 , 0 ) )
+      aPos := ::GetSelection()
+      nCursorPos := aPos[ 2 ]
       lChange := .F.
       cText := ::Caption
       nPos := 1

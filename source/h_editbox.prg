@@ -1,5 +1,5 @@
 /*
- * $Id: h_editbox.prg,v 1.20 2012-07-02 18:13:21 fyurisich Exp $
+ * $Id: h_editbox.prg,v 1.21 2012-07-06 00:45:38 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -103,7 +103,6 @@ CLASS TEdit FROM TText
    METHOD Define
    METHOD LookForKey
    METHOD Events_Enter  BLOCK { || nil }
-   METHOD Events
 
    EMPTY( _OOHG_AllVars )
 ENDCLASS
@@ -142,74 +141,3 @@ Local lDone
       lDone := .T.
    EndIf
 Return lDone
-
-#pragma BEGINDUMP
-
-#include "hbapi.h"
-#include "hbvm.h"
-#include "hbstack.h"
-#include <windows.h>
-#include <commctrl.h>
-#include "oohg.h"
-
-#define s_Super s_TText
-
-// oSelf->lAux[ 0 ] -> Client's area (width used by attached controls)
-
-// -----------------------------------------------------------------------------
-HB_FUNC_STATIC( TEDIT_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TEdit
-// -----------------------------------------------------------------------------
-{
-   HWND hWnd      = HWNDparam( 1 );
-   UINT message   = ( UINT )   hb_parni( 2 );
-   WPARAM wParam  = ( WPARAM ) hb_parni( 3 );
-   LPARAM lParam  = ( LPARAM ) hb_parnl( 4 );
-   PHB_ITEM pSelf = hb_stackSelfItem();
-
-   switch( message )
-   {
-      case WM_KEYDOWN:
-      case WM_UNDO:
-         if( ( GetWindowLong( hWnd, GWL_STYLE ) & ES_READONLY ) == 0 )
-         {
-            HB_FUNCNAME( TEDIT_EVENTS2 )();
-            break;
-         }
-
-      default:
-         _OOHG_Send( pSelf, s_Super );
-         hb_vmSend( 0 );
-         _OOHG_Send( hb_param( -1, HB_IT_OBJECT ), s_Events );
-         hb_vmPushLong( ( LONG ) hWnd );
-         hb_vmPushLong( message );
-         hb_vmPushLong( wParam );
-         hb_vmPushLong( lParam );
-         hb_vmSend( 4 );
-         break;
-   }
-}
-
-#pragma ENDDUMP
-
-*------------------------------------------------------------------------------*
-FUNCTION TEdit_Events2( hWnd, nMsg, wParam, lParam )
-*------------------------------------------------------------------------------*
-Local Self := QSelf()
-Local cText
-
-   // For multiline edit controls, CTRL+Z fires a WM_UNDO message,
-   // but not for single line edit controls.
-
-   If nMsg == WM_UNDO
-      cText := ::Value
-      ::Value := ::xUndo
-      ::xUndo := cText
-      Return 1
-      
-   ElseIf nMsg == WM_KEYDOWN .AND. wParam == VK_Z .AND. ;
-          ( GetKeyFlagState() == MOD_CONTROL .OR. GetKeyFlagState() == MOD_CONTROL + MOD_SHIFT )
-      Return 1
-
-   Endif
-
-Return ::Super:Events( hWnd, nMsg, wParam, lParam )

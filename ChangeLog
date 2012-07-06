@@ -1,11 +1,46 @@
 /*
- * $Id: ChangeLog,v 1.962 2012-07-03 11:58:07 fyurisich Exp $
+ * $Id: ChangeLog,v 1.963 2012-07-06 00:45:38 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-07-05 21:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/oohg.h
+   * source/c_controlmisc.c
+     + Added TEDIT to the symbols table.
+   * include/i_windefs.ch
+     + Added EM_GETLINECOUNT, EM_LINEINDEX and EM_LINEFROMCHAR.
+   * source/h_richeditbox.prg
+     ! Fixed: Ctrl-Z was not working.
+     + Added method EVENTS to process CTRL-Z.
+   * source/h_editbox.prg
+     - Deleted method EVENTS so they are handled by the TText class.
+   * source/h_textbox.prg
+     - Deleted handler for Ctrl-Z so default behaviour is used (the
+       control generates WM_UNDO message).
+     + Added method GetLine( nLine ).
+       Returns the text of a given line (use zero-based index).
+     + Added method GetLineIndex( nLine ).
+       Returns the zero-based index of the first character in a line.
+     + Added method GetFirstVisibleLine.
+       Returns the zero-based index of the first line visible.
+     + Added method GetLineCount.
+       Returns the number of lines in the control. When the control
+       is empty it returns 1.
+     + Added method GetLineFromChar( nChar ).
+       Returns the zero-based index of the line containing a given
+       character (use zero-based index).
+     + Added method GetCurrentLine.
+       Returns the zero-based index of the line containing the caret.
+     ! Fixed method CARETPOS, it was returning wrong value when the
+       text lenght is greater than 64 KB.
+     ! Fixed method GETSELECTION, it was returning wrong value when the
+       text lenght is greater than 64 KB.
+     * EM_GETSEL messages substituted by ::GetSelection in
+       TText_Events2 and TTextPicture_Events2 functions.
 
 2012-07-02 08:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_altsyntax.ch

@@ -1,5 +1,5 @@
 /*
- * $Id: h_richeditbox.prg,v 1.22 2012-07-02 18:13:21 fyurisich Exp $
+ * $Id: h_richeditbox.prg,v 1.23 2012-07-06 00:45:38 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -104,6 +104,7 @@ CLASS TEditRich FROM TEdit
    METHOD Define
    METHOD BackColor   SETGET
    METHOD RichValue   SETGET
+   METHOD Events
 
    EMPTY( _OOHG_AllVars )
 ENDCLASS
@@ -353,4 +354,55 @@ HB_FUNC( RICHSTREAMOUT )   // hWnd
    }
 }
 
+#define s_Super s_TEdit
+
+// -----------------------------------------------------------------------------
+HB_FUNC_STATIC( TEDITRICH_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TEditRich
+// -----------------------------------------------------------------------------
+{
+   HWND hWnd      = HWNDparam( 1 );
+   UINT message   = ( UINT )   hb_parni( 2 );
+   WPARAM wParam  = ( WPARAM ) hb_parni( 3 );
+   LPARAM lParam  = ( LPARAM ) hb_parnl( 4 );
+   PHB_ITEM pSelf = hb_stackSelfItem();
+
+   switch( message )
+   {
+      case WM_KEYDOWN:
+         if( ( GetWindowLong( hWnd, GWL_STYLE ) & ES_READONLY ) == 0 )
+         {
+            HB_FUNCNAME( TEDITRICH_EVENTS2 )();
+            break;
+         }
+
+      default:
+         _OOHG_Send( pSelf, s_Super );
+         hb_vmSend( 0 );
+         _OOHG_Send( hb_param( -1, HB_IT_OBJECT ), s_Events );
+         hb_vmPushLong( ( LONG ) hWnd );
+         hb_vmPushLong( message );
+         hb_vmPushLong( wParam );
+         hb_vmPushLong( lParam );
+         hb_vmSend( 4 );
+         break;
+   }
+}
+
 #pragma ENDDUMP
+
+*------------------------------------------------------------------------------*
+FUNCTION TEditRich_Events2( hWnd, nMsg, wParam, lParam )
+*------------------------------------------------------------------------------*
+Local Self := QSelf()
+Local cText
+
+   If nMsg == WM_KEYDOWN .AND. wParam == VK_Z .AND. ( GetKeyFlagState() == MOD_CONTROL .OR. GetKeyFlagState() == MOD_CONTROL + MOD_SHIFT )
+
+      cText := ::Value
+      ::Value := ::xUndo
+      ::xUndo := cText
+      Return 1
+
+   Endif
+
+Return ::Super:Events( hWnd, nMsg, wParam, lParam )
