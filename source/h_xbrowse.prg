@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.61 2012-06-30 00:15:21 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.62 2012-07-10 18:07:39 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -693,7 +693,7 @@ Local nvKey, lGo
                   If MsgYesNo(_OOHG_Messages(4, 1), _OOHG_Messages(4, 2))
                      ::Delete()
                   EndIf
-               Else
+               ElseIf ! Empty( ::DelMsg )
                   MsgStop(::DelMsg, _OOHG_Messages(4, 2))
                EndIf
             EndIf

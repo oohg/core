@@ -1,11 +1,17 @@
 /*
- * $Id: ChangeLog,v 1.963 2012-07-06 00:45:38 fyurisich Exp $
+ * $Id: ChangeLog,v 1.964 2012-07-10 18:07:39 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-07-10 15:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_browse.prg
+   * source/h_xbrowse.prg
+     + Added: when DELETEMSG clause is not used, and DELETEWHEN block
+       returns .F. (impeding deletion), no message is displayed.
 
 2012-07-05 21:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/oohg.h
