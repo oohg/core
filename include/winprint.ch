@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.ch,v 1.4 2008-01-27 06:47:35 guerra000 Exp $
+ * $Id: winprint.ch,v 1.5 2012-07-12 16:18:34 fyurisich Exp $
  */
 // ---------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -9,6 +9,9 @@
 // ---------------------------------------------------------------------------
 
 MEMVAR HBPRN
+#xcommand SET CHANGES GLOBAL => hbprn:lGlobalChanges := .T.
+#xcommand SET CHANGES LOCAL => hbprn:lGlobalChanges := .F.
+
 #xcommand SET DUPLEX VERTICAL => hbprn:setdevmode(DM_DUPLEX,DMDUP_VERTICAL)
 #xcommand SET DUPLEX HORIZONTAL => hbprn:setdevmode(DM_DUPLEX,DMDUP_HORIZONTAL)
 #xcommand SET DUPLEX OFF => hbprn:setdevmode(DM_DUPLEX,DMDUP_SIMPLEX)

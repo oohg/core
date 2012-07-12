@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.45 2012-07-12 14:59:15 fyurisich Exp $
+ * $Id: winprint.prg,v 1.46 2012-07-12 16:18:34 fyurisich Exp $
  */
 // -----------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -85,6 +85,7 @@ CLASS HBPrinter
    DATA    InMemory INIT .F.
    DATA    TimeStamp INIT ''
    DATA    BaseDoc INIT ""
+   DATA    lGlobalChanges INIT .T.
 
    METHOD New()
    METHOD SelectPrinter( cPrinter ,lPrev)
@@ -237,7 +238,7 @@ Return Nil
 
 
 METHOD SetDevMode(what,newvalue) CLASS HBPrinter
-  ::hDCRef:=rr_setdevmode(what,newvalue)
+  ::hDCRef:=rr_setdevmode( what, newvalue, ! ::lGlobalChanges )
   rr_getdevicecaps(::DEVCAPS,::Fonts[3])
   ::setunits(::units)
 Return Self
@@ -2252,7 +2253,10 @@ HB_FUNC (RR_SETDEVMODE)
      if (what==DM_COLLATE)        pi2->pDevMode->dmCollate = (short)hb_parni(2);
 
      DocumentProperties(NULL, hPrinter,PrinterName,pi2->pDevMode,pi2->pDevMode,DM_IN_BUFFER | DM_OUT_BUFFER);
-     SetPrinter(hPrinter, 2, (LPBYTE)pi2,0);
+     if( ! hb_parl( 3 ) )
+     {
+        SetPrinter( hPrinter, 2, (LPBYTE) pi2, 0 );
+     }
      ResetDC(hDCRef,pi2->pDevMode);
      hb_retnl((LONG) hDCRef);
   }

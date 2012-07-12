@@ -1,11 +1,24 @@
 /*
- * $Id: ChangeLog,v 1.966 2012-07-12 14:59:14 fyurisich Exp $
+ * $Id: ChangeLog,v 1.967 2012-07-12 16:18:34 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-07-12 13:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * include/winprint.ch
+    + Added SET CHANGES LOCAL to force HBPRINTER not to change the
+      system's printer settings.
+    + Added SET CHANGES GLOBAL to force HBPRINTER to change the
+      system's printer settings. This is the default behaviour.
+  * source/winprint.prg
+    + Added DATA lGlobalChanges INIT .T. to control if HBPRINTER is
+      going to change or not the system's printer settings.
+    + Added third parameter to rr_setdevmode() to control whether
+      the new mode is going to change (.F.) or not (.T.) the
+      system's settings.
 
 2012-07-12 11:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * source/winprint.prg
