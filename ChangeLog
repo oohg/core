@@ -1,11 +1,26 @@
 /*
- * $Id: ChangeLog,v 1.964 2012-07-10 18:07:39 fyurisich Exp $
+ * $Id: ChangeLog,v 1.965 2012-07-12 00:22:27 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-07-11 21:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * source/winprint.prg
+    * In method New, rr_getdefaultprinter was substituted by
+      Harbour's getdefaultprinter function.
+  * source/h_windows.prg
+    + Added to _PushEventInfo() and _PopEventInfo() functions:
+      _OOHG_ThisItemRowIndex
+      _OOHG_ThisItemColIndex
+      _OOHG_ThisItemCellRow 
+      _OOHG_ThisItemCellCol 
+      _OOHG_ThisItemCellWidth
+      _OOHG_ThisItemCellHeight
+      _OOHG_ThisItemCellValue
+    ! This addition fixes EDITKEY in browse only called once.
 
 2012-07-10 15:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_browse.prg

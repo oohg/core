@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.43 2011-12-31 16:54:48 fyurisich Exp $
+ * $Id: winprint.prg,v 1.44 2012-07-12 00:22:27 fyurisich Exp $
  */
 // -----------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -179,7 +179,7 @@ local aprnport
       aprnport:=str2arr(aprnport,",,")
       aeval(aprnport,{|x,xi| aprnport[xi]:=str2arr(x,',')})
       aeval(aprnport,{|x| aadd(::Printers,x[1]),  aadd(::ports,x[2]) })
-      ::PrinterDefault:=RR_GETDEFAULTPRINTER()
+      ::PrinterDefault:=GetDefaultPrinter()
    ELSE
       ::error:=1
    ENDIF

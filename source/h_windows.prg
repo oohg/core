@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.235 2012-06-30 17:04:58 fyurisich Exp $
+ * $Id: h_windows.prg,v 1.236 2012-07-12 00:22:27 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -2307,7 +2307,18 @@ Return
 *------------------------------------------------------------------------------*
 Procedure _PushEventInfo()
 *------------------------------------------------------------------------------*
-   aAdd( _OOHG_aEventInfo, { _OOHG_ThisForm, _OOHG_ThisEventType, _OOHG_ThisType, _OOHG_ThisControl, _OOHG_ThisObject } )
+   aAdd( _OOHG_aEventInfo, { _OOHG_ThisForm, ;
+                             _OOHG_ThisEventType, ;
+                             _OOHG_ThisType, ;
+                             _OOHG_ThisControl, ;
+                             _OOHG_ThisObject, ;
+                             _OOHG_ThisItemRowIndex, ;
+                             _OOHG_ThisItemColIndex, ;
+                             _OOHG_ThisItemCellRow, ;
+                             _OOHG_ThisItemCellCol, ;
+                             _OOHG_ThisItemCellWidth, ;
+                             _OOHG_ThisItemCellHeight, ;
+                             _OOHG_ThisItemCellValue } )
 Return
 
 *------------------------------------------------------------------------------*
@@ -2316,18 +2327,32 @@ Procedure _PopEventInfo()
 Local l
    l := Len( _OOHG_aEventInfo )
    If l > 0
-      _OOHG_ThisForm      := _OOHG_aEventInfo[ l ][ 1 ]
-      _OOHG_ThisEventType := _OOHG_aEventInfo[ l ][ 2 ]
-      _OOHG_ThisType      := _OOHG_aEventInfo[ l ][ 3 ]
-      _OOHG_ThisControl   := _OOHG_aEventInfo[ l ][ 4 ]
-      _OOHG_ThisObject    := _OOHG_aEventInfo[ l ][ 5 ]
+      _OOHG_ThisForm           := _OOHG_aEventInfo[ l ][ 01 ]
+      _OOHG_ThisEventType      := _OOHG_aEventInfo[ l ][ 02 ]
+      _OOHG_ThisType           := _OOHG_aEventInfo[ l ][ 03 ]
+      _OOHG_ThisControl        := _OOHG_aEventInfo[ l ][ 04 ]
+      _OOHG_ThisObject         := _OOHG_aEventInfo[ l ][ 05 ]
+      _OOHG_ThisItemRowIndex   := _OOHG_aEventInfo[ l ][ 06 ]
+      _OOHG_ThisItemColIndex   := _OOHG_aEventInfo[ l ][ 07 ]
+      _OOHG_ThisItemCellRow    := _OOHG_aEventInfo[ l ][ 08 ]
+      _OOHG_ThisItemCellCol    := _OOHG_aEventInfo[ l ][ 09 ]
+      _OOHG_ThisItemCellWidth  := _OOHG_aEventInfo[ l ][ 10 ]
+      _OOHG_ThisItemCellHeight := _OOHG_aEventInfo[ l ][ 11 ]
+      _OOHG_ThisItemCellValue  := _OOHG_aEventInfo[ l ][ 12 ]
       aSize( _OOHG_aEventInfo, l - 1 )
    Else
-      _OOHG_ThisForm      := nil
-      _OOHG_ThisType      := ''
-      _OOHG_ThisEventType := ''
-      _OOHG_ThisControl   := nil
-      _OOHG_ThisObject    := nil
+      _OOHG_ThisForm           := nil
+      _OOHG_ThisType           := ''
+      _OOHG_ThisEventType      := ''
+      _OOHG_ThisControl        := nil
+      _OOHG_ThisObject         := nil
+      _OOHG_ThisItemRowIndex   := 0
+      _OOHG_ThisItemColIndex   := 0
+      _OOHG_ThisItemCellRow    := 0
+      _OOHG_ThisItemCellCol    := 0
+      _OOHG_ThisItemCellWidth  := 0
+      _OOHG_ThisItemCellHeight := 0
+      _OOHG_ThisItemCellValue  := nil
    EndIf
 Return
 
