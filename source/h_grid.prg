@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.171 2012-06-30 00:15:21 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.172 2012-07-13 22:17:24 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -577,7 +577,7 @@ Return Nil
 *--------------------------------------------------------------------------*
 METHOD EditGrid( nRow, nCol ) CLASS TGrid
 *--------------------------------------------------------------------------*
-Local lRet, i, nLast
+Local lRet
    If ! HB_IsNumeric( nRow )
       nRow := ::FirstSelectedItem
    EndIf
@@ -594,15 +594,8 @@ Local lRet, i, nLast
    lRet := .T.
 
    Do While ::nColPos <= Len( ::aHeaders ) .AND. ::nRowPos <= ::ItemCount .AND. lRet
-      nLast := Len( ::aHeaders )
-      For i := Len( ::aHeaders ) To 1 Step -1
-         If ! ::IsColumnReadOnly( i ) .AND. ::IsColumnWhen( i )
-            nLast := i
-            Exit
-         EndIf
-      Next i
-
       _OOHG_ThisItemCellValue := ::Cell( ::nRowPos, ::nColPos )
+
       If ::IsColumnReadOnly( ::nColPos )
          // Read only column
       ElseIf ! ::IsColumnWhen( ::nColPos )
@@ -631,7 +624,9 @@ Local lRet, i, nLast
 
       // ::OnEditCell() may change ::nRowPos and/or ::nColPos using ::Up(),
       // ::Down(), ::Left() and/or ::Right()
-      If ::nColPos == nLast
+      If ::nColPos < Len( ::aHeaders )
+         ::nColPos ++
+      Else
          If ::FullMove
             If ::nRowPos == ::ItemCount
                If ::Append
@@ -648,8 +643,6 @@ Local lRet, i, nLast
          Else
             Exit
          EndIf
-      Else
-         ::nColPos ++
       EndIf
 
       ::Value := ::nRowPos
@@ -2243,7 +2236,7 @@ Return Nil
 *--------------------------------------------------------------------------*
 METHOD EditGrid( nRow, nCol ) CLASS TGridMulti
 *--------------------------------------------------------------------------*
-Local lRet, i, nLast
+Local lRet
    If ! HB_IsNumeric( nRow )
       nRow := ::FirstSelectedItem
    EndIf
@@ -2260,15 +2253,8 @@ Local lRet, i, nLast
    lRet := .T.
 
    Do While ::nColPos <= Len( ::aHeaders ) .AND. ::nRowPos <= ::ItemCount .AND. lRet
-      nlast := Len( ::aheaders )
-      For i:= Len( ::aheaders ) To 1 Step -1
-         If ( ! ::iscolumnreadonly( i ) ) .OR. ( ::iscolumnwhen( i ) )
-            nlast := i
-            exit
-         EndIf
-      Next i
-
       _OOHG_ThisItemCellValue := ::Cell( ::nRowPos, ::nColPos )
+
       If ::IsColumnReadOnly( ::nColPos )
          // Read only column
       ElseIf ! ::IsColumnWhen( ::nColPos )
@@ -2297,7 +2283,9 @@ Local lRet, i, nLast
 
       // ::OnEditCell() may change ::nRowPos and/or ::nColPos using ::Up(),
       // ::Down(), ::Left() and/or ::Right()
-      If ::nColPos == nLast
+      If ::nColPos < Len( ::aHeaders )
+         ::nColPos ++
+      Else
          If ::FullMove
             If ::nRowPos == ::ItemCount
                If ::Append
@@ -2314,8 +2302,6 @@ Local lRet, i, nLast
          Else
             Exit
          EndIf
-      Else
-         ::nColPos ++
       EndIf
 
       ::Value := { ::nRowPos }
@@ -2575,7 +2561,7 @@ Return Nil
 *--------------------------------------------------------------------------*
 METHOD EditGrid( nRow, nCol ) CLASS TGridByCell
 *--------------------------------------------------------------------------*
-Local lRet, i, nLast, uValue
+Local lRet, uValue
    uValue := ::Value
 
    If ! HB_IsNumeric( nRow )
@@ -2601,15 +2587,8 @@ Local lRet, i, nLast, uValue
    lRet := .T.
 
    Do While uValue[ 2 ] <= Len( ::aHeaders ) .AND. uValue[ 1 ] <= ::ItemCount .AND. lRet
-      nLast := Len( ::aHeaders )
-      For i := Len( ::aHeaders ) To 1 Step -1
-         If ! ::IsColumnReadonly( i ) .AND. ::IsColumnWhen( i )
-            nLast := i
-            Exit
-         EndIf
-      Next i
-
       _OOHG_ThisItemCellValue := ::Cell( uValue[ 1 ], uValue[ 2 ] )
+
       If ::IsColumnReadOnly( uValue[ 2 ] )
          // Read only column
       ElseIf ! ::IsColumnWhen( uValue[ 2 ] )
@@ -2638,7 +2617,7 @@ Local lRet, i, nLast, uValue
       // ::OnEditCell() may change ::Value using ::Up(), ::Down(), ::Left(),
       // ::Right(), ::PageUp(), ::PageDown(), ::GoTop() and/or ::GoBottom()
       uValue := ::Value
-      If uValue[ 2 ] < nLast
+      If uValue[ 2 ] < Len( ::aHeaders )
          ::Value := { uValue[ 1 ], uValue[ 2 ] + 1 }
       ElseIf ::FullMove
          If uValue[ 1 ] < ::ItemCount
