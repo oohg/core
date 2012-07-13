@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.120 2012-04-03 20:52:38 declan2005 Exp $
+* $Id: h_print.prg,v 1.121 2012-07-13 02:29:08 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -991,7 +991,7 @@ erase &cbat
 RETURN nil
 
 *----------------------------
-method printraw()  CLASS TPRINTBASE   /////  Based upon an example of Lucho Miranda
+method printraw()  CLASS TPRINTBASE   /////  Based upon an example of Lucho Miranda   (elsanes)
 *----------------------------
 LOCAL nResult  :=NIL
 LOCAL cMsg     :=""
@@ -1514,6 +1514,7 @@ INIT PRINTSYS
 GET PRINTERS TO ::aprinters
 GET PORTS TO ::aports
 SET UNITS MM
+SET CHANGES LOCAL         //// to set printer options not permanent
 ::cprintlibrary:="HBPRINTER"
 RETURN self
 
