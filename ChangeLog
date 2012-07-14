@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog,v 1.969 2012-07-13 22:17:23 fyurisich Exp $
+ * $Id: ChangeLog,v 1.970 2012-07-14 01:51:10 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-07-13 22:51 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_xbrowse.prg
+     + Added support for IMAGEDATA editcontrols (text and image in
+       the same cell) in Browse and xBrowse controls.
 
 2012-07-13 19:17 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg

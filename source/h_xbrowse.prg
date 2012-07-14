@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.62 2012-07-10 18:07:39 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.63 2012-07-14 01:51:10 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -379,8 +379,37 @@ Local bRet
    If ! lDirect
       oEditControl := GetEditControlFromArray( NIL, ::EditControls, nCol, Self )
       If ValType( oEditControl ) == "O"
-         // Edit Control
-         If ValType( cWorkArea ) $ "CM"
+         If oEditControl:Type == "TGRIDCONTROLIMAGEDATA" .AND. ValType( cValue ) == "A" .AND. LEN( cValue ) > 1
+            If ValType( cWorkArea ) $ "CM"
+               If HB_IsBlock( cValue[1] )
+                  If HB_IsBlock( cValue[2] )
+                     bRet := { |wa| oEditControl:GridValue( { ( cWorkArea ) -> ( EVAL( cValue[2], wa ) ), ( cWorkArea ) -> ( EVAL( cValue[1], wa ) ) } ) }
+                  Else
+                     bRet := { |wa| oEditControl:GridValue( { ( cWorkArea ) -> ( &( cValue[2] ) ), ( cWorkArea ) -> ( EVAL( cValue[1], wa ) ) } ) }
+                  EndIf
+               Else
+                  If HB_IsBlock( cValue[2] )
+                     bRet := { |wa| oEditControl:GridValue( { ( cWorkArea ) -> ( EVAL( cValue[2], wa ) ), ( cWorkArea ) -> ( &( cValue[1] ) ) } ) }
+                  Else
+                     bRet := { || oEditControl:GridValue( { ( cWorkArea ) -> ( &( cValue[2] ) ), ( cWorkArea ) -> ( &( cValue[1] ) ) } ) }
+                  EndIf
+               EndIf
+            Else
+               If HB_IsBlock( cValue[1] )
+                  If HB_IsBlock( cValue[2] )
+                     bRet := { |wa| oEditControl:GridValue( EVAL( cValue[2], wa ),  EVAL( cValue[1], wa ) ) }
+                  Else
+                     bRet := { |wa| oEditControl:GridValue( &( cValue[2] ),  EVAL( cValue[1], wa ) ) }
+                  EndIf
+               Else
+                  If HB_IsBlock( cValue[2] )
+                     bRet := { |wa| oEditControl:GridValue(  EVAL( cValue[2], wa ),  &( cValue[1] ) ) }
+                  Else
+                     bRet := { || oEditControl:GridValue(  &( cValue[2] ),  &( cValue[1] ) ) }
+                  EndIf
+               EndIf
+            EndIf
+         ElseIf ValType( cWorkArea ) $ "CM"
             If ValType( cValue ) == "B"
                bRet := { |wa| oEditControl:GridValue( ( cWorkArea ) -> ( EVAL( cValue, wa ) ) ) }
             Else
