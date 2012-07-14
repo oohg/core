@@ -1,11 +1,62 @@
 /*
- * $Id: ChangeLog,v 1.970 2012-07-14 01:51:10 fyurisich Exp $
+ * $Id: ChangeLog,v 1.971 2012-07-14 23:10:47 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-07-14 20:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * doc/classes.txt
+     * Updated.
+   * source/h_checklist.prg
+     + Added new parameter to ::Super:Define call in TCheckList:Define.
+   * source/h_browse.prg
+     + Added new parameter 'abortedit' to TOBrowse:Define and to
+       TGrid:Define call in TOBrowse:Define.
+     * Changed MsgStop call by MsgExclamation call in TOBrowse:Delete
+       and function TOBrowse_Events_Notify2() to be consistent with
+       other messages in the class.
+   * source/h_xbrowse.prg
+     + Added new parameter 'abortedit' to TXBrowse:Define and to
+       ::Define2 call in TXBrowse:Define.
+     * Changed MsgStop call by MsgExclamation call in TXBrowse:Delete
+       and function TXBrowse_Events_Notify2() to be consistent with
+       other messages in the class.
+     * Changed hardwired message by localized one in TXBrowse:Delete.
+     * OnEditCell block now receives ::CurrentRow and 0 as parameters
+       instead of 0 and 0 when called from TXBrowse:EditItem_B.
+     + Added support for OnAbortEdit event in TXBrowse:EditItem_B
+       and TXBrowse:EditCell. The codeblock will receive two parameters:
+       ::CurrentRow and 0.
+   * source/h_grid.prg
+     + Added data OnAbortEdit to TGrid class. It's an optional codeblock
+       that will be evaluated when and edition is aborted.
+     + Added new parameter 'abortedit' to TGrid:Define, TGrid:Define2,
+       TGridMulti:Define, TGridByCell:Define and to ::Define2 calls in
+       TGrid:Define, TGridMulti:Define and TGridByCell:Define.
+     + Added support for OnAbortEdit event in TGrid:EditItem.
+       The codeblock will be evaluated using nRow and 0 as parameters.
+     + Added support for OnAbortEdit event in TGrid:EditCell.
+       The codeblock will be evaluated using nRow and nCol as parameters.
+     * Changed hardwired message by localized one in TGrid:EditCell2.
+   * source/h_init.prg
+     + Added message 'can't determine cell type' to miscelaneous
+       messages in language customization module.
+       TODO: Translate message into Croatian, Basque, French,
+       German, Italian, Polish, Portuguese, Russian, Finnish,
+       Dutch and Slovenian.
+   * include/i_altsyntax.ch
+     + Added ABORTEDIT clause to DEFINE BROWSE/GRID/XBROWSE to execute
+       a codeblock any time an edition is aborted with ESCAPE key.
+   * include/i_hmg_compat.ch
+   * include/i_browse.ch
+   * include/i_xbrowse.ch
+   * include/i_grid.ch
+     + Added ON ABORTEDIT clause to @ ... BROWSE/GRID/XBROWSE to
+       execute a codeblock any time an edition is aborted with ESCAPE
+       key.
 
 2012-07-13 22:51 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_xbrowse.prg

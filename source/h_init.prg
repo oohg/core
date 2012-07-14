@@ -1,5 +1,5 @@
 /*
- * $Id: h_init.prg,v 1.28 2012-05-20 20:32:54 fyurisich Exp $
+ * $Id: h_init.prg,v 1.29 2012-07-14 23:10:47 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -213,7 +213,8 @@ Local acButton, acLabel, acUser
                          'Pag.', ;
                          'Error', ;
                          'Warning', ;
-                         'Edit Memo' }
+                         'Edit Memo', ;
+                         "ooHG can't determine cell type for INPLACE edit." }
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Append", ;
@@ -395,7 +396,8 @@ Local acButton, acLabel, acUser
                          'Pag.', ;
                          'Pogreška', ;
                          'Upozorenje', ;
-                         'Uredi Memo' }
+                         'Uredi Memo', ;
+                         "ooHG can't determine cell type for INPLACE edit." }
 
    // BROWSE MESSAGES
    acBrowseButton   := {}
@@ -546,7 +548,8 @@ Local acButton, acLabel, acUser
                          'Pag.', ;
                          'Erreur', ;
                          'Alerte', ;
-                         'Editer Memo' }
+                         'Editer Memo', ;
+                         "ooHG can't determine cell type for INPLACE edit." }
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Ajout", ;
@@ -731,7 +734,8 @@ Local acButton, acLabel, acUser
                          'Seite', ;
                          'Fehler', ;
                          'Warnung', ;
-                         'Bearbeiten Memo' }
+                         'Bearbeiten Memo', ;
+                         "ooHG can't determine cell type for INPLACE edit." }
 
    // BROWSE MESSAGES
    acBrowseButton   := {}
@@ -900,7 +904,8 @@ Local acButton, acLabel, acUser
                          'Pag.', ;
                          'Errore', ;
                          'Avvertimento', ;
-                         'Edita Memo' }
+                         'Edita Memo', ;
+                         "ooHG can't determine cell type for INPLACE edit." }
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Aggiungere", ;
@@ -1091,7 +1096,8 @@ Local acButton, acLabel, acUser
                          'Pag.', ;
                          'B³¹d', ;
                          'Ostrze¿enie', ;
-                         'Edycja Memo' }
+                         'Edycja Memo', ;
+                         "ooHG can't determine cell type for INPLACE edit." }
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Dodaj", ;
@@ -1273,7 +1279,8 @@ Local acButton, acLabel, acUser
                          'Pag.', ;
                          'Erro', ;
                          'Advertência', ;
-                         'Edita Memo' }
+                         'Edita Memo', ;
+                         "ooHG can't determine cell type for INPLACE edit." }
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Incluir", ;
@@ -1461,7 +1468,8 @@ Local acButton, acLabel, acUser
                          'Pag.', ;
                          'Îøèáêà', ;
                          'Ïðåäóïðåæäåíèå', ;
-                         'Èçìåíèòü Memo' }
+                         'Èçìåíèòü Memo', ;
+                         "ooHG can't determine cell type for INPLACE edit." }
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Äîáàâèòü", ;
@@ -1565,7 +1573,8 @@ Local acButton, acLabel, acUser
                          'Pag.', ;
                          'Error', ;
                          'Peligro', ;
-                         'Editar Memo' }
+                         'Editar Memo', ;
+                         "ooHG can't determine cell type for INPLACE edit." }
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Agregar", ;
@@ -1747,7 +1756,8 @@ Local acButton, acLabel, acUser
                          'Sivu.', ;
                          'Virhe', ;
                          'Varoitus', ;
-                         'Korjaa Memo' }
+                         'Korjaa Memo', ;
+                         "ooHG can't determine cell type for INPLACE edit." }
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Lisää", ;
@@ -1929,7 +1939,8 @@ Local acButton, acLabel, acUser
                          'Pag.', ;
                          'Fout', ;
                          'Waarschuwing', ;
-                         'Bewerken Memo' }
+                         'Bewerken Memo', ;
+                         "ooHG can't determine cell type for INPLACE edit." }
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Toevoegen", ;
@@ -2120,7 +2131,8 @@ Local acButton, acLabel, acUser
                          'Pag.', ;
                          'Napaka', ;
                          'Opozorilo', ;
-                         'Popravi Memo' }
+                         'Popravi Memo', ;
+                         "ooHG can't determine cell type for INPLACE edit." }
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Dodaj", ;

@@ -1,5 +1,5 @@
 /*
- * $Id: i_grid.ch,v 1.23 2012-06-25 20:14:48 fyurisich Exp $
+ * $Id: i_grid.ch,v 1.24 2012-07-14 23:10:47 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -163,6 +163,7 @@
       [ <focus: NOFOCUSRECT, FOCUSRECT> ] ;
       [ <plm: PAINTLEFTMARGIN> ] ;
       [ <fixedcols: FIXEDCOLS> ] ;
+      [ ON ABORTEDIT <abortedit> ] ;
    =>;
       [ <obj> := ] _OOHG_SelectSubClass(iif( <.bycell.>, TGridByCell(), iif( <.multiselect.>, TGridMulti(), TGrid() ) ), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, ;
@@ -177,7 +178,7 @@
             ! <.noshowheaders.>, <{enter}>, <aHeaderImages>, <aImgAlign>, <.fullmove.>, ;
             <aSelectedColors>, <aEditKeys>, <.checkboxes.>, <{checkchange}>, <.dblbffr.>, ;
             iif( #<focus> == "NOFOCUSRECT", .F., iif( #<focus> == "FOCUSRECT", .T., NIL ) ), ;
-            <.plm.>, <.fixedcols.> )
+            <.plm.>, <.fixedcols.>, <{abortedit}> )
 
 ///////////////////////////////////////////////////////////////////////////////
 // GRID (SPLITBOX VERSION)

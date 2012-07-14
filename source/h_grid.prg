@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.172 2012-07-13 22:17:24 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.173 2012-07-14 23:10:47 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -120,6 +120,7 @@ CLASS TGrid FROM TControl
    DATA Valid                 INIT Nil
    DATA ValidMessages         INIT Nil
    DATA OnEditCell            INIT Nil
+   DATA OnAbortEdit           INIT Nil
    DATA OnAppend              INIT Nil
    DATA aWhen                 INIT {}
    DATA cRowEditTitle         INIT Nil
@@ -219,7 +220,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                aWhenFields, lDisabled, lNoTabStop, lInvisible, lHasHeaders, ;
                onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
                aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
-               lFocusRect, lPLM, lFixedCols ) CLASS TGrid
+               lFocusRect, lPLM, lFixedCols, abortedit ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local nStyle := LVS_SINGLESEL
 
@@ -233,7 +234,7 @@ Local nStyle := LVS_SINGLESEL
               editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
               lHasHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
               aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
-              lFocusRect, lPLM, lFixedCols )
+              lFocusRect, lPLM, lFixedCols, abortedit )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -247,7 +248,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                 editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
                 lHasHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
                 aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
-                lFocusRect, lPLM, lFixedCols ) CLASS TGrid
+                lFocusRect, lPLM, lFixedCols, abortedit ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local ControlHandle, aImageList, i
 
@@ -346,6 +347,7 @@ Local ControlHandle, aImageList, i
    ::aEditKeys := aEditKeys
    ::EditControls := editcontrols
    ::OnEditCell := editcell
+   ::OnAbortEdit := abortedit
    ::aWhen := aWhenFields
    ASSIGN ::InPlace   VALUE inplace  TYPE "L"
    ASSIGN ::FullMove  VALUE FullMove TYPE "L"
@@ -831,7 +833,9 @@ Local nItem, aItems, aEditControls, nColumn
    Next
 
    aItems := ::EditItem2( nItem, aItems, aEditControls,, If( ValType( ::cRowEditTitle ) $ "CM", ::cRowEditTitle, _OOHG_Messages( 1, 5 ) ) )
-   If ! Empty( aItems )
+   If Empty( aItems )
+      _OOHG_Eval( ::OnAbortEdit, nItem, 0 )
+   Else
       ::Item( nItem, aSize( aItems, Len( ::aHeaders ) ) )
       _SetThisCellInfo( ::hWnd, nItem, 1, Nil )
       _OOHG_Eval( ::OnEditCell, nItem, 0 )
@@ -1426,6 +1430,8 @@ Local lRet
          ::Cell( nRow, nCol, uValue )
       EndIf
       _ClearThisCellInfo()
+   Else
+      _OOHG_Eval( ::OnAbortEdit, nRow, nCol )
    EndIf
 Return lRet
 
@@ -1483,7 +1489,7 @@ Local r, r2, lRet := .F., nWidth
       EndIf
 
       If ! HB_IsObject( EditControl )
-         MsgExclamation( "ooHG can't determine cell type for INPLACE edit." )
+         MsgExclamation( _OOHG_Messages( 1, 12 ), _OOHG_Messages( 1, 5 ) )
       Else
          r := { 0, 0, 0, 0 }                                        // left, top, right, bottom
          GetClientRect( ::hWnd, r )
@@ -2196,7 +2202,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                aWhenFields, lDisabled, lNoTabStop, lInvisible, lHasHeaders, ;
                onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
                aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
-               lFocusRect, lPLM, lFixedCols ) CLASS TGridMulti
+               lFocusRect, lPLM, lFixedCols, abortedit ) CLASS TGridMulti
 *-----------------------------------------------------------------------------*
 Local nStyle := 0
 
@@ -2210,7 +2216,7 @@ Local nStyle := 0
               editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
               lHasHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
               aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
-              lFocusRect, lPLM, lFixedCols )
+              lFocusRect, lPLM, lFixedCols, abortedit )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -2445,7 +2451,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                aWhenFields, lDisabled, lNoTabStop, lInvisible, lHasHeaders, ;
                onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
                aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
-               lFocusRect, lPLM, lFixedCols ) CLASS TGridByCell
+               lFocusRect, lPLM, lFixedCols, abortedit ) CLASS TGridByCell
 *-----------------------------------------------------------------------------*
 Local nStyle := LVS_SINGLESEL
 
@@ -2461,7 +2467,7 @@ Local nStyle := LVS_SINGLESEL
               editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
               lHasHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
               aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
-              lFocusRect, lPLM, lFixedCols )
+              lFocusRect, lPLM, lFixedCols, abortedit )
 
    // This is not really needed because TGridByCell ignores it
    ::InPlace := .T.

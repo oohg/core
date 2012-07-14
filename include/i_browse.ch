@@ -1,5 +1,5 @@
 /*
- * $Id: i_browse.ch,v 1.34 2012-06-30 00:15:21 fyurisich Exp $
+ * $Id: i_browse.ch,v 1.35 2012-07-14 23:10:47 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -174,6 +174,7 @@
       [ <fixedcols: FIXEDCOLS> ] ;
       [ <nodelmsg: NODELETEMSG> ] ;
       [ <updall: UPDATEALL> ] ;
+      [ ON ABORTEDIT <abortedit> ] ;
    =>;
       [ <oObj> := ] _OOHG_SelectSubClass( TOBrowse(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, <widths>, ;
@@ -191,7 +192,7 @@
             if( <.forcerefresh.>, 0, if( <.norefresh.>, 1, nil ) ), <.dblbffr.>, ;
             iif( upper( #<focus> ) == "NOFOCUSRECT", .F., iif( upper( #<focus> ) == "FOCUSRECT", .T., NIL ) ), ;
             <.plm.>, iif( upper( #<sync> ) == "UNSYNCHRONIZED", .F., iif( upper( #<sync> ) == "SYNCHRONIZED", .T., NIL ) ), ;
-            <.fixedcols.>, <.nodelmsg.>, <.updall.> )
+            <.fixedcols.>, <.nodelmsg.>, <.updall.>, <{abortedit}> )
 
 #command SET BROWSESYNC ON  => SetBrowseSync( .T. )
 #command SET BROWSESYNC OFF => SetBrowseSync( .F. )

@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.72 2012-07-03 11:58:07 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.73 2012-07-14 23:10:47 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -122,6 +122,7 @@ Memvariables
 #xtranslate _OOHG_ActiveControlTrailingFontColor      => _OOHG_ActiveControlInfo \[  25 \]
 #xtranslate _OOHG_ActiveControlBackgroundColor        => _OOHG_ActiveControlInfo \[  26 \]
 
+#xtranslate _OOHG_ActiveControlAbortEdit              => _OOHG_ActiveControlInfo \[ 132 \]
 #xtranslate _OOHG_ActiveControlUpdateAll              => _OOHG_ActiveControlInfo \[ 133 \]
 #xtranslate _OOHG_ActiveControlNoDeleteMsg            => _OOHG_ActiveControlInfo \[ 134 \]
 #xtranslate _OOHG_ActiveControlFixedCols              => _OOHG_ActiveControlInfo \[ 135 \]
@@ -417,6 +418,10 @@ Memvariables
 #xcommand EDITCELL <editcell> ;
         => ;
         _OOHG_ActiveControlEditCell := <editcell>
+
+#xcommand ABORTEDIT <abortedit> ;
+        => ;
+        _OOHG_ActiveControlAbortEdit := <abortedit>
 
 #xcommand WORKAREA <workarea> ;
         => ;
@@ -2018,7 +2023,8 @@ GRID
         _OOHG_ActiveControlPaintLeftMargin  := .F. ;;
         _OOHG_ActiveControlFocusRect        := .F. ;;
         _OOHG_ActiveControlNoFocusRect      := .F. ;;
-        _OOHG_ActiveControlFixedCols        := .F.
+        _OOHG_ActiveControlFixedCols        := .F. ;;
+        _OOHG_ActiveControlAbortEdit        := Nil
 
 #xcommand ONAPPEND <onappend> ;
         => ;
@@ -2138,7 +2144,8 @@ GRID
                 _OOHG_ActiveControlDblBffer, ;
                 iif( _OOHG_ActiveControlNoFocusRect, .F., iif( _OOHG_ActiveControlFocusRect, .T., NIL ) ), ;
                 _OOHG_ActiveControlPaintLeftMargin, ;
-                _OOHG_ActiveControlFixedCols )
+                _OOHG_ActiveControlFixedCols, ;
+                _OOHG_ActiveControlAbortEdit )
 
 /*----------------------------------------------------------------------------
 BROWSE
@@ -2194,7 +2201,8 @@ BROWSE
         _OOHG_ActiveControlSynchronized     := Nil ;;
         _OOHG_ActiveControlFixedCols        := .F. ;;
         _OOHG_ActiveControlNoDeleteMsg      := .F. ;;
-        _OOHG_ActiveControlUpdateAll        := .F.
+        _OOHG_ActiveControlUpdateAll        := .F. ;;
+        _OOHG_ActiveControlAbortEdit        := Nil
 
 #xcommand DELETEWHEN <delwhen> ;
         => ;
@@ -2317,7 +2325,8 @@ BROWSE
                 _OOHG_ActiveControlSynchronized, ;
                 _OOHG_ActiveControlFixedCols, ;
                 _OOHG_ActiveControlNoDeleteMsg, ;
-                _OOHG_ActiveControlUpdateAll )
+                _OOHG_ActiveControlUpdateAll, ;
+                _OOHG_ActiveControlAbortEdit )
 
 /*----------------------------------------------------------------------------
 XBROWSE
@@ -2368,7 +2377,8 @@ XBROWSE
         _OOHG_ActiveControlPaintLeftMargin  := .F. ;;
         _OOHG_ActiveControlFocusRect        := .F. ;;
         _OOHG_ActiveControlNoFocusRect      := .F. ;;
-        _OOHG_ActiveControlFixedCols        := .F.
+        _OOHG_ActiveControlFixedCols        := .F. ;;
+        _OOHG_ActiveControlAbortEdit        := Nil
 
 #xcommand END XBROWSE ;
         => ;
@@ -2439,7 +2449,8 @@ XBROWSE
                 _OOHG_ActiveControlDblBffer, ;
                 iif( _OOHG_ActiveControlNoFocusRect, .F., iif( _OOHG_ActiveControlFocusRect, .T., NIL ) ), ;
                 _OOHG_ActiveControlPaintLeftMargin, ;
-                _OOHG_ActiveControlFixedCols )
+                _OOHG_ActiveControlFixedCols, ;
+                _OOHG_ActiveControlAbortEdit )
 
 /*----------------------------------------------------------------------------
 HYPERLINK

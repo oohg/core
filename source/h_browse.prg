@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.100 2012-07-10 18:07:39 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.101 2012-07-14 23:10:47 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -159,7 +159,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lDescending, bDelWhen, DelMsg, onDelete, aHeaderImage, ;
                aHeaderImageAlign, FullMove, aSelectedColors, aEditKeys, ;
                uRefresh, dblbffr, lFocusRect, lPLM, sync, lFixedCols, ;
-               lNoDelMsg, lUpdateAll ) CLASS TOBrowse
+               lNoDelMsg, lUpdateAll, abortedit ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local nWidth2, nCol2, oScroll, z
 
@@ -238,7 +238,7 @@ Local nWidth2, nCol2, oScroll, z
                    lRtl, InPlace, editcontrols, readonly, valid, validmessages, editcell, ;
                    aWhenFields, lDisabled, lNoTabStop, lInvisible, lNoHeaders,, aHeaderImage, ;
                    aHeaderImageAlign, FullMove, aSelectedColors, aEditKeys, , , dblbffr, lFocusRect, ;
-                   lPLM, lFixedCols )
+                   lPLM, lFixedCols, abortedit )
 
    ::nWidth := w
 
@@ -775,7 +775,7 @@ Local Value, nRecNo, lSync
    ::DbGoTo( Value )
 
    If ::Lock .AND. ! ( ::WorkArea )->( Rlock() )
-      MsgStop( _OOHG_Messages( 3, 9 ), _OOHG_Messages( 4, 2 ) )
+      MsgExclamation( _OOHG_Messages( 3, 9 ), _OOHG_Messages( 4, 2 ) )
 
    Else
       ( ::WorkArea )->( DbDelete() )
@@ -1351,7 +1351,7 @@ Local nvKey, r, DeltaSelect, lGo
                   ::Delete()
                EndIf
             ElseIf ! Empty( ::DelMsg )
-               MsgStop(::DelMsg, _OOHG_Messages(4, 2))
+               MsgExclamation(::DelMsg, _OOHG_Messages(4, 2))
             EndIf
          EndIf
 

@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.63 2012-07-14 01:51:10 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.64 2012-07-14 23:10:47 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -154,7 +154,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lNoTabStop, lInvisible, lDescending, bDelWhen, DelMsg, ;
                onDelete, aHeaderImage, aHeaderImageAlign, FullMove, ;
                aSelectedColors, aEditKeys, lDblBffr, lFocusRect, lPLM, ;
-               lFixedCols ) CLASS TXBrowse
+               lFixedCols, abortedit ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
 Local nWidth2, nCol2, lLocked, oScroll, z
 
@@ -218,7 +218,7 @@ Local nWidth2, nCol2, lLocked, oScroll, z
               editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
               lNoHeaders,, aHeaderImage, aHeaderImageAlign, FullMove, ;
               aSelectedColors, aEditKeys, , , lDblBffr, lFocusRect, lPLM, ;
-              lFixedCols )
+              lFixedCols, abortedit )
 
    ::nWidth := w
 
@@ -723,7 +723,7 @@ Local nvKey, lGo
                      ::Delete()
                   EndIf
                ElseIf ! Empty( ::DelMsg )
-                  MsgStop(::DelMsg, _OOHG_Messages(4, 2))
+                  MsgExclamation(::DelMsg, _OOHG_Messages(4, 2))
                EndIf
             EndIf
 
@@ -950,7 +950,7 @@ Local Value
 
    If ::Lock
       If ! ::oWorkArea:Lock()
-         MsgStop( "Record is being edited by another user. Retry later.", "Delete Record" )
+         MsgExclamation( _OOHG_Messages(3, 9), _OOHG_Messages(4, 2) )
          Return .F.
       Endif
    EndIf
@@ -1093,13 +1093,14 @@ Local aItems, aEditControls, aMemVars, aReplaceFields
          ::RefreshRow( ::CurrentRow )
       EndIf
       _SetThisCellInfo( ::hWnd, 0, 0, nil )
-      _OOHG_Eval( ::OnEditCell, 0, 0 )
+      _OOHG_Eval( ::OnEditCell, ::CurrentRow, 0 )
       _ClearThisCellInfo()
 
    Else
       If lAppend
          oWorkArea:GoTo( nOld )
       EndIf
+      _OOHG_Eval( ::OnAbortEdit, ::CurrentRow, 0 )
    EndIf
 
    If ::Lock
@@ -1161,6 +1162,8 @@ Local lRet, bReplaceField, oWorkArea
          _SetThisCellInfo( ::hWnd, nRow, nCol, uValue )
          _OOHG_EVAL( ::OnEditCell, nRow, nCol )
          _ClearThisCellInfo()
+      Else
+         _OOHG_EVAL( ::OnAborEdit, nRow, nCol )
       EndIf
       If ::Lock
          oWorkArea:Commit()

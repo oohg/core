@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.55 2012-06-27 01:50:06 fyurisich Exp $
+ * $Id: classes.txt,v 1.56 2012-07-14 23:10:47 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -858,6 +858,7 @@ CLASS TGRID FROM TCONTROL
    DATA NHEIGHT                   INIT 120
    DATA NROWPOS                   INIT 0
    DATA NWIDTH                    INIT 240
+   DATA ONABORTEDIT               INIT NIL
    DATA ONAPPEND                  INIT NIL
    DATA ONCHECKCHANGE             INIT NIL
    DATA ONDISPINFO                INIT NIL
