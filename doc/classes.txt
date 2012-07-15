@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.56 2012-07-14 23:10:47 fyurisich Exp $
+ * $Id: classes.txt,v 1.57 2012-07-15 07:23:43 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -838,6 +838,7 @@ CLASS TGRID FROM TCONTROL
    DATA AWIDTHS                   INIT {}
    DATA BONENTER                  INIT NIL
    DATA CROWEDITTITLE             INIT NIL
+   DATA CTEXT                     INIT ""
    DATA DYNAMICBACKCOLOR          INIT {}
    DATA DYNAMICFORECOLOR          INIT {}
    DATA EDITCONTROLS              INIT NIL
@@ -865,9 +866,13 @@ CLASS TGRID FROM TCONTROL
    DATA ONEDITCELL                INIT NIL
    DATA PICTURE                   INIT NIL
    DATA READONLY                  INIT NIL
+   DATA SEARCHCOL                 INIT 1
+   DATA SEARCHLAPSE               INIT 1000
+   DATA SEARCHWRAP                INIT .T.
    DATA SETIMAGELISTCOMMAND       INIT LVM_SETIMAGELIST
    DATA SETIMAGELISTWPARAM        INIT LVSIL_SMALL
    DATA TYPE                      INIT "GRID" READONLY
+   DATA UINITIME                  INIT 0
    DATA VALID                     INIT NIL
    DATA VALIDMESSAGES             INIT NIL
 

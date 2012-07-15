@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.173 2012-07-14 23:10:47 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.174 2012-07-15 07:23:43 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -144,6 +144,11 @@ CLASS TGrid FROM TControl
    DATA lFocusRect            INIT .T.
    DATA lNoGrid               INIT .F.
    DATA lPLM                  INIT .F.
+   DATA SearchCol             INIT 1
+   DATA SearchWrap            INIT .T.
+   DATA SearchLapse           INIT 1000
+   DATA cText                 INIT ""
+   DATA uIniTime              INIT 0
 
    METHOD Define
    METHOD Define2
@@ -1592,7 +1597,7 @@ Return lRet
 *-----------------------------------------------------------------------------*
 FUNCTION _OOHG_TGrid_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TGrid
 *-----------------------------------------------------------------------------*
-Local aCellData
+Local aCellData, nItem, i
    Empty( hWnd )
    Empty( wParam )
    Empty( lParam )
@@ -1645,6 +1650,51 @@ Local aCellData
          _PopEventInfo()
       EndIf
       Return 0
+
+   ElseIf nMsg == WM_CHAR
+      If wParam < 32
+         ::cText := ""
+      Else
+         If Empty( ::cText )
+            ::uIniTime := HB_MilliSeconds()
+            ::cText := Upper( Chr( wParam ) )
+         ElseIf HB_MilliSeconds() > ::uIniTime + ::SearchLapse
+            ::uIniTime := HB_MilliSeconds()
+            ::cText := Upper( Chr( wParam ) )
+         Else
+            ::cText += Upper( Chr( wParam ) )
+         EndIf
+
+         If ::SearchCol > 1
+            nItem := 0
+
+            If ::SearchCol <= ::ColumnCount
+               For i := ::FirstSelectedItem + 1 To ::ItemCount
+                  If Upper( Left( ::CellCaption( i, ::SearchCol ), Len( ::cText ) ) ) == ::cText
+                     nItem := i
+                     Exit
+                  EndIf
+               Next i
+
+               If nItem == 0 .AND. ::SearchWrap
+                  For i := 1 To ::FirstSelectedItem
+                    If Upper( Left( ::CellCaption( i, ::SearchCol ), Len( ::cText ) ) ) == ::cText
+                       nItem := i
+                       Exit
+                    EndIf
+                  Next i
+               EndIf
+            EndIf
+         Else
+            nItem := ListView_FindItem( hWnd, ::FirstSelectedItem - 1, ::cText, ::SearchWrap )
+         EndIf
+
+         If nItem > 0
+            ::Value := nItem
+         EndIf
+
+         Return 0
+     EndIf
 
    EndIf
 
@@ -2877,7 +2927,7 @@ Return ::Super:EditCell2( @nRow, @nCol, EditControl, uOldValue, @uValue, cMemVar
 *-----------------------------------------------------------------------------*
 FUNCTION _OOHG_TGridByCell_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TGridByCell
 *-----------------------------------------------------------------------------*
-Local aCellData
+Local aCellData, nItem, i
    Empty( hWnd )
    Empty( lParam )
 
@@ -2931,6 +2981,51 @@ Local aCellData
          ::Down()
       EndIf
       Return 1
+
+   ElseIf nMsg == WM_CHAR
+      If wParam < 32
+         ::cText := ""
+      Else
+         If Empty( ::cText )
+            ::uIniTime := HB_MilliSeconds()
+            ::cText := Upper( Chr( wParam ) )
+         ElseIf HB_MilliSeconds() > ::uIniTime + ::SearchLapse
+            ::uIniTime := HB_MilliSeconds()
+            ::cText := Upper( Chr( wParam ) )
+         Else
+            ::cText += Upper( Chr( wParam ) )
+         EndIf
+
+         If ::SearchCol > 1
+            nItem := 0
+
+            If ::SearchCol <= ::ColumnCount
+               For i := ::FirstSelectedItem + 1 To ::ItemCount
+                  If Upper( Left( ::CellCaption( i, ::SearchCol ), Len( ::cText ) ) ) == ::cText
+                     nItem := i
+                     Exit
+                  EndIf
+               Next i
+
+               If nItem == 0 .AND. ::SearchWrap
+                  For i := 1 To ::FirstSelectedItem
+                    If Upper( Left( ::CellCaption( i, ::SearchCol ), Len( ::cText ) ) ) == ::cText
+                       nItem := i
+                       Exit
+                    EndIf
+                  Next i
+               EndIf
+            EndIf
+         Else
+            nItem := ListView_FindItem( hWnd, ::FirstSelectedItem - 1, ::cText, ::SearchWrap )
+         EndIf
+
+         If nItem > 0
+            ::Value := { nItem, ::SearchCol }
+         EndIf
+
+         Return 0
+     EndIf
 
    EndIf
 
@@ -3495,7 +3590,7 @@ Local lRet := .F., i
 Return lRet
 
 METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGridControlMemo
-   @ nRow,nCol EDITBOX 0 OBJ ::oControl PARENT ( cWindow ) VALUE StrTran( uValue, chr(141), ' ' ) HEIGHT nHeight WIDTH nWidth
+   @ nRow,nCol EDITBOX 0 OBJ ::oControl PARENT ( cWindow ) VALUE StrTran( uValue, Chr(141), ' ' ) HEIGHT nHeight WIDTH nWidth
 Return ::oControl
 
 *-----------------------------------------------------------------------------*
@@ -4001,6 +4096,7 @@ HB_FUNC_STATIC( TGRID_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
          bDefault = FALSE;
          break;
 
+      case WM_CHAR:
       case WM_LBUTTONDBLCLK:
          if( ! s_Events2 )
          {
@@ -4154,6 +4250,7 @@ HB_FUNC_STATIC( TGRIDBYCELL_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lPa
          }
          break;
 
+      case WM_CHAR:
       case WM_NOTIFY:
          if( ( ( NMHDR FAR * ) lParam )->hwndFrom == ( HWND ) SendMessage( hWnd, LVM_GETHEADER, 0, 0 ) )
          {
@@ -5285,6 +5382,20 @@ HB_FUNC( LISTVIEW_GETIMAGELIST )
 HB_FUNC( GETDIALOGBASEUNITS )
 {
    hb_retnl( GetDialogBaseUnits() ) ;
+}
+
+HB_FUNC( LISTVIEW_FINDITEM )
+{
+   LVFINDINFO fi;
+
+   fi.psz = (LPCTSTR) hb_parc( 3 );
+   fi.flags = LVFI_PARTIAL;
+   if( hb_parl( 4 ) )
+   {
+      fi.flags |= LVFI_WRAP;
+   }
+
+   hb_retni( ListView_FindItem( HWNDparam( 1 ), (WPARAM) hb_parni( 2 ), (LPARAM) &fi ) + 1 );
 }
 
 #pragma ENDDUMP
