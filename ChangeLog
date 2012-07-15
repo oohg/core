@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.972 2012-07-15 07:23:43 fyurisich Exp $
+ * $Id: ChangeLog,v 1.973 2012-07-15 15:21:36 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,17 +7,22 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-07-15 12:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     - Past entry stating that automatic search was working in
+       Browse and xBrowse controls (they need more work).
+
 2012-07-15 04:23 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * doc/classes.txt
      * Updated.
    * source/h_grid.prg
      + Added data to TGrid class: SearchCol, SearchWrap, SearchLapse,
        cText and uIniTime.
-     + Added automatic search by column content feature to Browse,
-       Grid, and xBrowse controls. See processing of WM_CHAR
-       message in _OOHG_TGrid_Events2 and _OOHG_TGridByCell_Events2
-       functions. The search is not restricted to visible items and
-       can be customized using datas:
+     + Added automatic search by column content feature to Grid
+       controls. See processing of WM_CHAR message in
+       _OOHG_TGrid_Events2 and _OOHG_TGridByCell_Events2 functions.
+       The search is not restricted to visible items and can be
+       customized using datas:
        SearchCol = column to search in, defaults to 1
        SearchWrap = .T. (default) if the search must continue at the
        begining when no match is found.
