@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog,v 1.973 2012-07-15 15:21:36 fyurisich Exp $
+ * $Id: ChangeLog,v 1.974 2012-07-16 13:21:48 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-07-15 10:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_xbrowse.prg
+     ! Fixed RTE " Message not found: TOBROWSE:ONABOREDIT" in
+       TXBROWSE:EDITCELL (1166).
 
 2012-07-15 12:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./Changelog

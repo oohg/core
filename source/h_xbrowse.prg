@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.64 2012-07-14 23:10:47 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.65 2012-07-16 13:21:48 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1163,7 +1163,7 @@ Local lRet, bReplaceField, oWorkArea
          _OOHG_EVAL( ::OnEditCell, nRow, nCol )
          _ClearThisCellInfo()
       Else
-         _OOHG_EVAL( ::OnAborEdit, nRow, nCol )
+         _OOHG_EVAL( ::OnAbortEdit, nRow, nCol )
       EndIf
       If ::Lock
          oWorkArea:Commit()
