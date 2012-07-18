@@ -1,11 +1,41 @@
 /*
- * $Id: ChangeLog,v 1.974 2012-07-16 13:21:48 fyurisich Exp $
+ * $Id: ChangeLog,v 1.975 2012-07-18 01:55:28 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-07-15 10:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_grid.prg
+     * Use local variables instead of class variables, in
+       _OOHG_TGrid_Events2 and _OOHG_TGridByCell_Events2 functions.
+     - Deleted unnecessary empty() calls in _OOHG_TGrid_Events2 and
+       _OOHG_TGridByCell_Events2 functions.
+     + Ignore chars under asc 32 in WM_CHAR handler in
+       _OOHG_TGrid_Events2 and _OOHG_TGridByCell_Events2 functions.
+     + Reset search string in methods TGrid:Events_Enter and
+       TGridByCell:Events_Enter (when Enter key is pressed).
+     + Reset search string in LVN_KEYDOWN handler in methods
+       TGrid:Events_Notify and TGridByCell:Events_Notify, when the
+       key pressed is not a WM_CHAR.
+     * Changed: TGridByCell will search by the current column if no
+       search column is setted, instead of searching by column 1.
+     ! Fixed: WM_CHAR message for TGridByCell was being sended to
+       the wrong handler.
+     + Added GETGRIDVKEYASCHAR C function.
+   * source/h_xbrowse.prg
+     + Added method Events to TXBrowse class to handle WM_CHAR
+       messages. This enables automatic search in Browse and
+       xBrowse controls.
+     + Reset search string in LVN_KEYDOWN handler in function
+       TXBrowse_Events_Notify2, when the key pressed is not a WM_CHAR.
+   * source/h_browse.prg
+     + Reset search string in method TOBrowse:Events_Enter (when
+       Enter key is pressed).
+     + Reset search string in LVN_KEYDOWN handler in function
+       TOBrowse_Events_Notify2, when the key pressed is not a WM_CHAR.
 
 2012-07-15 10:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_xbrowse.prg

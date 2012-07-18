@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.101 2012-07-14 23:10:47 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.102 2012-07-18 01:55:28 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1246,6 +1246,7 @@ RETURN ::Super:RefreshData()
 *-----------------------------------------------------------------------------*
 METHOD Events_Enter() CLASS TOBrowse
 *-----------------------------------------------------------------------------*
+   ::cText := ""
    If Select( ::WorkArea ) != 0
       If ! ::AllowEdit
          ::DoEvent( ::OnEnter, "ENTER" )
@@ -1318,6 +1319,10 @@ Local nvKey, r, DeltaSelect, lGo
       Return nil
 
    ElseIf nNotify == LVN_KEYDOWN
+      If GetGridvKeyAsChar( lParam ) == 0
+         ::cText := ""
+      EndIf
+
       nvKey := GetGridvKey( lParam )
 
       Do Case

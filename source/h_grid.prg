@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.174 2012-07-15 07:23:43 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.175 2012-07-18 01:55:28 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1598,12 +1598,10 @@ Return lRet
 FUNCTION _OOHG_TGrid_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local aCellData, nItem, i
-   Empty( hWnd )
-   Empty( wParam )
    Empty( lParam )
 
    If nMsg == WM_LBUTTONDBLCLK
-      If ! ::lCheckBoxes .OR. ListView_HitOnCheckBox( ::hWnd, GetCursorRow() - GetWindowRow( ::hWnd ), GetCursorCol() - GetWindowCol( ::hWnd ) ) == 0
+      If ! ::lCheckBoxes .OR. ListView_HitOnCheckBox( hWnd, GetCursorRow() - GetWindowRow( hWnd ), GetCursorCol() - GetWindowCol( hWnd ) ) == 0
          _PushEventInfo()
          _OOHG_ThisForm := ::Parent
          _OOHG_ThisType := 'C'
@@ -1654,47 +1652,44 @@ Local aCellData, nItem, i
    ElseIf nMsg == WM_CHAR
       If wParam < 32
          ::cText := ""
-      Else
-         If Empty( ::cText )
-            ::uIniTime := HB_MilliSeconds()
-            ::cText := Upper( Chr( wParam ) )
-         ElseIf HB_MilliSeconds() > ::uIniTime + ::SearchLapse
-            ::uIniTime := HB_MilliSeconds()
-            ::cText := Upper( Chr( wParam ) )
-         Else
-            ::cText += Upper( Chr( wParam ) )
-         EndIf
-
-         If ::SearchCol > 1
-            nItem := 0
-
-            If ::SearchCol <= ::ColumnCount
-               For i := ::FirstSelectedItem + 1 To ::ItemCount
-                  If Upper( Left( ::CellCaption( i, ::SearchCol ), Len( ::cText ) ) ) == ::cText
-                     nItem := i
-                     Exit
-                  EndIf
-               Next i
-
-               If nItem == 0 .AND. ::SearchWrap
-                  For i := 1 To ::FirstSelectedItem
-                    If Upper( Left( ::CellCaption( i, ::SearchCol ), Len( ::cText ) ) ) == ::cText
-                       nItem := i
-                       Exit
-                    EndIf
-                  Next i
-               EndIf
-            EndIf
-         Else
-            nItem := ListView_FindItem( hWnd, ::FirstSelectedItem - 1, ::cText, ::SearchWrap )
-         EndIf
-
-         If nItem > 0
-            ::Value := nItem
-         EndIf
-
          Return 0
-     EndIf
+      ElseIf Empty( ::cText )
+         ::uIniTime := HB_MilliSeconds()
+         ::cText := Upper( Chr( wParam ) )
+      ElseIf HB_MilliSeconds() > ::uIniTime + ::SearchLapse
+         ::uIniTime := HB_MilliSeconds()
+         ::cText := Upper( Chr( wParam ) )
+      Else
+         ::cText += Upper( Chr( wParam ) )
+      EndIf
+
+      If ::SearchCol > 1
+         nItem := 0
+
+         If ::SearchCol <= ::ColumnCount
+            For i := ::FirstSelectedItem + 1 To ::ItemCount
+               If Upper( Left( ::CellCaption( i, ::SearchCol ), Len( ::cText ) ) ) == ::cText
+                  nItem := i
+                  Exit
+               EndIf
+            Next i
+
+            If nItem == 0 .AND. ::SearchWrap
+               For i := 1 To ::FirstSelectedItem
+                 If Upper( Left( ::CellCaption( i, ::SearchCol ), Len( ::cText ) ) ) == ::cText
+                    nItem := i
+                    Exit
+                 EndIf
+               Next i
+            EndIf
+         EndIf
+      Else
+         nItem := ListView_FindItem( hWnd, ::FirstSelectedItem - 1, ::cText, ::SearchWrap )
+      EndIf
+      If nItem > 0
+         ::Value := nItem
+      EndIf
+      Return 0
 
    EndIf
 
@@ -1733,6 +1728,7 @@ Return Nil
 *-----------------------------------------------------------------------------*
 METHOD Events_Enter() CLASS TGrid
 *-----------------------------------------------------------------------------*
+   ::cText := ""
    If ! ::AllowEdit
       ::DoEvent( ::OnEnter, "ENTER" )
    ElseIf ::FullMove
@@ -1763,6 +1759,10 @@ Local lvc, _ThisQueryTemp, nvkey, uValue, uRet
       Return uRet
 
    ElseIf nNotify == LVN_KEYDOWN
+      If GetGridvKeyAsChar( lParam ) == 0
+         ::cText := ""
+      EndIf
+
       nvKey := GetGridvKey( lParam )
 
       If nvkey == VK_DOWN
@@ -2519,6 +2519,9 @@ Local nStyle := LVS_SINGLESEL
               aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
               lFocusRect, lPLM, lFixedCols, abortedit )
 
+   // By default, search in the current column
+   ::SearchCol := 0
+
    // This is not really needed because TGridByCell ignores it
    ::InPlace := .T.
 
@@ -2927,12 +2930,11 @@ Return ::Super:EditCell2( @nRow, @nCol, EditControl, uOldValue, @uValue, cMemVar
 *-----------------------------------------------------------------------------*
 FUNCTION _OOHG_TGridByCell_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TGridByCell
 *-----------------------------------------------------------------------------*
-Local aCellData, nItem, i
-   Empty( hWnd )
+Local aCellData, nItem, i, nSearchCol
    Empty( lParam )
 
    If nMsg == WM_LBUTTONDBLCLK
-      If ! ::lCheckBoxes .OR. ListView_HitOnCheckBox( ::hWnd, GetCursorRow() - GetWindowRow( ::hWnd ), GetCursorCol() - GetWindowCol( ::hWnd ) ) == 0
+      If ! ::lCheckBoxes .OR. ListView_HitOnCheckBox( hWnd, GetCursorRow() - GetWindowRow( hWnd ), GetCursorCol() - GetWindowCol( hWnd ) ) == 0
          _PushEventInfo()
          _OOHG_ThisForm := ::Parent
          _OOHG_ThisType := 'C'
@@ -2969,7 +2971,7 @@ Local aCellData, nItem, i
       Return 0
 
    ElseIf nMsg == WM_LBUTTONDOWN .OR. nMsg == WM_RBUTTONDOWN
-      If ! ::lCheckBoxes .OR. ListView_HitOnCheckBox( ::hWnd, GetCursorRow() - GetWindowRow( ::hWnd ), GetCursorCol() - GetWindowCol( ::hWnd ) ) == 0
+      If ! ::lCheckBoxes .OR. ListView_HitOnCheckBox( hWnd, GetCursorRow() - GetWindowRow( hWnd ), GetCursorCol() - GetWindowCol( hWnd ) ) == 0
          aCellData := _GetGridCellData( Self )
          ::Value := { aCellData[ 1 ], aCellData[ 2 ] }
       EndIf
@@ -2985,47 +2987,50 @@ Local aCellData, nItem, i
    ElseIf nMsg == WM_CHAR
       If wParam < 32
          ::cText := ""
-      Else
-         If Empty( ::cText )
-            ::uIniTime := HB_MilliSeconds()
-            ::cText := Upper( Chr( wParam ) )
-         ElseIf HB_MilliSeconds() > ::uIniTime + ::SearchLapse
-            ::uIniTime := HB_MilliSeconds()
-            ::cText := Upper( Chr( wParam ) )
-         Else
-            ::cText += Upper( Chr( wParam ) )
-         EndIf
-
-         If ::SearchCol > 1
-            nItem := 0
-
-            If ::SearchCol <= ::ColumnCount
-               For i := ::FirstSelectedItem + 1 To ::ItemCount
-                  If Upper( Left( ::CellCaption( i, ::SearchCol ), Len( ::cText ) ) ) == ::cText
-                     nItem := i
-                     Exit
-                  EndIf
-               Next i
-
-               If nItem == 0 .AND. ::SearchWrap
-                  For i := 1 To ::FirstSelectedItem
-                    If Upper( Left( ::CellCaption( i, ::SearchCol ), Len( ::cText ) ) ) == ::cText
-                       nItem := i
-                       Exit
-                    EndIf
-                  Next i
-               EndIf
-            EndIf
-         Else
-            nItem := ListView_FindItem( hWnd, ::FirstSelectedItem - 1, ::cText, ::SearchWrap )
-         EndIf
-
-         If nItem > 0
-            ::Value := { nItem, ::SearchCol }
-         EndIf
-
          Return 0
-     EndIf
+      ElseIf Empty( ::cText )
+         ::uIniTime := HB_MilliSeconds()
+         ::cText := Upper( Chr( wParam ) )
+      ElseIf HB_MilliSeconds() > ::uIniTime + ::SearchLapse
+         ::uIniTime := HB_MilliSeconds()
+         ::cText := Upper( Chr( wParam ) )
+      Else
+         ::cText += Upper( Chr( wParam ) )
+      EndIf
+
+      If ::SearchCol < 1 .OR. ::SearchCol > ::ColumnCount
+         nSearchCol := ::Value[ 2 ]
+         If nSearchCol < 1 .OR. nSearchCol > ::ColumnCount
+            Return 1
+         EndIf
+      Else
+         nSearchCol := ::SearchCol
+      EndIf
+      If nSearchCol == 1
+         nItem := ListView_FindItem( hWnd, ::FirstSelectedItem - 1, ::cText, ::SearchWrap )
+      Else
+         nItem := 0
+
+         For i := ::FirstSelectedItem + 1 To ::ItemCount
+            If Upper( Left( ::CellCaption( i, nSearchCol ), Len( ::cText ) ) ) == ::cText
+               nItem := i
+               Exit
+            EndIf
+         Next i
+
+         If nItem == 0 .AND. ::SearchWrap
+            For i := 1 To ::FirstSelectedItem
+              If Upper( Left( ::CellCaption( i, nSearchCol ), Len( ::cText ) ) ) == ::cText
+                 nItem := i
+                 Exit
+              EndIf
+            Next i
+         EndIf
+      EndIf
+      If nItem > 0
+         ::Value := { nItem, nSearchCol }
+      EndIf
+      Return 0
 
    EndIf
 
@@ -3034,6 +3039,7 @@ Return Nil
 *-----------------------------------------------------------------------------*
 METHOD Events_Enter() CLASS TGridByCell
 *-----------------------------------------------------------------------------*
+   ::cText := ""
    If ::AllowEdit
       If ! ::lNestedEdit
          ::lNestedEdit := .T.
@@ -3058,6 +3064,10 @@ Local nvkey, uRet, aValue, nItem
       Return uRet
 
    ElseIf nNotify == LVN_KEYDOWN
+      If GetGridvKeyAsChar( lParam ) == 0
+         ::cText := ""
+      EndIf
+
       nvKey := GetGridvKey( lParam )
 
       If nvkey == VK_DOWN
@@ -4228,6 +4238,7 @@ HB_FUNC_STATIC( TGRIDBYCELL_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lPa
 
    switch( message )
    {
+      case WM_CHAR:
       case WM_MOUSEWHEEL:
       case WM_LBUTTONDBLCLK:
       case WM_LBUTTONDOWN:
@@ -4250,7 +4261,6 @@ HB_FUNC_STATIC( TGRIDBYCELL_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lPa
          }
          break;
 
-      case WM_CHAR:
       case WM_NOTIFY:
          if( ( ( NMHDR FAR * ) lParam )->hwndFrom == ( HWND ) SendMessage( hWnd, LVM_GETHEADER, 0, 0 ) )
          {
@@ -5056,6 +5066,11 @@ HB_FUNC( LISTVIEW_DELETECOLUMN )
 HB_FUNC( GETGRIDVKEY )
 {
    hb_retnl( ( LPARAM ) ( ( ( LV_KEYDOWN * ) hb_parnl( 1 ) ) -> wVKey ) );
+}
+
+HB_FUNC( GETGRIDVKEYASCHAR )
+{
+   hb_retni( MapVirtualKey( (UINT) ( ( (LV_KEYDOWN *) hb_parnl( 1 ) ) -> wVKey ), 2 ) );
 }
 
 static int TGrid_Notify_CustomDraw_GetColor( PHB_ITEM pSelf, unsigned int x, unsigned int y, int sGridColor, int sObjColor, int iDefaultColor )
