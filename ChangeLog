@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.976 2012-07-18 02:04:16 fyurisich Exp $
+ * $Id: ChangeLog,v 1.977 2012-07-18 02:05:35 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,11 +7,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2012-07-17 23:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2012-07-17 23:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./Changelog
      ! Fixed previous commit time and date.
 
-2012-07-15 22:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2012-07-17 22:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
      * Use local variables instead of class variables, in
        _OOHG_TGrid_Events2 and _OOHG_TGridByCell_Events2 functions.
