@@ -1,11 +1,17 @@
 /*
- * $Id: ChangeLog,v 1.977 2012-07-18 02:05:35 fyurisich Exp $
+ * $Id: ChangeLog,v 1.978 2012-07-20 18:22:50 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-07-20 15:23 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_status.prg
+     * Added method TMessageBar:ItemIcon( nItem, cIcon ) to
+       change an item's icon. If cIcon is NIL or an empty string,
+       the current icon will be removed.
 
 2012-07-17 23:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./Changelog

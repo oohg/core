@@ -1,5 +1,5 @@
 /*
- * $Id: h_status.prg,v 1.36 2011-09-12 01:40:01 fyurisich Exp $
+ * $Id: h_status.prg,v 1.37 2012-07-20 18:22:51 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -115,6 +115,7 @@ CLASS TMessageBar FROM TControl
    METHOD ItemWidth
    METHOD ItemCount        BLOCK { |Self| GetItemCount( ::hWnd ) }
    METHOD ItemToolTip
+   METHOD ItemIcon
    METHOD ClientHeightUsed     BLOCK { |Self| GetWindowHeight( ::hWnd ) * IF( ::lTop, 1, -1 ) }
 
    METHOD BackColor        SETGET
@@ -253,6 +254,11 @@ METHOD ItemToolTip( nItem, cValue ) CLASS TMessageBar
       SetItemToolTip( ::hWnd, cValue, nItem - 1 )
    ENDIF
 RETURN GetItemToolTip( ::hWnd, nItem - 1 )
+
+*-----------------------------------------------------------------------------*
+METHOD ItemIcon( nItem, cIcon ) CLASS TMessageBar
+*-----------------------------------------------------------------------------*
+RETURN SetStatusItemIcon( ::hWnd, nItem, cIcon )
 
 *-----------------------------------------------------------------------------*
 METHOD SetClock( Width, ToolTip, action, lAmPm ) CLASS TMessageBar
