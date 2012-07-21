@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.175 2012-07-18 01:55:28 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.176 2012-07-21 21:53:01 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -5412,5 +5412,13 @@ HB_FUNC( LISTVIEW_FINDITEM )
 
    hb_retni( ListView_FindItem( HWNDparam( 1 ), (WPARAM) hb_parni( 2 ), (LPARAM) &fi ) + 1 );
 }
+
+#ifdef __XHARBOUR__
+#include "hbdate.h"
+HB_FUNC( HB_MILLISECONDS )
+{
+   hb_retnint( hb_dateMilliSeconds() );
+}
+#endif
 
 #pragma ENDDUMP
