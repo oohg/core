@@ -1,11 +1,17 @@
 /*
- * $Id: ChangeLog,v 1.979 2012-07-21 21:53:00 fyurisich Exp $
+ * $Id: ChangeLog,v 1.980 2012-07-22 19:40:35 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-07-22 16:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_textbox.prg
+     + Added method TText:GetLineLength(nLine).
+   * include/i_windefs.ch
+     + Added EM_LINELENGTH constant definition.
 
 2012-07-21 18:52 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg

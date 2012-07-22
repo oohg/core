@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.80 2012-07-06 00:45:38 fyurisich Exp $
+ * $Id: h_textbox.prg,v 1.81 2012-07-22 19:40:36 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -151,11 +151,12 @@ CLASS TText FROM TLabel
    METHOD SetSelection
    METHOD InsertStatus                 SETGET
    METHOD GetLine
-   METHOD GetLineIndex( nLine )        BLOCK { |Self,nLine| SendMessage( ::hWnd, EM_LINEINDEX, nLine, 0) }
+   METHOD GetLineIndex( nLine )        BLOCK { |Self,nLine| SendMessage( ::hWnd, EM_LINEINDEX, nLine, 0 ) }
    METHOD GetFirstVisibleLine          BLOCK { |Self| SendMessage( ::hWnd, EM_GETFIRSTVISIBLELINE, 0, 0 ) }
    METHOD GetLineCount                 BLOCK { |Self| SendMessage( ::hWnd, EM_GETLINECOUNT, 0, 0 ) }
    METHOD GetLineFromChar( nChar )     BLOCK { |Self,nChar| SendMessage( ::hWnd, EM_LINEFROMCHAR, nChar, 0) }
    METHOD GetCurrentLine               BLOCK { |Self| ::GetLineFromChar( -1 ) }
+   METHOD GetLineLength( nLine )       BLOCK { |Self,nLine| SendMessage( ::hWnd, EM_LINELENGTH, ::GetLineIndex( nLine ), 0 ) }
 
    Empty( _OOHG_AllVars )
 ENDCLASS

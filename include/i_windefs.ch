@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.48 2012-07-06 00:45:38 fyurisich Exp $
+ * $Id: i_windefs.ch,v 1.49 2012-07-22 19:40:35 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -561,6 +561,7 @@
 #define EM_SETMODIFY                  185
 #define EM_GETLINECOUNT               186
 #define EM_LINEINDEX                  187
+#define EM_LINELENGTH                 193
 #define EM_LINEFROMCHAR               201
 #define EM_GETLINE                    196
 #define EM_SETSEL                     177
