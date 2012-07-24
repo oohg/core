@@ -1,5 +1,5 @@
 /*
- * $Id: h_checklist.prg,v 1.9 2012-07-14 23:10:47 fyurisich Exp $
+ * $Id: h_checklist.prg,v 1.10 2012-07-24 23:21:54 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -140,7 +140,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aRows, v, fontname, ;
                fontsize, tooltip, change, gotfocus, lostfocus, aImage, just, ;
                break, HelpId, bold, italic, underline, strikeout, backcolor, ;
                fontcolor, lRtl, lDisabled, lNoTabStop, lInvisible, sort, ;
-               descending, aSelectedColors, dblbffr ) CLASS TCheckList
+               descending, aSelectedColors, dblbffr, click ) CLASS TCheckList
 *-----------------------------------------------------------------------------*
 LOCAL aHdr, aWidth, aJust, aPic, aEdC
 
@@ -194,7 +194,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                aWhenFields, lDisabled, lNoTabStop, lInvisible, lHasHeaders, ;
                onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
                aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
-               lFocusRect, lPLM, lFixedCols, abortedit ) CLASS TGrid
+               lFocusRect, lPLM, lFixedCols, abortedit, click ) CLASS TGrid
 */
    ::Super:Define( ControlName, ParentForm, x, y, w, h, aHdr, aWidth, ;
                    {}, Nil, fontname, fontsize, tooltip, change, Nil, ;
@@ -205,7 +205,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                    aEdC, .T., Nil, Nil, Nil, ;
                    Nil, lDisabled, lNoTabStop, lInvisible, .F., ;
                    Nil, Nil, Nil, .F., ;
-                   aSelectedColors, Nil, .T., Nil, dblbffr, .F., .F., .T., nil )
+                   aSelectedColors, Nil, .T., Nil, dblbffr, .F., .F., .T., ;
+                   nil, click )
 
    aEval( aRows, { |u| ::AddItem( u ) } )
 

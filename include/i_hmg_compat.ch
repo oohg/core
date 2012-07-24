@@ -1,5 +1,5 @@
 /*
- * $Id: i_hmg_compat.ch,v 1.15 2012-07-14 23:10:47 fyurisich Exp $
+ * $Id: i_hmg_compat.ch,v 1.16 2012-07-24 23:21:54 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -132,6 +132,7 @@
       [ ON CHANGE <change> ] ;
       [ ON LOSTFOCUS <lostfocus> ] ;
       [ ON DBLCLICK <dblclick> ] ;
+      [ ON CLICK <click> ] ;
       [ <edit: EDIT> ] ;
       [ <inplace: INPLACE> ] ;
       [ <append: APPEND> ] ;
@@ -197,7 +198,7 @@
             if( <.forcerefresh.>, 0, if( <.norefresh.>, 1, nil ) ), <.dblbffr.>, ;
             iif( upper( #<focus> ) == "NOFOCUSRECT", .F., iif( upper( #<focus> ) == "FOCUSRECT", .T., NIL ) ), ;
             <.plm.>, iif( upper( #<sync> ) == "UNSYNCHRONIZED", .F., iif( upper( #<sync> ) == "SYNCHRONIZED", .T., NIL ) ), ;
-            <.fixedcols.>, <.nodelmsg.>, <.updall.>, <{abortedit}> )
+            <.fixedcols.>, <.nodelmsg.>, <.updall.>, <{abortedit}>, <{click}> )
 
 
 #xcommand @ <row>, <col> BUTTONEX <name> ;

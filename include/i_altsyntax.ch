@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.73 2012-07-14 23:10:47 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.74 2012-07-24 23:21:54 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -2024,7 +2024,8 @@ GRID
         _OOHG_ActiveControlFocusRect        := .F. ;;
         _OOHG_ActiveControlNoFocusRect      := .F. ;;
         _OOHG_ActiveControlFixedCols        := .F. ;;
-        _OOHG_ActiveControlAbortEdit        := Nil
+        _OOHG_ActiveControlAbortEdit        := Nil ;;
+        _OOHG_ActiveControlAction           := Nil
 
 #xcommand ONAPPEND <onappend> ;
         => ;
@@ -2145,7 +2146,8 @@ GRID
                 iif( _OOHG_ActiveControlNoFocusRect, .F., iif( _OOHG_ActiveControlFocusRect, .T., NIL ) ), ;
                 _OOHG_ActiveControlPaintLeftMargin, ;
                 _OOHG_ActiveControlFixedCols, ;
-                _OOHG_ActiveControlAbortEdit )
+                _OOHG_ActiveControlAbortEdit, ;
+                _OOHG_ActiveControlAction )
 
 /*----------------------------------------------------------------------------
 BROWSE
@@ -2202,7 +2204,8 @@ BROWSE
         _OOHG_ActiveControlFixedCols        := .F. ;;
         _OOHG_ActiveControlNoDeleteMsg      := .F. ;;
         _OOHG_ActiveControlUpdateAll        := .F. ;;
-        _OOHG_ActiveControlAbortEdit        := Nil
+        _OOHG_ActiveControlAbortEdit        := Nil ;;
+        _OOHG_ActiveControlAction           := Nil
 
 #xcommand DELETEWHEN <delwhen> ;
         => ;
@@ -2326,7 +2329,8 @@ BROWSE
                 _OOHG_ActiveControlFixedCols, ;
                 _OOHG_ActiveControlNoDeleteMsg, ;
                 _OOHG_ActiveControlUpdateAll, ;
-                _OOHG_ActiveControlAbortEdit )
+                _OOHG_ActiveControlAbortEdit, ;
+                _OOHG_ActiveControlAction )
 
 /*----------------------------------------------------------------------------
 XBROWSE
@@ -2378,7 +2382,8 @@ XBROWSE
         _OOHG_ActiveControlFocusRect        := .F. ;;
         _OOHG_ActiveControlNoFocusRect      := .F. ;;
         _OOHG_ActiveControlFixedCols        := .F. ;;
-        _OOHG_ActiveControlAbortEdit        := Nil
+        _OOHG_ActiveControlAbortEdit        := Nil ;;
+        _OOHG_ActiveControlAction           := Nil
 
 #xcommand END XBROWSE ;
         => ;
@@ -2450,7 +2455,8 @@ XBROWSE
                 iif( _OOHG_ActiveControlNoFocusRect, .F., iif( _OOHG_ActiveControlFocusRect, .T., NIL ) ), ;
                 _OOHG_ActiveControlPaintLeftMargin, ;
                 _OOHG_ActiveControlFixedCols, ;
-                _OOHG_ActiveControlAbortEdit )
+                _OOHG_ActiveControlAbortEdit, ;
+                _OOHG_ActiveControlAction )
 
 /*----------------------------------------------------------------------------
 HYPERLINK

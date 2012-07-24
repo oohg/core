@@ -1,5 +1,5 @@
 /*
- * $Id: i_xbrowse.ch,v 1.19 2012-07-14 23:10:47 fyurisich Exp $
+ * $Id: i_xbrowse.ch,v 1.20 2012-07-24 23:21:54 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -124,6 +124,7 @@
       [ ON CHANGE <change> ] ;
       [ ON LOSTFOCUS <lostfocus> ] ;
       [ ON DBLCLICK <dblclick> ] ;
+      [ ON CLICK <click> ] ;
       [ <edit : EDIT> ] ;
       [ <inplace : INPLACE> ] ;
       [ <append : APPEND> ] ;
@@ -183,4 +184,4 @@
             <DelMsg>, <{onDelete}>, <aHeaderImages>, <aImgAlign>, <.fullmove.>, ;
             <aSelectedColors>, <aEditKeys>, <.dblbffr.>, ;
             iif( upper( #<focus> ) == "NOFOCUSRECT", .F., iif( upper( #<focus> ) == "FOCUSRECT", .T., NIL ) ), ;
-            <.plm.>, <.fixedcols.>, <{abortedit}> )
+            <.plm.>, <.fixedcols.>, <{abortedit}>, <{click}> )

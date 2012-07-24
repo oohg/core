@@ -1,5 +1,5 @@
 /*
- * $Id: i_grid.ch,v 1.24 2012-07-14 23:10:47 fyurisich Exp $
+ * $Id: i_grid.ch,v 1.25 2012-07-24 23:21:54 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -126,6 +126,7 @@
       [ ON CHANGE <change> ] ;
       [ ON LOSTFOCUS <lostfocus> ] ;
       [ ON DBLCLICK <dblclick> ] ;
+      [ ON CLICK <click> ] ;
       [ ON HEADCLICK <aHeadClick> ] ;
       [ <edit : EDIT> ] ;
       [ <ownerdata: VIRTUAL> ] ;
@@ -178,7 +179,7 @@
             ! <.noshowheaders.>, <{enter}>, <aHeaderImages>, <aImgAlign>, <.fullmove.>, ;
             <aSelectedColors>, <aEditKeys>, <.checkboxes.>, <{checkchange}>, <.dblbffr.>, ;
             iif( #<focus> == "NOFOCUSRECT", .F., iif( #<focus> == "FOCUSRECT", .T., NIL ) ), ;
-            <.plm.>, <.fixedcols.>, <{abortedit}> )
+            <.plm.>, <.fixedcols.>, <{abortedit}>, <{click}> )
 
 ///////////////////////////////////////////////////////////////////////////////
 // GRID (SPLITBOX VERSION)
@@ -208,6 +209,7 @@
       [ ON CHANGE <change> ] ;
       [ ON LOSTFOCUS <lostfocus> ] ;
       [ ON DBLCLICK <dblclick> ] ;
+      [ ON CLICK <click> ] ;
       [ ON HEADCLICK <aHeadClick> ] ;
       [ <edit : EDIT> ] ;
       [ <ownerdata: VIRTUAL> ] ;
@@ -259,4 +261,4 @@
             ! <.noshowheaders.>, <{enter}>, <aHeaderImages>, <aImgAlign>, <.fullmove.>, ;
             <aSelectedColors>, <aEditKeys>, <.checkboxes.>, <{checkchange}>, <.dblbffr.>, ;
             iif( #<focus> == "NOFOCUSRECT", .F., iif( #<focus> == "FOCUSRECT", .T., NIL ) ), ;
-            <.plm.>, <.fixedcols.> )
+            <.plm.>, <.fixedcols.>, <{click}> )

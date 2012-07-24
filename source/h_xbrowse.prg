@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.66 2012-07-18 01:55:28 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.67 2012-07-24 23:21:54 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -155,7 +155,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lNoTabStop, lInvisible, lDescending, bDelWhen, DelMsg, ;
                onDelete, aHeaderImage, aHeaderImageAlign, FullMove, ;
                aSelectedColors, aEditKeys, lDblBffr, lFocusRect, lPLM, ;
-               lFixedCols, abortedit ) CLASS TXBrowse
+               lFixedCols, abortedit, click ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
 Local nWidth2, nCol2, lLocked, oScroll, z
 
@@ -219,7 +219,7 @@ Local nWidth2, nCol2, lLocked, oScroll, z
               editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
               lNoHeaders,, aHeaderImage, aHeaderImageAlign, FullMove, ;
               aSelectedColors, aEditKeys, , , lDblBffr, lFocusRect, lPLM, ;
-              lFixedCols, abortedit )
+              lFixedCols, abortedit, click )
 
    ::nWidth := w
 
