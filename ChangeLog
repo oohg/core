@@ -1,11 +1,63 @@
 /*
- * $Id: ChangeLog,v 1.981 2012-07-24 23:21:54 fyurisich Exp $
+ * $Id: ChangeLog,v 1.982 2012-07-29 05:09:29 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-07-29 02:09 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     * Some entries were corrected.
+   * include/oohg.ch
+     * Changed the position of i_altsyntax.ch in the #include chain to
+       avoid conflict with redefined DATE command for statusbars.
+   * include/i_status.ch
+     * Format.
+     + Added support for DATE, CLOCK and alignment in
+       DEFINE STATUSBAR command.
+     + Added support for item alignment in STATUSITEM, DATE, CLOCK
+       and KEYBOARD commands.
+     + Added support for style and icon in KEYBOARD command.
+   * include/i_windefs.ch
+     + Added define for SB_SETMINHEIGHT constant.
+   * include/i_toolbar.ch
+     * Format.
+     + Added NOTABSTOP clause to DEFINE TOOLBAR command.
+   * include/i_window.ch
+     + Added support for method Item with 3 arguments in semioop syntax.
+   * source/h_status.prg
+     + Added support for item alignment. The alignment must be specified
+       using "RIGHT", "LEFT" and "CENTER". At define time the alignment
+       defaults to "LEFT". It will persist until explicity changed using
+       one of predefined values. Methods that accept an alignment as a
+       parameter will default to the last used value.
+     + Added DATAs cLedOn and cLedOff to store the name of the icons to
+       show in KEYBOARD item.
+     + Added DATA aAligns to store the alignment of each item in the
+       statusbar.
+     + Added new parameter (cAlign) to methods Define, AddItem, Caption
+       and Item, and to function _SetStatusItem.
+     + Added new parameters (icon, cstyl, cAlign) to methods SetClock
+       and SetKeybrd, and to functions _SetStatusClock and
+       _SetStatusKeybrd.
+     + Added method MinHeight to set the minimun height of the statusbar.
+     + Added method SetDate to create an item with the current date.
+     + Added method ItemAlign to change the alignment of an item.
+     * Reinstated creation of DATE item at define time.
+   * source/h_toolbar.prg
+     ! Fixed: the action codeblock of a toolbar button inside an
+       internal window is not fired when the button is clicked.
+     ! Fixed: the toolbar is not accessible using the TAB key.
+     + Added method TToolBar:Events_Command to handle BN_CLICKED
+       notification code.
+     + Added new parameter (lNoTabStop) to TToolBar:Define.
+     + Added handling of optional styles in function INITTOOLBAR.
+       Now, by default, the toolbar can be focused using TAB key.
+       To retain previous behaviour add NOTABSTOP clause to DEFINE.
+     + Added method LookForKey to handle ENTER key as a button click
+       when using SET NAVIGATION STANDARD.
 
 2012-07-24 20:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_altsyntax.ch
@@ -19,7 +71,8 @@
    * source/h_xbrowse.prg
    * source/h_checklist.prg
      + Added support for ON CLICK bCodeBlock clause to
-       @ row, col GRID/BROWSE/XBROWSE syntax.
+       @ row, col GRID/BROWSE/XBROWSE syntax and to
+       DEFINE GRID/BROWSE/XBROWSE ... END DEFINE syntax.
 
 2012-07-22 16:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_textbox.prg
@@ -262,7 +315,7 @@
      ! Fixed: error at compile time in DEFINE BROWSE.
 
 2012-06-30 02:17 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * source/h_splitbox.c
+   * source/h_splitbox.prg
      + Added WS_EX_CONTROLPARENT in INITSPLITBOX function.
      ! Fixed: buttons inside a splitchild window inside a splitbox
        produce a deadly loop.

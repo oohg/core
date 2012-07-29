@@ -1,5 +1,5 @@
 /*
- * $Id: i_status.ch,v 1.7 2007-02-06 00:13:25 guerra000 Exp $
+ * $Id: i_status.ch,v 1.8 2012-07-29 05:09:29 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -82,75 +82,84 @@
 
  Parts of this project are based upon:
 
-	"Harbour GUI framework for Win32"
- 	Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- 	Copyright 2001 Antonio Linares <alinares@fivetech.com>
-	www - http://www.harbour-project.org
+   "Harbour GUI framework for Win32"
+   Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
+   Copyright 2001 Antonio Linares <alinares@fivetech.com>
+   www - http://www.harbour-project.org
 
-	"Harbour Project"
-	Copyright 1999-2003, http://www.harbour-project.org/
+   "Harbour Project"
+   Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
 #xcommand DEFINE STATUSBAR ;
-		[ <dummy1: OF, PARENT> <parent> ] ;
-                [ OBJ <obj> ] ;
-                [ <kbd: KEYBOARD> ] ;
-                [ FONT <fontname> ]          ;
-                [ SIZE <fontsize> ]          ;
-		[ <bold : BOLD> ] ;
-                [ <top : TOP> ] ;
-		[ <italic : ITALIC> ] ;
-		[ <underline : UNDERLINE> ] ;
-		[ <strikeout : STRIKEOUT> ] ;
-                [ MESSAGE <msg> ] ;
-                [ SUBCLASS <subclass> ]         ;
-                [ <noautoadjust: NOAUTOADJUST> ] ;
-                [ WIDTH <nSize> ] ;
-                [ ACTION <uAction> ] ;
-                [ ICON <cBitmap> ] ;
-                [ <styl:FLAT,RAISED> ] ;
-                [ TOOLTIP <cToolTip> ] ;
-      => ;
-         [ <obj> := ] _OOHG_SelectSubClass( TMessageBar(), [ <subclass>() ] ): ;
-                      Define( "StatusBar", <(parent)>, 0, 0, 0, 0, <msg>, <{uAction}>, <fontname>, ;
-                      <fontsize>, <cToolTip>, .f., .f., <.kbd.>, Nil , Nil ,<.bold.>, <.italic.>, ;
-                      <.underline.>, <.strikeout.>, <.top.>, <.noautoadjust.>, <nSize>, <cBitmap>, ;
-                      <(styl)> )
+      [ <dummy1: OF, PARENT> <parent> ] ;
+      [ OBJ <obj> ] ;
+      [ <kbd: KEYBOARD> ] ;
+      [ <date: DATE> ] ;
+      [ <clock: CLOCK> ] ;
+      [ FONT <fontname> ] ;
+      [ SIZE <fontsize> ] ;
+      [ <bold: BOLD> ] ;
+      [ <top: TOP> ] ;
+      [ <italic: ITALIC> ] ;
+      [ <underline: UNDERLINE> ] ;
+      [ <strikeout: STRIKEOUT> ] ;
+      [ MESSAGE <msg> ] ;
+      [ SUBCLASS <subclass> ] ;
+      [ <noautoadjust: NOAUTOADJUST> ] ;
+      [ WIDTH <nSize> ] ;
+      [ ACTION <uAction> ] ;
+      [ ICON <cBitmap> ] ;
+      [ <styl: FLAT, RAISED> ] ;
+      [ TOOLTIP <cToolTip> ] ;
+      [ <align: LEFT, CENTER, RIGHT> ] ;
+   => ;
+      [ <obj> := ] _OOHG_SelectSubClass( TMessageBar(), [ <subclass>() ] ): ;
+            Define( "StatusBar", <(parent)>, 0, 0, 0, 0, <msg>, <{uAction}>, ;
+            <fontname>, <fontsize>, <cToolTip>, <.clock.>, <.date.>, <.kbd.>, ;
+            Nil, Nil, <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, ;
+            <.top.>, <.noautoadjust.>, <nSize>, <cBitmap>, <(styl)>, <(align)> )
 
-#xcommand  END STATUSBAR ;
-      => ;
-	_EndMessageBar ()
+#xcommand END STATUSBAR ;
+   => ;
+      _EndMessageBar ()
 
 #xcommand STATUSITEM [ <cMsg> ] ;
-         [ WIDTH <nSize> ] ;
-         [ ACTION <uAction> ] ;
-	 [ ICON <cBitmap> ] ;
-	 [ <styl:FLAT,RAISED> ] ;
-         [ TOOLTIP <cToolTip> ] ;
-       => ;
-         _SetStatusItem( <cMsg>, <nSize>, <{uAction}>, <cToolTip>, <cBitmap>, <(styl)> )
+      [ WIDTH <nSize> ] ;
+      [ ACTION <uAction> ] ;
+      [ ICON <cBitmap> ] ;
+      [ <styl:FLAT, RAISED> ] ;
+      [ TOOLTIP <cToolTip> ] ;
+      [ <align:LEFT, CENTER, RIGHT> ] ;
+   => ;
+      _SetStatusItem( <cMsg>, <nSize>, <{uAction}>, <cToolTip>, <cBitmap>, <(styl)>, <(align)> )
 
 #xcommand DATE ;
-	[ <w: WIDTH > <nSize> ] ;
-	[ ACTION <uAction> ] ;
-	[ TOOLTIP <cToolTip> ] ;
-        [ <styl:FLAT,RAISED> ] ;
-       => ;
-        _SetStatusItem( Dtoc( Date() ), ;
-                        if( <.w.>, <nSize>, if( "yyyy" $ lower( set( _SET_DATEFORMAT ) ), 95, 75 ) ), ;
-                        <{uAction}>, <cToolTip>,, <(styl)> )
+      [ <w: WIDTH > <nSize> ] ;
+      [ ACTION <uAction> ] ;
+      [ TOOLTIP <cToolTip> ] ;
+      [ <styl:FLAT, RAISED> ] ;
+      [ <align:LEFT, CENTER, RIGHT> ] ;
+   => ;
+      _SetStatusItem( Dtoc( Date() ), ;
+         if( <.w.>, <nSize>, if( "yyyy" $ lower( set( _SET_DATEFORMAT ) ), 95, 75 ) ), ;
+         <{uAction}>, <cToolTip>, Nil, <(styl)>, <(align)> )
 
 #xcommand CLOCK ;
-             [ WIDTH <nSize> ] ;
-             [ ACTION <uAction> ] ;
-             [ TOOLTIP <cToolTip> ] ;
-             [ <ampm: AMPM> ] ;
-       => ;
-        _SetStatusClock( <nSize> , <cToolTip> , <{uAction}> , <.ampm.> )
+      [ WIDTH <nSize> ] ;
+      [ ACTION <uAction> ] ;
+      [ TOOLTIP <cToolTip> ] ;
+      [ <ampm: AMPM> ] ;
+      [ ICON <cBitmap> ] ;
+      [ <styl:FLAT, RAISED> ] ;
+      [ <align:LEFT, CENTER, RIGHT> ] ;
+   => ;
+      _SetStatusClock( <nSize>, <cToolTip>, <{uAction}>, <.ampm.>, <cBitmap>, <(styl)>, <(align)> )
 
 #xcommand KEYBOARD ;
-             [ WIDTH <nSize> ] ;
-             [ ACTION <uAction> ] ;
-             [ TOOLTIP <cToolTip> ] ;
-       => ;
-        _SetStatusKeybrd( <nSize> , <cToolTip> , <{uAction}> )
+      [ WIDTH <nSize> ] ;
+      [ ACTION <uAction> ] ;
+      [ TOOLTIP <cToolTip> ] ;
+      [ <align:LEFT, CENTER, RIGHT> ] ;
+   => ;
+      _SetStatusKeybrd( <nSize>, <cToolTip>, <{uAction}>, <(align)> )

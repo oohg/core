@@ -1,5 +1,5 @@
 /*
- * $Id: i_toolbar.ch,v 1.6 2011-10-27 19:58:03 fyurisich Exp $
+ * $Id: i_toolbar.ch,v 1.7 2012-07-29 05:09:29 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -82,58 +82,63 @@
 
  Parts of this project are based upon:
 
-	"Harbour GUI framework for Win32"
- 	Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- 	Copyright 2001 Antonio Linares <alinares@fivetech.com>
-	www - http://www.harbour-project.org
+   "Harbour GUI framework for Win32"
+   Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
+   Copyright 2001 Antonio Linares <alinares@fivetech.com>
+   www - http://www.harbour-project.org
 
-	"Harbour Project"
-	Copyright 1999-2003, http://www.harbour-project.org/
+   "Harbour Project"
+   Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-#xcommand  DEFINE TOOLBAR  <name> ;
-                [ OBJ <obj> ];
-		[ OF <parent> ]  [ PARENT <parent> ] ;
-		[ CAPTION <caption> ];
-		[ ACTION <action> ] ;
-                [ BUTTONSIZE <w> , <h> ] ;
-		[ FONT <f> ] ;
-		[ SIZE <s> ] ;
-		[ <bold : BOLD> ] ;
-		[ <italic : ITALIC> ] ;
-		[ <underline : UNDERLINE> ] ;
-		[ <strikeout : STRIKEOUT> ] ;
-		[ TOOLTIP <tooltip> ] ;
-		[ <flat: FLAT> ] ;
-		[ <bottom: BOTTOM> ] ;
-		[ <righttext: RIGHTTEXT> ] ;
-		[ GRIPPERTEXT <caption> ] ;
-		[ <border : BORDER> ] ;
-	        [ <break: BREAK> ] ;
-                [ <rtl: RTL> ] ;
-                [ SUBCLASS <subclass> ] ;
-      => ;
-        [ <obj> := ] _OOHG_SelectSubClass( TToolBar(), [ <subclass>() ] ): ;
-                     Define( <(name)>, <(parent)>, 0, 0, <w>, <h>, <caption>, <{action}>,<f>,<s> ,<tooltip> , <.flat.> , <.bottom.> , <.righttext.> , <.break.> , <.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <.border.> , <.rtl.> )
+#xcommand DEFINE TOOLBAR  <name> ;
+      [ OBJ <obj> ] ;
+      [ <dummy1: OF, PARENT> <parent> ] ;
+      [ CAPTION <caption> ] ;
+      [ ACTION <action> ] ;
+      [ BUTTONSIZE <w>, <h> ] ;
+      [ FONT <f> ] ;
+      [ SIZE <s> ] ;
+      [ <bold : BOLD> ] ;
+      [ <italic : ITALIC> ] ;
+      [ <underline : UNDERLINE> ] ;
+      [ <strikeout : STRIKEOUT> ] ;
+      [ TOOLTIP <tooltip> ] ;
+      [ <flat: FLAT> ] ;
+      [ <bottom: BOTTOM> ] ;
+      [ <righttext: RIGHTTEXT> ] ;
+      [ GRIPPERTEXT <caption> ] ;
+      [ <border : BORDER> ] ;
+      [ <break: BREAK> ] ;
+      [ <rtl: RTL> ] ;
+      [ SUBCLASS <subclass> ] ;
+      [ <notabstop: NOTABSTOP> ] ;
+   => ;
+      [ <obj> := ] _OOHG_SelectSubClass( TToolBar(), [ <subclass>() ] ): ;
+         Define( <(name)>, <(parent)>, 0, 0, <w>, <h>, <caption>, <{action}>, ;
+         <f>, <s>, <tooltip>, <.flat.>, <.bottom.>, <.righttext.>, <.break.>, ;
+         <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, <.border.>, ;
+         <.rtl.>, <.notabstop.> )
 
-#xcommand  END TOOLBAR [ <nobreak: NOBREAK> ];
+#xcommand  END TOOLBAR [ <nobreak: NOBREAK> ] ;
       => ;
-	_EndToolBar (! <.nobreak.>)
-
+   _EndToolBar (! <.nobreak.>)
 
 #xcommand BUTTON <name> ;
-                [ OBJ <obj> ];
-		[ CAPTION <caption> ] ;
-		[ PICTURE <bitmap> ] ;
-                [ <dummy: ACTION, ON CLICK, ONCLICK> <action> ] ;
-		[ TOOLTIP <tooltip> ]	;
-		[ <separator: SEPARATOR> ] ;
-	        [ <autosize: AUTOSIZE> ] ;
-		[ <dropdown: DROPDOWN> ] ;
-		[ <wholedropdown: WHOLEDROPDOWN> ] ;
-		[ <check: CHECK> ] ;
-		[ <group: GROUP> ] ;
-                [ SUBCLASS <subclass> ] ;
-	=>;
-        [ <obj> := ] _OOHG_SelectSubClass( TToolButton(), [ <subclass>() ] ): ;
-                     Define( <(name)>, 0, 0, <caption>, <{action}>, , , <bitmap>, <tooltip>, , , .f., <.separator.>, <.autosize.>, <.check.>, <.group.>, <.dropdown.>, <.wholedropdown.> )
+      [ OBJ <obj> ] ;
+      [ CAPTION <caption> ] ;
+      [ PICTURE <bitmap> ] ;
+      [ <dummy: ACTION, ON CLICK, ONCLICK> <action> ] ;
+      [ TOOLTIP <tooltip> ] ;
+      [ <separator: SEPARATOR> ] ;
+      [ <autosize: AUTOSIZE> ] ;
+      [ <dropdown: DROPDOWN> ] ;
+      [ <wholedropdown: WHOLEDROPDOWN> ] ;
+      [ <check: CHECK> ] ;
+      [ <group: GROUP> ] ;
+      [ SUBCLASS <subclass> ] ;
+   => ;
+      [ <obj> := ] _OOHG_SelectSubClass( TToolButton(), [ <subclass>() ] ): ;
+         Define( <(name)>, 0, 0, <caption>, <{action}>, , , <bitmap>, ;
+         <tooltip>, , , .f., <.separator.>, <.autosize.>, <.check.>, <.group.>, ;
+         <.dropdown.>, <.wholedropdown.> )

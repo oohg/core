@@ -1,5 +1,5 @@
 /*
- * $Id: h_status.prg,v 1.37 2012-07-20 18:22:51 fyurisich Exp $
+ * $Id: h_status.prg,v 1.38 2012-07-29 05:09:30 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -83,8 +83,8 @@
  Parts of this project are based upon:
 
  "Harbour GUI framework for Win32"
-  Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
-  Copyright 2001 Antonio Linares <alinares@fivetech.com>
+ Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
+ Copyright 2001 Antonio Linares <alinares@fivetech.com>
  www - http://www.harbour-project.org
 
  "Harbour Project"
@@ -95,33 +95,36 @@
 #include "hbclass.ch"
 #include "i_windefs.ch"
 
-STATIC _OOHG_ActiveMessageBar := nil
+STATIC _OOHG_ActiveMessageBar := Nil
 
 CLASS TMessageBar FROM TControl
-   DATA Type      INIT "MESSAGEBAR" READONLY
-   DATA aClicks   INIT nil
-   DATA aWidths   INIT nil
-   DATA lAutoAdjust   INIT .T.
-   DATA lTop          INIT .F.
-
-   DATA ladjust  INIT .F.  /// redimensionar
+   DATA Type        INIT "MESSAGEBAR" READONLY
+   DATA aClicks     INIT Nil
+   DATA aWidths     INIT Nil
+   DATA lAutoAdjust INIT .T.
+   DATA lTop        INIT .F.
+   DATA ladjust     INIT .F.
+   DATA cLedOn      INIT "zzz_led_on"
+   DATA cLedOff     INIT "zzz_led_off"
+   DATA aAligns     INIT {}
 
    METHOD Define
-   METHOD EndStatus           BLOCK { || _EndMessageBar() }
+   METHOD EndStatus                      BLOCK { || _EndMessageBar() }
 
    METHOD AddItem
    METHOD Item
-   METHOD Caption(nItem,cCaption)        BLOCK { |Self,nItem,cCaption| ::Item( nItem, cCaption ) }
+   METHOD Caption(nItem, cCaption, cAlign) BLOCK { |Self, nItem, cCaption, cAlign| ::Item( nItem, cCaption, cAlign ) }
    METHOD ItemWidth
-   METHOD ItemCount        BLOCK { |Self| GetItemCount( ::hWnd ) }
+   METHOD ItemCount                      BLOCK { |Self| GetItemCount( ::hWnd ) }
    METHOD ItemToolTip
    METHOD ItemIcon
-   METHOD ClientHeightUsed     BLOCK { |Self| GetWindowHeight( ::hWnd ) * IF( ::lTop, 1, -1 ) }
-
-   METHOD BackColor        SETGET
-
+   METHOD ClientHeightUsed               BLOCK { |Self| GetWindowHeight( ::hWnd ) * IF( ::lTop, 1, -1 ) }
+   METHOD MinHeight                      SETGET
+   METHOD BackColor                      SETGET
+   METHOD ItemAlign
    METHOD SetClock
    METHOD SetKeybrd
+   METHOD SetDate
 
    METHOD Events_Notify
    METHOD Events_Size
@@ -134,7 +137,7 @@ ENDCLASS
 METHOD Define( ControlName, ParentForm, y, x, w, h, caption, ProcedureName, ;
                fontname, nFontsize, tooltip, clock, date, kbd, nClrF, nClrB, ;
                bold, italic, underline, strikeout, lTop, lNoAutoAdjust, ;
-               Width, icon, cstyl ) CLASS TMessageBar
+               Width, icon, cstyl, cAlign ) CLASS TMessageBar
 *-----------------------------------------------------------------------------*
 Local ControlHandle
 
@@ -150,35 +153,35 @@ Local ControlHandle
    ::aWidths := {}
 
    ::SetForm( ControlName, ParentForm, FontName, nFontSize )
-   ::Container := nil
+   ::Container := Nil
 
    _OOHG_ActiveMessageBar := Self
 
-   ControlHandle := InitMessageBar( ::Parent:hWnd, Caption, 0, ::lTop  )
+   ControlHandle := InitMessageBar( ::Parent:hWnd, Caption, 0, ::lTop )
 
    ::Register( ControlHandle, ControlName, , , ToolTip )
-   ::SetFont( , , bold, italic, underline, strikeout )
+   ::SetFont(, , bold, italic, underline, strikeout )
 
    ::Caption := Caption
-   IF VALTYPE( lNoAutoAdjust ) == "L"
+   IF ValType( lNoAutoAdjust ) == "L"
       ::lAutoAdjust := ! lNoAutoAdjust
    ENDIF
 
    // Re-defines first status item
    If ValType( Caption ) $ "CM"
-      ::AddItem( Caption, Width, ProcedureName, ToolTip, icon, cstyl )
+      ::AddItem( Caption, Width, ProcedureName, ToolTip, icon, cstyl, cAlign )
    Endif
 
-   IF VALTYPE( clock ) == "L" .AND. clock
+   IF ValType( clock ) == "L" .AND. clock
       ::SetClock()
    ENDIF
 
-   IF VALTYPE( kbd ) == "L" .AND. kbd
+   IF ValType( kbd ) == "L" .AND. kbd
       ::SetKeybrd()
    ENDIF
 
-   IF VALTYPE( date ) == "L" .AND. date
-*      ::SetDate()
+   IF ValType( date ) == "L" .AND. date
+      ::SetDate()
    ENDIF
 
    _OOHG_AddFrame( Self )
@@ -189,9 +192,9 @@ Local ControlHandle
 Return Self
 
 *-----------------------------------------------------------------------------*
-METHOD AddItem( Caption, Width, action, ToolTip, icon, cstyl ) CLASS TMessageBar
+METHOD AddItem( Caption, Width, action, ToolTip, icon, cstyl, cAlign ) CLASS TMessageBar
 *-----------------------------------------------------------------------------*
-Local styl, nItem, i
+Local styl, nItem, i, nRep
 
    ASSIGN Width VALUE Width TYPE "N" DEFAULT 50
 
@@ -205,12 +208,22 @@ Local styl, nItem, i
       EndIf
    EndIf
 
+   nRep := 0
+   If ValType( cAlign ) $ "CM" .AND. ! Empty( cAlign )
+      cAlign := UPPER( ALLTRIM( cAlign ) )
+      If cAlign == "CENTER"
+         nRep := 1
+      ElseIf cAlign == "RIGHT"
+         nRep := 2
+      EndIf
+   EndIf
+
    If ! ::lAutoAdjust
-      nItem := InitItemBar( ::hWnd, Caption, 0, Width, 2, Icon, ToolTip, styl )
+      nItem := InitItemBar( ::hWnd, Replicate( Chr( 9 ), nRep ) + Caption, 0, Width, 2, Icon, ToolTip, styl )
    ElseIf LEN( ::aWidths ) == 0
-      nItem := InitItemBar( ::hWnd, Caption, 0, Width, 0, Icon, ToolTip, styl )
+      nItem := InitItemBar( ::hWnd, Replicate( Chr( 9 ), nRep ) + Caption, 0, Width, 0, Icon, ToolTip, styl )
    Else
-      nItem := InitItemBar( ::hWnd, Caption, 0, Width, 1, Icon, ToolTip, styl )
+      nItem := InitItemBar( ::hWnd, Replicate( Chr( 9 ), nRep ) + Caption, 0, Width, 1, Icon, ToolTip, styl )
    EndIf
 
    ASIZE( ::aClicks, nItem )
@@ -218,6 +231,9 @@ Local styl, nItem, i
 
    ASIZE( ::aWidths, nItem )
    ::aWidths[ nItem ] := Width
+
+   ASIZE( ::aAligns, nItem )
+   ::aAligns[ nItem ] := cAlign
 
    i := At( "&", Caption )
    If i > 0 .AND. i < LEN( Caption )
@@ -227,12 +243,41 @@ Local styl, nItem, i
 Return nItem
 
 *-----------------------------------------------------------------------------*
-METHOD Item( nItem, uValue ) CLASS TMessageBar
+METHOD Item( nItem, uValue, cAlign ) CLASS TMessageBar
 *-----------------------------------------------------------------------------*
-   IF VALTYPE( uValue ) $ "CM"
-      SetItemBar( ::hWnd, uValue, nItem - 1 )
-   ENDIF
-RETURN GetItemBar( ::hWnd, nItem - 1 )
+/* If third parameter is NIL the previous alignment is used */
+Local nRep
+   If ValType( uValue ) $ "CM"
+      nRep := 0
+      If cAlign == Nil .AND. nItem >= 1 .AND. nItem <= Len( ::aAligns )
+         cAlign := ::aAligns[ nItem ]
+      EndIf
+      If ValType( cAlign ) $ "CM" .AND. ! Empty( cAlign )
+         cAlign := UPPER( ALLTRIM( cAlign ) )
+         If cAlign == "CENTER"
+            nRep := 1
+         ElseIf cAlign == "RIGHT"
+            nRep := 2
+         EndIf
+      EndIf
+      If nItem >= 1 .AND. nItem <= Len( ::aAligns )
+         ::aAligns[ nItem ] := cAlign
+      EndIf
+      SetItemBar( ::hWnd, Replicate( Chr( 9 ), nRep ) + uValue, nItem - 1 )
+   EndIf
+Return GetItemBar( ::hWnd, nItem - 1 )
+
+*-----------------------------------------------------------------------------*
+METHOD ItemAlign( nItem, cAlign )
+*-----------------------------------------------------------------------------*
+Local uRet
+   If ValType( cAlign ) $ "CM" .AND. nItem >= 1 .AND. nItem <= Len( ::aAligns )
+      ::Item( nItem, ::Item( nItem ), cAlign )
+      uRet := ::aAligns[ nItem ]
+   Else
+      uRet := Nil
+   EndIf
+Return uRet
 
 *-----------------------------------------------------------------------------*
 METHOD ItemWidth( nItem, nWidth ) CLASS TMessageBar
@@ -250,20 +295,20 @@ Return GetItemWidth( ::hWnd, nItem )
 *-----------------------------------------------------------------------------*
 METHOD ItemToolTip( nItem, cValue ) CLASS TMessageBar
 *-----------------------------------------------------------------------------*
-   IF VALTYPE( cValue ) $ "CM"
+   IF ValType( cValue ) $ "CM"
       SetItemToolTip( ::hWnd, cValue, nItem - 1 )
    ENDIF
-RETURN GetItemToolTip( ::hWnd, nItem - 1 )
+Return GetItemToolTip( ::hWnd, nItem - 1 )
 
 *-----------------------------------------------------------------------------*
 METHOD ItemIcon( nItem, cIcon ) CLASS TMessageBar
 *-----------------------------------------------------------------------------*
-RETURN SetStatusItemIcon( ::hWnd, nItem, cIcon )
+Return SetStatusItemIcon( ::hWnd, nItem, cIcon )
 
 *-----------------------------------------------------------------------------*
-METHOD SetClock( Width, ToolTip, action, lAmPm ) CLASS TMessageBar
+METHOD SetClock( Width, ToolTip, action, lAmPm, icon, cstyl, cAlign ) CLASS TMessageBar
 *-----------------------------------------------------------------------------*
-local nrItem
+Local nrItem
 
    If ValType( lAmPm ) != "L"
       lAmPm := .F.
@@ -276,11 +321,11 @@ local nrItem
    EndIf
 
    If ! lAmPm
-      nrItem := ::AddItem( Time(), Width, action, ToolTip )
-      TTimer():Define( , Self, 1000, { || ::Item( nrItem, Time() ) } )
+      nrItem := ::AddItem( Time(), Width, action, ToolTip, icon, cstyl, cAlign )
+      TTimer():Define(, Self, 1000, { || ::Item( nrItem, Time(), Nil ) } )
    Else
-      nrItem := ::AddItem( TMessageBar_AmPmClock(), Width, action, ToolTip )
-      TTimer():Define( , Self, 1000, { || ::Item( nrItem, TMessageBar_AmPmClock() ) } )
+      nrItem := ::AddItem( TMessageBar_AmPmClock(), Width, action, ToolTip, icon, cstyl, cAlign )
+      TTimer():Define(, Self, 1000, { || ::Item( nrItem, TMessageBar_AmPmClock(), Nil ) } )
    Endif
 
 Return Nil
@@ -298,26 +343,36 @@ LOCAL cTime, nHour
    ELSE
       cTime := cTime + " am"
    ENDIF
-RETURN cTime
+Return cTime
 
 *-----------------------------------------------------------------------------*
-METHOD SetKeybrd( Width , ToolTip , action ) CLASS TMessageBar
+METHOD SetKeybrd( Width, ToolTip, action, icon, cstyl, cAlign ) CLASS TMessageBar
 *-----------------------------------------------------------------------------*
-local nrItem1 , nrItem2 , nrItem3
+local nrItem1, nrItem2, nrItem3
 
-   If ValType (Width) == 'U'
+   If ValType( Width ) == 'U'
       Width := 45
    EndIf
-   If ValType (ToolTip) == 'U'
+   If ValType( ToolTip ) == 'U'
       ToolTip := ''
    EndIf
-   If ValType (Action) == 'U'
+   If ValType( Action ) == 'U'
       Action := ''
    EndIf
+   If ValType( icon ) $ "CM"
+      ::cLedOn := icon[ 1 ]
+   ElseIf ValType( icon ) == "A" .AND. Len( icon ) > 0
+      If ValType( icon[ 1 ] ) $ "CM"
+         ::cLedOn := icon[ 1 ]
+      EndIf
+      If Len( icon ) > 1 .AND. ValType( icon[ 2 ] ) $ "CM"
+         ::cLedOff := icon[ 2 ]
+      EndIf
+   EndIf
 
-   nrItem1 := ::AddItem( "Num",  GetTextWidth( NIL, "Num",  ::FontHandle ) + 36, action, ToolTip, if( IsNumLockActive(),  "zzz_led_on", "zzz_led_off" ) )
-   nrItem2 := ::AddItem( "Caps", GetTextWidth( NIL, "Caps", ::FontHandle ) + 36, action, ToolTip, if( IsCapsLockActive(), "zzz_led_on", "zzz_led_off" ) )
-   nrItem3 := ::AddItem( "Ins",  GetTextWidth( NIL, "Ins",  ::FontHandle ) + 36, action, ToolTip, if( IsCapsLockActive(), "zzz_led_on", "zzz_led_off" ) )
+   nrItem1 := ::AddItem( "Num", GetTextWidth( Nil, "Num", ::FontHandle ) + 36, action, ToolTip, if( IsNumLockActive(), ::cLedOn, ::cLedOff ), cstyl, cAlign )
+   nrItem2 := ::AddItem( "Caps", GetTextWidth( Nil, "Caps", ::FontHandle ) + 36, action, ToolTip, if( IsCapsLockActive(), ::cLedOn, ::cLedOff ), cstyl, cAlign )
+   nrItem3 := ::AddItem( "Ins", GetTextWidth( Nil, "Ins", ::FontHandle ) + 36, action, ToolTip, if( IsCapsLockActive(), ::cLedOn, ::cLedOff ), cstyl, cAlign )
 
    If Empty( Action )
       ::aClicks[ nrItem1 ] := { || KeyToggle( VK_NUMLOCK ) }
@@ -329,12 +384,18 @@ local nrItem1 , nrItem2 , nrItem3
       ::aClicks[ nrItem3 ] := Action
    EndIf
 
-   TTimer():Define( , Self, 400 , ;
-      {|| SetStatusItemIcon( ::hWnd, nrItem1 , if ( IsNumLockActive() , "zzz_led_on" , "zzz_led_off" ) ), ;
-          SetStatusItemIcon( ::hWnd, nrItem2 , if ( IsCapsLockActive() , "zzz_led_on" , "zzz_led_off" ) ), ;
-          SetStatusItemIcon( ::hWnd, nrItem3 , if ( IsInsertActive() , "zzz_led_on" , "zzz_led_off" ) ) } )
+   TTimer():Define(, Self, 400, ;
+      {|| SetStatusItemIcon( ::hWnd, nrItem1, if ( IsNumLockActive(), ::cLedOn, ::cLedOff ) ), ;
+          SetStatusItemIcon( ::hWnd, nrItem2, if ( IsCapsLockActive(), ::cLedOn, ::cLedOff ) ), ;
+          SetStatusItemIcon( ::hWnd, nrItem3, if ( IsInsertActive(), ::cLedOn, ::cLedOff ) ) } )
 
 Return Nil
+
+*-----------------------------------------------------------------------------*
+METHOD SetDate( Width, ToolTip, action, icon, cstyl, cAlign ) CLASS TMessageBar
+*-----------------------------------------------------------------------------*
+   ASSIGN Width VALUE Width TYPE "N" DEFAULT If( "yyyy" $ Lower( Set( _SET_DATEFORMAT ) ), 95, 75 )
+Return ::AddItem( Dtoc( Date() ), Width, action, ToolTip, icon, cstyl, cAlign )
 
 *-----------------------------------------------------------------------------*
 METHOD Events_Notify( wParam, lParam ) CLASS TMessageBar
@@ -346,7 +407,7 @@ Local x
       x := GetItemPos( lParam ) + 1
       if x > 0 .AND. x <= Len( ::aClicks )
          if ::DoEvent( ::aClicks[ x ], "CLICK" )
-            Return nil
+            Return Nil
          EndIf
       EndIf
    EndIf
@@ -369,24 +430,33 @@ METHOD RefreshData() CLASS TMessageBar
 Return ::Super:RefreshData()
 
 *-----------------------------------------------------------------------------*
+METHOD MinHeight( nWidth ) CLASS TMessageBar
+*-----------------------------------------------------------------------------*
+   SendMessage( ::hWnd, SB_SETMINHEIGHT, nWidth, 0 )
+   SendMessage( ::hWnd, WM_SIZE, 0, 0 )
+Return ::ClientHeightUsed()
+
+*-----------------------------------------------------------------------------*
 Function _EndMessageBar()
 *-----------------------------------------------------------------------------*
-   _OOHG_ActiveMessageBar := nil
+   _OOHG_ActiveMessageBar := Nil
    _OOHG_DeleteFrame( "MESSAGEBAR" )
 Return Nil
 
+*-----------------------------------------------------------------------------*
+FUNCTION _SetStatusClock( nSize, cToolTip, uAction, lAmPm, icon, cstyl, cAlign )
+*-----------------------------------------------------------------------------*
+Return _OOHG_ActiveMessageBar:SetClock( nSize, cToolTip, uAction, lAmPm, icon, cstyl, cAlign )
 
+*-----------------------------------------------------------------------------*
+FUNCTION _SetStatusKeybrd( nSize, cToolTip, uAction, icon, cstyl, cAlign )
+*-----------------------------------------------------------------------------*
+Return _OOHG_ActiveMessageBar:SetKeybrd( nSize, cToolTip, uAction, icon, cstyl, cAlign )
 
-
-
-FUNCTION _SetStatusClock( nSize, cToolTip, uAction, lAmPm )
-Return _OOHG_ActiveMessageBar:SetClock( nSize, cToolTip, uAction, lAmPm )
-
-FUNCTION _SetStatusKeybrd( nSize, cToolTip, uAction )
-Return _OOHG_ActiveMessageBar:SetKeybrd( nSize, cToolTip, uAction )
-
-FUNCTION _SetStatusItem( Caption, Width, action, ToolTip, icon, cstyl )
-Return _OOHG_ActiveMessageBar:AddItem( Caption, Width, action, ToolTip, icon, cstyl )
+*-----------------------------------------------------------------------------*
+FUNCTION _SetStatusItem( Caption, Width, action, ToolTip, icon, cstyl, cAlign )
+*-----------------------------------------------------------------------------*
+Return _OOHG_ActiveMessageBar:AddItem( Caption, Width, action, ToolTip, icon, cstyl, cAlign )
 
 
 
@@ -528,7 +598,7 @@ HB_FUNC( INITITEMBAR )
 
    if( ! hIcon )
    {
-      hIcon = (HICON)LoadImage(GetModuleHandle(NULL),hb_parc(6),IMAGE_ICON ,cx,cy, 0 );
+      hIcon = (HICON)LoadImage(GetModuleHandle(NULL), hb_parc(6), IMAGE_ICON, cx, cy, 0 );
    }
 
    if( hIcon != NULL )

@@ -1,5 +1,5 @@
 /*
- * $Id: h_toolbar.prg,v 1.35 2012-05-20 20:32:54 fyurisich Exp $
+ * $Id: h_toolbar.prg,v 1.36 2012-07-29 05:09:30 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -121,7 +121,7 @@ CLASS TToolBar FROM TControl
    DATA Type               INIT "TOOLBAR" READONLY
    DATA lAdjust            INIT .T.
    DATA lfixfont           INIT .T.
-   DATA lTop	             INIT .T.
+   DATA lTop	            INIT .T.
    DATA nButtonHeight      INIT 0
    DATA nButtonWidth       INIT 0
 
@@ -129,6 +129,8 @@ CLASS TToolBar FROM TControl
    METHOD Events_Size
    METHOD Events_Notify
    METHOD Events
+   METHOD Events_Command
+   METHOD LookForKey
    METHOD ClientHeightUsed BLOCK { |Self| GetWindowHeight( ::hWnd ) }
    METHOD Height           SETGET
    METHOD Width            SETGET
@@ -139,9 +141,9 @@ ENDCLASS
 *-----------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, x, y, w, h, caption, ProcedureName, ;
                fontname, fontsize, tooltip, flat, bottom, righttext, break, ;
-               bold, italic, underline, strikeout, border, lRtl ) CLASS TToolBar
+               bold, italic, underline, strikeout, border, lRtl, lNoTabStop ) CLASS TToolBar
 *-----------------------------------------------------------------------------*
-Local ControlHandle, id, lSplitActive
+Local ControlHandle, id, lSplitActive, nStyle
 
    If valtype( caption ) == 'U'
       caption := ""
@@ -159,7 +161,8 @@ Local ControlHandle, id, lSplitActive
    Id := _GetId()
 
    lSplitActive := ::SetSplitBoxInfo( Break, caption, ::nButtonWidth,, .T. )
-   ControlHandle := InitToolBar( ::ContainerhWnd, Caption, id, ::ContainerCol, ::ContainerRow, ::nButtonWidth, ::nButtonHeight, "", 0, flat, bottom, righttext, lSplitActive, border, ::lRtl )
+   nStyle := ::InitStyle( Nil, Nil, Nil, lNoTabStop, Nil )
+   ControlHandle := InitToolBar( ::ContainerhWnd, Caption, id, ::ContainerCol, ::ContainerRow, ::nButtonWidth, ::nButtonHeight, "", 0, flat, bottom, righttext, lSplitActive, border, ::lRtl, nStyle )
 
    ::Register( ControlHandle, ControlName, , , ToolTip, Id )
    ::SetFont( , , bold, italic, underline, strikeout )
@@ -291,6 +294,51 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TToolBar
    ENDIF
 RETURN ::Super:Events( hWnd, nMsg, wParam, lParam )
 
+*------------------------------------------------------------------------------*
+METHOD Events_Command( wParam ) CLASS TToolBar
+*------------------------------------------------------------------------------*
+Local Hi_wParam := HIWORD( wParam )
+Local oControl, aPos
+   If Hi_wParam == BN_CLICKED
+      oControl := GetControlObjectById( LOWORD( wParam ), ::Parent:hWnd )
+      If ! oControl:NestedClick
+         oControl:NestedClick := ! _OOHG_NestedSameEvent()
+         aPos := GetCursorPos()
+         aPos[ 1 ] -= GetWindowRow( oControl:hWnd )
+         aPos[ 2 ] -= GetWindowCol( oControl:hWnd )
+         oControl:DoEvent( oControl:OnClick, "CLICK", aPos )
+         oControl:NestedClick := .F.
+      EndIf
+      Return 1
+   EndIf
+Return ::Super:Events_Command( wParam )
+
+*-----------------------------------------------------------------------------*
+METHOD LookForKey( nKey, nFlags ) CLASS TToolBar
+*-----------------------------------------------------------------------------*
+Local ButtonIndex, i, oControl, aPos
+   If nKey == VK_RETURN .and. nFlags == 0
+      ::Events_Enter()
+      If GetFocus() == ::hWnd
+         ButtonIndex := SendMessage( ::hWnd, TB_GETHOTITEM , 0 , 0 )
+         If ButtonIndex >= 0
+            i := Ascan( ::aControls, { |o| o:Position == ButtonIndex + 1 } )
+            If i > 0
+               oControl := ::aControls[ i ]
+               If ! oControl:NestedClick
+                  oControl:NestedClick := ! _OOHG_NestedSameEvent()
+                  aPos := GetCursorPos()
+                  aPos[ 1 ] -= GetWindowRow( oControl:hWnd )
+                  aPos[ 2 ] -= GetWindowCol( oControl:hWnd )
+                  oControl:DoEvent( oControl:OnClick, "CLICK", aPos )
+                  oControl:NestedClick := .F.
+               EndIf
+            EndIf
+         EndIf
+      EndIf
+      Return .T.
+   EndIf
+Return ::Super:LookForKey( nKey, nFlags )
 
 
 
@@ -340,7 +388,7 @@ Empty( FLAT )
 
    id := _GetId()
 
-   InitToolButton( ::ContainerhWnd, Caption, id , ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight,, 0 , separator , autosize , check , group , dropdown , WHOLEDROPDOWN )
+   InitToolButton( ::ContainerhWnd, Caption, id, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight, , 0, separator, autosize, check, group, dropdown, WHOLEDROPDOWN, ::Parent:visible )
 
    nPos := GetButtonBarCount( ::ContainerhWnd ) - if( separator, 1, 0 )
 
@@ -506,8 +554,7 @@ HB_FUNC( INITTOOLBAR )
 {
    HWND hwnd;
    HWND hwndTB;
-   int Style = WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN |
-               WS_CLIPSIBLINGS | TBSTYLE_TOOLTIPS;
+   int Style = WS_CHILD | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | TBSTYLE_TOOLTIPS | hb_parni( 16 );
 
    int ExStyle;
    int TbExStyle = TBSTYLE_EX_DRAWDDARROWS ;
@@ -556,7 +603,10 @@ HB_FUNC( INITTOOLBAR )
 
    SendMessage( hwndTB, TB_SETEXTENDEDSTYLE, 0, ( LPARAM ) TbExStyle );
 
-   ShowWindow( hwndTB, SW_SHOW );
+   if( hb_parni( 16 ) & WS_VISIBLE )
+   {
+      ShowWindow( hwndTB, SW_SHOW );
+   }
    HWNDret( hwndTB );
 }
 
@@ -616,7 +666,7 @@ HB_FUNC( INITTOOLBUTTON )
    // Button New
 
    tbb[nBtn].iBitmap = 0;
-   tbb[nBtn].idCommand = hb_parni(3);
+   tbb[nBtn].idCommand = hb_parni( 3 );
    tbb[nBtn].fsState = TBSTATE_ENABLED;
    tbb[nBtn].fsStyle = ( BYTE ) Style;
    nBtn++;
@@ -632,7 +682,10 @@ HB_FUNC( INITTOOLBUTTON )
 
    SendMessage( hwndTB, TB_ADDBUTTONS, nBtn, ( LPARAM ) &tbb );
 
-   ShowWindow( hwndTB, SW_SHOW );
+   if( hb_parl( 16 ) )
+   {
+      ShowWindow( hwndTB, SW_SHOW );
+   }
 }
 
 HB_FUNC( CDISABLETOOLBARBUTTON )
@@ -642,7 +695,7 @@ HB_FUNC( CDISABLETOOLBARBUTTON )
 
 HB_FUNC( CENABLETOOLBARBUTTON )
 {
-   hb_retnl( SendMessage( HWNDparam( 1 ), TB_ENABLEBUTTON, hb_parni(2), MAKELONG(1,0)) );
+   hb_retnl( SendMessage( HWNDparam( 1 ), TB_ENABLEBUTTON, hb_parni( 2 ), MAKELONG( 1, 0 ) ) );
 }
 
 HB_FUNC( GETSIZETOOLBAR )

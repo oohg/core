@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.49 2012-07-22 19:40:35 fyurisich Exp $
+ * $Id: i_windefs.ch,v 1.50 2012-07-29 05:09:29 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -556,6 +556,7 @@
 #define EN_KILLFOCUS                  512
 #define EN_CHANGE                     768
 #define EN_UPDATE                     1024
+#define TB_GETHOTITEM                 (WM_USER + 71)
 
 #define EM_SCROLLCARET                183
 #define EM_SETMODIFY                  185
@@ -780,5 +781,8 @@
 #define MB_APPLMODAL                  0
 #define MB_SYSTEMMODAL                4096
 #define MB_TASKMODAL                  8192
+
+// StatusBar
+#define SB_SETMINHEIGHT	              (WM_USER+8)
 
 #endif

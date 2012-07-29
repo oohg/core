@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.ch,v 1.18 2012-04-01 00:58:24 fyurisich Exp $
+ * $Id: oohg.ch,v 1.19 2012-07-29 05:09:29 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -96,6 +96,7 @@
 #define __OOHG__
 
 #include "i_var.ch"
+#include "i_altsyntax.ch"
 #include "i_media.ch"
 #include "i_pseudofunc.ch"
 #include "i_exec.ch"
@@ -135,7 +136,6 @@
 #include "i_region.ch"
 #include "i_socket.ch"
 #include "i_ipaddress.ch"
-#include "i_altsyntax.ch"
 #include "i_scrsaver.ch"
 #include "i_registry.ch"
 #include "i_edit.ch"
