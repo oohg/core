@@ -1,5 +1,5 @@
 /*
- * $Id: i_status.ch,v 1.8 2012-07-29 05:09:29 fyurisich Exp $
+ * $Id: i_status.ch,v 1.9 2012-07-29 17:31:54 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -160,6 +160,8 @@
       [ WIDTH <nSize> ] ;
       [ ACTION <uAction> ] ;
       [ TOOLTIP <cToolTip> ] ;
+      [ ICON <cBitmap> ] ;
+      [ <styl:FLAT, RAISED> ] ;
       [ <align:LEFT, CENTER, RIGHT> ] ;
    => ;
-      _SetStatusKeybrd( <nSize>, <cToolTip>, <{uAction}>, <(align)> )
+      _SetStatusKeybrd( <nSize>, <cToolTip>, <{uAction}>, <cBitmap>, <(styl)>, <(align)> )

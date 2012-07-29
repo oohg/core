@@ -1,11 +1,17 @@
 /*
- * $Id: ChangeLog,v 1.982 2012-07-29 05:09:29 fyurisich Exp $
+ * $Id: ChangeLog,v 1.983 2012-07-29 17:31:53 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-07-29 14:31 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_status.ch
+     + Added parameters to KEYBOARD clause.
+   * doc/classes.txt
+     * Updated.
 
 2012-07-29 02:09 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./Changelog
@@ -27,7 +33,7 @@
      + Added NOTABSTOP clause to DEFINE TOOLBAR command.
    * include/i_window.ch
      + Added support for method Item with 3 arguments in semioop syntax.
-   * source/h_status.prg
+    * source/h_status.prg
      + Added support for item alignment. The alignment must be specified
        using "RIGHT", "LEFT" and "CENTER". At define time the alignment
        defaults to "LEFT". It will persist until explicity changed using
@@ -509,8 +515,8 @@
      + Event ON HEADCLICK passes the column's number to the invoked
        codeblock.
      + Support for only one codeblock in ON HEADCLICK clause.
-     Now, the following is supported:
-        ONHEADCLICK {|nCol| MsgInfo("Column " + ltrim(str(nCol)))}
+       Now, the following is supported:
+       ONHEADCLICK {|nCol| MsgInfo("Column " + ltrim(str(nCol)))}
 
 2012-06-11 22:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_windows.prg
