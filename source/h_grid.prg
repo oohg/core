@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.177 2012-07-24 23:21:54 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.178 2012-08-02 02:09:05 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -3503,9 +3503,12 @@ METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, 
 Return ::Super:CreateWindow( uValue, nRow - 3, nCol - 3, nWidth + 6, nHeight + 6, cFontName, nFontSize, aKeys )
 
 METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGridControlTextBox
+/*
+ TODO: Delete if everything is all right
    If ValType( uValue ) == "C"
       uValue := ::Str2Val( uValue )
    EndIf
+*/
    If ! Empty( ::cMask )
       @ nRow,nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue INPUTMASK ::cMask
    ElseIf HB_IsNumeric( uValue )
