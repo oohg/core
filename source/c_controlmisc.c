@@ -1,5 +1,5 @@
 /*
- * $Id: c_controlmisc.c,v 1.65 2012-07-06 00:45:38 fyurisich Exp $
+ * $Id: c_controlmisc.c,v 1.66 2012-08-03 02:54:41 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -992,4 +992,35 @@ HB_FUNC( GETPARENT )
 HB_FUNC( GETDLGCTRLID )
 {
    hb_retnl( GetDlgCtrlID( HWNDparam( 1 ) ) );
+}
+
+void SetDragCursorARROW( BOOL isCtrlKeyDown )
+{
+   if( isCtrlKeyDown )
+   {
+      SetCursor( LoadCursor( GetModuleHandle(NULL), "DRAG_ARROW_COPY" ) );
+   }
+   else
+   {
+      SetCursor( LoadCursor( GetModuleHandle(NULL), "DRAG_ARROW_MOVE" ) );
+   }
+}
+
+HB_FUNC( GENERIC_ONMOUSEDRAG )
+{
+   POINT pnt;
+
+   /* get the current position of the mouse pointer in screen coordinates and drag the image there */
+   GetCursorPos( &pnt );
+   if( ImageList_DragMove( pnt.x, pnt.y ) )
+   {
+      /* set drag cursor */
+      SetDragCursorARROW( ( ( (WPARAM) hb_parnl( 1 ) & MK_CONTROL) == MK_CONTROL ) );
+
+      /* hide the dragged image so the background can be refreshed */
+      ImageList_DragShowNolock( FALSE );
+
+      /* show the drag image */
+      ImageList_DragShowNolock( TRUE );
+   }
 }

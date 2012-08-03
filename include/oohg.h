@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.h,v 1.53 2012-07-06 00:45:38 fyurisich Exp $
+ * $Id: oohg.h,v 1.54 2012-08-03 02:54:41 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -108,6 +108,7 @@ typedef struct OOHG_Window {
 */
 } OCTRL, *POCTRL;
 
+extern void SetDragCursorARROW( BOOL isCtrlKeyDown );
 extern void ImageFillParameter( struct IMAGE_PARAMETER *pResult, PHB_ITEM pString );
 extern PHB_ITEM GetFormObjectByHandle( HWND hWnd );
 extern PHB_ITEM GetControlObjectByHandle( HWND hWnd );

@@ -1,5 +1,5 @@
 /*
- * $Id: h_tree.prg,v 1.34 2012-05-20 20:32:54 fyurisich Exp $
+ * $Id: h_tree.prg,v 1.35 2012-08-03 02:54:41 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1274,7 +1274,7 @@ Local nItem, lChecked, TargetHandle, i, oAux, Value
                oAux:HasDragFocus := .T.
 
                _OOHG_EVAL( oAux:OnMouseDrag, Self, oAux, wParam )
-               
+
                Return Nil
             EndIf
          EndIf
@@ -1292,11 +1292,15 @@ Local nItem, lChecked, TargetHandle, i, oAux, Value
          If HB_IsObject( ::LastTarget )
             ::LastTarget:HasDragFocus := .F.
             
-            If HB_IsObject( ::LastTarget:AutoScrollTimer )
-               ::LastTarget:AutoScrollTimer:Enabled := .F.
+            If __objHasData( ::LastTarget, "AutoScrollTimer" )
+               If HB_IsObject( ::LastTarget:AutoScrollTimer )
+                  ::LastTarget:AutoScrollTimer:Enabled := .F.
+               EndIf
             EndIf
-            If HB_IsObject( ::LastTarget:AutoExpandTimer )
-               ::LastTarget:AutoExpandTimer:Enabled := .F.
+            If __objHasData( ::LastTarget, "AutoExpandTimer" )
+               If HB_IsObject( ::LastTarget:AutoExpandTimer )
+                  ::LastTarget:AutoExpandTimer:Enabled := .F.
+               EndIf
             EndIf
          EndIf
 
@@ -1344,13 +1348,17 @@ Local nItem, lChecked, TargetHandle, i, oAux, Value
          If HB_IsObject( ::LastTarget )
             ::LastTarget:HasDragFocus := .F.
 
-            If HB_IsObject( ::LastTarget:AutoScrollTimer )
-               ::LastTarget:AutoScrollTimer:Release()
-               ::LastTarget:AutoScrollTimer := Nil
+            If __objHasData( ::LastTarget, "AutoScrollTimer" )
+               If HB_IsObject( ::LastTarget:AutoScrollTimer )
+                  ::LastTarget:AutoScrollTimer:Release()
+                  ::LastTarget:AutoScrollTimer := Nil
+               EndIf
             EndIf
-            If HB_IsObject( ::LastTarget:AutoExpandTimer )
-               ::LastTarget:AutoExpandTimer:Release()
-               ::LastTarget:AutoExpandTimer := Nil
+            If __objHasData( ::LastTarget, "AutoExpandTimer" )
+               If HB_IsObject( ::LastTarget:AutoExpandTimer )
+                  ::LastTarget:AutoExpandTimer:Release()
+                  ::LastTarget:AutoExpandTimer := Nil
+               EndIf
             EndIf
          EndIf
 
