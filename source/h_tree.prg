@@ -1,5 +1,5 @@
 /*
- * $Id: h_tree.prg,v 1.35 2012-08-03 02:54:41 fyurisich Exp $
+ * $Id: h_tree.prg,v 1.36 2012-08-03 03:03:25 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -2997,18 +2997,6 @@ BOOL IsTargetChild( HWND hTree, HTREEITEM hOrigin, HTREEITEM hDestination )
    }
 
    return FALSE;
-}
-
-void SetDragCursorARROW( BOOL isCtrlKeyDown )
-{
-   if( isCtrlKeyDown )
-   {
-      SetCursor( LoadCursor( GetModuleHandle(NULL), "DRAG_ARROW_COPY" ) );
-   }
-   else
-   {
-      SetCursor( LoadCursor( GetModuleHandle(NULL), "DRAG_ARROW_MOVE" ) );
-   }
 }
 
 HB_FUNC( TREEVIEW_ONMOUSEDRAG )
