@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.58 2012-06-12 01:37:09 fyurisich Exp $
+ * $Id: h_tab.prg,v 1.59 2012-08-05 03:04:31 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1387,6 +1387,7 @@ LOCAL oTab
    oTab := ::Container
    DO EVENTS
    ::SizePos( , , oTab:Width, oTab:Height )
+   RedrawWindow( ::hWnd )
 RETURN nil
 
 *------------------------------------------------------------------------------*

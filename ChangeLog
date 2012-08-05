@@ -1,11 +1,17 @@
 /*
- * $Id: ChangeLog,v 1.986 2012-08-03 03:03:25 fyurisich Exp $
+ * $Id: ChangeLog,v 1.987 2012-08-05 03:04:31 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-08-05 00:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+    * source/h_tab.prg
+      ! After changing the ::Row of a tab the controls inside the
+        selected tab are not shown correctly until the form is
+        repainted.
 
 2012-08-03 00:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
     * source/h_tree.prg
@@ -562,8 +568,6 @@
      + Added TABCTRL_GETROWCOUNT function.
    ! Previous changes fix: after AutoAdjust the controls inside a tab's
      page may overlap the tab area.
-   TOFIX: After changing the ::Row of a tab the controls inside the
-   selected tab are not shown correctly until the form is repainted.
 
 2012-06-11 19:26 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_tab.prg
