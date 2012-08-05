@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.134 2012-04-03 22:51:14 fyurisich Exp $
+ * $Id: h_controlmisc.prg,v 1.135 2012-08-05 04:50:06 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1334,7 +1334,7 @@ FUNCTION _OOHG_GetNullName( cName )
 STATIC nCtrl := 0
    cName := IF( VALTYPE( cName ) $ "CM", UPPER( ALLTRIM( cName ) ), "0" )
    IF EMPTY( cName ) .OR. cName == "0" .OR. cName == "NONAME" .OR. cName == "NIL" .OR. cName == "NULL" .OR. cName == "NONE"
-      // TODO: Verify this name doesn't exists
+      // Caller must verify this name doesn't exists
       cName := "NULL" + STRZERO( nCtrl, 10 )
       nCtrl++
       IF nCtrl > 9999999999
