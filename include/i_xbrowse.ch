@@ -1,5 +1,5 @@
 /*
- * $Id: i_xbrowse.ch,v 1.20 2012-07-24 23:21:54 fyurisich Exp $
+ * $Id: i_xbrowse.ch,v 1.21 2012-08-15 23:52:33 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -178,7 +178,7 @@
             <.break.>, <helpid>, <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, ;
             <.edit.>, <backcolor>, <fontcolor>, ;
             <dynamicbackcolor>, <dynamicforecolor>, <Picture>, <.rtl.>, <.inplace.>, ;
-            <editcontrols>, <aReadOnly>, <{aValidFields}>, <aValidMessages>, <{editcell}>, ;
+            <editcontrols>, <aReadOnly>, <aValidFields>, <aValidMessages>, <{editcell}>, ;
             <aWhenFields>, <.reccount.>, <columninfo>, ! <.noshowheaders.>, <{enter}>, ;
             <.disabled.>, <.notabstop.>, <.invisible.>, <.descending.>, <{bWhenDel}>, ;
             <DelMsg>, <{onDelete}>, <aHeaderImages>, <aImgAlign>, <.fullmove.>, ;

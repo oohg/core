@@ -1,5 +1,5 @@
 /*
- * $Id: h_menu.prg,v 1.33 2012-02-12 02:17:48 fyurisich Exp $
+ * $Id: h_menu.prg,v 1.34 2012-08-15 23:52:34 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -109,6 +109,7 @@ CLASS TMenu FROM TControl
    METHOD Refresh
    METHOD Release     BLOCK { |Self| DestroyMenu( ::hWnd ), ::Super:Release() }
    METHOD Separator   BLOCK { |Self| TMenuItem():DefineSeparator( , Self ) }
+   METHOD SetMenuBarColor
 
    EMPTY( _OOHG_AllVars )
 ENDCLASS
@@ -269,7 +270,7 @@ CLASS TMenuItem FROM TControl
    DATA aPicture  INIT {"", ""}
    DATA hBitMaps  INIT {nil, nil}
    DATA lStretch  INIT .F.
-
+   DATA lIsPopUp  INIT .F.
    DATA lAdjust   INIT .F.
 
    METHOD DefinePopUp
@@ -278,18 +279,18 @@ CLASS TMenuItem FROM TControl
    METHOD InsertPopUp
    METHOD InsertItem
    METHOD InsertSeparator
-
-   METHOD Enabled      SETGET
-   METHOD Checked      SETGET
-   METHOD Hilited      SETGET
-   METHOD Caption      SETGET
+   METHOD SetItemsColor
+   METHOD Enabled              SETGET
+   METHOD Checked              SETGET
+   METHOD Hilited              SETGET
+   METHOD Caption              SETGET
    METHOD Release
    METHOD EndPopUp
-   METHOD Separator    BLOCK { |Self| TMenuItem():DefineSeparator( , Self ) }
-   METHOD Picture      SETGET
-   METHOD Stretch      SETGET
+   METHOD Separator            BLOCK { |Self| TMenuItem():DefineSeparator( , Self ) }
+   METHOD Picture              SETGET
+   METHOD Stretch              SETGET
 
-   METHOD DefaultItem( nItem )    BLOCK { |Self,nItem| SetMenuDefaultItem( ::Container:hWnd, nItem ) }
+   METHOD DefaultItem( nItem ) BLOCK { |Self,nItem| SetMenuDefaultItem( ::Container:hWnd, nItem ) }
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -316,6 +317,7 @@ LOCAL nStyle
    if HB_IsLogical( disabled ) .AND. disabled
       ::Enabled := .F.
    EndIf
+   ::lIsPopUp := .T.
 Return Self
 
 *------------------------------------------------------------------------------*
@@ -343,6 +345,7 @@ LOCAL nStyle
    if HB_IsLogical( disabled ) .AND. disabled
       ::Enabled := .F.
    EndIf
+   ::lIsPopUp := .T.
 Return Self
 
 *------------------------------------------------------------------------------*
@@ -555,6 +558,14 @@ Local nPos
 Return Nil
 
 *------------------------------------------------------------------------------*
+METHOD SetItemsColor( uColor, lApplyToSubItems ) CLASS TMenuItem
+*------------------------------------------------------------------------------*
+   IF ::lIsPopUp
+      TMenuItemSetItemsColor( Self, uColor, lApplyToSubItems )
+   ENDIF
+Return Nil
+
+*------------------------------------------------------------------------------*
 Function _EndMenuPopup()
 *------------------------------------------------------------------------------*
    IF LEN( _OOHG_xMenuActive ) > 0
@@ -566,9 +577,19 @@ EXTERN TrackPopUpMenu, SetMenuDefaultItem, GetMenuBarHeight
 
 #pragma BEGINDUMP
 
+#ifndef WINVER
+   #define WINVER 0x0500
+#endif
+#if ( WINVER < 0x0500 )
+   #undef WINVER
+   #define WINVER 0x0500
+#endif
+
 #include <windows.h>
 #include <commctrl.h>
 #include "hbapi.h"
+#include "hbvm.h"
+#include "hbstack.h"
 #include "oohg.h"
 
 HB_FUNC( TRACKPOPUPMENU )
@@ -751,6 +772,66 @@ HB_FUNC( DELETEMENU )
    {
       DeleteMenu( hMenu, hb_parni( 2 ), MF_BYCOMMAND );
    }
+}
+
+HB_FUNC_STATIC( TMENU_SETMENUBARCOLOR )           // METHOD SetMenuBarColor( uColor, lApplyToSubMenus ) CLASS TMenu
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   COLORREF Color;
+   MENUINFO iMenuInfo;
+
+   if( _OOHG_DetermineColorReturn( hb_param( 1, HB_IT_ANY ), &oSelf->lBackColor, ( hb_pcount() >= 1 ) ) )
+   {
+      if( ValidHandler( oSelf->hWnd ) )
+      {
+         Color = ( oSelf->lBackColor == -1 ) ? CLR_DEFAULT : (COLORREF) oSelf->lBackColor;
+
+         GetMenuInfo( (HMENU) oSelf->hWnd, &iMenuInfo );
+
+         iMenuInfo.cbSize  = sizeof( MENUINFO );
+         iMenuInfo.hbrBack = CreateSolidBrush( Color );
+         iMenuInfo.fMask   = MIM_BACKGROUND;
+         if( hb_parl( 2 ) )
+         {
+            iMenuInfo.fMask |= MIM_APPLYTOSUBMENUS;
+         }
+
+         SetMenuInfo( (HMENU) oSelf->hWnd, &iMenuInfo );
+      }
+   }
+
+   // Return value was set in _OOHG_DetermineColorReturn()
+}
+
+HB_FUNC( TMENUITEMSETITEMSCOLOR )
+{
+   PHB_ITEM pSelf = (PHB_ITEM) hb_param( 1, HB_IT_ANY );
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   COLORREF Color;
+   MENUINFO iMenuInfo;
+
+   if( _OOHG_DetermineColorReturn( hb_param( 2, HB_IT_ANY ), &oSelf->lBackColor, ( hb_pcount() >= 2 ) ) )
+   {
+      if( ValidHandler( oSelf->hWnd ) )
+      {
+         Color = ( oSelf->lBackColor == -1 ) ? CLR_DEFAULT : (COLORREF) oSelf->lBackColor;
+
+         GetMenuInfo( (HMENU) oSelf->hWnd, &iMenuInfo );
+
+         iMenuInfo.cbSize  = sizeof( MENUINFO );
+         iMenuInfo.hbrBack = CreateSolidBrush( Color );
+         iMenuInfo.fMask   = MIM_BACKGROUND;
+         if( hb_parl( 3 ) )
+         {
+            iMenuInfo.fMask |= MIM_APPLYTOSUBMENUS;
+         }
+
+         SetMenuInfo( (HMENU) oSelf->hWnd, &iMenuInfo );
+      }
+   }
+
+   // Return value was set in _OOHG_DetermineColorReturn()
 }
 
 #pragma ENDDUMP

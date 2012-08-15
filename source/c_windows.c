@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.76 2011-10-18 01:08:04 fyurisich Exp $
+ * $Id: c_windows.c,v 1.77 2012-08-15 23:52:33 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -613,6 +613,11 @@ HB_FUNC (GETWINDOWHEIGHT)
 HB_FUNC (GETTITLEHEIGHT)
 {
 	hb_retni ( GetSystemMetrics( SM_CYCAPTION ) ) ;
+}
+
+HB_FUNC (GETEDGEHEIGHT)
+{
+	hb_retni ( GetSystemMetrics(  SM_CYEDGE ) ) ;
 }
 
 HB_FUNC (GETBORDERHEIGHT)
@@ -1352,6 +1357,13 @@ HB_FUNC( ISWINDOWSTYLE )
    LONG ulRequest = hb_parnl( 2 );
 
    hb_retl( ( GetWindowLong( HWNDparam( 1 ), GWL_STYLE ) & ulRequest ) == ulRequest );
+}
+
+HB_FUNC( ISWINDOWEXSTYLE )
+{
+   LONG ulRequest = hb_parnl( 2 );
+
+   hb_retl( ( GetWindowLong( HWNDparam( 1 ), GWL_EXSTYLE ) & ulRequest ) == ulRequest );
 }
 
 HB_FUNC( WINDOWSTYLEFLAG )

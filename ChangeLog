@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.989 2012-08-05 05:03:25 fyurisich Exp $
+ * $Id: ChangeLog,v 1.990 2012-08-15 23:52:33 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,41 +7,66 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2012-08-05 01:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-    ; To place a Tab inside a Frame you must define the Frame
-      after the END TAB command. If you fail to do that, the tab
-      will not be drawn.
+2012-08-15 20:52 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_xbrowse.ch
+     * Changed preprocessor rule for VALID clause from
+       <{aValidFields}> to <aValidFields>, so it behaves like
+       Browse and Grid.
+   * source/h_grid.prg
+     + Added METHOD TGrid:HeaderHeight, it returns the height of
+       the grid's header in pixels.
+     + Added METHOD TGrid:ItemHeight, it returns the height of an
+       item of the grid in pixels.
+   * source/c_windows.c
+     + Added function GetEdgeHeight(), it returns the height of
+       a 3-D border in pixels (see SM_CYEDGE constant in MSDN).
+     + Added function IsWindowExStyle( hWnd, ExStyle), it returns
+       .T. if the window has that extended style, .F. otherwise.
+   * source/h_menu.prg
+     + Added METHOD TMenu:SetMenuBarColor( uColor, lApplyToSubMenus ),
+       it sets the color of the menu bar of a window and optionally
+       the color of it's submenus.
+     + Added DATA lIsPopUp to TMenuItem class. It's .T. when the
+       item is a popup, .F. otherwise.
+     + Added METHOD TMenuItem:SetItemsColor( uColor, lApplyToSubItems ),
+       it sets the color of the subitems of the MenuItem, and
+       optionally the color of the subitems' subitems.
 
 2012-08-05 01:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-    * source/h_controlmisc.prg
-      * One comment changed to eliminate *T*O*D*O keyword.
+   ; To place a Tab inside a Frame you must define the Frame
+     after the END TAB command. If you fail to do that, the tab
+     will not be drawn.
+
+2012-08-05 01:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_controlmisc.prg
+     * One comment changed to eliminate *T*O*D*O keyword.
 
 2012-08-05 00:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-    * source/h_tab.prg
-      ! After changing the ::Row of a tab the controls inside the
-        selected tab are not shown correctly until the form is
-        repainted.
+   * source/h_tab.prg
+     ! After changing the ::Row of a tab the controls inside the
+       selected tab are not shown correctly until the form is
+       repainted.
 
 2012-08-03 00:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-    * source/h_tree.prg
-      - SetDragCursorARROW function deleted.
+   * source/h_tree.prg
+     - SetDragCursorARROW function deleted.
 
 2012-08-02 23:54 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-    * source/h_tree.prg
-      ! Fixed: RTE when dragging over a control that's not a Tree.
-    * source/c_controlmisc.c
-      + Added SetDragCursorARROW function (c level) to load
-        the appropriate cursor when dragging.
-      + Added Generic_OnMouseDrag function (prg level) to move
-        the cursor when dragging an item over another control.
-    * include/oohg.h
-      + Added prototype for SetDragCursorARROW function.
+   * source/h_tree.prg
+     ! Fixed: RTE when dragging over a control that's not a Tree.
+   * source/c_controlmisc.c
+     + Added SetDragCursorARROW function (c level) to load
+       the appropriate cursor when dragging.
+     + Added Generic_OnMouseDrag function (prg level) to move
+       the cursor when dragging an item over another control.
+   * include/oohg.h
+     + Added prototype for SetDragCursorARROW function.
 
 2012-08-01 23:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-    * source/h_grid.prg
-      ! Fixed: when editing a cell with value "020598" using a
-        columncontrol defined as {'TEXTBOX','CHARACTER','!!-!!!!','R'}
-        the third character is deleted.
+   * source/h_grid.prg
+     ! Fixed: when editing a cell with value "020598" using a
+       columncontrol defined as {'TEXTBOX','CHARACTER','!!-!!!!','R'}
+       the third character is deleted.
 
 2012-07-29 14:31 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_status.ch

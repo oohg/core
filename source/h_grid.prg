@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.178 2012-08-02 02:09:05 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.179 2012-08-15 23:52:33 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -212,6 +212,8 @@ CLASS TGrid FROM TControl
    METHOD SetSelectedColors   SETGET
    METHOD CheckItem           SETGET
    METHOD Justify
+   METHOD HeaderHeight
+   METHOD ItemHeight
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -2223,6 +2225,13 @@ METHOD SortColumn( nColumn, lDescending ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Return ListView_SortItemsEx( ::hWnd, nColumn, lDescending )
 
+*---------------------------------------------------------------------------*
+METHOD ItemHeight() CLASS TGrid
+*---------------------------------------------------------------------------*
+Local aCellRect
+   aCellRect := ListView_GetSubitemRect( ::hWnd, 0, 0 )
+Return aCellRect[ 4 ]
+
 
 
 
@@ -4225,6 +4234,32 @@ HB_FUNC_STATIC( TGRID_COLUMNCOUNT )
    }
 
    hb_retni( iCount );
+}
+
+HB_FUNC_STATIC( TGRID_HEADERHEIGHT )
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   RECT rc;
+   int iHeight;
+
+   if( ValidHandler( oSelf->hWnd ) )
+   {
+      if( Header_GetItemRect( ListView_GetHeader( oSelf->hWnd ), 0, &rc ) )
+      {
+         iHeight = rc.bottom - rc.top;
+      }
+      else
+      {
+         iHeight = 0;
+      }
+   }
+   else
+   {
+      iHeight = 0;
+   }
+
+   hb_retni( iHeight );
 }
 
 // -----------------------------------------------------------------------------
