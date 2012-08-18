@@ -1,5 +1,5 @@
 /*
- * $Id: h_status.prg,v 1.38 2012-07-29 05:09:30 fyurisich Exp $
+ * $Id: h_status.prg,v 1.39 2012-08-18 15:00:17 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -350,9 +350,6 @@ METHOD SetKeybrd( Width, ToolTip, action, icon, cstyl, cAlign ) CLASS TMessageBa
 *-----------------------------------------------------------------------------*
 local nrItem1, nrItem2, nrItem3
 
-   If ValType( Width ) == 'U'
-      Width := 45
-   EndIf
    If ValType( ToolTip ) == 'U'
       ToolTip := ''
    EndIf
@@ -370,9 +367,9 @@ local nrItem1, nrItem2, nrItem3
       EndIf
    EndIf
 
-   nrItem1 := ::AddItem( "Num", GetTextWidth( Nil, "Num", ::FontHandle ) + 36, action, ToolTip, if( IsNumLockActive(), ::cLedOn, ::cLedOff ), cstyl, cAlign )
-   nrItem2 := ::AddItem( "Caps", GetTextWidth( Nil, "Caps", ::FontHandle ) + 36, action, ToolTip, if( IsCapsLockActive(), ::cLedOn, ::cLedOff ), cstyl, cAlign )
-   nrItem3 := ::AddItem( "Ins", GetTextWidth( Nil, "Ins", ::FontHandle ) + 36, action, ToolTip, if( IsCapsLockActive(), ::cLedOn, ::cLedOff ), cstyl, cAlign )
+   nrItem1 := ::AddItem( "Num", Max( GetTextWidth( Nil, "Num", ::FontHandle ) + 36, Width ), action, ToolTip, if( IsNumLockActive(), ::cLedOn, ::cLedOff ), cstyl, cAlign )
+   nrItem2 := ::AddItem( "Caps", Max( GetTextWidth( Nil, "Caps", ::FontHandle ) + 36, Width ), action, ToolTip, if( IsCapsLockActive(), ::cLedOn, ::cLedOff ), cstyl, cAlign )
+   nrItem3 := ::AddItem( "Ins", Max( GetTextWidth( Nil, "Ins", ::FontHandle ) + 36, Width ), action, ToolTip, if( IsCapsLockActive(), ::cLedOn, ::cLedOff ), cstyl, cAlign )
 
    If Empty( Action )
       ::aClicks[ nrItem1 ] := { || KeyToggle( VK_NUMLOCK ) }

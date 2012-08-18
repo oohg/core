@@ -1,11 +1,15 @@
 /*
- * $Id: ChangeLog,v 1.990 2012-08-15 23:52:33 fyurisich Exp $
+ * $Id: ChangeLog,v 1.991 2012-08-18 15:00:17 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-08-18 12:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+    * source/h_status.prg
+      ! Width in KEYBOARD clause is being ignored.
 
 2012-08-15 20:52 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_xbrowse.ch
@@ -1131,7 +1135,7 @@
        NOREFRESH inhibits the relocation of such items.
        Default behaviour is EditItem method refreshes such item and
        EditAllCells method doesn´t.
-     * Modified EditAllCells method to suppor FORCEREFRESH clause.
+     * Modified EditAllCells method to support FORCEREFRESH clause.
      ! Fixed: edition is finished after editing the last item of
        the browse without entering append mode when using FULLMOVE.
    * source/h_xbrowse.prg
