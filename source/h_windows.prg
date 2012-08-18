@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.236 2012-07-12 00:22:27 fyurisich Exp $
+ * $Id: h_windows.prg,v 1.237 2012-08-18 16:14:51 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1656,22 +1656,27 @@ Return nil
 *------------------------------------------------------------------------------*
 METHOD Adjust( nAdjust ) CLASS TWindow
 *------------------------------------------------------------------------------*
-Local Adjustpos
+Local Adjustpos, newAdjust
    If PCOUNT() > 0
       If HB_IsString( nAdjust )
          AdjustPos := upper( alltrim( nAdjust ) )
          If AdjustPos == 'TOP'
-            ::ClientAdjust := 1
+            newAdjust := 1
          Elseif AdjustPos == 'BOTTOM'
-            ::ClientAdjust := 2
+            newAdjust := 2
          Elseif AdjustPos == 'LEFT'
-            ::ClientAdjust := 3
+            newAdjust := 3
          Elseif AdjustPos == 'RIGHT'
-            ::ClientAdjust := 4
+            newAdjust := 4
          Elseif AdjustPos == 'CLIENT'
-            ::ClientAdjust := 5
+            newAdjust := 5
+         Else
+            newAdjust := ::ClientAdjust
          EndIf
-         * ::nHeight := ::nWidth  // ???
+         If newAdjust <> ::ClientAdjust
+            ::ClientAdjust := newAdjust
+            ::CheckClientsPos()
+         EndIf
       ElseIf hb_IsNumeric( nAdjust )
          If nAdjust <> ::ClientAdjust
             ::ClientAdjust := nAdjust
