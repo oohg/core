@@ -1,5 +1,5 @@
 /*
- * $Id: h_status.prg,v 1.39 2012-08-18 15:00:17 fyurisich Exp $
+ * $Id: h_status.prg,v 1.40 2012-08-20 00:17:29 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -350,6 +350,9 @@ METHOD SetKeybrd( Width, ToolTip, action, icon, cstyl, cAlign ) CLASS TMessageBa
 *-----------------------------------------------------------------------------*
 local nrItem1, nrItem2, nrItem3
 
+   If ValType( Width ) == 'U'
+      Width := 45
+   EndIf
    If ValType( ToolTip ) == 'U'
       ToolTip := ''
    EndIf

@@ -1,11 +1,15 @@
 /*
- * $Id: ChangeLog,v 1.992 2012-08-18 16:14:51 fyurisich Exp $
+ * $Id: ChangeLog,v 1.993 2012-08-20 00:17:27 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-08-19 21:17 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+    * source/h_status.prg
+      ! KEYBOARD clause without width generates RTE.
 
 2012-08-18 13:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
     * source/h_windows.prg
