@@ -1,11 +1,22 @@
 /*
- * $Id: ChangeLog,v 1.993 2012-08-20 00:17:27 fyurisich Exp $
+ * $Id: ChangeLog,v 1.994 2012-08-25 03:28:59 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-08-25 00:28 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+    * source/h_grid.prg
+      ! Image background is not painted correctly when image is
+        at column 2 or upper.
+      ! IMAGELIST columncontrol generates RTE in METHOD
+        TGridControlImageList:Str2Val when trying to edit the cell.
+      + Added two more pixels to column 1 default width when it
+        contains images, so the images are shown in full.
+    * ./compile_MINGW.BAT
+      + Added hbtip, hbpcre and ws2_32 libraries.
 
 2012-08-19 21:17 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
     * source/h_status.prg

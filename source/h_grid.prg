@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.179 2012-08-15 23:52:33 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.180 2012-08-25 03:28:59 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -332,10 +332,10 @@ Local ControlHandle, aImageList, i
       ::ImageList := aImageList[ 1 ]
       If aScan( ::Picture, .T. ) == 0
          ::Picture[ 1 ] := .T.
-         ::aWidths[ 1 ] := Max( ::aWidths[ 1 ], aImageList[ 2 ] + If( ::lCheckBoxes, GetStateListWidth( ControlHandle ) + 2, 2 ) ) // Set Column 1 width to Bitmap width plus checkboxes
+         ::aWidths[ 1 ] := Max( ::aWidths[ 1 ], aImageList[ 2 ] + If( ::lCheckBoxes, GetStateListWidth( ControlHandle ) + 4, 4 ) ) // Set Column 1 width to Bitmap width plus checkboxes
       EndIf
    ElseIf ::lCheckBoxes
-      ::aWidths[ 1 ] := Max( ::aWidths[ 1 ], GetStateListWidth( ControlHandle ) + 2 ) // Set Column 1 width to checkboxes width
+      ::aWidths[ 1 ] := Max( ::aWidths[ 1 ], GetStateListWidth( ControlHandle ) + 4 ) // Set Column 1 width to checkboxes width
    EndIf
 
    InitListViewColumns( ControlHandle, ::aHeaders, ::aWidths, ::aJust )
@@ -527,7 +527,7 @@ Local i, nPos, nCount, aImageList, nImagesWidth, aHeaderImage, aImageName := {}
                   ::HeaderImageList := aImageList[ 1 ]
                   aAdd( aImageName, aHeaderImage[ i ] )
                   ::aHeaderImage[ i ] := 1
-                  nImagesWidth := aImageList[ 2 ] + 2
+                  nImagesWidth := aImageList[ 2 ] + 4
                   If i == 1
                      ::aWidths[ 1 ] := Max( ::aWidths[ 1 ], nImagesWidth + If( ::lCheckBoxes, GetStateListWidth( ::hWnd ), 0 ) )
                   Else
@@ -3903,7 +3903,7 @@ CLASS TGridControlImageList FROM TGridControl
    METHOD New
    METHOD CreateWindow
    METHOD CreateControl
-   METHOD Str2Val( uValue ) BLOCK { |Self, uValue| Empty( Self ), Val( uValue ) }
+   METHOD Str2Val( uValue ) BLOCK { |Self, uValue| Empty( Self ), If( ValType( uValue ) == "C", Val( uValue ), uValue ) }
    METHOD ControlValue      SETGET
 ENDCLASS
 
@@ -5372,10 +5372,21 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
          ListView_GetSubItemRect( lplvcd->nmcd.hdr.hwndFrom, lplvcd->nmcd.dwItemSpec, lplvcd->iSubItem, LVIR_ICON, &rcIcon );
 
          // Calculate area for background and paint it
-         rcBack.top = rcIcon.top;
-         rcBack.left = ( ( x == 1 ) && ( ! bCheckBoxes ) && bPLM ) ? 0 : rcIcon.left;
-         rcBack.bottom = bNoGrid ? rcIcon.bottom : ( rcIcon.bottom - 1 );
-         rcBack.right = rcIcon.right;
+         if( x == 1)
+         {
+            rcBack.top = rcIcon.top;
+            rcBack.left = ( ( x == 1 ) && ( ! bCheckBoxes ) && bPLM ) ? 0 : rcIcon.left;
+            rcBack.bottom = bNoGrid ? rcIcon.bottom : ( rcIcon.bottom - 1 );
+            rcBack.right = rcIcon.right;
+         }
+         else
+         {
+            rcBack.top = rcIcon.top;
+            rcBack.left = rcIcon.left;
+            rcBack.bottom = bNoGrid ? rcIcon.bottom : ( rcIcon.bottom - 1 );
+            rcBack.right = rcIcon.right + 2;
+            rcIcon.left += 2;
+         }
 
          hBrush = CreateSolidBrush( lplvcd->clrTextBk );
          FillRect( lplvcd->nmcd.hdc, &rcBack, hBrush );
