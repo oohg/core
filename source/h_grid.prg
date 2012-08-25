@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.180 2012-08-25 03:28:59 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.181 2012-08-25 17:20:33 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -3909,6 +3909,9 @@ ENDCLASS
 
 METHOD New( oGrid ) CLASS TGridControlImageList
    ::oGrid := oGrid
+   If ! Empty( ::oGrid ) .AND. ::oGrid:ImageList != 0
+      ::nDefHeight := ImageList_Size( ::oGrid:ImageList ) [ 2 ] + 6
+   EndIf
 Return Self
 
 METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aKeys ) CLASS TGridControlImageList
