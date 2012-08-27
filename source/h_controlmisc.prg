@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.135 2012-08-05 04:50:06 fyurisich Exp $
+ * $Id: h_controlmisc.prg,v 1.136 2012-08-27 01:15:46 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1007,36 +1007,39 @@ Return RetVal
 *------------------------------------------------------------------------------*
 Function DoMethod( ... )
 *------------------------------------------------------------------------------*
-Local RetVal := Nil
-Local oWnd, oCtrl, cMethod, cPars, i
+Local RetVal, aPars, cMethod, oWnd, oCtrl
+
+   RetVal := Nil
 
    If PCount() == 2 // WINDOW
-      cMethod := Upper( PValue(2) )
+      aPars := HB_aParams()
+
+      cMethod := Upper( aPars[2] )
 
       If cMethod == 'ACTIVATE'
-         If HB_IsArray( PValue(1) )
-            RetVal := _ActivateWindow( PValue(1) )
+         If HB_IsArray( aPars[1] )
+            RetVal := _ActivateWindow( aPars[1] )
          Else
-            oWnd := GetExistingFormObject( PValue(1) )
+            oWnd := GetExistingFormObject( aPars[1] )
             RetVal := oWnd:Activate()
          EndIf
       ElseIf cMethod == 'SETFOCUS'
          If oWnd:Active
-            oWnd := GetExistingFormObject( PValue(1) )
+            oWnd := GetExistingFormObject( aPars[1] )
             RetVal := oWnd:SetFocus()
          EndIf
       Else
-         oWnd := GetExistingFormObject( PValue(1) )
+         oWnd := GetExistingFormObject( aPars[1] )
          If _OOHG_HasMethod( oWnd, cMethod )
             RetVal := oWnd:&( cMethod )()
          EndIf
       EndIf
 
-      Return RetVal
+   ElseIf PCount() > 2
+      aPars := HB_aParams()
 
-   Else
-      oCtrl := GetExistingControlObject( PValue(2), PValue(1) )
-      cMethod := Upper( PValue(3) )
+      oCtrl := GetExistingControlObject( aPars[2], aPars[1] )
+      cMethod := Upper( aPars[3] )
 
       If PCount() == 3 // CONTROL WITHOUT ARGUMENTS
          If cMethod == 'SAVE'
@@ -1053,7 +1056,7 @@ Local oWnd, oCtrl, cMethod, cPars, i
          // Handle exceptions
          If PCount() == 7
             If cMethod == 'ADDCONTROL'
-               RetVal := oCtrl:AddControl( GetControlObject( PValue(4), PValue(1) ), PValue(5) , PValue(6) , PValue(7) )
+               RetVal := oCtrl:AddControl( GetControlObject( aPars[4], aPars[1] ), aPars[5], aPars[6], aPars[7] )
 
                Return RetVal
             EndIf
@@ -1061,13 +1064,12 @@ Local oWnd, oCtrl, cMethod, cPars, i
 
          // Handle other methods
          If _OOHG_HasMethod( oCtrl, cMethod )
-            cPars := ""
-            For i := 4 to PCount()
-               cPars += "PValue(" + ltrim( str( i ) ) + "), "
-            Next i
-            cPars := Left( cPars, Len( cPars ) - 2 )
+            aDel( aPars, 1 )
+            aDel( aPars, 1 )
+            aDel( aPars, 1 )
+            aSize( aPars, Len( aPars ) - 3 )
 
-            RetVal := oCtrl:&( cMethod )( &( cPars ) )
+            RetVal := HB_ExecFromArray( oCtrl, cMethod, aPars )
          EndIf
       EndIf
    EndIf
@@ -1157,7 +1159,7 @@ Local i
    If ValType ( OldArray ) == 'U'
       Return Nil
    Else
-      Asize( NewArray , Len (OldArray) )
+      aSize( NewArray , Len (OldArray) )
    EndIf
 
    For i := 1 To Len ( OldArray )
