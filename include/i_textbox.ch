@@ -1,5 +1,5 @@
 /*
- * $Id: i_textbox.ch,v 1.18 2012-05-17 22:54:52 fyurisich Exp $
+ * $Id: i_textbox.ch,v 1.19 2012-08-27 05:50:50 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -117,6 +117,7 @@
                         [ ON LOSTFOCUS <lostfocus> ]    ;
                         [ ON ENTER <enter> ]      ;
                         [ <RightAlign: RIGHTALIGN> ]   ;
+                        [ <centeralign: CENTERALIGN> ]  ;
                         [ <invisible: INVISIBLE> ]   ;
                         [ <notabstop: NOTABSTOP> ]   ;
                         [ <rtl: RTL> ]                  ;
@@ -146,4 +147,5 @@
                         <backcolor> , <fontcolor> , <.invisible.> , <.notabstop.> , ;
                         <.rtl.>, <.autoskip.>, <.noborder.>, <focusedpos>, <.disabled.>, ;
                         <{valid}>, <.date.>, <.numeric.>, <inputmask>, <format>, ;
-                        [ <subclass>() ] , <{action}>, <abitmap>, <btnwidth>, <{action2}>,<{bWhen}> )
+                        [ <subclass>() ] , <{action}>, <abitmap>, <btnwidth>, <{action2}>, ;
+                        <{bWhen}>, <.centeralign.> )

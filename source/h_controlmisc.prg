@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.136 2012-08-27 01:15:46 fyurisich Exp $
+ * $Id: h_controlmisc.prg,v 1.137 2012-08-27 05:50:50 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -518,9 +518,23 @@ Function _GetCaretPos( ControlName, FormName )
 Return GetControlObject( ControlName, FormName ):CaretPos
 
 *------------------------------------------------------------------------------*
+Function DefineProperty( cProperty, cControlName, cFormName, xValue )
+*------------------------------------------------------------------------------*
+Local oCtrl
+   If HB_IsObject( cFormName )
+      oCtrl := cFormName
+   ElseIf HB_IsString( cControlName )
+      oCtrl := GetExistingControlObject( cControlName, cFormName )
+   Else
+      oCtrl := GetExistingFormObject( cFormName )
+   EndIf
+   oCtrl:Property( cProperty, xValue )
+Return oCtrl:Property( cProperty )
+
+*------------------------------------------------------------------------------*
 Function SetProperty( Arg1, Arg2, Arg3, Arg4, Arg5, Arg6 )
 *------------------------------------------------------------------------------*
-Local oWnd, oCtrl
+Local oWnd, oCtrl, nPos
 
    if Pcount() == 3 // Window
 
@@ -553,6 +567,13 @@ Local oWnd, oCtrl
 
       ElseIf Arg2 == "CURSOR"
          oWnd:Cursor := Arg3
+
+      Else
+         // Pseudo-property
+         nPos := ASCAN( oWnd:aProperties, { |a| a[ 1 ] == Arg2 } )
+         If nPos > 0
+            oWnd:aProperties[ nPos ][ 2 ] := Arg3
+         EndIf
 
       EndIf
 
@@ -689,6 +710,13 @@ Local oWnd, oCtrl
       ElseIf Arg3 == "ONCHANGE"
          oCtrl:OnChange := Arg4
 
+      Else
+         // Pseudo-property
+         nPos := ASCAN( oCtrl:aProperties, { |a| a[ 1 ] == Arg3 } )
+         If nPos > 0
+            oCtrl:aProperties[ nPos ][ 2 ] := Arg4
+         EndIf
+
       EndIf
 
    ElseIf Pcount() == 5 // CONTROL (WITH ARGUMENT OR TOOLBAR BUTTON)
@@ -766,7 +794,7 @@ Return Nil
 *------------------------------------------------------------------------------*
 Function GetProperty( Arg1, Arg2, Arg3, Arg4, Arg5 )
 *------------------------------------------------------------------------------*
-Local RetVal, oWnd, oCtrl
+Local RetVal, oWnd, oCtrl, nPos
 
    If Pcount() == 2 // WINDOW
 
@@ -808,6 +836,13 @@ Local RetVal, oWnd, oCtrl
 
       ElseIf Arg2 == "OBJECT"
          RetVal := oWnd
+
+      Else
+         // Pseudo-property
+         nPos := ASCAN( oWnd:aProperties, { |a| a[ 1 ] == Arg2 } )
+         If nPos > 0
+            RetVal := oWnd:aProperties[ nPos ][ 2 ]
+         EndIf
 
       EndIf
 
@@ -923,6 +958,13 @@ Local RetVal, oWnd, oCtrl
 
       ElseIf Arg3 == "SELCOLOR"
          RetVal := oCtrl:SelColor()
+
+      Else
+         // Pseudo-property
+         nPos := ASCAN( oCtrl:aProperties, { |a| a[ 1 ] == Arg3 } )
+         If nPos > 0
+            RetVal := oCtrl:aProperties[ nPos ][ 2 ]
+         EndIf
 
       EndIf
 

@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.58 2012-07-29 17:31:54 fyurisich Exp $
+ * $Id: classes.txt,v 1.59 2012-08-27 05:50:50 guerra000 Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -2522,6 +2522,7 @@ CLASS TWINDOW
    DATA ACTIVE                    INIT .F.
    DATA AHOTKEYS                  INIT {}
    DATA AKEYS                     INIT {}
+   DATA APROPERTIES               INIT {}
    DATA BKEYDOWN                  INIT NIL
    DATA BLOCK                     INIT NIL
    DATA BOLD                      INIT .F.
@@ -2665,6 +2666,7 @@ CLASS TWINDOW
    METHOD PIE
    METHOD PRERELEASE
    METHOD PRINT
+   METHOD PROPERTY
    METHOD REDRAW
    METHOD REFRESHDATA
    METHOD RELEASE

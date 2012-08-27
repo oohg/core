@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.81 2012-07-22 19:40:36 fyurisich Exp $
+ * $Id: h_textbox.prg,v 1.82 2012-08-27 05:50:50 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -168,7 +168,7 @@ METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, cValue, ;
                HelpId, readonly, bold, italic, underline, strikeout, field, ;
                backcolor, fontcolor, invisible, notabstop, lRtl, lAutoSkip, ;
                lNoBorder, OnFocusPos, lDisabled, bValid, bAction, aBitmap, ;
-               nBtnwidth, bAction2, bWhen ) CLASS TText
+               nBtnwidth, bAction2, bWhen, lCenter ) CLASS TText
 *-----------------------------------------------------------------------------*
 Local nStyle := ES_AUTOHSCROLL, nStyleEx := 0
 
@@ -181,7 +181,7 @@ Local nStyle := ES_AUTOHSCROLL, nStyleEx := 0
               readonly, bold, italic, underline, strikeout, field, ;
               backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, ;
               lAutoSkip, nStyleEx, lNoBorder, OnFocusPos, lDisabled, bValid, ;
-              bAction, aBitmap, nBtnwidth, bAction2, bWhen )
+              bAction, aBitmap, nBtnwidth, bAction2, bWhen, lCenter )
 
 Return Self
 
@@ -192,7 +192,8 @@ METHOD Define2( cControlName, cParentForm, x, y, w, h, cValue, ;
                 readonly, bold, italic, underline, strikeout, field, ;
                 backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, ;
                 lAutoSkip, nStyleEx, lNoBorder, OnFocusPos, lDisabled, ;
-                bValid, bAction, aBitmap, nBtnwidth, bAction2, bWhen ) CLASS TText
+                bValid, bAction, aBitmap, nBtnwidth, bAction2, bWhen, ;
+                lCenter ) CLASS TText
 *-----------------------------------------------------------------------------*
 Local nControlHandle
 Local break := Nil
@@ -213,10 +214,17 @@ Local break := Nil
 
    ::SetForm( cControlName, cParentForm, cFontName, nFontSize, FontColor, BackColor, .T., lRtl )
 
+   If HB_IsLogical( lCenter ) .AND. lCenter
+      right := .F.
+   Else
+      lCenter := .F.
+   EndIf
+
    // Style definition
    nStyle += ::InitStyle( ,, Invisible, NoTabStop, lDisabled ) + ;
              If( HB_IsLogical( lPassword ) .AND. lPassword, ES_PASSWORD,  0 ) + ;
              If( HB_IsLogical( right     ) .AND. right,     ES_RIGHT,     0 ) + ;
+             If( HB_IsLogical( lCenter   ) .AND. lCenter,   ES_CENTER,    0 ) + ;
              If( HB_IsLogical( readonly  ) .AND. readonly,  ES_READONLY,  0 )
 
    nStyleEx += If( !HB_IsLogical( lNoBorder ) .OR. ! lNoBorder, WS_EX_CLIENTEDGE, 0 )
@@ -746,7 +754,7 @@ METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, uValue, ;
                italic, underline, strikeout, field, backcolor, fontcolor, ;
                invisible, notabstop, lRtl, lAutoSkip, lNoBorder, OnFocusPos, ;
                lDisabled, bValid, lUpper, lLower, bAction, aBitmap, ;
-               nBtnwidth, bAction2 ) CLASS TTextPicture
+               nBtnwidth, bAction2, bWhen, lCenter ) CLASS TTextPicture
 *-----------------------------------------------------------------------------*
 Local nStyle := ES_AUTOHSCROLL, nStyleEx := 0
 
@@ -774,7 +782,7 @@ Local nStyle := ES_AUTOHSCROLL, nStyleEx := 0
               readonly, bold, italic, underline, strikeout, field, ;
               backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, ;
               lAutoSkip, nStyleEx, lNoBorder, OnFocusPos, lDisabled, bValid, ;
-              bAction, aBitmap, nBtnwidth, bAction2 )
+              bAction, aBitmap, nBtnwidth, bAction2, bWhen, lCenter )
 
 Return Self
 
@@ -1445,7 +1453,7 @@ METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, cValue, ;
                HelpId, readonly, bold, italic, underline, strikeout, field , ;
                backcolor , fontcolor , invisible , notabstop, lRtl, lAutoSkip, ;
                lNoBorder, OnFocusPos, lDisabled, bValid, bAction, aBitmap, ;
-               nBtnwidth, bAction2 ) CLASS TTextNum
+               nBtnwidth, bAction2, bWhen, lCenter ) CLASS TTextNum
 *-----------------------------------------------------------------------------*
 Local nStyle := ES_NUMBER + ES_AUTOHSCROLL, nStyleEx := 0
 
@@ -1458,7 +1466,7 @@ Local nStyle := ES_NUMBER + ES_AUTOHSCROLL, nStyleEx := 0
               readonly, bold, italic, underline, strikeout, field, ;
               backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, ;
               lAutoSkip, nStyleEx, lNoBorder, OnFocusPos, lDisabled, bValid, ;
-              bAction, aBitmap, nBtnwidth, bAction2 )
+              bAction, aBitmap, nBtnwidth, bAction2, bWhen, lCenter )
 
 Return Self
 
@@ -1518,7 +1526,7 @@ FUNCTION DefineTextBox( cControlName, cParentForm, x, y, Width, Height, ;
                         fontcolor, invisible, notabstop, lRtl, lAutoSkip, ;
                         lNoBorder, OnFocusPos, lDisabled, bValid, ;
                         date, numeric, inputmask, format, subclass, bAction, ;
-                        aBitmap, nBtnwidth, bAction2 )
+                        aBitmap, nBtnwidth, bAction2, bWhen, lCenter )
 *-----------------------------------------------------------------------------*
 Local Self, lInsert
 
@@ -1569,7 +1577,7 @@ Local Self, lInsert
                 italic, underline, strikeout, field, backcolor, fontcolor, ;
                 invisible, notabstop, lRtl, lAutoSkip, lNoBorder, OnFocusPos, ;
                 lDisabled, bValid, lUpper, lLower, bAction, aBitmap, ;
-                nBtnwidth, bAction2 )
+                nBtnwidth, bAction2, bWhen, lCenter )
    Else
       Self := _OOHG_SelectSubClass( If( numeric, TTextNum(), TText() ), subclass )
       ::Define( cControlName, cParentForm, x, y, Width, Height, Value, ;
@@ -1578,9 +1586,7 @@ Local Self, lInsert
                 HelpId, readonly, bold, italic, underline, strikeout, field, ;
                 backcolor, fontcolor, invisible, notabstop, lRtl, lAutoSkip, ;
                 lNoBorder, OnFocusPos, lDisabled, bValid, bAction, aBitmap, ;
-                nBtnwidth, bAction2 )
+                nBtnwidth, bAction2, bWhen, lCenter )
    EndIf
 
 Return Self
-
-

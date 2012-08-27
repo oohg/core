@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.237 2012-08-18 16:14:51 fyurisich Exp $
+ * $Id: h_windows.prg,v 1.238 2012-08-27 05:50:50 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -252,6 +252,7 @@ CLASS TWindow
    DATA aKeys               INIT {}  // { Id, Mod, Key, Action }   Application-controlled hotkeys
    DATA aHotKeys            INIT {}  // { Id, Mod, Key, Action }   OperatingSystem-controlled hotkeys
    DATA aAcceleratorKeys    INIT {}  // { Id, Mod, Key, Action }   Accelerator hotkeys
+   DATA aProperties         INIT {}  // { cProperty, xValue }      Pseudo-properties
    DATA bKeyDown            INIT nil     // WM_KEYDOWN handler
    DATA NestedClick         INIT .F.
    DATA HScrollBar          INIT nil
@@ -331,6 +332,7 @@ CLASS TWindow
    METHOD SetKey                // Application-controlled hotkeys
    METHOD AcceleratorKey        // Accelerator hotkeys
    METHOD LookForKey
+   METHOD Property              // Pseudo-properties
    METHOD ReleaseAttached
    METHOD Visible             SETGET
    METHOD Show                BLOCK { |Self| ::Visible := .T. }
@@ -1230,12 +1232,29 @@ METHOD ParentDefaults( cFontName, nFontSize, uFontColor ) CLASS TWindow
 Return Self
 
 *-----------------------------------------------------------------------------*
-METHOD Error() CLASS TWindow
+METHOD Error( xParam ) CLASS TWindow
 *-----------------------------------------------------------------------------*
 Local nPos, cMessage
    cMessage := __GetMessage()
+
    nPos := aScan( ::aControlsNames, UPPER( ALLTRIM( cMessage ) ) + CHR( 255 ) )
-Return IF( nPos > 0, ::aControls[ nPos ], ::MsgNotFound( cMessage ) )
+   If nPos > 0
+      Return ::aControls[ nPos ]
+   EndIf
+
+   If PCOUNT() >= 1
+      nPos := ASCAN( ::aProperties, { |a| "_" + a[ 1 ] == cMessage } )
+      If nPos > 0
+         ::aProperties[ nPos ][ 2 ] := xParam
+         Return ::aProperties[ nPos ][ 2 ]
+      EndIf
+   Else
+      nPos := ASCAN( ::aProperties, { |a| a[ 1 ] == cMessage } )
+      If nPos > 0
+         Return ::aProperties[ nPos ][ 2 ]
+      EndIf
+   EndIf
+Return ::MsgNotFound( cMessage )
 
 *-----------------------------------------------------------------------------*
 METHOD Control( cControl ) CLASS TWindow
@@ -1356,6 +1375,28 @@ Local lDone
       lDone := .F.
    EndIf
 Return lDone
+
+*-----------------------------------------------------------------------------*
+METHOD Property( cProperty, xValue ) CLASS TWindow
+*-----------------------------------------------------------------------------*
+LOCAL nPos
+   cProperty := UPPER( ALLTRIM( cProperty ) )
+   nPos := ASCAN( ::aProperties, { |a| a[ 1 ] == cProperty } )
+   If PCOUNT() >= 2
+      If nPos > 0
+         ::aProperties[ nPos ][ 2 ] := xValue
+      Else
+         AADD( ::aProperties, { cProperty, xValue } )
+      EndIf
+   Else
+      If nPos > 0
+         xValue := ::aProperties[ nPos ][ 2 ]
+      Else
+         // RTE?
+         xValue := nil
+      EndIf
+   EndIf
+Return xValue
 
 *-----------------------------------------------------------------------------*
 METHOD ReleaseAttached() CLASS TWindow

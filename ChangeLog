@@ -1,11 +1,28 @@
 /*
- * $Id: ChangeLog,v 1.996 2012-08-27 01:15:46 fyurisich Exp $
+ * $Id: ChangeLog,v 1.997 2012-08-27 05:50:49 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-08-27 00:45 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+   * source/h_hotkey.prg
+     * Now it's possible to assign a hotkey to a specific control using
+       ON KEY <key> TO ( <oControl> ) ACTION <bAction>
+   * include/i_textbox.ch
+   * source/h_textbox.prg
+     + CENTERALIGN clause added.
+     * Fixed missing WHEN clause (bWhen) parameter.
+   * doc/classes.txt
+   * include/i_controlmisc.ch
+   * source/h_controlmisc.prg
+   * source/h_windows.prg
+     + ::Property() method added.
+     + DEFINE PROPERTY command added.
+       It allows to create "virtual" properties to any
+       window/control.
 
 2012-08-26 22:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
     * source/h_controlmisc.prg

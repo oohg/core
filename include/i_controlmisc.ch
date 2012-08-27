@@ -1,5 +1,5 @@
 /*
- * $Id: i_controlmisc.ch,v 1.7 2012-05-20 20:32:53 fyurisich Exp $
+ * $Id: i_controlmisc.ch,v 1.8 2012-08-27 05:50:50 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -154,6 +154,10 @@
 #command SET FONT TO <fontname>, <fontsize> ;
    => ;
          _OOHG_DefaultFontName := <fontname> ; _OOHG_DefaultFontSize := <fontsize>
+
+#command DEFINE PROPERTY <property> TO [ CONTROL ] [ <control> OF ] <form> VALUE <value> ;
+   => ;
+         DefineProperty( <(property)>, <(control)>, <(form)>, <value> )
 
 #translate MODIFY [ PROPERTY ] [ CONTROL ] <Arg2> OF <Arg1> <Arg3> <Arg4> ;
    => ;

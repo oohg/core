@@ -1,5 +1,5 @@
 /*
- * $Id: h_hotkey.prg,v 1.11 2010-01-21 09:13:07 guerra000 Exp $
+ * $Id: h_hotkey.prg,v 1.12 2012-08-27 05:50:50 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -153,6 +153,26 @@ Return Nil
 FUNCTION _DetermineKey( cKey )
 *------------------------------------------------------------------------------*
 LOCAL aKey, nAlt, nCtrl, nShift, nWin, nPos, cKey2, cText
+
+STATIC aKeyTables := { "LBUTTON", "RBUTTON", "CANCEL", "MBUTTON", "XBUTTON1", "XBUTTON2", ".7", "BACK", "TAB", ".10", ;
+                       ".11", "CLEAR", "RETURN", ".14", ".15", "SHIFT", "CONTROL", "MENU", "PAUSE", "CAPITAL", ;
+                       "KANA", ".22", "JUNJA", "FINAL", "HANJA", ".26", "ESCAPE", "CONVERT", "NONCONVERT", "ACCEPT", ;
+                       "MODECHANGE", "SPACE", "PRIOR", "NEXT", "END", "HOME", "LEFT", "UP", "RIGHT", "DOWN", ;
+                       "SELECT", "PRINT", "EXECUTE", "SNAPSHOT", "INSERT", "DELETE", "HELP", "0", "1", "2", ;
+                       "3", "4", "5", "6", "7", "8", "9", ".58", ".59", ".60", ;
+                       ".61", ".62", ".63", ".64", "A", "B", "C", "D", "E", "F", ;
+                       "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", ;
+                       "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", ;
+                       "LWIN", "RWIN", "APPS", ".94", "SLEEP", "NUMPAD0", "NUMPAD1", "NUMPAD2", "NUMPAD3", "NUMPAD4", ;
+                       "NUMPAD5", "NUMPAD6", "NUMPAD7", "NUMPAD8", "NUMPAD9", "MULTIPLY", "ADD", "SEPARATOR", "SUBTRACT", "DECIMAL", ;
+                       "DIVIDE", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", ;
+                       "F10", "F11", "F12", "F13", "F14", "F15", "F16", "F17", "F18", "F19", ;
+                       "F20", "F21", "F22", "F23", "F24", ".136", ".137", ".138", ".139", ".140", ;
+                       ".141", ".142", ".143", "NUMLOCK", "SCROLL", ".146", ".147", ".148", ".149", ".150", ;
+                       ".151", ".152", ".153", ".154", ".155", ".156", ".157", ".158", ".159", "LSHIFT", ;
+                       "RSHIFT", "LCONTROL", "RCONTROL", "LMENU", "RMENU" } // 165
+
+
    aKey := { 0, 0 }
    nAlt := nCtrl := nShift := nWin := 0
    cKey2 := UPPER( cKey )
@@ -189,13 +209,14 @@ RETURN aKey
 *------------------------------------------------------------------------------*
 Function _DefineAnyKey( cParentForm, cKey, bAction )
 *------------------------------------------------------------------------------*
-LOCAL aKey, oWnd, bCode
+LOCAL aKey, oBase, bCode
    aKey := _DetermineKey( cKey )
    IF aKey[ 1 ] != 0
-      oWnd := TControl():SetForm( "", cParentForm ):Parent
-      bCode := oWnd:_HOTKEYMETHOD( aKey[ 1 ], aKey[ 2 ] )
+      oBase := TControl():SetForm( "", cParentForm )
+      oBase := IF( EMPTY( oBase:Container ), oBase:Parent, oBase:Container )
+      bCode := oBase:_HOTKEYMETHOD( aKey[ 1 ], aKey[ 2 ] )
       IF PCOUNT() > 2
-         oWnd:_HOTKEYMETHOD( aKey[ 1 ], aKey[ 2 ], bAction )
+         oBase:_HOTKEYMETHOD( aKey[ 1 ], aKey[ 2 ], bAction )
       ENDIF
    ELSE
       MsgOOHGError( "HOTKEY: Key combination name not valid: " + cKey + ". Program Terminated." )
@@ -206,13 +227,14 @@ Return bCode
 *------------------------------------------------------------------------------*
 Function _DefineAccelerator( cParentForm, cKey, bAction )
 *------------------------------------------------------------------------------*
-LOCAL aKey, oWnd, bCode
+LOCAL aKey, oBase, bCode
    aKey := _DetermineKey( cKey )
    IF aKey[ 1 ] != 0
-      oWnd := TControl():SetForm( "", cParentForm ):Parent
-      bCode := oWnd:AcceleratorKey( aKey[ 1 ], aKey[ 2 ] )
+      oBase := TControl():SetForm( "", cParentForm )
+      oBase := IF( EMPTY( oBase:Container ), oBase:Parent, oBase:Container )
+      bCode := oBase:AcceleratorKey( aKey[ 1 ], aKey[ 2 ] )
       IF PCOUNT() > 2
-         oWnd:AcceleratorKey( aKey[ 1 ], aKey[ 2 ], bAction )
+         oBase:AcceleratorKey( aKey[ 1 ], aKey[ 2 ], bAction )
       ENDIF
    ELSE
       MsgOOHGError( "ACCELERATOR: Key combination name not valid: " + cKey + ". Program Terminated." )
@@ -275,11 +297,16 @@ LOCAL aKey
    ASSIGN ::OnClick VALUE bAction TYPE "B"
 
    ::SetForm( ControlName, ParentForm )
-   ::Container := nil
+   IF ! HB_IsObject( ParentForm )
+      ::Container := nil
+   ENDIF
    IF HB_IsLogical( lDisabled ) .AND. lDisabled
       ::lEnabled := .F.
    ELSE
-      ::Parent:_HOTKEYMETHOD( ::nKey, ::nMod, ::OnClick )
+      IF ::lEnabled
+         ::lEnabled := .F.
+         ::Enabled := .T.
+      ENDIF
    ENDIF
    ::Register( 0, ControlName )
 Return Self
@@ -287,11 +314,13 @@ Return Self
 *-----------------------------------------------------------------------------*
 METHOD Enabled( lEnabled ) CLASS THotKey
 *-----------------------------------------------------------------------------*
+LOCAL oBase
    IF HB_IsLogical( lEnabled ) .AND. ::lEnabled != lEnabled
+      oBase := IF( EMPTY( ::Container ), ::Parent, ::Container )
       IF lEnabled
-         ::Parent:_HOTKEYMETHOD( ::nKey, ::nMod, ::OnClick )
+         oBase:_HOTKEYMETHOD( ::nKey, ::nMod, ::OnClick )
       ELSE
-         ::Parent:_HOTKEYMETHOD( ::nKey, ::nMod, nil )
+         oBase:_HOTKEYMETHOD( ::nKey, ::nMod, nil )
       ENDIF
       ::lEnabled := lEnabled
    ENDIF
@@ -300,8 +329,5 @@ RETURN ::lEnabled
 *-----------------------------------------------------------------------------*
 METHOD Release() CLASS THotKey
 *-----------------------------------------------------------------------------*
-   If ::lEnabled
-      ::Parent:_HOTKEYMETHOD( ::nKey, ::nMod, nil )
-      ::lEnabled := .F.
-   EndIf
+   ::Enabled := .F.
 RETURN ::Super:Release()
