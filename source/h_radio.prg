@@ -1,5 +1,5 @@
 /*
- * $Id: h_radio.prg,v 1.30 2012-06-27 01:50:06 fyurisich Exp $
+ * $Id: h_radio.prg,v 1.31 2012-08-28 01:37:01 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -142,8 +142,9 @@ Local i, oItem
    ASSIGN ::nWidth  VALUE width  TYPE "N"
    ASSIGN ::nHeight VALUE height TYPE "N"
 
-   ASSIGN ::lAutoSize    VALUE autosize   TYPE "L"
-   ASSIGN ::lHorizontal  VALUE horizontal TYPE "L"
+   ASSIGN ::lAutoSize   VALUE autosize    TYPE "L"
+   ASSIGN ::lHorizontal VALUE horizontal  TYPE "L"
+   ASSIGN ::Transparent VALUE transparent TYPE "L"
 
    ASSIGN ::nSpacing     VALUE Spacing    TYPE "N"
    If HB_IsNumeric( ::nSpacing )
@@ -161,8 +162,7 @@ Local i, oItem
    ::Register( 0, , HelpId,, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
 
-   ::Transparent := transparent
-   ::AutoSize    := autosize
+   ::AutoSize := autosize
 
    ::aOptions := {}
    

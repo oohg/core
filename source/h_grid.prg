@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.181 2012-08-25 17:20:33 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.182 2012-08-28 01:37:01 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -3512,18 +3512,15 @@ METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, 
 Return ::Super:CreateWindow( uValue, nRow - 3, nCol - 3, nWidth + 6, nHeight + 6, cFontName, nFontSize, aKeys )
 
 METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGridControlTextBox
-/*
- TODO: Delete if everything is all right
-   If ValType( uValue ) == "C"
+   If ValType( uValue ) == "C" .AND. ::cType $ "DNL"
       uValue := ::Str2Val( uValue )
    EndIf
-*/
-   If ! Empty( ::cMask )
-      @ nRow,nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue INPUTMASK ::cMask
-   ElseIf HB_IsNumeric( uValue )
+   If ::cType == "N"
       @ nRow,nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue NUMERIC
-   ElseIf HB_IsDAte( uValue )
+   ElseIf ::cType == "D"
       @ nRow,nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue DATE
+   ElseIf ! Empty( ::cMask )
+      @ nRow,nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue INPUTMASK ::cMask
    Else
       @ nRow,nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue
    EndIf
@@ -3757,7 +3754,6 @@ METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGrid
    EndIf
 Return ::oControl
 
-// Transforms the combo's display value (string) into the cell content
 METHOD Str2Val( uValue ) CLASS TGridControlComboBox
 Local xValue
    xValue := aScan( ::aItems, { |c| c == uValue } )
@@ -3774,7 +3770,6 @@ Local xValue
    EndIf
 Return xValue
 
-// Transforms the cell content into a string to show in the listview
 METHOD GridValue( uValue ) CLASS TGridControlComboBox
    If HB_IsArray( ::aValues )
       uValue := aScan( ::aValues, { |c| c == uValue } )
@@ -3949,6 +3944,8 @@ CLASS TGridControlImageData FROM TGridControl
    METHOD CreateWindow
    METHOD CreateControl
    METHOD ControlValue SETGET
+   METHOD OnLostFocus  SETGET
+   METHOD Enabled      SETGET
 ENDCLASS
 
 METHOD New( oGrid, oData ) CLASS TGridControlImageData
@@ -3975,7 +3972,7 @@ Local oCData, oCImage, nSize
    Else
       @ nRow,nCol COMBOBOX 0 OBJ oCImage PARENT ( cWindow ) WIDTH nSize VALUE 0 ITEMS {}
    EndIf
-   oCData := ::oData:CreateControl( uValue[ 1 ], cWindow, nRow, nCol + nSize, nWidth - nSize, oCImage:Width )
+   oCData := ::oData:CreateControl( uValue[ 1 ], cWindow, nRow, nCol + nSize, nWidth - nSize, ImageList_Size( ::oGrid:ImageList )[ 2 ] + 6 )
    ::oControl := { oCData, oCImage }
 
    aEval( Array( ImageList_GetImageCount( ::oGrid:ImageList ) ), { |x,i| oCImage:AddItem( i - 1 ), x } )
@@ -3984,13 +3981,26 @@ Return ::oControl
 
 METHOD ControlValue( uValue ) CLASS TGridControlImageData
 Local oCData, oCImage
-      oCData := ::oControl[1]
-      oCImage := ::oControl[2]
+   oCData := ::oControl[1]
+   oCImage := ::oControl[2]
    If PCount() >= 1
       oCData:value := uValue[1]
       oCImage:value := uValue[2] + 1
    EndIf
 Return { oCData:Value, oCImage:value - 1 }
+
+METHOD OnLostFocus( uValue ) CLASS TGridControlImageData
+Local oCData
+   oCData := ::oControl[1]
+   If PCount() >= 1
+      oCData:OnLostFocus := uValue
+   EndIf
+Return oCData:OnLostFocus
+
+METHOD Enabled( uValue ) CLASS TGridControlImageData
+Local oCData
+   oCData := ::oControl[1]
+Return ( oCData:Enabled := uValue )
 
 *-----------------------------------------------------------------------------*
 CLASS TGridControlLComboBox FROM TGridControl

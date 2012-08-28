@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.67 2012-07-24 23:21:54 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.68 2012-08-28 01:37:01 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -384,29 +384,29 @@ Local bRet
             If ValType( cWorkArea ) $ "CM"
                If HB_IsBlock( cValue[1] )
                   If HB_IsBlock( cValue[2] )
-                     bRet := { |wa| oEditControl:GridValue( { ( cWorkArea ) -> ( EVAL( cValue[2], wa ) ), ( cWorkArea ) -> ( EVAL( cValue[1], wa ) ) } ) }
+                     bRet := { |wa| oEditControl:GridValue( { ( cWorkArea ) -> ( EVAL( cValue[1], wa ) ), ( cWorkArea ) -> ( EVAL( cValue[2], wa ) ) } ) }
                   Else
-                     bRet := { |wa| oEditControl:GridValue( { ( cWorkArea ) -> ( &( cValue[2] ) ), ( cWorkArea ) -> ( EVAL( cValue[1], wa ) ) } ) }
+                     bRet := { |wa| oEditControl:GridValue( { ( cWorkArea ) -> ( EVAL( cValue[1], wa ) ), ( cWorkArea ) -> ( &( cValue[2] ) ) } ) }
                   EndIf
                Else
                   If HB_IsBlock( cValue[2] )
-                     bRet := { |wa| oEditControl:GridValue( { ( cWorkArea ) -> ( EVAL( cValue[2], wa ) ), ( cWorkArea ) -> ( &( cValue[1] ) ) } ) }
+                     bRet := { |wa| oEditControl:GridValue( { ( cWorkArea ) -> ( &( cValue[1] ) ), ( cWorkArea ) -> ( EVAL( cValue[2], wa ) ) } ) }
                   Else
-                     bRet := { || oEditControl:GridValue( { ( cWorkArea ) -> ( &( cValue[2] ) ), ( cWorkArea ) -> ( &( cValue[1] ) ) } ) }
+                     bRet := { || oEditControl:GridValue( { ( cWorkArea ) -> ( &( cValue[1] ) ), ( cWorkArea ) -> ( &( cValue[2] ) ) } ) }
                   EndIf
                EndIf
             Else
                If HB_IsBlock( cValue[1] )
                   If HB_IsBlock( cValue[2] )
-                     bRet := { |wa| oEditControl:GridValue( EVAL( cValue[2], wa ),  EVAL( cValue[1], wa ) ) }
+                     bRet := { |wa| oEditControl:GridValue( EVAL( cValue[1], wa ),  EVAL( cValue[2], wa ) ) }
                   Else
-                     bRet := { |wa| oEditControl:GridValue( &( cValue[2] ),  EVAL( cValue[1], wa ) ) }
+                     bRet := { |wa| oEditControl:GridValue(  EVAL( cValue[1], wa ),  &( cValue[2] ) ) }
                   EndIf
                Else
                   If HB_IsBlock( cValue[2] )
-                     bRet := { |wa| oEditControl:GridValue(  EVAL( cValue[2], wa ),  &( cValue[1] ) ) }
+                     bRet := { |wa| oEditControl:GridValue( &( cValue[1] ),  EVAL( cValue[2], wa ) ) }
                   Else
-                     bRet := { || oEditControl:GridValue(  &( cValue[2] ),  &( cValue[1] ) ) }
+                     bRet := { || oEditControl:GridValue(  &( cValue[1] ),  &( cValue[2] ) ) }
                   EndIf
                EndIf
             EndIf
@@ -466,14 +466,30 @@ Local bRet
    If bRet == nil
       // Direct value
       If ValType( cWorkArea ) $ "CM"
-         If ValType( cValue ) == "B"
+         If ValType( cValue ) == "A"
+            If HB_IsBlock( cValue[1] )
+               If HB_IsBlock( cValue[2] )
+                  bRet := { |wa| { ( cWorkArea ) -> ( EVAL( cValue[1], wa ) ), ( cWorkArea ) -> ( EVAL( cValue[2], wa ) ) } }
+               Else
+                  bRet := { |wa| { ( cWorkArea ) -> ( EVAL( cValue[1], wa ) ), ( cWorkArea ) -> ( &( cValue[2] ) ) } }
+               EndIf
+            Else
+               If HB_IsBlock( cValue[2] )
+                  bRet := { |wa| { ( cWorkArea ) -> ( &( cValue[1] ) ), ( cWorkArea ) -> ( EVAL( cValue[2], wa ) ) } }
+               Else
+                  bRet := { || { ( cWorkArea ) -> ( &( cValue[1] ) ), ( cWorkArea ) -> ( &( cValue[2] ) ) } }
+               EndIf
+            EndIf
+         ElseIf ValType( cValue ) == "B"
             bRet := { |wa| ( cWorkArea ) -> ( EVAL( cValue, wa ) ) }
          Else
             // bRet := { || ( cWorkArea ) -> ( &( cValue ) ) }
             bRet := &( " { || " + cWorkArea + " -> ( " + cValue + " ) } " )
          EndIf
       Else
-         If ValType( cValue ) == "B"
+         If ValType( cValue ) == "A"
+            bRet := cValue
+         ElseIf ValType( cValue ) == "B"
             bRet := cValue
          Else
             // bRet := { || &( cValue ) }

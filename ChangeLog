@@ -1,11 +1,29 @@
 /*
- * $Id: ChangeLog,v 1.997 2012-08-27 05:50:49 guerra000 Exp $
+ * $Id: ChangeLog,v 1.998 2012-08-28 01:37:01 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-08-27 22:35 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+   * source/h_radio.prg
+     ! DEFINE generates RTE when transparent parameter is missing.
+   * source/h_form.prg
+     * Revert changes made to TForm:AutoAdjust because they has a
+       nasty effect when multiple controls are autoadjusted in one form.
+   * source/h_xbrowse.prg
+     ! Editing an xbrowse with an IMAGEDATA columncontrol causes RTE in
+       TXBrowse:ColumnBlock().
+   * source/h_grid.prg
+     + Added methods OnLostFocus and Enabled to TGridControlImageData
+       class.
+     ! Height of control used to edit data part of TGridControlImageData
+       is wrongly calculated.
+     ! TGridControlTextBox with DATE option returns character value
+       instead of date value.
+     - Misleading comments.
 
 2012-08-27 00:45 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
    * source/h_hotkey.prg
