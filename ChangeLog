@@ -1,5 +1,5 @@
-/*
- * $Id: ChangeLog,v 1.998 2012-08-28 01:37:01 fyurisich Exp $
+﻿/*
+ * $Id: ChangeLog,v 1.999 2012-08-28 16:49:00 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,7 +7,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2012-08-27 22:35 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+
+
+2012-08-28 12:30 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+   * source/h_error.prg
+     ! version updated
+
+2012-08-27 22:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+
    * source/h_radio.prg
      ! DEFINE generates RTE when transparent parameter is missing.
    * source/h_form.prg
@@ -25,7 +32,9 @@
        instead of date value.
      - Misleading comments.
 
-2012-08-27 00:45 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+
+
+2012-08-27 00:45 UTC-0500 Vicente Guerra <vicente@guerra.com.mx> 
    * source/h_hotkey.prg
      * Now it's possible to assign a hotkey to a specific control using
        ON KEY <key> TO ( <oControl> ) ACTION <bAction>
