@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.182 2012-08-28 01:37:01 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.183 2012-08-29 22:15:29 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -3515,12 +3515,12 @@ METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGrid
    If ValType( uValue ) == "C" .AND. ::cType $ "DNL"
       uValue := ::Str2Val( uValue )
    EndIf
-   If ::cType == "N"
+   If ! Empty( ::cMask )
+      @ nRow,nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue INPUTMASK ::cMask
+   ElseIf ::cType == "N"
       @ nRow,nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue NUMERIC
    ElseIf ::cType == "D"
       @ nRow,nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue DATE
-   ElseIf ! Empty( ::cMask )
-      @ nRow,nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue INPUTMASK ::cMask
    Else
       @ nRow,nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue
    EndIf

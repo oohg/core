@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog,v 1.1000 2012-08-29 21:39:35 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1001 2012-08-29 22:15:28 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-08-29 19:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_grid.prg
+     ! Decimals are missing when the edition of a number starts, and
+       decimals can't be entered afterward.
 
 2012-08-29 18:39 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_hotkey.prg
