@@ -1,5 +1,5 @@
 /*
- * $Id: h_hotkey.prg,v 1.12 2012-08-27 05:50:50 guerra000 Exp $
+ * $Id: h_hotkey.prg,v 1.13 2012-08-29 21:39:36 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -94,24 +94,6 @@
 #include "oohg.ch"
 #include "hbclass.ch"
 
-STATIC aKeyTables := { "LBUTTON", "RBUTTON", "CANCEL", "MBUTTON", "XBUTTON1", "XBUTTON2", ".7", "BACK", "TAB", ".10", ;
-                       ".11", "CLEAR", "RETURN", ".14", ".15", "SHIFT", "CONTROL", "MENU", "PAUSE", "CAPITAL", ;
-                       "KANA", ".22", "JUNJA", "FINAL", "HANJA", ".26", "ESCAPE", "CONVERT", "NONCONVERT", "ACCEPT", ;
-                       "MODECHANGE", "SPACE", "PRIOR", "NEXT", "END", "HOME", "LEFT", "UP", "RIGHT", "DOWN", ;
-                       "SELECT", "PRINT", "EXECUTE", "SNAPSHOT", "INSERT", "DELETE", "HELP", "0", "1", "2", ;
-                       "3", "4", "5", "6", "7", "8", "9", ".58", ".59", ".60", ;
-                       ".61", ".62", ".63", ".64", "A", "B", "C", "D", "E", "F", ;
-                       "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", ;
-                       "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", ;
-                       "LWIN", "RWIN", "APPS", ".94", "SLEEP", "NUMPAD0", "NUMPAD1", "NUMPAD2", "NUMPAD3", "NUMPAD4", ;
-                       "NUMPAD5", "NUMPAD6", "NUMPAD7", "NUMPAD8", "NUMPAD9", "MULTIPLY", "ADD", "SEPARATOR", "SUBTRACT", "DECIMAL", ;
-                       "DIVIDE", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", ;
-                       "F10", "F11", "F12", "F13", "F14", "F15", "F16", "F17", "F18", "F19", ;
-                       "F20", "F21", "F22", "F23", "F24", ".136", ".137", ".138", ".139", ".140", ;
-                       ".141", ".142", ".143", "NUMLOCK", "SCROLL", ".146", ".147", ".148", ".149", ".150", ;
-                       ".151", ".152", ".153", ".154", ".155", ".156", ".157", ".158", ".159", "LSHIFT", ;
-                       "RSHIFT", "LCONTROL", "RCONTROL", "LMENU", "RMENU" } // 165
-
 #define _HOTKEYMETHOD   SetKey
 
 *------------------------------------------------------------------------------*
@@ -171,7 +153,6 @@ STATIC aKeyTables := { "LBUTTON", "RBUTTON", "CANCEL", "MBUTTON", "XBUTTON1", "X
                        ".141", ".142", ".143", "NUMLOCK", "SCROLL", ".146", ".147", ".148", ".149", ".150", ;
                        ".151", ".152", ".153", ".154", ".155", ".156", ".157", ".158", ".159", "LSHIFT", ;
                        "RSHIFT", "LCONTROL", "RCONTROL", "LMENU", "RMENU" } // 165
-
 
    aKey := { 0, 0 }
    nAlt := nCtrl := nShift := nWin := 0
@@ -297,7 +278,7 @@ LOCAL aKey
    ASSIGN ::OnClick VALUE bAction TYPE "B"
 
    ::SetForm( ControlName, ParentForm )
-   IF ! HB_IsObject( ParentForm )
+   IF HB_IsObject( ParentForm )
       ::Container := nil
    ENDIF
    IF HB_IsLogical( lDisabled ) .AND. lDisabled
