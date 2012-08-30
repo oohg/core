@@ -1,5 +1,5 @@
 /*
- * $Id: h_hotkey.prg,v 1.13 2012-08-29 21:39:36 fyurisich Exp $
+ * $Id: h_hotkey.prg,v 1.14 2012-08-30 01:24:46 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -278,7 +278,7 @@ LOCAL aKey
    ASSIGN ::OnClick VALUE bAction TYPE "B"
 
    ::SetForm( ControlName, ParentForm )
-   IF HB_IsObject( ParentForm )
+   IF ! HB_IsObject( ParentForm ) .OR. ParentForm:lForm
       ::Container := nil
    ENDIF
    IF HB_IsLogical( lDisabled ) .AND. lDisabled

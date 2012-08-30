@@ -1,5 +1,5 @@
-﻿/*
- * $Id: ChangeLog,v 1.1002 2012-08-30 00:05:09 declan2005 Exp $
+/*
+ * $Id: ChangeLog,v 1.1003 2012-08-30 01:24:46 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,10 +7,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-08-29 20:32 UTC-0500 Vicente Guerra <vicente@guerra.com.mx> 
+   * source/h_hotkey.prg
+     ! Fixed parent/container selection.
+
 2012-08-29 20:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
    * source/h_print.prg
      ! moved buttons to top on dosprint
-
 
 2012-08-29 19:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
