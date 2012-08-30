@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.121 2012-07-13 02:29:08 declan2005 Exp $
+* $Id: h_print.prg,v 1.122 2012-08-30 00:05:10 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -1941,26 +1941,36 @@ IF ::impreview
    wr:=memoread((::tempfile))
    DEFINE WINDOW PRINT_PREVIEW  ;
    AT 0,0 ;
-   WIDTH nx HEIGHT ny-70 ;
+   WIDTH nx HEIGHT ny-70-40 ;
    TITLE 'Preview -----> ' + ::tempfile+"   "+::cprintlibrary ;
    MODAL
 
-   @ 0,0 RICHEDITBOX EDIT_P ;
+   @ 42,0 RICHEDITBOX EDIT_P ;
    OF PRINT_PREVIEW ;
-   WIDTH nx-50 ;
-   HEIGHT ny-40-70 ;
+   WIDTH nx-5 ;
+   HEIGHT ny-40-70-70 ;
    VALUE WR ;
    READONLY ;
    FONT 'Courier New' ;
    SIZE 10 ;
    BACKCOLOR WHITE
 
-   @ 010,nx-40 button but_4 caption "X" width 30 action ( print_preview.release() ) tooltip "close"
-   @ 090,nx-40 button but_1 caption "+ +" width 30 action zoom("+") tooltip "zoom +"
-   @ 170,nx-40 button but_2 caption "- -" width 30 action zoom("-") tooltip "zoom -"
-   @ 250,nx-40 button but_3 caption "P" width 30 action ::printmode() tooltip "Print "+::cprintlibrary+" mode"
-   @ 330,nx-40 button but_5 caption "S" width 30 action  (::searchstring(print_preview.edit_p.value)) tooltip "Search"
-   @ 410,nx-40 button but_6 caption "N" width 30 action  ::nextsearch() tooltip "Next Search"
+   DEFINE TOOLBAR Toolbr buttonsize 80,20
+
+    button but_4 caption "Close"  action ( print_preview.release() ) tooltip "close"
+    button but_1 caption "Zoom + "  action zoom("+") tooltip "zoom +"
+    button but_2 caption "Zoom -"  action zoom("-") tooltip "zoom -"
+    button but_3 caption "Print"  action ::printmode() tooltip "Print "+::cprintlibrary+" mode"
+    button but_5 caption "Search"  action  (::searchstring(print_preview.edit_p.value)) tooltip "Search"
+    button but_6 caption "Next search"  action  ::nextsearch() tooltip "Next Search"
+   END TOOLBAR
+
+////   @ 010,nx-40 button but_4 caption "X" width 30 action ( print_preview.release() ) tooltip "close"
+////   @ 090,nx-40 button but_1 caption "+ +" width 30 action zoom("+") tooltip "zoom +"
+///   @ 170,nx-40 button but_2 caption "- -" width 30 action zoom("-") tooltip "zoom -"
+////   @ 250,nx-40 button but_3 caption "P" width 30 action ::printmode() tooltip "Print "+::cprintlibrary+" mode"
+////   @ 330,nx-40 button but_5 caption "S" width 30 action  (::searchstring(print_preview.edit_p.value)) tooltip "Search"
+////   @ 410,nx-40 button but_6 caption "N" width 30 action  ::nextsearch() tooltip "Next Search"
 
    END WINDOW
 
