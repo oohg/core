@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.103 2012-07-24 23:21:54 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.104 2012-08-31 13:30:15 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -102,13 +102,13 @@ CLASS TOBrowse FROM TXBrowse
    DATA aRecMap         INIT {}
    DATA RecCount        INIT 0
    DATA SyncStatus      INIT nil
-   DATA lUpdateAll      INIT .F.
-   DATA lNoDelMsg       INIT .T.
    /*
     * When .T. the browse behaves as if SET BROWSESYNC is ON.
     * When .F. the browse behaves as if SET BROWSESYNC if OFF.
     * When NIL the browse behaves according to SET BROWESYNC value.
     */
+   DATA lUpdateAll      INIT .F.
+   DATA lNoDelMsg       INIT .T.
 
    METHOD Define
    METHOD Refresh
@@ -116,6 +116,7 @@ CLASS TOBrowse FROM TXBrowse
    METHOD RefreshData
    METHOD DoChange            BLOCK { |Self| ::TGrid:DoChange() }
 
+   METHOD Events
    METHOD Events_Enter
    METHOD Events_Notify
 
@@ -1242,6 +1243,94 @@ Local nValue := ::nValue
       ::Refresh()
    ENDIF
 RETURN ::Super:RefreshData()
+
+*-----------------------------------------------------------------------------*
+METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TOBrowse
+*-----------------------------------------------------------------------------*
+Local cWorkArea, _RecNo, Value, uGridValue
+
+   If nMsg == WM_CHAR
+      If wParam < 32
+         ::cText := ""
+         Return 0
+      ElseIf Empty( ::cText )
+         ::uIniTime := HB_MilliSeconds()
+         ::cText := Upper( Chr( wParam ) )
+      ElseIf HB_MilliSeconds() > ::uIniTime + ::SearchLapse
+         ::uIniTime := HB_MilliSeconds()
+         ::cText := Upper( Chr( wParam ) )
+      Else
+         ::cText += Upper( Chr( wParam ) )
+      EndIf
+
+      If ::SearchCol < 1 .OR. ::SearchCol > ::ColumnCount
+         Return 0
+      EndIf
+
+      cWorkArea := ::WorkArea
+      If Select( cWorkArea ) == 0
+         Return 0
+      EndIf
+
+      _RecNo := ( cWorkArea )->( RecNo() )
+
+      Value := ::Value
+      If Value == 0
+         If Len( ::aRecMap ) == 0
+            ::TopBottom( -1 )
+         Else
+            ::DbGoTo( ::aRecMap[ 1 ] )
+         EndIf
+
+         If ::Eof()
+            ::DbGoTo( _RecNo )
+            Return 0
+         EndIf
+
+         Value := ( cWorkArea )->( RecNo() )
+      EndIf
+      ::DbGoTo( Value )
+      ::DbSkip()
+
+      Do While ! ::Eof()
+         uGridValue := Eval( ::ColumnBlock( ::SearchCol ), cWorkArea )
+         If ValType( uGridValue ) == "A"      // TGridControlImageData
+            uGridValue := uGridValue[ 1 ]
+         EndIf
+
+         If Upper( Left( uGridValue, Len( ::cText ) ) ) == ::cText
+            Exit
+         EndIf
+
+         ::DbSkip()
+      EndDo
+
+      If ::Eof() .AND. ::SearchWrap
+         ::TopBottom( -1 )
+         Do While ! ::Eof() .AND. ( cWorkArea )->( RecNo() ) != Value
+            uGridValue := Eval( ::ColumnBlock( ::SearchCol ), cWorkArea )
+            If ValType( uGridValue ) == "A"      // TGridControlImageData
+               uGridValue := uGridValue[ 1 ]
+            EndIf
+
+            If Upper( Left( uGridValue, Len( ::cText ) ) ) == ::cText
+               Exit
+            EndIf
+
+            ::DbSkip()
+         EndDo
+      EndIf
+
+      If ! ::Eof()
+         ::Value := ( cWorkArea )->( RecNo() )
+      EndIf
+
+      ::DbGoTo( _RecNo )
+      Return 0
+
+   EndIf
+
+Return ::Super:Events( hWnd, nMsg, wParam, lParam )
 
 *-----------------------------------------------------------------------------*
 METHOD Events_Enter() CLASS TOBrowse

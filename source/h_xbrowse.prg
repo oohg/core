@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.68 2012-08-28 01:37:01 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.69 2012-08-31 13:30:15 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -78,6 +78,7 @@ CLASS TXBROWSE FROM TGrid
    DATA DelMsg            INIT nil
    DATA onDelete          INIT nil
    DATA RefreshType       INIT nil
+   DATA SearchWrap        INIT .F.
 
    METHOD Define
    METHOD Refresh
@@ -92,7 +93,6 @@ CLASS TXBROWSE FROM TGrid
    METHOD Visible          SETGET
    METHOD RefreshData
 
-   METHOD Events
    METHOD Events_Notify
 
    METHOD DbSkip
@@ -703,94 +703,6 @@ METHOD RefreshData() CLASS TXBrowse
 *-----------------------------------------------------------------------------*
    ::Refresh()
 RETURN ::Super:RefreshData()
-
-*-----------------------------------------------------------------------------*
-METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TXBrowse
-*-----------------------------------------------------------------------------*
-Local cWorkArea, _RecNo, Value, uGridValue
-
-   If nMsg == WM_CHAR
-      If wParam < 32
-         ::cText := ""
-         Return 0
-      ElseIf Empty( ::cText )
-         ::uIniTime := HB_MilliSeconds()
-         ::cText := Upper( Chr( wParam ) )
-      ElseIf HB_MilliSeconds() > ::uIniTime + ::SearchLapse
-         ::uIniTime := HB_MilliSeconds()
-         ::cText := Upper( Chr( wParam ) )
-      Else
-         ::cText += Upper( Chr( wParam ) )
-      EndIf
-
-      If ::SearchCol < 1 .OR. ::SearchCol > ::ColumnCount
-         Return 0
-      EndIf
-
-      cWorkArea := ::WorkArea
-      If Select( cWorkArea ) == 0
-         Return 0
-      EndIf
-
-      _RecNo := ( cWorkArea )->( RecNo() )
-
-      Value := ::Value
-      If Value == 0
-         If Len( ::aRecMap ) == 0
-            ::TopBottom( -1 )
-         Else
-            ::DbGoTo( ::aRecMap[ 1 ] )
-         EndIf
-
-         If ::Eof()
-            ::DbGoTo( _RecNo )
-            Return 0
-         EndIf
-
-         Value := ( cWorkArea )->( RecNo() )
-      EndIf
-      ::DbGoTo( Value )
-      ::DbSkip()
-
-      Do While ! ::Eof()
-         uGridValue := Eval( ::ColumnBlock( ::SearchCol ), cWorkArea )
-         If ValType( uGridValue ) == "A"      // TGridControlImageData
-            uGridValue := uGridValue[ 1 ]
-         EndIf
-
-         If Upper( Left( uGridValue, Len( ::cText ) ) ) == ::cText
-            Exit
-         EndIf
-
-         ::DbSkip()
-      EndDo
-
-      If ::Eof() .AND. ::SearchWrap
-         ::TopBottom( -1 )
-         Do While ! ::Eof() .AND. ( cWorkArea )->( RecNo() ) != Value
-            uGridValue := Eval( ::ColumnBlock( ::SearchCol ), cWorkArea )
-            If ValType( uGridValue ) == "A"      // TGridControlImageData
-               uGridValue := uGridValue[ 1 ]
-            EndIf
-
-            If Upper( Left( uGridValue, Len( ::cText ) ) ) == ::cText
-               Exit
-            EndIf
-
-            ::DbSkip()
-         EndDo
-      EndIf
-
-      If ! ::Eof()
-         ::Value := ( cWorkArea )->( RecNo() )
-      EndIf
-
-      ::DbGoTo( _RecNo )
-      Return 0
-
-   EndIf
-
-Return ::Super:Events( hWnd, nMsg, wParam, lParam )
 
 *-----------------------------------------------------------------------------*
 FUNCTION TXBrowse_Events_Notify2( wParam, lParam )

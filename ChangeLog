@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.1003 2012-08-30 01:24:46 guerra000 Exp $
+ * $Id: ChangeLog,v 1.1004 2012-08-31 13:30:15 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,7 +7,19 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2012-08-29 20:32 UTC-0500 Vicente Guerra <vicente@guerra.com.mx> 
+2012-08-31 10:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_xbrowse.prg
+     - Method Events. This removes Browse-like incremental search
+       and enables Grid-like incremental search (only in the visible
+       items). Needs more work to reinstate.
+     * SearchWrap now defaults to .F. so XBrowse's default behaviour
+       is restored to previous.
+   * source/h_browse.prg
+     + Method Events. This enables incremental search.
+     * SearchWrap now defaults to .F. so Browse's default behaviour
+       is restored to previous.
+
+2012-08-29 20:32 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
    * source/h_hotkey.prg
      ! Fixed parent/container selection.
 
