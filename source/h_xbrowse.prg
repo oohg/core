@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.69 2012-08-31 13:30:15 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.70 2012-09-01 20:03:26 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -93,6 +93,7 @@ CLASS TXBROWSE FROM TGrid
    METHOD Visible          SETGET
    METHOD RefreshData
 
+   METHOD Events
    METHOD Events_Notify
 
    METHOD DbSkip
@@ -280,7 +281,7 @@ Local nWidth2, nCol2, lLocked, oScroll, z
    ASSIGN ::OnChange    VALUE change      TYPE "B"
    ASSIGN ::OnDblClick  VALUE dblclick    TYPE "B"
    ASSIGN ::OnAppend    VALUE onappend    TYPE "B"
-   ASSIGN ::OnEnter     value onenter     TYPE "B"
+   ASSIGN ::OnEnter     VALUE onenter     TYPE "B"
    ASSIGN ::bDelWhen    VALUE bDelWhen    TYPE "B"
    ASSIGN ::DelMsg      VALUE DelMsg      TYPE "C"
    ASSIGN ::OnDelete    VALUE onDelete    TYPE "B"
@@ -703,6 +704,14 @@ METHOD RefreshData() CLASS TXBrowse
 *-----------------------------------------------------------------------------*
    ::Refresh()
 RETURN ::Super:RefreshData()
+
+*-----------------------------------------------------------------------------*
+METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TXBrowse
+*-----------------------------------------------------------------------------*
+   If nMsg == WM_CHAR
+      Return 0
+   EndIf
+Return ::Super:Events( hWnd, nMsg, wParam, lParam )
 
 *-----------------------------------------------------------------------------*
 FUNCTION TXBrowse_Events_Notify2( wParam, lParam )
