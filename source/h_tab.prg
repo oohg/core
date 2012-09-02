@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.59 2012-08-05 03:04:31 fyurisich Exp $
+ * $Id: h_tab.prg,v 1.60 2012-09-02 04:40:43 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1385,7 +1385,6 @@ METHOD Events_Size() CLASS TTabPage
 *-----------------------------------------------------------------------------*
 LOCAL oTab
    oTab := ::Container
-   DO EVENTS
    ::SizePos( , , oTab:Width, oTab:Height )
    RedrawWindow( ::hWnd )
 RETURN nil
