@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.183 2012-08-29 22:15:29 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.184 2012-09-04 23:16:59 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -358,7 +358,7 @@ Local ControlHandle, aImageList, i
    ::aWhen := aWhenFields
    ASSIGN ::InPlace   VALUE inplace  TYPE "L"
    ASSIGN ::FullMove  VALUE FullMove TYPE "L"
-   ASSIGN ::AllowEdit VALUE editable .OR. inplace TYPE "L"
+   ASSIGN ::AllowEdit VALUE ::InPlace .OR. ( HB_IsLogical( editable ) .AND. editable ) TYPE "L"
 
    // Load images alignments
    // This should come before than 'Load header images'

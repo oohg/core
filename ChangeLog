@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog,v 1.1006 2012-09-02 04:40:42 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1007 2012-09-04 23:16:59 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-09-04 20:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_grid.prg
+     ! Fixed: RTE when calling TGrid:Define(...) with NIL "editable"
+       and/or "inplace" parameters.
 
 2012-09-02 01:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_tab.prg
@@ -1040,7 +1045,7 @@
 2012-03-28 00:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_browse.prg
      ! Fixed: controls with INPLACE and/or FULLMOVE were starting
-       edition even if AllowEdit == .T.
+       edition even if AllowEdit == .F.
      ! Fixed: EditAllCells cancels with "Index out of bounds" error.
        See included NOTE.
    * source/h_grid.prg
