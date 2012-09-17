@@ -1,5 +1,5 @@
 /*
- * $Id: i_socket.ch,v 1.2 2005-10-22 06:04:31 guerra000 Exp $
+ * $Id: i_socket.ch,v 1.3 2012-09-17 00:29:58 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -82,26 +82,26 @@
 
  Parts of this project are based upon:
 
-	"Harbour GUI framework for Win32"
- 	Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- 	Copyright 2001 Antonio Linares <alinares@fivetech.com>
-	www - http://www.harbour-project.org
+   "Harbour GUI framework for Win32"
+   Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
+   Copyright 2001 Antonio Linares <alinares@fivetech.com>
+   www - http://www.harbour-project.org
 
-	"Harbour Project"
-	Copyright 1999-2003, http://www.harbour-project.org/
+   "Harbour Project"
+   Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
 // HTTP
 
-#xcommand OPEN CONNECTION <con> SERVER <server> PORT <port> HTTP	;
-	=> ;
-httpconnect( <(con)> , <server> , <port> )
+#xcommand OPEN CONNECTION [<obj: OBJ>] <con> SERVER <server> PORT <port> HTTP ;
+   => ;
+   httpconnect( iif( <.obj.>, @<con>, <(con)>), <server>, <port> )
 
 
-#xcommand CLOSE CONNECTION <con> 					;
-	=> 								;
-	<con>:Close()
+#xcommand CLOSE CONNECTION <con> ;
+   => ;
+   <con>:Close()
 
-#xcommand GET URL <url> TO <response> CONNECTION <con>				;
-	=>								;
-	<response> := <con>:Get ( <url> )
+#xcommand GET URL <url> TO <response> CONNECTION <con> [ <data: NOHEADERS, HEADERS> ];
+   => ;
+   <response> := httpgeturl( <con>, <url>, iif( upper( #<data> ) == "HEADERS", .F., iif( upper( #<data> ) == "NOHEADERS", NIL, .T. ) ) )

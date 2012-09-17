@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.70 2012-09-01 20:03:26 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.71 2012-09-17 00:29:58 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -65,7 +65,6 @@ CLASS TXBROWSE FROM TGrid
    DATA AllowDelete       INIT .F.
    DATA aReplaceField     INIT nil
    DATA Lock              INIT .F.
-   DATA lEditing          INIT .F.
    DATA skipBlock         INIT nil
    DATA goTopBlock        INIT nil
    DATA goBottomBlock     INIT nil
@@ -838,7 +837,7 @@ Return Self
 METHOD Down() CLASS TXBrowse
 *-----------------------------------------------------------------------------*
 Local nValue
-   If ::lEditing .OR. ::lLocked
+   If ::lNestedEdit .OR. ::lLocked
       // Do not move
    ElseIf ::DbSkip( 1 ) == 1
       nValue := ::CurrentRow
@@ -868,7 +867,7 @@ Return Self
 METHOD PageDown() CLASS TXBrowse
 *-----------------------------------------------------------------------------*
 Local nSkip, nCountPerPage
-   If ::lEditing .OR. ::lLocked
+   If ::lNestedEdit .OR. ::lLocked
       // Do not move
    Else
       nCountPerPage := ::CountPerPage
@@ -1009,15 +1008,15 @@ METHOD EditItem( lAppend ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
 Local uRet
    uRet := nil
-   If ! ::lEditing
-      ::lEditing := .T.
+   If ! ::lNestedEdit
+      ::lNestedEdit := .T.
       If ::VScroll != nil
          // Kills scrollbar's events...
          ::VScroll:Enabled := .F.
          ::VScroll:Enabled := .T.
       EndIf
       uRet := ::EditItem_B( lAppend )
-      ::lEditing := .F.
+      ::lNestedEdit := .F.
    EndIf
 Return uRet
 

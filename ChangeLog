@@ -1,11 +1,32 @@
 /*
- * $Id: ChangeLog,v 1.1007 2012-09-04 23:16:59 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1008 2012-09-17 00:29:57 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-09-16 21:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_xbrowse.prg
+     - Deleted lEditing DATA.
+     * All references to ::lEditing changed to ::lNestedEdit
+     ! Fixes RTE triggered by nested editing when Down key is rapidly
+       followed by Enter key.
+   * ./compile_mingw.bat
+     + Added rddsql and sddodbc libraries.
+   * include/i_socket.prg
+     + Added HEADERS clause to GET URL command to retrieve only the
+       page's headers.
+     + Added NOHEADERS clause to GET URL command to retrieve only
+       the page's DATA.
+     + Added OBJ clause to OPEN CONNECTION command to enable the use
+       of variable's reference instead of a variable's name.
+   * source/h_http.prg
+     * Function httpconnect modified to use tURL and TIpClientHttp
+       classes instead of THTTP class. Also modified to accept a
+       reference to a variable instead of the name of a variable.
+     + Added function httpgeturl to emulate previous GET URL command.
 
 2012-09-04 20:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
