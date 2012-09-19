@@ -1,11 +1,27 @@
 /*
- * $Id: ChangeLog,v 1.1008 2012-09-17 00:29:57 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1009 2012-09-19 01:49:04 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-09-18 22:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   - include/i_socket.prg
+   - source/h_http.prg
+     - Deleted because they're not related to any graphical
+       functionality.
+   + samples/http/i_socket.prg
+   + samples/http/h_http.prg
+   + samples/http/demo.prg
+     + Added as a sample.
+   * source/makelib_mingw.bat
+     - Deleted h_http from the list of linked files.
+   * source/common_make.bat
+     - Deleted h_http from the list of compile files.
+   * include/oohg.ch
+     - Deleted i_socket.ch from list of included files.
 
 2012-09-16 21:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_xbrowse.prg

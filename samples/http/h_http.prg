@@ -1,5 +1,5 @@
 /*
- * $Id: h_http.prg,v 1.2 2012-09-17 00:29:58 fyurisich Exp $
+ * $Id: h_http.prg,v 1.1 2012-09-19 01:49:09 fyurisich Exp $
  */
 /*
  * ooHG source code:

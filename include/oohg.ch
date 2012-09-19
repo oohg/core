@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.ch,v 1.19 2012-07-29 05:09:29 fyurisich Exp $
+ * $Id: oohg.ch,v 1.20 2012-09-19 01:49:04 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -134,7 +134,6 @@
 #include "i_help.ch"
 #include "i_monthcal.ch"
 #include "i_region.ch"
-#include "i_socket.ch"
 #include "i_ipaddress.ch"
 #include "i_scrsaver.ch"
 #include "i_registry.ch"

@@ -1,5 +1,5 @@
 /*
- * $Id: i_socket.ch,v 1.3 2012-09-17 00:29:58 fyurisich Exp $
+ * $Id: i_socket.ch,v 1.1 2012-09-19 01:49:09 fyurisich Exp $
  */
 /*
  * ooHG source code:
