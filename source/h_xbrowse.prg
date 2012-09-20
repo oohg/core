@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.71 2012-09-17 00:29:58 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.72 2012-09-20 23:48:50 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -293,7 +293,7 @@ METHOD Refresh( nCurrent, lNoEmptyBottom ) CLASS TXBrowse
 Local nRow, nCount, nSkipped
    If Empty( ::WorkArea ) .OR. ( ValType( ::WorkArea ) $ "CM" .AND. Select( ::WorkArea ) == 0 )
       // No workarea specified...
-   ElseIf ! ::lLocked
+   ElseIf ! ::lLocked .AND. ! ::oWorkArea:Eof()
       nCount := ::CountPerPage
       ASSIGN nCurrent       VALUE nCurrent       TYPE "N" DEFAULT ::CurrentRow
       ASSIGN lNoEmptyBottom VALUE lNoEmptyBottom TYPE "L" DEFAULT .F.
@@ -339,7 +339,7 @@ Return Self
 METHOD RefreshRow( nRow ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
 Local aItem, cWorkArea
-   If ! ::lLocked
+   If ! ::lLocked .AND. ! ::oWorkArea:Eof()
       cWorkArea := ::WorkArea
       If ValType( cWorkArea ) $ "CM" .AND. Empty( cWorkArea )
          cWorkArea := nil
@@ -707,8 +707,78 @@ RETURN ::Super:RefreshData()
 *-----------------------------------------------------------------------------*
 METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
+Local cWorkArea, nCurrent, nSkipped, uGridValue
+
    If nMsg == WM_CHAR
+      If wParam < 32
+         ::cText := ""
+         Return 0
+      ElseIf Empty( ::cText )
+         ::uIniTime := HB_MilliSeconds()
+         ::cText := Upper( Chr( wParam ) )
+      ElseIf HB_MilliSeconds() > ::uIniTime + ::SearchLapse
+         ::uIniTime := HB_MilliSeconds()
+         ::cText := Upper( Chr( wParam ) )
+      Else
+         ::cText += Upper( Chr( wParam ) )
+      EndIf
+
+      If ::SearchCol < 1 .OR. ::SearchCol > ::ColumnCount
+         Return 0
+      EndIf
+
+      cWorkArea := ::WorkArea
+      If ValType( cWorkArea ) $ "CM" .AND. Empty( cWorkArea )
+         cWorkArea := nil
+      EndIf
+
+      nCurrent := ::CurrentRow
+      ::DbSkip()
+      nSkipped := 1
+
+      Do While ! ::Eof()
+         uGridValue := Eval( ::ColumnBlock( ::SearchCol ), cWorkArea )
+         If ValType( uGridValue ) == "A"      // TGridControlImageData
+            uGridValue := uGridValue[ 1 ]
+         EndIf
+
+         If Upper( Left( uGridValue, Len( ::cText ) ) ) == ::cText
+            Exit
+         EndIf
+
+         ::DbSkip()
+         nSkipped ++
+      EndDo
+
+      If ::Eof() .AND. ::SearchWrap
+         ::TopBottom( -1 )
+         Do While ! ::Eof()
+            uGridValue := Eval( ::ColumnBlock( ::SearchCol ), cWorkArea )
+            If ValType( uGridValue ) == "A"      // TGridControlImageData
+               uGridValue := uGridValue[ 1 ]
+            EndIf
+
+            If Upper( Left( uGridValue, Len( ::cText ) ) ) == ::cText
+               Exit
+            EndIf
+
+            ::DbSkip()
+            nSkipped ++
+         EndDo
+      EndIf
+
+      If ::Eof()
+         ::GoBottom()
+      ElseIf nCurrent + nSkipped > ::CountPerPage
+         ::Refresh( ::CountPerPage )
+         ::DoChange()
+      Else
+         ::CurrentRow := nCurrent + nSkipped
+        ::DoChange()
+      EndIf
+
       Return 0
+
    EndIf
 Return ::Super:Events( hWnd, nMsg, wParam, lParam )
 

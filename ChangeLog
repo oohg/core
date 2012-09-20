@@ -1,11 +1,19 @@
 /*
- * $Id: ChangeLog,v 1.1009 2012-09-19 01:49:04 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1010 2012-09-20 23:48:50 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-09-20 20:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_xbrowse.prg
+     ! Fixed: when the workarea is empty a row of empty values is
+       shown (culprit was Refresh method).
+     ! Fixed: when the workarea is empty, doubleclicking on the
+       control generates a RTE (culprit was RefreshRow method).
+     + Incremental search is available again.
 
 2012-09-18 22:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    - include/i_socket.prg
@@ -400,7 +408,7 @@
        ::CurrentRow and 0.
    * source/h_grid.prg
      + Added data OnAbortEdit to TGrid class. It's an optional codeblock
-       that will be evaluated when and edition is aborted.
+       that will be evaluated when an edition is aborted.
      + Added new parameter 'abortedit' to TGrid:Define, TGrid:Define2,
        TGridMulti:Define, TGridByCell:Define and to ::Define2 calls in
        TGrid:Define, TGridMulti:Define and TGridByCell:Define.
@@ -870,7 +878,7 @@
      + Added support for FOCUSRECT, NOFOCUSRECT and PAINTLEFTMARGIN clauses.
        FOCUSRECT defaults to .T. for TGrid and TGridMulti classes, and to
        .F. for TGridByCell class.
-       FOCUSRECT .T. forces the grid to display a the FocusRect around the
+       FOCUSRECT .T. forces the grid to display the FocusRect around the
        selected item, and .F. forces to hide it.
        PAINTLEFTMARGIN defaults to .F. if grid has CHECKBOXES clause.
        PAINTLEFTMARGIN and CHECKBOXES clauses can't be used simultaneously.
