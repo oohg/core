@@ -1,11 +1,15 @@
 /*
- * $Id: ChangeLog,v 1.1011 2012-09-21 02:54:32 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1012 2012-09-21 21:59:15 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-09-21 17:21 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+   * source/h_tab.prg
+     ! Fixed repaint when a tab page is resized.
 
 2012-09-20 23:54 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_scroll.prg
