@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: compile_MINGW.BAT,v 1.16 2012-09-17 00:29:57 fyurisich Exp $
+rem $Id: compile_MINGW.BAT,v 1.17 2012-09-21 22:31:23 fyurisich Exp $
 rem
 cls
 
@@ -71,6 +71,7 @@ if exist _temp.rc del _temp.rc
 if exist _temp.o del _temp.o
 if exist _oohg_resconfig.h del _oohg_resconfig.h
 set PATH=%TPATH%
+set TPATH=
 
 if exist %1.exe %1.exe
 
