@@ -1,11 +1,22 @@
 /*
- * $Id: ChangeLog,v 1.1010 2012-09-20 23:48:50 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1011 2012-09-21 02:54:32 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-09-20 23:54 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_scroll.prg
+     ! Fixed: down button in vertical scrollbar does not update
+       the thumb position until the mouse is moved away from the
+       button; observed under Windows XP.
+     * Changed 1 by .T. in SetScrollRange calls at PRG level.
+     * Changed 1 by .T. in SetScrollPos calls at PRG level.
+   * source/miniprint.prg
+     * Changed 1 by .T. in SetScrollRange calls at PRG level.
+     * Changed 1 by .T. in SetScrollPos calls at PRG level.
 
 2012-09-20 20:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_xbrowse.prg

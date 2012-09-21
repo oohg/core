@@ -1,5 +1,5 @@
 /*
- * $Id: h_scroll.prg,v 1.20 2011-09-07 19:06:17 fyurisich Exp $
+ * $Id: h_scroll.prg,v 1.21 2012-09-21 02:54:33 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -155,7 +155,7 @@ Local ControlHandle, nStyle
    EndIf
 
    ::SetRange( ::nRangeMin, ::nRangeMax )
-   SetScrollRange( ::FromhWnd, ::ScrollType, ::nRangeMin, ::nRangeMax, 1 )
+   SetScrollRange( ::FromhWnd, ::ScrollType, ::nRangeMin, ::nRangeMax, .T. )
 
    ::Value := value
 
@@ -176,7 +176,7 @@ Return Self
 METHOD Value( nValue ) CLASS TScrollBar
 *-----------------------------------------------------------------------------*
    if HB_IsNumeric( nValue )
-      SetScrollPos( ::FromhWnd, ::ScrollType, nValue / ::nFactor, 1 )
+      SetScrollPos( ::FromhWnd, ::ScrollType, nValue / ::nFactor, .T. )
       ///#ifdef __HARBOUR__
       /// ::Redraw()
       ////#endif
@@ -208,7 +208,7 @@ METHOD SetRange( nRangeMin, nRangeMax ) CLASS TScrollBar
 *      Else
 *         ::nFactor := 1
 *      EndIf
-      SetScrollRange( ::FromhWnd, ::ScrollType, ::nRangeMin / ::nFactor, ::nRangeMax / ::nFactor, 1 )
+      SetScrollRange( ::FromhWnd, ::ScrollType, ::nRangeMin / ::nFactor, ::nRangeMax / ::nFactor, .T. )
    EndIf
 Return nil
 
