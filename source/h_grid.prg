@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.184 2012-09-04 23:16:59 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.185 2012-09-21 23:00:21 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -227,7 +227,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                aWhenFields, lDisabled, lNoTabStop, lInvisible, lHasHeaders, ;
                onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
                aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
-               lFocusRect, lPLM, lFixedCols, abortedit, click ) CLASS TGrid
+               lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local nStyle := LVS_SINGLESEL
 
@@ -241,7 +241,7 @@ Local nStyle := LVS_SINGLESEL
               editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
               lHasHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
               aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
-              lFocusRect, lPLM, lFixedCols, abortedit, click )
+              lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -255,7 +255,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                 editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
                 lHasHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
                 aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
-                lFocusRect, lPLM, lFixedCols, abortedit, click ) CLASS TGrid
+                lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local ControlHandle, aImageList, i
 
@@ -291,6 +291,10 @@ Local ControlHandle, aImageList, i
 
    If HB_IsLogical( lFixedCols )
       ::AllowMoveColumn := ! lFixedCols
+   EndIf
+
+   If HB_IsLogical( lFixedWidths )
+      ::AllowChangeSize := ! lFixedWidths
    EndIf
 
    ASSIGN ::aJust       VALUE aJust       TYPE "A"
@@ -2262,7 +2266,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                aWhenFields, lDisabled, lNoTabStop, lInvisible, lHasHeaders, ;
                onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
                aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
-               lFocusRect, lPLM, lFixedCols, abortedit, click ) CLASS TGridMulti
+               lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths ) CLASS TGridMulti
 *-----------------------------------------------------------------------------*
 Local nStyle := 0
 
@@ -2276,7 +2280,7 @@ Local nStyle := 0
               editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
               lHasHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
               aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
-              lFocusRect, lPLM, lFixedCols, abortedit, click )
+              lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -2511,7 +2515,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                aWhenFields, lDisabled, lNoTabStop, lInvisible, lHasHeaders, ;
                onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
                aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
-               lFocusRect, lPLM, lFixedCols, abortedit, click ) CLASS TGridByCell
+               lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths ) CLASS TGridByCell
 *-----------------------------------------------------------------------------*
 Local nStyle := LVS_SINGLESEL
 
@@ -2527,7 +2531,7 @@ Local nStyle := LVS_SINGLESEL
               editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
               lHasHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
               aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
-              lFocusRect, lPLM, lFixedCols, abortedit, click )
+              lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths )
 
    // By default, search in the current column
    ::SearchCol := 0

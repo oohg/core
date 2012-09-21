@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.72 2012-09-20 23:48:50 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.73 2012-09-21 23:00:21 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -155,7 +155,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lNoTabStop, lInvisible, lDescending, bDelWhen, DelMsg, ;
                onDelete, aHeaderImage, aHeaderImageAlign, FullMove, ;
                aSelectedColors, aEditKeys, lDblBffr, lFocusRect, lPLM, ;
-               lFixedCols, abortedit, click ) CLASS TXBrowse
+               lFixedCols, abortedit, click, lFixedWidths ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
 Local nWidth2, nCol2, lLocked, oScroll, z
 
@@ -219,7 +219,7 @@ Local nWidth2, nCol2, lLocked, oScroll, z
               editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
               lNoHeaders,, aHeaderImage, aHeaderImageAlign, FullMove, ;
               aSelectedColors, aEditKeys, , , lDblBffr, lFocusRect, lPLM, ;
-              lFixedCols, abortedit, click )
+              lFixedCols, abortedit, click, lFixedWidths )
 
    ::nWidth := w
 
@@ -293,7 +293,7 @@ METHOD Refresh( nCurrent, lNoEmptyBottom ) CLASS TXBrowse
 Local nRow, nCount, nSkipped
    If Empty( ::WorkArea ) .OR. ( ValType( ::WorkArea ) $ "CM" .AND. Select( ::WorkArea ) == 0 )
       // No workarea specified...
-   ElseIf ! ::lLocked .AND. ! ::oWorkArea:Eof()
+   ElseIf ! ::lLocked
       nCount := ::CountPerPage
       ASSIGN nCurrent       VALUE nCurrent       TYPE "N" DEFAULT ::CurrentRow
       ASSIGN lNoEmptyBottom VALUE lNoEmptyBottom TYPE "L" DEFAULT .F.
@@ -339,7 +339,7 @@ Return Self
 METHOD RefreshRow( nRow ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
 Local aItem, cWorkArea
-   If ! ::lLocked .AND. ! ::oWorkArea:Eof()
+   If ! ::lLocked
       cWorkArea := ::WorkArea
       If ValType( cWorkArea ) $ "CM" .AND. Empty( cWorkArea )
          cWorkArea := nil

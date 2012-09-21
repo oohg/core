@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.74 2012-07-24 23:21:54 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.75 2012-09-21 23:00:21 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -122,6 +122,7 @@ Memvariables
 #xtranslate _OOHG_ActiveControlTrailingFontColor      => _OOHG_ActiveControlInfo \[  25 \]
 #xtranslate _OOHG_ActiveControlBackgroundColor        => _OOHG_ActiveControlInfo \[  26 \]
 
+#xtranslate _OOHG_ActiveControlFixedWidths            => _OOHG_ActiveControlInfo \[ 131 \]
 #xtranslate _OOHG_ActiveControlAbortEdit              => _OOHG_ActiveControlInfo \[ 132 \]
 #xtranslate _OOHG_ActiveControlUpdateAll              => _OOHG_ActiveControlInfo \[ 133 \]
 #xtranslate _OOHG_ActiveControlNoDeleteMsg            => _OOHG_ActiveControlInfo \[ 134 \]
@@ -2025,7 +2026,8 @@ GRID
         _OOHG_ActiveControlNoFocusRect      := .F. ;;
         _OOHG_ActiveControlFixedCols        := .F. ;;
         _OOHG_ActiveControlAbortEdit        := Nil ;;
-        _OOHG_ActiveControlAction           := Nil
+        _OOHG_ActiveControlAction           := Nil ;;
+        _OOHG_ActiveControlFixedWidths      := .F.
 
 #xcommand ONAPPEND <onappend> ;
         => ;
@@ -2082,6 +2084,10 @@ GRID
 #xcommand FIXEDCOLS <fixedcols> ;
         => ;
         _OOHG_ActiveControlFixedCols := <fixedcols>
+
+#xcommand FIXEDWIDTHS <fixedwidths> ;
+        => ;
+        _OOHG_ActiveControlFixedWidths := <fixedwidths>
 
 #xcommand END GRID ;
         => ;
@@ -2147,7 +2153,8 @@ GRID
                 _OOHG_ActiveControlPaintLeftMargin, ;
                 _OOHG_ActiveControlFixedCols, ;
                 _OOHG_ActiveControlAbortEdit, ;
-                _OOHG_ActiveControlAction )
+                _OOHG_ActiveControlAction, ;
+                _OOHG_ActiveControlFixedWidths )
 
 /*----------------------------------------------------------------------------
 BROWSE
@@ -2205,7 +2212,8 @@ BROWSE
         _OOHG_ActiveControlNoDeleteMsg      := .F. ;;
         _OOHG_ActiveControlUpdateAll        := .F. ;;
         _OOHG_ActiveControlAbortEdit        := Nil ;;
-        _OOHG_ActiveControlAction           := Nil
+        _OOHG_ActiveControlAction           := Nil ;;
+        _OOHG_ActiveControlFixedWidths      := .F.
 
 #xcommand DELETEWHEN <delwhen> ;
         => ;
@@ -2330,7 +2338,8 @@ BROWSE
                 _OOHG_ActiveControlNoDeleteMsg, ;
                 _OOHG_ActiveControlUpdateAll, ;
                 _OOHG_ActiveControlAbortEdit, ;
-                _OOHG_ActiveControlAction )
+                _OOHG_ActiveControlAction, ;
+                _OOHG_ActiveControlFixedWidths )
 
 /*----------------------------------------------------------------------------
 XBROWSE
@@ -2383,7 +2392,8 @@ XBROWSE
         _OOHG_ActiveControlNoFocusRect      := .F. ;;
         _OOHG_ActiveControlFixedCols        := .F. ;;
         _OOHG_ActiveControlAbortEdit        := Nil ;;
-        _OOHG_ActiveControlAction           := Nil
+        _OOHG_ActiveControlAction           := Nil ;;
+        _OOHG_ActiveControlFixedWidths      := .F.
 
 #xcommand END XBROWSE ;
         => ;
@@ -2456,7 +2466,8 @@ XBROWSE
                 _OOHG_ActiveControlPaintLeftMargin, ;
                 _OOHG_ActiveControlFixedCols, ;
                 _OOHG_ActiveControlAbortEdit, ;
-                _OOHG_ActiveControlAction )
+                _OOHG_ActiveControlAction, ;
+                _OOHG_ActiveControlFixedWidths )
 
 /*----------------------------------------------------------------------------
 HYPERLINK

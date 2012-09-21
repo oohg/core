@@ -1,11 +1,30 @@
 /*
- * $Id: ChangeLog,v 1.1013 2012-09-21 22:31:23 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1014 2012-09-21 23:00:21 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-09-21 20:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_xbrowse.prg
+     * Reverted changes in Refresh and RefreshRow methods made
+       2012-09-20 20:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+       TOFIX: when the workarea is empty a row of empty values is shown.
+       TOFIX: when the workarea is empty, doubleclicking on the
+       control generates a RTE.
+   * include/i_altsyntax.ch
+   * include/i_browse.ch
+   * include/i_grid.ch
+   * include/i_hmg_compat.ch
+   * include/i_xbrowse.ch
+   * source/h_grid.prg
+   * source/h_browse.prg
+   * source/h_xbrowse.prg
+   * source/h_checklist.prg
+     + Added support for FIXEDWIDTHS clause. This clause is equivalent
+       to oCtrl:AllowChangeSize := .F.
 
 2012-09-21 19:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./compile_mingw.bat

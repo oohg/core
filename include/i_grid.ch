@@ -1,5 +1,5 @@
 /*
- * $Id: i_grid.ch,v 1.25 2012-07-24 23:21:54 fyurisich Exp $
+ * $Id: i_grid.ch,v 1.26 2012-09-21 23:00:21 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -165,6 +165,7 @@
       [ <plm: PAINTLEFTMARGIN> ] ;
       [ <fixedcols: FIXEDCOLS> ] ;
       [ ON ABORTEDIT <abortedit> ] ;
+      [ <fixedwidths: FIXEDWIDTHS> ] ;
    =>;
       [ <obj> := ] _OOHG_SelectSubClass(iif( <.bycell.>, TGridByCell(), iif( <.multiselect.>, TGridMulti(), TGrid() ) ), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, ;
@@ -179,7 +180,7 @@
             ! <.noshowheaders.>, <{enter}>, <aHeaderImages>, <aImgAlign>, <.fullmove.>, ;
             <aSelectedColors>, <aEditKeys>, <.checkboxes.>, <{checkchange}>, <.dblbffr.>, ;
             iif( #<focus> == "NOFOCUSRECT", .F., iif( #<focus> == "FOCUSRECT", .T., NIL ) ), ;
-            <.plm.>, <.fixedcols.>, <{abortedit}>, <{click}> )
+            <.plm.>, <.fixedcols.>, <{abortedit}>, <{click}>, <.fixedwidths.> )
 
 ///////////////////////////////////////////////////////////////////////////////
 // GRID (SPLITBOX VERSION)
@@ -247,6 +248,7 @@
       [ <focus: NOFOCUSRECT, FOCUSRECT> ] ;
       [ <plm: PAINTLEFTMARGIN> ] ;
       [ <fixedcols: FIXEDCOLS> ] ;
+      [ <fixedwidths: FIXEDWIDTHS> ] ;
    =>;
       [ <obj> := ] _OOHG_SelectSubClass(iif( <.bycell.>, TGridByCell(), iif( <.multiselect.>, TGridMulti(), TGrid() ) ), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, , , <w>, <h>, <headers>, ;
@@ -261,4 +263,4 @@
             ! <.noshowheaders.>, <{enter}>, <aHeaderImages>, <aImgAlign>, <.fullmove.>, ;
             <aSelectedColors>, <aEditKeys>, <.checkboxes.>, <{checkchange}>, <.dblbffr.>, ;
             iif( #<focus> == "NOFOCUSRECT", .F., iif( #<focus> == "FOCUSRECT", .T., NIL ) ), ;
-            <.plm.>, <.fixedcols.>, <{click}> )
+            <.plm.>, <.fixedcols.>, <{click}>, <.fixedwidths.> )

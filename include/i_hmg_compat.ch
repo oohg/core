@@ -1,5 +1,5 @@
 /*
- * $Id: i_hmg_compat.ch,v 1.16 2012-07-24 23:21:54 fyurisich Exp $
+ * $Id: i_hmg_compat.ch,v 1.17 2012-09-21 23:00:21 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -181,6 +181,7 @@
       [ <nodelmsg: NODELETEMSG> ] ;
       [ <updall: UPDATEALL> ] ;
       [ ON ABORTEDIT <abortedit> ] ;
+      [ <fixedwidths: FIXEDWIDTHS> ] ;
    => ;
       [ <oObj> := ] _OOHG_SelectSubClass( TOBrowse(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, , , <w>, <h>, <headers>, <widths>, <Fields>, ;
@@ -198,7 +199,7 @@
             if( <.forcerefresh.>, 0, if( <.norefresh.>, 1, nil ) ), <.dblbffr.>, ;
             iif( upper( #<focus> ) == "NOFOCUSRECT", .F., iif( upper( #<focus> ) == "FOCUSRECT", .T., NIL ) ), ;
             <.plm.>, iif( upper( #<sync> ) == "UNSYNCHRONIZED", .F., iif( upper( #<sync> ) == "SYNCHRONIZED", .T., NIL ) ), ;
-            <.fixedcols.>, <.nodelmsg.>, <.updall.>, <{abortedit}>, <{click}> )
+            <.fixedcols.>, <.nodelmsg.>, <.updall.>, <{abortedit}>, <{click}>, <.fixedwidths.> )
 
 
 #xcommand @ <row>, <col> BUTTONEX <name> ;

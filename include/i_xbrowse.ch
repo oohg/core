@@ -1,5 +1,5 @@
 /*
- * $Id: i_xbrowse.ch,v 1.21 2012-08-15 23:52:33 fyurisich Exp $
+ * $Id: i_xbrowse.ch,v 1.22 2012-09-21 23:00:21 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -168,6 +168,7 @@
       [ <plm: PAINTLEFTMARGIN> ] ;
       [ <fixedcols: FIXEDCOLS> ] ;
       [ ON ABORTEDIT <abortedit> ] ;
+      [ <fixedwidths: FIXEDWIDTHS> ] ;
 	=>;
       [ <oObj> := ] _OOHG_SelectSubClass( TXBrowse(), [ <subclass>() ] ):Define( ;
             <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, <widths>, ;
@@ -184,4 +185,4 @@
             <DelMsg>, <{onDelete}>, <aHeaderImages>, <aImgAlign>, <.fullmove.>, ;
             <aSelectedColors>, <aEditKeys>, <.dblbffr.>, ;
             iif( upper( #<focus> ) == "NOFOCUSRECT", .F., iif( upper( #<focus> ) == "FOCUSRECT", .T., NIL ) ), ;
-            <.plm.>, <.fixedcols.>, <{abortedit}>, <{click}> )
+            <.plm.>, <.fixedcols.>, <{abortedit}>, <{click}>, <.fixedwidths.> )
