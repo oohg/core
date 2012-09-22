@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.186 2012-09-22 00:25:27 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.187 2012-09-22 02:46:59 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1667,6 +1667,7 @@ Local aCellData, nItem, i
          ::uIniTime := HB_MilliSeconds()
          ::cText := Upper( Chr( wParam ) )
       Else
+         ::uIniTime := HB_MilliSeconds()
          ::cText += Upper( Chr( wParam ) )
       EndIf
 
@@ -3010,6 +3011,7 @@ Local aCellData, nItem, i, nSearchCol
          ::uIniTime := HB_MilliSeconds()
          ::cText := Upper( Chr( wParam ) )
       Else
+         ::uIniTime := HB_MilliSeconds()
          ::cText += Upper( Chr( wParam ) )
       EndIf
 

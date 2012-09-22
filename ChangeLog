@@ -1,11 +1,19 @@
 /*
- * $Id: ChangeLog,v 1.1015 2012-09-22 00:25:27 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1016 2012-09-22 02:46:58 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-09-21 23:47 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_grid.prg
+   * source/h_browse.prg
+   * source/h_xbrowse.prg
+     * Search changed: consecutive characters are part of the same
+       search when the elapsed time is less than or equal to
+       SearchLapse.
 
 2012-09-21 21:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
@@ -18,9 +26,6 @@
    * source/h_xbrowse.prg
      * Reverted changes in Refresh and RefreshRow methods made
        2012-09-20 20:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-       TOFIX: when the workarea is empty a row of empty values is shown.
-       TOFIX: when the workarea is empty, doubleclicking on the
-       control generates a RTE.
    * include/i_altsyntax.ch
    * include/i_browse.ch
    * include/i_grid.ch

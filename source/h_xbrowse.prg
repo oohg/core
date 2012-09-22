@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.73 2012-09-21 23:00:21 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.74 2012-09-22 02:46:59 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -720,6 +720,7 @@ Local cWorkArea, nCurrent, nSkipped, uGridValue
          ::uIniTime := HB_MilliSeconds()
          ::cText := Upper( Chr( wParam ) )
       Else
+         ::uIniTime := HB_MilliSeconds()
          ::cText += Upper( Chr( wParam ) )
       EndIf
 
