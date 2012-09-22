@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.187 2012-09-22 02:46:59 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.188 2012-09-22 13:12:23 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -144,7 +144,7 @@ CLASS TGrid FROM TControl
    DATA lFocusRect            INIT .T.
    DATA lNoGrid               INIT .F.
    DATA lPLM                  INIT .F.
-   DATA SearchCol             INIT 1
+   DATA SearchCol             INIT 0
    DATA SearchWrap            INIT .T.
    DATA SearchLapse           INIT 1000
    DATA cText                 INIT ""

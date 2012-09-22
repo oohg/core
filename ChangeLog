@@ -1,11 +1,19 @@
 /*
- * $Id: ChangeLog,v 1.1016 2012-09-22 02:46:58 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1017 2012-09-22 13:12:22 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-09-22 10:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_grid.prg
+     * Search changed: this restores default behaviour of grid,
+       browse and xbrowse (search disabled). To enable it you
+       must assign to oCtrl:SearchCol a valid column number.
+       Beware that if the control contains a lot of rows, the
+       search can make de control unresponsive while processing.
 
 2012-09-21 23:47 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
