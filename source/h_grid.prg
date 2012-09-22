@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.185 2012-09-21 23:00:21 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.186 2012-09-22 00:25:27 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1724,6 +1724,7 @@ Local nNotify := GetNotifyCode( lParam )      //, nColumn := NMHeader_iItem( lPa
    ElseIf nNotify == HDN_ENDTRACK
       // ::AllowChangeSize
       // Termina de cambiar el tamaño de nColumn
+      RedrawWindow( ::ContainerhWnd )
    ElseIf nNotify == HDN_DIVIDERDBLCLICK
       If HB_IsLogical( ::AllowChangeSize ) .AND. ! ::AllowChangeSize
          Return 1

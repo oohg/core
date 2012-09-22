@@ -1,11 +1,18 @@
 /*
- * $Id: ChangeLog,v 1.1014 2012-09-21 23:00:21 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1015 2012-09-22 00:25:27 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-09-21 21:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_grid.prg
+     ! Fixed: when sizing one column of a grid placed inside a
+       tab, the grid's frame is erased and it will not be shown
+       again until the tab is redrawn. This look like an ugly
+       hack, please revise if there's a better solution.
 
 2012-09-21 20:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_xbrowse.prg
