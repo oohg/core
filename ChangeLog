@@ -1,11 +1,20 @@
 /*
- * $Id: ChangeLog,v 1.1017 2012-09-22 13:12:22 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1018 2012-09-23 00:17:27 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-09-22 21:17 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_browse.prg
+   * source/h_xbrowse.prg
+     ! Moved processing of Home, End, PgUp, PgDn, Up and Down keys
+       from Events_Notify (under LVN_KEYDOWN notification) to Events
+       method (under WM_KEYDOWN message).
+       Fixed: after pressing one of this key the next key is 'eaten'
+       by the system instead of passing it to the seach routine.
 
 2012-09-22 10:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg

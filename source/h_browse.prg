@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.106 2012-09-22 02:46:59 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.107 2012-09-23 00:17:27 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1329,6 +1329,30 @@ Local cWorkArea, _RecNo, Value, uGridValue
       ::DbGoTo( _RecNo )
       Return 0
 
+   ElseIf nMsg == WM_KEYDOWN
+      Do Case
+      Case Select( ::WorkArea ) == 0
+         // No database open
+      Case wParam == 36 // HOME
+         ::Home()
+         Return 0
+      Case wParam == 35 // END
+         ::End()
+         Return 0
+      Case wParam == 33 // PGUP
+         ::PageUp()
+         Return 0
+      Case wParam == 34 // PGDN
+         ::PageDown()
+         Return 0
+      Case wParam == 38 // UP
+         ::Up()
+         Return 0
+      Case wParam == 40 // DOWN
+         ::Down()
+         Return 0
+      EndCase
+
    EndIf
 
 Return ::Super:Events( hWnd, nMsg, wParam, lParam )
@@ -1425,7 +1449,7 @@ Local nvKey, r, DeltaSelect, lGo
             .or.;
             GetAltState() == -128   // ALT
 
-            if ::AllowAppend
+            If ::AllowAppend
                ::EditItem( .t. )
             EndIf
 
@@ -1449,30 +1473,6 @@ Local nvKey, r, DeltaSelect, lGo
                MsgExclamation(::DelMsg, _OOHG_Messages(4, 2))
             EndIf
          EndIf
-
-      Case nvKey == 36 // HOME
-         ::Home()
-         Return 1
-
-      Case nvKey == 35 // END
-         ::End()
-         Return 1
-
-      Case nvKey == 33 // PGUP
-         ::PageUp()
-         Return 1
-
-      Case nvKey == 34 // PGDN
-         ::PageDown()
-         Return 1
-
-      Case nvKey == 38 // UP
-         ::Up()
-         Return 1
-
-      Case nvKey == 40 // DOWN
-         ::Down()
-         Return 1
 
       EndCase
 
