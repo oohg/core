@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.75 2012-09-23 00:17:27 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.76 2012-09-24 01:01:38 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -753,6 +753,9 @@ Local cWorkArea, nCurrent, nSkipped, uGridValue
 
       If ::Eof() .AND. ::SearchWrap
          ::TopBottom( -1 )
+         nCurrent := 1
+         nSkipped := 0
+
          Do While ! ::Eof()
             uGridValue := Eval( ::ColumnBlock( ::SearchCol ), cWorkArea )
             If ValType( uGridValue ) == "A"      // TGridControlImageData

@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog,v 1.1018 2012-09-23 00:17:27 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1019 2012-09-24 01:01:37 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-09-23 22:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_xbrowse.prg
+     ! Fixed: search wrap doen't work when there are few row in
+       a big control.
 
 2012-09-22 21:17 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_browse.prg
