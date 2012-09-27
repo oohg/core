@@ -1,5 +1,5 @@
 /*
- * $Id: miniprint.prg,v 1.39 2012-09-21 02:54:33 fyurisich Exp $
+ * $Id: miniprint.prg,v 1.40 2012-09-27 02:05:32 fyurisich Exp $
  */
 /*----------------------------------------------------------------------------
  MINIGUI - Harbour Win32 GUI library source code
@@ -240,7 +240,7 @@ PUBLIC _OOHG_Auxil_Zoom
 
          @ 15, 291 LABEL lbl_1 VALUE _HMG_PRINTER_UserMessages [07] AUTOSIZE
 
-         @ 8, 400 TEXTBOX pagina OBJ _OOHG_Auxil_Page PICTURE '999' NUMERIC WIDTH 75 VALUE _HMG_PRINTER_CurrentPageNumber IMAGE "HP_GOPAGE" ;
+         @ 8, 400 TEXTBOX pagina OBJ _OOHG_Auxil_Page PICTURE '999999' NUMERIC WIDTH 75 VALUE _HMG_PRINTER_CurrentPageNumber IMAGE "HP_GOPAGE" ;
          ACTION ( _OOHG_Auxil_Page:Value := If( _OOHG_Auxil_Page:Value < 1, 1, _OOHG_Auxil_Page:Value ), ;
                   _OOHG_Auxil_Page:Value := If( _OOHG_Auxil_Page:Value > _HMG_PRINTER_PageCount, _HMG_PRINTER_PageCount, _OOHG_Auxil_Page:Value ), ;
                   _HMG_PRINTER_CurrentPageNumber := _OOHG_Auxil_Page:Value, _HMG_PRINTER_SHOWPREVIEW:Show() )
