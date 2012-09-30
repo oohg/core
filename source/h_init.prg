@@ -1,5 +1,5 @@
 /*
- * $Id: h_init.prg,v 1.29 2012-07-14 23:10:47 fyurisich Exp $
+ * $Id: h_init.prg,v 1.30 2012-09-30 23:22:57 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -95,7 +95,7 @@
 
 #define ABM_CRLF                HB_OsNewLine()
 
-STATIC _OOHG_Messages := { {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {} }
+STATIC _OOHG_Messages := { {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {} }
 
 INIT PROCEDURE _OOHG_INIT()
 
@@ -180,6 +180,7 @@ Local aLang, aLangDefault
    _OOHG_Messages[  9 ] := InitMessagesMerge( aLang, aLangDefault,  9 )
    _OOHG_Messages[ 10 ] := InitMessagesMerge( aLang, aLangDefault, 10 )
    _OOHG_Messages[ 11 ] := InitMessagesMerge( aLang, aLangDefault, 11 )
+   _OOHG_Messages[ 12 ] := InitMessagesMerge( aLang, aLangDefault, 12 )
 
 Return
 
@@ -200,7 +201,7 @@ FUNCTION ooHG_Messages_EN // English (default)
 Local acMisc
 Local acBrowseButton, acBrowseError, acBrowseMessages
 Local acABMUser, acABMLabel, acABMButton, acABMError
-Local acButton, acLabel, acUser
+Local acButton, acLabel, acUser, acPrint
 
    // MISC MESSAGES
    acMisc           := { 'Are you sure ?', ;
@@ -374,7 +375,53 @@ Local acButton, acLabel, acUser
                          ABM_CRLF + "Deactivate filter?   " + ABM_CRLF, ;                                                                        // 40
                          ABM_CRLF + "Record locked by another user    " + ABM_CRLF }                                                             // 41
 
-RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser }
+   // PRINT MESSAGES
+   acPrint          := { "Print preview pending, close first", ;
+                         "ooHG printing", ;
+                         "Auxiliar printing command", ;
+                         " PRINTED OK !!!", ;
+                         "Invalid parameters passed to function !!!", ;
+                         "WinAPI OpenPrinter() call failed !!!", ;
+                         "WinAPI StartDocPrinter() call failed !!!", ;
+                         "WinAPI StartPagePrinter() call failed !!!", ;
+                         "WinAPI malloc() call failed !!!", ;
+                         " NOT FOUND !!!", ;
+                         "No printer found !!!", ;
+                         "Error", ;
+                         "Port is not valid !!!", ;
+                         "Select printer", ;
+                         "OK", ;
+                         "Cancel", ;
+                         'Preview -----> ', ;
+                         "Close", ;
+                         "Close", ;
+                         "Zoom +", ;
+                         "Zoom +", ;
+                         "Zoom -", ;
+                         "Zoom -", ;
+                         "Print", ;
+                         "Print mode: ", ;
+                         "Search", ;
+                         "Search", ;
+                         "Next search", ;
+                         "Next search", ;
+                         'Text: ', ;
+                         'Search string', ;
+                         "Search ended.", ;
+                         "Information", ;
+                         'Excel not found !!!', ;
+                         "XLS extension not asociated !!!", ;
+                         "File saved in: ", ;
+                         "HTML extension not asociated !!!", ;
+                         "RTF extension not asociated !!!", ;
+                         "CSV extension not asociated !!!", ;
+                         "PDF extension not asociated !!!", ;
+                         "ODT extension not asociated !!!", ;
+                         'Barcode c128 requires a character value !!!', ;
+                         'Code 128 modes are A, B or C (character values) !!!', ;
+                         "Open Calc not found !!!" }
+
+RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
 
 /////////////////////////////////////////////////////////////
 // CROATIAN
@@ -383,7 +430,7 @@ FUNCTION ooHG_Messages_HR852 // Croatian
 Local acMisc
 Local acBrowseButton, acBrowseError, acBrowseMessages
 Local acABMUser, acABMLabel, acABMButton, acABMError
-Local acButton, acLabel, acUser
+Local acButton, acLabel, acUser, acPrint
 
    // MISC MESSAGES
    acMisc           := { 'Are you sure ?', ;
@@ -415,7 +462,10 @@ Local acButton, acLabel, acUser
    acLabel          := {}
    acUser           := {}
 
-RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser }
+   // PRINT MESSAGES
+   acPrint          := {}
+
+RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
 
 /////////////////////////////////////////////////////////////
 // BASQUE
@@ -424,7 +474,7 @@ FUNCTION ooHG_Messages_EU // Basque
 Local acMisc
 Local acBrowseButton, acBrowseError, acBrowseMessages
 Local acABMUser, acABMLabel, acABMButton, acABMError
-Local acButton, acLabel, acUser
+Local acButton, acLabel, acUser, acPrint
 
    // MISC MESSAGES
    acMisc           := {}
@@ -526,7 +576,10 @@ Local acButton, acLabel, acUser
                          ABM_CRLF + "Iragazkia kendu?   " + ABM_CRLF, ;                                                                                // 40
                          ABM_CRLF + "Record locked by another user" + ABM_CRLF }                                                                       // 41
 
-RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser }
+   // PRINT MESSAGES
+   acPrint          := {}
+
+RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
 
 /////////////////////////////////////////////////////////////
 // FRENCH
@@ -535,7 +588,7 @@ FUNCTION ooHG_Messages_FR // French
 Local acMisc
 Local acBrowseButton, acBrowseError, acBrowseMessages
 Local acABMUser, acABMLabel, acABMButton, acABMError
-Local acButton, acLabel, acUser
+Local acButton, acLabel, acUser, acPrint
 
    // MISC MESSAGES
    acMisc           := { 'Etes-vous sûre ?', ;
@@ -709,7 +762,10 @@ Local acButton, acLabel, acUser
                          ABM_CRLF + "Désactiver le filtre?   " + ABM_CRLF, ;                                                                                     // 40
                          ABM_CRLF + "Record locked by another user" + ABM_CRLF }                                                                                 // 41
 
-RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser }
+   // PRINT MESSAGES
+   acPrint          := {}
+
+RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
 
 /////////////////////////////////////////////////////////////
 // GERMAN
@@ -721,7 +777,7 @@ FUNCTION ooHG_Messages_DEWIN // German
 Local acMisc
 Local acBrowseButton, acBrowseError, acBrowseMessages
 Local acABMUser, acABMLabel, acABMButton, acABMError
-Local acButton, acLabel, acUser
+Local acButton, acLabel, acUser, acPrint
 
    // MISC MESSAGES
    acMisc           := { 'Sind Sie sicher ?', ;
@@ -882,7 +938,10 @@ Local acButton, acLabel, acUser
                          ABM_CRLF + "Filter deaktivieren?   " + ABM_CRLF, ;                                                                                                  // 40
                          ABM_CRLF + "Record locked by another user" + ABM_CRLF }                                                                                             // 41
 
-RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser }
+   // PRINT MESSAGES
+   acPrint          := {}
+
+RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
 
 /////////////////////////////////////////////////////////////
 // ITALIAN
@@ -891,7 +950,7 @@ FUNCTION ooHG_Messages_IT // Italian
 Local acMisc
 Local acBrowseButton, acBrowseError, acBrowseMessages
 Local acABMUser, acABMLabel, acABMButton, acABMError
-Local acButton, acLabel, acUser
+Local acButton, acLabel, acUser, acPrint
 
    // MISC MESSAGES
    acMisc           := { 'Sei sicuro ?', ;
@@ -1065,7 +1124,10 @@ Local acButton, acLabel, acUser
                          ABM_CRLF + "Disattivare filtro ?   " + ABM_CRLF, ;                                                                    // 40
                          ABM_CRLF + "Record bloccato da altro utente" + ABM_CRLF }                                                             // 41
 
-RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser }
+   // PRINT MESSAGES
+   acPrint          := {}
+
+RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
 
 /////////////////////////////////////////////////////////////
 // POLISH
@@ -1083,7 +1145,7 @@ FUNCTION ooHG_Messages_PLWIN // Polish
 Local acMisc
 Local acBrowseButton, acBrowseError, acBrowseMessages
 Local acABMUser, acABMLabel, acABMButton, acABMError
-Local acButton, acLabel, acUser
+Local acButton, acLabel, acUser, acPrint
 
    // MISC MESSAGES
    acMisc           := { 'Czy jesteœ pewny ?', ;
@@ -1257,7 +1319,10 @@ Local acButton, acLabel, acUser
                          ABM_CRLF + "Deaktywowaæ filtr?   " + ABM_CRLF, ;                                                                       // 40
                          ABM_CRLF + "Record locked by another user" + ABM_CRLF }                                                                // 41
 
-RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser }
+   // PRINT MESSAGES
+   acPrint          := {}
+
+RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
 
 /////////////////////////////////////////////////////////////
 // PORTUGUESE
@@ -1266,7 +1331,7 @@ FUNCTION ooHG_Messages_PT // Portuguese
 Local acMisc
 Local acBrowseButton, acBrowseError, acBrowseMessages
 Local acABMUser, acABMLabel, acABMButton, acABMError
-Local acButton, acLabel, acUser
+Local acButton, acLabel, acUser, acPrint
 
    // MISC MESSAGES
    acMisc           := { 'Você tem Certeza ?', ;
@@ -1440,7 +1505,10 @@ Local acButton, acLabel, acUser
                          ABM_CRLF + "Eliminar o filtro ativo?   " + ABM_CRLF, ;                                                                              // 40
                          ABM_CRLF + "Registro bloqueado por outro usuário" + ABM_CRLF }                                                                      // 41
 
-RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser }
+   // PRINT MESSAGES
+   acPrint          := {}
+
+RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
 
 /////////////////////////////////////////////////////////////
 // RUSSIAN
@@ -1455,7 +1523,7 @@ FUNCTION ooHG_Messages_RUWIN // Russian
 Local acMisc
 Local acBrowseButton, acBrowseError, acBrowseMessages
 Local acABMUser, acABMLabel, acABMButton, acABMError
-Local acButton, acLabel, acUser
+Local acButton, acLabel, acUser, acPrint
 
    // MISC MESSAGES
    acMisc           := { 'Âû óâåðåíû ?', ;
@@ -1548,7 +1616,10 @@ Local acButton, acLabel, acUser
    acLabel          := {}
    acUser           := {}
 
-RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser }
+   // PRINT MESSAGES
+   acPrint          := {}
+
+RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
 
 /////////////////////////////////////////////////////////////
 // SPANISH
@@ -1560,7 +1631,7 @@ FUNCTION ooHG_Messages_ESWIN // Spanish
 Local acMisc
 Local acBrowseButton, acBrowseError, acBrowseMessages
 Local acABMUser, acABMLabel, acABMButton, acABMError
-Local acButton, acLabel, acUser
+Local acButton, acLabel, acUser, acPrint
 
    // MISC MESSAGES
    acMisc           := { '¿ Está seguro ?', ;
@@ -1734,7 +1805,53 @@ Local acButton, acLabel, acUser
                          ABM_CRLF + "¿Eliminar el filtro activo?   " + ABM_CRLF, ;                                                                           // 40
                          ABM_CRLF + "Registro bloqueado por otro usuario    " + ABM_CRLF }                                                                   // 41
 
-RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser }
+   // PRINT MESSAGES
+   acPrint          := { "Vista previa de impresión pendiente, ciérrela primero", ;
+                         "Impresión ooHG", ;
+                         "Comando auxiliar de impresión", ;
+                         " IMPRESO OK !!!", ;
+                         "Los parámetros pasados a la función no son válidos !!!", ;
+                         "Fracasó la llamada a WinAPI OpenPrinter() !!!", ;
+                         "Fracasó la llamada a WinAPI StartDocPrinter() !!!", ;
+                         "Fracasó la llamada a WinAPI StartPagePrinter() !!!", ;
+                         "Fracasó la llamada a WinAPI malloc() !!!", ;
+                         " NO ENCONTRADO !!!", ;
+                         "No se detectó impresora !!!", ;
+                         "Error", ;
+                         "El puerto no es válido !!!", ;
+                         "Seleccione la impresora", ;
+                         "OK", ;
+                         "Cancelar", ;
+                         'Vista previa -----> ', ;
+                         "Cerrar", ;
+                         "Cerrar", ;
+                         "Zoom +", ;
+                         "Zoom +", ;
+                         "Zoom -", ;
+                         "Zoom -", ;
+                         "Imprimir", ;
+                         "Modo de impresión: ", ;
+                         "Buscar", ;
+                         "Buscar", ;
+                         "Sig. búsqueda", ;
+                         "Sig. búsqueda", ;
+                         'Texto: ', ;
+                         'Cadena a buscar', ;
+                         "Búsqueda finalizada.", ;
+                         "Información", ;
+                         'No se detectó Excel !!!', ;
+                         "La extensión XLS no está asociada !!!", ;
+                         "File saved in: ", ;
+                         "La extensión HTML no está asociada !!!", ;
+                         "La extensión RTF no está asociada !!!", ;
+                         "La extensión CSV no está asociada !!!", ;
+                         "La extensión PDF no está asociada !!!", ;
+                         "La extensión ODT no está asociada !!!", ;
+                         'Los códigos de barra c128 requieren una cadena !!!', ;
+                         'Los modos válidos de códigos de barra c128 son A, B or C !!!', ;
+                         "No se detectó OpenCalc !!!" }
+
+RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
 
 /////////////////////////////////////////////////////////////
 // FINNISH
@@ -1743,7 +1860,7 @@ FUNCTION ooHG_Messages_FI // Finnish
 Local acMisc
 Local acBrowseButton, acBrowseError, acBrowseMessages
 Local acABMUser, acABMLabel, acABMButton, acABMError
-Local acButton, acLabel, acUser
+Local acButton, acLabel, acUser, acPrint
 
    // MISC MESSAGES
    acMisc           := { 'Oletko varma ?', ;
@@ -1917,7 +2034,10 @@ Local acButton, acLabel, acUser
                          ABM_CRLF + "Poista suodin?   " + ABM_CRLF, ;                                                              // 40
                          ABM_CRLF + "Tietue lukittu    " + ABM_CRLF }                                                              // 41
 
-RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser }
+   // PRINT MESSAGES
+   acPrint          := {}
+
+RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
 
 /////////////////////////////////////////////////////////////
 // DUTCH
@@ -1926,7 +2046,7 @@ FUNCTION ooHG_Messages_NL // Dutch
 Local acMisc
 Local acBrowseButton, acBrowseError, acBrowseMessages
 Local acABMUser, acABMLabel, acABMButton, acABMError
-Local acButton, acLabel, acUser
+Local acButton, acLabel, acUser, acPrint
 
    // MISC MESSAGES
    acMisc           := { 'Weet u het zeker?', ;
@@ -2100,7 +2220,10 @@ Local acButton, acLabel, acUser
                          ABM_CRLF + "Deactiveer filter?   " + ABM_CRLF, ;                                                                                                      // 40
                          ABM_CRLF + "Regel geblokkeerd door een andere gebuiker" + ABM_CRLF }                                                                                  // 41
 
-RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser }
+   // PRINT MESSAGES
+   acPrint          := {}
+
+RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
 
 /////////////////////////////////////////////////////////////
 // SLOVENIAN
@@ -2118,7 +2241,7 @@ FUNCTION ooHG_Messages_SLWIN // Slovenian
 Local acMisc
 Local acBrowseButton, acBrowseError, acBrowseMessages
 Local acABMUser, acABMLabel, acABMButton, acABMError
-Local acButton, acLabel, acUser
+Local acButton, acLabel, acUser, acPrint
 
    // MISC MESSAGES
    acMisc           := { 'Ste preprièani ?', ;
@@ -2292,4 +2415,7 @@ Local acButton, acLabel, acUser
                          ABM_CRLF + "Deaktiviram filter?   " + ABM_CRLF, ;                                                                   // 40
                          ABM_CRLF + "Vrstica zaklenjena - uporablja jo drug uporabnik    " + ABM_CRLF }                                      // 41
 
-RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser }
+   // PRINT MESSAGES
+   acPrint          := {}
+
+RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }

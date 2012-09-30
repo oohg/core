@@ -1,11 +1,51 @@
 /*
- * $Id: ChangeLog,v 1.1020 2012-09-27 02:05:31 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1021 2012-09-30 23:22:57 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-09-30 20:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * doc/tprint.txt
+     * Updated.
+   * source/h_init.prg
+     * Added support for TPRINT messages.
+       TODO: Translate message into Croatian, Basque, French,
+       German, Italian, Polish, Portuguese, Russian, Finnish,
+       Dutch and Slovenian.
+   * source/h_print.prg
+     * Cleaned up and formatted.
+     * Modified method Init() to check for _modalhide window
+       instead of _oohg_winreport window.
+     * Changed SET PRINTER TO &(var) to SET PRINTER TO (var).
+     * Private variables milinea1, amicolor, rutaficrtf1, ntcsvprint,
+       and ntcsvprint1 changed to locals.
+     * Private variable oPrintRtf1 changed to DATA aPrintRtf1.
+     * Private variable oPrintRtf2 changed to DATA nPrintRtf2.
+     * Private variable oPrintRtf3 changed to DATA lPrintRtf3.
+     * Private variable oPrintCsv1 changed to DATA aPrintCsv.
+     * Changed * comments to // format.
+     * Changed comments to english.
+     * Changed some local variable names.
+     * Static variables changed to #defines.
+     * Literals replaced by _OOHG_Messages() calls so the can be
+       customized.
+     * DATA cPort moved from TPRINTDOS to TPRINTBASE because it's
+       used in method TPRINTBASE:PrintDos().
+     * The "oohg printing ..." window can be sustituted by an
+       owner defined window. Just create a CHILD window and name it
+       "_oohg_winreport". Do not activate it, the class will do that.
+       This window must be defined before calling method BeginDoc.
+     + Added T O D O keyword to some comments.
+     + Added: lPreview parameter in method TPRINTBASE:SelPrinter
+       defaults to .T. (previously it was required).
+     - References to unused milinea2 variable deleted.
+     - References to unused oPrintCsv2 variable deleted.
+     - References to unused oPrintCsv3 variable deleted.
+     - Deleted some commented lines.
+     - Deleted some comments.
 
 2012-09-26 23:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/miniprint.prg

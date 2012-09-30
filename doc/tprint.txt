@@ -1,5 +1,5 @@
 /*
- * $Id: tprint.txt,v 1.4 2012-06-03 15:39:04 fyurisich Exp $
+ * $Id: tprint.txt,v 1.5 2012-09-30 23:22:57 fyurisich Exp $
  */
 
 CLASE TPRINT
@@ -47,7 +47,7 @@ Nota: Todos los parámetros de todos los métodos son opcionales.
   Inicializa la impresora.
     lselect    = .T. muestra cuadro de diálogo para seleccionar impresora
     lselect    = .F. utiliza la impresora por defecto
-    lpreview   = .T. muestra la vista previa antes de imprimir
+    lpreview   = .T. muestra la vista previa antes de imprimir (valor por defecto)
     lpreview   = .F. no muestra la vista previa
     llandscape = .T. impresión horizontal
     llanscape  = .F. impresión vertical
