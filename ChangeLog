@@ -1,11 +1,15 @@
 /*
- * $Id: ChangeLog,v 1.1021 2012-09-30 23:22:57 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1022 2012-10-03 22:49:23 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-10-03 19:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./compile_mingw.bat
+     + Added minizip library.
 
 2012-09-30 20:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * doc/tprint.txt
