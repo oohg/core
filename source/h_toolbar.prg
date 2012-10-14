@@ -1,5 +1,5 @@
 /*
- * $Id: h_toolbar.prg,v 1.36 2012-07-29 05:09:30 fyurisich Exp $
+ * $Id: h_toolbar.prg,v 1.37 2012-10-14 16:11:42 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -99,9 +99,13 @@ STATIC _OOHG_ActiveToolBar := NIL    // Active toolbar
 
 #pragma BEGINDUMP
 
-#define _WIN32_IE      0x0500
+#ifndef _WIN32_IE
+   #define _WIN32_IE      0x0500
+#endif
 #define HB_OS_WIN_32_USED
-#define _WIN32_WINNT   0x0400
+#ifndef _WIN32_WINNT
+   #define _WIN32_WINNT   0x0400
+#endif
 #include <shlobj.h>
 
 #include <windows.h>

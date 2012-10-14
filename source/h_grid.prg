@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.188 2012-09-22 13:12:23 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.189 2012-10-14 16:11:42 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -4097,6 +4097,10 @@ EXTERN GetGridVKey, TGrid_Notify_CustomDraw
 
 #ifndef LVS_EX_DOUBLEBUFFER
    #define LVS_EX_DOUBLEBUFFER 0x00010000
+#endif
+
+#ifndef WM_MOUSEWHEEL
+   #define WM_MOUSEWHEEL  0x020A
 #endif
 
 #define s_Super s_TControl

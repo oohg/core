@@ -1,5 +1,5 @@
 /*
- * $Id: h_frame.prg,v 1.11 2012-02-08 18:24:33 fyurisich Exp $
+ * $Id: h_frame.prg,v 1.12 2012-10-14 16:11:42 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -158,9 +158,13 @@ Return Events_Color_InTab( Self, wParam, nDefColor )    // see h_controlmisc.prg
 
 #pragma BEGINDUMP
 
-#define _WIN32_IE      0x0500
+#ifndef _WIN32_IE
+   #define _WIN32_IE      0x0500
+#endif
 #define HB_OS_WIN_32_USED
-#define _WIN32_WINNT   0x0400
+#ifndef _WIN32_WINNT
+   #define _WIN32_WINNT   0x0400
+#endif
 #include <shlobj.h>
 
 #include <windows.h>

@@ -1,5 +1,5 @@
 /*
- * $Id: h_spinner.prg,v 1.16 2009-06-13 01:50:32 guerra000 Exp $
+ * $Id: h_spinner.prg,v 1.17 2012-10-14 16:11:42 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -238,9 +238,13 @@ Return ::nIncrement
 
 #pragma BEGINDUMP
 
-#define _WIN32_IE      0x0500
+#ifndef _WIN32_IE
+   #define _WIN32_IE      0x0500
+#endif
 #define HB_OS_WIN_32_USED
-#define _WIN32_WINNT   0x0400
+#ifndef _WIN32_WINNT
+   #define _WIN32_WINNT   0x0400
+#endif
 #include <shlobj.h>
 
 #include <windows.h>

@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.55 2011-11-20 03:51:46 fyurisich Exp $
+ * $Id: h_button.prg,v 1.56 2012-10-14 16:11:42 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -381,13 +381,17 @@ Return ::aImageMargin
 
 #pragma BEGINDUMP
 
-#define _WIN32_IE      0x0500
+#ifndef _WIN32_IE
+   #define _WIN32_IE      0x0500
+#endif
 
 #ifndef HB_OS_WIN_32_USED
    #define HB_OS_WIN_32_USED
 #endif
 
-#define _WIN32_WINNT   0x0501
+#ifdef _WIN32_WINNT
+   #define _WIN32_WINNT   0x0501
+#endif
 
 #include <hbapi.h>
 #include <windows.h>

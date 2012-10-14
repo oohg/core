@@ -1,11 +1,21 @@
 /*
- * $Id: ChangeLog,v 1.1022 2012-10-03 22:49:23 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1023 2012-10-14 16:11:42 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-10-14 11:10 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+   * source/h_button.prg
+   * source/h_frame.prg
+   * source/h_spinner.prg
+   * source/h_timer.prg
+   * source/h_toolbar.prg
+     ! Prevents _WIN32_IE and _WIN32_WINNT redeclarations.
+   * source/h_grid.prg
+     ! Prevents missing WM_MOUSEWHEEL declaration.
 
 2012-10-03 19:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./compile_mingw.bat
