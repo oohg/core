@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.76 2012-09-24 01:01:38 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.77 2012-10-15 14:34:37 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -707,7 +707,7 @@ RETURN ::Super:RefreshData()
 *-----------------------------------------------------------------------------*
 METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
-Local cWorkArea, nCurrent, nSkipped, uGridValue
+Local cWorkArea, uGridValue
 
    If nMsg == WM_CHAR
       If wParam < 32
@@ -733,9 +733,7 @@ Local cWorkArea, nCurrent, nSkipped, uGridValue
          cWorkArea := nil
       EndIf
 
-      nCurrent := ::CurrentRow
       ::DbSkip()
-      nSkipped := 1
 
       Do While ! ::Eof()
          uGridValue := Eval( ::ColumnBlock( ::SearchCol ), cWorkArea )
@@ -748,13 +746,10 @@ Local cWorkArea, nCurrent, nSkipped, uGridValue
          EndIf
 
          ::DbSkip()
-         nSkipped ++
       EndDo
 
       If ::Eof() .AND. ::SearchWrap
          ::TopBottom( -1 )
-         nCurrent := 1
-         nSkipped := 0
 
          Do While ! ::Eof()
             uGridValue := Eval( ::ColumnBlock( ::SearchCol ), cWorkArea )
@@ -767,18 +762,14 @@ Local cWorkArea, nCurrent, nSkipped, uGridValue
             EndIf
 
             ::DbSkip()
-            nSkipped ++
          EndDo
       EndIf
 
       If ::Eof()
          ::GoBottom()
-      ElseIf nCurrent + nSkipped > ::CountPerPage
+      Else
          ::Refresh( ::CountPerPage )
          ::DoChange()
-      Else
-         ::CurrentRow := nCurrent + nSkipped
-        ::DoChange()
       EndIf
 
       Return 0

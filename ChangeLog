@@ -1,11 +1,15 @@
 /*
- * $Id: ChangeLog,v 1.1023 2012-10-14 16:11:42 guerra000 Exp $
+ * $Id: ChangeLog,v 1.1024 2012-10-15 14:34:37 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-10-15 12:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_xbrowse.prg
+     ! Fixed: search wrap dos not paint the control correctly.
 
 2012-10-14 11:10 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
    * source/h_button.prg
@@ -67,7 +71,7 @@
 
 2012-09-23 22:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_xbrowse.prg
-     ! Fixed: search wrap doen't work when there are few row in
+     ! Fixed: search wrap dosen't work when there are few row in
        a big control.
 
 2012-09-22 21:17 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
