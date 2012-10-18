@@ -1,5 +1,5 @@
 /*
- * $Id: i_xbrowse.ch,v 1.22 2012-09-21 23:00:21 fyurisich Exp $
+ * $Id: i_xbrowse.ch,v 1.23 2012-10-18 00:46:46 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -163,7 +163,7 @@
       [ <fullmove: FULLMOVE> ] ;
       [ SELECTEDCOLORS <aSelectedColors> ] ;
       [ EDITKEYS <aEditKeys> ] ;
-      [ <dblbffr: DOUBLEBUFFER> ] ;
+      [ <bffr: DOUBLEBUFFER, SINGLEBUFFER> ] ;
       [ <focus: NOFOCUSRECT, FOCUSRECT> ] ;
       [ <plm: PAINTLEFTMARGIN> ] ;
       [ <fixedcols: FIXEDCOLS> ] ;
@@ -183,6 +183,7 @@
             <aWhenFields>, <.reccount.>, <columninfo>, ! <.noshowheaders.>, <{enter}>, ;
             <.disabled.>, <.notabstop.>, <.invisible.>, <.descending.>, <{bWhenDel}>, ;
             <DelMsg>, <{onDelete}>, <aHeaderImages>, <aImgAlign>, <.fullmove.>, ;
-            <aSelectedColors>, <aEditKeys>, <.dblbffr.>, ;
+            <aSelectedColors>, <aEditKeys>, ;
+            iif( upper( #<bffr> ) == "DOUBLEBUFFER", .T., iif( upper( #<bffr> ) == "SINGLEBUFFER", .F., .T. ) ), ;
             iif( upper( #<focus> ) == "NOFOCUSRECT", .F., iif( upper( #<focus> ) == "FOCUSRECT", .T., NIL ) ), ;
             <.plm.>, <.fixedcols.>, <{abortedit}>, <{click}>, <.fixedwidths.> )

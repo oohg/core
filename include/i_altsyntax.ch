@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.75 2012-09-21 23:00:21 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.76 2012-10-18 00:46:46 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -679,7 +679,7 @@ CHECKLIST
         _OOHG_ActiveControlSort           := .F. ;;
         _OOHG_ActiveControlDescending     := .F. ;;
         _OOHG_ActiveControlSelectedColors := Nil ;;
-        _OOHG_ActiveControlDblBffer       := .F.
+        _OOHG_ActiveControlDblBffer       := .T.
 
 #xcommand DOUBLEBUFFER <dblbffr> ;
         => ;
@@ -2020,7 +2020,7 @@ GRID
         _OOHG_ActiveControlKeys             := Nil ;;
         _OOHG_ActiveControlCheckBoxes       := .F. ;;
         _OOHG_ActiveControlOnCheckChange    := Nil ;;
-        _OOHG_ActiveControlDblBffer         := .F. ;;
+        _OOHG_ActiveControlDblBffer         := .T. ;;
         _OOHG_ActiveControlPaintLeftMargin  := .F. ;;
         _OOHG_ActiveControlFocusRect        := .F. ;;
         _OOHG_ActiveControlNoFocusRect      := .F. ;;
@@ -2203,7 +2203,7 @@ BROWSE
         _OOHG_ActiveControlKeys             := Nil ;;
         _OOHG_ActiveControlForceRefresh     := .F. ;;
         _OOHG_ActiveControlNoRefresh        := .F. ;;
-        _OOHG_ActiveControlDblBffer         := .F. ;;
+        _OOHG_ActiveControlDblBffer         := .T. ;;
         _OOHG_ActiveControlPaintLeftMargin  := .F. ;;
         _OOHG_ActiveControlFocusRect        := .F. ;;
         _OOHG_ActiveControlNoFocusRect      := .F. ;;
@@ -2386,7 +2386,7 @@ XBROWSE
         _OOHG_ActiveControlFullMove         := .F. ;;
         _OOHG_ActiveControlSelectedColors   := .F. ;;
         _OOHG_ActiveControlKeys             := Nil ;
-        _OOHG_ActiveControlDblBffer         := .F. ;;
+        _OOHG_ActiveControlDblBffer         := .T. ;;
         _OOHG_ActiveControlPaintLeftMargin  := .F. ;;
         _OOHG_ActiveControlFocusRect        := .F. ;;
         _OOHG_ActiveControlNoFocusRect      := .F. ;;

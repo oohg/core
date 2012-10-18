@@ -1,11 +1,25 @@
 /*
- * $Id: ChangeLog,v 1.1024 2012-10-15 14:34:37 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1025 2012-10-18 00:46:46 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-10-17 22:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_browse.ch
+   * include/i_checklist.ch
+   * include/i_grid.ch
+   * include/i_hmg_compat.ch
+   * include/i_xbrowse.ch
+     + Added support for SINGLEBUFFER clause.
+   * include/i_altsyntax.ch
+   * source/h_grid.prg
+     * By default grid, xbrowse and browse controls will have
+       double buffering ON if Windows version is XP or upper.
+       This feature will be forced to OFF when Windows version
+       is previous to XP.
 
 2012-10-15 12:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_xbrowse.prg

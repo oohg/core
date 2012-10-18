@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.189 2012-10-14 16:11:42 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.190 2012-10-18 00:46:46 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -327,7 +327,7 @@ Local ControlHandle, aImageList, i
    aEval( ::Picture, { |x,i| ::Picture[ i ] := If( ( ValType( x ) $ "CM" .AND. ! Empty( x ) ) .OR. HB_IsLogical( x ), x, Nil ) } )
 
    ::SetSplitBoxInfo( Break )
-   ControlHandle := InitListView( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, '', 0, If( ::lNoGrid, 0, 1 ), ownerdata, itemcount, nStyle, ::lRtl, ::lCheckBoxes, lDblBffr )
+   ControlHandle := InitListView( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, '', 0, If( ::lNoGrid, 0, 1 ), ownerdata, itemcount, nStyle, ::lRtl, ::lCheckBoxes, OSisWinXPorLater() .AND. lDblBffr )
 
    If HB_IsArray( aImage )
 //      aImageList := ImageList_Init( aImage, CLR_NONE, LR_LOADTRANSPARENT )

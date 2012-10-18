@@ -1,5 +1,5 @@
 /*
- * $Id: i_checklist.ch,v 1.4 2012-07-24 23:21:54 fyurisich Exp $
+ * $Id: i_checklist.ch,v 1.5 2012-10-18 00:46:46 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -83,7 +83,7 @@
       [ <invisible: INVISIBLE> ] ;
       [ <sort: SORT> ] ;
       [ <descending: DESCENDING> ] ;
-      [ <dblbffr: DOUBLEBUFFER> ] ;
+      [ <bffr: DOUBLEBUFFER, SINGLEBUFFER> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TCheckList(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <aRows>, ;
@@ -92,7 +92,9 @@
             <helpid>, <.bold.>, <.italic.>, <.underline.>, ;
             <.strikeout.>, <backcolor>, <fontcolor>, <.rtl.>, ;
             <.disabled.>, <.notabstop.>, <.invisible.>, <.sort.>, ;
-            <.descending.>, <aSelectedColors>, <.dblbffr.>, <{click}> )
+            <.descending.>, <aSelectedColors>, ;
+            iif( upper( #<bffr> ) == "DOUBLEBUFFER", .T., iif( upper( #<bffr> ) == "SINGLEBUFFER", .F., .T. ) ), ;
+            <{click}> )
 
 /*
  * EOF

@@ -1,5 +1,5 @@
 /*
- * $Id: i_browse.ch,v 1.37 2012-09-21 23:00:21 fyurisich Exp $
+ * $Id: i_browse.ch,v 1.38 2012-10-18 00:46:46 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -168,7 +168,7 @@
       [ EDITKEYS <aEditKeys> ] ;
       [ <forcerefresh: FORCEREFRESH> ] ;
       [ <norefresh: NOREFRESH> ] ;
-      [ <dblbffr: DOUBLEBUFFER> ] ;
+      [ <bffr: DOUBLEBUFFER, SINGLEBUFFER> ] ;
       [ <focus: NOFOCUSRECT, FOCUSRECT> ] ;
       [ <plm: PAINTLEFTMARGIN> ] ;
       [ <sync: SYNCHRONIZED, UNSYNCHRONIZED> ] ;
@@ -191,7 +191,8 @@
             <columninfo>, ! <.noshowheaders.>, <{enter}>, <.disabled.>, <.notabstop.>, ;
             <.invisible.>, <.descending.>, <{bWhenDel}>, <DelMsg>, <{onDelete}>, ;
             <aHeaderImages>, <aImgAlign>, <.fullmove.>, <aSelectedColors>, <aEditKeys>, ;
-            if( <.forcerefresh.>, 0, if( <.norefresh.>, 1, nil ) ), <.dblbffr.>, ;
+            if( <.forcerefresh.>, 0, if( <.norefresh.>, 1, nil ) ), ;
+            iif( upper( #<bffr> ) == "DOUBLEBUFFER", .T., iif( upper( #<bffr> ) == "SINGLEBUFFER", .F., .T. ) ), ;
             iif( upper( #<focus> ) == "NOFOCUSRECT", .F., iif( upper( #<focus> ) == "FOCUSRECT", .T., NIL ) ), ;
             <.plm.>, iif( upper( #<sync> ) == "UNSYNCHRONIZED", .F., iif( upper( #<sync> ) == "SYNCHRONIZED", .T., NIL ) ), ;
             <.fixedcols.>, <.nodelmsg.>, <.updall.>, <{abortedit}>, <{click}>, <.fixedwidths.> )

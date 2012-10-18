@@ -1,5 +1,5 @@
 /*
- * $Id: i_grid.ch,v 1.26 2012-09-21 23:00:21 fyurisich Exp $
+ * $Id: i_grid.ch,v 1.27 2012-10-18 00:46:46 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -160,7 +160,7 @@
       [ EDITKEYS <aEditKeys> ] ;
       [ <checkboxes: CHECKBOXES> ] ;
       [ ON CHECKCHANGE <checkchange> ] ;
-      [ <dblbffr: DOUBLEBUFFER> ] ;
+      [ <bffr: DOUBLEBUFFER, SINGLEBUFFER> ] ;
       [ <focus: NOFOCUSRECT, FOCUSRECT> ] ;
       [ <plm: PAINTLEFTMARGIN> ] ;
       [ <fixedcols: FIXEDCOLS> ] ;
@@ -178,7 +178,8 @@
             <aReadOnly>, <aValidFields>, <aValidMessages>, <{editcell}>, ;
             <aWhenFields>, <.disabled.>, <.notabstop.>, <.invisible.>, ;
             ! <.noshowheaders.>, <{enter}>, <aHeaderImages>, <aImgAlign>, <.fullmove.>, ;
-            <aSelectedColors>, <aEditKeys>, <.checkboxes.>, <{checkchange}>, <.dblbffr.>, ;
+            <aSelectedColors>, <aEditKeys>, <.checkboxes.>, <{checkchange}>, ;
+            iif( upper( #<bffr> ) == "DOUBLEBUFFER", .T., iif( upper( #<bffr> ) == "SINGLEBUFFER", .F., .T. ) ), ;
             iif( #<focus> == "NOFOCUSRECT", .F., iif( #<focus> == "FOCUSRECT", .T., NIL ) ), ;
             <.plm.>, <.fixedcols.>, <{abortedit}>, <{click}>, <.fixedwidths.> )
 
@@ -244,7 +245,7 @@
       [ EDITKEYS <aEditKeys> ] ;
       [ <checkboxes: CHECKBOXES> ] ;
       [ ON CHECKCHANGE <checkchange> ] ;
-      [ <dblbffr: DOUBLEBUFFER> ] ;
+      [ <bffr: DOUBLEBUFFER, SINGLEBUFFER> ] ;
       [ <focus: NOFOCUSRECT, FOCUSRECT> ] ;
       [ <plm: PAINTLEFTMARGIN> ] ;
       [ <fixedcols: FIXEDCOLS> ] ;
@@ -261,6 +262,7 @@
             <aReadOnly>, <aValidFields>, <aValidMessages>, <{editcell}>, ;
             <aWhenFields>, <.disabled.>, <.notabstop.>, <.invisible.>, ;
             ! <.noshowheaders.>, <{enter}>, <aHeaderImages>, <aImgAlign>, <.fullmove.>, ;
-            <aSelectedColors>, <aEditKeys>, <.checkboxes.>, <{checkchange}>, <.dblbffr.>, ;
+            <aSelectedColors>, <aEditKeys>, <.checkboxes.>, <{checkchange}>, ;
+            iif( upper( #<bffr> ) == "DOUBLEBUFFER", .T., iif( upper( #<bffr> ) == "SINGLEBUFFER", .F., .T. ) ), ;
             iif( #<focus> == "NOFOCUSRECT", .F., iif( #<focus> == "FOCUSRECT", .T., NIL ) ), ;
             <.plm.>, <.fixedcols.>, <{click}>, <.fixedwidths.> )
