@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.56 2012-10-14 16:11:42 guerra000 Exp $
+ * $Id: h_button.prg,v 1.57 2012-10-21 19:48:33 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -389,7 +389,7 @@ Return ::aImageMargin
    #define HB_OS_WIN_32_USED
 #endif
 
-#ifdef _WIN32_WINNT
+#ifndef _WIN32_WINNT
    #define _WIN32_WINNT   0x0501
 #endif
 

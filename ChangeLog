@@ -1,5 +1,5 @@
 ﻿/*
- * $Id: ChangeLog,v 1.1026 2012-10-18 14:46:30 declan2005 Exp $
+ * $Id: ChangeLog,v 1.1027 2012-10-21 19:48:32 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,6 +7,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2012-10-21 14:48 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+   * source/h_button.prg
+     ! Fixed _WIN32_WINNT redeclaration.
+   * source/h_ini.prg
+     ! Prevents _WIN32_IE and _WIN32_WINNT redeclarations.
 
 2012-10-18 10:44 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
    * source/h_error.prg

@@ -1,5 +1,5 @@
 /*
- * $Id: h_ini.prg,v 1.4 2010-01-21 09:13:07 guerra000 Exp $
+ * $Id: h_ini.prg,v 1.5 2012-10-21 19:48:33 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -238,7 +238,9 @@ EXTERN GETPRIVATEPROFILESTRING, WRITEPRIVATEPROFILESTRING, DELINIENTRY, DELINISE
 
 #pragma BEGINDUMP
 #define HB_OS_WIN_32_USED
-#define _WIN32_WINNT   0x0400
+#ifndef _WIN32_WINNT
+   #define _WIN32_WINNT   0x0400
+#endif
 #include <windows.h>
 #include <commctrl.h>
 #include "hbapi.h"
