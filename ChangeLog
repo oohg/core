@@ -1,11 +1,17 @@
-﻿/*
- * $Id: ChangeLog,v 1.1027 2012-10-21 19:48:32 guerra000 Exp $
+/*
+ * $Id: ChangeLog,v 1.1028 2012-11-03 03:54:56 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-11-03 01:54 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_windows.prg
+     * Changed _OOHG_CallDump to accept any kind of parameter.
+   * source/h_tab.prg
+     ! Fixed: browse in second page of a tab displays two scrollbars.
 
 2012-10-21 14:48 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
    * source/h_button.prg
@@ -17,7 +23,7 @@
    * source/h_error.prg
      ! version updated
 
-2012-10-17 22:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2012-10-17 22:46 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_browse.ch
    * include/i_checklist.ch
    * include/i_grid.ch
@@ -31,7 +37,7 @@
        This feature will be forced to OFF when Windows version
        is previous to XP.
 
-2012-10-15 12:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2012-10-15 12:30 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_xbrowse.prg
      ! Fixed: search wrap dos not paint the control correctly.
 

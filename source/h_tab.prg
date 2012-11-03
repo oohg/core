@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.61 2012-09-21 21:59:15 guerra000 Exp $
+ * $Id: h_tab.prg,v 1.62 2012-11-03 03:54:56 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -708,7 +708,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aCaptions, aPageMap, ;
 
    ::CreatePages( aCaptions, Images, aPageMap, aMnemonic )
 
-   ::oContainerBase:OnChange := { || ::Refresh() , ::DoChange() }
+   ::oContainerBase:OnChange := { || ::Refresh(), ::DoChange() }
 RETURN Self
 
 *-----------------------------------------------------------------------------*
@@ -851,6 +851,7 @@ LOCAL nPage, nFocused
    AEVAL( ::aPages, { |p,i| p:Position := i , p:ForceHide() } )
    IF nPage >= 1 .AND. nPage <= LEN( ::aPages )
       ::aPages[ nPage ]:Show()
+      AEVAL( ::aPages[ nPage ]:aControls, { |o| o:Refresh() } )
    ENDIF
 
    IF ValidHandler( nFocused )

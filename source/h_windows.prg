@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.238 2012-08-27 05:50:50 guerra000 Exp $
+ * $Id: h_windows.prg,v 1.239 2012-11-03 03:54:56 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -2727,7 +2727,7 @@ Local uRet
    EndIf
 Return uRet
 
-PROCEDURE _OOHG_CallDump( cTitle )
+PROCEDURE _OOHG_CallDump( uTitle )
 LOCAL nLevel, cText
    cText := ""
    nLevel := 1
@@ -2738,7 +2738,7 @@ LOCAL nLevel, cText
       cText += PROCNAME( nLevel ) + "(" + LTRIM( STR( PROCLINE( nLevel ) ) ) + ")"
       nLevel++
    ENDDO
-   MSGINFO( cText, cTitle )
+   MSGINFO( cText, autotype( uTitle ) )
 Return
 
 // PATCH :(
