@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.62 2012-11-03 03:54:56 fyurisich Exp $
+ * $Id: h_tab.prg,v 1.63 2012-11-04 15:13:51 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -851,7 +851,6 @@ LOCAL nPage, nFocused
    AEVAL( ::aPages, { |p,i| p:Position := i , p:ForceHide() } )
    IF nPage >= 1 .AND. nPage <= LEN( ::aPages )
       ::aPages[ nPage ]:Show()
-      AEVAL( ::aPages[ nPage ]:aControls, { |o| o:Refresh() } )
    ENDIF
 
    IF ValidHandler( nFocused )

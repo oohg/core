@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.190 2012-10-18 00:46:46 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.191 2012-11-04 15:13:51 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -4368,29 +4368,43 @@ static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 HB_FUNC( INITLISTVIEW )
 {
    HWND hwnd;
-   HWND hbutton;
    int style, StyleEx, extStyle;
-
    INITCOMMONCONTROLSEX i;
+   int iCol, iRow, iWidth, iHeight, iNewRow;
+   BOOL bVisible;
 
    i.dwSize = sizeof( INITCOMMONCONTROLSEX );
    i.dwICC = ICC_DATE_CLASSES;
    InitCommonControlsEx( &i );
 
-   hwnd = HWNDparam( 1 );
-
    StyleEx = WS_EX_CLIENTEDGE | _OOHG_RTL_Status( hb_parl( 13 ) );
 
-   style = LVS_SHOWSELALWAYS | WS_CHILD | LVS_REPORT;
+   style = LVS_SHOWSELALWAYS | WS_CHILD | LVS_REPORT | hb_parni( 12 );
    if ( hb_parl( 10 ) )
    {
       style = style | LVS_OWNERDATA;
    }
 
-   hbutton = CreateWindowEx(StyleEx,"SysListView32","",
-   ( style | hb_parni( 12 ) ),
-   hb_parni(3), hb_parni(4), hb_parni(5), hb_parni(6),
-   hwnd, ( HMENU ) HWNDparam( 2 ), GetModuleHandle(NULL), NULL ) ;
+   // control must have WS_VISIBLE style or it may not be painted properly
+
+   bVisible = ( style & WS_VISIBLE );
+
+   iCol = hb_parni(3);
+   iRow = hb_parni(4);
+   iWidth = hb_parni(5);
+   iHeight = hb_parni(6);
+
+   iNewRow = iRow;
+
+   if( ! bVisible )
+   {
+      style = style | WS_VISIBLE;
+      iRow = - 1000 - iRow;
+   }
+
+   hwnd = CreateWindowEx( StyleEx, "SysListView32", "", style,
+                          iCol, iRow, iWidth, iHeight,
+                          HWNDparam( 1 ), (HMENU) HWNDparam( 2 ), GetModuleHandle( NULL ), NULL ) ;
 
    extStyle = hb_parni(9) | LVS_EX_FULLROWSELECT | LVS_EX_HEADERDRAGDROP | LVS_EX_SUBITEMIMAGES;
    if ( hb_parl( 14 ) )
@@ -4401,16 +4415,22 @@ HB_FUNC( INITLISTVIEW )
    {
       extStyle = extStyle | LVS_EX_DOUBLEBUFFER;
    }
-   SendMessage(hbutton, LVM_SETEXTENDEDLISTVIEWSTYLE, 0, extStyle );
+   SendMessage( hwnd, LVM_SETEXTENDEDLISTVIEWSTYLE, 0, extStyle );
+
+   if( ! bVisible )
+   {
+      SetWindowLong( hwnd, GWL_STYLE, style & ( ~ WS_VISIBLE ) );
+      MoveWindow( hwnd, iCol, iNewRow, iWidth, iHeight, TRUE );
+   }
 
    if ( hb_parl( 10 ) )
    {
-      ListView_SetItemCount( hbutton, hb_parni( 11 ) ) ;
+      ListView_SetItemCount( hwnd, hb_parni( 11 ) ) ;
    }
 
-   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( hbutton, GWL_WNDPROC, ( LONG ) SubClassFunc );
+   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( hwnd, GWL_WNDPROC, ( LONG ) SubClassFunc );
 
-   HWNDret( hbutton );
+   HWNDret( hwnd );
 }
 
 HB_FUNC( INITLISTVIEWCOLUMNS )
