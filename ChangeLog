@@ -1,11 +1,20 @@
 /*
- * $Id: ChangeLog,v 1.1029 2012-11-04 15:13:50 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1030 2012-11-26 16:13:42 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2012-11-26 14:13 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_tab.prg
+     - Deleted DATA SetImageListWParam from TTabRaw class because is
+       equal to it's parent.
+   * source/h_tree.prg
+     + Added method BACKCOLOR.
+     * Changed the way that node's and item's images are loaded.
+     ! Fixed: control's background is not fully painted.
 
 2012-11-04 13:13 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg

@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.63 2012-11-04 15:13:51 fyurisich Exp $
+ * $Id: h_tab.prg,v 1.64 2012-11-26 16:13:43 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1201,7 +1201,6 @@ CLASS TTabRaw FROM TControl
    DATA ImageListColor      INIT CLR_DEFAULT
    DATA ImageListFlags      INIT LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
    DATA SetImageListCommand INIT TCM_SETIMAGELIST
-   DATA SetImageListWParam  INIT 0
 
    METHOD Define
    METHOD Value               SETGET

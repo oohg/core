@@ -1,5 +1,5 @@
 /*
- * $Id: h_tree.prg,v 1.36 2012-08-03 03:03:25 fyurisich Exp $
+ * $Id: h_tree.prg,v 1.37 2012-11-26 16:13:43 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -173,6 +173,7 @@ CLASS TTree FROM TControl
    METHOD ItemHeight         SETGET
    METHOD SelectionID        SETGET
    METHOD IsItemValid
+   METHOD BackColor          SETGET
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -254,10 +255,8 @@ Local Controlhandle, nStyle, ImgDefNode, ImgDefItem, aBitmaps := array(4)
          aBitmaps[ 4 ] := aImgNode[ ImgDefNode ]
       EndIf
 
-      If ::BackColor != Nil
-         ::ImageListColor := RGB( ::BackColor[ 1 ], ::BackColor[ 2 ], ::BackColor[ 3 ] )
-         ::ImageListFlags := LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
-      EndIf
+      ::ImageListColor := GetSysColor( COLOR_3DFACE )
+      ::ImageListFlags := LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
       
       ::AddBitMap( aBitmaps )
    EndIf
@@ -347,10 +346,8 @@ Local NewHandle, TempHandle, i, Pos, ChildHandle, BackHandle, ParentHandle, iPos
             iUnSel := aImage[ 1 ]
          Else
             If ! ValidHandler( ::ImageList )
-               If ::BackColor != Nil
-                  ::ImageListColor := RGB( ::BackColor[ 1 ], ::BackColor[ 2 ], ::BackColor[ 3 ] )
-                  ::ImageListFlags := LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
-               EndIf
+               ::ImageListColor := GetSysColor( COLOR_3DFACE )
+               ::ImageListFlags := LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
             EndIf
 
             iUnSel := ::AddBitMap( aImage[ 1 ] ) - 1
@@ -364,10 +361,8 @@ Local NewHandle, TempHandle, i, Pos, ChildHandle, BackHandle, ParentHandle, iPos
                iSel := aImage[ 2 ]
             Else
                If ! ValidHandler( ::ImageList )
-                  If ::BackColor != Nil
-                     ::ImageListColor := RGB( ::BackColor[ 1 ], ::BackColor[ 2 ], ::BackColor[ 3 ] )
-                     ::ImageListFlags := LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
-                  EndIf
+                  ::ImageListColor := GetSysColor( COLOR_3DFACE )
+                  ::ImageListFlags := LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
                EndIf
 
                iSel := ::AddBitMap( aImage[ 2 ] ) - 1
@@ -449,10 +444,8 @@ Local NewHandle, TempHandle, i, Pos, ChildHandle, BackHandle, ParentHandle, iPos
             iUnSel := aImage[ 1 ]
          Else
             If ! ValidHandler( ::ImageList )
-               If ::BackColor != Nil
-                  ::ImageListColor := RGB( ::BackColor[ 1 ], ::BackColor[ 2 ], ::BackColor[ 3 ] )
-                  ::ImageListFlags := LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
-               EndIf
+               ::ImageListColor := GetSysColor( COLOR_3DFACE )
+               ::ImageListFlags := LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
             EndIf
 
             iUnSel := ::AddBitMap( aImage[ 1 ] ) - 1
@@ -466,10 +459,8 @@ Local NewHandle, TempHandle, i, Pos, ChildHandle, BackHandle, ParentHandle, iPos
                iSel := aImage[ 2 ]
             Else
                If ! ValidHandler( ::ImageList )
-                  If ::BackColor != Nil
-                     ::ImageListColor := RGB( ::BackColor[ 1 ], ::BackColor[ 2 ], ::BackColor[ 3 ] )
-                     ::ImageListFlags := LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
-                  EndIf
+                  ::ImageListColor := GetSysColor( COLOR_3DFACE )
+                  ::ImageListFlags := LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
                EndIf
 
                iSel := ::AddBitMap( aImage[ 2 ] ) - 1
@@ -855,10 +846,8 @@ Local ImgDef, iUnSel, iSel, Item, iID, iPos
          iUnSel := aImage[ 1 ]
       Else
          If ! ValidHandler( _OOHG_ActiveTree:ImageList )
-            If _OOHG_ActiveTree:BackColor != Nil
-               _OOHG_ActiveTree:ImageListColor := RGB( _OOHG_ActiveTree:BackColor[ 1 ], _OOHG_ActiveTree:BackColor[ 2 ], _OOHG_ActiveTree:BackColor[ 3 ] )
-               _OOHG_ActiveTree:ImageListFlags := LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
-            EndIf
+            _OOHG_ActiveTree:ImageListColor := GetSysColor( COLOR_3DFACE )
+            _OOHG_ActiveTree:ImageListFlags := LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
          EndIf
 
          iUnSel := _OOHG_ActiveTree:AddBitMap( aImage[ 1 ] ) - 1
@@ -872,10 +861,8 @@ Local ImgDef, iUnSel, iSel, Item, iID, iPos
             iSel := aImage[ 2 ]
          Else
             If ! ValidHandler( _OOHG_ActiveTree:ImageList )
-               If _OOHG_ActiveTree:BackColor != Nil
-                  _OOHG_ActiveTree:ImageListColor := RGB( _OOHG_ActiveTree:BackColor[ 1 ], _OOHG_ActiveTree:BackColor[ 2 ], _OOHG_ActiveTree:BackColor[ 3 ] )
-                  _OOHG_ActiveTree:ImageListFlags := LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
-               EndIf
+               _OOHG_ActiveTree:ImageListColor := GetSysColor( COLOR_3DFACE )
+               _OOHG_ActiveTree:ImageListFlags := LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
             EndIf
 
             iSel := _OOHG_ActiveTree:AddBitMap( aImage[ 2 ] ) - 1
@@ -968,10 +955,8 @@ Local Item, ImgDef, iUnSel, iSel, iID, iPos
          iUnSel := aImage[ 1 ]
       Else
          If ! ValidHandler( _OOHG_ActiveTree:ImageList )
-            If _OOHG_ActiveTree:BackColor != Nil
-               _OOHG_ActiveTree:ImageListColor := RGB( _OOHG_ActiveTree:BackColor[ 1 ], _OOHG_ActiveTree:BackColor[ 2 ], _OOHG_ActiveTree:BackColor[ 3 ] )
-               _OOHG_ActiveTree:ImageListFlags := LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
-            EndIf
+            _OOHG_ActiveTree:ImageListColor := GetSysColor( COLOR_3DFACE )
+            _OOHG_ActiveTree:ImageListFlags := LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
          EndIf
 
          iUnSel := _OOHG_ActiveTree:AddBitMap( aImage[ 1 ] ) - 1
@@ -985,10 +970,8 @@ Local Item, ImgDef, iUnSel, iSel, iID, iPos
             iSel := aImage[ 2 ]
          Else
             If ! ValidHandler( _OOHG_ActiveTree:ImageList )
-               If _OOHG_ActiveTree:BackColor != Nil
-                  _OOHG_ActiveTree:ImageListColor := RGB( _OOHG_ActiveTree:BackColor[ 1 ], _OOHG_ActiveTree:BackColor[ 2 ], _OOHG_ActiveTree:BackColor[ 3 ] )
-                  _OOHG_ActiveTree:ImageListFlags := LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
-               EndIf
+               _OOHG_ActiveTree:ImageListColor := GetSysColor( COLOR_3DFACE )
+               _OOHG_ActiveTree:ImageListFlags := LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
             EndIf
 
             iSel := _OOHG_ActiveTree:AddBitMap( aImage[ 2 ] ) - 1
@@ -3430,4 +3413,29 @@ HB_FUNC( TREEVIEW_ISITEMVISIBLE )
 
    hb_retl( bVisible );
 }
+
+HB_FUNC_STATIC( TTREE_BACKCOLOR )
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+
+   if( _OOHG_DetermineColorReturn( hb_param( 1, HB_IT_ANY ), &oSelf->lBackColor, ( hb_pcount() >= 1 ) ) )
+   {
+      if( ValidHandler( oSelf->hWnd ) )
+      {
+         if( oSelf->lBackColor != -1 )
+         {
+            TreeView_SetBkColor( oSelf->hWnd, (COLORREF) oSelf->lBackColor );
+         }
+         else
+         {
+            TreeView_SetBkColor( oSelf->hWnd, (COLORREF) GetSysColor( COLOR_WINDOW ) );
+         }
+         RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+      }
+   }
+
+   // Return value was set in _OOHG_DetermineColorReturn()
+}
+
 #pragma ENDDUMP
