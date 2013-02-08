@@ -1,11 +1,16 @@
-/*
- * $Id: ChangeLog,v 1.1030 2012-11-26 16:13:42 fyurisich Exp $
+﻿/*
+ * $Id: ChangeLog,v 1.1031 2013-02-08 05:35:48 declan2005 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-02-13 00:34 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+   * source/h_print.prg
+     ! fixed problem in barcode print code128c when in the code are two 7  in sequence.
+     ( thanks to guillermo Luhning for reporting )
 
 2012-11-26 14:13 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_tab.prg

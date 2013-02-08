@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.123 2012-09-30 23:22:57 fyurisich Exp $
+* $Id: h_print.prg,v 1.124 2013-02-08 05:35:49 declan2005 Exp $
 */
 
 #include 'hbclass.ch'
@@ -591,7 +591,8 @@ RETURN Self
 METHOD Code128( nRow, nCol, cCode, cMode, aColor, lHorz, nWidth, nHeigth ) CLASS TPRINTBASE
 *-----------------------------------------------------------------------------*
    // TODO: test parameters
-   ::Go_Code( _Code128( cCode, cMode ), nRow, nCol, lHorz, aColor, nWidth, nHeigth )
+
+        ::Go_Code( _Code128( cCode, cMode ), nRow, nCol, lHorz, aColor, nWidth, nHeigth )
 RETURN Self
 
 *-----------------------------------------------------------------------------*
@@ -665,7 +666,7 @@ LOCAL n
 
    DEFAULT aColor TO { 0, 0, 0 }
    DEFAULT lHorz  TO .T.
-   DEFAULT nWidth TO 0.50           // 1/3 M/mm 0.25 width
+   DEFAULT nWidth TO 0.495           // 1/3 M/mm 0.25 width
    DEFAULT nLen   TO 15             // mm height
 
    FOR n := 1 TO Len( cBarcode )
@@ -678,6 +679,16 @@ LOCAL n
             ny += nWidth
          ENDIF
       ELSE
+          //////////////////////////////////
+     /////      IF SubStr( cBarcode, n, 1 ) = '1'
+      ///   IF lHorz
+      ////      ::PrintBarcodeX( ny, nx, ny + nLen, nx + nWidth, {255,255,255} )
+          ///  nx += nWidth
+       ///  ELSE
+      ////      ::PrintBarcodeX( ny, nx, ny + nWidth, nx + nlen , {255,255,255} )
+         ///   ny += nWidth
+      ////   ENDIF
+          /////////////////////////////////
          IF lHorz
             nx += nWidth
          ELSE
@@ -3284,7 +3295,7 @@ RETURN cBarcode
                        "142211", ;
                        "241211", ;
                        "221114", ;
-                       "213111", ;
+                       "413111", ;
                        "241112", ;
                        "134111", ;
                        "111242", ;
@@ -3484,7 +3495,7 @@ RETURN cBarcode
 #define EAN_LEFT1 "0001101001100100100110111101010001101100010101111011101101101110001011"
 #define EAN_LEFT2 "0100111011001100110110100001001110101110010000101001000100010010010111"
 #define EAN_FIRST "ooooooooeoeeooeeoeooeeeooeooeeoeeooeoeeeoooeoeoeoeoeeooeeoeo"
-                  
+
 *-----------------------------------------------------------------------------*
 FUNCTION _Ean13( cCode )
 *-----------------------------------------------------------------------------*
@@ -3792,8 +3803,6 @@ LOCAL cPre, cBarCode := '', nCheck, n
      ENDIF
    NEXT
 RETURN cBarCode
-
-
 
 
 
