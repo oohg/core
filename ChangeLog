@@ -1,11 +1,16 @@
 ﻿/*
- * $Id: ChangeLog,v 1.1031 2013-02-08 05:35:48 declan2005 Exp $
+ * $Id: ChangeLog,v 1.1032 2013-02-17 06:32:01 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-02-17 00:29 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+   * samples/oohg/oohgrecord/px.prg
+     ! Fixed SEEK procedure on PX files.
+     * Moved field's reading to C level.
 
 2013-02-13 00:34 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
    * source/h_print.prg

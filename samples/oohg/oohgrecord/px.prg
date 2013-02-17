@@ -1,5 +1,5 @@
 /*
- * $Id: px.prg,v 1.5 2012-06-24 15:41:55 fyurisich Exp $
+ * $Id: px.prg,v 1.6 2013-02-17 06:32:02 guerra000 Exp $
  */
 /*
  * This is a ooHGRecord's subclasses (database class used
@@ -432,30 +432,27 @@ RETURN HB_InLine( cBuffer, nPos, nCount ){
 //    ENDDO
 // RETURN nNum
 
-STATIC FUNCTION ReadBigEndian( cBuffer, nPos, nCount, lUnsigned )
-RETURN HB_InLine( cBuffer, nPos, nCount, lUnsigned ){
-   int iCount, iLen;
-   char *cBuffer;
+EXTERN READBIGENDIAN
+
+#pragma BEGINDUMP
+
+ULONGLONG ReadBigEndian( char *cBuffer, int iLen, int iPos, int iCount, int iUnsigned )
+{
    ULONGLONG llNum, llSign;
 
-   // Buffer's length
-   iLen = hb_parclen( 1 );
-   cBuffer = ( char * ) hb_parc( 1 );
    // Skipped bytes
-   iCount = hb_parni( 2 );
-   if( iCount > iLen )
+   if( iPos > iLen )
    {
       iLen = 0;
    }
-   else if( iCount > 1 )
+   else if( iPos > 1 )
    {
-      iCount--;
-      iLen -= iCount;
-      cBuffer += iCount;
+      iPos--;
+      iLen -= iPos;
+      cBuffer += iPos;
    }
 
    // Number size
-   iCount = hb_parni( 3 );
    if( iCount > iLen )
    {
       iCount = iLen;
@@ -478,7 +475,7 @@ RETURN HB_InLine( cBuffer, nPos, nCount, lUnsigned ){
       }
    }
 
-   if( hb_parl( 4 ) )
+   if( iUnsigned )
    {
       llNum = llNum ^ llSign;
    }
@@ -487,8 +484,15 @@ RETURN HB_InLine( cBuffer, nPos, nCount, lUnsigned ){
       llNum = llNum - llSign;
    }
 
-   hb_retnll( llNum );
+   return llNum;
 }
+
+HB_FUNC( READBIGENDIAN )   // ( cBuffer, nPos, nCount, lUnsigned )
+{
+   hb_retnll( ReadBigEndian( ( char * ) hb_parc( 1 ), hb_parclen( 1 ), hb_parni( 2 ), hb_parni( 3 ), hb_parl( 4 ) ) );
+}
+
+#pragma ENDDUMP
 
 STATIC FUNCTION WriteBigEndian( nNum, nCount )
 /*
@@ -913,6 +917,7 @@ LOCAL uValue, nBufferPos
          ::ReadRecord()
       ENDIF
       nBufferPos := ::aBufferPos[ nPos ]
+/*
       IF     ::aTypes[ nPos ] == "A"
          // Character
          uValue := SUBSTR( ::cRecord, nBufferPos, StrLen( ::cRecord, nBufferPos, nBufferPos + ::aWidths[ nPos ] - 1 ) )
@@ -930,6 +935,7 @@ LOCAL uValue, nBufferPos
          // Long integer ( LONG )
          uValue := ReadBigEndian( ::cRecord, nBufferPos, 4 )
       ELSEIF ::aTypes[ nPos ] == "$" .OR. ::aTypes[ nPos ] == "N"
+         // Currency / numeric double
          uValue := HB_INLINE( SUBSTR( ::cRecord, nBufferPos, 8 ) ){
                       char *cPos, cBuffer[ 8 ];
                       int iMove;
@@ -982,8 +988,250 @@ uValue := STRZERO( INT( uValue / 3600 ), 2 ) + ":" + STRZERO( INT( ( uValue % 36
       ELSEIF ::aTypes[ nPos ] == "Y"
 * BYTES ????
          uValue := SUBSTR( ::cRecord, nBufferPos, ::aWidths[ nPos ] )
-
       ENDIF
+*/
+
+         // ( cType, cRecord, nBufferPos, nWidth )
+         uValue := HB_INLINE( ::aTypes[ nPos ], ::cRecord, ::aBufferPos[ nPos ], ::aWidths[ nPos ] ){
+            char *cBuffer;
+            int iLen, iBufferPos, iWidth, iMax;
+            unsigned long lAux;
+
+            cBuffer = ( char * ) hb_parc( 2 );
+            iLen = hb_parclen( 2 );
+            iBufferPos = hb_parni( 3 ) - 1;
+            iWidth = hb_parni( 4 );
+            if( iBufferPos >= iLen )
+            {
+               iMax = 0;
+            }
+            else
+            {
+               iMax = ( iBufferPos + iWidth > iLen ) ? ( iLen - iBufferPos ) : iWidth;
+            }
+
+            switch( hb_parc( 1 )[ 0 ] )
+            {
+
+               case 'A':
+                  // Character
+                  if( iMax == 0 )
+                  {
+                     hb_retc( "" );
+                  }
+                  else
+                  {
+                     int iBytes, iSize;
+
+                     iSize = iMax;
+                     iBytes = 0;
+                     while( iSize )
+                     {
+                        iSize--;
+                        if( cBuffer[ iBufferPos + iBytes ] == 0 )
+                        {
+                           iSize = 0;
+                        }
+                        else
+                        {
+                           iBytes++;
+                        }
+                     }
+
+                     if( iBytes == 0 || cBuffer[ iBufferPos ] != '"' )
+                     {
+                        hb_retclen( cBuffer + iBufferPos, iBytes );
+                     }
+                     else
+                     {
+                        iBufferPos++;
+                        iBytes--;
+                        if( iBytes > 0 && cBuffer[ iBufferPos + iBytes - 1 ] == '"' )
+                        {
+                           iBytes--;
+                        }
+
+                        if( iBytes == 0 )
+                        {
+                           hb_retc( "" );
+                        }
+                        else
+                        {
+                           char *cText;
+
+                           cText = hb_xgrab( iBytes + 2 );
+                           iSize = 0;
+                           while( iBytes )
+                           {
+                              cText[ iSize ] = cBuffer[ iBufferPos ];
+                              iSize++;
+                              iBytes--;
+                              if( iBytes && cBuffer[ iBufferPos ] == '"' && cBuffer[ iBufferPos + 1 ] == '"' )
+                              {
+                                 iBytes--;
+                                 iBufferPos++;
+                              }
+                              iBufferPos++;
+                           }
+                           cText[ iSize ] = 0;
+                           hb_retclenAdopt( cText, iSize );
+                        }
+                     }
+                  }
+                  break;
+
+               case 'D':
+                  // Date
+                  if( iMax < 4 )
+                  {
+                     hb_retds( "" );
+                  }
+                  else
+                  {
+                     hb_retdl( 1757585 - 36160 + ReadBigEndian( cBuffer, iLen, iBufferPos + 1, 4, 0 ) );
+                  }
+                  break;
+
+               case 'S':
+                  // Small integer ( WORD )
+                  hb_retni( ReadBigEndian( cBuffer, iLen, iBufferPos + 1, 2, 0 ) );
+                  break;
+
+               case 'I':
+                  // Long integer ( LONG )
+                  hb_retnl( ReadBigEndian( cBuffer, iLen, iBufferPos + 1, 4, 0 ) );
+                  break;
+
+               case '$':
+               case 'N':
+                  // Currency / numeric double
+                  if( iMax < 8 )
+                  {
+                     hb_retnd( 0 );
+                  }
+                  else
+                  {
+                     char cNumber[ 8 ];
+                     int iMove;
+                     for( iMove = 0; iMove < 8; iMove++ )
+                     {
+                        cNumber[ iMove ] = cBuffer[ iBufferPos + 7 - iMove ];
+                     }
+                     hb_retnd( *( ( double * ) &cNumber[ 0 ] ) );
+                  }
+                  break;
+
+               case 'L':
+                  // Logical
+                  if( iMax < 1 )
+                  {
+                     hb_retl( 0 );
+                  }
+                  else
+                  {
+                     hb_retl( cBuffer[ iBufferPos ] != 0 );
+                  }
+                  break;
+
+               case 'M':
+               case 'B':
+               case 'F':
+               case 'O':
+               case 'G':
+                  // MEMO Y PARECIDOS...
+                  hb_retc( "" );
+                  break;
+
+               case 'T':
+                  // Time
+                  if( iMax < 4 ||
+                      ( cBuffer[ iBufferPos ]     == 0 &&
+                        cBuffer[ iBufferPos + 1 ] == 0 &&
+                        cBuffer[ iBufferPos + 2 ] == 0 &&
+                        cBuffer[ iBufferPos + 3 ] == 0 ) )
+                  {
+                     hb_retc( "**:**:**" );
+                  }
+                  else
+                  {
+                     lAux = ReadBigEndian( cBuffer, iLen, iBufferPos + 1, 4, 0 ) / 1000;
+                     // hb_retnl( lAux );
+                     {
+                        int iNum;
+                        char cDate[ 10 ];
+                        iNum = lAux % 60;
+                        lAux = lAux / 60;
+                        cDate[ 8 ] = 0;
+                        cDate[ 7 ] = '0' + ( iNum % 10 );
+                        cDate[ 6 ] = '0' + ( iNum / 10 );
+                        iNum = lAux % 60;
+                        lAux = lAux / 60;
+                        cDate[ 5 ] = ':';
+                        cDate[ 4 ] = '0' + ( iNum % 10 );
+                        cDate[ 3 ] = '0' + ( iNum / 10 );
+                        cDate[ 2 ] = ':';
+                        cDate[ 1 ] = '0' + ( lAux % 10 );
+                        cDate[ 0 ] = '0' + ( lAux / 10 );
+                        hb_retc( cDate );
+                     }
+                  }
+                  break;
+
+               case '@':
+                  // Timestamp
+                  //
+                  if( iMax < 4 )
+                  {
+                     hb_retds( "" );
+                  }
+                  else
+                  {
+                     // 1. DATE bytes
+                     lAux = ( ( ( unsigned long ) ( unsigned char ) cBuffer[ iBufferPos + 2 ] ) << 8 ) |
+                              ( ( unsigned long ) ( unsigned char ) cBuffer[ iBufferPos + 3 ] )        ;
+                     if( lAux == 0 )
+                     {
+                     hb_retds( "" );
+                     }
+                     else
+                     {
+                        lAux -= 32767;
+                        // 2. ***MAGIC NUMBER***
+                        // I hadn't found it :'( ... It's a closer number
+                        // uValue := ROUND( ( uValue * 65536 ) / 168752, 0 )
+                        lAux = lAux << 16;
+                             lAux += ( 168752 / 2 );   // ROUND()-like operation
+                        lAux = lAux / 168752;
+                        // 3. Day 0 is January 1st, 1987
+                        hb_retdl( lAux + 2446797 );
+
+                        // TODO: Check for TIME bytes
+
+                     }
+                  }
+                  break;
+
+               case '+':
+                  // Autoincrement
+                  hb_retnl( ReadBigEndian( cBuffer, iLen, iBufferPos + 1, 4, 0 ) );
+                  break;
+
+               case '#':
+// BCD .... ????
+                  hb_retclen( cBuffer + iBufferPos, iMax );
+                  break;
+
+               case 'Y':
+// BYTES ????
+                  hb_retclen( cBuffer + iBufferPos, iMax );
+                  break;
+
+               default:
+                  hb_ret();
+                  break;
+            }
+         }
+
    ENDIF
 RETURN uValue
 
@@ -1356,7 +1604,7 @@ RETURN aData
 
 METHOD SeekKey( cKey, lSoftSeek, lLast, lFound ) CLASS XBrowse_Paradox
 LOCAL cBuffer, nLevel, nBlock, nRecNo, nCant
-LOCAL nPos
+LOCAL nPos, nRecNoFound
    lFound := .F.
    IF ! HB_IsLogical( lLast )
       lLast := .F.
@@ -1369,10 +1617,11 @@ LOCAL nPos
    nBlock := ::nPxRootBlock
    nLevel := ::nPxIndexLevels
    nRecNo := 0
+   nRecNoFound := 0
    DO WHILE nLevel > 0
       ::oPxFile:Seek( ::nPxHeaderSize + ( ( nBlock - 1 ) * ::nPxBlockSize ), FS_SET )
       ::oPxFile:Read( @cBuffer, ::nPxBlockSize )
-      nBlock := ::SeekKeyTree( cKey, cBuffer, ::nPxKeyLen, lLast )
+      nBlock := ::SeekKeyTree( cKey, cBuffer, ::nPxKeyLen, lLast, @lFound )
       IF nBlock == 0
          // Not found!
          EXIT
@@ -1386,10 +1635,17 @@ LOCAL nPos
             nCant := ( nCant * 65536 ) + ReadBigEndian( cBuffer, ( nPos * ::nPxKeyLen ) + 7 - 4, 2, .T. )
             nRecNo := nRecNo + nCant
          NEXT
+         IF ! lLast .AND. lFound .AND. nBlock > 1 .AND. LEN( cKey ) < ::nPxKeyLen - 6
+            // First record could be on the previous block
+            nRecNoFound := nRecNo
+            nRecNo := nRecNo - nCant
+            nBlock--
+         ENDIF
          nBlock := ReadBigEndian( cBuffer, ( nBlock * ::nPxKeyLen ) + 7 - 6, 2 )
       ENDIF
       nLevel--
    ENDDO
+   lFound := .F.
    IF nBlock > 0
       cBuffer := ::ReadBlock( nBlock )
       nBlock := ::SeekKeyTree( cKey, cBuffer, ::nRecordLen, lLast, @lFound )
@@ -1402,6 +1658,12 @@ LOCAL nPos
             nRecNo := 0
          ENDIF
       ENDIF
+   ELSE
+      nRecNo := 0
+   ENDIF
+   IF nRecNo == 0 .AND. nRecNoFound != 0
+      nRecNo := nRecNoFound
+      lFound := .T.
    ENDIF
 RETURN nRecNo
 
@@ -1421,24 +1683,33 @@ LOCAL nItems, nPos, nFrom, nTo, cCurrentKey
    ELSE
       nFrom := 1
       nTo := nItems
-      DO WHILE nFrom <= nTo
-         nPos := INT( ( nTo + nFrom ) / 2 )
+      DO WHILE .T.
+         nPos := INT( ( nTo + nFrom + 1 ) / 2 )
          cCurrentKey := SUBSTR( cBuffer, ( ( nPos - 1 ) * nRecordLen ) + 7, LEN( cKey ) )
-         IF cCurrentKey > cKey
-            nTo := nPos - 1
-            nPos := nTo
-         ELSEIF cCurrentKey < cKey
-            nFrom := nPos + 1
-         ELSE
+         IF    cCurrentKey == cKey
             lFound := .T.
             IF lLast
                nFrom := nPos
             ELSE
                nTo := nPos
+               // Don't locks!
+               IF nTo == nFrom + 1
+                  IF SUBSTR( cBuffer, ( ( nFrom - 1 ) * nRecordLen ) + 7, LEN( cKey ) ) == cKey
+                     nTo := nFrom
+                     nPos := nTo
+                  ELSE
+                     nFrom := nTo
+                  ENDIF
+               ENDIF
             ENDIF
-            IF nFrom == nTo
-               EXIT
-            ENDIF
+         ELSEIF cCurrentKey > cKey
+            nTo := nPos - 1
+            nPos := nTo
+         ELSE
+            nFrom := nPos
+         ENDIF
+         IF nFrom >= nTo
+            EXIT
          ENDIF
       ENDDO
    ENDIF
