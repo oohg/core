@@ -1,5 +1,5 @@
 /*
- * $Id: px.prg,v 1.6 2013-02-17 06:32:02 guerra000 Exp $
+ * $Id: px.prg,v 1.7 2013-02-21 05:32:15 guerra000 Exp $
  */
 /*
  * This is a ooHGRecord's subclasses (database class used
@@ -30,7 +30,7 @@ RETURN
 PROCEDURE BrowsePx( cFile )
 Local oPx, aHeaders, aWidths, aFields, oWnd
 
-   oPx := XBrowse_Paradox():New( cFile )
+   oPx := XBrowse_Paradox():New( cFile, .T. )
 
    aWidths := AFILL( ARRAY( oPx:nFields ), 100 )
    aFields := ARRAY( oPx:nFields + 1 )
@@ -303,10 +303,12 @@ CLASS XBrowse_Paradox FROM XBrowse_DirectFile
    DATA nVersionId           INIT 0
    DATA aBlocks              INIT nil
    DATA nUsedBlocks          INIT 0
+   DATA nTotalBlocks         INIT 0
    DATA nHeaderSize          INIT 0
    DATA nBlockSize           INIT 0
    DATA nFirstBlock          INIT 0
    DATA nLastBlock           INIT 0
+   DATA nFreeBlock           INIT 0
    // Fast skip
    DATA cCurrentBlockBuffer  INIT nil
    DATA nCurrentBlock        INIT 0
@@ -383,15 +385,16 @@ RETURN HB_InLine( cBuffer, nStart, nLen ){
 //    ENDDO
 // RETURN nPos - nStart
 
-STATIC FUNCTION ReadLittleEndian( cBuffer, nPos, nCount )
+STATIC FUNCTION ReadLittleEndian( cBuffer, nPos, nCount, lTrimTopBit )
 RETURN HB_InLine( cBuffer, nPos, nCount ){
-   int iCount, iLen;
+   int iCount, iLen, iTrimTopBit;
    char *cBuffer;
-   ULONGLONG llNum;
+   ULONGLONG llNum, llSign;
 
    // Buffer's length
    iLen = hb_parclen( 1 );
    cBuffer = ( char * ) hb_parc( 1 );
+   iTrimTopBit = hb_parl( 4 );
    // Skipped bytes
    iCount = hb_parni( 2 );
    if( iCount > iLen )
@@ -413,12 +416,26 @@ RETURN HB_InLine( cBuffer, nPos, nCount ){
    }
 
    llNum = 0;
+   llSign = 0;
    cBuffer += iCount;
    while( iCount )
    {
       cBuffer--;
       iCount--;
       llNum = ( llNum << 8 ) | ( ULONGLONG ) ( unsigned char ) *cBuffer;
+      if( llSign )
+      {
+         llSign = llSign << 8;
+      }
+      else
+      {
+         llSign = 0x80;
+      }
+   }
+
+   if( iTrimTopBit )
+   {
+      llNum = llNum & ( llSign - 1 );
    }
 
    hb_retnll( llNum );
@@ -436,7 +453,7 @@ EXTERN READBIGENDIAN
 
 #pragma BEGINDUMP
 
-ULONGLONG ReadBigEndian( char *cBuffer, int iLen, int iPos, int iCount, int iUnsigned )
+ULONGLONG ReadBigEndian( char *cBuffer, int iLen, int iPos, int iCount, int iUnsigned, int iTrimTopBit )
 {
    ULONGLONG llNum, llSign;
 
@@ -475,7 +492,11 @@ ULONGLONG ReadBigEndian( char *cBuffer, int iLen, int iPos, int iCount, int iUns
       }
    }
 
-   if( iUnsigned )
+   if( iTrimTopBit )
+   {
+      llNum = llNum & ( llSign - 1 );
+   }
+   else if( iUnsigned )
    {
       llNum = llNum ^ llSign;
    }
@@ -487,9 +508,9 @@ ULONGLONG ReadBigEndian( char *cBuffer, int iLen, int iPos, int iCount, int iUns
    return llNum;
 }
 
-HB_FUNC( READBIGENDIAN )   // ( cBuffer, nPos, nCount, lUnsigned )
+HB_FUNC( READBIGENDIAN )   // ( cBuffer, nPos, nCount, lUnsigned, lTrimTopBit )
 {
-   hb_retnll( ReadBigEndian( ( char * ) hb_parc( 1 ), hb_parclen( 1 ), hb_parni( 2 ), hb_parni( 3 ), hb_parl( 4 ) ) );
+   hb_retnll( ReadBigEndian( ( char * ) hb_parc( 1 ), hb_parclen( 1 ), hb_parni( 2 ), hb_parni( 3 ), hb_parl( 4 ), hb_parl( 5 ) ) );
 }
 
 #pragma ENDDUMP
@@ -795,10 +816,7 @@ LOCAL lBof
           ABS( nCount ) <= INT( ::nBlockSize / ::nRecordLen )      // How many records for "fast" skip?
       IF ! ::lShared .OR. ::cCurrentBlockBuffer == ::ReadBlock( ::nCurrentBlock )
          DO WHILE nCount != 0
-            nAux := ReadLittleEndian( ::cCurrentBlockBuffer, 5, 2 )
-            IF nAux >= 0x8000
-               nAux -= 0x8000
-            ENDIF
+            nAux := ReadLittleEndian( ::cCurrentBlockBuffer, 5, 2, .T. )
             nAux := INT( nAux / ::nRecordLen ) + 1
             IF nCount < 0
                IF ::nCurrentBlockRecord == 0
@@ -1088,18 +1106,18 @@ uValue := STRZERO( INT( uValue / 3600 ), 2 ) + ":" + STRZERO( INT( ( uValue % 36
                   }
                   else
                   {
-                     hb_retdl( 1757585 - 36160 + ReadBigEndian( cBuffer, iLen, iBufferPos + 1, 4, 0 ) );
+                     hb_retdl( 1757585 - 36160 + ReadBigEndian( cBuffer, iLen, iBufferPos + 1, 4, 0, 0 ) );
                   }
                   break;
 
                case 'S':
                   // Small integer ( WORD )
-                  hb_retni( ReadBigEndian( cBuffer, iLen, iBufferPos + 1, 2, 0 ) );
+                  hb_retni( ReadBigEndian( cBuffer, iLen, iBufferPos + 1, 2, 0, 0 ) );
                   break;
 
                case 'I':
                   // Long integer ( LONG )
-                  hb_retnl( ReadBigEndian( cBuffer, iLen, iBufferPos + 1, 4, 0 ) );
+                  hb_retnl( ReadBigEndian( cBuffer, iLen, iBufferPos + 1, 4, 0, 0 ) );
                   break;
 
                case '$':
@@ -1154,7 +1172,7 @@ uValue := STRZERO( INT( uValue / 3600 ), 2 ) + ":" + STRZERO( INT( ( uValue % 36
                   }
                   else
                   {
-                     lAux = ReadBigEndian( cBuffer, iLen, iBufferPos + 1, 4, 0 ) / 1000;
+                     lAux = ReadBigEndian( cBuffer, iLen, iBufferPos + 1, 4, 0, 0 ) / 1000;
                      // hb_retnl( lAux );
                      {
                         int iNum;
@@ -1213,7 +1231,7 @@ uValue := STRZERO( INT( uValue / 3600 ), 2 ) + ":" + STRZERO( INT( ( uValue % 36
 
                case '+':
                   // Autoincrement
-                  hb_retnl( ReadBigEndian( cBuffer, iLen, iBufferPos + 1, 4, 0 ) );
+                  hb_retnl( ReadBigEndian( cBuffer, iLen, iBufferPos + 1, 4, 0, 0 ) );
                   break;
 
                case '#':
@@ -1386,10 +1404,10 @@ LOCAL cBuffer
       ENDIF
       ::nRecCount := ReadLittleEndian( cBuffer, 7, 4 )
       ::nUsedBlocks := ReadLittleEndian( cBuffer, 11, 2 )
-*      ::nTotalBlocks := ReadLittleEndian( cBuffer, 13, 2 )
+      ::nTotalBlocks := ReadLittleEndian( cBuffer, 13, 2 )
       ::nFirstBlock := ReadLittleEndian( cBuffer, 15, 2 )
       ::nLastBlock := ReadLittleEndian( cBuffer, 17, 2 )
-*      ::nFreeBlock := ReadLittleEndian( cBuffer, 78, 2 )
+      ::nFreeBlock := ReadLittleEndian( cBuffer, 78, 2 )
 *      ::nMagicFileChanged := ReadLittleEndian( cBuffer, 19, 2 )
 *      ::nMagicHeaderChanged := ReadLittleEndian( cBuffer, 43, 2 )
 *      * ::nMagic_x := ReadLittleEndian( cBuffer, 45, 2 )
@@ -1542,25 +1560,27 @@ LOCAL nLevel, nCant3, nCant4
       DO WHILE nLevel > 0
          ::oPxFile:Seek( ::nPxHeaderSize + ( ( nBlock - 1 ) * ::nPxBlockSize ), FS_SET )
          ::oPxFile:Read( @cBuffer, ::nPxBlockSize )
-         nCant2 := ReadLittleEndian( cBuffer, 5, 2 )
-         IF nCant2 >= 0x8000
-            nCant2 -= 0x8000
-         ENDIF
+         nCant2 := ReadLittleEndian( cBuffer, 5, 2, .T. )
          nCant2 := INT( nCant2 / ::nPxKeyLen ) + 1
 
          nPos := 7
          DO WHILE nCant2 > 0
             nBlock := ReadBigEndian( cBuffer, nPos + ::nPxKeyLen - 6, 2 )
+/*
             nCant3 := ReadBigEndian( cBuffer, nPos + ::nPxKeyLen - 4, 2, .T. )
             IF SUBSTR( cBuffer, nPos + ::nPxKeyLen - 2, 2 ) = CHR( 0 ) + CHR( 0 )
                nCant4 := 0
             ELSE
-               nCant4 := ReadBigEndian( cBuffer, nPos + ::nPxKeyLen - 2, 2, .T. )
+               nCant4 := ReadBigEndian( cBuffer, nPos + ::nPxKeyLen - 2, 2,, .T. )
                IF nCant4 >= 0x8000
                   nCant4 -= 0x8000
                ENDIF
             ENDIF
             nCant3 := ( nCant4 * 65536 ) + nCant3
+*/
+            nCant3 := ( ReadBigEndian( cBuffer, nPos + ::nPxKeyLen - 2, 2,, .T. ) * 65536 ) + ;
+                        ReadBigEndian( cBuffer, nPos + ::nPxKeyLen - 4, 2, .T. )
+
             IF nCant3 >= nCant1
                EXIT
             ENDIF
@@ -1592,10 +1612,7 @@ LOCAL cBuffer, aData, nCount
    cBuffer := SPACE( 6 )
    ::oFile:Seek( ::nHeaderSize + ( ( nBlock - 1 ) * ::nBlockSize ), FS_SET )
    ::oFile:Read( @cBuffer, 6 )
-   nCount := ReadLittleEndian( cBuffer, 5, 2 )
-   IF nCount >= 0x8000
-      nCount -= 0x8000
-   ENDIF
+   nCount := ReadLittleEndian( cBuffer, 5, 2, .T. )
    nCount := INT( nCount / ::nRecordLen ) + 1
    aData := { nCount, nBlock, ;
               ReadLittleEndian( cBuffer, 1, 2 ), ;
@@ -1637,7 +1654,7 @@ LOCAL nPos, nRecNoFound
          NEXT
          IF ! lLast .AND. lFound .AND. nBlock > 1 .AND. LEN( cKey ) < ::nPxKeyLen - 6
             // First record could be on the previous block
-            nRecNoFound := nRecNo
+            nRecNoFound := nRecNo + 1
             nRecNo := nRecNo - nCant
             nBlock--
          ENDIF
@@ -1651,7 +1668,10 @@ LOCAL nPos, nRecNoFound
       nBlock := ::SeekKeyTree( cKey, cBuffer, ::nRecordLen, lLast, @lFound )
       nRecNo := nRecNo + nBlock
       IF ! lFound
-         IF HB_IsLogical( lSoftSeek ) .AND. lSoftSeek
+         IF nRecNoFound != 0
+            //
+            nRecNo := 0
+         ELSEIF HB_IsLogical( lSoftSeek ) .AND. lSoftSeek
             // It's not here..
             // nRecNo++
          ELSE
@@ -1672,10 +1692,7 @@ LOCAL nItems, nPos, nFrom, nTo, cCurrentKey
    lFound := .F.
 
    // Item's count
-   nItems := ReadLittleEndian( cBuffer, 5, 2 )
-   IF nItems >= 0x8000
-      nItems -= 0x8000
-   ENDIF
+   nItems := ReadLittleEndian( cBuffer, 5, 2, .T. )
    nItems := INT( ( nItems + nRecordLen ) / nRecordLen )
 
    IF nItems == 0 .OR. LEN( cKey ) == 0
@@ -1713,6 +1730,7 @@ LOCAL nItems, nPos, nFrom, nTo, cCurrentKey
          ENDIF
       ENDDO
    ENDIF
+   lFound := ( nPos >= 1 .AND. nPos <= nItems .AND. SUBSTR( cBuffer, ( ( nPos - 1 ) * nRecordLen ) + 7, LEN( cKey ) ) == cKey )
 RETURN nPos
 
 METHOD ValueToBuffer( xValue, cType, nWidth ) CLASS XBrowse_Paradox
