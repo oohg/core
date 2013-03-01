@@ -1,5 +1,5 @@
 /*
- * $Id: px.prg,v 1.7 2013-02-21 05:32:15 guerra000 Exp $
+ * $Id: px.prg,v 1.8 2013-03-01 18:20:29 guerra000 Exp $
  */
 /*
  * This is a ooHGRecord's subclasses (database class used
@@ -77,6 +77,7 @@ CLASS XBrowse_PseudoFile
    METHOD Read
    METHOD Seek
    METHOD Close
+   METHOD Write
 ENDCLASS
 
 METHOD Open( cFile, lShared, lReadOnly, cExtension ) CLASS XBrowse_PseudoFile
@@ -116,6 +117,9 @@ METHOD Close() CLASS XBrowse_PseudoFile
    FCLOSE( ::nHdl )
    ::nHdl := 0
 RETURN nil
+
+METHOD Write( cBuffer, nBytes ) CLASS XBrowse_PseudoFile
+RETURN FWRITE( ::nHdl, cBuffer, nBytes )
 
 /*
  *  This is a template for ooHGRecord's subclasses (database class used
