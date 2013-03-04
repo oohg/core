@@ -1,5 +1,5 @@
 /*
- * $Id: TStreamSerial.prg,v 1.2 2012-05-06 20:01:39 guerra000 Exp $
+ * $Id: TStreamSerial.prg,v 1.3 2013-03-04 23:38:21 guerra000 Exp $
  */
 /*
  * TStreamSerial
@@ -171,6 +171,9 @@ LOCAL nWrite := 0
          }
          IF nWrite < 0
             ::Disconnect()
+         ELSE
+            // Must read after write
+            ::Fill()
          ENDIF
       ENDIF
    ENDIF

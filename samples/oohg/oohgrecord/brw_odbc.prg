@@ -1,5 +1,5 @@
 /*
- * $Id: brw_odbc.prg,v 1.3 2012-06-24 15:41:55 fyurisich Exp $
+ * $Id: brw_odbc.prg,v 1.4 2013-03-04 23:38:21 guerra000 Exp $
  */
 /*
  * ooHG XBrowse ODBC demo. (c) 2008 Vic
@@ -84,15 +84,27 @@ CLASS XBrowse_ODBC
    // Used by "own" (XBrowse_ODBC) class (not used by XBrowse itself)
    DATA oODBC
    METHOD New( oODBC )       BLOCK { | Self, oODBC | ::oODBC := oODBC , Self }
-   METHOD FieldGet( nPos )   BLOCK { | Self, nPos | ::oODBC:Fields[ nPos ]:Value }
+   METHOD FieldGet( p )      BLOCK { | Self, p | ::oODBC:Fields[ p ]:Value }
    METHOD FieldPut( p, u )   BLOCK { | Self, p, u | ::oODBC:Fields[ p ]:Value := u }
+   METHOD Field( p )         BLOCK { | Self, p | ::oODBC:Fields[ p ]:FieldName }
+   METHOD FieldName( p )     BLOCK { | Self, p | ::oODBC:Fields[ p ]:FieldName }
+   METHOD FieldPos
 
    // Implemented but not used for this sample (not used by XBrowse itself)
    METHOD Use( oODBC )       BLOCK { | Self, oODBC | ::oODBC := oODBC , Self }
-   METHOD Skip( n )          BLOCK { | Self, n | ::Skipper( n ) }
+   METHOD Skip
    METHOD Bof                BLOCK { | Self | ::oODBC:Bof }
    METHOD FieldBlock
    METHOD Commit             BLOCK { | Self | ::oODBC:Commit() }
+
+   // Interface to ODBC object
+   METHOD Connect(cString)   BLOCK { | Self, cString | ::oODBC := TODBC() , ::oODBC:New( cString ) , Self }
+   METHOD Query
+   METHOD Close              BLOCK { | Self | ::oODBC:Close() }
+   METHOD SQLErrorMessage    BLOCK { | Self | ::oODBC:SQLErrorMessage() }
+   METHOD Destroy            BLOCK { | Self | ::oODBC:Destroy() }
+
+   ERROR HANDLER FieldAssign
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -123,28 +135,88 @@ LOCAL nCount
 RETURN nCount
 
 *-----------------------------------------------------------------------------*
+METHOD FieldPos( cField ) CLASS XBrowse_ODBC
+*-----------------------------------------------------------------------------*
+   cField := UPPER( ALLTRIM( cField ) )
+RETURN ASCAN( ::oODBC:Fields, { |h| UPPER( h:FieldName ) == cField } )
+
+*-----------------------------------------------------------------------------*
+METHOD Skip( nSkip ) CLASS XBrowse_ODBC
+*-----------------------------------------------------------------------------*
+   IF nSkip == NIL
+      nSkip := 1
+   ENDIF
+   IF nSkip > 0
+      DO WHILE nSkip > 0
+         ::oODBC:Next()
+         nSkip--
+         IF ::oODBC:EOF()
+            EXIT
+         ENDIF
+      ENDDO
+   ELSE
+      DO WHILE nSkip < 0
+         ::oODBC:Prior()
+         nSkip++
+         IF ::oODBC:BOF()
+            EXIT
+         ENDIF
+      ENDDO
+   ENDIF
+RETURN NIL
+
+*-----------------------------------------------------------------------------*
 METHOD FieldBlock( nPos ) CLASS XBrowse_ODBC
 *-----------------------------------------------------------------------------*
 RETURN { | uValue | IF( PCOUNT() > 0, ::oODBC:Fields[ nPos ]:Value := uValue, ::oODBC:Fields[ nPos ]:Value ) }
+
+*-----------------------------------------------------------------------------*
+METHOD Query( cQuery ) CLASS XBrowse_ODBC
+*-----------------------------------------------------------------------------*
+LOCAL lRet
+   ::oODBC:SetSQL( cQuery )
+   lRet := ::oODBC:Open()
+   IF lRet
+      ::GoTop()
+   ENDIF
+RETURN lRet
+
+*-----------------------------------------------------------------------------*
+METHOD FieldAssign( xValue ) CLASS XBrowse_ODBC
+*-----------------------------------------------------------------------------*
+LOCAL nPos, cMessage, uRet, lError
+   cMessage := ALLTRIM( UPPER( __GetMessage() ) )
+   lError := .T.
+   IF PCOUNT() == 0
+      nPos := ::FieldPos( cMessage )
+      IF nPos > 0
+         uRet := ::FieldGet( nPos )
+         lError := .F.
+      ENDIF
+   ELSEIF PCOUNT() == 1
+      nPos := ::FieldPos( SUBSTR( cMessage, 2 ) )
+      IF nPos > 0
+         uRet := ::FieldPut( nPos, xValue )
+         lError := .F.
+      ENDIF
+   ENDIF
+   IF lError
+      uRet := NIL
+      ::MsgNotFound( cMessage )
+   ENDIF
+RETURN uRet
 
 // Database methods not implemented (not used by XBrowse)
 *   METHOD OrdScope
 *   METHOD Filter
 
-*   METHOD Field      BLOCK { | Self, nPos |                   ( ::cAlias__ )->( Field( nPos ) ) }                 // Field's name
-*   METHOD FieldName  BLOCK { | Self, nPos |                   ( ::cAlias__ )->( FieldName( nPos ) ) }             // Field's name
-*   METHOD FieldPos   BLOCK { | Self, cField |                 ( ::cAlias__ )->( FieldPos( cField ) ) }            // Field's position
-
 *   METHOD Locate     BLOCK { | Self, bFor, bWhile, nNext, nRec, lRest | ( ::cAlias__ )->( __dbLocate( bFor, bWhile, nNext, nRec, lRest ) ) }
 *   METHOD Seek       BLOCK { | Self, uKey, lSoftSeek, lLast | ( ::cAlias__ )->( DbSeek( uKey, lSoftSeek, lLast ) ) }
 *   METHOD Unlock     BLOCK { | Self |                         ( ::cAlias__ )->( DbUnlock() ) }
 *   METHOD Delete     BLOCK { | Self |                         ( ::cAlias__ )->( DbDelete() ) }
-*   METHOD Close      BLOCK { | Self |                         ( ::cAlias__ )->( DbCloseArea() ) }
 *   METHOD Found      BLOCK { | Self |                         ( ::cAlias__ )->( Found() ) }
 *   METHOD SetOrder   BLOCK { | Self, uOrder |                 ( ::cAlias__ )->( ORDSETFOCUS( uOrder ) ) }
 *   METHOD SetIndex   BLOCK { | Self, cFile, lAdditive |       IF( EMPTY( lAdditive ), ( ::cAlias__ )->( ordListClear() ), ) , ( ::cAlias__ )->( ordListAdd( cFile ) ) }
 *   METHOD Append     BLOCK { | Self |                         ( ::cAlias__ )->( DbAppend() ) }
 *   METHOD Lock       BLOCK { | Self |                         ( ::cAlias__ )->( RLock() ) }
 *   METHOD DbStruct   BLOCK { | Self |                         ( ::cAlias__ )->( DbStruct() ) }
-
-*   ERROR HANDLER FieldAssign
