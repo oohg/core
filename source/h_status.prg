@@ -1,5 +1,5 @@
 /*
- * $Id: h_status.prg,v 1.40 2012-08-20 00:17:29 fyurisich Exp $
+ * $Id: h_status.prg,v 1.41 2013-03-05 23:24:38 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -418,7 +418,7 @@ METHOD Events_Size() CLASS TMessageBar
 *-----------------------------------------------------------------------------*
    ::RefreshData()
    AEVAL( ::aControls, { |o| o:Events_Size() } )
-Return Super:Events_Size()
+Return ::Super:Events_Size()
 
 *-----------------------------------------------------------------------------*
 METHOD RefreshData() CLASS TMessageBar
