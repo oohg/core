@@ -1,11 +1,21 @@
 /*
- * $Id: ChangeLog,v 1.1036 2013-03-05 23:24:38 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1037 2013-03-16 20:47:05 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-03-16 17:47 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_grid.prg
+     ! Incremental search is not working properly.
+     + DblClick event can be triggered when the cell is readonly or
+       the when clause returns false, and allowedit is true.
+       Use oGrid:lExtendDblClick := .T. to activate this feature.
+     + Added second parameter to TGridControlMemo():New method.
+       When .T. the control replaces Chr(13)+Chr(10) by a space
+       before showing the text on the grid.
 
 2013-03-05 21:20 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_status.prg

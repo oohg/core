@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.191 2012-11-04 15:13:51 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.192 2013-03-16 20:47:06 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -149,6 +149,7 @@ CLASS TGrid FROM TControl
    DATA SearchLapse           INIT 1000
    DATA cText                 INIT ""
    DATA uIniTime              INIT 0
+   DATA lExtendDblClick       INIT .F.
 
    METHOD Define
    METHOD Define2
@@ -1631,8 +1632,14 @@ Local aCellData, nItem, i
          ElseIf ::FullMove
             If ::IsColumnReadOnly( _OOHG_ThisItemColIndex )
                // Cell is readonly
+               If ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick )
+                  ::DoEvent( ::OnDblClick, "DBLCLICK" )
+               EndIf
             ElseIf ! ::IsColumnWhen( _OOHG_ThisItemColIndex )
                // Not a valid WHEN
+               If ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick )
+                  ::DoEvent( ::OnDblClick, "DBLCLICK" )
+               EndIf
             Else
                ::EditGrid( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
             EndIf
@@ -1640,8 +1647,14 @@ Local aCellData, nItem, i
          ElseIf ::InPlace
             If ::IsColumnReadOnly( _OOHG_ThisItemColIndex )
                // Cell is readonly
+               If ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick )
+                  ::DoEvent( ::OnDblClick, "DBLCLICK" )
+               EndIf
             ElseIf ! ::IsColumnWhen( _OOHG_ThisItemColIndex )
                // Not a valid WHEN
+               If ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick )
+                  ::DoEvent( ::OnDblClick, "DBLCLICK" )
+               EndIf
             Else
                ::EditCell( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
             EndIf
@@ -1692,7 +1705,7 @@ Local aCellData, nItem, i
             EndIf
          EndIf
       Else
-         nItem := ListView_FindItem( hWnd, ::FirstSelectedItem - 1, ::cText, ::SearchWrap )
+         nItem := ListView_FindItem( hWnd, ::FirstSelectedItem - 2, ::cText, ::SearchWrap )
       EndIf
       If nItem > 0
          ::Value := nItem
@@ -2968,8 +2981,14 @@ Local aCellData, nItem, i, nSearchCol
          If ::AllowEdit
             If ::IsColumnReadOnly( _OOHG_ThisItemColIndex )
                // Cell is readonly
+               If ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick )
+                  ::DoEvent( ::OnDblClick, "DBLCLICK" )
+               EndIf
             ElseIf ! ::IsColumnWhen( _OOHG_ThisItemColIndex )
                // Not a valid WHEN
+               If ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick )
+                  ::DoEvent( ::OnDblClick, "DBLCLICK" )
+               EndIf
             ElseIf ! ::lNestedEdit
                ::lNestedEdit := .T.
                ::EditGrid( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
@@ -3024,7 +3043,7 @@ Local aCellData, nItem, i, nSearchCol
          nSearchCol := ::SearchCol
       EndIf
       If nSearchCol == 1
-         nItem := ListView_FindItem( hWnd, ::FirstSelectedItem - 1, ::cText, ::SearchWrap )
+         nItem := ListView_FindItem( hWnd, ::FirstSelectedItem - 2, ::cText, ::SearchWrap )
       Else
          nItem := 0
 
@@ -3291,7 +3310,7 @@ Local oGridControl, aEdit2, cControl
       cControl := Upper( AllTrim( aEditControl[ 1 ] ) )
       Do Case
          Case cControl == "MEMO"
-            oGridControl := TGridControlMemo():New( aEdit2[ 2 ] )
+            oGridControl := TGridControlMemo():New( aEdit2[ 2 ], aEdit2[ 3 ] )
          Case cControl == "DATEPICKER"
             oGridControl := TGridControlDatePicker():New( aEdit2[ 2 ], aEdit2[ 3 ] )
          Case cControl == "COMBOBOX"
@@ -3569,15 +3588,20 @@ CLASS TGridControlMemo FROM TGridControl
 *-----------------------------------------------------------------------------*
    DATA nDefHeight INIT 84
    DATA cTitle     INIT _OOHG_Messages( 1, 11 )
+   DATA lCleanCRLF INIT .F.
 
    METHOD New
    METHOD CreateWindow
    METHOD CreateControl
+   METHOD GridValue
 ENDCLASS
 
-METHOD New( cTitle ) CLASS TGridControlMemo
+METHOD New( cTitle, lCleanCRLF ) CLASS TGridControlMemo
    If ValType( cTitle ) $ "CM" .AND. ! Empty( cTitle )
       ::cTitle := cTitle
+   EndIf
+   If HB_IsLogical( lCleanCRLF )
+      ::lCleanCRLF := lCleanCRLF
    EndIf
 Return Self
 
@@ -3619,6 +3643,21 @@ Return lRet
 METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGridControlMemo
    @ nRow,nCol EDITBOX 0 OBJ ::oControl PARENT ( cWindow ) VALUE StrTran( uValue, Chr(141), ' ' ) HEIGHT nHeight WIDTH nWidth
 Return ::oControl
+
+METHOD GridValue( uValue ) CLASS TGridControlMemo
+Local uRet
+   If ValType( uValue ) == "C"
+      uRet := Trim( uValue )
+   ElseIf ValType( uValue ) == "M"
+      If ::lCleanCRLF
+         uRet := StrTran( Trim( uValue ), Chr(13) + Chr(10), " " )
+      Else
+         uRet := Trim( uValue )
+      EndIf
+   Else
+      uRet := uValue
+   EndIf
+Return uRet
 
 *-----------------------------------------------------------------------------*
 CLASS TGridControlDatePicker FROM TGridControl
