@@ -1,5 +1,5 @@
 /*
- * $Id: h_radio.prg,v 1.31 2012-08-28 01:37:01 fyurisich Exp $
+ * $Id: h_radio.prg,v 1.32 2013-03-19 00:11:55 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -112,6 +112,7 @@ CLASS TRadioGroup FROM TLabel
 
    METHOD Define
    METHOD SetFont
+   METHOD SizePos
    METHOD Value               SETGET
    METHOD Enabled             SETGET
    METHOD SetFocus
@@ -196,6 +197,18 @@ METHOD SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout ) CLASS T
 *-----------------------------------------------------------------------------*
    AEVAL( ::aOptions, { |o| o:SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout ) } )
 RETURN ::Super:SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout )
+
+*-----------------------------------------------------------------------------*
+METHOD SizePos( Row, Col, Width, Height ) CLASS TRadioGroup
+*-----------------------------------------------------------------------------*
+Local nDeltaRow, nDeltaCol, uRet
+   nDeltaRow := ::Row
+   nDeltaCol := ::Col
+   uRet := ::Super:SizePos( Row, Col, Width, Height )
+   nDeltaRow := ::Row - nDeltaRow
+   nDeltaCol := ::Col - nDeltaCol
+   AEVAL( ::aControls, { |o| o:SizePos( o:Row + nDeltaRow, o:Col + nDeltaCol ) } )
+Return uRet
 
 *-----------------------------------------------------------------------------*
 METHOD Value( nValue ) CLASS TRadioGroup

@@ -1,11 +1,17 @@
 /*
- * $Id: ChangeLog,v 1.1037 2013-03-16 20:47:05 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1038 2013-03-19 00:11:55 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-03-18 21:12 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_radio.prg
+     + Method SizePos deleted in 2012-06-26 22:50 UTC-0300 commit.
+     ! It's needed to repaint the control when row or col properties
+       are modified in response to on paint and on size events.
 
 2013-03-16 17:47 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
