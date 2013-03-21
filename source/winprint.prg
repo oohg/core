@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.46 2012-07-12 16:18:34 fyurisich Exp $
+ * $Id: winprint.prg,v 1.47 2013-03-21 01:13:32 fyurisich Exp $
  */
 // -----------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -1900,7 +1900,7 @@ next pi
          END SPLITBOX
   END WINDOW
   ::PrevShow()
-  ::oHBPreview1:setfocus()
+  ::oHBPreview1:i1:SetFocus()
   ACTIVATE WINDOW HBPREVIEW
 return nil
 
