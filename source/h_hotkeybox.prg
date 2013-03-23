@@ -1,5 +1,5 @@
 /*
- * $Id: h_hotkeybox.prg,v 1.8 2010-05-15 21:05:05 guerra000 Exp $
+ * $Id: h_hotkeybox.prg,v 1.9 2013-03-23 19:50:45 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -67,7 +67,7 @@ CLASS THotKeyBox FROM TLabel
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
-METHOD Define( ControlName, ParentForm, x, y, w, h, /**/cValue, ;
+METHOD Define( ControlName, ParentForm, x, y, w, h, cValue, ;
                FontName, FontSize, ToolTip, ;
                uLostFocus, uGotFocus, uChange, uEnter, ;
                HelpId, bold, italic, underline, strikeout, ;

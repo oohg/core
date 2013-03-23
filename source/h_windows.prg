@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.239 2012-11-03 03:54:56 fyurisich Exp $
+ * $Id: h_windows.prg,v 1.240 2013-03-23 19:50:45 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -2203,23 +2203,15 @@ Local cRet
    EndIf
 Return cRet
 
-#pragma BEGINDUMP
-HB_FUNC( _OOHG_SELECTSUBCLASS ) // _OOHG_SelectSubClass( oClass, oSubClass )
-{
-   PHB_ITEM pRet, pCopy;
-
-   pCopy = hb_itemNew( NULL );
-   pRet = hb_param( 2, HB_IT_OBJECT );
-   if( ! pRet )
-   {
-      pRet = hb_param( 1, HB_IT_ANY );
-   }
-   hb_itemCopy( pCopy, pRet );
-   hb_itemReturn( pCopy );
-   hb_itemRelease( pCopy );
-// Return if( ValType( oSubClass ) == "O", oSubClass, oClass )
-}
-#pragma ENDDUMP
+*------------------------------------------------------------------------------*
+FUNCTION _OOHG_SelectSubClass( oClass, oSubClass, bAssign )
+*------------------------------------------------------------------------------*
+LOCAL oObj
+   oObj := If( VALTYPE( oSubClass ) == "O", oSubClass, oClass )
+   If VALTYPE( bAssign ) == "B"
+      EVAL( bAssign, oObj )
+   EndIf
+Return oObj
 
 *-----------------------------------------------------------------------------*
 Function InputBox ( cInputPrompt , cDialogCaption , cDefaultValue , nTimeout , cTimeoutValue , lMultiLine )

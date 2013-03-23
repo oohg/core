@@ -1,5 +1,5 @@
 /*
- * $Id: h_listbox.prg,v 1.27 2012-03-13 15:49:27 fyurisich Exp $
+ * $Id: h_listbox.prg,v 1.28 2013-03-23 19:50:45 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -276,7 +276,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, rows, value, fontname, ;
                fontsize, tooltip, changeprocedure, dblclick, gotfocus, ;
                lostfocus, break, HelpId, invisible, notabstop, sort, bold, ;
                italic, underline, strikeout, backcolor, fontcolor, lRtl, ;
-               lDisabled, onenter, aImage, TextHeight, lAdjustImages ) CLASS TListMulti
+               lDisabled, onenter, aImage, TextHeight, lAdjustImages, ;
+               novscroll ) CLASS TListMulti
 *-----------------------------------------------------------------------------*
 Local nStyle := LBS_EXTENDEDSEL + LBS_MULTIPLESEL
 
@@ -284,7 +285,8 @@ Local nStyle := LBS_EXTENDEDSEL + LBS_MULTIPLESEL
               fontsize, tooltip, changeprocedure, dblclick, gotfocus, ;
               lostfocus, break, HelpId, invisible, notabstop, sort, bold, ;
               italic, underline, strikeout, backcolor, fontcolor, nStyle, ;
-              lRtl, lDisabled, onenter, aImage, TextHeight, lAdjustImages )
+              lRtl, lDisabled, onenter, aImage, TextHeight, lAdjustImages, ;
+              novscroll )
 Return Self
 
 *------------------------------------------------------------------------------*

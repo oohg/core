@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.76 2012-10-18 00:46:46 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.77 2013-03-23 19:50:45 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -122,6 +122,10 @@ Memvariables
 #xtranslate _OOHG_ActiveControlTrailingFontColor      => _OOHG_ActiveControlInfo \[  25 \]
 #xtranslate _OOHG_ActiveControlBackgroundColor        => _OOHG_ActiveControlInfo \[  26 \]
 
+#xtranslate _OOHG_ActiveControlOnListDisplay          => _OOHG_ActiveControlInfo \[ 127 \]
+#xtranslate _OOHG_ActiveControlOnListClose            => _OOHG_ActiveControlInfo \[ 128 \]
+#xtranslate _OOHG_ActiveControlSubClass               => _OOHG_ActiveControlInfo \[ 129 \]
+#xtranslate _OOHG_ActiveControlAssignObject           => _OOHG_ActiveControlInfo \[ 130 \]
 #xtranslate _OOHG_ActiveControlFixedWidths            => _OOHG_ActiveControlInfo \[ 131 \]
 #xtranslate _OOHG_ActiveControlAbortEdit              => _OOHG_ActiveControlInfo \[ 132 \]
 #xtranslate _OOHG_ActiveControlUpdateAll              => _OOHG_ActiveControlInfo \[ 133 \]
@@ -322,7 +326,17 @@ Memvariables
         _OOHG_ActiveControlOnGotFocus    := Nil          ;;
         _OOHG_ActiveControlOnChange      := Nil          ;;
         _OOHG_ActiveControlOnEnter       := Nil          ;;
-        _OOHG_ActiveControlOnMouseMove   := Nil
+        _OOHG_ActiveControlOnMouseMove   := Nil          ;;
+        _OOHG_ActiveControlAssignObject  := Nil          ;;
+        _OOHG_ActiveControlSubClass      := Nil
+
+#xcommand OBJECT <var> ;
+        => ;
+        _OOHG_ActiveControlAssignObject := { |_o_| <var> := _o_ }
+
+#xcommand SUBCLASS <class> ;
+        => ;
+        _OOHG_ActiveControlSubClass := <class>()
 
 #xcommand PARENT <of> ;
         => ;
@@ -513,7 +527,7 @@ FRAME
 
 #xcommand END FRAME ;
         => ;
-        TFrame():Define( ;
+        _OOHG_SelectSubClass( TFrame(), _OOHG_ActiveControlSubClass, _OOHG_ActiveControlAssignObject ):Define( ;
                 _OOHG_ActiveControlName, ;
                 _OOHG_ActiveControlOf, ;
                 _OOHG_ActiveControlRow, ;
@@ -630,7 +644,7 @@ LIST BOX
 
 #xcommand END LISTBOX ;
         => ;
-        iif( _OOHG_ActiveControlMultiSelect, TListMulti(), TList() ):Define( ;
+        _OOHG_SelectSubClass( iif( _OOHG_ActiveControlMultiSelect, TListMulti(), TList() ), _OOHG_ActiveControlSubClass, _OOHG_ActiveControlAssignObject ):Define( ;
                 _OOHG_ActiveControlName, ;
                 _OOHG_ActiveControlOf, ;
                 _OOHG_ActiveControlCol, ;
@@ -679,7 +693,8 @@ CHECKLIST
         _OOHG_ActiveControlSort           := .F. ;;
         _OOHG_ActiveControlDescending     := .F. ;;
         _OOHG_ActiveControlSelectedColors := Nil ;;
-        _OOHG_ActiveControlDblBffer       := .T.
+        _OOHG_ActiveControlDblBffer       := .T. ;;
+        _OOHG_ActiveControlAction         := Nil
 
 #xcommand DOUBLEBUFFER <dblbffr> ;
         => ;
@@ -687,7 +702,7 @@ CHECKLIST
 
 #xcommand END CHECKLIST ;
         => ;
-        TCheckList():Define( ;
+        _OOHG_SelectSubClass( TCheckList(), _OOHG_ActiveControlSubClass, _OOHG_ActiveControlAssignObject ):Define( ;
                 _OOHG_ActiveControlName, ;
                 _OOHG_ActiveControlOf, ;
                 _OOHG_ActiveControlCol, ;
@@ -719,7 +734,8 @@ CHECKLIST
                 _OOHG_ActiveControlSort, ;
                 _OOHG_ActiveControlDescending, ;
                 _OOHG_ActiveControlSelectedColors, ;
-                _OOHG_ActiveControlDblBffer )
+                _OOHG_ActiveControlDblBffer, ;
+                _OOHG_ActiveControlAction )
 
 /*----------------------------------------------------------------------------
 ANIMATEBOX COMMANDS
@@ -747,7 +763,7 @@ ANIMATEBOX COMMANDS
 
 #xcommand END ANIMATEBOX;
         => ;
-        TAnimateBox():Define( ;
+        _OOHG_SelectSubClass( TAnimateBox(), _OOHG_ActiveControlSubClass, _OOHG_ActiveControlAssignObject ):Define( ;
                 _OOHG_ActiveControlName, ;
                 _OOHG_ActiveControlOf, ;
                 _OOHG_ActiveControlCol, ;
@@ -821,7 +837,7 @@ ANIMATEBOX COMMANDS
 
 #xcommand END PLAYER;
         => ;
-        TPlayer():Define( ;
+        _OOHG_SelectSubClass( TPlayer(), _OOHG_ActiveControlSubClass, _OOHG_ActiveControlAssignObject ):Define( ;
                 _OOHG_ActiveControlName, ;
                 _OOHG_ActiveControlOf, ;
                 _OOHG_ActiveControlFile, ;
@@ -881,7 +897,7 @@ PROGRESS BAR
 
 #xcommand END PROGRESSBAR;
         => ;
-        TProgressBar():Define( ;
+        _OOHG_SelectSubClass( TProgressBar(), _OOHG_ActiveControlSubClass, _OOHG_ActiveControlAssignObject ):Define( ;
                 _OOHG_ActiveControlName, ;
                 _OOHG_ActiveControlOf, ;
                 _OOHG_ActiveControlCol, ;
@@ -928,7 +944,7 @@ RADIO GROUP
 
 #xcommand END RADIOGROUP ;
         => ;
-        TRadioGroup():Define( ;
+        _OOHG_SelectSubClass( TRadioGroup(), _OOHG_ActiveControlSubClass, _OOHG_ActiveControlAssignObject ):Define( ;
                 _OOHG_ActiveControlName, ;
                 _OOHG_ActiveControlOf, ;
                 _OOHG_ActiveControlCol, ;
@@ -990,7 +1006,7 @@ SLIDER
 
 #xcommand END SLIDER ;
         => ;
-        TSlider():Define( ;
+        _OOHG_SelectSubClass( TSlider(), _OOHG_ActiveControlSubClass, _OOHG_ActiveControlAssignObject ):Define( ;
                 _OOHG_ActiveControlName, ;
                 _OOHG_ActiveControlOf, ;
                 _OOHG_ActiveControlCol, ;
@@ -1021,26 +1037,27 @@ TEXT BOX
 #xcommand DEFINE TEXTBOX <name> ;
         => ;
         _OOHG_ClearActiveControlInfo( <(name)> ) ;;
-        _OOHG_ActiveControlField      := Nil     ;;
-        _OOHG_ActiveControlMaxLength  := Nil     ;;
-        _OOHG_ActiveControlUpperCase  := .F.     ;;
-        _OOHG_ActiveControlLowerCase  := .F.     ;;
-        _OOHG_ActiveControlNumeric    := .F.     ;;
-        _OOHG_ActiveControlPassword   := .F.     ;;
-        _OOHG_ActiveControlRightAlign := .F.     ;;
-        _OOHG_ActiveControlReadonly   := .F.     ;;
-        _OOHG_ActiveControlDateType   := .F.     ;;
-        _OOHG_ActiveControlInputMask  := Nil     ;;
-        _OOHG_ActiveControlPicture    := Nil     ;;
-        _OOHG_ActiveControlFormat     := Nil     ;;
-        _OOHG_ActiveControlNoBorder   := .F.     ;;
-        _OOHG_ActiveControlAutoSkip   := .F.     ;;
-        _OOHG_ActiveControlFocusedPos := Nil     ;;
-        _OOHG_ActiveControlValid      := Nil     ;;
-        _OOHG_ActiveControlImage      := Nil     ;;
-        _OOHG_ActiveControlWhen       := Nil     ;;
-        _OOHG_ActiveControlAction     := Nil     ;;
-        _OOHG_ActiveControlAction2    := Nil
+        _OOHG_ActiveControlField       := Nil     ;;
+        _OOHG_ActiveControlMaxLength   := Nil     ;;
+        _OOHG_ActiveControlUpperCase   := .F.     ;;
+        _OOHG_ActiveControlLowerCase   := .F.     ;;
+        _OOHG_ActiveControlNumeric     := .F.     ;;
+        _OOHG_ActiveControlPassword    := .F.     ;;
+        _OOHG_ActiveControlRightAlign  := .F.     ;;
+        _OOHG_ActiveControlReadonly    := .F.     ;;
+        _OOHG_ActiveControlDateType    := .F.     ;;
+        _OOHG_ActiveControlInputMask   := Nil     ;;
+        _OOHG_ActiveControlPicture     := Nil     ;;
+        _OOHG_ActiveControlFormat      := Nil     ;;
+        _OOHG_ActiveControlNoBorder    := .F.     ;;
+        _OOHG_ActiveControlAutoSkip    := .F.     ;;
+        _OOHG_ActiveControlFocusedPos  := Nil     ;;
+        _OOHG_ActiveControlValid       := Nil     ;;
+        _OOHG_ActiveControlImage       := Nil     ;;
+        _OOHG_ActiveControlWhen        := Nil     ;;
+        _OOHG_ActiveControlAction      := Nil     ;;
+        _OOHG_ActiveControlAction2     := Nil     ;;
+        _OOHG_ActiveControlCenterAlign := Nil
 
 #xcommand UPPERCASE <uppercase> ;
         => ;
@@ -1088,7 +1105,7 @@ TEXT BOX
 
 #xcommand END TEXTBOX;
         => ;
-        DefineTextBox( ;
+        _OOHG_SelectSubClass( DefineTextBox( ;
                 _OOHG_ActiveControlName, ;
                 _OOHG_ActiveControlOf, ;
                 _OOHG_ActiveControlCol, ;
@@ -1129,12 +1146,13 @@ TEXT BOX
                 _OOHG_ActiveControlNumeric, ;
                 _OOHG_ActiveControlInputMask, ;
                 _OOHG_ActiveControlFormat, ;
-                Nil, ;
+                _OOHG_ActiveControlSubClass, ;
                 _OOHG_ActiveControlAction, ;
                 _OOHG_ActiveControlImage, ;
                 _OOHG_ActiveControlButtonWidth, ;
                 _OOHG_ActiveControlAction2, ;
-                _OOHG_ActiveControlWhen )
+                _OOHG_ActiveControlWhen, ;
+                _OOHG_ActiveControlCenterAlign ), NIL, _OOHG_ActiveControlAssignObject )
 
 /*----------------------------------------------------------------------------
 MONTH CALENDAR
@@ -1181,7 +1199,7 @@ MONTH CALENDAR
 
 #xcommand END MONTHCALENDAR ;
         => ;
-        TMonthCal():Define( ;
+        _OOHG_SelectSubClass( TMonthCal(), _OOHG_ActiveControlSubClass, _OOHG_ActiveControlAssignObject ):Define( ;
                 _OOHG_ActiveControlName, ;
                 _OOHG_ActiveControlOf, ;
                 _OOHG_ActiveControlCol, ;
@@ -1324,7 +1342,7 @@ BUTTON
 
 #xcommand END BUTTON ;
         => ;
-        TButton():Define( ;
+        _OOHG_SelectSubClass( TButton(), _OOHG_ActiveControlSubClass, _OOHG_ActiveControlAssignObject ):Define( ;
                 _OOHG_ActiveControlName, ;
                 _OOHG_ActiveControlOf, ;
                 _OOHG_ActiveControlCol, ;
@@ -1397,7 +1415,7 @@ IMAGE
 
 #xcommand END IMAGE ;
         => ;
-        TImage():Define( ;
+        _OOHG_SelectSubClass( TImage(), _OOHG_ActiveControlSubClass, _OOHG_ActiveControlAssignObject ):Define( ;
                 _OOHG_ActiveControlName, ;
                 _OOHG_ActiveControlOf, ;
                 _OOHG_ActiveControlCol, ;
@@ -1471,7 +1489,7 @@ CHECK BOX/BUTTON
 
 #xcommand END CHECKBOX ;
         => ;
-        TCheckBox():Define( ;
+        _OOHG_SelectSubClass( TCheckBox(), _OOHG_ActiveControlSubClass, _OOHG_ActiveControlAssignObject ):Define( ;
                 _OOHG_ActiveControlName, ;
                 _OOHG_ActiveControlOf, ;
                 _OOHG_ActiveControlCol, ;
@@ -1505,7 +1523,7 @@ CHECK BOX/BUTTON
 
 #xcommand END CHECKBUTTON ;
         => ;
-        TButtonCheck():Define( ;
+        _OOHG_SelectSubClass( TButtonCheck(), _OOHG_ActiveControlSubClass, _OOHG_ActiveControlAssignObject ):Define( ;
                 _OOHG_ActiveControlName, ;
                 _OOHG_ActiveControlOf, ;
                 _OOHG_ActiveControlCol, ;
@@ -1602,13 +1620,21 @@ COMBO BOX
         => ;
         _OOHG_ActiveControlOnEnter := <{enter}>
 
+#xcommand ON LISTDISPLAY <enter> ;
+        => ;
+        _OOHG_ActiveControlOnListDisplay := <{enter}>
+
+#xcommand ON LISTCLOSE <enter> ;
+        => ;
+        _OOHG_ActiveControlOnListClose := <{enter}>
+
 #xcommand FIRSTITEM <firstitem> ;
         => ;
         _OOHG_ActiveControlFirstItem := <firstitem>
 
 #xcommand END COMBOBOX ;
         => ;
-        TCombo():Define( ;
+        _OOHG_SelectSubClass( TCombo(), _OOHG_ActiveControlSubClass, _OOHG_ActiveControlAssignObject ):Define( ;
                 _OOHG_ActiveControlName, ;
                 _OOHG_ActiveControlOf, ;
                 _OOHG_ActiveControlCol, ;
@@ -1647,6 +1673,8 @@ COMBO BOX
                 _OOHG_ActiveControlBackColor, ;
                 _OOHG_ActiveControlFontColor, ;
                 _OOHG_ActiveControlListWidth, ;
+                _OOHG_ActiveControlOnListDisplay, ;
+                _OOHG_ActiveControlOnListClose, ;
                 _OOHG_ActiveControlImageSource, ;
                 _OOHG_ActiveControlItemImageNumber )
 
@@ -1679,7 +1707,7 @@ DATEPICKER
 
 #xcommand END DATEPICKER ;
         => ;
-        TDatePick():Define( ;
+        _OOHG_SelectSubClass( TDatePick(), _OOHG_ActiveControlSubClass, _OOHG_ActiveControlAssignObject ):Define( ;
                 _OOHG_ActiveControlName, ;
                 _OOHG_ActiveControlOf, ;
                 _OOHG_ActiveControlCol, ;
@@ -1722,7 +1750,7 @@ DATEPICKER
 
 #xcommand END TIMEPICKER ;
         => ;
-        TTimePick():Define( ;
+        _OOHG_SelectSubClass( TTimePick(), _OOHG_ActiveControlSubClass, _OOHG_ActiveControlAssignObject ):Define( ;
                 _OOHG_ActiveControlName, ;
                 _OOHG_ActiveControlOf, ;
                 _OOHG_ActiveControlCol, ;
@@ -1782,7 +1810,7 @@ EDIT BOX
 
 #xcommand END EDITBOX ;
         => ;
-        TEdit():Define( ;
+        _OOHG_SelectSubClass( TEdit(), _OOHG_ActiveControlSubClass, _OOHG_ActiveControlAssignObject ):Define( ;
                 _OOHG_ActiveControlName, ;
                 _OOHG_ActiveControlOf, ;
                 _OOHG_ActiveControlCol, ;
@@ -1829,7 +1857,7 @@ RICH EDIT BOX
 
 #xcommand END RICHEDITBOX ;
         => ;
-        TEditRich():Define( ;
+        _OOHG_SelectSubClass( TEditRich(), _OOHG_ActiveControlSubClass, _OOHG_ActiveControlAssignObject ):Define( ;
                 _OOHG_ActiveControlName, ;
                 _OOHG_ActiveControlOf, ;
                 _OOHG_ActiveControlCol, ;
@@ -1916,7 +1944,7 @@ LABEL
 
 #xcommand END LABEL ;
         => ;
-        TLabel():Define( ;
+        _OOHG_SelectSubClass( TLabel(), _OOHG_ActiveControlSubClass, _OOHG_ActiveControlAssignObject ):Define( ;
                 _OOHG_ActiveControlName, ;
                 _OOHG_ActiveControlOf, ;
                 _OOHG_ActiveControlCol, ;
@@ -1955,7 +1983,7 @@ LABEL
 
 #xcommand END IPADDRESS ;
         => ;
-        TIPAddress():Define( ;
+        _OOHG_SelectSubClass( TIPAddress(), _OOHG_ActiveControlSubClass, _OOHG_ActiveControlAssignObject ):Define( ;
                 _OOHG_ActiveControlName, ;
                 _OOHG_ActiveControlOf, ;
                 _OOHG_ActiveControlCol, ;
@@ -2091,7 +2119,7 @@ GRID
 
 #xcommand END GRID ;
         => ;
-        iif( _OOHG_ActiveControlByCell, TGridByCell(), iif( _OOHG_ActiveControlMultiSelect, TGridMulti(), TGrid() ) ):Define( ;
+        _OOHG_SelectSubClass( iif( _OOHG_ActiveControlByCell, TGridByCell(), iif( _OOHG_ActiveControlMultiSelect, TGridMulti(), TGrid() ) ), _OOHG_ActiveControlSubClass, _OOHG_ActiveControlAssignObject ):Define( ;
                 _OOHG_ActiveControlName, ;
                 _OOHG_ActiveControlOf, ;
                 _OOHG_ActiveControlCol, ;
@@ -2265,7 +2293,7 @@ BROWSE
 
 #xcommand END BROWSE ;
         => ;
-        TOBrowse():Define( _OOHG_ActiveControlName, ;
+        _OOHG_SelectSubClass( TOBrowse(), _OOHG_ActiveControlSubClass, _OOHG_ActiveControlAssignObject ):Define( ;
                 _OOHG_ActiveControlOf, ;
                 _OOHG_ActiveControlCol, ;
                 _OOHG_ActiveControlRow, ;
@@ -2397,7 +2425,7 @@ XBROWSE
 
 #xcommand END XBROWSE ;
         => ;
-        TXBrowse():Define( _OOHG_ActiveControlName, ;
+        _OOHG_SelectSubClass( TXBrowse(), _OOHG_ActiveControlSubClass, _OOHG_ActiveControlAssignObject ):Define( ;
                 _OOHG_ActiveControlOf, ;
                 _OOHG_ActiveControlCol, ;
                 _OOHG_ActiveControlRow, ;
@@ -2495,7 +2523,7 @@ HYPERLINK
 
 #xcommand END HYPERLINK ;
         => ;
-        THyperLink():Define(     ;
+        _OOHG_SelectSubClass( THyperLink(), _OOHG_ActiveControlSubClass, _OOHG_ActiveControlAssignObject ):Define( ;
                 _OOHG_ActiveControlName, ;
                 _OOHG_ActiveControlOf, ;
                 _OOHG_ActiveControlCol, ;
@@ -2546,7 +2574,7 @@ SPINNER
 
 #xcommand END SPINNER;
         => ;
-        TSpinner():Define( ;
+        _OOHG_SelectSubClass( TSpinner(), _OOHG_ActiveControlSubClass, _OOHG_ActiveControlAssignObject ):Define( ;
                 _OOHG_ActiveControlName, ;
                 _OOHG_ActiveControlOf, ;
                 _OOHG_ActiveControlCol, ;
@@ -2591,7 +2619,7 @@ ACTIVEX
 
 #xcommand END ACTIVEX;
         => ;
-        TActiveX():Define( ;
+        _OOHG_SelectSubClass( TActiveX(), _OOHG_ActiveControlSubClass, _OOHG_ActiveControlAssignObject ):Define( ;
                 _OOHG_ActiveControlName, ;
                 _OOHG_ActiveControlOf, ;
                 _OOHG_ActiveControlCol, ;
@@ -2617,7 +2645,7 @@ HOTKEYBOX
 
 #xcommand END HOTKEYBOX;
         => ;
-        THotKeyBox():Define( ;
+        _OOHG_SelectSubClass( THotKeyBox(), _OOHG_ActiveControlSubClass, _OOHG_ActiveControlAssignObject ):Define( ;
                 _OOHG_ActiveControlName, ;
                 _OOHG_ActiveControlOf, ;
                 _OOHG_ActiveControlCol, ;
@@ -2673,7 +2701,7 @@ PICTURE
 
 #xcommand END PICTURE;
         => ;
-        TPicture():Define( ;
+        _OOHG_SelectSubClass( TPicture(), _OOHG_ActiveControlSubClass, _OOHG_ActiveControlAssignObject ):Define( ;
                 _OOHG_ActiveControlName, ;
                 _OOHG_ActiveControlOf, ;
                 _OOHG_ActiveControlCol, ;
@@ -2710,7 +2738,7 @@ PROGRESSMETER
 
 #xcommand END PROGRESSMETER;
         => ;
-        TProgressMeter():Define( ;
+        _OOHG_SelectSubClass( TProgressMeter(), _OOHG_ActiveControlSubClass, _OOHG_ActiveControlAssignObject ):Define( ;
                 _OOHG_ActiveControlName, ;
                 _OOHG_ActiveControlOf, ;
                 _OOHG_ActiveControlCol, ;
@@ -2834,7 +2862,7 @@ SCROLLBAR
 
 #xcommand END SCROLLBAR;
         => ;
-        TScrollBar():Define( ;
+        _OOHG_SelectSubClass( TScrollBar(), _OOHG_ActiveControlSubClass, _OOHG_ActiveControlAssignObject ):Define( ;
                 _OOHG_ActiveControlName, ;
                 _OOHG_ActiveControlOf, ;
                 _OOHG_ActiveControlCol, ;
@@ -2886,9 +2914,9 @@ TEXTARRAY
         => ;
         _OOHG_ActiveControlColCount := <colcount>
 
-#xcommand END SCROLLBAR;
+#xcommand END TEXTARRAY;
         => ;
-        TTextArray():Define( ;
+        _OOHG_SelectSubClass( TTextArray(), _OOHG_ActiveControlSubClass, _OOHG_ActiveControlAssignObject ):Define( ;
                 _OOHG_ActiveControlName, ;
                 _OOHG_ActiveControlOf, ;
                 _OOHG_ActiveControlCol, ;
