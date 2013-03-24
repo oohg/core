@@ -1,11 +1,22 @@
 /*
- * $Id: ChangeLog,v 1.1041 2013-03-23 19:57:35 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1042 2013-03-24 00:21:49 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-03-23 16:58 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     * Typo fixed.
+   * source/h_browse.prg
+   * source/h_xbrowse.prg
+     * Changed: vertical scrollbar and asociated scrollbar button are
+       always created at control's creation time.
+     + Added hidden datas VScrollCopy and lVscrollVisible.
+     + Added method VScrollVisible( lState ) to hide/show the
+       control's vertical scrollbar.
 
 2013-03-23 16:58 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * ./Changelog
@@ -23,7 +34,7 @@
      ! Fixed: END TEXTARRAY not defined.
      ! Fixed: END SCROLLBAR defined two times.
    * source/h_windows.prg
-     * Function _OOHG_SELECTSUBCLASS moved PRG level.
+     * Function _OOHG_SELECTSUBCLASS moved to PRG level.
      + Added new codeblock type parameter to be evaluated against
        selected object.
    * source/h_listbox.prg

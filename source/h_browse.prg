@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.107 2012-09-23 00:17:27 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.108 2013-03-24 00:21:49 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -256,44 +256,49 @@ Local nWidth2, nCol2, oScroll, z
    ::WorkArea := WorkArea
    ::aRecMap := {}
 
-   if ! novscroll
+   ::ScrollButton := TScrollButton():Define( , Self, nCol2, ::nHeight - GETHSCROLLBARHEIGHT(), GETVSCROLLBARWIDTH() , GETHSCROLLBARHEIGHT() )
 
-      ::ScrollButton := TScrollButton():Define( , Self, nCol2, ::nHeight - GETHSCROLLBARHEIGHT(), GETVSCROLLBARWIDTH() , GETHSCROLLBARHEIGHT() )
+   oScroll := TScrollBar()
+   oScroll:nWidth := GETVSCROLLBARWIDTH()
+   oScroll:SetRange( 1, 1000 )
 
-      oScroll := TScrollBar()
-      oScroll:nWidth := GETVSCROLLBARWIDTH()
-      oScroll:SetRange( 1, 1000 )
+   IF ::lRtl .AND. ! ::Parent:lRtl
+      ::nCol := ::nCol + GETVSCROLLBARWIDTH()
+      nCol2 := -GETVSCROLLBARWIDTH()
+   Else
+      nCol2 := nWidth2
+   ENDIF
+   oScroll:nCol := nCol2
 
-      IF ::lRtl .AND. ! ::Parent:lRtl
-         ::nCol := ::nCol + GETVSCROLLBARWIDTH()
-         nCol2 := -GETVSCROLLBARWIDTH()
-      Else
-         nCol2 := nWidth2
-      ENDIF
-      oScroll:nCol := nCol2
+   If IsWindowStyle( ::hWnd, WS_HSCROLL )
+      oScroll:nRow := 0
+      oScroll:nHeight := ::nHeight - GETHSCROLLBARHEIGHT()
+   Else
+      oScroll:nRow := 0
+      oScroll:nHeight := ::nHeight
+      ::ScrollButton:Visible := .F.
+   EndIf
 
-      If IsWindowStyle( ::hWnd, WS_HSCROLL )
-         oScroll:nRow := 0
-         oScroll:nHeight := ::nHeight - GETHSCROLLBARHEIGHT()
-      Else
-         oScroll:nRow := 0
-         oScroll:nHeight := ::nHeight
-         ::ScrollButton:Visible := .F.
-      EndIf
+   oScroll:Define( , Self )
+   ::VScroll := oScroll
+   ::VScroll:OnLineUp   := { || ::SetFocus():Up() }
+   ::VScroll:OnLineDown := { || ::SetFocus():Down() }
+   ::VScroll:OnPageUp   := { || ::SetFocus():PageUp() }
+   ::VScroll:OnPageDown := { || ::SetFocus():PageDown() }
+   ::VScroll:OnThumb    := { |VScroll,Pos| ::SetFocus():SetScrollPos( Pos, VScroll ) }
+   // cambiar TOOLTIP si cambia el del BROWSE
+   // Cambiar HelpID si cambia el del BROWSE
 
-      oScroll:Define( , Self )
-      ::VScroll := oScroll
-      ::VScroll:OnLineUp   := { || ::SetFocus():Up() }
-      ::VScroll:OnLineDown := { || ::SetFocus():Down() }
-      ::VScroll:OnPageUp   := { || ::SetFocus():PageUp() }
-      ::VScroll:OnPageDown := { || ::SetFocus():PageDown() }
-      ::VScroll:OnThumb    := { |VScroll,Pos| ::SetFocus():SetScrollPos( Pos, VScroll ) }
-// cambiar TOOLTIP si cambia el del BROWSE
-// Cambiar HelpID si cambia el del BROWSE
+   ::VScrollCopy := oScroll
 
-      // It forces to hide "additional" controls when it's inside a
-      // non-visible TAB page.
-      ::Visible := ::Visible
+   // It forces to hide "additional" controls when it's inside a
+   // non-visible TAB page.
+   ::Visible := ::Visible
+
+   If novscroll
+      ::lVScrollVisible := .F.
+      ::ScrollButton:Visible := .F.
+      ::VScroll := nil
    EndIf
 
    ::SizePos()
@@ -1064,7 +1069,7 @@ METHOD FastUpdate( d, nRow ) CLASS TOBrowse
 Local ActualRecord , RecordCount
 
    // If vertical scrollbar is used it must be updated
-   If ::VScroll != nil
+   If ::lVScrollVisible
 
       RecordCount := ::RecCount
 
@@ -1095,12 +1100,10 @@ Return nil
 METHOD ScrollUpdate() CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local ActualRecord , RecordCount
-Local oVScroll, cWorkArea
-
-          oVScroll := ::VScroll
+Local cWorkArea
 
    // If vertical scrollbar is used it must be updated
-   If oVScroll != nil
+   If ::lVScrollVisible
 
       cWorkArea := ::WorkArea
       IF Select( cWorkArea ) == 0
@@ -1126,11 +1129,11 @@ Local oVScroll, cWorkArea
       EndIf
 
       If RecordCount < 1000
-         oVScroll:RangeMax := RecordCount
-         oVScroll:Value := ActualRecord
+         ::VScroll:RangeMax := RecordCount
+         ::VScroll:Value := ActualRecord
       Else
-         oVScroll:RangeMax := 1000
-         oVScroll:Value := INT( ActualRecord * 1000 / RecordCount )
+         ::VScroll:RangeMax := 1000
+         ::VScroll:Value := INT( ActualRecord * 1000 / RecordCount )
       EndIf
 
    EndIf

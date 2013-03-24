@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.77 2012-10-15 14:34:37 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.78 2013-03-24 00:21:49 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -78,6 +78,8 @@ CLASS TXBROWSE FROM TGrid
    DATA onDelete          INIT nil
    DATA RefreshType       INIT nil
    DATA SearchWrap        INIT .F.
+   DATA VScrollCopy       INIT nil HIDDEN
+   DATA lVscrollVisible   INIT .T. HIDDEN
 
    METHOD Define
    METHOD Refresh
@@ -104,7 +106,7 @@ CLASS TXBROWSE FROM TGrid
    METHOD PageUp
    METHOD PageDown
    METHOD SetScrollPos
-
+   METHOD VScrollVisible   SETGET
    METHOD Delete
    METHOD EditItem
    METHOD EditItem_B
@@ -229,44 +231,50 @@ Local nWidth2, nCol2, lLocked, oScroll, z
    ASSIGN ::aReplaceField VALUE replacefields TYPE "A"
    ASSIGN ::lRecCount     VALUE lRecCount     TYPE "L"
 
-   If ! novscroll
+   IF ::lRtl .AND. ! ::Parent:lRtl
+      ::nCol := ::nCol + GETVSCROLLBARWIDTH()
+      nCol2 := -GETVSCROLLBARWIDTH()
+   Else
+      nCol2 := nWidth2
+   ENDIF
 
-      IF ::lRtl .AND. ! ::Parent:lRtl
-         ::nCol := ::nCol + GETVSCROLLBARWIDTH()
-         nCol2 := -GETVSCROLLBARWIDTH()
-      Else
-         nCol2 := nWidth2
-      ENDIF
+   ::ScrollButton := TScrollButton():Define( , Self, nCol2, ::nHeight - GETHSCROLLBARHEIGHT(), GETVSCROLLBARWIDTH() , GETHSCROLLBARHEIGHT() )
 
-      ::ScrollButton := TScrollButton():Define( , Self, nCol2, ::nHeight - GETHSCROLLBARHEIGHT(), GETVSCROLLBARWIDTH() , GETHSCROLLBARHEIGHT() )
+   oScroll := TScrollBar()
+   oScroll:nWidth := GETVSCROLLBARWIDTH()
+   oScroll:SetRange( 1, 100 )
+   oScroll:nCol := nCol2
 
-      oScroll := TScrollBar()
-      oScroll:nWidth := GETVSCROLLBARWIDTH()
-      oScroll:SetRange( 1, 100 )
-      oScroll:nCol := nCol2
+   If IsWindowStyle( ::hWnd, WS_HSCROLL )
+      oScroll:nRow := 0
+      oScroll:nHeight := ::nHeight - GETHSCROLLBARHEIGHT()
+   Else
+      oScroll:nRow := 0
+      oScroll:nHeight := ::nHeight
+      ::ScrollButton:Visible := .F.
+   EndIf
 
-      If IsWindowStyle( ::hWnd, WS_HSCROLL )
-         oScroll:nRow := 0
-         oScroll:nHeight := ::nHeight - GETHSCROLLBARHEIGHT()
-      Else
-         oScroll:nRow := 0
-         oScroll:nHeight := ::nHeight
-         ::ScrollButton:Visible := .F.
-      EndIf
+   oScroll:Define( , Self )
+   ::VScroll := oScroll
+   ::VScroll:OnLineUp   := { || ::SetFocus():Up() }
+   ::VScroll:OnLineDown := { || ::SetFocus():Down() }
+   ::VScroll:OnPageUp   := { || ::SetFocus():PageUp() }
+   ::VScroll:OnPageDown := { || ::SetFocus():PageDown() }
+   ::VScroll:OnThumb    := { |VScroll,Pos| ::SetFocus():SetScrollPos( Pos, VScroll ) }
+   // cambiar TOOLTIP si cambia el del BROWSE
+   // Cambiar HelpID si cambia el del BROWSE
 
-      oScroll:Define( , Self )
-      ::VScroll := oScroll
-      ::VScroll:OnLineUp   := { || ::SetFocus():Up() }
-      ::VScroll:OnLineDown := { || ::SetFocus():Down() }
-      ::VScroll:OnPageUp   := { || ::SetFocus():PageUp() }
-      ::VScroll:OnPageDown := { || ::SetFocus():PageDown() }
-      ::VScroll:OnThumb    := { |VScroll,Pos| ::SetFocus():SetScrollPos( Pos, VScroll ) }
-// cambiar TOOLTIP si cambia el del BROWSE
-// Cambiar HelpID si cambia el del BROWSE
+   ::VScrollCopy := oScroll
 
-      // It forces to hide "additional" controls when it's inside a
-      // non-visible TAB page.
-      ::Visible := ::Visible
+   // It forces to hide "additional" controls when it's inside a
+   // non-visible TAB page.
+   ::Visible := ::Visible
+
+   If novscroll
+      ::lVScrollVisible := .F.
+      ::ScrollButton:Visible := .F.
+      ::VScroll := nil
+      ::SizePos()
    EndIf
 
    ASSIGN lLocked VALUE ::lLocked TYPE "L" DEFAULT .F.
@@ -560,7 +568,7 @@ Local oVScroll, aPosition
    If ValType( nValue ) == "N" .AND. ! ::lLocked
       ::nValue := nValue
       oVScroll := ::VScroll
-      If oVScroll != NIL
+      If ::lVScrollVisible
          If ::lRecCount
             aPosition := { ::oWorkArea:OrdKeyNo(), ::oWorkArea:RecCount() }
          Else
@@ -593,7 +601,7 @@ Local uRet, nWidth
    ASSIGN ::nWidth  VALUE Width  TYPE "N"
    ASSIGN ::nHeight VALUE Height TYPE "N"
 
-   If ::VScroll != nil
+   If ::lVScrollVisible
       nWidth := ::VScroll:Width
 
       // See below
@@ -1073,7 +1081,7 @@ Local uRet
    uRet := nil
    If ! ::lNestedEdit
       ::lNestedEdit := .T.
-      If ::VScroll != nil
+      If ::lVScrollVisible
          // Kills scrollbar's events...
          ::VScroll:Enabled := .F.
          ::VScroll:Enabled := .T.
@@ -1534,6 +1542,23 @@ LOCAL nColumns, nRet
    nRet := ::Super:DeleteColumn( nColIndex )
    ::Refresh()
 RETURN nRet
+
+*-----------------------------------------------------------------------------*
+METHOD VScrollVisible( lState ) CLASS TXBrowse
+*-----------------------------------------------------------------------------*
+   If HB_IsLogical( lState ) .AND. lState # ::lVScrollVisible
+      If ::lVScrollVisible
+         ::VScroll:Visible := .F.
+         ::VScroll := nil
+      Else
+         ::VScroll := ::VScrollCopy
+         ::VScroll:Visible := .T.
+      EndIf
+      ::lVScrollVisible := lState
+      ::ScrollButton:Visible := lState
+      ::SizePos()
+   EndIf
+Return ::lVScrollVisible
 
 
 
