@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.1042 2013-03-24 00:21:49 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1043 2013-03-24 00:23:38 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,9 +7,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2013-03-23 16:58 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+2013-03-23 21:23 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * ./Changelog
-     * Typo fixed.
+     * Previous entry corrected.
+
+2013-03-23 21:21 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     * Typo fixed in previous entry.
    * source/h_browse.prg
    * source/h_xbrowse.prg
      * Changed: vertical scrollbar and asociated scrollbar button are
