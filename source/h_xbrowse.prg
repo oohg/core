@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.78 2013-03-24 00:21:49 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.79 2013-03-24 22:43:43 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -78,8 +78,8 @@ CLASS TXBROWSE FROM TGrid
    DATA onDelete          INIT nil
    DATA RefreshType       INIT nil
    DATA SearchWrap        INIT .F.
-   DATA VScrollCopy       INIT nil HIDDEN
-   DATA lVscrollVisible   INIT .T. HIDDEN
+   DATA VScrollCopy       INIT nil
+   DATA lVscrollVisible   INIT .F.
 
    METHOD Define
    METHOD Refresh
@@ -275,6 +275,8 @@ Local nWidth2, nCol2, lLocked, oScroll, z
       ::ScrollButton:Visible := .F.
       ::VScroll := nil
       ::SizePos()
+   Else
+      ::lVScrollVisible := .T.
    EndIf
 
    ASSIGN lLocked VALUE ::lLocked TYPE "L" DEFAULT .F.

@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.108 2013-03-24 00:21:49 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.109 2013-03-24 22:43:43 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -299,6 +299,8 @@ Local nWidth2, nCol2, oScroll, z
       ::lVScrollVisible := .F.
       ::ScrollButton:Visible := .F.
       ::VScroll := nil
+   Else
+      ::lVScrollVisible := .T.
    EndIf
 
    ::SizePos()
