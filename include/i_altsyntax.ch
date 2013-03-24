@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.78 2013-03-24 00:42:27 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.79 2013-03-24 15:26:42 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1105,7 +1105,7 @@ TEXT BOX
 
 #xcommand END TEXTBOX;
         => ;
-        DefineTextBox( ;
+        _OOHG_SelectSubClass( DefineTextBox( ;
                 _OOHG_ActiveControlName, ;
                 _OOHG_ActiveControlOf, ;
                 _OOHG_ActiveControlCol, ;
@@ -1146,13 +1146,13 @@ TEXT BOX
                 _OOHG_ActiveControlNumeric, ;
                 _OOHG_ActiveControlInputMask, ;
                 _OOHG_ActiveControlFormat, ;
-                _OOHG_SelectSubClass( NIL, _OOHG_ActiveControlSubClass, _OOHG_ActiveControlAssignObject ), ;
+                _OOHG_ActiveControlSubClass, ;
                 _OOHG_ActiveControlAction, ;
                 _OOHG_ActiveControlImage, ;
                 _OOHG_ActiveControlButtonWidth, ;
                 _OOHG_ActiveControlAction2, ;
                 _OOHG_ActiveControlWhen, ;
-                _OOHG_ActiveControlCenterAlign )
+                _OOHG_ActiveControlCenterAlign ), NIL, _OOHG_ActiveControlAssignObject )
 
 /*----------------------------------------------------------------------------
 MONTH CALENDAR
