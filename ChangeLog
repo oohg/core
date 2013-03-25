@@ -1,11 +1,30 @@
 /*
- * $Id: ChangeLog,v 1.1046 2013-03-24 22:43:43 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1047 2013-03-25 17:47:28 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-03-25 14:47 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_grid.prg
+     ! When doubleclicking on an empty row of a grid with
+       horizontal scrollbar, the grid is scrolled to the left.
+       This occurs because _GetGridCellData() does not check
+       for a hit on an empty row.
+       Fixed to not scroll anymore and to return all zeroes,
+       so if on dblclick event is fired, the following conditions
+       are true:
+         _OOHG_ThisItemRowIndex == 0
+         _OOHG_ThisItemColIndex == 0
+         _OOHG_ThisItemCellRow == 0
+         _OOHG_ThisItemCellCol == 0
+         _OOHG_ThisItemCellWidth == 0
+         _OOHG_ThisItemCellHeight == 0
+         _OOHG_ThisItemCellValue == nil
+     * Method ItemHeight now returns 0 if the grid has no rows,
+       instead of returning a nonsense number.
 
 2013-03-24 19:43 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_browse.prg

@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.192 2013-03-16 20:47:06 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.193 2013-03-25 17:47:28 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -2248,6 +2248,9 @@ Return ListView_SortItemsEx( ::hWnd, nColumn, lDescending )
 METHOD ItemHeight() CLASS TGrid
 *---------------------------------------------------------------------------*
 Local aCellRect
+   If ::ItemCount == 0
+     Return 0
+   EndIf
    aCellRect := ListView_GetSubitemRect( ::hWnd, 0, 0 )
 Return aCellRect[ 4 ]
 
@@ -3196,7 +3199,10 @@ Local xd
 Local aCellData
 
    r := ListView_HitTest ( ::hWnd, GetCursorRow() - GetWindowRow ( ::hWnd ), GetCursorCol() - GetWindowCol ( ::hWnd ) )
-   If r [2] == 1
+   If r [1] == 0 .AND. r [2] == 0
+      // hit on an empty row
+      Return { 0, 0, 0, 0, 0, 0 }
+   ElseIf r [2] == 1
       ListView_Scroll( ::hWnd,  -10000, 0 )
       r := ListView_HitTest ( ::hWnd, GetCursorRow() - GetWindowRow ( ::hWnd ), GetCursorCol() - GetWindowCol ( ::hWnd ) )
    Else
