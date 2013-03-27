@@ -1,5 +1,5 @@
 /*
- * $Id: i_var.ch,v 1.21 2008-09-07 23:12:56 guerra000 Exp $
+ * $Id: i_var.ch,v 1.22 2013-03-27 00:07:56 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -119,7 +119,7 @@ MEMVAR _OOHG_AllVars
 #xtranslate  _OOHG_ThisItemCellCol     => _OOHG_AllVars \[  20 \]
 #xtranslate  _OOHG_ThisItemCellWidth   => _OOHG_AllVars \[  21 \]
 #xtranslate  _OOHG_ThisItemCellHeight  => _OOHG_AllVars \[  22 \]
-
+#xtranslate  _OOHG_DialogCancelled     => _OOHG_AllVArs \[  23 \]
 #xtranslate  _OOHG_ExtendedNavigation  => _OOHG_AllVars \[  24 \]
 #xtranslate  _OOHG_ThisEventType       => _OOHG_AllVars \[  25 \]
 

@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.240 2013-03-23 19:50:45 fyurisich Exp $
+ * $Id: h_windows.prg,v 1.241 2013-03-27 00:09:20 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -106,7 +106,6 @@
 #include "error.ch"
 
 STATIC _OOHG_aEventInfo := {}        // Event's stack
-STATIC _OOHG_DialogCancelled := .F.  //
 STATIC _OOHG_HotKeys := {}           // Application-wide hot keys
 STATIC _OOHG_bKeyDown := nil         // Application-wide WM_KEYDOWN handler
 
