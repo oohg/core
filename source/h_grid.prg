@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.193 2013-03-25 17:47:28 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.194 2013-04-01 22:49:05 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1509,7 +1509,9 @@ Local r, r2, lRet := .F., nWidth
          nWidth := r[ 3 ] - r[ 1 ]
          r2 := { 0, 0, 0, 0 }                                       // left, top, right, bottom
          GetWindowRect( ::hWnd, r2 )
-         ListView_EnsureVisible( ::hWnd, nRow - 1 )
+         If ! OSisWinXPorLater() .or. ! ListView_IsItemVisible( ::hWnd, nRow )
+            ListView_EnsureVisible( ::hWnd, nRow )
+         EndIf
          r := ListView_GetSubitemRect( ::hWnd, nRow - 1, nCol - 1 ) // top, left, width, height
          r[ 3 ] := ListView_GetColumnWidth( ::hWnd, nCol - 1 )
          // Ensures cell is visible
@@ -4148,6 +4150,11 @@ EXTERN GetGridVKey, TGrid_Notify_CustomDraw
    #define WM_MOUSEWHEEL  0x020A
 #endif
 
+#ifndef LVM_ISITEMVISIBLE
+   #define LVM_ISITEMVISIBLE (LVM_FIRST + 182)
+   #define ListView_IsItemVisible(w,i) (BOOL)SNDMSG((w),LVM_ISITEMVISIBLE,i,0)
+#endif
+
 #define s_Super s_TControl
 
 // -----------------------------------------------------------------------------
@@ -4981,6 +4988,11 @@ HB_FUNC( LISTVIEWGETCOUNTPERPAGE )
 HB_FUNC( LISTVIEW_ENSUREVISIBLE )
 {
    hb_retl( ListView_EnsureVisible( HWNDparam( 1 ), hb_parni( 2 ) - 1, 1 ) );
+}
+
+HB_FUNC( LISTVIEW_ISITEMVISIBLE )
+{
+   hb_retl( ListView_IsItemVisible( HWNDparam( 1 ), hb_parni( 2 ) - 1 ) );
 }
 
 HB_FUNC( LISTVIEW_GETTOPINDEX )
