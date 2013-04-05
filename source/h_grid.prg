@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.194 2013-04-01 22:49:05 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.195 2013-04-05 01:30:50 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -215,6 +215,9 @@ CLASS TGrid FROM TControl
    METHOD Justify
    METHOD HeaderHeight
    METHOD ItemHeight
+   METHOD ScrollToLeft
+   METHOD ScrollToRight
+   METHOD ScrollToCol
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -664,7 +667,7 @@ Local lRet
    EndDo
 
    If lRet
-      ListView_Scroll( ::hWnd, - _OOHG_GridArrayWidths( ::hWnd, ::aWidths ), 0)
+      ListView_Scroll( ::hWnd, - _OOHG_GridArrayWidths( ::hWnd, ::aWidths ), 0 )
    EndIf
 Return lRet
 
@@ -2256,6 +2259,31 @@ Local aCellRect
    aCellRect := ListView_GetSubitemRect( ::hWnd, 0, 0 )
 Return aCellRect[ 4 ]
 
+*-----------------------------------------------------------------------------*
+METHOD ScrollToLeft CLASS TGrid
+*-----------------------------------------------------------------------------*
+   ListView_Scroll( ::hWnd, - _OOHG_GridArrayWidths( ::hWnd, ::aWidths ), 0 )
+Return Nil
+
+*-----------------------------------------------------------------------------*
+METHOD ScrollToRight CLASS TGrid
+*-----------------------------------------------------------------------------*
+   ListView_Scroll( ::hWnd, _OOHG_GridArrayWidths( ::hWnd, ::aWidths ), 0 )
+Return Nil
+
+*-----------------------------------------------------------------------------*
+METHOD ScrollToCol( nCol ) CLASS TGrid
+*-----------------------------------------------------------------------------*
+Local r
+
+   r := ListView_GetSubitemRect( ::hWnd, 0, nCol - 1 )        // top, left, width, height
+
+   If r[ 2 ] # 0
+      ListView_Scroll( ::hWnd, r[ 2 ], 0 )
+   EndIf
+
+Return Nil
+
 
 
 
@@ -2398,7 +2426,7 @@ Local lRet
    EndDo
 
    If lRet
-      ListView_Scroll( ::hWnd, - _OOHG_GridArrayWidths( ::hWnd, ::aWidths ), 0)
+      ListView_Scroll( ::hWnd, - _OOHG_GridArrayWidths( ::hWnd, ::aWidths ), 0 )
    EndIf
 Return lRet
 
@@ -2732,7 +2760,7 @@ Local lRet, uValue
 
    // TODO: revisar si esto es necesario
    If lRet
-      ListView_Scroll( ::hWnd, - _OOHG_GridArrayWidths( ::hWnd, ::aWidths ), 0)
+      ListView_Scroll( ::hWnd, - _OOHG_GridArrayWidths( ::hWnd, ::aWidths ), 0 )
    EndIf
 Return lRet
 

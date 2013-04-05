@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.241 2013-03-27 00:09:20 fyurisich Exp $
+ * $Id: h_windows.prg,v 1.242 2013-04-05 01:30:50 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -82,23 +82,23 @@
 
  Parts of this project are based upon:
 
-	"Harbour GUI framework for Win32"
- 	Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- 	Copyright 2001 Antonio Linares <alinares@fivetech.com>
-	www - http://www.harbour-project.org
+   "Harbour GUI framework for Win32"
+   Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
+   Copyright 2001 Antonio Linares <alinares@fivetech.com>
+   www - http://www.harbour-project.org
 
-	"Harbour Project"
-	Copyright 1999-2003, http://www.harbour-project.org/
+   "Harbour Project"
+   Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 /*
-	Cayetano Gómez ( 11/04/2011)
-	usar :
-	//CGR
-	Para encontrar ls modificaciones
-	añadidos los bordes, a todos los controles.
-	08082011 - Colores en el foco
-	13082011 - angle y width en la fuente.
-*/	
+   Cayetano Gómez ( 11/04/2011)
+   usar :
+   //CGR
+   Para encontrar ls modificaciones
+   añadidos los bordes, a todos los controles.
+   08082011 - Colores en el foco
+   13082011 - angle y width en la fuente.
+*/
 
 #include "oohg.ch"
 #include "i_windefs.ch"
@@ -195,15 +195,15 @@ CLASS TWindow
    DATA Italic              INIT .F.
    DATA Underline           INIT .F.
    DATA Strikeout           INIT .F.
-   DATA FntWidth			INIT 0
-   DATA FntAngle				INIT 0
+   DATA FntWidth            INIT 0
+   DATA FntAngle            INIT 0
    //CGR
-   DATA cFocusFontName           INIT ""
-   DATA nFocusFontSize           INIT 0
-   DATA FocusBold                INIT .F.
-   DATA FocusItalic              INIT .F.
-   DATA FocusUnderline           INIT .F.
-   DATA FocusStrikeout           INIT .F.
+   DATA cFocusFontName      INIT ""
+   DATA nFocusFontSize      INIT 0
+   DATA FocusBold           INIT .F.
+   DATA FocusItalic         INIT .F.
+   DATA FocusUnderline      INIT .F.
+   DATA FocusStrikeout      INIT .F.
    DATA FocusColor
    DATA FocusBackColor
    
@@ -273,11 +273,11 @@ CLASS TWindow
    // Client adjust
    DATA ClientAdjust        INIT 0 // 0=none, 1=top, 2=bottom, 3=left, 4=right, 5=Client
    DATA IsAdjust            INIT .F.
-   DATA nBorders			      INIT {0,0,0} // ancho externo, estacio, ancho interno.
-   DATA aBECOLORS			      INIT {{0,0,0},{0,0,0},{0,0,0},{0,0,0}} // color externo: arriba, derecha, abajo, izquierda
-   DATA aBICOLORS			      INIT {{0,0,0},{0,0,0},{0,0,0},{0,0,0}} // color interno: arriba, derecha, abajo, izquierda
-   DATA nPaintCount			                                           // contador para GetDc y ReleaseDc
-   DATA hDC					                                               // puntero al contexto del canvas.
+   DATA nBorders            INIT {0,0,0} // ancho externo, estacio, ancho interno.
+   DATA aBECOLORS           INIT {{0,0,0},{0,0,0},{0,0,0},{0,0,0}} // color externo: arriba, derecha, abajo, izquierda
+   DATA aBICOLORS           INIT {{0,0,0},{0,0,0},{0,0,0},{0,0,0}} // color interno: arriba, derecha, abajo, izquierda
+   DATA nPaintCount                                                    // contador para GetDc y ReleaseDc
+   DATA hDC                                                              // puntero al contexto del canvas.
 
    METHOD SethWnd
    METHOD Release
@@ -762,9 +762,9 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )
                      _OOHG_Send( pControl, s_DoEvent );
                      hb_vmPush( pOnClick );
                      hb_vmPushString( "CLICK", 5 );
-// aqui!
-//DefWindowProc( hWnd, message, wParam, lParam );
-EndMenu();
+                     // aqui!
+                     //DefWindowProc( hWnd, message, wParam, lParam );
+                     EndMenu();
                      hb_vmSend( 2 );
                      hb_itemRelease( pOnClick );
                      bClicked = 1;
@@ -983,9 +983,9 @@ EndMenu();
          if( hb_param( -1, HB_IT_BLOCK ) )
          {
 #ifdef __XHARBOUR__
-      hb_vmPushSymbol( &hb_symEval );
+            hb_vmPushSymbol( &hb_symEval );
 #else
-      hb_vmPushEvalSym();
+            hb_vmPushEvalSym();
 #endif
             hb_vmPush( hb_param( -1, HB_IT_BLOCK ) );
             HWNDpush( hWnd );
@@ -1170,7 +1170,6 @@ Local nPos
          ::Container := uParent
          ::Parent := ::Container:Parent
       EndIf
-
    EndIf
 Return uParent
 
@@ -1634,23 +1633,23 @@ local nOffset // desplazamientos por borde
    ::IsAdjust := .T.
    // remove toolbar .and. statusbar
    for n:=1 to len(aControls)
-		if aControls[n]:type="TOOLBAR"
-			if aControls[n]:ltop
-				nRow+=aControls[n]:ClientHeightUsed()
-				nHeight-=aControls[n]:ClientHeightUsed()
-			else
-				nHeight-=aControls[n]:ClientHeightUsed()
-			end
-		elseif aControls[n]:type="MESSAGEBAR"
-		    nHeight+=aControls[n]:ClientHeightUsed()
-		end
+      if aControls[n]:type="TOOLBAR"
+         if aControls[n]:ltop
+            nRow+=aControls[n]:ClientHeightUsed()
+            nHeight-=aControls[n]:ClientHeightUsed()
+         else
+            nHeight-=aControls[n]:ClientHeightUsed()
+         end
+      elseif aControls[n]:type="MESSAGEBAR"
+          nHeight+=aControls[n]:ClientHeightUsed()
+      end
    next
    // nCol := ::Height - GetStatusbarHeight( ::name ) - GetTitleHeight() - 2 * GetBorderHeight()
    For n := 1 to len( aControls )
       oControl := aControls[ n ]
       nAdjust := oControl:ClientAdjust
       If nAdjust > 0 .and. nAdjust < 5 .and. aControls[ n ]:ContainerVisible
-		oControl:Hide()
+      oControl:Hide()
          If nAdjust == 1 // top
             oControl:Col := nCol
             oControl:Row := nRow
@@ -1683,10 +1682,10 @@ local nOffset // desplazamientos por borde
       If aControls[ n ]:ClientAdjust == 5 .and. aControls[ n ]:Visible
          aControls[ n ]:Hide()
          //aControls[ n ]:SizePos( nRow, nCol, nWidth - 2, nHeight - 2 )
-		 aControls[n]:width:=nWidth -2
-		 aControls[n]:height:=nHeight -2
-		 aControls[n]:col:=nCol
-		 aControls[n]:row:=nRow
+       aControls[n]:width:=nWidth -2
+       aControls[n]:height:=nHeight -2
+       aControls[n]:col:=nCol
+       aControls[n]:row:=nRow
          aControls[ n ]:Show()
       EndIf
    Next
@@ -1987,143 +1986,138 @@ RETURN cValue
 *-----------------------------------------------------------------------------*
 METHOD LINE(nRow ,nCol ,nToRow ,nToCol ,nWidth ,aColor, nStyle ) CLASS TWindow
 *-----------------------------------------------------------------------------*
-	default aColor to {0,0,0}
-	default nWidth to 1
-	::GetDc()
-	c_Line(::hdc,nRow ,nCol ,nToRow ,nToCol ,nWidth ,aColor[1] ;
-		,aColor[2] ,aColor[3] ,.t. ,.t., !empty(nStyle) ,nStyle )
-	::ReleaseDc()
-return nil	
+   default aColor to {0,0,0}
+   default nWidth to 1
+   ::GetDc()
+   c_Line(::hdc,nRow ,nCol ,nToRow ,nToCol ,nWidth ,aColor[1] ;
+      ,aColor[2] ,aColor[3] ,.t. ,.t., !empty(nStyle) ,nStyle )
+   ::ReleaseDc()
+return nil
 
 *------------------------------------------------------------------------------*
 METHOD FILL(nRow , nCol , nToRow , nToCol , aColor) Class TWindow
 *------------------------------------------------------------------------------*
 
-	default aColor to {0,0,0}
-	::GetDc()
+   default aColor to {0,0,0}
+   ::GetDc()
     C_FILL(::Hdc ,nRow ,nCol ,nToRow ,nToCol ,aColor[1] ,aColor[2] ,aColor[3] , .t. )
-	::ReleaseDc()
+   ::ReleaseDc()
 Return nil
 
 *------------------------------------------------------------------------------*
 METHOD Box (nRow ,nCol ,nToRow ,nToCol ,nWidth , aColor, ;
-	nStyle, nBrStyle, aBrColor) CLASS TWindow
+   nStyle, nBrStyle, aBrColor) CLASS TWindow
 *------------------------------------------------------------------------------*
 local lBrColor
 
-	default aColor to {0,0,0}
-	default nWidth to 1
+   default aColor to {0,0,0}
+   default nWidth to 1
 
-	if empty(aBrColor)
-		aBrColor:={0,0,0}
-		lBrColor:=.f.
-	else
-		lBrColor:=.t.
-	end
-	
-	::GetDc()
-    C_RECTANGLE(::Hdc ,nRow ,nCol ,nToRow ,nToCol ,nWidth ,;
-		aColor[1] ,aColor[2] ,aColor[3] ,.t. ,.t., !empty(nStyle) ,nStyle , !empty(nBrStyle),;
-		nBrStyle, lBrColor , aBrColor[1],aBrColor[2],aBrColor[3]  )
-	::ReleaseDc()
+   if empty(aBrColor)
+      aBrColor:={0,0,0}
+      lBrColor:=.f.
+   else
+      lBrColor:=.t.
+   end
+
+   ::GetDc()
+   C_RECTANGLE(::Hdc ,nRow ,nCol ,nToRow ,nToCol ,nWidth ,;
+      aColor[1] ,aColor[2] ,aColor[3] ,.t. ,.t., !empty(nStyle) ,nStyle , !empty(nBrStyle),;
+      nBrStyle, lBrColor , aBrColor[1],aBrColor[2],aBrColor[3]  )
+   ::ReleaseDc()
 Return nil
 
 *------------------------------------------------------------------------------*
 METHOD ROUNDbox (nRow ,nCol ,nToRow ,nToCol ,nWidth , aColor, lStyle, ;
-	nStyle, nBrStyle, aBrColor ) CLASS tWindow
+   nStyle, nBrStyle, aBrColor ) CLASS tWindow
 *------------------------------------------------------------------------------*
 local lBrushColor
 
    EMPTY( lStyle )
 
-	default aColor to {0,0,0}
-	default nWidth to 1
+   default aColor to {0,0,0}
+   default nWidth to 1
 
-	if empty(aBrColor)
-		aBrColor:={0,0,0}
-		lBrushColor:=.f.
-	else
-		lBrushColor:=.t.
-	end
-	
-	::GetDc()
+   if empty(aBrColor)
+      aBrColor:={0,0,0}
+      lBrushColor:=.f.
+   else
+      lBrushColor:=.t.
+   end
+
+   ::GetDc()
     C_ROUNDRECTANGLE(::Hdc ,nRow ,nCol ,nToRow ,nToCol ,nWidth ,;
-		aColor[1] ,aColor[2] ,aColor[3] ,.t. ,.t., !empty(nStyle),nStyle ,!empty(nBrStyle),;
-		nBrStyle, lBrushColor, aBrColor[1],aBrColor[2],aBrColor[3] )
-	::ReleaseDc()
-	
-Return nil
+      aColor[1] ,aColor[2] ,aColor[3] ,.t. ,.t., !empty(nStyle),nStyle ,!empty(nBrStyle),;
+      nBrStyle, lBrushColor, aBrColor[1],aBrColor[2],aBrColor[3] )
+   ::ReleaseDc()
 
+Return nil
 
 *------------------------------------------------------------------------------*
 METHOD Ellipse (nRow ,nCol ,nToRow ,nToCol ,nWidth , aColor, lStyle, ;
-	nStyle, nBrStyle, aBrColor ) CLASS tWindow
+   nStyle, nBrStyle, aBrColor ) CLASS tWindow
 *------------------------------------------------------------------------------*
 local lBrushColor
 
    EMPTY( lStyle )
 
-	default aColor to {0,0,0}
-	default nWidth to 1
+   default aColor to {0,0,0}
+   default nWidth to 1
 
-	if empty(aBrColor)
-		aBrColor:={0,0,0}
-		lBrushColor:=.f.
-	else
-		lBrushColor:=.t.
-	end
-	
-	::GetDc()
+   if empty(aBrColor)
+      aBrColor:={0,0,0}
+      lBrushColor:=.f.
+   else
+      lBrushColor:=.t.
+   end
+
+   ::GetDc()
     C_ELLIPSE(::Hdc ,nRow ,nCol ,nToRow ,nToCol ,nWidth ,;
-		aColor[1] ,aColor[2] ,aColor[3] ,.t. ,.t., !empty(nStyle),nStyle ,!empty(nBrStyle),;
-		nBrStyle, lBrushColor, aBrColor[1],aBrColor[2],aBrColor[3] )
-	::ReleaseDc()
-	
+      aColor[1] ,aColor[2] ,aColor[3] ,.t. ,.t., !empty(nStyle),nStyle ,!empty(nBrStyle),;
+      nBrStyle, lBrushColor, aBrColor[1],aBrColor[2],aBrColor[3] )
+   ::ReleaseDc()
+
 Return nil
 
 *-----------------------------------------------------------------------------*
 METHOD Arc(nRow ,nCol ,nToRow ,nToCol,X1,Y1,X2,Y2 ,nWidth ,aColor, nStyle ) CLASS TWindow
 *-----------------------------------------------------------------------------*
-	default aColor to {0,0,0}
-	default nWidth to 1
-	::GetDc()
-	c_arc(::hdc,nRow ,nCol ,nToRow ,nToCol,X1,Y1,X2,Y2,nWidth ,aColor[1] ;
-		,aColor[2] ,aColor[3] ,.t. ,.t., !empty(nStyle) ,nStyle )
-	::ReleaseDc()
-return nil	
+   default aColor to {0,0,0}
+   default nWidth to 1
+   ::GetDc()
+   c_arc(::hdc,nRow ,nCol ,nToRow ,nToCol,X1,Y1,X2,Y2,nWidth ,aColor[1] ;
+      ,aColor[2] ,aColor[3] ,.t. ,.t., !empty(nStyle) ,nStyle )
+   ::ReleaseDc()
+return nil
 
 *------------------------------------------------------------------------------*
 METHOD Pie(nRow ,nCol ,nToRow ,nToCol,x1,y1,x2,y2,nWidth , aColor, lStyle, ;
-	nStyle, nBrStyle, aBrColor ) CLASS tWindow
+   nStyle, nBrStyle, aBrColor ) CLASS tWindow
 *------------------------------------------------------------------------------*
 local lBrushColor
 
    EMPTY( lStyle )
 
-	default aColor to {0,0,0}
-	default nWidth to 1
+   default aColor to {0,0,0}
+   default nWidth to 1
 
-	if empty(aBrColor)
-		aBrColor:={0,0,0}
-		lBrushColor:=.f.
-	else
-		lBrushColor:=.t.
-	end
-	
-	::GetDc()
+   if empty(aBrColor)
+      aBrColor:={0,0,0}
+      lBrushColor:=.f.
+   else
+      lBrushColor:=.t.
+   end
+
+   ::GetDc()
     C_PIE(::Hdc ,nRow ,nCol ,nToRow ,nToCol ,x1 ,y1 ,x2 ,y2 ,nWidth ,;
-		aColor[1] ,aColor[2] ,aColor[3] ,.t. ,.t., !empty(nStyle),nStyle ,!empty(nBrStyle),;
-		nBrStyle, lBrushColor, aBrColor[1],aBrColor[2],aBrColor[3] )
-	::ReleaseDc()
-	
+      aColor[1] ,aColor[2] ,aColor[3] ,.t. ,.t., !empty(nStyle),nStyle ,!empty(nBrStyle),;
+      nBrStyle, lBrushColor, aBrColor[1],aBrColor[2],aBrColor[3] )
+   ::ReleaseDc()
+
 Return nil
 
-
-
-
-
-
 #pragma BEGINDUMP
+
 HB_FUNC( _OOHG_HEX )   // nNum, nDigits
 {
    char cLine[ 50 ], cBuffer[ 50 ];
@@ -2166,6 +2160,7 @@ HB_FUNC( _OOHG_HEX )   // nNum, nDigits
    }
    hb_retclen( cLine, iLen );
 }
+
 #pragma ENDDUMP
 
 *------------------------------------------------------------------------------*
@@ -2213,89 +2208,100 @@ LOCAL oObj
 Return oObj
 
 *-----------------------------------------------------------------------------*
-Function InputBox ( cInputPrompt , cDialogCaption , cDefaultValue , nTimeout , cTimeoutValue , lMultiLine )
+Function InputBox ( cInputPrompt, cDialogCaption, cDefaultValue, nTimeout, cTimeoutValue, lMultiLine, nMaxLength )
 *-----------------------------------------------------------------------------*
+Local RetVal, mo
 
-	Local RetVal , mo
+   ASSIGN cInputPrompt   VALUE cInputPrompt   TYPE "C" DEFAULT ""
+   ASSIGN cDialogCaption VALUE cDialogCaption TYPE "C" DEFAULT ""
+   ASSIGN cDefaultValue  VALUE cDefaultValue  TYPE "C" DEFAULT ""
+   ASSIGN nTimeout       VALUE nTimeout       TYPE "N" DEFAULT 0
+   ASSIGN cTimeoutValue  VALUE cTimeoutValue  TYPE "C" DEFAULT nil
+   ASSIGN lMultiLine     VALUE lMultiLine     TYPE "L" DEFAULT .F.
+   ASSIGN nMaxLength     VALUE nMaxLength     TYPE "N" DEFAULT 0
 
-	DEFAULT cInputPrompt	TO ""
-	DEFAULT cDialogCaption	TO ""
-	DEFAULT cDefaultValue	TO ""
+   RetVal := ''
 
-	RetVal := ''
-
-   If HB_IsLogical (lMultiLine) .AND. lMultiLine
+   If lMultiLine
       mo := 150
-	Else
-		mo := 0
-	EndIf
+   Else
+      mo := 0
+   EndIf
 
-	DEFINE WINDOW _InputBox 		;
-		AT 0,0 				;
-		WIDTH 350 			;
-		HEIGHT 115 + mo	+ GetTitleHeight() ;
-		TITLE cDialogCaption  		;
-		MODAL 				;
-		NOSIZE 				;
-      FONT 'Arial'      ;
-      SIZE 10           ;
+   DEFINE WINDOW _InputBox ;
+      AT 0,0 ;
+      WIDTH 350 ;
+      HEIGHT 115 + mo + GetTitleHeight() ;
+      TITLE cDialogCaption ;
+      MODAL ;
+      NOSIZE ;
+      FONT 'Arial' ;
+      SIZE 10 ;
       BACKCOLOR ( GetFormObjectByHandle( GetActiveWindow() ):BackColor )
 
-      ON KEY ESCAPE ACTION ( _OOHG_DialogCancelled := .T. , if(iswindowactive(_Inputbox), _InputBox.Release ,nil)   )
+      ON KEY ESCAPE ACTION ( _OOHG_DialogCancelled := .T., If( IsWindowActive( _Inputbox ), _InputBox.Release, nil ) )
 
-		@ 07,10 LABEL _Label		;
-			VALUE cInputPrompt	;
-			WIDTH 280
-// JK
-                If ValType (lMultiLine) != 'U' .and. lMultiLine == .T.
-                @ 30,10 EDITBOX _TextBox	;
-			VALUE cDefaultValue	;
-			HEIGHT 26 + mo		;
-			WIDTH 320
-                else
-		@ 30,10 TEXTBOX _TextBox	;
-			VALUE cDefaultValue	;
-			HEIGHT 26 + mo		;
-			WIDTH 320		;
-         ON ENTER ( _OOHG_DialogCancelled := .F. , RetVal := _InputBox._TextBox.Value , if(iswindowactive(_Inputbox), _InputBox.Release ,nil)   )
+      @ 07,10 LABEL _Label ;
+         VALUE cInputPrompt ;
+         WIDTH 280
 
-                endif
-//
-		@ 67+mo,120 BUTTON _Ok		;
-			CAPTION if( Set ( _SET_LANGUAGE ) == 'ES', 'Aceptar' ,'Ok' )		;
-         ACTION ( _OOHG_DialogCancelled := .F. , RetVal := _InputBox._TextBox.Value , if(iswindowactive(_Inputbox), _InputBox.Release ,nil)   )
+      If lMultiLine
+         If nMaxLength > 0
+            @ 30,10 EDITBOX _TextBox ;
+               VALUE cDefaultValue ;
+               HEIGHT 26 + mo ;
+               WIDTH 320 ;
+               MAXLENGTH nMaxLength
+         Else
+            @ 30,10 EDITBOX _TextBox ;
+               VALUE cDefaultValue ;
+               HEIGHT 26 + mo ;
+               WIDTH 320
+         EndIf
+      Else
+         If nMaxLength > 0
+            @ 30,10 TEXTBOX _TextBox ;
+               VALUE cDefaultValue ;
+               HEIGHT 26 + mo ;
+               WIDTH 320 ;
+               ON ENTER ( _OOHG_DialogCancelled := .F., RetVal := _InputBox._TextBox.Value, If( IsWindowActive( _Inputbox ), _InputBox.Release, nil ) ) ;
+               MAXLENGTH nMaxLength
+         Else
+            @ 30,10 TEXTBOX _TextBox ;
+               VALUE cDefaultValue ;
+               HEIGHT 26 + mo ;
+               WIDTH 320 ;
+               ON ENTER ( _OOHG_DialogCancelled := .F., RetVal := _InputBox._TextBox.Value, If( IsWindowActive( _Inputbox ), _InputBox.Release, nil ) )
+         EndIf
+      Endif
 
-		@ 67+mo,230 BUTTON _Cancel		;
-			CAPTION if( Set ( _SET_LANGUAGE ) == 'ES', 'Cancelar', 'Cancel'	);
-         ACTION   ( _OOHG_DialogCancelled := .T. , if(iswindowactive(_Inputbox), _InputBox.Release ,nil)   )
+      @ 67 + mo,120 BUTTON _Ok ;
+         CAPTION _OOHG_Messages( 1, 6 ) ;
+         ACTION ( _OOHG_DialogCancelled := .F., RetVal := _InputBox._TextBox.Value, If( IsWindowActive( _Inputbox ), _InputBox.Release, nil ) )
 
-			If ValType (nTimeout) != 'U'
+      @ 67 + mo,230 BUTTON _Cancel ;
+         CAPTION _OOHG_Messages( 1, 7 ) ;
+         ACTION ( _OOHG_DialogCancelled := .T., If( IsWindowActive( _Inputbox ), _InputBox.Release, nil ) )
 
-				If ValType (cTimeoutValue) != 'U'
+      If nTimeout > 0
+         If cTimeoutValue == nil
+            DEFINE TIMER _InputBox ;
+               INTERVAL nTimeout ;
+               ACTION _InputBox.Release
+         Else
+            DEFINE TIMER _InputBox ;
+               INTERVAL nTimeout ;
+               ACTION  ( RetVal := cTimeoutValue, If( IsWindowActive( _Inputbox ), _InputBox.Release, nil ) )
+         EndIf
+      EndIf
+   END WINDOW
 
-					DEFINE TIMER _InputBox ;
-					INTERVAL nTimeout ;
-					ACTION  ( RetVal := cTimeoutValue , if(iswindowactive(_Inputbox), _InputBox.Release ,nil)   )
+   _InputBox._TextBox.SetFocus
 
-				Else
+   CENTER WINDOW _InputBox
+   ACTIVATE WINDOW _InputBox
 
-					DEFINE TIMER _InputBox ;
-					INTERVAL nTimeout ;
-					ACTION _InputBox.Release
-
-				EndIf
-
-			EndIf
-
-	END WINDOW
-
-	_InputBox._TextBox.SetFocus
-
-	CENTER WINDOW _InputBox
-
-	ACTIVATE WINDOW _InputBox
-
-Return ( RetVal )
+Return RetVal
 
 *-----------------------------------------------------------------------------*
 Function _SetWindowRgn(name,col,row,w,h,lx)
@@ -2746,629 +2752,629 @@ RETURN lState
 HB_FUNC ( C_LINE )
 {
 
-	// 1: hDC
-	// 2: y
-	// 3: x
-	// 4: toy
-	// 5: tox
-	// 6: width
-	// 7: R Color
-	// 8: G Color
-	// 9: B Color
-	// 10: lWindth
-	// 11: lColor
-	// 12: lStyle
-	// 13: nStyle
+   // 1: hDC
+   // 2: y
+   // 3: x
+   // 4: toy
+   // 5: tox
+   // 6: width
+   // 7: R Color
+   // 8: G Color
+   // 9: B Color
+   // 10: lWindth
+   // 11: lColor
+   // 12: lStyle
+   // 13: nStyle
 
-	int r ;
-	int g ;
-	int b ;
+   int r ;
+   int g ;
+   int b ;
 
-	int x = hb_parni(3) ;
-	int y = hb_parni(2) ;
+   int x = hb_parni(3) ;
+   int y = hb_parni(2) ;
 
-	int tox = hb_parni(5) ;
-	int toy = hb_parni(4) ;
+   int tox = hb_parni(5) ;
+   int toy = hb_parni(4) ;
 
-	int width = 0;
+   int width = 0;
         int nStyle;
 
-	HDC hdc = (HDC) hb_parnl( 1 );
-	HGDIOBJ hgdiobj;
-	HPEN hpen;
+   HDC hdc = (HDC) hb_parnl( 1 );
+   HGDIOBJ hgdiobj;
+   HPEN hpen;
 
-	
-	if ( hdc != 0 )
-	{
-		// Width
-		if ( hb_parl(10) )
-		{
-			width = hb_parni(6) ;
-		}
-		// Color
-		if ( hb_parl(11) )
-		{
-			r = hb_parni(7) ;
-			g = hb_parni(8) ;
-			b = hb_parni(9) ;
-		}
-		else
-		{
-			r = 0 ;
-			g = 0 ;
-			b = 0 ;
-		}
-		if ( hb_parl(12) )
-		{
-			nStyle = hb_parni(13) ;
-		}
-		else
-		{
-			nStyle = (int) PS_SOLID ;
-		}
-		hpen = CreatePen( nStyle ,  width , (COLORREF) RGB( r , g , b ) );
-		hgdiobj = SelectObject( (HDC) hdc , hpen );
-		MoveToEx( (HDC) hdc , x, y ,NULL	);
-		LineTo ( (HDC) hdc, tox ,toy 	);
-		SelectObject( (HDC) hdc , (HGDIOBJ) hgdiobj );
-		DeleteObject( hpen );
-		//InvalidateRect( (HDC) hdc ,NULL, TRUE );
-	}
+
+   if ( hdc != 0 )
+   {
+      // Width
+      if ( hb_parl(10) )
+      {
+         width = hb_parni(6) ;
+      }
+      // Color
+      if ( hb_parl(11) )
+      {
+         r = hb_parni(7) ;
+         g = hb_parni(8) ;
+         b = hb_parni(9) ;
+      }
+      else
+      {
+         r = 0 ;
+         g = 0 ;
+         b = 0 ;
+      }
+      if ( hb_parl(12) )
+      {
+         nStyle = hb_parni(13) ;
+      }
+      else
+      {
+         nStyle = (int) PS_SOLID ;
+      }
+      hpen = CreatePen( nStyle ,  width , (COLORREF) RGB( r , g , b ) );
+      hgdiobj = SelectObject( (HDC) hdc , hpen );
+      MoveToEx( (HDC) hdc , x, y ,NULL   );
+      LineTo ( (HDC) hdc, tox ,toy    );
+      SelectObject( (HDC) hdc , (HGDIOBJ) hgdiobj );
+      DeleteObject( hpen );
+      //InvalidateRect( (HDC) hdc ,NULL, TRUE );
+   }
 
 }
 
 HB_FUNC ( C_FILL )
 {
 
-	// 1: hDC
-	// 2: y
-	// 3: x
-	// 4: toy
-	// 5: tox
-	// 6: R Color
-	// 7: G Color
-	// 8: B Color
-	// 9: lColor
+   // 1: hDC
+   // 2: y
+   // 3: x
+   // 4: toy
+   // 5: tox
+   // 6: R Color
+   // 7: G Color
+   // 8: B Color
+   // 9: lColor
 
-	int r ;
-	int g ;
-	int b ;
+   int r ;
+   int g ;
+   int b ;
 
-	int x = hb_parnl(3) ;
-	int y = hb_parnl(2) ;
+   int x = hb_parnl(3) ;
+   int y = hb_parnl(2) ;
 
-	int tox = hb_parnl(5) ;
-	int toy = hb_parnl(4) ;
-	
-	
-	RECT rect ;
+   int tox = hb_parnl(5) ;
+   int toy = hb_parnl(4) ;
 
-	HDC hdc = (HDC) hb_parnl(1) ;
-	HGDIOBJ hgdiobj;
-	HBRUSH hBrush;
 
-	if ( hdc != 0 )
-	{
-		// Color
+   RECT rect ;
 
-		if ( hb_parl(9) )
-		{
-			r = hb_parni(6) ;
-			g = hb_parni(7) ;
-			b = hb_parni(8) ;
-		}
-		else
-		{
-			r = 0 ;
-			g = 0 ;
-			b = 0 ;
-		}
-		rect.left=x;
-		rect.top=y;
-		rect.right=tox ;
-		rect.bottom=toy;
+   HDC hdc = (HDC) hb_parnl(1) ;
+   HGDIOBJ hgdiobj;
+   HBRUSH hBrush;
 
-		hBrush = CreateSolidBrush( RGB(r,g,b) );
-		hgdiobj = SelectObject( (HDC) hdc , hBrush );
-		FillRect( (HDC) hdc , &rect , (HBRUSH) hBrush ) ;
-		SelectObject( (HDC) hdc , (HGDIOBJ) hgdiobj );
-		DeleteObject( hBrush );
-	}
+   if ( hdc != 0 )
+   {
+      // Color
+
+      if ( hb_parl(9) )
+      {
+         r = hb_parni(6) ;
+         g = hb_parni(7) ;
+         b = hb_parni(8) ;
+      }
+      else
+      {
+         r = 0 ;
+         g = 0 ;
+         b = 0 ;
+      }
+      rect.left=x;
+      rect.top=y;
+      rect.right=tox ;
+      rect.bottom=toy;
+
+      hBrush = CreateSolidBrush( RGB(r,g,b) );
+      hgdiobj = SelectObject( (HDC) hdc , hBrush );
+      FillRect( (HDC) hdc , &rect , (HBRUSH) hBrush ) ;
+      SelectObject( (HDC) hdc , (HGDIOBJ) hgdiobj );
+      DeleteObject( hBrush );
+   }
 }
 
 HB_FUNC ( C_RECTANGLE )
 {
 
-	// 1: hDC
-	// 2: y
-	// 3: x
-	// 4: toy
-	// 5: tox
-	// 6: width
-	// 7: R Color
-	// 8: G Color
-	// 9: B Color
-	// 10: lWindth
-	// 11: lColor
-	// 12: lStyle
-	// 13: nStyle
-	// 14: lBrusStyle
-	// 15: nBrushStyle
-	// 16: lBrushColor
-	// 17: nColorR
-	// 18: nColorG
-	// 19: nColorB
-	
-	int r ;
-	int g ;
-	int b ;
+   // 1: hDC
+   // 2: y
+   // 3: x
+   // 4: toy
+   // 5: tox
+   // 6: width
+   // 7: R Color
+   // 8: G Color
+   // 9: B Color
+   // 10: lWindth
+   // 11: lColor
+   // 12: lStyle
+   // 13: nStyle
+   // 14: lBrusStyle
+   // 15: nBrushStyle
+   // 16: lBrushColor
+   // 17: nColorR
+   // 18: nColorG
+   // 19: nColorB
 
-	int x = hb_parni(3) ;
-	int y = hb_parni(2) ;
+   int r ;
+   int g ;
+   int b ;
 
-	int tox = hb_parni(5) ;
-	int toy = hb_parni(4) ;
+   int x = hb_parni(3) ;
+   int y = hb_parni(2) ;
 
-	int width ;
-	int nStyle ;
-	
-	int br ;
-	int bg ;
-	int bb ;
-	int nBr ;
-	long nBh ;
-	
-	HDC hdc = (HDC) hb_parnl(1) ;
-	HGDIOBJ hgdiobj,hgdiobj2;
-	HPEN hpen;
-	LOGBRUSH pbr;
-	HBRUSH hbr ;
+   int tox = hb_parni(5) ;
+   int toy = hb_parni(4) ;
 
-	if ( hdc != 0 )
-	{
-		// Width
-		if ( hb_parl(10) )
-		{
-			width = hb_parni(6) ;
-		}
-		else
-		{
-			width = 1  ;
-		}
-		// Color
-		if ( hb_parl(11) )
-		{
-			r = hb_parni(7) ;
-			g = hb_parni(8) ;
-			b = hb_parni(9) ;
-		}
-		else
-		{
-			r = 0 ;
-			g = 0 ;
-			b = 0 ;
-		}
-		if ( hb_parl(12) )
-		{
-			nStyle = hb_parni(13) ;
-		}
-		else
-		{
-			nStyle = (int) PS_SOLID ;
-		}
-		if ( hb_parl(14) )
-		{
-			nBh = hb_parni(15);
-			nBr = 2 ;
-		}
-		else
-		{
-			if ( hb_parl(16) )
-			{
-			nBr = 0 ;
-			}
-			else
-			{
-			nBr = 1 ;
-			}
-			nBh = 0  ;
-		}
-		
-		if ( hb_parl(16) )
-		{
-			br = hb_parni(17) ;
-			bg = hb_parni(18) ;
-			bb = hb_parni(19) ;
-		}
-		else
-		{
-			br = 0 ;
-			bg = 0 ;
-			bb = 0 ;
-		}
+   int width ;
+   int nStyle ;
 
-		pbr.lbStyle=nBr ;
-		pbr.lbColor=(COLORREF) RGB( br , bg , bb );
-		pbr.lbHatch=(LONG) nBh;
+   int br ;
+   int bg ;
+   int bb ;
+   int nBr ;
+   long nBh ;
 
-		hpen = CreatePen( nStyle,  width , (COLORREF) RGB( r , g , b ) );
-		hbr =CreateBrushIndirect(&pbr) ;
-		hgdiobj = SelectObject( (HDC) hdc , hpen );
-		hgdiobj2 = SelectObject( (HDC) hdc , hbr );
-		Rectangle( (HDC) hdc ,x,y,tox,toy);
+   HDC hdc = (HDC) hb_parnl(1) ;
+   HGDIOBJ hgdiobj,hgdiobj2;
+   HPEN hpen;
+   LOGBRUSH pbr;
+   HBRUSH hbr ;
 
-		SelectObject( (HDC) hdc , (HGDIOBJ) hgdiobj );
-		SelectObject( (HDC) hdc , (HGDIOBJ) hgdiobj2 );
+   if ( hdc != 0 )
+   {
+      // Width
+      if ( hb_parl(10) )
+      {
+         width = hb_parni(6) ;
+      }
+      else
+      {
+         width = 1  ;
+      }
+      // Color
+      if ( hb_parl(11) )
+      {
+         r = hb_parni(7) ;
+         g = hb_parni(8) ;
+         b = hb_parni(9) ;
+      }
+      else
+      {
+         r = 0 ;
+         g = 0 ;
+         b = 0 ;
+      }
+      if ( hb_parl(12) )
+      {
+         nStyle = hb_parni(13) ;
+      }
+      else
+      {
+         nStyle = (int) PS_SOLID ;
+      }
+      if ( hb_parl(14) )
+      {
+         nBh = hb_parni(15);
+         nBr = 2 ;
+      }
+      else
+      {
+         if ( hb_parl(16) )
+         {
+         nBr = 0 ;
+         }
+         else
+         {
+         nBr = 1 ;
+         }
+         nBh = 0  ;
+      }
 
-		DeleteObject( hpen );
-		DeleteObject( hbr );
-	}
+      if ( hb_parl(16) )
+      {
+         br = hb_parni(17) ;
+         bg = hb_parni(18) ;
+         bb = hb_parni(19) ;
+      }
+      else
+      {
+         br = 0 ;
+         bg = 0 ;
+         bb = 0 ;
+      }
+
+      pbr.lbStyle=nBr ;
+      pbr.lbColor=(COLORREF) RGB( br , bg , bb );
+      pbr.lbHatch=(LONG) nBh;
+
+      hpen = CreatePen( nStyle,  width , (COLORREF) RGB( r , g , b ) );
+      hbr =CreateBrushIndirect(&pbr) ;
+      hgdiobj = SelectObject( (HDC) hdc , hpen );
+      hgdiobj2 = SelectObject( (HDC) hdc , hbr );
+      Rectangle( (HDC) hdc ,x,y,tox,toy);
+
+      SelectObject( (HDC) hdc , (HGDIOBJ) hgdiobj );
+      SelectObject( (HDC) hdc , (HGDIOBJ) hgdiobj2 );
+
+      DeleteObject( hpen );
+      DeleteObject( hbr );
+   }
 
 }
 
 HB_FUNC ( C_ROUNDRECTANGLE )
 {
 
-	// 1: hDC
-	// 2: y
-	// 3: x
-	// 4: toy
-	// 5: tox
-	// 6: width
-	// 7: R Color
-	// 8: G Color
-	// 9: B Color
-	// 10: lWindth
-	// 11: lColor
-	// 12: lStyle
-	// 13: nStyle
-	// 14: lBrusStyle
-	// 15: nBrushStyle
-	// 16: lBrushColor
-	// 17: nColorR
-	// 18: nColorG
-	// 19: nColorB
+   // 1: hDC
+   // 2: y
+   // 3: x
+   // 4: toy
+   // 5: tox
+   // 6: width
+   // 7: R Color
+   // 8: G Color
+   // 9: B Color
+   // 10: lWindth
+   // 11: lColor
+   // 12: lStyle
+   // 13: nStyle
+   // 14: lBrusStyle
+   // 15: nBrushStyle
+   // 16: lBrushColor
+   // 17: nColorR
+   // 18: nColorG
+   // 19: nColorB
 
-	int r ;
-	int g ;
-	int b ;
+   int r ;
+   int g ;
+   int b ;
 
-	int x = hb_parni(3) ;
-	int y = hb_parni(2) ;
+   int x = hb_parni(3) ;
+   int y = hb_parni(2) ;
 
-	int tox = hb_parni(5) ;
-	int toy = hb_parni(4) ;
+   int tox = hb_parni(5) ;
+   int toy = hb_parni(4) ;
 
-	int width ;
+   int width ;
 
-	int p ;
-	int nStyle ;
-	
-	int br ;
-	int bg ;
-	int bb ;
-	int nBr ;
-	long nBh ;
-	
-	HDC hdc = (HDC) hb_parnl(1) ;
-	HGDIOBJ hgdiobj,hgdiobj2;
-	HPEN hpen;
-	LOGBRUSH pbr;
-	HBRUSH hbr ;
+   int p ;
+   int nStyle ;
 
-	if ( hdc != 0 )
-	{
+   int br ;
+   int bg ;
+   int bb ;
+   int nBr ;
+   long nBh ;
 
-		// Width
+   HDC hdc = (HDC) hb_parnl(1) ;
+   HGDIOBJ hgdiobj,hgdiobj2;
+   HPEN hpen;
+   LOGBRUSH pbr;
+   HBRUSH hbr ;
 
-		if ( hb_parl(10) )
-		{
-			width = hb_parni(6) ;
-		}
-		else
-		{
-			width = 1  ;
-		}
+   if ( hdc != 0 )
+   {
 
-		// Color
+      // Width
 
-		if ( hb_parl(11) )
-		{
-			r = hb_parni(7) ;
-			g = hb_parni(8) ;
-			b = hb_parni(9) ;
-		}
-		else
-		{
-			r = 0 ;
-			g = 0 ;
-			b = 0 ;
-		}
+      if ( hb_parl(10) )
+      {
+         width = hb_parni(6) ;
+      }
+      else
+      {
+         width = 1  ;
+      }
 
-		if ( hb_parl(12) )
-		{
-			nStyle = hb_parni(13) ;
-		}
-		else
-		{
-			nStyle = (int) PS_SOLID ;
-		}
+      // Color
 
-		if ( hb_parl(14) )
-		{
-			nBh = hb_parni(15);
-			nBr = 2 ;
-		}
-		else
-		{
-			if ( hb_parl(16) )
-			{
-			nBr = 0 ;
-			}
-			else
-			{
-			nBr = 1 ;
-			}
-			nBh = 0  ;
-		}
-		
-		if ( hb_parl(16) )
-		{
-			br = hb_parni(17) ;
-			bg = hb_parni(18) ;
-			bb = hb_parni(19) ;
-		}
-		else
-		{
-			br = 0 ;
-			bg = 0 ;
-			bb = 0 ;
-		}
+      if ( hb_parl(11) )
+      {
+         r = hb_parni(7) ;
+         g = hb_parni(8) ;
+         b = hb_parni(9) ;
+      }
+      else
+      {
+         r = 0 ;
+         g = 0 ;
+         b = 0 ;
+      }
 
-		pbr.lbStyle=nBr ;
-		pbr.lbColor=(COLORREF) RGB( br , bg , bb );
-		pbr.lbHatch=(LONG) nBh;
-		
-		hpen = CreatePen( nStyle, width , (COLORREF) RGB( r , g , b ) );
-		hbr =CreateBrushIndirect(&pbr) ;
-		hgdiobj = SelectObject( (HDC) hdc , hpen );
-		hgdiobj2 = SelectObject( (HDC) hdc , hbr );
+      if ( hb_parl(12) )
+      {
+         nStyle = hb_parni(13) ;
+      }
+      else
+      {
+         nStyle = (int) PS_SOLID ;
+      }
 
-		p = ( tox + toy ) / 2 ;
-		p = p / 10 ;
+      if ( hb_parl(14) )
+      {
+         nBh = hb_parni(15);
+         nBr = 2 ;
+      }
+      else
+      {
+         if ( hb_parl(16) )
+         {
+         nBr = 0 ;
+         }
+         else
+         {
+         nBr = 1 ;
+         }
+         nBh = 0  ;
+      }
 
-		RoundRect( (HDC) hdc ,x,y,tox,toy,p,p);
+      if ( hb_parl(16) )
+      {
+         br = hb_parni(17) ;
+         bg = hb_parni(18) ;
+         bb = hb_parni(19) ;
+      }
+      else
+      {
+         br = 0 ;
+         bg = 0 ;
+         bb = 0 ;
+      }
 
-		SelectObject( (HDC) hdc , (HGDIOBJ) hgdiobj );
-		SelectObject( (HDC) hdc , (HGDIOBJ) hgdiobj2 );
+      pbr.lbStyle=nBr ;
+      pbr.lbColor=(COLORREF) RGB( br , bg , bb );
+      pbr.lbHatch=(LONG) nBh;
+
+      hpen = CreatePen( nStyle, width , (COLORREF) RGB( r , g , b ) );
+      hbr =CreateBrushIndirect(&pbr) ;
+      hgdiobj = SelectObject( (HDC) hdc , hpen );
+      hgdiobj2 = SelectObject( (HDC) hdc , hbr );
+
+      p = ( tox + toy ) / 2 ;
+      p = p / 10 ;
+
+      RoundRect( (HDC) hdc ,x,y,tox,toy,p,p);
+
+      SelectObject( (HDC) hdc , (HGDIOBJ) hgdiobj );
+      SelectObject( (HDC) hdc , (HGDIOBJ) hgdiobj2 );
 
 
 
-		DeleteObject( hpen );
-		DeleteObject( hbr );
+      DeleteObject( hpen );
+      DeleteObject( hbr );
 
-	}
+   }
 
 }
 
 HB_FUNC ( C_ELLIPSE )
 {
 
-	// 1: hDC
-	// 2: y
-	// 3: x
-	// 4: toy
-	// 5: tox
-	// 6: width
-	// 7: R Color
-	// 8: G Color
-	// 9: B Color
-	// 10: lWindth
-	// 11: lColor
-	// 12: lStyle
-	// 13: nStyle
-	// 14: lBrusStyle
-	// 15: nBrushStyle
-	// 16: lBrushColor
-	// 17: nColorR
-	// 18: nColorG
-	// 19: nColorB
+   // 1: hDC
+   // 2: y
+   // 3: x
+   // 4: toy
+   // 5: tox
+   // 6: width
+   // 7: R Color
+   // 8: G Color
+   // 9: B Color
+   // 10: lWindth
+   // 11: lColor
+   // 12: lStyle
+   // 13: nStyle
+   // 14: lBrusStyle
+   // 15: nBrushStyle
+   // 16: lBrushColor
+   // 17: nColorR
+   // 18: nColorG
+   // 19: nColorB
 
-	int r ;
-	int g ;
-	int b ;
+   int r ;
+   int g ;
+   int b ;
 
-	int x = hb_parni(3) ;
-	int y = hb_parni(2) ;
+   int x = hb_parni(3) ;
+   int y = hb_parni(2) ;
 
-	int tox = hb_parni(5) ;
-	int toy = hb_parni(4) ;
+   int tox = hb_parni(5) ;
+   int toy = hb_parni(4) ;
 
-	int width ;
+   int width ;
 
-	int nStyle ;
-	
-	int br ;
-	int bg ;
-	int bb ;
-	int nBr ;
-	long nBh ;
-	
-	HDC hdc = (HDC) hb_parnl(1) ;
-	HGDIOBJ hgdiobj,hgdiobj2;
-	HPEN hpen;
-	LOGBRUSH pbr;
-	HBRUSH hbr ;
+   int nStyle ;
 
-	if ( hdc != 0 )
-	{
+   int br ;
+   int bg ;
+   int bb ;
+   int nBr ;
+   long nBh ;
 
-		// Width
+   HDC hdc = (HDC) hb_parnl(1) ;
+   HGDIOBJ hgdiobj,hgdiobj2;
+   HPEN hpen;
+   LOGBRUSH pbr;
+   HBRUSH hbr ;
 
-		if ( hb_parl(10) )
-		{
-			width = hb_parni(6) ;
-		}
-		else
-		{
-			width = 1 * 10000 / 254 ;
-		}
+   if ( hdc != 0 )
+   {
 
-		// Color
+      // Width
 
-		if ( hb_parl(11) )
-		{
-			r = hb_parni(7) ;
-			g = hb_parni(8) ;
-			b = hb_parni(9) ;
-		}
-		else
-		{
-			r = 0 ;
-			g = 0 ;
-			b = 0 ;
-		}
+      if ( hb_parl(10) )
+      {
+         width = hb_parni(6) ;
+      }
+      else
+      {
+         width = 1 * 10000 / 254 ;
+      }
 
-		if ( hb_parl(12) )
-		{
-			nStyle = hb_parni(13) ;
-		}
-		else
-		{
-			nStyle = (int) PS_SOLID ;
-		}
+      // Color
 
-		if ( hb_parl(14) )
-		{
-			nBh = hb_parni(15);
-			nBr = 2 ;
-		}
-		else
-		{
-			if ( hb_parl(16) )
-			{
-			nBr = 0 ;
-			}
-			else
-			{
-			nBr = 1 ;
-			}
-			nBh = 0  ;
-		}
-		
-		if ( hb_parl(16) )
-		{
-			br = hb_parni(17) ;
-			bg = hb_parni(18) ;
-			bb = hb_parni(19) ;
-		}
-		else
-		{
-			br = 0 ;
-			bg = 0 ;
-			bb = 0 ;
-		}
+      if ( hb_parl(11) )
+      {
+         r = hb_parni(7) ;
+         g = hb_parni(8) ;
+         b = hb_parni(9) ;
+      }
+      else
+      {
+         r = 0 ;
+         g = 0 ;
+         b = 0 ;
+      }
 
-		pbr.lbStyle=nBr ;
-		pbr.lbColor=(COLORREF) RGB( br , bg , bb );
-		pbr.lbHatch=(LONG) nBh;
-		
-		hpen = CreatePen( nStyle, width , (COLORREF) RGB( r , g , b ) );
-		hbr =CreateBrushIndirect(&pbr) ;
-		hgdiobj = SelectObject( (HDC) hdc , hpen );
-		hgdiobj2 = SelectObject( (HDC) hdc , hbr );
+      if ( hb_parl(12) )
+      {
+         nStyle = hb_parni(13) ;
+      }
+      else
+      {
+         nStyle = (int) PS_SOLID ;
+      }
 
-		Ellipse( (HDC) hdc ,x,y,tox,toy);
+      if ( hb_parl(14) )
+      {
+         nBh = hb_parni(15);
+         nBr = 2 ;
+      }
+      else
+      {
+         if ( hb_parl(16) )
+         {
+         nBr = 0 ;
+         }
+         else
+         {
+         nBr = 1 ;
+         }
+         nBh = 0  ;
+      }
 
-		SelectObject( (HDC) hdc , (HGDIOBJ) hgdiobj );
-		SelectObject( (HDC) hdc , (HGDIOBJ) hgdiobj2 );
+      if ( hb_parl(16) )
+      {
+         br = hb_parni(17) ;
+         bg = hb_parni(18) ;
+         bb = hb_parni(19) ;
+      }
+      else
+      {
+         br = 0 ;
+         bg = 0 ;
+         bb = 0 ;
+      }
+
+      pbr.lbStyle=nBr ;
+      pbr.lbColor=(COLORREF) RGB( br , bg , bb );
+      pbr.lbHatch=(LONG) nBh;
+
+      hpen = CreatePen( nStyle, width , (COLORREF) RGB( r , g , b ) );
+      hbr =CreateBrushIndirect(&pbr) ;
+      hgdiobj = SelectObject( (HDC) hdc , hpen );
+      hgdiobj2 = SelectObject( (HDC) hdc , hbr );
+
+      Ellipse( (HDC) hdc ,x,y,tox,toy);
+
+      SelectObject( (HDC) hdc , (HGDIOBJ) hgdiobj );
+      SelectObject( (HDC) hdc , (HGDIOBJ) hgdiobj2 );
 
 
 
-		DeleteObject( hpen );
-		DeleteObject( hbr );
+      DeleteObject( hpen );
+      DeleteObject( hbr );
 
-	}
+   }
 
 }
 
 HB_FUNC ( C_ARC )
 {
 
-	// 1: hDC
-	// 2: y
-	// 3: x
-	// 4: toy
-	// 5: tox
-	// 6-9,x1,y1,x2,y2
-	// 10: width
-	// 11: R Color
-	// 12: G Color
-	// 13: B Color
-	// 14: lWindth
-	// 15: lColor
-	// 16: lStyle
-	// 17: nStyle
+   // 1: hDC
+   // 2: y
+   // 3: x
+   // 4: toy
+   // 5: tox
+   // 6-9,x1,y1,x2,y2
+   // 10: width
+   // 11: R Color
+   // 12: G Color
+   // 13: B Color
+   // 14: lWindth
+   // 15: lColor
+   // 16: lStyle
+   // 17: nStyle
 
 
-	int r ;
-	int g ;
-	int b ;
+   int r ;
+   int g ;
+   int b ;
 
-	int x = hb_parni(3) ;
-	int y = hb_parni(2) ;
+   int x = hb_parni(3) ;
+   int y = hb_parni(2) ;
 
-	int tox = hb_parni(5) ;
-	int toy = hb_parni(4) ;
+   int tox = hb_parni(5) ;
+   int toy = hb_parni(4) ;
 
-	int x1 = hb_parni(7);
-	int y1 = hb_parni(6);
-	int x2 = hb_parni(9);
-	int y2 = hb_parni(8);
+   int x1 = hb_parni(7);
+   int y1 = hb_parni(6);
+   int x2 = hb_parni(9);
+   int y2 = hb_parni(8);
 
-	int width = 0;
+   int width = 0;
         int nStyle;
 
-	HDC hdc = (HDC) hb_parnl( 1 );
-	HGDIOBJ hgdiobj;
-	HPEN hpen;
+   HDC hdc = (HDC) hb_parnl( 1 );
+   HGDIOBJ hgdiobj;
+   HPEN hpen;
 
-	
-	if ( hdc != 0 )
-	{
-		// Width
-		if ( hb_parl(14) )
-		{
-			width = hb_parni(10) ;
-		}
-		// Color
-		if ( hb_parl(15) )
-		{
-			r = hb_parni(11) ;
-			g = hb_parni(12) ;
-			b = hb_parni(13) ;
-		}
-		else
-		{
-			r = 0 ;
-			g = 0 ;
-			b = 0 ;
-		}
-		if ( hb_parl(16) )
-		{
-			nStyle = hb_parni(17) ;
-		}
-		else
-		{
-			nStyle = (int) PS_SOLID ;
-		}
-		hpen = CreatePen( nStyle ,  width , (COLORREF) RGB( r , g , b ) );
-		hgdiobj = SelectObject( (HDC) hdc , hpen );		
-		Arc ( (HDC) hdc, x,y,tox ,toy,x1,y1,x2,y2 	);
-		SelectObject( (HDC) hdc , (HGDIOBJ) hgdiobj );
-		DeleteObject( hpen );
-		//InvalidateRect( (HDC) hdc ,NULL, TRUE );
-	}
+
+   if ( hdc != 0 )
+   {
+      // Width
+      if ( hb_parl(14) )
+      {
+         width = hb_parni(10) ;
+      }
+      // Color
+      if ( hb_parl(15) )
+      {
+         r = hb_parni(11) ;
+         g = hb_parni(12) ;
+         b = hb_parni(13) ;
+      }
+      else
+      {
+         r = 0 ;
+         g = 0 ;
+         b = 0 ;
+      }
+      if ( hb_parl(16) )
+      {
+         nStyle = hb_parni(17) ;
+      }
+      else
+      {
+         nStyle = (int) PS_SOLID ;
+      }
+      hpen = CreatePen( nStyle ,  width , (COLORREF) RGB( r , g , b ) );
+      hgdiobj = SelectObject( (HDC) hdc , hpen );
+      Arc ( (HDC) hdc, x,y,tox ,toy,x1,y1,x2,y2    );
+      SelectObject( (HDC) hdc , (HGDIOBJ) hgdiobj );
+      DeleteObject( hpen );
+      //InvalidateRect( (HDC) hdc ,NULL, TRUE );
+   }
 
 }
 
@@ -3376,134 +3382,134 @@ HB_FUNC ( C_ARC )
 HB_FUNC ( C_PIE )
 {
 
-	// 1: hDC
-	// 2: y
-	// 3: x
-	// 4: toy
-	// 5: tox
-	// 6-9,x1,y1,x2,y2
-	// 10: width
-	// 11: R Color
-	// 12: G Color
-	// 13: B Color
-	// 14: lWindth
-	// 15: lColor
-	// 16: lStyle
-	// 17: nStyle
-	// 18: lBrusStyle
-	// 19: nBrushStyle
-	// 20: lBrushColor
-	// 21: nColorR
-	// 22: nColorG
-	// 23: nColorB
-	
-	int r ;
-	int g ;
-	int b ;
+   // 1: hDC
+   // 2: y
+   // 3: x
+   // 4: toy
+   // 5: tox
+   // 6-9,x1,y1,x2,y2
+   // 10: width
+   // 11: R Color
+   // 12: G Color
+   // 13: B Color
+   // 14: lWindth
+   // 15: lColor
+   // 16: lStyle
+   // 17: nStyle
+   // 18: lBrusStyle
+   // 19: nBrushStyle
+   // 20: lBrushColor
+   // 21: nColorR
+   // 22: nColorG
+   // 23: nColorB
 
-	int x = hb_parni(3) ;
-	int y = hb_parni(2) ;
+   int r ;
+   int g ;
+   int b ;
 
-	int tox = hb_parni(5) ;
-	int toy = hb_parni(4) ;
+   int x = hb_parni(3) ;
+   int y = hb_parni(2) ;
 
-	int x1 = hb_parni(7);
-	int y1 = hb_parni(6);
-	int x2 = hb_parni(9);
-	int y2 = hb_parni(8);
+   int tox = hb_parni(5) ;
+   int toy = hb_parni(4) ;
 
-	int width = 0;
+   int x1 = hb_parni(7);
+   int y1 = hb_parni(6);
+   int x2 = hb_parni(9);
+   int y2 = hb_parni(8);
+
+   int width = 0;
         int nStyle;
-	
-	int br ;
-	int bg ;
-	int bb ;
-	int nBr ;
-	long nBh ;
-	
-	HDC hdc = (HDC) hb_parnl(1) ;
-	HGDIOBJ hgdiobj,hgdiobj2;
-	HPEN hpen;
-	LOGBRUSH pbr;
-	HBRUSH hbr ;
-	
-	if ( hdc != 0 )
-	{
-		// Width
-		if ( hb_parl(14) )
-		{
-			width = hb_parni(10) ;
-		}
-		// Color
-		if ( hb_parl(15) )
-		{
-			r = hb_parni(11) ;
-			g = hb_parni(12) ;
-			b = hb_parni(13) ;
-		}
-		else
-		{
-			r = 0 ;
-			g = 0 ;
-			b = 0 ;
-		}
-		if ( hb_parl(16) )
-		{
-			nStyle = hb_parni(17) ;
-		}
-		else
-		{
-			nStyle = (int) PS_SOLID ;
-		}
 
-		if ( hb_parl(18) )
-		{
-			nBh = hb_parni(19);
-			nBr = 2 ;
-		}
-		else
-		{
-			if ( hb_parl(20) )
-			{
-			nBr = 0 ;
-			}
-			else
-			{
-			nBr = 1 ;
-			}
-			nBh = 0  ;
-		}
-		
-		if ( hb_parl(20) )
-		{
-			br = hb_parni(21) ;
-			bg = hb_parni(22) ;
-			bb = hb_parni(23) ;
-		}
-		else
-		{
-			br = 0 ;
-			bg = 0 ;
-			bb = 0 ;
-		}
+   int br ;
+   int bg ;
+   int bb ;
+   int nBr ;
+   long nBh ;
 
-		pbr.lbStyle=nBr ;
-		pbr.lbColor=(COLORREF) RGB( br , bg , bb );
-		pbr.lbHatch=(LONG) nBh;
-		
-		hpen = CreatePen( nStyle, width , (COLORREF) RGB( r , g , b ) );
-		hbr =CreateBrushIndirect(&pbr) ;
-		hgdiobj = SelectObject( (HDC) hdc , hpen );
-		hgdiobj2 = SelectObject( (HDC) hdc , hbr );
-	
-		Pie ( (HDC) hdc, x,y,tox ,toy,x1,y1,x2,y2 	);
-		SelectObject( (HDC) hdc , (HGDIOBJ) hgdiobj );
-		SelectObject( (HDC) hdc , (HGDIOBJ) hgdiobj2 );
+   HDC hdc = (HDC) hb_parnl(1) ;
+   HGDIOBJ hgdiobj,hgdiobj2;
+   HPEN hpen;
+   LOGBRUSH pbr;
+   HBRUSH hbr ;
 
-		DeleteObject( hpen );
-		DeleteObject( hbr );
-		//InvalidateRect( (HDC) hdc ,NULL, TRUE );
-	}
+   if ( hdc != 0 )
+   {
+      // Width
+      if ( hb_parl(14) )
+      {
+         width = hb_parni(10) ;
+      }
+      // Color
+      if ( hb_parl(15) )
+      {
+         r = hb_parni(11) ;
+         g = hb_parni(12) ;
+         b = hb_parni(13) ;
+      }
+      else
+      {
+         r = 0 ;
+         g = 0 ;
+         b = 0 ;
+      }
+      if ( hb_parl(16) )
+      {
+         nStyle = hb_parni(17) ;
+      }
+      else
+      {
+         nStyle = (int) PS_SOLID ;
+      }
+
+      if ( hb_parl(18) )
+      {
+         nBh = hb_parni(19);
+         nBr = 2 ;
+      }
+      else
+      {
+         if ( hb_parl(20) )
+         {
+         nBr = 0 ;
+         }
+         else
+         {
+         nBr = 1 ;
+         }
+         nBh = 0  ;
+      }
+
+      if ( hb_parl(20) )
+      {
+         br = hb_parni(21) ;
+         bg = hb_parni(22) ;
+         bb = hb_parni(23) ;
+      }
+      else
+      {
+         br = 0 ;
+         bg = 0 ;
+         bb = 0 ;
+      }
+
+      pbr.lbStyle=nBr ;
+      pbr.lbColor=(COLORREF) RGB( br , bg , bb );
+      pbr.lbHatch=(LONG) nBh;
+
+      hpen = CreatePen( nStyle, width , (COLORREF) RGB( r , g , b ) );
+      hbr =CreateBrushIndirect(&pbr) ;
+      hgdiobj = SelectObject( (HDC) hdc , hpen );
+      hgdiobj2 = SelectObject( (HDC) hdc , hbr );
+
+      Pie ( (HDC) hdc, x,y,tox ,toy,x1,y1,x2,y2    );
+      SelectObject( (HDC) hdc , (HGDIOBJ) hgdiobj );
+      SelectObject( (HDC) hdc , (HGDIOBJ) hgdiobj2 );
+
+      DeleteObject( hpen );
+      DeleteObject( hbr );
+      //InvalidateRect( (HDC) hdc ,NULL, TRUE );
+   }
 
 }
 

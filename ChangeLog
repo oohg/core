@@ -1,11 +1,31 @@
 /*
- * $Id: ChangeLog,v 1.1049 2013-04-01 22:49:05 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1050 2013-04-05 01:30:48 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-04-04 22:30 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_grid.prg
+     + Added method ScrollToLeft() to TGrid class.
+       Scrolls the grid's window content so the first column is shown at
+       the left side of the window.
+     + Added method ScrollToRight() to TGrid class.
+       Scrolls the grid's window content so the last column is shown at
+       the right side of the window.
+     + Added method ScrollToCol( nCol ) to TGrid class.
+       Scrolls the grid's window content so the left edge of the nCol
+       column is shown at the left side of the window. Note that when
+       the width of the remaining columns is lesser than the width of
+       the window, the left edge of the nCol column may be placed at
+       a different position.
+   * source/h_window.prg
+     * Minor formatting.
+     + Added nMaxLength parameter to InputBox function.
+     * Changed parameters handling in InputBox function.
+     * Changed hardwired captions by localized ones in InputBox function.
 
 2013-04-01 19:48 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
