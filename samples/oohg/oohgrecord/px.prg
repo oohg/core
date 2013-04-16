@@ -1,5 +1,5 @@
 /*
- * $Id: px.prg,v 1.8 2013-03-01 18:20:29 guerra000 Exp $
+ * $Id: px.prg,v 1.9 2013-04-16 15:30:12 guerra000 Exp $
  */
 /*
  * This is a ooHGRecord's subclasses (database class used
@@ -264,6 +264,7 @@ CLASS XBrowse_Paradox FROM XBrowse_DirectFile
    // It's on XBrowse_DirectFile class... METHOD Field      BLOCK { | Self, nPos | ::FieldName( nPos ) }
    // It's on XBrowse_DirectFile class... METHOD FieldName  BLOCK { | Self, nPos | IF( nPos < 1 .OR. nPos > ::nFields, "", UPPER( ::aFields[ nPos ] ) ) }
    METHOD FieldGet
+   METHOD FieldDecode
    METHOD FieldPut
    // It's on XBrowse_DirectFile class... METHOD FieldBlock
    // It's on XBrowse_DirectFile class... METHOD FieldPos
@@ -339,6 +340,7 @@ CLASS XBrowse_Paradox FROM XBrowse_DirectFile
    METHOD SeekKey
    METHOD SeekKeyTree
    METHOD ValueToBuffer
+   METHOD CurrentIndexKey
 ENDCLASS
 
 STATIC FUNCTION StrLen( cBuffer, nStart, nLen )
@@ -382,12 +384,6 @@ RETURN HB_InLine( cBuffer, nStart, nLen ){
 
    hb_retni( iCount );
 }
-// LOCAL nPos
-//    nPos := nStart
-//    DO WHILE nPos <= nLen .AND. cBuffer[ nPos ] != 0
-//       nPos++
-//    ENDDO
-// RETURN nPos - nStart
 
 STATIC FUNCTION ReadLittleEndian( cBuffer, nPos, nCount, lTrimTopBit )
 RETURN HB_InLine( cBuffer, nPos, nCount ){
@@ -444,14 +440,6 @@ RETURN HB_InLine( cBuffer, nPos, nCount ){
 
    hb_retnll( llNum );
 }
-// LOCAL nNum := 0
-//    nPos := nPos + nCount - 1
-//    DO WHILE nCount > 0
-//       nNum := ( nNum * 256 ) + ASC( cBuffer[ nPos ] )
-//       nPos--
-//       nCount--
-//    ENDDO
-// RETURN nNum
 
 EXTERN READBIGENDIAN
 
@@ -939,90 +927,24 @@ LOCAL uValue, nBufferPos
          ::ReadRecord()
       ENDIF
       nBufferPos := ::aBufferPos[ nPos ]
-/*
-      IF     ::aTypes[ nPos ] == "A"
-         // Character
-         uValue := SUBSTR( ::cRecord, nBufferPos, StrLen( ::cRecord, nBufferPos, nBufferPos + ::aWidths[ nPos ] - 1 ) )
-         IF LEFT( uValue, 1 ) == CHR( 34 )
-            uValue := SUBSTR( uValue, 2, LEN( uValue ) - IF( RIGHT( uValue, 1 ) == CHR( 34 ), 2, 1 ) )
-            uValue := STRTRAN( uValue, CHR( 34 ) + CHR( 34 ), CHR( 34 ) )
-         ENDIF
-      ELSEIF ::aTypes[ nPos ] == "D"
-         // Date
-         uValue := STOD( "01000101" ) - 36160 + ReadBigEndian( ::cRecord, nBufferPos, 4 )
-      ELSEIF ::aTypes[ nPos ] == "S"
-         // Small integer ( WORD )
-         uValue := ReadBigEndian( ::cRecord, nBufferPos, 2 )
-      ELSEIF ::aTypes[ nPos ] == "I"
-         // Long integer ( LONG )
-         uValue := ReadBigEndian( ::cRecord, nBufferPos, 4 )
-      ELSEIF ::aTypes[ nPos ] == "$" .OR. ::aTypes[ nPos ] == "N"
-         // Currency / numeric double
-         uValue := HB_INLINE( SUBSTR( ::cRecord, nBufferPos, 8 ) ){
-                      char *cPos, cBuffer[ 8 ];
-                      int iMove;
+      uValue := ::FieldDecode( ::aTypes[ nPos ], ::cRecord, ::aBufferPos[ nPos ], ::aWidths[ nPos ] )
+   ENDIF
+RETURN uValue
 
-                      cPos = ( char * ) hb_parc( 1 );
-                      for( iMove = 0; iMove < 8; iMove++ )
-                      {
-                         cBuffer[ iMove ] = cPos[ 7 - iMove ];
-                      }
-
-                      hb_retnd( *( ( double * ) &cBuffer[ 0 ] ) );
-                   }
-      ELSEIF ::aTypes[ nPos ] == "L"
-         // Logical
-         uValue := ( ::cRecord[ nBufferPos ] != 0 )
-      ELSEIF ::aTypes[ nPos ] == "M" .OR. ::aTypes[ nPos ] == "B" .OR. ::aTypes[ nPos ] == "F" .OR. ::aTypes[ nPos ] == "O" .OR. ::aTypes[ nPos ] == "G"
-* MEMO Y PARECIDOS...
-         uValue := ""
-      ELSEIF ::aTypes[ nPos ] == "T"
-         // Time
-* TIME
-         uValue := ReadBigEndian( ::cRecord, nBufferPos, 4 ) / 1000
-uValue := STRZERO( INT( uValue / 3600 ), 2 ) + ":" + STRZERO( INT( ( uValue % 3600 ) / 60 ), 2 ) + ":" + STRZERO( INT( uValue % 60 ), 2 )
-      ELSEIF ::aTypes[ nPos ] == "@"
-         // Timestamp
-         //
-         // 1. DATE bytes
-         uValue := ( ASC( ::cRecord[ nBufferPos + 2 ] ) * 256 ) + ;
-                     ASC( ::cRecord[ nBufferPos + 3 ] )
-         IF uValue == 0
-            uValue := STOD( "" )
-         ELSE
-            uValue := uValue - 32767
-            // 2. ***MAGIC NUMBER***
-            // I hadn't found it :'( ... It's a closer number
-            uValue := ROUND( ( uValue * 65536 ) / 168752, 0 )
-            // 3. Day 0 is January 1st, 1987
-            uValue := STOD( "19870101" ) + uValue
-
-            // TODO: Check for TIME bytes
-
-         ENDIF
-
-      ELSEIF ::aTypes[ nPos ] == "+"
-         // Autoincrement
-         uValue := ReadBigEndian( ::cRecord, nBufferPos, 4 )
-      ELSEIF ::aTypes[ nPos ] == "#"
-* BCD
-         uValue := SUBSTR( ::cRecord, nBufferPos, ::aWidths[ nPos ] )
-      ELSEIF ::aTypes[ nPos ] == "Y"
-* BYTES ????
-         uValue := SUBSTR( ::cRecord, nBufferPos, ::aWidths[ nPos ] )
-      ENDIF
-*/
-
-         // ( cType, cRecord, nBufferPos, nWidth )
-         uValue := HB_INLINE( ::aTypes[ nPos ], ::cRecord, ::aBufferPos[ nPos ], ::aWidths[ nPos ] ){
+METHOD FieldDecode( cType, cRecord, nBufferPos, nWidth ) CLASS XBrowse_Paradox
+RETURN HB_INLINE( cType, cRecord, nBufferPos, nWidth ){
             char *cBuffer;
             int iLen, iBufferPos, iWidth, iMax;
             unsigned long lAux;
 
             cBuffer = ( char * ) hb_parc( 2 );
             iLen = hb_parclen( 2 );
-            iBufferPos = hb_parni( 3 ) - 1;
+            iBufferPos = hb_parni( 3 );
             iWidth = hb_parni( 4 );
+            if( iBufferPos > 0 )
+            {
+               iBufferPos--;
+            }
             if( iBufferPos >= iLen )
             {
                iMax = 0;
@@ -1254,9 +1176,6 @@ uValue := STRZERO( INT( uValue / 3600 ), 2 ) + ":" + STRZERO( INT( ( uValue % 36
             }
          }
 
-   ENDIF
-RETURN uValue
-
 METHOD FieldPut( nPos, xValue ) CLASS XBrowse_Paradox
 RETURN NIL
 
@@ -1267,28 +1186,61 @@ LOCAL cKey, nRecNo
       lRecordFound := .F.
       ::GoTo( 0 )
    ELSE
+      ::GoCold()
+      ::lValidBuffer := .F.
+
+      // Verify softseek
+      IF ! HB_IsLogical( lSoftSeek )
+         lSoftSeek := .F.
+      ENDIF
 
       // Checks key
+      cKey := ""
       IF HB_IsArray( uKey )
-         cKey := ""
          AEVAL( uKey, { |x,i| cKey += ::ValueToBuffer( x, ::aTypes[ i ], ::aWidths[ i ] ) },, ::nKeyFields )
-      ELSEIF VALTYPE( uKey ) == VALTYPE( ::FieldGet( 1 ) )
+      ELSE // IF VALTYPE( uKey ) == VALTYPE( ::FieldGet( 1 ) )
          cKey := ::ValueToBuffer( uKey, ::aTypes[ 1 ], ::aWidths[ 1 ] )
       ENDIF
       cKey := LEFT( cKey, ::nPxKeyLen - 6 )
-      nRecNo := ::SeekKey( cKey, lSoftSeek, lLast, @lRecordFound )
+      IF LEN( cKey ) == 0
+         IF HB_IsLogical( lLast ) .AND. lLast
+            ::GoBottom()
+         ELSE
+            ::GoTop()
+         ENDIF
+         ::lFound := .T.
+         RETURN .T.
+      ENDIF
+      nRecNo := ::SeekKey( cKey, lSoftSeek, lLast, @lRecordFound, .T. )
 
       // Soft seek
       IF ! lRecordFound
-         IF HB_IsLogical( lSoftSeek ) .AND. lSoftSeek
+         IF lSoftSeek
             nRecNo++
          ELSE
             nRecNo := 0
          ENDIF
       ENDIF
 
+      // Forces to move to new record
+      IF ! ::lValidBuffer
+         ::GoTo( nRecNo )
+      ENDIF
+
       // Delimited by scope
       IF LEN( ::cScopeFrom ) + LEN( ::cScopeTo ) > 0 .AND. ::cScopeFrom <= ::cScopeTo
+         IF     LEN( ::cScopeFrom ) > 0 .AND. ::CurrentIndexKey( LEN( ::cScopeFrom ) ) < ::cScopeFrom
+            IF lSoftSeek
+               ::GoTop()
+            ELSE
+               ::GoTo( 0 )
+            ENDIF
+            lRecordFound := .F.
+         ELSEIF LEN( ::cScopeTo ) > 0 .AND. ::CurrentIndexKey( LEN( ::cScopeTo ) ) > ::cScopeTo
+            ::GoTo( 0 )
+            lRecordFound := .F.
+         ENDIF
+/*
          nFrom := ::SeekKey( ::cScopeFrom, .T., .F., @lFound )
          IF ! lFound
             nFrom++
@@ -1300,7 +1252,7 @@ LOCAL cKey, nRecNo
          ELSEIF nRecNo < nFrom
             IF cKey >= LEFT( ::cScopeFrom, LEN( cKey ) )
                nRecNo := nFrom
-            ELSEIF HB_IsLogical( lSoftSeek ) .AND. lSoftSeek
+            ELSEIF lSoftSeek
                lRecordFound := .F.
                nRecNo := nFrom
             ELSE
@@ -1308,11 +1260,10 @@ LOCAL cKey, nRecNo
                nRecNo := 0
             ENDIF
          ENDIF
+*/
       ENDIF
-
-      ::GoTo( nRecNo )
-      ::lFound := lRecordFound
    ENDIF
+   ::lFound := lRecordFound
 RETURN lRecordFound
 
 METHOD Close() CLASS XBrowse_Paradox
@@ -1449,7 +1400,7 @@ RETURN nil
 
 METHOD ReadRecord() CLASS XBrowse_Paradox
 LOCAL nCant1, nCant2, nPos, nBlock, cBuffer
-LOCAL nLevel, nCant3, nCant4
+LOCAL nLevel
    * ??? ::RefreshHeader()
    ::GoCold()
    IF ::nRecno > ::nRecCount .OR. ::nRecno < 1
@@ -1564,34 +1515,45 @@ LOCAL nLevel, nCant3, nCant4
       DO WHILE nLevel > 0
          ::oPxFile:Seek( ::nPxHeaderSize + ( ( nBlock - 1 ) * ::nPxBlockSize ), FS_SET )
          ::oPxFile:Read( @cBuffer, ::nPxBlockSize )
-         nCant2 := ReadLittleEndian( cBuffer, 5, 2, .T. )
-         nCant2 := INT( nCant2 / ::nPxKeyLen ) + 1
+         HB_INLINE( cBuffer, ::nPxKeyLen, @nBlock, @nCant1 ){
+            unsigned char *cBuffer;
+            unsigned int iLen, iKeyLen, iPos, iBlock, iRecords, iKeys, iCount;
 
-         nPos := 7
-         DO WHILE nCant2 > 0
-            nBlock := ReadBigEndian( cBuffer, nPos + ::nPxKeyLen - 6, 2 )
-/*
-            nCant3 := ReadBigEndian( cBuffer, nPos + ::nPxKeyLen - 4, 2, .T. )
-            IF SUBSTR( cBuffer, nPos + ::nPxKeyLen - 2, 2 ) = CHR( 0 ) + CHR( 0 )
-               nCant4 := 0
-            ELSE
-               nCant4 := ReadBigEndian( cBuffer, nPos + ::nPxKeyLen - 2, 2,, .T. )
-               IF nCant4 >= 0x8000
-                  nCant4 -= 0x8000
-               ENDIF
-            ENDIF
-            nCant3 := ( nCant4 * 65536 ) + nCant3
-*/
-            nCant3 := ( ReadBigEndian( cBuffer, nPos + ::nPxKeyLen - 2, 2,, .T. ) * 65536 ) + ;
-                        ReadBigEndian( cBuffer, nPos + ::nPxKeyLen - 4, 2, .T. )
+            iLen = hb_parclen( 1 );
+            iKeyLen = hb_parni( 2 );
+            if( iLen < 6 + iKeyLen )
+            {
+               return;
+            }
+            cBuffer = ( unsigned char * ) hb_parc( 1 );
 
-            IF nCant3 >= nCant1
-               EXIT
-            ENDIF
-            nCant1 -= nCant3
-            nPos += ::nPxKeyLen
-            nCant2--
-         ENDDO
+            iKeys = ( ( ( ( unsigned int ) cBuffer[ 5 ] ) << 8 ) | ( ( unsigned int ) cBuffer[ 4 ] ) ) & 0x7FFF;
+            iKeys = ( iKeys / iKeyLen ) + 1;
+
+            iBlock = hb_parni( 3 );
+            iRecords = hb_parni( 4 );
+            iPos = 6;
+            while( iKeys )
+            {
+               iBlock = ( ( ( ( unsigned int ) cBuffer[ iPos + iKeyLen - 6 ] ) << 8 ) | ( ( unsigned int ) cBuffer[ iPos + iKeyLen - 5 ] ) ) ^ 0x8000;
+               iCount = ( ( ( ( unsigned int ) cBuffer[ iPos + iKeyLen - 2 ] ) & 0x7F ) << 24 ) |
+                          ( ( ( unsigned int ) cBuffer[ iPos + iKeyLen - 1 ] )          << 16 ) |
+                        ( ( ( ( unsigned int ) cBuffer[ iPos + iKeyLen - 4 ] ) ^ 0x80 ) <<  8 ) |
+                            ( ( unsigned int ) cBuffer[ iPos + iKeyLen - 3 ] );
+               if( iCount >= iRecords )
+               {
+                  iKeys = 0;
+               }
+               else
+               {
+                  iRecords -= iCount;
+                  iPos += iKeyLen;
+                  iKeys--;
+               }
+            }
+            hb_storni( iBlock, 3 );
+            hb_storni( iRecords, 4 );
+         }
          nLevel--
       ENDDO
 
@@ -1623,7 +1585,7 @@ LOCAL cBuffer, aData, nCount
               ReadLittleEndian( cBuffer, 3, 2 )  }
 RETURN aData
 
-METHOD SeekKey( cKey, lSoftSeek, lLast, lFound ) CLASS XBrowse_Paradox
+METHOD SeekKey( cKey, lSoftSeek, lLast, lFound, lKeepBuffer ) CLASS XBrowse_Paradox
 LOCAL cBuffer, nLevel, nBlock, nRecNo, nCant
 LOCAL nPos, nRecNoFound
    lFound := .F.
@@ -1647,15 +1609,43 @@ LOCAL nPos, nRecNoFound
          // Not found!
          EXIT
       ELSE
-         FOR nPos := 1 TO nBlock - 1
-            IF SUBSTR( cBuffer, ( nPos * ::nPxKeyLen ) + 7 - 2, 2 ) = CHR( 0 ) + CHR( 0 )
-               nCant := 0
-            ELSE
-               nCant := ReadBigEndian( cBuffer, ( nPos * ::nPxKeyLen ) + 7 - 2, 2, .T. )
-            ENDIF
-            nCant := ( nCant * 65536 ) + ReadBigEndian( cBuffer, ( nPos * ::nPxKeyLen ) + 7 - 4, 2, .T. )
-            nRecNo := nRecNo + nCant
-         NEXT
+         nRecno := nRecno + HB_INLINE( cBuffer, ::nPxKeyLen, nBlock - 1, @nCant ){
+            unsigned char *cBuffer;
+            unsigned int iLen, iKeyLen, iPos, iKeys, iCount, iCant;
+            int iSkip;
+
+            iLen = hb_parclen( 1 );
+            iKeyLen = hb_parni( 2 );
+            iSkip = hb_parni( 3 );
+            if( iLen < 6 + iKeyLen || iSkip < 1 )
+            {
+               hb_storni( 0, 4 );
+               hb_retni( 0 );
+               return;
+            }
+            cBuffer = ( unsigned char * ) hb_parc( 1 );
+
+            iKeys = ( ( ( ( unsigned int ) cBuffer[ 5 ] ) << 8 ) | ( ( unsigned int ) cBuffer[ 4 ] ) ) & 0x7FFF;
+            iKeys = ( iKeys / iKeyLen ) + 1;
+
+            iPos = 6;
+            iCount = 0;
+            iCant = 0;
+            while( iKeys && iSkip )
+            {
+               iSkip--;
+               iKeys--;
+               iCant = ( ( ( ( unsigned int ) cBuffer[ iPos + iKeyLen - 2 ] ) & 0x7F ) << 24 ) |
+                         ( ( ( unsigned int ) cBuffer[ iPos + iKeyLen - 1 ] )          << 16 ) |
+                       ( ( ( ( unsigned int ) cBuffer[ iPos + iKeyLen - 4 ] ) ^ 0x80 ) <<  8 ) |
+                           ( ( unsigned int ) cBuffer[ iPos + iKeyLen - 3 ] );
+               iCount += iCant;
+               iPos += iKeyLen;
+            }
+
+            hb_storni( iCant, 4 );
+            hb_retni( iCount );
+         }
          IF ! lLast .AND. lFound .AND. nBlock > 1 .AND. LEN( cKey ) < ::nPxKeyLen - 6
             // First record could be on the previous block
             nRecNoFound := nRecNo + 1
@@ -1669,8 +1659,8 @@ LOCAL nPos, nRecNoFound
    lFound := .F.
    IF nBlock > 0
       cBuffer := ::ReadBlock( nBlock )
-      nBlock := ::SeekKeyTree( cKey, cBuffer, ::nRecordLen, lLast, @lFound )
-      nRecNo := nRecNo + nBlock
+      nCant := ::SeekKeyTree( cKey, cBuffer, ::nRecordLen, lLast, @lFound )
+      nRecNo := nRecNo + nCant
       IF ! lFound
          IF nRecNoFound != 0
             //
@@ -1680,6 +1670,19 @@ LOCAL nPos, nRecNoFound
             // nRecNo++
          ELSE
             nRecNo := 0
+         ENDIF
+      ELSE
+         IF lKeepBuffer
+            // Keeps located buffer
+            ::nCurrentBlock := nBlock
+            ::nCurrentBlockRecord := nCant
+            ::cCurrentBlockBuffer := cBuffer
+            ::cRecord := SUBSTR( ::cCurrentBlockBuffer, 7 + ( ( ::nCurrentBlockRecord - 1 ) * ::nRecordLen ), ::nRecordLen )
+            ::lValidBuffer := .T.
+            ::nRecNo := nRecno
+            ::lBof := .F.
+            ::lEof := .F.
+            ::lFound := .T.
          ENDIF
       ENDIF
    ELSE
@@ -1791,3 +1794,17 @@ LOCAL cValue, nAux
       ENDIF
    ENDIF
 RETURN cValue
+
+METHOD CurrentIndexKey( nLen ) CLASS XBrowse_Paradox
+LOCAL cKey
+   cKey := ""
+   IF ::nOrder == 1
+      IF ! ::lValidBuffer
+         ::ReadRecord()
+      ENDIF
+      cKey := LEFT( ::cRecord, ::nPxKeyLen - 6 )
+      IF HB_IsNumeric( nLen )
+         cKey := LEFT( cKey, nLen )
+      ENDIF
+   ENDIF
+RETURN cKey

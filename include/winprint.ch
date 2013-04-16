@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.ch,v 1.5 2012-07-12 16:18:34 fyurisich Exp $
+ * $Id: winprint.ch,v 1.6 2013-04-16 15:30:11 guerra000 Exp $
  */
 // ---------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -164,11 +164,9 @@ MEMVAR HBPRN
 #xcommand POLYBEZIERTO <apoints> [PEN <cpen>] ;
           => hbprn:polybezierto(<apoints>,<cpen>)
 
-#xcommand SET UNITS [ROWCOL] => hbprn:setunits(0)
-#xcommand SET UNITS MM =>  hbprn:setunits(1)
-#xcommand SET UNITS INCHES =>  hbprn:setunits(2)
-#xcommand SET UNITS PIXELS =>  hbprn:setunits(3)
-#xcommand SET UNITS ROWS <r> COLS <c> =>  hbprn:setunits(4,<r>,<c>)
+#xcommand SET UNITS => hbprn:setunits(0)
+#xcommand SET UNITS <units: ROWCOL, MM, INCHES, PIXELS> [ <absolute: ABSOLUTE> ] =>  hbprn:setunits(<"units">,,,<.absolute.>)
+#xcommand SET UNITS ROWS <r> COLS <c> [ <absolute: ABSOLUTE> ] =>  hbprn:setunits(4,<r>,<c>,<.absolute.>)
 
 #xcommand DEFINE RECT REGION <creg> AT <row>,<col>,<row2>,<col2> ;
            => hbprn:definerectrgn(<creg>,<row>,<col>,<row2>,<col2>)

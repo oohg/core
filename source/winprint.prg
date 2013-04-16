@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.47 2013-03-21 01:13:32 fyurisich Exp $
+ * $Id: winprint.prg,v 1.48 2013-04-16 15:30:12 guerra000 Exp $
  */
 // -----------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -86,6 +86,7 @@ CLASS HBPrinter
    DATA    TimeStamp INIT ''
    DATA    BaseDoc INIT ""
    DATA    lGlobalChanges INIT .T.
+   DATA    lAbsoluteCoords INIT .F.
 
    METHOD New()
    METHOD SelectPrinter( cPrinter ,lPrev)
@@ -130,7 +131,7 @@ CLASS HBPrinter
    METHOD Polygon(apoints,defpen,defbrush,style)
    METHOD PolyBezier(apoints,defpen)
    METHOD PolyBezierTo(apoints,defpen)
-   METHOD SetUnits(newvalue,r,c)
+   METHOD SetUnits(newvalue,r,c,lAbsolute)
    METHOD Convert(arr,lsize)
    METHOD DefineRectRgn(defname,row,col,torow,tocol)
    METHOD DefinePolygonRgn(defname,apoints,style)
@@ -617,8 +618,20 @@ local lhand:=::getobjbyname(defname,"F")
   endif
 return self
 
-METHOD SetUnits(newvalue,r,c) CLASS HBPrinter
+METHOD SetUnits(newvalue,r,c,lAbsolute) CLASS HBPrinter
 local oldvalue:=::UNITS
+   If HB_IsString(newvalue)
+      newvalue := UPPER( ALLTRIM( newvalue ) )
+      If     newvalue == "ROWCOL"
+         newvalue := 0
+      ElseIf newvalue == "MM"
+         newvalue := 1
+      ElseIf newvalue == "INCHES"
+         newvalue := 2
+      ElseIf newvalue == "PIXELS"
+         newvalue := 3
+      EndIf
+   EndIf
    newvalue:=if(HB_IsNumeric(newvalue),newvalue,0)
    ::UNITS:=if(newvalue<0 .or. newvalue>4,0,newvalue)
    do case
@@ -642,6 +655,9 @@ local oldvalue:=::UNITS
               ::MaxCol:=c-1
            endif
    endcase
+   If Hb_IsLogical( lAbsolute )
+      ::lAbsoluteCoords := lAbsolute
+   EndIf
 return oldvalue
 
 METHOD Convert(arr,lsize) CLASS HBPrinter
@@ -655,11 +671,11 @@ do case
         aret[1]:=(arr[1])*::DEVCAPS[3]/(::maxrow+1)
         aret[2]:=(arr[2])*::DEVCAPS[4]/(::maxcol+1)
    case ::UNITS==1
-        aret[1]:=(arr[1])*::DEVCAPS[5]/25.4-if(lsize==NIL,::DEVCAPS[9 ],0)
-        aret[2]:=(arr[2])*::DEVCAPS[6]/25.4-if(lsize==NIL,::DEVCAPS[10],0)
+        aret[1]:=(arr[1])*::DEVCAPS[5]/25.4-if(! ::lAbsoluteCoords .AND. lsize==NIL,::DEVCAPS[9 ],0)
+        aret[2]:=(arr[2])*::DEVCAPS[6]/25.4-if(! ::lAbsoluteCoords .AND. lsize==NIL,::DEVCAPS[10],0)
    case ::UNITS==2
-        aret[1]:=(arr[1])*::DEVCAPS[5]-if(lsize==NIL,::DEVCAPS[9 ],0)
-        aret[2]:=(arr[2])*::DEVCAPS[6]-if(lsize==NIL,::DEVCAPS[10],0)
+        aret[1]:=(arr[1])*::DEVCAPS[5]-if(! ::lAbsoluteCoords .AND. lsize==NIL,::DEVCAPS[9 ],0)
+        aret[2]:=(arr[2])*::DEVCAPS[6]-if(! ::lAbsoluteCoords .AND. lsize==NIL,::DEVCAPS[10],0)
    otherwise
         aret[1]:=(arr[1])*::DEVCAPS[11]
         aret[2]:=(arr[2])*::DEVCAPS[12]

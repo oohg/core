@@ -1,11 +1,25 @@
 /*
- * $Id: ChangeLog,v 1.1050 2013-04-05 01:30:48 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1051 2013-04-16 15:30:10 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-04-16 10:29 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+  * samples/oohg/oohgrecord/px.prg
+    * Fixed ::Found() flag when table is not indexed.
+    * Optimized record jump.
+    * Doesn't get record buffer twice when found on SEEK.
+    * Commented code (PRG rewritten in C) removed.
+    * Field de-code function splitted.
+  * include/winprint.ch
+  * source/winprint.prg
+    + Added ::lAbsoluteCoords property.
+    ! Added ABSOLUTE clause to SET UNITS command.
+      It disables WRONG coordinates' adjustment to
+      page's printable area.
 
 2013-04-04 22:30 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
