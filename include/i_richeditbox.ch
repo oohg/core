@@ -1,5 +1,5 @@
 /*
- * $Id: i_richeditbox.ch,v 1.5 2007-11-08 08:55:19 guerra000 Exp $
+ * $Id: i_richeditbox.ch,v 1.6 2013-04-19 01:57:05 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -92,74 +92,76 @@
 ---------------------------------------------------------------------------*/
 
 #xcommand @ <row>,<col> RICHEDITBOX <name> ;
-                [ OBJ <obj> ] ;
-		[ <dummy1: OF, PARENT> <parent> ] ;
-		[ WIDTH <w> ] ;
-		[ HEIGHT <h> ] ;
-		[ FIELD <field> ]		;
-		[ VALUE <value> ] ;
-		[ < readonly: READONLY > ] ;
-		[ FONT <f> ] ;
-		[ SIZE <s> ] ;
-		[ <bold : BOLD> ] ;
-		[ <italic : ITALIC> ] ;
-		[ <underline : UNDERLINE> ] ;
-		[ <strikeout : STRIKEOUT> ] ;
-		[ TOOLTIP <tooltip> ] ;
-		[ BACKCOLOR <backcolor> ] ;
-		[ FONTCOLOR <dummy2> ] ;
-		[ MAXLENGTH <maxlenght> ] ;
-                [ ON GOTFOCUS <gotfocus> ] ;
-                [ ON CHANGE <change> ] ;
-                [ ON LOSTFOCUS <lostfocus> ] ;
-		[ HELPID <helpid> ] 		;
-		[ <break: BREAK> ] ;
-		[ <invisible: INVISIBLE> ] ;
-		[ <notabstop: NOTABSTOP> ] ;
-                [ <rtl: RTL> ] ;
-                [ SUBCLASS <subclass> ] ;
-                [ <disabled: DISABLED> ] ;
-	=>;
-        [ <obj> := ] _OOHG_SelectSubClass( TEditRich(), [ <subclass>() ] ): ;
-                     Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <value>, <f>, ;
-                     <s>, <tooltip>, <maxlenght>, <{gotfocus}>, <{change}>, <{lostfocus}>, ;
-                     <.readonly.>, <.break.>, <helpid>, <.invisible.>, <.notabstop.>, <.bold.>, ;
-                     <.italic.>, <.underline.>, <.strikeout.>, <(field)> , <backcolor>, ;
-                     <.rtl.>, <.disabled.> )
+            [ OBJ <obj> ] ;
+            [ <dummy1: OF, PARENT> <parent> ] ;
+            [ WIDTH <w> ] ;
+            [ HEIGHT <h> ] ;
+            [ FIELD <field> ]      ;
+            [ VALUE <value> ] ;
+            [ < readonly: READONLY > ] ;
+            [ FONT <f> ] ;
+            [ SIZE <s> ] ;
+            [ <bold : BOLD> ] ;
+            [ <italic : ITALIC> ] ;
+            [ <underline : UNDERLINE> ] ;
+            [ <strikeout : STRIKEOUT> ] ;
+            [ TOOLTIP <tooltip> ] ;
+            [ BACKCOLOR <backcolor> ] ;
+            [ FONTCOLOR <dummy2> ] ;
+            [ MAXLENGTH <maxlenght> ] ;
+            [ ON GOTFOCUS <gotfocus> ] ;
+            [ ON CHANGE <change> ] ;
+            [ ON LOSTFOCUS <lostfocus> ] ;
+            [ ON SELCHANGE <selchange> ] ;
+            [ HELPID <helpid> ]       ;
+            [ <break: BREAK> ] ;
+            [ <invisible: INVISIBLE> ] ;
+            [ <notabstop: NOTABSTOP> ] ;
+            [ <rtl: RTL> ] ;
+            [ SUBCLASS <subclass> ] ;
+            [ <disabled: DISABLED> ] ;
+   =>;
+            [ <obj> := ] _OOHG_SelectSubClass( TEditRich(), [ <subclass>() ] ): ;
+                  Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <value>, <f>, ;
+                  <s>, <tooltip>, <maxlenght>, <{gotfocus}>, <{change}>, <{lostfocus}>, ;
+                  <.readonly.>, <.break.>, <helpid>, <.invisible.>, <.notabstop.>, <.bold.>, ;
+                  <.italic.>, <.underline.>, <.strikeout.>, <(field)> , <backcolor>, ;
+                  <.rtl.>, <.disabled.>, <{selchange}> )
 
 //SPLITBOX VERSION
 
 #xcommand RICHEDITBOX <name> ;
-                [ OBJ <obj> ] ;
-		[ <dummy1: OF, PARENT> <parent> ] ;
-		[ WIDTH <w> ] ;
-		[ HEIGHT <h> ] ;
-		[ FIELD <field> ]		;
-		[ VALUE <value> ] ;
-		[ < readonly: READONLY > ] ;
-		[ FONT <f> ] ;
-		[ SIZE <s> ] ;
-		[ <bold : BOLD> ] ;
-		[ <italic : ITALIC> ] ;
-		[ <underline : UNDERLINE> ] ;
-		[ <strikeout : STRIKEOUT> ] ;
-		[ TOOLTIP <tooltip> ] ;
-		[ BACKCOLOR <backcolor> ] ;
-		[ FONTCOLOR <dummy2> ] ;
-		[ MAXLENGTH <maxlenght> ] ;
-                [ ON GOTFOCUS <gotfocus> ] ;
-                [ ON CHANGE <change> ] ;
-                [ ON LOSTFOCUS <lostfocus> ] ;
-		[ HELPID <helpid> ] 		;
-		[ <break: BREAK> ] ;
-		[ <invisible: INVISIBLE> ] ;
-		[ <notabstop: NOTABSTOP> ] ;
-                [ <rtl: RTL> ] ;
-                [ SUBCLASS <subclass> ] ;
-                [ <disabled: DISABLED> ] ;
-	=>;
-        [ <obj> := ] _OOHG_SelectSubClass( TEditRich(), [ <subclass>() ] ): ;
-                     Define( <(name)>, <(parent)>, , , <w>, <h>, <value>, <f>, <s>, <tooltip>, ;
-                     <maxlenght>, <{gotfocus}>, <{change}>, <{lostfocus}>, <.readonly.>, <.break.>, ;
-                     <helpid>, <.invisible.>, <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, ;
-                     <.strikeout.>, <(field)>, <backcolor>, <.rtl.>, <.disabled.> )
+            [ OBJ <obj> ] ;
+            [ <dummy1: OF, PARENT> <parent> ] ;
+            [ WIDTH <w> ] ;
+            [ HEIGHT <h> ] ;
+            [ FIELD <field> ]      ;
+            [ VALUE <value> ] ;
+            [ < readonly: READONLY > ] ;
+            [ FONT <f> ] ;
+            [ SIZE <s> ] ;
+            [ <bold : BOLD> ] ;
+            [ <italic : ITALIC> ] ;
+            [ <underline : UNDERLINE> ] ;
+            [ <strikeout : STRIKEOUT> ] ;
+            [ TOOLTIP <tooltip> ] ;
+            [ BACKCOLOR <backcolor> ] ;
+            [ FONTCOLOR <dummy2> ] ;
+            [ MAXLENGTH <maxlenght> ] ;
+            [ ON GOTFOCUS <gotfocus> ] ;
+            [ ON CHANGE <change> ] ;
+            [ ON LOSTFOCUS <lostfocus> ] ;
+            [ ON SELCHANGE <selchange> ] ;
+            [ HELPID <helpid> ]       ;
+            [ <break: BREAK> ] ;
+            [ <invisible: INVISIBLE> ] ;
+            [ <notabstop: NOTABSTOP> ] ;
+            [ <rtl: RTL> ] ;
+            [ SUBCLASS <subclass> ] ;
+            [ <disabled: DISABLED> ] ;
+   =>;
+            [ <obj> := ] _OOHG_SelectSubClass( TEditRich(), [ <subclass>() ] ): ;
+                  Define( <(name)>, <(parent)>, , , <w>, <h>, <value>, <f>, <s>, <tooltip>, ;
+                  <maxlenght>, <{gotfocus}>, <{change}>, <{lostfocus}>, <.readonly.>, <.break.>, ;
+                  <helpid>, <.invisible.>, <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, ;
+                  <.strikeout.>, <(field)>, <backcolor>, <.rtl.>, <.disabled.>, <{selchange}> )

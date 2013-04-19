@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.79 2013-03-24 15:26:42 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.80 2013-04-19 01:57:05 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -122,6 +122,7 @@ Memvariables
 #xtranslate _OOHG_ActiveControlTrailingFontColor      => _OOHG_ActiveControlInfo \[  25 \]
 #xtranslate _OOHG_ActiveControlBackgroundColor        => _OOHG_ActiveControlInfo \[  26 \]
 
+#xtranslate _OOHG_ActiveControlOnSelChange            => _OOHG_ActiveControlInfo \[ 126 \]
 #xtranslate _OOHG_ActiveControlOnListDisplay          => _OOHG_ActiveControlInfo \[ 127 \]
 #xtranslate _OOHG_ActiveControlOnListClose            => _OOHG_ActiveControlInfo \[ 128 \]
 #xtranslate _OOHG_ActiveControlSubClass               => _OOHG_ActiveControlInfo \[ 129 \]
@@ -1850,10 +1851,19 @@ RICH EDIT BOX
 #xcommand DEFINE RICHEDITBOX <name> ;
         => ;
         _OOHG_ClearActiveControlInfo( <(name)> ) ;;
-        _OOHG_ActiveControlReadonly  := .F.      ;;
-        _OOHG_ActiveControlMaxLength := Nil      ;;
-        _OOHG_ActiveControlBreak     := .F.      ;;
-        _OOHG_ActiveControlField     := Nil
+        _OOHG_ActiveControlReadonly    := .F.    ;;
+        _OOHG_ActiveControlMaxLength   := Nil    ;;
+        _OOHG_ActiveControlBreak       := .F.    ;;
+        _OOHG_ActiveControlField       := Nil    ;;
+        _OOHG_ActiveControlOnSelChange := Nil
+
+#xcommand ONSELCHANGE <onselchange> ;
+        => ;
+        _OOHG_ActiveControlOnSelChange := <{onselchange}>
+
+#xcommand ON SELCHANGE <onselchange> ;
+        => ;
+        _OOHG_ActiveControlOnSelChange := <{onselchange}>
 
 #xcommand END RICHEDITBOX ;
         => ;
@@ -1884,7 +1894,8 @@ RICH EDIT BOX
                 _OOHG_ActiveControlField, ;
                 _OOHG_ActiveControlBackColor, ;
                 _OOHG_ActiveControlRtl, ;
-                _OOHG_ActiveControlDisabled )
+                _OOHG_ActiveControlDisabled, ;
+                _OOHG_ActiveControlOnSelChange )
 
 /*----------------------------------------------------------------------------
 LABEL

@@ -1,5 +1,5 @@
 /*
- * $Id: h_richeditbox.prg,v 1.23 2012-07-06 00:45:38 fyurisich Exp $
+ * $Id: h_richeditbox.prg,v 1.24 2013-04-19 01:57:05 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -97,14 +97,19 @@
 #include "i_windefs.ch"
 
 CLASS TEditRich FROM TEdit
-   DATA Type      INIT "RICHEDIT" READONLY
-   DATA nWidth    INIT 120
-   DATA nHeight   INIT 240
+   DATA Type         INIT "RICHEDIT" READONLY
+   DATA nWidth       INIT 120
+   DATA nHeight      INIT 240
+   DATA OnSelChange  INIT Nil
+   DATA lSelChanging INIT .F.
 
    METHOD Define
-   METHOD BackColor   SETGET
-   METHOD RichValue   SETGET
+   METHOD BackColor  SETGET
+   METHOD RichValue  SETGET
    METHOD Events
+   METHOD Events_Notify
+   METHOD SetSelectionTextColor
+   METHOD SetSelectionBackColor
 
    EMPTY( _OOHG_AllVars )
 ENDCLASS
@@ -162,6 +167,10 @@ RETURN RichStreamOut( ::hWnd )
 #include <richedit.h>
 #include "oohg.h"
 
+#ifndef CFM_BACKCOLOR
+   #define CFM_BACKCOLOR 0x04000000
+#endif
+
 static WNDPROC lpfnOldWndProc = 0;
 
 static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
@@ -173,13 +182,15 @@ HB_FUNC( INITRICHEDITBOX )
 {
    HWND hwnd;
    HWND hwndRE = 0;
-   int Style, StyleEx ;
+   int Style, StyleEx, Mask;
 
    StyleEx = WS_EX_CLIENTEDGE | _OOHG_RTL_Status( hb_parl( 9 ) );
 
    hwnd = HWNDparam( 1 );
 
    Style = ES_MULTILINE | ES_WANTRETURN | WS_CHILD | WS_VSCROLL | WS_HSCROLL | hb_parni( 7 );
+
+   Mask = ENM_CHANGE | ENM_SELCHANGE;
 
    InitCommonControls();
    if ( LoadLibrary( "RichEd20.dll" ) )
@@ -190,7 +201,7 @@ HB_FUNC( INITRICHEDITBOX )
 
       lpfnOldWndProc = ( WNDPROC ) SetWindowLong( hwndRE, GWL_WNDPROC, ( LONG ) SubClassFunc );
       SendMessage( hwndRE, EM_LIMITTEXT, ( WPARAM ) hb_parni( 8 ), 0 );
-      SendMessage( hwndRE, EM_SETEVENTMASK, 0, ( LPARAM ) ENM_CHANGE );
+      SendMessage( hwndRE, EM_SETEVENTMASK, 0, ( LPARAM ) Mask );
    }
 
    HWNDret( hwndRE );
@@ -388,6 +399,54 @@ HB_FUNC_STATIC( TEDITRICH_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lPara
    }
 }
 
+HB_FUNC_STATIC( TEDITRICH_SETSELECTIONTEXTCOLOR )       // METHOD SetSelectionTextColor( lColor ) CLASS TEditRich
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   CHARFORMAT2 Format;
+   COLORREF clrColor;
+
+   if( ISNIL( 1 ) )
+   {
+      clrColor = ( ( oSelf->lFontColor == -1 ) ? GetSysColor( COLOR_WINDOWTEXT ) : (COLORREF) oSelf->lFontColor );
+   }
+   else
+   {
+      clrColor = (COLORREF) hb_parnl( 1 );
+   }
+
+   memset( &Format, 0, sizeof( Format ) );
+   Format.cbSize = sizeof( Format );
+   Format.dwMask = CFM_COLOR;
+   Format.crTextColor = clrColor;
+
+   SendMessage( oSelf->hWnd, EM_SETCHARFORMAT, (WPARAM) SCF_SELECTION, (LPARAM) &Format );
+}
+
+HB_FUNC_STATIC( TEDITRICH_SETSELECTIONBACKCOLOR )       // METHOD SetSelectionBackColor( lColor ) CLASS TEditRich
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   CHARFORMAT2 Format;
+   COLORREF clrColor;
+
+   if( ISNIL( 1 ) )
+   {
+      clrColor = ( ( oSelf->lBackColor == -1 ) ? GetSysColor( COLOR_WINDOW ) : (COLORREF) oSelf->lBackColor );
+   }
+   else
+   {
+      clrColor = (COLORREF) hb_parnl( 1 );
+   }
+
+   memset( &Format, 0, sizeof( Format ) );
+   Format.cbSize = sizeof( Format );
+   Format.dwMask = CFM_BACKCOLOR;
+   Format.crBackColor = clrColor;
+
+   SendMessage( oSelf->hWnd, EM_SETCHARFORMAT, (WPARAM) SCF_SELECTION, (LPARAM) &Format );
+}
+
 #pragma ENDDUMP
 
 *------------------------------------------------------------------------------*
@@ -406,3 +465,18 @@ Local cText
    Endif
 
 Return ::Super:Events( hWnd, nMsg, wParam, lParam )
+
+*-----------------------------------------------------------------------------*
+METHOD Events_Notify( wParam, lParam ) CLASS TEditRich
+*-----------------------------------------------------------------------------*
+Local nNotify := GetNotifyCode( lParam )
+
+   If nNotify == EN_SELCHANGE
+     IF ! ::lSelChanging
+        ::lSelChanging := .T.
+        ::DoEvent( ::OnSelChange, "SELCHANGE" )
+        ::lSelChanging := .F.
+     ENDIF
+   EndIf
+
+Return ::Super:Events_Notify( wParam, lParam )

@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.50 2012-07-29 05:09:29 fyurisich Exp $
+ * $Id: i_windefs.ch,v 1.51 2013-04-19 01:57:05 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -556,6 +556,7 @@
 #define EN_KILLFOCUS                  512
 #define EN_CHANGE                     768
 #define EN_UPDATE                     1024
+#define EN_SELCHANGE                  0x0702
 #define TB_GETHOTITEM                 (WM_USER + 71)
 
 #define EM_SCROLLCARET                183

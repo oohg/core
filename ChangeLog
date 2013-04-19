@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.1051 2013-04-16 15:30:10 guerra000 Exp $
+ * $Id: ChangeLog,v 1.1052 2013-04-19 01:57:04 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,19 +7,42 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-04-18 22:57 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_windefs.ch
+     + Added define for EN_SELCHANGE constant.
+   * include/i_richeditbox.ch
+   * include/i_altsyntax.ch
+     + Added ON SELCHANGE clause.
+   * source/h_richeditbox.prg
+     + Added DATAs OnSelChange and lSelChanging.
+     + Added METHODs Events_Notify to handel EN_SELCHANGE notification.
+     + Added SetSelectionTextColor( aColor ) to set the foreground
+       color of the currently selected text. Beware that the new
+       color is not seen until the selection changes.
+     + Added SetSelectionBackColor( aColor ) to set the background
+       color of the currently selected of text. Beware that the new
+       color is not seen until the selection changes.
+     + Added define for CFM_BACKCOLOR constant.
+     + Added ENM_SELCHANGE to the event mask in InitRichEditBox
+       function to request for EN_SELCHANGE notifications.
+     + Added OnSelChange event to RichEdit controls. This event is
+       fired when the current selection is changed. Beware that
+       selection changes inside the event handler do not fire the
+       event, to prevent an infinite loop.
+
 2013-04-16 10:29 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
-  * samples/oohg/oohgrecord/px.prg
-    * Fixed ::Found() flag when table is not indexed.
-    * Optimized record jump.
-    * Doesn't get record buffer twice when found on SEEK.
-    * Commented code (PRG rewritten in C) removed.
-    * Field de-code function splitted.
-  * include/winprint.ch
-  * source/winprint.prg
-    + Added ::lAbsoluteCoords property.
-    ! Added ABSOLUTE clause to SET UNITS command.
-      It disables WRONG coordinates' adjustment to
-      page's printable area.
+   * samples/oohg/oohgrecord/px.prg
+     * Fixed ::Found() flag when table is not indexed.
+     * Optimized record jump.
+     * Doesn't get record buffer twice when found on SEEK.
+     * Commented code (PRG rewritten in C) removed.
+     * Field de-code function splitted.
+   * include/winprint.ch
+   * source/winprint.prg
+     + Added ::lAbsoluteCoords property.
+     ! Added ABSOLUTE clause to SET UNITS command.
+       It disables WRONG coordinates' adjustment to
+       page's printable area.
 
 2013-04-04 22:30 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
