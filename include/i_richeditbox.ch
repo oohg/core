@@ -1,5 +1,5 @@
 /*
- * $Id: i_richeditbox.ch,v 1.6 2013-04-19 01:57:05 fyurisich Exp $
+ * $Id: i_richeditbox.ch,v 1.7 2013-04-22 00:06:43 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -107,7 +107,7 @@
             [ <strikeout : STRIKEOUT> ] ;
             [ TOOLTIP <tooltip> ] ;
             [ BACKCOLOR <backcolor> ] ;
-            [ FONTCOLOR <dummy2> ] ;
+            [ FONTCOLOR <fontcolor> ] ;
             [ MAXLENGTH <maxlenght> ] ;
             [ ON GOTFOCUS <gotfocus> ] ;
             [ ON CHANGE <change> ] ;
@@ -120,13 +120,14 @@
             [ <rtl: RTL> ] ;
             [ SUBCLASS <subclass> ] ;
             [ <disabled: DISABLED> ] ;
+            [ <nohidesel: NOHIDESEL> ] ;
    =>;
             [ <obj> := ] _OOHG_SelectSubClass( TEditRich(), [ <subclass>() ] ): ;
                   Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <value>, <f>, ;
                   <s>, <tooltip>, <maxlenght>, <{gotfocus}>, <{change}>, <{lostfocus}>, ;
                   <.readonly.>, <.break.>, <helpid>, <.invisible.>, <.notabstop.>, <.bold.>, ;
                   <.italic.>, <.underline.>, <.strikeout.>, <(field)> , <backcolor>, ;
-                  <.rtl.>, <.disabled.>, <{selchange}> )
+                  <.rtl.>, <.disabled.>, <{selchange}>, <fontcolor>, <.nohidesel.> )
 
 //SPLITBOX VERSION
 
@@ -146,7 +147,7 @@
             [ <strikeout : STRIKEOUT> ] ;
             [ TOOLTIP <tooltip> ] ;
             [ BACKCOLOR <backcolor> ] ;
-            [ FONTCOLOR <dummy2> ] ;
+            [ FONTCOLOR <fontcolor> ] ;
             [ MAXLENGTH <maxlenght> ] ;
             [ ON GOTFOCUS <gotfocus> ] ;
             [ ON CHANGE <change> ] ;
@@ -159,9 +160,11 @@
             [ <rtl: RTL> ] ;
             [ SUBCLASS <subclass> ] ;
             [ <disabled: DISABLED> ] ;
+            [ <nohidesel: NOHIDESEL> ] ;
    =>;
             [ <obj> := ] _OOHG_SelectSubClass( TEditRich(), [ <subclass>() ] ): ;
                   Define( <(name)>, <(parent)>, , , <w>, <h>, <value>, <f>, <s>, <tooltip>, ;
                   <maxlenght>, <{gotfocus}>, <{change}>, <{lostfocus}>, <.readonly.>, <.break.>, ;
                   <helpid>, <.invisible.>, <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, ;
-                  <.strikeout.>, <(field)>, <backcolor>, <.rtl.>, <.disabled.>, <{selchange}> )
+                  <.strikeout.>, <(field)>, <backcolor>, <.rtl.>, <.disabled.>, <{selchange}>, ;
+                  <fontcolor>, <.nohidesel.> )

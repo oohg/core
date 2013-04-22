@@ -1,11 +1,24 @@
 /*
- * $Id: ChangeLog,v 1.1052 2013-04-19 01:57:04 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1053 2013-04-22 00:06:43 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-04-21 21:06 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_richeditbox.ch
+     + Added support for setting control's fontcolor.
+     + Added NOHIDESEL clause to RichEdit control (prevents the hidding
+       of the selection when the control losts the focus).
+   * include/i_altsyntax.ch
+     + Added NOHIDESEL clause to RichEdit control.
+   * source/h_richeditbox.prg
+     + Added FontColor, HideSelection and GetSelText methods.
+     ! ON SELCHANGE clause at define time is been ignored.
+   * source/h_textbox.prg
+     + Added GetSelText method.
 
 2013-04-18 22:57 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_windefs.ch

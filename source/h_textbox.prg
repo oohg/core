@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.82 2012-08-27 05:50:50 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.83 2013-04-22 00:06:44 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -149,6 +149,7 @@ CLASS TText FROM TLabel
    METHOD ScrollCaret                  BLOCK { |Self| SendMessage( ::hWnd, EM_SCROLLCARET, 0, 0 ) }
    METHOD GetSelection
    METHOD SetSelection
+   METHOD GetSelText
    METHOD InsertStatus                 SETGET
    METHOD GetLine
    METHOD GetLineIndex( nLine )        BLOCK { |Self,nLine| SendMessage( ::hWnd, EM_LINEINDEX, nLine, 0 ) }
@@ -379,6 +380,12 @@ METHOD SetSelection( nStart, nEnd ) CLASS TText
    // Use nStart = 0 and nEnd = -1 to select all
    SendMessage( ::hWnd, EM_SETSEL, nStart, nEnd )
 Return ::GetSelection()
+
+*------------------------------------------------------------------------------*
+METHOD GetSelText CLASS TText
+*------------------------------------------------------------------------------*
+Local aPos := ::GetSelection()
+Return SubStr( ::Caption, aPos[1] + 1, aPos[2] - aPos[1] )
 
 *------------------------------------------------------------------------------*
 METHOD ReadOnly( lReadOnly ) CLASS TText

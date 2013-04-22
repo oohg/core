@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.80 2013-04-19 01:57:05 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.81 2013-04-22 00:06:43 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -122,6 +122,7 @@ Memvariables
 #xtranslate _OOHG_ActiveControlTrailingFontColor      => _OOHG_ActiveControlInfo \[  25 \]
 #xtranslate _OOHG_ActiveControlBackgroundColor        => _OOHG_ActiveControlInfo \[  26 \]
 
+#xtranslate _OOHG_ActiveControlNoHideSel              => _OOHG_ActiveControlInfo \[ 125 \]
 #xtranslate _OOHG_ActiveControlOnSelChange            => _OOHG_ActiveControlInfo \[ 126 \]
 #xtranslate _OOHG_ActiveControlOnListDisplay          => _OOHG_ActiveControlInfo \[ 127 \]
 #xtranslate _OOHG_ActiveControlOnListClose            => _OOHG_ActiveControlInfo \[ 128 \]
@@ -1855,7 +1856,12 @@ RICH EDIT BOX
         _OOHG_ActiveControlMaxLength   := Nil    ;;
         _OOHG_ActiveControlBreak       := .F.    ;;
         _OOHG_ActiveControlField       := Nil    ;;
-        _OOHG_ActiveControlOnSelChange := Nil
+        _OOHG_ActiveControlOnSelChange := Nil    ;;
+        _OOHG_ActiveControlNoHideSel   := Nil
+
+#xcommand NOHIDESEL <nohidesel> ;
+        => ;
+        _OOHG_ActiveControlNoHideSel := <nohidesel>
 
 #xcommand ONSELCHANGE <onselchange> ;
         => ;
@@ -1895,7 +1901,9 @@ RICH EDIT BOX
                 _OOHG_ActiveControlBackColor, ;
                 _OOHG_ActiveControlRtl, ;
                 _OOHG_ActiveControlDisabled, ;
-                _OOHG_ActiveControlOnSelChange )
+                _OOHG_ActiveControlOnSelChange, ;
+                _OOHG_ActiveControlFontColor, ;
+                _OOHG_ActiveControlNoHideSel )
 
 /*----------------------------------------------------------------------------
 LABEL

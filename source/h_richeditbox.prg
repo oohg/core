@@ -1,5 +1,5 @@
 /*
- * $Id: h_richeditbox.prg,v 1.24 2013-04-19 01:57:05 fyurisich Exp $
+ * $Id: h_richeditbox.prg,v 1.25 2013-04-22 00:06:44 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -104,12 +104,15 @@ CLASS TEditRich FROM TEdit
    DATA lSelChanging INIT .F.
 
    METHOD Define
+   METHOD FontColor  SETGET
    METHOD BackColor  SETGET
    METHOD RichValue  SETGET
    METHOD Events
    METHOD Events_Notify
    METHOD SetSelectionTextColor
    METHOD SetSelectionBackColor
+   METHOD HideSelection
+   METHOD GetSelText
 
    EMPTY( _OOHG_AllVars )
 ENDCLASS
@@ -118,7 +121,8 @@ ENDCLASS
 METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
                fontsize, tooltip, maxlenght, gotfocus, change, lostfocus, ;
                readonly, break, HelpId, invisible, notabstop, bold, italic, ;
-               underline, strikeout, field, backcolor, lRtl, lDisabled ) CLASS TEditRich
+               underline, strikeout, field, backcolor, lRtl, lDisabled, ;
+               selchange, fontcolor, nohidesel ) CLASS TEditRich
 *-----------------------------------------------------------------------------*
 Local ControlHandle, nStyle
 
@@ -127,12 +131,11 @@ Local ControlHandle, nStyle
    ASSIGN ::nRow    VALUE y TYPE "N"
    ASSIGN ::nCol    VALUE x TYPE "N"
 
-   // DEFAULT Maxlenght TO 64738
-
-   ::SetForm( ControlName, ParentForm, FontName, FontSize, , BackColor, .T., lRtl )
+   ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, .T., lRtl )
 
    nStyle := ::InitStyle( ,, Invisible, NoTabStop, lDisabled ) + ;
-             if( ValType( readonly ) == "L"  .AND. readonly,   ES_READONLY, 0 )
+             if( ValType( readonly ) == "L" .AND. readonly, ES_READONLY, 0 ) + ;
+             if( ValType( nohidesel ) == "L" .AND. nohidesel, ES_NOHIDESEL, 0 )
 
    ::SetSplitBoxInfo( Break, )
    ControlHandle := InitRichEditBox( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, maxlenght, ::lRtl )
@@ -143,10 +146,12 @@ Local ControlHandle, nStyle
    ::SetVarBlock( Field, Value )
 
    ::BackColor := ::BackColor
+   ::FontColor := ::FontColor
 
    ASSIGN ::OnLostFocus VALUE lostfocus TYPE "B"
    ASSIGN ::OnGotFocus  VALUE gotfocus  TYPE "B"
-   ASSIGN ::OnChange    VALUE Change    TYPE "B"
+   ASSIGN ::OnChange    VALUE change    TYPE "B"
+   ASSIGN ::OnSelChange VALUE selchange TYPE "B"
 
 Return Self
 
@@ -231,6 +236,29 @@ HB_FUNC_STATIC( TEDITRICH_BACKCOLOR )
    // Return value was set in _OOHG_DetermineColorReturn()
 }
 
+HB_FUNC_STATIC( TEDITRICH_FONTCOLOR )
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   CHARFORMAT2 Format;
+
+   if( _OOHG_DetermineColorReturn( hb_param( 1, HB_IT_ANY ), &oSelf->lFontColor, ( hb_pcount() >= 1 ) ) )
+   {
+      if( ValidHandler( oSelf->hWnd ) )
+      {
+         memset( &Format, 0, sizeof( Format ) );
+         Format.cbSize = sizeof( Format );
+         Format.dwMask = CFM_COLOR;
+         Format.crTextColor = ( ( oSelf->lFontColor != -1 ) ? (COLORREF) oSelf->lFontColor : GetSysColor( COLOR_WINDOWTEXT ) );
+
+         SendMessage( oSelf->hWnd, EM_SETCHARFORMAT, (WPARAM) SCF_ALL, (LPARAM) &Format );
+
+         RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+      }
+   }
+
+   // Return value was set in _OOHG_DetermineColorReturn()
+}
 struct StreamInfo {
    LONG lSize;
    LONG lRead;
@@ -447,6 +475,38 @@ HB_FUNC_STATIC( TEDITRICH_SETSELECTIONBACKCOLOR )       // METHOD SetSelectionBa
    SendMessage( oSelf->hWnd, EM_SETCHARFORMAT, (WPARAM) SCF_SELECTION, (LPARAM) &Format );
 }
 
+HB_FUNC_STATIC( TEDITRICH_HIDESELECTION )       // METHOD HideSelection( lHide ) CLASS TEditRich
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+
+   SendMessage( oSelf->hWnd, EM_HIDESELECTION, (WPARAM) ( hb_parl( 1 ) ? 1 : 0 ), 0 );
+}
+
+HB_FUNC( RICHEDIT_GETSELTEXT )
+
+{
+   GETTEXTLENGTHEX gtl;
+   GETTEXTEX gte;
+   char *cBuffer;
+
+   gtl.flags = GTL_USECRLF | GTL_PRECISE | GTL_NUMCHARS;
+   gtl.codepage = CP_ACP;
+
+   gte.cb = SendMessage( HWNDparam( 1 ), EM_GETTEXTLENGTHEX, (WPARAM) &gtl, 0 ) + 1;
+   gte.flags = GT_SELECTION | GT_USECRLF;
+   gte.codepage = CP_ACP;
+   gte.lpDefaultChar = NULL;
+   gte.lpUsedDefChar = NULL;
+
+   cBuffer = (char *) hb_xgrab( gte.cb );
+
+   SendMessage( HWNDparam( 1 ), EM_GETSELTEXT, 0, (LPARAM) cBuffer );
+
+   hb_retc( cBuffer );
+   hb_xfree( cBuffer );
+}
+
 #pragma ENDDUMP
 
 *------------------------------------------------------------------------------*
@@ -472,11 +532,22 @@ METHOD Events_Notify( wParam, lParam ) CLASS TEditRich
 Local nNotify := GetNotifyCode( lParam )
 
    If nNotify == EN_SELCHANGE
-     IF ! ::lSelChanging
+     If ! ::lSelChanging
         ::lSelChanging := .T.
         ::DoEvent( ::OnSelChange, "SELCHANGE" )
         ::lSelChanging := .F.
-     ENDIF
+     EndIf
    EndIf
 
 Return ::Super:Events_Notify( wParam, lParam )
+
+*-----------------------------------------------------------------------------*
+METHOD GetSelText( lTranslate ) CLASS TEditRich
+*-----------------------------------------------------------------------------*
+Local cSelText := RichEdit_GetSelText( ::hWnd )
+
+   If HB_IsLogical( lTranslate ) .AND. lTranslate
+     cSelText := StrTran( cSelText, Chr(13), Chr(13) + Chr(10) )
+   EndIf
+
+Return cSelText
