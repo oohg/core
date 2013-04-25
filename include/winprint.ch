@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.ch,v 1.6 2013-04-16 15:30:11 guerra000 Exp $
+ * $Id: winprint.ch,v 1.7 2013-04-25 17:12:04 guerra000 Exp $
  */
 // ---------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -117,8 +117,8 @@ MEMVAR HBPRN
 #xcommand SELECT FONT <cfont> => hbprn:selectfont(<cfont>)
 #xcommand SET CHARSET <charset> => hbprn:setcharset(<charset>)
 
-#xcommand @ <row>,<col>,<row2>,<col2> DRAW TEXT <txt> [STYLE <style>] [FONT <cfont>];
-          => hbprn:drawtext(<row>,<col>,<row2>,<col2>,<txt>,<style>,<cfont>)
+#xcommand @ <row>,<col>,<row2>,<col2> DRAW TEXT <txt> [STYLE <style>] [FONT <cfont>] [<lNoWordBreak: NOWORDBREAK>];
+          => hbprn:drawtext(<row>,<col>,<row2>,<col2>,<txt>,<style>,<cfont>,<.lNoWordBreak.>)
 #xcommand @ <row>,<col> TEXTOUT <txt> [FONT <cfont>];
           => hbprn:textout(<row>,<col>,<txt>,<cfont>)
 

@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.48 2013-04-16 15:30:12 guerra000 Exp $
+ * $Id: winprint.prg,v 1.49 2013-04-25 17:12:04 guerra000 Exp $
  */
 // -----------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -114,7 +114,7 @@ CLASS HBPrinter
    METHOD ModifyFont(defname,lfontname,lfontsize,lfontwidth,langle,lweight,lnweight,litalic,lnitalic,lunderline,lnunderline,lstrikeout,lnstrikeout)
    METHOD SelectFont(defname)
    METHOD GetObjByName(defname,what,retpos)
-   METHOD DrawText(row,col,torow,tocol,txt,style,defname)
+   METHOD DrawText(row,col,torow,tocol,txt,style,defname,lNoWordBreak)
    METHOD TextOut(row,col,txt,defname)
    METHOD Say(row,col,txt,defname,lcolor,lalign)
    METHOD SetCharset(charset) INLINE rr_setcharset(charset,,SELF) // Dummy SELF
@@ -682,7 +682,7 @@ do case
 endcase
 return aret
 
-METHOD DrawText(row,col,torow,tocol,txt,style,defname) CLASS HBPrinter
+METHOD DrawText(row,col,torow,tocol,txt,style,defname,lNoWordBreak) CLASS HBPrinter
 local lhf:=::getobjbyname(defname,"F")
      if torow==NIL
         torow:=::maxrow
@@ -690,7 +690,7 @@ local lhf:=::getobjbyname(defname,"F")
      if tocol==NIL
         tocol:=::maxcol
      endif
-     rr_drawtext(::Convert({row,col}),::Convert({torow,tocol}),txt,style,lhf)
+     rr_drawtext(::Convert({row,col}),::Convert({torow,tocol}),txt,style,lhf,lNoWordBreak)
 return self
 
 METHOD TEXTOUT(row,col,txt,defname) CLASS HBPrinter
@@ -2804,48 +2804,69 @@ HB_FUNC( RR_DRAWTEXT )
    const char  *pszData = hb_parc(3);
    int   iLen = strlen(pszData);
    int   iStyle = hb_parni(4);
+   int   iAlign, iNoWordBreak;
    LONG  w, h;
 
    SetRect( &rect, HB_PARNL(1, 2), HB_PARNL(1, 1), HB_PARNL(2, 2), HB_PARNL(2, 1) );
+   iNoWordBreak = hb_parl( 6 );
 
    if( xfont != 0 )
    {
       prevfont = ( HFONT ) SelectObject( hDC, (HFONT) xfont );
    }
 
-   GetTextExtentPoint32( hDC, pszData, iLen , &sSize );
-   w = (LONG) sSize.cx; // text width
-   h = (LONG) sSize.cy; // text height
+   uFormat = DT_NOPREFIX;
 
-   // Center text vertically within rectangle
-   if( w < rect.right - rect.left )
+   if( iNoWordBreak )
    {
-      rect.top = rect.top + ( rect.bottom - rect.top + h / 2 ) / 2 ;
+      iAlign = GetTextAlign( hDC );
+      SetTextAlign( hDC, TA_TOP );
    }
    else
    {
-      rect.top = rect.top + ( rect.bottom - rect.top - h / 2 ) / 2 ;
+      uFormat |= DT_NOCLIP | DT_WORDBREAK | DT_END_ELLIPSIS;
+
+      GetTextExtentPoint32( hDC, pszData, iLen , &sSize );
+      w = (LONG) sSize.cx; // text width
+      h = (LONG) sSize.cy; // text height
+
+      // Center text vertically within rectangle
+      if( w < rect.right - rect.left )
+      {
+         rect.top = rect.top + ( rect.bottom - rect.top + h / 2 ) / 2 ;
+      }
+      else
+      {
+         rect.top = rect.top + ( rect.bottom - rect.top - h / 2 ) / 2 ;
+      }
    }
 
-   uFormat = DT_NOCLIP | DT_NOPREFIX | DT_WORDBREAK | DT_END_ELLIPSIS ;
+   if( ! hb_parl( 6 ) )
+   {
+   }
 
    if( iStyle == 0 )
    {
-      uFormat = uFormat | DT_LEFT ;
+      uFormat = uFormat | DT_LEFT;
    }
    else if ( iStyle == 2 )
    {
-      uFormat = uFormat | DT_RIGHT ;
+      uFormat = uFormat | DT_RIGHT;
    }
    else if ( iStyle == 1 )
    {
-      uFormat = uFormat | DT_CENTER ;
+      uFormat = uFormat | DT_CENTER;
    }
 
    hb_retni( DrawText( hDC, pszData, -1, &rect, uFormat ) );
    if( xfont != 0 )
    {
       SelectObject( hDC, prevfont );
+   }
+
+   if( iNoWordBreak )
+   {
+      SetTextAlign( hDC, iAlign );
    }
 }
 
@@ -3221,7 +3242,7 @@ HB_FUNC( RR_DRAWPICTURE )
 
    if( ! hb_parclen( 1 ) )
      return ;
-     
+
    ipic = (IPicture *) rr_loadpicture( ( char * ) hb_parc( 1 ), &lwidth, &lheight );
    if( ! ipic )
    {

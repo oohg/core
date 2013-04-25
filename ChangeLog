@@ -1,11 +1,18 @@
 /*
- * $Id: ChangeLog,v 1.1053 2013-04-22 00:06:43 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1054 2013-04-25 17:12:03 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-04-25 12:10 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+   * include/winprint.ch
+   * source/winprint.prg
+     + Added NOWORDBREAK clause to @...DRAW TEXT command.
+       It shows only text which fits on rectangle area,
+       without "..." suffix.
 
 2013-04-21 21:06 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_richeditbox.ch
