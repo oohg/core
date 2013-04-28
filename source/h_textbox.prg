@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.83 2013-04-22 00:06:44 fyurisich Exp $
+ * $Id: h_textbox.prg,v 1.84 2013-04-28 02:01:13 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -745,6 +745,7 @@ CLASS TTextPicture FROM TText
    DATA cDateFormat    INIT Nil
    DATA lToUpper       INIT .F.
    DATA lNumericScroll INIT .F.
+   DATA nYear          INIT Nil
 
    METHOD Define
    METHOD Value       SETGET
@@ -761,12 +762,14 @@ METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, uValue, ;
                italic, underline, strikeout, field, backcolor, fontcolor, ;
                invisible, notabstop, lRtl, lAutoSkip, lNoBorder, OnFocusPos, ;
                lDisabled, bValid, lUpper, lLower, bAction, aBitmap, ;
-               nBtnwidth, bAction2, bWhen, lCenter ) CLASS TTextPicture
+               nBtnwidth, bAction2, bWhen, lCenter, nYear ) CLASS TTextPicture
 *-----------------------------------------------------------------------------*
 Local nStyle := ES_AUTOHSCROLL, nStyleEx := 0
 
    nStyle += If( HB_IsLogical( lUpper ) .AND. lUpper, ES_UPPERCASE, 0 ) + ;
              If( HB_IsLogical( lLower ) .AND. lLower, ES_LOWERCASE, 0 )
+
+   ASSIGN ::nYear VALUE nYear TYPE "N" DEFAULT -1
 
    If uValue == Nil
       uValue := ""
@@ -999,7 +1002,7 @@ Return aValid
 *------------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TTextPicture
 *------------------------------------------------------------------------------*
-Local cType, cAux, cDateFormat, lOldCentury
+Local cType, cAux, cDateFormat, lOldCentury, nAt
    If ! ValidHandler( ::hWnd )
       Return Nil
    EndIf
@@ -1045,7 +1048,24 @@ Local cType, cAux, cDateFormat, lOldCentury
    Case cType == "N"
       uValue := Val( StrTran( xUnTransform( Self, ::Caption ), " ", "" ) )
    Case cType == "D"
-      uValue := CtoD( ::Caption )
+      uValue := ::Caption
+      If ::nYear >= 100 .and. ::nYear <= 2999
+         nAt := At( "YY", upper(::cDateFormat) )
+         If nAt > 0
+            cAux := Transform( uValue, "@D" )
+
+            If __SETCENTURY()
+               If Empty( SubStr( cAux, nAt, 4 ) )
+                  uValue := Stuff( cAux, nAt, 4, StrZero( ::nYear, 4, 0 ) )
+               EndIf
+            Else
+               If Empty( SubStr( cAux, nAt, 2 ) )
+                  uValue := Stuff( cAux, nAt, 2, StrZero( ::nYear % 100, 2, 0 ) )
+               EndIf
+            EndIf
+         EndIf
+      EndIf
+      uValue := CtoD( uValue )
    Case cType == "L"
       uValue := ( Left( xUnTransform( Self, ::Caption ), 1 ) $ "YT" + HB_LANGMESSAGE( HB_LANG_ITEM_BASE_TEXT + 1 ) )
    Otherwise
@@ -1533,7 +1553,7 @@ FUNCTION DefineTextBox( cControlName, cParentForm, x, y, Width, Height, ;
                         fontcolor, invisible, notabstop, lRtl, lAutoSkip, ;
                         lNoBorder, OnFocusPos, lDisabled, bValid, ;
                         date, numeric, inputmask, format, subclass, bAction, ;
-                        aBitmap, nBtnwidth, bAction2, bWhen, lCenter )
+                        aBitmap, nBtnwidth, bAction2, bWhen, lCenter, nYear )
 *-----------------------------------------------------------------------------*
 Local Self, lInsert
 
@@ -1584,7 +1604,7 @@ Local Self, lInsert
                 italic, underline, strikeout, field, backcolor, fontcolor, ;
                 invisible, notabstop, lRtl, lAutoSkip, lNoBorder, OnFocusPos, ;
                 lDisabled, bValid, lUpper, lLower, bAction, aBitmap, ;
-                nBtnwidth, bAction2, bWhen, lCenter )
+                nBtnwidth, bAction2, bWhen, lCenter, nYear )
    Else
       Self := _OOHG_SelectSubClass( If( numeric, TTextNum(), TText() ), subclass )
       ::Define( cControlName, cParentForm, x, y, Width, Height, Value, ;

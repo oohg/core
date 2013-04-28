@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.49 2013-04-25 17:12:04 guerra000 Exp $
+ * $Id: winprint.prg,v 1.50 2013-04-28 02:01:13 fyurisich Exp $
  */
 // -----------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -2804,7 +2804,7 @@ HB_FUNC( RR_DRAWTEXT )
    const char  *pszData = hb_parc(3);
    int   iLen = strlen(pszData);
    int   iStyle = hb_parni(4);
-   int   iAlign, iNoWordBreak;
+   int   iAlign = 0, iNoWordBreak;
    LONG  w, h;
 
    SetRect( &rect, HB_PARNL(1, 2), HB_PARNL(1, 1), HB_PARNL(2, 2), HB_PARNL(2, 1) );

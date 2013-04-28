@@ -1,5 +1,5 @@
 /*
- * $Id: i_textbox.ch,v 1.19 2012-08-27 05:50:50 guerra000 Exp $
+ * $Id: i_textbox.ch,v 1.20 2013-04-28 02:01:13 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -128,6 +128,7 @@
                         [ <disabled: DISABLED> ]        ;
                         [ VALID <valid> ]               ;
                         [ < date : DATE > ]             ;
+                        [ DEFAULTYEAR <year> ]          ;
                         [ <numeric: NUMERIC> ]          ;
                         [ <dummy2: INPUTMASK, PICTURE> <inputmask> ] ;
                         [ FORMAT <format> ]             ;
@@ -148,4 +149,4 @@
                         <.rtl.>, <.autoskip.>, <.noborder.>, <focusedpos>, <.disabled.>, ;
                         <{valid}>, <.date.>, <.numeric.>, <inputmask>, <format>, ;
                         [ <subclass>() ] , <{action}>, <abitmap>, <btnwidth>, <{action2}>, ;
-                        <{bWhen}>, <.centeralign.> )
+                        <{bWhen}>, <.centeralign.>, <year> )

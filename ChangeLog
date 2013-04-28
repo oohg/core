@@ -1,11 +1,28 @@
 /*
- * $Id: ChangeLog,v 1.1054 2013-04-25 17:12:03 guerra000 Exp $
+ * $Id: ChangeLog,v 1.1055 2013-04-28 02:01:12 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-04-27 23:01 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     * Corrected UTC zone in varios entries.
+   * include/i_textbox.ch
+   * include/i_altsyntax.ch
+     + Added DEFAULTYEAR <year> clause. When used with DATE clause,
+       it autocompletes dates without year when control losts focus.
+   * source/h_textbox.prg
+     + Added DATA nYear to TTextPicture class.
+     + Added new parameter to TTextPicture:Default method.
+     * Changed TTextPicture:Value method.
+     + Added new parameter to DefineTextbox function.
+   * source/winprint.prg
+     * Added inicialization value to pacify MinGW compiler.
+   * source/h_tree.prg
+     * Added cast to pacify Borland compiler.
 
 2013-04-25 12:10 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
    * include/winprint.ch
@@ -14,7 +31,7 @@
        It shows only text which fits on rectangle area,
        without "..." suffix.
 
-2013-04-21 21:06 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+2013-04-21 21:06 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_richeditbox.ch
      + Added support for setting control's fontcolor.
      + Added NOHIDESEL clause to RichEdit control (prevents the hidding
@@ -27,7 +44,7 @@
    * source/h_textbox.prg
      + Added GetSelText method.
 
-2013-04-18 22:57 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+2013-04-18 22:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_windefs.ch
      + Added define for EN_SELCHANGE constant.
    * include/i_richeditbox.ch
@@ -64,7 +81,7 @@
        It disables WRONG coordinates' adjustment to
        page's printable area.
 
-2013-04-04 22:30 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+2013-04-04 22:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
      + Added method ScrollToLeft() to TGrid class.
        Scrolls the grid's window content so the first column is shown at
@@ -84,20 +101,20 @@
      * Changed parameters handling in InputBox function.
      * Changed hardwired captions by localized ones in InputBox function.
 
-2013-04-01 19:48 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+2013-04-01 19:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
      + Added ListView_IsItemVisible function.
      ! Fixed: under Windows 7, when doubleclicking on a cell the
        grid is scrolled left while the editing control is been
        displayed.
 
-2013-03-26 21:07 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+2013-03-26 21:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_var.ch
    * source/h_init.prg
    * source/h_windows.prg
      * _OOHG_DialogCancelled moved to PUBLIC.
 
-2013-03-25 14:47 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+2013-03-25 14:47 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
      ! When doubleclicking on an empty row of a grid with
        horizontal scrollbar, the grid is scrolled to the left.
@@ -116,25 +133,25 @@
      * Method ItemHeight now returns 0 if the grid has no rows,
        instead of returning a nonsense number.
 
-2013-03-24 19:43 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+2013-03-24 19:43 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_browse.prg
    * source/h_xbrowse.prg
      ! RTE at control creation due to VScroll not yet defined.
 
-2013-03-24 12:25 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+2013-03-24 12:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_altsyntax.ch
      * Last fix reverted.  Thanks to Vicente Guerra for testing.
 
-2013-03-23 21:42 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+2013-03-23 21:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_altsyntax.ch
      ! Fixed: SUBCLASS clause in DEFINE TEXTBOX not working
        properly. Thanks to Vicente Guerra.
 
-2013-03-23 21:23 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+2013-03-23 21:23 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./Changelog
      * Previous entry corrected.
 
-2013-03-23 21:21 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+2013-03-23 21:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./Changelog
      * Typo fixed in previous entry.
    * source/h_browse.prg
@@ -145,11 +162,11 @@
      + Added method VScrollVisible( lState ) to hide/show the
        control's vertical scrollbar.
 
-2013-03-23 16:58 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+2013-03-23 16:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./Changelog
      * Previous entry corrected.
 
-2013-03-23 16:50 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+2013-03-23 16:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_altsyntax.ch
      + Added OBJECT and SUBCLASS clauses.
        Thanks to David Field for the idea.
@@ -169,18 +186,18 @@
    * source/h_hotkeybox.prg
      - Empty comment deleted.
 
-2013-03-20 22:12 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+2013-03-20 22:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/winprint.prg
      ! Scrollbar of preview window does not scroll the page until
        the user clicks the page's image.
 
-2013-03-18 21:12 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+2013-03-18 21:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_radio.prg
      + Method SizePos deleted in 2012-06-26 22:50 UTC-0300 commit.
      ! It's needed to repaint the control when row or col properties
        are modified in response to on paint and on size events.
 
-2013-03-16 17:47 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+2013-03-16 17:47 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
      ! Incremental search is not working properly.
      + DblClick event can be triggered when the cell is readonly or

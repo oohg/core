@@ -1,5 +1,5 @@
 /*
- * $Id: h_tree.prg,v 1.37 2012-11-26 16:13:43 fyurisich Exp $
+ * $Id: h_tree.prg,v 1.38 2013-04-28 02:01:13 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -3425,11 +3425,11 @@ HB_FUNC_STATIC( TTREE_BACKCOLOR )
       {
          if( oSelf->lBackColor != -1 )
          {
-            TreeView_SetBkColor( oSelf->hWnd, (COLORREF) oSelf->lBackColor );
+            (void) TreeView_SetBkColor( oSelf->hWnd, (COLORREF) oSelf->lBackColor );
          }
          else
          {
-            TreeView_SetBkColor( oSelf->hWnd, (COLORREF) GetSysColor( COLOR_WINDOW ) );
+            (void) TreeView_SetBkColor( oSelf->hWnd, (COLORREF) GetSysColor( COLOR_WINDOW ) );
          }
          RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
       }

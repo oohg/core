@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.81 2013-04-22 00:06:43 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.82 2013-04-28 02:01:13 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -122,6 +122,7 @@ Memvariables
 #xtranslate _OOHG_ActiveControlTrailingFontColor      => _OOHG_ActiveControlInfo \[  25 \]
 #xtranslate _OOHG_ActiveControlBackgroundColor        => _OOHG_ActiveControlInfo \[  26 \]
 
+#xtranslate _OOHG_ActiveControlDefaultYear            => _OOHG_ActiveControlInfo \[ 124 \]
 #xtranslate _OOHG_ActiveControlNoHideSel              => _OOHG_ActiveControlInfo \[ 125 \]
 #xtranslate _OOHG_ActiveControlOnSelChange            => _OOHG_ActiveControlInfo \[ 126 \]
 #xtranslate _OOHG_ActiveControlOnListDisplay          => _OOHG_ActiveControlInfo \[ 127 \]
@@ -1059,7 +1060,8 @@ TEXT BOX
         _OOHG_ActiveControlWhen        := Nil     ;;
         _OOHG_ActiveControlAction      := Nil     ;;
         _OOHG_ActiveControlAction2     := Nil     ;;
-        _OOHG_ActiveControlCenterAlign := Nil
+        _OOHG_ActiveControlCenterAlign := Nil     ;;
+        _OOHG_ActiveControlDefaultYear := Nil
 
 #xcommand UPPERCASE <uppercase> ;
         => ;
@@ -1104,6 +1106,10 @@ TEXT BOX
 #xcommand ACTION2 <action> ;
         => ;
         _OOHG_ActiveControlAction2 := <{action}>
+
+#xcommand DEFAULTYEAR <year> ;
+        => ;
+        _OOHG_ActiveControlDefaultYear := <year>
 
 #xcommand END TEXTBOX;
         => ;
@@ -1154,7 +1160,8 @@ TEXT BOX
                 _OOHG_ActiveControlButtonWidth, ;
                 _OOHG_ActiveControlAction2, ;
                 _OOHG_ActiveControlWhen, ;
-                _OOHG_ActiveControlCenterAlign ), NIL, _OOHG_ActiveControlAssignObject )
+                _OOHG_ActiveControlCenterAlign, ;
+                _OOHG_ActiveControlDefaultYear ), NIL, _OOHG_ActiveControlAssignObject )
 
 /*----------------------------------------------------------------------------
 MONTH CALENDAR
