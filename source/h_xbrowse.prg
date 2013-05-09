@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.79 2013-03-24 22:43:43 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.80 2013-05-09 22:10:31 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -652,16 +652,24 @@ RETURN ::Super:Enabled
 *------------------------------------------------------------------------------*
 METHOD ToExcel( cTitle ) CLASS TXBrowse
 *------------------------------------------------------------------------------*
-Local LIN := 4
-LOCAL oExcel, oHoja, i
+Local lin := 4
+Local oExcel, oHoja, i
 
-   default ctitle to ""
-   ///oExcel := CreateObject( "Excel.Application" )
-   oExcel := TOleAuto():New( "Excel.Application" )
-   IF Ole2TxtError() != 'S_OK'
-      MsgStop('Excel not found','error')
-      RETURN Nil
-   ENDIF
+   DEFAULT ctitle TO ""
+
+   #ifndef __XHARBOUR__
+      If ( oExcel := win_oleCreateObject( "Excel.Application" ) ) == Nil
+         MsgStop( "Error: MS Excel not available. [" + win_oleErrorText()+ "]" )
+         Return Nil
+      EndIf
+   #else
+      oExcel := TOleAuto():New( "Excel.Application" )
+      If Ole2TxtError() != 'S_OK'
+         MsgStop('Excel not found','error')
+         Return Nil
+      EndIf
+   #EndIf
+
    oExcel:WorkBooks:Add()
    oHoja := oExcel:ActiveSheet()
    ////oHoja := oExcel:Get( "ActiveSheet" )
