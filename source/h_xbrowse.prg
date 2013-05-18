@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.80 2013-05-09 22:10:31 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.81 2013-05-18 03:01:57 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1119,6 +1119,10 @@ Local aItems, aEditControls, aMemVars, aReplaceFields
       Endif
    EndIf
 
+   If lAppend
+      ::lAppendMode := .T.
+   EndIf
+
    If ::InPlace
       If lAppend
          ::GoBottom( .T. )
@@ -1190,6 +1194,7 @@ Local aItems, aEditControls, aMemVars, aReplaceFields
       Next z
 
       If lAppend
+         ::lAppendMode := .F.
          If ! EMPTY( oWorkArea:cAlias__ )
             ( oWorkArea:cAlias__ )->( ::DoEvent( ::OnAppend, "APPEND" ) )
          Else
@@ -1208,6 +1213,7 @@ Local aItems, aEditControls, aMemVars, aReplaceFields
 
    Else
       If lAppend
+         ::lAppendMode := .F.
          oWorkArea:GoTo( nOld )
       EndIf
       _OOHG_Eval( ::OnAbortEdit, ::CurrentRow, 0 )
@@ -1241,6 +1247,7 @@ Local lRet, bReplaceField, oWorkArea
    Else
       oWorkArea := ::oWorkArea
       If oWorkArea:EOF()
+         ::lAppendMode := .T.
          lAppend := .T.
       Endif
 
@@ -1262,6 +1269,7 @@ Local lRet, bReplaceField, oWorkArea
          EndIf
          _OOHG_EVAL( bReplaceField, uValue, oWorkArea )
          If lAppend
+            ::lAppendMode := .F.
             If ! EMPTY( oWorkArea:cAlias__ )
                ( oWorkArea:cAlias__ )->( ::DoEvent( ::OnAppend, "APPEND" ) )
             Else
@@ -1273,6 +1281,7 @@ Local lRet, bReplaceField, oWorkArea
          _OOHG_EVAL( ::OnEditCell, nRow, nCol )
          _ClearThisCellInfo()
       Else
+         ::lAppendMode := .F.
          _OOHG_EVAL( ::OnAbortEdit, nRow, nCol )
       EndIf
       If ::Lock
@@ -1298,7 +1307,7 @@ Local lRet, lRowEdited, lSomethingEdited
 
    lSomethingEdited := .F.
 
-   Do While .t.
+   Do While .T.
       lRet := .T.
       lRowEdited := .F.
 
@@ -1345,6 +1354,7 @@ Local lRet, lRowEdited, lSomethingEdited
          nRow := ::CurrentRow := ::ItemCount
          nCol := 1
          lAppend := .T.
+         ::lAppendMode := .T.
          ::oWorkArea:GoTo( 0 )
       Else
          Exit

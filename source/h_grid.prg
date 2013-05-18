@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.195 2013-04-05 01:30:50 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.196 2013-05-18 03:01:57 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -590,6 +590,7 @@ METHOD AppendItem() CLASS TGrid
    ::InsertBlank( ::ItemCount + 1 )
    ::Value := ::ItemCount
    ::Events_Enter()
+   ::lAppendMode := .F.
 Return Nil
 
 *--------------------------------------------------------------------------*

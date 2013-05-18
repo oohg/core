@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.109 2013-03-24 22:43:43 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.110 2013-05-18 03:01:57 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -986,6 +986,7 @@ Local lRet, lRowEdited, lSomethingEdited, _RecNo, lRowAppended, lMoreRecs
          ::InsertBlank( ::ItemCount + 1 )
          nRow := ::CurrentRow := ::ItemCount
          lAppend := .T.
+         ::lAppendMode := .T.
       ElseIf nRow < ::ItemCount()
          // Edit next row
          nRow ++
@@ -1017,6 +1018,7 @@ Local lRet, lRowEdited, lSomethingEdited, _RecNo, lRowAppended, lMoreRecs
          ::InsertBlank( ::ItemCount + 1 )
          nRow := ::CurrentRow := ::ItemCount
          lAppend := .T.
+         ::lAppendMode := .T.
          nCol := 1
       Else
          // Stop because last row was edited
