@@ -1,5 +1,5 @@
 /*
- * $Id: c_image.c,v 1.30 2011-09-07 21:53:35 fyurisich Exp $
+ * $Id: c_image.c,v 1.31 2013-05-25 20:30:11 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -82,17 +82,17 @@
 
  Parts of this project are based upon:
 
-	"Harbour GUI framework for Win32"
- 	Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- 	Copyright 2001 Antonio Linares <alinares@fivetech.com>
-	www - http://www.harbour-project.org
+   "Harbour GUI framework for Win32"
+   Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
+   Copyright 2001 Antonio Linares <alinares@fivetech.com>
+   www - http://www.harbour-project.org
 
-	"Harbour Project"
-	Copyright 1999-2003, http://www.harbour-project.org/
+   "Harbour Project"
+   Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
 #ifndef CINTERFACE
-	#define CINTERFACE
+   #define CINTERFACE
 #endif
 #define _WIN32_IE      0x0500
 #define HB_OS_WIN_32_USED
@@ -199,7 +199,7 @@ HBITMAP _OOHG_ScaleImage( HWND hWnd, HBITMAP hImage, int iWidth, int iHeight, in
       }
       else
       {
-         hBrush = CreateSolidBrush( BackColor );
+         hBrush = CreateSolidBrush( (COLORREF) BackColor );
       }
 
       // FROM parameters
@@ -382,7 +382,7 @@ HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, 
 
          GetIconInfo( hIcon, &IconInfo );
 
-         if (IconInfo.hbmColor)
+         if( IconInfo.hbmColor )
          {
             // color ICON
             GetObject( IconInfo.hbmColor, sizeof( BITMAP ), &bm );
@@ -521,7 +521,7 @@ HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, 
 HB_FUNC( _OOHG_BITMAPFROMFILE )   // ( oSelf, cFile, iAttributes, lAutoSize )
 {
    POCTRL oSelf = _OOHG_GetControlInfo( hb_param( 1, HB_IT_OBJECT ) );
-   HBITMAP hBitmap;
+   HBITMAP hBitmap, hBitmap2;
    int iAttributes;
    long lWidth, lHeight;
 
@@ -538,8 +538,72 @@ HB_FUNC( _OOHG_BITMAPFROMFILE )   // ( oSelf, cFile, iAttributes, lAutoSize )
       lWidth = lHeight = 0;
    }
    hBitmap = (HBITMAP) _OOHG_LoadImage( ( char * ) hb_parc( 2 ), iAttributes, lWidth, lHeight, oSelf->hWnd, oSelf->lBackColor );
+   if( hb_parl( 4 ) )
+   {
+      hBitmap2 = _OOHG_ScaleImage( oSelf->hWnd, hBitmap, 0, 0, FALSE, oSelf->lBackColor );
+      DeleteObject( hBitmap );
+      HWNDret( hBitmap2 );
+   }
+   else
+   {
+      HWNDret( hBitmap );
+   }
+}
 
-   HWNDret( hBitmap );
+HB_FUNC( _OOHG_SIZEOFBITMAPFROMFILE )   // ( cFile )
+{
+   HBITMAP hBitmap;
+   BITMAP bm;
+   char *cImage = ( char * ) hb_parc( 1 );
+   HICON hIcon;
+   ICONINFO sIconInfo;
+
+   memset( &bm, 0, sizeof( bm ) );
+
+   // Try to load BITMAP from EXE
+   hBitmap = LoadImage( GetModuleHandle( NULL ), cImage, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION );
+   if( ! hBitmap )
+   {
+      // Try to load BITMAP from FILE
+      hBitmap = LoadImage( NULL, cImage, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_LOADFROMFILE );
+   }
+   if( hBitmap )
+   {
+      GetObject( hBitmap, sizeof( bm ), &bm );
+
+      DeleteObject( hBitmap );
+   }
+   else
+   {
+      // Try to load ICON from EXE
+      hIcon = LoadImage( GetModuleHandle( NULL ), cImage, IMAGE_ICON, 0, 0, LR_DEFAULTCOLOR );
+      if( ! hIcon )
+      {
+         // Try to extract from EXE
+         hIcon = ExtractIcon( GetModuleHandle( NULL ), cImage, 0 );
+         if( ! hIcon )
+         {
+            // Try to load ICON from FILE
+            hIcon = LoadImage( NULL, cImage, IMAGE_ICON, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE );
+         }
+      }
+      if( hIcon )
+      {
+         if( GetIconInfo( hIcon, &sIconInfo ) )
+         {
+            GetObject( sIconInfo.hbmColor, sizeof( bm ), &bm );
+
+            DeleteObject( sIconInfo.hbmMask );
+            DeleteObject( sIconInfo.hbmColor );
+         }
+         DestroyIcon( hIcon );
+      }
+   }
+
+   hb_reta( 3 );
+   HB_STORNI( bm.bmWidth, -1, 1 );
+   HB_STORNI( bm.bmHeight, -1, 2 );
+   HB_STORNI( bm.bmBitsPixel, -1, 3 );
 }
 
 HB_FUNC( _OOHG_BITMAPFROMBUFFER )   // ( oSelf, cBuffer, lAutoSize )

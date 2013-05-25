@@ -1,11 +1,46 @@
 /*
- * $Id: ChangeLog,v 1.1061 2013-05-25 16:46:14 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1062 2013-05-25 20:30:11 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-05-25 17:29 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     * Somes entries corrected.
+   * source/c_image.prg
+     ! _OOHG_BITMAPFROMFILE function was clipping the image instead of
+       scaling it to the control's rect when lAutosize is .T.
+     + Added _OOHG_SIZEOFBITMAPFROMFILE function.
+     * Added casting.
+   * source/h_button.prg
+     + Added DATA lNo3DColors (when .T., LR_LOADMAP3DCOLORS is not
+       applied when loading images with 8 or less bpp).
+     + Added parameter lNo3DColors to TButton:Define().
+     + Added parameter lAutoFit to TButton:Define().
+     * Changed the way an image with more than 8bpp is loaded by
+       TButton:Picture() to preserve transparency.
+     + Added parameters Stretch and AutoSize to SetImageXP() so
+       images can be scaled.
+     + Added parameter lNo3DColors to TButtonCheck:Define().
+     + Added parameter lAutoFit to TButtonCheck:Define().
+   * include/i_altsyntax.ch
+     + Added support for AUTOFIT/ADJUST clauses in DEFINE BUTTON.
+     + Added support for NO3DCOLORS clause in DEFINE BUTTON.
+     + Added support for AUTOFIT/ADJUST clauses in DEFINE CHECKBUTTON.
+     + Added support for NO3DCOLORS clause in DEFINE CHECKBUTTON.
+   * include/i_button.ch
+     + Added support for AUTOFIT/ADJUST clauses in @ BUTTON.
+     + Added support for NO3DCOLORS clause in @ BUTTON.
+     + Added support for AUTOFIT/ADJUST clauses in @ CHECKBUTTON.
+     + Added support for NO3DCOLORS clause in @ CHECKBUTTON.
+   * include/i_hmg_compat.ch
+     + Added support for ADJUST clause in @ BUTTONEX control.
+     + Added OOHG Button's extension to @ BUTTONEX control.
+   * doc/classes.txt
+     * Updated.
 
 2013-05-25 13:43 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * doc/classes.txt
@@ -62,7 +97,7 @@
 
 2013-04-27 23:01 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./Changelog
-     * Corrected UTC zone in varios entries.
+     * Corrected UTC zone in various entries.
    * include/i_textbox.ch
    * include/i_altsyntax.ch
      + Added DEFAULTYEAR <year> clause. When used with DATE clause,

@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.61 2013-05-25 16:46:14 fyurisich Exp $
+ * $Id: classes.txt,v 1.62 2013-05-25 20:30:11 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -257,6 +257,7 @@ CLASS TBUTTON FROM TCONTROL
    DATA CPICTURE                  INIT ""
    DATA HIMAGE                    INIT NIL
    DATA IMAGESIZE                 INIT .F.
+   DATA LNO3DCOLORS               INIT .F.
    DATA LNOTRANSPARENT            INIT .F.
    DATA LTHEMED                   INIT .F.
    DATA NALIGN                    INIT 2

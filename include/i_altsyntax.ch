@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.84 2013-05-25 16:46:14 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.85 2013-05-25 20:30:11 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -122,6 +122,8 @@ Memvariables
 #xtranslate _OOHG_ActiveControlTrailingFontColor      => _OOHG_ActiveControlInfo \[  25 \]
 #xtranslate _OOHG_ActiveControlBackgroundColor        => _OOHG_ActiveControlInfo \[  26 \]
 
+#xtranslate _OOHG_ActiveControlAutoFit                => _OOHG_ActiveControlInfo \[ 122 \]
+#xtranslate _OOHG_ActiveControlNo3DColors             => _OOHG_ActiveControlInfo \[ 123 \]
 #xtranslate _OOHG_ActiveControlDefaultYear            => _OOHG_ActiveControlInfo \[ 124 \]
 #xtranslate _OOHG_ActiveControlNoHideSel              => _OOHG_ActiveControlInfo \[ 125 \]
 #xtranslate _OOHG_ActiveControlOnSelChange            => _OOHG_ActiveControlInfo \[ 126 \]
@@ -1261,7 +1263,9 @@ BUTTON
         _OOHG_ActiveControlAlignment   := Nil    ;;
         _OOHG_ActiveControlMultiLine   := .F.    ;;
         _OOHG_ActiveControlThemed      := .F.    ;;
-        _OOHG_ActiveControlImageMargin := Nil
+        _OOHG_ActiveControlImageMargin := Nil    ;;
+        _OOHG_ActiveControlNo3DColors  := .F.    ;;
+        _OOHG_ActiveControlAutoFit     := .F.
 
 #xcommand CAPTION <caption> ;
         => ;
@@ -1351,6 +1355,18 @@ BUTTON
         => ;
         _OOHG_ActiveControlImageMargin := <margin>
 
+#xcommand NO3DCOLORS <no3dcolors> ;
+        => ;
+        _OOHG_ActiveControlNo3DColors := <no3dcolors>
+
+#xcommand AUTOFIT <autofit> ;
+        => ;
+        _OOHG_ActiveControlAutoFit := <autofit>
+
+#xcommand ADJUST <autofit> ;
+        => ;
+        _OOHG_ActiveControlAutoFit := <autofit>
+
 #xcommand END BUTTON ;
         => ;
         _OOHG_SelectSubClass( TButton(), _OOHG_ActiveControlSubClass, _OOHG_ActiveControlAssignObject ):Define( ;
@@ -1388,7 +1404,9 @@ BUTTON
                 _OOHG_ActiveControlMultiLine, ;
                 _OOHG_ActiveControlThemed, ;
                 _OOHG_ActiveControlImageMargin, ;
-                _OOHG_ActiveControlOnMouseMove )
+                _OOHG_ActiveControlOnMouseMove, ;
+                _OOHG_ActiveControlNo3DColors, ;
+                _OOHG_ActiveControlAutoFit )
 
 /*----------------------------------------------------------------------------
 IMAGE
@@ -1481,7 +1499,9 @@ CHECK BOX/BUTTON
         _OOHG_ActiveControlBuffer      := Nil    ;;
         _OOHG_ActiveControlHBitmap     := Nil    ;;
         _OOHG_ActiveControlTransparent := .T.    ;;
-        _OOHG_ActiveControlScale       := .F.
+        _OOHG_ActiveControlScale       := .F.    ;;
+        _OOHG_ActiveControlNo3DColors  := .F.    ;;
+        _OOHG_ActiveControlAutoFit     := .F.
 
 #xcommand ONCHANGE <onchange> ;
         => ;
@@ -1564,7 +1584,9 @@ CHECK BOX/BUTTON
                 _OOHG_ActiveControlBuffer, ;
                 _OOHG_ActiveControlHBitmap, ;
                 .NOT. _OOHG_ActiveControlTransparent, ;
-                _OOHG_ActiveControlScale )
+                _OOHG_ActiveControlScale, ;
+                _OOHG_ActiveControlNo3DColors, ;
+                _OOHG_ActiveControlAutoFit )
 
 /*----------------------------------------------------------------------------
 COMBO BOX

@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.57 2012-10-21 19:48:33 guerra000 Exp $
+ * $Id: h_button.prg,v 1.58 2013-05-25 20:30:11 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -108,6 +108,7 @@ CLASS TButton FROM TControl
    DATA ImageSize       INIT .F.
    DATA lThemed         INIT .F.
    DATA aImageMargin    INIT {10, 10, 10, 10}
+   DATA lNo3DColors     INIT .F.
 
    METHOD Define
    METHOD DefineImage
@@ -131,7 +132,7 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, ProcedureName, w, h, ;
                NoTabStop, HelpId, invisible, bold, italic, underline, ;
                strikeout, lRtl, lNoPrefix, lDisabled, cBuffer, hBitMap, ;
                cImage, lNoTransparent, lScale, lCancel, cAlign, lMultiLine, ;
-               themed, aImageMargin, OnMouseMove ) CLASS TButton
+               themed, aImageMargin, OnMouseMove, lNo3DColors, lAutoFit ) CLASS TButton
 *-----------------------------------------------------------------------------*
 Local ControlHandle, nStyle, lBitMap, i
 
@@ -184,6 +185,8 @@ Local ControlHandle, nStyle, lBitMap, i
    ASSIGN ::Stretch        VALUE lScale         TYPE "L"
    ASSIGN ::lCancel        VALUE lCancel        TYPE "L"
    ASSIGN ::lThemed        VALUE themed         TYPE "L"
+   ASSIGN ::AutoFit        VALUE lAutoFit       TYPE "L"
+   ASSIGN ::lNo3DColors    VALUE lNo3DColors    TYPE "L"
 
    IF VALTYPE( cAlign ) $ "CM"
       cAlign := ALLTRIM( UPPER( cAlign ) )
@@ -246,21 +249,21 @@ Return ::Super:SetFocus()
 *-----------------------------------------------------------------------------*
 METHOD Picture( cPicture ) CLASS TButton
 *-----------------------------------------------------------------------------*
-LOCAL nAttrib
+LOCAL nAttrib, aPictSize
    IF VALTYPE( cPicture ) $ "CM"
       DeleteObject( ::hImage )
       ::cPicture := cPicture
+      aPictSize := _OOHG_SizeOfBitmapFromFile( cPicture )      // width, height, depth
 
-      nAttrib := LR_LOADMAP3DCOLORS
-      IF ! ::lNoTransparent
-         nAttrib += LR_LOADTRANSPARENT
+      nAttrib := LR_DEFAULTCOLOR
+      IF aPictSize[ 3 ] <= 8
+        IF ! ::lNo3DColors
+           nAttrib += LR_LOADMAP3DCOLORS
+        ENDIF
+        IF ! ::lNoTransparent
+           nAttrib += LR_LOADTRANSPARENT
+        ENDIF
       ENDIF
-
-//      IF ::lNoTransparent
-//         nAttrib := LR_LOADMAP3DCOLORS
-//      ELSE
-//         nAttrib := LR_LOADTRANSPARENT
-//      ENDIF
 
       ::hImage := _OOHG_BitmapFromFile( Self, cPicture, nAttrib, ::AutoFit .AND. ! ::ImageSize .AND. ! ::Stretch )
       IF ::ImageSize
@@ -314,7 +317,7 @@ METHOD RePaint() CLASS TButton
       ::AuxHandle := NIL
       ::TControl:SizePos()
       IF OSisWinXPorLater() .AND. ValidHandler( ::hImage ) .AND. ( LEN( ::Caption ) > 0 .OR. ::lThemed )
-         SetImageXP( ::hWnd, ::hImage, ::nAlign, -1, ::aImageMargin[1], ::aImageMargin[2], ::aImageMargin[3], ::aImageMargin[4] )
+         SetImageXP( ::hWnd, ::hImage, ::nAlign, -1, ::aImageMargin[1], ::aImageMargin[2], ::aImageMargin[3], ::aImageMargin[4], ::Stretch, ::AutoFit )
          ::ReDraw()
       ELSEIF ::Stretch .OR. ::AutoFit
          ::AuxHandle := _OOHG_SetBitmap( Self, ::hImage, BM_SETIMAGE, ::Stretch, ::AutoFit )
@@ -489,13 +492,28 @@ HB_FUNC( SETIMAGEXP )
          SendMessage( hWnd, BCM_SETIMAGELIST, 0, ( LPARAM ) &bi );
          ImageList_Destroy( himl );
       }
-      clrColor = ( COLORREF ) hb_parnl( 4 );
-      if( clrColor == ( COLORREF ) ( ~0 ) )
+      if( hb_parnl( 4 ) == -1 )
       {
          clrColor = GetSysColor( COLOR_BTNFACE );
       }
+      else
+      {
+         clrColor = ( COLORREF ) hb_parnl( 4 );
+      }
       GetObject( hBmp, sizeof( bm ), &bm );
-      hBmp2 = _OOHG_ScaleImage( hWnd, hBmp, bm.bmWidth, bm.bmHeight, 0, clrColor );
+      if( hb_parl( 9 ) )            // Stretch
+      {
+         hBmp2 = _OOHG_ScaleImage( hWnd, hBmp, 0, 0, TRUE, hb_parnl( 4 ) );
+      }
+      else if( hb_parl( 10 ) )      // AutoSize
+      {
+         hBmp2 = _OOHG_ScaleImage( hWnd, hBmp, 0, 0, FALSE, hb_parnl( 4 ) );
+      }
+      else                          // No scale
+      {
+         hBmp2 = _OOHG_ScaleImage( hWnd, hBmp, bm.bmWidth, bm.bmHeight, FALSE, hb_parnl( 4 ) );
+      }
+      GetObject( hBmp2, sizeof( bm ), &bm );
       himl = ImageList_Create( bm.bmWidth, bm.bmHeight, ILC_COLOR32 | ILC_MASK, 2, 2 );
       ImageList_AddMasked( himl, hBmp2, clrColor );
       memset( &bm, 0, sizeof( bm ) );
@@ -651,7 +669,7 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
                fontsize, tooltip, changeprocedure, w, h, lostfocus, gotfocus, ;
                HelpId, invisible, notabstop, bold, italic, underline, ;
                strikeout, field, lRtl, BitMap, cBuffer, hBitMap, ;
-               lNoTransparent, lScale ) CLASS TButtonCheck
+               lNoTransparent, lScale, lNo3DColors, lAutoFit ) CLASS TButtonCheck
 *-----------------------------------------------------------------------------*
 Local ControlHandle, nStyle
 
@@ -681,6 +699,9 @@ Local ControlHandle, nStyle
 
    ASSIGN ::lNoTransparent VALUE lNoTransparent TYPE "L"
    ASSIGN ::Stretch        VALUE lScale         TYPE "L"
+   ASSIGN ::AutoFit        VALUE lAutoFit       TYPE "L"
+   ASSIGN ::lNo3DColors    VALUE lNo3DColors    TYPE "L"
+
    ::Picture := BitMap
    If ! ValidHandler( ::hImage )
       ::Buffer := cBuffer

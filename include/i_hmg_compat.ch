@@ -1,5 +1,5 @@
 /*
- * $Id: i_hmg_compat.ch,v 1.18 2012-10-18 00:46:46 fyurisich Exp $
+ * $Id: i_hmg_compat.ch,v 1.19 2013-05-25 20:30:11 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -202,8 +202,17 @@
             <.plm.>, iif( upper( #<sync> ) == "UNSYNCHRONIZED", .F., iif( upper( #<sync> ) == "SYNCHRONIZED", .T., NIL ) ), ;
             <.fixedcols.>, <.nodelmsg.>, <.updall.>, <{abortedit}>, <{click}>, <.fixedwidths.> )
 
-
-#xcommand @ <row>, <col> BUTTONEX <name> ;
+/*
+TODO:
+      [ PICTURE <bitmap> ] ;
+      [ ICON <icon> ] ;
+      [ BACKCOLOR <backcolor> ] ;
+      [ FONTCOLOR <fontcolor> ] ;
+      [ <nohotlight : NOHOTLIGHT> ] ;
+      [ <noxpstyle: NOXPSTYLE > ] ;
+      [ <default: DEFAULT> ] ;
+*/
+#xcommand @ <row>,<col> BUTTONEX <name> ;
       [ OBJ <obj> ] ;
       [ <dummy1: OF, PARENT> <parent> ] ;
       [ CAPTION <caption> ] ;
@@ -213,19 +222,19 @@
       [ HEIGHT <h> ] ;
       [ FONT <font> ] ;
       [ SIZE <size> ] ;
-      [ <bold: BOLD> ] ;
-      [ <italic: ITALIC> ] ;
-      [ <underline: UNDERLINE> ] ;
-      [ <strikeout: STRIKEOUT> ] ;
-      [ <uptext: UPPERTEXT> ] ;
-      [ <ladjust: ADJUST> ] ;
+      [ <bold : BOLD> ] ;
+      [ <italic : ITALIC> ] ;
+      [ <underline : UNDERLINE> ] ;
+      [ <strikeout : STRIKEOUT> ] ;
+      [ <uptext : UPPERTEXT> ] ;
+      [ <ladjust : AUTOFIT, ADJUST> ] ;
       [ TOOLTIP <tooltip> ] ;
-      [ BACKCOLOR <backcolor> ] ;
-      [ FONTCOLOR <fontcolor> ] ;
-      [ <nohotlight: NOHOTLIGHT> ] ;
+      [ BACKCOLOR <backcolor> ] ;                                
+      [ FONTCOLOR <fontcolor> ] ;                                
+      [ <nohotlight : NOHOTLIGHT> ] ;                            
       [ <flat: FLAT> ] ;
       [ <notrans: NOTRANSPARENT > ] ;
-      [ <noxpstyle: NOXPSTYLE > ] ;
+      [ <noxpstyle: NOXPSTYLE > ] ;                              
       [ ON GOTFOCUS <gotfocus> ] ;
       [ ON LOSTFOCUS <lostfocus> ] ;
       [ <notabstop: NOTABSTOP> ] ;
@@ -241,14 +250,17 @@
       [ HBITMAP <hbitmap> ] ;
       [ <scale: FORCESCALE> ] ;
       [ <cancel: CANCEL> ] ;
-      [ <alignment: LEFT, RIGHT, TOP, BOTTOM> ] ;
+      [ <alignment:LEFT,RIGHT,TOP,BOTTOM,CENTER> ] ;
       [ <multiline: MULTILINE> ] ;
-      [ <themed: THEMED> ] ;
+      [ <themed : THEMED> ] ;
       [ IMAGEMARGIN <aImageMargin> ] ;
+      [ <no3dcolors: NO3DCOLORS> ] ;
    => ;
       @ <row>, <col> BUTTON <name> ;
             [ OBJ <obj> ] ;
             [ PARENT <parent> ] ;
+            [ CAPTION <caption> ] ;
+            [ PICTURE <bitmap> ] ;
             [ ACTION <action> ];
             [ WIDTH <w> ] ;
             [ HEIGHT <h> ] ;
@@ -262,42 +274,31 @@
             [ <flat> ] ;
             [ ON GOTFOCUS <gotfocus> ] ;
             [ ON LOSTFOCUS <lostfocus> ] ;
-            [ ON MOUSEMOVE <onmousemove> ] ;
             [ <notabstop> ] ;
             [ HELPID <helpid> ]       ;
             [ <invisible> ] ;
+            [ <notrans> ] ;
+            [ <ladjust> ] ;
+            [ ON MOUSEMOVE <onmousemove> ] ;
             [ <rtl> ] ;
             [ <noprefix> ] ;
             [ SUBCLASS <subclass> ] ;
             [ <disabled> ] ;
-            [ CAPTION <caption> ] ;
-            [ PICTURE <bitmap> ] ;
             [ BUFFER <buffer> ] ;
             [ HBITMAP <hbitmap> ] ;
-            [ <notrans> ] ;
             [ <scale> ] ;
             [ <cancel> ] ;
             [ <alignment> ] ;
             [ <multiline> ] ;
             [ <themed> ] ;
-            [ IMAGEMARGIN <aImageMargin> ]
-
-/* TODO:
-      [ <nohotlight: NOHOTLIGHT> ];
-      [ <noxpstyle: NOXPSTYLE > ] ;
-      [ <ladjust: ADJUST> ];
-      [ <default: DEFAULT> ] ;
-      [ BACKCOLOR <backcolor> ] ;
-      [ FONTCOLOR <fontcolor> ] ;
-*/
-
+            [ IMAGEMARGIN <aImageMargin> ] ;
+            [ <no3dcolors> ]
 
 #xtranslate BUTTONEX [ <x> ] LEFTTEXT => BUTTONEX [ <x> ] RIGHT
 #xtranslate BUTTONEX [ <x> ] VERTICAL => BUTTONEX [ <x> ] TOP
 #xtranslate BUTTONEX [ <x> ] VERTICAL [ <y> ] UPPERTEXT => BUTTONEX [ <x> ] BOTTOM [ <y> ]
 #xtranslate BUTTONEX [ <x> ] UPPERTEXT [ <y> ] VERTICAL => BUTTONEX [ <x> ] BOTTOM [ <y> ]
 #xtranslate <Form> . <Button> . Icon => <Form>.<Button>.Picture
-
 
 #xtranslate @ <row>, <col> BTNTEXTBOX <name> ;
       [ ID <nId> ] ;
@@ -393,8 +394,6 @@
             [ BUTTONWIDTH <btnwidth> ] ;
             [ WHEN <bWhen> ]
 
-
 #xtranslate DISABLEEDIT => READONLY
-
 
 #endif

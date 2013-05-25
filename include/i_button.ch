@@ -1,5 +1,5 @@
 /*
- * $Id: i_button.ch,v 1.17 2011-11-03 23:07:04 fyurisich Exp $
+ * $Id: i_button.ch,v 1.18 2013-05-25 20:30:11 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -126,13 +126,16 @@
             [ <multiline: MULTILINE> ] ;
             [ <themed : THEMED> ] ;
             [ IMAGEMARGIN <aImageMargin> ] ;
+            [ <no3dcolors: NO3DCOLORS> ] ;
+            [ <autofit: AUTOFIT, ADJUST> ] ;
    =>;
             [ <obj> := ] _OOHG_SelectSubClass( TButton(), [ <subclass>() ] ): ;
                   Define( <(name)>, <(parent)>, <col>, <row>, <caption>, <{action}>, ;
                   <w>, <h>, <font>, <size>, <tooltip>, <{gotfocus}>,<{lostfocus}>, <.flat.>, <.notabstop.>, ;
                   <helpid>, <.invisible.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.>, <.rtl.>, ;
                   <.noprefix.>, <.disabled.>, <buffer>, <hbitmap>, <bitmap>, <.notrans.>, <.scale.>, ;
-                  <.cancel.>, <"alignment">, <.multiline.>, <.themed.>, <aImageMargin>, <{onmousemove}> )
+                  <.cancel.>, <"alignment">, <.multiline.>, <.themed.>, <aImageMargin>, <{onmousemove}>, ;
+                  <.no3dcolors.>, <.autofit.> )
 
 #command @ <row>,<col> CHECKBUTTON <name> ;
             [ OBJ <obj> ] ;
@@ -162,9 +165,12 @@
             [ <notrans: NOTRANSPARENT> ] ;
             [ <scale: FORCESCALE> ] ;
             [ FIELD <field> ] ;
+            [ <no3dcolors: NO3DCOLORS> ] ;
+            [ <autofit: AUTOFIT, ADJUST> ] ;
    =>;
             [ <obj> := ] _OOHG_SelectSubClass( TButtonCheck(), [ <subclass>() ] ): ;
                   Define( <(name)>, <(parent)>, <col>, <row>, <caption>, <value>, <f>, <n>, ;
                   <tooltip>, <{change}>, [<w>], [<h>], <{lostfocus}>, <{gotfocus}>, <helpid>, ;
                   <.invisible.>, <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, ;
-                  <(field)>, <.rtl.>, <bitmap>, <buffer>, <hbitmap>, <.notrans.>, <.scale.> )
+                  <(field)>, <.rtl.>, <bitmap>, <buffer>, <hbitmap>, <.notrans.>, <.scale.>, ;
+                  <.no3dcolors.>, <.autofit.> )
