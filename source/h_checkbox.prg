@@ -1,5 +1,5 @@
 /*
- * $Id: h_checkbox.prg,v 1.35 2013-05-25 14:37:09 fyurisich Exp $
+ * $Id: h_checkbox.prg,v 1.36 2013-05-25 15:14:40 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -266,8 +266,44 @@ Return ::Super:Events_Notify( wParam, lParam )
 #include <windows.h>
 #include <commctrl.h>
 #include "oohg.h"
+
+/*
+This files are not present in BCC 551
 #include <uxtheme.h>
 #include <tmschema.h>
+*/
+
+typedef struct _MARGINS {
+	int cxLeftWidth;
+	int cxRightWidth;
+	int cyTopHeight;
+	int cyBottomHeight;
+} MARGINS, *PMARGINS;
+
+typedef HANDLE HTHEME;
+
+enum {
+	BP_PUSHBUTTON = 1,
+	BP_RADIOBUTTON = 2,
+	BP_CHECKBOX = 3,
+	BP_GROUPBOX = 4,
+	BP_USERBUTTON = 5
+};
+
+enum {
+	CBS_UNCHECKEDNORMAL = 1,
+	CBS_UNCHECKEDHOT = 2,
+	CBS_UNCHECKEDPRESSED = 3,
+	CBS_UNCHECKEDDISABLED = 4,
+	CBS_CHECKEDNORMAL = 5,
+	CBS_CHECKEDHOT = 6,
+	CBS_CHECKEDPRESSED = 7,
+	CBS_CHECKEDDISABLED = 8,
+	CBS_MIXEDNORMAL = 9,
+	CBS_MIXEDHOT = 10,
+	CBS_MIXEDPRESSED = 11,
+	CBS_MIXEDDISABLED = 12
+};
 
 static WNDPROC lpfnOldWndProc = 0;
 

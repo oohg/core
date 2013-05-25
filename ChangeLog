@@ -1,11 +1,17 @@
 /*
- * $Id: ChangeLog,v 1.1059 2013-05-25 14:49:20 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1060 2013-05-25 15:14:39 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-05-25 12:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_checkbox.ch
+     + Added various definitions at C level in order to compile
+       with BCC 5.5.1 (this compiler does not has uxtheme.h nor
+       tmschema.h files).
 
 2013-05-25 11:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_altsyntax.ch
