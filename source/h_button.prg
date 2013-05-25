@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.58 2013-05-25 20:30:11 fyurisich Exp $
+ * $Id: h_button.prg,v 1.59 2013-05-25 21:03:59 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -229,7 +229,8 @@ METHOD DefineImage( ControlName, ParentForm, x, y, Caption, ProcedureName, w, h,
                     fontname, fontsize, tooltip, gotfocus, lostfocus, flat, ;
                     NoTabStop, HelpId, invisible, bold, italic, underline, ;
                     strikeout, lRtl, lNoPrefix, lDisabled, cBuffer, hBitMap, ;
-                    cImage, lNoTransparent, lScale, lCancel, cAlign, lMix ) CLASS TButton
+                    cImage, lNoTransparent, lScale, lCancel, cAlign, lMultiLine, ;
+                    themed, aImageMargin, OnMouseMove, lNo3DColors, lAutoFit ) CLASS TButton
 *------------------------------------------------------------------------------*
    If Empty( cBuffer )
       cBuffer := ""
@@ -238,7 +239,8 @@ Return ::Define( ControlName, ParentForm, x, y, Caption, ProcedureName, w, h, ;
                  fontname, fontsize, tooltip, gotfocus, lostfocus, flat, ;
                  NoTabStop, HelpId, invisible, bold, italic, underline, ;
                  strikeout, lRtl, lNoPrefix, lDisabled, cBuffer, hBitMap, ;
-                 cImage, lNoTransparent, lScale, lCancel, cAlign, lMix )
+                 cImage, lNoTransparent, lScale, lCancel, cAlign, lMultiLine, ;
+                 themed, aImageMargin, OnMouseMove, lNo3DColors, lAutoFit ) CLASS TButton
 
 *------------------------------------------------------------------------------*
 METHOD SetFocus() CLASS TButton
@@ -723,7 +725,7 @@ METHOD DefineImage( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
                     fontsize, tooltip, changeprocedure, w, h, lostfocus, gotfocus, ;
                     HelpId, invisible, notabstop, bold, italic, underline, ;
                     strikeout, field, lRtl, BitMap, cBuffer, hBitMap, ;
-                    lNoTransparent, lScale ) CLASS TButtonCheck
+                    lNoTransparent, lScale, lNo3DColors, lAutoFit ) CLASS TButtonCheck
 *-----------------------------------------------------------------------------*
    If Empty( cBuffer )
       cBuffer := ""
@@ -732,7 +734,7 @@ Return ::Define( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
                  fontsize, tooltip, changeprocedure, w, h, lostfocus, gotfocus, ;
                  HelpId, invisible, notabstop, bold, italic, underline, ;
                  strikeout, field, lRtl, BitMap, cBuffer, hBitMap, ;
-                 lNoTransparent, lScale )
+                 lNoTransparent, lScale, lNo3DColors, lAutoFit )
 
 *------------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TButtonCheck

@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.1062 2013-05-25 20:30:11 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1063 2013-05-25 21:03:59 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,9 +7,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-05-25 18:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     * Previous entry corrected.
+   * source/h_button.prg
+     + Added missing parameters to TButton:DefineImage().
+     + Added missing parameters to TButtonCheck:DefineImage().
+
 2013-05-25 17:29 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./Changelog
-     * Somes entries corrected.
+     * Some entries corrected.
    * source/c_image.prg
      ! _OOHG_BITMAPFROMFILE function was clipping the image instead of
        scaling it to the control's rect when lAutosize is .T.
