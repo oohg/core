@@ -1,5 +1,5 @@
 /*
- * $Id: h_checkbox.prg,v 1.36 2013-05-25 15:14:40 fyurisich Exp $
+ * $Id: h_checkbox.prg,v 1.37 2013-05-25 16:46:14 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -255,10 +255,6 @@ Return ::Super:Events_Notify( wParam, lParam )
    #define _WIN32_WINNT   0x0501
 #endif
 
-#ifndef BST_HOT
-   #define BST_HOT        0x0200
-#endif
-
 #include "hbapi.h"
 #include "hbvm.h"
 #include "hbstack.h"
@@ -266,6 +262,10 @@ Return ::Super:Events_Notify( wParam, lParam )
 #include <windows.h>
 #include <commctrl.h>
 #include "oohg.h"
+
+#ifndef BST_HOT
+   #define BST_HOT        0x0200
+#endif
 
 /*
 This files are not present in BCC 551

@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.60 2013-05-25 14:37:09 fyurisich Exp $
+ * $Id: classes.txt,v 1.61 2013-05-25 16:46:14 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -326,6 +326,7 @@ CLASS TCHECKBOX FROM TLABEL
    DATA CPICTURE                  INIT ""
    DATA ICONWIDTH                 INIT 19
    DATA LEFTALIGN                 INIT .F.
+   DATA LTHEMED                   INIT .F.
    DATA NHEIGHT                   INIT 28
    DATA NWIDTH                    INIT 100
    DATA TABHANDLE                 INIT 0
@@ -335,6 +336,7 @@ CLASS TCHECKBOX FROM TLABEL
    METHOD DEFINE
    METHOD EVENTS_COLOR
    METHOD EVENTS_COMMAND
+   METHOD EVENTS_NOTIFY
    METHOD VALUE                   SETGET
 ENDCLASS
 
@@ -1832,6 +1834,7 @@ CLASS TRADIOGROUP FROM TLABEL
    DATA AOPTIONS                  INIT {}
    DATA ICONWIDTH                 INIT 19
    DATA LHORIZONTAL               INIT .F.
+   DATA LTHEMED                   INIT .F.
    DATA NHEIGHT                   INIT 25
    DATA NSPACING                  INIT NIL
    DATA NWIDTH                    INIT 120
@@ -1868,6 +1871,7 @@ CLASS TRADIOITEM FROM TLABEL
    METHOD EVENTS
    METHOD EVENTS_COLOR
    METHOD EVENTS_COMMAND
+   METHOD EVENTS_NOTIFY
    METHOD VALUE                   SETGET
 ENDCLASS
 

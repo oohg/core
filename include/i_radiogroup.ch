@@ -1,5 +1,5 @@
 /*
- * $Id: i_radiogroup.ch,v 1.6 2009-08-15 00:39:01 guerra000 Exp $
+ * $Id: i_radiogroup.ch,v 1.7 2013-05-25 16:46:14 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -91,38 +91,39 @@
         Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-#command @ <row>,<col> RADIOGROUP <name>        ;
-                        [ OBJ <obj> ]           ;
-			[ <dummy1: OF, PARENT> <parent> ] ;
-                        [ OPTIONS <aOptions> ]  ;
-			[ VALUE <value> ]	;
-			[ WIDTH <width> ] 	;
-			[ SPACING <spacing> ] 	;
-			[ FONT <fontname> ] 	;
-			[ SIZE <fontsize> ]	;
-                        [ <bold : BOLD> ]       ;
-                        [ <italic : ITALIC> ]   ;
-			[ <underline : UNDERLINE> ] ;
-			[ <strikeout : STRIKEOUT> ] ;
-			[ TOOLTIP <tooltip> ]	;
-			[ BACKCOLOR <backcolor> ] ;
-			[ FONTCOLOR <fontcolor> ] ;
-			[ ON CHANGE <change> ]	;
-			[ <transparent: TRANSPARENT> ] ;
-                        [ HELPID <helpid> ]     ;
-			[ <invisible : INVISIBLE> ] ;
-			[ <notabstop : NOTABSTOP> ] ;
-                        [ <autosize : AUTOSIZE> ] ;
-                        [ <horizontal: HORIZONTAL> ] ;
-                        [ <disabled : DISABLED> ] ;
-                        [ <rtl : RTL> ]         ;
-                        [ HEIGHT <height> ]     ;
-                        [ SUBCLASS <subclass> ] ;
-	=>;
-        [ <obj> := ] _OOHG_SelectSubClass( TRadioGroup(), [ <subclass>() ] ): ;
-                     Define( <(name)>, <(parent)>, <col>, <row>, <aOptions>, <value>, ;
-                             <fontname>, <fontsize>, <tooltip>, <{change}>, <width>, ;
-                             <spacing>, <helpid>, <.invisible.>, <.notabstop.>, <.bold.>, ;
-                             <.italic.>, <.underline.>, <.strikeout.>, <backcolor>, ;
-                             <fontcolor>, <.transparent.>, <.autosize.>, <.horizontal.>, ;
-                             <.disabled.>, <.rtl.>, <height> )
+#command @ <row>,<col> RADIOGROUP <name> ;
+            [ OBJ <obj> ] ;
+            [ <dummy1: OF, PARENT> <parent> ] ;
+            [ OPTIONS <aOptions> ] ;
+            [ VALUE <value> ] ;
+            [ WIDTH <width> ] ;
+            [ SPACING <spacing> ] ;
+            [ FONT <fontname> ] ;
+            [ SIZE <fontsize> ] ;
+            [ <bold : BOLD> ] ;
+            [ <italic : ITALIC> ] ;
+            [ <underline : UNDERLINE> ] ;
+            [ <strikeout : STRIKEOUT> ] ;
+            [ TOOLTIP <tooltip> ] ;
+            [ BACKCOLOR <backcolor> ] ;
+            [ FONTCOLOR <fontcolor> ] ;
+            [ ON CHANGE <change> ] ;
+            [ <transparent: TRANSPARENT> ] ;
+            [ HELPID <helpid> ] ;
+            [ <invisible : INVISIBLE> ] ;
+            [ <notabstop : NOTABSTOP> ] ;
+            [ <autosize : AUTOSIZE> ] ;
+            [ <horizontal: HORIZONTAL> ] ;
+            [ <disabled : DISABLED> ] ;
+            [ <rtl : RTL> ] ;
+            [ HEIGHT <height> ] ;
+            [ SUBCLASS <subclass> ] ;
+            [ <themed : THEMED> ] ;
+   => ;
+            [ <obj> := ] _OOHG_SelectSubClass( TRadioGroup(), [ <subclass>() ] ): ;
+                  Define( <(name)>, <(parent)>, <col>, <row>, <aOptions>, <value>, ;
+                  <fontname>, <fontsize>, <tooltip>, <{change}>, <width>, ;
+                  <spacing>, <helpid>, <.invisible.>, <.notabstop.>, <.bold.>, ;
+                  <.italic.>, <.underline.>, <.strikeout.>, <backcolor>, ;
+                  <fontcolor>, <.transparent.>, <.autosize.>, <.horizontal.>, ;
+                  <.disabled.>, <.rtl.>, <height>, <.themed.> )
