@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.59 2013-05-25 21:03:59 fyurisich Exp $
+ * $Id: h_button.prg,v 1.60 2013-05-25 21:08:39 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -240,7 +240,7 @@ Return ::Define( ControlName, ParentForm, x, y, Caption, ProcedureName, w, h, ;
                  NoTabStop, HelpId, invisible, bold, italic, underline, ;
                  strikeout, lRtl, lNoPrefix, lDisabled, cBuffer, hBitMap, ;
                  cImage, lNoTransparent, lScale, lCancel, cAlign, lMultiLine, ;
-                 themed, aImageMargin, OnMouseMove, lNo3DColors, lAutoFit ) CLASS TButton
+                 themed, aImageMargin, OnMouseMove, lNo3DColors, lAutoFit )
 
 *------------------------------------------------------------------------------*
 METHOD SetFocus() CLASS TButton
