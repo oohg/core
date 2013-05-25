@@ -1,5 +1,5 @@
 /*
- * $Id: h_checkbox.prg,v 1.34 2012-02-08 18:21:13 fyurisich Exp $
+ * $Id: h_checkbox.prg,v 1.35 2013-05-25 14:37:09 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -106,11 +106,13 @@ CLASS TCheckBox FROM TLabel
    DATA TabHandle  INIT 0
    DATA Threestate INIT .F.
    DATA LeftAlign  INIT .F.
+   DATA lThemed    INIT .F.
 
    METHOD Define
    METHOD Value       SETGET
    METHOD Events_Command
    METHOD Events_Color
+   METHOD Events_Notify
 
    EMPTY( _OOHG_AllVars )
 ENDCLASS
@@ -120,7 +122,7 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
                fontsize, tooltip, changeprocedure, w, h, lostfocus, gotfocus, ;
                HelpId, invisible, notabstop, bold, italic, underline, ;
                strikeout, field, backcolor, fontcolor, transparent, autosize, ;
-               lRtl, lDisabled, threestate, leftalign ) CLASS TCheckBox
+               lRtl, lDisabled, threestate, leftalign, themed ) CLASS TCheckBox
 *-----------------------------------------------------------------------------*
 Local ControlHandle, nStyle, nStyleEx := 0
 Local oTab
@@ -132,6 +134,7 @@ Local oTab
    ASSIGN ::Transparent VALUE transparent TYPE "L"
    ASSIGN ::Threestate  VALUE threestate  TYPE "L"
    ASSIGN ::LeftAlign   VALUE leftalign   TYPE "L"
+   ASSIGN ::lThemed     VALUE themed      TYPE "L"
 
    IF ! ::Threestate .and. ! HB_IsLogical( value )
       value := .F.
@@ -221,11 +224,40 @@ METHOD Events_Color( wParam, nDefColor ) CLASS TCheckBox
 
 Return Events_Color_InTab( Self, wParam, nDefColor )    // see h_controlmisc.prg
 
+*-----------------------------------------------------------------------------*
+METHOD Events_Notify( wParam, lParam ) CLASS TCheckBox
+*-----------------------------------------------------------------------------*
+Local nNotify := GetNotifyCode( lParam )
+
+   If nNotify == NM_CUSTOMDRAW
+      If ::lThemed .AND. IsAppThemed()
+         Return TCheckBox_Notify_CustomDraw( Self, lParam, ::Caption, ::LeftAlign )
+      EndIf
+   EndIf
+
+Return ::Super:Events_Notify( wParam, lParam )
+
 
 
 
 
 #pragma BEGINDUMP
+
+#ifndef _WIN32_IE
+   #define _WIN32_IE      0x0500
+#endif
+
+#ifndef HB_OS_WIN_32_USED
+   #define HB_OS_WIN_32_USED
+#endif
+
+#ifndef _WIN32_WINNT
+   #define _WIN32_WINNT   0x0501
+#endif
+
+#ifndef BST_HOT
+   #define BST_HOT        0x0200
+#endif
 
 #include "hbapi.h"
 #include "hbvm.h"
@@ -234,6 +266,8 @@ Return Events_Color_InTab( Self, wParam, nDefColor )    // see h_controlmisc.prg
 #include <windows.h>
 #include <commctrl.h>
 #include "oohg.h"
+#include <uxtheme.h>
+#include <tmschema.h>
 
 static WNDPROC lpfnOldWndProc = 0;
 
@@ -262,6 +296,166 @@ HB_FUNC( INITCHECKBOX )
    lpfnOldWndProc = ( WNDPROC ) SetWindowLong( hbutton, GWL_WNDPROC, ( LONG ) SubClassFunc );
 
    HWNDret( hbutton );
+}
+
+/* http://devel.no-ip.org/programming/static/os/ReactOS-0.3.14/dll/win32/comctl32/theme_button.c */
+
+typedef int (CALLBACK *CALL_OPENTHEMEDATA )( HWND, LPCWSTR );
+typedef int (CALLBACK *CALL_DRAWTHEMEBACKGROUND )( HTHEME, HDC, int, int, const RECT*, const RECT* );
+typedef int (CALLBACK *CALL_GETTHEMEBACKGROUNDCONTENTRECT )( HTHEME, HDC, int, int, const RECT*, RECT* );
+typedef int (CALLBACK *CALL_CLOSETHEMEDATA )( HTHEME );
+typedef int (CALLBACK *CALL_DRAWTHEMEPARENTBACKGROUND )( HWND, HDC, RECT* );
+
+int TCheckBox_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption, BOOL bLeftAlign )
+{
+   HMODULE hInstDLL;
+   LPNMCUSTOMDRAW pCustomDraw = (LPNMCUSTOMDRAW) lParam;
+   CALL_DRAWTHEMEPARENTBACKGROUND dwProcDrawThemeParentBackground;
+   CALL_OPENTHEMEDATA dwProcOpenThemeData;
+   HTHEME hTheme;
+   LONG style, state;
+   int state_id, checkState, drawState;
+   CALL_DRAWTHEMEBACKGROUND dwProcDrawThemeBackground;
+   CALL_GETTHEMEBACKGROUNDCONTENTRECT dwProcGetThemeBackgroundContentRect;
+   RECT content_rect, aux_rect;
+   CALL_CLOSETHEMEDATA dwProcCloseThemeData;
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   static const int cb_states[3][5] =
+   {
+      { CBS_UNCHECKEDNORMAL, CBS_UNCHECKEDHOT, CBS_UNCHECKEDPRESSED, CBS_UNCHECKEDDISABLED, CBS_UNCHECKEDNORMAL },
+      { CBS_CHECKEDNORMAL,   CBS_CHECKEDHOT,   CBS_CHECKEDPRESSED,   CBS_CHECKEDDISABLED,   CBS_CHECKEDNORMAL },
+      { CBS_MIXEDNORMAL,     CBS_MIXEDHOT,     CBS_MIXEDPRESSED,     CBS_MIXEDDISABLED,     CBS_MIXEDNORMAL }
+   };
+
+   hInstDLL = LoadLibrary( "UXTHEME.DLL" );
+   if( ! hInstDLL )
+   {
+      return CDRF_DODEFAULT;
+   }
+
+   if( pCustomDraw->dwDrawStage == CDDS_PREERASE )
+   {
+      /* erase background (according to parent window's themed background) */
+      dwProcDrawThemeParentBackground = (CALL_DRAWTHEMEPARENTBACKGROUND) GetProcAddress( hInstDLL, "DrawThemeParentBackground" );
+      if( ! dwProcDrawThemeParentBackground )
+      {
+         FreeLibrary( hInstDLL );
+         return CDRF_DODEFAULT;
+      }
+      ( dwProcDrawThemeParentBackground )( pCustomDraw->hdr.hwndFrom, pCustomDraw->hdc, &pCustomDraw->rc );
+   }
+
+ 	if (pCustomDraw->dwDrawStage == CDDS_PREERASE || pCustomDraw->dwDrawStage == CDDS_PREPAINT)
+   {
+      /* get theme handle */
+      dwProcOpenThemeData = (CALL_OPENTHEMEDATA) GetProcAddress( hInstDLL, "OpenThemeData" );
+      if( ! dwProcOpenThemeData )
+      {
+         FreeLibrary( hInstDLL );
+         return CDRF_DODEFAULT;
+      }
+
+      hTheme = (HTHEME) ( dwProcOpenThemeData )( pCustomDraw->hdr.hwndFrom, L"BUTTON" );
+      if( ! hTheme )
+      {
+         FreeLibrary( hInstDLL );
+         return CDRF_DODEFAULT;
+      }
+
+      /* determine state for DrawThemeBackground()
+         note: order of these tests is significant */
+      style = GetWindowLong( pCustomDraw->hdr.hwndFrom, GWL_STYLE );
+      state = SendMessage( pCustomDraw->hdr.hwndFrom, BM_GETSTATE, 0, 0 );
+
+      if( state & BST_INDETERMINATE )
+      {
+         checkState = 2;
+      }
+      else if( state & BST_CHECKED )
+      {
+         checkState = 1;
+      }
+      else
+      {
+         checkState = 0;
+      }
+
+      if( style & WS_DISABLED )
+      {
+         drawState = 3;
+      }
+      else if( state & BST_HOT )
+      {
+         drawState = 1;
+      }
+      else if( state & BST_FOCUS )
+      {
+         drawState = 4;
+      }
+      else if( state & BST_PUSHED )
+      {
+         drawState = 2;
+      }
+      else
+      {
+         drawState = 0;
+      }
+
+      state_id = cb_states[checkState][drawState];
+
+      /* get content rectangle */
+      dwProcGetThemeBackgroundContentRect = (CALL_GETTHEMEBACKGROUNDCONTENTRECT) GetProcAddress( hInstDLL, "GetThemeBackgroundContentRect" );
+      if( ! dwProcGetThemeBackgroundContentRect )
+      {
+         FreeLibrary( hInstDLL );
+         return CDRF_DODEFAULT;
+      }
+      ( dwProcGetThemeBackgroundContentRect )( hTheme, pCustomDraw->hdc, BP_CHECKBOX, state_id, &pCustomDraw->rc, &content_rect );
+
+      /* draw themed button background appropriate to control state */
+      dwProcDrawThemeBackground = (CALL_DRAWTHEMEBACKGROUND) GetProcAddress( hInstDLL, "DrawThemeBackground" );
+      if( ! dwProcDrawThemeBackground )
+      {
+         FreeLibrary( hInstDLL );
+         return CDRF_DODEFAULT;
+      }
+      aux_rect = pCustomDraw->rc;
+      aux_rect.top = aux_rect.top + (content_rect.bottom - content_rect.top - 13) / 2;
+      aux_rect.bottom = aux_rect.top + 13;
+      if( bLeftAlign )
+      {
+        aux_rect.left = aux_rect.right - 13;
+        content_rect.right = aux_rect.left - 6;
+      }
+      else
+      {
+        aux_rect.right = aux_rect.left + 13;
+        content_rect.left = aux_rect.right + 6;
+      }
+      ( dwProcDrawThemeBackground )( hTheme, pCustomDraw->hdc, BP_CHECKBOX, state_id, &aux_rect, NULL );
+
+      // paint caption
+      SetTextColor( pCustomDraw->hdc, ( oSelf->lFontColor == -1 ) ? GetSysColor( COLOR_BTNTEXT ) : (COLORREF) oSelf->lFontColor );
+      DrawText( pCustomDraw->hdc, cCaption, -1, &content_rect, DT_VCENTER | DT_LEFT | DT_SINGLELINE );
+
+      /* close theme */
+      dwProcCloseThemeData = (CALL_CLOSETHEMEDATA) GetProcAddress( hInstDLL, "CloseThemeData" );
+      if( dwProcCloseThemeData )
+      {
+         ( dwProcCloseThemeData )( hTheme );
+      }
+
+      FreeLibrary( hInstDLL );
+
+      return CDRF_SKIPDEFAULT;
+   }
+
+   return CDRF_SKIPDEFAULT;
+}
+
+HB_FUNC( TCHECKBOX_NOTIFY_CUSTOMDRAW )
+{
+   hb_retni( TCheckBox_Notify_CustomDraw( hb_param( 1, HB_IT_OBJECT ), (LPARAM) hb_parnl( 2 ), (LPCSTR) hb_parc( 3 ), hb_parl( 4 ) ) );
 }
 
 #pragma ENDDUMP

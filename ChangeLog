@@ -1,11 +1,24 @@
 /*
- * $Id: ChangeLog,v 1.1057 2013-05-18 03:01:55 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1058 2013-05-25 14:37:07 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-05-25 11:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     * Somes entries corrected.
+   * doc/classes.txt
+     * Updated.
+   * include/i_checkbox.ch
+     + Added THEMED clause to enable use of fontcolor on themed
+       Windows.
+   * source/h_checkbox.ch
+     + Added DATA lThemed.
+     + Added METHOD Events_Notify.
+     + Added new parameter 'themed' to TChekBox:Define.
 
 2013-05-18 00:01 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_browse.prg
@@ -336,17 +349,17 @@
      * Changed SET PRINTER TO &(var) to SET PRINTER TO (var).
      * Private variables milinea1, amicolor, rutaficrtf1, ntcsvprint,
        and ntcsvprint1 changed to locals.
-     * Private variable oPrintRtf1 changed to DATA aPrintRtf1.
-     * Private variable oPrintRtf2 changed to DATA nPrintRtf2.
-     * Private variable oPrintRtf3 changed to DATA lPrintRtf3.
+     * Private variable oPrintRtf1 changed to DATA aPrintRtf.
+     * Private variable oPrintRtf2 changed to DATA nPrintRtf.
+     * Private variable oPrintRtf3 changed to DATA lPrintRtf.
      * Private variable oPrintCsv1 changed to DATA aPrintCsv.
      * Changed * comments to // format.
      * Changed comments to english.
      * Changed some local variable names.
      * Static variables changed to #defines.
-     * Literals replaced by _OOHG_Messages() calls so the can be
+     * Literals replaced by _OOHG_Messages() calls so they can be
        customized.
-     * DATA cPort moved from TPRINTDOS to TPRINTBASE because it's
+     * DATA cPort moved from TDOSPRINT to TPRINTBASE because it's
        used in method TPRINTBASE:PrintDos().
      * The "oohg printing ..." window can be sustituted by an
        owner defined window. Just create a CHILD window and name it
@@ -367,7 +380,7 @@
 
 2012-09-23 22:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_xbrowse.prg
-     ! Fixed: search wrap dosen't work when there are few row in
+     ! Fixed: search wrap doesn't work when there are few rows in
        a big control.
 
 2012-09-22 21:17 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
@@ -377,7 +390,7 @@
        from Events_Notify (under LVN_KEYDOWN notification) to Events
        method (under WM_KEYDOWN message).
        Fixed: after pressing one of this key the next key is 'eaten'
-       by the system instead of passing it to the seach routine.
+       by the system instead of passing it to the search routine.
 
 2012-09-22 10:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
@@ -448,7 +461,7 @@
 2012-09-18 22:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    - include/i_socket.prg
    - source/h_http.prg
-     - Deleted because they're not related to any graphical
+     - Deleted because they are not related to any graphical
        functionality.
    + samples/http/i_socket.prg
    + samples/http/h_http.prg
