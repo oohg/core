@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog,v 1.1064 2013-05-25 21:08:39 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1065 2013-05-26 18:35:16 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-05-26 15:34 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_window.ch
+     + Added support for method AddPage with 4, 5, 6 and 7 arguments
+       in semioop syntax.
 
 2013-05-25 18:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_button.prg

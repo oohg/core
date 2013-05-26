@@ -1,5 +1,5 @@
 /*
- * $Id: i_window.ch,v 1.47 2012-07-29 05:09:29 fyurisich Exp $
+ * $Id: i_window.ch,v 1.48 2013-05-26 18:35:16 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -130,6 +130,10 @@
          #xtranslate <w> . \<c\> . \<p:AddItem,Item,ItemReadonly,ItemEnabled,ItemDraggable,CheckItem,BoldItem\> (\<arg1\>,\<arg2\>) => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ( \<arg1\> , \<arg2\> ) ;;
          #xtranslate <w> . \<c\> . \<p:AddPage,SetRange,SetEditSel\> (\<a1\> , \<a2\>) => Domethod ( <(w)>, \<(c)> , \<(p)> , \<a1\> , \<a2\> ) ;;
          #xtranslate <w> . \<c\> . \<p:AddPage\> (\<a1\> , \<a2\> , \<a3\> ) => Domethod ( <(w)>, \<(c)> , \<(p)> , \<a1\> , \<a2\> , \<a3\> ) ;;
+         #xtranslate <w> . \<c\> . \<p:AddPage\> (\<a1\> , \<a2\> , \<a3\> , \<a4\> ) => Domethod ( <(w)>, \<(c)> , \<(p)> , \<a1\> , \<a2\> , \<a3\> , \<a4\> ) ;;
+         #xtranslate <w> . \<c\> . \<p:AddPage\> (\<a1\> , \<a2\> , \<a3\> , \<a4\> , \<a5\> ) => Domethod ( <(w)>, \<(c)> , \<(p)> , \<a1\> , \<a2\> , \<a3\> , \<a4\> , \<a5\> ) ;;
+         #xtranslate <w> . \<c\> . \<p:AddPage\> (\<a1\> , \<a2\> , \<a3\> , \<a4\> , \<a5\> , \<a6\> ) => Domethod ( <(w)>, \<(c)> , \<(p)> , \<a1\> , \<a2\> , \<a3\> , \<a4\> , \<a5\> , \<a6\> ) ;;
+         #xtranslate <w> . \<c\> . \<p:AddPage\> (\<a1\> , \<a2\> , \<a3\> , \<a4\> , \<a5\> , \<a6\> , \<a7\> ) => Domethod ( <(w)>, \<(c)> , \<(p)> , \<a1\> , \<a2\> , \<a3\> , \<a4\> , \<a5\> , \<a6\> , \<a7\> ) ;;
          #xtranslate <w> . \<c\> . \<p:AddItem,Item\> (\<a1\> , \<a2\> , \<a3\> ) => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ( \<a1\> , \<a2\> , \<a3\> ) ;;
          #xtranslate <w> . \<c\> . \<p:AddColumn,AddControl\> (\<a1\> , \<a2\> , \<a3\> , \<a4\> ) => Domethod ( <(w)>, \<(c)> , \<(p)> , \<a1\> , \<a2\> , \<a3\> , \<a4\> ) ;;
          #xtranslate <w> . \<c\> . \<p:AddItem\> (\<a1\> , \<a2\> , \<a3\> , \<a4\> ) => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ( \<a1\> , \<a2\> , \<a3\> , \<a4\> ) ;;
