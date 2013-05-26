@@ -1,5 +1,5 @@
 /*
- * $Id: h_radio.prg,v 1.33 2013-05-25 16:46:14 fyurisich Exp $
+ * $Id: h_radio.prg,v 1.34 2013-05-26 19:41:13 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -136,7 +136,7 @@ METHOD Define( ControlName, ParentForm, x, y, aOptions, Value, fontname, ;
                fontcolor, transparent, autosize, horizontal, lDisabled, lRtl, ;
                height, themed ) CLASS TRadioGroup
 *-----------------------------------------------------------------------------*
-Local i, oItem
+Local i, oItem, uToolTip
 
    ASSIGN ::nCol        VALUE x           TYPE "N"
    ASSIGN ::nRow        VALUE y           TYPE "N"
@@ -158,9 +158,15 @@ Local i, oItem
       ::TabStop := ! NoTabStop
    EndIf
 
+   If HB_IsArray( tooltip )
+     uToolTip := nil
+   Else
+     uToolTip := tooltip
+   EndIf
+
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor,, lRtl )
    ::InitStyle( ,, Invisible, ! ::TabStop, lDisabled )
-   ::Register( 0, , HelpId,, ToolTip )
+   ::Register( 0, , HelpId,, uToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
 
    ::AutoSize := autosize
@@ -170,11 +176,17 @@ Local i, oItem
    x := ::Col
    y := ::Row
    For i = 1 to len( aOptions )
+      If HB_IsArray( ToolTip ) .AND. LEN( ToolTip ) >= i
+         uToolTip := ToolTip[ i ]
+      Else
+         uToolTip := ::ToolTip
+      EndIf
+
       oItem := TRadioItem():Define( , Self, x, y, ::Width, ::Height, ;
                aOptions[ i ], .F., ( i == 1 ), ;
                ::AutoSize, ::Transparent, , , ;
                , , , , , , ;
-               ::ToolTip, ::HelpId, , .T., , )
+               uToolTip, ::HelpId, , .T., , )
       AADD( ::aOptions, oItem )
       If ::lHorizontal
          x += Spacing
@@ -268,14 +280,26 @@ METHOD Visible( lVisible ) CLASS TRadioGroup
 RETURN ::lVisible
 
 *-----------------------------------------------------------------------------*
-METHOD AddItem( cCaption ) CLASS TRadioGroup
+METHOD AddItem( cCaption, nImage, uToolTip ) CLASS TRadioGroup
 *-----------------------------------------------------------------------------*
-Return ::InsertItem( ::ItemCount + 1, cCaption )
+Return ::InsertItem( ::ItemCount + 1, cCaption, nImage, uToolTip )
+
+/*
+TODO:
+RadioItem with Image instead/and Text.
+
+Note that TMultiPage control expects an Image as third parameter.
+*/
 
 *-----------------------------------------------------------------------------*
-METHOD InsertItem( nPosition, cCaption ) CLASS TRadioGroup
+METHOD InsertItem( nPosition, cCaption, nImage, uToolTip ) CLASS TRadioGroup
 *-----------------------------------------------------------------------------*
 Local nPos2, Spacing, oItem, x, y, nValue, hWnd
+   EMPTY( nImage )
+   IF  ( ! VALTYPE( uToolTip ) $ "CM" .OR. EMPTY( uToolTip ) ) .AND. ! HB_IsBlock( uToolTip )
+      uToolTip := ::ToolTip
+   ENDIF
+
    nValue := ::Value
 
    If HB_IsNumeric( ::nSpacing )
@@ -320,7 +344,7 @@ Local nPos2, Spacing, oItem, x, y, nValue, hWnd
             cCaption, .F., ( nPosition == 1 ), ;
             ::AutoSize, ::Transparent, , , ;
             , , , , , , ;
-            ::ToolTip, ::HelpId, , .T., , )
+            uToolTip, ::HelpId, , .T., , )
    ::aOptions[ nPosition ] := oItem
 
    If nPosition > 1
