@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: compile_MINGW.BAT,v 1.18 2012-10-03 22:49:24 fyurisich Exp $
+rem $Id: compile_MINGW.BAT,v 1.19 2013-05-29 23:48:07 fyurisich Exp $
 rem
 cls
 
@@ -19,11 +19,19 @@ if exist %1.rc copy /b %ooHG_INSTALL%\resources\ooHG.rc+%1.rc+%ooHG_INSTALL%\res
 if exist %1.rc windres -i _temp.rc -o _temp.o
 
 set EXTRA=
+if "%4"=="-w3" set EXTRA=-w3
+
 if "%3"=="/p" set EXTRA=-p
 if "%3"=="/P" set EXTRA=-p
+if "%3"=="-p" set EXTRA=-p
+if "%3"=="-P" set EXTRA=-p
+
+if "%3"=="-w3" set EXTRA=-w3
 
 if "%2"=="/d" goto DEBUG_COMP
 if "%2"=="/D" goto DEBUG_COMP
+
+if "%2"=="-w3" set EXTRA=-w3
 
 if "%2"=="/c" goto CONSOLE_COMP
 if "%2"=="/C" goto CONSOLE_COMP

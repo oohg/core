@@ -1,5 +1,5 @@
 /*
- * $Id: i_registry.ch,v 1.1 2005-08-06 23:53:54 guerra000 Exp $
+ * $Id: i_registry.ch,v 1.2 2013-05-29 23:48:07 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -169,6 +169,11 @@
             [<of: OF, REGISTRY> <oReg>] ;
             => ;
             <oReg>:Delete(<cKey>)
+
+#xcommand DELETE KEY <cKey> ;
+            [<of: OF, REGISTRY> <oReg>] ;
+            => ;
+            <oReg>:KeyDelete(<cKey>)
 
 #xcommand CLOSE REGISTRY <oReg> ;
             => ;
