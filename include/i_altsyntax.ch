@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.85 2013-05-25 20:30:11 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.86 2013-06-06 02:37:19 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -122,6 +122,9 @@ Memvariables
 #xtranslate _OOHG_ActiveControlTrailingFontColor      => _OOHG_ActiveControlInfo \[  25 \]
 #xtranslate _OOHG_ActiveControlBackgroundColor        => _OOHG_ActiveControlInfo \[  26 \]
 
+#xtranslate _OOHG_ActiveControlDelayedLoad            => _OOHG_ActiveControlInfo \[ 119 \]
+#xtranslate _OOHG_ActiveControlIncrementalSearch      => _OOHG_ActiveControlInfo \[ 120 \]
+#xtranslate _OOHG_ActiveControlIntegralHeight         => _OOHG_ActiveControlInfo \[ 121 \]
 #xtranslate _OOHG_ActiveControlAutoFit                => _OOHG_ActiveControlInfo \[ 122 \]
 #xtranslate _OOHG_ActiveControlNo3DColors             => _OOHG_ActiveControlInfo \[ 123 \]
 #xtranslate _OOHG_ActiveControlDefaultYear            => _OOHG_ActiveControlInfo \[ 124 \]
@@ -1595,21 +1598,36 @@ COMBO BOX
 #xcommand DEFINE COMBOBOX <name> ;
         => ;
         _OOHG_ClearActiveControlInfo( <(name)> ) ;;
-        _OOHG_ActiveControlItems           := Nil  ;;
-        _OOHG_ActiveControlSort            := .F.  ;;
-        _OOHG_ActiveControlItemSource      := Nil  ;;
-        _OOHG_ActiveControlValueSource     := Nil  ;;
-        _OOHG_ActiveControlBreak           := .F.  ;;
-        _OOHG_ActiveControlGripperText     := ""   ;;
-        _OOHG_ActiveControlDisplayEdit     := .F.  ;;
-        _OOHG_ActiveControlDisplayChange   := Nil  ;;
-        _OOHG_ActiveControlImage           := Nil  ;;
-        _OOHG_ActiveControlTextHeight      := Nil  ;;
-        _OOHG_ActiveControlStretch         := .F.  ;;
-        _OOHG_ActiveControlFirstItem       := Nil  ;;
-        _OOHG_ActiveControlListWidth       := Nil  ;;
-        _OOHG_ActiveControlItemImageNumber := Nil  ;;
-        _OOHG_ActiveControlImageSource     := Nil
+        _OOHG_ActiveControlItems             := Nil  ;;
+        _OOHG_ActiveControlSort              := .F.  ;;
+        _OOHG_ActiveControlItemSource        := Nil  ;;
+        _OOHG_ActiveControlValueSource       := Nil  ;;
+        _OOHG_ActiveControlBreak             := .F.  ;;
+        _OOHG_ActiveControlGripperText       := ""   ;;
+        _OOHG_ActiveControlDisplayEdit       := .F.  ;;
+        _OOHG_ActiveControlDisplayChange     := Nil  ;;
+        _OOHG_ActiveControlImage             := Nil  ;;
+        _OOHG_ActiveControlTextHeight        := Nil  ;;
+        _OOHG_ActiveControlStretch           := .F.  ;;
+        _OOHG_ActiveControlFirstItem         := Nil  ;;
+        _OOHG_ActiveControlListWidth         := Nil  ;;
+        _OOHG_ActiveControlItemImageNumber   := Nil  ;;
+        _OOHG_ActiveControlImageSource       := Nil  ;;
+        _OOHG_ActiveControlDelayedLoad       := Nil  ;;
+        _OOHG_ActiveControlIncrementalSearch := Nil  ;;
+        _OOHG_ActiveControlIntegralHeight    := Nil
+
+#xcommand DELAYEDLOAD <delayedload> ;
+        => ;
+        _OOHG_ActiveControlDelayedLoad := <delayedload>
+
+#xcommand INCREMENTAL <incremental> ;
+        => ;
+        _OOHG_ActiveControlIncrementalSearch := <incremental>
+
+#xcommand INTEGRALHEIGHT <integralheight> ;
+        => ;
+        _OOHG_ActiveControlIntegralHeight := <integralheight>
 
 #xcommand IMAGESOURCE <imagesource> ;
         => ;
@@ -1711,7 +1729,10 @@ COMBO BOX
                 _OOHG_ActiveControlOnListDisplay, ;
                 _OOHG_ActiveControlOnListClose, ;
                 _OOHG_ActiveControlImageSource, ;
-                _OOHG_ActiveControlItemImageNumber )
+                _OOHG_ActiveControlItemImageNumber, ;
+                _OOHG_ActiveControlDelayedLoad, ;
+                _OOHG_ActiveControlIncrementalSearch, ;
+                _OOHG_ActiveControlIntegralHeight )
 
 /*----------------------------------------------------------------------------
 DATEPICKER

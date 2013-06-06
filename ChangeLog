@@ -1,11 +1,21 @@
 /*
- * $Id: ChangeLog,v 1.1068 2013-06-06 02:19:57 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1069 2013-06-06 02:37:19 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-06-05 23:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     * Added missing credit in previous entry.
+   * doc/classes.txt
+     * Updated.
+   * include\i_altsyntax.ch
+     + Added support for DELAYEDLOAD clause in DEFINE COMBOBOX.
+     + Added support for INCREMENTAL clause in DEFINE COMBOBOX.
+     + Added support for INTEGRALHEIGHT clause in DEFINE COMBOBOX.
 
 2013-06-05 23:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_combobox.ch
@@ -47,6 +57,7 @@
        .T. will enable combo's INTEGRALHEIGHT clause.
      * Modified TGridControlComboBoxText:CreateControl() to add
        support for INCREMENTAL and INTEGRALHEIGHT clauses.
+   Thanks to David Field for the idea.
 
 2013-05-29 20:47 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_registry.ch

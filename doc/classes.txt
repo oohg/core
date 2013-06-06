@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.62 2013-05-25 20:30:11 fyurisich Exp $
+ * $Id: classes.txt,v 1.63 2013-06-06 02:37:19 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -408,18 +408,25 @@ ENDCLASS
 *------------------------------------------------------------------------------*
 CLASS TCOMBO FROM TLABEL
    DATA AVALUES                   INIT {}
+   DATA CTEXT                     INIT ""
    DATA FIELD                     INIT ""
    DATA IMAGELISTCOLOR            INIT CLR_DEFAULT
    DATA IMAGELISTFLAGS            INIT LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
    DATA IMAGESOURCE               INIT NIL
    DATA ITEMNUMBER                INIT NIL
    DATA LADJUSTIMAGES             INIT .F.
+   DATA LDELAYLOAD                INIT .F.
+   DATA LINCREMENTAL              INIT .F.
    DATA NHEIGHT2                  INIT 150
+   DATA NLASTFOUND                INIT 0
+   DATA NLASTITEM                 INIT 0
    DATA NTEXTHEIGHT               INIT 0
    DATA NWIDTH                    INIT 120
    DATA ONLISTCLOSE               INIT NIL
    DATA ONLISTDISPLAY             INIT NIL
+   DATA SEARCHLAPSE               INIT 1000
    DATA TYPE                      INIT "COMBO" READONLY
+   DATA UINITIME                  INIT 0
    DATA VALUESOURCE               INIT ""
    DATA WORKAREA                  INIT ""
 
@@ -431,6 +438,7 @@ CLASS TCOMBO FROM TLABEL
    METHOD DELETEALLITEMS
    METHOD DELETEITEM(NPOS)
    METHOD DISPLAYVALUE            SETGET
+   METHOD EVENTS
    METHOD EVENTS_COMMAND
    METHOD EVENTS_DRAWITEM
    METHOD EVENTS_MEASUREITEM
@@ -441,6 +449,7 @@ CLASS TCOMBO FROM TLABEL
    METHOD ITEM
    METHOD ITEMBYSOURCE
    METHOD ITEMCOUNT
+   METHOD ITEMHEIGHT
    METHOD NHEIGHT                 SETGET
    METHOD PRERELEASE
    METHOD REFRESH
@@ -451,6 +460,7 @@ CLASS TCOMBO FROM TLABEL
    METHOD SHOWDROPDOWN
    METHOD VALUE                   SETGET
    METHOD VISIBLE                 SETGET
+   METHOD VISIBLEITEMS
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -1047,6 +1057,8 @@ ENDCLASS
 *------------------------------------------------------------------------------*
 CLASS TGRIDCONTROLCOMBOBOXTEXT FROM TGRIDCONTROL
    DATA AITEMS                    INIT {}
+   DATA LINCREMENTAL              INIT .F.
+   DATA LWINSIZE                  INIT .F.
    DATA OGRID                     INIT NIL
 
    METHOD CONTROLVALUE            SETGET
