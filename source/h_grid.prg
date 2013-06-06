@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.196 2013-05-18 03:01:57 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.197 2013-06-06 02:19:59 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -3864,8 +3864,10 @@ Return If( ( uValue >= 1 .AND. uValue <= Len( ::aItems ) ), ::aItems[ uValue ], 
 *-----------------------------------------------------------------------------*
 CLASS TGridControlComboBoxText FROM TGridControl
 *-----------------------------------------------------------------------------*
-   DATA aItems INIT {}
-   DATA oGrid  INIT Nil
+   DATA aItems       INIT {}
+   DATA oGrid        INIT Nil
+   DATA lIncremental INIT .F.
+   DATA lWinSize     INIT .F.
 
    METHOD New
    METHOD CreateWindow
@@ -3875,7 +3877,9 @@ CLASS TGridControlComboBoxText FROM TGridControl
    METHOD ControlValue        SETGET
 ENDCLASS
 
-METHOD New( aItems, oGrid ) CLASS TGridControlComboBoxText
+METHOD New( aItems, oGrid, lIncremental, lWinSize ) CLASS TGridControlComboBoxText
+   ASSIGN ::lIncremental VALUE lIncremental TYPE "L" DEFAULT .F.
+   ASSIGN ::lWinSize     VALUE lWinSize     TYPE "L" DEFAULT .F.
    If HB_IsArray( aItems )
       ::aItems := Array( Len( aItems ) )
       aEval( aItems, { |x,i| ::aItems[ i ] := Trim( x ) } )
@@ -3889,7 +3893,19 @@ Return ::Super:CreateWindow( uValue, nRow - 3, nCol - 3, nWidth + 6, nHeight + 6
 METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGridControlComboBoxText
    Empty( nHeight )
    uValue := aScan( ::aItems, { |c| c == uValue } )
-   @ nRow,nCol COMBOBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth VALUE uValue ITEMS ::aItems
+   If ::lIncremental
+      If ::lWinSize
+         @ nRow,nCol COMBOBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth VALUE uValue ITEMS ::aItems INTEGRALHEIGHT INCREMENTAL
+      Else
+         @ nRow,nCol COMBOBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth VALUE uValue ITEMS ::aItems INCREMENTAL
+      EndIf
+   Else
+      If ::lWinSize
+         @ nRow,nCol COMBOBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth VALUE uValue ITEMS ::aItems INTEGRALHEIGHT
+      Else
+         @ nRow,nCol COMBOBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth VALUE uValue ITEMS ::aItems
+      EndIf
+   EndIf
    If ! Empty( ::oGrid ) .AND. ::oGrid:ImageList != 0
       ::oControl:ImageList := ImageList_Duplicate( ::oGrid:ImageList )
    EndIf

@@ -1,11 +1,52 @@
 /*
- * $Id: ChangeLog,v 1.1067 2013-05-29 23:48:07 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1068 2013-06-06 02:19:57 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-06-05 23:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_combobox.ch
+     + Added clause DELAYEDLOAD to enable the delayed loading of
+       items from a database (ITEMSOURCE clause is also needed).
+       Item loading is done when PgDn, Down and End keys are
+       pressed, or when a search is done past the last loaded item.
+       This clause and SORT clause can't be used simultaneously.
+     + Added clause INCREMENTAL to enable the incremental search
+       in the item's list.
+     + Added clause INTEGRALHEIGHT to let Windows choose the
+       height of the list part of the control.
+     * Formatted.
+   * include/i_windefs.ch
+     + Added define for CB_GETMINVISIBLE constant.
+   * source/h_combo.prg
+     + Added method TCombo:Events, to enable incremental search
+       and delayed loading of items.
+     + Added method TCombo:ItemHeight, returns the height in pixels
+       of an item in the combo's list.
+     + Added method TCombo:VisibleItems, returns the number of
+       visible items in the combo's list.
+     + Added datas nLastItem, lDelayLoad, SearchLapse, cText,
+       uIniTime, nLastFound and lIncremental to TCombo class.
+     * Modified method TCombo:Refresh to enabled delayed loading
+       of items.
+     + Added C-level function COMBOBOXFINDSTRING to search the
+       combo's list for a given string.
+     + Added C-level function COMBOBOXGETLISTHWND to retrive the
+       handle of the combo's list.
+     + Added conditional define of CB_GETCOMBOBOXINFO constant at
+       C-level.
+   * source/h_grid.prg
+     + Added datas lIncremental and lWinSize to
+       TGridControlComboBoxText class.
+     + Added third parameter to TGridControlComboBoxText:New().
+       .T. will enable combo's INCREMENTAL clause.
+     + Added fourth parameter to TGridControlComboBoxText:New().
+       .T. will enable combo's INTEGRALHEIGHT clause.
+     * Modified TGridControlComboBoxText:CreateControl() to add
+       support for INCREMENTAL and INTEGRALHEIGHT clauses.
 
 2013-05-29 20:47 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_registry.ch
