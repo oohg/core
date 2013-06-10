@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.69 2013-06-06 02:19:59 fyurisich Exp $
+ * $Id: h_combo.prg,v 1.70 2013-06-10 00:31:30 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -565,6 +565,27 @@ Local WorkArea, BackRec, nMax, i, nStart
             EndIf
 
             Return 0
+         EndIf
+      Else
+         If OSisWinXPorLater() .AND. ::lDelayLoad
+            If ! Select( WorkArea := ::WorkArea ) == 0
+               BackRec := ( WorkArea )->( Recno() )
+               ( WorkArea )->( DBGoto( ::nLastItem ) )
+               ( WorkArea )->( DBSkip() )
+               If ! ( WorkArea )->( Eof() )
+                  // load remaining items
+                  Do While ! ( WorkArea )->( Eof() )
+                     ::AddItem( { ( WorkArea )-> &( ::Field ), _OOHG_Eval( ::ItemNumber ) } )
+                     AADD( ::aValues, If( Empty( ::ValueSource ), ( WorkArea )->( RecNo() ), &( ::ValueSource ) ) )
+                     If ValidHandler( ::ImageList )
+                        ::AddBitMap( Eval( ::ImageSource ) )
+                     EndIf
+                     ::nLastItem := ( WorkArea )->( Recno() )
+                     ( WorkArea )->( DBSkip() )
+                  EndDo
+               EndIf
+               ( WorkArea )->( DBGoTo( BackRec ) )
+            EndIf
          EndIf
       EndIf
 
