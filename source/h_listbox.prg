@@ -1,5 +1,5 @@
 /*
- * $Id: h_listbox.prg,v 1.28 2013-03-23 19:50:45 fyurisich Exp $
+ * $Id: h_listbox.prg,v 1.29 2013-06-17 01:57:37 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -192,6 +192,7 @@ METHOD Value( uValue ) CLASS TList
 *------------------------------------------------------------------------------*
    IF VALTYPE( uValue ) == "N"
       ListBoxSetCursel( ::hWnd, uValue )
+      ::DoChange()
    ENDIF
 RETURN ListBoxGetCursel( ::hWnd )
 
