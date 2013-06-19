@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.197 2013-06-06 02:19:59 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.198 2013-06-19 14:39:33 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1778,13 +1778,10 @@ Return Nil
 METHOD Events_Notify( wParam, lParam ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local nNotify := GetNotifyCode( lParam )
-Local lvc, _ThisQueryTemp, nvkey, uValue, uRet
+Local lvc, _ThisQueryTemp, nvkey, uValue
 
    If nNotify == NM_CUSTOMDRAW
-      uValue := ::FirstSelectedItem
-      uRet := TGrid_Notify_CustomDraw( Self, lParam, .F., uValue, 0, ::lCheckBoxes, ::lFocusRect, ::lNoGrid, ::lPLM )
-      ListView_SetCursel( ::hWnd, uValue )
-      Return uRet
+      Return TGrid_Notify_CustomDraw( Self, lParam, .F., uValue, 0, ::lCheckBoxes, ::lFocusRect, ::lNoGrid, ::lPLM )
 
    ElseIf nNotify == LVN_KEYDOWN
       If GetGridvKeyAsChar( lParam ) == 0
@@ -3163,11 +3160,10 @@ Local nvkey, uRet, aValue, nItem
          If nItem > 0
             // change check mark
             ::CheckItem( nItem, ! ::CheckItem( nItem ) )
-            // skip default action
-            Return 1
          EndIf
       EndIf
-      Return Nil
+      // skip default action
+      Return 1
 
    ElseIf nNotify == LVN_ITEMCHANGED
       Return Nil
@@ -5444,7 +5440,16 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
          }
       }
 
-      return CDRF_DODEFAULT | CDRF_NOTIFYPOSTPAINT;
+      if( LI.iImage != -1 )                                 // Subitem has image?
+      {
+         return CDRF_NOTIFYPOSTPAINT;
+      }
+      else if( ( x == 1 ) && ( ! bCheckBoxes ) && bPLM )    // Is first subitem and has no image nor checkbox?
+      {
+         return CDRF_NOTIFYPOSTPAINT;
+      }
+
+      return CDRF_DODEFAULT;
    }
    else if( lplvcd->nmcd.dwDrawStage == ( CDDS_SUBITEM | CDDS_ITEMPOSTPAINT ) )
    {
@@ -5458,11 +5463,11 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
       LI.iSubItem = lplvcd->iSubItem;
       ListView_GetItem( lplvcd->nmcd.hdr.hwndFrom, &LI );
 
-      // Get background color
+      // Get subitem's row (y) and col (x)
       x = lplvcd->iSubItem + 1;
       y = lplvcd->nmcd.dwItemSpec + 1;
 
-      // Get text's color and background color
+      // Get text's background color
       if( LI.state & LVIS_SELECTED )
       {
          if( bByCell )

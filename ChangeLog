@@ -1,11 +1,26 @@
 /*
- * $Id: ChangeLog,v 1.1071 2013-06-17 01:57:35 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1072 2013-06-19 14:39:33 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-06-19 11:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_windefs.ch
+     + Added define for WM_SETREDRAW constant.
+   * source/h_window.prg
+     + Added method TWindow:SETREDRAW( lRedraw ) to allow changes in
+       a window to be redrawn or to prevent changes in that window
+       from being redrawn. Nota that hidden windows will become
+       visible after executing this method.
+   * source/h_grid.prg
+     % Optimized NM_CUSTOMDRAW handler of TGrid class.
+     * Changed return value in LVN_KEYDOWN handler of TGridByCell class.
+     % Optimized TGrid_Notify_CustomDraw C-level function. This affects
+       TGrid, TGridMulti, TGridByCell, TXBrowse and TOBrowse classes.
+     * Some comments changed.
 
 2013-06-16 22:56 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_listbox.prg

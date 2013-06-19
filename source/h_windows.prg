@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.242 2013-04-05 01:30:50 fyurisich Exp $
+ * $Id: h_windows.prg,v 1.243 2013-06-19 14:39:33 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -213,6 +213,7 @@ CLASS TWindow
    DATA ContainerhWndValue  INIT nil
    DATA lRtl                INIT .F.
    DATA lVisible            INIT .T.
+   DATA lRedraw             INIT .T.
    DATA ContextMenu         INIT nil
    DATA Cargo               INIT nil
    DATA lEnabled            INIT .T.
@@ -345,7 +346,7 @@ CLASS TWindow
    METHOD ClientWidth         SETGET
    METHOD ClientHeight        SETGET
    METHOD AdjustResize
-   //
+   METHOD SetRedraw
    METHOD Anchor              SETGET
    METHOD AdjustAnchor
 
@@ -1412,6 +1413,20 @@ METHOD ReleaseAttached() CLASS TWindow
    ENDDO
 
 Return nil
+
+*-----------------------------------------------------------------------------*
+METHOD SetRedraw( lRedraw ) CLASS TWindow
+*-----------------------------------------------------------------------------*
+   If HB_IsLogical( lRedraw )
+      ::lRedraw := lRedraw
+      If lRedraw
+         // When the window is hidden, this message shows it by adding WS_VISIBLE style to the window.
+         SendMessage( ::hWnd, WM_SETREDRAW, 1, 0 )
+      Else
+         SendMessage( ::hWnd, WM_SETREDRAW, 0, 0 )
+      EndIf
+   EndIf
+Return ::lRedraw
 
 *------------------------------------------------------------------------------*
 METHOD Visible( lVisible ) CLASS TWindow

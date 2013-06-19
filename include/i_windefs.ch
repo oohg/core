@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.52 2013-06-06 02:19:59 fyurisich Exp $
+ * $Id: i_windefs.ch,v 1.53 2013-06-19 14:39:33 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -102,6 +102,7 @@
 #define WM_ACTIVATE                   6
 #define WM_SETFOCUS                   7
 #define WM_KILLFOCUS                  8
+#define WM_SETREDRAW                  11
 #define WM_GETTEXT                    13
 #define WM_PAINT                      15
 #define WM_CLOSE                      16
