@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.110 2013-05-18 03:01:57 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.111 2013-06-19 21:34:00 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -256,7 +256,7 @@ Local nWidth2, nCol2, oScroll, z
    ::WorkArea := WorkArea
    ::aRecMap := {}
 
-   ::ScrollButton := TScrollButton():Define( , Self, nCol2, ::nHeight - GETHSCROLLBARHEIGHT(), GETVSCROLLBARWIDTH() , GETHSCROLLBARHEIGHT() )
+   ::ScrollButton := TScrollButton():Define( , Self, nCol2, ::nHeight - GETHSCROLLBARHEIGHT(), GETVSCROLLBARWIDTH(), GETHSCROLLBARHEIGHT() )
 
    oScroll := TScrollBar()
    oScroll:nWidth := GETVSCROLLBARWIDTH()
@@ -321,7 +321,7 @@ Return Self
 *-----------------------------------------------------------------------------*
 METHOD UpDate() CLASS TOBrowse
 *-----------------------------------------------------------------------------*
-Local PageLength , aTemp, _BrowseRecMap := {}, x
+Local PageLength, aTemp, _BrowseRecMap := {}, x
 Local nCurrentLength
 Local lColor, aFields, cWorkArea, hWnd, nWidth
 
@@ -375,7 +375,7 @@ Local lColor, aFields, cWorkArea, hWnd, nWidth
          ListViewSetItem( hWnd, aTemp, x )
       ENDIF
 
-      aadd( _BrowseRecMap , ( cWorkArea )->( RecNo() ) )
+      aadd( _BrowseRecMap, ( cWorkArea )->( RecNo() ) )
 
       ::DbSkip()
    EndDo
@@ -415,9 +415,7 @@ Return nil
 *-----------------------------------------------------------------------------*
 METHOD PageDown() CLASS TOBrowse
 *-----------------------------------------------------------------------------*
-Local _RecNo, s // , _DeltaScroll
-
-   // _DeltaScroll := ListView_GetSubItemRect( ::hWnd, 0 , 0 )
+Local _RecNo, s, i
 
    s := LISTVIEW_GETFIRSTITEM( ::hWnd )
 
@@ -453,9 +451,11 @@ Local _RecNo, s // , _DeltaScroll
          ::DbGoTo( ::aRecMap[ Len( ::aRecMap ) ] )
       EndIf
       ::scrollUpdate()
-      // ListView_Scroll( ::hWnd, _DeltaScroll[2] * (-1) , 0 )
-      ListView_SetCursel ( ::hWnd, Len( ::aRecMap ) )
       ::DbGoTo( _RecNo )
+
+      i := Len( ::aRecMap )
+      ListView_SetCursel ( ::hWnd, i )
+      ListView_EnsureVisible( ::hWnd, i )
 
    Else
 
@@ -470,9 +470,7 @@ Return nil
 *-----------------------------------------------------------------------------*
 METHOD PageUp() CLASS TOBrowse
 *-----------------------------------------------------------------------------*
-Local _RecNo // , _DeltaScroll
-
-   // _DeltaScroll := ListView_GetSubItemRect( ::hWnd, 0 , 0 )
+Local _RecNo
 
    If LISTVIEW_GETFIRSTITEM( ::hWnd ) == 1
       If Select( ::WorkArea ) == 0
@@ -488,9 +486,10 @@ Local _RecNo // , _DeltaScroll
       ::DbSkip( - ::CountPerPage + 1 )
       ::scrollUpdate()
       ::Update()
-      // ListView_Scroll( ::hWnd, _DeltaScroll[2] * (-1) , 0 )
       ::DbGoTo( _RecNo )
+
       ListView_SetCursel ( ::hWnd, 1 )
+      ListView_EnsureVisible( ::hWnd, 1 )
 
    Else
 
@@ -505,9 +504,7 @@ Return nil
 *-----------------------------------------------------------------------------*
 METHOD Home() CLASS TOBrowse
 *-----------------------------------------------------------------------------*
-Local _RecNo // , _DeltaScroll
-
-   // _DeltaScroll := ListView_GetSubItemRect ( ::hWnd, 0 , 0 )
+Local _RecNo
 
    If Select( ::WorkArea ) == 0
       ::RecCount := 0
@@ -517,10 +514,10 @@ Local _RecNo // , _DeltaScroll
    ::TopBottom( -1 )
    ::scrollUpdate()
    ::Update()
-   // ListView_Scroll( ::hWnd, _DeltaScroll[2] * (-1) , 0 )
    ::DbGoTo( _RecNo )
 
    ListView_SetCursel( ::hWnd, 1 )
+   ListView_EnsureVisible( ::hWnd, 1 )
 
    ::BrowseOnChange()
 
@@ -529,10 +526,8 @@ Return nil
 *-----------------------------------------------------------------------------*
 METHOD End( lAppend ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
-Local _RecNo , _BottomRec // , _DeltaScroll
+Local _RecNo, _BottomRec, i
    ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
-
-   // _DeltaScroll := ListView_GetSubItemRect ( ::hWnd, 0 , 0 )
 
    If Select( ::WorkArea ) == 0
       ::RecCount := 0
@@ -546,10 +541,11 @@ Local _RecNo , _BottomRec // , _DeltaScroll
    // If it's for APPEND, leaves a blank line ;)
    ::DbSkip( - ::CountPerPage + IF( lAppend, 2, 1 ) )
    ::Update()
-   // ListView_Scroll( ::hWnd, _DeltaScroll[2] * (-1) , 0 )
    ::DbGoTo( _RecNo )
 
-   ListView_SetCursel( ::hWnd, ascan ( ::aRecMap, _BottomRec ) )
+   i := ascan( ::aRecMap, _BottomRec )
+   ListView_SetCursel( ::hWnd, i )
+   ListView_EnsureVisible( ::hWnd, i )
 
    ::BrowseOnChange()
 
@@ -558,9 +554,7 @@ Return nil
 *-----------------------------------------------------------------------------*
 METHOD Up() CLASS TOBrowse
 *-----------------------------------------------------------------------------*
-Local s  , _RecNo // , _DeltaScroll := { Nil , Nil , Nil , Nil }
-
-   // _DeltaScroll := ListView_GetSubItemRect ( ::hWnd, 0 , 0 )
+Local s, _RecNo
 
    s := LISTVIEW_GETFIRSTITEM ( ::hWnd )
 
@@ -578,10 +572,11 @@ Local s  , _RecNo // , _DeltaScroll := { Nil , Nil , Nil , Nil }
       ::DbSkip( -1 )
       ::scrollUpdate()
       ::Update()
-      // ListView_Scroll( ::hWnd, _DeltaScroll[2] * (-1) , 0 )
       ::DbGoTo( _RecNo )
+
       If Len( ::aRecMap ) != 0
          ListView_SetCursel( ::hWnd, 1 )
+         ListView_EnsureVisible( ::hWnd, 1 )
       EndIf
 
    Else
@@ -597,13 +592,11 @@ Return nil
 *-----------------------------------------------------------------------------*
 METHOD Down() CLASS TOBrowse
 *-----------------------------------------------------------------------------*
-Local s , _RecNo  //, _DeltaScroll
+Local s, _RecNo, i
 
    s := LISTVIEW_GETFIRSTITEM( ::hWnd )
 
    If s >= Len( ::aRecMap )
-
-   ///    _DeltaScroll := ListView_GetSubItemRect( ::hWnd, 0 , 0 )
 
       If Select( ::WorkArea ) == 0
          ::RecCount := 0
@@ -633,12 +626,13 @@ Local s , _RecNo  //, _DeltaScroll
       ::Update()
       If Len( ::aRecMap ) != 0
          ::DbGoTo( ATail( ::aRecMap ) )
-    ///      ListView_Scroll( ::hWnd, _DeltaScroll[2] * (-1) , 0 )
       EndIf
       ::scrollUpdate()
       ::DbGoTo( _RecNo )
 
-      ListView_SetCursel( ::hWnd, Len( ::aRecMap ) )
+      i := Len( ::aRecMap )
+      ListView_SetCursel( ::hWnd, i )
+      ListView_EnsureVisible( ::hWnd, i )
 
    Else
 
@@ -697,7 +691,7 @@ RETURN NIL
 *-----------------------------------------------------------------------------*
 METHOD SetValue( Value, mp ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
-Local _RecNo , m , hWnd, cWorkArea // , _DeltaScroll
+Local _RecNo, m, hWnd, cWorkArea, i
 
    cWorkArea := ::WorkArea
 
@@ -731,8 +725,6 @@ Local _RecNo , m , hWnd, cWorkArea // , _DeltaScroll
       m := mp
    endif
 
-   // _DeltaScroll := ListView_GetSubItemRect( hWnd, 0 , 0 )
-
    _RecNo := ( cWorkArea )->( RecNo() )
 
    ::DbGoTo( Value )
@@ -758,8 +750,9 @@ Local _RecNo , m , hWnd, cWorkArea // , _DeltaScroll
    ::Update()
    ::DbGoTo( _RecNo )
 
-   // ListView_Scroll( hWnd, _DeltaScroll[ 2 ] * ( -1 ) , 0 )
-   ListView_SetCursel ( hWnd, ascan( ::aRecMap, Value ) )
+   i := ascan( ::aRecMap, Value )
+   ListView_SetCursel ( hWnd, i )
+   ListView_EnsureVisible( ::hWnd, i )
 
    _OOHG_ThisEventType := 'BROWSE_ONCHANGE'
    ::BrowseOnChange()
@@ -804,7 +797,7 @@ Local Value, nRecNo, lSync
       EndIf
 
       If Set( _SET_DELETED )
-         ::SetValue( ( ::WorkArea )->( RecNo() ) , LISTVIEW_GETFIRSTITEM( ::hWnd ) )
+         ::SetValue( ( ::WorkArea )->( RecNo() ), LISTVIEW_GETFIRSTITEM( ::hWnd ) )
       EndIf
    EndIf
 
@@ -893,7 +886,7 @@ Return lRet
 *-----------------------------------------------------------------------------*
 METHOD EditAllCells( nRow, nCol, lAppend ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
-Local lRet, lRowEdited, lSomethingEdited, _RecNo, lRowAppended, lMoreRecs
+Local lRet, lRowEdited, lSomethingEdited, _RecNo, lRowAppended, lMoreRecs, i
 
    ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
    ASSIGN nRow    VALUE nRow    TYPE "N" DEFAULT ::CurrentRow
@@ -1009,7 +1002,10 @@ Local lRet, lRowEdited, lSomethingEdited, _RecNo, lRowAppended, lMoreRecs
          ::ScrollUpdate()
          ::DbGoTo( _RecNo )
 
-         ListView_SetCursel( ::hWnd, Len( ::aRecMap ) )
+         i := Len( ::aRecMap )
+         ListView_SetCursel( ::hWnd, i )
+         ListView_EnsureVisible( ::hWnd, i )
+
          ::BrowseOnChange()
          nCol := 1
        ElseIf ::AllowAppend
@@ -1070,7 +1066,7 @@ Return nil
 *-----------------------------------------------------------------------------*
 METHOD FastUpdate( d, nRow ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
-Local ActualRecord , RecordCount
+Local ActualRecord, RecordCount
 
    // If vertical scrollbar is used it must be updated
    If ::lVScrollVisible
@@ -1097,13 +1093,14 @@ Local ActualRecord , RecordCount
    EndIf
 
    ListView_SetCursel( ::hWnd, nRow )
+   ListView_EnsureVisible( ::hWnd, nRow )
 
 Return nil
 
 *-----------------------------------------------------------------------------*
 METHOD ScrollUpdate() CLASS TOBrowse
 *-----------------------------------------------------------------------------*
-Local ActualRecord , RecordCount
+Local ActualRecord, RecordCount
 Local cWorkArea
 
    // If vertical scrollbar is used it must be updated
@@ -1147,7 +1144,7 @@ Return NIL
 *-----------------------------------------------------------------------------*
 METHOD Refresh() CLASS TOBrowse
 *-----------------------------------------------------------------------------*
-Local s , _RecNo, v /// , _DeltaScroll
+Local s, _RecNo, v, i
 Local cWorkArea, hWnd
 
    cWorkArea := ::WorkArea
@@ -1160,8 +1157,6 @@ Local cWorkArea, hWnd
 
    v := ::Value
 
- ///   _DeltaScroll := ListView_GetSubItemRect ( hWnd, 0 , 0 )
-
    s := LISTVIEW_GETFIRSTITEM( hWnd )
 
    _RecNo := ( cWorkArea )->( RecNo() )
@@ -1172,8 +1167,6 @@ Local cWorkArea, hWnd
 
    ::DbGoTo( v )
 
-***************************
-
    if s <= 1
       ::DbSkip()
       ::DbSkip( -1 )
@@ -1181,8 +1174,6 @@ Local cWorkArea, hWnd
          ::DbSkip()
       ENDIF
    EndIf
-
-***************************
 
    If s == 0
       If ( cWorkArea )->( INDEXORD() ) != 0
@@ -1212,8 +1203,9 @@ Local cWorkArea, hWnd
 
    ::Update()
 
-   // ListView_Scroll( hWnd, _DeltaScroll[2] * (-1) , 0 )
-   ListView_SetCursel( hWnd, ascan( ::aRecMap, v ) )
+   i := ascan( ::aRecMap, v )
+   ListView_SetCursel( hWnd, i )
+   ListView_EnsureVisible( ::hWnd, i )
 
    ::DbGoTo( _RecNo )
 
@@ -1519,7 +1511,7 @@ EXTERN INSERTUP, INSERTDOWN, INSERTPRIOR, INSERTNEXT
 HB_FUNC( INSERTUP )
 {
    keybd_event(
-                VK_UP   ,       // virtual-key code
+                VK_UP,          // virtual-key code
                 0,              // hardware scan code
                 0,              // flags specifying various function options
                 0               // additional data associated with keystroke
@@ -1529,7 +1521,7 @@ HB_FUNC( INSERTUP )
 HB_FUNC( INSERTDOWN )
 {
    keybd_event(
-                VK_DOWN ,       // virtual-key code
+                VK_DOWN,        // virtual-key code
                 0,              // hardware scan code
                 0,              // flags specifying various function options
                 0               // additional data associated with keystroke
@@ -1539,7 +1531,7 @@ HB_FUNC( INSERTDOWN )
 HB_FUNC( INSERTPRIOR )
 {
    keybd_event(
-                VK_PRIOR        ,       // virtual-key code
+                VK_PRIOR,       // virtual-key code
                 0,              // hardware scan code
                 0,              // flags specifying various function options
                 0               // additional data associated with keystroke
@@ -1549,7 +1541,7 @@ HB_FUNC( INSERTPRIOR )
 HB_FUNC( INSERTNEXT )
 {
    keybd_event(
-                VK_NEXT ,       // virtual-key code
+                VK_NEXT,        // virtual-key code
                 0,              // hardware scan code
                 0,              // flags specifying various function options
                 0               // additional data associated with keystroke

@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.63 2013-06-06 02:37:19 fyurisich Exp $
+ * $Id: classes.txt,v 1.64 2013-06-19 21:34:00 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -2722,6 +2722,7 @@ CLASS TWINDOW
    METHOD SETFOCUS
    METHOD SETHWND
    METHOD SETKEY
+   METHOD SETREDRAW
    METHOD SETSPLITBOX
    METHOD SETSPLITBOXINFO
    METHOD SHOW
