@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.111 2013-06-19 21:34:00 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.112 2013-06-20 22:47:55 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -142,7 +142,7 @@ CLASS TOBrowse FROM TXBrowse
    MESSAGE GoTop    METHOD Home
    MESSAGE GoBottom METHOD End
    METHOD SetScrollPos
-   
+
    MESSAGE EditGrid METHOD EditAllCells
 ENDCLASS
 
@@ -315,7 +315,7 @@ Local nWidth2, nCol2, oScroll, z
    ASSIGN ::bDelWhen    VALUE bDelWhen    TYPE "B"
    ASSIGN ::DelMsg      VALUE DelMsg      TYPE "C"
    ASSIGN ::OnDelete    VALUE onDelete    TYPE "B"
-   
+
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -454,8 +454,9 @@ Local _RecNo, s, i
       ::DbGoTo( _RecNo )
 
       i := Len( ::aRecMap )
-      ListView_SetCursel ( ::hWnd, i )
-      ListView_EnsureVisible( ::hWnd, i )
+      If s != i
+         ListView_SetCursel ( ::hWnd, i )
+      EndIf
 
    Else
 
@@ -488,9 +489,6 @@ Local _RecNo
       ::Update()
       ::DbGoTo( _RecNo )
 
-      ListView_SetCursel ( ::hWnd, 1 )
-      ListView_EnsureVisible( ::hWnd, 1 )
-
    Else
 
       ::FastUpdate( 1 - LISTVIEW_GETFIRSTITEM ( ::hWnd ), 1 )
@@ -517,7 +515,6 @@ Local _RecNo
    ::DbGoTo( _RecNo )
 
    ListView_SetCursel( ::hWnd, 1 )
-   ListView_EnsureVisible( ::hWnd, 1 )
 
    ::BrowseOnChange()
 
@@ -526,7 +523,7 @@ Return nil
 *-----------------------------------------------------------------------------*
 METHOD End( lAppend ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
-Local _RecNo, _BottomRec, i
+Local _RecNo, _BottomRec
    ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
 
    If Select( ::WorkArea ) == 0
@@ -543,9 +540,7 @@ Local _RecNo, _BottomRec, i
    ::Update()
    ::DbGoTo( _RecNo )
 
-   i := ascan( ::aRecMap, _BottomRec )
-   ListView_SetCursel( ::hWnd, i )
-   ListView_EnsureVisible( ::hWnd, i )
+   ListView_SetCursel( ::hWnd, ascan ( ::aRecMap, _BottomRec ) )
 
    ::BrowseOnChange()
 
@@ -574,9 +569,8 @@ Local s, _RecNo
       ::Update()
       ::DbGoTo( _RecNo )
 
-      If Len( ::aRecMap ) != 0
+      If Len( ::aRecMap ) != 0 .and. s != 1
          ListView_SetCursel( ::hWnd, 1 )
-         ListView_EnsureVisible( ::hWnd, 1 )
       EndIf
 
    Else
@@ -631,8 +625,9 @@ Local s, _RecNo, i
       ::DbGoTo( _RecNo )
 
       i := Len( ::aRecMap )
-      ListView_SetCursel( ::hWnd, i )
-      ListView_EnsureVisible( ::hWnd, i )
+      If s != i
+         ListView_SetCursel( ::hWnd, i )
+      EndIf
 
    Else
 
@@ -691,7 +686,7 @@ RETURN NIL
 *-----------------------------------------------------------------------------*
 METHOD SetValue( Value, mp ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
-Local _RecNo, m, hWnd, cWorkArea, i
+Local _RecNo, m, hWnd, cWorkArea
 
    cWorkArea := ::WorkArea
 
@@ -733,7 +728,7 @@ Local _RecNo, m, hWnd, cWorkArea, i
       Return nil
    EndIf
 
-// Avoid to use DBFILTER()
+   // Avoid to use DBFILTER()
    ::DbSkip()
    ::DbSkip( -1 )
    IF ( cWorkArea )->( RecNo() ) != Value
@@ -750,9 +745,7 @@ Local _RecNo, m, hWnd, cWorkArea, i
    ::Update()
    ::DbGoTo( _RecNo )
 
-   i := ascan( ::aRecMap, Value )
-   ListView_SetCursel ( hWnd, i )
-   ListView_EnsureVisible( ::hWnd, i )
+   ListView_SetCursel ( hWnd, ascan( ::aRecMap, Value ) )
 
    _OOHG_ThisEventType := 'BROWSE_ONCHANGE'
    ::BrowseOnChange()
@@ -886,7 +879,7 @@ Return lRet
 *-----------------------------------------------------------------------------*
 METHOD EditAllCells( nRow, nCol, lAppend ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
-Local lRet, lRowEdited, lSomethingEdited, _RecNo, lRowAppended, lMoreRecs, i
+Local lRet, lRowEdited, lSomethingEdited, _RecNo, lRowAppended, lMoreRecs
 
    ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
    ASSIGN nRow    VALUE nRow    TYPE "N" DEFAULT ::CurrentRow
@@ -914,7 +907,7 @@ Local lRet, lRowEdited, lSomethingEdited, _RecNo, lRowAppended, lMoreRecs, i
          //      with "Index out of bounds" error
          //      Just happened once with a FULLMOVE INPLACE APPEND EDIT DELETE
          //      browse of an indexed database.
-         //      I can´t undertand why and I can´t replicate the error.
+         //      I can't undertand why and I can't replicate the error.
          ::DbGoTo( ::aRecMap[ nRow ] )
          ::DbSkip()
          If ::Eof()
@@ -961,7 +954,7 @@ Local lRet, lRowEdited, lSomethingEdited, _RecNo, lRowAppended, lMoreRecs, i
             // This is needed in case EditAllCells was called from EditItem_B
             ::DbGoTo( aTail( ::aRecMap ) )
          EndIf
-         
+
          If ::RefreshType == 0
             ::Refresh()
          EndIf
@@ -1002,10 +995,7 @@ Local lRet, lRowEdited, lSomethingEdited, _RecNo, lRowAppended, lMoreRecs, i
          ::ScrollUpdate()
          ::DbGoTo( _RecNo )
 
-         i := Len( ::aRecMap )
-         ListView_SetCursel( ::hWnd, i )
-         ListView_EnsureVisible( ::hWnd, i )
-
+         ListView_SetCursel( ::hWnd, Len( ::aRecMap ) )
          ::BrowseOnChange()
          nCol := 1
        ElseIf ::AllowAppend
@@ -1093,7 +1083,6 @@ Local ActualRecord, RecordCount
    EndIf
 
    ListView_SetCursel( ::hWnd, nRow )
-   ListView_EnsureVisible( ::hWnd, nRow )
 
 Return nil
 
@@ -1144,7 +1133,7 @@ Return NIL
 *-----------------------------------------------------------------------------*
 METHOD Refresh() CLASS TOBrowse
 *-----------------------------------------------------------------------------*
-Local s, _RecNo, v, i
+Local s, _RecNo, v
 Local cWorkArea, hWnd
 
    cWorkArea := ::WorkArea
@@ -1203,11 +1192,9 @@ Local cWorkArea, hWnd
 
    ::Update()
 
-   i := ascan( ::aRecMap, v )
-   ListView_SetCursel( hWnd, i )
-   ListView_EnsureVisible( ::hWnd, i )
-
    ::DbGoTo( _RecNo )
+
+   ListView_SetCursel( hWnd, ascan( ::aRecMap, v ) )
 
 Return nil
 

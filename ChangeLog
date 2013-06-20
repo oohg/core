@@ -1,11 +1,19 @@
 /*
- * $Id: ChangeLog,v 1.1073 2013-06-19 21:34:00 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1074 2013-06-20 22:47:55 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-06-20 19:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_browse.prg
+     - All calls to ListView_EnsureVisible were deleted because they
+       made worse the refresh problem.
+     %  Optimized methods PageDown, PageUp, Up and Down so they do not
+        call ListView_SetCursel when it's not necessary.
+     * One comment changed.
 
 2013-06-19 18:34 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * doc/classes.txt
