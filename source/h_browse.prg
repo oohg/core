@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.113 2013-06-24 00:57:55 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.114 2013-06-24 23:17:48 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -572,12 +572,33 @@ Local s  , _RecNo // , _DeltaScroll := { Nil , Nil , Nil , Nil }
       _RecNo := ( ::WorkArea )->( RecNo() )
       If Len( ::aRecMap ) == 0
          ::TopBottom( -1 )
+         ::DbSkip( -1 )
+         ::Update()
       Else
          ::DbGoTo( ::aRecMap[ 1 ] )
+         ::DbSkip( -1 )
+         If ::Bof()
+            ::DbGoTo( _RecNo )
+            Return nil
+         EndIf
+         AINS( ::aRecMap, 1 )
+         ::aRecMap[ 1 ] := ( ::WorkArea )->( RecNo() )
+/*
+         If ::Visible
+            ::SetRedraw( .F. )
+         EndIf
+*/
+         ::InsertBlank( 1 )
+         ::RefreshRow( 1 )
+         ::DeleteItem( Len( ::aRecMap ) + 1 )
+/*
+         If ::Visible
+            ::SetRedraw( .T. )
+         EndIf
+*/
       EndIf
-      ::DbSkip( -1 )
+
       ::scrollUpdate()
-      ::Update()
       // ListView_Scroll( ::hWnd, _DeltaScroll[2] * (-1) , 0 )
       ::DbGoTo( _RecNo )
       If Len( ::aRecMap ) != 0

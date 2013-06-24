@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog,v 1.1075 2013-06-24 00:57:55 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1076 2013-06-24 23:17:48 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-06-24 20:17 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_browse.prg
+     * Changed TOBrowse:Up() method so it does not update all the
+       items in the grid each time is executed.
 
 2013-06-23 21:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_browse.prg
