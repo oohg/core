@@ -1,11 +1,25 @@
 /*
- * $Id: ChangeLog,v 1.1077 2013-06-26 02:06:37 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1078 2013-06-26 21:10:57 migsoft Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-06-26 12:18:22 UTC-0400 MigSoft <migsoft@oohg.org>
+   + buildapp.bat
+   + oohg.hbc
+   + Added batch and configuration file for building application
+     in harbour compiler
+   + source/Buildlib.bat
+   + source/oohg.hbp
+   + source/miniprint.hbp
+   + source/hbprinter.hbp
+     + Added batch and hbp files for building libraries
+       in harbour compiler
+   + samples/oohg/build.bat
+     + Added batch for building exe files
 
 2013-06-25 23:06 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_browse.prg
