@@ -1,0 +1,15 @@
+#
+# $Id: miniprint.hbp,v 1.1 2013-06-26 21:20:58 migsoft Exp $
+#
+
+
+-inc
+
+-hblib
+-o../lib/miniprint
+
+-n -q0 -w -es2
+
+-i../include
+
+miniprint.prg

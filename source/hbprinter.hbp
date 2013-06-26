@@ -1,0 +1,14 @@
+#
+# $Id: hbprinter.hbp,v 1.1 2013-06-26 21:20:58 migsoft Exp $
+#
+
+-inc
+
+-hblib
+-o../lib/hbprinter
+
+-n -q0 -w -es2
+
+-i../include
+
+winprint.prg

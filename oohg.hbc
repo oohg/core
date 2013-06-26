@@ -1,0 +1,22 @@
+#
+# $Id: oohg.hbc,v 1.1 2013-06-26 21:19:42 migsoft Exp $
+#
+
+# oohg paths
+{win}incpaths=include
+{win}libpaths=lib
+{win}incpaths=${hb_curdir}
+# oohg resources
+{win}sources=resources\_temp.o
+
+# gui mode
+{win}gt=gtgui
+
+# core
+{win}libs=oohg
+# core (binary)
+libs=hbprinter miniprint
+# Harbour contribs
+{win}libs=hbct hbmisc hbtip hbziparc hbmzip minizip hbwin xhb
+# system
+{win}libs=msvfw32 vfw32
