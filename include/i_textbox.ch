@@ -1,5 +1,5 @@
 /*
- * $Id: i_textbox.ch,v 1.20 2013-04-28 02:01:13 fyurisich Exp $
+ * $Id: i_textbox.ch,v 1.21 2013-06-26 02:06:37 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -91,62 +91,63 @@
  Copyright 1999-2003, http://www.harbour-project.org/
 ---------------------------------------------------------------------------*/
 
-#command @ <row>, <col> TEXTBOX <name>                  ;
-                        [ OBJ <obj> ]                   ;
+#command @ <row>, <col> TEXTBOX <name> ;
+                        [ OBJ <obj> ] ;
                         [ <dummy1: OF, PARENT> <parent> ] ;
-                        [ HEIGHT <height> ]             ;
-                        [ WIDTH <width> ]               ;
-                        [ FIELD <field> ]      ;
-                        [ VALUE <value> ]               ;
-                        [ < readonly: READONLY > ]    ;
-                        [ FONT <fontname> ]             ;
-                        [ SIZE <fontsize> ]             ;
-                        [ <bold : BOLD> ]               ;
-                        [ <italic : ITALIC> ]           ;
-                        [ <underline : UNDERLINE> ]     ;
-                        [ <strikeout : STRIKEOUT> ]     ;
-                        [ TOOLTIP <tooltip> ]           ;
-                        [ BACKCOLOR <backcolor> ]       ;
-                        [ FONTCOLOR <fontcolor> ]       ;
-                        [ MAXLENGTH <maxlength> ]       ;
-                        [ <upper: UPPERCASE> ]          ;
-                        [ <lower: LOWERCASE> ]          ;
-                        [ <password: PASSWORD> ]        ;
-                        [ ON CHANGE <change> ]          ;
-                        [ ON GOTFOCUS <gotfocus> ]      ;
-                        [ ON LOSTFOCUS <lostfocus> ]    ;
-                        [ ON ENTER <enter> ]      ;
-                        [ <RightAlign: RIGHTALIGN> ]   ;
-                        [ <centeralign: CENTERALIGN> ]  ;
-                        [ <invisible: INVISIBLE> ]   ;
-                        [ <notabstop: NOTABSTOP> ]   ;
-                        [ <rtl: RTL> ]                  ;
-                        [ HELPID <helpid> ]       ;
-                        [ <autoskip: AUTOSKIP> ]        ;
-                        [ <noborder: NOBORDER> ]        ;
-                        [ FOCUSEDPOS <focusedpos> ]     ;
-                        [ <disabled: DISABLED> ]        ;
-                        [ VALID <valid> ]               ;
-                        [ < date : DATE > ]             ;
-                        [ DEFAULTYEAR <year> ]          ;
-                        [ <numeric: NUMERIC> ]          ;
+                        [ HEIGHT <height> ] ;
+                        [ WIDTH <width> ] ;
+                        [ FIELD <field> ] ;
+                        [ VALUE <value> ] ;
+                        [ < readonly: READONLY > ] ;
+                        [ FONT <fontname> ] ;
+                        [ SIZE <fontsize> ] ;
+                        [ <bold : BOLD> ] ;
+                        [ <italic : ITALIC> ] ;
+                        [ <underline : UNDERLINE> ] ;
+                        [ <strikeout : STRIKEOUT> ] ;
+                        [ TOOLTIP <tooltip> ] ;
+                        [ BACKCOLOR <backcolor> ] ;
+                        [ FONTCOLOR <fontcolor> ] ;
+                        [ MAXLENGTH <maxlength> ] ;
+                        [ <upper: UPPERCASE> ] ;
+                        [ <lower: LOWERCASE> ] ;
+                        [ <password: PASSWORD> ] ;
+                        [ ON CHANGE <change> ] ;
+                        [ ON GOTFOCUS <gotfocus> ] ;
+                        [ ON LOSTFOCUS <lostfocus> ] ;
+                        [ ON TEXTFILLED <textfilled> ] ;
+                        [ ON ENTER <enter> ] ;
+                        [ <RightAlign: RIGHTALIGN> ] ;
+                        [ <centeralign: CENTERALIGN> ] ;
+                        [ <invisible: INVISIBLE> ] ;
+                        [ <notabstop: NOTABSTOP> ] ;
+                        [ <rtl: RTL> ] ;
+                        [ HELPID <helpid> ] ;
+                        [ <autoskip: AUTOSKIP> ] ;
+                        [ <noborder: NOBORDER> ] ;
+                        [ FOCUSEDPOS <focusedpos> ] ;
+                        [ <disabled: DISABLED> ] ;
+                        [ VALID <valid> ] ;
+                        [ < date : DATE > ] ;
+                        [ DEFAULTYEAR <year> ] ;
+                        [ <numeric: NUMERIC> ] ;
                         [ <dummy2: INPUTMASK, PICTURE> <inputmask> ] ;
-                        [ FORMAT <format> ]             ;
-                        [ SUBCLASS <subclass> ]         ;
-                        [ ACTION <action> ]             ;
-                        [ ACTION2 <action2> ]           ;
-                        [ IMAGE <abitmap> ]             ;
-                        [ BUTTONWIDTH <btnwidth> ]      ;
+                        [ FORMAT <format> ] ;
+                        [ SUBCLASS <subclass> ] ;
+                        [ ACTION <action> ] ;
+                        [ ACTION2 <action2> ] ;
+                        [ IMAGE <abitmap> ] ;
+                        [ BUTTONWIDTH <btnwidth> ] ;
                         [ WHEN <bWhen> ] ;
-   =>;
+   => ;
          [ <obj> := ] DefineTextBox( <(name)>, <(parent)>, <col>, <row>, <width>, <height>, ;
                         <value>, <fontname>, <fontsize>, <tooltip>, <maxlength>, ;
                         <.upper.>, <.lower.>, <.password.>, ;
                         <{lostfocus}>, <{gotfocus}>, <{change}>, <{enter}>, ;
-                        <.RightAlign.>, <helpid>, <.readonly.> ,<.bold.>, ;
-                        <.italic.>, <.underline.>, <.strikeout.> , <(field)> , ;
-                        <backcolor> , <fontcolor> , <.invisible.> , <.notabstop.> , ;
+                        <.RightAlign.>, <helpid>, <.readonly.>, <.bold.>, ;
+                        <.italic.>, <.underline.>, <.strikeout.>, <(field)>, ;
+                        <backcolor>, <fontcolor>, <.invisible.>, <.notabstop.>, ;
                         <.rtl.>, <.autoskip.>, <.noborder.>, <focusedpos>, <.disabled.>, ;
                         <{valid}>, <.date.>, <.numeric.>, <inputmask>, <format>, ;
-                        [ <subclass>() ] , <{action}>, <abitmap>, <btnwidth>, <{action2}>, ;
-                        <{bWhen}>, <.centeralign.>, <year> )
+                        [ <subclass>() ], <{action}>, <abitmap>, <btnwidth>, <{action2}>, ;
+                        <{bWhen}>, <.centeralign.>, <year>, <{textfilled}> )

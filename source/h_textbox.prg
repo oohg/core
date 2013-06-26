@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.84 2013-04-28 02:01:13 fyurisich Exp $
+ * $Id: h_textbox.prg,v 1.85 2013-06-26 02:06:37 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -169,7 +169,7 @@ METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, cValue, ;
                HelpId, readonly, bold, italic, underline, strikeout, field, ;
                backcolor, fontcolor, invisible, notabstop, lRtl, lAutoSkip, ;
                lNoBorder, OnFocusPos, lDisabled, bValid, bAction, aBitmap, ;
-               nBtnwidth, bAction2, bWhen, lCenter ) CLASS TText
+               nBtnwidth, bAction2, bWhen, lCenter, OnTextFilled ) CLASS TText
 *-----------------------------------------------------------------------------*
 Local nStyle := ES_AUTOHSCROLL, nStyleEx := 0
 
@@ -182,7 +182,7 @@ Local nStyle := ES_AUTOHSCROLL, nStyleEx := 0
               readonly, bold, italic, underline, strikeout, field, ;
               backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, ;
               lAutoSkip, nStyleEx, lNoBorder, OnFocusPos, lDisabled, bValid, ;
-              bAction, aBitmap, nBtnwidth, bAction2, bWhen, lCenter )
+              bAction, aBitmap, nBtnwidth, bAction2, bWhen, lCenter, OnTextFilled )
 
 Return Self
 
@@ -194,7 +194,7 @@ METHOD Define2( cControlName, cParentForm, x, y, w, h, cValue, ;
                 backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, ;
                 lAutoSkip, nStyleEx, lNoBorder, OnFocusPos, lDisabled, ;
                 bValid, bAction, aBitmap, nBtnwidth, bAction2, bWhen, ;
-                lCenter ) CLASS TText
+                lCenter, OnTextFilled ) CLASS TText
 *-----------------------------------------------------------------------------*
 Local nControlHandle
 Local break := Nil
@@ -240,14 +240,15 @@ Local break := Nil
 
    ::SetVarBlock( Field, cValue )
 
-   ASSIGN ::OnLostFocus VALUE uLostFocus TYPE "B"
-   ASSIGN ::OnGotFocus  VALUE uGotFocus  TYPE "B"
-   ASSIGN ::OnChange    VALUE uChange    TYPE "B"
-   ASSIGN ::OnEnter     VALUE uEnter     TYPE "B"
-   ASSIGN ::postBlock   VALUE bValid     TYPE "B"
-   ASSIGN ::lAutoSkip   VALUE lAutoSkip  TYPE "L"
-   ASSIGN ::nOnFocusPos VALUE OnFocusPos TYPE "N"
-   ASSIGN nBtnwidth     VALUE nBtnwidth  TYPE "N" DEFAULT 20
+   ASSIGN ::OnLostFocus  VALUE uLostFocus   TYPE "B"
+   ASSIGN ::OnGotFocus   VALUE uGotFocus    TYPE "B"
+   ASSIGN ::OnChange     VALUE uChange      TYPE "B"
+   ASSIGN ::OnEnter      VALUE uEnter       TYPE "B"
+   ASSIGN ::OnTextFilled VALUE OnTextFilled TYPE "B"
+   ASSIGN ::postBlock    VALUE bValid       TYPE "B"
+   ASSIGN ::lAutoSkip    VALUE lAutoSkip    TYPE "L"
+   ASSIGN ::nOnFocusPos  VALUE OnFocusPos   TYPE "N"
+   ASSIGN nBtnwidth      VALUE nBtnwidth    TYPE "N" DEFAULT 20
 
    If ! HB_IsArray( aBitmap )
       aBitmap := { aBitmap, Nil }
@@ -762,7 +763,7 @@ METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, uValue, ;
                italic, underline, strikeout, field, backcolor, fontcolor, ;
                invisible, notabstop, lRtl, lAutoSkip, lNoBorder, OnFocusPos, ;
                lDisabled, bValid, lUpper, lLower, bAction, aBitmap, ;
-               nBtnwidth, bAction2, bWhen, lCenter, nYear ) CLASS TTextPicture
+               nBtnwidth, bAction2, bWhen, lCenter, nYear, OnTextFilled ) CLASS TTextPicture
 *-----------------------------------------------------------------------------*
 Local nStyle := ES_AUTOHSCROLL, nStyleEx := 0
 
@@ -792,7 +793,7 @@ Local nStyle := ES_AUTOHSCROLL, nStyleEx := 0
               readonly, bold, italic, underline, strikeout, field, ;
               backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, ;
               lAutoSkip, nStyleEx, lNoBorder, OnFocusPos, lDisabled, bValid, ;
-              bAction, aBitmap, nBtnwidth, bAction2, bWhen, lCenter )
+              bAction, aBitmap, nBtnwidth, bAction2, bWhen, lCenter, OnTextFilled )
 
 Return Self
 
@@ -1480,7 +1481,7 @@ METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, cValue, ;
                HelpId, readonly, bold, italic, underline, strikeout, field , ;
                backcolor , fontcolor , invisible , notabstop, lRtl, lAutoSkip, ;
                lNoBorder, OnFocusPos, lDisabled, bValid, bAction, aBitmap, ;
-               nBtnwidth, bAction2, bWhen, lCenter ) CLASS TTextNum
+               nBtnwidth, bAction2, bWhen, lCenter, OnTextFilled ) CLASS TTextNum
 *-----------------------------------------------------------------------------*
 Local nStyle := ES_NUMBER + ES_AUTOHSCROLL, nStyleEx := 0
 
@@ -1493,7 +1494,7 @@ Local nStyle := ES_NUMBER + ES_AUTOHSCROLL, nStyleEx := 0
               readonly, bold, italic, underline, strikeout, field, ;
               backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, ;
               lAutoSkip, nStyleEx, lNoBorder, OnFocusPos, lDisabled, bValid, ;
-              bAction, aBitmap, nBtnwidth, bAction2, bWhen, lCenter )
+              bAction, aBitmap, nBtnwidth, bAction2, bWhen, lCenter, OnTextFilled )
 
 Return Self
 
@@ -1553,7 +1554,7 @@ FUNCTION DefineTextBox( cControlName, cParentForm, x, y, Width, Height, ;
                         fontcolor, invisible, notabstop, lRtl, lAutoSkip, ;
                         lNoBorder, OnFocusPos, lDisabled, bValid, ;
                         date, numeric, inputmask, format, subclass, bAction, ;
-                        aBitmap, nBtnwidth, bAction2, bWhen, lCenter, nYear )
+                        aBitmap, nBtnwidth, bAction2, bWhen, lCenter, nYear, OnTextFilled )
 *-----------------------------------------------------------------------------*
 Local Self, lInsert
 
@@ -1604,7 +1605,7 @@ Local Self, lInsert
                 italic, underline, strikeout, field, backcolor, fontcolor, ;
                 invisible, notabstop, lRtl, lAutoSkip, lNoBorder, OnFocusPos, ;
                 lDisabled, bValid, lUpper, lLower, bAction, aBitmap, ;
-                nBtnwidth, bAction2, bWhen, lCenter, nYear )
+                nBtnwidth, bAction2, bWhen, lCenter, nYear, OnTextFilled )
    Else
       Self := _OOHG_SelectSubClass( If( numeric, TTextNum(), TText() ), subclass )
       ::Define( cControlName, cParentForm, x, y, Width, Height, Value, ;
@@ -1613,7 +1614,7 @@ Local Self, lInsert
                 HelpId, readonly, bold, italic, underline, strikeout, field, ;
                 backcolor, fontcolor, invisible, notabstop, lRtl, lAutoSkip, ;
                 lNoBorder, OnFocusPos, lDisabled, bValid, bAction, aBitmap, ;
-                nBtnwidth, bAction2, bWhen, lCenter )
+                nBtnwidth, bAction2, bWhen, lCenter, OnTextFilled )
    EndIf
 
 Return Self

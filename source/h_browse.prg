@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.114 2013-06-24 23:17:48 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.115 2013-06-26 02:06:37 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -583,19 +583,15 @@ Local s  , _RecNo // , _DeltaScroll := { Nil , Nil , Nil , Nil }
          EndIf
          AINS( ::aRecMap, 1 )
          ::aRecMap[ 1 ] := ( ::WorkArea )->( RecNo() )
-/*
          If ::Visible
             ::SetRedraw( .F. )
          EndIf
-*/
          ::InsertBlank( 1 )
          ::RefreshRow( 1 )
          ::DeleteItem( Len( ::aRecMap ) + 1 )
-/*
          If ::Visible
             ::SetRedraw( .T. )
          EndIf
-*/
       EndIf
 
       ::scrollUpdate()
@@ -650,18 +646,14 @@ Local s , _RecNo  //, _DeltaScroll
          EndIf
          ADEL( ::aRecMap, 1 )
          ::aRecMap[ Len( ::aRecMap ) ] := ( ::WorkArea )->( RecNo() )
-/*
          If ::Visible
             ::SetRedraw( .F. )
          EndIf
-*/
          ::RefreshRow( Len( ::aRecMap ) + 1 )
          ::DeleteItem( 1 )
-/*
          If ::Visible
             ::SetRedraw( .T. )
          EndIf
-*/
       EndIf
 
       If Len( ::aRecMap ) != 0

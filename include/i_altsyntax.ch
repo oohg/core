@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.86 2013-06-06 02:37:19 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.87 2013-06-26 02:06:37 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -122,6 +122,7 @@ Memvariables
 #xtranslate _OOHG_ActiveControlTrailingFontColor      => _OOHG_ActiveControlInfo \[  25 \]
 #xtranslate _OOHG_ActiveControlBackgroundColor        => _OOHG_ActiveControlInfo \[  26 \]
 
+#xtranslate _OOHG_ActiveControlOnTextFilled           => _OOHG_ActiveControlInfo \[ 118 \]
 #xtranslate _OOHG_ActiveControlDelayedLoad            => _OOHG_ActiveControlInfo \[ 119 \]
 #xtranslate _OOHG_ActiveControlIncrementalSearch      => _OOHG_ActiveControlInfo \[ 120 \]
 #xtranslate _OOHG_ActiveControlIntegralHeight         => _OOHG_ActiveControlInfo \[ 121 \]
@@ -1047,28 +1048,29 @@ TEXT BOX
 #xcommand DEFINE TEXTBOX <name> ;
         => ;
         _OOHG_ClearActiveControlInfo( <(name)> ) ;;
-        _OOHG_ActiveControlField       := Nil     ;;
-        _OOHG_ActiveControlMaxLength   := Nil     ;;
-        _OOHG_ActiveControlUpperCase   := .F.     ;;
-        _OOHG_ActiveControlLowerCase   := .F.     ;;
-        _OOHG_ActiveControlNumeric     := .F.     ;;
-        _OOHG_ActiveControlPassword    := .F.     ;;
-        _OOHG_ActiveControlRightAlign  := .F.     ;;
-        _OOHG_ActiveControlReadonly    := .F.     ;;
-        _OOHG_ActiveControlDateType    := .F.     ;;
-        _OOHG_ActiveControlInputMask   := Nil     ;;
-        _OOHG_ActiveControlPicture     := Nil     ;;
-        _OOHG_ActiveControlFormat      := Nil     ;;
-        _OOHG_ActiveControlNoBorder    := .F.     ;;
-        _OOHG_ActiveControlAutoSkip    := .F.     ;;
-        _OOHG_ActiveControlFocusedPos  := Nil     ;;
-        _OOHG_ActiveControlValid       := Nil     ;;
-        _OOHG_ActiveControlImage       := Nil     ;;
-        _OOHG_ActiveControlWhen        := Nil     ;;
-        _OOHG_ActiveControlAction      := Nil     ;;
-        _OOHG_ActiveControlAction2     := Nil     ;;
-        _OOHG_ActiveControlCenterAlign := Nil     ;;
-        _OOHG_ActiveControlDefaultYear := Nil
+        _OOHG_ActiveControlField        := Nil    ;;
+        _OOHG_ActiveControlMaxLength    := Nil    ;;
+        _OOHG_ActiveControlUpperCase    := .F.    ;;
+        _OOHG_ActiveControlLowerCase    := .F.    ;;
+        _OOHG_ActiveControlNumeric      := .F.    ;;
+        _OOHG_ActiveControlPassword     := .F.    ;;
+        _OOHG_ActiveControlRightAlign   := .F.    ;;
+        _OOHG_ActiveControlReadonly     := .F.    ;;
+        _OOHG_ActiveControlDateType     := .F.    ;;
+        _OOHG_ActiveControlInputMask    := Nil    ;;
+        _OOHG_ActiveControlPicture      := Nil    ;;
+        _OOHG_ActiveControlFormat       := Nil    ;;
+        _OOHG_ActiveControlNoBorder     := .F.    ;;
+        _OOHG_ActiveControlAutoSkip     := .F.    ;;
+        _OOHG_ActiveControlFocusedPos   := Nil    ;;
+        _OOHG_ActiveControlValid        := Nil    ;;
+        _OOHG_ActiveControlImage        := Nil    ;;
+        _OOHG_ActiveControlWhen         := Nil    ;;
+        _OOHG_ActiveControlAction       := Nil    ;;
+        _OOHG_ActiveControlAction2      := Nil    ;;
+        _OOHG_ActiveControlCenterAlign  := Nil    ;;
+        _OOHG_ActiveControlDefaultYear  := Nil    ;;
+        _OOHG_ActiveControlOnTextFilled := Nil
 
 #xcommand UPPERCASE <uppercase> ;
         => ;
@@ -1117,6 +1119,14 @@ TEXT BOX
 #xcommand DEFAULTYEAR <year> ;
         => ;
         _OOHG_ActiveControlDefaultYear := <year>
+
+#xcommand ONTEXTFILLED <ontextfilled> ;
+        => ;
+        _OOHG_ActiveControlOnTextFilled := <{ontextfilled}>
+
+#xcommand ON TEXTFILLED <ontextfilled> ;
+        => ;
+        _OOHG_ActiveControlOnTextFilled := <{ontextfilled}>
 
 #xcommand END TEXTBOX;
         => ;
@@ -1168,7 +1178,8 @@ TEXT BOX
                 _OOHG_ActiveControlAction2, ;
                 _OOHG_ActiveControlWhen, ;
                 _OOHG_ActiveControlCenterAlign, ;
-                _OOHG_ActiveControlDefaultYear ), NIL, _OOHG_ActiveControlAssignObject )
+                _OOHG_ActiveControlDefaultYear, ;
+                _OOHG_ActiveControlOnTextFilled ), NIL, _OOHG_ActiveControlAssignObject )
 
 /*----------------------------------------------------------------------------
 MONTH CALENDAR
