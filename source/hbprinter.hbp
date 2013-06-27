@@ -1,5 +1,5 @@
 #
-# $Id: hbprinter.hbp,v 1.1 2013-06-26 21:20:58 migsoft Exp $
+# $Id: hbprinter.hbp,v 1.2 2013-06-27 00:00:38 fyurisich Exp $
 #
 
 -inc
@@ -7,7 +7,7 @@
 -hblib
 -o../lib/hbprinter
 
--n -q0 -w -es2
+-n -q0 -w3 -ko -es2
 
 -i../include
 

@@ -1,5 +1,5 @@
 #
-# $Id: miniprint.hbp,v 1.1 2013-06-26 21:20:58 migsoft Exp $
+# $Id: miniprint.hbp,v 1.2 2013-06-27 00:00:38 fyurisich Exp $
 #
 
 
@@ -8,7 +8,7 @@
 -hblib
 -o../lib/miniprint
 
--n -q0 -w -es2
+-n -q0 -ko -w3 -es2
 
 -i../include
 
