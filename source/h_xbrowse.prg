@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.81 2013-05-18 03:01:57 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.82 2013-06-29 19:19:32 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -80,6 +80,8 @@ CLASS TXBROWSE FROM TGrid
    DATA SearchWrap        INIT .F.
    DATA VScrollCopy       INIT nil
    DATA lVscrollVisible   INIT .F.
+   DATA aColumnBlocks     INIT nil
+   DATA lFixedBlocks      INIT .F.
 
    METHOD Define
    METHOD Refresh
@@ -88,7 +90,7 @@ CLASS TXBROWSE FROM TGrid
    METHOD MoveTo
    METHOD CurrentRow       SETGET
    METHOD DoChange         BLOCK { |Self| ::DoEvent( ::OnChange, "CHANGE" ) }
-
+   METHOD FixBlocks        SETGET
    METHOD SizePos
    METHOD Enabled          SETGET
    METHOD Visible          SETGET
@@ -157,15 +159,14 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lNoTabStop, lInvisible, lDescending, bDelWhen, DelMsg, ;
                onDelete, aHeaderImage, aHeaderImageAlign, FullMove, ;
                aSelectedColors, aEditKeys, lDblBffr, lFocusRect, lPLM, ;
-               lFixedCols, abortedit, click, lFixedWidths ) CLASS TXBrowse
+               lFixedCols, abortedit, click, lFixedWidths, lFixedBlocks ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
 Local nWidth2, nCol2, lLocked, oScroll, z
 
-   ASSIGN ::aFields  VALUE aFields  TYPE "A"
-   ASSIGN ::aHeaders VALUE aHeaders TYPE "A" DEFAULT {}
-   ASSIGN ::aWidths  VALUE aWidths  TYPE "A" DEFAULT {}
-   ASSIGN ::aJust    VALUE aJust    TYPE "A" DEFAULT {}
-
+   ASSIGN ::aFields     VALUE aFields     TYPE "A"
+   ASSIGN ::aHeaders    VALUE aHeaders    TYPE "A" DEFAULT {}
+   ASSIGN ::aWidths     VALUE aWidths     TYPE "A" DEFAULT {}
+   ASSIGN ::aJust       VALUE aJust       TYPE "A" DEFAULT {}
    ASSIGN ::lDescending VALUE lDescending TYPE "L"
 
    If ValType( columninfo ) == "A" .AND. LEN( columninfo ) > 0
@@ -224,6 +225,8 @@ Local nWidth2, nCol2, lLocked, oScroll, z
               lFixedCols, abortedit, click, lFixedWidths )
 
    ::nWidth := w
+
+   ::FixBlocks( lFixedBlocks )
 
    ASSIGN ::Lock          VALUE lock          TYPE "L"
    ASSIGN ::AllowDelete   VALUE AllowDelete   TYPE "L"
@@ -298,6 +301,21 @@ Local nWidth2, nCol2, lLocked, oScroll, z
 Return Self
 
 *-----------------------------------------------------------------------------*
+METHOD FixBlocks( lFix ) CLASS TXBrowse
+*-----------------------------------------------------------------------------*
+   If HB_IsLogical( lFix )
+      If lFix
+         ::aColumnBlocks := ARRAY( len( ::aFields ) )
+         AEVAL( ::aFields, { |c,i| ::aColumnBlocks[ i ] := ::ColumnBlock( i ), c } )
+         ::lFixedBlocks := .T.
+      Else
+         ::lFixedBlocks := .F.
+         ::aColumnBlocks := nil
+      EndIf
+   EndIf
+Return ::lFixedBlocks
+
+*-----------------------------------------------------------------------------*
 METHOD Refresh( nCurrent, lNoEmptyBottom ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
 Local nRow, nCount, nSkipped
@@ -354,8 +372,12 @@ Local aItem, cWorkArea
       If ValType( cWorkArea ) $ "CM" .AND. Empty( cWorkArea )
          cWorkArea := nil
       EndIf
-      aItem := ARRAY( LEN( ::aFields ) )
-      AEVAL( aItem, { |x,i| aItem[ i ] := EVAL( ::ColumnBlock( i ), cWorkArea ), x } )
+      If ::FixBlocks()
+        aItem := ACLONE( ::aColumnBlocks )
+      Else
+        aItem := ARRAY( LEN( ::aFields ) )
+        AEVAL( aItem, { |x,i| aItem[ i ] := EVAL( ::ColumnBlock( i ), cWorkArea ), x } )
+      EndIf
       AEVAL( aItem, { |x,i| IF( VALTYPE( x ) $ "CM", aItem[ i ] := TRIM( x ),  ) } )
 
       If ValType( cWorkArea ) $ "CM"
@@ -754,7 +776,11 @@ Local cWorkArea, uGridValue
       ::DbSkip()
 
       Do While ! ::Eof()
-         uGridValue := Eval( ::ColumnBlock( ::SearchCol ), cWorkArea )
+         If ::FixBlocks()
+           uGridValue := Eval( ::aColumnBlocks[ ::SearchCol ], cWorkArea )
+         Else
+           uGridValue := Eval( ::ColumnBlock( ::SearchCol ), cWorkArea )
+         EndIf
          If ValType( uGridValue ) == "A"      // TGridControlImageData
             uGridValue := uGridValue[ 1 ]
          EndIf
@@ -770,7 +796,11 @@ Local cWorkArea, uGridValue
          ::TopBottom( -1 )
 
          Do While ! ::Eof()
-            uGridValue := Eval( ::ColumnBlock( ::SearchCol ), cWorkArea )
+            If ::FixBlocks()
+              uGridValue := Eval( ::aColumnBlocks[ ::SearchCol ], cWorkArea )
+            Else
+              uGridValue := Eval( ::ColumnBlock( ::SearchCol ), cWorkArea )
+            EndIf
             If ValType( uGridValue ) == "A"      // TGridControlImageData
                uGridValue := uGridValue[ 1 ]
             EndIf
@@ -1530,6 +1560,12 @@ METHOD AddColumn( nColIndex, xField, cHeader, nWidth, nJustify, uForeColor, ;
    AINS( ::aFields, nColIndex )
    ::aFields[ nColIndex ] := xField
 
+   If ::FixBlocks()
+      ASIZE( ::aColumnBlocks, LEN( ::aFields ) + 1 )
+      AINS( ::aColumnBlocks, nColIndex )
+      ::aColumnBlocks[ nColIndex ] := ::ColumnBlock( nColIndex )
+   EndIf
+
    If HB_IsArray( ::aReplaceField )
       ASIZE( ::aReplaceField, LEN( ::aReplaceField ) + 1 )
       AINS( ::aReplaceField, nColIndex )
@@ -1556,6 +1592,9 @@ LOCAL nColumns, nRet
    EndIf
 
    _OOHG_DeleteArrayItem( ::aFields,  nColIndex )
+   If ::FixBlocks()
+      _OOHG_DeleteArrayItem( ::aColumnBlocks,  nColIndex )
+   EndIf
    If HB_IsArray( ::aReplaceField )
       _OOHG_DeleteArrayItem( ::aReplaceField,  nColIndex )
    EndIf

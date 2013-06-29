@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.87 2013-06-26 02:06:37 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.88 2013-06-29 19:19:32 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -122,6 +122,7 @@ Memvariables
 #xtranslate _OOHG_ActiveControlTrailingFontColor      => _OOHG_ActiveControlInfo \[  25 \]
 #xtranslate _OOHG_ActiveControlBackgroundColor        => _OOHG_ActiveControlInfo \[  26 \]
 
+#xtranslate _OOHG_ActiveControlFixedBlocks            => _OOHG_ActiveControlInfo \[ 117 \]
 #xtranslate _OOHG_ActiveControlOnTextFilled           => _OOHG_ActiveControlInfo \[ 118 \]
 #xtranslate _OOHG_ActiveControlDelayedLoad            => _OOHG_ActiveControlInfo \[ 119 \]
 #xtranslate _OOHG_ActiveControlIncrementalSearch      => _OOHG_ActiveControlInfo \[ 120 \]
@@ -2325,7 +2326,8 @@ BROWSE
         _OOHG_ActiveControlUpdateAll        := .F. ;;
         _OOHG_ActiveControlAbortEdit        := Nil ;;
         _OOHG_ActiveControlAction           := Nil ;;
-        _OOHG_ActiveControlFixedWidths      := .F.
+        _OOHG_ActiveControlFixedWidths      := .F. ;;
+        _OOHG_ActiveControlFixedBlocks      := .F.
 
 #xcommand DELETEWHEN <delwhen> ;
         => ;
@@ -2374,6 +2376,10 @@ BROWSE
 #xcommand UPDATEALL <updall> ;
         => ;
         _OOHG_ActiveControlUpdateAll := <updall>
+
+#xcommand FIXEDBLOCKS <fixedblocks> ;
+        => ;
+        _OOHG_ActiveControlFixedBlocks := <fixedblocks>
 
 #xcommand END BROWSE ;
         => ;
@@ -2451,7 +2457,8 @@ BROWSE
                 _OOHG_ActiveControlUpdateAll, ;
                 _OOHG_ActiveControlAbortEdit, ;
                 _OOHG_ActiveControlAction, ;
-                _OOHG_ActiveControlFixedWidths )
+                _OOHG_ActiveControlFixedWidths, ;
+                _OOHG_ActiveControlFixedBlocks )
 
 /*----------------------------------------------------------------------------
 XBROWSE
@@ -2505,7 +2512,8 @@ XBROWSE
         _OOHG_ActiveControlFixedCols        := .F. ;;
         _OOHG_ActiveControlAbortEdit        := Nil ;;
         _OOHG_ActiveControlAction           := Nil ;;
-        _OOHG_ActiveControlFixedWidths      := .F.
+        _OOHG_ActiveControlFixedWidths      := .F. ;;
+        _OOHG_ActiveControlFixedBlocks      := .F.
 
 #xcommand END XBROWSE ;
         => ;
@@ -2579,7 +2587,8 @@ XBROWSE
                 _OOHG_ActiveControlFixedCols, ;
                 _OOHG_ActiveControlAbortEdit, ;
                 _OOHG_ActiveControlAction, ;
-                _OOHG_ActiveControlFixedWidths )
+                _OOHG_ActiveControlFixedWidths, ;
+                _OOHG_ActiveControlFixedBlocks )
 
 /*----------------------------------------------------------------------------
 HYPERLINK

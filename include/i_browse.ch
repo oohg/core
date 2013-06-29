@@ -1,5 +1,5 @@
 /*
- * $Id: i_browse.ch,v 1.38 2012-10-18 00:46:46 fyurisich Exp $
+ * $Id: i_browse.ch,v 1.39 2013-06-29 19:19:32 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -177,7 +177,8 @@
       [ <updall: UPDATEALL> ] ;
       [ ON ABORTEDIT <abortedit> ] ;
       [ <fixedwidths: FIXEDWIDTHS> ] ;
-   =>;
+      [ <fixedblocks: FIXEDBLOCKS> ] ;
+   => ;
       [ <oObj> := ] _OOHG_SelectSubClass( TOBrowse(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, <widths>, ;
             <Fields>, <value>, <fontname>, <fontsize>, <tooltip>, <{change}>, ;
@@ -195,7 +196,7 @@
             iif( upper( #<bffr> ) == "DOUBLEBUFFER", .T., iif( upper( #<bffr> ) == "SINGLEBUFFER", .F., .T. ) ), ;
             iif( upper( #<focus> ) == "NOFOCUSRECT", .F., iif( upper( #<focus> ) == "FOCUSRECT", .T., NIL ) ), ;
             <.plm.>, iif( upper( #<sync> ) == "UNSYNCHRONIZED", .F., iif( upper( #<sync> ) == "SYNCHRONIZED", .T., NIL ) ), ;
-            <.fixedcols.>, <.nodelmsg.>, <.updall.>, <{abortedit}>, <{click}>, <.fixedwidths.> )
+            <.fixedcols.>, <.nodelmsg.>, <.updall.>, <{abortedit}>, <{click}>, <.fixedwidths.>, <.fixedblocks.> )
 
 #command SET BROWSESYNC ON  => SetBrowseSync( .T. )
 #command SET BROWSESYNC OFF => SetBrowseSync( .F. )

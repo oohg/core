@@ -1,11 +1,36 @@
 /*
- * $Id: ChangeLog,v 1.1081 2013-06-29 14:04:44 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1082 2013-06-29 19:19:32 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-06-29 16:19 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_browse.prg
+     + Added parameter lFixedBlocks to method Define.
+     * Changed Update() method to support FIXEDBLOCKS clause.
+     * Changed Events() method to support FIXEDBLOCKS clause.
+   * source/h_xbrowse.prg
+     + Added DATAs lFixedBlocks and aColumnBlocks.
+     + Added parameter lFixedBlocks to method Define.
+     + Added METHOD FixBlocks().
+     * Changed Refresh() method to support FIXEDBLOCKS clause.
+     * Changed Events() method to support FIXEDBLOCKS clause.
+     * Changed AddColumn() method to support FIXEDBLOCKS clause.
+     * Changed DeleteColumn() method to support FIXEDBLOCKS clause.
+   * include/i_browse.prg
+   * include/i_xbrowse.prg
+   * include/i_altsyntax.prg
+   * include/i_hmg_compat.prg
+     + Added support for FIXEDBLOCKS clause.
+   NOTE: this clause changes the default behaviour of the control,
+   causing the evaluation of the codeblocks used to set the values
+   of each item's columns only at control's define time (or when
+   adding a new column), instead of evaluating them each time an
+   item is showed or refreshed. This clause may reduce the time
+   needed to refresh a control with many columns.
 
 2013-06-29 11:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_browse.prg

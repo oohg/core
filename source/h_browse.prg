@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.118 2013-06-29 14:04:44 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.119 2013-06-29 19:19:32 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -160,15 +160,15 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lDescending, bDelWhen, DelMsg, onDelete, aHeaderImage, ;
                aHeaderImageAlign, FullMove, aSelectedColors, aEditKeys, ;
                uRefresh, dblbffr, lFocusRect, lPLM, sync, lFixedCols, ;
-               lNoDelMsg, lUpdateAll, abortedit, click, lFixedWidths ) CLASS TOBrowse
+               lNoDelMsg, lUpdateAll, abortedit, click, lFixedWidths, ;
+               lFixedBlocks ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local nWidth2, nCol2, oScroll, z
 
-   ASSIGN ::aFields  VALUE aFields  TYPE "A"
-   ASSIGN ::aHeaders VALUE aHeaders TYPE "A" DEFAULT {}
-   ASSIGN ::aWidths  VALUE aWidths  TYPE "A" DEFAULT {}
-   ASSIGN ::aJust    VALUE aJust    TYPE "A" DEFAULT {}
-
+   ASSIGN ::aFields     VALUE aFields     TYPE "A"
+   ASSIGN ::aHeaders    VALUE aHeaders    TYPE "A" DEFAULT {}
+   ASSIGN ::aWidths     VALUE aWidths     TYPE "A" DEFAULT {}
+   ASSIGN ::aJust       VALUE aJust       TYPE "A" DEFAULT {}
    ASSIGN ::lDescending VALUE lDescending TYPE "L"
    ASSIGN ::SyncStatus  VALUE sync        TYPE "L" DEFAULT nil
    ASSIGN ::lNoDelMsg   VALUE lNoDelMsg   TYPE "L"
@@ -246,6 +246,8 @@ Local nWidth2, nCol2, oScroll, z
    IF ValType( Value ) == "N"
       ::nValue := Value
    ENDIF
+
+   ::FixBlocks( lFixedBlocks )
 
    ASSIGN ::Lock          VALUE lock          TYPE "L"
    ASSIGN ::AllowDelete   VALUE AllowDelete   TYPE "L"
@@ -337,12 +339,18 @@ Local lColor, aFields, cWorkArea, hWnd, nWidth
      Return nil
    Endif
 
-   lColor := ! ( Empty( ::DynamicForeColor ) .AND. Empty( ::DynamicBackColor ) )
    nWidth := LEN( ::aFields )
-   aFields := ARRAY( nWidth )
-   AEVAL( ::aFields, { |c,i| aFields[ i ] := ::ColumnBlock( i ), c } )
+
+   If ::FixBlocks()
+     aFields := ACLONE( ::aColumnBlocks )
+   Else
+     aFields := ARRAY( nWidth )
+     AEVAL( ::aFields, { |c,i| aFields[ i ] := ::ColumnBlock( i ), c } )
+   EndIf
+
    hWnd := ::hWnd
 
+   lColor := ! ( Empty( ::DynamicForeColor ) .AND. Empty( ::DynamicBackColor ) )
    If lColor
       ::GridForeColor := ARRAY( PageLength )
       ::GridBackColor := ARRAY( PageLength )
@@ -1292,7 +1300,11 @@ Local cWorkArea, _RecNo, Value, uGridValue
       ::DbSkip()
 
       Do While ! ::Eof()
-         uGridValue := Eval( ::ColumnBlock( ::SearchCol ), cWorkArea )
+         If ::FixBlocks()
+           uGridValue := Eval( ::aColumnBlocks[ ::SearchCol ], cWorkArea )
+         Else
+           uGridValue := Eval( ::ColumnBlock( ::SearchCol ), cWorkArea )
+         EndIf
          If ValType( uGridValue ) == "A"      // TGridControlImageData
             uGridValue := uGridValue[ 1 ]
          EndIf
@@ -1307,7 +1319,11 @@ Local cWorkArea, _RecNo, Value, uGridValue
       If ::Eof() .AND. ::SearchWrap
          ::TopBottom( -1 )
          Do While ! ::Eof() .AND. ( cWorkArea )->( RecNo() ) != Value
-            uGridValue := Eval( ::ColumnBlock( ::SearchCol ), cWorkArea )
+            If ::FixBlocks()
+              uGridValue := Eval( ::aColumnBlocks[ ::SearchCol ], cWorkArea )
+            Else
+              uGridValue := Eval( ::ColumnBlock( ::SearchCol ), cWorkArea )
+            EndIf
             If ValType( uGridValue ) == "A"      // TGridControlImageData
                uGridValue := uGridValue[ 1 ]
             EndIf

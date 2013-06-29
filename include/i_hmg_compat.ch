@@ -1,5 +1,5 @@
 /*
- * $Id: i_hmg_compat.ch,v 1.19 2013-05-25 20:30:11 fyurisich Exp $
+ * $Id: i_hmg_compat.ch,v 1.20 2013-06-29 19:19:32 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -182,6 +182,7 @@
       [ <updall: UPDATEALL> ] ;
       [ ON ABORTEDIT <abortedit> ] ;
       [ <fixedwidths: FIXEDWIDTHS> ] ;
+      [ <fixedblocks: FIXEDBLOCKS> ] ;
    => ;
       [ <oObj> := ] _OOHG_SelectSubClass( TOBrowse(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, , , <w>, <h>, <headers>, <widths>, <Fields>, ;
@@ -200,18 +201,8 @@
             iif( upper( #<bffr> ) == "DOUBLEBUFFER", .T., iif( upper( #<bffr> ) == "SINGLEBUFFER", .F., .T. ) ), ;
             iif( upper( #<focus> ) == "NOFOCUSRECT", .F., iif( upper( #<focus> ) == "FOCUSRECT", .T., NIL ) ), ;
             <.plm.>, iif( upper( #<sync> ) == "UNSYNCHRONIZED", .F., iif( upper( #<sync> ) == "SYNCHRONIZED", .T., NIL ) ), ;
-            <.fixedcols.>, <.nodelmsg.>, <.updall.>, <{abortedit}>, <{click}>, <.fixedwidths.> )
+            <.fixedcols.>, <.nodelmsg.>, <.updall.>, <{abortedit}>, <{click}>, <.fixedwidths.>, <.fixedblocks.> )
 
-/*
-TODO:
-      [ PICTURE <bitmap> ] ;
-      [ ICON <icon> ] ;
-      [ BACKCOLOR <backcolor> ] ;
-      [ FONTCOLOR <fontcolor> ] ;
-      [ <nohotlight : NOHOTLIGHT> ] ;
-      [ <noxpstyle: NOXPSTYLE > ] ;
-      [ <default: DEFAULT> ] ;
-*/
 #xcommand @ <row>,<col> BUTTONEX <name> ;
       [ OBJ <obj> ] ;
       [ <dummy1: OF, PARENT> <parent> ] ;
@@ -293,6 +284,17 @@ TODO:
             [ <themed> ] ;
             [ IMAGEMARGIN <aImageMargin> ] ;
             [ <no3dcolors> ]
+
+/*
+TODO:
+      [ PICTURE <bitmap> ] ;
+      [ ICON <icon> ] ;
+      [ BACKCOLOR <backcolor> ] ;
+      [ FONTCOLOR <fontcolor> ] ;
+      [ <nohotlight : NOHOTLIGHT> ] ;
+      [ <noxpstyle: NOXPSTYLE > ] ;
+      [ <default: DEFAULT> ] ;
+*/
 
 #xtranslate BUTTONEX [ <x> ] LEFTTEXT => BUTTONEX [ <x> ] RIGHT
 #xtranslate BUTTONEX [ <x> ] VERTICAL => BUTTONEX [ <x> ] TOP
