@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.116 2013-06-27 00:00:38 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.117 2013-06-29 13:42:25 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -332,17 +332,17 @@ Local lColor, aFields, cWorkArea, hWnd, nWidth
       Return nil
    EndIf
 
-   lColor := ! ( Empty( ::DynamicForeColor ) .AND. Empty( ::DynamicBackColor ) )
-   nWidth := LEN( ::aFields )
-   aFields := ARRAY( nWidth )
-   AEVAL( ::aFields, { |c,i| aFields[ i ] := ::ColumnBlock( i ), c } )
-   hWnd := ::hWnd
-
    PageLength := ::CountPerPage
 
    If PageLength < 1
      Return nil
    Endif
+
+   lColor := ! ( Empty( ::DynamicForeColor ) .AND. Empty( ::DynamicBackColor ) )
+   nWidth := LEN( ::aFields )
+   aFields := ARRAY( nWidth )
+   AEVAL( ::aFields, { |c,i| aFields[ i ] := ::ColumnBlock( i ), c } )
+   hWnd := ::hWnd
 
    If lColor
       ::GridForeColor := ARRAY( PageLength )
@@ -355,12 +355,10 @@ Local lColor, aFields, cWorkArea, hWnd, nWidth
    // update rows
    x := 0
    nCurrentLength := ::ItemCount()
+   aTemp := ARRAY( nWidth )
 
    Do While x < PageLength .AND. ! ::Eof()
-
       x++
-
-      aTemp := ARRAY( nWidth )
 
       AEVAL( aFields, { |b,i| aTemp[ i ] := EVAL( b ) } )
 
@@ -625,9 +623,8 @@ Local s, _RecNo, nLen
             Return nil
          EndIf
          // Add one record at the bottom
-         AADD( ::aRecMap, nil )
+         AADD( ::aRecMap, ( ::WorkArea )->( RecNo() ) )
          nLen := Len( ::aRecMap )
-         ::aRecMap[ nLen ] := ( ::WorkArea )->( RecNo() )
          If ::Visible
             ::SetRedraw( .F. )
          EndIf
