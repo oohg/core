@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.117 2013-06-29 13:42:25 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.118 2013-06-29 14:04:44 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -322,7 +322,6 @@ Return Self
 METHOD UpDate() CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local PageLength, aTemp, _BrowseRecMap := {}, x
-Local nCurrentLength
 Local lColor, aFields, cWorkArea, hWnd, nWidth
 
    cWorkArea := ::WorkArea
@@ -354,8 +353,13 @@ Local lColor, aFields, cWorkArea, hWnd, nWidth
 
    // update rows
    x := 0
-   nCurrentLength := ::ItemCount()
    aTemp := ARRAY( nWidth )
+
+   If ::Visible
+      ::SetRedraw( .F. )
+   EndIf
+
+   ::DeleteAllItems()
 
    Do While x < PageLength .AND. ! ::Eof()
       x++
@@ -366,22 +370,16 @@ Local lColor, aFields, cWorkArea, hWnd, nWidth
          ( cWorkArea )->( ::SetItemColor( x,,, aTemp ) )
       EndIf
 
-      IF nCurrentLength < x
-         AddListViewItems( hWnd, aTemp )
-         nCurrentLength++
-      Else
-         ListViewSetItem( hWnd, aTemp, x )
-      ENDIF
+      AddListViewItems( hWnd, aTemp )
 
       aadd( _BrowseRecMap, ( cWorkArea )->( RecNo() ) )
 
       ::DbSkip()
    EndDo
 
-   Do While nCurrentLength > Len( _BrowseRecMap )
-      ::DeleteItem( nCurrentLength )
-      nCurrentLength--
-   EndDo
+   If ::Visible
+      ::SetRedraw( .T. )
+   EndIf
 
    ::aRecMap := _BrowseRecMap
 
