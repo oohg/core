@@ -1,11 +1,19 @@
 /*
- * $Id: ChangeLog,v 1.1083 2013-07-01 02:03:35 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1084 2013-07-01 19:34:25 migsoft Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-07-01 14:53 UTC-0400 MigSoft <migsoft@oohg.org>
+   * ./buildapp.bat
+   * samples/oohg/build.bat
+     * Some comments added.
+     * Paths and environment variables changed to match OOHG defaults.
+       To use a different version of Harbour and/or MinGW compilers,
+       edit buildapp.bat and change HBPATH and/or MINGWPATH variables.
 
 2013-06-30 23:01 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./Changelog
