@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.64 2013-06-19 21:34:00 fyurisich Exp $
+ * $Id: classes.txt,v 1.65 2013-07-01 02:03:35 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -859,6 +859,11 @@ CLASS TGRID FROM TCONTROL
    DATA ASELECTEDCOLORS           INIT {}
    DATA AWHEN                     INIT {}
    DATA AWIDTHS                   INIT {}
+   DATA BAFTERCOLMOVE             INIT NIL
+   DATA BAFTERCOLSIZE             INIT NIL
+   DATA BBEFOREAUTOFIT            INIT NIL
+   DATA BBEFORECOLMOVE            INIT NIL
+   DATA BBEFORECOLSIZE            INIT NIL
    DATA BONENTER                  INIT NIL
    DATA CROWEDITTITLE             INIT NIL
    DATA CTEXT                     INIT ""
@@ -914,6 +919,7 @@ CLASS TGRID FROM TCONTROL
    METHOD COLUMNBETTERAUTOFIT
    METHOD COLUMNCOUNT
    METHOD COLUMNHIDE
+   METHOD COLUMNORDER             SETGET
    METHOD COLUMNSAUTOFIT
    METHOD COLUMNSAUTOFITH
    METHOD COLUMNSBETTERAUTOFIT
@@ -1516,10 +1522,10 @@ ENDCLASS
 CLASS TOBROWSE FROM TXBROWSE
    DATA ARECMAP                   INIT {}
    DATA LNODELMSG                 INIT .T.
+   DATA LUPDATEALL                INIT .F.
    DATA RECCOUNT                  INIT 0
    DATA TYPE                      INIT "BROWSE" READONLY
    DATA SYNCSTATUS                INIT NIL
-   DATA LUPDATEALL                INIT .F.
 
    MESSAGE GOBOTTOM               METHOD END
    MESSAGE GOTOP                  METHOD HOME
@@ -2483,6 +2489,7 @@ ENDCLASS
 
 *------------------------------------------------------------------------------*
 CLASS TXBROWSE FROM TGRID
+   DATA ACOLUMNBLOCKS             INIT NIL
    DATA AFIELDS                   INIT NIL
    DATA ALLOWAPPEND               INIT .F.
    DATA ALLOWDELETE               INIT .F.
@@ -2494,6 +2501,7 @@ CLASS TXBROWSE FROM TGRID
    DATA GOBOTTOMBLOCK             INIT NIL
    DATA GOTOPBLOCK                INIT NIL
    DATA LDESCENDING               INIT .F.
+   DATA LFIXEDBLOCKS              INIT .F.
    DATA LLOCKED                   INIT .F.
    DATA LOCK                      INIT .F.
    DATA LRECCOUNT                 INIT .F.
@@ -2534,6 +2542,7 @@ CLASS TXBROWSE FROM TGRID
    METHOD ENABLED                 SETGET
    METHOD EVENTS
    METHOD EVENTS_NOTIFY
+   METHOD FIXBLOCKS               SETGET
    METHOD GETCELLTYPE
    METHOD GOBOTTOM
    METHOD GOTOP

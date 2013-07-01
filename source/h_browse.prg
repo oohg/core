@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.119 2013-06-29 19:19:32 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.120 2013-07-01 02:03:35 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -161,7 +161,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                aHeaderImageAlign, FullMove, aSelectedColors, aEditKeys, ;
                uRefresh, dblbffr, lFocusRect, lPLM, sync, lFixedCols, ;
                lNoDelMsg, lUpdateAll, abortedit, click, lFixedWidths, ;
-               lFixedBlocks ) CLASS TOBrowse
+               lFixedBlocks, bBeforeColMove, bAfterColMove, bBeforeColSize, ;
+               bAfterColSize, bBeforeAutofit ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local nWidth2, nCol2, oScroll, z
 
@@ -239,7 +240,8 @@ Local nWidth2, nCol2, oScroll, z
                    lRtl, InPlace, editcontrols, readonly, valid, validmessages, editcell, ;
                    aWhenFields, lDisabled, lNoTabStop, lInvisible, lNoHeaders,, aHeaderImage, ;
                    aHeaderImageAlign, FullMove, aSelectedColors, aEditKeys, , , dblbffr, lFocusRect, ;
-                   lPLM, lFixedCols, abortedit, click, lFixedWidths )
+                   lPLM, lFixedCols, abortedit, click, lFixedWidths, bBeforeColMove, bAfterColMove, ;
+                   bBeforeColSize, bAfterColSize, bBeforeAutofit )
 
    ::nWidth := w
 
@@ -317,7 +319,7 @@ Local nWidth2, nCol2, oScroll, z
    ASSIGN ::bDelWhen    VALUE bDelWhen    TYPE "B"
    ASSIGN ::DelMsg      VALUE DelMsg      TYPE "C"
    ASSIGN ::OnDelete    VALUE onDelete    TYPE "B"
-   
+
 Return Self
 
 *-----------------------------------------------------------------------------*

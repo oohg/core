@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.198 2013-06-19 14:39:33 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.199 2013-07-01 02:03:35 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -96,65 +96,70 @@
 #include "i_windefs.ch"
 
 CLASS TGrid FROM TControl
-   DATA Type                  INIT "GRID" READONLY
-   DATA nWidth                INIT 240
-   DATA nHeight               INIT 120
-   DATA aWidths               INIT {}
-   DATA aHeaders              INIT {}
-   DATA aHeadClick            INIT Nil
-   DATA aJust                 INIT Nil
-   DATA AllowEdit             INIT .F.
-   DATA GridForeColor         INIT {}
-   DATA GridBackColor         INIT {}
-   DATA DynamicForeColor      INIT {}
-   DATA DynamicBackColor      INIT {}
-   DATA Picture               INIT Nil
-   DATA OnDispInfo            INIT Nil
-   DATA SetImageListCommand   INIT LVM_SETIMAGELIST
-   DATA SetImageListWParam    INIT LVSIL_SMALL
-   DATA InPlace               INIT .F.
-   DATA FullMove              INIT .F.
-   DATA Append                INIT .F.
-   DATA EditControls          INIT Nil
-   DATA ReadOnly              INIT Nil
-   DATA Valid                 INIT Nil
-   DATA ValidMessages         INIT Nil
-   DATA OnEditCell            INIT Nil
-   DATA OnAbortEdit           INIT Nil
-   DATA OnAppend              INIT Nil
-   DATA aWhen                 INIT {}
-   DATA cRowEditTitle         INIT Nil
-   DATA lNested               INIT .F.
-   DATA AllowMoveColumn       INIT .T.
-   DATA AllowChangeSize       INIT .T.
-   DATA lNestedEdit           INIT .F.
-   DATA nRowPos               INIT 1
-   DATA nColPos               INIT 1
-   DATA lEditMode             INIT .F.
-   DATA lAppendMode           INIT .F.
-   DATA bOnEnter              INIT Nil
-   DATA HeaderImageList       INIT Nil
-   DATA aHeaderImage          INIT {}
-   DATA aHeaderImageAlign     INIT {}
-   DATA GridSelectedColors    INIT {}
-   DATA aSelectedColors       INIT {}
-   DATA aEditKeys             INIT Nil
-   DATA lCheckBoxes           INIT .F.
-   DATA OnCheckChange         INIT Nil
-   DATA lFocusRect            INIT .T.
-   DATA lNoGrid               INIT .F.
-   DATA lPLM                  INIT .F.
-   DATA SearchCol             INIT 0
-   DATA SearchWrap            INIT .T.
-   DATA SearchLapse           INIT 1000
-   DATA cText                 INIT ""
-   DATA uIniTime              INIT 0
-   DATA lExtendDblClick       INIT .F.
+   DATA Type                   INIT "GRID" READONLY
+   DATA nWidth                 INIT 240
+   DATA nHeight                INIT 120
+   DATA aWidths                INIT {}
+   DATA aHeaders               INIT {}
+   DATA aHeadClick             INIT Nil
+   DATA aJust                  INIT Nil
+   DATA AllowEdit              INIT .F.
+   DATA GridForeColor          INIT {}
+   DATA GridBackColor          INIT {}
+   DATA DynamicForeColor       INIT {}
+   DATA DynamicBackColor       INIT {}
+   DATA Picture                INIT Nil
+   DATA OnDispInfo             INIT Nil
+   DATA SetImageListCommand    INIT LVM_SETIMAGELIST
+   DATA SetImageListWParam     INIT LVSIL_SMALL
+   DATA InPlace                INIT .F.
+   DATA FullMove               INIT .F.
+   DATA Append                 INIT .F.
+   DATA EditControls           INIT Nil
+   DATA ReadOnly               INIT Nil
+   DATA Valid                  INIT Nil
+   DATA ValidMessages          INIT Nil
+   DATA OnEditCell             INIT Nil
+   DATA OnAbortEdit            INIT Nil
+   DATA OnAppend               INIT Nil
+   DATA aWhen                  INIT {}
+   DATA cRowEditTitle          INIT Nil
+   DATA lNested                INIT .F.
+   DATA AllowMoveColumn        INIT .T.
+   DATA AllowChangeSize        INIT .T.
+   DATA lNestedEdit            INIT .F.
+   DATA nRowPos                INIT 1
+   DATA nColPos                INIT 1
+   DATA lEditMode              INIT .F.
+   DATA lAppendMode            INIT .F.
+   DATA bOnEnter               INIT Nil
+   DATA HeaderImageList        INIT Nil
+   DATA aHeaderImage           INIT {}
+   DATA aHeaderImageAlign      INIT {}
+   DATA GridSelectedColors     INIT {}
+   DATA aSelectedColors        INIT {}
+   DATA aEditKeys              INIT Nil
+   DATA lCheckBoxes            INIT .F.
+   DATA OnCheckChange          INIT Nil
+   DATA lFocusRect             INIT .T.
+   DATA lNoGrid                INIT .F.
+   DATA lPLM                   INIT .F.
+   DATA SearchCol              INIT 0
+   DATA SearchWrap             INIT .T.
+   DATA SearchLapse            INIT 1000
+   DATA cText                  INIT ""
+   DATA uIniTime               INIT 0
+   DATA lExtendDblClick        INIT .F.
+   DATA bBeforeColMove         INIT Nil
+   DATA bAfterColMove          INIT Nil
+   DATA bBeforeColSize         INIT Nil
+   DATA bAfterColSize          INIT Nil
+   DATA bBeforeAutofit         INIT Nil
 
    METHOD Define
    METHOD Define2
-   METHOD Value               SETGET
-   METHOD OnEnter             SETGET
+   METHOD Value                SETGET
+   METHOD OnEnter              SETGET
    METHOD Events
    METHOD Events_Enter
    METHOD Events_Notify
@@ -177,15 +182,15 @@ CLASS TGrid FROM TControl
    METHOD InsertItem
    METHOD InsertBlank
    METHOD DeleteItem
-   METHOD DeleteAllItems      BLOCK { | Self | ListViewReset( ::hWnd ), ::GridForeColor := Nil, ::GridBackColor := Nil, ::DoChange() }
+   METHOD DeleteAllItems       BLOCK { | Self | ListViewReset( ::hWnd ), ::GridForeColor := Nil, ::GridBackColor := Nil, ::DoChange() }
    METHOD Item
    METHOD SetItemColor
-   METHOD ItemCount           BLOCK { | Self | ListViewGetItemCount( ::hWnd ) }
-   METHOD CountPerPage        BLOCK { | Self | ListViewGetCountPerPage( ::hWnd ) }
-   METHOD FirstSelectedItem   BLOCK { | Self | ListView_GetFirstItem( ::hWnd ) }
+   METHOD ItemCount            BLOCK { | Self | ListViewGetItemCount( ::hWnd ) }
+   METHOD CountPerPage         BLOCK { | Self | ListViewGetCountPerPage( ::hWnd ) }
+   METHOD FirstSelectedItem    BLOCK { | Self | ListView_GetFirstItem( ::hWnd ) }
    METHOD Header
-   METHOD FontColor           SETGET
-   METHOD BackColor           SETGET
+   METHOD FontColor            SETGET
+   METHOD BackColor            SETGET
    METHOD ColumnCount
    METHOD SetRangeColor
    METHOD ColumnWidth
@@ -194,9 +199,10 @@ CLASS TGrid FROM TControl
    METHOD ColumnsAutoFit
    METHOD ColumnsAutoFitH
    METHOD ColumnBetterAutoFit
-   METHOD ColumnsBetterAutoFit
+   METHOD ColumnsBetterAutoFit 
    METHOD ColumnHide
    METHOD ColumnShow
+   METHOD ColumnOrder          SETGET
    METHOD SortColumn
    METHOD Up
    METHOD Down
@@ -210,8 +216,8 @@ CLASS TGrid FROM TControl
    METHOD HeaderImageAlign
    METHOD Release
    METHOD LoadHeaderImages
-   METHOD SetSelectedColors   SETGET
-   METHOD CheckItem           SETGET
+   METHOD SetSelectedColors    SETGET
+   METHOD CheckItem            SETGET
    METHOD Justify
    METHOD HeaderHeight
    METHOD ItemHeight
@@ -231,7 +237,9 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                aWhenFields, lDisabled, lNoTabStop, lInvisible, lHasHeaders, ;
                onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
                aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
-               lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths ) CLASS TGrid
+               lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths, ;
+               bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
+               bBeforeAutofit ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local nStyle := LVS_SINGLESEL
 
@@ -245,7 +253,9 @@ Local nStyle := LVS_SINGLESEL
               editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
               lHasHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
               aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
-              lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths )
+              lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths, ;
+              bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
+              bBeforeAutofit )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -259,7 +269,9 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                 editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
                 lHasHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
                 aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
-                lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths ) CLASS TGrid
+                lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths, ;
+                bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
+                bBeforeAutofit ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local ControlHandle, aImageList, i
 
@@ -406,14 +418,19 @@ Local ControlHandle, aImageList, i
    ::Value := value
 
    // Must be set after control is initialized
-   ASSIGN ::OnLostFocus   VALUE lostfocus  TYPE "B"
-   ASSIGN ::OnGotFocus    VALUE gotfocus   TYPE "B"
-   ASSIGN ::OnChange      VALUE Change     TYPE "B"
-   ASSIGN ::OnDblClick    VALUE dblclick   TYPE "B"
-   ASSIGN ::OnClick       VALUE click      TYPE "B"
-   ASSIGN ::OnDispInfo    VALUE ondispinfo TYPE "B"
-   ASSIGN ::OnEnter       VALUE onenter    TYPE "B"
-   ASSIGN ::OnCheckChange VALUE oncheck    TYPE "B"
+   ASSIGN ::OnLostFocus    VALUE lostfocus      TYPE "B"
+   ASSIGN ::OnGotFocus     VALUE gotfocus       TYPE "B"
+   ASSIGN ::OnChange       VALUE Change         TYPE "B"
+   ASSIGN ::OnDblClick     VALUE dblclick       TYPE "B"
+   ASSIGN ::OnClick        VALUE click          TYPE "B"
+   ASSIGN ::OnDispInfo     VALUE ondispinfo     TYPE "B"
+   ASSIGN ::OnEnter        VALUE onenter        TYPE "B"
+   ASSIGN ::OnCheckChange  VALUE oncheck        TYPE "B"
+   ASSIGN ::bBeforeColMove VALUE bBeforeColMove TYPE "B"
+   ASSIGN ::bAfterColMove  VALUE bAfterColMove  TYPE "B"
+   ASSIGN ::bBeforeColSize VALUE bBeforeColSize TYPE "B"
+   ASSIGN ::bAfterColSize  VALUE bAfterColSize  TYPE "B"
+   ASSIGN ::bBeforeAutofit VALUE bBeforeAutofit TYPE "B"
 
 Return Self
 
@@ -1324,6 +1341,15 @@ METHOD ColumnShow( nColIndex ) CLASS TGrid
 Return Nil
 
 *-----------------------------------------------------------------------------*
+METHOD ColumnOrder( aOrder ) CLASS TGrid
+*-----------------------------------------------------------------------------*
+   If HB_IsArray( aOrder )
+      ListView_SetColumnOrder( ::hWnd, aOrder )
+      ::Refresh()
+   EndIf
+Return ListView_GetColumnOrder( ::hWnd )
+
+*-----------------------------------------------------------------------------*
 METHOD DeleteColumn( nColIndex, lNoDelete ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local nColumns
@@ -1609,7 +1635,7 @@ Local lRet
 Return lRet
 
 *-----------------------------------------------------------------------------*
-FUNCTION _OOHG_TGrid_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TGrid
+FUNCTION _OOHG_TGrid_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TGrid and TGridByCell
 *-----------------------------------------------------------------------------*
 Local aCellData, nItem, i
    Empty( lParam )
@@ -1725,30 +1751,84 @@ Return Nil
 *-----------------------------------------------------------------------------*
 FUNCTION _OOHG_TGrid_Notify2( Self, wParam, lParam ) // CLASS TGrid
 *-----------------------------------------------------------------------------*
-Local nNotify := GetNotifyCode( lParam )      //, nColumn := NMHeader_iItem( lParam )
+Local nNotify, nColumn, lGo, nNewWidth
 
    Empty( wParam )
+   nNotify := GetNotifyCode( lParam )
+   nColumn := NMHeader_iItem( lParam )
 
    If nNotify == HDN_BEGINDRAG
+      // The user has begun dragging a column
       If HB_IsLogical( ::AllowMoveColumn ) .AND. ! ::AllowMoveColumn
+         // Prevent the action
          Return 1
       EndIf
+
+      If HB_IsBlock( ::bBeforeColMove )
+         lGo := Eval( ::bBeforeColMove, nColumn )
+         If HB_IsLogical( lGo ) .and. ! lGo
+            // Prevent the action
+            Return 1
+         EndIf
+      EndIf
+
    ElseIf nNotify == HDN_ENDDRAG
-      // ::AllowMoveColumn
-      // Termina de arrastrar el encabezado de nColumn
-      // Return 1 para no permitirlo
+      // The user has finished dragging a column
+      If HB_IsBlock( ::bAfterColMove )
+         // HDITEM_iOrder() returns the destination position in the header
+         lGo := Eval( ::bAfterColMove, nColumn, HDITEM_iOrder( lParam ) )
+         If HB_IsLogical( lGo ) .and. ! lGo
+            // Deny the action so the column remains in it's original place
+            Return 1
+         EndIf
+      EndIf
+
    ElseIf nNotify == HDN_BEGINTRACK
+      // The user has begun dragging a column divider
       If HB_IsLogical( ::AllowChangeSize ) .AND. ! ::AllowChangeSize
+         // Prevent the action
          Return 1
       EndIf
+
+      If HB_IsBlock( ::bBeforeColSize )
+         lGo := Eval( ::bBeforeColSize, nColumn )
+         If HB_IsLogical( lGo ) .and. ! lGo
+            // Prevent the acion
+            Return 1
+         EndIf
+      EndIf
+
    ElseIf nNotify == HDN_ENDTRACK
-      // ::AllowChangeSize
-      // Termina de cambiar el tamaño de nColumn
-      RedrawWindow( ::ContainerhWnd )
+      // The user has finished dragging a column divider but the new width is not set yet
+      If HB_IsBlock( ::bAfterColSize )
+         // HDITEM_cxy() gets the user's selected width from lParam
+         nNewWidth := Eval( ::bAfterColSize, nColumn, HDITEM_cxy( lParam ) )
+         If HB_IsNumeric( nNewWidth ) .and. nNewWidth >= 0
+            // Set_HDITEM_cxy() sets the returned width into lParam
+            Set_HDITEM_cxy( lParam, nNewWidth )
+         EndIf
+      EndIf
+      //  Let the OS set the new width
+
+      /*
+       * TODO: check if this is needed
+       * RedrawWindow( ::ContainerhWnd )
+       */
+
    ElseIf nNotify == HDN_DIVIDERDBLCLICK
       If HB_IsLogical( ::AllowChangeSize ) .AND. ! ::AllowChangeSize
+         // Prevent column autofit
          Return 1
       EndIf
+
+      If HB_IsBlock( ::bBeforeAutofit )
+         lGo := Eval( ::bBeforeAutofit, nColumn )
+         If HB_IsLogical( lGo ) .and. ! lGo
+            // Prevent column autofit
+            Return 1
+         EndIf
+      EndIf
+
    EndIf
 
 Return Nil
@@ -2312,7 +2392,9 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                aWhenFields, lDisabled, lNoTabStop, lInvisible, lHasHeaders, ;
                onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
                aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
-               lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths ) CLASS TGridMulti
+               lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths, ;
+               bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
+               bBeforeAutofit ) CLASS TGridMulti
 *-----------------------------------------------------------------------------*
 Local nStyle := 0
 
@@ -2326,7 +2408,9 @@ Local nStyle := 0
               editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
               lHasHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
               aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
-              lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths )
+              lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths, ;
+              bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
+              bBeforeAutofit )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -2561,7 +2645,9 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                aWhenFields, lDisabled, lNoTabStop, lInvisible, lHasHeaders, ;
                onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
                aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
-               lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths ) CLASS TGridByCell
+               lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths, ;
+               bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
+               bBeforeAutofit ) CLASS TGridByCell
 *-----------------------------------------------------------------------------*
 Local nStyle := LVS_SINGLESEL
 
@@ -2577,7 +2663,9 @@ Local nStyle := LVS_SINGLESEL
               editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
               lHasHeaders, onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
               aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
-              lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths )
+              lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths, ;
+              bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
+              bBeforeAutofit )
 
    // By default, search in the current column
    ::SearchCol := 0
@@ -4379,6 +4467,62 @@ HB_FUNC_STATIC( TGRID_HEADERHEIGHT )
    hb_retni( iHeight );
 }
 
+HB_FUNC( LISTVIEW_GETCOLUMNORDER )
+{
+   HWND hWnd = HWNDparam( 1 );
+   int iCount, n;
+
+   if( ValidHandler( hWnd ) )
+   {
+      iCount = Header_GetItemCount( ListView_GetHeader( hWnd ) );
+      int nArray[ iCount ];
+      if( ListView_GetColumnOrderArray( hWnd, (WPARAM) iCount, (LPARAM) (LPINT) nArray ) )
+      {
+         hb_reta( iCount );
+         for( n = 0; n < iCount; n++ )
+         {
+            HB_STORNI( nArray[ n ] + 1, -1, n + 1 );
+         }
+      }
+      else
+      {
+         hb_reta( 0 );
+      }
+   }
+   else
+   {
+      hb_reta( 0 );
+   }
+}
+
+HB_FUNC_STATIC( LISTVIEW_SETCOLUMNORDER )
+{
+   HWND hWnd = HWNDparam( 1 );
+   int iCount, n;
+   PHB_ITEM nArray;
+   BOOL bRet = FALSE;
+
+   if( ValidHandler( hWnd ) && HB_ISARRAY( 2 ) )
+   {
+      iCount = Header_GetItemCount( ListView_GetHeader( hWnd ) );
+
+      if( (int) hb_parinfa( 2, 0 ) == iCount )
+      {
+         int iArray[ iCount ];
+         nArray = hb_param( 2, HB_IT_ARRAY );
+
+         for( n = 1; n <= iCount; n++ )
+         {
+            iArray[ n - 1 ] = hb_arrayGetNI( nArray, n ) - 1;
+         }
+
+         bRet = ListView_SetColumnOrderArray( hWnd, (WPARAM) iCount, (LPARAM) (LPINT) iArray );
+      }
+   }
+
+   hb_retl( bRet );
+}
+
 // -----------------------------------------------------------------------------
 HB_FUNC_STATIC( TGRIDBYCELL_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TGridByCell
 // -----------------------------------------------------------------------------
@@ -4918,6 +5062,21 @@ HB_FUNC( LISTVIEW_SORTITEMSEX )   // hWnd, nColumn, lDescending
 HB_FUNC( NMHEADER_IITEM )
 {
    hb_retnl( ( LONG ) ( ( ( NMHEADER * ) hb_parnl( 1 ) )->iItem ) + 1 );
+}
+
+HB_FUNC( HDITEM_CXY )
+{
+   hb_retni( ( int ) ( ( ( ( NMHEADER * ) hb_parnl( 1 ) )->pitem )->cxy ) );
+}
+
+HB_FUNC( SET_HDITEM_CXY )
+{
+   ( ( ( NMHEADER * ) hb_parnl( 1 ) )->pitem )->cxy = hb_parni( 2 );
+}
+
+HB_FUNC( HDITEM_IORDER )
+{
+   hb_retni( ( int ) ( ( ( ( NMHEADER * ) hb_parnl( 1 ) )->pitem )->iOrder + 1 ) );
 }
 
 HB_FUNC( LISTVIEW_SETITEMCOUNT )

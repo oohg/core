@@ -1,5 +1,5 @@
 /*
- * $Id: h_checklist.prg,v 1.11 2012-09-21 23:00:21 fyurisich Exp $
+ * $Id: h_checklist.prg,v 1.12 2013-07-01 02:03:35 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -194,7 +194,9 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                aWhenFields, lDisabled, lNoTabStop, lInvisible, lHasHeaders, ;
                onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
                aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
-               lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths ) CLASS TGrid
+               lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths, ;
+               bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
+               bBeforeAutofit ) CLASS TGrid
 */
    ::Super:Define( ControlName, ParentForm, x, y, w, h, aHdr, aWidth, ;
                    {}, Nil, fontname, fontsize, tooltip, change, Nil, ;
@@ -206,7 +208,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                    Nil, lDisabled, lNoTabStop, lInvisible, .F., ;
                    Nil, Nil, Nil, .F., ;
                    aSelectedColors, Nil, .T., Nil, dblbffr, .F., .F., .T., ;
-                   nil, click, .T. )
+                   nil, click, .T., Nil, Nil, Nil, Nil, Nil )
 
    aEval( aRows, { |u| ::AddItem( u ) } )
 

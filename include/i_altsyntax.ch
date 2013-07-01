@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.88 2013-06-29 19:19:32 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.89 2013-07-01 02:03:35 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -122,6 +122,11 @@ Memvariables
 #xtranslate _OOHG_ActiveControlTrailingFontColor      => _OOHG_ActiveControlInfo \[  25 \]
 #xtranslate _OOHG_ActiveControlBackgroundColor        => _OOHG_ActiveControlInfo \[  26 \]
 
+#xtranslate _OOHG_ActiveControlBeforeAutoFit          => _OOHG_ActiveControlInfo \[ 112 \]
+#xtranslate _OOHG_ActiveControlAfterColSize           => _OOHG_ActiveControlInfo \[ 113 \]
+#xtranslate _OOHG_ActiveControlBeforeColSize          => _OOHG_ActiveControlInfo \[ 114 \]
+#xtranslate _OOHG_ActiveControlAfterColMove           => _OOHG_ActiveControlInfo \[ 115 \]
+#xtranslate _OOHG_ActiveControlBeforeColMove          => _OOHG_ActiveControlInfo \[ 116 \]
 #xtranslate _OOHG_ActiveControlFixedBlocks            => _OOHG_ActiveControlInfo \[ 117 \]
 #xtranslate _OOHG_ActiveControlOnTextFilled           => _OOHG_ActiveControlInfo \[ 118 \]
 #xtranslate _OOHG_ActiveControlDelayedLoad            => _OOHG_ActiveControlInfo \[ 119 \]
@@ -2140,7 +2145,12 @@ GRID
         _OOHG_ActiveControlFixedCols        := .F. ;;
         _OOHG_ActiveControlAbortEdit        := Nil ;;
         _OOHG_ActiveControlAction           := Nil ;;
-        _OOHG_ActiveControlFixedWidths      := .F.
+        _OOHG_ActiveControlFixedWidths      := .F. ;;
+        _OOHG_ActiveControlBeforeColMove    := Nil ;;
+        _OOHG_ActiveControlAfterColMove     := Nil ;;
+        _OOHG_ActiveControlBeforeColSize    := Nil ;;
+        _OOHG_ActiveControlAfterColSize     := Nil ;;
+        _OOHG_ActiveControlBeforeAutoFit    := Nil
 
 #xcommand ONAPPEND <onappend> ;
         => ;
@@ -2201,6 +2211,26 @@ GRID
 #xcommand FIXEDWIDTHS <fixedwidths> ;
         => ;
         _OOHG_ActiveControlFixedWidths := <fixedwidths>
+
+#xcommand BEFORECOLMOVE <bBefMov> ;
+        => ;
+        _OOHG_ActiveControlBeforeColMove := <{bBefMov}>
+
+#xcommand AFTERCOLMOVE <bAftMov> ;
+        => ;
+        _OOHG_ActiveControlAfterColMove := <{bAftMov}>
+
+#xcommand BEFORECOLSIZE <bBefSiz> ;
+        => ;
+        _OOHG_ActiveControlBeforeColSize := <{bBefSiz}>
+
+#xcommand AFTERCOLSIZE <bAftSiz> ;
+        => ;
+        _OOHG_ActiveControlAfterColSize := <{bAftSiz}>
+
+#xcommand BEFOREAUTOFIT <bBefAut> ;
+        => ;
+        _OOHG_ActiveControlBeforeAutoFit := <{bBefAut}>
 
 #xcommand END GRID ;
         => ;
@@ -2267,7 +2297,12 @@ GRID
                 _OOHG_ActiveControlFixedCols, ;
                 _OOHG_ActiveControlAbortEdit, ;
                 _OOHG_ActiveControlAction, ;
-                _OOHG_ActiveControlFixedWidths )
+                _OOHG_ActiveControlFixedWidths, ;
+                _OOHG_ActiveControlBeforeColMove, ;
+                _OOHG_ActiveControlAfterColMove, ;
+                _OOHG_ActiveControlBeforeColSize, ;
+                _OOHG_ActiveControlAfterColSize, ;
+                _OOHG_ActiveControlBeforeAutoFit)
 
 /*----------------------------------------------------------------------------
 BROWSE
@@ -2327,7 +2362,12 @@ BROWSE
         _OOHG_ActiveControlAbortEdit        := Nil ;;
         _OOHG_ActiveControlAction           := Nil ;;
         _OOHG_ActiveControlFixedWidths      := .F. ;;
-        _OOHG_ActiveControlFixedBlocks      := .F.
+        _OOHG_ActiveControlFixedBlocks      := .F. ;;
+        _OOHG_ActiveControlBeforeColMove    := Nil ;;
+        _OOHG_ActiveControlAfterColMove     := Nil ;;
+        _OOHG_ActiveControlBeforeColSize    := Nil ;;
+        _OOHG_ActiveControlAfterColSize     := Nil ;;
+        _OOHG_ActiveControlBeforeAutoFit    := Nil
 
 #xcommand DELETEWHEN <delwhen> ;
         => ;
@@ -2458,7 +2498,12 @@ BROWSE
                 _OOHG_ActiveControlAbortEdit, ;
                 _OOHG_ActiveControlAction, ;
                 _OOHG_ActiveControlFixedWidths, ;
-                _OOHG_ActiveControlFixedBlocks )
+                _OOHG_ActiveControlFixedBlocks, ;
+                _OOHG_ActiveControlBeforeColMove, ;
+                _OOHG_ActiveControlAfterColMove, ;
+                _OOHG_ActiveControlBeforeColSize, ;
+                _OOHG_ActiveControlAfterColSize, ;
+                _OOHG_ActiveControlBeforeAutoFit)
 
 /*----------------------------------------------------------------------------
 XBROWSE
@@ -2513,7 +2558,12 @@ XBROWSE
         _OOHG_ActiveControlAbortEdit        := Nil ;;
         _OOHG_ActiveControlAction           := Nil ;;
         _OOHG_ActiveControlFixedWidths      := .F. ;;
-        _OOHG_ActiveControlFixedBlocks      := .F.
+        _OOHG_ActiveControlFixedBlocks      := .F. ;;
+        _OOHG_ActiveControlBeforeColMove    := Nil ;;
+        _OOHG_ActiveControlAfterColMove     := Nil ;;
+        _OOHG_ActiveControlBeforeColSize    := Nil ;;
+        _OOHG_ActiveControlAfterColSize     := Nil ;;
+        _OOHG_ActiveControlBeforeAutoFit    := Nil
 
 #xcommand END XBROWSE ;
         => ;
@@ -2588,7 +2638,12 @@ XBROWSE
                 _OOHG_ActiveControlAbortEdit, ;
                 _OOHG_ActiveControlAction, ;
                 _OOHG_ActiveControlFixedWidths, ;
-                _OOHG_ActiveControlFixedBlocks )
+                _OOHG_ActiveControlFixedBlocks, ;
+                _OOHG_ActiveControlBeforeColMove, ;
+                _OOHG_ActiveControlAfterColMove, ;
+                _OOHG_ActiveControlBeforeColSize, ;
+                _OOHG_ActiveControlAfterColSize, ;
+                _OOHG_ActiveControlBeforeAutoFit)
 
 /*----------------------------------------------------------------------------
 HYPERLINK

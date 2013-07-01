@@ -1,11 +1,73 @@
 /*
- * $Id: ChangeLog,v 1.1082 2013-06-29 19:19:32 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1083 2013-07-01 02:03:35 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-06-30 23:01 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     * Misspelled word corrected.
+     * Added new notes to previous entry.
+   * doc/classes.txt
+     * Updated.
+   * include/i_grid.prg
+     ! Added missing ON ABORTEDIT clause and corresponding parameter
+       in splitbox version of Grid control.
+   * source/h_checklist.prg
+     + Added new parameters to ::Super:Define() call.
+   * source/h_grid.prg
+     + Added DATAs bBeforeColMove, bAfterColMove, bBeforeColSize,
+       bAfterColSize and bBeforeAutofit.
+     + Added support for BEFORECOLMOVE, AFTERCOLMOVE, BEFORECOLSIZE,
+       AFTERCOLSIZE and BEFOREAUTOFIT clauses in FUNCTION
+       _OOHG_TGrid_Notify2().
+     + Added METHOD ColumnOrder(aColumnOrder) to set/get the
+       order used to display the columns in the grid.
+   * source/h_xbrowse.prg
+   * source/h_browse.prg
+   * include/i_grid.prg
+   * include/i_browse.prg
+   * include/i_xbrowse.prg
+   * include/i_altsyntax.prg
+   * include/i_hmg_compat.prg
+     + Added BEFORECOLMOVE clause to TGrid, TGridMulti, TGridByCell
+       TXBrowse and TOBrowse classes. Specifies a codeblock that is
+       evaluated when the user starts dragging a column header.
+       The column number is passed as a parameter.
+       If the codeblock returns .F. the dragging is not allowed.
+     + Added ON AFTERCOLMOVE clause to TGrid, TGridMulti, TGridByCell
+       TXBrowse and TOBrowse classes. Specifies a codeblock that is
+       evaluated after the user ends dragging a column header.
+       The column number is passed as a parameter.
+       If the codeblock returns .F. the dragging is not allowed.
+     + Added BEFORECOLSIZE clause to TGrid, TGridMulti, TGridByCell
+       TXBrowse and TOBrowse classes. Specifies a codeblock that is
+       evaluated when the user starts dragging a column divider.
+       The column number is passed as a parameter.
+       If the codeblock returns .F. the sizing is not allowed.
+     + Added AFTERCOLSIZE clause to TGrid, TGridMulti, TGridByCell
+       TXBrowse and TOBrowse classes. Specifies a codeblock that is
+       evaluated when the user ends dragging a column divider.
+       Column number and selected size are passed as parameters.
+       If the codeblock returns a number, the selected size is
+       discarded and the returned number is used as new size.
+     + Added BEFOREAUTOFIT clause to TGrid, TGridMulti, TGridByCell
+       TXBrowse and TOBrowse classes. Specifies a codeblock that is
+       evaluated when the user doubleclicks a column divider.
+       The column number is passed as a parameter.
+       If the codeblock returns .F. the autofit is not allowed.
+   * source/oohg.hbp
+   * source/miniprint.hbp
+   * source/hbprinter.hbp
+   * source/BuildLib.bat
+     * Some comments added.
+     * Paths and environment variables changed to match OOHG defaults.
+       To use a different version of Harbour and/or MinGW compilers,
+       edit BuildLib.bat and change HRB_DIR and/or MINGW variables.
+     + Added support for hbmk2 options (see inside BuildLib.bat).
 
 2013-06-29 16:19 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_browse.prg
@@ -31,6 +93,17 @@
    adding a new column), instead of evaluating them each time an
    item is showed or refreshed. This clause may reduce the time
    needed to refresh a control with many columns.
+   NOTE: at run time use ::FixBlock( .F. ) to return to default
+   behaviour or use ::FixBlock( .T. ) to enable new behaviour (the
+   codeblocks are evaluated using ::ColumnBlock() and stored in
+   ::aColumnBlocks).
+   NOTE: to change or refresh the codeblocks of a FIXEDBLOCKS control
+   you can use the following code:
+   ::FixBlock( .F. )
+   ::aField := { new fields }
+   ::FixBlock( .T. )
+   Beware that changing ::lFixedBlocks or ::aColumnBlocks directly
+   may cause RTE or impredictable behaviour.
 
 2013-06-29 11:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_browse.prg
@@ -45,7 +118,7 @@
 2013-06-26 21:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./Changelog
      * Some name files in previous entry corrected.
-     * Added reminder to previos entry.
+     * Added reminder to previous entry.
    * source/miniprint.hbp
    * source/hbprinter.hbp
      * Switch -w changed to -w3.
@@ -74,7 +147,7 @@
    + samples/oohg/build.bat
      + Added batch for building exe files
 
-   Note: you must tweak the environment variables to match
+   NOTE: you must tweak the environment variables to match
    your Harbour and MinGW installations.
    TODO: adapt paths to OOHG defaults.
 

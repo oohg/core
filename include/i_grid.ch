@@ -1,5 +1,5 @@
 /*
- * $Id: i_grid.ch,v 1.27 2012-10-18 00:46:46 fyurisich Exp $
+ * $Id: i_grid.ch,v 1.28 2013-07-01 02:03:35 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -166,6 +166,11 @@
       [ <fixedcols: FIXEDCOLS> ] ;
       [ ON ABORTEDIT <abortedit> ] ;
       [ <fixedwidths: FIXEDWIDTHS> ] ;
+      [ BEFORECOLMOVE <bBefMov> ] ;
+      [ AFTERCOLMOVE <bAftMov> ] ;
+      [ BEFORECOLSIZE <bBefSiz> ] ;
+      [ AFTERCOLSIZE <bAftSiz> ] ;
+      [ BEFOREAUTOFIT <bBefAut> ] ;
    =>;
       [ <obj> := ] _OOHG_SelectSubClass(iif( <.bycell.>, TGridByCell(), iif( <.multiselect.>, TGridMulti(), TGrid() ) ), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, ;
@@ -181,7 +186,8 @@
             <aSelectedColors>, <aEditKeys>, <.checkboxes.>, <{checkchange}>, ;
             iif( upper( #<bffr> ) == "DOUBLEBUFFER", .T., iif( upper( #<bffr> ) == "SINGLEBUFFER", .F., .T. ) ), ;
             iif( #<focus> == "NOFOCUSRECT", .F., iif( #<focus> == "FOCUSRECT", .T., NIL ) ), ;
-            <.plm.>, <.fixedcols.>, <{abortedit}>, <{click}>, <.fixedwidths.> )
+            <.plm.>, <.fixedcols.>, <{abortedit}>, <{click}>, <.fixedwidths.>, ;
+            <{bBefMov}>, <{bAftMov}>, <{bBefSiz}>, <{bAftSiz}>, <{bBefAut}> )
 
 ///////////////////////////////////////////////////////////////////////////////
 // GRID (SPLITBOX VERSION)
@@ -249,7 +255,13 @@
       [ <focus: NOFOCUSRECT, FOCUSRECT> ] ;
       [ <plm: PAINTLEFTMARGIN> ] ;
       [ <fixedcols: FIXEDCOLS> ] ;
+      [ ON ABORTEDIT <abortedit> ] ;
       [ <fixedwidths: FIXEDWIDTHS> ] ;
+      [ BEFORECOLMOVE <bBefMov> ] ;
+      [ AFTERCOLMOVE <bAftMov> ] ;
+      [ BEFORECOLSIZE <bBefSiz> ] ;
+      [ AFTERCOLSIZE <bAftSiz> ] ;
+      [ BEFOREAUTOFIT <bBefAut> ] ;
    =>;
       [ <obj> := ] _OOHG_SelectSubClass(iif( <.bycell.>, TGridByCell(), iif( <.multiselect.>, TGridMulti(), TGrid() ) ), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, , , <w>, <h>, <headers>, ;
@@ -265,4 +277,5 @@
             <aSelectedColors>, <aEditKeys>, <.checkboxes.>, <{checkchange}>, ;
             iif( upper( #<bffr> ) == "DOUBLEBUFFER", .T., iif( upper( #<bffr> ) == "SINGLEBUFFER", .F., .T. ) ), ;
             iif( #<focus> == "NOFOCUSRECT", .F., iif( #<focus> == "FOCUSRECT", .T., NIL ) ), ;
-            <.plm.>, <.fixedcols.>, <{click}>, <.fixedwidths.> )
+            <.plm.>, <.fixedcols.>, <{abortedit}>, <{click}>, <.fixedwidths.>, ;
+            <{bBefMov}>, <{bAftMov}>, <{bBefSiz}>, <{bAftSiz}>, <{bBefAut}> )

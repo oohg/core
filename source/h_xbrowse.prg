@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.82 2013-06-29 19:19:32 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.83 2013-07-01 02:03:36 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -159,7 +159,9 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lNoTabStop, lInvisible, lDescending, bDelWhen, DelMsg, ;
                onDelete, aHeaderImage, aHeaderImageAlign, FullMove, ;
                aSelectedColors, aEditKeys, lDblBffr, lFocusRect, lPLM, ;
-               lFixedCols, abortedit, click, lFixedWidths, lFixedBlocks ) CLASS TXBrowse
+               lFixedCols, abortedit, click, lFixedWidths, lFixedBlocks, ;
+               bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
+               bBeforeAutofit ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
 Local nWidth2, nCol2, lLocked, oScroll, z
 
@@ -222,7 +224,8 @@ Local nWidth2, nCol2, lLocked, oScroll, z
               editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
               lNoHeaders,, aHeaderImage, aHeaderImageAlign, FullMove, ;
               aSelectedColors, aEditKeys, , , lDblBffr, lFocusRect, lPLM, ;
-              lFixedCols, abortedit, click, lFixedWidths )
+              lFixedCols, abortedit, click, lFixedWidths, bBeforeColMove, ;
+              bAfterColMove, bBeforeColSize, bAfterColSize, bBeforeAutofit )
 
    ::nWidth := w
 

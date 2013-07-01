@@ -1,5 +1,5 @@
 /*
- * $Id: i_browse.ch,v 1.39 2013-06-29 19:19:32 fyurisich Exp $
+ * $Id: i_browse.ch,v 1.40 2013-07-01 02:03:35 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -178,6 +178,11 @@
       [ ON ABORTEDIT <abortedit> ] ;
       [ <fixedwidths: FIXEDWIDTHS> ] ;
       [ <fixedblocks: FIXEDBLOCKS> ] ;
+      [ BEFORECOLMOVE <bBefMov> ] ;
+      [ AFTERCOLMOVE <bAftMov> ] ;
+      [ BEFORECOLSIZE <bBefSiz> ] ;
+      [ AFTERCOLSIZE <bAftSiz> ] ;
+      [ BEFOREAUTOFIT <bBefAut> ] ;
    => ;
       [ <oObj> := ] _OOHG_SelectSubClass( TOBrowse(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, <widths>, ;
@@ -196,7 +201,8 @@
             iif( upper( #<bffr> ) == "DOUBLEBUFFER", .T., iif( upper( #<bffr> ) == "SINGLEBUFFER", .F., .T. ) ), ;
             iif( upper( #<focus> ) == "NOFOCUSRECT", .F., iif( upper( #<focus> ) == "FOCUSRECT", .T., NIL ) ), ;
             <.plm.>, iif( upper( #<sync> ) == "UNSYNCHRONIZED", .F., iif( upper( #<sync> ) == "SYNCHRONIZED", .T., NIL ) ), ;
-            <.fixedcols.>, <.nodelmsg.>, <.updall.>, <{abortedit}>, <{click}>, <.fixedwidths.>, <.fixedblocks.> )
+            <.fixedcols.>, <.nodelmsg.>, <.updall.>, <{abortedit}>, <{click}>, <.fixedwidths.>, ;
+            <.fixedblocks.>, <{bBefMov}>, <{bAftMov}>, <{bBefSiz}>, <{bAftSiz}>, <{bBefAut}> )
 
 #command SET BROWSESYNC ON  => SetBrowseSync( .T. )
 #command SET BROWSESYNC OFF => SetBrowseSync( .F. )

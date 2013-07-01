@@ -1,5 +1,5 @@
 /*
- * $Id: i_xbrowse.ch,v 1.24 2013-06-29 19:19:32 fyurisich Exp $
+ * $Id: i_xbrowse.ch,v 1.25 2013-07-01 02:03:35 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -170,6 +170,11 @@
       [ ON ABORTEDIT <abortedit> ] ;
       [ <fixedwidths: FIXEDWIDTHS> ] ;
       [ <fixedblocks: FIXEDBLOCKS> ] ;
+      [ BEFORECOLMOVE <bBefMov> ] ;
+      [ AFTERCOLMOVE <bAftMov> ] ;
+      [ BEFORECOLSIZE <bBefSiz> ] ;
+      [ AFTERCOLSIZE <bAftSiz> ] ;
+      [ BEFOREAUTOFIT <bBefAut> ] ;
 	=> ;
       [ <oObj> := ] _OOHG_SelectSubClass( TXBrowse(), [ <subclass>() ] ):Define( ;
             <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, <widths>, ;
@@ -187,4 +192,5 @@
             <aSelectedColors>, <aEditKeys>, ;
             iif( upper( #<bffr> ) == "DOUBLEBUFFER", .T., iif( upper( #<bffr> ) == "SINGLEBUFFER", .F., .T. ) ), ;
             iif( upper( #<focus> ) == "NOFOCUSRECT", .F., iif( upper( #<focus> ) == "FOCUSRECT", .T., NIL ) ), ;
-            <.plm.>, <.fixedcols.>, <{abortedit}>, <{click}>, <.fixedwidths.>, <.fixedblocks.> )
+            <.plm.>, <.fixedcols.>, <{abortedit}>, <{click}>, <.fixedwidths.>, ;
+            <.fixedblocks.>, <{bBefMov}>, <{bAftMov}>, <{bBefSiz}>, <{bAftSiz}>, <{bBefAut}> )

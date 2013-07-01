@@ -1,14 +1,26 @@
 #
-# $Id: hbprinter.hbp,v 1.2 2013-06-27 00:00:38 fyurisich Exp $
+# $Id: hbprinter.hbp,v 1.3 2013-07-01 02:03:36 fyurisich Exp $
 #
 
+# compilation is incremental (hidden .hmk folder is created)
 -inc
 
+# builds a static library
 -hblib
--o../lib/hbprinter
 
+# name of output file
+-o${ooHG_INSTALL}\lib\${hb_name}
+
+# harbour compiler flags
 -n -q0 -w3 -ko -es2
 
--i../include
+# uncomment the following line to generate .ppo files
+#-p${ooHG_INSTALL}\source\ppo\
 
+# path to headers files (.ch)
+-i${ooHG_INSTALL}\include
+
+# files to compile
 winprint.prg
+
+# EOF
