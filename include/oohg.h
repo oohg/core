@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.h,v 1.54 2012-08-03 02:54:41 fyurisich Exp $
+ * $Id: oohg.h,v 1.55 2013-07-02 21:47:50 migsoft Exp $
  */
 /*
  * ooHG source code:
@@ -233,6 +233,22 @@ HBRUSH GetTabBrush( HWND hWnd );
    #define HB_PARCLEN( n, x )     hb_parvclen( n, x )
    #define HB_PARNL3( n, x, y )   hb_parvnl( n, x, y )
    #define HB_STORNI2( n, x )     hb_storvni( n, x )
+#endif
+
+#ifdef __XHARBOUR__
+   #include "hbverbld.h"
+   #define HB_ISDATE( n )     ISDATE( n )
+   #if defined( HB_VER_CVSID ) && ( HB_VER_CVSID < 9639 )
+      #define HB_ISCHAR( n )     ISCHAR( n )
+      #define HB_ISNUM( n )      ISNUM( n )
+   #endif
+   #if defined( HB_VER_CVSID ) && ( HB_VER_CVSID < 9798 )
+      #define HB_ISNIL( n )      ISNIL( n )
+   #endif
+   #if defined( HB_VER_CVSID ) && ( HB_VER_CVSID < 9820 )
+      #define HB_ISARRAY( n )    ISARRAY( n )
+      #define HB_ISLOG( n )      ISLOG( n )
+   #endif
 #endif
 
 // Hack for MinGW and static functions (object's methods)

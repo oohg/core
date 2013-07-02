@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.41 2012-08-28 01:37:01 fyurisich Exp $
+ * $Id: h_form.prg,v 1.42 2013-07-02 21:47:51 migsoft Exp $
  */
 /*
  * ooHG source code:
@@ -924,7 +924,7 @@ HB_FUNC_STATIC( TFORM_TOPMOST )
 
    if( ValidHandler( oSelf->hWnd ) )
    {
-      if( ISLOG( 1 ) )
+      if( HB_ISLOG( 1 ) )
       {
          if( hb_parl( 1 ) )
          {
@@ -1631,7 +1631,7 @@ HB_FUNC_STATIC( _TFORM_MOVING )   // lParam, nForceRow, nForceCol
 {
    int iForceRow, iForceCol;
 
-   if( ISNUM( 2 ) )
+   if( HB_ISNUM( 2 ) )
    {
       iForceRow = hb_parni( 2 );
    }
@@ -1640,7 +1640,7 @@ HB_FUNC_STATIC( _TFORM_MOVING )   // lParam, nForceRow, nForceCol
       iForceRow = -1;
    }
 
-   if( ISNUM( 3 ) )
+   if( HB_ISNUM( 3 ) )
    {
       iForceCol = hb_parni( 3 );
    }

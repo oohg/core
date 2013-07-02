@@ -1,5 +1,5 @@
 /*
- * $Id: h_datepicker.prg,v 1.20 2011-07-15 14:35:33 fyurisich Exp $
+ * $Id: h_datepicker.prg,v 1.21 2013-07-02 21:47:51 migsoft Exp $
  */
 /*
  * ooHG source code:
@@ -366,7 +366,7 @@ HB_FUNC_STATIC( TDATEPICK_SETRANGE )
    char *cDate;
    WPARAM wLimit = 0;
 
-   if( ISDATE( 1 ) && ISDATE( 2 ) )
+   if( HB_ISDATE( 1 ) && HB_ISDATE( 2 ) )
    {
       memset( &sysTime, 0, sizeof( sysTime ) );
 

@@ -1,5 +1,5 @@
 /*
- * $Id: h_dll.prg,v 1.6 2011-12-31 16:54:48 fyurisich Exp $ 
+ * $Id: h_dll.prg,v 1.7 2013-07-02 21:47:51 migsoft Exp $
  */ 
 /* 
  * Harbour Project source code: 
@@ -155,7 +155,7 @@ HB_FUNC( CALLDLL32 )
    {
       for( i = 0; i < nArgs; i++ )
       {
-         if( ISCHAR( i + 3 ) ) 
+         if( HB_ISCHAR( i + 3 ) )
          { 
             dd[ i ] = ( int ) ( char * ) hb_parc( i + 3 ); 
          } 
