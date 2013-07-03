@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.84 2013-07-03 02:13:51 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.85 2013-07-03 23:43:52 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -375,12 +375,12 @@ Local aItem, cWorkArea
       If ValType( cWorkArea ) $ "CM" .AND. Empty( cWorkArea )
          cWorkArea := nil
       EndIf
+      aItem := ARRAY( LEN( ::aFields ) )
       If ::FixBlocks()
-         aItem := ACLONE( ::aColumnBlocks )
+         AEVAL( aItem, { |x,i| aItem[ i ] := EVAL( :aColumnBlocks[ i ], cWorkArea ), x } )
       Else
-         aItem := ARRAY( LEN( ::aFields ) )
+         AEVAL( aItem, { |x,i| aItem[ i ] := EVAL( ::ColumnBlock( i ), cWorkArea ), x } )
       EndIf
-      AEVAL( aItem, { |x,i| aItem[ i ] := EVAL( ::ColumnBlock( i ), cWorkArea ), x } )
       AEVAL( aItem, { |x,i| IF( VALTYPE( x ) $ "CM", aItem[ i ] := TRIM( x ),  ) } )
 
       If ValType( cWorkArea ) $ "CM"
