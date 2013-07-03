@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.85 2013-07-03 23:43:52 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.86 2013-07-03 23:56:35 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -377,7 +377,7 @@ Local aItem, cWorkArea
       EndIf
       aItem := ARRAY( LEN( ::aFields ) )
       If ::FixBlocks()
-         AEVAL( aItem, { |x,i| aItem[ i ] := EVAL( :aColumnBlocks[ i ], cWorkArea ), x } )
+         AEVAL( aItem, { |x,i| aItem[ i ] := EVAL( ::aColumnBlocks[ i ], cWorkArea ), x } )
       Else
          AEVAL( aItem, { |x,i| aItem[ i ] := EVAL( ::ColumnBlock( i ), cWorkArea ), x } )
       EndIf
