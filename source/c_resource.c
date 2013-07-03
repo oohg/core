@@ -1,5 +1,5 @@
 /*
- * $Id: c_resource.c,v 1.2 2011-12-31 16:54:48 fyurisich Exp $
+ * $Id: c_resource.c,v 1.3 2013-07-03 01:44:52 migsoft Exp $
  */
 /*
  * ooHG source code:
@@ -110,7 +110,7 @@ HB_FUNC(LOADICON) // handle of dll/NULL , resource name/id
 {
     HICON hIco;
 
-    hIco =  LoadIcon( ( HINSTANCE ) hb_parnl(1), ISCHAR( 2 ) ? hb_parc( 2 ):
+    hIco =  LoadIcon( ( HINSTANCE ) hb_parnl(1), HB_ISCHAR( 2 ) ? hb_parc( 2 ):
            ( LPCTSTR ) MAKEINTRESOURCE( hb_parnl( 2 ) ) ) ;
 
     hb_retnl((LONG)hIco);

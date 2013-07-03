@@ -1,5 +1,5 @@
 /*
- * $Id: h_richeditbox.prg,v 1.25 2013-04-22 00:06:44 fyurisich Exp $
+ * $Id: h_richeditbox.prg,v 1.26 2013-07-03 01:44:52 migsoft Exp $
  */
 /*
  * ooHG source code:
@@ -434,7 +434,7 @@ HB_FUNC_STATIC( TEDITRICH_SETSELECTIONTEXTCOLOR )       // METHOD SetSelectionTe
    CHARFORMAT2 Format;
    COLORREF clrColor;
 
-   if( ISNIL( 1 ) )
+   if( HB_ISNIL( 1 ) )
    {
       clrColor = ( ( oSelf->lFontColor == -1 ) ? GetSysColor( COLOR_WINDOWTEXT ) : (COLORREF) oSelf->lFontColor );
    }
@@ -458,7 +458,7 @@ HB_FUNC_STATIC( TEDITRICH_SETSELECTIONBACKCOLOR )       // METHOD SetSelectionBa
    CHARFORMAT2 Format;
    COLORREF clrColor;
 
-   if( ISNIL( 1 ) )
+   if( HB_ISNIL( 1 ) )
    {
       clrColor = ( ( oSelf->lBackColor == -1 ) ? GetSysColor( COLOR_WINDOW ) : (COLORREF) oSelf->lBackColor );
    }

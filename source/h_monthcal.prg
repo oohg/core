@@ -1,5 +1,5 @@
 /*
- * $Id: h_monthcal.prg,v 1.13 2011-03-08 17:30:57 guerra000 Exp $
+ * $Id: h_monthcal.prg,v 1.14 2013-07-03 01:44:52 migsoft Exp $
  */
 /*
  * ooHG source code:
@@ -254,7 +254,7 @@ HB_FUNC( SETMONTHCAL )
    SYSTEMTIME sysTime;
    char *cDate;
 
-   if( ISDATE( 2 ) )
+   if( HB_ISDATE( 2 ) )
    {
       cDate = ( char * ) hb_pards( 2 );
       if( ! ( cDate[ 0 ] == ' ' ) )
@@ -472,7 +472,7 @@ HB_FUNC_STATIC( TMONTHCAL_SETRANGE )
    char *cDate;
    WPARAM wLimit = 0;
 
-   if( ISDATE( 1 ) && ISDATE( 2 ) )
+   if( HB_ISDATE( 1 ) && HB_ISDATE( 2 ) )
    {
       memset( &sysTime, 0, sizeof( sysTime ) );
 

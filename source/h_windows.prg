@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.243 2013-06-19 14:39:33 fyurisich Exp $
+ * $Id: h_windows.prg,v 1.244 2013-07-03 01:44:52 migsoft Exp $
  */
 /*
  * ooHG source code:
@@ -380,7 +380,7 @@ CLASS TWindow
    METHOD Fill
    Method Box
    Method RoundBox   
-   METHOD Ellipse   
+   METHOD Ellipse
    METHOD Arc
    METHOD Pie
    /*
@@ -399,7 +399,7 @@ HB_FUNC_STATIC( TWINDOW_SETHWND )
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
 
-   if( hb_pcount() >= 1 && ISNUM( 1 ) )
+   if( hb_pcount() >= 1 && HB_ISNUM( 1 ) )
    {
       oSelf->hWnd = HWNDparam( 1 );
    }
@@ -497,7 +497,7 @@ HB_FUNC_STATIC( TWINDOW_IMAGELIST )
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
 
-   if( hb_pcount() >= 1 && ISNUM( 1 ) )
+   if( hb_pcount() >= 1 && HB_ISNUM( 1 ) )
    {
       oSelf->ImageList = ( HIMAGELIST ) hb_parnl( 1 );
    }
@@ -529,7 +529,7 @@ HB_FUNC_STATIC( TWINDOW_FONTHANDLE )
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
 
-   if( hb_pcount() >= 1 && ISNUM( 1 ) )
+   if( hb_pcount() >= 1 && HB_ISNUM( 1 ) )
    {
       oSelf->hFontHandle = ( HFONT ) HWNDparam( 1 );
    }
@@ -667,7 +667,7 @@ HB_FUNC_STATIC( TWINDOW_CAPTION )
    int iLen;
    LPTSTR cText;
 
-   if( ISCHAR( 1 ) )
+   if( HB_ISCHAR( 1 ) )
    {
       SetWindowText( oSelf->hWnd, ( LPCTSTR ) hb_parc( 1 ) );
    }
@@ -684,7 +684,7 @@ HB_FUNC_STATIC( TWINDOW_ACCEPTFILES )
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
 
-   if( ISLOG( 1 ) )
+   if( HB_ISLOG( 1 ) )
    {
       DragAcceptFiles( oSelf->hWnd, hb_parl( 1 ) );
    }
@@ -2587,7 +2587,7 @@ HB_FUNC( GETCOMCTL32VERSION )
 
 HB_FUNC( _OOHG_EVAL )
 {
-   if( ISBLOCK( 1 ) )
+   if( HB_ISBLOCK( 1 ) )
    {
       HB_FUN_EVAL();
    }
@@ -2601,7 +2601,7 @@ HB_FUNC( _OOHG_EVAL_ARRAY )
 {
    static PHB_SYMB s_Eval = 0;
 
-   if( ISBLOCK( 1 ) )
+   if( HB_ISBLOCK( 1 ) )
    {
       int iCount, iLen;
       PHB_ITEM pArray, pItem;
@@ -2636,7 +2636,7 @@ HB_FUNC( _OOHG_EVAL_ARRAY )
 
 HB_FUNC( _OOHG_SHOWCONTEXTMENUS )
 {
-   if( ISLOG( 1 ) )
+   if( HB_ISLOG( 1 ) )
    {
       _OOHG_ShowContextMenus = hb_parl( 1 );
    }
@@ -2645,7 +2645,7 @@ HB_FUNC( _OOHG_SHOWCONTEXTMENUS )
 
 HB_FUNC( _OOHG_GLOBALRTL )
 {
-   if( ISLOG( 1 ) )
+   if( HB_ISLOG( 1 ) )
    {
       _OOHG_GlobalRTL = hb_parl( 1 );
    }
@@ -2654,7 +2654,7 @@ HB_FUNC( _OOHG_GLOBALRTL )
 
 HB_FUNC( _OOHG_NESTEDSAMEEVENT )
 {
-   if( ISLOG( 1 ) )
+   if( HB_ISLOG( 1 ) )
    {
       _OOHG_NestedSameEvent = hb_parl( 1 );
    }

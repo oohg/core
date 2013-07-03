@@ -1,5 +1,5 @@
 /*
- * $Id: c_msgbox.c,v 1.5 2011-12-31 16:54:48 fyurisich Exp $
+ * $Id: c_msgbox.c,v 1.6 2013-07-03 01:44:52 migsoft Exp $
  */
 /*
  * ooHG source code:
@@ -110,7 +110,7 @@ HB_FUNC( C_MSGRETRYCANCEL )
 {
    int uType;
    
-   if( ISNIL( 3 ) )
+   if( HB_ISNIL( 3 ) )
    {
       uType = MB_SYSTEMMODAL;
    }
@@ -126,7 +126,7 @@ HB_FUNC( C_MSGOKCANCEL )
 {
    int uType;
 
-   if( ISNIL( 3 ) )
+   if( HB_ISNIL( 3 ) )
    {
       uType = MB_SYSTEMMODAL;
    }
@@ -142,7 +142,7 @@ HB_FUNC( C_MSGYESNO )
 {
    int uType;
 
-   if( ISNIL( 3 ) )
+   if( HB_ISNIL( 3 ) )
    {
       uType = MB_SYSTEMMODAL;
    }
@@ -158,7 +158,7 @@ HB_FUNC( C_MSGYESNOCANCEL )
 {
    int uType;
 
-   if( ISNIL( 3 ) )
+   if( HB_ISNIL( 3 ) )
    {
       uType = MB_SYSTEMMODAL;
    }
@@ -174,7 +174,7 @@ HB_FUNC( C_MSGYESNO_ID )
 {
    int uType;
 
-   if( ISNIL( 3 ) )
+   if( HB_ISNIL( 3 ) )
    {
       uType = MB_SYSTEMMODAL;
    }
@@ -190,7 +190,7 @@ HB_FUNC( C_MSGBOX )
 {
    int uType;
 
-   if( ISNIL( 3 ) )
+   if( HB_ISNIL( 3 ) )
    {
       uType = MB_SYSTEMMODAL;
    }
@@ -206,7 +206,7 @@ HB_FUNC( C_MSGINFO )
 {
    int uType;
 
-   if( ISNIL( 3 ) )
+   if( HB_ISNIL( 3 ) )
    {
       uType = MB_SYSTEMMODAL;
    }
@@ -222,7 +222,7 @@ HB_FUNC( C_MSGSTOP )
 {
    int uType;
 
-   if( ISNIL( 3 ) )
+   if( HB_ISNIL( 3 ) )
    {
       uType = MB_SYSTEMMODAL;
    }
@@ -238,7 +238,7 @@ HB_FUNC( C_MSGEXCLAMATION )
 {
    int uType;
 
-   if( ISNIL( 3 ) )
+   if( HB_ISNIL( 3 ) )
    {
       uType = MB_SYSTEMMODAL;
    }

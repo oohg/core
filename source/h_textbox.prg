@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.85 2013-06-26 02:06:37 fyurisich Exp $
+ * $Id: h_textbox.prg,v 1.86 2013-07-03 01:44:52 migsoft Exp $
  */
 /*
  * ooHG source code:
@@ -636,7 +636,7 @@ HB_FUNC_STATIC( TTEXT_CONTROLAREA )   // METHOD ControlArea( nWidth ) CLASS TTex
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
    RECT rect;
 
-   if( ISNUM( 1 ) )
+   if( HB_ISNUM( 1 ) )
    {
       oSelf->lAux[ 0 ] = hb_parni( 1 );
       GetWindowRect( oSelf->hWnd, &rect );

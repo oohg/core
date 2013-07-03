@@ -1,5 +1,5 @@
 /*
- * $Id: h_ipaddress.prg,v 1.9 2010-05-15 21:05:05 guerra000 Exp $
+ * $Id: h_ipaddress.prg,v 1.10 2013-07-03 01:44:52 migsoft Exp $
  */
 /*
  * ooHG source code:
@@ -217,7 +217,7 @@ HB_FUNC( SETIPADDRESS )
 {
    BYTE v1, v2, v3, v4, *v;
 
-   if( ISCHAR( 2 ) )
+   if( HB_ISCHAR( 2 ) )
    {
       v = ( BYTE * ) hb_parc( 2 );
       v1 = v[ 0 ];

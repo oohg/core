@@ -1,5 +1,5 @@
 /*
- * $Id: h_textarray.prg,v 1.20 2011-12-31 16:54:48 fyurisich Exp $
+ * $Id: h_textarray.prg,v 1.21 2013-07-03 01:44:52 migsoft Exp $
  */
 /*
  * ooHG source code:
@@ -1006,7 +1006,7 @@ HB_FUNC_STATIC( TTEXTARRAY_ROWCOUNT )   // ( nRowCount )
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
 
-   if( hb_pcount() >= 1 && ISNUM( 1 ) )
+   if( hb_pcount() >= 1 && HB_ISNUM( 1 ) )
    {
       TTextArray_ReSize( oSelf, hb_parni( 1 ), SELF_COLCOUNT( oSelf ) );
    }
@@ -1019,7 +1019,7 @@ HB_FUNC_STATIC( TTEXTARRAY_COLCOUNT )   // ( nColCount )
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
 
-   if( hb_pcount() >= 1 && ISNUM( 1 ) )
+   if( hb_pcount() >= 1 && HB_ISNUM( 1 ) )
    {
       TTextArray_ReSize( oSelf, SELF_ROWCOUNT( oSelf ), hb_parni( 1 ) );
    }
@@ -1032,7 +1032,7 @@ HB_FUNC_STATIC( TTEXTARRAY_TEXTROW )   // ( nRow )
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
 
-   if( hb_pcount() >= 1 && ISNUM( 1 ) )
+   if( hb_pcount() >= 1 && HB_ISNUM( 1 ) )
    {
       TTextArray_MoveTo( oSelf, hb_parni( 1 ), SELF_COL( oSelf ) );
    }
@@ -1045,7 +1045,7 @@ HB_FUNC_STATIC( TTEXTARRAY_TEXTCOL )   // ( nCol )
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
 
-   if( hb_pcount() >= 1 && ISNUM( 1 ) )
+   if( hb_pcount() >= 1 && HB_ISNUM( 1 ) )
    {
       TTextArray_MoveTo( oSelf, oSelf->lAux[ 3 ], hb_parni( 1 ) );
    }
@@ -1068,8 +1068,8 @@ HB_FUNC_STATIC( TTEXTARRAY_WRITE )   // ( cText, nCol, nRow, FontColor, BackColo
    rect.left   = SELF_COLCOUNT( oSelf );
    rect.right  = 0;
 
-   iCol = ISNUM( 3 ) ? hb_parni( 3 ) : SELF_COL( oSelf );
-   iRow = ISNUM( 2 ) ? hb_parni( 2 ) : oSelf->lAux[ 3 ];
+   iCol = HB_ISNUM( 3 ) ? hb_parni( 3 ) : SELF_COL( oSelf );
+   iRow = HB_ISNUM( 2 ) ? hb_parni( 2 ) : oSelf->lAux[ 3 ];
    TTextArray_MoveTo( oSelf, iRow, iCol );
 
    lFontColor = oSelf->lFontColor;
@@ -1085,7 +1085,7 @@ HB_FUNC_STATIC( TTEXTARRAY_WRITE )   // ( cText, nCol, nRow, FontColor, BackColo
       oSelf->lBackColor = lAuxColor;
    }
 
-   if( ISCHAR( 1 ) && oSelf->AuxBuffer && SELF_COLCOUNT( oSelf ) && SELF_ROWCOUNT( oSelf ) )
+   if( HB_ISCHAR( 1 ) && oSelf->AuxBuffer && SELF_COLCOUNT( oSelf ) && SELF_ROWCOUNT( oSelf ) )
    {
       pBuffer = ( BYTE * ) hb_parc( 1 );
       lBuffer = hb_parclen( 1 );
@@ -1139,8 +1139,8 @@ HB_FUNC_STATIC( TTEXTARRAY_WRITERAW )   // ( cText, nCol, nRow, FontColor, BackC
    rect.left   = SELF_COLCOUNT( oSelf );
    rect.right  = 0;
 
-   iCol = ISNUM( 3 ) ? hb_parni( 3 ) : SELF_COL( oSelf );
-   iRow = ISNUM( 2 ) ? hb_parni( 2 ) : oSelf->lAux[ 3 ];
+   iCol = HB_ISNUM( 3 ) ? hb_parni( 3 ) : SELF_COL( oSelf );
+   iRow = HB_ISNUM( 2 ) ? hb_parni( 2 ) : oSelf->lAux[ 3 ];
    TTextArray_MoveTo( oSelf, iRow, iCol );
 
    lFontColor = oSelf->lFontColor;
@@ -1156,7 +1156,7 @@ HB_FUNC_STATIC( TTEXTARRAY_WRITERAW )   // ( cText, nCol, nRow, FontColor, BackC
       oSelf->lBackColor = lAuxColor;
    }
 
-   if( ISCHAR( 1 ) && oSelf->AuxBuffer && SELF_COLCOUNT( oSelf ) && SELF_ROWCOUNT( oSelf ) )
+   if( HB_ISCHAR( 1 ) && oSelf->AuxBuffer && SELF_COLCOUNT( oSelf ) && SELF_ROWCOUNT( oSelf ) )
    {
       pBuffer = ( BYTE * ) hb_parc( 1 );
       lBuffer = hb_parclen( 1 );
@@ -1181,7 +1181,7 @@ HB_FUNC_STATIC( TTEXTARRAY_CURSORTYPE )   // ( nCursorType )
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
 
-   if( hb_pcount() >= 1 && ISNUM( 1 ) )
+   if( hb_pcount() >= 1 && HB_ISNUM( 1 ) )
    {
       DrawCursor( oSelf, 0 );
       oSelf->lAux[ 6 ] = hb_parni( 1 );
@@ -1199,12 +1199,12 @@ HB_FUNC_STATIC( TTEXTARRAY_SCROLL )   // ( nTop, nLeft, nBottom, nRight, nVertic
 
    if( oSelf->AuxBuffer && SELF_COLCOUNT( oSelf ) && SELF_ROWCOUNT( oSelf ) )
    {
-      iCol1  = ISNUM( 2 ) ? hb_parni( 2 ) : 0;
-      iRow1  = ISNUM( 1 ) ? hb_parni( 1 ) : 0;
-      iCol2  = ISNUM( 4 ) ? hb_parni( 4 ) : SELF_COLCOUNT( oSelf ) - 1;
-      iRow2  = ISNUM( 3 ) ? hb_parni( 3 ) : SELF_ROWCOUNT( oSelf ) - 1;
-      iVert  = ISNUM( 5 ) ? hb_parni( 5 ) : 0;
-      iHoriz = ISNUM( 6 ) ? hb_parni( 6 ) : 0;
+      iCol1  = HB_ISNUM( 2 ) ? hb_parni( 2 ) : 0;
+      iRow1  = HB_ISNUM( 1 ) ? hb_parni( 1 ) : 0;
+      iCol2  = HB_ISNUM( 4 ) ? hb_parni( 4 ) : SELF_COLCOUNT( oSelf ) - 1;
+      iRow2  = HB_ISNUM( 3 ) ? hb_parni( 3 ) : SELF_ROWCOUNT( oSelf ) - 1;
+      iVert  = HB_ISNUM( 5 ) ? hb_parni( 5 ) : 0;
+      iHoriz = HB_ISNUM( 6 ) ? hb_parni( 6 ) : 0;
 
       TTextArray_Scroll( oSelf, iCol1, iRow1, iCol2, iRow2, iVert, iHoriz );
    }
@@ -1219,10 +1219,10 @@ HB_FUNC_STATIC( TTEXTARRAY_CLEAR )   // ( nTop, nLeft, nBottom, nRight )
 
    if( oSelf->AuxBuffer && SELF_COLCOUNT( oSelf ) && SELF_ROWCOUNT( oSelf ) )
    {
-      iCol1  = ISNUM( 2 ) ? hb_parni( 2 ) : 0;
-      iRow1  = ISNUM( 1 ) ? hb_parni( 1 ) : 0;
-      iCol2  = ISNUM( 4 ) ? hb_parni( 4 ) : SELF_COLCOUNT( oSelf ) - 1;
-      iRow2  = ISNUM( 3 ) ? hb_parni( 3 ) : SELF_ROWCOUNT( oSelf ) - 1;
+      iCol1  = HB_ISNUM( 2 ) ? hb_parni( 2 ) : 0;
+      iRow1  = HB_ISNUM( 1 ) ? hb_parni( 1 ) : 0;
+      iCol2  = HB_ISNUM( 4 ) ? hb_parni( 4 ) : SELF_COLCOUNT( oSelf ) - 1;
+      iRow2  = HB_ISNUM( 3 ) ? hb_parni( 3 ) : SELF_ROWCOUNT( oSelf ) - 1;
 
       RANGEMINMAX( 0, iCol1, ( SELF_COLCOUNT( oSelf ) - 1 ) )
       RANGEMINMAX( 0, iCol2, ( SELF_COLCOUNT( oSelf ) - 1 ) )
@@ -1248,8 +1248,8 @@ HB_FUNC_STATIC( TTEXTARRAY_DEVPOS )   // ( nRow, nCol )
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
    int iRow, iCol;
 
-   iRow = ISNUM( 1 ) ? hb_parni( 1 ) : oSelf->lAux[ 3 ];
-   iCol = ISNUM( 2 ) ? hb_parni( 2 ) : SELF_COL( oSelf );
+   iRow = HB_ISNUM( 1 ) ? hb_parni( 1 ) : oSelf->lAux[ 3 ];
+   iCol = HB_ISNUM( 2 ) ? hb_parni( 2 ) : SELF_COL( oSelf );
    TTextArray_MoveTo( oSelf, iRow, iCol );
    hb_ret();
 }
@@ -1259,7 +1259,7 @@ HB_FUNC_STATIC( TTEXTARRAY_ASSUMEFIXED )   // ( lAssumeFixed )
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
 
-   if( ISLOG( 1 ) )
+   if( HB_ISLOG( 1 ) )
    {
       SELF_FIXED( oSelf ) = hb_parl( 1 );
    }

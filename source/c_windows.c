@@ -1,5 +1,5 @@
 /*
- * $Id: c_windows.c,v 1.77 2012-08-15 23:52:33 fyurisich Exp $
+ * $Id: c_windows.c,v 1.78 2013-07-03 01:44:52 migsoft Exp $
  */
 /*
  * ooHG source code:
@@ -281,7 +281,7 @@ HB_FUNC( _OOHG_DOMESSAGELOOP )
    MSG Msg;
    int iSwitch;
 
-   if( ISARRAY( 1 ) && hb_parinfa( 1, 0 ) >= 2 )
+   if( HB_ISARRAY( 1 ) && hb_parinfa( 1, 0 ) >= 2 )
    {
       HB_STORPTR( ( void * ) &iSwitch , 1, 2 );
    }
@@ -521,7 +521,7 @@ HB_FUNC ( MOVEWINDOW )
                         hb_parni(3),
                         hb_parni(4),
                         hb_parni(5),
-                        ( ISNIL( 6 ) ? TRUE : hb_parl( 6 ) )
+                        ( HB_ISNIL( 6 ) ? TRUE : hb_parl( 6 ) )
                       ));
 }
 
@@ -1373,7 +1373,7 @@ HB_FUNC( WINDOWSTYLEFLAG )
 
    hWnd = HWNDparam( 1 );
    lMask = hb_parnl( 2 );
-   if( ISNUM( 3 ) )
+   if( HB_ISNUM( 3 ) )
    {
       SetWindowLong( hWnd, GWL_STYLE, ( ( GetWindowLong( hWnd, GWL_STYLE ) & ( ~ lMask ) ) | ( hb_parnl( 3 ) & lMask ) ) );
       RedrawWindow( hWnd, 0, 0, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );

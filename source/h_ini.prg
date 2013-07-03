@@ -1,5 +1,5 @@
 /*
- * $Id: h_ini.prg,v 1.5 2012-10-21 19:48:33 guerra000 Exp $
+ * $Id: h_ini.prg,v 1.6 2013-07-03 01:44:52 migsoft Exp $
  */
 /*
  * ooHG source code:
@@ -252,7 +252,7 @@ HB_FUNC (GETPRIVATEPROFILESTRING )
    TCHAR bBuffer[ 1024 ] = { 0 };
    DWORD dwLen ;
    char * lpSection = ( char * ) hb_parc( 1 );
-   char * lpEntry = ISCHAR(2) ? ( char * ) hb_parc( 2 ) : NULL ;
+   char * lpEntry = HB_ISCHAR(2) ? ( char * ) hb_parc( 2 ) : NULL ;
    char * lpDefault = ( char * ) hb_parc( 3 );
    char * lpFileName = ( char * ) hb_parc( 4 );
    dwLen = GetPrivateProfileString( lpSection , lpEntry ,lpDefault , bBuffer, sizeof( bBuffer ) , lpFileName);
@@ -265,8 +265,8 @@ HB_FUNC (GETPRIVATEPROFILESTRING )
 HB_FUNC( WRITEPRIVATEPROFILESTRING )
 {
    char * lpSection = ( char * ) hb_parc( 1 );
-   char * lpEntry = ISCHAR( 2 ) ? ( char * ) hb_parc( 2 ) : NULL ;
-   char * lpData = ISCHAR( 3 ) ? ( char * ) hb_parc( 3 ) : NULL ;
+   char * lpEntry = HB_ISCHAR( 2 ) ? ( char * ) hb_parc( 2 ) : NULL ;
+   char * lpData = HB_ISCHAR( 3 ) ? ( char * ) hb_parc( 3 ) : NULL ;
    char * lpFileName= ( char * ) hb_parc( 4 );
 
    if ( WritePrivateProfileString( lpSection , lpEntry , lpData , lpFileName ) )

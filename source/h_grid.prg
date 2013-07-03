@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.199 2013-07-01 02:03:35 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.200 2013-07-03 01:44:52 migsoft Exp $
  */
 /*
  * ooHG source code:
@@ -4354,7 +4354,7 @@ HB_FUNC_STATIC( TGRID_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
             hb_vmPushLong( wParam );
             hb_vmPushLong( lParam );
             hb_vmDo( 3 );
-            if( ISNUM( -1 ) )
+            if( HB_ISNUM( -1 ) )
             {
                bDefault = FALSE;
             }
@@ -4555,7 +4555,7 @@ HB_FUNC_STATIC( TGRIDBYCELL_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lPa
          hb_vmPushLong( wParam );
          hb_vmPushLong( lParam );
          hb_vmDo( 5 );
-         if( ISNUM( -1 ) )
+         if( HB_ISNUM( -1 ) )
          {
             bDefault = FALSE;
          }
@@ -4574,7 +4574,7 @@ HB_FUNC_STATIC( TGRIDBYCELL_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lPa
             hb_vmPushLong( wParam );
             hb_vmPushLong( lParam );
             hb_vmDo( 3 );
-            if( ISNUM( -1 ) )
+            if( HB_ISNUM( -1 ) )
             {
                bDefault = FALSE;
             }
@@ -4977,13 +4977,13 @@ HB_FUNC( CELLRAWVALUE )   // hWnd, nRow, nCol, nType, uValue
 
    ListView_GetItem( hWnd, &LI );
 
-   if( iType == 1 && ISCHAR( 5 ) )
+   if( iType == 1 && HB_ISCHAR( 5 ) )
    {
       LI.cchTextMax = 1022;
       LI.pszText = ( char * ) hb_parc( 5 );
       ListView_SetItem( hWnd, &LI );
    }
-   else if( iType == 2 && ISNUM( 5 ) )
+   else if( iType == 2 && HB_ISNUM( 5 ) )
    {
       LI.iImage = hb_parni( 5 );
       ListView_SetItem( hWnd, &LI );

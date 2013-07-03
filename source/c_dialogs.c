@@ -1,5 +1,5 @@
 /*
- * $Id: c_dialogs.c,v 1.10 2012-03-24 02:37:35 fyurisich Exp $
+ * $Id: c_dialogs.c,v 1.11 2013-07-03 01:44:52 migsoft Exp $
  */
 /*
  * ooHG source code:
@@ -226,7 +226,7 @@ HB_FUNC( C_GETFILE )
 
    int flags = OFN_FILEMUSTEXIST ;
 
-   if( ISCHAR( 6 ) )
+   if( HB_ISCHAR( 6 ) )
    {
       strcpy( buffer, hb_parc( 6 ) );
    }
@@ -313,7 +313,7 @@ HB_FUNC( C_PUTFILE )
       flags = flags | OFN_NOCHANGEDIR;
    }
 
-   if( ISCHAR( 5 ) )
+   if( HB_ISCHAR( 5 ) )
    {
       strcpy( buffer, hb_parc( 5 ) );
    }
@@ -364,14 +364,14 @@ HB_FUNC( C_BROWSEFORFOLDER ) // Syntax: C_BROWSEFORFOLDER([<hWnd>],[<cTitle>],<n
       hwnd = GetActiveWindow();
    }
 
-   SHGetSpecialFolderLocation( hwnd, ISNIL(4) ? CSIDL_DRIVES : hb_parni(4), &pidlBrowse) ;
+   SHGetSpecialFolderLocation( hwnd, HB_ISNIL(4) ? CSIDL_DRIVES : hb_parni(4), &pidlBrowse) ;
    BrowseInfo.hwndOwner = hwnd;
    BrowseInfo.pidlRoot = pidlBrowse;
    BrowseInfo.pszDisplayName = lpBuffer;
-   BrowseInfo.lpszTitle = ISNIL (2) ? "Select a Folder" : hb_parc(2);
+   BrowseInfo.lpszTitle = HB_ISNIL (2) ? "Select a Folder" : hb_parc(2);
    BrowseInfo.ulFlags = hb_parni(3);
-   BrowseInfo.lpfn = ISCHAR(5) ? BrowseCallbackProc : NULL ;
-   BrowseInfo.lParam = ISCHAR(5) ? (LPARAM) (char *) hb_parc(5) : 1 ;
+   BrowseInfo.lpfn = HB_ISCHAR(5) ? BrowseCallbackProc : NULL ;
+   BrowseInfo.lParam = HB_ISCHAR(5) ? (LPARAM) (char *) hb_parc(5) : 1 ;
    BrowseInfo.iImage = 0;
    pidlBrowse = SHBrowseForFolder(&BrowseInfo);
 
@@ -396,14 +396,14 @@ HB_FUNC( CHOOSECOLOR )
 
    for( i = 0 ; i < 16 ; i++ )
    {
-      crCustClr[ i ] = ( ISARRAY( 3 ) ? (COLORREF) HB_PARNL( 3, i + 1 ) : GetSysColor( COLOR_BTNFACE ) );
+      crCustClr[ i ] = ( HB_ISARRAY( 3 ) ? (COLORREF) HB_PARNL( 3, i + 1 ) : GetSysColor( COLOR_BTNFACE ) );
    }
 
    cc.lStructSize    = sizeof( CHOOSECOLOR ) ;
-   cc.hwndOwner      = ISNIL(1) ? GetActiveWindow() : HWNDparam( 1 );
-   cc.rgbResult      = (COLORREF)ISNIL(2) ?  0 : hb_parnl(2) ;
+   cc.hwndOwner      = HB_ISNIL(1) ? GetActiveWindow() : HWNDparam( 1 );
+   cc.rgbResult      = (COLORREF)HB_ISNIL(2) ?  0 : hb_parnl(2) ;
    cc.lpCustColors   = crCustClr ;
-   cc.Flags          = (WORD) (ISNIL(4) ? CC_ANYCOLOR | CC_FULLOPEN | CC_RGBINIT : hb_parnl(4) ) ;
+   cc.Flags          = (WORD) (HB_ISNIL(4) ? CC_ANYCOLOR | CC_FULLOPEN | CC_RGBINIT : hb_parnl(4) ) ;
 
    if( ! ChooseColorA( &cc ) )
    {

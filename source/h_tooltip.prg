@@ -1,5 +1,5 @@
 /*
- * $Id: h_tooltip.prg,v 1.7 2011-09-07 19:06:17 fyurisich Exp $
+ * $Id: h_tooltip.prg,v 1.8 2013-07-03 01:44:52 migsoft Exp $
  */
 /*
  * ooHG source code:
@@ -285,7 +285,7 @@ HB_FUNC( SETTOOLTIP )   // ( hWnd, cToolTip, hWndToolTip )
    ti.uFlags = TTF_SUBCLASS | TTF_IDISHWND;
    ti.hwnd = GetParent( hWnd );
    ti.uId = ( UINT ) hWnd;
-   if( ISBLOCK( 2 ) )
+   if( HB_ISBLOCK( 2 ) )
    {
       ti.lpszText = LPSTR_TEXTCALLBACK;
    }

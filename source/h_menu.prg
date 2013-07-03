@@ -1,5 +1,5 @@
 /*
- * $Id: h_menu.prg,v 1.34 2012-08-15 23:52:34 fyurisich Exp $
+ * $Id: h_menu.prg,v 1.35 2013-07-03 01:44:52 migsoft Exp $
  */
 /*
  * ooHG source code:
@@ -480,7 +480,7 @@ METHOD Picture( Images ) CLASS TMenuItem
             ::aPicture[2] := ""
          EndIf
       EndIf
-      
+
       If LEN( Images ) > 0
          // Change unchecked bitmap
          If VALTYPE( Images[1] ) # "CM"
@@ -631,7 +631,7 @@ HB_FUNC( MENUCHECKED )
    HMENU hMenu = HMENUparam( 1 );
    int iItem = hb_parni( 2 );
 
-   if( ISLOG( 3 ) )
+   if( HB_ISLOG( 3 ) )
    {
       CheckMenuItem( hMenu, iItem, MF_BYCOMMAND | ( hb_parl( 3 ) ? MF_CHECKED : MF_UNCHECKED ) );
    }
@@ -644,7 +644,7 @@ HB_FUNC( MENUENABLED )
    HMENU hMenu = HMENUparam( 1 );
    int iItem = hb_parni( 2 );
 
-   if( ISLOG( 3 ) )
+   if( HB_ISLOG( 3 ) )
    {
       EnableMenuItem( hMenu, iItem, MF_BYCOMMAND | ( hb_parl( 3 ) ? MF_ENABLED : MF_GRAYED ) );
    }
@@ -657,7 +657,7 @@ HB_FUNC( MENUHILITED )
    HMENU hMenu = HMENUparam( 1 );
    int iItem = hb_parni( 2 );
 
-   if( ISLOG( 3 ) )
+   if( HB_ISLOG( 3 ) )
    {
       HiliteMenuItem( HWNDparam( 4 ), hMenu, iItem, MF_BYCOMMAND | ( hb_parl( 3 ) ? MF_HILITE : MF_UNHILITE ) );
    }
@@ -672,7 +672,7 @@ HB_FUNC( MENUCAPTION )
    int iLen;
    char *cBuffer;
 
-   if( ISCHAR( 3 ) )
+   if( HB_ISCHAR( 3 ) )
    {
       MENUITEMINFO MenuItem;
       memset( &MenuItem, 0, sizeof( MenuItem ) );
@@ -710,7 +710,7 @@ TODO: detect AERO and set background color accordingly
       iAttributes = LR_LOADMAP3DCOLORS;
    }
 
-   if( ISLOG( 5 ) )
+   if( HB_ISLOG( 5 ) )
    {
       if( hb_parl( 5 ) )
       {

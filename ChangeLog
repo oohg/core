@@ -1,11 +1,35 @@
 /*
- * $Id: ChangeLog,v 1.1085 2013-07-02 21:47:50 migsoft Exp $
+ * $Id: ChangeLog,v 1.1086 2013-07-03 01:44:51 migsoft Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-07-02 21:19 UTC-0400 MigSoft <migsoft@oohg.org>
+   * ./Changelog
+   * source/c_windows.c
+   * source/c_winapimisc.c
+   * source/c_resource.c
+   * source/c_msgbox.c
+   * source/c_dialogs.c
+   * source/c_cursor.c
+   * source/h_windows.prg
+   * source/h_tooltip.prg
+   * source/h_textbox.prg
+   * source/h_textarray.prg
+   * source/h_splitbox.prg
+   * source/h_scroll.prg
+   * source/h_richeditbox.prg
+   * source/h_progressmeter.prg
+   * source/h_picture.prg
+   * source/h_monthcal.prg
+   * source/h_ini.prg
+   * source/h_ipaddress.prg
+   * source/h_menu.prg
+   * source/h_grid.prg
+     * HB_* compatibility commands
 
 2013-07-02 17:37 UTC-0400 MigSoft <migsoft@oohg.org>
    * ./Changelog

@@ -1,5 +1,5 @@
 /*
- * $Id: h_progressmeter.prg,v 1.18 2011-09-12 01:40:01 fyurisich Exp $
+ * $Id: h_progressmeter.prg,v 1.19 2013-07-03 01:44:52 migsoft Exp $
  */
 /*
  * ooHG source code:
@@ -376,7 +376,7 @@ HB_FUNC_STATIC( TPROGRESSMETER_SETPERCENT )
    double dNum;
    LONG lNum;
 
-   if( ISNUM( 1 ) )
+   if( HB_ISNUM( 1 ) )
    {
       dNum = hb_parnd( 1 ) * 100;
       if( dNum > 10000 )
@@ -391,7 +391,7 @@ HB_FUNC_STATIC( TPROGRESSMETER_SETPERCENT )
       {
          lNum = ( LONG ) dNum;
       }
-      if( lNum != oSelf->lAux[ 0 ] || ( ISLOG( 2 ) && hb_parl( 2 ) ) )
+      if( lNum != oSelf->lAux[ 0 ] || ( HB_ISLOG( 2 ) && hb_parl( 2 ) ) )
       {
          oSelf->lAux[ 0 ] = lNum;
          ProgressMeter_Paint( oSelf, NULL );
@@ -406,7 +406,7 @@ HB_FUNC_STATIC( TPROGRESSMETER_ALIGN )
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
 
-   if( ISNUM( 1 ) )
+   if( HB_ISNUM( 1 ) )
    {
       oSelf->lAux[ 1 ] = hb_parni( 1 );
       ProgressMeter_Paint( oSelf, NULL );

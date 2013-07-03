@@ -1,5 +1,5 @@
 /*
- * $Id: h_scroll.prg,v 1.21 2012-09-21 02:54:33 fyurisich Exp $
+ * $Id: h_scroll.prg,v 1.22 2013-07-03 01:44:52 migsoft Exp $
  */
 /*
  * ooHG source code:
@@ -499,7 +499,7 @@ HB_FUNC( _SETSCROLL )
 
    nStyle = GetWindowLong( hWnd, GWL_STYLE );
 
-   if( ISLOG( 2 ) )
+   if( HB_ISLOG( 2 ) )
    {
       if( hb_parl( 2 ) )
       {
@@ -521,7 +521,7 @@ HB_FUNC( _SETSCROLL )
       }
    }
 
-   if( ISLOG( 3 ) )
+   if( HB_ISLOG( 3 ) )
    {
       if( hb_parl( 3 ) )
       {
@@ -563,7 +563,7 @@ HB_FUNC( SETSCROLLPAGE ) // ( hWnd, fnBar [ , size ] )
    pScrollInfo.fMask = SIF_PAGE | SIF_POS | SIF_RANGE | SIF_TRACKPOS;
    GetScrollInfo( hWnd, iType, &pScrollInfo );
    iPage = pScrollInfo.nPage;
-   if( ISNUM( 3 ) )
+   if( HB_ISNUM( 3 ) )
    {
       pScrollInfo.fMask = SIF_PAGE;
       pScrollInfo.nPage = hb_parni( 3 );
@@ -594,22 +594,22 @@ HB_FUNC( SETSCROLLINFO ) // ( hWnd, nMax, nPos, nPage, nMin )
  SCROLLINFO lpsi;
    lpsi.cbSize = sizeof( SCROLLINFO );
    lpsi.fMask = 0;
-   if( ISNUM( 2 ) )
+   if( HB_ISNUM( 2 ) )
    {
       lpsi.fMask |= SIF_RANGE;
       lpsi.nMax = hb_parni( 2 );
    }
-   if( ISNUM( 3 ) )
+   if( HB_ISNUM( 3 ) )
    {
       lpsi.fMask |= SIF_POS;
       lpsi.nPos = hb_parni( 3 );
    }
-   if( ISNUM( 4 ) )
+   if( HB_ISNUM( 4 ) )
    {
       lpsi.fMask |= SIF_PAGE;
       lpsi.nPage = hb_parni( 4 );
    }
-   if( ISNUM( 5 ) )
+   if( HB_ISNUM( 5 ) )
    {
       lpsi.fMask |= SIF_RANGE;
       lpsi.nMin = hb_parni( 5 );

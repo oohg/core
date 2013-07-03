@@ -1,5 +1,5 @@
 /*
- * $Id: h_splitbox.prg,v 1.19 2012-06-30 05:17:50 fyurisich Exp $
+ * $Id: h_splitbox.prg,v 1.20 2013-07-03 01:44:52 migsoft Exp $
  */
 /*
  * ooHG source code:
@@ -396,7 +396,7 @@ HB_FUNC( SETSPLITBOXITEM )
    iCount = SendMessage( HWNDparam( 2 ) , RB_GETBANDCOUNT, 0 , 0 ) - 1;
    SendMessage( HWNDparam( 2 ) , RB_GETBANDINFO, iCount, (LPARAM) &rbBand );
 
-   if( ISLOG( 4 ) )
+   if( HB_ISLOG( 4 ) )
    {
       rbBand.fMask |= RBBIM_STYLE;
       
@@ -410,7 +410,7 @@ HB_FUNC( SETSPLITBOXITEM )
       }
    }
 
-   if( ISCHAR( 5 ) )
+   if( HB_ISCHAR( 5 ) )
    {
       rbBand.fMask |= RBBIM_TEXT;
       rbBand.lpText = ( char * ) hb_parc( 5 );

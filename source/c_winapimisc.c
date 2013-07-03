@@ -1,5 +1,5 @@
 /*
- * $Id: c_winapimisc.c,v 1.18 2012-02-16 22:49:28 fyurisich Exp $
+ * $Id: c_winapimisc.c,v 1.19 2013-07-03 01:44:52 migsoft Exp $
  */
 /*
  * ooHG source code:
@@ -316,7 +316,7 @@ HB_FUNC( PAINTBKGND )
 
     GetClientRect(hwnd, &recClie);
 
-    if ((hb_pcount() > 1) && (!ISNIL(2)))
+    if ((hb_pcount() > 1) && (!HB_ISNIL(2)))
     { brush = CreateSolidBrush( RGB(HB_PARNI(2, 1),
                                     HB_PARNI(2, 2),
                                     HB_PARNI(2, 3)) );
@@ -409,7 +409,7 @@ HB_FUNC( GETNEXTDLGTABITEM )
 
 HB_FUNC( SHELLEXECUTE )
 {
-   hb_retnl( (LONG) ShellExecute( HWNDparam( 1 ), ISNIL(2) ? NULL : (LPCSTR) hb_parc(2),(LPCSTR) hb_parc(3),ISNIL(4) ? NULL : (LPCSTR) hb_parc(4),ISNIL(5) ? NULL : (LPCSTR) hb_parc(5),hb_parni(6) ) ) ;
+   hb_retnl( (LONG) ShellExecute( HWNDparam( 1 ), HB_ISNIL(2) ? NULL : (LPCSTR) hb_parc(2),(LPCSTR) hb_parc(3),HB_ISNIL(4) ? NULL : (LPCSTR) hb_parc(4),HB_ISNIL(5) ? NULL : (LPCSTR) hb_parc(5),hb_parni(6) ) ) ;
 }
 
 HB_FUNC( WAITRUN )
@@ -457,7 +457,7 @@ HB_FUNC( CREATEMUTEX )
 {
    SECURITY_ATTRIBUTES *sa = NULL;
 
-   if( ISCHAR( 2 ) && ! ISNIL( 1 ) )
+   if( HB_ISCHAR( 2 ) && ! HB_ISNIL( 1 ) )
    {
       sa = ( SECURITY_ATTRIBUTES * ) hb_itemGetCPtr( hb_param( 1, HB_IT_STRING ) );
    }

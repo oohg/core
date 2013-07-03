@@ -1,5 +1,5 @@
 /*
- * $Id: c_cursor.c,v 1.6 2012-04-03 22:51:14 fyurisich Exp $
+ * $Id: c_cursor.c,v 1.7 2013-07-03 01:44:51 migsoft Exp $
  */
 /*
  * ooHG source code:
@@ -115,7 +115,7 @@ Status:      Public Domain
 
 HB_FUNC( LOADCURSOR )
 {
-   HINSTANCE hInstance    = ( ISNIL(1) ? NULL : (HINSTANCE) hb_parnl(1) );
+   HINSTANCE hInstance    = ( HB_ISNIL(1) ? NULL : (HINSTANCE) hb_parnl(1) );
    LPCTSTR   lpCursorName = ( hb_parinfo(2) == HB_IT_STRING ? hb_parc(2): MAKEINTRESOURCE( hb_parnl(2) ) );
 
    hb_retnl( (LONG) LoadCursor( hInstance, lpCursorName ) );
@@ -217,7 +217,7 @@ HB_FUNC( SETWINDOWCURSOR )
 {
    HCURSOR ch;
 
-   if( ISCHAR(2) )
+   if( HB_ISCHAR(2) )
    {
       ch = LoadCursor( GetModuleHandle( NULL ), hb_parc(2) );
 

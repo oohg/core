@@ -1,5 +1,5 @@
 /*
- * $Id: h_picture.prg,v 1.10 2011-11-03 23:07:05 fyurisich Exp $
+ * $Id: h_picture.prg,v 1.11 2013-07-03 01:44:52 migsoft Exp $
  */
 /*
  * ooHG source code:
@@ -691,7 +691,7 @@ HB_FUNC_STATIC( TPICTURE_NDEGREE )   // ( nDegree )
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
 
-   if( ISNUM( 1 ) )
+   if( HB_ISNUM( 1 ) )
    {
       oSelf->lAux[ 1 ] = hb_parnl( 1 ) % 360;
    }
