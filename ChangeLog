@@ -1,11 +1,19 @@
 /*
- * $Id: ChangeLog,v 1.1086 2013-07-03 01:44:51 migsoft Exp $
+ * $Id: ChangeLog,v 1.1087 2013-07-03 02:13:51 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-07-02 23:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     * One entry corrected.
+   * source/h_xbrowse.prg
+     * Minor formatting.
+     ! Fixed method ::RefreshRow() not working properly when
+       ::FixBlocks() == .T.
 
 2013-07-02 21:19 UTC-0400 MigSoft <migsoft@oohg.org>
    * ./Changelog
@@ -78,7 +86,7 @@
        evaluated when the user starts dragging a column header.
        The column number is passed as a parameter.
        If the codeblock returns .F. the dragging is not allowed.
-     + Added ON AFTERCOLMOVE clause to TGrid, TGridMulti, TGridByCell
+     + Added AFTERCOLMOVE clause to TGrid, TGridMulti, TGridByCell
        TXBrowse and TOBrowse classes. Specifies a codeblock that is
        evaluated after the user ends dragging a column header.
        The column number is passed as a parameter.

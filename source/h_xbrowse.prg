@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.83 2013-07-01 02:03:36 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.84 2013-07-03 02:13:51 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -376,11 +376,11 @@ Local aItem, cWorkArea
          cWorkArea := nil
       EndIf
       If ::FixBlocks()
-        aItem := ACLONE( ::aColumnBlocks )
+         aItem := ACLONE( ::aColumnBlocks )
       Else
-        aItem := ARRAY( LEN( ::aFields ) )
-        AEVAL( aItem, { |x,i| aItem[ i ] := EVAL( ::ColumnBlock( i ), cWorkArea ), x } )
+         aItem := ARRAY( LEN( ::aFields ) )
       EndIf
+      AEVAL( aItem, { |x,i| aItem[ i ] := EVAL( ::ColumnBlock( i ), cWorkArea ), x } )
       AEVAL( aItem, { |x,i| IF( VALTYPE( x ) $ "CM", aItem[ i ] := TRIM( x ),  ) } )
 
       If ValType( cWorkArea ) $ "CM"
@@ -780,9 +780,9 @@ Local cWorkArea, uGridValue
 
       Do While ! ::Eof()
          If ::FixBlocks()
-           uGridValue := Eval( ::aColumnBlocks[ ::SearchCol ], cWorkArea )
+            uGridValue := Eval( ::aColumnBlocks[ ::SearchCol ], cWorkArea )
          Else
-           uGridValue := Eval( ::ColumnBlock( ::SearchCol ), cWorkArea )
+            uGridValue := Eval( ::ColumnBlock( ::SearchCol ), cWorkArea )
          EndIf
          If ValType( uGridValue ) == "A"      // TGridControlImageData
             uGridValue := uGridValue[ 1 ]
@@ -800,9 +800,9 @@ Local cWorkArea, uGridValue
 
          Do While ! ::Eof()
             If ::FixBlocks()
-              uGridValue := Eval( ::aColumnBlocks[ ::SearchCol ], cWorkArea )
+               uGridValue := Eval( ::aColumnBlocks[ ::SearchCol ], cWorkArea )
             Else
-              uGridValue := Eval( ::ColumnBlock( ::SearchCol ), cWorkArea )
+               uGridValue := Eval( ::ColumnBlock( ::SearchCol ), cWorkArea )
             EndIf
             If ValType( uGridValue ) == "A"      // TGridControlImageData
                uGridValue := uGridValue[ 1 ]
@@ -1410,7 +1410,6 @@ Local cField, cArea, nPos, aStruct
    EndIf
 
    If ValType( uOldValue ) == "U"
-      // uOldValue := &( ::WorkArea + "->( " + ::aFields[ nCol ] + " )" )
       uOldValue := EVAL( ::ColumnBlock( nCol, .T. ), ::WorkArea )
    EndIf
 
