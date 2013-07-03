@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.200 2013-07-03 01:44:52 migsoft Exp $
+ * $Id: h_grid.prg,v 1.201 2013-07-03 02:36:30 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -155,6 +155,7 @@ CLASS TGrid FROM TControl
    DATA bBeforeColSize         INIT Nil
    DATA bAfterColSize          INIT Nil
    DATA bBeforeAutofit         INIT Nil
+   DATA aHiddenCols            INIT {}
 
    METHOD Define
    METHOD Define2
@@ -1326,6 +1327,7 @@ METHOD ColumnHide( nColIndex ) CLASS TGrid
    If HB_IsNumeric( nColIndex )
       If nColindex > 0
          ::ColumnWidth( nColIndex, 0 )
+         AADD( ::aHiddenCols, nColIndex )
       EndIf
    EndIf
 Return Nil
@@ -1333,9 +1335,14 @@ Return Nil
 *-----------------------------------------------------------------------------*
 METHOD ColumnShow( nColIndex ) CLASS TGrid
 *-----------------------------------------------------------------------------*
+Local i
    If HB_IsNumeric( nColIndex )
       If nColindex > 0
-         ::ColumnBetterAutoFit ( nColIndex )
+         i := ASCAN( ::aHiddenCols, nColIndex )
+         If i > 0
+            ::ColumnBetterAutoFit ( nColIndex )
+            _OOHG_DeleteArrayItem( ::aHiddenCols, i )
+         EndIf
       EndIf
    EndIf
 Return Nil
@@ -1786,6 +1793,12 @@ Local nNotify, nColumn, lGo, nNewWidth
    ElseIf nNotify == HDN_BEGINTRACK
       // The user has begun dragging a column divider
       If HB_IsLogical( ::AllowChangeSize ) .AND. ! ::AllowChangeSize
+         // Prevent the action
+         Return 1
+      EndIf
+
+      // Is a hidden column ?
+      If ASCAN( ::aHiddenCols, nColumn ) > 0
          // Prevent the action
          Return 1
       EndIf
@@ -5376,6 +5389,32 @@ HB_FUNC( LISTVIEW_ADDCOLUMN )
       ListView_InsertColumn( hwnd, 1, &COL );
       ListView_DeleteColumn( hwnd, 0 );
    }
+
+   if( ! hb_parl( 6 ) )
+   {
+      SendMessage( hwnd, LVM_DELETEALLITEMS, 0, 0 );
+      RedrawWindow( hwnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+   }
+}
+
+HB_FUNC( LISTVIEW_SETCOLUMN )
+{
+   LV_COLUMN COL;
+   int iColumn = hb_parni( 2 ) - 1;
+   HWND hwnd = HWNDparam( 1 );
+
+   if( iColumn < 0 || iColumn > Header_GetItemCount( ListView_GetHeader( hwnd ) ) )
+   {
+      return;
+   }
+
+   COL.mask = LVCF_WIDTH | LVCF_TEXT | LVCF_FMT | LVCF_SUBITEM; // | LVCF_IMAGE;
+   COL.cx = hb_parni( 3 );
+   COL.pszText = ( char * ) hb_parc( 4 );
+   COL.iSubItem = iColumn;
+   COL.fmt = hb_parni( 5 ); // | LVCFMT_IMAGE;
+
+   ListView_SetColumn( hwnd, iColumn, &COL );
 
    if( ! hb_parl( 6 ) )
    {

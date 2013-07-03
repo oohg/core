@@ -1,11 +1,22 @@
 /*
- * $Id: ChangeLog,v 1.1088 2013-07-03 02:16:46 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1089 2013-07-03 02:36:30 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-07-02 23:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * doc/classes.txt
+     * Updated.
+   * source/h_grid.prg
+     + Added DATA aHiddenCols.
+     + ::ColumnHide stores column number into ::aHiddenCols.
+     + ::ColumnShow deletes column number from ::aHiddenCols.
+     + Function _OOHG_TGrid_Notify2() verifies ::aHiddenCols
+       before allowing the drag of a column.
+     + Added function LISTVIEW_SETCOLUMN().
 
 2013-07-02 23:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_browse.prg

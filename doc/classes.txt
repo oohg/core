@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.65 2013-07-01 02:03:35 fyurisich Exp $
+ * $Id: classes.txt,v 1.66 2013-07-03 02:36:30 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -851,6 +851,7 @@ CLASS TGRID FROM TCONTROL
    DATA AHEADERIMAGE              INIT {}
    DATA AHEADERIMAGEALIGN         INIT {}
    DATA AHEADERS                  INIT {}
+   DATA AHIDDENCOLS               INIT {}
    DATA AJUST                     INIT NIL
    DATA ALLOWCHANGESIZE           INIT .T.
    DATA ALLOWEDIT                 INIT .F.
