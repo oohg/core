@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.120 2013-07-01 02:03:35 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.121 2013-07-03 02:16:46 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -640,8 +640,7 @@ Local s, _RecNo, nLen
          // Resize record map
          If nLen > ::CountPerPage
             ::DeleteItem( 1 )
-            ADEL( ::aRecMap, 1 )
-            ASIZE( ::aRecMap, nLen - 1 )
+             _OOHG_DeleteArrayItem( ::aRecMap, 1 )
          EndIf
          If ::Visible
             ::SetRedraw( .T. )
