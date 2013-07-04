@@ -1,11 +1,28 @@
 /*
- * $Id: ChangeLog,v 1.1092 2013-07-04 01:10:59 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1093 2013-07-04 20:43:16 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-07-04 17:43 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/oohg.h
+     * Changed the definition of HB_* compatibility commands
+       for xHarbour.
+   * include/i_xbrowse.prg
+   * include/i_hmg_compat.prg
+   * include/i_browse.prg
+     + Added DYNAMICBLOCKS clause (is the opposite of FIXEDBLOCKS).
+   * source/h_grid.prg
+     * Some BCC errors fixed in LISTVIEW_GETCOLUMNORDER and
+       LISTVIEW_SETCOLUMNORDER C-level functions.
+   NOTE: OOHG libraries must build under the following compilers:
+         - Harbour 3.0.0
+         - xHarbour 1.2.1 rev. 6406
+         - BCC 5.5.1.
+         - MinGW 3.4.5
 
 2013-07-03 22:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_browse.prg

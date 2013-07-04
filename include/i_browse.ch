@@ -1,5 +1,5 @@
 /*
- * $Id: i_browse.ch,v 1.40 2013-07-01 02:03:35 fyurisich Exp $
+ * $Id: i_browse.ch,v 1.41 2013-07-04 20:43:16 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -177,7 +177,7 @@
       [ <updall: UPDATEALL> ] ;
       [ ON ABORTEDIT <abortedit> ] ;
       [ <fixedwidths: FIXEDWIDTHS> ] ;
-      [ <fixedblocks: FIXEDBLOCKS> ] ;
+      [ <blocks: FIXEDBLOCKS, DYNAMICBLOCKS> ] ;
       [ BEFORECOLMOVE <bBefMov> ] ;
       [ AFTERCOLMOVE <bAftMov> ] ;
       [ BEFORECOLSIZE <bBefSiz> ] ;
@@ -202,7 +202,8 @@
             iif( upper( #<focus> ) == "NOFOCUSRECT", .F., iif( upper( #<focus> ) == "FOCUSRECT", .T., NIL ) ), ;
             <.plm.>, iif( upper( #<sync> ) == "UNSYNCHRONIZED", .F., iif( upper( #<sync> ) == "SYNCHRONIZED", .T., NIL ) ), ;
             <.fixedcols.>, <.nodelmsg.>, <.updall.>, <{abortedit}>, <{click}>, <.fixedwidths.>, ;
-            <.fixedblocks.>, <{bBefMov}>, <{bAftMov}>, <{bBefSiz}>, <{bAftSiz}>, <{bBefAut}> )
+            iif( upper( #<blocks> ) == "FIXEDBLOCKS", .T., iif( upper( #<blocks> ) == "DYNAMICBLOCKS", .F., .F. ) ), ;
+            <{bBefMov}>, <{bAftMov}>, <{bBefSiz}>, <{bAftSiz}>, <{bBefAut}> )
 
 #command SET BROWSESYNC ON  => SetBrowseSync( .T. )
 #command SET BROWSESYNC OFF => SetBrowseSync( .F. )

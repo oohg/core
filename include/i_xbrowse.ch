@@ -1,5 +1,5 @@
 /*
- * $Id: i_xbrowse.ch,v 1.25 2013-07-01 02:03:35 fyurisich Exp $
+ * $Id: i_xbrowse.ch,v 1.26 2013-07-04 20:43:16 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -169,7 +169,7 @@
       [ <fixedcols: FIXEDCOLS> ] ;
       [ ON ABORTEDIT <abortedit> ] ;
       [ <fixedwidths: FIXEDWIDTHS> ] ;
-      [ <fixedblocks: FIXEDBLOCKS> ] ;
+      [ <blocks: FIXEDBLOCKS, DYNAMICBLOCKS> ] ;
       [ BEFORECOLMOVE <bBefMov> ] ;
       [ AFTERCOLMOVE <bAftMov> ] ;
       [ BEFORECOLSIZE <bBefSiz> ] ;
@@ -193,4 +193,5 @@
             iif( upper( #<bffr> ) == "DOUBLEBUFFER", .T., iif( upper( #<bffr> ) == "SINGLEBUFFER", .F., .T. ) ), ;
             iif( upper( #<focus> ) == "NOFOCUSRECT", .F., iif( upper( #<focus> ) == "FOCUSRECT", .T., NIL ) ), ;
             <.plm.>, <.fixedcols.>, <{abortedit}>, <{click}>, <.fixedwidths.>, ;
-            <.fixedblocks.>, <{bBefMov}>, <{bAftMov}>, <{bBefSiz}>, <{bAftSiz}>, <{bBefAut}> )
+            iif( upper( #<blocks> ) == "FIXEDBLOCKS", .T., iif( upper( #<blocks> ) == "DYNAMICBLOCKS", .F., .F. ) ), ;
+            <{bBefMov}>, <{bAftMov}>, <{bBefSiz}>, <{bAftSiz}>, <{bBefAut}> )

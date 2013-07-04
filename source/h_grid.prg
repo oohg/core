@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.201 2013-07-03 02:36:30 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.202 2013-07-04 20:43:16 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -4484,11 +4484,13 @@ HB_FUNC( LISTVIEW_GETCOLUMNORDER )
 {
    HWND hWnd = HWNDparam( 1 );
    int iCount, n;
+   int *nArray;
 
    if( ValidHandler( hWnd ) )
    {
       iCount = Header_GetItemCount( ListView_GetHeader( hWnd ) );
-      int nArray[ iCount ];
+      nArray = (int *) hb_xgrab( ( iCount ) * sizeof( int ) );
+
       if( ListView_GetColumnOrderArray( hWnd, (WPARAM) iCount, (LPARAM) (LPINT) nArray ) )
       {
          hb_reta( iCount );
@@ -4496,9 +4498,13 @@ HB_FUNC( LISTVIEW_GETCOLUMNORDER )
          {
             HB_STORNI( nArray[ n ] + 1, -1, n + 1 );
          }
+
+         hb_xfree( nArray );
       }
       else
       {
+         hb_xfree( nArray );
+
          hb_reta( 0 );
       }
    }
@@ -4512,6 +4518,7 @@ HB_FUNC_STATIC( LISTVIEW_SETCOLUMNORDER )
 {
    HWND hWnd = HWNDparam( 1 );
    int iCount, n;
+   int *iArray;
    PHB_ITEM nArray;
    BOOL bRet = FALSE;
 
@@ -4521,7 +4528,7 @@ HB_FUNC_STATIC( LISTVIEW_SETCOLUMNORDER )
 
       if( (int) hb_parinfa( 2, 0 ) == iCount )
       {
-         int iArray[ iCount ];
+         iArray = (int *) hb_xgrab( ( iCount ) * sizeof( int ) );
          nArray = hb_param( 2, HB_IT_ARRAY );
 
          for( n = 1; n <= iCount; n++ )
@@ -4530,6 +4537,8 @@ HB_FUNC_STATIC( LISTVIEW_SETCOLUMNORDER )
          }
 
          bRet = ListView_SetColumnOrderArray( hWnd, (WPARAM) iCount, (LPARAM) (LPINT) iArray );
+
+         hb_xfree( iArray );
       }
    }
 
