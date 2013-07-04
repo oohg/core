@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.121 2013-07-03 02:16:46 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.122 2013-07-04 01:10:59 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -249,8 +249,6 @@ Local nWidth2, nCol2, oScroll, z
       ::nValue := Value
    ENDIF
 
-   ::FixBlocks( lFixedBlocks )
-
    ASSIGN ::Lock          VALUE lock          TYPE "L"
    ASSIGN ::AllowDelete   VALUE AllowDelete   TYPE "L"
    ASSIGN ::AllowAppend   VALUE AllowAppend   TYPE "L"
@@ -258,6 +256,9 @@ Local nWidth2, nCol2, oScroll, z
    ASSIGN ::lRecCount     VALUE lRecCount     TYPE "L"
 
    ::WorkArea := WorkArea
+
+   ::FixBlocks( lFixedBlocks )
+
    ::aRecMap := {}
 
    ::ScrollButton := TScrollButton():Define( , Self, nCol2, ::nHeight - GETHSCROLLBARHEIGHT(), GETVSCROLLBARWIDTH(), GETHSCROLLBARHEIGHT() )

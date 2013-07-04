@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog,v 1.1091 2013-07-03 23:56:35 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1092 2013-07-04 01:10:59 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-07-03 22:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_browse.prg
+     ! Fixed method ::FixBlocks() not working properly because
+       ::WorkArea is not yet initialized.
 
 2013-07-03 20:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_xbrowse.prg
