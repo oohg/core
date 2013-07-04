@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.122 2013-07-04 01:10:59 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.123 2013-07-04 23:00:17 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -370,7 +370,9 @@ Local lColor, aFields, cWorkArea, hWnd, nWidth
       ::SetRedraw( .F. )
    EndIf
 
-   ::DeleteAllItems()
+   ListViewReset( ::hWnd )
+   ::GridForeColor := nil
+   ::GridBackColor := nil
 
    Do While x < PageLength .AND. ! ::Eof()
       x++
