@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.202 2013-07-04 20:43:16 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.203 2013-07-05 01:02:46 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -166,6 +166,7 @@ CLASS TGrid FROM TControl
    METHOD Events_Notify
    METHOD AddColumn
    METHOD DeleteColumn
+   METHOD SetColumn
    METHOD Cell
    METHOD CellCaption( nRow, nCol, uValue ) BLOCK { | Self, nRow, nCol, uValue | CellRawValue( ::hWnd, nRow, nCol, 1, uValue ) }
    METHOD CellImage( nRow, nCol, uValue )   BLOCK { | Self, nRow, nCol, uValue | CellRawValue( ::hWnd, nRow, nCol, 2, uValue ) }
@@ -1305,6 +1306,118 @@ Local uTemp, x
       Next
    EndIf
 Return Nil
+
+*-----------------------------------------------------------------------------*
+METHOD SetColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor, ;
+                  lNoDelete, uPicture, uEditControl, uHeadClick, uValid, ;
+                  uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign ) CLASS TGrid
+*-----------------------------------------------------------------------------*
+Local nColumns, uGridColor, uDynamicColor
+
+   // Set Default Values
+   nColumns := Len( ::aHeaders )
+
+   If ! HB_IsNumeric( nColIndex ) .OR. nColIndex > nColumns
+      nColIndex := nColumns
+   ElseIf nColIndex < 1
+      nColIndex := 1
+   EndIf
+
+   If ! ValType( cCaption ) $ 'CM'
+      cCaption := ''
+   EndIf
+
+   If ! HB_IsNumeric( nWidth )
+      nWidth := 120
+   EndIf
+
+   If ! HB_IsNumeric( nJustify )
+      nJustify := 0
+   EndIf
+
+   // Update Headers
+   ::aHeaders[ nColIndex ] := cCaption
+
+   // Update Pictures
+   ::Picture[ nColIndex ] := If( ( ValType( uPicture ) $ "CM" .AND. ! Empty( uPicture ) ) .OR. HB_IsLogical( uPicture ), uPicture, Nil )
+
+   // Update Widths
+   ::aWidths[ nColIndex ] := nWidth
+
+   If ! HB_IsLogical( lNoDelete )
+      lNoDelete := .F.
+   EndIf
+
+   // Update Foreground Color
+   uGridColor := ::GridForeColor
+   uDynamicColor := ::DynamicForeColor
+   TGrid_AddColumnColor( @uGridColor, nColIndex, uForeColor, @uDynamicColor, nColumns, ::ItemCount, lNoDelete, ::hWnd )
+   ::GridForeColor := uGridColor
+   ::DynamicForeColor := uDynamicColor
+
+   // Update Background Color
+   uGridColor := ::GridBackColor
+   uDynamicColor := ::DynamicBackColor
+   TGrid_AddColumnColor( @uGridColor, nColIndex, uBackColor, @uDynamicColor, nColumns, ::ItemCount, lNoDelete, ::hWnd )
+   ::GridBackColor := uGridColor
+   ::DynamicBackColor := uDynamicColor
+
+   // Update edit control
+   If ValType( uEditControl ) != Nil .OR. HB_IsArray( ::EditControls )
+      If ! HB_IsArray( ::EditControls )
+         ::EditControls := Array( nColumns )
+      ElseIf Len( ::EditControls ) < nColumns
+         aSize( ::EditControls, nColumns )
+      EndIf
+      ::EditControls[ nColIndex ] := uEditControl
+   EndIf
+
+   // Update justification
+   ::aJust[ nColIndex ] := nJustify
+
+   // Update on head click codeblock
+   ::aHeadClick[ nColIndex ] := uHeadClick
+
+   // Update valid
+   If HB_IsArray( ::Valid )
+      ::Valid[ nColIndex ] := uValid
+   ElseIf uValid != Nil
+      ::Valid := Array( nColumns )
+      ::Valid[ nColIndex ] := uValid
+   EndIf
+
+   // Update validmessages
+   If HB_IsArray( ::ValidMessages )
+      ::ValidMessages[ nColIndex ] := uValidMessage
+   ElseIf uValidMessage != Nil
+      ::ValidMessages := Array( nColumns )
+      ::ValidMessages[ nColIndex ] := uValidMessage
+   EndIf
+
+   // Update when
+   If HB_IsArray( ::aWhen )
+      ::aWhen[ nColIndex ] := uWhen
+   ElseIf uWhen != Nil
+      ::aWhen := Array( nColumns )
+      ::aWhen[ nColIndex ] := uWhen
+   EndIf
+
+   // Update header image
+   If ! HB_IsNumeric( nHeaderImage ) .OR. nHeaderImage < 0
+      nHeaderImage := 0
+   EndIf
+   ::HeaderImage( nColIndex, nHeaderImage )
+
+   // Update header image alignment
+   If ! HB_IsNumeric( nHeaderImageAlign ) .OR. nHeaderImageAlign != HEADER_IMG_AT_RIGHT
+      nHeaderImageAlign := HEADER_IMG_AT_LEFT
+   EndIf
+   ::HeaderImageAlign( nColIndex, nHeaderImageAlign )
+
+   // Call C-Level Routine
+   ListView_SetColumn( ::hWnd, nColIndex, nWidth, cCaption, nJustify, lNoDelete )
+
+Return nColIndex
 
 *----------------------------------------------------------------------------*
 METHOD ColumnBetterAutoFit( nColIndex ) CLASS Tgrid

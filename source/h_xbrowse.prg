@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.86 2013-07-03 23:56:35 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.87 2013-07-05 01:02:46 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -138,9 +138,7 @@ CLASS TXBROWSE FROM TGrid
    METHOD Item
    METHOD ItemCount           BLOCK { | Self | ListViewGetItemCount( ::hWnd ) }
 */
-/* tbrowse:
-   METHOD SetColumn( nColumn, oCol )      // Replaces one TBColumn object with another
-*/
+   METHOD SetColumn
    MESSAGE EditGrid METHOD EditAllCells
 
    EMPTY( _OOHG_AllVars )
@@ -1548,9 +1546,10 @@ RETURN ::uWorkArea
 *-----------------------------------------------------------------------------*
 METHOD AddColumn( nColIndex, xField, cHeader, nWidth, nJustify, uForeColor, ;
                   uBackColor, lNoDelete, uPicture, uEditControl, uHeadClick, ;
-                  uValid, uValidMessage, uWhen, cHeaderImage, nHeaderImageAlign ) CLASS TXBrowse
+                  uValid, uValidMessage, uWhen, cHeaderImage, nHeaderImageAlign, ;
+                  uReplaceField, lRefresh ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
-
+LOCAL nRet
    // Set Default Values
    If ! HB_IsNumeric( nColIndex ) .OR. nColIndex > Len( ::aHeaders ) + 1
       nColIndex := Len( ::aHeaders ) + 1
@@ -1571,16 +1570,22 @@ METHOD AddColumn( nColIndex, xField, cHeader, nWidth, nJustify, uForeColor, ;
    If HB_IsArray( ::aReplaceField )
       ASIZE( ::aReplaceField, LEN( ::aReplaceField ) + 1 )
       AINS( ::aReplaceField, nColIndex )
+   ELSE
+      ::aReplaceField := ARRAY( LEN( ::aFields ) + 1 )
    EndIf
+   ::aReplaceField[ nColIndex ] := uReplaceField
 
-   ::Super:AddColumn( nColIndex, cHeader, nWidth, nJustify, uForeColor, ;
-                      uBackColor, lNoDelete, uPicture, uEditControl, uHeadClick, ;
-                      uValid, uValidMessage, uWhen, cHeaderImage, nHeaderImageAlign )
-   ::Refresh()
-RETURN nil
+   nRet := ::Super:AddColumn( nColIndex, cHeader, nWidth, nJustify, uForeColor, ;
+                              uBackColor, lNoDelete, uPicture, uEditControl, uHeadClick, ;
+                              uValid, uValidMessage, uWhen, cHeaderImage, nHeaderImageAlign )
+
+   If ! HB_IsLogical( lRefresh ) .OR. lRefresh
+      ::Refresh()
+   EndIf
+RETURN nRet
 
 *-----------------------------------------------------------------------------*
-METHOD DeleteColumn( nColIndex ) CLASS TXBrowse
+METHOD DeleteColumn( nColIndex, lRefresh ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
 LOCAL nColumns, nRet
    nColumns := Len( ::aHeaders )
@@ -1601,7 +1606,44 @@ LOCAL nColumns, nRet
       _OOHG_DeleteArrayItem( ::aReplaceField,  nColIndex )
    EndIf
    nRet := ::Super:DeleteColumn( nColIndex )
-   ::Refresh()
+
+   If ! HB_IsLogical( lRefresh ) .OR. lRefresh
+      ::Refresh()
+   EndIf
+RETURN nRet
+
+*-----------------------------------------------------------------------------*
+METHOD SetColumn( nColIndex, xField, cHeader, nWidth, nJustify, uForeColor, ;
+                  uBackColor, lNoDelete, uPicture, uEditControl, uHeadClick, ;
+                  uValid, uValidMessage, uWhen, cHeaderImage, nHeaderImageAlign, ;
+                  uReplaceField, lRefresh ) CLASS TXBrowse
+*-----------------------------------------------------------------------------*
+LOCAL nRet
+   // Set Default Values
+   If ! HB_IsNumeric( nColIndex ) .OR. nColIndex > Len( ::aHeaders ) + 1
+      nColIndex := Len( ::aHeaders ) + 1
+   ElseIf nColIndex < 1
+      nColIndex := 1
+   EndIf
+
+   ::aFields[ nColIndex ] := xField
+
+   If ::FixBlocks()
+      ::aColumnBlocks[ nColIndex ] := ::ColumnBlock( nColIndex )
+   EndIf
+
+   If ! HB_IsArray( ::aReplaceField )
+      ::aReplaceField := ARRAY( LEN( ::aFields ) )
+   EndIf
+   ::aReplaceField[ nColIndex ] := uReplaceField
+
+   nRet := ::Super:SetColumn( nColIndex, cHeader, nWidth, nJustify, uForeColor, ;
+                              uBackColor, lNoDelete, uPicture, uEditControl, uHeadClick, ;
+                              uValid, uValidMessage, uWhen, cHeaderImage, nHeaderImageAlign )
+
+   If ! HB_IsLogical( lRefresh ) .OR. lRefresh
+      ::Refresh()
+   EndIf
 RETURN nRet
 
 *-----------------------------------------------------------------------------*
