@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.70 2013-06-10 00:31:30 fyurisich Exp $
+ * $Id: h_combo.prg,v 1.71 2013-07-08 23:50:32 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -533,7 +533,7 @@ Local WorkArea, BackRec, nMax, i, nStart
                // item was found in the rest of the list, select
                ComboSetCurSel( ::hWnd, ::nLastFound )
             Else
-               // if there are more items load, load them and search again
+               // if there are more items not already loaded, load them and search again
                If OSisWinXPorLater() .AND. ::lDelayLoad
                   If ! Select( WorkArea := ::WorkArea ) == 0
                      BackRec := ( WorkArea )->( Recno() )
@@ -616,7 +616,7 @@ Local WorkArea, BackRec, nMax, i, nStart
       If OSisWinXPorLater() .AND. ::lDelayLoad
          If ! Select( WorkArea := ::WorkArea ) == 0
             Do Case
-            Case wParam == 35 // END
+            Case wParam == VK_END
                BackRec := ( WorkArea )->( Recno() )
                ( WorkArea )->( DBGoto( ::nLastItem ) )
                ( WorkArea )->( DBSkip() )
@@ -631,7 +631,7 @@ Local WorkArea, BackRec, nMax, i, nStart
                EndDo
                ( WorkArea )->( DBGoTo( BackRec ) )
 
-            Case wParam == 34 // PGDN
+            Case wParam == VK_NEXT
                nMax := ::VisibleItems
                BackRec := ( WorkArea )->( Recno() )
                ( WorkArea )->( DBGoto( ::nLastItem ) )
@@ -649,7 +649,7 @@ Local WorkArea, BackRec, nMax, i, nStart
                EndDo
                ( WorkArea )->( DBGoTo( BackRec ) )
 
-            Case wParam == 40 // DOWN
+            Case wParam == VK_DOWN
                BackRec := ( WorkArea )->( Recno() )
                ( WorkArea )->( DBGoto( ::nLastItem ) )
                ( WorkArea )->( DBSkip() )
@@ -674,7 +674,7 @@ Return ::Super:Events( hWnd, nMsg, wParam, lParam )
 *-----------------------------------------------------------------------------*
 METHOD Events_Command( wParam ) CLASS TCombo
 *-----------------------------------------------------------------------------*
-Local Hi_wParam := HIWORD( wParam )
+Local Hi_wParam := HIWORD( wParam ), WorkArea, BackRec
 
    if Hi_wParam == CBN_SELCHANGE
       IF ::lAutosize
@@ -704,6 +704,47 @@ Local Hi_wParam := HIWORD( wParam )
       Return nil
 
    elseif Hi_wParam == CBN_EDITCHANGE
+      If ::lIncremental
+         ::cText := Upper( ::DisplayValue )
+         ::nLastFound := ComboBoxFindString( ComboBoxGetListhWnd( ::hWnd ), -1, ::cText )
+         If ::nLastFound > 0
+            ComboSetCurSel( ::hWnd, ::nLastFound )
+            ::SetEditSel( LEN( ::cText ), LEN( ::DisplayValue ) )
+            ::DoChange()
+            Return nil
+         EndIf
+         // if there are more items not already loaded, load them and search again
+         If OSisWinXPorLater() .AND. ::lDelayLoad
+            If ! Select( WorkArea := ::WorkArea ) == 0
+               BackRec := ( WorkArea )->( Recno() )
+               ( WorkArea )->( DBGoto( ::nLastItem ) )
+               ( WorkArea )->( DBSkip() )
+               If ! ( WorkArea )->( Eof() )
+                  // load remaining items
+                  ::SetRedraw( .F. )
+                  Do While ! ( WorkArea )->( Eof() )
+                     ::AddItem( { ( WorkArea )-> &( ::Field ), _OOHG_Eval( ::ItemNumber ) } )
+                     AADD( ::aValues, If( Empty( ::ValueSource ), ( WorkArea )->( RecNo() ), &( ::ValueSource ) ) )
+                     If ValidHandler( ::ImageList )
+                        ::AddBitMap( Eval( ::ImageSource ) )
+                     EndIf
+                     ::nLastItem := ( WorkArea )->( Recno() )
+                     ( WorkArea )->( DBSkip() )
+                  EndDo
+                  ::SetRedraw( .T. )
+                  // search again
+                  ::nLastFound := ComboBoxFindString( ComboBoxGetListhWnd( ::hWnd ), - 1, ::cText )
+               EndIf
+               ( WorkArea )->( DBGoTo( BackRec ) )
+               If ::nLastFound > 0
+                  ComboSetCurSel( ::hWnd, ::nLastFound )
+                  ::SetEditSel( LEN( ::cText ), LEN( ::DisplayValue ) )
+                  ::DoChange()
+                  Return nil
+               EndIf
+            EndIf
+         EndIf
+      EndIf
       ::DoEvent( ::OnClick, "CLICK" )
       Return nil
 
