@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.h,v 1.57 2013-07-05 01:16:45 fyurisich Exp $
+ * $Id: oohg.h,v 1.58 2013-07-10 15:42:28 migsoft Exp $
  */
 /*
  * ooHG source code:
@@ -269,4 +269,14 @@ HBRUSH GetTabBrush( HWND hWnd );
    #define ultoa _ultoa
    #define itoa  _itoa
    #define ltoa  _ltoa
+#endif
+
+#if defined( HB_ARCH_64BIT )
+   #if !defined( GCL_HBRBACKGROUND )
+       #define GCL_HBRBACKGROUND (-10)
+       #define GWL_USERDATA (-21)
+       #define GWL_WNDPROC (-4)
+       #define DWL_MSGRESULT (0)
+       #define GCL_HCURSOR (-12)
+   #endif
 #endif

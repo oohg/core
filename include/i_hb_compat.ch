@@ -1,5 +1,5 @@
 /*
- * $Id: i_hb_compat.ch,v 1.1 2012-04-01 00:58:24 fyurisich Exp $
+ * $Id: i_hb_compat.ch,v 1.2 2013-07-10 15:42:28 migsoft Exp $
  */
 /*
  * ooHG source code:
@@ -94,4 +94,10 @@
 
 #ifndef __XHARBOUR__
 #xtranslate Curdrive([<x>]) => hb_Curdrive(<x>)
+#endif
+
+#if defined( HB_ARCH_64BIT )
+   #xtranslate WIN_OEMTOANSI( <arg1> )   =>   HB_OEMTOANSI( <arg1> )
+   #xtranslate WIN_ANSITOOEM( <arg1> )   =>   HB_ANSITOOEM( <arg1> )
+   #xtranslate TIP_HTMLTOSTR( <arg1> )   =>   HTMLTOOEM( <arg1> )
 #endif
