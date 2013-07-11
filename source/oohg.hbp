@@ -1,5 +1,5 @@
 #
-# $Id: oohg.hbp,v 1.3 2013-07-01 02:03:36 fyurisich Exp $
+# $Id: oohg.hbp,v 1.4 2013-07-11 19:26:22 migsoft Exp $
 #
 
 # build a static library
@@ -9,7 +9,10 @@
 -inc
 
 # name of output file
--o${ooHG_INSTALL}\lib\${hb_name}
+-o${ooHG_INSTALL}\lib\hb\mingw\${hb_name}
+
+# name of output file x64
+#-o${ooHG_INSTALL}\lib\hb\mingw64\${hb_name}
 
 # path to headers files (.ch)
 -i${ooHG_INSTALL}\include

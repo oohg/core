@@ -1,10 +1,13 @@
 #
-# $Id: oohg.hbc,v 1.1 2013-06-26 21:19:42 migsoft Exp $
+# $Id: oohg.hbc,v 1.2 2013-07-11 19:26:22 migsoft Exp $
 #
 
 # oohg paths
 {win}incpaths=include
-{win}libpaths=lib
+# c compiler
+{win}libpaths=lib\hb\mingw lib
+# c compiler x64
+#{win}libpaths=lib\hb\mingw64
 {win}incpaths=${hb_curdir}
 # oohg resources
 {win}sources=resources\_temp.o

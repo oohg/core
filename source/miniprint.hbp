@@ -1,5 +1,5 @@
 #
-# $Id: miniprint.hbp,v 1.3 2013-07-01 02:03:36 fyurisich Exp $
+# $Id: miniprint.hbp,v 1.4 2013-07-11 19:26:22 migsoft Exp $
 #
 
 # compilation is incremental (hidden .hmk folder is created)
@@ -9,7 +9,8 @@
 -hblib
 
 # name of output file
--o${ooHG_INSTALL}\lib\${hb_name}
+-o${ooHG_INSTALL}\lib\hb\mingw\${hb_name}
+#-o${ooHG_INSTALL}\lib\hb\mingw64\${hb_name}
 
 # harbour compiler flags
 -n -q0 -ko -w3 -es2

@@ -1,11 +1,23 @@
 /*
- * $Id: ChangeLog,v 1.1099 2013-07-10 15:42:27 migsoft Exp $
+ * $Id: ChangeLog,v 1.1100 2013-07-11 19:26:22 migsoft Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-07-11 15:26 UTC-0400 MigSoft <migsoft@oohg.org>
+   * ./buildapp.bat
+   * ./oohg.hbc
+   + source/Buildlib.bat
+   + source/oohg.hbp
+   + source/miniprint.hbp
+   + source/hbprinter.hbp
+     + Added support for MinGW64. (./lib/hb/mingw,./lib/hb/mingw64)
+
+   NOTE: you must tweak the environment variables to match
+   your Harbour and MinGW installations.
 
 2013-07-10 11:37 UTC-0400 MigSoft <migsoft@oohg.org>
    * include/oohg.h

@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: buildapp.bat,v 1.2 2013-07-01 19:34:25 migsoft Exp $
+rem $Id: buildapp.bat,v 1.3 2013-07-11 19:26:22 migsoft Exp $
 rem
 
 rem detects current disk
@@ -10,16 +10,21 @@ rem detects current path
 rem SET OOHGPATH=%~dp0
 
 rem to use default paths ooHG
-SET OOHGPATH=c:\oohg
+SET OOHGPATH=%DISCO%\oohg
 SET HBPATH=%OOHGPATH%\harbour
 SET MINGWPATH=%OOHGPATH%\mingw
 
 rem uncomment for use different paths
 rem SET OOHGPATH=%DISCO%\oohg
 rem SET HBPATH=%DISCO%\hb32
-rem SET MINGWPATH=%DISCO%\hb32\comp\mingw
 
-SET PATH=%HBPATH%\bin;%MINGWPATH%\bin;%PATH%
+rem c compiler
+SET MINGWPATH=%HBPATH%\comp\mingw
+SET PATH=%HBPATH%\bin\win\mingw;%HBPATH%\bin;%MINGWPATH%\bin;%PATH%
+
+rem c compiler x64
+rem SET MINGWPATH=%HBPATH%\comp\mingw64
+rem SET PATH=%HBPATH%\bin\win\mingw64;%MINGWPATH%\bin;%PATH%
 
 if "%1"=="" goto EXIT
 
