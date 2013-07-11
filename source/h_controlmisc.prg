@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.137 2012-08-27 05:50:50 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.138 2013-07-11 22:45:53 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1258,7 +1258,6 @@ CLASS TControl FROM TWindow
    DATA lCancel              INIT .F.
    DATA OnEnter              INIT nil
    DATA xOldValue            INIT nil
-   //CGR
    DATA OldColor
    DATA OldBackColor
    DATA Tag                  INIT ""
@@ -1271,7 +1270,7 @@ CLASS TControl FROM TWindow
    METHOD SetForm
    METHOD  INITStyle
    METHOD Register
-   //CGR
+   METHOD TabIndex           SETGET
    METHOD Refresh            BLOCK { |self| ::ReDraw() }
    METHOD Release
    METHOD SetFont
@@ -2196,7 +2195,53 @@ Local nNotify := GetNotifyCode( lParam )
 
 Return nil
 
-
+*-----------------------------------------------------------------------------*
+METHOD TabIndex( nNewIndex ) CLASS TControl
+*-----------------------------------------------------------------------------*
+Local nCurIndex, i, nLen, j, aAux
+   If ::Parent == NIL
+      nCurIndex := 0
+   Else
+      i := aScan( ::Parent:aControlsNames, Upper( AllTrim( ::Name ) ) + Chr( 255 ) )
+      If i > 0
+         nCurIndex := ::Parent:aCtrlsTabIndxs[ i ]
+         If HB_IsNumeric( nNewIndex ) .AND. nNewIndex != nCurIndex
+            nLen := LEN( ::Parent:aControls )
+            // update indexes in array
+            For j := 1 TO nLen
+               IF nCurIndex > nNewIndex
+                  // control is moved upward in the tab order
+                  IF ::Parent:aCtrlsTabIndxs[ j ] < nCurIndex .AND. ::Parent:aCtrlsTabIndxs[ j ] >= nNewIndex
+                     ::Parent:aCtrlsTabIndxs[ j ] ++
+                  EndIf
+               Else
+                  // control is moved downward in the tab order
+                  IF ::Parent:aCtrlsTabIndxs[ j ] > nCurIndex .AND. ::Parent:aCtrlsTabIndxs[ j ] <= nNewIndex
+                     ::Parent:aCtrlsTabIndxs[ j ] --
+                  EndIf
+               EndIf
+            Next
+            ::Parent:aCtrlsTabIndxs[ i ] := nCurIndex := nNewIndex
+            // change tab order
+            aAux := {}
+            For j := 1 to nLen
+               AADD( aAux, { ::Parent:aControls[ j ], ::Parent:aCtrlsTabIndxs[ j ] } )
+            Next j
+            ASORT( aAux, nil, nil, { | x, y | x[ 2 ] < y[ 2 ] } )
+            For j := 2 to nLen
+               SetTabAfter( aAux[ j, 1 ]:hWnd, aAux[ j - 1, 1 ]:hWnd )
+            Next j
+            // renumber tab indexes so they remain 1-based
+            For j := 1 to nLen
+               i := aScan( ::Parent:aControlsNames, Upper( AllTrim( aAux[ j, 1 ]:Name ) ) + Chr( 255 ) )
+               ::Parent:aCtrlsTabIndxs[ i ] := j
+            Next j
+         EndIf
+      ELSE
+         nCurIndex := 0
+      EndIf
+   EndIf
+Return nCurIndex
 
 *-----------------------------------------------------------------------------*
 Function GetControlObject( ControlName, FormName )
@@ -2490,6 +2535,11 @@ HB_FUNC( _OOHG_UNTRANSFORM )
    {
       hb_retc( "" );
    }
+}
+
+HB_FUNC( SETTABAFTER )
+{
+   hb_retl( SetWindowPos( HWNDparam( 1 ), HWNDparam( 2 ), 0, 0, 0, 0, SWP_NOACTIVATE | SWP_NOCOPYBITS | SWP_NOMOVE | SWP_NOOWNERZORDER | SWP_NOREDRAW | SWP_NOSENDCHANGING | SWP_NOSIZE ) );
 }
 
 #pragma ENDDUMP

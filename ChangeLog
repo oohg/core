@@ -1,11 +1,31 @@
 /*
- * $Id: ChangeLog,v 1.1100 2013-07-11 19:26:22 migsoft Exp $
+ * $Id: ChangeLog,v 1.1101 2013-07-11 22:45:52 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-07-11 19:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_combo.prg
+     + Added support for codeblocks in ITEMSOURCE clause.
+       Use: ITEMSOURCE { cWorkArea, bBlock }
+       Combo items result from (cWorkArea)->(EVAL(bBlock)).
+     + Added support for codeblocks in VALUESOURCE clause.
+     + Added methods FIELD and VALUESOURCE.
+     * Changed literal field aliases by numeric workareas.
+       This, marginally, improves performance when using large
+       databases to populate the control.
+   * source/h_controlmisc.prg
+     + Added METHOD TabIndex SETGET to set/get the tab order of
+       a control.
+     - One comment deleted.
+     * Added FUNCTION SetTabAfter at C-level.
+   * source/h_windows.prg
+     + Added DATA aCtrlsTabIndxs.
+     + Added support for control's tab order in AddControl and
+       DeleteControl methods.
 
 2013-07-11 15:26 UTC-0400 MigSoft <migsoft@oohg.org>
    * ./buildapp.bat

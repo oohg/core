@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.244 2013-07-03 01:44:52 migsoft Exp $
+ * $Id: h_windows.prg,v 1.245 2013-07-11 22:45:53 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -219,6 +219,7 @@ CLASS TWindow
    DATA lEnabled            INIT .T.
    DATA aControls           INIT {}
    DATA aControlsNames      INIT {}
+   DATA aCtrlsTabIndxs      INIT {}
    DATA WndProc             INIT nil
    DATA OverWndProc         INIT nil
    DATA lInternal           INIT .T.
@@ -1123,16 +1124,21 @@ METHOD AddControl( oControl ) CLASS TWindow
 *-----------------------------------------------------------------------------*
    AADD( ::aControls,      oControl )
    AADD( ::aControlsNames, UPPER( ALLTRIM( oControl:Name ) ) + CHR( 255 ) )
+   AADD( ::aCtrlsTabIndxs, Len( ::aControls ) )
 Return oControl
 
 *-----------------------------------------------------------------------------*
 METHOD DeleteControl( oControl ) CLASS TWindow
 *-----------------------------------------------------------------------------*
-Local nPos
+Local nPos, nDelOrder
    nPos := aScan( ::aControlsNames, UPPER( ALLTRIM( oControl:Name ) ) + CHR( 255 ) )
    IF nPos > 0
-      _OOHG_DeleteArrayItem( ::aControls,      nPos )
-      _OOHG_DeleteArrayItem( ::aControlsNames, nPos )
+      _OOHG_DeleteArrayItem( ::aControls,       nPos )
+      _OOHG_DeleteArrayItem( ::aControlsNames,  nPos )
+      nDelOrder := ::aControlsOrders[ nPos ]
+      _OOHG_DeleteArrayItem( ::aControlsOrders, nPos )
+      // renumber to avoid gaps
+      AEVAL( ::aControlsOrders, { | nOrder, i | IIF( nOrder > nDelOrder, ::aControlsOrders[ i ] --, NIL ) } )
    ENDIF
 Return oControl
 
