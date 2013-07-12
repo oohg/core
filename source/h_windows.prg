@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.245 2013-07-11 22:45:53 fyurisich Exp $
+ * $Id: h_windows.prg,v 1.246 2013-07-12 00:43:49 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1135,10 +1135,10 @@ Local nPos, nDelOrder
    IF nPos > 0
       _OOHG_DeleteArrayItem( ::aControls,       nPos )
       _OOHG_DeleteArrayItem( ::aControlsNames,  nPos )
-      nDelOrder := ::aControlsOrders[ nPos ]
-      _OOHG_DeleteArrayItem( ::aControlsOrders, nPos )
+      nDelOrder := ::aCtrlsTabIndxs[ nPos ]
+      _OOHG_DeleteArrayItem( ::aCtrlsTabIndxs, nPos )
       // renumber to avoid gaps
-      AEVAL( ::aControlsOrders, { | nOrder, i | IIF( nOrder > nDelOrder, ::aControlsOrders[ i ] --, NIL ) } )
+      AEVAL( ::aCtrlsTabIndxs, { | nOrder, i | IIF( nOrder > nDelOrder, ::aCtrlsTabIndxs[ i ] --, NIL ) } )
    ENDIF
 Return oControl
 
