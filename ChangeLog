@@ -1,11 +1,19 @@
 /*
- * $Id: ChangeLog,v 1.1101 2013-07-11 22:45:52 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1102 2013-07-12 01:10:10 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-07-11 22:09 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     ! Forgotten in last update.
+
+2013-07-11 21:43 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_windows.prg
+     ! Message ::ACONTROLSORDERS not found.
 
 2013-07-11 19:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_combo.prg
