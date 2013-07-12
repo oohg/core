@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: compile_MINGW.BAT,v 1.19 2013-05-29 23:48:07 fyurisich Exp $
+rem $Id: compile_MINGW.BAT,v 1.20 2013-07-12 02:38:24 fyurisich Exp $
 rem
 cls
 
@@ -46,8 +46,8 @@ goto STD_COMP
 %HRB_DIR%\bin\harbour %1.prg -n %EXTRA% -i%HRB_DIR%\include;%ooHG_INSTALL%\include;.
 gcc -I. -I%HRB_DIR%\include -I%ooHG_INSTALL%\include -mno-cygwin -Wall -c %1.c -o%1.o
   
-if     exist %1.rc gcc -Wall -o%1.exe %1.o _temp.o                         -L%MINGW%\lib -L%HRB_DIR%\lib -L%ooHG_INSTALL%\lib -mno-cygwin -Wl,--start-group                 -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 -lsocket -lhbmysql -lmysqldll -ldll -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -Wl,--end-group
-if not exist %1.rc gcc -Wall -o%1.exe %1.o %ooHG_INSTALL%\resources\ooHG.o -L%MINGW%\lib -L%HRB_DIR%\lib -L%ooHG_INSTALL%\lib -mno-cygwin -Wl,--start-group -lgtgui -lgtwin -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 -lsocket -lhbmysql -lmysqldll -ldll -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -Wl,--end-group
+if     exist %1.rc gcc -Wall -o%1.exe %1.o _temp.o                         -L%MINGW%\lib -L%HRB_DIR%\lib -L%ooHG_INSTALL%\lib\hb\mingw -mno-cygwin -Wl,--start-group                 -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 -lsocket -lhbmysql -lmysqldll -ldll -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -Wl,--end-group
+if not exist %1.rc gcc -Wall -o%1.exe %1.o %ooHG_INSTALL%\resources\ooHG.o -L%MINGW%\lib -L%HRB_DIR%\lib -L%ooHG_INSTALL%\lib\hb\mingw -mno-cygwin -Wl,--start-group -lgtgui -lgtwin -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 -lsocket -lhbmysql -lmysqldll -ldll -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -Wl,--end-group
 
 goto END_COMPILE
 
@@ -56,8 +56,8 @@ goto END_COMPILE
 %HRB_DIR%\bin\harbour %1.prg -n %EXTRA% -i%HRB_DIR%\include;%ooHG_INSTALL%\include;.
 gcc -I. -I%HRB_DIR%\include -I%ooHG_INSTALL%\include -mno-cygwin -Wall -c %1.c -o%1.o
 
-if     exist %1.rc gcc -Wall -o%1.exe %1.o _temp.o                         -mwindows -L%MINGW%\lib -L%HRB_DIR%\lib -L%ooHG_INSTALL%\lib -mno-cygwin -Wl,--start-group -looHG -lhbprinter -lminiprint -lgtgui -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 -lsocket -lhbmysql -lmysqldll -ldll -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -Wl,--end-group
-if not exist %1.rc gcc -Wall -o%1.exe %1.o %ooHG_INSTALL%\resources\ooHG.o -mwindows -L%MINGW%\lib -L%HRB_DIR%\lib -L%ooHG_INSTALL%\lib -mno-cygwin -Wl,--start-group -looHG -lhbprinter -lminiprint -lgtgui -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 -lsocket -lhbmysql -lmysqldll -ldll -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -Wl,--end-group
+if     exist %1.rc gcc -Wall -o%1.exe %1.o _temp.o                         -mwindows -L%MINGW%\lib -L%HRB_DIR%\lib -L%ooHG_INSTALL%\lib\hb\mingw -mno-cygwin -Wl,--start-group -looHG -lhbprinter -lminiprint -lgtgui -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 -lsocket -lhbmysql -lmysqldll -ldll -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -Wl,--end-group
+if not exist %1.rc gcc -Wall -o%1.exe %1.o %ooHG_INSTALL%\resources\ooHG.o -mwindows -L%MINGW%\lib -L%HRB_DIR%\lib -L%ooHG_INSTALL%\lib\hb\mingw -mno-cygwin -Wl,--start-group -looHG -lhbprinter -lminiprint -lgtgui -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 -lsocket -lhbmysql -lmysqldll -ldll -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -Wl,--end-group
 
 goto END_COMPILE
 

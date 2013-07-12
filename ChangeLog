@@ -1,11 +1,18 @@
 /*
- * $Id: ChangeLog,v 1.1102 2013-07-12 01:10:10 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1103 2013-07-12 02:38:24 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-07-11 23:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./compile.bat
+     ! Can't build app after 2013-07-11 15:26 UTC-0400
+     TODO: add support for MinGW64.
+   * ./Changelog
+     - One already done T O D O.
 
 2013-07-11 22:09 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./Changelog
@@ -327,7 +334,6 @@
 
    NOTE: you must tweak the environment variables to match
    your Harbour and MinGW installations.
-   TODO: adapt paths to OOHG defaults.
 
 2013-06-25 23:06 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_browse.prg
