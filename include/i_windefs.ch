@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.53 2013-06-19 14:39:33 fyurisich Exp $
+ * $Id: i_windefs.ch,v 1.54 2013-07-13 02:51:56 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -787,5 +787,10 @@
 
 // StatusBar
 #define SB_SETMINHEIGHT	              (WM_USER+8)
+
+#define SWP_NOSIZE                    0x0001
+#define SWP_NOMOVE                    0x0002
+#define SWP_NOACTIVATE                0x0010
+#define SWP_FRAMECHANGED              0x0020
 
 #endif

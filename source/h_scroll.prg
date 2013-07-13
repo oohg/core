@@ -1,5 +1,5 @@
 /*
- * $Id: h_scroll.prg,v 1.22 2013-07-03 01:44:52 migsoft Exp $
+ * $Id: h_scroll.prg,v 1.23 2013-07-13 02:51:56 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -591,7 +591,8 @@ HB_FUNC( GETSCROLLRANGEMAX ) // ( hWnd, fnBar )
 
 HB_FUNC( SETSCROLLINFO ) // ( hWnd, nMax, nPos, nPage, nMin )
 {
- SCROLLINFO lpsi;
+   SCROLLINFO lpsi;
+
    lpsi.cbSize = sizeof( SCROLLINFO );
    lpsi.fMask = 0;
    if( HB_ISNUM( 2 ) )
@@ -616,7 +617,7 @@ HB_FUNC( SETSCROLLINFO ) // ( hWnd, nMax, nPos, nPage, nMin )
    }
    if( lpsi.fMask )
    {
-      hb_retni( SetScrollInfo( HWNDparam( 1 ), SB_CTL, ( LPSCROLLINFO ) &lpsi, 1 ) );
+      hb_retni( SetScrollInfo( HWNDparam( 1 ), SB_VERT, ( LPSCROLLINFO ) &lpsi, TRUE ) );
    }
    else
    {

@@ -1,11 +1,31 @@
 /*
- * $Id: ChangeLog,v 1.1103 2013-07-12 02:38:24 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1104 2013-07-13 02:51:56 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-07-12 23:52 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_windefs.ch
+     + Added defines for some constants.
+   * source/h_tab.prg
+   * source/h_radio.prg
+     * Changed hardwired constants by defined constants.
+   * source/h_scroll.prg
+     * Changed hardwired constants by defined constants.
+     * Minor formatting.
+   * source/h_combo.prg
+     + Added DATA oListBox to store a reference to the listbox
+       asociated with the combobox.
+     ! Search is not working properly when ::lIncremental == .F.
+     - Deleted some unnecessary code.
+     % Minor optimizations.
+     + Added CLASS TListCombo to handle the scroll in the associated
+       listbox when INCREMENTAL clause is used.
+     ! Scroll box and down scroll arrow don't load aditional items when
+       they hit bottom.
 
 2013-07-11 23:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./compile.bat

@@ -1,5 +1,5 @@
 /*
- * $Id: h_radio.prg,v 1.34 2013-05-26 19:41:13 fyurisich Exp $
+ * $Id: h_radio.prg,v 1.35 2013-07-13 02:51:56 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -348,10 +348,10 @@ Local nPos2, Spacing, oItem, x, y, nValue, hWnd
    ::aOptions[ nPosition ] := oItem
 
    If nPosition > 1
-      SetWindowPos( oItem:hWnd, ::aOptions[ nPosition - 1 ]:hWnd, 0, 0, 0, 0, 3 )
+      SetWindowPos( oItem:hWnd, ::aOptions[ nPosition - 1 ]:hWnd, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE )
    ElseIf LEN( ::aOptions ) >= 2
       hWnd:= GetWindow( ::aOptions[ 2 ]:hWnd, GW_HWNDPREV )
-      SetWindowPos( oItem:hWnd, hWnd, 0, 0, 0, 0, 3 )
+      SetWindowPos( oItem:hWnd, hWnd, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE )
    Endif
 
    If nValue >= nPosition

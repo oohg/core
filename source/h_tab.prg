@@ -1,5 +1,5 @@
 /*
- * $Id: h_tab.prg,v 1.64 2012-11-26 16:13:43 fyurisich Exp $
+ * $Id: h_tab.prg,v 1.65 2013-07-13 02:51:56 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -156,7 +156,7 @@ LOCAL z, Caption, Image, aControls, Mnemonic
    ENDIF
 
    IF ! ::lInternals .AND. ! EMPTY( ::Container )
-      SetWindowPos( ::hWnd, 0, 0, 0, 0, 0, 3 )
+      SetWindowPos( ::hWnd, 0, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE )
    ENDIF
 
    _OOHG_AddFrame( Self )
@@ -700,7 +700,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aCaptions, aPageMap, ;
       ::BackColor := -1
 
       IF ! EMPTY( ::Container )
-         SetWindowPos( ::oContainerBase:hWnd, 0, 0, 0, 0, 0, 3 )
+         SetWindowPos( ::oContainerBase:hWnd, 0, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE )
       ENDIF
    ELSE
       ::oPageClass := TTabPageInternal()
