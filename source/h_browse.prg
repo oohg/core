@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.123 2013-07-04 23:00:17 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.124 2013-07-14 22:46:54 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1441,7 +1441,24 @@ Local Self := QSelf()
 Local nNotify := GetNotifyCode( lParam )
 Local nvKey, r, DeltaSelect, lGo
 
-   If nNotify == NM_CLICK  .or. nNotify == LVN_BEGINDRAG .or. nNotify == NM_RCLICK
+   If nNotify == NM_CLICK
+      If HB_IsBlock( ::OnClick )
+         If ! ::NestedClick
+            ::NestedClick := ! _OOHG_NestedSameEvent()
+            ::DoEvent( ::OnClick, "CLICK" )
+            ::NestedClick := .F.
+         EndIf
+      EndIf
+
+      r := LISTVIEW_GETFIRSTITEM( ::hWnd )
+      If r > 0
+         DeltaSelect := r - ascan ( ::aRecMap, ::nValue )
+         ::FastUpdate( DeltaSelect, r )
+         ::BrowseOnChange()
+      EndIf
+      Return nil
+
+   ElseIf nNotify == LVN_BEGINDRAG .or. nNotify == NM_RCLICK
       r := LISTVIEW_GETFIRSTITEM( ::hWnd )
       If r > 0
          DeltaSelect := r - ascan ( ::aRecMap, ::nValue )

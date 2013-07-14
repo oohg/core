@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.203 2013-07-05 01:02:46 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.204 2013-07-14 22:46:54 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -5876,7 +5876,7 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
          // Calculate area for background
          rcBack.top = rcIcon.top;
          rcBack.left = 0;
-         rcBack.bottom = rcIcon.bottom - 1;
+         rcBack.bottom = rcIcon.bottom;
          rcBack.right = rcIcon.right;
 
          // Paint to get rid of empty space at left

@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.87 2013-07-05 01:02:46 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.88 2013-07-14 22:46:54 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -855,7 +855,23 @@ Local Self := QSelf()
 Local nNotify := GetNotifyCode( lParam )
 Local nvKey, lGo
 
-   If nNotify == NM_CLICK  .or. nNotify == LVN_BEGINDRAG
+   If nNotify == NM_CLICK
+      If HB_IsBlock( ::OnClick )
+         If ! ::NestedClick
+            ::NestedClick := ! _OOHG_NestedSameEvent()
+            ::DoEvent( ::OnClick, "CLICK" )
+            ::NestedClick := .F.
+         EndIf
+      EndIf
+
+      If ! ::lLocked
+         ::MoveTo( ::CurrentRow, ::nValue )
+      Else
+         ::Super:Value := ::nValue
+      EndIf
+      Return nil
+
+   ElseIf nNotify == LVN_BEGINDRAG
       If ! ::lLocked
          ::MoveTo( ::CurrentRow, ::nValue )
       Else
