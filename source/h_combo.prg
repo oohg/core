@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.74 2013-07-13 02:51:56 fyurisich Exp $
+ * $Id: h_combo.prg,v 1.75 2013-07-15 23:10:46 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -274,7 +274,7 @@ RETURN ::uField
 *-----------------------------------------------------------------------------*
 METHOD ValueSource( uValue ) CLASS TCombo
 *-----------------------------------------------------------------------------*
-   If PCOUNT() == 0
+   If PCOUNT() > 0 .AND. HB_IsNil( uValue )
       ::aValues := {}
       ::uValueSource := NIL
    ElseIf HB_IsArray( uValue )
