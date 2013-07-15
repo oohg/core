@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.86 2013-07-03 01:44:52 migsoft Exp $
+ * $Id: h_textbox.prg,v 1.87 2013-07-15 01:47:09 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -117,6 +117,8 @@ CLASS TText FROM TLabel
    DATA lPrevUndo       INIT .F.
    DATA xPrevUndo       INIT Nil
    DATA nInsertType     INIT 0
+   DATA oButton1        INIT Nil
+   DATA oButton2        INIT Nil
 /*
  * 0 = Default: each time the control gots focus, it's set to
  *     overwrite for TTextPicture and to insert for the rest.
@@ -258,11 +260,11 @@ Local break := Nil
    EndIf
 
    If HB_IsBlock( bAction )
-      @ 2,::ClientWidth + 2 - nBtnwidth BUTTON 0 WIDTH nBtnwidth HEIGHT 100 ACTION Eval( bAction ) OF ( Self ) PICTURE aBitmap[ 1 ]
+      @ 2,::ClientWidth + 2 - nBtnwidth BUTTON 0 WIDTH nBtnwidth HEIGHT 100 ACTION Eval( bAction ) OF ( Self ) PICTURE aBitmap[ 1 ] OBJ ::oButton1
    EndIf
 
    If HB_IsBlock( bAction2 )
-      @ 2,::ClientWidth + 2 - nBtnwidth BUTTON 0 WIDTH nBtnwidth HEIGHT 100 ACTION Eval( bAction2 ) OF ( Self ) PICTURE aBitmap[ 2 ]
+      @ 2,::ClientWidth + 2 - nBtnwidth BUTTON 0 WIDTH nBtnwidth HEIGHT 100 ACTION Eval( bAction2 ) OF ( Self ) PICTURE aBitmap[ 2 ] OBJ ::oButton2
    EndIf
 
 Return Self
