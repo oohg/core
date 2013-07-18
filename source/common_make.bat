@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: common_make.bat,v 1.24 2012-09-19 01:49:09 fyurisich Exp $
+rem $Id: common_make.bat,v 1.25 2013-07-18 21:29:01 migsoft Exp $
 rem
 
 if "%1"=="" goto INFO
@@ -26,13 +26,13 @@ GOTO PRG_COMPILE
 rem /// Compile PRG source files
 
 :PRG_COMPILE
-%hg_hrb%\bin\harbour %HG_FILES1_PRG% %OOHG_X_FLAGS%
+%hg_hrb%\%BIN_HRB%\harbour %HG_FILES1_PRG% %OOHG_X_FLAGS%
 if errorlevel 1 goto EXIT
-%hg_hrb%\bin\harbour %HG_FILES2_PRG% %OOHG_X_FLAGS%
+%hg_hrb%\%BIN_HRB%\harbour %HG_FILES2_PRG% %OOHG_X_FLAGS%
 if errorlevel 1 goto EXIT
-if exist winprint.prg  %hg_hrb%\bin\harbour winprint  %OOHG_X_FLAGS%
+if exist winprint.prg  %hg_hrb%\%BIN_HRB%\harbour winprint  %OOHG_X_FLAGS%
 if errorlevel 1 goto EXIT
-if exist miniprint.prg %hg_hrb%\bin\harbour miniprint %OOHG_X_FLAGS%
+if exist miniprint.prg %hg_hrb%\%BIN_HRB%\harbour miniprint %OOHG_X_FLAGS%
 if errorlevel 1 goto EXIT
 
 goto EXIT
