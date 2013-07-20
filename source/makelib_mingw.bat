@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: makelib_mingw.bat,v 1.30 2013-07-18 21:29:01 migsoft Exp $
+rem $Id: makelib_mingw.bat,v 1.31 2013-07-20 01:32:51 fyurisich Exp $
 rem
 cls
 
@@ -11,8 +11,10 @@ IF "%HG_ROOT%"=="" SET HG_ROOT=c:\oohg
 IF "%HG_HRB%"==""  SET HG_HRB=c:\oohg\harbour
 
 IF "%LIB_GUI%"=="" SET LIB_GUI=lib\hb\mingw
-IF "%LIB_HRB%"=="" SET LIB_HRB=lib\win\mingw
-IF "%BIN_HRB%"=="" SET BIN_HRB=bin\win\mingw
+IF "%LIB_HRB%"=="" SET LIB_HRB=lib
+rem IF "%LIB_HRB%"=="" SET LIB_HRB=lib\win\mingw
+IF "%BIN_HRB%"=="" SET BIN_HRB=bin
+rem IF "%BIN_HRB%"=="" SET BIN_HRB=bin\win\mingw
 
 rem IF "%LIB_GUI%"=="" SET LIB_GUI=lib\hb\mingw64
 rem IF "%LIB_HRB%"=="" SET LIB_HRB=lib\win\mingw64
@@ -53,6 +55,10 @@ if exist winprint.o  %hg_mgw%\bin\ar rc %hg_root%\%LIB_GUI%\libhbprinter.a winpr
 if errorlevel 2 goto EXIT2
 if exist miniprint.o %hg_mgw%\bin\ar rc %hg_root%\%LIB_GUI%\libminiprint.a miniprint.o
 if errorlevel 2 goto EXIT2
+
+IF EXIST %hg_root%\%LIB_GUI%\liboohg.a      copy %hg_root%\%LIB_GUI%\liboohg.a      %hg_root%\lib\liboohg.a
+IF EXIST %hg_root%\%LIB_GUI%\libhbprinter.a copy %hg_root%\%LIB_GUI%\libhbprinter.a %hg_root%\lib\libhbprinter.a
+IF EXIST %hg_root%\%LIB_GUI%\libminiprint.a copy %hg_root%\%LIB_GUI%\libminiprint.a %hg_root%\lib\libminiprint.a
 
 :EXIT2
 SET PATH=%_PATH2%
