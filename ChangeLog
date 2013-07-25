@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog,v 1.1112 2013-07-23 19:46:40 migsoft Exp $
+ * $Id: ChangeLog,v 1.1113 2013-07-25 21:01:39 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-07-25 18:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/c_winapimisc.c
+     * Added support for newer versions of Windows to WinVersion().
+     * Formatted.
 
 2013-07-23 15:46 UTC-0400 MigSoft <migsoft@oohg.org>
    * source/makelib_mingw.bat
