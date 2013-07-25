@@ -1,11 +1,33 @@
 /*
- * $Id: ChangeLog,v 1.1114 2013-07-25 23:12:45 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1115 2013-07-25 23:42:21 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-07-25 20:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * manual/ACTIVEX.HTM
+     * Changed case of referenced page name.
+   + manual/ANIMATEBOX.HTM
+   + manual/BROWSE.HTM
+   + manual/BUTTON.HTM
+   + manual/CHECKBOX.HTM
+   + manual/CHECKBUTTON.HTM
+   + manual/CHECKLIST.HTM
+   + manual/CLASSES.HTM
+   + manual/COMBOBOX.HTM
+   + manual/DATEPICKER.HTM
+   + manual/DO_REPORT.HTM
+   + manual/DRAW_IN_WINDOW.HTM
+   + manual/EDIT_EXTENDED.HTM
+   + manual/EDIT_WORKAREA.HTM
+   + manual/EDITBOX.HTM
+   + manual/FRAME.HTM
+   + manual/GRID.HTM
+   + manual/HOTKEY.HTM
+   + manual/HOTKEYBOX.HTM
 
 2013-07-25 20:11 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * manual

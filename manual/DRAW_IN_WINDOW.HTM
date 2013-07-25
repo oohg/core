@@ -1,0 +1,1463 @@
+<!--
+$Id: DRAW_IN_WINDOW.HTM,v 1.1 2013-07-25 23:42:23 fyurisich Exp $
+-->
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=Windows-1252">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 11">
+<meta name=Originator content="Microsoft Word 11">
+<link rel=File-List href="DRAW%20IN%20WINDOW_archivos/filelist.xml">
+<title>DRAW IN WINDOW</title>
+
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+@page Section1
+	{size:612.0pt 792.0pt;
+	margin:70.85pt 3.0cm 70.85pt 3.0cm;
+	mso-header-margin:35.4pt;
+	mso-footer-margin:35.4pt;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+
+
+
+<style>
+html {
+	overflow-y:scroll;
+}
+
+body {
+	padding: 0px;
+	margin: 0px;
+	overflow: auto; 
+	background-color: #FFFFFF; 
+}
+
+#winchm_template_navigation{
+	margin-top: 0px;
+	margin-left: 0px;
+	margin-bottom: 0px;
+	margin-right: 0px;
+
+	padding-top: 5px;
+	padding-left: 5px;
+	padding-bottom: 5px;
+	padding-right: 5px;
+
+	font-family: arial, helvetica, sans-serif;
+	font-size: 10px;
+	font-style: normal;
+	font-weight: normal;
+	color: #626262; 
+	 
+	border-bottom-style: solid;
+	border-bottom-width: 1px;
+	border-bottom-color: #DBDBDB;
+	
+	background-color: #E2EDFA;
+	width: auto;
+}
+
+#winchm_template_button{
+	float: right;
+	top: -7px;
+	position: relative;
+	text-align: right;
+	right: -5px;
+	height: auto;
+}
+
+#winchm_template_title{
+	font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
+	font-weight: bold;
+	font-size: 18px;
+	color: 353535;	
+
+	margin-top: 0px;
+	margin-left: 0px;
+	margin-bottom: 0px;
+	margin-right: 0px;
+
+	padding-top: 10px;
+	padding-left: 5px;
+	padding-bottom: 10px;
+	padding-right: 10px;
+	
+	border-bottom-style: solid;
+	border-bottom-width: 1px;
+	border-bottom-color: #C7C7C7;
+
+	width: auto;
+	background-color: #C4DBF4;
+	text-align: left;
+}
+
+#winchm_template_content{
+	padding: 0px;
+	margin-top: 15px;
+	margin-left: 15px;
+	margin-bottom: 15px;
+	margin-right: 15px;
+
+	width: auto  !important;
+	width: 100%;
+}
+
+#winchm_template_footer{
+	border-width: 1px;
+	border-color: #c0c0c0;
+	border-top-style: solid;
+	
+	margin-top: 0px;
+	margin-left: 15px;
+	margin-bottom: 5px;
+	margin-right: 15px;
+
+	padding-top: 6px;
+	padding-left: 0px;
+	padding-bottom: 20px;
+	padding-right: 0px;
+
+	font-family: arial, helvetica, sans-serif;
+	font-size: 9px;
+	color: #909090;
+
+	text-align: left;	
+	width: auto;	
+}
+
+#winchm_template_navigation a:link	{text-decoration: none;color: #0000ff}
+#winchm_template_navigation a:visited  {text-decoration: none; color: #0000ff}
+#winchm_template_navigation a:active {text-decoration: none; color: #0000ff}
+#winchm_template_navigation a:hover {text-decoration: none;color: #0000ff}
+
+a:link	{text-decoration: underline; color:#0033cc}
+a:visited  {text-decoration: underline; color: #0033cc}
+a:active {text-decoration: underline; color: #0033cc }
+a:hover {text-decoration: underline;color: #ff0000;}
+
+@media print
+{
+#winchm_template_button{
+visibility:hidden;
+}
+}
+</style>
+</head>
+
+<body>
+
+<div id="winchm_template_title">
+<div id="winchm_template_button"><A href="DO_REPORT.HTM" title="Previous topic"><img id="winchm_template_prev" alt="Previous topic" src="template4/btn_prev_n.gif" border="0"></a><A href="EDIT_EXTENDED.HTM" title="Next topic"><img id="winchm_template_next" alt="Next topic" src="template4/btn_next_n.gif" border="0"></a></div>
+DRAW IN WINDOW</div>
+<div id="winchm_template_navigation">Help &gt; 
+Controls &gt; </div>
+<div id="winchm_template_content">
+
+<div class=Section1>
+
+<p class=MsoNormal><span lang=ES style='color:darkgreen;mso-ansi-language:ES'>///////////////////////////////////////////////////////////////////////////////
+<br>
+// DRAW IN WINDOW <br>
+///////////////////////////////////////////////////////////////////////////////
+<br>
+</span><span lang=ES style='color:gray;mso-ansi-language:ES'><br>
+&nbsp;</span><span lang=ES style='color:blue;mso-ansi-language:ES'>#</span><span
+lang=ES style='color:black;mso-ansi-language:ES'>xcommand</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>DRAW</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>TEXT</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>IN</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>WINDOW</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;windowname&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>AT</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;nRow&gt;,&lt;nCol&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>VALUE</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;cString&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>[FONT</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;cFont&gt;]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>[SIZE</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;nSize&gt;]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>[BACKCOLOR</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;aBkRGB&gt;]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>[FONTCOLOR</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;aRGB&gt;]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>[&lt;lBold</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>:</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>BOLD&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>[&lt;lItalic</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>:</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>ITALIC&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>[&lt;lUnderline</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>:</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>UNDERLINE&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>[&lt;lStrikeout</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>:</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>STRIKEOUT&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>[</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;transparent:</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>TRANSPARENT&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES style='color:blue;
+mso-ansi-language:ES'>=</span><span lang=ES style='color:black;mso-ansi-language:
+ES'>&gt;</span><span lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp; </span><span
+lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>drawtextout(&lt;(windowname)&gt;,&lt;nRow&gt;,&lt;nCol&gt;,&lt;cString&gt;,&lt;aRGB&gt;,&lt;aBkRGB&gt;,&lt;cFont&gt;,&lt;nSize&gt;,</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:black;mso-ansi-language:ES'>&lt;.lBold.&gt;,&lt;.lItalic.&gt;,&lt;.lUnderline.&gt;,&lt;.lStrikeout.&gt;,&lt;.transparent.&gt;)</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+<br>
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>#</span><span
+lang=ES style='color:black;mso-ansi-language:ES'>xcommand</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>DRAW</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>LINE</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>IN</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>WINDOW</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;windowname&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>AT</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;frow&gt;,&lt;fcol&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+lang=ES style='color:black;mso-ansi-language:ES'>TO</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;trow&gt;,&lt;tcol&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+lang=ES style='color:black;mso-ansi-language:ES'>[PENCOLOR</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;penrgb&gt;]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+lang=ES style='color:black;mso-ansi-language:ES'>[PENWIDTH</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;pnwidth&gt;]</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>=</span><span lang=ES style='color:
+black;mso-ansi-language:ES'>&gt;</span><span lang=ES style='color:blue;
+mso-ansi-language:ES'>;</span><span lang=ES style='color:gray;mso-ansi-language:
+ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>drawline(&lt;(windowname)&gt;,&lt;frow&gt;,&lt;fcol&gt;,&lt;trow&gt;,&lt;tcol&gt;,[&lt;penrgb&gt;],&lt;pnwidth&gt;)</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+<br>
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>#</span><span
+lang=ES style='color:black;mso-ansi-language:ES'>xcommand</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>DRAW</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>RECTANGLE</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>IN</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>WINDOW</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;windowname&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>AT</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;frow&gt;,&lt;fcol&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+lang=ES style='color:black;mso-ansi-language:ES'>TO</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;trow&gt;,&lt;tcol&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+lang=ES style='color:black;mso-ansi-language:ES'>[PENCOLOR</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;penrgb&gt;]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+lang=ES style='color:black;mso-ansi-language:ES'>[PENWIDTH</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;pnwidth&gt;]</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+lang=ES style='color:black;mso-ansi-language:ES'>[FILLCOLOR</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;fillrgb&gt;]</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>=</span><span lang=ES style='color:
+black;mso-ansi-language:ES'>&gt;</span><span lang=ES style='color:blue;
+mso-ansi-language:ES'>;</span><span lang=ES style='color:gray;mso-ansi-language:
+ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>drawrect(&lt;(windowname)&gt;,&lt;frow&gt;,&lt;fcol&gt;,&lt;trow&gt;,&lt;tcol&gt;,[&lt;penrgb&gt;],&lt;pnwidth&gt;,[&lt;fillrgb&gt;])</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+<br>
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>#</span><span
+lang=ES style='color:black;mso-ansi-language:ES'>xcommand</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>DRAW</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>ROUNDRECTANGLE</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>IN</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>WINDOW</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;windowname&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>AT</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;frow&gt;,&lt;fcol&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+lang=ES style='color:black;mso-ansi-language:ES'>TO</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;trow&gt;,&lt;tcol&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+lang=ES style='color:black;mso-ansi-language:ES'>ROUNDWIDTH</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;width&gt;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+lang=ES style='color:black;mso-ansi-language:ES'>ROUNDHEIGHT</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;height&gt;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+lang=ES style='color:black;mso-ansi-language:ES'>[PENCOLOR</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;penrgb&gt;]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+lang=ES style='color:black;mso-ansi-language:ES'>[PENWIDTH</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;pnwidth&gt;]</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+lang=ES style='color:black;mso-ansi-language:ES'>[FILLCOLOR</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;fillrgb&gt;]</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>=</span><span lang=ES style='color:
+black;mso-ansi-language:ES'>&gt;</span><span lang=ES style='color:blue;
+mso-ansi-language:ES'>;</span><span lang=ES style='color:gray;mso-ansi-language:
+ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>drawroundrect(&lt;(windowname)&gt;,&lt;frow&gt;,&lt;fcol&gt;,&lt;trow&gt;,&lt;tcol&gt;,&lt;width&gt;,&lt;height&gt;,[&lt;penrgb&gt;],&lt;pnwidth&gt;,[&lt;fillrgb&gt;])</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+<br>
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>#</span><span
+lang=ES style='color:black;mso-ansi-language:ES'>xcommand</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>DRAW</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>ELLIPSE</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>IN</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>WINDOW</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;windowname&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>AT</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;frow&gt;,&lt;fcol&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+lang=ES style='color:black;mso-ansi-language:ES'>TO</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;trow&gt;,&lt;tcol&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+lang=ES style='color:black;mso-ansi-language:ES'>[PENCOLOR</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;penrgb&gt;]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+lang=ES style='color:black;mso-ansi-language:ES'>[PENWIDTH</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;pnwidth&gt;]</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+lang=ES style='color:black;mso-ansi-language:ES'>[FILLCOLOR</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;fillrgb&gt;]</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>=</span><span lang=ES style='color:
+black;mso-ansi-language:ES'>&gt;</span><span lang=ES style='color:blue;
+mso-ansi-language:ES'>;</span><span lang=ES style='color:gray;mso-ansi-language:
+ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>drawellipse(&lt;(windowname)&gt;,&lt;frow&gt;,&lt;fcol&gt;,&lt;trow&gt;,&lt;tcol&gt;,[&lt;penrgb&gt;],&lt;pnwidth&gt;,[&lt;fillrgb&gt;])</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+<br>
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>#</span><span
+lang=ES style='color:black;mso-ansi-language:ES'>xcommand</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>DRAW</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>ARC</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>IN</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>WINDOW</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;windowname&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>AT</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;frow&gt;,&lt;fcol&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+lang=ES style='color:black;mso-ansi-language:ES'>TO</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;trow&gt;,&lt;tcol&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+lang=ES style='color:black;mso-ansi-language:ES'>FROM</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>RADIAL</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;rrow&gt;,</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;rcol&gt;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+lang=ES style='color:black;mso-ansi-language:ES'>TO</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>RADIAL</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;rrow1&gt;,</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;rcol1&gt;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+lang=ES style='color:black;mso-ansi-language:ES'>[PENCOLOR</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;penrgb&gt;]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+lang=ES style='color:black;mso-ansi-language:ES'>[PENWIDTH</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;pnwidth&gt;]</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>=</span><span lang=ES style='color:
+black;mso-ansi-language:ES'>&gt;</span><span lang=ES style='color:blue;
+mso-ansi-language:ES'>;</span><span lang=ES style='color:gray;mso-ansi-language:
+ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>drawarc(&lt;(windowname)&gt;,&lt;frow&gt;,&lt;fcol&gt;,&lt;trow&gt;,&lt;tcol&gt;,&lt;rrow&gt;,&lt;rcol&gt;,&lt;rrow1&gt;,&lt;rcol1&gt;,[&lt;penrgb&gt;],&lt;pnwidth&gt;)</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+<br>
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>#</span><span
+lang=ES style='color:black;mso-ansi-language:ES'>xcommand</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>DRAW</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>PIE</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>IN</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>WINDOW</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;windowname&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>AT</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;frow&gt;,&lt;fcol&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+lang=ES style='color:black;mso-ansi-language:ES'>TO</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;trow&gt;,&lt;tcol&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+lang=ES style='color:black;mso-ansi-language:ES'>FROM</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>RADIAL</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;rrow&gt;,</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;rcol&gt;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+lang=ES style='color:black;mso-ansi-language:ES'>TO</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>RADIAL</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;rrow1&gt;,</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;rcol1&gt;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+lang=ES style='color:black;mso-ansi-language:ES'>[PENCOLOR</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;penrgb&gt;]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+lang=ES style='color:black;mso-ansi-language:ES'>[PENWIDTH</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;pnwidth&gt;]</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+lang=ES style='color:black;mso-ansi-language:ES'>[FILLCOLOR</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;fillrgb&gt;]</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>=</span><span lang=ES style='color:
+black;mso-ansi-language:ES'>&gt;</span><span lang=ES style='color:blue;
+mso-ansi-language:ES'>;</span><span lang=ES style='color:gray;mso-ansi-language:
+ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>drawpie(&lt;(windowname)&gt;,&lt;frow&gt;,&lt;fcol&gt;,&lt;trow&gt;,&lt;tcol&gt;,&lt;rrow&gt;,&lt;rcol&gt;,&lt;rrow1&gt;,&lt;rcol1&gt;,[&lt;penrgb&gt;],&lt;pnwidth&gt;,[&lt;fillrgb&gt;])</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+<br>
+</span><span lang=ES style='color:darkgreen;mso-ansi-language:ES'>// Points
+should be in the format {{row1,col1},{row2,col2},{row3,col3},{row4,col4}.....} <br>
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>#</span><span
+lang=ES style='color:black;mso-ansi-language:ES'>xcommand</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>DRAW</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>POLYGON</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>IN</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>WINDOW</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;windowname&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+lang=ES style='color:black;mso-ansi-language:ES'>POINTS</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;pointsarr&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+lang=ES style='color:black;mso-ansi-language:ES'>[PENCOLOR</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;penrgb&gt;]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+lang=ES style='color:black;mso-ansi-language:ES'>[PENWIDTH</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;penwidth&gt;]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+lang=ES style='color:black;mso-ansi-language:ES'>[FILLCOLOR</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;fillrgb&gt;]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>=</span><span lang=ES style='color:
+black;mso-ansi-language:ES'>&gt;</span><span lang=ES style='color:blue;
+mso-ansi-language:ES'>;</span><span lang=ES style='color:gray;mso-ansi-language:
+ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>drawpolygon(&lt;(windowname)&gt;,[&lt;pointsarr&gt;],[&lt;penrgb&gt;],&lt;penwidth&gt;,[&lt;fillrgb&gt;])</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+<br>
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>#</span><span
+lang=ES style='color:black;mso-ansi-language:ES'>xcommand</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>DRAW</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>POLYBEZIER</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>IN</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>WINDOW</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;windowname&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+lang=ES style='color:black;mso-ansi-language:ES'>POINTS</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;pointsarr&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+lang=ES style='color:black;mso-ansi-language:ES'>[PENCOLOR</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;penrgb&gt;]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+lang=ES style='color:black;mso-ansi-language:ES'>[PENWIDTH</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;penwidth&gt;]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>=</span><span lang=ES style='color:
+black;mso-ansi-language:ES'>&gt;</span><span lang=ES style='color:blue;
+mso-ansi-language:ES'>;</span><span lang=ES style='color:gray;mso-ansi-language:
+ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>drawpolybezier(&lt;(windowname)&gt;,[&lt;pointsarr&gt;],[&lt;penrgb&gt;],&lt;penwidth&gt;)</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+<br>
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>#</span><span
+lang=ES style='color:black;mso-ansi-language:ES'>xcommand</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>ERASE</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>WINDOW</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;windowname&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>=</span><span lang=ES style='color:
+black;mso-ansi-language:ES'>&gt;</span><span lang=ES style='color:gray;
+mso-ansi-language:ES'>&nbsp;</span><span lang=ES style='color:black;mso-ansi-language:
+ES'>erasewindow(&lt;(windowname)&gt;)</span><span lang=ES style='color:gray;
+mso-ansi-language:ES'> <br>
+<br>
+<br>
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>#</span><span
+lang=ES style='color:black;mso-ansi-language:ES'>xcommand</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>DEFAULT</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;uVar1&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>:</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>=</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES style='color:black;
+mso-ansi-language:ES'>&lt;uVal1&gt;</span><span lang=ES style='color:gray;
+mso-ansi-language:ES'>&nbsp;</span><span lang=ES style='color:blue;mso-ansi-language:
+ES'>;</span><span lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:black;mso-ansi-language:ES'>[,</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;uVarN&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>:</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>=</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES style='color:black;
+mso-ansi-language:ES'>&lt;uValN&gt;</span><span lang=ES style='color:gray;
+mso-ansi-language:ES'>&nbsp;</span><span lang=ES style='color:black;mso-ansi-language:
+ES'>]</span><span lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span
+lang=ES style='color:blue;mso-ansi-language:ES'>=</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:black;mso-ansi-language:ES'>&lt;uVar1&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>:</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>=</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES style='color:black;
+mso-ansi-language:ES'>IIf(</span><span lang=ES style='color:gray;mso-ansi-language:
+ES'>&nbsp;</span><span lang=ES style='color:black;mso-ansi-language:ES'>&lt;uVar1&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>==</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>nil,</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;uVal1&gt;,</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;uVar1&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>)</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:black;mso-ansi-language:ES'>[</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;uVarN&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>:</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>=</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES style='color:black;
+mso-ansi-language:ES'>IIf(</span><span lang=ES style='color:gray;mso-ansi-language:
+ES'>&nbsp;</span><span lang=ES style='color:black;mso-ansi-language:ES'>&lt;uVarN&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>==</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>nil,</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;uValN&gt;,</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;uVarN&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>)</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES style='color:black;
+mso-ansi-language:ES'>]</span><span lang=ES style='color:gray;mso-ansi-language:
+ES'> <br>
+<br>
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>#</span><span
+lang=ES style='color:black;mso-ansi-language:ES'>translate</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>RGB(</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;nRed&gt;,</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;nGreen&gt;,</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;nBlue&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>)</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>=</span><span lang=ES style='color:
+black;mso-ansi-language:ES'>&gt;</span><span lang=ES style='color:gray;
+mso-ansi-language:ES'>&nbsp;</span><span lang=ES style='color:blue;mso-ansi-language:
+ES'>;</span><span lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+lang=ES style='color:black;mso-ansi-language:ES'>(</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;nRed&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>+</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>(</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;nGreen&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>*</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:maroon;mso-ansi-language:ES'>256</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>)</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>+</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>(</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;nBlue&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>*</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:maroon;mso-ansi-language:ES'>65536</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>)</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>)</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'> <br>
+<br>
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>#</span><span
+lang=ES style='color:black;mso-ansi-language:ES'>xcommand</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>DRAW</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>GRAPH</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>IN</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>WINDOW</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;window&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES style='color:black;
+mso-ansi-language:ES'>AT</span><span lang=ES style='color:gray;mso-ansi-language:
+ES'>&nbsp;</span><span lang=ES style='color:black;mso-ansi-language:ES'>&lt;nT&gt;,&lt;nL&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES style='color:black;
+mso-ansi-language:ES'>TO</span><span lang=ES style='color:gray;mso-ansi-language:
+ES'>&nbsp;</span><span lang=ES style='color:black;mso-ansi-language:ES'>&lt;nB&gt;,&lt;nR&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp; </span><span
+lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES style='color:black;
+mso-ansi-language:ES'>TITLE</span><span lang=ES style='color:gray;mso-ansi-language:
+ES'>&nbsp;</span><span lang=ES style='color:black;mso-ansi-language:ES'>&lt;cTitle&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp; </span><span
+lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES style='color:black;
+mso-ansi-language:ES'>TYPE</span><span lang=ES style='color:gray;mso-ansi-language:
+ES'>&nbsp;</span><span lang=ES style='color:black;mso-ansi-language:ES'>PIE</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES style='color:black;
+mso-ansi-language:ES'>SERIES</span><span lang=ES style='color:gray;mso-ansi-language:
+ES'>&nbsp;</span><span lang=ES style='color:black;mso-ansi-language:ES'>&lt;aSer&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES style='color:black;
+mso-ansi-language:ES'>DEPTH</span><span lang=ES style='color:gray;mso-ansi-language:
+ES'>&nbsp;</span><span lang=ES style='color:black;mso-ansi-language:ES'>&lt;nD&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES style='color:black;
+mso-ansi-language:ES'>SERIENAMES</span><span lang=ES style='color:gray;
+mso-ansi-language:ES'>&nbsp;</span><span lang=ES style='color:black;mso-ansi-language:
+ES'>&lt;aName&gt;</span><span lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES style='color:black;
+mso-ansi-language:ES'>COLORS</span><span lang=ES style='color:gray;mso-ansi-language:
+ES'>&nbsp;</span><span lang=ES style='color:black;mso-ansi-language:ES'>&lt;aColor&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>[</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;l3D</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>:</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>3DVIEW&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>[</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;lxVal</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>:</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>SHOWXVALUES&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp; </span><span
+lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>[</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;lSLeg</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>:</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>SHOWLEGENDS&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp; </span><span
+lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:black;mso-ansi-language:ES'>[</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;lNoBorder</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>:</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>NOBORDER&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES style='color:blue;
+mso-ansi-language:ES'>=</span><span lang=ES style='color:black;mso-ansi-language:
+ES'>&gt;</span><span lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span
+lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:black;mso-ansi-language:ES'>DrawPieGraph(&lt;(window)&gt;,</span><span
+lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;nT&gt;,</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;nL&gt;,</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;nB&gt;,</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;nR&gt;,</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;aSer&gt;,</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;aName&gt;,</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;aColor&gt;,</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;cTitle&gt;,</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;nD&gt;,</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;.l3D.&gt;,</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;.lxVal.&gt;,</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:black;mso-ansi-language:ES'>&lt;.lSLeg.&gt;,</span><span
+lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:black;mso-ansi-language:ES'>&lt;.lNoBorder.&gt;)</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+<br>
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>#</span><span
+lang=ES style='color:black;mso-ansi-language:ES'>define</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>BARS</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+lang=ES style='color:maroon;mso-ansi-language:ES'>1</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'> <br>
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>#</span><span
+lang=ES style='color:black;mso-ansi-language:ES'>define</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>LINES</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+lang=ES style='color:maroon;mso-ansi-language:ES'>2</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'> <br>
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>#</span><span
+lang=ES style='color:black;mso-ansi-language:ES'>define</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>POINTS</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp; </span><span
+lang=ES style='color:maroon;mso-ansi-language:ES'>3</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'> <br>
+<br>
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>#</span><span
+lang=ES style='color:black;mso-ansi-language:ES'>xcommand</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>DRAW</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>GRAPH</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>IN</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>WINDOW</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;window&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>AT</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;nT&gt;,&lt;nL&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>[</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>TO</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;nB&gt;,&lt;nR&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>[</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>TITLE</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;cTitle&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>TYPE</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;nType&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>SERIES</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;aSer&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>YVALUES</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;aYVal&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>DEPTH</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;nD&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>[</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>BARWIDTH</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;nW&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>HVALUES</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;nRange&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>SERIENAMES</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;aName&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>COLORS</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;aColor&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>[</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;l3D</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>:</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>3DVIEW&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>[</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;lGrid</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>:</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>SHOWGRID&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp; </span><span
+lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>[</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;lxVal</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>:</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>SHOWXVALUES&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp; </span><span
+lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>[</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;lyVal</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>:</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>SHOWYVALUES&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp; </span><span
+lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>[</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;lSLeg</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>:</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>SHOWLEGENDS&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp; </span><span
+lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:black;mso-ansi-language:ES'>[</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>LEGENDSWIDTH</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;nLegendWindth&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>[</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;lNoborder</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>:</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>NOBORDER&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp; </span><span
+lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'> <br>
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>=</span><span
+lang=ES style='color:black;mso-ansi-language:ES'>&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:black;mso-ansi-language:ES'>GraphShow(&lt;(window)&gt;,</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp; </span><span
+lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;nT&gt;,</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;nL&gt;,</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;nB&gt;,</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;nR&gt;,</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>Nil,</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>Nil,</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;aSer&gt;,</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;cTitle&gt;,</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;aYVal&gt;,</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;nD&gt;,</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;nW&gt;,</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>Nil,</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;nRange&gt;,</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;.l3D.&gt;,</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;.lGrid.&gt;,</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>.f.,</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>.f.,</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;.lxVal.&gt;,</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;.lyVal.&gt;,</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;.lSLeg.&gt;,</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;aName&gt;,</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;aColor&gt;,</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;nType&gt;,</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>.f.,</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:black;mso-ansi-language:ES'>Nil,</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:black;mso-ansi-language:ES'>&lt;nLegendWindth&gt;,</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:black;mso-ansi-language:ES'>&lt;.lNoborder.&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>)</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+
+</div>
+
+</div>
+<div id="winchm_template_footer"><FONT color=#808080 
+size=1>Copyright © 2013 MigSoft - </FONT><A 
+href="http://www.oohg.org"><FONT 
+size=1>http://www.oohg.org</FONT></A> 
+     </div>
+
+</body>
+
+</html>
