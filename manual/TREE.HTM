@@ -1,0 +1,1388 @@
+<!--
+$Id: TREE.HTM,v 1.1 2013-07-26 00:15:12 fyurisich Exp $
+-->
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=Windows-1252">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 11">
+<meta name=Originator content="Microsoft Word 11">
+<link rel=File-List href="TREE_archivos/filelist.xml">
+<title>TREE</title>
+
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+span.SpellE
+	{mso-style-name:"";
+	mso-spl-e:yes;}
+span.GramE
+	{mso-style-name:"";
+	mso-gram-e:yes;}
+@page Section1
+	{size:612.0pt 792.0pt;
+	margin:70.85pt 3.0cm 70.85pt 3.0cm;
+	mso-header-margin:35.4pt;
+	mso-footer-margin:35.4pt;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+
+
+
+<style>
+html {
+	overflow-y:scroll;
+}
+
+body {
+	padding: 0px;
+	margin: 0px;
+	overflow: auto; 
+	background-color: #FFFFFF; 
+}
+
+#winchm_template_navigation{
+	margin-top: 0px;
+	margin-left: 0px;
+	margin-bottom: 0px;
+	margin-right: 0px;
+
+	padding-top: 5px;
+	padding-left: 5px;
+	padding-bottom: 5px;
+	padding-right: 5px;
+
+	font-family: arial, helvetica, sans-serif;
+	font-size: 10px;
+	font-style: normal;
+	font-weight: normal;
+	color: #626262; 
+	 
+	border-bottom-style: solid;
+	border-bottom-width: 1px;
+	border-bottom-color: #DBDBDB;
+	
+	background-color: #E2EDFA;
+	width: auto;
+}
+
+#winchm_template_button{
+	float: right;
+	top: -7px;
+	position: relative;
+	text-align: right;
+	right: -5px;
+	height: auto;
+}
+
+#winchm_template_title{
+	font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
+	font-weight: bold;
+	font-size: 18px;
+	color: 353535;	
+
+	margin-top: 0px;
+	margin-left: 0px;
+	margin-bottom: 0px;
+	margin-right: 0px;
+
+	padding-top: 10px;
+	padding-left: 5px;
+	padding-bottom: 10px;
+	padding-right: 10px;
+	
+	border-bottom-style: solid;
+	border-bottom-width: 1px;
+	border-bottom-color: #C7C7C7;
+
+	width: auto;
+	background-color: #C4DBF4;
+	text-align: left;
+}
+
+#winchm_template_content{
+	padding: 0px;
+	margin-top: 15px;
+	margin-left: 15px;
+	margin-bottom: 15px;
+	margin-right: 15px;
+
+	width: auto  !important;
+	width: 100%;
+}
+
+#winchm_template_footer{
+	border-width: 1px;
+	border-color: #c0c0c0;
+	border-top-style: solid;
+	
+	margin-top: 0px;
+	margin-left: 15px;
+	margin-bottom: 5px;
+	margin-right: 15px;
+
+	padding-top: 6px;
+	padding-left: 0px;
+	padding-bottom: 20px;
+	padding-right: 0px;
+
+	font-family: arial, helvetica, sans-serif;
+	font-size: 9px;
+	color: #909090;
+
+	text-align: left;	
+	width: auto;	
+}
+
+#winchm_template_navigation a:link	{text-decoration: none;color: #0000ff}
+#winchm_template_navigation a:visited  {text-decoration: none; color: #0000ff}
+#winchm_template_navigation a:active {text-decoration: none; color: #0000ff}
+#winchm_template_navigation a:hover {text-decoration: none;color: #0000ff}
+
+a:link	{text-decoration: underline; color:#0033cc}
+a:visited  {text-decoration: underline; color: #0033cc}
+a:active {text-decoration: underline; color: #0033cc }
+a:hover {text-decoration: underline;color: #ff0000;}
+
+@media print
+{
+#winchm_template_button{
+visibility:hidden;
+}
+}
+</style>
+</head>
+
+<body>
+
+<div id="winchm_template_title">
+<div id="winchm_template_button"><A href="TOOLBAR.HTM" title="Previous topic"><img id="winchm_template_prev" alt="Previous topic" src="template4/btn_prev_n.gif" border="0"></a><A href="UNCOMPRESS.HTM" title="Next topic"><img id="winchm_template_next" alt="Next topic" src="template4/btn_next_n.gif" border="0"></a></div>
+TREE</div>
+<div id="winchm_template_navigation">Help &gt; 
+Controls &gt; </div>
+<div id="winchm_template_content">
+
+<div class=Section1>
+
+<p class=MsoNormal><span lang=ES style='color:darkgreen;mso-ansi-language:ES'>///////////////////////////////////////////////////////////////////////////////
+<br>
+// TREE <br>
+///////////////////////////////////////////////////////////////////////////////
+<br>
+</span><span lang=ES style='color:gray;mso-ansi-language:ES'><br>
+</span><span lang=ES style='color:black;mso-ansi-language:ES'>#<span
+class=SpellE>xcommand</span> DEFINE TREE &lt;<span class=SpellE>name</span>&gt;
+;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>FULLROWSELECT ;</span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ OBJ</span> &lt;<span class=SpellE>obj</span>&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;</span><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ &lt;</span>dummy1: OF, PARENT&gt; &lt;<span
+class=SpellE>parent</span>&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ AT</span> &lt;<span class=SpellE>row</span>&gt; ,
+&lt;col&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ WIDTH</span> &lt;<span class=SpellE>width</span>&gt;
+] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ HEIGHT</span> &lt;<span class=SpellE>height</span>&gt;
+] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ VALUE</span> &lt;<span class=SpellE>value</span>&gt;
+] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ FONT</span> &lt;<span class=SpellE>fontname</span>&gt;
+] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ SIZE</span> &lt;<span class=SpellE>fontsize</span>&gt;
+] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>bold</span></span>: BOLD&gt;
+] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>italic</span></span>:
+ITALIC&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>underline</span></span>:
+UNDERLINE&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>strikeout</span></span>:
+STRIKEOUT&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ TOOLTIP</span> &lt;<span class=SpellE>tooltip</span>&gt;
+] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ ON</span> GOTFOCUS &lt;<span class=SpellE>gotfocus</span>&gt;
+] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ ON</span> CHANGE &lt;<span class=SpellE>change</span>&gt;
+] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ ON</span> LOSTFOCUS &lt;<span class=SpellE>lostfocus</span>&gt;
+] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ ON</span> DBLCLICK &lt;<span class=SpellE>dblclick</span>&gt;
+] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ NODEIMAGES</span> &lt;<span class=SpellE>aImgNode</span>&gt;
+[ ITEMIMAGES &lt;<span class=SpellE>aImgItem</span>&gt; ]];<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>itemids</span></span>:
+ITEMIDS&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ HELPID</span> &lt;<span class=SpellE>helpid</span>&gt;
+]<span style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>rtl</span></span>: RTL&gt;
+]<span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ ON</span> ENTER &lt;<span class=SpellE>enter</span>&gt;
+]<span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>break</span></span>:
+BREAK&gt; ]<span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>disabled</span></span>:
+DISABLED&gt; ]<span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ SUBCLASS</span> &lt;<span class=SpellE>subclass</span>&gt;
+]<span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=GramE>invisible</span>: INVISIBLE&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>notabstop</span></span>:
+NOTABSTOP&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ FONTCOLOR</span> &lt;<span class=SpellE>fontcolor</span>&gt;
+] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ BACKCOLOR</span> &lt;<span class=SpellE>backcolor</span>&gt;
+] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ SELCOLOR</span> &lt;<span class=SpellE>selcolor</span>&gt;
+] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>selbold</span></span>:
+SELBOLD&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>checkboxes</span></span>:
+CHECKBOXES&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>editlabels</span></span>:
+EDITLABELS&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>noHScr</span></span>:
+NOHSCROLL&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>noScr</span></span>: NOSCROLL&gt;
+] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>hott</span></span>:
+HOTTRACKING&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>nobuts</span></span>:
+NOBUTTONS&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=GramE>drag</span>: ENABLEDRAG&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>drop</span></span>:
+ENABLEDROP&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ TARGET</span> &lt;<span class=SpellE>aTarget</span>&gt;
+] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=GramE>single</span>: SINGLEEXPAND&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>noborder</span></span>: BORDERLESS&gt;
+] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ ON</span> LABELEDIT &lt;<span class=SpellE>labeledit</span>&gt;
+] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ VALID</span> &lt;<span class=SpellE>valid</span>&gt;
+] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ ON</span> CHECKCHANGE &lt;<span class=SpellE>checkchange</span>&gt;
+] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ INDENT</span> &lt;<span class=SpellE>pixels</span>&gt;
+] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ ON</span> DROP &lt;<span class=SpellE>ondrop</span>&gt;
+] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>=&gt;;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>obj</span></span>&gt; := ] _<span
+class=SpellE>OOHG_SelectSubClass</span>( <span class=SpellE>TTree</span>(), [
+&lt;<span class=SpellE>subclass</span>&gt;() ] ):Define( ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>&lt;(<span class=SpellE><span class=GramE>name</span></span>)&gt;,
+&lt;(parent)&gt;, &lt;row&gt;, &lt;col&gt;, &lt;<span class=SpellE>width</span>&gt;,
+&lt;height&gt;, &lt;{change}&gt;, &lt;<span class=SpellE>tooltip</span>&gt;, ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>&lt;<span class=GramE>fontname</span>&gt;, &lt;fontsize&gt;, &lt;{<span
+class=SpellE>gotfocus</span>}&gt;, &lt;{lostfocus}&gt;, &lt;{dblclick}&gt;,
+&lt;.<span class=SpellE>break</span>.&gt;, ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>&lt;<span
+class=GramE>value</span>&gt;, &lt;helpid&gt;, &lt;<span class=SpellE>aImgNode</span>&gt;,
+&lt;aImgItem&gt;, .T., ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>&lt;.<span class=SpellE>bold</span>.&gt;, &lt;.italic.&gt;,
+&lt;.underline.&gt;, &lt;.<span class=SpellE>strikeout</span>.&gt;,
+&lt;.itemids.&gt;, &lt;.rtl.<span class=GramE>&gt;, ;</span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>&lt;{<span class=SpellE><span class=GramE>enter</span></span>}&gt;,
+&lt;{disabled}&gt;, &lt;.invisible.&gt;, &lt;.<span class=SpellE>notabstop</span>.&gt;,
+&lt;fontcolor&gt;, ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>&lt;<span
+class=GramE>backcolor</span>&gt;, .T., &lt;.<span class=SpellE>checkboxes</span>.&gt;,
+&lt;.editlabels.&gt;, &lt;.noHScr.&gt;, &lt;.<span class=SpellE>noScr</span>.&gt;,
+;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>&lt;.hott.&gt;, .F., &lt;.<span class=SpellE>nobuts</span>.&gt;,
+&lt;.drag.&gt;, &lt;.single.&gt;, &lt;.<span class=SpellE>noborder</span>.&gt;,
+&lt;selcolor<span class=GramE>&gt;, ;</span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>&lt;{<span class=GramE>labeledit</span>}&gt;, &lt;{<span class=SpellE>valid</span>}&gt;,
+&lt;{checkchange}&gt;, &lt;pixels&gt;, &lt;.<span class=SpellE>selbold</span>.&gt;,
+;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>&lt;.drop.&gt;, &lt;aTarget&gt;, <span class=GramE>&lt;{</span><span
+class=SpellE>ondrop</span>}&gt; )<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'>#<span
+class=SpellE>xcommand</span> DEFINE TREE &lt;<span class=SpellE>name</span><span
+class=GramE>&gt; ;</span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ OBJ</span> &lt;<span class=SpellE>obj</span>&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ &lt;</span>dummy1: OF, PARENT&gt; &lt;<span
+class=SpellE>parent</span>&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ AT</span> &lt;<span class=SpellE>row</span>&gt; ,
+&lt;col&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ WIDTH</span> &lt;<span class=SpellE>width</span>&gt;
+] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;</span><span class=GramE>[ HEIGHT</span>
+&lt;<span class=SpellE>height</span>&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ VALUE</span> &lt;<span class=SpellE>value</span>&gt;
+] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ FONT</span> &lt;<span class=SpellE>fontname</span>&gt;
+] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ SIZE</span> &lt;<span class=SpellE>fontsize</span>&gt;
+] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>bold</span></span>: BOLD&gt;
+] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>italic</span></span>:
+ITALIC&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>underline</span></span>:
+UNDERLINE&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>strikeout</span></span>:
+STRIKEOUT&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ TOOLTIP</span> &lt;<span class=SpellE>tooltip</span>&gt;
+] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ ON</span> GOTFOCUS &lt;<span class=SpellE>gotfocus</span>&gt;
+] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ ON</span> CHANGE &lt;<span class=SpellE>change</span>&gt;
+] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ ON</span> LOSTFOCUS &lt;<span class=SpellE>lostfocus</span>&gt;
+] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ ON</span> DBLCLICK &lt;<span class=SpellE>dblclick</span>&gt;
+] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ NODEIMAGES</span> &lt;<span class=SpellE>aImgNode</span>&gt;
+[ ITEMIMAGES &lt;<span class=SpellE>aImgItem</span>&gt; ] [ &lt;<span
+class=SpellE>noBut</span>: NOROOTBUTTON&gt; ]];<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>itemids</span></span>:
+ITEMIDS&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ HELPID</span> &lt;<span class=SpellE>helpid</span>&gt;
+]<span style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>rtl</span></span>: RTL&gt;
+]<span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ ON</span> ENTER &lt;<span class=SpellE>enter</span>&gt;
+]<span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>break</span></span>:
+BREAK&gt; ]<span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>disabled</span></span>: DISABLED&gt;
+]<span style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ SUBCLASS</span> &lt;<span class=SpellE>subclass</span>&gt;
+]<span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=GramE>invisible</span>: INVISIBLE&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>notabstop</span></span>:
+NOTABSTOP&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ FONTCOLOR</span> &lt;<span class=SpellE>fontcolor</span>&gt;
+] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ BACKCOLOR</span> &lt;<span class=SpellE>backcolor</span>&gt;
+] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ SELCOLOR</span> &lt;<span class=SpellE>selcolor</span>&gt;
+] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;</span>[ &lt;<span
+class=SpellE><span class=GramE>selbold</span></span>: SELBOLD&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>checkboxes</span></span>:
+CHECKBOXES&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>editlabels</span></span>:
+EDITLABELS&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>noHScr</span></span>:
+NOHSCROLL&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>noScr</span></span>:
+NOSCROLL&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>hott</span></span>:
+HOTTRACKING&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>nobuts</span></span>:
+NOBUTTONS&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp; </span><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>[
+&lt;<span class=SpellE><span class=GramE>nolines</span></span>: NOLINES&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=GramE>drag</span>: ENABLEDRAG&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>drop</span></span>:
+ENABLEDROP&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ TARGET</span> &lt;<span class=SpellE>aTarget</span>&gt;
+] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=GramE>single</span>: SINGLEEXPAND&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>noborder</span></span>:
+BORDERLESS&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ ON</span> LABELEDIT &lt;<span class=SpellE>labeledit</span>&gt;
+] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp; </span><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class=GramE>[ VALID</span> &lt;<span class=SpellE>valid</span>&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ ON</span> CHECKCHANGE &lt;<span class=SpellE>checkchange</span>&gt;
+] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ INDENT</span> &lt;<span class=SpellE>pixels</span>&gt;
+] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ ON</span> DROP &lt;<span class=SpellE>ondrop</span>&gt;
+] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>=&gt;;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>obj</span></span>&gt; := ] _<span
+class=SpellE>OOHG_SelectSubClass</span>( <span class=SpellE>TTree</span>(), [
+&lt;<span class=SpellE>subclass</span>&gt;() ] ):Define( ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span style='mso-spacerun:yes'>&nbsp;&nbsp;</span>&lt;(<span
+class=SpellE><span class=GramE>name</span></span>)&gt;, &lt;(parent)&gt;,
+&lt;row&gt;, &lt;col&gt;, &lt;<span class=SpellE>width</span>&gt;,
+&lt;height&gt;, &lt;{change}&gt;, &lt;<span class=SpellE>tooltip</span>&gt;, ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>&lt;<span class=GramE>fontname</span>&gt;, &lt;fontsize&gt;, &lt;{<span
+class=SpellE>gotfocus</span>}&gt;, &lt;{lostfocus}&gt;, &lt;{dblclick}&gt;,
+&lt;.<span class=SpellE>break</span>.&gt;, ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>&lt;<span class=GramE>value</span>&gt;, &lt;helpid&gt;, &lt;<span
+class=SpellE>aImgNode</span>&gt;, &lt;aImgItem&gt;, &lt;.noBut.&gt;, ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>&lt;.<span class=SpellE>bold</span>.&gt;, &lt;.italic.&gt;,
+&lt;.underline.&gt;, &lt;.<span class=SpellE>strikeout</span>.&gt;,
+&lt;.itemids.&gt;, &lt;.rtl.<span class=GramE>&gt;, ;</span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>&lt;{<span class=SpellE><span class=GramE>enter</span></span>}&gt;,
+&lt;{disabled}&gt;, &lt;.invisible.&gt;, &lt;.<span class=SpellE>notabstop</span>.&gt;,
+&lt;fontcolor&gt;, ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>&lt;<span class=GramE>backcolor</span>&gt;, .F., &lt;.<span
+class=SpellE>checkboxes</span>.&gt;, &lt;.editlabels.&gt;, &lt;.noHScr.&gt;,
+&lt;.<span class=SpellE>noScr</span>.&gt;, ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>&lt;.hott.&gt;, &lt;.nolines.&gt;, &lt;.<span class=SpellE>nobuts</span>.&gt;,
+&lt;.drag.&gt;, &lt;.single.&gt;, &lt;.<span class=SpellE>noborder</span>.<span
+class=GramE>&gt;, ;</span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>&lt;<span class=GramE>selcolor</span>&gt;, &lt;{labeledit}&gt;, &lt;{<span
+class=SpellE>valid</span>}&gt;, &lt;{checkchange}&gt;, &lt;pixels&gt;, &lt;.<span
+class=SpellE>selbold</span>.&gt;, ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>&lt;.drop.&gt;,
+&lt;aTarget&gt;, <span class=GramE>&lt;{</span><span class=SpellE>ondrop</span>}&gt;
+)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'>#<span
+class=SpellE>xcommand</span> NODE &lt;<span class=SpellE>text</span><span
+class=GramE>&gt; ;</span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ IMAGES</span> &lt;<span class=SpellE>aImage</span>&gt;
+] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ ID</span> &lt;<span class=SpellE>id</span>&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>checked</span></span>:
+CHECKED&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>readonly</span></span>:
+READONLY&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>bold</span></span>: BOLD&gt;
+] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>disabled</span></span>:
+DISABLED&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>nodrag</span></span>:
+NODRAG&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>autoid</span></span>:
+AUTOID&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'>=&gt;;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'>_<span
+class=SpellE>DefineTreeNode</span> (&lt;text&gt;, &lt;aImage<span class=GramE>&gt;
+,</span> &lt;<span class=SpellE>id</span>&gt;, &lt;.checked.&gt;,
+&lt;.readonly.&gt;, &lt;.<span class=SpellE>bold</span>.&gt;,
+&lt;.disabled.&gt;, &lt;.nodrag.&gt;, &lt;.<span class=SpellE>autoid</span>.&gt;
+)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'>#<span
+class=SpellE>xcommand</span> DEFINE NODE &lt;<span class=SpellE>text</span><span
+class=GramE>&gt; ;</span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ IMAGES</span> &lt;<span class=SpellE>aImage</span>&gt;
+] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ ID</span> &lt;<span class=SpellE>id</span>&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>checked</span></span>:
+CHECKED&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>readonly</span></span>:
+READONLY&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>bold</span></span>: BOLD&gt;
+] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>disabled</span></span>:
+DISABLED&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>nodrag</span></span>:
+NODRAG&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>autoid</span></span>:
+AUTOID&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'>=&gt;;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'>_<span
+class=SpellE>DefineTreeNode</span> (&lt;text&gt;, &lt;aImage<span class=GramE>&gt;
+,</span> &lt;<span class=SpellE>id</span>&gt;, &lt;.checked.&gt;,
+&lt;.readonly.&gt;, &lt;.<span class=SpellE>bold</span>.&gt;,
+&lt;.disabled.&gt;, &lt;.nodrag.&gt;, &lt;.<span class=SpellE>autoid</span>.&gt;
+)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'>#<span
+class=SpellE>xcommand</span> END <span class=GramE>NODE ;</span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'>=&gt;;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'>_<span
+class=SpellE><span class=GramE>EndTreeNode</span></span><span class=GramE>()</span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'>#<span
+class=SpellE>xcommand</span> TREEITEM &lt;<span class=SpellE>text</span><span
+class=GramE>&gt; ;</span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ IMAGES</span> &lt;<span class=SpellE>aImage</span>&gt;
+] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span class=GramE>[ ID</span> &lt;<span class=SpellE>id</span>&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>checked</span></span>:
+CHECKED&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>readonly</span></span>:
+READONLY&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>bold</span></span>: BOLD&gt;
+] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>disabled</span></span>:
+DISABLED&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>nodrag</span></span>:
+NODRAG&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>[ &lt;<span class=SpellE><span class=GramE>autoid</span></span>:
+AUTOID&gt; ] ;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'>=&gt;
+;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'>_<span
+class=SpellE>DefineTreeItem</span> (&lt;text&gt;, &lt;aImage<span class=GramE>&gt;
+,</span> &lt;<span class=SpellE>id</span>&gt;, &lt;.checked.&gt;,
+&lt;.readonly.&gt;, &lt;.<span class=SpellE>bold</span>.&gt;, &lt;.disabled.&gt;,
+&lt;.nodrag.&gt;, &lt;.autoid.&gt; )<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'>#<span
+class=SpellE>xcommand</span> END <span class=GramE>TREE ;</span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'>=&gt;
+;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:black;mso-ansi-language:ES'>_<span
+class=SpellE><span class=GramE>EndTree</span></span><span class=GramE>()</span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=ES style='color:gray;mso-ansi-language:ES'><br>
+<br>
+</span><span lang=ES style='color:darkgreen;mso-ansi-language:ES'>///////////////////////////////////////////////////////////////////////////////
+<br>
+// TREE SPLITBOX VERSION <br>
+///////////////////////////////////////////////////////////////////////////////
+<br>
+</span><span lang=ES style='color:gray;mso-ansi-language:ES'><br>
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>#</span><span
+class=SpellE><span lang=ES style='color:black;mso-ansi-language:ES'>xcommand</span></span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>DEFINE</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>TREE</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;<span class=SpellE>name</span>&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>[</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>OBJ</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;<span class=SpellE>obj</span>&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp; </span><span lang=ES style='color:black;mso-ansi-language:
+ES'>[</span><span lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span
+lang=ES style='color:black;mso-ansi-language:ES'>&lt;dummy1:</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>OF,</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>PARENT&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;<span class=SpellE>parent</span>&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp; </span><span lang=ES style='color:black;mso-ansi-language:
+ES'>[</span><span lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span
+lang=ES style='color:black;mso-ansi-language:ES'>WIDTH</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;<span class=SpellE>width</span>&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp; </span><span lang=ES style='color:black;mso-ansi-language:
+ES'>[</span><span lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span
+lang=ES style='color:black;mso-ansi-language:ES'>HEIGHT</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;<span class=SpellE>height</span>&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp; </span><span lang=ES style='color:black;mso-ansi-language:
+ES'>[</span><span lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span
+lang=ES style='color:black;mso-ansi-language:ES'>VALUE</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;</span><span class=SpellE><span
+lang=ES style='color:blue;mso-ansi-language:ES'>value</span></span><span
+lang=ES style='color:black;mso-ansi-language:ES'>&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp; </span><span lang=ES style='color:black;mso-ansi-language:
+ES'>[</span><span lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span
+lang=ES style='color:black;mso-ansi-language:ES'>FONT</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;<span class=SpellE>fontname</span>&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp; </span><span lang=ES style='color:black;mso-ansi-language:
+ES'>[</span><span lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span
+lang=ES style='color:black;mso-ansi-language:ES'>SIZE</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;<span class=SpellE>fontsize</span>&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp; </span><span lang=ES style='color:black;mso-ansi-language:
+ES'>[</span><span lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span
+lang=ES style='color:black;mso-ansi-language:ES'>&lt;<span class=SpellE>bold</span></span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>:</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>BOLD&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp; </span><span lang=ES style='color:black;mso-ansi-language:
+ES'>[</span><span lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span
+lang=ES style='color:black;mso-ansi-language:ES'>&lt;<span class=SpellE>italic</span></span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>:</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>ITALIC&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp; </span><span lang=ES style='color:black;mso-ansi-language:
+ES'>[</span><span lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span
+lang=ES style='color:black;mso-ansi-language:ES'>&lt;<span class=SpellE>underline</span></span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>:</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>UNDERLINE&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp; </span><span lang=ES style='color:black;mso-ansi-language:
+ES'>[</span><span lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span
+lang=ES style='color:black;mso-ansi-language:ES'>&lt;<span class=SpellE>strikeout</span></span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>:</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>STRIKEOUT&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp; </span><span lang=ES style='color:black;mso-ansi-language:
+ES'>[</span><span lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span
+lang=ES style='color:black;mso-ansi-language:ES'>TOOLTIP</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;<span class=SpellE>tooltip</span>&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp; </span><span lang=ES style='color:black;mso-ansi-language:
+ES'>[</span><span lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span
+lang=ES style='color:black;mso-ansi-language:ES'>ON</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>GOTFOCUS</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;<span class=SpellE>gotfocus</span>&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp; </span><span lang=ES style='color:black;mso-ansi-language:
+ES'>[</span><span lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span
+lang=ES style='color:black;mso-ansi-language:ES'>ON</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>CHANGE</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;<span class=SpellE>change</span>&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp; </span><span lang=ES style='color:black;mso-ansi-language:
+ES'>[</span><span lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span
+lang=ES style='color:black;mso-ansi-language:ES'>ON</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>LOSTFOCUS</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;<span class=SpellE>lostfocus</span>&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp; </span><span lang=ES style='color:black;mso-ansi-language:
+ES'>[</span><span lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span
+lang=ES style='color:black;mso-ansi-language:ES'>ON</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>DBLCLICK</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;<span class=SpellE>dblclick</span>&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp; </span><span lang=ES style='color:black;mso-ansi-language:
+ES'>[</span><span lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span
+lang=ES style='color:black;mso-ansi-language:ES'>&lt;<span class=SpellE>itemids</span></span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>:</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>ITEMIDS&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp; </span><span lang=ES style='color:black;mso-ansi-language:
+ES'>[</span><span lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span
+lang=ES style='color:black;mso-ansi-language:ES'>HELPID</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;<span class=SpellE>helpid</span>&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp; </span><span lang=ES style='color:black;mso-ansi-language:
+ES'>[</span><span lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span
+lang=ES style='color:black;mso-ansi-language:ES'>NODEIMAGES</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;<span class=SpellE>aImgNode</span>&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>[</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>ITEMIMAGES</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;<span class=SpellE>aImgItem</span>&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>[</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;<span class=SpellE>noBut</span>:</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>NOROOTBUTTON&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>]]</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp; </span><span lang=ES style='color:black;mso-ansi-language:
+ES'>[</span><span lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span
+lang=ES style='color:black;mso-ansi-language:ES'>&lt;</span><span class=SpellE><span
+lang=ES style='color:blue;mso-ansi-language:ES'>break</span></span><span
+lang=ES style='color:black;mso-ansi-language:ES'>:</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>BREAK&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>[</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;<span class=SpellE>rtl</span>:</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>RTL&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>]</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'> <br>
+</span><span lang=ES style='color:blue;mso-ansi-language:ES'>=</span><span
+lang=ES style='color:black;mso-ansi-language:ES'>&gt;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>;</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'> <br>
+</span><span lang=ES style='color:black;mso-ansi-language:ES'>[</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;<span class=SpellE>obj</span>&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>:</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>=</span><span lang=ES style='color:
+gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES style='color:black;
+mso-ansi-language:ES'>]</span><span lang=ES style='color:gray;mso-ansi-language:
+ES'>&nbsp;</span><span class=SpellE><span lang=ES style='color:black;
+mso-ansi-language:ES'>TTree</span></span><span lang=ES style='color:black;
+mso-ansi-language:ES'>():Define(</span><span lang=ES style='color:gray;
+mso-ansi-language:ES'>&nbsp;</span><span lang=ES style='color:black;mso-ansi-language:
+ES'>&lt;(<span class=SpellE>name</span>)&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>,</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;(parent)&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>,</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>,</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>,</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;<span class=SpellE>width</span>&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>,</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;height&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>,</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;{change}&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>,</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;<span class=SpellE>tooltip</span>&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>,</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;fontname&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>,</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;fontsize&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>,</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;{<span class=SpellE>gotfocus</span>}&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>,</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;{lostfocus}&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>,</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;{dblclick}&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>,</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;.</span><span class=SpellE><span
+lang=ES style='color:blue;mso-ansi-language:ES'>break</span></span><span
+lang=ES style='color:black;mso-ansi-language:ES'>.&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>,</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;</span><span lang=ES
+style='color:blue;mso-ansi-language:ES'>value</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>,</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;helpid&gt;,</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;<span class=SpellE>aImgNode</span>&gt;,</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;aImgItem&gt;,</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;.noBut.&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>,&lt;.<span class=SpellE>bold</span>.&gt;,</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;.italic.&gt;,</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;.underline.&gt;,</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;.<span class=SpellE>strikeout</span>.&gt;</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp; </span><span lang=ES
+style='color:black;mso-ansi-language:ES'>,</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;.itemids.&gt;,</span><span
+lang=ES style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>&lt;.rtl.&gt;</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'>&nbsp;</span><span lang=ES
+style='color:black;mso-ansi-language:ES'>)</span><span lang=ES
+style='color:gray;mso-ansi-language:ES'> <br>
+<br style='mso-special-character:line-break'>
+<br style='mso-special-character:line-break'>
+</span></p>
+
+</div>
+
+</div>
+<div id="winchm_template_footer"><FONT color=#808080 
+size=1>Copyright © 2013 MigSoft - </FONT><A 
+href="http://www.oohg.org"><FONT 
+size=1>http://www.oohg.org</FONT></A> 
+     </div>
+
+</body>
+
+</html>

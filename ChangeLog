@@ -1,11 +1,51 @@
 /*
- * $Id: ChangeLog,v 1.1115 2013-07-25 23:42:21 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1116 2013-07-26 00:15:08 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-07-25 21:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     + Added T O D O.
+     ! Some entries corrected.
+   + manual/images
+     + Added folder to hold some images.
+   + manual/images/bm0.gif
+   + manual/images/harbour-logo.jpg
+   + manual/HowToBuild.txt
+   + manual/HYPERLINK.HTM
+   + manual/IMAGE.HTM
+   + manual/INTERNAL.HTM
+   + manual/IPADDRESS.HTM
+   + manual/LABEL.HTM
+   + manual/LISTBOX.HTM
+   + manual/MONTHCALENDAR.HTM
+   + manual/OVERVIEW.HTM
+   + manual/PLAYER.HTM
+   + manual/PROGRESSBAR.HTM
+   + manual/PROGRESSMETER.HTM
+   + manual/RADIOGROUP.HTM
+   + manual/RICHEDITBOX.HTM
+   + manual/SCREENSAVER.HTM
+   + manual/SLIDER.HTM
+   + manual/SPINNER.HTM
+   + manual/SPLITBOX.HTM
+   + manual/STATUSBAR.HTM
+   + manual/TAB.HTM
+   + manual/TEXTARRAY.HTM
+   + manual/TEXTBOX.HTM
+   + manual/TIMEPICKER.HTM
+   + manual/TIMER.HTM
+   + manual/TOOLBAR.HTM
+   + manual/TPRINT.HTM
+   + manual/TREE.HTM
+   + manual/UNCOMPRESS.HTM
+   + manual/WAVE.HTM
+   + manual/WINDOW.HTM
+   + manual/XBROWSE.HTM
 
 2013-07-25 20:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * manual/ACTIVEX.HTM
@@ -30,11 +70,12 @@
    + manual/HOTKEYBOX.HTM
 
 2013-07-25 20:11 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * manual
+   + ./manual
      + Added folder to hold MigSoft's html manual.
    + manual/ACTIVEX.HTM
    * manual/template4
      + Added folder to hold some images.
+       TODO: move images to manual/images and delete this folder.
    + manual/template4/btn_next_g.gif
    + manual/template4/btn_next_n.gif
    + manual/template4/btn_prev_g.gif

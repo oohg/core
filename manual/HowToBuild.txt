@@ -1,0 +1,7 @@
+/*
+ * $Id: HowToBuild.txt,v 1.1 2013-07-26 00:15:10 fyurisich Exp $
+ */
+
+TODO:
+  Detail needed tools and how to install them.
+  Describe how to build oohg.chm file.
