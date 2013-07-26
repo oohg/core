@@ -1,7 +1,32 @@
 /*
- * $Id: HowToBuild.txt,v 1.1 2013-07-26 00:15:10 fyurisich Exp $
+ * $Id: HowToBuild.txt,v 1.2 2013-07-26 02:20:47 fyurisich Exp $
  */
 
-TODO:
-  Detail needed tools and how to install them.
-  Describe how to build oohg.chm file.
+Tools needed
+------------
+
+In order to build oohg.chm file you need Microsoft's HTML Help Workshop tool.
+Please follow this instructions to download and install.
+(Tested in Windows XP SP 3)
+
+1. Go to this page
+   http://msdn.microsoft.com/en-us/library/windows/desktop/ms669985(v=vs.85).aspx
+
+2. Download Htmlhelp.exe and install (ignore any warnings).
+
+3. Download HelpDocs.zip and extract all files.
+
+4. Copy all .chm files to C:\Windows\Help folder, if they are newer.
+
+5. Copy htmlhelp.lib to C:\Archivos de Programas\HTML Help Workshop\lib folder,
+   if it's newer.
+
+How to build
+------------
+
+1. Run HTML Help Workshop tool.
+
+2. Open c:\oohg\manual\ooHG.hhp
+
+3. Use option Compile from File menu to build oohg.chm file.
+

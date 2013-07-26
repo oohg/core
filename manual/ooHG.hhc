@@ -1,0 +1,273 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<!-- Sitemap 1.0 -->
+</HEAD>
+<BODY>
+   <OBJECT type="text/site properties"> 
+     <param name="FrameName" value="right">
+     <param name="WindowName" value="main">
+     <param name="Font" value=",8,0">
+     <param name="ImageType" value="Book">
+     <param name="Window Styles" value="0x27">
+     <param name="ExWindow Styles" value="0x0">
+   </OBJECT>
+<UL><LI><OBJECT type="text/sitemap">
+<param name="Name" value="Overview">
+<param name="Local" value="OVERVIEW.HTM">
+<param name="ImageNumber" value="11">
+</OBJECT>
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="Controls">
+<param name="Local" value="">
+<param name="ImageNumber" value="1">
+</OBJECT>
+<UL><LI><OBJECT type="text/sitemap">
+<param name="Name" value="ACTIVEX">
+<param name="Local" value="ACTIVEX.HTM">
+<param name="ImageNumber" value="11">
+</OBJECT>
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="ANIMATEBOX">
+<param name="Local" value="ANIMATEBOX.HTM">
+<param name="ImageNumber" value="11">
+</OBJECT>
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="BROWSE">
+<param name="Local" value="BROWSE.HTM">
+<param name="ImageNumber" value="11">
+</OBJECT>
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="BUTTON">
+<param name="Local" value="BUTTON.HTM">
+<param name="ImageNumber" value="11">
+</OBJECT>
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="CHECKBOX">
+<param name="Local" value="CHECKBOX.HTM">
+<param name="ImageNumber" value="11">
+</OBJECT>
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="CHECKBUTTON">
+<param name="Local" value="CHECKBUTTON.HTM">
+<param name="ImageNumber" value="11">
+</OBJECT>
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="CHECKLIST">
+<param name="Local" value="CHECKLIST.HTM">
+<param name="ImageNumber" value="11">
+</OBJECT>
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="COMBOBOX">
+<param name="Local" value="COMBOBOX.HTM">
+<param name="ImageNumber" value="11">
+</OBJECT>
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="DATEPICKER">
+<param name="Local" value="DATEPICKER.HTM">
+<param name="ImageNumber" value="11">
+</OBJECT>
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="DO REPORT">
+<param name="Local" value="DO_REPORT.HTM">
+<param name="ImageNumber" value="11">
+</OBJECT>
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="DRAW IN WINDOW">
+<param name="Local" value="DRAW_IN_WINDOW.HTM">
+<param name="ImageNumber" value="11">
+</OBJECT>
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="EDIT EXTENDED">
+<param name="Local" value="EDIT_EXTENDED.HTM">
+<param name="ImageNumber" value="11">
+</OBJECT>
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="EDIT WORKAREA">
+<param name="Local" value="EDIT_WORKAREA.HTM">
+<param name="ImageNumber" value="11">
+</OBJECT>
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="EDITBOX">
+<param name="Local" value="EDITBOX.HTM">
+<param name="ImageNumber" value="11">
+</OBJECT>
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="FRAME">
+<param name="Local" value="FRAME.HTM">
+<param name="ImageNumber" value="11">
+</OBJECT>
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="GRID">
+<param name="Local" value="GRID.HTM">
+<param name="ImageNumber" value="11">
+</OBJECT>
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="HOTKEY">
+<param name="Local" value="HOTKEY.HTM">
+<param name="ImageNumber" value="11">
+</OBJECT>
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="HOTKEYBOX">
+<param name="Local" value="HOTKEYBOX.HTM">
+<param name="ImageNumber" value="11">
+</OBJECT>
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="HYPERLINK">
+<param name="Local" value="HYPERLINK.HTM">
+<param name="ImageNumber" value="11">
+</OBJECT>
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="IMAGE">
+<param name="Local" value="IMAGE.HTM">
+<param name="ImageNumber" value="11">
+</OBJECT>
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="INTERNAL">
+<param name="Local" value="INTERNAL.HTM">
+<param name="ImageNumber" value="11">
+</OBJECT>
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="IPADDRESS">
+<param name="Local" value="IPADDRESS.HTM">
+<param name="ImageNumber" value="11">
+</OBJECT>
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="LABEL">
+<param name="Local" value="LABEL.HTM">
+<param name="ImageNumber" value="11">
+</OBJECT>
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="LISTBOX">
+<param name="Local" value="LISTBOX.HTM">
+<param name="ImageNumber" value="11">
+</OBJECT>
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="MONTHCALENDAR">
+<param name="Local" value="MONTHCALENDAR.HTM">
+<param name="ImageNumber" value="11">
+</OBJECT>
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="PLAYER">
+<param name="Local" value="PLAYER.HTM">
+<param name="ImageNumber" value="11">
+</OBJECT>
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="PROGRESSBAR">
+<param name="Local" value="PROGRESSBAR.HTM">
+<param name="ImageNumber" value="11">
+</OBJECT>
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="PROGRESSMETER">
+<param name="Local" value="PROGRESSMETER.HTM">
+<param name="ImageNumber" value="11">
+</OBJECT>
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="RADIOGROUP">
+<param name="Local" value="RADIOGROUP.HTM">
+<param name="ImageNumber" value="11">
+</OBJECT>
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="RICHEDITBOX">
+<param name="Local" value="RICHEDITBOX.HTM">
+<param name="ImageNumber" value="11">
+</OBJECT>
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="SCREENSAVER">
+<param name="Local" value="SCREENSAVER.HTM">
+<param name="ImageNumber" value="11">
+</OBJECT>
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="SLIDER">
+<param name="Local" value="SLIDER.HTM">
+<param name="ImageNumber" value="11">
+</OBJECT>
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="SPINNER">
+<param name="Local" value="SPINNER.HTM">
+<param name="ImageNumber" value="11">
+</OBJECT>
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="SPLITBOX">
+<param name="Local" value="SPLITBOX.HTM">
+<param name="ImageNumber" value="11">
+</OBJECT>
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="STATUSBAR">
+<param name="Local" value="STATUSBAR.HTM">
+<param name="ImageNumber" value="11">
+</OBJECT>
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="TAB">
+<param name="Local" value="TAB.HTM">
+<param name="ImageNumber" value="11">
+</OBJECT>
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="TEXTARRAY">
+<param name="Local" value="TEXTARRAY.HTM">
+<param name="ImageNumber" value="11">
+</OBJECT>
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="TEXTBOX">
+<param name="Local" value="TEXTBOX.HTM">
+<param name="ImageNumber" value="11">
+</OBJECT>
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="TIMEPICKER">
+<param name="Local" value="TIMEPICKER.HTM">
+<param name="ImageNumber" value="11">
+</OBJECT>
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="TIMER">
+<param name="Local" value="TIMER.HTM">
+<param name="ImageNumber" value="11">
+</OBJECT>
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="TOOLBAR">
+<param name="Local" value="TOOLBAR.HTM">
+<param name="ImageNumber" value="11">
+</OBJECT>
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="TREE">
+<param name="Local" value="TREE.HTM">
+<param name="ImageNumber" value="11">
+</OBJECT>
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="UNCOMPRESS">
+<param name="Local" value="UNCOMPRESS.HTM">
+<param name="ImageNumber" value="11">
+</OBJECT>
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="WAVE">
+<param name="Local" value="WAVE.HTM">
+<param name="ImageNumber" value="11">
+</OBJECT>
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="WINDOW">
+<param name="Local" value="WINDOW.HTM">
+<param name="ImageNumber" value="11">
+</OBJECT>
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="XBROWSE">
+<param name="Local" value="XBROWSE.HTM">
+<param name="ImageNumber" value="11">
+</OBJECT>
+</UL><LI><OBJECT type="text/sitemap">
+<param name="Name" value="Classes">
+<param name="Local" value="">
+<param name="ImageNumber" value="1">
+</OBJECT>
+<UL><LI><OBJECT type="text/sitemap">
+<param name="Name" value="CLASSES">
+<param name="Local" value="CLASSES.HTM">
+<param name="ImageNumber" value="11">
+</OBJECT>
+<LI><OBJECT type="text/sitemap">
+<param name="Name" value="TPRINT">
+<param name="Local" value="TPRINT.HTM">
+<param name="ImageNumber" value="11">
+</OBJECT>
+</UL></UL>
+</BODY>
+</HTML>
