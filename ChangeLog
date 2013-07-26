@@ -1,11 +1,23 @@
 /*
- * $Id: ChangeLog,v 1.1117 2013-07-26 02:20:47 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1118 2013-07-26 02:36:18 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-07-25 23:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   + lib/hb
+   + lib/hb/mingw
+   + lib/xhb
+   + lib/xhb/bcc
+     This folders will hold the libraries builded with
+     diferent compilers.
+   + lib/hb/mingw/.cvsignore
+   + lib/xhb/bcc/.cvsignore
+   * lib/.cvsignore
+     * Updated.
 
 2013-07-25 23:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * manual/HowToBuild.txt
