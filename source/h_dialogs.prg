@@ -1,5 +1,5 @@
 /*
- * $Id: h_dialogs.prg,v 1.12 2012-03-24 02:37:35 fyurisich Exp $
+ * $Id: h_dialogs.prg,v 1.13 2013-07-27 02:08:17 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -163,7 +163,7 @@ local n
 Return Nil
 
 *-----------------------------------------------------------------------------*
-Function Putfile( aFilter, title, cIniFolder, nochangedir, cDefaultFileName )
+Function Putfile( aFilter, title, cIniFolder, nochangedir, cDefaultFileName, lForceExt )
 *-----------------------------------------------------------------------------*
 local c := ''
 
@@ -171,7 +171,7 @@ local c := ''
       AEVAL( aFilter, { |a| c += a[ 1 ] + CHR( 0 ) + a[ 2 ] + CHR( 0 ) } )
    EndIf
 
-Return C_PutFile( c, title, cIniFolder, nochangedir, cDefaultFileName )
+Return C_PutFile( c, title, cIniFolder, nochangedir, cDefaultFileName, lForceExt )
 
 *------------------------------------------------------------------------------*
 Function GetFont( cInitFontName , nInitFontSize , lBold , lItalic , anInitColor , lUnderLine , lStrikeOut , nCharset )

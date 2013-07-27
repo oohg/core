@@ -1,5 +1,5 @@
 /*
- * $Id: c_dialogs.c,v 1.12 2013-07-26 19:28:43 migsoft Exp $
+ * $Id: c_dialogs.c,v 1.13 2013-07-27 02:08:17 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -309,15 +309,20 @@ HB_FUNC( C_PUTFILE )
    DWORD flags = OFN_FILEMUSTEXIST | OFN_EXPLORER;
 
    if( hb_parl( 4 ) )
+   {
       flags = flags | OFN_NOCHANGEDIR;
+   }
 
-   if( strlen( hb_parc( 5 ) ) != 0 )
+   if( HB_ISCHAR( 5 ) )
+   {
       strcpy( buffer, hb_parc( 5 ) );
+   }
    else
+   {
       strcpy( buffer, "" );
-   strcpy( cExt, "" );
+   }
 
-   memset( ( void * ) &ofn, 0, sizeof( OPENFILENAME ) );
+   memset( (void *) &ofn, 0, sizeof( OPENFILENAME ) );
    ofn.lStructSize = sizeof( ofn );
    ofn.hwndOwner = GetActiveWindow();
    ofn.lpstrFilter = hb_parc( 1 );
@@ -326,11 +331,16 @@ HB_FUNC( C_PUTFILE )
    ofn.lpstrInitialDir = hb_parc( 3 );
    ofn.lpstrTitle = hb_parc( 2 );
    ofn.Flags = flags;
-   ofn.lpstrDefExt = cExt;
+
+   if( hb_parl( 6 ) )
+   {
+      strcpy( cExt, "" );
+      ofn.lpstrDefExt = cExt;
+   }
 
    if( GetSaveFileName( &ofn ) )
    {
-      if( ofn.nFileExtension == 0 )
+      if( hb_parl( 6 ) && ofn.nFileExtension == 0 )
       {
          ofn.lpstrFile = strcat( ofn.lpstrFile, "." );
          ofn.lpstrFile = strcat( ofn.lpstrFile, ofn.lpstrDefExt );
@@ -339,7 +349,9 @@ HB_FUNC( C_PUTFILE )
       hb_retc( ofn.lpstrFile );
    }
    else
+   {
       hb_retc( "" );
+   }
 }
 
 int CALLBACK BrowseCallbackProc( HWND hWnd, UINT uMsg, LPARAM lParam, LPARAM lpData )
