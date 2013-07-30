@@ -1,11 +1,41 @@
 /*
- * $Id: ChangeLog,v 1.1122 2013-07-30 01:51:17 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1123 2013-07-30 19:37:15 migsoft Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-07-30 15:35 UTC-0400 MigSoft <migsoft@oohg.org>
+   + samples/autoadjust/demo.prg
+   + samples/basegraph/demo.prg
+   + samples/basegraph/saldomes.dbf
+   + samples/basegraph/graph.ico
+   + samples/fastfind/demo.prg
+   + samples/fastfind/win_1.fmg
+   + samples/fastfind/demo.rc
+   + samples/fastfind/cuentas.dbf
+   + samples/fastfind/find.ico
+   + samples/histogram/demo.prg
+   + samples/histogram/veamos.fmg
+   + samples/histogram/veamos2.fmg
+   + samples/histogram/grafico.fmg
+   + samples/histogram/demo.rc
+   + samples/histogram/graph.ico
+   + samples/mybrowse/mybrowse.prg
+   + samples/mybrowse/test.dbf
+   + samples/mybrowse/mybrowse.rc
+   + samples/mybrowse/agenda.ico
+   + samples/mybrowse/br_ok.bmp
+   + samples/mybrowse/br_no.bmp
+   + samples/mybrowse/images/memo.bmp
+   + samples/mybrowse/images/fech.bmp
+   + samples/mybrowse/images/char.bmp
+   + samples/mybrowse/images/num.bmp
+   + samples/mybrowse/images/logic.bmp
+   + samples/mybrowse/images/dele.bmp
+     + Added as a samples.
 
 2013-07-29 22:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * resources/oohg_bcc.rc
