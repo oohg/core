@@ -1,5 +1,5 @@
 //
-// $Id: oohg_bcc.rc,v 1.1 2011-08-05 18:25:18 fyurisich Exp $
+// $Id: oohg_bcc.rc,v 1.2 2013-07-30 01:51:18 fyurisich Exp $
 //
 // Use CompileRes.bat to build oohg.res from this file using Borland Compiler
 
@@ -29,7 +29,6 @@ ZZZ_AAAWINDOW           ICON            WINDOW.ICO
 ZZZ_LED_ON              ICON            LED_ON.ICO
 ZZZ_LED_OFF             ICON            LED_OFF.ICO
 
-
 // HBPRINT PRINT PREVIEW IMAGE BUTTONS
 
 zzz_printicon           ICON    print.ico
@@ -44,8 +43,6 @@ hbprint_zoomin          BITMAP  hbprint_zoomin.bmp
 hbprint_zoomout         BITMAP  hbprint_zoomout.bmp
 hbprint_option          BITMAP  hbprint_option.bmp
 
-
-
 // MINIPRINT PRINT PREVIEW IMAGE BUTTONS
 
 HP_END          BITMAP  HP_END.BMP
@@ -59,3 +56,8 @@ HP_CLOSE        BITMAP  HP_CLOSE.BMP
 HP_SAVE         BITMAP  HP_SAVE.BMP
 HP_THUMBNAIL    BITMAP  hp_thumbnail.bmp
 HP_GLASS        CURSOR  HP_GLASS.CUR
+
+// IMAGES FOR TGRIDCONTROL BUTTONS
+
+EDIT_OK_16      BITMAP  EDIT_OK_16.BMP
+EDIT_CANCEL_16  BITMAP  EDIT_CANCEL_16.BMP

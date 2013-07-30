@@ -1,5 +1,5 @@
 //
-// $Id: oohg.rc,v 1.6 2013-07-10 15:42:28 migsoft Exp $
+// $Id: oohg.rc,v 1.7 2013-07-30 01:51:17 fyurisich Exp $
 //
 // Use this file with MinGW Compiler
 
@@ -38,7 +38,6 @@ ZZZ_AAAWINDOW           ICON            oohgpath\WINDOW.ICO
 ZZZ_LED_ON              ICON            oohgpath\LED_ON.ICO
 ZZZ_LED_OFF             ICON            oohgpath\LED_OFF.ICO
 
-
 // HBPRINT PRINT PREVIEW IMAGE BUTTONS
 
 zzz_printicon           ICON    oohgpath\print.ico
@@ -53,8 +52,6 @@ hbprint_zoomin          BITMAP  oohgpath\hbprint_zoomin.bmp
 hbprint_zoomout         BITMAP  oohgpath\hbprint_zoomout.bmp
 hbprint_option          BITMAP  oohgpath\hbprint_option.bmp
 
-
-
 // MINIPRINT PRINT PREVIEW IMAGE BUTTONS
 
 HP_END          BITMAP  oohgpath\HP_END.BMP
@@ -68,3 +65,8 @@ HP_CLOSE        BITMAP  oohgpath\HP_CLOSE.BMP
 HP_SAVE         BITMAP  oohgpath\HP_SAVE.BMP
 HP_THUMBNAIL    BITMAP  oohgpath\hp_thumbnail.bmp
 HP_GLASS        CURSOR  oohgpath\HP_GLASS.CUR
+
+// IMAGES FOR TGRIDCONTROL BUTTONS
+
+EDIT_OK_16      BITMAP  oohgpath\EDIT_OK_16.BMP
+EDIT_CANCEL_16  BITMAP  oohgpath\EDIT_CANCEL_16.BMP

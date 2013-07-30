@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.205 2013-07-30 01:28:32 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.206 2013-07-30 01:51:18 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -3756,8 +3756,8 @@ CLASS TGridControlTextBox FROM TGridControl
    DATA cType        INIT ""
    DATA nOnFocusPos  INIT NIL
    DATA lButtons     INIT .F.
-   DATA cImageOK     INIT 'EDIT_OK_16.BMP'
-   DATA cImageCancel INIT 'EDIT_CANCEL_16.BMP'
+   DATA cImageOK     INIT 'EDIT_OK_16'
+   DATA cImageCancel INIT 'EDIT_CANCEL_16'
 
    METHOD New
    METHOD CreateWindow
