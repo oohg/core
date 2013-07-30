@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.1120 2013-07-27 02:08:17 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1121 2013-07-30 01:28:32 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,7 +7,32 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2013-07-26 23:08 UTC-0400 MigSoft <migsoft@oohg.org>
+2013-07-29 22:28 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     + Previous entry corrected.
+   * ./compile_MINGW.bat
+     * Do not delete ./resources/_oohg_resconfig.h after building
+       because this file is part of the CVS.
+   * source/h_textbox.prg
+     * One comment moved to a better place.
+     + Added new value -3 to ::nOnFocusPos so the control selectes
+       only the non-blank chars of the text.
+   * source/h_grid.prg
+     + Added DATAs bOk and bCancel to TGridControl().
+     * Changed TGridControl:CreateWindow() to save accept/cancel blocks.
+     + Added DATAs nOnFocusPos, lButtons, cImageOK and cImageCancel to
+       TGridControlTextBox().
+     + Added new parameter nFocusPos to method TGridControlTextBox:New().
+       This parameter adds support for FOCUSEDPOS clause.
+     + Added new parameter lButtons to method TGridControlTextBox:New().
+       When .T. two buttons are added to the control to accept/cancel
+       the edition.
+     + Added new parameter aImages to method TGridControlTextBox:New().
+       This parameters specifies the images to use in the buttons.
+     Usage: in COLUMNCONTROLS clause specify
+     {'TEXTBOX', cType, cPicture, cFunction, nOnFocusPos, lButtons, aImages}
+
+2013-07-26 23:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/c_dialogs.c
      ! C_PUTFILE generates RTE when fifth parameter is not a string.
      * Restored default behaviour: user input is returned as is,

@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.87 2013-07-15 01:47:09 fyurisich Exp $
+ * $Id: h_textbox.prg,v 1.88 2013-07-30 01:28:33 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -119,15 +119,6 @@ CLASS TText FROM TLabel
    DATA nInsertType     INIT 0
    DATA oButton1        INIT Nil
    DATA oButton2        INIT Nil
-/*
- * 0 = Default: each time the control gots focus, it's set to
- *     overwrite for TTextPicture and to insert for the rest.
- *
- * 1 = Same as default for the first time the control gots focus,
- *     the next times the control got focus, it remembers the previous value.
- *
- * 2 = The state of the INSERT key is used always, instead of lInsert.
- */
 
    METHOD Define
    METHOD Define2
@@ -349,7 +340,10 @@ METHOD SetFocus() CLASS TText
 *------------------------------------------------------------------------------*
 Local uRet, nLen
    uRet := ::Super:SetFocus()
-   If ::nOnFocusPos == -2
+   If ::nOnFocusPos == -3
+      nLen := Len( ::Caption )
+      SendMessage( ::hWnd, EM_SETSEL, 0, nLen )
+   ElseIf ::nOnFocusPos == -2
       SendMessage( ::hWnd, EM_SETSEL, 0, -1 )
    ElseIf ::nOnFocusPos == -1
       nLen := Len( ::Caption )
@@ -490,6 +484,15 @@ Return ::Super:Events_Command( wParam )
 *------------------------------------------------------------------------------*
 METHOD InsertStatus( lValue ) CLASS TText
 *------------------------------------------------------------------------------*
+/*
+ * 0 = Default: each time the control gots focus, it's set to
+ *     overwrite for TTextPicture and to insert for the rest.
+ *
+ * 1 = Same as default for the first time the control gots focus,
+ *     the next times the control got focus, it remembers the previous value.
+ *
+ * 2 = The state of the INSERT key is used always, instead of lInsert.
+ */
    If HB_IsLogical( lValue )
       // Set
       If ::nInsertType != 2

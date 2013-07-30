@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: compile_MINGW.BAT,v 1.22 2013-07-23 19:46:41 migsoft Exp $
+rem $Id: compile_MINGW.BAT,v 1.23 2013-07-30 01:28:32 fyurisich Exp $
 rem
 cls
 
@@ -112,7 +112,7 @@ del %1.c
 del %1.o
 if exist %ooHG_INSTALL%\resources\_temp.rc del %ooHG_INSTALL%\resources\_temp.rc
 if exist %ooHG_INSTALL%\resources\_temp.o del %ooHG_INSTALL%\resources\_temp.o
-if exist %ooHG_INSTALL%\resources\_oohg_resconfig.h del %ooHG_INSTALL%\resources\_oohg_resconfig.h
+rem if exist %ooHG_INSTALL%\resources\_oohg_resconfig.h del %ooHG_INSTALL%\resources\_oohg_resconfig.h
 set PATH=%TPATH%
 set TPATH=
 

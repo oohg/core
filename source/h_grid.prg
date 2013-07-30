@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.204 2013-07-14 22:46:54 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.205 2013-07-30 01:28:32 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -3553,7 +3553,7 @@ Local oGridControl, aEdit2, cControl
    oGridControl := Nil
    If HB_IsArray( aEditControl ) .AND. Len( aEditControl ) >= 1 .AND. ValType( aEditControl[ 1 ] ) $ "CM"
       aEdit2 := aClone( aEditControl )
-      aSize( aEdit2, 4 )
+      aSize( aEdit2, 8 )
       cControl := Upper( AllTrim( aEditControl[ 1 ] ) )
       Do Case
          Case cControl == "MEMO"
@@ -3569,7 +3569,7 @@ Local oGridControl, aEdit2, cControl
          Case cControl == "CHECKBOX"
             oGridControl := TGridControlCheckBox():New( aEdit2[ 2 ], aEdit2[ 3 ] )
          Case cControl == "TEXTBOX"
-            oGridControl := TGridControlTextBox():New( aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 2 ] )
+            oGridControl := TGridControlTextBox():New( aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 2 ], aEdit2[ 5 ], aEdit2[ 6 ], aEdit2[ 7 ], aEdit2[ 8 ] )
          Case cControl == "IMAGELIST"
             oGridControl := TGridControlImageList():New( oGrid )
          Case cControl == "IMAGEDATA"
@@ -3648,6 +3648,8 @@ CLASS TGridControl
    DATA cValidMessage         INIT Nil
    DATA nDefWidth             INIT 140
    DATA nDefHeight            INIT 24
+   DATA bCancel               INIT Nil
+   DATA bOk                   INIT Nil
 
    METHOD New                 BLOCK { |Self| Self }
    METHOD CreateWindow
@@ -3670,8 +3672,11 @@ Local lRet := .F., i
           MODAL NOSIZE NOCAPTION ;
           FONT cFontName SIZE nFontSize
 
-          ON KEY RETURN OF ( ::oWindow ) ACTION ( lRet := ::Valid() )
-          ON KEY ESCAPE OF ( ::oWindow ) ACTION ( ::oWindow:Release() )
+          ::bCancel := { || ::oWindow:Release() }
+          ::bOk     := { || lRet := ::Valid() }
+
+          ON KEY RETURN OF ( ::oWindow ) ACTION EVAL( ::bOk )
+          ON KEY ESCAPE OF ( ::oWindow ) ACTION EVAL( ::bCancel )
 
           If HB_IsArray( aKeys )
              For i := 1 To Len( aKeys )
@@ -3747,8 +3752,12 @@ Return ::oControl:OnLostFocus
 *-----------------------------------------------------------------------------*
 CLASS TGridControlTextBox FROM TGridControl
 *-----------------------------------------------------------------------------*
-   DATA cMask INIT ""
-   DATA cType INIT ""
+   DATA cMask        INIT ""
+   DATA cType        INIT ""
+   DATA nOnFocusPos  INIT NIL
+   DATA lButtons     INIT .F.
+   DATA cImageOK     INIT 'EDIT_OK_16.BMP'
+   DATA cImageCancel INIT 'EDIT_CANCEL_16.BMP'
 
    METHOD New
    METHOD CreateWindow
@@ -3757,7 +3766,10 @@ CLASS TGridControlTextBox FROM TGridControl
    METHOD GridValue
 ENDCLASS
 
-METHOD New( cPicture, cFunction, cType ) CLASS TGridControlTextBox
+/*
+{'TEXTBOX',cType,cPicture,cFunction,nOnFocusPos,lButtons}
+*/
+METHOD New( cPicture, cFunction, cType, nOnFocusPos, lButtons, aImages ) CLASS TGridControlTextBox
    ::cMask := ""
    If ValType( cPicture ) $ "CM" .AND. ! Empty( cPicture )
       ::cMask := cPicture
@@ -3779,6 +3791,17 @@ METHOD New( cPicture, cFunction, cType ) CLASS TGridControlTextBox
    ElseIf ::cType == "L" .AND. Empty( ::cMask )
       ::cMask := "L"
    EndIf
+
+   ASSIGN ::nOnFocusPos VALUE nOnFocusPos TYPE "N"
+   ASSIGN ::lButtons    VALUE lButtons    TYPE "L"
+
+   If HB_IsArray( aImages )
+     If Len( aImages ) < 2
+       aSize( aImages, 2 )
+     EndIf
+     DEFAULT ::cImageCancel TO aImages[ 1 ]
+     DEFAULT ::cImageOk     TO aImages[ 2 ]
+   EndIf
 Return Self
 
 METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aKeys ) CLASS TGridControlTextBox
@@ -3789,13 +3812,32 @@ METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGrid
       uValue := ::Str2Val( uValue )
    EndIf
    If ! Empty( ::cMask )
-      @ nRow,nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue INPUTMASK ::cMask
+      If ::lButtons
+        @ nRow,nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue INPUTMASK ::cMask FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bCancel ) ACTION2 EVAL( ::bOK ) IMAGE {::cImageCancel, ::cImageOk}
+      Else
+        @ nRow,nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue INPUTMASK ::cMask FOCUSEDPOS ::nOnFocusPos
+      EndIf
    ElseIf ::cType == "N"
-      @ nRow,nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue NUMERIC
+      If ::lButtons
+        @ nRow,nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue NUMERIC FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bCancel ) ACTION2 EVAL( ::bOK ) IMAGE {::cImageCancel, ::cImageOk}
+      Else
+        @ nRow,nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue NUMERIC FOCUSEDPOS ::nOnFocusPos
+      EndIf
    ElseIf ::cType == "D"
-      @ nRow,nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue DATE
+      If ::lButtons
+        @ nRow,nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue DATE FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bCancel ) ACTION2 EVAL( ::bOK ) IMAGE {::cImageCancel, ::cImageOk}
+      Else
+        @ nRow,nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue DATE FOCUSEDPOS ::nOnFocusPos
+      EndIf
    Else
-      @ nRow,nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue
+      If ::lButtons
+        @ nRow,nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bCancel ) ACTION2 EVAL( ::bOK ) IMAGE {::cImageCancel, ::cImageOk}
+      Else
+        @ nRow,nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue FOCUSEDPOS ::nOnFocusPos
+      EndIf
+   EndIf
+   If ::lButtons
+      ::oControl:oButton1:TabIndex := 2
    EndIf
 Return ::oControl
 
