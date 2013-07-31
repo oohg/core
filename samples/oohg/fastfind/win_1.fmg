@@ -1,0 +1,119 @@
+*HMGS-MINIGUI-IDE Two-Way Form Designer Generated Code
+*OPEN SOURCE PROJECT 2005-2006 Walter Formigoni http://sourceforge.net/projects/hmgs-minigui/
+
+DEFINE WINDOW TEMPLATE AT 169 , 233 WIDTH 548 HEIGHT 379 TITLE "Grid FastFind Demo    ||  Adaptacíón de MigSoft  ||" ICON "FIND" MAIN NOMAXIMIZE NOSIZE CURSOR NIL ON INIT Captura() ON RELEASE NIL ON INTERACTIVECLOSE NIL ON MOUSECLICK NIL ON MOUSEDRAG NIL ON MOUSEMOVE NIL ON SIZE NIL ON MAXIMIZE NIL ON MINIMIZE NIL ON PAINT NIL BACKCOLOR Nil NOTIFYICON NIL NOTIFYTOOLTIP NIL ON NOTIFYCLICK NIL ON GOTFOCUS NIL ON LOSTFOCUS NIL ON SCROLLUP NIL ON SCROLLDOWN NIL ON SCROLLLEFT NIL ON SCROLLRIGHT NIL ON HSCROLLBOX NIL ON VSCROLLBOX NIL
+
+     DEFINE GRID Grid_1
+            ROW    30
+            COL    30
+            WIDTH  475
+            HEIGHT 230
+            ITEMS Nil
+            VALUE 1
+            WIDTHS { 80, 375 - IF(IsXPThemeActive(), 1, 0) }
+            HEADERS {'Imputación','Nombre'}
+            FONTNAME "Arial"
+            FONTSIZE 9
+            TOOLTIP "Doble Click Muestra Contenido"
+            ONCHANGE Nil
+            ONGOTFOCUS Nil
+            ONLOSTFOCUS Nil
+            FONTBOLD .F.
+            FONTITALIC .F.
+            FONTUNDERLINE .F.
+            FONTSTRIKEOUT .F.
+            ONDBLCLICK VerItem()
+            ONHEADCLICK Nil
+            ONQUERYDATA Nil
+            MULTISELECT .F.
+            ALLOWEDIT .F.
+            VIRTUAL .F.
+            DYNAMICBACKCOLOR Nil
+            DYNAMICFORECOLOR Nil
+            COLUMNCONTROLS Nil
+            NOLINES .F.
+            HELPID Nil
+            IMAGE Nil
+            JUSTIFY { BROWSE_JTFY_RIGHT, BROWSE_JTFY_LEFT }
+            ITEMCOUNT Nil
+            BACKCOLOR {255,255,225}
+            FONTCOLOR {0,0,0}
+     END GRID  
+
+     DEFINE LABEL Label_1
+            ROW    294
+            COL    30
+            WIDTH  70
+            HEIGHT 20
+            VALUE "Buscar:"
+            FONTNAME "MS SANS SERIF"
+            FONTSIZE 9
+            TOOLTIP ""
+            FONTBOLD .T.
+            FONTITALIC .F.
+            FONTUNDERLINE .F.
+            FONTSTRIKEOUT .F.
+            HELPID Nil
+            VISIBLE .T.
+            TRANSPARENT .T.
+            ACTION Nil
+            AUTOSIZE  .F.
+            BACKCOLOR NIL
+            FONTCOLOR {0,64,128}
+     END LABEL  
+
+     DEFINE TEXTBOX Text_1
+            ROW    290
+            COL    100
+            WIDTH  280
+            HEIGHT 24
+            FONTNAME "MS SANS SERIF"
+            FONTSIZE 10
+            TOOLTIP "Digite Nombre a Buscar"
+            ONCHANGE { || Captura() }
+            ONGOTFOCUS This.BackColor := {211,237,250}
+            ONLOSTFOCUS This.BackColor := {255,255,225}
+            FONTBOLD  .T.
+            FONTITALIC .F.
+            FONTUNDERLINE .F.
+            FONTSTRIKEOUT .F.
+            ONENTER Nil
+            HELPID Nil
+            TABSTOP .T.
+            VISIBLE .T.
+            READONLY .F.
+            RIGHTALIGN .F.
+            BACKCOLOR {255,255,255}
+            FONTCOLOR NIL
+            INPUTMASK NIL
+            FORMAT NIL
+            VALUE  ""
+     END TEXTBOX 
+
+     DEFINE LABEL Label_2
+            ROW    294
+            COL    390
+            WIDTH  140
+            HEIGHT 20
+            VALUE "Nombre de Cuenta"
+            FONTNAME "Arial"
+            FONTSIZE 9
+            TOOLTIP ""
+            FONTBOLD .T.
+            FONTITALIC .F.
+            FONTUNDERLINE .F.
+            FONTSTRIKEOUT .F.
+            HELPID Nil
+            VISIBLE .T.
+            TRANSPARENT .F.
+            ACTION Nil
+            AUTOSIZE  .F.
+            BACKCOLOR NIL
+            FONTCOLOR {0,64,128}
+     END LABEL  
+
+     ON KEY ESCAPE ACTION ThisWindow.Release()
+
+END WINDOW
+
+

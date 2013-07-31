@@ -1,0 +1,1112 @@
+* Harbour MiniGUI IDE Two-Way Form Designer Generated Code
+* (c)2004-2006 Roberto Lopez <roblez@ciudad.com.ar>
+
+DEFINE WINDOW TEMPLATE AT 96 , 73 WIDTH 688 HEIGHT 461 VIRTUAL WIDTH Nil VIRTUAL HEIGHT Nil TITLE "Graphics by MigSoft" ICON "Barra_1" MAIN CURSOR NIL ON INIT Nil ON RELEASE Nil ON INTERACTIVECLOSE Nil ON MOUSECLICK Nil ON MOUSEDRAG Nil ON MOUSEMOVE Nil ON SIZE Nil ON MAXIMIZE Nil ON MINIMIZE Nil ON PAINT Nil BACKCOLOR {255,255,255} NOTIFYICON NIL NOTIFYTOOLTIP NIL ON NOTIFYCLICK Nil ON GOTFOCUS Nil ON LOSTFOCUS Nil ON SCROLLUP Nil ON SCROLLDOWN Nil ON SCROLLLEFT Nil ON SCROLLRIGHT Nil ON HSCROLLBOX Nil ON VSCROLLBOX Nil
+
+    DEFINE LABEL Label_1
+        ROW    150
+        COL    130
+        WIDTH  120
+        HEIGHT 24
+        VALUE "SerieNames"
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        FONTBOLD .T.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        HELPID NIL
+        VISIBLE .T.
+        TRANSPARENT .F.
+        ACTION NIL
+        AUTOSIZE .F.
+        BACKCOLOR {255,255,255}
+        FONTCOLOR NIL
+        CENTERALIGN .T. 
+    END LABEL
+
+    DEFINE TEXTBOX Text_20
+        ROW    30
+        COL    280
+        WIDTH  260
+        HEIGHT 24
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        ONCHANGE Nil
+        ONGOTFOCUS Nil
+        ONLOSTFOCUS Nil
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        ONENTER Nil
+        HELPID Nil
+        TABSTOP .T.
+        VISIBLE .T.
+        READONLY .F.
+        RIGHTALIGN .F.
+        BACKCOLOR {192,192,192}
+        FONTCOLOR NIL
+        INPUTMASK Nil
+        FORMAT Nil
+        VALUE "Ventas"
+    END TEXTBOX
+
+    DEFINE TEXTBOX Text_17
+        ROW    100
+        COL    280
+        WIDTH  80
+        HEIGHT 24
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        ONCHANGE Nil
+        ONGOTFOCUS Nil
+        ONLOSTFOCUS Nil
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        ONENTER Nil
+        HELPID Nil
+        TABSTOP .T.
+        VISIBLE .T.
+        READONLY .F.
+        RIGHTALIGN .F.
+        BACKCOLOR {192,192,192}
+        FONTCOLOR NIL
+        INPUTMASK Nil
+        FORMAT Nil
+        VALUE "Enero"
+    END TEXTBOX
+
+    DEFINE TEXTBOX Text_18
+        ROW    100
+        COL    370
+        WIDTH  80
+        HEIGHT 24
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        ONCHANGE Nil
+        ONGOTFOCUS Nil
+        ONLOSTFOCUS Nil
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        ONENTER Nil
+        HELPID Nil
+        TABSTOP .T.
+        VISIBLE .T.
+        READONLY .F.
+        RIGHTALIGN .F.
+        BACKCOLOR {192,192,192}
+        FONTCOLOR NIL
+        INPUTMASK Nil
+        FORMAT Nil
+        VALUE "Febrero"
+    END TEXTBOX
+
+    DEFINE TEXTBOX Text_19
+        ROW    100
+        COL    460
+        WIDTH  80
+        HEIGHT 24
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        ONCHANGE Nil
+        ONGOTFOCUS Nil
+        ONLOSTFOCUS Nil
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        ONENTER Nil
+        HELPID Nil
+        TABSTOP .T.
+        VISIBLE .T.
+        READONLY .F.
+        RIGHTALIGN .F.
+        BACKCOLOR {192,192,192}
+        FONTCOLOR NIL
+        INPUTMASK Nil
+        FORMAT Nil
+        VALUE "Marzo"
+    END TEXTBOX
+
+    DEFINE TEXTBOX Text_1
+        ROW    180
+        COL    130
+        WIDTH  120
+        HEIGHT 24
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        ONCHANGE NIL
+        ONGOTFOCUS NIL
+        ONLOSTFOCUS NIL
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        ONENTER NIL
+        HELPID NIL
+        TABSTOP .T.
+        VISIBLE .T.
+        READONLY .F.
+        RIGHTALIGN .F.
+        BACKCOLOR {192,192,192}
+        FONTCOLOR NIL
+        INPUTMASK Nil
+        FORMAT Nil
+        VALUE "2003"
+    END TEXTBOX
+
+    DEFINE TEXTBOX Text_5
+        ROW    180
+        COL    280
+        WIDTH  80
+        HEIGHT 24
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        ONCHANGE NIL
+        ONGOTFOCUS NIL
+        ONLOSTFOCUS NIL
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        ONENTER NIL
+        HELPID NIL
+        TABSTOP .T.
+        VISIBLE .T.
+        READONLY .F.
+        RIGHTALIGN .T.
+        BACKCOLOR {192,192,192}
+        FONTCOLOR NIL
+        INPUTMASK Nil
+        FORMAT Nil
+        NUMERIC .T. 
+        VALUE 50
+    END TEXTBOX
+
+    DEFINE TEXTBOX Text_9
+        ROW    180
+        COL    370
+        WIDTH  80
+        HEIGHT 24
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        ONCHANGE NIL
+        ONGOTFOCUS NIL
+        ONLOSTFOCUS NIL
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        ONENTER NIL
+        HELPID NIL
+        TABSTOP .T.
+        VISIBLE .T.
+        READONLY .F.
+        RIGHTALIGN .T.
+        BACKCOLOR {192,192,192}
+        FONTCOLOR NIL
+        INPUTMASK Nil
+        FORMAT Nil
+        NUMERIC .T. 
+        VALUE 30
+    END TEXTBOX
+
+    DEFINE TEXTBOX Text_13
+        ROW    180
+        COL    460
+        WIDTH  80
+        HEIGHT 24
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        ONCHANGE NIL
+        ONGOTFOCUS NIL
+        ONLOSTFOCUS NIL
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        ONENTER NIL
+        HELPID NIL
+        TABSTOP .T.
+        VISIBLE .T.
+        READONLY .F.
+        RIGHTALIGN .T.
+        BACKCOLOR {192,192,192}
+        FONTCOLOR NIL
+        INPUTMASK Nil
+        FORMAT Nil
+        NUMERIC .T. 
+        VALUE 10
+    END TEXTBOX
+
+    DEFINE TEXTBOX Text_2
+        ROW    210
+        COL    130
+        WIDTH  120
+        HEIGHT 24
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        ONCHANGE NIL
+        ONGOTFOCUS NIL
+        ONLOSTFOCUS NIL
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        ONENTER NIL
+        HELPID NIL
+        TABSTOP .T.
+        VISIBLE .T.
+        READONLY .F.
+        RIGHTALIGN .F.
+        BACKCOLOR {192,192,192}
+        FONTCOLOR NIL
+        INPUTMASK Nil
+        FORMAT Nil
+        VALUE "2004"
+    END TEXTBOX
+
+    DEFINE TEXTBOX Text_6
+        ROW    210
+        COL    280
+        WIDTH  80
+        HEIGHT 24
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        ONCHANGE NIL
+        ONGOTFOCUS NIL
+        ONLOSTFOCUS NIL
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        ONENTER NIL
+        HELPID NIL
+        TABSTOP .T.
+        VISIBLE .T.
+        READONLY .F.
+        RIGHTALIGN .T.
+        BACKCOLOR {192,192,192}
+        FONTCOLOR NIL
+        INPUTMASK Nil
+        FORMAT Nil
+        NUMERIC .T. 
+        VALUE 90
+    END TEXTBOX
+
+    DEFINE TEXTBOX Text_10
+        ROW    210
+        COL    370
+        WIDTH  80
+        HEIGHT 24
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        ONCHANGE NIL
+        ONGOTFOCUS NIL
+        ONLOSTFOCUS NIL
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        ONENTER NIL
+        HELPID NIL
+        TABSTOP .T.
+        VISIBLE .T.
+        READONLY .F.
+        RIGHTALIGN .T.
+        BACKCOLOR {192,192,192}
+        FONTCOLOR NIL
+        INPUTMASK Nil
+        FORMAT Nil
+        NUMERIC .T. 
+        VALUE 50
+    END TEXTBOX
+
+    DEFINE TEXTBOX Text_14
+        ROW    210
+        COL    460
+        WIDTH  80
+        HEIGHT 24
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        ONCHANGE NIL
+        ONGOTFOCUS NIL
+        ONLOSTFOCUS NIL
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        ONENTER NIL
+        HELPID NIL
+        TABSTOP .T.
+        VISIBLE .T.
+        READONLY .F.
+        RIGHTALIGN .T.
+        BACKCOLOR {192,192,192}
+        FONTCOLOR NIL
+        INPUTMASK Nil
+        FORMAT Nil
+        NUMERIC .T. 
+        VALUE 20
+    END TEXTBOX
+
+    DEFINE TEXTBOX Text_3
+        ROW    240
+        COL    130
+        WIDTH  120
+        HEIGHT 24
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        ONCHANGE NIL
+        ONGOTFOCUS NIL
+        ONLOSTFOCUS NIL
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        ONENTER NIL
+        HELPID NIL
+        TABSTOP .T.
+        VISIBLE .T.
+        READONLY .F.
+        RIGHTALIGN .F.
+        BACKCOLOR {192,192,192}
+        FONTCOLOR NIL
+        INPUTMASK Nil
+        FORMAT Nil
+        VALUE "2005"
+    END TEXTBOX
+
+    DEFINE TEXTBOX Text_7
+        ROW    240
+        COL    280
+        WIDTH  80
+        HEIGHT 24
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        ONCHANGE NIL
+        ONGOTFOCUS NIL
+        ONLOSTFOCUS NIL
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        ONENTER NIL
+        HELPID NIL
+        TABSTOP .T.
+        VISIBLE .T.
+        READONLY .F.
+        RIGHTALIGN .T.
+        BACKCOLOR {192,192,192}
+        FONTCOLOR NIL
+        INPUTMASK Nil
+        FORMAT Nil
+        NUMERIC .T. 
+        VALUE 20
+    END TEXTBOX
+
+    DEFINE TEXTBOX Text_11
+        ROW    240
+        COL    370
+        WIDTH  80
+        HEIGHT 24
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        ONCHANGE NIL
+        ONGOTFOCUS NIL
+        ONLOSTFOCUS NIL
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        ONENTER NIL
+        HELPID NIL
+        TABSTOP .T.
+        VISIBLE .T.
+        READONLY .F.
+        RIGHTALIGN .T.
+        BACKCOLOR {192,192,192}
+        FONTCOLOR NIL
+        INPUTMASK Nil
+        FORMAT Nil
+        NUMERIC .T. 
+        VALUE 50
+    END TEXTBOX
+
+    DEFINE TEXTBOX Text_15
+        ROW    240
+        COL    460
+        WIDTH  80
+        HEIGHT 24
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        ONCHANGE NIL
+        ONGOTFOCUS NIL
+        ONLOSTFOCUS NIL
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        ONENTER NIL
+        HELPID NIL
+        TABSTOP .T.
+        VISIBLE .T.
+        READONLY .F.
+        RIGHTALIGN .T.
+        BACKCOLOR {192,192,192}
+        FONTCOLOR NIL
+        INPUTMASK Nil
+        FORMAT Nil
+        NUMERIC .T. 
+        VALUE 90
+    END TEXTBOX
+
+    DEFINE TEXTBOX Text_4
+        ROW    270
+        COL    130
+        WIDTH  120
+        HEIGHT 24
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        ONCHANGE NIL
+        ONGOTFOCUS NIL
+        ONLOSTFOCUS NIL
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        ONENTER NIL
+        HELPID NIL
+        TABSTOP .T.
+        VISIBLE .T.
+        READONLY .F.
+        RIGHTALIGN .F.
+        BACKCOLOR {192,192,192}
+        FONTCOLOR NIL
+        INPUTMASK Nil
+        FORMAT Nil
+        VALUE "2006"
+    END TEXTBOX
+
+    DEFINE TEXTBOX Text_8
+        ROW    270
+        COL    280
+        WIDTH  80
+        HEIGHT 24
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        ONCHANGE NIL
+        ONGOTFOCUS NIL
+        ONLOSTFOCUS NIL
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        ONENTER NIL
+        HELPID NIL
+        TABSTOP .T.
+        VISIBLE .T.
+        READONLY .F.
+        RIGHTALIGN .T.
+        BACKCOLOR {192,192,192}
+        FONTCOLOR NIL
+        INPUTMASK Nil
+        FORMAT Nil
+        NUMERIC .T. 
+        VALUE 100
+    END TEXTBOX
+
+    DEFINE TEXTBOX Text_12
+        ROW    270
+        COL    370
+        WIDTH  80
+        HEIGHT 24
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        ONCHANGE NIL
+        ONGOTFOCUS NIL
+        ONLOSTFOCUS NIL
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        ONENTER NIL
+        HELPID NIL
+        TABSTOP .T.
+        VISIBLE .T.
+        READONLY .F.
+        RIGHTALIGN .T.
+        BACKCOLOR {192,192,192}
+        FONTCOLOR NIL
+        INPUTMASK Nil
+        FORMAT Nil
+        NUMERIC .T. 
+        VALUE 40
+    END TEXTBOX
+
+    DEFINE TEXTBOX Text_16
+        ROW    270
+        COL    460
+        WIDTH  80
+        HEIGHT 24
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        ONCHANGE NIL
+        ONGOTFOCUS NIL
+        ONLOSTFOCUS NIL
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        ONENTER NIL
+        HELPID NIL
+        TABSTOP .T.
+        VISIBLE .T.
+        READONLY .F.
+        RIGHTALIGN .T.
+        BACKCOLOR {192,192,192}
+        FONTCOLOR NIL
+        INPUTMASK Nil
+        FORMAT Nil
+        NUMERIC .T. 
+        VALUE 80
+    END TEXTBOX
+
+    DEFINE LABEL Label_5
+        ROW    180
+        COL    560
+        WIDTH  50
+        HEIGHT 24
+        VALUE "Serie 1"
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP "Click cambia de color"
+        FONTBOLD .T.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        HELPID NIL
+        VISIBLE .T.
+        TRANSPARENT .F.
+        ACTION This.FontColor := GetColor()
+        AUTOSIZE .F.
+        BACKCOLOR {255,255,255}
+        FONTCOLOR {255,0,0}
+        CENTERALIGN .T. 
+    END LABEL
+
+    DEFINE LABEL Label_6
+        ROW    210
+        COL    560
+        WIDTH  50
+        HEIGHT 24
+        VALUE "Serie 2"
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP "Click cambia de color"
+        FONTBOLD .T.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        HELPID NIL
+        VISIBLE .T.
+        TRANSPARENT .F.
+        ACTION This.FontColor := GetColor()
+        AUTOSIZE .F.
+        BACKCOLOR {255,255,255}
+        FONTCOLOR {128,0,0}
+        CENTERALIGN .T. 
+    END LABEL
+
+    DEFINE LABEL Label_7
+        ROW    240
+        COL    560
+        WIDTH  50
+        HEIGHT 24
+        VALUE "Serie 3"
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP "Click cambia de color"
+        FONTBOLD .T.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        HELPID NIL
+        VISIBLE .T.
+        TRANSPARENT .F.
+        ACTION This.FontColor := GetColor()
+        AUTOSIZE .F.
+        BACKCOLOR {255,255,255}
+        FONTCOLOR {0,87,130}
+        CENTERALIGN .T. 
+    END LABEL
+
+    DEFINE LABEL Label_8
+        ROW    270
+        COL    560
+        WIDTH  50
+        HEIGHT 24
+        VALUE "Serie 4"
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP "Click cambia de color"
+        FONTBOLD .T.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        HELPID NIL
+        VISIBLE .T.
+        TRANSPARENT .F.
+        ACTION This.FontColor := GetColor()
+        AUTOSIZE .F.
+        BACKCOLOR {255,255,255}
+        FONTCOLOR {255,128,0}
+        CENTERALIGN .T. 
+    END LABEL
+
+    DEFINE BUTTON Button_1
+        ROW    372
+        COL    280
+        WIDTH  100
+        HEIGHT 28
+        CAPTION "Histogram"
+        ACTION Presenta(0)
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        ONGOTFOCUS NIL
+        ONLOSTFOCUS NIL
+        HELPID NIL
+        FLAT .F.
+        TABSTOP .T.
+        VISIBLE .T.
+        TRANSPARENT .F.
+        PICTURE Nil
+    END BUTTON
+
+    DEFINE BUTTON Button_2
+        ROW    372
+        COL    440
+        WIDTH  100
+        HEIGHT 28
+        CAPTION "Exit"
+        ACTION Grafico.Release
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        ONGOTFOCUS NIL
+        ONLOSTFOCUS NIL
+        HELPID NIL
+        FLAT .F.
+        TABSTOP .T.
+        VISIBLE .T.
+        TRANSPARENT .F.
+        PICTURE Nil
+    END BUTTON
+
+    DEFINE LABEL Label_9
+        ROW    80
+        COL    380
+        WIDTH  50
+        HEIGHT 20
+        VALUE "YValues"
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        FONTBOLD .T.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        HELPID Nil
+        VISIBLE .T.
+        TRANSPARENT .F.
+        ACTION Nil
+        AUTOSIZE .F.
+        BACKCOLOR {255,255,255}
+        FONTCOLOR NIL
+    END LABEL
+
+    DEFINE LABEL Label_3
+        ROW    150
+        COL    290
+        WIDTH  60
+        HEIGHT 24
+        VALUE "Column 1"
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP "Click cambia de color"
+        FONTBOLD .T.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        HELPID Nil
+        VISIBLE .T.
+        TRANSPARENT .F.
+        ACTION This.FontColor := GetColor()
+        AUTOSIZE .F.
+        BACKCOLOR {255,255,255}
+        FONTCOLOR {0,128,255}
+    END LABEL
+
+    DEFINE LABEL Label_4
+        ROW    150
+        COL    380
+        WIDTH  60
+        HEIGHT 24
+        VALUE "Column 2"
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP "Click cambia de color"
+        FONTBOLD .T.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        HELPID Nil
+        VISIBLE .T.
+        TRANSPARENT .F.
+        ACTION This.FontColor := GetColor()
+        AUTOSIZE .F.
+        BACKCOLOR {255,255,255}
+        FONTCOLOR {0,128,128}
+    END LABEL
+
+    DEFINE LABEL Label_11
+        ROW    150
+        COL    470
+        WIDTH  60
+        HEIGHT 24
+        VALUE "Column 3"
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP "Click cambia de color"
+        FONTBOLD .T.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        HELPID Nil
+        VISIBLE .T.
+        TRANSPARENT .F.
+        ACTION This.FontColor := GetColor()
+        AUTOSIZE .F.
+        BACKCOLOR {255,255,255}
+        FONTCOLOR {255,0,128}
+    END LABEL
+
+    DEFINE LABEL Label_10
+        ROW    150
+        COL    560
+        WIDTH  50
+        HEIGHT 24
+        VALUE "Color"
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        FONTBOLD .T.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        HELPID Nil
+        VISIBLE .T.
+        TRANSPARENT .F.
+        ACTION Nil
+        AUTOSIZE .F.
+        BACKCOLOR {255,255,255}
+        FONTCOLOR NIL
+        CENTERALIGN .T. 
+    END LABEL
+
+    DEFINE LABEL Label_2
+        ROW    30
+        COL    130
+        WIDTH  120
+        HEIGHT 24
+        VALUE "Title"
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        FONTBOLD .T.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        HELPID Nil
+        VISIBLE .T.
+        TRANSPARENT .F.
+        ACTION Nil
+        AUTOSIZE .F.
+        BACKCOLOR {255,255,255}
+        FONTCOLOR NIL
+        CENTERALIGN .T. 
+    END LABEL
+
+    DEFINE FRAME Frame_5
+        ROW    20
+        COL    120
+        WIDTH  430
+        HEIGHT 40
+        FONTNAME "Arial"
+        FONTSIZE 9
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        CAPTION NIL
+        BACKCOLOR NIL
+        FONTCOLOR NIL
+        OPAQUE .T.
+    END FRAME
+
+    DEFINE BUTTON Button_4
+        ROW    180
+        COL    60
+        WIDTH  50
+        HEIGHT 24
+        CAPTION "Pie 1"
+        ACTION Presenta(1)
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        ONGOTFOCUS Nil
+        ONLOSTFOCUS Nil
+        HELPID Nil
+        FLAT .F.
+        TABSTOP .T.
+        VISIBLE .T.
+        TRANSPARENT .F.
+        PICTURE Nil
+    END BUTTON
+
+    DEFINE BUTTON Button_5
+        ROW    210
+        COL    60
+        WIDTH  50
+        HEIGHT 24
+        CAPTION "Pie 2"
+        ACTION Presenta(2)
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        ONGOTFOCUS Nil
+        ONLOSTFOCUS Nil
+        HELPID Nil
+        FLAT .F.
+        TABSTOP .T.
+        VISIBLE .T.
+        TRANSPARENT .F.
+        PICTURE Nil
+    END BUTTON
+
+    DEFINE BUTTON Button_6
+        ROW    240
+        COL    60
+        WIDTH  50
+        HEIGHT 24
+        CAPTION "Pie 3"
+        ACTION Presenta(3)
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        ONGOTFOCUS Nil
+        ONLOSTFOCUS Nil
+        HELPID Nil
+        FLAT .F.
+        TABSTOP .T.
+        VISIBLE .T.
+        TRANSPARENT .F.
+        PICTURE Nil
+    END BUTTON
+
+    DEFINE BUTTON Button_7
+        ROW    270
+        COL    60
+        WIDTH  50
+        HEIGHT 24
+        CAPTION "Pie 4"
+        ACTION Presenta(4)
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        ONGOTFOCUS Nil
+        ONLOSTFOCUS Nil
+        HELPID Nil
+        FLAT .F.
+        TABSTOP .T.
+        VISIBLE .T.
+        TRANSPARENT .F.
+        PICTURE Nil
+    END BUTTON
+
+    DEFINE BUTTON Button_8
+        ROW    315
+        COL    280
+        WIDTH  80
+        HEIGHT 28
+        CAPTION "Pie 5"
+        ACTION Presenta(5)
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        ONGOTFOCUS Nil
+        ONLOSTFOCUS Nil
+        HELPID Nil
+        FLAT .F.
+        TABSTOP .T.
+        VISIBLE .T.
+        TRANSPARENT .F.
+        PICTURE Nil
+    END BUTTON
+
+    DEFINE BUTTON Button_9
+        ROW    315
+        COL    370
+        WIDTH  80
+        HEIGHT 28
+        CAPTION "Pie 6"
+        ACTION Presenta(6)
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        ONGOTFOCUS Nil
+        ONLOSTFOCUS Nil
+        HELPID Nil
+        FLAT .F.
+        TABSTOP .T.
+        VISIBLE .T.
+        TRANSPARENT .F.
+        PICTURE Nil
+    END BUTTON
+
+    DEFINE BUTTON Button_10
+        ROW    315
+        COL    460
+        WIDTH  80
+        HEIGHT 28
+        CAPTION "Pie 7"
+        ACTION Presenta(7)
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        ONGOTFOCUS Nil
+        ONLOSTFOCUS Nil
+        HELPID Nil
+        FLAT .F.
+        TABSTOP .T.
+        VISIBLE .T.
+        TRANSPARENT .F.
+        PICTURE Nil
+    END BUTTON
+
+    DEFINE FRAME Frame_1
+        ROW    140
+        COL    120
+        WIDTH  500
+        HEIGHT 160
+        FONTNAME "Arial"
+        FONTSIZE 9
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        CAPTION NIL
+        BACKCOLOR NIL
+        FONTCOLOR NIL
+        OPAQUE .T.
+    END FRAME
+
+    DEFINE FRAME Frame_2
+        ROW    70
+        COL    260
+        WIDTH  290
+        HEIGHT 230
+        FONTNAME "Arial"
+        FONTSIZE 9
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        CAPTION NIL
+        BACKCOLOR NIL
+        FONTCOLOR NIL
+        OPAQUE .T.
+    END FRAME
+
+    DEFINE FRAME Frame_4
+        ROW    360
+        COL    260
+        WIDTH  290
+        HEIGHT 50
+        FONTNAME "Arial"
+        FONTSIZE 9
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        CAPTION NIL
+        BACKCOLOR NIL
+        FONTCOLOR NIL
+        OPAQUE .T.
+    END FRAME
+
+END WINDOW
+
