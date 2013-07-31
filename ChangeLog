@@ -1,11 +1,50 @@
 /*
- * $Id: ChangeLog,v 1.1123 2013-07-30 19:37:15 migsoft Exp $
+ * $Id: ChangeLog,v 1.1124 2013-07-31 00:16:26 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-07-30 21:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_grid.prg
+     + Added new parameters to function GridControlObject().
+     + Added DATAs lButtons, cImageOK and cImageCancel to TGridControl().
+     - Deleted DATAs lButtons, cImageOK and cImageCancel from
+       TGridControlTextBox().
+     * Changed TGridControlTextBox():CreateWindow().
+     + Added lButtons and aImages parameters to:
+       TGridControlDatePicker:New()
+       TGridControlComboBox:New()
+       TGridControlComboBoxText:New()
+       TGridControlSpinner:New()
+       TGridControlCheckBox:New()
+       TGridControlImageList:New()
+       TGridControlImageData:New()
+       TGridControlLComboBox:New()
+     + Added some comments on usage in COLUMNCONTROLS clause.
+     * Changed TGridControl:CreateWindow() to save accept/cancel blocks.
+     + Added DATAs nOnFocusPos, lButtons, cImageOK and cImageCancel to
+       TGridControlTextBox().
+     + Added new parameter nFocusPos to method TGridControlTextBox:New().
+       This parameter adds support for FOCUSEDPOS clause.
+     + Added new parameter lButtons to method TGridControlTextBox:New().
+       When .T. two buttons are added to the control to accept/cancel
+       the edition.
+     + Added new parameter aImages to method TGridControlTextBox:New().
+       This parameters specifies the images to use in the buttons.
+     Usage: in COLUMNCONTROLS clause specify
+     {'TEXTBOX', cType, cPicture, cFunction, nOnFocusPos, lButtons, aImages}
+     {'MEMO', cTitle, lCleanCRLF}
+     {'DATEPICKER', lUpDown, lShowNone, lButtons, aImages}
+     {'COMBOBOX', aItems, aValues, cRetValType, lButtons, aImages}
+     {'COMBOBOXTEXT', aItems, lIncremental, lWinSize, lButtons, aImages}
+     {'SPINNER', nRangeMin, nRangeMax, lButtons, aImages}
+     {'CHECKBOX', cTrue, cFalse, lButtons, aImages}
+     {'IMAGELIST', lButtons, aImages}
+     {'IMAGEDATA', oData, lButtons, aImages}
+     {'LCOMBOBOX', cTrue, cFalse, lButtons, aImages}
 
 2013-07-30 15:35 UTC-0400 MigSoft <migsoft@oohg.org>
    + samples/autoadjust/demo.prg

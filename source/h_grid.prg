@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.206 2013-07-30 01:51:18 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.207 2013-07-31 00:16:26 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -3553,29 +3553,29 @@ Local oGridControl, aEdit2, cControl
    oGridControl := Nil
    If HB_IsArray( aEditControl ) .AND. Len( aEditControl ) >= 1 .AND. ValType( aEditControl[ 1 ] ) $ "CM"
       aEdit2 := aClone( aEditControl )
-      aSize( aEdit2, 8 )
+      aSize( aEdit2, 7 )
       cControl := Upper( AllTrim( aEditControl[ 1 ] ) )
       Do Case
          Case cControl == "MEMO"
             oGridControl := TGridControlMemo():New( aEdit2[ 2 ], aEdit2[ 3 ] )
          Case cControl == "DATEPICKER"
-            oGridControl := TGridControlDatePicker():New( aEdit2[ 2 ], aEdit2[ 3 ] )
+            oGridControl := TGridControlDatePicker():New( aEdit2[ 2 ], aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 5 ] )
          Case cControl == "COMBOBOX"
-            oGridControl := TGridControlComboBox():New( aEdit2[ 2 ], oGrid, aEdit2[ 3 ], aEdit2[ 4 ] )
+            oGridControl := TGridControlComboBox():New( aEdit2[ 2 ], oGrid, aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 5 ], aEdit2[ 6 ] )
          Case cControl == "COMBOBOXTEXT"
-            oGridControl := TGridControlComboBoxText():New( aEdit2[ 2 ], oGrid )
+            oGridControl := TGridControlComboBoxText():New( aEdit2[ 2 ], oGrid, aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 5 ], aEdit2[ 6 ] )
          Case cControl == "SPINNER"
-            oGridControl := TGridControlSpinner():New( aEdit2[ 2 ], aEdit2[ 3 ] )
+            oGridControl := TGridControlSpinner():New( aEdit2[ 2 ], aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 5 ] )
          Case cControl == "CHECKBOX"
-            oGridControl := TGridControlCheckBox():New( aEdit2[ 2 ], aEdit2[ 3 ] )
+            oGridControl := TGridControlCheckBox():New( aEdit2[ 2 ], aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 5 ] )
          Case cControl == "TEXTBOX"
-            oGridControl := TGridControlTextBox():New( aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 2 ], aEdit2[ 5 ], aEdit2[ 6 ], aEdit2[ 7 ], aEdit2[ 8 ] )
+            oGridControl := TGridControlTextBox():New( aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 2 ], aEdit2[ 5 ], aEdit2[ 6 ], aEdit2[ 7 ] )
          Case cControl == "IMAGELIST"
-            oGridControl := TGridControlImageList():New( oGrid )
+            oGridControl := TGridControlImageList():New( oGrid, aEdit2[ 2 ], aEdit2[ 3 ] )
          Case cControl == "IMAGEDATA"
-            oGridControl := TGridControlImageData():New( oGrid, GridControlObject( aEdit2[ 2 ] ) )
+            oGridControl := TGridControlImageData():New( oGrid, GridControlObject( aEdit2[ 2 ] ), aEdit2[ 3 ], aEdit2[ 4 ] )
          Case cControl == "LCOMBOBOX"
-            oGridControl := TGridControlLComboBox():New( aEdit2[ 2 ], aEdit2[ 3 ] )
+            oGridControl := TGridControlLComboBox():New( aEdit2[ 2 ], aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 5 ] )
       EndCase
    EndIf
 Return oGridControl
@@ -3650,6 +3650,9 @@ CLASS TGridControl
    DATA nDefHeight            INIT 24
    DATA bCancel               INIT Nil
    DATA bOk                   INIT Nil
+   DATA lButtons              INIT .F.
+   DATA cImageOk              INIT 'EDIT_OK_16'
+   DATA cImageCancel          INIT 'EDIT_CANCEL_16'
 
    METHOD New                 BLOCK { |Self| Self }
    METHOD CreateWindow
@@ -3664,7 +3667,7 @@ CLASS TGridControl
 ENDCLASS
 
 METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aKeys ) CLASS TGridControl
-Local lRet := .F., i
+Local lRet := .F., i, nSize
 
    If ! IsWindowDefined( _oohg_gridwn )
        DEFINE WINDOW _oohg_gridwn OBJ ::oWindow ;
@@ -3686,7 +3689,14 @@ Local lRet := .F., i
              Next
           EndIf
 
-          ::CreateControl( uValue, ::oWindow, 0, 0, nWidth, nHeight )
+          If ::lButtons
+             nSize := nHeight - 4
+             ::CreateControl( uValue, ::oWindow, 0, 0, nWidth - nSize * 2 - 6, nHeight )
+             @ 2,nWidth - nSize * 2 - 6 + 2 BUTTON 0 WIDTH nSize HEIGHT nSize ACTION EVAL( ::bOk ) OF ( ::oWindow ) PICTURE ::cImageOk
+             @ 2,nWidth - nSize - 2 BUTTON 0 WIDTH nSize HEIGHT nSize ACTION EVAL( ::bCancel ) OF ( ::oWindow ) PICTURE ::cImageCancel
+          Else
+             ::CreateControl( uValue, ::oWindow, 0, 0, nWidth, nHeight )
+          EndIf
           ::Value := ::ControlValue
       END WINDOW
    EndIf
@@ -3755,9 +3765,6 @@ CLASS TGridControlTextBox FROM TGridControl
    DATA cMask        INIT ""
    DATA cType        INIT ""
    DATA nOnFocusPos  INIT NIL
-   DATA lButtons     INIT .F.
-   DATA cImageOK     INIT 'EDIT_OK_16'
-   DATA cImageCancel INIT 'EDIT_CANCEL_16'
 
    METHOD New
    METHOD CreateWindow
@@ -3767,7 +3774,7 @@ CLASS TGridControlTextBox FROM TGridControl
 ENDCLASS
 
 /*
-{'TEXTBOX',cType,cPicture,cFunction,nOnFocusPos,lButtons}
+{'TEXTBOX', cType, cPicture, cFunction, nOnFocusPos, lButtons, aImages}
 */
 METHOD New( cPicture, cFunction, cType, nOnFocusPos, lButtons, aImages ) CLASS TGridControlTextBox
    ::cMask := ""
@@ -3793,8 +3800,8 @@ METHOD New( cPicture, cFunction, cType, nOnFocusPos, lButtons, aImages ) CLASS T
    EndIf
 
    ASSIGN ::nOnFocusPos VALUE nOnFocusPos TYPE "N"
-   ASSIGN ::lButtons    VALUE lButtons    TYPE "L"
 
+   ASSIGN ::lButtons VALUE lButtons TYPE "L"
    If HB_IsArray( aImages )
      If Len( aImages ) < 2
        aSize( aImages, 2 )
@@ -3805,7 +3812,42 @@ METHOD New( cPicture, cFunction, cType, nOnFocusPos, lButtons, aImages ) CLASS T
 Return Self
 
 METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aKeys ) CLASS TGridControlTextBox
-Return ::Super:CreateWindow( uValue, nRow - 3, nCol - 3, nWidth + 6, nHeight + 6, cFontName, nFontSize, aKeys )
+Local lRet := .F., i
+
+   If ! IsWindowDefined( _oohg_gridwn )
+       DEFINE WINDOW _oohg_gridwn OBJ ::oWindow ;
+          AT nRow - 3, nCol - 3 WIDTH nWidth + 6 HEIGHT nHeight + 6 ;
+          MODAL NOSIZE NOCAPTION ;
+          FONT cFontName SIZE nFontSize
+
+          ::bCancel := { || ::oWindow:Release() }
+          ::bOk     := { || lRet := ::Valid() }
+
+          ON KEY RETURN OF ( ::oWindow ) ACTION EVAL( ::bOk )
+          ON KEY ESCAPE OF ( ::oWindow ) ACTION EVAL( ::bCancel )
+
+          If HB_IsArray( aKeys )
+             For i := 1 To Len( aKeys )
+                If HB_IsArray( aKeys[ i ] ) .AND. Len( aKeys[ i ] ) > 1 .AND. ValType( aKeys[ i, 1 ] ) $ "CM" .AND. HB_IsBlock( aKeys[ i, 2 ] ) .AND. ! ( aKeys[ i, 1 ] == "RETURN" .OR. aKeys[ i, 1 ] == "ESCAPE" )
+                   _DefineAnyKey( ::oWindow, aKeys[ i, 1 ], aKeys[ i, 2 ] )
+                EndIf
+             Next
+          EndIf
+
+          ::CreateControl( uValue, ::oWindow, 0, 0, nWidth + 6, nHeight + 6 )
+          ::Value := ::ControlValue
+      END WINDOW
+   EndIf
+
+   If IsWindowDefined( _oohg_gridwn ) .AND. ! IsWindowActive( _oohg_gridwn )
+      If HB_IsObject( ::oControl )
+         ::oControl:SetFocus()
+      EndIf
+      If HB_IsObject( ::oWindow )
+         ::oWindow:Activate()
+      EndIf
+   EndIf
+Return lRet
 
 METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGridControlTextBox
    If ValType( uValue ) == "C" .AND. ::cType $ "DNL"
@@ -3885,6 +3927,9 @@ CLASS TGridControlMemo FROM TGridControl
    METHOD GridValue
 ENDCLASS
 
+/*
+{'MEMO', cTitle, lCleanCRLF}
+*/
 METHOD New( cTitle, lCleanCRLF ) CLASS TGridControlMemo
    If ValType( cTitle ) $ "CM" .AND. ! Empty( cTitle )
       ::cTitle := cTitle
@@ -3961,7 +4006,10 @@ CLASS TGridControlDatePicker FROM TGridControl
    METHOD GridValue( uValue ) BLOCK { |Self, uValue| Empty( Self ), DtoC( uValue ) }
 ENDCLASS
 
-METHOD New( lUpDown, lShowNone ) CLASS TGridControlDatePicker
+/*
+{'DATEPICKER', lUpDown, lShowNone, lButtons, aImages}
+*/
+METHOD New( lUpDown, lShowNone, lButtons, aImages ) CLASS TGridControlDatePicker
    If ! HB_IsLogical( lUpDown )
       lUpDown := .F.
    EndIf
@@ -3971,6 +4019,15 @@ METHOD New( lUpDown, lShowNone ) CLASS TGridControlDatePicker
       lShowNone := .F.
    EndIf
    ::lShowNone := lShowNone
+
+   ASSIGN ::lButtons VALUE lButtons TYPE "L"
+   If HB_IsArray( aImages )
+     If Len( aImages ) < 2
+       aSize( aImages, 2 )
+     EndIf
+     DEFAULT ::cImageCancel TO aImages[ 1 ]
+     DEFAULT ::cImageOk     TO aImages[ 2 ]
+   EndIf
 Return Self
 
 METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aKeys ) CLASS TGridControlDatePicker
@@ -3992,7 +4049,7 @@ METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGrid
       Else
          @ nRow,nCol DATEPICKER 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue
       EndIf
-  EndIf
+   EndIf
 Return ::oControl
 
 *-----------------------------------------------------------------------------*
@@ -4014,7 +4071,10 @@ CLASS TGridControlComboBox FROM TGridControl
    METHOD Refresh
 ENDCLASS
 
-METHOD New( aItems, oGrid, aValues, cRetValType ) CLASS TGridControlComboBox
+/*
+{'COMBOBOX', aItems, aValues, cRetValType, lButtons, aImages}
+*/
+METHOD New( aItems, oGrid, aValues, cRetValType, lButtons, aImages ) CLASS TGridControlComboBox
    DEFAULT cRetValType TO "NUMERIC"
    If HB_IsArray( aItems )
       ::aItems := aItems
@@ -4040,6 +4100,15 @@ METHOD New( aItems, oGrid, aValues, cRetValType ) CLASS TGridControlComboBox
       ::Refresh()
    EndIf
    ::oGrid := oGrid
+
+   ASSIGN ::lButtons VALUE lButtons TYPE "L"
+   If HB_IsArray( aImages )
+     If Len( aImages ) < 2
+       aSize( aImages, 2 )
+     EndIf
+     DEFAULT ::cImageCancel TO aImages[ 1 ]
+     DEFAULT ::cImageOk     TO aImages[ 2 ]
+   EndIf
 Return Self
 
 METHOD Refresh CLASS TGridControlComboBox
@@ -4129,7 +4198,10 @@ CLASS TGridControlComboBoxText FROM TGridControl
    METHOD ControlValue        SETGET
 ENDCLASS
 
-METHOD New( aItems, oGrid, lIncremental, lWinSize ) CLASS TGridControlComboBoxText
+/*
+{'COMBOBOXTEXT', aItems, lIncremental, lWinSize, lButtons, aImages}
+*/
+METHOD New( aItems, oGrid, lIncremental, lWinSize, lButtons, aImages ) CLASS TGridControlComboBoxText
    ASSIGN ::lIncremental VALUE lIncremental TYPE "L" DEFAULT .F.
    ASSIGN ::lWinSize     VALUE lWinSize     TYPE "L" DEFAULT .F.
    If HB_IsArray( aItems )
@@ -4137,6 +4209,15 @@ METHOD New( aItems, oGrid, lIncremental, lWinSize ) CLASS TGridControlComboBoxTe
       aEval( aItems, { |x,i| ::aItems[ i ] := Trim( x ) } )
    EndIf
    ::oGrid := oGrid
+
+   ASSIGN ::lButtons VALUE lButtons TYPE "L"
+   If HB_IsArray( aImages )
+     If Len( aImages ) < 2
+       aSize( aImages, 2 )
+     EndIf
+     DEFAULT ::cImageCancel TO aImages[ 1 ]
+     DEFAULT ::cImageOk     TO aImages[ 2 ]
+   EndIf
 Return Self
 
 METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aKeys ) CLASS TGridControlComboBoxText
@@ -4189,12 +4270,24 @@ CLASS TGridControlSpinner FROM TGridControl
    METHOD GridValue( uValue) BLOCK { |Self, uValue| Empty( Self ), LTrim( Str( uValue ) ) }
 ENDCLASS
 
-METHOD New( nRangeMin, nRangeMax ) CLASS TGridControlSpinner
+/*
+{'SPINNER', nRangeMin, nRangeMax, lButtons, aImages}
+*/
+METHOD New( nRangeMin, nRangeMax, lButtons, aImages ) CLASS TGridControlSpinner
    If HB_IsNumeric( nRangeMin )
       ::nRangeMin := nRangeMin
    EndIf
    If HB_IsNumeric( nRangeMax )
       ::nRangeMax := nRangeMax
+   EndIf
+
+   ASSIGN ::lButtons VALUE lButtons TYPE "L"
+   If HB_IsArray( aImages )
+     If Len( aImages ) < 2
+       aSize( aImages, 2 )
+     EndIf
+     DEFAULT ::cImageCancel TO aImages[ 1 ]
+     DEFAULT ::cImageOk     TO aImages[ 2 ]
    EndIf
 Return Self
 
@@ -4221,12 +4314,24 @@ CLASS TGridControlCheckBox FROM TGridControl
    METHOD GridValue( uValue ) BLOCK { |Self, uValue| If( uValue, ::cTrue, ::cFalse ) }
 ENDCLASS
 
-METHOD New( cTrue, cFalse ) CLASS TGridControlCheckBox
+/*
+{'CHECKBOX', cTrue, cFalse, lButtons, aImages}
+*/
+METHOD New( cTrue, cFalse, lButtons, aImages ) CLASS TGridControlCheckBox
    If ValType( cTrue ) $ "CM"
       ::cTrue := cTrue
    EndIf
    If ValType( cFalse ) $ "CM"
       ::cFalse := cFalse
+   EndIf
+
+   ASSIGN ::lButtons VALUE lButtons TYPE "L"
+   If HB_IsArray( aImages )
+     If Len( aImages ) < 2
+       aSize( aImages, 2 )
+     EndIf
+     DEFAULT ::cImageCancel TO aImages[ 1 ]
+     DEFAULT ::cImageOk     TO aImages[ 2 ]
    EndIf
 Return Self
 
@@ -4253,10 +4358,22 @@ CLASS TGridControlImageList FROM TGridControl
    METHOD ControlValue      SETGET
 ENDCLASS
 
-METHOD New( oGrid ) CLASS TGridControlImageList
+/*
+{'IMAGELIST', lButtons, aImages}
+*/
+METHOD New( oGrid, lButtons, aImages ) CLASS TGridControlImageList
    ::oGrid := oGrid
    If ! Empty( ::oGrid ) .AND. ::oGrid:ImageList != 0
       ::nDefHeight := ImageList_Size( ::oGrid:ImageList ) [ 2 ] + 6
+   EndIf
+
+   ASSIGN ::lButtons VALUE lButtons TYPE "L"
+   If HB_IsArray( aImages )
+     If Len( aImages ) < 2
+       aSize( aImages, 2 )
+     EndIf
+     DEFAULT ::cImageCancel TO aImages[ 1 ]
+     DEFAULT ::cImageOk     TO aImages[ 2 ]
    EndIf
 Return Self
 
@@ -4299,12 +4416,24 @@ CLASS TGridControlImageData FROM TGridControl
    METHOD Enabled      SETGET
 ENDCLASS
 
-METHOD New( oGrid, oData ) CLASS TGridControlImageData
+/*
+{'IMAGEDATA', oData, lButtons, aImages}
+*/
+METHOD New( oGrid, oData, lButtons, aImages ) CLASS TGridControlImageData
    ::oGrid := oGrid
    If oData == Nil
       oData := TGridControlTextBox():New
    EndIf
    ::oData := oData
+
+   ASSIGN ::lButtons VALUE lButtons TYPE "L"
+   If HB_IsArray( aImages )
+     If Len( aImages ) < 2
+       aSize( aImages, 2 )
+     EndIf
+     DEFAULT ::cImageCancel TO aImages[ 1 ]
+     DEFAULT ::cImageOk     TO aImages[ 2 ]
+   EndIf
 Return Self
 
 METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aKeys ) CLASS TGridControlImageData
@@ -4367,12 +4496,24 @@ CLASS TGridControlLComboBox FROM TGridControl
    METHOD ControlValue        SETGET
 ENDCLASS
 
-METHOD New( cTrue, cFalse ) CLASS TGridControlLComboBox
+/*
+{'LCOMBOBOX', cTrue, cFalse, lButtons, aImages}
+*/
+METHOD New( cTrue, cFalse, lButtons, aImages ) CLASS TGridControlLComboBox
    If ValType( cTrue ) $ "CM"
       ::cTrue := cTrue
    EndIf
    If ValType( cFalse ) $ "CM"
       ::cFalse := cFalse
+   EndIf
+
+   ASSIGN ::lButtons VALUE lButtons TYPE "L"
+   If HB_IsArray( aImages )
+     If Len( aImages ) < 2
+       aSize( aImages, 2 )
+     EndIf
+     DEFAULT ::cImageCancel TO aImages[ 1 ]
+     DEFAULT ::cImageOk     TO aImages[ 2 ]
    EndIf
 Return Self
 
