@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.89 2013-08-01 01:27:11 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.90 2013-08-01 01:55:04 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -223,7 +223,7 @@ Local nWidth2, nCol2, lLocked, oScroll, z
               lNoHeaders,, aHeaderImage, aHeaderImageAlign, FullMove, ;
               aSelectedColors, aEditKeys, , , lDblBffr, lFocusRect, lPLM, ;
               lFixedCols, abortedit, click, lFixedWidths, bBeforeColMove, ;
-              bAfterColMove, bBeforeColSize, bAfterColSize, bBeforeAutofit )
+              bAfterColMove, bBeforeColSize, bAfterColSize, bBeforeAutofit, )
 
    ::nWidth := w
 

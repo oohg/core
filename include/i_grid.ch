@@ -1,5 +1,5 @@
 /*
- * $Id: i_grid.ch,v 1.28 2013-07-01 02:03:35 fyurisich Exp $
+ * $Id: i_grid.ch,v 1.29 2013-08-01 01:55:04 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -171,6 +171,7 @@
       [ BEFORECOLSIZE <bBefSiz> ] ;
       [ AFTERCOLSIZE <bAftSiz> ] ;
       [ BEFOREAUTOFIT <bBefAut> ] ;
+      [ <excel: EDITLIKEEXCEL> ] ;
    =>;
       [ <obj> := ] _OOHG_SelectSubClass(iif( <.bycell.>, TGridByCell(), iif( <.multiselect.>, TGridMulti(), TGrid() ) ), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, ;
@@ -187,7 +188,7 @@
             iif( upper( #<bffr> ) == "DOUBLEBUFFER", .T., iif( upper( #<bffr> ) == "SINGLEBUFFER", .F., .T. ) ), ;
             iif( #<focus> == "NOFOCUSRECT", .F., iif( #<focus> == "FOCUSRECT", .T., NIL ) ), ;
             <.plm.>, <.fixedcols.>, <{abortedit}>, <{click}>, <.fixedwidths.>, ;
-            <{bBefMov}>, <{bAftMov}>, <{bBefSiz}>, <{bAftSiz}>, <{bBefAut}> )
+            <{bBefMov}>, <{bAftMov}>, <{bBefSiz}>, <{bAftSiz}>, <{bBefAut}>, <.excel.> )
 
 ///////////////////////////////////////////////////////////////////////////////
 // GRID (SPLITBOX VERSION)
@@ -262,6 +263,7 @@
       [ BEFORECOLSIZE <bBefSiz> ] ;
       [ AFTERCOLSIZE <bAftSiz> ] ;
       [ BEFOREAUTOFIT <bBefAut> ] ;
+      [ <excel: EDITLIKEEXCEL> ] ;
    =>;
       [ <obj> := ] _OOHG_SelectSubClass(iif( <.bycell.>, TGridByCell(), iif( <.multiselect.>, TGridMulti(), TGrid() ) ), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, , , <w>, <h>, <headers>, ;
@@ -278,4 +280,4 @@
             iif( upper( #<bffr> ) == "DOUBLEBUFFER", .T., iif( upper( #<bffr> ) == "SINGLEBUFFER", .F., .T. ) ), ;
             iif( #<focus> == "NOFOCUSRECT", .F., iif( #<focus> == "FOCUSRECT", .T., NIL ) ), ;
             <.plm.>, <.fixedcols.>, <{abortedit}>, <{click}>, <.fixedwidths.>, ;
-            <{bBefMov}>, <{bAftMov}>, <{bBefSiz}>, <{bAftSiz}>, <{bBefAut}> )
+            <{bBefMov}>, <{bAftMov}>, <{bBefSiz}>, <{bAftSiz}>, <{bBefAut}>, <.excel.> )

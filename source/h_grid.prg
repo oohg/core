@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.208 2013-08-01 01:27:11 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.209 2013-08-01 01:55:04 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -243,7 +243,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
                lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths, ;
                bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
-               bBeforeAutofit ) CLASS TGrid
+               bBeforeAutofit, lLikeExcel ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local nStyle := LVS_SINGLESEL
 
@@ -259,7 +259,7 @@ Local nStyle := LVS_SINGLESEL
               aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
               lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths, ;
               bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
-              bBeforeAutofit )
+              bBeforeAutofit, lLikeExcel )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -275,7 +275,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                 aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
                 lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths, ;
                 bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
-                bBeforeAutofit ) CLASS TGrid
+                bBeforeAutofit, lLikeExcel ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local ControlHandle, aImageList, i
 
@@ -324,6 +324,7 @@ Local ControlHandle, aImageList, i
    ASSIGN ::lCheckBoxes VALUE lCheckBoxes TYPE "L" DEFAULT .F.
    ASSIGN ::lFocusRect  VALUE lFocusRect  TYPE "L" DEFAULT .T.
    ASSIGN ::lPLM        VALUE lPLM        TYPE "L" DEFAULT .F.
+   ASSIGN ::lLikeExcel  VALUE lLikeExcel  TYPE "L" DEFAULT .F.
 
    If ::lCheckBoxes .AND. ::lPLM
       MsgOOHGError( "CHECKBOXES and PAINTLEFTMARGIN clauses can't be used simultaneously. Program Terminated." )
@@ -2522,7 +2523,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
                lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths, ;
                bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
-               bBeforeAutofit ) CLASS TGridMulti
+               bBeforeAutofit, lLikeExcel ) CLASS TGridMulti
 *-----------------------------------------------------------------------------*
 Local nStyle := 0
 
@@ -2538,7 +2539,7 @@ Local nStyle := 0
               aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
               lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths, ;
               bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
-              bBeforeAutofit )
+              bBeforeAutofit, lLikeExcel )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -2775,7 +2776,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
                lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths, ;
                bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
-               bBeforeAutofit ) CLASS TGridByCell
+               bBeforeAutofit, lLikeExcel ) CLASS TGridByCell
 *-----------------------------------------------------------------------------*
 Local nStyle := LVS_SINGLESEL
 
@@ -2793,7 +2794,7 @@ Local nStyle := LVS_SINGLESEL
               aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
               lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths, ;
               bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
-              bBeforeAutofit )
+              bBeforeAutofit, lLikeExcel )
 
    // By default, search in the current column
    ::SearchCol := 0
