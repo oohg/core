@@ -1,11 +1,15 @@
 /*
- * $Id: ChangeLog,v 1.1125 2013-08-01 01:27:10 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1126 2013-08-01 01:33:43 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-07-31 22:33 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     * Previous entry corrected.
 
 2013-07-31 22:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./Changelog
@@ -44,6 +48,9 @@
        in TGridControlTextBox:CreateWindow() mimicking Excel.
    * source/h_textbox.prg
      ! ON CLICK event is not fired.
+   * source/h_xbrowse.prg
+     + Added new parameter to GridControlObjectByType() call in
+       method TXBrowse:GetCellType().
 
 2013-07-30 21:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
