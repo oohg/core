@@ -1,5 +1,5 @@
 /*
- * $Id: h_spinner.prg,v 1.17 2012-10-14 16:11:42 guerra000 Exp $
+ * $Id: h_spinner.prg,v 1.18 2013-08-01 01:27:11 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -128,16 +128,17 @@ METHOD Define( ControlName, ParentForm, x, y, w, value, fontname, fontsize, ;
 Local nStyle := ES_NUMBER + ES_AUTOHSCROLL, nStyleEx := 0
 Local ControlHandle
 
-   ASSIGN ::nWidth       VALUE w TYPE "N"
-   ASSIGN ::nHeight      VALUE h TYPE "N"
-   ASSIGN ::nRow         VALUE y TYPE "N"
-   ASSIGN ::nCol         VALUE x TYPE "N"
-   ASSIGN ::nRangeMin    VALUE rl TYPE "N"
-   ASSIGN ::nRangeMax    VALUE rh TYPE "N"
+   ASSIGN ::nWidth       VALUE w         TYPE "N"
+   ASSIGN ::nHeight      VALUE h         TYPE "N"
+   ASSIGN ::nRow         VALUE y         TYPE "N"
+   ASSIGN ::nCol         VALUE x         TYPE "N"
+   ASSIGN ::nRangeMin    VALUE rl        TYPE "N"
+   ASSIGN ::nRangeMax    VALUE rh        TYPE "N"
    ASSIGN ::nIncrement   VALUE increment TYPE "N"
-   DEFAULT value     TO rl
-   DEFAULT wrap      TO FALSE
-   DEFAULT readonly  TO FALSE
+   ASSIGN wrap           VALUE wrap      TYPE "L" DEFAULT .F.
+   ASSIGN readonly       VALUE readonly  TYPE "L" DEFAULT .F.
+   ASSIGN invisible      VALUE invisible TYPE "L" DEFAULT .F.
+   DEFAULT value TO rl
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, .T., lRtl )
 

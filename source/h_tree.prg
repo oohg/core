@@ -1,5 +1,5 @@
 /*
- * $Id: h_tree.prg,v 1.38 2013-04-28 02:01:13 fyurisich Exp $
+ * $Id: h_tree.prg,v 1.39 2013-08-01 01:27:11 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -230,7 +230,9 @@ Local Controlhandle, nStyle, ImgDefNode, ImgDefItem, aBitmaps := array(4)
       nStyle += TVS_SINGLEEXPAND
    EndIf
    nStyle += TVS_SHOWSELALWAYS
-   
+
+   ASSIGN lChkBox VALUE lChkBox TYPE "L" DEFAULT .F.
+
    ::SetSplitBoxInfo( Break )
    ControlHandle := InitTree( ::ContainerhWnd, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, ::lRtl, lChkBox, !HB_IsLogical( lNoBor ) .OR. ! lNoBor )
 

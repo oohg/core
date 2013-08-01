@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.88 2013-07-30 01:28:33 fyurisich Exp $
+ * $Id: h_textbox.prg,v 1.89 2013-08-01 01:27:11 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -722,6 +722,7 @@ Local aPos, nStart, nEnd, cText
       If ! ::lFocused
          ::SetFocus()
       EndIf
+      ::DoEvent( ::OnClick, "CLICK" )
 
    ElseIf nMsg == WM_KEYDOWN .AND. wParam == VK_INSERT .AND. GetKeyFlagState() == 0
       // Toggle insertion
@@ -1205,8 +1206,11 @@ Local aValidMask := ::ValidMask
       Return 1
 
    ElseIf nMsg == WM_LBUTTONDOWN
-      If ! ::lFocused
+      If ::lFocused
+         ::DoEvent( ::OnClick, "CLICK" )
+      Else
          ::SetFocus()
+         ::DoEvent( ::OnClick, "CLICK" )
          Return 1
       EndIf
 

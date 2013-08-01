@@ -1,5 +1,5 @@
 /*
- * $Id: h_frame.prg,v 1.12 2012-10-14 16:11:42 guerra000 Exp $
+ * $Id: h_frame.prg,v 1.13 2013-08-01 01:27:11 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -119,7 +119,8 @@ Local oTab
    ASSIGN ::nWidth      VALUE w TYPE "N"
    ASSIGN ::nHeight     VALUE h TYPE "N"
 
-   ASSIGN caption       VALUE caption TYPE "CM" DEFAULT ""
+   ASSIGN caption VALUE caption TYPE "CM" DEFAULT ""
+   ASSIGN opaque  VALUE opaque  TYPE "L"  DEFAULT .F.
 
    If valtype( caption ) == 'U'
       caption := ""

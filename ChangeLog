@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.1124 2013-07-31 00:16:26 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1125 2013-08-01 01:27:10 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,9 +7,48 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-07-31 22:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     * Previous entry corrected.
+   * source/h_frame.prg
+     + Added initialization for opaque parameter of TFrame:Define().
+   * source/h_tree.prg
+     + Added initialization for lChkBox parameter of TTree:Define().
+   * source/h_form.prg
+   * source/h_windows.prg
+     ! Calls to GetNextDlgTabItem() return wrong value due to usage of
+       0 and 1 constants instead of .F. and .T.
+   * source/h_progressbar.prg
+     + Added initialization for smooth parameter of TProgressBar:Define().
+   * source/h_spinner.prg
+     + Added initialization for invisible parameter of TSpinner:Define().
+     * Changed initialization of wrap and readonly parameters of
+       TSpinner:Define().
+   * source/h_toolbar.prg
+     + Added initialization for flat, bottom, righttext and border
+       parameters of TToolBar:Define().
+     + Added initialization for separator, autosize, check, group and
+       dropdown parameters of TToolButton:Define().
+   * source/h_grid.prg
+     + Added DATAS lLikeExcel and cEditKey to TGrid().
+     + Added initialization for ownerdata parameter of TGrid:Define2().
+     + Added new parameters to TGridControlTextBox():New() call in
+       function GridControlObject().
+     + Added new parameter oGrid to method GridControlObjectByType.
+     + Added new parameter to TGridControlTextBox():New() calls in
+       function GridControlObjectByType().
+     + Added DATAs oGrid, lLikeExcel and cEditKey to TGridControlTextBox().
+     + Added new parameters oGrid, lLikeExcel and cEditKey to method
+       TGridControlTextBox:New().
+     + Added support for new behaviour of TGridControlTextBox()
+       in TGridControlTextBox:CreateWindow() mimicking Excel.
+   * source/h_textbox.prg
+     ! ON CLICK event is not fired.
+
 2013-07-30 21:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
-     + Added new parameters to function GridControlObject().
+     + Added new parameters to TGridControlTextBox():New() calls in
+       function GridControlObject().
      + Added DATAs lButtons, cImageOK and cImageCancel to TGridControl().
      - Deleted DATAs lButtons, cImageOK and cImageCancel from
        TGridControlTextBox().

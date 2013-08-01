@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.246 2013-07-12 00:43:49 fyurisich Exp $
+ * $Id: h_windows.prg,v 1.247 2013-08-01 01:27:11 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -2343,7 +2343,7 @@ Procedure _SetNextFocus()
 *-----------------------------------------------------------------------------*
 Local oCtrl, hControl
 
-   hControl := GetNextDlgTabITem( GetActiveWindow(), GetFocus(), 0 )
+   hControl := GetNextDlgTabITem( GetActiveWindow(), GetFocus(), .F. )
    oCtrl := GetControlObjectByHandle( hControl )
    If oCtrl:hWnd == hControl
       oCtrl:SetFocus()
@@ -2358,7 +2358,7 @@ Procedure _SetPrevFocus()
 *-----------------------------------------------------------------------------*
 Local oCtrl, hControl
 
-   hControl := GetNextDlgTabITem( GetActiveWindow(), GetFocus(), 1 )
+   hControl := GetNextDlgTabITem( GetActiveWindow(), GetFocus(), .T. )
    oCtrl := GetControlObjectByHandle( hControl )
    If oCtrl:hWnd == hControl
       oCtrl:SetFocus()

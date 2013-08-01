@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.42 2013-07-02 21:47:51 migsoft Exp $
+ * $Id: h_form.prg,v 1.43 2013-08-01 01:27:10 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -708,7 +708,7 @@ Local Sp, nSplit
    ELSEIF ::Focused
       Sp := GetFocus()
       IF ASCAN( ::aControls, { |o| o:hWnd == Sp } ) == 0
-         SetFocus( GetNextDlgTabItem( ::hWnd , 0 , 0 ) )
+         SetFocus( GetNextDlgTabItem( ::hWnd, 0, .F. ) )
       ENDIF
    ENDIF
 Return nil

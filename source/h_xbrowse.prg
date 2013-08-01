@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.88 2013-07-14 22:46:54 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.89 2013-08-01 01:27:11 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1496,7 +1496,7 @@ Local cField, cArea, nPos, aStruct
          EndCase
       EndIf
       If ValType( EditControl ) != "O"
-         EditControl := GridControlObjectByType( uOldValue )
+         EditControl := GridControlObjectByType( uOldValue, Self )
       EndIf
    EndIf
 Return .T.

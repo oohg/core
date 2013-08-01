@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.207 2013-07-31 00:16:26 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.208 2013-08-01 01:27:11 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -156,6 +156,8 @@ CLASS TGrid FROM TControl
    DATA bAfterColSize          INIT Nil
    DATA bBeforeAutofit         INIT Nil
    DATA aHiddenCols            INIT {}
+   DATA lLikeExcel             INIT .F.
+   DATA cEditKey               INIT "F2"
 
    METHOD Define
    METHOD Define2
@@ -317,7 +319,7 @@ Local ControlHandle, aImageList, i
 
    ASSIGN ::aJust       VALUE aJust       TYPE "A"
    ASSIGN ::Picture     VALUE aPicture    TYPE "A"
-
+   ASSIGN ownerdata     VALUE ownerdata   TYPE "L" DEFAULT .F.
    ASSIGN ::lNoGrid     VALUE nogrid      TYPE "L" DEFAULT .F.
    ASSIGN ::lCheckBoxes VALUE lCheckBoxes TYPE "L" DEFAULT .F.
    ASSIGN ::lFocusRect  VALUE lFocusRect  TYPE "L" DEFAULT .T.
@@ -925,9 +927,9 @@ Local aReturn
       oCtrl := GetEditControlFromArray( oCtrl, ::EditControls, i, Self )
       If ! HB_IsObject( oCtrl )
          If HB_IsArray( ::Picture ) .AND. Len( ::Picture ) >= i .AND. ValType( ::Picture[ i ] ) $ "CM"
-            oCtrl := TGridControlTextBox():New( ::Picture[ i ],, "C" )
+            oCtrl := TGridControlTextBox():New( ::Picture[ i ], , "C", , , , Self )
          Else
-            oCtrl := TGridControlTextBox():New()
+            oCtrl := TGridControlTextBox():New( , , , , , , Self )
          EndIf
       EndIf
       aEditControls2[ i ] := oCtrl
@@ -1645,10 +1647,10 @@ Local r, r2, lRet := .F., nWidth
          // EditControl specified
       ElseIf ValType( ::Picture[ nCol ] ) == "C"
          // Picture-based
-         EditControl := TGridControlTextBox():New( ::Picture[ nCol ],, ValType( uValue ) )
+         EditControl := TGridControlTextBox():New( ::Picture[ nCol ], , ValType( uValue ), , , , Self )
       Else
          // Checks according to data type
-         EditControl := GridControlObjectByType( uValue )
+         EditControl := GridControlObjectByType( uValue, Self )
       EndIf
 
       If ! HB_IsObject( EditControl )
@@ -3553,7 +3555,7 @@ Local oGridControl, aEdit2, cControl
    oGridControl := Nil
    If HB_IsArray( aEditControl ) .AND. Len( aEditControl ) >= 1 .AND. ValType( aEditControl[ 1 ] ) $ "CM"
       aEdit2 := aClone( aEditControl )
-      aSize( aEdit2, 7 )
+      aSize( aEdit2, 9 )
       cControl := Upper( AllTrim( aEditControl[ 1 ] ) )
       Do Case
          Case cControl == "MEMO"
@@ -3569,11 +3571,11 @@ Local oGridControl, aEdit2, cControl
          Case cControl == "CHECKBOX"
             oGridControl := TGridControlCheckBox():New( aEdit2[ 2 ], aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 5 ] )
          Case cControl == "TEXTBOX"
-            oGridControl := TGridControlTextBox():New( aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 2 ], aEdit2[ 5 ], aEdit2[ 6 ], aEdit2[ 7 ] )
+            oGridControl := TGridControlTextBox():New( aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 2 ], aEdit2[ 5 ], aEdit2[ 6 ], aEdit2[ 7 ], oGrid, aEdit2[ 8 ], aEdit2[ 9 ] )
          Case cControl == "IMAGELIST"
             oGridControl := TGridControlImageList():New( oGrid, aEdit2[ 2 ], aEdit2[ 3 ] )
          Case cControl == "IMAGEDATA"
-            oGridControl := TGridControlImageData():New( oGrid, GridControlObject( aEdit2[ 2 ] ), aEdit2[ 3 ], aEdit2[ 4 ] )
+            oGridControl := TGridControlImageData():New( oGrid, GridControlObject( aEdit2[ 2 ], oGrid ), aEdit2[ 3 ], aEdit2[ 4 ] )
          Case cControl == "LCOMBOBOX"
             oGridControl := TGridControlLComboBox():New( aEdit2[ 2 ], aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 5 ] )
       EndCase
@@ -3581,7 +3583,7 @@ Local oGridControl, aEdit2, cControl
 Return oGridControl
 
 *-----------------------------------------------------------------------------*
-FUNCTION GridControlObjectByType( uValue )
+FUNCTION GridControlObjectByType( uValue, oGrid )
 *-----------------------------------------------------------------------------*
 Local oGridControl := Nil, cMask, nPos
    Do Case
@@ -3592,17 +3594,17 @@ Local oGridControl := Nil, cMask, nPos
       If nPos != 0
          cMask := Left( cMask, nPos - 1 ) + "." + SubStr( cMask, nPos + 1 )
       EndIf
-      oGridControl := TGridControlTextBox():New( cMask,, "N" )
+      oGridControl := TGridControlTextBox():New( cMask, , "N", , , , oGrid )
    Case HB_IsLogical( uValue )
       // oGridControl := TGridControlCheckBox():New( ".T.", ".F." )
       oGridControl := TGridControlLComboBox():New( ".T.", ".F." )
    Case HB_IsDate( uValue )
       // oGridControl := TGridControlDatePicker():New( .T. )
-      oGridControl := TGridControlTextBox():New( "@D",, "D" )
+      oGridControl := TGridControlTextBox():New( "@D", , "D", , , , oGrid )
    Case ValType( uValue ) == "M"
       oGridControl := TGridControlMemo():New()
    Case ValType( uValue ) == "C"
-      oGridControl := TGridControlTextBox():New( , , "C" )
+      oGridControl := TGridControlTextBox():New( , , "C", , , , oGrid )
    OtherWise
       // Non-implemented data type!!!
    EndCase
@@ -3762,9 +3764,12 @@ Return ::oControl:OnLostFocus
 *-----------------------------------------------------------------------------*
 CLASS TGridControlTextBox FROM TGridControl
 *-----------------------------------------------------------------------------*
-   DATA cMask        INIT ""
-   DATA cType        INIT ""
-   DATA nOnFocusPos  INIT NIL
+   DATA cMask       INIT ""
+   DATA cType       INIT ""
+   DATA nOnFocusPos INIT NIL
+   DATA oGrid       INIT NIL
+   DATA lLikeExcel  INIT .F.
+   DATA cEditKey    INIT NIL
 
    METHOD New
    METHOD CreateWindow
@@ -3774,9 +3779,9 @@ CLASS TGridControlTextBox FROM TGridControl
 ENDCLASS
 
 /*
-{'TEXTBOX', cType, cPicture, cFunction, nOnFocusPos, lButtons, aImages}
+{'TEXTBOX', cType, cPicture, cFunction, nOnFocusPos, lButtons, aImages, lLikeExcel, cEditKey}
 */
-METHOD New( cPicture, cFunction, cType, nOnFocusPos, lButtons, aImages ) CLASS TGridControlTextBox
+METHOD New( cPicture, cFunction, cType, nOnFocusPos, lButtons, aImages, oGrid, lLikeExcel, cEditKey ) CLASS TGridControlTextBox
    ::cMask := ""
    If ValType( cPicture ) $ "CM" .AND. ! Empty( cPicture )
       ::cMask := cPicture
@@ -3809,6 +3814,16 @@ METHOD New( cPicture, cFunction, cType, nOnFocusPos, lButtons, aImages ) CLASS T
      DEFAULT ::cImageCancel TO aImages[ 1 ]
      DEFAULT ::cImageOk     TO aImages[ 2 ]
    EndIf
+
+   ::oGrid := oGrid
+
+   ASSIGN ::lLikeExcel VALUE lLikeExcel TYPE "L"
+
+   If ValType( cEditKey ) $ "CM"
+      ::cEditKey := cEditKey
+   Else
+      ::cEditKey := ::oGrid:cEditKey
+   EndIf
 Return Self
 
 METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aKeys ) CLASS TGridControlTextBox
@@ -3828,13 +3843,32 @@ Local lRet := .F., i
 
           If HB_IsArray( aKeys )
              For i := 1 To Len( aKeys )
-                If HB_IsArray( aKeys[ i ] ) .AND. Len( aKeys[ i ] ) > 1 .AND. ValType( aKeys[ i, 1 ] ) $ "CM" .AND. HB_IsBlock( aKeys[ i, 2 ] ) .AND. ! ( aKeys[ i, 1 ] == "RETURN" .OR. aKeys[ i, 1 ] == "ESCAPE" )
+                If HB_IsArray( aKeys[ i ] ) .AND. Len( aKeys[ i ] ) > 1 .AND. ValType( aKeys[ i, 1 ] ) $ "CM" .AND. HB_IsBlock( aKeys[ i, 2 ] ) .AND. ! ( aKeys[ i, 1 ] == "RETURN" .OR. aKeys[ i, 1 ] == "ESCAPE" .OR. aKeys[ i, 1 ] == "F2" )
                    _DefineAnyKey( ::oWindow, aKeys[ i, 1 ], aKeys[ i, 2 ] )
                 EndIf
              Next
           EndIf
 
           ::CreateControl( uValue, ::oWindow, 0, 0, nWidth + 6, nHeight + 6 )
+
+          If ::lLikeExcel .OR. ::oGrid:lLikeExcel
+             ON KEY (::cEditKey) OF ( ::oControl ) ACTION TGridControlTextBox_ReleaseKeys( ::oControl )
+             ON KEY UP           OF ( ::oControl ) ACTION ( EVAL( ::bCancel ), ::oGrid:Up() )
+             ON KEY RIGHT        OF ( ::oControl ) ACTION ( EVAL( ::bCancel ), ::oGrid:Right() )
+             ON KEY LEFT         OF ( ::oControl ) ACTION ( EVAL( ::bCancel ), ::oGrid:Left() )
+             ON KEY HOME         OF ( ::oControl ) ACTION ( EVAL( ::bCancel ), ::oGrid:GoTop() )
+             ON KEY END          OF ( ::oControl ) ACTION ( EVAL( ::bCancel ), ::oGrid:GoBottom() )
+             ON KEY DOWN         OF ( ::oControl ) ACTION ( EVAL( ::bCancel ), ::oGrid:Down() )
+             ON KEY PRIOR        OF ( ::oControl ) ACTION ( EVAL( ::bCancel ), ::oGrid:PageUp() )
+             ON KEY NEXT         OF ( ::oControl ) ACTION ( EVAL( ::bCancel ), ::oGrid:PageDown() )
+             ::oControl:OnClick     := { || TGridControlTextBox_ReleaseKeys( ::oControl ) }
+             ::oControl:OnDblClick  := { || TGridControlTextBox_ReleaseKeys( ::oControl ) }
+             ::oControl:OnRClick    := { || TGridControlTextBox_ReleaseKeys( ::oControl ) }
+             ::oControl:OnRDblClick := { || TGridControlTextBox_ReleaseKeys( ::oControl ) }
+             ::oControl:OnMClick    := { || TGridControlTextBox_ReleaseKeys( ::oControl ) }
+             ::oControl:OnMDblClick := { || TGridControlTextBox_ReleaseKeys( ::oControl ) }
+          EndIf
+
           ::Value := ::ControlValue
       END WINDOW
    EndIf
@@ -3848,6 +3882,18 @@ Local lRet := .F., i
       EndIf
    EndIf
 Return lRet
+
+FUNCTION TGridControlTextBox_ReleaseKeys( oControl )
+   RELEASE KEY LEFT  OF ( oControl )
+   RELEASE KEY UP    OF ( oControl )
+   RELEASE KEY RIGHT OF ( oControl )
+   RELEASE KEY DOWN  OF ( oControl )
+   RELEASE KEY HOME  OF ( oControl )
+   RELEASE KEY END   OF ( oControl )
+   RELEASE KEY PRIOR OF ( oControl )
+   RELEASE KEY DOWN  OF ( oControl )
+   RELEASE KEY F2    OF ( oControl )
+RETURN NIL
 
 METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGridControlTextBox
    If ValType( uValue ) == "C" .AND. ::cType $ "DNL"

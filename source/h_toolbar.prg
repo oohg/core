@@ -1,5 +1,5 @@
 /*
- * $Id: h_toolbar.prg,v 1.37 2012-10-14 16:11:42 guerra000 Exp $
+ * $Id: h_toolbar.prg,v 1.38 2013-08-01 01:27:11 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -157,6 +157,11 @@ Local ControlHandle, id, lSplitActive, nStyle
    ASSIGN ::nRow          VALUE y TYPE "N"
    ASSIGN ::nButtonWidth  VALUE w TYPE "N"
    ASSIGN ::nButtonHeight VALUE h TYPE "N"
+
+   ASSIGN flat         VALUE flat         TYPE "L" DEFAULT .F.
+   ASSIGN bottom       VALUE bottom       TYPE "L" DEFAULT .F.
+   ASSIGN righttext    VALUE righttext    TYPE "L" DEFAULT .F.
+   ASSIGN border       VALUE border       TYPE "L" DEFAULT .F.
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize,,,, lRtl )
 
@@ -383,8 +388,13 @@ Empty( FLAT )
 
    ::SetForm( ControlName, _OOHG_ActiveToolBar )
 
-   ASSIGN WHOLEDROPDOWN VALUE WHOLEDROPDOWN TYPE "L" DEFAULT .F.
-   ASSIGN Caption       VALUE Caption TYPE "CM" DEFAULT ""
+   ASSIGN WHOLEDROPDOWN VALUE WHOLEDROPDOWN TYPE "L"  DEFAULT .F.
+   ASSIGN Caption       VALUE Caption       TYPE "CM" DEFAULT ""
+   ASSIGN separator     VALUE separator     TYPE "L"  DEFAULT .F.
+   ASSIGN autosize      VALUE autosize      TYPE "L"  DEFAULT .F.
+   ASSIGN check         VALUE check         TYPE "L"  DEFAULT .F.
+   ASSIGN group         VALUE group         TYPE "L"  DEFAULT .F.
+   ASSIGN dropdown      VALUE dropdown      TYPE "L"  DEFAULT .F.
 
    If valtype( ProcedureName ) == "B" .and. WHOLEDROPDOWN
       MsgOOHGError( "Action and WholeDropDown clauses can't be used simultaneously. Program Terminated." )

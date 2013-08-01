@@ -1,5 +1,5 @@
 /*
- * $Id: h_progressbar.prg,v 1.12 2011-11-09 02:03:31 fyurisich Exp $
+ * $Id: h_progressbar.prg,v 1.13 2013-08-01 01:27:11 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -129,6 +129,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, lo, hi, tooltip, ;
 Local ControlHandle
 
    ASSIGN vertical  VALUE vertical  TYPE "L" DEFAULT .F.
+   ASSIGN smooth    VALUE smooth    TYPE "L" DEFAULT .F.
    ASSIGN h         VALUE h         TYPE "N" DEFAULT if( vertical, 120, 25 )
    ASSIGN w         VALUE w         TYPE "N" DEFAULT if( vertical, 25, 120 )
    ASSIGN lo        VALUE lo        TYPE "N" DEFAULT 0
