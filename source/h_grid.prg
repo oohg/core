@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.209 2013-08-01 01:55:04 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.210 2013-08-02 00:46:12 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1939,10 +1939,7 @@ Local nNotify, nColumn, lGo, nNewWidth
       EndIf
       //  Let the OS set the new width
 
-      /*
-       * TODO: check if this is needed
-       * RedrawWindow( ::ContainerhWnd )
-       */
+      RedrawWindow( ::ContainerhWnd )
 
    ElseIf nNotify == HDN_DIVIDERDBLCLICK
       If HB_IsLogical( ::AllowChangeSize ) .AND. ! ::AllowChangeSize

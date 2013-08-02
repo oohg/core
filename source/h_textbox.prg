@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.89 2013-08-01 01:27:11 fyurisich Exp $
+ * $Id: h_textbox.prg,v 1.90 2013-08-02 00:46:12 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -341,7 +341,7 @@ METHOD SetFocus() CLASS TText
 Local uRet, nLen
    uRet := ::Super:SetFocus()
    If ::nOnFocusPos == -3
-      nLen := Len( ::Caption )
+      nLen := Len( RTrim( ::Caption ) )
       SendMessage( ::hWnd, EM_SETSEL, 0, nLen )
    ElseIf ::nOnFocusPos == -2
       SendMessage( ::hWnd, EM_SETSEL, 0, -1 )
