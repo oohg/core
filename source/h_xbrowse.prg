@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.90 2013-08-01 01:55:04 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.91 2013-08-02 03:08:54 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -61,8 +61,6 @@ CLASS TXBROWSE FROM TGrid
    DATA VScroll           INIT nil
    DATA ScrollButton      INIT nil
    DATA nValue            INIT 0
-   DATA AllowAppend       INIT .F.
-   DATA AllowDelete       INIT .F.
    DATA aReplaceField     INIT nil
    DATA Lock              INIT .F.
    DATA skipBlock         INIT nil
@@ -73,9 +71,6 @@ CLASS TXBROWSE FROM TGrid
    DATA lDescending       INIT .F.
    DATA Eof               INIT .F.
    DATA Bof               INIT .F.
-   DATA bDelWhen          INIT nil
-   DATA DelMsg            INIT nil
-   DATA onDelete          INIT nil
    DATA RefreshType       INIT nil
    DATA SearchWrap        INIT .F.
    DATA VScrollCopy       INIT nil
@@ -159,7 +154,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                aSelectedColors, aEditKeys, lDblBffr, lFocusRect, lPLM, ;
                lFixedCols, abortedit, click, lFixedWidths, lFixedBlocks, ;
                bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
-               bBeforeAutofit ) CLASS TXBrowse
+               bBeforeAutofit, lLikeExcel, lButtons, lNoDelMsg ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
 Local nWidth2, nCol2, lLocked, oScroll, z
 
@@ -213,25 +208,25 @@ Local nWidth2, nCol2, lLocked, oScroll, z
    nWidth2 := if( novscroll, w, w - GETVSCROLLBARWIDTH() )
 
    ::Define2( ControlName, ParentForm, x, y, nWidth2, h, ::aHeaders, aWidths, ;
-              ,, fontname, fontsize, tooltip,,, ;
-              aHeadClick,,, nogrid, aImage, ::aJust, ;
+              , , fontname, fontsize, tooltip, , , ;
+              aHeadClick, , , nogrid, aImage, ::aJust, ;
               break, HelpId, bold, italic, underline, strikeout,, ;
-              ,, editable, backcolor, fontcolor, dynamicbackcolor, ;
+              , , editable, backcolor, fontcolor, dynamicbackcolor, ;
               dynamicforecolor, aPicture, lRtl, LVS_SINGLESEL, ;
               inplace, editcontrols, readonly, valid, validmessages, ;
               editcell, aWhenFields, lDisabled, lNoTabStop, lInvisible, ;
               lNoHeaders,, aHeaderImage, aHeaderImageAlign, FullMove, ;
               aSelectedColors, aEditKeys, , , lDblBffr, lFocusRect, lPLM, ;
               lFixedCols, abortedit, click, lFixedWidths, bBeforeColMove, ;
-              bAfterColMove, bBeforeColSize, bAfterColSize, bBeforeAutofit, )
+              bAfterColMove, bBeforeColSize, bAfterColSize, bBeforeAutofit, ;
+              lLikeExcel, lButtons, AllowDelete, , , DelMsg, lNoDelMsg, ;
+              AllowAppend, )
 
    ::nWidth := w
 
    ::FixBlocks( lFixedBlocks )
 
    ASSIGN ::Lock          VALUE lock          TYPE "L"
-   ASSIGN ::AllowDelete   VALUE AllowDelete   TYPE "L"
-   ASSIGN ::AllowAppend   VALUE AllowAppend   TYPE "L"
    ASSIGN ::aReplaceField VALUE replacefields TYPE "A"
    ASSIGN ::lRecCount     VALUE lRecCount     TYPE "L"
 
@@ -296,7 +291,6 @@ Local nWidth2, nCol2, lLocked, oScroll, z
    ASSIGN ::OnAppend    VALUE onappend    TYPE "B"
    ASSIGN ::OnEnter     VALUE onenter     TYPE "B"
    ASSIGN ::bDelWhen    VALUE bDelWhen    TYPE "B"
-   ASSIGN ::DelMsg      VALUE DelMsg      TYPE "C"
    ASSIGN ::OnDelete    VALUE onDelete    TYPE "B"
 
 Return Self
@@ -886,12 +880,12 @@ Local nvKey, lGo
 
       nvKey := GetGridvKey( lParam )
       Do Case
-         Case GetKeyFlagState() == MOD_ALT .AND. nvKey == 65 // A
+         Case GetKeyFlagState() == MOD_ALT .AND. nvKey == VK_A
             If ::AllowAppend .AND. ! ::lLocked
                ::EditItem( .T. )
             EndIf
 
-         Case nvKey == 46 // DEL
+         Case nvKey == VK_DELETE
             If ::AllowDelete .and. ! ::Eof() .AND. ! ::lLocked
                If valtype(::bDelWhen) == "B"
                   lGo := _OOHG_EVAL(::bDelWhen)
@@ -900,11 +894,13 @@ Local nvKey, lGo
                EndIf
 
                If lGo
-                  If MsgYesNo(_OOHG_Messages(4, 1), _OOHG_Messages(4, 2))
+                  If ::lNoDelMsg
+                     ::Delete()
+                  ElseIf MsgYesNo( _OOHG_Messages(4, 1), _OOHG_Messages(4, 2) )
                      ::Delete()
                   EndIf
                ElseIf ! Empty( ::DelMsg )
-                  MsgExclamation(::DelMsg, _OOHG_Messages(4, 2))
+                  MsgExclamation( ::DelMsg, _OOHG_Messages(4, 2) )
                EndIf
             EndIf
 
@@ -1116,7 +1112,7 @@ Local Value
 
    // Do before unlocking record or moving record pointer
    // so block can operate on deleted record (e.g. to copy to a log).
-   _OOHG_Eval(::OnDelete)
+   ::DoEvent( ::OnDelete, 'DELETE' )
 
    If ::Lock
       ::oWorkArea:Commit()
@@ -1467,7 +1463,7 @@ Local cField, cArea, nPos, aStruct
    If ValType( EditControl ) != "O"
       If ValType( ::Picture ) == "A" .AND. Len( ::Picture ) >= nCol
          If ValType( ::Picture[ nCol ] ) $ "CM"
-            EditControl := TGridControlTextBox():New( ::Picture[ nCol ],, ValType( uOldValue ) )
+            EditControl := TGridControlTextBox():New( ::Picture[ nCol ], , ValType( uOldValue ), , , , Self )
          ElseIf ValType( ::Picture[ nCol ] ) == "L" .AND. ::Picture[ nCol ]
             EditControl := TGridControlImageList():New( Self )
          EndIf
@@ -1477,20 +1473,20 @@ Local cField, cArea, nPos, aStruct
          Do Case
             Case aStruct[ nPos ][ 2 ] == "N"
                If aStruct[ nPos ][ 4 ] == 0
-                  EditControl := TGridControlTextBox():New( Replicate( "9", aStruct[ nPos ][ 3 ] ),, "N" )
+                  EditControl := TGridControlTextBox():New( Replicate( "9", aStruct[ nPos ][ 3 ] ), , "N", , , , Self )
                Else
-                  EditControl := TGridControlTextBox():New( Replicate( "9", aStruct[ nPos ][ 3 ] - aStruct[ nPos ][ 4 ] - 1 ) + "." + Replicate( "9", aStruct[ nPos ][ 4 ] ),, "N" )
+                  EditControl := TGridControlTextBox():New( Replicate( "9", aStruct[ nPos ][ 3 ] - aStruct[ nPos ][ 4 ] - 1 ) + "." + Replicate( "9", aStruct[ nPos ][ 4 ] ), , "N", , , , Self )
                EndIf
             Case aStruct[ nPos ][ 2 ] == "L"
-               // EditControl := TGridControlCheckBox():New()
-               EditControl := TGridControlLComboBox():New()
+               // EditControl := TGridControlCheckBox():New( , , , , Self)
+               EditControl := TGridControlLComboBox():New( , , , , Self )
             Case aStruct[ nPos ][ 2 ] == "M"
-               EditControl := TGridControlMemo():New()
+               EditControl := TGridControlMemo():New( , , Self )
             Case aStruct[ nPos ][ 2 ] == "D"
-               // EditControl := TGridControlDatePicker():New( .T. )
-               EditControl := TGridControlTextBox():New( "@D",, "D" )
+               // EditControl := TGridControlDatePicker():New( .T., , , , Self )
+               EditControl := TGridControlTextBox():New( "@D", , "D", , , , Self )
             Case aStruct[ nPos ][ 2 ] == "C"
-               EditControl := TGridControlTextBox():New( "@S" + Ltrim( Str( aStruct[ nPos ][ 3 ] ) ),, "C" )
+               EditControl := TGridControlTextBox():New( "@S" + Ltrim( Str( aStruct[ nPos ][ 3 ] ) ), , "C", , , , Self )
             OtherWise
                // Non-implemented field type!!!
          EndCase

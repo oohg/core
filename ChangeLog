@@ -1,11 +1,64 @@
 /*
- * $Id: ChangeLog,v 1.1128 2013-08-02 00:46:12 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1129 2013-08-02 03:08:52 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-08-02 00:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     * Previous entry corrected.
+   * source/h_grid.prg
+     + Added DATAs lButtons, AllowDelete, bDelWhen, DelMsg, onDelete,
+       lNoDelMsg, and AllowAppend.
+     - Deleted DATA Append.
+     + Added method TGrid():Append().
+     + Added support for DELETE, DELETEWHEN, DELETEMSG, NODELETEMSG,
+       ON DELETE, APPEND and ON APPEND clauses.
+     - Deleted TGridByCell():DeleteItem().
+     * After deleting an item in TGridByCell() the ::Value stays
+       unchanged except when there are no more items.
+     * Do not change received parameter in method TGridByCell():Value.
+     + Added DATA oGrid to TGridControl().
+     + Added support for Grid's lButtons property in TGridControl*().
+     - Deleted DATA oGrid from:
+       TGridControlTextBox()
+       TGridControlComboBox()
+       TGridControlComboText()
+       TGridControlImageList()
+       TGridControlImageData()
+     + Added new parameter to TGridControl*():New() calls.
+     * Some comments updated.
+   * source/h_xbrowse.prg
+     - Deleted DATAs AllowDelete, bDelWhen, DelMsg, onDelete and
+       AllowAppend.
+     + Added support for NODELETEMSG, EDITLIKEEXCEL and USEBUTTONS
+       clauses.
+     * Changed some hardwired constants by defined constants.
+   * source/h_browse.prg
+     - Deleted DATA lNoDelMsg.
+     + Added support for EDITLIKEEXCEL and USEBUTTONS clauses.
+     * Changed some hardwired constants by defined constants.
+   * include/i_grid.ch
+     + Added USEBUTTONS clause (indicates that TGridControls will
+       have buttons).
+     + Added support for DELETE, DELETEWHEN, DELETEMSG, NODELETEMSG,
+       ON DELETE, APPEND and ON APPEND clauses.
+   * include/i_browse.ch
+     + Added EDITLIKEEXCEL and USEBUTTONS clauses.
+   * include/i_hmg_compat.ch
+     + Added EDITLIKEEXCEL and USEBUTTONS clauses.
+   * include/i_xbrowse.ch
+     + Added NODELETEMSG, EDITLIKEEXCEL and USEBUTTONS clauses.
+   * include/i_altsyntax.ch
+     + Added support for new clauses in Grid, XBrowse and Browse.
+   * source/h_init.prg
+     + Added support for 'Delete Item' message.
+       TODO: Translate message into Croatian, Basque, French,
+       German, Italian, Polish, Portuguese, Russian, Finnish,
+       Dutch and Slovenian.
 
 2013-08-01 21:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
@@ -18,7 +71,8 @@
      + Added new parameter lLikeExcel to TGrid():Define,
        TGrid():Define2(), TGridMulti():Define and TGridByCell:Define().
    * include/i_grid.ch
-     + Added EDITLIKEEXCEL clause.
+     + Added EDITLIKEEXCEL clause (by default TGridControlTextboxes
+       will behave like Excel when editing).
    * source/h_xbrowse.prg
      + Added new parameter to TGrid():Define2() call in method
        TXBrowse:Define().

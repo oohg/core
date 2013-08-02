@@ -1,5 +1,5 @@
 /*
- * $Id: i_browse.ch,v 1.41 2013-07-04 20:43:16 fyurisich Exp $
+ * $Id: i_browse.ch,v 1.42 2013-08-02 03:08:54 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -183,6 +183,8 @@
       [ BEFORECOLSIZE <bBefSiz> ] ;
       [ AFTERCOLSIZE <bAftSiz> ] ;
       [ BEFOREAUTOFIT <bBefAut> ] ;
+      [ <excel: EDITLIKEEXCEL> ] ;
+      [ <buts: USEBUTTONS> ] ;
    => ;
       [ <oObj> := ] _OOHG_SelectSubClass( TOBrowse(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, <widths>, ;
@@ -203,7 +205,7 @@
             <.plm.>, iif( upper( #<sync> ) == "UNSYNCHRONIZED", .F., iif( upper( #<sync> ) == "SYNCHRONIZED", .T., NIL ) ), ;
             <.fixedcols.>, <.nodelmsg.>, <.updall.>, <{abortedit}>, <{click}>, <.fixedwidths.>, ;
             iif( upper( #<blocks> ) == "FIXEDBLOCKS", .T., iif( upper( #<blocks> ) == "DYNAMICBLOCKS", .F., .F. ) ), ;
-            <{bBefMov}>, <{bAftMov}>, <{bBefSiz}>, <{bAftSiz}>, <{bBefAut}> )
+            <{bBefMov}>, <{bAftMov}>, <{bBefSiz}>, <{bAftSiz}>, <{bBefAut}>, <.excel.>, <.buts.> )
 
 #command SET BROWSESYNC ON  => SetBrowseSync( .T. )
 #command SET BROWSESYNC OFF => SetBrowseSync( .F. )

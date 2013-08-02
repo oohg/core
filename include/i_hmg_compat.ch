@@ -1,5 +1,5 @@
 /*
- * $Id: i_hmg_compat.ch,v 1.22 2013-07-04 20:43:16 fyurisich Exp $
+ * $Id: i_hmg_compat.ch,v 1.23 2013-08-02 03:08:54 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -188,6 +188,8 @@
       [ BEFORECOLSIZE <bBefSiz> ] ;
       [ AFTERCOLSIZE <bAftSiz> ] ;
       [ BEFOREAUTOFIT <bBefAut> ] ;
+      [ <excel: EDITLIKEEXCEL> ] ;
+      [ <buts: USEBUTTONS> ] ;
    => ;
       [ <oObj> := ] _OOHG_SelectSubClass( TOBrowse(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, , , <w>, <h>, <headers>, <widths>, <Fields>, ;
@@ -208,7 +210,7 @@
             <.plm.>, iif( upper( #<sync> ) == "UNSYNCHRONIZED", .F., iif( upper( #<sync> ) == "SYNCHRONIZED", .T., NIL ) ), ;
             <.fixedcols.>, <.nodelmsg.>, <.updall.>, <{abortedit}>, <{click}>, <.fixedwidths.>, ;
             iif( upper( #<blocks> ) == "FIXEDBLOCKS", .T., iif( upper( #<blocks> ) == "DYNAMICBLOCKS", .F., .F. ) ), ;
-            <{bBefMov}>, <{bAftMov}>, <{bBefSiz}>, <{bAftSiz}>, <{bBefAut}> )
+            <{bBefMov}>, <{bAftMov}>, <{bBefSiz}>, <{bAftSiz}>, <{bBefAut}>, <.excel.>, <.buts.> )
 
 #xcommand @ <row>,<col> BUTTONEX <name> ;
       [ OBJ <obj> ] ;

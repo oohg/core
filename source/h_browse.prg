@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.124 2013-07-14 22:46:54 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.125 2013-08-02 03:08:54 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -108,7 +108,6 @@ CLASS TOBrowse FROM TXBrowse
     * When NIL the browse behaves according to SET BROWESYNC value.
     */
    DATA lUpdateAll      INIT .F.
-   DATA lNoDelMsg       INIT .T.
 
    METHOD Define
    METHOD Refresh
@@ -162,7 +161,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                uRefresh, dblbffr, lFocusRect, lPLM, sync, lFixedCols, ;
                lNoDelMsg, lUpdateAll, abortedit, click, lFixedWidths, ;
                lFixedBlocks, bBeforeColMove, bAfterColMove, bBeforeColSize, ;
-               bAfterColSize, bBeforeAutofit ) CLASS TOBrowse
+               bAfterColSize, bBeforeAutofit, lLikeExcel, lButtons ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local nWidth2, nCol2, oScroll, z
 
@@ -172,7 +171,6 @@ Local nWidth2, nCol2, oScroll, z
    ASSIGN ::aJust       VALUE aJust       TYPE "A" DEFAULT {}
    ASSIGN ::lDescending VALUE lDescending TYPE "L"
    ASSIGN ::SyncStatus  VALUE sync        TYPE "L" DEFAULT nil
-   ASSIGN ::lNoDelMsg   VALUE lNoDelMsg   TYPE "L"
    ASSIGN ::lUpdateAll  VALUE lUpdateAll  TYPE "L"
 
    IF ValType( uRefresh ) == "N"
@@ -241,7 +239,8 @@ Local nWidth2, nCol2, oScroll, z
                    aWhenFields, lDisabled, lNoTabStop, lInvisible, lNoHeaders,, aHeaderImage, ;
                    aHeaderImageAlign, FullMove, aSelectedColors, aEditKeys, , , dblbffr, lFocusRect, ;
                    lPLM, lFixedCols, abortedit, click, lFixedWidths, bBeforeColMove, bAfterColMove, ;
-                   bBeforeColSize, bAfterColSize, bBeforeAutofit )
+                   bBeforeColSize, bAfterColSize, bBeforeAutofit, lLikeExcel, lButtons, ;
+                   AllowDelete, , , DelMsg, lNoDelMsg, AllowAppend, )
 
    ::nWidth := w
 
@@ -250,8 +249,6 @@ Local nWidth2, nCol2, oScroll, z
    ENDIF
 
    ASSIGN ::Lock          VALUE lock          TYPE "L"
-   ASSIGN ::AllowDelete   VALUE AllowDelete   TYPE "L"
-   ASSIGN ::AllowAppend   VALUE AllowAppend   TYPE "L"
    ASSIGN ::aReplaceField VALUE replacefields TYPE "A"
    ASSIGN ::lRecCount     VALUE lRecCount     TYPE "L"
 
@@ -318,7 +315,6 @@ Local nWidth2, nCol2, oScroll, z
    ASSIGN ::OnAppend    VALUE onappend    TYPE "B"
    ASSIGN ::OnEnter     value onenter     TYPE "B"
    ASSIGN ::bDelWhen    VALUE bDelWhen    TYPE "B"
-   ASSIGN ::DelMsg      VALUE DelMsg      TYPE "C"
    ASSIGN ::OnDelete    VALUE onDelete    TYPE "B"
 
 Return Self
@@ -801,7 +797,7 @@ Local Value, nRecNo, lSync
       // Do before unlocking record or moving record pointer
       // so block can operate on deleted record (e.g. to copy to a log).
       If HB_IsBlock( ::OnDelete )
-         Eval( ::OnDelete )
+         ::DoEvent( ::OnDelete, 'DELETE' )
       EndIf
 
       If ::Lock
@@ -1479,7 +1475,7 @@ Local nvKey, r, DeltaSelect, lGo
       Case Select( ::WorkArea ) == 0
          // No database open
 
-      Case nvKey == 65 // A
+      Case nvKey == VK_A
          if GetAltState() == -127 ;
             .or.;
             GetAltState() == -128   // ALT
@@ -1490,7 +1486,7 @@ Local nvKey, r, DeltaSelect, lGo
 
          EndIf
 
-      Case nvKey == 46 // DEL
+      Case nvKey == VK_DELETE
          If ::AllowDelete .and. ! ::Eof()
             If HB_IsBlock( ::bDelWhen )
                lGo := EVAL( ::bDelWhen )
@@ -1501,11 +1497,11 @@ Local nvKey, r, DeltaSelect, lGo
             If lGo
                If ::lNoDelMsg
                   ::Delete()
-               ElseIf MsgYesNo(_OOHG_Messages(4, 1), _OOHG_Messages(4, 2))
+               ElseIf MsgYesNo( _OOHG_Messages(4, 1), _OOHG_Messages(4, 2) )
                   ::Delete()
                EndIf
             ElseIf ! Empty( ::DelMsg )
-               MsgExclamation(::DelMsg, _OOHG_Messages(4, 2))
+               MsgExclamation( ::DelMsg, _OOHG_Messages(4, 2) )
             EndIf
          EndIf
 

@@ -1,5 +1,5 @@
 /*
- * $Id: i_grid.ch,v 1.29 2013-08-01 01:55:04 fyurisich Exp $
+ * $Id: i_grid.ch,v 1.30 2013-08-02 03:08:54 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -172,6 +172,14 @@
       [ AFTERCOLSIZE <bAftSiz> ] ;
       [ BEFOREAUTOFIT <bBefAut> ] ;
       [ <excel: EDITLIKEEXCEL> ] ;
+      [ <buts: USEBUTTONS> ] ;
+      [ <delete: DELETE> ] ;
+      [ DELETEWHEN <bWhenDel> ] ;
+      [ DELETEMSG <DelMsg> ] ;
+      [ ON DELETE <onDelete> ] ;
+      [ <nodelmsg: NODELETEMSG> ] ;
+      [ <append : APPEND> ] ;
+      [ ON APPEND <onappend> ] ;
    =>;
       [ <obj> := ] _OOHG_SelectSubClass(iif( <.bycell.>, TGridByCell(), iif( <.multiselect.>, TGridMulti(), TGrid() ) ), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, ;
@@ -188,7 +196,9 @@
             iif( upper( #<bffr> ) == "DOUBLEBUFFER", .T., iif( upper( #<bffr> ) == "SINGLEBUFFER", .F., .T. ) ), ;
             iif( #<focus> == "NOFOCUSRECT", .F., iif( #<focus> == "FOCUSRECT", .T., NIL ) ), ;
             <.plm.>, <.fixedcols.>, <{abortedit}>, <{click}>, <.fixedwidths.>, ;
-            <{bBefMov}>, <{bAftMov}>, <{bBefSiz}>, <{bAftSiz}>, <{bBefAut}>, <.excel.> )
+            <{bBefMov}>, <{bAftMov}>, <{bBefSiz}>, <{bAftSiz}>, <{bBefAut}>, <.excel.>, ;
+            <.buts.>, <.delete.>, <{onDelete}>, <{bWhenDel}>, <DelMsg>, <.nodelmsg.>, ;
+            <.append.>, <{onappend}> )
 
 ///////////////////////////////////////////////////////////////////////////////
 // GRID (SPLITBOX VERSION)
@@ -264,6 +274,14 @@
       [ AFTERCOLSIZE <bAftSiz> ] ;
       [ BEFOREAUTOFIT <bBefAut> ] ;
       [ <excel: EDITLIKEEXCEL> ] ;
+      [ <buts: USEBUTTONS> ] ;
+      [ <delete: DELETE> ] ;
+      [ DELETEWHEN <bWhenDel> ] ;
+      [ DELETEMSG <DelMsg> ] ;
+      [ ON DELETE <onDelete> ] ;
+      [ <nodelmsg: NODELETEMSG> ] ;
+      [ <append : APPEND> ] ;
+      [ ON APPEND <onappend> ] ;
    =>;
       [ <obj> := ] _OOHG_SelectSubClass(iif( <.bycell.>, TGridByCell(), iif( <.multiselect.>, TGridMulti(), TGrid() ) ), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, , , <w>, <h>, <headers>, ;
@@ -280,4 +298,6 @@
             iif( upper( #<bffr> ) == "DOUBLEBUFFER", .T., iif( upper( #<bffr> ) == "SINGLEBUFFER", .F., .T. ) ), ;
             iif( #<focus> == "NOFOCUSRECT", .F., iif( #<focus> == "FOCUSRECT", .T., NIL ) ), ;
             <.plm.>, <.fixedcols.>, <{abortedit}>, <{click}>, <.fixedwidths.>, ;
-            <{bBefMov}>, <{bAftMov}>, <{bBefSiz}>, <{bAftSiz}>, <{bBefAut}>, <.excel.> )
+            <{bBefMov}>, <{bAftMov}>, <{bBefSiz}>, <{bAftSiz}>, <{bBefAut}>, <.excel.>, ;
+            <.buts.>, <.delete.>, <{onDelete}>, <{bWhenDel}>, <DelMsg>, <.nodelmsg.>, ;
+            <.append.>, <{onappend}> ) )

@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.210 2013-08-02 00:46:12 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.211 2013-08-02 03:08:54 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -114,7 +114,6 @@ CLASS TGrid FROM TControl
    DATA SetImageListWParam     INIT LVSIL_SMALL
    DATA InPlace                INIT .F.
    DATA FullMove               INIT .F.
-   DATA Append                 INIT .F.
    DATA EditControls           INIT Nil
    DATA ReadOnly               INIT Nil
    DATA Valid                  INIT Nil
@@ -158,6 +157,13 @@ CLASS TGrid FROM TControl
    DATA aHiddenCols            INIT {}
    DATA lLikeExcel             INIT .F.
    DATA cEditKey               INIT "F2"
+   DATA lButtons               INIT .F.
+   DATA AllowDelete            INIT .F.
+   DATA bDelWhen               INIT Nil
+   DATA DelMsg                 INIT Nil
+   DATA onDelete               INIT Nil
+   DATA lNoDelMsg              INIT .F.
+   DATA AllowAppend            INIT .F.
 
    METHOD Define
    METHOD Define2
@@ -228,6 +234,7 @@ CLASS TGrid FROM TControl
    METHOD ScrollToLeft
    METHOD ScrollToRight
    METHOD ScrollToCol
+   METHOD Append               SETGET
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -243,7 +250,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
                lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths, ;
                bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
-               bBeforeAutofit, lLikeExcel ) CLASS TGrid
+               bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
+               bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local nStyle := LVS_SINGLESEL
 
@@ -259,7 +267,8 @@ Local nStyle := LVS_SINGLESEL
               aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
               lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths, ;
               bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
-              bBeforeAutofit, lLikeExcel )
+              bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
+              bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -275,7 +284,8 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                 aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
                 lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths, ;
                 bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
-                bBeforeAutofit, lLikeExcel ) CLASS TGrid
+                bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
+                bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local ControlHandle, aImageList, i
 
@@ -325,6 +335,11 @@ Local ControlHandle, aImageList, i
    ASSIGN ::lFocusRect  VALUE lFocusRect  TYPE "L" DEFAULT .T.
    ASSIGN ::lPLM        VALUE lPLM        TYPE "L" DEFAULT .F.
    ASSIGN ::lLikeExcel  VALUE lLikeExcel  TYPE "L" DEFAULT .F.
+   ASSIGN ::lButtons    VALUE lButtons    TYPE "L" DEFAULT .F.
+   ASSIGN ::AllowDelete VALUE AllowDelete TYPE "L" DEFAULT .F.
+   ASSIGN ::AllowAppend VALUE AllowAppend TYPE "L" DEFAULT .F.
+   ASSIGN ::lNoDelMsg   VALUE lNoDelMsg   TYPE "L" DEFAULT .F.
+   ASSIGN ::DelMsg      VALUE DelMsg      TYPE "C"
 
    If ::lCheckBoxes .AND. ::lPLM
       MsgOOHGError( "CHECKBOXES and PAINTLEFTMARGIN clauses can't be used simultaneously. Program Terminated." )
@@ -436,8 +451,19 @@ Local ControlHandle, aImageList, i
    ASSIGN ::bBeforeColSize VALUE bBeforeColSize TYPE "B"
    ASSIGN ::bAfterColSize  VALUE bAfterColSize  TYPE "B"
    ASSIGN ::bBeforeAutofit VALUE bBeforeAutofit TYPE "B"
+   ASSIGN ::OnDelete       VALUE onDelete       TYPE "B"
+   ASSIGN ::bDelWhen       VALUE bDelWhen       TYPE "B"
+   ASSIGN ::OnAppend       VALUE onappend       TYPE "B"
 
 Return Self
+
+*-----------------------------------------------------------------------------*
+METHOD Append( lAppend ) CLASS TGrid
+*-----------------------------------------------------------------------------*
+   If HB_IsLogical( lAppend )
+      ::AllowAppend := lAppend
+   EndIf
+Return ::AllowAppend
 
 *-----------------------------------------------------------------------------*
 METHOD CheckItem( nItem, lChecked ) CLASS TGrid
@@ -670,7 +696,7 @@ Local lRet
       Else
          If ::FullMove
             If ::nRowPos == ::ItemCount
-               If ::Append
+               If ::AllowAppend
                   // Add a new item
                   ::lAppendMode := .T.
                   ::InsertBlank( ::ItemCount + 1 )
@@ -731,7 +757,7 @@ METHOD Down() CLASS TGrid
    Else
       If ::FirstSelectedItem < ::ItemCount
          ::Value := ::FirstSelectedItem + 1
-      ElseIf ::Append
+      ElseIf ::AllowAppend
          ::AppendItem()
       EndIf
    EndIf
@@ -1984,7 +2010,7 @@ Return Nil
 METHOD Events_Notify( wParam, lParam ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local nNotify := GetNotifyCode( lParam )
-Local lvc, _ThisQueryTemp, nvkey, uValue
+Local lvc, _ThisQueryTemp, nvkey, uValue, lGo, aItem
 
    If nNotify == NM_CUSTOMDRAW
       Return TGrid_Notify_CustomDraw( Self, lParam, .F., uValue, 0, ::lCheckBoxes, ::lFocusRect, ::lNoGrid, ::lPLM )
@@ -1998,7 +2024,7 @@ Local lvc, _ThisQueryTemp, nvkey, uValue
 
       If nvkey == VK_DOWN
          If ::FirstSelectedItem == ::ItemCount .AND. ! ::lEditMode
-            If ::Append
+            If ::AllowAppend
                ::AppendItem()
                Return Nil
             EndIf
@@ -2012,6 +2038,32 @@ Local lvc, _ThisQueryTemp, nvkey, uValue
             // skip default action
             Return 1
          EndIf
+      ElseIf nvKey == VK_DELETE .AND. ::AllowDelete
+         // detect item
+         uValue := ::FirstSelectedItem
+         If uValue > 0
+            If ValType( ::bDelWhen ) == "B"
+               lGo := _OOHG_EVAL( ::bDelWhen )
+            Else
+               lGo := .t.
+            EndIf
+
+            If lGo
+               If ::lNoDelMsg
+                  aItem := ::Item( uValue )
+                  ::DeleteItem( uValue )
+                  ::Value := Min( uValue, ::ItemCount )
+                  ::DoEvent( ::OnDelete, "DELETE", { aItem } )
+               ElseIf MsgYesNo( _OOHG_Messages(4, 1), _OOHG_Messages(4, 3) )
+                  aItem := ::Item( uValue )
+                  ::DeleteItem( uValue )
+                  ::Value := Min( uValue, ::ItemCount )
+                  ::DoEvent( ::OnDelete, "DELETE", { aItem } )
+               EndIf
+            ElseIf ! Empty( ::DelMsg )
+               MsgExclamation( ::DelMsg, _OOHG_Messages(4, 3) )
+            EndIf
+         Endif
       EndIf
 
    ElseIf nNotify == LVN_GETDISPINFO
@@ -2162,7 +2214,8 @@ METHOD DeleteItem( nItem ) CLASS TGrid
 *-----------------------------------------------------------------------------*
    _OOHG_DeleteArrayItem( ::GridForeColor, nItem )
    _OOHG_DeleteArrayItem( ::GridBackColor, nItem )
-Return ListViewDeleteString( ::hWnd, nItem )
+   ListViewDeleteString( ::hWnd, nItem )
+Return Nil
 
 *-----------------------------------------------------------------------------*
 METHOD Item( nItem, uValue, uForeColor, uBackColor ) CLASS TGrid
@@ -2520,7 +2573,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
                lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths, ;
                bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
-               bBeforeAutofit, lLikeExcel ) CLASS TGridMulti
+               bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
+               bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend ) CLASS TGridMulti
 *-----------------------------------------------------------------------------*
 Local nStyle := 0
 
@@ -2536,7 +2590,8 @@ Local nStyle := 0
               aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
               lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths, ;
               bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
-              bBeforeAutofit, lLikeExcel )
+              bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
+              bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -2614,7 +2669,7 @@ Local lRet
       Else
          If ::FullMove
             If ::nRowPos == ::ItemCount
-               If ::Append
+               If ::AllowAppend
                   // Add a new item
                   ::lAppendMode := .T.
                   ::InsertBlank( ::ItemCount + 1 )
@@ -2648,7 +2703,7 @@ METHOD Down() CLASS TGridMulti
    Else
       If ::FirstSelectedItem < ::ItemCount
          ::Value := { ::FirstSelectedItem + 1 }
-      ElseIf ::Append
+      ElseIf ::AllowAppend
          ::AppendItem()
       EndIf
    EndIf
@@ -2750,7 +2805,6 @@ CLASS TGridByCell FROM TGrid
    METHOD Events
    METHOD Events_Enter
    METHOD Events_Notify
-   METHOD DeleteItem
    METHOD DoChange
    METHOD SetSelectedColors SETGET
 
@@ -2773,7 +2827,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
                lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths, ;
                bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
-               bBeforeAutofit, lLikeExcel ) CLASS TGridByCell
+               bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
+               bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend ) CLASS TGridByCell
 *-----------------------------------------------------------------------------*
 Local nStyle := LVS_SINGLESEL
 
@@ -2791,7 +2846,8 @@ Local nStyle := LVS_SINGLESEL
               aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
               lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths, ;
               bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
-              bBeforeAutofit, lLikeExcel )
+              bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
+              bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend )
 
    // By default, search in the current column
    ::SearchCol := 0
@@ -2866,21 +2922,19 @@ METHOD Value( uValue ) CLASS TGridByCell
 *-----------------------------------------------------------------------------*
    If HB_IsArray( uValue ) .AND. Len( uValue ) > 1 .AND. HB_IsNumeric( uValue[ 1 ] ) .AND. HB_IsNumeric( uValue[ 2 ] )
       If uValue[ 1 ] < 1 .OR. uValue[ 1 ] > ::ItemCount .OR. uValue[ 2 ] < 1 .OR. uValue[ 2 ] > Len( ::aHeaders )
-         uValue[ 1 ] := 0
-         uValue[ 2 ] := 0
+         ::nRowPos := 0
+         ::nColPos := 0
+      Else
+         ::nRowPos := uValue[ 1 ]
+         ::nColPos := uValue[ 2 ]
       EndIf
 
-      ::nRowPos := uValue[ 1 ]
-      ::nColPos := uValue[ 2 ]
-
-      ListView_SetCursel( ::hWnd, uValue[ 1 ] )
-      ListView_EnsureVisible( ::hWnd, uValue[ 1 ] )
-      ListView_RedrawItems( ::hWnd, uValue[ 1 ], uValue[ 1 ] )
+      ListView_SetCursel( ::hWnd, ::nRowPos )
+      ListView_EnsureVisible( ::hWnd, ::nRowPos )
+      ListView_RedrawItems( ::hWnd, ::nRowPos, ::nRowPos )
       ::DoChange()
-   Else
-      uValue := { ::nRowPos, ::nColPos }
    EndIf
-RETURN uValue
+RETURN { ::nRowPos, ::nColPos }
 
 *--------------------------------------------------------------------------*
 METHOD AppendItem() CLASS TGridByCell
@@ -2955,7 +3009,7 @@ Local lRet, uValue
       ElseIf ::FullMove
          If uValue[ 1 ] < ::ItemCount
             ::Value := { uValue[ 1 ] + 1, 1 }
-         ElseIf ::Append
+         ElseIf ::AllowAppend
             // Add a new item
             ::lAppendMode := .T.
             ::InsertBlank( ::ItemCount + 1 )
@@ -2994,7 +3048,7 @@ Local uValue
       EndIf
    ElseIf ::lNestedEdit
       // EditGrid is active, ignore de command
-   ElseIf ::Append
+   ElseIf ::AllowAppend
       ::AppendItem()
    ElseIf ::FullMove
       ::Value := { 1, 1 }
@@ -3051,7 +3105,7 @@ Local uValue
       ::Value := { uValue[ 1 ] + 1, uValue[ 2 ] }
    ElseIf ::lNestedEdit
       // EditGrid is active, ignore de command
-   ElseIf ::Append
+   ElseIf ::AllowAppend
       ::AppendItem()
    ElseIf ::FullMove
       ::Value := { 1, uValue[ 2 ] }
@@ -3336,7 +3390,7 @@ Return Nil
 METHOD Events_Notify( wParam, lParam ) CLASS TGridByCell
 *-----------------------------------------------------------------------------*
 Local nNotify := GetNotifyCode( lParam )
-Local nvkey, uRet, aValue, nItem
+Local nvkey, uRet, aValue, lGo, aItem
 
    If nNotify == NM_CUSTOMDRAW
       aValue := ::Value
@@ -3369,11 +3423,36 @@ Local nvkey, uRet, aValue, nItem
          ::Right()
       ElseIf nvkey == VK_SPACE .AND. ::lCheckBoxes
          // detect item
-         nItem := ::FirstSelectedItem
-
-         If nItem > 0
+         aValue := ::Value
+         If aValue[ 1 ] > 0
             // change check mark
-            ::CheckItem( nItem, ! ::CheckItem( nItem ) )
+            ::CheckItem( aValue[ 1 ], ! ::CheckItem( aValue[ 1 ] ) )
+         EndIf
+      ElseIf nvKey == VK_DELETE .AND. ::AllowDelete
+         // detect item
+         aValue := ::Value
+         If aValue[ 1 ] > 0
+            If ValType( ::bDelWhen ) == "B"
+               lGo := _OOHG_EVAL( ::bDelWhen )
+            Else
+               lGo := .t.
+            EndIf
+
+            If lGo
+               If ::lNoDelMsg
+                  aItem := ::Item( aValue[ 1 ] )
+                  ::DeleteItem( aValue[ 1 ] )
+                  ::Value := { Min( aValue[ 1 ], ::ItemCount ), aValue[ 2 ] }
+                  ::DoEvent( ::OnDelete, "DELETE", { aItem } )
+               ElseIf MsgYesNo( _OOHG_Messages(4, 1), _OOHG_Messages(4, 3) )
+                  aItem := ::Item( aValue[ 1 ] )
+                  ::DeleteItem( aValue[ 1 ] )
+                  ::Value := { Min( aValue[ 1 ], ::ItemCount ), aValue[ 2 ] }
+                  ::DoEvent( ::OnDelete, "DELETE", { aItem } )
+               EndIf
+            ElseIf ! Empty( ::DelMsg )
+               MsgExclamation( ::DelMsg, _OOHG_Messages(4, 3) )
+            EndIf
          EndIf
       EndIf
       // skip default action
@@ -3385,17 +3464,6 @@ Local nvkey, uRet, aValue, nItem
    EndIf
 
 Return ::Super:Events_Notify( wParam, lParam )
-
-*-----------------------------------------------------------------------------*
-METHOD DeleteItem( nItem ) CLASS TGridByCell
-*-----------------------------------------------------------------------------*
-Local aValue
-   aValue := ::Value
-   If nItem == aValue[ 1 ]
-      ::Value := { 0, 0 }
-   EndIf
-
-Return ::Super:DeleteItem( nItem )
 
 *-----------------------------------------------------------------------------*
 METHOD DoChange() CLASS TGridByCell
@@ -3557,17 +3625,17 @@ Local oGridControl, aEdit2, cControl
       cControl := Upper( AllTrim( aEditControl[ 1 ] ) )
       Do Case
          Case cControl == "MEMO"
-            oGridControl := TGridControlMemo():New( aEdit2[ 2 ], aEdit2[ 3 ] )
+            oGridControl := TGridControlMemo():New( aEdit2[ 2 ], aEdit2[ 3 ], oGrid )
          Case cControl == "DATEPICKER"
-            oGridControl := TGridControlDatePicker():New( aEdit2[ 2 ], aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 5 ] )
+            oGridControl := TGridControlDatePicker():New( aEdit2[ 2 ], aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 5 ], oGrid )
          Case cControl == "COMBOBOX"
             oGridControl := TGridControlComboBox():New( aEdit2[ 2 ], oGrid, aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 5 ], aEdit2[ 6 ] )
          Case cControl == "COMBOBOXTEXT"
             oGridControl := TGridControlComboBoxText():New( aEdit2[ 2 ], oGrid, aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 5 ], aEdit2[ 6 ] )
          Case cControl == "SPINNER"
-            oGridControl := TGridControlSpinner():New( aEdit2[ 2 ], aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 5 ] )
+            oGridControl := TGridControlSpinner():New( aEdit2[ 2 ], aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 5 ], oGrid )
          Case cControl == "CHECKBOX"
-            oGridControl := TGridControlCheckBox():New( aEdit2[ 2 ], aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 5 ] )
+            oGridControl := TGridControlCheckBox():New( aEdit2[ 2 ], aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 5 ], oGrid )
          Case cControl == "TEXTBOX"
             oGridControl := TGridControlTextBox():New( aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 2 ], aEdit2[ 5 ], aEdit2[ 6 ], aEdit2[ 7 ], oGrid, aEdit2[ 8 ], aEdit2[ 9 ] )
          Case cControl == "IMAGELIST"
@@ -3575,7 +3643,7 @@ Local oGridControl, aEdit2, cControl
          Case cControl == "IMAGEDATA"
             oGridControl := TGridControlImageData():New( oGrid, GridControlObject( aEdit2[ 2 ], oGrid ), aEdit2[ 3 ], aEdit2[ 4 ] )
          Case cControl == "LCOMBOBOX"
-            oGridControl := TGridControlLComboBox():New( aEdit2[ 2 ], aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 5 ] )
+            oGridControl := TGridControlLComboBox():New( aEdit2[ 2 ], aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 5 ], oGrid )
       EndCase
    EndIf
 Return oGridControl
@@ -3594,13 +3662,13 @@ Local oGridControl := Nil, cMask, nPos
       EndIf
       oGridControl := TGridControlTextBox():New( cMask, , "N", , , , oGrid )
    Case HB_IsLogical( uValue )
-      // oGridControl := TGridControlCheckBox():New( ".T.", ".F." )
-      oGridControl := TGridControlLComboBox():New( ".T.", ".F." )
+      // oGridControl := TGridControlCheckBox():New( ".T.", ".F.", oGrid )
+      oGridControl := TGridControlLComboBox():New( ".T.", ".F.", , , oGrid )
    Case HB_IsDate( uValue )
-      // oGridControl := TGridControlDatePicker():New( .T. )
+      // oGridControl := TGridControlDatePicker():New( .T., , oGrid )
       oGridControl := TGridControlTextBox():New( "@D", , "D", , , , oGrid )
    Case ValType( uValue ) == "M"
-      oGridControl := TGridControlMemo():New()
+      oGridControl := TGridControlMemo():New( , , oGrid )
    Case ValType( uValue ) == "C"
       oGridControl := TGridControlTextBox():New( , , "C", , , , oGrid )
    OtherWise
@@ -3641,6 +3709,7 @@ CLASS TGridControl
    DATA Type                  INIT "TGRIDCONTROL" READONLY
    DATA oControl              INIT Nil
    DATA oWindow               INIT Nil
+   DATA oGrid                 INIT Nil
    DATA Value                 INIT Nil
    DATA bWhen                 INIT Nil
    DATA cMemVar               INIT Nil
@@ -3689,7 +3758,7 @@ Local lRet := .F., i, nSize
              Next
           EndIf
 
-          If ::lButtons
+          If ::lButtons .OR. ::oGrid:lButtons
              nSize := nHeight - 4
              ::CreateControl( uValue, ::oWindow, 0, 0, nWidth - nSize * 2 - 6, nHeight )
              @ 2,nWidth - nSize * 2 - 6 + 2 BUTTON 0 WIDTH nSize HEIGHT nSize ACTION EVAL( ::bOk ) OF ( ::oWindow ) PICTURE ::cImageOk
@@ -3765,7 +3834,6 @@ CLASS TGridControlTextBox FROM TGridControl
    DATA cMask       INIT ""
    DATA cType       INIT ""
    DATA nOnFocusPos INIT NIL
-   DATA oGrid       INIT NIL
    DATA lLikeExcel  INIT .F.
    DATA cEditKey    INIT NIL
 
@@ -3777,6 +3845,7 @@ CLASS TGridControlTextBox FROM TGridControl
 ENDCLASS
 
 /*
+COLUMNCONTROL syntax:
 {'TEXTBOX', cType, cPicture, cFunction, nOnFocusPos, lButtons, aImages, lLikeExcel, cEditKey}
 */
 METHOD New( cPicture, cFunction, cType, nOnFocusPos, lButtons, aImages, oGrid, lLikeExcel, cEditKey ) CLASS TGridControlTextBox
@@ -3972,15 +4041,17 @@ CLASS TGridControlMemo FROM TGridControl
 ENDCLASS
 
 /*
+COLUMNCONTROL syntax:
 {'MEMO', cTitle, lCleanCRLF}
 */
-METHOD New( cTitle, lCleanCRLF ) CLASS TGridControlMemo
+METHOD New( cTitle, lCleanCRLF, oGrid ) CLASS TGridControlMemo
    If ValType( cTitle ) $ "CM" .AND. ! Empty( cTitle )
       ::cTitle := cTitle
    EndIf
    If HB_IsLogical( lCleanCRLF )
       ::lCleanCRLF := lCleanCRLF
    EndIf
+   ::oGrid := oGrid
 Return Self
 
 METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aKeys ) CLASS TGridControlMemo
@@ -4051,9 +4122,10 @@ CLASS TGridControlDatePicker FROM TGridControl
 ENDCLASS
 
 /*
+COLUMNCONTROL syntax:
 {'DATEPICKER', lUpDown, lShowNone, lButtons, aImages}
 */
-METHOD New( lUpDown, lShowNone, lButtons, aImages ) CLASS TGridControlDatePicker
+METHOD New( lUpDown, lShowNone, lButtons, aImages, oGrid ) CLASS TGridControlDatePicker
    If ! HB_IsLogical( lUpDown )
       lUpDown := .F.
    EndIf
@@ -4072,6 +4144,8 @@ METHOD New( lUpDown, lShowNone, lButtons, aImages ) CLASS TGridControlDatePicker
      DEFAULT ::cImageCancel TO aImages[ 1 ]
      DEFAULT ::cImageOk     TO aImages[ 2 ]
    EndIf
+
+   ::oGrid := oGrid
 Return Self
 
 METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aKeys ) CLASS TGridControlDatePicker
@@ -4100,7 +4174,6 @@ Return ::oControl
 CLASS TGridControlComboBox FROM TGridControl
 *-----------------------------------------------------------------------------*
    DATA aItems       INIT {}
-   DATA oGrid        INIT Nil
    DATA aValues      INIT Nil
    DATA cWorkArea    INIT ""
    DATA cField       INIT ""
@@ -4116,6 +4189,7 @@ CLASS TGridControlComboBox FROM TGridControl
 ENDCLASS
 
 /*
+COLUMNCONTROL syntax:
 {'COMBOBOX', aItems, aValues, cRetValType, lButtons, aImages}
 */
 METHOD New( aItems, oGrid, aValues, cRetValType, lButtons, aImages ) CLASS TGridControlComboBox
@@ -4230,7 +4304,6 @@ Return If( ( uValue >= 1 .AND. uValue <= Len( ::aItems ) ), ::aItems[ uValue ], 
 CLASS TGridControlComboBoxText FROM TGridControl
 *-----------------------------------------------------------------------------*
    DATA aItems       INIT {}
-   DATA oGrid        INIT Nil
    DATA lIncremental INIT .F.
    DATA lWinSize     INIT .F.
 
@@ -4243,6 +4316,7 @@ CLASS TGridControlComboBoxText FROM TGridControl
 ENDCLASS
 
 /*
+COLUMNCONTROL syntax:
 {'COMBOBOXTEXT', aItems, lIncremental, lWinSize, lButtons, aImages}
 */
 METHOD New( aItems, oGrid, lIncremental, lWinSize, lButtons, aImages ) CLASS TGridControlComboBoxText
@@ -4315,9 +4389,10 @@ CLASS TGridControlSpinner FROM TGridControl
 ENDCLASS
 
 /*
+COLUMNCONTROL syntax:
 {'SPINNER', nRangeMin, nRangeMax, lButtons, aImages}
 */
-METHOD New( nRangeMin, nRangeMax, lButtons, aImages ) CLASS TGridControlSpinner
+METHOD New( nRangeMin, nRangeMax, lButtons, aImages, oGrid ) CLASS TGridControlSpinner
    If HB_IsNumeric( nRangeMin )
       ::nRangeMin := nRangeMin
    EndIf
@@ -4333,6 +4408,8 @@ METHOD New( nRangeMin, nRangeMax, lButtons, aImages ) CLASS TGridControlSpinner
      DEFAULT ::cImageCancel TO aImages[ 1 ]
      DEFAULT ::cImageOk     TO aImages[ 2 ]
    EndIf
+
+   ::oGrid := oGrid
 Return Self
 
 METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aKeys ) CLASS TGridControlSpinner
@@ -4359,9 +4436,10 @@ CLASS TGridControlCheckBox FROM TGridControl
 ENDCLASS
 
 /*
+COLUMNCONTROL syntax:
 {'CHECKBOX', cTrue, cFalse, lButtons, aImages}
 */
-METHOD New( cTrue, cFalse, lButtons, aImages ) CLASS TGridControlCheckBox
+METHOD New( cTrue, cFalse, lButtons, aImages, oGrid ) CLASS TGridControlCheckBox
    If ValType( cTrue ) $ "CM"
       ::cTrue := cTrue
    EndIf
@@ -4377,6 +4455,8 @@ METHOD New( cTrue, cFalse, lButtons, aImages ) CLASS TGridControlCheckBox
      DEFAULT ::cImageCancel TO aImages[ 1 ]
      DEFAULT ::cImageOk     TO aImages[ 2 ]
    EndIf
+
+   ::oGrid := oGrid
 Return Self
 
 METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aKeys ) CLASS TGridControlCheckBox
@@ -4393,8 +4473,6 @@ Return ::oControl
 *-----------------------------------------------------------------------------*
 CLASS TGridControlImageList FROM TGridControl
 *-----------------------------------------------------------------------------*
-   DATA oGrid
-
    METHOD New
    METHOD CreateWindow
    METHOD CreateControl
@@ -4403,6 +4481,7 @@ CLASS TGridControlImageList FROM TGridControl
 ENDCLASS
 
 /*
+COLUMNCONTROL syntax:
 {'IMAGELIST', lButtons, aImages}
 */
 METHOD New( oGrid, lButtons, aImages ) CLASS TGridControlImageList
@@ -4449,7 +4528,6 @@ Return ::oControl:Value - 1
 CLASS TGridControlImageData FROM TGridControl
 *-----------------------------------------------------------------------------*
    DATA Type INIT "TGRIDCONTROLIMAGEDATA" READONLY
-   DATA oGrid
    DATA oData
 
    METHOD New
@@ -4461,6 +4539,7 @@ CLASS TGridControlImageData FROM TGridControl
 ENDCLASS
 
 /*
+COLUMNCONTROL syntax:
 {'IMAGEDATA', oData, lButtons, aImages}
 */
 METHOD New( oGrid, oData, lButtons, aImages ) CLASS TGridControlImageData
@@ -4541,9 +4620,10 @@ CLASS TGridControlLComboBox FROM TGridControl
 ENDCLASS
 
 /*
+COLUMNCONTROL syntax:
 {'LCOMBOBOX', cTrue, cFalse, lButtons, aImages}
 */
-METHOD New( cTrue, cFalse, lButtons, aImages ) CLASS TGridControlLComboBox
+METHOD New( cTrue, cFalse, lButtons, aImages, oGrid ) CLASS TGridControlLComboBox
    If ValType( cTrue ) $ "CM"
       ::cTrue := cTrue
    EndIf
@@ -4559,6 +4639,8 @@ METHOD New( cTrue, cFalse, lButtons, aImages ) CLASS TGridControlLComboBox
      DEFAULT ::cImageCancel TO aImages[ 1 ]
      DEFAULT ::cImageOk     TO aImages[ 2 ]
    EndIf
+
+   ::oGrid := oGrid
 Return Self
 
 METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aKeys ) CLASS TGridControlLComboBox

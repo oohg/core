@@ -1,5 +1,5 @@
 /*
- * $Id: h_init.prg,v 1.31 2013-03-27 00:09:20 fyurisich Exp $
+ * $Id: h_init.prg,v 1.32 2013-08-02 03:08:54 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -236,7 +236,8 @@ Local acButton, acLabel, acUser, acPrint
                          "Warning", ;
                          "Invalid Entry" }
    acBrowseMessages := { 'Are you sure ?', ;
-                         'Delete Record' }
+                         'Delete Record', ;
+                         'Delete Item' }
 
    // EDIT MESSAGES
    acABMUser        := { Chr(13)+"Delete record"+Chr(13)+"Are you sure ?"+Chr(13), ;
@@ -623,7 +624,8 @@ Local acButton, acLabel, acUser, acPrint
                          "Erreur", ;
                          "Entrée invalide" }
    acBrowseMessages := { 'Etes-vous sûre ?', ;
-                         'Enregistrement détruit' }
+                         'Enregistrement détruit', ;
+                         'Delete Item' }
 
    // EDIT MESSAGES
    acABMUser        := { Chr(13)+"Suppression d'enregistrement"+Chr(13)+"Etes-vous sûre ?"+Chr(13), ;
@@ -799,7 +801,8 @@ Local acButton, acLabel, acUser, acPrint
    acBrowseButton   := {}
    acBrowseError    := {}
    acBrowseMessages := { 'Sind Sie sicher ?', ;
-                         'Datensatz löschen' }
+                         'Datensatz löschen', ;
+                         'Delete Item' }
 
    // EDIT MESSAGES
    acABMUser        := { Chr(13)+"Datensatz loeschen"+Chr(13)+"Sind Sie sicher ?"+Chr(13), ;
@@ -985,7 +988,8 @@ Local acButton, acLabel, acUser, acPrint
                          "Attenzione!", ;
                          "Dato non valido" }
    acBrowseMessages := { 'Sei sicuro ?', ;
-                         'Cancella Record' }
+                         'Cancella Record', ;
+                         'Delete Item' }
 
    // EDIT MESSAGES
    acABMUser        := { Chr(13)+"Cancellare il record"+Chr(13)+"Sei sicuro ?"+Chr(13), ;
@@ -1180,7 +1184,8 @@ Local acButton, acLabel, acUser, acPrint
                          "Ostrze¿enie", ;
                          "Nieprawid³owy wpis" }
    acBrowseMessages := { 'Czy jesteo pewny ?', ;
-                         'Skasuj rekord' }
+                         'Skasuj rekord', ;
+                         'Delete Item' }
 
    // EDIT MESSAGES
    acABMUser        := { Chr(13)+"Usuni©cie rekordu"+Chr(13)+"Jeste˜ pewny ?"+Chr(13), ;
@@ -1366,7 +1371,8 @@ Local acButton, acLabel, acUser, acPrint
                          "Aguarde...", ;
                          "Dado Invalido" }
    acBrowseMessages := { 'Você tem Certeza ?', ;
-                         'Apaga Registro' }
+                         'Apaga Registro', ;
+                         'Delete Item' }
 
    // EDIT MESSAGES
    acABMUser        := { Chr(13)+"Ser  apagado o registro atual"+Chr(13)+"Tem certeza?"+Chr(13), ;
@@ -1558,7 +1564,8 @@ Local acButton, acLabel, acUser, acPrint
                          "Ïðåäóïðåæäåíèå", ;
                          "Ââåäåíû íåïðàâèëüíûå äàííûå" }
    acBrowseMessages := { 'Âû óâåðåíû ?', ;
-                         'Óäàëèòü çàïèñü' }
+                         'Óäàëèòü çàïèñü', ;
+                         'Delete Item' }
 
    // EDIT MESSAGES
    acABMUser        := { Chr(13)+"Óäàëåíèå çàïèñè."+Chr(13)+"Âû óâåðåíû ?"+Chr(13), ;
@@ -1666,7 +1673,8 @@ Local acButton, acLabel, acUser, acPrint
                          "Peligro", ;
                          "Entrada no válida" }
    acBrowseMessages := { '¿ Está Seguro ?', ;
-                         'Eliminar Registro' }
+                         'Eliminar Registro', ;
+                         'Eliminar Item' }
 
    // EDIT MESSAGES
    acABMUser        := { Chr(13)+"Va a eliminar el registro actual"+Chr(13)+"¿ Está seguro ?"+Chr(13), ;
@@ -1895,7 +1903,8 @@ Local acButton, acLabel, acUser, acPrint
                          "Varoitus", ;
                          "Virheellinen arvo" }
    acBrowseMessages := { 'Oletko varma ?', ;
-                         'Poista tietue' }
+                         'Poista tietue', ;
+                         'Delete Item' }
 
    // EDIT MESSAGES
    acABMUser        := { Chr(13)+"Poista tietue"+Chr(13)+"Oletko varma?"+Chr(13), ;
@@ -2081,7 +2090,8 @@ Local acButton, acLabel, acUser, acPrint
                          "Waarschuwing", ;
                          "Onjuiste invoer" }
    acBrowseMessages := { 'Weet u het zeker?', ;
-                         'Verwijder regel' }
+                         'Verwijder regel', ;
+                         'Delete Item' }
 
    // EDIT MESSAGES
    acABMUser        := { Chr(13)+"Verwijder regel"+Chr(13)+"Weet u het zeker ?"+Chr(13), ;
@@ -2276,7 +2286,8 @@ Local acButton, acLabel, acUser, acPrint
                          "Opozorilo", ;
                          "Narobe vnos" }
    acBrowseMessages := { 'Ste preprièani ?', ;
-                         'Briši vrstico' }
+                         'Briši vrstico', ;
+                         'Delete Item' }
 
    // EDIT MESSAGES
    acABMUser        := { Chr(13)+"Briši vrstico"+Chr(13)+"Ste preprièani ?"+Chr(13), ;

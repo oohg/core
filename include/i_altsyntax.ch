@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.89 2013-07-01 02:03:35 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.90 2013-08-02 03:08:52 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -122,6 +122,8 @@ Memvariables
 #xtranslate _OOHG_ActiveControlTrailingFontColor      => _OOHG_ActiveControlInfo \[  25 \]
 #xtranslate _OOHG_ActiveControlBackgroundColor        => _OOHG_ActiveControlInfo \[  26 \]
 
+#xtranslate _OOHG_ActiveControlEditLikeExcel          => _OOHG_ActiveControlInfo \[ 110 \]
+#xtranslate _OOHG_ActiveControlUseButtons             => _OOHG_ActiveControlInfo \[ 111 \]
 #xtranslate _OOHG_ActiveControlBeforeAutoFit          => _OOHG_ActiveControlInfo \[ 112 \]
 #xtranslate _OOHG_ActiveControlAfterColSize           => _OOHG_ActiveControlInfo \[ 113 \]
 #xtranslate _OOHG_ActiveControlBeforeColSize          => _OOHG_ActiveControlInfo \[ 114 \]
@@ -2150,7 +2152,11 @@ GRID
         _OOHG_ActiveControlAfterColMove     := Nil ;;
         _OOHG_ActiveControlBeforeColSize    := Nil ;;
         _OOHG_ActiveControlAfterColSize     := Nil ;;
-        _OOHG_ActiveControlBeforeAutoFit    := Nil
+        _OOHG_ActiveControlBeforeAutoFit    := Nil ;;
+        _OOHG_ActiveControlEditLikeExcel    := Nil ;;
+        _OOHG_ActiveControlUseButtons       := Nil ;;
+        _OOHG_ActiveControlNoDeleteMsg      := .F. ;;
+        _OOHG_ActiveControlAppendable       := .F.
 
 #xcommand ONAPPEND <onappend> ;
         => ;
@@ -2232,6 +2238,14 @@ GRID
         => ;
         _OOHG_ActiveControlBeforeAutoFit := <{bBefAut}>
 
+#xcommand EDITLIKEEXCEL <excel> ;
+        => ;
+        _OOHG_ActiveControlEditLikeExcel := <excel>
+
+#xcommand USEBUTTONS <buts> ;
+        => ;
+        _OOHG_ActiveControlUseButtons := <buts>
+
 #xcommand END GRID ;
         => ;
         _OOHG_SelectSubClass( iif( _OOHG_ActiveControlByCell, TGridByCell(), iif( _OOHG_ActiveControlMultiSelect, TGridMulti(), TGrid() ) ), _OOHG_ActiveControlSubClass, _OOHG_ActiveControlAssignObject ):Define( ;
@@ -2302,7 +2316,12 @@ GRID
                 _OOHG_ActiveControlAfterColMove, ;
                 _OOHG_ActiveControlBeforeColSize, ;
                 _OOHG_ActiveControlAfterColSize, ;
-                _OOHG_ActiveControlBeforeAutoFit)
+                _OOHG_ActiveControlBeforeAutoFit, ;
+                _OOHG_ActiveControlEditLikeExcel, ;
+                _OOHG_ActiveControlUseButtons, ;
+                _OOHG_ActiveControlNoDeleteMsg, ;
+                _OOHG_ActiveControlAppendable, ;
+                _OOHG_ActiveControlOnAppend )
 
 /*----------------------------------------------------------------------------
 BROWSE
@@ -2367,7 +2386,9 @@ BROWSE
         _OOHG_ActiveControlAfterColMove     := Nil ;;
         _OOHG_ActiveControlBeforeColSize    := Nil ;;
         _OOHG_ActiveControlAfterColSize     := Nil ;;
-        _OOHG_ActiveControlBeforeAutoFit    := Nil
+        _OOHG_ActiveControlBeforeAutoFit    := Nil ;;
+        _OOHG_ActiveControlEditLikeExcel    := Nil ;;
+        _OOHG_ActiveControlUseButtons       := Nil
 
 #xcommand DELETEWHEN <delwhen> ;
         => ;
@@ -2503,7 +2524,11 @@ BROWSE
                 _OOHG_ActiveControlAfterColMove, ;
                 _OOHG_ActiveControlBeforeColSize, ;
                 _OOHG_ActiveControlAfterColSize, ;
-                _OOHG_ActiveControlBeforeAutoFit)
+                _OOHG_ActiveControlBeforeAutoFit, ;
+                _OOHG_ActiveControlEditLikeExcel, ;
+                _OOHG_ActiveControlUseButtons, ;
+                _OOHG_ActiveControlEditLikeExcel, ;
+                _OOHG_ActiveControlUseButtons )
 
 /*----------------------------------------------------------------------------
 XBROWSE
@@ -2563,7 +2588,10 @@ XBROWSE
         _OOHG_ActiveControlAfterColMove     := Nil ;;
         _OOHG_ActiveControlBeforeColSize    := Nil ;;
         _OOHG_ActiveControlAfterColSize     := Nil ;;
-        _OOHG_ActiveControlBeforeAutoFit    := Nil
+        _OOHG_ActiveControlBeforeAutoFit    := Nil ;;
+        _OOHG_ActiveControlEditLikeExcel    := Nil ;;
+        _OOHG_ActiveControlUseButtons       := Nil ;;
+        _OOHG_ActiveControlNoDeleteMsg      := .F.
 
 #xcommand END XBROWSE ;
         => ;
@@ -2643,7 +2671,10 @@ XBROWSE
                 _OOHG_ActiveControlAfterColMove, ;
                 _OOHG_ActiveControlBeforeColSize, ;
                 _OOHG_ActiveControlAfterColSize, ;
-                _OOHG_ActiveControlBeforeAutoFit)
+                _OOHG_ActiveControlBeforeAutoFit, ;
+                _OOHG_ActiveControlEditLikeExcel, ;
+                _OOHG_ActiveControlUseButtons, ;
+                _OOHG_ActiveControlNoDeleteMsg )
 
 /*----------------------------------------------------------------------------
 HYPERLINK

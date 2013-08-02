@@ -1,5 +1,5 @@
 /*
- * $Id: i_xbrowse.ch,v 1.26 2013-07-04 20:43:16 fyurisich Exp $
+ * $Id: i_xbrowse.ch,v 1.27 2013-08-02 03:08:54 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -175,6 +175,9 @@
       [ BEFORECOLSIZE <bBefSiz> ] ;
       [ AFTERCOLSIZE <bAftSiz> ] ;
       [ BEFOREAUTOFIT <bBefAut> ] ;
+      [ <excel: EDITLIKEEXCEL> ] ;
+      [ <buts: USEBUTTONS> ] ;
+      [ <nodelmsg: NODELETEMSG> ] ;
 	=> ;
       [ <oObj> := ] _OOHG_SelectSubClass( TXBrowse(), [ <subclass>() ] ):Define( ;
             <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, <widths>, ;
@@ -194,4 +197,5 @@
             iif( upper( #<focus> ) == "NOFOCUSRECT", .F., iif( upper( #<focus> ) == "FOCUSRECT", .T., NIL ) ), ;
             <.plm.>, <.fixedcols.>, <{abortedit}>, <{click}>, <.fixedwidths.>, ;
             iif( upper( #<blocks> ) == "FIXEDBLOCKS", .T., iif( upper( #<blocks> ) == "DYNAMICBLOCKS", .F., .F. ) ), ;
-            <{bBefMov}>, <{bAftMov}>, <{bBefSiz}>, <{bAftSiz}>, <{bBefAut}> )
+            <{bBefMov}>, <{bAftMov}>, <{bBefSiz}>, <{bAftSiz}>, <{bBefAut}>, <.excel.>, ;
+            <.buts.>, <.nodelmsg.> )
