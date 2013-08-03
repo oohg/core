@@ -1,11 +1,33 @@
 /*
- * $Id: ChangeLog,v 1.1129 2013-08-02 03:08:52 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1130 2013-08-03 02:55:44 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-08-02 23:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     * Previous entry corrected.
+   * source/h_grid.prg
+     * EDITLIKEEXCEL limited to INPLACE controls.
+     + Added DATA bPosition to TGrid().
+     + Added parameter nOnFocusPos to TGrid():EditCell(),
+       TGrid:EditCell2(), TGridByCell():EditCell() and
+       TGridByCell:EditCell2().
+     + Added support EDITLIKEEXCEL to TGridByCell():EditGrid()
+       and TGridByCell():EditCell().
+     + Added support for starting cell edition when user presses a
+       key in _OOHG_TGridByCell_Events2(). Applies to cells with a
+       ColumnControl that includes lLikeExcel == .T. and to cells
+       of a TGridByCell() with EDITLIKEEXCEL clause.
+     * Some comments updated.
+     + Added DATAs lLikeExcel and nOnFocusPos to TGridControl().
+     - Deleted DATAs lLikeExcel and nOnFocusPos from
+       TGridControlTextBox().
+     ! Fixed TGridControlTextBox:CreateWindow() is not working
+       properly when lLikeExcel == .T.
 
 2013-08-02 00:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./Changelog
@@ -71,8 +93,8 @@
      + Added new parameter lLikeExcel to TGrid():Define,
        TGrid():Define2(), TGridMulti():Define and TGridByCell:Define().
    * include/i_grid.ch
-     + Added EDITLIKEEXCEL clause (by default TGridControlTextboxes
-       will behave like Excel when editing).
+     + Added EDITLIKEEXCEL clause (forces all TGridControlTextboxes
+       to behave like Excel when editing).
    * source/h_xbrowse.prg
      + Added new parameter to TGrid():Define2() call in method
        TXBrowse:Define().
@@ -150,17 +172,6 @@
        the edition.
      + Added new parameter aImages to method TGridControlTextBox:New().
        This parameters specifies the images to use in the buttons.
-     Usage: in COLUMNCONTROLS clause specify
-     {'TEXTBOX', cType, cPicture, cFunction, nOnFocusPos, lButtons, aImages}
-     {'MEMO', cTitle, lCleanCRLF}
-     {'DATEPICKER', lUpDown, lShowNone, lButtons, aImages}
-     {'COMBOBOX', aItems, aValues, cRetValType, lButtons, aImages}
-     {'COMBOBOXTEXT', aItems, lIncremental, lWinSize, lButtons, aImages}
-     {'SPINNER', nRangeMin, nRangeMax, lButtons, aImages}
-     {'CHECKBOX', cTrue, cFalse, lButtons, aImages}
-     {'IMAGELIST', lButtons, aImages}
-     {'IMAGEDATA', oData, lButtons, aImages}
-     {'LCOMBOBOX', cTrue, cFalse, lButtons, aImages}
 
 2013-07-30 15:35 UTC-0400 MigSoft <migsoft@oohg.org>
    + samples/autoadjust/demo.prg
