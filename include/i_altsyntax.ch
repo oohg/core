@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.90 2013-08-02 03:08:52 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.91 2013-08-07 00:05:22 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -122,6 +122,7 @@ Memvariables
 #xtranslate _OOHG_ActiveControlTrailingFontColor      => _OOHG_ActiveControlInfo \[  25 \]
 #xtranslate _OOHG_ActiveControlBackgroundColor        => _OOHG_ActiveControlInfo \[  26 \]
 
+#xtranslate _OOHG_ActiveControlUpdateColors           => _OOHG_ActiveControlInfo \[ 109 \]
 #xtranslate _OOHG_ActiveControlEditLikeExcel          => _OOHG_ActiveControlInfo \[ 110 \]
 #xtranslate _OOHG_ActiveControlUseButtons             => _OOHG_ActiveControlInfo \[ 111 \]
 #xtranslate _OOHG_ActiveControlBeforeAutoFit          => _OOHG_ActiveControlInfo \[ 112 \]
@@ -2388,7 +2389,8 @@ BROWSE
         _OOHG_ActiveControlAfterColSize     := Nil ;;
         _OOHG_ActiveControlBeforeAutoFit    := Nil ;;
         _OOHG_ActiveControlEditLikeExcel    := Nil ;;
-        _OOHG_ActiveControlUseButtons       := Nil
+        _OOHG_ActiveControlUseButtons       := Nil ;;
+        _OOHG_ActiveControlUpdateColors     := NIL
 
 #xcommand DELETEWHEN <delwhen> ;
         => ;
@@ -2441,6 +2443,10 @@ BROWSE
 #xcommand FIXEDBLOCKS <fixedblocks> ;
         => ;
         _OOHG_ActiveControlFixedBlocks := <fixedblocks>
+
+#xcommand UPDATECOLORS <upcols> ;
+        => ;
+        _OOHG_ActiveControlUpdateColors := <upcols>
 
 #xcommand END BROWSE ;
         => ;
@@ -2528,7 +2534,8 @@ BROWSE
                 _OOHG_ActiveControlEditLikeExcel, ;
                 _OOHG_ActiveControlUseButtons, ;
                 _OOHG_ActiveControlEditLikeExcel, ;
-                _OOHG_ActiveControlUseButtons )
+                _OOHG_ActiveControlUseButtons, ;
+                _OOHG_ActiveControlUpdateColors )
 
 /*----------------------------------------------------------------------------
 XBROWSE

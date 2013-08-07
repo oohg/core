@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.125 2013-08-02 03:08:54 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.126 2013-08-07 00:05:22 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -108,6 +108,7 @@ CLASS TOBrowse FROM TXBrowse
     * When NIL the browse behaves according to SET BROWESYNC value.
     */
    DATA lUpdateAll      INIT .F.
+   DATA lUpdCols        INIT .F.
 
    METHOD Define
    METHOD Refresh
@@ -128,7 +129,7 @@ CLASS TOBrowse FROM TXBrowse
    METHOD SetValue
    METHOD Delete
    METHOD UpDate
-
+   METHOD UpdateColors
    METHOD Home
    METHOD End
    METHOD PageUp
@@ -161,7 +162,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                uRefresh, dblbffr, lFocusRect, lPLM, sync, lFixedCols, ;
                lNoDelMsg, lUpdateAll, abortedit, click, lFixedWidths, ;
                lFixedBlocks, bBeforeColMove, bAfterColMove, bBeforeColSize, ;
-               bAfterColSize, bBeforeAutofit, lLikeExcel, lButtons ) CLASS TOBrowse
+               bAfterColSize, bBeforeAutofit, lLikeExcel, lButtons, lUpdCols ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local nWidth2, nCol2, oScroll, z
 
@@ -172,6 +173,7 @@ Local nWidth2, nCol2, oScroll, z
    ASSIGN ::lDescending VALUE lDescending TYPE "L"
    ASSIGN ::SyncStatus  VALUE sync        TYPE "L" DEFAULT nil
    ASSIGN ::lUpdateAll  VALUE lUpdateAll  TYPE "L"
+   ASSIGN ::lUpdCols    VALUE lUpdCols    TYPE "L"
 
    IF ValType( uRefresh ) == "N"
       IF uRefresh == 0 .OR. uRefresh == 1
@@ -350,13 +352,6 @@ Local lColor, aFields, cWorkArea, hWnd, nWidth
    hWnd := ::hWnd
 
    lColor := ! ( Empty( ::DynamicForeColor ) .AND. Empty( ::DynamicBackColor ) )
-   If lColor
-      ::GridForeColor := ARRAY( PageLength )
-      ::GridBackColor := ARRAY( PageLength )
-   Else
-      ::GridForeColor := nil
-      ::GridBackColor := nil
-   EndIf
 
    // update rows
    x := 0
@@ -414,6 +409,58 @@ Local lColor, aFields, cWorkArea, hWnd, nWidth
 
       ::LoadHeaderImages( ::aHeaderImage )
    EndIf
+
+Return nil
+
+*-----------------------------------------------------------------------------*
+METHOD UpDateColors() CLASS TOBrowse
+*-----------------------------------------------------------------------------*
+Local aTemp, x, aFields, cWorkArea, nWidth, nLen, _RecNo
+
+   ::GridForeColor := nil
+   ::GridBackColor := nil
+
+   nLen := Len( ::aRecMap )
+   If nLen == 0
+      Return nil
+   EndIf
+
+   If Empty( ::DynamicForeColor ) .AND. Empty( ::DynamicBackColor )
+      Return nil
+   EndIf
+
+   cWorkArea := ::WorkArea
+   If Select( cWorkArea ) == 0
+      Return nil
+   EndIf
+
+   nWidth := LEN( ::aFields )
+   aTemp := ARRAY( nWidth )
+
+   If ::FixBlocks()
+     aFields := ACLONE( ::aColumnBlocks )
+   Else
+     aFields := ARRAY( nWidth )
+     AEVAL( ::aFields, { |c,i| aFields[ i ] := ::ColumnBlock( i ), c } )
+   EndIf
+
+   _RecNo := ( ::WorkArea )->( RecNo() )
+
+   If ::Visible
+      ::SetRedraw( .F. )
+   EndIf
+
+   For x := 1 to nLen
+      ::DbGoTo( ::aRecMap[ x ] )
+      AEVAL( aFields, { |b,i| aTemp[ i ] := EVAL( b ) } )
+      ( cWorkArea )->( ::SetItemColor( x,,, aTemp ) )
+   Next x
+
+   If ::Visible
+      ::SetRedraw( .T. )
+   EndIf
+
+   ::DbGoTo( _RecNo )
 
 Return nil
 
@@ -1050,6 +1097,10 @@ Return lSomethingEdited
 METHOD BrowseOnChange() CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 LOCAL cWorkArea, lSync
+
+   If ::lUpdCols
+      ::UpdateColors()
+   EndIf
 
    If HB_IsLogical( ::SyncStatus )
       lSync := ::SyncStatus
