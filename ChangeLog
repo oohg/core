@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.1133 2013-08-08 01:53:14 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1134 2013-08-08 02:00:22 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,10 +7,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-08-07 22:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     * Previous entry corrected.
+
 2013-08-07 22:52 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
      ! TGridByCell():EditCell() with EDITLIKEEXCELL clause doesn't
-       acts properly when edition is ended with a cursor key.
+       act properly when edition is ended with a cursor key.
 
 2013-08-07 22:32 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
@@ -33,7 +37,7 @@
    * include/i_hmg_compat.prg
    * include/i_altsyntax.prg
      + Added clause UPDATECOLOR to force a color update of the
-       displayed items on every change. This restores de behaviour
+       displayed items on every change. This restores the behaviour
        before 2013-06-24 20:17 UTC-0300.
 
 2013-08-02 23:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
