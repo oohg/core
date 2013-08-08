@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.212 2013-08-03 02:55:44 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.213 2013-08-08 01:33:11 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1715,7 +1715,9 @@ Local r, r2, lRet := .F., nWidth
          If HB_IsArray( ::ValidMessages ) .AND. Len( ::ValidMessages ) >= nCol
             EditControl:cValidMessage := ::ValidMessages[ nCol ]
          EndIf
-         EditControl:nOnFocusPos := nOnFocusPos
+         If nOnFocusPos # Nil
+            EditControl:nOnFocusPos := nOnFocusPos
+         EndIf
          If ValType( uValue ) $ "CM"
             uValue := Trim( uValue )
          EndIf
@@ -2155,7 +2157,7 @@ Local lvc, _ThisQueryTemp, nvkey, uValue, lGo, aItem
          // change check mark
          ::CheckItem( uValue, ! ::CheckItem( uValue ) )
          // fire context menu
-         If ::ContextMenu != nil
+         If ::ContextMenu != Nil
             ::ContextMenu:Activate()
          EndIf
          // skip default action
@@ -4001,7 +4003,7 @@ Local lRet := .F., i, nSize
              Next
           EndIf
 
-          If ::lButtons .OR. ::oGrid:lButtons
+          If ::lButtons .OR. ( HB_IsObject( ::oGrid ) .AND. ::oGrid:lButtons )
              nSize := nHeight - 4
              ::CreateControl( uValue, ::oWindow, 0, 0, nWidth - nSize * 2 - 6, nHeight )
              @ 2,nWidth - nSize * 2 - 6 + 2 BUTTON 0 WIDTH nSize HEIGHT nSize ACTION EVAL( ::bOk ) OF ( ::oWindow ) PICTURE ::cImageOk
@@ -4076,7 +4078,7 @@ CLASS TGridControlTextBox FROM TGridControl
 *-----------------------------------------------------------------------------*
    DATA cMask       INIT ""
    DATA cType       INIT ""
-   DATA cEditKey    INIT NIL
+   DATA cEditKey    INIT "F2"
 
    METHOD New
    METHOD CreateWindow
@@ -4129,7 +4131,7 @@ METHOD New( cPicture, cFunction, cType, nOnFocusPos, lButtons, aImages, oGrid, l
 
    If ValType( cEditKey ) $ "CM"
       ::cEditKey := cEditKey
-   Else
+   ElseIf HB_IsObject( ::oGrid )
       ::cEditKey := ::oGrid:cEditKey
    EndIf
 Return Self
@@ -4151,30 +4153,34 @@ Local lRet := .F., i
 
           If HB_IsArray( aKeys )
              For i := 1 To Len( aKeys )
-                If HB_IsArray( aKeys[ i ] ) .AND. Len( aKeys[ i ] ) > 1 .AND. ValType( aKeys[ i, 1 ] ) $ "CM" .AND. HB_IsBlock( aKeys[ i, 2 ] ) .AND. ! ( aKeys[ i, 1 ] == "RETURN" .OR. aKeys[ i, 1 ] == "ESCAPE" .OR. aKeys[ i, 1 ] == "F2" )
-                   _DefineAnyKey( ::oWindow, aKeys[ i, 1 ], aKeys[ i, 2 ] )
+                If HB_IsArray( aKeys[ i ] ) .AND. Len( aKeys[ i ] ) > 1
+                   If ValType( aKeys[ i, 1 ] ) $ "CM" .AND. HB_IsBlock( aKeys[ i, 2 ] )
+                      If ! ( aKeys[ i, 1 ] == "RETURN" .OR. aKeys[ i, 1 ] == "ESCAPE" .OR. ( aKeys[ i, 1 ] == ::cEditKey .AND. HB_IsObject( ::oGrid ) .AND. ::oGrid:InPlace .AND. ( ::lLikeExcel .OR. ::oGrid:lLikeExcel ) ) )
+                         _DefineAnyKey( ::oWindow, aKeys[ i, 1 ], aKeys[ i, 2 ] )
+                      EndIf
+                   EndIf
                 EndIf
              Next
           EndIf
 
           ::CreateControl( uValue, ::oWindow, 0, 0, nWidth + 6, nHeight + 6 )
 
-          If ::oGrid:InPlace .AND. ( ::lLikeExcel .OR. ::oGrid:lLikeExcel )
-             ON KEY (::cEditKey) OF ( ::oControl ) ACTION TGridControlTextBox_ReleaseKeys( ::oControl )
-             ON KEY UP           OF ( ::oControl ) ACTION ( ::oGrid:bPosition := 1, EVAL( ::bOk ) )
-             ON KEY RIGHT        OF ( ::oControl ) ACTION ( ::oGrid:bPosition := 2, EVAL( ::bOk ) )
-             ON KEY LEFT         OF ( ::oControl ) ACTION ( ::oGrid:bPosition := 3, EVAL( ::bOk ) )
-             ON KEY HOME         OF ( ::oControl ) ACTION ( ::oGrid:bPosition := 4, EVAL( ::bOk ) )
-             ON KEY END          OF ( ::oControl ) ACTION ( ::oGrid:bPosition := 5, EVAL( ::bOk ) )
-             ON KEY DOWN         OF ( ::oControl ) ACTION ( ::oGrid:bPosition := 6, EVAL( ::bOk ) )
-             ON KEY PRIOR        OF ( ::oControl ) ACTION ( ::oGrid:bPosition := 7, EVAL( ::bOk ) )
-             ON KEY NEXT         OF ( ::oControl ) ACTION ( ::oGrid:bPosition := 8, EVAL( ::bOk ) )
-             ::oControl:OnClick     := { || TGridControlTextBox_ReleaseKeys( ::oControl ) }
-             ::oControl:OnDblClick  := { || TGridControlTextBox_ReleaseKeys( ::oControl ) }
-             ::oControl:OnRClick    := { || TGridControlTextBox_ReleaseKeys( ::oControl ) }
-             ::oControl:OnRDblClick := { || TGridControlTextBox_ReleaseKeys( ::oControl ) }
-             ::oControl:OnMClick    := { || TGridControlTextBox_ReleaseKeys( ::oControl ) }
-             ::oControl:OnMDblClick := { || TGridControlTextBox_ReleaseKeys( ::oControl ) }
+          If HB_IsObject( ::oGrid ) .AND. ::oGrid:InPlace .AND. ( ::lLikeExcel .OR. ::oGrid:lLikeExcel )
+             ON KEY UP             OF ( ::oControl ) ACTION ( ::oGrid:bPosition := 1, EVAL( ::bOk ) )
+             ON KEY RIGHT          OF ( ::oControl ) ACTION ( ::oGrid:bPosition := 2, EVAL( ::bOk ) )
+             ON KEY LEFT           OF ( ::oControl ) ACTION ( ::oGrid:bPosition := 3, EVAL( ::bOk ) )
+             ON KEY HOME           OF ( ::oControl ) ACTION ( ::oGrid:bPosition := 4, EVAL( ::bOk ) )
+             ON KEY END            OF ( ::oControl ) ACTION ( ::oGrid:bPosition := 5, EVAL( ::bOk ) )
+             ON KEY DOWN           OF ( ::oControl ) ACTION ( ::oGrid:bPosition := 6, EVAL( ::bOk ) )
+             ON KEY PRIOR          OF ( ::oControl ) ACTION ( ::oGrid:bPosition := 7, EVAL( ::bOk ) )
+             ON KEY NEXT           OF ( ::oControl ) ACTION ( ::oGrid:bPosition := 8, EVAL( ::bOk ) )
+             ON KEY ( ::cEditKey ) OF ( ::oControl ) ACTION TGridControlTextBox_ReleaseKeys( ::oControl, ::cEditKey )
+             ::oControl:OnClick     := { || TGridControlTextBox_ReleaseKeys( ::oControl, ::cEditKey ) }
+             ::oControl:OnDblClick  := { || TGridControlTextBox_ReleaseKeys( ::oControl, ::cEditKey ) }
+             ::oControl:OnRClick    := { || TGridControlTextBox_ReleaseKeys( ::oControl, ::cEditKey ) }
+             ::oControl:OnRDblClick := { || TGridControlTextBox_ReleaseKeys( ::oControl, ::cEditKey ) }
+             ::oControl:OnMClick    := { || TGridControlTextBox_ReleaseKeys( ::oControl, ::cEditKey ) }
+             ::oControl:OnMDblClick := { || TGridControlTextBox_ReleaseKeys( ::oControl, ::cEditKey ) }
           EndIf
 
           ::Value := ::ControlValue
@@ -4191,16 +4197,16 @@ Local lRet := .F., i
    EndIf
 Return lRet
 
-FUNCTION TGridControlTextBox_ReleaseKeys( oControl )
-   RELEASE KEY LEFT  OF ( oControl )
-   RELEASE KEY UP    OF ( oControl )
-   RELEASE KEY RIGHT OF ( oControl )
-   RELEASE KEY DOWN  OF ( oControl )
-   RELEASE KEY HOME  OF ( oControl )
-   RELEASE KEY END   OF ( oControl )
-   RELEASE KEY PRIOR OF ( oControl )
-   RELEASE KEY DOWN  OF ( oControl )
-   RELEASE KEY F2    OF ( oControl )
+FUNCTION TGridControlTextBox_ReleaseKeys( oControl, cEditKey )
+   RELEASE KEY LEFT         OF ( oControl )
+   RELEASE KEY UP           OF ( oControl )
+   RELEASE KEY RIGHT        OF ( oControl )
+   RELEASE KEY DOWN         OF ( oControl )
+   RELEASE KEY HOME         OF ( oControl )
+   RELEASE KEY END          OF ( oControl )
+   RELEASE KEY PRIOR        OF ( oControl )
+   RELEASE KEY DOWN         OF ( oControl )
+   RELEASE KEY ( cEditKey ) OF ( oControl )
 RETURN NIL
 
 METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGridControlTextBox

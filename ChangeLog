@@ -1,11 +1,24 @@
 /*
- * $Id: ChangeLog,v 1.1131 2013-08-07 00:05:18 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1132 2013-08-08 01:33:10 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-08-07 22:32 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_grid.prg
+     ! nOnFocusPos is not working.
+     ! TGridControl():CreateWindow() cancels if no grid is associated.
+     * TGridControlTextBox():cEditKey defaults to F2 instead of NIL.
+     ! TGridControlTextBox():New() cancels if no grid is associated.
+     ! TGridControlTextBox():CreateWindow() steps over ::cEditKey
+       when it's diferent from F2.
+     ! TGridControlTextBox():CreateWindow() cancels if no grid is
+       associated.
+     ! TGridControlTextBox():CreateWindow() doesn't release ::cEditKey
+       when it's diferent from F2.
 
 2013-08-06 21:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_browse.prg
