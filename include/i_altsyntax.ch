@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.91 2013-08-07 00:05:22 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.92 2013-08-08 22:32:54 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -122,6 +122,7 @@ Memvariables
 #xtranslate _OOHG_ActiveControlTrailingFontColor      => _OOHG_ActiveControlInfo \[  25 \]
 #xtranslate _OOHG_ActiveControlBackgroundColor        => _OOHG_ActiveControlInfo \[  26 \]
 
+#xtranslate _OOHG_ActiveControlNoModalEdit            => _OOHG_ActiveControlInfo \[ 108 \]
 #xtranslate _OOHG_ActiveControlUpdateColors           => _OOHG_ActiveControlInfo \[ 109 \]
 #xtranslate _OOHG_ActiveControlEditLikeExcel          => _OOHG_ActiveControlInfo \[ 110 \]
 #xtranslate _OOHG_ActiveControlUseButtons             => _OOHG_ActiveControlInfo \[ 111 \]
@@ -2157,7 +2158,8 @@ GRID
         _OOHG_ActiveControlEditLikeExcel    := Nil ;;
         _OOHG_ActiveControlUseButtons       := Nil ;;
         _OOHG_ActiveControlNoDeleteMsg      := .F. ;;
-        _OOHG_ActiveControlAppendable       := .F.
+        _OOHG_ActiveControlAppendable       := .F. ;;
+        _OOHG_ActiveControlNoModalEdit      := .F.
 
 #xcommand ONAPPEND <onappend> ;
         => ;
@@ -2247,6 +2249,10 @@ GRID
         => ;
         _OOHG_ActiveControlUseButtons := <buts>
 
+#xcommand NOMODALEDIT <nomodal> ;
+        => ;
+        _OOHG_ActiveControlNoModalEdit := <nomodal>
+
 #xcommand END GRID ;
         => ;
         _OOHG_SelectSubClass( iif( _OOHG_ActiveControlByCell, TGridByCell(), iif( _OOHG_ActiveControlMultiSelect, TGridMulti(), TGrid() ) ), _OOHG_ActiveControlSubClass, _OOHG_ActiveControlAssignObject ):Define( ;
@@ -2322,7 +2328,8 @@ GRID
                 _OOHG_ActiveControlUseButtons, ;
                 _OOHG_ActiveControlNoDeleteMsg, ;
                 _OOHG_ActiveControlAppendable, ;
-                _OOHG_ActiveControlOnAppend )
+                _OOHG_ActiveControlOnAppend, ;
+                _OOHG_ActiveControlNoModalEdit )
 
 /*----------------------------------------------------------------------------
 BROWSE

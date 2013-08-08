@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.214 2013-08-08 01:53:14 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.215 2013-08-08 22:32:54 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -165,6 +165,8 @@ CLASS TGrid FROM TControl
    DATA lNoDelMsg              INIT .F.
    DATA AllowAppend            INIT .F.
    DATA bPosition              INIT 0
+   DATA lNoModal               INIT .F.
+   DATA HeaderFontHandle       INIT Nil
 
    METHOD Define
    METHOD Define2
@@ -236,6 +238,7 @@ CLASS TGrid FROM TControl
    METHOD ScrollToRight
    METHOD ScrollToCol
    METHOD Append               SETGET
+   METHOD HeaderSetFont
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -252,7 +255,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths, ;
                bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
                bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
-               bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend ) CLASS TGrid
+               bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local nStyle := LVS_SINGLESEL
 
@@ -269,7 +272,7 @@ Local nStyle := LVS_SINGLESEL
               lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths, ;
               bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
               bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
-              bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend )
+              bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -286,7 +289,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                 lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths, ;
                 bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
                 bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
-                bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend ) CLASS TGrid
+                bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local ControlHandle, aImageList, i
 
@@ -341,6 +344,7 @@ Local ControlHandle, aImageList, i
    ASSIGN ::AllowAppend VALUE AllowAppend TYPE "L" DEFAULT .F.
    ASSIGN ::lNoDelMsg   VALUE lNoDelMsg   TYPE "L" DEFAULT .F.
    ASSIGN ::DelMsg      VALUE DelMsg      TYPE "C"
+   ASSIGN ::lNoModal    VALUE lNoModal    TYPE "L" DEFAULT .F.
 
    If ::lCheckBoxes .AND. ::lPLM
       MsgOOHGError( "CHECKBOXES and PAINTLEFTMARGIN clauses can't be used simultaneously. Program Terminated." )
@@ -2364,6 +2368,27 @@ METHOD HeaderImageAlign( nColumn, nPlace ) CLASS TGrid
    EndIf
 Return ::aHeaderImageAlign[ nColumn ]
 
+*-----------------------------------------------------------------------------*
+METHOD HeaderSetFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, lFntAngle, lFntwidth ) CLASS TGrid
+*-----------------------------------------------------------------------------*
+Local HeaderHandle
+   If ValidHandler( ::HeaderFontHandle )
+      DeleteObject( ::HeaderFontHandle )
+   EndIf
+   ASSIGN cFontName  VALUE cFontName  TYPE "CM" DEFAULT ""
+   ASSIGN nFontSize  VALUE nFontSize  TYPE "N"  DEFAULT 0
+   ASSIGN lBold      VALUE lBold      TYPE "L"  DEFAULT .F.
+   ASSIGN lItalic    VALUE lItalic    TYPE "L"  DEFAULT .F.
+   ASSIGN lUnderline VALUE lUnderline TYPE "L"  DEFAULT .F.
+   ASSIGN lStrikeout VALUE lStrikeout TYPE "L"  DEFAULT .F.
+   ASSIGN lFntAngle  VALUE lFntAngle  TYPE "N"  DEFAULT 0
+   ASSIGN lFntWidth  VALUE lFntWidth  TYPE "N"  DEFAULT 0
+   HeaderHandle := GetHeader( ::hWnd )
+   If ValidHandler( HeaderHandle )
+      ::HeaderFontHandle := _SetFont( HeaderHandle, cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, lFntAngle, lFntWidth )
+   EndIf
+Return Nil
+
 *------------------------------------------------------------------------------*
 METHOD Release() CLASS TGrid
 *------------------------------------------------------------------------------*
@@ -2371,6 +2396,11 @@ METHOD Release() CLASS TGrid
    If ValidHandler( ::HeaderImageList )
       ImageList_Destroy( ::HeaderImageList )
       ::HeaderImageList := Nil
+   EndIf
+
+   If ValidHandler( ::HeaderFontHandle)
+      DeleteObject( ::HeaderFontHandle )
+      ::HeaderFontHandle := Nil
    EndIf
 
 Return ::Super:Release()
@@ -2578,7 +2608,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths, ;
                bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
                bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
-               bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend ) CLASS TGridMulti
+               bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal ) CLASS TGridMulti
 *-----------------------------------------------------------------------------*
 Local nStyle := 0
 
@@ -2595,7 +2625,7 @@ Local nStyle := 0
               lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths, ;
               bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
               bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
-              bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend )
+              bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -2832,7 +2862,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths, ;
                bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
                bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
-               bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend ) CLASS TGridByCell
+               bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal ) CLASS TGridByCell
 *-----------------------------------------------------------------------------*
 Local nStyle := LVS_SINGLESEL
 
@@ -2851,7 +2881,7 @@ Local nStyle := LVS_SINGLESEL
               lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths, ;
               bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
               bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
-              bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend )
+              bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal )
 
    // By default, search in the current column
    ::SearchCol := 0
@@ -3117,6 +3147,9 @@ Local lRet, uValue
          Else
             ::Value := { ::Itemcount, uValue[ 2 ] }
          EndIf
+      ElseIf ::bPosition == 9                        // MOUSE EXIT
+         ::bPosition := 0
+         Exit
       Else
          ::bPosition := 0
          uValue := ::Value
@@ -3459,6 +3492,10 @@ Local aValue, lRet
          Else
             ::Value := { ::Itemcount, uValue[ 2 ] }
          EndIf
+      ElseIf ::bPosition == 9                        // MOUSE EXIT
+         ::bPosition := 0
+      Else
+         ::bPosition := 0
       EndIf
    EndIf
 Return lRet
@@ -3964,6 +4001,7 @@ CLASS TGridControl
    DATA cImageCancel          INIT 'EDIT_CANCEL_16'
    DATA lLikeExcel            INIT .F.
    DATA nOnFocusPos           INIT NIL
+   DATA lNoModal              INIT .F.
 
    METHOD New                 BLOCK { |Self| Self }
    METHOD CreateWindow
@@ -3981,10 +4019,18 @@ METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, 
 Local lRet := .F., i, nSize
 
    If ! IsWindowDefined( _oohg_gridwn )
-       DEFINE WINDOW _oohg_gridwn OBJ ::oWindow ;
-          AT nRow, nCol WIDTH nWidth HEIGHT nHeight ;
-          MODAL NOSIZE NOCAPTION ;
-          FONT cFontName SIZE nFontSize
+       If HB_IsObject( ::oGrid ) .AND. ::oGrid:InPlace .AND. ( ::lNoModal .OR. ::oGrid:lNoModal )
+          DEFINE WINDOW _oohg_gridwn OBJ ::oWindow ;
+             AT nRow, nCol WIDTH nWidth HEIGHT nHeight ;
+             NOSIZE NOCAPTION ;
+             FONT cFontName SIZE nFontSize ;
+             ON INIT ( ::onLostFocus := { || ::oGrid:bPosition := 9, lRet := ::Valid() } )
+       Else
+          DEFINE WINDOW _oohg_gridwn OBJ ::oWindow ;
+             AT nRow, nCol WIDTH nWidth HEIGHT nHeight ;
+             MODAL NOSIZE NOCAPTION ;
+             FONT cFontName SIZE nFontSize
+       EndIf
 
           ::bCancel := { || ::oWindow:Release() }
           ::bOk     := { || lRet := ::Valid() }
@@ -4088,7 +4134,7 @@ ENDCLASS
 COLUMNCONTROLS syntax:
 {'TEXTBOX', cType, cPicture, cFunction, nOnFocusPos, lButtons, aImages, lLikeExcel, cEditKey}
 */
-METHOD New( cPicture, cFunction, cType, nOnFocusPos, lButtons, aImages, oGrid, lLikeExcel, cEditKey ) CLASS TGridControlTextBox
+METHOD New( cPicture, cFunction, cType, nOnFocusPos, lButtons, aImages, oGrid, lLikeExcel, cEditKey, lNoModal ) CLASS TGridControlTextBox
    ::cMask := ""
    If ValType( cPicture ) $ "CM" .AND. ! Empty( cPicture )
       ::cMask := cPicture
@@ -4131,16 +4177,26 @@ METHOD New( cPicture, cFunction, cType, nOnFocusPos, lButtons, aImages, oGrid, l
    ElseIf HB_IsObject( ::oGrid )
       ::cEditKey := ::oGrid:cEditKey
    EndIf
+
+   ASSIGN ::lNoModal VALUE lNoModal TYPE "L"
 Return Self
 
 METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aKeys ) CLASS TGridControlTextBox
 Local lRet := .F., i
 
    If ! IsWindowDefined( _oohg_gridwn )
-       DEFINE WINDOW _oohg_gridwn OBJ ::oWindow ;
-          AT nRow - 3, nCol - 3 WIDTH nWidth + 6 HEIGHT nHeight + 6 ;
-          MODAL NOSIZE NOCAPTION ;
-          FONT cFontName SIZE nFontSize
+       If HB_IsObject( ::oGrid ) .AND. ::oGrid:InPlace .AND. ( ::lNoModal .OR. ::oGrid:lNoModal )
+          DEFINE WINDOW _oohg_gridwn OBJ ::oWindow ;
+             AT nRow - 3, nCol - 3 WIDTH nWidth + 6 HEIGHT nHeight + 6 ;
+             NOSIZE NOCAPTION ;
+             FONT cFontName SIZE nFontSize ;
+             ON INIT ( ::onLostFocus := { || ::oGrid:bPosition := 9, lRet := ::Valid() } )
+       Else
+          DEFINE WINDOW _oohg_gridwn OBJ ::oWindow ;
+             AT nRow - 3, nCol - 3 WIDTH nWidth + 6 HEIGHT nHeight + 6 ;
+             MODAL NOSIZE NOCAPTION ;
+             FONT cFontName SIZE nFontSize
+       EndIf
 
           ::bCancel := { || ::oWindow:Release() }
           ::bOk     := { || lRet := ::Valid() }
@@ -4211,31 +4267,31 @@ METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGrid
       uValue := ::Str2Val( uValue )
    EndIf
    If ! Empty( ::cMask )
-      If ::lButtons
-        @ nRow,nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue INPUTMASK ::cMask FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bCancel ) ACTION2 EVAL( ::bOK ) IMAGE {::cImageCancel, ::cImageOk}
+      If ::lButtons .OR. ( HB_IsObject( ::oGrid ) .AND. ::oGrid:lButtons )
+        @ nRow,nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue INPUTMASK ::cMask FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bCancel ) ACTION2 EVAL( ::bOK ) IMAGE {::cImageCancel, ::cImageOk} ON LOSTFOCUS ( ::oGrid:bPosition := 9, EVAL( ::bOk ) )
       Else
         @ nRow,nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue INPUTMASK ::cMask FOCUSEDPOS ::nOnFocusPos
       EndIf
    ElseIf ::cType == "N"
-      If ::lButtons
+      If ::lButtons .OR. ( HB_IsObject( ::oGrid ) .AND. ::oGrid:lButtons )
         @ nRow,nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue NUMERIC FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bCancel ) ACTION2 EVAL( ::bOK ) IMAGE {::cImageCancel, ::cImageOk}
       Else
         @ nRow,nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue NUMERIC FOCUSEDPOS ::nOnFocusPos
       EndIf
    ElseIf ::cType == "D"
-      If ::lButtons
+      If ::lButtons .OR. ( HB_IsObject( ::oGrid ) .AND. ::oGrid:lButtons )
         @ nRow,nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue DATE FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bCancel ) ACTION2 EVAL( ::bOK ) IMAGE {::cImageCancel, ::cImageOk}
       Else
         @ nRow,nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue DATE FOCUSEDPOS ::nOnFocusPos
       EndIf
    Else
-      If ::lButtons
+      If ::lButtons .OR. ( HB_IsObject( ::oGrid ) .AND. ::oGrid:lButtons )
         @ nRow,nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bCancel ) ACTION2 EVAL( ::bOK ) IMAGE {::cImageCancel, ::cImageOk}
       Else
         @ nRow,nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue FOCUSEDPOS ::nOnFocusPos
       EndIf
    EndIf
-   If ::lButtons
+   If ::lButtons .OR. ( HB_IsObject( ::oGrid ) .AND. ::oGrid:lButtons )
       ::oControl:oButton1:TabIndex := 2
    EndIf
 Return ::oControl
@@ -4369,7 +4425,7 @@ ENDCLASS
 COLUMNCONTROLS syntax:
 {'DATEPICKER', lUpDown, lShowNone, lButtons, aImages}
 */
-METHOD New( lUpDown, lShowNone, lButtons, aImages, oGrid ) CLASS TGridControlDatePicker
+METHOD New( lUpDown, lShowNone, lButtons, aImages, oGrid, lNoModal ) CLASS TGridControlDatePicker
    If ! HB_IsLogical( lUpDown )
       lUpDown := .F.
    EndIf
@@ -4390,6 +4446,8 @@ METHOD New( lUpDown, lShowNone, lButtons, aImages, oGrid ) CLASS TGridControlDat
    EndIf
 
    ::oGrid := oGrid
+
+   ASSIGN ::lNoModal VALUE lNoModal TYPE "L"
 Return Self
 
 METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aKeys ) CLASS TGridControlDatePicker
@@ -4436,7 +4494,7 @@ ENDCLASS
 COLUMNCONTROLS syntax:
 {'COMBOBOX', aItems, aValues, cRetValType, lButtons, aImages}
 */
-METHOD New( aItems, oGrid, aValues, cRetValType, lButtons, aImages ) CLASS TGridControlComboBox
+METHOD New( aItems, oGrid, aValues, cRetValType, lButtons, aImages, lNoModal ) CLASS TGridControlComboBox
    DEFAULT cRetValType TO "NUMERIC"
    If HB_IsArray( aItems )
       ::aItems := aItems
@@ -4471,6 +4529,8 @@ METHOD New( aItems, oGrid, aValues, cRetValType, lButtons, aImages ) CLASS TGrid
      DEFAULT ::cImageCancel TO aImages[ 1 ]
      DEFAULT ::cImageOk     TO aImages[ 2 ]
    EndIf
+
+   ASSIGN ::lNoModal VALUE lNoModal TYPE "L"
 Return Self
 
 METHOD Refresh CLASS TGridControlComboBox
@@ -4563,7 +4623,7 @@ ENDCLASS
 COLUMNCONTROLS syntax:
 {'COMBOBOXTEXT', aItems, lIncremental, lWinSize, lButtons, aImages}
 */
-METHOD New( aItems, oGrid, lIncremental, lWinSize, lButtons, aImages ) CLASS TGridControlComboBoxText
+METHOD New( aItems, oGrid, lIncremental, lWinSize, lButtons, aImages, lNoModal ) CLASS TGridControlComboBoxText
    ASSIGN ::lIncremental VALUE lIncremental TYPE "L" DEFAULT .F.
    ASSIGN ::lWinSize     VALUE lWinSize     TYPE "L" DEFAULT .F.
    If HB_IsArray( aItems )
@@ -4580,6 +4640,8 @@ METHOD New( aItems, oGrid, lIncremental, lWinSize, lButtons, aImages ) CLASS TGr
      DEFAULT ::cImageCancel TO aImages[ 1 ]
      DEFAULT ::cImageOk     TO aImages[ 2 ]
    EndIf
+
+   ASSIGN ::lNoModal VALUE lNoModal TYPE "L"
 Return Self
 
 METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aKeys ) CLASS TGridControlComboBoxText
@@ -4636,7 +4698,7 @@ ENDCLASS
 COLUMNCONTROLS syntax:
 {'SPINNER', nRangeMin, nRangeMax, lButtons, aImages}
 */
-METHOD New( nRangeMin, nRangeMax, lButtons, aImages, oGrid ) CLASS TGridControlSpinner
+METHOD New( nRangeMin, nRangeMax, lButtons, aImages, oGrid, lNoModal ) CLASS TGridControlSpinner
    If HB_IsNumeric( nRangeMin )
       ::nRangeMin := nRangeMin
    EndIf
@@ -4654,6 +4716,8 @@ METHOD New( nRangeMin, nRangeMax, lButtons, aImages, oGrid ) CLASS TGridControlS
    EndIf
 
    ::oGrid := oGrid
+
+   ASSIGN ::lNoModal VALUE lNoModal TYPE "L"
 Return Self
 
 METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aKeys ) CLASS TGridControlSpinner
@@ -4683,7 +4747,7 @@ ENDCLASS
 COLUMNCONTROLS syntax:
 {'CHECKBOX', cTrue, cFalse, lButtons, aImages}
 */
-METHOD New( cTrue, cFalse, lButtons, aImages, oGrid ) CLASS TGridControlCheckBox
+METHOD New( cTrue, cFalse, lButtons, aImages, oGrid, lNoModal ) CLASS TGridControlCheckBox
    If ValType( cTrue ) $ "CM"
       ::cTrue := cTrue
    EndIf
@@ -4701,6 +4765,8 @@ METHOD New( cTrue, cFalse, lButtons, aImages, oGrid ) CLASS TGridControlCheckBox
    EndIf
 
    ::oGrid := oGrid
+
+   ASSIGN ::lNoModal VALUE lNoModal TYPE "L"
 Return Self
 
 METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aKeys ) CLASS TGridControlCheckBox
@@ -4728,7 +4794,7 @@ ENDCLASS
 COLUMNCONTROLS syntax:
 {'IMAGELIST', lButtons, aImages}
 */
-METHOD New( oGrid, lButtons, aImages ) CLASS TGridControlImageList
+METHOD New( oGrid, lButtons, aImages, lNoModal ) CLASS TGridControlImageList
    ::oGrid := oGrid
    If ! Empty( ::oGrid ) .AND. ::oGrid:ImageList != 0
       ::nDefHeight := ImageList_Size( ::oGrid:ImageList ) [ 2 ] + 6
@@ -4742,6 +4808,8 @@ METHOD New( oGrid, lButtons, aImages ) CLASS TGridControlImageList
      DEFAULT ::cImageCancel TO aImages[ 1 ]
      DEFAULT ::cImageOk     TO aImages[ 2 ]
    EndIf
+
+   ASSIGN ::lNoModal VALUE lNoModal TYPE "L"
 Return Self
 
 METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aKeys ) CLASS TGridControlImageList
@@ -4786,7 +4854,7 @@ ENDCLASS
 COLUMNCONTROLS syntax:
 {'IMAGEDATA', oData, lButtons, aImages}
 */
-METHOD New( oGrid, oData, lButtons, aImages ) CLASS TGridControlImageData
+METHOD New( oGrid, oData, lButtons, aImages, lNoModal ) CLASS TGridControlImageData
    ::oGrid := oGrid
    If oData == Nil
       oData := TGridControlTextBox():New
@@ -4801,6 +4869,8 @@ METHOD New( oGrid, oData, lButtons, aImages ) CLASS TGridControlImageData
      DEFAULT ::cImageCancel TO aImages[ 1 ]
      DEFAULT ::cImageOk     TO aImages[ 2 ]
    EndIf
+
+   ASSIGN ::lNoModal VALUE lNoModal TYPE "L"
 Return Self
 
 METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aKeys ) CLASS TGridControlImageData
@@ -4867,7 +4937,7 @@ ENDCLASS
 COLUMNCONTROLS syntax:
 {'LCOMBOBOX', cTrue, cFalse, lButtons, aImages}
 */
-METHOD New( cTrue, cFalse, lButtons, aImages, oGrid ) CLASS TGridControlLComboBox
+METHOD New( cTrue, cFalse, lButtons, aImages, oGrid, lNoModal ) CLASS TGridControlLComboBox
    If ValType( cTrue ) $ "CM"
       ::cTrue := cTrue
    EndIf
@@ -4885,6 +4955,8 @@ METHOD New( cTrue, cFalse, lButtons, aImages, oGrid ) CLASS TGridControlLComboBo
    EndIf
 
    ::oGrid := oGrid
+
+   ASSIGN ::lNoModal VALUE lNoModal TYPE "L"
 Return Self
 
 METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aKeys ) CLASS TGridControlLComboBox
@@ -5453,6 +5525,11 @@ HB_FUNC( SETGRIDCOLUMNHEADER )
 HB_FUNC( SETHEADERIMAGELIST )
 {
    SendMessage( ListView_GetHeader( HWNDparam( 1 ) ), HDM_SETIMAGELIST, 0, (LPARAM) hb_parnl( 2 ) );
+}
+
+HB_FUNC( GETHEADER )
+{
+   HWNDret( ListView_GetHeader( HWNDparam( 1 ) ) );
 }
 
 HB_FUNC( SETGRIDCOLUMNIMAGE )

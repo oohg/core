@@ -1,5 +1,5 @@
 /*
- * $Id: i_grid.ch,v 1.30 2013-08-02 03:08:54 fyurisich Exp $
+ * $Id: i_grid.ch,v 1.31 2013-08-08 22:32:54 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -180,6 +180,7 @@
       [ <nodelmsg: NODELETEMSG> ] ;
       [ <append : APPEND> ] ;
       [ ON APPEND <onappend> ] ;
+      [ <nomodal : NOMODALEDIT> ] ;
    =>;
       [ <obj> := ] _OOHG_SelectSubClass(iif( <.bycell.>, TGridByCell(), iif( <.multiselect.>, TGridMulti(), TGrid() ) ), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, ;
@@ -198,7 +199,7 @@
             <.plm.>, <.fixedcols.>, <{abortedit}>, <{click}>, <.fixedwidths.>, ;
             <{bBefMov}>, <{bAftMov}>, <{bBefSiz}>, <{bAftSiz}>, <{bBefAut}>, <.excel.>, ;
             <.buts.>, <.delete.>, <{onDelete}>, <{bWhenDel}>, <DelMsg>, <.nodelmsg.>, ;
-            <.append.>, <{onappend}> )
+            <.append.>, <{onappend}>, <.nomodal.> )
 
 ///////////////////////////////////////////////////////////////////////////////
 // GRID (SPLITBOX VERSION)
@@ -282,6 +283,7 @@
       [ <nodelmsg: NODELETEMSG> ] ;
       [ <append : APPEND> ] ;
       [ ON APPEND <onappend> ] ;
+      [ <nomodal : NOMODALEDIT> ] ;
    =>;
       [ <obj> := ] _OOHG_SelectSubClass(iif( <.bycell.>, TGridByCell(), iif( <.multiselect.>, TGridMulti(), TGrid() ) ), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, , , <w>, <h>, <headers>, ;
@@ -300,4 +302,4 @@
             <.plm.>, <.fixedcols.>, <{abortedit}>, <{click}>, <.fixedwidths.>, ;
             <{bBefMov}>, <{bAftMov}>, <{bBefSiz}>, <{bAftSiz}>, <{bBefAut}>, <.excel.>, ;
             <.buts.>, <.delete.>, <{onDelete}>, <{bWhenDel}>, <DelMsg>, <.nodelmsg.>, ;
-            <.append.>, <{onappend}> ) )
+            <.append.>, <{onappend}>, <.nomodal.> ) )
