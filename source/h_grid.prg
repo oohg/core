@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.215 2013-08-08 22:32:54 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.216 2013-08-08 23:33:34 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -3149,7 +3149,6 @@ Local lRet, uValue
          EndIf
       ElseIf ::bPosition == 9                        // MOUSE EXIT
          ::bPosition := 0
-         Exit
       Else
          ::bPosition := 0
          uValue := ::Value
