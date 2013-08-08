@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.213 2013-08-08 01:33:11 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.214 2013-08-08 01:53:14 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -3357,8 +3357,7 @@ Local aValue, lRet
 
    If lRet
       /* ::bPosition is set by TGridControl() */
-      Switch ::bPosition
-      Case 1                       // UP
+      If ::bPosition == 1                            // UP
          ::bPosition := 0
          uValue := ::Value
          If uValue[ 1 ] < 1 .OR. uValue[ 1 ] > ::ItemCount .OR. uValue[ 2 ] < 1 .or. uValue[ 2 ] > Len( ::aHeaders )
@@ -3370,7 +3369,7 @@ Local aValue, lRet
          Else
             // ignore
          EndIf
-      Case 2                       // RIGHT
+      ElseIf ::bPosition == 2                        // RIGHT
          ::bPosition := 0
          uValue := ::Value
          If uValue[ 1 ] < 1 .OR. uValue[ 1 ] > ::ItemCount .OR. uValue[ 2 ] < 1 .or. uValue[ 2 ] > Len( ::aHeaders )
@@ -3395,7 +3394,7 @@ Local aValue, lRet
          Else
             // ignore
          EndIf
-      Case 3                       // LEFT
+      ElseIf ::bPosition == 3                        // LEFT
          ::bPosition := 0
          uValue := ::Value
          If uValue[ 1 ] < 1 .OR. uValue[ 1 ] > ::ItemCount .OR. uValue[ 2 ] < 1 .or. uValue[ 2 ] > Len( ::aHeaders )
@@ -3411,13 +3410,13 @@ Local aValue, lRet
          Else
             // ignore
          EndIf
-      Case 4                       // HOME
+      ElseIf ::bPosition == 4                        // HOME
          ::bPosition := 0
          ::Value := { 1, 1 }
-      Case 5                       // END
+      ElseIf ::bPosition == 5                        // END
          ::bPosition := 0
          ::Value := { ::Itemcount, Len( ::aHeaders ) }
-      Case 6                       // DOWN
+      ElseIf ::bPosition == 6                        // DOWN
          ::bPosition := 0
          uValue := ::Value
          If uValue[ 1 ] < 1 .OR. uValue[ 1 ] > ::ItemCount .OR. uValue[ 2 ] < 1 .or. uValue[ 2 ] > Len( ::aHeaders )
@@ -3436,7 +3435,7 @@ Local aValue, lRet
          Else
             // ignore
          EndIf
-      Case 7                       // PRIOR
+      ElseIf ::bPosition == 7                        // PRIOR
          ::bPosition := 0
          uValue := ::Value
          If uValue[ 1 ] < 1 .OR. uValue[ 1 ] > ::ItemCount .OR. uValue[ 2 ] < 1 .or. uValue[ 2 ] > Len( ::aHeaders )
@@ -3446,7 +3445,7 @@ Local aValue, lRet
          Else
             ::Value := { 1, uValue[ 2 ] }
          EndIf
-      Case 8                       // NEXT
+      ElseIf ::bPosition == 8                        // NEXT
          ::bPosition := 0
          uValue := ::Value
          If uValue[ 1 ] < 1 .OR. uValue[ 1 ] > ::ItemCount .OR. uValue[ 2 ] < 1 .or. uValue[ 2 ] > Len( ::aHeaders )
@@ -3460,9 +3459,7 @@ Local aValue, lRet
          Else
             ::Value := { ::Itemcount, uValue[ 2 ] }
          EndIf
-      Otherwise
-         ::bPosition := 0
-      End Switch
+      EndIf
    EndIf
 Return lRet
 
