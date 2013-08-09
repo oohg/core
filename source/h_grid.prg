@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.216 2013-08-08 23:33:34 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.217 2013-08-09 00:31:30 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -3897,29 +3897,29 @@ Local oGridControl, aEdit2, cControl
    oGridControl := Nil
    If HB_IsArray( aEditControl ) .AND. Len( aEditControl ) >= 1 .AND. ValType( aEditControl[ 1 ] ) $ "CM"
       aEdit2 := aClone( aEditControl )
-      aSize( aEdit2, 9 )
+      aSize( aEdit2, 10 )
       cControl := Upper( AllTrim( aEditControl[ 1 ] ) )
       Do Case
-         Case cControl == "MEMO"
-            oGridControl := TGridControlMemo():New( aEdit2[ 2 ], aEdit2[ 3 ], oGrid )
-         Case cControl == "DATEPICKER"
-            oGridControl := TGridControlDatePicker():New( aEdit2[ 2 ], aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 5 ], oGrid )
-         Case cControl == "COMBOBOX"
-            oGridControl := TGridControlComboBox():New( aEdit2[ 2 ], oGrid, aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 5 ], aEdit2[ 6 ] )
-         Case cControl == "COMBOBOXTEXT"
-            oGridControl := TGridControlComboBoxText():New( aEdit2[ 2 ], oGrid, aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 5 ], aEdit2[ 6 ] )
-         Case cControl == "SPINNER"
-            oGridControl := TGridControlSpinner():New( aEdit2[ 2 ], aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 5 ], oGrid )
-         Case cControl == "CHECKBOX"
-            oGridControl := TGridControlCheckBox():New( aEdit2[ 2 ], aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 5 ], oGrid )
-         Case cControl == "TEXTBOX"
-            oGridControl := TGridControlTextBox():New( aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 2 ], aEdit2[ 5 ], aEdit2[ 6 ], aEdit2[ 7 ], oGrid, aEdit2[ 8 ], aEdit2[ 9 ] )
-         Case cControl == "IMAGELIST"
-            oGridControl := TGridControlImageList():New( oGrid, aEdit2[ 2 ], aEdit2[ 3 ] )
-         Case cControl == "IMAGEDATA"
-            oGridControl := TGridControlImageData():New( oGrid, GridControlObject( aEdit2[ 2 ], oGrid ), aEdit2[ 3 ], aEdit2[ 4 ] )
-         Case cControl == "LCOMBOBOX"
-            oGridControl := TGridControlLComboBox():New( aEdit2[ 2 ], aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 5 ], oGrid )
+      Case cControl == "MEMO"
+         oGridControl := TGridControlMemo():New( aEdit2[ 2 ], aEdit2[ 3 ], oGrid )
+      Case cControl == "DATEPICKER"
+         oGridControl := TGridControlDatePicker():New( aEdit2[ 2 ], aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 5 ], oGrid, aEdit2[ 6 ] )
+      Case cControl == "COMBOBOX"
+         oGridControl := TGridControlComboBox():New( aEdit2[ 2 ], oGrid, aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 5 ], aEdit2[ 6 ], aEdit2[ 7 ] )
+      Case cControl == "COMBOBOXTEXT"
+         oGridControl := TGridControlComboBoxText():New( aEdit2[ 2 ], oGrid, aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 5 ], aEdit2[ 6 ], aEdit2[ 7 ] )
+      Case cControl == "SPINNER"
+         oGridControl := TGridControlSpinner():New( aEdit2[ 2 ], aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 5 ], oGrid, aEdit2[ 6 ] )
+      Case cControl == "CHECKBOX"
+         oGridControl := TGridControlCheckBox():New( aEdit2[ 2 ], aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 5 ], oGrid, aEdit2[ 6 ] )
+      Case cControl == "TEXTBOX"
+         oGridControl := TGridControlTextBox():New( aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 2 ], aEdit2[ 5 ], aEdit2[ 6 ], aEdit2[ 7 ], oGrid, aEdit2[ 8 ], aEdit2[ 9 ], aEdit2[ 10 ] )
+      Case cControl == "IMAGELIST"
+         oGridControl := TGridControlImageList():New( oGrid, aEdit2[ 2 ], aEdit2[ 3 ], aEdit2[ 4 ] )
+      Case cControl == "IMAGEDATA"
+         oGridControl := TGridControlImageData():New( oGrid, GridControlObject( aEdit2[ 2 ], oGrid ), aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 5 ] )
+      Case cControl == "LCOMBOBOX"
+         oGridControl := TGridControlLComboBox():New( aEdit2[ 2 ], aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 5 ], oGrid, aEdit2[ 6 ] )
       EndCase
    EndIf
 Return oGridControl
@@ -4131,7 +4131,7 @@ ENDCLASS
 
 /*
 COLUMNCONTROLS syntax:
-{'TEXTBOX', cType, cPicture, cFunction, nOnFocusPos, lButtons, aImages, lLikeExcel, cEditKey}
+{'TEXTBOX', cType, cPicture, cFunction, nOnFocusPos, lButtons, aImages, lLikeExcel, cEditKey, lNoModal}
 */
 METHOD New( cPicture, cFunction, cType, nOnFocusPos, lButtons, aImages, oGrid, lLikeExcel, cEditKey, lNoModal ) CLASS TGridControlTextBox
    ::cMask := ""
@@ -4422,7 +4422,7 @@ ENDCLASS
 
 /*
 COLUMNCONTROLS syntax:
-{'DATEPICKER', lUpDown, lShowNone, lButtons, aImages}
+{'DATEPICKER', lUpDown, lShowNone, lButtons, aImages, lNoModal}
 */
 METHOD New( lUpDown, lShowNone, lButtons, aImages, oGrid, lNoModal ) CLASS TGridControlDatePicker
    If ! HB_IsLogical( lUpDown )
@@ -4491,7 +4491,7 @@ ENDCLASS
 
 /*
 COLUMNCONTROLS syntax:
-{'COMBOBOX', aItems, aValues, cRetValType, lButtons, aImages}
+{'COMBOBOX', aItems, aValues, cRetValType, lButtons, aImages, lNoModal}
 */
 METHOD New( aItems, oGrid, aValues, cRetValType, lButtons, aImages, lNoModal ) CLASS TGridControlComboBox
    DEFAULT cRetValType TO "NUMERIC"
@@ -4620,7 +4620,7 @@ ENDCLASS
 
 /*
 COLUMNCONTROLS syntax:
-{'COMBOBOXTEXT', aItems, lIncremental, lWinSize, lButtons, aImages}
+{'COMBOBOXTEXT', aItems, lIncremental, lWinSize, lButtons, aImages, lNoModal}
 */
 METHOD New( aItems, oGrid, lIncremental, lWinSize, lButtons, aImages, lNoModal ) CLASS TGridControlComboBoxText
    ASSIGN ::lIncremental VALUE lIncremental TYPE "L" DEFAULT .F.
@@ -4695,7 +4695,7 @@ ENDCLASS
 
 /*
 COLUMNCONTROLS syntax:
-{'SPINNER', nRangeMin, nRangeMax, lButtons, aImages}
+{'SPINNER', nRangeMin, nRangeMax, lButtons, aImages, lNoModal}
 */
 METHOD New( nRangeMin, nRangeMax, lButtons, aImages, oGrid, lNoModal ) CLASS TGridControlSpinner
    If HB_IsNumeric( nRangeMin )
@@ -4744,7 +4744,7 @@ ENDCLASS
 
 /*
 COLUMNCONTROLS syntax:
-{'CHECKBOX', cTrue, cFalse, lButtons, aImages}
+{'CHECKBOX', cTrue, cFalse, lButtons, aImages, lNoModal}
 */
 METHOD New( cTrue, cFalse, lButtons, aImages, oGrid, lNoModal ) CLASS TGridControlCheckBox
    If ValType( cTrue ) $ "CM"
@@ -4791,7 +4791,7 @@ ENDCLASS
 
 /*
 COLUMNCONTROLS syntax:
-{'IMAGELIST', lButtons, aImages}
+{'IMAGELIST', lButtons, aImages, lNoModal}
 */
 METHOD New( oGrid, lButtons, aImages, lNoModal ) CLASS TGridControlImageList
    ::oGrid := oGrid
@@ -4851,7 +4851,7 @@ ENDCLASS
 
 /*
 COLUMNCONTROLS syntax:
-{'IMAGEDATA', oData, lButtons, aImages}
+{'IMAGEDATA', oData, lButtons, aImages, lNoModal}
 */
 METHOD New( oGrid, oData, lButtons, aImages, lNoModal ) CLASS TGridControlImageData
    ::oGrid := oGrid
@@ -4934,7 +4934,7 @@ ENDCLASS
 
 /*
 COLUMNCONTROLS syntax:
-{'LCOMBOBOX', cTrue, cFalse, lButtons, aImages}
+{'LCOMBOBOX', cTrue, cFalse, lButtons, aImages, lNoModal}
 */
 METHOD New( cTrue, cFalse, lButtons, aImages, oGrid, lNoModal ) CLASS TGridControlLComboBox
    If ValType( cTrue ) $ "CM"
