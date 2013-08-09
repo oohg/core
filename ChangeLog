@@ -1,11 +1,15 @@
 /*
- * $Id: ChangeLog,v 1.1137 2013-08-09 00:31:30 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1138 2013-08-09 20:27:53 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-08-09 17:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   + doc/How_to_Configure_and_Use.txt
+     TODO: add configuration for new compilers and buildapp.bat
 
 2013-08-08 21:32 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg

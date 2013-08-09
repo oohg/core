@@ -1,0 +1,92 @@
+
+English
+--------------------------------------------------------------------------------
+
+If ooHg package was installed in C:\OOHG, and MinGW is going to be used to
+compile projects, there's no need to change the default configuration. Simply
+add C:\OOHG to the system's PATH and use DOS commands "COMPILE prg_name" or
+"COMPILE_MINGW prg_name" to build executable files. If you don´t want to change
+the PATH, use "C:\OOHG\COMPILE prg_name" or "C:\OOHG\COMPILE_MINGW prg_name"
+instead.
+
+If ooHg package was installed in another folder (e.g. D:\XYZ), you must replace
+the line "set ooHG_INSTALL=c:\oohg" with "set ooHG_INSTALL=D:\XYZ" in the
+following files:
+
+D:\XYZ\COMPILE.BAT
+D:\XYZ\COMPILE_BCC.BAT
+D:\XYZ\COMPILE_MINGW.BAT
+D:\XYZ\COMPILE_PC.BAT
+D:\XYZ\COMPILE_VC.BAT
+
+By default ooHg package uses a bundled version of MinGW to compile projects.
+To use a different version of MinGW (e.g. installed in D:\MYMINGW), edit
+C:\OOHG\COMPILE_MINGW.BAT and replace the line "set MINGW=c:\oohg\mingw" with
+"set MINGW=D:\MYMINGW".
+
+To use Borland C++ 5.5 compiler instead of MinGW, edit C:\OOHG\COMPILE.BAT,
+locate the line "call %ooHG_INSTALL%\compile_mingw %1 %2 %3 %4 %5 %6 %7 %8 %9"
+and replace "compile_mingw" with "compile_bcc". If the compiler is not installed
+at C:\BORLAND\BCC55 (e.g. at D:\MYBCC), edit C:\OOHG\COMPILE_BCC.BAT and replace
+the line "set BCC=c:\borland\bcc55" with "set BCC=D:\MYBCC".
+
+To use Pelles C compiler instead of MinGW, edit C:\OOHG\COMPILE.BAT,
+locate the line "call %ooHG_INSTALL%\compile_mingw %1 %2 %3 %4 %5 %6 %7 %8 %9"
+and replace "compile_mingw" with "compile_pc". If the compiler is not installed
+at C:\PELLESC (e.g. at D:\PCC), edit C:\OOHG\COMPILE_PC.BAT and replace
+the line "set PCC=c:\pellesc" with "set BCC=D:\PCC".
+
+To use Microsoft Visual Studio 9.0 compiler instead of MinGW, edit
+C:\OOHG\COMPILE.BAT, locate the line
+"call %ooHG_INSTALL%\compile_mingw %1 %2 %3 %4 %5 %6 %7 %8 %9"
+and replace "compile_mingw" with "compile_vc". If the compiler is not installed
+at %PROGRAM FILES%\MICROSOFT VISUAL STUDIO 9.0\vc (e.g. at D:\VS9), edit
+C:\OOHG\COMPILE_PC.BAT and replace the line
+"set VSC=%Program Files%\Microsoft Visual Studio 9.0\vc" with "set BCC=D:\VS9".
+
+
+Español
+--------------------------------------------------------------------------------
+
+Si el paquete ooHg se instala en C:\OOHG y MinGW va a ser utilizado para
+compilar los proyectos, no hay necesidad de cambiar la configuración por
+defecto. Simplemente añada C:\OOHG al PATH del sistema y utilice los comandos
+de DOS "Compilar prg_name" o "COMPILE_MINGW prg_name" para crear los archivos
+ejecutables. Si no desea cambiar el PATH, utilice "C:\OOHG\COMPILE prg_name" o
+"C:\OOHG\COMPILE_MINGW prg_name" en su lugar.
+
+Si el paquete ooHg se instaló en otra carpeta (por ejemplo D: \ XYZ), deberá
+reemplazar cada ocurrencia de C:\OOHG por D:\XYZ en los siguientes archivos:
+
+D:\XYZ\COMPILE.BAT
+D:\XYZ\COMPILE_BCC.BAT
+D:\XYZ\COMPILE_MINGW.BAT
+D:\XYZ\COMPILE_PC.BAT
+D:\XYZ\COMPILE_VC.BAT
+
+Por defecto, el paquete ooHg utiliza la versión incluida del compilador MinGW.
+Para utilizar una versión diferente de MinGW (por ejemplo la instalada en
+D:\MYMINGW), edite C:\OOHG\COMPILE_MINGW.BAT y reemplace la línea
+"set MINGW=c:\oohg\mingw" con "set MINGW=D:\MYMINGW".
+
+Para utilizar el compilador Borland C++ 5.5 en lugar de MinGW, edite
+C:\OOHG\COMPILE.BAT, localice la línea
+"call %ooHG_INSTALL%\compile_mingw %1 %2 %3 %4 %5 %6 %7 %8 %9" y reemplace
+"compile_mingw" con "compile_bcc". Si el compilador no está instalado en 
+C:\BORLAND\BCC55 (por ejemplo, está en D:\MYBCC), edite C:\OOHG\COMPILE_BCC.BAT
+y reemplace la línea "set BCC=c:\borland\bcc55" con "set BCC=D:\MYBCC".
+
+Para utilizar el compilador Pelles C en lugar de MinGW, edite
+C:\OOHG\COMPILE.BAT, localice la línea
+"call %ooHG_INSTALL%\compile_mingw %1 %2 %3 %4 %5 %6 %7 %8 %9" y reemplace
+"compile_mingw" con "compile_pc". Si el compilador no está instalado en
+C:\PELLESC (por ejemplo, está en D:\PCC), edite C:\OOHG\COMPILE_PC.BAT y
+reemplace la línea "set PCC=c:\pellesc" con "set BCC=D:\PCC".
+
+Para utilizar el compilador Microsoft Visual Studio 9.0 en lugar de MinGW, edite
+C:\OOHG\COMPILE.BAT, localicela línea
+"call %ooHG_INSTALL%\compile_mingw %1 %2 %3 %4 %5 %6 %7 %8 %9" y reemplace
+"compile_mingw" con "compile_vc". Si el compilador no está instalado en
+%PROGRAM FILES%\MICROSOFT VISUAL STUDIO 9.0\vc (por ejemplo, está en D:\VS9),
+edite C:\OOHG\COMPILE_PC.BAT y reemplace la línea
+"set VSC=%Program Files%\Microsoft Visual Studio 9.0\vc" con "set BCC=D:\VS9".
