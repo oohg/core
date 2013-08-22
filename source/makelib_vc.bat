@@ -1,30 +1,38 @@
 @echo off
 rem
-rem $Id: makelib_vc.bat,v 1.3 2010-08-12 23:07:55 guerra000 Exp $
+rem $Id: makelib_vc.bat,v 1.4 2013-08-22 22:25:08 fyurisich Exp $
 rem
 cls
 
-Rem Set Paths
+rem *** Set Paths ***
+if "%HG_ROOT%"=="" set HG_ROOT=c:\oohg
+if "%HG_HRB%"==""  set HG_HRB=%HG_ROOT%\harbour
+if "%HG_VC%"==""   set HG_VC=%PROGRAMFILES%\Microsoft Visual Studio 9.0\vc
 
-IF "%HG_VC%"==""   SET HG_VC=%Program Files%\Microsoft Visual Studio 9.0\vc
-IF "%HG_ROOT%"=="" SET HG_ROOT=C:\oohg
-IF "%HG_HRB%"==""  SET HG_HRB=C:\oohg\harbour
+rem *** Set EnvVars ***
+if "%LIB_GUI%"=="" set LIB_GUI=lib
+if "%LIB_HRB%"=="" set LIB_HRB=lib
+if "%BIN_HRB%"=="" set BIN_HRB=bin
 
-SET _PATH=%PATH%
-SET PATH="%HG_VC%\bin";%PATH%
-IF EXIST "%HG_VC%"\vcvarsall.bat CALL "%HG_VC%"\vcvarsall.bat
+rem *** Change Path ***
+set _PATH=%PATH%
+set PATH="%HG_VC%\bin";%PATH%
+if exist "%HG_VC%"\vcvarsall.bat call "%HG_VC%"\vcvarsall.bat
 
-IF NOT EXIST %hg_root%\lib\oohg.lib MD %hg_root%\lib >nul
+rem *** Create Lib Folder ***
+if not exist %HG_ROOT%\%LIB_GUI%\oohg.lib md %HG_ROOT%\%LIB_GUI% >nul
 
-IF EXIST %hg_root%\lib\oohg.lib del %hg_root%\lib\oohg.lib
-IF EXIST %hg_root%\lib\hbprinter.lib del %hg_root%\lib\hbprinter.lib
-IF EXIST %hg_root%\lib\miniprint.lib del %hg_root%\lib\miniprint.lib
+rem *** Delete Old Libraries ***
+if exist %HG_ROOT%\%LIB_GUI%\oohg.lib      del %HG_ROOT%\%LIB_GUI%\oohg.lib
+if exist %HG_ROOT%\%LIB_GUI%\hbprinter.lib del %HG_ROOT%\%LIB_GUI%\hbprinter.lib
+if exist %HG_ROOT%\%LIB_GUI%\miniprint.lib del %HG_ROOT%\%LIB_GUI%\miniprint.lib
 
-call common_make "%hg_hrb%\lib\tip.lib"
+rem *** Compile with Harbour ***
+call common_make "%HG_HRB%\%LIB_HRB%\tip.lib"
 if errorlevel 1 goto EXIT1
 
-SET OOHG_X_FLAGS= /O2 /c /W3 /nologo /I"%hg_vc%\include" /I"%hg_vc%\include\Win" /I%hg_hrb%\include /I%hg_root%\include /D__WIN32__ /D_CRT_SECURE_NO_WARNINGS
-
+rem *** Compile with MSVC ***
+set OOHG_X_FLAGS= /O2 /c /W3 /nologo /I"%HG_VC%\include" /I"%HG_VC%\include\Win" /I%HG_HRB%\include /I%HG_ROOT%\include /D__WIN32__ /D_CRT_SECURE_NO_WARNINGS
 for %%a in (%HG_FILES1_PRG%) do if not errorlevel 1 cl %OOHG_X_FLAGS% %%a.c
 if errorlevel 1 goto EXIT2
 for %%a in (%HG_FILES2_PRG%) do if not errorlevel 1 cl %OOHG_X_FLAGS% %%a.c
@@ -36,34 +44,42 @@ if errorlevel 1 goto EXIT2
 if exist miniprint.c cl %OOHG_X_FLAGS% miniprint.c
 if errorlevel 1 goto EXIT2
 
-ECHO /out:%hg_root%\lib\oohg.lib >%hg_root%\lib\oohg.def
-for %%a in (%HG_FILES1_PRG%) do ECHO %%a.obj >>%hg_root%\lib\oohg.def
-for %%a in (%HG_FILES2_PRG%) do ECHO %%a.obj >>%hg_root%\lib\oohg.def
-for %%a in (%HG_FILES_C%)    do ECHO %%a.obj >>%hg_root%\lib\oohg.def
-lib @%hg_root%\lib\oohg.def
+rem *** Build Libraries ***
+echo /out:%HG_ROOT%\%LIB_GUI%\oohg.lib >%HG_ROOT%\%LIB_GUI%\oohg.def
+for %%a in (%HG_FILES1_PRG%) do echo %%a.obj >>%HG_ROOT%\%LIB_GUI%\oohg.def
+for %%a in (%HG_FILES2_PRG%) do echo %%a.obj >>%HG_ROOT%\%LIB_GUI%\oohg.def
+for %%a in (%HG_FILES_C%)    do echo %%a.obj >>%HG_ROOT%\%LIB_GUI%\oohg.def
+lib @%HG_ROOT%\lib\oohg.def
 if errorlevel 2 goto EXIT3
-if exist winprint.obj  lib /out:%hg_root%\lib\hbprinter.lib winprint.obj
+if exist winprint.obj  lib /out:%HG_ROOT%\%LIB_GUI%\hbprinter.lib winprint.obj
 if errorlevel 2 goto EXIT3
-if exist miniprint.obj lib /out:%hg_root%\lib\miniprint.lib miniprint.obj
+if exist miniprint.obj lib /out:%HG_ROOT%\%LIB_GUI%\miniprint.lib miniprint.obj
 if errorlevel 2 goto EXIT3
+
 
 :EXIT3
-IF EXIST %hg_root%\lib\oohg.def del %hg_root%\lib\oohg.def
-IF EXIST %hg_root%\lib\oohg.bak del %hg_root%\lib\oohg.bak
-IF EXIST %hg_root%\lib\hbprinter.bak del %hg_root%\lib\hbprinter.bak
-IF EXIST %hg_root%\lib\miniprint.bak del %hg_root%\lib\miniprint.bak
+rem *** Delete Unwanted Files ***
+if exist %HG_ROOT%\%LIB_GUI%\oohg.def      del %HG_ROOT%\%LIB_GUI%\oohg.def
+if exist %HG_ROOT%\%LIB_GUI%\oohg.bak      del %HG_ROOT%\%LIB_GUI%\oohg.bak
+if exist %HG_ROOT%\%LIB_GUI%\hbprinter.bak del %HG_ROOT%\%LIB_GUI%\hbprinter.bak
+if exist %HG_ROOT%\%LIB_GUI%\miniprint.bak del %HG_ROOT%\%LIB_GUI%\miniprint.bak
+
 
 :EXIT2
+rem *** Delete Unwanted Files ***
 del *.obj
 
+
 :EXIT1
+rem *** Delete Unwanted Files ***
 del h_*.c
 if exist winprint.c  del winprint.c
 if exist miniprint.c del miniprint.c
 
-SET OOHG_X_FLAGS=
-SET HG_FILES1_PRG=
-SET HG_FILES2_PRG=
-SET HG_FILES_C=
-SET PATH=%_PATH%
-SET _PATH=
+rem *** Clear Temporary EnvVars ***
+set OOHG_X_FLAGS=
+set HG_FILES1_PRG=
+set HG_FILES2_PRG=
+set HG_FILES_C=
+set PATH=%_PATH%
+set _PATH=

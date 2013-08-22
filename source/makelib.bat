@@ -1,6 +1,8 @@
 @echo off
 rem
-rem $Id: makelib.bat,v 1.36 2009-09-23 18:51:10 declan2005 Exp $
+rem $Id: makelib.bat,v 1.37 2013-08-22 22:25:08 fyurisich Exp $
 rem
+cls
 
+rem *** Call Compiler Specific Batch File ***
 call makelib_mingw

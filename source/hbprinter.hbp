@@ -1,5 +1,5 @@
 #
-# $Id: hbprinter.hbp,v 1.4 2013-07-11 19:26:22 migsoft Exp $
+# $Id: hbprinter.hbp,v 1.5 2013-08-22 22:25:07 fyurisich Exp $
 #
 
 # compilation is incremental (hidden .hmk folder is created)
@@ -9,17 +9,17 @@
 -hblib
 
 # name of output file
--o${ooHG_INSTALL}\lib\hb\mingw\${hb_name}
-#-o${ooHG_INSTALL}\lib\hb\mingw64\${hb_name}
+-o${HG_ROOT}\lib\hb\mingw\${hb_name}
+#-o${HG_ROOT}\lib\hb\mingw64\${hb_name}
 
 # harbour compiler flags
 -n -q0 -w3 -ko -es2
 
 # uncomment the following line to generate .ppo files
-#-p${ooHG_INSTALL}\source\ppo\
+#-p${HG_ROOT}\source\ppo\
 
 # path to headers files (.ch)
--i${ooHG_INSTALL}\include
+-i${HG_ROOT}\include
 
 # files to compile
 winprint.prg

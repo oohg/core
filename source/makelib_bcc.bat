@@ -1,62 +1,78 @@
 @echo off
 rem
-rem $Id: makelib_bcc.bat,v 1.16 2008-10-01 01:27:36 guerra000 Exp $
+rem $Id: makelib_bcc.bat,v 1.17 2013-08-22 22:25:08 fyurisich Exp $
 rem
 cls
 
-Rem Set Paths
+rem *** Set Paths ***
+if "%HG_ROOT%"=="" set HG_ROOT=c:\oohg
+if "%HG_HRB%"==""  set HG_HRB=%HG_ROOT%\harbour
+if "%HG_BCC%"==""  set HG_BCC=c:\borland\bcc55
 
-IF "%HG_BCC%"==""  SET HG_BCC=c:\borland\bcc55
-IF "%HG_ROOT%"=="" SET HG_ROOT=c:\oohg
-IF "%HG_HRB%"==""  SET HG_HRB=c:\oohg\harbour
+rem *** Set EnvVars ***
+if "%LIB_GUI%"=="" set LIB_GUI=lib
+if "%LIB_HRB%"=="" set LIB_HRB=lib
+if "%BIN_HRB%"=="" set BIN_HRB=bin
 
-IF NOT EXIST %hg_root%\lib\oohg.lib MD %hg_root%\lib >nul
+rem *** Create Lib Folder ***
+if not exist %HG_ROOT%\lib\oohg.lib md %HG_ROOT%\lib >nul
 
-IF EXIST %hg_root%\lib\oohg.lib del %hg_root%\lib\oohg.lib
-IF EXIST %hg_root%\lib\hbprinter.lib del %hg_root%\lib\hbprinter.lib
-IF EXIST %hg_root%\lib\miniprint.lib del %hg_root%\lib\miniprint.lib
+rem *** Delete Old Libraries ***
+if exist %HG_ROOT%\%LIB_GUI%\oohg.lib      del %HG_ROOT%\%LIB_GUI%\oohg.lib
+if exist %HG_ROOT%\%LIB_GUI%\hbprinter.lib del %HG_ROOT%\%LIB_GUI%\hbprinter.lib
+if exist %HG_ROOT%\%LIB_GUI%\miniprint.lib del %HG_ROOT%\%LIB_GUI%\miniprint.lib
 
-call common_make "%hg_hrb%\lib\tip.lib"
+rem *** Compile with Harbour ***
+call common_make "%HG_HRB%\%LIB_HRB%\tip.lib"
 if errorlevel 1 goto EXIT1
 
-SET OOHG_X_FLAGS=-c -O2 -tW -tWM -d -a8 -OS -5 -6 -I%hg_hrb%\include;%hg_bcc%\include;%hg_root%\include; -L%hg_hrb%\lib;%hg_bcc%\lib;
+rem *** Compile with BCC ***
+set OOHG_X_FLAGS=-c -O2 -tW -tWM -d -a8 -OS -5 -6 -I%HG_HRB%\include;%HG_BCC%\include;%HG_ROOT%\include; -L%HG_HRB%\%LIB_HRB%;%HG_BCC%\lib;
+for %%a in (%HG_FILES1_PRG%) do if not errorlevel 1 %HG_BCC%\bin\bcc32 %OOHG_X_FLAGS% %%a.c
+if errorlevel 1 goto EXIT2
+for %%a in (%HG_FILES2_PRG%) do if not errorlevel 1 %HG_BCC%\bin\bcc32 %OOHG_X_FLAGS% %%a.c
+if errorlevel 1 goto EXIT2
+for %%a in (%HG_FILES_C%)    do if not errorlevel 1 %HG_BCC%\bin\bcc32 %OOHG_X_FLAGS% %%a.c
+if errorlevel 1 goto EXIT2
+if exist winprint.c  %HG_BCC%\bin\bcc32 %OOHG_X_FLAGS% winprint.c
+if errorlevel 1 goto EXIT2
+if exist miniprint.c %HG_BCC%\bin\bcc32 %OOHG_X_FLAGS% miniprint.c
+if errorlevel 1 goto EXIT2
 
-for %%a in (%HG_FILES1_PRG%) do if not errorlevel 1 %hg_bcc%\bin\bcc32 %OOHG_X_FLAGS% %%a.c
-if errorlevel 1 goto EXIT2
-for %%a in (%HG_FILES2_PRG%) do if not errorlevel 1 %hg_bcc%\bin\bcc32 %OOHG_X_FLAGS% %%a.c
-if errorlevel 1 goto EXIT2
-for %%a in (%HG_FILES_C%)    do if not errorlevel 1 %hg_bcc%\bin\bcc32 %OOHG_X_FLAGS% %%a.c
-if errorlevel 1 goto EXIT2
-if exist winprint.c  %hg_bcc%\bin\bcc32 %OOHG_X_FLAGS% winprint.c
-if errorlevel 1 goto EXIT2
-if exist miniprint.c %hg_bcc%\bin\bcc32 %OOHG_X_FLAGS% miniprint.c
-if errorlevel 1 goto EXIT2
+rem *** Build Libraries ***
+for %%a in ( %HG_FILES1_PRG% ) do if not errorlevel 2 %HG_BCC%\bin\tlib %HG_ROOT%\%LIB_GUI%\oohg +%%a.obj /P32
+if errorlevel 2 goto EXIT3
+for %%a in ( %HG_FILES2_PRG% ) do if not errorlevel 2 %HG_BCC%\bin\tlib %HG_ROOT%\%LIB_GUI%\oohg +%%a.obj /P32
+if errorlevel 2 goto EXIT3
+for %%a in ( %HG_FILES_C%    ) do if not errorlevel 2 %HG_BCC%\bin\tlib %HG_ROOT%\%LIB_GUI%\oohg +%%a.obj /P32
+if errorlevel 2 goto EXIT3
+if exist winprint.obj  %HG_BCC%\bin\tlib %HG_ROOT%\%LIB_GUI%\hbprinter +winprint.obj
+if errorlevel 2 goto EXIT3
+if exist miniprint.obj %HG_BCC%\bin\tlib %HG_ROOT%\%LIB_GUI%\miniprint +miniprint.obj
+if errorlevel 2 goto EXIT3
 
-for %%a in ( %HG_FILES1_PRG% ) do if not errorlevel 2 %hg_bcc%\bin\tlib %hg_root%\lib\oohg +%%a.obj /P32
-if errorlevel 2 goto EXIT3
-for %%a in ( %HG_FILES2_PRG% ) do if not errorlevel 2 %hg_bcc%\bin\tlib %hg_root%\lib\oohg +%%a.obj /P32
-if errorlevel 2 goto EXIT3
-for %%a in ( %HG_FILES_C%    ) do if not errorlevel 2 %hg_bcc%\bin\tlib %hg_root%\lib\oohg +%%a.obj /P32
-if errorlevel 2 goto EXIT3
-if exist winprint.obj  %hg_bcc%\bin\tlib %hg_root%\lib\hbprinter +winprint.obj
-if errorlevel 2 goto EXIT3
-if exist miniprint.obj %hg_bcc%\bin\tlib %hg_root%\lib\miniprint +miniprint.obj
-if errorlevel 2 goto EXIT3
 
 :EXIT3
-IF EXIST %hg_root%\lib\oohg.bak del %hg_root%\lib\oohg.bak
-IF EXIST %hg_root%\lib\hbprinter.bak del %hg_root%\lib\hbprinter.bak
-IF EXIST %hg_root%\lib\miniprint.bak del %hg_root%\lib\miniprint.bak
+rem *** Cleanup ***
+IF EXIST %HG_ROOT%\%LIB_GUI%\oohg.bak      del %HG_ROOT%\%LIB_GUI%\oohg.bak
+IF EXIST %HG_ROOT%\%LIB_GUI%\hbprinter.bak del %HG_ROOT%\%LIB_GUI%\hbprinter.bak
+IF EXIST %HG_ROOT%\%LIB_GUI%\miniprint.bak del %HG_ROOT%\%LIB_GUI%\miniprint.bak
+
 
 :EXIT2
+rem *** Cleanup ***
 del *.obj
 
+
 :EXIT1
+rem *** Cleanup ***
 del h_*.c
 if exist winprint.c  del winprint.c
 if exist miniprint.c del miniprint.c
-
 SET OOHG_X_FLAGS=
 SET HG_FILES1_PRG=
 SET HG_FILES2_PRG=
 SET HG_FILES_C=
+
+
+:EXIT

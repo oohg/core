@@ -1,145 +1,199 @@
 @echo off
 rem
-rem $Id: compile_vc.bat,v 1.1 2009-11-24 02:55:18 guerra000 Exp $
+rem $Id: compile_vc.bat,v 1.2 2013-08-22 22:25:02 fyurisich Exp $
 rem
 cls
 
-Rem Set Paths
+REM *** Check for .prg ***
+if "%1"=="" goto EXIT
+if not exist %1.prg goto ERREXIT1
 
-IF "%HG_VC%"==""   SET HG_VC=%Program Files%\Microsoft Visual Studio 9.0\vc
-IF "%HG_ROOT%"=="" SET HG_ROOT=C:\OOHG
-IF "%HG_HRB%"==""  SET HG_HRB=C:\OOHG\HARBOUR
-
+rem *** Delete Old Executable ***
 if exist %1.exe del %1.exe
-SET HG_USE_GT=gtwin
+if exist %1.exe goto ERREXIT2
 
-Rem Debug Compile
+rem *** Set Paths ***
+if "%HG_ROOT%"=="" set HG_ROOT=c:\oohg
+if "%HG_HRB%"==""  set HG_HRB=%HG_ROOT%\harbour
+if "%HG_VC%"==""   set HG_VC=%PROGRAMFILES%\Microsoft Visual Studio 9.0\vc
 
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/d" GOTO DEBUG_COMP
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/D" GOTO DEBUG_COMP
+rem *** Set EnvVars ***
+if "%LIB_GUI%"=="" set LIB_GUI=lib
+if "%LIB_HRB%"=="" set LIB_HRB=lib
+if "%BIN_HRB%"=="" set BIN_HRB=bin
 
-if exist %HG_HRB%\lib\gtgui.lib SET HG_USE_GT=gtgui
-%HG_HRB%\bin\harbour %1.prg -n -i%HG_HRB%\include;%HG_ROOT%\include; %2 %3
+rem *** To Build with Nightly Harbour ***
+rem *** For 32 bits MSVC ***
+rem set LIB_GUI=lib\hb\vc
+rem set LIB_HRB=lib\win\vc
+rem set BIN_HRB=bin\win\vc
 
-GOTO C_COMP
+rem *** Set GT and Check for Debug Switch ***
+set HG_USE_GT=gtwin
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/d" goto DEBUG_COMP
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/D" goto DEBUG_COMP
+
+rem *** Set GT and Compile with Harbour ***
+if exist %HG_HRB%\%LIB_HRB%\gtgui.lib set HG_USE_GT=gtgui
+%HG_HRB%\%BIN_HRB%\harbour %1.prg -n -i%HG_HRB%\include;%HG_ROOT%\include; %2 %3
+
+goto C_COMP
+
 
 :DEBUG_COMP
+rem *** Compile with Harbour Using -b Option ***
+echo OPTIONS NORUNATSTARTUP > INIT.CLD
+%HG_HRB%\%BIN_HRB%\harbour %1.prg -n -b -i%HG_HRB%\include;%HG_ROOT%\include; %2 %3
 
-ECHO OPTIONS NORUNATSTARTUP > INIT.CLD
-
-%HG_HRB%\bin\harbour %1.prg -n -b -i%HG_HRB%\include;%HG_ROOT%\include; %2 %3
 
 :C_COMP
+rem *** Check for Errors in Harbour Compilation ***
+if errorlevel 1 goto EXIT1
 
-if errorlevel 1 goto exit1
+rem *** Change Path, Compile with VC and Check for Errors ***
+set TPATH=%PATH%
+set PATH="%HG_VC%\bin";%PATH%
+if exist "%HG_VC%"\vcvarsall.bat call "%HG_VC%"\vcvarsall.bat
+cl /O2 /c /TP /I%HG_HRB%\include /I%HG_ROOT%\include /I. /D__WIN32__ %1.c
+if errorlevel 1 goto EXIT2
 
-SET _PATH=%PATH%
-SET PATH="%HG_VC%\bin";%PATH%
-IF EXIST "%HG_VC%"\vcvarsall.bat CALL "%HG_VC%"\vcvarsall.bat
-
-cl /O2 /c /TP /I%hg_hrb%\include /I%hg_root%\include /I. /D__WIN32__ %1.c
-
-if errorlevel 1 goto exit2
-
+rem *** Process Resource File and Check for Errors ***
 if exist %1.rc rc /Fo%1.res %1.rc
-if errorlevel 1 goto exit3
+if errorlevel 1 goto EXIT3
 
+rem *** Build Response File ***
 echo /OUT:%1.exe > vc.lnk
 echo /FORCE:MULTIPLE >> vc.lnk
 echo /INCLUDE:__matherr >> vc.lnk
 echo %1.obj >> vc.lnk
-echo %HG_ROOT%\lib\oohg.lib >> vc.lnk
+echo %HG_ROOT%\%LIB_GUI%\oohg.lib >> vc.lnk
 
-Rem *** Compiler libraries ***
+rem *** Compiler Libraries ***
 for %%a in (rtl vm %HG_USE_GT% lang codepage macro rdd dbfntx dbfcdx dbffpt common debug pp) do echo %HG_HRB%\lib\%%a.lib >> vc.lnk
 
-Rem *** Compiler-dependant libraries ***
-if exist %HG_HRB%\lib\dbfdbt.lib  echo %HG_HRB%\lib\dbfdbt.lib >> vc.lnk
-if exist %HG_HRB%\lib\hbsix.lib   echo %HG_HRB%\lib\hbsix.lib >> vc.lnk
-if exist %HG_HRB%\lib\tip.lib     echo %HG_HRB%\lib\tip.lib >> vc.lnk
-if exist %HG_HRB%\lib\ct.lib      echo %HG_HRB%\lib\ct.lib >> vc.lnk
-if exist %HG_HRB%\lib\hsx.lib     echo %HG_HRB%\lib\hsx.lib >> vc.lnk
-if exist %HG_HRB%\lib\pcrepos.lib echo %HG_HRB%\lib\pcrepos.lib >> vc.lnk
+rem *** Harbour-dependant Libraries ***
+if exist %HG_HRB%\%LIB_HRB%\dbfdbt.lib     echo %HG_HRB%\%LIB_HRB%\dbfdbt.lib >> vc.lnk
+if exist %HG_HRB%\%LIB_HRB%\hbsix.lib      echo %HG_HRB%\%LIB_HRB%\hbsix.lib >> vc.lnk
+if exist %HG_HRB%\%LIB_HRB%\tip.lib        echo %HG_HRB%\%LIB_HRB%\tip.lib >> vc.lnk
+if exist %HG_HRB%\%LIB_HRB%\ct.lib         echo %HG_HRB%\%LIB_HRB%\ct.lib >> vc.lnk
+if exist %HG_HRB%\%LIB_HRB%\hsx.lib        echo %HG_HRB%\%LIB_HRB%\hsx.lib >> vc.lnk
+if exist %HG_HRB%\%LIB_HRB%\pcrepos.lib    echo %HG_HRB%\%LIB_HRB%\pcrepos.lib >> vc.lnk
 
-Rem *** Additional libraries ***
-if exist %HG_HRB%\lib\libct.lib   echo %HG_HRB%\lib\libct.lib >> vc.lnk
-if exist %HG_HRB%\lib\libmisc.lib echo %HG_HRB%\lib\libmisc.lib >> vc.lnk
-if exist %HG_HRB%\lib\hboleaut.lib   echo %HG_HRB%\lib\hboleaut.lib >> vc.lnk
-if exist %HG_HRB%\lib\dll.lib     echo %HG_HRB%\lib\dll.lib >> vc.lnk
+rem *** Additional Libraries ***
+if exist %HG_HRB%\%LIB_HRB%\libct.lib      echo %HG_HRB%\%LIB_HRB%\libct.lib >> vc.lnk
+if exist %HG_HRB%\%LIB_HRB%\libmisc.lib    echo %HG_HRB%\%LIB_HRB%\libmisc.lib >> vc.lnk
+if exist %HG_HRB%\%LIB_HRB%\hboleaut.lib   echo %HG_HRB%\%LIB_HRB%\hboleaut.lib >> vc.lnk
+if exist %HG_HRB%\%LIB_HRB%\dll.lib        echo %HG_HRB%\%LIB_HRB%\dll.lib >> vc.lnk
 
-Rem *** "Related" libraries ***
-if exist %HG_HRB%\lib\socket.lib     echo %HG_HRB%\lib\socket.lib >> vc.lnk
-if exist %HG_ROOT%\lib\socket.lib    echo %HG_ROOT%\lib\socket.lib >> vc.lnk
-if exist %HG_ROOT%\lib\hbprinter.lib echo %HG_ROOT%\lib\hbprinter.lib >> vc.lnk
-if exist %HG_ROOT%\lib\miniprint.lib echo %HG_ROOT%\lib\miniprint.lib >> vc.lnk
+rem *** "Related" Libraries ***
+if exist %HG_HRB%\%LIB_HRB%\socket.lib     echo %HG_HRB%\%LIB_HRB%\socket.lib >> vc.lnk
+if exist %HG_ROOT%\%LIB_GUI%\socket.lib    echo %HG_ROOT%\%LIB_GUI%\socket.lib >> vc.lnk
+if exist %HG_ROOT%\%LIB_GUI%\hbprinter.lib echo %HG_ROOT%\%LIB_GUI%\hbprinter.lib >> vc.lnk
+if exist %HG_ROOT%\%LIB_GUI%\miniprint.lib echo %HG_ROOT%\%LIB_GUI%\miniprint.lib >> vc.lnk
 
-Rem *** ODBC Libraries Link ***
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/o" echo %HG_HRB%\lib\hbodbc.lib >> vc.lnk
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/o" echo %HG_HRB%\lib\odbc32.lib >> vc.lnk
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/O" echo %HG_HRB%\lib\hbodbc.lib >> vc.lnk
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/O" echo %HG_HRB%\lib\odbc32.lib >> vc.lnk
+rem *** ODBC Libraries ***
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/o" echo %HG_HRB%\%LIB_HRB%\hbodbc.lib >> vc.lnk
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/o" echo %HG_HRB%\%LIB_HRB%\odbc32.lib >> vc.lnk
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/O" echo %HG_HRB%\%LIB_HRB%\hbodbc.lib >> vc.lnk
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/O" echo %HG_HRB%\%LIB_HRB%\odbc32.lib >> vc.lnk
 
-Rem *** ZIP Libraries Linking ***
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/z" echo %HG_HRB%\lib\zlib1.lib >> vc.lnk
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/z" echo %HG_HRB%\lib\ziparchive.lib >> vc.lnk
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/Z" echo %HG_HRB%\lib\zlib1.lib >> vc.lnk
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/Z" echo %HG_HRB%\lib\ziparchive.lib >> vc.lnk
+rem *** ZIP Libraries ***
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/z" echo %HG_HRB%\%LIB_HRB%\zlib1.lib >> vc.lnk
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/z" echo %HG_HRB%\%LIB_HRB%\ziparchive.lib >> vc.lnk
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/Z" echo %HG_HRB%\%LIB_HRB%\zlib1.lib >> vc.lnk
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/Z" echo %HG_HRB%\%LIB_HRB%\ziparchive.lib >> vc.lnk
 
-Rem *** ADS Libraries Linking ***
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/a" echo %HG_HRB%\lib\rddads.lib >> vc.lnk
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/a" echo %HG_HRB%\lib\ace32.lib >> vc.lnk
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/A" echo %HG_HRB%\lib\rddads.lib >> vc.lnk
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/A" echo %HG_HRB%\lib\ace32.lib >> vc.lnk
+rem *** ADS Libraries ***
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/a" echo %HG_HRB%\%LIB_HRB%\rddads.lib >> vc.lnk
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/a" echo %HG_HRB%\%LIB_HRB%\ace32.lib >> vc.lnk
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/A" echo %HG_HRB%\%LIB_HRB%\rddads.lib >> vc.lnk
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/A" echo %HG_HRB%\%LIB_HRB%\ace32.lib >> vc.lnk
 
-Rem *** MySql Libraries Linking ***
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/m" echo %HG_HRB%\lib\mysql.lib >> vc.lnk
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/m" echo %HG_HRB%\lib\libmysqldll.lib >> vc.lnk
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/M" echo %HG_HRB%\lib\mysql.lib >> vc.lnk
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/M" echo %HG_HRB%\lib\libmysqldll.lib >> vc.lnk
+rem *** MySql Libraries ***
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/m" echo %HG_HRB%\%LIB_HRB%\mysql.lib >> vc.lnk
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/m" echo %HG_HRB%\%LIB_HRB%\libmysqldll.lib >> vc.lnk
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/M" echo %HG_HRB%\%LIB_HRB%\mysql.lib >> vc.lnk
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/M" echo %HG_HRB%\%LIB_HRB%\libmysqldll.lib >> vc.lnk
 
-Rem *** MSVC libraries ***
+rem *** VC-dependant Libraries ***
 for %%a in (user32 ws2_32 winspool ole32 oleaut32 advapi32 winmm mpr) do echo %%a.lib >> vc.lnk
 for %%a in (shell32 gdi32 comctl32 comdlg32 wsock32) do echo %%a.lib >> vc.lnk
 
-Rem Debug Link
+rem *** Check for Debug Switch ***
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/d" goto DEBUG_LINK
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/D" goto DEBUG_LINK
 
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/d" GOTO DEBUG_LINK
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/D" GOTO DEBUG_LINK
-
+rem *** Resource Files ***
 if exist %1.res echo %1.res >> vc.lnk
 if exist %HG_ROOT%\resources\hbprinter.res echo %HG_ROOT%\resources\hbprinter.res >> vc.lnk
 if exist %HG_ROOT%\resources\miniprint.res echo %HG_ROOT%\resources\miniprint.res >> vc.lnk
 if exist %HG_ROOT%\resources\oohg.res      echo %HG_ROOT%\resources\oohg.res >> vc.lnk
 
+rem *** Link ***
 link /SUBSYSTEM:WINDOWS @vc.lnk
 
-GOTO CLEANUP
+goto CLEANUP
+
 
 :DEBUG_LINK
-
+rem *** Link ***
 link /SUBSYSTEM:CONSOLE @vc.lnk
 
+goto CLEANUP
+
+
+:ERREXIT1
+echo FILE %1.PRG NOT FOUND !!!
+
+goto EXIT
+
+
+:ERREXIT2
+echo COMPILE ERROR: IS %1.EXE RUNNING ?
+
+goto EXIT
+
+
 :CLEANUP
+rem *** Check for Errors in Linking ***
+if errorlevel 1 goto EXIT4
 
-if errorlevel 1 goto exit4
-
+rem *** Cleanup ***
 del %1.c
 del %1.obj
 del vc.lnk
 if exist %1.res del %1.res
-PATH %_PATH%
+set PATH=%TPATH%
+set TPATH=
+set HG_USE_GT=
+
+rem *** Execute ***
 %1
-goto exit1
+goto EXIT
+
 
 :EXIT4
+rem *** Cleanup ***
 del vc.lnk
 del %1.obj
 
+
 :EXIT3
+rem *** Cleanup ***
 if exist %1.res del %1.res
 
+
 :EXIT2
-PATH %_PATH%
+rem *** Cleanup ***
 del %1.c
+set PATH=%TPATH%
+set TPATH=
+
 
 :EXIT1
+rem *** Cleanup ***
+set HG_USE_GT=
+
+
+:EXIT
+if exist init.cld del init.cld

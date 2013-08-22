@@ -1,5 +1,5 @@
 /*
- * $Id: h_richeditbox.prg,v 1.26 2013-07-03 01:44:52 migsoft Exp $
+ * $Id: h_richeditbox.prg,v 1.27 2013-08-22 22:25:07 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -122,7 +122,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
                fontsize, tooltip, maxlenght, gotfocus, change, lostfocus, ;
                readonly, break, HelpId, invisible, notabstop, bold, italic, ;
                underline, strikeout, field, backcolor, lRtl, lDisabled, ;
-               selchange, fontcolor, nohidesel ) CLASS TEditRich
+               selchange, fontcolor, nohidesel, OnFocusPos ) CLASS TEditRich
 *-----------------------------------------------------------------------------*
 Local ControlHandle, nStyle
 
@@ -148,10 +148,11 @@ Local ControlHandle, nStyle
    ::BackColor := ::BackColor
    ::FontColor := ::FontColor
 
-   ASSIGN ::OnLostFocus VALUE lostfocus TYPE "B"
-   ASSIGN ::OnGotFocus  VALUE gotfocus  TYPE "B"
-   ASSIGN ::OnChange    VALUE change    TYPE "B"
-   ASSIGN ::OnSelChange VALUE selchange TYPE "B"
+   ASSIGN ::OnLostFocus VALUE lostfocus  TYPE "B"
+   ASSIGN ::OnGotFocus  VALUE gotfocus   TYPE "B"
+   ASSIGN ::OnChange    VALUE change     TYPE "B"
+   ASSIGN ::OnSelChange VALUE selchange  TYPE "B"
+   ASSIGN ::nOnFocusPos VALUE OnFocusPos TYPE "N"
 
 Return Self
 

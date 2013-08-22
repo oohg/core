@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.1138 2013-08-09 20:27:53 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1139 2013-08-22 22:25:01 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,9 +7,48 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-08-22 19:23 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     * Previous entries corrected.
+   * ./BuildApp.bat
+   * ./compile.bat
+   * ./compile_MINGW.bat
+   * ./compile_bcc.bat
+   * ./compile_pc.bat
+   * ./compile_vc.bat
+   * doc/How_to_Configure_and_Use.txt
+   * resources/CompileRes.bat
+   * source/BuildLib.bat
+   * source/hbprinter.hbp
+   * source/makelib.bat
+   * source/makelib_bcc.bat
+   * source/makelib_mingw.bat
+   * source/makelib_pc.bat
+   * source/makelib_vc.bat
+   * source/miniprint.hbp
+   * source/oohg.hbp
+   * source/xml.bat
+     * Comments updated.
+     * Changed ooHG_INSTALL by HG_ROOT.
+     * EnvVars normalized.
+     * Allways use user-defined envvars.
+     + Added support for different drives.
+     + Added support for %9 parameter.
+     + Added check for EXE running.
+     + Added check for PRG existence.
+     * Changed path of temporary files to source's folder instead
+       of ./resources folder.
+   * source/h_editbox.prg
+     ! Changed initial value of DATA nOnFocusPos to -4 so the
+       behaviour of TEdit() .and. TRichEdit() before
+       2013-07-29 22:28 UTC-0300 is restored.
+   * source/h_richeditbox.prg
+   * include/i_richeditbox.prg
+     + Added support for FOCUSEDPOS at define time.
+
 2013-08-09 17:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    + doc/How_to_Configure_and_Use.txt
-     TODO: add configuration for new compilers and buildapp.bat
+     TODO: add configuration for new compilers and BuildApp.bat
 
 2013-08-08 21:32 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
@@ -506,7 +545,7 @@
        DeleteControl methods.
 
 2013-07-11 15:26 UTC-0400 MigSoft <migsoft@oohg.org>
-   * ./buildapp.bat
+   * ./BuildApp.bat
    * ./oohg.hbc
    + source/Buildlib.bat
    + source/oohg.hbp
@@ -648,12 +687,12 @@
      * HB_* compatibility commands
 
 2013-07-01 14:53 UTC-0400 MigSoft <migsoft@oohg.org>
-   * ./buildapp.bat
+   * ./BuildApp.bat
    * samples/oohg/build.bat
      * Some comments added.
      * Paths and environment variables changed to match OOHG defaults.
        To use a different version of Harbour and/or MinGW compilers,
-       edit buildapp.bat and change HBPATH and/or MINGWPATH variables.
+       edit BuildApp.bat and change HBPATH and/or MINGWPATH variables.
 
 2013-06-30 23:01 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./Changelog
@@ -782,7 +821,7 @@
        visible items is less than the number of items per page.
 
 2013-06-26 12:18 UTC-0400 MigSoft <migsoft@oohg.org>
-   + ./buildapp.bat
+   + ./BuildApp.bat
    + ./oohg.hbc
      Added batch and configuration file for building application
      with Harbour compiler.
@@ -3270,7 +3309,6 @@
    * source/h_editbox.prg
      + Added METHOD Events to fix UNDO support (in multiline edit
        controls, CTRL+Z sends a WM_UNDO message).
-     - Deleted DATA nOnFocusPos (parent already has it).
      ! Fixed numeric textbox cancels when entering a number.
    * source/h_richeditbox.prg
      + Added METHOD Events to fix UNDO support (richeditbox

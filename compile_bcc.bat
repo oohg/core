@@ -1,139 +1,195 @@
 @echo off
 rem
-rem $Id: compile_bcc.bat,v 1.8 2009-11-24 02:55:18 guerra000 Exp $
+rem $Id: compile_bcc.bat,v 1.9 2013-08-22 22:25:02 fyurisich Exp $
 rem
 cls
 
-Rem Set Paths
+REM *** Check for .prg ***
+if "%1"=="" goto EXIT
+if not exist %1.prg goto ERREXIT1
 
-IF "%HG_BCC%"==""  SET HG_BCC=C:\BORLAND\BCC55
-IF "%HG_ROOT%"=="" SET HG_ROOT=C:\OOHG
-IF "%HG_HRB%"==""  SET HG_HRB=C:\OOHG\HARBOUR
-
+rem *** Delete Old Executable ***
 if exist %1.exe del %1.exe
-SET HG_USE_GT=gtwin
+if exist %1.exe goto ERREXIT2
 
-Rem Debug Compile
+rem *** Set Paths ***
+if "%HG_ROOT%"=="" set HG_ROOT=c:\oohg
+if "%HG_HRB%"==""  set HG_HRB=%HG_ROOT%\harbour
+if "%HG_BCC%"==""  set HG_BCC=c:\borland\bcc55
 
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/d" GOTO DEBUG_COMP
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/D" GOTO DEBUG_COMP
+rem *** Set EnvVars ***
+if "%LIB_GUI%"=="" set LIB_GUI=lib
+if "%LIB_HRB%"=="" set LIB_HRB=lib
+if "%BIN_HRB%"=="" set BIN_HRB=bin
 
-if exist %HG_HRB%\lib\gtgui.lib SET HG_USE_GT=gtgui
-%HG_HRB%\bin\harbour %1.prg -n -i%HG_HRB%\include;%HG_ROOT%\include; %2 %3
+rem *** To Build with Nightly Harbour ***
+rem *** For 32 bits BCC ***
+rem set LIB_GUI=lib\hb\bcc
+rem set LIB_HRB=lib\win\bcc
+rem set BIN_HRB=bin\win\bcc
 
-GOTO C_COMP
+rem *** Set GT and Check for Debug Switch ***
+set HG_USE_GT=gtwin
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/d" goto DEBUG_COMP
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/D" goto DEBUG_COMP
+
+rem *** Set GT and Compile with Harbour ***
+if exist %HG_HRB%\%LIB_HRB%\gtgui.lib set HG_USE_GT=gtgui
+%HG_HRB%\%BIN_HRB%\harbour %1.prg -n -i%HG_HRB%\include;%HG_ROOT%\include; %2 %3
+
+rem *** Continue with .c Compilation ***
+goto C_COMP
+
 
 :DEBUG_COMP
+rem *** Compile with Harbour Using -b Option ***
+echo OPTIONS NORUNATSTARTUP > INIT.CLD
+%HG_HRB%\%BIN_HRB%\harbour %1.prg -n -b -i%HG_HRB%\include;%HG_ROOT%\include; %2 %3
 
-ECHO OPTIONS NORUNATSTARTUP > INIT.CLD
-
-%HG_HRB%\bin\harbour %1.prg -n -b -i%HG_HRB%\include;%HG_ROOT%\include; %2 %3
 
 :C_COMP
+rem *** Check for Errors in Harbour Compilation ***
+if errorlevel 1 goto EXIT1
 
-if errorlevel 1 goto exit1
-
+rem *** Compile with BCC and Check for Errors ***
 %HG_BCC%\bin\bcc32 -c -O2 -tW -M -I%HG_HRB%\include;%HG_BCC%\include;%HG_ROOT%\include; -L%HG_BCC%\lib; %1.c
-if errorlevel 1 goto exit2
+if errorlevel 1 goto EXIT2
 
+rem *** Process Resource File and Check for Errors ***
 if exist %1.rc %HG_BCC%\bin\brc32 -r %1.rc
-if errorlevel 1 goto exit3
+if errorlevel 1 goto EXIT3
 
+rem *** Build Response File ***
 echo c0w32.obj + > b32.bc
 echo %1.obj, + >> b32.bc
 echo %1.exe, + >> b32.bc
 echo %1.map, + >> b32.bc
-echo %HG_ROOT%\lib\oohg.lib + >> b32.bc
+echo %HG_ROOT%\%LIB_GUI%\oohg.lib + >> b32.bc
 
-Rem *** Compiler libraries ***
-for %%a in (rtl vm %HG_USE_GT% lang codepage macro rdd dbfntx dbfcdx dbffpt common debug pp) do echo %HG_HRB%\lib\%%a.lib + >> b32.bc
+rem *** Compiler Libraries ***
+for %%a in (rtl vm %HG_USE_GT% lang codepage macro rdd dbfntx dbfcdx dbffpt common debug pp) do echo %HG_HRB%\%BIN_HRB%\%%a.lib + >> b32.bc
 
-Rem *** Compiler-dependant libraries ***
-if exist %HG_HRB%\lib\dbfdbt.lib  echo %HG_HRB%\lib\dbfdbt.lib + >> b32.bc
-if exist %HG_HRB%\lib\hbsix.lib   echo %HG_HRB%\lib\hbsix.lib + >> b32.bc
-if exist %HG_HRB%\lib\tip.lib     echo %HG_HRB%\lib\tip.lib + >> b32.bc
-if exist %HG_HRB%\lib\ct.lib      echo %HG_HRB%\lib\ct.lib + >> b32.bc
-if exist %HG_HRB%\lib\hsx.lib     echo %HG_HRB%\lib\hsx.lib + >> b32.bc
-if exist %HG_HRB%\lib\pcrepos.lib echo %HG_HRB%\lib\pcrepos.lib + >> b32.bc
+rem *** Harbour-dependant Libraries ***
+if exist %HG_HRB%\%BIN_HRB%\dbfdbt.lib     echo %HG_HRB%\%BIN_HRB%\dbfdbt.lib + >> b32.bc
+if exist %HG_HRB%\%BIN_HRB%\hbsix.lib      echo %HG_HRB%\%BIN_HRB%\hbsix.lib + >> b32.bc
+if exist %HG_HRB%\%BIN_HRB%\tip.lib        echo %HG_HRB%\%BIN_HRB%\tip.lib + >> b32.bc
+if exist %HG_HRB%\%BIN_HRB%\ct.lib         echo %HG_HRB%\%BIN_HRB%\ct.lib + >> b32.bc
+if exist %HG_HRB%\%BIN_HRB%\hsx.lib        echo %HG_HRB%\%BIN_HRB%\hsx.lib + >> b32.bc
+if exist %HG_HRB%\%BIN_HRB%\pcrepos.lib    echo %HG_HRB%\%BIN_HRB%\pcrepos.lib + >> b32.bc
 
-Rem *** Additional libraries ***
-if exist %HG_HRB%\lib\libct.lib   echo %HG_HRB%\lib\libct.lib + >> b32.bc
-if exist %HG_HRB%\lib\libmisc.lib echo %HG_HRB%\lib\libmisc.lib + >> b32.bc
-if exist %HG_HRB%\lib\hboleaut.lib   echo %HG_HRB%\lib\hboleaut.lib + >> b32.bc
-if exist %HG_HRB%\lib\dll.lib     echo %HG_HRB%\lib\dll.lib + >> b32.bc
+rem *** Additional Libraries ***
+if exist %HG_HRB%\%BIN_HRB%\libct.lib      echo %HG_HRB%\%BIN_HRB%\libct.lib + >> b32.bc
+if exist %HG_HRB%\%BIN_HRB%\libmisc.lib    echo %HG_HRB%\%BIN_HRB%\libmisc.lib + >> b32.bc
+if exist %HG_HRB%\%BIN_HRB%\hboleaut.lib   echo %HG_HRB%\%BIN_HRB%\hboleaut.lib + >> b32.bc
+if exist %HG_HRB%\%BIN_HRB%\dll.lib        echo %HG_HRB%\%BIN_HRB%\dll.lib + >> b32.bc
 
-Rem *** "Related" libraries ***
-if exist %HG_HRB%\lib\socket.lib     echo %HG_HRB%\lib\socket.lib + >> b32.bc
-if exist %HG_ROOT%\lib\socket.lib    echo %HG_ROOT%\lib\socket.lib + >> b32.bc
-if exist %HG_ROOT%\lib\hbprinter.lib echo %HG_ROOT%\lib\hbprinter.lib + >> b32.bc
-if exist %HG_ROOT%\lib\miniprint.lib echo %HG_ROOT%\lib\miniprint.lib + >> b32.bc
+rem *** "Related" Libraries ***
+if exist %HG_HRB%\%BIN_HRB%\socket.lib     echo %HG_HRB%\%BIN_HRB%\socket.lib + >> b32.bc
+if exist %HG_ROOT%\%LIB_GUI%\socket.lib    echo %HG_ROOT%\%LIB_GUI%\socket.lib + >> b32.bc
+if exist %HG_ROOT%\%LIB_GUI%\hbprinter.lib echo %HG_ROOT%\%LIB_GUI%\hbprinter.lib + >> b32.bc
+if exist %HG_ROOT%\%LIB_GUI%\miniprint.lib echo %HG_ROOT%\%LIB_GUI%\miniprint.lib + >> b32.bc
 
-Rem *** ODBC Libraries Link ***
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/o" echo %HG_HRB%\lib\hbodbc.lib + >> b32.bc
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/o" echo %HG_HRB%\lib\odbc32.lib + >> b32.bc
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/O" echo %HG_HRB%\lib\hbodbc.lib + >> b32.bc
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/O" echo %HG_HRB%\lib\odbc32.lib + >> b32.bc
+rem *** ODBC Libraries ***
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/o" echo %HG_HRB%\%BIN_HRB%\hbodbc.lib + >> b32.bc
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/o" echo %HG_HRB%\%BIN_HRB%\odbc32.lib + >> b32.bc
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/O" echo %HG_HRB%\%BIN_HRB%\hbodbc.lib + >> b32.bc
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/O" echo %HG_HRB%\%BIN_HRB%\odbc32.lib + >> b32.bc
 
-Rem *** ZIP Libraries Linking ***
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/z" echo %HG_HRB%\lib\zlib1.lib + >> b32.bc
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/z" echo %HG_HRB%\lib\ziparchive.lib + >> b32.bc
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/Z" echo %HG_HRB%\lib\zlib1.lib + >> b32.bc
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/Z" echo %HG_HRB%\lib\ziparchive.lib + >> b32.bc
+rem *** ZIP Libraries ***
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/z" echo %HG_HRB%\%BIN_HRB%\zlib1.lib + >> b32.bc
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/z" echo %HG_HRB%\%BIN_HRB%\ziparchive.lib + >> b32.bc
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/Z" echo %HG_HRB%\%BIN_HRB%\zlib1.lib + >> b32.bc
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/Z" echo %HG_HRB%\%BIN_HRB%\ziparchive.lib + >> b32.bc
 
-Rem *** ADS Libraries Linking ***
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/a" echo %HG_HRB%\lib\rddads.lib + >> b32.bc
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/a" echo %HG_HRB%\lib\ace32.lib + >> b32.bc
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/A" echo %HG_HRB%\lib\rddads.lib + >> b32.bc
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/A" echo %HG_HRB%\lib\ace32.lib + >> b32.bc
+rem *** ADS Libraries ***
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/a" echo %HG_HRB%\%BIN_HRB%\rddads.lib + >> b32.bc
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/a" echo %HG_HRB%\%BIN_HRB%\ace32.lib + >> b32.bc
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/A" echo %HG_HRB%\%BIN_HRB%\rddads.lib + >> b32.bc
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/A" echo %HG_HRB%\%BIN_HRB%\ace32.lib + >> b32.bc
 
-Rem *** MySql Libraries Linking ***
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/m" echo %HG_HRB%\lib\mysql.lib + >> b32.bc
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/m" echo %HG_HRB%\lib\libmysqldll.lib + >> b32.bc
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/M" echo %HG_HRB%\lib\mysql.lib + >> b32.bc
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/M" echo %HG_HRB%\lib\libmysqldll.lib + >> b32.bc
+rem *** MySql Libraries ***
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/m" echo %HG_HRB%\%BIN_HRB%\mysql.lib + >> b32.bc
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/m" echo %HG_HRB%\%BIN_HRB%\libmysqldll.lib + >> b32.bc
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/M" echo %HG_HRB%\%BIN_HRB%\mysql.lib + >> b32.bc
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/M" echo %HG_HRB%\%BIN_HRB%\libmysqldll.lib + >> b32.bc
 
+rem *** BCC-dependant Libraries ***
 echo cw32.lib + >> b32.bc
 echo import32.lib, >> b32.bc
 
+rem *** Resource Files ***
 if exist %1.res echo %1.res + >> b32.bc
-if exist %HG_ROOT%\resources\oohg.res      echo %HG_ROOT%\resources\oohg.res + >> b32.bc
+if exist %HG_ROOT%\resources\oohg.res echo %HG_ROOT%\resources\oohg.res + >> b32.bc
 
-Rem Debug Link
+rem *** Check for Debug Switch ***
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/d" GOTO DEBUG_LINK
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/D" GOTO DEBUG_LINK
 
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/d" GOTO DEBUG_LINK
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 ) do if "%%a"=="/D" GOTO DEBUG_LINK
-
+rem *** Link ***
 %HG_BCC%\bin\ilink32 -Gn -Tpe -aa -L%HG_BCC%\lib; @b32.bc
 
-GOTO CLEANUP
+goto CLEANUP
+
 
 :DEBUG_LINK
-
+rem *** Link ***
 %HG_BCC%\bin\ilink32 -Gn -Tpe -ap -L%HG_BCC%\lib; @b32.bc
 
+goto CLEANUP
+
+
+:ERREXIT1
+echo FILE %1.PRG NOT FOUND !!!
+
+goto EXIT
+
+
+:ERREXIT2
+echo COMPILE ERROR: IS %1.EXE RUNNING ?
+
+goto EXIT
+
+
 :CLEANUP
+rem *** Check for Errors in Linking ***
+if errorlevel 1 goto EXIT4
 
-if errorlevel 1 goto exit4
-
+rem *** Cleanup ***
 del *.tds
 del %1.c
 del %1.map
 del %1.obj
 del b32.bc
 if exist %1.res del %1.res
+set HG_USE_GT=
+
+rem *** Execute ***
 %1
-goto exit1
+goto EXIT
+
 
 :EXIT4
+rem *** Cleanup ***
 del b32.bc
 del %1.map
 del %1.obj
 del %1.tds
 
+
 :EXIT3
+rem *** Cleanup ***
 if exist %1.res del %1.res
 
+
 :EXIT2
+rem *** Cleanup ***
 del %1.c
 
+
 :EXIT1
+rem *** Cleanup ***
+set HG_USE_GT=
+
+
+:EXIT
+if exist init.cld del init.cld

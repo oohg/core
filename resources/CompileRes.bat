@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: CompileRes.bat,v 1.6 2011-08-08 19:33:50 fyurisich Exp $
+rem $Id: CompileRes.bat,v 1.7 2013-08-22 22:25:07 fyurisich Exp $
 rem
 
 cls
@@ -24,16 +24,16 @@ goto MINGW
 
 :MINGW
 echo Compiling oohg.o ...
-if "%MINGW%"=="" set MINGW=c:\oohg\mingw
-if not exist %MINGW%\bin\windres.exe goto NO_MINGW
+if "%HG_MINGW%"=="" set HG_MINGW=c:\oohg\mingw
+if not exist %HG_MINGW%\bin\windres.exe goto NO_MINGW
 if exist _oohg_resconfig.h del _oohg_resconfig.h
 if exist _oohg_resconfig.h goto ERROR2
-if "%ooHG_INSTALL%"=="" set ooHG_INSTALL=c:\oohg
-echo #define oohgpath %oohg_INSTALL%\RESOURCES > _oohg_resconfig.h
+if "%HG_ROOT%"=="" set HG_ROOT=c:\oohg
+echo #define oohgpath %HG_ROOT%\RESOURCES > _oohg_resconfig.h
 if not exist _oohg_resconfig.h goto ERROR3
 if exist oohg.o del oohg.o
 if exist oohg.o goto ERROR4
-%MINGW%\bin\windres -i ooHG.rc -o ooHG.o
+%HG_MINGW%\bin\windres -i ooHG.rc -o ooHG.o
 rem Do not delete _oohg_resconfig.h, QAC needs it
 if exist oohg.o echo Done.
 if not exist oohg.o echo Not done.

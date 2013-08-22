@@ -1,5 +1,5 @@
 /*
- * $Id: h_editbox.prg,v 1.21 2012-07-06 00:45:38 fyurisich Exp $
+ * $Id: h_editbox.prg,v 1.22 2013-08-22 22:25:07 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -98,7 +98,7 @@
 
 CLASS TEdit FROM TText
    DATA Type            INIT "EDIT" READONLY
-   DATA nOnFocusPos     INIT -3
+   DATA nOnFocusPos     INIT -4
 
    METHOD Define
    METHOD LookForKey
