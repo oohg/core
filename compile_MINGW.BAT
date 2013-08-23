@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: compile_MINGW.BAT,v 1.24 2013-08-22 22:25:02 fyurisich Exp $
+rem $Id: compile_MINGW.BAT,v 1.25 2013-08-23 23:23:11 fyurisich Exp $
 rem
 cls
 
@@ -195,7 +195,6 @@ del _oohg_resconfig.h
 del %TFILE%.o
 del %TFILE%.c
 set THR_LIB=
-set TFILE=
 set COMP_TYPE=
 set EXTRA=
 set PATH=%TPATH%
@@ -203,6 +202,7 @@ set TPATH=
 
 rem *** Execute ***
 %TFILE%
+set TFILE=
 goto EXIT
 
 
