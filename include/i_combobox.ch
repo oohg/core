@@ -1,5 +1,5 @@
 /*
- * $Id: i_combobox.ch,v 1.13 2013-06-06 02:19:59 fyurisich Exp $
+ * $Id: i_combobox.ch,v 1.14 2013-09-04 01:38:12 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -134,18 +134,22 @@
             [ <delay: DELAYEDLOAD> ] ;
             [ <incremental: INCREMENTAL> ] ;
             [ <winsize: INTEGRALHEIGHT> ] ;
+            [ <norefresh: NOREFRESH> ] ;
+            [ SOURCEORDER <sourceorder> ] ;
+            [ ON REFRESH <refresh> ] ;
    =>;
             [ <obj> := ] _OOHG_SelectSubClass( TCombo(), [ <subclass>() ] ): ;
-                  Define( <(name)>, <(parent)>, <col>, <row>, <w>, <aRows> , <value>, ;
+                  Define( <(name)>, <(parent)>, <col>, <row>, <w>, <aRows>, <value>, ;
                   <f>, <n>, <tooltip>, <{changeprocedure}>, <h>, ;
                   <{gotfocus}>, <{lostfocus}>, <{enter}>, <helpid>, ;
                   <.invisible.>, <.notabstop.>, <.sort.> ,<.bold.>, ;
-                  <.italic.>, <.underline.>, <.strikeout.> , <(itemsource)> , ;
-                  <(valuesource)> , <.displaychange.> , ;
-                  <{ondisplaychangeprocedure}> ,  .f. , "", <aImage>, <.rtl.>, ;
+                  <.italic.>, <.underline.>, <.strikeout.>, <(itemsource)>, ;
+                  <(valuesource)>, <.displaychange.>, ;
+                  <{ondisplaychangeprocedure}>,  .f., "", <aImage>, <.rtl.>, ;
                   <textheight>, <.disabled.>, <.firstitem.>, <.fit.>, <backcolor>, ;
                   <fontcolor>, <listwidth>, <{onListDisplay}>, <{onListClose}>, ;
-                  <{imagesource}>, <{itemimagenumber}>, <.delay.>, <.incremental.>, <.winsize.> )
+                  <{imagesource}>, <{itemimagenumber}>, <.delay.>, <.incremental.>, ;
+                  <.winsize.>, <.norefresh.>, <(sourceorder)>, <{refresh}> )
 
 // SPLITBOX VERSION
 
@@ -194,14 +198,18 @@
             [ <delay: DELAYEDLOAD> ] ;
             [ <incremental: INCREMENTAL> ] ;
             [ <winsize: INTEGRALHEIGHT> ] ;
+            [ <norefresh: NOREFRESH> ] ;
+            [ SOURCEORDER <sourceorder> ] ;
+            [ ON REFRESH <refresh> ] ;
    =>;
             [ <obj> := ] _OOHG_SelectSubClass( TCombo(), [ <subclass>() ] ): ;
-                  Define( <(name)>, <(parent)>, , , <w>, <aRows> , <value>, ;
+                  Define( <(name)>, <(parent)>,, , <w>, <aRows>, <value>, ;
                   <f>, <n>, <tooltip>, <{changeprocedure}>, <h>, <{gotfocus}>, ;
                   <{lostfocus}>, <{enter}>, <helpid>, <.invisible.>, <.notabstop.>, ;
-                  <.sort.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , ;
-                  <(itemsource)> , <(valuesource)> , <.displaychange.> , ;
-                  <{ondisplaychangeprocedure}> , <.break.> , <grippertext>, <aImage>, ;
+                  <.sort.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.>, ;
+                  <(itemsource)>, <(valuesource)>, <.displaychange.>, ;
+                  <{ondisplaychangeprocedure}>, <.break.>, <grippertext>, <aImage>, ;
                   <.rtl.>, <textheight>, <.disabled.>, <.firstitem.>, <.fit.>, <backcolor>, ;
                   <fontcolor>, <listwidth>, <{onListDisplay}>, <{onListClose}>, ;
-                  <{imagesource}>, <{itemimagenumber}>, <.delay.>, <.incremental.>, <.winsize.> )
+                  <{imagesource}>, <{itemimagenumber}>, <.delay.>, <.incremental.>, ;
+                  <.winsize.>, <.norefresh.>, <(sourceorder)>, <{refresh}> )

@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.92 2013-08-08 22:32:54 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.93 2013-09-04 01:38:12 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -122,6 +122,8 @@ Memvariables
 #xtranslate _OOHG_ActiveControlTrailingFontColor      => _OOHG_ActiveControlInfo \[  25 \]
 #xtranslate _OOHG_ActiveControlBackgroundColor        => _OOHG_ActiveControlInfo \[  26 \]
 
+#xtranslate _OOHG_ActiveControlOnRefresh              => _OOHG_ActiveControlInfo \[ 106 \]
+#xtranslate _OOHG_ActiveControlSourceOrder            => _OOHG_ActiveControlInfo \[ 107 \]
 #xtranslate _OOHG_ActiveControlNoModalEdit            => _OOHG_ActiveControlInfo \[ 108 \]
 #xtranslate _OOHG_ActiveControlUpdateColors           => _OOHG_ActiveControlInfo \[ 109 \]
 #xtranslate _OOHG_ActiveControlEditLikeExcel          => _OOHG_ActiveControlInfo \[ 110 \]
@@ -1636,7 +1638,10 @@ COMBO BOX
         _OOHG_ActiveControlImageSource       := Nil  ;;
         _OOHG_ActiveControlDelayedLoad       := Nil  ;;
         _OOHG_ActiveControlIncrementalSearch := Nil  ;;
-        _OOHG_ActiveControlIntegralHeight    := Nil
+        _OOHG_ActiveControlIntegralHeight    := Nil  ;;
+        _OOHG_ActiveControlNoRefresh         := .F.  ;;
+        _OOHG_ActiveControlSourceOrder       := Nil  ;;
+        _OOHG_ActiveControlOnRefresh         := Nil
 
 #xcommand DELAYEDLOAD <delayedload> ;
         => ;
@@ -1706,6 +1711,14 @@ COMBO BOX
         => ;
         _OOHG_ActiveControlFirstItem := <firstitem>
 
+#xcommand SOURCEORDER <sourceorder> ;
+        => ;
+        _OOHG_ActiveControlSourceOrder := <sourceorder>
+
+#xcommand ON REFRESH <refresh> ;
+        => ;
+        _OOHG_ActiveControlOnRefresh := <{refresh}>
+
 #xcommand END COMBOBOX ;
         => ;
         _OOHG_SelectSubClass( TCombo(), _OOHG_ActiveControlSubClass, _OOHG_ActiveControlAssignObject ):Define( ;
@@ -1753,7 +1766,10 @@ COMBO BOX
                 _OOHG_ActiveControlItemImageNumber, ;
                 _OOHG_ActiveControlDelayedLoad, ;
                 _OOHG_ActiveControlIncrementalSearch, ;
-                _OOHG_ActiveControlIntegralHeight )
+                _OOHG_ActiveControlIntegralHeight, ;
+                _OOHG_ActiveControlNoRefresh, ;
+                _OOHG_ActiveControlSourceOrder, ;
+                _OOHG_ActiveControlOnRefresh )
 
 /*----------------------------------------------------------------------------
 DATEPICKER

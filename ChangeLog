@@ -1,11 +1,30 @@
 /*
- * $Id: ChangeLog,v 1.1141 2013-08-23 23:23:11 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1142 2013-09-04 01:38:09 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-09-03 22:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_combo.prg
+     + DATAs lRefresh, SourceOrder and OnRefresh.
+     * ValueSource can be of any type (even mixed types).
+     + OnRefresh event at the end of ::Refresh().
+     + New parameter to ::AddItem() and ::InsertItem().
+       Use it to set item's valuesource.
+   * include/i_combobox.ch
+   * include/i_altsyntax.ch
+     + Support for NOREFRESH and SOURCEORDER clauses.
+     + Support for ON REFRESH clause.
+   ; NOREFRESH prevents ::RefreshData() from calling ::Refresh().
+   ; SOURCEORDER sets the index order of the associated workarea.
+     Also: ITEMSOURCE { cWorkArea, bBlock, SourceOrder } (this
+     syntax takes preference over the first one).
+     SourceOrder should be NIL, a Number, a String or a Block.
+     When it's a Block, it will be evaluated inmediatly before
+     loading the items.
 
 2013-08-23 20:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./compile_MINGW.bat
