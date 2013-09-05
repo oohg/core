@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.76 2013-09-04 01:38:12 fyurisich Exp $
+ * $Id: h_combo.prg,v 1.77 2013-09-05 02:40:23 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -96,6 +96,8 @@
 #include "hbclass.ch"
 #include "i_windefs.ch"
 
+STATIC _OOHG_ComboRefresh := .T.
+
 CLASS TCombo FROM TLabel
    DATA Type                  INIT "COMBO" READONLY
    DATA WorkArea              INIT ""
@@ -120,7 +122,7 @@ CLASS TCombo FROM TLabel
    DATA nLastFound            INIT 0
    DATA lIncremental          INIT .F.
    DATA oListBox              INIT NIL
-   DATA lRefresh              INIT .T.
+   DATA lRefresh              INIT NIL
    DATA SourceOrder           INIT NIL
    DATA onRefresh             INIT NIL
 
@@ -169,7 +171,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, rows, value, fontname, ;
                ondisplaychangeprocedure, break, GripperText, aImage, lRtl, ;
                TextHeight, lDisabled, lFirstItem, lAdjustImages, backcolor, ;
                fontcolor, listwidth, onListDisplay, onListClose, ImageSource, ;
-               ItemNumber, lDelayLoad, lIncremental, lWinSize, lNoRefresh, ;
+               ItemNumber, lDelayLoad, lIncremental, lWinSize, lRefresh, ;
                sourceorder, onrefresh ) CLASS TCombo
 *-----------------------------------------------------------------------------*
 Local ControlHandle, WorkArea, uField, nStyle
@@ -189,7 +191,7 @@ Local ControlHandle, WorkArea, uField, nStyle
    ASSIGN ::lDelayLoad    VALUE lDelayLoad    TYPE "L" DEFAULT .F.
    ASSIGN ::lIncremental  VALUE lIncremental  TYPE "L" DEFAULT .F.
    ASSIGN lWinSize        VALUE lWinSize      TYPE "L" DEFAULT .F.
-   ASSIGN ::lRefresh      VALUE ! lNoRefresh  TYPE "L" DEFAULT .T.
+   ASSIGN ::lRefresh      VALUE lRefresh      TYPE "L" DEFAULT NIL
    ASSIGN ::SourceOrder   VALUE sourceorder   TYPE "CMNB"
    ASSIGN ::OnRefresh     VALUE onrefresh     TYPE "B"
 
@@ -329,7 +331,7 @@ RETURN nRet
 *-----------------------------------------------------------------------------*
 METHOD Refresh() CLASS TCombo
 *-----------------------------------------------------------------------------*
-Local BackRec, bField, aValues, uValue, bValueSource, lNoEval, BackOrd
+Local BackRec, bField, aValues, uValue, bValueSource, lNoEval, BackOrd := NIL
 Local lRefreshImages, aImages, nMax, nCount, nArea
 
    If ( nArea := Select( ::WorkArea ) ) != 0
@@ -343,12 +345,10 @@ Local lRefreshImages, aImages, nMax, nCount, nArea
       uValue := ::Value
       bField := ::Field
       BackRec := ( nArea )->( RecNo() )
-      If ValType( ::SourceOrder ) $ "CMN"
-         BackOrd := ( nArea )->( OrdSetFocus( ::SourceOrder ) )
-      ElseIf ValType( ::SourceOrder ) == "B"
+      If HB_IsBlock( ::SourceOrder )
          BackOrd := ( nArea )->( OrdSetFocus( ( nArea )->( Eval( ::SourceOrder ) ) ) )
-      Else
-         BackOrd := NIL
+      ElseIf ValType( ::SourceOrder ) $ "CMN"
+         BackOrd := ( nArea )->( OrdSetFocus( ::SourceOrder ) )
       EndIf
 
       If OSisWinXPorLater() .AND. ::lDelayLoad
@@ -448,7 +448,13 @@ RETURN ::lVisible
 *-----------------------------------------------------------------------------*
 METHOD RefreshData() CLASS TCombo
 *-----------------------------------------------------------------------------*
-   If ::lRefresh
+Local lRefresh
+   If HB_IsLogical( ::lRefresh )
+      lRefresh := ::lRefresh
+   Else
+      lRefresh := _OOHG_ComboRefresh
+   Endif
+   If lRefresh
       ::Refresh()
    EndIf
 RETURN ::Super:RefreshData()
@@ -568,7 +574,7 @@ RETURN ::lAutoSize
 *-----------------------------------------------------------------------------*
 METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TCombo
 *-----------------------------------------------------------------------------*
-Local nArea, BackRec, nMax, i, nStart, bField, bValueSource, lNoEval, BackOrd
+Local nArea, BackRec, nMax, i, nStart, bField, bValueSource, lNoEval, BackOrd := NIL
 
    If nMsg == WM_CHAR
       If ::lIncremental
@@ -603,12 +609,10 @@ Local nArea, BackRec, nMax, i, nStart, bField, bValueSource, lNoEval, BackOrd
                      lNoEval := EMPTY( bValueSource )
 
                      BackRec := ( nArea )->( Recno() )
-                     If ValType( ::SourceOrder ) $ "CMN"
-                        BackOrd := ( nArea )->( OrdSetFocus( ::SourceOrder ) )
-                     ElseIf ValType( ::SourceOrder ) == "B"
+                     If HB_IsBlock( ::SourceOrder )
                         BackOrd := ( nArea )->( OrdSetFocus( ( nArea )->( Eval( ::SourceOrder ) ) ) )
-                     Else
-                        BackOrd := NIL
+                     ElseIf ValType( ::SourceOrder ) $ "CMN"
+                        BackOrd := ( nArea )->( OrdSetFocus( ::SourceOrder ) )
                      EndIf
 
                      ( nArea )->( DBGoto( ::nLastItem ) )
@@ -659,12 +663,10 @@ Local nArea, BackRec, nMax, i, nStart, bField, bValueSource, lNoEval, BackOrd
                lNoEval := EMPTY( bValueSource )
 
                BackRec := ( nArea )->( Recno() )
-               If ValType( ::SourceOrder ) $ "CMN"
-                  BackOrd := ( nArea )->( OrdSetFocus( ::SourceOrder ) )
-               ElseIf ValType( ::SourceOrder ) == "B"
+               If HB_IsBlock( ::SourceOrder )
                   BackOrd := ( nArea )->( OrdSetFocus( ( nArea )->( Eval( ::SourceOrder ) ) ) )
-               Else
-                  BackOrd := NIL
+               ElseIf ValType( ::SourceOrder ) $ "CMN"
+                  BackOrd := ( nArea )->( OrdSetFocus( ::SourceOrder ) )
                EndIf
 
                ( nArea )->( DBGoto( ::nLastItem ) )
@@ -697,12 +699,10 @@ Local nArea, BackRec, nMax, i, nStart, bField, bValueSource, lNoEval, BackOrd
                lNoEval := EMPTY( bValueSource )
 
                BackRec := ( nArea )->( Recno() )
-               If ValType( ::SourceOrder ) $ "CMN"
-                  BackOrd := ( nArea )->( OrdSetFocus( ::SourceOrder ) )
-               ElseIf ValType( ::SourceOrder ) == "B"
+               If HB_IsBlock( ::SourceOrder )
                   BackOrd := ( nArea )->( OrdSetFocus( ( nArea )->( Eval( ::SourceOrder ) ) ) )
-               Else
-                  BackOrd := NIL
+               ElseIf ValType( ::SourceOrder ) $ "CMN"
+                  BackOrd := ( nArea )->( OrdSetFocus( ::SourceOrder ) )
                EndIf
 
                ( nArea )->( DBGoto( ::nLastItem ) )
@@ -739,12 +739,10 @@ Local nArea, BackRec, nMax, i, nStart, bField, bValueSource, lNoEval, BackOrd
                lNoEval := EMPTY( bValueSource )
 
                BackRec := ( nArea )->( Recno() )
-               If ValType( ::SourceOrder ) $ "CMN"
-                  BackOrd := ( nArea )->( OrdSetFocus( ::SourceOrder ) )
-               ElseIf ValType( ::SourceOrder ) == "B"
+               If HB_IsBlock( ::SourceOrder )
                   BackOrd := ( nArea )->( OrdSetFocus( ( nArea )->( Eval( ::SourceOrder ) ) ) )
-               Else
-                  BackOrd := NIL
+               ElseIf ValType( ::SourceOrder ) $ "CMN"
+                  BackOrd := ( nArea )->( OrdSetFocus( ::SourceOrder ) )
                EndIf
 
                ( nArea )->( DBGoto( ::nLastItem ) )
@@ -773,12 +771,10 @@ Local nArea, BackRec, nMax, i, nStart, bField, bValueSource, lNoEval, BackOrd
                lNoEval := EMPTY( bValueSource )
 
                BackRec := ( nArea )->( Recno() )
-               If ValType( ::SourceOrder ) $ "CMN"
-                  BackOrd := ( nArea )->( OrdSetFocus( ::SourceOrder ) )
-               ElseIf ValType( ::SourceOrder ) == "B"
+               If HB_IsBlock( ::SourceOrder )
                   BackOrd := ( nArea )->( OrdSetFocus( ( nArea )->( Eval( ::SourceOrder ) ) ) )
-               Else
-                  BackOrd := NIL
+               ElseIf ValType( ::SourceOrder ) $ "CMN"
+                  BackOrd := ( nArea )->( OrdSetFocus( ::SourceOrder ) )
                EndIf
 
                ( nArea )->( DBGoto( ::nLastItem ) )
@@ -808,12 +804,10 @@ Local nArea, BackRec, nMax, i, nStart, bField, bValueSource, lNoEval, BackOrd
                lNoEval := EMPTY( bValueSource )
 
                BackRec := ( nArea )->( Recno() )
-               If ValType( ::SourceOrder ) $ "CMN"
-                  BackOrd := ( nArea )->( OrdSetFocus( ::SourceOrder ) )
-               ElseIf ValType( ::SourceOrder ) == "B"
+               If HB_IsBlock( ::SourceOrder )
                   BackOrd := ( nArea )->( OrdSetFocus( ( nArea )->( Eval( ::SourceOrder ) ) ) )
-               Else
-                  BackOrd := NIL
+               ElseIf ValType( ::SourceOrder ) $ "CMN"
+                  BackOrd := ( nArea )->( OrdSetFocus( ::SourceOrder ) )
                EndIf
 
                ( nArea )->( DBGoto( ::nLastItem ) )
@@ -844,7 +838,7 @@ Return ::Super:Events( hWnd, nMsg, wParam, lParam )
 *-----------------------------------------------------------------------------*
 METHOD Events_Command( wParam ) CLASS TCombo
 *-----------------------------------------------------------------------------*
-Local Hi_wParam := HIWORD( wParam ), nArea, BackRec, i, nMax, bField, bValueSource, lNoEval, BackOrd
+Local Hi_wParam := HIWORD( wParam ), nArea, BackRec, i, nMax, bField, bValueSource, lNoEval, BackOrd := NIL
 
    if Hi_wParam == CBN_SELCHANGE
       If ::lAutosize
@@ -892,12 +886,10 @@ Local Hi_wParam := HIWORD( wParam ), nArea, BackRec, i, nMax, bField, bValueSour
                lNoEval := EMPTY( bValueSource )
 
                BackRec := ( nArea )->( Recno() )
-               If ValType( ::SourceOrder ) $ "CMN"
-                  BackOrd := ( nArea )->( OrdSetFocus( ::SourceOrder ) )
-               ElseIf ValType( ::SourceOrder ) == "B"
+               If HB_IsBlock( ::SourceOrder )
                   BackOrd := ( nArea )->( OrdSetFocus( ( nArea )->( Eval( ::SourceOrder ) ) ) )
-               Else
-                  BackOrd := NIL
+               ElseIf ValType( ::SourceOrder ) $ "CMN"
+                  BackOrd := ( nArea )->( OrdSetFocus( ::SourceOrder ) )
                EndIf
 
                ( nArea )->( DBGoto( ::nLastItem ) )
@@ -1480,7 +1472,7 @@ RETURN Self
 *-----------------------------------------------------------------------------*
 METHOD Events_VScroll( wParam ) CLASS TListCombo
 *-----------------------------------------------------------------------------*
-Local Lo_wParam := LoWord( wParam ), nArea, bField, bValueSource, lNoEval, BackRec, nLoad, i, BackOrd
+Local Lo_wParam := LoWord( wParam ), nArea, bField, bValueSource, lNoEval, BackRec, nLoad, i, BackOrd := NIL
 
    If Lo_wParam == SB_LINEDOWN
       If ( nArea := Select( ::Container:WorkArea ) ) != 0
@@ -1490,12 +1482,10 @@ Local Lo_wParam := LoWord( wParam ), nArea, bField, bValueSource, lNoEval, BackR
          lNoEval := EMPTY( bValueSource )
 
          BackRec := ( nArea )->( Recno() )
-         If ValType( ::Container:SourceOrder ) $ "CMN"
-            BackOrd := ( nArea )->( OrdSetFocus( ::Container:SourceOrder ) )
-         ElseIf ValType( ::Container:SourceOrder ) == "B"
+         If ValType( ::Container:SourceOrder ) == "B"
             BackOrd := ( nArea )->( OrdSetFocus( ( nArea )->( Eval( ::Container:SourceOrder ) ) ) )
-         Else
-            BackOrd := NIL
+         ElseIf ValType( ::Container:SourceOrder ) $ "CMN"
+            BackOrd := ( nArea )->( OrdSetFocus( ::Container:SourceOrder ) )
          EndIf
 
          ( nArea )->( DBGoto( ::Container:nLastItem ) )
@@ -1525,12 +1515,10 @@ Local Lo_wParam := LoWord( wParam ), nArea, bField, bValueSource, lNoEval, BackR
          lNoEval := EMPTY( bValueSource )
 
          BackRec := ( nArea )->( Recno() )
-         If ValType( ::Container:SourceOrder ) $ "CMN"
-            BackOrd := ( nArea )->( OrdSetFocus( ::Container:SourceOrder ) )
-         ElseIf ValType( ::Container:SourceOrder ) == "B"
+         If ValType( ::Container:SourceOrder ) == "B"
             BackOrd := ( nArea )->( OrdSetFocus( ( nArea )->( Eval( ::Container:SourceOrder ) ) ) )
-         Else
-            BackOrd := NIL
+         ElseIf ValType( ::Container:SourceOrder ) $ "CMN"
+            BackOrd := ( nArea )->( OrdSetFocus( ::Container:SourceOrder ) )
          EndIf
 
          ( nArea )->( DBGoto( ::Container:nLastItem ) )
@@ -1562,12 +1550,10 @@ Local Lo_wParam := LoWord( wParam ), nArea, bField, bValueSource, lNoEval, BackR
          lNoEval := EMPTY( bValueSource )
 
          BackRec := ( nArea )->( Recno() )
-         If ValType( ::Container:SourceOrder ) $ "CMN"
-            BackOrd := ( nArea )->( OrdSetFocus( ::Container:SourceOrder ) )
-         ElseIf ValType( ::Container:SourceOrder ) == "B"
+         If ValType( ::Container:SourceOrder ) == "B"
             BackOrd := ( nArea )->( OrdSetFocus( ( nArea )->( Eval( ::Container:SourceOrder ) ) ) )
-         Else
-            BackOrd := NIL
+         ElseIf ValType( ::Container:SourceOrder ) $ "CMN"
+            BackOrd := ( nArea )->( OrdSetFocus( ::Container:SourceOrder ) )
          EndIf
 
          ( nArea )->( DBGoto( ::Container:nLastItem ) )
@@ -1596,12 +1582,10 @@ Local Lo_wParam := LoWord( wParam ), nArea, bField, bValueSource, lNoEval, BackR
          lNoEval := EMPTY( bValueSource )
 
          BackRec := ( nArea )->( Recno() )
-         If ValType( ::Container:SourceOrder ) $ "CMN"
-            BackOrd := ( nArea )->( OrdSetFocus( ::Container:SourceOrder ) )
-         ElseIf ValType( ::Container:SourceOrder ) == "B"
+         If ValType( ::Container:SourceOrder ) == "B"
             BackOrd := ( nArea )->( OrdSetFocus( ( nArea )->( Eval( ::Container:SourceOrder ) ) ) )
-         Else
-            BackOrd := NIL
+         ElseIf ValType( ::Container:SourceOrder ) $ "CMN"
+            BackOrd := ( nArea )->( OrdSetFocus( ::Container:SourceOrder ) )
          EndIf
 
          ( nArea )->( DBGoto( ::Container:nLastItem ) )
@@ -1647,3 +1631,9 @@ HB_FUNC( INITLISTCOMBO )
 }
 
 #pragma ENDDUMP
+
+Function SetComboRefresh( lValue )
+   If HB_IsLogical( lValue )
+      _OOHG_ComboRefresh := lValue
+   EndIf
+Return _OOHG_ComboRefresh

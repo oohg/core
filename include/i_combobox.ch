@@ -1,5 +1,5 @@
 /*
- * $Id: i_combobox.ch,v 1.14 2013-09-04 01:38:12 fyurisich Exp $
+ * $Id: i_combobox.ch,v 1.15 2013-09-05 02:40:23 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -134,7 +134,7 @@
             [ <delay: DELAYEDLOAD> ] ;
             [ <incremental: INCREMENTAL> ] ;
             [ <winsize: INTEGRALHEIGHT> ] ;
-            [ <norefresh: NOREFRESH> ] ;
+            [ <rfrsh: REFRESH, NOREFRESH> ] ;
             [ SOURCEORDER <sourceorder> ] ;
             [ ON REFRESH <refresh> ] ;
    =>;
@@ -149,7 +149,8 @@
                   <textheight>, <.disabled.>, <.firstitem.>, <.fit.>, <backcolor>, ;
                   <fontcolor>, <listwidth>, <{onListDisplay}>, <{onListClose}>, ;
                   <{imagesource}>, <{itemimagenumber}>, <.delay.>, <.incremental.>, ;
-                  <.winsize.>, <.norefresh.>, <(sourceorder)>, <{refresh}> )
+                  <.winsize.>, iif( upper( #<rfrsh> ) == "NOREFRESH", .F., iif( upper( #<rfrsh> ) == "REFRESH", .T., NIL ) ), ;
+                  <(sourceorder)>, <{refresh}> )
 
 // SPLITBOX VERSION
 
@@ -198,7 +199,7 @@
             [ <delay: DELAYEDLOAD> ] ;
             [ <incremental: INCREMENTAL> ] ;
             [ <winsize: INTEGRALHEIGHT> ] ;
-            [ <norefresh: NOREFRESH> ] ;
+            [ <rfrsh: REFRESH, NOREFRESH> ] ;
             [ SOURCEORDER <sourceorder> ] ;
             [ ON REFRESH <refresh> ] ;
    =>;
@@ -212,4 +213,8 @@
                   <.rtl.>, <textheight>, <.disabled.>, <.firstitem.>, <.fit.>, <backcolor>, ;
                   <fontcolor>, <listwidth>, <{onListDisplay}>, <{onListClose}>, ;
                   <{imagesource}>, <{itemimagenumber}>, <.delay.>, <.incremental.>, ;
-                  <.winsize.>, <.norefresh.>, <(sourceorder)>, <{refresh}> )
+                  <.winsize.>, iif( upper( #<rfrsh> ) == "NOREFRESH", .F., iif( upper( #<rfrsh> ) == "REFRESH", .T., NIL ) ), ;
+                  <(sourceorder)>, <{refresh}> )
+
+#command SET COMBOREFRESH ON  => SetComboRefresh( .T. )
+#command SET COMBOREFRESH OFF => SetComboRefresh( .F. )

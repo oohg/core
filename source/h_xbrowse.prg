@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.91 2013-08-02 03:08:54 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.92 2013-09-05 02:40:23 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -53,6 +53,8 @@
 #include "hbclass.ch"
 #include "i_windefs.ch"
 
+STATIC _OOHG_XBrowseFixedBlocks := .T.
+
 CLASS TXBROWSE FROM TGrid
    DATA Type              INIT "XBROWSE" READONLY
    DATA aFields           INIT nil
@@ -76,7 +78,7 @@ CLASS TXBROWSE FROM TGrid
    DATA VScrollCopy       INIT nil
    DATA lVscrollVisible   INIT .F.
    DATA aColumnBlocks     INIT nil
-   DATA lFixedBlocks      INIT .F.
+   DATA lFixedBlocks      INIT nil
 
    METHOD Define
    METHOD Refresh
@@ -298,17 +300,25 @@ Return Self
 *-----------------------------------------------------------------------------*
 METHOD FixBlocks( lFix ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
-   If HB_IsLogical( lFix )
+Local lFixedBlocks
+   If PCOUNT() > 0 .AND. HB_IsNil( lFix )
+      ::lFixedBlocks := nil
+      lFixedBlocks := _OOHG_XBrowseFixedBlocks
+   ElseIf HB_IsLogical( lFix )
       If lFix
          ::aColumnBlocks := ARRAY( len( ::aFields ) )
          AEVAL( ::aFields, { |c,i| ::aColumnBlocks[ i ] := ::ColumnBlock( i ), c } )
          ::lFixedBlocks := .T.
+         lFixedBlocks := .T.
       Else
          ::lFixedBlocks := .F.
          ::aColumnBlocks := nil
+         lFixedBlocks := .F.
       EndIf
+   Else
+      lFixedBlocks := ::lFixedBlocks
    EndIf
-Return ::lFixedBlocks
+Return lFixedBlocks
 
 *-----------------------------------------------------------------------------*
 METHOD Refresh( nCurrent, lNoEmptyBottom ) CLASS TXBrowse
@@ -1963,3 +1973,9 @@ HB_FUNC( INSERT_ALT_A )
 }
 
 #pragma ENDDUMP
+
+Function SetXBrowseFixedBlocks( lValue )
+   IF valtype( lValue ) == "L"
+      _OOHG_XBrowseFixedBlocks := lValue
+   ENDIF
+Return _OOHG_XBrowseFixedBlocks

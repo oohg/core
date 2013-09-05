@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.93 2013-09-04 01:38:12 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.94 2013-09-05 02:40:22 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -2405,7 +2405,7 @@ BROWSE
         _OOHG_ActiveControlAbortEdit        := Nil ;;
         _OOHG_ActiveControlAction           := Nil ;;
         _OOHG_ActiveControlFixedWidths      := .F. ;;
-        _OOHG_ActiveControlFixedBlocks      := .F. ;;
+        _OOHG_ActiveControlFixedBlocks      := NIL ;;
         _OOHG_ActiveControlBeforeColMove    := Nil ;;
         _OOHG_ActiveControlAfterColMove     := Nil ;;
         _OOHG_ActiveControlBeforeColSize    := Nil ;;
@@ -2613,7 +2613,7 @@ XBROWSE
         _OOHG_ActiveControlAbortEdit        := Nil ;;
         _OOHG_ActiveControlAction           := Nil ;;
         _OOHG_ActiveControlFixedWidths      := .F. ;;
-        _OOHG_ActiveControlFixedBlocks      := .F. ;;
+        _OOHG_ActiveControlFixedBlocks      := NIL ;;
         _OOHG_ActiveControlBeforeColMove    := Nil ;;
         _OOHG_ActiveControlAfterColMove     := Nil ;;
         _OOHG_ActiveControlBeforeColSize    := Nil ;;

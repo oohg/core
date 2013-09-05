@@ -1,5 +1,5 @@
 /*
- * $Id: i_xbrowse.ch,v 1.27 2013-08-02 03:08:54 fyurisich Exp $
+ * $Id: i_xbrowse.ch,v 1.28 2013-09-05 02:40:23 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -196,6 +196,9 @@
             iif( upper( #<bffr> ) == "DOUBLEBUFFER", .T., iif( upper( #<bffr> ) == "SINGLEBUFFER", .F., .T. ) ), ;
             iif( upper( #<focus> ) == "NOFOCUSRECT", .F., iif( upper( #<focus> ) == "FOCUSRECT", .T., NIL ) ), ;
             <.plm.>, <.fixedcols.>, <{abortedit}>, <{click}>, <.fixedwidths.>, ;
-            iif( upper( #<blocks> ) == "FIXEDBLOCKS", .T., iif( upper( #<blocks> ) == "DYNAMICBLOCKS", .F., .F. ) ), ;
+            iif( upper( #<blocks> ) == "FIXEDBLOCKS", .T., iif( upper( #<blocks> ) == "DYNAMICBLOCKS", .F., NIL ) ), ;
             <{bBefMov}>, <{bAftMov}>, <{bBefSiz}>, <{bAftSiz}>, <{bBefAut}>, <.excel.>, ;
             <.buts.>, <.nodelmsg.> )
+
+#command SET XBROWSEFIXEDBLOCKS ON  => SetXBrowseFixedBlocks( .T. )
+#command SET XBROWSEFIXEDBLOCKS OFF => SetXBrowseFixedBlocks( .F. )

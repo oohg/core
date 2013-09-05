@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.126 2013-08-07 00:05:22 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.127 2013-09-05 02:40:23 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -96,6 +96,7 @@
 #include "i_windefs.ch"
 
 STATIC _OOHG_BrowseSyncStatus := .F.
+STATIC _OOHG_BrowseFixedBlocks := .T.
 
 CLASS TOBrowse FROM TXBrowse
    DATA Type            INIT "BROWSE" READONLY
@@ -112,10 +113,10 @@ CLASS TOBrowse FROM TXBrowse
 
    METHOD Define
    METHOD Refresh
-   METHOD Value               SETGET
+   METHOD Value         SETGET
    METHOD RefreshData
-   METHOD DoChange            BLOCK { |Self| ::TGrid:DoChange() }
-
+   METHOD DoChange      BLOCK { |Self| ::TGrid:DoChange() }
+   METHOD FixBlocks     SETGET
    METHOD Events
    METHOD Events_Enter
    METHOD Events_Notify
@@ -139,11 +140,11 @@ CLASS TOBrowse FROM TXBrowse
    METHOD TopBottom
    METHOD DbSkip
    METHOD DbGoTo
-   MESSAGE GoTop    METHOD Home
-   MESSAGE GoBottom METHOD End
+   MESSAGE GoTop        METHOD Home
+   MESSAGE GoBottom     METHOD End
    METHOD SetScrollPos
    
-   MESSAGE EditGrid METHOD EditAllCells
+   MESSAGE EditGrid     METHOD EditAllCells
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -320,6 +321,29 @@ Local nWidth2, nCol2, oScroll, z
    ASSIGN ::OnDelete    VALUE onDelete    TYPE "B"
 
 Return Self
+
+*-----------------------------------------------------------------------------*
+METHOD FixBlocks( lFix ) CLASS TOBrowse
+*-----------------------------------------------------------------------------*
+Local lFixedBlocks
+   If PCOUNT() > 0 .AND. HB_IsNil( lFix )
+      ::lFixedBlocks := nil
+      lFixedBlocks := _OOHG_BrowseFixedBlocks
+   ElseIf HB_IsLogical( lFix )
+      If lFix
+         ::aColumnBlocks := ARRAY( len( ::aFields ) )
+         AEVAL( ::aFields, { |c,i| ::aColumnBlocks[ i ] := ::ColumnBlock( i ), c } )
+         ::lFixedBlocks := .T.
+         lFixedBlocks := .T.
+      Else
+         ::lFixedBlocks := .F.
+         ::aColumnBlocks := nil
+         lFixedBlocks := .F.
+      EndIf
+   Else
+      lFixedBlocks := ::lFixedBlocks
+   EndIf
+Return lFixedBlocks
 
 *-----------------------------------------------------------------------------*
 METHOD UpDate() CLASS TOBrowse
@@ -1298,8 +1322,8 @@ Local nValue := ::nValue
       ::nValue := ::Value
    Else
       ::Refresh()
-   ENDIF
-RETURN ::Super:RefreshData()
+   EndIf
+RETURN ::TGrid:RefreshData()
 
 *-----------------------------------------------------------------------------*
 METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TOBrowse
@@ -1638,3 +1662,9 @@ Function SetBrowseSync( lValue )
       _OOHG_BrowseSyncStatus := lValue
    ENDIF
 Return _OOHG_BrowseSyncStatus
+
+Function SetBrowseFixedBlocks( lValue )
+   IF valtype( lValue ) == "L"
+      _OOHG_BrowseFixedBlocks := lValue
+   ENDIF
+Return _OOHG_BrowseFixedBlocks

@@ -1,5 +1,5 @@
 /*
- * $Id: i_browse.ch,v 1.43 2013-08-07 00:05:22 fyurisich Exp $
+ * $Id: i_browse.ch,v 1.44 2013-09-05 02:40:23 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -205,8 +205,11 @@
             iif( upper( #<focus> ) == "NOFOCUSRECT", .F., iif( upper( #<focus> ) == "FOCUSRECT", .T., NIL ) ), ;
             <.plm.>, iif( upper( #<sync> ) == "UNSYNCHRONIZED", .F., iif( upper( #<sync> ) == "SYNCHRONIZED", .T., NIL ) ), ;
             <.fixedcols.>, <.nodelmsg.>, <.updall.>, <{abortedit}>, <{click}>, <.fixedwidths.>, ;
-            iif( upper( #<blocks> ) == "FIXEDBLOCKS", .T., iif( upper( #<blocks> ) == "DYNAMICBLOCKS", .F., .F. ) ), ;
+            iif( upper( #<blocks> ) == "FIXEDBLOCKS", .T., iif( upper( #<blocks> ) == "DYNAMICBLOCKS", .F., NIL ) ), ;
             <{bBefMov}>, <{bAftMov}>, <{bBefSiz}>, <{bAftSiz}>, <{bBefAut}>, <.excel.>, <.buts.>, <.upcol.> )
 
 #command SET BROWSESYNC ON  => SetBrowseSync( .T. )
 #command SET BROWSESYNC OFF => SetBrowseSync( .F. )
+
+#command SET BROWSEFIXEDBLOCKS ON  => SetBrowseFixedBlocks( .T. )
+#command SET BROWSEFIXEDBLOCKS OFF => SetBrowseFixedBlocks( .F. )

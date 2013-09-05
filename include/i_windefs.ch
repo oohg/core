@@ -1,5 +1,5 @@
 /*
- * $Id: i_windefs.ch,v 1.54 2013-07-13 02:51:56 fyurisich Exp $
+ * $Id: i_windefs.ch,v 1.55 2013-09-05 02:40:23 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -737,6 +737,7 @@
 #define HDN_BEGINTRACK                ( HDN_FIRST - 26 )
 #define HDN_ENDTRACK                  ( HDN_FIRST - 27 )
 #define HDN_DIVIDERDBLCLICK           ( HDN_FIRST - 25 )
+#define HDN_ITEMCHANGED               ( HDN_FIRST - 21 )
 
 #define TCS_SCROLLOPPOSITE            1
 #define TCS_BOTTOM                    2

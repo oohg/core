@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.1142 2013-09-04 01:38:09 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1143 2013-09-05 02:40:22 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,13 +7,59 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-09-04 23:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     * Previous entry corrected.
+   * include/i_windefs.ch
+     + Define for HDN_ITEMCHANGED.
+   * include/i_xbrowse.ch
+     + SET XBROWSEFIXEDBLOCKS ON | OFF
+     * Handling of FIXEDBLOCKS and DYNAMICBLOCKS clauses.
+   * include/i_hmg_compat.ch
+     * Handling of FIXEDBLOCKS and DYNAMICBLOCKS clauses.
+   * include/i_browse.ch
+     + SET BROWSEFIXEDBLOCKS ON | OFF
+     * Handling of FIXEDBLOCKS and DYNAMICBLOCKS clauses.
+   * include/i_altsyntax.ch
+     * Handling of FIXEDBLOCKS and DYNAMICBLOCKS clauses.
+   * include/i_combobox.ch
+     + Support for REFRESH clause.
+     + SET COMBOREFRESH ON | OFF.
+   * source/h_grid.prg
+     ! Typo.
+     ! Control is erased after doubleclicking on a header's separator.
+   * source/h_xbrowse.prg
+     + Static var _OOHG_XBrowseFixedBlocks.
+     * Initial value of DATA lFixedBlocks.
+     * ::FixBlocks() to support SET XBROWSEFIXEDBLOCKS.
+     + Function SetXBrowseFixedBlocks() to set XBROWSEFIXEDBLOCKS
+       status globally.
+     * INCOMPATIBLE: FIXEDBLOCKS is .T. by default.
+       To obtains previous behaviour use SET XBROWSEFIXEDBLOCKS OFF to
+       change globally or method FixBlocks(.F.) to change individually.
+   * source/h_browse.prg
+     + Static var _OOHG_BrowseFixedBlocks.
+     + ::FixBlocks() to support SET BROWSEFIXEDBLOCKS.
+     ! ::RefreshData() calls ::Refresh() two times.
+     + Function SetBrowseFixedBlocks() to set BROWSEFIXEDBLOCKS status
+       globally.
+     * INCOMPATIBLE: FIXEDBLOCKS is .T. by default.
+       To obtains previous behaviour use SET BROWSEFIXEDBLOCKS OFF to
+       change globally or method FixBlocks(.F.) to change individually.
+   * source/h_combo.prg
+     + Static var _OOHG_ComboRefresh.
+     * Initial value of DATA lRefresh.
+     ! RTE when NOREFRESH clause is not used.
+     % Check for sourceorder.
+     + Function SetComboRefresh() to set REFRESH status globally.
+
 2013-09-03 22:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_combo.prg
      + DATAs lRefresh, SourceOrder and OnRefresh.
-     * ValueSource can be of any type (even mixed types).
      + OnRefresh event at the end of ::Refresh().
      + New parameter to ::AddItem() and ::InsertItem().
        Use it to set item's valuesource.
+       Never use 0 as valuesource because 0 means no item is selected.
    * include/i_combobox.ch
    * include/i_altsyntax.ch
      + Support for NOREFRESH and SOURCEORDER clauses.

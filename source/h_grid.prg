@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.217 2013-08-09 00:31:30 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.218 2013-09-05 02:40:23 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1956,7 +1956,7 @@ Local nNotify, nColumn, lGo, nNewWidth
       If HB_IsBlock( ::bBeforeColSize )
          lGo := Eval( ::bBeforeColSize, nColumn )
          If HB_IsLogical( lGo ) .and. ! lGo
-            // Prevent the acion
+            // Prevent the action
             Return 1
          EndIf
       EndIf
@@ -1973,8 +1973,6 @@ Local nNotify, nColumn, lGo, nNewWidth
       EndIf
       //  Let the OS set the new width
 
-      RedrawWindow( ::ContainerhWnd )
-
    ElseIf nNotify == HDN_DIVIDERDBLCLICK
       If HB_IsLogical( ::AllowChangeSize ) .AND. ! ::AllowChangeSize
          // Prevent column autofit
@@ -1988,6 +1986,10 @@ Local nNotify, nColumn, lGo, nNewWidth
             Return 1
          EndIf
       EndIf
+
+   ElseIf nNotify == HDN_ITEMCHANGED
+      RedrawWindow( ::hWnd )
+      Return 1
 
    EndIf
 
