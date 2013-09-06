@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog,v 1.1143 2013-09-05 02:40:22 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1144 2013-09-06 01:02:08 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-09-05 22:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_grid.prg
+     + Method ToOpenOffice() to export grid to a Calc spreadsheet.
+     * Name of local variable.
 
 2013-09-04 23:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./Changelog

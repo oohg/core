@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.218 2013-09-05 02:40:23 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.219 2013-09-06 01:02:09 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -190,6 +190,7 @@ CLASS TGrid FROM TControl
    METHOD IsColumnReadOnly
    METHOD IsColumnWhen
    METHOD ToExcel
+   METHOD ToOpenOffice
    METHOD AddItem
    METHOD AppendItem
    METHOD InsertItem
@@ -821,7 +822,7 @@ Return Self
 *-----------------------------------------------------------------------------*
 METHOD ToExcel( cTitle, nRow ) CLASS TGrid
 *-----------------------------------------------------------------------------*
-Local lin := 4
+Local nLin := 4
 Local oExcel, oHoja, i
 
    DEFAULT ctitle TO ""
@@ -833,8 +834,8 @@ Local oExcel, oHoja, i
       EndIf
    #else
       oExcel := TOleAuto():New( "Excel.Application" )
-      If Ole2TxtError() != 'S_OK'
-         MsgStop('Excel not found','error')
+      If Ole2TxtError() != "S_OK"
+         MsgStop( "Excel not found", "Error" )
          Return Nil
       EndIf
    #EndIf
@@ -848,21 +849,21 @@ Local oExcel, oHoja, i
    oHoja:Cells( 1, 1 ):Font:Bold := .T.
 
    For i := 1 To Len( ::aHeaders )
-      oHoja:Cells( lin, i ):Value := Upper( ::aHeaders[i] )
-      oHoja:Cells( lin, i ):Font:Bold := .T.
+      oHoja:Cells( nLin, i ):Value := Upper( ::aHeaders[i] )
+      oHoja:Cells( nLin, i ):Font:Bold := .T.
    Next i
-   lin ++
-   lin ++
+   nLin ++
+   nLin ++
 
    If ! HB_IsNumeric( nRow ) .OR. nRow < 1
       nRow := ::FirstSelectedItem
    EndIf
    Do While nRow <= ::ItemCount .AND. nRow > 0
       For i := 1 To Len( ::aHeaders )
-         oHoja:Cells( lin, i ):Value := ::Cell( nRow, i )
+         oHoja:Cells( nLin, i ):Value := ::Cell( nRow, i )
       Next i
       nRow ++
-      lin ++
+      nLin ++
    Enddo
 
    For i := 1 To Len( ::Aheaders )
@@ -873,6 +874,124 @@ Local oExcel, oHoja, i
    oExcel:Visible := .T.
    oHoja := Nil
    oExcel:= Nil
+
+Return Nil
+
+*-----------------------------------------------------------------------------*
+METHOD ToOpenOffice( cTitle, nRow ) CLASS TGrid
+*-----------------------------------------------------------------------------*
+Local nLin := 4
+Local oSerMan, oDesk, oPropVals, oBook, oSheet, i, uValue
+
+   DEFAULT ctitle TO ""
+
+   // open service manager
+   #ifndef __XHARBOUR__
+      If ( oSerMan := win_oleCreateObject( "com.sun.star.ServiceManager" ) ) == Nil
+         MsgStop( "Error: OpenOffice not available. [" + win_oleErrorText()+ "]" )
+         Return Nil
+      EndIf
+   #else
+      oSerMan := TOleAuto():New( "com.sun.star.ServiceManager" )
+      If Ole2TxtError() != "S_OK"
+         MsgStop( "OpenOffice not found", "Error" )
+         Return Nil
+      EndIf
+   #EndIf
+
+   // open desktop service
+   If ( oDesk := oSerMan:CreateInstance( "com.sun.star.frame.Desktop" ) ) == Nil
+      MsgStop( "Error: OpenOffice Desktop not available." )
+      Return Nil
+   EndIf
+
+   // set properties for new book
+   oPropVals := oSerMan:Bridge_GetStruct( "com.sun.star.beans.PropertyValue" )
+   oPropVals:Name := "Hidden"
+   oPropVals:Value := .T.
+
+   // open new book
+   If ( oBook := oDesk:LoadComponentFromURL( "private:factory/scalc", "_blank", 0, {oPropVals} ) ) == Nil
+      MsgStop( "Error: OpenOffice Calc not available." )
+      oDesk := Nil
+      Return Nil
+   EndIf
+
+   // keep only one sheet
+   Do While oBook:Sheets:GetCount() > 1
+      oSheet := oBook:Sheets:GetByIndex( oBook:Sheets:GetCount() - 1 )
+      oBook:Sheets:RemoveByName( oSheet:Name )
+   EndDo
+
+   // select first sheet
+   oSheet := oBook:Sheets:GetByIndex( 0 )
+   oBook:GetCurrentController:SetActiveSheet( oSheet )
+
+   // set font name and size of all cells
+   oSheet:CharFontName := "Arial"
+   oSheet:CharHeight := 10
+
+   // put title using bold style
+   oSheet:GetCellByPosition( 0, 0 ):SetString( Upper( cTitle ) )
+   oSheet:GetCellByPosition( 0, 0 ):SetPropertyValue( "CharWeight", 150 )
+
+   // put headers using bold style
+   For i := 1 To Len( ::aHeaders )
+      oSheet:GetCellByPosition( i - 1, nLin - 1 ):SetString( Upper( ::aHeaders[i] ) )
+      oSheet:GetCellByPosition( i - 1, nLin - 1 ):SetPropertyValue( "CharWeight", 150 )
+   Next i
+   nLin ++
+   nLin ++
+
+   // put rows
+   If ! HB_IsNumeric( nRow ) .OR. nRow < 1
+      nRow := ::FirstSelectedItem
+   EndIf
+   Do While nRow <= ::ItemCount .AND. nRow > 0
+      For i := 1 To Len( ::aHeaders )
+         uValue := ::Cell( nRow, i )
+         Do Case
+         Case uValue == Nil
+         Case ValType( uValue ) == "C"
+            If Left( uValue, 1 ) == "'"
+               uValue := "'" + uValue
+            EndIf
+            oSheet:GetCellByPosition( i - 1, nLin - 1 ):SetString( uValue )
+         Case ValType( uValue ) == "N"
+            oSheet:GetCellByPosition( i - 1, nLin - 1 ):SetValue( uValue )
+         Case ValType( uValue ) == "L"
+            oSheet:GetCellByPosition( i - 1, nLin - 1 ):SetValue( uValue )
+            oSheet:GetCellByPosition( i - 1, nLin - 1 ):SetPropertyValue("NumberFormat", 99 )
+         Case ValType( uValue ) == "D"
+            oSheet:GetCellByPosition( i - 1, nLin - 1 ):SetValue( uValue )
+            oSheet:GetCellByPosition( i - 1, nLin - 1 ):SetPropertyValue( "NumberFormat", 36 )
+         Case ValType( uValue ) == "T"
+            oSheet:GetCellByPosition( i - 1, nLin - 1 ):SetString( uValue )
+         otherwise
+            oSheet:GetCellByPosition( i - 1, nLin - 1 ):SetFormula( uValue )
+         EndCase
+      Next i
+      nRow ++
+      nLin ++
+   EndDo
+
+   // autofit columns
+   For i := 1 To Len( ::Aheaders )
+      oSheet:GetColumns:GetByIndex( i - 1 ):SetPropertyValue( "OptimalWidth", .T. )
+   Next i
+
+   // show
+   oSheet:GetCellRangeByName( "A1:A1" )
+   oSheet:IsVisible := .T.
+   oBook:GetCurrentController():GetFrame():GetContainerWindow():SetVisible( .T. )
+   oBook:GetCurrentController():GetFrame():GetContainerWindow():ToFront()
+
+   // cleanup
+   oSheet    := Nil
+   oBook     := Nil
+   oPropVals := Nil
+   oDesk     := Nil
+   oSerMan   := Nil
 
 Return Nil
 
