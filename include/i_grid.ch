@@ -1,5 +1,5 @@
 /*
- * $Id: i_grid.ch,v 1.31 2013-08-08 22:32:54 fyurisich Exp $
+ * $Id: i_grid.ch,v 1.32 2013-09-08 23:49:46 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -181,6 +181,7 @@
       [ <append : APPEND> ] ;
       [ ON APPEND <onappend> ] ;
       [ <nomodal : NOMODALEDIT> ] ;
+      [ <edtctrls: FIXEDCONTROLS, DYNAMICCONTROLS> ] ;
    =>;
       [ <obj> := ] _OOHG_SelectSubClass(iif( <.bycell.>, TGridByCell(), iif( <.multiselect.>, TGridMulti(), TGrid() ) ), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, ;
@@ -199,7 +200,8 @@
             <.plm.>, <.fixedcols.>, <{abortedit}>, <{click}>, <.fixedwidths.>, ;
             <{bBefMov}>, <{bAftMov}>, <{bBefSiz}>, <{bAftSiz}>, <{bBefAut}>, <.excel.>, ;
             <.buts.>, <.delete.>, <{onDelete}>, <{bWhenDel}>, <DelMsg>, <.nodelmsg.>, ;
-            <.append.>, <{onappend}>, <.nomodal.> )
+            <.append.>, <{onappend}>, <.nomodal.>, ;
+            iif( upper( #<edtctrls> ) == "FIXEDCONTROLS", .T., iif( upper( #<edtctrls> ) == "DYNAMICCONTROLS", .F., NIL ) ) )
 
 ///////////////////////////////////////////////////////////////////////////////
 // GRID (SPLITBOX VERSION)
@@ -284,6 +286,7 @@
       [ <append : APPEND> ] ;
       [ ON APPEND <onappend> ] ;
       [ <nomodal : NOMODALEDIT> ] ;
+      [ <edtctrls: FIXEDCONTROLS, DYNAMICCONTROLS> ] ;
    =>;
       [ <obj> := ] _OOHG_SelectSubClass(iif( <.bycell.>, TGridByCell(), iif( <.multiselect.>, TGridMulti(), TGrid() ) ), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, , , <w>, <h>, <headers>, ;
@@ -302,4 +305,8 @@
             <.plm.>, <.fixedcols.>, <{abortedit}>, <{click}>, <.fixedwidths.>, ;
             <{bBefMov}>, <{bAftMov}>, <{bBefSiz}>, <{bAftSiz}>, <{bBefAut}>, <.excel.>, ;
             <.buts.>, <.delete.>, <{onDelete}>, <{bWhenDel}>, <DelMsg>, <.nodelmsg.>, ;
-            <.append.>, <{onappend}>, <.nomodal.> ) )
+            <.append.>, <{onappend}>, <.nomodal.>, ;
+            iif( upper( #<edtctrls> ) == "FIXEDCONTROLS", .T., iif( upper( #<edtctrls> ) == "DYNAMICCONTROLS", .F., NIL ) ) )
+
+#command SET GRIDFIXEDCONTROLS ON  => SetGridFixedControls( .T. )
+#command SET GRIDFIXEDCONTROLS OFF => SetGridFixedControls( .F. )

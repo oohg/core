@@ -1,11 +1,67 @@
 /*
- * $Id: ChangeLog,v 1.1144 2013-09-06 01:02:08 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1145 2013-09-08 23:49:46 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-09-08 20:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_checklist.prg
+     + Method ToOpenOffice().
+   * source/h_xbrowse.prg
+     + Method FixControls() to support SET XBROWSEFIXEDCONTROLS.
+     + Method ToOpenOffice().
+     + Support for FIXEDCONTROLS clause.
+     ! RTE in method FixBlocks().
+     + Parameters nColFrom and nColTo to method ToExcel()
+     * Name of some local variables.
+     * Title is exported after autofiting columns in method ToExcel().
+     ! RTE in method ToExcel() when a field is defined by a block.
+     + Parameter nOnFocusPos to method EditCell().
+     + Function SetXBrowseFixedControls().
+   * source/h_browse.prg
+     + Method FixControls() to support SET BROWSEFIXEDCONTROLS.
+     + Support for FIXEDCONTROLS clause.
+     ! RTE in method FixBlocks().
+     + Parameter nOnFocusPos to method EditCell().
+     + Function SetBrowseFixedControls().
+   * source/h_grid.prg
+     + Static var _OOHG_GridFixedControls.
+     + Support for FIXEDCONTROLS clause.
+     + DATAs aEditControls and lFixedControls.
+     + Method FixControls() to support SET GRIDFIXEDCONTROLS.
+     + Support for FIXEDCONTROLS clause.
+     + Parameters nItemTo, nColFrom and nColTo to methods ToExcel()
+       and ToOpenOffice().
+     * Title is exported after autofiting columns in methods ToExcel()
+       and ToOpenOffice().
+     % Method EditCell2().
+     + Function SetGridFixedControls().
+   * include/i_grid.ch
+     + FIXEDCONTROLS and DYNAMICCONTROLS clauses.
+     + SET GRIDFIXEDCONTROLS ON | OFF.
+   * include/i_xbrowse.ch
+   * include/i_browse.ch
+   * include/i_hmg_compat.ch
+     + FIXEDCONTROLS and DYNAMICCONTROLS clauses.
+   * include/i_altsyntax.ch
+     + Support for FIXEDCONTROLS and DYNAMICCONTROLS clauses.
+     ! Support for FIXEDBLOCKS and DYNAMICBLOCKS clauses.
+     ! Support for DOUBLEBUFFER and SINGLEBUFFER clauses.
+     ! Support for SYNCHRONIZED and UNSYNCHRONIZED clauses.
+     * Minor formatting.
+   ; FIXEDCONTROLS clause prevents Grid, XBrowse and Browse objects
+     to use more than one TGridControlObject, thus improving
+     performance.
+   ; This clause has a drawback: you can't change an edit control by
+     simply doing ::EditControls[nCol] := <new edit control>.
+     To implement the change you must add a call to ::FixControls(.T.).
+   ; The control's default behaviour is not changed, it remains as
+     if SET FIXEDCONTROLS is OFF.
+     The global behaviour can be changed with the SET commands.
+     To change the behaviour of a single control use FixControls(.T.).
 
 2013-09-05 22:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg

@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.127 2013-09-05 02:40:23 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.128 2013-09-08 23:49:46 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -97,6 +97,7 @@
 
 STATIC _OOHG_BrowseSyncStatus := .F.
 STATIC _OOHG_BrowseFixedBlocks := .T.
+STATIC _OOHG_BrowseFixedControls := .F.
 
 CLASS TOBrowse FROM TXBrowse
    DATA Type            INIT "BROWSE" READONLY
@@ -120,7 +121,7 @@ CLASS TOBrowse FROM TXBrowse
    METHOD Events
    METHOD Events_Enter
    METHOD Events_Notify
-
+   METHOD FixControls   SETGET
    METHOD EditCell
    METHOD EditItem_B
    METHOD EditAllCells
@@ -163,7 +164,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                uRefresh, dblbffr, lFocusRect, lPLM, sync, lFixedCols, ;
                lNoDelMsg, lUpdateAll, abortedit, click, lFixedWidths, ;
                lFixedBlocks, bBeforeColMove, bAfterColMove, bBeforeColSize, ;
-               bAfterColSize, bBeforeAutofit, lLikeExcel, lButtons, lUpdCols ) CLASS TOBrowse
+               bAfterColSize, bBeforeAutofit, lLikeExcel, lButtons, lUpdCols, ;
+               lFixedCtrls ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local nWidth2, nCol2, oScroll, z
 
@@ -243,7 +245,7 @@ Local nWidth2, nCol2, oScroll, z
                    aHeaderImageAlign, FullMove, aSelectedColors, aEditKeys, , , dblbffr, lFocusRect, ;
                    lPLM, lFixedCols, abortedit, click, lFixedWidths, bBeforeColMove, bAfterColMove, ;
                    bBeforeColSize, bAfterColSize, bBeforeAutofit, lLikeExcel, lButtons, ;
-                   AllowDelete, , , DelMsg, lNoDelMsg, AllowAppend, )
+                   AllowDelete, , , DelMsg, lNoDelMsg, AllowAppend, , , lFixedCtrls )
 
    ::nWidth := w
 
@@ -323,6 +325,34 @@ Local nWidth2, nCol2, oScroll, z
 Return Self
 
 *-----------------------------------------------------------------------------*
+METHOD FixControls( lFix ) CLASS TOBrowse
+*-----------------------------------------------------------------------------*
+Local lFixedControls, i
+   If PCOUNT() > 0 .AND. HB_IsNil( lFix )
+      ::lFixedControls := Nil
+      lFixedControls := _OOHG_BrowseFixedControls
+   ElseIf HB_IsLogical( lFix )
+      If lFix
+         ::aEditControls := Array( Len( ::aHeaders ) )
+         For i := 1 to Len( ::aHeaders )
+            ::aEditControls[ i ] := GetEditControlFromArray( Nil, ::EditControls, i, Self )
+         Next i
+         ::lFixedControls := .T.
+         lFixedControls := .T.
+      Else
+         ::lFixedControls := .F.
+         lFixedControls := .F.
+      Endif
+   Else
+      If HB_IsNil( ::lFixedControls )
+         lFixedControls := _OOHG_BrowseFixedControls
+      Else
+         lFixedControls := ::lFixedControls
+      EndIf
+   EndIf
+Return lFixedControls
+
+*-----------------------------------------------------------------------------*
 METHOD FixBlocks( lFix ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local lFixedBlocks
@@ -341,7 +371,11 @@ Local lFixedBlocks
          lFixedBlocks := .F.
       EndIf
    Else
-      lFixedBlocks := ::lFixedBlocks
+      If HB_IsNil( ::lFixedBlocks )
+         lFixedBlocks := _OOHG_BrowseFixedBlocks
+      Else
+         lFixedBlocks := ::lFixedBlocks
+      EndIf
    EndIf
 Return lFixedBlocks
 
@@ -513,7 +547,7 @@ Local _RecNo, s
          If ::Eof()
             ::DbGoTo( _RecNo )
             If ::AllowAppend
-               ::EditItem( .t. )
+               ::EditItem( .T. )
             Endif
             Return nil
          EndIf
@@ -696,7 +730,7 @@ Local s, _RecNo, nLen
          If ::Eof()
             ::DbGoTo( _RecNo )
             If ::AllowAppend
-               ::EditItem( .t. )
+               ::EditItem( .T. )
             Endif
             Return nil
          EndIf
@@ -940,7 +974,7 @@ Local nOldRecNo, nItem, cWorkArea, lRet
 Return lRet
 
 *-----------------------------------------------------------------------------*
-METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend ) CLASS TOBrowse
+METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend, nOnFocusPos ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local lRet, BackRec
    ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
@@ -959,7 +993,7 @@ Local lRet, BackRec
       Else
          ::DbGoTo( ::aRecMap[ nRow ] )
       EndIf
-      lRet := ::Super:EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend )
+      lRet := ::Super:EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend, nOnFocusPos )
       If lRet .AND. lAppend
          AADD( ::aRecMap, ( ::WorkArea )->( RecNo() ) )
       EndIf
@@ -1016,7 +1050,7 @@ Local lRet, lRowEdited, lSomethingEdited, _RecNo, lRowAppended, lMoreRecs
          ElseIf ! ::IsColumnWhen( nCol )
            // Not a valid WHEN, skip column and continue editing
          Else
-            lRet := ::EditCell( nRow, nCol,,,,, lAppend )
+            lRet := ::EditCell( nRow, nCol, , , , , lAppend )
 
             If lRet
                lRowEdited := .T.
@@ -1556,7 +1590,7 @@ Local nvKey, r, DeltaSelect, lGo
             GetAltState() == -128   // ALT
 
             If ::AllowAppend
-               ::EditItem( .t. )
+               ::EditItem( .T. )
             EndIf
 
          EndIf
@@ -1668,3 +1702,9 @@ Function SetBrowseFixedBlocks( lValue )
       _OOHG_BrowseFixedBlocks := lValue
    ENDIF
 Return _OOHG_BrowseFixedBlocks
+
+Function SetBrowseFixedControls( lValue )
+   IF valtype( lValue ) == "L"
+      _OOHG_BrowseFixedControls := lValue
+   ENDIF
+Return _OOHG_BrowseFixedControls

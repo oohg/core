@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.94 2013-09-05 02:40:22 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.95 2013-09-08 23:49:46 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -122,6 +122,11 @@ Memvariables
 #xtranslate _OOHG_ActiveControlTrailingFontColor      => _OOHG_ActiveControlInfo \[  25 \]
 #xtranslate _OOHG_ActiveControlBackgroundColor        => _OOHG_ActiveControlInfo \[  26 \]
 
+#xtranslate _OOHG_ActiveControlUnSynchronized         => _OOHG_ActiveControlInfo \[ 101 \]
+#xtranslate _OOHG_ActiveControlFixedCtrls             => _OOHG_ActiveControlInfo \[ 102 \]
+#xtranslate _OOHG_ActiveControlDynamicCtrls           => _OOHG_ActiveControlInfo \[ 103 \]
+#xtranslate _OOHG_ActiveControlDynamicBlocks          => _OOHG_ActiveControlInfo \[ 104 \]
+#xtranslate _OOHG_ActiveControlSngBffer               => _OOHG_ActiveControlInfo \[ 105 \]
 #xtranslate _OOHG_ActiveControlOnRefresh              => _OOHG_ActiveControlInfo \[ 106 \]
 #xtranslate _OOHG_ActiveControlSourceOrder            => _OOHG_ActiveControlInfo \[ 107 \]
 #xtranslate _OOHG_ActiveControlNoModalEdit            => _OOHG_ActiveControlInfo \[ 108 \]
@@ -715,11 +720,16 @@ CHECKLIST
         _OOHG_ActiveControlDescending     := .F. ;;
         _OOHG_ActiveControlSelectedColors := Nil ;;
         _OOHG_ActiveControlDblBffer       := .T. ;;
+        _OOHG_ActiveControlSngBffer       := .F. ;;
         _OOHG_ActiveControlAction         := Nil
 
 #xcommand DOUBLEBUFFER <dblbffr> ;
         => ;
         _OOHG_ActiveControlDblBffer := <dblbffr>
+
+#xcommand SINGLEBUFFER <sngbffr> ;
+        => ;
+        _OOHG_ActiveControlSngBffer := <sngbffr>
 
 #xcommand END CHECKLIST ;
         => ;
@@ -755,7 +765,7 @@ CHECKLIST
                 _OOHG_ActiveControlSort, ;
                 _OOHG_ActiveControlDescending, ;
                 _OOHG_ActiveControlSelectedColors, ;
-                _OOHG_ActiveControlDblBffer, ;
+                iif( _OOHG_ActiveControlDblBffer, .T., iif( _OOHG_ActiveControlSngBffer, .F., .T. ) ), ;
                 _OOHG_ActiveControlAction )
 
 /*----------------------------------------------------------------------------
@@ -1191,7 +1201,7 @@ TEXT BOX
                 _OOHG_ActiveControlWhen, ;
                 _OOHG_ActiveControlCenterAlign, ;
                 _OOHG_ActiveControlDefaultYear, ;
-                _OOHG_ActiveControlOnTextFilled ), NIL, _OOHG_ActiveControlAssignObject )
+                _OOHG_ActiveControlOnTextFilled ), Nil, _OOHG_ActiveControlAssignObject )
 
 /*----------------------------------------------------------------------------
 MONTH CALENDAR
@@ -1783,8 +1793,8 @@ DATEPICKER
         _OOHG_ActiveControlRightAlign := .F.     ;;
         _OOHG_ActiveControlField      := Nil     ;;
         _OOHG_ActiveControlNoBorder   := .F.     ;;
-        _OOHG_ActiveControlRangeLow  := Nil      ;;
-        _OOHG_ActiveControlRangeHigh := Nil
+        _OOHG_ActiveControlRangeLow   := Nil      ;;
+        _OOHG_ActiveControlRangeHigh  := Nil
 
 #xcommand SHOWNONE <shownone> ;
         => ;
@@ -2159,6 +2169,7 @@ GRID
         _OOHG_ActiveControlCheckBoxes       := .F. ;;
         _OOHG_ActiveControlOnCheckChange    := Nil ;;
         _OOHG_ActiveControlDblBffer         := .T. ;;
+        _OOHG_ActiveControlSngBffer         := .F. ;;
         _OOHG_ActiveControlPaintLeftMargin  := .F. ;;
         _OOHG_ActiveControlFocusRect        := .F. ;;
         _OOHG_ActiveControlNoFocusRect      := .F. ;;
@@ -2175,7 +2186,9 @@ GRID
         _OOHG_ActiveControlUseButtons       := Nil ;;
         _OOHG_ActiveControlNoDeleteMsg      := .F. ;;
         _OOHG_ActiveControlAppendable       := .F. ;;
-        _OOHG_ActiveControlNoModalEdit      := .F.
+        _OOHG_ActiveControlNoModalEdit      := .F. ;;
+        _OOHG_ActiveControlFixedCtrls       := Nil ;;
+        _OOHG_ActiveControlDynamicCtrls     := Nil
 
 #xcommand ONAPPEND <onappend> ;
         => ;
@@ -2269,6 +2282,14 @@ GRID
         => ;
         _OOHG_ActiveControlNoModalEdit := <nomodal>
 
+#xcommand FIXEDCONTROLS <fixed> ;
+        => ;
+        _OOHG_ActiveControlFixedCtrls := <fixed>
+
+#xcommand DYNAMICCONTROLS <dynamic> ;
+        => ;
+        _OOHG_ActiveControlDynamicCtrls := <dynamic>
+
 #xcommand END GRID ;
         => ;
         _OOHG_SelectSubClass( iif( _OOHG_ActiveControlByCell, TGridByCell(), iif( _OOHG_ActiveControlMultiSelect, TGridMulti(), TGrid() ) ), _OOHG_ActiveControlSubClass, _OOHG_ActiveControlAssignObject ):Define( ;
@@ -2328,8 +2349,8 @@ GRID
                 _OOHG_ActiveControlKeys, ;
                 _OOHG_ActiveControlCheckBoxes, ;
                 _OOHG_ActiveControlOnCheckChange, ;
-                _OOHG_ActiveControlDblBffer, ;
-                iif( _OOHG_ActiveControlNoFocusRect, .F., iif( _OOHG_ActiveControlFocusRect, .T., NIL ) ), ;
+                iif( _OOHG_ActiveControlDblBffer, .T., iif( _OOHG_ActiveControlSngBffer, .F., .T. ) ), ;
+                iif( _OOHG_ActiveControlNoFocusRect, .F., iif( _OOHG_ActiveControlFocusRect, .T., Nil ) ), ;
                 _OOHG_ActiveControlPaintLeftMargin, ;
                 _OOHG_ActiveControlFixedCols, ;
                 _OOHG_ActiveControlAbortEdit, ;
@@ -2345,7 +2366,8 @@ GRID
                 _OOHG_ActiveControlNoDeleteMsg, ;
                 _OOHG_ActiveControlAppendable, ;
                 _OOHG_ActiveControlOnAppend, ;
-                _OOHG_ActiveControlNoModalEdit )
+                _OOHG_ActiveControlNoModalEdit, ;
+                iif( _OOHG_ActiveControlFixedCtrls, .T., iif( _OOHG_ActiveControlDynamicCtrls, .F., Nil ) ) )
 
 /*----------------------------------------------------------------------------
 BROWSE
@@ -2395,6 +2417,7 @@ BROWSE
         _OOHG_ActiveControlForceRefresh     := .F. ;;
         _OOHG_ActiveControlNoRefresh        := .F. ;;
         _OOHG_ActiveControlDblBffer         := .T. ;;
+        _OOHG_ActiveControlSngBffer         := .F. ;;
         _OOHG_ActiveControlPaintLeftMargin  := .F. ;;
         _OOHG_ActiveControlFocusRect        := .F. ;;
         _OOHG_ActiveControlNoFocusRect      := .F. ;;
@@ -2405,7 +2428,8 @@ BROWSE
         _OOHG_ActiveControlAbortEdit        := Nil ;;
         _OOHG_ActiveControlAction           := Nil ;;
         _OOHG_ActiveControlFixedWidths      := .F. ;;
-        _OOHG_ActiveControlFixedBlocks      := NIL ;;
+        _OOHG_ActiveControlFixedBlocks      := Nil ;;
+        _OOHG_ActiveControlDynamicBlocks    := Nil ;;
         _OOHG_ActiveControlBeforeColMove    := Nil ;;
         _OOHG_ActiveControlAfterColMove     := Nil ;;
         _OOHG_ActiveControlBeforeColSize    := Nil ;;
@@ -2413,7 +2437,9 @@ BROWSE
         _OOHG_ActiveControlBeforeAutoFit    := Nil ;;
         _OOHG_ActiveControlEditLikeExcel    := Nil ;;
         _OOHG_ActiveControlUseButtons       := Nil ;;
-        _OOHG_ActiveControlUpdateColors     := NIL
+        _OOHG_ActiveControlUpdateColors     := Nil ;;
+        _OOHG_ActiveControlFixedCtrls       := Nil ;;
+        _OOHG_ActiveControlDynamicCtrls     := Nil
 
 #xcommand DELETEWHEN <delwhen> ;
         => ;
@@ -2466,6 +2492,10 @@ BROWSE
 #xcommand FIXEDBLOCKS <fixedblocks> ;
         => ;
         _OOHG_ActiveControlFixedBlocks := <fixedblocks>
+
+#xcommand DYNAMICBLOCKS <dynamicblocks> ;
+        => ;
+        _OOHG_ActiveControlDynamicBlocks := <dynamicblocks>
 
 #xcommand UPDATECOLORS <upcols> ;
         => ;
@@ -2537,18 +2567,18 @@ BROWSE
                 _OOHG_ActiveControlFullMove, ;
                 _OOHG_ActiveControlSelectedColors, ;
                 _OOHG_ActiveControlKeys, ;
-                if( _OOHG_ActiveControlForceRefresh, 0, if( _OOHG_ActiveControlNoRefresh, 1, nil ) ), ;
-                _OOHG_ActiveControlDblBffer, ;
-                iif( _OOHG_ActiveControlNoFocusRect, .F., iif( _OOHG_ActiveControlFocusRect, .T., NIL ) ), ;
+                iif( _OOHG_ActiveControlForceRefresh, 0, iif( _OOHG_ActiveControlNoRefresh, 1, Nil ) ), ;
+                iif( _OOHG_ActiveControlDblBffer, .T., iif( _OOHG_ActiveControlSngBffer, .F., .T. ) ), ;
+                iif( _OOHG_ActiveControlNoFocusRect, .F., iif( _OOHG_ActiveControlFocusRect, .T., Nil ) ), ;
                 _OOHG_ActiveControlPaintLeftMargin, ;
-                _OOHG_ActiveControlSynchronized, ;
+                iif( _OOHG_ActiveControlUnSynchronized, .F., iif( _OOHG_ActiveControlSynchronized, .T., Nil ) ), ;
                 _OOHG_ActiveControlFixedCols, ;
                 _OOHG_ActiveControlNoDeleteMsg, ;
                 _OOHG_ActiveControlUpdateAll, ;
                 _OOHG_ActiveControlAbortEdit, ;
                 _OOHG_ActiveControlAction, ;
                 _OOHG_ActiveControlFixedWidths, ;
-                _OOHG_ActiveControlFixedBlocks, ;
+                iif( _OOHG_ActiveControlFixedBlocks, .T., iif( _OOHG_ActiveControlDynamicBlocks, .F., Nil ) ), ;
                 _OOHG_ActiveControlBeforeColMove, ;
                 _OOHG_ActiveControlAfterColMove, ;
                 _OOHG_ActiveControlBeforeColSize, ;
@@ -2558,7 +2588,8 @@ BROWSE
                 _OOHG_ActiveControlUseButtons, ;
                 _OOHG_ActiveControlEditLikeExcel, ;
                 _OOHG_ActiveControlUseButtons, ;
-                _OOHG_ActiveControlUpdateColors )
+                _OOHG_ActiveControlUpdateColors, ;
+                iif( _OOHG_ActiveControlFixedCtrls, .T., iif( _OOHG_ActiveControlDynamicCtrls, .F., Nil ) ) )
 
 /*----------------------------------------------------------------------------
 XBROWSE
@@ -2606,6 +2637,7 @@ XBROWSE
         _OOHG_ActiveControlSelectedColors   := .F. ;;
         _OOHG_ActiveControlKeys             := Nil ;
         _OOHG_ActiveControlDblBffer         := .T. ;;
+        _OOHG_ActiveControlSngBffer         := .F. ;;
         _OOHG_ActiveControlPaintLeftMargin  := .F. ;;
         _OOHG_ActiveControlFocusRect        := .F. ;;
         _OOHG_ActiveControlNoFocusRect      := .F. ;;
@@ -2613,7 +2645,8 @@ XBROWSE
         _OOHG_ActiveControlAbortEdit        := Nil ;;
         _OOHG_ActiveControlAction           := Nil ;;
         _OOHG_ActiveControlFixedWidths      := .F. ;;
-        _OOHG_ActiveControlFixedBlocks      := NIL ;;
+        _OOHG_ActiveControlFixedBlocks      := Nil ;;
+        _OOHG_ActiveControlDynamicBlocks    := Nil ;;
         _OOHG_ActiveControlBeforeColMove    := Nil ;;
         _OOHG_ActiveControlAfterColMove     := Nil ;;
         _OOHG_ActiveControlBeforeColSize    := Nil ;;
@@ -2621,7 +2654,9 @@ XBROWSE
         _OOHG_ActiveControlBeforeAutoFit    := Nil ;;
         _OOHG_ActiveControlEditLikeExcel    := Nil ;;
         _OOHG_ActiveControlUseButtons       := Nil ;;
-        _OOHG_ActiveControlNoDeleteMsg      := .F.
+        _OOHG_ActiveControlNoDeleteMsg      := .F. ;;
+        _OOHG_ActiveControlFixedCtrls       := Nil ;;
+        _OOHG_ActiveControlDynamicCtrls     := Nil
 
 #xcommand END XBROWSE ;
         => ;
@@ -2689,14 +2724,14 @@ XBROWSE
                 _OOHG_ActiveControlFullMove, ;
                 _OOHG_ActiveControlSelectedColors, ;
                 _OOHG_ActiveControlKeys, ;
-                _OOHG_ActiveControlDblBffer, ;
-                iif( _OOHG_ActiveControlNoFocusRect, .F., iif( _OOHG_ActiveControlFocusRect, .T., NIL ) ), ;
+                iif( _OOHG_ActiveControlDblBffer, .T., iif( _OOHG_ActiveControlSngBffer, .F., .T. ) ), ;
+                iif( _OOHG_ActiveControlNoFocusRect, .F., iif( _OOHG_ActiveControlFocusRect, .T., Nil ) ), ;
                 _OOHG_ActiveControlPaintLeftMargin, ;
                 _OOHG_ActiveControlFixedCols, ;
                 _OOHG_ActiveControlAbortEdit, ;
                 _OOHG_ActiveControlAction, ;
                 _OOHG_ActiveControlFixedWidths, ;
-                _OOHG_ActiveControlFixedBlocks, ;
+                iif( _OOHG_ActiveControlFixedBlocks, .T., iif( _OOHG_ActiveControlDynamicBlocks, .F., Nil ) ), ;
                 _OOHG_ActiveControlBeforeColMove, ;
                 _OOHG_ActiveControlAfterColMove, ;
                 _OOHG_ActiveControlBeforeColSize, ;
@@ -2704,7 +2739,8 @@ XBROWSE
                 _OOHG_ActiveControlBeforeAutoFit, ;
                 _OOHG_ActiveControlEditLikeExcel, ;
                 _OOHG_ActiveControlUseButtons, ;
-                _OOHG_ActiveControlNoDeleteMsg )
+                _OOHG_ActiveControlNoDeleteMsg, ;
+                iif( _OOHG_ActiveControlFixedCtrls, .T., iif( _OOHG_ActiveControlDynamicCtrls, .F., Nil ) ) )
 
 /*----------------------------------------------------------------------------
 HYPERLINK
@@ -3094,7 +3130,7 @@ SCROLLBAR
                 _OOHG_ActiveControlInvisible, ;
                 _OOHG_ActiveControlTooltip, ;
                 _OOHG_ActiveControlRtl, ;
-                iif( _OOHG_ActiveControlHorizontal, 0, iif( _OOHG_ActiveControlVertical, 1, nil ) ), ;
+                iif( _OOHG_ActiveControlHorizontal, 0, iif( _OOHG_ActiveControlVertical, 1, Nil ) ), ;
                 _OOHG_ActiveControlAttached, ;
                 _OOHG_ActiveControlValue, ;
                 _OOHG_ActiveControlDisabled, ;

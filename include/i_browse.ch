@@ -1,5 +1,5 @@
 /*
- * $Id: i_browse.ch,v 1.44 2013-09-05 02:40:23 fyurisich Exp $
+ * $Id: i_browse.ch,v 1.45 2013-09-08 23:49:46 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -186,6 +186,7 @@
       [ <excel: EDITLIKEEXCEL> ] ;
       [ <buts: USEBUTTONS> ] ;
       [ <upcol: UPDATECOLORS> ] ;
+      [ <edtctrls: FIXEDCONTROLS, DYNAMICCONTROLS> ] ;
    => ;
       [ <oObj> := ] _OOHG_SelectSubClass( TOBrowse(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, <widths>, ;
@@ -206,10 +207,14 @@
             <.plm.>, iif( upper( #<sync> ) == "UNSYNCHRONIZED", .F., iif( upper( #<sync> ) == "SYNCHRONIZED", .T., NIL ) ), ;
             <.fixedcols.>, <.nodelmsg.>, <.updall.>, <{abortedit}>, <{click}>, <.fixedwidths.>, ;
             iif( upper( #<blocks> ) == "FIXEDBLOCKS", .T., iif( upper( #<blocks> ) == "DYNAMICBLOCKS", .F., NIL ) ), ;
-            <{bBefMov}>, <{bAftMov}>, <{bBefSiz}>, <{bAftSiz}>, <{bBefAut}>, <.excel.>, <.buts.>, <.upcol.> )
+            <{bBefMov}>, <{bAftMov}>, <{bBefSiz}>, <{bAftSiz}>, <{bBefAut}>, <.excel.>, <.buts.>, <.upcol.>, ;
+            iif( upper( #<edtctrls> ) == "FIXEDCONTROLS", .T., iif( upper( #<edtctrls> ) == "DYNAMICCONTROLS", .F., NIL ) ) )
 
 #command SET BROWSESYNC ON  => SetBrowseSync( .T. )
 #command SET BROWSESYNC OFF => SetBrowseSync( .F. )
 
 #command SET BROWSEFIXEDBLOCKS ON  => SetBrowseFixedBlocks( .T. )
 #command SET BROWSEFIXEDBLOCKS OFF => SetBrowseFixedBlocks( .F. )
+
+#command SET BROWSEFIXEDCONTROLS ON  => SetBrowseFixedControls( .T. )
+#command SET BROWSEFIXEDCONTROLS OFF => SetBrowseFixedControls( .F. )

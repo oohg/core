@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.92 2013-09-05 02:40:23 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.93 2013-09-08 23:49:47 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -54,6 +54,7 @@
 #include "i_windefs.ch"
 
 STATIC _OOHG_XBrowseFixedBlocks := .T.
+STATIC _OOHG_XBrowseFixedControls := .F.
 
 CLASS TXBROWSE FROM TGrid
    DATA Type              INIT "XBROWSE" READONLY
@@ -92,7 +93,7 @@ CLASS TXBROWSE FROM TGrid
    METHOD Enabled          SETGET
    METHOD Visible          SETGET
    METHOD RefreshData
-
+   METHOD FixControls      SETGET
    METHOD Events
    METHOD Events_Notify
 
@@ -124,7 +125,7 @@ CLASS TXBROWSE FROM TGrid
    METHOD WorkArea         SETGET
 
    METHOD ToExcel
-
+   METHOD ToOpenOffice
    METHOD AddColumn
    METHOD DeleteColumn
 /* from grid:
@@ -156,7 +157,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                aSelectedColors, aEditKeys, lDblBffr, lFocusRect, lPLM, ;
                lFixedCols, abortedit, click, lFixedWidths, lFixedBlocks, ;
                bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
-               bBeforeAutofit, lLikeExcel, lButtons, lNoDelMsg ) CLASS TXBrowse
+               bBeforeAutofit, lLikeExcel, lButtons, lNoDelMsg, lFixedCtrls ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
 Local nWidth2, nCol2, lLocked, oScroll, z
 
@@ -222,7 +223,7 @@ Local nWidth2, nCol2, lLocked, oScroll, z
               lFixedCols, abortedit, click, lFixedWidths, bBeforeColMove, ;
               bAfterColMove, bBeforeColSize, bAfterColSize, bBeforeAutofit, ;
               lLikeExcel, lButtons, AllowDelete, , , DelMsg, lNoDelMsg, ;
-              AllowAppend, )
+              AllowAppend, , , lFixedCtrls )
 
    ::nWidth := w
 
@@ -298,6 +299,34 @@ Local nWidth2, nCol2, lLocked, oScroll, z
 Return Self
 
 *-----------------------------------------------------------------------------*
+METHOD FixControls( lFix ) CLASS TXBrowse
+*-----------------------------------------------------------------------------*
+Local lFixedControls, i
+   If PCOUNT() > 0 .AND. HB_IsNil( lFix )
+      ::lFixedControls := Nil
+      lFixedControls := _OOHG_XBrowseFixedControls
+   ElseIf HB_IsLogical( lFix )
+      If lFix
+         ::aEditControls := Array( Len( ::aHeaders ) )
+         For i := 1 to Len( ::aHeaders )
+            ::aEditControls[ i ] := GetEditControlFromArray( Nil, ::EditControls, i, Self )
+         Next i
+         ::lFixedControls := .T.
+         lFixedControls := .T.
+      Else
+         ::lFixedControls := .F.
+         lFixedControls := .F.
+      Endif
+   Else
+      If HB_IsNil( ::lFixedControls )
+         lFixedControls := _OOHG_XBrowseFixedControls
+      Else
+         lFixedControls := ::lFixedControls
+      EndIf
+   EndIf
+Return lFixedControls
+
+*-----------------------------------------------------------------------------*
 METHOD FixBlocks( lFix ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
 Local lFixedBlocks
@@ -316,7 +345,11 @@ Local lFixedBlocks
          lFixedBlocks := .F.
       EndIf
    Else
-      lFixedBlocks := ::lFixedBlocks
+      If HB_IsNil( ::lFixedBlocks )
+         lFixedBlocks := _OOHG_XBrowseFixedBlocks
+      Else
+         lFixedBlocks := ::lFixedBlocks
+      EndIf
    EndIf
 Return lFixedBlocks
 
@@ -415,7 +448,10 @@ Local bRet
    cValue := ::aFields[ nCol ]
    bRet := nil
    If ! lDirect
-      oEditControl := GetEditControlFromArray( NIL, ::EditControls, nCol, Self )
+      If ::FixControls() .AND. HB_IsArray( ::aEditControls ) .AND. Len( ::aEditControls ) >= nCol
+         oEditControl := ::aEditControls[ nCol ]
+      EndIf
+      oEditControl := GetEditControlFromArray( oEditControl, ::EditControls, nCol, Self )
       If ValType( oEditControl ) == "O"
          If oEditControl:Type == "TGRIDCONTROLIMAGEDATA" .AND. ValType( cValue ) == "A" .AND. LEN( cValue ) > 1
             If ValType( cWorkArea ) $ "CM"
@@ -677,12 +713,19 @@ METHOD Enabled( lEnabled ) CLASS TXBrowse
 RETURN ::Super:Enabled
 
 *------------------------------------------------------------------------------*
-METHOD ToExcel( cTitle ) CLASS TXBrowse
+METHOD ToExcel( cTitle, nColFrom, nColTo ) CLASS TXBrowse
 *------------------------------------------------------------------------------*
-Local lin := 4
-Local oExcel, oHoja, i
+Local oExcel, oSheet, nLin, i, cWorkArea, uValue
 
-   DEFAULT ctitle TO ""
+   If ! ValType( cTitle ) $ "CM"
+      cTitle := ""
+   EndIf
+   If ! ValType( nColFrom ) == "N" .OR. nColFrom < 1
+      nColFrom := 1
+   EndIf
+   If ! ValType( nColTo ) == "N" .OR. nColTo > Len( ::aHeaders )
+      nColTo := Len( ::aHeaders )
+   EndIf
 
    #ifndef __XHARBOUR__
       If ( oExcel := win_oleCreateObject( "Excel.Application" ) ) == Nil
@@ -691,47 +734,198 @@ Local oExcel, oHoja, i
       EndIf
    #else
       oExcel := TOleAuto():New( "Excel.Application" )
-      If Ole2TxtError() != 'S_OK'
-         MsgStop('Excel not found','error')
+      If Ole2TxtError() != "S_OK"
+         MsgStop( "Excel not found", "Error" )
          Return Nil
       EndIf
    #EndIf
 
    oExcel:WorkBooks:Add()
-   oHoja := oExcel:ActiveSheet()
-   ////oHoja := oExcel:Get( "ActiveSheet" )
-   oHoja:Cells:Font:Name := "Arial"
-   oHoja:Cells:Font:Size := 10
+   oSheet := oExcel:ActiveSheet()
+   oSheet:Cells:Font:Name := "Arial"
+   oSheet:Cells:Font:Size := 10
 
-   oHoja:Cells( 1, 1 ):Value := upper( cTitle )
-   oHoja:Cells( 1, 1 ):font:bold := .T.
+   nLin := 4
 
-   for i:= 1 to len( ::aHeaders )
-      oHoja:Cells( LIN, i ):Value := upper( ::aHeaders[i] )
-      oHoja:Cells( LIN, i ):font:bold:= .T.
-   next i
-   LIN++
-   LIN++
+   If nColFrom >= nColTo
+      For i := nColFrom To nColTo
+         oSheet:Cells( nLin, i - nColFrom + 1 ):Value := ::aHeaders[ i ]
+         oSheet:Cells( nLin, i - nColFrom + 1 ):Font:Bold := .T.
+      Next i
+      nLin += 2
+   EndIf
+
+   cWorkArea := ::WorkArea
+   If ValType( cWorkArea ) $ "CM" .AND. Empty( cWorkArea )
+      cWorkArea := Nil
+   EndIf
+
    ::GoTop()
    Do While ! ::Eof()
-      for i:= 1 to len ( ::aFields )
-         oHoja:Cells( LIN, i ):Value := &( ::aFields[i] )
-      next i
+      For i := nColFrom To nColTo
+         If HB_IsBlock( ::aFields[ i ] )
+            uValue := ( cWorkArea ) -> ( Eval( ::aFields[ i ], cWorkArea ) )
+         Else
+            uValue := ( cWorkArea ) -> &( ::aFields[ i ] )
+         Endif
+         If Valtype( uValue ) == "C"
+            uValue := "'" + uValue
+         EndIf
+         oSheet:Cells( nLin, i - nColFrom + 1 ):Value := uValue
+      Next i
       ::DbSkip()
-      LIN++
-   Enddo
+      nLin ++
+   EndDo
 
-   FOR i := 1 TO LEN( ::aHeaders )
-      oHoja:Columns( i ):AutoFit()
-   NEXT
+   For i := nColFrom To nColTo
+      oSheet:Columns( i - nColFrom + 1 ):AutoFit()
+   Next i
 
-   oHoja:Cells( 1, 1 ):Select()
+   oSheet:Cells( 1, 1 ):Value := cTitle
+   oSheet:Cells( 1, 1 ):Font:Bold := .T.
+
+   oSheet:Cells( 1, 1 ):Select()
    oExcel:Visible := .T.
-
-   oHoja  := NIL
+   oSheet := NIL
    oExcel := NIL
 
-RETURN nil
+RETURN Nil
+
+*-----------------------------------------------------------------------------*
+METHOD ToOpenOffice( cTitle, nColFrom, nColTo ) CLASS TXBrowse
+*-----------------------------------------------------------------------------*
+Local oSerMan, oDesk, oPropVals, oBook, oSheet, nLin, i, uValue, cWorkArea
+
+   If ! ValType( cTitle ) $ "CM"
+      cTitle := ""
+   EndIf
+   If ! ValType( nColFrom ) == "N" .OR. nColFrom < 1
+      nColFrom := 1
+   EndIf
+   If ! ValType( nColTo ) == "N" .OR. nColTo > Len( ::aHeaders )
+      nColTo := Len( ::aHeaders )
+   EndIf
+
+   // open service manager
+   #ifndef __XHARBOUR__
+      If ( oSerMan := win_oleCreateObject( "com.sun.star.ServiceManager" ) ) == Nil
+         MsgStop( "Error: OpenOffice not available. [" + win_oleErrorText()+ "]" )
+         Return Nil
+      EndIf
+   #else
+      oSerMan := TOleAuto():New( "com.sun.star.ServiceManager" )
+      If Ole2TxtError() != "S_OK"
+         MsgStop( "OpenOffice not found", "Error" )
+         Return Nil
+      EndIf
+   #EndIf
+
+   // open desktop service
+   If ( oDesk := oSerMan:CreateInstance( "com.sun.star.frame.Desktop" ) ) == Nil
+      MsgStop( "Error: OpenOffice Desktop not available." )
+      Return Nil
+   EndIf
+
+   // set properties for new book
+   oPropVals := oSerMan:Bridge_GetStruct( "com.sun.star.beans.PropertyValue" )
+   oPropVals:Name := "Hidden"
+   oPropVals:Value := .T.
+
+   // open new book
+   If ( oBook := oDesk:LoadComponentFromURL( "private:factory/scalc", "_blank", 0, {oPropVals} ) ) == Nil
+      MsgStop( "Error: OpenOffice Calc not available." )
+      oDesk := Nil
+      Return Nil
+   EndIf
+
+   // keep only one sheet
+   Do While oBook:Sheets:GetCount() > 1
+      oSheet := oBook:Sheets:GetByIndex( oBook:Sheets:GetCount() - 1 )
+      oBook:Sheets:RemoveByName( oSheet:Name )
+   EndDo
+
+   // select first sheet
+   oSheet := oBook:Sheets:GetByIndex( 0 )
+   oBook:GetCurrentController:SetActiveSheet( oSheet )
+
+   // set font name and size of all cells
+   oSheet:CharFontName := "Arial"
+   oSheet:CharHeight := 10
+
+   nLin := 4
+
+   // put headers using bold style
+   If nColFrom >= nColTo
+      For i := nColFrom To nColTo
+         oSheet:GetCellByPosition( i - nColFrom, nLin - 1 ):SetString( ::aHeaders[ i ] )
+         oSheet:GetCellByPosition( i - nColFrom, nLin - 1 ):SetPropertyValue( "CharWeight", 150 )
+      Next i
+      nLin += 2
+   EndIf
+
+   // put rows
+   cWorkArea := ::WorkArea
+   If ValType( cWorkArea ) $ "CM" .AND. Empty( cWorkArea )
+      cWorkArea := Nil
+   EndIf
+
+   ::GoTop()
+   Do While ! ::Eof()
+      For i := nColFrom To nColTo
+         If HB_IsBlock( ::aFields[ i ] )
+            uValue := ( cWorkArea ) -> ( Eval( ::aFields[ i ], cWorkArea ) )
+         Else
+            uValue := ( cWorkArea ) -> &( ::aFields[ i ] )
+         Endif
+
+         Do Case
+         Case uValue == Nil
+         Case ValType( uValue ) == "C"
+            If Left( uValue, 1 ) == "'"
+               uValue := "'" + uValue
+            EndIf
+            oSheet:GetCellByPosition( i - nColFrom, nLin - 1 ):SetString( uValue )
+         Case ValType( uValue ) == "N"
+            oSheet:GetCellByPosition( i - nColFrom, nLin - 1 ):SetValue( uValue )
+         Case ValType( uValue ) == "L"
+            oSheet:GetCellByPosition( i - nColFrom, nLin - 1 ):SetValue( uValue )
+            oSheet:GetCellByPosition( i - nColFrom, nLin - 1 ):SetPropertyValue("NumberFormat", 99 )
+         Case ValType( uValue ) == "D"
+            oSheet:GetCellByPosition( i - nColFrom, nLin - 1 ):SetValue( uValue )
+            oSheet:GetCellByPosition( i - nColFrom, nLin - 1 ):SetPropertyValue( "NumberFormat", 36 )
+         Case ValType( uValue ) == "T"
+            oSheet:GetCellByPosition( i - nColFrom, nLin - 1 ):SetString( uValue )
+         otherwise
+            oSheet:GetCellByPosition( i - nColFrom, nLin - 1 ):SetFormula( uValue )
+         EndCase
+      Next i
+      ::DbSkip()
+      nLin ++
+   EndDo
+
+   // autofit columns
+   For i := nColFrom To nColTo
+      oSheet:GetColumns:GetByIndex( i - nColFrom ):SetPropertyValue( "OptimalWidth", .T. )
+   Next i
+
+   // put title using bold style
+   oSheet:GetCellByPosition( 0, 0 ):SetString( cTitle )
+   oSheet:GetCellByPosition( 0, 0 ):SetPropertyValue( "CharWeight", 150 )
+
+   // show
+   oSheet:GetCellRangeByName( "A1:A1" )
+   oSheet:IsVisible := .T.
+   oBook:GetCurrentController():GetFrame():GetContainerWindow():SetVisible( .T. )
+   oBook:GetCurrentController():GetFrame():GetContainerWindow():ToFront()
+
+   // cleanup
+   oSheet    := Nil
+   oBook     := Nil
+   oPropVals := Nil
+   oDesk     := Nil
+   oSerMan   := Nil
+
+Return Nil
 
 *------------------------------------------------------------------------------*
 METHOD Visible( lVisible ) CLASS TXBrowse
@@ -1159,7 +1353,7 @@ METHOD EditItem_B( lAppend ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
 Local oWorkArea, cTitle, z, nOld
 Local uOldValue, oEditControl, cMemVar, bReplaceField
-Local aItems, aEditControls, aMemVars, aReplaceFields
+Local aItems, aMemVars, aReplaceFields
 
    ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
 
@@ -1183,7 +1377,7 @@ Local aItems, aEditControls, aMemVars, aReplaceFields
          ::CurrentRow := ::ItemCount
          oWorkArea:GoTo( 0 )
       EndIf
-      Return ::EditAllCells( ,, lAppend )
+      Return ::EditAllCells( , , lAppend )
    EndIf
 
    If lAppend
@@ -1195,17 +1389,19 @@ Local aItems, aEditControls, aMemVars, aReplaceFields
    EndIf
 
    aItems := ARRAY( Len( ::aHeaders ) )
-   aEditControls := ARRAY( Len( aItems ) )
+   If ! ::lStaticControl .OR. ! HB_IsArray( ::aEditControls ) .OR. Len( ::aEditControls ) < Len( aItems )
+      ::aEditControls := ARRAY( Len( aItems ) )
+   EndIf
    aMemVars := ARRAY( Len( aItems ) )
    aReplaceFields := ARRAY( Len( aItems ) )
    For z := 1 To Len( aItems )
-      oEditControl := uOldValue := cMemVar := bReplaceField := nil
+      oEditControl := uOldValue := cMemVar := bReplaceField := Nil
       ::GetCellType( z, @oEditControl, @uOldValue, @cMemVar, @bReplaceField )
       If ValType( uOldValue ) $ "CM"
          uOldValue := AllTrim( uOldValue )
       EndIf
       // MixedFields??? If field is from other workarea...
-      aEditControls[ z ] := oEditControl
+      ::aEditControls[ z ] := oEditControl
       aItems[ z ] := uOldValue
       aMemVars[ z ] := cMemVar
       aReplaceFields[ z ] := bReplaceField
@@ -1225,9 +1421,9 @@ Local aItems, aEditControls, aMemVars, aReplaceFields
    EndIf
 
    If ! EMPTY( oWorkArea:cAlias__ )
-      aItems := ( oWorkArea:cAlias__ )->( ::EditItem2( ::CurrentRow, aItems, aEditControls, aMemVars, cTitle ) )
+      aItems := ( oWorkArea:cAlias__ )->( ::EditItem2( ::CurrentRow, aItems, ::aEditControls, aMemVars, cTitle ) )
    Else
-      aItems := ::EditItem2( ::CurrentRow, aItems, aEditControls, aMemVars, cTitle )
+      aItems := ::EditItem2( ::CurrentRow, aItems, ::aEditControls, aMemVars, cTitle )
    EndIf
 
    If ! Empty( aItems )
@@ -1281,7 +1477,7 @@ Local aItems, aEditControls, aMemVars, aReplaceFields
 Return .T.
 
 *-----------------------------------------------------------------------------*
-METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend ) CLASS TXBrowse
+METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend, nOnFocusPos ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
 Local lRet, bReplaceField, oWorkArea
    ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
@@ -1315,7 +1511,7 @@ Local lRet, bReplaceField, oWorkArea
 
       ::GetCellType( nCol, @EditControl, @uOldValue, @cMemVar, @bReplaceField )
 
-      lRet := ::EditCell2( @nRow, @nCol, EditControl, uOldValue, @uValue, cMemVar )
+      lRet := ::EditCell2( @nRow, @nCol, EditControl, uOldValue, @uValue, cMemVar, nOnFocusPos )
       If lRet
          If lAppend
             oWorkArea:Append()
@@ -1370,7 +1566,7 @@ Local lRet, lRowEdited, lSomethingEdited
          ElseIf ! ::IsColumnWhen( nCol )
            // Not a valid WHEN, skip column and continue editing
          Else
-            lRet := ::EditCell( nRow, nCol,,,,, lAppend )
+            lRet := ::EditCell( nRow, nCol, , , , , lAppend )
 
             If lRet
                lRowEdited := .T.
@@ -1469,6 +1665,9 @@ Local cField, cArea, nPos, aStruct
    EndIf
 
    // Determines control type
+   If ! HB_IsObject( EditControl ) .AND. ::FixControls() .AND. HB_IsArray( ::aEditControls ) .AND. Len( ::aEditControls ) >= nCol
+      EditControl := ::aEditControls[ nCol ]
+   EndIf
    EditControl := GetEditControlFromArray( EditControl, ::EditControls, nCol, Self )
    If ValType( EditControl ) != "O"
       If ValType( ::Picture ) == "A" .AND. Len( ::Picture ) >= nCol
@@ -1979,3 +2178,9 @@ Function SetXBrowseFixedBlocks( lValue )
       _OOHG_XBrowseFixedBlocks := lValue
    ENDIF
 Return _OOHG_XBrowseFixedBlocks
+
+Function SetXBrowseFixedControls( lValue )
+   IF valtype( lValue ) == "L"
+      _OOHG_XBrowseFixedControls := lValue
+   ENDIF
+Return _OOHG_XBrowseFixedControls

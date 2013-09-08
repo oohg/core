@@ -1,5 +1,5 @@
 /*
- * $Id: h_checklist.prg,v 1.12 2013-07-01 02:03:35 fyurisich Exp $
+ * $Id: h_checklist.prg,v 1.13 2013-09-08 23:49:46 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -115,6 +115,7 @@ CLASS TCheckList FROM TGrid
    METHOD IsColumnReadOnly     BLOCK { || Nil }
    METHOD IsColumnWhen         BLOCK { || Nil }
    METHOD ToExcel              BLOCK { || Nil }
+   METHOD ToOpenOffice         BLOCK { || Nil }
    METHOD AppendItem           BLOCK { || Nil }
    METHOD ColumnCount          BLOCK { || Nil }
    METHOD ColumnAutoFit        BLOCK { || Nil }

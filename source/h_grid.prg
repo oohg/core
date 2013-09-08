@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.219 2013-09-06 01:02:09 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.220 2013-09-08 23:49:46 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -95,6 +95,8 @@
 #include "hbclass.ch"
 #include "i_windefs.ch"
 
+STATIC _OOHG_GridFixedControls := .F.
+
 CLASS TGrid FROM TControl
    DATA Type                   INIT "GRID" READONLY
    DATA nWidth                 INIT 240
@@ -115,6 +117,8 @@ CLASS TGrid FROM TControl
    DATA InPlace                INIT .F.
    DATA FullMove               INIT .F.
    DATA EditControls           INIT Nil
+   DATA aEditControls          INIT Nil
+   DATA lFixedControls         INIT Nil
    DATA ReadOnly               INIT Nil
    DATA Valid                  INIT Nil
    DATA ValidMessages          INIT Nil
@@ -240,6 +244,7 @@ CLASS TGrid FROM TControl
    METHOD ScrollToCol
    METHOD Append               SETGET
    METHOD HeaderSetFont
+   METHOD FixControls          SETGET
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -256,7 +261,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths, ;
                bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
                bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
-               bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal ) CLASS TGrid
+               bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
+               lFixedCtrls ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local nStyle := LVS_SINGLESEL
 
@@ -273,7 +279,8 @@ Local nStyle := LVS_SINGLESEL
               lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths, ;
               bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
               bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
-              bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal )
+              bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
+              lFixedCtrls )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -290,7 +297,8 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                 lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths, ;
                 bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
                 bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
-                bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal ) CLASS TGrid
+                bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
+                lFixedCtrls ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local ControlHandle, aImageList, i
 
@@ -406,6 +414,8 @@ Local ControlHandle, aImageList, i
    ASSIGN ::FullMove  VALUE FullMove TYPE "L"
    ASSIGN ::AllowEdit VALUE ::InPlace .OR. ( HB_IsLogical( editable ) .AND. editable ) TYPE "L"
 
+   ::FixControls( lFixedCtrls )
+
    // Load images alignments
    // This should come before than 'Load header images'
    ::aHeaderImageAlign := aFill( Array( Len( ::aHeaders ) ), HEADER_IMG_AT_LEFT )
@@ -462,6 +472,34 @@ Local ControlHandle, aImageList, i
    ASSIGN ::OnAppend       VALUE onappend       TYPE "B"
 
 Return Self
+
+*-----------------------------------------------------------------------------*
+METHOD FixControls( lFix ) CLASS TGrid
+*-----------------------------------------------------------------------------*
+Local lFixedControls, i
+   If PCOUNT() > 0 .AND. HB_IsNil( lFix )
+      ::lFixedControls := Nil
+      lFixedControls := _OOHG_GridFixedControls
+   ElseIf HB_IsLogical( lFix )
+      If lFix
+         ::aEditControls := Array( Len( ::aHeaders ) )
+         For i := 1 to Len( ::aHeaders )
+            ::aEditControls[ i ] := GetEditControlFromArray( Nil, ::EditControls, i, Self )
+         Next i
+         ::lFixedControls := .T.
+         lFixedControls := .T.
+      Else
+         ::lFixedControls := .F.
+         lFixedControls := .F.
+      Endif
+   Else
+      If HB_IsNil( ::lFixedControls )
+         lFixedControls := _OOHG_GridFixedControls
+      Else
+         lFixedControls := ::lFixedControls
+      EndIf
+   EndIf
+Return lFixedControls
 
 *-----------------------------------------------------------------------------*
 METHOD Append( lAppend ) CLASS TGrid
@@ -820,12 +858,25 @@ METHOD GoBottom() CLASS TGrid
 Return Self
 
 *-----------------------------------------------------------------------------*
-METHOD ToExcel( cTitle, nRow ) CLASS TGrid
+METHOD ToExcel( cTitle, nItemFrom, nItemTo, nColFrom, nColTo ) CLASS TGrid
 *-----------------------------------------------------------------------------*
-Local nLin := 4
-Local oExcel, oHoja, i
+Local oExcel, oSheet, nLin, i, j
 
-   DEFAULT ctitle TO ""
+   If ! ValType( cTitle ) $ "CM"
+      cTitle := ""
+   EndIf
+   If ! ValType( nItemFrom ) == "N" .OR. nItemFrom < 1
+      nItemFrom := Max( ::FirstSelectedItem, 1 )
+   EndIf
+   If ! ValType( nItemTo ) == "N" .OR. nItemTo > ::ItemCount
+      nItemTo := ::ItemCount
+   EndIf
+   If ! ValType( nColFrom ) == "N" .OR. nColFrom < 1
+      nColFrom := 1
+   EndIf
+   If ! ValType( nColTo ) == "N" .OR. nColTo > Len( ::aHeaders )
+      nColTo := Len( ::aHeaders )
+   EndIf
 
    #ifndef __XHARBOUR__
       If ( oExcel := win_oleCreateObject( "Excel.Application" ) ) == Nil
@@ -841,49 +892,61 @@ Local oExcel, oHoja, i
    #EndIf
 
    oExcel:WorkBooks:Add()
-   oHoja := oExcel:ActiveSheet()
-   oHoja:Cells:Font:Name := "Arial"
-   oHoja:Cells:Font:Size := 10
+   oSheet := oExcel:ActiveSheet()
+   oSheet:Cells:Font:Name := "Arial"
+   oSheet:Cells:Font:Size := 10
 
-   oHoja:Cells( 1, 1 ):Value := Upper( cTitle )
-   oHoja:Cells( 1, 1 ):Font:Bold := .T.
+   nLin := 4
 
-   For i := 1 To Len( ::aHeaders )
-      oHoja:Cells( nLin, i ):Value := Upper( ::aHeaders[i] )
-      oHoja:Cells( nLin, i ):Font:Bold := .T.
-   Next i
-   nLin ++
-   nLin ++
-
-   If ! HB_IsNumeric( nRow ) .OR. nRow < 1
-      nRow := ::FirstSelectedItem
-   EndIf
-   Do While nRow <= ::ItemCount .AND. nRow > 0
-      For i := 1 To Len( ::aHeaders )
-         oHoja:Cells( nLin, i ):Value := ::Cell( nRow, i )
+   If nColFrom >= nColTo
+      For i := nColFrom To nColTo
+         oSheet:Cells( nLin, i - nColFrom + 1 ):Value := ::aHeaders[ i ]
+         oSheet:Cells( nLin, i - nColFrom + 1 ):Font:Bold := .T.
       Next i
-      nRow ++
-      nLin ++
-   Enddo
+      nLin += 2
+   EndIf
 
-   For i := 1 To Len( ::Aheaders )
-      oHoja:Columns( i ):AutoFit()
+   For j := nItemFrom To nItemTo
+      For i := nColFrom To nColTo
+         oSheet:Cells( nLin, i - nColFrom + 1 ):Value := ::Cell( j, i )
+      Next i
+      nLin ++
+   Next j
+
+   For i := nColFrom To nColTo
+      oSheet:Columns( i - nColFrom + 1 ):AutoFit()
    Next i
 
-   oHoja:Cells( 1, 1 ):Select()
+   oSheet:Cells( 1, 1 ):Value := cTitle
+   oSheet:Cells( 1, 1 ):Font:Bold := .T.
+
+   oSheet:Cells( 1, 1 ):Select()
    oExcel:Visible := .T.
-   oHoja := Nil
-   oExcel:= Nil
+   oSheet := Nil
+   oExcel := Nil
 
 Return Nil
 
 *-----------------------------------------------------------------------------*
-METHOD ToOpenOffice( cTitle, nRow ) CLASS TGrid
+METHOD ToOpenOffice( cTitle, nItemFrom, nItemTo, nColFrom, nColTo ) CLASS TGrid
 *-----------------------------------------------------------------------------*
-Local nLin := 4
-Local oSerMan, oDesk, oPropVals, oBook, oSheet, i, uValue
+Local oSerMan, oDesk, oPropVals, oBook, oSheet, nLin, i, j, uValue
 
-   DEFAULT ctitle TO ""
+   If ! ValType( cTitle ) $ "CM"
+      cTitle := ""
+   EndIf
+   If ! ValType( nItemFrom ) == "N" .OR. nItemFrom < 1
+      nItemFrom := Max( ::FirstSelectedItem, 1 )
+   EndIf
+   If ! ValType( nItemTo ) == "N" .OR. nItemTo > ::ItemCount
+      nItemTo := ::ItemCount
+   EndIf
+   If ! ValType( nColFrom ) == "N" .OR. nColFrom < 1
+      nColFrom := 1
+   EndIf
+   If ! ValType( nColTo ) == "N" .OR. nColTo > Len( ::aHeaders )
+      nColTo := Len( ::aHeaders )
+   EndIf
 
    // open service manager
    #ifndef __XHARBOUR__
@@ -931,54 +994,53 @@ Local oSerMan, oDesk, oPropVals, oBook, oSheet, i, uValue
    oSheet:CharFontName := "Arial"
    oSheet:CharHeight := 10
 
-   // put title using bold style
-   oSheet:GetCellByPosition( 0, 0 ):SetString( Upper( cTitle ) )
-   oSheet:GetCellByPosition( 0, 0 ):SetPropertyValue( "CharWeight", 150 )
+   nLin := 4
 
    // put headers using bold style
-   For i := 1 To Len( ::aHeaders )
-      oSheet:GetCellByPosition( i - 1, nLin - 1 ):SetString( Upper( ::aHeaders[i] ) )
-      oSheet:GetCellByPosition( i - 1, nLin - 1 ):SetPropertyValue( "CharWeight", 150 )
-   Next i
-   nLin ++
-   nLin ++
+   If nColFrom >= nColTo
+      For i := nColFrom To nColTo
+         oSheet:GetCellByPosition( i - nColFrom, nLin - 1 ):SetString( ::aHeaders[ i ] )
+         oSheet:GetCellByPosition( i - nColFrom, nLin - 1 ):SetPropertyValue( "CharWeight", 150 )
+      Next i
+      nLin += 2
+   EndIf
 
    // put rows
-   If ! HB_IsNumeric( nRow ) .OR. nRow < 1
-      nRow := ::FirstSelectedItem
-   EndIf
-   Do While nRow <= ::ItemCount .AND. nRow > 0
-      For i := 1 To Len( ::aHeaders )
-         uValue := ::Cell( nRow, i )
+   For j := nItemFrom To nItemTo
+      For i := nColFrom To nColTo
+         uValue := ::Cell( j, i )
          Do Case
          Case uValue == Nil
          Case ValType( uValue ) == "C"
             If Left( uValue, 1 ) == "'"
                uValue := "'" + uValue
             EndIf
-            oSheet:GetCellByPosition( i - 1, nLin - 1 ):SetString( uValue )
+            oSheet:GetCellByPosition( i - nColFrom, nLin - 1 ):SetString( uValue )
          Case ValType( uValue ) == "N"
-            oSheet:GetCellByPosition( i - 1, nLin - 1 ):SetValue( uValue )
+            oSheet:GetCellByPosition( i - nColFrom, nLin - 1 ):SetValue( uValue )
          Case ValType( uValue ) == "L"
-            oSheet:GetCellByPosition( i - 1, nLin - 1 ):SetValue( uValue )
-            oSheet:GetCellByPosition( i - 1, nLin - 1 ):SetPropertyValue("NumberFormat", 99 )
+            oSheet:GetCellByPosition( i - nColFrom, nLin - 1 ):SetValue( uValue )
+            oSheet:GetCellByPosition( i - nColFrom, nLin - 1 ):SetPropertyValue("NumberFormat", 99 )
          Case ValType( uValue ) == "D"
-            oSheet:GetCellByPosition( i - 1, nLin - 1 ):SetValue( uValue )
-            oSheet:GetCellByPosition( i - 1, nLin - 1 ):SetPropertyValue( "NumberFormat", 36 )
+            oSheet:GetCellByPosition( i - nColFrom, nLin - 1 ):SetValue( uValue )
+            oSheet:GetCellByPosition( i - nColFrom, nLin - 1 ):SetPropertyValue( "NumberFormat", 36 )
          Case ValType( uValue ) == "T"
-            oSheet:GetCellByPosition( i - 1, nLin - 1 ):SetString( uValue )
+            oSheet:GetCellByPosition( i - nColFrom, nLin - 1 ):SetString( uValue )
          otherwise
-            oSheet:GetCellByPosition( i - 1, nLin - 1 ):SetFormula( uValue )
+            oSheet:GetCellByPosition( i - nColFrom, nLin - 1 ):SetFormula( uValue )
          EndCase
       Next i
-      nRow ++
       nLin ++
-   EndDo
+   Next j
 
    // autofit columns
-   For i := 1 To Len( ::Aheaders )
-      oSheet:GetColumns:GetByIndex( i - 1 ):SetPropertyValue( "OptimalWidth", .T. )
+   For i := nColFrom To nColTo
+      oSheet:GetColumns:GetByIndex( i - nColFrom ):SetPropertyValue( "OptimalWidth", .T. )
    Next i
+
+   // put title using bold style
+   oSheet:GetCellByPosition( 0, 0 ):SetString( cTitle )
+   oSheet:GetCellByPosition( 0, 0 ):SetPropertyValue( "CharWeight", 150 )
 
    // show
    oSheet:GetCellRangeByName( "A1:A1" )
@@ -998,7 +1060,7 @@ Return Nil
 *-----------------------------------------------------------------------------*
 METHOD EditItem() CLASS TGrid
 *-----------------------------------------------------------------------------*
-Local nItem, aItems, aEditControls, nColumn
+Local nItem, aItems, nColumn
    nItem := ::FirstSelectedItem
    If nItem == 0
       Return Nil
@@ -1006,22 +1068,24 @@ Local nItem, aItems, aEditControls, nColumn
    
    aItems := ::Item( nItem )
 
-   aEditControls := Array( Len( aItems ) )
-   For nColumn := 1 To Len( aEditControls )
-      aEditControls[ nColumn ] := GetEditControlFromArray( Nil, ::EditControls, nColumn, Self )
-      If ! HB_IsObject( aEditControls[ nColumn ] )
-         // Check for imagelist
-         If HB_IsNumeric( aItems[ nColumn ] )
-            If HB_IsLogical( ::Picture[ nColumn ] ) .AND. ::Picture[ nColumn ]
-               aEditControls[ nColumn ] := TGridControlImageList():New( Self )
-            ElseIf HB_IsNumeric( ListViewGetItem( ::hWnd, nItem, Len( ::aHeaders ) )[ nColumn ] )
-               aEditControls[ nColumn ] := TGridControlImageList():New( Self )
+   If ! ::FixControls() .OR. ! HB_IsArray( ::aEditControls ) .OR. Len( ::aEditControls ) < Len( aItems )
+      ::aEditControls := Array( Len( aItems ) )
+      For nColumn := 1 To Len( ::aEditControls )
+         ::aEditControls[ nColumn ] := GetEditControlFromArray( Nil, ::EditControls, nColumn, Self )
+         If ! HB_IsObject( ::aEditControls[ nColumn ] )
+            // Check for imagelist
+            If HB_IsNumeric( aItems[ nColumn ] )
+               If HB_IsLogical( ::Picture[ nColumn ] ) .AND. ::Picture[ nColumn ]
+                  ::aEditControls[ nColumn ] := TGridControlImageList():New( Self )
+               ElseIf HB_IsNumeric( ListViewGetItem( ::hWnd, nItem, Len( ::aHeaders ) )[ nColumn ] )
+                  ::aEditControls[ nColumn ] := TGridControlImageList():New( Self )
+               EndIf
             EndIf
          EndIf
-      EndIf
-   Next
+      Next
+   EndIf
 
-   aItems := ::EditItem2( nItem, aItems, aEditControls,, If( ValType( ::cRowEditTitle ) $ "CM", ::cRowEditTitle, _OOHG_Messages( 1, 5 ) ) )
+   aItems := ::EditItem2( nItem, aItems, ::aEditControls,, If( ValType( ::cRowEditTitle ) $ "CM", ::cRowEditTitle, _OOHG_Messages( 1, 5 ) ) )
    If Empty( aItems )
       _OOHG_Eval( ::OnAbortEdit, nItem, 0 )
    Else
@@ -1074,7 +1138,12 @@ Local aReturn
    nRow := 0
    aEditControls2 := Array( l )
    For i := 1 To l
-      oCtrl := GetEditControlFromArray( Nil, aEditControls, i, Self )
+      If ::FixControls() .AND. HB_IsArray( ::aEditControls ) .AND. Len( ::aEditControls ) >= i
+         oCtrl := ::aEditControls[ i ]
+      Else
+         oCtrl := Nil
+      EndIf
+      oCtrl := GetEditControlFromArray( oCtrl, aEditControls, i, Self )
       oCtrl := GetEditControlFromArray( oCtrl, ::EditControls, i, Self )
       If ! HB_IsObject( oCtrl )
          If HB_IsArray( ::Picture ) .AND. Len( ::Picture ) >= i .AND. ValType( ::Picture[ i ] ) $ "CM"
@@ -1722,6 +1791,9 @@ Local lRet
       uOldValue := ::Cell( nRow, nCol )
    EndIf
 
+   If ! HB_IsObject( EditControl ) .AND. ::FixControls() .AND. HB_IsArray( ::aEditControls ) .AND. Len( ::aEditControls ) >= nCol
+      EditControl := ::aEditControls[ nCol ]
+   EndIf
    EditControl := GetEditControlFromArray( EditControl, ::EditControls, nCol, Self )
    If ! HB_IsObject( EditControl )
       // If EditControl is not specified, check for imagelist
@@ -1755,7 +1827,7 @@ Return lRet
 *-----------------------------------------------------------------------------*
 METHOD EditCell2( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusPos ) CLASS TGrid
 *-----------------------------------------------------------------------------*
-Local r, r2, lRet := .F., nWidth
+Local r, r2, lRet := .F., nWidth, uAux
    If ::lNested
       Return .F.
    EndIf
@@ -1772,7 +1844,7 @@ Local r, r2, lRet := .F., nWidth
    EndIf
 
    // This var may be used in When codeblock
-   _OOHG_ThisItemCellValue := ::Cell( nRow, nCol )
+   _OOHG_ThisItemCellValue := uAux := ::Cell( nRow, nCol )
 
    If nRow < 1 .OR. nRow > ::ItemCount .OR. nCol < 1 .OR. nCol > Len( ::aHeaders )
       // Cell out of range
@@ -1787,12 +1859,15 @@ Local r, r2, lRet := .F., nWidth
    Else
       // Cell value
       If ValType( uOldValue ) == "U"
-         uValue := ::Cell( nRow, nCol )
+         uValue := uAux
       Else
          uValue := uOldValue
       EndIf
 
       // Determines control type
+      If ! HB_IsObject( EditControl ) .AND. ::FixControls() .AND. HB_IsArray( ::aEditControls ) .AND. Len( ::aEditControls ) >= nCol
+         EditControl := ::aEditControls[ nCol ]
+      EndIf
       EditControl := GetEditControlFromArray( EditControl, ::EditControls, nCol, Self )
       If HB_IsObject( EditControl )
          // EditControl specified
@@ -2356,9 +2431,9 @@ Local nColumn, aTemp, oEditControl
       ListViewSetItem( ::hWnd, aTemp, nItem )
    EndIf
    uValue := ListViewGetItem( ::hWnd, nItem, Len( ::aHeaders ) )
-   If HB_IsArray( ::EditControls )
+   If ::FixControls() .AND. HB_IsArray( ::aEditControls ) .and. Len( ::aEditControls ) >= Len( uValue )
       For nColumn := 1 To Len( uValue )
-         oEditControl := GetEditControlFromArray( Nil, ::EditControls, nColumn, Self )
+         oEditControl := ::aEditControls[ nColumn ]
          If HB_IsObject( oEditControl )
             If oEditControl:Type == "TGRIDCONTROLIMAGEDATA"
                // when the column has images, ListViewGetItem returns only the image's index number
@@ -2367,6 +2442,21 @@ Local nColumn, aTemp, oEditControl
             uValue[ nColumn ] := oEditControl:Str2Val( uValue[ nColumn ] )
          EndIf
       Next
+   Else
+      ::aEditControls := Array( Len( uValue ) )
+      If HB_IsArray( ::EditControls )
+         For nColumn := 1 To Len( uValue )
+            oEditControl := GetEditControlFromArray( Nil, ::EditControls, nColumn, Self )
+            ::aEditControls[ nColumn ] := oEditControl
+            If HB_IsObject( oEditControl )
+               If oEditControl:Type == "TGRIDCONTROLIMAGEDATA"
+                  // when the column has images, ListViewGetItem returns only the image's index number
+                  uValue[ nColumn ] := { ::CellCaption( nItem, nColumn ), ::CellImage( nItem, nColumn ) }
+               EndIf
+               uValue[ nColumn ] := oEditControl:Str2Val( uValue[ nColumn ] )
+            EndIf
+         Next
+      EndIf
    EndIf
 Return uValue
 
@@ -2375,17 +2465,33 @@ FUNCTION TGrid_SetArray( Self, uValue )
 *-----------------------------------------------------------------------------*
 Local aTemp, nColumn, xValue, oEditControl
    aTemp := Array( Len( uValue ) )
-   For nColumn := 1 To Len( uValue )
-      xValue := uValue[ nColumn ]
-      oEditControl := GetEditControlFromArray( Nil, ::EditControls, nColumn, Self )
-      If HB_IsObject( oEditControl )
-         aTemp[ nColumn ] := oEditControl:GridValue( xValue )
-      ElseIf ValType( ::Picture[ nColumn ] ) $ "CM"
-         aTemp[ nColumn ] := Trim( Transform( xValue, ::Picture[ nColumn ] ) )
-      Else
-         aTemp[ nColumn ] := xValue
-      EndIf
-   Next
+   If ::FixControls() .AND. HB_IsArray( ::aEditControls ) .AND. Len( ::aEditControls ) >= Len( uValue )
+      For nColumn := 1 To Len( uValue )
+         xValue := uValue[ nColumn ]
+         oEditControl := ::aEditControls[ nColumn ]
+         If HB_IsObject( oEditControl )
+            aTemp[ nColumn ] := oEditControl:GridValue( xValue )
+         ElseIf ValType( ::Picture[ nColumn ] ) $ "CM"
+            aTemp[ nColumn ] := Trim( Transform( xValue, ::Picture[ nColumn ] ) )
+         Else
+            aTemp[ nColumn ] := xValue
+         EndIf
+      Next
+   Else
+      ::aEditControls := Array( Len( uValue ) )
+      For nColumn := 1 To Len( uValue )
+         xValue := uValue[ nColumn ]
+         oEditControl := GetEditControlFromArray( Nil, ::EditControls, nColumn, Self )
+         ::aEditControls[ nColumn ] := oEditControl
+         If HB_IsObject( oEditControl )
+            aTemp[ nColumn ] := oEditControl:GridValue( xValue )
+         ElseIf ValType( ::Picture[ nColumn ] ) $ "CM"
+            aTemp[ nColumn ] := Trim( Transform( xValue, ::Picture[ nColumn ] ) )
+         Else
+            aTemp[ nColumn ] := xValue
+         EndIf
+      Next
+   EndIf
 Return aTemp
 
 *-----------------------------------------------------------------------------*
@@ -2729,7 +2835,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths, ;
                bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
                bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
-               bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal ) CLASS TGridMulti
+               bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
+               lFixedCtrls ) CLASS TGridMulti
 *-----------------------------------------------------------------------------*
 Local nStyle := 0
 
@@ -2746,7 +2853,8 @@ Local nStyle := 0
               lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths, ;
               bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
               bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
-              bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal )
+              bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
+              lFixedCtrls )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -2983,7 +3091,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths, ;
                bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
                bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
-               bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal ) CLASS TGridByCell
+               bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
+               lFixedCtrls ) CLASS TGridByCell
 *-----------------------------------------------------------------------------*
 Local nStyle := LVS_SINGLESEL
 
@@ -3002,7 +3111,8 @@ Local nStyle := LVS_SINGLESEL
               lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths, ;
               bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
               bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
-              bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal )
+              bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
+              lFixedCtrls )
 
    // By default, search in the current column
    ::SearchCol := 0
@@ -3765,7 +3875,11 @@ Return Nil
 *-----------------------------------------------------------------------------*
 FUNCTION EditControlLikeExcel( oGrid, nColumn )
 *-----------------------------------------------------------------------------*
-Local oEditControl := GetEditControlFromArray( Nil, oGrid:EditControls, nColumn, oGrid )
+Local oEditControl
+   If oGrid:FixControls() .AND. HB_IsArray( oGrid:aEditControls ) .AND. Len( oGrid:aEditControls ) >= nColumn
+      oEditControl := oGrid:aEditControls[ nColumn ]
+   EndIf
+   oEditControl := GetEditControlFromArray( oEditControl, oGrid:EditControls, nColumn, oGrid )
 Return HB_IsObject( oEditControl ) .AND. oEditControl:lLikeExcel
 
 *-----------------------------------------------------------------------------*
@@ -6693,3 +6807,9 @@ HB_FUNC( HB_MILLISECONDS )
 #endif
 
 #pragma ENDDUMP
+
+Function SetGridFixedControls( lValue )
+   IF valtype( lValue ) == "L"
+      _OOHG_GridFixedControls := lValue
+   ENDIF
+Return _OOHG_GridFixedControls
