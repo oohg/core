@@ -1,11 +1,17 @@
 /*
- * $Id: ChangeLog,v 1.1145 2013-09-08 23:49:46 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1146 2013-09-09 21:18:56 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-09-09 18:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_xbrowse.prg
+   * source/h_grid.prg
+     ! Column headers are not exported in methods ToExcel() and
+       ToOpenOffice().
 
 2013-09-08 20:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_checklist.prg

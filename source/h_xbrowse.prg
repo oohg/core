@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.93 2013-09-08 23:49:47 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.94 2013-09-09 21:18:57 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -747,13 +747,11 @@ Local oExcel, oSheet, nLin, i, cWorkArea, uValue
 
    nLin := 4
 
-   If nColFrom >= nColTo
-      For i := nColFrom To nColTo
-         oSheet:Cells( nLin, i - nColFrom + 1 ):Value := ::aHeaders[ i ]
-         oSheet:Cells( nLin, i - nColFrom + 1 ):Font:Bold := .T.
-      Next i
-      nLin += 2
-   EndIf
+   For i := nColFrom To nColTo
+      oSheet:Cells( nLin, i - nColFrom + 1 ):Value := ::aHeaders[ i ]
+      oSheet:Cells( nLin, i - nColFrom + 1 ):Font:Bold := .T.
+   Next i
+   nLin += 2
 
    cWorkArea := ::WorkArea
    If ValType( cWorkArea ) $ "CM" .AND. Empty( cWorkArea )
@@ -855,13 +853,11 @@ Local oSerMan, oDesk, oPropVals, oBook, oSheet, nLin, i, uValue, cWorkArea
    nLin := 4
 
    // put headers using bold style
-   If nColFrom >= nColTo
-      For i := nColFrom To nColTo
-         oSheet:GetCellByPosition( i - nColFrom, nLin - 1 ):SetString( ::aHeaders[ i ] )
-         oSheet:GetCellByPosition( i - nColFrom, nLin - 1 ):SetPropertyValue( "CharWeight", 150 )
-      Next i
-      nLin += 2
-   EndIf
+   For i := nColFrom To nColTo
+      oSheet:GetCellByPosition( i - nColFrom, nLin - 1 ):SetString( ::aHeaders[ i ] )
+      oSheet:GetCellByPosition( i - nColFrom, nLin - 1 ):SetPropertyValue( "CharWeight", 150 )
+   Next i
+   nLin += 2
 
    // put rows
    cWorkArea := ::WorkArea
