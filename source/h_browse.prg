@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.128 2013-09-08 23:49:46 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.129 2013-09-09 22:11:18 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -259,7 +259,22 @@ Local nWidth2, nCol2, oScroll, z
 
    ::WorkArea := WorkArea
 
-   ::FixBlocks( lFixedBlocks )
+   If ! HB_IsLogical( lFixedBlocks )
+      If _OOHG_BrowseFixedBlocks
+         ::aColumnBlocks := ARRAY( len( ::aFields ) )
+         AEVAL( ::aFields, { |c,i| ::aColumnBlocks[ i ] := ::ColumnBlock( i ), c } )
+      Else
+         ::aColumnBlocks := nil
+      EndIf
+      ::lFixedBlocks := Nil
+   ElseIf lFixedBlocks
+      ::aColumnBlocks := ARRAY( len( ::aFields ) )
+      AEVAL( ::aFields, { |c,i| ::aColumnBlocks[ i ] := ::ColumnBlock( i ), c } )
+      ::lFixedBlocks := .T.
+   Else
+      ::lFixedBlocks := .F.
+      ::aColumnBlocks := nil
+   EndIf
 
    ::aRecMap := {}
 
@@ -269,12 +284,12 @@ Local nWidth2, nCol2, oScroll, z
    oScroll:nWidth := GETVSCROLLBARWIDTH()
    oScroll:SetRange( 1, 1000 )
 
-   IF ::lRtl .AND. ! ::Parent:lRtl
+   If ::lRtl .AND. ! ::Parent:lRtl
       ::nCol := ::nCol + GETVSCROLLBARWIDTH()
       nCol2 := -GETVSCROLLBARWIDTH()
    Else
       nCol2 := nWidth2
-   ENDIF
+   EndIf
    oScroll:nCol := nCol2
 
    If IsWindowStyle( ::hWnd, WS_HSCROLL )

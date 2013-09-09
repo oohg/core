@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.94 2013-09-09 21:18:57 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.95 2013-09-09 22:11:18 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -227,7 +227,22 @@ Local nWidth2, nCol2, lLocked, oScroll, z
 
    ::nWidth := w
 
-   ::FixBlocks( lFixedBlocks )
+   If ! HB_IsLogical( lFixedBlocks )
+      If _OOHG_XBrowseFixedBlocks
+         ::aColumnBlocks := ARRAY( len( ::aFields ) )
+         AEVAL( ::aFields, { |c,i| ::aColumnBlocks[ i ] := ::ColumnBlock( i ), c } )
+      Else
+         ::aColumnBlocks := nil
+      EndIf
+      ::lFixedBlocks := Nil
+   ElseIf lFixedBlocks
+      ::aColumnBlocks := ARRAY( len( ::aFields ) )
+      AEVAL( ::aFields, { |c,i| ::aColumnBlocks[ i ] := ::ColumnBlock( i ), c } )
+      ::lFixedBlocks := .T.
+   Else
+      ::lFixedBlocks := .F.
+      ::aColumnBlocks := nil
+   EndIf
 
    ASSIGN ::Lock          VALUE lock          TYPE "L"
    ASSIGN ::aReplaceField VALUE replacefields TYPE "A"
