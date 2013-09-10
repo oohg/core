@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.129 2013-09-09 22:11:18 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.130 2013-09-10 01:42:10 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -117,11 +117,9 @@ CLASS TOBrowse FROM TXBrowse
    METHOD Value         SETGET
    METHOD RefreshData
    METHOD DoChange      BLOCK { |Self| ::TGrid:DoChange() }
-   METHOD FixBlocks     SETGET
    METHOD Events
    METHOD Events_Enter
    METHOD Events_Notify
-   METHOD FixControls   SETGET
    METHOD EditCell
    METHOD EditItem_B
    METHOD EditAllCells
@@ -169,14 +167,16 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
 *-----------------------------------------------------------------------------*
 Local nWidth2, nCol2, oScroll, z
 
-   ASSIGN ::aFields     VALUE aFields     TYPE "A"
-   ASSIGN ::aHeaders    VALUE aHeaders    TYPE "A" DEFAULT {}
-   ASSIGN ::aWidths     VALUE aWidths     TYPE "A" DEFAULT {}
-   ASSIGN ::aJust       VALUE aJust       TYPE "A" DEFAULT {}
-   ASSIGN ::lDescending VALUE lDescending TYPE "L"
-   ASSIGN ::SyncStatus  VALUE sync        TYPE "L" DEFAULT nil
-   ASSIGN ::lUpdateAll  VALUE lUpdateAll  TYPE "L"
-   ASSIGN ::lUpdCols    VALUE lUpdCols    TYPE "L"
+   ASSIGN ::aFields     VALUE aFields      TYPE "A"
+   ASSIGN ::aHeaders    VALUE aHeaders     TYPE "A" DEFAULT {}
+   ASSIGN ::aWidths     VALUE aWidths      TYPE "A" DEFAULT {}
+   ASSIGN ::aJust       VALUE aJust        TYPE "A" DEFAULT {}
+   ASSIGN ::lDescending VALUE lDescending  TYPE "L"
+   ASSIGN ::SyncStatus  VALUE sync         TYPE "L" DEFAULT nil
+   ASSIGN ::lUpdateAll  VALUE lUpdateAll   TYPE "L"
+   ASSIGN ::lUpdCols    VALUE lUpdCols     TYPE "L"
+   ASSIGN lFixedBlocks  VALUE lFixedBlocks TYPE "L" DEFAULT _OOHG_BrowseFixedBlocks
+   ASSIGN lFixedCtrls   VALUE lFixedCtrls  TYPE "L" DEFAULT _OOHG_BrowseFixedControls
 
    IF ValType( uRefresh ) == "N"
       IF uRefresh == 0 .OR. uRefresh == 1
@@ -259,22 +259,7 @@ Local nWidth2, nCol2, oScroll, z
 
    ::WorkArea := WorkArea
 
-   If ! HB_IsLogical( lFixedBlocks )
-      If _OOHG_BrowseFixedBlocks
-         ::aColumnBlocks := ARRAY( len( ::aFields ) )
-         AEVAL( ::aFields, { |c,i| ::aColumnBlocks[ i ] := ::ColumnBlock( i ), c } )
-      Else
-         ::aColumnBlocks := nil
-      EndIf
-      ::lFixedBlocks := Nil
-   ElseIf lFixedBlocks
-      ::aColumnBlocks := ARRAY( len( ::aFields ) )
-      AEVAL( ::aFields, { |c,i| ::aColumnBlocks[ i ] := ::ColumnBlock( i ), c } )
-      ::lFixedBlocks := .T.
-   Else
-      ::lFixedBlocks := .F.
-      ::aColumnBlocks := nil
-   EndIf
+   ::FixBlocks( lFixedBlocks )
 
    ::aRecMap := {}
 
@@ -338,61 +323,6 @@ Local nWidth2, nCol2, oScroll, z
    ASSIGN ::OnDelete    VALUE onDelete    TYPE "B"
 
 Return Self
-
-*-----------------------------------------------------------------------------*
-METHOD FixControls( lFix ) CLASS TOBrowse
-*-----------------------------------------------------------------------------*
-Local lFixedControls, i
-   If PCOUNT() > 0 .AND. HB_IsNil( lFix )
-      ::lFixedControls := Nil
-      lFixedControls := _OOHG_BrowseFixedControls
-   ElseIf HB_IsLogical( lFix )
-      If lFix
-         ::aEditControls := Array( Len( ::aHeaders ) )
-         For i := 1 to Len( ::aHeaders )
-            ::aEditControls[ i ] := GetEditControlFromArray( Nil, ::EditControls, i, Self )
-         Next i
-         ::lFixedControls := .T.
-         lFixedControls := .T.
-      Else
-         ::lFixedControls := .F.
-         lFixedControls := .F.
-      Endif
-   Else
-      If HB_IsNil( ::lFixedControls )
-         lFixedControls := _OOHG_BrowseFixedControls
-      Else
-         lFixedControls := ::lFixedControls
-      EndIf
-   EndIf
-Return lFixedControls
-
-*-----------------------------------------------------------------------------*
-METHOD FixBlocks( lFix ) CLASS TOBrowse
-*-----------------------------------------------------------------------------*
-Local lFixedBlocks
-   If PCOUNT() > 0 .AND. HB_IsNil( lFix )
-      ::lFixedBlocks := nil
-      lFixedBlocks := _OOHG_BrowseFixedBlocks
-   ElseIf HB_IsLogical( lFix )
-      If lFix
-         ::aColumnBlocks := ARRAY( len( ::aFields ) )
-         AEVAL( ::aFields, { |c,i| ::aColumnBlocks[ i ] := ::ColumnBlock( i ), c } )
-         ::lFixedBlocks := .T.
-         lFixedBlocks := .T.
-      Else
-         ::lFixedBlocks := .F.
-         ::aColumnBlocks := nil
-         lFixedBlocks := .F.
-      EndIf
-   Else
-      If HB_IsNil( ::lFixedBlocks )
-         lFixedBlocks := _OOHG_BrowseFixedBlocks
-      Else
-         lFixedBlocks := ::lFixedBlocks
-      EndIf
-   EndIf
-Return lFixedBlocks
 
 *-----------------------------------------------------------------------------*
 METHOD UpDate() CLASS TOBrowse

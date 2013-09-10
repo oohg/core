@@ -1,11 +1,47 @@
 /*
- * $Id: ChangeLog,v 1.1147 2013-09-09 22:11:18 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1148 2013-09-10 01:42:10 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-09-09 22:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     * Previous entries corrected.
+   * source/h_browse.prg
+     - Method FixBlocks().
+     - Method FixControls().
+     ! Method FixBlocks() was not working as intended.
+     ! Method FixControls() was not working as intended.
+     ! SET BROWSEFIXEDCONTROLS not working as intended.
+   * source/h_xbrowse.prg
+     - Method FixControls().
+     ! Method FixBlocks() was not working as intended.
+     ! Method FixControls() was not working as intended.
+     ! SET XBROWSEFIXEDCONTROLS not working as intended.
+     % Some unnecessary conditions.
+   * source/h_grid.prg
+     ! Method FixControls() was not working as intended.
+     ! SET GRIDFIXEDCONTROLS not working as intended.
+     % Some unnecessary conditions.
+   ; FIXEDCONTROLS clause prevents Grid, XBrowse and Browse objects
+     to use more than one TGridControlObject, thus improving
+     performance.
+   ; This clause has a drawback: you can't change an edit control by
+     simply doing ::EditControls[nCol] := <new edit control>.
+     To implement the change you must add a call to ::FixControls(.T.).
+   ; The Grid, XBrowse and Browse controls default behaviour is not
+     changed, it remains as if FIXEDCONTROLS is .F.
+     To create, from some point on, all controls with fixed/non-fixed
+     edit controls, use:
+     SET GRIDFIXEDCONTROLS ON | OFF for Grids, or
+     SET BROWSEFIXEDCONTROLS ON | OFF for Browses, or
+     SET XBROWSEFIXEDCONTROLS ON | OFF for XBrowses.
+   ; This sets don't change the behaviour of already defined objects.
+     To change the behaviour of an already defined object, use
+     FixControls( .T. | .F. ).
 
 2013-09-09 19:09 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_xbrowse.prg
@@ -63,16 +99,6 @@
      ! Support for DOUBLEBUFFER and SINGLEBUFFER clauses.
      ! Support for SYNCHRONIZED and UNSYNCHRONIZED clauses.
      * Minor formatting.
-   ; FIXEDCONTROLS clause prevents Grid, XBrowse and Browse objects
-     to use more than one TGridControlObject, thus improving
-     performance.
-   ; This clause has a drawback: you can't change an edit control by
-     simply doing ::EditControls[nCol] := <new edit control>.
-     To implement the change you must add a call to ::FixControls(.T.).
-   ; The control's default behaviour is not changed, it remains as
-     if SET FIXEDCONTROLS is OFF.
-     The global behaviour can be changed with the SET commands.
-     To change the behaviour of a single control use FixControls(.T.).
 
 2013-09-05 22:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
@@ -107,8 +133,11 @@
      + Function SetXBrowseFixedBlocks() to set XBROWSEFIXEDBLOCKS
        status globally.
      * INCOMPATIBLE: FIXEDBLOCKS is .T. by default.
-       To obtains previous behaviour use SET XBROWSEFIXEDBLOCKS OFF to
-       change globally or method FixBlocks(.F.) to change individually.
+     ; To obtains previous behaviour use SET XBROWSEFIXEDBLOCKS OFF
+       before creating the controls (this set doesn't change the
+       behaviour of already defined controls).
+       To change the behaviour of an already defined control, use
+       FixBlocks( .T. | .F. ).
    * source/h_browse.prg
      + Static var _OOHG_BrowseFixedBlocks.
      + ::FixBlocks() to support SET BROWSEFIXEDBLOCKS.
@@ -116,8 +145,11 @@
      + Function SetBrowseFixedBlocks() to set BROWSEFIXEDBLOCKS status
        globally.
      * INCOMPATIBLE: FIXEDBLOCKS is .T. by default.
-       To obtains previous behaviour use SET BROWSEFIXEDBLOCKS OFF to
-       change globally or method FixBlocks(.F.) to change individually.
+     ; To obtains previous behaviour use SET BROWSEFIXEDBLOCKS OFF
+       before creating the controls (this set doesn't change the
+       behaviour of already defined controls).
+       To change the behaviour of an already defined control, use
+       FixBlocks( .T. | .F. ).
    * source/h_combo.prg
      + Static var _OOHG_ComboRefresh.
      * Initial value of DATA lRefresh.

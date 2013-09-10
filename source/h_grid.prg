@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.221 2013-09-09 21:18:57 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.222 2013-09-10 01:42:10 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -414,6 +414,7 @@ Local ControlHandle, aImageList, i
    ASSIGN ::FullMove  VALUE FullMove TYPE "L"
    ASSIGN ::AllowEdit VALUE ::InPlace .OR. ( HB_IsLogical( editable ) .AND. editable ) TYPE "L"
 
+   ASSIGN lFixedCtrls VALUE lFixedCtrls TYPE "L" DEFAULT _OOHG_GridFixedControls
    ::FixControls( lFixedCtrls )
 
    // Load images alignments
@@ -476,30 +477,19 @@ Return Self
 *-----------------------------------------------------------------------------*
 METHOD FixControls( lFix ) CLASS TGrid
 *-----------------------------------------------------------------------------*
-Local lFixedControls, i
-   If PCOUNT() > 0 .AND. HB_IsNil( lFix )
-      ::lFixedControls := Nil
-      lFixedControls := _OOHG_GridFixedControls
-   ElseIf HB_IsLogical( lFix )
+Local i
+   If HB_IsLogical( lFix )
       If lFix
          ::aEditControls := Array( Len( ::aHeaders ) )
          For i := 1 to Len( ::aHeaders )
             ::aEditControls[ i ] := GetEditControlFromArray( Nil, ::EditControls, i, Self )
          Next i
          ::lFixedControls := .T.
-         lFixedControls := .T.
       Else
          ::lFixedControls := .F.
-         lFixedControls := .F.
       Endif
-   Else
-      If HB_IsNil( ::lFixedControls )
-         lFixedControls := _OOHG_GridFixedControls
-      Else
-         lFixedControls := ::lFixedControls
-      EndIf
    EndIf
-Return lFixedControls
+Return ::lFixedControls
 
 *-----------------------------------------------------------------------------*
 METHOD Append( lAppend ) CLASS TGrid
@@ -1064,7 +1054,7 @@ Local nItem, aItems, nColumn
    
    aItems := ::Item( nItem )
 
-   If ! ::FixControls() .OR. ! HB_IsArray( ::aEditControls ) .OR. Len( ::aEditControls ) < Len( aItems )
+   If ! ::FixControls()
       ::aEditControls := Array( Len( aItems ) )
       For nColumn := 1 To Len( ::aEditControls )
          ::aEditControls[ nColumn ] := GetEditControlFromArray( Nil, ::EditControls, nColumn, Self )
@@ -1134,7 +1124,7 @@ Local aReturn
    nRow := 0
    aEditControls2 := Array( l )
    For i := 1 To l
-      If ::FixControls() .AND. HB_IsArray( ::aEditControls ) .AND. Len( ::aEditControls ) >= i
+      If ::FixControls()
          oCtrl := ::aEditControls[ i ]
       Else
          oCtrl := Nil
@@ -1787,7 +1777,7 @@ Local lRet
       uOldValue := ::Cell( nRow, nCol )
    EndIf
 
-   If ! HB_IsObject( EditControl ) .AND. ::FixControls() .AND. HB_IsArray( ::aEditControls ) .AND. Len( ::aEditControls ) >= nCol
+   If ! HB_IsObject( EditControl ) .AND. ::FixControls()
       EditControl := ::aEditControls[ nCol ]
    EndIf
    EditControl := GetEditControlFromArray( EditControl, ::EditControls, nCol, Self )
@@ -1861,7 +1851,7 @@ Local r, r2, lRet := .F., nWidth, uAux
       EndIf
 
       // Determines control type
-      If ! HB_IsObject( EditControl ) .AND. ::FixControls() .AND. HB_IsArray( ::aEditControls ) .AND. Len( ::aEditControls ) >= nCol
+      If ! HB_IsObject( EditControl ) .AND. ::FixControls()
          EditControl := ::aEditControls[ nCol ]
       EndIf
       EditControl := GetEditControlFromArray( EditControl, ::EditControls, nCol, Self )
@@ -2427,7 +2417,7 @@ Local nColumn, aTemp, oEditControl
       ListViewSetItem( ::hWnd, aTemp, nItem )
    EndIf
    uValue := ListViewGetItem( ::hWnd, nItem, Len( ::aHeaders ) )
-   If ::FixControls() .AND. HB_IsArray( ::aEditControls ) .and. Len( ::aEditControls ) >= Len( uValue )
+   If ::FixControls()
       For nColumn := 1 To Len( uValue )
          oEditControl := ::aEditControls[ nColumn ]
          If HB_IsObject( oEditControl )
@@ -2461,7 +2451,7 @@ FUNCTION TGrid_SetArray( Self, uValue )
 *-----------------------------------------------------------------------------*
 Local aTemp, nColumn, xValue, oEditControl
    aTemp := Array( Len( uValue ) )
-   If ::FixControls() .AND. HB_IsArray( ::aEditControls ) .AND. Len( ::aEditControls ) >= Len( uValue )
+   If ::FixControls()
       For nColumn := 1 To Len( uValue )
          xValue := uValue[ nColumn ]
          oEditControl := ::aEditControls[ nColumn ]
@@ -3872,7 +3862,7 @@ Return Nil
 FUNCTION EditControlLikeExcel( oGrid, nColumn )
 *-----------------------------------------------------------------------------*
 Local oEditControl
-   If oGrid:FixControls() .AND. HB_IsArray( oGrid:aEditControls ) .AND. Len( oGrid:aEditControls ) >= nColumn
+   If oGrid:FixControls()
       oEditControl := oGrid:aEditControls[ nColumn ]
    EndIf
    oEditControl := GetEditControlFromArray( oEditControl, oGrid:EditControls, nColumn, oGrid )

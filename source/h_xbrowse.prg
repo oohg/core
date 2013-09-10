@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.95 2013-09-09 22:11:18 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.96 2013-09-10 01:42:11 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -93,7 +93,6 @@ CLASS TXBROWSE FROM TGrid
    METHOD Enabled          SETGET
    METHOD Visible          SETGET
    METHOD RefreshData
-   METHOD FixControls      SETGET
    METHOD Events
    METHOD Events_Notify
 
@@ -166,6 +165,8 @@ Local nWidth2, nCol2, lLocked, oScroll, z
    ASSIGN ::aWidths     VALUE aWidths     TYPE "A" DEFAULT {}
    ASSIGN ::aJust       VALUE aJust       TYPE "A" DEFAULT {}
    ASSIGN ::lDescending VALUE lDescending TYPE "L"
+   ASSIGN lFixedBlocks  VALUE lFixedBlocks TYPE "L" DEFAULT _OOHG_XBrowseFixedBlocks
+   ASSIGN lFixedCtrls   VALUE lFixedCtrls  TYPE "L" DEFAULT _OOHG_XBrowseFixedControls
 
    If ValType( columninfo ) == "A" .AND. LEN( columninfo ) > 0
       If ValType( ::aFields ) == "A"
@@ -227,22 +228,7 @@ Local nWidth2, nCol2, lLocked, oScroll, z
 
    ::nWidth := w
 
-   If ! HB_IsLogical( lFixedBlocks )
-      If _OOHG_XBrowseFixedBlocks
-         ::aColumnBlocks := ARRAY( len( ::aFields ) )
-         AEVAL( ::aFields, { |c,i| ::aColumnBlocks[ i ] := ::ColumnBlock( i ), c } )
-      Else
-         ::aColumnBlocks := nil
-      EndIf
-      ::lFixedBlocks := Nil
-   ElseIf lFixedBlocks
-      ::aColumnBlocks := ARRAY( len( ::aFields ) )
-      AEVAL( ::aFields, { |c,i| ::aColumnBlocks[ i ] := ::ColumnBlock( i ), c } )
-      ::lFixedBlocks := .T.
-   Else
-      ::lFixedBlocks := .F.
-      ::aColumnBlocks := nil
-   EndIf
+   ::FixBlocks( lFixedBlocks )
 
    ASSIGN ::Lock          VALUE lock          TYPE "L"
    ASSIGN ::aReplaceField VALUE replacefields TYPE "A"
@@ -314,59 +300,19 @@ Local nWidth2, nCol2, lLocked, oScroll, z
 Return Self
 
 *-----------------------------------------------------------------------------*
-METHOD FixControls( lFix ) CLASS TXBrowse
-*-----------------------------------------------------------------------------*
-Local lFixedControls, i
-   If PCOUNT() > 0 .AND. HB_IsNil( lFix )
-      ::lFixedControls := Nil
-      lFixedControls := _OOHG_XBrowseFixedControls
-   ElseIf HB_IsLogical( lFix )
-      If lFix
-         ::aEditControls := Array( Len( ::aHeaders ) )
-         For i := 1 to Len( ::aHeaders )
-            ::aEditControls[ i ] := GetEditControlFromArray( Nil, ::EditControls, i, Self )
-         Next i
-         ::lFixedControls := .T.
-         lFixedControls := .T.
-      Else
-         ::lFixedControls := .F.
-         lFixedControls := .F.
-      Endif
-   Else
-      If HB_IsNil( ::lFixedControls )
-         lFixedControls := _OOHG_XBrowseFixedControls
-      Else
-         lFixedControls := ::lFixedControls
-      EndIf
-   EndIf
-Return lFixedControls
-
-*-----------------------------------------------------------------------------*
 METHOD FixBlocks( lFix ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
-Local lFixedBlocks
-   If PCOUNT() > 0 .AND. HB_IsNil( lFix )
-      ::lFixedBlocks := nil
-      lFixedBlocks := _OOHG_XBrowseFixedBlocks
-   ElseIf HB_IsLogical( lFix )
+   If HB_IsLogical( lFix )
       If lFix
          ::aColumnBlocks := ARRAY( len( ::aFields ) )
          AEVAL( ::aFields, { |c,i| ::aColumnBlocks[ i ] := ::ColumnBlock( i ), c } )
          ::lFixedBlocks := .T.
-         lFixedBlocks := .T.
       Else
          ::lFixedBlocks := .F.
          ::aColumnBlocks := nil
-         lFixedBlocks := .F.
-      EndIf
-   Else
-      If HB_IsNil( ::lFixedBlocks )
-         lFixedBlocks := _OOHG_XBrowseFixedBlocks
-      Else
-         lFixedBlocks := ::lFixedBlocks
       EndIf
    EndIf
-Return lFixedBlocks
+Return ::lFixedBlocks
 
 *-----------------------------------------------------------------------------*
 METHOD Refresh( nCurrent, lNoEmptyBottom ) CLASS TXBrowse
@@ -463,7 +409,7 @@ Local bRet
    cValue := ::aFields[ nCol ]
    bRet := nil
    If ! lDirect
-      If ::FixControls() .AND. HB_IsArray( ::aEditControls ) .AND. Len( ::aEditControls ) >= nCol
+      If ::FixControls()
          oEditControl := ::aEditControls[ nCol ]
       EndIf
       oEditControl := GetEditControlFromArray( oEditControl, ::EditControls, nCol, Self )
@@ -1676,7 +1622,7 @@ Local cField, cArea, nPos, aStruct
    EndIf
 
    // Determines control type
-   If ! HB_IsObject( EditControl ) .AND. ::FixControls() .AND. HB_IsArray( ::aEditControls ) .AND. Len( ::aEditControls ) >= nCol
+   If ! HB_IsObject( EditControl ) .AND. ::FixControls()
       EditControl := ::aEditControls[ nCol ]
    EndIf
    EditControl := GetEditControlFromArray( EditControl, ::EditControls, nCol, Self )
