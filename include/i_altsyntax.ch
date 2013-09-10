@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.95 2013-09-08 23:49:46 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.96 2013-09-10 22:50:57 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -457,6 +457,14 @@ Memvariables
         _OOHG_ActiveControlEditControls := <editcontrols>
 
 #xcommand EDITCELL <editcell> ;
+        => ;
+        _OOHG_ActiveControlEditCell := <editcell>
+
+#xcommand ONEDITCELL <editcell> ;
+        => ;
+        _OOHG_ActiveControlEditCell := <editcell>
+
+#xcommand ON EDITCELL <editcell> ;
         => ;
         _OOHG_ActiveControlEditCell := <editcell>
 
@@ -2191,6 +2199,10 @@ GRID
         _OOHG_ActiveControlDynamicCtrls     := Nil
 
 #xcommand ONAPPEND <onappend> ;
+        => ;
+        _OOHG_ActiveControlOnAppend := <onappend>
+
+#xcommand ON APPEND <onappend> ;
         => ;
         _OOHG_ActiveControlOnAppend := <onappend>
 

@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.96 2013-09-10 01:42:11 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.97 2013-09-10 22:50:57 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1346,7 +1346,7 @@ Local aItems, aMemVars, aReplaceFields
    EndIf
 
    aItems := ARRAY( Len( ::aHeaders ) )
-   If ! ::lStaticControl .OR. ! HB_IsArray( ::aEditControls ) .OR. Len( ::aEditControls ) < Len( aItems )
+   If ! ::FixControls()
       ::aEditControls := ARRAY( Len( aItems ) )
    EndIf
    aMemVars := ARRAY( Len( aItems ) )
@@ -1358,7 +1358,9 @@ Local aItems, aMemVars, aReplaceFields
          uOldValue := AllTrim( uOldValue )
       EndIf
       // MixedFields??? If field is from other workarea...
-      ::aEditControls[ z ] := oEditControl
+      If ! ::FixControls()
+         ::aEditControls[ z ] := oEditControl
+      EndIf
       aItems[ z ] := uOldValue
       aMemVars[ z ] := cMemVar
       aReplaceFields[ z ] := bReplaceField
