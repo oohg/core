@@ -1,11 +1,17 @@
 /*
- * $Id: ChangeLog,v 1.1149 2013-09-10 22:50:57 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1150 2013-09-11 22:52:39 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-09-11 19:52 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_grid.prg
+     - Unneeded code.
+     ! TGridControlComboBox display a blank cell when valuesource
+       contains trailing blanks.
 
 2013-09-10 19:51 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_altsyntax.ch

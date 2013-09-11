@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.222 2013-09-10 01:42:10 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.223 2013-09-11 22:52:40 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -4772,9 +4772,6 @@ Local cValueSource, cWorkArea, cField, nRecno, aIt, aVa, uValue
             If ! ValType( uValue ) == ::cRetValType
                MsgOOHGError( "GridControl: ValueSource/RetVal type mismatch. Program Terminated." )
             EndIf
-            If ValType( uValue ) $ "CM"
-               uValue := Trim( uValue )
-            EndIf
          EndIf
          AADD( aVa, uValue )
          ( cWorkArea )->( DBSkip() )
@@ -4782,9 +4779,6 @@ Local cValueSource, cWorkArea, cField, nRecno, aIt, aVa, uValue
       ( cWorkArea )->( DBGoTo( nRecno ) )
       ::aItems := aIt
       ::aValues := aVa
-      ::cField := cField
-      ::cWorkArea := cWorkArea
-      ::cValueSource := cValueSource
    EndIf
 Return Nil
 
