@@ -1,5 +1,5 @@
 /*
- * $Id: h_graph.prg,v 1.10 2012-05-20 20:32:54 fyurisich Exp $
+ * $Id: h_graph.prg,v 1.11 2013-09-12 23:09:33 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1118,71 +1118,87 @@ Local oWnd := GetFormObject( window )
       Case cumulative[ i ] <= 45
          toradialcol := middlerightcol
          toradialrow := middlerightrow - Round( cumulative[ i ] / 45 * ( middlerightrow - toprightrow ), 0 )
-         DrawPie( window, fromrow, fromcol, torow, tocol, fromradialrow, fromradialcol, toradialrow, toradialcol, , , colors[ i ] )
-         fromradialrow := toradialrow
-         fromradialcol := toradialcol
+         If fromradialrow # toradialrow .OR. fromradialcol # toradialcol
+            DrawPie( window, fromrow, fromcol, torow, tocol, fromradialrow, fromradialcol, toradialrow, toradialcol, , , colors[ i ] )
+            fromradialrow := toradialrow
+            fromradialcol := toradialcol
+         EndIf
       Case cumulative[ i ] <= 90 .and. cumulative[ i ] > 45
          toradialrow := toprightrow
          toradialcol := toprightcol - Round( ( cumulative[ i ] - 45 ) / 45 * ( toprightcol - middletopcol ), 0 )
-         DrawPie( window, fromrow, fromcol, torow, tocol, fromradialrow, fromradialcol, toradialrow, toradialcol, , , colors[ i ] )
-         fromradialrow := toradialrow
-         fromradialcol := toradialcol
+         If fromradialrow # toradialrow .OR. fromradialcol # toradialcol
+            DrawPie( window, fromrow, fromcol, torow, tocol, fromradialrow, fromradialcol, toradialrow, toradialcol, , , colors[ i ] )
+            fromradialrow := toradialrow
+            fromradialcol := toradialcol
+         EndIf
       Case cumulative[ i ] <= 135 .and. cumulative[ i ] > 90
          toradialrow := topleftrow
          toradialcol := middletopcol - Round( ( cumulative[ i ] - 90 ) / 45 * ( middletopcol - topleftcol ), 0 )
-         DrawPie( window, fromrow, fromcol, torow, tocol, fromradialrow, fromradialcol, toradialrow, toradialcol, , , colors[ i ] )
-         fromradialrow := toradialrow
-         fromradialcol := toradialcol
+         If fromradialrow # toradialrow .OR. fromradialcol # toradialcol
+            DrawPie( window, fromrow, fromcol, torow, tocol, fromradialrow, fromradialcol, toradialrow, toradialcol, , , colors[ i ] )
+            fromradialrow := toradialrow
+            fromradialcol := toradialcol
+         EndIf
       Case cumulative[ i ] <= 180 .and. cumulative[ i ] > 135
          toradialcol := topleftcol
          toradialrow := topleftrow + Round( ( cumulative[ i ] - 135 ) / 45 * ( middleleftrow - topleftrow ), 0 )
-         DrawPie( window, fromrow, fromcol, torow, tocol, fromradialrow, fromradialcol, toradialrow, toradialcol, , , colors[ i ] )
-         fromradialrow := toradialrow
-         fromradialcol := toradialcol
+         If fromradialrow # toradialrow .OR. fromradialcol # toradialcol
+            DrawPie( window, fromrow, fromcol, torow, tocol, fromradialrow, fromradialcol, toradialrow, toradialcol, , , colors[ i ] )
+            fromradialrow := toradialrow
+            fromradialcol := toradialcol
+         Endif
       Case cumulative[ i ] <= 225 .and. cumulative[ i ] > 180
          toradialcol := topleftcol
          toradialrow := middleleftrow + Round( ( cumulative[ i ] - 180 ) / 45 * ( bottomleftrow - middleleftrow ), 0 )
-         If l3d
-            For j := 1 To depth
-               DrawArc( window, fromrow + j, fromcol, torow + j, tocol, fromradialrow + j, fromradialcol, toradialrow + j, toradialcol, shadowcolor )
-            Next j
+         If fromradialrow # toradialrow .OR. fromradialcol # toradialcol
+            If l3d
+               For j := 1 To depth
+                  DrawArc( window, fromrow + j, fromcol, torow + j, tocol, fromradialrow + j, fromradialcol, toradialrow + j, toradialcol, shadowcolor )
+               Next j
+            EndIf
+            DrawPie( window, fromrow, fromcol, torow, tocol, fromradialrow, fromradialcol, toradialrow, toradialcol, , , colors[ i ] )
+            fromradialrow := toradialrow
+            fromradialcol := toradialcol
          EndIf
-         DrawPie( window, fromrow, fromcol, torow, tocol, fromradialrow, fromradialcol, toradialrow, toradialcol, , , colors[ i ] )
-         fromradialrow := toradialrow
-         fromradialcol := toradialcol
       Case cumulative[ i ] <= 270 .and. cumulative[ i ] > 225
          toradialrow := bottomleftrow
          toradialcol := bottomleftcol + Round( ( cumulative[ i ] - 225 ) / 45 * ( middlebottomcol - bottomleftcol ), 0 )
-         If l3d
-            For j := 1 To depth
-               DrawArc( window, fromrow + j, fromcol, torow + j, tocol, fromradialrow + j, fromradialcol, toradialrow + j, toradialcol, shadowcolor )
-            Next j
+         If fromradialrow # toradialrow .OR. fromradialcol # toradialcol
+            If l3d
+               For j := 1 To depth
+                  DrawArc( window, fromrow + j, fromcol, torow + j, tocol, fromradialrow + j, fromradialcol, toradialrow + j, toradialcol, shadowcolor )
+               Next j
+            EndIf
+            DrawPie( window, fromrow, fromcol, torow, tocol, fromradialrow, fromradialcol, toradialrow, toradialcol, , , colors[ i ] )
+            fromradialrow := toradialrow
+            fromradialcol := toradialcol
          EndIf
-         DrawPie( window, fromrow, fromcol, torow, tocol, fromradialrow, fromradialcol, toradialrow, toradialcol, , , colors[ i ] )
-         fromradialrow := toradialrow
-         fromradialcol := toradialcol
       Case cumulative[ i ] <= 315 .and. cumulative[ i ] > 270
          toradialrow := bottomleftrow
          toradialcol := middlebottomcol + Round( ( cumulative[ i ] - 270 ) / 45 * ( bottomrightcol - middlebottomcol ), 0 )
-         If l3d
-            For j := 1 To depth
-               DrawArc( window, fromrow + j, fromcol, torow + j, tocol, fromradialrow + j, fromradialcol, toradialrow + j, toradialcol, shadowcolor )
-            Next j
+         If fromradialrow # toradialrow .OR. fromradialcol # toradialcol
+            If l3d
+               For j := 1 To depth
+                  DrawArc( window, fromrow + j, fromcol, torow + j, tocol, fromradialrow + j, fromradialcol, toradialrow + j, toradialcol, shadowcolor )
+               Next j
+            EndIf
+            DrawPie( window, fromrow, fromcol, torow, tocol, fromradialrow, fromradialcol, toradialrow, toradialcol, , , colors[ i ] )
+            fromradialrow := toradialrow
+            fromradialcol := toradialcol
          EndIf
-         DrawPie( window, fromrow, fromcol, torow, tocol, fromradialrow, fromradialcol, toradialrow, toradialcol, , , colors[ i ] )
-         fromradialrow := toradialrow
-         fromradialcol := toradialcol
       Case cumulative[ i ] <= 360 .and. cumulative[ i ] > 315
          toradialcol := bottomrightcol
          toradialrow := bottomrightrow - round( ( cumulative[ i ] - 315 ) / 45 * ( bottomrightrow - middlerightrow ), 0 )
-         If l3d
-            For j := 1 To depth
-               DrawArc( window, fromrow + j, fromcol, torow + j, tocol, fromradialrow + j, fromradialcol, toradialrow + j, toradialcol, shadowcolor )
-            Next j
+         If fromradialrow # toradialrow .OR. fromradialcol # toradialcol
+            If l3d
+               For j := 1 To depth
+                  DrawArc( window, fromrow + j, fromcol, torow + j, tocol, fromradialrow + j, fromradialcol, toradialrow + j, toradialcol, shadowcolor )
+               Next j
+            EndIf
+            DrawPie( window, fromrow, fromcol, torow, tocol, fromradialrow, fromradialcol, toradialrow, toradialcol, , , colors[ i ] )
+            fromradialrow := toradialrow
+            fromradialcol := toradialcol
          EndIf
-         DrawPie( window, fromrow, fromcol, torow, tocol, fromradialrow, fromradialcol, toradialrow, toradialcol, , , colors[ i ] )
-         fromradialrow := toradialrow
-         fromradialcol := toradialcol
       EndCase
       If l3d
          DrawLine( window, middleleftrow, middleleftcol, middleleftrow + depth, middleleftcol )
