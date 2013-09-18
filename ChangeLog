@@ -1,11 +1,19 @@
 /*
- * $Id: ChangeLog,v 1.1151 2013-09-12 23:09:33 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1152 2013-09-18 21:37:40 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-09-18 18:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_altsyntax.ch
+     ! RTE when no FIXEDCONTROLS clause nor DYNAMICCONTROLS clause
+       is used in DEFINE/END GRID/BROWSE/XBROWSE.
+     ! RTE when no FIXEDBLOCKS clause nor DYNAMICBLOCKS clause
+       is used in DEFINE/END BROWSE/XBROWSE.
+     + Added UNSYNCHRONIZED clause.
 
 2013-09-12 20:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_graph.prg

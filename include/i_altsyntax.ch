@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.96 2013-09-10 22:50:57 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.97 2013-09-18 21:37:40 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -2195,8 +2195,8 @@ GRID
         _OOHG_ActiveControlNoDeleteMsg      := .F. ;;
         _OOHG_ActiveControlAppendable       := .F. ;;
         _OOHG_ActiveControlNoModalEdit      := .F. ;;
-        _OOHG_ActiveControlFixedCtrls       := Nil ;;
-        _OOHG_ActiveControlDynamicCtrls     := Nil
+        _OOHG_ActiveControlFixedCtrls       := .F. ;;
+        _OOHG_ActiveControlDynamicCtrls     := .F.
 
 #xcommand ONAPPEND <onappend> ;
         => ;
@@ -2433,15 +2433,16 @@ BROWSE
         _OOHG_ActiveControlPaintLeftMargin  := .F. ;;
         _OOHG_ActiveControlFocusRect        := .F. ;;
         _OOHG_ActiveControlNoFocusRect      := .F. ;;
-        _OOHG_ActiveControlSynchronized     := Nil ;;
+        _OOHG_ActiveControlSynchronized     := .F. ;;
+        _OOHG_ActiveControlUnSynchronized   := .F. ;;
         _OOHG_ActiveControlFixedCols        := .F. ;;
         _OOHG_ActiveControlNoDeleteMsg      := .F. ;;
         _OOHG_ActiveControlUpdateAll        := .F. ;;
         _OOHG_ActiveControlAbortEdit        := Nil ;;
         _OOHG_ActiveControlAction           := Nil ;;
         _OOHG_ActiveControlFixedWidths      := .F. ;;
-        _OOHG_ActiveControlFixedBlocks      := Nil ;;
-        _OOHG_ActiveControlDynamicBlocks    := Nil ;;
+        _OOHG_ActiveControlFixedBlocks      := .F. ;;
+        _OOHG_ActiveControlDynamicBlocks    := .F. ;;
         _OOHG_ActiveControlBeforeColMove    := Nil ;;
         _OOHG_ActiveControlAfterColMove     := Nil ;;
         _OOHG_ActiveControlBeforeColSize    := Nil ;;
@@ -2450,8 +2451,8 @@ BROWSE
         _OOHG_ActiveControlEditLikeExcel    := Nil ;;
         _OOHG_ActiveControlUseButtons       := Nil ;;
         _OOHG_ActiveControlUpdateColors     := Nil ;;
-        _OOHG_ActiveControlFixedCtrls       := Nil ;;
-        _OOHG_ActiveControlDynamicCtrls     := Nil
+        _OOHG_ActiveControlFixedCtrls       := .F. ;;
+        _OOHG_ActiveControlDynamicCtrls     := .F.
 
 #xcommand DELETEWHEN <delwhen> ;
         => ;
@@ -2492,6 +2493,10 @@ BROWSE
 #xcommand SYNCHRONIZED <sync> ;
         => ;
         _OOHG_ActiveControlSynchronized := <sync>
+
+#xcommand UNSYNCHRONIZED <sync> ;
+        => ;
+        _OOHG_ActiveControlUnSynchronized := <sync>
 
 #xcommand NODELETEMSG <nodeletemsg> ;
         => ;
@@ -2657,8 +2662,8 @@ XBROWSE
         _OOHG_ActiveControlAbortEdit        := Nil ;;
         _OOHG_ActiveControlAction           := Nil ;;
         _OOHG_ActiveControlFixedWidths      := .F. ;;
-        _OOHG_ActiveControlFixedBlocks      := Nil ;;
-        _OOHG_ActiveControlDynamicBlocks    := Nil ;;
+        _OOHG_ActiveControlFixedBlocks      := .F. ;;
+        _OOHG_ActiveControlDynamicBlocks    := .F. ;;
         _OOHG_ActiveControlBeforeColMove    := Nil ;;
         _OOHG_ActiveControlAfterColMove     := Nil ;;
         _OOHG_ActiveControlBeforeColSize    := Nil ;;
@@ -2667,8 +2672,8 @@ XBROWSE
         _OOHG_ActiveControlEditLikeExcel    := Nil ;;
         _OOHG_ActiveControlUseButtons       := Nil ;;
         _OOHG_ActiveControlNoDeleteMsg      := .F. ;;
-        _OOHG_ActiveControlFixedCtrls       := Nil ;;
-        _OOHG_ActiveControlDynamicCtrls     := Nil
+        _OOHG_ActiveControlFixedCtrls       := .F. ;;
+        _OOHG_ActiveControlDynamicCtrls     := .F.
 
 #xcommand END XBROWSE ;
         => ;
