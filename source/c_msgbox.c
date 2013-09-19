@@ -1,5 +1,5 @@
 /*
- * $Id: c_msgbox.c,v 1.6 2013-07-03 01:44:52 migsoft Exp $
+ * $Id: c_msgbox.c,v 1.7 2013-09-19 20:35:36 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -248,4 +248,20 @@ HB_FUNC( C_MSGEXCLAMATION )
    }
 
    MessageBox( GetActiveWindow(), hb_parc( 1 ), hb_parc( 2 ), MB_ICONEXCLAMATION | MB_OK | uType );
+}
+
+HB_FUNC( C_MSGEXCLAMATIONYESNO )
+{
+   int uType;
+
+   if( HB_ISNIL( 3 ) )
+   {
+      uType = MB_SYSTEMMODAL;
+   }
+   else
+   {
+      uType = hb_parni( 3 );
+   }
+
+   hb_retni( MessageBox( GetActiveWindow(), hb_parc( 1 ), hb_parc( 2 ), MB_YESNO | MB_ICONEXCLAMATION | uType ) );
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: h_msgbox.prg,v 1.14 2011-11-16 22:59:57 fyurisich Exp $
+ * $Id: h_msgbox.prg,v 1.15 2013-09-19 20:35:36 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -224,6 +224,20 @@ Function MsgExclamation( Message, Title, Mode )
    c_msgexclamation( Message, Title, Mode )
 
 Return Nil
+
+
+*-----------------------------------------------------------------------------*
+Function MsgExclamationYesNo( Message, Title, Mode )
+*-----------------------------------------------------------------------------*
+Local t
+
+   DEFAULT Message TO _OOHG_MsgDefaultMessage
+   DEFAULT Title TO _OOHG_MsgDefaultTitle
+   DEFAULT Mode to _OOHG_MsgDefaultMode
+
+   t := c_msgexclamationyesno( Message, Title, Mode )
+
+Return ( t == 6 )
 
 
 *-----------------------------------------------------------------------------*
