@@ -1,5 +1,5 @@
 /*
- * $Id: c_image.c,v 1.31 2013-05-25 20:30:11 fyurisich Exp $
+ * $Id: c_image.c,v 1.32 2013-09-23 02:22:07 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -598,6 +598,24 @@ HB_FUNC( _OOHG_SIZEOFBITMAPFROMFILE )   // ( cFile )
          }
          DestroyIcon( hIcon );
       }
+   }
+
+   hb_reta( 3 );
+   HB_STORNI( bm.bmWidth, -1, 1 );
+   HB_STORNI( bm.bmHeight, -1, 2 );
+   HB_STORNI( bm.bmBitsPixel, -1, 3 );
+}
+
+HB_FUNC( _OOHG_SIZEOFHBITMAP )   // ( hBitmap )
+{
+   HBITMAP hBitmap = ( HBITMAP ) HWNDparam( 1 );
+   BITMAP bm;
+
+   memset( &bm, 0, sizeof( bm ) );
+
+   if( hBitmap )
+   {
+      GetObject( hBitmap, sizeof( bm ), &bm );
    }
 
    hb_reta( 3 );

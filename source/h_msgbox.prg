@@ -1,5 +1,5 @@
 /*
- * $Id: h_msgbox.prg,v 1.15 2013-09-19 20:35:36 fyurisich Exp $
+ * $Id: h_msgbox.prg,v 1.16 2013-09-23 02:22:07 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -94,10 +94,22 @@
 #include 'oohg.ch'
 #include 'i_windefs.ch'
 
+static _OOHG_OneItemPerLine := .F.
 static _OOHG_MsgDefaultMessage := ''
 static _OOHG_MsgDefaultTitle := ''
 static _OOHG_MsgDefaultMode := Nil
 // Nil = MB_SYSTEMMODAL, other values MB_APPLMODAL and MB_TASKMODAL
+
+
+*-----------------------------------------------------------------------------*
+Function SetOneArrayItemPerLine( lSet )
+*-----------------------------------------------------------------------------*
+
+   IF HB_IsLogical( lSet )
+      _OOHG_OneItemPerLine := lSet
+   ENDIF
+
+Return _OOHG_OneItemPerLine
 
 
 *-----------------------------------------------------------------------------*
@@ -219,7 +231,7 @@ Function MsgExclamation( Message, Title, Mode )
 
    DEFAULT Message TO _OOHG_MsgDefaultMessage
    DEFAULT Title TO _OOHG_MsgDefaultTitle
-   DEFAULT Mode to _OOHG_MsgDefaultMode
+   DEFAULT Mode TO _OOHG_MsgDefaultMode
 
    c_msgexclamation( Message, Title, Mode )
 
@@ -233,7 +245,7 @@ Local t
 
    DEFAULT Message TO _OOHG_MsgDefaultMessage
    DEFAULT Title TO _OOHG_MsgDefaultTitle
-   DEFAULT Mode to _OOHG_MsgDefaultMode
+   DEFAULT Mode TO _OOHG_MsgDefaultMode
 
    t := c_msgexclamationyesno( Message, Title, Mode )
 
@@ -357,33 +369,37 @@ Return Nil
 *-----------------------------------------------------------------------------*
 Function autoType( Message )
 *-----------------------------------------------------------------------------*
-Local cMessage, ctype, l, i
+Local cMessage, cType, l, i
 
-   ctype := valtype( Message )
+   cType := valtype( Message )
 
    do case
-      case ctype $ "CNLDM"
-         cMessage :=  transform( Message, "@" )+"  "         //// cvc
-      case cType = "O"
-         cMessage :=  Message:ClassName()+ " :Object: "       //// cvc
-      case ctype = "A"
-         l:=len( Message )
-         cMessage:=""
-         for i:=1 to l
-             cMessage = cMessage +  if ( i=l, autoType( Message [ i ] )+chr(13)+chr(10), autoType( Message[ i ] ) )    /// cvc
-         next i
-      case ctype = "B"
-         cMessage := "{|| Codeblock }   "
-      case cType = "H"
-         cMessage := ":Hash:   "
-      case cType = "P"
-   #IFDEF __XHARBOUR__
-        cMessage :=  Ltrim( Hb_ValToStr( Message )) + " HexToNum()=> " + LTrim( Str( HexToNum( SubStr( Hb_ValToStr( Message ), 3 ) ) ) )  /// cvc
-   #ELSE
-        cMessage :=  Ltrim( Hb_ValToStr( Message )) + " Hb_HexToNum()=> " + LTrim( Str( Hb_HexToNum( SubStr( Hb_ValToStr( Message ), 3 ) ) ) )    ///cvc
-   #ENDIF
-      otherwise
-         cMessage :="<NIL>   "
+   case cType $ "CNLDM"
+      cMessage := transform( Message, "@" ) + "   "
+   case cType = "O"
+      cMessage := Message:ClassName() + " :Object:   "
+   case cType = "A"
+      l := len( Message )
+      cMessage := ""
+      for i := 1 to l
+         if _OOHG_OneItemPerLine
+            cMessage := cMessage + iif( i = l, autoType( Message[ i ] ), autoType( Message[ i ] ) + chr( 13 ) + chr( 10 ) )
+         else
+            cMessage := cMessage + iif( i = l, autoType( Message[ i ] ) + chr( 13 ) + chr( 10 ), autoType( Message[ i ] ) + "   " )
+         endif
+      next i
+   case cType = "B"
+      cMessage := "{|| Codeblock }   "
+   case cType = "H"
+      cMessage := ":Hash:   "
+   case cType = "P"
+      #ifdef __XHARBOUR__
+         cMessage :=  ltrim( Hb_ValToStr( Message )) + " HexToNum()=> " + ltrim( str( HexToNum( substr( Hb_ValToStr( Message ), 3 ) ) ) )
+      #else
+         cMessage :=  ltrim( Hb_ValToStr( Message )) + " Hb_HexToNum()=> " + ltrim( str( Hb_HexToNum( substr( Hb_ValToStr( Message ), 3 ) ) ) )
+      #endif
+   otherwise
+      cMessage := "<NIL>   "
    endcase
 
 Return cMessage

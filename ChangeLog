@@ -1,11 +1,46 @@
 /*
- * $Id: ChangeLog,v 1.1153 2013-09-19 20:35:35 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1154 2013-09-23 02:22:07 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-09-22 23:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/c_image.c
+     + Function _OOHG_SIZEOFHBITMAP.
+   * source/h_msgbox.prg
+     + Static _OOHG_OneItemPerLine.
+     + Function SetOneArrayItemPerLine, when .T. function AutoType
+       will show items in separated lines.
+     * Function AutoType.
+     * Minor formatting.
+   + source/c_gdiplus.c
+     + Support for saving a BMP as JPEG, PNG and TIFF.
+       Borrowed from HMG Extended Gdiplus sample.
+   * source/common_make.bat
+   * source/makelib_mingw.bat
+   * source/oohg.hbp
+     + c_gdiplus.c
+   * source/h_pdf.prg
+     ; TODO: fix RTE when printing a file containing a TIFF file.
+   * source/h_windows.prg
+     + Support for JPEG, PNG and TIFF formats in methods SaveAs
+       and Print.
+     ; Use SaveAs( cFile, lAll, cType, nQuality ).
+       Use Print( nFRow, nFCol, nTRow, nTCol, lAll, cType, nQuality ).
+       nFRow == from row.
+       nFCol == from col.
+       nTRow == to row.
+       nTCol == to col.
+       cFile == name of the file to create.
+       lAll == .T. to save the whole window, .F. to save the
+               windows's client area only.
+       cType == "BMP", "JPG", "JPEG", "TIF", "TIFF" or "PNG".
+       nQuality == for JPEG format only, a value from 0 (lowest)
+                   to 100 (highest). For TIFF format only, a 0 to
+                   save uncompressed or a 1 to save using LZW.
 
 2013-09-19 17:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_msgbox.prg

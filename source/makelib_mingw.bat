@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: makelib_mingw.bat,v 1.32 2013-08-22 22:25:08 fyurisich Exp $
+rem $Id: makelib_mingw.bat,v 1.33 2013-09-23 02:22:07 fyurisich Exp $
 rem
 cls
 
@@ -65,7 +65,7 @@ rem *** Build Libraries ***
 if errorlevel 2 goto EXIT3
 %HG_MINGW%\bin\ar rc %HG_ROOT%\%LIB_GUI%\liboohg.a h_windows.o h_form.o c_windows.o h_crypt.o h_winapimisc.o h_slider.o c_controlmisc.o c_dialogs.o c_image.o c_msgbox.o c_progressbar.o c_winapimisc.o h_button.o h_checkbox.o h_combo.o h_controlmisc.o h_datepicker.o h_editbox.o h_dialogs.o h_grid.o h_image.o h_label.o h_listbox.o h_menu.o h_msgbox.o h_frame.o h_progressbar.o h_radio.o h_spinner.o h_tab.o h_textbox.o h_timer.o h_registry.o h_internal.o h_dll.o h_checklist.o
 if errorlevel 2 goto EXIT3
-%HG_MINGW%\bin\ar rc %HG_ROOT%\%LIB_GUI%\liboohg.a h_xbrowse.o h_activex.o c_activex.o h_textarray.o h_picture.o  h_hotkeybox.o
+%HG_MINGW%\bin\ar rc %HG_ROOT%\%LIB_GUI%\liboohg.a h_xbrowse.o h_activex.o c_activex.o h_textarray.o h_picture.o h_hotkeybox.o c_gdiplus.o
 if errorlevel 2 goto EXIT3
 if exist winprint.o  %HG_MINGW%\bin\ar rc %HG_ROOT%\%LIB_GUI%\libhbprinter.a winprint.o
 if errorlevel 2 goto EXIT3

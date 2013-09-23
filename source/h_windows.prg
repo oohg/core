@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.247 2013-08-01 01:27:11 fyurisich Exp $
+ * $Id: h_windows.prg,v 1.248 2013-09-23 02:22:07 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1076,20 +1076,36 @@ METHOD RefreshData() CLASS TWindow
 Return nil
 
 *-----------------------------------------------------------------------------*
-METHOD Print( y, x, y1, x1 ) CLASS TWindow
+METHOD Print( y, x, y1, x1, lAll, cType, nQuality ) CLASS TWindow
 *-----------------------------------------------------------------------------*
-Local myobject, cWork
-   cWork := '_oohg_t' + alltrim( str( int( hb_random( 999999 ) ) ) ) + '.bmp'
-   do while file( cWork )
-      cWork := '_oohg_t' + alltrim( str( int( hb_random( 999999 ) ) ) ) + '.bmp'
-   enddo
+Local myobject, cWork, cExt
+   If ValType( cType ) $ "CM"
+     cType := Upper( cType )
+   Else
+     cType := "BMP"
+   EndIf
+   If cType == "BMP"
+      cExt := ".bmp"
+   ElseIf cType == "JPEG" .OR. cType == "JPG"
+      cExt := ".jpg"
+   ElseIf cType == "GIF"
+      cExt := ".gif"
+   ElseIf cType == "TIFF" .OR. cType == "TIF"
+      cExt := ".tif"
+   ElseIf cType == "PNG"
+      cExt := ".png"
+   EndIf
+   cWork := '_oohg_t' + alltrim( str( int( hb_random( 999999 ) ) ) ) + cExt
+   Do While file( cWork )
+      cWork := '_oohg_t' + alltrim( str( int( hb_random( 999999 ) ) ) ) + cExt
+   EndDo
 
-   DEFAULT y1    TO 44
-   DEFAULT x1    TO 110
+   DEFAULT y1   TO 44
+   DEFAULT x1   TO 110
    DEFAULT x    TO 1
    DEFAULT y    TO 1
 
-   ::SaveAs( cWork ) //// save as BMP
+   ::SaveAs( cWork, lAll, cType, nQuality ) //// save as BMP by default
 
    myobject := Tprint()
    
@@ -1110,12 +1126,39 @@ Local myobject, cWork
 return nil
 
 *-----------------------------------------------------------------------------*
-METHOD SaveAs( cFile, lAll ) CLASS TWindow
+METHOD SaveAs( cFile, lAll, cType, nQuality ) CLASS TWindow
 *-----------------------------------------------------------------------------*
-Local hBitMap
+Local hBitMap, aSize
+   If ValType( cType ) $ "CM"
+     cType := Upper( cType )
+   Else
+     cType := "BMP"
+   EndIf
    bringwindowtotop( ::hWnd )
    hBitMap := ::GetBitMap( lAll )
-   _SaveBitmap( hBitMap, cFile )
+   aSize := _OOHG_SizeOfHBitmap( hBitMap )
+   If cType == "BMP"
+      _SaveBitmap( hBitMap, cFile )
+   Else
+      If gPlusInit()
+         If cType == "JPEG" .OR. cType == "JPG"
+            If ValType( nQuality ) != "N" .OR. nQuality < 0 .OR. nQuality > 100
+              nQuality := 100
+            EndIf
+            gPlusSaveHBitmapToFile( hBitMap, cFile, aSize[1], aSize[2], "image/jpeg", nQuality )
+         ElseIf cType == "GIF"
+            gPlusSaveHBitmapToFile( hBitMap, cFile, aSize[1], aSize[2], "image/gif", 100 )
+         ElseIf cType == "TIFF" .OR. cType == "TIF"
+            If ValType( nQuality ) != "N" .OR. nQuality < 0 .OR. nQuality > 1
+              nQuality := 1
+            EndIf
+            gPlusSaveHBitmapToFile( hBitMap, cFile, aSize[1], aSize[2], "image/tiff", nQuality )
+         ElseIf cType == "PNG"
+            gPlusSaveHBitmapToFile( hBitMap, cFile, aSize[1], aSize[2], "image/png", 100 )
+         EndIf
+         gPlusDeInit()
+      EndIf
+   EndIf
    DeleteObject( hBitMap )
 return nil
 

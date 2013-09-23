@@ -1,5 +1,5 @@
 /*
-* $Id: h_pdf.prg,v 1.8 2011-09-07 19:06:17 fyurisich Exp $
+* $Id: h_pdf.prg,v 1.9 2013-09-23 02:22:07 fyurisich Exp $
 */
 //컴컴컴컴컴컴컴컴컴컴컴컴�\\
 //
@@ -4406,16 +4406,16 @@ local nWidth := 0, nHeight := 0, nBits := 0, nFrom := 0, nLength := 0, xRes := 0
 
    nHandle := fopen( cFile )
 
-   c2 := '  '
+   c2 := space(2)
    fread( nHandle, @c2, 2 )
    fread( nHandle, @c2, 2 )
 
-   cIFDNext := ''
+   cIFDNext := space(4)
    fread( nHandle, @cIFDNext, 4 )
 
-   cTemp  := space(12)
+   cTemp := space(12)
 
-   while cIFDNext <> c40 //read IFD's
+   while ! ( cIFDNext == c40 )               //read IFD's
 
       nIFD := bin2l( cIFDNext )
 
