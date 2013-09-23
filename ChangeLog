@@ -1,11 +1,17 @@
 /*
- * $Id: ChangeLog,v 1.1154 2013-09-23 02:22:07 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1155 2013-09-23 23:04:04 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-09-23 20:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   + source/c_gdiplus.c
+     * Missing in previous commit.
+   * ./Changelog
+     * Previous entry corrected.
 
 2013-09-22 23:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/c_image.c
@@ -24,7 +30,7 @@
    * source/oohg.hbp
      + c_gdiplus.c
    * source/h_pdf.prg
-     ; TODO: fix RTE when printing a file containing a TIFF file.
+     ; TODO: TIFF files are not shown correctly.
    * source/h_windows.prg
      + Support for JPEG, PNG and TIFF formats in methods SaveAs
        and Print.
