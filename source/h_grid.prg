@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.223 2013-09-11 22:52:40 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.224 2013-09-24 00:11:22 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -118,7 +118,7 @@ CLASS TGrid FROM TControl
    DATA FullMove               INIT .F.
    DATA EditControls           INIT Nil
    DATA aEditControls          INIT Nil
-   DATA lFixedControls         INIT Nil
+   DATA lFixedControls         INIT .F.
    DATA ReadOnly               INIT Nil
    DATA Valid                  INIT Nil
    DATA ValidMessages          INIT Nil

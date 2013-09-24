@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.97 2013-09-10 22:50:57 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.98 2013-09-24 00:11:23 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -79,7 +79,7 @@ CLASS TXBROWSE FROM TGrid
    DATA VScrollCopy       INIT nil
    DATA lVscrollVisible   INIT .F.
    DATA aColumnBlocks     INIT nil
-   DATA lFixedBlocks      INIT nil
+   DATA lFixedBlocks      INIT .F.
 
    METHOD Define
    METHOD Refresh
@@ -211,6 +211,8 @@ Local nWidth2, nCol2, lLocked, oScroll, z
    ASSIGN novscroll VALUE novscroll TYPE "L" DEFAULT .F.
    nWidth2 := if( novscroll, w, w - GETVSCROLLBARWIDTH() )
 
+   ::FixBlocks( lFixedBlocks )
+
    ::Define2( ControlName, ParentForm, x, y, nWidth2, h, ::aHeaders, aWidths, ;
               , , fontname, fontsize, tooltip, , , ;
               aHeadClick, , , nogrid, aImage, ::aJust, ;
@@ -227,8 +229,6 @@ Local nWidth2, nCol2, lLocked, oScroll, z
               AllowAppend, , , lFixedCtrls )
 
    ::nWidth := w
-
-   ::FixBlocks( lFixedBlocks )
 
    ASSIGN ::Lock          VALUE lock          TYPE "L"
    ASSIGN ::aReplaceField VALUE replacefields TYPE "A"
