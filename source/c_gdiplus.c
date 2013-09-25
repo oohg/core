@@ -1,5 +1,5 @@
 /*
- * $Id: c_gdiplus.c,v 1.1 2013-09-23 23:04:04 fyurisich Exp $
+ * $Id: c_gdiplus.c,v 1.2 2013-09-25 23:12:03 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -233,6 +233,30 @@ static HB_GARBAGE_FUNC( hb_gPlusImage_Destructor )
    }
 }
 
+#ifdef __XHARBOUR__
+
+static gPlusImagePtr hb_pargPlusImage( int iParam )
+{
+   gPlusImagePtr * imPtr =
+   ( gPlusImagePtr * ) hb_parptrGC( &hb_gPlusImage_Destructor, iParam );
+
+   if( imPtr )
+      return * imPtr;
+   else
+      return NULL;
+}
+
+static void hb_retgPlusImage( gPlusImagePtr image )
+{
+   gPlusImagePtr * imPtr;
+
+   imPtr = ( gPlusImagePtr * ) hb_gcAlloc( sizeof( gPlusImagePtr ), &hb_gPlusImage_Destructor );
+   * imPtr = image;
+   hb_retptrGC( ( void * ) imPtr );
+}
+
+#else
+
 static const HB_GC_FUNCS s_gcPlusImageFuncs =
 {
    hb_gPlusImage_Destructor,
@@ -259,6 +283,8 @@ static void hb_retgPlusImage( gPlusImagePtr image )
    * imPtr = image;
    hb_retptrGC( ( void * ) imPtr );
 }
+
+#endif
 
 /*
 Load and unload library

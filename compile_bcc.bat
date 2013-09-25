@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: compile_bcc.bat,v 1.9 2013-08-22 22:25:02 fyurisich Exp $
+rem $Id: compile_bcc.bat,v 1.10 2013-09-25 23:12:03 fyurisich Exp $
 rem
 cls
 
@@ -67,51 +67,51 @@ echo %1.map, + >> b32.bc
 echo %HG_ROOT%\%LIB_GUI%\oohg.lib + >> b32.bc
 
 rem *** Compiler Libraries ***
-for %%a in (rtl vm %HG_USE_GT% lang codepage macro rdd dbfntx dbfcdx dbffpt common debug pp) do echo %HG_HRB%\%BIN_HRB%\%%a.lib + >> b32.bc
+for %%a in (rtl vm %HG_USE_GT% lang codepage macro rdd dbfntx dbfcdx dbffpt common debug pp) do echo %HG_HRB%\%LIB_HRB%\%%a.lib + >> b32.bc
 
 rem *** Harbour-dependant Libraries ***
-if exist %HG_HRB%\%BIN_HRB%\dbfdbt.lib     echo %HG_HRB%\%BIN_HRB%\dbfdbt.lib + >> b32.bc
-if exist %HG_HRB%\%BIN_HRB%\hbsix.lib      echo %HG_HRB%\%BIN_HRB%\hbsix.lib + >> b32.bc
-if exist %HG_HRB%\%BIN_HRB%\tip.lib        echo %HG_HRB%\%BIN_HRB%\tip.lib + >> b32.bc
-if exist %HG_HRB%\%BIN_HRB%\ct.lib         echo %HG_HRB%\%BIN_HRB%\ct.lib + >> b32.bc
-if exist %HG_HRB%\%BIN_HRB%\hsx.lib        echo %HG_HRB%\%BIN_HRB%\hsx.lib + >> b32.bc
-if exist %HG_HRB%\%BIN_HRB%\pcrepos.lib    echo %HG_HRB%\%BIN_HRB%\pcrepos.lib + >> b32.bc
+if exist %HG_HRB%\%LIB_HRB%\dbfdbt.lib     echo %HG_HRB%\%LIB_HRB%\dbfdbt.lib + >> b32.bc
+if exist %HG_HRB%\%LIB_HRB%\hbsix.lib      echo %HG_HRB%\%LIB_HRB%\hbsix.lib + >> b32.bc
+if exist %HG_HRB%\%LIB_HRB%\tip.lib        echo %HG_HRB%\%LIB_HRB%\tip.lib + >> b32.bc
+if exist %HG_HRB%\%LIB_HRB%\ct.lib         echo %HG_HRB%\%LIB_HRB%\ct.lib + >> b32.bc
+if exist %HG_HRB%\%LIB_HRB%\hsx.lib        echo %HG_HRB%\%LIB_HRB%\hsx.lib + >> b32.bc
+if exist %HG_HRB%\%LIB_HRB%\pcrepos.lib    echo %HG_HRB%\%LIB_HRB%\pcrepos.lib + >> b32.bc
 
 rem *** Additional Libraries ***
-if exist %HG_HRB%\%BIN_HRB%\libct.lib      echo %HG_HRB%\%BIN_HRB%\libct.lib + >> b32.bc
-if exist %HG_HRB%\%BIN_HRB%\libmisc.lib    echo %HG_HRB%\%BIN_HRB%\libmisc.lib + >> b32.bc
-if exist %HG_HRB%\%BIN_HRB%\hboleaut.lib   echo %HG_HRB%\%BIN_HRB%\hboleaut.lib + >> b32.bc
-if exist %HG_HRB%\%BIN_HRB%\dll.lib        echo %HG_HRB%\%BIN_HRB%\dll.lib + >> b32.bc
+if exist %HG_HRB%\%LIB_HRB%\libct.lib      echo %HG_HRB%\%LIB_HRB%\libct.lib + >> b32.bc
+if exist %HG_HRB%\%LIB_HRB%\libmisc.lib    echo %HG_HRB%\%LIB_HRB%\libmisc.lib + >> b32.bc
+if exist %HG_HRB%\%LIB_HRB%\hboleaut.lib   echo %HG_HRB%\%LIB_HRB%\hboleaut.lib + >> b32.bc
+if exist %HG_HRB%\%LIB_HRB%\dll.lib        echo %HG_HRB%\%LIB_HRB%\dll.lib + >> b32.bc
 
 rem *** "Related" Libraries ***
-if exist %HG_HRB%\%BIN_HRB%\socket.lib     echo %HG_HRB%\%BIN_HRB%\socket.lib + >> b32.bc
+if exist %HG_HRB%\%LIB_HRB%\socket.lib     echo %HG_HRB%\%LIB_HRB%\socket.lib + >> b32.bc
 if exist %HG_ROOT%\%LIB_GUI%\socket.lib    echo %HG_ROOT%\%LIB_GUI%\socket.lib + >> b32.bc
 if exist %HG_ROOT%\%LIB_GUI%\hbprinter.lib echo %HG_ROOT%\%LIB_GUI%\hbprinter.lib + >> b32.bc
 if exist %HG_ROOT%\%LIB_GUI%\miniprint.lib echo %HG_ROOT%\%LIB_GUI%\miniprint.lib + >> b32.bc
 
 rem *** ODBC Libraries ***
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/o" echo %HG_HRB%\%BIN_HRB%\hbodbc.lib + >> b32.bc
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/o" echo %HG_HRB%\%BIN_HRB%\odbc32.lib + >> b32.bc
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/O" echo %HG_HRB%\%BIN_HRB%\hbodbc.lib + >> b32.bc
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/O" echo %HG_HRB%\%BIN_HRB%\odbc32.lib + >> b32.bc
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/o" echo %HG_HRB%\%LIB_HRB%\hbodbc.lib + >> b32.bc
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/o" echo %HG_HRB%\%LIB_HRB%\odbc32.lib + >> b32.bc
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/O" echo %HG_HRB%\%LIB_HRB%\hbodbc.lib + >> b32.bc
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/O" echo %HG_HRB%\%LIB_HRB%\odbc32.lib + >> b32.bc
 
 rem *** ZIP Libraries ***
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/z" echo %HG_HRB%\%BIN_HRB%\zlib1.lib + >> b32.bc
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/z" echo %HG_HRB%\%BIN_HRB%\ziparchive.lib + >> b32.bc
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/Z" echo %HG_HRB%\%BIN_HRB%\zlib1.lib + >> b32.bc
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/Z" echo %HG_HRB%\%BIN_HRB%\ziparchive.lib + >> b32.bc
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/z" echo %HG_HRB%\%LIB_HRB%\zlib1.lib + >> b32.bc
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/z" echo %HG_HRB%\%LIB_HRB%\ziparchive.lib + >> b32.bc
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/Z" echo %HG_HRB%\%LIB_HRB%\zlib1.lib + >> b32.bc
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/Z" echo %HG_HRB%\%LIB_HRB%\ziparchive.lib + >> b32.bc
 
 rem *** ADS Libraries ***
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/a" echo %HG_HRB%\%BIN_HRB%\rddads.lib + >> b32.bc
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/a" echo %HG_HRB%\%BIN_HRB%\ace32.lib + >> b32.bc
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/A" echo %HG_HRB%\%BIN_HRB%\rddads.lib + >> b32.bc
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/A" echo %HG_HRB%\%BIN_HRB%\ace32.lib + >> b32.bc
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/a" echo %HG_HRB%\%LIB_HRB%\rddads.lib + >> b32.bc
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/a" echo %HG_HRB%\%LIB_HRB%\ace32.lib + >> b32.bc
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/A" echo %HG_HRB%\%LIB_HRB%\rddads.lib + >> b32.bc
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/A" echo %HG_HRB%\%LIB_HRB%\ace32.lib + >> b32.bc
 
 rem *** MySql Libraries ***
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/m" echo %HG_HRB%\%BIN_HRB%\mysql.lib + >> b32.bc
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/m" echo %HG_HRB%\%BIN_HRB%\libmysqldll.lib + >> b32.bc
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/M" echo %HG_HRB%\%BIN_HRB%\mysql.lib + >> b32.bc
-for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/M" echo %HG_HRB%\%BIN_HRB%\libmysqldll.lib + >> b32.bc
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/m" echo %HG_HRB%\%LIB_HRB%\mysql.lib + >> b32.bc
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/m" echo %HG_HRB%\%LIB_HRB%\libmysqldll.lib + >> b32.bc
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/M" echo %HG_HRB%\%LIB_HRB%\mysql.lib + >> b32.bc
+for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if "%%a"=="/M" echo %HG_HRB%\%LIB_HRB%\libmysqldll.lib + >> b32.bc
 
 rem *** BCC-dependant Libraries ***
 echo cw32.lib + >> b32.bc
