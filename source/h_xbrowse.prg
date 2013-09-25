@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.98 2013-09-24 00:11:23 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.99 2013-09-25 00:03:45 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -211,8 +211,6 @@ Local nWidth2, nCol2, lLocked, oScroll, z
    ASSIGN novscroll VALUE novscroll TYPE "L" DEFAULT .F.
    nWidth2 := if( novscroll, w, w - GETVSCROLLBARWIDTH() )
 
-   ::FixBlocks( lFixedBlocks )
-
    ::Define2( ControlName, ParentForm, x, y, nWidth2, h, ::aHeaders, aWidths, ;
               , , fontname, fontsize, tooltip, , , ;
               aHeadClick, , , nogrid, aImage, ::aJust, ;
@@ -227,6 +225,8 @@ Local nWidth2, nCol2, lLocked, oScroll, z
               bAfterColMove, bBeforeColSize, bAfterColSize, bBeforeAutofit, ;
               lLikeExcel, lButtons, AllowDelete, , , DelMsg, lNoDelMsg, ;
               AllowAppend, , , lFixedCtrls )
+
+   ::FixBlocks( lFixedBlocks )
 
    ::nWidth := w
 

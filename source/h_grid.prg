@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.224 2013-09-24 00:11:22 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.225 2013-09-25 00:03:45 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -355,6 +355,11 @@ Local ControlHandle, aImageList, i
    ASSIGN ::DelMsg      VALUE DelMsg      TYPE "C"
    ASSIGN ::lNoModal    VALUE lNoModal    TYPE "L" DEFAULT .F.
 
+   /* This must be placed before calling ::Register because when the
+      control is an XBrowse, ::Register will call ::ColumnBlock and
+      this method needs ::EditControls */
+   ::EditControls := editcontrols
+
    If ::lCheckBoxes .AND. ::lPLM
       MsgOOHGError( "CHECKBOXES and PAINTLEFTMARGIN clauses can't be used simultaneously. Program Terminated." )
    EndIf
@@ -406,7 +411,6 @@ Local ControlHandle, aImageList, i
    ::Valid := valid
    ::ValidMessages := validmessages
    ::aEditKeys := aEditKeys
-   ::EditControls := editcontrols
    ::OnEditCell := editcell
    ::OnAbortEdit := abortedit
    ::aWhen := aWhenFields
