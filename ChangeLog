@@ -1,11 +1,18 @@
 /*
- * $Id: ChangeLog,v 1.1158 2013-09-25 23:12:03 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1159 2013-09-28 02:38:32 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-09-27 23:39 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_grid.prg
+     ! Current cell is not shown when scrolling a TGridByCell using
+       the right arrow.
+     ! The edition window of a TGridByCell acts "independently".
+     ! Edit controls with inputmask behave oddly.
 
 2013-09-25 20:11 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    + source/c_gdiplus.c

@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.225 2013-09-25 00:03:45 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.226 2013-09-28 02:38:32 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -3175,6 +3175,8 @@ Return aSelectedColors
 *-----------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TGridByCell
 *-----------------------------------------------------------------------------*
+Local r, r2, nWidth
+
    If HB_IsArray( uValue ) .AND. Len( uValue ) > 1 .AND. HB_IsNumeric( uValue[ 1 ] ) .AND. HB_IsNumeric( uValue[ 2 ] )
       If uValue[ 1 ] < 1 .OR. uValue[ 1 ] > ::ItemCount .OR. uValue[ 2 ] < 1 .OR. uValue[ 2 ] > Len( ::aHeaders )
          ::nRowPos := 0
@@ -3184,9 +3186,26 @@ METHOD Value( uValue ) CLASS TGridByCell
          ::nColPos := uValue[ 2 ]
       EndIf
 
+      // Ensure cell is visible
       ListView_SetCursel( ::hWnd, ::nRowPos )
-      ListView_EnsureVisible( ::hWnd, ::nRowPos )
+      r := { 0, 0, 0, 0 }                                        // left, top, right, bottom
+      GetClientRect( ::hWnd, r )
+      nWidth := r[ 3 ] - r[ 1 ]
+      r2 := { 0, 0, 0, 0 }
+      GetWindowRect( ::hWnd, r2 )
+      If ! OSisWinXPorLater() .or. ! ListView_IsItemVisible( ::hWnd, ::nRowPos )
+         ListView_EnsureVisible( ::hWnd, ::nRowPos )
+      EndIf
+      r := ListView_GetSubitemRect( ::hWnd, ::nRowPos - 1, ::nColPos - 1 ) // top, left, width, height
+      r[ 3 ] := ListView_GetColumnWidth( ::hWnd, ::nColPos - 1 )
+      If r[ 2 ] + r[ 3 ] + GetVScrollBarWidth() > nWidth
+         ListView_Scroll( ::hWnd, ( r[ 2 ] + r[ 3 ] + GetVScrollBarWidth() - nWidth ), 0 )
+      EndIf
+      If r[ 2 ] < 0
+         ListView_Scroll( ::hWnd, r[ 2 ], 0 )
+      EndIf
       ListView_RedrawItems( ::hWnd, ::nRowPos, ::nRowPos )
+
       ::DoChange()
    EndIf
 RETURN { ::nRowPos, ::nColPos }
@@ -4246,7 +4265,7 @@ Local lRet := .F., i, nSize
        If HB_IsObject( ::oGrid ) .AND. ::oGrid:InPlace .AND. ( ::lNoModal .OR. ::oGrid:lNoModal )
           DEFINE WINDOW _oohg_gridwn OBJ ::oWindow ;
              AT nRow, nCol WIDTH nWidth HEIGHT nHeight ;
-             NOSIZE NOCAPTION ;
+             CHILD NOSIZE NOCAPTION ;
              FONT cFontName SIZE nFontSize ;
              ON INIT ( ::onLostFocus := { || ::oGrid:bPosition := 9, lRet := ::Valid() } )
        Else
@@ -4412,7 +4431,7 @@ Local lRet := .F., i
        If HB_IsObject( ::oGrid ) .AND. ::oGrid:InPlace .AND. ( ::lNoModal .OR. ::oGrid:lNoModal )
           DEFINE WINDOW _oohg_gridwn OBJ ::oWindow ;
              AT nRow - 3, nCol - 3 WIDTH nWidth + 6 HEIGHT nHeight + 6 ;
-             NOSIZE NOCAPTION ;
+             CHILD NOSIZE NOCAPTION ;
              FONT cFontName SIZE nFontSize ;
              ON INIT ( ::onLostFocus := { || ::oGrid:bPosition := 9, lRet := ::Valid() } )
        Else
@@ -4492,7 +4511,7 @@ METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGrid
    EndIf
    If ! Empty( ::cMask )
       If ::lButtons .OR. ( HB_IsObject( ::oGrid ) .AND. ::oGrid:lButtons )
-        @ nRow,nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue INPUTMASK ::cMask FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bCancel ) ACTION2 EVAL( ::bOK ) IMAGE {::cImageCancel, ::cImageOk} ON LOSTFOCUS ( ::oGrid:bPosition := 9, EVAL( ::bOk ) )
+        @ nRow,nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue INPUTMASK ::cMask FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bCancel ) ACTION2 EVAL( ::bOK ) IMAGE {::cImageCancel, ::cImageOk}
       Else
         @ nRow,nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue INPUTMASK ::cMask FOCUSEDPOS ::nOnFocusPos
       EndIf
