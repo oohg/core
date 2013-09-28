@@ -1,5 +1,5 @@
 /*
- * $Id: i_image.ch,v 1.10 2011-11-04 00:51:19 fyurisich Exp $
+ * $Id: i_image.ch,v 1.11 2013-09-28 16:26:18 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -112,12 +112,16 @@
          [ TOOLTIP <tooltip> ] ;
          [ <border: BORDER> ] ;
          [ <clientedge: CLIENTEDGE> ] ;
- =>;
+         [ <notrans: NOTRANSPARENT> ] ;
+         [ <no3dcolors: NO3DCOLORS> ] ;
+         [ <nodib: NODIBSECTION> ] ;
+=>;
          [ <obj> := ] _OOHG_SelectSubClass( TImage(), [ <subclass>() ] ): ;
                         Define( <(name)>, <(parent)>, <col>, <row>, <filename>, <w>, <h>, ;
                         <{action}>, <helpid>, <.invisible.>, <.stretch.>, ;
                         <.whitebackground.>, <.rtl.>, <backcolor>, <buffer>, <hbitmap>, ;
-                        ! <.noresize.>, <.imagesize.>, <tooltip>, <.border.>, <.clientedge.> )
+                        ! <.noresize.>, <.imagesize.>, <tooltip>, <.border.>, <.clientedge.>, ;
+                        <.notrans.>, <.no3dcolors.>, <.nodib.>)
 
 /*
 #command @ <row>,<col> IMAGE <name> ;

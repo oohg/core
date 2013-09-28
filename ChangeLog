@@ -1,11 +1,29 @@
 /*
- * $Id: ChangeLog,v 1.1159 2013-09-28 02:38:32 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1160 2013-09-28 16:26:17 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-09-28 13:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_hmg_compat.ch
+   * include/i_altsyntax.ch
+   * include/i_button.ch
+   * include/i_image.ch
+   * source/h_button.ch
+   * source/h_image.ch
+     + DIBSECTION clause to Button, ButtonCheck and ButtonEx controls.
+     + NOTRANSPARENT, NO3DCOLORS and NODIBSECTION clauses to Image
+       controls.
+     ; This clauses improve image support.
+   * source/h_print.prg
+     ! Printer icon shows wrong background.
+   * source/miniprint.prg
+   * include/miniprint.ch
+     ! Pages after 9999 are not shown in preview.
+     + "Wait while closing" window.
 
 2013-09-27 23:39 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg

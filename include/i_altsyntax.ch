@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.97 2013-09-18 21:37:40 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.98 2013-09-28 16:26:17 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -122,6 +122,7 @@ Memvariables
 #xtranslate _OOHG_ActiveControlTrailingFontColor      => _OOHG_ActiveControlInfo \[  25 \]
 #xtranslate _OOHG_ActiveControlBackgroundColor        => _OOHG_ActiveControlInfo \[  26 \]
 
+#xtranslate _OOHG_ActiveControlNoDIBSection           => _OOHG_ActiveControlInfo \[ 100 \]
 #xtranslate _OOHG_ActiveControlUnSynchronized         => _OOHG_ActiveControlInfo \[ 101 \]
 #xtranslate _OOHG_ActiveControlFixedCtrls             => _OOHG_ActiveControlInfo \[ 102 \]
 #xtranslate _OOHG_ActiveControlDynamicCtrls           => _OOHG_ActiveControlInfo \[ 103 \]
@@ -1294,22 +1295,23 @@ BUTTON
 #xcommand DEFINE BUTTON <name> ;
         => ;
         _OOHG_ClearActiveControlInfo( <(name)> ) ;;
-        _OOHG_ActiveControlCaption     := Nil    ;;
-        _OOHG_ActiveControlAction      := Nil    ;;
-        _OOHG_ActiveControlFlat        := .F.    ;;
-        _OOHG_ActiveControlPicture     := Nil    ;;
-        _OOHG_ActiveControlTransparent := .T.    ;;
-        _OOHG_ActiveControlNoPrefix    := .F.    ;;
-        _OOHG_ActiveControlBuffer      := Nil    ;;
-        _OOHG_ActiveControlHBitmap     := Nil    ;;
-        _OOHG_ActiveControlScale       := .F.    ;;
-        _OOHG_ActiveControlCancel      := .F.    ;;
-        _OOHG_ActiveControlAlignment   := Nil    ;;
-        _OOHG_ActiveControlMultiLine   := .F.    ;;
-        _OOHG_ActiveControlThemed      := .F.    ;;
-        _OOHG_ActiveControlImageMargin := Nil    ;;
-        _OOHG_ActiveControlNo3DColors  := .F.    ;;
-        _OOHG_ActiveControlAutoFit     := .F.
+        _OOHG_ActiveControlCaption      := Nil    ;;
+        _OOHG_ActiveControlAction       := Nil    ;;
+        _OOHG_ActiveControlFlat         := .F.    ;;
+        _OOHG_ActiveControlPicture      := Nil    ;;
+        _OOHG_ActiveControlTransparent  := .T.    ;;
+        _OOHG_ActiveControlNoPrefix     := .F.    ;;
+        _OOHG_ActiveControlBuffer       := Nil    ;;
+        _OOHG_ActiveControlHBitmap      := Nil    ;;
+        _OOHG_ActiveControlScale        := .F.    ;;
+        _OOHG_ActiveControlCancel       := .F.    ;;
+        _OOHG_ActiveControlAlignment    := Nil    ;;
+        _OOHG_ActiveControlMultiLine    := .F.    ;;
+        _OOHG_ActiveControlThemed       := .F.    ;;
+        _OOHG_ActiveControlImageMargin  := Nil    ;;
+        _OOHG_ActiveControlNo3DColors   := .F.    ;;
+        _OOHG_ActiveControlAutoFit      := .F.    ;;
+        _OOHG_ActiveControlNoDIBSection := .T.
 
 #xcommand CAPTION <caption> ;
         => ;
@@ -1411,6 +1413,10 @@ BUTTON
         => ;
         _OOHG_ActiveControlAutoFit := <autofit>
 
+#xcommand DIBSECTION <dibsection> ;
+        => ;
+        _OOHG_ActiveControlNoDIBSection := ! <dibsection>
+
 #xcommand END BUTTON ;
         => ;
         _OOHG_SelectSubClass( TButton(), _OOHG_ActiveControlSubClass, _OOHG_ActiveControlAssignObject ):Define( ;
@@ -1450,7 +1456,8 @@ BUTTON
                 _OOHG_ActiveControlImageMargin, ;
                 _OOHG_ActiveControlOnMouseMove, ;
                 _OOHG_ActiveControlNo3DColors, ;
-                _OOHG_ActiveControlAutoFit )
+                _OOHG_ActiveControlAutoFit, ;
+                _OOHG_ActiveControlNoDIBSection )
 
 /*----------------------------------------------------------------------------
 IMAGE
@@ -1468,7 +1475,8 @@ IMAGE
         _OOHG_ActiveControlImagesize       := .F. ;;
         _OOHG_ActiveControlBuffer          := Nil ;;
         _OOHG_ActiveControlHBitmap         := Nil ;;
-        _OOHG_ActiveControlWhiteBackground := Nil
+        _OOHG_ActiveControlWhiteBackground := Nil ;;
+        _OOHG_ActiveControlNoDIBSection    := .F.
 
 #xcommand STRETCH <stretch> ;
         => ;
@@ -1485,6 +1493,10 @@ IMAGE
 #xcommand NORESIZE <noresize> ;
         => ;
         _OOHG_ActiveControlNoResize := <noresize>
+
+#xcommand NODIBSECTION <nodib> ;
+        => ;
+        _OOHG_ActiveControlNoDIBSection := <nodib>
 
 #xcommand END IMAGE ;
         => ;
@@ -1509,7 +1521,8 @@ IMAGE
                 _OOHG_ActiveControlImagesize, ;
                 _OOHG_ActiveControlTooltip, ;
                 _OOHG_ActiveControlBorder, ;
-                _OOHG_ActiveControlClientEdge )
+                _OOHG_ActiveControlClientEdge, ;
+                _OOHG_ActiveControlNoDIBSection )
 
 /*----------------------------------------------------------------------------
 CHECK BOX/BUTTON
@@ -1537,15 +1550,16 @@ CHECK BOX/BUTTON
 #xcommand DEFINE CHECKBUTTON <name> ;
         => ;
         _OOHG_ClearActiveControlInfo( <(name)> ) ;;
-        _OOHG_ActiveControlCaption     := Nil    ;;
-        _OOHG_ActiveControlPicture     := Nil    ;;
-        _OOHG_ActiveControlField       := Nil    ;;
-        _OOHG_ActiveControlBuffer      := Nil    ;;
-        _OOHG_ActiveControlHBitmap     := Nil    ;;
-        _OOHG_ActiveControlTransparent := .T.    ;;
-        _OOHG_ActiveControlScale       := .F.    ;;
-        _OOHG_ActiveControlNo3DColors  := .F.    ;;
-        _OOHG_ActiveControlAutoFit     := .F.
+        _OOHG_ActiveControlCaption      := Nil    ;;
+        _OOHG_ActiveControlPicture      := Nil    ;;
+        _OOHG_ActiveControlField        := Nil    ;;
+        _OOHG_ActiveControlBuffer       := Nil    ;;
+        _OOHG_ActiveControlHBitmap      := Nil    ;;
+        _OOHG_ActiveControlTransparent  := .T.    ;;
+        _OOHG_ActiveControlScale        := .F.    ;;
+        _OOHG_ActiveControlNo3DColors   := .F.    ;;
+        _OOHG_ActiveControlAutoFit      := .F.    ;;
+        _OOHG_ActiveControlNoDIBSection := .T.
 
 #xcommand ONCHANGE <onchange> ;
         => ;
@@ -1630,7 +1644,8 @@ CHECK BOX/BUTTON
                 .NOT. _OOHG_ActiveControlTransparent, ;
                 _OOHG_ActiveControlScale, ;
                 _OOHG_ActiveControlNo3DColors, ;
-                _OOHG_ActiveControlAutoFit )
+                _OOHG_ActiveControlAutoFit, ;
+                _OOHG_ActiveControlNoDIBSection )
 
 /*----------------------------------------------------------------------------
 COMBO BOX

@@ -1,5 +1,5 @@
 /*
- * $Id: miniprint.prg,v 1.40 2012-09-27 02:05:32 fyurisich Exp $
+ * $Id: miniprint.prg,v 1.41 2013-09-28 16:26:18 fyurisich Exp $
  */
 /*----------------------------------------------------------------------------
  MINIGUI - Harbour Win32 GUI library source code
@@ -554,14 +554,13 @@ LOCAL cAction
    ttHandle := GetFormToolTipHandle( '_HMG_PRINTER_SHOWTHUMBNAILS' )
 
    For i := 1 To _HMG_PRINTER_PageCount
-
       cMacroTemp := 'Image' + AllTrim( Str( i ) )
 
       cAction := "( _HMG_PRINTER_CurrentPageNumber := " + AllTrim( Str( i ) ) + ", _HMG_PRINTER_ThumbUpdate := .F., _HMG_PRINTER_PreviewRefresh(), _HMG_PRINTER_ThumbUpdate := .T. )"
 
       TImage():Define( cMacroTemp, '_HMG_PRINTER_SHOWTHUMBNAILS', 10, ;
                        ( i * (tHeight + 10) ) - tHeight, ;
-                       _HMG_PRINTER_BasePageName + strzero(i, 4) + ".emf", ;
+                       _HMG_PRINTER_BasePageName + strzero(i, 6) + ".emf", ;
                        tWidth, tHeight, { || &cAction }, NIL, ;
                        .F., .F., .T., .F. )
 
@@ -624,7 +623,7 @@ LOCAL c, i, f, t, d, x, a
 
    For i := 1 To c
       f := t + "\" + a [i]
-      d := x + 'Harbour_MiniPrint_' + StrZero( i, 4 ) + '.Emf'
+      d := x + 'Harbour_MiniPrint_' + StrZero( i, 6 ) + '.Emf'
       COPY FILE (f) TO (d)
    Next i
 RETURN
@@ -656,11 +655,12 @@ RETURN
 *------------------------------------------------------------------------------*
 PROCEDURE _HMG_PRINTER_PreviewClose()
 *------------------------------------------------------------------------------*
-   _HMG_PRINTER_CleanPreview()
-
    If IsWindowDefined( "_HMG_PRINTER_WAIT" )
-     _HMG_PRINTER_WAIT.Release
+      _HMG_PRINTER_WAIT.label_1.Value := _HMG_PRINTER_UserMessages [103]
+      ShowWindow( GetFormHandle( "_HMG_PRINTER_WAIT" ) )
    EndIf
+
+   _HMG_PRINTER_CleanPreview()
 
    If IsWindowDefined( "_OOHG_AUXIL" )
      _OOHG_AUXIL.Release
@@ -669,13 +669,17 @@ PROCEDURE _HMG_PRINTER_PreviewClose()
    If IsWindowDefined( "_HMG_PRINTER_PRINTPAGES" )
      _HMG_PRINTER_PRINTPAGES.Release
    EndIf
+
+   If IsWindowDefined( "_HMG_PRINTER_WAIT" )
+     _HMG_PRINTER_WAIT.Release
+   EndIf
 RETURN
 
 *------------------------------------------------------------------------------*
 PROCEDURE _HMG_PRINTER_CleanPreview
 *------------------------------------------------------------------------------*
    AEval( Directory( GetTempFolder() + "\" + _HMG_PRINTER_TimeStamp + "_HMG_print_preview_*.Emf" ), ;
-                     { |file| Ferase( GetTempFolder() + "\" + file[1] ) } )
+                     { |file| Ferase( GetTempFolder() + '\' + file[1] ) } )
 RETURN
 
 *------------------------------------------------------------------------------*
@@ -739,7 +743,7 @@ LOCAL nScrollMax
       RETURN
    EndIf
 
-   _HMG_PRINTER_SHOWPAGE( _HMG_PRINTER_BasePageName + StrZero( _HMG_PRINTER_CurrentPageNumber, 4 ) + ".emf", GetFormHandle( '_HMG_PRINTER_SHOWPREVIEW' ), _HMG_PRINTER_hDC_Bak, _HMG_PRINTER_SizeFactor * 10000, _HMG_PRINTER_Dz, _HMG_PRINTER_Dx, _HMG_PRINTER_Dy )
+   _HMG_PRINTER_SHOWPAGE( _HMG_PRINTER_BasePageName + StrZero( _HMG_PRINTER_CurrentPageNumber, 6 ) + ".emf", GetFormHandle( '_HMG_PRINTER_SHOWPREVIEW' ), _HMG_PRINTER_hDC_Bak, _HMG_PRINTER_SizeFactor * 10000, _HMG_PRINTER_Dz, _HMG_PRINTER_Dx, _HMG_PRINTER_Dy )
 
    _OOHG_AUXIL.Title := _HMG_PRINTER_UserMessages [02]+'. '+_HMG_PRINTER_UserMessages [01] + ' [' + alltrim(str(_HMG_PRINTER_CurrentPageNumber)) + '/' + AllTrim( Str( _HMG_PRINTER_PageCount ) ) + ']'
 
@@ -808,14 +812,14 @@ LOCAL EvenOnly := .F.
       For i := PageFrom To PageTo
          If OddOnly == .T.
             If i / 2 != Int( i / 2 )
-               _HMG_PRINTER_PRINTPAGE( _HMG_PRINTER_hDC_Bak, _HMG_PRINTER_BasePageName + StrZero( i, 4 ) + ".emf" )
+               _HMG_PRINTER_PRINTPAGE( _HMG_PRINTER_hDC_Bak, _HMG_PRINTER_BasePageName + StrZero( i, 6 ) + ".emf" )
             EndIf
          ElseIf EvenOnly == .T.
             If i / 2 == Int( i / 2 )
-               _HMG_PRINTER_PRINTPAGE( _HMG_PRINTER_hDC_Bak, _HMG_PRINTER_BasePageName + StrZero( i, 4 ) + ".emf" )
+               _HMG_PRINTER_PRINTPAGE( _HMG_PRINTER_hDC_Bak, _HMG_PRINTER_BasePageName + StrZero( i, 6 ) + ".emf" )
             EndIf
          Else
-            _HMG_PRINTER_PRINTPAGE( _HMG_PRINTER_hDC_Bak, _HMG_PRINTER_BasePageName + StrZero( i, 4 ) + ".emf" )
+            _HMG_PRINTER_PRINTPAGE( _HMG_PRINTER_hDC_Bak, _HMG_PRINTER_BasePageName + StrZero( i, 6 ) + ".emf" )
          EndIf
       Next i
 
@@ -826,14 +830,14 @@ LOCAL EvenOnly := .F.
          For i := PageFrom To PageTo
             If OddOnly == .T.
                If i / 2 != Int( i / 2 )
-                  _HMG_PRINTER_PRINTPAGE( _HMG_PRINTER_hDC_Bak, _HMG_PRINTER_BasePageName + StrZero( i, 4 ) + ".emf" )
+                  _HMG_PRINTER_PRINTPAGE( _HMG_PRINTER_hDC_Bak, _HMG_PRINTER_BasePageName + StrZero( i, 6 ) + ".emf" )
                EndIf
             ElseIf EvenOnly == .T.
                If i / 2 == Int( i / 2 )
-                  _HMG_PRINTER_PRINTPAGE( _HMG_PRINTER_hDC_Bak, _HMG_PRINTER_BasePageName + StrZero( i, 4 ) + ".emf" )
+                  _HMG_PRINTER_PRINTPAGE( _HMG_PRINTER_hDC_Bak, _HMG_PRINTER_BasePageName + StrZero( i, 6 ) + ".emf" )
                EndIf
             Else
-               _HMG_PRINTER_PRINTPAGE( _HMG_PRINTER_hDC_Bak, _HMG_PRINTER_BasePageName + StrZero( i, 4 ) + ".emf" )
+               _HMG_PRINTER_PRINTPAGE( _HMG_PRINTER_hDC_Bak, _HMG_PRINTER_BasePageName + StrZero( i, 6 ) + ".emf" )
             EndIf
          Next i
 
@@ -845,14 +849,14 @@ LOCAL EvenOnly := .F.
                For i := PageFrom To PageTo
                   If OddOnly == .T.
                      If i / 2 != Int( i / 2 )
-                        _HMG_PRINTER_PRINTPAGE( _HMG_PRINTER_hDC_Bak, _HMG_PRINTER_BasePageName + StrZero( i, 4 ) + ".emf" )
+                        _HMG_PRINTER_PRINTPAGE( _HMG_PRINTER_hDC_Bak, _HMG_PRINTER_BasePageName + StrZero( i, 6 ) + ".emf" )
                      EndIf
                   ElseIf EvenOnly == .T.
                      If i / 2 == Int( i / 2 )
-                        _HMG_PRINTER_PRINTPAGE( _HMG_PRINTER_hDC_Bak, _HMG_PRINTER_BasePageName + StrZero( i, 4 ) + ".emf" )
+                        _HMG_PRINTER_PRINTPAGE( _HMG_PRINTER_hDC_Bak, _HMG_PRINTER_BasePageName + StrZero( i, 6 ) + ".emf" )
                      EndIf
                   Else
-                     _HMG_PRINTER_PRINTPAGE( _HMG_PRINTER_hDC_Bak, _HMG_PRINTER_BasePageName + StrZero( i, 4 ) + ".emf" )
+                     _HMG_PRINTER_PRINTPAGE( _HMG_PRINTER_hDC_Bak, _HMG_PRINTER_BasePageName + StrZero( i, 6 ) + ".emf" )
                   EndIf
                Next i
             Next p
@@ -863,14 +867,14 @@ LOCAL EvenOnly := .F.
                For p := 1 To _HMG_PRINTER_PrintPages.Spinner_3.Value
                   If OddOnly == .T.
                      If i / 2 != Int( i / 2 )
-                        _HMG_PRINTER_PRINTPAGE( _HMG_PRINTER_hDC_Bak, _HMG_PRINTER_BasePageName + StrZero( i, 4 ) + ".emf" )
+                        _HMG_PRINTER_PRINTPAGE( _HMG_PRINTER_hDC_Bak, _HMG_PRINTER_BasePageName + StrZero( i, 6 ) + ".emf" )
                      EndIf
                   ElseIf EvenOnly == .T.
                      If i / 2 == Int( i / 2 )
-                        _HMG_PRINTER_PRINTPAGE( _HMG_PRINTER_hDC_Bak, _HMG_PRINTER_BasePageName + StrZero( i, 4 ) + ".emf" )
+                        _HMG_PRINTER_PRINTPAGE( _HMG_PRINTER_hDC_Bak, _HMG_PRINTER_BasePageName + StrZero( i, 6 ) + ".emf" )
                      EndIf
                   Else
-                     _HMG_PRINTER_PRINTPAGE( _HMG_PRINTER_hDC_Bak, _HMG_PRINTER_BasePageName + StrZero( i, 4 ) + ".emf" )
+                     _HMG_PRINTER_PRINTPAGE( _HMG_PRINTER_hDC_Bak, _HMG_PRINTER_BasePageName + StrZero( i, 6 ) + ".emf" )
                   EndIf
                Next p
             Next i
@@ -1328,7 +1332,7 @@ RETURN
 PROCEDURE _HMG_PRINTER_InitUserMessages
 *------------------------------------------------------------------------------*
 LOCAL   cLang
-PUBLIC  _HMG_PRINTER_UserMessages [102]
+PUBLIC  _HMG_PRINTER_UserMessages [103]
 PUBLIC _OOHG_PRINTER_DocName := "OOHG printing system"
 
    cLang := Set( _SET_LANGUAGE )
@@ -1380,6 +1384,7 @@ PUBLIC _OOHG_PRINTER_DocName := "OOHG printing system"
          _HMG_PRINTER_UserMessages [29] := 'Generating Thumbnails... Please Wait...'
          _HMG_PRINTER_UserMessages [101] := 'Select a Folder'
          _HMG_PRINTER_UserMessages [102] := 'No printer is installed in this system.'
+         _HMG_PRINTER_UserMessages [103] := 'Closing preview... Please Wait...'
 
       Case cLang == "EU"        // Basque.
    /////////////////////////////////////////////////////////////
@@ -1417,6 +1422,7 @@ PUBLIC _OOHG_PRINTER_DocName := "OOHG printing system"
          _HMG_PRINTER_UserMessages [29] := 'Generating Thumbnails... Please Wait...'
          _HMG_PRINTER_UserMessages [101] := 'Select a Folder'
          _HMG_PRINTER_UserMessages [102] := 'No printer is installed in this system.'
+         _HMG_PRINTER_UserMessages [103] := 'Closing preview... Please Wait...'
 
       Case cLang == "EN"        // English
    /////////////////////////////////////////////////////////////
@@ -1454,6 +1460,7 @@ PUBLIC _OOHG_PRINTER_DocName := "OOHG printing system"
          _HMG_PRINTER_UserMessages [29] := 'Generating Thumbnails... Please Wait...'
          _HMG_PRINTER_UserMessages [101] := 'Select a Folder'
          _HMG_PRINTER_UserMessages [102] := 'No printer is installed in this system.'
+         _HMG_PRINTER_UserMessages [103] := 'Closing preview... Please Wait...'
 
       Case cLang == "FR"        // French
    /////////////////////////////////////////////////////////////
@@ -1491,6 +1498,7 @@ PUBLIC _OOHG_PRINTER_DocName := "OOHG printing system"
             _HMG_PRINTER_UserMessages [29] := 'Produisant De affichettes...  Svp Attente...'
             _HMG_PRINTER_UserMessages [101] := 'Sélectionner un dossier'
             _HMG_PRINTER_UserMessages [102] := "Aucune imprimeur n'est installé dans ce système."
+            _HMG_PRINTER_UserMessages [103] := 'Closing preview... Please Wait...'
 
       Case cLang == "DEWIN" .OR. cLang == "DE"       // German
    /////////////////////////////////////////////////////////////
@@ -1528,6 +1536,7 @@ PUBLIC _OOHG_PRINTER_DocName := "OOHG printing system"
          _HMG_PRINTER_UserMessages [29] := 'Überblick Erzeugen...  Bitte Wartezeit...'
          _HMG_PRINTER_UserMessages [101] := 'Wählen Sie einen Ordner'
          _HMG_PRINTER_UserMessages [102] := 'Kein Drucker ist in diesem System installiert.'
+         _HMG_PRINTER_UserMessages [103] := 'Closing preview... Please Wait...'
 
       Case cLang == "IT"        // Italian
    /////////////////////////////////////////////////////////////
@@ -1565,6 +1574,7 @@ PUBLIC _OOHG_PRINTER_DocName := "OOHG printing system"
          _HMG_PRINTER_UserMessages [29] := 'Generando Miniatura...  Prego Attesa...'
          _HMG_PRINTER_UserMessages [101] := 'Selezionare una cartella'
          _HMG_PRINTER_UserMessages [102] := 'Nessuna stampatore è installata in questo sistema.'
+         _HMG_PRINTER_UserMessages [103] := 'Closing preview... Please Wait...'
 
       Case cLang == "PLWIN"  .OR. cLang == "PL852"  .OR. cLang == "PLISO"  .OR. cLang == ""  .OR. cLang == "PLMAZ"   // Polish
    /////////////////////////////////////////////////////////////
@@ -1602,6 +1612,7 @@ PUBLIC _OOHG_PRINTER_DocName := "OOHG printing system"
          _HMG_PRINTER_UserMessages [29] := 'Generating Thumbnails... Please Wait...'
          _HMG_PRINTER_UserMessages [101] := 'Select a Folder'
          _HMG_PRINTER_UserMessages [102] := 'No printer is installed in this system.'
+         _HMG_PRINTER_UserMessages [103] := 'Closing preview... Please Wait...'
 
       Case cLang == "PT"        // Portuguese
    /////////////////////////////////////////////////////////////
@@ -1639,6 +1650,7 @@ PUBLIC _OOHG_PRINTER_DocName := "OOHG printing system"
          _HMG_PRINTER_UserMessages [29] := 'Gerando Miniaturas...  Por favor Espera...'
          _HMG_PRINTER_UserMessages [101] := 'Selecione uma pasta'
          _HMG_PRINTER_UserMessages [102] := 'Nenhuma impressora está instalado neste sistema.'
+         _HMG_PRINTER_UserMessages [103] := 'Closing preview... Please Wait...'
 
       Case cLang == "RUWIN"  .OR. cLang == "RU866" .OR. cLang == "RUKOI8" // Russian
    /////////////////////////////////////////////////////////////
@@ -1676,6 +1688,7 @@ PUBLIC _OOHG_PRINTER_DocName := "OOHG printing system"
          _HMG_PRINTER_UserMessages [29] := 'Generating Thumbnails... Please Wait...'
          _HMG_PRINTER_UserMessages [101] := 'Select a Folder'
          _HMG_PRINTER_UserMessages [102] := 'No printer is installed in this system.'
+         _HMG_PRINTER_UserMessages [103] := 'Closing preview... Please Wait...'
 
       Case cLang == "ES"  .OR. cLang == "ESWIN"       // Spanish
    /////////////////////////////////////////////////////////////
@@ -1713,6 +1726,7 @@ PUBLIC _OOHG_PRINTER_DocName := "OOHG printing system"
          _HMG_PRINTER_UserMessages [29] := 'Generando Miniaturas... Espere Por Favor...'
          _HMG_PRINTER_UserMessages [101] := 'Seleccione Una Carpeta'
          _HMG_PRINTER_UserMessages [102] := 'No hay impresora instalada en este sistema.'
+         _HMG_PRINTER_UserMessages [103] := 'Cerrando vista previa... Espere Por Favor...'
 
       Case cLang == "FI"        // Finnish
    ///////////////////////////////////////////////////////////////////////
@@ -1750,6 +1764,7 @@ PUBLIC _OOHG_PRINTER_DocName := "OOHG printing system"
          _HMG_PRINTER_UserMessages [29] := 'Generating Thumbnails... Please Wait...'
          _HMG_PRINTER_UserMessages [101] := 'Select a Folder'
          _HMG_PRINTER_UserMessages [102] := 'No printer is installed in this system.'
+         _HMG_PRINTER_UserMessages [103] := 'Closing preview... Please Wait...'
 
       Case cLang == "NL"        // Dutch
    /////////////////////////////////////////////////////////////
@@ -1787,6 +1802,7 @@ PUBLIC _OOHG_PRINTER_DocName := "OOHG printing system"
          _HMG_PRINTER_UserMessages [29] := 'Generating Thumbnails... Please Wait...'
          _HMG_PRINTER_UserMessages [101] := 'Select a Folder'
          _HMG_PRINTER_UserMessages [102] := 'No printer is installed in this system.'
+         _HMG_PRINTER_UserMessages [103] := 'Closing preview... Please Wait...'
 
       Case cLang == "SLWIN" .OR. cLang == "SLISO" .OR. cLang == "SL852" .OR. cLang == "" .OR. cLang == "SL437" // Slovenian
    /////////////////////////////////////////////////////////////
@@ -1824,6 +1840,7 @@ PUBLIC _OOHG_PRINTER_DocName := "OOHG printing system"
          _HMG_PRINTER_UserMessages [29] := 'Generating Thumbnails... Please Wait...'
          _HMG_PRINTER_UserMessages [101] := 'Select a Folder'
          _HMG_PRINTER_UserMessages [102] := 'No printer is installed in this system.'
+         _HMG_PRINTER_UserMessages [103] := 'Closing preview... Please Wait...'
 
       Otherwise
    /////////////////////////////////////////////////////////////
@@ -1861,6 +1878,7 @@ PUBLIC _OOHG_PRINTER_DocName := "OOHG printing system"
          _HMG_PRINTER_UserMessages [29] := 'Generating Thumbnails... Please Wait...'
          _HMG_PRINTER_UserMessages [101] := 'Select a Folder'
          _HMG_PRINTER_UserMessages [102] := 'No printer is installed in this system.'
+         _HMG_PRINTER_UserMessages [103] := 'Closing preview... Please Wait...'
 
    EndCase
 RETURN

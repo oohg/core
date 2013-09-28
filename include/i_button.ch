@@ -1,5 +1,5 @@
 /*
- * $Id: i_button.ch,v 1.18 2013-05-25 20:30:11 fyurisich Exp $
+ * $Id: i_button.ch,v 1.19 2013-09-28 16:26:17 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -128,6 +128,7 @@
             [ IMAGEMARGIN <aImageMargin> ] ;
             [ <no3dcolors: NO3DCOLORS> ] ;
             [ <autofit: AUTOFIT, ADJUST> ] ;
+            [ <lDIB: DIBSECTION> ] ;
    =>;
             [ <obj> := ] _OOHG_SelectSubClass( TButton(), [ <subclass>() ] ): ;
                   Define( <(name)>, <(parent)>, <col>, <row>, <caption>, <{action}>, ;
@@ -135,7 +136,7 @@
                   <helpid>, <.invisible.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.>, <.rtl.>, ;
                   <.noprefix.>, <.disabled.>, <buffer>, <hbitmap>, <bitmap>, <.notrans.>, <.scale.>, ;
                   <.cancel.>, <"alignment">, <.multiline.>, <.themed.>, <aImageMargin>, <{onmousemove}>, ;
-                  <.no3dcolors.>, <.autofit.> )
+                  <.no3dcolors.>, <.autofit.>, ! <.lDIB.> )
 
 #command @ <row>,<col> CHECKBUTTON <name> ;
             [ OBJ <obj> ] ;
@@ -167,10 +168,11 @@
             [ FIELD <field> ] ;
             [ <no3dcolors: NO3DCOLORS> ] ;
             [ <autofit: AUTOFIT, ADJUST> ] ;
+            [ <lDIB: DIBSECTION> ] ;
    =>;
             [ <obj> := ] _OOHG_SelectSubClass( TButtonCheck(), [ <subclass>() ] ): ;
                   Define( <(name)>, <(parent)>, <col>, <row>, <caption>, <value>, <f>, <n>, ;
                   <tooltip>, <{change}>, [<w>], [<h>], <{lostfocus}>, <{gotfocus}>, <helpid>, ;
                   <.invisible.>, <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, ;
                   <(field)>, <.rtl.>, <bitmap>, <buffer>, <hbitmap>, <.notrans.>, <.scale.>, ;
-                  <.no3dcolors.>, <.autofit.> )
+                  <.no3dcolors.>, <.autofit.>, ! <.lDIB.> )

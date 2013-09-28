@@ -1,5 +1,5 @@
 /*
- * $Id: i_hmg_compat.ch,v 1.26 2013-09-08 23:49:46 fyurisich Exp $
+ * $Id: i_hmg_compat.ch,v 1.27 2013-09-28 16:26:18 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -258,6 +258,7 @@
       [ <themed : THEMED> ] ;
       [ IMAGEMARGIN <aImageMargin> ] ;
       [ <no3dcolors: NO3DCOLORS> ] ;
+      [ <lDIB: DIBSECTION> ] ;
    => ;
       @ <row>, <col> BUTTON <name> ;
             [ OBJ <obj> ] ;
@@ -295,7 +296,8 @@
             [ <multiline> ] ;
             [ <themed> ] ;
             [ IMAGEMARGIN <aImageMargin> ] ;
-            [ <no3dcolors> ]
+            [ <no3dcolors> ] ;
+            [ <lDIB> ]
 
 /*
 TODO:

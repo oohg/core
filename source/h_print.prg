@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.124 2013-02-08 05:35:49 declan2005 Exp $
+* $Id: h_print.prg,v 1.125 2013-09-28 16:26:18 fyurisich Exp $
 */
 
 #include 'hbclass.ch'
@@ -313,7 +313,8 @@ LOCAL oLabel, oImage, cDoc
             PICTURE 'hbprint_print' ;
             WIDTH 25 ;
             HEIGHT 30 ;
-            STRETCH
+            STRETCH ;
+            NODIBSECTION
 
          @ 22, 225 LABEL label_101 VALUE '......' FONT "Courier New" SIZE 10
 

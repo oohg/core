@@ -1,5 +1,5 @@
 /*
- * $Id: h_image.prg,v 1.27 2012-06-28 03:36:03 fyurisich Exp $
+ * $Id: h_image.prg,v 1.28 2013-09-28 16:26:18 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -105,6 +105,9 @@ CLASS TImage FROM TControl
    DATA nHeight         INIT 100
    DATA hImage          INIT nil
    DATA ImageSize       INIT .F.
+   DATA lNoDIBSection   INIT .F.
+   DATA lNo3DColors     INIT .F.
+   DATA lNoTransparent  INIT .F.
 
    METHOD Define
    METHOD Picture       SETGET
@@ -123,19 +126,21 @@ ENDCLASS
 *-----------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, x, y, FileName, w, h, ProcedureName, ;
                HelpId, invisible, stretch, lWhiteBackground, lRtl, backcolor, ;
-               cBuffer, hBitMap, autofit, imagesize, ToolTip, ;
-               Border, ClientEdge ) CLASS TImage
+               cBuffer, hBitMap, autofit, imagesize, ToolTip, Border, ClientEdge, ;
+               lNoTransparent, lNo3DColors, lNoDIB ) CLASS TImage
 *-----------------------------------------------------------------------------*
 Local ControlHandle, nStyle, nStyleEx
 
-   ASSIGN ::nCol    VALUE x TYPE "N"
-   ASSIGN ::nRow    VALUE y TYPE "N"
-   ASSIGN ::nWidth  VALUE w TYPE "N"
-   ASSIGN ::nHeight VALUE h TYPE "N"
-
-   ASSIGN ::Stretch    VALUE stretch   TYPE "L"
-   ASSIGN ::AutoFit    VALUE autofit   TYPE "L"
-   ASSIGN ::ImageSize  VALUE imagesize TYPE "L"
+   ASSIGN ::nCol           VALUE x              TYPE "N"
+   ASSIGN ::nRow           VALUE y              TYPE "N"
+   ASSIGN ::nWidth         VALUE w              TYPE "N"
+   ASSIGN ::nHeight        VALUE h              TYPE "N"
+   ASSIGN ::Stretch        VALUE stretch        TYPE "L"
+   ASSIGN ::AutoFit        VALUE autofit        TYPE "L"
+   ASSIGN ::ImageSize      VALUE imagesize      TYPE "L"
+   ASSIGN ::lNoTransparent VALUE lNoTransparent TYPE "L"
+   ASSIGN ::lNo3DColors    VALUE lNo3DColors    TYPE "L"
+   ASSIGN ::lNoDIBSection  VALUE lNoDIB         TYPE "L"
 
    ::SetForm( ControlName, ParentForm,,,, BackColor,, lRtl )
    If HB_IsLogical( lWhiteBackground ) .AND. lWhiteBackground
@@ -166,14 +171,27 @@ Return Self
 *-----------------------------------------------------------------------------*
 METHOD Picture( cPicture ) CLASS TImage
 *-----------------------------------------------------------------------------*
-LOCAL nAttrib
+LOCAL nAttrib, aPictSize
    IF VALTYPE( cPicture ) $ "CM"
       DeleteObject( ::hImage )
       ::cPicture := cPicture
-      nAttrib := LR_CREATEDIBSECTION
-      // IF ::Transparent
-      //    nAttrib += LR_LOADMAP3DCOLORS + LR_LOADTRANSPARENT
-      // ENDIF
+
+      IF ::lNoDIBSection
+         aPictSize := _OOHG_SizeOfBitmapFromFile( cPicture )      // width, height, depth
+
+         nAttrib := LR_DEFAULTCOLOR
+         IF aPictSize[ 3 ] <= 8
+           IF ! ::lNo3DColors
+              nAttrib += LR_LOADMAP3DCOLORS
+           ENDIF
+           IF ! ::lNoTransparent
+              nAttrib += LR_LOADTRANSPARENT
+           ENDIF
+         ENDIF
+      ELSE
+         nAttrib := LR_CREATEDIBSECTION
+      ENDIF
+
       ::hImage := _OOHG_BitmapFromFile( Self, cPicture, nAttrib, ::AutoFit .AND. ! ::ImageSize .AND. ! ::Stretch )
       IF ::ImageSize
          ::nWidth  := _BitMapWidth( ::hImage )

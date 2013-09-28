@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.60 2013-05-25 21:08:39 fyurisich Exp $
+ * $Id: h_button.prg,v 1.61 2013-09-28 16:26:18 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -109,6 +109,7 @@ CLASS TButton FROM TControl
    DATA lThemed         INIT .F.
    DATA aImageMargin    INIT {10, 10, 10, 10}
    DATA lNo3DColors     INIT .F.
+   DATA lNoDIBSection   INIT .T.
 
    METHOD Define
    METHOD DefineImage
@@ -132,7 +133,7 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, ProcedureName, w, h, ;
                NoTabStop, HelpId, invisible, bold, italic, underline, ;
                strikeout, lRtl, lNoPrefix, lDisabled, cBuffer, hBitMap, ;
                cImage, lNoTransparent, lScale, lCancel, cAlign, lMultiLine, ;
-               themed, aImageMargin, OnMouseMove, lNo3DColors, lAutoFit ) CLASS TButton
+               themed, aImageMargin, OnMouseMove, lNo3DColors, lAutoFit, lNoDIB ) CLASS TButton
 *-----------------------------------------------------------------------------*
 Local ControlHandle, nStyle, lBitMap, i
 
@@ -187,6 +188,7 @@ Local ControlHandle, nStyle, lBitMap, i
    ASSIGN ::lThemed        VALUE themed         TYPE "L"
    ASSIGN ::AutoFit        VALUE lAutoFit       TYPE "L"
    ASSIGN ::lNo3DColors    VALUE lNo3DColors    TYPE "L"
+   ASSIGN ::lNoDIBSection  VALUE lNoDIB         TYPE "L"
 
    IF VALTYPE( cAlign ) $ "CM"
       cAlign := ALLTRIM( UPPER( cAlign ) )
@@ -230,7 +232,8 @@ METHOD DefineImage( ControlName, ParentForm, x, y, Caption, ProcedureName, w, h,
                     NoTabStop, HelpId, invisible, bold, italic, underline, ;
                     strikeout, lRtl, lNoPrefix, lDisabled, cBuffer, hBitMap, ;
                     cImage, lNoTransparent, lScale, lCancel, cAlign, lMultiLine, ;
-                    themed, aImageMargin, OnMouseMove, lNo3DColors, lAutoFit ) CLASS TButton
+                    themed, aImageMargin, OnMouseMove, lNo3DColors, lAutoFit, ;
+                    lNoDIB ) CLASS TButton
 *------------------------------------------------------------------------------*
    If Empty( cBuffer )
       cBuffer := ""
@@ -240,7 +243,7 @@ Return ::Define( ControlName, ParentForm, x, y, Caption, ProcedureName, w, h, ;
                  NoTabStop, HelpId, invisible, bold, italic, underline, ;
                  strikeout, lRtl, lNoPrefix, lDisabled, cBuffer, hBitMap, ;
                  cImage, lNoTransparent, lScale, lCancel, cAlign, lMultiLine, ;
-                 themed, aImageMargin, OnMouseMove, lNo3DColors, lAutoFit )
+                 themed, aImageMargin, OnMouseMove, lNo3DColors, lAutoFit, lNoDIB )
 
 *------------------------------------------------------------------------------*
 METHOD SetFocus() CLASS TButton
@@ -255,16 +258,21 @@ LOCAL nAttrib, aPictSize
    IF VALTYPE( cPicture ) $ "CM"
       DeleteObject( ::hImage )
       ::cPicture := cPicture
-      aPictSize := _OOHG_SizeOfBitmapFromFile( cPicture )      // width, height, depth
 
-      nAttrib := LR_DEFAULTCOLOR
-      IF aPictSize[ 3 ] <= 8
-        IF ! ::lNo3DColors
-           nAttrib += LR_LOADMAP3DCOLORS
-        ENDIF
-        IF ! ::lNoTransparent
-           nAttrib += LR_LOADTRANSPARENT
-        ENDIF
+      IF ::lNoDIBSection
+         aPictSize := _OOHG_SizeOfBitmapFromFile( cPicture )      // width, height, depth
+
+         nAttrib := LR_DEFAULTCOLOR
+         IF aPictSize[ 3 ] <= 8
+           IF ! ::lNo3DColors
+              nAttrib += LR_LOADMAP3DCOLORS
+           ENDIF
+           IF ! ::lNoTransparent
+              nAttrib += LR_LOADTRANSPARENT
+           ENDIF
+         ENDIF
+      ELSE
+         nAttrib := LR_CREATEDIBSECTION
       ENDIF
 
       ::hImage := _OOHG_BitmapFromFile( Self, cPicture, nAttrib, ::AutoFit .AND. ! ::ImageSize .AND. ! ::Stretch )
@@ -671,7 +679,7 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
                fontsize, tooltip, changeprocedure, w, h, lostfocus, gotfocus, ;
                HelpId, invisible, notabstop, bold, italic, underline, ;
                strikeout, field, lRtl, BitMap, cBuffer, hBitMap, ;
-               lNoTransparent, lScale, lNo3DColors, lAutoFit ) CLASS TButtonCheck
+               lNoTransparent, lScale, lNo3DColors, lAutoFit, lNoDIB ) CLASS TButtonCheck
 *-----------------------------------------------------------------------------*
 Local ControlHandle, nStyle
 
@@ -703,6 +711,7 @@ Local ControlHandle, nStyle
    ASSIGN ::Stretch        VALUE lScale         TYPE "L"
    ASSIGN ::AutoFit        VALUE lAutoFit       TYPE "L"
    ASSIGN ::lNo3DColors    VALUE lNo3DColors    TYPE "L"
+   ASSIGN ::lNoDIBSection  VALUE lNoDIB         TYPE "L"
 
    ::Picture := BitMap
    If ! ValidHandler( ::hImage )
@@ -725,7 +734,7 @@ METHOD DefineImage( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
                     fontsize, tooltip, changeprocedure, w, h, lostfocus, gotfocus, ;
                     HelpId, invisible, notabstop, bold, italic, underline, ;
                     strikeout, field, lRtl, BitMap, cBuffer, hBitMap, ;
-                    lNoTransparent, lScale, lNo3DColors, lAutoFit ) CLASS TButtonCheck
+                    lNoTransparent, lScale, lNo3DColors, lAutoFit, lNoDIB ) CLASS TButtonCheck
 *-----------------------------------------------------------------------------*
    If Empty( cBuffer )
       cBuffer := ""
@@ -734,7 +743,7 @@ Return ::Define( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
                  fontsize, tooltip, changeprocedure, w, h, lostfocus, gotfocus, ;
                  HelpId, invisible, notabstop, bold, italic, underline, ;
                  strikeout, field, lRtl, BitMap, cBuffer, hBitMap, ;
-                 lNoTransparent, lScale, lNo3DColors, lAutoFit )
+                 lNoTransparent, lScale, lNo3DColors, lAutoFit, lNoDIB )
 
 *------------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TButtonCheck

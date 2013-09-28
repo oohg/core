@@ -1,5 +1,5 @@
 /*
- * $Id: miniprint.ch,v 1.7 2012-04-01 01:20:19 fyurisich Exp $
+ * $Id: miniprint.ch,v 1.8 2013-09-28 16:26:18 fyurisich Exp $
  */
 /*----------------------------------------------------------------------------
  MINIGUI - Harbour Win32 GUI library source code
@@ -212,7 +212,7 @@ if ( _HMG_printer_preview , ( _HMG_printer_PageCount := 0 , _HMG_printer_hdc_bak
 
 #xcommand START PRINTPAGE ;
 => ;
-if ( _HMG_printer_preview , ( _HMG_printer_hdc := _HMG_PRINTER_STARTPAGE_PREVIEW ( _HMG_printer_hdc_bak , GetTempFolder() + "\" + _HMG_printer_timestamp + "_HMG_print_preview_" +  alltrim(strzero(++_HMG_printer_PageCount,4)) + ".Emf" ) ) , _HMG_PRINTER_StartPage ( _HMG_printer_hdc ) )
+if ( _HMG_printer_preview , ( _HMG_printer_hdc := _HMG_PRINTER_STARTPAGE_PREVIEW ( _HMG_printer_hdc_bak , GetTempFolder() + "\" + _HMG_printer_timestamp + "_HMG_print_preview_" +  alltrim(strzero(++_HMG_printer_PageCount,6)) + ".Emf" ) ) , _HMG_PRINTER_StartPage ( _HMG_printer_hdc ) )
 
 #xcommand END PRINTPAGE ;
 => ;
