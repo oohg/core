@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.1160 2013-09-28 16:26:17 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1161 2013-09-29 23:02:35 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,13 +7,26 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-09-29 20:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     * Previous entry corrected.
+   * include/i_altsyntax.ch
+   * include/i_xbrowse.ch
+   * source/h_xbrowse.prg
+     ! The first row can't be deleted when it's the only one.
+     + Method IsTableEmpty to class ooHGRecord: returns .T. when the
+       data origin is empty.
+     + Clause NOSHOWEMPTYROW: it hides the empty row of the XBrowse
+       control when the data origin is empty. It needs that the data
+       origin has IsTableEmpty method properly defined.
+
 2013-09-28 13:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_hmg_compat.ch
    * include/i_altsyntax.ch
    * include/i_button.ch
    * include/i_image.ch
-   * source/h_button.ch
-   * source/h_image.ch
+   * source/h_button.prg
+   * source/h_image.prg
      + DIBSECTION clause to Button, ButtonCheck and ButtonEx controls.
      + NOTRANSPARENT, NO3DCOLORS and NODIBSECTION clauses to Image
        controls.

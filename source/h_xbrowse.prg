@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.99 2013-09-25 00:03:45 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.100 2013-09-29 23:02:35 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -80,6 +80,7 @@ CLASS TXBROWSE FROM TGrid
    DATA lVscrollVisible   INIT .F.
    DATA aColumnBlocks     INIT nil
    DATA lFixedBlocks      INIT .F.
+   DATA lNoShowEmptyRow   INIT .F.
 
    METHOD Define
    METHOD Refresh
@@ -156,17 +157,19 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                aSelectedColors, aEditKeys, lDblBffr, lFocusRect, lPLM, ;
                lFixedCols, abortedit, click, lFixedWidths, lFixedBlocks, ;
                bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
-               bBeforeAutofit, lLikeExcel, lButtons, lNoDelMsg, lFixedCtrls ) CLASS TXBrowse
+               bBeforeAutofit, lLikeExcel, lButtons, lNoDelMsg, lFixedCtrls, ;
+               lNoShowEmptyRow ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
 Local nWidth2, nCol2, lLocked, oScroll, z
 
-   ASSIGN ::aFields     VALUE aFields     TYPE "A"
-   ASSIGN ::aHeaders    VALUE aHeaders    TYPE "A" DEFAULT {}
-   ASSIGN ::aWidths     VALUE aWidths     TYPE "A" DEFAULT {}
-   ASSIGN ::aJust       VALUE aJust       TYPE "A" DEFAULT {}
-   ASSIGN ::lDescending VALUE lDescending TYPE "L"
-   ASSIGN lFixedBlocks  VALUE lFixedBlocks TYPE "L" DEFAULT _OOHG_XBrowseFixedBlocks
-   ASSIGN lFixedCtrls   VALUE lFixedCtrls  TYPE "L" DEFAULT _OOHG_XBrowseFixedControls
+   ASSIGN ::aFields         VALUE aFields         TYPE "A"
+   ASSIGN ::aHeaders        VALUE aHeaders        TYPE "A" DEFAULT {}
+   ASSIGN ::aWidths         VALUE aWidths         TYPE "A" DEFAULT {}
+   ASSIGN ::aJust           VALUE aJust           TYPE "A" DEFAULT {}
+   ASSIGN ::lDescending     VALUE lDescending     TYPE "L"
+   ASSIGN lFixedBlocks      VALUE lFixedBlocks    TYPE "L" DEFAULT _OOHG_XBrowseFixedBlocks
+   ASSIGN lFixedCtrls       VALUE lFixedCtrls     TYPE "L" DEFAULT _OOHG_XBrowseFixedControls
+   ASSIGN ::lNoShowEmptyRow VALUE lNoShowEmptyRow TYPE "L"
 
    If ValType( columninfo ) == "A" .AND. LEN( columninfo ) > 0
       If ValType( ::aFields ) == "A"
@@ -327,27 +330,35 @@ Local nRow, nCount, nSkipped
       nCurrent := MAX( MIN( nCurrent, nCount ), 1 )
       // Top of screen
       nCurrent := ( - ::DbSkip( - ( nCurrent - 1 ) ) ) + 1
-      // Draws rows
-      nRow := 1
-      Do While .T.
-         ::RefreshRow( nRow )
-         If nRow < nCount
-            If ::DbSkip( 1 ) == 1
-               nRow++
-            Else
-               If lNoEmptyBottom
-                  nSkipped := ( - ::DbSkip( - ( nCount - 1 ) ) ) + 1
-                  nCurrent := nCurrent + ( nSkipped - nRow )
-                  nRow := 1
-                  lNoEmptyBottom := .F.
+
+      If ::lNoShowEmptyRow .AND. ::oWorkArea:IsTableEmpty()
+         nCurrent := nRow := 0
+         ::TopBottom( 1 )
+      Else
+         // Draws rows
+         nRow := 1
+         Do While .T.
+            ::RefreshRow( nRow )
+            If nRow < nCount
+               If ::DbSkip( 1 ) == 1
+                  nRow++
                Else
-                  Exit
+                  If lNoEmptyBottom
+                     nSkipped := ( - ::DbSkip( - ( nCount - 1 ) ) ) + 1
+                     nCurrent := nCurrent + ( nSkipped - nRow )
+                     nRow := 1
+                     lNoEmptyBottom := .F.
+                  Else
+                     ::TopBottom( 1 )
+                     Exit
+                  EndIf
                EndIf
+            Else
+               Exit
             EndIf
-         Else
-            Exit
-         EndIf
-      EndDo
+         EndDo
+      EndIf
+
       // Clears bottom rows
       Do While ::ItemCount > nRow
          ::DeleteItem( ::ItemCount )
@@ -559,7 +570,7 @@ Return uValue
 *-----------------------------------------------------------------------------*
 METHOD MoveTo( nTo, nFrom ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
-   If ! ::lLocked
+   If ! ::lLocked .AND. ! ( ::lNoShowEmptyRow .AND. ::oWorkArea:IsTableEmpty() )
       ASSIGN nTo   VALUE nTo   TYPE "N" DEFAULT ::CurrentRow
       ASSIGN nFrom VALUE nFrom TYPE "N" DEFAULT ::nValue
       nFrom := Max( Min( nFrom, ::ItemCount ), 1 )
@@ -1189,7 +1200,7 @@ METHOD TopBottom( nDir ) CLASS TXBrowse
          ::oWorkArea:GoTop()
       EndIf
    Endif
-   ::Bof := .F.
+   ::Bof := ( ::lNoShowEmptyRow .AND. ::oWorkArea:IsTableEmpty() )
    ::Eof := ::oWorkArea:Eof()
 Return nil
 
@@ -1284,8 +1295,8 @@ Local Value
       ::GoBottom()
    Else
       ::Refresh()
+      ::DoChange()
    EndIf
-   ::DoChange()
 Return .T.
 
 *-----------------------------------------------------------------------------*
@@ -1857,6 +1868,7 @@ CLASS ooHGRecord
    METHOD Skipper
    METHOD OrdScope
    METHOD Filter
+   METHOD IsTableEmpty
 
    METHOD Field      BLOCK { | Self, nPos |                   ( ::cAlias__ )->( Field( nPos ) ) }
    METHOD FieldBlock BLOCK { | Self, cField |                 ( ::cAlias__ )->( FieldBlock( cField ) ) }
@@ -1892,6 +1904,28 @@ CLASS ooHGRecord
 
    ERROR HANDLER FieldAssign
 ENDCLASS
+
+*-----------------------------------------------------------------------------*
+METHOD IsTableEmpty CLASS ooHGRecord
+*-----------------------------------------------------------------------------*
+LOCAL lEmpty
+   IF ::EOF()
+      IF ::BOF()
+         lEmpty := .T.
+      ELSE
+         ::Skip( -1 )
+         lEmpty := ::BOF()
+         ::Skip( 1 )
+      ENDIF
+   ELSE
+      IF ::BOF()
+         ::GoTop()
+         lEmpty := ::EOF()
+      ELSE
+        lEmpty := .F.
+      ENDIF
+   ENDIF
+RETURN lEmpty
 
 *-----------------------------------------------------------------------------*
 METHOD FieldAssign( xValue ) CLASS ooHGRecord

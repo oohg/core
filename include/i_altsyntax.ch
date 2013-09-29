@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.98 2013-09-28 16:26:17 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.99 2013-09-29 23:02:35 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -122,6 +122,7 @@ Memvariables
 #xtranslate _OOHG_ActiveControlTrailingFontColor      => _OOHG_ActiveControlInfo \[  25 \]
 #xtranslate _OOHG_ActiveControlBackgroundColor        => _OOHG_ActiveControlInfo \[  26 \]
 
+#xtranslate _OOHG_ActiveControlNoShowEmptyRow         => _OOHG_ActiveControlInfo \[  99 \]
 #xtranslate _OOHG_ActiveControlNoDIBSection           => _OOHG_ActiveControlInfo \[ 100 \]
 #xtranslate _OOHG_ActiveControlUnSynchronized         => _OOHG_ActiveControlInfo \[ 101 \]
 #xtranslate _OOHG_ActiveControlFixedCtrls             => _OOHG_ActiveControlInfo \[ 102 \]
@@ -2688,7 +2689,8 @@ XBROWSE
         _OOHG_ActiveControlUseButtons       := Nil ;;
         _OOHG_ActiveControlNoDeleteMsg      := .F. ;;
         _OOHG_ActiveControlFixedCtrls       := .F. ;;
-        _OOHG_ActiveControlDynamicCtrls     := .F.
+        _OOHG_ActiveControlDynamicCtrls     := .F. ;;
+        _OOHG_ActiveControlNoShowEmptyRow   := .F.
 
 #xcommand END XBROWSE ;
         => ;
@@ -2772,7 +2774,8 @@ XBROWSE
                 _OOHG_ActiveControlEditLikeExcel, ;
                 _OOHG_ActiveControlUseButtons, ;
                 _OOHG_ActiveControlNoDeleteMsg, ;
-                iif( _OOHG_ActiveControlFixedCtrls, .T., iif( _OOHG_ActiveControlDynamicCtrls, .F., Nil ) ) )
+                iif( _OOHG_ActiveControlFixedCtrls, .T., iif( _OOHG_ActiveControlDynamicCtrls, .F., Nil ) ), ;
+                _OOHG_ActiveControlNoShowEmptyRow )
 
 /*----------------------------------------------------------------------------
 HYPERLINK

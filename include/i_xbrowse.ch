@@ -1,5 +1,5 @@
 /*
- * $Id: i_xbrowse.ch,v 1.29 2013-09-08 23:49:46 fyurisich Exp $
+ * $Id: i_xbrowse.ch,v 1.30 2013-09-29 23:02:35 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -179,6 +179,7 @@
       [ <buts: USEBUTTONS> ] ;
       [ <nodelmsg: NODELETEMSG> ] ;
       [ <edtctrls: FIXEDCONTROLS, DYNAMICCONTROLS> ] ;
+      [ <noshowempty: NOSHOWEMPTYROW> ] ;
 	=> ;
       [ <oObj> := ] _OOHG_SelectSubClass( TXBrowse(), [ <subclass>() ] ):Define( ;
             <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, <widths>, ;
@@ -200,7 +201,8 @@
             iif( upper( #<blocks> ) == "FIXEDBLOCKS", .T., iif( upper( #<blocks> ) == "DYNAMICBLOCKS", .F., NIL ) ), ;
             <{bBefMov}>, <{bAftMov}>, <{bBefSiz}>, <{bAftSiz}>, <{bBefAut}>, <.excel.>, ;
             <.buts.>, <.nodelmsg.>, ;
-            iif( upper( #<edtctrls> ) == "FIXEDCONTROLS", .T., iif( upper( #<edtctrls> ) == "DYNAMICCONTROLS", .F., NIL ) ) )
+            iif( upper( #<edtctrls> ) == "FIXEDCONTROLS", .T., iif( upper( #<edtctrls> ) == "DYNAMICCONTROLS", .F., NIL ) ), ;
+            <.noshowempty.> )
 
 #command SET XBROWSEFIXEDBLOCKS ON  => SetXBrowseFixedBlocks( .T. )
 #command SET XBROWSEFIXEDBLOCKS OFF => SetXBrowseFixedBlocks( .F. )
