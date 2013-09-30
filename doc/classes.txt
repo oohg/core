@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.68 2013-07-22 22:11:40 fyurisich Exp $
+ * $Id: classes.txt,v 1.69 2013-09-30 02:04:14 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -167,6 +167,7 @@ CLASS OOHGRECORD
    METHOD GOBOTTOM
    METHOD GOTO
    METHOD GOTOP
+   METHOD ISTABLEEMPTY
    METHOD LOCATE
    METHOD LOCK
    METHOD NEW
@@ -258,6 +259,7 @@ CLASS TBUTTON FROM TCONTROL
    DATA HIMAGE                    INIT NIL
    DATA IMAGESIZE                 INIT .F.
    DATA LNO3DCOLORS               INIT .F.
+   DATA LNODIBSECTION             INIT .T.
    DATA LNOTRANSPARENT            INIT .F.
    DATA LTHEMED                   INIT .F.
    DATA NALIGN                    INIT 2
@@ -400,6 +402,7 @@ CLASS TCHECKLIST FROM TGRID
    METHOD SORT
    METHOD SORTCOLUMN              BLOCK { || NIL }
    METHOD TOEXCEL                 BLOCK { || NIL }
+   METHOD TOOPENOFFICE            BLOCK { || NIL }
    METHOD UP                      BLOCK { || NIL }
    METHOD VALUE                   SETGET
    METHOD WIDTH                   SETGET
@@ -409,7 +412,6 @@ ENDCLASS
 CLASS TCOMBO FROM TLABEL
    DATA AVALUES                   INIT {}
    DATA CTEXT                     INIT ""
-   DATA FIELD                     INIT ""
    DATA IMAGELISTCOLOR            INIT CLR_DEFAULT
    DATA IMAGELISTFLAGS            INIT LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
    DATA IMAGESOURCE               INIT NIL
@@ -417,6 +419,7 @@ CLASS TCOMBO FROM TLABEL
    DATA LADJUSTIMAGES             INIT .F.
    DATA LDELAYLOAD                INIT .F.
    DATA LINCREMENTAL              INIT .F.
+   DATA LREFRESH                  INIT NIL
    DATA NHEIGHT2                  INIT 150
    DATA NLASTFOUND                INIT 0
    DATA NLASTITEM                 INIT 0
@@ -425,7 +428,9 @@ CLASS TCOMBO FROM TLABEL
    DATA OLISTBOX                  INIT NIL
    DATA ONLISTCLOSE               INIT NIL
    DATA ONLISTDISPLAY             INIT NIL
+   DATA ONREFRESH                 INIT NIL
    DATA SEARCHLAPSE               INIT 1000
+   DATA SOURCEORDER               INIT NIL
    DATA TYPE                      INIT "COMBO" READONLY
    DATA UFIELD                    INIT NIL
    DATA UINITIME                  INIT 0
@@ -438,7 +443,7 @@ CLASS TCOMBO FROM TLABEL
    METHOD CARETPOS                SETGET
    METHOD DEFINE
    METHOD DELETEALLITEMS
-   METHOD DELETEITEM(NPOS)
+   METHOD DELETEITEM
    METHOD DISPLAYVALUE            SETGET
    METHOD EVENTS
    METHOD EVENTS_COMMAND
@@ -608,7 +613,7 @@ ENDCLASS
 *------------------------------------------------------------------------------*
 CLASS TEDIT FROM TTEXT
    DATA TYPE                      INIT "EDIT" READONLY
-   DATA NONFOCUSPOS               INIT -3
+   DATA NONFOCUSPOS               INIT -4
 
    METHOD DEFINE
    METHOD EVENTS_ENTER
@@ -851,6 +856,7 @@ ENDCLASS
 
 *------------------------------------------------------------------------------*
 CLASS TGRID FROM TCONTROL
+   DATA AEDITCONTROLS             INIT NIL
    DATA AEDITKEYS                 INIT NIL
    DATA AHEADCLICK                INIT NIL
    DATA AHEADERIMAGE              INIT {}
@@ -858,10 +864,11 @@ CLASS TGRID FROM TCONTROL
    DATA AHEADERS                  INIT {}
    DATA AHIDDENCOLS               INIT {}
    DATA AJUST                     INIT NIL
+   DATA ALLOWAPPEND               INIT .F.
    DATA ALLOWCHANGESIZE           INIT .T.
+   DATA ALLOWDELETE               INIT .F.
    DATA ALLOWEDIT                 INIT .F.
    DATA ALLOWMOVECOLUMN           INIT .T.
-   DATA APPEND                    INIT .F.
    DATA ASELECTEDCOLORS           INIT {}
    DATA AWHEN                     INIT {}
    DATA AWIDTHS                   INIT {}
@@ -870,9 +877,13 @@ CLASS TGRID FROM TCONTROL
    DATA BBEFOREAUTOFIT            INIT NIL
    DATA BBEFORECOLMOVE            INIT NIL
    DATA BBEFORECOLSIZE            INIT NIL
+   DATA BDELWHEN                  INIT NIL
    DATA BONENTER                  INIT NIL
+   DATA BPOSITION                 INIT 0
+   DATA CEDITKEY                  INIT "F2"
    DATA CROWEDITTITLE             INIT NIL
    DATA CTEXT                     INIT ""
+   DATA DELMSG                    INIT NIL
    DATA DYNAMICBACKCOLOR          INIT {}
    DATA DYNAMICFORECOLOR          INIT {}
    DATA EDITCONTROLS              INIT NIL
@@ -880,16 +891,22 @@ CLASS TGRID FROM TCONTROL
    DATA GRIDBACKCOLOR             INIT {}
    DATA GRIDFORECOLOR             INIT {}
    DATA GRIDSELECTEDCOLORS        INIT {}
+   DATA HEADERFONTHANDLE          INIT NIL
    DATA HEADERIMAGELIST           INIT NIL
    DATA INPLACE                   INIT .F.
    DATA LAPPENDMODE               INIT .F.
+   DATA LBUTTONS                  INIT .F.
    DATA LCHECKBOXES               INIT .F.
    DATA LEDITMODE                 INIT .F.
    DATA LEXTENDDBLCLICK           INIT .F.
+   DATA LFIXEDCONTROLS            INIT .F.
    DATA LFOCUSRECT                INIT .T.
+   DATA LLIKEEXCEL                INIT .F.
    DATA LNESTED                   INIT .F.
    DATA LNESTEDEDIT               INIT .F.
    DATA LNOGRID                   INIT .F.
+   DATA LNODELMSG                 INIT .F.
+   DATA LNOMODAL                  INIT .F.
    DATA LPLM                      INIT .F.
    DATA NCOLPOS                   INIT 0
    DATA NHEIGHT                   INIT 120
@@ -898,6 +915,7 @@ CLASS TGRID FROM TCONTROL
    DATA ONABORTEDIT               INIT NIL
    DATA ONAPPEND                  INIT NIL
    DATA ONCHECKCHANGE             INIT NIL
+   DATA ONDELETE                  INIT NIL
    DATA ONDISPINFO                INIT NIL
    DATA ONEDITCELL                INIT NIL
    DATA PICTURE                   INIT NIL
@@ -914,6 +932,7 @@ CLASS TGRID FROM TCONTROL
 
    METHOD ADDCOLUMN
    METHOD ADDITEM
+   METHOD APPEND                  SETGET
    METHOD APPENDITEM
    METHOD BACKCOLOR               SETGET
    METHOD CELL
@@ -948,6 +967,7 @@ CLASS TGRID FROM TCONTROL
    METHOD EVENTS_ENTER
    METHOD EVENTS_NOTIFY
    METHOD FIRSTSELECTEDITEM
+   METHOD FIXCONTROLS             SETGET
    METHOD FONTCOLOR               SETGET
    METHOD GOBOTTOM
    METHOD GOTOP
@@ -955,6 +975,7 @@ CLASS TGRID FROM TCONTROL
    METHOD HEADERHEIGHT
    METHOD HEADERIMAGE
    METHOD HEADERIMAGEALIGN
+   METHOD HEADERSETFONT
    METHOD INSERTBLANK
    METHOD INSERTITEM
    METHOD ISCOLUMNREADONLY
@@ -979,6 +1000,7 @@ CLASS TGRID FROM TCONTROL
    METHOD SETSELECTEDCOLORS       SETGET
    METHOD SORTCOLUMN
    METHOD TOEXCEL
+   METHOD TOOPENOFFICE
    METHOD UP
    METHOD VALUE                   SETGET
 ENDCLASS
@@ -1019,13 +1041,22 @@ ENDCLASS
 
 *------------------------------------------------------------------------------*
 CLASS TGRIDCONTROL
+   DATA BCANCEL                   INIT NIL
+   DATA BOK                       INIT NIL
    DATA BVALID                    INIT NIL
    DATA BWHEN                     INIT NIL
+   DATA CIMAGECANCEL              INIT 'EDIT_CANCEL_16'
+   DATA CIMAGEOK                  INIT 'EDIT_OK_16'
    DATA CMEMVAR                   INIT NIL
    DATA CVALIDMESSAGE             INIT NIL
+   DATA LBUTTONS                  INIT .F.
+   DATA LLIKEEXCEL                INIT .F.
+   DATA LNOMODAL                  INIT .F.
    DATA NDEFHEIGHT                INIT 24
    DATA NDEFWIDTH                 INIT 140
+   DATA NONFOCUSPOS               INIT NIL
    DATA OCONTROL                  INIT NIL
+   DATA OGRID                     INIT NIL
    DATA OWINDOW                   INIT NIL
    DATA TYPE                      INIT "TGRIDCONTROL" READONLY
    DATA VALUE                     INIT NIL
@@ -1058,12 +1089,16 @@ ENDCLASS
 CLASS TGRIDCONTROLCOMBOBOX FROM TGRIDCONTROL
    DATA AITEMS                    INIT {}
    DATA AVALUES                   INIT NIL
-   DATA OGRID                     INIT NIL
+   DATA CFIELD                    INIT ""
+   DATA CRETVALTYPE               INIT "N"
+   DATA CVALUESOURCE              INIT ""
+   DATA CWORKAREA                 INIT ""
 
    METHOD CREATECONTROL
    METHOD CREATEWINDOW
    METHOD GRIDVALUE
    METHOD NEW
+   METHOD REFRESH
    METHOD STR2VAL
 ENDCLASS
 
@@ -1072,7 +1107,6 @@ CLASS TGRIDCONTROLCOMBOBOXTEXT FROM TGRIDCONTROL
    DATA AITEMS                    INIT {}
    DATA LINCREMENTAL              INIT .F.
    DATA LWINSIZE                  INIT .F.
-   DATA OGRID                     INIT NIL
 
    METHOD CONTROLVALUE            SETGET
    METHOD CREATECONTROL
@@ -1097,19 +1131,18 @@ ENDCLASS
 *------------------------------------------------------------------------------*
 CLASS TGRIDCONTROLIMAGEDATA FROM TGRIDCONTROL
    DATA ODATA
-   DATA OGRID
    DATA TYPE                      INIT "TGRIDCONTROLIMAGEDATA" READONLY
 
    METHOD CONTROLVALUE SETGET
    METHOD CREATECONTROL
    METHOD CREATEWINDOW
+   METHOD ENABLED                 SETGET
    METHOD NEW
+   METHOD ONLOSTFOCUS             SETGET
 ENDCLASS
 
 *------------------------------------------------------------------------------*
 CLASS TGRIDCONTROLIMAGELIST FROM TGRIDCONTROL
-   DATA OGRID
-
    METHOD CONTROLVALUE            SETGET
    METHOD CREATECONTROL
    METHOD CREATEWINDOW
@@ -1132,10 +1165,14 @@ ENDCLASS
 
 *------------------------------------------------------------------------------*
 CLASS TGRIDCONTROLMEMO FROM TGRIDCONTROL
+   DATA CTITLE                    INIT _OOHG_MESSAGES( 1, 11 )
+   DATA LCLEANCRLF                INIT .F.
    DATA NDEFHEIGHT                INIT 84
 
    METHOD CREATECONTROL
    METHOD CREATEWINDOW
+   METHOD GRIDVALUE
+   METHOD NEW
 ENDCLASS
 
 *------------------------------------------------------------------------------*
@@ -1152,6 +1189,7 @@ ENDCLASS
 
 *------------------------------------------------------------------------------*
 CLASS TGRIDCONTROLTEXTBOX FROM TGRIDCONTROL
+   DATA CEDITKEY                  INIT "F2"
    DATA CMASK                     INIT ""
    DATA CTYPE                     INIT ""
 
@@ -1242,6 +1280,9 @@ CLASS TIMAGE FROM TCONTROL
    DATA CPICTURE                  INIT ""
    DATA HIMAGE                    INIT NIL
    DATA IMAGESIZE                 INIT .F.
+   DATA LNO3DCOLORS               INIT .F.
+   DATA LNODIBSECTION             INIT .F.
+   DATA LNOTRANSPARENT            INIT .F.
    DATA NHEIGHT                   INIT 100
    DATA NWIDTH                    INIT 100
    DATA STRETCH                   INIT .F.
@@ -1249,6 +1290,7 @@ CLASS TIMAGE FROM TCONTROL
 
    METHOD BUFFER                  SETGET
    METHOD DEFINE
+   METHOD EVENTS
    METHOD HBITMAP                 SETGET
    METHOD ONCLICK                 SETGET
    METHOD PICTURE                 SETGET
@@ -1534,12 +1576,13 @@ ENDCLASS
 *------------------------------------------------------------------------------*
 CLASS TOBROWSE FROM TXBROWSE
    DATA ARECMAP                   INIT {}
-   DATA LNODELMSG                 INIT .T.
    DATA LUPDATEALL                INIT .F.
+   DATA LUPDCOLS                  INIT .F.
    DATA RECCOUNT                  INIT 0
-   DATA TYPE                      INIT "BROWSE" READONLY
    DATA SYNCSTATUS                INIT NIL
+   DATA TYPE                      INIT "BROWSE" READONLY
 
+   MESSAGE EDITGRID               METHOD EDITALLCELLS
    MESSAGE GOBOTTOM               METHOD END
    MESSAGE GOTOP                  METHOD HOME
 
@@ -1554,6 +1597,7 @@ CLASS TOBROWSE FROM TXBROWSE
    METHOD EDITCELL
    METHOD EDITITEM_B
    METHOD END
+   METHOD EVENTS
    METHOD EVENTS_ENTER
    METHOD EVENTS_NOTIFY
    METHOD FASTUPDATE
@@ -1568,6 +1612,7 @@ CLASS TOBROWSE FROM TXBROWSE
    METHOD TOPBOTTOM
    METHOD UP
    METHOD UPDATE
+   METHOD UPDATECOLORS
    METHOD VALUE                   SETGET
 ENDCLASS
 
@@ -2385,9 +2430,11 @@ CLASS TTOOLBAR FROM TCONTROL
    METHOD CLIENTHEIGHTUSED
    METHOD DEFINE
    METHOD EVENTS
+   METHOD EVENTS_COMMAND
    METHOD EVENTS_NOTIFY
    METHOD EVENTS_SIZE
    METHOD HEIGHT                  SETGET
+   METHOD LOOKFORKEY
    METHOD WIDTH                   SETGET
 ENDCLASS
 
@@ -2506,23 +2553,19 @@ ENDCLASS
 CLASS TXBROWSE FROM TGRID
    DATA ACOLUMNBLOCKS             INIT NIL
    DATA AFIELDS                   INIT NIL
-   DATA ALLOWAPPEND               INIT .F.
-   DATA ALLOWDELETE               INIT .F.
    DATA AREPLACEFIELD             INIT NIL
-   DATA BDELWHEN                  INIT NIL
    DATA BOF                       INIT .F.
-   DATA DELMSG                    INIT NIL
    DATA EOF                       INIT .F.
    DATA GOBOTTOMBLOCK             INIT NIL
    DATA GOTOPBLOCK                INIT NIL
    DATA LDESCENDING               INIT .F.
    DATA LFIXEDBLOCKS              INIT .F.
    DATA LLOCKED                   INIT .F.
+   DATA LNOSHOWEMPTYROW           INIT .F.
    DATA LOCK                      INIT .F.
    DATA LRECCOUNT                 INIT .F.
    DATA LVSCROLLVISIBLE           INIT .F.
    DATA NVALUE                    INIT 0
-   DATA ONDELETE                  INIT NIL
    DATA OWORKAREA                 INIT NIL
    DATA REFRESHTYPE               INIT NIL
    DATA SCROLLBUTTON              INIT NIL
@@ -2571,6 +2614,7 @@ CLASS TXBROWSE FROM TGRID
    METHOD SETSCROLLPOS
    METHOD SIZEPOS
    METHOD TOEXCEL
+   METHOD TOOPENOFFICE
    METHOD TOPBOTTOM
    METHOD UP
    METHOD VISIBLE                 SETGET
