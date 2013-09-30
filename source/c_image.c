@@ -1,5 +1,5 @@
 /*
- * $Id: c_image.c,v 1.32 2013-09-23 02:22:07 fyurisich Exp $
+ * $Id: c_image.c,v 1.33 2013-09-30 02:34:54 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -112,6 +112,10 @@
 #include "olectl.h"
 #include "oohg.h"
 
+// Functions for automatic use of Gdi+
+BOOL _OOHG_UseGDIP( void );
+HANDLE _OOHG_GDIPLoadPicture( HGLOBAL, HWND, LONG, long, long );
+
 HANDLE _OOHG_OleLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG lBackColor, long lWidth2, long lHeight2 )
 {
    HANDLE hImage = 0;
@@ -122,6 +126,11 @@ HANDLE _OOHG_OleLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG lBackColor, long l
    HDC hdc1, hdc2;
    RECT rect;
    HBRUSH hBrush;
+
+   if( _OOHG_UseGDIP() )
+   {
+      return _OOHG_GDIPLoadPicture( hGlobal, hWnd, lBackColor, lWidth2, lHeight2 );
+   }
 
    CreateStreamOnHGlobal( hGlobal, FALSE, &iStream );
    OleLoadPicture( iStream, 0, TRUE, &IID_IPicture, ( LPVOID * ) iPictureRef );

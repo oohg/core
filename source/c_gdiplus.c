@@ -1,5 +1,5 @@
 /*
- * $Id: c_gdiplus.c,v 1.2 2013-09-25 23:12:03 fyurisich Exp $
+ * $Id: c_gdiplus.c,v 1.3 2013-09-30 02:34:54 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -198,8 +198,8 @@ BOOL SaveHBitmapToFile( void *, const char *, UINT, UINT, const char *, ULONG );
 BOOL GetEnCodecClsid( const char *, CLSID * );
 LONG LoadImageFromFile( const char *, void** );
 
-void *GdiPlusHandle;
-ULONG GdiPlusToken;
+void *GdiPlusHandle = NULL;
+ULONG GdiPlusToken = 0;
 unsigned char *MimeTypeOld;
 
 GDIPLUS_STARTUP_INPUT GdiPlusStartupInput;
@@ -299,9 +299,10 @@ HB_FUNC( GPLUSDEINIT )
    hb_retl( InitDeinitGdiPlus( FALSE ) );
 }
 
+static BOOL GDIP_InitOK;
+
 BOOL InitDeinitGdiPlus( BOOL OnOff )
 {
-   static BOOL InitOK;
 
    if( ! OnOff )
    {
@@ -311,12 +312,13 @@ BOOL InitDeinitGdiPlus( BOOL OnOff )
       if( GdiPlusHandle != NULL )
          FreeLibrary( GdiPlusHandle );
 
-      InitOK = FALSE;
+      GDIP_InitOK = FALSE;
       GdiPlusToken = 0;
+      GdiPlusHandle = NULL;
 
       return TRUE;
    }
-   if( InitOK )
+   if( GDIP_InitOK )
       return TRUE;
 
    if( ! LoadGdiPlusDll() )
@@ -330,113 +332,102 @@ BOOL InitDeinitGdiPlus( BOOL OnOff )
    if( GdiPlusStartup( &GdiPlusToken, &GdiPlusStartupInput, NULL ) )
    {
       FreeLibrary( GdiPlusHandle );
+      GdiPlusHandle = NULL;
 
       return FALSE;
    }
 
-   InitOK = TRUE;
+   GDIP_InitOK = TRUE;
 
    return TRUE;
 }
 
 BOOL LoadGdiPlusDll( void )
 {
-   if( GdiPlusHandle != NULL )
-      FreeLibrary( GdiPlusHandle );
+   void *GdiPlusHandle_pre;
 
-   if( ( GdiPlusHandle = LoadLibrary( "GdiPlus.dll") ) == NULL )
+   if( ( GdiPlusHandle_pre = LoadLibrary( "GdiPlus.dll") ) == NULL )
       return FALSE;
 
-   if( ( GdiPlusStartup = (GDIPLUSSTARTUP) GetProcAddress( GdiPlusHandle, "GdiplusStartup" ) ) == NULL )
+   if( ( GdiPlusStartup = (GDIPLUSSTARTUP) GetProcAddress( GdiPlusHandle_pre, "GdiplusStartup" ) ) == NULL )
    {
-      FreeLibrary(GdiPlusHandle);
-
+      FreeLibrary(GdiPlusHandle_pre);
       return FALSE;
    }
 
-   if( ( GdiPlusShutdown = (GDIPPLUSSHUTDOWN) GetProcAddress( GdiPlusHandle, "GdiplusShutdown" ) ) == NULL )
+   if( ( GdiPlusShutdown = (GDIPPLUSSHUTDOWN) GetProcAddress( GdiPlusHandle_pre, "GdiplusShutdown" ) ) == NULL )
    {
-      FreeLibrary(GdiPlusHandle);
-
+      FreeLibrary( GdiPlusHandle_pre );
       return FALSE;
    }
 
-   if( ( GdipLoadImageFromStream = (GDIPLODIMAGEFROMSTREAM) GetProcAddress( GdiPlusHandle, "GdipLoadImageFromStream" ) ) == NULL )
+   if( ( GdipLoadImageFromStream = (GDIPLODIMAGEFROMSTREAM) GetProcAddress( GdiPlusHandle_pre, "GdipLoadImageFromStream" ) ) == NULL )
    {
-      FreeLibrary( GdiPlusHandle );
-
+      FreeLibrary( GdiPlusHandle_pre );
       return FALSE;
    }
 
-   if( ( GdipCreateHBITMAPFromBitmap = (GDIPCREATEHBITMAPFROMBITMAP) GetProcAddress( GdiPlusHandle, "GdipCreateHBITMAPFromBitmap" ) ) == NULL )
+   if( ( GdipCreateHBITMAPFromBitmap = (GDIPCREATEHBITMAPFROMBITMAP) GetProcAddress( GdiPlusHandle_pre, "GdipCreateHBITMAPFromBitmap" ) ) == NULL )
    {
-      FreeLibrary( GdiPlusHandle );
-
+      FreeLibrary( GdiPlusHandle_pre );
       return FALSE;
    }
 
-   if( ( GdipCreateBitmapFromHBITMAP = (GDIPCREATEBITMAPFROMHBITMAP) GetProcAddress( GdiPlusHandle, "GdipCreateBitmapFromHBITMAP" ) ) == NULL )
+   if( ( GdipCreateBitmapFromHBITMAP = (GDIPCREATEBITMAPFROMHBITMAP) GetProcAddress( GdiPlusHandle_pre, "GdipCreateBitmapFromHBITMAP" ) ) == NULL )
    {
-      FreeLibrary( GdiPlusHandle );
-
+      FreeLibrary( GdiPlusHandle_pre );
       return FALSE;
    }
 
-   if( ( GdipGetImageEncodersSize = (GDIPGETIMAGEENCODERSSIZE) GetProcAddress( GdiPlusHandle, "GdipGetImageEncodersSize" ) ) == NULL )
+   if( ( GdipGetImageEncodersSize = (GDIPGETIMAGEENCODERSSIZE) GetProcAddress( GdiPlusHandle_pre, "GdipGetImageEncodersSize" ) ) == NULL )
    {
-      FreeLibrary(GdiPlusHandle);
-
+      FreeLibrary( GdiPlusHandle_pre );
       return FALSE;
    }
 
-   if( ( GdipGetImageEncoders = (GDIPGETIMAGEENCODERS) GetProcAddress( GdiPlusHandle, "GdipGetImageEncoders" ) ) == NULL )
+   if( ( GdipGetImageEncoders = (GDIPGETIMAGEENCODERS) GetProcAddress( GdiPlusHandle_pre, "GdipGetImageEncoders" ) ) == NULL )
    {
-      FreeLibrary(GdiPlusHandle);
-
+      FreeLibrary( GdiPlusHandle_pre );
       return FALSE;
    }
 
-   if( ( GdipSaveImageToFile = (GDIPSAVEIMAGETOFILE) GetProcAddress( GdiPlusHandle, "GdipSaveImageToFile" ) ) == NULL )
+   if( ( GdipSaveImageToFile = (GDIPSAVEIMAGETOFILE) GetProcAddress( GdiPlusHandle_pre, "GdipSaveImageToFile" ) ) == NULL )
    {
-      FreeLibrary(GdiPlusHandle);
-
+      FreeLibrary( GdiPlusHandle_pre );
       return FALSE;
    }
 
-   if( ( GdipDisposeImage = (GDIPDISPOSEIMAGE) GetProcAddress( GdiPlusHandle, "GdipDisposeImage" ) ) == NULL )
+   if( ( GdipDisposeImage = (GDIPDISPOSEIMAGE) GetProcAddress( GdiPlusHandle_pre, "GdipDisposeImage" ) ) == NULL )
    {
-      FreeLibrary(GdiPlusHandle);
-
+      FreeLibrary( GdiPlusHandle_pre );
       return FALSE;
    }
 
-   if( ( GdipGetImageThumbnail = (GDIPGETIMANGETHUMBNAIL) GetProcAddress( GdiPlusHandle, "GdipGetImageThumbnail" ) ) == NULL )
+   if( ( GdipGetImageThumbnail = (GDIPGETIMANGETHUMBNAIL) GetProcAddress( GdiPlusHandle_pre, "GdipGetImageThumbnail" ) ) == NULL )
    {
-      FreeLibrary(GdiPlusHandle);
-
+      FreeLibrary( GdiPlusHandle_pre );
       return FALSE;
    }
 
-   if( ( GdipLoadImageFromFile = (GDIPLOADIMAGEFROMFILE) GetProcAddress( GdiPlusHandle, "GdipLoadImageFromFile" ) ) == NULL )
+   if( ( GdipLoadImageFromFile = (GDIPLOADIMAGEFROMFILE) GetProcAddress( GdiPlusHandle_pre, "GdipLoadImageFromFile" ) ) == NULL )
    {
-      FreeLibrary(GdiPlusHandle);
-
+      FreeLibrary( GdiPlusHandle_pre );
       return FALSE;
    }
 
-   if( ( GdipGetImageWidth = (GDIPGETIMAGEWIDTH) GetProcAddress( GdiPlusHandle, "GdipGetImageWidth" ) ) == NULL )
+   if( ( GdipGetImageWidth = (GDIPGETIMAGEWIDTH) GetProcAddress( GdiPlusHandle_pre, "GdipGetImageWidth" ) ) == NULL )
    {
-      FreeLibrary(GdiPlusHandle);
-
+      FreeLibrary( GdiPlusHandle_pre );
       return FALSE;
    }
 
-   if( ( GdipGetImageHeight = (GDIPGETIMAGEHEIGHT) GetProcAddress( GdiPlusHandle, "GdipGetImageHeight" ) ) == NULL )
+   if( ( GdipGetImageHeight = (GDIPGETIMAGEHEIGHT) GetProcAddress( GdiPlusHandle_pre, "GdipGetImageHeight" ) ) == NULL )
    {
-      FreeLibrary(GdiPlusHandle);
-
+      FreeLibrary( GdiPlusHandle_pre );
       return FALSE;
    }
+
+   GdiPlusHandle = GdiPlusHandle_pre;
 
    return TRUE;
 }
@@ -573,11 +564,11 @@ BOOL SaveHBitmapToFile( void *HBitmap, const char *FileName, unsigned int Width,
          return FALSE;
       }
 
-      strcpy( MimeTypeOld, MimeType );
+      strcpy( ( char * ) MimeTypeOld, MimeType );
    }
    else
    {
-      if( strcmp( MimeTypeOld, MimeType ) != 0 )
+      if( strcmp( ( char * ) MimeTypeOld, MimeType ) != 0 )
       {
          LocalFree( MimeTypeOld );
 
@@ -595,7 +586,7 @@ BOOL SaveHBitmapToFile( void *HBitmap, const char *FileName, unsigned int Width,
 
             return FALSE;
          }
-         strcpy( MimeTypeOld, MimeType );
+         strcpy( ( char * ) MimeTypeOld, MimeType );
       }
    }
 
@@ -818,4 +809,120 @@ HB_FUNC( GPLUSGETIMAGEHEIGHT )
    GdipGetImageHeight( image, &height );
 
    hb_retni( height );
+}
+
+BOOL GDIP_IsInit( void )
+{
+   return GDIP_InitOK;
+}
+
+static int _OOHG_GdiPlus = 2;
+
+HB_FUNC( _OOHG_SETGDIP )
+{
+   int iNewStatus;
+
+   if( ISNUM( 1 ) )
+   {
+      iNewStatus = hb_parni( 1 );
+      if( iNewStatus >= 0 && iNewStatus <= 2 )
+      {
+         _OOHG_GdiPlus = iNewStatus;
+      }
+   }
+   else if( ISLOG( 1 ) )
+   {
+      _OOHG_GdiPlus = hb_parl( 1 ) ? 1 : 0;
+   }
+
+   if( _OOHG_GdiPlus == 0 )
+   {
+      InitDeinitGdiPlus( FALSE );
+   }
+   else if( _OOHG_GdiPlus == 1 )
+   {
+      InitDeinitGdiPlus( TRUE );
+   }
+
+   hb_retni( _OOHG_GdiPlus );
+}
+
+BOOL _OOHG_UseGDIP( void )
+{
+   BOOL bRet = FALSE;
+
+   if( _OOHG_GdiPlus == 1 || _OOHG_GdiPlus == 2 )
+   {
+      bRet = InitDeinitGdiPlus( TRUE );
+   }
+
+   return bRet;
+}
+
+HB_FUNC( _OOHG_USEGDIP )
+{
+   hb_retl( _OOHG_UseGDIP() );
+}
+
+HBITMAP _OOHG_ScaleImage( HWND, HBITMAP, int, int, int, LONG );
+
+HANDLE _OOHG_GDIPLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG lBackColor, long lWidth2, long lHeight2 )
+{
+   HBITMAP hImage = 0, hOldImage;
+   IStream * iStream;
+   gPlusImage gImage;
+   UINT uiWidth, uiHeight;
+
+   // Creates Stream
+   CreateStreamOnHGlobal( hGlobal, FALSE, &iStream );
+
+   // Creates Gdi+ image
+   if( GdipLoadImageFromStream( iStream, &gImage ) != 0 )
+   {
+      return 0;
+   }
+   GdipGetImageWidth(  gImage, ( UINT * ) &uiWidth );
+   GdipGetImageHeight( gImage, ( UINT * ) &uiHeight );
+
+   // Back color
+   if( lBackColor == -1 )
+   {
+      lBackColor = GetSysColor( COLOR_BTNFACE );
+   }
+
+   // Creates HBITMAP
+   if( GdipCreateHBITMAPFromBitmap( gImage, &hImage, ( ULONG ) lBackColor ) != 0 )
+   {
+      hImage = 0;
+   }
+
+   // Release Gdi+ image
+   GdipDisposeImage( gImage );
+
+   if( hImage )
+   {
+      // Resize image
+      if( lWidth2 && lHeight2 )
+      {
+         // GetClientRect( hWnd, &rect );
+         // lWidth2 = rect.right;
+         // lHeight2 = rect.bottom;
+      }
+      else
+      {
+         // Takes "real" image size
+         lWidth2  = uiWidth;
+         lHeight2 = uiHeight;
+      }
+
+      if( lWidth2 != ( long ) uiWidth || lHeight2 != ( long ) uiHeight )
+      {
+         hOldImage = hImage;
+         hImage = _OOHG_ScaleImage( hWnd, hOldImage, lWidth2, lHeight2, 0, lBackColor );
+         DeleteObject( hOldImage );
+      }
+
+   }
+
+   return ( HANDLE ) hImage;
 }
