@@ -1,5 +1,5 @@
 /*
- * $Id: c_gdiplus.c,v 1.3 2013-09-30 02:34:54 guerra000 Exp $
+ * $Id: c_gdiplus.c,v 1.4 2013-09-30 20:36:33 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -822,7 +822,7 @@ HB_FUNC( _OOHG_SETGDIP )
 {
    int iNewStatus;
 
-   if( ISNUM( 1 ) )
+   if( HB_ISNUM( 1 ) )
    {
       iNewStatus = hb_parni( 1 );
       if( iNewStatus >= 0 && iNewStatus <= 2 )
@@ -830,7 +830,7 @@ HB_FUNC( _OOHG_SETGDIP )
          _OOHG_GdiPlus = iNewStatus;
       }
    }
-   else if( ISLOG( 1 ) )
+   else if( HB_ISLOG( 1 ) )
    {
       _OOHG_GdiPlus = hb_parl( 1 ) ? 1 : 0;
    }
