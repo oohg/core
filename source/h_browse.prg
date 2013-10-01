@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.130 2013-09-10 01:42:10 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.131 2013-10-01 23:46:18 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -110,7 +110,6 @@ CLASS TOBrowse FROM TXBrowse
     * When NIL the browse behaves according to SET BROWESYNC value.
     */
    DATA lUpdateAll      INIT .F.
-   DATA lUpdCols        INIT .F.
 
    METHOD Define
    METHOD Refresh

@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.100 2013-09-29 23:02:35 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.101 2013-10-01 23:46:18 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -81,6 +81,7 @@ CLASS TXBROWSE FROM TGrid
    DATA aColumnBlocks     INIT nil
    DATA lFixedBlocks      INIT .F.
    DATA lNoShowEmptyRow   INIT .F.
+   DATA lUpdCols          INIT .F.
 
    METHOD Define
    METHOD Refresh
@@ -158,7 +159,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lFixedCols, abortedit, click, lFixedWidths, lFixedBlocks, ;
                bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
                bBeforeAutofit, lLikeExcel, lButtons, lNoDelMsg, lFixedCtrls, ;
-               lNoShowEmptyRow ) CLASS TXBrowse
+               lNoShowEmptyRow, lUpdCols ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
 Local nWidth2, nCol2, lLocked, oScroll, z
 
@@ -170,6 +171,7 @@ Local nWidth2, nCol2, lLocked, oScroll, z
    ASSIGN lFixedBlocks      VALUE lFixedBlocks    TYPE "L" DEFAULT _OOHG_XBrowseFixedBlocks
    ASSIGN lFixedCtrls       VALUE lFixedCtrls     TYPE "L" DEFAULT _OOHG_XBrowseFixedControls
    ASSIGN ::lNoShowEmptyRow VALUE lNoShowEmptyRow TYPE "L"
+   ASSIGN ::lUpdCols        VALUE lUpdCols        TYPE "L"
 
    If ValType( columninfo ) == "A" .AND. LEN( columninfo ) > 0
       If ValType( ::aFields ) == "A"
@@ -324,6 +326,10 @@ Local nRow, nCount, nSkipped
    If Empty( ::WorkArea ) .OR. ( ValType( ::WorkArea ) $ "CM" .AND. Select( ::WorkArea ) == 0 )
       // No workarea specified...
    ElseIf ! ::lLocked
+      If ::Visible
+         ::SetRedraw( .F. )
+      EndIf
+
       nCount := ::CountPerPage
       ASSIGN nCurrent       VALUE nCurrent       TYPE "N" DEFAULT ::CurrentRow
       ASSIGN lNoEmptyBottom VALUE lNoEmptyBottom TYPE "L" DEFAULT .F.
@@ -370,6 +376,10 @@ Local nRow, nCount, nSkipped
          nCurrent := nRow
       EndIf
       ::CurrentRow := nCurrent
+
+      If ::Visible
+         ::SetRedraw( .T. )
+      EndIf
    EndIf
 Return Self
 
@@ -1123,8 +1133,12 @@ Local nValue
       Else
          nValue--
       EndIf
-      ::RefreshRow( nValue )
-      ::CurrentRow := nValue
+      If ::lUpdCols
+         ::Refresh( nValue )
+      Else
+         ::RefreshRow( nValue )
+         ::CurrentRow := nValue
+      EndIf
       ::DoChange()
    EndIf
 Return Self
@@ -1142,8 +1156,12 @@ Local nValue
       Else
          nValue++
       EndIf
-      ::RefreshRow( nValue )
-      ::CurrentRow := nValue
+      If ::lUpdCols
+         ::Refresh( nValue )
+      Else
+         ::RefreshRow( nValue )
+         ::CurrentRow := nValue
+      EndIf
       ::DoChange()
    ElseIf ::AllowAppend
       ::EditItem( .T. )

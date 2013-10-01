@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.69 2013-09-30 02:04:14 fyurisich Exp $
+ * $Id: classes.txt,v 1.70 2013-10-01 23:46:17 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -1577,7 +1577,6 @@ ENDCLASS
 CLASS TOBROWSE FROM TXBROWSE
    DATA ARECMAP                   INIT {}
    DATA LUPDATEALL                INIT .F.
-   DATA LUPDCOLS                  INIT .F.
    DATA RECCOUNT                  INIT 0
    DATA SYNCSTATUS                INIT NIL
    DATA TYPE                      INIT "BROWSE" READONLY
@@ -2564,6 +2563,7 @@ CLASS TXBROWSE FROM TGRID
    DATA LNOSHOWEMPTYROW           INIT .F.
    DATA LOCK                      INIT .F.
    DATA LRECCOUNT                 INIT .F.
+   DATA LUPDCOLS                  INIT .F.
    DATA LVSCROLLVISIBLE           INIT .F.
    DATA NVALUE                    INIT 0
    DATA OWORKAREA                 INIT NIL

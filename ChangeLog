@@ -1,11 +1,22 @@
 /*
- * $Id: ChangeLog,v 1.1164 2013-09-30 20:36:32 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1165 2013-10-01 23:46:17 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-10-01 20:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_altsyntax.ch
+   * include/i_xbrowse.ch
+   * source/h_xbrowse.prg
+     + DATA lUpdCols.
+     + Added clause UPDATECOLOR to force a color update of the
+       displayed items on every change.
+     * Redraw is disabled during ::Refresh().
+   * source/h_xbrowse.prg
+     - DATA lUpdCols.
 
 2013-09-30 17:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/c_gdiplus.c

@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.99 2013-09-29 23:02:35 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.100 2013-10-01 23:46:18 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -2690,7 +2690,8 @@ XBROWSE
         _OOHG_ActiveControlNoDeleteMsg      := .F. ;;
         _OOHG_ActiveControlFixedCtrls       := .F. ;;
         _OOHG_ActiveControlDynamicCtrls     := .F. ;;
-        _OOHG_ActiveControlNoShowEmptyRow   := .F.
+        _OOHG_ActiveControlNoShowEmptyRow   := .F. ;;
+        _OOHG_ActiveControlUpdateColors     := .F.
 
 #xcommand END XBROWSE ;
         => ;
@@ -2775,7 +2776,8 @@ XBROWSE
                 _OOHG_ActiveControlUseButtons, ;
                 _OOHG_ActiveControlNoDeleteMsg, ;
                 iif( _OOHG_ActiveControlFixedCtrls, .T., iif( _OOHG_ActiveControlDynamicCtrls, .F., Nil ) ), ;
-                _OOHG_ActiveControlNoShowEmptyRow )
+                _OOHG_ActiveControlNoShowEmptyRow, ;
+                _OOHG_ActiveControlUpdateColors )
 
 /*----------------------------------------------------------------------------
 HYPERLINK
