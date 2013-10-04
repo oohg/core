@@ -1,11 +1,17 @@
-/*
- * $Id: ChangeLog,v 1.1168 2013-10-03 00:18:30 fyurisich Exp $
+﻿/*
+ * $Id: ChangeLog,v 1.1169 2013-10-04 23:11:39 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-10-04 18:09 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
+   * samples/oohg/stream/TStream.prg
+     ! Fixed TStreamFile:Skip() method.
+     + ::nMinToFill property added. Autofills when buffer is lower
+       than this value.
 
 2013-10-02 21:17 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./compile_MINGW.bat

@@ -1,5 +1,5 @@
 /*
- * $Id: TStream.prg,v 1.2 2011-09-02 22:31:23 guerra000 Exp $
+ * $Id: TStream.prg,v 1.3 2013-10-04 23:11:39 guerra000 Exp $
  */
 /*
  * Data stream management class.
@@ -13,12 +13,13 @@
 #include "hbclass.ch"
 
 CLASS TStreamBase
-   DATA pBuffer    INIT nil    // Pointer to buffer
-   DATA nLen       INIT 0      // Bytes in buffer
-   DATA nMax       INIT 1024   // Buffer size
-   DATA lAutoFill  INIT .T.    // Automatic fill buffer at ::Read()
-   DATA nPosition  INIT 0      // Bytes already read
-   DATA Cargo      INIT nil    // Dummy...
+   DATA pBuffer      INIT nil    // Pointer to buffer
+   DATA nLen         INIT 0      // Bytes in buffer
+   DATA nMax         INIT 1024   // Buffer size
+   DATA nMinToFill   INIT 0      // Fills buffer when there're less bytes
+   DATA lAutoFill    INIT .T.    // Automatic fill buffer at ::Read()
+   DATA nPosition    INIT 0      // Bytes already read
+   DATA Cargo        INIT nil    // Dummy...
 
    METHOD Read          // Read buffer
    METHOD Remove        // Remove some bytes from buffer
@@ -81,7 +82,7 @@ RETURN Self
 METHOD Read( nBytes ) CLASS TStreamBase
 LOCAL cBuffer
    IF ! EMPTY( ::pBuffer )
-      IF ::lAutoFill
+      IF ::lAutoFill .OR. ( ::nMinToFill > 0 .AND. ::nLen < ::nMinToFill )
          ::Fill()
       ENDIF
       IF ! HB_ISNUMERIC( nBytes )
@@ -196,7 +197,7 @@ METHOD Skip( nCount ) CLASS TStreamBase
          nCount -= ::nLen
          ::Remove( ::nLen )
       ENDIF
-      IF nCount > 0 .OR. ::lAutoFill
+      IF nCount > 0 .OR. ::lAutoFill .OR. ( ::nMinToFill > 0 .AND. ::nLen < ::nMinToFill )
          ::Fill()
       ENDIF
    ENDDO
@@ -244,7 +245,7 @@ RETURN
 METHOD IsLine() CLASS TStreamBase
 LOCAL lIsLine := .F.
    IF ! EMPTY( ::pBuffer )
-      IF ::lAutoFill
+      IF ::lAutoFill .OR. ( ::nMinToFill > 0 .AND. ::nLen < ::nMinToFill )
          ::Fill()
       ENDIF
       IF ::nLen > 0 .AND. ::lLf
@@ -262,7 +263,7 @@ RETURN lIsLine
 METHOD GetLine() CLASS TStreamBase
 LOCAL cBuffer := "", nPos
    IF ! EMPTY( ::pBuffer )
-      IF ::lAutoFill
+      IF ::lAutoFill .OR. ( ::nMinToFill > 0 .AND. ::nLen < ::nMinToFill )
          ::Fill()
       ENDIF
       IF ::nLen > 0 .AND. ::lLf
@@ -563,12 +564,11 @@ LOCAL nCurrent, nSize
    nCount := INT( nCount )
    IF ::nLen >= nCount
       ::Remove( nCount )
-      ::nLen := ::nLen - nCount
       nCount := 0
    ELSE
       nCount := nCount - ::nLen
       ::Remove( ::nLen )
-      IF ::IsConnected()
+      IF ::IsConnected() .AND. nCount > 0
          nCurrent := FSeek( ::nHdl, 0, 1 )
          nSize := FSeek( ::nHdl, 0, 2 )
          nCount := MIN( nCount, MAX( nSize - nCurrent, 0 ) )
@@ -576,7 +576,7 @@ LOCAL nCurrent, nSize
          ::nPosition := ::nPosition + nCount
       ENDIF
    ENDIF
-   IF ::lAutoFill
+   IF ::lAutoFill .OR. ( ::nMinToFill > 0 .AND. ::nLen < ::nMinToFill )
       ::Fill()
    ENDIF
 RETURN nil
