@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.226 2013-09-28 02:38:32 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.227 2013-10-07 20:04:27 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -2173,7 +2173,6 @@ Local nNotify, nColumn, lGo, nNewWidth
 
    ElseIf nNotify == HDN_ITEMCHANGED
       RedrawWindow( ::hWnd )
-      Return 1
 
    EndIf
 

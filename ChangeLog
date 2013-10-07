@@ -1,11 +1,16 @@
-﻿/*
- * $Id: ChangeLog,v 1.1169 2013-10-04 23:11:39 guerra000 Exp $
+/*
+ * $Id: ChangeLog,v 1.1170 2013-10-07 20:04:27 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-10-07 18:04 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_grid.prg
+     ! Grid is not painted properly after resizing one column and
+       clicking in a new row.
 
 2013-10-04 18:09 UTC-0500 Vicente Guerra <vicente@guerra.com.mx>
    * samples/oohg/stream/TStream.prg
