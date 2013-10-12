@@ -1,5 +1,5 @@
 /*
- * $Id: c_gdiplus.c,v 1.4 2013-09-30 20:36:33 fyurisich Exp $
+ * $Id: c_gdiplus.c,v 1.5 2013-10-12 11:28:55 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -99,9 +99,8 @@
 #include <windows.h>
 #include "hbapi.h"
 #include "hbapiitm.h"
-#include "hbstack.h"
-#include "hbapierr.h"
-#include "hbapifs.h"
+#include <commctrl.h>
+#include "oohg.h"
 
 typedef void(__stdcall* DEBUGEVENTPROC) ( void*, char* );
 typedef int(__stdcall* GET_THUMBNAIL_IMAGE_ABORT) ( void* );
