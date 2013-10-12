@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.227 2013-10-07 20:04:27 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.228 2013-10-12 00:01:00 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -171,6 +171,11 @@ CLASS TGrid FROM TControl
    DATA bPosition              INIT 0
    DATA lNoModal               INIT .F.
    DATA HeaderFontHandle       INIT Nil
+   DATA lDividerDblclick       INIT .F.
+   DATA lTracking              INIT .F.
+   DATA lBeginTrack            INIT .F.
+   DATA lEndTrack              INIT .F.
+   DATA nVisibleItems          INIT 0
 
    METHOD Define
    METHOD Define2
@@ -206,6 +211,7 @@ CLASS TGrid FROM TControl
    METHOD ItemCount            BLOCK { | Self | ListViewGetItemCount( ::hWnd ) }
    METHOD CountPerPage         BLOCK { | Self | ListViewGetCountPerPage( ::hWnd ) }
    METHOD FirstSelectedItem    BLOCK { | Self | ListView_GetFirstItem( ::hWnd ) }
+   METHOD FirstVisibleItem
    METHOD Header
    METHOD FontColor            SETGET
    METHOD BackColor            SETGET
@@ -477,6 +483,20 @@ Local ControlHandle, aImageList, i
    ASSIGN ::OnAppend       VALUE onappend       TYPE "B"
 
 Return Self
+
+*-----------------------------------------------------------------------------*
+METHOD FirstVisibleItem CLASS TGrid
+*-----------------------------------------------------------------------------*
+Local nRet
+   If ::ItemCount > 0
+      nRet := ListView_GetTopIndex( ::hWnd )
+      If nRet < 1 .OR. nRet > ::ItemCount
+         nRet := 0
+      EndIf
+   Else
+      nRet := 0
+   EndIf
+Return nRet
 
 *-----------------------------------------------------------------------------*
 METHOD FixControls( lFix ) CLASS TGrid
@@ -2092,7 +2112,7 @@ Return Nil
 *-----------------------------------------------------------------------------*
 FUNCTION _OOHG_TGrid_Notify2( Self, wParam, lParam ) // CLASS TGrid
 *-----------------------------------------------------------------------------*
-Local nNotify, nColumn, lGo, nNewWidth
+Local nNotify, nColumn, lGo, nNewWidth, nResul, aRect
 
    Empty( wParam )
    nNotify := GetNotifyCode( lParam )
@@ -2145,6 +2165,38 @@ Local nNotify, nColumn, lGo, nNewWidth
          EndIf
       EndIf
 
+      /* Notification sequence:
+         for XP, Win7 with manifest
+            when user starts dragging
+               HDN_BEGINTRACK
+            while tracking goes on
+               HDN_ITEMCHANGING
+               HDN_ITEMCHANGED
+            when user releases the mouse button
+               HDN_ENDTRACK
+               HDN_ITEMCHANGING
+               HDN_ITEMCHANGED
+               NM_RELEASEDCAPTURE
+
+         for Win7 without manifest
+            when user starts dragging
+               HDN_BEGINTRACK
+            while tracking goes on
+               HDN_TRACK
+            when user releases the mouse button
+               HDN_ENDTRACK
+               HDN_ITEMCHANGING
+               HDN_ITEMCHANGED
+               NM_RELEASEDCAPTURE
+      */
+
+      // Set HDN_BEGINTRACK flag and reset others
+      ::lBeginTrack      := .T.
+      ::lEndTrack        := .F.
+      ::lDividerDblclick := .F.
+      ::lTracking        := .F.
+      ::nVisibleItems    := ::CountPerPage()
+
    ElseIf nNotify == HDN_ENDTRACK
       // The user has finished dragging a column divider but the new width is not set yet
       If HB_IsBlock( ::bAfterColSize )
@@ -2155,7 +2207,13 @@ Local nNotify, nColumn, lGo, nNewWidth
             Set_HDITEM_cxy( lParam, nNewWidth )
          EndIf
       EndIf
-      //  Let the OS set the new width
+
+      // Set HDN_ENDTRACK flag
+      ::lEndTrack := .T.
+
+   ElseIf nNotify == HDN_TRACK
+      // A column divider is been dragged under Win7 without manifest
+      ::lTracking := .T.
 
    ElseIf nNotify == HDN_DIVIDERDBLCLICK
       If HB_IsLogical( ::AllowChangeSize ) .AND. ! ::AllowChangeSize
@@ -2171,8 +2229,62 @@ Local nNotify, nColumn, lGo, nNewWidth
          EndIf
       EndIf
 
+      /* Notification sequence for XP and Win7 with/without manifest:
+            when the user doubleclicks a header separator
+               HDN_BEGINTRACK
+               HDN_ENDTRACK
+               HDN_ITEMCHANGING
+               HDN_ITEMCHANGED
+               NM_RELEASEDCAPTURE
+               HDN_DIVIDERDBLCLICK
+               HDN_ITEMCHANGING
+               HDN_ITEMCHANGED
+      */
+
+      // Set HDN_DIVIDERDBLCLICK flag
+      ::lDividerDblclick := .T.
+
+   ElseIf nNotify == HDN_ITEMCHANGING
+     If ::lBeginTrack .AND. ! ::lEndTrack
+        // A column divider is been dragged under XP or Win7 with manifest
+        ::lTracking := .T.
+     EndIf
+
    ElseIf nNotify == HDN_ITEMCHANGED
-      RedrawWindow( ::hWnd )
+      If ::lDividerDblclick
+         ::lDividerDblclick := .F.
+         // Do default processing (needed to properly update header)
+         nResul := ExecOldWndProc( ::hWnd, WM_NOTIFY, wParam, lParam )
+
+         // Ensure column is visible
+         aRect := ListView_GetSubitemRect( ::hWnd, 0, nColumn - 1 )     // top, left, width, height
+         If aRect[ 2 ] < 0
+            ListView_Scroll( ::hWnd, aRect[ 2 ], 0 )
+         EndIf
+
+         // Forces the repaint of the last row in case the horizontal scrollbar became hidden
+         If ::nVisibleItems # ::CountPerPage()
+            ::Refresh()
+         EndIf
+
+         // Repaint the grid
+         RedrawWindow( ::ContainerhWnd )
+
+         //Prevent default processing
+         Return nResul
+      EndIf
+
+   ElseIf nNotify == NM_RELEASEDCAPTURE
+      If ::lTracking
+         ::lTracking := .F.
+         // Forces the repaint of the last row in case the horizontal scrollbar became hidden
+         If ::nVisibleItems # ::CountPerPage()
+            ::Refresh()
+         EndIf
+
+         // Repaint the grid
+         RedrawWindow( ::ContainerhWnd )
+      EndIf
 
    EndIf
 
@@ -5598,6 +5710,11 @@ static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM
    return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
 }
 
+HB_FUNC( EXECOLDWNDPROC )
+{
+   hb_retnl( (LRESULT) CallWindowProc( lpfnOldWndProc, HWNDparam( 1 ), (UINT) hb_parni( 2 ), (WPARAM) hb_parnl( 3 ), (LPARAM) hb_parnl( 4 ) ) );
+}
+
 HB_FUNC( INITLISTVIEW )
 {
    HWND hwnd;
@@ -6198,7 +6315,7 @@ HB_FUNC( LISTVIEW_ISITEMVISIBLE )
 
 HB_FUNC( LISTVIEW_GETTOPINDEX )
 {
-   hb_retnl( ListView_GetTopIndex( HWNDparam( 1 ) ) );
+   hb_retnl( ListView_GetTopIndex( HWNDparam( 1 ) ) + 1 );
 }
 
 HB_FUNC( LISTVIEW_REDRAWITEMS )

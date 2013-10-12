@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.70 2013-10-01 23:46:17 fyurisich Exp $
+ * $Id: classes.txt,v 1.71 2013-10-12 00:00:59 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -895,22 +895,27 @@ CLASS TGRID FROM TCONTROL
    DATA HEADERIMAGELIST           INIT NIL
    DATA INPLACE                   INIT .F.
    DATA LAPPENDMODE               INIT .F.
+   DATA LBEGINTRACK               INIT .F. 
    DATA LBUTTONS                  INIT .F.
    DATA LCHECKBOXES               INIT .F.
+   DATA LDIVIDERDBLCLICK          INIT .F. 
    DATA LEDITMODE                 INIT .F.
+   DATA LENDTRACK                 INIT .F. 
    DATA LEXTENDDBLCLICK           INIT .F.
    DATA LFIXEDCONTROLS            INIT .F.
    DATA LFOCUSRECT                INIT .T.
    DATA LLIKEEXCEL                INIT .F.
    DATA LNESTED                   INIT .F.
    DATA LNESTEDEDIT               INIT .F.
-   DATA LNOGRID                   INIT .F.
    DATA LNODELMSG                 INIT .F.
+   DATA LNOGRID                   INIT .F.
    DATA LNOMODAL                  INIT .F.
    DATA LPLM                      INIT .F.
+   DATA LTRACKING                 INIT .F. 
    DATA NCOLPOS                   INIT 0
    DATA NHEIGHT                   INIT 120
    DATA NROWPOS                   INIT 0
+   DATA NVISIBLEITEMS             INIT 0   
    DATA NWIDTH                    INIT 240
    DATA ONABORTEDIT               INIT NIL
    DATA ONAPPEND                  INIT NIL

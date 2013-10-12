@@ -1,11 +1,25 @@
 /*
- * $Id: ChangeLog,v 1.1170 2013-10-07 20:04:27 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1171 2013-10-12 00:00:58 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-10-11 22:00 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     * Previous entry corrected.
+   * ./compile_MINGW.bat
+     + /i switch to prevent linking of OOHG resource file.
+   * include/i_windefs.ch
+     + Defines for HDN_ITEMCHANGING and HDN_TRACK.
+   * source/h_grid.prg
+     ! Visual artifacts when sizing column headers.
+     + METHOD FirstVisibleItem.
+     * Function ListView_GetTopIndex returns 1-based index.
+   * doc/classes.txt
+     * Updated.
 
 2013-10-07 18:04 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
@@ -1680,7 +1694,7 @@
      Thanks to Vicente Guerra for his invaluable guidance.
    * source/h_tab.prg
      * Reverted previous commit: the culprit is the grid's
-       creation and not the handling of the tab´s page.
+       creation and not the handling of the tab's page.
 
 2012-11-03 01:54 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_windows.prg

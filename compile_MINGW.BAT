@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: compile_MINGW.BAT,v 1.26 2013-10-03 00:18:30 fyurisich Exp $
+rem $Id: compile_MINGW.BAT,v 1.27 2013-10-12 00:00:58 fyurisich Exp $
 rem
 cls
 
@@ -51,16 +51,19 @@ rem *** Parse Switches ***
 set TFILE=%1
 set COMP_TYPE=STD
 set EXTRA=
+set RC_FILE=TRUE
 :LOOP_START
 if "%2"==""    goto LOOP_END
 if "%2"=="/d"  goto COMP_DEBUG
 if "%2"=="/D"  goto COMP_DEBUG
 if "%2"=="/c"  goto COMP_CONSOLE
 if "%2"=="/C"  goto COMP_CONSOLE
-if "%2"=="-P"  goto PPO
+if "%2"=="/i"  goto NORC
+if "%2"=="/I"  goto NORC
 if "%2"=="-p"  goto PPO
-if "%2"=="-W3" goto W3
+if "%2"=="-P"  goto PPO
 if "%2"=="-w3" goto W3
+if "%2"=="-W3" goto W3
 set EXTRA=%EXTRA% %2
 shift
 goto LOOP_START
@@ -70,6 +73,10 @@ shift
 goto LOOP_START
 :COMP_CONSOLE
 set COMP_TYPE=CONSOLE
+shift
+goto LOOP_START
+:NORC
+set RC_FILE=FALSE
 shift
 goto LOOP_START
 :PPO
@@ -102,7 +109,10 @@ rem *** To Use -mno-cygwin Switch ***
 rem gcc -I. -I%HG_HRB%\include -I%HG_ROOT%\include -mno-cygwin -Wall -c %TFILE%.c -o%TFILE%.o
 if errorlevel 1 goto EXIT2
 
-rem *** Process Resource File ***
+rem *** Check for Exclude OOHG Resource Switch ***
+if not "%RC_FILE%"=="TRUE" GOTO CONSOLE_COMP_WITHOUT_RC
+
+rem *** Process Resource File and OOHG Resource File ***
 echo #define oohgpath %HG_ROOT%\RESOURCES > _oohg_resconfig.h
 if exist %TFILE%.rc copy /b %HG_ROOT%\resources\ooHG.rc+%TFILE%.rc+%HG_ROOT%\resources\filler _temp.rc > nul
 if exist %TFILE%.rc windres -i _temp.rc -o _temp.o
@@ -112,8 +122,24 @@ rem *** Link ***
 if     exist %TFILE%.rc gcc -Wall -o%TFILE%.exe %TFILE%.o _temp.o                    -L%HG_MINGW%\lib -L%HG_HRB%\%LIB_HRB% -L%HG_ROOT%\%LIB_GUI% -Wl,--start-group -looHG -lhbprinter -lminiprint -lgtgui -lgtwin -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 -lhbmysql %THR_LIB% -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -Wl,--end-group
 if not exist %TFILE%.rc gcc -Wall -o%TFILE%.exe %TFILE%.o %HG_ROOT%\resources\ooHG.o -L%HG_MINGW%\lib -L%HG_HRB%\%LIB_HRB% -L%HG_ROOT%\%LIB_GUI% -Wl,--start-group -looHG -lhbprinter -lminiprint -lgtgui -lgtwin -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 -lhbmysql %THR_LIB% -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -Wl,--end-group
 rem *** To Use -mno-cygwin Switch ***
-rem if     exist %TFILE%.rc gcc -Wall -o%TFILE%.exe %TFILE%.o _temp.o                         -L%HG_MINGW%\lib -L%HG_HRB%\%LIB_HRB% -L%HG_ROOT%\%LIB_GUI% -mno-cygwin -Wl,--start-group                 -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 -lhbmysql %THR_LIB% -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -Wl,--end-group
+rem if     exist %TFILE%.rc gcc -Wall -o%TFILE%.exe %TFILE%.o _temp.o                    -L%HG_MINGW%\lib -L%HG_HRB%\%LIB_HRB% -L%HG_ROOT%\%LIB_GUI% -mno-cygwin -Wl,--start-group                 -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 -lhbmysql %THR_LIB% -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -Wl,--end-group
 rem if not exist %TFILE%.rc gcc -Wall -o%TFILE%.exe %TFILE%.o %HG_ROOT%\resources\ooHG.o -L%HG_MINGW%\lib -L%HG_HRB%\%LIB_HRB% -L%HG_ROOT%\%LIB_GUI% -mno-cygwin -Wl,--start-group -lgtgui -lgtwin -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 -lhbmysql %THR_LIB% -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -Wl,--end-group
+
+goto CLEANUP
+
+
+:CONSOLE_COMP_WITHOUT_RC
+rem *** Process Resource File Without OOHG Resource ***
+if exist %TFILE%.rc copy /b %TFILE%.rc _temp.rc > nul
+if exist %TFILE%.rc windres -i _temp.rc -o _temp.o
+if errorlevel 1 goto EXIT3
+
+rem *** Link ***
+if     exist %TFILE%.rc gcc -Wall -o%TFILE%.exe %TFILE%.o _temp.o                    -L%HG_MINGW%\lib -L%HG_HRB%\%LIB_HRB% -L%HG_ROOT%\%LIB_GUI% -Wl,--start-group -looHG -lhbprinter -lminiprint -lgtgui -lgtwin -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 -lhbmysql %THR_LIB% -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -Wl,--end-group
+if not exist %TFILE%.rc gcc -Wall -o%TFILE%.exe %TFILE%.o                            -L%HG_MINGW%\lib -L%HG_HRB%\%LIB_HRB% -L%HG_ROOT%\%LIB_GUI% -Wl,--start-group -looHG -lhbprinter -lminiprint -lgtgui -lgtwin -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 -lhbmysql %THR_LIB% -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -Wl,--end-group
+rem *** To Use -mno-cygwin Switch ***
+rem if     exist %TFILE%.rc gcc -Wall -o%TFILE%.exe %TFILE%.o _temp.o                    -L%HG_MINGW%\lib -L%HG_HRB%\%LIB_HRB% -L%HG_ROOT%\%LIB_GUI% -mno-cygwin -Wl,--start-group                 -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 -lhbmysql %THR_LIB% -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -Wl,--end-group
+rem if not exist %TFILE%.rc gcc -Wall -o%TFILE%.exe %TFILE%.o                            -L%HG_MINGW%\lib -L%HG_HRB%\%LIB_HRB% -L%HG_ROOT%\%LIB_GUI% -mno-cygwin -Wl,--start-group -lgtgui -lgtwin -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 -lhbmysql %THR_LIB% -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -Wl,--end-group
 
 goto CLEANUP
 
@@ -130,7 +156,10 @@ rem *** To Use -mno-cygwin Switch ***
 rem gcc -I. -I%HG_HRB%\include -I%HG_ROOT%\include -mno-cygwin -Wall -c %TFILE%.c -o%TFILE%.o
 if errorlevel 1 goto EXIT2
 
-rem *** Process Resource File ***
+rem *** Check for Exclude OOHG Resource Switch ***
+if not "%RC_FILE%"=="TRUE" GOTO DEBUG_COMP_WITHOUT_RC
+
+rem *** Process Resource File and OOHG Resource File ***
 echo #define oohgpath %HG_ROOT%\RESOURCES > _oohg_resconfig.h
 if exist %TFILE%.rc copy /b %HG_ROOT%\resources\ooHG.rc+%TFILE%.rc+%HG_ROOT%\resources\filler _temp.rc > nul
 if exist %TFILE%.rc windres -i _temp.rc -o _temp.o
@@ -146,6 +175,22 @@ rem if not exist %TFILE%.rc gcc -Wall -o%TFILE%.exe %TFILE%.o %HG_ROOT%\resource
 goto CLEANUP
 
 
+:DEBUG_COMP_WITHOUT_RC
+rem *** Process Resource File Without OOHG Resource ***
+if exist %TFILE%.rc copy /b %TFILE%.rc _temp.rc > nul
+if exist %TFILE%.rc windres -i _temp.rc -o _temp.o
+if errorlevel 1 goto EXIT3
+
+rem *** Link ***
+if     exist %TFILE%.rc gcc -Wall -o%TFILE%.exe %TFILE%.o _temp.o                    -L%HG_MINGW%\lib -L%HG_HRB%\%LIB_DIR% -L%HG_ROOT%\%LIB_GUI% -Wl,--start-group -looHG -lhbprinter -lminiprint -lhbdebug -lgtgui -lgtwin -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 -lhbmysql %THR_LIB% -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -Wl,--end-group
+if not exist %TFILE%.rc gcc -Wall -o%TFILE%.exe %TFILE%.o                            -L%HG_MINGW%\lib -L%HG_HRB%\%LIB_DIR% -L%HG_ROOT%\%LIB_GUI% -Wl,--start-group -looHG -lhbprinter -lminiprint -lhbdebug -lgtgui -lgtwin -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 -lhbmysql %THR_LIB% -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -Wl,--end-group
+rem *** To Use -mno-cygwin Switch ***
+rem if     exist %TFILE%.rc gcc -Wall -o%TFILE%.exe %TFILE%.o _temp.o                    -L%HG_MINGW%\lib -L%HG_HRB%\%LIB_DIR% -L%HG_ROOT%\%LIB_GUI% -mno-cygwin -Wl,--start-group -looHG -lhbprinter -lminiprint -lhbdebug -lgtgui -lgtwin -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 -lhbmysql %THR_LIB% -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -Wl,--end-group
+rem if not exist %TFILE%.rc gcc -Wall -o%TFILE%.exe %TFILE%.o %                          -L%HG_MINGW%\lib -L%HG_HRB%\%LIB_DIR% -L%HG_ROOT%\%LIB_GUI% -mno-cygwin -Wl,--start-group -looHG -lhbprinter -lminiprint -lhbdebug -lgtgui -lgtwin -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 -lhbmysql %THR_LIB% -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -Wl,--end-group
+
+goto CLEANUP
+
+
 :STD_COMP
 rem *** Compile with Harbour and Check for Errors ***
 %HG_HRB%\%BIN_HRB%\harbour %TFILE%.prg -n %EXTRA% -i%HG_HRB%\include;%HG_ROOT%\include;.
@@ -155,6 +200,9 @@ rem *** Compile .c Files and Check for Errors ***
 gcc -I. -I%HG_HRB%\include -I%HG_ROOT%\include -Wall -c %TFILE%.c -o%TFILE%.o
 rem *** Use -mno-cygwin Switch ***
 rem gcc -I. -I%HG_HRB%\include -I%HG_ROOT%\include -mno-cygwin -Wall -c %TFILE%.c -o%TFILE%.o
+
+rem *** Check for Exclude OOHG Resource Switch ***
+if not "%RC_FILE%"=="TRUE" GOTO STD_COMP_WITHOUT_RC
 
 rem *** Process Resource File ***
 echo #define oohgpath %HG_ROOT%\RESOURCES > _oohg_resconfig.h
@@ -168,6 +216,22 @@ if not exist %TFILE%.rc gcc -Wall -o%TFILE%.exe %TFILE%.o %HG_ROOT%\resources\oo
 rem *** Use -mno-cygwin Switch ***
 rem if     exist %TFILE%.rc gcc -Wall -o%TFILE%.exe %TFILE%.o _temp.o                    -mwindows -L%HG_MINGW%\lib -L%HG_HRB%\%LIB_HRB% -L%HG_ROOT%\%LIB_GUI% -mno-cygwin -Wl,--start-group -looHG -lhbprinter -lminiprint -lgtgui -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 -lhbmysql %THR_LIB% -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -Wl,--end-group
 rem if not exist %TFILE%.rc gcc -Wall -o%TFILE%.exe %TFILE%.o %HG_ROOT%\resources\ooHG.o -mwindows -L%HG_MINGW%\lib -L%HG_HRB%\%LIB_HRB% -L%HG_ROOT%\%LIB_GUI% -mno-cygwin -Wl,--start-group -looHG -lhbprinter -lminiprint -lgtgui -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 -lhbmysql %THR_LIB% -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -Wl,--end-group
+
+goto CLEANUP
+
+
+:STD_COMP_WITHOUT_RC
+rem *** Process Resource File Without OOHG Resource ***
+if exist %TFILE%.rc copy /b %TFILE%.rc _temp.rc > nul
+if exist %TFILE%.rc windres -i _temp.rc -o _temp.o
+if errorlevel 1 goto EXIT3
+
+rem *** Link ***
+if     exist %TFILE%.rc gcc -Wall -o%TFILE%.exe %TFILE%.o _temp.o                    -mwindows -L%HG_MINGW%\lib -L%HG_HRB%\%LIB_HRB% -L%HG_ROOT%\%LIB_GUI% -Wl,--start-group -looHG -lhbprinter -lminiprint -lgtgui -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 -lhbmysql %THR_LIB% -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -Wl,--end-group
+if not exist %TFILE%.rc gcc -Wall -o%TFILE%.exe %TFILE%.o                            -mwindows -L%HG_MINGW%\lib -L%HG_HRB%\%LIB_HRB% -L%HG_ROOT%\%LIB_GUI% -Wl,--start-group -looHG -lhbprinter -lminiprint -lgtgui -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 -lhbmysql %THR_LIB% -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -Wl,--end-group
+rem *** Use -mno-cygwin Switch ***
+rem if     exist %TFILE%.rc gcc -Wall -o%TFILE%.exe %TFILE%.o _temp.o                    -mwindows -L%HG_MINGW%\lib -L%HG_HRB%\%LIB_HRB% -L%HG_ROOT%\%LIB_GUI% -mno-cygwin -Wl,--start-group -looHG -lhbprinter -lminiprint -lgtgui -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 -lhbmysql %THR_LIB% -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -Wl,--end-group
+rem if not exist %TFILE%.rc gcc -Wall -o%TFILE%.exe %TFILE%.o                            -mwindows -L%HG_MINGW%\lib -L%HG_HRB%\%LIB_HRB% -L%HG_ROOT%\%LIB_GUI% -mno-cygwin -Wl,--start-group -looHG -lhbprinter -lminiprint -lgtgui -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 -lhbmysql %THR_LIB% -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -Wl,--end-group
 
 goto CLEANUP
 
