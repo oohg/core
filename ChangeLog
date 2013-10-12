@@ -1,11 +1,47 @@
 /*
- * $Id: ChangeLog,v 1.1172 2013-10-12 11:28:55 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1173 2013-10-12 19:55:57 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-10-12 17:55 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     * Previous entry corrected.
+   * source/h_pdf.prg
+     ; TPDF class only supports 24 bpp TIFF images.
+   * source/c_gdiplus.c
+     + Support for color depth parameter.
+     * Use NULL when image format do not support parameters.
+   * source/h_windows.prg
+     + nColorDepth parameter in methods SaveAs and Print.
+     ; Use SaveAs( cFile, lAll, cType, nQuality, nColorDepth ).
+       Use Print( nFRow, nFCol, nTRow, nTCol, lAll, cType, nQuality, nColorDepth).
+       nFRow == from row.
+       nFCol == from col.
+       nTRow == to row.
+       nTCol == to col.
+       cFile == name of the file to create.
+       lAll == .T. to save the whole window, .F. to save the
+               windows's client area only.
+       cType == "BMP", "JPG", "JPEG", "TIF", "TIFF" or "PNG".
+       nQuality == for JPEG format only, a value from 0 (lowest) to
+                   100 (highest, default). For TIFF format only, a 0 to
+                   save uncompressed or a 1 to save using LZW (default).
+                   Other formats ignore these parameter.
+                   GIF images are always compressed using LZW.
+                   PNG images are always compressed using ZIP.
+                   BMP images are always uncompressed.
+       nColorDepth == 1, 4, 8, 24 or 32 for TIFF format, defaults to
+                      32/24 for images with/without transparency.
+                      Other formats ignore these parameter.
+                      BMP and JPEG images are always saved at 24 bpp.
+                      GIF images are always saved at 8 bpp.
+                      PNG images are always saved at 24 bpp color depth
+                      if they don't have transparency or at 32 bpp if
+                      they have it.
 
 2013-10-12 09:28 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source/c_gdiplus.c
@@ -149,8 +185,6 @@
    * source/makelib_mingw.bat
    * source/oohg.hbp
      + c_gdiplus.c
-   * source/h_pdf.prg
-     ; TODO: TIFF files are not shown correctly.
    * source/h_windows.prg
      + Support for JPEG, PNG and TIFF formats in methods SaveAs
        and Print.

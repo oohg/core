@@ -1,5 +1,5 @@
 /*
- * $Id: h_windows.prg,v 1.248 2013-09-23 02:22:07 fyurisich Exp $
+ * $Id: h_windows.prg,v 1.249 2013-10-12 19:55:57 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1076,7 +1076,7 @@ METHOD RefreshData() CLASS TWindow
 Return nil
 
 *-----------------------------------------------------------------------------*
-METHOD Print( y, x, y1, x1, lAll, cType, nQuality ) CLASS TWindow
+METHOD Print( y, x, y1, x1, lAll, cType, nQuality, nColorDepth ) CLASS TWindow
 *-----------------------------------------------------------------------------*
 Local myobject, cWork, cExt
    If ValType( cType ) $ "CM"
@@ -1105,7 +1105,7 @@ Local myobject, cWork, cExt
    DEFAULT x    TO 1
    DEFAULT y    TO 1
 
-   ::SaveAs( cWork, lAll, cType, nQuality ) //// save as BMP by default
+   ::SaveAs( cWork, lAll, cType, nQuality, nColorDepth ) //// save as BMP by default
 
    myobject := Tprint()
    
@@ -1126,7 +1126,7 @@ Local myobject, cWork, cExt
 return nil
 
 *-----------------------------------------------------------------------------*
-METHOD SaveAs( cFile, lAll, cType, nQuality ) CLASS TWindow
+METHOD SaveAs( cFile, lAll, cType, nQuality, nColorDepth ) CLASS TWindow
 *-----------------------------------------------------------------------------*
 Local hBitMap, aSize
    If ValType( cType ) $ "CM"
@@ -1145,16 +1145,29 @@ Local hBitMap, aSize
             If ValType( nQuality ) != "N" .OR. nQuality < 0 .OR. nQuality > 100
               nQuality := 100
             EndIf
-            gPlusSaveHBitmapToFile( hBitMap, cFile, aSize[1], aSize[2], "image/jpeg", nQuality )
+            // JPEG images are always saved at 24 bpp color depth.
+            gPlusSaveHBitmapToFile( hBitMap, cFile, aSize[1], aSize[2], "image/jpeg", nQuality, nil )
          ElseIf cType == "GIF"
-            gPlusSaveHBitmapToFile( hBitMap, cFile, aSize[1], aSize[2], "image/gif", 100 )
+            // GIF images do not support parameters.
+            // GIF images are always saved at 8 bpp color depth.
+            // GIF images are always compressed using LZW algorithm.
+            gPlusSaveHBitmapToFile( hBitMap, cFile, aSize[1], aSize[2], "image/gif", nil, nil )
          ElseIf cType == "TIFF" .OR. cType == "TIF"
             If ValType( nQuality ) != "N" .OR. nQuality < 0 .OR. nQuality > 1
+              // This the default value: LZW compression.
               nQuality := 1
             EndIf
-            gPlusSaveHBitmapToFile( hBitMap, cFile, aSize[1], aSize[2], "image/tiff", nQuality )
+            If ValType( nColorDepth ) != "N" .OR. ( nColorDepth # 1 .AND. nColorDepth # 4 .AND. nColorDepth # 8 .AND. nColorDepth # 24 .AND. nColorDepth # 32 )
+              // This is the default value: 32 bpp.
+              nColorDepth := 32
+            EndIf
+            gPlusSaveHBitmapToFile( hBitMap, cFile, aSize[1], aSize[2], "image/tiff", nQuality, nColorDepth )
          ElseIf cType == "PNG"
-            gPlusSaveHBitmapToFile( hBitMap, cFile, aSize[1], aSize[2], "image/png", 100 )
+            // PNG images do not support parameters.
+            // PNG images are always saved at 24 bpp color depth if they don't have transparecy
+            // or at 32 bpp if they have it.
+            // PNG images are always compressed using ZIP algorithm.
+            gPlusSaveHBitmapToFile( hBitMap, cFile, aSize[1], aSize[2], "image/png", nil, nil )
          EndIf
          gPlusDeInit()
       EndIf

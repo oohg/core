@@ -1,5 +1,5 @@
 /*
- * $Id: c_gdiplus.c,v 1.5 2013-10-12 11:28:55 fyurisich Exp $
+ * $Id: c_gdiplus.c,v 1.6 2013-10-12 19:55:57 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -193,7 +193,7 @@ typedef LONG(__stdcall* GDIPGETIMAGEHEIGHT) ( void*, UINT* );
 
 BOOL InitDeinitGdiPlus( BOOL );
 BOOL LoadGdiPlusDll( void );
-BOOL SaveHBitmapToFile( void *, const char *, UINT, UINT, const char *, ULONG );
+BOOL SaveHBitmapToFile( void *, const char *, UINT, UINT, const char *, ULONG, ULONG );
 BOOL GetEnCodecClsid( const char *, CLSID * );
 LONG LoadImageFromFile( const char *, void** );
 
@@ -527,22 +527,20 @@ HB_FUNC( GPLUSSAVEHBITMAPTOFILE )
 {
    HBITMAP hbmp = (HBITMAP) hb_parnl( 1 );
 
-   hb_retl( SaveHBitmapToFile( (void*) hbmp, hb_parc( 2 ), (UINT) hb_parnl( 3 ), (UINT) hb_parnl( 4 ), hb_parc( 5 ), (ULONG) hb_parnl( 6 ) ) );
+   hb_retl( SaveHBitmapToFile( (void*) hbmp, hb_parc( 2 ), (UINT) hb_parnl( 3 ), (UINT) hb_parnl( 4 ), hb_parc( 5 ), (ULONG) hb_parnl( 6 ), (ULONG) hb_parnl( 7 ) ) );
 }
 
-BOOL SaveHBitmapToFile( void *HBitmap, const char *FileName, unsigned int Width,unsigned int Height, const char *MimeType, ULONG JpgQuality )
+BOOL SaveHBitmapToFile( void *HBitmap, const char *FileName, unsigned int Width,unsigned int Height, const char *MimeType, ULONG JpgQuality, ULONG ColorDepth )
 {
    void *GBitmap;
    void *GBitmapThumbnail;
    LPWSTR WFileName;
    static CLSID Clsid;
    ENCODER_PARAMETERS EncoderParameters;
-   ULONG value;
+   ULONG quality;
 
    if( ( HBitmap == NULL ) || ( FileName == NULL ) || ( MimeType == NULL ) || ( GdiPlusHandle == NULL ) )
    {
-//    MessageBox( NULL, "Wrong Param", "GPlus error", MB_OK | MB_ICONINFORMATION | MB_SYSTEMMODAL );
-
       return FALSE;
    }
 
@@ -550,16 +548,14 @@ BOOL SaveHBitmapToFile( void *HBitmap, const char *FileName, unsigned int Width,
    {
       if( ! GetEnCodecClsid( MimeType, &Clsid ) )
       {
-//       MessageBox( NULL, "Wrong MimeType", "GPlus error", MB_OK | MB_ICONINFORMATION | MB_SYSTEMMODAL );
-
+         // Wrong MimeType
          return FALSE;
       }
 
       MimeTypeOld = LocalAlloc( LPTR, strlen( MimeType ) + 1 );
       if( MimeTypeOld == NULL )
       {
-//       MessageBox( NULL, "LocalAlloc Error", "GPlus error", MB_OK | MB_ICONINFORMATION | MB_SYSTEMMODAL );
-
+         // LocalAlloc Error
          return FALSE;
       }
 
@@ -573,27 +569,59 @@ BOOL SaveHBitmapToFile( void *HBitmap, const char *FileName, unsigned int Width,
 
          if( ! GetEnCodecClsid( MimeType, &Clsid ) )
          {
-//          MessageBox( NULL, "Wrong MimeType", "GPlus error", MB_OK | MB_ICONINFORMATION | MB_SYSTEMMODAL );
-
+            // Wrong MimeType
             return FALSE;
          }
 
          MimeTypeOld = LocalAlloc( LPTR, strlen( MimeType ) + 1 );
          if( MimeTypeOld == NULL )
          {
-//          MessageBox( NULL, "LocalAlloc Error", "GPlus error", MB_OK | MB_ICONINFORMATION | MB_SYSTEMMODAL );
-
+            // LocalAlloc Error
             return FALSE;
          }
          strcpy( ( char * ) MimeTypeOld, MimeType );
       }
    }
 
-   ZeroMemory( &EncoderParameters, sizeof( EncoderParameters ) );
-   EncoderParameters.Count=1;
+   GBitmap = 0;
 
+   if( GdipCreateBitmapFromHBITMAP( HBitmap, NULL, &GBitmap ) )
+   {
+      // CreateBitmap Operation Error
+      return FALSE;
+   }
+
+   WFileName = LocalAlloc( LPTR, ( strlen( FileName ) * sizeof( WCHAR ) ) + 1 );
+   if( WFileName == NULL )
+   {
+      // WFile LocalAlloc Error
+      return FALSE;
+   }
+
+   MultiByteToWideChar( CP_ACP, 0, FileName, -1, WFileName, ( strlen( FileName )*sizeof( WCHAR ) ) - 1 );
+
+   if( ( Width > 0 ) && ( Height > 0 ) )
+   {
+      GBitmapThumbnail = NULL;
+
+      if( GdipGetImageThumbnail( GBitmap, Width, Height, &GBitmapThumbnail, NULL, NULL ) )
+      {
+         GdipDisposeImage(GBitmap);
+         LocalFree( WFileName );
+         // Thumbnail Operation Error
+         return FALSE;
+      }
+
+      GdipDisposeImage( GBitmap );
+      GBitmap = GBitmapThumbnail;
+   }
+
+   // Build parameters and save
    if( strcmp( MimeType, "image/jpeg" ) == 0 )
    {
+      ZeroMemory( &EncoderParameters, sizeof( EncoderParameters ) );
+      EncoderParameters.Count = 1;
+
       // Quality: TGUID = 1d5be4b5-fa4a-452d-9cdd-5db35105e7eb
       EncoderParameters.Parameter[0].Guid.Data1 = 0x1d5be4b5;
       EncoderParameters.Parameter[0].Guid.Data2 = 0xfa4a;
@@ -609,9 +637,23 @@ BOOL SaveHBitmapToFile( void *HBitmap, const char *FileName, unsigned int Width,
       EncoderParameters.Parameter[0].NumberOfValues = 1;
       EncoderParameters.Parameter[0].Type = 4;
       EncoderParameters.Parameter[0].Value = (void*) &JpgQuality;
+
+      // Colordepth for JPEG images is always 24 bpp
+
+      // Save
+      if( GdipSaveImageToFile( GBitmap, WFileName, &Clsid, &EncoderParameters ) != 0 )
+      {
+         GdipDisposeImage( GBitmap );
+         LocalFree( WFileName );
+         // Save Operation Error
+         return FALSE;
+      }
    }
-   else
+   else if( strcmp( MimeType, "image/tiff" ) == 0 )
    {
+      ZeroMemory( &EncoderParameters, sizeof( EncoderParameters ) );
+      EncoderParameters.Count = 2;
+
       // Compression: e09d739d-ccd4-44ee-8eba-3fbf8be4fc58
       EncoderParameters.Parameter[0].Guid.Data1 = 0xe09d739d;
       EncoderParameters.Parameter[0].Guid.Data2 = 0xccd4;
@@ -628,58 +670,53 @@ BOOL SaveHBitmapToFile( void *HBitmap, const char *FileName, unsigned int Width,
       EncoderParameters.Parameter[0].Type = 4;
       if( JpgQuality == 0 )
       {
-         value = EncoderValueCompressionNone;
+         quality = EncoderValueCompressionNone;
       }
       else
       {
-         value = EncoderValueCompressionLZW;
+         quality = EncoderValueCompressionLZW;
       }
-      EncoderParameters.Parameter[0].Value = (void*) &value;
-   }
+      EncoderParameters.Parameter[0].Value = (void*) &quality;
 
-   GBitmap = 0;
+      // ColorDepth: 66087055-ad66-4c7c-9a18-38a2310b8337
+      // Valid values for TIFF images are 1, 4, 8, 24, 32 bpp
+      // Use 24 bpp if you want to include the image in a PDF file using TPDF class
+      EncoderParameters.Parameter[1].Guid.Data1 = 0x66087055;
+      EncoderParameters.Parameter[1].Guid.Data2 = 0xad66;
+      EncoderParameters.Parameter[1].Guid.Data3 = 0x4c7c;
+      EncoderParameters.Parameter[1].Guid.Data4[0] = 0x9a;
+      EncoderParameters.Parameter[1].Guid.Data4[1] = 0x18;
+      EncoderParameters.Parameter[1].Guid.Data4[2] = 0x38;
+      EncoderParameters.Parameter[1].Guid.Data4[3] = 0xa2;
+      EncoderParameters.Parameter[1].Guid.Data4[4] = 0x31;
+      EncoderParameters.Parameter[1].Guid.Data4[5] = 0x0b;
+      EncoderParameters.Parameter[1].Guid.Data4[6] = 0x83;
+      EncoderParameters.Parameter[1].Guid.Data4[7] = 0x37;
+      EncoderParameters.Parameter[1].NumberOfValues = 1;
+      EncoderParameters.Parameter[1].Type = 4;
+      EncoderParameters.Parameter[1].Value = (void*) &ColorDepth;
 
-   if( GdipCreateBitmapFromHBITMAP( HBitmap, NULL, &GBitmap ) )
-   {
-//    MessageBox( NULL, "CreateBitmap Operation Error", "GPlus error", MB_OK | MB_ICONINFORMATION | MB_SYSTEMMODAL );
-
-      return FALSE;
-   }
-
-   WFileName = LocalAlloc( LPTR, ( strlen( FileName ) * sizeof( WCHAR ) ) + 1 );
-   if( WFileName == NULL )
-   {
-//    MessageBox( NULL, "WFile LocalAlloc Error", "GPlus error", MB_OK | MB_ICONINFORMATION | MB_SYSTEMMODAL );
-
-      return FALSE;
-   }
-
-   MultiByteToWideChar( CP_ACP, 0, FileName, -1, WFileName, ( strlen( FileName )*sizeof( WCHAR ) ) - 1 );
-
-   if( ( Width > 0 ) && ( Height > 0 ) )
-   {
-      GBitmapThumbnail = NULL;
-
-      if( GdipGetImageThumbnail( GBitmap, Width, Height, &GBitmapThumbnail, NULL, NULL ) )
+      // Save
+      if( GdipSaveImageToFile( GBitmap, WFileName, &Clsid, &EncoderParameters ) != 0 )
       {
-         GdipDisposeImage(GBitmap);
+         GdipDisposeImage( GBitmap );
          LocalFree( WFileName );
-//       MessageBox( NULL, "Thumbnail Operation Error", "GPlus error", MB_OK | MB_ICONINFORMATION | MB_SYSTEMMODAL );
-
+         // Save Operation Error
          return FALSE;
       }
-
-      GdipDisposeImage( GBitmap );
-      GBitmap = GBitmapThumbnail;
    }
-
-   if( GdipSaveImageToFile( GBitmap, WFileName, &Clsid, &EncoderParameters ) != 0 )
+   else
    {
-      GdipDisposeImage( GBitmap );
-      LocalFree( WFileName );
-//    MessageBox( NULL, "Save Operation Error", "GPlus error", MB_OK | MB_ICONINFORMATION | MB_SYSTEMMODAL );
+      // Other formats do not support parameters
 
-      return FALSE;
+      // Save
+      if( GdipSaveImageToFile( GBitmap, WFileName, &Clsid, NULL ) != 0 )
+      {
+         GdipDisposeImage( GBitmap );
+         LocalFree( WFileName );
+         // Save Operation Error
+         return FALSE;
+      }
    }
 
    GdipDisposeImage( GBitmap );
