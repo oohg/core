@@ -1,5 +1,5 @@
 /*
- * $Id: h_error.prg,v 1.56 2012-10-18 14:46:33 declan2005 Exp $
+ * $Id: h_error.prg,v 1.57 2013-10-16 20:29:55 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -517,7 +517,21 @@ METHOD CreateLog() CLASS OOHG_TErrorHtml
 *------------------------------------------------------------------------------*
 LOCAL nHdl, cFile, cTop, cBottom, nPos
 
-   cFile := IF( EMPTY( ::Path ), "\" + CurDir() + "\", ::Path ) + ::FileName
+   IF EMPTY( ::Path )
+      IF EMPTY( CurDir() )
+        cFile := '\'
+      ELSE
+        cFile := '\' + CurDir() + '\'
+      ENDIF
+   ELSE
+      IF RIGHT( ::Path, 1 ) == '\'
+         cFile := ::Path
+      ELSE
+         cFile := ::Path + '\'
+      ENDIF
+   ENDIF
+   cFile += ::FileName
+
    cBottom := MEMOREAD( cFile )
    nPos := AT( ::PreHeader(), cBottom )
    IF nPos == 0

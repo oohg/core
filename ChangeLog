@@ -1,11 +1,15 @@
 /*
- * $Id: ChangeLog,v 1.1173 2013-10-12 19:55:57 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1174 2013-10-16 20:29:53 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-10-16 17:55 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_error.prg
+     ! Error log is not created when app runs in root folder.
 
 2013-10-12 17:55 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * ./Changelog
