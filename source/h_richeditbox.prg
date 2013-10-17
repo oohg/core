@@ -1,5 +1,5 @@
 /*
- * $Id: h_richeditbox.prg,v 1.27 2013-08-22 22:25:07 fyurisich Exp $
+ * $Id: h_richeditbox.prg,v 1.28 2013-10-17 19:51:10 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -102,6 +102,7 @@ CLASS TEditRich FROM TEdit
    DATA nHeight      INIT 240
    DATA OnSelChange  INIT Nil
    DATA lSelChanging INIT .F.
+   DATA lDefault     INIT .T.
 
    METHOD Define
    METHOD FontColor  SETGET
@@ -408,6 +409,10 @@ HB_FUNC_STATIC( TEDITRICH_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lPara
 
    switch( message )
    {
+      case WM_LBUTTONDBLCLK:
+          HB_FUNCNAME( TEDITRICH_EVENTS2 )();
+          break;
+
       case WM_KEYDOWN:
          if( ( GetWindowLong( hWnd, GWL_STYLE ) & ES_READONLY ) == 0 )
          {
@@ -522,6 +527,17 @@ Local cText
       ::Value := ::xUndo
       ::xUndo := cText
       Return 1
+
+   ElseIf nMsg == WM_LBUTTONDBLCLK
+      If ::DoEvent( ::OnDblClick, "DBLCLICK" )
+         If ::lDefault
+            // Do default action: select word
+            Return Nil
+         Else
+            // Prevent default action
+            Return 1
+         EndIf
+      EndIf
 
    Endif
 

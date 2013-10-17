@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog,v 1.1174 2013-10-16 20:29:53 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1175 2013-10-17 19:51:09 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-10-17 17:50 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_richeditbox.prg
+     + DATA lDefault: set to .F. so after DBLCLICK event the default
+       action (select one word) is not performed. Defaults to .T.
 
 2013-10-16 17:55 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_error.prg
