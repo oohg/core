@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.131 2013-10-01 23:46:18 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.132 2013-10-24 02:41:45 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -582,7 +582,7 @@ Local _RecNo, _BottomRec
    ::DbSkip( - ::CountPerPage + IF( lAppend, 2, 1 ) )
    ::Update()
    ::DbGoTo( _RecNo )
-   ListView_SetCursel( ::hWnd, ascan ( ::aRecMap, _BottomRec ) )
+   ListView_SetCursel( ::hWnd, ASCAN ( ::aRecMap, _BottomRec ) )
 
    ::BrowseOnChange()
 
@@ -814,7 +814,7 @@ Local _RecNo, m, hWnd, cWorkArea
    ::nValue := Value
    ::Update()
    ::DbGoTo( _RecNo )
-   ListView_SetCursel ( hWnd, ascan( ::aRecMap, Value ) )
+   ListView_SetCursel ( hWnd, ASCAN( ::aRecMap, Value ) )
 
    _OOHG_ThisEventType := 'BROWSE_ONCHANGE'
    ::BrowseOnChange()
@@ -993,6 +993,8 @@ Local lRet, lRowEdited, lSomethingEdited, _RecNo, lRowAppended, lMoreRecs
            // Read only column, skip
          ElseIf ! ::IsColumnWhen( nCol )
            // Not a valid WHEN, skip column and continue editing
+         ElseIf ASCAN( ::aHiddenCols, nCol ) > 0
+           // Is a hidden column, skip
          Else
             lRet := ::EditCell( nRow, nCol, , , , , lAppend )
 
@@ -1265,7 +1267,7 @@ Local cWorkArea, hWnd
 
    ::Update()
 
-   ListView_SetCursel( hWnd, ascan( ::aRecMap, v ) )
+   ListView_SetCursel( hWnd, ASCAN( ::aRecMap, v ) )
 
    ::DbGoTo( _RecNo )
 
@@ -1501,7 +1503,7 @@ Local nvKey, r, DeltaSelect, lGo
 
       r := LISTVIEW_GETFIRSTITEM( ::hWnd )
       If r > 0
-         DeltaSelect := r - ascan ( ::aRecMap, ::nValue )
+         DeltaSelect := r - ASCAN ( ::aRecMap, ::nValue )
          ::FastUpdate( DeltaSelect, r )
          ::BrowseOnChange()
       EndIf
@@ -1510,7 +1512,7 @@ Local nvKey, r, DeltaSelect, lGo
    ElseIf nNotify == LVN_BEGINDRAG .or. nNotify == NM_RCLICK
       r := LISTVIEW_GETFIRSTITEM( ::hWnd )
       If r > 0
-         DeltaSelect := r - ascan ( ::aRecMap, ::nValue )
+         DeltaSelect := r - ASCAN ( ::aRecMap, ::nValue )
          ::FastUpdate( DeltaSelect, r )
          ::BrowseOnChange()
       EndIf

@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.228 2013-10-12 00:01:00 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.229 2013-10-24 02:41:45 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -317,7 +317,7 @@ Local ControlHandle, aImageList, i
       MsgOOHGError( "Grid: HEADERS/WIDTHS array size mismatch. Program Terminated." )
    EndIf
    If HB_IsArray( aRows )
-      If aScan( aRows, { |a| ! HB_IsArray( a ) .OR. Len( a ) != Len( aHeaders ) } ) > 0
+      If ASCAN( aRows, { |a| ! HB_IsArray( a ) .OR. Len( a ) != Len( aHeaders ) } ) > 0
          MsgOOHGError( "Grid: ITEMS length mismatch. Program Terminated." )
       EndIf
    Else
@@ -395,7 +395,7 @@ Local ControlHandle, aImageList, i
       aImageList := ImageList_Init( aImage, CLR_DEFAULT, LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS )
       SendMessage( ControlHandle, ::SetImageListCommand, ::SetImageListWParam, aImageList[ 1 ] )
       ::ImageList := aImageList[ 1 ]
-      If aScan( ::Picture, .T. ) == 0
+      If ASCAN( ::Picture, .T. ) == 0
          ::Picture[ 1 ] := .T.
          ::aWidths[ 1 ] := Max( ::aWidths[ 1 ], aImageList[ 2 ] + If( ::lCheckBoxes, GetStateListWidth( ControlHandle ) + 4, 4 ) ) // Set Column 1 width to Bitmap width plus checkboxes
       EndIf
@@ -616,7 +616,7 @@ Local i, nPos, nCount, aImageList, nImagesWidth, aHeaderImage, aImageName := {}
       For i := 1 To Len( aHeaderImage )
          If ValType( aHeaderImage[ i ] ) $ "CM" .AND. ! Empty( aHeaderImage[ i ] )
             If ValidHandler( ::HeaderImageList )
-               nPos := aScan( aImageName, aHeaderImage[ i ] )
+               nPos := ASCAN( aImageName, aHeaderImage[ i ] )
                If nPos > 0                                                 // Image already loaded, reuse it
                   ::aHeaderImage[ i ] := nPos
                Else
@@ -725,6 +725,8 @@ Local lRet
          // Read only column
       ElseIf ! ::IsColumnWhen( ::nColPos )
          // Not a valid WHEN
+      ElseIf ASCAN( ::aHiddenCols, ::nColPos ) > 0
+        // Hidden column
       Else
 
          ::leditmode := .T.
@@ -1111,7 +1113,7 @@ METHOD EditItem2( nItem, aItems, aEditControls, aMemVars, cTitle ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local l, actpos := {0,0,0,0}, GCol, iRow, i, oWnd, nWidth, nMaxHigh, oMain
 Local oCtrl, aEditControls2, nRow, lSplitWindow, nControlsMaxHeight
-Local aReturn
+Local aReturn, lHidden
 
    If ::lNested
       Return {}
@@ -1197,7 +1199,11 @@ Local aReturn
    nRow := 10
 
    For i := 1 To l
-      @ nRow + 3, 10 LABEL 0 PARENT ( oWnd ) VALUE AllTrim( ::aHeaders[ i ] ) + ":" WIDTH 110 NOWORDWRAP
+      // Test for hidden column
+      lHidden := ( ASCAN( ::aHiddenCols, i ) > 0 )
+      If ! lHidden
+        @ nRow + 3, 10 LABEL 0 PARENT ( oWnd ) VALUE AllTrim( ::aHeaders[ i ] ) + ":" WIDTH 110 NOWORDWRAP
+      EndIf
       aEditControls2[ i ]:CreateControl( aItems[ i ], oWnd:Name, nRow, 120, aEditControls2[ i ]:nDefWidth, aEditControls2[ i ]:nDefHeight )
       nRow += aEditControls2[ i ]:nDefHeight + 6
       If HB_IsArray( aMemVars ) .AND. Len( aMemVars ) >= i
@@ -1207,7 +1213,10 @@ Local aReturn
             &( aMemVars[ i ] ) := Nil
          EndIf
       EndIf
-      If HB_IsArray( ::Valid ) .AND. Len( ::Valid ) >= i
+      If lHidden
+         aEditControls2[ i ]:bValid := { || .T. }
+         aEditControls2[ i ]:Visible := .F.
+      ElseIf HB_IsArray( ::Valid ) .AND. Len( ::Valid ) >= i
          aEditControls2[ i ]:bValid := ::Valid[ i ]
       EndIf
       If HB_IsArray( ::ValidMessages ) .AND. Len( ::ValidMessages ) >= i
@@ -1221,7 +1230,6 @@ Local aReturn
          aEditControls2[ i ]:Enabled := .F.
          aEditControls2[ i ]:bWhen := { || .F. }
       EndIf
-
    Next
 
    If HB_IsArray( ::aEditKeys )
@@ -1866,6 +1874,9 @@ Local r, r2, lRet := .F., nWidth, uAux
    ElseIf ! ::IsColumnWhen( nCol )
       // Not a valid WHEN
 
+   ElseIf ASCAN( ::aHiddenCols, nCol ) > 0
+     // Hidden column
+
    Else
       // Cell value
       If ValType( uOldValue ) == "U"
@@ -1973,6 +1984,8 @@ Local lRet
          // Read only column
       ElseIf ! ::IsColumnWhen( nCol )
          // Not a valid WHEN
+      ElseIf ASCAN( ::aHiddenCols, nCol ) > 0
+        // Hidden column
       Else
          lRet := ::EditCell( nRow, nCol )
 
@@ -2033,6 +2046,11 @@ Local aCellData, nItem, i
                If ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick )
                   ::DoEvent( ::OnDblClick, "DBLCLICK" )
                EndIf
+            ElseIf ASCAN( ::aHiddenCols, _OOHG_ThisItemColIndex ) > 0
+               // Hidden column
+               If ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick )
+                  ::DoEvent( ::OnDblClick, "DBLCLICK" )
+               EndIf
             Else
                ::EditGrid( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
             EndIf
@@ -2045,6 +2063,11 @@ Local aCellData, nItem, i
                EndIf
             ElseIf ! ::IsColumnWhen( _OOHG_ThisItemColIndex )
                // Not a valid WHEN
+               If ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick )
+                  ::DoEvent( ::OnDblClick, "DBLCLICK" )
+               EndIf
+            ElseIf ASCAN( ::aHiddenCols, _OOHG_ThisItemColIndex ) > 0
+              // Hidden column
                If ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick )
                   ::DoEvent( ::OnDblClick, "DBLCLICK" )
                EndIf
@@ -3004,6 +3027,8 @@ Local lRet
          // Read only column
       ElseIf ! ::IsColumnWhen( ::nColPos )
          // Not a valid WHEN
+      ElseIf ASCAN( ::aHiddenCols, ::nColPos ) > 0
+         // Hidden column
       Else
 
          ::leditmode:=.T.
@@ -3369,6 +3394,12 @@ Local lRet, uValue
          EndIf
       ElseIf ! ::IsColumnWhen( uValue[ 2 ] )
          // Not a valid WHEN
+         If ::lAppendMode
+            ::lAppendMode := .F.
+            ::DoEvent( ::OnAppend, "APPEND" )
+         EndIf
+      ElseIf ASCAN( ::aHiddenCols, uValue[ 2 ] ) > 0
+         // Hidden column
          If ::lAppendMode
             ::lAppendMode := .F.
             ::DoEvent( ::OnAppend, "APPEND" )
@@ -3896,6 +3927,11 @@ Local aCellData, nItem, i, nSearchCol
                EndIf
             ElseIf ! ::IsColumnWhen( _OOHG_ThisItemColIndex )
                // Not a valid WHEN
+               If ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick )
+                  ::DoEvent( ::OnDblClick, "DBLCLICK" )
+               EndIf
+            ElseIf ASCAN( ::aHiddenCols, _OOHG_ThisItemColIndex ) > 0
+               // Cell is in a hidden column
                If ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick )
                   ::DoEvent( ::OnDblClick, "DBLCLICK" )
                EndIf
@@ -4930,7 +4966,7 @@ Return ::oControl
 
 METHOD Str2Val( uValue ) CLASS TGridControlComboBox
 Local xValue
-   xValue := aScan( ::aItems, { |c| c == uValue } )
+   xValue := ASCAN( ::aItems, { |c| c == uValue } )
    If HB_IsArray( ::aValues )
       If xValue >= 1 .AND. xValue <= Len( ::aValues )
          xValue := ::aValues[ xValue ]
@@ -4946,7 +4982,7 @@ Return xValue
 
 METHOD GridValue( uValue ) CLASS TGridControlComboBox
    If HB_IsArray( ::aValues )
-      uValue := aScan( ::aValues, { |c| c == uValue } )
+      uValue := ASCAN( ::aValues, { |c| c == uValue } )
    ElseIf ! ValType( uValue ) == "N"
      uValue := 0
    EndIf
@@ -4997,7 +5033,7 @@ Return ::Super:CreateWindow( uValue, nRow - 3, nCol - 3, nWidth + 6, nHeight + 6
 
 METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGridControlComboBoxText
    Empty( nHeight )
-   uValue := aScan( ::aItems, { |c| c == uValue } )
+   uValue := ASCAN( ::aItems, { |c| c == uValue } )
    If ::lIncremental
       If ::lWinSize
          @ nRow,nCol COMBOBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth VALUE uValue ITEMS ::aItems INTEGRALHEIGHT INCREMENTAL
@@ -5018,7 +5054,7 @@ Return ::oControl
 
 METHOD Str2Val( uValue ) CLASS TGridControlComboBoxText
 Local nPos
-   nPos := aScan( ::aItems, { |c| c == Trim( uValue ) } )
+   nPos := ASCAN( ::aItems, { |c| c == Trim( uValue ) } )
 Return If( nPos == 0, "", ::aItems[ nPos ] )
 
 METHOD ControlValue( uValue ) CLASS TGridControlComboBoxText

@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.101 2013-10-01 23:46:18 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.102 2013-10-24 02:41:46 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1424,6 +1424,8 @@ Local aItems, aMemVars, aReplaceFields
 
          If ::IsColumnReadOnly( z )
             // Readonly field
+         ElseIf ASCAN( ::aHiddenCols, z ) > 0
+           // Hidden column
          Else
             _OOHG_EVAL( aReplaceFields[ z ], aItems[ z ], oWorkArea )
          EndIf
@@ -1476,6 +1478,10 @@ Local lRet, bReplaceField, oWorkArea
       lRet := .F.
    ElseIf ::IsColumnReadOnly( nCol )
       // Read only column
+      PlayHand()
+      lRet := .F.
+   ElseIf ASCAN( ::aHiddenCols, nCol ) > 0
+     // Hidden column
       PlayHand()
       lRet := .F.
    ElseIf ::oWorkArea:EOF() .AND. ! lAppend .AND. ! ::AllowAppend
@@ -1553,6 +1559,8 @@ Local lRet, lRowEdited, lSomethingEdited
            // Read only column, skip
          ElseIf ! ::IsColumnWhen( nCol )
            // Not a valid WHEN, skip column and continue editing
+         ElseIf ASCAN( ::aHiddenCols, nCol ) > 0
+           // Hidden column, skip
          Else
             lRet := ::EditCell( nRow, nCol, , , , , lAppend )
 
