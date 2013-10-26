@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.1177 2013-10-26 15:25:59 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1178 2013-10-26 15:28:51 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,9 +7,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-10-26 13:28 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     * Previous entry corrected.
+
 2013-10-26 13:25 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_print.prg
-     ! TPRINTDOS not working.
+     ! TPRINTDOS does not print from preview.
 
 2013-10-24 00:41 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_browse.prg
