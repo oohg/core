@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.125 2013-09-28 16:26:18 fyurisich Exp $
+* $Id: h_print.prg,v 1.126 2013-10-26 15:25:59 fyurisich Exp $
 */
 
 #include 'hbclass.ch'
@@ -1597,7 +1597,8 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX ) CLASS
 
          @ 15, 10 COMBOBOX combo_1 ITEMS ::aPorts VALUE 1 WIDTH 320
 
-         @ 53, 65 BUTTON ok CAPTION _OOHG_Messages( 12, 15 ) ACTION ( ::cPort := SubStr( myselprinter.combo_1.Item( myselprinter.combo_1.Value ), 1, 6 ), myselprinter.Release() )
+         @ 53, 65 BUTTON ok CAPTION _OOHG_Messages( 12, 15 ) ACTION ( ::cPort := SubStr( myselprinter.combo_1.Item( myselprinter.combo_1.Value ), 1, AT(",", myselprinter.combo_1.Item( myselprinter.combo_1.Value ))-1 ), myselprinter.Release() )
+
          @ 53,175 BUTTON cancel CAPTION _OOHG_Messages( 12, 16 ) ACTION ( ::lPrError := .T., myselprinter.Release() )
       END WINDOW
 
