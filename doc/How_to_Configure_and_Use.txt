@@ -1,3 +1,7 @@
+/*
+ * $Id: How_to_Configure_and_Use.txt,v 1.3 2013-10-27 21:07:56 fyurisich Exp $
+ */
+
 
 English
 --------------------------------------------------------------------------------
@@ -18,7 +22,7 @@ By default OOHG package uses the folder "LIB" to store it's libraries.
 To use a different folder (e.g. C:\OOHG\LIB\WIN\MINGW), set the following
 environment variable, before using the compilation commands:
 
-set LIB_GUI=C:\OOHG\LIB\WIN\MINGW
+set LIB_GUI=LIB\WIN\MINGW
 
 By default OOHG package uses a bundled version of Harbour to compile projects.
 To use a different version of Harbour (e.g. installed in D:\MYHRB), set the
@@ -90,7 +94,7 @@ Por defecto, OOHG utiliza la carpeta "LIB" para guardar sus librerías.
 Para utilizar otra carpeta (por ej. C:\OOHG\LIB\WIN\MINGW), deberá setear la
 siguiente variable de ambiente, antes de usar los comandos de compilación:
 
-set LIB_GUI=C:\OOHG\LIB\WIN\MINGW
+set LIB_GUI=LIB\WIN\MINGW
 
 Por defecto el paquete OOHG utiliza la versión incluida de Harbour para
 compilar los proyectos. Para utilizar una versión diferente (por ej. la
