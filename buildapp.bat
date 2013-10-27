@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: buildapp.bat,v 1.4 2013-08-22 22:25:02 fyurisich Exp $
+rem $Id: buildapp.bat,v 1.5 2013-10-27 15:37:27 fyurisich Exp $
 rem
 
 REM *** Check for .prg ***
@@ -9,7 +9,7 @@ if not exist %1.prg goto ERREXIT1
 
 rem *** Delete Old Executable and Log ***
 if exist %1.exe     del %1.exe
-if exist %1.exe     goto ERREXIT1
+if exist %1.exe     goto ERREXIT2
 if exist output.log del output.log
 
 rem *** Set Paths ***

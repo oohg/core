@@ -1,11 +1,17 @@
 /*
- * $Id: ChangeLog,v 1.1179 2013-10-27 13:49:03 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1180 2013-10-27 15:37:27 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-10-27 13:37 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * ./BuildApp.bat
+     ! Fixed wrong message when exe is running.
+   * ./oohg.hbc
+     * Path of _temp.o file to current folder.
 
 2013-10-27 11:48 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    + lib/xhb/bcc/.cvsignore
