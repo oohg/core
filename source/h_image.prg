@@ -1,5 +1,5 @@
 /*
- * $Id: h_image.prg,v 1.28 2013-09-28 16:26:18 fyurisich Exp $
+ * $Id: h_image.prg,v 1.29 2013-11-01 20:36:56 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -192,7 +192,8 @@ LOCAL nAttrib, aPictSize
          nAttrib := LR_CREATEDIBSECTION
       ENDIF
 
-      ::hImage := _OOHG_BitmapFromFile( Self, cPicture, nAttrib, ::AutoFit .AND. ! ::ImageSize .AND. ! ::Stretch )
+      // load image at full size
+      ::hImage := _OOHG_BitmapFromFile( Self, cPicture, nAttrib, .F. )
       IF ::ImageSize
          ::nWidth  := _BitMapWidth( ::hImage )
          ::nHeight := _BitMapHeight( ::hImage )
@@ -220,7 +221,8 @@ METHOD Buffer( cBuffer ) CLASS TImage
 *-----------------------------------------------------------------------------*
    If VALTYPE( cBuffer ) $ "CM"
       DeleteObject( ::hImage )
-      ::hImage := _OOHG_BitmapFromBuffer( Self, cBuffer, ::AutoFit .AND. ! ::ImageSize .AND. ! ::Stretch )
+      // load image at full size
+      ::hImage := _OOHG_BitmapFromBuffer( Self, cBuffer, .F. )
       IF ::ImageSize
          ::nWidth  := _BitMapWidth( ::hImage )
          ::nHeight := _BitMapHeight( ::hImage )

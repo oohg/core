@@ -1,11 +1,32 @@
 /*
- * $Id: ChangeLog,v 1.1183 2013-10-28 23:34:54 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1184 2013-11-01 20:36:56 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-11-01 18:36 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * ./compile_MINGW.bat
+     * hbmysql libraby is now optional because it may not be
+       present in some Harbour builds.
+   * source/BuildLib.bat
+     + LIB_GUI envvar.
+     + Some comments.
+     * BIN_HRB envvar preserved if already defined.
+   * source/hbprinter.hbp
+   * source/miniprint.hbp
+   * source/oohg.hbp
+     * Use LIB_GUI envvar instead of fixed path.
+     * Comments.
+   * source/makelib_mingw.bat
+     ! Process cancels when PATH envvar is empty.
+     + Messages showing process' progress.
+   * source/h_image.prg
+     ! Image control with Height==0 and Width==0 displays a black
+       rectangle when the control is resized (caused by not loading
+       the source image at full size).
 
 2013-10-28 21:34 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * lib/hb/mingw/.cvsignore

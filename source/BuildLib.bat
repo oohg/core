@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: BuildLib.bat,v 1.4 2013-08-22 22:25:07 fyurisich Exp $
+rem $Id: BuildLib.bat,v 1.5 2013-11-01 20:36:56 fyurisich Exp $
 rem
 rem Build ooHG libraries from official distro
 rem
@@ -25,12 +25,15 @@ rem *** For 64 bits MinGW ***
 rem set HG_MINGW=%HG_HRB%\comp\mingw64
 
 rem *** Set EnvVars ***
-set BIN_HRB=bin
+if "%LIB_GUI%"=="" set LIB_GUI=lib
+if "%BIN_HRB%"=="" set BIN_HRB=bin
 
 rem *** To Build with Nightly Harbour ***
 rem *** For 32 bits MinGW ***
+rem set LIB_GUI=lib\hb\mingw
 rem set BIN_HRB=bin\win\mingw
 rem *** For 64 bits MinGW ***
+rem set LIB_GUI=lib\hb\mingw64
 rem set BIN_HRB=bin\win\mingw64
 
 rem *** Set PATH ***
