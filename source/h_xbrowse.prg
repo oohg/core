@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.102 2013-10-24 02:41:46 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.103 2013-11-02 00:12:21 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1779,16 +1779,16 @@ LOCAL nRet
    ::aFields[ nColIndex ] := xField
 
    If ::FixBlocks()
-      ASIZE( ::aColumnBlocks, LEN( ::aFields ) + 1 )
+      ASIZE( ::aColumnBlocks, LEN( ::aFields ) )
       AINS( ::aColumnBlocks, nColIndex )
       ::aColumnBlocks[ nColIndex ] := ::ColumnBlock( nColIndex )
    EndIf
 
    If HB_IsArray( ::aReplaceField )
-      ASIZE( ::aReplaceField, LEN( ::aReplaceField ) + 1 )
+      ASIZE( ::aReplaceField, LEN( ::aFields ) )
       AINS( ::aReplaceField, nColIndex )
    ELSE
-      ::aReplaceField := ARRAY( LEN( ::aFields ) + 1 )
+      ::aReplaceField := ARRAY( LEN( ::aFields ) )
    EndIf
    ::aReplaceField[ nColIndex ] := uReplaceField
 
