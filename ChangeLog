@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog,v 1.1185 2013-11-02 00:12:21 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1186 2013-11-03 16:28:52 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-11-03 14:28 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_pdf.prg
+     ; TPDF class does not supports EXINFO nor IPTC info in
+       JPEG images.
 
 2013-11-01 22:12 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_xbrowse.prg
