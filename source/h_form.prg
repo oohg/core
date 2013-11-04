@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.43 2013-08-01 01:27:10 fyurisich Exp $
+ * $Id: h_form.prg,v 1.44 2013-11-04 21:15:22 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -330,6 +330,7 @@ Local Formhandle
 
    If ! valtype( FormName ) $ "CM"
       FormName := _OOHG_TempWindowName
+      _OOHG_TempWindowName := ""
    Endif
 
    FormName := _OOHG_GetNullName( FormName )

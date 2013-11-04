@@ -1,11 +1,18 @@
 /*
- * $Id: ChangeLog,v 1.1186 2013-11-03 16:28:52 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1187 2013-11-04 21:15:22 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-11-04 19:15 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_form.prg
+     ! RTE when a window is defined inside a template because the
+       included window is asigned the same name as the loaded window.
+   * source/makelib_bcc.bat
+     ! Wrong folder is created.
 
 2013-11-03 14:28 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_pdf.prg

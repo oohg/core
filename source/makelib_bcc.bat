@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: makelib_bcc.bat,v 1.17 2013-08-22 22:25:08 fyurisich Exp $
+rem $Id: makelib_bcc.bat,v 1.18 2013-11-04 21:15:22 fyurisich Exp $
 rem
 cls
 
@@ -15,7 +15,7 @@ if "%LIB_HRB%"=="" set LIB_HRB=lib
 if "%BIN_HRB%"=="" set BIN_HRB=bin
 
 rem *** Create Lib Folder ***
-if not exist %HG_ROOT%\lib\oohg.lib md %HG_ROOT%\lib >nul
+if not exist %HG_ROOT%\%LIB_GUI%\nul md %HG_ROOT%\%LIB_GUI%
 
 rem *** Delete Old Libraries ***
 if exist %HG_ROOT%\%LIB_GUI%\oohg.lib      del %HG_ROOT%\%LIB_GUI%\oohg.lib
