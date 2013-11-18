@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog,v 1.1191 2013-11-15 19:31:16 migsoft Exp $
+ * $Id: ChangeLog,v 1.1192 2013-11-18 17:34:47 migsoft Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-11-18 14:30 UTC-0400 MigSoft <migsoft@oohg.org>
+   * ./ChangeLog
+   * ./buildapp.bat
+     * Fixed support .hbp files
 
 2013-11-15 16:25 UTC-0400 MigSoft <migsoft@oohg.org>
    * ./ChangeLog

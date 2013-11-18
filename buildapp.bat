@@ -1,11 +1,14 @@
 @echo off
 rem
-rem $Id: buildapp.bat,v 1.5 2013-10-27 15:37:27 fyurisich Exp $
+rem $Id: buildapp.bat,v 1.6 2013-11-18 17:34:47 migsoft Exp $
 rem
 
 REM *** Check for .prg ***
 if "%1"=="" goto EXIT
-if not exist %1.prg goto ERREXIT1
+if exist %1.prg goto CONTINUE
+if not exist %1.hbp goto ERREXIT1
+
+:CONTINUE
 
 rem *** Delete Old Executable and Log ***
 if exist %1.exe     del %1.exe
@@ -60,7 +63,7 @@ goto EXIT
 
 
 :ERREXIT1
-echo FILE %1.PRG NOT FOUND !!!
+echo FILE %1.PRG OR %.HBP NOT FOUND !!!
 
 goto EXIT
 
