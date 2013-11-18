@@ -1,11 +1,72 @@
 /*
- * $Id: ChangeLog,v 1.1192 2013-11-18 17:34:47 migsoft Exp $
+ * $Id: ChangeLog,v 1.1193 2013-11-18 20:40:23 migsoft Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-11-18 17:13 UTC-0400 MigSoft <migsoft@oohg.org>
+   * ./ChangeLog
+   * ./buildapp.bat
+     * Minor changes
+   + samples/mpm/mpm.hbp
+   + samples/mpm/mpm.rc
+   + samples/mpm/readme.txt
+   + samples/mpm/prgs/mpm.prg
+   + samples/mpm/prgs/exegcc.prg
+   + samples/mpm/prgs/libgcc.prg
+   + samples/mpm/prgs/fmgfilesadd.prg
+   + samples/mpm/prgs/rcfilesadd.prg
+   + samples/mpm/prgs/prgfilesadd.prg
+   + samples/mpm/prgs/mpmcommon.prg
+   + samples/mpm/prgs/exemsvc.prg
+   + samples/mpm/prgs/libmsvc.prg
+   + samples/mpm/prgs/libbcc.prg
+   + samples/mpm/prgs/libpocc.prg
+   + samples/mpm/prgs/aboutwin.prg
+   + samples/mpm/prgs/libfilesadd.prg
+   + samples/mpm/prgs/cfilesadd.prg
+   + samples/mpm/prgs/exebcc.prg
+   + samples/mpm/prgs/execommon.prg
+   + samples/mpm/prgs/exepocc.prg
+   + samples/mpm/prgs/mpmaso.prg
+   + samples/mpm/fmgs/main.fmg
+   + samples/mpm/fmgs/mpm.ch
+   + samples/mpm/res/Migproj.ico
+   + samples/mpm/res/Migproj.ico
+   + samples/mpm/res/Process.ico
+   + samples/mpm/res/Build.ico
+   + samples/mpm/res/ologop.jpg
+   + samples/mpm/res/new.bmp
+   + samples/mpm/res/open.bmp
+   + samples/mpm/res/save.bmp
+   + samples/mpm/res/run.bmp
+   + samples/mpm/res/exit.bmp
+   + samples/mpm/res/mpm.bmp
+   + samples/mpm/res/build2.bmp
+   + samples/mpm/res/folder.bmp
+   + samples/mpm/res/prg.bmp
+   + samples/mpm/res/c.bmp
+   + samples/mpm/res/rc.bmp
+   + samples/mpm/res/add.bmp
+   + samples/mpm/res/remove.bmp
+   + samples/mpm/res/down.bmp
+   + samples/mpm/res/up.bmp
+   + samples/mpm/res/edit.bmp
+   + samples/mpm/res/editfmg.bmp
+   + samples/mpm/res/harbour.bmp
+   + samples/mpm/res/xharbour.bmp
+   + samples/mpm/res/migsoft.bmp
+   + samples/mpm/res/t_project.bmp
+   + samples/mpm/res/t_files.bmp
+   + samples/mpm/res/t_harbour.bmp
+   + samples/mpm/res/t_compiler.bmp
+   + samples/mpm/res/t_gui.bmp
+   + samples/mpm/res/t_libraries.bmp
+   + samples/mpm/res/t_result.bmp
+     + Added as a samples.
 
 2013-11-18 14:30 UTC-0400 MigSoft <migsoft@oohg.org>
    * ./ChangeLog

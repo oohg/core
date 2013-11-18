@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: buildapp.bat,v 1.6 2013-11-18 17:34:47 migsoft Exp $
+rem $Id: buildapp.bat,v 1.7 2013-11-18 20:40:23 migsoft Exp $
 rem
 
 REM *** Check for .prg ***
@@ -47,6 +47,7 @@ set TPATH=%PATH%
 set PATH=%HG_MINGW%\bin;%HG_HRB%\%BIN_HRB%
 
 rem *** Process Resource File ***
+echo Compiling %1 ...
 echo #define oohgpath %HG_ROOT%\RESOURCES > _oohg_resconfig.h
 copy /b %HG_ROOT%\resources\oohg.rc+%1.rc _temp.rc > nul
 windres -i _temp.rc -o _temp.o
@@ -63,7 +64,7 @@ goto EXIT
 
 
 :ERREXIT1
-echo FILE %1.PRG OR %.HBP NOT FOUND !!!
+echo FILE %1.prg OR %1.hbp NOT FOUND !!!
 
 goto EXIT
 
