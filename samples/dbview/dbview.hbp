@@ -1,0 +1,15 @@
+#
+# $Id: dbview.hbp,v 1.1 2013-11-19 19:15:41 migsoft Exp $
+#
+
+-ifmgs
+
+prgs\dbview.prg
+prgs\Admindbf.Prg
+prgs\Showprop.prg
+prgs\creanew1.prg
+prgs\dbquery1.prg
+prgs\AboutWin.prg
+prgs\modistru.prg
+prgs\Indadmin.Prg
+prgs\Import.prg

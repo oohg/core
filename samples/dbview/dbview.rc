@@ -1,0 +1,50 @@
+//
+// $Id: dbview.rc,v 1.1 2013-11-19 19:15:41 migsoft Exp $
+//
+
+Favicon     ICON        res\Zoom.ico
+main1       ICON        res\Zoom.ico
+dbback      JPG         res\dbview.jpg
+guardar1    BITMAP      res\guardar.bmp
+salir1      BITMAP      res\salir.bmp
+open1       BITMAP      res\open.bmp
+new1        BITMAP      res\new.bmp
+saveas1     BITMAP      res\saveas.bmp
+erase1      BITMAP      res\erase.bmp
+print1      BITMAP      res\print.bmp
+index1      BITMAP      res\index.bmp
+insert1     BITMAP      res\insert.bmp
+select1     BITMAP      res\select3.bmp
+reindex1    BITMAP      res\reindex.bmp
+modiind1    BITMAP      res\modifyindex.bmp
+addtag1     BITMAP      res\addtag.bmp
+droptag1    BITMAP      res\droptag.bmp
+closeid1    BITMAP      res\closeindex.bmp
+findnext1   BITMAP      res\findnext.bmp
+replace1    BITMAP      res\replace.bmp
+paste1      BITMAP      res\paste.bmp
+copy1       BITMAP      res\copy.bmp
+info1       BITMAP      res\info.bmp
+filter1     BITMAP      res\filter.bmp
+filter2     BITMAP      res\filter2.bmp
+record1     BITMAP      res\record.bmp
+find1       BITMAP      res\find.bmp
+format1     BITMAP      res\format.bmp
+first1      BITMAP      res\primero.bmp
+previous1   BITMAP      res\anterior.bmp
+next1       BITMAP      res\siguiente.bmp
+last1       BITMAP      res\ultimo.bmp
+Paint1      BITMAP      res\paint.bmp
+back1       BITMAP      res\back.bmp
+font1       BITMAP      res\font.bmp
+br_ok       BITMAP      res\br_ok.bmp
+br_no       BITMAP      res\br_no.bmp
+hlogic      BITMAP      res\logic.bmp
+hfech       BITMAP      res\fech.bmp
+hnum        BITMAP      res\num.bmp
+hnum1       BITMAP      res\num1.bmp
+hchar       BITMAP      res\char.bmp
+hdel        BITMAP      res\dele.bmp
+hmemo       BITMAP      res\memo.bmp
+down1       BITMAP      res\down.bmp
+mmigsoft    BITMAP      res\migsoft.bmp

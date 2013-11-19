@@ -1,11 +1,76 @@
 /*
- * $Id: ChangeLog,v 1.1193 2013-11-18 20:40:23 migsoft Exp $
+ * $Id: ChangeLog,v 1.1194 2013-11-19 19:15:40 migsoft Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-11-19 16:09 UTC-0400 MigSoft <migsoft@oohg.org>
+   * ./ChangeLog
+   + samples/dbview/dbview.hbp
+   + samples/dbview/dbview.rc
+   + samples/dbview/prgs/dbview.prg
+   + samples/dbview/prgs/Admindbf.Prg
+   + samples/dbview/prgs/Showprop.prg
+   + samples/dbview/prgs/creanew1.prg
+   + samples/dbview/prgs/dbquery1.prg
+   + samples/dbview/prgs/AboutWin.prg
+   + samples/dbview/prgs/modistru.prg
+   + samples/dbview/prgs/Indadmin.Prg
+   + samples/dbview/prgs/Import.prg
+   + samples/dbview/fmgs/dbuvar.ch
+   + samples/dbview/fmgs/import.fmg
+   + samples/dbview/fmgs/owndbase.fmg
+   + samples/dbview/fmgs/hbcompat.ch
+   + samples/dbview/res/Zoom.ico
+   + samples/dbview/res/Zoom.ico
+   + samples/dbview/res/dbview.jpg
+   + samples/dbview/res/guardar.bmp
+   + samples/dbview/res/salir.bmp
+   + samples/dbview/res/open.bmp
+   + samples/dbview/res/new.bmp
+   + samples/dbview/res/saveas.bmp
+   + samples/dbview/res/erase.bmp
+   + samples/dbview/res/print.bmp
+   + samples/dbview/res/index.bmp
+   + samples/dbview/res/insert.bmp
+   + samples/dbview/res/select3.bmp
+   + samples/dbview/res/reindex.bmp
+   + samples/dbview/res/modifyindex.bmp
+   + samples/dbview/res/addtag.bmp
+   + samples/dbview/res/droptag.bmp
+   + samples/dbview/res/closeindex.bmp
+   + samples/dbview/res/findnext.bmp
+   + samples/dbview/res/replace.bmp
+   + samples/dbview/res/paste.bmp
+   + samples/dbview/res/copy.bmp
+   + samples/dbview/res/info.bmp
+   + samples/dbview/res/filter.bmp
+   + samples/dbview/res/filter2.bmp
+   + samples/dbview/res/record.bmp
+   + samples/dbview/res/find.bmp
+   + samples/dbview/res/format.bmp
+   + samples/dbview/res/primero.bmp
+   + samples/dbview/res/anterior.bmp
+   + samples/dbview/res/siguiente.bmp
+   + samples/dbview/res/ultimo.bmp
+   + samples/dbview/res/paint.bmp
+   + samples/dbview/res/back.bmp
+   + samples/dbview/res/font.bmp
+   + samples/dbview/res/br_ok.bmp
+   + samples/dbview/res/br_no.bmp
+   + samples/dbview/res/logic.bmp
+   + samples/dbview/res/fech.bmp
+   + samples/dbview/res/num.bmp
+   + samples/dbview/res/num1.bmp
+   + samples/dbview/res/char.bmp
+   + samples/dbview/res/dele.bmp
+   + samples/dbview/res/memo.bmp
+   + samples/dbview/res/down.bmp
+   + samples/dbview/res/migsoft.bmp
+     + Added as a samples.
 
 2013-11-18 17:13 UTC-0400 MigSoft <migsoft@oohg.org>
    * ./ChangeLog

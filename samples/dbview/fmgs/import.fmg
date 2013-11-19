@@ -1,0 +1,162 @@
+/*
+ * $Id: import.fmg,v 1.1 2013-11-19 19:15:41 migsoft Exp $
+ */
+
+*HMGS-MINIGUI-IDE Two-Way Form Designer Generated Code
+*OPEN SOURCE PROJECT 2005-2011 Walter Formigoni http://sourceforge.net/projects/hmgs-minigui/
+
+DEFINE WINDOW TEMPLATE AT 186 , 398 WIDTH 390 HEIGHT 322 TITLE PROGRAM+"- Import a File" ICON "MAIN1" MODAL NOSIZE NOMINIMIZE NOMAXIMIZE
+
+     DEFINE RADIOGROUP RadioGroup_i1
+            ROW    30
+            COL    30
+            WIDTH  160
+            OPTIONS {'Text File (*.txt;*.csv)','DBF file (*.dbf)'}
+            VALUE 1
+            FONTNAME "MS Sans Serif"
+            SPACING 20
+     END RADIOGROUP
+
+     DEFINE TEXTBOX Text_ii1
+            ROW    90
+            COL    30
+            WIDTH  295
+            HEIGHT 24
+            FONTNAME "MS Sans Serif"
+     END TEXTBOX
+
+     DEFINE BUTTON Button_ii1
+            ROW    89
+            COL    325
+            WIDTH  30
+            HEIGHT 25
+            ACTION ImportGetFile()
+            CAPTION "..."
+            FONTNAME "MS Sans Serif"
+     END BUTTON
+
+     DEFINE LABEL Label_ii3
+            ROW    150
+            COL    30
+            WIDTH  90
+            HEIGHT 15
+            VALUE "Field delimiter:"
+            TRANSPARENT .T.
+            FONTNAME "MS Sans Serif"
+     END LABEL
+
+     DEFINE COMBOBOX Combo_ii2
+            ROW    150
+            COL    170
+            WIDTH  100
+            HEIGHT 100
+            ITEMS {';',',',':','(Tab)','(Space)','|'}
+            VALUE 1
+            FONTNAME "MS Sans Serif"
+     END COMBOBOX
+
+     DEFINE LABEL Label_ii4
+            ROW    180
+            COL    30
+            WIDTH  90
+            HEIGHT 15
+            VALUE "Text delimiter:"
+            TRANSPARENT .T.   
+            FONTNAME "MS Sans Serif"
+     END LABEL
+
+     DEFINE COMBOBOX Combo_ii3
+            ROW    180
+            COL    170
+            WIDTH  100
+            HEIGHT 100
+            ITEMS {'"','none',"'"}
+            VALUE 1
+            FONTNAME "MS Sans Serif"
+     END COMBOBOX
+
+     DEFINE LABEL Label_ii5
+            ROW    210
+            COL    30
+            WIDTH  90
+            HEIGHT 15
+            VALUE "First Row:"
+            TRANSPARENT .T.
+            FONTNAME "MS Sans Serif"
+     END LABEL
+
+     DEFINE LABEL Label_ii6
+            ROW    240
+            COL    30
+            WIDTH  100
+            HEIGHT 15
+            VALUE "Last Row:"
+            TRANSPARENT .T.
+            FONTNAME "MS Sans Serif"
+     END LABEL
+
+     DEFINE SPINNER Spinner_ii1
+            ROW    210
+            COL    170
+            WIDTH  100
+            HEIGHT 24
+            RANGEMIN 1
+            RANGEMAX 10
+            FONTNAME "MS Sans Serif"
+     END SPINNER
+
+     DEFINE SPINNER Spinner_ii2
+            ROW    240
+            COL    170
+            WIDTH  100
+            HEIGHT 24
+            RANGEMIN 1
+            RANGEMAX 10
+            FONTNAME "MS Sans Serif"
+     END SPINNER
+
+     DEFINE FRAME Frame_1
+            ROW    5
+            COL    10
+            WIDTH  360
+            HEIGHT 270
+            FONTNAME "MS Sans Serif"
+            CAPTION "File to Import"
+            FONTNAME "MS Sans Serif"
+            OPAQUE .T.
+     END FRAME
+
+     DEFINE BUTTON Button_1
+            ROW    210
+            COL    280
+            WIDTH  75
+            HEIGHT 24
+            ACTION OpenImpFile()
+            CAPTION "Execute"
+            FONTNAME "MS Sans Serif"
+            TOOLTIP ''
+     END BUTTON
+
+     DEFINE BUTTON Button_2
+            ROW    240
+            COL    280
+            WIDTH  75
+            HEIGHT 24
+            ACTION Import.Release
+            CAPTION "Cancel"
+            FONTNAME "MS Sans Serif"
+            TOOLTIP ''
+     END BUTTON
+
+     DEFINE CHECKBOX Check_1
+            ROW    115
+            COL    30
+            WIDTH  180
+            HEIGHT 28
+            CAPTION "SDF (Standard Data Format)"
+            FONTNAME "MS Sans Serif"
+            TOOLTIP ''
+     END CHECKBOX
+
+END WINDOW
+
