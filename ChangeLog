@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog,v 1.1194 2013-11-19 19:15:40 migsoft Exp $
+ * $Id: ChangeLog,v 1.1195 2013-11-21 06:55:49 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-11-20 23:00 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+   * samples/oohg/oohgrecord/px.prg
+     ! Fixed SCOPE functionality.
+     + Added ::IsTableEmpty() function for NOSHOWEMPTYROW support.
 
 2013-11-19 16:09 UTC-0400 MigSoft <migsoft@oohg.org>
    * ./ChangeLog

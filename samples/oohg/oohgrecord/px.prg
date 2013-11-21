@@ -1,5 +1,5 @@
 /*
- * $Id: px.prg,v 1.9 2013-04-16 15:30:12 guerra000 Exp $
+ * $Id: px.prg,v 1.10 2013-11-21 06:55:49 guerra000 Exp $
  */
 /*
  * This is a ooHGRecord's subclasses (database class used
@@ -257,6 +257,9 @@ CLASS XBrowse_Paradox FROM XBrowse_DirectFile
    // It's on XBrowse_DirectFile class... DATA cAlias__             INIT nil
    METHOD Eof                INLINE ::lEof
 
+   // Methods used by XBrowse if you'll allow NOSHOWEMPTYROW
+   METHOD IsTableEmpty
+
    // Implementations
    METHOD Bof                INLINE ::lBof
    METHOD Skip
@@ -269,7 +272,7 @@ CLASS XBrowse_Paradox FROM XBrowse_DirectFile
    // It's on XBrowse_DirectFile class... METHOD FieldBlock
    // It's on XBrowse_DirectFile class... METHOD FieldPos
 
-*   METHOD OrdScope
+   METHOD OrdScope
 *   METHOD Filter
 
 *   METHOD Locate     BLOCK { | Self, bFor, bWhile, nNext, nRec, lRest | ( ::cAlias__ )->( __dbLocate( bFor, bWhile, nNext, nRec, lRest ) ) }
@@ -790,6 +793,25 @@ LOCAL lFound, nFrom, nTo
    ENDIF
 RETURN nil
 
+METHOD IsTableEmpty() CLASS XBrowse_Paradox
+LOCAL lEmpty, lFound, nFrom, nTo
+   ::RefreshHeader()
+   IF ::nOrder == 0
+      lEmpty := ( ::RecCount == 0 )
+   ELSE // IF ::nOrder == 1
+      IF LEN( ::cScopeFrom ) + LEN( ::cScopeTo ) > 0 .AND. ::cScopeFrom <= ::cScopeTo
+         nFrom := ::SeekKey( ::cScopeFrom, .T., .F., @lFound )
+         IF ! lFound
+            nFrom++
+         ENDIF
+         nTo   := ::SeekKey( ::cScopeTo,   .T., .T. )
+         lEmpty := ( nFrom > nTo )
+      ELSE
+         lEmpty := ( ::RecCount == 0 )
+      ENDIF
+   ENDIF
+RETURN lEmpty
+
 METHOD Skip( nCount ) CLASS XBrowse_Paradox
 LOCAL lFound, nFrom, nTo, nAux
 LOCAL lBof
@@ -883,36 +905,39 @@ LOCAL lBof
       ELSEIF nCount > ::nRecCount
          nCount := ::nRecCount + 1
       ENDIF
+      ::GoTo( nCount )
+
    ELSE // IF ::nOrder == 1
       IF LEN( ::cScopeFrom ) + LEN( ::cScopeTo ) > 0 .AND. ::cScopeFrom <= ::cScopeTo
-         nFrom := ::SeekKey( ::cScopeFrom, .T., .F., @lFound )
-         IF ! lFound
-            nFrom++
-         ENDIF
-         nTo   := ::SeekKey( ::cScopeTo,   .T., .T. )
-         IF nFrom > nTo
-            lBof := ( nCount < 0 )
-            nCount := 0
-         ELSE
-            nCount := ::nRecno + nCount
-            IF nCount < nFrom
-               nCount := nFrom
+         IF ::Recno > ::RecCount
+            ::GoBottom()
+            IF ::Recno > ::RecCount .AND. nCount < 1
                lBof := .T.
-            ELSEIF nCount > nTo
-               nCount := ::nRecCount + 1
             ENDIF
+            nCount := nCount + 1
          ENDIF
-      ELSE
-         nCount := ::nRecno + nCount
-         IF nCount < 1
-            nCount := 1
-            lBof := .T.
-         ELSEIF nCount > ::nRecCount
-            nCount := ::nRecCount + 1
+      ENDIF
+      //
+      nCount := ::nRecno + nCount
+      IF nCount < 1
+         nCount := 1
+         lBof := .T.
+      ELSEIF nCount > ::nRecCount
+         nCount := ::nRecCount + 1
+      ENDIF
+      ::GoTo( nCount )
+      //
+      IF LEN( ::cScopeFrom ) + LEN( ::cScopeTo ) > 0 .AND. ::cScopeFrom <= ::cScopeTo
+         IF ::Recno <= ::RecCount
+            IF ::CurrentIndexKey( LEN( ::cScopeTo ) ) > ::cScopeTo
+               ::GoTo( 0 )
+            ELSEIF ::CurrentIndexKey( LEN( ::cScopeFrom ) ) < ::cScopeFrom
+               ::GoTop()
+               lBof := .T.
+            ENDIF
          ENDIF
       ENDIF
    ENDIF
-   ::GoTo( nCount )
    IF lBof
       ::lBof := .T.
       ::lEof := .F.
@@ -1177,6 +1202,34 @@ RETURN HB_INLINE( cType, cRecord, nBufferPos, nWidth ){
          }
 
 METHOD FieldPut( nPos, xValue ) CLASS XBrowse_Paradox
+RETURN NIL
+
+METHOD OrdScope( uFrom, uTo ) CLASS XBrowse_Paradox
+LOCAL cKey
+   IF PCOUNT() == 0
+      ::cScopeFrom := ""
+      ::cScopeTo := ""
+   ELSE
+      cKey := ""
+      IF HB_IsArray( uFrom )
+         AEVAL( uFrom, { |x,i| cKey += ::ValueToBuffer( x, ::aTypes[ i ], ::aWidths[ i ] ) },, ::nKeyFields )
+      ELSE
+         cKey := ::ValueToBuffer( uFrom, ::aTypes[ 1 ], ::aWidths[ 1 ] )
+      ENDIF
+      ::cScopeFrom := LEFT( cKey, ::nPxKeyLen - 6 )
+      //
+      IF PCOUNT() == 1
+         ::cScopeTo := ::cScopeFrom
+      ELSE
+         cKey := ""
+         IF HB_IsArray( uTo )
+            AEVAL( uTo, { |x,i| cKey += ::ValueToBuffer( x, ::aTypes[ i ], ::aWidths[ i ] ) },, ::nKeyFields )
+         ELSE
+            cKey := ::ValueToBuffer( uTo, ::aTypes[ 1 ], ::aWidths[ 1 ] )
+         ENDIF
+         ::cScopeTo := LEFT( cKey, ::nPxKeyLen - 6 )
+      ENDIF
+   ENDIF
 RETURN NIL
 
 METHOD Seek( uKey, lSoftSeek, lLast ) CLASS XBrowse_Paradox
@@ -1594,6 +1647,9 @@ LOCAL nPos, nRecNoFound
    ENDIF
    IF ! lLast
 //      cKey := PADR( cKey, ::nPxKeyLen - 6, CHR( 0 ) )
+   ENDIF
+   IF ! HB_IsLogical( lKeepBuffer )
+      lKeepBuffer := .F.
    ENDIF
    ::RefreshHeader()
    cBuffer := SPACE( ::nPxBlockSize )
