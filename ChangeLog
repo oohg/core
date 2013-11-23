@@ -1,11 +1,15 @@
 /*
- * $Id: ChangeLog,v 1.1195 2013-11-21 06:55:49 guerra000 Exp $
+ * $Id: ChangeLog,v 1.1196 2013-11-23 00:12:30 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-11-22 18:11 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+   * source/h_xbrowse.prg
+     ! Commented DO EVENTS call on ::Up() method.
 
 2013-11-20 23:00 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
    * samples/oohg/oohgrecord/px.prg

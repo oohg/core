@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.103 2013-11-02 00:12:21 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.104 2013-11-23 00:12:31 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1127,7 +1127,9 @@ Local nValue
       If nValue <= 1
          If ::ItemCount >= ::CountPerPage
             ::DeleteItem( ::ItemCount )
-            DO EVENTS
+            // ????????????
+            // DO EVENTS
+            // ????????????
          EndIf
          ::InsertBlank( 1 )
       Else
