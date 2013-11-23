@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: compile_MINGW.BAT,v 1.28 2013-11-01 20:36:56 fyurisich Exp $
+rem $Id: compile_MINGW.BAT,v 1.29 2013-11-23 14:16:24 fyurisich Exp $
 rem
 cls
 
@@ -40,8 +40,7 @@ rem set LIB_HRB=lib\win\mingw64
 rem set BIN_HRB=bin\win\mingw64
 
 rem *** Third Party Libraries ***
-set THR_LIB=
-rem THR_LIB=-lsocket -lmysqldll -ldll -lhbmysql
+rem set THR_LIB=-lsocket -lmysqldll -ldll -lhbmysql -lrddleto
 
 rem *** Set PATH ***
 set TPATH=%PATH%

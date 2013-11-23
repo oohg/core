@@ -1,11 +1,23 @@
 /*
- * $Id: ChangeLog,v 1.1196 2013-11-23 00:12:30 guerra000 Exp $
+ * $Id: ChangeLog,v 1.1197 2013-11-23 14:16:24 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-11-13 12:15 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * ./ChangeLog
+     * Previous entries cleaned up.
+     ; Do not add ./ChangeLog in entries unless a previous
+       entry was manually corrected.
+   * ./compile_MINGW.BAT
+     ! THR_LIB envvar is ignored.
+   * ./buildapp.bat
+     + /sl switch to show compiler messages on the screen.
+     + -q switch to suppress harbour's line number messages when
+       messages are redirect to output.log
 
 2013-11-22 18:11 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
    * source/h_xbrowse.prg
@@ -17,7 +29,6 @@
      + Added ::IsTableEmpty() function for NOSHOWEMPTYROW support.
 
 2013-11-19 16:09 UTC-0400 MigSoft <migsoft@oohg.org>
-   * ./ChangeLog
    + samples/dbview/dbview.hbp
    + samples/dbview/dbview.rc
    + samples/dbview/prgs/dbview.prg
@@ -82,7 +93,6 @@
      + Added as a samples.
 
 2013-11-18 17:13 UTC-0400 MigSoft <migsoft@oohg.org>
-   * ./ChangeLog
    * ./buildapp.bat
      * Minor changes
    + samples/mpm/mpm.hbp
@@ -143,12 +153,10 @@
      + Added as a samples.
 
 2013-11-18 14:30 UTC-0400 MigSoft <migsoft@oohg.org>
-   * ./ChangeLog
    * ./buildapp.bat
      * Fixed support .hbp files
 
 2013-11-15 16:25 UTC-0400 MigSoft <migsoft@oohg.org>
-   * ./ChangeLog
    + source/mymakelib.bat
      + set path for compile batch.
 

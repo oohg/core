@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: buildapp.bat,v 1.7 2013-11-18 20:40:23 migsoft Exp $
+rem $Id: buildapp.bat,v 1.8 2013-11-23 14:16:24 fyurisich Exp $
 rem
 
 REM *** Check for .prg ***
@@ -42,18 +42,38 @@ rem set LIB_GUI=lib\hb\mingw64
 rem set LIB_HRB=lib\win\mingw64
 rem set BIN_HRB=bin\win\mingw64
 
+rem *** Parse Switches ***
+set TFILE=%1
+set NO_LOG=NO
+set EXTRA=
+:LOOP_START
+if "%2"==""    goto LOOP_END
+if "%2"=="/sl" goto SUPPRESS_LOG
+if "%2"=="/sL" goto SUPPRESS_LOG
+if "%2"=="/Sl" goto SUPPRESS_LOG
+if "%2"=="/SL" goto SUPPRESS_LOG
+set EXTRA=%EXTRA% %2
+shift
+goto LOOP_START
+:SUPPRESS_LOG
+set NO_LOG=YES
+shift
+goto LOOP_START
+:LOOP_END
+
 rem *** Set PATH ***
 set TPATH=%PATH%
 set PATH=%HG_MINGW%\bin;%HG_HRB%\%BIN_HRB%
 
 rem *** Process Resource File ***
-echo Compiling %1 ...
+echo Compiling %TFILE% ...
 echo #define oohgpath %HG_ROOT%\RESOURCES > _oohg_resconfig.h
-copy /b %HG_ROOT%\resources\oohg.rc+%1.rc _temp.rc > nul
+copy /b %HG_ROOT%\resources\oohg.rc+%TFILE%.rc _temp.rc > nul
 windres -i _temp.rc -o _temp.o
 
 rem *** Compile and Link ***
-hbmk2 %1 %2 %3 %4 %5 %6 %7 %8 %9 %HG_ROOT%\oohg.hbc >> output.log 2>&1 -run
+if "%NO_LOG%"=="YES" hbmk2 %TFILE% %EXTRA% %HG_ROOT%\oohg.hbc -run
+if not "%NO_LOG%"=="YES" hbmk2 %TFILE% %EXTRA% %HG_ROOT%\oohg.hbc >> output.log 2>&1 -run -prgflag=-q
 
 rem *** Cleanup ***
 if exist _oohg_resconfig.h del _oohg_resconfig.h
@@ -62,15 +82,11 @@ set PATH=%TPATH%
 set TPATH=
 goto EXIT
 
-
 :ERREXIT1
-echo FILE %1.prg OR %1.hbp NOT FOUND !!!
-
+echo FILE %TFILE%.prg OR %TFILE%.hbp NOT FOUND !!!
 goto EXIT
 
-
 :ERREXIT2
-echo COMPILE ERROR: IS %1.EXE RUNNING ?
-
+echo COMPILE ERROR: IS %TFILE%.EXE RUNNING ?
 
 :EXIT
