@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.104 2013-11-23 00:12:31 guerra000 Exp $
+ * $Id: h_xbrowse.prg,v 1.105 2013-11-27 19:42:40 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -746,12 +746,14 @@ Local oExcel, oSheet, nLin, i, cWorkArea, uValue
          If HB_IsBlock( ::aFields[ i ] )
             uValue := ( cWorkArea ) -> ( Eval( ::aFields[ i ], cWorkArea ) )
          Else
-            uValue := ( cWorkArea ) -> &( ::aFields[ i ] )
+            uValue := ( cWorkArea ) -> ( &( ::aFields[ i ] ) )
          Endif
          If Valtype( uValue ) == "C"
             uValue := "'" + uValue
          EndIf
-         oSheet:Cells( nLin, i - nColFrom + 1 ):Value := uValue
+         If ! HB_IsDate( uValue ) .or. ! Empty( uValue )
+            oSheet:Cells( nLin, i - nColFrom + 1 ):Value := uValue
+         EndIf
       Next i
       ::DbSkip()
       nLin ++

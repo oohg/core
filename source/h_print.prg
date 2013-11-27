@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.126 2013-10-26 15:25:59 fyurisich Exp $
+* $Id: h_print.prg,v 1.127 2013-11-27 19:42:40 fyurisich Exp $
 */
 
 #include 'hbclass.ch'
@@ -2354,9 +2354,9 @@ LOCAL cMarginRig := LTrim( Str( Round( 10 * 56.7, 0 ) ) )
    AAdd( ::aPrintRtf, "{\*\pnseclvl7\pnlcrm\pnstart1\pnindent720\pnhang{\pntxtb (}{\pntxta )}}{\*\pnseclvl8\pnlcltr\pnstart1\pnindent720\pnhang{\pntxtb (}{\pntxta )}}{\*\pnseclvl9\pnlcrm\pnstart1\pnindent720\pnhang{\pntxtb (}{\pntxta )}}\pard\plain " )
    AAdd( ::aPrintRtf, "\qj \li0\ri0\nowidctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang3082\langfe3082\cgrid\langnp3082\langfenp3082" )
    IF ::cUnits = "MM"
-      AAdd( ::aPrintRtf, "{\b\f0\lang1034\langfe3082\cgrid0\langnp1034" )
+      AAdd( ::aPrintRtf, "{\f0\lang1034\langfe3082\cgrid0\langnp1034" )
    ELSE
-      AAdd( ::aPrintRtf, "{\b\f2\lang1034\langfe3082\cgrid0\langnp1034" )
+      AAdd( ::aPrintRtf, "{\f2\lang1034\langfe3082\cgrid0\langnp1034" )
    ENDIF
 RETURN Self
 
@@ -2428,27 +2428,27 @@ LOCAL nLin, i1, i2
          DO CASE
          CASE ::nPrintRtf <= 8
             IF ::cUnits = "MM"
-               ::aPrintRtf[ Len( ::aPrintRtf ) ] := ::aPrintRtf[ Len( ::aPrintRtf ) ] + "}{\b\f0\fs16\lang1034\langfe3082\cgrid0\langnp1034"
+               ::aPrintRtf[ Len( ::aPrintRtf ) ] := ::aPrintRtf[ Len( ::aPrintRtf ) ] + "}{\f0\fs16\lang1034\langfe3082\cgrid0\langnp1034"
             ELSE
-               ::aPrintRtf[ Len( ::aPrintRtf ) ] := ::aPrintRtf[ Len( ::aPrintRtf ) ] + "}{\b\f2\fs16\lang1034\langfe3082\cgrid0\langnp1034"
+               ::aPrintRtf[ Len( ::aPrintRtf ) ] := ::aPrintRtf[ Len( ::aPrintRtf ) ] + "}{\f2\fs16\lang1034\langfe3082\cgrid0\langnp1034"
             ENDIF
          CASE ::nPrintRtf >= 9 .AND. ::nPrintRtf <= 10
             IF ::cUnits = "MM"
-               ::aPrintRtf[ Len( ::aPrintRtf ) ] := ::aPrintRtf[ Len( ::aPrintRtf ) ] + "}{\b\f0\lang1034\langfe3082\cgrid0\langnp1034"
+               ::aPrintRtf[ Len( ::aPrintRtf ) ] := ::aPrintRtf[ Len( ::aPrintRtf ) ] + "}{\f0\lang1034\langfe3082\cgrid0\langnp1034"
             ELSE
-               ::aPrintRtf[ Len( ::aPrintRtf ) ] := ::aPrintRtf[ Len( ::aPrintRtf ) ] + "}{\b\f2\lang1034\langfe3082\cgrid0\langnp1034"
+               ::aPrintRtf[ Len( ::aPrintRtf ) ] := ::aPrintRtf[ Len( ::aPrintRtf ) ] + "}{\f2\lang1034\langfe3082\cgrid0\langnp1034"
             ENDIF
          CASE ::nPrintRtf >= 11 .AND. ::nPrintRtf <= 12
             IF ::cUnits = "MM"
-            ::aPrintRtf[ Len( ::aPrintRtf ) ] := ::aPrintRtf[ Len( ::aPrintRtf ) ] + "}{\b\f0\fs24\lang1034\langfe3082\cgrid\langnp1034"
+            ::aPrintRtf[ Len( ::aPrintRtf ) ] := ::aPrintRtf[ Len( ::aPrintRtf ) ] + "}{\f0\fs24\lang1034\langfe3082\cgrid\langnp1034"
             ELSE
-            ::aPrintRtf[ Len( ::aPrintRtf ) ] := ::aPrintRtf[ Len( ::aPrintRtf ) ] + "}{\b\f2\fs24\lang1034\langfe3082\cgrid\langnp1034"
+            ::aPrintRtf[ Len( ::aPrintRtf ) ] := ::aPrintRtf[ Len( ::aPrintRtf ) ] + "}{\f2\fs24\lang1034\langfe3082\cgrid\langnp1034"
             ENDIF
          CASE ::nPrintRtf >= 13
             IF ::cUnits = "MM"
-            ::aPrintRtf[ Len( ::aPrintRtf ) ] := ::aPrintRtf[ Len( ::aPrintRtf ) ] + "}{\b\f0\fs28\lang1034\langfe3082\cgrid\langnp1034"
+            ::aPrintRtf[ Len( ::aPrintRtf ) ] := ::aPrintRtf[ Len( ::aPrintRtf ) ] + "}{\f0\fs28\lang1034\langfe3082\cgrid\langnp1034"
             ELSE
-            ::aPrintRtf[ Len( ::aPrintRtf ) ] := ::aPrintRtf[ Len( ::aPrintRtf ) ] + "}{\b\f2\fs28\lang1034\langfe3082\cgrid\langnp1034"
+            ::aPrintRtf[ Len( ::aPrintRtf ) ] := ::aPrintRtf[ Len( ::aPrintRtf ) ] + "}{\f2\fs28\lang1034\langfe3082\cgrid\langnp1034"
             ENDIF
          ENDCASE
       ENDIF
@@ -2457,7 +2457,7 @@ LOCAL nLin, i1, i2
          ::aPrintRtf[ Len( ::aPrintRtf ) ] := ::aPrintRtf[ Len( ::aPrintRtf ) ] + "\tab "
       ENDIF
 
-      ::aPrintRtf[ Len( ::aPrintRtf ) ] := ::aPrintRtf[ Len( ::aPrintRtf ) ] + ::aLinCelda[ i1, 3 ]
+      ::aPrintRtf[ Len( ::aPrintRtf ) ] := ::aPrintRtf[ Len( ::aPrintRtf ) ] + if(::aLinCelda[ i1, 6 ], "\b ", "") + ::aLinCelda[ i1, 3 ] + if(::aLinCelda[ i1, 6 ], "\b0 ", "")
    NEXT
 
    ::aPrintRtf[ Len( ::aPrintRtf ) ] := ::aPrintRtf[ Len( ::aPrintRtf ) ] + " \page"
@@ -2469,7 +2469,6 @@ METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen,
 *-----------------------------------------------------------------------------*
    Empty( uData )
    Empty( cFont )
-   Empty( lBold )
    Empty( aColor )
    Empty( nLen )
    Empty( lItalic )
@@ -2481,7 +2480,7 @@ METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen,
    IF ::cUnits = "MM"
       cText := AllTrim( cText )
    ENDIF
-   AAdd( ::aLinCelda, { nLin, nCol, Space( ::nLMargin ) + cText, nSize, cAlign } )
+   AAdd( ::aLinCelda, { nLin, nCol, Space( ::nLMargin ) + cText, nSize, cAlign, lBold } )
 RETURN Self
 
 *-----------------------------------------------------------------------------*

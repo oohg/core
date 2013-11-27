@@ -1,11 +1,27 @@
 /*
- * $Id: ChangeLog,v 1.1197 2013-11-23 14:16:24 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1198 2013-11-27 19:42:39 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-11-27 17:42 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_xbrowse.prg
+   * source/h_grid.prg
+     ! RTE in method ToExcel when exporting an empty date.
+   * source/h_controlmisc.prg
+     * Keeps buttons centered whatever values are received in
+       nLabelWidth and nControlWidth. Thanks to David Field
+       for the idea.
+     + New parameter nButtonWidth to set the width of the buttons.
+     * Parameter handling.
+     + Set minimun width.
+     * Format.
+   * source/h_print.prg
+     ! Document is printed in bold when using RTFPRINT class.
+     + Bold parameter is enabled in method PrintData of RTFPRINT class.
 
 2013-11-13 12:15 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * ./ChangeLog

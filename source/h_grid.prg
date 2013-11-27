@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.229 2013-10-24 02:41:45 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.230 2013-11-27 19:42:40 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -876,7 +876,7 @@ Return Self
 *-----------------------------------------------------------------------------*
 METHOD ToExcel( cTitle, nItemFrom, nItemTo, nColFrom, nColTo ) CLASS TGrid
 *-----------------------------------------------------------------------------*
-Local oExcel, oSheet, nLin, i, j
+Local oExcel, oSheet, nLin, i, j, uValue
 
    If ! ValType( cTitle ) $ "CM"
       cTitle := ""
@@ -922,7 +922,10 @@ Local oExcel, oSheet, nLin, i, j
 
    For j := nItemFrom To nItemTo
       For i := nColFrom To nColTo
-         oSheet:Cells( nLin, i - nColFrom + 1 ):Value := ::Cell( j, i )
+         uValue := ::Cell( j, i )
+         If ! HB_IsDate( uValue ) .or. ! Empty( uValue )
+            oSheet:Cells( nLin, i - nColFrom + 1 ):Value := uValue
+         EndIf
       Next i
       nLin ++
    Next j
