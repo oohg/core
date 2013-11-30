@@ -1,5 +1,5 @@
 /*
- * $Id: px.prg,v 1.10 2013-11-21 06:55:49 guerra000 Exp $
+ * $Id: px.prg,v 1.11 2013-11-30 04:12:09 guerra000 Exp $
  */
 /*
  * This is a ooHGRecord's subclasses (database class used
@@ -813,7 +813,7 @@ LOCAL lEmpty, lFound, nFrom, nTo
 RETURN lEmpty
 
 METHOD Skip( nCount ) CLASS XBrowse_Paradox
-LOCAL lFound, nFrom, nTo, nAux
+LOCAL lFound, nFrom, nTo, nRecordsInBlock, nAux
 LOCAL lBof
    ::GoCold()
    ::RefreshHeader()
@@ -823,21 +823,43 @@ LOCAL lBof
    nCount := INT( nCount )
    lBof := .F.
 
+   IF     ::nOrder == 1                                                                    .AND. ;   // Table is sorted
+          LEN( ::cScopeFrom ) + LEN( ::cScopeTo ) > 0 .AND. ::cScopeFrom <= ::cScopeTo     .AND. ;   // There's SCOPE active
+          ::Recno > ::RecCount                                                                       // Current record is EOF
+      ::GoBottom()
+      IF ::Recno > ::RecCount .AND. nCount < 1
+         lBof := .T.
+      ENDIF
+      nCount := nCount + 1
+   ENDIF
+
    // Fast skip
    IF     ::lValidBuffer                               .AND. ;     // Data in progress
           ! ::cCurrentBlockBuffer == NIL               .AND. ;     // Block is on memory
-          LEN( ::cScopeFrom ) + LEN( ::cScopeTo ) == 0 .AND. ;     // There's no SCOPE
-          ABS( nCount ) <= INT( ::nBlockSize / ::nRecordLen )      // How many records for "fast" skip?
+          ABS( nCount ) <= ( INT( ::nBlockSize / ::nRecordLen ) * 2 )      // How many records for "fast" skip?
       IF ! ::lShared .OR. ::cCurrentBlockBuffer == ::ReadBlock( ::nCurrentBlock )
          DO WHILE nCount != 0
-            nAux := ReadLittleEndian( ::cCurrentBlockBuffer, 5, 2, .T. )
-            nAux := INT( nAux / ::nRecordLen ) + 1
+            nRecordsInBlock := INT( ReadLittleEndian( ::cCurrentBlockBuffer, 5, 2, .T. ) / ::nRecordLen ) + 1
             IF nCount < 0
                IF ::nCurrentBlockRecord == 0
                   // Row 0 means "comes from other block"
-                  ::nCurrentBlockRecord := nAux + 1
+                  ::nCurrentBlockRecord := nRecordsInBlock + 1
                ENDIF
-               IF ( - nCount ) < ::nCurrentBlockRecord
+               IF     LEN( ::cScopeFrom ) + LEN( ::cScopeTo ) > 0 .AND. ::cScopeFrom <= ::cScopeTo .AND. SUBSTR( ::cCurrentBlockBuffer, 7, LEN( ::cScopeFrom ) ) < ::cScopeFrom
+                  // There's SCOPE and first item in block is out of range
+                  DO WHILE nCount != 0 .AND. SUBSTR( ::cCurrentBlockBuffer, ( ( ::nCurrentBlockRecord - 2 ) * ::nRecordLen ) + 7, LEN( ::cScopeFrom ) ) >= ::cScopeFrom
+                     nCount++
+                     ::nCurrentBlockRecord--
+                     ::nRecNo--
+                  ENDDO
+                  IF nCount < 0
+                     ::GoTop()
+                     ::lBof := .T.
+                     ::lEof := .F.
+                     RETURN nil
+                  ENDIF
+                  EXIT
+               ELSEIF ( - nCount ) < ::nCurrentBlockRecord
                   ::nRecNo += nCount
                   ::nCurrentBlockRecord += nCount
                   nCount := 0
@@ -858,15 +880,27 @@ LOCAL lBof
                   ENDIF
                ENDIF
             ELSE // IF nCount > 0
-               IF nCount + ::nCurrentBlockRecord <= nAux
+               IF     LEN( ::cScopeFrom ) + LEN( ::cScopeTo ) > 0 .AND. ::cScopeFrom <= ::cScopeTo .AND. SUBSTR( ::cCurrentBlockBuffer, ( ( nRecordsInBlock - 1 ) * ::nRecordLen ) + 7, LEN( ::cScopeTo ) ) > ::cScopeTo
+                  // There's SCOPE and last item in block is out of range
+                  DO WHILE nCount != 0 .AND. SUBSTR( ::cCurrentBlockBuffer, ( ::nCurrentBlockRecord * ::nRecordLen ) + 7, LEN( ::cScopeTo ) ) <= ::cScopeTo
+                     nCount--
+                     ::nCurrentBlockRecord++
+                     ::nRecNo++
+                  ENDDO
+                  IF nCount > 0
+                     ::GoTo( 0 )
+                     RETURN nil
+                  ENDIF
+                  EXIT
+               ELSEIF nCount + ::nCurrentBlockRecord <= nRecordsInBlock
                   ::nRecNo += nCount
                   ::nCurrentBlockRecord += nCount
                   nCount := 0
-               ELSEIF ::nCurrentBlockRecord > nAux
+               ELSEIF ::nCurrentBlockRecord > nRecordsInBlock
                   // Error!
                   EXIT
                ELSE
-                  nAux := nAux - ::nCurrentBlockRecord
+                  nAux := nRecordsInBlock - ::nCurrentBlockRecord
                   nCount -= nAux
                   ::nRecNo += nAux
                   ::nCurrentBlockRecord := 0
@@ -908,16 +942,6 @@ LOCAL lBof
       ::GoTo( nCount )
 
    ELSE // IF ::nOrder == 1
-      IF LEN( ::cScopeFrom ) + LEN( ::cScopeTo ) > 0 .AND. ::cScopeFrom <= ::cScopeTo
-         IF ::Recno > ::RecCount
-            ::GoBottom()
-            IF ::Recno > ::RecCount .AND. nCount < 1
-               lBof := .T.
-            ENDIF
-            nCount := nCount + 1
-         ENDIF
-      ENDIF
-      //
       nCount := ::nRecno + nCount
       IF nCount < 1
          nCount := 1
@@ -1708,7 +1732,7 @@ LOCAL nPos, nRecNoFound
             nRecNo := nRecNo - nCant
             nBlock--
          ENDIF
-         nBlock := ReadBigEndian( cBuffer, ( nBlock * ::nPxKeyLen ) + 7 - 6, 2 )
+         nBlock := ReadBigEndian( cBuffer, ( nBlock * ::nPxKeyLen ) + 7 - 6, 2, .T. )
       ENDIF
       nLevel--
    ENDDO
