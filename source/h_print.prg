@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.127 2013-11-27 19:42:40 fyurisich Exp $
+* $Id: h_print.prg,v 1.128 2013-12-01 23:26:02 fyurisich Exp $
 */
 
 #include 'hbclass.ch'
@@ -2299,9 +2299,10 @@ RETURN Self
 
 CLASS TRTFPRINT FROM TPRINTBASE
 
-   DATA aPrintRtf INIT {}
-   DATA nPrintRtf INIT 10
-   DATA lPrintRtf INIT .F.
+   DATA aPrintRtf  INIT {}
+   DATA nPrintRtf  INIT 10
+   DATA lPrintRtf  INIT .F.
+   DATA lIndentAll INIT .F.
 
    METHOD InitX
    METHOD BeginDocX
@@ -2337,6 +2338,7 @@ LOCAL cMarginInf := LTrim( Str( Round( 15 * 56.7, 0 ) ) )
 LOCAL cMarginLef := LTrim( Str( Round( 10 * 56.7, 0 ) ) )
 LOCAL cMarginRig := LTrim( Str( Round( 10 * 56.7, 0 ) ) )
 
+// If you insert a new font in the document's font table please add it also to array aFontTable in Method PrinDataX
    AAdd( ::aPrintRtf, "{\rtf1\ansi\ansicpg1252\uc1 \deff0\deflang3082\deflangfe3082{\fonttbl{\f0\froman\fcharset0\fprq2{\*\panose 02020603050405020304}Times New Roman;}{\f2\fmodern\fcharset0\fprq1{\*\panose 02070309020205020404}Courier New;}" )
    AAdd( ::aPrintRtf, "{\f106\froman\fcharset238\fprq2 Times New Roman CE;}{\f107\froman\fcharset204\fprq2 Times New Roman Cyr;}{\f109\froman\fcharset161\fprq2 Times New Roman Greek;}{\f110\froman\fcharset162\fprq2 Times New Roman Tur;}" )
    AAdd( ::aPrintRtf, "{\f111\froman\fcharset177\fprq2 Times New Roman (Hebrew);}{\f112\froman\fcharset178\fprq2 Times New Roman (Arabic);}{\f113\froman\fcharset186\fprq2 Times New Roman Baltic;}{\f122\fmodern\fcharset238\fprq1 Courier New CE;}" )
@@ -2454,19 +2456,41 @@ LOCAL nLin, i1, i2
       ENDIF
 
       IF ::cUnits = "MM"
-         ::aPrintRtf[ Len( ::aPrintRtf ) ] := ::aPrintRtf[ Len( ::aPrintRtf ) ] + "\tab "
+         ::aPrintRtf[ Len( ::aPrintRtf ) ] := ::aPrintRtf[ Len( ::aPrintRtf ) ] + "\tab " + if( ::aLinCelda[ i1, 6 ], "\b ", "" ) + ::aLinCelda[ i1, 3 ] + if( ::aLinCelda[ i1, 6 ], "\b0", "" )
+      ELSE
+         IF ::aLinCelda[ i1, 6 ]        // Bold
+            ::aPrintRtf[ Len( ::aPrintRtf ) ] := ::aPrintRtf[ Len( ::aPrintRtf ) ] + "\b " + space(::aLinCelda[ i1, 2 ]) + ::aLinCelda[ i1, 3 ] + "\b0"
+         ELSE
+            ::aPrintRtf[ Len( ::aPrintRtf ) ] := ::aPrintRtf[ Len( ::aPrintRtf ) ] + if( Right( ::aPrintRtf[ Len( ::aPrintRtf ) ], 1 ) == " ", "", " " ) + space(::aLinCelda[ i1, 2 ]) + ::aLinCelda[ i1, 3 ]
+         ENDIF
       ENDIF
-
-      ::aPrintRtf[ Len( ::aPrintRtf ) ] := ::aPrintRtf[ Len( ::aPrintRtf ) ] + if(::aLinCelda[ i1, 6 ], "\b ", "") + ::aLinCelda[ i1, 3 ] + if(::aLinCelda[ i1, 6 ], "\b0 ", "")
    NEXT
 
-   ::aPrintRtf[ Len( ::aPrintRtf ) ] := ::aPrintRtf[ Len( ::aPrintRtf ) ] + " \page"
+   ::aPrintRtf[ Len( ::aPrintRtf ) ] := ::aPrintRtf[ Len( ::aPrintRtf ) ] + "\page"
    ::aLinCelda := {}
 RETURN Self
 
 *-----------------------------------------------------------------------------*
 METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen, cText, lItalic ) CLASS TRTFPRINT
 *-----------------------------------------------------------------------------*
+LOCAL nFontTableStart, i, j, aFonts, cFontNumber, cNext, nParLevel, cFontName
+LOCAL nNextFont := 201, aFontTable := { {"0",   "TIMES NEW ROMAN" }, ;
+                                        {"2",   "COURIER NEW" }, ;
+                                        {"106", "TIMES NEW ROMAN CE" }, ;
+                                        {"107", "TIMES NEW ROMAN CYR" }, ;
+                                        {"109", "TIMES NEW ROMAN GREEK" }, ;
+                                        {"110", "TIMES NEW ROMAN TUR" }, ;
+                                        {"111", "TIMES NEW ROMAN (HEBREW)" }, ;
+                                        {"112", "TIMES NEW ROMAN (ARABIC)" }, ;
+                                        {"113", "TIMES NEW ROMAN BALTIC" }, ;
+                                        {"122", "COURIER NEW CE" }, ;
+                                        {"123", "COURIER NEW CYR" }, ;
+                                        {"125", "COURIER NEW GREEK" }, ;
+                                        {"126", "COURIER NEW TUR" }, ;
+                                        {"127", "COURIER NEW (HEBREW)" }, ;
+                                        {"128", "COURIER NEW (ARABIC)" }, ;
+                                        {"129", "COURIER NEW BALTIC" } }
+
    Empty( uData )
    Empty( cFont )
    Empty( aColor )
@@ -2480,6 +2504,133 @@ METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen,
    IF ::cUnits = "MM"
       cText := AllTrim( cText )
    ENDIF
+
+   IF Left( cText, 6 ) == "{\rtf1"
+      // A RTF document can have only one font table.
+      // We must change the number of already defined fonts and
+      // add new one to original font table.
+      IF ( nFontTableStart := At( "{\fonttbl", cText ) ) > 0
+         i := nFontTableStart + 9
+
+         aFonts := {}
+
+         DO WHILE i <= Len( cText )
+            IF SubStr( cText, i, 1 ) == "}"
+               cText := SubStr( cText, 1, nFontTableStart - 1 ) + substr( cText, i + 1 )
+               EXIT
+            ENDIF
+
+            IF SubStr( cText, i, 3 ) == "{\f"
+               // process font number
+               cFontNumber := ""
+               i += 3
+               DO WHILE i <= Len( cText ) .AND. ( cNext := SubStr( cText, i, 1 ) ) $ "0123456789"
+                  cFontNumber += cNext
+                  i ++
+               ENDDO
+               IF Len( cFontNumber ) < 1 .OR. i > Len( cText ) .OR. ! cNext $ " \{"
+                  // RTF text is non compliant with the standard
+                  EXIT
+               ENDIF
+
+               nParLevel := 0
+               DO WHILE .T.
+                  IF cNext == " "
+                     i ++
+                     IF i > Len( cText )
+                        EXIT
+                     ENDIF
+                     cNext := SubStr( cText, i, 1 )
+                  ENDIF
+
+                  IF cNext == "\"
+                     i ++
+                     DO WHILE i <= Len( cText ) .AND. ! ( cNext := SubStr( cText, i, 1 ) ) $ " \{}"
+                        i ++
+                     ENDDO
+                     IF i > Len( cText ) .OR. cNext == "}"
+                        EXIT
+                     ELSEIF cNext == " "
+                        LOOP
+                     ELSEIF cNext == "\"
+                        LOOP
+                     ENDIF
+                  ENDIF
+
+                  IF cNext == "{"
+                     nParLevel ++
+                     DO WHILE nParLevel > 0
+                        i ++
+                        DO WHILE i <= Len( cText ) .AND. ! ( cNext := SubStr( cText, i, 1 ) ) $ "{}"
+                           i ++
+                        ENDDO
+                        IF i > Len( cText )
+                           EXIT
+                        ELSEIF cNext == "{"
+                           nParLevel ++
+                        ELSE
+                           nParLevel --
+                        ENDIF
+                     ENDDO
+                     IF i > Len( cText )
+                        EXIT
+                     ENDIF
+                     i++
+                     IF i > Len( cText )
+                        EXIT
+                     ENDIF
+                     cNext := SubStr( cText, i, 1 )
+                  ENDIF
+
+                  cFontName := ""
+                  DO WHILE ! cNext == ";"
+                     cFontName += cNext
+                     i ++
+                     IF i > Len( cText )
+                        EXIT
+                     ENDIF
+                     cNext := SubStr( cText, i, 1 )
+                  ENDDO
+                  IF i > Len( cText )
+                     EXIT
+                  ENDIF
+                  i ++
+                  IF i > Len( cText )
+                     EXIT
+                  ENDIF
+                  IF ! ( cNext := SubStr( cText, i, 1 ) ) == "}"
+                     EXIT
+                  ENDIF
+
+                  AADD( aFonts, { cFontNumber, Upper( cFontName ) } )
+
+                  i ++
+                  EXIT
+               ENDDO
+            ELSE
+               EXIT
+            ENDIF
+         ENDDO
+
+         FOR i := 1 TO Len( aFonts )
+            IF ( j := ASCAN( aFontTable, { |f| f[2] == aFonts[i, 2] } ) ) > 0
+               // Substitute font references
+               cText := StrTran( cText, '\f' + aFonts[i, 1] + ' ', '\f' + aFontTable[j, 1] + ' ' )
+               cText := StrTran( cText, '\f' + aFonts[i, 1] + '\', '\f' + aFontTable[j, 1] + '\' )
+               cText := StrTran( cText, '\f' + aFonts[i, 1] + '{', '\f' + aFontTable[j, 1] + '{' )
+            ELSE
+               // Add new font
+               ::aPrintRtf[1] += "{\f" + ltrim(str(nNextFont)) + " " + aFonts[i, 2] + ";}"
+            ENDIF
+         NEXT
+
+         IF ::lIndentAll .AND. ::cUnits == "ROWCOL"
+            cText := StrTran( cText, "\par ", "\par " + space( nCol ) )
+            cText := StrTran( cText, "\par" + chr(13) + chr(10), "\par " + space( nCol ) )
+         ENDIF
+      ENDIF
+   ENDIF
+
    AAdd( ::aLinCelda, { nLin, nCol, Space( ::nLMargin ) + cText, nSize, cAlign, lBold } )
 RETURN Self
 

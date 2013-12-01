@@ -1,11 +1,20 @@
 /*
- * $Id: ChangeLog,v 1.1199 2013-11-30 04:12:09 guerra000 Exp $
+ * $Id: ChangeLog,v 1.1200 2013-12-01 23:26:02 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-12-01 21:26 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_print.prg
+     ! Document is always printed at COL 0 when using RTFPRINT
+       class with ROWCOL units.
+     + Data lIndentAll to RTFPRINT class.
+       When .T. and the text printed is the RichValue of a
+       RichEditBox, if it has more than one line, all lines are
+       placed at the column specified in the PrintData call.
 
 2013-11-29 22:09 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
    * samples/oohg/oohgrecord/px.prg
