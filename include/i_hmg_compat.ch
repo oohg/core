@@ -1,5 +1,5 @@
 /*
- * $Id: i_hmg_compat.ch,v 1.27 2013-09-28 16:26:18 fyurisich Exp $
+ * $Id: i_hmg_compat.ch,v 1.28 2013-12-02 23:01:45 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -192,6 +192,7 @@
       [ <buts: USEBUTTONS> ] ;
       [ <upcol: UPDATECOLORS> ] ;
       [ <edtctrls: FIXEDCONTROLS, DYNAMICCONTROLS> ] ;
+      [ ONHEADRCLICK <bheadrclick> ] ;
    => ;
       [ <oObj> := ] _OOHG_SelectSubClass( TOBrowse(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, , , <w>, <h>, <headers>, <widths>, <Fields>, ;
@@ -213,7 +214,8 @@
             <.fixedcols.>, <.nodelmsg.>, <.updall.>, <{abortedit}>, <{click}>, <.fixedwidths.>, ;
             iif( upper( #<blocks> ) == "FIXEDBLOCKS", .T., iif( upper( #<blocks> ) == "DYNAMICBLOCKS", .F., NIL ) ), ;
             <{bBefMov}>, <{bAftMov}>, <{bBefSiz}>, <{bAftSiz}>, <{bBefAut}>, <.excel.>, <.buts.>, <.upcol.>, ;
-            iif( upper( #<edtctrls> ) == "FIXEDCONTROLS", .T., iif( upper( #<blocks> ) == "DYNAMICCONTROLS", .F., NIL ) ) )
+            iif( upper( #<edtctrls> ) == "FIXEDCONTROLS", .T., iif( upper( #<blocks> ) == "DYNAMICCONTROLS", .F., NIL ) ), ;
+            <{bheadrclick}> )
 
 #xcommand @ <row>,<col> BUTTONEX <name> ;
       [ OBJ <obj> ] ;

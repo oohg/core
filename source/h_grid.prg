@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.230 2013-11-27 19:42:40 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.231 2013-12-02 23:01:45 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -176,6 +176,7 @@ CLASS TGrid FROM TControl
    DATA lBeginTrack            INIT .F.
    DATA lEndTrack              INIT .F.
    DATA nVisibleItems          INIT 0
+   DATA bHeadRClick            INIT Nil
 
    METHOD Define
    METHOD Define2
@@ -268,7 +269,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
                bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
                bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
-               lFixedCtrls ) CLASS TGrid
+               lFixedCtrls, bHeadRClick ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local nStyle := LVS_SINGLESEL
 
@@ -286,7 +287,7 @@ Local nStyle := LVS_SINGLESEL
               bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
               bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
               bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
-              lFixedCtrls )
+              lFixedCtrls, bHeadRClick )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -304,7 +305,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                 bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
                 bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
                 bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
-                lFixedCtrls ) CLASS TGrid
+                lFixedCtrls, bHeadRClick ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local ControlHandle, aImageList, i
 
@@ -481,6 +482,7 @@ Local ControlHandle, aImageList, i
    ASSIGN ::OnDelete       VALUE onDelete       TYPE "B"
    ASSIGN ::bDelWhen       VALUE bDelWhen       TYPE "B"
    ASSIGN ::OnAppend       VALUE onappend       TYPE "B"
+   ASSIGN ::bHeadRClick   VALUE bHeadRClick   TYPE "B"
 
 Return Self
 
@@ -2012,7 +2014,7 @@ Local lRet
 Return lRet
 
 *-----------------------------------------------------------------------------*
-FUNCTION _OOHG_TGrid_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TGrid and TGridByCell
+FUNCTION _OOHG_TGrid_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local aCellData, nItem, i
    Empty( lParam )
@@ -2310,6 +2312,17 @@ Local nNotify, nColumn, lGo, nNewWidth, nResul, aRect
 
          // Repaint the grid
          RedrawWindow( ::ContainerhWnd )
+      EndIf
+
+   ElseIf nNotify == NM_RCLICK
+      If HB_IsBlock( ::bHeadRClick )
+         nColumn := ListView_HitTest( ::hWnd, GetCursorRow() - GetWindowRow( ::hWnd ), GetCursorCol() - GetWindowCol( ::hWnd ) )
+
+         lGo := Eval( ::bHeadRClick, nColumn[2] )
+         If HB_IsLogical( lGo ) .and. ! lGo
+            // Prevent the action
+            Return 1
+         EndIf
       EndIf
 
    EndIf
@@ -2919,9 +2932,34 @@ Return Nil
 *-----------------------------------------------------------------------------*
 METHOD ScrollToCol( nCol ) CLASS TGrid
 *-----------------------------------------------------------------------------*
-Local r
+Local aOrder, n, r, i
 
-   r := ListView_GetSubitemRect( ::hWnd, 0, nCol - 1 )        // top, left, width, height
+   /*
+      When first column is moved to another position ListView_GetSubitemRect()
+      return wrong "left" value (always 0).
+   */
+
+   If nCol == 1
+      aOrder := ::ColumnOrder()
+      If Len( aOrder) > 0 .AND. aOrder[1] != 1
+         r := ListView_GetSubitemRect( ::hWnd, 0, aOrder[1] - 1 )        // top, left, width, height
+         n := r[2]
+
+         i := 1
+         Do While i <= Len( aOrder ) .AND. aOrder[i] != 1
+            n += ::ColumnWidth( aOrder[i] )
+            i ++
+         EndDo
+
+         r := ListView_GetSubitemRect( ::hWnd, 0, nCol - 1 )
+         r[2] := n
+      Else
+         r := ListView_GetSubitemRect( ::hWnd, 0, nCol - 1 )
+      EndIf
+   Else
+      r := ListView_GetSubitemRect( ::hWnd, 0, nCol - 1 )
+   EndIf
+      automsgbox(r)
 
    If r[ 2 ] # 0
       ListView_Scroll( ::hWnd, r[ 2 ], 0 )
@@ -2963,7 +3001,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
                bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
                bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
-               lFixedCtrls ) CLASS TGridMulti
+               lFixedCtrls, bHeadRClick ) CLASS TGridMulti
 *-----------------------------------------------------------------------------*
 Local nStyle := 0
 
@@ -2981,7 +3019,7 @@ Local nStyle := 0
               bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
               bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
               bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
-              lFixedCtrls )
+              lFixedCtrls, bHeadRClick )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -3221,7 +3259,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
                bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
                bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
-               lFixedCtrls ) CLASS TGridByCell
+               lFixedCtrls, bHeadRClick ) CLASS TGridByCell
 *-----------------------------------------------------------------------------*
 Local nStyle := LVS_SINGLESEL
 
@@ -3241,7 +3279,7 @@ Local nStyle := LVS_SINGLESEL
               bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
               bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
               bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
-              lFixedCtrls )
+              lFixedCtrls, bHeadRClick )
 
    // By default, search in the current column
    ::SearchCol := 0

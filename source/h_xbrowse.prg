@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.105 2013-11-27 19:42:40 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.106 2013-12-02 23:01:45 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -159,7 +159,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lFixedCols, abortedit, click, lFixedWidths, lFixedBlocks, ;
                bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
                bBeforeAutofit, lLikeExcel, lButtons, lNoDelMsg, lFixedCtrls, ;
-               lNoShowEmptyRow, lUpdCols ) CLASS TXBrowse
+               lNoShowEmptyRow, lUpdCols, bHeadRClick ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
 Local nWidth2, nCol2, lLocked, oScroll, z
 
@@ -229,7 +229,7 @@ Local nWidth2, nCol2, lLocked, oScroll, z
               lFixedCols, abortedit, click, lFixedWidths, bBeforeColMove, ;
               bAfterColMove, bBeforeColSize, bAfterColSize, bBeforeAutofit, ;
               lLikeExcel, lButtons, AllowDelete, , , DelMsg, lNoDelMsg, ;
-              AllowAppend, , , lFixedCtrls )
+              AllowAppend, , , lFixedCtrls, bHeadRClick )
 
    ::FixBlocks( lFixedBlocks )
 

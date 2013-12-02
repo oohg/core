@@ -1,5 +1,5 @@
 /*
- * $Id: i_browse.ch,v 1.45 2013-09-08 23:49:46 fyurisich Exp $
+ * $Id: i_browse.ch,v 1.46 2013-12-02 23:01:44 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -187,6 +187,7 @@
       [ <buts: USEBUTTONS> ] ;
       [ <upcol: UPDATECOLORS> ] ;
       [ <edtctrls: FIXEDCONTROLS, DYNAMICCONTROLS> ] ;
+      [ ONHEADRCLICK <bheadrclick> ] ;
    => ;
       [ <oObj> := ] _OOHG_SelectSubClass( TOBrowse(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, <widths>, ;
@@ -208,7 +209,8 @@
             <.fixedcols.>, <.nodelmsg.>, <.updall.>, <{abortedit}>, <{click}>, <.fixedwidths.>, ;
             iif( upper( #<blocks> ) == "FIXEDBLOCKS", .T., iif( upper( #<blocks> ) == "DYNAMICBLOCKS", .F., NIL ) ), ;
             <{bBefMov}>, <{bAftMov}>, <{bBefSiz}>, <{bAftSiz}>, <{bBefAut}>, <.excel.>, <.buts.>, <.upcol.>, ;
-            iif( upper( #<edtctrls> ) == "FIXEDCONTROLS", .T., iif( upper( #<edtctrls> ) == "DYNAMICCONTROLS", .F., NIL ) ) )
+            iif( upper( #<edtctrls> ) == "FIXEDCONTROLS", .T., iif( upper( #<edtctrls> ) == "DYNAMICCONTROLS", .F., NIL ) ), ;
+            <{bheadrclick}> )
 
 #command SET BROWSESYNC ON  => SetBrowseSync( .T. )
 #command SET BROWSESYNC OFF => SetBrowseSync( .F. )

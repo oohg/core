@@ -1,11 +1,35 @@
 /*
- * $Id: ChangeLog,v 1.1200 2013-12-01 23:26:02 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1201 2013-12-02 23:01:44 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-12-02 21:00 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_grid.prg
+     ! ScrollToCol not working properly when first column is moved
+       to another position.
+     + DATA bHeadRClick.
+     + NM_RCLICK handler.
+     + Support for clause ONHEADRCLICK.
+     ; If bHeadRClick is a codeblock and the user right clicks
+       on a column header, the codeblock is evaluated (receiving
+       the column number as parameter).
+     ; Column number 0 means that the user clicked on an unused
+       part of the header.
+   * source/h_browse.prg
+   * source/h_xbrowse.prg
+     + Support for clause ONHEADRCLICK.
+   * source/h_checklist.prg
+     + Missing and new parameters in TGrid():Define() call.
+   * include\i_altsyntax.ch
+   * include\i_grid.ch
+   * include\i_browse.ch
+   * include\i_xbrowse.ch
+   * include\i_hmg_compat.ch
+     + Clause ONHEADRCLICK to Grid, Browse and XBrowse controls.
 
 2013-12-01 21:26 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_print.prg

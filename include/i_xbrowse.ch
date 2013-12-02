@@ -1,5 +1,5 @@
 /*
- * $Id: i_xbrowse.ch,v 1.31 2013-10-01 23:46:18 fyurisich Exp $
+ * $Id: i_xbrowse.ch,v 1.32 2013-12-02 23:01:45 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -181,6 +181,7 @@
       [ <edtctrls: FIXEDCONTROLS, DYNAMICCONTROLS> ] ;
       [ <noshowempty: NOSHOWEMPTYROW> ] ;
       [ <upcol: UPDATECOLORS> ] ;
+      [ ONHEADRCLICK <bheadrclick> ] ;
 	=> ;
       [ <oObj> := ] _OOHG_SelectSubClass( TXBrowse(), [ <subclass>() ] ):Define( ;
             <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, <widths>, ;
@@ -203,7 +204,7 @@
             <{bBefMov}>, <{bAftMov}>, <{bBefSiz}>, <{bAftSiz}>, <{bBefAut}>, <.excel.>, ;
             <.buts.>, <.nodelmsg.>, ;
             iif( upper( #<edtctrls> ) == "FIXEDCONTROLS", .T., iif( upper( #<edtctrls> ) == "DYNAMICCONTROLS", .F., NIL ) ), ;
-            <.noshowempty.>, <.upcol.> )
+            <.noshowempty.>, <.upcol.>, <{bheadrclick}> )
 
 #command SET XBROWSEFIXEDBLOCKS ON  => SetXBrowseFixedBlocks( .T. )
 #command SET XBROWSEFIXEDBLOCKS OFF => SetXBrowseFixedBlocks( .F. )

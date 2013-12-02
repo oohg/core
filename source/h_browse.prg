@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.132 2013-10-24 02:41:45 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.133 2013-12-02 23:01:45 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -162,7 +162,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lNoDelMsg, lUpdateAll, abortedit, click, lFixedWidths, ;
                lFixedBlocks, bBeforeColMove, bAfterColMove, bBeforeColSize, ;
                bAfterColSize, bBeforeAutofit, lLikeExcel, lButtons, lUpdCols, ;
-               lFixedCtrls ) CLASS TOBrowse
+               lFixedCtrls, bHeadRClick ) CLASS TOBrowse
 *-----------------------------------------------------------------------------*
 Local nWidth2, nCol2, oScroll, z
 
@@ -244,7 +244,7 @@ Local nWidth2, nCol2, oScroll, z
                    aHeaderImageAlign, FullMove, aSelectedColors, aEditKeys, , , dblbffr, lFocusRect, ;
                    lPLM, lFixedCols, abortedit, click, lFixedWidths, bBeforeColMove, bAfterColMove, ;
                    bBeforeColSize, bAfterColSize, bBeforeAutofit, lLikeExcel, lButtons, ;
-                   AllowDelete, , , DelMsg, lNoDelMsg, AllowAppend, , , lFixedCtrls )
+                   AllowDelete, , , DelMsg, lNoDelMsg, AllowAppend, , , lFixedCtrls, bHeadRClick )
 
    ::nWidth := w
 

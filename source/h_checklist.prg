@@ -1,5 +1,5 @@
 /*
- * $Id: h_checklist.prg,v 1.13 2013-09-08 23:49:46 fyurisich Exp $
+ * $Id: h_checklist.prg,v 1.14 2013-12-02 23:01:45 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -197,7 +197,9 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
                lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths, ;
                bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
-               bBeforeAutofit ) CLASS TGrid
+               bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
+               bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
+               lFixedCtrls, bHeadRClick ) CLASS TGrid
 */
    ::Super:Define( ControlName, ParentForm, x, y, w, h, aHdr, aWidth, ;
                    {}, Nil, fontname, fontsize, tooltip, change, Nil, ;
@@ -208,8 +210,12 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                    aEdC, .T., Nil, Nil, Nil, ;
                    Nil, lDisabled, lNoTabStop, lInvisible, .F., ;
                    Nil, Nil, Nil, .F., ;
-                   aSelectedColors, Nil, .T., Nil, dblbffr, .F., .F., .T., ;
-                   nil, click, .T., Nil, Nil, Nil, Nil, Nil )
+                   aSelectedColors, Nil, .T., Nil, dblbffr, ;
+                   .F., .F., .T., nil, click, .T., ;
+                   Nil, Nil, Nil, Nil, ;
+                   Nil, Nil, Nil, Nil, Nil, ;
+                   Nil, Nil, Nil, Nil, Nil, Nil, ;
+                   .T., Nil )
 
    aEval( aRows, { |u| ::AddItem( u ) } )
 

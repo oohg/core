@@ -1,5 +1,5 @@
 /*
- * $Id: i_grid.ch,v 1.32 2013-09-08 23:49:46 fyurisich Exp $
+ * $Id: i_grid.ch,v 1.33 2013-12-02 23:01:45 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -182,6 +182,7 @@
       [ ON APPEND <onappend> ] ;
       [ <nomodal : NOMODALEDIT> ] ;
       [ <edtctrls: FIXEDCONTROLS, DYNAMICCONTROLS> ] ;
+      [ ONHEADRCLICK <bheadrclick> ] ;
    =>;
       [ <obj> := ] _OOHG_SelectSubClass(iif( <.bycell.>, TGridByCell(), iif( <.multiselect.>, TGridMulti(), TGrid() ) ), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, ;
@@ -201,7 +202,8 @@
             <{bBefMov}>, <{bAftMov}>, <{bBefSiz}>, <{bAftSiz}>, <{bBefAut}>, <.excel.>, ;
             <.buts.>, <.delete.>, <{onDelete}>, <{bWhenDel}>, <DelMsg>, <.nodelmsg.>, ;
             <.append.>, <{onappend}>, <.nomodal.>, ;
-            iif( upper( #<edtctrls> ) == "FIXEDCONTROLS", .T., iif( upper( #<edtctrls> ) == "DYNAMICCONTROLS", .F., NIL ) ) )
+            iif( upper( #<edtctrls> ) == "FIXEDCONTROLS", .T., iif( upper( #<edtctrls> ) == "DYNAMICCONTROLS", .F., NIL ) ), ;
+            <{bheadrclick}> )
 
 ///////////////////////////////////////////////////////////////////////////////
 // GRID (SPLITBOX VERSION)
@@ -287,6 +289,7 @@
       [ ON APPEND <onappend> ] ;
       [ <nomodal : NOMODALEDIT> ] ;
       [ <edtctrls: FIXEDCONTROLS, DYNAMICCONTROLS> ] ;
+      [ ONHEADRCLICK <bheadrclick> ] ;
    =>;
       [ <obj> := ] _OOHG_SelectSubClass(iif( <.bycell.>, TGridByCell(), iif( <.multiselect.>, TGridMulti(), TGrid() ) ), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, , , <w>, <h>, <headers>, ;
@@ -306,7 +309,8 @@
             <{bBefMov}>, <{bAftMov}>, <{bBefSiz}>, <{bAftSiz}>, <{bBefAut}>, <.excel.>, ;
             <.buts.>, <.delete.>, <{onDelete}>, <{bWhenDel}>, <DelMsg>, <.nodelmsg.>, ;
             <.append.>, <{onappend}>, <.nomodal.>, ;
-            iif( upper( #<edtctrls> ) == "FIXEDCONTROLS", .T., iif( upper( #<edtctrls> ) == "DYNAMICCONTROLS", .F., NIL ) ) )
+            iif( upper( #<edtctrls> ) == "FIXEDCONTROLS", .T., iif( upper( #<edtctrls> ) == "DYNAMICCONTROLS", .F., NIL ) ), ;
+            <{bheadrclick}> )
 
 #command SET GRIDFIXEDCONTROLS ON  => SetGridFixedControls( .T. )
 #command SET GRIDFIXEDCONTROLS OFF => SetGridFixedControls( .F. )
