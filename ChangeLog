@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.1201 2013-12-02 23:01:44 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1202 2013-12-02 23:06:04 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,10 +7,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-12-02 21:05 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * ./ChangeLog
+     * Previous entry amended.
+
 2013-12-02 21:00 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
      ! ScrollToCol not working properly when first column is moved
-       to another position.
+       to another position. Thanks to David Fied for reporting.
      + DATA bHeadRClick.
      + NM_RCLICK handler.
      + Support for clause ONHEADRCLICK.
@@ -19,6 +23,7 @@
        the column number as parameter).
      ; Column number 0 means that the user clicked on an unused
        part of the header.
+     ; Thanks to David Field for his idea and code sample.
    * source/h_browse.prg
    * source/h_xbrowse.prg
      + Support for clause ONHEADRCLICK.
