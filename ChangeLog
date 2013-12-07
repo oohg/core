@@ -1,11 +1,25 @@
 /*
- * $Id: ChangeLog,v 1.1202 2013-12-02 23:06:04 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1203 2013-12-07 12:38:07 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-12-07 10:37 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_grid.prg
+     - Workarounds in PRG code for ListView_GetSubitemRect returning
+       wrong left and/or width values for first column.
+     % Method ScrollToCol.
+     + Test for vertical scrollbar presence in method Value.
+     % Function _GetGridCellData.
+     + Workaround to function ListView_GetSubitemRect at C level,
+       so it always returns the correct left and width values for
+       first column.
+     ! First displayed column is erased after moving first defined
+       column to another position in a Grid with PAINTLEFTMARGIN
+       clause.
 
 2013-12-02 21:05 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * ./ChangeLog

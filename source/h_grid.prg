@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.231 2013-12-02 23:01:45 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.232 2013-12-07 12:38:07 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1348,7 +1348,7 @@ Local lRet, nItem, aValues, lValid, cValidMessage
    // If all controls are valid, save values into "aItems"
    If lRet
       aSize( aReturn, Len( aItems ) )
-      aEval( aValues, { |u,i| aItems[ i ] := aReturn [ i ] := u } )
+      aEval( aValues, { |u,i| aItems[ i ] := aReturn[ i ] := u } )
       oWnd:Release()
    EndIf
 Return
@@ -1850,7 +1850,7 @@ Return lRet
 *-----------------------------------------------------------------------------*
 METHOD EditCell2( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusPos ) CLASS TGrid
 *-----------------------------------------------------------------------------*
-Local r, r2, lRet := .F., nWidth, uAux
+Local r, r2, lRet := .F., nClientWidth, uAux, nScrollWidth
    If ::lNested
       Return .F.
    EndIf
@@ -1910,25 +1910,30 @@ Local r, r2, lRet := .F., nWidth, uAux
       Else
          r := { 0, 0, 0, 0 }                                        // left, top, right, bottom
          GetClientRect( ::hWnd, r )
-         nWidth := r[ 3 ] - r[ 1 ]
+         nClientWidth := r[ 3 ] - r[ 1 ]
          r2 := { 0, 0, 0, 0 }                                       // left, top, right, bottom
          GetWindowRect( ::hWnd, r2 )
          If ! OSisWinXPorLater() .or. ! ListView_IsItemVisible( ::hWnd, nRow )
             ListView_EnsureVisible( ::hWnd, nRow )
          EndIf
          r := ListView_GetSubitemRect( ::hWnd, nRow - 1, nCol - 1 ) // top, left, width, height
-         r[ 3 ] := ListView_GetColumnWidth( ::hWnd, nCol - 1 )
          // Ensures cell is visible
-         If r[ 2 ] + r[ 3 ] + GetVScrollBarWidth() > nWidth
-            ListView_Scroll( ::hWnd, ( r[ 2 ] + r[ 3 ] + GetVScrollBarWidth() - nWidth ), 0 )
+         If ListViewGetItemCount( ::hWnd ) >  ListViewGetCountPerPage( ::hWnd )
+            nScrollWidth := GetVScrollBarWidth()
+         Else
+            nScrollWidth := 0
+         EndIf
+         If r[ 2 ] + r[ 3 ] + nScrollWidth > nClientWidth
+            ListView_Scroll( ::hWnd, ( r[ 2 ] + r[ 3 ] + nScrollWidth - nClientWidth ), 0 )
             r := ListView_GetSubitemRect( ::hWnd, nRow - 1, nCol - 1 )
-            r[ 3 ] := Min( ListView_GetColumnWidth( ::hWnd, nCol - 1 ), nWidth )
+            r[ 3 ] := Min( r[ 3 ], nClientWidth )
          EndIf
          If r[ 2 ] < 0
             ListView_Scroll( ::hWnd, r[ 2 ], 0 )
             r := ListView_GetSubitemRect( ::hWnd, nRow - 1, nCol - 1 )
-            r[ 3 ] := Min( ListView_GetColumnWidth( ::hWnd, nCol - 1 ), nWidth )
+            r[ 3 ] := Min( r[ 3 ], nClientWidth )
          EndIf
+         // Transform to screen coordinates and add some margins
          r[ 1 ] += r2[ 2 ] + 2
          r[ 2 ] += r2[ 1 ] + 3
 
@@ -2421,8 +2426,8 @@ Local lvc, _ThisQueryTemp, nvkey, uValue, lGo, aItem
          _OOHG_ThisType := 'C'
          _OOHG_ThisControl := Self
          _ThisQueryTemp  := GetGridDispInfoIndex( lParam )
-         _OOHG_ThisQueryRowIndex  := _ThisQueryTemp [1]
-         _OOHG_ThisQueryColIndex  := _ThisQueryTemp [2]
+         _OOHG_ThisQueryRowIndex  := _ThisQueryTemp[ 1 ]
+         _OOHG_ThisQueryColIndex  := _ThisQueryTemp[ 2 ]
          ::DoEvent( ::OnDispInfo, "DISPINFO" )
          If HB_IsNumeric( _OOHG_ThisQueryData )
             SetGridQueryImage ( lParam, _OOHG_ThisQueryData )
@@ -2932,39 +2937,11 @@ Return Nil
 *-----------------------------------------------------------------------------*
 METHOD ScrollToCol( nCol ) CLASS TGrid
 *-----------------------------------------------------------------------------*
-Local aOrder, n, r, i
-
-   /*
-      When first column is moved to another position ListView_GetSubitemRect()
-      return wrong "left" value (always 0).
-   */
-
-   If nCol == 1
-      aOrder := ::ColumnOrder()
-      If Len( aOrder) > 0 .AND. aOrder[1] != 1
-         r := ListView_GetSubitemRect( ::hWnd, 0, aOrder[1] - 1 )        // top, left, width, height
-         n := r[2]
-
-         i := 1
-         Do While i <= Len( aOrder ) .AND. aOrder[i] != 1
-            n += ::ColumnWidth( aOrder[i] )
-            i ++
-         EndDo
-
-         r := ListView_GetSubitemRect( ::hWnd, 0, nCol - 1 )
-         r[2] := n
-      Else
-         r := ListView_GetSubitemRect( ::hWnd, 0, nCol - 1 )
-      EndIf
-   Else
-      r := ListView_GetSubitemRect( ::hWnd, 0, nCol - 1 )
-   EndIf
-      automsgbox(r)
-
+Local r
+   r := ListView_GetSubitemRect( ::hWnd, 0, nCol - 1 )
    If r[ 2 ] # 0
       ListView_Scroll( ::hWnd, r[ 2 ], 0 )
    EndIf
-
 Return Nil
 
 
@@ -3352,7 +3329,7 @@ Return aSelectedColors
 *-----------------------------------------------------------------------------*
 METHOD Value( uValue ) CLASS TGridByCell
 *-----------------------------------------------------------------------------*
-Local r, r2, nWidth
+Local r, nClientWidth, nScrollWidth
 
    If HB_IsArray( uValue ) .AND. Len( uValue ) > 1 .AND. HB_IsNumeric( uValue[ 1 ] ) .AND. HB_IsNumeric( uValue[ 2 ] )
       If uValue[ 1 ] < 1 .OR. uValue[ 1 ] > ::ItemCount .OR. uValue[ 2 ] < 1 .OR. uValue[ 2 ] > Len( ::aHeaders )
@@ -3367,16 +3344,18 @@ Local r, r2, nWidth
       ListView_SetCursel( ::hWnd, ::nRowPos )
       r := { 0, 0, 0, 0 }                                        // left, top, right, bottom
       GetClientRect( ::hWnd, r )
-      nWidth := r[ 3 ] - r[ 1 ]
-      r2 := { 0, 0, 0, 0 }
-      GetWindowRect( ::hWnd, r2 )
+      nClientWidth := r[ 3 ] - r[ 1 ]
       If ! OSisWinXPorLater() .or. ! ListView_IsItemVisible( ::hWnd, ::nRowPos )
          ListView_EnsureVisible( ::hWnd, ::nRowPos )
       EndIf
       r := ListView_GetSubitemRect( ::hWnd, ::nRowPos - 1, ::nColPos - 1 ) // top, left, width, height
-      r[ 3 ] := ListView_GetColumnWidth( ::hWnd, ::nColPos - 1 )
-      If r[ 2 ] + r[ 3 ] + GetVScrollBarWidth() > nWidth
-         ListView_Scroll( ::hWnd, ( r[ 2 ] + r[ 3 ] + GetVScrollBarWidth() - nWidth ), 0 )
+      If ListViewGetItemCount( ::hWnd ) >  ListViewGetCountPerPage( ::hWnd )
+         nScrollWidth := GetVScrollBarWidth()
+      Else
+         nScrollWidth := 0
+      EndIf
+      If r[ 2 ] + r[ 3 ] + nScrollWidth > nClientWidth
+         ListView_Scroll( ::hWnd, ( r[ 2 ] + r[ 3 ] + nScrollWidth - nClientWidth ), 0 )
       EndIf
       If r[ 2 ] < 0
          ListView_Scroll( ::hWnd, r[ 2 ], 0 )
@@ -4211,53 +4190,49 @@ Local ThisItemCellCol
 Local ThisItemCellWidth
 Local ThisItemCellHeight
 Local r
-Local xs
-Local xd
+Local nScrollWidth
 Local aCellData
+Local nClientWidth
+Local aControlRect
 
-   r := ListView_HitTest ( ::hWnd, GetCursorRow() - GetWindowRow ( ::hWnd ), GetCursorCol() - GetWindowCol ( ::hWnd ) )
-   If r [1] == 0 .AND. r [2] == 0
+   r := ListView_HitTest ( ::hWnd, GetCursorRow() - GetWindowRow( ::hWnd ), GetCursorCol() - GetWindowCol( ::hWnd ) )
+   If r[ 1 ] == 0 .AND. r[ 2 ] == 0     // item & subitem (column)
       // hit on an empty row
       Return { 0, 0, 0, 0, 0, 0 }
-   ElseIf r [2] == 1
-      ListView_Scroll( ::hWnd,  -10000, 0 )
-      r := ListView_HitTest ( ::hWnd, GetCursorRow() - GetWindowRow ( ::hWnd ), GetCursorCol() - GetWindowCol ( ::hWnd ) )
    Else
-      r := ListView_GetSubitemRect ( ::hWnd, r[1] - 1, r[2] - 1 )
+      aControlRect := { 0, 0, 0, 0 }                                            // left, top, right, bottom
+      GetWindowRect( ::hWnd, aControlRect )
+      r := { 0, 0, 0, 0 }                                                       // left, top, right, bottom
+      GetClientRect( ::hWnd, r )
+      nClientWidth := r[ 3 ] - r[ 1 ]
 
-                  //   CellCol            CellWidth
-      xs := ( ( ::ContainerCol + r [2] ) +( r[3] ))  -  ( ::ContainerCol + ::Width )
+      r := ListView_GetSubitemRect( ::hWnd, r[ 1 ] - 1, r[ 2 ] - 1 )           // top, left, width, height
 
       If ListViewGetItemCount( ::hWnd ) >  ListViewGetCountPerPage( ::hWnd )
-         xd := 20
+         nScrollWidth := GetVScrollBarWidth()
       Else
-         xd := 0
+         nScrollWidth := 0
       EndIf
 
-      If xs > -xd
-         ListView_Scroll( ::hWnd,  xs + xd, 0 )
-      Else
-         If r [2] < 0
-            ListView_Scroll( ::hWnd, r[2], 0 )
-         EndIf
+      If r[ 2 ] + r[ 3 ] + nScrollWidth > nClientWidth
+         ListView_Scroll( ::hWnd,  r[ 2 ] + r[ 3 ] + nScrollWidth - nClientWidth, 0 )
+      EndIf
+      If r[ 2 ] < 0
+         ListView_Scroll( ::hWnd, r[ 2 ], 0 )
       EndIf
 
-      r := ListView_HitTest ( ::hWnd, GetCursorRow() - GetWindowRow ( ::hWnd ), GetCursorCol() - GetWindowCol ( ::hWnd ) )
+      r := ListView_HitTest( ::hWnd, GetCursorRow() - GetWindowRow( ::hWnd ), GetCursorCol() - GetWindowCol( ::hWnd ) )
    EndIf
 
-   ThisItemRowIndex := r[1]
-   ThisItemColIndex := r[2]
+   ThisItemRowIndex := r[ 1 ]
+   ThisItemColIndex := r[ 2 ]
 
-   If r [2] == 1
-      r := ListView_GetItemRect ( ::hWnd, r[1] - 1 )
-   Else
-      r := ListView_GetSubitemRect ( ::hWnd, r[1] - 1, r[2] - 1 )
-   EndIf
+   r := ListView_GetSubitemRect( ::hWnd, r[ 1 ] - 1, r[ 2 ] - 1 )
 
-   ThisItemCellRow := ::ContainerRow + r [1]
-   ThisItemCellCol := ::ContainerCol + r [2]
-   ThisItemCellWidth := r[3]
-   ThisItemCellHeight := r[4]
+   ThisItemCellRow    := r[ 1 ] + aControlRect[ 2 ]
+   ThisItemCellCol    := r[ 2 ] + aControlRect[ 1 ]
+   ThisItemCellWidth  := r[ 3 ]
+   ThisItemCellHeight := r[ 4 ]
 
    aCellData := { ThisItemRowIndex, ThisItemColIndex, ThisItemCellRow, ThisItemCellCol, ThisItemCellWidth, ThisItemCellHeight }
 
@@ -4267,10 +4242,9 @@ Return aCellData
 PROCEDURE _SetThisCellInfo( hWnd, nRow, nCol, uValue )
 *------------------------------------------------------------------------------*
 Local aControlRect, aCellRect
-   aControlRect := { 0, 0, 0, 0 }
+   aControlRect := { 0, 0, 0, 0 }                                               // left, top, right, bottom
    GetWindowRect( hWnd, aControlRect )
-   aCellRect := ListView_GetSubitemRect( hWnd, nRow - 1, nCol - 1 )
-   aCellRect[ 3 ] := ListView_GetColumnWidth( hWnd, nCol - 1 )
+   aCellRect := ListView_GetSubitemRect( hWnd, nRow - 1, nCol - 1 )             // top, left, width, height
 
    _OOHG_ThisItemRowIndex   := nRow
    _OOHG_ThisItemColIndex   := nCol
@@ -4405,7 +4379,7 @@ Return oEditControl
 FUNCTION GetStateListWidth( hwnd )
 *------------------------------------------------------------------------------*
 
-RETURN ImageList_Size( ListView_GetImageList( hwnd, LVSIL_STATE ) ) [ 1 ]
+RETURN ImageList_Size( ListView_GetImageList( hwnd, LVSIL_STATE ) )[ 1 ]
 
 
 
@@ -5222,7 +5196,7 @@ COLUMNCONTROLS syntax:
 METHOD New( oGrid, lButtons, aImages, lNoModal ) CLASS TGridControlImageList
    ::oGrid := oGrid
    If ! Empty( ::oGrid ) .AND. ::oGrid:ImageList != 0
-      ::nDefHeight := ImageList_Size( ::oGrid:ImageList ) [ 2 ] + 6
+      ::nDefHeight := ImageList_Size( ::oGrid:ImageList )[ 2 ] + 6
    EndIf
 
    ASSIGN ::lButtons VALUE lButtons TYPE "L"
@@ -5246,7 +5220,7 @@ METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGrid
       uValue := Val( uValue )
    EndIf
    If ! Empty( ::oGrid ) .AND. ::oGrid:ImageList != 0
-      @ nRow,nCol COMBOBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth VALUE 0 ITEMS {} IMAGE {} TEXTHEIGHT ImageList_Size( ::oGrid:ImageList ) [ 2 ]
+      @ nRow,nCol COMBOBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth VALUE 0 ITEMS {} IMAGE {} TEXTHEIGHT ImageList_Size( ::oGrid:ImageList )[ 2 ]
       ::oControl:ImageList := ImageList_Duplicate( ::oGrid:ImageList )
    Else
       @ nRow,nCol COMBOBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth VALUE 0 ITEMS {}
@@ -6455,8 +6429,15 @@ HB_FUNC( LISTVIEW_GETSUBITEMRECT )
 {
    RECT Rect ;
    LPRECT lpRect = (LPRECT) &Rect ;
+   HWND hWnd = HWNDparam( 1 );
 
-   ListView_GetSubItemRect( HWNDparam( 1 ), hb_parni( 2 ), hb_parni( 3 ), LVIR_BOUNDS, lpRect );
+   /*
+    * For first column, LVIR_BOUNDS always returns left == 0 and right == sum of all columns' widths
+    * As a workaround use LVIR_LABEL to get the subitem's right and compute it's left
+    * by substracting the column's width.
+    */
+   ListView_GetSubItemRect( hWnd, hb_parni( 2 ), hb_parni( 3 ), LVIR_LABEL, lpRect );
+   Rect.left = Rect.right - ListView_GetColumnWidth( hWnd, hb_parni( 3 ) );
 
    hb_reta( 4 );
    HB_STORNI( Rect.top,  -1, 1 );
@@ -6930,13 +6911,16 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
       }
       else if( ( x == 1 ) && ( ! bCheckBoxes ) && bPLM )    // Is first subitem and has no image nor checkbox?
       {
-         // Get icon's rect
+         /*
+          * LVIR_BOUNDS always returns left == 0 and right == sum of all columns' widths
+          * As a workaround use LVIR_LABEL to get the subitem's right and compute it's left
+          * by substracting the column's width.
+          * Use LVIR_ICON to get the left of the icon area, and use this value as the right
+          * of the area to paint.
+          */
+         ListView_GetSubItemRect( lplvcd->nmcd.hdr.hwndFrom, lplvcd->nmcd.dwItemSpec, lplvcd->iSubItem, LVIR_LABEL, &rcBack );
+         rcBack.left = rcBack.right - ListView_GetColumnWidth( lplvcd->nmcd.hdr.hwndFrom, lplvcd->iSubItem );
          ListView_GetSubItemRect( lplvcd->nmcd.hdr.hwndFrom, lplvcd->nmcd.dwItemSpec, lplvcd->iSubItem, LVIR_ICON, &rcIcon );
-
-         // Calculate area for background
-         rcBack.top = rcIcon.top;
-         rcBack.left = 0;
-         rcBack.bottom = rcIcon.bottom;
          rcBack.right = rcIcon.right;
 
          // Paint to get rid of empty space at left
