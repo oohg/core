@@ -1,5 +1,5 @@
 /*
- * $Id: px.prg,v 1.11 2013-11-30 04:12:09 guerra000 Exp $
+ * $Id: px.prg,v 1.12 2013-12-10 18:36:11 guerra000 Exp $
  */
 /*
  * This is a ooHGRecord's subclasses (database class used
@@ -68,6 +68,12 @@ RETURN { || oBase:FieldGet( nPos ) }
 
 #include "hbclass.ch"
 #include "fileio.ch"
+
+#pragma BEGINDUMP
+#ifdef __XHARBOUR__
+#define HB_ULONGLONG ULONGLONG
+#endif
+#pragma ENDDUMP
 
 *-----------------------------------------------------------------------------*
 CLASS XBrowse_PseudoFile
@@ -355,7 +361,7 @@ RETURN HB_InLine( cBuffer, nStart, nLen ){
    iLen = hb_parclen( 1 );
    cBuffer = ( char * ) hb_parc( 1 );
    // Length specified at 3rd. parameter
-   if( ISNUM( 3 ) )
+   if( HB_ISNUM( 3 ) )
    {
       iCount = hb_parni( 3 );
       if( iLen > iCount )
@@ -392,7 +398,7 @@ STATIC FUNCTION ReadLittleEndian( cBuffer, nPos, nCount, lTrimTopBit )
 RETURN HB_InLine( cBuffer, nPos, nCount ){
    int iCount, iLen, iTrimTopBit;
    char *cBuffer;
-   ULONGLONG llNum, llSign;
+   HB_ULONGLONG llNum, llSign;
 
    // Buffer's length
    iLen = hb_parclen( 1 );
@@ -425,7 +431,7 @@ RETURN HB_InLine( cBuffer, nPos, nCount ){
    {
       cBuffer--;
       iCount--;
-      llNum = ( llNum << 8 ) | ( ULONGLONG ) ( unsigned char ) *cBuffer;
+      llNum = ( llNum << 8 ) | ( HB_ULONGLONG ) ( unsigned char ) *cBuffer;
       if( llSign )
       {
          llSign = llSign << 8;
@@ -448,9 +454,9 @@ EXTERN READBIGENDIAN
 
 #pragma BEGINDUMP
 
-ULONGLONG ReadBigEndian( char *cBuffer, int iLen, int iPos, int iCount, int iUnsigned, int iTrimTopBit )
+HB_ULONGLONG ReadBigEndian( char *cBuffer, int iLen, int iPos, int iCount, int iUnsigned, int iTrimTopBit )
 {
-   ULONGLONG llNum, llSign;
+   HB_ULONGLONG llNum, llSign;
 
    // Skipped bytes
    if( iPos > iLen )
@@ -475,7 +481,7 @@ ULONGLONG ReadBigEndian( char *cBuffer, int iLen, int iPos, int iCount, int iUns
    while( iCount )
    {
       iCount--;
-      llNum = ( llNum << 8 ) | ( ULONGLONG ) ( unsigned char ) *cBuffer;
+      llNum = ( llNum << 8 ) | ( HB_ULONGLONG ) ( unsigned char ) *cBuffer;
       cBuffer++;
       if( llSign )
       {
@@ -511,9 +517,8 @@ HB_FUNC( READBIGENDIAN )   // ( cBuffer, nPos, nCount, lUnsigned, lTrimTopBit )
 #pragma ENDDUMP
 
 STATIC FUNCTION WriteBigEndian( nNum, nCount )
-/*
 RETURN HB_InLine( nNum, nCount ){
-   ULONGLONG llNum;
+   HB_ULONGLONG llNum;
    int iCount, iPos;
    char *cBuffer;
 
@@ -530,10 +535,11 @@ RETURN HB_InLine( nNum, nCount ){
    }
    *cBuffer |= 0x80;
 
-   hb_retclen( cBuffer, iCount );
-   hb_xfree( cBuffer );
+   //hb_retclen( cBuffer, iCount );
+   //hb_xfree( cBuffer );
+   hb_retclen_buffer( cBuffer, iCount );
 }
-*/
+/*
 LOCAL cRet
    cRet := SPACE( nCount )
    DO WHILE nCount > 0
@@ -543,6 +549,7 @@ LOCAL cRet
    ENDDO
    cRet[ 1 ] := CHR( cRet[ 1 ] + 128 )
 RETURN cRet
+*/
 
 METHOD New( cFile, lShared, lReadOnly ) CLASS XBrowse_Paradox
 LOCAL cBuffer, nLen, nBase, nPos, nBase2, nPos2, cKeyTypes
@@ -580,14 +587,14 @@ LOCAL cBuffer, nLen, nBase, nPos, nBase2, nPos2, cKeyTypes
 
    // Analyze header
    ::nRecordLen := ReadLittleEndian( cBuffer, 1, 2 )
-   ::lHasIndex := ( cBuffer[ 5 ] == 0 )   // 0.Indexed, 2.Not indexed
-   ::nBlockSize := ASC( cBuffer[ 6 ] ) * 1024
+   ::lHasIndex := ( ASC( SUBSTR( cBuffer, 5, 1 ) ) == 0 )   // 0.Indexed, 2.Not indexed
+   ::nBlockSize := ASC( SUBSTR( cBuffer, 6, 1 ) ) * 1024
    ::nFields := ReadLittleEndian( cBuffer, 34, 2 )
-   ::nVersionId := ASC( cBuffer[ 58 ] )   // 3=3.0, 4=3.5, (5-9)=4.x, (10-11)=5.x, 12=7.x
+   ::nVersionId := ASC( SUBSTR( cBuffer, 58, 1 ) )   // 3=3.0, 4=3.5, (5-9)=4.x, (10-11)=5.x, 12=7.x
    ::nVersion := { 0, 1, 2, 3, 3.5, 4, 4, 4, 4, 4, 5, 5, 7 }[ MIN( MAX( ::nVersionId, 0 ), 12 ) + 1 ]
    ::nKeyFields := ReadLittleEndian( cBuffer, 36, 2 )
 *   ::nEncription := ReadLittleEndian( cBuffer, 38, 4 )
-*   ::nOrderType := ASC( cBuffer[ 42 ] )
+*   ::nOrderType := ASC( SUBSTR( cBuffer, 42, 1 ) )
    IF ::nVersion >= 4
       nBase := 121
       // Paradox 4+ Header
@@ -610,14 +617,14 @@ LOCAL cBuffer, nLen, nBase, nPos, nBase2, nPos2, cKeyTypes
    ::aBufferPos := ARRAY( ::nFields )
    cKeyTypes := SUBSTR( cBuffer, nBase, ::nKeyFields * 2 )
    FOR nPos := 1 TO ::nFields
-      ::aCodeTypes[ nPos ] := ASC( cBuffer[ nBase ] )
+      ::aCodeTypes[ nPos ] := ASC( SUBSTR( cBuffer, nBase, 1 ) )
       ::aTypes[ nPos ] :=        SUBSTR( " ADSI$N  L  MBFOG   T@+#Y", MIN( MAX( ::aCodeTypes[ nPos ], 0 ), 24 ) + 1, 1 )
       ::aTypesHarbour[ nPos ] := SUBSTR( " CDNNNN  L  MMMMM   NDNNC", MIN( MAX( ::aCodeTypes[ nPos ], 0 ), 24 ) + 1, 1 )
       nBase++
       IF ::aTypes[ nPos ] == "#"
          ::aWidths[ nPos ] := 17
       ELSE
-         ::aWidths[ nPos ] := ASC( cBuffer[ nBase ] )
+         ::aWidths[ nPos ] := ASC( SUBSTR( cBuffer, nBase, 1 ) )
       ENDIF
       IF nPos == 1
          ::aBufferPos[ nPos ] := 1
@@ -640,7 +647,7 @@ LOCAL cBuffer, nLen, nBase, nPos, nBase2, nPos2, cKeyTypes
          cBuffer := SPACE( 88 + ( ::nKeyFields * 2 ) )
          ::oPxFile:Seek( 0, FS_SET )
          IF ! ::oPxFile:Read( @cBuffer, LEN( cBuffer ) ) == ( 88 + ( ::nKeyFields * 2 ) ) ;   // Can't read file
-            .OR. cBuffer[ 5 ] != 1                 ;   // Not a PX file!
+            .OR. ASC( SUBSTR( cBuffer, 5, 1 ) ) != 1                  ;   // Not a PX file!
             .OR. ReadLittleEndian( cBuffer, 34, 2 ) != ::nKeyFields   ;   // Key fields count error!
             .OR. ! SUBSTR( cBuffer, 89, ::nKeyFields * 2 ) == cKeyTypes   ;   // Not the same field types
             // Error!
@@ -649,7 +656,7 @@ LOCAL cBuffer, nLen, nBase, nPos, nBase2, nPos2, cKeyTypes
          ELSE
             ::nPxKeyLen := ReadLittleEndian( cBuffer, 1, 2 )
             ::nPxHeaderSize := ReadLittleEndian( cBuffer, 3, 2 )
-            ::nPxBlockSize := ASC( cBuffer[ 6 ] ) * 1024
+            ::nPxBlockSize := ASC( SUBSTR( cBuffer, 6, 1 ) ) * 1024
             ::nOrder := 1
          ENDIF
       ENDIF
@@ -1067,7 +1074,8 @@ RETURN HB_INLINE( cType, cRecord, nBufferPos, nWidth ){
                               iBufferPos++;
                            }
                            cText[ iSize ] = 0;
-                           hb_retclenAdopt( cText, iSize );
+                           // hb_retclenAdopt( cText, iSize );
+                           hb_retclen_buffer( cText, iSize );
                         }
                      }
                   }
@@ -1443,8 +1451,8 @@ LOCAL cBuffer
 *      ::nMagicFileChanged := ReadLittleEndian( cBuffer, 19, 2 )
 *      ::nMagicHeaderChanged := ReadLittleEndian( cBuffer, 43, 2 )
 *      * ::nMagic_x := ReadLittleEndian( cBuffer, 45, 2 )
-*      ::lFileChanged := ( ASC( cBuffer[ 21 ] ) != 0 .OR. ASC( cBuffer[ 43 ] ) != 0 )
-*      ::lWriteProtected := ( ASC( cBuffer[ 57 ] ) != 0 )
+*      ::lFileChanged := ( ASC( SUBSTR( cBuffer, 21, 1 ) ) != 0 .OR. ASC( SUBSTR( cBuffer, 43, 1 ) ) != 0 )
+*      ::lWriteProtected := ( ASC( SUBSTR( cBuffer, 57, 1 ) ) != 0 )
 *      ::nAutoInc := ReadLittleEndian( cBuffer, 74, 4 )
       IF ::aBlocks == NIL
          ::aBlocks := ARRAY( ::nUsedBlocks )
@@ -1458,7 +1466,7 @@ LOCAL cBuffer
          ENDIF
          ::nPxKeyCount := ReadLittleEndian( cBuffer, 7, 4 )
          ::nPxRootBlock := ReadLittleEndian( cBuffer, 31, 2 )
-         ::nPxIndexLevels := ASC( cBuffer[ 33 ] )
+         ::nPxIndexLevels := ASC( SUBSTR( cBuffer, 33, 1 ) )
 /*
 *si:      ::nUsedBlocks := ReadLittleEndian( cBuffer, 11, 2 )
 *si:      ::nTotalBlocks := ReadLittleEndian( cBuffer, 13, 2 )
@@ -1468,8 +1476,8 @@ LOCAL cBuffer
 *      ::nMagicFileChanged := ReadLittleEndian( cBuffer, 19, 2 )
 *      ::nMagicHeaderChanged := ReadLittleEndian( cBuffer, 43, 2 )
 *      * ::nMagic_x := ReadLittleEndian( cBuffer, 45, 2 )
-*      ::lFileChanged := ( ASC( cBuffer[ 21 ] ) != 0 .OR. ASC( cBuffer[ 43 ] ) != 0 )
-*      ::lWriteProtected := ( ASC( cBuffer[ 57 ] ) != 0 )
+*      ::lFileChanged := ( ASC( SUBSTR( cBuffer, 21, 1 ) ) != 0 .OR. ASC( SUBSTR( cBuffer, 43, 1 ) ) != 0 )
+*      ::lWriteProtected := ( ASC( SUBSTR( cBuffer, 57, 1 ) ) != 0 )
 */
       ENDIF
    ENDIF
