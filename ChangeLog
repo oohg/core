@@ -1,11 +1,24 @@
 /*
- * $Id: ChangeLog,v 1.1204 2013-12-10 18:36:10 guerra000 Exp $
+ * $Id: ChangeLog,v 1.1205 2013-12-23 18:24:17 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-12-23 12:23 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+   * source/h_pdf.prg
+     ! Fixed error when page contains an image but no text.
+     ! Fixed default value for nBitsPerSample in ::TIFFInfo()
+       to 1.
+     ! Minor corrections to variable initializations.
+     ! Really minimal source code alignment.
+     ! Added missing TIFF and JPEG extension validation
+       (from only TIF and JPG).
+     ! Few ::aReport[] items converted to object's properties
+       (HANDLE, DOCLEN).
+     ! ::WriteToFile() method added.
 
 2013-12-10 12:34 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
    * samples/oohg/oohgrecord/px.prg
