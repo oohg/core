@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.50 2013-04-28 02:01:13 fyurisich Exp $
+ * $Id: winprint.prg,v 1.51 2013-12-24 18:54:45 guerra000 Exp $
  */
 // -----------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -12,8 +12,16 @@
 // Eduardo Fernandes <modalsist@yahoo.com.br> MiniGuiOOP Print.prg
 // by Mitja Podgornik <yamamoto@rocketmail.com>
 
+
+
+// Define NO_GUI macro for non-ooHG compilation.
+// It allows to compile HBPRINTER library for console mode.
+// Fully functional but no preview.
+#ifndef NO_GUI
+   #include "oohg.ch"
+#endif
+
 #include "HBClass.ch"
-#include "oohg.ch"
 #include "winprint.ch"
 
 
@@ -159,12 +167,14 @@ CLASS HBPrinter
    METHOD GetTextExtent(ctext,apoint,deffont)
    METHOD End()
    METHOD ReportData(l_x1,l_x2,l_x3,l_x4,l_x5,l_x6)
-   METHOD Preview()
-   METHOD PrevPrint(n1)
-   METHOD PrevShow()
-   METHOD PrevThumb(nclick)
-// new method
-   METHOD PrintOption()
+   #ifndef NO_GUI
+      METHOD Preview()
+      METHOD PrevPrint(n1)
+      METHOD PrevShow()
+      METHOD PrevThumb(nclick)
+      // new method
+      METHOD PrintOption()
+   #endif
 
    IF TIME() == "Z"
       EMPTY( _OOHG_AllVars )
@@ -186,10 +196,10 @@ local aprnport
       ::error:=1
    ENDIF
    ::TimeStamp := strzero( Seconds() * 100 , 8 )
-   ::BaseDoc := GetTempFolder() + "\" + ::TimeStamp + "_HMG_print_preview_"
+   ::BaseDoc := rr_GetTempFolder() + "\" + ::TimeStamp + "_HMG_print_preview_"
 return self
 
-METHOD SelectPrinter( cPrinter ,lPrev) CLASS HBPrinter
+METHOD SelectPrinter( cPrinter ,lPrev ) CLASS HBPrinter
 local txtp:="",txtb:="",t:={0,0,1,.t.}
    IF cPrinter == Nil
       ::hDCRef := rr_getdc(::PrinterDefault)
@@ -210,9 +220,13 @@ local txtp:="",txtb:="",t:={0,0,1,.t.}
 
    ENDIF
    IF HB_IsLogical(lPrev)
-     if lprev
-      ::PreviewMode:=.t.
-     endif
+      #ifndef NO_GUI
+         if lprev
+            ::PreviewMode:=.t.
+         endif
+      #else
+         ::PreviewMode:=.f.
+      #endif
    ENDIF
    IF ::hDC==0
       ::error:=1
@@ -308,25 +322,27 @@ return self
 
 METHOD SaveMetaFiles(number) CLASS HBPrinter
 Local n,l
-default number to NIL
- if ::PreviewMode
-	if ::InMemory
-        	if number==NIL
-		   aeval(::METAFILES,{|x,xi| str2file(x[1],"page"+alltrim(str(xi))+".emf") })
-		else
-		   str2file(::METAFILES[number,1],"page"+alltrim(str(number))+".emf")
-		endif
-	else
-		if number<>NIL
-		   COPY FILE (::BaseDoc + alltrim(strzero(number,4))+'.emf') to ("page"+alltrim(strzero(number,4))+".emf")
-		else
-                         l:=::curpage-1
-			for n := 1 to l
-				COPY FILE (::BaseDoc + alltrim(strzero(n,4))+'.emf') to ("page"+alltrim(strzero(n,4))+".emf")
-			end
-		endif
-	endif
- endif
+   If Empty(number)
+      number:=NIL
+   EndIf
+   if ::PreviewMode
+      if ::InMemory
+         if number==NIL
+            aeval(::METAFILES,{|x,xi| str2file(x[1],"page"+alltrim(str(xi))+".emf") })
+         else
+            str2file(::METAFILES[number,1],"page"+alltrim(str(number))+".emf")
+         endif
+      else
+         if number<>NIL
+            COPY FILE (::BaseDoc + alltrim(strzero(number,4))+'.emf') to ("page"+alltrim(strzero(number,4))+".emf")
+         else
+            l:=::curpage-1
+            for n := 1 to l
+               COPY FILE (::BaseDoc + alltrim(strzero(n,4))+'.emf') to ("page"+alltrim(strzero(n,4))+".emf")
+            end
+         endif
+      endif
+   endif
 return self
 
 ***********************************
@@ -1316,47 +1332,80 @@ DO CASE
  ENDCASE
 RETURN ( aList )
 
+METHOD ReportData(l_x1,l_x2,l_x3,l_x4,l_x5,l_x6) CLASS HBPrinter
+set device to print
+set printer to "hbprinter.rep" ADDITIVE
+set printer on
+set console off
+ ? '-----------------',date(),time()
+ ?
+ ?? if(valtype(l_x1)<>"U",l_x1,",")
+ ?? if(valtype(l_x2)<>"U",l_x2,",")
+ ?? if(valtype(l_x3)<>"U",l_x3,",")
+ ?? if(valtype(l_x4)<>"U",l_x4,",")
+ ?? if(valtype(l_x5)<>"U",l_x5,",")
+ ?? if(valtype(l_x6)<>"U",l_x6,",")
+ ? 'HDC            :',::HDC
+ ? 'HDCREF         :',::HDCREF
+ ? 'PRINTERNAME    :',::PRINTERNAME
+ ? 'PRINTEDEFAULT  :',::PRINTERDEFAULT
+ ? 'VERT X HORZ SIZE         :',::DEVCAPS[1],"x",::DEVCAPS[2]
+ ? 'VERT X HORZ RES          :',::DEVCAPS[3],"x",::DEVCAPS[4]
+ ? 'VERT X HORZ LOGPIX       :',::DEVCAPS[5],"x",::DEVCAPS[6]
+ ? 'VERT X HORZ PHYS. SIZE   :',::DEVCAPS[7],"x",::DEVCAPS[8]
+ ? 'VERT X HORZ PHYS. OFFSET :',::DEVCAPS[9],"x",::DEVCAPS[10]
+ ? 'VERT X HORZ FONT SIZE    :',::DEVCAPS[11],"x",::DEVCAPS[12]
+ ? 'VERT X HORZ ROWS COLS    :',::DEVCAPS[13],"x",::DEVCAPS[14]
+ ? 'ORIENTATION              :',::DEVCAPS[15]
+ ? 'PAPER SIZE               :',::DEVCAPS[17]
+set printer off
+set printer to
+set console on
+set device to screen
+return self
 
+
+#ifndef NO_GUI
 
 **********************************************
 METHOD PrevThumb(nclick) CLASS HBPrinter
 **********************************************
 local i,spage
- if ::iloscstron==1
-    return self
- endif
- if nclick<>NIL
-    ::page:=::ngroup*15+nclick
-    ::prevshow()
-     SetProperty ( 'hbpreview' , 'combo_1' , 'value' , ::Page )
-    return self
- endif
- if int((::page-1)/15)<>::ngroup
-       ::ngroup:=int((::page-1)/15)
- else
-       return self
- endif
- spage:=::ngroup*15
+   if ::iloscstron==1
+      return self
+   endif
+   if nclick<>NIL
+      ::page:=::ngroup*15+nclick
+      ::prevshow()
+      SetProperty ( 'hbpreview' , 'combo_1' , 'value' , ::Page )
+      return self
+   endif
+   if int((::page-1)/15)<>::ngroup
+      ::ngroup:=int((::page-1)/15)
+   else
+      return self
+   endif
+   spage:=::ngroup*15
 
- for i:=1 to 15
-  if i+spage>::iloscstron
-      HideWindow(::ath[i,5])
-  else
-     if ::Metafiles[i+spage,2]>=::Metafiles[i+spage,3]
-       ::ath[i,3]:=::dy-5
-       ::ath[i,4]:=::dx*::Metafiles[i+spage,3]/::Metafiles[i+spage,2]-5
-     else
-       ::ath[i,4]:=::dx-5
-       ::ath[i,3]:=::dy*::Metafiles[i+spage,2]/::Metafiles[i+spage,3]-5
-     endif
-	 if ::InMemory
-		rr_playthumb(::ath[i],::Metafiles[i+spage],alltrim(str(i+spage)),i)
-	 else
-		rr_playfthumb(::ath[i],::Metafiles[i+spage,1],alltrim(str(i+spage)),i)
-	 endif
-     CShowControl(::ath[i,5])
-  endif
- next
+   for i:=1 to 15
+      if i+spage>::iloscstron
+         HideWindow(::ath[i,5])
+      else
+         if ::Metafiles[i+spage,2]>=::Metafiles[i+spage,3]
+            ::ath[i,3]:=::dy-5
+            ::ath[i,4]:=::dx*::Metafiles[i+spage,3]/::Metafiles[i+spage,2]-5
+         else
+            ::ath[i,4]:=::dx-5
+            ::ath[i,3]:=::dy*::Metafiles[i+spage,2]/::Metafiles[i+spage,3]-5
+         endif
+         if ::InMemory
+            rr_playthumb(::ath[i],::Metafiles[i+spage],alltrim(str(i+spage)),i)
+         else
+            rr_playfthumb(::ath[i],::Metafiles[i+spage,1],alltrim(str(i+spage)),i)
+         endif
+         CShowControl(::ath[i,5])
+      endif
+   next
 
 return self
 
@@ -1365,45 +1414,45 @@ METHOD PrevShow() CLASS HBPrinter
 **************************************
 local spos, hImage
 
- IF ::Thumbnails
-    ::Prevthumb()
- ENDIF
+   IF ::Thumbnails
+      ::Prevthumb()
+   ENDIF
 
- spos:={GetScrollpos(::ahs[5,7],SB_HORZ)/::azoom[4],GetScrollpos(::ahs[5,7],SB_VERT)/(::azoom[3])}
+   spos:={GetScrollpos(::ahs[5,7],SB_HORZ)/::azoom[4],GetScrollpos(::ahs[5,7],SB_VERT)/(::azoom[3])}
 
- if ::MetaFiles[::page,2]>=::MetaFiles[::page,3]
-         ::azoom[3]:=(::ahs[5,3])*::scale-60
-         ::azoom[4]:=(::ahs[5,3]*::MetaFiles[::page,3]/::MetaFiles[::page,2])*::scale-60
- else
-         ::azoom[3]:=(::ahs[5,4]*::MetaFiles[::page,2]/::MetaFiles[::page,3])*::scale-60
-         ::azoom[4]:=(::ahs[5,4])*::scale-60
- endif
- GetControlObject( "StatusBar", "hbpreview" ):Item( 1, ::aopisy[ 15 ] + " " + alltrim( str( ::page ) ) )
+   if ::MetaFiles[::page,2]>=::MetaFiles[::page,3]
+      ::azoom[3]:=(::ahs[5,3])*::scale-60
+      ::azoom[4]:=(::ahs[5,3]*::MetaFiles[::page,3]/::MetaFiles[::page,2])*::scale-60
+   else
+      ::azoom[3]:=(::ahs[5,4]*::MetaFiles[::page,2]/::MetaFiles[::page,3])*::scale-60
+      ::azoom[4]:=(::ahs[5,4])*::scale-60
+   endif
+   GetControlObject( "StatusBar", "hbpreview" ):Item( 1, ::aopisy[ 15 ] + " " + alltrim( str( ::page ) ) )
 
- if ::azoom[3]<30
-    ::scale:=::scale*1.25
-    ::prevshow()
-    msgstop(::aopisy[18],"")
- endif
- HideWindow(::ahs[6,7])
+   if ::azoom[3]<30
+      ::scale:=::scale*1.25
+      ::prevshow()
+      msgstop(::aopisy[18],"")
+   endif
+   HideWindow(::ahs[6,7])
    ::oHBPreview1:i1:SizePos( ,, ::azoom[4], ::azoom[3] )
    ::oHBPreview1:VirtualHeight := ::azoom[3]+20
    ::oHBPreview1:VirtualWidth := ::azoom[4]+20
 
- if ::InMemory
-	hImage := rr_previewplay(::ahs[6,7],::METAFILES[::page],::azoom)
- else
-	hImage := rr_previewfplay(::ahs[6,7],::METAFILES[::page,1],::azoom)
- endif
- if ! ValidHandler( hImage )
+   if ::InMemory
+      hImage := rr_previewplay(::ahs[6,7],::METAFILES[::page],::azoom)
+   else
+      hImage := rr_previewfplay(::ahs[6,7],::METAFILES[::page,1],::azoom)
+   endif
+   if ! ValidHandler( hImage )
       ::scale:=::scale/1.25
       ::PrevShow()
       msgstop(::aopisy[18],::aopisy[1])
- else
+   else
       ::oHBPreview1:i1:hbitmap := hImage
- endif
- rr_scrollwindow(::ahs[5,7],-spos[1]*::azoom[4],-spos[2]*::azoom[3])
- CShowControl(::ahs[6,7])
+   endif
+   rr_scrollwindow(::ahs[5,7],-spos[1]*::azoom[4],-spos[2]*::azoom[3])
+   CShowControl(::ahs[6,7])
 return self
 
 **************************************
@@ -1411,59 +1460,59 @@ METHOD PrevPrint(n1) CLASS HBPrinter
 **************************************
 local i,ilkop,toprint:=.t.
 
-IF .NOT. Eval(::BeforePrint)
-  RETURN self
-ENDIF
+   IF .NOT. Eval(::BeforePrint)
+      RETURN self
+   ENDIF
 
-::Previewmode:=.f.
-::Printingemf:=.t.
-rr_lalabye(1)
-if n1<>NIL
-       ::startdoc()
-       ::setpage(::MetaFiles[n1,6],::MetaFiles[n1,7])
-       ::startpage()
-	   if ::InMemory
-           rr_PlayEnhMetaFile(::MetaFiles[n1],::hDCRef)
-	   else
-		   rr_PlayFEnhMetaFile(::MetaFiles[n1],::hDCRef)
-		end
-       ::endpage()
-       ::enddoc()
-else
-       for ilkop = 1 to ::nCopies
-        if .NOT. Eval(::BeforePrintCopy, ilkop)
-          rr_lalabye(0)
-          ::printingemf:=.f.
-          ::Previewmode:=.t.
-          return self
-        endif
-        ::startdoc()
-          for i:=max(1,::nFromPage) to min(::iloscstron,::nToPage)
-           do case
-             case ::PrintOpt==1                    ; toprint:=.t.
-             case ::PrintOpt==2 .or. ::PrintOpt==4 ; toprint:=!(i%2==0)
-             case ::PrintOpt==3 .or. ::PrintOpt==5 ; toprint:=(i%2==0)
-           endcase
-           if toprint
-              toprint:=.f.
-              ::setpage(::MetaFiles[i,6],::MetaFiles[i,7])
-              ::startpage()
-              //rr_PlayEnhMetaFile(::MetaFiles[i],::hDCRef)
-			  if ::InMemory
-                 rr_PlayEnhMetaFile(::MetaFiles[i],::hDCRef)
-	          else
-		         rr_PlayFEnhMetaFile(::MetaFiles[i],::hDCRef)
-	          end
+   ::Previewmode:=.f.
+   ::Printingemf:=.t.
+   rr_lalabye(1)
+   if n1<>NIL
+      ::startdoc()
+      ::setpage(::MetaFiles[n1,6],::MetaFiles[n1,7])
+      ::startpage()
+      if ::InMemory
+         rr_PlayEnhMetaFile(::MetaFiles[n1],::hDCRef)
+      else
+         rr_PlayFEnhMetaFile(::MetaFiles[n1],::hDCRef)
+      end
+      ::endpage()
+      ::enddoc()
+   else
+      for ilkop = 1 to ::nCopies
+         if .NOT. Eval(::BeforePrintCopy, ilkop)
+            rr_lalabye(0)
+            ::printingemf:=.f.
+            ::Previewmode:=.t.
+            return self
+         endif
+         ::startdoc()
+         for i:=max(1,::nFromPage) to min(::iloscstron,::nToPage)
+            do case
+               case ::PrintOpt==1                    ; toprint:=.t.
+               case ::PrintOpt==2 .or. ::PrintOpt==4 ; toprint:=!(i%2==0)
+               case ::PrintOpt==3 .or. ::PrintOpt==5 ; toprint:=(i%2==0)
+            endcase
+            if toprint
+               toprint:=.f.
+               ::setpage(::MetaFiles[i,6],::MetaFiles[i,7])
+               ::startpage()
+               //rr_PlayEnhMetaFile(::MetaFiles[i],::hDCRef)
+               if ::InMemory
+                  rr_PlayEnhMetaFile(::MetaFiles[i],::hDCRef)
+               else
+                  rr_PlayFEnhMetaFile(::MetaFiles[i],::hDCRef)
+               end
 
-              ::endpage()
-           endif
-          next i
-          ::enddoc()
+               ::endpage()
+            endif
+         next i
+         ::enddoc()
 
-          if ::PrintOpt==4 .or. ::PrintOpt==5
-             MsgBox(::aopisy[30],::aopisy[29])
-             ::startdoc()
-             for i:=max(1,::nFromPage) to min(::iloscstron,::nToPage)
+         if ::PrintOpt==4 .or. ::PrintOpt==5
+            MsgBox(::aopisy[30],::aopisy[29])
+            ::startdoc()
+            for i:=max(1,::nFromPage) to min(::iloscstron,::nToPage)
                do case
                   case ::PrintOpt==4 ; toprint:=(i%2==0)
                   case ::PrintOpt==5 ; toprint:=!(i%2==0)
@@ -1473,23 +1522,23 @@ else
                   ::setpage(::MetaFiles[i,6],::MetaFiles[i,7])
                   ::startpage()
                   //rr_PlayEnhMetaFile(::MetaFiles[i],::hDCRef)
-				  if ::InMemory
-					rr_PlayEnhMetaFile(::MetaFiles[i],::hDCRef)
-				  else
-					rr_PlayFEnhMetaFile(::MetaFiles[i],::hDCRef)
-				  end
+                  if ::InMemory
+                     rr_PlayEnhMetaFile(::MetaFiles[i],::hDCRef)
+                  else
+                     rr_PlayFEnhMetaFile(::MetaFiles[i],::hDCRef)
+                  end
 
                   ::endpage()
                endif
             next i
             ::enddoc()
-          endif
-       next ilkop
-endif
-rr_lalabye(0)
-::printingemf:=.f.
-::Previewmode:=.t.
-Eval(::AfterPrint)
+         endif
+      next ilkop
+   endif
+   rr_lalabye(0)
+   ::printingemf:=.f.
+   ::Previewmode:=.t.
+   Eval(::AfterPrint)
 return self
 
 **********************************
@@ -1497,7 +1546,7 @@ METHOD Preview() CLASS HBPrinter
 **********************************
 local i, pi, wl, oHBPreview
 
- ::aopisy:=;
+   ::aopisy:=;
 {"Preview",;
 "&Cancel",;
 "&Print",;
@@ -1529,22 +1578,22 @@ local i, pi, wl, oHBPreview
 "Printing ....",;
 "Waiting for paper change..."}
 
-  ::iloscstron:=len(::metafiles)
-  ::ngroup:=-1
-  ::page:=1
-  ::ath:={}
-  ::ahs:={}
-  ::azoom:={0,0,0,0}
-  ::scale:=::PREVIEWSCALE
-  ::npages:={}
+   ::iloscstron:=len(::metafiles)
+   ::ngroup:=-1
+   ::page:=1
+   ::ath:={}
+   ::ahs:={}
+   ::azoom:={0,0,0,0}
+   ::scale:=::PREVIEWSCALE
+   ::npages:={}
 
 #ifdef __XHARBOUR__
-  wl:=set(100)
+   wl:=set(100)
 #else
-  wl:=hb_langselect()
+   wl:=hb_langselect()
 #endif
-  do case
-  case wl="EN"
+   do case
+      case wl="EN"
 ::aopisy:={"Preview";
 ,"&Cancel";
 ,"&Print";
@@ -1761,46 +1810,46 @@ case wl='FR'
 ,"Tout mais pair d'abord";
 ,"Impression ....";
 ,"Attente de changement de papier..."}
-  endcase
+   endcase
 
-  if ::nwhattoprint<2
-   ::ntopage:=::iloscstron
-  endif
-//  for i:=1 to len(::aopisy)
-//    ctxt:=rr_loadstring(60000+i)
-//    if !empty(ctxt)
-//      ::aopisy[i]:=ctxt
-//    endif
-//  next
+   if ::nwhattoprint<2
+      ::ntopage:=::iloscstron
+   endif
+//   for i:=1 to len(::aopisy)
+//      ctxt:=rr_loadstring(60000+i)
+//      if !empty(ctxt)
+//         ::aopisy[i]:=ctxt
+//      endif
+//   next
 
-  if !::PreviewMode // .or. empty(::metafiles)
-    return self
-  endif
-  aadd(::ahs,{0,0,0,0,0,0,0})
-  rr_getwindowrect(::ahs[1])
+   if !::PreviewMode // .or. empty(::metafiles)
+      return self
+   endif
+   aadd(::ahs,{0,0,0,0,0,0,0})
+   rr_getwindowrect(::ahs[1])
 
-for pi=1 to ::iloscstron
-AADD(::npages,padl(pi,4))
-next pi
+   for pi=1 to ::iloscstron
+      AADD(::npages,padl(pi,4))
+   next pi
 
-  if ::PreviewRect[3]>0 .and. ::PreviewRect[4]>0
-    ::ahs[1,1]:=::Previewrect[1]
-    ::ahs[1,2]:=::Previewrect[2]
-    ::ahs[1,3]:=::Previewrect[3]
-    ::ahs[1,4]:=::Previewrect[4]
-    ::ahs[1,5]:=::Previewrect[3]-::Previewrect[1]+1
-    ::ahs[1,6]:=::Previewrect[4]-::Previewrect[2]+1
-  else
-    ::ahs[1,1]+=10
-    ::ahs[1,2]+=10
-    ::ahs[1,3]-=10
-    ::ahs[1,4]-=10
-    ::ahs[1,5]:=::ahs[1,3]-::ahs[1,1]+1
-    ::ahs[1,6]:=::ahs[1,4]-::ahs[1,2]+1
-  endif
+   if ::PreviewRect[3]>0 .and. ::PreviewRect[4]>0
+      ::ahs[1,1]:=::Previewrect[1]
+      ::ahs[1,2]:=::Previewrect[2]
+      ::ahs[1,3]:=::Previewrect[3]
+      ::ahs[1,4]:=::Previewrect[4]
+      ::ahs[1,5]:=::Previewrect[3]-::Previewrect[1]+1
+      ::ahs[1,6]:=::Previewrect[4]-::Previewrect[2]+1
+   else
+      ::ahs[1,1]+=10
+      ::ahs[1,2]+=10
+      ::ahs[1,3]-=10
+      ::ahs[1,4]-=10
+      ::ahs[1,5]:=::ahs[1,3]-::ahs[1,1]+1
+      ::ahs[1,6]:=::ahs[1,4]-::ahs[1,2]+1
+   endif
 
-  DEFINE WINDOW HBPREVIEW OBJ oHBPreview AT  ::ahs[1,1] , ::ahs[1,1] ;
-         WIDTH ::ahs[1,6] HEIGHT ::ahs[1,5]-45 ;
+   DEFINE WINDOW HBPREVIEW OBJ oHBPreview AT  ::ahs[1,1] , ::ahs[1,1] ;
+          WIDTH ::ahs[1,6] HEIGHT ::ahs[1,5]-45 ;
           TITLE ::aopisy[1] ICON 'zzz_Printicon' ;
           MODAL NOSIZE ;
           FONT 'Arial' SIZE 9
@@ -1888,21 +1937,21 @@ next pi
                          ::ath[i,1]:=int((i-1)/5)*::dy+5
                          ::ath[i,2]:=((i-1)%5)*::dx+5
                        next
-                       @::ath[1 ,1],::ath[1 ,2]  image it1  of hbpreview2 picture "" action {|| ::Prevthumb(1 ) } width ::ath[1 ,4] height ::ath[1 ,3]
-                       @::ath[2 ,1],::ath[2 ,2]  image it2  of hbpreview2 picture "" action {|| ::Prevthumb(2 ) } width ::ath[2 ,4] height ::ath[2 ,3]
-                       @::ath[3 ,1],::ath[3 ,2]  image it3  of hbpreview2 picture "" action {|| ::Prevthumb(3 ) } width ::ath[3 ,4] height ::ath[3 ,3]
-                       @::ath[4 ,1],::ath[4 ,2]  image it4  of hbpreview2 picture "" action {|| ::Prevthumb(4 ) } width ::ath[4 ,4] height ::ath[4 ,3]
-                       @::ath[5 ,1],::ath[5 ,2]  image it5  of hbpreview2 picture "" action {|| ::Prevthumb(5 ) } width ::ath[5 ,4] height ::ath[5 ,3]
-                       @::ath[6 ,1],::ath[6 ,2]  image it6  of hbpreview2 picture "" action {|| ::Prevthumb(6 ) } width ::ath[6 ,4] height ::ath[6 ,3]
-                       @::ath[7 ,1],::ath[7 ,2]  image it7  of hbpreview2 picture "" action {|| ::Prevthumb(7 ) } width ::ath[7 ,4] height ::ath[7 ,3]
-                       @::ath[8 ,1],::ath[8 ,2]  image it8  of hbpreview2 picture "" action {|| ::Prevthumb(8 ) } width ::ath[8 ,4] height ::ath[8 ,3]
-                       @::ath[9 ,1],::ath[9 ,2]  image it9  of hbpreview2 picture "" action {|| ::Prevthumb(9 ) } width ::ath[9 ,4] height ::ath[9 ,3]
-                       @::ath[10,1],::ath[10,2]  image it10 of hbpreview2 picture "" action {|| ::Prevthumb(10) } width ::ath[10,4] height ::ath[10,3]
-                       @::ath[11,1],::ath[11,2]  image it11 of hbpreview2 picture "" action {|| ::Prevthumb(11) } width ::ath[11,4] height ::ath[11,3]
-                       @::ath[12,1],::ath[12,2]  image it12 of hbpreview2 picture "" action {|| ::Prevthumb(12) } width ::ath[12,4] height ::ath[12,3]
-                       @::ath[13,1],::ath[13,2]  image it13 of hbpreview2 picture "" action {|| ::Prevthumb(13) } width ::ath[13,4] height ::ath[13,3]
-                       @::ath[14,1],::ath[14,2]  image it14 of hbpreview2 picture "" action {|| ::Prevthumb(14) } width ::ath[14,4] height ::ath[14,3]
-                       @::ath[15,1],::ath[15,2]  image it15 of hbpreview2 picture "" action {|| ::Prevthumb(15) } width ::ath[15,4] height ::ath[15,3]
+                       @ ::ath[1 ,1],::ath[1 ,2]  image it1  of hbpreview2 picture "" action {|| ::Prevthumb(1 ) } width ::ath[1 ,4] height ::ath[1 ,3]
+                       @ ::ath[2 ,1],::ath[2 ,2]  image it2  of hbpreview2 picture "" action {|| ::Prevthumb(2 ) } width ::ath[2 ,4] height ::ath[2 ,3]
+                       @ ::ath[3 ,1],::ath[3 ,2]  image it3  of hbpreview2 picture "" action {|| ::Prevthumb(3 ) } width ::ath[3 ,4] height ::ath[3 ,3]
+                       @ ::ath[4 ,1],::ath[4 ,2]  image it4  of hbpreview2 picture "" action {|| ::Prevthumb(4 ) } width ::ath[4 ,4] height ::ath[4 ,3]
+                       @ ::ath[5 ,1],::ath[5 ,2]  image it5  of hbpreview2 picture "" action {|| ::Prevthumb(5 ) } width ::ath[5 ,4] height ::ath[5 ,3]
+                       @ ::ath[6 ,1],::ath[6 ,2]  image it6  of hbpreview2 picture "" action {|| ::Prevthumb(6 ) } width ::ath[6 ,4] height ::ath[6 ,3]
+                       @ ::ath[7 ,1],::ath[7 ,2]  image it7  of hbpreview2 picture "" action {|| ::Prevthumb(7 ) } width ::ath[7 ,4] height ::ath[7 ,3]
+                       @ ::ath[8 ,1],::ath[8 ,2]  image it8  of hbpreview2 picture "" action {|| ::Prevthumb(8 ) } width ::ath[8 ,4] height ::ath[8 ,3]
+                       @ ::ath[9 ,1],::ath[9 ,2]  image it9  of hbpreview2 picture "" action {|| ::Prevthumb(9 ) } width ::ath[9 ,4] height ::ath[9 ,3]
+                       @ ::ath[10,1],::ath[10,2]  image it10 of hbpreview2 picture "" action {|| ::Prevthumb(10) } width ::ath[10,4] height ::ath[10,3]
+                       @ ::ath[11,1],::ath[11,2]  image it11 of hbpreview2 picture "" action {|| ::Prevthumb(11) } width ::ath[11,4] height ::ath[11,3]
+                       @ ::ath[12,1],::ath[12,2]  image it12 of hbpreview2 picture "" action {|| ::Prevthumb(12) } width ::ath[12,4] height ::ath[12,3]
+                       @ ::ath[13,1],::ath[13,2]  image it13 of hbpreview2 picture "" action {|| ::Prevthumb(13) } width ::ath[13,4] height ::ath[13,3]
+                       @ ::ath[14,1],::ath[14,2]  image it14 of hbpreview2 picture "" action {|| ::Prevthumb(14) } width ::ath[14,4] height ::ath[14,3]
+                       @ ::ath[15,1],::ath[15,2]  image it15 of hbpreview2 picture "" action {|| ::Prevthumb(15) } width ::ath[15,4] height ::ath[15,3]
 
                        for i:=1 to 15
                           ::ath[i,5]:=GetControlHandle("it"+alltrim(str(i)),"hbpreview2")
@@ -1914,87 +1963,57 @@ next pi
                   END WINDOW
                ENDIF
          END SPLITBOX
-  END WINDOW
-  ::PrevShow()
-  ::oHBPreview1:i1:SetFocus()
-  ACTIVATE WINDOW HBPREVIEW
+   END WINDOW
+   ::PrevShow()
+   ::oHBPreview1:i1:SetFocus()
+   ACTIVATE WINDOW HBPREVIEW
 return nil
 
-FUNCTION MYCLOSEP(T1,T2,OT3,oHBPreview1)
-oHBPreview1:Release()
-IF T1>1 .and. T2
-  _ReleaseWindow ("HBPREVIEW2" )
-ENDIF
-oT3:Release()
+FUNCTION MYCLOSEP( T1, T2, OT3, oHBPreview1 )
+   oHBPreview1:Release()
+   IF T1 > 1 .and. T2
+     _ReleaseWindow ( "HBPREVIEW2" )
+   ENDIF
+   oT3:Release()
 return nil
+
 *******************************************
 METHOD PrintOption() CLASS HBPrinter
 *******************************************
-Local OKprint:=.f. // ,aro:={::aopisy[24],::aopisy[25],::aopisy[26],::aopisy[27],::aopisy[28]}
+Local OKprint := .f.
 
-If IsWIndowDefined(PrOpt)==.f.
+   If IsWIndowDefined(PrOpt) == .F.
 
-  DEFINE WINDOW PrOpt AT 270,346 WIDTH 298 HEIGHT 134 TITLE ::aopisy[19] ICON 'zzz_Printicon' ;
-         MODAL NOSIZE FONT 'Arial' SIZE  9
+      DEFINE WINDOW PrOpt AT 270,346 WIDTH 298 HEIGHT 134 TITLE ::aopisy[19] ICON 'zzz_Printicon' ;
+             MODAL NOSIZE FONT 'Arial' SIZE  9
 
-@ 2,1    FRAME   PrOptFrame  WIDTH 291 HEIGHT 105
-@ 19,9   LABEL   label_11  VALUE ::aopisy[20] WIDTH 87 HEIGHT 16 FONT 'Arial' SIZE 9 BOLD
-@ 18,90  TEXTBOX textFrom  HEIGHT 21 WIDTH 33 NUMERIC Font 'Arial' size 09 MAXLENGTH 4 RIGHTALIGN
-@ 19,134 LABEL   label_12  VALUE ::aopisy[21] WIDTH 14 HEIGHT 19 FONT 'Arial' SIZE 09 BOLD
-@ 18,156 TEXTBOX textTo HEIGHT 21 WIDTH 33 NUMERIC Font 'Arial' size 09 MAXLENGTH 4 RIGHTALIGN
-@ 19,200 LABEL   label_18  VALUE ::aopisy[22]  WIDTH 40 HEIGHT 19 FONT 'Arial' SIZE 09 BOLD
-@ 18,252 TEXTBOX textCopies HEIGHT 21 WIDTH 30 NUMERIC Font 'Arial' size 09 MAXLENGTH 4   RIGHTALIGN
-@ 55,9   LABEL label_13 VALUE ::aopisy[23]  WIDTH 71 HEIGHT 17 FONT 'Arial' SIZE 9 BOLD
-@ 50,90  COMBOBOX prnCombo VALUE ::PRINTOPT ITEMS {::aopisy[24],::aopisy[25],::aopisy[26],::aopisy[27],::aopisy[28]}  WIDTH 195 FONT 'Arial' SIZE 9
+         @ 2,1    FRAME   PrOptFrame  WIDTH 291 HEIGHT 105
+         @ 19,9   LABEL   label_11  VALUE ::aopisy[20] WIDTH 87 HEIGHT 16 FONT 'Arial' SIZE 9 BOLD
+         @ 18,90  TEXTBOX textFrom  HEIGHT 21 WIDTH 33 NUMERIC Font 'Arial' size 09 MAXLENGTH 4 RIGHTALIGN
+         @ 19,134 LABEL   label_12  VALUE ::aopisy[21] WIDTH 14 HEIGHT 19 FONT 'Arial' SIZE 09 BOLD
+         @ 18,156 TEXTBOX textTo HEIGHT 21 WIDTH 33 NUMERIC Font 'Arial' size 09 MAXLENGTH 4 RIGHTALIGN
+         @ 19,200 LABEL   label_18  VALUE ::aopisy[22]  WIDTH 40 HEIGHT 19 FONT 'Arial' SIZE 09 BOLD
+         @ 18,252 TEXTBOX textCopies HEIGHT 21 WIDTH 30 NUMERIC Font 'Arial' size 09 MAXLENGTH 4   RIGHTALIGN
+         @ 55,9   LABEL label_13 VALUE ::aopisy[23]  WIDTH 71 HEIGHT 17 FONT 'Arial' SIZE 9 BOLD
+         @ 50,90  COMBOBOX prnCombo VALUE ::PRINTOPT ITEMS {::aopisy[24],::aopisy[25],::aopisy[26],::aopisy[27],::aopisy[28]}  WIDTH 195 FONT 'Arial' SIZE 9
 
+         @ 82,90 BUTTON button_14 CAPTION "OK";
+           ACTION {|| ::nFromPage:=PrOpt.textFrom.Value,::nToPage:=PrOpt.textTo.Value,::nCopies:=max(PrOpt.textCopies.Value,1),::PrintOpt:=PrOpt.prnCombo.Value , PrOpt.Release} ;
+           WIDTH 110 HEIGHT 19 ;
+           FONT 'Arial' SIZE 9
 
-@ 82,90 BUTTON button_14 CAPTION "OK";
-  ACTION {|| ::nFromPage:=PrOpt.textFrom.Value,::nToPage:=PrOpt.textTo.Value,::nCopies:=max(PrOpt.textCopies.Value,1),::PrintOpt:=PrOpt.prnCombo.Value , PrOpt.Release} ;
-  WIDTH 110 HEIGHT 19 ;
-  FONT 'Arial' SIZE 9
-
-END WINDOW
-endif
-PrOpt.Title := ::aopisy[19]
-PrOpt.textCopies.Value := ::nCopies
-PrOpt.textFrom.Value := max(::nfrompage,1)
-PrOpt.textTo.Value := if(::nwhattoprint<2,::iloscstron,::ntopage)
-PrOpt.Activate
+      END WINDOW
+   endif
+   PrOpt.Title := ::aopisy[19]
+   PrOpt.textCopies.Value := ::nCopies
+   PrOpt.textFrom.Value := max( ::nfrompage, 1 )
+   PrOpt.textTo.Value := if( ::nwhattoprint< 2, ::iloscstron, ::ntopage )
+   PrOpt.Activate
 
 Return OKPrint
 
+#endif // NO_GUI
 
-METHOD ReportData(l_x1,l_x2,l_x3,l_x4,l_x5,l_x6) CLASS HBPrinter
-set device to print
-set printer to "hbprinter.rep" ADDITIVE
-set printer on
-set console off
- ? '-----------------',date(),time()
- ?
- ?? if(valtype(l_x1)<>"U",l_x1,",")
- ?? if(valtype(l_x2)<>"U",l_x2,",")
- ?? if(valtype(l_x3)<>"U",l_x3,",")
- ?? if(valtype(l_x4)<>"U",l_x4,",")
- ?? if(valtype(l_x5)<>"U",l_x5,",")
- ?? if(valtype(l_x6)<>"U",l_x6,",")
- ? 'HDC            :',::HDC
- ? 'HDCREF         :',::HDCREF
- ? 'PRINTERNAME    :',::PRINTERNAME
- ? 'PRINTEDEFAULT  :',::PRINTERDEFAULT
- ? 'VERT X HORZ SIZE         :',::DEVCAPS[1],"x",::DEVCAPS[2]
- ? 'VERT X HORZ RES          :',::DEVCAPS[3],"x",::DEVCAPS[4]
- ? 'VERT X HORZ LOGPIX       :',::DEVCAPS[5],"x",::DEVCAPS[6]
- ? 'VERT X HORZ PHYS. SIZE   :',::DEVCAPS[7],"x",::DEVCAPS[8]
- ? 'VERT X HORZ PHYS. OFFSET :',::DEVCAPS[9],"x",::DEVCAPS[10]
- ? 'VERT X HORZ FONT SIZE    :',::DEVCAPS[11],"x",::DEVCAPS[12]
- ? 'VERT X HORZ ROWS COLS    :',::DEVCAPS[13],"x",::DEVCAPS[14]
- ? 'ORIENTATION              :',::DEVCAPS[15]
- ? 'PAPER SIZE               :',::DEVCAPS[17]
-set printer off
-set printer to
-set console on
-set device to screen
-return self
 
 
 
@@ -2015,7 +2034,32 @@ return self
 #include <olectl.h>
 #include <ocidl.h>
 #include <commctrl.h>
-#include "oohg.h"
+
+#ifdef __XHARBOUR__
+   #define HB_STORNI( n, x, y )   hb_storni( n, x, y )
+   #define HB_STORNL( n, x, y )   hb_stornl( n, x, y )
+   #define HB_STORL( n, x, y )    hb_storl( n, x, y )
+   #define HB_STORC( n, x, y )    hb_storc( n, x, y )
+   #define HB_PARNI( n, x )       hb_parni( n, x )
+   #define HB_PARNL( n, x )       hb_parnl( n, x )
+   #define HB_STORPTR( n, x, y )  hb_storptr( n, x, y )
+   #define HB_PARC( n, x )        hb_parc( n, x )
+   #define HB_PARCLEN( n, x )     hb_parclen( n, x )
+   #define HB_PARNL3( n, x, y )   hb_parnl( n, x, y )
+   #define HB_STORNI2( n, x )     hb_storni( n, x )
+#else
+   #define HB_STORNI( n, x, y )   hb_storvni( n, x, y )
+   #define HB_STORNL( n, x, y )   hb_storvnl( n, x, y )
+   #define HB_STORL( n, x, y )    hb_storvl( n, x, y )
+   #define HB_STORC( n, x, y )    hb_storvc( n, x, y )
+   #define HB_PARNI( n, x )       hb_parvni( n, x )
+   #define HB_PARNL( n, x )       hb_parvnl( n, x )
+   #define HB_STORPTR( n, x, y )  hb_storvptr( n, x, y )
+   #define HB_PARC( n, x )        hb_parvc( n, x )
+   #define HB_PARCLEN( n, x )     hb_parvclen( n, x )
+   #define HB_PARNL3( n, x, y )   hb_parvnl( n, x, y )
+   #define HB_STORNI2( n, x )     hb_storvni( n, x )
+#endif
 
 static HDC hDC=NULL;
 static HDC hDCRef=NULL;
@@ -3630,8 +3674,7 @@ HB_FUNC (RR_PREVIEWFPLAY)
         hb_retnl( ( long ) himgbmp );
 }
 
-
-HB_FUNC (RR_PLAYTHUMB)
+HB_FUNC( RR_PLAYTHUMB )
 {
    RECT rect;
    HDC tmpDC;
@@ -3652,7 +3695,7 @@ HB_FUNC (RR_PLAYTHUMB)
    DeleteDC(tmpDC);
 }
 
-HB_FUNC (RR_PLAYFTHUMB)
+HB_FUNC( RR_PLAYFTHUMB )
 {
    RECT rect;
    HDC tmpDC;
@@ -3674,8 +3717,7 @@ HB_FUNC (RR_PLAYFTHUMB)
    DeleteDC(tmpDC);
 }
 
-
-HB_FUNC (RR_PLAYENHMETAFILE)
+HB_FUNC( RR_PLAYENHMETAFILE )
 {
    RECT rect;
    HENHMETAFILE hh=SetEnhMetaFileBits((UINT) HB_PARCLEN(1,1), ( BYTE * ) HB_PARC(1,1));
@@ -3684,7 +3726,7 @@ HB_FUNC (RR_PLAYENHMETAFILE)
    DeleteEnhMetaFile(hh);
 }
 
-HB_FUNC (RR_PLAYFENHMETAFILE)
+HB_FUNC( RR_PLAYFENHMETAFILE )
 {
    RECT rect;
    HENHMETAFILE hh = GetEnhMetaFile( HB_PARC(1,1) ) ;
@@ -3694,28 +3736,31 @@ HB_FUNC (RR_PLAYFENHMETAFILE)
    DeleteEnhMetaFile(hh);
 }
 
-
-
-HB_FUNC (RR_LALABYE)
+HB_FUNC( RR_LALABYE )
 {
-   if (hb_parni(1)==1)
-     {
-       hDCtemp=hDC;
-       hDC=hDCRef;
-     }
+   if( hb_parni( 1 ) == 1 )
+   {
+      hDCtemp = hDC;
+      hDC = hDCRef;
+   }
    else
-       hDC=hDCtemp;
+      hDC = hDCtemp;
 }
-
-
 
 HB_FUNC( RR_LOADSTRING )
 {
-  char *cBuffer;
-  cBuffer = (char *) GlobalAlloc(GPTR,255);
-  LoadString(GetModuleHandle(NULL),hb_parni(1),(LPSTR) cBuffer,254);
-  hb_retc(cBuffer);
-  GlobalFree(cBuffer);
+   char *cBuffer;
+   cBuffer = ( char * ) GlobalAlloc( GPTR, 255 );
+   LoadString( GetModuleHandle( NULL ), hb_parni( 1 ), ( LPSTR ) cBuffer, 254 );
+   hb_retc( cBuffer );
+   GlobalFree( cBuffer );
+}
+
+HB_FUNC( RR_GETTEMPFOLDER )
+{
+   char szBuffer[ MAX_PATH + 1 ] = { 0 };
+   GetTempPath( MAX_PATH, szBuffer );
+   hb_retc( szBuffer );
 }
 
 #pragma ENDDUMP
