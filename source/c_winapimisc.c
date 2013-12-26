@@ -1,5 +1,5 @@
 /*
- * $Id: c_winapimisc.c,v 1.20 2013-07-25 21:01:39 fyurisich Exp $
+ * $Id: c_winapimisc.c,v 1.21 2013-12-26 23:11:29 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -461,14 +461,10 @@ HB_FUNC( CREATEMUTEX )
    hb_retnl( (ULONG) CreateMutex( sa, hb_parnl( 2 ), hb_parc( 3 ) ) );
 }
 
-#ifndef __XHARBOUR__
-
-HB_FUNC( GETLASTERROR )
+HB_FUNC( _OOHG_GETLASTERROR )
 {
    hb_retnl( (LONG) GetLastError() );
 }
-
-#endif
 
 HB_FUNC ( CREATEFOLDER )
 {

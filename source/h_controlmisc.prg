@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.139 2013-11-27 19:42:40 fyurisich Exp $
+ * $Id: h_controlmisc.prg,v 1.140 2013-12-26 23:11:29 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -2302,7 +2302,7 @@ Local lRet := _OOHG_lMultiple
       EndIf
    EndIf
    If ! _OOHG_lMultiple .AND. ;
-      ( EMPTY( CreateMutex( , .T., strtran(GetModuleFileName(),'\','_') ) ) .OR. (GetLastError() > 0) )
+      ( EMPTY( CreateMutex( , .T., strtran(GetModuleFileName(),'\','_') ) ) .OR. (_OOHG_GetLastError() > 0) )
       If HB_IsLogical( lWarning ) .AND. lWarning
          InitMessages()
          MsgStop( _OOHG_Messages( 1, 4 ) )

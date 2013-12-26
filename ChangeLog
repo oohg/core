@@ -1,11 +1,18 @@
 /*
- * $Id: ChangeLog,v 1.1206 2013-12-24 18:54:45 guerra000 Exp $
+ * $Id: ChangeLog,v 1.1207 2013-12-26 23:11:28 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-12-26 21:11 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * source/c_winapimisc.c
+     * C-level function GETLASTERROR renamed to _OOHG_GETLASTERROR,
+       so it doesn't colides with the one inside Harbour's libhbwin.
+   * source/h_controlmisc.prg
+     * Changed GETLASTERROR call by _OOHG_GETLASTERROR call.
 
 2013-12-24 12:52 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
    * source/winprint.prg
