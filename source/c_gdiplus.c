@@ -1,5 +1,5 @@
 /*
- * $Id: c_gdiplus.c,v 1.6 2013-10-12 19:55:57 fyurisich Exp $
+ * $Id: c_gdiplus.c,v 1.7 2013-12-31 18:50:24 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -182,7 +182,7 @@ typedef LONG(__stdcall* GDIPCREATEBITMAPFROMHBITMAP) ( void*, void*, void** );
 typedef LONG(__stdcall* GDIPGETIMAGEENCODERSSIZE) ( unsigned int*, unsigned int* );
 typedef LONG(__stdcall* GDIPGETIMAGEENCODERS) ( UINT, UINT, IMAGE_CODEC_INFO* );
 typedef LONG(__stdcall* GDIPSAVEIMAGETOFILE) ( void*, const unsigned short*, const CLSID*, const ENCODER_PARAMETERS* );
-typedef LONG(__stdcall* GDIPLODIMAGEFROMSTREAM) ( IStream*, void** );
+typedef LONG(__stdcall* GDIPLOADIMAGEFROMSTREAM) ( IStream*, void** );
 typedef LONG(__stdcall* GDIPCREATEHBITMAPFROMBITMAP) ( void*, void*, ULONG );
 typedef LONG(__stdcall* GDIPDISPOSEIMAGE) ( void* );
 typedef LONG(__stdcall* GDIPGETIMANGETHUMBNAIL) ( void*, UINT, UINT, void**, GET_THUMBNAIL_IMAGE_ABORT, void* );
@@ -208,7 +208,7 @@ GDIPCREATEBITMAPFROMHBITMAP GdipCreateBitmapFromHBITMAP;
 GDIPGETIMAGEENCODERSSIZE GdipGetImageEncodersSize;
 GDIPGETIMAGEENCODERS GdipGetImageEncoders;
 GDIPSAVEIMAGETOFILE GdipSaveImageToFile;
-GDIPLODIMAGEFROMSTREAM GdipLoadImageFromStream;
+GDIPLOADIMAGEFROMSTREAM GdipLoadImageFromStream;
 GDIPCREATEHBITMAPFROMBITMAP GdipCreateHBITMAPFromBitmap;
 GDIPDISPOSEIMAGE GdipDisposeImage;
 GDIPGETIMANGETHUMBNAIL GdipGetImageThumbnail;
@@ -360,7 +360,7 @@ BOOL LoadGdiPlusDll( void )
       return FALSE;
    }
 
-   if( ( GdipLoadImageFromStream = (GDIPLODIMAGEFROMSTREAM) GetProcAddress( GdiPlusHandle_pre, "GdipLoadImageFromStream" ) ) == NULL )
+   if( ( GdipLoadImageFromStream = (GDIPLOADIMAGEFROMSTREAM) GetProcAddress( GdiPlusHandle_pre, "GdipLoadImageFromStream" ) ) == NULL )
    {
       FreeLibrary( GdiPlusHandle_pre );
       return FALSE;
@@ -915,8 +915,10 @@ HANDLE _OOHG_GDIPLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG lBackColor, long 
    // Creates Gdi+ image
    if( GdipLoadImageFromStream( iStream, &gImage ) != 0 )
    {
+      iStream->lpVtbl->Release( iStream );
       return 0;
    }
+   iStream->lpVtbl->Release( iStream );
    GdipGetImageWidth(  gImage, ( UINT * ) &uiWidth );
    GdipGetImageHeight( gImage, ( UINT * ) &uiHeight );
 

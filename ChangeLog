@@ -1,11 +1,23 @@
 /*
- * $Id: ChangeLog,v 1.1207 2013-12-26 23:11:28 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1208 2013-12-31 18:50:24 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2013-12-31 12:49 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+   * source/c_gdiplus.c
+   * source/c_image.c
+   * source/miniprint.prg
+     ! Fixed memory leak for missing iStream release.
+   * source/h_print.prg
+     ! Adjusted supported image extensions to
+       .jpg, .jpeg, .tif, .tiff .
+   * include/winprint.ch
+     * Changed _EndTabPage() to DO("_EndTabPage") call, for
+       avoid linking this function.
 
 2013-12-26 21:11 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source/c_winapimisc.c

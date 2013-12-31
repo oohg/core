@@ -1,5 +1,5 @@
 /*
- * $Id: miniprint.prg,v 1.41 2013-09-28 16:26:18 fyurisich Exp $
+ * $Id: miniprint.prg,v 1.42 2013-12-31 18:50:24 guerra000 Exp $
  */
 /*----------------------------------------------------------------------------
  MINIGUI - Harbour Win32 GUI library source code
@@ -3600,6 +3600,7 @@ HB_FUNC( _HMG_PRINTER_C_IMAGE )
          CloseHandle( hFile );
          CreateStreamOnHGlobal( hGlobal, TRUE, &iStream );
          OleLoadPicture( iStream, nFileSize, TRUE, &IID_IPicture, (LPVOID*) iPictureRef );
+         iStream->lpVtbl->Release( iStream );
          GlobalFree( hGlobal );
 
          if( iPicture == 0 )

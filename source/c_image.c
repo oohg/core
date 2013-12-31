@@ -1,5 +1,5 @@
 /*
- * $Id: c_image.c,v 1.33 2013-09-30 02:34:54 guerra000 Exp $
+ * $Id: c_image.c,v 1.34 2013-12-31 18:50:24 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -134,6 +134,7 @@ HANDLE _OOHG_OleLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG lBackColor, long l
 
    CreateStreamOnHGlobal( hGlobal, FALSE, &iStream );
    OleLoadPicture( iStream, 0, TRUE, &IID_IPicture, ( LPVOID * ) iPictureRef );
+   iStream->lpVtbl->Release( iStream );
    if( iPicture )
    {
       iPicture->lpVtbl->get_Width( iPicture, &lWidth );
