@@ -1,5 +1,5 @@
 /*
- * $Id: px.prg,v 1.12 2013-12-10 18:36:11 guerra000 Exp $
+ * $Id: px.prg,v 1.13 2014-01-04 01:29:18 guerra000 Exp $
  */
 /*
  * This is a ooHGRecord's subclasses (database class used
@@ -514,10 +514,8 @@ HB_FUNC( READBIGENDIAN )   // ( cBuffer, nPos, nCount, lUnsigned, lTrimTopBit )
    hb_retnll( ReadBigEndian( ( char * ) hb_parc( 1 ), hb_parclen( 1 ), hb_parni( 2 ), hb_parni( 3 ), hb_parl( 4 ), hb_parl( 5 ) ) );
 }
 
-#pragma ENDDUMP
-
-STATIC FUNCTION WriteBigEndian( nNum, nCount )
-RETURN HB_InLine( nNum, nCount ){
+HB_FUNC( WRITEBIGENDIAN )   // ( nNum, nCount )
+{
    HB_ULONGLONG llNum;
    int iCount, iPos;
    char *cBuffer;
@@ -535,21 +533,10 @@ RETURN HB_InLine( nNum, nCount ){
    }
    *cBuffer |= 0x80;
 
-   //hb_retclen( cBuffer, iCount );
-   //hb_xfree( cBuffer );
    hb_retclen_buffer( cBuffer, iCount );
 }
-/*
-LOCAL cRet
-   cRet := SPACE( nCount )
-   DO WHILE nCount > 0
-      cRet[ nCount ] := CHR( nNum % 256 )
-      nNum := INT( nNum / 256 )
-      nCount--
-   ENDDO
-   cRet[ 1 ] := CHR( cRet[ 1 ] + 128 )
-RETURN cRet
-*/
+
+#pragma ENDDUMP
 
 METHOD New( cFile, lShared, lReadOnly ) CLASS XBrowse_Paradox
 LOCAL cBuffer, nLen, nBase, nPos, nBase2, nPos2, cKeyTypes
@@ -934,6 +921,9 @@ LOCAL lBof
             ::lValidBuffer := .F.
             ::cCurrentBlockBuffer := NIL
          ENDIF
+      ELSEIF ::nOrder == 1
+         // Block has changed, so locate current key (new record's position)
+         ::Seek( ::CurrentIndexKey(), .T. )
       ENDIF
    ENDIF
    // Fast skip
