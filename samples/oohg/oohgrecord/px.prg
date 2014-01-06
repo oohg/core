@@ -1,5 +1,5 @@
 /*
- * $Id: px.prg,v 1.13 2014-01-04 01:29:18 guerra000 Exp $
+ * $Id: px.prg,v 1.14 2014-01-06 22:37:20 guerra000 Exp $
  */
 /*
  * This is a ooHGRecord's subclasses (database class used
@@ -346,6 +346,7 @@ CLASS XBrowse_Paradox FROM XBrowse_DirectFile
    METHOD ReadRecord
    METHOD ReadBlock
    METHOD ReadBlockHeader
+   METHOD SeekSpecifiedKey
    METHOD SeekKey
    METHOD SeekKeyTree
    METHOD ValueToBuffer
@@ -827,6 +828,11 @@ LOCAL lBof
       nCount := nCount + 1
    ENDIF
 
+   IF ::nOrder == 1 .AND. ::lValidBuffer .AND. ::lShared .AND. ! ::cCurrentBlockBuffer == ::ReadBlock( ::nCurrentBlock )
+      // Block has changed, so locate current key (new record's position)
+      ::SeekSpecifiedKey( ::CurrentIndexKey(), .T. )
+   ENDIF
+
    // Fast skip
    IF     ::lValidBuffer                               .AND. ;     // Data in progress
           ! ::cCurrentBlockBuffer == NIL               .AND. ;     // Block is on memory
@@ -921,9 +927,6 @@ LOCAL lBof
             ::lValidBuffer := .F.
             ::cCurrentBlockBuffer := NIL
          ENDIF
-      ELSEIF ::nOrder == 1
-         // Block has changed, so locate current key (new record's position)
-         ::Seek( ::CurrentIndexKey(), .T. )
       ENDIF
    ENDIF
    // Fast skip
@@ -1255,20 +1258,11 @@ LOCAL cKey
 RETURN NIL
 
 METHOD Seek( uKey, lSoftSeek, lLast ) CLASS XBrowse_Paradox
-LOCAL lFound, nFrom, nTo, lRecordFound
-LOCAL cKey, nRecNo
+LOCAL cKey
    IF ::nOrder == 0
-      lRecordFound := .F.
+      ::lFound := .F.
       ::GoTo( 0 )
    ELSE
-      ::GoCold()
-      ::lValidBuffer := .F.
-
-      // Verify softseek
-      IF ! HB_IsLogical( lSoftSeek )
-         lSoftSeek := .F.
-      ENDIF
-
       // Checks key
       cKey := ""
       IF HB_IsArray( uKey )
@@ -1276,70 +1270,9 @@ LOCAL cKey, nRecNo
       ELSE // IF VALTYPE( uKey ) == VALTYPE( ::FieldGet( 1 ) )
          cKey := ::ValueToBuffer( uKey, ::aTypes[ 1 ], ::aWidths[ 1 ] )
       ENDIF
-      cKey := LEFT( cKey, ::nPxKeyLen - 6 )
-      IF LEN( cKey ) == 0
-         IF HB_IsLogical( lLast ) .AND. lLast
-            ::GoBottom()
-         ELSE
-            ::GoTop()
-         ENDIF
-         ::lFound := .T.
-         RETURN .T.
-      ENDIF
-      nRecNo := ::SeekKey( cKey, lSoftSeek, lLast, @lRecordFound, .T. )
-
-      // Soft seek
-      IF ! lRecordFound
-         IF lSoftSeek
-            nRecNo++
-         ELSE
-            nRecNo := 0
-         ENDIF
-      ENDIF
-
-      // Forces to move to new record
-      IF ! ::lValidBuffer
-         ::GoTo( nRecNo )
-      ENDIF
-
-      // Delimited by scope
-      IF LEN( ::cScopeFrom ) + LEN( ::cScopeTo ) > 0 .AND. ::cScopeFrom <= ::cScopeTo
-         IF     LEN( ::cScopeFrom ) > 0 .AND. ::CurrentIndexKey( LEN( ::cScopeFrom ) ) < ::cScopeFrom
-            IF lSoftSeek
-               ::GoTop()
-            ELSE
-               ::GoTo( 0 )
-            ENDIF
-            lRecordFound := .F.
-         ELSEIF LEN( ::cScopeTo ) > 0 .AND. ::CurrentIndexKey( LEN( ::cScopeTo ) ) > ::cScopeTo
-            ::GoTo( 0 )
-            lRecordFound := .F.
-         ENDIF
-/*
-         nFrom := ::SeekKey( ::cScopeFrom, .T., .F., @lFound )
-         IF ! lFound
-            nFrom++
-         ENDIF
-         nTo   := ::SeekKey( ::cScopeTo,   .T., .T. )
-         IF nRecNo > nTo
-            lRecordFound := .F.
-            nRecNo := 0
-         ELSEIF nRecNo < nFrom
-            IF cKey >= LEFT( ::cScopeFrom, LEN( cKey ) )
-               nRecNo := nFrom
-            ELSEIF lSoftSeek
-               lRecordFound := .F.
-               nRecNo := nFrom
-            ELSE
-               lRecordFound := .F.
-               nRecNo := 0
-            ENDIF
-         ENDIF
-*/
-      ENDIF
+      ::lFound := ::SeekSpecifiedKey( cKey, lSoftSeek, lLast )
    ENDIF
-   ::lFound := lRecordFound
-RETURN lRecordFound
+RETURN ::lFound
 
 METHOD Close() CLASS XBrowse_Paradox
    IF ::oFile != NIL
@@ -1659,6 +1592,61 @@ LOCAL cBuffer, aData, nCount
               ReadLittleEndian( cBuffer, 1, 2 ), ;
               ReadLittleEndian( cBuffer, 3, 2 )  }
 RETURN aData
+
+METHOD SeekSpecifiedKey( cKey, lSoftSeek, lLast ) CLASS XBrowse_Paradox
+LOCAL lFound, nFrom, nTo, lRecordFound
+LOCAL nRecNo
+   ::GoCold()
+   ::lValidBuffer := .F.
+
+   // Verify softseek
+   IF ! HB_IsLogical( lSoftSeek )
+      lSoftSeek := .F.
+   ENDIF
+
+   // uKey must be passed pre-validated
+   cKey := LEFT( cKey, ::nPxKeyLen - 6 )
+   IF LEN( cKey ) == 0
+      IF HB_IsLogical( lLast ) .AND. lLast
+         ::GoBottom()
+      ELSE
+         ::GoTop()
+      ENDIF
+      ::lFound := .T.
+      RETURN .T.
+   ENDIF
+   nRecNo := ::SeekKey( cKey, lSoftSeek, lLast, @lRecordFound, .T. )
+
+   // Soft seek
+   IF ! lRecordFound
+      IF lSoftSeek
+         nRecNo++
+      ELSE
+         nRecNo := 0
+      ENDIF
+   ENDIF
+
+   // Forces to move to new record
+   IF ! ::lValidBuffer
+      ::GoTo( nRecNo )
+   ENDIF
+
+   // Delimited by scope
+   IF LEN( ::cScopeFrom ) + LEN( ::cScopeTo ) > 0 .AND. ::cScopeFrom <= ::cScopeTo
+      IF     LEN( ::cScopeFrom ) > 0 .AND. ::CurrentIndexKey( LEN( ::cScopeFrom ) ) < ::cScopeFrom
+         IF lSoftSeek
+            ::GoTop()
+         ELSE
+            ::GoTo( 0 )
+         ENDIF
+         lRecordFound := .F.
+      ELSEIF LEN( ::cScopeTo ) > 0 .AND. ::CurrentIndexKey( LEN( ::cScopeTo ) ) > ::cScopeTo
+         ::GoTo( 0 )
+         lRecordFound := .F.
+      ENDIF
+   ENDIF
+   ::lFound := lRecordFound
+RETURN lRecordFound
 
 METHOD SeekKey( cKey, lSoftSeek, lLast, lFound, lKeepBuffer ) CLASS XBrowse_Paradox
 LOCAL cBuffer, nLevel, nBlock, nRecNo, nCant
