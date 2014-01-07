@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.129 2013-12-31 18:50:24 guerra000 Exp $
+* $Id: h_print.prg,v 1.130 2014-01-07 22:10:44 fyurisich Exp $
 */
 
 #include 'hbclass.ch'
@@ -3029,7 +3029,7 @@ LOCAL nHDispl := 1.300
    IF HB_IsString( cImage )
       cImage := Upper( cImage )
       // The only supported image formats are jpg and tiff.
-      IF ! LOWER( SUBSTR( cImage, RAT( ".", cImage ) ) ) $ { ".jpg", ".jpeg", ".tif", ".tiff" }
+      IF ASCAN( { ".jpg", ".jpeg", ".tif", ".tiff" }, LOWER( SUBSTR( cImage, RAT( ".", cImage ) ) ) ) == 0
          RETURN Self
       ENDIF
    ELSE
