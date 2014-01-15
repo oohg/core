@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.140 2013-12-26 23:11:29 fyurisich Exp $
+ * $Id: h_controlmisc.prg,v 1.141 2014-01-15 13:27:58 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -411,8 +411,13 @@ Local oInputWindow, aResult, nWidth, ControlCol, nSep
             ControlRow := ControlRow + 30
 
          Case HB_IsDate( aValues[i] )
-            @ ControlRow, ControlCol DATEPICKER &CN  OF _InputWindow VALUE aValues[i] WIDTH nControlWidth
-            ControlRow := ControlRow + 30
+            If ValType( aFormats[i] ) $ 'CM' .AND. upper( aFormats[i] ) == "SHOWNONE"
+               @ ControlRow, ControlCol DATEPICKER &CN  OF _InputWindow VALUE aValues[i] WIDTH nControlWidth SHOWNONE
+               ControlRow := ControlRow + 30
+            Else
+               @ ControlRow, ControlCol DATEPICKER &CN  OF _InputWindow VALUE aValues[i] WIDTH nControlWidth
+               ControlRow := ControlRow + 30
+            EndIf
 
          Case HB_IsNumeric( aValues[i] )
             If HB_IsArray( aFormats[i] )
