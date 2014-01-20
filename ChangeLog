@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog,v 1.1212 2014-01-15 13:27:56 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1213 2014-01-20 19:03:50 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-01-20 17:03 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_combo.prg
+     ! BackSpace not working properly in COMBOBOX control with
+       DISPLAYEDIT and INCREMENTAL clauses.
 
 2014-01-15 11:28 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * ./ChangeLog

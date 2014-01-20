@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.77 2013-09-05 02:40:23 fyurisich Exp $
+ * $Id: h_combo.prg,v 1.78 2014-01-20 19:03:51 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -122,6 +122,7 @@ CLASS TCombo FROM TLabel
    DATA nLastFound            INIT 0
    DATA lIncremental          INIT .F.
    DATA oListBox              INIT NIL
+   DATA oEditBox              INIT NIL
    DATA lRefresh              INIT NIL
    DATA SourceOrder           INIT NIL
    DATA onRefresh             INIT NIL
@@ -270,6 +271,7 @@ Local ControlHandle, WorkArea, uField, nStyle
    ASSIGN ::onListClose   VALUE onListClose              TYPE "B"
 
    ::oListBox := TListCombo():Define( Self, ComboBoxGetListhWnd( ::hWnd ) )
+   ::oEditBox := TEditCombo():Define( Self, ComboBoxGetEdithWnd( ::hWnd ) )
 
 RETURN Self
 
@@ -870,6 +872,12 @@ Local Hi_wParam := HIWORD( wParam ), nArea, BackRec, i, nMax, bField, bValueSour
    ElseIf Hi_wParam == CBN_EDITCHANGE
       If ::lIncremental
          ::cText := Upper( ::DisplayValue )
+         If ::oEditBox:LastKey == VK_BACK
+            nMax := Len( ::cText )
+            If nMax > 0
+               ::cText := SubStr( ::cText, 1, nMax - 1 )
+            EndIf
+         EndIf
          ::nLastFound := ComboBoxFindString( ::oListBox:hWnd, -1, ::cText )
          If ::nLastFound > 0
             ComboSetCurSel( ::hWnd, ::nLastFound )
@@ -1414,6 +1422,16 @@ HB_FUNC( COMBOBOXGETLISTHWND )
    HWNDret( info.hwndList );
 }
 
+HB_FUNC( COMBOBOXGETEDITHWND )
+{
+   POINT pt;
+
+   pt.x = 3;
+   pt.y = 3;
+
+   HWNDret( ChildWindowFromPoint( HWNDparam( 1 ), pt ) );
+}
+
 HB_FUNC_STATIC( TCOMBO_ITEMHEIGHT )   // METHOD ItemHeight()
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
@@ -1637,3 +1655,50 @@ Function SetComboRefresh( lValue )
       _OOHG_ComboRefresh := lValue
    EndIf
 Return _OOHG_ComboRefresh
+
+
+
+
+
+CLASS TEditCombo FROM TControl STATIC
+   DATA LastKey INIT 0
+
+   METHOD Define
+   METHOD Events
+
+   EMPTY( _OOHG_AllVars )
+ENDCLASS
+
+*-----------------------------------------------------------------------------*
+METHOD Define( Container, hWnd ) CLASS TEditCombo
+*-----------------------------------------------------------------------------*
+   ::SetForm( , Container )
+   InitEditCombo( hWnd )
+   ::Register( hWnd )
+RETURN Self
+
+*-----------------------------------------------------------------------------*
+METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TEditCombo
+*-----------------------------------------------------------------------------*
+
+   If nMsg == WM_KEYDOWN
+      ::LastKey := wParam
+   EndIf
+
+Return ::Super:Events( hWnd, nMsg, wParam, lParam )
+
+#pragma BEGINDUMP
+
+static WNDPROC lpfnOldWndProcCE = 0;
+
+static LRESULT APIENTRY SubClassFuncCE( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+{
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProcCE );
+}
+
+HB_FUNC( INITEDITCOMBO )
+{
+   lpfnOldWndProcCE = ( WNDPROC ) SetWindowLong( HWNDparam( 1 ), GWL_WNDPROC, ( LONG ) SubClassFuncCE );
+}
+
+#pragma ENDDUMP
