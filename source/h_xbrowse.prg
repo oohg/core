@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.106 2013-12-02 23:01:45 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.107 2014-01-23 00:05:42 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1034,6 +1034,12 @@ Local nNotify := GetNotifyCode( lParam )
 Local nvKey, lGo
 
    If nNotify == NM_CLICK
+      If ! ::lLocked
+         ::MoveTo( ::CurrentRow, ::nValue )
+      Else
+         ::Super:Value := ::nValue
+      EndIf
+
       If HB_IsBlock( ::OnClick )
          If ! ::NestedClick
             ::NestedClick := ! _OOHG_NestedSameEvent()
@@ -1041,13 +1047,15 @@ Local nvKey, lGo
             ::NestedClick := .F.
          EndIf
       EndIf
+      Return nil
 
+   ElseIf nNotify == NM_RCLICK
       If ! ::lLocked
          ::MoveTo( ::CurrentRow, ::nValue )
       Else
          ::Super:Value := ::nValue
       EndIf
-      Return nil
+      // Continue to ::Super:Events_Notify()
 
    ElseIf nNotify == LVN_BEGINDRAG
       If ! ::lLocked
@@ -1097,7 +1105,8 @@ Local nvKey, lGo
       EndIf
 
    EndIf
-Return ::Super:Events_Notify( wParam, lParam )
+// Return ::Super:Events_Notify( wParam, lParam )
+Return ::TGrid:Events_Notify( wParam, lParam )
 
 *-----------------------------------------------------------------------------*
 METHOD DbSkip( nRows ) CLASS TXBrowse
@@ -2080,6 +2089,7 @@ HB_FUNC_STATIC( TXBROWSE_EVENTS_NOTIFY )
    switch( ( ( NMHDR FAR * ) lParam )->code )
    {
       case NM_CLICK:
+      case NM_RCLICK:
       case LVN_BEGINDRAG:
       case LVN_KEYDOWN:
       case LVN_ITEMCHANGED:
