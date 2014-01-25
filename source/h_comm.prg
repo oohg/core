@@ -1,5 +1,5 @@
 /*
- * $Id: h_comm.prg,v 1.4 2012-05-20 20:32:54 fyurisich Exp $
+ * $Id: h_comm.prg,v 1.5 2014-01-25 01:23:21 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -140,7 +140,9 @@ Local DataValue, DataType, DataLenght, Packet
 						RetVal := CTOD ( DataValue )
 					Case DataType == 'L'
 						RetVal := iif ( Alltrim(DataValue) == 'T' , .t. , .f. )
-			        End Case
+               Case DataType == 'T'
+                  RetVal := CTOT ( DataValue )
+            End Case
 
 			// One Dimension Array Data
 
@@ -166,7 +168,9 @@ Local DataValue, DataType, DataLenght, Packet
 							aItem := CTOD ( DataValue )
 						Case DataType == 'L'
 							aItem := iif ( Alltrim(DataValue) == 'T' , .t. , .f. )
-				        End Case
+                  Case DataType == 'T'
+                     aItem := CTOT ( DataValue )
+               End Case
 
 					aAdd ( aTemp , aItem )
 
@@ -205,7 +209,9 @@ Local DataValue, DataType, DataLenght, Packet
 							aItem := CTOD ( DataValue )
 						Case DataType == 'L'
 							aItem := iif ( Alltrim(DataValue) == 'T' , .t. , .f. )
-				        End Case
+                  Case DataType == 'T'
+                     aItem := CTOT ( DataValue )
+               End Case
 
 					aTemp [r] [c] := aItem
 

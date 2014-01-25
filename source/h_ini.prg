@@ -1,5 +1,5 @@
 /*
- * $Id: h_ini.prg,v 1.6 2013-07-03 01:44:52 migsoft Exp $
+ * $Id: h_ini.prg,v 1.7 2014-01-25 01:23:21 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -187,6 +187,7 @@ LOCAL cValue := "", nDecimals := Set( _SET_DECIMALS)
       CASE cType == "N" ;  cValue := LTrim( Str( xValue, 20, nDecimals ) )
       CASE cType == "D" ;  cValue := DToS( xValue )
       CASE cType == "L" ;  cValue := IIf( xValue, "T", "F" )
+      CASE cType == "T" ;  cValue := TToS( xValue )
       CASE cType == "A" ;  cValue := AToC( xValue )
       CASE cType $  "UE";  cValue := "NIL"
       CASE cType == "B" ;  cValue := "{|| ... }"
@@ -201,6 +202,7 @@ LOCAL xValue
       CASE cType == "D" ;  xValue := SToD( cValue )
       CASE cType == "N" ;  xValue := Val( cValue )
       CASE cType == "L" ;  xValue := ( cValue == 'T' )
+      CASE cType == "T" ;  xValue := SToT( cValue )
       CASE cType == "A" ;  xValue := CToA( cValue )
       OTHERWISE;           xValue := NIL                     // nil, block, object
    ENDCASE

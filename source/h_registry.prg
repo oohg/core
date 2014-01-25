@@ -1,5 +1,5 @@
 /*
- * $Id: h_registry.prg,v 1.3 2011-09-05 23:37:33 fyurisich Exp $
+ * $Id: h_registry.prg,v 1.4 2014-01-25 01:23:22 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -165,6 +165,8 @@ METHOD Get( cSubkey, uVar ) CLASS TReg32
               uVar = (Upper(uVar ) == ".T." )
          case cType == "N"
               uVar = Val(uVar )
+         case cType == "T"
+              uVar = CToT(uVar )
       endcase
    endif
 return uVar
@@ -185,6 +187,8 @@ Local cType, nLen
                  uVar := If( uVar, ".T.", ".F." )
             case cType == "N"
                  uVar := LTRIM( STR( uVar ) )
+            case cType == "T"
+                 uVar = TToC( uVar )
          endcase
       Else
          nLen := Len( uVar )

@@ -1,5 +1,5 @@
 /*
-* $Id: h_print.prg,v 1.130 2014-01-07 22:10:44 fyurisich Exp $
+* $Id: h_print.prg,v 1.131 2014-01-25 01:23:21 guerra000 Exp $
 */
 
 #include 'hbclass.ch'
@@ -442,6 +442,8 @@ LOCAL cText, cSpace, uAux, cType := ValType( uData )
       cText := IIF( uData, 'T', 'F' )
    CASE cType == 'M'
       cText := uData
+   CASE cType == 'T'
+      cText := TtoC( uData )
    CASE cType == 'O'
       cText := "< Object >"
    CASE cType == 'A'

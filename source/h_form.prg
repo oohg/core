@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.45 2013-11-11 19:22:54 guerra000 Exp $
+ * $Id: h_form.prg,v 1.46 2014-01-25 01:23:21 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -210,7 +210,7 @@ CLASS TForm FROM TWindow
    //CGR
    DATA TagControl
    DATA Tag	INIT ""
-   
+
    METHOD NotifyIcon          SETGET
    METHOD NotifyToolTip       SETGET
    METHOD Title               SETGET
@@ -1416,7 +1416,7 @@ Local oCtrl, lMinim, nOffset,nDesp
 		::Fill(nOffSet,::ClientWidth-nOffSet,::Clientheight-nOffset,::Clientwidth-nDesp,::abicolors[2])
 		::Fill(::ClientHeight-nOffSet,::clientwidth-nOffSet,::clientheight-nDesp,noffset,::abicolors[3])
 		::Fill(nOffSet,nOffSet,::ClientHeight-nDesp,nDesp,::abicolors[4])
-		::ReleaseDc() // libera el canvas 
+		::ReleaseDc() // libera el canvas
 	  EndIf
 
 
@@ -3178,13 +3178,13 @@ DEFINE WINDOW __OOHG_OBJ_INSPECTOR OBJ oWnd ;
    HEIGHT 300 ;
    TITLE 'Object Inspector' ;
 	MODAL NOSIZE nomaximize nominimize
-	
+
 	@ 24,0 grid __oohg_obj_Inspector_Grid obj oGrd ;
 		height 240 width 394 ;
 		headers {"DATA","Values"};
 		widths {150,180};
 		on dblclick (selecciona(aControls[oCombo:value],aControlsNames[oCombo:value],oooBj_Data[this.cellrowindex]),carga(aControls[oCombo:value],oGrd,@ooobj_data))
-	
+
 	aData := {}
 	n:=''
 
@@ -3200,12 +3200,12 @@ DEFINE WINDOW __OOHG_OBJ_INSPECTOR OBJ oWnd ;
                 aadd (aData,aControls[ ENUMINDEX ]:type+' >> '+s)
                 aControlsNames[ ENUMINDEX ]:=S
 	next
-	
+
 	@ 0,0 combobox __OOHG_OBJ_INSPECTOR_combo obj oCombo;
 		items aData value 1 width 394;
 		on change carga(aControls[oCombo:value],oGrd,@ooobj_data)
 	carga(aControls[1],oGrd,@ooobj_data)
-	
+
 
 	end window
 	ownd:activate()
@@ -3257,6 +3257,8 @@ tipo := valtype(xValue)
 			Ret:='Codeblock {|| ... }'
 		case tipo='D'
 			ret:='Date '+dtoc(xValue)
+      case tipo='t'
+         ret:='DateTime '+ttoc(xValue)
 		case tipo='O'
 			ret:='Object, class '+xValue:Classname()
 		otherwise
@@ -3266,18 +3268,18 @@ return ret
 
 static function selecciona(ooBj,name,Values)
 	local oWnd, tipo ,lOk:=.f., oget
-	
+
 	tipo=valtype(values[2])
 	if tipo$"CNDL"
 		Define window _oohg_change_value obj oWnd;
 			at 50,50 width 400 height 150;
 			title "Change value : "+name+'=>'+Values[1];
 			modal NOSIZE nomaximize nominimize
-			
+
 		@ 10,10 label _oohg_change_value_lbl value "New value for "+name+'=>'+Values[1] autosize
-		
+
 		if tipo='C'
-			@ 40,20 textbox _oohg_change_value_txt obj oGet value Values[2] 
+			@ 40,20 textbox _oohg_change_value_txt obj oGet value Values[2]
 		elseif tipo='N'
 			@ 40,20 textbox _oohg_change_value_txt obj oGet  value Values[2] numeric
 		elseif tipo='D'

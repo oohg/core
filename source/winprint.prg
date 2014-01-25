@@ -1,5 +1,5 @@
 /*
- * $Id: winprint.prg,v 1.51 2013-12-24 18:54:45 guerra000 Exp $
+ * $Id: winprint.prg,v 1.52 2014-01-25 01:23:22 guerra000 Exp $
  */
 // -----------------------------------------------------------------------------
 // HBPRINTER - Harbour Win32 Printing library source code
@@ -719,11 +719,12 @@ local atxt:={},i,lhf:=::getobjbyname(defname,"F"),oldalign
 local apos
   do case
      case HB_IsNumeric(txt)    ;  aadd(atxt,str(txt))
-     case HB_IsDate(txt)    ;  aadd(atxt,dtoc(txt))
+     case valtype(txt)=="T"    ;  aadd(atxt,ttoc(txt))
+     case HB_IsDate(txt)       ;  aadd(atxt,dtoc(txt))
      case HB_IsLogical(txt)    ;  aadd(atxt,if(txt,".T.",".F."))
      case valtype(txt)=="U"    ;  aadd(atxt,"NIL")
      case valtype(txt)$"BO"    ;  aadd(atxt,"")
-     case HB_IsArray(txt)    ;  aeval(txt,{|x| aadd(atxt,sayconvert(x)) })
+     case HB_IsArray(txt)      ;  aeval(txt,{|x| aadd(atxt,sayconvert(x)) })
      case valtype(txt)$"MC"    ;  atxt:=str2arr(txt,hb_osnewline())
   endcase
   apos:=::convert({row,col})
@@ -1295,7 +1296,8 @@ static Function sayconvert(ltxt)
   do case
      case valtype(ltxt)$"MC"    ;  return ltxt
      case HB_IsNumeric(ltxt)    ;  return str(ltxt)
-     case HB_IsDate(ltxt)    ;  return dtoc(ltxt)
+     case ValType(ltxt)=="T"    ;  return ttoc(ltxt)
+     case HB_IsDate(ltxt)       ;  return dtoc(ltxt)
      case HB_IsLogical(ltxt)    ;  return if(ltxt,".T.",".F.")
   endcase
 return ""

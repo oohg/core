@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.232 2013-12-07 12:38:07 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.233 2014-01-25 01:23:21 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -224,7 +224,7 @@ CLASS TGrid FROM TControl
    METHOD ColumnsAutoFit
    METHOD ColumnsAutoFitH
    METHOD ColumnBetterAutoFit
-   METHOD ColumnsBetterAutoFit 
+   METHOD ColumnsBetterAutoFit
    METHOD ColumnHide
    METHOD ColumnShow
    METHOD ColumnOrder          SETGET
@@ -462,7 +462,7 @@ Local ControlHandle, aImageList, i
       aSelectedColors := {}
    EndIf
    ::SetSelectedColors( aSelectedColors, .F. )
-   
+
    ::Value := value
 
    // Must be set after control is initialized
@@ -672,7 +672,7 @@ Local i, nPos, nCount, aImageList, nImagesWidth, aHeaderImage, aImageName := {}
       // Deassociate the imagelist
       SetHeaderImageList( ::hWnd, 0 )
    EndIf
-   
+
 Return Nil
 
 *-----------------------------------------------------------------------------*
@@ -1082,7 +1082,7 @@ Local nItem, aItems, nColumn
    If nItem == 0
       Return Nil
    EndIf
-   
+
    aItems := ::Item( nItem )
 
    If ! ::FixControls()
@@ -1986,7 +1986,7 @@ Local lRet
    EndIf
 
    lRet := .T.
-   
+
    Do While nCol <= Len( ::aHeaders ) .AND. lRet
       _OOHG_ThisItemCellValue := ::Cell( nRow, nCol )
 
@@ -2012,7 +2012,7 @@ Local lRet
 
       nCol++
    EndDo
-   
+
    If lRet
       ListView_Scroll( ::hWnd, - _OOHG_GridArrayWidths( ::hWnd, ::aWidths ), 0 )
    EndIf
@@ -2709,7 +2709,7 @@ METHOD HeaderImage( nColumn, nImg ) CLASS TGrid
 *-----------------------------------------------------------------------------*
    If HB_IsNumeric( nImg ) .AND. nImg >= 0 .AND. nImg # ::aHeaderImage[ nColumn ]
       ::aHeaderImage[ nColumn ] := nImg
-      
+
       If nImg == 0
         RemoveGridColumnImage( ::hWnd, nColumn )
       ElseIf ValidHandler( ::HeaderImageList )
@@ -4709,6 +4709,8 @@ METHOD Str2Val( uValue ) CLASS TGridControlTextBox
       uValue := ( PadL( uValue, 1 ) $ "TtYy" )
    Case ::cType == "N"
       uValue := Val( StrTran( _OOHG_UnTransform( uValue, ::cMask, ::cType ), " ", "" ) )
+   Case ::cType == "T"
+      uValue := CtoT( uValue )
    Otherwise
       If ! Empty( ::cMask )
          uValue := _OOHG_UnTransform( uValue, ::cMask, ::cType )
@@ -4726,6 +4728,8 @@ METHOD GridValue( uValue ) CLASS TGridControlTextBox
          uValue := If( uValue, "T", "F" )
       ElseIf ::cType $ "CM"
          uValue := Trim( uValue )
+      ElseIf ::cType == "T"
+         uValue := TtoC( uValue )
       EndIf
    Else
       uValue := Trim( Transform( uValue, ::cMask ) )
@@ -6412,7 +6416,7 @@ HB_FUNC( LISTVIEW_HITONCHECKBOX )
    lvhti.pt = point;
 
    ListView_SubItemHitTest( HWNDparam( 1 ), &lvhti );
-   
+
    if( lvhti.flags == LVHT_ONITEMSTATEICON )
    {
       item = lvhti.iItem + 1;
@@ -6421,7 +6425,7 @@ HB_FUNC( LISTVIEW_HITONCHECKBOX )
    {
       item = 0;
    }
-   
+
    hb_retni( item );
 }
 

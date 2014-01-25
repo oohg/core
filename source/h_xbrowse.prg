@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.107 2014-01-23 00:05:42 guerra000 Exp $
+ * $Id: h_xbrowse.prg,v 1.108 2014-01-25 01:23:22 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -564,6 +564,8 @@ Local cType := ValType( uValue )
       uValue := IIF( uValue, ".T.", ".F." )
    ElseIf cType == "D"
       uValue := Dtoc( uValue )
+   ElseIf cType == "T"
+      uValue := Ttoc( uValue )
    ElseIf cType == "M"
       uValue := '<Memo>'
    ElseIf cType == "A"

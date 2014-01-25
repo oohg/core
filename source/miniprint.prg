@@ -1,5 +1,5 @@
 /*
- * $Id: miniprint.prg,v 1.42 2013-12-31 18:50:24 guerra000 Exp $
+ * $Id: miniprint.prg,v 1.43 2014-01-25 01:23:22 guerra000 Exp $
  */
 /*----------------------------------------------------------------------------
  MINIGUI - Harbour Win32 GUI library source code
@@ -1132,6 +1132,8 @@ PROCEDURE _HMG_PRINTER_H_Print( nHdc, nRow, nCol, cFontName, nFontSize, nColor1,
       cText := DtoC( cText )
    Elseif ValType( cText ) == "L"
       cText := If( cText == .T., _HMG_PRINTER_UserMessages [24], _HMG_PRINTER_UserMessages [25] )
+   Elseif ValType( cText ) == "T"
+      cText := TtoC( cText )
    Elseif ValType( cText ) == "A"
       RETURN
    Elseif ValType( cText ) == "B"
@@ -1164,6 +1166,8 @@ PROCEDURE _HMG_PRINTER_H_MultiLine_Print( nHdc, nRow, nCol, nToRow, nToCol, cFon
       cText := DtoC( cText )
    Elseif ValType( cText ) == "L"
       cText := If( cText == .T., _HMG_PRINTER_UserMessages [24], _HMG_PRINTER_UserMessages [25] )
+   Elseif ValType( cText ) == "T"
+      cText := TtoC( cText )
    Elseif ValType( cText ) == "A"
       RETURN
    Elseif ValType( cText ) == "B"
