@@ -1,11 +1,17 @@
 /*
- * $Id: ChangeLog,v 1.1215 2014-01-25 01:23:19 guerra000 Exp $
+ * $Id: ChangeLog,v 1.1216 2014-01-27 18:54:44 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-01-27 16:54 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_combo.prg
+     ! COMBOBOX control with DISPLAYEDIT clause is not painted
+       properly.
+     ; Thanks to David Field for the solution.
 
 2014-01-24 19:20 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
    * source/h_comm.prg

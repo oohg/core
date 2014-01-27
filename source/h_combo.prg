@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.78 2014-01-20 19:03:51 fyurisich Exp $
+ * $Id: h_combo.prg,v 1.79 2014-01-27 18:54:45 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -271,7 +271,7 @@ Local ControlHandle, WorkArea, uField, nStyle
    ASSIGN ::onListClose   VALUE onListClose              TYPE "B"
 
    ::oListBox := TListCombo():Define( Self, ComboBoxGetListhWnd( ::hWnd ) )
-   ::oEditBox := TEditCombo():Define( Self, ComboBoxGetEdithWnd( ::hWnd ) )
+   ::oEditBox := TEditCombo():Define( Self, GetWindow( ::hWnd, GW_CHILD ) )
 
 RETURN Self
 
@@ -1420,16 +1420,6 @@ HB_FUNC( COMBOBOXGETLISTHWND )
    SendMessage( HWNDparam( 1 ), CB_GETCOMBOBOXINFO, 0, ( LPARAM ) &info );
 
    HWNDret( info.hwndList );
-}
-
-HB_FUNC( COMBOBOXGETEDITHWND )
-{
-   POINT pt;
-
-   pt.x = 3;
-   pt.y = 3;
-
-   HWNDret( ChildWindowFromPoint( HWNDparam( 1 ), pt ) );
 }
 
 HB_FUNC_STATIC( TCOMBO_ITEMHEIGHT )   // METHOD ItemHeight()
