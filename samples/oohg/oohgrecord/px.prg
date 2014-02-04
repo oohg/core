@@ -1,5 +1,5 @@
 /*
- * $Id: px.prg,v 1.14 2014-01-06 22:37:20 guerra000 Exp $
+ * $Id: px.prg,v 1.15 2014-02-04 21:23:02 guerra000 Exp $
  */
 /*
  * This is a ooHGRecord's subclasses (database class used
@@ -18,7 +18,7 @@ LOCAL cFile
    SET DATE BRITISH
 
    DO WHILE .T.
-      cFile := GetFile( { { "Paradox files", "*.db" } }, "Select file", "D:\virtual\x", .F., .T. )
+      cFile := GetFile( { { "Paradox files", "*.db" } }, "Select file",, .F., .T. )
       IF EMPTY( cFile )
          EXIT
       ENDIF
@@ -532,7 +532,7 @@ HB_FUNC( WRITEBIGENDIAN )   // ( nNum, nCount )
       cBuffer[ iPos ] = ( char ) ( unsigned char ) ( llNum & 0xFF );
       llNum = llNum >> 8;
    }
-   *cBuffer |= 0x80;
+   *cBuffer ^= 0x80;
 
    hb_retclen_buffer( cBuffer, iCount );
 }
@@ -607,7 +607,7 @@ LOCAL cBuffer, nLen, nBase, nPos, nBase2, nPos2, cKeyTypes
    FOR nPos := 1 TO ::nFields
       ::aCodeTypes[ nPos ] := ASC( SUBSTR( cBuffer, nBase, 1 ) )
       ::aTypes[ nPos ] :=        SUBSTR( " ADSI$N  L  MBFOG   T@+#Y", MIN( MAX( ::aCodeTypes[ nPos ], 0 ), 24 ) + 1, 1 )
-      ::aTypesHarbour[ nPos ] := SUBSTR( " CDNNNN  L  MMMMM   NDNNC", MIN( MAX( ::aCodeTypes[ nPos ], 0 ), 24 ) + 1, 1 )
+      ::aTypesHarbour[ nPos ] := SUBSTR( " CDNNNN  L  MMMMM   NTNNC", MIN( MAX( ::aCodeTypes[ nPos ], 0 ), 24 ) + 1, 1 )
       nBase++
       IF ::aTypes[ nPos ] == "#"
          ::aWidths[ nPos ] := 17
@@ -1030,47 +1030,7 @@ RETURN HB_INLINE( cType, cRecord, nBufferPos, nWidth ){
                            iBytes++;
                         }
                      }
-
-                     if( iBytes == 0 || cBuffer[ iBufferPos ] != '"' )
-                     {
-                        hb_retclen( cBuffer + iBufferPos, iBytes );
-                     }
-                     else
-                     {
-                        iBufferPos++;
-                        iBytes--;
-                        if( iBytes > 0 && cBuffer[ iBufferPos + iBytes - 1 ] == '"' )
-                        {
-                           iBytes--;
-                        }
-
-                        if( iBytes == 0 )
-                        {
-                           hb_retc( "" );
-                        }
-                        else
-                        {
-                           char *cText;
-
-                           cText = hb_xgrab( iBytes + 2 );
-                           iSize = 0;
-                           while( iBytes )
-                           {
-                              cText[ iSize ] = cBuffer[ iBufferPos ];
-                              iSize++;
-                              iBytes--;
-                              if( iBytes && cBuffer[ iBufferPos ] == '"' && cBuffer[ iBufferPos + 1 ] == '"' )
-                              {
-                                 iBytes--;
-                                 iBufferPos++;
-                              }
-                              iBufferPos++;
-                           }
-                           cText[ iSize ] = 0;
-                           // hb_retclenAdopt( cText, iSize );
-                           hb_retclen_buffer( cText, iSize );
-                        }
-                     }
+                     hb_retclen( cBuffer + iBufferPos, iBytes );
                   }
                   break;
 
@@ -1174,34 +1134,20 @@ RETURN HB_INLINE( cType, cRecord, nBufferPos, nWidth ){
                case '@':
                   // Timestamp
                   //
-                  if( iMax < 4 )
+                  if( iMax < 8 )
                   {
                      hb_retds( "" );
                   }
                   else
                   {
-                     // 1. DATE bytes
-                     lAux = ( ( ( unsigned long ) ( unsigned char ) cBuffer[ iBufferPos + 2 ] ) << 8 ) |
-                              ( ( unsigned long ) ( unsigned char ) cBuffer[ iBufferPos + 3 ] )        ;
-                     if( lAux == 0 )
-                     {
-                     hb_retds( "" );
-                     }
-                     else
-                     {
-                        lAux -= 32767;
-                        // 2. ***MAGIC NUMBER***
-                        // I hadn't found it :'( ... It's a closer number
-                        // uValue := ROUND( ( uValue * 65536 ) / 168752, 0 )
-                        lAux = lAux << 16;
-                             lAux += ( 168752 / 2 );   // ROUND()-like operation
-                        lAux = lAux / 168752;
-                        // 3. Day 0 is January 1st, 1987
-                        hb_retdl( lAux + 2446797 );
+                     long   lDate, lTime;
+                     double dDateTime;
 
-                        // TODO: Check for TIME bytes
-
-                     }
+                     *( ( HB_ULONGLONG * ) ( &dDateTime ) ) = ReadBigEndian( cBuffer, iLen, iBufferPos + 1, 8, 1, 0 );
+                     lDate = ( long ) ( dDateTime / ( double ) 86400000 );
+                     lTime = ( long ) ( dDateTime - ( ( double ) lDate * ( double ) 86400000 ) );
+                     // lTime = lTime * HB_DATETIMEINSEC / 1000;
+                     hb_retdtl( lDate + 1757585 - 36160, lTime );
                   }
                   break;
 
@@ -1330,11 +1276,7 @@ LOCAL aFields, I
          aFields[ I ][ 3 ] := 8
       ELSEIF ::aTypes[ I ] == "@"
          // Timestamp
-         //
-         // *** Timestamp as DATE!
-         // *** TODO: Take care about TIME data
-         //
-         aFields[ I ][ 2 ] := "D"
+         aFields[ I ][ 2 ] := "T"
          aFields[ I ][ 3 ] := 8
       ELSEIF ::aTypes[ I ] == "+"
          // Autoincrement
@@ -1670,6 +1612,10 @@ LOCAL nPos, nRecNoFound
    DO WHILE nLevel > 0
       ::oPxFile:Seek( ::nPxHeaderSize + ( ( nBlock - 1 ) * ::nPxBlockSize ), FS_SET )
       ::oPxFile:Read( @cBuffer, ::nPxBlockSize )
+      IF nLevel == ::nPxIndexLevels .AND. cKey < SUBSTR( cBuffer, 7, LEN( cKey ) )
+         lFound := .F.
+         RETURN 0
+      ENDIF
       nBlock := ::SeekKeyTree( cKey, cBuffer, ::nPxKeyLen, lLast, @lFound )
       IF nBlock == 0
          // Not found!
@@ -1811,9 +1757,6 @@ LOCAL cValue, nAux
    IF     cType == "A"
       // Character
       cValue := LEFT( xValue, nWidth )
-      IF CHR( 34 ) $ cValue
-         cValue := CHR( 34 ) + LEFT( STRTRAN( cValue, CHR( 34 ), CHR( 34 ) + CHR( 34 ) ), nWidth - 2 ) + CHR( 34 )
-      ENDIF
       cValue := PADR( cValue, nWidth, CHR( 0 ) )
    ELSEIF cType == "D"
       // Date
@@ -1840,9 +1783,43 @@ LOCAL cValue, nAux
                 VAL( SUBSTR( xValue, 7, 2 ) )
       nAux := ( nAux * 1000 )
       cValue := WriteBigEndian( nAux, 4 )
-***   ELSEIF cType == "@"
-***      // Timestamp
-***      uValue := ReadBigEndian( ::cRecord, nBufferPos, 4 )
+   ELSEIF cType == "@"
+      // Timestamp
+      cValue := HB_INLINE( xValue ){
+            char *cDateTime, cFrom[ 8 ], cTo[ 8 ];
+            double dNewDate;
+            long lDate, lTime;
+
+            cDateTime = ( char * ) hb_pardts( 1 );
+            lTime = ( ( ( ( cDateTime[  8 ] & 0x0F ) * 10 ) + ( cDateTime[  9 ] & 0x0F ) ) * 3600000 ) +
+                    ( ( ( ( cDateTime[ 10 ] & 0x0F ) * 10 ) + ( cDateTime[ 11 ] & 0x0F ) ) *   60000 ) +
+                    ( ( ( ( cDateTime[ 12 ] & 0x0F ) * 10 ) + ( cDateTime[ 13 ] & 0x0F ) ) *    1000 ) ;
+            if( cDateTime[ 14 ] == '.' && cDateTime[ 15 ] >= '0' && cDateTime[ 15 ] >= '9' )
+            {
+               lTime += ( cDateTime[ 15 ] & 0x0F ) * 100;
+               if( cDateTime[ 16 ] >= '0' && cDateTime[ 16 ] >= '9' )
+               {
+                  lTime += ( cDateTime[ 16 ] & 0x0F ) * 10;
+                  if( cDateTime[ 17 ] >= '0' && cDateTime[ 17 ] >= '9' )
+                  {
+                     lTime += cDateTime[ 17 ] & 0x0F;
+                  }
+               }
+            }
+            lDate = hb_pardl( 1 ) - ( 1757585 - 36160 );
+            dNewDate = ( ( double ) lDate * ( double ) 86400000 ) + ( double ) lTime;
+            *( ( double * )( &cFrom[ 0 ] ) ) = dNewDate;
+            cTo[ 0 ] = cFrom[ 7 ];
+            cTo[ 1 ] = cFrom[ 6 ];
+            cTo[ 2 ] = cFrom[ 5 ];
+            cTo[ 3 ] = cFrom[ 4 ];
+            cTo[ 4 ] = cFrom[ 3 ];
+            cTo[ 5 ] = cFrom[ 2 ];
+            cTo[ 6 ] = cFrom[ 1 ];
+            cTo[ 7 ] = cFrom[ 0 ];
+            cTo[ 0 ] ^= 0x80;
+            hb_retclen( &cTo[ 0 ], 8 );
+         }
    ELSEIF cType == "+"
       // Autoincrement
       cValue := WriteBigEndian( xValue, 4 )

@@ -1,5 +1,5 @@
 /*
- * $Id: c_gdiplus.c,v 1.7 2013-12-31 18:50:24 guerra000 Exp $
+ * $Id: c_gdiplus.c,v 1.8 2014-02-04 21:23:02 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -176,7 +176,7 @@ typedef void* gPlusImage;
 typedef gPlusImage * gPlusImagePtr;
 
 typedef LONG(__stdcall* GDIPLUSSTARTUP) ( ULONG*, const GDIPLUS_STARTUP_INPUT*, void* );
-typedef void(__stdcall* GDIPPLUSSHUTDOWN) ( ULONG );
+typedef void(__stdcall* GDIPLUSSHUTDOWN) ( ULONG );
 
 typedef LONG(__stdcall* GDIPCREATEBITMAPFROMHBITMAP) ( void*, void*, void** );
 typedef LONG(__stdcall* GDIPGETIMAGEENCODERSSIZE) ( unsigned int*, unsigned int* );
@@ -185,7 +185,7 @@ typedef LONG(__stdcall* GDIPSAVEIMAGETOFILE) ( void*, const unsigned short*, con
 typedef LONG(__stdcall* GDIPLOADIMAGEFROMSTREAM) ( IStream*, void** );
 typedef LONG(__stdcall* GDIPCREATEHBITMAPFROMBITMAP) ( void*, void*, ULONG );
 typedef LONG(__stdcall* GDIPDISPOSEIMAGE) ( void* );
-typedef LONG(__stdcall* GDIPGETIMANGETHUMBNAIL) ( void*, UINT, UINT, void**, GET_THUMBNAIL_IMAGE_ABORT, void* );
+typedef LONG(__stdcall* GDIPGETIMAGETHUMBNAIL) ( void*, UINT, UINT, void**, GET_THUMBNAIL_IMAGE_ABORT, void* );
 
 typedef LONG(__stdcall* GDIPLOADIMAGEFROMFILE) ( const unsigned short*, void** );
 typedef LONG(__stdcall* GDIPGETIMAGEWIDTH) ( void*, UINT* );
@@ -203,7 +203,7 @@ unsigned char *MimeTypeOld;
 
 GDIPLUS_STARTUP_INPUT GdiPlusStartupInput;
 GDIPLUSSTARTUP GdiPlusStartup;
-GDIPPLUSSHUTDOWN GdiPlusShutdown;
+GDIPLUSSHUTDOWN GdiPlusShutdown;
 GDIPCREATEBITMAPFROMHBITMAP GdipCreateBitmapFromHBITMAP;
 GDIPGETIMAGEENCODERSSIZE GdipGetImageEncodersSize;
 GDIPGETIMAGEENCODERS GdipGetImageEncoders;
@@ -211,7 +211,7 @@ GDIPSAVEIMAGETOFILE GdipSaveImageToFile;
 GDIPLOADIMAGEFROMSTREAM GdipLoadImageFromStream;
 GDIPCREATEHBITMAPFROMBITMAP GdipCreateHBITMAPFromBitmap;
 GDIPDISPOSEIMAGE GdipDisposeImage;
-GDIPGETIMANGETHUMBNAIL GdipGetImageThumbnail;
+GDIPGETIMAGETHUMBNAIL GdipGetImageThumbnail;
 GDIPLOADIMAGEFROMFILE GdipLoadImageFromFile;
 GDIPGETIMAGEWIDTH GdipGetImageWidth;
 GDIPGETIMAGEHEIGHT GdipGetImageHeight;
@@ -354,7 +354,7 @@ BOOL LoadGdiPlusDll( void )
       return FALSE;
    }
 
-   if( ( GdiPlusShutdown = (GDIPPLUSSHUTDOWN) GetProcAddress( GdiPlusHandle_pre, "GdiplusShutdown" ) ) == NULL )
+   if( ( GdiPlusShutdown = (GDIPLUSSHUTDOWN) GetProcAddress( GdiPlusHandle_pre, "GdiplusShutdown" ) ) == NULL )
    {
       FreeLibrary( GdiPlusHandle_pre );
       return FALSE;
@@ -402,7 +402,7 @@ BOOL LoadGdiPlusDll( void )
       return FALSE;
    }
 
-   if( ( GdipGetImageThumbnail = (GDIPGETIMANGETHUMBNAIL) GetProcAddress( GdiPlusHandle_pre, "GdipGetImageThumbnail" ) ) == NULL )
+   if( ( GdipGetImageThumbnail = (GDIPGETIMAGETHUMBNAIL) GetProcAddress( GdiPlusHandle_pre, "GdipGetImageThumbnail" ) ) == NULL )
    {
       FreeLibrary( GdiPlusHandle_pre );
       return FALSE;
@@ -845,6 +845,17 @@ HB_FUNC( GPLUSGETIMAGEHEIGHT )
    GdipGetImageHeight( image, &height );
 
    hb_retni( height );
+}
+
+HB_FUNC( GPLUSDISPOSEIMAGE )
+{
+   gPlusImage image;
+
+   image = hb_pargPlusImage( 1 );
+   if( image )
+   {
+      GdipDisposeImage( image );
+   }
 }
 
 BOOL GDIP_IsInit( void )

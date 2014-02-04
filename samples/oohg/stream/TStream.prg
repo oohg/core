@@ -1,5 +1,5 @@
 /*
- * $Id: TStream.prg,v 1.3 2013-10-04 23:11:39 guerra000 Exp $
+ * $Id: TStream.prg,v 1.4 2014-02-04 21:23:02 guerra000 Exp $
  */
 /*
  * Data stream management class.
@@ -132,11 +132,17 @@ METHOD Fill() CLASS TStreamBase
 RETURN nil
 
 METHOD Len() CLASS TStreamBase
+   IF ::lAutoFill .OR. ( ::nMinToFill > 0 .AND. ::nLen < ::nMinToFill )
+      ::Fill()
+   ENDIF
 RETURN IIF( ! EMPTY( ::pBuffer ), ::nLen, 0 )
 
 METHOD Left( nCount ) CLASS TStreamBase
 LOCAL cBuffer
    IF ! EMPTY( ::pBuffer )
+      IF ::lAutoFill .OR. ( ::nMinToFill > 0 .AND. ::nLen < ::nMinToFill )
+         ::Fill()
+      ENDIF
       IF ! HB_ISNUMERIC( nCount )
          nCount := ::nLen
       ENDIF
@@ -150,6 +156,9 @@ RETURN cBuffer
 METHOD Right( nCount ) CLASS TStreamBase
 LOCAL cBuffer
    IF ! EMPTY( ::pBuffer )
+      IF ::lAutoFill .OR. ( ::nMinToFill > 0 .AND. ::nLen < ::nMinToFill )
+         ::Fill()
+      ENDIF
       IF ! HB_ISNUMERIC( nCount )
          nCount := ::nLen
       ENDIF
@@ -163,6 +172,9 @@ RETURN cBuffer
 METHOD SubStr( nPos, nCount ) CLASS TStreamBase
 LOCAL cBuffer
    IF ! EMPTY( ::pBuffer )
+      IF ::lAutoFill .OR. ( ::nMinToFill > 0 .AND. ::nLen < ::nMinToFill )
+         ::Fill()
+      ENDIF
       IF ! HB_ISNUMERIC( nPos )
          nPos := 1
       ENDIF
@@ -186,7 +198,7 @@ METHOD Skip( nCount ) CLASS TStreamBase
    IF ! HB_IsNumeric( nCount ) .OR. nCount < 0
       nCount := 0
    ENDIF
-   IF nCount == 0 .AND. ::lAutoFill
+   IF nCount == 0 .AND. ( ::lAutoFill .OR. ( ::nMinToFill > 0 .AND. ::nLen < ::nMinToFill ) )
       ::Fill()
    ENDIF
    DO WHILE nCount > 0 .AND. ::IsActive()

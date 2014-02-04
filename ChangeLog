@@ -1,11 +1,25 @@
 /*
- * $Id: ChangeLog,v 1.1216 2014-01-27 18:54:44 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1217 2014-02-04 21:23:00 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-02-04 15:19 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+   * samples/oohg/oohgrecord/px.prg
+     ! Fixed (again!) sign change on WriteBigEndian() function.
+     - Removed hack for change double-quotation marks on
+       string fields (BDE doesn't works so).
+     ! Fixed ::Seek(,.T.) when key is lower than first record.
+     ! Corrected DateTime processing.
+   * samples/oohg/stream/TStream.prg
+     ! Added autofill functionality to ::Len(), ::Left(), ::Right(),
+       ::Substr() and ::Skip() methods.
+   * source/c_cdiplus.c
+     + Added PRG level GPlusDisposeImage (GdipDisposeImage) function.
+     ! GDIPPLUSSHUTDOWN and GDIPGETIMANGETHUMBNAIL typos corrected.
 
 2014-01-27 16:54 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_combo.prg
