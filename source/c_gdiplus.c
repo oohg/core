@@ -1,5 +1,5 @@
 /*
- * $Id: c_gdiplus.c,v 1.9 2014-02-09 23:49:43 guerra000 Exp $
+ * $Id: c_gdiplus.c,v 1.10 2014-02-09 23:53:52 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -817,6 +817,7 @@ HB_FUNC( GPLUSLOADIMAGEFROMBUFFER )
    gPlusImage gImage;
    IStream *iStream;
    HGLOBAL hGlobal;
+   LONG lResult;
    int iSize;
 
    lResult = 0;
