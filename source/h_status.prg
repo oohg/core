@@ -1,5 +1,5 @@
 /*
- * $Id: h_status.prg,v 1.41 2013-03-05 23:24:38 fyurisich Exp $
+ * $Id: h_status.prg,v 1.42 2014-02-09 23:49:43 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -100,6 +100,8 @@ STATIC _OOHG_ActiveMessageBar := Nil
 CLASS TMessageBar FROM TControl
    DATA Type        INIT "MESSAGEBAR" READONLY
    DATA aClicks     INIT Nil
+   DATA aRClicks    INIT Nil
+   DATA aDblClicks  INIT Nil
    DATA aWidths     INIT Nil
    DATA lAutoAdjust INIT .T.
    DATA lTop        INIT .F.
@@ -118,6 +120,9 @@ CLASS TMessageBar FROM TControl
    METHOD ItemCount                      BLOCK { |Self| GetItemCount( ::hWnd ) }
    METHOD ItemToolTip
    METHOD ItemIcon
+   METHOD ItemClick
+   METHOD ItemRClick
+   METHOD ItemDblClick
    METHOD ClientHeightUsed               BLOCK { |Self| GetWindowHeight( ::hWnd ) * IF( ::lTop, 1, -1 ) }
    METHOD MinHeight                      SETGET
    METHOD BackColor                      SETGET
@@ -150,6 +155,8 @@ Local ControlHandle
    ASSIGN ::lTop        VALUE lTop TYPE "L"
 
    ::aClicks := {}
+   ::aRClicks := {}
+   ::aDblClicks := {}
    ::aWidths := {}
 
    ::SetForm( ControlName, ParentForm, FontName, nFontSize )
@@ -229,6 +236,10 @@ Local styl, nItem, i, nRep
    ASIZE( ::aClicks, nItem )
    ::aClicks[ nItem ] := action
 
+   ASIZE( ::aRClicks, nItem )
+
+   ASIZE( ::aDblClicks, nItem )
+
    ASIZE( ::aWidths, nItem )
    ::aWidths[ nItem ] := Width
 
@@ -238,7 +249,7 @@ Local styl, nItem, i, nRep
    i := At( "&", Caption )
    If i > 0 .AND. i < LEN( Caption )
       DEFINE HOTKEY 0 PARENT ( Self ) KEY "ALT+" + SubStr( Caption, i + 1, 1 ) ACTION ::DoEvent( ::aClicks[ nItem ], "CLICK" )
- EndIf
+   EndIf
 
 Return nItem
 
@@ -304,6 +315,51 @@ Return GetItemToolTip( ::hWnd, nItem - 1 )
 METHOD ItemIcon( nItem, cIcon ) CLASS TMessageBar
 *-----------------------------------------------------------------------------*
 Return SetStatusItemIcon( ::hWnd, nItem, cIcon )
+
+*-----------------------------------------------------------------------------*
+METHOD ItemClick( nItem, bAction ) CLASS TMessageBar
+*-----------------------------------------------------------------------------*
+   IF nItem >= 1 .AND. nItem <= LEN( ::aClicks )
+      IF PCOUNT() >= 2
+         IF ! HB_IsBlock( bAction )
+            bAction := NIL
+         ENDIF
+         ::aClicks[ nItem ] := bAction
+      ELSE
+         bAction := ::aClicks[ nItem ]
+      ENDIF
+   ENDIF
+Return bAction
+
+*-----------------------------------------------------------------------------*
+METHOD ItemRClick( nItem, bAction ) CLASS TMessageBar
+*-----------------------------------------------------------------------------*
+   IF nItem >= 1 .AND. nItem <= LEN( ::aRClicks )
+      IF PCOUNT() >= 2
+         IF ! HB_IsBlock( bAction )
+            bAction := NIL
+         ENDIF
+         ::aRClicks[ nItem ] := bAction
+      ELSE
+         bAction := ::aRClicks[ nItem ]
+      ENDIF
+   ENDIF
+Return bAction
+
+*-----------------------------------------------------------------------------*
+METHOD ItemDblClick( nItem, bAction ) CLASS TMessageBar
+*-----------------------------------------------------------------------------*
+   IF nItem >= 1 .AND. nItem <= LEN( ::aDblClicks )
+      IF PCOUNT() >= 2
+         IF ! HB_IsBlock( bAction )
+            bAction := NIL
+         ENDIF
+         ::aDblClicks[ nItem ] := bAction
+      ELSE
+         bAction := ::aDblClicks[ nItem ]
+      ENDIF
+   ENDIF
+Return bAction
 
 *-----------------------------------------------------------------------------*
 METHOD SetClock( Width, ToolTip, action, lAmPm, icon, cstyl, cAlign ) CLASS TMessageBar
@@ -407,6 +463,22 @@ Local x
       x := GetItemPos( lParam ) + 1
       if x > 0 .AND. x <= Len( ::aClicks )
          if ::DoEvent( ::aClicks[ x ], "CLICK" )
+            Return Nil
+         EndIf
+      EndIf
+   ElseIf nNotify == NM_RCLICK
+      DefWindowProc( ::hWnd, NM_RCLICK, wParam, lParam )
+      x := GetItemPos( lParam ) + 1
+      if x > 0 .AND. x <= Len( ::aRClicks )
+         if ::DoEvent( ::aRClicks[ x ], "RCLICK" )
+            Return Nil
+         EndIf
+      EndIf
+   ElseIf nNotify == NM_DBLCLK
+      DefWindowProc( ::hWnd, NM_DBLCLK, wParam, lParam )
+      x := GetItemPos( lParam ) + 1
+      if x > 0 .AND. x <= Len( ::aDblClicks )
+         if ::DoEvent( ::aDblClicks[ x ], "DBLCLICK" )
             Return Nil
          EndIf
       EndIf

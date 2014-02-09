@@ -1,11 +1,22 @@
 /*
- * $Id: ChangeLog,v 1.1217 2014-02-04 21:23:00 guerra000 Exp $
+ * $Id: ChangeLog,v 1.1218 2014-02-09 23:49:43 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-02-09 17:48 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+   * source/h_status.prg
+     + Right-click and double-click events added.
+     + ::ItemClick() method added for set/get click action.
+     + ::ItemRClick() method added for set/get right-click action.
+     + ::ItemDblClick() method added for set/get double-click action.
+   * source/c_cdiplus.c
+     + Added PRG level GPlusDisposeImage (GdipDisposeImage) function.
+   * source/c_cdiplus.c
+     + GPlusLoadImageFromBuffer() function added.
 
 2014-02-04 15:19 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
    * samples/oohg/oohgrecord/px.prg

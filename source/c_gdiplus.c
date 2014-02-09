@@ -1,5 +1,5 @@
 /*
- * $Id: c_gdiplus.c,v 1.8 2014-02-04 21:23:02 guerra000 Exp $
+ * $Id: c_gdiplus.c,v 1.9 2014-02-09 23:49:43 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -93,7 +93,7 @@
 /*
  * This source file is based on the hbGdiPlus library source
  * Copyright 2007 P.Chornyj <myorg63@mail.ru>
- * 
+ *
  */
 
 #include <windows.h>
@@ -786,15 +786,15 @@ Load an image from a file
 */
 HB_FUNC( GPLUSLOADIMAGEFROMFILE )
 {
-   gPlusImage image;
+   gPlusImage gImage;
 
-   if( LoadImageFromFile( hb_parc( 1 ), &image ) == 0 )
-      hb_retgPlusImage( image );
+   if( LoadImageFromFile( hb_parc( 1 ), &gImage ) == 0 )
+      hb_retgPlusImage( gImage );
    else
-      hb_ret( );
+      hb_ret();
 }
 
-LONG LoadImageFromFile( const char *FileName, gPlusImagePtr image )
+LONG LoadImageFromFile( const char *FileName, gPlusImagePtr gImage )
 {
    LPWSTR WFileName;
    LONG result;
@@ -805,11 +805,44 @@ LONG LoadImageFromFile( const char *FileName, gPlusImagePtr image )
 
    MultiByteToWideChar( CP_ACP, 0, FileName, -1, WFileName, ( strlen( FileName )*sizeof( WCHAR ) ) - 1 );
 
-   result = GdipLoadImageFromFile( WFileName, image );
+   result = GdipLoadImageFromFile( WFileName, gImage );
 
    LocalFree( WFileName );
 
    return result;
+}
+
+HB_FUNC( GPLUSLOADIMAGEFROMBUFFER )
+{
+   gPlusImage gImage;
+   IStream *iStream;
+   HGLOBAL hGlobal;
+   int iSize;
+
+   lResult = 0;
+
+   iSize = hb_parclen( 1 );
+   if( iSize )
+   {
+      hGlobal = GlobalAlloc( GPTR, iSize );
+   }
+   if( hGlobal )
+   {
+      memcpy( hGlobal, hb_parc( 1 ), iSize );
+      CreateStreamOnHGlobal( hGlobal, FALSE, &iStream );
+      lResult = GdipLoadImageFromStream( iStream, &gImage );
+      iStream->lpVtbl->Release( iStream );
+      GlobalFree( hGlobal );
+   }
+
+   if( lResult )
+   {
+      hb_retgPlusImage( gImage );
+   }
+   else
+   {
+      hb_ret();
+   }
 }
 
 /*
