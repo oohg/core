@@ -1,11 +1,15 @@
 /*
- * $Id: ChangeLog,v 1.1219 2014-02-09 23:53:52 guerra000 Exp $
+ * $Id: ChangeLog,v 1.1220 2014-02-10 00:09:55 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-02-09 22:09 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * source/c_cdiplus.c
+     + Added hGlobal initialization to avoid MinGW warning.
 
 2014-02-09 17:52 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
    * source/c_cdiplus.c
