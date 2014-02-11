@@ -1,5 +1,5 @@
 /*
- * $Id: h_status.prg,v 1.42 2014-02-09 23:49:43 guerra000 Exp $
+ * $Id: h_status.prg,v 1.43 2014-02-11 05:16:59 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -195,6 +195,8 @@ Local ControlHandle
    ::ContainerhWndValue := ::hWnd
 
    ASSIGN ::OnClick     VALUE ProcedureName TYPE "B"
+
+   ::nWidth := GetWindowWidth( ::hWnd )
 
 Return Self
 
@@ -488,6 +490,13 @@ Return ::Super:Events_Notify( wParam, lParam )
 *-----------------------------------------------------------------------------*
 METHOD Events_Size() CLASS TMessageBar
 *-----------------------------------------------------------------------------*
+LOCAL nWidth, nOldWidth
+   nWidth := GetWindowWidth( ::hWnd )
+   IF ! ::nWidth == nWidth
+      nOldWidth := ::nWidth
+      ::nWidth := nWidth
+      AEVAL( ::aControls, { |o| o:AdjustAnchor( 0, nWidth - nOldWidth ) } )
+   ENDIF
    ::RefreshData()
    AEVAL( ::aControls, { |o| o:Events_Size() } )
 Return ::Super:Events_Size()

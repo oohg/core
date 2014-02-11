@@ -1,5 +1,5 @@
 /*
- * $Id: h_picture.prg,v 1.11 2013-07-03 01:44:52 migsoft Exp $
+ * $Id: h_picture.prg,v 1.12 2014-02-11 05:16:59 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -77,6 +77,9 @@ CLASS TPicture FROM TControl
    METHOD Rotate        SETGET
    METHOD OnClick       SETGET
 
+   METHOD HorizontalScroll    SETGET
+   METHOD VerticalScroll      SETGET
+
    METHOD Events
    METHOD nDegree       SETGET
    METHOD Redraw
@@ -128,7 +131,7 @@ Local ControlHandle, nStyle, nStyleEx
 Return Self
 
 *-----------------------------------------------------------------------------*
-METHOD Picture( cPicture ) CLASS TPicture
+METHOD Picture( cPicture, lNoRepaint ) CLASS TPicture
 *-----------------------------------------------------------------------------*
 LOCAL nAttrib
    IF VALTYPE( cPicture ) $ "CM"
@@ -139,45 +142,55 @@ LOCAL nAttrib
       //    nAttrib += LR_LOADMAP3DCOLORS + LR_LOADTRANSPARENT
       // ENDIF
       ::hImage := _OOHG_BitmapFromFile( Self, cPicture, nAttrib, .F. )
-      ::RePaint()
-   ENDIF
+      If ! HB_IsLogical( lNoRepaint ) .OR. ! lNoRepaint
+         ::RePaint()
+      EndIf
+   EndIf
 Return ::cPicture
 
 *-----------------------------------------------------------------------------*
-METHOD HBitMap( hBitMap ) CLASS TPicture
+METHOD HBitMap( hBitMap, lNoRepaint ) CLASS TPicture
 *-----------------------------------------------------------------------------*
    If ValType( hBitMap ) $ "NP"
       DeleteObject( ::hImage )
       ::hImage := hBitMap
-      ::RePaint()
+      If ! HB_IsLogical( lNoRepaint ) .OR. ! lNoRepaint
+         ::RePaint()
+      EndIf
    EndIf
 Return ::hImage
 
 *-----------------------------------------------------------------------------*
-METHOD Buffer( cBuffer ) CLASS TPicture
+METHOD Buffer( cBuffer, lNoRepaint ) CLASS TPicture
 *-----------------------------------------------------------------------------*
    If VALTYPE( cBuffer ) $ "CM"
       DeleteObject( ::hImage )
       ::hImage := _OOHG_BitmapFromBuffer( Self, cBuffer, .F. )
-      ::RePaint()
+      If ! HB_IsLogical( lNoRepaint ) .OR. ! lNoRepaint
+         ::RePaint()
+      EndIf
    EndIf
 Return nil
 
 *-----------------------------------------------------------------------------*
-METHOD Zoom( nZoom ) CLASS TPicture
+METHOD Zoom( nZoom, lNoRepaint ) CLASS TPicture
 *-----------------------------------------------------------------------------*
    If HB_IsNumeric( nZoom )
       ::nZoom := nZoom
-      ::RePaint()
+      If ! HB_IsLogical( lNoRepaint ) .OR. ! lNoRepaint
+         ::RePaint()
+      EndIf
    EndIf
 Return ::nZoom
 
 *-----------------------------------------------------------------------------*
-METHOD Rotate( nDegree ) CLASS TPicture
+METHOD Rotate( nDegree, lNoRepaint ) CLASS TPicture
 *-----------------------------------------------------------------------------*
    If HB_IsNumeric( nDegree )
       ::nDegree := nDegree
-      ::RePaint()
+      If ! HB_IsLogical( lNoRepaint ) .OR. ! lNoRepaint
+         ::RePaint()
+      EndIf
    EndIf
 Return ::nDegree
 
@@ -242,6 +255,36 @@ METHOD Release() CLASS TPicture
       DeleteObject( ::hImage )
    ENDIF
 RETURN ::Super:Release()
+
+*------------------------------------------------------------------------------*
+METHOD HorizontalScroll( nPosition ) CLASS TPicture
+*------------------------------------------------------------------------------*
+Local nRangeMin, nRangeMax, nPos
+   nPos := GetScrollPos( ::hWnd, SB_HORZ )
+   If HB_IsNumeric( nPosition )
+      nRangeMin := GetScrollRangeMin( ::hWnd, SB_HORZ )
+      nRangeMax := GetScrollRangeMax( ::hWnd, SB_HORZ )
+      If nRangeMin != nRangeMax
+         nPos := MIN( nRangeMax, MAX( nRangeMin, nPosition ) )
+         SetScrollPos( ::hWnd, SB_HORZ, nPos, .T. )
+      EndIf
+   EndIf
+Return nPos
+
+*------------------------------------------------------------------------------*
+METHOD VerticalScroll( nPosition ) CLASS TPicture
+*------------------------------------------------------------------------------*
+Local nRangeMin, nRangeMax, nPos
+   nPos := GetScrollPos( ::hWnd, SB_VERT )
+   If HB_IsNumeric( nPosition )
+      nRangeMin := GetScrollRangeMin( ::hWnd, SB_VERT )
+      nRangeMax := GetScrollRangeMax( ::hWnd, SB_VERT )
+      If nRangeMin != nRangeMax
+         nPos := MIN( nRangeMax, MAX( nRangeMin, nPosition ) )
+         SetScrollPos( ::hWnd, SB_VERT, nPos, .T. )
+      EndIf
+   EndIf
+Return nPos
 
 #pragma BEGINDUMP
 
