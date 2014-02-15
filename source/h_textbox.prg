@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.90 2013-08-02 00:46:12 fyurisich Exp $
+ * $Id: h_textbox.prg,v 1.91 2014-02-15 01:17:23 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -460,7 +460,7 @@ Local lWhen
          If lWhen
             ::xPrevUndo := ::Value
             ::lPrevUndo := .T.
-            
+
             ::lFocused := .T.
 
             If ::nInsertType == 0
@@ -702,7 +702,7 @@ Local aPos, nStart, nEnd, cText
       aPos := ::GetSelection()
       nStart := aPos[ 1 ]
       nEnd := aPos[ 2 ]
-      
+
       /* If some characters are selected or if the insertion point is
        * at the end of line then use control's default behavior.
        * Else, select the next character and invoke default behavior.
@@ -722,7 +722,7 @@ Local aPos, nStart, nEnd, cText
       If ! ::lFocused
          ::SetFocus()
       EndIf
-      ::DoEvent( ::OnClick, "CLICK" )
+      ::DoEventMouseCoords( ::OnClick, "CLICK" )
 
    ElseIf nMsg == WM_KEYDOWN .AND. wParam == VK_INSERT .AND. GetKeyFlagState() == 0
       // Toggle insertion
@@ -1207,10 +1207,10 @@ Local aValidMask := ::ValidMask
 
    ElseIf nMsg == WM_LBUTTONDOWN
       If ::lFocused
-         ::DoEvent( ::OnClick, "CLICK" )
+         ::DoEventMouseCoords( ::OnClick, "CLICK" )
       Else
          ::SetFocus()
-         ::DoEvent( ::OnClick, "CLICK" )
+         ::DoEventMouseCoords( ::OnClick, "CLICK" )
          Return 1
       EndIf
 

@@ -1,5 +1,5 @@
 /*
- * $Id: h_status.prg,v 1.43 2014-02-11 05:16:59 guerra000 Exp $
+ * $Id: h_status.prg,v 1.44 2014-02-15 01:17:23 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -464,7 +464,7 @@ Local x
       DefWindowProc( ::hWnd, NM_CLICK, wParam, lParam )
       x := GetItemPos( lParam ) + 1
       if x > 0 .AND. x <= Len( ::aClicks )
-         if ::DoEvent( ::aClicks[ x ], "CLICK" )
+         if ::DoEventMouseCoords( ::aClicks[ x ], "CLICK" )
             Return Nil
          EndIf
       EndIf
@@ -472,7 +472,7 @@ Local x
       DefWindowProc( ::hWnd, NM_RCLICK, wParam, lParam )
       x := GetItemPos( lParam ) + 1
       if x > 0 .AND. x <= Len( ::aRClicks )
-         if ::DoEvent( ::aRClicks[ x ], "RCLICK" )
+         if ::DoEventMouseCoords( ::aRClicks[ x ], "RCLICK" )
             Return Nil
          EndIf
       EndIf
@@ -480,7 +480,7 @@ Local x
       DefWindowProc( ::hWnd, NM_DBLCLK, wParam, lParam )
       x := GetItemPos( lParam ) + 1
       if x > 0 .AND. x <= Len( ::aDblClicks )
-         if ::DoEvent( ::aDblClicks[ x ], "DBLCLICK" )
+         if ::DoEventMouseCoords( ::aDblClicks[ x ], "DBLCLICK" )
             Return Nil
          EndIf
       EndIf

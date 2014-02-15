@@ -1,5 +1,5 @@
 /*
- * $Id: h_radio.prg,v 1.35 2013-07-13 02:51:56 fyurisich Exp $
+ * $Id: h_radio.prg,v 1.36 2014-02-15 01:17:23 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -172,7 +172,7 @@ Local i, oItem, uToolTip
    ::AutoSize := autosize
 
    ::aOptions := {}
-   
+
    x := ::Col
    y := ::Row
    For i = 1 to len( aOptions )
@@ -480,16 +480,16 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TRadioItem
 *-----------------------------------------------------------------------------*
    If nMsg == WM_LBUTTONDBLCLK
       If HB_IsBlock( ::OnDblClick )
-         ::DoEvent( ::OnDblClick, "DBLCLICK" )
+         ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
       ElseIf ! ::Container == NIL
-         ::Container:DoEvent( ::Container:OnDblClick, "DBLCLICK" )
+         ::Container:DoEventMouseCoords( ::Container:OnDblClick, "DBLCLICK" )
       EndIf
       Return nil
    ElseIf nMsg == WM_RBUTTONUP
       If HB_IsBlock( ::OnRClick )
-         ::DoEvent( ::OnRClick, "RCLICK" )
+         ::DoEventMouseCoords( ::OnRClick, "RCLICK" )
       ElseIf ! ::Container == NIL
-         ::Container:DoEvent( ::Container:OnRClick, "RCLICK" )
+         ::Container:DoEventMouseCoords( ::Container:OnRClick, "RCLICK" )
       EndIf
       Return nil
    EndIf

@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.108 2014-01-25 01:23:22 guerra000 Exp $
+ * $Id: h_xbrowse.prg,v 1.109 2014-02-15 01:17:23 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1045,7 +1045,7 @@ Local nvKey, lGo
       If HB_IsBlock( ::OnClick )
          If ! ::NestedClick
             ::NestedClick := ! _OOHG_NestedSameEvent()
-            ::DoEvent( ::OnClick, "CLICK" )
+            ::DoEventMouseCoords( ::OnClick, "CLICK" )
             ::NestedClick := .F.
          EndIf
       EndIf

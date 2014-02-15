@@ -1,5 +1,5 @@
 /*
- * $Id: h_richeditbox.prg,v 1.28 2013-10-17 19:51:10 fyurisich Exp $
+ * $Id: h_richeditbox.prg,v 1.29 2014-02-15 01:17:23 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -529,7 +529,7 @@ Local cText
       Return 1
 
    ElseIf nMsg == WM_LBUTTONDBLCLK
-      If ::DoEvent( ::OnDblClick, "DBLCLICK" )
+      If ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
          If ::lDefault
             // Do default action: select word
             Return Nil

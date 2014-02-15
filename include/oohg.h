@@ -1,5 +1,5 @@
 /*
- * $Id: oohg.h,v 1.58 2013-07-10 15:42:28 migsoft Exp $
+ * $Id: oohg.h,v 1.59 2014-02-15 01:17:22 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -114,7 +114,8 @@ extern PHB_ITEM GetFormObjectByHandle( HWND hWnd );
 extern PHB_ITEM GetControlObjectByHandle( HWND hWnd );
 extern PHB_ITEM GetControlObjectById( LONG lId, HWND hWnd );
 extern void _OOHG_Send( PHB_ITEM pSelf, int iSymbol );
-void _OOHG_DoEvent( PHB_ITEM pSelf, int iSymbol, char * cType, PHB_ITEM pArray );
+void _OOHG_DoEvent( PHB_ITEM pSelf, int iSymbol, char* cType, PHB_ITEM pArray );
+void _OOHG_DoEventMouseCoords( PHB_ITEM pSelf, int iSymbol, char* cType, LPARAM lParam );
 LRESULT APIENTRY _OOHG_WndProcCtrl( HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM lParam, WNDPROC lpfnOldWndProc );
 extern int GetKeyFlagState( void );
 POCTRL _OOHG_GetControlInfo( PHB_ITEM pSelf );

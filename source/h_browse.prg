@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.133 2013-12-02 23:01:45 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.134 2014-02-15 01:17:23 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -141,7 +141,7 @@ CLASS TOBrowse FROM TXBrowse
    MESSAGE GoTop        METHOD Home
    MESSAGE GoBottom     METHOD End
    METHOD SetScrollPos
-   
+
    MESSAGE EditGrid     METHOD EditAllCells
 ENDCLASS
 
@@ -1025,7 +1025,7 @@ Local lRet, lRowEdited, lSomethingEdited, _RecNo, lRowAppended, lMoreRecs
             // This is needed in case EditAllCells was called from EditItem_B
             ::DbGoTo( aTail( ::aRecMap ) )
          EndIf
-         
+
          If ::RefreshType == 0
             ::Refresh()
          EndIf
@@ -1496,7 +1496,7 @@ Local nvKey, r, DeltaSelect, lGo
       If HB_IsBlock( ::OnClick )
          If ! ::NestedClick
             ::NestedClick := ! _OOHG_NestedSameEvent()
-            ::DoEvent( ::OnClick, "CLICK" )
+            ::DoEventMouseCoords( ::OnClick, "CLICK" )
             ::NestedClick := .F.
          EndIf
       EndIf

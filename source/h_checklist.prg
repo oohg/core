@@ -1,5 +1,5 @@
 /*
- * $Id: h_checklist.prg,v 1.14 2013-12-02 23:01:45 fyurisich Exp $
+ * $Id: h_checklist.prg,v 1.15 2014-02-15 01:17:23 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -284,11 +284,11 @@ Local nNext
       // ignore double click on checkbox, it was processed as single click
       If ListView_HitOnCheckBox( ::hWnd, GetCursorRow() - GetWindowRow( ::hWnd ), GetCursorCol() - GetWindowCol( ::hWnd ) ) == 0
          If HB_IsBlock( ::OnDblClick )
-            ::DoEvent( ::OnDblClick, "DBLCLICK" )
+            ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
          EndIf
       EndIf
       Return 1
-      
+
    ElseIf nMsg == WM_CONTEXTMENU
       // ignore right click on checkbox
       If ListView_HitOnCheckBox( ::hWnd, GetCursorRow() - GetWindowRow( ::hWnd ), GetCursorCol() - GetWindowCol( ::hWnd ) ) > 0
@@ -309,7 +309,7 @@ Local nNext
       EndIf
       Return 1
    EndIf
-   
+
 Return ::Super:Events( hWnd, nMsg, wParam, lParam )
 
 *-----------------------------------------------------------------------------*
@@ -341,7 +341,7 @@ Local uValue, uRet, nItem
          // skip default action
          Return 1
       EndIf
-      
+
    ElseIf nNotify == LVN_ENDSCROLL
       // There is a bug in ListView under XP that causes the gridlines to be
       // incorrectly scrolled when the left button is clicked to scroll.
@@ -358,7 +358,7 @@ Local uValue, uRet, nItem
          If HB_IsBlock( ::OnClick )
             If ! ::NestedClick
                ::NestedClick := ! _OOHG_NestedSameEvent()
-               ::DoEvent( ::OnClick, "CLICK" )
+               ::DoEventMouseCoords( ::OnClick, "CLICK" )
                ::NestedClick := .F.
             EndIf
          EndIf
@@ -376,7 +376,7 @@ Local uValue, uRet, nItem
          Return 1
       Else
          If HB_IsBlock( ::OnRClick )
-            ::DoEvent( ::OnRClick, "RCLICK" )
+            ::DoEventMouseCoords( ::OnRClick, "RCLICK" )
          EndIf
       EndIf
 
@@ -475,7 +475,7 @@ Local aRow
    If HB_IsLogical( lChecked ) .and. lChecked
       ::CheckItem( ::ItemCount, .T. )
    EndIf
-   
+
 Return ::ItemCount
 
 *-----------------------------------------------------------------------------*
@@ -538,7 +538,7 @@ Local lChanged
    ::Super:DeleteItem( nItem )
 
    ::LastChangedItem := 0
-   
+
    If lChanged
       ::DoChange()
    EndIf

@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.141 2014-01-15 13:27:58 fyurisich Exp $
+ * $Id: h_controlmisc.prg,v 1.142 2014-02-15 01:17:23 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1292,6 +1292,7 @@ CLASS TControl FROM TWindow
    METHOD AddBitMap
 
    METHOD DoEvent
+   METHOD DoEventMouseCoords
    METHOD DoLostFocus
    METHOD DoChange
 
@@ -1801,6 +1802,15 @@ Local lRetVal
 Return lRetVal
 
 *-----------------------------------------------------------------------------*
+METHOD DoEventMouseCoords( bBlock, cEventType ) CLASS TControl
+*-----------------------------------------------------------------------------*
+Local aPos := GetCursorPos()
+   // TODO: Use GetClientRect instead
+   aPos[ 1 ] -= GetWindowRow( ::hWnd )
+   aPos[ 2 ] -= GetWindowCol( ::hWnd )
+Return ::DoEvent( bBlock, cEventType, aPos )
+
+*-----------------------------------------------------------------------------*
 METHOD DoLostFocus() CLASS TControl
 *-----------------------------------------------------------------------------*
 Local uRet := nil, nFocus, oFocus
@@ -1875,43 +1885,43 @@ HB_FUNC_STATIC( TCONTROL_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam
          }
          if( wParam == MK_LBUTTON )
          {
-            _OOHG_DoEvent( pSelf, s_OnMouseDrag, "MOUSEDRAG", NULL );
+            _OOHG_DoEventMouseCoords( pSelf, s_OnMouseDrag, "MOUSEDRAG", lParam );
          }
          else
          {
-            _OOHG_DoEvent( pSelf, s_OnMouseMove, "MOUSEMOVE", NULL );
+            _OOHG_DoEventMouseCoords( pSelf, s_OnMouseMove, "MOUSEMOVE", lParam );
          }
          hb_ret();
          break;
 
       // *** Commented for use current behaviour.
       // case WM_LBUTTONUP:
-      //    _OOHG_DoEvent( pSelf, s_OnClick, "CLICK", NULL );
+      //    _OOHG_DoEventMouseCoords( pSelf, s_OnClick, "CLICK", lParam );
       //    hb_ret();
       //    break;
 
       case WM_LBUTTONDBLCLK:
-         _OOHG_DoEvent( pSelf, s_OnDblClick, "DBLCLICK", NULL );
+         _OOHG_DoEventMouseCoords( pSelf, s_OnDblClick, "DBLCLICK", lParam );
          hb_ret();
          break;
 
       case WM_RBUTTONUP:
-         _OOHG_DoEvent( pSelf, s_OnRClick, "RCLICK", NULL );
+         _OOHG_DoEventMouseCoords( pSelf, s_OnRClick, "RCLICK", lParam );
          hb_ret();
          break;
 
       case WM_RBUTTONDBLCLK:
-         _OOHG_DoEvent( pSelf, s_OnRDblClick, "RDBLCLICK", NULL );
+         _OOHG_DoEventMouseCoords( pSelf, s_OnRDblClick, "RDBLCLICK", lParam );
          hb_ret();
          break;
 
       case WM_MBUTTONUP:
-         _OOHG_DoEvent( pSelf, s_OnMClick, "MCLICK", NULL );
+         _OOHG_DoEventMouseCoords( pSelf, s_OnMClick, "MCLICK", lParam );
          hb_ret();
          break;
 
       case WM_MBUTTONDBLCLK:
-         _OOHG_DoEvent( pSelf, s_OnMDblClick, "MDBLCLICK", NULL );
+         _OOHG_DoEventMouseCoords( pSelf, s_OnMDblClick, "MDBLCLICK", lParam );
          hb_ret();
          break;
 
@@ -2054,7 +2064,7 @@ HB_FUNC( EVENTS_COLOR_INTAB )
          hb_retnl( ( LONG ) GetStockObject( NULL_BRUSH ) );
          return;
       }
-      
+
       lBackColor = ( oSelf->lUseBackColor != -1 ) ? oSelf->lUseBackColor : oSelf->lBackColor;
       if( lBackColor == -1 )
       {
@@ -2079,15 +2089,11 @@ HB_FUNC( EVENTS_COLOR_INTAB )
 METHOD Events_Command( wParam ) CLASS TControl
 *-----------------------------------------------------------------------------*
 Local Hi_wParam := HIWORD( wParam )
-Local aPos
 
    If Hi_wParam == BN_CLICKED .OR. Hi_wParam == STN_CLICKED  // Same value.....
       If ! ::NestedClick
          ::NestedClick := ! _OOHG_NestedSameEvent()
-         aPos := GetCursorPos()
-         aPos[ 1 ] -= GetWindowRow( ::hWnd )
-         aPos[ 2 ] -= GetWindowCol( ::hWnd )
-         ::DoEvent( ::OnClick, "CLICK", aPos )
+         ::DoEventMouseCoords( ::OnClick, "CLICK" )
          ::NestedClick := .F.
       EndIf
 

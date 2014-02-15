@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.79 2014-01-27 18:54:45 fyurisich Exp $
+ * $Id: h_combo.prg,v 1.80 2014-02-15 01:17:23 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -259,7 +259,7 @@ Local ControlHandle, WorkArea, uField, nStyle
    If HB_IsLogical( lFirstItem ) .AND. lFirstItem .AND. ::ItemCount > 0
       ::SelectFirstItem()
    EndIf
-   
+
    ::Value := Value
 
    ASSIGN ::OnClick       VALUE ondisplaychangeprocedure TYPE "B"
@@ -377,7 +377,7 @@ Local lRefreshImages, aImages, nMax, nCount, nArea
          If lRefreshImages
             AADD( aImages, EVAL( ::ImageSource ) )
          EndIf
-         
+
          ::nLastItem := ( nArea )->( Recno() )
          ( nArea )->( DBSkip() )
          nCount ++
@@ -508,7 +508,7 @@ If ommited or is less than 0, defaults to 0 if lResizeBox == .T. or to combobox 
    If ! HB_IsNumeric( nMinWidth ) .or. nMinWidth < 0
       nMinWidth := if( lResizeBox, 0, ::Width )
    EndIf
-      
+
 /*
 If the computed value is less than the minimum, use the minimum.
 */
@@ -540,7 +540,7 @@ always, at least equal to combobox width.
 Resize dropdown list
 */
    ::SetDropDownWidth( nNewWidth )
-   
+
 RETURN NIL
 
 *-----------------------------------------------------------------------------*
@@ -938,7 +938,7 @@ Local Hi_wParam := HIWORD( wParam ), nArea, BackRec, i, nMax, bField, bValueSour
             EndIf
          EndIf
       EndIf
-      ::DoEvent( ::OnClick, "CLICK" )
+      ::DoEventMouseCoords( ::OnClick, "CLICK" )
       Return NIL
 
    ElseIf Hi_wParam == EN_KILLFOCUS .OR. ;
@@ -963,7 +963,7 @@ METHOD SetEditSel( nStart, nEnd ) CLASS TCombo
    The first character after the last selected character is in the ending
    position. For example, to select the first four characters, use a
    starting position of 0 and an ending position of 4.
-   
+
    This method is meaningfull only when de combo is in edit state.
    When combo looses focus, it gets out of edit state.
    When combo gots focus, all the text is selected.
@@ -1256,7 +1256,7 @@ HB_FUNC_STATIC( TCOMBO_EVENTS_DRAWITEM )   // METHOD Events_DrawItem( lParam )
          if( cy < lpdis->rcItem.bottom - lpdis->rcItem.top )                   // there is spare space
          {
             y = ( lpdis->rcItem.bottom + lpdis->rcItem.top - cy ) / 2;         // center image
-            dy = cy;                                                           
+            dy = cy;
          }
          else
          {
@@ -1274,7 +1274,7 @@ HB_FUNC_STATIC( TCOMBO_EVENTS_DRAWITEM )   // METHOD Events_DrawItem( lParam )
                dy = cy;                                                        // use real size
             }
          }
-         
+
          ImageList_DrawEx( oSelf->ImageList, iImage, lpdis->hDC, x, y, cx, dy, CLR_DEFAULT, CLR_NONE, ILD_TRANSPARENT );
       }
 

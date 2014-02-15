@@ -1,5 +1,5 @@
 /*
- * $Id: h_form.prg,v 1.46 2014-01-25 01:23:21 guerra000 Exp $
+ * $Id: h_form.prg,v 1.47 2014-02-15 01:17:23 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -1159,19 +1159,19 @@ HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
 
       case WM_LBUTTONDOWN:
          _OOHG_SetMouseCoords( pSelf, LOWORD( lParam ), HIWORD( lParam ) );
-         _OOHG_DoEvent( pSelf, s_OnClick, "CLICK", NULL );
+         _OOHG_DoEventMouseCoords( pSelf, s_OnClick, "CLICK", lParam );
          hb_ret();
          break;
 
       case WM_LBUTTONDBLCLK:
          _OOHG_SetMouseCoords( pSelf, LOWORD( lParam ), HIWORD( lParam ) );
-         _OOHG_DoEvent( pSelf, s_OnDblClick, "DBLCLICK", NULL );
+         _OOHG_DoEventMouseCoords( pSelf, s_OnDblClick, "DBLCLICK", lParam );
          hb_ret();
          break;
 
       case WM_RBUTTONUP:
          _OOHG_SetMouseCoords( pSelf, LOWORD( lParam ), HIWORD( lParam ) );
-         _OOHG_DoEvent( pSelf, s_OnRClick, "RCLICK", NULL );
+         _OOHG_DoEventMouseCoords( pSelf, s_OnRClick, "RCLICK", lParam );
          hb_ret();
          break;
 
@@ -1182,13 +1182,13 @@ HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
 
       case WM_RBUTTONDBLCLK:
          _OOHG_SetMouseCoords( pSelf, LOWORD( lParam ), HIWORD( lParam ) );
-         _OOHG_DoEvent( pSelf, s_OnRDblClick, "RDBLCLICK", NULL );
+         _OOHG_DoEventMouseCoords( pSelf, s_OnRDblClick, "RDBLCLICK", lParam );
          hb_ret();
          break;
 
       case WM_MBUTTONUP:
          _OOHG_SetMouseCoords( pSelf, LOWORD( lParam ), HIWORD( lParam ) );
-         _OOHG_DoEvent( pSelf, s_OnMClick, "MCLICK", NULL );
+         _OOHG_DoEventMouseCoords( pSelf, s_OnMClick, "MCLICK", lParam );
          hb_ret();
          break;
 
@@ -1199,7 +1199,7 @@ HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
 
       case WM_MBUTTONDBLCLK:
          _OOHG_SetMouseCoords( pSelf, LOWORD( lParam ), HIWORD( lParam ) );
-         _OOHG_DoEvent( pSelf, s_OnMDblClick, "MDBLCLICK", NULL );
+         _OOHG_DoEventMouseCoords( pSelf, s_OnMDblClick, "MDBLCLICK", lParam );
          hb_ret();
          break;
 
@@ -1207,11 +1207,11 @@ HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
          _OOHG_SetMouseCoords( pSelf, LOWORD( lParam ), HIWORD( lParam ) );
          if( wParam == MK_LBUTTON )
          {
-            _OOHG_DoEvent( pSelf, s_OnMouseDrag, "MOUSEDRAG", NULL );
+            _OOHG_DoEventMouseCoords( pSelf, s_OnMouseDrag, "MOUSEDRAG", lParam );
          }
          else
          {
-            _OOHG_DoEvent( pSelf, s_OnMouseMove, "MOUSEMOVE", NULL );
+            _OOHG_DoEventMouseCoords( pSelf, s_OnMouseMove, "MOUSEMOVE", lParam );
          }
          hb_ret();
          break;

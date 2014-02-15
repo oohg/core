@@ -1,5 +1,5 @@
 /*
- * $Id: h_toolbar.prg,v 1.38 2013-08-01 01:27:11 fyurisich Exp $
+ * $Id: h_toolbar.prg,v 1.39 2014-02-15 01:17:23 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -202,7 +202,7 @@ Local Self
       SetSplitBoxItem( ::hWnd, ::Container:hWnd, w,,, MinWidth, MinHeight, ::Container:lInverted )
 
       ASSIGN lBreak VALUE lBreak TYPE "L" DEFAULT .T.
-      
+
       ::SetSplitBoxInfo( lBreak )  // .T. forces break for next control...
    EndIf
 
@@ -307,15 +307,12 @@ RETURN ::Super:Events( hWnd, nMsg, wParam, lParam )
 METHOD Events_Command( wParam ) CLASS TToolBar
 *------------------------------------------------------------------------------*
 Local Hi_wParam := HIWORD( wParam )
-Local oControl, aPos
+Local oControl
    If Hi_wParam == BN_CLICKED
       oControl := GetControlObjectById( LOWORD( wParam ), ::Parent:hWnd )
       If ! oControl:NestedClick
          oControl:NestedClick := ! _OOHG_NestedSameEvent()
-         aPos := GetCursorPos()
-         aPos[ 1 ] -= GetWindowRow( oControl:hWnd )
-         aPos[ 2 ] -= GetWindowCol( oControl:hWnd )
-         oControl:DoEvent( oControl:OnClick, "CLICK", aPos )
+         oControl:DoEventMouseCoords( oControl:OnClick, "CLICK" )
          oControl:NestedClick := .F.
       EndIf
       Return 1
@@ -325,7 +322,7 @@ Return ::Super:Events_Command( wParam )
 *-----------------------------------------------------------------------------*
 METHOD LookForKey( nKey, nFlags ) CLASS TToolBar
 *-----------------------------------------------------------------------------*
-Local ButtonIndex, i, oControl, aPos
+Local ButtonIndex, i, oControl
    If nKey == VK_RETURN .and. nFlags == 0
       ::Events_Enter()
       If GetFocus() == ::hWnd
@@ -336,10 +333,7 @@ Local ButtonIndex, i, oControl, aPos
                oControl := ::aControls[ i ]
                If ! oControl:NestedClick
                   oControl:NestedClick := ! _OOHG_NestedSameEvent()
-                  aPos := GetCursorPos()
-                  aPos[ 1 ] -= GetWindowRow( oControl:hWnd )
-                  aPos[ 2 ] -= GetWindowCol( oControl:hWnd )
-                  oControl:DoEvent( oControl:OnClick, "CLICK", aPos )
+                  oControl:DoEvent( oControl:OnClick, "CLICK" )
                   oControl:NestedClick := .F.
                EndIf
             EndIf

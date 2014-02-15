@@ -1,11 +1,31 @@
 /*
- * $Id: ChangeLog,v 1.1221 2014-02-11 05:16:59 guerra000 Exp $
+ * $Id: ChangeLog,v 1.1222 2014-02-15 01:17:21 guerra000 Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-02-14 19:12 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
+   * include/oohg.h
+   * source/c_controlmisc.c
+     + _OOHG_DoEventMouseCoords() function added for send mouse
+       coordinates as parameter.
+   * source/h_browse.prg
+   * source/h_checklist.prg
+   * source/h_combo.prg
+   * source/h_controlmisc.prg
+   * source/h_form.prg
+   * source/h_grid.prg
+   * source/h_listbox.prg
+   * source/h_radio.prg
+   * source/h_richeditbox.prg
+   * source/h_status.prg
+   * source/h_textbox.prg
+   * source/h_toolbar.prg
+   * source/h_xbrowse.prg
+     + Added missing mouse coordinates to CLICK events.
 
 2014-02-10 23:08 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
    * source/h_picture.prg

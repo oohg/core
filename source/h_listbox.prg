@@ -1,5 +1,5 @@
 /*
- * $Id: h_listbox.prg,v 1.29 2013-06-17 01:57:37 fyurisich Exp $
+ * $Id: h_listbox.prg,v 1.30 2014-02-15 01:17:23 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -237,7 +237,7 @@ Local Hi_wParam := HIWORD( wParam )
       Return nil
 
    elseif Hi_wParam == LBN_DBLCLK
-      ::DoEvent( ::OnDblClick, "DBLCLICK" )
+      ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
       Return nil
 
    EndIf
@@ -615,7 +615,7 @@ HB_FUNC_STATIC( TLIST_EVENTS_MEASUREITEM )   // METHOD Events_MeasureItem( lPara
    _OOHG_Send( pSelf, s_nTextHeight );
    hb_vmSend( 0 );
    iSize = hb_parni( -1 );
-   
+
    hFont = oSelf->hFontHandle;
 
    hOldFont = ( HFONT ) SelectObject( hDC, hFont );

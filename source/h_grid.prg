@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.233 2014-01-25 01:23:21 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.234 2014-02-15 01:17:23 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -2042,24 +2042,24 @@ Local aCellData, nItem, i
 
          If ! ::AllowEdit
             If HB_IsBlock( ::OnDblClick )
-               ::DoEvent( ::OnDblClick, "DBLCLICK" )
+               ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
             EndIf
 
          ElseIf ::FullMove
             If ::IsColumnReadOnly( _OOHG_ThisItemColIndex )
                // Cell is readonly
                If ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick )
-                  ::DoEvent( ::OnDblClick, "DBLCLICK" )
+                  ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
                EndIf
             ElseIf ! ::IsColumnWhen( _OOHG_ThisItemColIndex )
                // Not a valid WHEN
                If ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick )
-                  ::DoEvent( ::OnDblClick, "DBLCLICK" )
+                  ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
                EndIf
             ElseIf ASCAN( ::aHiddenCols, _OOHG_ThisItemColIndex ) > 0
                // Hidden column
                If ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick )
-                  ::DoEvent( ::OnDblClick, "DBLCLICK" )
+                  ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
                EndIf
             Else
                ::EditGrid( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
@@ -2069,17 +2069,17 @@ Local aCellData, nItem, i
             If ::IsColumnReadOnly( _OOHG_ThisItemColIndex )
                // Cell is readonly
                If ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick )
-                  ::DoEvent( ::OnDblClick, "DBLCLICK" )
+                  ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
                EndIf
             ElseIf ! ::IsColumnWhen( _OOHG_ThisItemColIndex )
                // Not a valid WHEN
                If ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick )
-                  ::DoEvent( ::OnDblClick, "DBLCLICK" )
+                  ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
                EndIf
             ElseIf ASCAN( ::aHiddenCols, _OOHG_ThisItemColIndex ) > 0
               // Hidden column
                If ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick )
-                  ::DoEvent( ::OnDblClick, "DBLCLICK" )
+                  ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
                EndIf
             Else
                ::EditCell( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
@@ -2474,7 +2474,7 @@ Local lvc, _ThisQueryTemp, nvkey, uValue, lGo, aItem
       If HB_IsBlock( ::OnClick )
          If ! ::NestedClick
             ::NestedClick := ! _OOHG_NestedSameEvent()
-            ::DoEvent( ::OnClick, "CLICK" )
+            ::DoEventMouseCoords( ::OnClick, "CLICK" )
             ::NestedClick := .F.
          EndIf
       EndIf
@@ -2495,7 +2495,7 @@ Local lvc, _ThisQueryTemp, nvkey, uValue, lGo, aItem
       EndIf
 
       If HB_IsBlock( ::OnRClick )
-         ::DoEvent( ::OnRClick, "RCLICK" )
+         ::DoEventMouseCoords( ::OnRClick, "RCLICK" )
       EndIf
 
       If uValue > 0
@@ -3943,17 +3943,17 @@ Local aCellData, nItem, i, nSearchCol
             If ::IsColumnReadOnly( _OOHG_ThisItemColIndex )
                // Cell is readonly
                If ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick )
-                  ::DoEvent( ::OnDblClick, "DBLCLICK" )
+                  ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
                EndIf
             ElseIf ! ::IsColumnWhen( _OOHG_ThisItemColIndex )
                // Not a valid WHEN
                If ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick )
-                  ::DoEvent( ::OnDblClick, "DBLCLICK" )
+                  ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
                EndIf
             ElseIf ASCAN( ::aHiddenCols, _OOHG_ThisItemColIndex ) > 0
                // Cell is in a hidden column
                If ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick )
-                  ::DoEvent( ::OnDblClick, "DBLCLICK" )
+                  ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
                EndIf
             ElseIf ! ::lNestedEdit
                ::lNestedEdit := .T.
@@ -3962,7 +3962,7 @@ Local aCellData, nItem, i, nSearchCol
             EndIf
 
          ElseIf HB_IsBlock( ::OnDblClick )
-            ::DoEvent( ::OnDblClick, "DBLCLICK" )
+            ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
 
          EndIf
 

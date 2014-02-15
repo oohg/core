@@ -1,5 +1,5 @@
 /*
- * $Id: c_controlmisc.c,v 1.66 2012-08-03 02:54:41 fyurisich Exp $
+ * $Id: c_controlmisc.c,v 1.67 2014-02-15 01:17:22 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -260,7 +260,7 @@ POCTRL _OOHG_GetControlInfo( PHB_ITEM pSelf )
    return ( POCTRL ) pString;
 }
 
-void _OOHG_DoEvent( PHB_ITEM pSelf, int iSymbol, char * cType, PHB_ITEM pArray )
+void _OOHG_DoEvent( PHB_ITEM pSelf, int iSymbol, char *cType, PHB_ITEM pArray )
 {
    PHB_ITEM pSelf2;
 
@@ -281,6 +281,24 @@ void _OOHG_DoEvent( PHB_ITEM pSelf, int iSymbol, char * cType, PHB_ITEM pArray )
       hb_vmSend( 2 );
    }
    hb_itemRelease( pSelf2 );
+}
+
+void _OOHG_DoEventMouseCoords( PHB_ITEM pSelf, int iSymbol, char *cType, LPARAM lParam )
+{
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   PHB_ITEM pArray;
+   POINT pnt;
+   RECT rect;
+
+   pArray = hb_itemArrayNew( 2 );
+   GetCursorPos( &pnt );
+   GetWindowRect( oSelf->hWnd, &rect );
+   hb_arraySetNI( pArray, 1, HIWORD( lParam ) );
+   hb_arraySetNI( pArray, 2, LOWORD( lParam ) );
+
+   _OOHG_DoEvent( pSelf, iSymbol, cType, pArray );
+
+   hb_itemRelease( pArray );
 }
 
 BOOL _OOHG_DetermineColor( PHB_ITEM pColor, LONG *lColor )
