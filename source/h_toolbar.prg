@@ -1,5 +1,5 @@
 /*
- * $Id: h_toolbar.prg,v 1.39 2014-02-15 01:17:23 guerra000 Exp $
+ * $Id: h_toolbar.prg,v 1.40 2014-02-17 22:07:35 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -128,6 +128,7 @@ CLASS TToolBar FROM TControl
    DATA lTop	            INIT .T.
    DATA nButtonHeight      INIT 0
    DATA nButtonWidth       INIT 0
+   DATA lVertical          INIT .F.
 
    METHOD Define
    METHOD Events_Size
@@ -145,7 +146,8 @@ ENDCLASS
 *-----------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, x, y, w, h, caption, ProcedureName, ;
                fontname, fontsize, tooltip, flat, bottom, righttext, break, ;
-               bold, italic, underline, strikeout, border, lRtl, lNoTabStop ) CLASS TToolBar
+               bold, italic, underline, strikeout, border, lRtl, lNoTabStop, ;
+               lVertical ) CLASS TToolBar
 *-----------------------------------------------------------------------------*
 Local ControlHandle, id, lSplitActive, nStyle
 
@@ -162,6 +164,11 @@ Local ControlHandle, id, lSplitActive, nStyle
    ASSIGN bottom       VALUE bottom       TYPE "L" DEFAULT .F.
    ASSIGN righttext    VALUE righttext    TYPE "L" DEFAULT .F.
    ASSIGN border       VALUE border       TYPE "L" DEFAULT .F.
+   ASSIGN lVertical    VALUE lVertical    TYPE "L" DEFAULT .F.
+
+   If bottom .AND. lVertical
+      MsgOOHGError( "BOTTOM and VERTICAL clauses can't be used simultaneously. Program Terminated." )
+   EndIf
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize,,,, lRtl )
 
@@ -171,7 +178,7 @@ Local ControlHandle, id, lSplitActive, nStyle
 
    lSplitActive := ::SetSplitBoxInfo( Break, caption, ::nButtonWidth,, .T. )
    nStyle := ::InitStyle( Nil, Nil, Nil, lNoTabStop, Nil )
-   ControlHandle := InitToolBar( ::ContainerhWnd, Caption, id, ::ContainerCol, ::ContainerRow, ::nButtonWidth, ::nButtonHeight, "", 0, flat, bottom, righttext, lSplitActive, border, ::lRtl, nStyle )
+   ControlHandle := InitToolBar( ::ContainerhWnd, Caption, id, ::ContainerCol, ::ContainerRow, ::nButtonWidth, ::nButtonHeight, "", 0, flat, bottom, righttext, lSplitActive, border, ::lRtl, nStyle, lVertical )
 
    ::Register( ControlHandle, ControlName, , , ToolTip, Id )
    ::SetFont( , , bold, italic, underline, strikeout )
@@ -179,7 +186,8 @@ Local ControlHandle, id, lSplitActive, nStyle
    ::ContainerhWndValue := ::hWnd
 
    ASSIGN ::OnClick     VALUE ProcedureName TYPE "B"
-   ::lTop:=.not.(bottom)
+   ::lTop := ! bottom
+   ::lVertical := lVertical
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -369,7 +377,7 @@ ENDCLASS
 *-----------------------------------------------------------------------------*
 METHOD Define( ControlName, x, y, Caption, ProcedureName, w, h, image, ;
                tooltip, gotfocus, lostfocus, flat, separator, autosize, ;
-               check, group, dropdown, WHOLEDROPDOWN ) CLASS TToolButton
+               check, group, dropdown, WholeDropdown ) CLASS TToolButton
 *-----------------------------------------------------------------------------*
 Local id, nPos
 
@@ -382,7 +390,7 @@ Empty( FLAT )
 
    ::SetForm( ControlName, _OOHG_ActiveToolBar )
 
-   ASSIGN WHOLEDROPDOWN VALUE WHOLEDROPDOWN TYPE "L"  DEFAULT .F.
+   ASSIGN WholeDropdown VALUE WholeDropdown TYPE "L"  DEFAULT .F.
    ASSIGN Caption       VALUE Caption       TYPE "CM" DEFAULT ""
    ASSIGN separator     VALUE separator     TYPE "L"  DEFAULT .F.
    ASSIGN autosize      VALUE autosize      TYPE "L"  DEFAULT .F.
@@ -390,13 +398,13 @@ Empty( FLAT )
    ASSIGN group         VALUE group         TYPE "L"  DEFAULT .F.
    ASSIGN dropdown      VALUE dropdown      TYPE "L"  DEFAULT .F.
 
-   If valtype( ProcedureName ) == "B" .and. WHOLEDROPDOWN
-      MsgOOHGError( "Action and WholeDropDown clauses can't be used simultaneously. Program Terminated." )
+   If valtype( ProcedureName ) == "B" .and. WholeDropdown
+      MsgOOHGError( "ACTION and WHOLEDROPDOWN clauses can't be used simultaneously. Program Terminated." )
    EndIf
 
    id := _GetId()
 
-   InitToolButton( ::ContainerhWnd, Caption, id, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight, , 0, separator, autosize, check, group, dropdown, WHOLEDROPDOWN, ::Parent:visible )
+   InitToolButton( ::ContainerhWnd, Caption, id, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight, , 0, separator, autosize, check, group, dropdown, WholeDropdown, ::Parent:visible, GetControlObjectByHandle( ::ContainerhWnd ):lVertical )
 
    nPos := GetButtonBarCount( ::ContainerhWnd ) - if( separator, 1, 0 )
 
@@ -565,51 +573,53 @@ HB_FUNC( INITTOOLBAR )
    int Style = WS_CHILD | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | TBSTYLE_TOOLTIPS | hb_parni( 16 );
 
    int ExStyle;
-   int TbExStyle = TBSTYLE_EX_DRAWDDARROWS ;
+   int TbExStyle = TBSTYLE_EX_DRAWDDARROWS;
 
    hwnd = HWNDparam( 1 );
 
    ExStyle = _OOHG_RTL_Status( hb_parl( 15 ) );
 
-   if( hb_parl (14) )
+   if( hb_parl( 14 ) )
    {
       ExStyle |= WS_EX_CLIENTEDGE;
    }
 
-	if ( hb_parl (10) )
+	if ( hb_parl( 10 ) )
 	{
-		Style = Style | TBSTYLE_FLAT ;
+		Style = Style | TBSTYLE_FLAT;
 	}
 
-	if ( hb_parl (11) )
+	if ( hb_parl( 11 ) )
 	{
-		Style = Style | CCS_BOTTOM ;
+		Style = Style | CCS_BOTTOM;
 	}
 
-	if ( hb_parl (12) )
+	if ( hb_parl( 12 ) )
 	{
-		Style = Style | TBSTYLE_LIST ;
+		Style = Style | TBSTYLE_LIST;
 	}
 
-	if ( hb_parl (13) )
+	if ( hb_parl( 13 ) )
 	{
 		Style = Style | CCS_NOPARENTALIGN | CCS_NODIVIDER | CCS_NORESIZE;
 	}
 
-	hwndTB = CreateWindowEx( ExStyle, TOOLBARCLASSNAME, (LPSTR) NULL,
-		Style ,
-		0, 0 ,0 ,0,
-		hwnd, (HMENU)hb_parni(3), GetModuleHandle(NULL), NULL);
+	if ( hb_parl( 17 ) )
+	{
+		Style = Style | CCS_VERT;
+	}
 
-   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hwndTB, GWL_WNDPROC, ( LONG ) SubClassFunc );
+	hwndTB = CreateWindowEx( ExStyle, TOOLBARCLASSNAME, (LPSTR) NULL, Style, 0, 0 ,0 ,0, hwnd, (HMENU) hb_parni( 3 ), GetModuleHandle( NULL ), NULL );
+
+   lpfnOldWndProc = (WNDPROC) SetWindowLong( (HWND) hwndTB, GWL_WNDPROC, (LONG) SubClassFunc );
 
    if( hb_parni( 6 ) && hb_parni( 7 ) )
    {
-      SendMessage(hwndTB,TB_SETBUTTONSIZE,hb_parni(6),hb_parni(7));
-      SendMessage(hwndTB,TB_SETBITMAPSIZE,0,(LPARAM) MAKELONG(hb_parni(6),hb_parni(7)));
+      SendMessage( hwndTB, TB_SETBUTTONSIZE, hb_parni( 6 ), hb_parni( 7 ));
+      SendMessage( hwndTB, TB_SETBITMAPSIZE, 0, (LPARAM) MAKELONG( hb_parni( 6 ), hb_parni( 7 ) ) );
    }
 
-   SendMessage( hwndTB, TB_SETEXTENDEDSTYLE, 0, ( LPARAM ) TbExStyle );
+   SendMessage( hwndTB, TB_SETEXTENDEDSTYLE, 0, (LPARAM) TbExStyle );
 
    if( hb_parni( 16 ) & WS_VISIBLE )
    {
@@ -632,11 +642,11 @@ HB_FUNC( INITTOOLBUTTON )
 
    // Add the bitmap containing button images to the toolbar.
 
-   Style =  TBSTYLE_BUTTON ;
+   Style =  TBSTYLE_BUTTON;
 
    if ( hb_parl(11) )
    {
-      Style = Style | TBSTYLE_AUTOSIZE ;
+      Style = Style | TBSTYLE_AUTOSIZE;
    }
 
    nBtn = 0;
@@ -645,50 +655,57 @@ HB_FUNC( INITTOOLBUTTON )
 
    if( strlen( hb_parc( 2 ) ) > 0 )
    {
-      index = SendMessage(hwndTB,TB_ADDSTRING,0,(LPARAM) hb_parc(2));
+      index = SendMessage( hwndTB, TB_ADDSTRING, 0, (LPARAM) hb_parc( 2 ) );
       tbb[nBtn].iString = index;
    }
 
    if( hb_parl( 12 ) )
    {
-      Style = Style | BTNS_CHECK ;
+      Style = Style | BTNS_CHECK;
    }
 
    if( hb_parl( 13 ) )
    {
-      Style = Style | BTNS_GROUP ;
+      Style = Style | BTNS_GROUP;
    }
 
    if( hb_parl( 14 ) )
    {
-      Style = Style | BTNS_DROPDOWN ;
+      Style = Style | BTNS_DROPDOWN;
    }
 
    if( hb_parl( 15 ) )
    {
-      Style = Style | BTNS_WHOLEDROPDOWN ;
+      Style = Style | BTNS_WHOLEDROPDOWN;
    }
 
-   SendMessage(hwndTB,TB_AUTOSIZE,0,0);
+   SendMessage( hwndTB, TB_AUTOSIZE, 0, 0 );
 
    // Button New
 
-   tbb[nBtn].iBitmap = 0;
-   tbb[nBtn].idCommand = hb_parni( 3 );
-   tbb[nBtn].fsState = TBSTATE_ENABLED;
-   tbb[nBtn].fsStyle = ( BYTE ) Style;
+   tbb[ nBtn ].iBitmap = 0;
+   tbb[ nBtn ].idCommand = hb_parni( 3 );
+   if( hb_parl( 17 ) )
+   {
+      tbb[ nBtn ].fsState = TBSTATE_ENABLED | TBSTATE_WRAP;
+   }
+   else
+   {
+      tbb[ nBtn ].fsState = TBSTATE_ENABLED;
+   }
+   tbb[ nBtn ].fsStyle = (BYTE) Style;
    nBtn++;
 
    if( hb_parl( 10 ) )
    {
-      tbb[nBtn].fsState = 0;
-      tbb[nBtn].fsStyle = TBSTYLE_SEP;
+      tbb[ nBtn ].fsState = 0;
+      tbb[ nBtn ].fsStyle = TBSTYLE_SEP;
       nBtn++;
    }
 
-   SendMessage( hwndTB, TB_BUTTONSTRUCTSIZE, ( WPARAM ) sizeof( TBBUTTON ), 0 );
+   SendMessage( hwndTB, TB_BUTTONSTRUCTSIZE, (WPARAM) sizeof( TBBUTTON ), 0 );
 
-   SendMessage( hwndTB, TB_ADDBUTTONS, nBtn, ( LPARAM ) &tbb );
+   SendMessage( hwndTB, TB_ADDBUTTONS, nBtn, (LPARAM) &tbb );
 
    if( hb_parl( 16 ) )
    {
