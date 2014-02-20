@@ -1,5 +1,5 @@
 /*
- * $Id: h_combo.prg,v 1.80 2014-02-15 01:17:23 guerra000 Exp $
+ * $Id: h_combo.prg,v 1.81 2014-02-20 20:07:34 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -271,7 +271,9 @@ Local ControlHandle, WorkArea, uField, nStyle
    ASSIGN ::onListClose   VALUE onListClose              TYPE "B"
 
    ::oListBox := TListCombo():Define( Self, ComboBoxGetListhWnd( ::hWnd ) )
-   ::oEditBox := TEditCombo():Define( Self, GetWindow( ::hWnd, GW_CHILD ) )
+   If displaychange
+      ::oEditBox := TEditCombo():Define( Self, GetWindow( ::hWnd, GW_CHILD ) )
+   EndIf
 
 RETURN Self
 

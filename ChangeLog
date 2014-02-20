@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog,v 1.1223 2014-02-17 22:07:29 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1224 2014-02-20 20:07:33 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-02-20 18:07 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_combo.prg
+     ! Combobox with DISPPLAYEDIT clause shows no items when
+       the form contains another Combobox without that clause.
 
 2014-02-17 20:07 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_toolbar.ch
