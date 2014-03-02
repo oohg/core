@@ -1,5 +1,5 @@
 /*
- * $Id: c_gdiplus.c,v 1.11 2014-02-10 00:09:55 fyurisich Exp $
+ * $Id: c_gdiplus.c,v 1.12 2014-03-02 03:20:08 guerra000 Exp $
  */
 /*
  * ooHG source code:
@@ -817,7 +817,6 @@ HB_FUNC( GPLUSLOADIMAGEFROMBUFFER )
    gPlusImage gImage;
    IStream *iStream;
    HGLOBAL hGlobal;
-   LONG lResult;
    int iSize;
 
    lResult = 0;
@@ -830,14 +829,16 @@ HB_FUNC( GPLUSLOADIMAGEFROMBUFFER )
    }
    if( hGlobal )
    {
+      gImage = 0;
+      memset( hGlobal, 0, iSize );
       memcpy( hGlobal, hb_parc( 1 ), iSize );
       CreateStreamOnHGlobal( hGlobal, FALSE, &iStream );
-      lResult = GdipLoadImageFromStream( iStream, &gImage );
+      GdipLoadImageFromStream( iStream, &gImage );
       iStream->lpVtbl->Release( iStream );
       GlobalFree( hGlobal );
    }
 
-   if( lResult )
+   if( gImage )
    {
       hb_retgPlusImage( gImage );
    }
