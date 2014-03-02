@@ -1,5 +1,5 @@
 /*
- * $Id: c_gdiplus.c,v 1.12 2014-03-02 03:20:08 guerra000 Exp $
+ * $Id: c_gdiplus.c,v 1.13 2014-03-02 12:24:54 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -819,7 +819,6 @@ HB_FUNC( GPLUSLOADIMAGEFROMBUFFER )
    HGLOBAL hGlobal;
    int iSize;
 
-   lResult = 0;
    hGlobal = 0;
 
    iSize = hb_parclen( 1 );
