@@ -1,11 +1,15 @@
 /*
- * $Id: ChangeLog,v 1.1226 2014-03-02 12:24:54 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1227 2014-03-06 22:09:04 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-03-06 20:08 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_grid.prg
+     ! RTE when removing the a column's image.
 
 2014-03-02 10:24 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source/c_cdiplus.c

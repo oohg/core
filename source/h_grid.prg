@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.234 2014-02-15 01:17:23 guerra000 Exp $
+ * $Id: h_grid.prg,v 1.235 2014-03-06 22:09:05 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -5974,6 +5974,7 @@ HB_FUNC( REMOVEGRIDCOLUMNIMAGE )
 
    ListView_GetColumn( HWNDparam( 1 ), hb_parni( 2 ) - 1, &COL );
 
+   COL.mask &= ~LVCF_IMAGE;
    COL.fmt &= ~LVCFMT_IMAGE;
    COL.iImage = -1;
 
