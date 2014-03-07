@@ -1,5 +1,5 @@
 /*
- * $Id: c_winapimisc.c,v 1.21 2013-12-26 23:11:29 fyurisich Exp $
+ * $Id: c_winapimisc.c,v 1.22 2014-03-07 19:23:06 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -518,9 +518,9 @@ HB_FUNC ( SETWINDOWLONG )
 /*  This function returns the Windows Version on which the app calling the function   */
 /*  is running.                                                                       */
 /*                                                                                    */
-/*  The return value is an three dimensi0nal array containing the OS in the first,    */
-/*  the servicepack or the system release number in the second and the build number   */
-/*  in the third array element.                                                       */
+/*  The return value is an array with 4 items (strings), containing the OS in the     */
+/*  first, the servicepack or the system release number in the second, the build      */
+/*  number in the third and extended OS information in the fourth array element.      */
 /*                                                                                    */
 /**************************************************************************************/
 
