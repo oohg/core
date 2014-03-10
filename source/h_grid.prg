@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.235 2014-03-06 22:09:05 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.236 2014-03-10 23:29:35 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1683,7 +1683,7 @@ Return Nil
 METHOD ColumnHide( nColIndex ) CLASS TGrid
 *-----------------------------------------------------------------------------*
    If HB_IsNumeric( nColIndex )
-      If nColindex > 0
+      If nColindex > 0 .AND. ASCAN( ::aHiddenCols, nColIndex ) == 0
          ::ColumnWidth( nColIndex, 0 )
          AADD( ::aHiddenCols, nColIndex )
       EndIf
