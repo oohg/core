@@ -1,5 +1,5 @@
 /*
- * $Id: i_zip.ch,v 1.1 2005-08-06 23:53:55 guerra000 Exp $
+ * $Id: i_zip.ch,v 1.2 2014-03-11 20:26:05 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -92,17 +92,24 @@
 ---------------------------------------------------------------------------*/
 
 #command UNCOMPRESS [ FILE ] <zipfile> ;
-		EXTRACTPATH <extractpath> ;
+		[ EXTRACTPATH <extractpath> ] ;
+		[ RESULT [ TO ] <lSuccess> ] ;
 		[ BLOCK <block> ] ;
 		[ <createdir: CREATEDIR> ] ;
 		[ PASSWORD <password> ] ;
-=> ;
-	Hb_UNZIPFILE ( <zipfile>, <block> , <.createdir.> , <password> , <extractpath> )
+		[ <dummy1: FILEMASK, FILEARRAY> <mask> ] ;
+		[ FILEPROGRESS <fileblock> ] ;
+	=> ;
+	[ <lSuccess> := ] hb_UnZipFile( <zipfile> , <block> , <.createdir.> , <password> , <extractpath> , <mask> , <fileblock> )
 
 #command COMPRESS [ FILES ] <afiles> ;
-		TO <zipfile> ;
-		BLOCK <block>  ;
+		TO <zipfile>  ;
+		[ BLOCK <block> ] ;
+		[ RESULT [ TO ] <lSuccess> ] ;
 		[ LEVEL <level> ] ;
 		[ <ovr: OVERWRITE> ] ;
-=> ;
-	Hb_ZIPFILE(<zipfile>,<afiles>, <level> , <block> , <.ovr.> )
+		[ PASSWORD <password> ] ;
+		[ <srp: STOREPATH> ] ;
+		[ FILEPROGRESS <fileblock> ] ;
+	=> ;
+	[ <lSuccess> := ] hb_ZipFile( <zipfile> , <afiles> , <level> , <block> , <.ovr.> , <password> , <.srp.> , , <fileblock> )

@@ -1,11 +1,19 @@
 /*
- * $Id: ChangeLog,v 1.1230 2014-03-10 23:29:34 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1231 2014-03-11 20:26:05 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-03-11 17:26 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_zip.ch
+     + New clauses in COMPRESS and UNCOMPRESS commands,
+       borrowed from HGM Extended.
+     ; FILEPROGRESS clause in UNCOMPRESS command is not implemented
+       in Harbour 3.0, if you need it you must recompile with
+       Harbour 3.2
 
 2014-03-10 20:29 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
