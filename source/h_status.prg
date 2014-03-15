@@ -1,5 +1,5 @@
 /*
- * $Id: h_status.prg,v 1.44 2014-02-15 01:17:23 guerra000 Exp $
+ * $Id: h_status.prg,v 1.45 2014-03-15 20:54:05 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -102,6 +102,7 @@ CLASS TMessageBar FROM TControl
    DATA aClicks     INIT Nil
    DATA aRClicks    INIT Nil
    DATA aDblClicks  INIT Nil
+   DATA aRDblClicks INIT Nil
    DATA aWidths     INIT Nil
    DATA lAutoAdjust INIT .T.
    DATA lTop        INIT .F.
@@ -123,6 +124,7 @@ CLASS TMessageBar FROM TControl
    METHOD ItemClick
    METHOD ItemRClick
    METHOD ItemDblClick
+   METHOD ItemRDblClick
    METHOD ClientHeightUsed               BLOCK { |Self| GetWindowHeight( ::hWnd ) * IF( ::lTop, 1, -1 ) }
    METHOD MinHeight                      SETGET
    METHOD BackColor                      SETGET
@@ -157,6 +159,7 @@ Local ControlHandle
    ::aClicks := {}
    ::aRClicks := {}
    ::aDblClicks := {}
+   ::aRDblClicks := {}
    ::aWidths := {}
 
    ::SetForm( ControlName, ParentForm, FontName, nFontSize )
@@ -241,6 +244,8 @@ Local styl, nItem, i, nRep
    ASIZE( ::aRClicks, nItem )
 
    ASIZE( ::aDblClicks, nItem )
+
+   ASIZE( ::aRDblClicks, nItem )
 
    ASIZE( ::aWidths, nItem )
    ::aWidths[ nItem ] := Width
@@ -364,6 +369,21 @@ METHOD ItemDblClick( nItem, bAction ) CLASS TMessageBar
 Return bAction
 
 *-----------------------------------------------------------------------------*
+METHOD ItemRDblClick( nItem, bAction ) CLASS TMessageBar
+*-----------------------------------------------------------------------------*
+   IF nItem >= 1 .AND. nItem <= LEN( ::aRDblClicks )
+      IF PCOUNT() >= 2
+         IF ! HB_IsBlock( bAction )
+            bAction := NIL
+         ENDIF
+         ::aRDblClicks[ nItem ] := bAction
+      ELSE
+         bAction := ::aRDblClicks[ nItem ]
+      ENDIF
+   ENDIF
+Return bAction
+
+*-----------------------------------------------------------------------------*
 METHOD SetClock( Width, ToolTip, action, lAmPm, icon, cstyl, cAlign ) CLASS TMessageBar
 *-----------------------------------------------------------------------------*
 Local nrItem
@@ -481,6 +501,14 @@ Local x
       x := GetItemPos( lParam ) + 1
       if x > 0 .AND. x <= Len( ::aDblClicks )
          if ::DoEventMouseCoords( ::aDblClicks[ x ], "DBLCLICK" )
+            Return Nil
+         EndIf
+      EndIf
+   ElseIf nNotify == NM_RDBLCLK
+      DefWindowProc( ::hWnd, NM_RDBLCLK, wParam, lParam )
+      x := GetItemPos( lParam ) + 1
+      if x > 0 .AND. x <= Len( ::aRDblClicks )
+         if ::DoEventMouseCoords( ::aRDblClicks[ x ], "RDBLCLICK" )
             Return Nil
          EndIf
       EndIf

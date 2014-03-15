@@ -1,11 +1,21 @@
 /*
- * $Id: ChangeLog,v 1.1232 2014-03-13 22:58:45 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1233 2014-03-15 20:54:05 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-03-15 17:53 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_status.prg
+     + Right doubleclick event added.
+     + ::ItemRDblClick() method added for set/get right
+       doubleclick action.
+     ; Click event disables Doubleclick event.
+     ; Right Click event disables Right Doubleclick event.
+   * doc/classes.txt
+     * Updated.
 
 2014-03-13 19:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./compile_MINGW.BAT
