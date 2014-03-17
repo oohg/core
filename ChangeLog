@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.1233 2014-03-15 20:54:05 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1234 2014-03-17 22:50:04 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,13 +7,20 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-03-17 19:49 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     * Previous entry.
+
 2014-03-15 17:53 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_status.prg
      + Right doubleclick event added.
      + ::ItemRDblClick() method added for set/get right
        doubleclick action.
-     ; Click event disables Doubleclick event.
-     ; Right Click event disables Right Doubleclick event.
+     ; Doubleclick event first fires Click event. If Click function
+       displays a window the Doubleclick event is omitted.
+     ; Right Doubleclick event first fires Right Click event. If
+       Right Click function displays a window the Right Doubleclick
+       event is omitted.
    * doc/classes.txt
      * Updated.
 
