@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.101 2013-12-02 23:01:44 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.102 2014-03-22 13:45:53 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -433,11 +433,11 @@ Memvariables
 
 #xcommand TABSTOP <notabstop> ;
         => ;
-        _OOHG_ActiveControlNoTabStop := .NOT. <notabstop>
+        _OOHG_ActiveControlNoTabStop := ! <notabstop>
 
 #xcommand VISIBLE <visible> ;
         => ;
-        _OOHG_ActiveControlInvisible := .NOT. <visible>
+        _OOHG_ActiveControlInvisible := ! <visible>
 
 #xcommand HELPID <helpid> ;
         => ;
@@ -497,7 +497,7 @@ Memvariables
 
 #xcommand VSCROLLBAR <vs> ;
         => ;
-        _OOHG_ActiveControlNoVScroll := .NOT. <vs>
+        _OOHG_ActiveControlNoVScroll := ! <vs>
 
 #xcommand NOHSCROLLBAR <nvs> ;
         => ;
@@ -505,7 +505,7 @@ Memvariables
 
 #xcommand HSCROLLBAR <vs> ;
         => ;
-        _OOHG_ActiveControlNoHScroll := .NOT. <vs>
+        _OOHG_ActiveControlNoHScroll := ! <vs>
 
 #xcommand INPLACEEDIT <inplaceedit> ;
         => ;
@@ -1449,7 +1449,7 @@ BUTTON
                 _OOHG_ActiveControlBuffer, ;
                 _OOHG_ActiveControlHBitmap, ;
                 _OOHG_ActiveControlPicture, ;
-                .NOT. _OOHG_ActiveControlTransparent, ;
+                ! _OOHG_ActiveControlTransparent, ;
                 _OOHG_ActiveControlScale, ;
                 _OOHG_ActiveControlCancel, ;
                 _OOHG_ActiveControlAlignment, ;
@@ -1478,7 +1478,9 @@ IMAGE
         _OOHG_ActiveControlBuffer          := Nil ;;
         _OOHG_ActiveControlHBitmap         := Nil ;;
         _OOHG_ActiveControlWhiteBackground := Nil ;;
-        _OOHG_ActiveControlNoDIBSection    := .F.
+        _OOHG_ActiveControlNoDIBSection    := .F. ;;
+        _OOHG_ActiveControlNo3DColors      := .F. ;;
+        _OOHG_ActiveControlTransparent     := .T.
 
 #xcommand STRETCH <stretch> ;
         => ;
@@ -1500,6 +1502,10 @@ IMAGE
         => ;
         _OOHG_ActiveControlNoDIBSection := <nodib>
 
+#xcommand NOTRANSPARENT <notransparent> ;
+        => ;
+        _OOHG_ActiveControlTransparent := ! <notransparent>
+
 #xcommand END IMAGE ;
         => ;
         _OOHG_SelectSubClass( TImage(), _OOHG_ActiveControlSubClass, _OOHG_ActiveControlAssignObject ):Define( ;
@@ -1519,11 +1525,13 @@ IMAGE
                 _OOHG_ActiveControlBackColor, ;
                 _OOHG_ActiveControlBuffer, ;
                 _OOHG_ActiveControlHBitmap, ;
-                .NOT. _OOHG_ActiveControlNoResize, ;
+                ! _OOHG_ActiveControlNoResize, ;
                 _OOHG_ActiveControlImagesize, ;
                 _OOHG_ActiveControlTooltip, ;
                 _OOHG_ActiveControlBorder, ;
                 _OOHG_ActiveControlClientEdge, ;
+                ! _OOHG_ActiveControlTransparent, ;
+                _OOHG_ActiveControlNo3DColors, ;
                 _OOHG_ActiveControlNoDIBSection )
 
 /*----------------------------------------------------------------------------
@@ -1547,7 +1555,7 @@ CHECK BOX/BUTTON
 
 #xcommand LEFTALIGN <leftalign> ;
         => ;
-        _OOHG_ActiveControlRightAlign := .NOT. <leftalign>
+        _OOHG_ActiveControlRightAlign := ! <leftalign>
 
 #xcommand DEFINE CHECKBUTTON <name> ;
         => ;
@@ -1611,7 +1619,7 @@ CHECK BOX/BUTTON
                 _OOHG_ActiveControlRtl, ;
                 _OOHG_ActiveControlDisabled, ;
                 _OOHG_ActiveControl3State, ;
-                .NOT. _OOHG_ActiveControlRightAlign, ;
+                ! _OOHG_ActiveControlRightAlign, ;
                 _OOHG_ActiveControlThemed )
 
 #xcommand END CHECKBUTTON ;
@@ -1643,7 +1651,7 @@ CHECK BOX/BUTTON
                 _OOHG_ActiveControlPicture, ;
                 _OOHG_ActiveControlBuffer, ;
                 _OOHG_ActiveControlHBitmap, ;
-                .NOT. _OOHG_ActiveControlTransparent, ;
+                ! _OOHG_ActiveControlTransparent, ;
                 _OOHG_ActiveControlScale, ;
                 _OOHG_ActiveControlNo3DColors, ;
                 _OOHG_ActiveControlAutoFit, ;
@@ -2074,10 +2082,6 @@ LABEL
 #xcommand VSCROLL <vscroll> ;
         => ;
         _OOHG_ActiveControlVScroll := <vscroll>
-
-#xcommand TRANSPARENT <transparent> ;
-        => ;
-        _OOHG_ActiveControlTransparent := <transparent>
 
 #xcommand NOWORDWRAP <nowordwrap> ;
         => ;
@@ -2964,7 +2968,7 @@ HOTKEYBOX
                 _OOHG_ActiveControlNoTabStop, ;
                 _OOHG_ActiveControlRtl, ;
                 _OOHG_ActiveControlDisabled, ;
-                .NOT. _OOHG_ActiveControlForceAlt )
+                ! _OOHG_ActiveControlForceAlt )
 
 /*----------------------------------------------------------------------------
 PICTURE
@@ -2973,16 +2977,19 @@ PICTURE
 #xcommand DEFINE PICTURE <name> ;
         => ;
         _OOHG_ClearActiveControlInfo( <(name)> ) ;;
-        _OOHG_ActiveControlPicture    := Nil     ;;
-        _OOHG_ActiveControlImagesize  := .F.     ;;
-        _OOHG_ActiveControlBuffer     := Nil     ;;
-        _OOHG_ActiveControlHBitmap    := Nil     ;;
-        _OOHG_ActiveControlAction     := Nil     ;;
-        _OOHG_ActiveControlClientEdge := .F.     ;;
-        _OOHG_ActiveControlImagesize  := .F.     ;;
-        _OOHG_ActiveControlBorder     := .F.     ;;
-        _OOHG_ActiveControlScale      := .F.     ;;
-        _OOHG_ActiveControlStretch    := .F.
+        _OOHG_ActiveControlPicture      := Nil   ;;
+        _OOHG_ActiveControlImagesize    := .F.   ;;
+        _OOHG_ActiveControlBuffer       := Nil   ;;
+        _OOHG_ActiveControlHBitmap      := Nil   ;;
+        _OOHG_ActiveControlAction       := Nil   ;;
+        _OOHG_ActiveControlClientEdge   := .F.   ;;
+        _OOHG_ActiveControlImagesize    := .F.   ;;
+        _OOHG_ActiveControlBorder       := .F.   ;;
+        _OOHG_ActiveControlScale        := .F.   ;;
+        _OOHG_ActiveControlStretch      := .F.   ;;
+        _OOHG_ActiveControlNoDIBSection := .F.   ;;
+        _OOHG_ActiveControlNo3DColors   := .F.   ;;
+        _OOHG_ActiveControlTransparent  := .T.
 
 #xcommand ICON <icon> ;
         => ;
@@ -3014,7 +3021,10 @@ PICTURE
                 _OOHG_ActiveControlTooltip, ;
                 _OOHG_ActiveControlHelpId, ;
                 _OOHG_ActiveControlRtl, ;
-                _OOHG_ActiveControlInvisible )
+                _OOHG_ActiveControlInvisible, ;
+                ! _OOHG_ActiveControlTransparent, ;
+                _OOHG_ActiveControlNo3DColors, ;
+                _OOHG_ActiveControlNoDIBSection )
 
 /*----------------------------------------------------------------------------
 PROGRESSMETER

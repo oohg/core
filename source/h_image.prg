@@ -1,5 +1,5 @@
 /*
- * $Id: h_image.prg,v 1.29 2013-11-01 20:36:56 fyurisich Exp $
+ * $Id: h_image.prg,v 1.30 2014-03-22 13:45:54 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -115,7 +115,6 @@ CLASS TImage FROM TControl
    METHOD Buffer        SETGET
    METHOD OnClick       SETGET
    METHOD Events
-
    METHOD SizePos
    METHOD RePaint
    METHOD Release
@@ -164,7 +163,7 @@ Local ControlHandle, nStyle, nStyleEx
       EndIf
    EndIf
 
-   ASSIGN ::OnClick     VALUE ProcedureName TYPE "B" DEFAULT ::OnClick
+   ASSIGN ::OnClick VALUE ProcedureName TYPE "B"
 
 Return Self
 
@@ -327,7 +326,7 @@ HB_FUNC_STATIC( TIMAGE_EVENTS )
          }
          else
          {
-            hb_retni( HTTRANSPARENT );
+            hb_retni( HTCLIENT );
          }
          break;
 

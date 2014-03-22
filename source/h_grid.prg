@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.236 2014-03-10 23:29:35 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.237 2014-03-22 13:45:54 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -213,6 +213,7 @@ CLASS TGrid FROM TControl
    METHOD CountPerPage         BLOCK { | Self | ListViewGetCountPerPage( ::hWnd ) }
    METHOD FirstSelectedItem    BLOCK { | Self | ListView_GetFirstItem( ::hWnd ) }
    METHOD FirstVisibleItem
+   METHOD FirstVisibleColumn
    METHOD Header
    METHOD FontColor            SETGET
    METHOD BackColor            SETGET
@@ -249,6 +250,8 @@ CLASS TGrid FROM TControl
    METHOD ScrollToLeft
    METHOD ScrollToRight
    METHOD ScrollToCol
+   METHOD ScrollToPrior
+   METHOD ScrollToNext
    METHOD Append               SETGET
    METHOD HeaderSetFont
    METHOD FixControls          SETGET
@@ -497,6 +500,59 @@ Local nRet
       EndIf
    Else
       nRet := 0
+   EndIf
+Return nRet
+
+*-----------------------------------------------------------------------------*
+METHOD FirstVisibleColumn( lStart ) CLASS TGrid
+*-----------------------------------------------------------------------------*
+Local aColumnOrder, nLen, i, r, nRet := 0, lEmpty := .F., nClientWidth, nScrollWidth
+   ASSIGN lStart VALUE lStart TYPE "L" DEFAULT .F.
+
+   If ::ItemCount < 1
+      lEmpty := .T.
+      InsertListViewItem( ::hWnd, Array( Len( ::aHeaders ) ), 1 )
+   EndIf
+
+   If lStart
+      // We are looking for the leftmost column whose left side is visible.
+      // To check we need the width of the grid's client area minus the width of the scrollbar if one is present.
+      r := { 0, 0, 0, 0 }                                        // left, top, right, bottom
+      GetClientRect( ::hWnd, r )
+      nClientWidth := r[ 3 ] - r[ 1 ]
+      If ListViewGetItemCount( ::hWnd ) >  ListViewGetCountPerPage( ::hWnd )
+         nScrollWidth := GetVScrollBarWidth()
+      Else
+         nScrollWidth := 0
+      EndIf
+   EndIf
+
+   aColumnOrder := ::ColumnOrder
+   nLen := Len( aColumnOrder )
+   i := 1
+   Do While i <= nLen
+      If aScan( ::aHiddenCols, aColumnOrder[ i ] ) == 0
+         // get the column's rect
+         r := ListView_GetSubitemRect( ::hWnd, 0, aColumnOrder[ i ] - 1 )     // top, left, width, height
+         If lStart
+            // check if the left side is inside the client area
+            If r[ 2 ] >= 0 .AND. r[ 2 ] < nClientWidth - nScrollWidth
+              nRet := i
+              Exit
+            EndIf
+         Else
+            // We are looking for the leftmost column
+            If r[ 2 ] + r[ 3 ] - 1 >= 0
+               nRet := i
+               Exit
+            EndIf
+         EndIf
+      EndIf
+      i ++
+   EndDo
+
+   If lEmpty
+      ListViewDeleteString( ::hWnd, 1 )
    EndIf
 Return nRet
 
@@ -2523,8 +2579,7 @@ Local aText
 
    aText := TGrid_SetArray( Self, aRow )
    ::SetItemColor( ::ItemCount + 1, uForeColor, uBackColor, aRow )
-   AddListViewItems( ::hWnd, aText )
-Return Nil
+Return AddListViewItems( ::hWnd, aText )
 
 *-----------------------------------------------------------------------------*
 METHOD InsertItem( nItem, aRow, uForeColor, uBackColor ) CLASS TGrid
@@ -2938,9 +2993,50 @@ Return Nil
 METHOD ScrollToCol( nCol ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local r
-   r := ListView_GetSubitemRect( ::hWnd, 0, nCol - 1 )
+   r := ListView_GetSubitemRect( ::hWnd, 0, nCol - 1 ) // top, left, width, height
    If r[ 2 ] # 0
       ListView_Scroll( ::hWnd, r[ 2 ], 0 )
+   EndIf
+Return Nil
+
+*-----------------------------------------------------------------------------*
+METHOD ScrollToPrior CLASS TGrid
+*-----------------------------------------------------------------------------*
+Local nColF, nColT, aColumnOrder, i
+   nColF := ::FirstVisibleColumn( .F. )
+   If nColF > 0
+      nColT := ::FirstVisibleColumn( .T. )
+      If nColT > nColF
+        ::ScrollToCol( nColF )
+      Else
+         aColumnOrder := ::ColumnOrder
+         i := aScan( aColumnOrder, nColF )
+         Do While i > 1
+            If aScan( ::aHiddenCols, aColumnOrder[ i - 1 ] ) == 0
+               ::ScrollToCol( aColumnOrder[ i - 1 ] )
+               Exit
+            EndIf
+            i --
+         EndDo
+      EndIf
+   EndIf
+Return Nil
+
+*-----------------------------------------------------------------------------*
+METHOD ScrollToNext CLASS TGrid
+*-----------------------------------------------------------------------------*
+Local nColF, aColumnOrder, i
+   nColF := ::FirstVisibleColumn( .F. )
+   If nColF > 0
+      aColumnOrder := ::ColumnOrder
+      i := aScan( aColumnOrder, nColF )
+      Do While i < Len( aColumnOrder )
+         If aScan( ::aHiddenCols, aColumnOrder[ i + 1 ] ) == 0
+            ::ScrollToCol( aColumnOrder[ i + 1 ] )
+            Exit
+         EndIf
+         i ++
+      EndDo
    EndIf
 Return Nil
 
@@ -5987,6 +6083,7 @@ HB_FUNC( ADDLISTVIEWITEMS )
    LV_ITEM LI;
    HWND h;
    int c;
+   int nItem;
 
    hArray = hb_param( 2, HB_IT_ARRAY );
    if( ! hArray || hb_arrayLen( hArray ) == 0 )
@@ -6004,9 +6101,14 @@ HB_FUNC( ADDLISTVIEWITEMS )
    LI.iSubItem = 0;
    LI.pszText = "";
    LI.iImage = -1;
-   ListView_InsertItem( h, &LI );
+   nItem = ListView_InsertItem( h, &LI ) + 1;
 
-   _OOHG_ListView_FillItem( h, c, hArray );
+   if( nItem > 0)
+   {
+      _OOHG_ListView_FillItem( h, c, hArray );
+   }
+
+   hb_retni( nItem );
 }
 
 HB_FUNC( INSERTLISTVIEWITEM )
@@ -6456,13 +6558,22 @@ HB_FUNC( LISTVIEW_GETITEMRECT )
    RECT Rect ;
    LPRECT lpRect = (LPRECT) &Rect ;
 
-   ListView_GetItemRect( HWNDparam( 1 ), hb_parni( 2 ), lpRect, LVIR_LABEL );
-
-   hb_reta( 4 );
-   HB_STORNI( Rect.top,  -1, 1 );
-   HB_STORNI( Rect.left, -1, 2 );
-   HB_STORNI( Rect.right  - Rect.left, -1, 3 );
-   HB_STORNI( Rect.bottom - Rect.top,  -1, 4 );
+   if( ListView_GetItemRect( HWNDparam( 1 ), hb_parni( 2 ), lpRect, LVIR_LABEL ) )
+   {
+      hb_reta( 4 );
+      HB_STORNI( Rect.top, -1, 1 );
+      HB_STORNI( Rect.left, -1, 2 );
+      HB_STORNI( Rect.right - Rect.left, -1, 3 );
+      HB_STORNI( Rect.bottom - Rect.top, -1, 4 );
+   }
+   else
+   {
+      hb_reta( 4 );
+      HB_STORNI( -1, -1, 1 );
+      HB_STORNI( -1, -1, 2 );
+      HB_STORNI( -1, -1, 3 );
+      HB_STORNI( -1, -1, 4 );
+   }
 }
 
 HB_FUNC( LISTVIEW_UPDATE )

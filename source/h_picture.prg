@@ -1,5 +1,5 @@
 /*
- * $Id: h_picture.prg,v 1.12 2014-02-11 05:16:59 guerra000 Exp $
+ * $Id: h_picture.prg,v 1.13 2014-03-22 13:45:54 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -64,22 +64,22 @@ CLASS TPicture FROM TControl
    DATA ImageSize       INIT .F.
    DATA nZoom           INIT 1
    DATA bOnClick        INIT nil
+   DATA lNoDIBSection   INIT .F.
+   DATA lNo3DColors     INIT .F.
+   DATA lNoTransparent  INIT .F.
 
    METHOD Define
    METHOD RePaint
    METHOD Release
    METHOD SizePos
-
    METHOD Picture       SETGET
    METHOD Buffer        SETGET
    METHOD HBitMap       SETGET
    METHOD Zoom          SETGET
    METHOD Rotate        SETGET
    METHOD OnClick       SETGET
-
    METHOD HorizontalScroll    SETGET
    METHOD VerticalScroll      SETGET
-
    METHOD Events
    METHOD nDegree       SETGET
    METHOD Redraw
@@ -90,18 +90,21 @@ ENDCLASS
 *-----------------------------------------------------------------------------*
 METHOD Define( ControlName, ParentForm, x, y, FileName, w, h, cBuffer, hBitMap, ;
                stretch, autofit, imagesize, BORDER, CLIENTEDGE, BackColor, ;
-               ProcedureName, ToolTip, HelpId, lRtl, invisible ) CLASS TPicture
+               ProcedureName, ToolTip, HelpId, lRtl, invisible, lNoTransparent, ;
+               lNo3DColors, lNoDIB ) CLASS TPicture
 *-----------------------------------------------------------------------------*
 Local ControlHandle, nStyle, nStyleEx
 
-   ASSIGN ::nCol        VALUE x TYPE "N"
-   ASSIGN ::nRow        VALUE y TYPE "N"
-   ASSIGN ::nWidth      VALUE w TYPE "N"
-   ASSIGN ::nHeight     VALUE h TYPE "N"
-
-   ASSIGN ::Stretch    VALUE stretch   TYPE "L"
-   ASSIGN ::AutoFit    VALUE autofit   TYPE "L"
-   ASSIGN ::ImageSize  VALUE imagesize TYPE "L"
+   ASSIGN ::nCol           VALUE x              TYPE "N"
+   ASSIGN ::nRow           VALUE y              TYPE "N"
+   ASSIGN ::nWidth         VALUE w              TYPE "N"
+   ASSIGN ::nHeight        VALUE h              TYPE "N"
+   ASSIGN ::Stretch        VALUE stretch        TYPE "L"
+   ASSIGN ::AutoFit        VALUE autofit        TYPE "L"
+   ASSIGN ::ImageSize      VALUE imagesize      TYPE "L"
+   ASSIGN ::lNoTransparent VALUE lNoTransparent TYPE "L"
+   ASSIGN ::lNo3DColors    VALUE lNo3DColors    TYPE "L"
+   ASSIGN ::lNoDIBSection  VALUE lNoDIB         TYPE "L"
 
    IF BackColor == NIL
       BackColor := GetSysColor( COLOR_3DFACE )
@@ -110,9 +113,9 @@ Local ControlHandle, nStyle, nStyleEx
    ::SetForm( ControlName, ParentForm,,,, BackColor, , lRtl )
 
    nStyle := ::InitStyle( ,, Invisible, .T.,  ) + ;
-             if( ValType( BORDER ) == "L"    .AND. BORDER,     WS_BORDER,   0 )
+             if( ValType( BORDER ) == "L" .AND. BORDER, WS_BORDER, 0 )
 
-   nStyleEx := if( ValType( CLIENTEDGE ) == "L"   .AND. CLIENTEDGE,   WS_EX_CLIENTEDGE,  0 )
+   nStyleEx := if( ValType( CLIENTEDGE ) == "L" .AND. CLIENTEDGE, WS_EX_CLIENTEDGE, 0 )
 
    Controlhandle := InitPictureControl( ::ContainerhWnd, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight, nStyle, nStyleEx, ::lRtl )
 
@@ -126,21 +129,35 @@ Local ControlHandle, nStyle, nStyleEx
       EndIf
    EndIf
 
-   ASSIGN ::OnClick     VALUE ProcedureName TYPE "B"
+   ASSIGN ::OnClick VALUE ProcedureName TYPE "B"
 
 Return Self
 
 *-----------------------------------------------------------------------------*
 METHOD Picture( cPicture, lNoRepaint ) CLASS TPicture
 *-----------------------------------------------------------------------------*
-LOCAL nAttrib
+LOCAL nAttrib, aPictSize
    IF VALTYPE( cPicture ) $ "CM"
       DeleteObject( ::hImage )
       ::cPicture := cPicture
-      nAttrib := LR_CREATEDIBSECTION
-      // IF ::Transparent
-      //    nAttrib += LR_LOADMAP3DCOLORS + LR_LOADTRANSPARENT
-      // ENDIF
+
+      IF ::lNoDIBSection
+         aPictSize := _OOHG_SizeOfBitmapFromFile( cPicture )      // width, height, depth
+
+         nAttrib := LR_DEFAULTCOLOR
+         IF aPictSize[ 3 ] <= 8
+           IF ! ::lNo3DColors
+              nAttrib += LR_LOADMAP3DCOLORS
+           ENDIF
+           IF ! ::lNoTransparent
+              nAttrib += LR_LOADTRANSPARENT
+           ENDIF
+         ENDIF
+      ELSE
+         nAttrib := LR_CREATEDIBSECTION
+      ENDIF
+
+      // load image at full size
       ::hImage := _OOHG_BitmapFromFile( Self, cPicture, nAttrib, .F. )
       If ! HB_IsLogical( lNoRepaint ) .OR. ! lNoRepaint
          ::RePaint()

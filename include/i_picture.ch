@@ -1,5 +1,5 @@
 /*
- * $Id: i_picture.ch,v 1.2 2010-05-03 01:34:57 guerra000 Exp $
+ * $Id: i_picture.ch,v 1.3 2014-03-22 13:45:54 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -92,28 +92,31 @@
 ---------------------------------------------------------------------------*/
 
 #command @ <row>,<col> PICTURE <name> ;
-        [ OBJ <obj> ] ;
-	[ <dummy1: OF, PARENT> <parent> ] ;
-	[ <dummy2: ACTION,ON CLICK,ONCLICK> <action> ];
-	[ WIDTH <w> ] ;
-	[ HEIGHT <h> ] ;
-	[ <stretch: STRETCH> ] ;
-	[ HELPID <helpid> ] 		;
-	[ <invisible: INVISIBLE> ] ;
-        [ <rtl: RTL> ] ;
-        [ SUBCLASS <subclass> ] ;
-        [ BACKCOLOR <backcolor> ] ;
-        [ <dummy3: PICTURE, ICON> <filename> ] ;
-        [ BUFFER <buffer> ] ;
-        [ HBITMAP <hbitmap> ] ;
-        [ <scale: FORCESCALE> ] ;
-	[ <border: BORDER> ] ;
-	[ <clientedge: CLIENTEDGE> ] ;
-	[ TOOLTIP <tooltip> ] ;
-        [ <imagesize: IMAGESIZE> ] ;
+         [ OBJ <obj> ] ;
+	      [ <dummy1: OF, PARENT> <parent> ] ;
+	      [ <dummy2: ACTION,ON CLICK,ONCLICK> <action> ];
+	      [ WIDTH <w> ] ;
+	      [ HEIGHT <h> ] ;
+	      [ <stretch: STRETCH> ] ;
+	      [ HELPID <helpid> ] 		;
+	      [ <invisible: INVISIBLE> ] ;
+         [ <rtl: RTL> ] ;
+         [ SUBCLASS <subclass> ] ;
+         [ BACKCOLOR <backcolor> ] ;
+         [ <dummy3: PICTURE, ICON> <filename> ] ;
+         [ BUFFER <buffer> ] ;
+         [ HBITMAP <hbitmap> ] ;
+         [ <scale: FORCESCALE> ] ;
+	      [ <border: BORDER> ] ;
+	      [ <clientedge: CLIENTEDGE> ] ;
+	      [ TOOLTIP <tooltip> ] ;
+         [ <imagesize: IMAGESIZE> ] ;
+         [ <notrans: NOTRANSPARENT> ] ;
+         [ <no3dcolors: NO3DCOLORS> ] ;
+         [ <nodib: NODIBSECTION> ] ;
  =>;
-        [ <obj> := ] _OOHG_SelectSubClass( TPicture(), [ <subclass>() ] ): ;
-        Define( <(name)>, <(parent)>, <col>, <row>, <filename>, <w>, <h>, ;
-        <buffer>, <hbitmap>, <.stretch.>, <.scale.>, <.imagesize.>, ;
-        <.border.>, <.clientedge.>, <backcolor>, <{action}>, <tooltip>, ;
-        <helpid>, <.rtl.>, <.invisible.> )
+         [ <obj> := ] _OOHG_SelectSubClass( TPicture(), [ <subclass>() ] ): ;
+         Define( <(name)>, <(parent)>, <col>, <row>, <filename>, <w>, <h>, ;
+         <buffer>, <hbitmap>, <.stretch.>, <.scale.>, <.imagesize.>, ;
+         <.border.>, <.clientedge.>, <backcolor>, <{action}>, <tooltip>, ;
+         <helpid>, <.rtl.>, <.invisible.>, <.notrans.>, <.no3dcolors.>, <.nodib.>)

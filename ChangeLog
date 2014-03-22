@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.1234 2014-03-17 22:50:04 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1235 2014-03-22 13:45:53 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,7 +7,43 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2014-03-17 19:49 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
+2014-03-22 10:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_grid.prg
+     + Method ScrollToPrior: scrolls to the left until the prior 
+       column-start is shown at grid's x := 0.
+     + Method ScrollToNext: scrolls to the right until the next
+       column-start is shown at grid's x := 0.
+     + Method FirstVisibleColumn( lStart ): when lStart is .F.
+       (default value) returns the number of the column shown at
+       grid's x := 0; when lStart is .T. returns the number of the
+       leftmost column-start visible en the grid's client area.
+     * Function ListView_GetItemRect returns {-1,-1,-1,-1} when it's
+       not successful (e.g. when the item requested does not exist).
+   * source/h_browse.prg
+     ! Control stops painting itself after a while when down arrow
+       is pressed and not released. This behaviour was observed
+       under Win7 Prof 32 bits with comctl32.dll 5.82.7601.18201 in
+       an app build with Ciro Vargas's Clip2Win software.
+   * source/h_image.prg
+     ! IMAGE's tooltip is not working.
+   * include/i_picture.ch
+   * source/h_picture.prg
+     + NOTRANSPARENT, NO3DCOLORS and NODIBSECTION clauses to Picture
+       controls.
+     * Format.
+     ; This clauses improve image support.
+   * include/i_altsyntax.ch
+     * .NOT. changed by !
+     ! DEFINE IMAGE.
+     + New DEFINE PICTURE clauses.
+   * ./Changelog
+     * Previous entries corrected.
+
+2014-03-17 19:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     * Previous entry.
+
+2014-03-17 19:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./Changelog
      * Previous entry.
 
