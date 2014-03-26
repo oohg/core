@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.1235 2014-03-22 13:45:53 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1236 2014-03-26 01:12:27 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,8 +7,20 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2014-03-22 10:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2014-03-25 22:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_altsyntax.ch
+     ! Name is missing in Browse and XBrowse controls defined using
+       semi oop syntax.
    * source/h_grid.prg
+     * In functions InsertListViewItem and AddListViewItem the item
+       is now filled using the item number returned by
+       ListView_InsertItem function.
+   * source/h_browse.prg
+     * Previous change reverted. The problem is not in OOHG but in
+       Clip2Win. Further investigation is needed.
+
+2014-03-22 10:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_browse.prg
      + Method ScrollToPrior: scrolls to the left until the prior 
        column-start is shown at grid's x := 0.
      + Method ScrollToNext: scrolls to the right until the next

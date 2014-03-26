@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.135 2014-03-22 13:45:54 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.136 2014-03-26 01:12:27 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -684,7 +684,6 @@ Local s, _RecNo, nLen
          If ::Visible
             ::SetRedraw( .F. )
          EndIf
-         ::InsertBlank( ::ItemCount + 1 )
          ::RefreshRow( nLen )
          // Resize record map
          If nLen > ::CountPerPage

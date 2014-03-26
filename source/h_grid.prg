@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.237 2014-03-22 13:45:54 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.238 2014-03-26 01:12:27 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -6101,14 +6101,14 @@ HB_FUNC( ADDLISTVIEWITEMS )
    LI.iSubItem = 0;
    LI.pszText = "";
    LI.iImage = -1;
-   nItem = ListView_InsertItem( h, &LI ) + 1;
+   nItem = ListView_InsertItem( h, &LI );
 
-   if( nItem > 0)
+   if( nItem > -1 )
    {
-      _OOHG_ListView_FillItem( h, c, hArray );
+      _OOHG_ListView_FillItem( h, nItem, hArray );
    }
 
-   hb_retni( nItem );
+   hb_retni( nItem + 1 );
 }
 
 HB_FUNC( INSERTLISTVIEWITEM )
@@ -6135,14 +6135,14 @@ HB_FUNC( INSERTLISTVIEWITEM )
    LI.iSubItem = 0;
    LI.pszText = "";
    LI.iImage = -1;
-   nItem = ListView_InsertItem( h, &LI ) + 1;
+   nItem = ListView_InsertItem( h, &LI );
 
-   if( nItem > 0)
+   if( nItem > -1)
    {
-      _OOHG_ListView_FillItem( h, c, hArray );
+      _OOHG_ListView_FillItem( h, nItem, hArray );
    }
 
-   hb_retni( nItem );
+   hb_retni( nItem + 1 );
 }
 
 HB_FUNC( LISTVIEWSETITEM )
