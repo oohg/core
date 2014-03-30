@@ -1,5 +1,5 @@
 /*
- * $Id: h_image.prg,v 1.30 2014-03-22 13:45:54 fyurisich Exp $
+ * $Id: h_image.prg,v 1.31 2014-03-30 19:39:42 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -114,6 +114,7 @@ CLASS TImage FROM TControl
    METHOD HBitMap       SETGET
    METHOD Buffer        SETGET
    METHOD OnClick       SETGET
+   METHOD ToolTip       SETGET
    METHOD Events
    METHOD SizePos
    METHOD RePaint
@@ -240,6 +241,14 @@ METHOD OnClick( bOnClick ) CLASS TImage
    EndIf
 Return ::bOnClick
 
+*------------------------------------------------------------------------------*
+METHOD ToolTip( cToolTip ) CLASS TImage
+*------------------------------------------------------------------------------*
+   If PCOUNT() > 0
+      TImage_SetToolTip( Self,  ( ValType( cToolTip ) $ "CM" .AND. ! Empty( cToolTip ) ) .OR. HB_IsBlock( cToolTip ) )
+   EndIf
+Return ::Super:ToolTip( cToolTip )
+
 *-----------------------------------------------------------------------------*
 METHOD SizePos( Row, Col, Width, Height ) CLASS TImage
 *-----------------------------------------------------------------------------*
@@ -324,9 +333,13 @@ HB_FUNC_STATIC( TIMAGE_EVENTS )
          {
             hb_retni( DefWindowProc( hWnd, message, wParam, lParam ) );
          }
-         else
+         else if( oSelf->lAux[ 1 ] )
          {
             hb_retni( HTCLIENT );
+         }
+         else
+         {
+            hb_retni( HTTRANSPARENT );
          }
          break;
 
@@ -349,6 +362,15 @@ HB_FUNC( TIMAGE_SETNOTIFY )   // ( oSelf, lHit )
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
 
    oSelf->lAux[ 0 ] = hb_parl( 2 );
+   hb_ret();
+}
+
+HB_FUNC( TIMAGE_SETTOOLTIP )   // ( oSelf, lShow )
+{
+   PHB_ITEM pSelf = hb_param( 1, HB_IT_ANY );
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+
+   oSelf->lAux[ 1 ] = hb_parl( 2 );
    hb_ret();
 }
 

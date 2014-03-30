@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.142 2014-02-15 01:17:23 guerra000 Exp $
+ * $Id: h_controlmisc.prg,v 1.143 2014-03-30 19:39:42 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1979,6 +1979,7 @@ HB_FUNC_STATIC( TCONTROL_EVENTS_COLOR )
 }
 
 /*
+ * METHOD Events_Color( wParam, nDefColor ) CLASS TFRAME
  * METHOD Events_Color( wParam, nDefColor ) CLASS TCHECKBOX
  * METHOD Events_Color( wParam, nDefColor ) CLASS TRADIOGROUP
  * METHOD Events_Color( wParam, nDefColor ) CLASS TRADIOITEM

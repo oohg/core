@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.91 2014-02-15 01:17:23 guerra000 Exp $
+ * $Id: h_textbox.prg,v 1.92 2014-03-30 19:39:42 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -603,7 +603,7 @@ HB_FUNC_STATIC( TTEXT_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
 
          if( iRet == 0 )
          {
-            iRet = -1;
+            iRet = HTTRANSPARENT;
          }
 
          hb_retni( iRet );

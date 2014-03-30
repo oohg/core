@@ -1,5 +1,5 @@
 /*
- * $Id: i_tooltip.ch,v 1.4 2006-02-28 15:51:18 declan2005 Exp $
+ * $Id: i_tooltip.ch,v 1.5 2014-03-30 19:39:42 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -96,10 +96,12 @@
 #xcommand SET TOOLTIPSTYLE BALLOON  => _SetToolTipBalloon ( .T. )
 #xcommand SET TOOLTIPSTYLE STANDARD  => _SetToolTipBalloon ( .F. )
 
-
 #translate IsToolTipBalloonActive => _SetToolTipBalloon ()
 
 #xcommand SET TOOLTIPBACKCOLOR <aColor>  => _settooltipbackcolor( <aColor> )
 
-
 #xcommand SET TOOLTIPFORECOLOR <aColor>  => _settooltipforecolor( <aColor> )
+
+#xcommand SET TOOLTIPINITIALTIME TO <nMilliSec>  => _SetToolTipInitialTime ( <nMilliSec> )
+#xcommand SET TOOLTIPAUTOPOPTIME TO <nMilliSec>  => _SetToolTipAutoPopTime ( <nMilliSec> )
+#xcommand SET TOOLTIPRESHOWTIME TO <nMilliSec>  => _SetToolTipReShowTime ( <nMilliSec> )

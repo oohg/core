@@ -1,5 +1,5 @@
 /*
- * $Id: h_picture.prg,v 1.13 2014-03-22 13:45:54 fyurisich Exp $
+ * $Id: h_picture.prg,v 1.14 2014-03-30 19:39:42 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -54,35 +54,36 @@
 #include "i_windefs.ch"
 
 CLASS TPicture FROM TControl
-   DATA Type            INIT "PICTURE" READONLY
-   DATA nWidth          INIT 100
-   DATA nHeight         INIT 100
-   DATA cPicture        INIT ""
-   DATA Stretch         INIT .F.
-   DATA AutoFit         INIT .F.
-   DATA hImage          INIT nil
-   DATA ImageSize       INIT .F.
-   DATA nZoom           INIT 1
-   DATA bOnClick        INIT nil
-   DATA lNoDIBSection   INIT .F.
-   DATA lNo3DColors     INIT .F.
-   DATA lNoTransparent  INIT .F.
+   DATA Type               INIT "PICTURE" READONLY
+   DATA nWidth             INIT 100
+   DATA nHeight            INIT 100
+   DATA cPicture           INIT ""
+   DATA Stretch            INIT .F.
+   DATA AutoFit            INIT .F.
+   DATA hImage             INIT nil
+   DATA ImageSize          INIT .F.
+   DATA nZoom              INIT 1
+   DATA bOnClick           INIT nil
+   DATA lNoDIBSection      INIT .F.
+   DATA lNo3DColors        INIT .F.
+   DATA lNoTransparent     INIT .F.
 
    METHOD Define
    METHOD RePaint
    METHOD Release
    METHOD SizePos
-   METHOD Picture       SETGET
-   METHOD Buffer        SETGET
-   METHOD HBitMap       SETGET
-   METHOD Zoom          SETGET
-   METHOD Rotate        SETGET
-   METHOD OnClick       SETGET
-   METHOD HorizontalScroll    SETGET
-   METHOD VerticalScroll      SETGET
+   METHOD Picture          SETGET
+   METHOD Buffer           SETGET
+   METHOD HBitMap          SETGET
+   METHOD Zoom             SETGET
+   METHOD Rotate           SETGET
+   METHOD OnClick          SETGET
+   METHOD HorizontalScroll SETGET
+   METHOD VerticalScroll   SETGET
    METHOD Events
-   METHOD nDegree       SETGET
+   METHOD nDegree          SETGET
    METHOD Redraw
+   METHOD ToolTip          SETGET
 
    EMPTY( _OOHG_AllVars )
 ENDCLASS
@@ -220,6 +221,14 @@ METHOD OnClick( bOnClick ) CLASS TPicture
    EndIf
 Return ::bOnClick
 
+*------------------------------------------------------------------------------*
+METHOD ToolTip( cToolTip ) CLASS TPicture
+*------------------------------------------------------------------------------*
+   If PCOUNT() > 0
+      TPicture_SetToolTip( Self,  ( ValType( cToolTip ) $ "CM" .AND. ! Empty( cToolTip ) ) .OR. HB_IsBlock( cToolTip ) )
+   EndIf
+Return ::Super:ToolTip( cToolTip )
+
 *-----------------------------------------------------------------------------*
 METHOD RePaint( lMoving ) CLASS TPicture
 *-----------------------------------------------------------------------------*
@@ -228,7 +237,7 @@ LOCAL nWidth, nHeight, nAux
       DeleteObject( ::AuxHandle )
    ENDIF
    IF ( ::Stretch .OR. ::AutoFit ) .AND. ! ::ImageSize
-* TO DO: ROTATE
+// TO DO: ROTATE
       ::AuxHandle := _OOHG_SetBitmap( Self, ::hImage, 0, ::Stretch, ::AutoFit )
    ELSEIF ! ::nZoom == 1
       ::AuxHandle := _OOHG_ScaleImage( Self, ::hImage, ( _BitmapWidth( ::hImage ) * ::nZoom ) + 0.999, ( _BitmapHeight( ::hImage ) * ::nZoom ) + 0.999 )
@@ -249,7 +258,7 @@ LOCAL nWidth, nHeight, nAux
       ::Super:SizePos( ,, nWidth, nHeight )
    ENDIF
    IF SCROLLS( ::hWnd, nWidth, nHeight )
-*      ::ReDraw()
+//      ::ReDraw()
    ENDIF
    TPicture_SetNotify( Self, HB_IsBlock( ::bOnClick ) )
    IF ( ! HB_IsLogical( lMoving ) .OR. ! lMoving )
@@ -727,11 +736,16 @@ HB_FUNC_STATIC( TPICTURE_EVENTS )
          {
             hb_retni( DefWindowProc( hWnd, message, wParam, lParam ) );
          }
-         else
+         else if( oSelf->lAux[ 2 ] )
          {
             hb_retni( HTCLIENT );
          }
+         else
+         {
+            hb_retni( HTTRANSPARENT );
+         }
          break;
+
 
       default:
          _OOHG_Send( pSelf, s_Super );
@@ -785,6 +799,15 @@ HB_FUNC( TPICTURE_SETNOTIFY )   // ( oSelf, lHit )
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
 
    oSelf->lAux[ 0 ] = ( hb_parl( 2 ) || ( GetWindowLong( oSelf->hWnd, GWL_STYLE ) & ( WS_HSCROLL | WS_VSCROLL ) ) );
+   hb_ret();
+}
+
+HB_FUNC( TPICTURE_SETTOOLTIP )   // ( oSelf, lShow )
+{
+   PHB_ITEM pSelf = hb_param( 1, HB_IT_ANY );
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+
+   oSelf->lAux[ 2 ] = hb_parl( 2 );
    hb_ret();
 }
 

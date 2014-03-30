@@ -1,11 +1,62 @@
 /*
- * $Id: ChangeLog,v 1.1236 2014-03-26 01:12:27 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1237 2014-03-30 19:39:41 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-03-30 16:39 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_frame.ch
+     * Format.
+   * source/h_frame.ch
+     ! RTL support was being ignored.
+     * Added WS_EX_TRANSPARENT style when OPAQUE clause is not
+       used, as HMG Extended does.
+     * Use only one Windows subclass function.
+     ; To place a Tab inside a Frame, it's no further needed to define
+       the Frame after the END TAB command. Beware that the Frame must
+       not have OPAQUE clause or the TAB will not be drawn.
+     ; FONTCOLOR clause is ignored by Windows.
+     ; BACKCOLOR clause only applies to the caption's
+     ; The inner area is always painted with the Form's backcolor.
+   * ./Changelog.003
+     * 2012-08-05 01:50 UTC-0300 entry.
+   * include/i_tooltip.ch
+     + Added SET TOOLTIPINITIALTIME TO <nMilliSec>: sets the default
+       initial time for all ToolTip controls created afterward.
+     + Added SET TOOLTIPAUTOPOPTIME TO <nMilliSec>: sets the default
+       autopop time for all ToolTip controls created afterward.
+     + Added SET TOOLTIPRESHOWTIME TO <nMilliSec>: sets the default
+       reshow time for all ToolTip controls created afterward.
+     ; See related comments in source/h_tooltip.prg
+   * source/h_tooltip.prg
+     + Added support for setting/getting the initial, autopop and
+       reshow times.
+     + METHOD InitialTime to set/get the initial time.
+     + METHOD AutoPopTime to set/get the autopop time.
+     + METHOD ReshowTime to set/get the reshow time.
+     + METHOD ResetDelays to set all three times to default proportions.
+     + New parameters to TToolTip:Define() for initial, autopop and
+       reshow times.
+     ; For more information see related comments.
+   * source/h_textbox.prg
+     * Use HTTRANSPARENT instead of -1.
+   * source/h_controlmisc.prg
+     + Comment.
+   * source/h_image.prg
+     ! Grid/XBrowse/Browse are not receiving mouse clicks when an Image
+       control is underneath them.
+     + METHOD ToolTip.
+     ; An image control placed beneath other controls must not have an
+       ON CLICK block nor a TOOLTIP, or it will not work as expected.
+   * source/h_picture.prg
+     ! Grid/XBrowse/Browse are not receiving mouse clicks when a Picture
+       control is underneath them.
+     + METHOD ToolTip.
+     ; A picture control placed beneath other controls must not have an
+       ON CLICK block nor a TOOLTIP, or it will not work as expected.
 
 2014-03-25 22:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_altsyntax.ch

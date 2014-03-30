@@ -1,5 +1,5 @@
 /*
- * $Id: h_tooltip.prg,v 1.8 2013-07-03 01:44:52 migsoft Exp $
+ * $Id: h_tooltip.prg,v 1.9 2014-03-30 19:39:42 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -95,6 +95,10 @@
 #include "i_windefs.ch"
 #include "hbclass.ch"
 
+STATIC _OOHG_ToolTipInitialTime := 0
+STATIC _OOHG_ToolTipAutoPopTime := 0
+STATIC _OOHG_ToolTipReShowTime := 0
+
 CLASS TToolTip FROM TControl
    DATA Type           INIT "TOOLTIP" READONLY
    DATA nWindowWidth   INIT -1
@@ -105,17 +109,33 @@ CLASS TToolTip FROM TControl
    METHOD Events_Notify
    METHOD WindowWidth    SETGET
    METHOD MultiLine      SETGET
+   METHOD InitialTime    SETGET
+   METHOD AutoPopTime    SETGET
+   METHOD ReshowTime     SETGET
+   METHOD ResetDelays
 
    EMPTY( _OOHG_AllVars )
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
-METHOD Define( ControlName, ParentForm ) CLASS TToolTip
+METHOD Define( ControlName, ParentForm, nInitial, nAutoPop, nReShow ) CLASS TToolTip
 *-----------------------------------------------------------------------------*
 LOCAL ControlHandle
    ::SetForm( ControlName, ParentForm )
    ControlHandle := InitToolTip( ::ContainerhWnd, _SetToolTipBalloon() )
    ::Register( ControlHandle, ControlName )
+   ASSIGN nInitial VALUE nInitial TYPE "N" DEFAULT _OOHG_ToolTipInitialTime
+   ASSIGN nAutoPop VALUE nAutoPop TYPE "N" DEFAULT _OOHG_ToolTipAutoPopTime
+   ASSIGN nReShow  VALUE nReShow  TYPE "N" DEFAULT _OOHG_ToolTipReshowTime
+   If nInitial > 0
+      ::InitialTime := nInitial
+   EndIf
+   If nAutoPop > 0
+      ::AutoPopTime := nAutoPop
+   EndIf
+   If nReShow > 0
+      ::ReshowTime := nReShow
+   EndIf
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -188,8 +208,83 @@ Local lYesNo := Nil
       EndIf
       lBalloon := lNewBalloon
    Endif
-
 return lOldBalloon
+
+*-----------------------------------------------------------------------------*
+Function _SetToolTipInitialTime( nMilliSec )
+*-----------------------------------------------------------------------------*
+   If HB_IsNumeric( nMilliSec ) .AND. nMilliSec > 0
+      _OOHG_ToolTipInitialTime := nMilliSec
+   EndIf
+Return _OOHG_ToolTipInitialTime
+
+*-----------------------------------------------------------------------------*
+Function _SetToolTipAutoPopTime( nMilliSec )
+*-----------------------------------------------------------------------------*
+   If HB_IsNumeric( nMilliSec ) .AND. nMilliSec > 0
+      _OOHG_ToolTipAutoPopTime := nMilliSec
+   EndIf
+Return _OOHG_ToolTipAutoPopTime
+
+*-----------------------------------------------------------------------------*
+Function _SetToolTipReShowTime( nMilliSec )
+*-----------------------------------------------------------------------------*
+   If HB_IsNumeric( nMilliSec ) .AND. nMilliSec > 0
+      _OOHG_ToolTipReShowTime := nMilliSec
+   EndIf
+Return _OOHG_ToolTipReShowTime
+
+*-----------------------------------------------------------------------------*
+METHOD InitialTime( nMilliSecs ) CLASS TToolTip
+*-----------------------------------------------------------------------------*
+   If PCount() > 0
+      /* nMilliSec := -1 returns the initial time (amount of time the mouse
+         must remain stationary on a control before the tooltip appears) to
+         its default value = GetDoubleClickTime()
+      */
+      SetInitialTime( ::hWnd, nMilliSecs )
+   EndIf
+Return GetInitialTime( ::hWnd )
+
+*-----------------------------------------------------------------------------*
+METHOD AutoPopTime( nMilliSecs ) CLASS TToolTip
+*-----------------------------------------------------------------------------*
+   If PCount() > 0
+      /* nMilliSec := -1 returns the autopop time (amount of time a tooltip
+         remains visible if the mouse is stationary on the control) to its
+         default value = GetDoubleClickTime() * 10
+      */
+      SetAutoPopTime( ::hWnd, nMilliSecs )
+   EndIf
+Return GetAutoPopTime( ::hWnd )
+
+*-----------------------------------------------------------------------------*
+METHOD ReshowTime( nMilliSecs ) CLASS TToolTip
+*-----------------------------------------------------------------------------*
+   If PCount() > 0
+      /* nMilliSec := -1 returns the reshow time (amount of time it takes for
+         subsequent tooltip windows to appear as the mouse moves from one
+         control to another) to its default value = GetDoubleClickTime() / 5
+      */
+      SetReshowTime( ::hWnd, nMilliSecs )
+   EndIf
+Return GetReshowTime( ::hWnd )
+
+*-----------------------------------------------------------------------------*
+METHOD ResetDelays( nMilliSecs ) CLASS TToolTip
+*-----------------------------------------------------------------------------*
+   /* Sets all three delay times to default proportions. The autopop time will
+      be ten times the initial time and the reshow time will be one fifth the
+      initial time. Use nMilliSec > 0 to specify a new initial time. Use a
+      negative value to return all three delay times to their default values.
+      Use 0 to retain the current initial time.
+   */
+   ASSIGN nMilliSecs VALUE nMilliSecs TYPE "N" DEFAULT -1
+   If nMilliSecs == 0
+     nMilliSecs := ::InitialTime()
+   EndIf
+   SetDelayTime( ::hWnd, nMilliSecs )
+Return Nil
 
 EXTERN _SetToolTipBackColor, _SetToolTipForeColor
 
@@ -361,6 +456,46 @@ HB_FUNC( _SETTOOLTIPGETDISPINFO )     // ( lParam, cToolTip )
    notify->lpszText = ( LPSTR ) _OOHG_ToolTipBuffer;
    notify->szText[ 0 ] = 0;
    notify->hinst = NULL;
+}
+
+HB_FUNC( GETINITIALTIME )
+{
+   hb_retni( SendMessage( HWNDparam( 1 ), TTM_GETDELAYTIME, (WPARAM) TTDT_INITIAL, 0 ) );
+}
+
+HB_FUNC( GETAUTOPOPTIME )
+{
+   hb_retni( SendMessage( HWNDparam( 1 ), TTM_GETDELAYTIME, (WPARAM) TTDT_AUTOPOP, 0 ) );
+}
+
+HB_FUNC( GETRESHOWTIME )
+{
+   hb_retni( SendMessage( HWNDparam( 1 ), TTM_GETDELAYTIME, (WPARAM) TTDT_RESHOW, 0 ) );
+}
+
+HB_FUNC( SETINITIALTIME )
+{
+   SendMessage( HWNDparam( 1 ), TTM_SETDELAYTIME, (WPARAM) TTDT_INITIAL, (LPARAM) MAKELONG( hb_parni( 2 ), 0 ) );
+}
+
+HB_FUNC( SETAUTOPOPTIME )
+{
+   SendMessage( HWNDparam( 1 ), TTM_SETDELAYTIME, (WPARAM) TTDT_AUTOPOP, (LPARAM) MAKELONG( hb_parni( 2 ), 0 ) );
+}
+
+HB_FUNC( SETRESHOWTIME )
+{
+   SendMessage( HWNDparam( 1 ), TTM_SETDELAYTIME, (WPARAM) TTDT_RESHOW, (LPARAM) MAKELONG( hb_parni( 2 ), 0 ) );
+}
+
+HB_FUNC( SETDELAYTIME )
+{
+   SendMessage( HWNDparam( 1 ), TTM_SETDELAYTIME, (WPARAM) TTDT_AUTOMATIC, (LPARAM) MAKELONG( hb_parni( 2 ), 0 ) );
+}
+
+HB_FUNC( GETDOUBLECLICKTIME )
+{
+   hb_retni( GetDoubleClickTime() );
 }
 
 #pragma ENDDUMP

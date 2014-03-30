@@ -1,5 +1,5 @@
-﻿/*
- * $Id: ChangeLog.003,v 1.1 2013-11-11 19:22:52 guerra000 Exp $
+/*
+ * $Id: ChangeLog.003,v 1.2 2014-03-30 19:39:41 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -2171,7 +2171,7 @@
 2012-08-05 01:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    ; To place a Tab inside a Frame you must define the Frame
      after the END TAB command. If you fail to do that, the tab
-     will not be drawn.
+     will not be drawn. See 2014-03-28 22:12 UTC-0300
 
 2012-08-05 01:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_controlmisc.prg

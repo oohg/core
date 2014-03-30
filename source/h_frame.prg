@@ -1,5 +1,5 @@
 /*
- * $Id: h_frame.prg,v 1.13 2013-08-01 01:27:11 fyurisich Exp $
+ * $Id: h_frame.prg,v 1.14 2014-03-30 19:39:42 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -132,7 +132,7 @@ Local oTab
 
    nStyle := ::InitStyle( ,, Invisible, .T., lDisabled )
 
-   Controlhandle := InitFrame( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, caption , opaque, ::lRtl, nStyle )
+   Controlhandle := InitFrame( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, caption, opaque, ::lRtl, nStyle )
 
    ::Register( ControlHandle, ControlName )
    ::SetFont( , , bold, italic, underline, strikeout )
@@ -179,16 +179,10 @@ Return Events_Color_InTab( Self, wParam, nDefColor )    // see h_controlmisc.prg
 #include "oohg.h"
 
 static WNDPROC lpfnOldWndProcA = 0;
-static WNDPROC lpfnOldWndProcB = 0;
 
 static LRESULT APIENTRY SubClassFuncA( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
    return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProcA );
-}
-
-static LRESULT APIENTRY SubClassFuncB( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
-{
-   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProcB );
 }
 
 HB_FUNC( INITFRAME )
@@ -202,20 +196,15 @@ HB_FUNC( INITFRAME )
    Style = hb_parni( 10 ) | WS_CHILD | BS_GROUPBOX | BS_NOTIFY;
    StyleEx = _OOHG_RTL_Status( hb_parl( 9 ) );
 
-   if ( ! hb_parl( 8 ) )
+   if ( ! hb_parl( 8 ) )   /* opaque */
 	{
-      hbutton = CreateWindowEx( StyleEx, "BUTTON", hb_parc( 7 ), Style,
-                hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
-                hwnd, ( HMENU ) hb_parni( 2 ), GetModuleHandle( NULL ), NULL );
-      lpfnOldWndProcA = ( WNDPROC ) SetWindowLong( ( HWND ) hbutton, GWL_WNDPROC, ( LONG ) SubClassFuncA );
-	}
-   else
-	{
-      hbutton = CreateWindow( "BUTTON", hb_parc( 7 ), Style,
-                hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
-                hwnd, ( HMENU ) hb_parni( 2 ), GetModuleHandle( NULL ), NULL );
-      lpfnOldWndProcB = ( WNDPROC ) SetWindowLong( ( HWND ) hbutton, GWL_WNDPROC, ( LONG ) SubClassFuncB );
-	}
+      StyleEx = StyleEx | WS_EX_TRANSPARENT;
+   }
+
+   hbutton = CreateWindowEx( StyleEx, "BUTTON", hb_parc( 7 ), Style,
+             hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
+             hwnd, ( HMENU ) hb_parni( 2 ), GetModuleHandle( NULL ), NULL );
+   lpfnOldWndProcA = ( WNDPROC ) SetWindowLong( ( HWND ) hbutton, GWL_WNDPROC, ( LONG ) SubClassFuncA );
 
    HWNDret( hbutton );
 }

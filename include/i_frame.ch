@@ -1,5 +1,5 @@
 /*
- * $Id: i_frame.ch,v 1.5 2008-10-22 06:50:51 guerra000 Exp $
+ * $Id: i_frame.ch,v 1.6 2014-03-30 19:39:42 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -92,28 +92,28 @@
 ---------------------------------------------------------------------------*/
 
 #xcommand @ <row> , <col> FRAME <name> ;
-                [ OBJ <obj> ] ;
-		[ <dummy1: OF, PARENT> <parent> ] ;
-		[ CAPTION <caption> ] ;
-		[ WIDTH <w> ] ;
-		[ HEIGHT <h> ] ;
-		[ FONT <fontname> ] ;
-		[ SIZE <fontsize> ] ;
-		[ <bold : BOLD> ] ;
-		[ <italic : ITALIC> ] ;
-		[ <underline : UNDERLINE> ] ;
-		[ <strikeout : STRIKEOUT> ] ;
-		[ BACKCOLOR <backcolor> ] ;
-		[ FONTCOLOR <fontcolor> ] ;
-		[ <opaque: OPAQUE> ] ;
-		[ <transparent: TRANSPARENT> ] ;
-                [ <rtl: RTL> ] ;
-		[ <invisible : INVISIBLE> ] ;
-                [ <disabled : DISABLED> ] ;
-                [ SUBCLASS <subclass> ]         ;
-	=>;
-        [ <obj> := ] _OOHG_SelectSubClass( TFrame(), [ <subclass>() ] ): ;
-                     Define( <(name)>, <(parent)>, <row>, <col>, <w>, <h>, <caption>, ;
-                     <fontname>, <fontsize>, <.opaque.>, <.bold.>, <.italic.>, ;
-                     <.underline.>, <.strikeout.>, <backcolor>, <fontcolor>, ;
-                     <.transparent.>, <.rtl.>, <.invisible.>, <.disabled.> )
+      [ OBJ <obj> ] ;
+      [ <dummy1: OF, PARENT> <parent> ] ;
+      [ CAPTION <caption> ] ;
+      [ WIDTH <w> ] ;
+      [ HEIGHT <h> ] ;
+      [ FONT <fontname> ] ;
+      [ SIZE <fontsize> ] ;
+      [ <bold: BOLD> ] ;
+      [ <italic: ITALIC> ] ;
+      [ <underline: UNDERLINE> ] ;
+      [ <strikeout: STRIKEOUT> ] ;
+      [ BACKCOLOR <backcolor> ] ;
+      [ FONTCOLOR <fontcolor> ] ;
+      [ <opaque: OPAQUE> ] ;
+      [ <transparent: TRANSPARENT> ] ;
+      [ <rtl: RTL> ] ;
+      [ <invisible: INVISIBLE> ] ;
+      [ <disabled: DISABLED> ] ;
+      [ SUBCLASS <subclass> ] ;
+=>;
+      [ <obj> := ] _OOHG_SelectSubClass( TFrame(), [ <subclass>() ] ): ;
+         Define( <(name)>, <(parent)>, <row>, <col>, <w>, <h>, <caption>, ;
+         <fontname>, <fontsize>, <.opaque.>, <.bold.>, <.italic.>, ;
+         <.underline.>, <.strikeout.>, <backcolor>, <fontcolor>, ;
+         <.transparent.>, <.rtl.>, <.invisible.>, <.disabled.> )
