@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.238 2014-03-26 01:12:27 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.239 2014-04-01 22:58:53 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -485,7 +485,7 @@ Local ControlHandle, aImageList, i
    ASSIGN ::OnDelete       VALUE onDelete       TYPE "B"
    ASSIGN ::bDelWhen       VALUE bDelWhen       TYPE "B"
    ASSIGN ::OnAppend       VALUE onappend       TYPE "B"
-   ASSIGN ::bHeadRClick   VALUE bHeadRClick   TYPE "B"
+   ASSIGN ::bHeadRClick    VALUE bHeadRClick    TYPE "B"
 
 Return Self
 
@@ -2379,7 +2379,7 @@ Local nNotify, nColumn, lGo, nNewWidth, nResul, aRect
       If HB_IsBlock( ::bHeadRClick )
          nColumn := ListView_HitTest( ::hWnd, GetCursorRow() - GetWindowRow( ::hWnd ), GetCursorCol() - GetWindowCol( ::hWnd ) )
 
-         lGo := Eval( ::bHeadRClick, nColumn[2] )
+         lGo := Eval( ::bHeadRClick, nColumn[2], Self )
          If HB_IsLogical( lGo ) .and. ! lGo
             // Prevent the action
             Return 1

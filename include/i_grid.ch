@@ -1,5 +1,5 @@
 /*
- * $Id: i_grid.ch,v 1.33 2013-12-02 23:01:45 fyurisich Exp $
+ * $Id: i_grid.ch,v 1.34 2014-04-01 22:58:53 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -103,7 +103,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 #command @ <row>,<col> GRID <name> ;
       [ OBJ <obj> ] ;
-      [ <dummy1: OF, PARENT> <parent> ] ;
+      [ <dummy01: OF, PARENT> <parent> ] ;
       [ WIDTH <w> ] ;
       [ HEIGHT <h> ] ;
       [ HEADERS <headers> ] ;
@@ -122,16 +122,16 @@
       [ FONTCOLOR <fontcolor> ] ;
       [ DYNAMICBACKCOLOR <dynamicbackcolor> ] ;
       [ DYNAMICFORECOLOR <dynamicforecolor> ] ;
-      [ ON GOTFOCUS <gotfocus> ] ;
-      [ ON CHANGE <change> ] ;
-      [ ON LOSTFOCUS <lostfocus> ] ;
-      [ ON DBLCLICK <dblclick> ] ;
-      [ ON CLICK <click> ] ;
-      [ ON HEADCLICK <aHeadClick> ] ;
+      [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
+      [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
+      [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
+      [ <dummy05: ONDBLCLICK, ON DBLCLICK> <dblclick> ] ;
+      [ <dummy06: ONCLICK, ON CLICK> <click> ] ;
+      [ <dummy07: ONHEADCLICK, ON HEADCLICK> <aHeadClick> ] ;
       [ <edit : EDIT> ] ;
       [ <ownerdata: VIRTUAL> ] ;
       [ ITEMCOUNT <itemcount> ] ;
-      [ ON QUERYDATA <dispinfo> ] ;
+      [ <dummy08: ONQUERYDATA, ON QUERYDATA> <dispinfo> ] ;
       [ <multiselect: MULTISELECT> ] ;
       [ <style: NOLINES> ] ;
       [ IMAGE <aImage> ] ;
@@ -144,14 +144,14 @@
       [ READONLY <aReadOnly> ] ;
       [ VALID <aValidFields> ] ;
       [ VALIDMESSAGES <aValidMessages> ] ;
-      [ ON EDITCELL <editcell> ] ;
+      [ <dummy09: ONEDITCELL, ON EDITCELL> <editcell> ] ;
       [ <noshowheaders: NOHEADERS> ] ;
-      [ <dummy2: WHEN, COLUMNWHEN> <aWhenFields> ] ;
+      [ <dummy10: WHEN, COLUMNWHEN> <aWhenFields> ] ;
       [ SUBCLASS <subclass> ] ;
       [ <disabled: DISABLED> ] ;
       [ <notabstop: NOTABSTOP> ] ;
       [ <invisible: INVISIBLE> ] ;
-      [ ON ENTER <enter> ] ;
+      [ <dummy11: ONENTER, ON ENTER> <enter> ] ;
       [ HEADERIMAGES <aHeaderImages> ] ;
       [ IMAGESALIGN <aImgAlign> ] ;
       [ <fullmove: FULLMOVE> ] ;
@@ -159,12 +159,12 @@
       [ SELECTEDCOLORS <aSelectedColors> ] ;
       [ EDITKEYS <aEditKeys> ] ;
       [ <checkboxes: CHECKBOXES> ] ;
-      [ ON CHECKCHANGE <checkchange> ] ;
+      [ <dummy12: ONCHECKCHANGE, ON CHECKCHANGE> <checkchange> ] ;
       [ <bffr: DOUBLEBUFFER, SINGLEBUFFER> ] ;
       [ <focus: NOFOCUSRECT, FOCUSRECT> ] ;
       [ <plm: PAINTLEFTMARGIN> ] ;
       [ <fixedcols: FIXEDCOLS> ] ;
-      [ ON ABORTEDIT <abortedit> ] ;
+      [ <dummy13: ONABORTEDIT, ON ABORTEDIT> <abortedit> ] ;
       [ <fixedwidths: FIXEDWIDTHS> ] ;
       [ BEFORECOLMOVE <bBefMov> ] ;
       [ AFTERCOLMOVE <bAftMov> ] ;
@@ -176,13 +176,13 @@
       [ <delete: DELETE> ] ;
       [ DELETEWHEN <bWhenDel> ] ;
       [ DELETEMSG <DelMsg> ] ;
-      [ ON DELETE <onDelete> ] ;
+      [ <dummy14: ONDELETE, ON DELETE> <onDelete> ] ;
       [ <nodelmsg: NODELETEMSG> ] ;
       [ <append : APPEND> ] ;
-      [ ON APPEND <onappend> ] ;
+      [ <dummy15: ONAPPEND, ON APPEND> <onappend> ] ;
       [ <nomodal : NOMODALEDIT> ] ;
       [ <edtctrls: FIXEDCONTROLS, DYNAMICCONTROLS> ] ;
-      [ ONHEADRCLICK <bheadrclick> ] ;
+      [ <dummy16: ONHEADRCLICK, ON HEADRCLICK> <bheadrclick> ] ;
    =>;
       [ <obj> := ] _OOHG_SelectSubClass(iif( <.bycell.>, TGridByCell(), iif( <.multiselect.>, TGridMulti(), TGrid() ) ), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, ;
@@ -210,7 +210,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 #command GRID <name> ;
       [ OBJ <obj> ] ;
-      [ <dummy1: OF, PARENT> <parent> ] ;
+      [ <dummy01: OF, PARENT> <parent> ] ;
       [ WIDTH <w> ] ;
       [ HEIGHT <h> ] ;
       [ HEADERS <headers> ] ;
@@ -229,16 +229,16 @@
       [ FONTCOLOR <fontcolor> ] ;
       [ DYNAMICBACKCOLOR <dynamicbackcolor> ] ;
       [ DYNAMICFORECOLOR <dynamicforecolor> ] ;
-      [ ON GOTFOCUS <gotfocus> ] ;
-      [ ON CHANGE <change> ] ;
-      [ ON LOSTFOCUS <lostfocus> ] ;
-      [ ON DBLCLICK <dblclick> ] ;
-      [ ON CLICK <click> ] ;
-      [ ON HEADCLICK <aHeadClick> ] ;
+      [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
+      [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
+      [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
+      [ <dummy05: ONDBLCLICK, ON DBLCLICK> <dblclick> ] ;
+      [ <dummy06: ONCLICK, ON CLICK> <click> ] ;
+      [ <dummy07: ONHEADCLICK, ON HEADCLICK> <aHeadClick> ] ;
       [ <edit : EDIT> ] ;
       [ <ownerdata: VIRTUAL> ] ;
       [ ITEMCOUNT <itemcount> ] ;
-      [ ON QUERYDATA <dispinfo> ] ;
+      [ <dummy08: ONQUERYDATA, ON QUERYDATA> <dispinfo> ] ;
       [ <multiselect: MULTISELECT> ] ;
       [ <style: NOLINES> ] ;
       [ IMAGE <aImage> ] ;
@@ -251,14 +251,14 @@
       [ READONLY <aReadOnly> ] ;
       [ VALID <aValidFields> ] ;
       [ VALIDMESSAGES <aValidMessages> ] ;
-      [ ON EDITCELL <editcell> ] ;
+      [ <dummy09: ONEDITCELL, ON EDITCELL> <editcell> ] ;
       [ <noshowheaders: NOHEADERS> ] ;
-      [ <dummy2: WHEN, COLUMNWHEN> <aWhenFields> ] ;
+      [ <dummy10: WHEN, COLUMNWHEN> <aWhenFields> ] ;
       [ SUBCLASS <subclass> ] ;
       [ <disabled: DISABLED> ] ;
       [ <notabstop: NOTABSTOP> ] ;
       [ <invisible: INVISIBLE> ] ;
-      [ ON ENTER <enter> ] ;
+      [ <dummy11: ONENTER, ON ENTER> <enter> ] ;
       [ HEADERIMAGES <aHeaderImages> ] ;
       [ IMAGESALIGN <aImgAlign> ] ;
       [ <fullmove: FULLMOVE> ] ;
@@ -266,12 +266,12 @@
       [ SELECTEDCOLORS <aSelectedColors> ] ;
       [ EDITKEYS <aEditKeys> ] ;
       [ <checkboxes: CHECKBOXES> ] ;
-      [ ON CHECKCHANGE <checkchange> ] ;
+      [ <dummy12: ONCHECKCHANGE, ON CHECKCHANGE> <checkchange> ] ;
       [ <bffr: DOUBLEBUFFER, SINGLEBUFFER> ] ;
       [ <focus: NOFOCUSRECT, FOCUSRECT> ] ;
       [ <plm: PAINTLEFTMARGIN> ] ;
       [ <fixedcols: FIXEDCOLS> ] ;
-      [ ON ABORTEDIT <abortedit> ] ;
+      [ <dummy13: ONABORTEDIT, ON ABORTEDIT> <abortedit> ] ;
       [ <fixedwidths: FIXEDWIDTHS> ] ;
       [ BEFORECOLMOVE <bBefMov> ] ;
       [ AFTERCOLMOVE <bAftMov> ] ;
@@ -283,13 +283,13 @@
       [ <delete: DELETE> ] ;
       [ DELETEWHEN <bWhenDel> ] ;
       [ DELETEMSG <DelMsg> ] ;
-      [ ON DELETE <onDelete> ] ;
+      [ <dummy14: ONDELETE, ON DELETE> <onDelete> ] ;
       [ <nodelmsg: NODELETEMSG> ] ;
       [ <append : APPEND> ] ;
-      [ ON APPEND <onappend> ] ;
+      [ <dummy15: ONAPPEND, ON APPEND> <onappend> ] ;
       [ <nomodal : NOMODALEDIT> ] ;
       [ <edtctrls: FIXEDCONTROLS, DYNAMICCONTROLS> ] ;
-      [ ONHEADRCLICK <bheadrclick> ] ;
+      [ <dummy16: ONHEADRCLICK, ON HEADRCLICK> <bheadrclick> ] ;
    =>;
       [ <obj> := ] _OOHG_SelectSubClass(iif( <.bycell.>, TGridByCell(), iif( <.multiselect.>, TGridMulti(), TGrid() ) ), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, , , <w>, <h>, <headers>, ;

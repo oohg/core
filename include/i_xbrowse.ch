@@ -1,5 +1,5 @@
 /*
- * $Id: i_xbrowse.ch,v 1.32 2013-12-02 23:01:45 fyurisich Exp $
+ * $Id: i_xbrowse.ch,v 1.33 2014-04-01 22:58:53 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -99,7 +99,7 @@
 #translate MemVar . <AreaName> . <FieldName> =>  MemVar<AreaName><FieldName>
 
 #command @ <row>,<col> XBROWSE <name> ;
-      [ <dummy1: OF, PARENT> <parent> ] ;
+      [ <dummy01: OF, PARENT> <parent> ] ;
       [ OBJ <oObj> ] ;
       [ WIDTH <w> ] ;
       [ HEIGHT <h> ] ;
@@ -120,16 +120,16 @@
       [ DYNAMICBACKCOLOR <dynamicbackcolor> ] ;
       [ DYNAMICFORECOLOR <dynamicforecolor> ] ;
       [ FONTCOLOR <fontcolor> ] ;
-      [ ON GOTFOCUS <gotfocus> ] ;
-      [ ON CHANGE <change> ] ;
-      [ ON LOSTFOCUS <lostfocus> ] ;
-      [ ON DBLCLICK <dblclick> ] ;
-      [ ON CLICK <click> ] ;
+      [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
+      [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
+      [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
+      [ <dummy05: ONDBLCLICK, ON DBLCLICK> <dblclick> ] ;
+      [ <dummy06: ONCLICK, ON CLICK> <click> ] ;
       [ <edit : EDIT> ] ;
       [ <inplace : INPLACE> ] ;
       [ <append : APPEND> ] ;
-      [ ON HEADCLICK <aHeadClick> ] ;
-      [ <dummy2: WHEN, COLUMNWHEN> <aWhenFields> ] ;
+      [ <dummy07: ONHEADCLICK, ON HEADCLICK> <aHeadClick> ] ;
+      [ <dummy08: WHEN, COLUMNWHEN> <aWhenFields> ] ;
       [ VALID <aValidFields> ] ;
       [ VALIDMESSAGES <aValidMessages> ] ;
       [ READONLY <aReadOnly> ] ;
@@ -142,22 +142,22 @@
       [ HELPID <helpid> ] ;
       [ <break: BREAK> ] ;
       [ <rtl: RTL> ] ;
-      [ ON APPEND <onappend> ] ;
-      [ ON EDITCELL <editcell> ] ;
+      [ <dummy09: ONAPPEND, ON APPEND> <onappend> ] ;
+      [ <dummy10: ONEDITCELL, ON EDITCELL> <editcell> ] ;
       [ COLUMNCONTROLS <editcontrols> ] ;
       [ REPLACEFIELD <replacefields> ] ;
       [ SUBCLASS <subclass> ] ;
       [ <reccount: RECCOUNT> ] ;
       [ COLUMNINFO <columninfo> ] ;
       [ <noshowheaders: NOHEADERS> ] ;
-      [ ON ENTER <enter> ] ;
+      [ <dummy11: ONENTER, ON ENTER> <enter> ] ;
       [ <disabled: DISABLED> ] ;
       [ <notabstop: NOTABSTOP> ] ;
       [ <invisible: INVISIBLE> ] ;
       [ <descending: DESCENDING> ] ;
       [ DELETEWHEN <bWhenDel> ] ;
       [ DELETEMSG <DelMsg> ] ;
-      [ ON DELETE <onDelete> ] ;
+      [ <dummy12: ONDELETE, ON DELETE> <onDelete> ] ;
       [ HEADERIMAGES <aHeaderImages> ] ;
       [ IMAGESALIGN <aImgAlign> ] ;
       [ <fullmove: FULLMOVE> ] ;
@@ -167,7 +167,7 @@
       [ <focus: NOFOCUSRECT, FOCUSRECT> ] ;
       [ <plm: PAINTLEFTMARGIN> ] ;
       [ <fixedcols: FIXEDCOLS> ] ;
-      [ ON ABORTEDIT <abortedit> ] ;
+      [ <dummy13: ONABORTEDIT, ON ABORTEDIT> <abortedit> ] ;
       [ <fixedwidths: FIXEDWIDTHS> ] ;
       [ <blocks: FIXEDBLOCKS, DYNAMICBLOCKS> ] ;
       [ BEFORECOLMOVE <bBefMov> ] ;
@@ -181,7 +181,7 @@
       [ <edtctrls: FIXEDCONTROLS, DYNAMICCONTROLS> ] ;
       [ <noshowempty: NOSHOWEMPTYROW> ] ;
       [ <upcol: UPDATECOLORS> ] ;
-      [ ONHEADRCLICK <bheadrclick> ] ;
+      [ <dummy14: ONHEADRCLICK, ON HEADRCLICK> <bheadrclick> ] ;
 	=> ;
       [ <oObj> := ] _OOHG_SelectSubClass( TXBrowse(), [ <subclass>() ] ):Define( ;
             <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, <widths>, ;

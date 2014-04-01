@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.103 2014-03-26 01:12:27 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.104 2014-04-01 22:58:53 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -471,7 +471,11 @@ Memvariables
         => ;
         _OOHG_ActiveControlEditCell := <editcell>
 
-#xcommand ABORTEDIT <abortedit> ;
+#xcommand ON ABORTEDIT <abortedit> ;
+        => ;
+        _OOHG_ActiveControlAbortEdit := <abortedit>
+
+#xcommand ONABORTEDIT <abortedit> ;
         => ;
         _OOHG_ActiveControlAbortEdit := <abortedit>
 
@@ -2325,6 +2329,10 @@ GRID
         _OOHG_ActiveControlDynamicCtrls := <dynamic>
 
 #xcommand ONHEADRCLICK <bheadrclick> ;
+        => ;
+        _OOHG_ActiveControlOnHeaderRClick := <{bheadrclick}>
+
+#xcommand ON HEADRCLICK <bheadrclick> ;
         => ;
         _OOHG_ActiveControlOnHeaderRClick := <{bheadrclick}>
 
