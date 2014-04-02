@@ -1,11 +1,17 @@
 /*
- * $Id: ChangeLog,v 1.1238 2014-04-01 22:58:53 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1239 2014-04-02 00:03:24 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-04-01 21:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./Changelog
+     * Previous entry.
+   * doc/classes.txt
+     * Updated.
 
 2014-04-01 19:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_browse.ch
@@ -86,7 +92,7 @@
        Clip2Win. Further investigation is needed.
 
 2014-03-22 10:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * source/h_browse.prg
+   * source/h_grid.prg
      + Method ScrollToPrior: scrolls to the left until the prior 
        column-start is shown at grid's x := 0.
      + Method ScrollToNext: scrolls to the right until the next
