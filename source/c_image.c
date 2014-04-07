@@ -1,5 +1,5 @@
 /*
- * $Id: c_image.c,v 1.34 2013-12-31 18:50:24 guerra000 Exp $
+ * $Id: c_image.c,v 1.35 2014-04-07 00:07:09 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -480,6 +480,14 @@ HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, 
       if( ! hSource )
       {
          hSource = FindResource( GetModuleHandle( NULL ), cImage, "ICON" );
+      }
+      if( ! hSource )
+      {
+         hSource = FindResource( GetModuleHandle( NULL ), cImage, "PNG" );
+      }
+      if( ! hSource )
+      {
+         hSource = FindResource( GetModuleHandle( NULL ), cImage, "TIFF" );
       }
       if( hSource )
       {
