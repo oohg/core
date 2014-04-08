@@ -1,5 +1,5 @@
 /*
- * $Id: i_richeditbox.ch,v 1.8 2013-08-22 22:25:07 fyurisich Exp $
+ * $Id: i_richeditbox.ch,v 1.9 2014-04-08 22:05:44 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -122,6 +122,8 @@
             [ <disabled: DISABLED> ] ;
             [ <nohidesel: NOHIDESEL> ] ;
             [ FOCUSEDPOS <focusedpos> ] ;
+            [ <novscroll: NOVSCROLL> ] ;
+            [ <nohscroll: NOHSCROLL> ] ;
    =>;
             [ <obj> := ] _OOHG_SelectSubClass( TEditRich(), [ <subclass>() ] ): ;
                   Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <value>, <f>, ;
@@ -129,7 +131,7 @@
                   <.readonly.>, <.break.>, <helpid>, <.invisible.>, <.notabstop.>, <.bold.>, ;
                   <.italic.>, <.underline.>, <.strikeout.>, <(field)> , <backcolor>, ;
                   <.rtl.>, <.disabled.>, <{selchange}>, <fontcolor>, <.nohidesel.>, ;
-                  <focusedpos> )
+                  <focusedpos>, <.novscroll.>, <.nohscroll.> )
 
 //SPLITBOX VERSION
 
@@ -164,10 +166,12 @@
             [ <disabled: DISABLED> ] ;
             [ <nohidesel: NOHIDESEL> ] ;
             [ FOCUSEDPOS <focusedpos> ] ;
+            [ <novscroll: NOVSCROLL> ] ;
+            [ <nohscroll: NOHSCROLL> ] ;
    =>;
             [ <obj> := ] _OOHG_SelectSubClass( TEditRich(), [ <subclass>() ] ): ;
                   Define( <(name)>, <(parent)>, , , <w>, <h>, <value>, <f>, <s>, <tooltip>, ;
                   <maxlenght>, <{gotfocus}>, <{change}>, <{lostfocus}>, <.readonly.>, <.break.>, ;
                   <helpid>, <.invisible.>, <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, ;
                   <.strikeout.>, <(field)>, <backcolor>, <.rtl.>, <.disabled.>, <{selchange}>, ;
-                  <fontcolor>, <.nohidesel.>, <focusedpos> )
+                  <fontcolor>, <.nohidesel.>, <focusedpos>, <.novscroll.>, <.nohscroll.> )

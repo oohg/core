@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.104 2014-04-01 22:58:53 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.105 2014-04-08 22:05:44 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1995,7 +1995,10 @@ RICH EDIT BOX
         _OOHG_ActiveControlBreak       := .F.    ;;
         _OOHG_ActiveControlField       := Nil    ;;
         _OOHG_ActiveControlOnSelChange := Nil    ;;
-        _OOHG_ActiveControlNoHideSel   := Nil
+        _OOHG_ActiveControlNoHideSel   := Nil    ;;
+        _OOHG_ActiveControlNoVScroll   := .F.    ;;
+        _OOHG_ActiveControlNoHScroll   := .F.    ;;
+        _OOHG_ActiveControlFocusedPos  := Nil
 
 #xcommand NOHIDESEL <nohidesel> ;
         => ;
@@ -2041,7 +2044,10 @@ RICH EDIT BOX
                 _OOHG_ActiveControlDisabled, ;
                 _OOHG_ActiveControlOnSelChange, ;
                 _OOHG_ActiveControlFontColor, ;
-                _OOHG_ActiveControlNoHideSel )
+                _OOHG_ActiveControlNoHideSel, ;
+                _OOHG_ActiveControlFocusedPos, ;
+                _OOHG_ActiveControlNoVScroll, ;
+                _OOHG_ActiveControlNoHScroll )
 
 /*----------------------------------------------------------------------------
 LABEL

@@ -1,5 +1,5 @@
 /*
- * $Id: h_richeditbox.prg,v 1.29 2014-02-15 01:17:23 guerra000 Exp $
+ * $Id: h_richeditbox.prg,v 1.30 2014-04-08 22:05:45 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -123,7 +123,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
                fontsize, tooltip, maxlenght, gotfocus, change, lostfocus, ;
                readonly, break, HelpId, invisible, notabstop, bold, italic, ;
                underline, strikeout, field, backcolor, lRtl, lDisabled, ;
-               selchange, fontcolor, nohidesel, OnFocusPos ) CLASS TEditRich
+               selchange, fontcolor, nohidesel, OnFocusPos, novscroll, ;
+               nohscroll ) CLASS TEditRich
 *-----------------------------------------------------------------------------*
 Local ControlHandle, nStyle
 
@@ -135,8 +136,10 @@ Local ControlHandle, nStyle
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, .T., lRtl )
 
    nStyle := ::InitStyle( ,, Invisible, NoTabStop, lDisabled ) + ;
-             if( ValType( readonly ) == "L" .AND. readonly, ES_READONLY, 0 ) + ;
-             if( ValType( nohidesel ) == "L" .AND. nohidesel, ES_NOHIDESEL, 0 )
+             if( HB_IsLogical( readonly ) .AND. readonly, ES_READONLY, 0 ) + ;
+             if( HB_IsLogical( nohidesel ) .AND. nohidesel, ES_NOHIDESEL, 0 ) + ;
+             if( HB_IsLogical( novscroll ) .AND. novscroll, ES_AUTOVSCROLL, WS_VSCROLL ) + ;
+             if( HB_IsLogical( nohscroll ) .AND. nohscroll, 0, WS_HSCROLL )
 
    ::SetSplitBoxInfo( Break, )
    ControlHandle := InitRichEditBox( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, maxlenght, ::lRtl )
@@ -195,7 +198,7 @@ HB_FUNC( INITRICHEDITBOX )
 
    hwnd = HWNDparam( 1 );
 
-   Style = ES_MULTILINE | ES_WANTRETURN | WS_CHILD | WS_VSCROLL | WS_HSCROLL | hb_parni( 7 );
+   Style = ES_MULTILINE | ES_WANTRETURN | WS_CHILD | hb_parni( 7 );
 
    Mask = ENM_CHANGE | ENM_SELCHANGE;
 
@@ -207,7 +210,19 @@ HB_FUNC( INITRICHEDITBOX )
               hwnd, (HMENU) HWNDparam( 2 ), GetModuleHandle( NULL ), NULL );
 
       lpfnOldWndProc = ( WNDPROC ) SetWindowLong( hwndRE, GWL_WNDPROC, ( LONG ) SubClassFunc );
-      SendMessage( hwndRE, EM_LIMITTEXT, ( WPARAM ) hb_parni( 8 ), 0 );
+
+      if( hb_parni( 8 ) != 0 )
+      {
+         if( hb_parni( 8 ) > 64000 )
+         {
+            SendMessage( hwndRE, EM_EXLIMITTEXT, ( WPARAM) 0, ( LPARAM ) hb_parni( 8 ) );
+         }
+         else
+         {
+            SendMessage( hwndRE, EM_LIMITTEXT, ( WPARAM) hb_parni( 8 ), ( LPARAM ) 0 );
+         }
+      }
+
       SendMessage( hwndRE, EM_SETEVENTMASK, 0, ( LPARAM ) Mask );
    }
 

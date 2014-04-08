@@ -1,11 +1,34 @@
 /*
- * $Id: ChangeLog,v 1.1240 2014-04-07 00:07:08 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1241 2014-04-08 22:05:44 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-04-08 19:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_altsyntax.ch
+     + Support for clauses FOCUSEDPOS, NOVSCROLL and NOHSCROLL
+       in DEFINE RICHEDITBOX.
+   * include/i_windefs.ch
+     + EM_EXLIMITTEXT and EM_EXLINEFROMCHAR constants.
+   * include/i_richeditbox.ch
+     + Clauses NOVSCROLL and NOHSCROLL.
+   * source/h_richeditbox.prg
+     ! Function InitRicheditBox does not handle correctly MaxLength
+       greater than 64000.
+     + Clauses NOVSCROLL and NOHSCROLL.
+   * source/h_textbox.prg
+     ! Method GetLineFromChar does not handle correctly char number
+       greater than 64000.
+     ! Method MaxLength does not handle correctly length greater than
+       64000.
+     ! Function InitTextBox does not handle correctly MaxLength greater
+       than 64000.
+   ; Direct use of DATA nInsertType of TText, TEdit and
+     TEditRich classes causes wrong control's behaviour.
+     Use method InsertStatus instead.
 
 2014-04-06 21:06 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/c_image.c

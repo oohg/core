@@ -1,5 +1,5 @@
 /*
- * $Id: h_textbox.prg,v 1.92 2014-03-30 19:39:42 fyurisich Exp $
+ * $Id: h_textbox.prg,v 1.93 2014-04-08 22:05:45 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -148,7 +148,7 @@ CLASS TText FROM TLabel
    METHOD GetLineIndex( nLine )        BLOCK { |Self,nLine| SendMessage( ::hWnd, EM_LINEINDEX, nLine, 0 ) }
    METHOD GetFirstVisibleLine          BLOCK { |Self| SendMessage( ::hWnd, EM_GETFIRSTVISIBLELINE, 0, 0 ) }
    METHOD GetLineCount                 BLOCK { |Self| SendMessage( ::hWnd, EM_GETLINECOUNT, 0, 0 ) }
-   METHOD GetLineFromChar( nChar )     BLOCK { |Self,nChar| SendMessage( ::hWnd, EM_LINEFROMCHAR, nChar, 0) }
+   METHOD GetLineFromChar( nChar )     
    METHOD GetCurrentLine               BLOCK { |Self| ::GetLineFromChar( -1 ) }
    METHOD GetLineLength( nLine )       BLOCK { |Self,nLine| SendMessage( ::hWnd, EM_LINELENGTH, ::GetLineIndex( nLine ), 0 ) }
 
@@ -397,7 +397,11 @@ METHOD MaxLength( nLen ) CLASS TText
 *------------------------------------------------------------------------------*
    If HB_IsNumeric( nLen )
       ::nMaxLength := If( nLen >= 1, nLen, 0 )
-      SendMessage( ::hWnd, EM_LIMITTEXT, ::nMaxLength, 0 )
+      If ::nMaxLength > 64000
+         SendMessage( ::hWnd, EM_EXLIMITTEXT, 0, ::nMaxLength )
+      Else
+         SendMessage( ::hWnd, EM_LIMITTEXT, ::nMaxLength, 0 )
+      endif
    EndIf
 Return SendMessage( ::hWnd, EM_GETLIMITTEXT, 0, 0 )
 
@@ -506,7 +510,17 @@ METHOD InsertStatus( lValue ) CLASS TText
    EndIf
 Return ::lInsert
 
+*------------------------------------------------------------------------------*
+METHOD GetLineFromChar( nChar ) CLASS TText
+*------------------------------------------------------------------------------*
+   Local nLine
 
+   If nChar > 64000
+      nLine := SendMessage( ::hWnd, EM_EXLINEFROMCHAR, 0, nChar)
+   Else
+      nLine := SendMessage( ::hWnd, EM_LINEFROMCHAR, nChar, 0)
+   EndIf
+Return nLine
 
 
 #pragma BEGINDUMP
@@ -517,6 +531,8 @@ Return ::lInsert
 #include <windows.h>
 #include <commctrl.h>
 #include "oohg.h"
+
+#define EM_EXLIMITTEXT (WM_USER+53)
 
 static WNDPROC lpfnOldWndProc = 0;
 
@@ -552,7 +568,14 @@ HB_FUNC( INITTEXTBOX )
 
    if( hb_parni( 8 ) != 0 )
    {
-      SendMessage( hedit, ( UINT ) EM_LIMITTEXT, ( WPARAM) hb_parni( 8 ), ( LPARAM ) 0 );
+      if( hb_parni( 8 ) > 64000 )
+      {
+         SendMessage( hedit, ( UINT ) EM_EXLIMITTEXT, ( WPARAM) 0, ( LPARAM ) hb_parni( 8 ) );
+      }
+      else
+      {
+         SendMessage( hedit, ( UINT ) EM_LIMITTEXT, ( WPARAM) hb_parni( 8 ), ( LPARAM ) 0 );
+      }
    }
 
    lpfnOldWndProc = ( WNDPROC ) SetWindowLong( hedit, GWL_WNDPROC, ( LONG ) SubClassFunc );
