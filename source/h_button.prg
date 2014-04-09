@@ -1,5 +1,5 @@
 /*
- * $Id: h_button.prg,v 1.61 2013-09-28 16:26:18 fyurisich Exp $
+ * $Id: h_button.prg,v 1.62 2014-04-09 02:45:48 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -327,7 +327,7 @@ METHOD RePaint() CLASS TButton
       ::AuxHandle := NIL
       ::TControl:SizePos()
       IF OSisWinXPorLater() .AND. ValidHandler( ::hImage ) .AND. ( LEN( ::Caption ) > 0 .OR. ::lThemed )
-         SetImageXP( ::hWnd, ::hImage, ::nAlign, -1, ::aImageMargin[1], ::aImageMargin[2], ::aImageMargin[3], ::aImageMargin[4], ::Stretch, ::AutoFit )
+         ::ImageList := SetImageXP( ::hWnd, ::hImage, ::nAlign, -1, ::aImageMargin[1], ::aImageMargin[2], ::aImageMargin[3], ::aImageMargin[4], ::Stretch, ::AutoFit )
          ::ReDraw()
       ELSEIF ::Stretch .OR. ::AutoFit
          ::AuxHandle := _OOHG_SetBitmap( Self, ::hImage, BM_SETIMAGE, ::Stretch, ::AutoFit )
@@ -535,6 +535,9 @@ HB_FUNC( SETIMAGEXP )
       bi.uAlign = hb_parni( 3 );
       SendMessage( hWnd, BCM_SETIMAGELIST, 0, ( LPARAM ) &bi );
       DeleteObject( hBmp2 );
+      // This handle must be explicitly released !!!
+      hb_retnl( (LONG) himl );
+
    }
 }
 

@@ -1,11 +1,39 @@
 /*
- * $Id: ChangeLog,v 1.1241 2014-04-08 22:05:44 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1242 2014-04-09 02:45:48 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-04-08 23:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * doc/classes.txt
+     * Updated.
+   * source\h_grid.prg
+     * Initial value of DATAs HeaderImageList and HeaderFontHandle.
+     + DATAs ImageListColor and ImageListFlags.
+     + Method AddBitMap.
+     * Method Define uses new method AddBitMap.
+     * Method LoadHeaderImages uses DATAs ImageListColor and
+       ImageListFlags instead of constant values.
+     * x:ImageList != 0 replaced with ValidHandler( x:ImageList ) in
+       TGridControlComboBox:CreateControl(),
+       TGridControlComboBoxText:CreateControl(),
+       TGridControlImageList:New(),
+       TGridControlImageList:CreateControl(), and
+       TGridControlImageData:CreateControl().
+     % Methods TGridControlImageList:CreateControl() and
+       TGridControlImageData:CreateControl().
+   * source/h_controlmisc.prg
+     ! Method AddBitMap fails adding an array of images to an
+       existing imagelist.
+     + Method ClearBitMaps to release control's imagelist.
+   * source\h_button.prg
+     * SetImageXP now returns a handle to the imagelist
+       associated with the control so it can disposed when the
+       control is released.
+     ! Memory leak when function SetImageXP is used.
 
 2014-04-08 19:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include/i_altsyntax.ch

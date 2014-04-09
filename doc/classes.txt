@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.73 2014-04-02 00:03:25 fyurisich Exp $
+ * $Id: classes.txt,v 1.74 2014-04-09 02:45:48 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -494,6 +494,7 @@ CLASS TCONTROL FROM TWINDOW
    DATA XOLDVALUE                 INIT NIL
 
    METHOD ADDBITMAP
+   METHOD CLEARBITMAPS
    METHOD COL                     SETGET
    METHOD CONTAINERCOL        
    METHOD CONTAINERHWND       
@@ -893,8 +894,10 @@ CLASS TGRID FROM TCONTROL
    DATA GRIDBACKCOLOR             INIT {}
    DATA GRIDFORECOLOR             INIT {}
    DATA GRIDSELECTEDCOLORS        INIT {}
-   DATA HEADERFONTHANDLE          INIT NIL
-   DATA HEADERIMAGELIST           INIT NIL
+   DATA HEADERFONTHANDLE          INIT 0
+   DATA HEADERIMAGELIST           INIT 0
+   DATA IMAGELISTCOLOR            INIT CLR_DEFAULT
+   DATA IMAGELISTFLAGS            INIT LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
    DATA INPLACE                   INIT .F.
    DATA LAPPENDMODE               INIT .F.
    DATA LBEGINTRACK               INIT .F. 
@@ -937,6 +940,7 @@ CLASS TGRID FROM TCONTROL
    DATA VALID                     INIT NIL
    DATA VALIDMESSAGES             INIT NIL
 
+   METHOD ADDBITMAP
    METHOD ADDCOLUMN
    METHOD ADDITEM
    METHOD APPEND                  SETGET

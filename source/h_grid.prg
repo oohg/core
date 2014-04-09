@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.239 2014-04-01 22:58:53 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.240 2014-04-09 02:45:49 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -136,7 +136,7 @@ CLASS TGrid FROM TControl
    DATA lEditMode              INIT .F.
    DATA lAppendMode            INIT .F.
    DATA bOnEnter               INIT Nil
-   DATA HeaderImageList        INIT Nil
+   DATA HeaderImageList        INIT 0
    DATA aHeaderImage           INIT {}
    DATA aHeaderImageAlign      INIT {}
    DATA GridSelectedColors     INIT {}
@@ -170,13 +170,15 @@ CLASS TGrid FROM TControl
    DATA AllowAppend            INIT .F.
    DATA bPosition              INIT 0
    DATA lNoModal               INIT .F.
-   DATA HeaderFontHandle       INIT Nil
+   DATA HeaderFontHandle       INIT 0
    DATA lDividerDblclick       INIT .F.
    DATA lTracking              INIT .F.
    DATA lBeginTrack            INIT .F.
    DATA lEndTrack              INIT .F.
    DATA nVisibleItems          INIT 0
    DATA bHeadRClick            INIT Nil
+   DATA ImageListColor         INIT CLR_DEFAULT
+   DATA ImageListFlags         INIT LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
 
    METHOD Define
    METHOD Define2
@@ -255,6 +257,7 @@ CLASS TGrid FROM TControl
    METHOD Append               SETGET
    METHOD HeaderSetFont
    METHOD FixControls          SETGET
+   METHOD AddBitMap
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -310,7 +313,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                 bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
                 lFixedCtrls, bHeadRClick ) CLASS TGrid
 *-----------------------------------------------------------------------------*
-Local ControlHandle, aImageList, i
+Local ControlHandle, i
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, .t., lRtl )
 
@@ -395,14 +398,7 @@ Local ControlHandle, aImageList, i
    ControlHandle := InitListView( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, '', 0, If( ::lNoGrid, 0, 1 ), ownerdata, itemcount, nStyle, ::lRtl, ::lCheckBoxes, OSisWinXPorLater() .AND. lDblBffr )
 
    If HB_IsArray( aImage )
-//      aImageList := ImageList_Init( aImage, CLR_NONE, LR_LOADTRANSPARENT )
-      aImageList := ImageList_Init( aImage, CLR_DEFAULT, LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS )
-      SendMessage( ControlHandle, ::SetImageListCommand, ::SetImageListWParam, aImageList[ 1 ] )
-      ::ImageList := aImageList[ 1 ]
-      If ASCAN( ::Picture, .T. ) == 0
-         ::Picture[ 1 ] := .T.
-         ::aWidths[ 1 ] := Max( ::aWidths[ 1 ], aImageList[ 2 ] + If( ::lCheckBoxes, GetStateListWidth( ControlHandle ) + 4, 4 ) ) // Set Column 1 width to Bitmap width plus checkboxes
-      EndIf
+      ::AddBitMap( aImage )
    ElseIf ::lCheckBoxes
       ::aWidths[ 1 ] := Max( ::aWidths[ 1 ], GetStateListWidth( ControlHandle ) + 4 ) // Set Column 1 width to checkboxes width
    EndIf
@@ -488,6 +484,42 @@ Local ControlHandle, aImageList, i
    ASSIGN ::bHeadRClick    VALUE bHeadRClick    TYPE "B"
 
 Return Self
+
+*-----------------------------------------------------------------------------*
+METHOD AddBitMap( uImage ) CLASS TGrid
+*-----------------------------------------------------------------------------*
+Local aImageList, nPos, nCount
+   If ! ValidHandler( ::ImageList )
+      If HB_IsArray( uImage )
+         aImageList := ImageList_Init( uImage, ::ImageListColor, ::ImageListFlags )
+      Else
+         aImageList := ImageList_Init( { uImage }, ::ImageListColor, ::ImageListFlags )
+      EndIf
+      If ValidHandler( aImageList[ 1 ] )
+         ::ImageList := aImageList[ 1 ]
+         nPos := 1
+         SendMessage( ::hWnd, ::SetImageListCommand, ::SetImageListWParam, ::ImageList )
+         If ASCAN( ::Picture, .T. ) == 0
+            ::Picture[ 1 ] := .T.
+            ::aWidths[ 1 ] := Max( ::aWidths[ 1 ], aImageList[ 2 ] + If( ::lCheckBoxes, GetStateListWidth( ::hWnd ) + 4, 4 ) ) // Set Column 1 width to Bitmap width plus checkboxes
+         EndIf
+      Else
+         nPos := 0
+      EndIf
+   Else
+      nCount := ImageList_GetImageCount( ::ImageList )
+      If HB_IsArray( uImage )
+         nPos := ImageList_Add( ::ImageList, uImage[ 1 ], ::ImageListFlags, ::ImageListColor )
+         AEVAL( uImage, { |c| ImageList_Add( ::ImageList, c, ::ImageListFlags, ::ImageListColor ) }, 2 )
+      Else
+         nPos := ImageList_Add( ::ImageList, uImage, ::ImageListFlags, ::ImageListColor )
+      EndIf
+      If nCount == ImageList_GetImageCount( ::ImageList )
+         nPos := 0
+      EndIf
+      SendMessage( ::hWnd, ::SetImageListCommand, ::SetImageListWParam, ::ImageList )
+   Endif
+Return nPos
 
 *-----------------------------------------------------------------------------*
 METHOD FirstVisibleItem CLASS TGrid
@@ -665,7 +697,7 @@ Local i, nPos, nCount, aImageList, nImagesWidth, aHeaderImage, aImageName := {}
    If ValidHandler( ::HeaderImageList )
       ImageList_Destroy( ::HeaderImageList )
    EndIf
-   ::HeaderImageList := Nil
+   ::HeaderImageList := 0
 
    // Load images into imagelist
    ::aHeaderImage := aFill( Array( Len( ::aHeaders ) ), 0 )
@@ -679,7 +711,7 @@ Local i, nPos, nCount, aImageList, nImagesWidth, aHeaderImage, aImageName := {}
                   ::aHeaderImage[ i ] := nPos
                Else
                   nCount := ImageList_GetImageCount( ::HeaderImageList )
-                  nPos := ImageList_Add( ::HeaderImageList, aHeaderImage[ i ], LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS, CLR_DEFAULT )
+                  nPos := ImageList_Add( ::HeaderImageList, aHeaderImage[ i ], ::ImageListFlags, ::ImageListColor )
                   If ImageList_GetImageCount( ::HeaderImageList ) == nCount
                      nPos := 0
                   EndIf
@@ -693,7 +725,7 @@ Local i, nPos, nCount, aImageList, nImagesWidth, aHeaderImage, aImageName := {}
                   EndIf
                EndIf
             Else
-               aImageList := ImageList_Init( { aHeaderImage[ i ] }, CLR_DEFAULT, LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS )
+               aImageList := ImageList_Init( { aHeaderImage[ i ] }, ::ImageListColor, ::ImageListFlags )
 
                If ValidHandler( aImageList[ 1 ] )
                   ::HeaderImageList := aImageList[ 1 ]
@@ -2822,12 +2854,12 @@ METHOD Release() CLASS TGrid
 
    If ValidHandler( ::HeaderImageList )
       ImageList_Destroy( ::HeaderImageList )
-      ::HeaderImageList := Nil
+      ::HeaderImageList := 0
    EndIf
 
    If ValidHandler( ::HeaderFontHandle)
       DeleteObject( ::HeaderFontHandle )
-      ::HeaderFontHandle := Nil
+      ::HeaderFontHandle := 0
    EndIf
 
 Return ::Super:Release()
@@ -5074,7 +5106,7 @@ METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGrid
    Empty( nHeight )
    ::Refresh()
    @ nRow,nCol COMBOBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth VALUE uValue ITEMS ::aItems VALUESOURCE ( ::aValues )
-   If ! Empty( ::oGrid ) .AND. ::oGrid:ImageList != 0
+   If ! Empty( ::oGrid ) .AND. ValidHandler( ::oGrid:ImageList )
       ::oControl:ImageList := ImageList_Duplicate( ::oGrid:ImageList )
    EndIf
 Return ::oControl
@@ -5162,7 +5194,7 @@ METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGrid
          @ nRow,nCol COMBOBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth VALUE uValue ITEMS ::aItems
       EndIf
    EndIf
-   If ! Empty( ::oGrid ) .AND. ::oGrid:ImageList != 0
+   If ! Empty( ::oGrid ) .AND. ValidHandler( ::oGrid:ImageList )
       ::oControl:ImageList := ImageList_Duplicate( ::oGrid:ImageList )
    EndIf
 Return ::oControl
@@ -5295,7 +5327,7 @@ COLUMNCONTROLS syntax:
 */
 METHOD New( oGrid, lButtons, aImages, lNoModal ) CLASS TGridControlImageList
    ::oGrid := oGrid
-   If ! Empty( ::oGrid ) .AND. ::oGrid:ImageList != 0
+   If ! Empty( ::oGrid ) .AND. ValidHandler( ::oGrid:ImageList )
       ::nDefHeight := ImageList_Size( ::oGrid:ImageList )[ 2 ] + 6
    EndIf
 
@@ -5319,13 +5351,13 @@ METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGrid
    If ValType( uValue ) == "C"
       uValue := Val( uValue )
    EndIf
-   If ! Empty( ::oGrid ) .AND. ::oGrid:ImageList != 0
+   If ! Empty( ::oGrid ) .AND. ValidHandler( ::oGrid:ImageList )
       @ nRow,nCol COMBOBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth VALUE 0 ITEMS {} IMAGE {} TEXTHEIGHT ImageList_Size( ::oGrid:ImageList )[ 2 ]
       ::oControl:ImageList := ImageList_Duplicate( ::oGrid:ImageList )
+      aEval( Array( ImageList_GetImageCount( ::oGrid:ImageList ) ), { |x,i| ::oControl:AddItem( i - 1 ), x } )
    Else
       @ nRow,nCol COMBOBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth VALUE 0 ITEMS {}
    EndIf
-   aEval( Array( ImageList_GetImageCount( ::oGrid:ImageList ) ), { |x,i| ::oControl:AddItem( i - 1 ), x } )
    ::oControl:Value := uValue + 1
 Return ::oControl
 
@@ -5377,21 +5409,22 @@ Return ::Super:CreateWindow( uValue, nRow - 3, nCol - 3, nWidth + 6, nHeight + 6
 
 METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGridControlImageData
 Local oCData, oCImage, nSize
-   Empty( nHeight )
    If ValType( uValue[ 2 ] ) == "C"
       uValue[ 2 ] := Val( uValue[ 2 ] )
    EndIf
-   nSize := ImageList_Size( ::oGrid:ImageList )[ 1 ] + LoWord( GetDialogBaseUnits() ) + GetVScrollBarWidth()
-   If ! Empty( ::oGrid ) .AND. ::oGrid:ImageList != 0
+   nSize := LoWord( GetDialogBaseUnits() ) + GetVScrollBarWidth()
+   nHeight := 6
+   If ! Empty( ::oGrid ) .AND. ValidHandler( ::oGrid:ImageList )
+      nSize += ImageList_Size( ::oGrid:ImageList )[ 1 ]
+      nHeight += ImageList_Size( ::oGrid:ImageList )[ 2 ]
       @ nRow,nCol COMBOBOX 0 OBJ oCImage PARENT ( cWindow ) WIDTH nSize VALUE 0 ITEMS {} IMAGE {} TEXTHEIGHT ImageList_Size( ::oGrid:ImageList )[ 2 ]
       oCImage:ImageList := ImageList_Duplicate( ::oGrid:ImageList )
+      aEval( Array( ImageList_GetImageCount( ::oGrid:ImageList ) ), { |x,i| oCImage:AddItem( i - 1 ), x } )
    Else
       @ nRow,nCol COMBOBOX 0 OBJ oCImage PARENT ( cWindow ) WIDTH nSize VALUE 0 ITEMS {}
    EndIf
-   oCData := ::oData:CreateControl( uValue[ 1 ], cWindow, nRow, nCol + nSize, nWidth - nSize, ImageList_Size( ::oGrid:ImageList )[ 2 ] + 6 )
+   oCData := ::oData:CreateControl( uValue[ 1 ], cWindow, nRow, nCol + nSize, nWidth - nSize, nHeight )
    ::oControl := { oCData, oCImage }
-
-   aEval( Array( ImageList_GetImageCount( ::oGrid:ImageList ) ), { |x,i| oCImage:AddItem( i - 1 ), x } )
    oCImage:Value := uValue[ 2 ] + 1
 Return ::oControl
 

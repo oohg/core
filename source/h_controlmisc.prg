@@ -1,5 +1,5 @@
 /*
- * $Id: h_controlmisc.prg,v 1.143 2014-03-30 19:39:42 fyurisich Exp $
+ * $Id: h_controlmisc.prg,v 1.144 2014-04-09 02:45:49 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1290,7 +1290,7 @@ CLASS TControl FROM TWindow
    METHOD SetFocus           BLOCK { |Self| _OOHG_lSettingFocus := .T., GetFormObjectByHandle( ::ContainerhWnd ):LastFocusedControl := ::hWnd, ::Super:SetFocus() }
    METHOD SetVarBlock
    METHOD AddBitMap
-
+   METHOD ClearBitMaps
    METHOD DoEvent
    METHOD DoEventMouseCoords
    METHOD DoLostFocus
@@ -1749,6 +1749,15 @@ METHOD SetVarBlock( cField, uValue ) CLASS TControl
 Return nil
 
 *-----------------------------------------------------------------------------*
+METHOD ClearBitMaps CLASS TControl
+*-----------------------------------------------------------------------------*
+   If ValidHandler( ::ImageList )
+      ImageList_Destroy( ::ImageList )
+   EndIf
+   ::ImageList := 0
+Return Nil
+
+*-----------------------------------------------------------------------------*
 METHOD AddBitMap( uImage ) CLASS TControl
 *-----------------------------------------------------------------------------*
 Local nPos, nCount
@@ -1768,7 +1777,7 @@ Local nPos, nCount
       nCount := ImageList_GetImageCount( ::ImageList )
       If HB_IsArray( uImage )
          nPos := ImageList_Add( ::ImageList, uImage[ 1 ], ::ImageListFlags, ::ImageListColor )
-         AEVAL( ::ImageList, { |c| ImageList_Add( ::ImageList, c, ::ImageListFlags, ::ImageListColor ) }, 2 )
+         AEVAL( uImage, { |c| ImageList_Add( ::ImageList, c, ::ImageListFlags, ::ImageListColor ) }, 2 )
       Else
          nPos := ImageList_Add( ::ImageList, uImage, ::ImageListFlags, ::ImageListColor )
       EndIf
