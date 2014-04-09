@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.109 2014-02-15 01:17:23 guerra000 Exp $
+ * $Id: h_xbrowse.prg,v 1.110 2014-04-09 21:54:29 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1781,29 +1781,41 @@ METHOD AddColumn( nColIndex, xField, cHeader, nWidth, nJustify, uForeColor, ;
                   uValid, uValidMessage, uWhen, cHeaderImage, nHeaderImageAlign, ;
                   uReplaceField, lRefresh ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
-LOCAL nRet
+LOCAL nRet, nColumns := Len( ::aHeaders ) + 1
    // Set Default Values
-   If ! HB_IsNumeric( nColIndex ) .OR. nColIndex > Len( ::aHeaders ) + 1
-      nColIndex := Len( ::aHeaders ) + 1
+   If ! HB_IsNumeric( nColIndex ) .OR. nColIndex > nColumns
+      nColIndex := nColumns
    ElseIf nColIndex < 1
       nColIndex := 1
    EndIf
 
-   ASIZE( ::aFields, LEN( ::aFields ) + 1 )
+   ASIZE( ::aFields, nColumns )
    AINS( ::aFields, nColIndex )
    ::aFields[ nColIndex ] := xField
 
+   // Update before calling ::ColumnBlock
+   If ValType( uEditControl ) != Nil .OR. HB_IsArray( ::EditControls )
+      If ! HB_IsArray( ::EditControls )
+         ::EditControls := Array( nColumns )
+      ElseIf Len( ::EditControls ) < nColumns
+         aSize( ::EditControls, nColumns )
+      EndIf
+      aIns( ::EditControls, nColIndex )
+      ::EditControls[ nColIndex ] := uEditControl
+   EndIf
+
+   // Update after updating ::EditControls
    If ::FixBlocks()
-      ASIZE( ::aColumnBlocks, LEN( ::aFields ) )
+      ASIZE( ::aColumnBlocks, nColumns )
       AINS( ::aColumnBlocks, nColIndex )
       ::aColumnBlocks[ nColIndex ] := ::ColumnBlock( nColIndex )
    EndIf
 
    If HB_IsArray( ::aReplaceField )
-      ASIZE( ::aReplaceField, LEN( ::aFields ) )
+      ASIZE( ::aReplaceField, nColumns )
       AINS( ::aReplaceField, nColIndex )
    ELSE
-      ::aReplaceField := ARRAY( LEN( ::aFields ) )
+      ::aReplaceField := ARRAY( nColumns )
    EndIf
    ::aReplaceField[ nColIndex ] := uReplaceField
 
@@ -1850,16 +1862,27 @@ METHOD SetColumn( nColIndex, xField, cHeader, nWidth, nJustify, uForeColor, ;
                   uValid, uValidMessage, uWhen, cHeaderImage, nHeaderImageAlign, ;
                   uReplaceField, lRefresh ) CLASS TXBrowse
 *-----------------------------------------------------------------------------*
-LOCAL nRet
+LOCAL nRet, nColumns := Len( ::aHeaders )
    // Set Default Values
-   If ! HB_IsNumeric( nColIndex ) .OR. nColIndex > Len( ::aHeaders ) + 1
-      nColIndex := Len( ::aHeaders ) + 1
+   If ! HB_IsNumeric( nColIndex ) .OR. nColIndex > nColumns
+      nColIndex := nColumns
    ElseIf nColIndex < 1
       nColIndex := 1
    EndIf
 
    ::aFields[ nColIndex ] := xField
 
+   // Update before calling ::ColumnBlock
+   If ValType( uEditControl ) != Nil .OR. HB_IsArray( ::EditControls )
+      If ! HB_IsArray( ::EditControls )
+         ::EditControls := Array( nColumns )
+      ElseIf Len( ::EditControls ) < nColumns
+         aSize( ::EditControls, nColumns )
+      EndIf
+      ::EditControls[ nColIndex ] := uEditControl
+   EndIf
+
+   // Update after updating ::EditControls
    If ::FixBlocks()
       ::aColumnBlocks[ nColIndex ] := ::ColumnBlock( nColIndex )
    EndIf

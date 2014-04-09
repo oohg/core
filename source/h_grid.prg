@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.240 2014-04-09 02:45:49 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.241 2014-04-09 21:54:29 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -313,7 +313,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                 bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
                 lFixedCtrls, bHeadRClick ) CLASS TGrid
 *-----------------------------------------------------------------------------*
-Local ControlHandle, i
+Local ControlHandle, aImageList, i
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, .t., lRtl )
 
@@ -398,7 +398,16 @@ Local ControlHandle, i
    ControlHandle := InitListView( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, '', 0, If( ::lNoGrid, 0, 1 ), ownerdata, itemcount, nStyle, ::lRtl, ::lCheckBoxes, OSisWinXPorLater() .AND. lDblBffr )
 
    If HB_IsArray( aImage )
-      ::AddBitMap( aImage )
+      // Can't use ::AddBitMap( aImage ) because control is not registered yet
+      aImageList := ImageList_Init( aImage, ::ImageListColor, ::ImageListFlags )
+      If ValidHandler( aImageList[ 1 ] )
+         SendMessage( ControlHandle, ::SetImageListCommand, ::SetImageListWParam, aImageList[ 1 ] )
+         ::ImageList := aImageList[ 1 ]
+         If ASCAN( ::Picture, .T. ) == 0
+            ::Picture[ 1 ] := .T.
+            ::aWidths[ 1 ] := Max( ::aWidths[ 1 ], aImageList[ 2 ] + If( ::lCheckBoxes, GetStateListWidth( ControlHandle ) + 4, 4 ) ) // Set Column 1 width to Bitmap width plus checkboxes
+         EndIf
+      EndIf
    ElseIf ::lCheckBoxes
       ::aWidths[ 1 ] := Max( ::aWidths[ 1 ], GetStateListWidth( ControlHandle ) + 4 ) // Set Column 1 width to checkboxes width
    EndIf
@@ -498,7 +507,7 @@ Local aImageList, nPos, nCount
       If ValidHandler( aImageList[ 1 ] )
          ::ImageList := aImageList[ 1 ]
          nPos := 1
-         SendMessage( ::hWnd, ::SetImageListCommand, ::SetImageListWParam, ::ImageList )
+         SendMessage( ::hWnd, ::SetImageListCommand, ::SetImageListWParam, aImageList[ 1 ] )
          If ASCAN( ::Picture, .T. ) == 0
             ::Picture[ 1 ] := .T.
             ::aWidths[ 1 ] := Max( ::aWidths[ 1 ], aImageList[ 2 ] + If( ::lCheckBoxes, GetStateListWidth( ::hWnd ) + 4, 4 ) ) // Set Column 1 width to Bitmap width plus checkboxes

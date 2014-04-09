@@ -1,11 +1,19 @@
 /*
- * $Id: ChangeLog,v 1.1242 2014-04-09 02:45:48 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1243 2014-04-09 21:54:29 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-04-09 18:54 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_xbrowse.prg
+     ! Methods AddColumn and SetColumn build incorrectly the
+       column's columnblock when using FIXEDBLOCKS.
+     % Methods AddColumn and SetColumn.
+   * source\h_grid.prg
+     ! After last change, images are drawn in a different size.
 
 2014-04-08 23:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * doc/classes.txt
