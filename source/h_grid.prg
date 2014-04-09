@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.241 2014-04-09 21:54:29 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.242 2014-04-09 23:47:27 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -6562,7 +6562,17 @@ HB_FUNC( LISTVIEW_HITONCHECKBOX )
 
    ListView_SubItemHitTest( HWNDparam( 1 ), &lvhti );
 
-   if( lvhti.flags == LVHT_ONITEMSTATEICON )
+   /* The control changes de checkbox state when the item's
+    * state area if clicked. The item's state area is defined
+    * by the state imagelist dimensions, so it includes the
+    * checkbox and also it's outer margin (2 pixels).
+    * When the click is inside or in the border of the checkbox
+    * the flags field equals LVHT_ONITEMSTATEICON, but when the
+    * click is in the outer margin the flags field equals
+    * LVHT_ONITEMICON|LVHT_ONITEMLABEL|LVHT_ONITEMSTATEICON.
+    */
+
+   if( lvhti.flags & LVHT_ONITEMSTATEICON )
    {
       item = lvhti.iItem + 1;
    }

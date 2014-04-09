@@ -1,11 +1,17 @@
 /*
- * $Id: ChangeLog,v 1.1243 2014-04-09 21:54:29 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1244 2014-04-09 23:47:27 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-04-09 20:47 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source\h_grid.prg
+     ! Clicking in the outer margin of a checkbox toggles the
+       it's state without evaluating the OnCheckChange block.
+       TODO: see if there's a way of excluding the outer margin.
 
 2014-04-09 18:54 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_xbrowse.prg
