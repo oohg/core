@@ -1,11 +1,16 @@
 /*
- * $Id: ChangeLog,v 1.1245 2014-04-11 02:27:44 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1246 2014-04-11 21:21:01 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-04-11 18:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_richeditbox.prg
+     ! GPF in method RichValue when the output data stream needs
+       more than one block of storage.
 
 2014-04-10 23:26 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./Changelog

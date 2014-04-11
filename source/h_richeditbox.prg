@@ -1,5 +1,5 @@
 /*
- * $Id: h_richeditbox.prg,v 1.30 2014-04-08 22:05:45 fyurisich Exp $
+ * $Id: h_richeditbox.prg,v 1.31 2014-04-11 21:21:07 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -276,6 +276,7 @@ HB_FUNC_STATIC( TEDITRICH_FONTCOLOR )
 
    // Return value was set in _OOHG_DetermineColorReturn()
 }
+
 struct StreamInfo {
    LONG lSize;
    LONG lRead;
@@ -383,8 +384,8 @@ HB_FUNC( RICHSTREAMOUT )   // hWnd
    si2 = si->pNext;
    while( si2 )
    {
-      si2 = si2->pNext;
       lSize += si2->lSize;
+      si2 = si2->pNext;
    }
 
    if( lSize == 0 )
