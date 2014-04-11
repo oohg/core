@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.242 2014-04-09 23:47:27 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.243 2014-04-11 02:27:46 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -179,6 +179,8 @@ CLASS TGrid FROM TControl
    DATA bHeadRClick            INIT Nil
    DATA ImageListColor         INIT CLR_DEFAULT
    DATA ImageListFlags         INIT LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
+   DATA ClickOnCheckbox        INIT .T.
+   DATA RClickOnCheckbox       INIT .T.
 
    METHOD Define
    METHOD Define2
@@ -275,7 +277,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
                bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
                bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
-               lFixedCtrls, bHeadRClick ) CLASS TGrid
+               lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local nStyle := LVS_SINGLESEL
 
@@ -293,7 +295,7 @@ Local nStyle := LVS_SINGLESEL
               bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
               bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
               bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
-              lFixedCtrls, bHeadRClick )
+              lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox )
 Return Self
 
 *-----------------------------------------------------------------------------*
@@ -311,7 +313,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                 bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
                 bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
                 bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
-                lFixedCtrls, bHeadRClick ) CLASS TGrid
+                lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox ) CLASS TGrid
 *-----------------------------------------------------------------------------*
 Local ControlHandle, aImageList, i
 
@@ -331,10 +333,10 @@ Local ControlHandle, aImageList, i
       aRows := {}
    EndIf
 
-   ASSIGN ::nWidth      VALUE w           TYPE "N"
-   ASSIGN ::nHeight     VALUE h           TYPE "N"
-   ASSIGN ::nRow        VALUE y           TYPE "N"
-   ASSIGN ::nCol        VALUE x           TYPE "N"
+   ASSIGN ::nWidth  VALUE w TYPE "N"
+   ASSIGN ::nHeight VALUE h TYPE "N"
+   ASSIGN ::nRow    VALUE y TYPE "N"
+   ASSIGN ::nCol    VALUE x TYPE "N"
 
    If HB_IsArray( aHeadClick )
       ::aHeadClick := aHeadClick
@@ -353,20 +355,22 @@ Local ControlHandle, aImageList, i
       ::AllowChangeSize := ! lFixedWidths
    EndIf
 
-   ASSIGN ::aJust       VALUE aJust       TYPE "A"
-   ASSIGN ::Picture     VALUE aPicture    TYPE "A"
-   ASSIGN ownerdata     VALUE ownerdata   TYPE "L" DEFAULT .F.
-   ASSIGN ::lNoGrid     VALUE nogrid      TYPE "L" DEFAULT .F.
-   ASSIGN ::lCheckBoxes VALUE lCheckBoxes TYPE "L" DEFAULT .F.
-   ASSIGN ::lFocusRect  VALUE lFocusRect  TYPE "L" DEFAULT .T.
-   ASSIGN ::lPLM        VALUE lPLM        TYPE "L" DEFAULT .F.
-   ASSIGN ::lLikeExcel  VALUE lLikeExcel  TYPE "L" DEFAULT .F.
-   ASSIGN ::lButtons    VALUE lButtons    TYPE "L" DEFAULT .F.
-   ASSIGN ::AllowDelete VALUE AllowDelete TYPE "L" DEFAULT .F.
-   ASSIGN ::AllowAppend VALUE AllowAppend TYPE "L" DEFAULT .F.
-   ASSIGN ::lNoDelMsg   VALUE lNoDelMsg   TYPE "L" DEFAULT .F.
-   ASSIGN ::DelMsg      VALUE DelMsg      TYPE "C"
-   ASSIGN ::lNoModal    VALUE lNoModal    TYPE "L" DEFAULT .F.
+   ASSIGN ::aJust            VALUE aJust             TYPE "A"
+   ASSIGN ::Picture          VALUE aPicture          TYPE "A"
+   ASSIGN ownerdata          VALUE ownerdata         TYPE "L" DEFAULT .F.
+   ASSIGN ::lNoGrid          VALUE nogrid            TYPE "L"
+   ASSIGN ::lCheckBoxes      VALUE lCheckBoxes       TYPE "L"
+   ASSIGN ::lFocusRect       VALUE lFocusRect        TYPE "L"
+   ASSIGN ::lPLM             VALUE lPLM              TYPE "L"
+   ASSIGN ::lLikeExcel       VALUE lLikeExcel        TYPE "L"
+   ASSIGN ::lButtons         VALUE lButtons          TYPE "L"
+   ASSIGN ::AllowDelete      VALUE AllowDelete       TYPE "L"
+   ASSIGN ::AllowAppend      VALUE AllowAppend       TYPE "L"
+   ASSIGN ::lNoDelMsg        VALUE lNoDelMsg         TYPE "L"
+   ASSIGN ::DelMsg           VALUE DelMsg            TYPE "C"
+   ASSIGN ::lNoModal         VALUE lNoModal          TYPE "L"
+   ASSIGN ::ClickOnCheckbox  VALUE lClickOnCheckbox  TYPE "L"
+   ASSIGN ::RClickOnCheckbox VALUE lRClickOnCheckbox TYPE "L"
 
    /* This must be placed before calling ::Register because when the
       control is an XBrowse, ::Register will call ::ColumnBlock and
@@ -2122,7 +2126,7 @@ Local aCellData, nItem, i
    Empty( lParam )
 
    If nMsg == WM_LBUTTONDBLCLK
-      If ! ::lCheckBoxes .OR. ListView_HitOnCheckBox( hWnd, GetCursorRow() - GetWindowRow( hWnd ), GetCursorCol() - GetWindowCol( hWnd ) ) == 0
+      If ! ::lCheckBoxes .OR. ListView_HitOnCheckBox( hWnd, GetCursorRow() - GetWindowRow( hWnd ), GetCursorCol() - GetWindowCol( hWnd ) ) <= 0
          _PushEventInfo()
          _OOHG_ThisForm := ::Parent
          _OOHG_ThisType := 'C'
@@ -2562,17 +2566,18 @@ Local lvc, _ThisQueryTemp, nvkey, uValue, lGo, aItem
 
    ElseIf nNotify == NM_CLICK
       If ::lCheckBoxes .AND. HB_IsBlock( ::OnCheckChange )
-         // detect item
          uValue := ListView_HitOnCheckBox( ::hWnd, GetCursorRow() - GetWindowRow( ::hWnd ), GetCursorCol() - GetWindowCol( ::hWnd ) )
       Else
          uValue := 0
       EndIf
 
       If HB_IsBlock( ::OnClick )
-         If ! ::NestedClick
-            ::NestedClick := ! _OOHG_NestedSameEvent()
-            ::DoEventMouseCoords( ::OnClick, "CLICK" )
-            ::NestedClick := .F.
+         If ! ::lCheckBoxes .OR. ::ClickOnCheckbox .OR. uValue <= 0
+            If ! ::NestedClick
+               ::NestedClick := ! _OOHG_NestedSameEvent()
+               ::DoEventMouseCoords( ::OnClick, "CLICK" )
+               ::NestedClick := .F.
+            EndIf
          EndIf
       EndIf
 
@@ -2580,6 +2585,8 @@ Local lvc, _ThisQueryTemp, nvkey, uValue, lGo, aItem
          // change check mark
          ::CheckItem( uValue, ! ::CheckItem( uValue ) )
          // skip default action
+         Return 1
+      ElseIf uValue < 0
          Return 1
       EndIf
 
@@ -2592,17 +2599,21 @@ Local lvc, _ThisQueryTemp, nvkey, uValue, lGo, aItem
       EndIf
 
       If HB_IsBlock( ::OnRClick )
-         ::DoEventMouseCoords( ::OnRClick, "RCLICK" )
+         If ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. uValue <= 0
+            ::DoEventMouseCoords( ::OnRClick, "RCLICK" )
+         EndIf
       EndIf
 
       If uValue > 0
          // change check mark
          ::CheckItem( uValue, ! ::CheckItem( uValue ) )
          // fire context menu
-         If ::ContextMenu != Nil
+         If ::ContextMenu != Nil .AND. ::RClickOnCheckbox
             ::ContextMenu:Activate()
          EndIf
          // skip default action
+         Return 1
+      ElseIf uValue < 0
          Return 1
       EndIf
 
@@ -4061,7 +4072,7 @@ Local aCellData, nItem, i, nSearchCol
    Empty( lParam )
 
    If nMsg == WM_LBUTTONDBLCLK
-      If ! ::lCheckBoxes .OR. ListView_HitOnCheckBox( hWnd, GetCursorRow() - GetWindowRow( hWnd ), GetCursorCol() - GetWindowCol( hWnd ) ) == 0
+      If ! ::lCheckBoxes .OR. ListView_HitOnCheckBox( hWnd, GetCursorRow() - GetWindowRow( hWnd ), GetCursorCol() - GetWindowCol( hWnd ) ) <= 0
          _PushEventInfo()
          _OOHG_ThisForm := ::Parent
          _OOHG_ThisType := 'C'
@@ -4109,7 +4120,7 @@ Local aCellData, nItem, i, nSearchCol
       Return 0
 
    ElseIf nMsg == WM_LBUTTONDOWN .OR. nMsg == WM_RBUTTONDOWN
-      If ! ::lCheckBoxes .OR. ListView_HitOnCheckBox( hWnd, GetCursorRow() - GetWindowRow( hWnd ), GetCursorCol() - GetWindowCol( hWnd ) ) == 0
+      If ! ::lCheckBoxes .OR. ListView_HitOnCheckBox( hWnd, GetCursorRow() - GetWindowRow( hWnd ), GetCursorCol() - GetWindowCol( hWnd ) ) <= 0
          aCellData := _GetGridCellData( Self )
          ::Value := { aCellData[ 1 ], aCellData[ 2 ] }
       EndIf
@@ -6572,12 +6583,19 @@ HB_FUNC( LISTVIEW_HITONCHECKBOX )
     * LVHT_ONITEMICON|LVHT_ONITEMLABEL|LVHT_ONITEMSTATEICON.
     */
 
-   if( lvhti.flags & LVHT_ONITEMSTATEICON )
+   if( lvhti.flags == LVHT_ONITEMSTATEICON )
    {
+      // hit is on a checkbox
       item = lvhti.iItem + 1;
+   }
+   else if( lvhti.flags & LVHT_ONITEMSTATEICON )
+   {
+      // hit is inside the state area but in the outside of the checkbox
+      item = -1;
    }
    else
    {
+      // hit is outside the state area
       item = 0;
    }
 

@@ -1,5 +1,5 @@
 /*
- * $Id: h_xbrowse.prg,v 1.110 2014-04-09 21:54:29 fyurisich Exp $
+ * $Id: h_xbrowse.prg,v 1.111 2014-04-11 02:27:46 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -229,7 +229,7 @@ Local nWidth2, nCol2, lLocked, oScroll, z
               lFixedCols, abortedit, click, lFixedWidths, bBeforeColMove, ;
               bAfterColMove, bBeforeColSize, bAfterColSize, bBeforeAutofit, ;
               lLikeExcel, lButtons, AllowDelete, , , DelMsg, lNoDelMsg, ;
-              AllowAppend, , , lFixedCtrls, bHeadRClick )
+              AllowAppend, , , lFixedCtrls, bHeadRClick, , )
 
    ::FixBlocks( lFixedBlocks )
 

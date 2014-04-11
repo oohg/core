@@ -1,5 +1,5 @@
 /*
- * $Id: classes.txt,v 1.74 2014-04-09 02:45:48 fyurisich Exp $
+ * $Id: classes.txt,v 1.75 2014-04-11 02:27:45 fyurisich Exp $
  */
 
 *------------------------------------------------------------------------------*
@@ -884,6 +884,7 @@ CLASS TGRID FROM TCONTROL
    DATA BONENTER                  INIT NIL
    DATA BPOSITION                 INIT 0
    DATA CEDITKEY                  INIT "F2"
+   DATA CLICKONCHECKBOX           INIT .T.
    DATA CROWEDITTITLE             INIT NIL
    DATA CTEXT                     INIT ""
    DATA DELMSG                    INIT NIL
@@ -900,12 +901,12 @@ CLASS TGRID FROM TCONTROL
    DATA IMAGELISTFLAGS            INIT LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
    DATA INPLACE                   INIT .F.
    DATA LAPPENDMODE               INIT .F.
-   DATA LBEGINTRACK               INIT .F. 
+   DATA LBEGINTRACK               INIT .F.
    DATA LBUTTONS                  INIT .F.
    DATA LCHECKBOXES               INIT .F.
-   DATA LDIVIDERDBLCLICK          INIT .F. 
+   DATA LDIVIDERDBLCLICK          INIT .F.
    DATA LEDITMODE                 INIT .F.
-   DATA LENDTRACK                 INIT .F. 
+   DATA LENDTRACK                 INIT .F.
    DATA LEXTENDDBLCLICK           INIT .F.
    DATA LFIXEDCONTROLS            INIT .F.
    DATA LFOCUSRECT                INIT .T.
@@ -916,11 +917,11 @@ CLASS TGRID FROM TCONTROL
    DATA LNOGRID                   INIT .F.
    DATA LNOMODAL                  INIT .F.
    DATA LPLM                      INIT .F.
-   DATA LTRACKING                 INIT .F. 
+   DATA LTRACKING                 INIT .F.
    DATA NCOLPOS                   INIT 0
    DATA NHEIGHT                   INIT 120
    DATA NROWPOS                   INIT 0
-   DATA NVISIBLEITEMS             INIT 0   
+   DATA NVISIBLEITEMS             INIT 0
    DATA NWIDTH                    INIT 240
    DATA ONABORTEDIT               INIT NIL
    DATA ONAPPEND                  INIT NIL
@@ -929,6 +930,7 @@ CLASS TGRID FROM TCONTROL
    DATA ONDISPINFO                INIT NIL
    DATA ONEDITCELL                INIT NIL
    DATA PICTURE                   INIT NIL
+   DATA RCLICKONCHECKBOX          INIT .T.
    DATA READONLY                  INIT NIL
    DATA SEARCHCOL                 INIT 1
    DATA SEARCHLAPSE               INIT 1000

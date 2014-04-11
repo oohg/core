@@ -1,5 +1,5 @@
 /*
- * $Id: i_grid.ch,v 1.34 2014-04-01 22:58:53 fyurisich Exp $
+ * $Id: i_grid.ch,v 1.35 2014-04-11 02:27:46 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -183,6 +183,8 @@
       [ <nomodal : NOMODALEDIT> ] ;
       [ <edtctrls: FIXEDCONTROLS, DYNAMICCONTROLS> ] ;
       [ <dummy16: ONHEADRCLICK, ON HEADRCLICK> <bheadrclick> ] ;
+      [ <noclick: NOCLICKONCHECKBOX> ] ;
+      [ <norclick: NORCLICKONCHECKBOX> ] ;
    =>;
       [ <obj> := ] _OOHG_SelectSubClass(iif( <.bycell.>, TGridByCell(), iif( <.multiselect.>, TGridMulti(), TGrid() ) ), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, ;
@@ -203,7 +205,7 @@
             <.buts.>, <.delete.>, <{onDelete}>, <{bWhenDel}>, <DelMsg>, <.nodelmsg.>, ;
             <.append.>, <{onappend}>, <.nomodal.>, ;
             iif( upper( #<edtctrls> ) == "FIXEDCONTROLS", .T., iif( upper( #<edtctrls> ) == "DYNAMICCONTROLS", .F., NIL ) ), ;
-            <{bheadrclick}> )
+            <{bheadrclick}>, ! <.noclick.>, ! <.norclick.> )
 
 ///////////////////////////////////////////////////////////////////////////////
 // GRID (SPLITBOX VERSION)
@@ -290,6 +292,8 @@
       [ <nomodal : NOMODALEDIT> ] ;
       [ <edtctrls: FIXEDCONTROLS, DYNAMICCONTROLS> ] ;
       [ <dummy16: ONHEADRCLICK, ON HEADRCLICK> <bheadrclick> ] ;
+      [ <noclick: NOCLICKONCHECKBOX> ] ;
+      [ <norclick: NORCLICKONCHECKBOX> ] ;
    =>;
       [ <obj> := ] _OOHG_SelectSubClass(iif( <.bycell.>, TGridByCell(), iif( <.multiselect.>, TGridMulti(), TGrid() ) ), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, , , <w>, <h>, <headers>, ;
@@ -310,7 +314,7 @@
             <.buts.>, <.delete.>, <{onDelete}>, <{bWhenDel}>, <DelMsg>, <.nodelmsg.>, ;
             <.append.>, <{onappend}>, <.nomodal.>, ;
             iif( upper( #<edtctrls> ) == "FIXEDCONTROLS", .T., iif( upper( #<edtctrls> ) == "DYNAMICCONTROLS", .F., NIL ) ), ;
-            <{bheadrclick}> )
+            <{bheadrclick}>, ! <.noclick.>, ! <.norclick.> )
 
 #command SET GRIDFIXEDCONTROLS ON  => SetGridFixedControls( .T. )
 #command SET GRIDFIXEDCONTROLS OFF => SetGridFixedControls( .F. )

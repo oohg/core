@@ -1,5 +1,5 @@
 /*
- * $Id: h_browse.prg,v 1.136 2014-03-26 01:12:27 fyurisich Exp $
+ * $Id: h_browse.prg,v 1.137 2014-04-11 02:27:46 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -244,7 +244,7 @@ Local nWidth2, nCol2, oScroll, z
                    aHeaderImageAlign, FullMove, aSelectedColors, aEditKeys, , , dblbffr, lFocusRect, ;
                    lPLM, lFixedCols, abortedit, click, lFixedWidths, bBeforeColMove, bAfterColMove, ;
                    bBeforeColSize, bAfterColSize, bBeforeAutofit, lLikeExcel, lButtons, ;
-                   AllowDelete, , , DelMsg, lNoDelMsg, AllowAppend, , , lFixedCtrls, bHeadRClick )
+                   AllowDelete, , , DelMsg, lNoDelMsg, AllowAppend, , , lFixedCtrls, bHeadRClick, , )
 
    ::nWidth := w
 

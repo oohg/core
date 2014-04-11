@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.105 2014-04-08 22:05:44 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.106 2014-04-11 02:27:46 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -122,6 +122,8 @@ Memvariables
 #xtranslate _OOHG_ActiveControlTrailingFontColor      => _OOHG_ActiveControlInfo \[  25 \]
 #xtranslate _OOHG_ActiveControlBackgroundColor        => _OOHG_ActiveControlInfo \[  26 \]
 
+#xtranslate _OOHG_ActiveControlRClickOnCheckbox       => _OOHG_ActiveControlInfo \[  96 \]
+#xtranslate _OOHG_ActiveControlClickOnCheckbox        => _OOHG_ActiveControlInfo \[  97 \]
 #xtranslate _OOHG_ActiveControlOnHeaderRClick         => _OOHG_ActiveControlInfo \[  98 \]
 #xtranslate _OOHG_ActiveControlNoShowEmptyRow         => _OOHG_ActiveControlInfo \[  99 \]
 #xtranslate _OOHG_ActiveControlNoDIBSection           => _OOHG_ActiveControlInfo \[ 100 \]
@@ -2228,7 +2230,9 @@ GRID
         _OOHG_ActiveControlNoModalEdit      := .F. ;;
         _OOHG_ActiveControlFixedCtrls       := .F. ;;
         _OOHG_ActiveControlDynamicCtrls     := .F. ;;
-        _OOHG_ActiveControlOnHeaderRClick   := Nil
+        _OOHG_ActiveControlOnHeaderRClick   := Nil ;;
+        _OOHG_ActiveControlRClickOnCheckbox := .T. ;;
+        _OOHG_ActiveControlClickOnCheckbox  := .T.
 
 #xcommand ONAPPEND <onappend> ;
         => ;
@@ -2342,6 +2346,14 @@ GRID
         => ;
         _OOHG_ActiveControlOnHeaderRClick := <{bheadrclick}>
 
+#xcommand NOCLICKONCHECKBOX <noclick> ;
+        => ;
+        _OOHG_ActiveControlClickOnCheckbox := ! <noclick>
+
+#xcommand NORCLICKONCHECKBOX <norclick> ;
+        => ;
+        _OOHG_ActiveControlRClickOnCheckbox := ! <norclick>
+
 #xcommand END GRID ;
         => ;
         _OOHG_SelectSubClass( iif( _OOHG_ActiveControlByCell, TGridByCell(), iif( _OOHG_ActiveControlMultiSelect, TGridMulti(), TGrid() ) ), _OOHG_ActiveControlSubClass, _OOHG_ActiveControlAssignObject ):Define( ;
@@ -2420,7 +2432,9 @@ GRID
                 _OOHG_ActiveControlOnAppend, ;
                 _OOHG_ActiveControlNoModalEdit, ;
                 iif( _OOHG_ActiveControlFixedCtrls, .T., iif( _OOHG_ActiveControlDynamicCtrls, .F., Nil ) ), ;
-                _OOHG_ActiveControlOnHeaderRClick )
+                _OOHG_ActiveControlOnHeaderRClick, ;
+                _OOHG_ActiveControlRClickOnCheckbox, ;
+                _OOHG_ActiveControlClickOnCheckbox )
 
 /*----------------------------------------------------------------------------
 BROWSE
