@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.243 2014-04-11 02:27:46 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.244 2014-04-12 02:38:15 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -260,6 +260,7 @@ CLASS TGrid FROM TControl
    METHOD HeaderSetFont
    METHOD FixControls          SETGET
    METHOD AddBitMap
+   METHOD AdjustResize
 ENDCLASS
 
 *-----------------------------------------------------------------------------*
@@ -3091,6 +3092,16 @@ Local nColF, aColumnOrder, i
       EndDo
    EndIf
 Return Nil
+
+*------------------------------------------------------------------------------*
+METHOD AdjustResize( nDivh, nDivw, lSelfOnly ) CLASS TGrid
+*------------------------------------------------------------------------------*
+Local nCols, i
+   nCols := ::ColumnCount
+   For i := 1 To nCols
+      ::ColumnWidth( i, ::ColumnWidth( i ) * nDivw )
+   Next i
+Return ::Super:AdjustResize( nDivh, nDivw, lSelfOnly )
 
 
 
