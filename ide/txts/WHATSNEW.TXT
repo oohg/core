@@ -1,0 +1,436 @@
+
+H M I  plus  (whatsnew)
+
+
+R.16 
+
+- First released version     2003/01/08
+
+R.18                         2003/01/09
+
+- The Frame properties now works ok. (rigth click near caption )
+- All forms events work now.
+- new Backcolor propertie in form design.
+- new Backcolor and Fontcolor properties for label.
+- Change name to HMIde Plus. 
+
+R.20
+
+- Mixed bugs fixed.
+- New database viewer.
+- New run only button.
+- Menus examples included (while finish the menu editor, probably you may wait
+                           a long time for this.)
+- More space to write code in all events, turn font to courier new in order
+  to use fixed size font for better look
+- More space to form title.
+- Statusbar control now supported for each form.
+- turn font to courier new in tree view.
+- minor changes in aplication look.
+- change delete button of context menu to other position to avoid (hand confutions).
+
+
+R.22                         2003/02/07
+
+- browse control support.
+- minor bugs fixed.
+- invisible propertie added.
+- minor changes in aplication look.
+- confirmation in delete control.
+- change all source to minigui 59 new sintax.
+- frame problem (properties,size,move) finally fixed.
+- manual size/move for all controls.
+
+
+R.24                      2003/06/08
+
+- New look !!!!! thanks to Ed. :)
+- notabstop propertie added
+- change database viewer to database manager (DBU) (thank's to SRG)
+- Add search and next buttons to edit window on internal program editor. 
+- sort propertie added
+- stretch propertie added to image control
+- compiled with minigui 63b
+- minor bugs fixed (add more write space to any controls)
+- New Full Menu editor for main, context and notify.
+  (with checked, disable options)
+- itemsource prpertie added to combobox
+- wrap, readonly, increment, invisible and notapstop added to spinner.
+- sintax acorded to minigui 63.
+
+
+R.26                      2003/06/14
+
+- New look improvements
+- Add more menu items in main window
+- Add field clause to TEXTBOX, EDITBOX, CHECKBOX and DATEPICKER 
+- Add line information in text search.
+- Multiple source code optimization.
+- Source code are now dividen in more prgs to more easy edit
+- Toolbar items organization improvements.
+- Now quickbrowse util added.
+- compile with Latest minigui lib
+
+
+R.28                     2003/06/24
+
+- added ALT-F frames mode, to total control over frames, to return to
+  normal controls, press ALT-F again in design form.
+- Now nested frames control is possible.
+- Two build modes (traditional and brmake) select in preferences.
+- Minor bug fixes.
+- More source code optimization.
+- More menus options, new print item option with preview
+- Function keys enabled to Build and Run.
+- Now include modules are not linked automatically to project you must
+  include in your prgs, now are only for edit purpouses.
+  This change was necesary for brmake use (very fast maker)
+- If you want use brmake, you must install brmake :)
+
+
+
+R.30                     2003/07/11
+
+- Global search text enhanced
+- Add new reports modules (rpt) to make "easyreports"
+- Look changes "better look in all windows versions"
+  (thanks Jacek for your look opinions)
+- New "go line" in internal editor.
+- Now Internal editor show line and column positions of cursor.
+- Fix cut long lines > 79 char introduced incorrectly in last release
+  for (code optimization) :) Now support 500 chars per line.
+- Now tabs are traduced to space(8) in Prgs.
+- Now support for backcolor, and font type for controls.
+  (include color, bold, underline, strikeout)
+- Now when you select (new project) The IDE ask you if save the last project.
+- New comments description lines in new prg or ch  (author, item, project,date)
+- Now full interactive fonts and color support for form. 
+  (only at runtime or if you save and read the form again, because
+  minigui only support font,size and backcolor at "create window time".
+- Now if you don't select the Fontname and size in controls, HMI+ assign the
+  Fontname and size of the parent form.
+- Remember that now you may print each source item in project.
+- Complete backward compability.
+- Don't remember test the advanced menu editor.
+
+
+R.32    2003/09/10
+- new clauses for label ( CENTERALIGN - RIGTHALIGN )
+- fixed mixed little bugs.
+- now you may define and edit RC modules
+- new icons in mixed modules.
+
+
+R.34      2003/10/10
+- fixed mixed little bugs reported
+- now icons in forms are saved and retrieved correct.
+- new FANTASTIC keyboard move at design time in forms.
+  help full to align controls.
+  (contributed by Mirity Andor ytir@freemail.hu)
+
+
+R.36     2004/01/07
+- HMI+ are now Class based.
+- New readonly clause for textbox
+- fixed mixed little bugs.
+- Added image clause to menu editor.
+- Tree control added.
+- IP control added.
+- New visible and enable properties to all controls
+- Notabstop support for textbox
+- any code optimization
+- added PAPERSIZE clause to external report editor
+- new amazing speed loading forms
+- added default backcolor for forms,labels ,checkbox,radiogroup in preferences.
+- Now properties and events window are smaller and has a better look
+ 
+
+R.60     2004/10/07
+- Now complete TAB control support
+- Super amazing speed in program editor (no more delays in big files)
+  search, next search,  go line, routines optimized.
+- Debug support 
+- Fast forms load optimization
+- fixed mixed little bugs and a big one. :)
+- New look in control order
+- All controls support names changes (included TAB)
+- All controls support enabled and visible properties
+- look improvements in load forms, load file  and compile process
+- look improvements in project window
+- more mature 
+- much more stable
+
+
+R.70   2004/12/21
+- New Look in main Toolbar (more big and pretty buttons )
+- Toolbar builder.
+- Fix little menu editor bug
+- New look and more easy manage form properties, events, toolbar, statusbar
+  in form editor top.
+- Finally Fixed problem with moving - sizing frames
+- Better look program editor
+- add  nodeimages ,  itemimages , norootbutton , itemids and  helpid
+  to Tree control
+- more mature
+
+
+R.90  2005/03/18
+- Add noautorelease, splitchild, grippertext, cursor clause to form
+- Add notabstop for EDIT and RICHEDIT
+- Add break for RICHEDIT
+- fixed misc bugs
+- add helpbutton, focused,break clause to form
+- more easy modify all items ( with simple dblclick )
+- break in combo 
+- toolbar added in form editor
+- now design form are "dotted".
+- added virtual width and virtual height to form properties
+- better look and manage in program editor.
+- more mature, more simple.
+
+
+R.95  2005/04/17
+- now toolbar builder shows real buttons in their original size when save it. 
+- code reformater in program editor (prg)
+- add displaychange to combo
+- Now F1 help in editing forms and project.
+- Now select all controls with mouse (included frames) 
+- Frames mode on/off have been removed from project
+- more screen space to design forms
+- new look
+- more easy move and resize draging mouse on top left or down right
+- better use with brmake (please use the last version of brmake (2.05 or upper)
+  ( the only option that  don't function is debug)
+
+
+R1.00  2005/05/19
+- Fixed problem in (manual move/size) inside tab controls
+- Fixed other minimal problems with tab .
+- Fixed problems when not saving properties in toolbar.
+  Now properties are in the same window.
+- new unssurpased performance loading forms. now are 2 times faster.
+- fixed menu problem at level grather than 1 at bottom menu.
+- menu and toolbar builders optimized.
+
+R1.04  2005/06/01
+- Fixed bad sintax with AUTOSIZE clausule in Labels.
+
+R1.06  2005/06/25 
+- Fixed  problem in menu editor with deep levels.
+- Fixed  problem deleting toolbars.
+
+R1.08   2005/07/01
+- Added on headclick event to grid
+- Added backcolor default option.
+- Now is posible set NIL in default backcolor in preferences.
+  (this is good for same default colors in diferent systems)
+
+R1.10   2005/07/03
+- Added support for dropdown menus inside the toolbar editor.
+- Now Main menu is graphical in the visual designer like Toolbars.
+- fixed problem with images in menus.
+
+R1.12  2005/07/04
+- Minor fixes with DATE/NUMERIC/MAXLENGHT/VALUE properties in TEXTBOX
+
+R1.14  2005/07/06
+- Now in windows 98 preserve the path of the last project.
+- when use quickbrowse and change dir HMI+ preserve the project folder.
+- help system with F1 (not announced in previous versions.)
+- added NOHVSCROLL and NOHSCROLL properties to editbox.
+
+R1.16 2005/07/06
+- added FLAT propertie to BUTTON and PIC BUTTON
+
+R1.18 2005/07/12
+- fixed problem with progressbar size.
+- now when build/run don't show the brmake finished box.
+
+R1.20 2005/07/13
+- fixed problem in FLAT button propertie.
+
+R1.22 2005/07/14
+- Fixed problem with height in RADIOBUTTON.
+
+R1.24 2005/07/26
+- Fixed minor problem adding controls in TAB limits
+- Fixed problem  reading READONLY propertie BROWSE.
+
+
+R1.26 2005/07/28
+- Fixed Font propertie problem in tree.
+
+R1.28 2005/08/01
+- Fixed open project change directory.
+
+R1.30 2005/08/08
+- new clause WHEN to browse
+
+R1.32 2005/08/30
+- Now it's posible add externals libs in brmake compile mode.
+- now red lines for resolutions of 640x480 and 800x600 in order
+  to more easy design in grater resolutions.
+- fixed problem when change datepicker width.
+- Now status bar is visible only when is activated in project.
+- Now more visual space to properties and events
+
+R1.34 2005/09/06
+- Now print item change to View/ copy source /Print Items.
+- Compile now with ooHG (object oriented Harbour GUI) thanks Vic.
+- Now tab objects can move with all your items inside without problems.
+- Fixed a minor bug in global search text.
+- Report editor now shows the report used.
+- Reduced HMI+ EXE size.
+
+
+R1.36 2005/09/08
+- Fixed problem with height in manual move/size introduced in V1.34
+- New window "Controls" to select it manual, and change options.
+
+
+R1.38 2005/09/12
+- Better memory performance.
+- Better delete control method.
+- New Filter in control order to forget statics controls like LABEL or FRAME
+- added DISPLAYEDIT propertie to combo.
+- added DYNAMICBACKCOLOR and DYNAMICFORECOLOR propertie to Browse
+  for HMG 2.0, minigui exp, and ooHG
+
+
+R1.40 2005/09/28
+- added NOTABSTOP propertie to checkbox, checkbutton, piccheckbutton.
+- added on interactiveclose propertie to form .
+
+
+R1.42 2005/10/05
+- added IMAGE to dynamic filter in control order.
+- Now Return KEYBOARD MOVE in context menu of control.
+- Status bar are now more WYSIWYG
+- Increase speed load in forms.
+- Minor "look" fixes.
+- SET NAVIGATION EXTENDED added 
+- Compiled with new Harbour CVS and last ooHG.
+
+R1.44 2005/10/14
+- Minor multiple fixes.
+- Fixed problem with combo, but can't put more than 10 items
+- Fixed problems when form is empty.
+
+R1.46 2005/10/16
+- Minor fixes  reported by PierPaolo Martinello
+- New option "snap to grid" in preferences to automatically align controls.
+- File version.txt removed from project.
+
+R1.46b 2005/10/25
+- Fixed problem in on change event in browse. (reported by  Marcelo)
+
+R1.48 2005/10/29
+- Minor fixes
+- Added dynamicforecolor and dynamicbackcolor to GRID
+
+R1.50 2005/11/09
+- Added ENABLED and VISIBLE properties to LABEL
+- Minor fixes.
+- Now RTL parameter for arabig users.
+  If run MGIDE [enter] run normal
+  If run MGIDE rtl  [Enter] Run in RTL mode (Right to left)
+ 
+R1.52 2005/11/19
+- Added columncontrols to grid
+- minor optimizations
+
+R1.54 2005/11/20
+- Fixed oohg problems in TAB
+
+R1.56 2005/11/30
+- Fixed hmi+ problem in tab name
+- Try to fix problems in window color.
+ 
+R1.58 2005/12/19
+- fixed problem in toolbars.
+
+R1.62 2006/01/30
+- this version can mix with MPM project.
+
+R1.66 2006/02/05
+- fixed little problem with MPM project
+- add FORMAT clause to TEXTBOX for inputmask (2.0)
+
+R1.72 2006/03/17
+- fixed wrong cols grater than 999 (thanks Pier for reporting)
+
+R2.00 2006/07/13
+- Final version 
+- fixed problem changing order numeric propertie
+- HMI supports HMG , Minigui extended and OOHG to actual controls
+  (don't support tsbrowse and getbox)
+  Next releases only support OOHG controls and syntax.
+
+R2.3 2006/08/07
+- Fixed problem with combos in tab
+- minor fixes
+
+R2.4 2006/09/24
+- Fixed problem geting fonts
+- added new properties and events
+
+R2.5 2006/11/29
+- added tooltip to toolbar buttons
+- removed procedure pulse() to show button action
+- added CLIENTEDGE porpertie to Label
+- adapted to new harbour
+- preserve compatibility with QAC.
+
+R.5.5 2007/09/11
+- fixed problem with @ in inputmask.
+- compile with new harbour.
+- sources published again.
+
+R5.8 2007/10/04
+- New Modern Look (thanks to Miguel Juarez)
+- New Own make based on mpm (preferences option 3)  (First Approach)
+
+R5.8b 2007/10/15
+- Fixed little problem in keyboard move introduced when change look
+- little optimizations.
+- Formating sources.
+- Deleting unused functions.
+- Now clicking in explorer ( if asociate extensions ) load project
+  or if click on Fmg then load form.
+
+R6.4 2007/12/14
+- Fixed problem when change ipaddress properties.
+- Optimized move-size routine.
+- Tooltips now are showed at design time. (on most controls)
+- fixed problem editing reports.
+- line lenght now to 600 chars.
+
+R6.5 2007/12/16
+- Fixed mixed problems in Control inspector data entry
+- Now Slider changes orientation on the fly.
+
+R6.6 2008/01/08
+- Compiled with last ooHG.
+
+R6.6 recompiled with february ooHG version.
+
+R6.7 2008/06/30
+- properties-events dialog  now have more big buttons (ok, cancel)
+  fixed a little problem editing forms.
+
+R.6.8 2008/08/14
+- Compiled with harbour 1.0.
+- Little fix in input window function.
+
+R.7.3 2009/09/09
+- Compiled with harbour 2.0
+- Now support multiple C Compilers Harbour/(x)Harbour
+
+R.7.3 build 4  2010/06/27
+- added on enter to browse
+
+R.11.035 2011/03/05
+- Fixed problem of project folder.
+- Enable options only when you open or save a new project.
+- Added option for rebuild compiling
+- fixed problem with new folder of harbour libs

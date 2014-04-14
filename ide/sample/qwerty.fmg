@@ -1,0 +1,325 @@
+
+* ooHG IDE plus form generated code
+* (c)2004 Ciro Vargas Clemow   pcman2010@yahoo.com
+
+DEFINE WINDOW  TEMPLATE ; 
+AT 115,72 ;
+ WIDTH 657 ;
+ HEIGHT 413 ; 
+ TITLE 'tabs sample' ; 
+ ICON '' ; 
+MODAL ;
+FONT 'ms sans serif' ;
+SIZE 10 ;
+
+
+DEFINE STATUSBAR 
+STATUSITEM "statusbar" ; 
+WIDTH   80 ; 
+ &&& comment
+KEYBOARD  
+DATE  ; 
+WIDTH   80 ; 
+ &&& comment 
+CLOCK  ; 
+WIDTH   80 ; 
+ &&& comment 
+END STATUSBAR
+
+@ 17,96 BUTTON button_first ;
+CAPTION 'button test' ; 
+ACTION msginfo('Button pressed') ;
+WIDTH 100 ;
+HEIGHT 28 ; 
+FONT 'ms sans serif' ;
+SIZE 10 ;
+ 
+
+
+qwerty.button_first.fontcolor:={0,0,0}
+qwerty.button_first.backcolor:={212,208,251}
+
+@ 20,310 BUTTON button_second ;
+CAPTION 'button test II' ; 
+ACTION msginfo('Button pressed') ;
+WIDTH 100 ;
+HEIGHT 28 ; 
+FONT 'ms sans serif' ;
+SIZE 10 ;
+ 
+
+
+qwerty.button_second.fontcolor:={0,0,0}
+qwerty.button_second.backcolor:={212,208,251}
+
+*****@ 65,4 TAB tab_name  
+DEFINE TAB tab_name ; 
+AT   65 ,    4  ; 
+WIDTH  300 ;
+HEIGHT 250 ;
+VALUE 1 ;
+FONT 'ms sans serif' ;
+SIZE 10 ;
+TOOLTIP 'este es un tooltip' ;
+FLAT   ;
+ON CHANGE msgbox("cambio") ;
+    
+
+DEFINE PAGE 'Page cvc'  ;
+IMAGE 'info.bmp'  
+
+@ 83,14 TEXTBOX text_102 ; 
+HEIGHT 24 ; 
+WIDTH 120 ; 
+Font 'ms sans serif' ; 
+size 10 ; 
+MAXLENGTH 30 ; 
+
+
+
+qwerty.text_102.fontcolor:={0,0,0}
+qwerty.text_102.backcolor:={255,255,255}
+
+@ 50,154 LISTBOX list_103 ; 
+WIDTH  123 ;
+HEIGHT 111 ;
+FONT 'ms sans serif' ;
+SIZE 10 ;
+ 
+
+
+qwerty.list_103.fontcolor:={0,0,0}
+qwerty.list_103.backcolor:={255,255,255}
+
+END PAGE
+
+DEFINE PAGE 'Page ccxw'  ;
+IMAGE 'check.bmp'  
+
+@ 111,33 BUTTON button_104 ;
+CAPTION 'button_104' ; 
+ACTION msginfo('Button pressed') ;
+WIDTH 100 ;
+HEIGHT 28 ; 
+FONT 'ms sans serif' ;
+SIZE 10 ;
+ 
+
+
+qwerty.button_104.fontcolor:={0,0,0}
+qwerty.button_104.backcolor:={212,208,251}
+
+@ 70,159 LISTBOX list_102 ; 
+WIDTH  113 ;
+HEIGHT 157 ;
+FONT 'ms sans serif' ;
+SIZE 10 ;
+ 
+
+
+qwerty.list_102.fontcolor:={0,0,0}
+qwerty.list_102.backcolor:={255,255,255}
+
+END PAGE
+
+DEFINE PAGE 'Page santiago'  ;
+IMAGE 'check.bmp'  
+
+@ 145,128 BUTTON button_103 ;
+CAPTION 'button_103' ; 
+ACTION msginfo('Button pressed') ;
+WIDTH 100 ;
+HEIGHT 28 ; 
+FONT 'ms sans serif' ;
+SIZE 10 ;
+ 
+
+
+qwerty.button_103.fontcolor:={0,0,0}
+qwerty.button_103.backcolor:={212,208,251}
+
+@ 63,40 BUTTON button_108 ;
+CAPTION 'button_108' ; 
+ACTION msginfo('Button pressed') ;
+WIDTH 100 ;
+HEIGHT 28 ; 
+FONT 'ms sans serif' ;
+SIZE 10 ;
+ 
+
+
+qwerty.button_108.fontcolor:={0,0,0}
+qwerty.button_108.backcolor:={212,208,251}
+
+END PAGE
+
+DEFINE PAGE 'Page 4'  ;
+IMAGE 'check.bmp'  
+
+@ 127,52 CHECKBOX checkbox_101 ;
+CAPTION 'checkbox' ;
+WIDTH 100 ;
+HEIGHT 28;
+VALUE .F. ; 
+FONT 'ms sans serif' ; 
+SIZE 10 ; 
+ 
+
+
+qwerty.checkbox_101.fontcolor:={0,0,0}
+
+@ 71,79 BUTTON button_101 ;
+CAPTION 'button_101' ; 
+ACTION msginfo('Button pressed') ;
+WIDTH 100 ;
+HEIGHT 28 ; 
+FONT 'ms sans serif' ;
+SIZE 10 ;
+ 
+
+
+qwerty.button_101.fontcolor:={0,0,0}
+qwerty.button_101.backcolor:={212,208,251}
+
+END PAGE   
+END TAB
+
+
+*****@ 64,325 TAB tab_101  
+DEFINE TAB tab_101 ; 
+AT   64 ,  325  ; 
+WIDTH  300 ;
+HEIGHT 250 ;
+VALUE 0 ;
+FONT 'ms sans serif' ;
+SIZE 10 ;
+HOTTRACK   ;
+ON CHANGE msginfo("on change event") ;
+    
+
+DEFINE PAGE 'Page 1'  ;
+IMAGE 'info.bmp'  
+
+@ 54,24 BROWSE browse_101 ;
+WIDTH 252 ;
+HEIGHT 171 ; 
+HEADERS {'one','two'} ; 
+WIDTHS  {60,60} ; 
+WORKAREA ALIAS() ; 
+FIELDS  {'field1','field2'} ; 
+FONT 'ms sans serif' ;
+SIZE 10 ;
+
+
+
+qwerty.browse_101.fontcolor:={0,0,0}
+qwerty.browse_101.backcolor:={255,255,255}
+
+END PAGE
+
+DEFINE PAGE 'Page 2'  ;
+IMAGE 'info.bmp'  
+
+@ 189,50 BUTTON button_102 ;
+CAPTION 'button_102' ; 
+ACTION msginfo('Button pressed') ;
+WIDTH 100 ;
+HEIGHT 28 ; 
+FONT 'ms sans serif' ;
+SIZE 10 ;
+ 
+
+
+qwerty.button_102.fontcolor:={0,0,0}
+qwerty.button_102.backcolor:={212,208,251}
+
+@ 42,173 LISTBOX list_101 ; 
+WIDTH  100 ;
+HEIGHT 100 ;
+FONT 'ms sans serif' ;
+SIZE 10 ;
+ 
+
+
+qwerty.list_101.fontcolor:={0,0,0}
+qwerty.list_101.backcolor:={255,255,255}
+
+END PAGE
+
+DEFINE PAGE 'Page 3'  ;
+IMAGE 'info.bmp'  
+
+@ 59,79 BUTTON button_105 ;
+CAPTION 'button_105' ; 
+ACTION msginfo('Button pressed') ;
+WIDTH 100 ;
+HEIGHT 28 ; 
+FONT 'ms sans serif' ;
+SIZE 10 ;
+ 
+
+
+qwerty.button_105.fontcolor:={0,0,0}
+qwerty.button_105.backcolor:={212,208,251}
+
+@ 139,82 TEXTBOX text_101 ; 
+HEIGHT 24 ; 
+WIDTH 120 ; 
+Font 'ms sans serif' ; 
+size 10 ; 
+MAXLENGTH 30 ; 
+
+
+
+qwerty.text_101.fontcolor:={0,0,0}
+qwerty.text_101.backcolor:={255,255,255}
+
+@ 36,23 FRAME frame_101 ; 
+CAPTION "" ; 
+WIDTH 265 ; 
+HEIGHT 197 ; 
+
+
+
+qwerty.frame_101.fontcolor:={0,0,0}
+qwerty.frame_101.backcolor:={192 , 192 , 192 }
+qwerty.frame_101.fontname:='ms sans serif'
+qwerty.frame_101.fontsize:= 10
+
+END PAGE
+
+DEFINE PAGE 'Page 4'  ;
+IMAGE 'info.bmp'  
+
+@ 144,83 BUTTON button_107 ;
+CAPTION 'button_107' ; 
+ACTION msginfo('Button pressed') ;
+WIDTH 100 ;
+HEIGHT 28 ; 
+FONT 'ms sans serif' ;
+SIZE 10 ;
+ 
+
+
+qwerty.button_107.fontcolor:={0,0,0}
+qwerty.button_107.backcolor:={212,208,251}
+
+@ 78,109 BUTTON button_106 ;
+CAPTION 'button_106' ; 
+ACTION msginfo('Button pressed') ;
+WIDTH 100 ;
+HEIGHT 28 ; 
+FONT 'ms sans serif' ;
+SIZE 10 ;
+ 
+
+
+qwerty.button_106.fontcolor:={0,0,0}
+qwerty.button_106.backcolor:={212,208,251}
+
+END PAGE   
+END TAB
+
+
+END WINDOW 
+

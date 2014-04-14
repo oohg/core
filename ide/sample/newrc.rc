@@ -1,0 +1,14 @@
+//         IDE: HMI+
+//     Project: C:\ANALISIS\vd1\install\sample\CIRO.PMG
+//        Item: newrc.rc
+// Description:
+//      Author:
+//        Date: 2005.01.16
+//
+
+
+// MANIFEST FOR CREATE 'XP-STYLE' APPLICATIONS
+1 24 "c:\minigui\resources\WindowsXP.Manifest"
+// HBPRINT PRINT PREVIEW IMAGE BUTTONS
+
+

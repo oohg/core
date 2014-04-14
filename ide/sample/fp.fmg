@@ -1,0 +1,402 @@
+
+* ooHG IDE plus form generated code
+* (c)2004 Ciro Vargas Clemow   pcman2010@yahoo.com
+
+DEFINE WINDOW  TEMPLATE ; 
+AT 114,67 ;
+ WIDTH 715 ;
+ HEIGHT 448 ; 
+ TITLE 'Test form' ; 
+ ICON '' ; 
+MAIN ;
+ON INIT prgspi() ; 
+ON RELEASE msgbox('on release') ; 
+BACKCOLOR {0, 0, 255} ; 
+FONT 'arial' ;
+SIZE 10 ;
+
+
+DEFINE STATUSBAR 
+STATUSITEM "Statusbar AbCdEfGhIjKlMnOpQrStUvWxYz" ; 
+WIDTH  180 ; 
+ &&& comment
+KEYBOARD  
+DATE  ; 
+WIDTH   80 ; 
+ &&& comment 
+CLOCK  ; 
+WIDTH   80 ; 
+ &&& comment 
+END STATUSBAR
+
+
+DEFINE MAIN MENU 
+POPUP 'first popup' 
+      ITEM 'subx' ACTION msgbox('subx') NAME 'subx' 
+//fp.subx.enabled:=.F.
+SetProperty('fp','subx','enabled',.F.)
+      POPUP 'sub1' 
+            ITEM 'sub11' ACTION msgbox('sub11') NAME 'prueba1' 
+//fp.prueba1.checked:=.F.
+SetProperty('fp','prueba1','checked',.F.)
+            ITEM 'sub12' ACTION msgbox('12')  
+            SEPARATOR
+            ITEM 'sub13' ACTION msgbox('sub13')  
+      END POPUP
+      ITEM 'sub2' ACTION msgbox('sub2 ')  
+      ITEM 'suby1a' ACTION msgbox('y') NAME 'y1a' 
+//fp.y1a.checked:=.F.
+SetProperty('fp','y1a','checked',.F.)
+END POPUP
+POPUP 'second popup' 
+      ITEM 'sub3' ACTION msgbox('sub3')  
+      ITEM 'sub4' ACTION msgbox('sub4')  
+      SEPARATOR
+      ITEM 'sub5a' ACTION msgbox('sub5')  
+      POPUP 'nuevo pop' 
+            ITEM 'uno' ACTION nil  
+            ITEM 'dos' ACTION nil  
+            ITEM 'option' ACTION nil  
+      END POPUP
+END POPUP
+POPUP 'other popup' 
+      ITEM 'othe1' ACTION nil  
+      ITEM 'othe2' ACTION nil  
+END POPUP
+
+END MENU
+
+
+DEFINE NOTIFY MENU 
+ITEM 'about' ACTION msgbox('about')  
+SEPARATOR
+ITEM 'exit' ACTION msgbox('exit')  
+
+END MENU
+
+@ 75,255 EDITBOX edit_101 ; 
+WIDTH 120 ; 
+HEIGHT 120 ; 
+VALUE 'ooHG IDE plus' ; 
+FONT 'arial' ;
+SIZE 12 ;
+TOOLTIP 'edit help.' ;
+MAXLENGTH 40 ; 
+
+
+
+fp.edit_101.fontcolor:={0,0,0}
+fp.edit_101.backcolor:={255 , 255 , 255 }
+
+@ 110,86 TEXTBOX text_101 ; 
+HEIGHT 24 ; 
+WIDTH 120 ; 
+Font 'arial' ; 
+size 10 ; 
+TOOLTIP 'tooltip text_1' ; 
+NUMERIC ; 
+MAXLENGTH 30 ; 
+
+
+
+fp.text_101.fontcolor:={0,0,0}
+fp.text_101.backcolor:={255 , 255 , 255 }
+
+@ 40,87 BUTTON button_101 ;
+CAPTION 'Newform OK.' ; 
+ACTION p2() ;
+WIDTH 100 ;
+HEIGHT 28 ; 
+FONT 'arial' ;
+SIZE 10 ;
+TOOLTIP 'ayuda tooltip' ;
+HELPID  10 ;
+ 
+
+
+fp.button_101.fontcolor:={0,0,0}
+fp.button_101.backcolor:={212,208,200}
+
+@ 39,404 CHECKBOX checkbox_101 ;
+CAPTION 'checkbox_1' ;
+WIDTH 100 ;
+HEIGHT 28;
+VALUE .F. ; 
+FONT 'Arial' ; 
+SIZE 10 ; 
+TOOLTIP 'tooltip checkbox' ;
+ 
+
+
+fp.checkbox_101.fontcolor:={255,255,  0}
+fp.checkbox_101.backcolor:={0 , 0 , 255 }
+
+@ 213,23 LISTBOX list_101 ; 
+WIDTH  92 ;
+HEIGHT 80 ;
+ITEMS  {'L1','L2','L3','L4'}  ;
+VALUE 1 ;
+FONT 'arial' ;
+SIZE 10 ;
+TOOLTIP 'ayuda list ' ;
+ 
+
+
+fp.list_101.fontcolor:={0,0,0}
+fp.list_101.backcolor:={255 , 255 , 255 }
+
+@ 77,401 COMBOBOX combo_101 ; 
+ITEMS  {'c1','c2','c3','c4'}  ;
+VALUE 1 ;
+WIDTH  100 ;
+FONT 'Arial' ;
+SIZE  8 ;
+TOOLTIP 'tooltip combo' ;
+
+
+
+fp.combo_101.fontcolor:={  0,  0,  0}
+fp.combo_101.backcolor:={255,255,255}
+
+@ 141,86 CHECKBUTTON checkbtn_101 ;
+CAPTION ' check' ;
+WIDTH 120 ;
+HEIGHT 28;
+VALUE .F. ; 
+FONT 'arial' ;
+SIZE 10 ;
+TOOLTIP 'tooltip checkbtn' ;
+ 
+
+
+fp.checkbtn_101.fontcolor:={0,0,0}
+fp.checkbtn_101.backcolor:={212,208,200}
+
+@ 145,422 IMAGE image_101 ; 
+PICTURE "demo.bmp" ;
+WIDTH 94 ;
+HEIGHT 83 ; 
+
+
+
+
+@ 244,126 ANIMATEBOX animate_101 ; 
+ WIDTH 100 ; 
+ HEIGHT 50 ; 
+CENTER  ;
+
+
+
+
+fp.animate_101.tooltip:='animate tooltip' 
+
+@ 30,250 DATEPICKER datepicker_101 ; 
+ WIDTH 120 ; 
+FONT 'arial' ;
+SIZE 10 ;
+TOOLTIP 'ayuda datepicker' ;
+
+
+
+fp.datepicker_101.fontcolor:={0,0,0}
+fp.datepicker_101.backcolor:={212,208,200}
+
+@ 112,31 LABEL label_101 ; 
+WIDTH 44 ; 
+HEIGHT 20 ; 
+VALUE 'Item #' ; 
+FONT 'Arial' ; 
+SIZE 10 ;
+BACKCOLOR {0 , 0 , 255 } ; 
+HELPID  10 ; 
+
+
+
+
+fp.label_101.fontitalic:=.T.
+fp.label_101.fontunderline:=.T.
+fp.label_101.fontcolor:={255,255,  0}
+
+@ 214,264 PLAYER player_101 ; 
+WIDTH 100 ; 
+HEIGHT 100 ; 
+FILE "sample.mid" ; 
+
+
+
+
+@ 322,25 CHECKBUTTON piccheckbutt_102 ;
+PICTURE 'imagecbu.bmp' ;
+WIDTH 30 ;
+HEIGHT 30;
+VALUE .F. ; 
+TOOLTIP 'tooltip piccheck' ;
+
+
+
+
+@ 202,158 BUTTON picbutt_102 ; 
+PICTURE 'hp_zoom.bmp';
+ACTION msginfo('Pic button pressed') ;
+WIDTH 30 ;
+HEIGHT 30 ; 
+TOOLTIP 'ayuda picbutt' ;
+
+
+
+
+@ 82,548 PROGRESSBAR progressbar_101 ; 
+RANGE 1,65000 ; 
+WIDTH 120 ; 
+HEIGHT 26 ; 
+TOOLTIP 'ayuda progressbar' ; 
+
+
+
+fp.progressbar_101.fontcolor:={255,  0,  0}
+fp.progressbar_101.backcolor:={0 , 255 , 0 }
+
+@ 265,567 SLIDER slider_101 ; 
+RANGE 1,10 ; 
+VALUE    5 ; 
+WIDTH 121 ; 
+HEIGHT 39 ; 
+TOOLTIP 'ayuda tooltip' ; 
+
+
+
+fp.slider_101.backcolor:={0 , 0 , 255 }
+
+@ 42,547 SPINNER spinner_101 ; 
+RANGE 0,200 ; 
+VALUE  100 ; 
+WIDTH 120 ; 
+HEIGHT 24 ; 
+FONT 'arial' ;
+SIZE 12 ;
+TOOLTIP 'ayuda spinner tooltip' ;
+
+
+
+fp.spinner_101.fontcolor:={0,0,0}
+fp.spinner_101.backcolor:={255 , 255 , 255 }
+
+@ 135,571 RADIOGROUP radiogroup_101 ; 
+OPTIONS  {'op1','op2'}  ;
+VALUE 1 ;
+WIDTH  112 ;
+SPACING  20 ;
+FONT 'arial' ;
+SIZE 10 ;
+TOOLTIP 'ayuda' ;
+
+
+
+fp.radiogroup_101.fontcolor:={0,0,0}
+fp.radiogroup_101.backcolor:={0 , 0 , 255 }
+
+@ 249,411 GRID grid_101 ;
+WIDTH 151 ;
+HEIGHT 92 ; 
+HEADERS {"one","two"} ; 
+WIDTHS  {90,60} ; 
+ITEMS  { {"",""} } ; 
+FONT 'arial' ;
+SIZE 12 ;
+
+
+
+fp.grid_101.fontcolor:={0,0,0}
+fp.grid_101.backcolor:={255 , 255 , 255 }
+
+@ 325,68 LABEL label_105 ; 
+WIDTH 168 ; 
+HEIGHT 20 ; 
+VALUE 'right-click context menu' ; 
+FONT 'Arial' ; 
+SIZE 10 ;
+BACKCOLOR {0 , 0 , 255 } ; 
+CENTERALIGN  ;
+
+
+
+
+fp.label_105.tooltip:='label tooltip' 
+fp.label_105.fontitalic:=.T.
+fp.label_105.fontstrikeout:=.T.
+fp.label_105.fontcolor:={  0,255,  0}
+
+@ 75,86 BUTTON button_102 ;
+CAPTION 'Repdemo' ; 
+ACTION rep() ;
+WIDTH 100 ;
+HEIGHT 28 ; 
+FONT 'Arial' ;
+SIZE 10 ;
+TOOLTIP 'Report tooltip' ;
+ 
+
+
+fp.button_102.fontcolor:={0,0,0}
+
+@ 8,22 FRAME frame_101 ; 
+CAPTION "Frame # 1" ; 
+WIDTH 205 ; 
+HEIGHT 168 ; 
+
+
+
+fp.frame_101.fontcolor:={255,255,255}
+fp.frame_101.backcolor:={0, 0, 255}
+fp.frame_101.fontname:='Arial'
+fp.frame_101.fontsize:= 10
+
+@ 7,243 FRAME frame_102 ; 
+CAPTION "Frame #3" ; 
+WIDTH 460 ; 
+HEIGHT 354 ; 
+
+
+
+fp.frame_102.fontcolor:={255,255,255}
+fp.frame_102.backcolor:={0, 0, 255}
+fp.frame_102.fontname:='Arial'
+fp.frame_102.fontsize:= 10
+
+@ 119,390 FRAME frame_103 ; 
+CAPTION "Frame # 3 - 1" ; 
+WIDTH 301 ; 
+HEIGHT 225 ; 
+
+
+
+fp.frame_103.fontbold:=.T.
+fp.frame_103.fontcolor:={255,255,255}
+fp.frame_103.backcolor:={0, 0, 255}
+fp.frame_103.fontname:='Arial'
+fp.frame_103.fontsize:= 10
+
+@ 180,4 FRAME frame_104 ; 
+CAPTION "Frame # 2" ; 
+WIDTH 236 ; 
+HEIGHT 180 ; 
+
+
+
+fp.frame_104.fontcolor:={255,255,255}
+fp.frame_104.backcolor:={0, 0, 255}
+fp.frame_104.fontname:='Arial'
+fp.frame_104.fontsize:= 10
+
+*****@ 328,267 TIMER timer_1  
+DEFINE TIMER timer_1 ; 
+INTERVAL   20000 ; 
+ACTION msgbox("timer each 20 seg") ;
+ &&&& ROW 328 ; 
+ &&&& COL 267 ; 
+
+
+
+
+END WINDOW 
+

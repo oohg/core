@@ -1,0 +1,15 @@
+DO REPORT ;
+TITLE 'Title 1|Title2' ;
+HEADERS {'code','first','last'},{' ',' ',' '} ;
+FIELDS {'code' ,'first','last'} ;
+WIDTHS {10,20,20} ;
+TOTALS {.T.,.F.,.F.} ;
+WORKAREA test ;
+LPP  55 ;
+CPL  80 ;
+PAPERSIZE DMPAPER_LETTER ;
+PREVIEW  ;
+SELECT  ;
+
+
+

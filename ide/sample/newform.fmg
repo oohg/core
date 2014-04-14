@@ -1,0 +1,226 @@
+
+* ooHG IDE plus form generated code
+* (c)2004 Ciro Vargas Clemow   pcman2010@yahoo.com
+
+DEFINE WINDOW  TEMPLATE ; 
+AT 122,86 ;
+ WIDTH 700 ;
+ HEIGHT 421 ; 
+ TITLE 'new frames form' ; 
+ ICON '' ; 
+MODAL ;
+ON INIT abre() ; 
+ON RELEASE cierra() ; 
+BACKCOLOR {255 , 128 , 255 } ; 
+FONT 'Arial' ;
+SIZE  9 ;
+
+
+DEFINE STATUSBAR 
+STATUSITEM "New statusbar" ; 
+WIDTH   80 ; 
+ &&& comment
+DATE  ; 
+WIDTH   80 ; 
+ &&& comment 
+CLOCK  ; 
+WIDTH   80 ; 
+ &&& comment 
+END STATUSBAR
+
+
+DEFINE CONTEXT MENU 
+ITEM 'hi !!!' ACTION msgbox('hola') NAME 'hola' 
+//newform.hola.checked:=.F.
+SetProperty('newform','hola','checked',.F.)
+ITEM 'bye' ACTION msgbox('bye') NAME 'hola1' 
+
+END MENU
+
+@ 218,13 FRAME frame_101 ; 
+CAPTION "frame_101" ; 
+WIDTH 152 ; 
+HEIGHT 124 ; 
+
+
+
+newform.frame_101.fontcolor:={0,0,0}
+newform.frame_101.backcolor:={255 , 128 , 255 }
+newform.frame_101.fontname:='arial'
+newform.frame_101.fontsize:= 10
+
+@ 215,301 FRAME frame_102 ; 
+CAPTION "frame_102" ; 
+WIDTH 215 ; 
+HEIGHT 128 ; 
+
+
+
+newform.frame_102.fontunderline:=.T.
+newform.frame_102.fontcolor:={  0,  0,  0}
+newform.frame_102.backcolor:={255 , 128 , 255 }
+newform.frame_102.fontname:='Arioso'
+newform.frame_102.fontsize:= 14
+
+@ 17,11 FRAME frame_103 ; 
+CAPTION "frame_103" ; 
+WIDTH 188 ; 
+HEIGHT 197 ; 
+
+
+
+newform.frame_103.fontcolor:={0,0,0}
+newform.frame_103.backcolor:={255 , 128 , 255 }
+newform.frame_103.fontname:='arial'
+newform.frame_103.fontsize:= 10
+
+@ 99,34 FRAME frame_104 ; 
+CAPTION "frame_104" ; 
+WIDTH 144 ; 
+HEIGHT 97 ; 
+
+
+
+newform.frame_104.fontcolor:={0,0,0}
+newform.frame_104.backcolor:={255 , 128 , 255 }
+newform.frame_104.fontname:='arial'
+newform.frame_104.fontsize:= 10
+
+@ 41,36 BUTTON button_101 ;
+CAPTION 'toolbar form' ; 
+ACTION {|| toolbar()} ;
+WIDTH 121 ;
+HEIGHT 45 ; 
+FONT 'Arial' ;
+SIZE 12 ;
+ 
+
+
+newform.button_101.fontcolor:={  0,  0,  0}
+newform.button_101.backcolor:={128 , 255 , 128 }
+
+@ 144,54 BUTTON button_102 ;
+CAPTION 'button_102' ; 
+ACTION msginfo('hi') ;
+WIDTH 100 ;
+HEIGHT 28 ; 
+FONT 'Arioso' ;
+SIZE 14 ;
+ 
+
+
+newform.button_102.fontbold:=.T.
+newform.button_102.fontcolor:={  0,  0,  0}
+newform.button_102.backcolor:={255 , 128 , 255 }
+
+@ 279,371 LABEL label_test ; 
+WIDTH 122 ; 
+HEIGHT 30 ; 
+VALUE 'Test label' ; 
+FONT 'Arial' ; 
+SIZE 9 ;
+BACKCOLOR {255 , 128 , 255 } ; 
+
+
+
+
+newform.label_test.fontcolor:={  0,  0,  0}
+
+@ 248,548 DATEPICKER datepicker_101 ; 
+VALUE ctod('2003.04.30')  ;
+ WIDTH 120 ; 
+FONT 'Arial' ;
+SIZE  9 ;
+ON ENTER msgbox('enter') ;
+
+
+
+newform.datepicker_101.fontcolor:={0,0,0}
+newform.datepicker_101.backcolor:={255,255,255}
+
+@ 180,533 IPADDRESS ipaddress_101 ; 
+WIDTH 120 ; 
+HEIGHT 24 ; 
+VALUE {192,168,1,1} ; 
+FONT 'Arial' ;
+SIZE  9 ;
+
+
+
+
+@ 35,472 RICHEDITBOX richeditbox_cvc ; 
+WIDTH 186 ; 
+HEIGHT 111 ; 
+FONT 'Arial' ;
+SIZE  9 ;
+MAXLENGTH 30 ; 
+
+
+
+newform.richeditbox_cvc.fontcolor:={0,0,0}
+newform.richeditbox_cvc.backcolor:={255,255,255}
+
+@ 26,230 MONTHCALENDAR monthcal_cvc ; 
+FONT 'Arial' ;
+SIZE  9 ;
+
+
+
+
+*****@ 226,177 TREE tree_101  
+DEFINE TREE tree_101 ; 
+AT  226 ,  177  ; 
+WIDTH  100 ;
+HEIGHT 100 ;
+FONT 'Copperplate Gothic Bold' ;
+SIZE 10 ;
+ON GOTFOCUS msgbox('tree got focus') ;
+
+END TREE
+
+newform.tree_101.fontitalic:=.T.
+newform.tree_101.fontunderline:=.T.
+newform.tree_101.fontbold:=.T.
+newform.tree_101.fontcolor:={  0,128,  0}
+
+@ 155,534 LABEL label_102 ; 
+WIDTH 124 ; 
+HEIGHT 20 ; 
+VALUE 'Ip Address' ; 
+FONT 'Arial' ; 
+SIZE 9 ;
+BACKCOLOR {255 , 128 , 255 } ; 
+BOLD ;
+
+
+
+
+newform.label_102.fontbold:=.T.
+newform.label_102.fontcolor:={0,0,0}
+
+@ 6,494 HYPERLINK hyperlink_101 ; 
+WIDTH 120 ; 
+HEIGHT 24 ; 
+VALUE 'ooHG IDE+ Home' ; 
+ADDRESS 'http://sistemascvc.tripod.com' ; 
+FONT 'Arial' ;
+SIZE  9 ;
+TOOLTIP 'hola' ;
+HANDCURSOR  ; 
+
+
+
+@ 290,537 TEXTBOX text_1 ; 
+HEIGHT 24 ; 
+WIDTH 120 ; 
+Font 'courier new' ; 
+size 9 ; 
+INPUTMASK '99:99:99' ;
+
+
+
+newform.text_1.fontcolor:={0,0,0}
+newform.text_1.backcolor:={255,255,255}
+
+END WINDOW 
+

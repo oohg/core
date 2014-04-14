@@ -1,0 +1,782 @@
+
+* ooHG IDE plus form generated code
+* (c)2004 Ciro Vargas Clemow   pcman2010@yahoo.com
+
+DEFINE WINDOW  TEMPLATE ; 
+AT 108,68 ;
+ WIDTH 636 ;
+ HEIGHT 396 ; 
+ TITLE 'Preferences' ; 
+ ICON '' ; 
+MODAL ;
+NOMAXIMIZE ;
+NOSIZE ;
+FONT 'arial' ;
+SIZE 10 ;
+
+
+@ 320,402 BUTTON button_101 ;
+CAPTION '&Ok' ; 
+ACTION myide:okprefer() ;
+WIDTH 100 ;
+HEIGHT 28 ; 
+FONT 'arial' ;
+SIZE 10 ;
+FLAT  ;
+ 
+
+
+form_prefer.button_101.fontcolor:={0,0,0}
+form_prefer.button_101.backcolor:={255 , 255 , 255 }
+
+@ 319,510 BUTTON button_102 ;
+CAPTION '&Cancel' ; 
+ACTION {|| form_prefer.release } ;
+WIDTH 100 ;
+HEIGHT 28 ; 
+FONT 'arial' ;
+SIZE 10 ;
+FLAT  ;
+ 
+
+
+form_prefer.button_102.fontcolor:={0,0,0}
+form_prefer.button_102.backcolor:={255 , 255 , 255 }
+
+@ 320,290 CHECKBOX checkbox_105 ;
+CAPTION 'Snap to Grid' ;
+WIDTH 100 ;
+HEIGHT 24;
+VALUE .F. ; 
+FONT 'arial' ; 
+SIZE 10 ; 
+ 
+
+
+form_prefer.checkbox_105.fontcolor:={0,0,0}
+form_prefer.checkbox_105.backcolor:={215 , 231 , 244 }
+
+*****@ 14,13 TAB tab_1  
+DEFINE TAB tab_1 ; 
+AT   14 ,   13  ; 
+WIDTH  600 ;
+HEIGHT 294 ;
+VALUE 0 ;
+FONT 'arial' ;
+BUTTONS   ;
+FLAT   ;
+    
+
+DEFINE PAGE 'Project'  ;
+IMAGE ''  
+
+@ 50,20 LABEL label_1 ; 
+WIDTH 100 ; 
+HEIGHT 24 ; 
+VALUE 'Project Folder' ; 
+FONT 'arial' ; 
+SIZE 10 ;
+
+
+
+
+form_prefer.label_1.fontcolor:={0,0,0}
+
+@ 50,160 TEXTBOX text_3 ; 
+HEIGHT 24 ; 
+READONLY  ; 
+WIDTH 250 ; 
+Font 'arial' ; 
+size 10 ; 
+MAXLENGTH 30 ; 
+ NOTABSTOP  ; 
+
+
+
+form_prefer.text_3.enabled:=.F.
+form_prefer.text_3.fontcolor:={0,0,0}
+form_prefer.text_3.backcolor:={255,255,255}
+
+@ 85,20 LABEL label_2 ; 
+WIDTH 100 ; 
+HEIGHT 23 ; 
+VALUE 'Output Name ' ; 
+FONT 'arial' ; 
+SIZE 10 ;
+
+
+
+
+form_prefer.label_2.fontcolor:={0,0,0}
+
+@ 85,160 TEXTBOX text_4 ; 
+HEIGHT 24 ; 
+WIDTH 250 ; 
+Font 'arial' ; 
+size 10 ; 
+MAXLENGTH 30 ; 
+
+
+
+form_prefer.text_4.fontcolor:={0,0,0}
+form_prefer.text_4.backcolor:={255,255,255}
+
+@ 160,45 RADIOGROUP radiogroup_1 ; 
+OPTIONS  {'Harbour','xHarbour'}  ;
+WIDTH  100 ;
+SPACING  25 ;
+FONT 'arial' ;
+SIZE 10 ;
+
+
+
+form_prefer.radiogroup_1.fontcolor:={0,0,0}
+
+@ 160,241 RADIOGROUP radiogroup_2 ; 
+OPTIONS  {'MinGW','BCC','Pelles C'}  ;
+WIDTH  100 ;
+SPACING  25 ;
+FONT 'arial' ;
+SIZE 10 ;
+
+
+
+form_prefer.radiogroup_2.fontcolor:={0,0,0}
+
+@ 130,26 FRAME frame_1 ; 
+CAPTION "xBase Compiler" ; 
+WIDTH 140 ; 
+HEIGHT 140 ; 
+
+
+
+form_prefer.frame_1.fontcolor:={0,0,0}
+form_prefer.frame_1.fontname:='arial'
+form_prefer.frame_1.fontsize:= 10
+
+@ 130,219 FRAME frame_2 ; 
+CAPTION "C Compiler" ; 
+WIDTH 140 ; 
+HEIGHT 140 ; 
+
+
+
+form_prefer.frame_2.fontcolor:={0,0,0}
+form_prefer.frame_2.fontname:='arial'
+form_prefer.frame_2.fontsize:= 10
+
+@ 130,412 FRAME frame_3 ; 
+CAPTION "Build Type" ; 
+WIDTH 140 ; 
+HEIGHT 140 ; 
+
+
+
+form_prefer.frame_3.fontcolor:={0,0,0}
+form_prefer.frame_3.fontname:='arial'
+form_prefer.frame_3.fontsize:= 10
+
+@ 160,431 RADIOGROUP radiogroup_3 ; 
+OPTIONS  {'Compile.bat','Own Make'}  ;
+WIDTH  100 ;
+SPACING  25 ;
+FONT 'arial' ;
+
+
+
+form_prefer.radiogroup_3.fontcolor:={0,0,0}
+
+END PAGE
+
+DEFINE PAGE '(x)Harbour'  ;
+IMAGE ''  
+
+@ 85,20 LABEL label_5 ; 
+WIDTH 133 ; 
+HEIGHT 18 ; 
+VALUE 'Harbour-Borland C' ; 
+FONT 'arial' ; 
+SIZE 10 ;
+
+
+
+
+form_prefer.label_5.fontcolor:={0,0,0}
+
+@ 85,160 TEXTBOX text_2 ; 
+HEIGHT 24 ; 
+WIDTH 250 ; 
+Font 'arial' ; 
+size 10 ; 
+MAXLENGTH 30 ; 
+
+
+
+form_prefer.text_2.fontcolor:={0,0,0}
+form_prefer.text_2.backcolor:={255,255,255}
+
+@ 82,420 BUTTON button_3 ;
+CAPTION '...' ; 
+ACTION If ( !Empty( Folder := GetFolder() ) , form_prefer.text_2.Value := Folder , ) ;
+WIDTH 30 ;
+HEIGHT 28 ; 
+FONT 'arial' ;
+SIZE 10 ;
+ 
+
+
+form_prefer.button_3.fontcolor:={0,0,0}
+
+@ 50,160 TEXTBOX text_8 ; 
+HEIGHT 24 ; 
+WIDTH 250 ; 
+Font 'arial' ; 
+size 10 ; 
+MAXLENGTH 30 ; 
+
+
+
+form_prefer.text_8.fontcolor:={0,0,0}
+form_prefer.text_8.backcolor:={255,255,255}
+
+@ 50,20 LABEL label_6 ; 
+WIDTH 120 ; 
+HEIGHT 24 ; 
+VALUE 'Harbour-MinGW' ; 
+FONT 'arial' ; 
+SIZE 10 ;
+
+
+
+
+form_prefer.label_6.fontcolor:={0,0,0}
+
+@ 47,420 BUTTON button_11 ;
+CAPTION '...' ; 
+ACTION If ( !Empty( Folder := GetFolder() ) , form_prefer.text_8.Value := folder , ) ;
+WIDTH 30 ;
+HEIGHT 28 ; 
+FONT 'arial' ;
+SIZE 10 ;
+ 
+
+
+form_prefer.button_11.fontcolor:={0,0,0}
+
+@ 120,20 LABEL label_4 ; 
+WIDTH 120 ; 
+HEIGHT 24 ; 
+VALUE 'Harbour-Pelles C' ; 
+FONT 'arial' ; 
+
+
+
+
+form_prefer.label_4.fontcolor:={0,0,0}
+
+@ 120,160 TEXTBOX text_7 ; 
+HEIGHT 24 ; 
+WIDTH 250 ; 
+Font 'arial' ; 
+MAXLENGTH 30 ; 
+
+
+
+form_prefer.text_7.fontcolor:={0,0,0}
+form_prefer.text_7.backcolor:={255,255,255}
+
+@ 117,420 BUTTON button_2 ;
+CAPTION '...' ; 
+ACTION If ( !Empty( Folder := GetFolder() ) , form_prefer.text_7.Value := Folder , ) ;
+WIDTH 30 ;
+HEIGHT 28 ; 
+FONT 'arial' ;
+ 
+
+
+form_prefer.button_2.fontcolor:={0,0,0}
+
+@ 160,20 LABEL label_14 ; 
+WIDTH 120 ; 
+HEIGHT 24 ; 
+VALUE 'xHarbour-MinGW' ; 
+FONT 'arial' ; 
+
+
+
+
+form_prefer.label_14.fontcolor:={0,0,0}
+
+@ 195,20 LABEL label_15 ; 
+WIDTH 120 ; 
+HEIGHT 24 ; 
+VALUE 'xHarbour-Borland C' ; 
+FONT 'arial' ; 
+
+
+
+
+form_prefer.label_15.fontcolor:={0,0,0}
+
+@ 230,20 LABEL label_16 ; 
+WIDTH 120 ; 
+HEIGHT 24 ; 
+VALUE 'xHarbour-Pelles C' ; 
+FONT 'arial' ; 
+
+
+
+
+form_prefer.label_16.fontcolor:={0,0,0}
+
+@ 160,160 TEXTBOX text_13 ; 
+HEIGHT 24 ; 
+WIDTH 250 ; 
+Font 'arial' ; 
+MAXLENGTH 30 ; 
+
+
+
+form_prefer.text_13.fontcolor:={0,0,0}
+form_prefer.text_13.backcolor:={255,255,255}
+
+@ 195,160 TEXTBOX text_14 ; 
+HEIGHT 24 ; 
+WIDTH 250 ; 
+Font 'arial' ; 
+MAXLENGTH 30 ; 
+
+
+
+form_prefer.text_14.fontcolor:={0,0,0}
+form_prefer.text_14.backcolor:={255,255,255}
+
+@ 230,160 TEXTBOX text_15 ; 
+HEIGHT 24 ; 
+WIDTH 250 ; 
+Font 'arial' ; 
+MAXLENGTH 30 ; 
+
+
+
+form_prefer.text_15.fontcolor:={0,0,0}
+form_prefer.text_15.backcolor:={255,255,255}
+
+@ 156,420 BUTTON button_8 ;
+CAPTION '...' ; 
+ACTION If ( !Empty( Folder := GetFolder() ) , form_prefer.text_13.Value := Folder , ) ;
+WIDTH 30 ;
+HEIGHT 28 ; 
+FONT 'arial' ;
+ 
+
+
+form_prefer.button_8.fontcolor:={0,0,0}
+
+@ 196,420 BUTTON button_12 ;
+CAPTION '...' ; 
+ACTION If ( !Empty( Folder := GetFolder() ) , form_prefer.text_14.Value := Folder , ) ;
+WIDTH 30 ;
+HEIGHT 28 ; 
+FONT 'arial' ;
+ 
+
+
+form_prefer.button_12.fontcolor:={0,0,0}
+
+@ 230,420 BUTTON button_13 ;
+CAPTION '...' ; 
+ACTION If ( !Empty( Folder := GetFolder() ) , form_prefer.text_15.Value := Folder , ) ;
+WIDTH 30 ;
+HEIGHT 28 ; 
+FONT 'arial' ;
+ 
+
+
+form_prefer.button_13.fontcolor:={0,0,0}
+
+END PAGE
+
+DEFINE PAGE 'C Compiler'  ;
+IMAGE ''  
+
+@ 85,20 LABEL label_11 ; 
+WIDTH 120 ; 
+HEIGHT 24 ; 
+VALUE 'BCC Folder' ; 
+FONT 'arial' ; 
+SIZE 10 ;
+
+
+
+
+form_prefer.label_11.fontcolor:={0,0,0}
+
+@ 85,160 TEXTBOX text_5 ; 
+HEIGHT 24 ; 
+WIDTH 250 ; 
+Font 'arial' ; 
+size 10 ; 
+MAXLENGTH 30 ; 
+
+
+
+form_prefer.text_5.fontcolor:={0,0,0}
+form_prefer.text_5.backcolor:={255,255,255}
+
+@ 82,420 BUTTON button_4 ;
+CAPTION '...' ; 
+ACTION If ( !Empty( Folder := GetFolder() ) , form_prefer.text_5.Value := Folder , ) ;
+WIDTH 30 ;
+HEIGHT 28 ; 
+FONT 'arial' ;
+SIZE 10 ;
+ 
+
+
+form_prefer.button_4.fontcolor:={0,0,0}
+
+@ 120,20 LABEL label_13 ; 
+WIDTH 120 ; 
+HEIGHT 24 ; 
+VALUE 'Pelles C' ; 
+FONT 'arial' ; 
+SIZE 10 ;
+
+
+
+
+form_prefer.label_13.fontcolor:={0,0,0}
+
+@ 120,160 TEXTBOX text_6 ; 
+HEIGHT 24 ; 
+WIDTH 250 ; 
+Font 'arial' ; 
+size 10 ; 
+MAXLENGTH 30 ; 
+
+
+
+form_prefer.text_6.fontcolor:={0,0,0}
+form_prefer.text_6.backcolor:={255,255,255}
+
+@ 117,420 BUTTON button_5 ;
+CAPTION '...' ; 
+ACTION If ( !Empty( Folder := GetFolder() ) , form_prefer.text_6.Value := Folder , ) ;
+WIDTH 30 ;
+HEIGHT 28 ; 
+FONT 'arial' ;
+SIZE 10 ;
+ 
+
+
+form_prefer.button_5.fontcolor:={0,0,0}
+
+@ 50,160 TEXTBOX text_10 ; 
+HEIGHT 24 ; 
+WIDTH 250 ; 
+Font 'arial' ; 
+size 10 ; 
+MAXLENGTH 30 ; 
+
+
+
+form_prefer.text_10.fontcolor:={0,0,0}
+form_prefer.text_10.backcolor:={255,255,255}
+
+@ 50,20 LABEL label_8 ; 
+WIDTH 120 ; 
+HEIGHT 24 ; 
+VALUE 'MinGW Folder' ; 
+FONT 'arial' ; 
+SIZE 10 ;
+
+
+
+
+form_prefer.label_8.fontcolor:={0,0,0}
+
+@ 47,420 BUTTON button_10 ;
+CAPTION '...' ; 
+ACTION If ( !Empty( Folder := GetFolder() ) , form_prefer.text_10.Value := folder , ) ;
+WIDTH 30 ;
+HEIGHT 28 ; 
+FONT 'arial' ;
+SIZE 10 ;
+ 
+
+
+form_prefer.button_10.fontcolor:={0,0,0}
+
+END PAGE
+
+DEFINE PAGE 'GUI'  ;
+IMAGE ''  
+
+@ 50,20 LABEL label_10 ; 
+WIDTH 120 ; 
+HEIGHT 24 ; 
+VALUE 'ooHG-Hb-MinGW' ; 
+FONT 'arial' ; 
+SIZE 10 ;
+
+
+
+
+form_prefer.label_10.fontcolor:={0,0,0}
+
+@ 47,420 BUTTON button_9 ;
+CAPTION '...' ; 
+ACTION If ( !Empty( Folder := GetFolder() ) , form_prefer.text_12.Value := folder , ) ;
+WIDTH 30 ;
+HEIGHT 28 ; 
+FONT 'arial' ;
+SIZE 10 ;
+ 
+
+
+form_prefer.button_9.fontcolor:={0,0,0}
+
+@ 50,160 TEXTBOX text_12 ; 
+HEIGHT 24 ; 
+WIDTH 250 ; 
+Font 'arial' ; 
+size 10 ; 
+MAXLENGTH 30 ; 
+
+
+
+form_prefer.text_12.fontcolor:={0,0,0}
+form_prefer.text_12.backcolor:={255,255,255}
+
+@ 85,20 LABEL label_7 ; 
+WIDTH 120 ; 
+HEIGHT 24 ; 
+VALUE 'ooHG-Hb-BCC' ; 
+FONT 'arial' ; 
+
+
+
+
+form_prefer.label_7.fontcolor:={0,0,0}
+
+@ 120,20 LABEL label_9 ; 
+WIDTH 120 ; 
+HEIGHT 24 ; 
+VALUE 'ooHG-Hb-Pelles C' ; 
+FONT 'arial' ; 
+
+
+
+
+form_prefer.label_9.fontcolor:={0,0,0}
+
+@ 85,160 TEXTBOX text_9 ; 
+HEIGHT 24 ; 
+WIDTH 250 ; 
+Font 'arial' ; 
+MAXLENGTH 30 ; 
+
+
+
+form_prefer.text_9.fontcolor:={0,0,0}
+form_prefer.text_9.backcolor:={255,255,255}
+
+@ 120,160 TEXTBOX text_11 ; 
+HEIGHT 24 ; 
+WIDTH 250 ; 
+Font 'arial' ; 
+MAXLENGTH 30 ; 
+
+
+
+form_prefer.text_11.fontcolor:={0,0,0}
+form_prefer.text_11.backcolor:={255,255,255}
+
+@ 82,420 BUTTON button_6 ;
+CAPTION '...' ; 
+ACTION If ( !Empty( Folder := GetFolder() ) , form_prefer.text_9.Value := folder , ) ;
+WIDTH 30 ;
+HEIGHT 28 ; 
+FONT 'arial' ;
+ 
+
+
+form_prefer.button_6.fontcolor:={0,0,0}
+
+@ 117,420 BUTTON button_7 ;
+CAPTION '...' ; 
+ACTION If ( !Empty( Folder := GetFolder() ) , form_prefer.text_11.Value := folder , ) ;
+WIDTH 30 ;
+HEIGHT 28 ; 
+FONT 'arial' ;
+ 
+
+
+form_prefer.button_7.fontcolor:={0,0,0}
+
+@ 160,160 TEXTBOX text_16 ; 
+HEIGHT 24 ; 
+WIDTH 250 ; 
+Font 'arial' ; 
+MAXLENGTH         30 ; 
+
+
+
+form_prefer.text_16.fontcolor:={0,0,0}
+
+@ 195,160 TEXTBOX text_17 ; 
+HEIGHT 24 ; 
+WIDTH 250 ; 
+Font 'arial' ; 
+MAXLENGTH         30 ; 
+
+
+
+form_prefer.text_17.fontcolor:={0,0,0}
+
+@ 230,160 TEXTBOX text_18 ; 
+HEIGHT 24 ; 
+WIDTH 250 ; 
+Font 'arial' ; 
+MAXLENGTH         30 ; 
+
+
+
+form_prefer.text_18.fontcolor:={0,0,0}
+
+@ 160,20 LABEL label_17 ; 
+WIDTH 120 ; 
+HEIGHT 24 ; 
+VALUE 'ooHG-xHb-MinGW' ; 
+FONT 'arial' ; 
+
+
+
+
+form_prefer.label_17.fontcolor:={0,0,0}
+
+@ 195,20 LABEL label_18 ; 
+WIDTH 120 ; 
+HEIGHT 24 ; 
+VALUE 'ooHG-xHb-BCC' ; 
+FONT 'arial' ; 
+
+
+
+
+form_prefer.label_18.fontcolor:={0,0,0}
+
+@ 230,20 LABEL label_19 ; 
+WIDTH 120 ; 
+HEIGHT 24 ; 
+VALUE 'ooHG-xHb-Pelles C' ; 
+FONT 'arial' ; 
+
+
+
+
+form_prefer.label_19.fontcolor:={0,0,0}
+
+@ 156,420 BUTTON button_14 ;
+CAPTION '...' ; 
+ACTION If ( !Empty( Folder := GetFolder() ) , form_prefer.text_16.Value := folder , ) ;
+WIDTH 30 ;
+HEIGHT 28 ; 
+FONT 'arial' ;
+ 
+
+
+form_prefer.button_14.fontcolor:={0,0,0}
+
+@ 196,420 BUTTON button_15 ;
+CAPTION '...' ; 
+ACTION If ( !Empty( Folder := GetFolder() ) , form_prefer.text_17.Value := folder , ) ;
+WIDTH 30 ;
+HEIGHT 28 ; 
+FONT 'arial' ;
+ 
+
+
+form_prefer.button_15.fontcolor:={0,0,0}
+
+@ 230,420 BUTTON button_16 ;
+CAPTION '...' ; 
+ACTION If ( !Empty( Folder := GetFolder() ) , form_prefer.text_18.Value := folder , ) ;
+WIDTH 30 ;
+HEIGHT 28 ; 
+FONT 'arial' ;
+ 
+
+
+form_prefer.button_16.fontcolor:={0,0,0}
+
+END PAGE
+
+DEFINE PAGE 'Other'  ;
+IMAGE ''  
+
+@ 85,20 LABEL label_3 ; 
+WIDTH 120 ; 
+HEIGHT 24 ; 
+VALUE 'Text Editor' ; 
+FONT 'arial' ; 
+
+
+
+
+form_prefer.label_3.fontcolor:={0,0,0}
+
+@ 85,160 TEXTBOX text_1 ; 
+HEIGHT 24 ; 
+WIDTH 250 ; 
+Font 'arial' ; 
+MAXLENGTH 30 ; 
+
+
+
+form_prefer.text_1.fontcolor:={0,0,0}
+form_prefer.text_1.backcolor:={255,255,255}
+
+@ 82,417 BUTTON button_1 ;
+CAPTION '...' ; 
+ACTION If ( !Empty( Folder := GetFile() ) , form_prefer.text_1.Value := folder , ) ;
+WIDTH 30 ;
+HEIGHT 28 ; 
+FONT 'arial' ;
+ 
+
+
+form_prefer.button_1.fontcolor:={0,0,0}
+
+@ 50,160 TEXTBOX text_lib ; 
+HEIGHT 24 ; 
+WIDTH 400 ; 
+Font 'arial' ; 
+size 10 ; 
+TOOLTIP 'Libs separate with comma' ; 
+MAXLENGTH 30 ; 
+
+
+
+form_prefer.text_lib.fontcolor:={0,0,0}
+form_prefer.text_lib.backcolor:={255,255,255}
+
+@ 50,20 LABEL label_12 ; 
+WIDTH 120 ; 
+HEIGHT 24 ; 
+VALUE 'Additional Libs' ; 
+FONT 'arial' ; 
+SIZE 10 ;
+
+
+
+
+form_prefer.label_12.fontcolor:={0,0,0}
+
+END PAGE   
+END TAB
+
+
+END WINDOW 
+

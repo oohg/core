@@ -1,0 +1,493 @@
+
+* Harbour Minigui IDE HMI+ form generated code
+* (c)2004 Ciro Vargas Clemow   sistemascvc@softhome.net
+
+DEFINE WINDOW  TEMPLATE ; 
+AT 108,99 ;
+ WIDTH 706 ;
+ HEIGHT 479 ; 
+ TITLE ' ' ; 
+ ICON '' ; 
+MODAL ;
+BACKCOLOR myide:asystemcolor ; 
+FONT 'arial' ;
+SIZE 10 ;
+
+
+@ 53,60 LABEL label_101 ; 
+WIDTH 59 ; 
+HEIGHT 21 ; 
+VALUE 'Caption' ; 
+FONT 'Arial' ; 
+SIZE 10 ;
+BACKCOLOR myide:asystemcolor ; 
+
+
+
+
+MYTOOLBARED.label_101.fontcolor:={0,0,0}
+
+@ 24,62 LABEL label_102 ; 
+WIDTH 45 ; 
+HEIGHT 16 ; 
+VALUE 'Name' ; 
+FONT 'Arial' ; 
+SIZE 10 ;
+BACKCOLOR myide:asystemcolor ; 
+
+
+
+
+MYTOOLBARED.label_102.fontcolor:={0,0,0}
+
+@ 84,62 LABEL label_103 ; 
+WIDTH 55 ; 
+HEIGHT 21 ; 
+VALUE 'Action' ; 
+FONT 'Arial' ; 
+SIZE 10 ;
+BACKCOLOR myide:asystemcolor ; 
+
+
+
+
+MYTOOLBARED.label_103.fontcolor:={0,0,0}
+
+@ 116,63 LABEL label_104 ; 
+WIDTH 47 ; 
+HEIGHT 22 ; 
+VALUE 'Image' ; 
+FONT 'Arial' ; 
+SIZE 10 ;
+BACKCOLOR myide:asystemcolor ; 
+
+
+
+
+MYTOOLBARED.label_104.fontcolor:={0,0,0}
+
+@ 20,137 TEXTBOX text_102 ; 
+HEIGHT 23 ; 
+WIDTH 120 ; 
+Font 'Arial' ; 
+size 10 ; 
+MAXLENGTH 40 ; 
+ON CHANGE TMYtoolb:escribe1() ; 
+
+
+
+MYTOOLBARED.text_102.fontcolor:={0,0,0}
+MYTOOLBARED.text_102.backcolor:={255,255,255}
+
+@ 52,137 TEXTBOX text_101 ; 
+HEIGHT 23 ; 
+WIDTH 120 ; 
+Font 'Arial' ; 
+size 10 ; 
+MAXLENGTH 80 ; 
+ON CHANGE TMYtoolb:escribe() ; 
+
+
+
+MYTOOLBARED.text_101.fontcolor:={0,0,0}
+MYTOOLBARED.text_101.backcolor:={255,255,255}
+
+@ 82,138 TEXTBOX edit_101 ; 
+HEIGHT 23 ; 
+WIDTH 120 ; 
+Font 'Arial' ; 
+size 10 ; 
+MAXLENGTH 250 ; 
+ON CHANGE TMYtoolb:escribe1x() ; 
+
+
+
+MYTOOLBARED.edit_101.fontcolor:={0,0,0}
+MYTOOLBARED.edit_101.backcolor:={255,255,255}
+
+@ 113,137 TEXTBOX text_103 ; 
+HEIGHT 23 ; 
+WIDTH 120 ; 
+Font 'Arial' ; 
+size 10 ; 
+MAXLENGTH 40 ; 
+ON CHANGE TMYtoolb:escribe1a() ; 
+
+
+
+MYTOOLBARED.text_103.fontcolor:={0,0,0}
+MYTOOLBARED.text_103.backcolor:={255,255,255}
+
+@ 172,17 BUTTON button_101 ;
+CAPTION 'Insert item' ; 
+ACTION TMYtoolb:insertar() ;
+WIDTH 100 ;
+HEIGHT 28 ; 
+FONT 'Arial' ;
+SIZE 10 ;
+ 
+
+
+MYTOOLBARED.button_101.fontcolor:={0,0,0}
+MYTOOLBARED.button_101.backcolor:=myide:asystemcolor
+
+@ 220,16 BUTTON button_102 ;
+CAPTION 'Delete item' ; 
+ACTION TMYtoolb:borrar() ;
+WIDTH 100 ;
+HEIGHT 28 ; 
+FONT 'Arial' ;
+SIZE 10 ;
+ 
+
+
+MYTOOLBARED.button_102.fontcolor:={0,0,0}
+MYTOOLBARED.button_102.backcolor:=myide:asystemcolor
+
+@ 266,16 BUTTON button_103 ;
+CAPTION 'New item' ; 
+ACTION TMYtoolb:nextm() ;
+WIDTH 100 ;
+HEIGHT 28 ; 
+FONT 'Arial' ;
+SIZE 10 ;
+ 
+
+
+MYTOOLBARED.button_103.fontcolor:={0,0,0}
+MYTOOLBARED.button_103.backcolor:=myide:asystemcolor
+
+@ 396,577 BUTTON button_tbp ;
+CAPTION 'Font' ; 
+ACTION TMYtoolb:leefont() ;
+WIDTH 100 ;
+HEIGHT 28 ; 
+FONT 'Arial' ;
+SIZE 10 ;
+ 
+
+
+MYTOOLBARED.button_tbp.fontcolor:={0,0,0}
+MYTOOLBARED.button_tbp.backcolor:=myide:asystemcolor
+
+@ 353,16 BUTTON button_106 ;
+CAPTION '/\' ; 
+ACTION TMYtoolb:cursorup() ;
+WIDTH 100 ;
+HEIGHT 28 ; 
+FONT 'Arial' ;
+SIZE 10 ;
+ 
+
+
+MYTOOLBARED.button_106.fontcolor:={0,0,0}
+MYTOOLBARED.button_106.backcolor:=myide:asystemcolor
+
+@ 396,17 BUTTON button_107 ;
+CAPTION '\/' ; 
+ACTION TMYtoolb:cursordown() ;
+WIDTH 100 ;
+HEIGHT 28 ; 
+FONT 'Arial' ;
+SIZE 10 ;
+ 
+
+
+MYTOOLBARED.button_107.fontcolor:={0,0,0}
+MYTOOLBARED.button_107.backcolor:=myide:asystemcolor
+
+@ 353,134 BUTTON button_108 ;
+CAPTION 'Save / Exit' ; 
+ACTION TMYtoolb:exittb() ;
+WIDTH 100 ;
+HEIGHT 28 ; 
+FONT 'Arial' ;
+SIZE 10 ;
+ 
+
+
+MYTOOLBARED.button_108.fontcolor:={0,0,0}
+MYTOOLBARED.button_108.backcolor:=myide:asystemcolor
+
+@ 396,133 BUTTON button_109 ;
+CAPTION 'Discard ' ; 
+ACTION TMYtoolb:discard() ;
+WIDTH 100 ;
+HEIGHT 28 ; 
+FONT 'Arial' ;
+SIZE 10 ;
+ 
+
+
+MYTOOLBARED.button_109.fontcolor:={0,0,0}
+MYTOOLBARED.button_109.backcolor:=myide:asystemcolor
+
+@ 170,142 CHECKBOX checkbox_101 ;
+CAPTION 'Check' ;
+WIDTH 100 ;
+HEIGHT 28;
+VALUE .F. ; 
+FONT 'Arial' ; 
+SIZE 10 ; 
+ON CHANGE TMYtoolb:escribe1y() ; 
+ 
+
+
+MYTOOLBARED.checkbox_101.fontcolor:={0,0,0}
+MYTOOLBARED.checkbox_101.backcolor:=myide:asystemcolor
+
+@ 211,143 CHECKBOX checkbox_102 ;
+CAPTION 'Autosize' ;
+WIDTH 100 ;
+HEIGHT 28;
+VALUE .F. ; 
+FONT 'Arial' ; 
+SIZE 10 ; 
+ON CHANGE TMYtoolb:escribe1z() ; 
+ 
+
+
+MYTOOLBARED.checkbox_102.fontcolor:={0,0,0}
+MYTOOLBARED.checkbox_102.backcolor:=myide:asystemcolor
+
+@ 249,144 CHECKBOX checkbox_103 ;
+CAPTION 'Separator' ;
+WIDTH 100 ;
+HEIGHT 28;
+VALUE .F. ; 
+FONT 'Arial' ; 
+SIZE 10 ; 
+ON CHANGE TMYtoolb:escribe3a() ; 
+ 
+
+
+MYTOOLBARED.checkbox_103.fontcolor:={0,0,0}
+MYTOOLBARED.checkbox_103.backcolor:=myide:asystemcolor
+
+@ 291,144 CHECKBOX checkbox_104 ;
+CAPTION 'Group' ;
+WIDTH 100 ;
+HEIGHT 28;
+VALUE .F. ; 
+FONT 'Arial' ; 
+SIZE 10 ; 
+ON CHANGE TMYtoolb:escribe3b() ; 
+ 
+
+
+MYTOOLBARED.checkbox_104.fontcolor:={0,0,0}
+MYTOOLBARED.checkbox_104.backcolor:=myide:asystemcolor
+
+@ 314,313 CHECKBOX checkbox_1 ;
+CAPTION 'Flat' ;
+WIDTH 69 ;
+HEIGHT 27;
+VALUE .F. ; 
+FONT 'arial' ; 
+SIZE 10 ; 
+ 
+
+
+MYTOOLBARED.checkbox_1.fontcolor:={0,0,0}
+MYTOOLBARED.checkbox_1.backcolor:=myide:asystemcolor
+
+@ 316,415 CHECKBOX checkbox_3 ;
+CAPTION 'Righttext' ;
+WIDTH 79 ;
+HEIGHT 30;
+VALUE .F. ; 
+FONT 'arial' ; 
+SIZE 10 ; 
+ 
+
+
+MYTOOLBARED.checkbox_3.fontcolor:={0,0,0}
+MYTOOLBARED.checkbox_3.backcolor:=myide:asystemcolor
+
+@ 343,314 CHECKBOX checkbox_2 ;
+CAPTION 'Bottom' ;
+WIDTH 71 ;
+HEIGHT 24;
+VALUE .F. ; 
+FONT 'arial' ; 
+SIZE 10 ; 
+ 
+
+
+MYTOOLBARED.checkbox_2.fontcolor:={0,0,0}
+MYTOOLBARED.checkbox_2.backcolor:=myide:asystemcolor
+
+@ 342,416 CHECKBOX checkbox_4 ;
+CAPTION 'Border' ;
+WIDTH 80 ;
+HEIGHT 25;
+VALUE .F. ; 
+FONT 'arial' ; 
+SIZE 10 ; 
+ 
+
+
+MYTOOLBARED.checkbox_4.fontcolor:={0,0,0}
+MYTOOLBARED.checkbox_4.backcolor:=myide:asystemcolor
+
+@ 375,318 LABEL label_1 ; 
+WIDTH 82 ; 
+HEIGHT 18 ; 
+VALUE 'Toolbar Name' ; 
+FONT 'arial' ; 
+SIZE 10 ;
+BACKCOLOR myide:asystemcolor ; 
+
+
+
+
+MYTOOLBARED.label_1.fontcolor:={0,0,0}
+
+@ 399,300 TEXTBOX text_1 ; 
+HEIGHT 24 ; 
+WIDTH 120 ; 
+Font 'arial' ; 
+size 10 ; 
+MAXLENGTH 30 ; 
+
+
+
+MYTOOLBARED.text_1.fontcolor:={0,0,0}
+MYTOOLBARED.text_1.backcolor:={255,255,255}
+
+@ 377,477 LABEL label_2 ; 
+WIDTH 56 ; 
+HEIGHT 22 ; 
+VALUE 'Tooltip' ; 
+FONT 'arial' ; 
+SIZE 10 ;
+BACKCOLOR myide:asystemcolor ; 
+
+
+
+
+MYTOOLBARED.label_2.fontcolor:={0,0,0}
+
+@ 399,441 TEXTBOX text_4 ; 
+HEIGHT 24 ; 
+WIDTH 120 ; 
+Font 'arial' ; 
+size 10 ; 
+MAXLENGTH 30 ; 
+
+
+
+MYTOOLBARED.text_4.fontcolor:={0,0,0}
+MYTOOLBARED.text_4.backcolor:={255,255,255}
+
+@ 311,523 LABEL label_3 ; 
+WIDTH 43 ; 
+HEIGHT 53 ; 
+VALUE 'Button Width Height' ; 
+FONT 'arial' ; 
+SIZE 10 ;
+BACKCOLOR myide:asystemcolor ; 
+
+
+
+
+MYTOOLBARED.label_3.fontcolor:={0,0,0}
+
+@ 312,584 TEXTBOX text_2 ; 
+HEIGHT 25 ; 
+WIDTH 65 ; 
+Font 'arial' ; 
+size 10 ; 
+NUMERIC ; 
+MAXLENGTH 4 ; 
+
+
+
+MYTOOLBARED.text_2.fontcolor:={0,0,0}
+MYTOOLBARED.text_2.backcolor:={255,255,255}
+
+@ 342,585 TEXTBOX text_3 ; 
+HEIGHT 24 ; 
+WIDTH 65 ; 
+Font 'arial' ; 
+size 10 ; 
+NUMERIC ; 
+MAXLENGTH 4 ; 
+
+
+
+MYTOOLBARED.text_3.fontcolor:={0,0,0}
+MYTOOLBARED.text_3.backcolor:={255,255,255}
+
+@ 298,277 FRAME frame_1 ; 
+CAPTION "Toolbar Properties" ; 
+WIDTH 417 ; 
+HEIGHT 144 ; 
+
+
+
+MYTOOLBARED.frame_1.fontcolor:={0,0,0}
+MYTOOLBARED.frame_1.backcolor:=myide:asystemcolor
+MYTOOLBARED.frame_1.fontname:='arial'
+MYTOOLBARED.frame_1.fontsize:= 10
+
+@ 312,16 BUTTON button_1 ;
+CAPTION 'Dropdown Menu' ; 
+ACTION tmymenu:menu_ed( 4,dtoolbar->named ) ;
+WIDTH 100 ;
+HEIGHT 28 ; 
+FONT 'Arial' ;
+SIZE 10 ;
+ 
+
+
+MYTOOLBARED.button_1.fontcolor:={  0,  0,  0}
+MYTOOLBARED.button_1.backcolor:=myide:asystemcolor
+
+@ 17,277 BROWSE browse_101 ;
+WIDTH 357 ;
+HEIGHT 278 ; 
+HEADERS {'name','caption','action','check','autosize','image','separator','group','Tooltip'} ; 
+WIDTHS  {90,160,250,40,40,160,40,40,160} ; 
+WORKAREA dtoolbar ; 
+FIELDS  {'named','item','action','check','autosize','dtoolbar->image','separator','group','Tooltip'} ; 
+VALUE  1 ; 
+FONT 'courier new' ;
+SIZE 10 ;
+ON CHANGE TMYtoolb:readlevel() ;
+ON GOTFOCUS TMYtoolb:readlevel() ;
+LOCK ;
+
+
+
+MYTOOLBARED.browse_101.fontcolor:={0,0,0}
+MYTOOLBARED.browse_101.backcolor:={255,255,255}
+
+@ 144,137 TEXTBOX text_5 ; 
+HEIGHT 23 ; 
+WIDTH 120 ; 
+Font 'arial' ; 
+size 10 ; 
+MAXLENGTH 30 ; 
+ON CHANGE TMYtoolb:escribet() ; 
+
+
+
+MYTOOLBARED.text_5.fontcolor:={0,0,0}
+MYTOOLBARED.text_5.backcolor:={255,255,255}
+
+@ 146,58 LABEL label_4 ; 
+WIDTH 76 ; 
+HEIGHT 17 ; 
+VALUE 'Tooltip' ; 
+FONT 'arial' ; 
+SIZE 10 ;
+BACKCOLOR myide:asystemcolor ; 
+
+
+
+
+MYTOOLBARED.label_4.fontcolor:={0,0,0}
+
+END WINDOW 
+

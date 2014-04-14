@@ -1,0 +1,75 @@
+
+* ooHG IDE plus form generated code
+* (c)2004 Ciro Vargas Clemow   pcman2010@yahoo.com
+
+DEFINE WINDOW  TEMPLATE ; 
+AT 125,66 ;
+ WIDTH 700 ;
+ HEIGHT 410 ; 
+ TITLE '' ; 
+ ICON '' ; 
+FONT 'MS Sans Serif' ;
+SIZE 10 ;
+
+
+*****@ 100,200 TAB tab_1  
+DEFINE TAB tab_1 ; 
+AT  100 ,  200  ; 
+WIDTH  332 ;
+HEIGHT 256 ;
+VALUE 0 ;
+FONT 'MS Sans Serif' ;
+SIZE 10 ;
+    
+
+DEFINE PAGE 'Page 1'  ;
+IMAGE ''  
+
+@ 116,57 TEXTBOX text_2 ; 
+HEIGHT 24 ; 
+WIDTH 120 ; 
+Font 'MS Sans Serif' ; 
+size 10 ; 
+MAXLENGTH 30 ; 
+
+
+
+cvc.text_2.fontcolor:={0,0,0}
+cvc.text_2.backcolor:={255,255,255}
+
+@ 68,188 EDITBOX edit_1 ; 
+WIDTH 120 ; 
+HEIGHT 120 ; 
+FONT 'MS Sans Serif' ;
+SIZE 10 ;
+MAXLENGTH 30 ; 
+
+
+
+cvc.edit_1.fontcolor:={0,0,0}
+cvc.edit_1.backcolor:={255,255,255}
+
+END PAGE
+
+DEFINE PAGE 'Page 2'  ;
+IMAGE ''  
+
+@ 85,171 EDITBOX edit_2 ; 
+WIDTH 120 ; 
+HEIGHT 120 ; 
+FONT 'MS Sans Serif' ;
+SIZE 10 ;
+MAXLENGTH 30 ; 
+
+
+
+cvc.edit_2.fontcolor:={0,0,0}
+cvc.edit_2.backcolor:={255,255,255}
+
+END PAGE   
+END TAB
+
+
+END WINDOW 
+
+
