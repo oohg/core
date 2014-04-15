@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: buildapp.bat,v 1.8 2013-11-23 14:16:24 fyurisich Exp $
+rem $Id: buildapp.bat,v 1.9 2014-04-15 00:46:16 fyurisich Exp $
 rem
 
 REM *** Check for .prg ***
@@ -45,6 +45,7 @@ rem set BIN_HRB=bin\win\mingw64
 rem *** Parse Switches ***
 set TFILE=%1
 set NO_LOG=NO
+set RUNEXE=-run
 set EXTRA=
 :LOOP_START
 if "%2"==""    goto LOOP_END
@@ -52,11 +53,27 @@ if "%2"=="/sl" goto SUPPRESS_LOG
 if "%2"=="/sL" goto SUPPRESS_LOG
 if "%2"=="/Sl" goto SUPPRESS_LOG
 if "%2"=="/SL" goto SUPPRESS_LOG
+if "%2"=="-sl" goto SUPPRESS_LOG
+if "%2"=="-sL" goto SUPPRESS_LOG
+if "%2"=="-Sl" goto SUPPRESS_LOG
+if "%2"=="-SL" goto SUPPRESS_LOG
+if "%2"=="-nr" goto SUPPRESS_RUN
+if "%2"=="-nR" goto SUPPRESS_RUN
+if "%2"=="-Nr" goto SUPPRESS_RUN
+if "%2"=="-NR" goto SUPPRESS_RUN
+if "%2"=="/nr" goto SUPPRESS_RUN
+if "%2"=="/nR" goto SUPPRESS_RUN
+if "%2"=="/Nr" goto SUPPRESS_RUN
+if "%2"=="/NR" goto SUPPRESS_RUN
 set EXTRA=%EXTRA% %2
 shift
 goto LOOP_START
 :SUPPRESS_LOG
 set NO_LOG=YES
+shift
+goto LOOP_START
+:SUPPRESS_RUN
+set RUNEXE=-norun
 shift
 goto LOOP_START
 :LOOP_END
@@ -72,8 +89,8 @@ copy /b %HG_ROOT%\resources\oohg.rc+%TFILE%.rc _temp.rc > nul
 windres -i _temp.rc -o _temp.o
 
 rem *** Compile and Link ***
-if "%NO_LOG%"=="YES" hbmk2 %TFILE% %EXTRA% %HG_ROOT%\oohg.hbc -run
-if not "%NO_LOG%"=="YES" hbmk2 %TFILE% %EXTRA% %HG_ROOT%\oohg.hbc >> output.log 2>&1 -run -prgflag=-q
+if "%NO_LOG%"=="YES" hbmk2 %TFILE% %EXTRA% %HG_ROOT%\oohg.hbc %RUNEXE%
+if not "%NO_LOG%"=="YES" hbmk2 %TFILE% %EXTRA% %HG_ROOT%\oohg.hbc >> output.log 2>&1 %RUNEXE% -prgflag=-q
 
 rem *** Cleanup ***
 if exist _oohg_resconfig.h del _oohg_resconfig.h

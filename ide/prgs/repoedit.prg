@@ -1,3 +1,7 @@
+/*
+ * $Id: repoedit.prg,v 1.2 2014-04-15 00:46:19 fyurisich Exp $
+ */
+
 #include "oohg.ch"
 #DEFINE CRLF CHR(13)+CHR(10)
 *----------------------------

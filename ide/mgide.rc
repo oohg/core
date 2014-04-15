@@ -1,3 +1,6 @@
+//
+// $Id: mgide.rc,v 1.2 2014-04-15 00:46:19 fyurisich Exp $
+//
 
 EDIT              ICON         imgs\edit.ico
 VD                ICON         imgs\vd.ico
@@ -104,6 +107,3 @@ M12               BITMAP       imgs\DATA_MANAGER.bmp
 HMIQ              JPG          imgs\hmiq.jpg
 MYOOHG            JPG          imgs\oohgjpg.jpg
 HMI               JPG          imgs\hmi.jpg
-
-#include  "c:\oohg\resources\oohg.rc"
-

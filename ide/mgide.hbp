@@ -1,45 +1,30 @@
+#
+# $Id: mgide.hbp,v 1.2 2014-04-15 00:46:19 fyurisich Exp $
+#
+
+# name of output file
 -ooide
 
+# compilation is incremental (hidden .hmk folder is created)
 -inc
 
+# path to fmg files
 -Ifmgs
 
--q
+#compiler flags
 -trace
 -info
 -ldflag=-Wl,--allow-multiple-definition
--ldflag=-Lc:\oohg\lib
+-ldflag=-L${HG_ROOT}\lib
 
--
-
--mwindows
-
+#libs
 -loohg
 -lhbprinter
 -lminiprint
 
--lc:\oohg\harbour\lib\libhbwin.a
--lc:\oohg\harbour\lib\libhbct.a
--lc:\oohg\mingw\lib\libodbc32.a
--lc:\oohg\mingw\lib\libuser32.a
--lc:\oohg\mingw\lib\libwinspool.a
--lc:\oohg\mingw\lib\libcomctl32.a
--lc:\oohg\mingw\lib\libcomdlg32.a
--lc:\oohg\mingw\lib\libgdi32.a
--lc:\oohg\mingw\lib\libole32.a
--lc:\oohg\mingw\lib\liboleaut32.a
--lc:\oohg\mingw\lib\libuuid.a
--lc:\oohg\mingw\lib\libwinmm.a
--lc:\oohg\mingw\lib\libvfw32.a
--lc:\oohg\mingw\lib\libwsock32.a
-
-
-
-
+# files to compile and link
 mgide.rc
 c:\oohg\resources\oohg.res
-
-
 prgs\mgide.prg
 prgs\dbucvc.prg
 prgs\formedit.prg
@@ -51,3 +36,4 @@ prgs\propeven.prg
 prgs\repoedit.prg
 prgs\toolbed.prg
 
+#EOF

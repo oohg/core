@@ -1,11 +1,65 @@
 /*
- * $Id: ChangeLog,v 1.1248 2014-04-14 00:16:24 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1249 2014-04-15 00:46:16 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-04-14 21:44 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * -/buildapp.bat
+     + /nr (and -nr) switch to prevent execution.
+     + -sl switch (equivalent to /sl).
+   * ./ide/build.bat
+     + CVS Id.
+     + Default path.
+     + Comments.
+     * Use ./buildapp.bat to compile.
+   - ./ide/build2.bat
+   * ./ide/mgide.hbp
+     + CVS Id.
+     * Comments.
+     - Redundant options.
+   * ./ide/mgide.rc
+     + CVS Id.
+     - Redundant inclusion of oohg resources.
+   - ./ide/imgs/tollbarbuilder.bmp
+   + ./ide/imgs/toolbarbuilder.bmp
+   + ./ide/fmgs/form_prefer.fmg
+     + CVS Id.
+   + ./ide/fmgs/intfonco.fmg
+     + CVS Id.
+   + ./ide/fmgs/mymenued.fmg
+     + CVS Id.
+   + ./ide/fmgs/mytoolbared.fmg
+     + CVS Id.
+   + ./ide/fmgs/orderf.fmg
+     + CVS Id.
+   + ./ide/fmgs/tabeven.fmg
+     + CVS Id.
+   + ./ide/fmgs/tabprop.fmg
+     + CVS Id.
+   + ./ide/fmgs/tboptions.fmg
+     + CVS Id.
+   + ./ide/prgs/dbucvc.prg
+     + CVS Id.
+   + ./ide/prgs/intfocop.prg
+     + CVS Id.
+   + ./ide/prgs/menued.prg
+     + CVS Id.
+   + ./ide/prgs/moside.prg
+     + CVS Id.
+   + ./ide/prgs/orden.prg
+     + CVS Id.
+   + ./ide/prgs/propeven.prg
+     + CVS Id.
+   + ./ide/prgs/repoedit.prg
+     + CVS Id.
+   + ./ide/prgs/saveform.prg
+     + CVS Id.
+   + ./ide/prgs/toolbed.prg
+     + CVS Id.
 
 2014-04-13 21:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    + ./ide
