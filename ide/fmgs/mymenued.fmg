@@ -1,5 +1,5 @@
 /*
- * $Id: mymenued.fmg,v 1.2 2014-04-15 00:46:19 fyurisich Exp $
+ * $Id: mymenued.fmg,v 1.3 2014-04-17 00:21:33 fyurisich Exp $
  */
 
 * Harbour Minigui IDE HMI+ form generated code
@@ -170,7 +170,7 @@ mymenued.button_103.fontcolor:={0,0,0}
 
 @ 230,134 BUTTON button_104 ;
 CAPTION '<--' ; 
-ACTION {|| (iif(tmymenu:nlevel > 0 , tmymenu:nlevel-- , tmymenu:nlevel )), TMYMENU:escribe2() } ;
+ACTION {|| (iif(tmymenu:nlevel > 0 , tmymenu:nlevel-- , NIL )), TMYMENU:escribe2() } ;
 WIDTH 100 ;
 HEIGHT 28 ; 
 FONT 'Arial' ;

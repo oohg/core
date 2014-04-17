@@ -1,5 +1,5 @@
 /*
- * $Id: mgide.prg,v 1.1 2014-04-14 00:16:29 fyurisich Exp $
+ * $Id: mgide.prg,v 1.2 2014-04-17 00:21:33 fyurisich Exp $
  */
 
 #include "oohg.ch"
@@ -1564,7 +1564,7 @@ Return
 *-------------------------
 METHOD BldMinGW(nOption) CLASS THMI
 *-------------------------
-local output,i,nitems,nPos,cprgname,cexe,cError,cCompile
+local output,i,nitems,nPos,cprgname,cexe,cError
 LOCAL aPrgFiles       := {}
 LOCAL nPrgFiles   //////////////    := PrgFiles.List_1.ItemCount
 LOCAL cMakeExe
@@ -1809,7 +1809,7 @@ DO CASE
       npos:=at(".",myide:cprojectname)
       cprgname:=substr(myide:cprojectname,1,npos-1)
       if memowrit(cprgname+'.prg',output)
-         if .not. file('compile.bat')
+         if .not. file('compile.bat') .and. ! IsFileInPath('compile.bat')
             msginfo('You must copy the compile.bat distributed with ooHG to the actual project directory, or put in current path','Information')
             cursorarrow()
             form_tree:button_9:enabled:=.T.
@@ -1821,7 +1821,7 @@ DO CASE
          set printer to comp.bat
          set print on
          set console off
-         ? cCompile
+         ? "compile " + cprgname
          set console on
          set print off
          set printer to
@@ -1884,7 +1884,7 @@ return
 *-------------------------
 METHOD xBldMinGW(nOption) CLASS THMI
 *-------------------------
-local output,i,nitems,nPos,cprgname,cexe,cError,cCompile
+local output,i,nitems,nPos,cprgname,cexe,cError
 LOCAL aPrgFiles       := {}
 LOCAL nPrgFiles   //////////////    := PrgFiles.List_1.ItemCount
 LOCAL cMakeExe
@@ -2126,7 +2126,7 @@ DO CASE
       npos:=at(".",myide:cprojectname)
       cprgname:=substr(myide:cprojectname,1,npos-1)
       if memowrit(cprgname+'.prg',output)
-         if .not. file('compile.bat')
+         if .not. file('compile.bat') .and. ! IsFileInPath('compile.bat')
             msginfo('You must copy the compile.bat distributed with ooHG to the actual project directory, or put in current path','Information')
             cursorarrow()
             form_tree:button_9:enabled:=.T.
@@ -2138,7 +2138,7 @@ DO CASE
          set printer to comp.bat
          set print on
          set console off
-         ? cCompile
+         ? "compile " + cprgname
          set console on
          set print off
          set printer to
@@ -2182,7 +2182,7 @@ Return
 *-------------------------
 METHOD BuildBcc(nOption) CLASS THMI
 *-------------------------
-local output,i,nitems,nPos,cprgname,cexe,cError,cCompile
+local output,i,nitems,nPos,cprgname,cexe,cError
 LOCAL aPrgFiles       := {}
 LOCAL nPrgFiles   //////////////    := PrgFiles.List_1.ItemCount
 LOCAL cMakeExe
@@ -2434,7 +2434,7 @@ DO CASE
       npos:=at(".",myide:cprojectname)
       cprgname:=substr(myide:cprojectname,1,npos-1)
       if memowrit(cprgname+'.prg',output)
-         if .not. file('compile.bat')
+         if .not. file('compile.bat') .and. ! IsFileInPath('compile.bat')
             msginfo('You must copy the compile.bat distributed with ooHGIDE+ sample to the actual project directory, or put in current path','Information')
             cursorarrow()
             form_tree:button_9:enabled:=.T.
@@ -2446,8 +2446,7 @@ DO CASE
          set printer to comp.bat
          set print on
          set console off
-
-         ? cCompile
+         ? "compile " + cprgname
          set console on
          set print off
          set printer to
@@ -2491,7 +2490,7 @@ Return
 *-------------------------
 METHOD xBuildBcc(nOption) CLASS THMI
 *-------------------------
-local output,i,nitems,nPos,cprgname,cexe,cError,cCompile
+local output,i,nitems,nPos,cprgname,cexe,cError
 LOCAL aPrgFiles       := {}
 LOCAL nPrgFiles   //////////////    := PrgFiles.List_1.ItemCount
 LOCAL cMakeExe
@@ -2746,7 +2745,7 @@ DO CASE
       npos:=at(".",myide:cprojectname)
       cprgname:=substr(myide:cprojectname,1,npos-1)
       if memowrit(cprgname+'.prg',output)
-         if .not. file('compile.bat')
+         if .not. file('compile.bat') .and. ! IsFileInPath('compile.bat')
             msginfo('You must copy the compile.bat distributed with ooHGIDE+ sample to the actual project directory, or put in current path','Information')
             cursorarrow()
             form_tree:button_9:enabled:=.T.
@@ -2758,8 +2757,7 @@ DO CASE
          set printer to comp.bat
          set print on
          set console off
-
-         ? cCompile
+         ? "compile " + cprgname
          set console on
          set print off
          set printer to
@@ -2803,7 +2801,7 @@ Return
 *-------------------------
 METHOD XBldPellC(nOption) CLASS THMI
 *-------------------------
-local output,i,nitems,nPos,cprgname,cexe,cError,cCompile
+local output,i,nitems,nPos,cprgname,cexe,cError
 LOCAL aPrgFiles       := {}
 LOCAL nPrgFiles   //////////////    := PrgFiles.List_1.ItemCount
 LOCAL cMakeExe
@@ -3070,7 +3068,7 @@ DO CASE
       npos:=at(".",myide:cprojectname)
       cprgname:=substr(myide:cprojectname,1,npos-1)
       if memowrit(cprgname+'.prg',output)
-         if .not. file('compile.bat')
+         if .not. file('compile.bat') .and. ! IsFileInPath('compile.bat')
             msginfo('You must copy the compile.bat distributed with ooHGIDE+ sample to the actual project directory, or put in current path','Information')
             cursorarrow()
             form_tree:button_9:enabled:=.T.
@@ -3082,8 +3080,7 @@ DO CASE
          set printer to comp.bat
          set print on
          set console off
-
-         ? cCompile
+         ? "compile " + cprgname
          set console on
          set print off
          set printer to
@@ -3127,7 +3124,7 @@ Return
 *-------------------------
 METHOD BldPellC(nOption) CLASS THMI
 *-------------------------
-local output,i,nitems,nPos,cprgname,cexe,cError,cCompile
+local output,i,nitems,nPos,cprgname,cexe,cError
 LOCAL aPrgFiles       := {}
 LOCAL nPrgFiles   //////////////    := PrgFiles.List_1.ItemCount
 LOCAL cMakeExe
@@ -3415,7 +3412,7 @@ DO CASE
       npos:=at(".",myide:cprojectname)
       cprgname:=substr(myide:cprojectname,1,npos-1)
       if memowrit(cprgname+'.prg',output)
-         if .not. file('compile.bat')
+         if .not. file('compile.bat') .and. ! IsFileInPath('compile.bat')
             msginfo('You must copy the compile.bat distributed with ooHGIDE+ sample to the actual project directory, or put in current path','Information')
             cursorarrow()
             form_tree:button_9:enabled:=.T.
@@ -3427,8 +3424,7 @@ DO CASE
          set printer to comp.bat
          set print on
          set console off
-
-         ? cCompile
+         ? "compile " + cprgname
          set console on
          set print off
          set printer to
@@ -5144,6 +5140,32 @@ Function OnlyFolder(cFile1)
       cFolder := Nil
    Endif
 Return(cFolder)
+
+*---------------------------------------------------------------*
+Function IsFileInPath( cFileName )
+*---------------------------------------------------------------*
+   Local cDir
+   LOCAL cName
+   LOCAL cExt
+   LOCAL cFullName
+   LOCAL aExt
+
+   hb_FNameSplit( cFileName, @cDir, @cName, @cExt )
+
+   For Each cDir In hb_ATokens( GetEnv( "PATH" ), hb_osPathListSeparator(), .T., .T. )
+      If Left( cDir, 1 ) == '"' .AND. Right( cDir, 1 ) == '"'
+         cDir := SubStr( cDir, 2, Len( cDir ) - 2 )
+      EndIf
+      If ! Empty( cDir )
+         If ! Right( cDir, 1 ) == "\"
+            cDir += "\"
+         EndIf
+         If File( cDir + cFileName )
+            Return .T.
+         EndIf
+      EndIf
+   Next
+Return .F.
 
 
 #pragma BEGINDUMP

@@ -1,11 +1,21 @@
 /*
- * $Id: ChangeLog,v 1.1249 2014-04-15 00:46:16 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1250 2014-04-17 00:21:31 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-04-16 21:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./ide/fmgs/mymenued.fmg
+     ! Harbour warning.
+   * ./ide/mgide.hbp
+     ! Build type "compile.bat" is not working.
+     ! Warning when compile.bat is not in the current folder.
+   + lib/.cvsignore
+     * Updated.
+   + ide/.cvsignore
 
 2014-04-14 21:44 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * -/buildapp.bat
