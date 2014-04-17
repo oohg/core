@@ -1,5 +1,5 @@
 /*
- * $Id: mgide.prg,v 1.2 2014-04-17 00:21:33 fyurisich Exp $
+ * $Id: mgide.prg,v 1.3 2014-04-17 01:15:46 fyurisich Exp $
  */
 
 #include "oohg.ch"
@@ -1729,7 +1729,7 @@ DO CASE
     endif
 
     cOut += '-L$(MINGW)/lib -L$(HRB_DIR)/lib -L$(HRB_DIR)/lib/win/mingw -L$(MINIGUI_INSTALL)/lib -L$(MINIGUI_INSTALL)/lib/gcc -Wl,--start-group '  // MigSoft
-    cOut += '-looHG -lhbprinter -lminiprint -lgtgui -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbpp -lhbrtl -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lhbodbc -lodbc32 -lsocket -lhbmysql -lmysqldll -ldll -lhbwin -lhbcpage -lhbmzip -lhbzlib -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32'
+    cOut += '-looHG -lhbprinter -lminiprint -lgtgui -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbpp -lhbrtl -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lhbodbc -lodbc32 -lsocket -lhbmysql -lxhb -lmysqldll -ldll -lhbwin -lhbcpage -lhbmzip -lhbzlib -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32'
     cOut += ' -Wl,--end-group '
 
     cOut += CRLF
@@ -1821,7 +1821,7 @@ DO CASE
          set printer to comp.bat
          set print on
          set console off
-         ? "compile " + cprgname
+         ? "compile " + cprgname + " /nr"
          set console on
          set print off
          set printer to

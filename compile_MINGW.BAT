@@ -1,6 +1,6 @@
 @echo off
 rem
-rem $Id: compile_MINGW.BAT,v 1.30 2014-03-13 22:58:45 fyurisich Exp $
+rem $Id: compile_MINGW.BAT,v 1.31 2014-04-17 01:15:46 fyurisich Exp $
 rem
 cls
 
@@ -51,18 +51,37 @@ set TFILE=%1
 set COMP_TYPE=STD
 set EXTRA=
 set RC_FILE=TRUE
+set NO_RUN=FALSE
 :LOOP_START
 if "%2"==""    goto LOOP_END
 if "%2"=="/d"  goto COMP_DEBUG
+if "%2"=="-d"  goto COMP_DEBUG
 if "%2"=="/D"  goto COMP_DEBUG
+if "%2"=="-D"  goto COMP_DEBUG
 if "%2"=="/c"  goto COMP_CONSOLE
+if "%2"=="-c"  goto COMP_CONSOLE
 if "%2"=="/C"  goto COMP_CONSOLE
+if "%2"=="-C"  goto COMP_CONSOLE
 if "%2"=="/i"  goto NORC
+if "%2"=="-i"  goto NORC
 if "%2"=="/I"  goto NORC
+if "%2"=="-I"  goto NORC
 if "%2"=="-p"  goto PPO
+if "%2"=="/p"  goto PPO
 if "%2"=="-P"  goto PPO
+if "%2"=="/P"  goto PPO
 if "%2"=="-w3" goto W3
+if "%2"=="/w3" goto W3
 if "%2"=="-W3" goto W3
+if "%2"=="/W3" goto W3
+if "%2"=="-nr" goto NORUN
+if "%2"=="-Nr" goto NORUN
+if "%2"=="-nR" goto NORUN
+if "%2"=="-NR" goto NORUN
+if "%2"=="/nr" goto NORUN
+if "%2"=="/Nr" goto NORUN
+if "%2"=="/nR" goto NORUN
+if "%2"=="/NR" goto NORUN
 set EXTRA=%EXTRA% %2
 shift
 goto LOOP_START
@@ -84,6 +103,10 @@ shift
 goto LOOP_START
 :W3
 set EXTRA=%EXTRA% -w3
+shift
+goto LOOP_START
+:NORUN
+set NO_RUN=TRUE
 shift
 goto LOOP_START
 :LOOP_END
@@ -262,10 +285,12 @@ set COMP_TYPE=
 set EXTRA=
 set PATH=%TPATH%
 set TPATH=
+set RC_FILE=
 
 rem *** Execute ***
-%TFILE%
+if "%NO_RUN%"=="FALSE" %TFILE%
 set TFILE=
+set NO_RUN=
 goto EXIT
 
 
@@ -293,6 +318,8 @@ set COMP_TYPE=
 set EXTRA=
 set PATH=%TPATH%
 set TPATH=
+set NO_RUN=
+set RC_FILE=
 
 
 :EXIT

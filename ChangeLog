@@ -1,11 +1,19 @@
 /*
- * $Id: ChangeLog,v 1.1250 2014-04-17 00:21:31 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1251 2014-04-17 01:15:46 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-04-16 22:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * ./compile_MINGW.BAT
+     + /nr and -nr option: no run exe after successful building.
+     ! RC_FILE envvar not being deleted.
+     * Options can use -<option> and /<option> syntax.
+   * ./ide/mgide.hbp
+     ! Exe runs in "Build Project" option.
 
 2014-04-16 21:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./ide/fmgs/mymenued.fmg
