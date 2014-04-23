@@ -1,5 +1,5 @@
 /*
- * $Id: i_combobox.ch,v 1.15 2013-09-05 02:40:23 fyurisich Exp $
+ * $Id: i_combobox.ch,v 1.16 2014-04-23 22:52:42 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -101,7 +101,7 @@
             [ ITEMIMAGENUMBER <itemimagenumber> ] ;
             [ VALUE <value> ] ;
             [ VALUESOURCE <valuesource> ] ;
-            [ <displaychange : DISPLAYEDIT> ] ;
+            [ <displayedit : DISPLAYEDIT> ] ;
             [ FONT <f> ] ;
             [ SIZE <n> ] ;
             [ <bold : BOLD> ] ;
@@ -144,7 +144,7 @@
                   <{gotfocus}>, <{lostfocus}>, <{enter}>, <helpid>, ;
                   <.invisible.>, <.notabstop.>, <.sort.> ,<.bold.>, ;
                   <.italic.>, <.underline.>, <.strikeout.>, <(itemsource)>, ;
-                  <(valuesource)>, <.displaychange.>, ;
+                  <(valuesource)>, <.displayedit.>, ;
                   <{ondisplaychangeprocedure}>,  .f., "", <aImage>, <.rtl.>, ;
                   <textheight>, <.disabled.>, <.firstitem.>, <.fit.>, <backcolor>, ;
                   <fontcolor>, <listwidth>, <{onListDisplay}>, <{onListClose}>, ;
@@ -164,7 +164,7 @@
             [ ITEMIMAGENUMBER <itemimagenumber> ] ;
             [ VALUE <value> ] ;
             [ VALUESOURCE <valuesource> ] ;
-            [ <displaychange : DISPLAYEDIT> ] ;
+            [ <displayedit : DISPLAYEDIT> ] ;
             [ FONT <f> ] ;
             [ SIZE <n> ] ;
             [ <bold : BOLD> ] ;
@@ -208,7 +208,7 @@
                   <f>, <n>, <tooltip>, <{changeprocedure}>, <h>, <{gotfocus}>, ;
                   <{lostfocus}>, <{enter}>, <helpid>, <.invisible.>, <.notabstop.>, ;
                   <.sort.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.>, ;
-                  <(itemsource)>, <(valuesource)>, <.displaychange.>, ;
+                  <(itemsource)>, <(valuesource)>, <.displayedit.>, ;
                   <{ondisplaychangeprocedure}>, <.break.>, <grippertext>, <aImage>, ;
                   <.rtl.>, <textheight>, <.disabled.>, <.firstitem.>, <.fit.>, <backcolor>, ;
                   <fontcolor>, <listwidth>, <{onListDisplay}>, <{onListClose}>, ;

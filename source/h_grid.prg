@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.245 2014-04-23 02:36:17 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.246 2014-04-23 22:52:42 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -3418,7 +3418,7 @@ Local nStyle := LVS_SINGLESEL
               lFixedCtrls, bHeadRClick )
 
    // By default, search in the current column
-   ::SearchCol := 0
+   ::SearchCol := -1
 
    // This is not really needed because TGridByCell ignores it
    ::InPlace := .T.
@@ -3501,12 +3501,10 @@ Local r, nClientWidth, nScrollWidth
 
       // Ensure cell is visible
       ListView_SetCursel( ::hWnd, ::nRowPos )
+      ListView_EnsureVisible( ::hWnd, ::nRowPos )
       r := { 0, 0, 0, 0 }                                        // left, top, right, bottom
       GetClientRect( ::hWnd, r )
       nClientWidth := r[ 3 ] - r[ 1 ]
-      If ! OSisWinXPorLater() .or. ! ListView_IsItemVisible( ::hWnd, ::nRowPos )
-         ListView_EnsureVisible( ::hWnd, ::nRowPos )
-      EndIf
       r := ListView_GetSubitemRect( ::hWnd, ::nRowPos - 1, ::nColPos - 1 ) // top, left, width, height
       If ListViewGetItemCount( ::hWnd ) >  ListViewGetCountPerPage( ::hWnd )
          nScrollWidth := GetVScrollBarWidth()
@@ -4168,17 +4166,17 @@ Local aCellData, nItem, i, nSearchCol
             ::cText += Upper( Chr( wParam ) )
          EndIf
 
-         If ::SearchCol < 1 .OR. ::SearchCol > ::ColumnCount
+         If ::SearchCol < 0
             nSearchCol := ::Value[ 2 ]
             If nSearchCol < 1 .OR. nSearchCol > ::ColumnCount
-               Return 1
+               Return 0
             EndIf
+         ElseIf ::SearchCol > ::ColumnCount
+            Return 0
          Else
             nSearchCol := ::SearchCol
          EndIf
-         If nSearchCol == 1
-            nItem := ListView_FindItem( hWnd, ::FirstSelectedItem - 2, ::cText, ::SearchWrap )
-         Else
+         If nSearchCol >= 1
             nItem := 0
 
             For i := ::FirstSelectedItem + 1 To ::ItemCount
@@ -4196,6 +4194,9 @@ Local aCellData, nItem, i, nSearchCol
                  EndIf
                Next i
             EndIf
+         Else
+            nItem := ListView_FindItem( hWnd, ::FirstSelectedItem - 2, ::cText, ::SearchWrap )
+            nSearchCol := 1
          EndIf
          If nItem > 0
             ::Value := { nItem, nSearchCol }

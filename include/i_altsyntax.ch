@@ -1,5 +1,5 @@
 /*
- * $Id: i_altsyntax.ch,v 1.106 2014-04-11 02:27:46 fyurisich Exp $
+ * $Id: i_altsyntax.ch,v 1.107 2014-04-23 22:52:42 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -1681,14 +1681,14 @@ COMBO BOX
         _OOHG_ActiveControlImage             := Nil  ;;
         _OOHG_ActiveControlTextHeight        := Nil  ;;
         _OOHG_ActiveControlStretch           := .F.  ;;
-        _OOHG_ActiveControlFirstItem         := Nil  ;;
+        _OOHG_ActiveControlFirstItem         := .F.  ;;
         _OOHG_ActiveControlListWidth         := Nil  ;;
         _OOHG_ActiveControlItemImageNumber   := Nil  ;;
         _OOHG_ActiveControlImageSource       := Nil  ;;
-        _OOHG_ActiveControlDelayedLoad       := Nil  ;;
-        _OOHG_ActiveControlIncrementalSearch := Nil  ;;
-        _OOHG_ActiveControlIntegralHeight    := Nil  ;;
-        _OOHG_ActiveControlNoRefresh         := .F.  ;;
+        _OOHG_ActiveControlDelayedLoad       := .F.  ;;
+        _OOHG_ActiveControlIncrementalSearch := .F.  ;;
+        _OOHG_ActiveControlIntegralHeight    := .F.  ;;
+        _OOHG_ActiveControlNoRefresh         := Nil  ;;
         _OOHG_ActiveControlSourceOrder       := Nil  ;;
         _OOHG_ActiveControlOnRefresh         := Nil
 

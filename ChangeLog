@@ -1,5 +1,5 @@
 /*
- * $Id: ChangeLog,v 1.1253 2014-04-23 02:36:17 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1254 2014-04-23 22:52:39 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
@@ -7,12 +7,31 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-04-23 19:52 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include/i_altsyntax.ch
+     ! DEFINE COMBOBOX with ITEMSOURCE and VALUESOURCE clauses
+       not working properly.
+   * include/i_combobox.ch
+     * Name of DISPLAYEDIT marker.
+   * source/h_grid.prg
+     ! After search with wrap the founded item is not visible.
+     ; ListView_IsItemVisible() return .T. instead of .F.
+     * Search behaviour of TGridByCell().
+     ; When ::SearchCol < 0 (default value), the GRID searchs the
+       current column.
+       When ::SearchCol == 0, the GRID searchs column 1 for the first
+       item (starting from the top) whose first character matches the
+       key just pressed.
+       When ::SearchCol > ::ColumnCount, no search is performed.
+   * ./Changelog
+     * Previous entry amended.
+
 2014-04-22 23:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source/h_grid.prg
-     ! Fixed search behaviour when ::SearchCol == 1.
-     ; When ::SearchCol < 1, the GRID searchs for the first item
-       (starting from the top) whose first character matches the
-       key just pressed.
+     ! Fixed search behaviour when TGrid():SearchCol == 1.
+     ; When ::SearchCol < 1 (default value), the GRID searchs
+       column 1 for the first item (starting from the top) whose
+       first character matches the key just pressed.
        When ::SearchCol > ::ColumnCount, no search is performed.
 
 2014-04-22 21:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
