@@ -1,5 +1,5 @@
 /*
- * $Id: h_grid.prg,v 1.244 2014-04-12 02:38:15 fyurisich Exp $
+ * $Id: h_grid.prg,v 1.245 2014-04-23 02:36:17 fyurisich Exp $
  */
 /*
  * ooHG source code:
@@ -2212,7 +2212,7 @@ Local aCellData, nItem, i
          ::cText += Upper( Chr( wParam ) )
       EndIf
 
-      If ::SearchCol > 1
+      If ::SearchCol >= 1
          nItem := 0
 
          If ::SearchCol <= ::ColumnCount

@@ -1,11 +1,19 @@
 /*
- * $Id: ChangeLog,v 1.1252 2014-04-23 00:21:03 fyurisich Exp $
+ * $Id: ChangeLog,v 1.1253 2014-04-23 02:36:17 fyurisich Exp $
  */
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2014-04-22 23:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * source/h_grid.prg
+     ! Fixed search behaviour when ::SearchCol == 1.
+     ; When ::SearchCol < 1, the GRID searchs for the first item
+       (starting from the top) whose first character matches the
+       key just pressed.
+       When ::SearchCol > ::ColumnCount, no search is performed.
 
 2014-04-22 21:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * ./compile_MINGW.BAT
